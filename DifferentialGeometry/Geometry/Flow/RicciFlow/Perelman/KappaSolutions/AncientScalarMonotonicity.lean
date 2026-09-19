@@ -7,11 +7,11 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Set
+open Set Filter
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -63,5 +63,27 @@ theorem ancientKappa_scalar_monotoneOn
       (ancientKappa_regularSlabBound_finrank F hF) hoperator
     intro s hs
     simpa only [hF.regular_eq, Set.mem_Iio] using hs.trans_lt htneg
+
+theorem exists_eventually_scalar_pos_of_ancient
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) :
+    ∃ x : F.M, ∀ᶠ T in 𝓝[≤] (0 : ℝ), 0 < F.S.scalar T x := by
+  obtain ⟨t, ht, x, hx⟩ := hF.notFlat
+  have hnonneg : 0 ≤ F.rmNormSq (I := I) t x := by
+    exact DifferentialGeometry.Tensor0SBundle.normSq0S_nonneg
+      (I := I) (F.S.base.metric t) x 4 (F.S.base.rm04 t x)
+  have hpos : 0 < F.S.scalar t x :=
+    pos_of_mul_pos_right ((Real.sqrt_pos.mpr (lt_of_le_of_ne hnonneg hx.symm)).trans_le
+      (ancientKappa_rmNormLeScalar_finrank F hF t ht x)) (sq_nonneg _)
+  have ht0 : t ≤ 0 := by simpa only [hF.carrier_eq, mem_Iic] using ht
+  have hzero : 0 < F.S.scalar 0 x := hpos.trans_le
+    (ancientKappa_scalar_monotoneOn F hF x ht0 (mem_Iic.mpr le_rfl) ht0)
+  have hc : ContinuousOn (fun T : ℝ => F.S.scalar T x) (Iic 0) := by
+    have hmap : Continuous (fun T : ℝ => (T, x)) := continuous_id.prodMk continuous_const
+    have hm : MapsTo (fun T : ℝ => (T, x)) (Iic 0) (D.carrier ×ˢ univ) := by
+      intro T hT
+      exact ⟨by simpa only [hF.carrier_eq, mem_Iic] using hT, mem_univ x⟩
+    have hh := F.isSolution.scalarCont.comp hmap.continuousOn hm
+    exact hh
+  exact ⟨x, (hc 0 (mem_Iic.mpr le_rfl)).eventually (Ioi_mem_nhds hzero)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

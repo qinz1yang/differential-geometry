@@ -240,10 +240,10 @@ theorem curvatureNormalizedFlow_scalarBounded
   exact ⟨mul_nonneg (inv_nonneg.mpr hQ.le) h.1,
     mul_le_mul_of_nonneg_left h.2 (inv_nonneg.mpr hQ.le)⟩
 
-theorem isAncientKappaSolution_curvatureNormalizedFlow
+theorem isAncientKappaSolution_curvatureNormalizedFlow_of_scalar_ne_zero
     {kappa : ℝ} (hF : IsAncientKappaSolution (I := I) kappa F)
     (t0 Q : ℝ) (hQ : 0 < Q) (ht0 : t0 ∈ D.carrier)
-    (x0 : F.M) (hvalue : F.S.scalar t0 x0 = Q) :
+    (x0 : F.M) (hscalar : F.S.scalar t0 x0 ≠ 0) :
     IsAncientKappaSolution (I := I) kappa
       (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0) := by
   have ht0le : t0 ≤ 0 := by
@@ -280,8 +280,19 @@ theorem isAncientKappaSolution_curvatureNormalizedFlow
       (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0)
       (t := 0) (by simp) x0
     change (curvatureNormalizedSolution F.S t0 Q hQ ht0).scalar 0 x0 ≠ 0
-    rw [curvatureNormalizedSolution_scalar_base F.S t0 Q hQ ht0 x0 hvalue]
-    exact one_ne_zero
+    rw [curvatureNormalizedSolution_scalar]
+    change Q⁻¹ * F.S.scalar (parabolicTime t0 Q 0) x0 ≠ 0
+    rw [parabolicTime_zero]
+    exact mul_ne_zero (inv_ne_zero hQ.ne') hscalar
+
+theorem isAncientKappaSolution_curvatureNormalizedFlow
+    {kappa : ℝ} (hF : IsAncientKappaSolution (I := I) kappa F)
+    (t0 Q : ℝ) (hQ : 0 < Q) (ht0 : t0 ∈ D.carrier)
+    (x0 : F.M) (hvalue : F.S.scalar t0 x0 = Q) :
+    IsAncientKappaSolution (I := I) kappa
+      (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0) :=
+  isAncientKappaSolution_curvatureNormalizedFlow_of_scalar_ne_zero
+    F hF t0 Q hQ ht0 x0 (hvalue.trans_ne hQ.ne')
 
 end Pointed
 

@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthTimeComparison
 
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CurvatureNormalization
+
 set_option autoImplicit false
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
@@ -59,5 +61,44 @@ theorem continuousOn_redLength_space_time_of_ancient
           |redLength F.S 0 p z.2 tau - redLength F.S 0 p q tau| := abs_sub_le _ _ _
     _ ≤ B z := add_le_add hh le_rfl
     _ < epsilon := hs
+
+omit [I.Boundaryless] in
+private theorem redLength_curvatureNormalizedSolution_one
+    {T : ℝ} (hT : T ∈ ancientTimeInterval.carrier) (p q : F.M) (tau : ℝ) :
+    redLength (curvatureNormalizedSolution F.S T 1 zero_lt_one hT) 0 p q tau =
+      redLength F.S T p q tau := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hd (gamma : ℝ → F.M) (s : ℝ) :
+      lDensity (curvatureNormalizedSolution F.S T 1 zero_lt_one hT) 0 gamma s =
+        lDensity F.S T gamma s := by
+    simp only [lDensity, lSpeedSq, curvatureNormalizedSolution_scalar,
+      curvatureNormalizedSolution_metric, rescaledMetric, parabolicTime,
+      inv_one, div_one, one_mul, zero_sub, ← sub_eq_add_neg, scaleMetric_inner]
+  have hl (gamma : ℝ → F.M) :
+      lLength (curvatureNormalizedSolution F.S T 1 zero_lt_one hT) 0 gamma 0 tau =
+        lLength F.S T gamma 0 tau := by
+    exact congrArg (fun f : ℝ → ℝ => ∫ s in (0 : ℝ)..tau, f s) (funext (hd gamma))
+  simp only [redLength, lCost, hl]
+
+private theorem continuousOn_redLength_space_time_of_scalar_ne_zero
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    {T : ℝ} (hT : T ≤ 0) (x : F.M) (hx : F.S.scalar T x ≠ 0) (p : F.M) :
+    ContinuousOn (fun z : ℝ × F.M => redLength F.S T p z.2 z.1) (Ioi 0 ×ˢ univ) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let G := curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq T 1 zero_lt_one hT x
+  have hG : IsAncientKappaSolution kappa G :=
+    isAncientKappaSolution_curvatureNormalizedFlow_of_scalar_ne_zero
+      F hF T 1 zero_lt_one hT x hx
+  have hc := continuousOn_redLength_space_time_of_ancient G hG p
+  exact hc.congr (fun z _ => (redLength_curvatureNormalizedSolution_one F hT p z.2 z.1).symm)
+
+theorem eventually_continuousOn_redLength_space_time_of_ancient
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M) :
+    ∀ᶠ T in 𝓝[≤] (0 : ℝ),
+      ContinuousOn (fun z : ℝ × F.M => redLength F.S T p z.2 z.1) (Ioi 0 ×ˢ univ) := by
+  obtain ⟨x, hx⟩ := exists_eventually_scalar_pos_of_ancient F hF
+  have htime : ∀ᶠ T in 𝓝[≤] (0 : ℝ), T ≤ 0 := self_mem_nhdsWithin
+  filter_upwards [hx, htime] with T hpos hT
+  exact continuousOn_redLength_space_time_of_scalar_ne_zero F hF hT x hpos.ne' p
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
