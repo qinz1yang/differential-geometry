@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Analysis.Estimates.GaussianSeries
 import DifferentialGeometry.Geometry.Comparison.Volume.Model
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
@@ -253,5 +254,81 @@ theorem global_gaussian_annuli_tsum_lt_top
           (Real.exp (-c * (k : ℝ) ^ 2 + C₂ * (k : ℝ))) :=
       ENNReal.tsum_mul_left
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hseries
+
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
+
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
+
+open scoped ContDiff
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianVolumeMeasure_ball_le_exponential
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (p : M) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 < R)
+    (hRic : RicciBoundedBelow (I := I) g
+      (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2))) :
+    riemannianVolumeMeasure (I := I) (M := M) g
+        {y : M | riemannianEDistOf (I := I) g p y < ENNReal.ofReal R} ≤
+      ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere univ) *
+        ENNReal.ofReal (Real.exp
+          ((q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) + Module.finrank ℝ E) * R)) := by
+  classical
+  let : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+    g.toContinuousRiemannianMetric
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨cg.toRiemannianMetric⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+      (Metric.closedEBall p (ENNReal.ofReal R)) := by
+    have hc := RiemannianMetricComplete.closedEBall_isCompact (I := I) hcomplete p R
+    have hset : Metric.closedEBall p (ENNReal.ofReal R) =
+        {y | riemannianEDistOf (I := I) g p y ≤ ENNReal.ofReal R} := by
+      ext y
+      rw [Metric.mem_closedEBall', IsRiemannianManifold.out (I := I)]
+      simp only [mem_ofPred_eq, riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm]
+    rw [hset]
+    exact hc
+  have hvol := riemannianVolumeMeasure_ball_le_hyperbolic_of_isCompact_closedEBall
+    (I := I) g hEnorm p hq hR hcpt (fun y v _ => hRic y v)
+  have hn : 1 ≤ Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
+  have hpow : R ^ Module.finrank ℝ E ≤ Real.exp ((Module.finrank ℝ E : ℝ) * R) := by
+    calc
+      R ^ Module.finrank ℝ E ≤ Real.exp R ^ Module.finrank ℝ E :=
+        pow_le_pow_left₀ hR.le ((le_add_of_nonneg_right zero_le_one).trans (Real.add_one_le_exp R)) _
+      _ = Real.exp ((Module.finrank ℝ E : ℝ) * R) := by rw [← Real.exp_nat_mul]
+  have hmodel : hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R ≤
+      Real.exp ((q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) + Module.finrank ℝ E) * R) := by
+    calc
+      hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R ≤
+          R ^ Module.finrank ℝ E * Real.exp (q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * R) := by
+        simpa only [Nat.sub_add_cancel hn] using hyperbolicRadialVolume_le (Module.finrank ℝ E - 1) hq hR.le
+      _ ≤ Real.exp ((Module.finrank ℝ E : ℝ) * R) *
+          Real.exp (q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * R) :=
+        mul_le_mul_of_nonneg_right hpow (Real.exp_pos _).le
+      _ = Real.exp ((q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) + Module.finrank ℝ E) * R) := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+  simp only [riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm]
+  exact hvol.trans (mul_le_mul' le_rfl (ENNReal.ofReal_le_ofReal hmodel))
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -11397,3 +11397,10 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.ScalarCompositi
 import DifferentialGeometry.Analysis.Calculus.TimeJet.MixedJetsAlongCurve
 import DifferentialGeometry.Analysis.ODE.Regularity.ScalarJetContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedDistanceBounds
+import DifferentialGeometry.Geometry.Metric.LipschitzApproximation
+import DifferentialGeometry.Geometry.Metric.Distance.Approximation
+import DifferentialGeometry.Geometry.Operator.Gradient.Composition
+import DifferentialGeometry.Geometry.Metric.Distance.ExponentialWeight
+import DifferentialGeometry.Analysis.Integration.Measure.Estimates.DistanceExponential
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.DistanceExponential
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.ExponentialWeight
