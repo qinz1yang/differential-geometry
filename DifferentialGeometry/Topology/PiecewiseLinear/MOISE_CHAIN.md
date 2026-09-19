@@ -943,3 +943,50 @@ and the default environment linters
 were checked with only `docBlame` and `docBlameThm` excluded. These are local checks
 against the current imported objects, not a fresh certification of the entire
 integration source dependency graph.
+
+## 2026-09-19 Negative result: abstract boundary data does not determine the carrier germ
+
+F delivered `85d0c909b`, `BoundaryCarrierCompatibility.lean`, with strict lane
+verification and complete axiom/linter receipts. The fourth integration batch
+independently accepted this module at source checkpoint `eed5083b5`; see
+`HANDOFF_CODEX_INTEGRATION.md` section 17.
+The coordinator has read the proof and matched its current source hash to the
+module receipt. The formal result starts with any valid boundary-branch instance
+`hD` and constructs another complete `NormalSingularCellData` for
+`Bd* = BdM ∪ (D '' D.domain)ᶜ`, retaining its actual branch and crossing data.
+At a produced branch boundary point, every open chart neighborhood meets the
+open complement of the closed disk image. Thus Bd* has ambient interior points
+in that neighborhood; a pair of coordinate end planes has empty interior.
+No open partial homeomorphism can identify these boundary germs.
+
+The nonformal coordinate illustration in F's handoff uses
+`D(s,t) = (s,γ(t))` on `[0,1]×[0,3]`, where γ is successively
+`(-2+4t,0)`, `(4-2t,2t-2)`, and `(0,10-4t)` on the three unit intervals.
+The two preimages of the origin are t=1/2 and t=5/2. Its double-point branch is
+`[0,1]×{(0,0)}` in the box `[0,1]×[-2,3]×[-2,3]`.
+This illustration has not independently been instantiated in Lean; the checked
+formal result is the complete boundary-replacement construction from each
+valid input instance, not an asserted unconditional existence theorem.
+
+This does not refute the actual NormalSystem/Moise251 input, which has a real
+boundaryComplex. It refutes deriving that geometry from abstract BdM alone.
+F's next round targets information retained by the actual double and relative
+normal-form producer: a crossing with the specified carrier C and the germ
+relation between its frontier and the actual boundary Bd. Do not add these
+missing outputs as consumer hypotheses and call the producer complete.
+E3 independently advances a model that moves collision endpoints tangentially
+within their end faces, so it need not wait for this carrier repair.
+
+## 2026-09-19 Arc-cell normalization: nonvacuity correction
+
+The general marked-extension and trimmed cell-interface layers through h's
+`ac97849d4` are independently integration-verified. The subsequent normalized
+base, successor, and ball-pair endpoint (`edf2e00c0`, `b78e98dd9`, `122939e1b`)
+are withheld. Their finite closed three-manifold, ambient-dimension-three,
+and nonempty-chain hypotheses have no simultaneous geometric instance. Do
+not count their compilation or an n=1 index calculation as a usable endpoint.
+The intended repair uses a three-manifold with boundary and retained interior
+chain faces, first demonstrated by an actual nonempty n=1 complex and chain.
+Both endpoint vertex cells remain omitted. The closed higher-ambient-dimensional
+local cell-pair API is not invalidated by this finding. See integration handoff
+section 17 for the exact acceptance boundary and ongoing task assignment.

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleAnnulusIsotopy
 import DifferentialGeometry.Topology.LoopSpace.CircleLiftOrientation
 import DifferentialGeometry.Topology.LoopSpace.InjectiveLoop
+
+/-! Circle orientation, reflections, and PL pseudo-isotopies. -/
 
 open Set
 
@@ -60,7 +67,7 @@ theorem injective_arcPathOfParamRev {B : Set E} {δ : ℝ → E} (hδ : IsPLHome
   have h := hδ.bijOn.injOn hs ht hst
   exact Subtype.ext (by linarith)
 
-theorem exists_loopCircle_param_of_arc_decomposition [FiniteDimensional ℝ E]
+theorem exists_loopCircle_param_of_arc_decomposition
     {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
     (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
     (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1}) :
@@ -99,7 +106,8 @@ theorem exists_loopCircle_param_of_arc_decomposition [FiniteDimensional ℝ E]
       exact hγ.bijOn.mapsTo ⟨by linarith [hs.1], by linarith [hs.2]⟩
     · intro y hy
       obtain ⟨r, hr, rfl⟩ := hγ.bijOn.surjOn hy
-      refine ⟨((r / 2 : ℝ) : loopCircle), ⟨r / 2, ⟨by linarith [hr.1], by linarith [hr.2]⟩, rfl⟩, ?_⟩
+      refine ⟨((r / 2 : ℝ) : loopCircle),
+        ⟨r / 2, ⟨by linarith [hr.1], by linarith [hr.2]⟩, rfl⟩, ?_⟩
       rw [hlow (r / 2) ⟨by linarith [hr.1], by linarith [hr.2]⟩]
       ring_nf
   · have h := hlow 0 (by norm_num)
@@ -109,7 +117,7 @@ theorem exists_loopCircle_param_of_arc_decomposition [FiniteDimensional ℝ E]
     rw [h]
     norm_num
 
-theorem exists_pair_ne_of_isPLSphere_one [FiniteDimensional ℝ E] {S : Set E}
+theorem exists_pair_ne_of_isPLSphere_one {S : Set E}
     (hS : IsPLSphere 1 S) : ∃ x ∈ S, ∃ y ∈ S, x ≠ y := by
   obtain ⟨f, hf⟩ := hS
   have h0 : (Pi.single (0 : Fin 3) (1 : ℝ)) ∈ stdSimplexBoundary 2 :=
@@ -138,7 +146,8 @@ omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
 theorem circleConj_comp {S : Set E} {g : loopCircle → E} (hgb : BijOn g univ S) {u v : E → E}
     (hmv : MapsTo v S S) (θ : loopCircle) :
     circleConj g (u ∘ v) θ = circleConj g u (circleConj g v θ) := by
-  change Function.invFunOn g univ (u (v (g θ))) = Function.invFunOn g univ (u (g (circleConj g v θ)))
+  change Function.invFunOn g univ (u (v (g θ))) =
+    Function.invFunOn g univ (u (g (circleConj g v θ)))
   rw [circleConj_spec hgb hmv θ]
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
@@ -297,7 +306,7 @@ theorem exists_positive_map_eq_of_isPLSphere_one [FiniteDimensional ℝ E]
     exact ⟨r, hr, hrid, hrp,
       isPLCirclePositive_of_eqOn_arc hS hξ (hunion ▸ subset_union_right) hr hrB⟩
 
-theorem image_arc_eq_of_isPLCirclePositive [FiniteDimensional ℝ E]
+theorem image_arc_eq_of_isPLCirclePositive
     {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
     (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
     (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1})
@@ -521,11 +530,13 @@ theorem exists_isPLHomeomorphOn_of_endMaps_boundary_isPLCirclePositive
     (isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive K hK huf hposf)
     (isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive K' hK' hug hposg) hw
 
-theorem exists_not_isPLCirclePositive_of_arc_decomposition [FiniteDimensional ℝ E]
+theorem exists_isPLHomeomorphOn_reflection_of_arc_decomposition [FiniteDimensional ℝ E]
     {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
     (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
     (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1}) :
-    ∃ u : E → E, IsPLHomeomorphOn u S S ∧ ¬ IsPLCirclePositive S u := by
+    ∃ u : E → E, IsPLHomeomorphOn u S S ∧ ¬ IsPLCirclePositive S u ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, u (γ t) = δ t) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, u (δ t) = γ t) ∧ ∀ x ∈ S, u (u x) = x := by
   have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := by norm_num
   have hone : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := by norm_num
   have hhalf : ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 := by norm_num
@@ -574,15 +585,33 @@ theorem exists_not_isPLCirclePositive_of_arc_decomposition [FiniteDimensional �
     rw [hBA]
     rintro x hx
     rcases hx with hx | hx
-    · exact ⟨γ 0, by rw [hinter]; exact Or.inl rfl, by rw [hf0]; exact (show x = γ 0 from hx).symm⟩
+    · exact ⟨γ 0, by rw [hinter]; exact Or.inl rfl,
+        by rw [hf0]; exact (show x = γ 0 from hx).symm⟩
     · have hx' : x = γ 1 := hx
       exact ⟨γ 1, by rw [hinter]; exact Or.inr rfl, by rw [hf1]; exact hx'.symm⟩
-  obtain ⟨u, hu, huA, -⟩ := exists_isPLHomeomorphOn_union hAball.isPolyhedron hBball.isPolyhedron
+  obtain ⟨u, hu, huA, huB⟩ := exists_isPLHomeomorphOn_union hAball.isPolyhedron hBball.isPolyhedron
     hf hf' heq hsurj
   have huS : IsPLHomeomorphOn u S S := by
     rw [hunion, show B ∪ A = S by rw [union_comm]; exact hunion] at hu
     exact hu
-  refine ⟨u, huS, fun hpos => ?_⟩
+  have huγ (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1) : u (γ t) = δ t := by
+    rw [huA (hγ.bijOn.mapsTo ht)]
+    change δ (Function.invFunOn γ (Icc 0 1) (γ t)) = δ t
+    rw [hγ.bijOn.invOn_invFunOn.1 ht]
+  have huδ (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1) : u (δ t) = γ t := by
+    rw [huB (hδ.bijOn.mapsTo ht)]
+    change γ (Function.invFunOn δ (Icc 0 1) (δ t)) = γ t
+    rw [hδ.bijOn.invOn_invFunOn.1 ht]
+  have hinvol : ∀ x ∈ S, u (u x) = x := by
+    intro x hx
+    have hxAB : x ∈ A ∪ B := hunion.symm ▸ hx
+    rcases hxAB with hxA | hxB
+    · obtain ⟨t, ht, rfl⟩ := hγ.bijOn.surjOn hxA
+      rw [huγ t ht, huδ t ht]
+    · obtain ⟨t, ht, rfl⟩ := hδ.bijOn.surjOn hxB
+      rw [huδ t ht, huγ t ht]
+  refine ⟨u, huS, ?_, huγ, huδ, hinvol⟩
+  intro hpos
   have huimg : u '' A = B := by
     rw [image_congr huA]
     exact hf.image_eq
@@ -594,6 +623,15 @@ theorem exists_not_isPLCirclePositive_of_arc_decomposition [FiniteDimensional �
     exact hf1
   exact hAB ((huimg.symm.trans
     (image_arc_eq_of_isPLCirclePositive hγ hδ hδ0 hδ1 hunion hinter huS hpos hu0 hu1)).symm)
+
+theorem exists_not_isPLCirclePositive_of_arc_decomposition [FiniteDimensional ℝ E]
+    {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
+    (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
+    (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1}) :
+    ∃ u : E → E, IsPLHomeomorphOn u S S ∧ ¬ IsPLCirclePositive S u := by
+  obtain ⟨u, hu, hnu, -⟩ := exists_isPLHomeomorphOn_reflection_of_arc_decomposition
+    hγ hδ hδ0 hδ1 hunion hinter
+  exact ⟨u, hu, hnu⟩
 
 theorem exists_not_isPLCirclePositive_of_isPLSphere_one [FiniteDimensional ℝ E] {S : Set E}
     (hS : IsPLSphere 1 S) : ∃ u : E → E, IsPLHomeomorphOn u S S ∧ ¬ IsPLCirclePositive S u := by
