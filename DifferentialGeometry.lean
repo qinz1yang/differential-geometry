@@ -878,6 +878,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Exponential
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.GaussianTail
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Product
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
