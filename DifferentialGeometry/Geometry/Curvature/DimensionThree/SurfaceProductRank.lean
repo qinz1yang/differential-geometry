@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Product
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureNullityRank
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankNaturality
+import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
 
 noncomputable section
 
@@ -123,5 +124,44 @@ theorem curvatureOperatorImageAt_finrank_pullback_prod_real_eq_one_of_scalar_ne_
         metricRm04At_mem_algebraicCurvatureTensorSubmodule
           (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x⟩) = 1 := by
   rw [curvatureOperatorImageAt_finrank_pullback_prod_real g Φ hdim x, if_neg hscalar]
+
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
+
+end
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem curvatureOperatorImageAt_finrank_prod_scaled_real_le_one
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 2)
+    {ρ : ℝ} (hρ : 0 < ρ) (x : M × ℝ) :
+    Module.finrank ℝ (curvatureOperatorImageAt
+      (g.prod (scaleMetric ρ hρ (euclideanMetric (E := ℝ)))) x
+      ⟨metricRm04At (g.prod (scaleMetric ρ hρ (euclideanMetric (E := ℝ)))) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (g.prod (scaleMetric ρ hρ (euclideanMetric (E := ℝ)))) x⟩) ≤ 1 := by
+  have hsqrt : Real.sqrt ρ ≠ 0 := (Real.sqrt_pos.mpr hρ).ne'
+  let ψ : ℝ ≃ₘ⟮𝓘(ℝ, ℝ), 𝓘(ℝ, ℝ)⟯ ℝ :=
+    (LinearEquiv.smulOfNeZero ℝ ℝ (Real.sqrt ρ) hsqrt).toContinuousLinearEquiv.toDiffeomorph
+  let Φ : (M × ℝ) ≃ₘ⟮I.prod 𝓘(ℝ, ℝ), I.prod 𝓘(ℝ, ℝ)⟯ (M × ℝ) :=
+    (Diffeomorph.refl I M ∞).prodCongr ψ
+  have hΦ : Diffeomorph.pullbackMetricCross
+      (g.prod (euclideanMetric (E := ℝ))) Φ =
+      g.prod (scaleMetric ρ hρ (euclideanMetric (E := ℝ))) := by
+    rw [Diffeomorph.pullbackMetricCross_eq_pullbackMetric]
+    simpa only [Φ, ψ, Real.sq_sqrt hρ.le] using
+      Diffeomorph.pullbackMetric_prod_euclidean_smul (E := ℝ) g (Real.sqrt ρ) hsqrt
+  rw [← hΦ]
+  exact curvatureOperatorImageAt_finrank_pullback_prod_real_le_one g Φ hdim x
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
