@@ -4606,3 +4606,51 @@ and satisfies the required neighborhood controls.  Once such increments are
 available, the generic theorem above supplies the locally finite limit.  The
 finite trivalent instance does not prove that cross-stage producer, Moise 35.1
 Conditions (3)--(8), or `Moise351`.
+
+## 96. 2026-09-19 infinite supported shell modifications — done
+
+`LocallyFiniteSupportedModification.lean` resolves the first cross-stage
+question without weakening the limit interface.  `CompactCoreExhaustion`
+extracts a cofinal sequence of compact cores from every
+`LocallyFinitePieceTower`; consecutive selected cores contain the preceding
+core in their interior.  On a connected noncompact carrier, once the first
+core is nonempty, every open shell
+`interior (core (i + 1)) \ core i` is genuinely nonempty.
+
+`CompactCoreExhaustion.exists_supportedPLHomeomorphSystem` applies the actual
+manifold point-move theorem in every shell.  It produces the points, compact
+supports and PL self-homeomorphisms rather than accepting an increment family
+as input.  Every increment moves its selected point, is the identity outside
+its compact shell support, fixes the old core pointwise, and preserves every
+core.  The latter requirement is therefore not too strong: old cores are
+fixed, while each later core contains the support and is preserved by
+bijectivity.  The supports are pairwise disjoint and locally finite.  Their
+cumulative maps form a compatible exhaustion tower whose actual PL limit and
+inverse are constructed by the same local-stabilization argument as in
+Section 95.
+
+`exists_noncompact_infinite_supported_PL_modification_three` is a true
+infinite three-dimensional consumer.  It uses an actual locally finite tower
+of finite combinatorial 3-manifolds in Euclidean 3-space, starts beyond a
+nonempty compact polygonal segment, and constructs a nonidentity increment in
+every selected shell.  The selected points are injective, consecutive stages
+are never equal, the limit moves every selected point, every increment and the
+limit fix the original segment, and every compact set sees exact eventual
+stability.  Thus neither a finite `single` model nor an eventually constant
+family is used.
+
+The module passed its isolated private check with no diagnostics and left
+shared outputs unchanged.  The strict audit covered all seventy-three
+non-automatic module declarations and seven critical reused declarations;
+every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.  The leaf is registered in the flat root
+aggregate; no full-root build was run under the standing owner instruction.
+
+This closes the abstract and actual infinite supported-modification layer, but
+not the local Moise 35.1 geometry.  The next producer must choose in each
+shell, together with the modification, the new source and target standard
+solid-torus neighborhoods, compatible subdivisions and exact surface traces.
+The present protected graph is a compact polygonal segment; it does not yet
+assemble the locally finite trivalent dual-cell data of Sections 93--94 into
+the shells.  Conditions (3)--(8) and `Moise351` remain open.

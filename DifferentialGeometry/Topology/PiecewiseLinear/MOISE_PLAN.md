@@ -1681,3 +1681,32 @@ neighborhoods, compatible subdivisions and surface traces while preserving all
 earlier cores. After that input is constructed, the delivered tower theorem
 supplies the locally finite limit. Moise 35.1 Conditions (3)--(8) and
 `Moise351` therefore remain open.
+
+
+### Infinite supported shell modifications delivered
+
+The H lane now constructs, rather than assumes, a genuinely infinite family
+of compatible PL modifications. A compact-core exhaustion is extracted from
+the existing locally finite piece tower. On a connected noncompact carrier
+every successive open shell is nonempty, and the manifold point-move theorem
+produces a nonidentity PL self-homeomorphism with compact support in that
+shell. These supports are pairwise disjoint and locally finite. Each move fixes
+the old core and, because its support is contained in the next core, preserves
+every later core as well. Thus the all-core preservation condition used by the
+limit theorem is a consequence of the natural shell support geometry, not an
+extra consumer assumption.
+
+The Euclidean three-dimensional consumer uses an actual locally finite tower
+of finite combinatorial 3-manifolds, protects a nonempty polygonal segment and
+has a distinct nonzero move at every selected stage. Consecutive cumulative
+maps are never equal, the PL limit moves an injective infinite sequence of
+points, all stages and the limit fix the protected segment, and every compact
+set stabilizes exactly. All seventy-three module declarations and seven key
+reuses pass the standard-three-axiom audit and all thirteen linters.
+
+The remaining local geometric step is to choose, in the same shellwise
+construction, the transported source and target standard solid tori,
+compatible subdivisions and exact surface traces supplied in the finite
+trivalent model. The current infinite consumer protects a compact segment and
+does not yet assemble a locally finite trivalent dual-cell family. Conditions
+(3)--(8) and `Moise351` remain open.
