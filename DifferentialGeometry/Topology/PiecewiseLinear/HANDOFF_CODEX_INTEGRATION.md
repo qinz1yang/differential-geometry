@@ -563,3 +563,27 @@ At this coordination checkpoint, b3bbb416c, 1da809615, c252597c7, and the later
 F delivery c315e29f5 await integration acceptance. Do not treat these as already
 merged. The root build still targets source head 0e7ba393d; this documentation
 checkpoint does not change Lean source or restart that build.
+
+## 16. 2026-09-19 E3 resumed on closed-fold endpoint separation
+
+The owner explicitly asked to end E3's wait. E3 now has an independent producer
+round: construct compactly supported PL wedge pushes that preserve each slab
+end face as a set while moving the two collision endpoints within those faces;
+prove disjoint images of the complete closed folds and the empty tagged double
+point set; then supply continuous boundary-preserving homotopies. The existing
+pointwise-fixed-endpoint API remains intact.
+
+This task addresses the explicit obstruction already proved in SlabWedgePush:
+fixed collision endpoints prevent disjoint closed-fold images. A candidate is
+to translate the closed slab by a positive padding into the interior of the
+larger slab, conjugate the existing two pushes, and translate back. It must be
+verified, including actual instances and its boundary-loop consumer conditions;
+it is not yet an accepted proof or a replacement for F's actual branch chart.
+Joint continuity of a time-dependent homotopy must not be mistaken for joint
+piecewise affinity. General-environment separation and the L2 endpoint remain
+open until their actual producers and consumers are verified.
+
+E3 continues in its existing Sol-high task and original worktree, owns only its
+SlabWedge development and handoff, and has round token E3-round-20260919 under
+the same resource-admission helper as the other lanes. There is no further wait
+for F before this round can proceed, and no per-lemma mathematical redispatch.
