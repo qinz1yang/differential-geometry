@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoubleCoverProjection
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexBoundaryNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialImageIn
 
@@ -44,7 +44,8 @@ theorem exists_simplicialMap_derivedNeighborhood_of_isPiecewiseAffineOn
       C.faces ⊆ (boundaryComplex 3 T.complex).faces ∧
       A.space ∩ (boundaryComplex 3 T.complex).space = C.space ∧
       D.space ∩ (simplicialMap D g) ⁻¹' (boundaryComplex 3 T.complex).space = frontier P ∧
-      (derivedNeighborhood (boundaryComplex 3 T.complex) C).space ⊆ V := by
+      (derivedNeighborhood (boundaryComplex 3 T.complex) C).space ⊆
+        (boundaryComplex 3 K).space ∩ V := by
   have hfront : IsPolyhedron (frontier P) := hP.isPLSphere_frontier.isPolyhedron
   have hfrontP : frontier P ⊆ P := hP.isPolyhedron.isClosed.frontier_subset
   obtain ⟨g, hg, hgmap, hgfix, hgpre, -⟩ :=
@@ -120,7 +121,7 @@ theorem exists_simplicialMap_derivedNeighborhood_of_isPiecewiseAffineOn
       (hAspace.symm ▸ mem_image_of_mem (simplicialMap D g) hx)
   refine ⟨D, L, A, C, g, T, hDfin, hLfin, hDspace, hL, hAL, hCA, ?_, hAspace,
     hCspace', hfix, T.isCombinatorialManifoldWithBoundary hLmanifold, hCT,
-    htraceT, hproperT, fun x hx => (hTV hx).2⟩
+    htraceT, hproperT, fun x hx => ⟨hLbd ▸ (hTV hx).1, (hTV hx).2⟩⟩
   intro s hs
   rw [hAfaces]
   exact ⟨s, hs, rfl⟩
@@ -145,7 +146,7 @@ theorem exists_normalSystem_of_isPiecewiseAffineOn
       (∀ θ, (S.boundaryParam θ : EuclideanSpace ℝ (Fin 2)) = e θ) ∧
       S.basepoint = S.boundaryLoop 0 ∧
       S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space = frontier P ∧
-      S.boundaryNeighborhood.space ⊆ V ∧
+      S.boundaryNeighborhood.space ⊆ (boundaryComplex 3 K).space ∩ V ∧
       ∃ (β : C(S.boundaryNeighborhoodSpace, V)) (hb : β S.basepoint = γ 0),
         (∀ x, (β x : E) = (x : E)) ∧ β.comp S.boundaryLoop = γ ∧
         S.normalSubgroup = N.comap (FundamentalGroup.mapOfEq β hb) := by
@@ -178,7 +179,7 @@ theorem exists_normalSystem_of_isPiecewiseAffineOn
       (((isPiecewiseAffineOn_simplicialMap D g).continuousOn.domRestrict).comp
         a.continuous).subtype_mk _⟩
   let β : C(B.space, V) :=
-    ⟨fun x => ⟨x, hTV x.2⟩, continuous_subtype_val.subtype_mk _⟩
+    ⟨fun x => ⟨x, (hTV x.2).2⟩, continuous_subtype_val.subtype_mk _⟩
   have hβδ : β.comp δ = γ := by
     ext θ
     change φ (e' θ) = (γ θ : E)
@@ -233,4 +234,62 @@ theorem exists_normalSystem_of_isPiecewiseAffineOn
       loopClass_avoids_normal := havoid' }
   exact ⟨S, hDspace, hL, hfix, he', rfl, hproper, hTV,
     β, hb, fun _ => rfl, hβδ, rfl⟩
+namespace NormalSystem
+
+open Classical in
+theorem NonsingularCell.exists_isPLHomeomorphOn_boundaryLoop_of_comap
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K)
+    {S : NormalSystem E} (D : NonsingularCell S)
+    (hSK : S.manifoldComplex.space ⊆ K.space)
+    (hBK : S.boundaryNeighborhood.space ⊆ (PiecewiseLinear.boundaryComplex 3 K).space)
+    {V : Set E} (β : C(S.boundaryNeighborhoodSpace, V))
+    (hβ : ∀ x, (β x : E) = (x : E)) {y : V} (hb : β S.basepoint = y)
+    (N : Subgroup (FundamentalGroup V y)) [N.Normal]
+    (hN : S.normalSubgroup = N.comap (FundamentalGroup.mapOfEq β hb)) :
+    ∃ (f : EuclideanSpace ℝ (Fin 2) → E) (γ : freeLoop V) (q : Path y (γ 0)),
+      IsPLHomeomorphOn f D.sourceComplex.space (f '' D.sourceComplex.space) ∧
+      MapsTo f D.sourceComplex.space K.space ∧
+      EqOn f (simplicialMap D.sourceComplex D.vertexMap) (frontier D.sourceComplex.space) ∧
+      D.sourceComplex.space ∩ f ⁻¹' (PiecewiseLinear.boundaryComplex 3 K).space =
+        frontier D.sourceComplex.space ∧
+      f '' D.sourceComplex.space ∩ (PiecewiseLinear.boundaryComplex 3 K).space =
+        f '' frontier D.sourceComplex.space ∧
+      range (fun θ => (γ θ : E)) = f '' frontier D.sourceComplex.space ∧
+      ¬conjugacyClassMeets (normalSystemLoopConjugacyClass y γ q) N := by
+  let _ : Finite S.manifoldComplex.faces := S.manifoldComplex_faces_finite.to_subtype
+  obtain ⟨f, hf, hfmap, hfix, hpre, -, hrange⟩ :=
+    D.exists_isPLHomeomorphOn_eqOn_boundary
+  have hpreK : D.sourceComplex.space ∩ f ⁻¹' (PiecewiseLinear.boundaryComplex 3 K).space =
+      frontier D.sourceComplex.space := by
+    apply Subset.antisymm
+    · rintro x ⟨hx, hfx⟩
+      exact hpre.subset ⟨hx,
+        inter_boundaryComplex_space_subset_of_subset K S.manifoldComplex
+          hK S.isManifold hSK ⟨hfmap hx, hfx⟩⟩
+    · intro x hx
+      obtain ⟨θ, hθ⟩ := hrange.symm.subset (mem_image_of_mem f hx)
+      refine ⟨hpre.superset hx |>.1, ?_⟩
+      change f x ∈ (PiecewiseLinear.boundaryComplex 3 K).space
+      rw [← hθ]
+      exact hBK (D.boundaryLoop θ).2
+  have hinter : f '' D.sourceComplex.space ∩ (PiecewiseLinear.boundaryComplex 3 K).space =
+      f '' frontier D.sourceComplex.space := by
+    rw [← image_inter_preimage, hpreK]
+  let γ := β.comp D.boundaryLoop
+  let q : Path y (γ 0) := (D.connector.map β.continuous).cast hb.symm rfl
+  have hγ : range (fun θ => (γ θ : E)) = f '' frontier D.sourceComplex.space := by
+    rw [← hrange]
+    congr 1
+    funext θ
+    exact hβ (D.boundaryLoop θ)
+  have havoid : ¬conjugacyClassMeets
+      (normalSystemLoopConjugacyClass S.basepoint D.boundaryLoop D.connector)
+      (N.comap (FundamentalGroup.mapOfEq β hb)) := by
+    rw [← hN]
+    exact D.loopClass_avoids_normal
+  exact ⟨f, γ, q, hf, hfmap.mono_right hSK, hfix, hpreK, hinter, hγ,
+    normalSystemLoopConjugacyClass_map_avoids β hb D.boundaryLoop D.connector N havoid⟩
+
+end NormalSystem
 end DifferentialGeometry.Topology.PiecewiseLinear

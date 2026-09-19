@@ -868,3 +868,51 @@ modifications on the actual annulus, with the old-coordinate straightening
 obligation explicit. M304 delivered actual full-boundary gluing e4a3f74eb and
 continues its capping/essential-circle round. h and E3 were not interrupted.
 No new task, subagent or checker was added.
+
+## Original-boundary control and return of normal-system solutions (2026-09-19 UTC)
+
+F 584a5cfa0 is independently accepted. The two initial-system endpoints now
+retain the proved boundary-neighborhood containment in the original target
+boundary intersect V. The previous output retained only containment in V.
+This strengthens the existing conjunction field and preserves the raw inputs,
+boundary values, parameterization and normal-subgroup construction.
+
+NormalSystem.NonsingularCell.exists_isPLHomeomorphOn_boundaryLoop_of_comap
+transports a supplied actual nonsingular cell to a PL embedded disk in the
+original target. The relative inward-embedding producer keeps its source and
+boundary values; boundary monotonicity for nested three-manifolds then proves
+the exact original-boundary preimage and image intersection. The original
+normal subgroup is recovered through the actual inclusion/comap equation.
+Properness in the original target is an output, not an additional input.
+
+The complete modified module matches the author commit and was freshly checked
+in 35.598 seconds including admission. The combined audit took
+45.952 seconds. All four native nonautomatic declarations (one new, one
+private instance), eight critical reuses and all five probe declarations have
+only standard foundational axioms. All thirteen applicable environment linters
+pass; final source and audit checks have zero errors, warnings or info output.
+
+The actual collapsed triangular-disk/tetrahedron model is retested under the
+stronger statement. Two further consumers begin with the original raw inputs:
+one constructs a system and performs actual cover descent, and the other
+transports any actual solution of that constructed system back to the original
+target. The second explicitly requires NonsingularCell; it is not its existence
+producer. Two local instances complete the five-probe census. No independent
+complete subgroup-avoidance model is claimed by the constant-disk example.
+
+Thirty-three accepted private prerequisites were reused with exact current
+source and object identities. No integration source/header edits were required.
+Accepted Lean delta: +64/-5 in the existing leaf. Receipt:
+.lake/verified-twentyninth-lane-delivery-20260919.json, retaining exact probe
+bytes, source/object hashes, full declaration/axiom/lint census, provenance and
+timings. Root coverage remains 9454 project modules including itself, with no
+missing project sources or cycles. Full-root compilation remains stopped.
+
+The initial-input and solved-output interfaces are now both accepted. Actual
+sphere-boundary solution production, compatibility with fixed target faces,
+cover projection/desingularization and the final loop theorem remain open.
+F continues the single sphere-complementary-disk round. Connected-interior
+e50dbf499 is queued separately. M304 has delivered the actual separating-circle
+raw-capping and essential Betti layer afddb98a4, also awaiting independent replay;
+its raw caps share a disk and do not supply E3's disjoint pushed surfaces.
+M304 continues the nonseparating case. Other current rounds are unchanged.

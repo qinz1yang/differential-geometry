@@ -104,7 +104,13 @@ the original disk complexity. Actual subsequent covers preserve source
 properness and strictly decrease complexity. Sphere-boundary embedded disks,
 cover projection/desingularization and general singular normalization remain
 open. F completed initialization at 584a5cfa0 and has begun one sphere-production
-round; that later original-boundary/solution-return enhancement is still queued.
+round. Its 584a5cfa0 original-boundary containment and conditional solution-return
+enhancement is now independently accepted too. The initial system preserves
+containment in the original boundary intersect V. From an actual NonsingularCell,
+relative inward push and boundary monotonicity return a PL embedded disk with
+exact original-boundary preimage/intersection and original subgroup avoidance.
+All four native declarations, eight critical reused entries and five probe
+declarations pass with zero diagnostics and all thirteen applicable linters.
 The fixed target-face condition in NonsingularCell must be reconciled with
 actual PL disks and refinements, rather than silently assumed.
 
@@ -132,8 +138,9 @@ h's completed 12f8f0727 round supplies a one-triangulation exhaustion interface
 and an actual noncompact n=0 sanity model, still awaiting independent acceptance.
 Its next round constructs actual three-dimensional noncompact graph-neighborhood
 geometry and checks the ambient regular-neighborhood semantics. F's initial
-system chain through aef1bbb8e is accepted. Its later 584a5cfa0 original-boundary
-control and conditional solution-return interface is queued. At the completed
+system chain and original-boundary/conditional solution-return interface through
+584a5cfa0 are accepted. Connected-interior e50dbf499 and later sphere geometry
+remain queued for independent replay. At the completed
 round boundary, F continued actual sphere-neighborhood complementary disks and
 the sphere-boundary NonsingularCell producer, without a simultaneous cover-
 projection/desingularization assignment.
@@ -159,9 +166,9 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Source-faithful cover reduction and the raw-disk initial NormalSystem chain through aef1bbb8e are accepted. Later original-boundary control/solution return 584a5cfa0 is queued. Current round constructs actual sphere-boundary embedded disks. | Produce the finite complementary disks and boundary-generation geometry from the actual system. Reconcile the fixed-target-face condition before packaging NonsingularCell. General normalization and cover desingularization remain open. |
+| F / gpt-6-astra max | Raw-disk initialization, original-boundary control and conditional solution return through 584a5cfa0 are accepted. Connected-interior e50dbf499 is queued. Current round constructs sphere complementary disks and the sphere-boundary NonsingularCell. | Produce actual finite complementary disks and boundary-generation geometry. Reconcile fixed target faces with PL disk refinements; no assumed hpush or normal form. Cover desingularization and the final loop theorem remain open. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f, conditional Betti descent 2eecb1a86, circle-complement layer 9ee4df017 and actual branch-closure surfaces 5e695768f and full-boundary ball/manifold gluing e4a3f74eb are queued. | Produce actual capped surfaces and essential-circle/compression descent; retain exact intrinsic boundary and nonspherical-branch conditions. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f, conditional Betti descent 2eecb1a86, circle-complement layer 9ee4df017 and actual branch-closure surfaces 5e695768f and full-boundary ball/manifold gluing e4a3f74eb and actual separating essential-circle capping/Betti descent afddb98a4 are queued. | Current round addresses the nonseparating circle and annulus complement; independently verify the delivered separating-circle caps. Raw caps share their disk and are not E3 disjoint pushed surfaces; retain exact intrinsic boundary and nonspherical-branch conditions. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
 | S / gpt-6-astra max | Compact PL smoothing. Finite handles and new-cell annulus atlases through ada7fd321 are accepted. Actual local corner/framing smoothing in the fixed old atlas 29fc463ce is delivered and queued. | At its completed round, continued finite relative modifications around the actual attaching annulus. Produce old-coordinate straightening and framing compatibility from the real atlas construction; then crossing-seam open charts. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular

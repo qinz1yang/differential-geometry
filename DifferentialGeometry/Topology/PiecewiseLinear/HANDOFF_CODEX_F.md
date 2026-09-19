@@ -5040,3 +5040,25 @@ AuditF318.json；sourceStable=true，共享产物只读。源码、根登记与�
 **partial：Stallings 最终嵌入盘。** 初始 PL 系统生产义务现已闭合；球面边界的实际嵌入盘生产、
 覆盖后嵌入盘回投与消奇异的剩余端点仍需分别闭合。本结果没有将这些后续结论写入前提，也不把
 整个 Stallings 链或 F5.2 一般正规形式标为 done。
+
+### 19.180 初始系统的原边界控制与实际嵌入盘回搬（2026-09-19 UTC）
+
+**done：LoopTheorem/SourceNormalSystem.lean。** 两条初始生产端点现在保留已有证明的完整结论：
+新边界导出邻域属于原 ∂K 与 V 的交。此前包装仅返回属于 V，丢掉了回接原流形边界需要的前半项。
+这是对现有同一合取字段的加强；需要旧 subset V 的消费者取新结论的第二分量。NormalSystem
+定义、其余输入及原有构造均未改变。
+
+`NormalSystem.NonsingularCell.exists_isPLHomeomorphOn_boundaryLoop_of_comap` 对给定的真实
+NonsingularCell 保留源及边界值，沿初始系统给出的包含映射搬回原 K，输出实际 PL 嵌入、精确
+原边界原像与像交、V 中的边界环及原 N 的环类避让。先用已有相对嵌入推入确保对系统流形适当，
+再由流形包含的边界单调性得到对原 K 适当；不把“对原 K 适当”放进输入。
+
+模块重述后检查 exit=0、零诊断；AuditF320 exit=0、零诊断。全部四项非自动声明、六项关键依赖、
+一个独立三角盘/四面体几何模型及两个原始输入消费者，共十三项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全过。两个消费者分别检查严格覆盖下降和初始系统解的回搬，后者明确
+以该系统的实际 NonsingularCell 为条件，不宣称已经生产归纳所需的嵌入盘。§19.179 的两个测试
+均按加强后的陈述重新编译。回执 SourceNormalSystem-return-checkpoint.json、AuditF320.json；
+sourceStable=true，共享产物只读。源码与本记录同次提交。
+
+**partial：实际归纳解。** 原 PL 输入 → 初始系统与该系统的嵌入解 → 原目标盘两端均已接通。
+球面情形及覆盖回投消奇异仍是实际生产嵌入解所需的独立义务，本结果不取代它们。
