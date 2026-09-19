@@ -18,6 +18,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.FlatPersisten
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TimeRestriction
 import DifferentialGeometry.Geometry.Metric.Product.Completeness
 import Mathlib.Topology.Order.IntermediateValue
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ProductRankPersistence
 
 noncomputable section
 
@@ -239,6 +240,120 @@ theorem exists_right_interval_curvatureOperatorImageAt_finrank_eq_one_of_complet
     rw [hrank] at hle
     exact hle
 
+open DifferentialGeometry.Geometry.Curvature.DimensionThree in
+set_option backward.isDefEq.respectTransparency false in
+theorem exists_right_interval_curvatureOperatorImageAt_finrank_eq_one_of_complete
+    [SimplyConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b s : ℝ} (hs : s ∈ Ioo a b) (hreg : Ioo a b ⊆ D.regular)
+    (hR : ∀ t ∈ Ioo a b, ∀ x,
+      (⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hcomplete : ∀ t ∈ Ioo a b, RiemannianMetricComplete (S.family.metric t))
+    (hbound : ∀ u v, a < u → u < v → v < b →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Icc u v, ∀ x : M,
+        normSq0S (S.family.metric t) x 4 (metricRm04At (S.family.metric t) x) ≤ C)
+    (x₀ : M)
+    (hrank : Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric s) x₀
+      ⟨metricRm04At (S.family.metric s) x₀,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric s) x₀⟩) = 1) :
+    ∃ c ∈ Ioo s b, ∀ t ∈ Ico s c, ∀ x : M,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1 := by
+  obtain ⟨N, htop, hcs, hmanifold, ht2, hσ, h₀, F, hconn, -, -, hprod⟩ :=
+    exists_complete_surface_product_at_rank_one S hS hs hreg (hcomplete s hs) hR x₀ hrank
+  let _ := htop
+  let _ := hcs
+  let _ := hmanifold
+  let _ := ht2
+  let _ := hσ
+  let _ := hconn
+  obtain ⟨a₀, haa₀, ha₀s⟩ := exists_between hs.1
+  obtain ⟨c, hsc, hcb⟩ := exists_between hs.2
+  have hsub : Icc a₀ c ⊆ Ioo a b := fun t ht =>
+    ⟨haa₀.trans_le ht.1, ht.2.trans_lt hcb⟩
+  obtain ⟨K, hK, hKbound⟩ := hbound a₀ c haa₀ (ha₀s.trans hsc) hcb
+  let P := S.pullback F
+  have hP : IsSolutionOn P := hS.pullback S F
+  have hPcomplete : ∀ t ∈ Icc a₀ c, RiemannianMetricComplete (P.base.metric t) := by
+    intro t ht
+    exact RiemannianMetricComplete.pullbackCross (S.family.metric t) F
+      (hcomplete t (hsub ht))
+  have hPbound : ∀ t ∈ Icc a₀ c, ∀ x : N × ℝ,
+      normSq0S (P.base.metric t) x 4 (P.base.rm04 t x) ≤ K := by
+    intro t ht x
+    change normSq0S (Diffeomorph.pullbackMetricCross (S.base.metric t) F) x 4
+      (metricRm04At (Diffeomorph.pullbackMetricCross (S.base.metric t) F) x) ≤ K
+    rw [CheegerGromovCompactness.riemannNormSq_cross]
+    exact hKbound t ht (F x)
+  have hPR : ∀ t ∈ Icc s c, ∀ x : N × ℝ,
+      metricAlgebraicCurvatureTensorAt (P.base.metric t) x ∈
+        algebraicCurvatureOperatorNonnegativeCone := by
+    intro t ht x
+    have ht' : t ∈ Ioo a b := ⟨hs.1.trans_le ht.1, ht.2.trans_lt hcb⟩
+    apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
+      (P.base.metric t) x).mpr
+    intro n coeff v w
+    have hbase := (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
+      (S.base.metric t) (F x)).mp (hR t ht' (F x)) n coeff
+        (fun i => mfderiv _ I F x (v i)) (fun i => mfderiv _ I F x (w i))
+    change 0 ≤ ∑ i, ∑ j, coeff i * coeff j *
+      metricRm04StandardAt (Diffeomorph.pullbackMetricCross (S.base.metric t) F) x
+        (v i) (w i) (w j) (v j)
+    simpa only [metricRm04Standard_pullbackCross] using hbase
+  have hPupper := curvatureOperatorImageAt_finrank_le_one_of_initial_product P hP
+    (by simp [DifferentialGeometry.Topology.Morse.MorseModel]) ha₀s hsc
+    (fun t ht => D.regular_subset (hreg (hsub ht)))
+    (fun t ht => hreg (hsub ⟨ht.1.le, ht.2.le⟩)) hPcomplete hK hPbound hPR h₀ hprod
+  refine ⟨c, ⟨hsc, hcb⟩, fun t ht x => ?_⟩
+  have hupper : Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+      ⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) ≤ 1 := by
+    have hp := hPupper t ⟨ht.1, ht.2.le⟩ (F.symm x)
+    have hdimP : Module.finrank ℝ (TangentSpace
+        ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod 𝓘(ℝ, ℝ))
+        (F.symm x)) = 3 := by
+      change Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 2 × ℝ) = 3
+      simp [Module.finrank_prod, DifferentialGeometry.Topology.Morse.MorseModel]
+    have hdimM : Module.finrank ℝ (TangentSpace I (F (F.symm x))) = 3 := by
+      change Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3
+      simp [DifferentialGeometry.Topology.Morse.MorseModel]
+    have heq : Module.finrank ℝ (curvatureOperatorImageAt (P.base.metric t) (F.symm x)
+        (metricAlgebraicCurvatureTensorAt (P.base.metric t) (F.symm x))) =
+        Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric t) (F (F.symm x))
+          (metricAlgebraicCurvatureTensorAt (S.base.metric t) (F (F.symm x)))) := by
+      dsimp only [metricAlgebraicCurvatureTensorAt]
+      rw [← metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank _ _ hdimP,
+        ← metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank _ _ hdimM]
+      change metricCurvatureOperatorRankAt
+        (Diffeomorph.pullbackMetricCross (S.base.metric t) F) (F.symm x) hdimP = _
+      rw [Diffeomorph.pullbackMetricCross_eq_localPullMetric]
+      exact metricCurvatureOperatorRankAt_localPull (S.base.metric t) F
+        F.isLocalDiffeomorph (F.symm x) hdimP hdimM
+    rw [heq] at hp
+    rw [F.apply_symm_apply] at hp
+    exact hp
+  apply Nat.le_antisymm hupper
+  have hdim : Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3 := by
+    simp [DifferentialGeometry.Topology.Morse.MorseModel]
+  rcases ht.1.eq_or_lt with he | hst
+  · subst t
+    obtain ⟨r, har, hrs⟩ := exists_between hs.1
+    have hsub₀ : Icc r s ⊆ Ioo a b := fun q hq =>
+      ⟨har.trans_le hq.1, hq.2.trans_lt hs.2⟩
+    have heq₀ := curvatureOperatorImageAt_finrank_eq_at_later_time S hS hdim hrs
+      (hsub₀.trans hreg) (fun q hq => hR q (hsub₀ hq)) x x₀
+    rw [heq₀, hrank]
+  · have hsub₁ : Icc s t ⊆ Ioo a b := fun q hq =>
+      ⟨hs.1.trans_le hq.1, hq.2.trans_lt (ht.2.trans hcb)⟩
+    have hle := curvatureOperatorImageAt_finrank_le_at_later_time S hS hdim hst
+      (hsub₁.trans hreg) (fun q hq => hR q (hsub₁ hq)) x₀ x
+    rw [hrank] at hle
+    exact hle
+
 private theorem rank_le_on_interval_of_closed_and_right_extension
     {a b s : ℝ} (q : ℝ → ℕ) (hs : s ∈ Ioo a b)
     (hclosed : ∀ v ∈ Ioo s b, IsClosed ({t | q t ≤ 1} ∩ Icc s v))
@@ -273,6 +388,68 @@ private theorem rank_le_on_interval_of_closed_and_right_extension
     · have hle := hright t ⟨hst, ht.2⟩
       have hge : 1 ≤ q t := by simpa [hrank] using hmono hs ht hst.le
       omega
+
+theorem curvatureOperatorImageAt_finrank_eq_one_on_interval_of_complete
+    [SimplyConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b s : ℝ} (hs : s ∈ Ioo a b) (hreg : Ioo a b ⊆ D.regular)
+    (hR : ∀ t ∈ Ioo a b, ∀ x,
+      (⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hcomplete : ∀ t ∈ Ioo a b, RiemannianMetricComplete (S.family.metric t))
+    (hbound : ∀ u v, a < u → u < v → v < b →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Icc u v, ∀ x : M,
+        normSq0S (S.family.metric t) x 4 (metricRm04At (S.family.metric t) x) ≤ C)
+    (x₀ : M)
+    (hrank : Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric s) x₀
+      ⟨metricRm04At (S.family.metric s) x₀,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric s) x₀⟩) = 1) :
+    ∀ t ∈ Ioo a b, ∀ x : M,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1 := by
+  have hdim : Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3 := by
+    simp [DifferentialGeometry.Topology.Morse.MorseModel]
+  let q : ℝ → ℕ := fun t => Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x₀
+    ⟨metricRm04At (S.family.metric t) x₀,
+      metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x₀⟩)
+  have hclosed (v : ℝ) (hv : v ∈ Ioo s b) :
+      IsClosed ({t | q t ≤ 1} ∩ Icc s v) := by
+    apply isClosed_curvatureOperatorImageAt_finrank_le_on_Icc S hS hdim x₀ 1
+    intro t ht
+    exact D.regular_subset (hreg ⟨hs.1.trans_le ht.1, ht.2.trans_lt hv.2⟩)
+  have hzero (t : ℝ) (ht : t ∈ Ioo a b) (hz : q t = 0) :
+      ∀ u ∈ Ioo a b, q u = 0 := by
+    have hflat := stationary_flat_of_curvatureOperatorImageAt_finrank_eq_zero_of_complete
+      S hS hdim ht hreg hR hcomplete hbound x₀ hz
+    intro u hu
+    dsimp only [q]
+    rw [(hflat u hu).1]
+    exact hz
+  have hforward (t : ℝ) (ht : t ∈ Ioo a b) (hq : q t = 1) :
+      ∃ c ∈ Ioo t b, ∀ u ∈ Ico t c, q u ≤ 1 := by
+    obtain ⟨c, hc, hlocal⟩ :=
+      exists_right_interval_curvatureOperatorImageAt_finrank_eq_one_of_complete
+        S hS ht hreg hR hcomplete hbound x₀ hq
+    exact ⟨c, hc, fun u hu => (hlocal u hu x₀).le⟩
+  have hmono : MonotoneOn q (Ioo a b) := by
+    intro u hu v hv huv
+    rcases huv.eq_or_lt with rfl | huv
+    · exact le_rfl
+    · have hsub : Icc u v ⊆ Ioo a b := fun t ht =>
+        ⟨hu.1.trans_le ht.1, ht.2.trans_lt hv.2⟩
+      exact curvatureOperatorImageAt_finrank_le_at_later_time S hS hdim huv
+        (hsub.trans hreg) (fun t ht => hR t (hsub ht)) x₀ x₀
+  have hall := rank_le_on_interval_of_closed_and_right_extension q hs
+    hclosed hzero hforward hmono hrank
+  intro t ht x
+  obtain ⟨r, har, hrt⟩ := exists_between ht.1
+  have hsub : Icc r t ⊆ Ioo a b := fun u hu =>
+    ⟨har.trans_le hu.1, hu.2.trans_lt ht.2⟩
+  exact (curvatureOperatorImageAt_finrank_eq_at_later_time S hS hdim hrt
+    (hsub.trans hreg) (fun u hu => hR u (hsub hu)) x x₀).trans (hall t ht)
 
 theorem curvatureOperatorImageAt_finrank_eq_one_on_interval_of_complete_existence_and_uniqueness
     [SimplyConnectedSpace M]
