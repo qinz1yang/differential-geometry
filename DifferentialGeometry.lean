@@ -4867,6 +4867,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Variation.TraceAlg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Variation.WeightedCalculus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.LowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Evolution
@@ -11281,3 +11282,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedLength
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedVolume

@@ -1,0 +1,225 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeTightness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientAsymptoticReducedVolume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedLength
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Volume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Scaling
+
+set_option autoImplicit false
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Filter Set MeasureTheory
+open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow.Entropy
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
+
+variable (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+private local instance : MeasurableSpace F.M := borel F.M
+private local instance : BorelSpace F.M := ⟨rfl⟩
+private local instance (P : PointedRiemannianManifold.{u, uE, uH} I) :
+    MeasurableSpace P.M := borel P.M
+private local instance (P : PointedRiemannianManifold.{u, uE, uH} I) :
+    BorelSpace P.M := ⟨rfl⟩
+
+theorem lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (hdim : Module.finrank ℝ E = 3)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
+    {theta : ℝ} (htheta : 0 < theta)
+    (P : PointedRiemannianManifold.{u, uE, uH} (I := I)) {phi : ℕ → ℕ}
+    (hescape : Tendsto (tau ∘ phi) atTop atTop)
+    (Phi : PointedRiemannianConvergenceMaps
+      ((backwardFlowSequence F tau htau q).atTime (1 - theta)) P phi)
+    (C : MetricConvergenceData Phi)
+    (hcanonical : ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData Phi i)
+    (hcomplete : MetricComplete P) (ell : P.M → ℝ)
+    (hlim : ∀ x, Tendsto (fun i => redLength F.S 0 p (Phi.map i x) (tau (phi i) * theta))
+      atTop (𝓝 (ell x))) :
+    (∫⁻ x, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) theta ell x)
+      ∂riemannianVolumeMeasure (I := I) (M := P.M) P.metric) =
+        asymptoticReducedVolume F.S 0 p := by
+  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : ConnectedSpace F.M := hF.connected
+  let X := (backwardFlowSequence F tau htau q).atTime (1 - theta)
+  let sigma : ℕ → ℝ := fun i => tau i * theta
+  have hsigma (i : ℕ) : 0 < sigma i := mul_pos (htau i) htheta
+  let gs := fun i => scaleMetric (sigma i)⁻¹ (inv_pos.mpr (hsigma i))
+    (F.S.base.metric (-sigma i))
+  have hmetric0 (i : ℕ) : (X.obj i).metric =
+      scaleMetric (tau i)⁻¹ (inv_pos.mpr (htau i)) (F.S.base.metric (-sigma i)) := by
+    change ((backwardFlowSequence F tau htau q).term i).S.base.metric (1 - theta) = _
+    rw [backwardFlowSequence_metric]
+    congr 2
+    dsimp only [sigma]
+    ring
+  have hmetric (i : ℕ) : (X.obj i).metric = scaleMetric theta htheta (gs i) := by
+    rw [hmetric0]
+    apply SmoothRiemannianMetric.ext_inner
+    intro x v w
+    simp only [gs, sigma, scaleMetric_inner]
+    field_simp
+  let fs : ∀ i, (X.obj i).M → ℝ≥0∞ := fun i x => ENNReal.ofReal
+    (perelmanDensity (Module.finrank ℝ E) theta (fun y => redLength F.S 0 p y (sigma i)) x)
+  let μ : ℕ → Measure F.M := fun i =>
+    riemannianVolumeMeasure (I := I) (M := F.M) (X.obj i).metric
+  have hnonneg (i : ℕ) (x : F.M) : 0 ≤ redLength F.S 0 p x (sigma i) := by
+    obtain ⟨B, hB⟩ := hF.globalScalarBound
+    apply div_nonneg _ (by positivity)
+    apply lCost_nonneg_of_scalar_nonneg F.S 0 (hsigma i).le
+    intro t ht y
+    simpa only [zero_sub] using (hB (-t) (neg_nonpos.mpr ht.1) y).1
+  have hmeas (i : ℕ) : Measurable (fs i) :=
+    ENNReal.measurable_ofReal.comp
+      (continuous_const.mul (Real.continuous_exp.comp
+        (continuous_redLength_of_ancient F hF p (hsigma i)).neg)).measurable
+  have hbound (i : ℕ) (x : F.M) : fs i x ≤
+      ENNReal.ofReal (perelmanDensityPrefactor (Module.finrank ℝ E) theta) := by
+    apply ENNReal.ofReal_le_ofReal
+    apply mul_le_of_le_one_right (Real.rpow_nonneg (by positivity) _)
+    exact Real.exp_le_one_iff.mpr (neg_nonpos.mpr (hnonneg i x))
+  have htotal : Tendsto (fun i => ∫⁻ x, fs (phi i) x ∂μ (phi i)) atTop
+      (𝓝 (asymptoticReducedVolume F.S 0 p)) := by
+    have ht := ancient_reducedVolume_tendsto_rescaled F hF p hescape htheta
+    apply ht.congr'
+    apply Eventually.of_forall
+    intro i
+    dsimp only [Function.comp_apply]
+    rw [intrinsicReducedVolume_eq_lintegral_perelmanDensity_scaled F.S 0 p (htau (phi i)) htheta]
+    simp only [zero_sub]
+    change _ = ∫⁻ x, fs (phi i) x ∂riemannianVolumeMeasure (I := I) (M := F.M) (X.obj (phi i)).metric
+    rw [hmetric0]
+  apply Phi.lintegral_eq_of_tendsto_of_tightness C hcanonical hcomplete fs hmeas
+    (fun K _ => ⟨_, ENNReal.ofReal_ne_top,
+      Eventually.of_forall (fun i x _ => hbound (phi i) (Phi.map i x))⟩)
+    (fun x => ENNReal.continuous_ofReal.continuousAt.tendsto.comp
+      (tendsto_const_nhds.mul (Real.continuous_exp.continuousAt.tendsto.comp (hlim x).neg))) htotal
+  intro ε hε
+  obtain ⟨N, hN⟩ := ancientKappaThree_exp_neg_redLength_uniform_tightness F hF hdim
+    (ell P.basepoint + 1) hε
+  refine ⟨Real.sqrt theta * N, ?_⟩
+  have hbase : ∀ᶠ i in atTop,
+      redLength F.S 0 p (q (phi i)) (sigma (phi i)) ≤ ell P.basepoint + 1 := by
+    filter_upwards [(hlim P.basepoint).eventually
+      (gt_mem_nhds (lt_add_one (ell P.basepoint)))] with i hi
+    have hbp : Phi.map i P.basepoint = q (phi i) := Phi.basepoint_map i
+    rw [hbp] at hi
+    exact hi.le
+  filter_upwards [hbase] with i hi
+  let T := {x : F.M | (N : ℝ) ≤ (riemannianEDistOf (gs (phi i)) (q (phi i)) x).toReal}
+  have hsubset : (riemannianBallOf (gs (phi i)) (q (phi i)) (N : ℝ))ᶜ ⊆ T := by
+    intro x hx
+    have hn : ENNReal.ofReal (N : ℝ) ≤
+        riemannianEDistOf (gs (phi i)) (q (phi i)) x := le_of_not_gt hx
+    have hd := ENNReal.toReal_mono
+      (riemannianEDistOf_ne_top (gs (phi i)) (q (phi i)) x) hn
+    change (N : ℝ) ≤ (riemannianEDistOf (gs (phi i)) (q (phi i)) x).toReal
+    simpa only [ENNReal.toReal_ofReal (Nat.cast_nonneg N)] using hd
+  have hpref : perelmanDensityPrefactor (Module.finrank ℝ E) 1 ≤ 1 := by
+    change (4 * Real.pi * 1) ^ (-(Module.finrank ℝ E : ℝ) / 2) ≤ 1
+    apply Real.rpow_le_one_of_one_le_of_nonpos (by linarith [Real.pi_gt_three])
+    exact div_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (Nat.cast_nonneg _)) (by norm_num)
+  change (∫⁻ x in (riemannianBallOf (I := I) (M := F.M) (X.obj (phi i)).metric (q (phi i))
+      (Real.sqrt theta * N))ᶜ, fs (phi i) x ∂μ (phi i)) ≤ ε
+  dsimp only [μ, fs]
+  rw [hmetric, riemannianBallOf_scaleMetric]
+  have hscale := setLIntegral_perelmanDensity_scaleMetric (gs (phi i)) htheta zero_lt_one
+    (fun y => redLength F.S 0 p y (sigma (phi i)))
+    (riemannianBallOf (gs (phi i)) (q (phi i)) (N : ℝ))ᶜ
+  rw [mul_one] at hscale
+  rw [hscale]
+  calc
+    _ ≤ ∫⁻ x in T, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) 1
+        (fun y => redLength F.S 0 p y (sigma (phi i))) x)
+        ∂riemannianVolumeMeasure (I := I) (M := F.M) (gs (phi i)) := lintegral_mono_set hsubset
+    _ ≤ ∫⁻ x in T, ENNReal.ofReal (Real.exp (-redLength F.S 0 p x (sigma (phi i))))
+        ∂riemannianVolumeMeasure (I := I) (M := F.M) (gs (phi i)) := by
+      apply lintegral_mono
+      intro x
+      apply ENNReal.ofReal_le_ofReal
+      exact mul_le_of_le_one_left (Real.exp_pos _).le hpref
+    _ ≤ ε := hN p (q (phi i)) (sigma (phi i)) (hsigma (phi i)) hi
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+open Filter Set MeasureTheory
+open DifferentialGeometry.PDE.RicciFlow.Entropy
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
+open scoped _root_.Manifold ContDiff NNReal _root_.Topology
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact
+variable (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+
+theorem exists_backward_flow_reducedLength_limit_with_mass
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (hdim : Module.finrank ℝ E = 3)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
+    (hescape : Tendsto tau atTop atTop) (q : ℕ → F.M)
+    {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A)
+    {T : ℝ} (hT : 1 ≤ T) :
+    let X := backwardFlowSequence F tau htau q
+    ∃ (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval) (phi : ℕ → ℕ),
+      StrictMono phi ∧ ∃ Phi : PointedCGHMaps (I := I) X (L.atTime 0) phi,
+        ConnectedSpace L.M ∧ (∀ t : ℝ, t ≤ 0 → MetricComplete (L.atTime t)) ∧
+        (∀ t : ℝ, t ≤ 0 → ∃ C : MetricConvergenceData (I := I) (Phi.atTime (I := I) (X := X) (L := L) t),
+          (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I)
+            (Phi.atTime (I := I) (X := X) (L := L) t) k) ∧
+          (∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)) ∧
+        ∃ ell : C(L.M × Icc (1 : ℝ) T, ℝ),
+          (∀ z, 0 ≤ ell z) ∧ ell (L.basepoint, ⟨1, le_rfl, hT⟩) ≤ A ∧
+          (∀ R : ℝ, 0 ≤ R → ∃ K : ℝ≥0,
+            ∀ x ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint R,
+            ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint R,
+            ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
+              (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|)) ∧
+          (∀ S : Set (L.M × Icc (1 : ℝ) T), IsCompact S → TendstoUniformlyOn
+            (fun i z => redLength F.S 0 p (Phi.map i z.1) (tau (phi i) * z.2)) ell atTop S) ∧
+          ∀ theta : Icc (1 : ℝ) T,
+            (∫⁻ x, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) theta
+              (fun y => ell (y, theta)) x)
+              ∂riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric (1 - theta))) =
+                asymptoticReducedVolume F.S 0 p := by
+  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  obtain ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv,
+      ell, hnonneg, hbaseLimit, hLip, hpotential⟩ :=
+    exists_backward_flow_reducedLength_limit F hF p tau htau q hbase hT
+  refine ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv,
+    ell, hnonneg, hbaseLimit, hLip, hpotential, ?_⟩
+  intro theta
+  have htheta : 0 < (theta : ℝ) := zero_lt_one.trans_le theta.property.1
+  have ht : 1 - (theta : ℝ) ≤ 0 := sub_nonpos.mpr theta.property.1
+  obtain ⟨C, hcanonical, _⟩ := hconv (1 - theta) ht
+  apply lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF hdim
+    p tau htau q htheta (L.atTime (1 - theta)) (hescape.comp hphi.tendsto_atTop)
+    (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta))
+    C hcanonical (hcomplete (1 - theta) ht) (fun y => ell (y, theta))
+  intro x
+  change Tendsto (fun i => redLength F.S 0 p (Phi.map i x) (tau (phi i) * (theta : ℝ)))
+    atTop (𝓝 (ell (x, theta)))
+  have hh := (hpotential {(x, theta)} isCompact_singleton).tendsto_at (mem_singleton (x, theta))
+  exact hh
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
