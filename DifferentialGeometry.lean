@@ -1453,6 +1453,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TraceScalarization
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceGradient
+import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceHigherRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceRegularity
 import DifferentialGeometry.Analysis.Parabolic.Moser.BombieriGiusti.Basic
 import DifferentialGeometry.Analysis.Parabolic.Moser.Core.Cutoff
