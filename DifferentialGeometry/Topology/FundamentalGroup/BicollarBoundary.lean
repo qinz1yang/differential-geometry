@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.FundamentalGroup.BicollarKernel
+import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRetraction
 
 /-! Fundamental-group kernels from a bicollared surface into its closed sides. -/
@@ -49,27 +50,9 @@ theorem fundamentalGroup_map_collarMiddleInclusion_bijective (s : S) :
         (Homeomorph.prodUnique S Unit).toHomotopyEquiv
   let eh : ↑(c.negativeCover ∩ c.positiveCover) ≃ₕ S :=
     c.collarMiddleHomeomorph.symm.toHomotopyEquiv.trans ep
-  have hbase : c.collarMiddleProjection (c.collarMiddleInclusion s) = s :=
-    DFunLike.congr_fun c.collarMiddleProjection_comp_inclusion s
-  have hp : Function.Bijective (FundamentalGroup.mapOfEq c.collarMiddleProjection hbase) :=
-    fundamentalGroup_mapOfEq_bijective_of_homotopyEquiv eh (c.collarMiddleInclusion s) s hbase
-  have hinv : Function.LeftInverse
-      (FundamentalGroup.mapOfEq c.collarMiddleProjection hbase)
-      (FundamentalGroup.map c.collarMiddleInclusion s) := by
-    intro g
-    rw [FundamentalGroup.mapOfEq_apply]
-    induction g using Path.Homotopic.Quotient.ind with
-    | mk p =>
-      change Path.Homotopic.Quotient.mk
-        (((p.map c.collarMiddleInclusion.continuous).map
-          c.collarMiddleProjection.continuous).cast hbase.symm hbase.symm) =
-            Path.Homotopic.Quotient.mk p
-      congr 1
-      ext t
-      exact DFunLike.congr_fun c.collarMiddleProjection_comp_inclusion (p t)
-  refine ⟨hinv.injective, ?_⟩
-  intro a
-  exact ⟨FundamentalGroup.mapOfEq c.collarMiddleProjection hbase a, hp.1 (hinv _)⟩
+  exact bijective_fundamentalGroup_map_of_homotopyEquiv_leftInverse eh
+    c.collarMiddleInclusion
+    (fun x => DFunLike.congr_fun c.collarMiddleProjection_comp_inclusion x) s
 
 def negativeBoundaryInclusion : C(S, closure c.negativeSide) :=
   ⟨fun s => ⟨e s, c.range_e_subset_closure_negativeSide ⟨s, rfl⟩⟩,

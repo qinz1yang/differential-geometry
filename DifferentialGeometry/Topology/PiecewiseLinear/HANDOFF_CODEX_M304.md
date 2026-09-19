@@ -1887,3 +1887,97 @@ route under investigation. Nonseparating cuts, general ambient orientability
 and the actual Moise252 theorem remain separate upstream obligations.
 Full Moise264 and arbitrary-shell Moise304 remain open; independent
 integration acceptance is not claimed.
+
+## Closed-cut kernels from the original ambient inclusion (2026-09-19 UTC)
+
+The kernel transfer now accepts an actual nontrivial element killed by the
+original inclusion L into K. Ambient simple connectivity is no longer a
+hypothesis of the primary theorems. The previous simply connected results
+are corollaries of this general construction.
+
+`FundamentalGroup/CollaredClosedCover.lean` proves
+`ThreeManifold.TwoSidedCollar.exists_nontrivial_fundamentalGroup_kernel_of_closed_cover`.
+It applies in an arbitrary topological ambient X to a path-connected
+bicollared S and path-connected closed pieces P,Q. The geometric inputs are
+P union Q = X, P intersect Q = range e, and closure(P minus Q) = P,
+closure(Q minus P) = Q. Given g != 1 killed by e into X, it produces a new
+nontrivial element killed by the literal inclusion into P or Q. A closed-side
+kernel is never an input, and the output is not equated with the input g.
+
+Three elementary results in `Connected/ClosedCover.lean` derive
+interior P = complement Q, closure(interior P) = P and frontier P = P
+intersect Q from these dense-side hypotheses. The generic proof then reuses
+the native outward-collar orientation to obtain a collar d negative on P
+and its reverse negative on Q. The actual open sets are interior P union
+d.range and interior Q union d.reverse.range. They cover X, are path
+connected, and their intersection equals d.range. The native domain
+retractions fix the zero section and commute with both literal closed-side
+inclusions. The based ambient inclusion square also commutes, including
+the mapOfEq casts. The range homeomorphism and contractibility of the real
+factor give the overlap-to-S homotopy equivalence and zero-section group
+isomorphism. Native van Kampen then supplies the new side-kernel element.
+
+`FundamentalGroup/Retraction.lean` now exposes
+`fundamentalGroup_mapOfEq_leftInverse` and
+`bijective_fundamentalGroup_map_of_homotopyEquiv_leftInverse`.
+Its original injection theorem and the earlier collar-middle bijection
+reuse this common based-map argument. The existing injection signature and
+all ten declarations of BicollarBoundary retain their public signatures.
+
+`SurfaceCutKernel.lean` supplies the primary theorems
+`exists_nontrivial_fundamentalGroup_kernel_of_manifold_pair_of_map_eq_one`
+and `exists_boundary_component_kernel_of_manifold_pair_of_map_eq_one`.
+They work with the same supplied finite connected WB3 pieces A,B in any
+finite-dimensional real ambient space, their actual common surface L and
+actual boundary labels. Dense connected manifold interiors establish the
+closed-cover hypotheses. Literal subtype maps carry the resulting kernel
+into A or B and then into the actual connectedComponentComplex inclusion.
+No replacement ambient simplex or free cut object is introduced.
+
+The complete producer
+`IsCombinatorialManifoldWithBoundary.exists_boundary_component_kernel_of_interior_inclusion`
+starts with the original finite connected WB3 K and finite connected closed
+PL2 L in its interior in real ambient dimension three. It takes an actual
+nontrivial pi1(L)-to-pi1(K) kernel and the specified relative neighborhood U.
+It constructs the U-contained collar, the same finite connected orientable
+cut piece R inside K, the exact old-boundary trace, its actual boundary
+label equal to L and a nontrivial boundary kernel. The original full simply
+connected producer is a corollary with its former signature. Two intermediate
+simply connected corollaries additionally lose their unnecessary ambient
+local-path-connectedness instance; their other binders and conclusions
+are preserved. Eighteen other former public signatures are unchanged.
+
+The external actual model retains its original finite nonempty PL ball K,
+embedded beta-two torus L and U = interior K. It supplies the actual source
+inclusion kernel to this new general producer, then verifies the actual
+cut boundary, nontrivial kernel and essential free loop together. The ball
+is still the test model; a nonsimply-connected geometric test ambient is
+not claimed. The theorem statement and checked proof use the supplied
+ambient kernel directly.
+
+All 37 nonautomatic declarations in the five changed/new mathematical
+modules, 54 critical reused declarations, the actual model and three
+private helpers pass the transitive axiom audit with only propext,
+Classical.choice and Quot.sound. All 13 applicable linters pass. The five
+modules and final audit have zero-diagnostic private receipts. The new leaf
+is registered once in the flat root; the native graph has 527 modules and
+1032 edges, is acyclic and avoids HurewiczLowDegrees. The stopped root build
+is not restarted. Shared outputs and F/E3/h/S mathematical sources are
+untouched; independent acceptance is not claimed.
+
+Fifteen source-matching source/object/receipt sets and the complete external
+audit, declaration census and source review are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/collared-closed-cover-checkpoint/`.
+Manifest SHA256:
+`8F96C466CCC27FB5683F03258247AE40693FE8EFF66D16AD4CCC7E5DBF06C0EA`.
+Final audit completion is 2026-09-19T18:43:31.3239295Z. The manifest retains
+individual receipt times for freshly checked modules and unchanged earlier
+dependencies.
+
+Full Moise264 still requires the full component and ambient generality,
+including nonseparating cuts and the relevant orientability construction.
+The actual Moise252 theorem and embedded essential-disk production remain
+upstream. This checkpoint does not assert Moise252, Moise264 or arbitrary-
+shell Moise304. The existing based-kernel-to-free-loop theorem continues
+to provide the exact input shape for a later explicitly conditional Moise252
+consumer on the produced boundary.

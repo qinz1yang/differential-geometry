@@ -2044,3 +2044,40 @@ at `moise304-reading/surface-cut-kernel-checkpoint/`, manifest SHA256
 `080A9AD86A7A930F66371D76EE824CCECDEB73D2DA387A6F02F7F400C0FA08AA`.
 See HANDOFF_CODEX_M304.md for exact APIs and limits. No full-root build or
 independent integration acceptance is claimed.
+
+### M304 transfer of an original ambient inclusion kernel (2026-09-19 UTC)
+
+`CollaredClosedCover` now constructs a nontrivial kernel into one actual
+closed side from a nontrivial kernel of the original collared inclusion
+into the ambient space. Ambient simple connectivity is removed. The proof
+constructs the two open domain neighborhoods, identifies their overlap with
+the collar range, and proves the zero-section, ambient-map and native
+retraction squares commute with their based-group casts. Dense exclusive
+sides supply the regular-closed and frontier identities needed to orient
+the collar. Native van Kampen produces the new side element.
+
+The general manifold-pair and actual boundary-component theorems in
+`SurfaceCutKernel` use those maps on the same finite A,B and L in any
+finite-dimensional real ambient space. The complete original-K producer
+`exists_boundary_component_kernel_of_interior_inclusion` accepts the actual
+source inclusion kernel and preserves K,L,U. It constructs an orientable
+finite cut piece, exact boundary trace and actual boundary-component kernel
+for connected K,L in real ambient dimension three. The earlier simply
+connected results are now corollaries. Two redundant local-path-connectedness
+instances are removed; eighteen other former public signatures remain.
+
+The actual nonempty original ball and beta-two torus model invokes this
+general producer and verifies its actual boundary kernel and essential free
+loop together. The model ambient remains a ball. All 37 declarations in
+five changed/new modules, 54 critical reuses, the model and three helpers
+have standard transitive axioms; all 13 applicable linters pass with zero
+diagnostics. The registered native graph has 527 modules and 1032 edges
+without cycles or HurewiczLowDegrees.
+
+Fifteen source-matching private receipt sets and the complete audit are
+frozen at `moise304-reading/collared-closed-cover-checkpoint/`, manifest SHA256
+`8F96C466CCC27FB5683F03258247AE40693FE8EFF66D16AD4CCC7E5DBF06C0EA`.
+See HANDOFF_CODEX_M304.md for exact statements and maps. Full Moise264
+component/ambient generality, nonseparating cuts, the actual Moise252 proof
+and embedded essential disks remain open. No full-root build or independent
+acceptance is claimed; arbitrary-shell Moise304 is not complete.
