@@ -62,9 +62,6 @@ theorem exists_local_contDiffOn_solution_of_homogeneous_metric_divergence_equati
     exact Measure.restrict_congr_set Ioo_ae_eq_Icc.symm
   have hmeasure : ν₀ ≤ ν :=
     Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
-  have hUm : MemLp U 2 ((volume.restrict (Ioo c d)).prod (volume.restrict Ω₀)) := by
-    rw [← hμ₀]
-    exact (Lp.memLp U).mono_measure hmeasure
   have hKm (i) : MemLp (K i) 2 ((volume.restrict (Ioo c d)).prod (volume.restrict Ω₀)) := by
     rw [← hμ₀]
     exact (Lp.memLp (K i)).mono_measure hmeasure
@@ -110,7 +107,7 @@ theorem exists_local_contDiffOn_solution_of_homogeneous_metric_divergence_equati
       (prod_mono (fun t ht => ⟨hac.trans ht.1, ht.2.trans hdb⟩) hsub))
     simpa only [hrestrict] using h
   have h := weighted_divergence_eq_of_contDiffOn_ae_eq isOpen_Ioo hΩ₀
-    (by norm_num : (1 : ℝ≥0∞) ≤ 2) hUm hKm hKw (hu.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) hUu₀ hρ hA
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) hKm hKw (hu.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) hUu₀ hρ hA
     (continuousOn_const : ContinuousOn (fun _ => (0 : ℝ)) (Ioo c d ×ˢ Ω₀)) hweak₀
   simpa only [add_zero] using h
 

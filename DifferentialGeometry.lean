@@ -755,6 +755,7 @@ import DifferentialGeometry.Analysis.Integration.Gaussian.AnnularIntegral
 import DifferentialGeometry.Analysis.Integration.Gaussian.DistanceCoercivity
 import DifferentialGeometry.Analysis.Integration.Gaussian.VolumeTail
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
+import DifferentialGeometry.Analysis.Integration.Integral.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric

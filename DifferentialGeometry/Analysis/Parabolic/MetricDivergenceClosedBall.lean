@@ -1,7 +1,9 @@
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension.ClosedBall
+import DifferentialGeometry.Analysis.Integration.Integral.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceMixedRegularity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationAffine
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationClassical
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
 import DifferentialGeometry.Geometry.Metric.Family.Pullback
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
@@ -93,17 +95,6 @@ private theorem exists_affineEquiv_closedBall_subset
     have hz' : ‖z‖ ≤ 1 := by simpa only [Metric.mem_closedBall, dist_zero_right] using hz
     nlinarith
 
-private theorem integrableOn_mul_test
-    {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
-    {μ : Measure E} {Ω : Set E} {W ψ : E → ℝ}
-    (hW : LocallyIntegrableOn W Ω μ) (hψ : Continuous ψ)
-    (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ Ω) :
-    IntegrableOn (fun x => W x * ψ x) Ω μ := by
-  apply Integrable.mono_measure _ Measure.restrict_le_self
-  apply (integrableOn_iff_integrable_of_support_subset
-    ((subset_tsupport (fun x => W x * ψ x)).trans tsupport_mul_subset_right)).mp
-  exact (hW.integrableOn_compact_subset hψs hψc).mul_continuousOn hψ.continuousOn hψc
-
 private theorem exists_local_contDiffOn_ae_eq_of_raw_metric_equation
     {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
     [ChartedSpace (EuclideanHalfSpace n) M]
@@ -163,10 +154,10 @@ private theorem exists_local_contDiffOn_ae_eq_of_raw_metric_equation
     have hint (i j) : Integrable (fun p => A p i j * K p i *
         fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν := by
       rw [show ν = (volume.prod volume).restrict (Icc a b ×ˢ Ω) from Measure.prod_restrict _ _]
-      exact integrableOn_mul_test (hAK i j)
+      exact ((hAK i j).integrable_smul_right_of_hasCompactSupport
         ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const)
         (hφc.fderiv_apply ℝ _) ((tsupport_fderiv_apply_subset ℝ _).trans
-          (hφs.trans (Set.prod_mono Ioo_subset_Icc_self Subset.rfl)))
+          (hφs.trans (Set.prod_mono Ioo_subset_Icc_self Subset.rfl)))).mono_measure Measure.restrict_le_self
     calc
       _ = ∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν := by
         apply integral_congr_ae
@@ -649,6 +640,75 @@ theorem contDiffOn_of_homogeneous_metric_divergence_equation
       ContDiffOn ℝ (⊤ : ℕ∞) U (Ioo a b ×ˢ Ω) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (NeZero.ne n)
   exact contDiffOn_of_metric_equation_succ hG hreg α hΩ hΩs
+
+
+theorem metric_divergence_eq_of_homogeneous_weak_equation
+    {H M : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H}
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn D g)
+    {a b : ℝ} (hreg : Ioo a b ⊆ D.regular)
+    (α : M) {Ω : Set EuStd} (hΩ : IsOpen Ω)
+    (hΩs : Ω ⊆ (toEuclidean : EuN ≃L[ℝ] EuStd) '' interior (extChartAt I α).target) :
+    let μ := volume.restrict (Ioo a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (g p.1) α p.2
+    let A := fun p : ℝ × EuStd => Matrix.of fun i j => weightedInvGramOnEuclid (g p.1) α i j p.2
+    ∀ (U : ℝ × EuStd → ℝ) (K : ℝ × EuStd → EuStd),
+      ContinuousOn U (Ioo a b ×ˢ Ω) →
+      (∀ B : Set (ℝ × EuStd), IsCompact B → B ⊆ Ioo a b ×ˢ Ω →
+        MemLp K 2 ((volume.prod volume).restrict B)) →
+      (∀ᵐ t ∂μ, DeGiorgi.HasWeakGrad (fun z => K (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          ∑ j, ∫ p, ((A p).transpose *ᵥ (fun i => K p i)) j *
+            fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) →
+      ∀ p ∈ Ioo a b ×ˢ Ω, fderiv ℝ (fun q => ρ q * U q) p (1, 0) =
+        ∑ i, ∑ j, fderiv ℝ (fun q => A q i j * fderiv ℝ U q (0, EuclideanSpace.single i 1))
+          p (0, EuclideanSpace.single j 1) := by
+  intro μ ν ρ A U K hUc hK hKw hw
+  have hu := contDiffOn_of_homogeneous_metric_divergence_equation hG hreg α hΩ hΩs U K hUc hK hKw hw
+  have hKl (i) : LocallyIntegrableOn (fun p => K p i) (Ioo a b ×ˢ Ω) (volume.prod volume) := by
+    apply (locallyIntegrableOn_iff (isOpen_Ioo.prod hΩ).isLocallyClosed).mpr
+    intro B hB hBc
+    let : IsFiniteMeasure ((volume.prod volume).restrict B) :=
+      isFiniteMeasure_restrict.mpr hBc.measure_lt_top.ne
+    exact ((hK B hBc hB).eval_piLp i).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+  let G : MetricConnectionFamilyOn (I := I) (M := M) D :=
+    { metric := g
+      connection := fun t => leviCivitaConnectionOfMetric (g t)
+      metricCompatible := fun t => leviCivitaConnectionOfMetric_isMetricCompatible (g t) }
+  have hρ : ContDiffOn ℝ 1 ρ (Ioo a b ×ˢ Ω) :=
+    ((densityOnEuclid_family_contDiffOn (G := G) hG Subset.rfl α).mono
+      (prod_mono hreg (hΩs.trans (image_mono interior_subset)))).of_le (by simp)
+  have hA (i j) : ContDiffOn ℝ 1 (fun p => A p i j) (Ioo a b ×ˢ Ω) :=
+    ((weightedInvGramOnEuclid_family_contDiffOn (G := G) hG Subset.rfl α Subset.rfl i j).mono
+      (prod_mono hreg hΩs)).of_le (by simp)
+  have hweak (φ : ℝ × EuStd → ℝ) (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+      (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ioo a b ×ˢ Ω) :
+      (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+        (∑ i, ∑ j, ∫ p, A p i j * K p i * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+          ∫ p, (0 : ℝ) * φ p ∂ν := by
+    simp only [zero_mul, integral_zero, sub_zero]
+    rw [hw φ hφ hφc hφs, Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro j _
+    simp only [Matrix.mulVec, dotProduct, Matrix.transpose_apply, Finset.sum_mul]
+    apply integral_finsetSum
+    intro i _
+    rw [show ν = (volume.prod volume).restrict (Ioo a b ×ˢ Ω) from Measure.prod_restrict _ _]
+    have hAK := (hKl i).continuousOn_mul (hA i j).continuousOn (isOpen_Ioo.prod hΩ).isLocallyClosed
+    exact (hAK.integrable_smul_right_of_hasCompactSupport
+        ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const)
+        (hφc.fderiv_apply ℝ _) ((tsupport_fderiv_apply_subset ℝ _).trans hφs)).mono_measure
+          Measure.restrict_le_self
+  have h := weighted_divergence_eq_of_contDiffOn_ae_eq_of_locallyIntegrableOn isOpen_Ioo hΩ
+    hKl (fun i => hKw.mono (fun _ ht => ht i))
+    (hu.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) Filter.EventuallyEq.rfl hρ hA
+    (continuousOn_const : ContinuousOn (fun _ => (0 : ℝ)) (Ioo a b ×ˢ Ω)) hweak
+  simpa only [add_zero] using h
 
 end
 
