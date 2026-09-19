@@ -10,6 +10,7 @@ import Mathlib.Tactic.Ring
 noncomputable section
 
 open Filter MeasureTheory Set
+open scoped ENNReal
 
 namespace DifferentialGeometry.Analysis.Sobolev
 
@@ -118,5 +119,29 @@ theorem integral_fderiv_eq_neg_of_weighted_identity
     integral_fderiv_eq_of_weighted_identity hS v hU hR hρ hρne (fun _ => 0)
       (fun ψ hψ hψc hψs => by
         simpa only [zero_sub] using hweak ψ hψ hψc hψs) hφ hφc hφs
+
+theorem exists_lp_weak_deriv_of_weighted_identity
+    {μ : Measure E} [IsLocallyFiniteMeasure μ] {S : Set E} (hS : IsOpen S)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {U R ρ : E → ℝ} (v : E)
+    (hU : MemLp U p μ) (hR : MemLp R p μ)
+    (hρ : ContDiffOn ℝ (⊤ : ℕ∞) ρ S) (hρne : ∀ x ∈ S, ρ x ≠ 0)
+    (hinv : MemLp (fun x => (ρ x)⁻¹) ∞ μ)
+    (hlog : MemLp (fun x => (ρ x)⁻¹ * fderiv ℝ ρ x v) ∞ μ)
+    (hweak : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ S → (∫ x, ρ x * U x * fderiv ℝ φ x v ∂μ) = -∫ x, R x * φ x ∂μ) :
+    ∃ DU : Lp ℝ p μ,
+      (DU =ᵐ[μ] fun x => (ρ x)⁻¹ * R x - ((ρ x)⁻¹ * fderiv ℝ ρ x v) * U x) ∧
+      ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ S →
+        (∫ x, U x * fderiv ℝ φ x v ∂μ) = -∫ x, DU x * φ x ∂μ := by
+  let F := fun x => (ρ x)⁻¹ * R x - ((ρ x)⁻¹ * fderiv ℝ ρ x v) * U x
+  have hF : MemLp F p μ := (hR.mul hinv).sub (hU.mul hlog)
+  refine ⟨hF.toLp F, hF.coeFn_toLp, ?_⟩
+  intro φ hφ hφc hφs
+  refine (integral_fderiv_eq_neg_of_weighted_identity hS v
+    (hU.locallyIntegrable hp) (hR.locallyIntegrable hp) hρ hρne hweak hφ hφc hφs).trans ?_
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [hF.coeFn_toLp] with x hx
+  exact congrArg (fun z => z * φ x) hx.symm
 
 end DifferentialGeometry.Analysis.Sobolev

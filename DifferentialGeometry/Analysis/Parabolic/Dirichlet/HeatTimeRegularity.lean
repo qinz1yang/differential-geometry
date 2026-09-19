@@ -256,21 +256,12 @@ theorem exists_local_lp_weak_time_deriv_of_heat_timeH1
       (Set.prod_mono Subset.rfl subset_closure) (μ := (volume : Measure ℝ).prod volume)
     rw [← Measure.prod_restrict] at h
     exact h.mono_measure hmeasure
-  let F := fun p => (ρ p)⁻¹ * R p - ((ρ p)⁻¹ * fderiv ℝ ρ p v) * U p
-  have hF : MemLp F 2 ν :=
-    ((Lp.memLp R).mul hρinv).sub (hU.mul (hDρ.mul (r := ∞) hρinv))
-  refine ⟨hF.toLp F, ?_⟩
-  intro φ hφ hφc hφs
-  have heq := DifferentialGeometry.Analysis.Sobolev.integral_fderiv_eq_neg_of_weighted_identity
-    (μ := ν) (S := S) (isOpen_Ioo.prod hΩ₀) v (hU.locallyIntegrable (by norm_num))
-    ((Lp.memLp R).locallyIntegrable (by norm_num))
+  obtain ⟨R₀, _, hR₀⟩ := DifferentialGeometry.Analysis.Sobolev.exists_lp_weak_deriv_of_weighted_identity
+    (μ := ν) (S := S) (isOpen_Ioo.prod hΩ₀) (by norm_num : (1 : ℝ≥0∞) ≤ 2) v hU (Lp.memLp R)
     (hρsmooth.mono (Set.prod_mono hreg₀ (hsub.trans (subset_closure.trans hΩV))))
     (fun p hp => hρne p (hsub.trans (subset_closure.trans hΩV) hp.2))
-    (fun ψ hψ hψc hψs => hR ψ hψ hψc hψs) hφ hφc hφs
-  refine heq.trans (congrArg Neg.neg ?_)
-  apply integral_congr_ae
-  filter_upwards [hF.coeFn_toLp] with p hp
-  exact congrArg (fun r => r * φ p) hp.symm
+    hρinv (hDρ.mul (r := ∞) hρinv) hR
+  exact ⟨R₀, hR₀⟩
 
 theorem weak_time_derivative_eq_source_of_heat_timeH1
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}

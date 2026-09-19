@@ -1863,6 +1863,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialUniqueness
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialWkpTwo
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeightedDivergence
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroBoundaryGraph
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroExtension
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
