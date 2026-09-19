@@ -4637,3 +4637,30 @@ sourceStable=true，共享产物只读。回执 PLTriangulation-checkpoint.json�
 relativeDerivedNeighborhood hL L（固定 A=L）；已有 relativeDerivedNeighborhood_space 定理要求
 ∀x∈A.space, L.space∈𝓝[K.space]x，A=L 为低维奇异像时不能直接应用。正在核查固定的两次相对细分
 是否覆盖普通 derivedNeighborhood 的整个载体；尚未更改此公共定义或声称整体归纳完成。
+
+### 19.162 固定相对导出邻域公式的已证障碍（2026-09-19 UTC）
+
+**done：RelativeSimplexNeighborhood.lean。**
+`exists_mem_derivedNeighborhood_not_mem_relativeDerivedNeighborhood` 不要求有限性或环境有限维：
+设 A≤K，非退化边 {a,b} 是 A 的面，而 K 的面 s 含 a,b 但不属于 A，则实际存在普通导出邻域中的点
+不属于 relativeDerivedNeighborhood hA A 的载体。取 g=centroid(s)、c=centroid{a,b}、
+h=centroid{a,b,g}、x=centroid{c,g}=(3/4)h+(1/4)g。边 {h,g} 是 relativeSecondDerived hA 的面，
+x 在其相对内部，g 不在普通导出邻域；只保留完全落在普通邻域中的相对细分面，必然遗漏 x。
+`mem_faces_of_relativeDerivedNeighborhood_space_eq` 由此证明：若两载体相等，则 A 的每条非退化边的
+所有环境余面都必须已经属于 A。
+
+模块检查 exit=0、零诊断。AuditF302 exit=0、零诊断；四项非自动声明、五项关键依赖及两个模型/应用
+声明，共十一项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。第一个模型为实际有限
+标准三维单形 K 与它的三角形面 A，二者分别是 PL 3-球和 PL 2-球，实际证明该载体遗漏。
+第二个直接代入现有 NormalSystem.manifold_space，验证旧接口强制上述余面闭性。
+此处未声称已经形式化整个 NormalSystem 类型为空，但已否定从通常子复形输入自动生产旧载体等式。
+回执 RelativeSimplexNeighborhood-checkpoint.json、AuditF302.json；sourceStable=true、共享产物只读。
+源码、根登记与本记录同次提交。下一审计 AuditF303。
+
+**blocked：旧的固定邻域公式；修复路线已获批准。** SingularCell 中 normalSystemManifoldComplex
+固定为 relativeDerivedNeighborhood hL L，是实质性定义障碍，不能加假的 hdeep 或删掉 manifold_space
+来绕过。协调者在本轮明确批准公开接口修正并要求继续：先构造保留 imageComplex 原有各面的真实有限
+兼容邻域三角剖分，载体精确等于原 derivedNeighborhood，实际证明组合三维流形及边界关系；再用该
+几何对象替代固定公式，尽量保持 .manifoldComplex API，逐一检查所有实际受影响消费者并给非空实例。
+不得只添结论字段宣称修复，不放弃 SDR、源提升、边界环和严格复杂度契约。
+本 checkpoint 尚未修改旧公共定义；继续搜索并消费既有相对三角剖分/延拓生产者。
