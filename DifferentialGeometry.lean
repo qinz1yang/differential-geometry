@@ -1110,6 +1110,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.VectorField.L2JetBou
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.VectorField.MetricContinuity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricDifference
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricDifferenceFamily
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricEvolution
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffScalarSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotential
