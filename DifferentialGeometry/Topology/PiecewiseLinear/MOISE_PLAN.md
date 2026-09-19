@@ -2160,3 +2160,80 @@ This is a dependency-closed checkpoint inside the ongoing compression-ball
 round. The smaller centered prism, exact side wall and disjoint cap
 construction are not yet delivered by this checkpoint. No other lane
 source or shared output is changed; the stopped root build is not restarted.
+
+
+### M304 compression balls for the same original disk and shell (2026-09-19 UTC)
+
+Done in this feature branch, pending independent integration acceptance:
+the geometric compression producer no longer requires a supplied product
+neighborhood, compression ball, side wall, caps, or equivalent final geometry.
+The preceding relative-ball layer is checkpoint 714b1599a29980d7fb7e74571a838fbb26475ff5.
+
+SpanningDiskPrism proves the centered-prism construction and its boundary
+geometry. IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood
+uses the native centered-prism theorem on the same original D/r, then
+compactness of the standard rim to choose one positive thickness whose
+entire side wall lies in the original surface. Strictly smaller thickness
+excludes both old end faces. Injectivity gives exact surface trace.
+IsCombinatorialManifold.exists_centered_prism_neighborhood_of_spanning_disk
+constructs the needed auxiliary ball internally from the original finite
+connected closed surface and disk, in any prescribed open U containing D.
+The auxiliary ball and cut side are not hypotheses of this public result.
+IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism takes the two actual
+end faces of that same prism and proves their disjointness, exact frontier
+union, cap/wall intersections, and both labeled rim identities. Its
+intermediate prism input is produced by the preceding theorem.
+
+SpanningDiskCompression exposes
+IsCombinatorialManifold.exists_compression_neighborhood_of_spanning_disk.
+For the same D/r and S it returns N, W, D0/D1, f, rho, r0/r1, with
+N a PL3 ball contained in U, D contained in N, D minus S inside interior N,
+D intersect frontier N equal to the original rim, and N a relative
+neighborhood of all D in S union D. The prism has f(x,0) = r(x).
+S intersect N equals W; W is a relative neighborhood of the rim in S.
+The rim parameterization satisfies rho(r(x),t) = f(x,t), fixes the rim at
+t = 0, and matches the two cap boundary labels exactly. The caps are
+disjoint and frontier N = W union D0 union D1. W and the caps are chosen
+compatibly from this D, not from an arbitrary previously selected annulus.
+The neighborhood proof uses only the annulus-complement leaf, without an
+import of the higher compression-separation consumer.
+
+SphericalShellCompression exposes
+IsSphericalShell.exists_compression_of_essential_disk. It preserves the
+given X, B0, B1, S, D/r and prescribed U, constructs all the above geometry
+inside U intersect interior X, and applies the unchanged separation/Betti
+consumer to produce an actual connected component P of the capped surface.
+P remains in interior X, separates the same B0/B1, and has strictly smaller
+bettiOne than S. No Loop Theorem hypothesis is needed once the actual
+essential disk is supplied. Its sibling
+IsSphericalShell.exists_separating_component_bettiOne_lt_of_loop_theorem
+obtains that disk using the explicit h252 input and gives strict Betti
+decrease for an arbitrary nonspherical connected separator in the same shell.
+
+Verification: all three new modules compile without diagnostics; the
+compression leaf and shell consumer were rebuilt after narrowing imports.
+All 25 declarations in the cumulative native audit, 84 critical reuse
+entries, eight actual models and three model helpers have only approved
+foundational axioms. All 13 applicable linters pass. The eight models are
+three unconditional models and five explicit-h252 conditional consumers.
+The new unconditional and conditional compression models both retain a
+nonempty actual disk in the original beta-two torus and shell with nonempty
+targets, and quantify over every open neighborhood of that same disk.
+They check all ball/wall/cap, centered parameterization, relative neighborhood,
+component, target and Betti conclusions together. A separate conditional
+model consumes the new arbitrary-shell strict-decrease theorem directly.
+
+Thirty source/object/receipt sets and the complete audit are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/compression-checkpoint/`.
+Manifest SHA256: `7FE6FE9B969793268DA6857A4880FA26962828724136D282FC88181C73CF5C4B`.
+Final zero-diagnostic audit completion: 2026-09-19T19:59:17.5691222Z.
+The native import graph has 907 modules and 1927 edges, is acyclic,
+and avoids HurewiczLowDegrees. All three leaves are registered in the flat
+root. The owner-stopped root build was not restarted; all output is private.
+No other lane source or shared object is modified.
+
+Remaining scope: the actual Moise252 proof, broader Moise264 generality and
+the final arbitrary-shell Moise304 endpoint/integration are not claimed here.
+The previously reported missing ball/wall/cap producer for an original
+essential disk is closed by this round. Independent acceptance remains with
+the coordinator; the feature branch audit is not an acceptance substitute.
