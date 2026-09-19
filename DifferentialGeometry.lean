@@ -8283,6 +8283,7 @@ import DifferentialGeometry.Topology.Combinatorics.LineMultiplicity
 import DifferentialGeometry.Topology.Combinatorics.OrderedSpanningTree
 import DifferentialGeometry.Topology.CompactFamily
 import DifferentialGeometry.Topology.Compactness.DiagonalNeighborhood
+import DifferentialGeometry.Topology.Compactness.ExtremaConvergence
 import DifferentialGeometry.Topology.Compactness.FiniteSeparation
 import DifferentialGeometry.Topology.Compactness.Nonvanishing
 import DifferentialGeometry.Topology.Compactness.OpensProductChartBand
@@ -11283,3 +11284,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedVolume
+import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
