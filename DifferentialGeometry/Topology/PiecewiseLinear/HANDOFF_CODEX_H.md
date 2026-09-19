@@ -3486,7 +3486,7 @@ is continuous.  At the abstract topological level, nested closed arcs can
 cover a circle while every stage contracts to one point; this is the missing
 relative-neighborhood hypothesis in its simplest form.
 
-`RegularNeighborhoodRetraction.lean` now contains the reusable correction.
+`Topology/Homotopy/DeformationRetract.lean` now contains the reusable correction.
 `CompatibleStrongDeformationRetractSystem A B` carries a strong deformation
 retract of the stage core `A i` inside `B i`, the core containment, agreement
 of retractions and relative homotopies on every pair of stages containing the
@@ -3515,7 +3515,7 @@ nonempty three-dimensional model, now with a genuine global contraction.
 `MoiseChain` consumes the strengthened relation without weakening its
 noncompact or pointwise-error contract.
 
-Private checks of `RegularNeighborhoodRetraction`, `PolyhedralGraph`,
+Private checks of `Topology/Homotopy/DeformationRetract`, `PolyhedralGraph`,
 `ArcChainNeighborhood`, and `MoiseChain` all exited zero with no diagnostics
 and left shared outputs unchanged.  The external silent audit dynamically
 checked all sixty-nine non-automatic declarations in those four modules and
@@ -3529,3 +3529,36 @@ producer must obtain the compatible system from the book's single locally
 finite rectilinear triangulation and compatible dual-cell modifications, then
 construct the pointwise-error PL homeomorphism.  It may not merely postulate a
 global contraction or revert to unrelated stagewise neighborhoods.
+
+## 68. 2026-09-19 generic deformation-retract placement correction — done
+
+The reusable part of §67 has been moved out of the piecewise-linear tree and
+into `Topology/Homotopy/DeformationRetract.lean`.  The existing
+`StrongDeformationRetract` API now includes transport through a homeomorphism
+or an embedding.  The same module owns the generic compatible exhaustion
+system, its least-stage continuity proof, and the resulting global strong
+deformation retract.  The three set-level helpers are now independent of a
+topology; the linter therefore confirms that no accidental
+`TopologicalSpace` assumption remains.
+
+`PolyhedralGraph.lean` only consumes this topology API.  The former
+`PiecewiseLinear/RegularNeighborhoodRetraction.lean` leaf and its flat-root
+import have been removed, while the already registered homotopy leaf remains
+the single canonical home.  No public Moise endpoint changed:
+`IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract`,
+`strongDeformationRetract`, and the `MoiseChain` solid-torus extraction retain
+their signatures.
+
+Private checks of `Topology/Homotopy/DeformationRetract`, `PolyhedralGraph`,
+`ArcChainNeighborhood`, and `MoiseChain` exited zero with no diagnostics and
+left shared outputs unchanged.  The external strict audit dynamically checked
+all eighty-eight non-automatic declarations now contained in those four
+modules plus fourteen directly reused declarations.  Every axiom closure was
+contained in `{propext, Classical.choice, Quot.sound}`, and all thirteen
+applicable environment linters passed.
+
+This placement correction does not close the geometric producer identified in
+§67.  The next obligation is still to derive compatibility from one actual
+locally finite triangulation or from a justified restriction of its single
+global barycentric retraction; a compatible system may not simply be supplied
+as additional input.

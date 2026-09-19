@@ -509,6 +509,8 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 接口现还要求 `CompatibleStrongDeformationRetractSystem`：逐层强形变收缩在共同旧点上相容，且下一邻域层是总并集中的
 相对邻域。`toStrongDeformationRetract` 已从这些局部数据证明总并集到图并集的实际强形变收缩；不能再把
 `IsGlueIso` 本身当作无穷远处的收缩相容性。
+这些完全通用的搬运、穷竭拼接与连续性接口现归于
+`Topology/Homotopy/DeformationRetract.lean`，PL 层只负责生产和消费几何数据。
 `PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` 给出有限常值塔构造，
 `exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` 在三维球内部的一条单纯边上
 给出 `N/K/U` 均非空且带全局收缩的实际模型。`Moise351` 的非紧范围、相对闭输入和逐点误差不变；

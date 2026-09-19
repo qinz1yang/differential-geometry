@@ -8,7 +8,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePieceTower
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
-import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundary
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
 
@@ -254,7 +253,7 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
       let y : D.space := ⟨x, subcomplex_space_subset_derivedNeighborhood hG hx⟩
       exact ⟨y, hx, rfl⟩
   have rstage : StrongDeformationRetract
-      (regularNeighborhoodStageCore (P.piece.map '' G.space)
+      (deformationRetractStageCore (P.piece.map '' G.space)
         (P.piece.map '' D.space)) := by
     rw [← hfcore, ← hfrange]
     exact (derivedNeighborhoodStrongDeformationRetract hG).embeddingImage f hf

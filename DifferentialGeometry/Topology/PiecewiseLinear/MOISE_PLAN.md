@@ -875,7 +875,7 @@ inline comments and declaration docstrings remain disallowed.
   `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。
 - 2026-09-19（H 车道 35.1 全局正则邻域修正）：复核原书书页 155、247–248 后确认，仅有逐层二次导出邻域与
   `IsGlueIso` 不足以保证无限并集为同一个正则邻域：后层新增图顶点会改变旧层重心投影，且没有相对邻域穷竭时逐层连续映射
-  无法保证在并集上连续。新增 `RegularNeighborhoodRetraction.lean` 的
+  无法保证在并集上连续。`Topology/Homotopy/DeformationRetract.lean` 的
   `CompatibleStrongDeformationRetractSystem`，记录逐层强形变收缩、全对阶段相容性和下一层相对总并集的邻域性质；
   `toStrongDeformationRetract` 用最早出现层和 `continuous_of_cover_nhds` 实际粘出总并集到核心并集的强形变收缩。
   `IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract` / `strongDeformationRetract` 因而给出 `N ↘ K`。
@@ -883,3 +883,9 @@ inline comments and declaration docstrings remain disallowed.
   内部非空弧实例与 `MoiseChain` 均重编通过。四模块聚焦检查 exit=0、零 warning；严格审计动态覆盖 69 个本模块声明及
   14 个直接复用声明，公理仅 `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。35.1 本身仍开：
   非恒定生产者必须从单个局部有限直线三角剖分与相容对偶胞腔改造构造该系统，不能把全局收缩另作结论型假设。
+- 2026-09-19（H 车道通用收缩接口归位）：`StrongDeformationRetract.homeomorphImage` / `embeddingImage`、
+  `CompatibleStrongDeformationRetractSystem` 及其总并集连续性证明已从 PL 专用叶移入
+  `Topology/Homotopy/DeformationRetract.lean`；三个集合辅助定义同时去掉无用的拓扑假设。原 PL 叶与根聚合 import 已删除，
+  `PolyhedralGraph`、非空弧模型及 `MoiseChain` 签名不变。四模块私有检查 exit=0、零 warning；严格审计动态覆盖 88 个
+  本模块声明与 14 个直接复用声明，公理仅 `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。
+  这只闭合自然归位；35.1 的非恒定几何生产者仍须从单个局部有限三角剖分推出相容性。
