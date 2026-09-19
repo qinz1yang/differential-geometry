@@ -1454,6 +1454,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TraceScalarization
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceGradient
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceHigherRegularity
+import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceMixedRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceSecondTimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceTimeDerivativeEquation
@@ -1616,6 +1617,7 @@ import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Smoothing.Cons
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Smoothing.Sobolev
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Bounds
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Calculus
+import DifferentialGeometry.Analysis.Parabolic.SecondOrderWeakRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.ContinuousInterior
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.FiniteCover
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2

@@ -498,5 +498,101 @@ theorem exists_lp_weak_deriv_partial_tree_of_finite_sum
   · rw [hR]
     exact hDtime
 
+theorem exists_lp_mixed_weak_partial_trees_of_finite_sum
+    {Z ι : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    [MeasurableSpace Z] [OpensMeasurableSpace Z] [Fintype ι]
+    {μ : Measure Z} [IsLocallyFiniteMeasure μ]
+    {J V : Set Z} (hJ : IsCompact J) (hV : IsOpen V) (hJV : J ⊆ V)
+    {W Ω : Set E} (hW : IsOpen W) (hΩ : IsOpen Ω)
+    (hΩc : IsCompact (closure Ω)) (hΩW : closure Ω ⊆ W)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (K N : ℕ) (v : Z)
+    (f : Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω)))
+    (A : ι → Z × E → ℝ)
+    (hA : ∀ j, ContDiffOn ℝ (⊤ : ℕ∞) (A j) (V ×ˢ W))
+    (Y : ι → ℕ → ∀ m : ℕ, (Fin m → Fin d) →
+      Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω)))
+    (hY : ∀ j k, k ≤ K → ∀ m < N, ∀ β i, ∀ᵐ t ∂μ.restrict J, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => Y j k (m + 1) (Fin.cons i β) (t, z)) (fun z => Y j k m β (t, z)) Ω)
+    (htime : ∀ j k, k < K → ∀ φ : Z × E → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ interior J ×ˢ Ω →
+      (∫ q, Y j k 0 (fun i => Fin.elim0 i) q * fderiv ℝ φ q (v, 0)
+        ∂(μ.restrict J).prod (volume.restrict Ω)) =
+        -∫ q, Y j (k + 1) 0 (fun i => Fin.elim0 i) q * φ q ∂(μ.restrict J).prod (volume.restrict Ω))
+    (hf : f =ᵐ[(μ.restrict J).prod (volume.restrict Ω)] fun q =>
+      ∑ j, A j q * Y j 0 0 (fun i => Fin.elim0 i) q) :
+    ∃ C : ℕ → ∀ m : ℕ, (Fin m → Fin d) → Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω)),
+      C 0 0 (fun i => Fin.elim0 i) = f ∧
+      (∀ k ≤ K, ∀ m < N, ∀ β i, ∀ᵐ t ∂μ.restrict J, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => C k (m + 1) (Fin.cons i β) (t, z)) (fun z => C k m β (t, z)) Ω) ∧
+      ∀ k < K, ∀ φ : Z × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ interior J ×ˢ Ω →
+        (∫ q, C k 0 (fun i => Fin.elim0 i) q * fderiv ℝ φ q (v, 0)
+          ∂(μ.restrict J).prod (volume.restrict Ω)) =
+          -∫ q, C (k + 1) 0 (fun i => Fin.elim0 i) q * φ q
+            ∂(μ.restrict J).prod (volume.restrict Ω) := by
+  induction K generalizing ι f with
+  | zero =>
+    obtain ⟨R, hR, hRw⟩ := exists_lp_weak_partial_tree_of_finite_sum_of_contDiffOn
+      hJ hW hΩ hΩc hΩW hp N f A (fun j => (hA j).mono (prod_mono hJV Subset.rfl))
+      (fun j m β q => Y j 0 m β q) (fun j m _ β => Lp.memLp (Y j 0 m β))
+      (fun j m hm β i => hY j 0 le_rfl m hm β i) hf
+    exact ⟨fun _ => R, hR, fun _ _ => hRw, fun k hk => by omega⟩
+  | succ K ih =>
+    let e : Fin 0 → Fin d := fun i => Fin.elim0 i
+    obtain ⟨R, hR, hRw⟩ := exists_lp_weak_partial_tree_of_finite_sum_of_contDiffOn
+      hJ hW hΩ hΩc hΩW hp N f A (fun j => (hA j).mono (prod_mono hJV Subset.rfl))
+      (fun j m β q => Y j 0 m β q) (fun j m _ β => Lp.memLp (Y j 0 m β))
+      (fun j m hm β i => hY j 0 (by omega) m hm β i) hf
+    obtain ⟨D, hD, _, hDtime⟩ := exists_lp_weak_deriv_partial_tree_of_finite_sum
+      hJ hV hJV hW hΩ hΩc hΩW hp N v f A hA (fun j => Y j 0) (fun j => Y j 1)
+      (fun j m hm β i => hY j 0 (by omega) m hm β i)
+      (fun j m hm β i => hY j 1 (by omega) m hm β i) (fun j => htime j 0 (by omega)) hf
+    let DA := fun j q => fderiv ℝ (A j) q (v, 0)
+    let B : ι ⊕ ι → Z × E → ℝ := Sum.elim A DA
+    let X : ι ⊕ ι → ℕ → ∀ m : ℕ, (Fin m → Fin d) →
+        Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω)) :=
+      Sum.elim (fun j k => Y j (k + 1)) (fun j k => Y j k)
+    have hB (j : ι ⊕ ι) : ContDiffOn ℝ (⊤ : ℕ∞) (B j) (V ×ˢ W) := by
+      cases j with
+      | inl j => exact hA j
+      | inr j =>
+        exact ((hA j).fderiv_of_isOpen (hV.prod hW) (by simp)).clm_apply contDiffOn_const
+    have hX (j : ι ⊕ ι) (k) (hk : k ≤ K) (m) (hm : m < N) (β i) : ∀ᵐ t ∂μ.restrict J,
+        DeGiorgi.HasWeakPartialDeriv i
+          (fun z => X j k (m + 1) (Fin.cons i β) (t, z)) (fun z => X j k m β (t, z)) Ω := by
+      cases j with
+      | inl j => exact hY j (k + 1) (by omega) m hm β i
+      | inr j => exact hY j k (by omega) m hm β i
+    have hXtime (j : ι ⊕ ι) (k) (hk : k < K) (φ : Z × E → ℝ)
+        (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφc : HasCompactSupport φ)
+        (hφs : tsupport φ ⊆ interior J ×ˢ Ω) :
+        (∫ q, X j k 0 e q * fderiv ℝ φ q (v, 0) ∂(μ.restrict J).prod (volume.restrict Ω)) =
+          -∫ q, X j (k + 1) 0 e q * φ q ∂(μ.restrict J).prod (volume.restrict Ω) := by
+      cases j with
+      | inl j => exact htime j (k + 1) (by omega) φ hφ hφc hφs
+      | inr j => exact htime j k (by omega) φ hφ hφc hφs
+    have hDsum : D 0 e =ᵐ[(μ.restrict J).prod (volume.restrict Ω)] fun q =>
+        ∑ j : ι ⊕ ι, B j q * X j 0 0 e q := by
+      filter_upwards [hD] with q hq
+      simpa only [B, X, DA, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr,
+        Finset.sum_add_distrib] using hq
+    obtain ⟨T, hT, hTw, hTtime⟩ := ih (D 0 e) B hB X hX hXtime hDsum
+    let C : ℕ → ∀ m : ℕ, (Fin m → Fin d) → Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω))
+      | 0 => R
+      | k + 1 => T k
+    refine ⟨C, hR, ?_, ?_⟩
+    · intro k hk m hm β i
+      cases k with
+      | zero => exact hRw m hm β i
+      | succ k => exact hTw k (by omega) m hm β i
+    · intro k hk φ hφ hφc hφs
+      cases k with
+      | zero =>
+        change (∫ q, R 0 e q * fderiv ℝ φ q (v, 0) ∂(μ.restrict J).prod (volume.restrict Ω)) =
+          -∫ q, T 0 0 e q * φ q ∂(μ.restrict J).prod (volume.restrict Ω)
+        rw [hR, hT]
+        exact hDtime φ hφ hφc hφs
+      | succ k => exact hTtime k (by omega) φ hφ hφc hφs
+
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
