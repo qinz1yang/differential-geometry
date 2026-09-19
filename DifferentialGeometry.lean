@@ -1646,6 +1646,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativePro
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeUniqueness
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.FundamentalTheorem
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationDensity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationTensor
 import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint
 import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.SecondJet

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationDensity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
 
 noncomputable section
@@ -397,5 +398,109 @@ theorem exists_lp_weak_gradient_equation_of_heat_timeH1
   · intro k φ hφ hφc hφs
     simpa only [Fintype.sum_prod_type] using hQweak k φ hφ hφc hφs
 
+
+theorem exists_lp_weak_gradient_equation_fixed_density_of_heat_timeH1
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {T : ℝ} (hT : 0 ≤ T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (q : SmoothRiemannianMetric I_hs M)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M, ∀ w : TangentSpace I_hs x,
+      Cg⁻¹ * q.inner x w w ≤ (g t).inner x w w ∧
+        (g t).inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_hs) (M := M) (g t) ≤
+        Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {a b : ℝ} (ha : 0 < a) (hb : b < T)
+    (u : timeL2 (H1ComplDirichlet q) T)
+    (f : timeL2 (Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q)) T)
+    (w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T)
+    (hwmass : ∀ᵐ t ∂timeMeasure T, ∀ z,
+      w.toFun t z = inner ℝ (H1ComplDirichletToLp q (u t)) (H1ComplDirichletToLp q z))
+    (hwderiv : ∀ᵐ t ∂timeMeasure T, ∀ ht : t ∈ Icc (0 : ℝ) T, ∀ z,
+      w.deriv t z = dirichletWeakFormCompl (g t) 0 0 0 (by intro x; simp)
+        hCg (hequiv t ht) Cv hCv0 hCvtop (hvol t ht) (u t)
+        (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap (g t) q) z) +
+          inner ℝ (f t) (H1ComplDirichletToLp q z)) :
+    let μ := (timeMeasure T).restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω₀)
+    let x := fun z : EuStd => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let σ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) q α p.2
+    let r := fun p => ρ p / σ p
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    let F := Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+      (((chartRestrictionLp q α hΩ.measurableSet hΩc
+        (hΩs.trans (image_mono interior_subset)) 2).compLpL 2 (timeMeasure T)) f)
+    let c := fun p => ρ p * ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) g p.1 (x p.2))
+    ∀ Df : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      (∀ k, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k (fun z => Df k (t, z))
+        (fun z => F (t, z)) Ω₀) →
+    ∃ R : Lp ℝ 2 ν,
+      ∃ H : Fin (Module.finrank ℝ EuN) → Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∃ Q : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω₀ →
+        (∫ p, U p * fderiv ℝ φ p (1, 0) ∂ν) = -∫ p, R p * φ p ∂ν) ∧
+      (∀ i k, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k (fun z => H i k (t, z))
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) Ω₀) ∧
+      (∀ i k, H i k = H k i) ∧
+      (∀ k, Q k =ᵐ[ν] fun p =>
+        (c p * V k p + fderiv ℝ c p (0, EuclideanSpace.single k 1) * U p +
+          (ρ p * Df k p + fderiv ℝ ρ p (0, EuclideanSpace.single k 1) * F p)) +
+        (∑ i, ∑ j, (fderiv ℝ (A i j) p (0, EuclideanSpace.single k 1) * H i j p +
+          fderiv ℝ (fun z => fderiv ℝ (A i j) z (0, EuclideanSpace.single k 1)) p
+            (0, EuclideanSpace.single j 1) * V i p)) -
+        (fderiv ℝ ρ p (0, EuclideanSpace.single k 1) * R p +
+          fderiv ℝ (fun z => fderiv ℝ ρ z (0, EuclideanSpace.single k 1)) p (1, 0) * U p)) ∧
+      (∀ k (φ : ℝ × EuStd → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω₀ →
+        (∫ p, ρ p * V k p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * H k i p *
+            fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) - ∫ p, Q k p * φ p ∂ν) ∧
+      ∀ k (φ : ℝ × EuStd → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω₀ →
+        (∫ p, σ p * V k p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * H k i p *
+            fderiv ℝ (fun z => φ z / r z) p (0, EuclideanSpace.single j 1) ∂ν) -
+          ∫ p, ((r p)⁻¹ * Q k p - ((r p)⁻¹ * fderiv ℝ r p (1, 0)) *
+            (σ p * V k p)) * φ p ∂ν := by
+  intro μ ν x ρ σ r A U V F c Df hDf
+  obtain ⟨R, H, Q, hR, hH, hHsym, hQval, hQ⟩ :=
+    exists_lp_weak_gradient_equation_of_heat_timeH1 hG hT hreg q hCg hequiv Cv hCv0 hCvtop
+      hvol α hΩ hΩc hΩs hΩ₀ hΩ₀Ω ha hb u f w hwmass hwderiv Df hDf
+  refine ⟨R, H, Q, hR, hH, hHsym, hQval, hQ, ?_⟩
+  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
+  have hchart : Ω ⊆ chartTargetEuclid (I := I_hs) α :=
+    subset_closure.trans (hΩs.trans (image_mono interior_subset))
+  have hΩ₀c : IsCompact (closure Ω₀) :=
+    hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
+  let : IsFiniteMeasure (volume.restrict Ω₀) := by
+    refine ⟨?_⟩
+    rw [Measure.restrict_apply MeasurableSet.univ, univ_inter]
+    exact (measure_mono subset_closure).trans_lt hΩ₀c.measure_lt_top
+  have hmeasure : ν ≤ (timeMeasure T).prod (volume.restrict Ω) :=
+    Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
+  have hV (k) : MemLp (V k) 2 ν := (Lp.memLp (V k)).mono_measure hmeasure
+  have hσmem : MemLp σ ∞ ν := by
+    have hs : MemLp (densityOnEuclid (I := I_hs) q α) ∞ (volume.restrict Ω₀) :=
+      ((densityOnEuclid_contDiffOn q α).continuousOn.mono (hΩ₀Ω.trans hchart)).memLp_top_of_subset_isCompact
+        hΩ₀c hΩ₀.measurableSet subset_closure
+    exact hs.comp_snd μ
+  have hJ : Ioo a b ⊆ D.regular :=
+    fun t ht => hreg ⟨ha.le.trans ht.1.le, ht.2.le.trans hb.le⟩
+  intro k φ hφ hφc hφs
+  exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo hJ hΩ₀
+    (hsub.trans hchart) (((hV k).mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+    ((Lp.memLp (Q k)).locallyIntegrable (by norm_num))
+    (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * H k i p *
+      fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) (hQ k) hφ hφc hφs
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

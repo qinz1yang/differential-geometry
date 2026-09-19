@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedWeakDerivative
-import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeWeight
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationDensity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialLowerSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialCommutator
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationProduct
@@ -319,52 +319,18 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_fixed_density
   have hmeasure : ν ≤ (timeMeasure T).prod (volume.restrict Ω) :=
     Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
   have hV (k) : MemLp (V k) 2 ν := (Lp.memLp (V k)).mono_measure hmeasure
-  have hρall : ContDiffOn ℝ (⊤ : ℕ∞) ρ (D.regular ×ˢ Ω) :=
-    (MetricExtension.densityOnEuclid_family_contDiffOn hG Subset.rfl α).mono
-      (Set.prod_mono Subset.rfl hchart)
-  have hσall : ContDiffOn ℝ (⊤ : ℕ∞) σ (D.regular ×ˢ Ω) :=
-    (MetricExtension.densityOnEuclid_contDiffOn q α).comp contDiff_snd.contDiffOn
-      (fun p hp => hchart hp.2)
-  have hσne (p : ℝ × EuStd) (hp : p.2 ∈ Ω) : σ p ≠ 0 :=
-    (MetricExtension.densityOnEuclid_pos q α (hchart hp)).ne'
-  have hρne (p : ℝ × EuStd) (hp : p.2 ∈ Ω) : ρ p ≠ 0 :=
-    (MetricExtension.densityOnEuclid_pos (G.metric p.1) α (hchart hp)).ne'
   have hσmem : MemLp σ ∞ ν := by
-    have hb := (hσall.continuousOn.mono (prod_mono hreg hΩ₀Ω)).memLp_top_of_subset_isCompact
-      (isCompact_Icc.prod hΩ₀c) (measurableSet_Icc.prod hΩ₀.measurableSet)
-      (prod_mono Subset.rfl subset_closure) (μ := (volume : Measure ℝ).prod volume)
-    rw [← Measure.prod_restrict] at hb
-    exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
-  have hSsub : Ioo t₀ t₁ ×ˢ Ω₀ ⊆ D.regular ×ˢ Ω := by
-    intro p hp
-    exact ⟨hreg ⟨ht₀.le.trans hp.1.1.le, hp.1.2.le.trans ht₁.le⟩, hsub hp.2⟩
-  have hr : ContDiffOn ℝ (⊤ : ℕ∞) r (Ioo t₀ t₁ ×ˢ Ω₀) :=
-    ((hρall.div hσall (fun p hp => hσne p hp.2)).mono hSsub)
-  have hrne (p : ℝ × EuStd) (hp : p ∈ Ioo t₀ t₁ ×ˢ Ω₀) : r p ≠ 0 :=
-    div_ne_zero (hρne p (hsub hp.2)) (hσne p (hsub hp.2))
-  have hmem : ∀ᵐ p ∂ν, p.2 ∈ Ω₀ := by
-    apply (Measure.ae_prod_iff_ae_ae (measurable_snd hΩ₀.measurableSet)).mpr
-    exact ae_of_all μ (fun _ => ae_restrict_mem hΩ₀.measurableSet)
+    have hs : MemLp (MetricExtension.densityOnEuclid (I := I_hs) q α) ∞ (volume.restrict Ω₀) :=
+      ((MetricExtension.densityOnEuclid_contDiffOn q α).continuousOn.mono
+        (hΩ₀Ω.trans hchart)).memLp_top_of_subset_isCompact hΩ₀c hΩ₀.measurableSet subset_closure
+    exact hs.comp_snd μ
+  have hJ : Ioo t₀ t₁ ⊆ D.regular :=
+    fun t ht => hreg ⟨ht₀.le.trans ht.1.le, ht.2.le.trans ht₁.le⟩
   intro k φ hφ hφc hφs
-  have hW : LocallyIntegrable (fun p => σ p * V k p) ν :=
-    (((hV k).mul (r := 2) hσmem).integrable (by norm_num)).locallyIntegrable
-  have hFlocal : LocallyIntegrable (F k) ν :=
-    ((Lp.memLp (F k)).integrable (by norm_num)).locallyIntegrable
-  let L : ((ℝ × EuStd) → ℝ) → ℝ := fun ψ =>
-    ∑ i, ∑ j, ∫ p, A i j p * H k i p * fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν
-  apply DifferentialGeometry.Analysis.Sobolev.integral_fderiv_eq_of_weighted_identity
-    (isOpen_Ioo.prod hΩ₀) (1, 0) hW hFlocal hr hrne L
-  · intro ψ hψ hψc hψs
-    have heq : (∫ p, r p * (σ p * V k p) * fderiv ℝ ψ p (1, 0) ∂ν) =
-        ∫ p, ρ p * V k p * fderiv ℝ ψ p (1, 0) ∂ν := by
-      apply integral_congr_ae
-      filter_upwards [hmem] with p hp
-      dsimp only [r]
-      field_simp [hσne p (hsub hp)]
-    rw [heq]
-    exact hF k ψ hψ hψc hψs
-  · exact hφ
-  · exact hφc
-  · exact hφs
+  exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo hJ hΩ₀
+    (hsub.trans hchart) (((hV k).mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+    ((Lp.memLp (F k)).locallyIntegrable (by norm_num))
+    (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * H k i p *
+      fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) (hF k) hφ hφc hφs
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
