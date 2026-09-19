@@ -3090,3 +3090,34 @@ The next closed result is a concrete nonvacuous `n = 1` chain in the
 barycentric subdivision of a solid affine tetrahedron.  Its middle chain face
 will be proved outside the boundary complex before any normalization theorem is
 migrated.
+
+## 54. 2026-09-18 A genuine one-edge interior arc — done
+
+`ArcCellBoundaryExample.lean` proves
+`exists_simplicialArc_one_with_interior_edge`.  In every finite-dimensional
+real normed space of dimension three it constructs a finite combinatorial
+3-manifold with boundary and an injective simplicial arc with `n = 1` whose
+middle chain face is not in the boundary complex.
+
+The complex is the barycentric subdivision of the simplex complex of an affine
+tetrahedron.  The arc joins the tetrahedron barycenter to one original vertex.
+The barycenter and the vertex are vertices of the subdivision, their pair is a
+subdivision edge, and affine independence makes them distinct.  Boundary
+subdivision invariance transports any hypothetical boundary membership of the
+barycenter back to the original simplex boundary, contradicting that the
+barycenter lies in the open simplex.  Downward closure of the boundary complex
+then proves the whole arc edge is an interior face.
+
+The new leaf is registered in `DifferentialGeometry.lean`.  Strict private
+verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`; the module
+compiled with zero diagnostics and unchanged shared outputs.  The external
+silent audit dynamically enumerated its single non-automatic declaration,
+checked eight direct geometric producers, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+This supplies the required nonvacuity witness before migration of the
+normalization chain.  The primary boundary-manifold base theorem can now use
+interiority of `arcChainFace v 1`; later successor stages use the corresponding
+interiority assumption for every retained face.

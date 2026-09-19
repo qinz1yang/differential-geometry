@@ -8276,6 +8276,7 @@ import DifferentialGeometry.Topology.PartitionOfUnity
 import DifferentialGeometry.Topology.PartitionOfUnity.CompactSupport
 import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellBallPair
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellBoundaryExample
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellNormalization
