@@ -2926,3 +2926,58 @@ the same lane to localize the ball theorem to finite cofaces, preserving the
 same actual disk and links. Reusable metric-free separation is also to be
 moved to its natural Topology home at that coherent boundary. Checkpoint target
 is 14:05 UTC; the autonomous window ends at 14:19 UTC.
+
+## 62. Relative Morse approximation on the fixed old atlas (2026-09-19 UTC)
+
+S checkpoints 5beeda255 and fa9f81cbf are independently accepted. Three new
+Morse leaves are registered in the flat root. Committed bytes are preserved;
+author raw CRLF receipts and committed LF bytes are retained separately.
+
+Starting from a merely continuous real height in a fixed existing smooth atlas,
+the producer constructs arbitrarily accurate C0 smooth Morse approximation on
+a compact interior core. Only the original closed fixed collar needs an actual
+open smooth neighborhood and regularity where it meets the core. The output
+agrees with the original height on an open neighborhood of the collar. Proper
+input heights retain properness; compact value intervals have compact preimages.
+
+The next producer constructs an open neighborhood W of the whole compact core,
+with compact closure inside a prescribed open frame. Its critical points are
+finite, nondegenerate, and have pairwise distinct values. The critical-value
+perturbation is supported inside the chosen open region. It preserves the
+entire ambient critical set, even if that set is infinite, and changes the
+germ near each chosen critical point by a constant. This follows from an
+actual open restriction, a finite supported perturbation there, and smooth
+extension by zero back to the original manifold.
+
+The independent combined model fixes a cusp-shear old atlas on a lifted plane.
+Its original height is proved nonsmooth at zero; the corrected height is
+therefore nonidentical, stays within1/8 everywhere, retains both original end
+parameters, and has the stated control on a neighborhood of the whole compact
+rectangle. A cosine example has infinitely many ambient critical points;
+its equal maxima at0 and2pi become distinct while all critical locations and
+the exterior function are preserved. A proper cubic example gives a proper
+approximation and a compact band bounded by regular cuts on the tested core.
+
+Three focused checks took 29.995 seconds; the combined audit took
+45.024 seconds including admission. It covers all13 new native
+nonautomatic declarations,45 critical reuse entries(37 distinct), and25
+model declarations: five actual producer applications,ten fixture properties,
+eight definitions and two fixed-atlas local instances. There are no conditional
+consumer fixtures. All thirteen applicable linters pass, all transitive axioms
+are approved foundational axioms, and every final check has zero diagnostics.
+All13 public full names are unique. Thirty-five current prerequisite source
+identities match the frozen author census; unchanged prerequisites are not
+claimed freshly rebuilt.
+
+The accepted Lean delta is+564/-0, including three root imports. Static root
+closure now reaches 9593 project modules including the root;
+0 old dependency leaves became newly reachable, without adding new
+source code. There are no missing project sources or cycles. The full root
+build remains stopped. Receipt: .lake/verified-fortysecond-lane-delivery-20260919.json.
+
+The finite two-dimensional critical regions still need relative cancellation,
+followed by a noncritical whole-strip product retaining the original map and
+support. Crossing-seam charts and compact PL three-manifold smoothing remain
+open. Finitely many nondegenerate critical points do not establish their absence.
+S continues only its existing bounded level/handle investigation until the
+14:05 UTC checkpoint target; no additional proof lane was assigned.

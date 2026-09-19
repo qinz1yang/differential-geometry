@@ -265,7 +265,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
 | M304 / gpt-6-astra max | Own 30.4. Essential singular filling and actual torus compression/frontier/common targets through 1c43107f3 independently accepted. Native ball-target strengthening 815c38869 queued. | Continue the same concrete shell instance. General arbitrary-shell beta-zero descent and full Moise304 remain open; preserve E3 general surgery and F26.4 ownership. Checkpoint by 14:05 UTC. |
-| S / gpt-6-astra max | Actual fixed-old-atlas local chart smoothing and planar/Jordan extension through c4c935995 independently accepted. Later relative Morse approximation 5beeda255 queued. | Continue relative strip: actual neighborhood control, critical-point elimination and end-collar-preserving noncritical parameterization. Local chart smoothing does not close compact PL smoothing. Checkpoint 14:05 UTC. |
+| S / gpt-6-astra max | Fixed-old-atlas planar smoothing and relative Morse approximation with distinct finite critical values through fa9f81cbf independently accepted. | Relative critical-region cancellation and whole-strip product remain open. Continue only existing level/handle investigation and checkpoint by14:05 UTC. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
@@ -406,6 +406,20 @@ Through e8ffd9c5d, four modules, all71 native declarations,26 reused entries
 and two actual probes pass the axiom/lint gate. The same-disk local PL-ball
 bridge, solid-torus classification, geometric stability and Moise351 remain
 open. h continues that same lane until the final checkpoint; see section61.
+
+### Relative Morse neighborhood gate (2026-09-19 UTC)
+
+Relative continuous-to-smooth Morse approximation and distinct critical values
+through S fa9f81cbf are independently accepted. The original atlas and regular
+closed collars stay fixed, and the whole compact core has an open neighborhood
+with compact closure inside a prescribed frame, finite nondegenerate critical
+points and distinct critical values. Proper input remains proper. The supported
+critical-value change preserves the entire ambient critical set, even when
+infinite. Actual nonsmooth cusp-shear and infinite-critical-set cosine models
+pass. This does not remove the critical points or supply the full strip product;
+relative cancellation and seam gluing remain the next smoothing gate. See
+handoff section62 for13 native declarations,45 reused entries and25 classified
+model declarations, all with approved axioms and thirteen applicable linters.
 
 ## 1. 目标与接口
 
