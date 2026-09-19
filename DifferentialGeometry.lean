@@ -1147,7 +1147,9 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatEvolution
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatInteriorRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatWeakEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatWeakEquationChart
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianH1
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianScalarSource
