@@ -52,28 +52,42 @@ Every final check has zero diagnostics and only standard foundational axioms.
 The models validate actual neighborhood geometry and an actual anchored
 double-cover lift; they are not a full NormalSystem subgroup/avoidance instance.
 The exact boundary trace and same-source-complex simplicial lift are actual
-producers. General normalization and the complete cover diagram remain open.
+producers. The subsequent source-proper cover diagram and geometric cover
+reductions through 9bd8d23a7 are now independently accepted, as detailed below.
+General initialization and normalization remain open.
 
 A further source-level gate is now explicit: imageComplex intersect boundary =
 loopComplex does not supply the required source preimage boundary equality.
 The existing NormalSingularCellData fiber theorem supplies it only after actual
 normal data are present; the injective inward-push and NonsingularCell projection
 producers cannot be used circularly to initialize a general cover reduction.
-F has delivered 9b8e3c3da, an actual source-dependent relative PL collar
-push preserving the boundary map and proving exact source boundary preimage;
-its source has been reviewed and independent replay is queued. The covering
-boundary theorem d0d3d3468, singular image-subcomplex producer 451717c77 and
-relative small boundary-neighborhood producer c4b2edb95 are also queued.
-Later reported lifts 3e4695ab3 and d2fa2d933 assemble actual boundary-preserving
-simplicial lifts and controlled upstairs neighborhoods; independent replay is
-pending. The initial push yields a general piecewise affine map, so a compatible
-triangulation for a possibly noninjective map is still a separate initial gate.
+The complete delivered boundary/cover layer through F 9bd8d23a7 is now
+independently accepted. The source-dependent relative PL collar push fixes the
+prescribed source boundary and produces exact source boundary preimage even for
+a noninjective map. The actual covering boundary theorem, collapsed simplicial
+image subcomplexes, same-source lift and controlled upstairs neighborhoods are
+also accepted. For an already source-proper NormalSystem, the construction
+produces the complete upstairs NormalSystem and cover diagram. Basepoint and
+normal-subgroup transport retain the geometry; actual orientation-cocycle or
+nonspherical-boundary covers give strict complexity descent on the same source.
+The result does not require a hypothetical cover package as input.
+
+Ten fresh modules, including the existing projected-boundary consumer, and one
+combined audit pass with zero diagnostics. The census covers 41 nonautomatic
+declarations (35 new, four private), 38 critical reused entries and all thirteen
+applicable environment linters. Seven concrete geometric scenarios use eight
+theorem declarations; six additional tests are conditional NormalSystem
+consumers, and nine local instances are audited separately. They do not provide
+an independent nonempty complete NormalSystem instance.
+
+The initial push yields a general piecewise affine map, so exact compatible
+triangulation for a possibly noninjective map remains a separate initial gate.
 An image-triangulation theorem requiring injectivity cannot supply that step.
 This preprocessing precedes the initial complexity choice; it need not decrease
-the old disk complexity. Later cover lifts must preserve source properness and
-prove strict descent on the same source complex. Until that initial producer and
-its cover preservation are proved, arbitrary-NormalSystem induction stays a
-conditional consumer. Adding a properness field alone does not close it.
+the old disk complexity. Later cover lifts now preserve source properness and
+prove strict descent. The initial producer, general singular normalization and
+remaining loop-theorem geometry still prevent an unconditional endpoint.
+Adding a properness field alone does not close that initialization.
 No counterexample satisfying every NormalSystem field has been certified.
 
 
@@ -88,10 +102,10 @@ h's completed 12f8f0727 round supplies a one-triangulation exhaustion interface
 and an actual noncompact n=0 sanity model, still awaiting independent acceptance.
 Its next round constructs actual three-dimensional noncompact graph-neighborhood
 geometry and checks the ambient regular-neighborhood semantics. F's source-proper
-cover reduction and basepoint transport are delivered and queued; the initial
-general singular PL map triangulation remains open. F owns the requested
-arbitrary-cell-center generalization in CellComplex, preserving the existing
-default definitions and rebuilding direct consumers.
+cover reduction and basepoint transport are accepted. Its arbitrary-cell-center
+generalization 921aa49bd is separately queued; the active CellMapTriangulation
+round must produce exact triangulation of a nonconstant, noninjective actual
+map while preserving default CellComplex semantics and rebuilding consumers.
 
 M304 through 4400e3465 is now independently accepted: actual arbitrarily
 small annular neighborhoods, original-circle-fixed bicollars and larger disk
@@ -114,9 +128,9 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Compatible NormalSystem migration, exact boundary trace and anchored lift through c98ea5828 are accepted. Initial source-relative push and actual cover/boundary/reduction producers through 9bd8d23a7 are delivered and queued. Active round constructs triangulation of general noninjective PL maps. | Preserve default CellComplex semantics while generalizing legal centers; demonstrate a nonconstant noninjective actual map. Initial normalization and Lemma 2 branch separation remain open. |
+| F / gpt-6-astra max | Compatible NormalSystem migration and the boundary-push, lift, basepoint and actual cover-reduction chain through 9bd8d23a7 are accepted. Arbitrary-cell-center layer 921aa49bd is queued; active round constructs exact triangulation of general noninjective PL maps. | Preserve default CellComplex semantics and demonstrate a nonconstant noninjective actual map. Initial normalization and Lemma 2 branch separation remain open. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f and conditional Betti descent 2eecb1a86 are queued. | Produce actual circle-complement components and their closure interfaces, then compression geometry and nonspherical-branch descent. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f, conditional Betti descent 2eecb1a86 and actual circle-complement/closure-intersection layer 9ee4df017 are queued. | Produce closure manifolds with exact intrinsic boundary, then compression geometry and nonspherical-branch descent. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing. Complete finite PL handles through 6690962e1 are accepted. Local corners 2162e20eb and compatible full-annulus new-cell atlases through ada7fd321 are queued. | At the completed round, continued toward actual relative smoothing of the attaching annulus and framing in the old atlas, with controlled isotopy when needed, then crossing-seam open charts. A smooth new-cell atlas alone does not supply old-atlas compatibility. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular

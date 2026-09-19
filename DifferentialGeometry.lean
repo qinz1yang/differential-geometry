@@ -8843,6 +8843,14 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SphericalCircleExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSpanningDisk
+import DifferentialGeometry.Topology.Covering.PLBoundary
+import DifferentialGeometry.Topology.Covering.PLBoundaryLift
+import DifferentialGeometry.Topology.Covering.PLNeighborhoodLift
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverNormalSystem
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReduction
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalBasepoint
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexBoundaryNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialImageIn
 
 /-!
 # Differential geometry and geometric analysis

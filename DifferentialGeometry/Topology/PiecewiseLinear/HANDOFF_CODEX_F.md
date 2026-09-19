@@ -4788,3 +4788,178 @@ NormalSingularCellData.fiber_subset_frontier_of_mem_image_inter_boundary 为正�
 协调者复核后指定更窄预处理：在开始源顶点复杂度归纳之前，实际产生保持源边界映射的 PL f'，
 使源内部进入流形内部；允许重新选择初始复杂度。采用源参数依赖的领口高度，不能用固定边界像的
 环境后复合冒充。一般 NormalSystem 的既有归纳仍是条件消费者；不添 properness 字段声称已闭合。
+
+### 19.168 PL 局部同胚与覆盖的精确边界原像（2026-09-19 UTC）
+
+**done：Covering/PLBoundary.lean。**
+`IsPiecewiseAffineOn.mem_boundaryComplex_iff_of_isLocalHomeomorph` 对有限同维组合带边流形上的
+真实 PL 局部同胚，证明 f x∈∂L 当且仅当 x∈∂K；覆盖版与
+`IsPiecewiseAffineOn.preimage_boundaryComplex_eq_of_isCoveringMap` 给 K.space∩f⁻¹(∂L)=∂K。
+证明在局部单射邻域内实际选 PL 球，以像上的 PL 同胚和两侧的边界芽判据比较，未假设边界对应。
+
+模块检查 exit=0、零诊断；AuditF308 exit=0、零诊断。三项非自动声明、四项关键依赖和两项实际
+四面体乘 Bool 二重覆盖模型声明，共九项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。
+模型实际生产楼上组合三维带边流形，逐点验证完整覆盖的精确边界对应。回执
+PLBoundary-checkpoint.json、AuditF308.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交，根检由协调者负责。
+
+**partial：正规系统的覆盖生产。** 本层只从实际覆盖生产边界等价；要把提升后的盘的边界交集
+识别为源边界的像，仍须实际生产初始映射的源边界适当性，不能仅用原 image_inter_boundary 字段。
+
+### 19.169 允许塌缩的单纯映射实际像子复形（2026-09-19 UTC）
+
+**done：SimplicialImageIn.lean。** `exists_subcomplex_space_eq_image_simplicialMap` 对将每个源面
+映为既有目标复形面的任意顶点映射，实际生产目标子复形 A，精确满足 faces=simplicialImageFaces
+与 A.space=simplicialMap 的整个源载体像。有限源版同时给 A.faces.Finite；没有单射假设，
+主定理不要求源有限，两个定理均不要求目标向量空间有限维或目标复形有限。
+
+模块检查 exit=0、零诊断；AuditF309 exit=0、零诊断。两项非自动声明、两项关键依赖及一个实际
+塌缩模型，共五项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。模型把四面体中的
+三角形两个顶点合并，实际生产非平凡像子复形，同时验证源顶点映射非单射与精确像载体。
+回执 SimplicialImageIn-checkpoint.json、AuditF309.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交；实际提升像及边界环复形的组装继续使用本层。
+
+### 19.170 初始奇异盘的实际源相对 PL 边界推入（2026-09-19 UTC）
+
+**done：BoundaryInwardPush.lean。** 新端点
+`IsCombinatorialManifoldWithBoundary.exists_isPiecewiseAffineOn_eqOn_preimage_boundary` 从有限
+组合三维带边流形 K、源多面体 P、指定子多面体 C⊆P、PL 映射 f:P→K 及 f(C)⊆∂K，实际生产
+PL g:P→K，g 在 C 上与 f 相同，P∩g⁻¹(∂K)=C，且 g(P)∩∂K=f(C)。不要求 f 单射、局部单射、
+纤维有界或已处于正规形式；没有向 NormalSystem 添加适当性字段。本层适用于在开始复杂度归纳
+前将源盘内部推入流形内部，允许随后重新选择初始三角剖分与复杂度。
+
+一般领口引理 `IsPLHomeomorphOn.exists_piecewiseAffineOn_relative_inward` 使用源上的非负 PL
+分离函数 b，零点集恰为 C；在领口坐标中把高度 t 改为 max(t,min(t+b(x),(t+a)/2))。
+真实领口与剩余多面体的重叠处高度有统一正下界 a，因而在重叠上精确等于 f，按闭多面体拼接。
+推入量依赖源点 x，不是固定边界像的环境后复合；这允许分离原来落在同一边界像点的内部源点。
+
+模块与直接消费者 ProjectedBoundary 检查 exit=0、零诊断；AuditF310 exit=0、零诊断。
+五项非自动声明（含原三项）、六项关键依赖与一个实际模型，共十二项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全过。模型以真实三角形盘及其 PL 圆周为源，原 f 将整盘塌缩到四面体边界
+顶点；实际生产 g，验证固定圆周、精确边界原像/像交集，并验证三角形重心被送入三维流形内部。
+回执 BoundaryInwardPush-source-checkpoint.json、ProjectedBoundary-source-push-consumer.json、
+AuditF310.json；sourceStable=true，共享产物只读。源码与本记录同次提交。
+
+**partial：完整正规系统生产与覆盖归纳。** 已闭合先前缺失的初始源边界适当性生产者；下一步将
+精确边界原像与真实 PL 覆盖结合，保持源三角剖分，并构造提升像/边界环子复形、可控小边界邻域、
+相容基点及正规子群。一般 NormalSystem 的既有归纳仍是条件消费者；本项未声称完整端点已闭合。
+
+### 19.171 保留像复形原面且可控的小边界邻域（2026-09-19 UTC）
+
+**done：RelativeSimplexBoundaryNeighborhood.lean。**
+`IsCombinatorialManifoldWithBoundary.exists_derivedNeighborhoodTriangulation_boundary_mem`
+对有限同维组合带边流形 K、A≤K、C≤A、A∩∂K=C，以及 ∂K 中 C 的任意相对邻域 V，实际生产
+DerivedNeighborhoodTriangulation T K A，使 C 的原面属于 ∂T，且 N(C,∂T)⊆∂K∩V。
+开集版本 `exists_derivedNeighborhoodTriangulation_boundary_subset` 同时给精确边界所在位置。
+T 保留 A 的全部原面与原普通导出邻域的精确载体；不细分源映射的像面，不依赖已否定的固定相对公式。
+
+构造先取一个实际兼容邻域 T₀；从 T₀ 在 A 上的相对邻域性找出边界芽与 ∂K 一致的开集 O。
+T₀ 边界中位于 O 与指定邻域之外的闭集避开 A，于是只细分外围，使 A 的闭星避开该闭集。
+再由 C 的导出邻域包含于该闭星推出所求控制。没有假设新边界邻域已经落在 V。
+
+模块检查 exit=0、零诊断；AuditF311 exit=0、零诊断。两项非自动声明、四项关键依赖与一个实际
+模型，共七项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。标准四面体/三角形面模型
+实际生产非空 T 和非空边界邻域，保留原三角形，并验证边界邻域避开指定对顶点。
+回执 RelativeSimplexBoundaryNeighborhood-checkpoint.json、AuditF311.json；sourceStable=true，
+共享产物只读。源码、根登记与本记录同次提交；继续覆盖提升与基点/正规子群的实际组装。
+
+### 19.172 同源覆盖提升保持源边界并生产实际像子复形（2026-09-19 UTC）
+
+**done：Covering/PLBoundaryLift.lean。** `exists_simplicialMap_lift_with_boundary` 将有限 PL 球的
+单纯映射实际提升到真实有限覆盖，保持原源复形、精确投影等式和指定提升锚点，并从楼下的精确
+源边界原像等式证明楼上的同一等式。目标维数与源球维数分别为任意 n+1、m+1，没有额外单射条件。
+
+`exists_simplicialMap_lift_image_subcomplexes` 在同一输入上实际生产有限像子复形 A 与边界像子复形 C：
+A≤楼上完整覆盖复形、C≤A、C≤楼上边界，原源面的顶点像都是 A 的面，两个载体分别为整盘与源边界
+的精确像，并有 A∩楼上边界=C。源边界适当性由 §19.170 的初始预处理取得后可在每轮覆盖中保留；
+本层没有把一般 NormalSystem 的旧像交集字段当作适当性。
+
+模块检查 exit=0、零诊断；AuditF312 exit=0、零诊断。三项非自动声明（含一项私有局部可判定实例）、
+四项关键依赖与一个实际模型，共八项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。
+模型以标准三维单形的恒等映射为源，实际提升到其乘 Bool 的二重覆盖 true 层，验证非空 A/C、
+精确边界原像、像交集、原源复形、投影与锚点。它是一般维数定理的三球实例，不冒充完整二维盘
+NormalSystem 及正规子群实例。回执 PLBoundaryLift-checkpoint.json、AuditF312.json；sourceStable=true，
+共享产物只读。源码、根登记与本记录同次提交。下一步把小边界邻域控制与基点/群论资料接入。
+
+### 19.173 实际覆盖提升的相容小正规邻域与边界投影（2026-09-19 UTC）
+
+**done：Covering/PLNeighborhoodLift.lean。** `exists_simplicialMap_lift_derivedNeighborhood`
+从真实有限覆盖、源边界适当的单纯 PL 球映射以及楼下边界像的任意相对邻域 V，实际生产同源提升
+ψ、像与边界像子复形 A/C，以及 DerivedNeighborhoodTriangulation T。输出保留源复形与全部像面，
+精确投影等式、指定提升锚点、T 的组合流形性、C≤∂T、A∩∂T=C、源边界的精确原像，并有
+coveringBaseMap(N(C,∂T))⊆V。相对邻域 V 的拉回来自真实覆盖的连续性及精确边界原像定理。
+所需新边界投影包含关系是定理结论，没有放进构造输入。
+
+模块检查 exit=0、零诊断；AuditF313 exit=0、零诊断。两项非自动声明（含私有局部实例）、四项关键
+依赖与一个实际模型，共七项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。
+标准三球恒等映射在真实乘 Bool 二重覆盖中的模型实际生产非空 T/C，验证全部原面保留、源边界
+原像、像交集、边界邻域投影及 true 层锚点。它仍是一般几何定理的三球实例。
+回执 PLNeighborhoodLift-checkpoint.json、AuditF313.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交。
+
+**partial：正规系统与严格归纳。** 实际几何提升和受控邻域资料已经生产；仍需边界环、位于环上的
+基点、正规子群 comap 与避让条件的组装，才能向现有严格复杂度下降定理交付完整 DoubleCoverDiagram。
+初始源相对推入输出 PL 映射；把它与初始有限单纯资料接合仍须精确兼容三角剖分，不能仅靠逼近代替等式。
+
+### 19.174 完整正规系统的实际二重覆盖约化（2026-09-19 UTC）
+
+**done：LoopTheorem/CoverNormalSystem.lean。**
+`NormalSystem.exists_doubleCoverReduction_of_isCoveringMap` 从真实连通二重覆盖、具有精确源边界
+原像等式的 NormalSystem S，以及 S.basepoint=S.boundaryLoop 0，实际生产有限欧氏空间中的
+NormalSystem T 与 DoubleCoverReduction S T。T 保持原源复形、源边界适当性及环上基点，复杂度
+严格下降。完整覆盖、像/边界像子复形、相容小正规邻域、边界环、边界投影及正规子群 comap 都
+在证明内构造；正规子群的避让性由真实边界投影与原系统的环类避让性推出。
+
+模块检查 exit=0、零诊断；AuditF314 exit=0、零诊断。三项非自动声明、六项关键依赖与两个有类型
+消费者，共十一项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。消费者分别在欧氏三维
+目标上提取同源/严格下降/投影/边界性质，以及从复杂度为零推出这种连通二重覆盖不存在。
+这两个消费者以给定 NormalSystem 为条件，不声称独立构造了非空 NormalSystem 模型。
+回执 CoverNormalSystem-checkpoint.json、AuditF314.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交。
+
+**partial：一般初始系统与最终归纳。** 本定理的源边界适当性是自然但非原结构自动具有的输入，
+没有修改 NormalSystem 的定义。§19.170 已生产保持原边界值的实际 PL 推入；其输出到有限单纯
+资料仍缺精确的源/目标兼容三角剖分，现有 PLImage 的像复形生产者要求单射，不能用于一般奇异
+盘。下一步去掉环上基点的辅助限制，并接入具有上述适当性的覆盖归纳；不将一般端点记为 done。
+
+### 19.175 保留几何与复杂度的环上基点规范化（2026-09-19 UTC）
+
+**done：LoopTheorem/NormalBasepoint.lean。** `NormalSystem.atBoundaryLoop` 将给定系统的基点移至
+boundaryLoop 0，沿原 connector 的 fundamentalGroupChangeBasepoint 对正规子群取 comap，
+保留全部几何资料、源映射和复杂度。`NonsingularCell.ofAtBoundaryLoop` 把新系统的实际嵌入盘
+搬回原系统，保持源复形、顶点映射与边界环，以原 connector 接续盘的 connector，并证明原正规
+子群的避让性。`nonempty_nonsingularCell_of_atBoundaryLoop` 提供存在性接口，不增加几何假设。
+通用路径合成恒等式及正规子群 comap 的环类交集等价支持两项构造。
+
+模块检查 exit=0、零诊断；AuditF315 exit=0、零诊断。十四项非自动声明、四项关键依赖、两个
+有类型几何消费者及一个实际圆周 connector 合成模型，共二十一项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全过。两个几何消费者验证源边界适当性/复杂度保留与同一嵌入盘回搬，
+以给定 NormalSystem 为输入，不声称额外生产非空系统。回执 NormalBasepoint-checkpoint.json、
+AuditF315.json；sourceStable=true，共享产物只读。源码、根登记与本记录同次提交。
+
+**partial：一般初始系统。** §19.174 的环上基点限制现在可在归纳前通过实际规范化满足，得到盘
+后再搬回；一般 PL 初始盘的源/目标精确兼容三角剖分缺口不受本次结果影响。继续接入真实非定向
+及非球边界连通二重覆盖，不将整个 Stallings 端点记为 done。
+
+### 19.176 非定向及非球边界的实际覆盖约化（2026-09-19 UTC）
+
+**done：LoopTheorem/CoverReduction.lean。** 从源边界适当、基点位于环上的 NormalSystem S，
+`exists_doubleCoverReduction_of_not_isOrientable` 消费已证 orientationCocycle，实际生产完整
+严格二重覆盖约化；重心细分上的覆盖经载体相等同胚搬回原目标，不细分原源复形。
+`exists_doubleCoverReduction_of_isOrientable_of_boundaryComponent_not_isPLSphere` 消费已证
+边界分量非球性到非平凡 Bool cocycle 的链，实际生产定向情形的完整约化。
+`exists_doubleCoverReduction_of_boundaryComponent_not_isPLSphere` 合并两种情形，不再要求
+调用者交付覆盖资料。每项输出保留原源复形、精确边界原像与环上基点，并严格降低复杂度。
+`isConnected_manifoldComplex_space` 从原盘的连通像及真实导出邻域证明目标连通，无额外连通假设。
+
+模块检查 exit=0、零诊断；AuditF316 exit=0、零诊断。四项非自动声明、六项关键依赖与两个有类型
+消费者，共十二项传递公理闭包仅标准三公理；十三项适用环境 linters 全过，含实际定向 cocycle
+及同调生产链的传递审计。消费者从任意原基点的给定系统先规范化、提取同源投影与严格下降，
+并验证源边界适当且已单射的系统必须具有球面边界分量。消费者是条件测试，不冒充独立非空系统。
+回执 CoverReduction-checkpoint.json、AuditF316.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交。
+
+**partial：初始正规系统与最终 Stallings 端点。** 两类覆盖生产者已闭合，但源相对 PL 推入到
+精确初始单纯资料尚缺兼容三角剖分；球面情形与覆盖后嵌入盘投影的其余端点也不能由本结果自动
+宣布完成。整合端已授权下一步泛化 CellComplex 的合法胞腔中心选择，保留旧语义/API，并在
+CellMapTriangulation 中构造允许塌缩的精确 PL 映射三角剖分；不添加结论型假设。

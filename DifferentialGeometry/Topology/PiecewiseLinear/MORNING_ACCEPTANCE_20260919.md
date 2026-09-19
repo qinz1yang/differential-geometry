@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9429 project modules including the root, no missing
+are now registered and statically reachable (9443 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -645,3 +645,75 @@ requiring an arbitrary nonsmooth PL parameterization to already be smooth.
 F's geometric cover reductions through 9bd8d23a7 are also newly queued; its
 singular PL triangulation round continues. Active E3/h/M304 rounds were not
 interrupted. No new task or checker was created.
+
+## Source-boundary preparation and actual normal-system cover reductions (2026-09-19 UTC)
+
+F d0d3d3468, 451717c77, 9b8e3c3da, c4b2edb95, 3e4695ab3,
+d2fa2d933, 9e9e78bca, 9dda64423 and 9bd8d23a7 are independently accepted
+as one dependency-closed construction. The relative PL source push fixes the
+prescribed source boundary and proves that its full boundary preimage is
+exactly that boundary. Source dependence matters: an ambient map fixing all
+boundary image points would leave collapsed interior points on the boundary.
+The actual model starts with a constant disk map to a boundary vertex and
+produces a map whose interior enters the manifold interior.
+
+The construction also proves covering boundary correspondence, forms exact
+image subcomplexes for possibly collapsing simplicial maps, and lifts a PL
+ball using the same source complex. It constructs upstairs image/boundary
+subcomplexes and a compatible triangulation of the ordinary derived
+neighborhood with controlled boundary projection. For a supplied source-proper
+NormalSystem it fills the complete upstairs NormalSystem and cover diagram,
+including the normal-subgroup avoidance and source projection conditions.
+Basepoint transport changes the connector and subgroup while preserving
+geometry and complexity. The nonorientable and orientable nonspherical-boundary
+cases then construct actual connected double covers and prove strict
+complexity descent. No assumed cover-reduction package replaces that geometry.
+
+All nine delivered leaves match the frozen author commit exactly. They and the
+existing ProjectedBoundary consumer were freshly compiled: ten modules, zero
+diagnostics, 115.279 seconds including admission. The combined audit took
+51.391 seconds and covers all 41 nonautomatic declarations, including four
+private helpers. Thirty-five declarations are new; the author modules contain
+38 total and the unchanged consumer adds three. All 38 distinct critical reused
+entries have only standard foundational axioms. All thirteen applicable
+environment linters pass for the full module census and all probe declarations.
+
+The probe contains seven concrete geometric scenarios, expressed by eight
+theorem declarations: tetrahedral double-cover data and boundary, a
+nonconstant collapsed triangle image, the collapsed source-disk boundary
+push, a controlled tetrahedral boundary neighborhood, actual anchored proper
+lift and neighborhood models, and circle-connector composition. Six further
+declarations exercise supplied NormalSystem data conditionally. They are not
+independent nonempty NormalSystem examples. Nine named local instances bring
+the complete audited probe census to 23 declarations. The first audit passed
+its mathematical assertions but failed the strict delivery gate on five long
+lines introduced when naming those instances. Only probe formatting changed;
+the successful rerun and the failed source/log/receipt are all frozen.
+
+Twenty-one previously accepted private prerequisites were reused only after
+exact raw source and object identity checks. Fresh checks use private import
+overrides; shared artifacts remain read-only. The accepted Lean diff is
++1142/-0: 1134 author source lines and eight root imports. No integration proof
+or source-header edit was needed. These counts measure source changes, not
+classical theorem completion. Receipt:
+.lake/verified-twentysixth-lane-delivery-20260919.json. It retains exact source
+and object hashes, the full declaration/axiom/lint census, both audit attempts,
+eleven frozen external probe sources and their raw bytes, provenance and timing.
+
+The flat root statically reaches 9443 project modules including itself, with
+no missing project sources or cycles. Eight new leaves are directly registered.
+Six older modules are newly reachable through this chain: BallComplement,
+BoundaryEuler, CollarSectorPolyhedron, DoubleCoverExistence, HandleCount and
+HomologyCocycle. That static coverage is not a fresh-source certificate for
+every upstream module. Full-root compilation remains stopped; the new leaves
+and their combined imports have focused verification.
+
+The initial general PL push still needs an exact triangulation that permits
+noninjective maps. General singular-disk normalization, Lemma 2 branch
+separation, and the final Stallings/loop-theorem endpoint remain open. F's later
+arbitrary-cell-center checkpoint 921aa49bd is queued separately; its exact-map
+triangulation round continues without another assignment. S's old-atlas
+relative smoothing and h/E3/M304 current rounds continue without interruption.
+M304 synchronized the accepted interval-monodromy API name at 751f0e925; its
+later capping, conditional Betti and actual circle-complement deliveries remain
+separately queued. No task or checker was added, and no full build was started.
