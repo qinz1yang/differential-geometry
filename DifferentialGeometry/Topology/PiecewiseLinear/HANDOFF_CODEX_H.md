@@ -3320,3 +3320,31 @@ outputs.  The external audit dynamically enumerated all twenty-six
 non-automatic declarations of `MoiseChain`, checked four semantic producer
 declarations, found only `{propext, Classical.choice, Quot.sound}`, and passed
 all thirteen applicable environment linters.
+
+## 63. 2026-09-18 Locally finite graph regular-neighborhood vocabulary — done
+
+`PolyhedralGraph.lean` supplies the missing noncompact objects needed to state
+Moise 35.1 faithfully.  `IsLocallyFinitePolyhedralGraph` requires a
+`LocallyFinitePieceTower` of the advertised set whose finite simplices all
+have at most two vertices, so an arbitrary relatively closed subset is not a
+graph witness.
+
+`IsLocallyFiniteRegularNeighborhoodOf N K U` is relative to an ambient piece
+tower of `U`.  It selects graph subcomplexes in the finite cores, requires
+their faces to remain graph faces under successive tower embeddings, and
+requires their images to exhaust exactly `K`.  At every stage it uses the
+library's actual `regularNeighborhoodIn` construction, requires the resulting
+complex to be an ambient-dimensional combinatorial manifold with boundary,
+and requires the mapped stage neighborhoods to form a monotone family whose
+union is exactly `N`.  The relation additionally records the intrinsic
+consequences needed downstream: `N` is an ordinary neighborhood of `K`, lies
+in `U`, and is a locally finite polyhedral manifold with boundary.  Projection
+theorems expose these three properties without hiding the triangulation data.
+
+The new leaf is registered in the flat root aggregate.  It compiled with zero
+diagnostics and unchanged shared outputs under round token
+`h-round-20260919`.  Its external audit dynamically enumerated all six
+non-automatic declarations, checked four direct foundational declarations,
+found only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.  `Moise351` is the next consumer; no theorem
+of §35.1 is claimed by this definition layer.
