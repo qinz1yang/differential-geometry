@@ -18,58 +18,65 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
-### Latest live frontier (2026-09-19, compression accepted and sphere endpoint frozen)
+### Latest live frontier (2026-09-19, conditional sphere endpoint independently accepted)
 
-This snapshot and the latest integration-handoff sections take precedence over
-dated development paragraphs below, including their old deadlines and active
-assignments. The resumed stage has no new deadline. Five existing tasks keep
-one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
+This snapshot and the latest integration-handoff sections supersede dated
+development paragraphs below. The resumed stage has no new deadline. Five
+existing tasks keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 
 | Lane | Independently accepted frontier | Current mathematical gate |
 |---|---|---|
-| F | through71b0b003e | Relative general position fixing an actual protected polyhedron; exact whole-transition coverage for the same disk. New06a/d68 source is queued. |
-| h | throughe85a235df | Actual standard solid-torus identification of the newly transported neighborhoods, then compatible locally finite modifications. |
-| E3 | throughddade8562 | Prove the same physical capped result separates the original H/Q, then Moise303. Newc10 is queued. |
-| M304 | through8fe07bd87 | Exact conditional Moise252-to-Moise304 endpoint371 is frozen for independent replay. The completed-boundary next lane is original toroidal-shell30.6, preserving actual kernel/compression and torus identification obligations. |
-| S | throughc0f4df1b1 | Actual controlled cubic identity or direct supported cancellation from the same original function/frame. Common coordinates through2544d9120 were delivered;5b/c011/2544 remain queued for independent acceptance. |
-
-h's accepted seven-module layer has 36 audited native entries, including
-seventeen new reusable theorems and three new actual-model assertions. It
-constructs an original-carrier PL homeomorphism, compatible triangulations and
-exact transport of newly chosen nested circle neighborhoods. It does not close
-Moise351 or certify the later solid-torus layer. Lean +1302/-1 and root source
-reachability 9649 are verification accounting, not theorem-completion metrics.
-See integration section81 for full axiom, model and thirteen-linter evidence.
-
-F's frozen explicit kink counterexample rules out inferring a small Lipschitz
-displacement after arbitrary PL coordinate conjugation. Its new round instead
-fixes a closed protective polyhedral neighborhood, retains the fixed/mixed-face
-condition in canonical GeneralPosition, and proves actual coverage. This is a
-change of local strategy; full relative normalization remains open. Canonical
-GeneralPosition author-only write ownership is recorded. See section82.
+| F | through 71b0b003e | Finish protected-polyhedron relative general position and its full consumer/lint gate, then actual boundary-chart transition coverage.06a/d68 are queued; later source is still a separate author layer. |
+| h | throughe85a235df | Actual locally finite compatible modifications preserving the original carrier/graph and transported neighborhoods. Finite trivalent solid-torus layer72fa711aa is delivered, frozen and queued. |
+| E3 | throughddade8562 | The same physical capped result must separate original H/Q, then Moise303. c10 is queued; the later four-file separation bridge remains in the author checkout. |
+| M304 | through 3717074e9 | Exact Moise252-to-Moise304 is independently accepted. Later 6f/823 original-toroidal-shell incompressibility/parity is frozen, pending replay; next construct actual sphere-cut sides and endpoint factorization, then genuine torus recognition for 30.6. |
+| S | throughc0f4df1b1 | Correct the support geometry and produce actual cancellation in a sufficiently controlled regular-level region.5b/c011/2544 common coordinates and876 support obstruction are frozen, pending independent acceptance. |
 
 M304's original-disk ball/wall/caps, actual cut-boundary kernel and same-target
-strict Betti decrease are independently accepted in section85:30 fresh modules,
-165 native entries,84 reuse entries,one actual torus model family,13 linters
-and approved axioms; Lean+2031/-20. Exact private import bindings were checked
-after rejecting nested frozen-author/archived objects; all30 modules were
-replayed without project-source changes. Eleven leaves are root registered,
-with source reachability9660; this is not a full-root build certificate.
+strict Betti decrease were independently accepted in section 85. Section 89
+now accepts the thirteen-line exact endpoint moise304_of_moise252. Its proof
+chooses a least-Betti connected separator and contradicts minimality if the
+same-shell compression produces a smaller one. Arbitrary original X/B0/B1
+are retained, with no sphere, essential disk or compression conclusion assumed.
 
-Later3717074e9 proves the exact Moise252-to-Moise304 sphere endpoint in the
-author checkout. It is frozen for independent replay, including actual
-norm-shell/tame models and the claimed absence of303/broad264 kernel
-dependencies. At that delivery boundary M304 moved to the original
-toroidal-shell30.6 lane, then30.7. Moise252 remains explicit unresolved upstream;
-unconditional304 and general305 have not been proved. See section86.
+The changed module and unchanged tame consumer compile with no diagnostics.
+All seven nonautomatic declarations, fourteen key reuses, two concrete
+radius-one/radius-two models and one exact assembled consumer pass the full
+axiom and thirteen-linter audit. Both models explicitly retain h252; the tame
+model constructs its actual outer-frontier bicollar. Kernel type/body closure
+traversals contain9328 and7200 native constants, respectively, and neither
+uses Moise303 or broad Moise264. This changes the implemented dependency route;
+it does not prove Moise252, unconditional304 or general wild305.
 
-S's later2544d9120 source constructs common injective coordinates including
-both actual critical points and the original closed strip; the author byte
-receipt was frozen at delivery. The5b/c011/2544 chain still awaits independent
-acceptance. The next completed-boundary round derives a controlled cubic
-function identity or direct supported cancellation, preserving the original
-function and frame. Common coordinates alone are not a cancellation theorem.
-See integration section88.
+The later original-toroidal-shell delivery6f227c057/8236587e5 gives actual
+minimum/incompressible separators and a commutative-cover obstruction in the
+author checkout. Its final41-module evidence is frozen. The remaining gates
+are actual cut geometry excluding a sphere separator and genuine torus
+recognition; parity or beta-one equal to two is not an IsPLTorus proof.
+
+S's876319180 reports and source-proves a support obstruction to the previous
+universal arbitrary-O goal. For f(x,y)=x^3/3-x+y^2 and1<=r<3/2, fixing f outside
+the open sup-norm r-ball forces a local minimum inside the 3/2-ball. The actual
+small frame r=5/4 contains both critical points and their connection, yet
+cannot support the requested cancellation. The source and complete model
+receipt are frozen for independent replay. The impossible universal target
+is withdrawn now; common coordinates through 2544 remain valid. The next lane
+constructs sufficient regular-level support geometry or proves a permitted
+enlargement, with explicit containment, critical-point and protected-region
+control. No final cubic chart or cancellation conclusion may be an input.
+
+h's later 72fa711aa constructs source/target standard solid-torus diagrams for
+the actual finite trivalent model; independent replay remains pending. Its
+next round constructs cross-stage locally finite compatibility. F's completed
+boundary exposed one pre-existing unused instance and three private consumer
+compile permissions; these were resolved within the authorized same lane.
+E3's unchanged canonical SphereSchoenflies dependency has an exact-source
+private refresh grant. No new task or additional checker was created.
+
+Root source reachability is9660 modules, with no missing imports or cycle;
+this is not full-root compilation. Required headers and all current resource,
+ownership, quiet hourly scheduling and delivery-boundary rules remain binding.
+See integration sections89–90 and the resumed-stage ledger for frozen evidence.
 
 ### Section32 research and an additional upstream contract gate
 

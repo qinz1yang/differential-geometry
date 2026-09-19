@@ -4301,3 +4301,94 @@ the same original frame. Final cubic/cancellation conclusions cannot be new
 premises. The existing private compile lease was renewed for three hours;
 resource limits and file ownership are unchanged. No active lane was polled
 or given an additional lane for the research request.
+
+## 89. Exact conditional sphere endpoint independently accepted
+
+The coordinator replayed frozen3717074e9 against accepted parent8fe on the
+integration checkout. Only SphericalShellCompression changes: thirteen new
+Lean lines prove moise304_of_moise252 (h252 : Moise252) : Moise304. The source
+is byte-faithful to the author checkpoint and preserves arbitrary original
+X/B0/B1. Minimality of the actual connected separator contradicts the already
+proved strict same-shell Betti decrease whenever the separator is not a sphere.
+No essential disk, cap, sphere or final compression conclusion is a new input.
+
+The changed module and unchanged TameNestedCells consumer were freshly checked
+in 25.789 seconds including admission. The full audit took 76.437 seconds:
+all seven native nonautomatic declarations, fourteen critical reused entries,
+two actual conditional radius-one/radius-two models and one exact assembled
+consumer pass all thirteen applicable linters and approved foundational axioms.
+The models retain h252 and prove nonempty original targets and outputs; the
+tame model constructs its actual outer-frontier bicollar. One new public
+conditional theorem is counted; six retained declarations and three external
+consumer/model assertions are not new library theorems.
+
+Independent kernel type/body traversal took 22.932 seconds and covers 9328
+native constants from moise304_of_moise252 and7200 from the tame consumer.
+Both traversals require present roots and nonempty closures; neither contains
+Moise303 or broad Moise264. Their complete dependency graphs and full signatures
+are frozen. This certifies the implemented bypass, not completion of the
+general 30.3/26.4 theorems or the still-explicit Moise252 producer.
+
+All 113 reused private prerequisites match exact current raw source and earlier
+independently accepted object hashes. Every actual setup binding is canonical
+to this batch and this checkout; nested author archives cannot override it.
+Both leaves are already root imported; the 9660-module static root closure has
+no missing source or cycle. No root build was run and no shared outputs were
+modified. Lean delta is+13/-0. Receipt:
+.lake/verified-sixtieth-lane-delivery-20260919.json.
+
+## 90. Delivered boundaries, support correction and original-toroidal-shell frontier
+
+One compact logical snapshot found F/h/E3 idle. They were continued only at
+that boundary. F's protected-polyhedron source was frozen before author edits;
+the already demonstrated unused-instance generalization and three exact-source
+private dependent checks were authorized. h's clean72fa711aa source was frozen;
+the finite trivalent solid-torus layer remains queued while its next lane
+constructs actual locally finite compatible modifications. E3's four dirty
+separation-bridge modules were frozen without modification, and the same lane
+resumed. Its clean canonical SphereSchoenflies source matched integration and
+received a single-module private refresh grant. No new task or worker was added.
+
+S explicitly delivered876319180 during this work. Its native source proves
+that any continuous perturbation of x^3/3-x+y^2 fixed outside a sup-norm
+r-ball,1<=r<3/2, still has an interior local minimum in the 3/2-ball. For r=5/4,
+the fixed point value is-115/192, below the outer boundary lower bound-3/8.
+The same two actual critical points and their logistic connection lie in the
+small permitted frame. S's frozen actual common-coordinate consumer supplies
+the precise counterexample to removing that pair with support in this frame.
+The complete native/model byte receipt has SHA256
+6b52e4e7f06410ac2efa888f5e97d8aa0440199a2430b25e2f3123eaf351f3af.
+Independent integration replay is pending; no S Lean is accepted in this batch.
+
+The arbitrary prescribed-O goal is withdrawn. At this delivery S received
+one corrected lane: construct sufficient actual regular-level support geometry
+or a justified larger neighborhood, retaining the original function, exact
+support containment, other critical points and protected-region conditions.
+The real compact-smoothing consumer must be checked against the resulting
+geometry. The final cubic chart or desired cancellation cannot be assumed.
+The common-coordinate theorem remains valid; finite cancellation and compact
+PL smoothing remain open.
+
+M304 then explicitly delivered6f227c057/8236587e5. Its clean pushed author
+checkout,41 source/receipt sets and262 final evidence files were hash-frozen;
+manifest d04395c683f14d90e0886b7f637b0e536e8e7f6dc1f6103cf98120009b7d9f87.
+Use recognition-final-checkpoint only; the earlier root-resolution failure is
+not evidence. The reported new layer has685 native lines, eight new leaves,
+37 source declarations and one generated notation constant, with separate
+actual models and author audits. These are pending independent replay.
+
+Its actual original-toroidal-shell minimum/incompressible separator, endpoint
+fundamental-group isomorphisms, parity and commutative-cover obstruction do not
+yet identify a PL torus. At this completed boundary the next same30.6 lane
+constructs sphere-cut sides, collar/open cover and original endpoint inclusion
+factorizations, excludes a sphere separator, then constructs genuine torus
+recognition. Sphere-shell simple connectivity and an assumed handle profile
+cannot replace these obligations. The deferred30.8 inner-spine inclusion
+contract correction from section 87 was delivered at this boundary for later
+30.7/30.8 consumption; it is not a second active lane.
+
+Compiler leases were administratively renewed for three hours with the same
+two-private/three-total Lean limits. The resumed-stage ledger and actual saved
+hourly automation retain these boundaries; the completed morning report is
+unchanged. Later author deliveries are queued separately from the accepted
+sphere endpoint.

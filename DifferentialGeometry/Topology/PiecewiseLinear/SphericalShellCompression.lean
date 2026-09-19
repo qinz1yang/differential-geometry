@@ -85,4 +85,17 @@ theorem IsSphericalShell.exists_separating_component_bettiOne_lt_of_loop_theorem
       isOpen_interior hDX
   exact ⟨P, hPfin, hP, hPc, hPo, hPt, hPX, hPsep, hβ⟩
 
+theorem moise304_of_moise252 (h252 : Moise252) : Moise304 := by
+  intro X B₀ B₁ hX
+  obtain ⟨S, hSfin, hS, hSc, _, _, hSX, hsep, hmin⟩ :=
+    hX.exists_connected_separating_surface_bettiOne_min
+  let _ : Finite S.faces := hSfin.to_subtype
+  have hsphere : IsPLSphere 2 S.space := by
+    by_contra hnot
+    obtain ⟨P, hPfin, hP, hPc, _, _, _, hPsep, hβ⟩ :=
+      IsSphericalShell.exists_separating_component_bettiOne_lt_of_loop_theorem
+        h252 hX S hS hSc hnot hsep
+    exact (not_lt_of_ge (hmin P hPfin hP hPc hPsep)) hβ
+  exact ⟨S.space, hsphere, hSX, hsep⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
