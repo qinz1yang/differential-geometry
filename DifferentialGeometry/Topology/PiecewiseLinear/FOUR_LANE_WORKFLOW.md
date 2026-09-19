@@ -60,9 +60,12 @@ workflow's no-header, no-root-import, and in-tree-scratch instructions.
 ## Compiler trial
 
 The owner stopped the full-source build on 2026-09-19 at 02:00 UTC. Artifacts
-are retained with no automatic restart. The trial still allows at most two
-private lane checkers; stopping the root does not raise that limit. When root
-verification is resumed, it uses one Lean worker, at most three total Lean
+are retained. The owner later authorized restarting when compatibility checks
+require it, or after prolonged all-lane blockage without better proof work.
+Eight hours is an example rather than a trigger; record the actual reason.
+The trial still allows at most two private lane checkers; stopping the root
+does not raise that limit. When root verification is resumed, it uses one Lean
+worker, at most three total Lean
 processes, below the owner's ceiling of four. Each lane has at most one checker.
 A named mutex and per-process reservations coordinate admission; at least 12 GiB of free commit
 headroom and 4 GiB of free physical memory are required before another checker

@@ -33,15 +33,16 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Construct the embedded-disk projection used by the original section 25 cover induction. | Prove local injectivity and fibers of size at most two for the projected disk; construct PL, lift, boundary and subgroup compatibility with strict complexity descent. Then close the remaining Lemma 2 branch-separation producer. |
-| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement and annulus 18f861c89 are accepted; cut-cell layer 1cea2fbe7 is queued. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
+| F / gpt-6-astra max | Construct the full ambient cover diagram and compatible smaller neighborhood. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
+| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
 two-sheeted surjectivity. The upstairs disk must have the boundary/properness
-properties needed by descent; current NonsingularCell fields do not themselves
-assert proper interior placement. Lemma 2 starts with local injectivity and
+properties needed by descent. The inward-embedding producer through 3c7d44e19
+now constructs proper interior placement from the existing NonsingularCell,
+and the actual projection preserves it without extra properness hypotheses. Lemma 2 starts with local injectivity and
 two-point fibers. Neither arbitrary NormalSystem data nor the fiber-preserving
 DoubleCarrier transport produces them. Generic surface position in dimension
 three does not remove triple points. More conditional wrappers do not close
@@ -96,8 +97,15 @@ no acceptance of these contracts is claimed.
 
 E3 b195204ed and b5e36cfe5 are independently accepted: two modules, 35
 nonautomatic declarations and 12 key reused declarations pass the axiom/lint
-audit. h 0a0876425 and F through 51b4ee8ad still await
-independent integration acceptance. S's actual disk-times-circle product and
+audit. h 0a0876425 still awaits independent acceptance. F through 51b4ee8ad is
+independently accepted: nine modules, 92 nonautomatic declarations, 15 critical
+reuse entries, two nonempty models and 13 clean environment linters. The
+source-collapse result is conditional on a given NormalSystem. Complete cover
+diagram production and strict descent remain open. F through 3c7d44e19 is
+subsequently accepted: five modules, 23 declarations (18 new), 13 critical
+reuse entries, four concrete models and 13 clean linters. S 4627710d3
+cap-comparison remains queued for separate acceptance.
+S's actual disk-times-circle product and
 finite native 24.11/24.12 through 434d5352c are independently accepted: ten
 modules, 41 declarations, 33 critical reused declarations, 13 clean linters
 and a nonempty endpoint instance. Preserve S's
@@ -105,14 +113,17 @@ extraction of IsTopologicalSolidTorus when integrating h's separate MoiseChain
 repairs.
 
 The owner stopped the independent full-source build at 2026-09-19 02:00 UTC.
-Completed artifacts are retained; no automatic restart is scheduled. The run
-is incomplete, not a successful full-root gate. Lane checks continue under
-the existing two-private-checker admission policy.
+Completed artifacts are retained and the run is incomplete. After the account
+switch, the owner authorized a discretionary rebuild when integration
+compatibility requires it, or when all lanes are persistently blocked and no
+more productive proof work remains. Eight hours was an example, not a timer.
+Proof work and focused checks take priority. A restart must record its reason
+and keep the existing one-root-worker/two-private-checker resource policy.
 
 The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
-Static traversal reaches all six and 9304 project modules, with no missing
-project source. This is import coverage, not a successful root compilation.
+Static traversal reaches all six and 9314 project modules including the root,
+with no missing project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused
 checks covering 26 nonautomatic declarations, standard axioms and all 13
@@ -120,8 +131,8 @@ applicable environment linters; this does not establish full-source success.
 
 Next integration work is to review and replay pending deliveries and check
 changed modules, dependents and endpoint axioms. Root coverage is repaired.
-The root build stays stopped under the owner's instruction. When verification
-is resumed, reuse retained artifacts and check the expanded import graph before
+The root build is currently stopped. When the discretionary restart criteria
+are met, reuse retained artifacts and check the expanded import graph before
 treating a root success as endpoint coverage.
 Current AGENTS allows required copyright/authors headers and module docstrings;
 inline comments and declaration docstrings remain disallowed.
@@ -912,3 +923,34 @@ unchanged. Exact statements and evidence are in the final S handoff section.
   `h` 下多面体胞腔的像，`frontier C₂'` 双领口；双领口情形已由 `TubularExcision.lean:170` + `SphereH1.lean:189` +
   `JordanBrouwer.lean:28` 无条件证出（纯拓扑，已 `#print axioms` 核实）。H-M3 漏查了这一支。决定：以 `Moise305Tame`
   （加 `IsBicollared (frontier C₂)`）替代，估约 1k–2k 行；不实现 wild 球面的 Alexander 对偶。详见 `MOISE_CHAIN.md` 同名条目。
+
+### Half-prism acceptance update (2026-09-19 UTC)
+
+E3 1cea2fbe7 is independently accepted: the supplied compatible PLPieceIn chart
+produces the half-prism ball, its disjoint endpoint disks, exact safe frontier
+and path connectedness. All three declarations, seven critical reuse entries,
+an actual nonempty Euclidean box model and 13 applicable linters pass. The
+original Delta/D1/D2-to-compatible-chart construction is still E3's active gap.
+F ec3b6b063 strict descent and 52ead09cc finite-cover realization are now
+independently accepted; h 97d4a948d derived-neighborhood corrections remain
+queued. h continues the same lane
+by testing and proving the global regular-neighborhood meaning of its tower.
+
+### Cover realization and descent update (2026-09-19 UTC)
+
+F through 52ead09cc is independently accepted: four modules, 12 new
+nonautomatic declarations, ten critical reuse entries, two concrete models
+and all applicable lint checks. Equality of complexity now constructs a PL
+section on the image, extends it across the proved neighborhood deformation
+retraction by homotopy lifting, and contradicts connected double-covering.
+Thus strict descent is proved from the existing full connected cover diagram.
+The new finite-cover producer constructs the global PL projection with exact
+projection and fiber equations and preserves manifold structure/connectedness.
+
+The remaining lift construction must still produce a complete nonempty
+NormalSystem and its boundary-compatible smaller neighborhood. In particular,
+the fixed relativeDerivedNeighborhood carrier equation in the current
+normal-system interface is under investigation; no general obstruction is yet
+claimed. The concrete simplex-times-Bool model tests finite-cover realization,
+not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
+is newly queued and E3 continues simultaneous subdivisions and actual traces.

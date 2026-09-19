@@ -1023,3 +1023,153 @@ consumers do not produce that compatibility. The full-neighborhood boundary
 formula differs from the safe boundary of the half-cell; preserve this distinction.
 
 No new subagent/task, extra lane, or full-root restart was introduced.
+
+## 27. Covering projection and diagnostic source-collapse acceptance (2026-09-19 UTC)
+
+F through 51b4ee8ad is merged and independently accepted. The seven changed
+modules and MoiseChain/StallingsInduction consumers freshly compiled in
+100.459 seconds, zero diagnostics. A single combined audit checks all 67
+nonautomatic changed-module declarations, 25 unchanged MoiseChain declarations,
+15 critical reuse entries and two nonempty models; standard axioms only and
+all 13 applicable environment linters pass. Audit: 48.614 seconds. Unchanged
+Separation and SolidTorus prerequisites were privately reused with matching
+source, successful receipts and object hashes. Other upstream objects remain
+shared and read-only; the full-source gate is incomplete.
+
+RelativeSimplexSubdivision and SimplexCollapse construct a genuine finite
+boundary-fixed seven-triangle self-surjection with an interior constant
+triangle, infinite fiber and failure of local injectivity. SourceCollapse
+transfers that construction to any supplied NormalSystem while preserving
+ambient/image/loop data and boundary group data and adding six triangles.
+This does not construct an initial NormalSystem and is not a positive normal
+form theorem or a counterexample to Moise251.
+
+EmbeddedProjection and ProjectedCell prove local injectivity and fiber bounds
+for the actual projected embedded disk. DoubleCoverDiagram uses the full
+upstairs ambient cover and records source, boundary and subgroup equations;
+DoubleCoverProjection uses these to construct the projected disk and its
+boundary loop while preserving subgroup avoidance. It proves weak complexity
+monotonicity. Full diagram construction, strict descent and Lemma 2 branch
+separation remain unproved. Proper interior placement is the later F lane.
+
+Receipt: .lake/verified-eleventh-lane-delivery-20260919.json. Accepted Lean
+source +1085/-4 (six root imports included); delta from F's overnight starting
+eefa65bae is +229/-4. The 147 handoff Markdown lines are not Lean code.
+The flat root reaches 9310 project modules including itself, with no missing
+source; this is static coverage, not root compilation.
+
+F 8fc63d263, S 4627710d3, E3 1cea2fbe7 and h's corrected graph-domain 3a48527be5
+remain queued for independent review. h's 35.1 neighborhood relation remains
+under repair. The account-switch pauses preserved source and artifacts; all
+four existing tasks and the heartbeat have resumed, without new subagents.
+The owner authorized discretionary rebuilds for needed compatibility checks or
+prolonged all-lane blockage, while prioritizing proof work and narrow checks.
+No rebuild was started. Keep the original 14:19 UTC deadline.
+
+## 28. Proper projected disks without added boundary hypotheses (2026-09-19 UTC)
+
+F through 3c7d44e19 (including 8fc63d263) is merged and independently accepted.
+Five changed modules freshly compiled in 54.820 seconds, zero diagnostics.
+All 23 nonautomatic declarations (18 new), 13 critical reuse entries, four
+concrete models and 13 applicable environment linters pass the 47.137-second
+silent audit. Only standard axioms occur. Private reuse is limited to the
+accepted EmbeddedProjection and LemmaThree objects with receipt/source/object
+identity checks; other upstream objects remain shared and read-only.
+
+CollarInwardMap supplies an explicit injective PL height change.
+BoundaryInwardPush obtains a thin collar from compactness and glues it to the
+fixed core, then constructs a boundary-relative embedding with exact boundary
+preimage. BoundaryLocalEmbedding proves that a locally injective same-dimensional
+PL map cannot carry an interior point into the target boundary. It constructs
+small PL balls and uses actual boundary monotonicity and local invariance.
+
+ProjectedBoundary applies these producers to NonsingularCell, preserving its
+source boundary pointwise, then projects it through the actual covering map.
+The output includes the upstairs embedding, downstairs PL map, boundary loop
+and connector, exact boundary inverse/image relations, local injectivity,
+fibers of size at most two and normal-subgroup avoidance. No properness field
+or equivalent conclusion hypothesis is added. The old projection signature is
+preserved as a corollary of its generalized embedding form; its actual direct
+consumer is rebuilt.
+
+The standard nonempty simplex and a nonzero collar movement check the geometric
+producers. A complete nonempty NormalSystem/DoubleCoverDiagram is not claimed.
+Full cover construction, strict descent and crossing normalization remain
+separate gaps. F continues its existing strict-descent round without a new
+lane or interruption. E3 and S queued deliveries retain their ownership.
+
+Receipt: .lake/verified-twelfth-lane-delivery-20260919.json. Lean delta +565/-17,
+including four root imports; 65 handoff Markdown lines excluded. Root closure
+is 9314 project modules including itself, no missing source. No full-source
+build or restart was performed.
+
+## 29. Half-prism cut cells and a nonempty Euclidean model (2026-09-19 UTC)
+
+E3 1cea2fbe7 is merged and independently accepted. SurfaceSplitNeighborhood
+freshly compiled in 11.382 seconds including admission, zero diagnostics.
+The 45.730-second silent audit including admission checks all three new
+nonautomatic declarations, seven critical reuse entries, one concrete box
+model and all 13 applicable environment linters. Axiom sets contain only
+propext, Classical.choice and Quot.sound. Nine unchanged accepted prerequisites
+were privately reused with source/receipt/object identities; other upstream
+imports remain shared and read-only.
+
+The actual PLPieceIn prism is restricted to a half-prism. The output records
+a polyhedral 3-ball, two nonempty disjoint boundary 2-balls and exact equality
+of the remaining frontier with the side annulus image, which is path connected.
+The independent box model constructs the chart from a linear coordinate map
+and triangulated unit square times [0,2], then applies the new theorem at
+0 < 1 < 2. This checks a genuinely inhabited input and output.
+
+This remains conditional on a supplied compatible prism chart. E3 continues
+the chart and trace construction from the original splitting disk pair; no
+complete 30.3 or 30.4 is claimed. The first external test attempt used the
+wrong restriction API for a closed polyhedron and was corrected in the probe;
+its failure evidence is retained, and the delivered source was unchanged.
+
+Receipt: .lake/verified-thirteenth-lane-delivery-20260919.json. Lean delta
++195/-0 includes one root import; Markdown excluded. Root closure now reaches
+9316 project modules including itself: SurfaceSplitNeighborhood also brings
+the existing PolyhedralBallTopology into reach. Full-source build remains
+stopped. F ec3b6b063 and h 97d4a948d are newly queued for independent review;
+S 4627710d3 remains queued. No active lane was interrupted for status.
+
+## 30. Strict cover descent and finite-cover PL realization (2026-09-19 UTC)
+
+F ec3b6b063 and 52ead09cc are merged and independently accepted. Four modules
+freshly compiled in 46.673 seconds including admission, zero diagnostics.
+The 76.134-second silent audit including admission covers all 12 new
+nonautomatic declarations, ten critical reuse entries, two concrete models
+and 13 applicable environment linters. Only standard foundational axioms
+occur. Seven accepted private prerequisites have source/receipt/object
+identity evidence; other upstream artifacts remain shared and read-only.
+
+TwoSheetSection proves section obstruction for a connected two-sheeted cover
+and extension of a homotopic lift to a section. LiftedImage constructs a PL
+homeomorphism/section of the singular image from equality of vertex-collision
+complexity. CoverComplexity uses the actual image deformation retract and
+covering homotopy lift to contradict connected double-covering. Strict descent
+now follows from the existing full cover diagram and preconnectedness of its
+upstairs ambient space, without a separated-vertex or strict-descent premise.
+
+Covering/PLTriangulation constructs a Euclidean simplicial realization and
+global piecewise-affine projection of a supplied finite covering. It retains
+the actual commuting projection equation, exact fiber cardinalities,
+connectedness and combinatorial-manifold structure. The nonempty standard
+3-simplex-times-Bool model yields an actual PL double cover with 3-manifold
+structure. This model is disconnected: it checks the finite-cover producer,
+not a full connected DoubleCoverDiagram. A discrete section-lifting model is
+also checked. No complete NormalSystem instance is claimed.
+
+The small boundary-compatible neighborhood and its normal-system lift remain
+open, including the meaning of the fixed relativeDerivedNeighborhood carrier
+equation. F continues that existing round; crossing normalization is still
+separate. h continues global neighborhood compatibility after 97d4a948d;
+E3 continues simultaneous disk subdivisions after ace162dcd; S continues
+compact smoothing's actual handle producer. Their new source remains queued.
+
+Receipt: .lake/verified-fourteenth-lane-delivery-20260919.json. Lean +340/-0,
+including four root imports; 50 handoff Markdown lines excluded. Root closure
+reaches 9320 project modules including itself with no missing source. The
+full-source build remains stopped; focused proof work continues to make
+progress and no broad compatibility failure has required a restart.
