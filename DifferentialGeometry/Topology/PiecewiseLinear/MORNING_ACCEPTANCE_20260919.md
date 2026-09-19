@@ -49,7 +49,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9316 project modules including the root, no missing
+are now registered and statically reachable (9320 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -144,3 +144,27 @@ against the previous integration commit, including one root import, excluding
 Markdown. Receipt: .lake/verified-thirteenth-lane-delivery-20260919.json.
 F ec3b6b063 strict descent and h 97d4a948d neighborhood repair are queued;
 h has continued at its delivery boundary to global neighborhood compatibility.
+
+## Strict descent and finite-cover realization
+
+F ec3b6b063 and 52ead09cc are independently accepted: four fresh modules, 12
+new declarations, ten critical reuse entries, two concrete models, standard
+axioms and 13 applicable linters, zero diagnostics. Module checks total
+46.673 seconds; audit 76.134 seconds, both including admission. Seven
+accepted private prerequisites were reused with checked source/object identities.
+
+From an existing connected full double-cover diagram, equality of complexity
+produces a section, extends it across the actual deformation retract and
+contradicts two-sheeted connectedness. Strict decrease is thus proved without
+a strict-decrease input. The finite-cover PL producer constructs the actual
+Euclidean projection, preserving the projection equation, fiber cardinalities
+and manifold structure. The standard 3-simplex-times-Bool model is nonempty
+and checks a real double cover; it is disconnected and does not certify a
+complete NormalSystem or connected DoubleCoverDiagram. Those remain producer
+obligations, along with the compatible smaller neighborhood and crossing
+normalization.
+
+Lean delta +340/-0 including four root imports, excluding 50 Markdown lines.
+Receipt: .lake/verified-fourteenth-lane-delivery-20260919.json. E3 ace162dcd and
+h 97d4a948d are queued; both received their next same-lane round only on
+delivery. S 4627710d3 cap comparison remains queued for independent acceptance.

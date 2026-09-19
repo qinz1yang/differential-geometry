@@ -33,7 +33,7 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Construct the full ambient cover diagram and strict complexity descent. Proper projected disks through 3c7d44e19 are accepted. | Produce the actual cover and compatible smaller neighborhood, prove strict descent, then close Lemma 2 branch separation. |
+| F / gpt-6-astra max | Construct the full ambient cover diagram and compatible smaller neighborhood. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
@@ -895,6 +895,26 @@ produces the half-prism ball, its disjoint endpoint disks, exact safe frontier
 and path connectedness. All three declarations, seven critical reuse entries,
 an actual nonempty Euclidean box model and 13 applicable linters pass. The
 original Delta/D1/D2-to-compatible-chart construction is still E3's active gap.
-F ec3b6b063 strict descent and h 97d4a948d derived-neighborhood corrections
-are delivered but not yet independently accepted. h continues the same lane
+F ec3b6b063 strict descent and 52ead09cc finite-cover realization are now
+independently accepted; h 97d4a948d derived-neighborhood corrections remain
+queued. h continues the same lane
 by testing and proving the global regular-neighborhood meaning of its tower.
+
+### Cover realization and descent update (2026-09-19 UTC)
+
+F through 52ead09cc is independently accepted: four modules, 12 new
+nonautomatic declarations, ten critical reuse entries, two concrete models
+and all applicable lint checks. Equality of complexity now constructs a PL
+section on the image, extends it across the proved neighborhood deformation
+retraction by homotopy lifting, and contradicts connected double-covering.
+Thus strict descent is proved from the existing full connected cover diagram.
+The new finite-cover producer constructs the global PL projection with exact
+projection and fiber equations and preserves manifold structure/connectedness.
+
+The remaining lift construction must still produce a complete nonempty
+NormalSystem and its boundary-compatible smaller neighborhood. In particular,
+the fixed relativeDerivedNeighborhood carrier equation in the current
+normal-system interface is under investigation; no general obstruction is yet
+claimed. The concrete simplex-times-Bool model tests finite-cover realization,
+not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
+is newly queued and E3 continues simultaneous subdivisions and actual traces.

@@ -1133,3 +1133,43 @@ Receipt: .lake/verified-thirteenth-lane-delivery-20260919.json. Lean delta
 the existing PolyhedralBallTopology into reach. Full-source build remains
 stopped. F ec3b6b063 and h 97d4a948d are newly queued for independent review;
 S 4627710d3 remains queued. No active lane was interrupted for status.
+
+## 30. Strict cover descent and finite-cover PL realization (2026-09-19 UTC)
+
+F ec3b6b063 and 52ead09cc are merged and independently accepted. Four modules
+freshly compiled in 46.673 seconds including admission, zero diagnostics.
+The 76.134-second silent audit including admission covers all 12 new
+nonautomatic declarations, ten critical reuse entries, two concrete models
+and 13 applicable environment linters. Only standard foundational axioms
+occur. Seven accepted private prerequisites have source/receipt/object
+identity evidence; other upstream artifacts remain shared and read-only.
+
+TwoSheetSection proves section obstruction for a connected two-sheeted cover
+and extension of a homotopic lift to a section. LiftedImage constructs a PL
+homeomorphism/section of the singular image from equality of vertex-collision
+complexity. CoverComplexity uses the actual image deformation retract and
+covering homotopy lift to contradict connected double-covering. Strict descent
+now follows from the existing full cover diagram and preconnectedness of its
+upstairs ambient space, without a separated-vertex or strict-descent premise.
+
+Covering/PLTriangulation constructs a Euclidean simplicial realization and
+global piecewise-affine projection of a supplied finite covering. It retains
+the actual commuting projection equation, exact fiber cardinalities,
+connectedness and combinatorial-manifold structure. The nonempty standard
+3-simplex-times-Bool model yields an actual PL double cover with 3-manifold
+structure. This model is disconnected: it checks the finite-cover producer,
+not a full connected DoubleCoverDiagram. A discrete section-lifting model is
+also checked. No complete NormalSystem instance is claimed.
+
+The small boundary-compatible neighborhood and its normal-system lift remain
+open, including the meaning of the fixed relativeDerivedNeighborhood carrier
+equation. F continues that existing round; crossing normalization is still
+separate. h continues global neighborhood compatibility after 97d4a948d;
+E3 continues simultaneous disk subdivisions after ace162dcd; S continues
+compact smoothing's actual handle producer. Their new source remains queued.
+
+Receipt: .lake/verified-fourteenth-lane-delivery-20260919.json. Lean +340/-0,
+including four root imports; 50 handoff Markdown lines excluded. Root closure
+reaches 9320 project modules including itself with no missing source. The
+full-source build remains stopped; focused proof work continues to make
+progress and no broad compatibility failure has required a restart.
