@@ -74,3 +74,92 @@ theorem contDiffOn_diskMapMetricVariationDensity
   exact ((hd 1 1).add (hd Complex.I Complex.I)).div_const 2 |>.contDiffWithinAt
 
 end DifferentialGeometry.Geometry
+
+end
+
+section
+
+noncomputable section
+
+open Set Bundle Manifold DifferentialGeometry MeasureTheory Filter
+open DifferentialGeometry.Topology
+open scoped Topology ContDiff Bundle Manifold
+
+namespace DifferentialGeometry.Geometry
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+
+def diskMapMetricVariationWithinDensity (G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) M)
+    (T : Set ℝ) (t : ℝ) (U : ℂ → M) (z : ℂ) : ℝ :=
+  (derivWithin (fun r => (G r).inner (U z) (diskMapPartial U z 1) (diskMapPartial U z 1)) T t +
+    derivWithin (fun r => (G r).inner (U z) (diskMapPartial U z Complex.I)
+      (diskMapPartial U z Complex.I)) T t) / 2
+
+theorem contDiffOn_diskMapMetricVariationWithinDensity
+    {G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) M} {a b t₀ : ℝ} (hab : a < b)
+    (ht₀ : t₀ ∈ Icc a b)
+    (hG : ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E))) 𝓘(ℝ, ℝ) ∞
+      (fun q : ℝ × TangentBundle 𝓘(ℝ, E) M => (G q.1).inner q.2.proj q.2.2 q.2.2)
+      (Icc a b ×ˢ univ))
+    {U : ℂ → M} {s : Set ℂ} (hs : IsOpen s)
+    (hU : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U s) :
+    ContDiffOn ℝ ∞ (diskMapMetricVariationWithinDensity G (Icc a b) t₀ U) s := by
+  have hd := contMDiffOn_derivWithin_fst (uniqueDiffOn_Icc hab) hG
+  have hpair (v : ℂ) : ContDiffOn ℝ ∞
+      (fun z => derivWithin (fun r => (G r).inner (U z) (diskMapPartial U z v)
+        (diskMapPartial U z v)) (Icc a b) t₀) s := by
+    have hm : ContMDiffOn 𝓘(ℝ, ℂ)
+        (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E))) ∞
+        (fun z : ℂ => (t₀, TotalSpace.mk' E (U z) (diskMapPartial U z v))) s :=
+      contMDiffOn_const.prodMk (contMDiffOn_source_partial hs hU (m := ∞) (by simp) v)
+    have h := hd.comp (f := fun z : ℂ => (t₀, TotalSpace.mk' E (U z) (diskMapPartial U z v)))
+      hm (fun _ _ => ⟨ht₀, mem_univ _⟩)
+    exact h.contDiffOn
+  exact ((hpair 1).add (hpair Complex.I)).div_const 2
+
+
+private theorem differentiableWithinAt_metric_inner_of_quadratic
+    {G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) M} {T : Set ℝ} {t₀ : ℝ}
+    {x : M} (hdiag : ∀ v : TangentSpace 𝓘(ℝ, E) x,
+      DifferentiableWithinAt ℝ (fun t => (G t).inner x v v) T t₀)
+    (v w : TangentSpace 𝓘(ℝ, E) x) :
+    DifferentiableWithinAt ℝ (fun t => (G t).inner x v w) T t₀ := by
+  have hpolar : (fun t => (G t).inner x v w) =
+      (fun t => (1 / 4 : ℝ) *
+        ((G t).inner x (v + w) (v + w) - (G t).inner x (v - w) (v - w))) := by
+    funext t
+    simp only [map_add, map_sub, add_apply, sub_apply,
+      (G t).symm x w v]
+    ring
+  rw [hpolar]
+  exact (hdiag (v + w)).sub (hdiag (v - w)) |>.const_mul (1 / 4 : ℝ)
+
+
+theorem hasDerivWithinAt_diskMapAreaDensity_metric_on_Icc
+    {G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) M} {a b t₀ : ℝ} (hab : a < b)
+    (ht₀ : t₀ ∈ Icc a b)
+    (hG : ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E))) 𝓘(ℝ, ℝ) ∞
+      (fun q : ℝ × TangentBundle 𝓘(ℝ, E) M => (G q.1).inner q.2.proj q.2.2 q.2.2)
+      (Icc a b ×ˢ univ))
+    {U : ℂ → M} {z : ℂ} (hconf : DiskMapConformalAt (G t₀) U z) :
+    HasDerivWithinAt (fun r => riemannianAreaDensity (G r) U z)
+      (diskMapMetricVariationWithinDensity G (Icc a b) t₀ U z) (Icc a b) t₀ := by
+  have hdiag (v : TangentSpace 𝓘(ℝ, E) (U z)) :
+      DifferentiableWithinAt ℝ (fun t => (G t).inner (U z) v v) (Icc a b) t₀ := by
+    have hc := (hG (t₀, TotalSpace.mk' E (U z) v) ⟨ht₀, mem_univ _⟩).comp
+      (f := fun r : ℝ => (r, TotalSpace.mk' E (U z) v)) t₀
+      (contMDiffWithinAt_id.prodMk contMDiffWithinAt_const)
+      (fun r hr => ⟨hr, mem_univ _⟩)
+    exact hc.contDiffWithinAt.differentiableWithinAt (by simp)
+  have hpair (v w : TangentSpace 𝓘(ℝ, E) (U z)) :=
+    (differentiableWithinAt_metric_inner_of_quadratic hdiag v w).hasDerivWithinAt
+  exact hasDerivWithinAt_tangentTwoJacobian_at_conformal (uniqueDiffOn_Icc hab t₀ ht₀)
+    (hpair _ _) (hpair _ _) (hpair _ _) hconf.1 hconf.2
+
+
+end DifferentialGeometry.Geometry
+
+end
+
+end
