@@ -4664,3 +4664,24 @@ x 在其相对内部，g 不在普通导出邻域；只保留完全落在普通�
 几何对象替代固定公式，尽量保持 .manifoldComplex API，逐一检查所有实际受影响消费者并给非空实例。
 不得只添结论字段宣称修复，不放弃 SDR、源提升、边界环和严格复杂度契约。
 本 checkpoint 尚未修改旧公共定义；继续搜索并消费既有相对三角剖分/延拓生产者。
+
+### 19.163 保持原子复形的任意小闭星细分（2026-09-19 UTC）
+
+**done：RelativeSimplexRefinement.lean。**
+`exists_isSubdivision_regularNeighborhoodIn_subset_cthickening` 对任意有限复形 K、子复形 A 和 ε>0，
+实际构造有限细分 R，逐个保留 A 的原有面，并使 regularNeighborhoodIn R A.space 的整个载体落入
+A.space 的 ε 闭加厚。`exists_isSubdivision_regularNeighborhoodIn_subset_of_isOpen` 在有限维环境中
+将该闭星缩入任意包含 A.space 的给定开集。没有把 A 的原面重新细分，也没有假设结论型的闭星控制。
+先作保持 A 的相对重心细分，使 A 成为满子复形；随后在每个相交环境面中，实际选取靠近其 A 部分的
+相对导出中心。满性使该 A 部分本身是 A 的一个面，其闭加厚凸，因而控制相对导出面上的全部点。
+
+模块聚焦检查 exit=0、零诊断；AuditF303 exit=0、零诊断。四项非自动声明、四项关键复用定理及一项
+实际非空标准四面体/三角形面模型，共九项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。
+模型取 ε=1/100，输出真实有限细分、保留原三角形面的面集包含关系和闭星小性。
+回执 RelativeSimplexRefinement-checkpoint.json、AuditF303.json；sourceStable=true，共享产物只读。
+源码、根登记及本记录同次提交，整库根检由协调者负责。下一审计 AuditF304。
+
+**partial：兼容导出邻域与 NormalSystem 入口修复。** 本层消去相对延拓前要求的闭星远离补集条件。
+继续对 Q=closure(K.space \ N.space)、N=derivedNeighborhood K A 构造保持 A 的细分，
+再用同维带边组合流形的 closure(K.space \ Q)=N.space，生产载体精确等于 N 的有限邻域剖分。
+尚未修改 NormalSystem 的固定邻域公式；不得把本层当成该公共接口已经修复。
