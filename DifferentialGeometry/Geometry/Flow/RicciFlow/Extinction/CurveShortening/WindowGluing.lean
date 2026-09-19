@@ -813,3 +813,259 @@ def curveShorteningUniformLocalWindow
           ∀ z, solutions p z (p.1.1 : ℝ) = p.1.2.map z
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+noncomputable section
+
+open Set Filter
+open scoped ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] {N : ℕ}
+
+private theorem eventually_cylinder_jets_close
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {P : Type*} [TopologicalSpace P] {J : Set ℝ} {f : P → CurveMap M} {p : P}
+    (hf : @ContinuousAt P (CurveMap M) inferInstance (smoothCylinderTopology e J) f p)
+    (m : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ q in 𝓝 p, ∃ ρ : ℝ, ρ < ε ∧ ∀ z ∈ Icc (0 : ℝ) 1 ×ˢ J,
+      ‖iteratedFDerivWithin ℝ m (fun r : ℝ × ℝ => e.map ((f q).lift r.1 r.2))
+        (univ ×ˢ J) z -
+        iteratedFDerivWithin ℝ m (fun r : ℝ × ℝ => e.map ((f p).lift r.1 r.2))
+          (univ ×ˢ J) z‖ ≤ ρ := by
+  simp only [ContinuousAt, TopologicalSpace.tendsto_nhds_generateFrom_iff] at hf
+  exact hf _ ⟨f p, m, ε, hε, rfl⟩ ⟨0, hε, fun z _ => by simp⟩
+
+private theorem continuousAt_cylinder_of_eventually_jets_close
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {P : Type*} [TopologicalSpace P] {J : Set ℝ} {f : P → CurveMap M} {p : P}
+    (hf : ∀ (m : ℕ) (ε : ℝ), 0 < ε →
+      ∀ᶠ q in 𝓝 p, ∃ ρ : ℝ, ρ < ε ∧ ∀ z ∈ Icc (0 : ℝ) 1 ×ˢ J,
+        ‖iteratedFDerivWithin ℝ m (fun r : ℝ × ℝ => e.map ((f q).lift r.1 r.2))
+          (univ ×ˢ J) z -
+          iteratedFDerivWithin ℝ m (fun r : ℝ × ℝ => e.map ((f p).lift r.1 r.2))
+            (univ ×ˢ J) z‖ ≤ ρ) :
+    @ContinuousAt P (CurveMap M) inferInstance (smoothCylinderTopology e J) f p := by
+  simp only [ContinuousAt, TopologicalSpace.tendsto_nhds_generateFrom_iff]
+  rintro V ⟨c, m, ε, _, rfl⟩ ⟨ρ, hρε, hρ⟩
+  filter_upwards [hf m (ε - ρ) (sub_pos.mpr hρε)] with q hq
+  obtain ⟨δ, hδ, hδbound⟩ := hq
+  refine ⟨δ + ρ, by linarith, ?_⟩
+  intro z hz
+  exact (norm_sub_le_norm_sub_add_norm_sub _ _ _).trans
+    (add_le_add (hδbound z hz) (hρ z hz))
+
+private theorem cylinder_jets_eq_of_restriction
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {J K : Set ℝ} (hJK : J ⊆ K) (hJ : UniqueDiffOn ℝ J) (hK : UniqueDiffOn ℝ K)
+    {f g : CurveMap M} (hf : f.SmoothOn (I := I) K)
+    (heq : ∀ z t, t ∈ J → f z t = g z t)
+    (m : ℕ) (z : ℝ × ℝ) (hz : z ∈ univ ×ˢ J) :
+    iteratedFDerivWithin ℝ m (fun r : ℝ × ℝ => e.map (f.lift r.1 r.2)) (univ ×ˢ K) z =
+      iteratedFDerivWithin ℝ m (fun r : ℝ × ℝ => e.map (g.lift r.1 r.2)) (univ ×ˢ J) z := by
+  rw [← iteratedFDerivWithin_subset (prod_mono Subset.rfl hJK)
+    (uniqueDiffOn_univ.prod hJ) (uniqueDiffOn_univ.prod hK)
+    ((contDiffOn_liftMap e hf).of_le (by exact_mod_cast le_top)) hz]
+  exact smoothCylinderJets_eq_of_eqOn e heq m z hz
+
+theorem smoothCylinderTopology_continuous_mono
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {P : Type*} [TopologicalSpace P] {J K : Set ℝ} {f : P → CurveMap M}
+    (hJK : J ⊆ K) (hJ : UniqueDiffOn ℝ J) (hK : UniqueDiffOn ℝ K)
+    (hf : @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e K) f)
+    (hs : ∀ p, (f p).SmoothOn (I := I) K) :
+    @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e J) f := by
+  let : TopologicalSpace (CurveMap M) := smoothCylinderTopology e J
+  apply continuous_iff_continuousAt.mpr
+  intro p
+  have hfp : @ContinuousAt P (CurveMap M) inferInstance (smoothCylinderTopology e K) f p := by
+    let : TopologicalSpace (CurveMap M) := smoothCylinderTopology e K
+    exact hf.continuousAt
+  apply continuousAt_cylinder_of_eventually_jets_close e
+  intro m ε hε
+  filter_upwards [eventually_cylinder_jets_close e hfp m hε] with q hq
+  obtain ⟨ρ, hρ, hρbound⟩ := hq
+  refine ⟨ρ, hρ, ?_⟩
+  intro z hz
+  have heq (p : P) := cylinder_jets_eq_of_restriction e hJK hJ hK (hs p)
+    (fun _ _ _ => rfl) m z ⟨mem_univ _, hz.2⟩
+  rw [← heq q, ← heq p]
+  exact hρbound z ⟨hz.1, hJK hz.2⟩
+
+theorem smoothCylinderTopology_continuous_of_union
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {P : Type*} [TopologicalSpace P] {J K : Set ℝ} {f g h : P → CurveMap M}
+    (hJ : UniqueDiffOn ℝ J) (hK : UniqueDiffOn ℝ K)
+    (hf : @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e J) f)
+    (hg : @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e K) g)
+    (hh : ∀ p, (h p).SmoothOn (I := I) (J ∪ K))
+    (hhf : ∀ p z v, v ∈ J → h p z v = f p z v)
+    (hhg : ∀ p z v, v ∈ K → h p z v = g p z v) :
+    @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e (J ∪ K)) h := by
+  have hJK : UniqueDiffOn ℝ (J ∪ K) := by
+    intro x hx
+    rcases hx with hx | hx
+    · exact (hJ x hx).mono subset_union_left
+    · exact (hK x hx).mono subset_union_right
+  have hleft (p : P) (m : ℕ) (z : ℝ × ℝ) (hz : z ∈ univ ×ˢ J) :=
+    cylinder_jets_eq_of_restriction e subset_union_left hJ hJK (hh p) (hhf p) m z hz
+  have hright (p : P) (m : ℕ) (z : ℝ × ℝ) (hz : z ∈ univ ×ˢ K) :=
+    cylinder_jets_eq_of_restriction e subset_union_right hK hJK (hh p) (hhg p) m z hz
+  let : TopologicalSpace (CurveMap M) := smoothCylinderTopology e (J ∪ K)
+  apply continuous_iff_continuousAt.mpr
+  intro p
+  apply continuousAt_cylinder_of_eventually_jets_close e
+  intro m ε hε
+  have hfp : @ContinuousAt P (CurveMap M) inferInstance (smoothCylinderTopology e J) f p := by
+    let : TopologicalSpace (CurveMap M) := smoothCylinderTopology e J
+    exact hf.continuousAt
+  have hgp : @ContinuousAt P (CurveMap M) inferInstance (smoothCylinderTopology e K) g p := by
+    let : TopologicalSpace (CurveMap M) := smoothCylinderTopology e K
+    exact hg.continuousAt
+  filter_upwards [eventually_cylinder_jets_close e hfp m hε,
+    eventually_cylinder_jets_close e hgp m hε] with q hqf hqg
+  obtain ⟨ρ, hρ, hρbound⟩ := hqf
+  obtain ⟨δ, hδ, hδbound⟩ := hqg
+  refine ⟨max ρ δ, max_lt hρ hδ, ?_⟩
+  intro z hz
+  rcases hz.2 with hzl | hzr
+  · rw [hleft q m z ⟨mem_univ _, hzl⟩, hleft p m z ⟨mem_univ _, hzl⟩]
+    exact (hρbound z ⟨hz.1, hzl⟩).trans (le_max_left _ _)
+  · rw [hright q m z ⟨mem_univ _, hzr⟩, hright p m z ⟨mem_univ _, hzr⟩]
+    exact (hδbound z ⟨hz.1, hzr⟩).trans (le_max_right _ _)
+
+variable [FiniteDimensional ℝ E] [IsManifold I ∞ M]
+
+theorem continuous_solution_family_glue
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {P : Type*} [TopologicalSpace P] {a s t b : ℝ}
+    (has : a ≤ s) (hst : s < t) (htb : t < b)
+    {g : ℝ → SmoothRiemannianMetric I M} {f h : P → CurveMap M}
+    (hf : @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e (Icc a t)) f)
+    (hh : @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e (Icc s b)) h)
+    (hfsol : ∀ p, (f p).IsSolutionOn (I := I) g (Icc a t))
+    (hhsol : ∀ p, (h p).IsSolutionOn (I := I) g (Icc s b))
+    (heq : ∀ p z v, v ∈ Icc s t → f p z v = h p z v) :
+    let solutions : P → CurveMap M := fun p z v => if v ≤ t then f p z v else h p z v
+    @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e (Icc a b)) solutions ∧
+      (∀ p, (solutions p).IsSolutionOn (I := I) g (Icc a b)) ∧
+      (∀ p z v, v ∈ Icc a t → solutions p z v = f p z v) ∧
+      ∀ p z, solutions p z a = f p z a := by
+  intro solutions
+  have hsol (p : P) : (solutions p).IsSolutionOn (I := I) g (Icc a b) :=
+    CurveMap.IsSolutionOn.glue has hst htb (hfsol p) (hhsol p) (heq p)
+  have hleft (p : P) (z : AddCircle (1 : ℝ)) (v : ℝ) (hv : v ∈ Icc a t) :
+      solutions p z v = f p z v := by
+    exact if_pos hv.2
+  have hright (p : P) (z : AddCircle (1 : ℝ)) (v : ℝ) (hv : v ∈ Icc s b) :
+      solutions p z v = h p z v := by
+    by_cases hvt : v ≤ t
+    · exact (if_pos hvt).trans (heq p z v ⟨hv.1, hvt⟩)
+    · exact if_neg hvt
+  have hcover : Icc a t ∪ Icc s b = Icc a b := by
+    ext v
+    constructor
+    · rintro (hv | hv)
+      · exact ⟨hv.1, hv.2.trans htb.le⟩
+      · exact ⟨has.trans hv.1, hv.2⟩
+    · intro hv
+      by_cases hvt : v ≤ t
+      · exact Or.inl ⟨hv.1, hvt⟩
+      · exact Or.inr ⟨hst.le.trans (le_of_not_ge hvt), hv.2⟩
+  have hcont := smoothCylinderTopology_continuous_of_union e
+    (uniqueDiffOn_Icc (has.trans_lt hst)) (uniqueDiffOn_Icc (hst.trans htb))
+    hf hh (fun p => by rw [hcover]; exact (hsol p).smooth) hleft hright
+  rw [hcover] at hcont
+  exact ⟨hcont, hsol, hleft, fun p z => hleft p z a ⟨le_rfl, has.trans hst.le⟩⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
+open Set
+open scoped Pointwise
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+
+private theorem smoothCylinderJets_time_translate {N : ℕ}
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    (c : CurveMap M) (a b s : ℝ) (m : ℕ) (q : ℝ × ℝ) :
+    iteratedFDerivWithin ℝ m
+        (fun r : ℝ × ℝ => e.map (c.lift r.1 (r.2 + s))) (univ ×ˢ Icc a b) q =
+      iteratedFDerivWithin ℝ m
+        (fun r : ℝ × ℝ => e.map (c.lift r.1 r.2))
+        (univ ×ˢ Icc (a + s) (b + s)) (q.1, q.2 + s) := by
+  have hset : ((0, s) : ℝ × ℝ) +ᵥ ((univ : Set ℝ) ×ˢ Icc a b) =
+      univ ×ˢ Icc (a + s) (b + s) := by
+    ext r
+    simp only [Set.mem_vadd_set, vadd_eq_add, Set.mem_prod, Set.mem_univ, true_and]
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      change a + s ≤ s + v.2 ∧ s + v.2 ≤ b + s
+      exact ⟨by linarith [hv.1], by linarith [hv.2]⟩
+    · intro hr
+      refine ⟨(r.1, r.2 - s), ⟨?_, ?_⟩, ?_⟩
+      · linarith [hr.1]
+      · linarith [hr.2]
+      · ext <;> simp
+  have hq : q + (0, s) = (q.1, q.2 + s) := by ext <;> simp
+  simpa only [hset, hq, Prod.fst_add, Prod.snd_add, add_zero] using
+    (iteratedFDerivWithin_comp_add_right (𝕜 := ℝ)
+      (f := fun r : ℝ × ℝ => e.map (c.lift r.1 r.2))
+      (s := univ ×ˢ Icc a b) m ((0, s) : ℝ × ℝ) q)
+
+theorem smoothCylinderTopology_continuous_time_translate {N : ℕ}
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {P : Type*} [TopologicalSpace P] {f : P → CurveMap M} (a b s : ℝ)
+    (hf : @Continuous P (CurveMap M) inferInstance
+      (smoothCylinderTopology e (Icc (a + s) (b + s))) f) :
+    @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e (Icc a b))
+      (fun p z t => f p z (t + s)) := by
+  simp only [continuous_generateFrom_iff] at hf ⊢
+  rintro V ⟨c₀, m, ε, hε, rfl⟩
+  let c₁ : CurveMap M := fun z t => c₀ z (t - s)
+  have hcenter (q : ℝ × ℝ) :
+      iteratedFDerivWithin ℝ m
+          (fun r : ℝ × ℝ => e.map (c₀.lift r.1 r.2)) (univ ×ˢ Icc a b) q =
+        iteratedFDerivWithin ℝ m
+          (fun r : ℝ × ℝ => e.map (c₁.lift r.1 r.2))
+          (univ ×ˢ Icc (a + s) (b + s)) (q.1, q.2 + s) := by
+    simpa only [c₁, CurveMap.lift, add_sub_cancel_right] using
+      smoothCylinderJets_time_translate e c₁ a b s m q
+  have hopen := hf _ ⟨c₁, m, ε, hε, rfl⟩
+  convert hopen using 1
+  ext p
+  change (∃ ρ : ℝ, ρ < ε ∧ ∀ q ∈ Icc (0 : ℝ) 1 ×ˢ Icc a b,
+    ‖iteratedFDerivWithin ℝ m
+        (fun r : ℝ × ℝ => e.map ((f p).lift r.1 (r.2 + s))) (univ ×ˢ Icc a b) q -
+      iteratedFDerivWithin ℝ m
+        (fun r : ℝ × ℝ => e.map (c₀.lift r.1 r.2)) (univ ×ˢ Icc a b) q‖ ≤ ρ) ↔
+    (∃ ρ : ℝ, ρ < ε ∧ ∀ q ∈ Icc (0 : ℝ) 1 ×ˢ Icc (a + s) (b + s),
+      ‖iteratedFDerivWithin ℝ m
+          (fun r : ℝ × ℝ => e.map ((f p).lift r.1 r.2))
+          (univ ×ˢ Icc (a + s) (b + s)) q -
+        iteratedFDerivWithin ℝ m
+          (fun r : ℝ × ℝ => e.map (c₁.lift r.1 r.2))
+          (univ ×ˢ Icc (a + s) (b + s)) q‖ ≤ ρ)
+  constructor
+  · rintro ⟨ρ, hρ, hbound⟩
+    refine ⟨ρ, hρ, ?_⟩
+    intro q hq
+    have hqt : (q.1, q.2 - s) ∈ Icc (0 : ℝ) 1 ×ˢ Icc a b :=
+      ⟨hq.1, by constructor <;> linarith [hq.2.1, hq.2.2]⟩
+    have h := hbound (q.1, q.2 - s) hqt
+    rw [smoothCylinderJets_time_translate, hcenter] at h
+    simpa only [sub_add_cancel, Prod.eta] using h
+  · rintro ⟨ρ, hρ, hbound⟩
+    refine ⟨ρ, hρ, ?_⟩
+    intro q hq
+    rw [smoothCylinderJets_time_translate, hcenter]
+    exact hbound (q.1, q.2 + s)
+      ⟨hq.1, by constructor <;> linarith [hq.2.1, hq.2.2]⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
