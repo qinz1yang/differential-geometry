@@ -80,9 +80,10 @@ no acceptance of these contracts is claimed.
    to actual cell-adjunction homeomorphisms with exact lower/cell formulas.
    Actual vertex zero handles and edge one-handle attachments, including
    intrinsic boundary traces and successor-subcomplex homeomorphisms, are now
-   constructed. Higher-index product pairs, the global finite handle sequence,
-   smooth attaching/framing, corner rounding and smooth classification of
-   terminal two-sphere boundaries remain open.
+   constructed. Actual triangle two-handles now have their PL annulus pair,
+   framing and lower-fixing adjunction for finite closed K. Three-handle sphere
+   pairs, the global finite sequence, smooth attaching/framing, corner rounding
+   and smooth classification of terminal two-sphere boundaries remain open.
    The eventual compact assembly does not prove unrestricted PLSmoothing 3.
 4. S now runs compact PL smoothing as a separate phase, after its reported
    finite 24.12 delivery through 434d5352c.
@@ -306,6 +307,22 @@ pairs and global finite-stage assembly remain open, followed by the smooth
 attachment/framing/corner and two-sphere classification obligations above.
 The compact smoothing endpoint and unrestricted approximation scope are
 unchanged. Exact statements and evidence are in the final S handoff section.
+
+**S triangle two-handle layer (2026-09-19; integration replay pending):**
+The actual triangle cell in finite closed combinatorial three-manifolds is
+parametrized by the standard disk prism, with its lateral annulus mapped
+exactly onto the lower trace. The producer constructs the attaching embedding,
+intrinsic boundary location, PL product framing and quotient homeomorphism to
+the explicit successor neighborhood, fixing the lower space. It assumes
+neither hSchoenflies nor a handle decomposition. Six modules, eight declarations
+(one private), 27 reused entries and 13 linters per module passed; the actual
+four-simplex-boundary fixture passed with three distinct points on a framing
+fiber. All final checks exited 0 with zero diagnostics and standard axioms.
+This triangle proof is for closed K; the original-boundary cap in the
+with-boundary case remains open. Three-handles, the global finite sequence and
+the smooth attachment/framing/corner/two-sphere obligations remain open.
+The compact smoothing endpoint and noncompact approximation scope are
+unchanged. See the final S handoff section for signatures and frozen evidence.
 
 ### Phase 3：A′ `PLApproximationManifold 3` 的经典链（Moise §17, §21–28, §30–36）
 

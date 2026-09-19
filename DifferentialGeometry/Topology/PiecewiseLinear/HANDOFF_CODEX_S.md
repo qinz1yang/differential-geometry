@@ -6284,3 +6284,121 @@ MOISE_PLAN are one mathematical commit. No vendored source changed.
 
 No compact or unrestricted PLSmoothing 3 theorem is claimed by this layer.
 The noncompact statement of the approximation phase is unchanged.
+
+## Triangle two-handles in closed derived neighborhoods (2026-09-19)
+
+Status: closed for finite boundaryless combinatorial three-manifolds; the
+compact smoothing theorem and global finite handle sequence remain open.
+Integration was merged at `3939937e6` from `e39cf980e6`; both root import blocks
+were preserved. The previous cap-comparison and vertex/edge sources are frozen
+for independent replay. No vendored source changed in this layer.
+
+### Actual constructions and scope
+
+`DerivedNeighborhoodCellFrontier.lean` proves
+`derivedNeighborhoodCell_inter_derivedNeighborhood_eq_iUnion`, identifying
+the lower trace with the union of proper-face traces under the actual face
+order hypotheses, and `boundaryComplex_derivedNeighborhoodCell_space`,
+identifying the whole cell boundary with its intersections with all other
+cells in a finite closed manifold. The first identity needs neither finite K
+nor a finite-dimensional ambient; the second works in every dimension n+2.
+
+`BallIntersectionDensity.lean` proves
+`IsCombinatorialManifoldWithBoundary.subset_closure_sdiff_iUnion_of_isPLBall_inter`:
+if same-dimensional PL balls meet a fixed PL ball in codimension-one balls,
+its points lie in the closure of the complement of their union in the ambient
+manifold. The family is arbitrary, not assumed finite. Each intersection lies
+in the fixed ball's intrinsic boundary, and its interior is dense.
+
+`PrismSide.lean` proves `IsPLHomeomorphOn.image_prism_side`: the lateral side
+of an actual PL disk prism is exactly the closure of the target cell boundary
+minus its two end disks. It derives the intrinsic boundary correspondence.
+
+`DerivedNeighborhoodTriangle.lean` proves
+`exists_isPLHomeomorphOn_derivedNeighborhoodCell_triangle`. Starting from an
+actual new triangular face s of K and lower subcomplex L containing all proper
+faces (and no faces of cardinality above three), it constructs a PL map from
+`stdSimplex R (Fin 3) x [0,1]` onto the actual cell C_s, whose restriction to
+`stdSimplexBoundary 2 x [0,1]` is a PL homeomorphism onto C_s intersect N(K,L).
+The two actual tetrahedral cofaces produce disjoint cap disks. Proper-face
+intersections are dense in the complement of these disks in the cell boundary;
+the actual prism pair map then identifies the attaching annulus. The product
+interval supplies the PL framing. No smooth normal framing is asserted.
+
+`DerivedNeighborhoodCellAttachment.lean` proves
+`exists_derivedNeighborhoodCell_attachment`, a reusable geometric adjunction
+construction for an actual parametrized cell with its exact lower trace. It
+derives compactness of the attaching domain, its closed embedding, its image
+in the lower intrinsic boundary, and the quotient homeomorphism onto the next
+explicitly generated subcomplex neighborhood. It works in dimension n+2 for
+finite combinatorial manifolds with boundary and fixes every lower point.
+
+`DerivedNeighborhoodTriangleAttachment.lean` closes
+`exists_derivedNeighborhood_triangle_attachment`: it constructs the actual
+PL prism pair, attaching annulus embedding, boundary location and quotient
+homeomorphism fixing the lower space, with the precise evaluation on the new
+cell. The target is N(K, subcomplexGeneratedBy K (insert s L.faces)). No handle
+decomposition, standard-annulus equivalence or hSchoenflies is assumed.
+
+The triangle proof uses the two tetrahedral cofaces of a face in a closed
+three-manifold. A boundary triangle has only one such coface; the other cap
+would have to come from the original manifold boundary and is not constructed
+here. Thus this is the natural boundaryless version needed by the final
+compact consumer, not a claim for all manifolds with boundary.
+
+### Verification and actual instance
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `DerivedNeighborhoodCellFrontier` | 12.583 | 11.012 | 2 | 5 |
+| `BallIntersectionDensity` | 12.757 | 10.710 | 1 | 2 |
+| `PrismSide` | 13.000 | 11.073 | 1 | 3 |
+| `DerivedNeighborhoodTriangle` | 12.247 | 12.218 | 2 | 9 |
+| `DerivedNeighborhoodCellAttachment` | 11.135 | 10.958 | 1 | 5 |
+| `DerivedNeighborhoodTriangleAttachment` | 11.609 | 10.667 | 1 | 3 |
+
+All six final native checks and full dynamic declaration audits exited 0 with
+zero errors, warnings or info diagnostics. All eight nonautomatic declarations
+(one private), 27 critical reuse entries and all 13 applicable environment
+linters per module passed. Each axiom set is contained in
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The actual input fixture is a triangle in the boundary of a four-simplex; it
+checks the closed three-manifold and two distinct tetrahedral cofaces. The
+end-to-end fixture attaches its two-handle to the derived neighborhood of its
+boundary cycle. It proves all product-pair, boundary-valued embedding and
+lower-fixing quotient formulas, and distinguishes three points at t=0, 1/2
+and 1 on one framing fiber using injectivity of the actual embedding. The
+final fixture check, its 9 nonautomatic declarations, 5
+critical reuse entries and 13 linters passed in 12.175 seconds.
+Both concrete checks exited 0 with zero diagnostics and standard axioms.
+
+Raw native source SHA256 values:
+
+- `DerivedNeighborhoodCellFrontier`: `E4E2D95382CBDEB9202DC1EB17641E1074723F8B660129C181687D60329E75EB`.
+- `BallIntersectionDensity`: `83A1BE77A277AE9B1751CDEDD07A3B09E8E0CDC6E0DEC81B8B1B3D6C34B928C7`.
+- `PrismSide`: `11614E9DF765706FB5265112DBE5D0CAF3A9D21BB4D79911013BB51E734F716F`.
+- `DerivedNeighborhoodTriangle`: `4B757038EDC0427B9176DE8439BAECA0E12FED70BBE9612D43D8E62425F5F4A8`.
+- `DerivedNeighborhoodCellAttachment`: `1A9601F6B127B988BD88ACA2A7F93BFA4D953F7678A8152EDDF5A72FD25B0506`.
+- `DerivedNeighborhoodTriangleAttachment`: `63F305EE34EE65928EC072CFDB7048D43ADAC70A39CAFB1D2841F8F54C75BC58`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`TriangleHandles-round-verification.json`. The ledger freezes exact module,
+audit and both fixture sources, raw and LF hashes, private olean hashes,
+receipts, setup records, logs, timings and full declaration/reuse/linter lists.
+Every audit copy has the same proof body as its native module. All six leaves
+are registered once in the flat root; native import closures exclude
+`HurewiczLowDegrees`. Shared artifacts were unchanged. Independent integration
+replay and the stopped full-root gate remain separate. Source, root imports,
+this handoff and the plan record are committed together as this closed result.
+
+### Next exact obligations
+
+- Actual tetrahedral three-handle sphere pairs and their adjunctions.
+- Finite ordering and compatible assembly of all stages reaching the whole K.
+- Boundary-triangle cap geometry if a with-boundary endpoint is later required.
+- Smooth handle attachment, corner rounding, framed curve/annulus smoothing,
+  smooth two-sphere classification and final compact smooth-atlas assembly.
+
+No compact or unrestricted PLSmoothing 3 endpoint is claimed. The noncompact
+approximation statement is unchanged.
