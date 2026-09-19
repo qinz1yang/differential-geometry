@@ -1618,3 +1618,19 @@ E3 c10b83586. S through c0 and F through71 are accepted. Existing active lanes
 continue unchanged; deferred acceptance messages wait for their next completed
 delivery. The task cadence remains hourly, without a new deadline or automatic
 root rebuild, and existing two-private-checker resource limits remain in force.
+
+
+### Actual end-straightening handoff, pending independent acceptance
+
+S5b7117893 is frozen after F's accepted flat-sheet checkpoint. It supplies
+actual disjoint supported level-preserving end adjustments and positive-width
+open matching collars for the same original strip and complete Morse charts.
+It does not yet supply a globally injective common cancellation domain or
+complete cancellation. The next S round aligns the actual affine gauges and
+proves global chart/source/image and overlap identities, then proceeds to
+relative cubic coordinates or direct supported elimination in the same frame.
+Its end isotopies do not claim to preserve the original field or every orbit
+point. See integration section79 for frozen evidence and the completed-boundary
+handoff. The current independent queue is M304 through412, h e85, E3 c10 and
+S5b; earlier F71 and S throughc0 are accepted. All five lanes retain their
+existing models, scopes and resource policy.

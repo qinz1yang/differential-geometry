@@ -616,3 +616,36 @@ the historical 14:19 cutoff from the owner-authorized resumed stage with no
 new deadline. The old morning record is preserved. Current independent queues
 are M304 through 41220900e, h e85a235df and E3 c10b83586. Automation remains
 hourly and receives these acceptance and handoff updates through the app API.
+
+## 79. New S end-straightening delivery queued at its handoff boundary
+
+After the F acceptance checkpoint, S delivered and pushed 5b7117893. Its five
+new modules produce actual level charts from the original strip/Morse charts,
+their actual transition derivative preserving height, and supported smooth
+isotopies in disjoint height bands inside the original frame. The full Morse
+chart source and function normal form are retained. Matching holds on actual
+open overlaps containing positive-width closed end edges. The supplied original
+function, atlas, vector field and central strip orbit remain the data; the end
+isotopies do not claim to fix the entire orbit or preserve the vector field.
+
+The author reports nine native declarations, sixteen native reuse entries,
+and the same cubic/logistic fixture replayed with two new consumers. All
+remain pending independent acceptance. The exact manifest was copied to
+codex-integration-fiftyseventh-batch-20260919/s-5b7117893-frozen-verification.json;
+its hash is 702318763793801fa02cdf9c170586cf5eb2f053c9ca258c8604f092f3b67135.
+All five frozen source bodies match the pushed commit. No author object is
+treated as independent integration validation.
+
+The completed task was given its next Astra max round: align the real affine
+gauges and construct a globally injective common cancellation domain containing
+both actual critical neighborhoods and the original strip. Prove actual open
+overlap compatibility and source/image identities, then obtain a relative
+cubic chart or direct supported cancellation. A possible concrete starting
+point is the original strip map (s,t) -> (s,f(d(s,t))) and its strict height
+derivative; global invertibility and gluing must be proved, not assumed.
+The earlier c0 independent acceptance was delivered at this same boundary.
+
+The current queue is M304 through41220900e including7a/96, h e85a235df,
+E3 c10b83586, and S5b7117893. F71 and S throughc0 are independently accepted.
+All five existing lanes continue; no new task, routine active-round status
+request, new deadline or full-root restart was introduced.
