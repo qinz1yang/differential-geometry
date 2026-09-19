@@ -150,6 +150,7 @@ import DifferentialGeometry.Analysis.Calculus.SecondDerivative
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Minimum
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.SectionComposition
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Logarithm
+import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Prod
 import DifferentialGeometry.Analysis.Calculus.Seminorm.Radial
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Ball
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic
@@ -11303,3 +11304,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Stability
 import DifferentialGeometry.Analysis.Viscosity.ColeHopf
+import DifferentialGeometry.Analysis.Viscosity.Comparison
