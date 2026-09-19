@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceHigherRegularity
 import DifferentialGeometry.Analysis.Parabolic.SecondOrderWeakRegularity
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MixedWeakPartial
 
 noncomputable section
 
@@ -213,6 +214,107 @@ theorem exists_local_mixed_weak_partial_trees_of_homogeneous_metric_divergence_e
       rw [hp, zero_mul]
     · exact integral_zero _ _
   apply exists_local_mixed_weak_partial_trees_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF
+  · intro k φ hφ hφc hφs
+    change (∫ p, (0 : Lp ℝ 2 ν) p * fderiv ℝ φ p (1, 0) ∂ν) =
+      -∫ p, (0 : Lp ℝ 2 ν) p * φ p ∂ν
+    rw [hzeroIntegral, hzeroIntegral, neg_zero]
+  · intro φ hφ hφc hφs
+    change (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+      (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+        ∫ p, (0 : Lp ℝ 2 ν) p * φ p ∂ν
+    rw [hzeroIntegral, sub_zero]
+    exact hweak φ hφ hφc hφs
+
+theorem exists_local_contDiffOn_ae_eq_of_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∀ F : ℕ → ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ k m β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => F k (m + 1) (Fin.cons i β) (t, z)) (fun z => F k m β (t, z)) Ω) →
+      (∀ k (φ : ℝ × EuStd → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, F k 0 (fun i => Fin.elim0 i) p * fderiv ℝ φ p (1, 0) ∂ν) =
+          -∫ p, F (k + 1) 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+            ∫ p, F 0 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      let μ₀ := μ.restrict (Icc c d)
+      let ν₀ := μ₀.prod (volume.restrict Ω₀)
+      ∃ u : ℝ × EuStd → ℝ, ContDiffOn ℝ (⊤ : ℕ∞) u (Ioo c d ×ˢ Ω₀) ∧
+        U =ᵐ[ν₀] u := by
+  intro μ ν ρ A U K F hK hF hFt hweak μ₀ ν₀
+  have h := exists_local_mixed_weak_partial_trees_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hFt hweak
+  dsimp only at h
+  have hμ₀ : μ₀ = volume.restrict (Ioo c d) := by
+    change (volume.restrict (Icc a b)).restrict (Icc c d) = volume.restrict (Ioo c d)
+    rw [Measure.restrict_restrict measurableSet_Icc,
+      inter_eq_left.mpr (Icc_subset_Icc hac.le hdb.le)]
+    exact Measure.restrict_congr_set Ioo_ae_eq_Icc.symm
+  have hcanon : (volume.restrict (Icc a b)).restrict (Icc c d) = volume.restrict (Ioo c d) := hμ₀
+  rw [hcanon] at h
+  obtain ⟨u, hu, hUu⟩ := exists_contDiffOn_ae_eq_of_mixed_weak_partial_trees isOpen_Ioo hΩ₀ U
+    (fun N => h N N)
+  refine ⟨u, hu, ?_⟩
+  change U =ᵐ[μ₀.prod (volume.restrict Ω₀)] u
+  rw [hμ₀]
+  exact hUu
+
+theorem exists_local_contDiffOn_ae_eq_of_homogeneous_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν)) →
+      let μ₀ := μ.restrict (Icc c d)
+      let ν₀ := μ₀.prod (volume.restrict Ω₀)
+      ∃ u : ℝ × EuStd → ℝ, ContDiffOn ℝ (⊤ : ℕ∞) u (Ioo c d ×ˢ Ω₀) ∧
+        U =ᵐ[ν₀] u := by
+  intro μ ν ρ A U K hK hweak μ₀ ν₀
+  let F : ℕ → ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν := fun _ _ _ => 0
+  have hzero : (0 : Lp ℝ 2 ν) =ᵐ[ν] (fun _ => 0) := Lp.coeFn_zero ℝ 2 ν
+  have hF (k m β i) : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => F k (m + 1) (Fin.cons i β) (t, z)) (fun z => F k m β (t, z)) Ω := by
+    filter_upwards [Measure.ae_ae_of_ae_prod hzero] with t ht
+    have hz : DeGiorgi.HasWeakPartialDeriv i (fun _ => 0) (fun _ => 0) Ω := by
+      intro φ hφ hφc hφs
+      simp
+    exact hz.congr_ae (Filter.EventuallyEq.symm ht) (Filter.EventuallyEq.symm ht)
+  have hzeroIntegral (B : ℝ × EuStd → ℝ) : (∫ p, (0 : Lp ℝ 2 ν) p * B p ∂ν) = 0 := by
+    trans ∫ p, (0 : ℝ) ∂ν
+    · apply integral_congr_ae
+      filter_upwards [hzero] with p hp
+      rw [hp, zero_mul]
+    · exact integral_zero _ _
+  apply exists_local_contDiffOn_ae_eq_of_metric_divergence_equation
     hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF
   · intro k φ hφ hφc hφs
     change (∫ p, (0 : Lp ℝ 2 ν) p * fderiv ℝ φ p (1, 0) ∂ν) =

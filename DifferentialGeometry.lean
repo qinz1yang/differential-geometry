@@ -1821,6 +1821,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.IteratedSobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.SobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Iterated
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MixedWeakPartial
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Jet.CompactBound
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Local.BallL2
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.Basic
