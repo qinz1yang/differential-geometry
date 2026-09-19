@@ -3836,3 +3836,46 @@ This closes the finite edgewise piercing and controlled-cell-modification
 layer.  The nested regular neighborhoods `T_e ⊂ Int S_e`, their four boundary
 annuli, the locally finite simultaneous error choice, and the cellwise
 approximation/gluing remain separate obligations for §35.1.
+
+## 76. 2026-09-19 nested boundary bicollars at graph-dual-cell piercings — done
+
+`NestedCircleBicollar.lean` packages the existing spherical circle bicollar as
+`IsPLBicollarNeighborhood` and proves
+`IsPLSphere.exists_nested_bicollar_neighborhoods`.  Given a polygonal circle
+in a PL two-sphere and any prescribed relative neighborhood, it produces an
+outer and inner PL annulus.  The inner annulus lies in `O ∩ S` for an ambient
+open set `O` containing the circle, while `O ∩ S` lies in the outer annulus.
+This is an explicit certificate of relative-interior nesting and does not
+confuse it with ordinary ambient interior, which is empty for a two-dimensional
+annulus in a higher-dimensional Euclidean realization.
+
+`DualCellPiercingAnnuli.lean` applies this construction to the actual piercing
+from §75.  The central surface is
+`(boundaryComplex 3 (graphDualCell K L v)).space`.  The other surface is the
+actual transported boundary
+`f '' (boundaryComplex 3 (graphDualCell K L w)).space` of the inward-modified
+neighbor cell.  Both are proved PL two-spheres, and the constructed piercing
+circle is proved to lie in both.  For every open set containing the splitting
+disk, `exists_graphDualCell_piercing_with_nested_boundary_bicollars` supplies
+outer and inner annuli on both surfaces, all outer annuli contained in that
+open set, together with the original exact piercing equation.
+
+`exists_trivalent_graphDualCell_piercings_with_nested_bicollars` performs the
+same construction simultaneously for an actual trivalent vertex.  Its three
+piercing circles remain pairwise disjoint, and each circle carries both nested
+annulus pairs.  Thus the four boundary annuli in Figure 35.1 are now produced
+from the graph-dual-cell geometry rather than supplied as hypotheses.
+
+Private focused checks of `NestedCircleBicollar` and
+`DualCellPiercingAnnuli` exited zero with no diagnostics and left shared
+outputs unchanged.  The strict external audit dynamically checked all five
+non-automatic declarations in the two modules plus twelve directly reused
+declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes the four nested boundary-annulus traces.  It deliberately does not
+identify them as intersections with a common pair of ambient three-dimensional
+regular neighborhoods `T_e ⊂ Int S_e`; producing that common solid-torus pair
+remains the next geometric obligation, followed by the locally finite
+simultaneous error choice and cellwise approximation/gluing.

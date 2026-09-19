@@ -8841,6 +8841,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PrismDiskBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismSphere
 import DifferentialGeometry.Topology.PiecewiseLinear.RectangleArcPair
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalCircleBicollar
+import DifferentialGeometry.Topology.PiecewiseLinear.NestedCircleBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalCircleExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
@@ -8866,6 +8867,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceNormalSystem
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercing
+import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercingAnnuli
 
 /-!
 # Differential geometry and geometric analysis
