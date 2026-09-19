@@ -1108,3 +1108,18 @@ axioms and zero diagnostics. Frozen evidence is under
 `moise304-reading/surface-compression-checkpoint/`. Essential disk production,
 disjoint cap geometry and separation of the capped union are still upstream
 obligations; full 30.4 is not claimed.
+
+### M304 actual minimal Betti separators (2026-09-19 UTC)
+
+The general compact-set separator construction now produces an actual
+finite connected closed separator of minimal first Betti number in the
+specified open region. The spherical-shell specialization lies in the shell
+interior and is minimal among all finite connected closed separators of its
+two boundary components. Both changed modules and two existing consumers
+compile without diagnostics; the audit checks 19 native declarations,
+11 reused entries, five concrete models and 13 linters with standard axioms.
+A cube comparison proves a produced two-point separator has Betti zero and
+is a PL sphere. Frozen evidence is under
+`moise304-reading/minimal-separator-checkpoint/`. The general shell minimizer
+is not yet proved spherical; the essential disk and separation-preserving
+disjoint cap producers are still needed for full 30.4.

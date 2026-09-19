@@ -168,6 +168,19 @@ theorem isSphericalShell_norm_band {a b : ℝ} (ha : 0 < a) (hab : a < b) :
       rw [hp, mul_one, sub_add_cancel, norm_smul, Real.norm_eq_abs,
         abs_of_pos (ha.trans hab), mem_sphere_zero_iff_norm.mp p.1.property, mul_one]
 
+theorem IsSphericalShell.subset_interior_of_separates
+    {X B₀ B₁ C : Set (EuclideanSpace ℝ (Fin 3))} (h : IsSphericalShell X B₀ B₁)
+    (hC : IsPreconnected C) (hsep : Separates C B₀ B₁) : C ⊆ interior X := by
+  apply hsep.subset_interior_of_disjoint_frontier hC h.isConnected.isPreconnected
+  · obtain ⟨x, hx⟩ := h.isConnected_left.nonempty
+    exact ⟨x, hx, h.left_subset hx⟩
+  · obtain ⟨x, hx⟩ := h.isConnected_right.nonempty
+    exact ⟨x, hx, h.right_subset hx⟩
+  · rw [h.frontier_eq]
+    exact disjoint_left.mpr fun x hx hxB => hxB.elim
+      (fun hx₀ => hsep.left_subset_compl hx₀ hx)
+      (fun hx₁ => hsep.right_subset_compl hx₁ hx)
+
 open Classical in
 theorem IsSphericalShell.exists_connected_separating_surface
     {X B₀ B₁ : Set (EuclideanSpace ℝ (Fin 3))} (h : IsSphericalShell X B₀ B₁) :
@@ -182,14 +195,27 @@ theorem IsSphericalShell.exists_connected_separating_surface
       h.disjoint isOpen_univ (subset_univ _)
   let _ := hfin.to_subtype
   refine ⟨L, hfin, hL, hc, ho, ht, ?_, hsep⟩
-  apply hsep.subset_interior_of_disjoint_frontier hc.isPreconnected h.isConnected.isPreconnected
-  · obtain ⟨x, hx⟩ := h.isConnected_left.nonempty
-    exact ⟨x, hx, h.left_subset hx⟩
-  · obtain ⟨x, hx⟩ := h.isConnected_right.nonempty
-    exact ⟨x, hx, h.right_subset hx⟩
-  · rw [h.frontier_eq]
-    exact disjoint_left.mpr fun x hx hxB => hxB.elim
-      (fun hx₀ => hsep.left_subset_compl hx₀ hx)
-      (fun hx₁ => hsep.right_subset_compl hx₁ hx)
+  exact h.subset_interior_of_separates hc.isPreconnected hsep
+
+open Classical in
+theorem IsSphericalShell.exists_connected_separating_surface_bettiOne_min
+    {X B₀ B₁ : Set (EuclideanSpace ℝ (Fin 3))} (h : IsSphericalShell X B₀ B₁) :
+    ∃ (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (hLfin : L.faces.Finite),
+      letI := hLfin.to_subtype
+      IsCombinatorialManifold 2 L ∧ IsConnected L.space ∧ IsOrientable 2 L ∧
+      IsTwoSided L.space ∧ L.space ⊆ interior X ∧ Separates L.space B₀ B₁ ∧
+      ∀ (M : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))), M.faces.Finite →
+        IsCombinatorialManifold 2 M → IsConnected M.space → Separates M.space B₀ B₁ →
+        Homology.bettiOne L.space ≤ Homology.bettiOne M.space := by
+  obtain ⟨L, hfin, hL, hc, ho, ht, -, hsep, hmin⟩ :=
+    PiecewiseLinear.exists_connected_separating_surface_bettiOne_min (by simp :
+      Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 3)
+      h.isCompact_left h.isConnected_left h.isCompact_right.isClosed h.isConnected_right
+      h.disjoint isOpen_univ (subset_univ _)
+  let _ : Finite L.faces := hfin.to_subtype
+  refine ⟨L, hfin, hL, hc, ho, ht, h.subset_interior_of_separates hc.isPreconnected hsep,
+    hsep, ?_⟩
+  intro M hMfin hM hMc hMsep
+  exact hmin M hMfin hM hMc (subset_univ _) hMsep
 
 end DifferentialGeometry.Topology.PiecewiseLinear

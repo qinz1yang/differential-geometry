@@ -980,3 +980,42 @@ This is the proved compression consumer of concrete annulus and cap geometry;
 it does not produce the essential spanning disk or the disjoint caps and does
 not establish their union's separation. The root build remains stopped and
 shared outputs are unchanged. Full 30.4 remains open.
+
+## Actual separators of minimal first Betti number (2026-09-19 UTC)
+
+`SeparatingSurface.lean` now constructs a finite connected orientable two-sided
+closed surface of minimal first Betti number among the finite connected closed
+surface separators in the given open region. It starts from the existing
+actual compact-set separator construction and minimizes its natural-number
+Betti value. No nonempty family or compression conclusion is introduced as a
+new external hypothesis.
+
+`IsSphericalShell.subset_interior_of_separates` states the general location
+fact for any preconnected separator of the two shell boundary components.
+The existing shell surface producer uses it with its unchanged signature.
+`IsSphericalShell.exists_connected_separating_surface_bettiOne_min` produces
+an actual finite connected orientable two-sided separator inside the shell
+whose first Betti number is minimal among all finite connected closed surface
+separators of the two boundary components. The comparison surface does not
+need an additional inside-shell hypothesis.
+
+Both changed sources compile with zero diagnostics in 11.277 and 11.964
+seconds including admission. NullhomotopyNeighborhood and SurfaceCompression
+are freshly rechecked, and the reachable native import graph (576 modules)
+has no cycles. The final silent audit takes 49.323 seconds and checks all
+19 native declarations (three new and 16 retained, including one private),
+11 critical reused entries and five concrete models. All 13 applicable
+linters pass and all axiom closures are standard. The models retain the
+radial shell's frontier, simple connectedness and old separator API, add its
+actual minimal separator, and use a cube boundary as a comparison to prove
+that a produced minimum separating two explicit points has first Betti zero
+and is a PL sphere. Three external-model elaboration issues were repaired
+before the passing audit; no source proof repair was needed.
+
+The older separator signatures are unchanged. Frozen source identities,
+objects, receipts and full audit are under
+`moise304-reading/minimal-separator-checkpoint/`. This gives the actual
+minimizer for the 30.4 argument but does not prove that the general shell
+minimizer has Betti zero. Essential spanning disks, physical disjoint caps,
+and separation by their union remain the upstream obligations. Root builds
+remain stopped and shared outputs are unchanged.
