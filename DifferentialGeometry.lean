@@ -755,6 +755,7 @@ import DifferentialGeometry.Analysis.Integration.Gaussian.DistanceCoercivity
 import DifferentialGeometry.Analysis.Integration.Gaussian.VolumeTail
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
+import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
 import DifferentialGeometry.Analysis.Integration.Integral.HalfPlaneLaplacian
@@ -1455,6 +1456,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TraceScalarizati
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceGradient
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceHigherRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceMixedRegularity
+import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceClassicalRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceSecondTimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceTimeDerivativeEquation
@@ -1618,6 +1620,7 @@ import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Smoothing.Sobo
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Bounds
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Calculus
 import DifferentialGeometry.Analysis.Parabolic.SecondOrderWeakRegularity
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationClassical
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.ContinuousInterior
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.FiniteCover
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
@@ -2165,6 +2168,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.RestrictedDiffQuotLp
 import DifferentialGeometry.Analysis.Sobolev.Tools.SteklovAverage
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Tools.Translation
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeClassical
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeCommutation
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeFiniteSum
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
