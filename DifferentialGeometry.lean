@@ -8713,3 +8713,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDoubleCrossingChart
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryBranchSheets
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryBranchCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCarrierCompatibility
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble

@@ -4283,3 +4283,32 @@ sourceStable=true；标准语法 linter 集、header 与 longLine 均启用。�
 没有被修改的旧消费者；独立根重编由协调者负责，本模块验证不宣称整库检查通过。
 Lean 源码、根登记与本记录同一数学提交；MOISE_CHAIN 的负面结论请由整合者按本轮所有权记录。
 本轮在此真实输入障碍处交付，下一审计编号为 `AuditF291.lean`。
+
+### 19.151 Double 中真实拷贝的 frontier 与图卡边界 germ（2026-09-19 UTC）
+
+本轮在干净分支合并整合分支，合并提交 `f6261deef`。先全库搜索 actual carrier、boundary crossing、
+全局 normal-form 生产者与 frontier 搬运，核对 `NormalSystem`、`LemmaTwo` 和 `SingularChart` 的证明体。
+
+**done：`BoundaryDouble.lean`。** 对任意有限带边组合 `(n+2)`-流形 K，令 L=double(n+2,K)，
+A=glued₂(K,∂K,id)，ι=simplicialMap(K,glueEmbed₂(∂K,id))，所有集合先拉回 L.space。
+`frontier_preimage_glued₂_space_in_double` 证明真实第二拷贝 C 的 frontier 精确等于
+Subtype.val⁻¹'(ι''∂K)。没有另加 boundary germ 或局部平坦性假设。证明用实际 glued₂ PL 同胚、
+边界的 PL 不变性、double 无边界，以及 `ManifoldRelativeTopology` 的相对 frontier 定理。
+
+`frontier_image_glued₂_space_in_double_chart` 对任意开部分同胚 e（不要求 PL）给出
+`e.target ∩ frontier (e''(e.source∩C)) = e''(e.source∩Bd)`。
+`eventually_mem_frontier_image_glued₂_iff` 在每个 y∈e.source 导出两集合在 e(y) 的 germ 相同。
+这闭合 §19.150 中实际 double 边界的几何义务；未从抽象 `NormalSingularCellData` 推断边界。
+
+验证：模块聚焦检查 exit=0、零诊断、12.55 秒。外部静默 AuditF291 exit=0、零诊断、61.88 秒
+（helper 实测墙钟时间）；全部三项非自动声明和四项关键复用端点共七项公理闭包仅标准三公理，
+十三项适用环境 linters 全通过，严格语法 linter、header、longLine 启用，sourceStable=true。
+审计还正式构造了非空标准三维单形复形作为全部几何假设的实例；未把空复形当唯一测试。
+具体 double 展开的探针曾因实例归约超时，改为直接构造非空输入证据，没有调资源预算。
+源码 SHA256 `D7372D9DCE0E4321DAA267C84FAC683306B9559B6B862C28B1B0460D21FE7EE4`。
+私有回执为 `codex-f-boundary-private/BoundaryDouble-checkpoint.json` 与 `AuditF291.json`。
+没有共享产物改写；外部探针检查后移除；根登记随源码与本记录同一数学提交。
+
+本层不生产正规化映射或 crossing。继续把实际 `NormalSystem.exists_singular_two_cell_in_double`
+所生产的同一个 D 绑定到 C/Bd，并保留精确纤维信息。已确认当前 `NormalSystem` 不含局部单射
+或二重纤维约束，不能把这些当作包装丢掉的字段。下一审计 AuditF292。
