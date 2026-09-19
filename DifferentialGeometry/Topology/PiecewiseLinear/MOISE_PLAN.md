@@ -56,7 +56,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | Repair the fixed normal-system neighborhood formula through an actual compatible triangulation, then construct the full cover diagram. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
-| M304 / gpt-6-astra max | Own 30.4 directly: read the original proof and construct an independent actual producer toward the spherical-shell theorem. | Initial separating surface, compression induction or the actual 28.19 annulus construction can proceed beside E3. Keep 26.4 and 30.3 as explicit open dependencies; do not count a conclusion-shaped wrapper as production. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator and exact shell geometry through 0289bdaf4 are independently accepted; 7c051baf7 finite nullhomotopy capture/kernel producer is queued. | Continue the actual 28.19 annular-neighborhood producer and compression induction. Keep 26.4 and E3 actual 30.3 as open gates; the PL sphere remains unproved. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing. Finite 24.11/24.12 and actual zero/one/two handles through 9494e59f6 are independently accepted; three-handle checkpoint 78d96386b is queued. | Continue actual finite face order and stage assembly, then smooth attachment/framing/corners and two-sphere classification. Compact smoothing remains open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
@@ -95,9 +95,13 @@ orientable two-sided
 polyhedral surfaces separating arbitrary disjoint compact/closed connected
 sets, with arbitrary neighborhood control. Five new declarations, ten
 critical reuse entries, one nonempty geometric model and 13 applicable
-environment linters pass; only standard axioms occur. The shell-interior
-specialization and compression argument are not yet claimed. Exact evidence
-and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
+environment linters pass; only standard axioms occur. A second independently accepted layer (0289bdaf4)
+constructs the radial annulus homeomorphism, proves the exact shell frontier
+and simple connectivity of its interior, and constructs the initial
+separating surface inside that interior. Its 24 declarations, ten reused
+entries, three geometric models and 13 applicable linters pass. Compression
+and the PL-sphere endpoint remain open. Exact evidence and the source route
+are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
 
 1. Accept corrected contracts and a real cover/projection construction; complete
@@ -153,7 +157,7 @@ and keep the existing one-root-worker/two-private-checker resource policy.
 
 The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
-Static traversal reaches all six and 9347 project modules including the root,
+Static traversal reaches all six and 9350 project modules including the root,
 with no missing project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused

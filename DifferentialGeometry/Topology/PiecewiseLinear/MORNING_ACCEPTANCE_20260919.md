@@ -324,3 +324,38 @@ needed for boundary triangles is still open. S has separately delivered
 independent acceptance, and continues actual finite face ordering and stage
 assembly. Smooth attaching/framing, corner rounding, smooth two-sphere
 classification and the compact smoothing endpoint remain open.
+
+## Exact shell interior and actual interior separator
+
+M304 0289bdaf4 is independently accepted. Three modules freshly compiled in
+31.455 seconds; all 24 nonautomatic declarations (one private), ten inspected
+supporting declarations, three concrete radial-shell models and 13 environment
+linters pass the 49.261-second silent audit. Every final check exits 0 with
+zero diagnostics and only standard foundational axioms. Four accepted private
+prerequisite objects, including the current MoiseChain, were reused after
+source identity checks; other upstream artifacts are shared read-only.
+
+The radial sphere-times-interval homeomorphism is constructed explicitly.
+Invariance of domain then identifies the exact interior and frontier of an
+embedded spherical cylinder. From IsSphericalShell alone, the new API proves
+frontier X = B0 union B1 and simple connectivity of interior X, and produces
+an actual finite connected orientable two-sided polyhedral surface inside
+interior X separating the two ends. The radial-shell models at radii one and
+two check the actual interior separator, simple connectivity and exact frontier.
+The surface is not yet proved genus zero. The 26.4 compression disk, 28.19
+annular neighborhood, E3's actual 30.3 split and strict Betti descent remain open.
+
+Lean +396/-0 includes three flat-root imports. Receipt:
+.lake/verified-twentieth-lane-delivery-20260919.json. Exact sources, objects,
+audit, model provenance, timings and logs are retained. Static root closure
+contains 9350 project modules including the root, with no missing sources or
+cycles. Full-root compilation remains stopped.
+
+The book-source review corrected an erroneous lane report: rendered printed
+page 216 clearly has p1(M2) <= p1(M1) - 2. PDF text extraction had lost the
+lower stroke. The book is correct here; there is no strict-inequality erratum.
+The formal induction should prove that weak bound and hence strict descent.
+The image, crop and source record are retained with the acceptance receipt.
+M304 has separately delivered 7c051baf7 compact nullhomotopy capture and a
+nontrivial surface kernel element; independent acceptance is queued. It
+continues the actual annular-neighborhood producer within the same 30.4 lane.
