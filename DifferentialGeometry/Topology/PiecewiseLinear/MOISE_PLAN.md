@@ -2453,3 +2453,73 @@ kernel dependency reports and source/timing review. Manifest SHA256:
 D04395C683F14D90E0886B7F637B0E536E8E7F6DC1F6103CF98120009B7D9F87.
 Final zero-diagnostic audit: 2026-09-19T21:21:28.6825480Z; 2473.167 seconds since the first
 successful changed-module compile, not a measurement of total effort.
+
+
+## M304 original toroidal-shell sphere exclusion checkpoint, 2026-09-19
+
+This entry supersedes the sphere-exclusion frontier of checkpoint 8236587e5.
+The arbitrary ORIGINAL IsToroidalShell Y T0 T1 now satisfies
+IsToroidalShell.not_separates_of_isPLSphere: an IsPLSphere 2 S contained
+in interior Y cannot separate the original endpoint sets T0 and T1.
+This theorem has no Moise252 input. The finite-surface corollary
+IsToroidalShell.not_simplyConnectedSpace_of_separates also has no Moise252
+input. Combining it with the existing minimum/compression producer gives
+IsToroidalShell.exists_non_simply_connected_separating_surface_fundamentalGroup_map_injective
+with the same explicit h252 input as before.
+
+The sphere proof constructs the Schoenflies ball D with frontier D = S.
+Its actual closed sides in Y are P = val^(-1)(D) and
+Q = val^(-1)((interior D)^c). Frontier S inside interior Y gives the exact
+relative closure equalities closure(P \ Q) = P and closure(Q \ P) = Q.
+A given sphere collar is shrunk into interior Y and codomain-restricted to Y.
+The collar determines an open cover whose intersection is exactly its range.
+Connectedness of the closed sides follows from the connected closed-cover
+intersection; open collar neighborhoods are path connected and retract to
+the actual sides. No side, regularity, connectivity, intersection identity,
+kernel, or non-sphere hypothesis is supplied by the caller.
+
+The simply connected sphere makes the collar intersection simply connected.
+The commutative-cover obstruction therefore makes P or Q simply connected.
+Schoenflies component connectivity and the ORIGINAL separation relation put
+T0 and T1 in opposite actual sides. Each actual endpoint inclusion T_i -> Y
+is written as T_i -> P -> Y or T_i -> Q -> Y. A simply connected middle
+space makes its fundamental-group map trivial, contradicting the checked
+surjectivity of that actual endpoint map onto pi1(Y) isomorphic to Z x Z.
+All pre-existing public signatures are preserved; the old closed-cover kernel
+proof now reuses the extracted open-cover construction.
+
+Changes: 389 native lines added, 53 removed; eleven new declarations,
+four new leaf modules registered in the flat root, eight changed native modules.
+Cumulative verification covers 87 nonautomatic native constants, 119 critical
+reuse entries, eighteen actual models (nine unconditional and nine conditional
+on h252), four model helpers and all thirteen applicable linters. Every audited
+axiom closure is a subset of propext, Classical.choice and Quot.sound. Fresh
+changed-module compilation and the complete audit produced zero diagnostics.
+Nine exact kernel type/body dependency traversals contain no Moise303 or wide
+Moise264. The source import graph has 951 modules and
+2049 edges, with no cycle or HurewiczLowDegrees.
+The explicit owner stop on the root build remains in force. Shared outputs
+were not changed. Independent integration replay is still pending.
+
+The remaining Moise306 frontier is the actual torus homeomorphism of the
+produced connected closed orientable finite PL surface, now proved non-simply
+connected and with fundamental group injecting into pi1(interior Y) = Z x Z.
+SurfaceSphereRecognition supplies only Euler-characteristic-two recognition;
+SurfaceInvariants consumes a supplied handle/crosscap profile. Neither proves
+the needed torus recognition. The checked PathCones/FieldPathCones API proves
+degree-one homology vanishing under simple connectivity, not the general
+pi1-to-integral-H1 abelianization comparison needed by the book's rank argument.
+No numerical invariant or supplied profile is being counted as IsPLTorus.
+Moise307 remains unstarted, and Moise252 remains an explicit unresolved input.
+
+Before later Moise307/308 consumers, repair the Moise308 spine contract:
+the book's inner S1 spine must generate pi1 of every intermediate S through
+the actual inclusion map. The current contract assumes a spine of intermediate
+S itself. Preserve that true result, add the missing inclusion transport, and
+do not consume Moise312/314 until this transport is proved. MoiseChain was not
+edited in this checkpoint.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/sphere-exclusion-checkpoint
+45 source/receipt groups. Manifest SHA256: 69B2B74D52D5C659058B905AB9B216AF35F0FAF4CDAB3F5B14EB22E04ABFE701.
+Complete zero-diagnostic audit: 2026-09-19T21:54:51.8379979Z.
+Kernel dependency audit: 2026-09-19T21:57:34.0194709Z.

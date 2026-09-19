@@ -55,6 +55,14 @@ theorem IsToroidalShell.isCompact (h : IsToroidalShell X B₀ B₁) : IsCompact 
   let _ : CompactSpace X := φ.compactSpace
   exact isCompact_iff_compactSpace.mpr inferInstance
 
+theorem IsToroidalShell.locallyPathConnectedSpace (h : IsToroidalShell X B₀ B₁) :
+    LocallyPathConnectedSpace X := by
+  obtain ⟨φ, _, _⟩ := h
+  let _ : LocallyPathConnectedSpace (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) :=
+    ChartedSpace.locallyPathConnectedSpace (EuclideanSpace ℝ (Fin 1)) _
+  let _ : LocallyPathConnectedSpace unitInterval := (convex_Icc (0 : ℝ) 1).locallyPathConnectedSpace
+  exact φ.symm.isOpenEmbedding.locallyPathConnectedSpace
+
 theorem IsToroidalShell.isConnected (h : IsToroidalShell X B₀ B₁) : IsConnected X := by
   obtain ⟨φ, -, -⟩ := h
   have hrange : range (fun p : TorusModel × unitInterval => (φ p : E)) = X := by
