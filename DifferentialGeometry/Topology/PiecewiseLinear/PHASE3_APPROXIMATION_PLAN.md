@@ -723,3 +723,16 @@ axioms and zero diagnostics. The new actual model gives two disjoint cube
 boundaries with Euler two and first Betti zero. Frozen evidence is under
 `moise304-reading/separating-annulus-capping-checkpoint/`. Cap production,
 ambient separation transfer and full 30.4 remain open.
+
+### M304 smaller separating surface after capping (2026-09-19 UTC)
+
+`SurfaceCompression.lean` combines both annulus-complement cases into a
+proved compression step. Actual disjoint caps and separation by their union
+produce a finite connected orientable two-sided closed separator contained
+in that union, with strictly smaller first Betti number. The separating case
+uses the actual capped pair and Phragmen-Brouwer. Both native declarations,
+ten reused entries, three concrete probes and 13 linters pass with standard
+axioms and zero diagnostics. Frozen evidence is under
+`moise304-reading/surface-compression-checkpoint/`. Essential disk production,
+disjoint cap geometry and separation of the capped union are still upstream
+obligations; full 30.4 is not claimed.

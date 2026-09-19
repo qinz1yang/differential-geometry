@@ -951,3 +951,32 @@ audit and census are under
 caps and separation-preserving geometric push remain inputs from E3; the
 30.4 induction is still open. Root builds remain stopped and shared outputs
 are unchanged.
+
+## A smaller connected separator after annulus capping (2026-09-19 UTC)
+
+`SurfaceCompression.lean` now proves
+`IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_annulus_capping`.
+Given an actual essential circle, its actual annulus decomposition, actual
+disjoint disk caps, and separation by their resulting union, it produces a
+finite connected orientable two-sided closed surface contained in that union,
+separating the same preconnected target sets, with strictly smaller first
+Betti number. The proof covers both circle-complement cases. In the connected
+case it uses the connected capped surface; in the separating case the actual
+disjoint capped pair and Phragmen-Brouwer select a separating member. The
+separation hypothesis is on the given geometric union, not on a purported
+already-produced smaller surface.
+
+The source check takes 11.050 seconds including admission with zero diagnostics.
+The final silent audit takes 52.876 seconds and checks both native declarations,
+ten critical reused entries and three concrete probes: the circle's nontrivial
+fundamental group, its actual finite ambient neighborhood killing a nontrivial
+loop, and selection of the effective separator from two separated real points.
+All 13 applicable linters pass and all axiom closures are standard. Two
+external-model inequality elaborations were repaired before the passing audit.
+The original nontrivial-kernel neighborhood signature remains unchanged.
+
+Frozen evidence is under `moise304-reading/surface-compression-checkpoint/`.
+This is the proved compression consumer of concrete annulus and cap geometry;
+it does not produce the essential spanning disk or the disjoint caps and does
+not establish their union's separation. The root build remains stopped and
+shared outputs are unchanged. Full 30.4 remains open.
