@@ -1023,3 +1023,45 @@ consumers do not produce that compatibility. The full-neighborhood boundary
 formula differs from the safe boundary of the half-cell; preserve this distinction.
 
 No new subagent/task, extra lane, or full-root restart was introduced.
+
+## 27. Covering projection and diagnostic source-collapse acceptance (2026-09-19 UTC)
+
+F through 51b4ee8ad is merged and independently accepted. The seven changed
+modules and MoiseChain/StallingsInduction consumers freshly compiled in
+100.459 seconds, zero diagnostics. A single combined audit checks all 67
+nonautomatic changed-module declarations, 25 unchanged MoiseChain declarations,
+15 critical reuse entries and two nonempty models; standard axioms only and
+all 13 applicable environment linters pass. Audit: 48.614 seconds. Unchanged
+Separation and SolidTorus prerequisites were privately reused with matching
+source, successful receipts and object hashes. Other upstream objects remain
+shared and read-only; the full-source gate is incomplete.
+
+RelativeSimplexSubdivision and SimplexCollapse construct a genuine finite
+boundary-fixed seven-triangle self-surjection with an interior constant
+triangle, infinite fiber and failure of local injectivity. SourceCollapse
+transfers that construction to any supplied NormalSystem while preserving
+ambient/image/loop data and boundary group data and adding six triangles.
+This does not construct an initial NormalSystem and is not a positive normal
+form theorem or a counterexample to Moise251.
+
+EmbeddedProjection and ProjectedCell prove local injectivity and fiber bounds
+for the actual projected embedded disk. DoubleCoverDiagram uses the full
+upstairs ambient cover and records source, boundary and subgroup equations;
+DoubleCoverProjection uses these to construct the projected disk and its
+boundary loop while preserving subgroup avoidance. It proves weak complexity
+monotonicity. Full diagram construction, strict descent and Lemma 2 branch
+separation remain unproved. Proper interior placement is the later F lane.
+
+Receipt: .lake/verified-eleventh-lane-delivery-20260919.json. Accepted Lean
+source +1085/-4 (six root imports included); delta from F's overnight starting
+eefa65bae is +229/-4. The 147 handoff Markdown lines are not Lean code.
+The flat root reaches 9310 project modules including itself, with no missing
+source; this is static coverage, not root compilation.
+
+F 8fc63d263, S 4627710d3, E3 1cea2fbe7 and h's corrected graph-domain 3a48527be5
+remain queued for independent review. h's 35.1 neighborhood relation remains
+under repair. The account-switch pauses preserved source and artifacts; all
+four existing tasks and the heartbeat have resumed, without new subagents.
+The owner authorized discretionary rebuilds for needed compatibility checks or
+prolonged all-lane blockage, while prioritizing proof work and narrow checks.
+No rebuild was started. Keep the original 14:19 UTC deadline.

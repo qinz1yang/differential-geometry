@@ -4375,3 +4375,150 @@ sourceStable=true。源码 SHA256 为
 新模块实际消费 BoundaryDouble；两个旧生产者均未改签名，没有需重编的旧消费者。两叶已登记根聚合，
 整库根检仍由整合者负责。所有探针均在树外，检查后移除；共享产物未写；源码、根登记和本记录同次提交。
 下一审计 AuditF293。MOISE_CHAIN 的新起点障碍由整合者依本轮所有权记录。
+
+### 19.153 最大单形的实际 stellar 剖分（2026-09-19 UTC）
+
+本轮先合并整合分支，合并提交 `17d18965a`。**done：RelativeSimplexSubdivision.lean**，
+`exists_isSubdivision_stellar_of_facet` 在任意有限复形的一个最大面 t 内插入真实重心，
+生产有限 R、`IsSubdivision R K`，并证明精确面判据：旧的非 t 面，或
+`insert (t.centroid ℝ id) u`，其中 u 是 t 的真子面（允许空集）。
+相交相容、仿射独立和载体覆盖来自实际 relDerived 构造；没有把剖分兼容性列为假设。
+该层将供三次内部插点的三角形塌缩使用，不宣称已生产完整塌缩或退化 NormalSystem。
+
+聚焦检查 exit=0、零诊断、10.18 秒；外部 AuditF293 exit=0、零诊断、128.66 秒
+（含资源准入）。一项新非自动声明和三项关键复用生产者共四项公理闭包仅含标准三公理，
+十三项适用环境 linters 全通过。审计另含标准非退化三角形上的实际剖分实例。
+严格语法/header/longLine 开启；sourceStable=true；共享产物保持只读。
+源码 SHA256：`CFF56125319F06E34F4681CF9BFA747AC6E0A3302246123166129DCF05C2FA7E`。
+私有回执 `codex-f-boundary-private/RelativeSimplexSubdivision-checkpoint.json`、`AuditF293.json`。
+外部探针检查后删除；源码、根登记和本记录同次提交。无旧消费者改签名，整库根检由协调者负责。
+下一层继续实际塌缩的边界固定、满像、内三角形常值与真实源复形搬运；下一审计 AuditF294。
+
+### 19.154 七三角形上的边界固定 PL 塌缩（2026-09-19 UTC）
+
+**done：SimplexCollapse.lean。** 主端点 `exists_boundary_fixed_collapse_of_triangle`
+从真实二维赋范空间中的任意仿射独立三点单形，生产有限复形 R 和实际自映射 q：
+R 是原单形的剖分、载体相同，恰有七个二维面，每个面包含在一个二维面内，q 在各面仿射，
+连续且 PL，整体像等于原单形，在整个拓扑边界逐点恒等。一个三顶点内面 u 的闭凸包严格位于
+载体内部，q 在它上恒等于原顶点 a；其余六个二维面均与 openSimplex u 不交。
+端点还明确输出无限纤维、三个两两不同的同纤维点，以及局部单射谓词的否定。
+相交相容性、仿射独立、覆盖与七面计数均由实际构造证明，没有作为输入假设。
+
+本实现使用三个连续的重心 stellar 插点，以避免手工假设 §19.152 同心模型的兼容性。
+令 p₁=centroid[a,b,c]、p₂=centroid[p₁,a,b]、p₃=centroid[p₂,p₁,a]。
+内面为 [p₃,p₂,p₁]，其余六面为 [p₁,a,c]、[p₁,b,c]、[p₂,a,b]、[p₂,b,p₁]、
+[p₃,p₁,a]、[p₃,p₂,a]；插点均映到 a，旧顶点固定。形状与 §19.152 的同心选择不同，
+但实现同一真实的内部三角形塌缩。面关系来自 §19.153 的精确判据；每次三角形数增加二。
+
+`exists_inner_triangle_collapse` 已在任意有限平面复形的实际二维面上实现相对版本，
+保留所有其它旧面，返回到旧复形的面映射及每个旧面的原像面；新旧源载体相等，新增六面。
+`image_simplicialMap_eq_of_faces_image` 证明它与任意原顶点映射复合后保持整体像，
+不要求原映射单射；`frontier_subset_geometricFaceCostar` 给出全边界固定所需的实际包含。
+`infinite_fiber_and_not_locally_injective_of_constant_triangle` 使用真实开三角形邻域，
+证明无限纤维与局部单射失败。下一步把该层接到完整 NormalSystem，尚不宣称该记录已检查。
+
+最终聚焦检查 exit=0、零诊断、13.67 秒；最终 AuditF294 exit=0、零诊断、33.97 秒。
+全部十项非自动声明（七公开、三私有）和六项关键复用结果，共十六项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全通过。审计另在标准实际平面三角形上生产七面剖分和无限纤维，输入非空。
+严格语法/header/longLine 开启；sourceStable=true。源码 SHA256：
+`1033434F35480AC94AEF347DDC9FCF22F5F06FF4569341E9452FF8542A98B1B8`。
+回执 `codex-f-boundary-private/SimplexCollapse-checkpoint.json`、`AuditF294.json`。
+外部探针检查后删除；共享产物只读；源码、根登记与本记录同次提交。整库根检仍由协调者负责。
+下一审计 AuditF295。
+
+### 19.155 从每个实际 NormalSystem 生产保留全数据的退化系统（2026-09-19 UTC）
+
+**done：LoopTheorem/SourceCollapse.lean，`NormalSystem.exists_source_collapse`。**
+给定任意有效 S，先由 `S.source_isPLBall` 的非空性及组合流形纯维性生产真实二维面，
+再消费 §19.154 的三次内部 stellar 塌缩，构造完整的 `S' : NormalSystem E`。
+没有永久假设二维面的存在，没有抽象反例字段，没有要求原 S 的映射已局部单射或纤维至多二。
+
+端点明确保留 ambientComplex、imageComplex、loopComplex、实际 manifoldComplex、
+boundaryComplex 和 boundaryNeighborhood；源载体相同、确为源复形剖分，二维面恰增加六个。
+新旧 singularMap 在整个源拓扑边界 EqOn，boundaryParam 的欧氏坐标逐点相同。
+basepoint、boundaryLoop、connector、normalSubgroup、loopConjugacyClass 以 HEq 明确保留；
+它们在实际构造中原样使用 S 的字段，故 normal 与 loopClass_avoids_normal 也由原记录保持。
+新 image_space 由已证的离散面映射/满面及任意原顶点映射的像保持定理重建，
+并非默认非单射的旧映射允许逐点逆搬运。
+
+新源含真实三顶点二维面 u，整个闭凸包严格位于源载体内部，singularMap 在其上恒等于某 y。
+端点证明 y 的源纤维无限，并否定逐点存在相对邻域使映射单射的完整局部单射谓词。
+此为 `∀ S, ∃ S'` 的构造；未独立生产初始有效 S，故不声称无条件 `Nonempty NormalSystem`。
+它正式实现 §19.152 原来仅有几何论证的退化机制；也不把此结果称为 Moise251 的反例。
+
+**仍未闭合的实际生产义务：** 一般 S 的原映射经 double 的单射搬运仍不能自动具备正规化所需
+局部单射与二重纤维；本轮现在在真实 NormalSystem 内形式化了这一障碍。仍须生产允许改变的
+圆盘映射、真实载体内的边界相对条件、边界邻域中保留避开正规子群的自由环路同伦，
+再实现所需正规形式。普通一般位置不自动消除三重点。本轮未重新假设原映射的局部单射，
+未改 S/H/E3 源码，未消费未经证明的全局正规化。
+
+最终聚焦检查 exit=0、零诊断、19.07 秒；AuditF295 exit=0、零诊断、45.50 秒。
+全部一项新非自动声明加六项关键复用生产者，共七项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全通过，严格语法/header/longLine 开启。额外检查实际三维欧氏目标类型的
+条件消费者，不虚构初始 S 的非空实例。sourceStable=true，源码 SHA256：
+`EDD1208C08A7650A3B103A649E9C91E2F3E5DADD6D2FF9B00E758660A80C5AA4`。
+私有回执 `codex-f-boundary-private/SourceCollapse-checkpoint.json`、`AuditF295.json`。
+树外探针检查后删除，共享产物未改写；源码、根登记和本记录同次提交。没有旧消费者签名变化，
+整库根检仍由协调者负责。下一审计 AuditF296。本轮请求的实际三角形及完整 S' 构造均已闭合。
+
+### 19.156 真实 PL 二重覆盖下嵌入盘的投影（2026-09-19 UTC）
+
+**done：Covering/EmbeddedProjection.lean 与 LoopTheorem/ProjectedCell.lean。**
+按 ROUTE_AUDIT_20260919.md 及原书第 184、188–189 页，优先从归纳得到的楼上嵌入盘生产楼下盘。
+`SingularTwoCell.map` 实际构造 p ∘ D，源域保持不变；PL 性由已有 PL 复合定理证明。
+`exists_projected_singular_two_cell` 从真实 PL 覆盖 p、楼上嵌入盘 D 和每个覆盖纤维恰二点，
+证明实际投影盘在每一点的源相对邻域上单射、每个源纤维 encard ≤ 2，且边界像恰为原边界像的投影。
+没有假设原 NormalSystem 的映射已经具有这些性质；没有额外假设投影盘的局部单射或纤维界。
+覆盖层 `locally_injective_fiber_le_of_isCoveringMap` 对任意拓扑空间和任意 ℕ∞ 纤维界成立，
+只要求原映射在给定子集上连续且单射；更低层局部结论只要求投影局部单射。
+
+审计中的具体非空模型为两份三维欧氏空间的不交并，投影为 Sum.elim id id；实际构造其全局
+Bool 纤维平凡化、证明每个纤维恰二点，并用不交并的标准图卡证明 PL 性。
+源域取标准二维三角形（由标准二维单形的线性投影构造），嵌入第一份欧氏空间的坐标平面，
+再实际调用端点生产楼下 SingularTwoCell。模型所有假设均有构造，未使用条件式非空断言。
+
+最终两模块检查 exit=0、零诊断，分别 7.17 秒与 11.39 秒。
+AuditF296 exit=0、零诊断、43.69 秒；九项新非自动声明、四项关键复用结果和具体模型，
+共十四项传递公理闭包仅标准三公理，十三项适用环境 linters 全过。
+严格语法/header/longLine 开启，sourceStable=true。私有回执为
+`codex-f-boundary-private/EmbeddedProjection-checkpoint.json`、`ProjectedCell-checkpoint.json`
+及 `AuditF296.json`。共享产物只读；源码、根登记、本记录同次提交；整库根检仍由协调者负责。
+
+**partial：源书的整体归纳下降。** 此端点供应 Lemma 2 的 PL、局部单射、二重纤维三项，
+不供应 crossing 正规形式。下一层须修复 DoubleCoverReduction 的完整覆盖/小正规邻域混同，
+并连接实际投影、边界邻域映射及正规子群拉回。
+当前 NonsingularCell 只有边界环路的像等式，没有盘内部避开边界的结论；现有
+`exists_isPLHomeomorphOn_push_boundary_disk` 只处理整盘在边界里的输入，不能直接用于任意归纳盘。
+不得把 proper 边界结论新增为未生产的输出字段。下一审计 AuditF297。
+
+### 19.157 完整覆盖与小正规邻域的分离及实际投影（2026-09-19 UTC）
+
+**done：LoopTheorem/LemmaThree.lean 的包含图修正与 DoubleCoverProjection.lean。**
+`DoubleCoverDiagram S T` 的真实二重覆盖定义在 T.ambientComplex.space 上；
+T.manifoldComplex.space 只是相对导出正规邻域，其包含由
+`manifoldComplex_space_subset_ambient` 证明，不再误称这个小邻域仍覆盖整个楼下。
+资料明确包含实际逐片仿射投影、源复形相等、源映射提升等式、边界邻域映射与投影的逐点相等、
+基点相等，以及正规子群沿实际基本群映射的 comap 等式。
+`DoubleCoverReduction` 在此几何图上另加严格复杂度下降；不是严格下降的无条件生产者。
+
+`DoubleCoverDiagram.exists_projected_disk` 从楼上 NonsingularCell 实际构造投影盘、投影边界环路
+和搬运的连接路径，证明逐片仿射、像仍在楼下流形中、源相对局部单射、源纤维 encard ≤ 2、
+边界环路的像等于源边界的像，及继续避开楼下正规子群。
+局部单射与纤维界由 Covering/EmbeddedProjection.lean 的一般子集限制定理生产；
+`mapOfEq_loopRepresentativeAlong` 和 `normalSystemLoopConjugacyClass_map_avoids`
+直接证明基本群自然性与 comap 的避开性质，没有把结论放进输入。
+`DoubleCoverDiagram.complexity_le` 由源提升等式在顶点上的因子分解证明复杂度不增。
+
+**partial：整体 Lemma 3 生产。** 此层没有生产完整覆盖图及严格复杂度下降。
+NonsingularCell 原字段保持不变，仍未包含盘内部避开流形边界；新投影定理也未声称 proper 边界条件
+或 crossing 正规形式。下一步尝试消费已证的全边界 PL 领口与多面体精确零集函数，构造固定指定
+边界子多面体的真实向内嵌入；还须证明实际覆盖的边界兼容性，而不能新增所需结论字段。
+
+三个变更模块及只读消费者 MoiseChain 均以私有产物检查，exit=0、零诊断。
+AuditF297 exit=0、零诊断、47.11 秒；三模块全部四十九项非自动声明（含结构投影）及七项
+关键复用结果，共五十六项传递公理闭包仅标准三公理，十三项适用环境 linters 全通过。
+严格语法/header/longLine 开启，sourceStable=true，共享产物只读。
+回执为 codex-f-boundary-private 下 EmbeddedProjection-restrict-checkpoint.json、
+LemmaThree-checkpoint.json、DoubleCoverProjection-checkpoint.json、
+MoiseChain-consumer-checkpoint.json 与 AuditF297.json。
+源码、根登记与本记录同次提交；H 源码未修改；整库根检由协调者负责。下一审计 AuditF298。

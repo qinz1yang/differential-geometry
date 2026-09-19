@@ -49,7 +49,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9304 project modules, no missing
+are now registered and statically reachable (9310 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -59,7 +59,8 @@ certify a full-source build or the remaining classical input propositions.
 h 585cc71a0 is held: the 33.1 one-manifold hypothesis wrongly excludes
 branching graphs, and the proposed 35.1 raw-star tower does not yet establish
 a genuine global regular-neighborhood relation. h continues corrections.
-F 51b4ee8ad's actual covering projection is queued for independent acceptance.
+F through 51b4ee8ad is accepted; the subsequent 8fc63d263 inward-push
+layer and S 4627710d3 sphere/cell attachment layer await acceptance.
 E3 1cea2fbe7 reports actual half-prism cut cells from a supplied compatible
 chart, pending acceptance. The compatible neighborhood producer from the
 original disk pair remains open and is E3's continuing round.
@@ -72,3 +73,33 @@ actual unconditional producers versus conditional consumers, checks and axiom
 coverage, remaining blockers and next dependency-aware assignments. Record
 unfinished active rounds honestly; do not infer theorem completion from lines,
 elapsed task time or successful compilation.
+
+## Covering projection and source-collapse acceptance
+
+F through 51b4ee8ad is independently accepted: seven changed modules and the
+MoiseChain/StallingsInduction consumers freshly compiled in 100.459 seconds.
+The 48.614-second silent audit checks 67 nonautomatic declarations in the
+changed modules plus 25 unchanged MoiseChain declarations, 15 critical reuse
+entries, two concrete models and all 13 applicable environment linters.
+Every checked axiom set is a subset of propext/Classical.choice/Quot.sound;
+final checks contain no diagnostics. Two unchanged private prerequisites have
+receipt/source/object identity evidence; other upstream imports remain shared.
+
+The actual double cover of a nonempty embedded triangular disk exercises the
+projection theorem. A concrete boundary-fixed seven-triangle collapse has an
+infinite fiber and fails local injectivity. The NormalSystem source-collapse
+theorem still assumes an existing NormalSystem and is not a positive
+normalization theorem. The actual full-cover diagram and strict complexity
+descent must still be produced; the ring theorem is not closed.
+
+Accepted Lean delta is +1085/-4, including six root imports. Since F's window
+start eefa65bae, the newly committed Lean delta is +229/-4. The 147 added handoff
+Markdown lines are excluded from both Lean counts. No typing-time or proof
+completion percentage is inferred. Receipt:
+.lake/verified-eleventh-lane-delivery-20260919.json.
+
+The account-switch pauses preserved the dirty work and compiled objects.
+All four tasks resumed on their existing lanes with the required models;
+the heartbeat resumed with the original 14:19 UTC deadline. The owner now
+permits a rebuild for a genuine compatibility need or prolonged all-lane
+blockage; eight hours is not an automatic timer. No rebuild was started here.

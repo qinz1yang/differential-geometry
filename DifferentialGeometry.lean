@@ -7314,6 +7314,7 @@ import DifferentialGeometry.Topology.Covering.DeckGroup
 import DifferentialGeometry.Topology.Covering.DoubleCoverComponents
 import DifferentialGeometry.Topology.Covering.EmbeddedBoundaryLift
 import DifferentialGeometry.Topology.Covering.EmbeddedLift
+import DifferentialGeometry.Topology.Covering.EmbeddedProjection
 import DifferentialGeometry.Topology.Covering.Fiber.Equivalence
 import DifferentialGeometry.Topology.Covering.FiniteDeckGroup
 import DifferentialGeometry.Topology.Covering.FiniteFundamentalGroup
@@ -8747,3 +8748,8 @@ import DifferentialGeometry.Topology.Homotopy.FreeLoopNullhomotopy
 import DifferentialGeometry.Topology.Homotopy.CyclicLoopMap
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonNullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodContractiblePolygon
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexSubdivision
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCollapse
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoubleCoverProjection
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceCollapse

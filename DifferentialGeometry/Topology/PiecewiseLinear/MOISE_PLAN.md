@@ -86,8 +86,13 @@ no acceptance of these contracts is claimed.
 
 E3 b195204ed and b5e36cfe5 are independently accepted: two modules, 35
 nonautomatic declarations and 12 key reused declarations pass the axiom/lint
-audit. h 0a0876425 and F through 51b4ee8ad still await
-independent integration acceptance. S's actual disk-times-circle product and
+audit. h 0a0876425 still awaits independent acceptance. F through 51b4ee8ad is
+independently accepted: nine modules, 92 nonautomatic declarations, 15 critical
+reuse entries, two nonempty models and 13 clean environment linters. The
+source-collapse result is conditional on a given NormalSystem. Complete cover
+diagram production and strict descent remain open. F 8fc63d263 inward-push
+and S 4627710d3 cap-comparison deliveries are queued for separate acceptance.
+S's actual disk-times-circle product and
 finite native 24.11/24.12 through 434d5352c are independently accepted: ten
 modules, 41 declarations, 33 critical reused declarations, 13 clean linters
 and a nonempty endpoint instance. Preserve S's
@@ -95,14 +100,17 @@ extraction of IsTopologicalSolidTorus when integrating h's separate MoiseChain
 repairs.
 
 The owner stopped the independent full-source build at 2026-09-19 02:00 UTC.
-Completed artifacts are retained; no automatic restart is scheduled. The run
-is incomplete, not a successful full-root gate. Lane checks continue under
-the existing two-private-checker admission policy.
+Completed artifacts are retained and the run is incomplete. After the account
+switch, the owner authorized a discretionary rebuild when integration
+compatibility requires it, or when all lanes are persistently blocked and no
+more productive proof work remains. Eight hours was an example, not a timer.
+Proof work and focused checks take priority. A restart must record its reason
+and keep the existing one-root-worker/two-private-checker resource policy.
 
 The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
-Static traversal reaches all six and 9304 project modules, with no missing
-project source. This is import coverage, not a successful root compilation.
+Static traversal reaches all six and 9310 project modules including the root,
+with no missing project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused
 checks covering 26 nonautomatic declarations, standard axioms and all 13
@@ -110,8 +118,8 @@ applicable environment linters; this does not establish full-source success.
 
 Next integration work is to review and replay pending deliveries and check
 changed modules, dependents and endpoint axioms. Root coverage is repaired.
-The root build stays stopped under the owner's instruction. When verification
-is resumed, reuse retained artifacts and check the expanded import graph before
+The root build is currently stopped. When the discretionary restart criteria
+are met, reuse retained artifacts and check the expanded import graph before
 treating a root success as endpoint coverage.
 Current AGENTS allows required copyright/authors headers and module docstrings;
 inline comments and declaration docstrings remain disallowed.
