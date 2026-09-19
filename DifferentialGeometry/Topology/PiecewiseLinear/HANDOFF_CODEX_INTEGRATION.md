@@ -2981,3 +2981,51 @@ support. Crossing-seam charts and compact PL three-manifold smoothing remain
 open. Finitely many nondegenerate critical points do not establish their absence.
 S continues only its existing bounded level/handle investigation until the
 14:05 UTC checkpoint target; no additional proof lane was assigned.
+
+## 63. Actual torus compression in a produced spherical shell (2026-09-19 UTC)
+
+M304 checkpoints 815c38869 and7c38f9f1c are independently accepted from their
+exact committed bytes. Four changed leaves include the new root-registered
+TorusShell module. Two unchanged prerequisites/consumers were also recompiled.
+The corrected integration MoiseChain contracts remain unchanged.
+
+The same actual embedded torus compression now produces two disjoint PL
+three-ball targets with nonempty interiors. It also constructs a positive-
+width spherical shell whose actual inner and outer metric spheres are
+separated by both the original torus and the capped sphere. The full original
+essential meridian, complementary annulus, embedded spanning disk, two physical
+disjoint caps, exact intersection equations and Betti decrease2-to0 are retained.
+The two surfaces, the whole left compression three-ball and its middle disk
+lie inside this one produced shell.
+
+The reusable shell construction takes a compact outer set N and any contained
+inner set B with nonempty interior. It constructs concentric boundary spheres
+inside B and outside N, with both frontiers and N minus interior B lying in the
+shell interior. B need not be closed; a real open-ball fixture verifies this
+point. Embedding transport and arbitrary-center metric bands are also proved.
+
+Nine actual external geometric certificates pass. One applies the existing
+minimum-Betti separator producer to this specific shell and compares its
+output with the constructed capped sphere. Its Betti number is zero; native
+orientability, Euler characteristic and sphere recognition prove this actual
+minimizer is a PL sphere. This comparison uses a constructed sphere for this
+shell and does not prove zero Betti number for arbitrary prescribed shells.
+
+Six fresh checks took 74.050 seconds; the combined audit took
+56.924 seconds including admission. All31 native nonautomatic
+declarations(six new),57 critical reuse entries(31 distinct) and nine actual
+fixtures have only approved foundational axioms and pass all thirteen applicable
+linters. Final output has zero diagnostics. Six new public full names are
+unique. Old checked public signatures are preserved. Ninety-six prerequisite
+objects were reused with exact current raw-source and accepted object hashes.
+
+The incremental Lean delta is+327/-1, including one root import. Static root
+closure reaches9594 project modules including the root, with no missing
+project source or cycle. The full root build remains stopped. Receipt:
+.lake/verified-fortythird-lane-delivery-20260919.json.
+
+The general prescribed-shell Moise304, general surface surgery Moise303 and
+general singular elimination Moise264 remain open. TameNestedCells compiles
+with the combined imports but its Moise304 input remains explicit. Later
+M304 work stays in its existing concrete compression lane until the final
+checkpoint; no new lane or interruption was introduced.

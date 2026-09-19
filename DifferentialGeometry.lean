@@ -8957,6 +8957,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSplittingDisks
 import DifferentialGeometry.Topology.Morse.RelativeApproximation
 import DifferentialGeometry.Topology.Morse.CriticalNeighborhood
 import DifferentialGeometry.Topology.Morse.CompactCriticalValues
+import DifferentialGeometry.Topology.PiecewiseLinear.TorusShell
 
 /-!
 # Differential geometry and geometric analysis

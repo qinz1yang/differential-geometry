@@ -264,7 +264,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | h / gpt-5.6-sol max | Contracts and actual neighborhoods accepted; finite disjoint nested neighborhoods and genuinely locally finite disjoint open supports through e8ffd9c5d independently verified. | Localize splitting-disk ballness to finite cofaces without changing the actual disk. Stability, compatible approximation and Moise351 remain open. Checkpoint by14:05 UTC. |
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
-| M304 / gpt-6-astra max | Own 30.4. Essential singular filling and actual torus compression/frontier/common targets through 1c43107f3 independently accepted. Native ball-target strengthening 815c38869 queued. | Continue the same concrete shell instance. General arbitrary-shell beta-zero descent and full Moise304 remain open; preserve E3 general surgery and F26.4 ownership. Checkpoint by 14:05 UTC. |
+| M304 / gpt-6-astra max | Own30.4. Essential filling and actual torus compression through7c38f9f1c independently accepted, including common ball targets and one produced spherical shell. | General prescribed-shell target preservation and zero-Betti descent remain open. Continue only existing concrete compression round; checkpoint by14:05 UTC. |
 | S / gpt-6-astra max | Fixed-old-atlas planar smoothing and relative Morse approximation with distinct finite critical values through fa9f81cbf independently accepted. | Relative critical-region cancellation and whole-strip product remain open. Continue only existing level/handle investigation and checkpoint by14:05 UTC. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
@@ -420,6 +420,18 @@ pass. This does not remove the critical points or supply the full strip product;
 relative cancellation and seam gluing remain the next smoothing gate. See
 handoff section62 for13 native declarations,45 reused entries and25 classified
 model declarations, all with approved axioms and thirteen applicable linters.
+
+### Concrete shell-compression gate (2026-09-19 UTC)
+
+The actual torus compression through M3047c38f9f1c now has common disjoint
+three-ball targets and an actual produced spherical shell. Both surfaces,
+the whole compression three-ball and the same essential spanning disk lie
+inside that shell, and both surfaces separate its real boundary spheres.
+For this shell the existing minimum-Betti separator is independently proved
+a PL sphere by comparison with the actual capped sphere. General prescribed-
+shell target preservation and zero-Betti descent remain open; this specific
+example does not close Moise304. Six fresh modules,31 native declarations,
+57 reused entries and nine actual certificates pass; see handoff section63.
 
 ## 1. 目标与接口
 
