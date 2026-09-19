@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import Mathlib.Topology.NatEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneratedSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
@@ -297,5 +298,224 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
       (secondDerived_isSubdivision P.piece.complex) (Set.toFinite _)
     let D' := P'.restrict D (derivedNeighborhood_faces_subset P.piece.complex G)
     exact (isPolyhedralManifoldWithBoundary_of_pieceIn D' hderived).isLocallyFinite
+
+private def vertexOnlyComplex {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (V : Set E) : Geometry.SimplicialComplex ℝ E where
+  faces := {s | ∃ v ∈ V, s = {v}}
+  isRelLowerSet_faces := by
+    rintro s ⟨v, hv, rfl⟩
+    refine ⟨Finset.singleton_nonempty v, fun t hts ht => ?_⟩
+    exact ⟨v, hv, ht.subset_singleton_iff.mp hts⟩
+  indep := by
+    rintro s ⟨v, -, rfl⟩
+    exact affineIndependent_of_subsingleton ℝ _
+  inter_subset_convexHull := by
+    rintro s t ⟨v, -, rfl⟩ ⟨w, -, rfl⟩
+    simp only [Finset.coe_singleton, convexHull_singleton]
+    by_cases h : v = w
+    · subst w
+      simp
+    · simp [h]
+
+private theorem vertexOnlyComplex_space {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (V : Set E) : (vertexOnlyComplex V).space = V := by
+  ext x
+  rw [Geometry.SimplicialComplex.mem_space_iff]
+  constructor
+  · rintro ⟨s, ⟨v, hv, rfl⟩, hx⟩
+    rw [Finset.coe_singleton, convexHull_singleton] at hx
+    rwa [hx]
+  · intro hx
+    exact ⟨{x}, ⟨x, hx, rfl⟩, by simp⟩
+
+open Classical in
+private theorem vertexOnlyComplex_isCombinatorialManifoldWithBoundary_zero
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (V : Set E) :
+    IsCombinatorialManifoldWithBoundary 0 (vertexOnlyComplex V) := by
+  intro v hv
+  rw [Set.eq_empty_iff_forall_notMem]
+  intro t ht
+  obtain ⟨hne, hvt, hins⟩ :=
+    (@SimplicialComplex.mem_geometricLink_singleton ℝ E _ _ _ _
+      (Classical.decEq E) (vertexOnlyComplex V) v t).mp ht
+  obtain ⟨w, -, heq⟩ := hins
+  obtain ⟨x, hxt⟩ := hne
+  have hvw : v = w := by
+    have hv : v ∈ ({w} : Finset E) := heq ▸ Finset.mem_insert_self v t
+    simpa using hv
+  have hxw : x = w := by
+    have hx : x ∈ ({w} : Finset E) := heq ▸ Finset.mem_insert_of_mem hxt
+    simpa using hx
+  exact hvt ((hxw.trans hvw.symm) ▸ hxt)
+
+open Classical in
+private theorem isCombinatorialManifoldWithBoundary_zero_of_card_le_one
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (hcard : ∀ s ∈ K.faces, s.card ≤ 1) :
+    IsCombinatorialManifoldWithBoundary 0 K := by
+  intro v hv
+  rw [Set.eq_empty_iff_forall_notMem]
+  intro t ht
+  obtain ⟨hne, hvt, hins⟩ :=
+    (@SimplicialComplex.mem_geometricLink_singleton ℝ E _ _ _ _
+      (Classical.decEq E) K v t).mp ht
+  have hle := hcard _ hins
+  rw [Finset.card_insert_of_notMem hvt] at hle
+  have hpos := Finset.card_pos.mpr hne
+  omega
+
+open Classical in
+theorem noncompact_derivedNeighborhoodExhaustion_nat :
+    IsDerivedNeighborhoodExhaustion (n := 0) (Set.univ : Set ℕ) Set.univ ∧
+      ¬IsCompact (Set.univ : Set ℕ) := by
+  refine ⟨?_, noncompact_univ ℕ⟩
+  obtain ⟨p, hp⟩ := exists_topology_isEmbedding_nat (EuclideanSpace ℝ (Fin 1))
+  let _ : DecidableEq (EuclideanSpace ℝ (Fin 1)) := Classical.decEq _
+  let J := vertexOnlyComplex (Set.range p)
+  let A : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 1)) :=
+    fun i => vertexOnlyComplex (p '' Set.Iic i)
+  let L := A
+  have hJspace : J.space = Set.range p := by
+    simpa only [J] using vertexOnlyComplex_space (Set.range p)
+  have hAspace (i : ℕ) : (A i).space = p '' Set.Iic i := by
+    simpa only [A] using vertexOnlyComplex_space (p '' Set.Iic i)
+  have hfinite (i : ℕ) : (A i).faces.Finite := by
+    have hV : (p '' Set.Iic i).Finite := (Set.toFinite (Set.Iic i)).image p
+    refine (hV.image fun v => ({v} : Finset (EuclideanSpace ℝ (Fin 1)))).subset ?_
+    intro s hs
+    obtain ⟨v, hv, rfl⟩ := hs
+    exact ⟨v, hv, rfl⟩
+  have hDspace (i : ℕ) :
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space = (A i).space := by
+    let _ : Finite (A i).faces := (hfinite i).to_subtype
+    apply Subset.antisymm
+    · exact derivedNeighborhood_space_subset (A i) (L i)
+    · exact subcomplex_space_subset_derivedNeighborhood (by
+        change (A i).faces ⊆ (A i).faces
+        exact Subset.rfl)
+  have hAunion : (⋃ i, (A i).space) = Set.range p := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨i, hxi⟩ := Set.mem_iUnion.mp hx
+      rw [hAspace] at hxi
+      obtain ⟨k, -, rfl⟩ := hxi
+      exact Set.mem_range_self k
+    · rintro ⟨k, rfl⟩
+      exact Set.mem_iUnion.mpr ⟨k, hAspace k ▸ ⟨k, Set.mem_Iic.mpr le_rfl, rfl⟩⟩
+  have hDunion : derivedNeighborhoodExhaustionAmbient A L = Set.range p := by
+    change (⋃ i, (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space) =
+      Set.range p
+    simp_rw [hDspace]
+    exact hAunion
+  have hJfaces : J.faces = ⋃ i, (A i).faces := by
+    ext s
+    constructor
+    · rintro ⟨v, ⟨k, rfl⟩, rfl⟩
+      exact Set.mem_iUnion.mpr ⟨k, ⟨p k, ⟨k, Set.mem_Iic.mpr le_rfl, rfl⟩, rfl⟩⟩
+    · intro hs
+      obtain ⟨i, hsi⟩ := Set.mem_iUnion.mp hs
+      obtain ⟨v, ⟨k, -, rfl⟩, rfl⟩ := hsi
+      exact ⟨p k, Set.mem_range_self k, rfl⟩
+  have hlocal : LocallyFinite (fun s : J.faces =>
+      (Subtype.val : J.space → EuclideanSpace ℝ (Fin 1)) ⁻¹'
+        convexHull ℝ ((s : Finset (EuclideanSpace ℝ (Fin 1))) :
+          Set (EuclideanSpace ℝ (Fin 1)))) := by
+    let _ : DiscreteTopology J.space := by
+      rw [hJspace]
+      exact hp.toHomeomorph.symm.isEmbedding.discreteTopology
+    intro x
+    have hxrange : (x : EuclideanSpace ℝ (Fin 1)) ∈ Set.range p := hJspace ▸ x.2
+    have hxface : ({(x : EuclideanSpace ℝ (Fin 1))} : Finset _) ∈ J.faces :=
+      ⟨x, hxrange, rfl⟩
+    let sx : J.faces := ⟨{(x : EuclideanSpace ℝ (Fin 1))}, hxface⟩
+    refine ⟨{x}, (isOpen_discrete {x}).mem_nhds (Set.mem_singleton x), ?_⟩
+    refine Set.Finite.subset (Set.finite_singleton sx) ?_
+    intro s hs
+    obtain ⟨y, hyface, hyx⟩ := hs
+    have hyx' : y = x := Set.mem_singleton_iff.mp hyx
+    subst y
+    change (x : EuclideanSpace ℝ (Fin 1)) ∈
+      convexHull ℝ ((s : Finset (EuclideanSpace ℝ (Fin 1))) :
+        Set (EuclideanSpace ℝ (Fin 1))) at hyface
+    obtain ⟨v, -, hsv⟩ := s.2
+    have hxv : (x : EuclideanSpace ℝ (Fin 1)) = v := by
+      rw [hsv, Finset.coe_singleton, convexHull_singleton] at hyface
+      exact hyface
+    apply Set.mem_singleton_iff.mpr
+    apply Subtype.ext
+    change (s : Finset (EuclideanSpace ℝ (Fin 1))) =
+      {(x : EuclideanSpace ℝ (Fin 1))}
+    rw [hsv, hxv]
+  have hambient (i : ℕ) : IsCombinatorialManifoldWithBoundary 0 (A i) := by
+    simpa only [A] using
+      vertexOnlyComplex_isCombinatorialManifoldWithBoundary_zero (p '' Set.Iic i)
+  have hderived (i : ℕ) : IsCombinatorialManifoldWithBoundary 0
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)) := by
+    let _ : Finite (A i).faces := (hfinite i).to_subtype
+    apply isCombinatorialManifoldWithBoundary_zero_of_card_le_one
+    intro s hs
+    exact (hambient i).secondDerived.card_le_one
+      (derivedNeighborhood_faces_subset (A i) (L i) hs)
+  have hstrict : StrictMono (fun i => (A i).faces) := by
+    intro i j hij
+    refine Set.ssubset_iff_subset_ne.mpr ⟨?_, ?_⟩
+    · intro s hs
+      obtain ⟨v, ⟨k, hki, rfl⟩, rfl⟩ := hs
+      exact ⟨p k, ⟨k, Set.mem_Iic.mpr ((Set.mem_Iic.mp hki).trans hij.le), rfl⟩, rfl⟩
+    · intro heq
+      have hj : ({p j} : Finset (EuclideanSpace ℝ (Fin 1))) ∈ (A j).faces :=
+        ⟨p j, ⟨j, Set.mem_Iic.mpr le_rfl, rfl⟩, rfl⟩
+      have hi : ({p j} : Finset (EuclideanSpace ℝ (Fin 1))) ∈ (A i).faces := by
+        change (A i).faces = (A j).faces at heq
+        exact heq.symm ▸ hj
+      obtain ⟨v, ⟨k, hki, rfl⟩, hface⟩ := hi
+      have hpjk : p j = p k := Finset.singleton_injective hface
+      have hji : j ≤ i := by
+        simpa [hp.injective hpjk] using Set.mem_Iic.mp hki
+      exact (Nat.not_le_of_gt hij) hji
+  let e : derivedNeighborhoodExhaustionAmbient A L ≃ₜ ℕ :=
+    (Homeomorph.setCongr hDunion).trans hp.toHomeomorph.symm
+  let f : derivedNeighborhoodExhaustionAmbient A L → ℕ := e
+  let _ : DiscreteTopology (derivedNeighborhoodExhaustionAmbient A L) :=
+    e.isEmbedding.discreteTopology
+  have hnhds (i : ℕ) {x : EuclideanSpace ℝ (Fin 1)}
+      (hx : x ∈ (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space) :
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) (A (i + 1)) (L (i + 1))).space ∈
+        nhdsWithin x (derivedNeighborhoodExhaustionAmbient A L) := by
+    let y : derivedNeighborhoodExhaustionAmbient A L :=
+      ⟨x, Set.mem_iUnion.mpr ⟨i, hx⟩⟩
+    apply (preimage_coe_mem_nhds_subtype
+      (s := derivedNeighborhoodExhaustionAmbient A L)
+      (t := (@derivedNeighborhood _ _ _ (Classical.decEq _)
+        (A (i + 1)) (L (i + 1))).space) (a := y)).mp
+    apply (isOpen_discrete _).mem_nhds
+    exact space_mono_of_faces_subset
+      (derivedNeighborhood_faces_mono (hstrict.monotone (Nat.le_succ i))
+        (hstrict.monotone (Nat.le_succ i))) hx
+  have hcore : derivedNeighborhoodExhaustionCore A L = Set.univ := by
+    ext x
+    constructor
+    · intro
+      exact Set.mem_univ x
+    · intro
+      change (x : EuclideanSpace ℝ (Fin 1)) ∈ ⋃ i, (L i).space
+      rw [show (⋃ i, (L i).space) = Set.range p by simpa only [L] using hAunion]
+      rw [← hDunion]
+      exact x.2
+  refine ⟨1, J, A, L, f, hJfaces, hlocal, hfinite, fun i => by
+      change (A i).faces ⊆ (A i).faces
+      exact Subset.rfl,
+    fun i s hs => ?_, hambient, hderived, hstrict.monotone, ?_, ?_, hnhds,
+    e.isEmbedding, ?_, ?_⟩
+  · obtain ⟨v, -, rfl⟩ := hs
+    simp
+  · simpa only [L] using hstrict.monotone
+  · intro i j hij s hs _
+    change s ∈ (A i).faces
+    exact hs
+  · simpa only [f] using e.surjective.range_eq
+  · rw [hcore, Set.image_univ]
+    simpa only [f] using e.surjective.range_eq
 
 end DifferentialGeometry.Topology.PiecewiseLinear

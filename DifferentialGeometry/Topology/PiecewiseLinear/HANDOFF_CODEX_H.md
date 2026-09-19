@@ -3648,3 +3648,36 @@ The former variable-coordinate `GImage`/`DImage` fields and the free
 next separate obligation is a nonconstant noncompact instance of
 `IsDerivedNeighborhoodExhaustion`, followed by the dual-cell modification and
 pointwise-error homeomorphism needed for Moise 35.1 itself.
+
+## 71. 2026-09-19 noncompact nonconstant derived-neighborhood model — done
+
+`PolyhedralGraph.lean` now proves
+`noncompact_derivedNeighborhoodExhaustion_nat`.  It chooses one topological
+embedding of `ℕ` into `EuclideanSpace ℝ (Fin 1)`, takes `J` to be the
+zero-dimensional complex on the whole embedded vertex set, and takes `A i`
+and `L i` to be the vertex complexes on the first `i + 1` vertices.  The proof
+shows that the stage face sets are strictly increasing, their union is exactly
+`J.faces`, and every stage is finite.  Local finiteness follows from the
+discrete topology on the embedded range, rather than from a finite-index
+shortcut.
+
+For these stages the canonical derived-neighborhood support equals the stage
+support.  The total support is homeomorphic to `ℕ`, the exhaustion core is the
+whole total support, and the next stage is a relative neighborhood of every
+point of the preceding stage.  Consequently the theorem supplies an actual
+`IsDerivedNeighborhoodExhaustion (n := 0) univ univ` and simultaneously proves
+that its target is noncompact.  Thus the corrected interface is exercised by
+one fixed locally finite triangulation with genuinely nonconstant finite
+restrictions; it is not only inhabited by the constant finite constructor.
+
+The private focused check of `PolyhedralGraph` exited zero with no diagnostics
+and left shared outputs unchanged.  The strict external audit dynamically
+checked all one hundred sixty non-automatic declarations in the six relevant
+homotopy and PL modules plus twenty-seven directly reused declarations.  Every
+axiom closure was contained in `{propext, Classical.choice, Quot.sound}`, and
+all thirteen applicable environment linters passed.
+
+This zero-dimensional model is an interface sanity check, not the geometric
+producer for Moise 35.1.  The remaining 35.1 work is still the locally finite
+one-dimensional dual-cell modification followed by the pointwise-error PL
+homeomorphism.

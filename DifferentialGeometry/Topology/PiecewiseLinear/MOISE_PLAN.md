@@ -903,3 +903,9 @@ inline comments and declaration docstrings remain disallowed.
   `derivedNeighborhoodCompatibleStrongDeformationRetractSystem` 从上述几何数据推出，再搬到 `N ↘ K`。有限构造、内部弧模型与
   `MoiseChain` 的公开签名不变。四个私有模块检查均 exit=0、零诊断；严格审计覆盖 155 个模块声明与 20 个直接复用声明，
   公理仅标准三公理，13 项适用 linter 全通过。下一独立检查点是非恒定非紧实例；35.1 的对偶胞腔改造与逐点误差 PL 同胚仍未证明。
+- 2026-09-19（H 车道非恒定非紧实例）：`noncompact_derivedNeighborhoodExhaustion_nat` 在
+  `EuclideanSpace ℝ (Fin 1)` 中取一个自然数的拓扑嵌入，以全部像点的零维复形为单一局部有限 `J`，并令 `A i = L i`
+  为前 `i+1` 个顶点的复形。证明内实际得到面集严格单调、有限层穷尽 `J.faces`、逐层导出邻域相对邻域性、总支撑到 `ℕ`
+  的同胚及 core 等于全空间；结论同时给 `IsDerivedNeighborhoodExhaustion (n := 0) univ univ` 与目标非紧性。
+  `PolyhedralGraph` 私有聚焦检查 exit=0、零诊断；严格审计动态覆盖六模块 160 个声明与 27 个直接复用声明，公理仅标准三公理，
+  13 项适用 linter 全通过。这是新接口的实际 sanity check；35.1 的一维对偶胞腔改造与逐点误差 PL 同胚仍开。
