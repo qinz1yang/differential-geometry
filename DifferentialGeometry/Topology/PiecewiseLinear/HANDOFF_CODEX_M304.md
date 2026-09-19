@@ -2070,3 +2070,46 @@ The remaining boundaries are the actual Moise252 proof, full arbitrary
 ambient/component/nonseparating Moise264 generality, and production of the
 compression-ball wall/cap geometry for an arbitrary original-shell disk.
 Arbitrary-shell Moise304 is not complete.
+
+
+### M304 relative ball neighborhoods of the original spanning disk (2026-09-19 UTC)
+
+The new registered SpanningDiskBallNeighborhood leaf proves two geometric
+producers. exists_isPLBall_neighborhood_of_proper_disk starts with an actual
+properly embedded PL disk in a finite WB3 K and a prescribed open U
+containing that disk. Exhaustion and the native disk derived-neighborhood
+theorem produce a finite PL3 ball B inside K and U, containing the entire
+original disk and a relative neighborhood of every disk point. The disk
+meets frontier B in exactly its original rim, and boundary K is a relative
+neighborhood of that rim in frontier B.
+
+exists_isPLBall_neighborhood_of_spanning_disk starts with the original
+finite connected closed surface S inside a finite preconnected WB3 K in
+ambient dimension three, and the actual original D/r in interior K with
+D intersect S equal to its rim. Connectedness of the disk interior puts
+the whole disk in one actual cut side; density recovers its boundary.
+The first producer is applied on that side inside U intersect interior K.
+It produces B containing the same D, with D minus S in interior B,
+D intersect frontier B equal to the rim, S intersect B contained in
+frontier B, and S a relative neighborhood of the rim in frontier B.
+No relative product chart or final compression ball/cap package is an input.
+
+The new actual-model consumer retains the original beta-two torus, ball,
+h252-produced essential disk and U = interior K and checks all these
+properties together. The geometric producers themselves do not use h252.
+The audit separately retains two unconditional geometry models and three
+h252-conditional consumers. All 17 declarations in the audited layer,
+79 critical reuse entries, five models and three helpers have standard
+transitive axioms; all 13 applicable linters and the final private audit
+pass without diagnostics. The two new declarations and their actual
+derived-disk and centered-prism dependencies have fresh private receipts.
+
+Twenty-six source/object/receipt sets and complete audit evidence are frozen
+at `C:/Users/liao9/AppData/Local/Temp/moise304-reading/relative-ball-checkpoint/`.
+Manifest SHA256: `31444C22AB47B279280A535C0D73EB291839B2BE58F8A3409E4024B9F7277E8A`.
+Final audit completion: 2026-09-19T19:34:51.8777909Z. The new native import graph has 508
+modules and 1000 edges, is acyclic and avoids HurewiczLowDegrees.
+This is a dependency-closed checkpoint inside the ongoing compression-ball
+round. The smaller centered prism, exact side wall and disjoint cap
+construction are not yet delivered by this checkpoint. No other lane
+source or shared output is changed; the stopped root build is not restarted.
