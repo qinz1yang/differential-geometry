@@ -1113,6 +1113,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricDifferenceFamil
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricEvolution
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffScalarSource
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffWeakEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotential
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotentialFamily
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
@@ -1146,7 +1147,9 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatEvolution
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeDual
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatInteriorRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeRegularity
