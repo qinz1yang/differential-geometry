@@ -22,7 +22,7 @@ namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
-  [T3Space M] [CompactSpace M]
+  [T3Space M]
 
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] {μ : Measure V} [Measure.IsAddHaarMeasure μ]
@@ -37,7 +37,9 @@ theorem exists_open_ae_mdifferentiableAt_of_metric_lipschitz
   let χ : SmoothBumpFunction 𝓘(ℝ, E) (u z) := Classical.choice inferInstance
   let F : M → E := fun p => χ p • (chartAt E (u z)) p
   have hF : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) ∞ F := χ.contMDiff_smul contMDiffOn_chart
-  obtain ⟨L, _, hL⟩ := exists_riemannian_lipschitz_of_contMDiff g (hF.of_le (by simp))
+  have hFc : HasCompactSupport F := χ.hasCompactSupport.smul_right
+  obtain ⟨L, _, hL⟩ := exists_riemannian_lipschitz_of_contMDiff_of_hasCompactSupport
+    g (hF.of_le (by simp)) hFc
   have hcomp : LipschitzWith (L * C) (F ∘ u) := by
     intro x y
     apply (hL (u x) (u y)).trans

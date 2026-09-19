@@ -115,6 +115,21 @@ theorem edist_map_le_of_metric_mfderiv_bound
   simp only [γ.source, γ.target] at hc
   convert! hc using 1
 
+theorem exists_riemannian_lipschitz_of_contMDiff_of_hasCompactSupport
+    [FiniteDimensional ℝ E] [T2Space M]
+    (g : SmoothRiemannianMetric I M) {f : M → F}
+    (hf : ContMDiff I 𝓘(ℝ, F) 1 f) (hcompact : HasCompactSupport f) :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ x y,
+      edist (f x) (f y) ≤ (C : ℝ≥0∞) * riemannianEDistOf g x y := by
+  obtain ⟨B, hB⟩ := exists_metric_mfderiv_bound_of_hasCompactSupport g hf hcompact
+  have hbound : ∀ (x : M) (v : TangentSpace I x),
+      ‖(mfderiv I 𝓘(ℝ, F) f x v : F)‖ ≤ (B + 1 : ℝ≥0) * Real.sqrt (g.inner x v v) := by
+    intro x v
+    exact (hB x v).trans
+      (mul_le_mul_of_nonneg_right (by simp) (Real.sqrt_nonneg _))
+  exact ⟨B + 1, by positivity,
+    edist_map_le_of_metric_mfderiv_bound g (by positivity) hf hbound⟩
+
 theorem exists_riemannian_lipschitz_of_contMDiff
     [FiniteDimensional ℝ E] [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) {f : M → F} (hf : ContMDiff I 𝓘(ℝ, F) 1 f) :
