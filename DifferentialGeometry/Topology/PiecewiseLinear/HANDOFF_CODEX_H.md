@@ -3172,3 +3172,21 @@ environment linters.
 The remaining migration is the successor induction, with an interiority
 hypothesis for every retained face `1 ≤ j ≤ 2 * n - 1`, followed by the final
 ball-pair extraction.
+
+## 57. 2026-09-18 Boundary-manifold normalization induction — done
+
+`ArcCellNormalizationInduction.lean` now runs over a finite combinatorial
+3-manifold with boundary under the natural hypothesis that every retained chain
+face `arcChainFace v j`, `1 ≤ j ≤ 2 * n - 1`, is outside the boundary complex.
+The base consumes §56.  At each successor, the new cell base and both incoming
+and outgoing interface bases consume the appropriate local interior-face
+hypothesis through §55.  The two marked cone extensions, piecewise gluing, and
+normalization invariants are otherwise unchanged.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  Its external
+silent audit dynamically enumerated the single non-automatic declaration,
+checked thirty-two direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.

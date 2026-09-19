@@ -18,10 +18,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 open Classical in
 theorem exists_normalized_trimmedArcCellUnion_of_cutModel [FiniteDimensional ℝ E]
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
-    (hK : IsCombinatorialManifold 3 K) {n : ℕ} {v : ℕ → E}
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {n : ℕ} {v : ℕ → E}
     (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
     (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
     (hinj : ∀ i ≤ n, ∀ j ≤ n, v i = v j → i = j)
+    (hinterior : ∀ j, 1 ≤ j → j ≤ 2 * n - 1 →
+      arcChainFace v j ∉ (boundaryComplex 3 K).faces)
     (hnpos : 0 < n) (hn : Module.finrank ℝ E = 3)
     {p₁ p₂ z y₁ y₂ : E} {L₁ L₂ L₀ L : Geometry.SimplicialComplex ℝ E}
     (hfin₁ : L₁.faces.Finite) (hfin₂ : L₂.faces.Finite)
@@ -65,7 +67,8 @@ theorem exists_normalized_trimmedArcCellUnion_of_cutModel [FiniteDimensional ℝ
         intro hm
         obtain ⟨p, w, y, M, M₀, F, hfinM, hfinM₀, hM, hM₀, hSM, hSM₀, hDM,
           hyM, hF, hFarc, hFD, hFw, hFy⟩ :=
-          exists_normalized_trimmedArcCellUnion_one hK hvert hedge hinj hnpos hn
+          exists_normalized_trimmedArcCellUnion_one_of_interior hK hvert hedge hinj
+            (hinterior 1 (by omega) (by omega)) hnpos hn
         have _ : Finite M.faces := hfinM.to_subtype
         have _ : Finite M₀.faces := hfinM₀.to_subtype
         have hDball : IsPLBall 2 (coneSet w M₀.space) := by
@@ -114,13 +117,15 @@ theorem exists_normalized_trimmedArcCellUnion_of_cutModel [FiniteDimensional ℝ
         have _ : Finite (arcCellInterfaceBase K v (j + 1)).faces :=
           (arcCellInterfaceBase_faces_finite v (j + 1)).to_subtype
         have hLc := isConeBase_arcCellBase (K := K) hvert hedge (j := j + 1) (by omega)
-        have hSc := hK.isPLSphere_arcCellBase hvert hedge (j := j + 1) (by omega)
+        have hSc := hK.isPLSphere_arcCellBase_of_interior hvert hedge
+          (j := j + 1) (by omega) (hinterior (j + 1) (by omega) (by omega))
         have hLd := isConeBase_arcCellInterfaceBase (K := K) hvert hedge hinj (j := j) (by omega)
-        have hSd := hK.isPLSphere_arcCellInterfaceBase hvert hedge hinj (j := j) (by omega)
+        have hSd := hK.isPLSphere_arcCellInterfaceBase_of_interior_left
+          hvert hedge hinj (j := j) (by omega) (hinterior j (by omega) (by omega))
         have hLd' := isConeBase_arcCellInterfaceBase (K := K) hvert hedge hinj
           (j := j + 1) hjn
-        have hSd' := hK.isPLSphere_arcCellInterfaceBase hvert hedge hinj
-          (j := j + 1) hjn
+        have hSd' := hK.isPLSphere_arcCellInterfaceBase_of_interior_left hvert hedge hinj
+          (j := j + 1) hjn (hinterior (j + 1) (by omega) (by omega))
         have hDinBase := arcCellInterface_subset_arcCellBase_right
           (K := K) hvert hedge hinj (j := j) (by omega)
         have hDoutBase := arcCellInterface_subset_arcCellBase_left
