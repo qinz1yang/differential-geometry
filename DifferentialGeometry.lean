@@ -8720,3 +8720,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryBranchCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCarrierCompatibility
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoubleCarrier
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexSubdivision

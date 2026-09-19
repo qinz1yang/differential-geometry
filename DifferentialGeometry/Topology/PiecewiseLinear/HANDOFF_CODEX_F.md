@@ -4375,3 +4375,21 @@ sourceStable=true。源码 SHA256 为
 新模块实际消费 BoundaryDouble；两个旧生产者均未改签名，没有需重编的旧消费者。两叶已登记根聚合，
 整库根检仍由整合者负责。所有探针均在树外，检查后移除；共享产物未写；源码、根登记和本记录同次提交。
 下一审计 AuditF293。MOISE_CHAIN 的新起点障碍由整合者依本轮所有权记录。
+
+### 19.153 最大单形的实际 stellar 剖分（2026-09-19 UTC）
+
+本轮先合并整合分支，合并提交 `17d18965a`。**done：RelativeSimplexSubdivision.lean**，
+`exists_isSubdivision_stellar_of_facet` 在任意有限复形的一个最大面 t 内插入真实重心，
+生产有限 R、`IsSubdivision R K`，并证明精确面判据：旧的非 t 面，或
+`insert (t.centroid ℝ id) u`，其中 u 是 t 的真子面（允许空集）。
+相交相容、仿射独立和载体覆盖来自实际 relDerived 构造；没有把剖分兼容性列为假设。
+该层将供三次内部插点的三角形塌缩使用，不宣称已生产完整塌缩或退化 NormalSystem。
+
+聚焦检查 exit=0、零诊断、10.18 秒；外部 AuditF293 exit=0、零诊断、128.66 秒
+（含资源准入）。一项新非自动声明和三项关键复用生产者共四项公理闭包仅含标准三公理，
+十三项适用环境 linters 全通过。审计另含标准非退化三角形上的实际剖分实例。
+严格语法/header/longLine 开启；sourceStable=true；共享产物保持只读。
+源码 SHA256：`CFF56125319F06E34F4681CF9BFA747AC6E0A3302246123166129DCF05C2FA7E`。
+私有回执 `codex-f-boundary-private/RelativeSimplexSubdivision-checkpoint.json`、`AuditF293.json`。
+外部探针检查后删除；源码、根登记和本记录同次提交。无旧消费者改签名，整库根检由协调者负责。
+下一层继续实际塌缩的边界固定、满像、内三角形常值与真实源复形搬运；下一审计 AuditF294。
