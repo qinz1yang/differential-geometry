@@ -1,7 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Connected.FiniteCover
 import DifferentialGeometry.Topology.Connected.TwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceInclusion
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBallTopology
+
+/-!
+# Relative topology of polyhedral manifolds
+-/
 
 open Set Topology
 
@@ -59,9 +68,10 @@ theorem IsPolyhedralManifoldWithBoundary.closure_interior {P : Set X}
 
 open Classical in
 theorem PLPieceIn.isClosed_image_sdiff_connectedComponentIn
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {P : Set X} (T : PLPieceIn E (n + 1) X P)
-    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] (hLK : L.faces ⊆ T.complex.faces) (x : X) :
+    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+    (hLK : L.faces ⊆ T.complex.faces) (x : X) :
     IsClosed (T.map '' L.space \ connectedComponentIn (T.map '' L.space) x) := by
   let C := fun s : Finset E => T.map '' convexHull ℝ (s : Set E)
   have hsub (s : Finset E) (hs : s ∈ L.faces) : convexHull ℝ (s : Set E) ⊆ T.complex.space :=

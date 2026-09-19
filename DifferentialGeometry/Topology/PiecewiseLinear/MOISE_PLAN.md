@@ -1479,3 +1479,71 @@ results and one private helper are new; duplicated old gluing proofs are not
 new results. General 30.3 still needs the relative chart identifying original
 surface end circles with prism slices. See integration section 71 and the
 resumed-stage acceptance ledger. No full-root compilation is claimed.
+
+### Actual boundary charts and the remaining relative normalization gate
+
+The four F boundary-chart leaves through f0482b620 are independently accepted:
+actual bicollar, open product with the original PL parameter, compatible
+boundary-plane chart, and exact half-space sign. An actual tetrahedron vertex
+lies on the tested double frontier. Ten native declarations pass complete
+axiom and thirteen-linter checks, together with six existing declarations
+from two previously unreachable prerequisites. Those modules now have
+required headers and direct root imports. One old unused finite-dimensional
+hypothesis was removed, preserving the proof and old caller. See integration section72 and the resumed
+ledger. The earlier boundary perturbation/homotopy queue and the new
+a50bc58dd/44d4e28ef consumers still await independent replay.
+
+The current F lane must produce relative crossing control in the active
+transition annulus, or a finite protected-core invariant with a proved cover
+of the original target. Closed-region protection outside the new point alone
+does not establish overlap preservation. The fixed-vertex obstruction to
+the older face-transversality interface must remain explicit. Neither
+global normal form nor the loop theorem is complete. Other current lanes
+continue original-surface prism compatibility (E3), prescribed-shell
+separation-preserving compression (M304), graph-fixed compatible PL
+neighborhood modifications (h), and actual relative critical-pair normal
+form geometry (S). No full-root compilation is claimed.
+
+
+Latest unaccepted checkpoints are h d2c94f911, M304 f2338f0d and S f15aad47d.
+Source review distinguishes h's graph-fixed external homeomorphism from a
+self-homeomorphism of the original K.space; the latter is its next producer.
+M304's new finite polyhedral separator is not yet a capped closed surface.
+S's actual compact regular-band product still needs critical endpoint gluing
+and genuine cancellation incidence. These are next-round obligations, not
+independently verified theorem completions of their final goals.
+
+### Boundary homotopy accepted; original geometric producers still required
+
+Integration section73 independently accepts F's nine frozen boundary
+perturbation/loop/homotopy/relative modules through44d4e28ef, together with
+two previously unreachable half-space prerequisites. All 38 native
+declarations, 48 key reuse entries, thirteen linters and classified probes
+pass. Twenty-five declarations are new; old code and conditional fixtures
+are counted separately. Supported local perturbation now preserves the
+actual boundary loop class inside its original normal neighborhood.
+Closed-set protection leaves the active transition region open, and the
+embedded disk in the smaller normal system is still an input. Global
+normalization and the loop-theorem endpoint remain incomplete.
+
+E3's latest source throughddade8562 remains queued for independent acceptance.
+Its source audit corrects the proposed outer-circle marking: those circles
+avoid the small neighborhood. Continue with actual inner-disk boundary
+traces, the produced half-ball outer-boundary inclusion, sphere disk choice,
+and original external-annulus gluing. Do not infer that original outer
+circles lie inside that local neighborhood. Canonical finite realization
+and manifold capping from ab29 remain the downstream implementation.
+
+M304's bed13ca15 is a queued genuine capped-union separation proof, not
+completion of arbitrary-shell30.4. The native Betti and separating-component
+consumer already exists; its next round advances the actual original-wall
+and complement geometry rather than duplicating that chain. S's ec69dc759
+produces a real saddle section from original Morse data and a unique
+descending trajectory, still queued. The minimum end and two-end relative
+flow strip must preserve that same trajectory/field and original atlas.
+The regular-band theorem's separately constructed field cannot supply the
+original trajectory's incidence without a proved comparison.
+
+Five tasks remain authorized without a new deadline. Administrative leases
+are renewable and are not owner deadlines. Existing hourly quiet follow-up,
+two private checker slots and no unsolicited full-root rebuild continue.
