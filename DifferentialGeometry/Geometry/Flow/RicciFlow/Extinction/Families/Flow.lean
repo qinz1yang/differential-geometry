@@ -19,6 +19,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Families
 
 open Surgery.Topology Width CurveShortening
 
+section
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -597,5 +599,36 @@ theorem rfs_ramp_uniform_bounds (B : RicciBackground (I := I) (M := Q) D a b)
       B.curveShorteningLeastAreaSlope hcurv L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
       lambda hlambda hlambda_one c hsol γ hagree hctr hcont hlen htot hA
     exact ⟨hcont, hrange, hslope⟩
+
+end
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+    [T2Space Q] [CompactSpace Q] [I.Boundaryless]
+    {D : RealTimeInterval} {a b : ℝ}
+
+theorem rfs_ramp_area_bounds (B : RicciBackground (I := I) (M := Q) D a b)
+    (Ainit : ℝ) (hAinit : 0 ≤ Ainit) : RampAreaBounds B Ainit := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  intro L Theta hL hTheta lambda hlambda hlambda_one c hsol hlen htot γ hγ hctr hLa
+  let _ : Nonempty Q := ⟨γ a 0⟩
+  have hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) B := by
+    intro lambda hlambda _ c hc t ht
+    exact c.totalCurvature_add_length_le_exp B lambda hlambda
+      (uniqueDiffOn_Icc B.lt) hc B.lt Subset.rfl Subset.rfl a t
+      ⟨le_rfl, B.lt.le⟩ ht
+  have hagree : ∀ z t, t ∈ Icc a b → γ t z = c.projection z t := fun z t ht => hγ t ht z
+  have hγsmooth : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) := by
+    rw [CurveMap.SmoothOn]
+    refine hsol.smooth.1.congr ?_
+    intro p hp
+    exact hagree (p.1 : AddCircle (1 : ℝ)) p.2 hp.2
+  have hcont := continuousOn_loopFamilyLeastArea_of_contractible B γ hγsmooth hctr
+  obtain ⟨hrange, hslope⟩ := rfs_csf_projection_upper_control B
+    B.curveShorteningLeastAreaSlope hcurv L Theta Ainit hL hTheta hAinit
+    lambda hlambda hlambda_one c hsol γ hagree hctr hcont hlen htot hLa
+  exact ⟨hcont, hrange, hslope⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

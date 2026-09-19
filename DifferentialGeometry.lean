@@ -11495,3 +11495,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCa
 import DifferentialGeometry.Analysis.Integration.Measure.ContinuousRepresentative
 import DifferentialGeometry.Topology.MetricSpace.HolderContinuity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaVariation
