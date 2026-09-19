@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9412 project modules including the root, no missing
+are now registered and statically reachable (9429 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -569,3 +569,79 @@ files when the ownership grant was checked. This adds no task or checker.
 M304 4400e3465 reports the actual spanning-disk/bicollar pair producer, with
 its own nonempty models; E3 consumer instantiation awaits accepted integration
 dependencies. Actual 26.4, actual 30.3 and full 30.4 are still open.
+
+## Annular neighborhoods, fixed-core bicollars and spanning disks (2026-09-19 UTC)
+
+M304 e39955ff6, 193898ba4, aea8f27c2 and 4400e3465 are independently
+accepted as one dependency-closed construction. In a finite orientable
+combinatorial surface, an actual polygonal circle has an arbitrarily small
+annular neighborhood. If the circle avoids the surface boundary, an actual
+bicollar fixes the original circle pointwise. From an actual spanning-disk
+parameterization whose intersection with the surface is exactly its boundary,
+the construction produces two larger PL disks with exact intersection equal
+to that original disk, exact outer boundary circles, prescribed neighborhood
+control, and a union that is a relative neighborhood of the original disk.
+The spanning-disk existence hypothesis remains essential.
+
+The integration check freshly compiled 23 modules: twenty author-changed
+leaves and three additional existing consumers. All 84 nonautomatic module
+declarations, including seven private helpers, 44 distinct critical reused
+entries, and 16 model declarations have only standard foundational axioms.
+The models comprise twelve actual geometric theorems and four local decidable
+instances. They include prescribed opposite arcs of a square, arbitrarily
+small square-boundary annuli, fixed-core prism/inner-square bicollars, the
+exact boundary of a capped prism and the complete two-disk producer for a
+middle disk in a prism sphere. All thirteen applicable environment linters
+pass, and every final compile/audit has zero diagnostics.
+
+The first combined-import audit found a real public-name collision: the new
+interval-fiber and established disk-fiber monodromy theorems both used
+IsCylindricalDiagram.exists_endMap_id_of_isOrientable. The integration repair
+names the new version exists_endMap_id_of_isOrientable_interval and updates
+its annulus consumer, preserving the established disk API. All five affected
+modules were recompiled before the successful combined audit. The failed
+attempt and superseded objects/receipts are retained as evidence. This failure
+was invisible to the author's separate module audits.
+
+Final successful module checks took 261.578 seconds; the five superseded
+checks took another 57.813 seconds, all including admission. The final combined
+audit took 51.235 seconds. Twelve previously accepted ninth-batch private
+prerequisites were reused after object and source identity checks: eight raw
+byte matches and four canonical matches differing only in line endings.
+No author-only object substitutes for a fresh check of the delivered source.
+
+The actual accepted Lean diff is +1651/-38: the flattened author source diff
+is +1609/-38 including sixteen root imports; integration adds 42 required
+header lines to six existing leaves. The namespace repair changes two lines
+inside newly added files and adds no proof. Line counts describe source
+changes, not completed theorem counts. Exact receipt:
+.lake/verified-twentyfifth-lane-delivery-20260919.json. It freezes complete
+audit/model sources, raw bytes and hashes, full census, source/object identities,
+logs, timing and the import-collision repair. External probes are removed only
+after freezing their bytes.
+
+The root statically reaches 9429 project modules including itself, with no
+missing project sources or cycles. This adds sixteen new leaves and reaches
+one existing leaf, SubcomplexMesh. All new leaves are directly registered.
+Full-root compilation remains stopped; this is focused source and combined
+import verification, not a full-source compatibility certificate.
+
+E3's endpoint-disk refinement is a real identified consumer, but its pending
+canonical-generalization repair and independent acceptance still block a
+compiled cross-lane instantiation. No E3 author-private object is used.
+The actual compressing-disk producer 26.4, actual three-dimensional split 30.3,
+compression-branch geometry and final 30.4 induction remain open. M304's later
+26215354f disk-capping/cylinder-homotopy and 2eecb1a86 conditional Betti descent
+are queued separately. The latter assumes an actual SurfaceSplitAndCap;
+it does not construct that geometry or the nonspherical branch condition.
+
+S completed its full-annulus new-cell atlas round at 8ee999276 + ada7fd321,
+with the delivery merge 7f4ecc826. Source review confirms that this is open
+in the new cell only, with no old-atlas compatibility or crossing-seam claim.
+Independent replay is queued. At that completed-round boundary, S was continued
+with Astra max toward actual relative smoothing of the attaching annulus and
+framing, allowing an explicitly constructed controlled isotopy rather than
+requiring an arbitrary nonsmooth PL parameterization to already be smooth.
+F's geometric cover reductions through 9bd8d23a7 are also newly queued; its
+singular PL triangulation round continues. Active E3/h/M304 rounds were not
+interrupted. No new task or checker was created.
