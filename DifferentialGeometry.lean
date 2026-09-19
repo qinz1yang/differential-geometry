@@ -11496,3 +11496,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.ContinuousRepresentativ
 import DifferentialGeometry.Topology.MetricSpace.HolderContinuity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaVariation
+import DifferentialGeometry.Topology.SphereSeparation.PathCrossing
+import DifferentialGeometry.Topology.SphereSeparation.ProductLevels
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedArmCrossing
