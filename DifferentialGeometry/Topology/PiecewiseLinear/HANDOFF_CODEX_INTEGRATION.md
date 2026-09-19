@@ -6,7 +6,7 @@ FOUR_LANE_WORKFLOW.md. The dated original handoff remains below as history.
 
 ## Current entry point (2026-09-19 UTC)
 
-Read [MOISE_PLAN.md](MOISE_PLAN.md)'s latest live frontier and sections 81--82
+Read [MOISE_PLAN.md](MOISE_PLAN.md)'s latest live frontier and sections 81--84
 below before historical sections 0--8. Resumed work has no new owner deadline.
 F, h, E3, S and M304 each own one existing-task lane under FOUR_LANE_WORKFLOW.md.
 The full-root build remains deferred; restart only for an actual compatibility
@@ -4037,3 +4037,104 @@ e85a235df, F through71 and S throughc0 are accepted. Existing assignments,
 hourly quiet follow-up, no new deadline and the checker limits remain in force.
 The saved automation follows this queue and the corrected F route; app API
 read-back evidence is recorded in the current coordination state.
+
+## 83. Compatible compression geometry delivered; conditional shell endpoint next
+
+M304 completed and pushed 714b1599a and 8fe07bd87. The author checkout is clean
+and equals its configured remote. Both evidence directories were copied with
+all hashes checked: relative-ball has 166 files, 14,403,772 bytes and 26 source
+families; compression has 190 files, 17,101,728 bytes and 30 source families.
+Their manifest hashes are respectively
+31444c22ab47b279280a535c0d73eb291839b2be58f8a3409e4024b9f7277e8a and
+7fe6fe9b969793268da6857a4880fa26962828724136d282fc88181c73cf5c4b.
+Copies live under codex-integration-compression-and-height-handoff-20260919.
+Every frozen source agrees with its named Git checkpoint; final source also
+agrees with the author bytes. Independent integration acceptance is pending
+for the complete 7a/96/412/06/714/8fe chain.
+
+The reviewed new producer puts the same actual spanning disk into one cut
+side of the original closed surface, obtains a small relative PL three-ball
+from the native exhaustion and derived-neighborhood results, and applies the
+centered-prism theorem. Compactness of the original rim gives a common positive
+thickness. The strictly smaller thickness excludes the old end faces, yielding
+the exact original-surface intersection with the new side wall. The two caps
+are the two end faces of this same prism; their disjointness, frontier union,
+rim equations and minus/plus endpoint labels are proved together.
+
+IsCombinatorialManifold.exists_compression_neighborhood_of_spanning_disk keeps
+the original disk and its parameterization and works inside every supplied
+open neighborhood of that disk. No product, compression ball, wall or cap
+package is an input. IsSphericalShell.exists_compression_of_essential_disk
+then obtains an actual connected capped-surface component in the same original
+shell, separating the same two targets with strictly smaller first Betti
+number. The essential disk version does not need Moise252. The subsequent
+non-spherical-separator version explicitly consumes Moise252 to get that disk.
+This does not prove Moise252 or unconditional Moise304.
+
+The author reports 25 cumulative native declarations in the final audit,
+84 critical reuses, eight actual model assertions and three model helpers,
+with thirteen applicable linters and approved foundational axioms. Three model
+assertions are unconditional; five retain explicit h252. These are author
+receipts, not independent integration acceptance or eight independent families.
+The original beta-two torus, nonempty disk interior and original shell targets
+remain in the reported full geometric consumers.
+
+At the completed boundary, M304 received the next Astra max round: use the
+already existing least-Betti separator and the newly produced same-target
+strict decrease to construct an actual PL sphere for arbitrary original
+X/B0/B1. Close the exact Moise252-to-Moise304 conditional endpoint, then verify
+its existing tame downstream consumer. Do not add an essential disk or final
+sphere as a new input, duplicate the minimum selection, remove the explicit
+Moise252 condition, or claim unconditional completion. Check the real import
+and axiom chain before revising any claimed Moise303/Moise264 dependency.
+
+## 84. Shared regular height coordinates delivered; critical-piece gluing next
+
+S completed and pushed c0117ca09 on base5b7117893, with a clean author checkout
+equal to its configured remote. The full self-contained verification record
+was copied with hash
+6c03a656d7a9bf6e4dfad2dc2313209887b831858f1893476aaa197cbb16c39e.
+All eight source bodies match raw author and normalized committed bytes;
+all 127 recorded native dependency identities match. Exact audit/model sources,
+empty final logs, private receipt identities and publication evidence are
+preserved. The entire5b/c011 chain still awaits independent acceptance.
+
+The actual aligned-coordinate endpoint uses the same original function,
+atlas, field, orbit and same chosen flow strip. Strict descent and the positive
+time scale give a negative vertical height derivative. The closed strip has
+the exact rectangular height image and an open smooth inverse. One global
+height-preserving diffeomorphism aligns both positive transverse affine gauges.
+The same positive narrowed width works for both complete closed end rows,
+and the old full strip, new image equations and open overlaps remain explicit.
+Both original Morse normal forms and complete chart sources are retained.
+
+The endpoint's C.source equals the regular strip-coordinate source. It does
+not yet contain the two critical points; a height coordinate cannot certify
+a chart through a critical point. The end isotopies retain the original
+function and fix p/q and their marked endpoints, but do not claim to fix the
+whole orbit or preserve the field. Boundarylessness remains explicit.
+
+The author Lean delta is +883/-3 including five root imports. Thirteen native
+declarations, one private, and thirty native reuses pass the reported audits.
+The same cubic/logistic fixture contains 27 declarations and sixteen reuses;
+its first25 declaration bytes are retained, and the two new consumers test
+the full aligned signature and nonempty common-width end bands. This remains
+one concrete fixture family. No independent source acceptance is counted here.
+
+At the completed boundary, S received its next Astra max round: construct
+the actual common cancellation domain including both critical neighborhoods
+and the original strip. Prove Morse-model realization, cross-piece source and
+image identities, actual open-overlap agreement and global injectivity. Use
+the delivered ell/affine matching identities; do not repeat height alignment
+or promote the regular chart to a critical chart. Any compatible shrinking
+must retain a common positive width and exact old/new data relations. Then
+produce a relative cubic chart or directly supported cancellation for the
+same original function and frame. General finite cancellation and compact
+PL smoothing remain unfinished.
+
+Only the two delivered tasks received handoffs. Other active rounds were not
+queried or messaged. Their compiler admission leases remain administrative;
+M304 and S were renewed for their new authorized rounds. The current pending
+queue is M304 through8fe, E3 throughc10, F throughd68 and S throughc011. The
+accepted count stays ten for this resumed stage. No root build was started.
+The saved hourly automation is synchronized with these queues and scopes.

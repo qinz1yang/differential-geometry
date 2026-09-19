@@ -18,7 +18,7 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
-### Latest live frontier (2026-09-19, h e85 acceptance)
+### Latest live frontier (2026-09-19, compression and height handoffs)
 
 This snapshot and the latest integration-handoff sections take precedence over
 dated development paragraphs below, including their old deadlines and active
@@ -30,8 +30,8 @@ one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 | F | through71b0b003e | Relative general position fixing an actual protected polyhedron; exact whole-transition coverage for the same disk. New06a/d68 source is queued. |
 | h | throughe85a235df | Actual standard solid-torus identification of the newly transported neighborhoods, then compatible locally finite modifications. |
 | E3 | throughddade8562 | Prove the same physical capped result separates the original H/Q, then Moise303. Newc10 is queued. |
-| M304 | through01fc05b8c | Construct the compression ball/wall/caps around the same essential disk with a jointly compatible annulus. New7a/96/412/06 is queued; Moise252 stays explicit unresolved upstream. |
-| S | throughc0f4df1b1 | Globally injective common cancellation domain joining the original Morse ends and strip, then supported cancellation. New5b is queued. |
+| M304 | through01fc05b8c | Close the exact Moise252-to-Moise304 conditional sphere endpoint using the least-Betti separator and delivered actual compression. New7a/96/412/06/714/8fe is queued; Moise252 stays explicit unresolved upstream. |
+| S | throughc0f4df1b1 | Globally injective common cancellation domain containing both critical neighborhoods and the original strip, using delivered height/gauge alignment. New5b/c011 is queued. |
 
 h's accepted seven-module layer has 36 audited native entries, including
 seventeen new reusable theorems and three new actual-model assertions. It
@@ -47,6 +47,14 @@ fixes a closed protective polyhedral neighborhood, retains the fixed/mixed-face
 condition in canonical GeneralPosition, and proves actual coverage. This is a
 change of local strategy; full relative normalization remains open. Canonical
 GeneralPosition author-only write ownership is recorded. See section82.
+
+M304 has now delivered the compatible actual disk/ball/wall/caps construction
+and original-shell strict decrease, while S has delivered common regular
+height coordinates and both affine gauges with a shared positive width.
+These source-reviewed layers are frozen, not independently accepted yet.
+Sections83--84 record evidence and the two completed-boundary handoffs. The
+regular height chart does not include critical points; Moise252 remains an
+explicit unproved input to the planned shell endpoint.
 
 Current source and receipts remain authoritative. Full-root compilation stays
 deferred and may restart only for a concrete compatibility or stalled-work
