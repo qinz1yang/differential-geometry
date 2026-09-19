@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Loca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TimeJetConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalJointSpatialJets
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.UniformParameter
+import DifferentialGeometry.Topology.LocallyUniformConvergence
 
 
 set_option autoImplicit false
@@ -221,6 +222,31 @@ theorem uniform_chartInvGram_jets_of_metric_convergence_on_closed_interval
     exact (CanonicalNeighborhood.FiniteHorn.solution_chartGram_jets_continuousOn_closed
       S hS hac hcb hslab hreg p r i j).mono (prod_mono_left hJb)
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem uniform_chartChristoffel_jets_of_metric_convergence_on_closed_interval
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)
+    (g : ℕ → ℝ → SmoothRiemannianMetric I M) (R : SmoothRiemannianMetric I M)
+    {J : Set ℝ} (hJ : IsCompact J) (hJb : J ⊆ Icc c b)
+    (hconv : ∀ K : Set M, IsCompact K → ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J,
+        metricDerivNormSupOn K r (g n t) (S.base.metric t) R < epsilon)
+    (p : M) (i j k : Fin (Module.finrank ℝ E))
+    {K : Set E} (hK : IsCompact K) (hKt : K ⊆ (extChartAt I p).target) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (chartChristoffel (I := I) (g n t) p i j k) y -
+        iteratedFDeriv ℝ r (chartChristoffel (I := I) (S.base.metric t) p i j k) y‖ ≤ epsilon := by
+  let _ : NeZero (Module.finrank ℝ E) := ⟨Nat.ne_of_gt (Fin.pos i)⟩
+  apply uniform_spatial_jets_chartChristoffel_of_gram hJ.isSeqCompact g S.base.metric p
+    (isOpen_extChartAt_target (I := I) p) Subset.rfl _ _ i j k hK hKt r
+  · intro i j Q hQ hQt r epsilon hepsilon
+    exact chartGram_jets_uniform_of_metric_convergence g S.base.metric R hconv
+      p i j hQ hQt r hepsilon
+  · intro i j r
+    exact (CanonicalNeighborhood.FiniteHorn.solution_chartGram_jets_continuousOn_closed
+      S hS hac hcb hslab hreg p r i j).mono (prod_mono_left hJb)
+
 theorem uniform_metricScalar_jets_of_metric_convergence_on_closed_interval
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
@@ -244,6 +270,76 @@ theorem uniform_metricScalar_jets_of_metric_convergence_on_closed_interval
   · intro i j r
     exact (CanonicalNeighborhood.FiniteHorn.solution_chartGram_jets_continuousOn_closed
       S hS hac hcb hslab hreg p r i j).mono (prod_mono_left hJb)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartInvGram_locally_uniform_of_metric_convergence
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)
+    (g : ℕ → ℝ → SmoothRiemannianMetric I M) (R : SmoothRiemannianMetric I M)
+    (hconv : ∀ K : Set M, IsCompact K → ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc c b,
+        metricDerivNormSupOn K r (g n t) (S.base.metric t) R < epsilon)
+    (p : M) (i j : Fin (Module.finrank ℝ E)) :
+    TendstoLocallyUniformlyOn
+      (fun n (z : ℝ × E) => chartInvGramOnE (I := I) (g n z.1) p i j z.2)
+      (fun z => chartInvGramOnE (I := I) (S.base.metric z.1) p i j z.2) atTop
+      (Ioo c b ×ˢ (extChartAt I p).target) := by
+  let _ : NeZero (Module.finrank ℝ E) := ⟨Nat.ne_of_gt (Fin.pos i)⟩
+  apply (tendstoLocallyUniformlyOn_iff_forall_isCompact
+    (isOpen_Ioo.prod (isOpen_extChartAt_target (I := I) p))).mpr
+  intro Q hQt hQ
+  have hK : IsCompact (Prod.snd '' Q) := hQ.image continuous_snd
+  have hKt : Prod.snd '' Q ⊆ (extChartAt I p).target := by
+    rintro y ⟨z, hz, rfl⟩
+    exact (hQt hz).2
+  apply Metric.tendstoUniformlyOn_iff.mpr
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ := uniform_chartInvGram_jets_of_metric_convergence_on_closed_interval
+    S hS hac hcb hslab hreg g R isCompact_Icc Subset.rfl hconv p i j hK hKt 0
+      (epsilon / 2) (half_pos hepsilon)
+  filter_upwards [eventually_ge_atTop N] with n hn
+  intro z hz
+  have hh := hN n hn z.1 ⟨(hQt hz).1.1.le, (hQt hz).1.2.le⟩ z.2 ⟨z, hz, rfl⟩
+  simp only [iteratedFDeriv_zero_eq_comp, Function.comp_apply, ← map_sub,
+    LinearIsometryEquiv.norm_map] at hh
+  rw [dist_comm, dist_eq_norm]
+  exact hh.trans_lt (half_lt_self hepsilon)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartChristoffel_locally_uniform_of_metric_convergence
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)
+    (g : ℕ → ℝ → SmoothRiemannianMetric I M) (R : SmoothRiemannianMetric I M)
+    (hconv : ∀ K : Set M, IsCompact K → ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc c b,
+        metricDerivNormSupOn K r (g n t) (S.base.metric t) R < epsilon)
+    (p : M) (i j k : Fin (Module.finrank ℝ E)) :
+    TendstoLocallyUniformlyOn
+      (fun n (z : ℝ × E) => chartChristoffel (I := I) (g n z.1) p i j k z.2)
+      (fun z => chartChristoffel (I := I) (S.base.metric z.1) p i j k z.2) atTop
+      (Ioo c b ×ˢ (extChartAt I p).target) := by
+  let _ : NeZero (Module.finrank ℝ E) := ⟨Nat.ne_of_gt (Fin.pos i)⟩
+  apply (tendstoLocallyUniformlyOn_iff_forall_isCompact
+    (isOpen_Ioo.prod (isOpen_extChartAt_target (I := I) p))).mpr
+  intro Q hQt hQ
+  have hK : IsCompact (Prod.snd '' Q) := hQ.image continuous_snd
+  have hKt : Prod.snd '' Q ⊆ (extChartAt I p).target := by
+    rintro y ⟨z, hz, rfl⟩
+    exact (hQt hz).2
+  apply Metric.tendstoUniformlyOn_iff.mpr
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ := uniform_chartChristoffel_jets_of_metric_convergence_on_closed_interval
+    S hS hac hcb hslab hreg g R isCompact_Icc Subset.rfl hconv p i j k hK hKt 0
+      (epsilon / 2) (half_pos hepsilon)
+  filter_upwards [eventually_ge_atTop N] with n hn
+  intro z hz
+  have hh := hN n hn z.1 ⟨(hQt hz).1.1.le, (hQt hz).1.2.le⟩ z.2 ⟨z, hz, rfl⟩
+  simp only [iteratedFDeriv_zero_eq_comp, Function.comp_apply, ← map_sub,
+    LinearIsometryEquiv.norm_map] at hh
+  rw [dist_comm, dist_eq_norm]
+  exact hh.trans_lt (half_lt_self hepsilon)
 
 end Geometry
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

@@ -237,6 +237,41 @@ theorem uniform_spatial_jets_chartInvGram_of_gram
     (fun J => (Matrix.of J.1)⁻¹ i j) (fun _ hJ => contDiffAt_jetInvGram hJ i j) hK hKW r
   simpa only [jet2_chartGram_invGram] using h
 
+theorem uniform_spatial_jets_chartChristoffel_of_gram
+    {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
+    (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)
+    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ W →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (g n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon)
+    (hcont : ∀ i j : Fin (Module.finrank ℝ E), ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ z.1) p i j) z.2)
+      (S ×ˢ W))
+    (i j k : Fin (Module.finrank ℝ E))
+    {K : Set E} (hK : IsCompact K) (hKW : K ⊆ W) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (chartChristoffel (I := I) (g n t) p i j k) y -
+        iteratedFDeriv ℝ r (chartChristoffel (I := I) (g₀ t) p i j k) y‖ ≤ epsilon := by
+  have heq (h : SmoothRiemannianMetric I M) (y : E) (hy : y ∈ W) :
+      iteratedFDeriv ℝ r (chartChristoffel (I := I) h p i j k) y =
+        iteratedFDeriv ℝ r (fun z =>
+          jetChristoffel (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) z) i j k) y := by
+    have hnear : chartChristoffel (I := I) h p i j k =ᶠ[𝓝 y]
+        (fun z => jetChristoffel (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) z) i j k) := by
+      filter_upwards [hW.mem_nhds hy] with z hz
+      have hcd := chartGramPi_smooth h p hWt
+      exact chartChristoffel_eq_jet h p
+        ((hcd.contDiffAt (hW.mem_nhds hz)).differentiableAt (by simp)) i j k
+    exact (hnear.iteratedFDeriv ℝ r).eq_of_nhds
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ := uniform_spatial_jets_chartJetOperator_of_gram hS g g₀ p hW hWt hgram hcont
+    (fun J => jetChristoffel (chartModelBasis E) J i j k)
+    (fun _ hJ => contDiffAt_jetChristoffel (chartModelBasis E) hJ i j k) hK hKW r epsilon hepsilon
+  refine ⟨N, fun n hn t ht y hy => ?_⟩
+  rw [heq (g n t) y (hKW hy), heq (g₀ t) y (hKW hy)]
+  exact hN n hn t ht y hy
+
 theorem uniform_spatial_jets_chartRicci_of_gram
     {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
     (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)

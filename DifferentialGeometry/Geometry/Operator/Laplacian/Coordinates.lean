@@ -13,6 +13,33 @@ open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor0SBundle
 
+section TimeSlice
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+private theorem second_derivative_time_slice {phi : ℝ × E → ℝ} {t : ℝ} {x : E} (hphi : ContDiffAt ℝ 2 phi (t, x)) (v w : E) :
+    fderiv ℝ (fderiv ℝ (fun y => phi (t, y))) x v w =
+      fderiv ℝ (fderiv ℝ phi) (t, x) (0, v) (0, w) := by
+  let L : E →L[ℝ] ℝ × E := ContinuousLinearMap.inr ℝ ℝ E
+  have heq : fderiv ℝ (fun y => phi (t, y)) =ᶠ[𝓝 x]
+      fun y => (fderiv ℝ phi (t, y)).comp L := by
+    have hc : ContinuousAt (fun y : E => (t, y)) x := continuousAt_const.prodMk continuousAt_id
+    filter_upwards [hc.tendsto.eventually (hphi.eventually (by norm_num))] with y hy
+    have h := (hy.differentiableAt (by norm_num)).hasFDerivAt.comp y
+      ((hasFDerivAt_const t y).prodMk (hasFDerivAt_id y))
+    exact h.fderiv
+  have hd := ((hphi.fderiv_right (by norm_num : (1 : WithTop ℕ∞) + 1 ≤ 2)).differentiableAt
+    (by norm_num : (1 : WithTop ℕ∞) ≠ 0)).hasFDerivAt.comp x
+      ((hasFDerivAt_const t x).prodMk (hasFDerivAt_id x))
+  have hdd := hd.clm_comp (hasFDerivAt_const L x)
+  simp only [Function.comp_def] at hdd
+  rw [heq.fderiv_eq, hdd.fderiv]
+  simp only [add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply,
+    zero_apply, ContinuousLinearMap.id_apply, ContinuousLinearMap.compL_apply,
+    ContinuousLinearMap.flip_apply, ContinuousLinearMap.inr_apply, map_zero, zero_add, L]
+
+end TimeSlice
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -142,4 +169,26 @@ theorem laplacian_comp_extChartAt
   dsimp only [gInv, basis]
   rw [chartBasisFamily_apply, chartBasisFamily_apply]
   rw [inner_cov_gradient_comp_extChartAt_basis g a hx hf i j]
+
+theorem laplacian_time_slice_comp_extChartAt
+    (g : SmoothRiemannianMetric I M) (a : M) {t : ℝ} {x : M}
+    (hx : x ∈ (chartAt H a).source) (phi : ℝ × E → ℝ)
+    (hphi : ContDiffAt ℝ 2 phi (t, extChartAt I a x)) :
+    laplacian (I := I) (LeviCivita (I := I) g) g (fun y => phi (t, extChartAt I a y)) x =
+      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartInvGramOnE (I := I) g a i j (extChartAt I a x) *
+          (fderiv ℝ (fderiv ℝ phi) (t, extChartAt I a x) (0, chartModelBasis E i) (0, chartModelBasis E j) -
+            ∑ k : Fin (Module.finrank ℝ E), chartChristoffel (I := I) g a i j k (extChartAt I a x) *
+              fderiv ℝ phi (t, extChartAt I a x) (0, chartModelBasis E k)) := by
+  have hs : ContDiffAt ℝ 2 (fun y => phi (t, y)) (extChartAt I a x) :=
+    hphi.comp (extChartAt I a x) (contDiffAt_const.prodMk contDiffAt_id)
+  have hd := (hphi.differentiableAt (by norm_num)).hasFDerivAt.comp (extChartAt I a x)
+    ((hasFDerivAt_const t (extChartAt I a x)).prodMk (hasFDerivAt_id (extChartAt I a x)))
+  simp only [Function.comp_def] at hd
+  have hh := laplacian_comp_extChartAt g a hx hs
+  change laplacian (I := I) (LeviCivita (I := I) g) g
+    ((fun y => phi (t, y)) ∘ extChartAt I a) x = _
+  rw [hh]
+  simp only [second_derivative_time_slice hphi, hd.fderiv, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.prod_apply, zero_apply, ContinuousLinearMap.id_apply]
 end DifferentialGeometry.Geometry.Operator
