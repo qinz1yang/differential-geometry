@@ -149,17 +149,23 @@ conjugate-family theorem. The old unitInterval consumers now reuse it without
 a name collision. These actual isotopies work in the fixed Euclidean atlas,
 retaining framing at every height and all three corners. They do not produce
 relative smoothing in an arbitrary old atlas or charts across a gluing seam.
-S subsequently delivered bounded-displacement Alexander localization,
-actual planar whole-disk/germ extension, supported germ isotopy linearization
-2086c2aac, and general nested Jordan annuli with simultaneous compatible
-boundary extension ab12b25d1. These author-verified layers await independent
-replay. S's actual old-atlas local disk smoothing c4c935995 is also
-author-verified and queued; the original maximal atlas is retained. At that
-completed clean delivery S continued one relative-strip round, from actual
-end collars to whole compact-core smoothing, with a 14:05 UTC checkpoint
-target. This must construct compatibility, not assume a Diffeomorph or the
-desired extension. Cross-seam charts and compact PL smoothing remain open.
-See integration handoff sections 53 and 56.
+S's subsequent bounded-displacement Alexander localization, planar whole-disk
+extension, arbitrarily small-support germ linearization, prescribed Jordan
+annulus boundary extension and old-atlas local disk smoothing through
+c4c935995 are now independently accepted. Thirteen new leaves plus one
+unchanged orientation prerequisite were freshly checked. All 92 native
+declarations (71 new), 66 critical reuse entries and 51 classified fixture
+declarations pass the combined axiom/lint audit with zero diagnostics. The
+fixed cusp-shear old-atlas fixture proves the original PL chart is not smooth
+and the correcting isotopy is nonidentity. The produced chart belongs to the
+original maximal atlas; both transition directions and exact original frames
+are retained. This is local zero-handle smoothing, not whole-strip or
+cross-seam smoothing. Relative Morse approximation 5beeda255 is subsequently
+reported and queued separately; critical-point elimination and a noncritical
+parameterization preserving both end collars remain open. S continues its
+single relative-strip lane toward the 14:05 UTC checkpoint and 14:19 UTC
+deadline. Compact PL smoothing remains unproved. See integration handoff
+section 59 and the morning ledger.
 
 h's corrected contracts, same-PL-triangulation exhaustion, real noncompact
 three-dimensional edge model and graph dual-cell ballness through 2086d1064
@@ -248,7 +254,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
 | M304 / gpt-6-astra max | Own 30.4. Through ac3673685 independently accepted; actual essential singular filling b80e381fc and concrete essential torus compression fd77b6549 delivered and queued. | Continue the same concrete model toward actual ambient separation targets. Preserve E3 general physical-cap/separation and F26.4 ownership. General beta-zero and full 30.4 remain open. |
-| S / gpt-6-astra max | Finite 24.11/24.12 accepted. Planar localization, Jordan annuli and actual old-atlas local disk smoothing c4c935995 author-verified and queued. | At the completed clean delivery, continue one relative-strip round from actual end collars to whole-core smoothing. Checkpoint by 14:05 UTC. Preserve the old atlas; strip, seam charts and compact 3D smoothing remain open. |
+| S / gpt-6-astra max | Actual fixed-old-atlas local chart smoothing and planar/Jordan extension through c4c935995 independently accepted. Later relative Morse approximation 5beeda255 queued. | Continue relative strip: actual neighborhood control, critical-point elimination and end-collar-preserving noncritical parameterization. Local chart smoothing does not close compact PL smoothing. Checkpoint 14:05 UTC. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve

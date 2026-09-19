@@ -2725,3 +2725,79 @@ are not independently accepted by this receipt. It continues the same
 concrete-model ambient-separation question. S's old-atlas disk smoothing and
 F's later triangulation remain separate queues/current rounds. No active task
 received a routine status request or second lane.
+
+## 59. Planar localization and fixed-atlas local smoothing (2026-09-19 UTC)
+
+S's frozen committed planar and local smoothing developments through
+c4c935995, including 619ec24f6, f88028fd8, 2086c2aac and ab12b25d1,
+are independently accepted. All thirteen new source leaves are copied byte
+for byte from that checkpoint and registered in the flat root. The layer
+constructs radial compactification and Alexander isotopies under bounded
+displacement; exact whole-disk planar extensions; compactly supported
+representatives and arbitrarily small-support isotopies linearizing actual
+planar germs; and homeomorphisms between nested Jordan annuli with prescribed
+same-orientation maps on both boundary circles. The two boundary maps are
+independently specified on the same fixed pair of annulus parameterizations.
+
+The local surface-chart theorem retains the input ChartedSpace and IsManifold
+instances. Given an arbitrary topological chart and an open source region
+containing zero, it constructs a compactly supported source isotopy, its
+ambient conjugate, and a corrected chart whose inverse belongs to the
+original maximal atlas. Both transition directions with every old chart are
+smooth on the actual overlap. Exact source and ambient parameter equations
+hold for the original attachment, in both directions. Smooth compatibility,
+a Diffeomorph, and the desired extension are not assumed as inputs.
+
+The strongest concrete fixture uses a distinct ULift plane with a fixed
+cusp-shear old atlas. Its original attaching chart is PL and is proved not
+smooth at zero in that atlas. The actual producer then supplies a nonidentity
+isotopy and an old-atlas compatible corrected chart, supported within the
+prescribed smaller disk, with exact forward and inverse frames. Other
+fixtures move an explicit rational point, use nonsmooth shears and reflected
+shears, and prescribe an identity/quarter-turn pair or reflections on both
+annulus ends. Nonsmoothness of an ambient shear alone is not evidence that
+the sheared Jordan curves themselves are nonsmooth; that stronger claim is
+not made.
+
+Fourteen fresh module checks took 158.789 seconds including
+admission. The extra unchanged module CircleLiftOrientation was rebuilt in
+private output because the first CircleIsotopy attempt encountered an old
+shared artifact missing an already committed composition theorem. No source
+repair was necessary. The combined audit took 56.163 seconds and
+checks all 92 nonautomatic declarations: 71 genuinely new declarations
+(14 private) and 21 unchanged circle-orientation declarations. All 66 critical
+reuse entries (56 distinct) and all 51 external fixture declarations have
+transitive axiom closure contained in the three approved foundational axioms.
+All thirteen applicable environment linters pass; all final checks have zero
+errors, warnings, info messages or other diagnostics.
+
+The 51 external declarations are classified as twelve actual geometric
+producer applications, nineteen concrete fixture properties, two conditional
+helper theorems, sixteen fixture definitions and two local old-atlas
+instances. These are not 51 independently closed geometric headlines.
+All 57 new public full names have unique namespace-aware source locations.
+The complete changed proofs, scope, quantifiers and actual model bodies were
+reviewed; the author reports are retained separately from independent checks.
+
+Accepted Lean delta is +1719/-0: 1706 source lines and thirteen root imports.
+The selected author files have window-start delta
++1706/-0; this separate baseline is not additive.
+Six private prerequisite objects were reused only after exact raw-source and
+independently accepted object-hash checks. Static root closure now reaches
+9575 project modules including the root, with no missing project source or
+import cycle. The thirteen new imports also make 42 existing dependency
+modules transitively reachable for the first time. Those 42 are neither
+newly authored source nor a fresh whole-dependency compilation claim.
+The full-root build remains stopped. Receipt:
+.lake/verified-thirtyninth-lane-delivery-20260919.json.
+
+This closes local zero-handle chart smoothing. Whole-strip smoothing with
+fixed end collars, elimination of its critical points, cross-seam charts,
+higher-index smooth handle attachment, smooth two-sphere standardization and
+compact three-dimensional PL smoothing remain open. S's subsequently reported
+relative Morse approximation 5beeda255 is a separate queued source checkpoint;
+it is not accepted by this receipt and does not supply a noncritical strip
+parameterization. The already active strip lane continues toward its stated
+14:05 UTC checkpoint and 14:19 UTC deadline; no new task or extra lane was
+started. M304's exact cylindrical-frontier checkpoint 109bab2c4 is likewise
+queued independently of this acceptance.

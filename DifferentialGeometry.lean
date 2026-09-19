@@ -8926,6 +8926,19 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteErrorControl
 import DifferentialGeometry.Topology.PiecewiseLinear.NestedCircleBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellNeighborhoodModel
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitSeparation
+import DifferentialGeometry.Topology.Homeomorph.Alexander
+import DifferentialGeometry.Topology.Homeomorph.RadialCompactification
+import DifferentialGeometry.Topology.Homeomorph.SubsetImage
+import DifferentialGeometry.Topology.Homeomorph.PlanarExtension
+import DifferentialGeometry.Topology.Homeomorph.ClosedPasting
+import DifferentialGeometry.Topology.Homeomorph.CircleIsotopy
+import DifferentialGeometry.Topology.Homeomorph.JordanDiskMove
+import DifferentialGeometry.Topology.Homeomorph.SphereFamilyExtension
+import DifferentialGeometry.Topology.Homeomorph.PlanarSphereExtension
+import DifferentialGeometry.Topology.Homeomorph.PlanarLocalization
+import DifferentialGeometry.Topology.Homeomorph.PlanarGermIsotopy
+import DifferentialGeometry.Topology.Homeomorph.JordanAnnulus
+import DifferentialGeometry.Topology.Manifold.SurfaceChartSmoothing
 
 /-!
 # Differential geometry and geometric analysis
