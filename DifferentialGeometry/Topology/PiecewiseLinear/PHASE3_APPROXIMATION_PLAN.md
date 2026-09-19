@@ -511,6 +511,10 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 `IsGlueIso` 本身当作无穷远处的收缩相容性。
 这些完全通用的搬运、穷竭拼接与连续性接口现归于
 `Topology/Homotopy/DeformationRetract.lean`，PL 层只负责生产和消费几何数据。
+`derivedNeighborhoodCompatibleStrongDeformationRetractSystem` 已进一步证明单个直线复形的有限子复形穷竭确实生产这种系统：
+环境面递增、图在旧面上精确限制且相邻导出邻域有 interior 缓冲即可，重心投影相容性由
+`derivedNeighborhoodBarycentricProjection_eq_of_restrict` 推出，不是输入。现有可变坐标塔尚缺旧导出邻域包含于保留 core、
+后一层图在像 core 上的精确限制及片参数在该邻域上的一致性，故两个独立 `IsGlueIso` 仍不能直接消费此生产者。
 `PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` 给出有限常值塔构造，
 `exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` 在三维球内部的一条单纯边上
 给出 `N/K/U` 均非空且带全局收缩的实际模型。`Moise351` 的非紧范围、相对闭输入和逐点误差不变；

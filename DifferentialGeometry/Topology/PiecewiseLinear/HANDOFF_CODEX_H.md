@@ -3562,3 +3562,48 @@ This placement correction does not close the geometric producer identified in
 locally finite triangulation or from a justified restriction of its single
 global barycentric retraction; a compatible system may not simply be supplied
 as additional input.
+
+## 69. 2026-09-19 nested derived-neighborhood compatibility — done
+
+`DerivedNeighborhood.lean` now proves `derivedNeighborhood_faces_mono`.
+`DerivedNeighborhoodRetraction.lean` proves that the barycentric mass, moment,
+and normalized projection do not change on an old simplex when the ambient
+complex grows and the core complex is unchanged on the old faces.  The public
+chain is
+`subcomplexBarycentricProjection_eq_of_faces_subset`,
+`barycentricSubdivision_vertices_agree_of_restrict`, and
+`derivedNeighborhoodBarycentricProjection_eq_of_restrict`.
+
+The constructor
+`derivedNeighborhoodCompatibleStrongDeformationRetractSystem` applies this
+naturality to a nested sequence of finite ambient complexes `K i` and graph
+subcomplexes `L i`.  Its hypotheses are geometric: face monotonicity, exact
+restriction of `L j` to every old `K i`, and an interior buffer from each
+derived-neighborhood support to the next.  It produces the full compatible
+system using the already proved canonical barycentric strong deformation
+retract at every stage.  Neither retraction compatibility nor homotopy
+compatibility appears as an input.
+
+This also isolates the precise defect in the present
+`IsLocallyFiniteRegularNeighborhoodOf` data.  `IsGlueIso` records only the
+vertexwise image of faces.  `LocallyFinitePieceTower.map_embed` identifies the
+two piece parametrizations only on `core i`, while the relation does not say
+that the old derived neighborhood lies in that core, and it does not say that
+`G (i+1)` restricts exactly to the old graph on the image core.  The separate
+`DImage` and `GImage` isomorphisms therefore do not identify the two canonical
+barycentric projections.  This is an interface obstruction, not a missing
+rewriting lemma.
+
+Private checks of `DerivedNeighborhood` and
+`DerivedNeighborhoodRetraction` exited zero with no diagnostics and left
+shared outputs unchanged.  The external strict audit dynamically checked all
+sixty-four non-automatic declarations in the two modules plus nine directly
+reused declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+The next step is to replace the free compatible-system field by coherent
+single-triangulation restriction data (including derived-neighborhood
+containment in the preserved core and exact graph restriction), derive the
+system with this constructor after transport to the manifold, and instantiate
+it on a nonconstant noncompact model.

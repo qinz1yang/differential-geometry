@@ -76,6 +76,16 @@ theorem derivedNeighborhood_faces_finite [Finite K.faces] :
     (derivedNeighborhood K L).faces.Finite :=
   (Set.toFinite (secondDerived K).faces).subset (derivedNeighborhood_faces_subset K L)
 
+theorem derivedNeighborhood_faces_mono
+    {K K' L L' : Geometry.SimplicialComplex ℝ E}
+    (hK : K.faces ⊆ K'.faces) (hL : L.faces ⊆ L'.faces) :
+    (derivedNeighborhood K L).faces ⊆ (derivedNeighborhood K' L').faces := by
+  rintro u ⟨D, hD, hne, hmeet, rfl⟩
+  refine ⟨D, hD.of_le (barycentricSubdivision_faces_subset hK), hne, ?_, rfl⟩
+  intro e he
+  obtain ⟨s, hs, hse⟩ := hmeet e he
+  exact ⟨s, hL hs, hse⟩
+
 theorem derivedNeighborhood_space_subset_secondDerived :
     (derivedNeighborhood K L).space ⊆ (secondDerived K).space := by
   intro x hx
@@ -101,8 +111,9 @@ theorem singleton_centroid_mem_derivedNeighborhood_iff {e : Finset E}
     exact heq ▸ hL e' he'
   · intro h
     exact ⟨{e}, ⟨fun s hs => (Finset.mem_singleton.mp hs).symm ▸ he,
-      fun s hs t ht => Or.inl ((Finset.mem_singleton.mp hs).trans (Finset.mem_singleton.mp ht).symm ▸
-        Finset.Subset.refl _)⟩, Finset.singleton_nonempty e,
+      fun s hs t ht => Or.inl
+        ((Finset.mem_singleton.mp hs).trans (Finset.mem_singleton.mp ht).symm ▸
+          Finset.Subset.refl _)⟩, Finset.singleton_nonempty e,
       fun s hs => (Finset.mem_singleton.mp hs).symm ▸ h, by rw [Finset.image_singleton]⟩
 
 theorem subset_of_image_centroid_subset {D D' : Finset (Finset E)}

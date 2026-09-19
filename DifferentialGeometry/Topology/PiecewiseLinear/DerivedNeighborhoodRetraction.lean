@@ -220,6 +220,35 @@ theorem subcomplexBarycentricMoment_eq_sum_filter
   by_cases hvL : v ∈ L.vertices <;> by_cases hve : v ∈ e <;> simp [hvL, hve]
 
 open Classical in
+theorem subcomplexBarycentricProjection_eq_of_faces_subset
+    {K K' L L' : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite K'.faces]
+    (hK : K.faces ⊆ K'.faces)
+    (hvertices : ∀ v ∈ K.vertices, (v ∈ L.vertices ↔ v ∈ L'.vertices))
+    {x : E} (hx : x ∈ K.space) :
+    subcomplexBarycentricProjection K L x = subcomplexBarycentricProjection K' L' x := by
+  let e := carrierFace K x
+  have heK : e ∈ K.faces := carrierFace_mem hx
+  have hxe : x ∈ convexHull ℝ (e : Set E) := mem_convexHull_carrierFace hx
+  have hfilter : e.filter (· ∈ L.vertices) = e.filter (· ∈ L'.vertices) := by
+    ext v
+    simp only [Finset.mem_filter]
+    constructor
+    · rintro ⟨hve, hvL⟩
+      refine ⟨hve, (hvertices v ?_).mp hvL⟩
+      exact K.down_closed heK (Finset.singleton_subset_iff.mpr hve)
+        (Finset.singleton_nonempty v)
+    · rintro ⟨hve, hvL⟩
+      refine ⟨hve, (hvertices v ?_).mpr hvL⟩
+      exact K.down_closed heK (Finset.singleton_subset_iff.mpr hve)
+        (Finset.singleton_nonempty v)
+  simp only [subcomplexBarycentricProjection]
+  rw [
+    subcomplexBarycentricMass_eq_sum_filter K L heK hxe,
+    subcomplexBarycentricMass_eq_sum_filter K' L' (hK heK) hxe,
+    subcomplexBarycentricMoment_eq_sum_filter K L heK hxe,
+    subcomplexBarycentricMoment_eq_sum_filter K' L' (hK heK) hxe, hfilter]
+
+open Classical in
 theorem subcomplexBarycentricMass_pos_of_mem_faceNeighborhood
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     {e : Finset E} (he : e ∈ K.faces)
@@ -251,7 +280,8 @@ theorem subcomplexBarycentricProjection_mem_convexHull_filter
     rw [← Finset.mul_sum, ← subcomplexBarycentricMass_eq_sum_filter K L he hx]
     exact inv_mul_cancel₀ hm
   refine mem_convexHull_iff_exists_weights.mpr ⟨fun v => m⁻¹ * weights e x v,
-    fun v hv => mul_nonneg (inv_nonneg.mpr hmass.le) (weights_nonneg hx (Finset.mem_filter.mp hv).1),
+    fun v hv => mul_nonneg (inv_nonneg.mpr hmass.le)
+      (weights_nonneg hx (Finset.mem_filter.mp hv).1),
     hsum, ?_⟩
   rw [subcomplexBarycentricProjection, subcomplexBarycentricMoment_eq_sum_filter K L he hx]
   simp_rw [mul_smul]
@@ -308,6 +338,49 @@ theorem derivedNeighborhood_space_subset_barycentricSubdivision
     (derivedNeighborhood K L).space ⊆ (barycentricSubdivision K).space := by
   rw [(barycentricSubdivision_isSubdivision K).space_eq]
   exact derivedNeighborhood_space_subset K L
+
+open Classical in
+theorem barycentricSubdivision_vertices_agree_of_restrict
+    {K K' L L' : Geometry.SimplicialComplex ℝ E}
+    (hK : K.faces ⊆ K'.faces) (hLK : L.faces ⊆ K.faces)
+    (hL'K' : L'.faces ⊆ K'.faces)
+    (hrestrict : ∀ s ∈ K.faces, (s ∈ L.faces ↔ s ∈ L'.faces))
+    (v : E) (hv : v ∈ (barycentricSubdivision K).vertices) :
+    v ∈ (barycentricSubdivision L).vertices ↔
+      v ∈ (barycentricSubdivision L').vertices := by
+  obtain ⟨s, hs, hsv⟩ :=
+    exists_eq_centroid_of_singleton_mem_barycentricSubdivision K hv
+  constructor
+  · intro hvL
+    obtain ⟨t, ht, htv⟩ :=
+      exists_eq_centroid_of_singleton_mem_barycentricSubdivision L hvL
+    have hst : s = t := injOn_faces_of_mem_openSimplex K
+      (centroid_mem_openSimplex_of_mem_faces K) hs (hLK ht) (hsv.trans htv.symm)
+    subst t
+    exact hsv ▸ singleton_centroid_mem_barycentricSubdivision L' ((hrestrict s hs).mp ht)
+  · intro hvL'
+    obtain ⟨t, ht, htv⟩ :=
+      exists_eq_centroid_of_singleton_mem_barycentricSubdivision L' hvL'
+    have hst : s = t := injOn_faces_of_mem_openSimplex K'
+      (centroid_mem_openSimplex_of_mem_faces K') (hK hs) (hL'K' ht)
+      (hsv.trans htv.symm)
+    subst t
+    exact hsv ▸ singleton_centroid_mem_barycentricSubdivision L ((hrestrict s hs).mpr ht)
+
+open Classical in
+theorem derivedNeighborhoodBarycentricProjection_eq_of_restrict
+    {K K' L L' : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite K'.faces]
+    (hK : K.faces ⊆ K'.faces) (hLK : L.faces ⊆ K.faces)
+    (hL'K' : L'.faces ⊆ K'.faces)
+    (hrestrict : ∀ s ∈ K.faces, (s ∈ L.faces ↔ s ∈ L'.faces))
+    {x : E} (hx : x ∈ K.space) :
+    subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) x =
+      subcomplexBarycentricProjection (barycentricSubdivision K')
+        (barycentricSubdivision L') x := by
+  apply subcomplexBarycentricProjection_eq_of_faces_subset
+    (barycentricSubdivision_faces_subset hK)
+    (barycentricSubdivision_vertices_agree_of_restrict hK hLK hL'K' hrestrict)
+  rwa [(barycentricSubdivision_isSubdivision K).space_eq]
 
 open Classical in
 theorem subcomplexBarycentricMass_pos_on_derivedNeighborhood
@@ -431,7 +504,8 @@ open Classical in
 theorem subcomplexBarycentricProjection_eq_self_on_subcomplex
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hL : L.faces ⊆ K.faces) {x : E} (hx : x ∈ L.space) :
-    subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) x = x := by
+    subcomplexBarycentricProjection (barycentricSubdivision K)
+      (barycentricSubdivision L) x = x := by
   apply subcomplexBarycentricProjection_eq_self
     (barycentricSubdivision_faces_subset hL)
   rwa [(barycentricSubdivision_isSubdivision L).space_eq]
@@ -519,6 +593,45 @@ theorem derivedNeighborhoodStrongDeformationRetract_retraction_apply
         subcomplexBarycentricProjection (barycentricSubdivision K)
           (barycentricSubdivision L) x :=
   rfl
+
+open Classical in
+noncomputable def derivedNeighborhoodCompatibleStrongDeformationRetractSystem
+    [FiniteDimensional ℝ E]
+    (K L : ℕ → Geometry.SimplicialComplex ℝ E) [∀ i, Finite (K i).faces]
+    (hLK : ∀ i, (L i).faces ⊆ (K i).faces)
+    (hK : Monotone fun i => (K i).faces) (hL : Monotone fun i => (L i).faces)
+    (hrestrict : ∀ {i j}, i ≤ j → ∀ s ∈ (K i).faces,
+      s ∈ (L j).faces → s ∈ (L i).faces)
+    (hinterior : ∀ i, (derivedNeighborhood (K i) (L i)).space ⊆
+      interior (derivedNeighborhood (K (i + 1)) (L (i + 1))).space) :
+    CompatibleStrongDeformationRetractSystem
+      (fun i => (L i).space) (fun i => (derivedNeighborhood (K i) (L i)).space) where
+  core_subset := fun i => subcomplex_space_subset_derivedNeighborhood (hLK i)
+  stage := fun i => derivedNeighborhoodStrongDeformationRetract (hLK i)
+  retraction_compatible := by
+    intro i j hij x hxi hxj
+    change subcomplexBarycentricProjection (barycentricSubdivision (K j))
+      (barycentricSubdivision (L j)) x =
+        subcomplexBarycentricProjection (barycentricSubdivision (K i))
+          (barycentricSubdivision (L i)) x
+    apply (derivedNeighborhoodBarycentricProjection_eq_of_restrict
+      (hK hij) (hLK i) (hLK j) ?_ (derivedNeighborhood_space_subset (K i) (L i) hxi)).symm
+    intro s hs
+    exact ⟨fun hsL => hL hij hsL, hrestrict hij s hs⟩
+  homotopy_compatible := by
+    intro i j hij t x hxi hxj
+    change subcomplexBarycentricHomotopy (barycentricSubdivision (K j))
+      (barycentricSubdivision (L j)) t x =
+        subcomplexBarycentricHomotopy (barycentricSubdivision (K i))
+          (barycentricSubdivision (L i)) t x
+    unfold subcomplexBarycentricHomotopy
+    rw [derivedNeighborhoodBarycentricProjection_eq_of_restrict
+      (hK hij) (hLK i) (hLK j) (fun s hs =>
+        ⟨fun hsL => hL hij hsL, hrestrict hij s hs⟩)
+      (derivedNeighborhood_space_subset (K i) (L i) hxi)]
+  ambient_mem_nhdsWithin := by
+    intro i x hx
+    exact mem_nhdsWithin_of_mem_nhds (mem_interior_iff_mem_nhds.mp (hinterior i hx))
 
 open Classical in
 noncomputable def derivedNeighborhoodFundamentalGroupEquiv

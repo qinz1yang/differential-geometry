@@ -889,3 +889,10 @@ inline comments and declaration docstrings remain disallowed.
   `PolyhedralGraph`、非空弧模型及 `MoiseChain` 签名不变。四模块私有检查 exit=0、零 warning；严格审计动态覆盖 88 个
   本模块声明与 14 个直接复用声明，公理仅 `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。
   这只闭合自然归位；35.1 的非恒定几何生产者仍须从单个局部有限三角剖分推出相容性。
+- 2026-09-19（H 车道导出邻域限制自然性）：`derivedNeighborhood_faces_mono` 与
+  `derivedNeighborhoodBarycentricProjection_eq_of_restrict` 证明：环境有限子复形递增且图子复形在旧面上精确不变时，
+  规范重心投影及其线性同伦在旧导出邻域上不变。`derivedNeighborhoodCompatibleStrongDeformationRetractSystem`
+  再由面单调、精确限制和逐层 interior 缓冲实际生产相容强形变收缩系统，不把相容性作为输入。两模块私有检查
+  exit=0、零 warning；严格审计 64 个本模块声明与 9 个复用声明，公理仅标准三公理，13 项适用 linter 全通过。
+  现有 35.1 关系仍缺把此定理接到塔的条件：旧导出邻域未保证落在 `core i`，且后一层图未保证在像 core 上恰为旧图；
+  单独的 `GImage`/`DImage IsGlueIso` 不能推出规范投影相容。下一步须修正该几何接口并给非恒定非紧实例。
