@@ -8802,3 +8802,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.EulerUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingBetti
 import DifferentialGeometry.Topology.Connected.ClosedCover
+import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSubcomplexComplement

@@ -641,3 +641,14 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 - **R9 局部有限表示层（已解除，2026-09-15）。** 有限 `PLPiece` 必紧致，单独的集合穷竭不能提供 35.2/36.1 所需的相容非紧源域。F6.3 现已用 `LocallyFinitePieceTower` 与 `IsLocallyFinitePolyhedralManifoldWithBoundary` 提供该表示；`exists_locallyFinitePieceTower_of_isOpen` 从开集构造塔，保留内核原单形与映射，`exists_core_of_isCompact` 给紧致捕获，`exists_glue` 拼接内核上一致的映射。存在定理源码 `bfd458cdc`，聚焦检查 exit=0、零 warning，AuditF114 仅标准三公理。E.2/E.3 的表示层前置已解除；§12.1 改派后 F 车道已证明 36.1 与 PLApproximationManifold 3 的条件版（Moise352 3 → 端点，AuditF117 仅标准三公理），35.2 本身仍待 E 车道。
 - **R10 最小载体约束的刚性（2026-09-15）。** §12.2 的源单纯化把顶点映到目标顶点；carrierFace 的单点仿射包不能提供任何移动自由度。CarrierPerturbation.lean 已证明整映射与双点集不变，并证明既有顶点双点阻止奇点集避开目标顶点。F5.2 保持 partial，必须先修订载体选择及跨单形兼容设计，不能补上一般位置结论型假设。AuditF118 二十二项仅标准三公理。
 - **R11 固定折边的相对正规形式（2026-09-15）。** §15 球图卡路线的混合三角形可有固定折边与可动对顶点；两张片的固定折边原来重合时，完整相对通用位置条件仍允许两张在该边处同时折叠。固定边逐点不变不保证曲面芽不变，不能直接用于 crossing 的图卡搬运。FoldCrossing.lean 已闭合单折/平片引理；RelativeNormalForm.lean 仅有四个已验证支撑声明，不是相对正规形式。须生产固定折边处双折构型的处理，或使过渡部分的整片曲面芽恒同并证明缓冲层覆盖。AuditF120 六项仅标准三公理；F5.2 保持 partial，按 HANDOFF_CODEX_F.md §16.2 报告后暂停。
+
+
+### M304 surface-region complement checkpoint (2026-09-19 UTC)
+
+`CircleArcComplement.lean` and `SurfaceSubcomplexComplement.lean` construct
+actual complementary arcs and finite surface-region complements with the exact
+boundary carrier. Three new declarations, two retained ClosedCover declarations,
+nine critical reused entries and three models pass the standard-axiom and
+13-linter audit with zero diagnostics. Frozen evidence is in
+`moise304-reading/surface-complement-checkpoint/`. The connected annulus core
+and nonseparating-circle caps are still in progress; full 30.4 remains open.

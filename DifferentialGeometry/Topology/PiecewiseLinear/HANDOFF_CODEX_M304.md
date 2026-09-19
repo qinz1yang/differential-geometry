@@ -690,3 +690,34 @@ external audit's long-line warning was corrected before the passing run.
 
 Frozen evidence is under `moise304-reading/closed-cover-checkpoint/`. The root
 build remains stopped by the owner; no shared artifacts were modified.
+
+## Actual complements of surface regions (2026-09-19 UTC)
+
+`CircleArcComplement.lean` proves that the closure of the complement of any
+PL closed arc contained in a PL circle is a PL arc. It reuses the existing
+canonical planar parametrization and planar cut-pair theorem and transports
+the actual complementary arc back to the original ambient space.
+
+`SurfaceSubcomplexComplement.lean` proves that the generated complement of a
+two-dimensional manifold-with-boundary subcomplex in a closed combinatorial
+surface is a manifold with boundary. The local proof uses the actual
+complementary vertex links. A common-subdivision producer then constructs a
+finite manifold whose carrier is exactly the closure of the set difference,
+and whose boundary carrier is exactly the original region's boundary. The
+subcomplex theorem does not require a separate finite-faces hypothesis on
+the subcomplex; an unused such hypothesis was removed after the first audit.
+
+The two leaves compile without diagnostics in 10.844 and 11.294 seconds.
+The final silent audit takes 46.479 seconds and checks all three new
+declarations, both retained ClosedCover declarations, nine key reused entries
+and three models. The models remove the bottom edge of a square boundary,
+remove the bottom cap of a cube boundary while checking the exact boundary,
+and remove two disjoint closed attachments. All 13 applicable environment
+linters pass and all axiom closures contain only standard foundational
+axioms. Both leaves are registered in the flat aggregate. Frozen evidence is
+under `moise304-reading/surface-complement-checkpoint/`.
+
+These are actual complement producers, not a completed nonseparating-circle
+compression: the annulus boundary, connected core and subsequent caps still
+need to be assembled. The root build remains stopped and shared artifacts
+remain untouched.

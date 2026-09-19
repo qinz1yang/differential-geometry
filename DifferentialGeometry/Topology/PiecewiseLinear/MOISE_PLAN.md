@@ -1013,3 +1013,14 @@ The actual compatible-triangulation repair is next;
 no universal impossibility theorem for every NormalSystem is claimed. The concrete simplex-times-Bool model tests finite-cover realization,
 not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
 is newly queued and E3 continues simultaneous subdivisions and actual traces.
+
+
+### M304 surface-region complement checkpoint (2026-09-19 UTC)
+
+`CircleArcComplement.lean` and `SurfaceSubcomplexComplement.lean` construct
+actual complementary arcs and finite surface-region complements with the exact
+boundary carrier. Three new declarations, two retained ClosedCover declarations,
+nine critical reused entries and three models pass the standard-axiom and
+13-linter audit with zero diagnostics. Frozen evidence is in
+`moise304-reading/surface-complement-checkpoint/`. The connected annulus core
+and nonseparating-circle caps are still in progress; full 30.4 remains open.
