@@ -101,6 +101,8 @@ theorem weightedInvGramOnEuclid_closedCell_pullback
   rw [weightedInvGramOnEuclid, densityOnEuclid_closedCell_pullback g hα hy,
     invGramOnEuclid_closedCell_pullback g hα hy]
 
+section
+
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -233,5 +235,72 @@ theorem weightedInvGramOnEuclid_closedCell_chart_pullback
   intro h C B
   rw [weightedInvGramOnEuclid, densityOnEuclid_closedCell_chart_pullback g α e he hβ hy,
     invGramOnEuclid_closedCell_chart_pullback g α e he hβ hy]
+
+end
+
+section
+
+variable {H M : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (m + 1))) H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem densityOnEuclid_closedCell_chart_pullback_eq_abs_det_mul
+    (g : SmoothRiemannianMetric I M) (α : M) (e : EuN ≃ᴬ[ℝ] EuN)
+    (he : ∀ x : ClosedCell (m + 1), e x.val ∈ interior (extChartAt I α).target)
+    {β : ClosedCell (m + 1)} (hβ : ‖β.val‖ < 1)
+    {y : EuN} (hy : y ∈ (extChartAt (𝓡∂ (m + 1)) β).target) :
+    let h := g.pullback (I := 𝓡∂ (m + 1)) (J := I)
+      (fun x : ClosedCell (m + 1) => (extChartAt I α).symm (e x.val))
+      (contMDiff_extChartAt_symm_comp_affine_closedCell α e he)
+      (fun x => injective_mfderiv_extChartAt_symm_comp_affine_closedCell α e (he x))
+    densityOnEuclid h β (toEuclidean y) =
+      |e.toAffineEquiv.linear.toLinearMap.det| *
+        densityOnEuclid g α (toEuclidean (e (closedCellShiftSucc m (-1) y))) := by
+  intro h
+  rw [densityOnEuclid_closedCell_chart_pullback g α e he hβ hy]
+  let C := LinearMap.toMatrix (chartModelBasis EuN) (chartModelBasis EuN)
+    e.toAffineEquiv.linear.toLinearMap
+  let G := Matrix.of fun i j => gramOnEuclid g α i j
+    (toEuclidean (e (closedCellShiftSucc m (-1) y)))
+  have hdet : (C.transpose * G * C).det = C.det ^ 2 * G.det := by
+    rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
+    ring
+  change Real.sqrt (C.transpose * G * C).det = _
+  rw [hdet, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
+  rw [show C.det = e.toAffineEquiv.linear.toLinearMap.det from LinearMap.det_toMatrix _ _]
+  rfl
+
+theorem weightedInvGramOnEuclid_closedCell_chart_pullback_eq_congruence
+    (g : SmoothRiemannianMetric I M) (α : M) (e : EuN ≃ᴬ[ℝ] EuN)
+    (he : ∀ x : ClosedCell (m + 1), e x.val ∈ interior (extChartAt I α).target)
+    {β : ClosedCell (m + 1)} (hβ : ‖β.val‖ < 1)
+    {y : EuN} (hy : y ∈ (extChartAt (𝓡∂ (m + 1)) β).target)
+    (i j : Fin (Module.finrank ℝ EuN)) :
+    let h := g.pullback (I := 𝓡∂ (m + 1)) (J := I)
+      (fun x : ClosedCell (m + 1) => (extChartAt I α).symm (e x.val))
+      (contMDiff_extChartAt_symm_comp_affine_closedCell α e he)
+      (fun x => injective_mfderiv_extChartAt_symm_comp_affine_closedCell α e (he x))
+    let C := LinearMap.toMatrix (chartModelBasis EuN) (chartModelBasis EuN)
+      e.toAffineEquiv.linear.toLinearMap
+    weightedInvGramOnEuclid h β i j (toEuclidean y) =
+      |e.toAffineEquiv.linear.toLinearMap.det| *
+        (C⁻¹ * Matrix.of (fun k l => weightedInvGramOnEuclid g α k l
+          (toEuclidean (e (closedCellShiftSucc m (-1) y)))) * C⁻¹.transpose) i j := by
+  intro h C
+  rw [weightedInvGramOnEuclid,
+    densityOnEuclid_closedCell_chart_pullback_eq_abs_det_mul g α e he hβ hy,
+    invGramOnEuclid_closedCell_chart_pullback g α e he hβ hy]
+  simp only [Matrix.mul_inv_rev, ← Matrix.transpose_nonsing_inv, ← Matrix.mul_assoc]
+  let z := toEuclidean (e (closedCellShiftSucc m (-1) y))
+  have hA : Matrix.of (fun k l => weightedInvGramOnEuclid g α k l z) =
+      densityOnEuclid g α z • Matrix.of (fun k l => invGramOnEuclid g α k l z) := by
+    ext k l
+    rfl
+  change |e.toAffineEquiv.linear.toLinearMap.det| * densityOnEuclid g α z *
+    (C⁻¹ * (Matrix.of fun k l => gramOnEuclid g α k l z)⁻¹ * C⁻¹.transpose) i j = _
+  rw [hA, Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_apply, smul_eq_mul]
+  rw [mul_assoc]
+  rfl
+
+end
 
 end DifferentialGeometry.Analysis.Laplacian.MetricExtension
