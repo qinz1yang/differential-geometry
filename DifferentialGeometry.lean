@@ -11452,3 +11452,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ProductRankPe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSplitting.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientRankProduct
+import DifferentialGeometry.Topology.Compactness.Perturbation
+import DifferentialGeometry.Topology.Manifold.Coincidences
+import DifferentialGeometry.Analysis.Calculus.Periodic.Immersion
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Convergence
+import DifferentialGeometry.Analysis.Integration.Integral.UniformConvergence
+import DifferentialGeometry.Topology.LoopSpace.FiniteSelfIntersections

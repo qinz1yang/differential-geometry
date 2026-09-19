@@ -3,14 +3,9 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.TangentCone.Prod
 import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
 import Mathlib.Analysis.Calculus.Deriv.Comp
-
-
-
-
-
-
-
-
+import Mathlib.Algebra.Group.Pointwise.Set.Scalar
+import Mathlib.Topology.Compactness.Compact
+import Mathlib.Topology.UniformSpace.HeineCantor
 
 noncomputable section
 
@@ -200,3 +195,95 @@ theorem continuousOn_iteratedFDerivWithin_comp_graph
     (hJ.prod uniqueDiffOn_univ) hQ hd hQjet hdjet (fun _ hq => ⟨hq.2.1, mem_univ _⟩)
 
 end DifferentialGeometry.Analysis
+end
+
+noncomputable section
+
+open Set Filter
+open scoped Topology ContDiff Pointwise
+
+namespace DifferentialGeometry.Analysis
+
+variable {P E F : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem iteratedFDerivWithin_prod_slice
+    {f : P × E → F} {U : Set P} {S : Set E} {n : ℕ∞ω}
+    (hU : IsOpen U) (hS : UniqueDiffOn ℝ S) (hf : ContDiffOn ℝ n f (U ×ˢ S))
+    {p : P} {x : E} (hp : p ∈ U) (hx : x ∈ S) (m : ℕ) (hm : m ≤ n) :
+    iteratedFDerivWithin ℝ m (fun y => f (p, y)) S x =
+      (iteratedFDerivWithin ℝ m f (U ×ˢ S) (p, x)).compContinuousLinearMap
+        (fun _ : Fin m => ContinuousLinearMap.inr ℝ P E) := by
+  let R : Set (P × E) := (fun q : P × E => q + (p, 0)) ⁻¹' (U ×ˢ S)
+  have hR : R = ((fun q : P => q + p) ⁻¹' U) ×ˢ S := by
+    ext q
+    simp only [R, mem_preimage, mem_prod, Prod.fst_add, Prod.snd_add, add_zero]
+  have huniq : UniqueDiffOn ℝ R := by
+    rw [hR]
+    exact (hU.preimage (continuous_id.add continuous_const)).uniqueDiffOn.prod hS
+  have hpre : (ContinuousLinearMap.inr ℝ P E) ⁻¹' R = S := by
+    ext y
+    simp only [R, mem_preimage, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+      zero_add, add_zero, mem_prod, hp, true_and]
+  have hshift : ContDiffOn ℝ n (fun q : P × E => f (q + (p, 0))) R :=
+    hf.comp (contDiff_id.add contDiff_const).contDiffOn (fun _ h => h)
+  have hmem : (ContinuousLinearMap.inr ℝ P E) x ∈ R := by
+    change (0 + p, x + 0) ∈ U ×ˢ S
+    simpa only [zero_add, add_zero, mem_prod] using And.intro hp hx
+  have hcomp := (ContinuousLinearMap.inr ℝ P E).iteratedFDerivWithin_comp_right
+    hshift huniq (by rw [hpre]; exact hS) hmem hm
+  have htranslate : (p, (0 : E)) +ᵥ R = U ×ˢ S := by
+    ext q
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      simpa only [R, mem_preimage, vadd_eq_add, add_comm (p, (0 : E))] using hy
+    · intro hq
+      refine ⟨q - (p, 0), ?_, ?_⟩
+      · simpa only [R, mem_preimage, sub_add_cancel] using hq
+      · change (p, 0) + (q - (p, 0)) = q
+        abel
+  rw [hpre, iteratedFDerivWithin_comp_add_right, htranslate] at hcomp
+  simpa only [Function.comp_def, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+    zero_add, add_zero] using hcomp
+
+theorem continuousOn_iteratedFDerivWithin_prod_slice
+    {f : P × E → F} {U : Set P} {S : Set E} {n : ℕ∞ω}
+    (hU : IsOpen U) (hS : UniqueDiffOn ℝ S) (hf : ContDiffOn ℝ n f (U ×ˢ S))
+    (m : ℕ) (hm : m ≤ n) :
+    ContinuousOn (fun q : P × E => iteratedFDerivWithin ℝ m (fun y => f (q.1, y)) S q.2)
+      (U ×ˢ S) := by
+  have hfull := hf.continuousOn_iteratedFDerivWithin hm (hU.uniqueDiffOn.prod hS)
+  have h := (ContinuousMultilinearMap.compContinuousLinearMapL
+    (fun _ : Fin m => ContinuousLinearMap.inr ℝ P E)).continuous.comp_continuousOn hfull
+  refine h.congr fun q hq => ?_
+  exact iteratedFDerivWithin_prod_slice hU hS hf hq.1 hq.2 m hm
+
+theorem eventually_uniform_iteratedFDerivWithin_prod_slice
+    {f : P × E → F} {U : Set P} {S K : Set E}
+    (hU : IsOpen U) (hS : UniqueDiffOn ℝ S) (hf : ContDiffOn ℝ ∞ f (U ×ˢ S))
+    (hK : IsCompact K) (hKS : K ⊆ S) {a : P} (ha : a ∈ U)
+    (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ p in 𝓝 a, ∀ m : ℕ, m ≤ n → ∀ x ∈ K,
+      ‖iteratedFDerivWithin ℝ m (fun y => f (p, y)) S x -
+        iteratedFDerivWithin ℝ m (fun y => f (a, y)) S x‖ < ε := by
+  have hsingle : ∀ m : Fin (n + 1), ∀ᶠ p in 𝓝 a, ∀ x ∈ K,
+      ‖iteratedFDerivWithin ℝ m.val (fun y => f (p, y)) S x -
+        iteratedFDerivWithin ℝ m.val (fun y => f (a, y)) S x‖ < ε := by
+    intro m
+    have hjets := continuousOn_iteratedFDerivWithin_prod_slice hU hS hf m.val
+      (by exact_mod_cast le_top)
+    obtain ⟨W, hW, hclose⟩ := hK.mem_uniformity_of_prod
+      (f := fun p x => iteratedFDerivWithin ℝ m.val (fun y => f (p, y)) S x)
+      (hjets.mono (prod_mono subset_rfl hKS)) ha (Metric.dist_mem_uniformity hε)
+    rw [hU.nhdsWithin_eq ha] at hW
+    filter_upwards [hW] with p hp x hx
+    simpa only [mem_ofPred_eq, dist_eq_norm] using hclose p hp x hx
+  have hfinite : ∀ᶠ p in 𝓝 a, ∀ m : Fin (n + 1), ∀ x ∈ K,
+      ‖iteratedFDerivWithin ℝ m.val (fun y => f (p, y)) S x -
+        iteratedFDerivWithin ℝ m.val (fun y => f (a, y)) S x‖ < ε :=
+    Filter.eventually_all.mpr hsingle
+  filter_upwards [hfinite] with p hp m hm x hx
+  exact hp ⟨m, Nat.lt_succ_of_le hm⟩ x hx
+
+end DifferentialGeometry.Analysis
+end
