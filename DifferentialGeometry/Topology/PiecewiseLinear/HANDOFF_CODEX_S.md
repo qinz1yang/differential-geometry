@@ -5574,3 +5574,53 @@ root build is a separate coordinator gate.
 Remaining in this round: restrict to the boundary cylindrical diagram, force
 positive boundary monodromy from target orientability, and connect disk
 pseudo-isotopy and comparison. The full C.7 headline is still partial.
+
+## Positive boundary monodromy of orientable disk diagrams (2026-09-18)
+
+Status: done for the actual boundary diagram and positive monodromy.
+`CylindricalMonodromy.lean` contains three public declarations:
+
+- `IsCylindricalDiagram.boundary`: for any finite combinatorial manifold with
+  boundary of dimension `n + 1`, its actual cylindrical diagram restricts to a
+  cylindrical diagram on its boundary, with image the actual side image. The
+  target set need not be a manifold. A produced PL end map preserves the base
+  boundary, which proves equality of the two boundary end images.
+- `IsCylindricalDiagram.boundary_isPLCirclePositive`: a disk cylindrical diagram
+  whose target is an orientable finite combinatorial 3-manifold with boundary
+  has positive top-to-bottom monodromy on the disk boundary. The proof uses the
+  boundary diagram above, the proved side inclusion, the target boundary's
+  orientability and the actual Moebius-embedding obstruction.
+- `IsCylindricalDiagram.boundary_isPLCirclePositive_of_bottom_eq_top`: the
+  bottom-to-top convention used by the existing end-map producer. It passes to
+  the actual inverse disk map, uses boundary invariance for that inverse, and
+  transfers positivity back using the explicit inverse equations.
+
+No side inclusion, positive monodromy, pseudo-isotopy or Schoenflies statement
+is assumed. The two geometric inputs are the actual disk diagram and an
+orientable manifold target; each end map is tied to its diagram by the full
+pointwise end equation. This closes the geometric bridge left in the preceding
+entry, rather than assuming a boundary-image equality.
+
+Final checks: compile 12.094 seconds, complete dynamic audit 12.496 seconds,
+each exit 0 with zero diagnostics. Times include resource admission. All three
+nonautomatic declarations, seven directly reused critical producers, and all
+13 applicable environment linters pass; all axiom closures use only the
+standard three axioms. The nonempty tetrahedral-circle instance was strengthened
+to construct target orientability as well as the actual diagram. Its declaration
+and two orientation producers pass the axiom audit, exit 0, zero diagnostics,
+12.006 seconds including admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalMonodromy-verification.json` includes exact raw and normalized source
+hashes, private object identity, all receipts and timings, declaration/linter
+inventories, critical producers and the concrete instance. Source SHA256:
+`6D2CBEA4202874739E705127A2BE48C70C308827C5732CE889A43049339D1CB3`.
+Static checks pass and all 463 native imports avoid `HurewiczLowDegrees`.
+Source, root import, this handoff and the C.7 plan row are one commit; shared
+artifacts remain read-only and the integration root gate is separate.
+
+Remaining in this round: consume positive boundary monodromy to untwist the
+actual disk diagram and compare orientable diagram targets. The full original
+CST cyclic-decomposition/topological-solid-torus interface and the contractible
+polygon assembly remain beyond this completed layer.
