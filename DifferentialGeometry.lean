@@ -8082,6 +8082,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 import DifferentialGeometry.Geometry.Operator.Laplacian.Comparison
+import DifferentialGeometry.Geometry.Operator.Laplacian.Coordinates
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Operator.Laplacian.TensorInner
 import DifferentialGeometry.Geometry.Operator.Laplacian.Viscosity
