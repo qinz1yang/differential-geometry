@@ -8801,3 +8801,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingBetti
+import DifferentialGeometry.Topology.Connected.ClosedCover

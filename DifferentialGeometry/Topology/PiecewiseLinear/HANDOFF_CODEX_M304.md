@@ -667,3 +667,26 @@ and shared artifacts remain untouched. These raw caps share the original
 disk: they are not a claim of E3's disjoint pushed surfaces or of preservation
 of the original separating property. Nonseparating-circle compression,
 26.4 production, E3's separation step and full 30.4 remain open.
+
+## Shared closed-cover connectedness lemma (2026-09-19 UTC)
+
+`Topology.isPreconnected_left_of_isClosed_union` in `Connected/ClosedCover.lean`
+proves that a closed set A is preconnected when A union B and A intersection B
+are preconnected and B is closed. There is no nonemptiness assumption and no
+connectedness assumption on B. The existing complementary-component theorem
+is unchanged. The required source headers are added and the existing leaf is
+explicitly registered in the flat aggregate.
+
+The integration owner identified simultaneous F-lane work on the same result
+and assigned this existing natural topic home as the sole public producer.
+This dependency is delivered independently of the in-progress circle-arc and
+surface-complement leaves. Source compilation takes 6.232 seconds; the final
+silent audit takes 15.747 seconds. Both module declarations, six critical
+reused declarations and four models have only standard foundational axioms;
+all 13 applicable environment linters pass, with zero diagnostics. The models
+cover an interval attachment, the empty-set case, two disjoint attachments,
+and the preserved component API on two separated intervals. The initial
+external audit's long-line warning was corrected before the passing run.
+
+Frozen evidence is under `moise304-reading/closed-cover-checkpoint/`. The root
+build remains stopped by the owner; no shared artifacts were modified.
