@@ -5398,3 +5398,72 @@ exact flip-only fibers after composing with the cylindrical diagram. This must
 give `alpha1(s) = v^-1(alpha0(1-s))` on the entire interval. No invariant arc is
 assumed for the original arbitrary reversing monodromy. The orientability bridge
 remains a separate obligation.
+
+## Reversing mapping-torus band geometry (2026-09-18)
+
+Status: done for the reflection, complete flip seam, exact quotient fibers and
+actual embedded Moebius-band PL homeomorphism. C.7 remains partial. This is the
+next mathematical layer after `1da809615`; source, root registration, this record
+and the C.7 plan row are delivered in one commit.
+
+`CircleAnnulusOrientation.lean` now provides
+`exists_isPLHomeomorphOn_reflection_of_arc_decomposition`. From two complementary
+parametrized arcs it constructs a reversing PL involution that exchanges the
+parametrizations pointwise. The existing negative-map producer keeps its exact
+signature and is a corollary. Full-file linter review also removed unnecessary
+`FiniteDimensional` assumptions from `exists_pair_ne_of_isPLSphere_one`,
+`exists_loopCircle_param_of_arc_decomposition` and
+`image_arc_eq_of_isPLCirclePositive`. Their only consumers are in this module
+and the rechecked reflection module. Required headers and line lengths are fixed.
+
+`CircleReflection.lean` provides `exists_isPLHomeomorphOn_reflection_arc`.
+On every PL circle it constructs a reversing PL involution `r` and an actual
+PL parametrized arc `gamma : [0,1] -> A` inside the circle, with
+`r(gamma(s)) = gamma(1-s)` for every parameter. The two half-arcs meet only at
+their common initial endpoint; affine reparametrizations and native PL gluing
+produce the required arc. No invariant arc of arbitrary monodromy is assumed.
+
+`MobiusMappingTorus.lean` provides:
+
+- `exists_isPiecewiseAffineOn_square_flip_of_not_isPLCirclePositive`: given an
+  actual cylindrical diagram `f` over a PL circle and reversing monodromy `v`
+  satisfying `f(x,1) = f(v(x),0)`, produces a PWA square map with image inside
+  the diagram, the full flip seam and exactly the permitted fibers.
+- `exists_isPLHomeomorphOn_mobiusComplex_of_not_isPLCirclePositive`: consumes
+  that map and the verified square model to produce an actual PL homeomorphism
+  from `mobiusComplex.space` onto a subset of the diagram's target.
+
+The top strip map is the positive composite `inv(v) . r`. The prescribed-end
+annulus producer gives the full identity `alpha1(s) = inv(v)(alpha0(1-s))`.
+The cylindrical diagram reduces equal images to equal strip points or opposite
+ends. Global strip injectivity handles equality; exact end-preimage equivalences,
+bottom-edge injectivity and the full seam force complementary parameters at the
+opposite ends. No preservation of intermediate horizontal levels is used.
+
+Convention: `v` maps top to bottom. The earlier
+`IsCylindricalDiagram.exists_isPLHomeomorphOn_endMap` produces bottom-to-top
+monodromy, so its inverse must be used when applying these endpoints.
+
+Verification used the coordinator's `S-round-20260919` authorization and the
+round helper, one S Lean process at a time, private outputs and read-only shared
+artifacts. Final module checks and full dynamic audits completed at UTC
+2026-09-19 00:15--00:16. Counts are 33 + 4 + 2 = 39 nonautomatic declarations,
+including all three private reflection lemmas. Each module passed all 13
+applicable environment linters; every axiom closure uses only `propext`,
+`Classical.choice`, and `Quot.sound`. All final exits are 0 with zero diagnostics.
+Earlier S-only dependencies were reused after source-hash and byte checks.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`MobiusMappingTorus-verification.json` contains exact source and object hashes,
+compile/audit receipts and the complete declaration and linter inventories.
+Per-module audit TSVs and preserved audit receipts are alongside it and in `lib`;
+`dependency-reuse.json` records the four unchanged private dependencies. The
+external audit probes are removed after preserving these records. Static source
+checks and `git diff --check` pass. The integration root build remains the
+coordinator's separate gate.
+
+Remaining C.7 bridge: identify the boundary of a disk cylindrical diagram with
+its circle mapping torus, make the embedded band a subcomplex after subdivision,
+and transfer orientability to contradict `not_isOrientable_mobiusComplex`.
+The embedded-band producer is complete; the full C.7 headline is not claimed.
