@@ -11458,3 +11458,10 @@ import DifferentialGeometry.Analysis.Calculus.Periodic.Immersion
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Convergence
 import DifferentialGeometry.Analysis.Integration.Integral.UniformConvergence
 import DifferentialGeometry.Topology.LoopSpace.FiniteSelfIntersections
+import DifferentialGeometry.Analysis.Calculus.CurvePerturbation
+import DifferentialGeometry.Topology.Manifold.MapPerturbation
+import DifferentialGeometry.Topology.Manifold.TransversePerturbation
+import DifferentialGeometry.Topology.LoopSpace.FamilyDerivatives
+import DifferentialGeometry.Topology.LoopSpace.TransversePerturbation
+import DifferentialGeometry.Topology.LoopSpace.ImmersionStability
+import DifferentialGeometry.Topology.LoopSpace.GenericApproximation
