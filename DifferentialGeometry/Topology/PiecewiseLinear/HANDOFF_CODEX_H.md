@@ -3762,3 +3762,39 @@ This closes the requested nonconstant noncompact 3-dimensional model, not
 Moise 35.1.  The next geometric obligation is still the locally finite
 dual-cell modification of the actual graph, followed by the pointwise-error
 PL homeomorphism.
+
+## 74. 2026-09-19 graph dual cells are PL three-balls — done
+
+`DualCellDecomposition.lean` now proves
+`IsCombinatorialManifold.isPLBall_graphDualCell`.  For a finite combinatorial
+3-manifold and a graph subcomplex, every vertex-indexed cell in the canonical
+dual-cell cover of its derived neighborhood is a PL 3-ball.
+
+The proof works inside the coarse vertex dual ball
+`A = dualCell K {v}`.  A flag in `graphDualCell K L v` has a least member.
+The graph centroid in that least member is common to the whole flag, contains
+`v`, and is therefore either the vertex centroid itself or the centroid of an
+incident graph edge.  This gives an exact space decomposition into the dual
+3-ball at `v` and the dual 3-balls at all incident edge centroids, all formed
+inside `A`.  Each incident ball meets the central ball in a PL 2-ball.  Two
+different incident edges have the same cardinality and are incomparable, so
+their centroid dual balls are disjoint.  The finite pairwise-disjoint ball
+gluing theorem then gives the result.
+
+This is the local chimney decomposition required by F4.3.  It does not replace
+a clipped chimney by the full edge derived-neighborhood cell, and it uses no
+radial formula.  Together with the existing cover, splitting-disk, intersection,
+and diameter theorems, F4.3 is now complete and downstream consumers may drop
+their explicit `hcell` hypothesis.
+
+The private focused check of `DualCellDecomposition` exited zero with no
+diagnostics and left shared outputs unchanged.  The external strict audit
+dynamically checked all eleven non-automatic declarations in the module plus
+nineteen directly reused declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes the ballness prerequisite for the §35.1 dual-cell modification,
+not the modification itself.  The next geometric steps remain the edgewise
+piercing and nested annuli, the locally finite simultaneous error choices, and
+the cellwise approximation and gluing from Moise 35.1.

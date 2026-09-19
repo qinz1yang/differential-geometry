@@ -915,3 +915,5 @@ inline comments and declaration docstrings remain disallowed.
   `PLPieceIn.toLocallyFinite` 给出有限生产者，弧模型与 `Moise351` 公开签名不变。三个消费模块聚焦检查零诊断；严格审计 176 个模块声明加 28 个直接复用声明，仅标准三公理，13 项 linter 全过。
 - 2026-09-19（H 车道非紧三维 PL 导出邻域模型）：`PolyhedralGraph.lean` 的
   `exists_noncompact_isPLDerivedNeighborhoodExhaustion_three_with_edge` 从一个含内部单边弧的有限组合 3-球出发，取整数方向彼此分离的仿射平移，并以对称有限区间形成非恒定环境层与图层。全体分量组成同一个局部有限欧氏复形，恒等映射给 `LocallyFinitePLPieceIn`；旗标的分量唯一性给导出邻域的逐分量面/空间公式和严格旧面限制，局部有限闭分量族的外部并之补集给下一层相对邻域。端点同时证明总导出邻域非紧、核心含非退化线段，并由规范相容穷竭得到全局强形变收缩。私有聚焦检查 exit=0、零诊断；严格审计六模块 196 项及 39 项直接复用声明，仅 `propext`、`Classical.choice`、`Quot.sound`，13 项 linter 全过。零维实例继续只作接口 sanity check；35.1 的实际对偶胞腔改造与逐点误差 PL 同胚仍未证明。
+- 2026-09-19（H 车道 F4.3 顶点对偶胞腔球性）：`DualCellDecomposition.lean` 的
+  `IsCombinatorialManifold.isPLBall_graphDualCell` 已证明有限组合 3-流形中图的每个 `graphDualCell` 是 PL 3-球。证明在粗顶点对偶球内把它分解为中心顶点与各关联边形心的对偶球；中心交集是 PL 2-球，不同关联边形心不可比较，故附加球两两不交，再用有限边界盘粘合。聚焦检查零诊断；严格审计模块 11 项与 19 项直接复用声明，只含标准三公理且 13 项 linter 全过。F4.3 与计划 R8 由此闭合；35.1 尚需逐边穿孔、环带嵌套、局部有限误差选择及逐胞腔逼近拼接。
