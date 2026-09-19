@@ -11481,3 +11481,5 @@ import DifferentialGeometry.Analysis.FunctionalAnalysis.BallScaling
 import DifferentialGeometry.Analysis.Integration.PlaneScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Convergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureConvergence

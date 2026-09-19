@@ -93,3 +93,30 @@ theorem two_mul_hamiltonIveyBarrier_eq_fixedHamiltonIveyBarrier
   ring
 
 end DifferentialGeometry.Geometry.Curvature
+
+open Filter Set
+open scoped Topology
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+theorem mem_fixedHamiltonIveyRegion_of_tendsto
+    {ι : Type*} {l : Filter ι} [NeBot l] {a R ν : ι → ℝ} {a₀ R₀ ν₀ : ℝ}
+    (ha₀ : 0 < a₀) (ha : Tendsto a l (𝓝 a₀)) (hR : Tendsto R l (𝓝 R₀))
+    (hν : Tendsto ν l (𝓝 ν₀))
+    (hregion : ∀ᶠ i in l, (R i, ν i) ∈ fixedHamiltonIveyRegion (a i)) :
+    (R₀, ν₀) ∈ fixedHamiltonIveyRegion a₀ := by
+  by_cases hnonneg : 0 ≤ ν₀
+  · exact Or.inl hnonneg
+  have hnegative : ν₀ < 0 := lt_of_not_ge hnonneg
+  have harg : a₀ * (-ν₀) ≠ 0 := (mul_pos ha₀ (neg_pos.mpr hnegative)).ne'
+  have hbar : Tendsto (fun i => fixedHamiltonIveyBarrier (a i) (-(ν i))) l
+      (𝓝 (fixedHamiltonIveyBarrier a₀ (-ν₀))) :=
+    hν.neg.mul (((ha.mul hν.neg).log harg).sub_const 3)
+  apply Or.inr
+  apply le_of_tendsto_of_tendsto hbar hR
+  filter_upwards [hregion, hν.eventually_lt_const hnegative] with i hi hni
+  rcases hi with hpos | hbound
+  · exact False.elim ((not_le_of_gt hni) hpos)
+  · exact hbound
+
+end DifferentialGeometry.Geometry.Curvature

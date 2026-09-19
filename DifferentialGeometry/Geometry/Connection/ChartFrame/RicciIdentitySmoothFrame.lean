@@ -1809,3 +1809,80 @@ theorem chartFrameNorm_continuousOn_metricFamily
 end Connection
 end Geometry
 end DifferentialGeometry
+
+open DifferentialGeometry.Tensor.Coordinates
+open scoped BigOperators
+
+namespace DifferentialGeometry.Geometry.Connection
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem chartFrameNorm_rec (g : SmoothRiemannianMetric I M) (α x : M)
+    (i : Fin (Module.finrank ℝ E)) :
+    chartFrameNorm g α i x =
+      let raw := chartBasisVecFiber (I := I) α i x - ∑ j : Fin i.val,
+        g.inner x (chartBasisVecFiber (I := I) α i x)
+          (chartFrameNorm g α ⟨j.val, lt_trans j.isLt i.isLt⟩ x) •
+          chartFrameNorm g α ⟨j.val, lt_trans j.isLt i.isLt⟩ x
+      (Real.sqrt (g.inner x raw raw))⁻¹ • raw := by
+  unfold chartFrameNorm
+  rw [chartFrameNormFiber]
+
+private theorem tendsto_clm_apply {A B : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [NormedAddCommGroup B] [NormedSpace ℝ B]
+    {ι : Type*} {l : Filter ι} {f : ι → A →L[ℝ] B} {g : A →L[ℝ] B}
+    {v : ι → A} {v₀ : A} (hf : Tendsto f l (𝓝 g)) (hv : Tendsto v l (𝓝 v₀)) :
+    Tendsto (fun z => f z (v z)) l (𝓝 (g v₀)) :=
+  isBoundedBilinearMap_apply.continuous.continuousAt.tendsto.comp (hf.prodMk_nhds hv)
+
+private theorem tendsto_clm_of_apply {A B : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [FiniteDimensional ℝ A] [NormedAddCommGroup B] [NormedSpace ℝ B]
+    {ι : Type*} {l : Filter ι} {f : ι → A →L[ℝ] B} {g : A →L[ℝ] B}
+    (h : ∀ v, Tendsto (fun i => f i v) l (𝓝 (g v))) : Tendsto f l (𝓝 g) := by
+  let e : (A →L[ℝ] B) ≃L[ℝ] Fin (Module.finrank ℝ A) → B :=
+    ((ContinuousLinearEquiv.ofFinrankEq (Module.finrank_fin_fun ℝ).symm).arrowCongr
+      (1 : B ≃L[ℝ] B)).trans (ContinuousLinearEquiv.piRing _)
+  rw [e.toHomeomorph.isInducing.tendsto_nhds_iff]
+  exact tendsto_pi_nhds.mpr fun i => h _
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartFrameNorm_tendsto_of_inner_tendsto
+    {ι : Type*} {l : Filter ι} {g : ι → SmoothRiemannianMetric I M}
+    (g₀ : SmoothRiemannianMetric I M) (x : M)
+    (hg : ∀ v w : TangentSpace I x, Tendsto (fun z => (g z).inner x v w) l
+      (𝓝 (g₀.inner x v w))) (i : Fin (Module.finrank ℝ E)) :
+    Tendsto (fun z => chartFrameNorm (g z) x i x) l (𝓝 (chartFrameNorm g₀ x i x)) := by
+  let : NeZero (Module.finrank ℝ E) := ⟨Nat.ne_of_gt (Nat.zero_lt_of_lt i.isLt)⟩
+  have hinner : Tendsto (fun z => (g z).inner x) l (𝓝 (g₀.inner x)) :=
+    tendsto_clm_of_apply fun v => tendsto_clm_of_apply (hg v)
+  induction i using WellFoundedLT.induction with
+  | ind i ih =>
+    let raw (h : SmoothRiemannianMetric I M) := chartBasisVecFiber (I := I) x i x -
+      ∑ j : Fin i.val, h.inner x (chartBasisVecFiber (I := I) x i x)
+        (chartFrameNorm h x ⟨j.val, lt_trans j.isLt i.isLt⟩ x) •
+        chartFrameNorm h x ⟨j.val, lt_trans j.isLt i.isLt⟩ x
+    have hraw : Tendsto (fun z => raw (g z)) l (𝓝 (raw g₀)) := by
+      apply tendsto_const_nhds.sub
+      apply tendsto_finsetSum
+      intro j hj
+      exact (tendsto_clm_apply (tendsto_clm_apply hinner tendsto_const_nhds) (ih _ j.isLt)).smul (ih _ j.isLt)
+    have hnonzero : raw g₀ ≠ 0 := by
+      intro hz
+      have heq := chartFrameNorm_rec g₀ x x i
+      change chartFrameNorm g₀ x i x = (Real.sqrt (g₀.inner x (raw g₀) (raw g₀)))⁻¹ • raw g₀ at heq
+      rw [hz, smul_zero] at heq
+      have hunit := chartFrameNorm_orthonormal g₀ x
+        (mem_baseSet_trivializationAt E (TangentSpace I) x) i i
+      rw [heq] at hunit
+      simp at hunit
+    have hnorm := ((tendsto_clm_apply (tendsto_clm_apply hinner hraw) hraw).sqrt.inv₀
+      (Real.sqrt_pos.mpr (g₀.pos x _ hnonzero)).ne').smul hraw
+    convert hnorm using 1
+    · funext z; exact chartFrameNorm_rec (g z) x x i
+    · rw [chartFrameNorm_rec g₀ x x i]
+
+end DifferentialGeometry.Geometry.Connection
