@@ -1,3 +1,4 @@
+import Mathlib.Topology.MetricSpace.Cauchy
 import Mathlib.Topology.Compactness.LocallyCompact
 import Mathlib.Topology.UniformSpace.UniformApproximation
 import Mathlib.Topology.Maps.Basic
@@ -204,3 +205,51 @@ theorem exists_isCompact_eventually_range_subset
     exact hn (mem_univ x)
 
 end TendstoUniformly
+
+namespace DifferentialGeometry.Analysis
+
+open scoped Topology
+
+theorem exists_tendstoUniformlyOn_of_dist_le_dist
+    {J X F Y : Type*} [PseudoMetricSpace F] [CompleteSpace F] [PseudoMetricSpace Y]
+    {l : Filter J} [NeBot l] {U : Set X} (f : J → X → F) (m : J → Y)
+    {y : Y} (hm : Tendsto m l (𝓝 y))
+    (hbound : ∀ᶠ st : J × J in l ×ˢ l, ∀ x ∈ U,
+      dist (f st.1 x) (f st.2 x) ≤ dist (m st.1) (m st.2)) :
+    ∃ g : X → F, TendstoUniformlyOn f g l U := by
+  classical
+  have hmod : Tendsto (fun st : J × J => dist (m st.1) (m st.2))
+      (l ×ˢ l) (𝓝 0) := by
+    simpa only [dist_self, Function.comp_def] using (hm.comp tendsto_fst).dist (hm.comp tendsto_snd)
+  have huc : UniformCauchySeqOn f l U := by
+    intro V hV
+    obtain ⟨ε, hε, hεV⟩ := Metric.mem_uniformity_dist.mp hV
+    filter_upwards [hbound, hmod.eventually_lt_const hε] with st hst hsmall x hx
+    exact hεV ((hst x hx).trans_lt hsmall)
+  have hex : ∀ x : X, ∃ z : F, x ∈ U → Tendsto (fun t => f t x) l (𝓝 z) := by
+    intro x
+    by_cases hx : x ∈ U
+    · obtain ⟨z, hz⟩ := cauchy_map_iff_exists_tendsto.mp (huc.cauchy_map hx)
+      exact ⟨z, fun _ => hz⟩
+    · obtain ⟨i⟩ := nonempty_of_neBot l
+      exact ⟨f i x, fun hx' => False.elim (hx hx')⟩
+  choose g hg using hex
+  exact ⟨g, huc.tendstoUniformlyOn_of_tendsto hg⟩
+
+theorem exists_tendstoUniformlyOn_left_endpoint_of_time_modulus
+    {X F : Type*} [PseudoMetricSpace F] [CompleteSpace F]
+    {a b : ℝ} (hab : a < b) {U : Set X} (f : ℝ → X → F) (m : ℝ → ℝ)
+    {c : ℝ} (hm : Tendsto m (𝓝[Ioo a b] a) (𝓝 c))
+    (hbound : ∀ s ∈ Ioo a b, ∀ t ∈ Ioo a b, ∀ x ∈ U,
+      dist (f s x) (f t x) ≤ |m s - m t|) :
+    ∃ g : X → F, TendstoUniformlyOn f g (𝓝[Ioo a b] a) U := by
+  let : NeBot (𝓝[Ioo a b] a) := left_nhdsWithin_Ioo_neBot hab
+  apply exists_tendstoUniformlyOn_of_dist_le_dist f m hm
+  have hmem : ∀ᶠ st : ℝ × ℝ in (𝓝[Ioo a b] a) ×ˢ (𝓝[Ioo a b] a),
+      st.1 ∈ Ioo a b ∧ st.2 ∈ Ioo a b :=
+    (tendsto_fst.eventually eventually_mem_nhdsWithin).and
+      (tendsto_snd.eventually eventually_mem_nhdsWithin)
+  filter_upwards [hmem] with st hst x hx
+  simpa only [Real.dist_eq] using hbound st.1 hst.1 st.2 hst.2 x hx
+
+end DifferentialGeometry.Analysis

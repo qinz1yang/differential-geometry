@@ -877,3 +877,86 @@ theorem connectionDifferenceTimeIntegralOn_connectionVariationSpeed
       (I := I) S hS hregular) hcont
 
 end DifferentialGeometry.PDE.RicciFlow
+
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem connectionDifferenceTimeIntegralOn_of_initial_continuity
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {T : ℝ}
+    (hcarrier : Set.Icc (0 : ℝ) T ⊆ D.carrier)
+    (hregular : Set.Ioc (0 : ℝ) T ⊆ D.regular)
+    (hinitial : ∀ (x : M) (u w v : TangentSpace I x),
+      ContinuousWithinAt
+        (fun r : ℝ => (S.base.metric 0).inner x
+          (CovariantDerivative.difference
+            (LeviCivita (I := I) (S.base.metric r))
+            (LeviCivita (I := I) (S.base.metric 0)) x u w) v)
+        (Set.Icc (0 : ℝ) T) 0)
+    (hintegrable : ∀ (x : M) (u w v : TangentSpace I x),
+      IntervalIntegrable
+        (fun s : ℝ => (S.base.metric 0).inner x
+          (connectionVariationSpeed (I := I) S s x u w) v)
+        MeasureTheory.volume 0 T) :
+    ConnectionDifferenceTimeIntegralOn (I := I) S T
+      (connectionVariationSpeed (I := I) S) := by
+  intro t ht x u w v
+  have hsubset : Set.Icc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
+    Set.Icc_subset_Icc le_rfl ht.2
+  have hint := (hintegrable x u w v).mono_set (by
+    rw [Set.uIcc_of_le ht.1.le, Set.uIcc_of_le (ht.1.le.trans ht.2)]
+    exact hsubset)
+  refine ⟨hint, ?_⟩
+  have hderiv := fun s hs => hasDerivWithinAt_connectionDifference_pairing_of_mem_Ioc
+    (I := I) S hS hcarrier hregular (s := s) hs x u w v
+  have hcont : ContinuousOn
+      (fun r : ℝ => (S.base.metric 0).inner x
+        (CovariantDerivative.difference
+          (LeviCivita (I := I) (S.base.metric r))
+          (LeviCivita (I := I) (S.base.metric 0)) x u w) v)
+      (Set.Icc (0 : ℝ) t) := by
+    intro s hs
+    rcases hs.1.eq_or_lt with hzero | hpos
+    · subst s
+      exact (hinitial x u w v).mono hsubset
+    · exact (hderiv s ⟨hpos, hs.2.trans ht.2⟩).continuousWithinAt.mono hsubset
+  have hright : ∀ s ∈ Set.Ioo (0 : ℝ) t,
+      HasDerivWithinAt
+        (fun r : ℝ => (S.base.metric 0).inner x
+          (CovariantDerivative.difference
+            (LeviCivita (I := I) (S.base.metric r))
+            (LeviCivita (I := I) (S.base.metric 0)) x u w) v)
+        ((S.base.metric 0).inner x
+          (connectionVariationSpeed (I := I) S s x u w) v)
+        (Set.Ioi s) s := by
+    intro s hs
+    exact ((hderiv s ⟨hs.1, hs.2.le.trans ht.2⟩).hasDerivAt
+      (Icc_mem_nhds hs.1 (hs.2.trans_le ht.2))).hasDerivWithinAt
+  have hzero : CovariantDerivative.difference
+      (LeviCivita (I := I) (S.base.metric 0))
+      (LeviCivita (I := I) (S.base.metric 0)) x u w = 0 := by
+    have h := congrFun
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference_self
+        (I := I) (S.base.metric 0)) x
+    exact congrArg (fun A : TangentSpace I x →L[ℝ]
+      TangentSpace I x →L[ℝ] TangentSpace I x => A u w) h
+  have hftc := intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le
+    ht.1.le hcont hright hint
+  simpa only [hzero, map_zero, zero_apply, sub_zero] using hftc.symm
+
+end DifferentialGeometry.PDE.RicciFlow
+
+end

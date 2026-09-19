@@ -58,7 +58,8 @@ theorem exists_chartGramMatrix_right_endpoint_bound
     exact (norm_ricci_pairing_le_of_metric_le S R (le_max_left 0 B) x
       (chartBasisVecFiber (I := I) α i x) (chartBasisVecFiber (I := I) α j x)
       (fun v => (hmetric s hs' x hx v).trans
-        (mul_le_mul_of_nonneg_right (le_max_right 0 B) (metric_inner_self_nonneg R x v))) hRic (hframe x hx i) (hframe x hx j)).trans
+        (mul_le_mul_of_nonneg_right (le_max_right 0 B) (metric_inner_self_nonneg R x v)))
+      hRic (hframe x hx i) (hframe x hx j)).trans
       (le_max_right _ _)
   simpa only [dist_eq_norm] using
     norm_image_sub_le_of_norm_deriv_le_segment' hderiv hbound b (right_mem_Icc.mpr ht.2)
@@ -90,3 +91,62 @@ theorem tendstoUniformlyOn_chartGramOnE_right_endpoint
     ((extChartAt I α).symm y) (hU hy) i j).trans_lt hsmall
 
 end DifferentialGeometry.PDE.RicciFlow
+
+end
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow
+open Bundle Filter Set
+open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Operator DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem tendstoUniformlyOn_chartGramOnE_left_endpoint
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b : ℝ} (hcarrier : Icc a b ⊆ D.carrier)
+    (hregular : Ioo a b ⊆ D.regular)
+    (R : SmoothRiemannianMetric I M) (α : M)
+    {K : Set M} (hK : IsCompact K)
+    (hchart : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
+    {B C : ℝ}
+    (hmetric : ∀ t ∈ Icc a b, MetricUniformEquivalentOn K R (S.family.metric t) B)
+    (hShi : MovingShiBoundOn K a b (fun _ t => S.family.metric t) 0 C)
+    {U : Set E} (hU : MapsTo (extChartAt I α).symm U K)
+    (i j : Fin (Module.finrank ℝ E)) :
+    TendstoUniformlyOn (fun t : ℝ => chartGramOnE (S.family.metric t) α i j)
+      (chartGramOnE (S.family.metric a) α i j) (𝓝[Ioo a b] a) U := by
+  obtain ⟨L, _, hL⟩ := exists_chartGramMatrix_right_endpoint_bound R α hK hchart B C
+  have hmod : Tendsto (fun t : ℝ => L * (t - a)) (𝓝[Ioo a b] a) (𝓝 0) := by
+    have hc : ContinuousAt (fun t : ℝ => L * (t - a)) a := by fun_prop
+    simpa only [sub_self, mul_zero] using hc.tendsto.mono_left nhdsWithin_le_nhds
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  filter_upwards [eventually_mem_nhdsWithin, hmod.eventually_lt_const hε]
+    with t ht hsmall y hy
+  have hcarrier' : Icc a t ⊆ D.carrier := by
+    intro s hs
+    exact hcarrier ⟨hs.1, hs.2.trans ht.2.le⟩
+  have hregular' : Ioo a t ⊆ D.regular := by
+    intro s hs
+    exact hregular ⟨hs.1, hs.2.trans ht.2⟩
+  have hmetric' : ∀ s ∈ Icc a t,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (S.family.metric s).inner x v v ≤ B * R.inner x v v := by
+    intro s hs x hx v
+    exact ((hmetric s ⟨hs.1, hs.2.trans ht.2.le⟩).2 x hx v).2
+  have hShi' : MovingShiBoundOn K a t (fun _ s => S.family.metric s) 0 C := by
+    intro n hn q s hs x hx
+    exact hShi n hn q s ⟨hs.1, hs.2.trans ht.2.le⟩ x hx
+  have hbound := hL S hS ht.1 hcarrier' hregular' hmetric' hShi' a
+    ⟨le_rfl, ht.1.le⟩ ((extChartAt I α).symm y) (hU hy) i j
+  simpa only [chartGramOnE, dist_comm] using hbound.trans_lt hsmall
+
+end DifferentialGeometry.PDE.RicciFlow
+
+end

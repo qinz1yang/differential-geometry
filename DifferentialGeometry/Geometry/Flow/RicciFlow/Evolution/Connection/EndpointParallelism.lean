@@ -9,7 +9,7 @@ open Bundle Filter Set
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
-open scoped Topology Manifold ContDiff
+open scoped _root_.Topology Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

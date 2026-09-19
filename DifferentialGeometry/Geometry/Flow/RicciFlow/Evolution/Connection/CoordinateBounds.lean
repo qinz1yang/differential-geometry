@@ -48,19 +48,20 @@ private theorem nablaRicComp_eq_ricCovTower
         (vec3 (frame i x) (frame j x) (frame k x)) := by
   rfl
 
-theorem exists_bound_christoffel_evolution_rhs_on_compact
+theorem exists_bound_christoffel_evolution_rhs_by_nablaRic_on_compact
     (R : SmoothRiemannianMetric I M) (x₀ : M)
     {K : Set M} (hK : IsCompact K) (hchart : K ⊆ coordinateFrameSet (I := I) x₀)
-    (a b B KShi : ℝ) :
+    (B : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D),
-      (∀ t ∈ Icc a b, MetricUniformEquivalentOn K R (S.family.metric t) B) →
-      MovingShiBoundOn K a b (fun _ t => S.family.metric t) 1 KShi →
-      ∀ t ∈ Icc a b, ∀ x ∈ K, ∀ i j k : CoordinateIdx (𝕜 := ℝ) E,
+      ∀ t : ℝ, MetricUniformEquivalentOn K R (S.family.metric t) B →
+      ∀ x ∈ K, ∀ i j k : CoordinateIdx (𝕜 := ℝ) E,
         ‖-(∑ l : CoordinateIdx (𝕜 := ℝ) E,
           coordInv S x₀ t x k l *
             (nablaRicComp S (coordinateFrameAt (I := I) x₀) t x i j l +
               nablaRicComp S (coordinateFrameAt (I := I) x₀) t x j i l -
-              nablaRicComp S (coordinateFrameAt (I := I) x₀) t x l i j))‖ ≤ C := by
+              nablaRicComp S (coordinateFrameAt (I := I) x₀) t x l i j))‖ ≤
+          C * Real.sqrt (normSq0S (S.family.metric t) x 3
+            (ricCovTower (S.family.metric t) (S.family.metric t) 1 x)) := by
   classical
   by_cases hB : 0 < B
   · obtain ⟨Rf, hRf, hframe⟩ := exists_pos_bound_localFrame_on_compact
@@ -69,18 +70,20 @@ theorem exists_bound_christoffel_evolution_rhs_on_compact
       (coordinateTrivializationAt (I := I) x₀) R (Module.finBasis ℝ E) hK hchart
       B⁻¹ (inv_pos.mpr hB)
     let V := Real.sqrt B * Rf
-    let A := max KShi 0 * V ^ 3
     have hV : 0 ≤ V := mul_nonneg (Real.sqrt_nonneg _) hRf.le
-    have hA : 0 ≤ A := mul_nonneg (le_max_right _ _) (pow_nonneg hV _)
-    refine ⟨(Module.finrank ℝ E : ℝ) * (Ci * (3 * A)), by positivity, ?_⟩
-    intro D S hmetric hShi t ht x hx i j k
+    refine ⟨(Module.finrank ℝ E : ℝ) * (Ci * (3 * V ^ 3)), by positivity, ?_⟩
+    intro D S t hmetric x hx i j k
+    let N := Real.sqrt (normSq0S (S.family.metric t) x 3
+      (ricCovTower (S.family.metric t) (S.family.metric t) 1 x))
+    let A := N * V ^ 3
+    have hNnonneg : 0 ≤ N := Real.sqrt_nonneg _
     have hF (r : CoordinateIdx (𝕜 := ℝ) E) :
         Real.sqrt ((S.family.metric t).inner x (coordinateFrameAt (I := I) x₀ r x)
           (coordinateFrameAt (I := I) x₀ r x)) ≤ V := by
       calc
         _ ≤ Real.sqrt (B * R.inner x (coordinateFrameAt (I := I) x₀ r x)
             (coordinateFrameAt (I := I) x₀ r x)) :=
-          Real.sqrt_le_sqrt ((hmetric t ht).2 x hx _).2
+          Real.sqrt_le_sqrt (hmetric.2 x hx _).2
         _ = Real.sqrt B * Real.sqrt (R.inner x (coordinateFrameAt (I := I) x₀ r x)
             (coordinateFrameAt (I := I) x₀ r x)) := Real.sqrt_mul hB.le _
         _ ≤ Real.sqrt B * Rf :=
@@ -103,11 +106,10 @@ theorem exists_bound_christoffel_evolution_rhs_on_compact
             · intro q _; exact Real.sqrt_nonneg _
             · intro q _; fin_cases q <;> exact hF _
           _ = V ^ 3 := by simp
-      exact mul_le_mul ((hShi 1 le_rfl 0 t ht x hx).trans (le_max_left KShi 0)) hprod
-        (Finset.prod_nonneg fun _ _ => Real.sqrt_nonneg _) (le_max_right KShi 0)
+      exact mul_le_mul_of_nonneg_left hprod hNnonneg
     have hI (l : CoordinateIdx (𝕜 := ℝ) E) : |coordInv S x₀ t x k l| ≤ Ci := by
       rw [coordInv_eq_gramInv S x₀ t (hchart hx)]
-      exact hinv x hx (S.family.metric t) (fun v => ((hmetric t ht).2 x hx v).1) k l
+      exact hinv x hx (S.family.metric t) (fun v => (hmetric.2 x hx v).1) k l
     rw [norm_neg, Real.norm_eq_abs]
     calc
       _ ≤ ∑ l : CoordinateIdx (𝕜 := ℝ) E,
@@ -133,9 +135,30 @@ theorem exists_bound_christoffel_evolution_rhs_on_compact
                 (nablaRicComp S (coordinateFrameAt (I := I) x₀) t x i j l)
                 (nablaRicComp S (coordinateFrameAt (I := I) x₀) t x j i l)]
           _ ≤ 3 * A := by linarith [hN i j l, hN j i l, hN l i j]
-      _ = _ := by simp [CoordinateIdx]
+      _ = _ := by simp [CoordinateIdx, A, N]; ring
   · refine ⟨0, le_rfl, ?_⟩
-    intro D S hmetric _ t ht x _ i j k
-    exact False.elim (hB (zero_lt_one.trans_le (hmetric t ht).1))
+    intro D S t hmetric x _ i j k
+    exact False.elim (hB (zero_lt_one.trans_le hmetric.1))
+
+theorem exists_bound_christoffel_evolution_rhs_on_compact
+    (R : SmoothRiemannianMetric I M) (x₀ : M)
+    {K : Set M} (hK : IsCompact K) (hchart : K ⊆ coordinateFrameSet (I := I) x₀)
+    (a b B KShi : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D),
+      (∀ t ∈ Icc a b, MetricUniformEquivalentOn K R (S.family.metric t) B) →
+      MovingShiBoundOn K a b (fun _ t => S.family.metric t) 1 KShi →
+      ∀ t ∈ Icc a b, ∀ x ∈ K, ∀ i j k : CoordinateIdx (𝕜 := ℝ) E,
+        ‖-(∑ l : CoordinateIdx (𝕜 := ℝ) E,
+          coordInv S x₀ t x k l *
+            (nablaRicComp S (coordinateFrameAt (I := I) x₀) t x i j l +
+              nablaRicComp S (coordinateFrameAt (I := I) x₀) t x j i l -
+              nablaRicComp S (coordinateFrameAt (I := I) x₀) t x l i j))‖ ≤ C := by
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_bound_christoffel_evolution_rhs_by_nablaRic_on_compact R x₀ hK hchart B
+  refine ⟨C * max KShi 0, mul_nonneg hC (le_max_right _ _), ?_⟩
+  intro D S hmetric hShi t ht x hx i j k
+  exact (hbound S t (hmetric t ht) x hx i j k).trans
+    (mul_le_mul_of_nonneg_left ((hShi 1 le_rfl 0 t ht x hx).trans
+      (le_max_left _ _)) hC)
 
 end DifferentialGeometry.PDE.RicciFlow

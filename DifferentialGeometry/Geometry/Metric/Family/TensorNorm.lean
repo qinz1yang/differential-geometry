@@ -188,3 +188,87 @@ theorem exists_normSq0S_le_of_isCompact
   exact ⟨C, fun t ht x hx => hC _ ⟨(⟨t, ht⟩, x), ⟨mem_univ _, hx⟩, rfl⟩⟩
 
 end DifferentialGeometry.Tensor0SBundle
+
+end
+
+noncomputable section
+
+open Bundle Filter
+open DifferentialGeometry.Tensor.Coordinates
+open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Operator
+open scoped Manifold Topology ContDiff BigOperators Matrix
+
+namespace DifferentialGeometry.Tensor0SBundle
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem tendsto_normSq0S_of_chart_components
+    {T : Type*} {l : Filter T} {s : ℕ}
+    (g : T → SmoothRiemannianMetric I M) (g₀ : SmoothRiemannianMetric I M)
+    (x : M) (A : T → Tensor0SSpace s I x) (A₀ : Tensor0SSpace s I x)
+    (hg : ∀ i j : CoordinateIdx (𝕜 := ℝ) E,
+      Tendsto (fun t => chartGramMatrix (I := I) (g t) x x i j) l
+        (𝓝 (chartGramMatrix (I := I) g₀ x x i j)))
+    (hA : ∀ slots : Fin s → CoordinateIdx (𝕜 := ℝ) E,
+      Tendsto (fun t => A t (fun j => chartBasisVecFiber (I := I) x (slots j) x))
+        l (𝓝 (A₀ (fun j => chartBasisVecFiber (I := I) x (slots j) x)))) :
+    Tendsto (fun t => normSq0S (I := I) (g t) x s (A t)) l
+      (𝓝 (normSq0S (I := I) g₀ x s A₀)) := by
+  classical
+  have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
+    mem_baseSet_trivializationAt E (TangentSpace I) x
+  have hG : Tendsto (fun t => chartGramMatrix (I := I) (g t) x x) l
+      (𝓝 (chartGramMatrix (I := I) g₀ x x)) :=
+    tendsto_pi_nhds.mpr fun i => tendsto_pi_nhds.mpr fun j => hg i j
+  have hdet : (chartGramMatrix (I := I) g₀ x x).det ≠ 0 :=
+    ne_of_gt (chartGramMatrix_det_pos (I := I) g₀ x hx)
+  have hInv : Tendsto (fun t => chartInvGramMatrix (I := I) (g t) x x) l
+      (𝓝 (chartInvGramMatrix (I := I) g₀ x x)) := by
+    exact (continuousAt_matrix_inv (chartGramMatrix (I := I) g₀ x x)
+      (by
+        have heq : (Ring.inverse : ℝ → ℝ) = Inv.inv := by
+          funext a
+          exact Ring.inverse_eq_inv a
+        rw [heq]
+        exact continuousAt_inv₀ hdet)).tendsto.comp hG
+  have hInvEntry (i j : CoordinateIdx (𝕜 := ℝ) E) :
+      Tendsto (fun t => chartInvGramMatrix (I := I) (g t) x x i j) l
+        (𝓝 (chartInvGramMatrix (I := I) g₀ x x i j)) :=
+    tendsto_pi_nhds.mp (tendsto_pi_nhds.mp hInv i) j
+  have heq (h : SmoothRiemannianMetric I M) (B : Tensor0SSpace s I x) :
+      normSq0S (I := I) h x s B =
+      ∑ a : Fin s → CoordinateIdx (𝕜 := ℝ) E,
+        ∑ b : Fin s → CoordinateIdx (𝕜 := ℝ) E,
+          (∏ j : Fin s, chartInvGramMatrix (I := I) h x x (a j) (b j)) *
+            B (fun j => chartBasisVecFiber (I := I) x (a j) x) *
+            B (fun j => chartBasisVecFiber (I := I) x (b j) x) := by
+    rw [normSq0S_eq_coord (I := I) h x s (chartBasisFamily (I := I) x hx)
+      _ (chartInvGram_inverse (I := I) h x hx)]
+    simp only [coordInner0S, tensor0SComponent, chartBasisFamily_apply]
+  have hsum := tendsto_finsetSum Finset.univ fun a (_ : a ∈ Finset.univ) =>
+    tendsto_finsetSum Finset.univ fun b (_ : b ∈ Finset.univ) =>
+      ((tendsto_finsetProd Finset.univ fun j (_ : j ∈ Finset.univ) =>
+        hInvEntry (a j) (b j)).mul (hA a)).mul (hA b)
+  simpa only [heq] using hsum
+
+theorem tendsto_normSq0S_zero_of_chart_components
+    {T : Type*} {l : Filter T} {s : ℕ}
+    (g : T → SmoothRiemannianMetric I M) (g₀ : SmoothRiemannianMetric I M)
+    (x : M) (A : T → Tensor0SSpace s I x)
+    (hg : ∀ i j : CoordinateIdx (𝕜 := ℝ) E,
+      Tendsto (fun t => chartGramMatrix (I := I) (g t) x x i j) l
+        (𝓝 (chartGramMatrix (I := I) g₀ x x i j)))
+    (hA : ∀ slots : Fin s → CoordinateIdx (𝕜 := ℝ) E,
+      Tendsto (fun t => A t (fun j => chartBasisVecFiber (I := I) x (slots j) x))
+        l (𝓝 0)) :
+    Tendsto (fun t => normSq0S (I := I) (g t) x s (A t)) l (𝓝 0) := by
+  have h := tendsto_normSq0S_of_chart_components g g₀ x A 0 hg
+    (fun slots => by simpa only [Tensor0SSpace.zero_apply] using hA slots)
+  simpa only [(normSq0S_eq_zero_iff (I := I) g₀ x s 0).mpr rfl] using h
+
+end DifferentialGeometry.Tensor0SBundle
+
+end

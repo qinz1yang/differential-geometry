@@ -11358,3 +11358,17 @@ import DifferentialGeometry.Topology.Manifold.HalfCollarExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapSmoothDescent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedTwoSidedCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapCollar
+import DifferentialGeometry.Analysis.Calculus.Derivative.EndpointIntegrableLimit
+import DifferentialGeometry.Topology.Manifold.ChartNeighborhood
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.TimeWeighted
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialIntegrability
+import DifferentialGeometry.Geometry.Metric.Family.MetricDifference
+import DifferentialGeometry.Geometry.Curvature.Metric.Relowering
+import DifferentialGeometry.Geometry.Connection.LeviCivita.DifferenceCoordinates
+import DifferentialGeometry.Geometry.Connection.LeviCivita.DifferenceContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.Continuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.InitialContinuity
+import DifferentialGeometry.Analysis.Integration.SqrtIntegrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.TimeIntegrability
+import DifferentialGeometry.Geometry.Connection.VariationNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.TimeIntegrability
