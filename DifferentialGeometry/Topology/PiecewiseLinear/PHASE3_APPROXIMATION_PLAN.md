@@ -833,3 +833,41 @@ This supplies the missing ambient-boundary identity for the concrete torus
 compression. Common actual separator targets are the next obligation; this
 checkpoint does not assert general separation-preserving compression or
 close Moise 30.4. Root builds remain stopped and shared E outputs are unchanged.
+
+
+### M304 common actual targets for torus compression (2026-09-19 UTC)
+
+The premise-free native `exists_embedded_torus_compression_separating_points`
+retains the same embedded torus, essential nonseparating circle, annulus,
+connected complementary annulus, proper spanning disk, exact disjoint caps,
+and first-Betti descent from two to zero. It additionally returns the actual
+finite solid torus N and identifies the original surface with frontier N.
+The capped sphere is exactly the frontier of the remaining embedded disk
+prism, an actual three-ball B. It produces q in interior B and z outside N,
+proves q and z distinct, and proves that both surfaces separate {q} and {z}.
+The original `exists_embedded_torus_compression` keeps its exact public
+signature and is now a corollary of this stronger producer.
+
+`IsPLHomeomorphOn.frontier_prism_image` gives the general ambient-frontier
+identity for embedded disk prisms. The new cylindrical separation API works
+for any targets H contained in the remaining ball interior and K contained
+in the full three-manifold exterior. It derives both separations from the
+actual frontier identities; neither separation is assumed.
+
+All three new/changed modules compile without diagnostics, and both new
+leaves are registered in the flat root. The complete audit checks five native
+declarations, 25 critical reused declarations and five external certificates,
+with all 13 applicable linters and only standard foundational axioms. The
+certificates recheck the original nonempty disjoint caps and essential proper
+disk, then certify common nonempty open regions and two actual disjoint PL
+three-ball targets with nonempty interiors for the same torus/sphere pair.
+The two-ball certificate is external audit evidence, not a separate native
+public theorem. The reachable native import graph has 565 modules and 1118
+edges, with no cycles. Three source/object/receipt sets, the audit, census and
+raw/normalized hashes are frozen at `moise304-reading/torus-separation-checkpoint/`.
+
+This closes the concrete positive-genus compression instance through actual
+preserved separation. It does not produce embedded splitting disks or safe
+replacement neighborhoods for arbitrary surfaces in Moise 30.4. Those general
+26.4/30.3 obligations remain in their existing lanes. Root builds remain
+stopped; shared E outputs and other lanes' source files were not changed.

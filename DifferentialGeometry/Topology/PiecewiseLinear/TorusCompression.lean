@@ -6,6 +6,8 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalCircle
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalCompression
+import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalSeparation
+import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 
 /-!
 # Embedded torus compression along a nonseparating essential circle
@@ -16,7 +18,7 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 open Classical in
-theorem exists_embedded_torus_compression :
+theorem exists_embedded_torus_compression_separating_points :
     ∃ (f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3))
       (K R P : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
       (hKfin : K.faces.Finite) (hRfin : R.faces.Finite) (hPfin : P.faces.Finite),
@@ -54,7 +56,18 @@ theorem exists_embedded_torus_compression :
       (fun x => f (x, 1 / 2)) '' stdSimplexBoundary 2 = f '' (J ×ˢ {(1 / 2 : ℝ)}) ∧
       IsPLSphere 2 P.space ∧ P.space = R.space ∪ D₀ ∪ D₁ ∧
       Homology.bettiOne K.space = 2 ∧ Homology.bettiOne P.space = 0 ∧
-      Homology.bettiOne P.space < Homology.bettiOne K.space := by
+      Homology.bettiOne P.space < Homology.bettiOne K.space ∧
+      ∃ (N : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+        (q z : EuclideanSpace ℝ (Fin 3)),
+        N.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 N ∧
+        IsTopologicalSolidTorus N.space ∧
+        IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) N.space ∧
+        (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1)) ∧
+        K.space = frontier N.space ∧
+        IsPLBall 3 (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (1 / 2 : ℝ) 1)) ∧
+        P.space = frontier (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (1 / 2 : ℝ) 1)) ∧
+        q ∈ interior (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (1 / 2 : ℝ) 1)) ∧
+        z ∉ N.space ∧ q ≠ z ∧ Separates K.space {q} {z} ∧ Separates P.space {q} {z} := by
   let _ : DecidableEq (Fin 3 → ℝ) := Classical.decEq _
   let _ : DecidableEq (EuclideanSpace ℝ (Fin 3)) := Classical.decEq _
   let J := stdSimplexBoundary 2
@@ -67,7 +80,7 @@ theorem exists_embedded_torus_compression :
       ((isPiecewiseAffineOn_of_affine e.toLinearMap.toAffineMap isOpen_univ).mono_of_isPolyhedron
         hJ.isPolyhedron (subset_univ _))
     exact e.injective.injOn.bijOn_image
-  obtain ⟨N, f, hNfin, -, -, -, hf, hends⟩ :=
+  obtain ⟨N, f, hNfin, hN, -, hsolid, hf, hends⟩ :=
     (hJ.of_isPLHomeomorphOn he).exists_solid_torus_neighborhood (by simp)
   let _ : Finite N.faces := hNfin.to_subtype
   obtain ⟨D, hDfin, hDsp⟩ := (isPLBall_stdSimplex 2).isPolyhedron.exists_simplicialComplex
@@ -139,11 +152,92 @@ theorem exists_embedded_torus_compression :
     exact hside.image_strip_mem_nhdsWithin hJ.isPolyhedron.isCompact
       (a := 0) (b := 1 / 2) (t := z.2)
       (by norm_num) (by norm_num) (by rw [hzt]; norm_num) (by rw [hzt]; norm_num) hz.1
+  have hKfront : K.space = frontier N.space := by
+    rw [hKsp]
+    have h := hfD.frontier_eq_image_side D N hD hN (by simp)
+    simpa only [hDJ] using h.symm
+  have hPfront : P.space =
+      frontier (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (1 / 2 : ℝ) 1)) := by
+    rw [hPsp, hRsp]
+    have h := hfD.frontier_image_right_strip D hD (by simp) (a := 1 / 2) (by norm_num)
+    simpa only [hDsp, hDJ] using h.symm
+  have hball : IsPLBall 3 (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (1 / 2 : ℝ) 1)) :=
+    (isPLBall_three_prod (isPLBall_stdSimplex 2)
+      (isPLBall_Icc (by norm_num : (1 / 2 : ℝ) < 1))).of_isPLHomeomorphOn
+      (hf.isPLHomeomorphOn_strip (isPLBall_stdSimplex 2).isPolyhedron
+        (by norm_num) le_rfl (Or.inl (by norm_num)))
+  obtain ⟨q, hq⟩ := hball.interior_nonempty
+  obtain ⟨z, hz⟩ := nonempty_compl.mpr (isPolyhedron_space N).isCompact.ne_univ
+  have hBsub : f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (1 / 2 : ℝ) 1) ⊆ N.space := by
+    rw [← hf.image_eq]
+    exact image_mono (fun _ hx => ⟨hx.1, le_trans (by norm_num) hx.2.1, hx.2.2⟩)
+  have hqz : q ≠ z := fun heq => hz (heq ▸ hBsub (interior_subset hq))
+  have hqin : ({q} : Set (EuclideanSpace ℝ (Fin 3))) ⊆
+      interior (f '' (D.space ×ˢ Icc (1 / 2 : ℝ) 1)) := by
+    rw [hDsp]
+    exact singleton_subset_iff.mpr hq
+  have hsep := hfD.separates_side_and_capped_side D N hD hN (by simp)
+    (a := 1 / 2) (by norm_num) hqin (singleton_subset_iff.mpr hz)
+  simp only [hDsp, hDJ] at hsep
+  have hsepK : Separates K.space {q} {z} := hKsp.symm ▸ hsep.1
+  have hsepP : Separates P.space {q} {z} := by
+    rw [hPsp, hRsp]
+    exact hsep.2
   refine ⟨f, K, R, P, hKfin, hRfin, hPfin, hK, hKc, htorus, hKsp, hR, hRc, hRcl,
     hcover, htrace, ?_, hW, hJ.of_isPLHomeomorphOn hcore, hWnhds, ⟨hCK, hnon⟩, hCc,
     hDmid, hDmeet, hr₀, hr₁, hdis, hKmeet₀, hKmeet₁, hmeet₀, hmeet₁,
-    hbd₀, hbd₁, hP, hPsp, hβK, hβP, hlt⟩
-  exact (congrArg (fun d : DecidableEq (EuclideanSpace ℝ (Fin 3)) =>
-    (@boundaryComplex _ _ _ d 2 R).space) (Subsingleton.elim _ _)).trans hRbd
+    hbd₀, hbd₁, hP, hPsp, hβK, hβP, hlt, ?_⟩
+  · exact (congrArg (fun d : DecidableEq (EuclideanSpace ℝ (Fin 3)) =>
+      (@boundaryComplex _ _ _ d 2 R).space) (Subsingleton.elim _ _)).trans hRbd
+  · exact ⟨N, q, z, hNfin, hN, hsolid, hf, hends, hKfront, hball, hPfront,
+      hq, hz, hqz, hsepK, hsepP⟩
+
+open Classical in
+theorem exists_embedded_torus_compression :
+    ∃ (f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3))
+      (K R P : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+      (hKfin : K.faces.Finite) (hRfin : R.faces.Finite) (hPfin : P.faces.Finite),
+      letI := hKfin.to_subtype
+      letI := hRfin.to_subtype
+      letI := hPfin.to_subtype
+      let J := stdSimplexBoundary 2
+      let C := f '' (J ×ˢ {(1 / 4 : ℝ)})
+      let W := f '' (J ×ˢ Icc (0 : ℝ) (1 / 2))
+      let D₀ := f '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)})
+      let D₁ := f '' (stdSimplex ℝ (Fin 3) ×ˢ {(1 / 2 : ℝ)})
+      let D := f '' (stdSimplex ℝ (Fin 3) ×ˢ {(1 / 4 : ℝ)})
+      IsCombinatorialManifold 2 K ∧ IsConnected K.space ∧
+      Nonempty (K.space ≃ₜ (loopCircle × loopCircle)) ∧
+      K.space = f '' (J ×ˢ Icc (0 : ℝ) 1) ∧
+      IsCombinatorialManifoldWithBoundary 2 R ∧ IsConnected R.space ∧
+      R.space = closure (K.space \ W) ∧ W ∪ R.space = K.space ∧
+      W ∩ R.space = f '' (J ×ˢ {(0 : ℝ), 1 / 2}) ∧
+      (boundaryComplex 2 R).space = f '' (J ×ˢ {(0 : ℝ), 1 / 2}) ∧
+      IsPLHomeomorphOn f (J ×ˢ Icc (0 : ℝ) (1 / 2)) W ∧
+      IsPLSphere 1 C ∧ (∀ x ∈ C, W ∈ 𝓝[K.space] x) ∧
+      (∃ hCK : C ⊆ K.space,
+        ¬ (⟨Set.inclusion hCK, continuous_inclusion hCK⟩ : C(C, K.space)).Nullhomotopic) ∧
+      IsConnected (K.space \ C) ∧
+      IsPLHomeomorphOn (fun x => f (x, 1 / 4)) (stdSimplex ℝ (Fin 3)) D ∧
+      K.space ∩ D = C ∧
+      IsPLHomeomorphOn (fun x => f (x, 0)) (stdSimplex ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn (fun x => f (x, 1 / 2)) (stdSimplex ℝ (Fin 3)) D₁ ∧
+      Disjoint D₀ D₁ ∧
+      K.space ∩ D₀ = (fun x => f (x, 0)) '' stdSimplexBoundary 2 ∧
+      K.space ∩ D₁ = (fun x => f (x, 1 / 2)) '' stdSimplexBoundary 2 ∧
+      R.space ∩ D₀ = (fun x => f (x, 0)) '' stdSimplexBoundary 2 ∧
+      R.space ∩ D₁ = (fun x => f (x, 1 / 2)) '' stdSimplexBoundary 2 ∧
+      (fun x => f (x, 0)) '' stdSimplexBoundary 2 = f '' (J ×ˢ {(0 : ℝ)}) ∧
+      (fun x => f (x, 1 / 2)) '' stdSimplexBoundary 2 = f '' (J ×ˢ {(1 / 2 : ℝ)}) ∧
+      IsPLSphere 2 P.space ∧ P.space = R.space ∪ D₀ ∪ D₁ ∧
+      Homology.bettiOne K.space = 2 ∧ Homology.bettiOne P.space = 0 ∧
+      Homology.bettiOne P.space < Homology.bettiOne K.space := by
+  obtain ⟨f, K, R, P, hKfin, hRfin, hPfin, hK, hKc, htorus, hKsp, hR, hRc, hRcl,
+    hcover, htrace, hRbd, hW, hC, hWnhds, hn, hCc, hDmid, hDmeet, hr₀, hr₁, hdis,
+    hKmeet₀, hKmeet₁, hmeet₀, hmeet₁, hbd₀, hbd₁, hP, hPsp, hβK, hβP, hlt, -⟩ :=
+      exists_embedded_torus_compression_separating_points
+  exact ⟨f, K, R, P, hKfin, hRfin, hPfin, hK, hKc, htorus, hKsp, hR, hRc, hRcl,
+    hcover, htrace, hRbd, hW, hC, hWnhds, hn, hCc, hDmid, hDmeet, hr₀, hr₁, hdis,
+    hKmeet₀, hKmeet₁, hmeet₀, hmeet₁, hbd₀, hbd₁, hP, hPsp, hβK, hβP, hlt⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

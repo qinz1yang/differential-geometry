@@ -8826,3 +8826,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalSurface
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldBallInclusion
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.PrismFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalSeparation
