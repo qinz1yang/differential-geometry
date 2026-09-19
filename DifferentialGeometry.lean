@@ -802,6 +802,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
 import DifferentialGeometry.Analysis.Integration.Lp.QuadraticLowerSemicontinuity
 import DifferentialGeometry.Analysis.Integration.Lp.SmoothPairing
 import DifferentialGeometry.Analysis.Integration.Lp.SpacetimeDual
+import DifferentialGeometry.Analysis.Integration.Lp.SpatialDerivative
 import DifferentialGeometry.Analysis.Integration.Lp.SpatialSteklov
 import DifferentialGeometry.Analysis.Integration.Lp.Steklov
 import DifferentialGeometry.Analysis.Integration.Lp.ZeroExtension
@@ -1153,6 +1154,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTensorEquat
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatInteriorRegularity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatMixedTimeSpatialRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatThirdOrderRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatThirdWeakDerivative

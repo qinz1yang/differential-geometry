@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Lp.SpatialDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakTimeDerivativeBound
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
@@ -13,25 +14,6 @@ namespace DifferentialGeometry.Analysis
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [MeasurableSpace E] [OpensMeasurableSpace E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-private theorem memLp_top_and_spatial_fderiv_of_contDiffOn
-    {S J : Set ℝ} (hS : IsOpen S) (hJ : IsCompact J) (hJS : J ⊆ S)
-    {U Ω : Set E} (hU : IsOpen U) (hΩ : MeasurableSet Ω)
-    (hΩc : IsCompact (closure Ω)) (hΩU : closure Ω ⊆ U)
-    {A : ℝ → E → F}
-    (hA : ContDiffOn ℝ ∞ (fun p : ℝ × E => A p.1 p.2) (S ×ˢ U))
-    (μ : Measure (ℝ × E)) :
-    MemLp (fun p : ℝ × E => A p.1 p.2) ∞ (μ.restrict (J ×ˢ Ω)) ∧
-      (∀ v : E, MemLp (fun p : ℝ × E => fderiv ℝ (A p.1) p.2 v)
-        ∞ (μ.restrict (J ×ˢ Ω))) := by
-  constructor
-  · exact (hA.continuousOn.mono (prod_mono hJS hΩU)).memLp_top_of_subset_isCompact
-      (hJ.prod hΩc) (hJ.measurableSet.prod hΩ) (prod_mono Subset.rfl subset_closure)
-  · intro v
-    have hD := (spatialFDeriv_contDiffOn hS.uniqueDiffOn hU hA).clm_apply
-      (contDiffOn_const (c := v))
-    exact (hD.continuousOn.mono (prod_mono hJS hΩU)).memLp_top_of_subset_isCompact
-      (hJ.prod hΩc) (hJ.measurableSet.prod hΩ) (prod_mono Subset.rfl subset_closure)
 
 omit [MeasurableSpace E] [OpensMeasurableSpace E] in
 private theorem contDiffOn_spatial_of_contDiffOn_prod
@@ -290,7 +272,7 @@ theorem IsWeakEvolutionSolution.exists_spatial_weak_derivative_time_derivative
         fderiv ℝ (fun z => b (p.1,z)) p.2 (EuclideanSpace.single k 1)) ∞ ν := by
     have hb' := DifferentialGeometry.Analysis.memLp_top_and_spatial_fderiv_of_contDiffOn
       D.regular_isOpen isCompact_Icc hreg hW hΩ₀.measurableSet hΩ₀c hΩ₀W
-      (A := fun t z => b (t,z)) hb (volume.prod volume)
+      (A := fun t z => b (t,z)) (hb.of_le (by simp)) (volume.prod volume)
     rw [← Measure.prod_restrict] at hb'
     refine ⟨hb'.1.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl), ?_⟩
     intro k
