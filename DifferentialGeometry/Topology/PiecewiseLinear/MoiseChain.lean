@@ -8,6 +8,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplex
 import DifferentialGeometry.Topology.Connected.Separation
 import DifferentialGeometry.Topology.Connected.TwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
+import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
@@ -115,10 +116,6 @@ def Moise306 : Prop :=
     IsToroidalShell Y T₀ T₁ →
     ∃ T : Set (EuclideanSpace ℝ (Fin 3)),
       IsPLTorus T ∧ T ⊆ interior Y ∧ Separates T T₀ T₁
-
-def IsTopologicalSolidTorus {E : Type u} [TopologicalSpace E] (S : Set E) : Prop :=
-  Nonempty (S ≃ₜ (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
-    Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1))
 
 def HasCylindricalDiagram (S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
   ∃ f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3),

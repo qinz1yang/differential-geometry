@@ -5727,3 +5727,55 @@ Next in this round: convert the disk and circle models to the existing
 `IsTopologicalSolidTorus` definition and assemble the source-faithful CST
 cyclic decomposition of the actual regular neighborhood. Full 24.9/24.10
 and the 24.12 contractible-polygon interface remain distinct obligations.
+
+## Standard solid tori from disk cylinders and orientable neighborhoods (2026-09-19)
+
+Status: done for the standard topological product interface.
+`SolidTorusProduct.lean` proves:
+
+- `IsCylindricalDiagram.isTopologicalSolidTorus_of_eq_ends`: an actual disk
+  diagram with pointwise equal ends has a target homeomorphic to the Euclidean
+  closed 2-ball times the Euclidean unit circle. The target ambient space does
+  not need to be finite dimensional.
+- `IsCylindricalDiagram.isTopologicalSolidTorus_of_isOrientable`: the same
+  standard product for any actual disk diagram onto an orientable finite
+  combinatorial 3-manifold with boundary; the untwisting map is constructed.
+- `isTopologicalSolidTorus_derivedNeighborhood_circle`: the actual derived
+  neighborhood of a connected closed 1-manifold subcomplex in an orientable
+  finite combinatorial 3-manifold with boundary is a topological solid torus.
+
+The product homeomorphism is produced, not assumed. The proof composes the
+compact quotient product with the existing simplex-to-normed-ball homeomorphism
+and the additive-circle/complex-circle homeomorphism and orthonormal coordinates.
+`IsTopologicalSolidTorus` moved verbatim from `MoiseChain.lean` into the lower
+`SolidTorus.lean`: full name, universe, binders and defining expression are
+unchanged. `Moise307` is its only pre-existing direct mathematical consumer, checked
+along with all 25 declarations of `MoiseChain`; no high-level import is added
+back into the construction.
+
+| Module | Declarations | Critical reused producers | Compile seconds | Audit seconds |
+|---|---:|---:|---:|---:|
+| SolidTorus | 1 | 0 | 10.027 | 9.559 |
+| SolidTorusProduct | 3 | 6 | 12.226 | 12.182 |
+| MoiseChain | 25 | 1 | 12.122 | 12.915 |
+
+All checks exit 0 with zero diagnostics; all 29 nonautomatic declarations
+and seven reused-producer entries have only standard foundational axioms.
+Every module passes all 13 applicable environment linters. The nonempty
+triangle circle in a tetrahedral face satisfies the final standard solid-torus
+predicate; this concrete application and its two producers pass the axiom
+audit, exit 0, zero diagnostics, 12.301 seconds. Times include
+resource admission. The first concrete probe missed the retraction-module
+import for neighborhood containment; the corrected final probe passes.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`SolidTorusProduct-verification.json`, with source/object identities, receipts,
+complete declaration and linter censuses, the verbatim definition-move check
+and concrete application. SolidTorusProduct source SHA256:
+`3F3C28988743975D21E5B37CF628C58F25814A5DF72BFF06FFF070E6B7B37AEB`. Native import closures avoid
+`HurewiczLowDegrees`; static and whitespace checks pass. Source, consumer,
+root imports, this record and the C.6/C.7 rows form one mathematical commit.
+Shared artifacts were read-only; the integration root gate remains separate.
+
+The next layer assembles the book's cyclic 3-cell/2-disk CST conditions.
+This product result does not by itself claim general 24.9/24.10 or 24.12.
