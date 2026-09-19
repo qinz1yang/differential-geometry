@@ -4416,3 +4416,120 @@ leaf has an exact module grant; h's existing LocallyFiniteSeparation source
 remains untouched. This is a replacement lane after delivery, not a sixth task.
 The integer annulus family, actual open2-disk topology, pseudocell and32.1
 remain open. The same resource policy and three-hour renewable lease apply.
+
+## 92. Independent physical cap and original-target separation acceptance
+
+E3 throughc34726180, including the earlierc10b83586 physical-cap layer, is now
+independently accepted in the sixty-first integration batch. Four author
+modules were taken from the previously frozen six-source c347 snapshot with
+raw hashes unchanged. SphereSchoenflies and both direct old consumers,
+SpanningDiskPrism and SurfaceSplitSeparation, were also freshly checked.
+All seven pass with zero errors, warnings or diagnostics. Their34 nonautomatic
+declarations, including private declarations, and17 key reuses have only
+propext, Classical.choice and Quot.sound in their transitive axiom closures.
+All13 applicable environment linters pass. Existing public signatures in the
+three modified old modules are unchanged; ten public theorems are added.
+
+The mathematical result is the actual physical split/cap construction and
+separation by the same resulting surface. The ball-pair producer now retains
+both exact hemisphere-boundary decompositions, the common prism transports
+those identities, and the local trace theorem retains the real inner disk
+boundary and its incidence with the chosen half-ball boundary. A genuine cap
+is obtained by replacing the inner disk while fixing the original outer ring.
+The other cap is physically disjoint. The result has the retained split/cap
+combinatorial data, exact boundary traces and carrier union. Its old and new
+carriers agree outside the chosen ball. The safe ball-frontier complement is
+path connected, so Separates.of_frontier_replacement applies to the original
+H/T. No generally false C'=result equality or final separation premise is used.
+
+The author's four named probes were classified rather than all called models:
+a two-dimensional nondegenerate disk, a one-dimensional actual replacement,
+and two conditional assembly consumers. The independent audit also counts the
+triangle helper and a canonical model DecidableEq instance. It adds one full
+unconditional geometric application: start with the actual embedded solid
+torus, its first-Betti-two surface and interior meridian disk; preserve the
+actual distinct inner/outer points; place the same carrier in a finite PL
+three-ball; derive the meridian's avoidance of both targets from the original
+cylindrical diagram; then invoke the new endpoint. Its output retains the same
+source surface, actual disk and targets, disjoint physical caps, exact traces,
+SurfaceSplitAndCap and original-target separation. Neither this model nor the
+native endpoint assumes Moise252. Total probe declarations:7 = one full R3
+assertion + two lower-dimensional assertions + two consumers + two helpers.
+
+Compilation takes101.3505589 seconds including admission; the final combined
+audit takes64.9553414 seconds. Earlier external-probe attempts required binder,
+codomain-polyhedron and DecidableEq-scope repairs; no project theorem was
+changed or weakened. Failed probe bytes and receipts remain frozen separately.
+The corrected checker binds only canonical batch61 module objects and exact
+integration source.105 prerequisite objects come from previously accepted,
+raw-source-matching receipts. Frozen author/old-attempt artifacts are excluded
+from private override selection, and every actual setup binding was reviewed.
+
+Git delta against a9ad86954 is Lean+897/-29: native+896/-29 and one flat root
+import for SurfaceSplitPhysicalCapping. This is the cumulative c10/c347
+integration delta, not the author's c347-only+484/-50. Static root traversal
+has9661 modules/37529 edges, no missing sources or cycle. A full-root build was
+not run; compatibility was checked on the changed modules and direct old
+consumers. The author model is Sol max. Code volume and this physical surgery
+layer do not close25.2,32.1, general approximation or compact smoothing.
+
+Receipt: .lake/verified-sixtyfirst-lane-delivery-20260919.json. Exact sources,
+setups, censuses, model bytes and accepted-object provenance are retained in
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtyfirst-batch-20260919.
+E3 is already in Q.2a; this acceptance does not interrupt that active round.
+
+## 93. Completed-boundary continuations and new frozen deliveries
+
+One compact logical snapshot was partitioned into disjoint target calls
+because wait_threads returned early on completed tasks. F/S/h were idle;
+E3 and M304 were active. Only the completed tasks received continuation.
+The current hourly schedule, same five tasks and compiler limits are retained.
+
+F's current protected-polyhedron sources and successful author audit were
+frozen. The remaining consumer gate had4 HeightProjection and172
+SingularGeneralPosition old long-line warnings. All six worktrees were clean
+for those two source files. The coordinator explicitly granted only line-wrap
+and required-header formatting in F's own checkout, retaining signatures,
+proof tokens and scopes, followed by full zero-diagnostic replay. The same
+boundary-normalization lane continues after its clean checkpoint. The arbitrary
+PL conjugation Lipschitz counterexample remains binding. This authorization
+resolves the exact source-permission issue without changing linter policy.
+
+h delivered clean pushedc1bd6e42e after72fa711aa: generic locally finite PL
+homeomorphism limits and compact stabilization from compatible increments,
+plus a real one-increment trivalent model. Source and14 evidence files are
+frozen, pending independent replay. At that boundary h continued the genuine
+nonstationary cross-stage geometric producer, retaining original carrier/graph,
+subdivisions, neighborhoods and traces. Requiring every increment to preserve
+every core must be checked against the actual geometric consumer; no final
+compatible family or limit may be assumed to fill the missing producer.
+
+S delivered clean pushedc60f66395 after876319180. CubicLowering produces a
+nonpositive compact one-dimensional cubic perturbation, a controlled quadratic
+suspension and cancellation with sufficiently large longitudinal support and
+arbitrary positive transverse width. The same original cubic/logistic model
+constructs a larger O', keeps the old small-frame obstruction and verifies
+actual critical-point removal. This is a real model, not general compact
+smoothing. Its frozen verification hash is
+42c6006f8df5f52454bae2b44b1f4088d41a0ba4a275c5ccc5de9928fbf297f6.
+At this delivery boundary S continued original-function extended-arc, adequate
+support and relative h(u)+z^2 production, with original f/atlas/v/gamma and
+protected-set controls. The whole5b/c011/2544/876/c60 chain remains queued.
+
+M304 subsequently delivered87826c69c, reporting sphere exclusion in the same
+original toroidal shell without h252, plus the h252-dependent incompressible
+non-simply-connected separator. Actual cut sides, collar/open-cover identities
+and endpoint inclusion factorizations are in284 frozen files/45 source groups.
+Manifest hash:
+69b2b74d52d5c659058b905ab9b216af35f0faf4cdab3f5b14eb22e04abfe701.
+This is pending independent replay. The author continues true PL torus
+recognition in its existing30.6 round; no extra task or second lane was sent.
+The earlier recognition checkpoint with an unresolved root is still invalid.
+Moise308's original-inner-spine inclusion obligation was already delivered;
+do not send the old deferred notice again.
+
+The resumed-stage ledger records these frozen frontiers separately from
+accepted source. F/S/h compiler leases were renewed administratively to
+2026-09-20 00:57 UTC; they are renewable and are not user deadlines. The saved
+automation prompt is updated after this checkpoint and read back byte-for-byte.
+The completed morning report is preserved.

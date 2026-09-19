@@ -11,10 +11,10 @@ compiled declarations and transitive axioms outrank historical route notes.
 | 25.1 | Moise251 and conditional Stallings induction | F: actual NormalSystem relative normalization, cover/projection and singularity removal remain open. |
 | 25.2 | Corrected Moise252 | Essential boundary condition is present and accepted. The unconditional Loop Theorem producer remains open. |
 | 26.4 | Corrected Moise264 | General interior-surface kernel-to-disk theorem remains open. The implemented spherical-shell route uses the narrower proved conditional producers directly. |
-| 30.3 | Actual geometric splitting and separation | E3: physical caps are delivered; separation by the same result for the original targets remains open. Still relevant to later local surgery and section 32. |
+| 30.3 | Actual geometric splitting and separation | Independently accepted throughc347/c10: actual finite-surface caps and separation by the same result for the original targets, with a full R3 model. Still relevant to later local surgery and section32. |
 | 30.4 | moise304_of_moise252 : Moise252 -> Moise304 | Independently accepted from 3717074e9. Exact original shell and targets; least-Betti separator and actual compression. No Moise303 or broad Moise264 dependency in kernel type/body closure. |
 | 30.5 | moise305_tame_of_moise304 | Independently replayed with the new 304 producer and a concrete nested-ball model. Retains unresolved Moise252 and the outer-frontier bicollar. General wild305 remains open. |
-| 30.6 | Moise306 | M304: original toroidal-shell incompressibility/parity through 823 delivered pending replay. Actual sphere exclusion and genuine torus recognition remain open. No30.7 dependency. |
+| 30.6 | Moise306 | M304: original toroidal-shell incompressibility/parity and sphere exclusion through878 delivered pending replay. Genuine PL torus recognition remains open. No30.7 dependency. |
 | 30.7 | Moise307 | Open; follows30.6 and relevant collar/CST constructions. |
 | 30.8 | Moise308 | Current intermediate-spine premise is too weak for the book consumer. Needs generation via inclusion from the original inner spine; notified at M304 delivery. |
 | 31--32 | Configurations, tubes and pseudocells | E3 now owns the independent locally stable limit-separation gate. Two-ended annulus gluing, actual open body and exact closure remain open.32.4 may consume a given pseudocell independently. |
@@ -23,7 +23,7 @@ compiled declarations and transitive axioms outrank historical route notes.
 | 35.1 | Corrected Moise351 | Actual locally finite graph/regular-neighborhood input is accepted. h constructs compatible local modifications; Conditions3–8 and endpoint remain open. |
 | 35.2 | Moise352 in Transition361 | Open general approximation producer; retain noncompact overlaps and positive variable error. |
 | 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Conditional consumers; do not produce Moise352. |
-| Compact smoothability | Independent S lane | Common-coordinate chain and support obstruction queued. Arbitrary prescribed-O cancellation is refuted; produce adequate actual regular-level support geometry before finite cancellation and compact smoothing. |
+| Compact smoothability | Independent S lane | Common coordinates, support obstruction and enlarged-strip cubic lowering queued. Original-function extended arc, sufficient support and relative normal form remain open before finite cancellation and compact smoothing. |
 
 ## What the accepted sphere endpoint changes
 
@@ -31,8 +31,8 @@ The implemented route is corrected25.2 -> actual essential disk in the same
 shell -> compatible disk/ball/wall/caps -> same-target strict Betti decrease
 -> minimum separator is a PL 2 sphere -> tame 30.5. The last implication also
 uses the genuine outer-frontier bicollar. It does not introduce a general
-wild-cell complement theorem. Geometric30.3 and full26.4 remain mathematical
-tasks, but are not prerequisites of this checked sphere endpoint.
+wild-cell complement theorem. The accepted physical30.3 layer and the open full26.4 theorem are not
+prerequisites of this checked sphere endpoint.
 
 Integration section 89 records two fresh modules, seven native declarations,
 fourteen reused declarations, two real conditional models and an assembled
@@ -47,19 +47,20 @@ For the actual cubic/logistic saddle-minimum example, a small open frame can
 contain both critical points and their connection while fixed exterior values
 force a new local minimum. S 876319180 records this obstruction; independent
 integration replay is pending. Common injective coordinates alone do not
-provide room for cancellation. S now constructs an actual controlled
-regular-level region or a justified larger support, retaining the original
-function and verifying the real compact-smoothing consumer's needs.
+provide room for cancellation. S has delivered an actual enlarged-strip cubic lowering model, pending
+independent replay. Its next original-function producer constructs the
+extended arc and relative normal form with sufficient support and checks the
+real compact-smoothing consumer's needs.
 
 ## Verification boundaries
 
 The252/331/351 contract repairs and h's original-carrier transport throughe85
-are independently accepted. F through 71, E3 throughddade and S throughc0
+are independently accepted. F through71, E3 throughc347/c10 and S throughc0
 remain their independently accepted frontiers. Later author source and model
 reports enter the frozen queue before independent acceptance.
 
 All current endpoint modules are root reachable; the exact source closure
-contains 9660 modules without missing sources or cycles. Full-root compilation
+contains9661 modules without missing sources or cycles. Full-root compilation
 remains deferred under the owner's discretionary build policy. A clean local
 build or a committed source file does not certify unconditional headlines.
 

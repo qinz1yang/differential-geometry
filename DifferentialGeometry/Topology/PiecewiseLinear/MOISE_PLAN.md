@@ -18,65 +18,69 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
-### Latest live frontier (2026-09-19, conditional sphere endpoint independently accepted)
+### Latest live frontier (2026-09-19, physical surface splitting independently accepted)
 
 This snapshot and the latest integration-handoff sections supersede dated
-development paragraphs below. The resumed stage has no new deadline. Five
-existing tasks keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
+paragraphs below. The resumed stage has no new deadline. Five existing tasks
+keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 
 | Lane | Independently accepted frontier | Current mathematical gate |
 |---|---|---|
-| F | through 71b0b003e | Finish protected-polyhedron relative general position and its full consumer/lint gate, then actual boundary-chart transition coverage.06a/d68 are queued; later source is still a separate author layer. |
-| h | throughe85a235df | Actual locally finite compatible modifications preserving the original carrier/graph and transported neighborhoods. Finite trivalent solid-torus layer72fa711aa is delivered, frozen and queued. |
-| E3 | throughddade8562 | Physical30.3 separation throughc34726180, includingc10, is delivered and frozen pending replay. At that completed boundary E3 moved to section32 Q.2a: actual closed-separator limits from locally finite changes, preserving original targets. |
-| M304 | through 3717074e9 | Exact Moise252-to-Moise304 is independently accepted. Later 6f/823 original-toroidal-shell incompressibility/parity is frozen, pending replay; next construct actual sphere-cut sides and endpoint factorization, then genuine torus recognition for 30.6. |
-| S | throughc0f4df1b1 | Correct the support geometry and produce actual cancellation in a sufficiently controlled regular-level region.5b/c011/2544 common coordinates and876 support obstruction are frozen, pending independent acceptance. |
+| F | through71b0b003e | Actual arbitrary boundary-chart normalization and joint protection/transition/core coverage.06a/d68 are queued. The later protected-polyhedron layer has an author audit; two old consumer formatting repairs are authorized at its idle boundary before checkpointing. |
+| h | throughe85a235df | Produce actual nonstationary locally finite supported modifications with compatible subdivisions, original graph and transported neighborhoods.72fa/c1bd finite solid-torus and generic limit layers are frozen pending replay; a single-increment model does not close arbitrary-stage geometry. |
+| E3 | throughc34726180 includingc10 | Actual finite-surface physical caps and original-target separation are independently accepted in section92. Current section32 Q.2a constructs locally stable closed-separator limits and an infinite nonstationary model. |
+| M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878 original toroidal-shell incompressibility, parity and actual sphere exclusion are frozen pending replay. Genuine PL torus recognition is still open; author continues the same30.6 lane. |
+| S | throughc0f4df1b1 | Produce original-function extended-arc and relative normal-form geometry in an adequate support region.5b/c011/2544 common coordinates,876 small-frame obstruction andc60 cubic lowering in a produced enlarged strip are frozen pending replay. General finite cancellation/compact smoothing remain open. |
 
-M304's original-disk ball/wall/caps, actual cut-boundary kernel and same-target
-strict Betti decrease were independently accepted in section 85. Section 89
-now accepts the thirteen-line exact endpoint moise304_of_moise252. Its proof
-chooses a least-Betti connected separator and contradicts minimality if the
-same-shell compression produces a smaller one. Arbitrary original X/B0/B1
-are retained, with no sphere, essential disk or compression conclusion assumed.
+The exact sphere endpoint moise304_of_moise252 remains conditional on the
+unresolved Moise252. Its independently checked kernel type/body traversals
+contain9328 and7200 native constants for the304/tame consumers and omit
+Moise303 and broad Moise264. The tame consumer retains its outer-frontier
+bicollar. These are the section89 acceptance results, not an unconditional
+Loop Theorem,304 or general wild305 proof.
 
-The changed module and unchanged tame consumer compile with no diagnostics.
-All seven nonautomatic declarations, fourteen key reuses, two concrete
-radius-one/radius-two models and one exact assembled consumer pass the full
-axiom and thirteen-linter audit. Both models explicitly retain h252; the tame
-model constructs its actual outer-frontier bicollar. Kernel type/body closure
-traversals contain9328 and7200 native constants, respectively, and neither
-uses Moise303 or broad Moise264. This changes the implemented dependency route;
-it does not prove Moise252, unconditional304 or general wild305.
+Section92 now independently accepts E3's same actual SurfaceSplitAndCap result:
+physical disjoint disk caps, exact old/new carrier equality outside a chosen
+ball, a safe path-connected ball frontier, and separation of the original
+closed connected targets. Seven modules,34 nonautomatic declarations and17
+key reuses pass fresh compile, axiom and13-linter checks. The external audit
+has one full unconditional R3 torus/meridian/enclosing-ball/target-pair model,
+two lower-dimensional geometry assertions, two conditional consumers and two
+helpers. The latter four assertions are not four full three-dimensional models.
+All nine old public signatures in the changed modules remain unchanged.
+Git Lean delta for the whole c10/c347 integration is+897/-29, including one
+root import; ten new public theorems are distinct from the13 old consumer
+checks. No source theorem was weakened to make the actual model elaborate.
 
-The later original-toroidal-shell delivery6f227c057/8236587e5 gives actual
-minimum/incompressible separators and a commutative-cover obstruction in the
-author checkout. Its final41-module evidence is frozen. The remaining gates
-are actual cut geometry excluding a sphere separator and genuine torus
-recognition; parity or beta-one equal to two is not an IsPLTorus proof.
+F's protected-polyhedron relative general position currently solves a
+simultaneously flat interior case. An arbitrary PL change of coordinates does
+not preserve a small Lipschitz displacement; the explicit counterexample
+remains binding. The crucial25.2 gate is actual boundary/transition
+normalization of the same disk with original boundary homotopy, normal-subgroup
+avoidance and fibers, followed by the genuine cover/elimination argument.
+Neither code volume nor the conditional304 endpoint measures Loop Theorem
+completion. The route remains plausible; near-term closure is not established.
 
-S's876319180 reports and source-proves a support obstruction to the previous
-universal arbitrary-O goal. For f(x,y)=x^3/3-x+y^2 and1<=r<3/2, fixing f outside
-the open sup-norm r-ball forces a local minimum inside the 3/2-ball. The actual
-small frame r=5/4 contains both critical points and their connection, yet
-cannot support the requested cancellation. The source and complete model
-receipt are frozen for independent replay. The impossible universal target
-is withdrawn now; common coordinates through 2544 remain valid. The next lane
-constructs sufficient regular-level support geometry or proves a permitted
-enlargement, with explicit containment, critical-point and protected-region
-control. No final cubic chart or cancellation conclusion may be an input.
+S's small-frame obstruction formally withdraws arbitrary-prescribed-O
+cancellation. Its laterc60 author layer constructs a sufficient longitudinal
+R and arbitrary positive transverse width for actual cubic lowering, and the
+same original model cancels in a produced larger O'. A protected set inside
+O' minus O is not automatically preserved. The next geometric producer must
+supply adequate original-function support and relative normal form, not assume
+a final cancellation chart or perturbation.
 
-h's later 72fa711aa constructs source/target standard solid-torus diagrams for
-the actual finite trivalent model; independent replay remains pending. Its
-next round constructs cross-stage locally finite compatibility. F's completed
-boundary exposed one pre-existing unused instance and three private consumer
-compile permissions; these were resolved within the authorized same lane.
-E3's unchanged canonical SphereSchoenflies dependency has an exact-source
-private refresh grant. No new task or additional checker was created.
+The later M304 sphere-exclusion checkpoint has284 frozen files/45 source
+receipt groups. The earlier unresolved-root recognition checkpoint remains
+invalid; only recognition-final and sphere-exclusion evidence enter replay.
+The h limit theorem consumes genuine increments satisfying its core equations;
+the one-increment trivalent model does not produce arbitrary infinitely many
+compatible modifications. Both distinctions remain explicit in the queue.
 
-Root source reachability is9660 modules, with no missing imports or cycle;
-this is not full-root compilation. Required headers and all current resource,
-ownership, quiet hourly scheduling and delivery-boundary rules remain binding.
-See integration sections89–90 and the resumed-stage ledger for frozen evidence.
+Root source reachability is9661 modules with no missing imports or cycles;
+this is not full-root compilation. The full-root check remains deferred under
+the discretionary compatibility policy. Two private checkers, three total Lean
+processes, renewable leases and quiet hourly delivery-boundary coordination
+remain unchanged. See integration sections92–93 and the resumed-stage ledger.
 
 ### Section32 research and an additional upstream contract gate
 

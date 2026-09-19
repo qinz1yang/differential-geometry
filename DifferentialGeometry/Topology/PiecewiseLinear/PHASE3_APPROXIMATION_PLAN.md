@@ -19,23 +19,25 @@ wide Moise264. The narrower essential-disk, compatible annulus/ball/caps and
 same-target strict Betti decrease are already produced. Do not assign them
 again as open prerequisites of this conditional sphere endpoint.
 
-F retains actual NormalSystem boundary/transition normalization. E3 has delivered
-physical30.3 separation throughc347, pending independent replay, and moved at
-that delivery to section32 Q.2a locally stable limit separation. M304 has moved to
-original toroidal-shell30.6: incompressibility/parity are delivered pending
-replay, while actual sphere exclusion and torus recognition remain open.
-The direction remains30.6 ->30.7;30.8 needs the inner-to-intermediate spine
-inclusion bridge before31/32 can consume it.
+F retains actual NormalSystem boundary/transition normalization. E3's physical
+surface splitting and original-target separation throughc347/c10 are now
+independently accepted in section92, including an actual three-dimensional
+torus/meridian model. E3 continues section32 Q.2a after its prior delivery.
+M304's original toroidal-shell incompressibility/parity and sphere-exclusion
+through878 are frozen pending replay; genuine torus recognition remains open.
+The direction remains30.6 ->30.7.30.8 still needs the already-notified
+inner-to-intermediate spine inclusion bridge before31/32 can consume it.
 
-h's finite trivalent solid-torus layer is queued; its next round constructs
-locally finite compatible modifications. S's actual common-coordinate chain
-and small-frame support obstruction are queued. Arbitrary prescribed-O
-cancellation is withdrawn; the lane must construct sufficient regular-level
-support geometry or a justified enlargement for the real original function.
+h's finite solid-torus layer and generic PL limit/single-increment model are
+queued. The current producer must supply genuinely nonstationary compatible
+local modifications. S's common-coordinate chain, small-frame obstruction and
+later enlarged-strip cubic lowering are queued. Arbitrary prescribed-O
+cancellation is withdrawn; actual original-function extended-arc, sufficient
+support and relative normal-form geometry remain its current task.
 
 Compact PL smoothing is an independent open phase. Approximation retains
 noncompact chart overlaps and variable positive error. Existing root imports
-give9660 reachable source modules; this is not a full-root build certificate.
+give9661 reachable source modules; this is not a full-root build certificate.
 Five existing tasks, two private checkers and the owner-authorized discretionary
 build policy are unchanged. Dated tables below retain historical work evidence.
 
@@ -466,7 +468,7 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 |---|---|---|---|---|---|
 | I.1 | 30.1（书页 214）：X 单连通、局部连通且连通开集道路连通；H、K、C、D 是两两不交的闭集，H、K 连通；C ∪ D 分离 H、K 则 C 或 D 分离 H、K | 书上完整特化签名：`[SimplyConnectedSpace X] [LocallyConnectedSpace X] (hpath : ∀ U : Set X, IsOpen U → IsConnected U → IsPathConnected U) {H K C D : Set X} (hH : IsConnected H) (hK : IsConnected K) (hHclosed : IsClosed H) (hKclosed : IsClosed K) (hC : IsClosed C) (hD : IsClosed D) (hHK : Disjoint H K) (hHC : Disjoint H C) (hHD : Disjoint H D) (hKC : Disjoint K C) (hKD : Disjoint K D) (hCD : Disjoint C D) (hsep : Separates (C ∪ D) H K) : Separates C H K ∨ Separates D H K`；由 `separates_or_separates_of_union hpath hC hD hCD hH.isPreconnected hK.isPreconnected hsep` 直接得到 | I.2, §32 Step 2 | **done**。`6cf85c2d3`；`Connected/PhragmenBrouwer.lean` 的通用端点及局部道路连通版本 `phragmen_brouwer` 保留 H/K 的 `IsPreconnected` 假设，比书上允许更弱条件：无需闭、允许为空。书上 `IsConnected H/K` 蕴含这些假设；`Disjoint C D` 明确保留，其余不交条件由分离前提蕴含。两个模块 exit=0、零警告，AuditS147 九项仅标准三公理 | 3k–5k |
 | I.2 | 30.2：有限分支的闭集分离两个非空连通集 ⟹ 某分支分离 | `Connected/SeparatingComponent.lean`：`exists_separates_of_finite_iUnion`、`exists_separating_connectedComponentIn`、`exists_separating_component` | §30.4, §30.6, §33 L5/L6, §33 L10 | **done**。`bc20b0b45`；从 `[Finite (ConnectedComponents C)]`、`IsClosed C` 和 `Separates C H K` 实际产生 `x ∈ C`，使 `connectedComponentIn C x` 分离 H/K。先对有限个两两不交闭集归纳，再由真实连通分支构造该族。两种空间假设版本同 I.1，无未证参数。模块 exit=0、零警告，AuditS148 三项仅标准三公理 | 0.5k |
-| I.3 | 30.3: geometric splitting preserves separation | Actual annulus, inner disk, compatible ball, physical caps and resulting closed surface | Section32 and later local surgery; book variants | **Delivered throughc34726180, pending independent integration replay.** Same actual result preserves original H/T by frontier replacement; no assumed result separation or unjustified C′ equality. E3 now owns Q.2a. The checked conditional30.4 route bypasses this general theorem. | Author c347 Lean+484/-50; no E3 Lean accepted in batch60 |
+| I.3 | 30.3: geometric splitting preserves separation | Actual annulus, inner disk, compatible ball, physical caps and resulting closed surface | Section32 and later local surgery; book variants | **Independently accepted throughc347/c10 in section92.** Same actual result preserves original H/T by frontier replacement, with a full nonempty R3 torus/meridian model. E3 continues Q.2a. Conditional30.4 bypasses this route. | Batch61 Lean+897/-29;7 modules/34 native/17 reuse;10 new public theorems |
 | I.4 | **30.4 sphere separator in an arbitrary original spherical shell** | `moise304_of_moise252 (h252 : Moise252) : Moise304`; actual minimum-Betti separator and same-shell compression | S.6, section34 L3 | **Conditional endpoint independently accepted**, source3717074e9, integration section89. Preserves original X/B0/B1; no Moise303 or broad Moise264 in the checked kernel closure. Unconditional Moise252 remains open. M304 now owns original toroidal-shell30.6. | +13 Lean lines for this endpoint; earlier geometric producers counted separately |
 | I.5 | 30.6: PL torus separator in an arbitrary original toroidal shell | Actual minimum/incompressible separator, endpoint inclusion maps, sphere-cut cover and torus recognition | 30.7 | **Partial; M304 owns this lane.**6f227c057/8236587e5 are frozen pending independent replay. Actual shell incompressibility, parity and commutative-cover obstruction are delivered; sphere exclusion and genuine IsPLTorus recognition remain open. Keep Moise252 explicit. | Author reports685 native lines plus8 root imports; pending replay |
 | I.6 | 30.7：拓扑实心环面 `S₁ ⊆ Int S₂`、`Cl(S₂ − S₁)` 环壳 ⟹ 存在 CST `S`，`S₁ ⊆ Int S`，`S ⊆ S₂` | I.5, B.5, I.3, T.1 | §31.1 | new | 3k–4k |
