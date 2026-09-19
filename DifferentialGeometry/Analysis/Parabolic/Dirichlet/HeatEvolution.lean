@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormIntegration
+import DifferentialGeometry.Geometry.Metric.Family.UniformEquivalence
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricEvolution
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityFamily
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Gradient
@@ -11,6 +14,7 @@ open scoped ContDiff ENNReal InnerProductSpace Manifold NNReal RealInnerProductS
 
 namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
+open DifferentialGeometry.Analysis.Laplacian (smoothMulLp)
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev.Hs
@@ -180,5 +184,88 @@ theorem exists_local_dirichlet_heat_weak_solution
   rw [ht φ]
   congr 1
   exact integral_dirichlet_heat_adjoint q (g t) (Y t) rfl (a t) (U₀ t) φ
+
+theorem exists_local_dirichlet_heat_variational_solution
+    {D : RealTimeInterval}
+    {g : ℝ → SmoothRiemannianMetric (I_half n) M}
+    (hG : MetricFamilySmoothOn (I := I_half n) (M := M) D g)
+    (h0reg : (0 : ℝ) ∈ D.regular)
+    (a : ℝ → C^∞⟮I_half n, M; ℝ⟯)
+    (ha : ContinuousOn (fun p : ℝ × M => a p.1 p.2)
+      (D.regular ×ˢ (Set.univ : Set M))) :
+    let q := g 0
+    ∃ T : ℝ, 0 < T ∧ Icc (0 : ℝ) T ⊆ D.regular ∧
+      ∃ Cg : ℝ, ∃ Cv : ℝ≥0∞, ∃ hCg : 1 ≤ Cg,
+      ∃ hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M, ∀ w : TangentSpace (I_half n) x,
+        Cg⁻¹ * q.inner x w w ≤ (g t).inner x w w ∧
+          (g t).inner x w w ≤ Cg * q.inner x w w,
+      ∃ hCv0 : Cv ≠ 0, ∃ hCvtop : Cv ≠ ⊤,
+      ∃ hvol : ∀ t ∈ Icc (0 : ℝ) T,
+        riemannianVolumeMeasure (I := I_half n) (M := M) (g t) ≤
+          Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q,
+      ∀ (u₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q))
+        (f₀ : timeL2 (H1ComplDirichlet q →L[ℝ] ℝ) T),
+        ∃ (w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T)
+          (V : timeL2 (H1ComplDirichlet q) T)
+          (U : ℝ → Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)),
+          ContinuousOn U (Icc (0 : ℝ) T) ∧ U 0 = u₀ ∧
+          (fun t => H1ComplDirichletToLp q (V t)) =ᵐ[timeMeasure T] U ∧
+          (∀ t ∈ Icc (0 : ℝ) T, ∀ v : H1ComplDirichlet q,
+            w.toFun t v = inner ℝ (U t) (H1ComplDirichletToLp q v)) ∧
+          ∀ᵐ t ∂timeMeasure T, ∀ ht : t ∈ Icc (0 : ℝ) T, ∀ v : H1ComplDirichlet q,
+            w.deriv t v =
+              dirichletWeakFormCompl (g t) 0 0 0 (by intro x; simp)
+                hCg (hequiv t ht) Cv hCv0 hCvtop (hvol t ht) (V t)
+                (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap (g t) q) v) -
+              inner ℝ (smoothMulLp q (a t) (U t)) (H1ComplDirichletToLp q v) + f₀ t v := by
+  intro q
+  obtain ⟨T, hT, hreg, hsol⟩ := exists_local_dirichlet_heat_weak_solution hG h0reg a ha
+  obtain ⟨Cg, hCg, hequiv⟩ :=
+    exists_metric_equivalence_bound_on_icc_of_metricFamilySmoothOn
+      g hG (fun _ ht => D.regular_subset (hreg ht)) q
+  let G : MetricConnectionFamilyOn (I := I_half n) (M := M) D :=
+    { metric := g
+      connection := fun t => leviCivitaConnectionOfMetric (g t)
+      metricCompatible := fun t => leviCivitaConnectionOfMetric_isMetricCompatible (g t) }
+  obtain ⟨Cv, hCv0, hCvtop, hvolBoth⟩ := volume_uniform_equiv
+    (I := I_half n) (M := M) q g isCompact_Icc
+    (fun x₀ i j => MetricFamilySmoothOn.chartGramMatrix_continuousOn (G := G) hG hreg x₀ i j)
+  let hvol := fun t ht => (hvolBoth t ht).1
+  refine ⟨T, hT, hreg, Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, fun u₀ f₀ => ?_⟩
+  let J := (dirichletHsNegOneEquivH1Dual q).symm.toContinuousLinearMap
+  let fHs := J.compLpL 2 (timeMeasure T) f₀
+  obtain ⟨u, U₂, U₀, hcont, hinit, hfield, hpoint, heq⟩ :=
+    hsol ((dirichletHsZeroEquivL2 q).symm u₀) fHs
+  obtain ⟨w, _, hw, hwd⟩ :=
+    exists_timeH1_comp_clm (dirichletHsNegOneEquivH1Dual q).toContinuousLinearMap u
+  simp only [ContinuousLinearEquiv.coe_coe] at hw hwd
+  let K := (dirichletHsOneEquivH1Compl q).toContinuousLinearEquiv.toContinuousLinearMap
+  let V := K.compLpL 2 (timeMeasure T) U₂
+  let U := fun t => dirichletHsZeroEquivL2 q (U₀ t)
+  have hV : V =ᵐ[timeMeasure T] fun t => dirichletHsOneEquivH1Compl q (U₂ t) :=
+    K.coeFn_compLpL U₂
+  have hf : fHs =ᵐ[timeMeasure T] fun t => (dirichletHsNegOneEquivH1Dual q).symm (f₀ t) :=
+    J.coeFn_compLpL f₀
+  refine ⟨w, V, U, (dirichletHsZeroEquivL2 q).continuous.comp_continuousOn hcont,
+    ?_, ?_, ?_, ?_⟩
+  · change dirichletHsZeroEquivL2 q (U₀ 0) = u₀
+    rw [hinit, LinearIsometryEquiv.apply_symm_apply]
+  · filter_upwards [hV, hfield] with t hVt hfieldt
+    rw [hVt, H1ComplDirichletToLp_dirichletHsOneEquivH1Compl, hfieldt]
+  · intro t ht v
+    rw [hw t ht, ← hpoint t ht]
+    exact dirichletHsNegOneEquivH1Dual_inclusion_zero_apply q (U₀ t) v
+  · filter_upwards [heq, hfield, hV, hf, hwd] with t heqt hfieldt hVt hft hwdt
+    intro ht v
+    have hU : H1ComplDirichletToLp q (dirichletHsOneEquivH1Compl q (U₂ t)) = U t := by
+      rw [H1ComplDirichletToLp_dirichletHsOneEquivH1Compl, hfieldt]
+    have h := eq_dirichletWeakFormCompl_of_heat_adjoint (g t) hCg (hequiv t ht)
+      Cv hCv0 hCvtop (hvol t ht) (a t) (dirichletHsOneEquivH1Compl q (U₂ t))
+      (dirichletHsNegOneEquivH1Dual q (u.deriv t))
+      (dirichletHsNegOneEquivH1Dual q (fHs t))
+      (by intro φ; rw [hU]; exact heqt φ) v
+    rw [hU, hft, ContinuousLinearEquiv.apply_symm_apply] at h
+    rw [hwdt, hVt]
+    exact h
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
