@@ -11479,3 +11479,5 @@ import DifferentialGeometry.Analysis.Calculus.AffineComposition
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
 import DifferentialGeometry.Analysis.FunctionalAnalysis.BallScaling
 import DifferentialGeometry.Analysis.Integration.PlaneScaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
