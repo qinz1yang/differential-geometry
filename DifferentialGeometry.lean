@@ -353,6 +353,7 @@ import DifferentialGeometry.Analysis.Elliptic.LipschitzSupersolution
 import DifferentialGeometry.Analysis.Elliptic.MetricDensity
 import DifferentialGeometry.Analysis.Elliptic.MetricEllipticCoeff
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
+import DifferentialGeometry.Analysis.Elliptic.MetricExtension.ClosedBall
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension.DensityBounds
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartLocalLaplacian
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartMeasureEquiv
@@ -4225,6 +4226,7 @@ import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Geometry.Coordinates.Frame.ChangeOfBasis
 import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Geometry.Coordinates.Frame.ChartSource
+import DifferentialGeometry.Geometry.Coordinates.Frame.ClosedBall
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.Frame.Product
 import DifferentialGeometry.Geometry.Coordinates.Frame.TangentProduct
@@ -9117,6 +9119,7 @@ import DifferentialGeometry.Topology.Manifold.ChartSupportedIsotopy
 import DifferentialGeometry.Topology.Manifold.ClopenDecomposition
 import DifferentialGeometry.Topology.Manifold.ClopenOrientation
 import DifferentialGeometry.Topology.Manifold.ClosedBall
+import DifferentialGeometry.Topology.Manifold.ClosedBall.Coordinates
 import DifferentialGeometry.Topology.Manifold.ClosedBallBoundaryOrientation
 import DifferentialGeometry.Topology.Manifold.ClosedBallInducedBoundaryOrientation
 import DifferentialGeometry.Topology.Manifold.ClosedBallOrientation
