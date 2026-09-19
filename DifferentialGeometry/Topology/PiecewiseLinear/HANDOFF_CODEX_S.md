@@ -6402,3 +6402,75 @@ this handoff and the plan record are committed together as this closed result.
 
 No compact or unrestricted PLSmoothing 3 endpoint is claimed. The noncompact
 approximation statement is unchanged.
+
+## Maximal-cell sphere pairs and tetrahedral three-handles (2026-09-19)
+
+Status: closed. This extends the actual two-handle layer of `9494e59f6`; the
+previous audited sources remain unchanged for independent replay.
+
+`DerivedNeighborhoodMaximalCell.lean` proves
+`derivedNeighborhoodCell_inter_derivedNeighborhood_eq_boundaryComplex_of_maximal`:
+for a maximal face s of a finite closed combinatorial (n+2)-manifold K, and a
+lower subcomplex L containing every nonempty proper subface but not s, the
+new derived cell intersects N(K,L) in its whole intrinsic boundary. It uses
+the proved cell-boundary cover and actual comparability of intersecting cells.
+No lower-dimension bound on L is needed.
+
+`exists_isPLHomeomorphOn_derivedNeighborhoodCell_maximal` then constructs the
+actual standard (n+2)-simplex ball map with its standard boundary mapped PL
+homeomorphically onto exactly that lower trace. It derives the boundary
+parametrization from the existing PL ball producer and intrinsic boundary
+transport, without assuming a sphere-pair parametrization.
+
+`DerivedNeighborhoodMaximalAttachment.lean` proves
+`exists_derivedNeighborhood_maximal_attachment`: the actual attaching sphere
+has a closed embedding into the old neighborhood's intrinsic boundary, and
+the actual adjunction is homeomorphic to the neighborhood of the explicitly
+generated next subcomplex. The homeomorphism fixes the lower space and has the
+exact constructed cell formula. The dimension is n+2. Its natural corollary
+`exists_derivedNeighborhood_tetrahedron_attachment` starts from an actual
+four-vertex face of a finite closed combinatorial three-manifold and derives
+maximality from the manifold dimension. Neither theorem assumes Schoenflies,
+a handle decomposition or an attaching-sphere equivalence.
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `DerivedNeighborhoodMaximalCell` | 11.409 | 11.048 | 2 | 6 |
+| `DerivedNeighborhoodMaximalAttachment` | 11.330 | 11.273 | 2 | 4 |
+
+Both final native checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All four nonautomatic declarations
+(none private), ten critical reuse entries and all 13 applicable environment
+linters per module passed; their axioms are subsets of
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The input fixture is an actual tetrahedron in the boundary of a four-simplex.
+The complete attachment fixture uses its own boundary subcomplex as the lower
+input, checks the actual PL sphere pair and lower-fixing adjunction formulas,
+distinguishes two boundary images, and proves that the image of the standard
+ball center is outside the old neighborhood. It therefore tests a genuinely
+new cell interior. Its 9 declarations, 5 reused entries
+and 13 linters passed in 11.207 seconds, exit 0 and zero diagnostics.
+The preliminary nonempty input check also passed three named axiom checks.
+
+Raw source SHA256 values:
+
+- `DerivedNeighborhoodMaximalCell`: `8B70F3820C398C4230CD7137B74CF3E34795BA4108946125DDD183829174E8E1`.
+- `DerivedNeighborhoodMaximalAttachment`: `5D7B05B146748CEE639B3227C63901A7C425C4509D3F748A7C60CD63D69BBD64`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`MaximalHandles-round-verification.json` freezes exact native/audit/fixture
+bytes, raw and LF source identities, private olean identities, all receipts,
+setup records, logs, timings and declaration/reuse/linter censuses. Audit
+bodies equal the native sources. Both new leaves are registered once in the
+root, their native import closures exclude `HurewiczLowDegrees`, and shared
+artifacts were unchanged. Independent integration replay and the stopped
+full-root gate are separate. Source, root registration, this handoff and the
+plan record form one mathematical commit; no vendored source changed.
+
+The next obligation is the actual finite face order and compatible sequence
+of attachments reaching K. Smooth attachment and corner rounding, framed
+curve/annulus smoothing, smooth two-sphere classification and compact atlas
+assembly remain open. The boundary-triangle case is not asserted by this
+closed-manifold development. No compact or unrestricted PLSmoothing 3 endpoint
+is claimed, and noncompact approximation scope is unchanged.

@@ -81,9 +81,10 @@ no acceptance of these contracts is claimed.
    Actual vertex zero handles and edge one-handle attachments, including
    intrinsic boundary traces and successor-subcomplex homeomorphisms, are now
    constructed. Actual triangle two-handles now have their PL annulus pair,
-   framing and lower-fixing adjunction for finite closed K. Three-handle sphere
-   pairs, the global finite sequence, smooth attaching/framing, corner rounding
-   and smooth classification of terminal two-sphere boundaries remain open.
+   framing and lower-fixing adjunction for finite closed K. Maximal-cell sphere
+   pairs and actual tetrahedral three-handles are also constructed. The global
+   finite sequence, smooth attaching/framing, corner rounding and smooth
+   classification of terminal two-sphere boundaries remain open.
    The eventual compact assembly does not prove unrestricted PLSmoothing 3.
 4. S now runs compact PL smoothing as a separate phase, after its reported
    finite 24.12 delivery through 434d5352c.
@@ -323,6 +324,18 @@ with-boundary case remains open. Three-handles, the global finite sequence and
 the smooth attachment/framing/corner/two-sphere obligations remain open.
 The compact smoothing endpoint and noncompact approximation scope are
 unchanged. See the final S handoff section for signatures and frozen evidence.
+
+**S maximal-cell/three-handle layer (2026-09-19; integration replay pending):**
+Maximal derived cells in finite closed combinatorial (n+2)-manifolds now have
+their actual standard simplex/sphere pair and lower-fixing adjunction onto
+the next subcomplex neighborhood. The tetrahedral three-handle corollary
+derives maximality from dimension. Two modules, four declarations, ten reused
+entries and 13 linters per module passed, as did the actual four-simplex-boundary
+fixture with distinct attaching images and a center outside the lower space.
+All final checks exited 0 with zero diagnostics and standard axioms. The actual
+finite stage assembly and the smooth attachment/framing/corner/two-sphere
+obligations remain open; compact smoothing and unrestricted approximation
+are unchanged. See the final S handoff section for exact evidence.
 
 ### Phase 3：A′ `PLApproximationManifold 3` 的经典链（Moise §17, §21–28, §30–36）
 
