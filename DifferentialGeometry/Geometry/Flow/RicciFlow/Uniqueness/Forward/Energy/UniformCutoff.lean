@@ -19,36 +19,36 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [I.Boundaryless] [SigmaCompactSpace M]
 
-theorem forward_uniqueness_cutoff_energy_uniform_bound
+theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
     {a b : ℝ}
     (hjoint₁ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g₁ p.1) α p.2 i j)
-        (Ico a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
     (hjoint₂ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g₂ p.1) α p.2 i j)
-        (Ico a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
-    (hpde₁ : ∀ t ∈ Ico a b, ∀ (x : M) (v w : TangentSpace I x),
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hpde₁ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s => (g₁ s).inner x v w)
         ((-2 : ℝ) * ricciTensor (I := I) (g₁ t) x v w) (Ici a) t)
-    (hpde₂ : ∀ t ∈ Ico a b, ∀ (x : M) (v w : TangentSpace I x),
+    (hpde₂ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s => (g₂ s).inner x v w)
         ((-2 : ℝ) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
     {C R₁ R₂ D₁ D₂ : ℝ} (hC : 1 ≤ C)
-    (hEquiv : ∀ t ∈ Ico a b, ∀ x : M, ∀ v : TangentSpace I x,
+    (hEquiv : ∀ t ∈ Ioo a b, ∀ x : M, ∀ v : TangentSpace I x,
       C⁻¹ * (g₁ t).inner x v v ≤ (g₂ t).inner x v v ∧
         (g₂ t).inner x v v ≤ C * (g₁ t).inner x v v)
-    (hR₁ : ∀ t ∈ Ico a b, ∀ x : M,
+    (hR₁ : ∀ t ∈ Ioo a b, ∀ x : M,
       normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₁ t) x) ≤ R₁)
-    (hR₂ : ∀ t ∈ Ico a b, ∀ x : M,
+    (hR₂ : ∀ t ∈ Ioo a b, ∀ x : M,
       normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ R₂)
-    (hD₁ : ∀ t ∈ Ico a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 5
+    (hD₁ : ∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 5
       (metricNabla0S (I := I) (g₂ t)
         (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
           (metricCov_smooth (I := I) (g₂ t))) x) ≤ D₁)
-    (hD₂ : ∀ t ∈ Ico a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 6
+    (hD₂ : ∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 6
       (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
         (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
           (metricCov_smooth (I := I) (g₂ t)))) x) ≤ D₂) :
@@ -105,7 +105,7 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound
     apply (div_le_iff₀ hden).mpr
     linarith
   refine ⟨max K₀ 0, le_max_right _ _, fun χ hχ t ht => ?_⟩
-  have htime : t ∈ Ico a b := Ioo_subset_Ico_self ht
+  have htime : t ∈ Ioo a b := ht
   have heq (x : M) := hEquiv t htime x
   have hsymm (x : M) := metric_equiv_symm (I := I) (g₁ t) (g₂ t) x hC (heq x)
   have htransfer {s : ℕ} (x : M) (T : Tensor0SSpace s I x) {B : ℝ}
@@ -161,8 +161,23 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound
     have h := iterRic_normSq_le (g₂ t) (metricRm04 (g₂ t)) 1 x
     rw [← hRic] at h
     exact h.trans (mul_le_mul_of_nonneg_left (hD₁ t htime x) (pow_nonneg hn 5))
+  let a₀ : ℝ := (a + t) / 2
+  have haa₀ : a < a₀ := by dsimp only [a₀]; linarith [ht.1]
+  have ha₀t : a₀ < t := by dsimp only [a₀]; linarith [ht.1]
+  have hsub : Ico a₀ b ⊆ Ioo a b := fun s hs => ⟨haa₀.trans_le hs.1, hs.2⟩
+  have hpde₁' : ∀ s ∈ Ico a₀ b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun r => (g₁ r).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₁ s) x v w) (Ici a₀) s :=
+    fun s hs x v w => (hpde₁ s (hsub hs) x v w).mono fun r hr => haa₀.le.trans hr
+  have hpde₂' : ∀ s ∈ Ico a₀ b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun r => (g₂ r).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₂ s) x v w) (Ici a₀) s :=
+    fun s hs x v w => (hpde₂ s (hsub hs) x v w).mono fun r hr => haa₀.le.trans hr
   have henergy := forward_uniqueness_corrected_cutoff_energy_deriv_le (I := I)
-    g₁ g₂ χ hχ hjoint₁ hjoint₂ hpde₁ hpde₂ ht hC0
+    g₁ g₂ χ hχ
+    (fun α i j => (hjoint₁ α i j).mono (Set.prod_mono hsub Subset.rfl))
+    (fun α i j => (hjoint₂ α i j).mono (Set.prod_mono hsub Subset.rfl))
+    hpde₁' hpde₂' ⟨ha₀t, ht.2⟩ hC0
     (fun x _ v => (hsymm x v).2) hC (fun x _ => heq x)
     (fun x _ => hBH x) (fun x _ => hR₁ t htime x)
     (fun x _ => htransfer x _ (hR₂ t htime x))
@@ -198,5 +213,63 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound
   have hK := mul_le_mul_of_nonneg_right (le_max_left K₀ 0) henergy0
   norm_num only [one_div, inv_inv] at henergy
   linarith only [henergy, hdiss, hK]
+
+theorem forward_uniqueness_cutoff_energy_uniform_bound
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
+    {a b : ℝ}
+    (hjoint₁ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g₁ p.1) α p.2 i j)
+        (Ico a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hjoint₂ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g₂ p.1) α p.2 i j)
+        (Ico a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hpde₁ : ∀ t ∈ Ico a b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s => (g₁ s).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₁ t) x v w) (Ici a) t)
+    (hpde₂ : ∀ t ∈ Ico a b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s => (g₂ s).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
+    {C R₁ R₂ D₁ D₂ : ℝ} (hC : 1 ≤ C)
+    (hEquiv : ∀ t ∈ Ico a b, ∀ x : M, ∀ v : TangentSpace I x,
+      C⁻¹ * (g₁ t).inner x v v ≤ (g₂ t).inner x v v ∧
+        (g₂ t).inner x v v ≤ C * (g₁ t).inner x v v)
+    (hR₁ : ∀ t ∈ Ico a b, ∀ x : M,
+      normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₁ t) x) ≤ R₁)
+    (hR₂ : ∀ t ∈ Ico a b, ∀ x : M,
+      normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ R₂)
+    (hD₁ : ∀ t ∈ Ico a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 5
+      (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
+          (metricCov_smooth (I := I) (g₂ t))) x) ≤ D₁)
+    (hD₂ : ∀ t ∈ Ico a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 6
+      (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
+          (metricCov_smooth (I := I) (g₂ t)))) x) ≤ D₂) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (χ : C^∞⟮I, M; ℝ⟯), HasCompactSupport (χ : M → ℝ) →
+      ∀ t ∈ Ioo a b,
+      let S := forwardUniquenessSfield (I := I) g₁ g₂ t
+      let A := metricNabla0S (I := I) (g₁ t) S
+      let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
+        ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
+          (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
+        (unitZeroSec (I := I) (M := M) x)
+      let μ := riemannianVolumeMeasure (I := I) (M := M) (g₁ t)
+      deriv (fun s => ∫ x, χ x ^ 2 * forwardUniqueDensity (I := I) g₁ g₂ s x
+        ∂riemannianMeasureFamily g₁ s) t ≤
+        K * (∫ x, χ x ^ 2 * forwardUniqueDensity (I := I) g₁ g₂ t x ∂μ) -
+        (∫ x, χ x ^ 2 * normSq0S (I := I) (g₁ t) x 5 (A x) ∂μ) +
+        10 * (∫ x, normSq0S (I := I) (g₁ t) x 5 (B x) ∂μ) := by
+  exact forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo g₁ g₂
+    (fun α i j => (hjoint₁ α i j).mono (Set.prod_mono Ioo_subset_Ico_self Subset.rfl))
+    (fun α i j => (hjoint₂ α i j).mono (Set.prod_mono Ioo_subset_Ico_self Subset.rfl))
+    (fun t ht => hpde₁ t (Ioo_subset_Ico_self ht))
+    (fun t ht => hpde₂ t (Ioo_subset_Ico_self ht)) hC
+    (fun t ht => hEquiv t (Ioo_subset_Ico_self ht))
+    (fun t ht => hR₁ t (Ioo_subset_Ico_self ht))
+    (fun t ht => hR₂ t (Ioo_subset_Ico_self ht))
+    (fun t ht => hD₁ t (Ioo_subset_Ico_self ht))
+    (fun t ht => hD₂ t (Ioo_subset_Ico_self ht))
 
 end DifferentialGeometry.PDE.RicciFlow

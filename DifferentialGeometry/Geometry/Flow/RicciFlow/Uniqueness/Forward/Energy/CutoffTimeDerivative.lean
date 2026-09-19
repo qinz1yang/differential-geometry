@@ -76,4 +76,50 @@ theorem forward_uniqueness_cutoff_energy_hasDerivAt
   rw [((hdens x).const_mul (χ x ^ 2)).deriv]
   ring
 
+theorem forward_uniqueness_cutoff_energy_hasDerivAt_on_Ioo
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
+    (χ : C^∞⟮I, M; ℝ⟯) (hχ : HasCompactSupport (χ : M → ℝ))
+    {a b : ℝ}
+    (hjoint₁ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g₁ p.1) α p.2 i j)
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hjoint₂ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g₂ p.1) α p.2 i j)
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hpde₁ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s => (g₁ s).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₁ t) x v w) (Ici a) t)
+    (hpde₂ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s => (g₂ s).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
+    {t : ℝ} (ht : t ∈ Ioo a b) :
+    HasDerivAt
+      (fun s => ∫ x, χ x ^ 2 * forwardUniqueDensity (I := I) g₁ g₂ s x
+        ∂riemannianMeasureFamily g₁ s)
+      (∫ x, χ x ^ 2 *
+        (forwardUniqueDensityDot (I := I) g₁ g₂
+          (connSpeed (I := I) g₁ g₂ (forwardUniquenessAvec (I := I) g₁ g₂))
+          (rmSpeed (I := I) g₁ g₂ (forwardUniquenessSvec (I := I) g₁ g₂)) t x +
+          (1 / 2) * traceTimeDerivMetric (I := I) g₁ t x *
+            forwardUniqueDensity (I := I) g₁ g₂ t x)
+        ∂riemannianMeasureFamily g₁ t) t := by
+  let a₀ : ℝ := (a + t) / 2
+  have haa₀ : a < a₀ := by dsimp only [a₀]; linarith [ht.1]
+  have ha₀t : a₀ < t := by dsimp only [a₀]; linarith [ht.1]
+  have hsub : Ico a₀ b ⊆ Ioo a b := fun s hs => ⟨haa₀.trans_le hs.1, hs.2⟩
+  have hpde₁' : ∀ s ∈ Ico a₀ b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun r => (g₁ r).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₁ s) x v w) (Ici a₀) s :=
+    fun s hs x v w => (hpde₁ s (hsub hs) x v w).mono fun r hr => haa₀.le.trans hr
+  have hpde₂' : ∀ s ∈ Ico a₀ b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun r => (g₂ r).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₂ s) x v w) (Ici a₀) s :=
+    fun s hs x v w => (hpde₂ s (hsub hs) x v w).mono fun r hr => haa₀.le.trans hr
+  exact forward_uniqueness_cutoff_energy_hasDerivAt (I := I) g₁ g₂ χ hχ
+    (fun α i j => (hjoint₁ α i j).mono (Set.prod_mono hsub Subset.rfl))
+    (fun α i j => (hjoint₂ α i j).mono (Set.prod_mono hsub Subset.rfl))
+    hpde₁' hpde₂' ⟨ha₀t, ht.2⟩
+
 end DifferentialGeometry.PDE.RicciFlow
