@@ -1496,8 +1496,8 @@ axiom and thirteen-linter checks, together with six existing declarations
 from two previously unreachable prerequisites. Those modules now have
 required headers and direct root imports. One old unused finite-dimensional
 hypothesis was removed, preserving the proof and old caller. See integration section72 and the resumed
-ledger. The earlier boundary perturbation/homotopy queue and the new
-a50bc58dd/44d4e28ef consumers still await independent replay.
+ledger. At that checkpoint the boundary perturbation/homotopy queue and
+a50bc58dd/44d4e28ef consumers awaited replay; section 73 records acceptance.
 
 The current F lane must produce relative crossing control in the active
 transition annulus, or a finite protected-core invariant with a proved cover
@@ -1511,7 +1511,8 @@ neighborhood modifications (h), and actual relative critical-pair normal
 form geometry (S). No full-root compilation is claimed.
 
 
-Latest unaccepted checkpoints are h d2c94f911, M304 f2338f0d and S f15aad47d.
+The historical unaccepted queue at section 72 contained h d2c94f911, M304
+f2338f0d and S f15aad47d; sections 73-74 supersede that queue.
 Source review distinguishes h's graph-fixed external homeomorphism from a
 self-homeomorphism of the original K.space; the latter is its next producer.
 M304's new finite polyhedral separator is not yet a capped closed surface.
@@ -1553,3 +1554,79 @@ original trajectory's incidence without a proved comparison.
 Five tasks remain authorized without a new deadline. Administrative leases
 are renewable and are not owner deadlines. Existing hourly quiet follow-up,
 two private checker slots and no unsolicited full-root rebuild continue.
+
+
+### Actual compression component accepted; interior essential disk is next
+
+Integration section 74 accepts M304 through 01fc05b8c, including its preceding
+common solid-torus neighborhood, polyhedral separator and genuine wall-to-caps
+separation checkpoints. From an actual original essential disk/circle and the
+marked compression ball/caps, the endpoint produces a connected closed PL2
+component of the literal capped union, separates the original targets and
+strictly lowers the first Betti number. The result surface and final separation
+are not hypotheses. The exact component equation is proved, with the previous
+selection signature retained. All 68 declarations in fifteen fresh modules,
+63 critical reuses and six actual model assertions pass axiom and lint audit.
+The six assertions share one concrete nonseparating torus family.
+
+Do not repeat the existing minimum-Betti selection or capping arithmetic.
+M304 now advances actual cutting along an internal two-sided surface and the
+fundamental-group kernel bridge from the corrected boundary-loop theorem to
+the corrected Moise264 contract. Moise252 may be a named, explicit unresolved
+upstream input; a proper embedded disk or equivalent final kernel witness may
+not be assumed as the new producer's conclusion in disguise. Preserve the
+original K, L and ambient neighborhood. E3 independently retains original-wall
+alignment, inner-disk traces and physical cap gluing. Both gaps remain needed
+for arbitrary-shell Moise304.
+
+Pending independent acceptance is E3 through ddade8562, h through d2c94f911
+and S through ec69dc759. F's boundary layer through 44d4e28ef and M304 through
+01fc05b8c are accepted. Later active-round source must be frozen at delivery
+before integration. Required dependency refresh is authorized privately and
+on demand; source ownership, hourly quiet follow-up and checker limits remain.
+
+
+### Relative prism and outer-boundary layer accepted
+
+Integration section 75 accepts E3 through ddade8562, including actual marked
+boundary-circle prism coordinates and stronger split-ball outer-boundary
+inclusions. The sphere disk selector now works for any preconnected obstacle
+and lives in SphereSchoenflies; its earlier disk-specific interface is retained.
+Five fresh modules, all 22 native declarations, fifteen key reuses and thirteen
+linters pass independent verification. This does not supply the actual marked
+disks or physical caps from all Moise303 data. Continue E3's inner-disk boundary
+replacement and gluing of original outer annuli. Do not place the original
+outer circles inside the small derived neighborhood that avoids them.
+
+The independent acceptance queue is h through d2c94f911, S through d77f16c3c
+and F through 71b0b003e. F's completed flat-sheet round has resumed toward a
+controlled extension matching actual inner perturbations, then compatible
+transition-region coverage; its prior crossing layer through44d4 is accepted.
+S is on actual strip differential invertibility and critical-endpoint gluing.
+M304's original-shell compression component layer remains accepted, while
+actual Moise264 cutting/kernel production is open. Existing five tasks retain
+their lanes, with no new deadline, no routine mid-round messages and no
+time-triggered full-root rebuild.
+
+
+### Relative perturbation stability accepted; next actual geometric gates
+
+Integration section 76 accepts h through d2c94f911: finite perturbation radii,
+actual supported PL moves fixing the original graph, and image-neighborhood
+trace transport. Eight fresh modules, 33 native declarations, seventeen key
+reuses and thirteen linters pass independent verification. Of twelve newly
+placed declarations, two are relocated proofs; ten are new mathematics.
+The original three-dimensional carrier is not proved invariant. Continue h's
+active carrier-preserving self-homeomorphism and compatible-subdivision round.
+
+Independent acceptance now queues S through c0f4df1b1 (including d77f16c3c and
+earlier unaccepted prerequisites), F through 71b0b003e, and M304 7a1632779.
+S has delivered actual open smooth strip coordinates and has resumed full
+Morse endpoint gluing and supported cancellation. M304 has delivered actual
+finite cut pieces and open-side kernels and has resumed the compatible maps
+from open sides to the same closed boundary components; corrected Moise252
+remains explicit unresolved upstream. F owns the controlled canonical half-space
+extension/general-position implementation for the same actual perturbations.
+E3 remains on original inner traces and physical caps. These are completed-round
+handoffs, not new parallel lanes. No full-root restart is triggered by elapsed
+time, and no new deadline has been inferred.

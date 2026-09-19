@@ -3450,3 +3450,222 @@ calculus. Its next relative strip must use the same original descending
 field, not infer incidence from a separately constructed regular-band field.
 F and h were not interrupted. Five tasks retain one lane each, with hourly
 quiet follow-up and renewed administrative compiler leases.
+
+## 74. Original-shell compression produces a separating component of lower Betti number
+
+M304 checkpoints eb74775d5, f2338f0d, bed13ca15 and 01fc05b8c are independently
+accepted together. The common derived neighborhood now applies to finite
+orientable surfaces with boundary, preserves both exact annular traces and
+has an actual solid-torus realization. Given a proper spanning disk, it can
+avoid a prescribed closed obstacle and an interior point of that same disk.
+The earlier local replacement produces an actual finite polyhedral separator
+with exact outside agreement in the original shell; that intermediate result
+is not asserted to be a closed surface.
+
+The wall-to-caps theorem proves separation of the actual capped union. Its
+generic topological argument proves frontier(U minus N) lies in the replacement
+before applying separation monotonicity. The original connected closed PL
+surface supplies two local complementary regions, and an actual full-dimensional
+PL ball supplies a regular closed set with connected interior.
+
+The new compression endpoint starts with the original essential circle or
+proper embedded disk, a centered annulus in the original surface, an actual
+PL three-ball, two disjoint cap disks and the exact wall/frontier/rim equations.
+It constructs the finite annulus complement, its WB2 structure and cap traces.
+It then produces a finite closed connected orientable two-sided PL surface P
+inside C = closure(S minus W) union D0 union D1. P separates the original
+targets, has strictly smaller first Betti number, and satisfies
+connectedComponentIn C x = P.space for every x in P.space. Neither the result
+manifold, final separation nor Betti descent is an input.
+
+The existing capping chain is reused. A nonseparating essential circle gives
+beta(P)+2=beta(S). In the separating case the actual half-annulus and spherical
+disk complement would contract the original essential circle if either capped
+component were spherical. Thus both Betti numbers are positive and strictly
+smaller; Phragmen-Brouwer selects one still separating the original targets.
+DiskCapping and AnnulusCapping are freshly compiled and their complete native
+suites audited with the new modules. The original shell X and targets B0,B1
+are retained, and the produced P lies inside interior X.
+
+All fifteen fresh module checks pass in 176.941 seconds;
+the final joint audit takes 70.604 seconds including admission.
+All 68 nonautomatic declarations, 63 distinct critical reuse entries and six
+actual producer/model assertions have only approved foundational axioms.
+All thirteen applicable linters pass, with zero final diagnostics. There are
+23 new public declaration names and 45 retained declarations. One new name
+promotes and generalizes an existing private local-separation lemma; the old
+private name is removed, so the net declaration increase is 22. All 37 former
+public theorem signatures in changed files are preserved. The stronger
+component-selection result keeps its former surface-selection API as a corollary.
+
+The six model assertions use the same explicit nonseparating essential-torus
+family, not six independent geometries. They witness nonempty original targets,
+proper disk interior, exact annular traces and actual disjoint caps. The final
+test discards the old final separation, calls the new producer to obtain P,
+then identifies P with the literal capped sphere and verifies beta 2 to 0.
+The separating-circle proof is audited generally; no genus-two concrete model
+is claimed.
+
+The author-approved SphericalDiskComplement repair preserves all proof/import
+tokens. Integration also adds required headers to BallRegularClosed,
+BallStarring and SurfaceComplement, preserving their proof/import tokens and
+refreshing these modules and the two new separation consumers. Earlier check
+timings are retained without double counting. 118 private prerequisite
+objects are reused only with exact raw source and recorded object identities.
+Accepted Lean delta is +1120/-39: +1093/-39 frozen author source, 21 integration
+header lines and six root imports. This is integrated source, not typing during
+this delivery turn. The root graph reaches 9626 project modules including the
+root, with no missing source or cycles. Full-root compilation remains pending.
+Receipt: .lake/verified-fiftythird-lane-delivery-20260919.json.
+
+Arbitrary-shell Moise304 remains open. Its essential embedded-disk producer
+and E3's original-wall/end-rim geometry are still genuine upstream obligations.
+At its completed delivery boundary, M304 was assigned the actual interior
+surface cutting and fundamental-group kernel bridge for Moise264, treating
+the named Moise252 theorem as an explicit unresolved upstream input. Existing
+minimum-Betti and compression algebra are not reassigned. E3 keeps physical
+capping and received dependency-closed read-only private refresh authority for
+demonstrated missing/stale imports; this is not an eager full rebuild or source
+edit grant. Other active lanes are not interrupted.
+
+## 75. Relative prism circles and split-ball outer boundaries
+
+E3 checkpoints 4b60bda72, fd9ef334c and ddade8562 are independently accepted.
+Given actual two three-balls with common middle disk and disjoint marked disks
+in their respective boundaries, the relative prism theorem constructs a PL
+chart fixing the prescribed middle-disk map and sends its two side circles
+at heights minus/plus one-half to the actual marked-disk boundaries. The
+chart, its two half-ball images and final circle-image equations are produced.
+This remains conditional on the marked disks; arbitrary original annulus
+end circles have not been placed on the small neighborhood boundary.
+
+The sphere disk-selection argument is generalized to a preconnected obstacle
+and moved to SphereSchoenflies. It chooses the opposite disk from the actual
+Schoenflies decomposition of a PL circle on a PL two-sphere. No disk or
+polyhedron condition on the obstacle is needed. The previous disk-specific
+IsPLBall.exists_disjoint_isPLBall_with_boundary_of_isPLSphere_two retains its
+exact public name and signature as a corollary. Existing imports continue to
+expose it. Required headers are added to the canonical sphere module.
+
+The stronger split-ball producer proves that each produced half-ball's
+intersection with the original outer boundary lies in its own combinatorial
+boundary. Closedness and interior monotonicity establish the standard-model
+inclusion, then the original PL parametrizations transport it. The old
+split-ball selection signature remains a corollary of the stronger result.
+
+Five modules compile freshly in 67.416 seconds. The final joint audit takes
+52.565 seconds including admission. All 22 native nonautomatic declarations,
+15 distinct critical reuses, and six classified probe declarations have only
+approved foundational axioms; all thirteen applicable linters pass, with zero
+final diagnostics. Seven native declarations are new: four public and three
+private. Fifteen are existing results rechecked, including the full native
+suites of the actual PrismChart and LocalTrace consumers. All four previous
+public signatures in the changed files are retained.
+
+The probe suite contains three actual geometric assertions on a coordinate
+triangle and its prism, one explicit nonempty witness and two helper
+abbreviations. These are one model family, not six independent examples.
+The split-ball model explicitly retains both new outer-boundary inclusions.
+Its first strengthened statement exposed a mismatched synthesized DecidableEq;
+the same explicit local instance now appears in the statement and proof. A
+subsequent audit-only long-line warning was repaired by shortening qualified
+names through existing open namespaces. Failed probe sources and receipts are
+preserved; no production theorem failed and no resource budget was raised.
+
+Accepted Lean delta is +451/-5: +434/-5 author changes plus seventeen net
+integration lines for generalization, compatibility and required headers.
+There are no new leaves or root imports. All five modules are already root
+reachable; the static graph remains at 9626 project modules including the
+root, without missing sources or cycles. 31 prerequisite objects were reused
+only after matching exact raw source and accepted object hashes. Full-root
+compilation remains pending. Receipt:
+.lake/verified-fiftyfourth-lane-delivery-20260919.json.
+
+General Moise303 is still open. E3 is constructing the original inner-disk
+boundary trace, replacement disk in the correct half-ball boundary, and caps
+glued to the original external annuli. Original outer annulus circles avoid
+the small derived neighborhood and are not its internal slice markings.
+M304 retains the separate essential-disk/kernel bridge toward Moise264.
+
+F delivered 71b0b003e and resumed its same lane at that completed boundary.
+Its raw flat-sheet perturbation source is frozen for later independent replay.
+F alone may now extend the canonical HalfSpacePerturbation producer with
+controlled interior normal displacement and boundary-zero-level tangency,
+preserving old public signatures and checking actual consumers. This does not
+claim the whole transition annulus or global loop-theorem normalization.
+S through d77f16c3c and h through d2c94f911 also await independent replay.
+Five existing lanes and hourly quiet follow-up remain; no new tasks are added.
+
+## 76. Relative supported perturbations and finite neighborhood stability
+
+h checkpoints d8a0118fb, 1a8a1b422, 6ed79b213 and d2c94f911 are independently
+accepted. A natural metric theorem produces one positive radius preserving
+containment and pairwise disjointness for arbitrary uniformly small maps of
+finite compact families and their subordinate inner sets. No continuity of
+those maps is needed. Actual nested piercing neighborhoods supply the required
+compactness and containment, rather than assuming stability as an input.
+
+Supported PL point moves produce genuinely nonidentity ambient homeomorphisms
+of arbitrarily small displacement, fixing a specified closed obstacle and
+the complement of a specified open region. The actual trivalent graph in the
+boundary of a four-simplex gives three nonempty circle piercings and disjoint
+nested neighborhoods. A point on the first circle is chosen away from its
+splitting-disk centroid and proved outside the original graph; the resulting
+supported perturbation fixes that graph and moves the chosen point.
+
+The conclusion is carefully limited: transported open nesting lives in
+h(K.space), and image trace certificates describe images of the original
+derived neighborhoods. They do not prove h(K.space)=K.space or produce new
+canonical derived neighborhoods in a compatible subdivision. h's active next
+round remains the actual self-homeomorphism of the original carrier and its
+compatible triangulation. Moise331 and Moise351 are not completed here.
+
+Locally finite separation is centralized in its general topological home.
+The metric-free result is an existing private proof promoted and reused by
+both finite piercing neighborhoods and noncompact splitting-disk families.
+The private finite-uniform-radius lemma is also relocated. These two moved
+declarations are not new mathematical proof progress. Later author bytes had
+reintroduced two obsolete private helpers removed in d8a0118fb; integration
+restores the original 67-line deletion and rebuilds the four affected modules.
+No public signature is changed, and no parallel author worktree is modified.
+
+Eight modules compile freshly in 81.695 seconds; the complete final audit takes
+48.784 seconds including resource admission. All 33 native nonautomatic declarations,
+17 distinct critical reuses and one external concrete model have only approved
+foundational axioms and pass all thirteen applicable linters, with zero final
+diagnostics. Twenty-one old public signatures are retained. Twelve declarations
+appear in new module positions: eleven public and one private; two are the
+relocations above, leaving ten new mathematical declarations (nine theorems
+and one definition). The native census includes three new trivalent-model
+assertions and four retained model assertions. The external model is an actual
+nonidentity PL homeomorphism of R, fixing 0 and the complement of the prescribed
+radius-one-half ball about 1, with displacement below one eighth. Model assertions
+and helper declarations are not counted as independent Moise completions.
+
+Accepted Lean delta is +646/-144, including three root imports and relocated
+proofs; this is source accepted, not code typed during this heartbeat.
+All three new leaves are registered once in the root import header. Static
+reachability is 9629 project modules including the root, with no missing source
+or cycles. 38 private prerequisite objects match exact raw source and accepted
+object hashes. Full-root compilation remains pending; receipt:
+.lake/verified-fiftyfifth-lane-delivery-20260919.json.
+
+Two further completed deliveries are frozen and queued, not independently
+accepted: M304 7a1632779 gives actual finite cut pieces of the original K/L,
+boundary-component labels and a prescribed-neighborhood bicollar, plus an
+open-cover kernel theorem. Its next round constructs compatible collar maps
+to transport the kernel to the actual closed cut boundary before consuming
+the still-unproved Moise252. S c0f4df1b1 (mathematics d07d5e6e4) gives actual
+open smooth coordinates around the entire original-flow closed rectangle,
+including the two end overlaps, without an assumed immersion. Its next round
+glues the full Morse endpoint neighborhoods and performs actual supported
+cancellation for the same function, atlas and frame. Earlier S checkpoints
+through d77f16c3c remain in that same independent-acceptance dependency queue.
+
+F's existing round now owns canonical HalfSpacePerturbation and
+HalfSpaceGeneralPosition edits in its own checkout, preserving old public
+signatures while exposing controlled Lipschitz displacements of the same
+actual inner perturbations. Its previous 71b0b003e flat-sheet source remains
+frozen for independent replay. E3 continues actual physical caps from the
+inner-disk trace and original external annuli. No new task, second lane or
+routine status request is introduced; next handoffs occur at deliveries.
