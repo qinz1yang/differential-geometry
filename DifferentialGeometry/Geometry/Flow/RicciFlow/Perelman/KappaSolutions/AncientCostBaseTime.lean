@@ -4,6 +4,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TensorNormFinrankNeZero
 
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Comparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientScalarMonotonicity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientVolumeComparison
+
 set_option autoImplicit false
 noncomputable section
 
@@ -59,5 +63,32 @@ theorem exists_lCost_base_time_bound_of_ancient
   exact lCost_le_add_of_metric_antitone_of_scalar_time_lipschitz F.S F.isSolution
     hF.carrier_eq hC hmetric hscalarTime (fun t ht x => (hBscalar t ht x).1)
     hRT hT htau p q
+
+theorem exists_lCost_base_time_exp_bound_of_ancient
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ {R T tau : ℝ}, R ≤ T → T ≤ 0 → 0 < tau →
+      ∀ p q : F.M, lCost F.S R p q tau ≤
+        Real.exp (K * (T - R)) * lCost F.S T p q tau := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : ConnectedSpace F.M := hF.connected
+  obtain ⟨K, hK, hm⟩ := exists_ancientKappa_metric_inner_le_exp F hF
+  obtain ⟨C, hC⟩ := hF.globalScalarBound
+  refine ⟨2 * K, mul_nonneg (by norm_num) hK, ?_⟩
+  intro R T tau hRT hT htau p q
+  apply lCost_le_mul_of_metric_le_of_scalar_le F.S F.S F.isSolution F.isSolution
+    htau (Real.exp_pos _).le
+    (fun s hs => hs.2.trans (hRT.trans hT)) (fun s hs => hs.2.trans hT)
+    (fun s hs x => (hC (R - s) ((sub_le_self _ hs.1).trans (hRT.trans hT)) x).1)
+  · intro s hs x v
+    have h := hm (R - s) (T - s) (sub_le_sub_right hRT _) ((sub_le_self _ hs.1).trans hT) x v
+    simpa only [sub_sub_sub_cancel_right] using h
+  · intro s hs x
+    have hRs : R - s ≤ 0 := (sub_le_self _ hs.1).trans (hRT.trans hT)
+    have hTs : T - s ≤ 0 := (sub_le_self _ hs.1).trans hT
+    have hsc := ancientKappa_scalar_monotoneOn F hF x hRs hTs (sub_le_sub_right hRT _)
+    have he : 1 ≤ Real.exp (2 * K * (T - R)) := Real.one_le_exp (mul_nonneg
+      (mul_nonneg (by norm_num) hK) (sub_nonneg.mpr hRT))
+    exact hsc.trans (le_mul_of_one_le_left (hC (T - s) hTs x).1 he)
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
