@@ -6,11 +6,12 @@ FOUR_LANE_WORKFLOW.md. The dated original handoff remains below as history.
 
 ## Current entry point (2026-09-19 UTC)
 
-Read [MOISE_PLAN.md](MOISE_PLAN.md)'s current plan and section 22 below before
-historical sections 0--8. The owner stopped the full-source build; retain its
-artifacts with no automatic restart. F, h, E3 and S each run one existing-task
-lane under FOUR_LANE_WORKFLOW.md. Old cleanup snapshots are not instructions
-to interrupt or stash an active task's files.
+Read [MOISE_PLAN.md](MOISE_PLAN.md)'s latest live frontier and sections 81--84
+below before historical sections 0--8. Resumed work has no new owner deadline.
+F, h, E3, S and M304 each own one existing-task lane under FOUR_LANE_WORKFLOW.md.
+The full-root build remains deferred; restart only for an actual compatibility
+or stalled-work need under the current resource policy. Historical cleanup
+snapshots are not instructions to interrupt or stash active work.
 
 ## 0. 进入时立刻做的事
 
@@ -3669,3 +3670,1085 @@ actual inner perturbations. Its previous 71b0b003e flat-sheet source remains
 frozen for independent replay. E3 continues actual physical caps from the
 inner-disk trace and original external annuli. No new task, second lane or
 routine status request is introduced; next handoffs occur at deliveries.
+
+## 77. Actual descending Morse strips and relative cubic-chart cancellation
+
+S checkpoints 57aa0b9eb, f15aad47d, ec69dc759, d77f16c3c and d07d5e6e4,
+through the c0f4df1b1 root repair, are independently accepted together.
+Fourteen source modules are byte-identical to that frozen author checkpoint;
+integration registers the thirteen new leaves in the flat root import header.
+The previously accepted six CubicCancellation declarations retain their bodies,
+and all five old public signatures are unchanged. New Hessian and index results
+identify the actual cubic pair. Weighted scaling and compact zero extension
+give cancellation supported in an arbitrary prescribed neighborhood of a
+supplied cubic chart. This is a real relative cancellation consumer, but it
+does not manufacture a cubic chart for an arbitrary original Morse pair.
+
+For an actual compact regular band, a constructed supported field has derivative
+rate in [-1,0] and exact rate -1 on the band. Forward and backward estimates
+give a level product and its smooth inverse in the original regular-level atlas.
+For an actual descending saddle-minimum connection, the Morse charts and
+convergence of the original trajectory produce the saddle arcs and full
+minimum level circle inside prescribed endpoint neighborhoods. The minimum
+section is reached after any specified time. The saddle-level arc has an
+injective derivative proved from its coordinate projection, not merely from
+injectivity of its underlying smooth map.
+
+The original vector field agrees with a constructed compactly supported field
+on an open tube about the connection segment. A parameter-preserving inverse
+determines the nearby positive hitting times. Strict descent and the actual
+flow group law prove injectivity of the whole closed rectangle. Transversality
+of the actual level arc and flow direction gives smooth local inverses at
+every rectangle point; compact injectivity then yields a single open partial
+diffeomorphism around the entire rectangle, including its sides and ends.
+Both entire end edges lie in the actual Morse-chart overlaps. The original
+function, atlas, central orbit, descent equation and prescribed frame are
+retained. Agreement with the original field is asserted on the produced
+closed strip and its proven tube, not on every point of an arbitrary enlarged
+open inverse chart.
+
+Fourteen fresh compilations take 159.205 seconds; the combined independent
+audit takes 45.802 seconds, including resource admission. All 49 native nonautomatic
+declarations, 63 distinct external critical reuses and 55 model declarations
+have only approved foundational axioms. The full native and model suites pass
+all thirteen applicable environment linters, with zero final diagnostics.
+There are 43 new native declarations: 36 public and seven private. Six native
+declarations are retained, including one private helper. Source headers,
+long lines, prohibited constructs and namespace-aware public-name uniqueness
+also pass. No project proof or public signature required integration repair.
+
+The 55 external model declarations belong to three concrete families, not
+55 independent examples: a fixed cusp-shear pullback atlas with two cubic
+critical points (18 declarations), a nonempty compact annulus (10), and a
+single actual cubic descending field with a proved unique logistic connection
+(27). Six actual consumers check relative nonidentity cancellation with fixed
+end collars, closed and smooth annulus products, saddle sections, a closed
+strip, and its open smooth coordinates. The other declarations construct or
+verify the fixtures. In particular, the unique connection, nonempty rectangle
+interior and distinct endpoint images are proved rather than assumed.
+
+Accepted Lean delta is +2081/-0, including thirteen root import lines. This is
+frozen source accepted in this checkpoint, not code typed during this hourly
+inspection and not a count of completed Moise headlines. Root static reachability
+is 9642 project modules including the root, with no missing sources or import
+cycles. Full-root compilation remains deferred; local compatibility and the
+combined axiom/lint audit are checked. Receipt:
+.lake/verified-fiftysixth-lane-delivery-20260919.json.
+
+The active mathematical gap for S remains compatible gluing of the full Morse
+endpoint neighborhoods and actual supported critical-pair elimination for the
+same original function and frame. Neither general Morse cancellation nor
+compact PL smoothing is completed. This acceptance is recorded for S's next
+completed delivery; the active round receives no status interruption.
+
+Other completed deliveries were frozen at their handoff boundaries and remain
+unaccepted independently: h e85a235df constructs an actual self-homeomorphism of
+the original carrier, compatible triangulations and exact transport of freshly
+chosen canonical nested neighborhoods; its next round constructs their actual
+standard PL solid-torus type without assuming that product as input. E3 c10b83586
+constructs actual physical disjoint caps and a SurfaceSplitAndCap; its next
+round must prove that this same result separates the original H/Q, keeping all
+neighborhood, ball and cap choices compatible. M304 through 96ba235a4, including
+7a1632779, supplies the actual closed boundary-component kernel and a free loop
+for simply connected original ambient K; the active round removes that ambient
+restriction using the original inclusion kernel. F 71b0b003e remains queued
+while its current canonical half-space displacement-control round continues.
+
+The automation prompt was read, synchronized with these actual deliveries,
+and saved through the app automation API. It remains hourly, uses the same five
+tasks and model settings, has no new deadline, and only hands off at deliveries
+or genuine urgent stops. Administrative compiler leases were renewed to
+2026-09-19 21:23:56 UTC without creating a mathematical stopping deadline.
+Earlier overnight records and the morning report remain intact.
+
+## 78. Flat-sheet relative displacement accepted; ambient-kernel handoff
+
+F 71b0b003e is independently accepted from its frozen bytes. The new
+LoopTheorem/ProjectedSheetPerturbation leaf contains one public actual-disk
+perturbation theorem and five private geometric lemmas. A displacement h=id+a
+moves one sheet while the other physical sheet stays fixed. A second explicit
+correction x -> x + ell(a(x)) d, with d in the first plane and in the boundary
+height kernel, gives simultaneous PL straightening. Bounds on both Lipschitz
+constants make these maps homeomorphisms. This proves boundary and interior
+crossings of the moved sheet with the original other sheet; uniform C0
+closeness alone is not used as crossing stability.
+
+For a supplied actual locally injective SingularTwoCell with fibers of size
+at most two, the public theorem modifies its outer patch P, fixes Q and P's
+complement, and retains the same disk domain, target C and exact boundary
+preimage. The original seam is outside closure U, and the actual embedded
+patches A/B cover all fibers over U. On the compact prescribed set J the
+modified map equals D(x)+t*v(D(x)). Compact thickening about Z ensures the
+produced crossing neighborhood W and its inverse images stay in V, where
+the original sheets are simultaneously flat. The straight boundary homotopy
+stays in the original frontier C and fixes original images outside U. The
+perturbed disk's boundary image is identified exactly; the original boundary
+image is not claimed to stay pointwise fixed.
+
+One fresh module compiles in 13.769 seconds; the final combined audit takes
+43.863 seconds including admission. All six native declarations, seven
+critical reuses and six mathematical fixture declarations have only approved
+foundational axioms. The complete native and external suites pass thirteen
+applicable environment linters, with zero final diagnostics. Whole-module
+enumeration also finds one audit-only macro used to name a private producer.
+The first audit count omitted this macro; the final census includes and
+checks it too. This is a diagnostic enumeration repair, not a project proof
+change. Both external audit attempts are frozen in the receipt.
+
+The six fixture declarations describe one actual coordinate-half-plane family:
+three coordinate functionals, a type alias, a plane-rank lemma, and a nonidentity
+supported motion with actual boundary and interior crossings. The prescribed
+nonzero displacement at the origin extends inside the radius-two ball; h(0)
+is proved nonzero, and the other physical plane stays fixed. This checks the
+private geometric producer. It is not a complete SingularTwoCell or
+NormalSystem instance, and the seven total external declarations are not
+seven independent mathematical models.
+
+The accepted source still requires simultaneous flat coordinates and a
+displacement taking values in the boundary-height kernel everywhere on J.
+Matching arbitrary actual inner general-position perturbations, compatible
+charts across the whole transition region, full relative normalization and
+Moise Lemma 2 remain unfinished. Original local injectivity and the two-fiber
+bound are still inputs. F's active canonical HalfSpacePerturbation /
+HalfSpaceGeneralPosition round continues without a status interruption.
+
+Accepted Lean delta is +590/-0, comprising 589 source lines and one root
+import. The one new leaf is registered exactly once. Root static reachability
+is 9643 project modules including the root, with no missing sources or cycles.
+Nine private prerequisite objects match current raw sources and previously
+accepted object hashes. Full-root compilation remains deferred. Receipt:
+.lake/verified-fiftyseventh-lane-delivery-20260919.json.
+
+M304 completed and pushed 41220900e after 96ba235a4. Its checkpoint directory
+was copied and checked as 98 frozen files, including fifteen source/object/
+receipt families; the manifest hash is
+8f96c466ccc27fb5683f03258247ae40693fe8eff66d16ad4ccc7e5dbf06c0ea.
+This source is queued with 7a/96, not independently accepted. The primary
+closed-cover and actual cut-boundary kernel theorems now accept a nontrivial
+kernel of the original ambient inclusion without requiring ambient simple
+connectivity. The full geometric producer still retains connected K/L and
+real ambient dimension three. The actual test ambient remains the original
+ball with its beta-two torus; a nonsimply-connected geometric test is not
+claimed.
+
+At that completed delivery boundary, M304 received its next full Astra max
+round: turn this actual boundary kernel into an essential embedded interior
+disk for the same original K/L, explicitly consuming the unresolved Moise252,
+and supply the missing disk/circle inputs of the actual original-shell
+compression consumer. Prove avoidance of the old K boundary and transport of
+the exact boundary and essentiality statements. Do not assume the desired
+disk or final closed-side kernel. Full disconnected-surface, nonseparating-cut
+and arbitrary-ambient Moise264 generality remain separate unless the actual
+consumer requires them; reducing to one surface component must not silently
+allow the disk to meet the others. F/E3/h/S remain on their active lanes.
+
+The workflow's introductory hourly-cadence paragraph now explicitly distinguishes
+the historical 14:19 cutoff from the owner-authorized resumed stage with no
+new deadline. The old morning record is preserved. Current independent queues
+are M304 through 41220900e, h e85a235df and E3 c10b83586. Automation remains
+hourly and receives these acceptance and handoff updates through the app API.
+
+## 79. New S end-straightening delivery queued at its handoff boundary
+
+After the F acceptance checkpoint, S delivered and pushed 5b7117893. Its five
+new modules produce actual level charts from the original strip/Morse charts,
+their actual transition derivative preserving height, and supported smooth
+isotopies in disjoint height bands inside the original frame. The full Morse
+chart source and function normal form are retained. Matching holds on actual
+open overlaps containing positive-width closed end edges. The supplied original
+function, atlas, vector field and central strip orbit remain the data; the end
+isotopies do not claim to fix the entire orbit or preserve the vector field.
+
+The author reports nine native declarations, sixteen native reuse entries,
+and the same cubic/logistic fixture replayed with two new consumers. All
+remain pending independent acceptance. The exact manifest was copied to
+codex-integration-fiftyseventh-batch-20260919/s-5b7117893-frozen-verification.json;
+its hash is 702318763793801fa02cdf9c170586cf5eb2f053c9ca258c8604f092f3b67135.
+All five frozen source bodies match the pushed commit. No author object is
+treated as independent integration validation.
+
+The completed task was given its next Astra max round: align the real affine
+gauges and construct a globally injective common cancellation domain containing
+both actual critical neighborhoods and the original strip. Prove actual open
+overlap compatibility and source/image identities, then obtain a relative
+cubic chart or direct supported cancellation. A possible concrete starting
+point is the original strip map (s,t) -> (s,f(d(s,t))) and its strict height
+derivative; global invertibility and gluing must be proved, not assumed.
+The earlier c0 independent acceptance was delivered at this same boundary.
+
+The current queue is M304 through41220900e including7a/96, h e85a235df,
+E3 c10b83586, and S5b7117893. F71 and S throughc0 are independently accepted.
+All five existing lanes continue; no new task, routine active-round status
+request, new deadline or full-root restart was introduced.
+
+## 80. Original essential disks queued; actual compression neighborhood next
+
+M304 delivered and pushed 06af1e40d after 41220900e. The clean author checkout
+matches origin. The source now applies explicit h252 : Moise252 to the actual
+cut boundary kernel, producing a PL embedded disk for the same original K/L.
+It proves avoidance of the old K boundary, the exact disk/surface boundary
+trace and non-nullhomotopy in the original L. A connected finite neighborhood
+retains the actual nullhomotopy, enabling the same construction inside a
+prescribed simply connected open set and the interior of the original shell.
+
+The original-shell consumer keeps X/S/B0/B1 and produces the essential disk
+and a centered annulus. Its final compression conclusion still requires an
+actual three-dimensional ball, wall and two caps with the exact trace and
+endpoint equations. These geometric inputs have not yet been produced for an
+arbitrary new essential disk. Moise252 itself, full arbitrary-component and
+nonseparating Moise264, and general Moise304 remain open.
+
+The complete author evidence was copied to
+codex-integration-m304-essential-disk-handoff-20260919/frozen-evidence:
+147 files, 11,945,912 bytes, with all copy hashes verified. Its manifest hash is
+4c0794faac0c53e13ef333d6fce8388e3ad08f80cc44a4379a7f6757ca7266b9.
+All 23 frozen source bodies match their committed normalized bytes and author
+raw sources. The author reports 15 nonautomatic declarations across changed
+modules and the unchanged actual consumer, 74 critical reuse entries, two
+unconditional and two h252-conditional models, plus three helpers, with clean
+axiom and 13-linter audits. The author Lean delta is +230/-6. This is frozen
+source and author verification evidence; independent integration acceptance
+has not yet occurred and no Lean integration source changed at this handoff.
+
+At the completed delivery boundary, the existing Astra max task received the
+next full round: produce the actual compression ball, side wall and disjoint
+caps around the same disk, in the original shell. Choose the surface annulus
+and ball together, proving exact traces, endpoint compatibility and any
+shrinkage/transport equations. An arbitrary earlier annulus is not automatically
+compatible with a later ball. Reuse the existing spanning-disk neighborhood
+and collar results, distinguishing their two-dimensional outputs from the
+missing three-dimensional ball. Do not assume the final product neighborhood
+or a compression package. Feed the existing target-preserving separation and
+strict Betti descent only after producing their actual geometry.
+
+The independent queue now contains M304 through06af1e40d including7a/96/412,
+h e85a235df, E3 c10b83586, and S5b7117893. The other four active rounds were
+not contacted. Hourly follow-up, the existing five task/model assignments,
+no new deadline, and the current compiler limits remain in force.
+
+## 81. Original-carrier moves and exact neighborhood transport accepted
+
+h through e85a235df is independently accepted from the six frozen checkpoints
+11140aa11, 69b5da380, c85049a96, 9fcdded2e, 826a04b14 and e85a235df. The seven
+changed leaves were compiled from their exact frozen bytes in integration;
+no author proof or public signature required repair. Six new leaves are
+registered once in the flat root aggregate. Both old trivalent-model theorem
+signatures and their proof bodies are retained.
+
+The intrinsic point-move theorem constructs a compactly supported PL
+self-homeomorphism of the original manifold. It moves the designated point,
+fixes the given closed obstacle and the complement of the given open set,
+and satisfies the requested uniform distance bound. Compact inverse-chart
+continuity supplies that bound; no small Lipschitz bound after arbitrary PL
+conjugation is asserted. In the actual finite model, the homeomorphism acts
+on the original three-dimensional carrier and fixes the original graph. Its
+set-theoretic extension off that carrier is claimed only bijective.
+
+Compatible triangulations preserve the actual conjugated map and all fourteen
+named graph, circle, surface and neighborhood sets. Face-centroid and flag
+identities induce the first and second barycentric subdivision isomorphisms
+and exact images of derived neighborhoods. Fresh source neighborhoods are
+chosen inside the old stable ones; target neighborhoods are their exact
+images. Canonical restrictions recover the actual surface traces. The three
+real circles retain nested source and target pairs; containment proves source
+disjointness and injectivity proves target disjointness. This is transport of
+newly chosen compatible neighborhoods, not invariance of old neighborhoods
+under arbitrary subdivision.
+
+Seven module checks take 80.632 seconds and the final combined audit takes
+50.446 seconds, including admission. All 36 native nonautomatic declarations,
+27 critical reuses and two external assertions have only approved foundational
+axioms. Native and external suites pass all thirteen applicable environment
+linters, with zero final diagnostics. The census includes 24 explicit native
+declarations and twelve generated but nonautomatic indexing/recursor/instance
+entries. Of the 22 new explicit declarations, seventeen are reusable theorems,
+three are actual-model theorem assertions, and two define the fourteen-index
+family. Generated entries are not counted as new mathematical theorems.
+
+Five native model assertions, two retained and three new, concern one actual
+trivalent three-manifold/graph/circle family. The independent Euclidean-three
+fixture moves the origin inside the radius-two ball, fixes a nonempty closed
+singleton obstacle and the ball complement, and keeps displacement below 1/8.
+The second external assertion verifies index cardinality fourteen; it is a
+schema check, not a third geometric family. Initial external audit attempts
+needed WithLp/singleton/open-ball annotations and line wrapping; their sources
+and receipts are retained. None changed project mathematics.
+
+Accepted Lean delta is +1302/-1, including six root import lines. Thirty-nine
+private prerequisites match current raw source and previously accepted object
+hashes. Static root coverage is 9649 project modules including the root, with
+no missing project sources or cycles. Full-root compilation remains deferred.
+Receipt: .lake/verified-fiftyeighth-lane-delivery-20260919.json. These numbers
+describe frozen source accepted here, not typing time or headline completion.
+
+Standard solid-torus identification belongs to h's later active author layer,
+outside this frozen acceptance. Locally finite compatible modifications,
+Moise351 Conditions 3--8 and Moise351 itself remain open. The acceptance notice
+waits for h's next completed delivery; its active round is not interrupted.
+
+## 82. Relative protected-polyhedron route after F's conjugation obstruction
+
+The compact task snapshot found F's previous round completed at a genuine
+mathematical obstruction. Clean pushed commits 06a171025 and d68c5adc5 are
+frozen, with three canonical source leaves and 31 author evidence files in
+codex-integration-fiftyeighth-batch-20260919/f-d68-frozen-evidence. The manifest
+is f-d68-frozen-delivery.json. They remain pending independent acceptance.
+
+The delivered extension controls the displacement of the same chosen inner
+perturbation: height-zero vertices move tangentially while interior vertices
+may move normally. The comparison u = g inverse composed with h satisfies the
+bound (ka + kb) / (1 - kb) for the Lipschitz constant of u minus the identity.
+Its actual single-chart SingularTwoCell consumer retains the original domain,
+target, boundary homotopy and fiber bounds and obtains crossings on the union
+of a protected flat region and the new inner general-position neighborhood.
+It does not yet cover the entire transition region or arbitrary old charts.
+
+The frozen external counterexample uses the PL coordinate change
+c(x) = x + max(x,0). Arbitrarily small compactly supported PL displacements
+with arbitrarily small Lipschitz constants can have conjugated displacement
+Lipschitz constant at least one. The reviewed proof compares the actual values
+at 0 and minus the small translation parameter. Thus arbitrary PL conjugation
+cannot justify preservation of a small displacement Lipschitz bound. This
+obstructs that inference, not the global normalization theorem. The author
+counterexample and its audit are frozen evidence, not newly integrated public
+mathematics or independent integration acceptance.
+
+At the completed boundary, F received its next Astra max round: construct
+relative general position that fixes an actual closed protective polyhedral
+neighborhood in the old regular charts. Use a finite common refinement,
+retain the canonical fixed/mixed-face condition, and prove that protection,
+transition and the new core cover the required region for the same disk.
+Do not assume the desired compatible chart cover or normalization conclusion.
+The original boundary homotopy and normal-subgroup avoidance must remain tied
+to the actual modified map. Prior F71 independent acceptance was delivered at
+this same boundary.
+
+F then requested access to the existing canonical GeneralPosition producer.
+Its source was checked clean in all five author trees, with no other active
+owner. The coordinator granted edits only in F's author checkout and private
+consumer checks, preserving public signatures and the mixed-face exception.
+The grant is recorded in crossLaneOwnership and the current compiler lease;
+it does not authorize edits in integration or another lane's tree. No second
+lane or routine status request was added.
+
+Current independent queues are M304 through06af1e40d including7a/96/412,
+E3 c10b83586, S5b7117893, and F throughd68c5adc5 including06a171025. h through
+e85a235df, F through71 and S throughc0 are accepted. Existing assignments,
+hourly quiet follow-up, no new deadline and the checker limits remain in force.
+The saved automation follows this queue and the corrected F route; app API
+read-back evidence is recorded in the current coordination state.
+
+## 83. Compatible compression geometry delivered; conditional shell endpoint next
+
+M304 completed and pushed 714b1599a and 8fe07bd87. The author checkout is clean
+and equals its configured remote. Both evidence directories were copied with
+all hashes checked: relative-ball has 166 files, 14,403,772 bytes and 26 source
+families; compression has 190 files, 17,101,728 bytes and 30 source families.
+Their manifest hashes are respectively
+31444c22ab47b279280a535c0d73eb291839b2be58f8a3409e4024b9f7277e8a and
+7fe6fe9b969793268da6857a4880fa26962828724136d282fc88181c73cf5c4b.
+Copies live under codex-integration-compression-and-height-handoff-20260919.
+Every frozen source agrees with its named Git checkpoint; final source also
+agrees with the author bytes. Independent integration acceptance is pending
+for the complete 7a/96/412/06/714/8fe chain.
+
+The reviewed new producer puts the same actual spanning disk into one cut
+side of the original closed surface, obtains a small relative PL three-ball
+from the native exhaustion and derived-neighborhood results, and applies the
+centered-prism theorem. Compactness of the original rim gives a common positive
+thickness. The strictly smaller thickness excludes the old end faces, yielding
+the exact original-surface intersection with the new side wall. The two caps
+are the two end faces of this same prism; their disjointness, frontier union,
+rim equations and minus/plus endpoint labels are proved together.
+
+IsCombinatorialManifold.exists_compression_neighborhood_of_spanning_disk keeps
+the original disk and its parameterization and works inside every supplied
+open neighborhood of that disk. No product, compression ball, wall or cap
+package is an input. IsSphericalShell.exists_compression_of_essential_disk
+then obtains an actual connected capped-surface component in the same original
+shell, separating the same two targets with strictly smaller first Betti
+number. The essential disk version does not need Moise252. The subsequent
+non-spherical-separator version explicitly consumes Moise252 to get that disk.
+This does not prove Moise252 or unconditional Moise304.
+
+The author reports 25 cumulative native declarations in the final audit,
+84 critical reuses, eight actual model assertions and three model helpers,
+with thirteen applicable linters and approved foundational axioms. Three model
+assertions are unconditional; five retain explicit h252. These are author
+receipts, not independent integration acceptance or eight independent families.
+The original beta-two torus, nonempty disk interior and original shell targets
+remain in the reported full geometric consumers.
+
+At the completed boundary, M304 received the next Astra max round: use the
+already existing least-Betti separator and the newly produced same-target
+strict decrease to construct an actual PL sphere for arbitrary original
+X/B0/B1. Close the exact Moise252-to-Moise304 conditional endpoint, then verify
+its existing tame downstream consumer. Do not add an essential disk or final
+sphere as a new input, duplicate the minimum selection, remove the explicit
+Moise252 condition, or claim unconditional completion. Check the real import
+and axiom chain before revising any claimed Moise303/Moise264 dependency.
+
+## 84. Shared regular height coordinates delivered; critical-piece gluing next
+
+S completed and pushed c0117ca09 on base5b7117893, with a clean author checkout
+equal to its configured remote. The full self-contained verification record
+was copied with hash
+6c03a656d7a9bf6e4dfad2dc2313209887b831858f1893476aaa197cbb16c39e.
+All eight source bodies match raw author and normalized committed bytes;
+all 127 recorded native dependency identities match. Exact audit/model sources,
+empty final logs, private receipt identities and publication evidence are
+preserved. The entire5b/c011 chain still awaits independent acceptance.
+
+The actual aligned-coordinate endpoint uses the same original function,
+atlas, field, orbit and same chosen flow strip. Strict descent and the positive
+time scale give a negative vertical height derivative. The closed strip has
+the exact rectangular height image and an open smooth inverse. One global
+height-preserving diffeomorphism aligns both positive transverse affine gauges.
+The same positive narrowed width works for both complete closed end rows,
+and the old full strip, new image equations and open overlaps remain explicit.
+Both original Morse normal forms and complete chart sources are retained.
+
+The endpoint's C.source equals the regular strip-coordinate source. It does
+not yet contain the two critical points; a height coordinate cannot certify
+a chart through a critical point. The end isotopies retain the original
+function and fix p/q and their marked endpoints, but do not claim to fix the
+whole orbit or preserve the field. Boundarylessness remains explicit.
+
+The author Lean delta is +883/-3 including five root imports. Thirteen native
+declarations, one private, and thirty native reuses pass the reported audits.
+The same cubic/logistic fixture contains 27 declarations and sixteen reuses;
+its first25 declaration bytes are retained, and the two new consumers test
+the full aligned signature and nonempty common-width end bands. This remains
+one concrete fixture family. No independent source acceptance is counted here.
+
+At the completed boundary, S received its next Astra max round: construct
+the actual common cancellation domain including both critical neighborhoods
+and the original strip. Prove Morse-model realization, cross-piece source and
+image identities, actual open-overlap agreement and global injectivity. Use
+the delivered ell/affine matching identities; do not repeat height alignment
+or promote the regular chart to a critical chart. Any compatible shrinking
+must retain a common positive width and exact old/new data relations. Then
+produce a relative cubic chart or directly supported cancellation for the
+same original function and frame. General finite cancellation and compact
+PL smoothing remain unfinished.
+
+Only the two delivered tasks received handoffs. Other active rounds were not
+queried or messaged. Their compiler admission leases remain administrative;
+M304 and S were renewed for their new authorized rounds. The current pending
+queue is M304 through8fe, E3 throughc10, F throughd68 and S throughc011. The
+accepted count stays ten for this resumed stage. No root build was started.
+The saved hourly automation is synchronized with these queues and scopes.
+
+## 85. Original-disk compression and cut-boundary kernel independently accepted
+
+M304 through8fe07bd87 is independently accepted from frozen checkpoints
+7a1632779, 96ba235a4, 41220900e, 06af1e40d, 714b1599a and 8fe07bd87.
+Sixteen changed leaves match the frozen author bytes exactly: eleven new
+leaves and five compatible extensions. Fourteen existing prerequisites and
+consumers were also compiled freshly. The accepted SurfaceComplement header
+is retained; its source was not replaced by the older author copy.
+
+The general open-cover kernel proof uses actual Van Kampen amalgam injections.
+Reoriented collars, a genuine zero-section homotopy equivalence and retractions
+fixing the actual boundary inclusions carry a nontrivial kernel into a closed
+side. This primary bridge does not assume a simply connected ambient space.
+For an actual finite connected interior surface in a finite three-manifold
+in Euclidean three-space, the cut gives finite connected sides with exact
+intersection, old-boundary decomposition and the original surface as a real
+boundary component. The kernel is transported to that component inclusion.
+
+The finite connected neighborhood retains the same original loop and actual
+nullhomotopy, using the union of the surface and nullhomotopy image. Applying
+explicit h252 to the actual cut side produces an essential embedded disk.
+The proof derives old-boundary avoidance, exact disk/surface intersection and
+essentiality in the original surface. This is a conditional consumer of the
+Loop Theorem; Moise252 itself remains an unproved upstream input.
+
+For the same given essential disk, the native relative disk-neighborhood and
+centered-prism producers yield a three-dimensional PL compression ball in
+every specified open neighborhood of that disk. A common positive thickness
+is chosen by compactness; injectivity excludes the original prism end faces.
+The same reparametrized prism produces the original surface wall, disjoint
+caps, exact frontier and intersection equations, and both labeled end circles.
+No final product neighborhood, compression ball or cap package is assumed.
+In the same original spherical shell, existing separation and Betti machinery
+then produces an actual capped component separating the same two targets with
+strictly smaller first Betti number. This endpoint for a given essential disk
+has no h252 input; the nonspherical-separator disk producer retains h252.
+
+Thirty final isolated module checks took 329.977 seconds and the
+joint audit took 61.649 seconds, including compiler admission. All
+165 native nonautomatic declarations, 84 critical reuse entries and eleven
+external model/helper declarations have only approved foundational axioms.
+The native and external suites pass all thirteen applicable environment
+linters, with zero final errors, warnings or other diagnostics. The 84 reuse
+entries include 29 already in the native census and
+55 distinct entries outside it. The native census includes 56 new explicit
+declarations (49 theorem/lemma declarations and 7 definitions;
+51 public and 5 private), plus 109 retained declarations.
+The left-inverse API in Retraction extracts an already existing local proof;
+it is not wholly new mathematics. 13 old public source signatures are retained.
+
+The eleven external declarations comprise three helpers and eight assertions
+on one actual embedded beta-two torus family and its disk, enclosing ball and
+shell constructions. Three assertions are unconditional and five explicitly
+retain h252. The concrete disk interior and both shell targets are nonempty.
+The strongest unconditional fixture quantifies every open neighborhood of the
+same disk and jointly checks the produced ball, wall, caps, exact traces and
+same-target strict decrease. These are not eight independent model families.
+
+The initial direct-import schedule missed transitive batch dependencies and
+was corrected. The exact census then rejected recursive discovery of nested
+archived and newly frozen author objects: one rejected environment included
+the later371 endpoint. Separately, the source scanner missed one retained
+theorem whose name is written on the following line; its correction gives the
+full165-declaration census, including five in SurfaceSplitDiskNeighborhood.
+A private copy of the checker now admits only the canonical output path for
+each module and an exact source path in the authorized integration checkout.
+The shared helper and other active lanes were not changed. All thirty modules
+were replayed under the corrected binding; every final module/audit setup was
+checked against it. Rejected attempts and source/object identities are kept;
+393.605 seconds of superseded successful module checks are recorded separately.
+No project source or proof was changed to repair this verification problem.
+
+Accepted Lean delta is +2031/-20, including eleven flat-root imports.
+All 101 private reused prerequisites match current raw source and previously
+accepted object hashes. Static root coverage is 9660 project modules including
+the root, without missing sources or cycles. Full-root compilation remains
+deferred. Receipt: .lake/verified-fiftyninth-lane-delivery-20260919.json.
+These are frozen-source acceptance counts, not typing time or headline progress.
+
+## 86. Conditional sphere endpoint frozen; original toroidal-shell round started
+
+M304 subsequently completed and pushed3717074e9 on parent8fe07bd87. Its author
+checkout was clean and equal to origin when frozen. All 216 evidence files,
+33 source/object/receipt sets and complete dependency graphs were copied and
+hash-checked; manifest6d9ebb844d1c8660963e136d047b81c29bd62cd9f70d06f699ee47beb59fdee6.
+This later endpoint is not included in section85 acceptance.
+
+The thirteen new source lines prove moise304_of_moise252 (h252 : Moise252) :
+Moise304. They use the existing least-Betti connected separator; if it is not
+a sphere, the same-shell strict decrease contradicts minimality. The exact
+original X/B0/B1 quantifiers remain, without extra disk, cap or sphere inputs.
+The author also checked the unchanged tame30.5 consumer and two concrete
+norm-shell models with the same radius-one/radius-two targets. Its kernel
+dependency traversal reports no Moise303 or broad Moise264 in either endpoint;
+that claim and the new models await independent replay. Unconditional304 and
+general305 remain open; tame305 retains its outer-frontier bicollar condition.
+
+At this completed boundary only, M304 received one next Astra max lane:
+Moise30.6 for the same arbitrary original toroidal shell. Produce actual finite
+connected separators, use real inclusion-kernel/compression and surface-group
+or homological information to identify a minimal separator as a torus, keeping
+Moise252 explicit when consumed. Do not transplant spherical-shell simple
+connectivity or assume the final torus. The audited book direction is30.6 to
+30.7. The natural CylinderImage module has a single-module author-checkout
+private compile grant; this is no extra lane or resource allowance.
+
+Other active rounds were not polled for status or given new tasks. The queue
+after this acceptance is M304371, E3c10, F06a/d68 and S5b/c011. New changes and
+proof dependencies will be accepted independently before the plan treats them
+as proved. The hourly automation is updated from these exact boundaries.
+
+## 87. Section32 source research and the missing30.8 transport contract
+
+At the owner's explicit research request, the coordinator read and rendered
+book223–229, checked31 on220–222, the early33 consumers on230–232 and30.8
+on218, against integration c32baee8c. The result is
+[SECTION32_RESEARCH_20260919.md](SECTION32_RESEARCH_20260919.md).
+No Lean was added or deleted and no new compile/axiom certificate is claimed.
+
+Existing IsLocallyPolyhedral, LocallyFinitePLPieceIn, compact finite-piece
+control and locally finite splitting-disk APIs are reusable. The missing
+representation is a topological open body, designated possibly wild rim and
+an allowed exceptional center. Neither the full carrier nor its rim may be
+assumed PL; designated Int/Bd must not become ambient interior/frontier.
+The32.1 construction has two ends, one at the center and one at the boundary.
+Its hard gates are a single compatible integer annulus family, supported
+finite surgeries, local stabilization preserving separation, an actual
+open-disk homeomorphism and exact boundary closure.32.4 can be proved for a
+given pseudocell independently of32.1 existence. The old Q line forecast is
+historical; the detailed plan now records proof gates instead.
+
+An additional contract mismatch was found in MoiseChain.Moise308: its premise
+IsSpine S J already concerns the intermediate S. Original30.8 requires the
+spine of the inner S1 to generate the fundamental group of every admissible
+intermediate S. The actual inclusion-map transport is needed by31.2/31.4.
+It is recorded as a deferred M304 handoff for the next delivery, without
+interrupting active30.6. No sixth task or subagent was created.
+
+## 88. S common coordinates delivered during section32 research
+
+S delivered and pushed2544d9120c0666c0924ee5a63add801aaa90101d, parentc0117ca09,
+with a clean author checkout. The coordinator read the exact new producer
+exists_saddle_minimum_common_coordinates and its original-data hypotheses.
+Its common partial diffeomorphism contains both actual critical points and
+the original full closed strip, with exact open-overlap identities. It does
+not assert the required common cubic function identity or actual cancellation.
+
+The author reports nine modules, twelve source declarations,29 reused entries,
+27 model declarations and13 linters, with Lean+882/-8. These are pending author
+verification claims, not independent acceptance. The raw1,048,878-byte evidence
+file was separately copied and SHA256 checked:
+5d1cb432b8b50aa316e5754c67e154a5d58eaff1c7fe5dca19fcb31d28ed570f.
+Its saved path is recorded in .lake/resumed-stage-20260919.json. The entire
+5b/c011/2544 chain remains queued after previously accepted c0.
+
+Only at this completed boundary, S received its next Astra max round:
+derive the controlled common cubic identity from the actual quadratic endpoint
+charts and original strip, or construct supported cancellation directly in
+the same original frame. Final cubic/cancellation conclusions cannot be new
+premises. The existing private compile lease was renewed for three hours;
+resource limits and file ownership are unchanged. No active lane was polled
+or given an additional lane for the research request.
+
+## 89. Exact conditional sphere endpoint independently accepted
+
+The coordinator replayed frozen3717074e9 against accepted parent8fe on the
+integration checkout. Only SphericalShellCompression changes: thirteen new
+Lean lines prove moise304_of_moise252 (h252 : Moise252) : Moise304. The source
+is byte-faithful to the author checkpoint and preserves arbitrary original
+X/B0/B1. Minimality of the actual connected separator contradicts the already
+proved strict same-shell Betti decrease whenever the separator is not a sphere.
+No essential disk, cap, sphere or final compression conclusion is a new input.
+
+The changed module and unchanged TameNestedCells consumer were freshly checked
+in 25.789 seconds including admission. The full audit took 76.437 seconds:
+all seven native nonautomatic declarations, fourteen critical reused entries,
+two actual conditional radius-one/radius-two models and one exact assembled
+consumer pass all thirteen applicable linters and approved foundational axioms.
+The models retain h252 and prove nonempty original targets and outputs; the
+tame model constructs its actual outer-frontier bicollar. One new public
+conditional theorem is counted; six retained declarations and three external
+consumer/model assertions are not new library theorems.
+
+Independent kernel type/body traversal took 22.932 seconds and covers 9328
+native constants from moise304_of_moise252 and7200 from the tame consumer.
+Both traversals require present roots and nonempty closures; neither contains
+Moise303 or broad Moise264. Their complete dependency graphs and full signatures
+are frozen. This certifies the implemented bypass, not completion of the
+general 30.3/26.4 theorems or the still-explicit Moise252 producer.
+
+All 113 reused private prerequisites match exact current raw source and earlier
+independently accepted object hashes. Every actual setup binding is canonical
+to this batch and this checkout; nested author archives cannot override it.
+Both leaves are already root imported; the 9660-module static root closure has
+no missing source or cycle. No root build was run and no shared outputs were
+modified. Lean delta is+13/-0. Receipt:
+.lake/verified-sixtieth-lane-delivery-20260919.json.
+
+## 90. Delivered boundaries, support correction and original-toroidal-shell frontier
+
+One compact logical snapshot found F/h/E3 idle. They were continued only at
+that boundary. F's protected-polyhedron source was frozen before author edits;
+the already demonstrated unused-instance generalization and three exact-source
+private dependent checks were authorized. h's clean72fa711aa source was frozen;
+the finite trivalent solid-torus layer remains queued while its next lane
+constructs actual locally finite compatible modifications. E3's four dirty
+separation-bridge modules were frozen without modification, and the same lane
+resumed. Its clean canonical SphereSchoenflies source matched integration and
+received a single-module private refresh grant. No new task or worker was added.
+
+S explicitly delivered876319180 during this work. Its native source proves
+that any continuous perturbation of x^3/3-x+y^2 fixed outside a sup-norm
+r-ball,1<=r<3/2, still has an interior local minimum in the 3/2-ball. For r=5/4,
+the fixed point value is-115/192, below the outer boundary lower bound-3/8.
+The same two actual critical points and their logistic connection lie in the
+small permitted frame. S's frozen actual common-coordinate consumer supplies
+the precise counterexample to removing that pair with support in this frame.
+The complete native/model byte receipt has SHA256
+6b52e4e7f06410ac2efa888f5e97d8aa0440199a2430b25e2f3123eaf351f3af.
+Independent integration replay is pending; no S Lean is accepted in this batch.
+
+The arbitrary prescribed-O goal is withdrawn. At this delivery S received
+one corrected lane: construct sufficient actual regular-level support geometry
+or a justified larger neighborhood, retaining the original function, exact
+support containment, other critical points and protected-region conditions.
+The real compact-smoothing consumer must be checked against the resulting
+geometry. The final cubic chart or desired cancellation cannot be assumed.
+The common-coordinate theorem remains valid; finite cancellation and compact
+PL smoothing remain open.
+
+M304 then explicitly delivered6f227c057/8236587e5. Its clean pushed author
+checkout,41 source/receipt sets and262 final evidence files were hash-frozen;
+manifest d04395c683f14d90e0886b7f637b0e536e8e7f6dc1f6103cf98120009b7d9f87.
+Use recognition-final-checkpoint only; the earlier root-resolution failure is
+not evidence. The reported new layer has685 native lines, eight new leaves,
+37 source declarations and one generated notation constant, with separate
+actual models and author audits. These are pending independent replay.
+
+Its actual original-toroidal-shell minimum/incompressible separator, endpoint
+fundamental-group isomorphisms, parity and commutative-cover obstruction do not
+yet identify a PL torus. At this completed boundary the next same30.6 lane
+constructs sphere-cut sides, collar/open cover and original endpoint inclusion
+factorizations, excludes a sphere separator, then constructs genuine torus
+recognition. Sphere-shell simple connectivity and an assumed handle profile
+cannot replace these obligations. The deferred30.8 inner-spine inclusion
+contract correction from section 87 was delivered at this boundary for later
+30.7/30.8 consumption; it is not a second active lane.
+
+Compiler leases were administratively renewed for three hours with the same
+two-private/three-total Lean limits. The resumed-stage ledger and actual saved
+hourly automation retain these boundaries; the completed morning report is
+unchanged. Later author deliveries are queued separately from the accepted
+sphere endpoint.
+
+## 91. Physical30.3 delivered; E3 advances to the independent section32 limit gate
+
+After section90 dispatch, E3 delivered clean pushed c34726180. The coordinator
+read the complete endpoint signature and final proof: the same actual
+SurfaceSplitAndCap result preserves Separates for the original H/T. It uses
+outside-carrier equality and the actual safe path-connected frontier of the
+same selected ball; it does not assert the generally false C'=result.space.
+Six source snapshots and32 compiler/audit/model artifacts were frozen in
+the sixtieth batch. The new source and earlierc10 remain queued for independent
+replay; the author's21-native/12-reuse/4-model audit is not yet integration
+acceptance. The four-source delta is+484/-50, separate from batch60's+13/-0.
+
+At this explicit completed boundary, the same E3 task received section32 Q.2a:
+construct a closed limiting separator from actual locally finite changes
+away from a closed exceptional set, derive uniform eventual agreement on
+compact sets away from it, and preserve separation of the original targets.
+Prove the compact-path argument and a genuinely infinite nonstationary model.
+The final set's closedness/separation or the needed compact uniformity must
+not be assumed as substitute outputs. The natural new Connected.LimitSeparation
+leaf has an exact module grant; h's existing LocallyFiniteSeparation source
+remains untouched. This is a replacement lane after delivery, not a sixth task.
+The integer annulus family, actual open2-disk topology, pseudocell and32.1
+remain open. The same resource policy and three-hour renewable lease apply.
+
+## 92. Independent physical cap and original-target separation acceptance
+
+E3 throughc34726180, including the earlierc10b83586 physical-cap layer, is now
+independently accepted in the sixty-first integration batch. Four author
+modules were taken from the previously frozen six-source c347 snapshot with
+raw hashes unchanged. SphereSchoenflies and both direct old consumers,
+SpanningDiskPrism and SurfaceSplitSeparation, were also freshly checked.
+All seven pass with zero errors, warnings or diagnostics. Their34 nonautomatic
+declarations, including private declarations, and17 key reuses have only
+propext, Classical.choice and Quot.sound in their transitive axiom closures.
+All13 applicable environment linters pass. Existing public signatures in the
+three modified old modules are unchanged; ten public theorems are added.
+
+The mathematical result is the actual physical split/cap construction and
+separation by the same resulting surface. The ball-pair producer now retains
+both exact hemisphere-boundary decompositions, the common prism transports
+those identities, and the local trace theorem retains the real inner disk
+boundary and its incidence with the chosen half-ball boundary. A genuine cap
+is obtained by replacing the inner disk while fixing the original outer ring.
+The other cap is physically disjoint. The result has the retained split/cap
+combinatorial data, exact boundary traces and carrier union. Its old and new
+carriers agree outside the chosen ball. The safe ball-frontier complement is
+path connected, so Separates.of_frontier_replacement applies to the original
+H/T. No generally false C'=result equality or final separation premise is used.
+
+The author's four named probes were classified rather than all called models:
+a two-dimensional nondegenerate disk, a one-dimensional actual replacement,
+and two conditional assembly consumers. The independent audit also counts the
+triangle helper and a canonical model DecidableEq instance. It adds one full
+unconditional geometric application: start with the actual embedded solid
+torus, its first-Betti-two surface and interior meridian disk; preserve the
+actual distinct inner/outer points; place the same carrier in a finite PL
+three-ball; derive the meridian's avoidance of both targets from the original
+cylindrical diagram; then invoke the new endpoint. Its output retains the same
+source surface, actual disk and targets, disjoint physical caps, exact traces,
+SurfaceSplitAndCap and original-target separation. Neither this model nor the
+native endpoint assumes Moise252. Total probe declarations:7 = one full R3
+assertion + two lower-dimensional assertions + two consumers + two helpers.
+
+Compilation takes101.3505589 seconds including admission; the final combined
+audit takes64.9553414 seconds. Earlier external-probe attempts required binder,
+codomain-polyhedron and DecidableEq-scope repairs; no project theorem was
+changed or weakened. Failed probe bytes and receipts remain frozen separately.
+The corrected checker binds only canonical batch61 module objects and exact
+integration source.105 prerequisite objects come from previously accepted,
+raw-source-matching receipts. Frozen author/old-attempt artifacts are excluded
+from private override selection, and every actual setup binding was reviewed.
+
+Git delta against a9ad86954 is Lean+897/-29: native+896/-29 and one flat root
+import for SurfaceSplitPhysicalCapping. This is the cumulative c10/c347
+integration delta, not the author's c347-only+484/-50. Static root traversal
+has9661 modules/37529 edges, no missing sources or cycle. A full-root build was
+not run; compatibility was checked on the changed modules and direct old
+consumers. The author model is Sol max. Code volume and this physical surgery
+layer do not close25.2,32.1, general approximation or compact smoothing.
+
+Receipt: .lake/verified-sixtyfirst-lane-delivery-20260919.json. Exact sources,
+setups, censuses, model bytes and accepted-object provenance are retained in
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtyfirst-batch-20260919.
+E3 is already in Q.2a; this acceptance does not interrupt that active round.
+
+## 93. Completed-boundary continuations and new frozen deliveries
+
+One compact logical snapshot was partitioned into disjoint target calls
+because wait_threads returned early on completed tasks. F/S/h were idle;
+E3 and M304 were active. Only the completed tasks received continuation.
+The current hourly schedule, same five tasks and compiler limits are retained.
+
+F's current protected-polyhedron sources and successful author audit were
+frozen. The remaining consumer gate had4 HeightProjection and172
+SingularGeneralPosition old long-line warnings. All six worktrees were clean
+for those two source files. The coordinator explicitly granted only line-wrap
+and required-header formatting in F's own checkout, retaining signatures,
+proof tokens and scopes, followed by full zero-diagnostic replay. The same
+boundary-normalization lane continues after its clean checkpoint. The arbitrary
+PL conjugation Lipschitz counterexample remains binding. This authorization
+resolves the exact source-permission issue without changing linter policy.
+
+h delivered clean pushedc1bd6e42e after72fa711aa: generic locally finite PL
+homeomorphism limits and compact stabilization from compatible increments,
+plus a real one-increment trivalent model. Source and14 evidence files are
+frozen, pending independent replay. At that boundary h continued the genuine
+nonstationary cross-stage geometric producer, retaining original carrier/graph,
+subdivisions, neighborhoods and traces. Requiring every increment to preserve
+every core must be checked against the actual geometric consumer; no final
+compatible family or limit may be assumed to fill the missing producer.
+
+S delivered clean pushedc60f66395 after876319180. CubicLowering produces a
+nonpositive compact one-dimensional cubic perturbation, a controlled quadratic
+suspension and cancellation with sufficiently large longitudinal support and
+arbitrary positive transverse width. The same original cubic/logistic model
+constructs a larger O', keeps the old small-frame obstruction and verifies
+actual critical-point removal. This is a real model, not general compact
+smoothing. Its frozen verification hash is
+42c6006f8df5f52454bae2b44b1f4088d41a0ba4a275c5ccc5de9928fbf297f6.
+At this delivery boundary S continued original-function extended-arc, adequate
+support and relative h(u)+z^2 production, with original f/atlas/v/gamma and
+protected-set controls. The whole5b/c011/2544/876/c60 chain remains queued.
+
+M304 subsequently delivered87826c69c, reporting sphere exclusion in the same
+original toroidal shell without h252, plus the h252-dependent incompressible
+non-simply-connected separator. Actual cut sides, collar/open-cover identities
+and endpoint inclusion factorizations are in284 frozen files/45 source groups.
+Manifest hash:
+69b2b74d52d5c659058b905ab9b216af35f0faf4cdab3f5b14eb22e04abfe701.
+This is pending independent replay. The author continues true PL torus
+recognition in its existing30.6 round; no extra task or second lane was sent.
+The earlier recognition checkpoint with an unresolved root is still invalid.
+Moise308's original-inner-spine inclusion obligation was already delivered;
+do not send the old deferred notice again.
+
+The resumed-stage ledger records these frozen frontiers separately from
+accepted source. F/S/h compiler leases were renewed administratively to
+2026-09-20 00:57 UTC; they are renewable and are not user deadlines. The saved
+automation prompt is updated after this checkpoint and read back byte-for-byte.
+The completed morning report is preserved.
+
+## 94. Q.2a delivered after the physical-surface acceptance
+
+The physical-surface proof checkpoint is pushed as ec849f400. E3 then explicitly
+delivered clean pushed1dff5b63c. LimitSeparation constructs a closed limiting
+separator, proves uniform eventual equality on every compact set disjoint from
+the closed exceptional set, and derives local stabilization from genuinely
+locally finite change supports in the punctured space. The compact-path
+contradiction keeps the original targets separated. Its actual real-line
+model C_n={0,1/(n+1)} is never eventually stationary; supports become locally
+finite only after removing0, and both fixed targets are nonempty.
+
+Source and six matching private artifacts were frozen in the sixty-first
+batch. The author reports five native declarations, two public endpoints,
+one actual private model, seven key reuses,13 lint and allowed axioms. This
+is pending independent replay and root registration, not new acceptance.
+The previous physicalc347/c10 acceptance was notified at this explicit boundary.
+
+The same E3 task now proceeds to Q.2b: construct the actual global annular
+parameterization from compatible integer-indexed PL annuli and natural
+incidence/end-control conditions, prove injectivity and inverse continuity,
+add the center and prove open2-disk topology and exact closure. The two ends,
+center and rim remain distinct. A true infinite PL polygonal-annulus model
+must realize both end conditions; an ordinary Euclidean circle is not a PL
+polygon. No final homeomorphism, open-disk or closure identity may be assumed.
+The original-geometry production of this annular family remains Q.2c;32.1 is
+not claimed. Natural AnnularExhaustion/Pseudocell modules have exact private
+compile grants, with naming/structure review required before public additions.
+The renewable E3 compiler lease ends2026-09-20 01:17 UTC, not a user deadline.
+
+M304 was checked once after its new878 delivery and remains active on the same
+torus-recognition round; no continuation message or extra lane was sent.
+
+## 95. Independent locally finite separating-limit acceptance
+
+The sixty-second integration batch accepts E3's1dff5b63c abstract Q.2a layer.
+The support endpoint starts with closed separating sets containing a fixed
+closed exceptional set, and actual change supports locally finite in its
+complement. It produces local eventual agreement, a closed limiting set,
+uniform eventual agreement on every compact set away from the exceptional set,
+and separation of the same original targets. The last step uses a compact
+path in the hypothetical connected complement to contradict an earlier
+separator. Final closedness, separation and compact uniformity are outputs,
+not replacement hypotheses. The natural local connectivity/path hypotheses
+and preconnected targets remain explicit.
+
+The new generic Connected.LimitSeparation module retains all three native
+declarations, including its private eventual-membership helper. Both public
+signatures, scopes and full proof bodies match the frozen author source.
+The private real-line example and its T2-space helper move to the external
+audit, removing model-only SpecificLimits and LocallyConvex imports from
+foundational topology. This is source placement cleanup, not a weaker theorem.
+Notify E3 of that canonical placement only at its next delivery boundary.
+
+One fresh module compiles in9.483108 seconds including admission, with zero
+diagnostics. The combined audit takes22.3340732 seconds. All three native
+declarations, seven key reuses, one actual infinite-model assertion and one
+external model helper pass13 applicable linters and have only propext,
+Classical.choice and Quot.sound in their transitive axiom closures.
+The model has C_n={0,1/(n+1)}, consecutive-point supports locally finite off0,
+and fixed nonempty targets{-1} and{2}. Every stage changes. The independent
+strengthening proves that the same limit returned by the support endpoint is
+exactly{0}; it is nonempty and has no extra points. The helper is not a second
+model, and this real-line example is not an annulus or pseudocell construction.
+
+Git Lean delta is+171/-0:170 lines in the generic leaf and one flat root import.
+One previously accepted source-matching Separation object is reused; both
+actual setup files bind only canonical private objects and integration source.
+Static root reachability has9662 modules/37531 edges without missing sources
+or cycles. No full-root build was run. Receipt and full frozen evidence are
+.lake/verified-sixtysecond-lane-delivery-20260919.json and
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtysecond-batch-20260919.
+
+The compact five-task snapshot found every task active. None was interrupted
+or given another lane. E3 already continues Q.2b; actual two-ended annulus
+gluing, adding the center and exact open-disk closure remain open. Q.2c must
+still produce that family from the original geometry. This acceptance does
+not close32.1,25.2, unconditional30.4, general approximation or compact smoothing.
+
+## 96. Independent quantitative projected-sheet perturbation acceptance
+
+The sixty-third batch accepts F's exact frozen 06a171025/d68c5adc5 source.
+HalfSpacePerturbation constructs a small Lipschitz displacement extending the
+actual vertex perturbation, tangent on the boundary hyperplane, zero outside
+the specified support, and with id plus displacement a half-space-preserving
+PL homeomorphism. HalfSpaceGeneralPosition retains that bound for the same
+chosen relative general-position map, including the actual inverse/composition
+estimate. The old public existence statements remain corollaries with their
+original signatures.
+
+ProjectedSheetPerturbation uses that same displacement to retain the old flat
+crossing neighborhood W and produce the new crossing neighborhood N. The
+actual domain, boundary preimage, boundary homotopy, old fibers outside the
+support and local injectivity/fiber bound are retained. The selected graph
+agrees with the actual double-point set on N; crossings are proved on W union
+N only. Complete transition coverage and arbitrary boundary-chart assembly
+are not proved. No normalization of an arbitrary original singular map is
+claimed. The final intended input is an upstairs embedded disk projected
+through the actual double cover.
+
+Four modules were freshly compiled: three changed leaves and the unchanged
+ProjectedBoundaryPosition direct consumer. Compilation took 53.3771185 seconds
+including admission; the combined audit took 64.5496359 seconds. All 25 native
+nonautomatic declarations (22 changed-module and three consumer declarations),
+20 key reuses and 12 external declarations pass 13 applicable linters. Their
+transitive axioms are contained in propext, Classical.choice and Quot.sound.
+All seven old public signatures remain unchanged; seven public theorems are
+new. Exact source bytes agree with the frozen author source. Source review
+also records old/new variable and namespace scopes.
+
+The external suite has three actual positive coordinate assertions, one
+actual compactly supported PL-conjugation counterexample, seven helpers and
+one generated macro declaration. The relative-simplex assertion does not
+assert that its intersection graph is nonempty. None is a complete original
+NormalSystem model. The counterexample disproves arbitrary PL conjugation
+preserving arbitrarily small displacement Lipschitz constants; it does not
+disprove the global normalization theorem.
+
+Git Lean delta is +871/-217 in three existing leaves, with no new root import.
+Ten previously accepted source/object-matching prerequisites are privately
+reused. Actual setups bind only this batch's canonical object paths and the
+same integration checkout source. Static root reachability remains 9662
+modules without missing sources or cycles; no full-root build was run.
+The receipt is .lake/verified-sixtythird-lane-delivery-20260919.json. Frozen
+source, full census, model source, setups and receipts are in
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtythird-batch-20260919.
+
+M304's later 5461ed200 integral Hurewicz-one layer was delivered during this
+review. Its complete author checkpoint was copied and hash-checked: 306 files,
+48 source/receipt groups, including the large kernel dependency evidence.
+The author reports three new leaves, 384 native lines and 22 declarations;
+the surjectivity input is path connectedness. Abelianization isomorphism,
+rational Betti bounds and torus recognition are explicitly not claimed.
+This is frozen evidence only, pending independent integration acceptance.
+The author continues the existing 30.6 round; no extra task was sent.
+
+## 97. Owner-directed risk reallocation toward 25.2
+
+The owner supplied a fresh audit and requested greater weight for 25.2. The
+source review and concrete next-round plan are in
+LOOP_THEOREM_RISK_PLAN_20260919.md. This supersedes earlier future assignments;
+it does not interrupt an active round. At the next explicit delivery or
+genuine blocking handoff, F handles actual projected embedded-disk normal
+structure, M304 takes upstairs Lemma2/L2 surgery, h takes the whole-branch
+simultaneous two-sheet chart, and E3 takes actual spherical EmbeddedDisk/tower
+assembly. S retains independent compact smoothing. Model settings remain
+Astra max for F/M304/S and Sol max for h/E3. No extra task or compiler is added.
+The corresponding deferred handoffs are recorded as pending, not dispatched.
+
+The audit's main projection insight is supported by existing source: the
+actual cover projection already produces local injectivity, fibers at most
+two, proper boundary trace and subgroup avoidance from an EmbeddedDisk. It
+does not produce the full normal-crossing field. SphereCase now has actual
+finite spherical-domain and inward-push producers, including an EmbeddedDisk
+endpoint; the old hpush consumer is not its current complete dependency story.
+The corrected orientable Moise252 contract is already accepted. The generic
+Stallings interface still needs its actual invariants and output assembled;
+it must not be declared closed from these separate producers.
+
+Upstairs L2 is the preferred next construction, with an actual deck action,
+embedded replacement disk, compatible complete branch neighborhoods, exact
+new intersections and boundary-word avoidance, then one canonical projection.
+Normal-disk branch count and tower vertex-collision complexity are distinct.
+Their respective induction obligations and upstairs/downstairs branch-orbit
+identifications remain explicit. The strategy reduces repeated bookkeeping;
+it does not prove absence of new crossings or strict descent automatically.
+25.2 is the sole unresolved theorem input of the accepted conditional304
+endpoint, not the only outstanding input of all of section34 or smoothing.
+
+S delivered e24808bce during this decision. Its 622481-byte source/evidence
+receipt has SHA256 f2aa33c9d244c823b71aac4d07a514c88e29f3d52444c35bc541839020f9e5d7.
+Nine embedded evidence records and all four compiled objects were frozen and
+hash checked in the sixty-third batch. The author reports +762/-33 Lean,
+17 native declarations, 10 native reuses and 42 actual-model declarations;
+the whole chain afterc0 still awaits independent integration replay.
+The actual descending-branch theorem explicitly assumes a compact inward
+barrier region and adapted local radial field data, and produces a branch
+reaching below the original minimum level. Those inputs are not produced
+by the compact smoothing endpoint yet.
+
+At this explicit S delivery, the same task was continued to smooth gluing of
+the actual opposite branch with the original gamma through the same critical
+points, retaining the original quadratic germs, then the actual relative
+h(u)+z^2 normal form. Its local radial-line formula alone does not identify
+the original gamma with the other radial side; that is the next real local
+dynamics obligation. No other active task received a routine message or a
+second lane. The four-to-one allocation remains pending their own boundaries.
+
+## 98. First risk handoff activated at M304's complete homology delivery
+
+M304 delivered e8dc3d37d after 5461ed200: four new leaves, author-reported
+408 native lines and 24 declarations, ending in the actual original shell's
+incompressible separating surface with Betti one equal to two and Euler
+characteristic zero. Moise252 remains an explicit input. Numerical invariants
+do not supply a PL torus homeomorphism; Moise306 remains partial.
+The exact shell-homology manifest is
+c94b17e527ca290be0d767a75548e3235e77ed4723c30b6d456e4a4e1307a751.
+All 330 files, 52 source/receipt groups and 17 evidence files were copied and
+hash checked in the sixty-third batch. This remains frozen author evidence,
+not independent acceptance; only through371 is accepted for this task.
+
+At this explicit complete-layer delivery the coordinator activated the
+owner's risk decision: the same M304 task, Astra max, now takes upstairs
+Lemma2/L2 in the original double cover. The next torus-recognition step and
+30.7 are deferred. The dispatch requests an actual embedded replacement,
+deck-related intersection and branch-orbit accounting, boundary-word
+avoidance and strict descent, then one canonical projection. It protects
+the existing F/h source ownership and requires exact-module coordination for
+substantive CutAndPaste changes. No sixth task or second concurrent lane was
+created. The same private checker lease was renewed for three hours as
+administration, without adding resources or creating a user deadline.
+
+F continues its existing25.2 round. h and E3 still await their own delivery
+boundaries. S already continued at its e248 delivery, then requested one
+natural dry-ODE module, Analysis.ODE.InvariantAxis, for local invariant-axis
+and backward-orbit identification. The name was absent in both checkouts;
+the exact private compiler module was granted in S's lease, without widening
+the Analysis pattern or allowing writes to existing foreign source. This is
+an interface-permission reply inside the same lane, not an extra assignment.

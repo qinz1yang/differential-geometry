@@ -14,7 +14,7 @@ import DifferentialGeometry.Topology.Simplex.NormedBall
 
 /-! PL three-ball pairs cut out by a properly embedded PL disk. -/
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -264,7 +264,7 @@ theorem IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace
       _ = (v ∘ b₁) '' stdSimplexBoundary 3 := image_image v b₁ _
   exact ⟨C₀, C₁, hC₀, hC₁, hCcover, hCinter, hDC₀, hDC₁⟩
 
-private theorem IsPLBall.exists_pair_union_eq_inter_eq_with_outer_boundary_of_boundary_trace
+private theorem IsPLBall.exists_pair_union_eq_inter_eq_with_boundary_of_boundary_trace
     {P D : Set (EuclideanSpace ℝ (Fin 3))} (hP : IsPLBall 3 P)
     {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
     (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
@@ -272,7 +272,9 @@ private theorem IsPLBall.exists_pair_union_eq_inter_eq_with_outer_boundary_of_bo
     ∃ P₀ P₁ : Set (EuclideanSpace ℝ (Fin 3)),
       IsPLBall 3 P₀ ∧ IsPLBall 3 P₁ ∧ P₀ ∪ P₁ = P ∧ P₀ ∩ P₁ = D ∧
         D ⊆ frontier P₀ ∧ D ⊆ frontier P₁ ∧
-        P₀ ∩ frontier P ⊆ frontier P₀ ∧ P₁ ∩ frontier P ⊆ frontier P₁ := by
+        P₀ ∩ frontier P ⊆ frontier P₀ ∧ P₁ ∩ frontier P ⊆ frontier P₁ ∧
+        frontier P₀ = D ∪ (P₀ ∩ frontier P) ∧
+        frontier P₁ = D ∪ (P₁ ∩ frontier P) := by
   obtain ⟨P₀, P₁, hP₀, hP₁, hcover, hinter, hD₀, hD₁⟩ :=
     hP.exists_pair_union_eq_inter_eq_of_boundary_trace hg hDP htrace
   have hP₀P : P₀ ⊆ P := subset_union_left.trans hcover.subset
@@ -289,12 +291,53 @@ private theorem IsPLBall.exists_pair_union_eq_inter_eq_with_outer_boundary_of_bo
     refine ⟨hx.1, fun hxi => ?_⟩
     rw [hP.isPolyhedron.isClosed.frontier_eq] at hx
     exact hx.2.2 (interior_mono hP₁P hxi)
-  exact ⟨P₀, P₁, hP₀, hP₁, hcover, hinter, hD₀, hD₁, houter₀, houter₁⟩
+  have hfrontier₀ : frontier P₀ = D ∪ (P₀ ∩ frontier P) := by
+    apply Subset.antisymm
+    · intro x hx
+      by_cases hxP₁ : x ∈ P₁
+      · exact Or.inl (hinter.subset ⟨hP₀.isPolyhedron.isClosed.frontier_subset hx, hxP₁⟩)
+      · right
+        refine ⟨hP₀.isPolyhedron.isClosed.frontier_subset hx, ?_⟩
+        refine ⟨?_, ?_⟩
+        · exact hcover ▸ subset_closure (Or.inl (hP₀.isPolyhedron.isClosed.frontier_subset hx))
+        · intro hxIntP
+          have hxOpen : P₁ᶜ ∩ interior P ∈ 𝓝 x :=
+            (hP₁.isPolyhedron.isClosed.isOpen_compl.inter isOpen_interior).mem_nhds
+              ⟨hxP₁, hxIntP⟩
+          have hsub : P₁ᶜ ∩ interior P ⊆ P₀ := by
+            intro y hy
+            exact (hcover.symm.subset (interior_subset hy.2)).resolve_right hy.1
+          exact (mem_frontier_iff_notMem_interior
+            (hP₀.isPolyhedron.isClosed.frontier_subset hx)).mp hx
+              (mem_interior_iff_mem_nhds.mpr (Filter.mem_of_superset hxOpen hsub))
+    · exact union_subset hD₀ houter₀
+  have hfrontier₁ : frontier P₁ = D ∪ (P₁ ∩ frontier P) := by
+    apply Subset.antisymm
+    · intro x hx
+      by_cases hxP₀ : x ∈ P₀
+      · exact Or.inl (hinter.subset ⟨hxP₀, hP₁.isPolyhedron.isClosed.frontier_subset hx⟩)
+      · right
+        refine ⟨hP₁.isPolyhedron.isClosed.frontier_subset hx, ?_⟩
+        refine ⟨?_, ?_⟩
+        · exact hcover ▸ subset_closure (Or.inr (hP₁.isPolyhedron.isClosed.frontier_subset hx))
+        · intro hxIntP
+          have hxOpen : P₀ᶜ ∩ interior P ∈ 𝓝 x :=
+            (hP₀.isPolyhedron.isClosed.isOpen_compl.inter isOpen_interior).mem_nhds
+              ⟨hxP₀, hxIntP⟩
+          have hsub : P₀ᶜ ∩ interior P ⊆ P₁ := by
+            intro y hy
+            exact (hcover.symm.subset (interior_subset hy.2)).resolve_left hy.1
+          exact (mem_frontier_iff_notMem_interior
+            (hP₁.isPolyhedron.isClosed.frontier_subset hx)).mp hx
+              (mem_interior_iff_mem_nhds.mpr (Filter.mem_of_superset hxOpen hsub))
+    · exact union_subset hD₁ houter₁
+  exact ⟨P₀, P₁, hP₀, hP₁, hcover, hinter, hD₀, hD₁, houter₀, houter₁,
+    hfrontier₀, hfrontier₁⟩
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_outer_boundary_of_boundary_trace
+theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_boundary_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
     (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
@@ -304,7 +347,11 @@ theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_outer_boundary_of_bo
         K₀.space ∪ K₁.space = K.space ∧ K₀.space ∩ K₁.space = D ∧
           D ⊆ (boundaryComplex 3 K₀).space ∧ D ⊆ (boundaryComplex 3 K₁).space ∧
           K₀.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₀).space ∧
-          K₁.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₁).space := by
+          K₁.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₁).space ∧
+          (boundaryComplex 3 K₀).space =
+            D ∪ (K₀.space ∩ (boundaryComplex 3 K).space) ∧
+          (boundaryComplex 3 K₁).space =
+            D ∪ (K₁.space ∩ (boundaryComplex 3 K).space) := by
   let _ : DecidableEq E := Classical.decEq E
   let T := {x : EuclideanSpace ℝ (Fin 3) |
     0 ≤ x 0 ∧ 0 ≤ x 1 ∧ x 0 + x 1 ≤ 1 ∧ 0 ≤ x 2 ∧ x 2 ≤ 1}
@@ -343,8 +390,9 @@ theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_outer_boundary_of_bo
       _ = u '' (g '' stdSimplexBoundary 2) := congrArg (fun S => u '' S) htrace
       _ = (u ∘ g) '' stdSimplexBoundary 2 := image_image u g _
       _ = g' '' stdSimplexBoundary 2 := rfl
-  obtain ⟨B₀, B₁, hB₀, hB₁, hcover, hinter, hDB₀, hDB₁, houter₀, houter₁⟩ :=
-    hT.exists_pair_union_eq_inter_eq_with_outer_boundary_of_boundary_trace hg' hD'T htrace'
+  obtain ⟨B₀, B₁, hB₀, hB₁, hcover, hinter, hDB₀, hDB₁, houter₀, houter₁,
+      hfrontier₀, hfrontier₁⟩ :=
+    hT.exists_pair_union_eq_inter_eq_with_boundary_of_boundary_trace hg' hD'T htrace'
   have hB₀T : B₀ ⊆ T := subset_union_left.trans hcover.subset
   have hB₁T : B₁ ⊆ T := subset_union_right.trans hcover.subset
   let v := Function.invFunOn u K.space
@@ -430,10 +478,50 @@ theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_outer_boundary_of_bo
     rw [hK₁space, ← hbackBoundary, ← hbackBoundary₁,
       ← hv.bijOn.injOn.image_inter hB₁T hT.isPolyhedron.isClosed.frontier_subset]
     exact image_mono houter₁
+  have hboundaryK₀ : (boundaryComplex 3 K₀).space =
+      D ∪ (K₀.space ∩ (boundaryComplex 3 K).space) := by
+    calc
+      (boundaryComplex 3 K₀).space = v '' frontier B₀ := hbackBoundary₀.symm
+      _ = v '' (D' ∪ (B₀ ∩ frontier T)) := congrArg (fun S => v '' S) hfrontier₀
+      _ = v '' D' ∪ v '' (B₀ ∩ frontier T) := image_union _ _ _
+      _ = D ∪ (v '' B₀ ∩ v '' frontier T) := by
+        rw [hbackD, hv.bijOn.injOn.image_inter hB₀T
+          hT.isPolyhedron.isClosed.frontier_subset]
+      _ = D ∪ (K₀.space ∩ (boundaryComplex 3 K).space) := by
+        rw [hK₀space, hbackBoundary]
+  have hboundaryK₁ : (boundaryComplex 3 K₁).space =
+      D ∪ (K₁.space ∩ (boundaryComplex 3 K).space) := by
+    calc
+      (boundaryComplex 3 K₁).space = v '' frontier B₁ := hbackBoundary₁.symm
+      _ = v '' (D' ∪ (B₁ ∩ frontier T)) := congrArg (fun S => v '' S) hfrontier₁
+      _ = v '' D' ∪ v '' (B₁ ∩ frontier T) := image_union _ _ _
+      _ = D ∪ (v '' B₁ ∩ v '' frontier T) := by
+        rw [hbackD, hv.bijOn.injOn.image_inter hB₁T
+          hT.isPolyhedron.isClosed.frontier_subset]
+      _ = D ∪ (K₁.space ∩ (boundaryComplex 3 K).space) := by
+        rw [hK₁space, hbackBoundary]
   refine ⟨K₀, K₁, hK₀fin, hK₁fin, hK₀space.symm ▸ hP₀, hK₁space.symm ▸ hP₁,
-    ?_, ?_, hDbd₀, hDbd₁, houterK₀, houterK₁⟩
+    ?_, ?_, hDbd₀, hDbd₁, houterK₀, houterK₁, hboundaryK₀, hboundaryK₁⟩
   · rwa [hK₀space, hK₁space]
   · rwa [hK₀space, hK₁space]
+
+open Classical in
+theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_outer_boundary_of_boundary_trace
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
+    {D : Set E} {g : (Fin 3 → ℝ) → E}
+    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
+    ∃ K₀ K₁ : Geometry.SimplicialComplex ℝ E,
+      K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧
+        K₀.space ∪ K₁.space = K.space ∧ K₀.space ∩ K₁.space = D ∧
+          D ⊆ (boundaryComplex 3 K₀).space ∧ D ⊆ (boundaryComplex 3 K₁).space ∧
+          K₀.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₀).space ∧
+          K₁.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₁).space := by
+  obtain ⟨K₀, K₁, hK₀fin, hK₁fin, hK₀, hK₁, hcover, hinter, hD₀, hD₁,
+      houter₀, houter₁, -, -⟩ :=
+    hK.exists_complex_pair_union_eq_inter_eq_with_boundary_of_boundary_trace K hg hDK htrace
+  exact ⟨K₀, K₁, hK₀fin, hK₁fin, hK₀, hK₁, hcover, hinter, hD₀, hD₁,
+    houter₀, houter₁⟩
 
 open Classical in
 theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_of_boundary_trace

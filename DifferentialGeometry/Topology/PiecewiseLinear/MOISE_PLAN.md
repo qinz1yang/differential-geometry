@@ -18,6 +18,133 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
+### Owner risk decision: prioritize 25.2 at delivery boundaries
+
+[The Loop Theorem risk plan](LOOP_THEOREM_RISK_PLAN_20260919.md) now governs
+next-round allocation. F takes actual projected-disk relative normalization;
+M304 takes upstairs Lemma 2/L2 surgery; h takes whole-branch two-sheet charts;
+E3 takes the actual sphere-base/tower-interface assembly. S keeps independent
+compact smoothing. These four changes occur only at each task's next explicit
+delivery or genuine blocking handoff. Current active rounds remain intact;
+M304 has now moved to upstairs L2 at its complete e8dc3d37d delivery; h/E3
+changes still await their own boundaries. S continued at its e24808bce delivery.
+No new task, subagent, extra lane or compiler slot is created.
+
+The audit's projection insight is adopted as the primary route. Existing
+projection, finite spherical boundary-domain and inward-push producers are
+reused. The corrected orientable Moise252 contract is already accepted.
+Global normal crossings, whole-branch geometry, actual L2 surgery, branch
+count/descent and exact tower assembly remain the priorities. Tower vertex
+collision complexity is not normal-disk branch complexity. The conditional
+304 endpoint does not remove the other outstanding section34 inputs.
+
+### Latest live frontier (2026-09-19, controlled projected-sheet perturbations accepted)
+
+This snapshot and the latest integration-handoff sections supersede dated
+paragraphs below. The resumed stage has no new deadline. Five existing tasks
+keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
+
+| Lane | Independently accepted frontier | Current mathematical gate |
+|---|---|---|
+| F | throughd68c5adc5 including06a171025 | The same actual perturbation and W union N crossing consumer are independently accepted in section96. Full projected-disk boundary/transition normalization remains open. Later protected-polyhedron author layers require separate replay. |
+| h | throughe85a235df | Produce actual nonstationary locally finite supported modifications with compatible subdivisions, original graph and transported neighborhoods.72fa/c1bd finite solid-torus and generic limit layers are frozen pending replay; a single-increment model does not close arbitrary-stage geometry. |
+| E3 | through1dff5b63c | Physical caps and original-target separation are accepted in section92; Q.2a locally finite separating limits are independently accepted in section95. E3 continues Q.2b: two-ended annular exhaustion, adding the center, actual open disk and exact closure. |
+| M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878/546/e8 original toroidal-shell geometry, Hurewicz and actual Betti2 separator are frozen pending replay. The completee8 delivery triggered the new upstairs Lemma2/L2 round; actual torus recognition remains open. |
+| S | throughc0f4df1b1 | Produce original-function extended-arc and relative normal-form geometry in an adequate support region.5b/c011/2544 common coordinates,876 small-frame obstruction,c60 cubic lowering ande24808bce actual descending branch are frozen pending replay. The e248 delivery has continued into actual branch/gamma gluing and relative normal form. General finite cancellation/compact smoothing remain open. |
+
+
+Section 96 independently accepts F through d68c5adc5, including 06a171025:
+the same actual relative perturbation retains quantitative Lipschitz
+displacement and preserves old flat boundary crossings while producing new
+interior crossings on W union N. Four modules, 25 nonautomatic declarations
+(22 in changed leaves and three in an unchanged direct consumer), 20 key
+reuses and 12 classified probe declarations pass with zero diagnostics and
+only foundational axioms. Seven new public theorems preserve all seven old
+public signatures. Three positive geometric assertions and one actual PL
+conjugation counterexample are separate from seven helpers and one macro.
+Git Lean delta is +871/-217. This is a single-chart layer, not coverage of the
+whole transition region or a complete projected NormalSystem normalization.
+The later protected-polyhedron author layer is outside this acceptance.
+
+The exact sphere endpoint moise304_of_moise252 remains conditional on the
+unresolved Moise252. Its independently checked kernel type/body traversals
+contain9328 and7200 native constants for the304/tame consumers and omit
+Moise303 and broad Moise264. The tame consumer retains its outer-frontier
+bicollar. These are the section89 acceptance results, not an unconditional
+Loop Theorem,304 or general wild305 proof.
+
+Section92 now independently accepts E3's same actual SurfaceSplitAndCap result:
+physical disjoint disk caps, exact old/new carrier equality outside a chosen
+ball, a safe path-connected ball frontier, and separation of the original
+closed connected targets. Seven modules,34 nonautomatic declarations and17
+key reuses pass fresh compile, axiom and13-linter checks. The external audit
+has one full unconditional R3 torus/meridian/enclosing-ball/target-pair model,
+two lower-dimensional geometry assertions, two conditional consumers and two
+helpers. The latter four assertions are not four full three-dimensional models.
+All nine old public signatures in the changed modules remain unchanged.
+Git Lean delta for the whole c10/c347 integration is+897/-29, including one
+root import; ten new public theorems are distinct from the13 old consumer
+checks. No source theorem was weakened to make the actual model elaborate.
+
+F's protected-polyhedron relative general position currently solves a
+simultaneously flat interior case. An arbitrary PL change of coordinates does
+not preserve a small Lipschitz displacement; the explicit counterexample
+remains binding. The crucial25.2 gate is actual boundary/transition
+normalization of the same disk with original boundary homotopy, normal-subgroup
+avoidance and fibers, followed by the genuine cover/elimination argument.
+Neither code volume nor the conditional304 endpoint measures Loop Theorem
+completion. The route remains plausible; near-term closure is not established.
+
+S's small-frame obstruction formally withdraws arbitrary-prescribed-O
+cancellation. Its laterc60 author layer constructs a sufficient longitudinal
+R and arbitrary positive transverse width for actual cubic lowering, and the
+same original model cancels in a produced larger O'. A protected set inside
+O' minus O is not automatically preserved. The next geometric producer must
+supply adequate original-function support and relative normal form, not assume
+a final cancellation chart or perturbation.
+
+The later M304 shell-homology checkpoint has330 frozen files/52 source
+receipt groups. The earlier unresolved-root recognition checkpoint remains
+invalid; only recognition-final and sphere-exclusion evidence enter replay.
+The h limit theorem consumes genuine increments satisfying its core equations;
+the one-increment trivalent model does not produce arbitrary infinitely many
+compatible modifications. Both distinctions remain explicit in the queue.
+
+Section95 independently accepts the abstract locally finite separating-limit
+producer. All three native declarations and seven key reuses pass13 linters
+and foundational-axiom checks. The infinite real-line fixture is moved outside
+the generic topology module; its strengthened assertion proves the produced
+limit is exactly{0}, while both original targets remain nonempty and every
+stage changes. The two public signatures and proof bodies are unchanged.
+This supplies Q.2a, not the actual annulus family, open disk or32.1.
+
+Root source reachability is9662 modules with no missing imports or cycles;
+this is not full-root compilation. The full-root check remains deferred under
+the discretionary compatibility policy. Two private checkers, three total Lean
+processes, renewable leases and quiet hourly delivery-boundary coordination
+remain unchanged. See integration sections92–95 and the resumed-stage ledger.
+
+### Section32 research and an additional upstream contract gate
+
+[The section32 research](SECTION32_RESEARCH_20260919.md) checks book pages
+218,220–232 against current source. Existing local-polyhedral and locally finite
+PL-piece APIs can be reused; pseudocells need a separate topological body/rim/
+center representation. The infinite construction has two ends, requires local
+stabilization away from both, and must prove the final open-disk topology and
+exact closure.32.4 is an independent consumer of a given pseudocell.
+
+Moise308 currently assumes the original circle is already a spine of the
+intermediate torus. The book needs generation in every admissible intermediate
+torus from a spine of the inner torus. Preserve this missing inclusion-map
+bridge before consuming31.2/31.4. It was delivered at M304's823 completed boundary for later30.7/30.8 work;
+it does not interrupt the new actual30.6 sphere-cut round. Q's old18–27k estimate is historical,
+not an execution budget or completion metric. No sixth task was started.
+
+Current source and receipts remain authoritative. Full-root compilation stays
+deferred and may restart only for a concrete compatibility or stalled-work
+reason. Handoff notices wait for completed deliveries; no new task, mid-round
+status request or elapsed-time build trigger is introduced.
+
 ### First gate: repair contracts before consuming them
 
 The corrected Moise252/331/351 contracts and actual regular-neighborhood
@@ -1755,3 +1882,104 @@ The remaining representation layer is an ambient source/target subdivision
 simultaneously compatible with the locally finite graph, the modifications
 and both graph-dual-cell boundary surfaces.  The two exact annular surface
 traces and Conditions (3)--(8) are therefore still open.
+
+### Actual Morse flow coordinates accepted; current five-lane gates
+
+Integration section 77 independently accepts S through c0f4df1b1, including
+d77f16c3c and its earlier frozen prerequisites. Fourteen fresh modules, all
+49 native declarations, 63 distinct external reuses, and 55 model declarations
+from three concrete families pass. The source adds 43 native declarations
+(36 public, seven private), with +2081/-0 Lean lines including thirteen root
+imports. The actual saddle-level immersion and flow transversality produce an
+open smooth inverse about the whole original closed strip and its two end
+overlaps. A supplied cubic chart admits relative cancellation; constructing
+the general endpoint-neighborhood gluing and supported elimination for the
+original Morse pair remains the active S round. Compact PL smoothing remains
+an independent unfinished headline.
+
+The frozen independent-acceptance queue is now F 71b0b003e, M304 through
+96ba235a4 including 7a1632779, h e85a235df and E3 c10b83586. Author delivery is
+not independent acceptance. h's completed round now preserves the original
+carrier and transports newly chosen canonical neighborhoods through compatible
+subdivisions; the next round must produce their actual solid-torus type.
+E3's physical cap construction now yields SurfaceSplitAndCap; separation of
+the original H/Q by this same result is the next gate toward Moise303.
+M304's actual boundary kernel is delivered for simply connected original K;
+general original-inclusion kernel transfer remains the active next step.
+Corrected Moise252 is still explicit unresolved upstream, and no embedded
+essential disk or Moise264/Moise304 endpoint is claimed. F continues the same
+actual perturbation's Lipschitz control in its canonical half-space files.
+
+Five existing tasks retain one lane each. F/S/M304 use Astra max and h/E3 use
+Sol max. Handoffs to the newly completed h and E3 rounds have been sent;
+ongoing F/S/M304 rounds receive no routine status requests. The prompt and
+resumed-stage ledger govern hourly follow-up without a new owner deadline.
+Compilation remains limited to two private checkers, one per lane, and at most
+one root worker and three Lean processes. The whole-root gate remains deferred;
+its next run requires an actual compatibility or stalled-work reason, not an
+elapsed-time trigger. Static root coverage is 9642 modules including the root.
+
+
+### Flat-sheet relative perturbation accepted; actual interior-disk gate
+
+Integration section 78 accepts frozen F 71b0b003e: one actual projected-disk
+perturbation theorem and five geometric helpers. One sheet moves and the other
+physical sheet remains fixed; a quantitative PL correction proves their
+boundary and interior crossings. Actual source patches, disk domain, target C,
+boundary preimage and small boundary homotopy are preserved. The theorem still
+assumes simultaneous flat coordinates, local injectivity, at-most-two fibers
+and a boundary-tangent displacement on J. Its explicit nonempty half-plane
+model checks the geometric core, not a complete NormalSystem. Full transition
+coverage, actual inner-perturbation matching and global relative normalization
+remain F's active round in the canonical half-space files.
+
+Six native declarations, seven key reuses, six mathematical fixture declarations
+and one audit-only macro pass the full axiom/lint check. Accepted Lean is
++590/-0 including one root import. Root static coverage is 9643 modules;
+the whole-root compilation gate remains deferred.
+
+M304's new 41220900e general ambient-inclusion kernel layer is frozen with
+7a/96 and still awaits independent acceptance. Its primary has removed ambient
+simple connectivity; the full original-K producer still assumes connected K/L
+and real ambient dimension three. The next round has been dispatched at its
+completed delivery: use the actual boundary kernel and the explicitly unresolved
+Moise252 to construct an essential embedded disk in the original K interior,
+prove old-boundary avoidance and essentiality transport to L, and supply the
+actual original-shell compression step. This does not prove Moise252 or the
+full arbitrary-ambient/disconnected/nonseparating Moise264 contract. Do not
+repeat accepted compression-component, target-separation or Betti arithmetic.
+
+Current frozen independent queues are M304 through 41220900e, h e85a235df and
+E3 c10b83586. S through c0 and F through71 are accepted. Existing active lanes
+continue unchanged; deferred acceptance messages wait for their next completed
+delivery. The task cadence remains hourly, without a new deadline or automatic
+root rebuild, and existing two-private-checker resource limits remain in force.
+
+
+### Actual end-straightening handoff, pending independent acceptance
+
+S5b7117893 is frozen after F's accepted flat-sheet checkpoint. It supplies
+actual disjoint supported level-preserving end adjustments and positive-width
+open matching collars for the same original strip and complete Morse charts.
+It does not yet supply a globally injective common cancellation domain or
+complete cancellation. The next S round aligns the actual affine gauges and
+proves global chart/source/image and overlap identities, then proceeds to
+relative cubic coordinates or direct supported elimination in the same frame.
+Its end isotopies do not claim to preserve the original field or every orbit
+point. See integration section79 for frozen evidence and the completed-boundary
+handoff. The current independent queue is M304 through412, h e85, E3 c10 and
+S5b; earlier F71 and S throughc0 are accepted. All five lanes retain their
+existing models, scopes and resource policy.
+
+### Essential disk delivered; compatible compression ball is the next producer
+
+M30406af1e40d is frozen after412, pending independent acceptance of the full
+7a/96/412/06 chain. It produces the actual original K/L essential embedded
+disk with explicit Moise252, exact boundary trace and old-boundary avoidance,
+and retains the original shell in its annulus/compression consumer. The author
+Lean delta is +230/-6; no independent mathematical acceptance is added yet.
+The next dispatched round constructs the actual three-dimensional compression
+ball, wall and caps around that same disk, choosing the annulus compatibly
+and proving the exact trace equations before consuming existing separation
+and strict Betti descent. See integration section80 for frozen identities and
+scope. Other active lanes continue without mid-round messages.

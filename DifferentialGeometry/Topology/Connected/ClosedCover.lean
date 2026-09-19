@@ -107,4 +107,50 @@ theorem connectedComponentIn_union_inter_eq
   · exact fun y hy => ⟨connectedComponentIn_mono x subset_union_left hy,
       connectedComponentIn_subset A x hy⟩
 
+theorem closure_connectedComponentIn_sdiff_inter_eq_or_eq
+    {X : Type*} [TopologicalSpace X] {A B : Set X} {x : X}
+    (hA : IsClosed A) (hB : IsClosed B)
+    (hconnA : IsPreconnected (A \ B)) (hconnB : IsPreconnected (B \ A))
+    (hclA : closure (A \ B) = A) (hclB : closure (B \ A) = B)
+    (hx : x ∈ (A ∪ B) \ (A ∩ B)) :
+    closure (connectedComponentIn ((A ∪ B) \ (A ∩ B)) x) = A ∨
+      closure (connectedComponentIn ((A ∪ B) \ (A ∩ B)) x) = B := by
+  rcases hx.1 with hxA | hxB
+  · exact Or.inl ((congrArg closure (connectedComponentIn_sdiff_inter_eq_sdiff hA hB
+      hconnA ⟨hxA, fun h => hx.2 ⟨hxA, h⟩⟩)).trans hclA)
+  · right
+    rw [union_comm A B, inter_comm A B]
+    exact (congrArg closure (connectedComponentIn_sdiff_inter_eq_sdiff hB hA
+      hconnB ⟨hxB, fun h => hx.2 ⟨h, hxB⟩⟩)).trans hclB
+
+theorem interior_eq_compl_of_closure_sdiff_eq
+    {X : Type*} [TopologicalSpace X] {A B : Set X}
+    (hcover : A ∪ B = univ) (hB : closure (B \ A) = B) : interior A = Bᶜ := by
+  have hcomp : Aᶜ = B \ A := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨(hcover.symm ▸ mem_univ x : x ∈ A ∪ B).resolve_left hx, hx⟩
+    · exact fun hx => hx.2
+  rw [interior_eq_compl_closure_compl, hcomp, hB]
+
+theorem closure_interior_eq_of_closure_sdiff_eq
+    {X : Type*} [TopologicalSpace X] {A B : Set X}
+    (hcover : A ∪ B = univ) (hA : closure (A \ B) = A)
+    (hB : closure (B \ A) = B) : closure (interior A) = A := by
+  have hcomp : Bᶜ = A \ B := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨(hcover.symm ▸ mem_univ x : x ∈ A ∪ B).resolve_right hx, hx⟩
+    · exact fun hx => hx.2
+  rw [interior_eq_compl_of_closure_sdiff_eq hcover hB, hcomp, hA]
+
+theorem frontier_eq_inter_of_closure_sdiff_eq
+    {X : Type*} [TopologicalSpace X] {A B : Set X}
+    (hcover : A ∪ B = univ) (hA : closure (A \ B) = A)
+    (hB : closure (B \ A) = B) : frontier A = A ∩ B := by
+  have hclosed : IsClosed A := hA ▸ isClosed_closure
+  rw [hclosed.frontier_eq, interior_eq_compl_of_closure_sdiff_eq hcover hB, sdiff_compl]
+
 end DifferentialGeometry.Topology
