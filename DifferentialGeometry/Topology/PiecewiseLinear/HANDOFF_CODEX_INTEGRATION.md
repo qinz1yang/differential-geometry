@@ -757,3 +757,47 @@ are pending independent integration acceptance; the earlier hold is not silently
 counted as cleared. h has now begun its next round explicitly on Sol max,
 constructing a neighborhood of the full interior arc including endpoint caps.
 E3 is also on Sol max; F and S remain Astra max. No active task was interrupted.
+
+## 20. Seventh delivery: nonvacuous interior trimmed arc (2026-09-19)
+
+The repaired final source through h's `76d6c6162` was merged at
+`982dd6062c3fc8e637a6015f6173122657d3d37a` and independently accepted.
+Seven leaves add 781 and remove one source line; four flat-root imports bring
+the Lean diff to +785/-1. The earlier closed finite three-manifold hypotheses
+in three-dimensional Euclidean space were not a usable nonempty application.
+The repaired primary theorems use a finite manifold with boundary and require
+only the retained arc-chain faces to be interior. Their local link spheres,
+marked cone extensions and finite gluing are actually constructed.
+
+The resulting theorem is
+`IsCombinatorialManifoldWithBoundary.isPLBallPair_trimmedArcCellUnion_of_interior`.
+It concerns the union after omitting the two endpoint vertex cells. The concrete
+one-edge example is an actual barycentric subdivision of an affine tetrahedral
+ball. The coordinator additionally applied the final theorem to that example
+in an external Lean proof, obtaining a nonempty instance of the advertised
+trimmed ball pair. This does not prove simultaneous normalization of the entire
+arc including its endpoints, or a chart preserving two branch sheets.
+
+All seven changed modules compiled with exit 0 and zero diagnostics. A silent
+audit checked all 44 nonautomatic project declarations and the actual example
+application (45 total), their transitive standard-axiom closures, and all 13
+applicable environment linters. Strict syntax, header and long-line checks
+passed. Five unchanged private prerequisites were reused after exact source
+and object checks; other imported objects remain shared. Evidence, committed
+blob identities and source hashes are retained in
+`.lake/verified-seventh-lane-delivery-20260919.json` and the external directory
+`C:/Users/liao9/AppData/Local/Temp/codex-integration-seventh-batch-20260919`.
+The external proof has been removed after preserving its audit receipt and census.
+The independent full-source root build continues on this Lean source checkpoint;
+root success is not claimed.
+
+At the next E3 delivery boundary, `b195204ed` was received for chart-conjugated
+supported homotopies; independent integration acceptance is pending. Its next
+step exposed the absent compatible chart along the whole branch. The pointwise
+chart cover does not provide ordered normal transition equations, and
+`exists_chart_branch_chain` assumes an already compatible global map. This
+producer gap is queued for F's next delivery, without interrupting its current
+normal-form work. E3 now owns Moise 30.4 assembly on Sol max, first the genuine
+30.3 geometric splitting/separation step. Original T owned 30.5's conditional
+tame arrow, not 30.4. F/h/S keep their current lanes. h's subsequent full-arc
+containment checkpoint `0a0876425` is received but not yet independently accepted.

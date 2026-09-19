@@ -1037,3 +1037,16 @@ The existing nullhomotopic-polygon orientation declarations in
 DerivedNeighborhoodPolygon must be checked against current source and axiom
 closure before deciding whether 24.12 needs new orientation machinery.
 See integration handoff section 19 for evidence and the next S round.
+
+## Integration acceptance and ownership update (2026-09-19)
+
+The interior trimmed-arc ball-pair producer through `76d6c6162` is accepted:
+seven independently compiled modules, 44 project declarations plus an actual
+nonempty one-edge application, standard axioms only and 13 clean linters.
+This removes the earlier nonvacuity hold for the repaired final source, not for
+the historical closed-manifold formulation. Whole-arc simultaneous normalization
+and the compatible two-sheet branch chart remain open.
+
+E3 owns 30.4 from the delivery of `b195204ed`, beginning with the actual 30.3
+splitting/separation construction. The 26.4 and 28.19 prerequisites remain open.
+The previous T delivery proves only `Moise304 -> Moise305Tame`.
