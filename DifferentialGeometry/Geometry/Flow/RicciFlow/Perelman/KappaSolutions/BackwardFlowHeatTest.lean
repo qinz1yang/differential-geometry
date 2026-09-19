@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import Mathlib.Topology.Order.ProjIcc
 import DifferentialGeometry.Topology.LocallyUniformConvergence
 import DifferentialGeometry.Analysis.Viscosity.Stability
+import DifferentialGeometry.Analysis.Viscosity.ColeHopf
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthContinuity
 import DifferentialGeometry.Geometry.Operator.Laplacian.Coordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHeatTestPullback
@@ -16,6 +18,7 @@ open Filter Set
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
+open DifferentialGeometry.PDE.RicciFlow.Entropy
 open scoped _root_.Manifold ContDiff BigOperators _root_.Topology
 universe u uE uH
 
@@ -500,6 +503,153 @@ theorem backward_flow_reducedLength_limit_conjugate_heat_lower_test_in_chart
         metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2) +
         (Module.finrank ℝ E : ℝ) / (2 * z.1) := by
   apply conjugate_heat_lower_test_of_rescaled_reducedLength_limit_in_chart
+    F hF p (fun n => tau (subseq n)) (fun n => htau (subseq n)) L Phi.partialDiffeomorph
+    R G _ hmetric hT ell hell a hz phi hphi
+  intro K hK
+  filter_upwards [hG K hK] with n hn
+  obtain ⟨U, hU, hKU, hsource, hinner⟩ := hn
+  refine ⟨U, hU, hKU, hsource, ?_⟩
+  intro t x hx v w
+  let e : PartialDiffeomorph I I L.M F.M ∞ := Phi.partialDiffeomorph n
+  have hh := hinner t x hx v w
+  rw [backwardFlowSequence_metric] at hh
+  change (G n t).inner x v w =
+    (scaleMetric (tau (subseq n))⁻¹ (inv_pos.mpr (htau (subseq n)))
+      (F.S.base.metric (tau (subseq n) * (t - 1)))).inner (e x)
+        (mfderiv I I e x v) (mfderiv I I e x w) at hh
+  rw [scaleMetric_inner] at hh
+  exact hh
+
+
+theorem perelmanDensity_upper_test_of_rescaled_reducedLength_limit_in_chart
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (c : ℕ → ℝ) (hc : ∀ n, 0 < c n)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    (Phi : ℕ → PartialDiffeomorph I I L.M F.M ∞)
+    (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M)
+    (hG : ∀ K : Set L.M, IsCompact K → ∀ᶠ n in atTop,
+      ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ (Phi n).source ∧
+        ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+          (G n t).inner x v w = (c n)⁻¹ * (F.S.base.metric (c n * (t - 1))).inner (Phi n x)
+            (mfderiv I I (Phi n) x v) (mfderiv I I (Phi n) x w))
+    (hmetric : ∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc a b,
+        metricDerivNormSupOn K r (G n t) (L.S.base.metric t) R < epsilon)
+    {T : ℝ} (hT : 1 < T) (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hell : ∀ Q : Set (L.M × Icc (1 : ℝ) T), IsCompact Q → TendstoUniformlyOn
+      (fun n w => redLength F.S 0 p (Phi n w.1) (c n * w.2)) ell atTop Q)
+    (a : L.M) {z : ℝ × E} (hz : z ∈ Ioo 1 T ×ˢ (extChartAt I a).target)
+    (phi : ℝ × E → ℝ) (hphi : ContDiffAt ℝ 2 phi z) :
+    let u := fun w : ℝ × E => perelmanDensity (Module.finrank ℝ E) w.1
+      (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I a).symm w.2)
+    IsLocalMax (fun w => u w - phi w) z →
+      fderiv ℝ phi z (1, 0) -
+        (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          chartInvGramOnE (I := I) (L.S.base.metric (1 - z.1)) a i j z.2 *
+            (fderiv ℝ (fderiv ℝ phi) z (0, chartModelBasis E i) (0, chartModelBasis E j) -
+              ∑ k : Fin (Module.finrank ℝ E),
+                chartChristoffel (I := I) (L.S.base.metric (1 - z.1)) a i j k z.2 *
+                  fderiv ℝ phi z (0, chartModelBasis E k))) +
+        metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2) * u z ≤ 0 := by
+  let n := Module.finrank ℝ E
+  let f := fun w : ℝ × E => ell ((extChartAt I a).symm w.2, projIcc 1 T hT.le w.1)
+  let u := fun w : ℝ × E => perelmanDensity n w.1
+    (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I a).symm w.2)
+  let q : ℝ → ℝ := fun t => (n : ℝ) / 2 * Real.log (4 * Real.pi * t)
+  let A := fun i j => chartInvGramOnE (I := I) (L.S.base.metric (1 - z.1)) a i j z.2
+  let B := fun i j k => chartChristoffel (I := I) (L.S.base.metric (1 - z.1)) a i j k z.2
+  let d : E := ∑ i : Fin n, ∑ j : Fin n, ∑ k : Fin n, (A i j * B i j k) • chartModelBasis E k
+  have htime : 0 < z.1 := zero_lt_one.trans hz.1.1
+  have hbase : 0 < 4 * Real.pi * z.1 := mul_pos (mul_pos (by norm_num) Real.pi_pos) htime
+  have hq : ContDiffAt ℝ 2 q z.1 :=
+    contDiffAt_const.mul ((contDiffAt_const.mul contDiffAt_id).log hbase.ne')
+  have hqderiv : deriv q z.1 = (n : ℝ) / (2 * z.1) := by
+    have hh := (((hasDerivAt_id z.1).const_mul (4 * Real.pi)).log hbase.ne').const_mul ((n : ℝ) / 2)
+    have heq := hh.deriv
+    change deriv q z.1 = _ at heq
+    rw [heq]
+    simp only [id_eq]
+    field_simp
+  have hu (w : ℝ × E) (ht : 0 < w.1) : Real.exp (-(f w + q w.1)) = u w := by
+    have hb : 0 < 4 * Real.pi * w.1 := mul_pos (mul_pos (by norm_num) Real.pi_pos) ht
+    dsimp only [u, perelmanDensity, perelmanDensityPrefactor, f, q]
+    rw [Real.rpow_eq_pow, Real.rpow_def_of_pos hb, ← Real.exp_add]
+    congr 1
+    ring
+  have hD (P : (ℝ × E) →L[ℝ] ℝ) : P (1, d) = P (1, 0) +
+      ∑ i : Fin n, ∑ j : Fin n, A i j * ∑ k : Fin n, B i j k * P (0, chartModelBasis E k) := by
+    have heq : ((1 : ℝ), d) = (1, (0 : E)) + (0, d) := by ext <;> simp
+    rw [heq, map_add]
+    change P (1, 0) + P ((ContinuousLinearMap.inr ℝ ℝ E) d) = _
+    simp only [d, map_sum, map_smul, smul_eq_mul, ContinuousLinearMap.inr_apply, Finset.mul_sum, mul_assoc]
+  have hop (P : (ℝ × E) →L[ℝ] ℝ) (C : (ℝ × E) →L[ℝ] (ℝ × E) →L[ℝ] ℝ) :
+      P (1, d) - (∑ i : Fin n, ∑ j : Fin n, A i j * C (0, chartModelBasis E i) (0, chartModelBasis E j)) =
+        P (1, 0) - ∑ i : Fin n, ∑ j : Fin n, A i j *
+          (C (0, chartModelBasis E i) (0, chartModelBasis E j) -
+            ∑ k : Fin n, B i j k * P (0, chartModelBasis E k)) := by
+    rw [hD]
+    simp only [mul_sub, Finset.sum_sub_distrib]
+    ring
+  have hquad (P : (ℝ × E) →L[ℝ] ℝ) :
+      (∑ i : Fin n, ∑ j : Fin n, A i j * P (0, chartModelBasis E i) * P (0, chartModelBasis E j)) =
+        ∑ i : Fin n, ∑ j : Fin n, A i j * P (0, chartModelBasis E j) * P (0, chartModelBasis E i) := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    apply Finset.sum_congr rfl
+    intro j hj
+    ring
+  dsimp only
+  intro hmax
+  have hmax' : IsLocalMax (fun w => Real.exp (-(f w + q w.1)) - phi w) z := by
+    have hn : ∀ᶠ w : ℝ × E in 𝓝 z, 0 < w.1 :=
+      continuous_fst.continuousAt.eventually (lt_mem_nhds htime)
+    filter_upwards [hmax, hn] with w hw ht
+    rw [hu z htime, hu w ht]
+    exact hw
+  have hh := DifferentialGeometry.Analysis.Viscosity.cole_hopf_upper_test_add_time
+    f z d (chartModelBasis E) A (-metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2))
+    q hq (fun psi hpsi hmin => ?_) phi hphi hmax'
+  · rw [hop, hu z htime] at hh
+    simpa only [A, B, u, n, neg_mul, sub_eq_add_neg, neg_neg] using hh
+  · have h := conjugate_heat_lower_test_of_rescaled_reducedLength_limit_in_chart
+      F hF p c hc L Phi R G hG hmetric hT ell hell a hz psi hpsi hmin
+    rw [hop, hquad, hqderiv]
+    exact h
+
+theorem backward_flow_limit_perelmanDensity_upper_test_in_chart
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M)
+    (hG : ∀ K : Set L.M, IsCompact K → ∀ᶠ n in atTop,
+      ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source n ∧
+        ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+          (G n t).inner x v w = (((backwardFlowSequence F tau htau q).term (subseq n)).S.base.metric t).inner
+            (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x w))
+    (hmetric : ∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc a b,
+        metricDerivNormSupOn K r (G n t) (L.S.base.metric t) R < epsilon)
+    {T : ℝ} (hT : 1 < T) (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hell : ∀ Q : Set (L.M × Icc (1 : ℝ) T), IsCompact Q → TendstoUniformlyOn
+      (fun n w => redLength F.S 0 p (Phi.map n w.1) (tau (subseq n) * w.2)) ell atTop Q)
+    (a : L.M) {z : ℝ × E} (hz : z ∈ Ioo 1 T ×ˢ (extChartAt I a).target)
+    (phi : ℝ × E → ℝ) (hphi : ContDiffAt ℝ 2 phi z) :
+    let u := fun w : ℝ × E => perelmanDensity (Module.finrank ℝ E) w.1
+      (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I a).symm w.2)
+    IsLocalMax (fun w => u w - phi w) z →
+      fderiv ℝ phi z (1, 0) -
+        (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          chartInvGramOnE (I := I) (L.S.base.metric (1 - z.1)) a i j z.2 *
+            (fderiv ℝ (fderiv ℝ phi) z (0, chartModelBasis E i) (0, chartModelBasis E j) -
+              ∑ k : Fin (Module.finrank ℝ E),
+                chartChristoffel (I := I) (L.S.base.metric (1 - z.1)) a i j k z.2 *
+                  fderiv ℝ phi z (0, chartModelBasis E k))) +
+        metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2) * u z ≤ 0 := by
+  apply perelmanDensity_upper_test_of_rescaled_reducedLength_limit_in_chart
     F hF p (fun n => tau (subseq n)) (fun n => htau (subseq n)) L Phi.partialDiffeomorph
     R G _ hmetric hT ell hell a hz phi hphi
   intro K hK
