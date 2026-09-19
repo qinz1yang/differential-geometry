@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SmoothRegularLoopFamily
 noncomputable section
 open Bundle Manifold Set MeasureTheory Filter
@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [hBoundary : I.Boundaryless] [hT2 : T2Space M] [hCompact : CompactSpace M]
-  [hNonempty : Nonempty M] [SigmaCompactSpace M]
+  [hNonempty : Nonempty M]
   {D : RealTimeInterval} {a b : ℝ}
 
 theorem rfs_csf_immersed_area_of_embedded_area_of_generic_curves

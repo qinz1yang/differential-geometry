@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Comparison
 
 noncomputable section

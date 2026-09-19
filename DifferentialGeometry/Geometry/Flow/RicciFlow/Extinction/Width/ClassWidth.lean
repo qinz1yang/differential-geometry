@@ -1,3 +1,4 @@
+import Mathlib.Topology.Sequences
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
 import Mathlib.Topology.Order.Compact
@@ -430,6 +431,7 @@ theorem regularLeastArea_relative_metric_bound (g h : SmoothRiemannianMetric I Q
   rw [Real.sq_sqrt hminus.le, Real.sq_sqrt hplus] at harea
   exact abs_le.mpr ⟨by nlinarith [harea.1], by nlinarith [harea.2]⟩
 
+omit connectedQ in
 theorem tendsto_regularLeastArea_of_uniform_metric
     (g : SmoothRiemannianMetric I Q) (gseq : ℕ → SmoothRiemannianMetric I Q)
     (hg : ∀ ε : ℝ, 0 < ε → ∀ᶠ j in Filter.atTop,
@@ -440,6 +442,7 @@ theorem tendsto_regularLeastArea_of_uniform_metric
     (hγ : Filter.Tendsto γseq Filter.atTop (𝓝 γ)) :
     Filter.Tendsto (fun j => regularLeastArea (gseq j) (γseq j)) Filter.atTop
       (𝓝 (regularLeastArea g γ)) := by
+  let _ : Nonempty Q := ⟨γ.1.toContinuousLoop 0⟩
   have hbase := (continuous_regularLeastArea g).continuousAt.tendsto.comp hγ
   apply Metric.tendsto_nhds.mpr
   intro ε hε
@@ -535,3 +538,84 @@ theorem continuousOn_regularLeastArea_family [Nonempty Q]
     _ < ε := hδbound
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+noncomputable section
+
+open Bundle Manifold Set Filter
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+open Surgery.Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [I.Boundaryless] [T2Space M] [CompactSpace M]
+
+theorem uniform_regularLeastArea_of_uniform_embeddingFirstJet
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hg : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn D g)
+    {a b : ℝ} (hreg : Icc a b ⊆ D.carrier) {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := M) N)
+    (Γ : ℝ → ContractibleRegularLoop (I := I) (Q := M))
+    (Γseq : ℕ → ℝ → ContractibleRegularLoop (I := I) (Q := M))
+    (hΓ : ContinuousOn Γ (Icc a b))
+    (hjets : ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
+      dist (embeddingFirstJet e (Γseq j t).1) (embeddingFirstJet e (Γ t).1) < ε) :
+    ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
+      |regularLeastArea (g t) (Γseq j t) - regularLeastArea (g t) (Γ t)| < ε := by
+  classical
+  let _ : Nonempty M := ⟨(Γ a).1.toContinuousLoop 0⟩
+  by_contra h
+  push Not at h
+  obtain ⟨ε, hε, hbad⟩ := h
+  choose k hk t ht hlarge using hbad
+  obtain ⟨t₀, ht₀, φ, hφ, hlim⟩ := isCompact_Icc.tendsto_subseq ht
+  have hkφ : Tendsto (fun n => k (φ n)) atTop atTop :=
+    tendsto_atTop_mono (fun n => hk (φ n)) hφ.tendsto_atTop
+  have htime : Tendsto (fun n => t (φ n)) atTop (𝓝 t₀) := hlim
+  have hbase : Tendsto (fun n => Γ (t (φ n))) atTop (𝓝 (Γ t₀)) :=
+    (hΓ t₀ ht₀).tendsto.comp
+      (tendsto_nhdsWithin_iff.mpr ⟨htime, Eventually.of_forall fun n => ht (φ n)⟩)
+  have hjetbase : Tendsto (fun n => embeddingFirstJet e (Γ (t (φ n))).1) atTop
+      (𝓝 (embeddingFirstJet e (Γ t₀).1)) :=
+    ((continuous_embeddingFirstJet e).comp continuous_subtype_val).continuousAt.tendsto.comp hbase
+  have hdist : Tendsto (fun n => dist (embeddingFirstJet e (Γ (t (φ n))).1)
+      (embeddingFirstJet e (Γseq (k (φ n)) (t (φ n))).1)) atTop (𝓝 0) := by
+    apply Metric.tendsto_nhds.mpr
+    intro η hη
+    obtain ⟨j₀, hj₀⟩ := hjets η hη
+    filter_upwards [hkφ.eventually_ge_atTop j₀] with n hn
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg dist_nonneg, dist_comm]
+    exact hj₀ _ hn _ (ht (φ n))
+  have hind : Topology.IsInducing (embeddingFirstJet e) :=
+    ⟨regularLoop_topology_eq_embedding e⟩
+  have happrox : Tendsto (fun n => Γseq (k (φ n)) (t (φ n))) atTop (𝓝 (Γ t₀)) := by
+    apply tendsto_subtype_rng.mpr
+    exact hind.tendsto_nhds_iff.mpr (hjetbase.congr_dist hdist)
+  have htimeD : Tendsto (fun n => (⟨t (φ n), hreg (ht (φ n))⟩ : D.carrier)) atTop
+      (𝓝 (⟨t₀, hreg ht₀⟩ : D.carrier)) := tendsto_subtype_rng.mpr htime
+  have hmetric : ∀ η : ℝ, 0 < η → ∀ᶠ n in atTop,
+      ∀ q (v : TangentSpace I q),
+        |(g (t (φ n))).inner q v v - (g t₀).inner q v v| ≤ η * (g t₀).inner q v v := by
+    intro η hη
+    exact htimeD.eventually (eventually_uniform_relative_metric_bound D g hg
+      ⟨t₀, hreg ht₀⟩ hη)
+  have ha := tendsto_regularLeastArea_of_uniform_metric (g t₀) (fun n => g (t (φ n)))
+    hmetric (Γ t₀) _ happrox
+  have hb := tendsto_regularLeastArea_of_uniform_metric (g t₀) (fun n => g (t (φ n)))
+    hmetric (Γ t₀) _ hbase
+  have hd := (ha.sub hb).abs
+  simp only [sub_self, abs_zero] at hd
+  have hsmall := hd.eventually_lt_const hε
+  obtain ⟨n, hn⟩ := hsmall.exists
+  exact (not_lt_of_ge (hlarge (φ n))) hn
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end

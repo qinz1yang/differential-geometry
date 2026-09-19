@@ -11465,6 +11465,11 @@ import DifferentialGeometry.Topology.LoopSpace.FamilyDerivatives
 import DifferentialGeometry.Topology.LoopSpace.TransversePerturbation
 import DifferentialGeometry.Geometry.Metric.Family.OpenSubtypeCoefficients
 import DifferentialGeometry.Geometry.Curve.NormalVelocityErrorDensity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Naturality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Convergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LeastAreaConvergence
 import DifferentialGeometry.Topology.LoopSpace.ContractibleNearby
 import DifferentialGeometry.Topology.LoopSpace.ImmersionStability
 import DifferentialGeometry.Topology.LoopSpace.GenericApproximation

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Basic
 
 noncomputable section
 open Bundle Manifold Set Filter
@@ -162,7 +162,7 @@ theorem exists_continuousOn_contractibleRegularLoop_family_of_smoothOn {a b : �
     rfl
 
 theorem continuousOn_loopFamilyLeastArea_of_smoothOn
-    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
     {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
