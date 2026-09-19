@@ -86,9 +86,13 @@ first checked layer constructs finite connected orientable two-sided
 polyhedral surfaces separating arbitrary disjoint compact/closed connected
 sets, with arbitrary neighborhood control. Five new declarations, ten
 critical reuse entries, one nonempty geometric model and 13 applicable
-environment linters pass; only standard axioms occur. The shell-interior
-specialization and compression argument are not yet claimed. Exact evidence
-and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
+environment linters pass; only standard axioms occur. A second checked layer
+constructs the radial annulus homeomorphism, proves the exact shell frontier
+and simple connectivity of its interior, and constructs the initial
+separating surface inside that interior. Its 24 declarations, ten reused
+entries, three geometric models and 13 applicable linters pass. Compression
+and the PL-sphere endpoint remain open. Exact evidence and the source route
+are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
 
 1. Accept corrected contracts and a real cover/projection construction; complete

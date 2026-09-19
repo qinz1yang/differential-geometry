@@ -56,8 +56,12 @@ a compact connected set and a disjoint closed connected set, inside any
 specified neighborhood of the former. `SeparatingSurface.lean` and
 `Connected/SeparatorLocation.lean` pass focused checks, all-declaration
 axiom audit, a nonempty concentric-ball model and 13 environment linters.
-E3 retains 30.3. Locating the constructed surface inside a spherical shell,
-26.4 compression, 28.19 and the full 30.4 remain distinct obligations.
+The next checked layer constructs radial annulus coordinates, identifies
+the shell frontier and simply connected interior, and locates the actual
+initial separating surface inside that interior. Its 24 declarations, ten
+reused entries and three radial-shell models pass the same axiom and linter
+gates. E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
+strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 
 Phase 3 的唯一终点是一条定理：

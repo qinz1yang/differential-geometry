@@ -59,7 +59,50 @@ Both leaves are registered in the flat root. The owner-stopped full-root
 build was not restarted; independent integration/root acceptance remains
 separate from these focused checks.
 
-Next: construct the radial closed-annulus model and transport its interior
-and frontier through the actual spherical-shell homeomorphism. This will
-specialize the constructed separator to a surface inside interior X.
-Compression geometry and strict Betti descent remain later obligations.
+The first dependency-closed checkpoint is
+f0f7bd699f9c0313c74af2f716b4778acf9ebdd1, pushed on codex/moise-304.
+
+## Spherical-shell geometry (2026-09-19 UTC)
+
+`ClosedBall/AnnulusHomeomorph.lean` constructs the radial homeomorphism
+between the unit sphere times a closed positive radial interval and the
+closed norm band. Its inverse laws reuse `homeomorphUnitSphereProd`.
+It proves the norm band's compactness and exact interior.
+`ClosedBall/AnnulusImage.lean` uses invariance of domain to identify the
+interior and frontier of every embedded spherical cylinder, and constructs
+the actual homeomorphism from the open cylinder onto that interior.
+
+`SphericalShell.lean` now derives compactness, connectedness and disjointness
+of the shell and its two boundary spheres, the exact frontier formula,
+and simple connectivity of its interior. The interior proof transports
+the open-cylinder homeomorphism and the proved contraction of the interval
+factor. It also constructs the standard concentric norm-band shell.
+`IsSphericalShell.exists_connected_separating_surface` takes only an actual
+spherical shell and produces a finite, connected, orientable, two-sided
+closed combinatorial surface inside its interior separating the boundary
+spheres. This is an initial separating surface, not a PL sphere or 30.4.
+
+All three new modules compile with zero diagnostics. Successful final
+module checks took 14.691, 22.348 and 17.091 seconds respectively, including
+admission. The final silent audit took 45.555 seconds including admission.
+All 24 nonautomatic declarations, ten reused entries and three concrete
+radial-shell models have only the usual foundational axioms; all 13
+applicable environment linters pass. The models check an actual interior
+separator, simple connectivity of the open norm band, and its frontier.
+All leaves are registered in the flat root. Evidence is frozen outside
+the project in `moise304-reading/spherical-shell-checkpoint/`, including
+source snapshots, the census, receipts, private object hashes and exact
+source hashes. No root build or shared artifact write was performed.
+
+The disconnected compression paragraph on printed page 216 has an overly
+strong strict inequality: choosing a torus after compressing a genus-two
+surface gives Betti numbers 2 and 4, so 2 is not strictly less than 4 - 2.
+The needed descent is strictly below the original Betti number; a weak
+bound by the original number minus two suffices in this case. The formal
+descent must use the valid inequality rather than repeat that printed one.
+
+Next: capture an actual nullhomotopy in a finite polyhedral neighborhood
+inside the shell interior to provide the ambient input to 26.4. The
+compressing-disk theorem 26.4, annular-neighborhood construction 28.19,
+E3's actual 30.3 splitting geometry and strict Betti descent remain distinct
+obligations before the PL-sphere endpoint can be claimed.
