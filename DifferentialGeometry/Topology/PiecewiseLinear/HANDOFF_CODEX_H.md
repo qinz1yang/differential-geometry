@@ -4683,3 +4683,44 @@ nonidentity increment inside that torus and package its source and target at
 every stage.  It still does not supply the two graph-dual-cell boundary
 surfaces, their exact annular traces, the common compatible subdivision, or
 Moise 35.1 Conditions (3)--(8).
+
+## 98. 2026-09-19 infinite solid-torus-supported modifications — done
+
+`LocallyFiniteSolidTorusModification.lean` couples the localized standard
+solid torus to the actual shell modification.  A
+`SupportedSolidTorusPLHomeomorphSystem` carries, at every stage, a finite
+combinatorial standard solid torus with its equal-end cylindrical
+parametrization and a nonidentity PL self-homeomorphism whose compact support
+lies in the torus interior.  The entire torus lies in the corresponding open
+exhaustion shell.  Consequently the torus carriers are pairwise disjoint and
+locally finite, while the increment fixes all old cores and preserves all
+later cores.
+
+The support containment proves that the exact target carrier is the image of
+the source carrier and equals it setwise.  Thus every stage has an actual
+`IsParametrizedSolidTorusTransport`: the source and target are finite
+combinatorial 3-manifolds with boundary, both are standard topological solid
+tori, and both have equal-end standard-disk cylindrical diagrams.  The
+increment is still nonidentity inside that carrier; this is not an identity
+or eventually constant substitute.
+
+`exists_noncompact_infinite_solid_torus_supported_PL_modification_three`
+instantiates the construction in Euclidean 3-space using the genuine locally
+finite tower of finite combinatorial 3-manifolds.  It gives one nonzero move
+and one standard solid-torus transport in every shell, an injective infinite
+sequence of moved points, a PL limit moving every selected point, a protected
+nonempty polygonal segment fixed by every stage and the limit, and exact
+eventual stabilization on every compact set.
+
+The isolated private check had no diagnostics and left shared outputs
+unchanged.  The strict audit covered all twenty non-automatic declarations
+and eight critical reused declarations; every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.  The leaf is registered in the flat root
+aggregate; no full-root build was run under the standing owner instruction.
+
+This closes the infinite shellwise source/target standard-solid-torus layer.
+It does not yet produce one ambient source/target subdivision simultaneously
+compatible with the graph, the increment and both graph-dual-cell boundary
+surfaces.  In particular, the two exact annular surface traces and Moise 35.1
+Conditions (3)--(8) remain open.

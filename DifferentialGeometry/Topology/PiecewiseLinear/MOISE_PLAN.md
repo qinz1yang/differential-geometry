@@ -1730,3 +1730,28 @@ nonempty compact-exhaustion shell, but does not yet couple it to the supported
 nonidentity increment at that stage.  It also does not provide the two
 graph-dual-cell boundary surfaces, their exact annular traces, a common
 compatible subdivision, or Conditions (3)--(8).
+
+
+### Infinite shellwise standard-solid-torus transports delivered
+
+The H lane now chooses the nonidentity modification and a parametrized
+standard solid torus together at every stage of the compact exhaustion.  Each
+finite combinatorial solid torus lies wholly in its open shell, and the
+compact support of the stage homeomorphism lies in the torus interior.  The
+torus family is therefore pairwise disjoint and locally finite.  Every exact
+target carrier is the image of its source carrier and equals it setwise, so
+each stage has an `IsParametrizedSolidTorusTransport` with finite source and
+target complexes, standard topological type, and equal-end cylindrical
+parameters.  Each homeomorphism nevertheless moves a selected interior point.
+
+The Euclidean three-dimensional consumer has infinitely many distinct
+stages, one nonzero move and one solid-torus transport per shell, a PL limit
+moving an injective sequence of points, preservation of a nonempty compact
+polygonal segment, and exact eventual stabilization on compact subsets.  All
+twenty declarations and eight key reuses pass the standard-three-axiom audit
+and all thirteen linters.
+
+The remaining representation layer is an ambient source/target subdivision
+simultaneously compatible with the locally finite graph, the modifications
+and both graph-dual-cell boundary surfaces.  The two exact annular surface
+traces and Conditions (3)--(8) are therefore still open.
