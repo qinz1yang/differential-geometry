@@ -11418,3 +11418,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.BoundedDe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.DerivativeBounds
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciLower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.EndpointEquality
+import DifferentialGeometry.Analysis.Calculus.Periodic.CircleLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLiftInvariants
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductScalarRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampAngleComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampCurvatureBound
