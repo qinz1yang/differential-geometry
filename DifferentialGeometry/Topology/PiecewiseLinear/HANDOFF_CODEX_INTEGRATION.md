@@ -563,3 +563,197 @@ At this coordination checkpoint, b3bbb416c, 1da809615, c252597c7, and the later
 F delivery c315e29f5 await integration acceptance. Do not treat these as already
 merged. The root build still targets source head 0e7ba393d; this documentation
 checkpoint does not change Lean source or restart that build.
+
+## 16. 2026-09-19 E3 resumed on closed-fold endpoint separation
+
+The owner explicitly asked to end E3's wait. E3 now has an independent producer
+round: construct compactly supported PL wedge pushes that preserve each slab
+end face as a set while moving the two collision endpoints within those faces;
+prove disjoint images of the complete closed folds and the empty tagged double
+point set; then supply continuous boundary-preserving homotopies. The existing
+pointwise-fixed-endpoint API remains intact.
+
+This task addresses the explicit obstruction already proved in SlabWedgePush:
+fixed collision endpoints prevent disjoint closed-fold images. A candidate is
+to translate the closed slab by a positive padding into the interior of the
+larger slab, conjugate the existing two pushes, and translate back. It must be
+verified, including actual instances and its boundary-loop consumer conditions;
+it is not yet an accepted proof or a replacement for F's actual branch chart.
+Joint continuity of a time-dependent homotopy must not be mistaken for joint
+piecewise affinity. General-environment separation and the L2 endpoint remain
+open until their actual producers and consumers are verified.
+
+E3 continues in its existing Sol-high task and original worktree, owns only its
+SlabWedge development and handoff, and has round token E3-round-20260919 under
+the same resource-admission helper as the other lanes. There is no further wait
+for F before this round can proceed, and no per-lemma mathematical redispatch.
+
+## 17. Fourth delivery and nonvacuity correction (2026-09-19)
+
+The integration source checkpoint is `eed5083b55ae82a6f7d29a4fb6f0bb1cc7cc0a02`.
+Three merges accepted the following dependency-closed layers:
+
+| Task | Accepted branch tip | Integration merge | Result and remaining boundary |
+| --- | --- | --- | --- |
+| h | `ac97849d4` | `8a9dd84f4` | Marked cone/disk extension, its two relative-gluing consumers, exact trimmed arc-cell union interfaces, and the natural preceding-crossing bound. The normalized full union is not accepted; see the nonvacuity finding below. |
+| S | `0fe46b073` | `e419706af` | Cylinder comparison, an actual reflection-invariant arc, a Moebius embedding produced from a reversing circle mapping-torus diagram, and orientability transport along same-dimensional PL embeddings. The actual disk diagram's side inclusion into the three-manifold boundary remains a producer obligation. |
+| F | `85d0c909b` | `eed5083b5` | Fixed-source-sheet crossing germs and the formal obstruction to recovering the real boundary germ from arbitrary abstract boundary data. This is not an obstruction to the actual NormalSystem input with its genuine boundaryComplex. |
+
+The coordinator independently compiled all twelve changed leaf modules, including
+all direct source consumers outside the aggregate. The silent combined audit
+selected every nonautomatic declaration in those modules, including private ones:
+115 declarations, only the standard foundational axioms, and all 13 applicable
+default environment linters. Only docBlame and docBlameThm were excluded. Strict
+syntax checks, explicit header/long-line checks, and the final audit returned
+exit 0 with zero diagnostics. Source hygiene and git diff --check passed. Seven
+new leaves are directly registered in the flat root, and all twelve changed
+modules are reachable from it. The batch changes +1089/-16 Lean lines, including
+seven root import lines; this is a delivered diff, not an hourly writing count.
+
+Receipts, exact source hashes, committed blob identities, verified prerequisite
+reuse, and the full declaration census are retained under
+`C:/Users/liao9/AppData/Local/Temp/codex-integration-fourth-batch-20260919` and
+`.lake/verified-fourth-lane-delivery-20260919.json`. Seven private prerequisite
+objects were reused after current source and object checks; other imported
+project objects still come from the shared cache. The full-source root build
+was restarted once at this delivery boundary, preserving private outputs, on
+the source checkpoint above. It remains running with one worker. This local
+acceptance does not certify completion of the independent full-source gate.
+The handoff-only commit leaves the root build's Lean source unchanged.
+
+The coordinator withheld h's three later normalization commits `edf2e00c0`,
+`b78e98dd9`, and `122939e1b`. Their final theorem simultaneously requires a finite
+closed combinatorial three-manifold, ambient real dimension three, and a
+nonempty injective arc chain. Such a geometric instance cannot exist: a
+nonempty embedded three-manifold without boundary in real three-space is open,
+whereas the finite complex is compact. This is a mathematical statement review;
+no Lean theorem formalizing that contradiction is claimed here. An arithmetic
+n=1 index check does not supply an actual complex and chain satisfying the
+hypotheses. Thus the normalized trimmed-union endpoint is not counted complete.
+Earlier local ball-pair results without the ambient-dimension-three restriction
+remain useful for closed manifolds embedded in higher dimension.
+
+At h's delivery boundary, its next round was assigned to a genuine finite
+three-manifold with boundary, with spherical links for the retained interior
+chain faces and both endpoint vertex cells still omitted. It must first produce
+an actual nonempty n=1 instance, then repair the base, successor, and final
+normalization statements. Existing published history is retained. F advances
+real-carrier relative normal-form production; S advances the actual disk
+cylinder's boundary inclusion and monodromy identification; E3 independently
+advances closed-fold separation with tangential endpoint motion and continuous
+boundary-preserving homotopy. All four existing tasks remain assigned. No new
+subagents were created and no running lane was interrupted for this batch.
+
+## 18. Fifth delivery: actual double carriers and moving endpoints (2026-09-19)
+
+The source checkpoint is `0351480fd2f39cd3c9d1d4404973a7f1aa105912`.
+F's `74c919f9` and `a8e470266` were merged by `9956ac4fe`; E3's `8e366a560`,
+`ee701b2e2`, and `83558ae5a` were merged by `0351480fd`. All five new leaves are
+registered in the flat root. The delivered Lean diff adds 684 leaf-source lines
+and five root imports, with no deletions; it is not an hourly writing count.
+
+F's BoundaryDouble proves the actual second copy's frontier equals its genuine
+boundaryComplex image, and transports this equality to the precise frontier
+inside any open chart target and to the corresponding germ. DoubleCarrier
+binds the same D produced by the existing NormalSystem double constructor to
+that actual carrier and boundary, retains the original seven outputs, and
+proves an exact pointwise equality between its fibers and the original singular
+map's fibers. This closes the real frontier/germ obligation, not the missing
+normal-form or crossing producer. The original map's fibers are transported,
+not improved. F's inner-triangle collapse description is still an unformalized
+geometric construction; neither a complete Lean replacement NormalSystem nor
+an unconditional existence counterexample is certified by this delivery.
+
+E3's SlabWedgeEndpointPush translates the closed slab into a larger slab's
+interior and conjugates the already verified pushes. For positive padding,
+the complete closed folds have disjoint images, including their endpoints.
+Every first-coordinate fiber is preserved as a set, and the pushes have compact
+support. SlabWedgeEndpointDoublePoint proves the tagged model's double-point
+set is empty. SlabWedgeEndpointHomotopy constructs jointly continuous homotopies
+from identity to both pushes, preserves each end face throughout, and fixes the
+support complement. Its loop constructions are ambient model homotopies; they
+do not yet certify a homotopy inside an actual NormalSystem boundary neighborhood.
+No joint PL assertion or intermediate-time PL-homeomorphism assertion is made.
+
+The coordinator independently recompiled all five leaves and all their direct
+source consumers. The silent audit selected every nonautomatic declaration:
+3 + 1 + 22 + 7 + 20 = 53 declarations, including private declarations if present.
+Every transitive axiom closure uses only the three standard foundational axioms;
+all 13 applicable default environment linters passed, excluding only docBlame
+and docBlameThm. Strict syntax, header, and long-line checks returned exit 0 with
+zero diagnostics. Source hygiene, root registration, and git diff --check passed.
+Receipts, source and committed-blob hashes, and the complete census are retained
+under `C:/Users/liao9/AppData/Local/Temp/codex-integration-fifth-batch-20260919`
+and `.lake/verified-fifth-lane-delivery-20260919.json`.
+
+Only SlabWedgePush and SlabWedgeDoublePoint private prerequisites were reused,
+after source and object checks. Other imported project objects remain shared;
+the independent full-source gate is still running. Its one-worker build was
+restarted once at this delivery boundary on the source checkpoint above,
+preserving private compiled outputs. The subsequent documentation commit leaves
+its Lean source unchanged. Root success is not claimed.
+
+Both delivered tasks immediately received new complete rounds. E3 now runs
+Sol max, as explicitly requested by the owner: construct chart-conjugated
+homotopies with proved support/target preservation, then a single pasted source
+map and boundary homotopy. F continues Astra max: formalize the boundary-fixed,
+surjective source-triangle collapse and its complete NormalSystem refinement,
+with explicit nondegenerate witnesses and preserved fields. The latter closes
+the invalid unchanged-map route and supplies actual source-refinement machinery;
+it does not replace the positive normal-form producer. h remains on its active
+nonvacuity repair and will use Sol max at its next dispatch; S continues its
+active disk-cylinder boundary round. No active task was interrupted for status.
+
+## 19. Sixth delivery: orientable disk-cylinder classification (2026-09-19)
+
+S's three checkpoints `2ff5e3e07`, `a314556b3`, and `02a4f9918` were merged at
+source checkpoint `1016f34351f615fdff0a19467b1121373298b31f`. The three new leaves
+add 339 source lines and three root imports. All direct consumers are among
+these three modules; no existing public signature was changed.
+
+CylindricalBoundary produces side-image containment in the actual target
+boundary from the disk cylindrical diagram and finite three-manifold target.
+It proves an interior strip image is a relative neighborhood, uses local
+boundary invariance there, then uses closure and continuity at the two ends.
+Side containment is not a new caller hypothesis. CylindricalMonodromy constructs
+the actual boundary cylindrical diagram and proves its end map positive in an
+orientable target, with both top-to-bottom and bottom-to-top conventions tied
+to explicit endpoint equations and a verified inverse conversion.
+
+CylindricalClassification produces a PL pseudo-isotopy of the disk end map,
+a new diagram with pointwise equal ends, and a PL homeomorphism between the
+targets of any two orientable disk cylindrical diagrams. Base triangulations,
+end maps, positivity, pseudo-isotopies and base comparison maps are constructed
+inside the proofs. Its final theorem supplies the equal-end diagram for the
+actual derived neighborhood of a connected polygon in an orientable finite
+three-manifold with boundary.
+
+The coordinator read all three proofs, matched the lane receipts to current
+source, and independently recompiled the integration leaves. The combined
+silent census audits all 3 + 3 + 4 = 10 nonautomatic declarations, including the
+private side-image lemma: only standard foundational axioms and all thirteen
+applicable default environment linters. Only docBlame and docBlameThm are
+excluded. All compiles and the audit return exit 0 with zero diagnostics;
+source hygiene, root registration and git diff --check pass. Evidence is under
+`C:/Users/liao9/AppData/Local/Temp/codex-integration-sixth-batch-20260919` and
+`.lake/verified-sixth-lane-delivery-20260919.json`.
+
+Eight unchanged circle/Moebius prerequisites were reused only after source and
+object checks. Other project imports remain shared, so this is not a completed
+full-source gate. The independent one-worker root build was restarted once
+at the delivery boundary on the source checkpoint above, preserving its private
+outputs; it continues through the subsequent documentation-only commit.
+
+C.6/C.7 remain partial at their original book endpoints. S immediately continued
+Astra max on the actual disk-times-circle homeomorphism and faithful CST cyclic
+cell-decomposition assembly. The existing DerivedNeighborhoodPolygon producer
+from `4beaf053a` was located by the coordinator; its current source/dependencies
+and transitive axioms must be checked before reusing its nullhomotopic-polygon
+orientation transfer, rather than reimplementing it or trusting shared objects.
+
+During this delivery, h completed the nonvacuity repair through `76d6c6162` and
+pushed a clean checkpoint. Its repaired endpoint and concrete one-edge witness
+are pending independent integration acceptance; the earlier hold is not silently
+counted as cleared. h has now begun its next round explicitly on Sol max,
+constructing a neighborhood of the full interior arc including endpoint caps.
+E3 is also on Sol max; F and S remain Astra max. No active task was interrupted.

@@ -920,6 +920,11 @@ F 局部板图卡（2026-09-18，**局部生产层 done；完整链 partial**）
 一致源侧标签由生产者给出；相邻环境胞腔片迹匹配及全局图卡仍 partial。
 聚焦检查和 `AuditF288` 均 exit=0、零诊断；2 项本模块声明与 3 项复用端点仅标准三公理，
 13 项适用环境 linters 全通过。端点为 `NormalSingularCellData.exists_polyhedral_sheet_neighborhoods_of_boundaryBranch`。
+`BoundaryBranchCrossing.lean` 的固定源片 crossing germ 对齐层 **done**（§19.149）。
+端点 `NormalSingularCellData.exists_polyhedral_crossing_sheets_of_boundaryBranch` 在整条分支上
+使用同一 `S/T` 标签，并保留源片生产者的分支坐标、全纤维覆盖和精确双点集公式。
+聚焦检查 13.22 秒、`AuditF289` 46.19 秒，均 exit=0、零诊断；7 项本模块声明及 4 项直接复用
+端点仅标准三公理，13 项适用环境 linters 通过。真实载体/边界兼容、环境胞腔片迹及全局图卡仍 partial。
 
 ## 2026-09-18 Codex: essential boundary in the extended loop theorem
 
@@ -938,3 +943,97 @@ and the default environment linters
 were checked with only `docBlame` and `docBlameThm` excluded. These are local checks
 against the current imported objects, not a fresh certification of the entire
 integration source dependency graph.
+
+## 2026-09-19 Negative result: abstract boundary data does not determine the carrier germ
+
+F delivered `85d0c909b`, `BoundaryCarrierCompatibility.lean`, with strict lane
+verification and complete axiom/linter receipts. The fourth integration batch
+independently accepted this module at source checkpoint `eed5083b5`; see
+`HANDOFF_CODEX_INTEGRATION.md` section 17.
+The coordinator has read the proof and matched its current source hash to the
+module receipt. The formal result starts with any valid boundary-branch instance
+`hD` and constructs another complete `NormalSingularCellData` for
+`Bd* = BdM ∪ (D '' D.domain)ᶜ`, retaining its actual branch and crossing data.
+At a produced branch boundary point, every open chart neighborhood meets the
+open complement of the closed disk image. Thus Bd* has ambient interior points
+in that neighborhood; a pair of coordinate end planes has empty interior.
+No open partial homeomorphism can identify these boundary germs.
+
+The nonformal coordinate illustration in F's handoff uses
+`D(s,t) = (s,γ(t))` on `[0,1]×[0,3]`, where γ is successively
+`(-2+4t,0)`, `(4-2t,2t-2)`, and `(0,10-4t)` on the three unit intervals.
+The two preimages of the origin are t=1/2 and t=5/2. Its double-point branch is
+`[0,1]×{(0,0)}` in the box `[0,1]×[-2,3]×[-2,3]`.
+This illustration has not independently been instantiated in Lean; the checked
+formal result is the complete boundary-replacement construction from each
+valid input instance, not an asserted unconditional existence theorem.
+
+This does not refute the actual NormalSystem/Moise251 input, which has a real
+boundaryComplex. It refutes deriving that geometry from abstract BdM alone.
+F's next round targets information retained by the actual double and relative
+normal-form producer: a crossing with the specified carrier C and the germ
+relation between its frontier and the actual boundary Bd. Do not add these
+missing outputs as consumer hypotheses and call the producer complete.
+E3 independently advances a model that moves collision endpoints tangentially
+within their end faces, so it need not wait for this carrier repair.
+
+## 2026-09-19 Arc-cell normalization: nonvacuity correction
+
+The general marked-extension and trimmed cell-interface layers through h's
+`ac97849d4` are independently integration-verified. The subsequent normalized
+base, successor, and ball-pair endpoint (`edf2e00c0`, `b78e98dd9`, `122939e1b`)
+are withheld. Their finite closed three-manifold, ambient-dimension-three,
+and nonempty-chain hypotheses have no simultaneous geometric instance. Do
+not count their compilation or an n=1 index calculation as a usable endpoint.
+The intended repair uses a three-manifold with boundary and retained interior
+chain faces, first demonstrated by an actual nonempty n=1 complex and chain.
+Both endpoint vertex cells remain omitted. The closed higher-ambient-dimensional
+local cell-pair API is not invalidated by this finding. See integration handoff
+section 17 for the exact acceptance boundary and ongoing task assignment.
+
+## 2026-09-19 Actual double frontier closed; normal-form starting map remains open
+
+F's BoundaryDouble and LoopTheorem/DoubleCarrier are independently accepted at
+integration source `0351480fd2`. For the genuine second-copy carrier C and
+boundary Bd, frontier C = Bd is proved, including the exact chart-target
+frontier equality and boundary germ. The produced singular two-cell is tied to
+the same NormalSystem and retains all original outputs. Its pointwise fibers
+are exactly those of the original singularMap. Thus the actual frontier/germ
+obligation is closed; the old double construction does not improve fibers.
+
+NormalSystem has no explicit local-injectivity or two-point-fiber field. The
+existing chart/general-position producers require these inputs already.
+F's proposed boundary-fixed inner-triangle collapse explains geometrically why
+the unchanged-map route is inadequate, but the complete refined NormalSystem
+construction is not yet a Lean result. F is now formalizing that construction.
+Do not report an unconditional Lean counterexample from the current delivery.
+The positive obligation remains to produce an appropriately regular changed
+map and an actual boundary-neighborhood homotopy preserving the avoided normal
+subgroup class; ordinary general position does not automatically remove triple
+points. An old EqOn relationship to S.singularMap cannot be reused for a changed
+map without a new proof.
+
+E3's endpoint-moving buffered model, empty tagged double-point set, and continuous
+compactly supported homotopies are independently accepted in the same batch.
+The model permits tangential endpoint motion while preserving the end-face sets.
+Actual two-sheet traces, compatible double-end charts, homotopy inside the real
+boundary neighborhood, and source-disk pasting are still needed for the general
+branch-separation and L2 endpoints. See integration handoff section 18 for the
+53-declaration verification and the exact division of subsequent work.
+
+## 2026-09-19 Orientable disk-cylinder untwisting and comparison accepted
+
+At integration source `1016f3435`, S's CylindricalBoundary,
+CylindricalMonodromy, and CylindricalClassification are independently accepted:
+actual side-image containment, actual boundary-diagram positivity in both end
+conventions, internally produced disk pseudo-isotopy and equal-end diagrams,
+and PL comparison of any two orientable disk-diagram targets. The actual
+orientable polygon-neighborhood application also has pointwise equal ends.
+All ten declarations pass the complete axiom and environment-linter audit.
+
+The standard topological disk-times-circle identification and the original
+CST cyclic-cell interface remain to be assembled; C.6/C.7 are not marked done.
+The existing nullhomotopic-polygon orientation declarations in
+DerivedNeighborhoodPolygon must be checked against current source and axiom
+closure before deciding whether 24.12 needs new orientation machinery.
+See integration handoff section 19 for evidence and the next S round.

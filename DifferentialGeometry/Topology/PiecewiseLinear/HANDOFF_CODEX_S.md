@@ -5320,3 +5320,373 @@ In particular its endpoint parametrizations must satisfy
 `alpha1(s) = v^-1(alpha0(1-s))`; matching just the endpoints or using bilinear
 interpolation does not supply this piecewise affine tube. No invariant arc or
 new conclusion-shaped assumption has been added.
+
+## Prescribed-end annulus maps and arc strips delivered (2026-09-18)
+
+After `f17036dd1`, this layer constructs annulus maps with full prescribed ends
+and embeds arc strips by restricting those maps. It reuses the existing circle
+pseudo-isotopy producer.
+
+`Topology/LoopSpace/CircleLiftOrientation.lean` adds two statements: a reversing
+circle homeomorphism composed on the left with negation has an increasing
+periodic lift; the composition of two reversing circle homeomorphisms has an
+increasing periodic lift. The proof uses the existing lift dichotomy and
+`HasIncreasingCircleLift.negConj`. The module has 21 nonautomatic declarations.
+Its required copyright and module headers were added without altering any
+existing mathematical declaration.
+
+`CirclePrismComparison.lean` has four new declarations:
+
+- `IsPLCirclePositive.of_leftInverse` transports positivity to a left inverse
+  which maps the circle into itself, using the existing lift inverse theorem.
+- `isPLCirclePositive_comp_of_not_isPLCirclePositive` proves positivity for the
+  composite of any two reversing PL automorphisms of a PL circle.
+- `exists_isPLHomeomorphOn_circle_prod_of_isPLCirclePositive_iff` constructs an
+  actual PL homeomorphism of `S` times the closed unit interval, with bottom
+  map exactly `u` and top map exactly `v`, whenever `u` and `v` have the same
+  orientation. It proves that `v` composed with the inverse of `u` is positive,
+  consumes `isPLPseudoIsotopicToId_of_isPLCirclePositive`, and precomposes with
+  the product of `u` and the interval identity. The end equalities hold for
+  every point of `S`.
+- `exists_isPLHomeomorphOn_arc_prod_of_isPLCirclePositive_iff` restricts that
+  annulus homeomorphism to a parametrized arc times the interval. It returns a
+  PL homeomorphism from the closed square onto a polyhedral strip in `S` times
+  the interval, both full end parametrizations, and the two exact equivalences
+  that an image point has height 0 or 1 precisely when its source point has
+  that same height. Global injectivity follows from the annulus homeomorphism.
+
+This is a pseudo-isotopy construction: the strip need not have one arc in each
+horizontal slice. The exact end preimages and full end parametrizations are
+sufficient for the intended mapping-torus fiber argument. The orientation
+condition is proved for the composite of two reversing maps; injectivity and
+piecewise affinity are conclusions of the constructed strip.
+
+Verification used the unified `codex-moise-lane-check.ps1` under window
+`S-CirclePrism-20260918`, with one S Lean process and private output under
+`C:/Users/liao9/AppData/Local/Temp/codex-s-circle-prism-20260918/lib`.
+Both modules compiled in dependency order with exit 0 and zero diagnostics.
+Strict header/long-line checks and the standard syntax linter set were enabled.
+The private circle-lift artifact was selected by the exact `--setup importArts`
+mapping for the prism module. No shared artifact was deleted or replaced.
+
+External silent audits re-elaborated each source and dynamically enumerated its
+current-module declarations, filtering only `env.isAutoDecl`. The actual counts
+are 21 and 4, all public. All 25 transitive axiom closures contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Each module passed all 13 applicable default
+environment linters; only `docBlame` and `docBlameThm` were excluded. Both audits
+returned exit 0 with zero diagnostics; all four final logs are empty.
+
+The stable source SHA256 values are:
+
+- `CircleLiftOrientation`: `557210EB63A2D6E3EF011C3639B1EC06C20C5031EE465FE38616F2C190B88DD3`.
+- `CirclePrismComparison`: `9EE43030F8720A1DE4333AF6729ED09498194FE600A4C8A616AE0DE959D33198`.
+
+The combined receipt is `CirclePrism-verification.json`; exact per-declaration
+axiom inventories and linter names are retained in the two `*-audit.tsv` files
+in the same external temporary directory. Per-module compile and audit receipts
+are under `lib`. Audit probes are removed after retaining the receipts.
+`git diff --check` and static source checks pass. The new leaf is registered in
+the flat root aggregate. Source, root registration, this record and the C.7 plan
+row belong to one mathematical commit. The integration root build remains the
+coordinator's separate gate.
+
+Status: the prescribed-end annulus and embedded-strip producer is done. C.7
+remains partial. Still required: choose a reversing reflection with a
+parametrized invariant arc satisfying the full parameter flip, take actual
+monodromy inverse composed with that reflection as the top map, and prove the
+exact flip-only fibers after composing with the cylindrical diagram. This must
+give `alpha1(s) = v^-1(alpha0(1-s))` on the entire interval. No invariant arc is
+assumed for the original arbitrary reversing monodromy. The orientability bridge
+remains a separate obligation.
+
+## Reversing mapping-torus band geometry (2026-09-18)
+
+Status: done for the reflection, complete flip seam, exact quotient fibers and
+actual embedded Moebius-band PL homeomorphism. C.7 remains partial. This is the
+next mathematical layer after `1da809615`; source, root registration, this record
+and the C.7 plan row are delivered in one commit.
+
+`CircleAnnulusOrientation.lean` now provides
+`exists_isPLHomeomorphOn_reflection_of_arc_decomposition`. From two complementary
+parametrized arcs it constructs a reversing PL involution that exchanges the
+parametrizations pointwise. The existing negative-map producer keeps its exact
+signature and is a corollary. Full-file linter review also removed unnecessary
+`FiniteDimensional` assumptions from `exists_pair_ne_of_isPLSphere_one`,
+`exists_loopCircle_param_of_arc_decomposition` and
+`image_arc_eq_of_isPLCirclePositive`. Their only consumers are in this module
+and the rechecked reflection module. Required headers and line lengths are fixed.
+
+`CircleReflection.lean` provides `exists_isPLHomeomorphOn_reflection_arc`.
+On every PL circle it constructs a reversing PL involution `r` and an actual
+PL parametrized arc `gamma : [0,1] -> A` inside the circle, with
+`r(gamma(s)) = gamma(1-s)` for every parameter. The two half-arcs meet only at
+their common initial endpoint; affine reparametrizations and native PL gluing
+produce the required arc. No invariant arc of arbitrary monodromy is assumed.
+
+`MobiusMappingTorus.lean` provides:
+
+- `exists_isPiecewiseAffineOn_square_flip_of_not_isPLCirclePositive`: given an
+  actual cylindrical diagram `f` over a PL circle and reversing monodromy `v`
+  satisfying `f(x,1) = f(v(x),0)`, produces a PWA square map with image inside
+  the diagram, the full flip seam and exactly the permitted fibers.
+- `exists_isPLHomeomorphOn_mobiusComplex_of_not_isPLCirclePositive`: consumes
+  that map and the verified square model to produce an actual PL homeomorphism
+  from `mobiusComplex.space` onto a subset of the diagram's target.
+
+The top strip map is the positive composite `inv(v) . r`. The prescribed-end
+annulus producer gives the full identity `alpha1(s) = inv(v)(alpha0(1-s))`.
+The cylindrical diagram reduces equal images to equal strip points or opposite
+ends. Global strip injectivity handles equality; exact end-preimage equivalences,
+bottom-edge injectivity and the full seam force complementary parameters at the
+opposite ends. No preservation of intermediate horizontal levels is used.
+
+Convention: `v` maps top to bottom. The earlier
+`IsCylindricalDiagram.exists_isPLHomeomorphOn_endMap` produces bottom-to-top
+monodromy, so its inverse must be used when applying these endpoints.
+
+Verification used the coordinator's `S-round-20260919` authorization and the
+round helper, one S Lean process at a time, private outputs and read-only shared
+artifacts. Final module checks and full dynamic audits completed at UTC
+2026-09-19 00:15--00:16. Counts are 33 + 4 + 2 = 39 nonautomatic declarations,
+including all three private reflection lemmas. Each module passed all 13
+applicable environment linters; every axiom closure uses only `propext`,
+`Classical.choice`, and `Quot.sound`. All final exits are 0 with zero diagnostics.
+Earlier S-only dependencies were reused after source-hash and byte checks.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`MobiusMappingTorus-verification.json` contains exact source and object hashes,
+compile/audit receipts and the complete declaration and linter inventories.
+Per-module audit TSVs and preserved audit receipts are alongside it and in `lib`;
+`dependency-reuse.json` records the four unchanged private dependencies. The
+external audit probes are removed after preserving these records. Static source
+checks and `git diff --check` pass. The integration root build remains the
+coordinator's separate gate.
+
+Remaining C.7 bridge: identify the boundary of a disk cylindrical diagram with
+its circle mapping torus, make the embedded band a subcomplex after subdivision,
+and transfer orientability to contradict `not_isOrientable_mobiusComplex`.
+The embedded-band producer is complete; the full C.7 headline is not claimed.
+
+## Orientability of PL embedded manifolds and circle mapping tori (2026-09-18)
+
+Status: done for the independent subcomplex and orientation-transfer producer.
+`MobiusEmbedding.lean` contains four declarations:
+
+- `IsOrientable.of_isPLHomeomorphOn_subset`: a PL embedded manifold of the same
+  dimension as an orientable finite combinatorial manifold with boundary is
+  orientable. The source and ambient finite complexes may lie in different
+  finite-dimensional real normed spaces; the dimension is arbitrary.
+- `IsOrientable.of_space_subset`: the identity-map corollary for two complexes
+  in one ambient space. It does not require an existing subcomplex relation.
+- `not_isPLHomeomorphOn_mobiusComplex_of_isOrientable`: the actual Moebius model
+  has no PL homeomorphism onto a subset of an orientable finite PL surface.
+- `isPLCirclePositive_of_isOrientable_cylindricalDiagram`: an actual circle
+  cylindrical diagram whose image is contained in an orientable PL surface has
+  orientation-preserving top-to-bottom monodromy. The image need not equal the
+  ambient surface, and no manifold hypothesis is imposed on the image itself.
+
+The general embedding theorem proves the image is a polyhedron, subdivides the
+ambient complex until the image is the space of an actual restriction
+subcomplex, applies `IsOrientable.of_le`, and transfers orientation back by PL
+invariance. This constructs the required subdivision and subcomplex; neither is
+an additional assumption. The Moebius obstruction consumes the checked model's
+manifold and nonorientability theorems. The monodromy theorem uses the actual
+embedded band from `08a121822` and this obstruction. No new unproved parameter or
+conclusion-shaped hypothesis is introduced.
+
+Verification used `S-round-20260919`, one S Lean process, private outputs and
+read-only shared artifacts. The final module check completed at UTC
+`2026-09-19T00:24:07.2800461Z` and the final dynamic audit at
+`2026-09-19T00:24:19.3088074Z`. All four declarations are public; the
+complete nonautomatic census, standard axiom closure check and all 13 applicable
+environment linters passed with exit 0 and zero diagnostics. The final source
+SHA256 is `2BD2B0BA049ADDFD3A709279800C4DCDD7C09DB939FC6F2503A0126F9DD8F06A`.
+The combined receipt is
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/MobiusEmbedding-verification.json`;
+the declaration inventory is `MobiusEmbedding-audit.tsv` in the same directory.
+Per-module compile and preserved audit receipts are under `lib`.
+
+Source, flat-root registration, this record and the C.7 row are delivered in one
+mathematical commit. Static hygiene and whitespace checks pass. Native import
+closure excludes `Topology/Homology/HurewiczLowDegrees.lean`. External audit and
+draft probes are removed after preserving the evidence. The integration root
+build remains the coordinator's separate gate.
+
+C.7 is still partial. The next geometric producer is the side-image inclusion
+for an actual disk cylindrical diagram:
+`f '' ((boundaryComplex 2 D).space ×ˢ Icc 0 1) ⊆ (boundaryComplex 3 M).space`,
+from finite `D`, `M`, `IsPLBall 2 D.space`, the actual diagram on `D.space` with
+image `M.space`, and `IsCombinatorialManifoldWithBoundary 3 M`. The restriction
+to the boundary circle also needs its two end images identified using the disk
+monodromy's boundary invariance. The strengthened contained-image endpoint above
+then combines directly with `IsOrientable.boundary`: a full boundary-image
+equality or a separate manifold proof for the circle diagram's image is not
+needed to force positive boundary monodromy. Existing disk pseudo-isotopy and
+cylindrical comparison APIs can consume that result. The full CST endpoints and
+contractible-polygon assembly remain outside this completed layer.
+
+## Boundary side of a disk cylindrical diagram (2026-09-18)
+
+Status: done for the side-image inclusion, with no extra boundary hypothesis.
+`CylindricalBoundary.lean` proves
+`IsCylindricalDiagram.image_side_subset_boundaryComplex`: for finite complexes
+`D`, `M`, a PL 2-ball `D.space`, a combinatorial 3-manifold with boundary `M`,
+and an actual cylindrical diagram `f` on `D.space` with image `M.space`,
+`f '' ((boundaryComplex 2 D).space ×ˢ Icc 0 1)` lies in
+`(boundaryComplex 3 M).space`. The two ambient finite-dimensional real normed
+spaces may differ. Orientability and Schoenflies are not hypotheses.
+
+The public `image_strip_mem_nhdsWithin` proves that a strip around an interior
+height maps to a relative neighborhood in the diagram image. Compact images of
+the two discarded strips form a closed set avoiding the point, since an
+interior-height fiber is a singleton. The private open-height side lemma
+triangulates the strip and its image, uses the prism boundary formula and PL
+boundary invariance, then uses local boundary invariance for the relative
+neighborhood. Continuity and closedness of the target boundary add heights
+zero and one. The whole prism is never assumed injective.
+
+Verification: final focused compile exit 0, zero diagnostics, 12.504 seconds;
+full dynamic audit exit 0, zero diagnostics, 84.222 seconds. These are measured
+outer-helper times, including any resource-admission wait. All three
+nonautomatic declarations (two public and one private), five directly reused
+critical producers, and all 13 applicable environment linters pass. Axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+A nonempty actual instance is the derived neighborhood of a triangular circle
+in a tetrahedron. The external probe constructs the finite target manifold and
+its disk cylindrical diagram, and separately constructs a finite complex whose
+space equals that diagram's standard disk. Both declarations and the neighborhood producer pass the axiom audit;
+exit 0, zero diagnostics, 23.431 seconds including admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalBoundary-verification.json` records source and object hashes,
+normalized source identity, all compile/audit receipts, timings, declaration
+inventory, and reused producers. The instance audit and its three axiom rows
+are preserved alongside it. Source SHA256:
+`00E7E7158864F226C994BA18E5A0B8101DEF1C07361E5F85631A424CA9C9FA7E`.
+Static checks pass; the native import closure has 425 modules and excludes
+`HurewiczLowDegrees`. New source, flat-root import, this record and the C.7 row
+are one mathematical commit. Shared artifacts stay read-only; the integration
+root build is a separate coordinator gate.
+
+Remaining in this round: restrict to the boundary cylindrical diagram, force
+positive boundary monodromy from target orientability, and connect disk
+pseudo-isotopy and comparison. The full C.7 headline is still partial.
+
+## Positive boundary monodromy of orientable disk diagrams (2026-09-18)
+
+Status: done for the actual boundary diagram and positive monodromy.
+`CylindricalMonodromy.lean` contains three public declarations:
+
+- `IsCylindricalDiagram.boundary`: for any finite combinatorial manifold with
+  boundary of dimension `n + 1`, its actual cylindrical diagram restricts to a
+  cylindrical diagram on its boundary, with image the actual side image. The
+  target set need not be a manifold. A produced PL end map preserves the base
+  boundary, which proves equality of the two boundary end images.
+- `IsCylindricalDiagram.boundary_isPLCirclePositive`: a disk cylindrical diagram
+  whose target is an orientable finite combinatorial 3-manifold with boundary
+  has positive top-to-bottom monodromy on the disk boundary. The proof uses the
+  boundary diagram above, the proved side inclusion, the target boundary's
+  orientability and the actual Moebius-embedding obstruction.
+- `IsCylindricalDiagram.boundary_isPLCirclePositive_of_bottom_eq_top`: the
+  bottom-to-top convention used by the existing end-map producer. It passes to
+  the actual inverse disk map, uses boundary invariance for that inverse, and
+  transfers positivity back using the explicit inverse equations.
+
+No side inclusion, positive monodromy, pseudo-isotopy or Schoenflies statement
+is assumed. The two geometric inputs are the actual disk diagram and an
+orientable manifold target; each end map is tied to its diagram by the full
+pointwise end equation. This closes the geometric bridge left in the preceding
+entry, rather than assuming a boundary-image equality.
+
+Final checks: compile 12.094 seconds, complete dynamic audit 12.496 seconds,
+each exit 0 with zero diagnostics. Times include resource admission. All three
+nonautomatic declarations, seven directly reused critical producers, and all
+13 applicable environment linters pass; all axiom closures use only the
+standard three axioms. The nonempty tetrahedral-circle instance was strengthened
+to construct target orientability as well as the actual diagram. Its declaration
+and two orientation producers pass the axiom audit, exit 0, zero diagnostics,
+12.006 seconds including admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalMonodromy-verification.json` includes exact raw and normalized source
+hashes, private object identity, all receipts and timings, declaration/linter
+inventories, critical producers and the concrete instance. Source SHA256:
+`6D2CBEA4202874739E705127A2BE48C70C308827C5732CE889A43049339D1CB3`.
+Static checks pass and all 463 native imports avoid `HurewiczLowDegrees`.
+Source, root import, this handoff and the C.7 plan row are one commit; shared
+artifacts remain read-only and the integration root gate is separate.
+
+Remaining in this round: consume positive boundary monodromy to untwist the
+actual disk diagram and compare orientable diagram targets. The full original
+CST cyclic-decomposition/topological-solid-torus interface and the contractible
+polygon assembly remain beyond this completed layer.
+
+## Untwisting orientable disk cylinders and polygon neighborhoods (2026-09-18)
+
+Status: done for the assigned disk-diagram round. `CylindricalClassification.lean`
+contains four public endpoints, without unproved parameters:
+
+- `IsCylindricalDiagram.isPLPseudoIsotopicToId_endMap`: an actual bottom-to-top
+  end map of an orientable disk cylindrical diagram is PL pseudo-isotopic to
+  the identity. The base is any set `P` with `IsPLBall 2 P`; a finite disk
+  triangulation is constructed internally rather than required from the caller.
+- `IsCylindricalDiagram.exists_endMap_id_of_isOrientable`: constructs a new
+  actual diagram with the same disk base and target, and proves the pointwise
+  equation `g (x, 0) = g (x, 1)` for every base point.
+- `exists_isPLHomeomorphOn_of_isOrientable_cylindricalDiagrams`: constructs a PL
+  homeomorphism between the targets of any two orientable disk cylindrical
+  diagrams. The bases and target ambient spaces may differ. No end map,
+  positivity, pseudo-isotopy or base comparison map is assumed; those objects
+  are produced within the proof from the two actual diagrams and PL disks.
+- `exists_cylindricalDiagram_derivedNeighborhood_circle_eq_ends`: for a finite
+  orientable combinatorial 3-manifold with boundary and a connected closed
+  combinatorial 1-manifold subcomplex, constructs an actual disk diagram of
+  its derived neighborhood with both end maps pointwise equal. This consumes
+  the existing actual neighborhood and orientation producers, including the
+  proved restriction of orientation to subcomplexes.
+
+The diagram's target hypotheses remain finite combinatorial 3-manifold with
+boundary and orientability. The argument never infers side containment from
+`IsCylindricalDiagram` alone: it uses `2ff5e3e07`, then the actual boundary-circle
+and positivity results in `a314556b3`, then the checked disk pseudo-isotopy and
+comparison machinery. Both pointwise end-map conventions have explicit inverse
+conversion. There is no assumption that intermediate levels remain horizontal.
+
+Final focused compile: exit 0, zero diagnostics, 16.171 seconds. Complete dynamic
+audit: exit 0, zero diagnostics, 73.711 seconds. All four nonautomatic declarations,
+six directly reused critical producers, and all 13 applicable environment
+linters pass. Every axiom closure uses only the standard three axioms.
+The concrete tetrahedral-circle probe consumes the final neighborhood endpoint
+and produces a nonempty target diagram with pointwise equal ends. Its declaration
+and the final producer pass the axiom audit, exit 0, zero diagnostics,
+28.193 seconds. All reported times include resource admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalClassification-verification.json` preserves raw/normalized source
+hashes, object identity, receipts, timings, complete declaration/linter census,
+reused producers, and the concrete application. Source SHA256:
+`3A84B0EDC4EA5A5A790504F62086CE7135CACBC0329789F9277569684C801BA4`.
+The 481-module native import closure excludes `HurewiczLowDegrees`; static
+hygiene and whitespace checks pass. Source, root import, this record and the
+C.6/C.7 plan updates are one mathematical commit. All verification used one
+S worker and private artifacts; shared outputs were read-only. External Lean
+probes are removed after preserving evidence. The integration root build and
+independent integration replay remain the coordinator's separate gates.
+
+Round total: three new modules, 3 + 3 + 4 = 10 nonautomatic declarations,
+including the private open-height boundary lemma. Each module passes all
+13 environment linters; critical-producer audit counts are 5, 7 and 6.
+The nonempty concrete family and its final untwisted diagram are verified.
+
+C.6/C.7 remain partial at the book-level endpoint: the original CST cyclic
+cell-decomposition interface and its standard topological solid-torus product
+identification still need assembly. The orientable actual-diagram comparison
+and the untwisted orientable polygon-neighborhood diagram are now delivered.
+For 24.12, transfer of orientability for a contractible polygon through the
+already available orientation covering also remains to be connected. These
+are the next mathematical interfaces; no extra conditional wrapper is submitted.
