@@ -797,6 +797,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Integration.Lp.FiniteCover
 import DifferentialGeometry.Analysis.Integration.Lp.Lifting
+import DifferentialGeometry.Analysis.Integration.Lp.Lipschitz
 import DifferentialGeometry.Analysis.Integration.Lp.Multiplication
 import DifferentialGeometry.Analysis.Integration.Lp.Operator
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing

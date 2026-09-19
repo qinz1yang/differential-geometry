@@ -1,10 +1,12 @@
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension.ClosedBall
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Lp.Product
+import DifferentialGeometry.Analysis.Integration.Lp.Lipschitz
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceMixedRegularity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationAffine
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationClassical
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzW1
 import DifferentialGeometry.Geometry.Metric.Family.Pullback
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 
@@ -709,6 +711,49 @@ theorem metric_divergence_eq_of_homogeneous_weak_equation
     (hu.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) Filter.EventuallyEq.rfl hρ hA
     (continuousOn_const : ContinuousOn (fun _ => (0 : ℝ)) (Ioo a b ×ˢ Ω)) hweak
   simpa only [add_zero] using h
+
+theorem contDiffOn_and_metric_divergence_eq_of_locallyLipschitzOn
+    {H M : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H}
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn D g)
+    {a b : ℝ} (hreg : Ioo a b ⊆ D.regular)
+    (α : M) {Ω : Set EuStd} (hΩ : IsOpen Ω)
+    (hΩs : Ω ⊆ (toEuclidean : EuN ≃L[ℝ] EuStd) '' interior (extChartAt I α).target) :
+    let μ := volume.restrict (Ioo a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (g p.1) α p.2
+    let A := fun p : ℝ × EuStd => Matrix.of fun i j => weightedInvGramOnEuclid (g p.1) α i j p.2
+    ∀ (U : ℝ × EuStd → ℝ),
+      LocallyLipschitzOn (Ioo a b ×ˢ Ω) U →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          ∑ j, ∫ p, ((A p).transpose *ᵥ
+            (fun i => lineDeriv ℝ U p (0, EuclideanSpace.single i 1))) j *
+              fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) →
+      ContDiffOn ℝ (⊤ : ℕ∞) U (Ioo a b ×ˢ Ω) ∧
+        ∀ p ∈ Ioo a b ×ˢ Ω, fderiv ℝ (fun q => ρ q * U q) p (1, 0) =
+          ∑ i, ∑ j, fderiv ℝ (fun q => A q i j * fderiv ℝ U q (0, EuclideanSpace.single i 1))
+            p (0, EuclideanSpace.single j 1) := by
+  intro μ ν ρ A U hU hw
+  let K : ℝ × EuStd → EuStd := fun p =>
+    WithLp.toLp 2 (fun i => lineDeriv ℝ U p (0, EuclideanSpace.single i 1))
+  have hK (B : Set (ℝ × EuStd)) (hB : IsCompact B) (hBs : B ⊆ Ioo a b ×ˢ Ω) :
+      MemLp K 2 ((volume.prod volume).restrict B) := by
+    apply MemLp.of_eval_piLp
+    intro i
+    exact hU.memLp_lineDeriv_of_isCompact (isOpen_Ioo.prod hΩ) hB hBs hB.measure_lt_top.ne
+      (0, EuclideanSpace.single i 1) 2
+  have hKw : ∀ᵐ t ∂μ, DeGiorgi.HasWeakGrad (fun x => K (t, x)) (fun x => U (t, x)) Ω := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
+    have h := Sobolev.Euclidean.hasWeakGrad_prodMk_left_of_locallyLipschitzOn hU ht
+    simpa only [K, lineDeriv, Prod.smul_mk, smul_zero, Prod.mk_add_mk, add_zero] using h
+  exact ⟨contDiffOn_of_homogeneous_metric_divergence_equation hG hreg α hΩ hΩs U K
+    hU.continuousOn hK hKw hw,
+    metric_divergence_eq_of_homogeneous_weak_equation hG hreg α hΩ hΩs U K
+      hU.continuousOn hK hKw hw⟩
 
 end
 

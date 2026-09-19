@@ -5,8 +5,8 @@ import Mathlib.Topology.MetricSpace.Thickening
 
 noncomputable section
 
-open MeasureTheory Metric Set
-open scoped ENNReal NNReal BigOperators
+open MeasureTheory Metric Set Filter
+open scoped ENNReal NNReal BigOperators Topology
 
 namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
 
@@ -70,7 +70,7 @@ theorem lip_of_local_comp
     · rw [hzero hxK, hzero (fun hyK ↦ hyU (hK_sub hyK)), edist_self]
       exact bot_le
 
-theorem hasWeakPart_of_lip
+private theorem hasWeakPartialDeriv_of_lipschitz
     {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
     (hf : LipschitzWith C f) (i : Fin d) :
     DeGiorgi.HasWeakPartialDeriv i
@@ -115,6 +115,58 @@ theorem hasWeakPart_of_lip
     exact hibp
   have hneg := congrArg Neg.neg hibp'
   simpa only [ei, neg_neg] using hneg.symm
+
+theorem hasWeakPartialDeriv_of_locallyLipschitzOn
+    {f : E → ℝ} {Ω : Set E} (hf : LocallyLipschitzOn Ω f) (i : Fin d) :
+    DeGiorgi.HasWeakPartialDeriv i
+      (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Ω := by
+  intro φ hφ hφc hφs
+  obtain ⟨C, hC⟩ := (hf.mono hφs).exists_lipschitzOnWith_of_compact hφc
+  obtain ⟨g, hg, hfg⟩ := hC.extend_real
+  have hleft (x : E) : f x * fderiv ℝ φ x (EuclideanSpace.single i 1) =
+      g x * fderiv ℝ φ x (EuclideanSpace.single i 1) := by
+    by_cases hx : fderiv ℝ φ x (EuclideanSpace.single i 1) = 0
+    · rw [hx, mul_zero, mul_zero]
+    · rw [hfg ((tsupport_fderiv_apply_subset ℝ _)
+        (subset_tsupport (fun y => fderiv ℝ φ y (EuclideanSpace.single i 1)) hx))]
+  have hright (x : E) : lineDeriv ℝ g x (EuclideanSpace.single i 1) * φ x =
+      lineDeriv ℝ f x (EuclideanSpace.single i 1) * φ x := by
+    by_cases hx : φ x = 0
+    · rw [hx, mul_zero, mul_zero]
+    · have heq : f =ᶠ[𝓝 x] g := by
+        filter_upwards [hφ.continuous.continuousAt.eventually_ne hx] with y hy
+        exact hfg (subset_tsupport φ hy)
+      rw [heq.lineDeriv_eq]
+  calc
+    _ = ∫ x in Ω, g x * fderiv ℝ φ x (EuclideanSpace.single i 1) :=
+      integral_congr_ae (Eventually.of_forall hleft)
+    _ = -∫ x in Ω, lineDeriv ℝ g x (EuclideanSpace.single i 1) * φ x :=
+      hasWeakPartialDeriv_of_lipschitz hg i φ hφ hφc hφs
+    _ = _ := congrArg Neg.neg (integral_congr_ae (Eventually.of_forall hright))
+
+theorem hasWeakPart_of_lip
+    {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
+    (hf : LipschitzWith C f) (i : Fin d) :
+    DeGiorgi.HasWeakPartialDeriv i
+      (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Omega :=
+  hasWeakPartialDeriv_of_locallyLipschitzOn hf.locallyLipschitz.locallyLipschitzOn i
+
+theorem hasWeakGrad_prodMk_left_of_locallyLipschitzOn
+    {Z : Type*} [PseudoEMetricSpace Z]
+    {U : Z × E → ℝ} {J : Set Z} {Ω : Set E}
+    (hU : LocallyLipschitzOn (J ×ˢ Ω) U) {t : Z} (ht : t ∈ J) :
+    DeGiorgi.HasWeakGrad
+      (fun x => WithLp.toLp 2 (fun i => lineDeriv ℝ (fun y => U (t, y)) x (EuclideanSpace.single i 1)))
+      (fun x => U (t, x)) Ω := by
+  have hslice : LocallyLipschitzOn Ω (fun x => U (t, x)) := by
+    apply locallyLipschitzOn_iff_restrict.mpr
+    have hmap : LipschitzWith 1 (fun x : Ω => (⟨(t, x.1), ht, x.2⟩ : J ×ˢ Ω)) := by
+      simpa only [one_mul, Function.comp_apply] using
+        ((LipschitzWith.prodMk_left t).comp (LipschitzWith.subtype_val Ω)).subtype_mk
+          (fun x => ⟨ht, x.2⟩)
+    exact hU.restrict.comp hmap.locallyLipschitz
+  intro i
+  exact hasWeakPartialDeriv_of_locallyLipschitzOn hslice i
 
 theorem memW1p_of_lip
     {p : ℝ≥0∞} {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
