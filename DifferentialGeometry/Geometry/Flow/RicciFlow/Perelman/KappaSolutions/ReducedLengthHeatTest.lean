@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HeatTest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHamiltonJacobi
 import DifferentialGeometry.Geometry.Operator.Laplacian.Coordinates
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.JointDifferentialOperator
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
@@ -275,6 +276,114 @@ theorem ancient_redLength_time_deriv_add_laplacian_lower_test_in_chart
     hU hf hconv hH hHconv htests hx phi hphi hmin
   simp only [reducedLengthHeatOperatorInChart, f, (extChartAt I a).left_inv hqs, zero_sub] at hh
   linarith only [hh]
+
+theorem ancient_redLength_time_deriv_add_laplacian_lower_test
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) {tau : ℝ} (htau : 0 < tau)
+    (p q : F.M) (phi : ℝ × F.M → ℝ)
+    (hphi : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) 2 phi (tau, q))
+    (hmin : IsLocalMin (fun z : ℝ × F.M => redLength F.S 0 p z.2 z.1 - phi z) (tau, q)) :
+    deriv (fun t => phi (t, q)) tau +
+      laplacian (I := I) (LeviCivita (I := I) (F.S.base.metric (-tau))) (F.S.base.metric (-tau))
+        (fun y => phi (tau, y)) q ≤
+      ((Module.finrank ℝ E : ℝ) / 2 - redLength F.S 0 p q tau) / tau := by
+  let psi : ℝ × E → ℝ := fun z => phi (z.1, (extChartAt I q).symm z.2)
+  have hq : q ∈ (chartAt H q).source := mem_chart_source H q
+  have hqs : q ∈ (extChartAt I q).source := by simpa only [extChartAt_source] using hq
+  have hqt : extChartAt I q q ∈ (extChartAt I q).target := (extChartAt I q).map_source hqs
+  have hsymm : ContMDiffAt 𝓘(ℝ, E) I 2 (extChartAt I q).symm (extChartAt I q q) :=
+    (contMDiffOn_extChartAt_symm q).contMDiffAt ((isOpen_extChartAt_target (I := I) q).mem_nhds hqt)
+  have hmap : ContMDiffAt 𝓘(ℝ, ℝ × E) (𝓘(ℝ, ℝ).prod I) 2
+      (fun z : ℝ × E => (z.1, (extChartAt I q).symm z.2)) (tau, extChartAt I q q) :=
+    contDiffAt_fst.contMDiffAt.prodMk (hsymm.comp (tau, extChartAt I q q) contDiffAt_snd.contMDiffAt)
+  have hpsi : ContDiffAt ℝ 2 psi (tau, extChartAt I q q) := by
+    have hphi' : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) 2 phi
+        (tau, (extChartAt I q).symm (extChartAt I q q)) := by
+      simpa only [(extChartAt I q).left_inv hqs] using hphi
+    exact (hphi'.comp (tau, extChartAt I q q) hmap).contDiffAt
+  have hcontact : IsLocalMin (fun z : ℝ × E =>
+      redLength F.S 0 p ((extChartAt I q).symm z.2) z.1 - psi z) (tau, extChartAt I q q) := by
+    have ht : Tendsto (fun z : ℝ × E => (z.1, (extChartAt I q).symm z.2))
+        (𝓝 (tau, extChartAt I q q)) (𝓝 (tau, q)) := by
+      simpa only [(extChartAt I q).left_inv hqs] using hmap.continuousAt.tendsto
+    change ∀ᶠ z : ℝ × E in 𝓝 (tau, extChartAt I q q),
+      redLength F.S 0 p ((extChartAt I q).symm (extChartAt I q q)) tau - psi (tau, extChartAt I q q) ≤
+        redLength F.S 0 p ((extChartAt I q).symm z.2) z.1 - psi z
+    simpa only [psi, (extChartAt I q).left_inv hqs] using ht.eventually hmin
+  have htest := ancient_redLength_time_deriv_add_laplacian_lower_test_in_chart F hF htau p q q hq psi hpsi hcontact
+  have hdt : deriv (fun t => phi (t, q)) tau = fderiv ℝ psi (tau, extChartAt I q q) (1, 0) := by
+    have ht := (hpsi.differentiableAt (by norm_num)).hasFDerivAt.comp_hasDerivAt tau
+      ((hasDerivAt_id tau).prodMk (hasDerivAt_const tau (extChartAt I q q)))
+    simpa only [Function.comp_def, id_eq, psi, (extChartAt I q).left_inv hqs] using ht.deriv
+  have hspace : ContMDiffAt I 𝓘(ℝ, ℝ) 2 (fun y => phi (tau, y)) q :=
+    hphi.comp q (contMDiffAt_const.prodMk contMDiffAt_id)
+  have hspacepsi : ContMDiffAt I 𝓘(ℝ, ℝ) 2 (fun y => psi (tau, extChartAt I q y)) q :=
+    ((hpsi.comp (extChartAt I q q) (contDiffAt_const.prodMk contDiffAt_id)).contMDiffAt).comp q
+      (contMDiffAt_extChartAt' hq)
+  have heq : (fun y => phi (tau, y)) =ᶠ[𝓝 q] (fun y => psi (tau, extChartAt I q y)) := by
+    have hsrc : (extChartAt I q).source ∈ 𝓝 q := by
+      simpa only [extChartAt_source] using (chartAt H q).open_source.mem_nhds hq
+    filter_upwards [hsrc] with y hy
+    exact (congrArg (fun z => phi (tau, z)) ((extChartAt I q).left_inv hy)).symm
+  have heq0 : phi (tau, q) = psi (tau, extChartAt I q q) := heq.self_of_nhds
+  have hcov : IsMetricCompatible (I := I) (LeviCivita (I := I) (F.S.base.metric (-tau)))
+      (F.S.base.metric (-tau)) := by
+    simpa only [LeviCivita] using
+      leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (F.S.base.metric (-tau))
+  have hminEq : IsLocalMin (fun y => phi (tau, y) - psi (tau, extChartAt I q y)) q := by
+    filter_upwards [heq] with y hy
+    change phi (tau, q) - psi (tau, extChartAt I q q) ≤ phi (tau, y) - psi (tau, extChartAt I q y)
+    rw [heq0, hy, sub_self, sub_self]
+  have hminEq' : IsLocalMin (fun y => psi (tau, extChartAt I q y) - phi (tau, y)) q := by
+    filter_upwards [heq] with y hy
+    change psi (tau, extChartAt I q q) - phi (tau, q) ≤ psi (tau, extChartAt I q y) - phi (tau, y)
+    rw [heq0, hy, sub_self, sub_self]
+  have hlap := le_antisymm
+    (laplacian_le_of_isLocalMin_sub (LeviCivita (I := I) (F.S.base.metric (-tau)))
+      (F.S.base.metric (-tau)) hcov BoundarylessManifold.isInteriorPoint hspacepsi hspace hminEq')
+    (laplacian_le_of_isLocalMin_sub (LeviCivita (I := I) (F.S.base.metric (-tau)))
+      (F.S.base.metric (-tau)) hcov BoundarylessManifold.isInteriorPoint hspace hspacepsi hminEq)
+  rw [hdt, hlap, laplacian_time_slice_comp_extChartAt (F.S.base.metric (-tau)) q hq psi hpsi]
+  exact htest
+
+theorem ancient_redLength_conjugate_heat_lower_test
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) {tau : ℝ} (htau : 0 < tau)
+    (p q : F.M) (phi : ℝ × F.M → ℝ)
+    (hphi : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) 2 phi (tau, q))
+    (hmin : IsLocalMin (fun z : ℝ × F.M => redLength F.S 0 p z.2 z.1 - phi z) (tau, q)) :
+    0 ≤ deriv (fun t => phi (t, q)) tau -
+      laplacian (I := I) (LeviCivita (I := I) (F.S.base.metric (-tau))) (F.S.base.metric (-tau))
+        (fun y => phi (tau, y)) q +
+      (F.S.base.metric (-tau)).inner q
+        (gradientFun (F.S.base.metric (-tau)) (fun y => phi (tau, y)) q)
+        (gradientFun (F.S.base.metric (-tau)) (fun y => phi (tau, y)) q) -
+      F.S.scalar (-tau) q + (Module.finrank ℝ E : ℝ) / (2 * tau) := by
+  let c := redLength F.S 0 p q tau - phi (tau, q)
+  let psi : ℝ → F.M → ℝ := fun t y => phi (t, y) + c
+  have hd : MDifferentiableAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) phi (tau, q) :=
+    hphi.mdifferentiableAt (by norm_num)
+  have hpsi : MDifferentiableAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ)
+      (fun z : ℝ × F.M => psi z.1 z.2) (tau, q) := hd.add mdifferentiableAt_const
+  have heq : redLength F.S 0 p q tau = psi tau q := by dsimp [psi, c]; ring
+  have hlower : ∀ᶠ z : ℝ × F.M in 𝓝 (tau, q), psi z.1 z.2 ≤ redLength F.S 0 p z.2 z.1 := by
+    filter_upwards [hmin] with z hz
+    change redLength F.S 0 p q tau - phi (tau, q) ≤ redLength F.S 0 p z.2 z.1 - phi z at hz
+    dsimp [psi, c]
+    linarith
+  have hHJ := ancient_redLength_hamilton_jacobi_lower_test_terminal F hF htau p q psi hpsi heq hlower
+  have hdt : deriv (fun t => psi t q) tau = deriv (fun t => phi (t, q)) tau := by
+    exact deriv_add_const c
+  have hspace : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => phi (tau, y)) q :=
+    hd.comp q (mdifferentiableAt_const.prodMk mdifferentiableAt_id)
+  have hgrad : gradientFun (F.S.base.metric (-tau)) (psi tau) q =
+      gradientFun (F.S.base.metric (-tau)) (fun y => phi (tau, y)) q := by
+    dsimp [psi]
+    rw [gradientFun_add (F.S.base.metric (-tau)) hspace mdifferentiableAt_const,
+      gradientFun_const, add_zero]
+  rw [hdt, hgrad, ← heq] at hHJ
+  have hheat := ancient_redLength_time_deriv_add_laplacian_lower_test F hF htau p q phi hphi hmin
+  have halgebra : ((Module.finrank ℝ E : ℝ) / 2 - redLength F.S 0 p q tau) / tau +
+      2 * (redLength F.S 0 p q tau / (2 * tau)) = (Module.finrank ℝ E : ℝ) / (2 * tau) := by ring
+  linarith
 
 end Ancient
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
