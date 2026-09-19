@@ -33,15 +33,16 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Construct the embedded-disk projection used by the original section 25 cover induction. | Prove local injectivity and fibers of size at most two for the projected disk; construct PL, lift, boundary and subgroup compatibility with strict complexity descent. Then close the remaining Lemma 2 branch-separation producer. |
+| F / gpt-6-astra max | Construct the full ambient cover diagram and strict complexity descent. Proper projected disks through 3c7d44e19 are accepted. | Produce the actual cover and compatible smaller neighborhood, prove strict descent, then close Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement and annulus 18f861c89 are accepted; cut-cell layer 1cea2fbe7 is queued. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
 two-sheeted surjectivity. The upstairs disk must have the boundary/properness
-properties needed by descent; current NonsingularCell fields do not themselves
-assert proper interior placement. Lemma 2 starts with local injectivity and
+properties needed by descent. The inward-embedding producer through 3c7d44e19
+now constructs proper interior placement from the existing NonsingularCell,
+and the actual projection preserves it without extra properness hypotheses. Lemma 2 starts with local injectivity and
 two-point fibers. Neither arbitrary NormalSystem data nor the fiber-preserving
 DoubleCarrier transport produces them. Generic surface position in dimension
 three does not remove triple points. More conditional wrappers do not close
@@ -90,8 +91,10 @@ audit. h 0a0876425 still awaits independent acceptance. F through 51b4ee8ad is
 independently accepted: nine modules, 92 nonautomatic declarations, 15 critical
 reuse entries, two nonempty models and 13 clean environment linters. The
 source-collapse result is conditional on a given NormalSystem. Complete cover
-diagram production and strict descent remain open. F 8fc63d263 inward-push
-and S 4627710d3 cap-comparison deliveries are queued for separate acceptance.
+diagram production and strict descent remain open. F through 3c7d44e19 is
+subsequently accepted: five modules, 23 declarations (18 new), 13 critical
+reuse entries, four concrete models and 13 clean linters. S 4627710d3
+cap-comparison remains queued for separate acceptance.
 S's actual disk-times-circle product and
 finite native 24.11/24.12 through 434d5352c are independently accepted: ten
 modules, 41 declarations, 33 critical reused declarations, 13 clean linters
@@ -109,7 +112,7 @@ and keep the existing one-root-worker/two-private-checker resource policy.
 
 The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
-Static traversal reaches all six and 9310 project modules including the root,
+Static traversal reaches all six and 9314 project modules including the root,
 with no missing project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused

@@ -1065,3 +1065,40 @@ four existing tasks and the heartbeat have resumed, without new subagents.
 The owner authorized discretionary rebuilds for needed compatibility checks or
 prolonged all-lane blockage, while prioritizing proof work and narrow checks.
 No rebuild was started. Keep the original 14:19 UTC deadline.
+
+## 28. Proper projected disks without added boundary hypotheses (2026-09-19 UTC)
+
+F through 3c7d44e19 (including 8fc63d263) is merged and independently accepted.
+Five changed modules freshly compiled in 54.820 seconds, zero diagnostics.
+All 23 nonautomatic declarations (18 new), 13 critical reuse entries, four
+concrete models and 13 applicable environment linters pass the 47.137-second
+silent audit. Only standard axioms occur. Private reuse is limited to the
+accepted EmbeddedProjection and LemmaThree objects with receipt/source/object
+identity checks; other upstream objects remain shared and read-only.
+
+CollarInwardMap supplies an explicit injective PL height change.
+BoundaryInwardPush obtains a thin collar from compactness and glues it to the
+fixed core, then constructs a boundary-relative embedding with exact boundary
+preimage. BoundaryLocalEmbedding proves that a locally injective same-dimensional
+PL map cannot carry an interior point into the target boundary. It constructs
+small PL balls and uses actual boundary monotonicity and local invariance.
+
+ProjectedBoundary applies these producers to NonsingularCell, preserving its
+source boundary pointwise, then projects it through the actual covering map.
+The output includes the upstairs embedding, downstairs PL map, boundary loop
+and connector, exact boundary inverse/image relations, local injectivity,
+fibers of size at most two and normal-subgroup avoidance. No properness field
+or equivalent conclusion hypothesis is added. The old projection signature is
+preserved as a corollary of its generalized embedding form; its actual direct
+consumer is rebuilt.
+
+The standard nonempty simplex and a nonzero collar movement check the geometric
+producers. A complete nonempty NormalSystem/DoubleCoverDiagram is not claimed.
+Full cover construction, strict descent and crossing normalization remain
+separate gaps. F continues its existing strict-descent round without a new
+lane or interruption. E3 and S queued deliveries retain their ownership.
+
+Receipt: .lake/verified-twelfth-lane-delivery-20260919.json. Lean delta +565/-17,
+including four root imports; 65 handoff Markdown lines excluded. Root closure
+is 9314 project modules including itself, no missing source. No full-source
+build or restart was performed.

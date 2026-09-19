@@ -26,7 +26,10 @@ delivering 495a3e343; no running round was interrupted. F's actual full-cover
 projection layer through 51b4ee8ad is independently accepted: nine modules,
 92 nonautomatic declarations, 15 critical reuse entries, two nonempty models
 and 13 clean linters. The full cover diagram producer and strict descent remain
-open; later inward-push delivery 8fc63d263 is queued.
+open. Inward embeddings and proper projection through 3c7d44e19 are also
+accepted: five modules, 23 declarations, 13 critical reuse entries, four
+nonempty models and 13 clean linters. The boundary condition is constructed,
+not added as a DoubleCoverDiagram or NonsingularCell hypothesis.
 E3 owns I.4 through I.3. S's product and finite native 24.11/24.12 through
 434d5352c are independently accepted; S now owns compact PL smoothing.
 E3's path replacement and annulus connectivity through 18f861c89 are accepted;
@@ -38,7 +41,7 @@ smoothing is an independent open phase with its own producer and acceptance.
 The approximation stage must retain noncompact open sets and pointwise shrinking
 error control. Five existing endpoint-chain modules were missing from root
 reachability; all six planned direct imports are now present and statically
-reachable, with 9310 project modules (including the root) in the root closure. The owner
+reachable, with 9314 project modules (including the root) in the root closure. The owner
 stopped the full-source build at 2026-09-19 02:00 UTC, retaining outputs with
 a discretionary restart only when compatibility verification or prolonged
 all-lane blockage warrants it. Seven leaves/26 declarations passed focused checks;
