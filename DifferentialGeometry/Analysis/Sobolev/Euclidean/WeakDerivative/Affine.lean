@@ -1,0 +1,126 @@
+import DifferentialGeometry.Analysis.Calculus.AffineComposition
+import DifferentialGeometry.Analysis.Integration.Measure.Affine
+import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
+import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
+import Mathlib.Tactic.Ring
+
+noncomputable section
+
+open MeasureTheory Set
+
+namespace DeGiorgi
+
+open DifferentialGeometry.Analysis.Calculus
+
+variable {d : ℕ}
+
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+private theorem integral_comp_add_smul (F : E → ℝ) (b : E)
+    {r : ℝ} (hr : r ≠ 0) (Ω : Set E) :
+    (∫ x in (fun y => b + r • y) ⁻¹' Ω, F (b + r • x)) =
+      |(r ^ Module.finrank ℝ E)⁻¹| * ∫ x in Ω, F x := by
+  let e : E ≃ᵐ E :=
+    (MeasurableEquiv.smul₀ r hr).trans (MeasurableEquiv.addLeft b)
+  have hmap : ((volume : Measure E).restrict (e ⁻¹' Ω)).map e =
+      ENNReal.ofReal |(r ^ Module.finrank ℝ E)⁻¹| • volume.restrict Ω :=
+    Measure.map_add_smul_restrict_addHaar volume b hr Ω
+  change (∫ x in e ⁻¹' Ω, F (e x)) = _
+  rw [← integral_map_equiv e, hmap, integral_smul_measure,
+    ENNReal.toReal_ofReal (abs_nonneg _), smul_eq_mul]
+
+theorem HasWeakPartialDeriv.comp_add_smul {j : Fin d} {g f : E → ℝ} {Ω : Set E}
+    (h : HasWeakPartialDeriv j g f Ω) (b : E) {r : ℝ} (hr : r ≠ 0) :
+    HasWeakPartialDeriv j (fun x => r * g (b + r • x))
+      (fun x => f (b + r • x)) ((fun x => b + r • x) ⁻¹' Ω) := by
+  intro φ hφ hφc hφs
+  let S : E → E := fun x => b + r • x
+  let Ω' := S ⁻¹' Ω
+  let ψ : E → ℝ := fun z => φ (r⁻¹ • (z - b))
+  let v : E := EuclideanSpace.single j 1
+  have hψ : ContDiff ℝ (⊤ : ℕ∞) ψ := contDiff_comp_affine_inverse b r hφ
+  have hψc : HasCompactSupport ψ := hasCompactSupport_comp_affine_inverse b hr hφc
+  have hψs : tsupport ψ ⊆ Ω :=
+    tsupport_comp_affine_inverse_subset_of_preimage b hr hφs
+  have hψS (x : E) : ψ (S x) = φ x := by
+    simp [ψ, S, smul_smul, hr, sub_eq_add_neg, add_comm, add_assoc]
+  have hD (x : E) : fderiv ℝ ψ (S x) v = r⁻¹ * fderiv ℝ φ x v := by
+    simpa only [ψ, S, smul_eq_mul] using
+      fderiv_comp_affine_inverse_at_image b hr ((hφ.differentiable (by simp)) x) v
+  have hsource := h ψ hψ hψc hψs
+  change (∫ x in Ω, f x * fderiv ℝ ψ x v) = -∫ x in Ω, g x * ψ x at hsource
+  have htransport : (∫ x in Ω', f (S x) * fderiv ℝ ψ (S x) v) =
+      -∫ x in Ω', g (S x) * ψ (S x) := by
+    change (∫ x in (fun y => b + r • y) ⁻¹' Ω,
+        f (b + r • x) * fderiv ℝ ψ (b + r • x) v) =
+      -∫ x in (fun y => b + r • y) ⁻¹' Ω, g (b + r • x) * ψ (b + r • x)
+    rw [integral_comp_add_smul (fun z => f z * fderiv ℝ ψ z v) b hr Ω,
+      integral_comp_add_smul (fun z => g z * ψ z) b hr Ω, hsource, mul_neg]
+  have hleft : (∫ x in Ω', f (S x) * fderiv ℝ ψ (S x) v) =
+      r⁻¹ * ∫ x in Ω', f (S x) * fderiv ℝ φ x v := by
+    rw [← integral_const_mul]
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall fun x => by dsimp only; rw [hD x]; ring
+  have hright : (∫ x in Ω', g (S x) * ψ (S x)) =
+      ∫ x in Ω', g (S x) * φ x := by
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall fun x => by dsimp only; rw [hψS x]
+  rw [hleft, hright] at htransport
+  have hscaled := congrArg (fun z : ℝ => r * z) htransport
+  have hfactor : (∫ x in Ω', (r * g (S x)) * φ x) =
+      r * ∫ x in Ω', g (S x) * φ x := by
+    simp_rw [mul_assoc]
+    exact integral_const_mul r _
+  change (∫ x in Ω', f (S x) * fderiv ℝ φ x v) =
+    -∫ x in Ω', (r * g (S x)) * φ x
+  rw [hfactor]
+  simpa only [← mul_assoc, mul_inv_cancel₀ hr, one_mul, mul_neg] using hscaled
+
+end DeGiorgi
+
+end
+
+noncomputable section
+
+open MeasureTheory Set
+open scoped ENNReal
+namespace DeGiorgi
+
+variable {d : ℕ}
+
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+def MemW1pWitness.compAddSmul
+    {p : ℝ≥0∞} {f : E → ℝ} {Ω : Set E}
+    (hf : MemW1pWitness p f Ω) (b : E) {r : ℝ} (hr : r ≠ 0) :
+    MemW1pWitness p (fun x => f (b + r • x))
+      ((fun x => b + r • x) ⁻¹' Ω) where
+  memLp := hf.memLp.comp_add_smul b hr
+  weakGrad := fun x => r • hf.weakGrad (b + r • x)
+  weakGrad_component_memLp := by
+    intro j
+    simpa only [PiLp.smul_apply, smul_eq_mul] using
+      ((hf.weakGrad_component_memLp j).comp_add_smul b hr).const_mul r
+  isWeakGrad := by
+    intro j
+    simpa only [PiLp.smul_apply, smul_eq_mul] using
+      (hf.isWeakGrad j).comp_add_smul b hr
+
+theorem MemW1pWitness.compAddSmul_weakGrad
+    {p : ℝ≥0∞} {f : E → ℝ} {Ω : Set E}
+    (hf : MemW1pWitness p f Ω) (b : E) {r : ℝ} (hr : r ≠ 0) (x : E) :
+    (hf.compAddSmul b hr).weakGrad x = r • hf.weakGrad (b + r • x) := rfl
+
+theorem weakGrad_column_compAddSmul
+    {ι : Type*} {p : ℝ≥0∞} {u : E → EuclideanSpace ℝ ι} {Ω : Set E}
+    (hu : ∀ i : ι, MemW1pWitness p (fun x => u x i) Ω)
+    (b : E) {r : ℝ} (hr : r ≠ 0) (x : E) (j : Fin d) :
+    (WithLp.toLp 2 (fun i => ((hu i).compAddSmul b hr).weakGrad x j) :
+      EuclideanSpace ℝ ι) =
+      r • WithLp.toLp 2 (fun i => (hu i).weakGrad (b + r • x) j) := by
+  ext i
+  simp only [MemW1pWitness.compAddSmul, PiLp.smul_apply]
+
+end DeGiorgi
+
+end

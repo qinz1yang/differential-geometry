@@ -11474,3 +11474,8 @@ import DifferentialGeometry.Topology.LoopSpace.ContractibleNearby
 import DifferentialGeometry.Topology.LoopSpace.ImmersionStability
 import DifferentialGeometry.Topology.LoopSpace.GenericApproximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyExtension
+import DifferentialGeometry.Analysis.Integration.Measure.Affine
+import DifferentialGeometry.Analysis.Calculus.AffineComposition
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
+import DifferentialGeometry.Analysis.FunctionalAnalysis.BallScaling
+import DifferentialGeometry.Analysis.Integration.PlaneScaling
