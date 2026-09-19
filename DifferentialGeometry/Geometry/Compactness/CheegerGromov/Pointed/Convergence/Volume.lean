@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.BallImage
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackPartial
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.MetricExtension
@@ -98,5 +99,76 @@ theorem PointedRiemannianConvergenceMaps.tendsto_setLIntegral_image
     (gs i) (X.obj (phi (i + N))).metric U (hU i)
     (fun x hx v w => hgs i x (interior_subset hx) v w)
     hK.measurableSet hKK' (fs (phi (i + N)))).symm
+
+theorem PointedRiemannianConvergenceMaps.lintegral_eq_of_tendsto_of_tightness
+    [NeZero (Module.finrank ℝ E)]
+    {X : PointedRiemannianSeq.{u, uE, uH} I} {P : PointedRiemannianManifold.{u, uE, uH} I}
+    {phi : ℕ → ℕ} (Phi : PointedRiemannianConvergenceMaps X P phi)
+    (C : MetricConvergenceData Phi)
+    (hcanonical : ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData Phi i)
+    (hcomplete : MetricComplete P)
+    (fs : ∀ i, (X.obj i).M → ℝ≥0∞) (hmeas : ∀ i, Measurable (fs i))
+    {f : P.M → ℝ≥0∞}
+    (hbound : ∀ K : Set P.M, IsCompact K → ∃ B : ℝ≥0∞, B ≠ ⊤ ∧
+      ∀ᶠ i in atTop, ∀ x ∈ K, fs (phi i) (Phi.map i x) ≤ B)
+    (hlim : ∀ x, Tendsto (fun i => fs (phi i) (Phi.map i x)) atTop (𝓝 (f x)))
+    {b : ℝ≥0∞}
+    (htotal : Tendsto (fun i => ∫⁻ x, fs (phi i) x
+      ∂riemannianVolumeMeasure (I := I) (M := (X.obj (phi i)).M) (X.obj (phi i)).metric)
+      atTop (𝓝 b))
+    (htight : ∀ ε : ℝ≥0∞, 0 < ε → ∃ R : ℝ, ∀ᶠ i in atTop,
+      ∫⁻ x in (riemannianBallOf (X.obj (phi i)).metric (X.obj (phi i)).basepoint R)ᶜ,
+        fs (phi i) x
+        ∂riemannianVolumeMeasure (I := I) (M := (X.obj (phi i)).M) (X.obj (phi i)).metric ≤ ε) :
+    ∫⁻ x, f x ∂riemannianVolumeMeasure (I := I) (M := P.M) P.metric = b := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let ν := riemannianVolumeMeasure (I := I) (M := P.M) P.metric
+  let μ (i : ℕ) :=
+    riemannianVolumeMeasure (I := I) (M := (X.obj i).M) (X.obj i).metric
+  have hlocal (K : Set P.M) (hK : IsCompact K) :
+      Tendsto (fun i => ∫⁻ x in Phi.map i '' K, fs (phi i) x ∂μ (phi i)) atTop
+        (𝓝 (∫⁻ x in K, f x ∂ν)) := by
+    obtain ⟨B, hB, hb⟩ := hbound K hK
+    exact Phi.tendsto_setLIntegral_image C hcanonical hK fs hmeas hB hb (fun x _ => hlim x)
+  have hlocalBound (K : Set P.M) (hK : IsCompact K) : ∫⁻ x in K, f x ∂ν ≤ b := by
+    apply le_of_tendsto_of_tendsto (hlocal K hK) htotal
+    exact Eventually.of_forall fun i => setLIntegral_le_lintegral _ _
+  apply le_antisymm
+  · calc
+      _ = ∫⁻ x in ⋃ n, compactCovering P.M n, f x ∂ν := by
+        rw [iUnion_compactCovering, setLIntegral_univ]
+      _ = ⨆ n, ∫⁻ x in compactCovering P.M n, f x ∂ν :=
+        setLIntegral_iUnion_of_directed f (fun m n => ⟨max m n,
+          compactCovering_subset P.M (le_max_left _ _),
+          compactCovering_subset P.M (le_max_right _ _)⟩)
+      _ ≤ _ := iSup_le fun n => hlocalBound _ (isCompact_compactCovering P.M n)
+  · apply ENNReal.le_of_forall_pos_le_add
+    intro ε hε _
+    obtain ⟨R, hR⟩ := htight ε (ENNReal.coe_pos.mpr hε)
+    let K := riemannianClosedBallOf P.metric P.basepoint (2 * R + 1)
+    have hK : IsCompact K := by
+      let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+      have hcomp : RiemannianMetricComplete P.metric := ⟨MetricComplete.complete P hcomplete⟩
+      exact hcomp.closedEBall_isCompact _ _
+    have href : ∀ i, (C.domain i).referenceMetric = (C.domain i).limitMetric := by
+      intro i
+      rw [hcanonical]
+      rfl
+    have hcapture := Phi.eventually_ball_subset_image_closed_ball C href hcomplete P.basepoint
+      (A := R) (L := 2) (R := 2 * R + 1) (by norm_num) (by linarith)
+    have happrox : ∀ᶠ i in atTop,
+        (∫⁻ x, fs (phi i) x ∂μ (phi i)) ≤
+          (∫⁻ x in Phi.map i '' K, fs (phi i) x ∂μ (phi i)) + ε := by
+      filter_upwards [hcapture, hR] with i hi hRi
+      have hcompactImage : IsCompact (Phi.map i '' K) :=
+        hK.image_of_continuousOn ((Phi.partialDiffeomorph i).contMDiffOn_toFun.continuousOn.mono hi.1)
+      rw [← lintegral_add_compl _ hcompactImage.measurableSet]
+      apply add_le_add le_rfl
+      have hball : riemannianBallOf (X.obj (phi i)).metric (X.obj (phi i)).basepoint R ⊆
+          Phi.map i '' K := by
+        simpa only [PointedRiemannianConvergenceMaps.map, Phi.basepoint_map] using hi.2
+      exact (lintegral_mono_set (compl_subset_compl.mpr hball)).trans hRi
+    have hb := le_of_tendsto_of_tendsto htotal ((hlocal K hK).add tendsto_const_nhds) happrox
+    exact hb.trans (add_le_add (setLIntegral_le_lintegral _ _) le_rfl)
 
 end DifferentialGeometry.CheegerGromovCompactness

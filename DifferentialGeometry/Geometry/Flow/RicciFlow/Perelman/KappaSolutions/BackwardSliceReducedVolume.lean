@@ -38,7 +38,6 @@ theorem normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
-    {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A)
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I)) {phi : ℕ → ℕ}
     (hescape : Tendsto (tau ∘ phi) atTop atTop)
     (Phi : PointedRiemannianConvergenceMaps (backwardSliceSequence F tau htau q) P phi)
@@ -83,77 +82,41 @@ theorem normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit
     rw [intrinsicReducedVolume_eq_normalizedShrinkerMass F.S 0 p (htau (phi i))]
     simp only [zero_sub]
     rfl
-  have hlocal (K : Set P.M) (hK : IsCompact K) :
-      Tendsto (fun i => ∫⁻ x in Phi.map i '' K, fs (phi i) x ∂μ (phi i)) atTop
-        (𝓝 (∫⁻ x in K, f x ∂ν)) := by
-    apply Phi.tendsto_setLIntegral_image C hcanonical hK fs hmeas ENNReal.one_ne_top
-      (Eventually.of_forall (fun i x _ => hbound (phi i) (Phi.map i x)))
-    intro x _
-    exact ENNReal.continuous_ofReal.continuousAt.tendsto.comp
-      (Real.continuous_exp.continuousAt.tendsto.comp ((hlim x).neg.sub_const c))
-  have hlocalBound (K : Set P.M) (hK : IsCompact K) :
-      ∫⁻ x in K, f x ∂ν ≤ asymptoticReducedVolume F.S 0 p := by
-    apply le_of_tendsto_of_tendsto (hlocal K hK) htotal
-    exact Eventually.of_forall fun i => setLIntegral_le_lintegral _ _
   change (∫⁻ x, f x ∂ν) = asymptoticReducedVolume F.S 0 p
-  apply le_antisymm
-  · calc
-      _ = ∫⁻ x in ⋃ n, compactCovering P.M n, f x ∂ν := by
-        rw [iUnion_compactCovering, setLIntegral_univ]
-      _ = ⨆ n, ∫⁻ x in compactCovering P.M n, f x ∂ν :=
-        setLIntegral_iUnion_of_directed f (fun m n => ⟨max m n,
-          compactCovering_subset P.M (le_max_left _ _),
-          compactCovering_subset P.M (le_max_right _ _)⟩)
-      _ ≤ _ := iSup_le fun n => hlocalBound _ (isCompact_compactCovering P.M n)
-  · apply ENNReal.le_of_forall_pos_le_add
-    intro ε hε _
-    obtain ⟨N, hN⟩ := ancientKappaThree_exp_neg_redLength_uniform_tightness F hF hdim A
-      (show (0 : ℝ≥0∞) < ε from ENNReal.coe_pos.mpr hε)
-    let K := riemannianClosedBallOf P.metric P.basepoint (2 * (N : ℝ) + 1)
-    have hK : IsCompact K := by
-      have hcomp : RiemannianMetricComplete P.metric := ⟨MetricComplete.complete P hcomplete⟩
-      exact hcomp.closedEBall_isCompact _ _
-    have href : ∀ i, (C.domain i).referenceMetric = (C.domain i).limitMetric := by
-      intro i
-      rw [hcanonical]
-      rfl
-    have hcapture := Phi.eventually_ball_subset_image_closed_ball C href hcomplete P.basepoint
-      (A := (N : ℝ)) (L := 2) (R := 2 * (N : ℝ) + 1) (by norm_num) (by linarith)
-    have happrox : ∀ᶠ i in atTop,
-        (∫⁻ x, fs (phi i) x ∂μ (phi i)) ≤
-          (∫⁻ x in Phi.map i '' K, fs (phi i) x ∂μ (phi i)) + ε := by
-      filter_upwards [hcapture] with i hi
-      have hcompactImage : IsCompact (Phi.map i '' K) :=
-        hK.image_of_continuousOn ((Phi.partialDiffeomorph i).contMDiffOn_toFun.continuousOn.mono hi.1)
-      rw [← lintegral_add_compl _ hcompactImage.measurableSet]
-      apply add_le_add le_rfl
-      let T := {x : F.M | (N : ℝ) ≤ (riemannianEDistOf (X.obj (phi i)).metric (q (phi i)) x).toReal}
-      have hsubset : (Phi.map i '' K)ᶜ ⊆ T := by
-        intro x hx
-        have hn : ENNReal.ofReal (N : ℝ) ≤
-            riemannianEDistOf (X.obj (phi i)).metric (q (phi i)) x := by
-          apply le_of_not_gt
-          intro hlt
-          apply hx
-          apply hi.2
-          change riemannianEDistOf _ (Phi.map i P.basepoint) x < _
-          simpa only [PointedRiemannianConvergenceMaps.map, Phi.basepoint_map] using hlt
-        have hd := ENNReal.toReal_mono
-          (riemannianEDistOf_ne_top (X.obj (phi i)).metric (q (phi i)) x) hn
-        change (N : ℝ) ≤ (riemannianEDistOf (X.obj (phi i)).metric (q (phi i)) x).toReal
-        simpa only [ENNReal.toReal_ofReal (Nat.cast_nonneg N)] using hd
-      calc
-        _ ≤ ∫⁻ x in T, fs (phi i) x ∂μ (phi i) := lintegral_mono_set hsubset
-        _ ≤ ∫⁻ x in T, ENNReal.ofReal (Real.exp (-redLength F.S 0 p x (tau (phi i))))
-            ∂μ (phi i) := by
-          apply lintegral_mono
-          intro x
-          apply ENNReal.ofReal_le_ofReal
-          apply Real.exp_le_exp.mpr
-          linarith
-        _ ≤ ε := hN p (q (phi i)) (tau (phi i)) (htau (phi i)) (hbase (phi i))
-    have hb := le_of_tendsto_of_tendsto htotal ((hlocal K hK).add tendsto_const_nhds) happrox
-    exact hb.trans (add_le_add (setLIntegral_le_lintegral _ _) le_rfl)
+  apply Phi.lintegral_eq_of_tendsto_of_tightness C hcanonical hcomplete fs hmeas
+    (fun K _ => ⟨1, ENNReal.one_ne_top,
+      Eventually.of_forall (fun i x _ => hbound (phi i) (Phi.map i x))⟩)
+    (fun x => ENNReal.continuous_ofReal.continuousAt.tendsto.comp
+      (Real.continuous_exp.continuousAt.tendsto.comp ((hlim x).neg.sub_const c))) htotal
+  intro ε hε
+  obtain ⟨N, hN⟩ := ancientKappaThree_exp_neg_redLength_uniform_tightness F hF hdim
+    (ell P.basepoint + 1) hε
+  refine ⟨N, ?_⟩
+  have hbase : ∀ᶠ i in atTop,
+      redLength F.S 0 p (q (phi i)) (tau (phi i)) ≤ ell P.basepoint + 1 := by
+    filter_upwards [(hlim P.basepoint).eventually
+      (gt_mem_nhds (lt_add_one (ell P.basepoint)))] with i hi
+    simpa only [PointedRiemannianConvergenceMaps.map, Phi.basepoint_map] using hi.le
+  filter_upwards [hbase] with i hi
+  let T := {x : F.M | (N : ℝ) ≤ (riemannianEDistOf (X.obj (phi i)).metric (q (phi i)) x).toReal}
+  have hsubset : (riemannianBallOf (X.obj (phi i)).metric (q (phi i)) (N : ℝ))ᶜ ⊆ T := by
+    intro x hx
+    have hn : ENNReal.ofReal (N : ℝ) ≤
+        riemannianEDistOf (X.obj (phi i)).metric (q (phi i)) x := le_of_not_gt hx
+    have hd := ENNReal.toReal_mono
+      (riemannianEDistOf_ne_top (X.obj (phi i)).metric (q (phi i)) x) hn
+    change (N : ℝ) ≤ (riemannianEDistOf (X.obj (phi i)).metric (q (phi i)) x).toReal
+    simpa only [ENNReal.toReal_ofReal (Nat.cast_nonneg N)] using hd
+  calc
+    _ ≤ ∫⁻ x in T, fs (phi i) x ∂μ (phi i) := lintegral_mono_set hsubset
+    _ ≤ ∫⁻ x in T, ENNReal.ofReal (Real.exp (-redLength F.S 0 p x (tau (phi i))))
+        ∂μ (phi i) := by
+      apply lintegral_mono
+      intro x
+      apply ENNReal.ofReal_le_ofReal
+      apply Real.exp_le_exp.mpr
+      linarith
+    _ ≤ ε := hN p (q (phi i)) (tau (phi i)) (htau (phi i)) hi
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
@@ -202,7 +165,7 @@ theorem exists_backward_slice_reducedLength_limit_with_mass
   refine ⟨P, phi, hphi, Phi, C, hcanonical, href, hcomplete, hconnected,
     ell, hnonneg, hbaseLimit, hLip, hconv, ?_⟩
   exact normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit F hF hdim
-    p tau htau q hbase P (hescape.comp hphi.tendsto_atTop) Phi C hcanonical hcomplete ell
+    p tau htau q P (hescape.comp hphi.tendsto_atTop) Phi C hcanonical hcomplete ell
     (fun x => (hconv {x} isCompact_singleton).tendsto_at (mem_singleton x))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
