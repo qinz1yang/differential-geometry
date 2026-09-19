@@ -9,7 +9,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleBicollar
 import DifferentialGeometry.Topology.Connected.BicollarComplement
 
 /-!
-# Connected annulus complements of nonseparating surface circles
+# Orientable annulus complements of surface circles
 -/
 
 open Set Topology
@@ -19,14 +19,14 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-theorem IsCombinatorialManifold.exists_connected_annulus_complement
+theorem IsCombinatorialManifold.exists_annulus_complement_of_isOrientable
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     {J U : Set E} (hJ : IsPLSphere 1 J) (hJK : J ⊆ K.space)
-    (hnonsep : IsPreconnected (K.space \ J)) (hU : U ∈ 𝓝ˢ[K.space] J) :
+    (hU : U ∈ 𝓝ˢ[K.space] J) :
     ∃ (R : Geometry.SimplicialComplex ℝ E) (hRfin : R.faces.Finite),
       letI := hRfin.to_subtype
-      IsCombinatorialManifoldWithBoundary 2 R ∧ IsOrientable 2 R ∧ IsConnected R.space ∧
+      IsCombinatorialManifoldWithBoundary 2 R ∧ IsOrientable 2 R ∧
       eulerChar R = eulerChar K ∧
       ∃ (W : Set E) (ρ : E × ℝ → E), IsPolyhedron W ∧ W ⊆ K.space ∧ W ⊆ U ∧
         W ∈ 𝓝ˢ[K.space] J ∧ IsPLHomeomorphOn ρ (J ×ˢ Icc (-1 : ℝ) 1) W ∧
@@ -35,7 +35,8 @@ theorem IsCombinatorialManifold.exists_connected_annulus_complement
         (boundaryComplex 2 R).space = ρ '' (J ×ˢ {(-1 : ℝ), 1}) ∧
         W ∩ R.space = ρ '' (J ×ˢ {(-1 : ℝ), 1}) ∧ W ∪ R.space = K.space ∧
         IsPLSphere 1 (ρ '' (J ×ˢ {(-1 : ℝ)})) ∧ IsPLSphere 1 (ρ '' (J ×ˢ {(1 : ℝ)})) ∧
-        Disjoint (ρ '' (J ×ˢ {(-1 : ℝ)})) (ρ '' (J ×ˢ {(1 : ℝ)})) := by
+        Disjoint (ρ '' (J ×ˢ {(-1 : ℝ)})) (ρ '' (J ×ˢ {(1 : ℝ)})) ∧
+        (IsPreconnected (K.space \ J) → IsConnected R.space) := by
   obtain ⟨W, ρ, hW, hWK, hWU, hWnhds, hρ, hzero⟩ :=
     hK.exists_bicollar_of_isPLSphere_one K hor hJ hJK hU
   obtain ⟨A, R, hAfin, hRfin, hA, hR, hAspace, hRspace, -, hRbd, hmeet, hcover⟩ :=
@@ -49,7 +50,8 @@ theorem IsCombinatorialManifold.exists_connected_annulus_complement
     hor.of_space_subset K R hRK hK.isCombinatorialManifoldWithBoundary hR
   have hmeetW : W ∩ R.space = ρ '' (J ×ˢ {(-1 : ℝ), 1}) := by rwa [hAspace] at hmeet
   have hcoverW : W ∪ R.space = K.space := by rwa [hAspace] at hcover
-  have hRc : IsConnected R.space := Topology.isConnected_complement_of_bicollar
+  have hRc (hnonsep : IsPreconnected (K.space \ J)) : IsConnected R.space :=
+    Topology.isConnected_complement_of_bicollar
     hJ.isConnected hJ.isPolyhedron.isCompact (isPolyhedron_space R).isClosed
     (by rwa [union_comm]) (by rwa [inter_comm])
     hρ.isPiecewiseAffineOn.continuousOn hρ.bijOn hzero hnonsep
@@ -79,8 +81,32 @@ theorem IsCombinatorialManifold.exists_connected_annulus_complement
     have heq := hρ.bijOn.injOn (hleft hu) (hright hv) (hux.trans hvx.symm)
     have ht := hu.2.symm.trans ((congrArg Prod.snd heq).trans hv.2)
     norm_num at ht
-  exact ⟨R, hRfin, hR, hRo, hRc, hRχ, W, ρ, hW, hWK, hWU, hWnhds, hρ, hzero,
+  exact ⟨R, hRfin, hR, hRo, hRχ, W, ρ, hW, hWK, hWU, hWnhds, hρ, hzero,
     hRspace, fun x hx => ⟨hRK hx, fun hxJ => disjoint_left.mp hRJ hx hxJ⟩,
-    hRbd, hmeetW, hcoverW, hJ₀, hJ₁, hdis⟩
+    hRbd, hmeetW, hcoverW, hJ₀, hJ₁, hdis, hRc⟩
+
+open Classical in
+theorem IsCombinatorialManifold.exists_connected_annulus_complement
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
+    {J U : Set E} (hJ : IsPLSphere 1 J) (hJK : J ⊆ K.space)
+    (hnonsep : IsPreconnected (K.space \ J)) (hU : U ∈ 𝓝ˢ[K.space] J) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (hRfin : R.faces.Finite),
+      letI := hRfin.to_subtype
+      IsCombinatorialManifoldWithBoundary 2 R ∧ IsOrientable 2 R ∧ IsConnected R.space ∧
+      eulerChar R = eulerChar K ∧
+      ∃ (W : Set E) (ρ : E × ℝ → E), IsPolyhedron W ∧ W ⊆ K.space ∧ W ⊆ U ∧
+        W ∈ 𝓝ˢ[K.space] J ∧ IsPLHomeomorphOn ρ (J ×ˢ Icc (-1 : ℝ) 1) W ∧
+        (∀ x ∈ J, ρ (x, 0) = x) ∧ R.space = closure (K.space \ W) ∧
+        R.space ⊆ K.space \ J ∧
+        (boundaryComplex 2 R).space = ρ '' (J ×ˢ {(-1 : ℝ), 1}) ∧
+        W ∩ R.space = ρ '' (J ×ˢ {(-1 : ℝ), 1}) ∧ W ∪ R.space = K.space ∧
+        IsPLSphere 1 (ρ '' (J ×ˢ {(-1 : ℝ)})) ∧ IsPLSphere 1 (ρ '' (J ×ˢ {(1 : ℝ)})) ∧
+        Disjoint (ρ '' (J ×ˢ {(-1 : ℝ)})) (ρ '' (J ×ˢ {(1 : ℝ)})) := by
+  obtain ⟨R, hRfin, hR, hRo, hRχ, W, ρ, hW, hWK, hWU, hWnhds, hρ, hzero,
+      hRspace, hRK, hRbd, hmeet, hcover, hJ₀, hJ₁, hdis, hRc⟩ :=
+    hK.exists_annulus_complement_of_isOrientable K hor hJ hJK hU
+  exact ⟨R, hRfin, hR, hRo, hRc hnonsep, hRχ, W, ρ, hW, hWK, hWU, hWnhds, hρ, hzero,
+    hRspace, hRK, hRbd, hmeet, hcover, hJ₀, hJ₁, hdis⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

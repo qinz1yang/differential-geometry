@@ -8812,3 +8812,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceAnnulusComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldDisjointUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceBoundaryCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCapping
+import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskAnnulus

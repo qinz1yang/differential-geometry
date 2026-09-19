@@ -816,3 +816,54 @@ objects, receipts, models and audit are under
 shared artifacts are unchanged. Actual essential disk production, disjoint
 cap geometry, ambient separation preservation and the final 30.4 induction
 are still not claimed complete.
+
+
+## Common annulus and spanning-disk data (2026-09-19 UTC)
+
+`SurfaceAnnulusComplement.lean` now exposes
+`IsCombinatorialManifold.exists_annulus_complement_of_isOrientable` for any
+PL circle in a closed orientable surface. The actual annulus, finite
+orientable complement, exact boundary circles and Euler equation are retained
+without assuming nonseparation. Nonseparation implies connectedness of that
+same produced complement. The prior connected-complement theorem keeps its
+exact signature and is a corollary.
+
+`SurfaceSpanningDisk.lean` factors the disk-enlargement construction through
+`exists_disk_pair_of_spanning_disk_of_bicollar`, valid for a closed ambient
+set and an actual spanning disk with a supplied bicollar. It preserves both
+half-annulus carrier equations, both endpoint boundary equations, the exact
+shared original disk, and the relative-neighborhood conclusion. Both existing
+manifold spanning-disk signatures remain unchanged.
+
+`IsCombinatorialManifold.exists_annulus_complement_of_spanning_disk` in
+`SpanningDiskAnnulus.lean` assembles those constructions using the same annulus
+and bicollar map. It produces the finite complement R and actual enlarged
+disks D0 and D1, proves R misses the original disk, proves R intersects each
+Di exactly in its own boundary, and identifies the entire boundary of R with
+the two endpoint circles. The original disk lies in both parameterized open
+simplex images. The carrier equation `R union D0 union D1 = K union D`, the
+arbitrarily small prescribed control and the relative neighborhood required
+by the E3 input all hold for these same witnesses. D0 and D1 still intersect
+in the original disk; no disjointness of these enlarged disks is claimed.
+
+The three modules compile with zero diagnostics in 11.343, 11.666 and 12.090
+seconds including admission. The final silent audit takes 49.477 seconds:
+six native declarations (three new and three retained), ten critical reused
+entries, three geometric models, one retained conditional consumer and two
+explicit local instances. All 13 applicable linters pass and all axiom
+closures contain only standard foundational axioms. The new prism model
+checks exact cap-boundary intersections and small-neighborhood control, and
+proves that its complementary surface is disconnected with Euler two. The
+other geometric models replay the old bicollar pair and the old small
+spanning-disk API. The conditional consumer tests the old nonseparating
+interface; it is not counted as a geometric example. One set-union lemma
+name and two external-model line widths were repaired before the passing
+checks. All three old public signatures are compared textually to the prior
+checkpoint and are unchanged.
+
+The new leaf is registered in the flat root. Frozen sources, private objects,
+receipts, audit and census are under
+`moise304-reading/spanning-disk-annulus-checkpoint/`. This supplies consistent
+actual witnesses for the later local split construction. The geometric push
+to disjoint caps, ambient separation transfer and full 30.4 remain open; root
+builds remain stopped and shared artifacts were not modified.

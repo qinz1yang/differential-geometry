@@ -680,3 +680,18 @@ axioms and zero final diagnostics. Frozen evidence is under
 disjoint disks with exact boundary and intersection equations; their geometric
 production and preservation of ambient separation remain E3 work. No full
 30.4 completion is claimed.
+
+
+### M304 common spanning-disk and annulus witnesses (2026-09-19 UTC)
+
+`SpanningDiskAnnulus.lean` produces the annulus, finite orientable complement
+and enlarged spanning disks together, with common endpoint boundary circles,
+exact intersections, unchanged Euler characteristic, carrier-cover equations
+and the relative-neighborhood data for E3. It covers separating and
+nonseparating circles and derives connectedness in the latter case. Six
+native declarations, ten reused entries, three geometric models, one retained
+conditional consumer, two instances and 13 linters pass with standard axioms
+and zero diagnostics. All three older public signatures are unchanged.
+Frozen evidence is under `moise304-reading/spanning-disk-annulus-checkpoint/`.
+The enlarged disks still share the original disk; disjoint caps and full 30.4
+are not claimed.
