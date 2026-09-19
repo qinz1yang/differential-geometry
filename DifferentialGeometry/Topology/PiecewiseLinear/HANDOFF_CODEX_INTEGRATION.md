@@ -934,3 +934,32 @@ acceptance; its requested read-only MoiseChain compilation permission is granted
 Morning accounting is recorded in MORNING_ACCEPTANCE_20260919.md and the local
 overnight campaign ledger. At the deadline stop starting new proof rounds,
 record remaining active work and delivery points, and prepare the final review.
+
+## 24. Contract review hold, root coverage and smoothing handoff (2026-09-19 UTC)
+
+h delivered contracts through 585cc71a0, but source review found two unresolved
+defects before integration. Moise331's one-manifold input excludes branching
+graphs permitted on book p230 and needed for section 34. PolyhedralGraph's
+regular-neighborhood relation uses raw regularNeighborhoodIn stages without
+appropriate derived subdivision/global compatibility evidence. h was handed
+these exact review findings and nonempty-instance requirements at delivery;
+its lane remains contract repair. Do not merge/count this delivery as accepted
+merely because its private compiler/linter checks passed.
+
+The prepared six-import patch is now applied to the flat root. Static traversal
+with nested comments excluded reaches all six and 9265 project modules, with no
+missing project source. The seven endpoint audit modules retain their exact
+previously checked Git blobs. Evidence:
+.lake/root-endpoint-coverage-20260919.json.
+No Lean proof was changed for coverage; no full-root build was started or
+certified. Existing stopped-build outputs remain intact.
+
+S delivered 434d5352c for a finite native 24.12 generating-loop-to-CST endpoint.
+It is queued with the earlier product/CST delivery for independent acceptance.
+At that natural boundary S began the separate compact PL-smoothing lane on
+Astra max: audit actual triangulation/handle/circle/sphere producers, then prove
+a missing mathematical layer rather than add a conclusion-shaped assumption.
+E3 delivered 18f861c89 for path connectedness of a PL sphere minus two disjoint
+PL disks; it is queued and E3 continues the actual local split-cell geometry.
+F continues actual ambient-cover reduction after its projection delivery.
+All four tasks retain one lane each; private checker capacity remains two.

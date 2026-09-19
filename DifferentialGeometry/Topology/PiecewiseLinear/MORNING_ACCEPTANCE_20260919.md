@@ -18,15 +18,27 @@ Receipt: .lake/verified-eighth-lane-delivery-20260919.json.
 
 ## Continuing priorities
 
-h: repair Moise252/331/351; F: actual ambient-cover reduction and descent;
-E3: actual geometric 30.3 data before 30.4; S: 24.12 then separate compact PL
-smoothing. Use existing tasks, F/S Astra max and h/E3 Sol max.
+h: correct the held Moise331/351 repairs; F: actual ambient-cover reduction
+and descent; E3: actual geometric 30.3 data before 30.4; S: compact PL smoothing,
+assigned after reported finite 24.12 delivery 434d5352c. Use existing tasks,
+F/S Astra max and h/E3 Sol max.
 Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
-Retain full-root build artifacts; that build is stopped. Six-import endpoint
-coverage repair is prepared and unapplied. Focused checks do not certify a
-full-source build or the remaining classical input propositions.
+Retain full-root build artifacts; that build is stopped. Six endpoint imports
+are now registered and statically reachable (9265 project modules, no missing
+project source). The seven previously audited endpoint leaves retain their
+exact checked Git blobs; no full-root success is claimed. Focused checks do not
+certify a full-source build or the remaining classical input propositions.
+
+## Held and newly queued deliveries
+
+h 585cc71a0 is held: the 33.1 one-manifold hypothesis wrongly excludes
+branching graphs, and the proposed 35.1 raw-star tower does not yet establish
+a genuine global regular-neighborhood relation. h continues corrections.
+S 434d5352c reports a finite native 24.12 endpoint, pending independent
+acceptance. E3 18f861c89 reports the sphere-minus-two-disks connectedness
+producer, also pending acceptance. None is counted as an accepted endpoint.
 
 ## Required final update
 
