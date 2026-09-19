@@ -84,6 +84,52 @@ theorem IsCombinatorialManifold.exists_graphDualCell_piercing_with_nested_common
     hAU, hAB⟩
 
 open Classical in
+theorem IsCombinatorialManifold.exists_piercings_with_nested_common_neighborhoods
+    {ι : Type*}
+    [FiniteDimensional ℝ E] (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 3 K) (hL : L.faces ⊆ K.faces)
+    (hcard : ∀ s ∈ L.faces, s.card ≤ 2) {v : E} (w : ι → E)
+    (hwinj : Function.Injective w) (hvw : ∀ i, v ≠ w i)
+    (hneighbors : ∀ u, u ≠ v → ({v, u} ∈ L.faces ↔ u ∈ Set.range w))
+    {U : Set E} (hU : IsOpen U)
+    (hDU : ∀ i, (splittingDisk K {v, w i}
+      (hL ((hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩))).space ⊆ U) :
+    ∃ (J C : ι → Set E) (f : ι → E → E) (A B : ι → Set E),
+      (∀ i,
+        IsPLSphere 1 (J i) ∧
+        J i ⊆ (splittingDisk K {v, w i}
+          (hL ((hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩))).space ∧
+        Disjoint (J i) (boundaryComplex 2 (splittingDisk K {v, w i}
+          (hL ((hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩)))).space ∧
+        IsPLHomeomorphOn (f i) (graphDualCell K L (w i)).space (C i) ∧
+        C i ⊆ (graphDualCell K L (w i)).space ∧ EqOn (f i) id (J i) ∧
+        IsPLBall 3 (C i) ∧ (graphDualCell K L v).space ∩ C i = J i ∧
+        A i ⊆ U ∧
+        IsNestedCommonAnnularDerivedNeighborhood K (A i) (B i) (J i)
+          (boundaryComplex 3 (graphDualCell K L v)).space
+          (f i '' (boundaryComplex 3 (graphDualCell K L (w i))).space)) ∧
+      Pairwise fun i j => Disjoint (J i) (J j) := by
+  have hedge (i : ι) : {v, w i} ∈ L.faces :=
+    (hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩
+  have hpierce (i : ι) :=
+    hK.exists_graphDualCell_piercing_with_nested_common_neighborhoods K L hL hcard
+      (hvw i) (hedge i) hU (hDU i)
+  choose J C f A B hdata using hpierce
+  refine ⟨J, C, f, A, B, hdata, ?_⟩
+  intro i j hij
+  have hedgeNe : ({v, w i} : Finset E) ≠ {v, w j} := by
+    intro heq
+    have hmem : w i ∈ ({v, w j} : Finset E) := by
+      rw [← heq]
+      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self (w i))
+    have hwij : w i = w j := by
+      simpa [(hvw i).symm] using hmem
+    exact hij (hwinj hwij)
+  have hdis := disjoint_splittingDisk_space K (hL (hedge i)) (hL (hedge j))
+    hedgeNe (by rw [Finset.card_pair (hvw i), Finset.card_pair (hvw j)])
+  exact hdis.mono (hdata i).2.1 (hdata j).2.1
+
+open Classical in
 theorem IsCombinatorialManifold.exists_trivalent_piercings_with_nested_common_neighborhoods
     [FiniteDimensional ℝ E] (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 3 K) (hL : L.faces ⊆ K.faces)
@@ -107,25 +153,8 @@ theorem IsCombinatorialManifold.exists_trivalent_piercings_with_nested_common_ne
         IsNestedCommonAnnularDerivedNeighborhood K (A i) (B i) (J i)
           (boundaryComplex 3 (graphDualCell K L v)).space
           (f i '' (boundaryComplex 3 (graphDualCell K L (w i))).space)) ∧
-      Pairwise fun i j => Disjoint (J i) (J j) := by
-  have hedge (i : Fin 3) : {v, w i} ∈ L.faces :=
-    (hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩
-  have hpierce (i : Fin 3) :=
-    hK.exists_graphDualCell_piercing_with_nested_common_neighborhoods K L hL hcard
-      (hvw i) (hedge i) hU (hDU i)
-  choose J C f A B hdata using hpierce
-  refine ⟨J, C, f, A, B, hdata, ?_⟩
-  intro i j hij
-  have hedgeNe : ({v, w i} : Finset E) ≠ {v, w j} := by
-    intro heq
-    have hmem : w i ∈ ({v, w j} : Finset E) := by
-      rw [← heq]
-      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self (w i))
-    have hwij : w i = w j := by
-      simpa [(hvw i).symm] using hmem
-    exact hij (hwinj hwij)
-  have hdis := disjoint_splittingDisk_space K (hL (hedge i)) (hL (hedge j))
-    hedgeNe (by rw [Finset.card_pair (hvw i), Finset.card_pair (hvw j)])
-  exact hdis.mono (hdata i).2.1 (hdata j).2.1
+      Pairwise fun i j => Disjoint (J i) (J j) :=
+  hK.exists_piercings_with_nested_common_neighborhoods K L hL hcard w
+    hwinj hvw hneighbors hU hDU
 
 end DifferentialGeometry.Topology.PiecewiseLinear

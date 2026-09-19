@@ -3986,3 +3986,30 @@ for the cellwise maps into such thresholds, and the cellwise approximation
 producer `Moise341` itself remains an unproved proposition.  These are the
 next mathematical inputs; local finiteness is no longer the numerical choice
 obstruction once they are supplied.
+
+## 80. 2026-09-19 arbitrary neighbor-family piercing neighborhoods — done
+
+`DualCellPiercingNeighborhoods.lean` now exposes the natural general theorem
+`IsCombinatorialManifold.exists_piercings_with_nested_common_neighborhoods`.
+For an injectively indexed family of all neighbors of one graph vertex, with
+no finiteness assumption on the index type, it simultaneously constructs the
+actual dual-cell piercing circle, modified neighboring ball, PL map, and two
+nested common ambient derived neighborhoods at every incident edge.  The
+result also proves that all piercing circles in the family are pairwise
+disjoint.  Local finiteness may later be used separately to deduce finiteness
+of a particular incident family; it is not an accidental hypothesis of this
+geometric construction.
+
+The previous trivalent endpoint is now exactly the `Fin 3` corollary of the
+general theorem.  Both the producer module and the concrete trivalent model
+consumer passed the private focused checker with no diagnostics.  A strict
+external audit covered all three non-automatic declarations in the producer
+module and two critical reused declarations; all axiom closures were contained
+in `{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This does not yet make the independently constructed ambient neighborhoods
+pairwise disjoint, nor does it construct compatible cellwise modifications.
+Those require the still-missing positive geometric stability thresholds for
+Conditions (2)--(8); only the piercing circles themselves are currently
+proved pairwise disjoint.
