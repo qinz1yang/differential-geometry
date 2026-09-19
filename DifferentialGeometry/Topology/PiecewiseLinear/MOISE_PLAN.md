@@ -1545,3 +1545,40 @@ extension/general-position implementation for the same actual perturbations.
 E3 remains on original inner traces and physical caps. These are completed-round
 handoffs, not new parallel lanes. No full-root restart is triggered by elapsed
 time, and no new deadline has been inferred.
+
+
+### Actual Morse flow coordinates accepted; current five-lane gates
+
+Integration section 77 independently accepts S through c0f4df1b1, including
+d77f16c3c and its earlier frozen prerequisites. Fourteen fresh modules, all
+49 native declarations, 63 distinct external reuses, and 55 model declarations
+from three concrete families pass. The source adds 43 native declarations
+(36 public, seven private), with +2081/-0 Lean lines including thirteen root
+imports. The actual saddle-level immersion and flow transversality produce an
+open smooth inverse about the whole original closed strip and its two end
+overlaps. A supplied cubic chart admits relative cancellation; constructing
+the general endpoint-neighborhood gluing and supported elimination for the
+original Morse pair remains the active S round. Compact PL smoothing remains
+an independent unfinished headline.
+
+The frozen independent-acceptance queue is now F 71b0b003e, M304 through
+96ba235a4 including 7a1632779, h e85a235df and E3 c10b83586. Author delivery is
+not independent acceptance. h's completed round now preserves the original
+carrier and transports newly chosen canonical neighborhoods through compatible
+subdivisions; the next round must produce their actual solid-torus type.
+E3's physical cap construction now yields SurfaceSplitAndCap; separation of
+the original H/Q by this same result is the next gate toward Moise303.
+M304's actual boundary kernel is delivered for simply connected original K;
+general original-inclusion kernel transfer remains the active next step.
+Corrected Moise252 is still explicit unresolved upstream, and no embedded
+essential disk or Moise264/Moise304 endpoint is claimed. F continues the same
+actual perturbation's Lipschitz control in its canonical half-space files.
+
+Five existing tasks retain one lane each. F/S/M304 use Astra max and h/E3 use
+Sol max. Handoffs to the newly completed h and E3 rounds have been sent;
+ongoing F/S/M304 rounds receive no routine status requests. The prompt and
+resumed-stage ledger govern hourly follow-up without a new owner deadline.
+Compilation remains limited to two private checkers, one per lane, and at most
+one root worker and three Lean processes. The whole-root gate remains deferred;
+its next run requires an actual compatibility or stalled-work reason, not an
+elapsed-time trigger. Static root coverage is 9642 modules including the root.

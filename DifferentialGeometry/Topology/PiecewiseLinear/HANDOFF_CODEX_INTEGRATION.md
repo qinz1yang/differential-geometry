@@ -3669,3 +3669,93 @@ actual inner perturbations. Its previous 71b0b003e flat-sheet source remains
 frozen for independent replay. E3 continues actual physical caps from the
 inner-disk trace and original external annuli. No new task, second lane or
 routine status request is introduced; next handoffs occur at deliveries.
+
+## 77. Actual descending Morse strips and relative cubic-chart cancellation
+
+S checkpoints 57aa0b9eb, f15aad47d, ec69dc759, d77f16c3c and d07d5e6e4,
+through the c0f4df1b1 root repair, are independently accepted together.
+Fourteen source modules are byte-identical to that frozen author checkpoint;
+integration registers the thirteen new leaves in the flat root import header.
+The previously accepted six CubicCancellation declarations retain their bodies,
+and all five old public signatures are unchanged. New Hessian and index results
+identify the actual cubic pair. Weighted scaling and compact zero extension
+give cancellation supported in an arbitrary prescribed neighborhood of a
+supplied cubic chart. This is a real relative cancellation consumer, but it
+does not manufacture a cubic chart for an arbitrary original Morse pair.
+
+For an actual compact regular band, a constructed supported field has derivative
+rate in [-1,0] and exact rate -1 on the band. Forward and backward estimates
+give a level product and its smooth inverse in the original regular-level atlas.
+For an actual descending saddle-minimum connection, the Morse charts and
+convergence of the original trajectory produce the saddle arcs and full
+minimum level circle inside prescribed endpoint neighborhoods. The minimum
+section is reached after any specified time. The saddle-level arc has an
+injective derivative proved from its coordinate projection, not merely from
+injectivity of its underlying smooth map.
+
+The original vector field agrees with a constructed compactly supported field
+on an open tube about the connection segment. A parameter-preserving inverse
+determines the nearby positive hitting times. Strict descent and the actual
+flow group law prove injectivity of the whole closed rectangle. Transversality
+of the actual level arc and flow direction gives smooth local inverses at
+every rectangle point; compact injectivity then yields a single open partial
+diffeomorphism around the entire rectangle, including its sides and ends.
+Both entire end edges lie in the actual Morse-chart overlaps. The original
+function, atlas, central orbit, descent equation and prescribed frame are
+retained. Agreement with the original field is asserted on the produced
+closed strip and its proven tube, not on every point of an arbitrary enlarged
+open inverse chart.
+
+Fourteen fresh compilations take 159.205 seconds; the combined independent
+audit takes 45.802 seconds, including resource admission. All 49 native nonautomatic
+declarations, 63 distinct external critical reuses and 55 model declarations
+have only approved foundational axioms. The full native and model suites pass
+all thirteen applicable environment linters, with zero final diagnostics.
+There are 43 new native declarations: 36 public and seven private. Six native
+declarations are retained, including one private helper. Source headers,
+long lines, prohibited constructs and namespace-aware public-name uniqueness
+also pass. No project proof or public signature required integration repair.
+
+The 55 external model declarations belong to three concrete families, not
+55 independent examples: a fixed cusp-shear pullback atlas with two cubic
+critical points (18 declarations), a nonempty compact annulus (10), and a
+single actual cubic descending field with a proved unique logistic connection
+(27). Six actual consumers check relative nonidentity cancellation with fixed
+end collars, closed and smooth annulus products, saddle sections, a closed
+strip, and its open smooth coordinates. The other declarations construct or
+verify the fixtures. In particular, the unique connection, nonempty rectangle
+interior and distinct endpoint images are proved rather than assumed.
+
+Accepted Lean delta is +2081/-0, including thirteen root import lines. This is
+frozen source accepted in this checkpoint, not code typed during this hourly
+inspection and not a count of completed Moise headlines. Root static reachability
+is 9642 project modules including the root, with no missing sources or import
+cycles. Full-root compilation remains deferred; local compatibility and the
+combined axiom/lint audit are checked. Receipt:
+.lake/verified-fiftysixth-lane-delivery-20260919.json.
+
+The active mathematical gap for S remains compatible gluing of the full Morse
+endpoint neighborhoods and actual supported critical-pair elimination for the
+same original function and frame. Neither general Morse cancellation nor
+compact PL smoothing is completed. This acceptance is recorded for S's next
+completed delivery; the active round receives no status interruption.
+
+Other completed deliveries were frozen at their handoff boundaries and remain
+unaccepted independently: h e85a235df constructs an actual self-homeomorphism of
+the original carrier, compatible triangulations and exact transport of freshly
+chosen canonical nested neighborhoods; its next round constructs their actual
+standard PL solid-torus type without assuming that product as input. E3 c10b83586
+constructs actual physical disjoint caps and a SurfaceSplitAndCap; its next
+round must prove that this same result separates the original H/Q, keeping all
+neighborhood, ball and cap choices compatible. M304 through 96ba235a4, including
+7a1632779, supplies the actual closed boundary-component kernel and a free loop
+for simply connected original ambient K; the active round removes that ambient
+restriction using the original inclusion kernel. F 71b0b003e remains queued
+while its current canonical half-space displacement-control round continues.
+
+The automation prompt was read, synchronized with these actual deliveries,
+and saved through the app automation API. It remains hourly, uses the same five
+tasks and model settings, has no new deadline, and only hands off at deliveries
+or genuine urgent stops. Administrative compiler leases were renewed to
+2026-09-19 21:23:56 UTC without creating a mathematical stopping deadline.
+Earlier overnight records and the morning report remain intact.

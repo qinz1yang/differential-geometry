@@ -8994,6 +8994,19 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCompressionSeparatio
 import DifferentialGeometry.Topology.LocallyFiniteSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercingStability
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellPerturbationModel
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.FunctionExtension
+import DifferentialGeometry.Topology.Morse.CubicChartCancellation
+import DifferentialGeometry.Topology.Morse.LocalizedCubicCancellation
+import DifferentialGeometry.Topology.Morse.RegularLevel.Band
+import DifferentialGeometry.Topology.Morse.ConnectingOrbit
+import DifferentialGeometry.Topology.Morse.SaddleSection
+import DifferentialGeometry.Topology.Morse.ConnectingFlow
+import DifferentialGeometry.Topology.Morse.MinimumSection
+import DifferentialGeometry.Topology.Morse.SaddleMinimumStrip
+import DifferentialGeometry.Topology.Manifold.CompactLocalDiffeomorph
+import DifferentialGeometry.Topology.Manifold.FlowSection
+import DifferentialGeometry.Topology.Morse.SaddleImmersion
+import DifferentialGeometry.Topology.Morse.SaddleMinimumCoordinates
 /-!
 # Differential geometry and geometric analysis
 -/
