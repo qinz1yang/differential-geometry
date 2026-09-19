@@ -8739,3 +8739,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceCollapse
 import DifferentialGeometry.Topology.PiecewiseLinear.CollarInwardMap
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryLocalEmbedding

@@ -4557,3 +4557,33 @@ BoundaryInwardPush-checkpoint.json、ProjectedBoundary-checkpoint.json、AuditF2
 下一步证明局部单射 PL 映射把源内部送进同维目标内部，消费该边界单调性把新盘投影到楼下。
 这只需要小正规邻域的组合流形性，不要求额外假设完整覆盖环境已是组合流形。
 完整 DoubleCoverDiagram 的构造、严格复杂度下降与 crossing 正规化仍分别待完成。
+
+### 19.159 真实投影盘的精确边界条件（2026-09-19 UTC）
+
+**done：BoundaryLocalEmbedding.lean 与 LoopTheorem/ProjectedBoundary.lean。**
+`IsPiecewiseAffineOn.preimage_boundaryComplex_subset_of_isLocallyInjective`
+对任意同维有限组合带边流形之间的局部单射 PL 映射，证明目标边界的原像包含于源边界。
+证明在源点附近取实际小 PL 球，其映射限制是 PL 嵌入，再用边界单调性和相对邻域的边界不变性。
+不假设局部映射是满射，不把内部保持写成输入。
+
+`DoubleCoverDiagram.preimage_boundaryComplex_subset` 消费真实完整覆盖的局部单射性，
+在楼上小正规邻域上应用此定理；不要求另加完整覆盖环境的组合流形结构。
+`exists_projected_disk_of_embedding` 将原实际投影定理推广到保持源边界的任意 PL 嵌入，
+原 `exists_projected_disk` 的签名保留为推论。
+`DoubleCoverDiagram.exists_projected_disk_with_boundary` 现在实际连接 §19.158 的向内嵌入盘：
+同时输出楼上实际嵌入 g、楼下实际 f=p∘g、投影边界环路 γ 和连接路径 q；f 的像在楼下流形中，
+局部单射、纤维 encard≤2，目标边界原像恰为源边界，像与目标边界的交恰为源边界像，
+γ 的像等于该边界像且其共轭类继续避开正规子群。没有增加任何 proper 边界假设或结构字段。
+
+三个变更模块聚焦检查 exit=0、零诊断；AuditF299 exit=0、零诊断。
+十项非自动声明、六项关键依赖和两个具体模型声明，共十八项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全过。实际非空标准三维单形模型检验局部边界定理；§19.156 的真实二重
+覆盖模型及 §19.158 的实际向内位移模型仍为底层构造证据，本层未虚构初始完整 NormalSystem
+或 DoubleCoverDiagram 的非空实例。sourceStable=true、共享产物只读。
+回执：BoundaryLocalEmbedding-checkpoint.json、DoubleCoverProjection-embedding-checkpoint.json、
+ProjectedBoundary-proper-checkpoint.json、AuditF299.json。源码、根登记与本记录同次提交，
+整库根检由协调者负责。下一审计 AuditF300。
+
+**partial：完整覆盖图与严格下降。** proper 投影盘已闭合，但 crossing 正规形式仍未生产。
+下一层从复杂度相等推导真实奇异像上的 PL 截面，再沿已证的正规邻域变形收缩提升同伦，
+以连通二重覆盖不容全局截面推出严格下降；覆盖图的全部数据仍须由实际覆盖构造组装。

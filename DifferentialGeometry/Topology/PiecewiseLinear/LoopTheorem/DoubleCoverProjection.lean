@@ -85,6 +85,58 @@ theorem DoubleCoverDiagram.complexity_le {S : NormalSystem E} {T : NormalSystem 
   simpa only [R.sourceComplex_eq] using h
 
 open Classical in
+theorem DoubleCoverDiagram.exists_projected_disk_of_embedding
+    {S : NormalSystem E} {T : NormalSystem F} (R : DoubleCoverDiagram S T)
+    (D : NonsingularCell T) {g : EuclideanSpace ℝ (Fin 2) → F}
+    (hg : IsPiecewiseAffineOn g D.sourceComplex.space) (hginj : InjOn g D.sourceComplex.space)
+    (hgmap : MapsTo g D.sourceComplex.space T.manifoldComplex.space)
+    (hgfix : EqOn g (simplicialMap D.sourceComplex D.vertexMap) (frontier D.sourceComplex.space)) :
+    ∃ (f : EuclideanSpace ℝ (Fin 2) → E) (γ : freeLoop S.boundaryNeighborhoodSpace)
+      (q : Path S.basepoint (γ 0)),
+      f = R.projection ∘ g ∧
+      IsPiecewiseAffineOn f D.sourceComplex.space ∧
+      MapsTo f D.sourceComplex.space S.manifoldComplex.space ∧
+      (∀ x ∈ D.sourceComplex.space, ∃ U ∈ 𝓝[D.sourceComplex.space] x, InjOn f U) ∧
+      (∀ y, (D.sourceComplex.space ∩ f ⁻¹' {y}).encard ≤ 2) ∧
+      range (fun θ => (γ θ : E)) = f '' frontier D.sourceComplex.space ∧
+      ¬conjugacyClassMeets (normalSystemLoopConjugacyClass S.basepoint γ q) S.normalSubgroup := by
+  have hmap : MapsTo g D.sourceComplex.space T.ambientComplex.space := fun _ hx =>
+    T.manifoldComplex_space_subset_ambient
+      (hgmap hx)
+  have hpl : IsPiecewiseAffineOn (R.projection ∘ g) D.sourceComplex.space := by
+    have h := R.isPiecewiseAffineOn_projection.comp hg
+    have hinter : D.sourceComplex.space ∩ g ⁻¹' T.ambientComplex.space =
+        D.sourceComplex.space := inter_eq_left.mpr hmap
+    rwa [hinter] at h
+  obtain ⟨hloc, htwo⟩ := Covering.locally_injective_fiber_le_of_isCoveringMap_restrict
+    R.isCoveringMap (fun _ => rfl) hg.continuousOn hginj hmap
+    (fun y => (R.fiber_card y).le)
+  let γ := R.boundaryMap.comp D.boundaryLoop
+  let q : Path S.basepoint (γ 0) :=
+    (D.connector.map R.boundaryMap.continuous).cast R.basepoint_eq.symm rfl
+  have hboundary : range (fun θ => (γ θ : E)) =
+      (R.projection ∘ g) '' frontier D.sourceComplex.space := by
+    calc
+      range (fun θ => (γ θ : E)) =
+          range (R.projection ∘ fun θ => (D.boundaryLoop θ : F)) := by
+        congr 1
+        funext θ
+        exact R.boundaryMap_eq (D.boundaryLoop θ)
+      _ = R.projection '' range (fun θ => (D.boundaryLoop θ : F)) := range_comp _ _
+      _ = R.projection '' (g '' frontier D.sourceComplex.space) := by
+        rw [D.boundary_range, ← hgfix.image_eq]
+      _ = (R.projection ∘ g) '' frontier D.sourceComplex.space := (image_comp _ _ _).symm
+  let _ : S.normalSubgroup.Normal := S.normal
+  have havoid : ¬conjugacyClassMeets
+      (normalSystemLoopConjugacyClass T.basepoint D.boundaryLoop D.connector)
+      (S.normalSubgroup.comap (FundamentalGroup.mapOfEq R.boundaryMap R.basepoint_eq)) := by
+    rw [← R.normalSubgroup_eq]
+    exact D.loopClass_avoids_normal
+  exact ⟨R.projection ∘ g, γ, q, rfl, hpl, R.projection_mapsTo.comp hmap,
+    hloc, htwo, hboundary, normalSystemLoopConjugacyClass_map_avoids
+      R.boundaryMap R.basepoint_eq D.boundaryLoop D.connector S.normalSubgroup havoid⟩
+
+open Classical in
 theorem DoubleCoverDiagram.exists_projected_disk
     {S : NormalSystem E} {T : NormalSystem F} (R : DoubleCoverDiagram S T)
     (D : NonsingularCell T) :
@@ -98,43 +150,10 @@ theorem DoubleCoverDiagram.exists_projected_disk
       range (fun θ => (γ θ : E)) = f '' frontier D.sourceComplex.space ∧
       ¬conjugacyClassMeets (normalSystemLoopConjugacyClass S.basepoint γ q) S.normalSubgroup := by
   let _ : Finite D.sourceComplex.faces := D.finite_source.to_subtype
-  let f₀ := simplicialMap D.sourceComplex D.vertexMap
-  have hf₀ : IsPiecewiseAffineOn f₀ D.sourceComplex.space :=
-    isPiecewiseAffineOn_simplicialMap D.sourceComplex D.vertexMap
-  have hmap : MapsTo f₀ D.sourceComplex.space T.ambientComplex.space := fun _ hx =>
-    T.manifoldComplex_space_subset_ambient
-      (simplicialMap_mapsTo D.sourceComplex T.manifoldComplex D.vertexMap D.source_faces_map hx)
-  have hpl : IsPiecewiseAffineOn (R.projection ∘ f₀) D.sourceComplex.space := by
-    have h := R.isPiecewiseAffineOn_projection.comp hf₀
-    have hinter : D.sourceComplex.space ∩ f₀ ⁻¹' T.ambientComplex.space =
-        D.sourceComplex.space := inter_eq_left.mpr hmap
-    rwa [hinter] at h
-  obtain ⟨hloc, htwo⟩ := Covering.locally_injective_fiber_le_of_isCoveringMap_restrict
-    R.isCoveringMap (fun _ => rfl) hf₀.continuousOn D.nonsingular hmap
-    (fun y => (R.fiber_card y).le)
-  let γ := R.boundaryMap.comp D.boundaryLoop
-  let q : Path S.basepoint (γ 0) :=
-    (D.connector.map R.boundaryMap.continuous).cast R.basepoint_eq.symm rfl
-  have hboundary : range (fun θ => (γ θ : E)) =
-      (R.projection ∘ f₀) '' frontier D.sourceComplex.space := by
-    calc
-      range (fun θ => (γ θ : E)) =
-          range (R.projection ∘ fun θ => (D.boundaryLoop θ : F)) := by
-        congr 1
-        funext θ
-        exact R.boundaryMap_eq (D.boundaryLoop θ)
-      _ = R.projection '' range (fun θ => (D.boundaryLoop θ : F)) := range_comp _ _
-      _ = R.projection '' (f₀ '' frontier D.sourceComplex.space) := by rw [D.boundary_range]
-      _ = (R.projection ∘ f₀) '' frontier D.sourceComplex.space := (image_comp _ _ _).symm
-  let _ : S.normalSubgroup.Normal := S.normal
-  have havoid : ¬conjugacyClassMeets
-      (normalSystemLoopConjugacyClass T.basepoint D.boundaryLoop D.connector)
-      (S.normalSubgroup.comap (FundamentalGroup.mapOfEq R.boundaryMap R.basepoint_eq)) := by
-    rw [← R.normalSubgroup_eq]
-    exact D.loopClass_avoids_normal
-  exact ⟨R.projection ∘ f₀, γ, q, rfl, hpl, R.projection_mapsTo.comp hmap,
-    hloc, htwo, hboundary, normalSystemLoopConjugacyClass_map_avoids
-      R.boundaryMap R.basepoint_eq D.boundaryLoop D.connector S.normalSubgroup havoid⟩
+  exact R.exists_projected_disk_of_embedding D
+    (isPiecewiseAffineOn_simplicialMap D.sourceComplex D.vertexMap) D.nonsingular
+    (simplicialMap_mapsTo D.sourceComplex T.manifoldComplex D.vertexMap D.source_faces_map)
+    (fun _ _ => rfl)
 
 end NormalSystem
 
