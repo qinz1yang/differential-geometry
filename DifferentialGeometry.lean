@@ -11378,3 +11378,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.De
 import DifferentialGeometry.Analysis.Calculus.LipschitzApproximation
 import DifferentialGeometry.Geometry.Metric.Distance.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Approximation.LocalLipschitz
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.ScalarComposition
+import DifferentialGeometry.Analysis.Calculus.TimeJet.MixedJetsAlongCurve
+import DifferentialGeometry.Analysis.ODE.Regularity.ScalarJetContinuity

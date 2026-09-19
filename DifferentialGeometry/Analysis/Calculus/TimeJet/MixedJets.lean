@@ -18,7 +18,7 @@ private theorem scalar_spatial_jets_contDiffOn
     (ContinuousMultilinearMap.piFieldEquiv ℝ (Fin j) F).symm.contDiff.comp_contDiffOn
       (spatial_iteratedFDeriv_contDiffOn hV hG j)
 
-private theorem scalar_mixed_jets_contDiffOn
+theorem contDiffOn_iteratedDerivWithin_iteratedDeriv
     {G : ℝ → ℝ → F} {J V : Set ℝ}
     (hJ : UniqueDiffOn ℝ J) (hV : IsOpen V)
     (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ V)) (k j : ℕ) :
@@ -28,7 +28,7 @@ private theorem scalar_mixed_jets_contDiffOn
   time_iteratedDerivWithin_contDiffOn (G := fun t x => iteratedDeriv j (G t) x) hJ hV
     (scalar_spatial_jets_contDiffOn hV hG j) k
 
-private theorem fderivWithin_prod_eq_partials
+theorem fderivWithin_prod_eq_partials
     {H : ℝ × ℝ → F} {J V : Set ℝ}
     (hJ : UniqueDiffOn ℝ J) (hV : IsOpen V)
     (hH : DifferentiableOn ℝ H (J ×ˢ V)) {q : ℝ × ℝ} (hq : q ∈ J ×ˢ V) :
@@ -90,7 +90,7 @@ private theorem deriv_scalar_mixed_jets
         (fun s => deriv (fun y => iteratedDeriv j (G s) y) x) J t := hev.symm
     _ = _ := by simp only [iteratedDeriv_succ]
 
-private theorem fderivWithin_scalar_mixed_jets
+theorem fderivWithin_iteratedDerivWithin_iteratedDeriv
     {G : ℝ → ℝ → F} {J V : Set ℝ}
     (hJ : UniqueDiffOn ℝ J) (hacc : J ⊆ closure (interior J)) (hV : IsOpen V)
     (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ V))
@@ -103,7 +103,7 @@ private theorem fderivWithin_scalar_mixed_jets
       (ContinuousLinearMap.snd ℝ ℝ ℝ).smulRight
         (iteratedDerivWithin k (fun t => iteratedDeriv (j + 1) (G t) q.2) J q.1) := by
   rw [fderivWithin_prod_eq_partials hJ hV
-    ((scalar_mixed_jets_contDiffOn hJ hV hG k j).differentiableOn (by simp)) hq]
+    ((contDiffOn_iteratedDerivWithin_iteratedDeriv hJ hV hG k j).differentiableOn (by simp)) hq]
   rw [deriv_scalar_mixed_jets hJ hacc hV hG k j hq.1 hq.2]
   simp only [iteratedDerivWithin_succ]
 
@@ -127,12 +127,12 @@ theorem continuousOn_iteratedFDerivWithin_of_mixed_derivatives
     ContinuousLinearMap.smulRightL ℝ (ℝ × ℝ) F (ContinuousLinearMap.snd ℝ ℝ ℝ)
   have hu : UniqueDiffOn ℝ (J ×ˢ V) := hJ.prod hV.uniqueDiffOn
   have hs (k j : ℕ) (p : P) (hp : p ∈ S) : ContDiffOn ℝ ∞ (H k j p) (J ×ˢ V) :=
-    scalar_mixed_jets_contDiffOn hJ hV (hG p hp) k j
+    contDiffOn_iteratedDerivWithin_iteratedDeriv hJ hV (hG p hp) k j
   have hd (k j : ℕ) (p : P) (hp : p ∈ S) :
       EqOn (fderivWithin ℝ (H k j p) (J ×ˢ V))
         (fun q => T (H (k + 1) j p q) + X (H k (j + 1) p q)) (J ×ˢ V) := by
     intro q hq
-    exact fderivWithin_scalar_mixed_jets hJ hacc hV (hG p hp) k j hq
+    exact fderivWithin_iteratedDerivWithin_iteratedDeriv hJ hacc hV (hG p hp) k j hq
   have hall (m : ℕ) : ∀ k j : ℕ, ContinuousOn
       (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ m (H k j q.1) (J ×ˢ V) q.2)
       (S ×ˢ J ×ˢ V) := by
@@ -151,7 +151,8 @@ theorem continuousOn_iteratedFDerivWithin_of_mixed_derivatives
       have hxcont := (X.continuous_postcomp_continuousMultilinearMap
         (E := fun _ : Fin m => ℝ × ℝ)).comp_continuousOn (ih k (j + 1))
       have hc := htcont.add hxcont
-      have hc' := (continuousMultilinearCurryRightEquiv' ℝ m (ℝ × ℝ) F).symm.continuous.comp_continuousOn hc
+      have hc' :=
+        (continuousMultilinearCurryRightEquiv' ℝ m (ℝ × ℝ) F).symm.continuous.comp_continuousOn hc
       apply hc'.congr
       intro q hq
       dsimp only [Function.comp_apply, Pi.add_apply]
@@ -180,6 +181,108 @@ theorem continuousOn_iteratedFDerivWithin_of_mixed_derivatives
         _ = _ := by
           rw [T.iteratedFDerivWithin_comp_left ht hu hq.2 le_rfl,
             X.iteratedFDerivWithin_comp_left hx hu hq.2 le_rfl]
-  simpa only [H, iteratedDerivWithin_zero, iteratedDeriv_zero, Function.uncurry_def] using hall n 0 0
+  simpa only [H, iteratedDerivWithin_zero, iteratedDeriv_zero, Function.uncurry_def]
+    using hall n 0 0
+
+end DifferentialGeometry.Analysis
+
+namespace DifferentialGeometry.Analysis
+
+private theorem continuousOn_iteratedFDerivWithin_directional_family
+    {P E F : Type*} [TopologicalSpace P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {S : Set P} {A : Set E} (hA : UniqueDiffOn ℝ A)
+    (H : P → E → F)
+    (hH : ∀ p ∈ S, ContDiffOn ℝ ∞ (H p) A)
+    (hjet : ∀ n : ℕ, ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin ℝ n (H q.1) A q.2) (S ×ˢ A))
+    (v : E) (n : ℕ) :
+    ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin ℝ n
+        (fun x => fderivWithin ℝ (H q.1) A x v) A q.2) (S ×ˢ A) := by
+  let L : (E →L[ℝ] F) →L[ℝ] F := ContinuousLinearMap.apply ℝ F v
+  have hc := (L.continuous_postcomp_continuousMultilinearMap
+    (E := fun _ : Fin n => E)).comp_continuousOn
+      ((continuousMultilinearCurryRightEquiv' ℝ n E F).continuous.comp_continuousOn
+        (hjet (n + 1)))
+  apply hc.congr
+  intro q hq
+  have hd : ContDiffWithinAt ℝ n (fderivWithin ℝ (H q.1) A) A q.2 :=
+    ((hH q.1 hq.1).fderivWithin hA (m := ∞) (by simp) q.2 hq.2).of_le
+      (WithTop.coe_le_coe.mpr le_top)
+  change iteratedFDerivWithin ℝ n (L ∘ fderivWithin ℝ (H q.1) A) A q.2 =
+    L.compContinuousMultilinearMap
+      ((continuousMultilinearCurryRightEquiv' ℝ n E F)
+        (iteratedFDerivWithin ℝ (n + 1) (H q.1) A q.2))
+  rw [L.iteratedFDerivWithin_comp_left hd hA hq.2 le_rfl,
+    iteratedFDerivWithin_succ_eq_comp_right hA hq.2]
+  simp only [Function.comp_apply, LinearIsometryEquiv.apply_symm_apply]
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem continuousOn_mixed_derivatives_of_iteratedFDerivWithin
+    {P : Type*} [TopologicalSpace P] {S : Set P} {J V : Set ℝ}
+    (hJ : UniqueDiffOn ℝ J) (hV : IsOpen V)
+    {G : P → ℝ → ℝ → F}
+    (hG : ∀ p ∈ S, ContDiffOn ℝ ∞ (Function.uncurry (G p)) (J ×ˢ V))
+    (hfull : ∀ n : ℕ, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ n
+        (Function.uncurry (G q.1)) (J ×ˢ V) q.2) (S ×ˢ J ×ˢ V))
+    (k j : ℕ) :
+    ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedDerivWithin k
+        (fun t => iteratedDeriv j (G q.1 t) q.2.2) J q.2.1) (S ×ˢ J ×ˢ V) := by
+  let H : ℕ → ℕ → P → ℝ × ℝ → F := fun a b p q =>
+    iteratedDerivWithin a (fun t => iteratedDeriv b (G p t) q.2) J q.1
+  have hu : UniqueDiffOn ℝ (J ×ˢ V) := hJ.prod hV.uniqueDiffOn
+  have hs (a b : ℕ) (p : P) (hp : p ∈ S) :
+      ContDiffOn ℝ ∞ (H a b p) (J ×ˢ V) :=
+    contDiffOn_iteratedDerivWithin_iteratedDeriv hJ hV (hG p hp) a b
+  have hspace (b : ℕ) : ∀ n : ℕ, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ n
+        (H 0 b q.1) (J ×ˢ V) q.2) (S ×ˢ J ×ˢ V) := by
+    induction b with
+    | zero =>
+      simpa only [H, iteratedDerivWithin_zero, iteratedDeriv_zero,
+        Function.uncurry_def] using hfull
+    | succ b ih =>
+      intro n
+      have hc := continuousOn_iteratedFDerivWithin_directional_family
+        (H := H 0 b) hu (hs 0 b) ih ((0, 1) : ℝ × ℝ) n
+      apply hc.congr
+      intro q hq
+      apply iteratedFDerivWithin_congr (s := J ×ˢ V) ?_ hq.2 n
+      intro z hz
+      have hd := congrArg (fun L : (ℝ × ℝ) →L[ℝ] F => L (0, 1))
+        (fderivWithin_prod_eq_partials hJ hV
+          ((hs 0 b q.1 hq.1).differentiableOn (by simp)) hz)
+      simpa only [H, iteratedDerivWithin_zero, iteratedDeriv_succ,
+        add_apply, ContinuousLinearMap.smulRight_apply,
+        ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd',
+        zero_smul, one_smul, zero_add, add_zero] using hd.symm
+  have hall (a : ℕ) : ∀ b n : ℕ, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ n
+        (H a b q.1) (J ×ˢ V) q.2) (S ×ˢ J ×ˢ V) := by
+    induction a with
+    | zero => exact hspace
+    | succ a ih =>
+      intro b n
+      have hc := continuousOn_iteratedFDerivWithin_directional_family
+        (H := H a b) hu (hs a b) (ih b) ((1, 0) : ℝ × ℝ) n
+      apply hc.congr
+      intro q hq
+      apply iteratedFDerivWithin_congr (s := J ×ˢ V) ?_ hq.2 n
+      intro z hz
+      have hd := congrArg (fun L : (ℝ × ℝ) →L[ℝ] F => L (1, 0))
+        (fderivWithin_prod_eq_partials hJ hV
+          ((hs a b q.1 hq.1).differentiableOn (by simp)) hz)
+      simpa only [H, iteratedDerivWithin_succ, add_apply,
+        ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.coe_fst',
+        ContinuousLinearMap.coe_snd', zero_smul, one_smul, zero_add, add_zero] using hd.symm
+  have hc := (continuousMultilinearCurryFin0 ℝ (ℝ × ℝ) F).continuous.comp_continuousOn
+    (hall k j 0)
+  simpa only [iteratedFDerivWithin_zero_eq_comp, Function.comp_def,
+    LinearIsometryEquiv.apply_symm_apply, H] using hc
 
 end DifferentialGeometry.Analysis
