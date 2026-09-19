@@ -1964,3 +1964,44 @@ graph has 605 modules and 1216 edges without cycles. Fourteen source-matching
 module receipt sets and the final audit are frozen at
 `moise304-reading/compression-separation-checkpoint/`. No full-root build or
 independent integration acceptance is claimed.
+
+### M304 finite surface cuts and side kernels (2026-09-19 UTC)
+
+`SurfaceCutting` now constructs actual finite connected WB3 cut complexes
+A,B for an original connected finite K and connected separating interior
+surface L. It proves A union B = K, A intersect B = L, exact boundaries
+including the old boundary pieces, and actual boundary-component labels
+whose spaces equal L. In real ambient dimension three it derives separation
+and orientability of the cut pieces. Its separate collar producer retains
+the literal inclusion into the original K and the supplied relative
+neighborhood.
+
+`FundamentalGroup/OpenCoverKernel` proves that a nontrivial overlap element
+killed in the original ambient space forces a nontrivial kernel into one
+of the two members of an actual open path-connected cover. The proof uses
+native van Kampen and injectivity in an amalgamated product. The
+`BicollarKernel` specialization constructs such a side kernel when the
+original ambient space is simply connected and the compact connected
+collared surface is not. It does not assume the desired side kernel.
+
+The actual model keeps one finite PL ball K and its embedded beta-two
+torus L throughout: it obtains the actual orientable cut manifolds and
+boundary components, a nontrivial pi1(L)-to-pi1(K) kernel, and an open-side
+kernel from a collar contained in interior K. Transport from those open
+sides to the finite cut manifolds and their boundary inclusions remains
+unproved. General Moise252-to-Moise264, including the full component,
+nonseparating and ambient hypotheses, is still open. No embedded essential
+disk or arbitrary singular-disk normalization is claimed; F and E3 retain
+their proof and compression-geometry lanes.
+
+The eight native declarations, 27 critical reuses, one actual model with
+four private helpers and 13 linters pass the axiom audit with standard
+foundational axioms and zero diagnostics. The three new leaves are registered
+in the flat root. Their native graph has 508 modules and 989 edges without
+cycles or HurewiczLowDegrees. All existing mathematical sources are
+unchanged. See HANDOFF_CODEX_M304.md for exact APIs, proof mechanisms and
+frozen receipts. No full-root build or independent acceptance is claimed.
+
+Nine source-matching private module receipt sets and the final audit are
+frozen at `moise304-reading/surface-cutting-checkpoint/`, manifest SHA256
+`2B430531079C51AF7D64907068EC554DA6D77FD463A60ABEDE4C582AE76F8552`.

@@ -1695,3 +1695,107 @@ dependency receipts. SphericalDiskComplement's raw source SHA256 changes
 from `95EB5E0587DB26D1D6496B52C17D5CF2985C2DB607441298282ED77CCFB988CC`
 to `9A815DA01518E972B5C5B166EB5BC2DC3C08E7B9F170B7A352C483FB6D43EFC2`;
 its source tokens agree after removing whitespace and required headers.
+
+## Finite interior-surface cuts and open-cover kernels (2026-09-19 UTC)
+
+The corrected Moise252 statement in MoiseChain applies to an actual connected
+component of the boundary of an orientable finite WB3 complex. The present
+round constructs those geometric boundary components in the separating case
+and proves a reusable open-cover kernel bridge. It does not prove
+Moise252 implies Moise264, and it does not produce an embedded essential disk.
+
+`SurfaceCutting.lean` provides four public theorems and one private helper.
+The general producer
+`IsCombinatorialManifoldWithBoundary.exists_manifold_pair_of_separating_surface`
+starts with the original finite connected WB3 complex K and finite connected
+closed PL2 surface L inside K, disjoint from its original boundary. Given
+geometric separation of K minus L, it constructs finite connected WB3
+complexes A,B with A union B = K and A intersect B = L. Their boundaries are
+exactly L union (A intersect boundary K) and L union (B intersect boundary K).
+It constructs actual ConnectedComponents labels in both boundaries whose
+connectedComponentComplex spaces equal L. No cut manifold or boundary-copy
+identification is supplied as an input. The proof reuses the native
+complement-component closure manifold and boundary theorems and the closed
+partition connected-component theorem.
+
+`IsCombinatorialManifold.not_isPreconnected_sdiff_of_subset_interior` proves
+separation by a connected finite closed PL2 surface L in any real
+three-dimensional ambient normed space, whenever L lies in the interior of
+the set being cut. The ambient complement components meet each neighborhood
+of L and cannot connect in its complement.
+`IsCombinatorialManifoldWithBoundary.exists_manifold_pair_of_surface_interior`
+therefore derives separation from the original interior condition and
+produces the same A,B, additionally proving both orientable. The enclosing
+simplex is used only to prove orientability of these actual cut complexes;
+it never replaces the original K.
+
+`IsCombinatorialManifoldWithBoundary.exists_twoSidedCollar_of_interior_surface`
+converts the existing closed PL bicollar into an open TwoSidedCollar of the
+literal inclusion L.space into the original K.space. Its entire ambient
+image lies in the supplied relative neighborhood U. It assumes intrinsic
+two-sidedness in K and preserves the original K, L and U. The construction
+uses the native closed PL bicollar and the checked closed-interval-to-open-
+collar theorem; it introduces no singular-disk normalization assumption.
+
+`FundamentalGroup/OpenCoverKernel.lean` contributes two public theorems.
+`injective_fundamentalGroup_map_inter_of_open_cover` proves that injectivity
+of both overlap-to-side maps for an actual open path-connected cover implies
+injectivity of the overlap-to-ambient map. It uses the native van Kampen
+amalgamated-product equivalence and Monoid.PushoutI.base_injective.
+`exists_nontrivial_fundamentalGroup_kernel_of_open_cover` uses an actual
+nontrivial overlap element killed in the original ambient space to produce
+a nontrivial kernel element for at least one side. The resulting element
+need not be the initially supplied element. No side kernel is an input.
+
+`FundamentalGroup/BicollarKernel.lean` proves
+`ThreeManifold.TwoSidedCollar.exists_nontrivial_fundamentalGroup_kernel_of_simplyConnectedSpace`.
+For a compact path-connected nonsimply-connected surface with an actual
+two-sided collar in a simply connected, locally path-connected Hausdorff
+ambient space, it constructs a nontrivial element killed by one of the two
+canonical overlap-to-side maps. The overlap is homotopy equivalent to the
+original surface, and the ambient group is trivial. Simple connectivity of
+the original ambient space is an explicit restriction of this theorem.
+
+The external actual model fixes a finite enclosing PL ball K once and uses
+the existing embedded connected torus L, with first Betti number two, inside
+its interior. The new producers cut that same K along that same L, construct
+the orientable A,B and both actual boundary labels, and produce a nontrivial
+element of pi1(L) killed in pi1(K). An actual collar of the same inclusion
+has image in the prescribed neighborhood interior K, and the new bicollar
+kernel theorem produces a nontrivial side kernel. The model proves these
+facts together for the same objects. It does not identify that side kernel
+with the kernel into either finite closed cut complex A or B.
+
+The remaining bridge is now explicit: for the general original K and L,
+construct the appropriate collar open cover, identify its overlap with L
+and its sides with the finite cut pieces by maps inducing the required
+fundamental-group isomorphisms, and transport a produced nontrivial kernel
+to one of the actual boundary-component inclusions required by Moise252.
+The based-group/free-loop and boundary-copy transports must retain their
+commuting maps. The full hypotheses of Moise264 also require handling
+components, the nonseparating case and orientability outside the real
+three-dimensional specialization. The existing neighborhood-kernel and
+essential-singular-disk producers were inspected and axiom-audited, not
+duplicated. F retains the actual Loop Theorem proof; E3 retains compression
+wall/cap geometry. No F, E3 or h/S mathematical source is edited.
+
+All eight nonautomatic declarations in the three new leaves, 27 critical
+reuses, the single actual geometric model and its four private helpers pass
+the transitive axiom audit with only propext, Classical.choice and Quot.sound.
+All 13 applicable linters pass. The three new leaves have zero-diagnostic
+private receipts; the critical SurfaceComponentClosure is also freshly
+checked, and its consumer and the final audit are refreshed afterward.
+The native graph has 508 reachable modules and 989 edges, is acyclic and
+avoids HurewiczLowDegrees. All three leaves are registered once in the flat
+root. All pre-existing mathematical source files are unchanged. The stopped
+root build is not restarted, and shared E outputs are untouched.
+
+Nine source-matching source/object/receipt sets, the complete external audit,
+declaration census and source review are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/surface-cutting-checkpoint/`.
+Manifest SHA256:
+`2B430531079C51AF7D64907068EC554DA6D77FD463A60ABEDE4C582AE76F8552`.
+Final audit completion is 2026-09-19T17:43:57.5655663Z. The individual receipt
+times are recorded in the manifest, including valid earlier receipts for
+unchanged dependencies. Full Moise264 and arbitrary-shell Moise304 remain
+open; independent integration acceptance is not claimed.
