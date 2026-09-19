@@ -185,6 +185,7 @@ import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EvolutionJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Matching
 import DifferentialGeometry.Analysis.Calculus.TimeJet.MixedJets
+import DifferentialGeometry.Analysis.Calculus.TimeJet.FirstJetComposition
 import DifferentialGeometry.Analysis.Calculus.TimeJet.PolynomialEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap
@@ -10434,11 +10435,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.S
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CoefficientFamilies
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CurveRepresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ForcingFamilies
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.HigherForcingFamilies
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.InitialState
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ParameterSolutions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ReferenceSolutions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.Uniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SobolevExistence

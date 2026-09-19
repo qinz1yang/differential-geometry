@@ -19,6 +19,25 @@ private theorem compLpL_comp_apply
     A.coeFn_compLpL (B.compLpL 2 (timeMeasure T) f), B.coeFn_compLpL f] with t h₁ h₂ h₃
   rw [h₁, h₂, h₃, ContinuousLinearMap.comp_apply]
 
+section
+
+private theorem compLpL_injective_of_injective
+    {Ω E F : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {p : ℝ≥0∞} [Fact (1 ≤ p)] {μ : Measure Ω}
+    (A : E →L[ℝ] F) (hA : Function.Injective A) :
+    Function.Injective (A.compLpL p μ) := by
+  intro f₁ f₂ h
+  apply Lp.ext
+  filter_upwards [A.coeFn_compLpL (p := p) (μ := μ) f₁,
+    A.coeFn_compLpL (p := p) (μ := μ) f₂] with x h₁ h₂
+  apply hA
+  rw [← h₁, ← h₂]
+  exact congrArg (fun f : Lp F p μ => f x) h
+
+end
+
 variable {ι : Type*} [Fintype ι]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}

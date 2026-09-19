@@ -3515,3 +3515,503 @@ private theorem reference_exists_coefficient_representatives_timeShift
 end DifferentialGeometry.Analysis.Parabolic
 
 end
+
+open private
+  referenceCirclePrincipalNormBounds
+  DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.referenceCirclePrincipalNormBounds from
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ParameterSolutions
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff _root_.Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TensorSpectral TimeSobolev QuasiLinear MaximalRegularity
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_exists_selected_coefficient_family
+    {X : Type*} {n : ℕ}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T) (σ : X → ℝ)
+    (fref : CircleHsPi g (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : X → Metric.closedBall fref δ)
+    (fHigh : X → CircleHsPi g (Fin n) (((k + 3 : ℕ) : ℝ) + 2))
+    (force : X → timeL2 (CircleHsPi g (Fin n) ((k + 2 : ℕ) : ℝ)) T)
+    (W : X → ℝ → CircleHsPi g (Fin n) ((k + 3 : ℕ) : ℝ))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (diffusion : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (drift : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hdiffusion : ContDiffOn ℝ ∞ diffusion S)
+    (hdrift : ContDiffOn ℝ ∞ drift S) (hS : IsOpen S)
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g (Fin n) 1)
+    (a₂ : X → ℝ → TensorHs g 0 0 2)
+    (b₂ : X → ℝ → CircleHsPi g (Fin n) 2)
+    (ha₂ : ∀ x, AEStronglyMeasurable (a₂ x) (timeMeasure T))
+    (hb₂ : ∀ x, AEStronglyMeasurable (b₂ x) (timeMeasure T)) :
+    let R := circleHsPiInclusion g (Fin n)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        ((1 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let L := circleHsPiInclusion g (Fin n)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        ((1 : ℕ) : ℝ) + 1 ≤ ((k + 3 : ℕ) : ℝ))
+    let K := circleHsPiInclusion g (Fin n)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    let K₀ := circleHsPiInclusion g (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P₀ := (circleFirstJet (ι := Fin n) g).comp K₀
+    let J₀ := (circleFirstJet (ι := Fin n) g).comp (circleHsPiCongr g (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let A₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    let P₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        (2 : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        (1 : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let U := fun x => maximalRegularityDuhamelVectorField hT 0 (force x)
+    referenceCircleSymmetricCoefficientFacts g fref P₀ J₀ diffusion drift S δ ρ alpha reaction →
+    (∀ x, R (fHigh x) = (f x).val) →
+    (∀ x, W x =ᵐ[timeMeasure T] fun t => K (U x t)) →
+    (∀ x, -ρ ≤ σ x ∧ σ x + T ≤ ρ ∧ ∀ t ∈ Icc 0 T, ‖L (W x t)‖ ≤ ρ) →
+    (∀ x, (fun t => A₂ (a₂ x t)) =ᵐ[timeMeasure T]
+      (fun t => alpha (f x) (σ x + t) (L (W x t)))) →
+    (∀ x, (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ x t))
+      =ᵐ[timeMeasure T] (fun t => reaction (f x) (σ x + t) (L (W x t)))) →
+    ∃ (a : X → timeL2 (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) T)
+      (b : X → timeL2 (CircleHsPi g (Fin n) ((k + 3 : ℕ) : ℝ)) T),
+      (∀ x, (fun t => P₂ (a x t)) =ᵐ[timeMeasure T] a₂ x) ∧
+      (∀ x, (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => P₂) (b x t))
+        =ᵐ[timeMeasure T] b₂ x) ∧
+      (∀ x, (fun t => A (a x t)) =ᵐ[timeMeasure T]
+        (fun t => alpha (f x) (σ x + t) (L (W x t)))) ∧
+      (∀ x, (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A) (b x t))
+        =ᵐ[timeMeasure T] (fun t => reaction (f x) (σ x + t) (L (W x t)))) ∧
+      ∀ (l : Filter X) (x₀ : X), Tendsto σ l (𝓝 (σ x₀)) →
+        Tendsto fHigh l (𝓝 (fHigh x₀)) → Tendsto force l (𝓝 (force x₀)) →
+        TendstoUniformlyOn W (W x₀) l (Icc 0 T) →
+        Tendsto (fun x => (a x, b x)) l (𝓝 (a x₀, b x₀)) := by
+  intro R L K K₀ P₀ J₀ A₂ P₂ A U hcoeff hf hWU hgood ha₂physical hb₂physical
+  classical
+  let BF := circleHsPiInclusion g (Fin n)
+    (by push_cast; linarith :
+      ((k + 1 + 2 : ℕ) : ℝ) + 1 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+  let BV := circleHsPiInclusion g (Fin n)
+    (by push_cast; linarith :
+      ((k + 1 + 2 : ℕ) : ℝ) + 1 ≤ ((k + 2 : ℕ) : ℝ) + 2)
+  let BW := circleHsPiInclusion g (Fin n)
+    (by push_cast; linarith :
+      ((k + 1 + 1 : ℕ) : ℝ) + 1 ≤ ((k + 3 : ℕ) : ℝ))
+  let Rr := circleHsPiInclusion g (Fin n)
+    (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+      ((1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1)
+  let Lr := circleHsPiInclusion g (Fin n)
+    (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+      ((1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 1 : ℕ) : ℝ) + 1)
+  let Br := circleHsPiInclusion g (Fin n)
+    (by push_cast; linarith :
+      ((k + 1 + 1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1)
+  let Ur := fun x => BV.compLpL 2 (timeMeasure T) (U x)
+  let Wr := fun x t => BW (W x t)
+  have hRF (v : CircleHsPi g (Fin n) (((k + 3 : ℕ) : ℝ) + 2)) : Rr (BF v) = R v := by
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have hLW (v : CircleHsPi g (Fin n) ((k + 3 : ℕ) : ℝ)) : Lr (BW v) = L v := by
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have hWraw (x : X) : ContinuousOn (Wr x) (Icc 0 T) :=
+    BW.continuous.comp_continuousOn (hW x)
+  have hfraw (x : X) : Rr (BF (fHigh x)) = (f x).val := (hRF _).trans (hf x)
+  have hWVraw (x : X) : Wr x =ᵐ[timeMeasure T] fun t => Br (Ur x t) := by
+    filter_upwards [hWU x, BV.coeFn_compLpL (p := 2) (μ := timeMeasure T) (U x)]
+      with t hwt hvt
+    change BW (W x t) = Br (BV.compLpL 2 (timeMeasure T) (U x) t)
+    rw [hwt, hvt]
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have hgoodraw (x : X) :
+      -ρ ≤ σ x ∧ σ x + T ≤ ρ ∧ ∀ t ∈ Icc 0 T, ‖Lr (Wr x t)‖ ≤ ρ := by
+    refine ⟨(hgood x).1, (hgood x).2.1, ?_⟩
+    intro t ht
+    change ‖Lr (BW (W x t))‖ ≤ ρ
+    rw [hLW]
+    exact (hgood x).2.2 t ht
+  have hex (x : X) := reference_exists_successor_coefficients_timeShift
+    g k T (σ x) fref (f x) (BF (fHigh x)) (Ur x) (Wr x) (hWraw x)
+    diffusion drift hdiffusion hdrift hS alpha reaction (a₂ x) (b₂ x) (ha₂ x) (hb₂ x)
+    hcoeff (hfraw x) (hWVraw x) (hgoodraw x).1 (hgoodraw x).2.1 (hgoodraw x).2.2
+    (by
+      change (fun t => A₂ (a₂ x t)) =ᵐ[timeMeasure T]
+        (fun t => alpha (f x) (σ x + t) (Lr (Wr x t)))
+      simpa only [Wr, hLW] using ha₂physical x)
+    (by
+      change (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ x t))
+        =ᵐ[timeMeasure T] (fun t => reaction (f x) (σ x + t) (Lr (Wr x t)))
+      simpa only [Wr, hLW] using hb₂physical x)
+  choose ar br har₂ hbr₂ har hbr using hex
+  let C := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 1 : ℕ) : ℝ) + 2)
+  let CP := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => C)
+  let a := fun x => C.compLpL 2 (timeMeasure T) (ar x)
+  let b := fun x => CP.compLpL 2 (timeMeasure T) (br x)
+  refine ⟨a, b, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x
+    filter_upwards [C.coeFn_compLpL (p := 2) (μ := timeMeasure T) (ar x), har₂ x]
+      with t hct ht
+    change P₂ (C.compLpL 2 (timeMeasure T) (ar x) t) = a₂ x t
+    rw [hct]
+    convert ht using 1
+    apply TensorHs.ext
+    rfl
+  · intro x
+    filter_upwards [CP.coeFn_compLpL (p := 2) (μ := timeMeasure T) (br x), hbr₂ x]
+      with t hct ht
+    change (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => P₂))
+      (CP.compLpL 2 (timeMeasure T) (br x) t) = b₂ x t
+    rw [hct]
+    convert ht using 1
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  · intro x
+    filter_upwards [C.coeFn_compLpL (p := 2) (μ := timeMeasure T) (ar x), har x]
+      with t hct ht
+    change A (C.compLpL 2 (timeMeasure T) (ar x) t) = _
+    rw [hct]
+    change _ = alpha (f x) (σ x + t) (Lr (Wr x t)) at ht
+    simp only [Wr, hLW] at ht
+    convert ht using 1
+    apply TensorHs.ext
+    rfl
+  · intro x
+    filter_upwards [CP.coeFn_compLpL (p := 2) (μ := timeMeasure T) (br x), hbr x]
+      with t hct ht
+    change (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A))
+      (CP.compLpL 2 (timeMeasure T) (br x) t) = _
+    rw [hct]
+    change _ = reaction (f x) (σ x + t) (Lr (Wr x t)) at ht
+    simp only [Wr, hLW] at ht
+    convert ht using 1
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  · intro l x₀ hσ hfHigh hforce hWlim
+    let D := maximalRegularityVectorFieldL
+      (ι := Fin n) (g := g) (r := 0) (s := 0) ((k + 2 : ℕ) : ℝ) hT.le
+    have hUlim : Tendsto U l (𝓝 (U x₀)) := by
+      have hD := (D.continuous.tendsto (force x₀)).comp hforce
+      have heq (v : timeL2 (CircleHsPi g (Fin n) ((k + 2 : ℕ) : ℝ)) T) :
+          D v = maximalRegularityDuhamelVectorField hT 0 v :=
+        maximalRegularityVectorFieldL_eq_duhamel hT v
+      simpa only [U, Function.comp_def, heq] using hD
+    have hUr : Tendsto Ur l (𝓝 (Ur x₀)) :=
+      ((BV.compLpL 2 (timeMeasure T)).continuous.tendsto (U x₀)).comp hUlim
+    have hfr : Tendsto (fun x => BF (fHigh x)) l (𝓝 (BF (fHigh x₀))) :=
+      (BF.continuous.tendsto (fHigh x₀)).comp hfHigh
+    have hWr : TendstoUniformlyOn Wr (Wr x₀) l (Icc 0 T) :=
+      BW.uniformContinuous.comp_tendstoUniformlyOn hWlim
+    have hraw := reference_selected_coefficients_tendsto_timeShift
+      g k T σ (σ x₀) hσ 0 (fun x => BF (fHigh x)) (BF (fHigh x₀)) hfr
+      fref f (f x₀) diffusion drift hdiffusion hdrift hS alpha reaction
+      Ur (Ur x₀) Wr (Wr x₀) ar (ar x₀) br (br x₀) hUr (hWraw x₀) hWr
+      hcoeff (by simpa only [zero_add] using hfraw)
+      (by simpa only [zero_add] using hfraw x₀) hWVraw (hWVraw x₀)
+      (Eventually.of_forall hgoodraw) (hgoodraw x₀).1 (hgoodraw x₀).2.1
+      (hgoodraw x₀).2.2 (Eventually.of_forall har) (har x₀)
+      (Eventually.of_forall hbr) (hbr x₀)
+    have harlim : Tendsto ar l (𝓝 (ar x₀)) :=
+      (continuous_fst.tendsto (ar x₀, br x₀)).comp hraw
+    have hbrlim : Tendsto br l (𝓝 (br x₀)) :=
+      (continuous_snd.tendsto (ar x₀, br x₀)).comp hraw
+    exact (((C.compLpL 2 (timeMeasure T)).continuous.tendsto (ar x₀)).comp harlim).prodMk_nhds
+      (((CP.compLpL 2 (timeMeasure T)).continuous.tendsto (br x₀)).comp hbrlim)
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff _root_.Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TensorSpectral TimeSobolev QuasiLinear MaximalRegularity
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_exists_selected_coefficient_family_nat
+    {X : Type*} {n : ℕ}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T) (σ : X → ℝ)
+    (fref : CircleHsPi g (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : X → Metric.closedBall fref δ)
+    (fHigh : X → CircleHsPi g (Fin n) (((k + 3 : ℕ) : ℝ) + 2))
+    (force : X → timeL2 (CircleHsPi g (Fin n) ((k + 2 : ℕ) : ℝ)) T)
+    (W : X → ℝ → CircleHsPi g (Fin n) ((k + 3 : ℕ) : ℝ))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (diffusion : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (drift : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hdiffusion : ContDiffOn ℝ ∞ diffusion S)
+    (hdrift : ContDiffOn ℝ ∞ drift S) (hS : IsOpen S)
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g (Fin n) 1)
+    (a₂ : X → ℝ → TensorHs g 0 0 ((2 : ℕ) : ℝ))
+    (b₂ : X → ℝ → CircleHsPi g (Fin n) ((2 : ℕ) : ℝ))
+    (ha₂ : ∀ x, AEStronglyMeasurable (a₂ x) (timeMeasure T))
+    (hb₂ : ∀ x, AEStronglyMeasurable (b₂ x) (timeMeasure T)) :
+    let R := circleHsPiInclusion g (Fin n)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        ((1 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let L := circleHsPiInclusion g (Fin n)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        ((1 : ℕ) : ℝ) + 1 ≤ ((k + 3 : ℕ) : ℝ))
+    let K := circleHsPiInclusion g (Fin n)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    let K₀ := circleHsPiInclusion g (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P₀ := (circleFirstJet (ι := Fin n) g).comp K₀
+    let J₀ := (circleFirstJet (ι := Fin n) g).comp (circleHsPiCongr g (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let A₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ ((2 : ℕ) : ℝ))
+    let P₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        ((2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith [hk] :
+        (1 : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let U := fun x => maximalRegularityDuhamelVectorField hT 0 (force x)
+    referenceCircleSymmetricCoefficientFacts g fref P₀ J₀ diffusion drift S δ ρ alpha reaction →
+    (∀ x, R (fHigh x) = (f x).val) →
+    (∀ x, W x =ᵐ[timeMeasure T] fun t => K (U x t)) →
+    (∀ x, -ρ ≤ σ x ∧ σ x + T ≤ ρ ∧ ∀ t ∈ Icc 0 T, ‖L (W x t)‖ ≤ ρ) →
+    (∀ x, (fun t => A₂ (a₂ x t)) =ᵐ[timeMeasure T]
+      (fun t => alpha (f x) (σ x + t) (L (W x t)))) →
+    (∀ x, (fun t => ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : Fin n => TensorHs g 0 0 ((2 : ℕ) : ℝ))
+        (F := fun _ : Fin n => TensorHs g 0 0 (1 : ℝ)) 2 (fun _ : Fin n => A₂) (b₂ x t))
+      =ᵐ[timeMeasure T] (fun t => reaction (f x) (σ x + t) (L (W x t)))) →
+    ∃ (a : X → timeL2 (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) T)
+      (b : X → timeL2 (CircleHsPi g (Fin n) ((k + 3 : ℕ) : ℝ)) T),
+      (∀ x, (fun t => P₂ (a x t)) =ᵐ[timeMeasure T] a₂ x) ∧
+      (∀ x, (fun t => ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : Fin n => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))
+        (F := fun _ : Fin n => TensorHs g 0 0 ((2 : ℕ) : ℝ)) 2 (fun _ : Fin n => P₂) (b x t))
+        =ᵐ[timeMeasure T] b₂ x) ∧
+      (∀ x, (fun t => A (a x t)) =ᵐ[timeMeasure T]
+        (fun t => alpha (f x) (σ x + t) (L (W x t)))) ∧
+      (∀ x, (fun t => ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : Fin n => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))
+        (F := fun _ : Fin n => TensorHs g 0 0 (1 : ℝ)) 2 (fun _ : Fin n => A) (b x t))
+        =ᵐ[timeMeasure T] (fun t => reaction (f x) (σ x + t) (L (W x t)))) ∧
+      ∀ (l : Filter X) (x₀ : X), Tendsto σ l (𝓝 (σ x₀)) →
+        Tendsto fHigh l (𝓝 (fHigh x₀)) → Tendsto force l (𝓝 (force x₀)) →
+        TendstoUniformlyOn W (W x₀) l (Icc 0 T) →
+        Tendsto (fun x => (a x, b x)) l (𝓝 (a x₀, b x₀)) := by
+  intro R L K K₀ P₀ J₀ A₂ P₂ A U hcoeff hf hWU hgood ha₂physical hb₂physical
+  let Q₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (2 : ℝ) ≤ ((2 : ℕ) : ℝ))
+  let QP₂ := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : Fin n => TensorHs g 0 0 ((2 : ℕ) : ℝ))
+    (F := fun _ : Fin n => TensorHs g 0 0 (2 : ℝ)) 2 (fun _ : Fin n => Q₂)
+  let Q₂back := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((2 : ℕ) : ℝ) ≤ (2 : ℝ))
+  let QP₂back := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : Fin n => TensorHs g 0 0 (2 : ℝ))
+    (F := fun _ : Fin n => TensorHs g 0 0 ((2 : ℕ) : ℝ)) 2 (fun _ : Fin n => Q₂back)
+  let A₂real := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ (2 : ℝ))
+  let P₂real := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+      (2 : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+  let P₂realPi := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : Fin n => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))
+    (F := fun _ : Fin n => TensorHs g 0 0 (2 : ℝ)) 2 (fun _ : Fin n => P₂real)
+  let P₂Pi := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : Fin n => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))
+    (F := fun _ : Fin n => TensorHs g 0 0 ((2 : ℕ) : ℝ)) 2 (fun _ : Fin n => P₂)
+  have hA₂Q (v : TensorHs g 0 0 ((2 : ℕ) : ℝ)) : A₂real (Q₂ v) = A₂ v := by
+    apply TensorHs.ext
+    rfl
+  have hQ₂backQ (v : TensorHs g 0 0 ((2 : ℕ) : ℝ)) : Q₂back (Q₂ v) = v := by
+    apply TensorHs.ext
+    rfl
+  have hQ₂backP (v : TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) :
+      Q₂back (P₂real v) = P₂ v := by
+    apply TensorHs.ext
+    rfl
+  have hQP₂backQ (v : CircleHsPi g (Fin n) ((2 : ℕ) : ℝ)) : QP₂back (QP₂ v) = v := by
+    apply PiLp.ext
+    intro i
+    exact hQ₂backQ (v i)
+  have hQP₂backP (v : CircleHsPi g (Fin n) ((k + 3 : ℕ) : ℝ)) :
+      QP₂back (P₂realPi v) = P₂Pi v := by
+    apply PiLp.ext
+    intro i
+    exact hQ₂backP (v i)
+  have habaseReal (x : X) : (fun t => A₂real (Q₂ (a₂ x t))) =ᵐ[timeMeasure T]
+      (fun t => alpha (f x) (σ x + t) (L (W x t))) := by
+    filter_upwards [ha₂physical x] with t ht
+    rw [hA₂Q]
+    exact ht
+  have hbbaseReal (x : X) :
+      (fun t => ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : Fin n => TensorHs g 0 0 (2 : ℝ))
+        (F := fun _ : Fin n => TensorHs g 0 0 (1 : ℝ))
+        2 (fun _ : Fin n => A₂real) (QP₂ (b₂ x t)))
+        =ᵐ[timeMeasure T] (fun t => reaction (f x) (σ x + t) (L (W x t))) := by
+    filter_upwards [hb₂physical x] with t ht
+    refine Eq.trans ?_ ht
+    apply PiLp.ext
+    intro i
+    change A₂real (Q₂ (b₂ x t i)) = A₂ (b₂ x t i)
+    exact hA₂Q (b₂ x t i)
+  obtain ⟨a, b, ha₂projReal, hb₂projReal, haPhysical, hbPhysical, hablim⟩ :=
+    reference_exists_selected_coefficient_family
+      (X := X) (n := n) (T := T) g k hT σ fref f fHigh force W hW
+      diffusion drift hdiffusion hdrift hS alpha reaction
+      (fun x t => Q₂ (a₂ x t)) (fun x t => QP₂ (b₂ x t))
+      (fun x => Q₂.continuous.comp_aestronglyMeasurable (ha₂ x))
+      (fun x => QP₂.continuous.comp_aestronglyMeasurable (hb₂ x))
+      hcoeff hf hWU hgood habaseReal hbbaseReal
+  refine ⟨a, b, ?_, ?_, haPhysical, hbPhysical, hablim⟩
+  · intro x
+    filter_upwards [ha₂projReal x] with t ht
+    change P₂real (a x t) = Q₂ (a₂ x t) at ht
+    have h := congrArg Q₂back ht
+    simpa only [hQ₂backP, hQ₂backQ] using h
+  · intro x
+    filter_upwards [hb₂projReal x] with t ht
+    change P₂realPi (b x t) = QP₂ (b₂ x t) at ht
+    change P₂Pi (b x t) = b₂ x t
+    have h := congrArg QP₂back ht
+    simpa only [hQP₂backP, hQP₂backQ] using h
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+
+noncomputable section
+
+open Filter MeasureTheory Set
+open scoped Manifold ContDiff _root_.Topology ENNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+attribute [local instance] DifferentialGeometry.Analysis.Parabolic.vectorTensorHsNormedSpace
+
+private theorem reference_exists_continuousOn_principalCoefficient_timeShift
+    {X : Type*} [TopologicalSpace X] {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T) {U : Set X}
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (σ : X → ℝ) (hσ : ContinuousOn σ U)
+    (fref : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : X → Metric.closedBall fref δ)
+    (hf : ContinuousOn (fun x => (f x).val) U)
+    (gforce : X → timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hforce : ContinuousOn gforce U)
+    (W₂ : X → ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hW₂ : ∀ x, ContinuousOn (W₂ x) (Icc 0 T))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F S) (hG : ContDiffOn ℝ ∞ G S) (hS : IsOpen S)
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (hcoeff : referenceCircleSymmetricCoefficientFacts g₀ fref P J F G S δ ρ alpha reaction)
+    (hprincipal : referenceCirclePrincipalNormBounds (n := n) g₀ ρ alpha)
+    (hgood : ∀ x, -ρ ≤ σ x ∧ σ x + T ≤ ρ ∧ ∀ t ∈ Icc 0 T, ‖W₂ x t‖ ≤ ρ) :
+    let K := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let E₁ := tensorHsCongrL g₀ 0 0
+      (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+    (∀ x, W₂ x =ᵐ[timeMeasure T] fun t =>
+      K (maximalRegularityDuhamelVectorField hT 0 (gforce x) t)) →
+    ∃ aTop₁ : X → Lp (TensorHs g₀ 0 0 ((1 : ℕ) : ℝ)) ∞ (timeMeasure T),
+      (∀ x, aTop₁ x =ᵐ[timeMeasure T] fun t => E₁ (alpha (f x) (σ x + t) (W₂ x t))) ∧
+      ContinuousOn aTop₁ U ∧
+      (∀ x, ∀ᵐ t ∂timeMeasure T,
+        ‖AddCircle.parameterPrincipalOperatorHsPi (ι := Fin n) g₀ (aTop₁ x t)‖ ≤ (1 / 4 : ℝ)) ∧
+      (∀ x, ∀ᵐ t ∂timeMeasure T,
+        ‖AddCircle.parameterPrincipalOperatorH0Pi (ι := Fin n) g₀ (aTop₁ x t)‖ ≤ (1 / 4 : ℝ)) := by
+  classical
+  intro K E₁ hWpin
+  have hmem (x : X) :
+      MemLp (fun t => alpha (f x) (σ x + t) (W₂ x t)) ∞ (timeMeasure T) := by
+    have ha := (reference_shifted_coefficients_continuousOn
+      g₀ T (σ x) fref (f x) P J (W₂ x) (hW₂ x) F G hF hG hS alpha reaction
+      hcoeff (hgood x).1 (hgood x).2.1 (hgood x).2.2).1
+    obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn ha
+    apply memLp_top_of_bound (memLp_of_continuousOn ha).aestronglyMeasurable C
+    filter_upwards [ae_restrict_mem (μ := volume) measurableSet_Icc] with t ht
+    exact hC t ht
+  let aRaw := fun x => (hmem x).toLp (fun t => alpha (f x) (σ x + t) (W₂ x t))
+  have hRaw (x : X) :
+      aRaw x =ᵐ[timeMeasure T] fun t => alpha (f x) (σ x + t) (W₂ x t) :=
+    (hmem x).coeFn_toLp
+  have hRawCont : ContinuousOn aRaw U := by
+    intro x₀ hx₀
+    have hWlim := tendstoUniformlyOn_continuousOn_duhamel_representatives hT
+      (gforce x₀) gforce (W₂ x₀) W₂ (hW₂ x₀) hW₂ (hWpin x₀) hWpin
+      (hforce x₀ hx₀)
+    exact reference_shifted_principalCoefficient_tendsto_top
+      g₀ T P J σ (σ x₀) (hσ x₀ hx₀) fref f (f x₀) W₂ (W₂ x₀)
+      (hf x₀ hx₀) (hW₂ x₀) hWlim F G hF hS alpha reaction hcoeff
+      (Eventually.of_forall hgood) (hgood x₀).1 (hgood x₀).2.1 (hgood x₀).2.2
+      aRaw (aRaw x₀) hRaw (hRaw x₀)
+  let N := E₁.compLpL ∞ (timeMeasure T)
+  let aTop₁ := fun x => N (aRaw x)
+  have haTop₁ (x : X) :
+      aTop₁ x =ᵐ[timeMeasure T] fun t => E₁ (alpha (f x) (σ x + t) (W₂ x t)) := by
+    filter_upwards [E₁.coeFn_compLpL (p := ∞) (μ := timeMeasure T) (aRaw x), hRaw x]
+      with t hN hR
+    exact hN.trans (congrArg E₁ hR)
+  have hbound (x : X) : ∀ᵐ t ∂timeMeasure T,
+      ‖AddCircle.parameterPrincipalOperatorHsPi (ι := Fin n) g₀ (aTop₁ x t)‖ ≤ (1 / 4 : ℝ) ∧
+      ‖AddCircle.parameterPrincipalOperatorH0Pi (ι := Fin n) g₀ (aTop₁ x t)‖ ≤ (1 / 4 : ℝ) := by
+    filter_upwards [haTop₁ x, ae_restrict_mem (μ := volume) measurableSet_Icc] with t hat ht
+    have htime : σ x + t ∈ Icc (-ρ) ρ := by
+      constructor <;> linarith [ht.1, ht.2, (hgood x).1, (hgood x).2.1]
+    rw [hat]
+    exact hprincipal (f x) (σ x + t) htime (W₂ x t) ((hgood x).2.2 t ht)
+  exact ⟨aTop₁, haTop₁, N.continuous.comp_continuousOn hRawCont,
+    fun x => (hbound x).mono fun _ h => h.1,
+    fun x => (hbound x).mono fun _ h => h.2⟩
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end

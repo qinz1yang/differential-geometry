@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicUniqueness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.FamilyDependence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
@@ -103,6 +105,7 @@ theorem maximal_curvature_unbounded (B : RicciBackground (I := I) (M := M) D a b
   obtain ⟨τ, hτ, hτb, extended, hsol, heq⟩ := hextend hTb
   exact hmax (T + τ) (lt_add_of_pos_right T hτ) hτb ⟨extended, hsol, heq⟩
 
+omit [CompleteSpace E] [SigmaCompactSpace M] nonemptyM in
 theorem rfs_csf_family_dependence (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {d : ℝ} (had : a < d) (hdb : d ≤ b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc a d))
@@ -114,13 +117,16 @@ theorem rfs_csf_family_dependence (B : SmoothMetricWindow (I := I) (M := M) D a 
         (@Continuous U (CurveMap M) inferInstance (smoothCylinderTopology e (Icc a d)) solutions) ∧
         ∀ p : U, (solutions p).IsSolutionOn B.family.metric (Icc a d) ∧
           ∀ z, solutions p z a = p.1.map z := by
-  sorry
+  exact rfs_csf_family_dependence_of_localUniformDependence B
+    (fun _ B' _ => curveShorteningLocalUniformDependence_of_compact B')
+    (fun _ B' _ => curveShorteningLocalUniqueness_of_compact B') had hdb c hc e
 
+omit [CompleteSpace E] [SigmaCompactSpace M] nonemptyM in
 theorem compact_family_solution_continuous
     (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {d : ℝ} (had : a < d) (hdb : d ≤ b)
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    {P : Type*} [TopologicalSpace P] [CompactSpace P]
+    {P : Type*} [TopologicalSpace P]
     (initial : P → SmoothImmersion (I := I) (M := M))
     (hinit : @Continuous P _ inferInstance (smoothImmersionTopology e) initial)
     (solutions : P → CurveMap M)

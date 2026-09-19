@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ReferenceSolutions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ParameterSolutions
 
 open private
   CircleHsPi
@@ -195,6 +196,105 @@ private theorem reference_chart_spatial_jets
     0 hlocal n (hmem q.1 hq.1 q.2.1 hq.2.1 q.2.2 hq.2.2)
   simpa only [Φ, first, ψ, Q, G, c, CurveMap.lift, Function.comp_apply, Fin.val_zero,
     iteratedDeriv_zero] using heq
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+
+open private fixedAmbientSobolevExponent continuous_fixedAmbientSobolevExponent
+  fixedAmbientSobolevExponent_inclusion fixedAmbientSobolevExponent_three from
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ParameterSolutions
+
+open Set Filter
+open scoped Manifold ContDiff _root_.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Spectral
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem reference_joint_total_sobolev_representatives
+    {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    [TopologicalSpace M] [ChartedSpace H M]
+    {P : Type*} [TopologicalSpace P] {S : Set P} {N : ℕ} {T : ℝ}
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (initial : P → SmoothImmersion (I := I) (M := M))
+    (hinitial : @ContinuousOn P (SmoothImmersion (I := I) (M := M))
+      inferInstance (smoothImmersionTopology e) initial S)
+    (u : P → timeH1 (CircleHsPi g₀ (Fin N) ((1 : ℕ) : ℝ)) T)
+    (W : ∀ k : ℕ, P → ℝ → CircleHsPi g₀ (Fin N) ((k : ℝ) + 3))
+    (hW : ∀ k p, p ∈ S → ContinuousOn (W k p) (Icc 0 T))
+    (hWlim : ∀ k p, p ∈ S →
+      TendstoUniformlyOn (W k) (W k p) (𝓝[S] p) (Icc 0 T)) :
+    let B := circleHsPiInclusion g₀ (Fin N)
+      (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)
+    let L := circleHsPiInclusion g₀ (Fin N)
+      (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ))
+    (∀ (k : ℕ) p, p ∈ S → ∀ t, t ∈ Icc 0 T →
+      circleHsPiInclusion g₀ (Fin N)
+        (by have hk := Nat.cast_nonneg (α := ℝ) k; linarith [hk] :
+          (1 : ℝ) ≤ (k : ℝ) + 3) (W k p t) = L ((u p).toFun t)) →
+    ∀ k : ℕ, ∃ Z : (P × ℝ) → CircleHsPi g₀ (Fin N) ((k : ℝ) + 2),
+      ContinuousOn Z (S ×ˢ Icc 0 T) ∧
+        ∀ p ∈ S, ∀ t ∈ Icc 0 T,
+          circleHsPiInclusion g₀ (Fin N)
+            (by have hk := Nat.cast_nonneg (α := ℝ) k; linarith [hk] :
+              (1 : ℝ) ≤ (k : ℝ) + 2) (Z (p, t)) =
+            B (fixedAmbientSobolev e g₀ (initial p)) + L ((u p).toFun t) := by
+  intro B L hWpin k
+  let : TopologicalSpace (SmoothImmersion (I := I) (M := M)) := smoothImmersionTopology e
+  let R := circleHsPiInclusion g₀ (Fin N)
+    (by linarith : (k : ℝ) + 2 ≤ (k : ℝ) + 3)
+  let A := circleHsPiInclusion g₀ (Fin N)
+    (by have hk := Nat.cast_nonneg (α := ℝ) k; linarith [hk] :
+      (1 : ℝ) ≤ (k : ℝ) + 2)
+  let Z : (P × ℝ) → CircleHsPi g₀ (Fin N) ((k : ℝ) + 2) :=
+    fun q => fixedAmbientSobolevExponent e g₀ ((k : ℝ) + 2) (initial q.1) +
+      R (W k q.1 q.2)
+  have hWjoint : ContinuousOn (fun q : P × ℝ => W k q.1 q.2) (S ×ˢ Icc 0 T) := by
+    rintro ⟨p, t⟩ ⟨hp, ht⟩
+    change Tendsto _ (𝓝[S ×ˢ Icc 0 T] (p, t)) _
+    rw [nhdsWithin_prod_eq]
+    have hunif : TendstoUniformlyOn (fun q : P × ℝ => W k q.1) (W k p)
+        (𝓝[S] p ×ˢ 𝓝[Icc 0 T] t) (Icc 0 T) := by
+      intro v hv
+      exact tendsto_fst.eventually (hWlim k p hp v hv)
+    exact hunif.tendsto_comp (hW k p hp t ht) tendsto_snd
+  have hbase : ContinuousOn
+      (fun q : P × ℝ => fixedAmbientSobolevExponent e g₀ ((k : ℝ) + 2) (initial q.1))
+      (S ×ˢ Icc 0 T) :=
+    ((continuous_fixedAmbientSobolevExponent e g₀ ((k : ℝ) + 2)).comp_continuousOn
+      hinitial).comp continuous_fst.continuousOn (fun _ hq => hq.1)
+  refine ⟨Z, hbase.add (R.continuous.comp_continuousOn hWjoint), ?_⟩
+  intro p hp t ht
+  change A (fixedAmbientSobolevExponent e g₀ ((k : ℝ) + 2) (initial p) +
+    R (W k p t)) = _
+  rw [A.map_add]
+  have hbasepin : A (fixedAmbientSobolevExponent e g₀ ((k : ℝ) + 2) (initial p)) =
+      B (fixedAmbientSobolev e g₀ (initial p)) := by
+    change (ContinuousLinearMap.piLpMap 2 (fun _ : Fin N =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0) _)) _ = _
+    rw [fixedAmbientSobolevExponent_inclusion]
+    change fixedAmbientSobolevExponent e g₀ 1 (initial p) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : Fin N =>
+        tensorHsInclusion (g := g₀) (r := 0) (s := 0) _)) _
+    rw [← fixedAmbientSobolevExponent_three, fixedAmbientSobolevExponent_inclusion]
+  have hcorrection : A (R (W k p t)) = L ((u p).toFun t) := by
+    rw [← hWpin k p hp t ht]
+    apply PiLp.ext
+    intro i
+    exact (tensorHsInclusion_trans_apply
+      (by have hk := Nat.cast_nonneg (α := ℝ) k; linarith [hk] : (1 : ℝ) ≤ (k : ℝ) + 2)
+      (by linarith : (k : ℝ) + 2 ≤ (k : ℝ) + 3) ((W k p t) i)).symm
+  rw [hbasepin, hcorrection]
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 

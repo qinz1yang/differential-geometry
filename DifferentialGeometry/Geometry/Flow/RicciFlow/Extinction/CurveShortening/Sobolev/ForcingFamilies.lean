@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialRegularity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CoefficientFamilies
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.InitialState
@@ -1579,6 +1580,98 @@ private theorem reference_exists_continuousOn_h2_forcing_h3_state_timeShift
   exact ⟨W, hWcont, hWlow, hWV, hWnorm, hWzero, hWlim,
     a₂, b₂, ha₂, hb₂, F₂, hF₂, hV₂, hPDE₂, hF₂cont, hselected,
     W₃, hW₃cont, hW₃ae, hW₃low, hW₃lim⟩
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+open private
+  parameterDerivativeForcingFieldLift
+  DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.parameterDerivativeForcingFieldLift
+  parameterDerivative_field_lift_of_forcing_lift
+  DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.parameterDerivative_field_lift_of_forcing_lift from
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialRegularity
+
+noncomputable section
+
+open Filter MeasureTheory Set
+open scoped Manifold ContDiff _root_.Topology ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+attribute [local instance] DifferentialGeometry.Analysis.Parabolic.vectorTensorHsNormedSpace
+
+private theorem reference_parameterDerivative_forcing_field_lift_timeShift
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T) (σ : ℝ)
+    (fref : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : Metric.closedBall fref δ)
+    (f₄ : CircleHsPi g₀ (Fin n) (((2 : ℕ) : ℝ) + 2))
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (u : timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (W : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (b₂ : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) T) :
+    let K := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let K₄ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2)
+    let AH := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1)
+    let C := tensorHsCongrL g₀ 0 0 (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+    let Cpi := circleHsPiCongr g₀ (Fin n)
+      (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+    let V := maximalRegularityDuhamelVectorField hT 0 gforce
+    referenceCirclePrincipalNormBounds (n := n) g₀ ρ alpha →
+    K₄ f₄ = f.val →
+    (W =ᵐ[timeMeasure T] fun t => K (V t)) →
+    referenceCircleSolutionFacts g₀ f.val
+      (fun t z => alpha f (σ + t) z)
+      (fun t z => reaction f (σ + t) z) ρ hT u gforce →
+    (-ρ ≤ σ ∧ σ + T ≤ ρ ∧ ∀ t ∈ Icc 0 T, ‖W t‖ ≤ ρ) →
+    (fun t => AH (a₂ t)) =ᵐ[timeMeasure T]
+      (fun t => C (alpha f (σ + t) (W t))) →
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => AH) (b₂ t))
+      =ᵐ[timeMeasure T] (fun t => Cpi (reaction f (σ + t) (W t))) →
+    parameterDerivativeForcingFieldLift g₀ hT gforce := by
+  intro K K₄ AH C Cpi V hprincipal hbase hWV hfacts hgood ha₂ hb₂
+  have hpair : ∀ᵐ t ∂timeMeasure T,
+      ‖AddCircle.parameterPrincipalOperatorHsPi (ι := Fin n) g₀ (AH (a₂ t))‖ ≤ (1 / 4 : ℝ) ∧
+      ‖AddCircle.parameterPrincipalOperatorH0Pi (ι := Fin n) g₀ (AH (a₂ t))‖ ≤ (1 / 4 : ℝ) := by
+    filter_upwards [ha₂, ae_restrict_mem measurableSet_Icc] with t hat htt
+    have ht : σ + t ∈ Icc (-ρ) ρ := by
+      constructor <;> linarith [htt.1, htt.2, hgood.1, hgood.2.1]
+    have hp := hprincipal f (σ + t) ht (W t) (hgood.2.2 t htt)
+    rw [hat]
+    exact hp
+  have ha : (fun t => AH (a₂ t)) =ᵐ[timeMeasure T]
+      (fun t => C (alpha f (σ + t) (K (V t)))) := by
+    filter_upwards [ha₂, hWV] with t hat hwt
+    simpa only [hwt] using hat
+  have hb : (fun t => ContinuousLinearMap.piLpMap 2
+      (fun _ : Fin n => AH) (b₂ t)) =ᵐ[timeMeasure T]
+      (fun t => Cpi (reaction f (σ + t) (K (V t)))) := by
+    filter_upwards [hb₂, hWV] with t hbt hwt
+    simpa only [hwt] using hbt
+  obtain ⟨FH, hFH⟩ := exists_parameterDerivative_forcing_lift_of_principal_norm_lt_one
+    g₀ hT gforce f₄ a₂ b₂ (1 / 4) (1 / 4)
+    (by simpa [AH] using hpair.mono (fun _ h => h.1))
+    (by simpa [AH] using hpair.mono (fun _ h => h.2))
+    (by norm_num) (by norm_num)
+    (reference_parameterDerivative_weakEquation_of_h2_coefficients g₀
+      f.val f₄ (fun t z => alpha f (σ + t) z)
+      (fun t z => reaction f (σ + t) z)
+      hT u gforce a₂ b₂ hfacts hbase ha hb)
+  exact ⟨FH, hFH, parameterDerivative_field_lift_of_forcing_lift g₀ hT gforce FH hFH⟩
 
 end DifferentialGeometry.Analysis.Parabolic
 

@@ -726,3 +726,173 @@ theorem CurveMap.exists_parabolic_curve_of_classical_retraction_equation_of_firs
   · exact hpde
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
+
+end
+
+noncomputable section
+
+open Set Manifold
+open scoped Manifold ContDiff
+open DifferentialGeometry.Geometry.Riemannian
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+variable {E F H M : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem chartDiffusionCoefficient_retractionMetric_eq_speed_inv_sq
+    (g : ℝ → SmoothRiemannianMetric I M)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {U : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r U)
+    (hEU : range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (c : CurveMap M) (x t : ℝ)
+    (hc : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x) :
+    curveShorteningChartDiffusionCoefficient
+      (fun s => retractionMetric (g s) he hr) β
+      (t, e (c.lift x t), deriv (fun y => e (c.lift y t)) x) =
+        c.speed g x t ^ (-2 : ℤ) := by
+  let j : M → U := fun p => ⟨e p, hEU (mem_range_self p)⟩
+  have hj : ContMDiff I 𝓘(ℝ, F) ∞ j := (ContMDiff.subtypeVal_comp_iff U j).mp he
+  let d : CurveMap U := fun z s => j (c z s)
+  have hd : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F) (fun y => d.lift y t) x :=
+    (hj.mdifferentiableAt (by simp)).comp x hc
+  have hmetric : ∀ s p v w,
+      (retractionMetric (g s) he hr).inner (j p)
+        (mfderiv I 𝓘(ℝ, F) j p v) (mfderiv I 𝓘(ℝ, F) j p w) = (g s).inner p v w := by
+    intro s p v w
+    rw [← mfderiv_subtypeVal_comp j p]
+    exact retractionMetric_inner_map (g s) he hr hEU hleft p v w
+  have hspeed : d.speed (fun s => retractionMetric (g s) he hr) x t = c.speed g x t :=
+    speed_comp_of_inner_map hj hmetric hc
+  have hchart : d.lift x t ∈ (extChartAt 𝓘(ℝ, F) β).source := by
+    rw [DifferentialGeometry.extChartAt_opens_source]
+    trivial
+  have hdiff := chartDiffusionCoefficient_eq_speed_inv_sq
+    (fun s => retractionMetric (g s) he hr) d β x t hd hchart
+  exact hdiff.trans (congrArg (fun a : ℝ => a ^ (-2 : ℤ)) hspeed)
+
+theorem retraction_chartDiffusionCoefficient_timeShift_eq_speed_inv_sq
+    (g : ℝ → SmoothRiemannianMetric I M) (σ : ℝ)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {U : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r U)
+    (hEU : range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (c : CurveMap M) (d : CurveMap F) (t : ℝ)
+    (hc : MDifferentiable 𝓘(ℝ, ℝ) I (fun y => c.lift y t))
+    (hcd : ∀ z, e (c z t) = d z t) :
+    (fun x => curveShorteningChartDiffusionCoefficient
+      (fun s => retractionMetric (g s) he hr) β
+      (σ + t, d.lift x t, deriv (fun y => d.lift y t) x)) =
+        fun x => c.speed (fun s => g (σ + s)) x t ^ (-2 : ℤ) := by
+  have hspace : (fun y : ℝ => e (c.lift y t)) = fun y => d.lift y t :=
+    funext fun y => hcd (y : AddCircle (1 : ℝ))
+  funext x
+  have h := chartDiffusionCoefficient_retractionMetric_eq_speed_inv_sq
+    (fun s => g (σ + s)) he hr hEU hleft β c x t (hc x)
+  rw [hspace, congrFun hspace x] at h
+  exact h
+
+theorem iteratedDeriv_retraction_chartDiffusionCoefficient_timeShift_eq_speed_inv_sq
+    (g : ℝ → SmoothRiemannianMetric I M) (σ : ℝ)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {U : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r U)
+    (hEU : range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (c : CurveMap M) (d : CurveMap F) (t : ℝ)
+    (hc : MDifferentiable 𝓘(ℝ, ℝ) I (fun y => c.lift y t))
+    (hcd : ∀ z, e (c z t) = d z t) (k : ℕ) :
+    iteratedDeriv k (fun x => curveShorteningChartDiffusionCoefficient
+      (fun s => retractionMetric (g s) he hr) β
+      (σ + t, d.lift x t, deriv (fun y => d.lift y t) x)) =
+        iteratedDeriv k (fun x => c.speed (fun s => g (σ + s)) x t ^ (-2 : ℤ)) :=
+  congrArg (iteratedDeriv k)
+    (retraction_chartDiffusionCoefficient_timeShift_eq_speed_inv_sq
+      g σ he hr hEU hleft β c d t hc hcd)
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+end
+
+noncomputable section
+
+open Set Manifold
+open scoped Manifold ContDiff Topology
+open DifferentialGeometry.Geometry.Riemannian
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+variable {E F H M : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem iteratedDeriv_gaugeCoefficient_eq_retraction_chartDiffusionCoefficient
+    (g : ℝ → SmoothRiemannianMetric I M) (σ : ℝ)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {U : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r U)
+    (hEU : range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (c : CurveMap M) (d : CurveMap F) {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    {t : ℝ} (ht : t ∈ J) (hcd : ∀ z, e (c z t) = d z t) (k : ℕ) :
+    iteratedDeriv k (fun x =>
+      -(deriv (fun y => c.speed (fun s => g (σ + s)) y t) x /
+        c.speed (fun s => g (σ + s)) x t ^ 2) /
+          c.speed (fun s => g (σ + s)) x t) =
+      fun x => (1 / 2 : ℝ) * iteratedDeriv (k + 1)
+        (fun y => curveShorteningChartDiffusionCoefficient
+          (fun s => retractionMetric (g s) he hr) β
+          (σ + t, d.lift y t, deriv (fun z => d.lift z t) y)) x := by
+  have hs := contMDiffOn_univ.mp (c.space_slice_contMDiffOn J hc t ht)
+  have hA := iteratedDeriv_retraction_chartDiffusionCoefficient_timeShift_eq_speed_inv_sq
+    g σ he hr hEU hleft β c d t (hs.mdifferentiable (by simp)) hcd (k + 1)
+  funext x
+  rw [congrFun hA x]
+  exact iteratedDeriv_neg_deriv_speed_div_sq_div_speed hc hi ht k x
+
+theorem continuousOn_mixed_gaugeCoefficient_of_retraction_chartDiffusionCoefficient
+    {P : Type*} [TopologicalSpace P] {S : Set P} {J : Set ℝ}
+    (g : ℝ → SmoothRiemannianMetric I M) (σ : P → ℝ)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {U : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r U)
+    (hEU : range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (c : P → CurveMap M) (d : P → CurveMap F)
+    (hc : ∀ p ∈ S, (c p).SmoothOn (I := I) J)
+    (hi : ∀ p ∈ S, (c p).ImmersedOn (I := I) J)
+    (hcd : ∀ p ∈ S, ∀ z t, t ∈ J → e (c p z t) = d p z t) :
+    let A := fun p t x => curveShorteningChartDiffusionCoefficient
+      (fun s => retractionMetric (g s) he hr) β
+      (σ p + t, (d p).lift x t, deriv (fun y => (d p).lift y t) x)
+    (∀ k j : ℕ, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedDerivWithin k
+        (fun t => iteratedDeriv j (A q.1 t) q.2.2) J q.2.1) (S ×ˢ J ×ˢ univ)) →
+    let ξ := fun p t x =>
+      -(deriv (fun y => (c p).speed (fun s => g (σ p + s)) y t) x /
+        (c p).speed (fun s => g (σ p + s)) x t ^ 2) /
+          (c p).speed (fun s => g (σ p + s)) x t
+    ∀ k j : ℕ, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedDerivWithin k
+        (fun t => iteratedDeriv j (ξ q.1 t) q.2.2) J q.2.1) (S ×ˢ J ×ˢ univ) := by
+  intro A hA ξ k j
+  apply ((continuousOn_const (c := (1 / 2 : ℝ))).mul (hA k (j + 1))).congr
+  intro q hq
+  have heq : EqOn (fun t => iteratedDeriv j (ξ q.1 t) q.2.2)
+      (fun t => (1 / 2 : ℝ) * iteratedDeriv (j + 1) (A q.1 t) q.2.2) J := by
+    intro t ht
+    exact congrFun (iteratedDeriv_gaugeCoefficient_eq_retraction_chartDiffusionCoefficient
+      g (σ q.1) he hr hEU hleft β (c q.1) (d q.1) (hc q.1 hq.1) (hi q.1 hq.1)
+      ht (fun z => hcd q.1 hq.1 z t ht) j) q.2.2
+  have h := iteratedDerivWithin_congr (n := k) heq hq.2.1
+  simpa only [iteratedDerivWithin_const_mul_field, Pi.mul_apply] using h
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+end

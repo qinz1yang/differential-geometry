@@ -8,6 +8,8 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedForcing
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedOperators
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.HeatTraceLift
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.AddCircleIteratedDerivativeContinuity
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleForcingContinuity
 
 open private vectorTensorHsNormedSpace from
   DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.LinearTimeDependentStability
@@ -1574,6 +1576,187 @@ private theorem exists_tendsto_iteratedParameterDerivative_forcing_lift
     g k hT x₀ F f W hW a b FH aTop Ch Cl hf ha hb hWlim haToplim
     hWU hPDE haTop hCh hCl (hChlt x₀) (hCllt x₀) hFH
   exact tendsto_iteratedParameterDerivativeDuhamelForcing g 0 (k + 2) hT (F x₀) F hF
+
+end
+
+section
+
+open private exists_tendsto_normalized_duhamel_successor_states from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.AddCircleIteratedDerivativeContinuity
+
+open private exists_tendsto_forcing_with_representative from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleForcingContinuity
+
+open _root_.AddCircle (parameterSecondDerivativeHs parameterPrincipalOperatorHsPi
+  parameterPrincipalOperatorH0Pi)
+
+private theorem exists_tendsto_duhamel_states_of_principal_norm_lt_one
+    {X ι : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (f : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2)))
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (a : X → timeL2 (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) T)
+    (b : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))) T)
+    (aTop : X → Lp (TensorHs g 0 0 ((1 : ℕ) : ℝ)) ∞ (timeMeasure T))
+    (Ch Cl : X → ℝ≥0)
+    (hF : Tendsto F l (𝓝 (F x₀))) (hf : Tendsto f l (𝓝 (f x₀)))
+    (ha : Tendsto a l (𝓝 (a x₀))) (hb : Tendsto b l (𝓝 (b x₀)))
+    (hWlim : TendstoUniformlyOn W (W x₀) l (Icc 0 T))
+    (haToplim : Tendsto aTop l (𝓝 (aTop x₀))) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show k + 2 ≤ k + 3 by omega) :
+        ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 1 ≤ k + 3 by omega) : ((1 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let P := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith :
+        ((k + 2 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    let U := fun x => maximalRegularityDuhamelVectorField hT 0 (F x)
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i, W x t i = K (U x t i)) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((k + 2 : ℕ) : ℝ) (U x t i) +
+        F x t i = scalarHsMul g (k + 2) (by simp) (J (a x t))
+          (parameterSecondDerivativeHs g (k + 2) (P (f x i) + U x t i)) + J (b x t i)) →
+    (∀ x, aTop x =ᵐ[timeMeasure T] (fun t => A (a x t))) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorHsPi (ι := ι) g (A (a x t))‖ ≤ Ch x) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorH0Pi (ι := ι) g (A (a x t))‖ ≤ Cl x) →
+    (∀ x, (Ch x : ℝ) < 1) → (∀ x, (Cl x : ℝ) < 1) →
+    ∃ (Vnext : X → timeL2
+        (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))) T)
+      (Wnext : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2))),
+      (∀ x, (ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)) 2 (fun _ : ι => P)).compLpL
+        2 (timeMeasure T) (Vnext x) = U x) ∧
+      (∀ x, ContinuousOn (Wnext x) (Icc 0 T)) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) 2 (fun _ : ι => K) (Wnext x t) = W x t) ∧
+      (∀ x, Wnext x =ᵐ[timeMeasure T]
+        fun t => ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)) 2 (fun _ : ι => P) (Vnext x t)) ∧
+      Tendsto Vnext l (𝓝 (Vnext x₀)) ∧
+      TendstoUniformlyOn Wnext (Wnext x₀) l (Icc 0 T) := by
+  intro J A P K U hWU hPDE haTop hCh hCl hChlt hCllt
+  obtain ⟨FH, hFH, hFHlim⟩ := exists_tendsto_iteratedParameterDerivative_forcing_lift
+    g k hT x₀ F f W hW a b aTop Ch Cl hF hf ha hb hWlim haToplim
+    hWU hPDE haTop hCh hCl hChlt hCllt
+  exact exists_tendsto_normalized_duhamel_successor_states
+    g k hT x₀ F FH W hW hF hFHlim hFH hWU
+
+private def scalarSobolevPiInclusion
+    {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {a b : ℝ} (hab : a ≤ b) :
+    PiLp 2 (fun _ : ι => TensorHs g 0 0 b) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g 0 0 a) :=
+  ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : ι => TensorHs g 0 0 b)
+    (F := fun _ : ι => TensorHs g 0 0 a)
+    2 (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0) hab)
+
+variable
+    {X ι : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (f : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2)))
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (a : X → timeL2 (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) T)
+    (b : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))) T)
+    (aTop : X → Lp (TensorHs g 0 0 ((1 : ℕ) : ℝ)) ∞ (timeMeasure T))
+    (Ch Cl : X → ℝ≥0)
+    (hF : Tendsto F l (𝓝 (F x₀))) (hf : Tendsto f l (𝓝 (f x₀)))
+    (ha : Tendsto a l (𝓝 (a x₀))) (hb : Tendsto b l (𝓝 (b x₀)))
+    (hWlim : TendstoUniformlyOn W (W x₀) l (Icc 0 T))
+    (haToplim : Tendsto aTop l (𝓝 (aTop x₀)))
+
+variable (hcoeffLift :
+    ∀ Wnext : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)),
+      (∀ x, ContinuousOn (Wnext x) (Icc 0 T)) →
+      (∀ x t, t ∈ Icc 0 T →
+        scalarSobolevPiInclusion (ι := ι) g
+          (by simpa only [Nat.cast_add, Nat.cast_ofNat] using
+            (Nat.cast_le.mpr (by omega : k + 3 ≤ (k + 2) + 2) :
+              ((k + 3 : ℕ) : ℝ) ≤ (((k + 2) + 2 : ℕ) : ℝ))) (Wnext x t) = W x t) →
+      TendstoUniformlyOn Wnext (Wnext x₀) l (Icc 0 T) →
+      ∃ aTop : X → Lp (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) ∞ (timeMeasure T),
+        (∀ x, aTop x =ᵐ[timeMeasure T] a x) ∧ Tendsto aTop l (𝓝 (aTop x₀)))
+
+include hW hF hf ha hb hWlim haToplim hcoeffLift in
+private theorem exists_tendsto_forcing_successor_of_coefficient_lift :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (Nat.cast_le.mpr (Nat.add_le_add_left (by decide : 2 ≤ 3) k) :
+        ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (Nat.cast_le.mpr (by omega : 1 ≤ k + 3) : ((1 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let P := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (add_le_add_left (Nat.cast_le.mpr
+        (Nat.add_le_add_left (by decide : 2 ≤ 3) k) :
+          ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ)) 2)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by simpa only [Nat.cast_add, Nat.cast_ofNat] using
+        (Nat.cast_le.mpr (by omega : k + 3 ≤ (k + 2) + 2) :
+          ((k + 3 : ℕ) : ℝ) ≤ (((k + 2) + 2 : ℕ) : ℝ)))
+    let U := fun x => maximalRegularityDuhamelVectorField hT 0 (F x)
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i, W x t i = K (U x t i)) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((k + 2 : ℕ) : ℝ) (U x t i) +
+        F x t i = scalarHsMul g (k + 2) (by simp) (J (a x t))
+          (parameterSecondDerivativeHs g (k + 2) (P (f x i) + U x t i)) + J (b x t i)) →
+    (∀ x, aTop x =ᵐ[timeMeasure T] (fun t => A (a x t))) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorHsPi (ι := ι) g (A (a x t))‖ ≤ Ch x) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorH0Pi (ι := ι) g (A (a x t))‖ ≤ Cl x) →
+    (∀ x, (Ch x : ℝ) < 1) → (∀ x, (Cl x : ℝ) < 1) →
+    ∃ (forceNext : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))) T)
+      (Vnext : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))) T)
+      (Wnext : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2))),
+      (∀ x, (scalarSobolevPiInclusion (ι := ι) g
+        (Nat.cast_le.mpr (Nat.add_le_add_left (by decide : 2 ≤ 3) k) :
+          ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))).compLpL
+        2 (timeMeasure T) (forceNext x) = F x) ∧
+      (∀ x, Vnext x = maximalRegularityDuhamelVectorField hT 0 (forceNext x)) ∧
+      (∀ x, ContinuousOn (Wnext x) (Icc 0 T)) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        scalarSobolevPiInclusion (ι := ι) g
+          (by simpa only [Nat.cast_add, Nat.cast_ofNat] using
+            (Nat.cast_le.mpr (by omega : k + 3 ≤ (k + 2) + 2) :
+              ((k + 3 : ℕ) : ℝ) ≤ (((k + 2) + 2 : ℕ) : ℝ))) (Wnext x t) = W x t) ∧
+      (∀ x, Wnext x =ᵐ[timeMeasure T]
+        fun t => scalarSobolevPiInclusion (ι := ι) g
+          (add_le_add_left (Nat.cast_le.mpr
+            (Nat.add_le_add_left (by decide : 2 ≤ 3) k) :
+              ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ)) 2) (Vnext x t)) ∧
+      (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i,
+        tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((k + 3 : ℕ) : ℝ) (Vnext x t i) +
+          forceNext x t i = scalarHsMul g (k + 3) (by simp) (a x t)
+            (parameterSecondDerivativeHs g (k + 3) (f x i + Vnext x t i)) + b x t i) ∧
+      Tendsto forceNext l (𝓝 (forceNext x₀)) ∧
+      Tendsto Vnext l (𝓝 (Vnext x₀)) ∧
+      TendstoUniformlyOn Wnext (Wnext x₀) l (Icc 0 T) := by
+  intro J A P K U hWU hPDE haTop hCh hCl hChlt hCllt
+  obtain ⟨Vnext, Wnext, hs⟩ :=
+    exists_tendsto_duhamel_states_of_principal_norm_lt_one
+      (X := X) (ι := ι) (l := l) (T := T) g k hT x₀ F f W hW a b aTop Ch Cl hF hf ha hb hWlim haToplim
+      hWU hPDE haTop hCh hCl hChlt hCllt
+  obtain ⟨aHighTop, haHighTop, haHighToplim⟩ := hcoeffLift Wnext (hs.2.1) (hs.2.2.1) (hs.2.2.2.2.2)
+  have hout := exists_tendsto_forcing_with_representative
+    (X := X) (ι := ι) (l := l) (T := T) g k hT x₀ f Vnext F a aHighTop b W Wnext
+    hs.2.1 hs.2.2.2.2.2 hf hs.2.2.2.2.1 haHighToplim hb haHighTop
+    hs.1 hPDE hs.2.2.1 hs.2.2.2.1
+  exact hout
 
 end
 
