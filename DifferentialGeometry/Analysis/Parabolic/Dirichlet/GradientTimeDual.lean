@@ -28,6 +28,47 @@ local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 local notation "EuN" => EuclideanSpace ℝ (Fin n)
 local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 
+theorem exists_timeH1_dual_weak_partial
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {T : ℝ} (u : ℝ → H1ComplDirichlet q)
+    {c : EuStd → ℝ} (hc : ContDiff ℝ (⊤ : ℕ∞) c)
+    (hcc : HasCompactSupport c) (hcs : tsupport c ⊆ Ω) (k : Fin (Module.finrank ℝ EuN))
+    (v : timeH1 (Lp ℝ 2 (volume.restrict Ω)) T)
+    (hv : ∀ᵐ s ∂timeMeasure T, (v.toFun s : EuStd → ℝ) =ᵐ[volume.restrict Ω] fun z =>
+      H1ComplDirichletToLp q (u s)
+        ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) :
+    ∃ w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T,
+      ∀ᵐ s ∂timeMeasure T, ∀ z : H1ComplDirichlet q,
+        w.toFun s z = ∫ y in Ω, dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u s) y * c y *
+          H1ComplDirichletToLp q z ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm y)) := by
+  let R : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω) :=
+    (chartRestrictionLp q α hΩ.measurableSet hΩc (hΩs.trans (image_mono interior_subset)) 2).comp
+      (H1ComplDirichletToLp q)
+  let D : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω) :=
+    dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k
+  obtain ⟨L, _, hL⟩ := exists_lp_dual_weak_partial q α hΩ hΩc hΩs hc hcc hcs k
+  obtain ⟨w, _, hw, _⟩ := exists_timeH1_comp_clm
+    (X := Lp ℝ 2 (volume.restrict Ω)) (Y := H1ComplDirichlet q →L[ℝ] ℝ) L v
+  refine ⟨w, ?_⟩
+  filter_upwards [hv, ae_restrict_mem measurableSet_Icc] with s hs hsI
+  intro z
+  have hRv : v.toFun s = R (u s) := by
+    apply Lp.ext
+    exact hs.trans (chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q (u s))).symm
+  have hleft : w.toFun s z = L (R (u s)) z :=
+    congrArg (fun F : H1ComplDirichlet q →L[ℝ] ℝ => F z)
+      ((hw s hsI).trans (congrArg L hRv))
+  apply hleft.trans
+  apply (hL (u s) z).trans
+  apply integral_congr_ae
+  filter_upwards [chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q z)] with y hy
+  change _ * (R z : EuStd → ℝ) y = _
+  exact congrArg (fun r : ℝ => D (u s) y * c y * r) hy
+
 theorem IsWeakEvolutionSolution.exists_timeH1_weighted_gradient_dual
     {q : SmoothRiemannianMetric I_hs M}
     {D : RealTimeInterval}
@@ -74,32 +115,10 @@ theorem IsWeakEvolutionSolution.exists_timeH1_weighted_gradient_dual
     hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
   have hΩ₀s : closure Ω₀ ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target :=
     hΩ₀Ω.trans (subset_closure.trans hΩs)
-  let R : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω₀) :=
-    (chartRestrictionLp q α hΩ₀.measurableSet hΩ₀c (hΩ₀s.trans (image_mono interior_subset)) 2).comp
-      (H1ComplDirichletToLp q)
-  let D : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω₀) :=
-    dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s k
-  obtain ⟨L, _, hL⟩ := exists_lp_dual_weak_partial q α hΩ₀ hΩ₀c hΩ₀s hc hcc hcs k
-  obtain ⟨z, hz⟩ := hu.exists_timeH1_chartInverse hXcont hacont α hΩ hΩc hΩs hXsmooth ht₀ ht₁ ht₀₁ hΩ₀ hΩ₀Ω
-  obtain ⟨w, _, hw, _⟩ := exists_timeH1_comp_clm
-    (X := Lp ℝ 2 (volume.restrict Ω₀)) (Y := H1ComplDirichlet q →L[ℝ] ℝ) L z
-  refine ⟨w, ?_⟩
-  filter_upwards [hz, ae_restrict_mem measurableSet_Icc] with s hs hsI
-  intro v
-  have hRz : z.toFun s = R (u (t₀ + s)) := by
-    apply Lp.ext
-    exact hs.trans (chartRestrictionLp_coeFn q α hΩ₀.measurableSet hΩ₀c
-      (hΩ₀s.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q (u (t₀ + s)))).symm
-  have hleft : w.toFun s v = L (R (u (t₀ + s))) v :=
-    congrArg (fun F : H1ComplDirichlet q →L[ℝ] ℝ => F v)
-      ((hw s hsI).trans (congrArg L hRz))
-  apply hleft.trans
-  apply (hL (u (t₀ + s)) v).trans
-  apply integral_congr_ae
-  filter_upwards [chartRestrictionLp_coeFn q α hΩ₀.measurableSet hΩ₀c
-    (hΩ₀s.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q v)] with x hx
-  change _ * (R v : EuStd → ℝ) x = _
-  exact congrArg (fun y : ℝ => D (u (t₀ + s)) x * c x * y) hx
+  obtain ⟨z, hz⟩ := hu.exists_timeH1_chartInverse hXcont hacont α hΩ hΩc hΩs hXsmooth
+    ht₀ ht₁ ht₀₁ hΩ₀ hΩ₀Ω
+  exact exists_timeH1_dual_weak_partial q α hΩ₀ hΩ₀c hΩ₀s (fun s => u (t₀ + s))
+    hc hcc hcs k z hz
 
 theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_mass_dual
     {q : SmoothRiemannianMetric I_hs M}
