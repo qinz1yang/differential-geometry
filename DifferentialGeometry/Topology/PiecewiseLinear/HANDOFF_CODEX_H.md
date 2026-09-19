@@ -3214,3 +3214,29 @@ silent audit dynamically enumerated both non-automatic declarations, checked
 five direct reused declarations, found only
 `{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
 environment linters.
+
+## 59. 2026-09-18 A genuine fully interior one-edge arc — done
+
+`ArcCellBoundaryExample.lean` now proves
+`exists_simplicialArc_one_with_all_faces_interior`.  It constructs an `n = 1`
+injective simplicial arc in a finite combinatorial 3-manifold with boundary for
+which all three chain faces, including both endpoint vertices, lie outside the
+boundary complex.
+
+The construction starts from §54 and retains both its interior barycenter
+vertex and interior edge.  A further barycentric subdivision replaces them by
+their two barycenters; their nested pair is an edge of the new subdivision.
+Boundary-subdivision invariance shows that barycenters of the two old interior
+faces are interior vertices of the new complex, and downward closure excludes
+their connecting edge from the new boundary complex.  Thus this example does
+not reuse the old boundary endpoint as a purported interior endpoint.  The
+older example was strengthened to record that its barycenter endpoint, as well
+as its middle edge, is interior.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  Its external
+silent audit dynamically enumerated both non-automatic declarations, checked
+twelve direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
