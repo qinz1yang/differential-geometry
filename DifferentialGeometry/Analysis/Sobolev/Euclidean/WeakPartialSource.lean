@@ -188,13 +188,13 @@ theorem exists_lp_spatial_weak_partials_of_ae_eq_finite_sum
     (by norm_num) (by norm_num) (Lp.memLp f) (fun k => Lp.memLp (Df k)) hDfweak
   exact ⟨Df, hDfweak, hDf, hnorm, hWkp.1, hWkp.2⟩
 
-theorem exists_lp_gradient_source_spatial_derivative_step
-    {Z ι : Type*} [Fintype ι] [MeasurableSpace Z]
+theorem exists_lp_spatial_weak_partials_of_ae_eq_finite_sum_family
+    {Z ι κ : Type*} [Fintype ι] [MeasurableSpace Z]
     {μ : Measure Z} {Ω : Set E} (hΩ : IsOpen Ω)
-    (F : Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (Y : Fin d → ι → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (DY : Fin d → ι → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (A : Fin d → ι → Z × E → ℝ)
+    (F : κ → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (Y : κ → ι → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (DY : κ → ι → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (A : κ → ι → Z × E → ℝ)
     (hA : ∀ k i, MemLp (A k i) ∞ (μ.prod (volume.restrict Ω)))
     (hDA : ∀ k i j, MemLp
       (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
@@ -206,7 +206,7 @@ theorem exists_lp_gradient_source_spatial_derivative_step
         (fun x => DY k i j (t, x)) (fun x => Y k i (t, x)) Ω)
     (hF : ∀ k, F k =ᵐ[μ.prod (volume.restrict Ω)]
       fun p => ∑ i, A k i p * Y k i p) :
-    ∃ DF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+    ∃ DF : κ → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
       (∀ k j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
         (fun x => DF k j (t, x)) (fun x => F k (t, x)) Ω) ∧
       (∀ k j, DF k j =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
@@ -227,13 +227,13 @@ theorem exists_lp_gradient_source_spatial_derivative_step
 
 
 theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
-    {Z ι : Type*} [Fintype ι] [MeasurableSpace Z]
+    {Z ι κ : Type*} [Fintype ι] [MeasurableSpace Z]
     {μ : Measure Z} {Ω : Set E} (hΩ : IsOpen Ω)
-    (F : Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (Y : Fin d → ι → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (DY : Fin d → ι → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (DDY : Fin d → ι → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (A : Fin d → ι → Z × E → ℝ)
+    (F : κ → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (Y : κ → ι → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (DY : κ → ι → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (DDY : κ → ι → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (A : κ → ι → Z × E → ℝ)
     (hA : ∀ k i, MemLp (A k i) ∞ (μ.prod (volume.restrict Ω)))
     (hDA : ∀ k i j, MemLp
       (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
@@ -255,7 +255,7 @@ theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
         (fun x => DDY k i j l (t, x)) (fun x => DY k i j (t, x)) Ω)
     (hF : ∀ k, F k =ᵐ[μ.prod (volume.restrict Ω)]
       fun p => ∑ i, A k i p * Y k i p)
-    : ∃ DF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+    : ∃ DF : κ → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
       (∀ k j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
         (fun x => DF k j (t, x)) (fun x => F k (t, x)) Ω) ∧
       (∀ k j, DF k j =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
@@ -266,7 +266,7 @@ theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
         (lpNorm (A k i) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k i j‖ +
           lpNorm (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
             (EuclideanSpace.single j 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖Y k i‖)) ∧
-      ∃ DDF : Fin d → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+      ∃ DDF : κ → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
         (∀ k l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
           (fun x => DDF k l m (t, x)) (fun x => DF k l (t, x)) Ω) ∧
         (∀ k l m, DDF k l m =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
@@ -288,9 +288,9 @@ theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
               (μ.prod (volume.restrict Ω)) * ‖Y k i‖)) := by
   classical
   obtain ⟨DF, hDF, hDFformula, hDFnorm⟩ :=
-    exists_lp_gradient_source_spatial_derivative_step hΩ F Y DY A hA hDA hAsmooth hYweak hF
+    exists_lp_spatial_weak_partials_of_ae_eq_finite_sum_family hΩ F Y DY A hA hDA hAsmooth hYweak hF
   let ι' := ι ⊕ ι
-  have hex (k₀ : Fin d) : ∃ DDF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+  have hex (k₀ : κ) : ∃ DDF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
       (∀ l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
         (fun x => DDF l m (t, x)) (fun x => DF k₀ l (t, x)) Ω) ∧
       (∀ l m, DDF l m =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
@@ -350,7 +350,7 @@ theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
       simp only [A', Y']
       simp_rw [Finset.sum_add_distrib]
     obtain ⟨DDF, hDDF, hDDFformula, hDDFnorm⟩ :=
-      exists_lp_gradient_source_spatial_derivative_step hΩ (fun l => DF k₀ l) Y' DY' A'
+      exists_lp_spatial_weak_partials_of_ae_eq_finite_sum_family hΩ (fun l => DF k₀ l) Y' DY' A'
         hA' hDA' hAsmooth' hYweak' hF'
     have hformula : ∀ l m, DDF l m =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
         (A k₀ i p * DDY k₀ i l m p +

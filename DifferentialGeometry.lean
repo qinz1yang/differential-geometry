@@ -1169,6 +1169,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatMixedTimeSpatialReg
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatThirdOrderRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatThirdWeakDerivative
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeDerivativeHessian
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatWeakEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatWeakEquationChart
