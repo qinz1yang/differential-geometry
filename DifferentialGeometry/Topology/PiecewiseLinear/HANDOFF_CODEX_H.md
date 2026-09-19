@@ -4160,16 +4160,19 @@ remain open.
 
 ## 85. 2026-09-19 finite piercing-neighborhood perturbation radius — done
 
-`DualCellPiercingStability.lean` now proves
-`exists_perturbation_radius_of_pairwise_disjoint_nested_common_neighborhoods`.
-For a finite family of nested common annular derived neighborhoods whose
-compact outer layers `A i` are pairwise disjoint and contained in an open set
-`U`, it constructs one positive radius `δ`.  Every family of maps moving each
-point of each `A i` by less than `δ` still sends all outer layers into `U`,
-keeps the outer-layer images pairwise disjoint, and also keeps the inner-layer
-images pairwise disjoint.  The proof obtains individual open-containment and
-compact-separation radii from metric thickenings and takes an actual finite
-positive minimum; none of the three conclusions is supplied as a hypothesis.
+`Topology/Compactness/FiniteSeparation.lean` now proves the natural theorem
+`exists_perturbation_radius_preserving_containment_pairwise_disjoint`.  Its
+only geometric hypotheses are a finite family of compact outer sets, their
+pairwise disjointness and containment in an open set, and a family of inner
+sets contained in them.  It constructs one positive radius `δ`; every family
+of maps moving each outer-set point by less than `δ` still sends all outer
+sets into the open set and keeps both outer and inner image families pairwise
+disjoint.  The proof obtains individual open-containment and compact-separation
+radii from metric thickenings and takes an actual finite positive minimum.
+`DualCellPiercingStability.lean` retains
+`exists_perturbation_radius_of_pairwise_disjoint_nested_common_neighborhoods`
+as the direct derived-neighborhood corollary, so the specialized predicate is
+no longer an accidental hypothesis of the metric result.
 
 `exists_trivalent_graphDualCell_piercing_neighborhood_stability_model` applies
 the theorem to the actual standard 4-simplex-boundary trivalent graph.  Its
@@ -4180,13 +4183,11 @@ conclusion are all constructed.  Thus the stability statement has a concrete
 nonempty geometric consumer rather than only a conditional interface.  The
 new leaf is registered in `DifferentialGeometry.lean`.
 
-Both target modules passed the isolated private checker with no diagnostics
-and left shared outputs unchanged.  The strict external audit dynamically
-checked all five non-automatic declarations in the two modules together with
-twelve critical compactness, thickening, derived-neighborhood, and piercing
-declarations.  Every axiom closure was contained in
-`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
-environment linters passed.
+The initial two target modules passed the isolated private checker with no
+diagnostics and left shared outputs unchanged; their original five declarations
+and twelve critical reused declarations had only the standard three axioms and
+passed all thirteen linters.  The natural-home refactor and every current
+declaration are covered by the joint audit in Section 86.
 
 This closes only the positive-radius stability of open containment and
 pairwise-disjoint finite supports.  It does not assert that the perturbed
@@ -4196,3 +4197,51 @@ component statements, neighborhood coverage and avoidance, exceptional
 component counts, and general position remain open.  Cross-stage compatible
 modifications, the standard PL solid-torus input, and `Moise351` also remain
 open.
+
+## 86. 2026-09-19 supported nonidentity perturbation of the trivalent model — done
+
+`AmbientPointMove.lean` now exposes
+`exists_isPLHomeomorphOn_moves_point_dist_lt`.  Given a positive `ε` and a
+point in a nontrivial finite-dimensional real normed space, it constructs an
+actual PL homeomorphism of the whole space which moves the point, is the
+identity outside the ball of radius `ε / 4`, and moves every ambient point by
+less than `ε`.  The construction chooses a distinct point on a sufficiently
+small metric sphere and consumes the existing supported vertex-move theorem;
+neither the PL homeomorphism nor its nonidentity is an input.
+
+`IsNestedCommonAnnularDerivedNeighborhood.exists_image_open_nesting` transports
+the real open-set nesting witness through an ambient homeomorphism.  It proves
+that the transformed circle lies in a transformed open set, the transformed
+inner neighborhood lies in that open set intersected with the transformed
+ambient polyhedron, and this intersection lies in the transformed outer
+neighborhood.  `HasImageDerivedNeighborhoodSurfaceTraces` and its producer
+retain the finite common subdivision, circle and surface subcomplexes, and
+prove that each transformed surface intersection is exactly the image of the
+corresponding intrinsic derived neighborhood.
+
+`TrivalentDualCellPerturbationModel.lean` applies both results to the standard
+4-simplex-boundary trivalent model.  It chooses a point on the first actual
+piercing circle and constructs a supported PL ambient homeomorphism which
+moves that point and has global displacement below the previously constructed
+stability radius.  Consequently all transformed outer neighborhoods remain in
+the specified open set, and both transformed outer and inner families remain
+pairwise disjoint.  It also returns the transported open nesting witnesses and
+four finite-common-subdivision certificates identifying the inner and outer
+surface intersections with images of intrinsic derived neighborhoods.  The new leaf is registered in
+`DifferentialGeometry.lean`.
+
+The four target modules passed the isolated private checker with no diagnostics
+and left shared outputs unchanged.  The joint strict audit dynamically checked
+all eleven non-automatic declarations in the modified modules together with
+twelve critical compactness, thickening, supported-move, homeomorphism, and
+model declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes an actual nonidentity geometric perturbation, its quantitative
+consumption of the stability radius, set-theoretic open nesting, and exact
+transported surface intersections.  It does not yet prove that the transformed
+sets are derived neighborhoods in one compatible finite triangulation, nor
+that the perturbation fixes the original graph.  A graph-relative supported
+move, cross-stage compatible modifications, Moise 35.1 Conditions (3)--(8),
+the standard PL solid-torus input, and `Moise351` remain open.

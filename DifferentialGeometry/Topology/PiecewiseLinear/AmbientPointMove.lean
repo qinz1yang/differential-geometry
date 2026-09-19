@@ -1,6 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexComplex
+import Mathlib.Analysis.Normed.Module.RCLike.Real
 import Mathlib.Topology.Connected.Basic
+
+/-!
+# Compactly supported PL point moves
+-/
 
 open Set Topology
 
@@ -94,5 +104,50 @@ theorem exists_isPLHomeomorphOn_map_point_eqOn_compl {U : Set E}
       · exact Or.inr ⟨hx, h⟩)
     ⟨p, hp, hpA⟩
   exact (hUA hq).2
+
+open Classical in
+theorem exists_isPLHomeomorphOn_moves_point_dist_lt [Nontrivial E]
+    {p : E} {ε : ℝ} (hε : 0 < ε) :
+    ∃ h : E ≃ₜ E,
+      IsPLHomeomorphOn h univ univ ∧ h p ≠ p ∧
+      EqOn h id (Metric.ball p (ε / 4))ᶜ ∧ ∀ x, dist (h x) x < ε := by
+  let r := ε / 4
+  have hr : 0 < r := by positivity
+  obtain ⟨η, hη, hmove⟩ :=
+    exists_isPLHomeomorphOn_small_point_move
+      (U := Metric.ball p r) (p := p) Metric.isOpen_ball
+      (Metric.mem_ball_self hr)
+  let s := min η r / 2
+  have hs : 0 < s := div_pos (lt_min hη hr) (by norm_num)
+  have hsη : s < η :=
+    (half_lt_self (lt_min hη hr)).trans_le (min_le_left η r)
+  obtain ⟨q, hq⟩ :=
+    (NormedSpace.sphere_nonempty (E := E) (x := p) (r := s)).mpr hs.le
+  have hqdist : dist q p = s := Metric.mem_sphere.mp hq
+  have hqp : q ≠ p := by
+    intro h
+    subst q
+    have : (0 : ℝ) = s := by simpa using hqdist
+    linarith
+  obtain ⟨h, hh, hfix, hpq⟩ := hmove q (by simpa [hqdist] using hsη)
+  have hmaps : MapsTo h (Metric.ball p r) (Metric.ball p r) := by
+    intro x hx
+    by_contra hnot
+    have hfixed : h (h x) = h x := hfix hnot
+    have heq : h x = x := h.injective hfixed
+    exact hnot (heq.symm ▸ hx)
+  refine ⟨h, hh, ?_, ?_, ?_⟩
+  · exact hpq.symm ▸ hqp
+  · simpa [r] using hfix
+  · intro x
+    by_cases hx : x ∈ Metric.ball p r
+    · have hhx := hmaps hx
+      calc
+        dist (h x) x ≤ dist (h x) p + dist p x := dist_triangle _ _ _
+        _ < r + r := add_lt_add hhx
+          (by simpa only [Metric.mem_ball, dist_comm] using hx)
+        _ = ε / 2 := by simp [r]; ring
+        _ < ε := half_lt_self hε
+    · simpa [hfix hx] using hε
 
 end DifferentialGeometry.Topology.PiecewiseLinear
