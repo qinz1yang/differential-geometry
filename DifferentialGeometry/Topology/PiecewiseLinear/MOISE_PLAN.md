@@ -153,21 +153,29 @@ S subsequently delivered bounded-displacement Alexander localization,
 actual planar whole-disk/germ extension, supported germ isotopy linearization
 2086c2aac, and general nested Jordan annuli with simultaneous compatible
 boundary extension ab12b25d1. These author-verified layers await independent
-replay. At completed delivery 75d0ce3a1, S continued the real relative 0-handle
-consumer in an arbitrary old smooth atlas. The fixed-near-ends strip and
-cross-seam charts follow that interface. Compact PL smoothing remains open.
+replay. S's actual old-atlas local disk smoothing c4c935995 is also
+author-verified and queued; the original maximal atlas is retained. At that
+completed clean delivery S continued one relative-strip round, from actual
+end collars to whole compact-core smoothing, with a 14:05 UTC checkpoint
+target. This must construct compatibility, not assume a Diffeomorph or the
+desired extension. Cross-seam charts and compact PL smoothing remain open.
 See integration handoff sections 53 and 56.
 
 h's corrected contracts, same-PL-triangulation exhaustion, real noncompact
 three-dimensional edge model and graph dual-cell ballness through 2086d1064
-are now independently accepted. Eight fresh source checks and the combined
-212-native, 89-reuse, four-model audit pass with thirteen applicable linters,
-standard axioms and zero final diagnostics. Its subsequent graph piercing,
-nested bicollar and common derived restriction layers through 347cb4d3e remain
-queued. At that completed blocked round, h received read-only refresh authority
-for the exact unchanged CircleLiftOrientation dependency and resumed two common
-ambient neighborhoods with four exact annular traces. Arbitrary open-ambient
-construction, solid-torus PL type and locally finite error control remain open.
+remain independently accepted. The subsequent actual piercing, nested common
+neighborhoods, four exact annular traces, real trivalent model and locally
+finite numerical scales through c08f3a8d5 are now independently accepted too.
+Nine new leaves contain 35 new native declarations and one generalized,
+relocated canonical theorem. Its old E3 duplicate and five old calls were
+repaired across four consumers. All thirteen modules, 57 native declarations,
+90 critical reuse entries, two external geometric probes and thirteen
+applicable linters pass with zero final diagnostics and standard axioms.
+Nesting is relative to K.space. The ambient neighborhoods are not yet proved standard PL solid tori or mutually
+disjoint. Numerical scales do not supply the geometric stability thresholds,
+Moise341 approximation or compatible modifications needed for Moise351.
+See integration handoff sections 54 and 57.
+
 F's actual spherical EmbeddedDisk, boundary return, projected double-point
 cover and free partner-involution layers through 8a00ab535 are independently
 accepted. Its active equivariant relative triangulation is a further step;
@@ -231,11 +239,11 @@ its active 30.3 round without interruption. The private checker limit stays two.
 
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
-| h / gpt-5.6-sol max | Corrected contracts, PL exhaustion, actual noncompact edge model and graph dual-cell balls through 2086d1064 accepted. Piercing and common-restriction layers through 347cb4d3e queued. Active common nested ambient neighborhoods with four exact annular traces. | Preserve same graph, PL triangulation and locally finite error data. Arbitrary open-ambient neighborhoods, full Moise statements and solid-torus PL type remain open. Continuous-error specialization is explicit. |
+| h / gpt-5.6-sol max | Corrected contracts, exhaustion and graph dual-cell balls accepted. Piercing, nested common neighborhoods with four annular traces, real trivalent model and numerical scales through c08f3a8d5 now independently accepted. | Continue the current geometric stability/control round. Relative nesting is explicit; solid-torus PL type, disjoint edge neighborhoods, actual approximating maps and compatible gluing remain open. No Moise351 proof. |
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | Actual local traces through 8e0373385 accepted. Relative closed-carrier separation 45c848746 and interior-WB3 boundary trace 8ad00b74a queued. At be67795fa completed delivery resumed the current 30.3 interior bridge. | Construct interior prism/local traces and original R3 separation with a genuine 3D disk-pair model. Old whole-branch chart issue is not this lane's prerequisite. Physical cap separation and full 30.3 remain open. |
 | M304 / gpt-6-astra max | Own 30.4. Annulus components, conditional strict compression and actual minimum-Betti separators through ac3673685 independently accepted. Actual essential PL singular disk b80e381fc delivered and queued. | Construct an actual positive-genus essential-circle compression configuration and consume the existing strict Betti theorem. Preserve F's embedded-disk and E3's general physical-cap/separation ownership. No general beta-zero or full 30.4 claim. |
-| S / gpt-6-astra max | Finite handles, new-cell atlases and fixed-Euclidean annulus smoothing through adefc71d0 accepted. Alexander/planar extension, supported germ isotopy 2086c2aac and nested Jordan annuli ab12b25d1 delivered and queued. | At completed 75d0ce3a1 round continued actual old-atlas relative 0-handle consumer. Fixed-end strip and cross-seam charts follow it; compact 3D smoothing remains open. |
+| S / gpt-6-astra max | Finite 24.11/24.12 accepted. Planar localization, Jordan annuli and actual old-atlas local disk smoothing c4c935995 author-verified and queued. | At the completed clean delivery, continue one relative-strip round from actual end collars to whole-core smoothing. Checkpoint by 14:05 UTC. Preserve the old atlas; strip, seam charts and compact 3D smoothing remain open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve

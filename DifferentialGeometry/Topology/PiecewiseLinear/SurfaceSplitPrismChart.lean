@@ -99,7 +99,7 @@ theorem IsCombinatorialManifold.exists_isSubdivision_disk_pair_with_centered_pri
   let _ : Finite Q.faces := (derivedNeighborhood_faces_finite A₂ A).to_subtype
   have hmiddle : D₂ ∩ N.space = Q.space := by
     rw [← hA₂D₂, inter_comm]
-    exact derivedNeighborhood_space_inter_subcomplex R A A₂ hA₂R hAA₂
+    exact derivedNeighborhood_space_inter_subcomplex R A₂ A hA₂R
   obtain ⟨g, hg⟩ := id hB
   have hgboundary : g '' stdSimplexBoundary 2 = (boundaryComplex 2 Q).space :=
     hg.image_stdSimplexBoundary_eq_boundaryComplex Q hmiddle.symm

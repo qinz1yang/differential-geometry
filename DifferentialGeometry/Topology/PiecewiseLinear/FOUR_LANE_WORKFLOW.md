@@ -44,6 +44,11 @@ as urgent; routine requests and unchanged reports do not. While waiting for
 verification, continue independent source work when possible. Never count an
 active turn containing waits as continuous mathematical work.
 
+The owner changed scheduled follow-up to hourly checks on 2026-09-19 UTC.
+The existing automation runs at minute 19 of each hour, with its final check
+at 14:19 UTC / 07:19 America/Los_Angeles. It retains quiet notifications for
+unchanged state. This cadence does not add mid-round task interventions.
+
 ## Assignment and evidence
 
 Each assignment supplies the mathematical endpoint, current actual signatures,

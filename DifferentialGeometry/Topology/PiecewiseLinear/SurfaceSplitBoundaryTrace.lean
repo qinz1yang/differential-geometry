@@ -144,7 +144,7 @@ theorem derivedNeighborhood_surface_inter_boundaryComplex
     (K A B : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite B.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (hB : IsCombinatorialManifoldWithBoundary 2 B)
-    (hBK : B.faces ⊆ K.faces) (hAB : A.faces ⊆ B.faces)
+    (hBK : B.faces ⊆ K.faces)
     (hNdis : Disjoint (derivedNeighborhood K A).space (boundaryComplex 3 K).space)
     (hQdis : Disjoint (derivedNeighborhood B A).space (boundaryComplex 2 B).space) :
     (derivedNeighborhood B A).space ∩
@@ -161,7 +161,7 @@ theorem derivedNeighborhood_surface_inter_boundaryComplex
   have hQB : Q.space ⊆ B.space := derivedNeighborhood_space_subset B A
   have hQN : Q.space ⊆ N.space := by
     intro x hx
-    exact (derivedNeighborhood_space_inter_subcomplex K A B hBK hAB).symm.subset hx |>.1
+    exact (derivedNeighborhood_space_inter_subcomplex K B A hBK).symm.subset hx |>.1
   have hboundaryN := inter_closure_sdiff_eq_boundaryComplex_of_disjoint_boundary
     K N hK hN hNK hNdis
   have hboundaryQ := inter_closure_sdiff_eq_boundaryComplex_of_disjoint_boundary
@@ -244,7 +244,7 @@ theorem
     exact disjoint_empty N.space
   have hmiddle : D₂ ∩ N.space = Q.space := by
     rw [← hA₂D₂, inter_comm]
-    exact derivedNeighborhood_space_inter_subcomplex R A A₂ hA₂R hAA₂
+    exact derivedNeighborhood_space_inter_subcomplex R A₂ A hA₂R
   have hQN : Q.space ⊆ N.space := hmiddle.symm.subset.trans inter_subset_right
   have hA₂boundary : J = (boundaryComplex 2 A₂).space :=
     hr₂.image_stdSimplexBoundary_eq_boundaryComplex A₂ hA₂D₂
@@ -255,7 +255,7 @@ theorem
   have htrace := derivedNeighborhood_surface_inter_boundaryComplex R A A₂
     hRman.isCombinatorialManifoldWithBoundary
     hA₂ball.isCombinatorialManifoldWithBoundary
-    hA₂R hAA₂ hNdis hQdis
+    hA₂R hNdis hQdis
   refine ⟨R, A, A₁, A₂, L, φ, ψ, hR, hRfin, hAR, hAfin, hAΔ,
     hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
     hLfin, hL, hIso, hNball, hcontains, hNK, hNU, hnhds, hBball, ?_⟩

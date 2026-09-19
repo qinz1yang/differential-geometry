@@ -177,7 +177,7 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
     exact (hNV hxN).2 hxJ
   have hQ₁space : D₁ ∩ N.space = Q₁.space := by
     rw [← hA₁D₁, inter_comm]
-    exact derivedNeighborhood_space_inter_subcomplex R A A₁c hA₁R hAA₁
+    exact derivedNeighborhood_space_inter_subcomplex R A₁c A hA₁R
   have hQ₁N : Q₁.space ⊆ N.space := hQ₁space.symm.subset.trans inter_subset_right
   have hA₁ball : IsPLBall 2 A₁c.space := hA₁D₁.symm ▸ hD₁
   have hQ₁ball : IsPLBall 2 Q₁.space := by

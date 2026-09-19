@@ -1476,3 +1476,104 @@ ab12b25d1, merged integration at 75d0ce3a1, and continued the actual old-atlas
 replay. F, h and E3 were not interrupted or given second lanes. General embedded
 compression disks, physical cap separation, full 30.4, and compact smoothing
 remain open.
+
+## Common piercing neighborhoods and locally finite numerical scales (2026-09-19 UTC)
+
+h's frozen source through c08f3a8d5 is independently accepted in nine new
+leaves. The actual graph dual-cell producer shrinks a standard triangle inside
+the splitting disk and uses the boundary-inward embedding to construct a
+modified PL three-ball whose intersection with the central cell is exactly
+the produced polygonal circle. Nested bicollars on the two actual boundary
+spheres are constructed inside a prescribed neighborhood.
+
+The common-neighborhood producer simultaneously subdivides the ambient
+complex, both surfaces and their circle. It keeps those actual witnesses,
+their face inclusions, exact carriers and exact derived-neighborhood traces.
+Both traces are proved PL homeomorphic to a standard annulus using the native
+surface-circle theorem. Repeating this construction gives an inner and outer
+common ambient neighborhood with all four exact annular traces. The nesting
+certificate is B contained in O intersect K.space contained in A. It is
+relative to the ambient carrier K.space, not ordinary Euclidean interior.
+No standard PL solid-torus type is proved for A or B.
+
+The natural family theorem works for an injectively indexed enumeration of
+the neighbors, without adding a finite-index hypothesis. The old trivalent
+shape is its Fin 3 corollary. The actual model constructs the three-edge star
+inside the boundary of a four-simplex, proves the exact degree-three
+adjacency, and obtains three actual piercings and nested common neighborhoods.
+The three circles are nonempty and pairwise disjoint. The ambient PL
+three-sphere is realized in Fin 5 to real, not as a compact boundaryless
+three-manifold in R3. The independently chosen neighborhoods are not yet
+proved pairwise disjoint.
+
+The numerical error theorems use actual local finiteness to choose positive
+vertex scales below all incident positive face thresholds. Compactness of
+each simplex supplies face bounds for a continuous positive error along the
+same realization map. The external model extracts the actual locally finite
+ambient from the noncompact three-dimensional edge example and uses the
+nonconstant error 1/(1+norm x). It witnesses an incident vertex and face before
+checking both numerical bounds, so the test is not an empty-family example.
+These are numerical choices. Positive geometric stability thresholds for
+Conditions (2)--(8), actual Moise341 approximation, and compatible cellwise
+gluing remain unproved.
+
+The nine h leaves contain 36 native nonautomatic declarations: 35 new
+explicit declarations and one existing canonical theorem, generalized and
+relocated. A library-wide full-name scan caught its collision with the old
+E3 derivedNeighborhood_space_inter_subcomplex in SurfaceSplitEndpointDisk.
+The stronger DerivedNeighborhoodRestriction theorem is now the canonical
+implementation: arguments K A B hBK hAB become K B A hBK. It does not
+require the core to be a subcomplex of B. The redundant old theorem was
+removed, five old calls were migrated, and the boundary-trace helper and its
+one consumer drop the now-unneeded hAB. Four old E3 modules were recompiled.
+All 35 public names in the h leaves occur once: 34 new full names and the
+relocated canonical name. All other existing public signatures are preserved.
+The E3 worktree was not edited; migration is queued for its next delivery.
+
+Thirteen fresh source checks took 154.159 seconds including admission.
+The final combined audit took 55.230 seconds and covers all 57 native
+nonautomatic declarations (12 private), 90 critical reuse entries
+(74 distinct), and two external geometric probes. All have only
+approved foundational axioms and pass all thirteen applicable environment
+linters with zero diagnostics. The two native concrete model theorems are
+counted in the native suite, not again as external probes.
+
+Two early external-model attempts needed Lean-expression repairs: an explicit
+finite-face coercion and an unfolded reciprocal-norm denominator. The failed
+probe sources, receipts and logs are frozen; neither failure required a change
+to the project source. The successful audit duration above excludes those
+failed attempts and the earlier nine-leaf-only audit before the collision was
+repaired. Forty-seven independently accepted private prerequisites were
+reused only after matching current raw source and recorded object hashes.
+No shared artifacts or author worktrees were changed. In integration, four
+existing E3 consumer files now reuse the canonical restriction theorem. Their
+entire declaration suites and all new h internal consumers were checked.
+
+Accepted integration Lean delta: +1116/-37, comprising 1099 lines in the nine
+frozen h leaves, nine root imports, and +8/-37 for the four E3 consumer files.
+The same nine files have branch delta
++1099/-0 from h's window-start 99a766f5b.
+These figures exclude Markdown, diagnostics and generated objects, and are
+not additive across baselines. Receipt:
+.lake/verified-thirtyseventh-lane-delivery-20260919.json. It retains raw/normalized source
+identities, object hashes, all declaration types and axioms, probes, failures,
+source provenance and check durations. Static root closure reaches 9519
+project modules including the root, without missing sources or import cycles.
+The full-root build remains stopped. No Moise331/341/351 completion follows
+from this focused acceptance.
+
+The owner requested less frequent scheduled follow-up during this acceptance.
+The existing automation was changed through the app tool to hourly checks at
+minute 19, ending with the authorized 14:19 UTC / 07:19 Los Angeles check.
+Its prompt, five-task ownership, quiet-notification rule and deadline were
+preserved. One compact task snapshot showed all five existing tasks active;
+no routine status message or second lane was sent to an active task. S then
+delivered the actual old-atlas local disk smoothing c4c935995 at a clean safe
+point. It preserves the old maximal atlas and supplies a nonidentity model;
+this and its planar prerequisites remain queued for independent acceptance.
+At that completed delivery S received the next single relative-strip round,
+with a 14:05 UTC checkpoint target and the unchanged 14:19 UTC deadline.
+The new round must produce whole-core relative smoothing from actual end
+collars, without assuming a diffeomorphism or compatibility. E3's interior
+separation bridge and M304's actual singular filling also remain queued.
+These reported deliverables are not independently accepted by this receipt.

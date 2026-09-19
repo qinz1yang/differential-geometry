@@ -3,7 +3,7 @@ Copyright (c) 2026 Yuan Liao. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yuan Liao
 -/
-import DifferentialGeometry.Topology.PiecewiseLinear.StarIntersection
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRestriction
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitCompatibleSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitCurveGluing
 
@@ -14,35 +14,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-omit [FiniteDimensional ℝ E] in
-open Classical in
-theorem derivedNeighborhood_space_inter_subcomplex
-    (K A B : Geometry.SimplicialComplex ℝ E)
-    (hBK : B.faces ⊆ K.faces) (hAB : A.faces ⊆ B.faces) :
-    (PiecewiseLinear.derivedNeighborhood K A).space ∩ B.space =
-      (PiecewiseLinear.derivedNeighborhood B A).space := by
-  classical
-  have hAK : A.faces ⊆ K.faces := hAB.trans hBK
-  have hcell (s : Finset E) (hs : s ∈ A.faces) :
-      (derivedNeighborhoodCell K s).space ∩ B.space =
-        (derivedNeighborhoodCell B s).space := by
-    rw [derivedNeighborhoodCell_space_eq_closedStar K (hAK hs),
-      ← (barycentricSubdivision_isSubdivision B).space_eq,
-      derivedNeighborhoodCell_space_eq_closedStar B (hAB hs)]
-    exact closedStar_barycentricSubdivision_inter_space_eq
-      (barycentricSubdivision_faces_subset hBK)
-      (singleton_centroid_mem_barycentricSubdivision B (hAB hs))
-  rw [← iUnion_derivedNeighborhoodCell_space K A hAK,
-    ← iUnion_derivedNeighborhoodCell_space B A hAB]
-  apply Subset.antisymm
-  · rintro x ⟨hx, hxB⟩
-    obtain ⟨s, hs, hxs⟩ := mem_iUnion₂.mp hx
-    exact mem_iUnion₂.mpr ⟨s, hs, (hcell s hs).subset ⟨hxs, hxB⟩⟩
-  · intro x hx
-    obtain ⟨s, hs, hxs⟩ := mem_iUnion₂.mp hx
-    have hx' := (hcell s hs).symm.subset hxs
-    exact ⟨mem_iUnion₂.mpr ⟨s, hs, hx'.1⟩, hx'.2⟩
 
 open Classical in
 private theorem isPLBall_derivedNeighborhoodCell_inter_edge_one
@@ -955,7 +926,7 @@ theorem exists_isSubdivision_disk_pair_with_derivedNeighborhood_endpoint_disk
     have hA₂man := hA₂ball.isCombinatorialManifoldWithBoundary
     have hintrinsic :=
       hA₂man.isPLBall_derivedNeighborhood_of_isGlueIso_planar_subcomplex_in_surface hAA₂ hL hIso
-    rw [inter_comm, derivedNeighborhood_space_inter_subcomplex R A A₂ hA₂R hAA₂]
+    rw [inter_comm, derivedNeighborhood_space_inter_subcomplex R A₂ A hA₂R]
     exact hintrinsic
   refine ⟨R, A, A₁, A₂, L, φ, ψ, hR, hRfin, hAR, hAfin, hAΔ,
     hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
