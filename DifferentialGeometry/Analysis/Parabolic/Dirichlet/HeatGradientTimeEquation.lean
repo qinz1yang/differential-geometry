@@ -141,7 +141,7 @@ theorem exists_timeH1_cutoff_gradient_dual_deriv_of_heat_timeH1
   choose v' w' hv hw using hmass
   obtain ⟨R, H, S, hR, hH, hHsym, hSformula, hS, hfixed, hsource⟩ :=
     exists_lp_cutoff_gradient_tensor_identity_of_heat_timeH1 hG hT hreg q hCg hequiv Cv hCv0
-      hCvtop hvol α hΩ hΩc hΩs hΩ₀ hΩ₀Ω ha hb u f w hwmass hwderiv hη hηc hηs Df hDf
+      hCvtop hvol α hΩ hΩc hΩs hΩ₀ hΩ₀Ω ha hb u f w hwmass hwderiv hη hηs Df hDf
   refine ⟨R, H, S, hR, hH, hHsym, hSformula, hS, hfixed, ?_⟩
   intro C Q B
   obtain ⟨hQ, hB, hdual, htensor⟩ := hsource
