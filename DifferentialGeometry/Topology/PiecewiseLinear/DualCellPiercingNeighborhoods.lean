@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.LocallyFiniteSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.CommonCircleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercing
 
@@ -15,73 +16,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-private theorem exists_pos_uniform_finite {ι : Type*} [Finite ι]
-    (P : ι → ℝ → Prop)
-    (hP : ∀ i, ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε → P i δ) :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ i δ, 0 < δ → δ < ε → P i δ := by
-  classical
-  let _ := Fintype.ofFinite ι
-  cases isEmpty_or_nonempty ι with
-  | inl hι =>
-      let _ := hι
-      exact ⟨1, zero_lt_one, fun i => isEmptyElim i⟩
-  | inr hι =>
-      let values : Finset ℝ := Finset.univ.image fun i => Classical.choose (hP i)
-      have hvalues : values.Nonempty := by
-        let i : ι := Classical.choice hι
-        exact ⟨Classical.choose (hP i),
-          Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩⟩
-      let ε := values.min' hvalues
-      have hε : 0 < ε := by
-        have hmem : ε ∈ values := Finset.min'_mem values hvalues
-        obtain ⟨i, -, hi⟩ := Finset.mem_image.mp hmem
-        rw [← hi]
-        exact (Classical.choose_spec (hP i)).1
-      refine ⟨ε, hε, ?_⟩
-      intro i δ hδ hδε
-      apply (Classical.choose_spec (hP i)).2 δ hδ
-      exact hδε.trans_le (Finset.min'_le values
-        (Classical.choose (hP i)) (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩))
-
-private theorem exists_pairwise_disjoint_open_neighborhoods
-    {ι X : Type*} [Finite ι] [MetricSpace X] (C : ι → Set X)
-    (hC : ∀ i, IsCompact (C i)) (hdis : Pairwise fun i j => Disjoint (C i) (C j))
-    {U : Set X} (hU : IsOpen U) (hCU : ∀ i, C i ⊆ U) :
-    ∃ V : ι → Set X,
-      (∀ i, IsOpen (V i) ∧ C i ⊆ V i ∧ V i ⊆ U) ∧
-      Pairwise fun i j => Disjoint (V i) (V j) := by
-  have hinside (i : ι) :
-      ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε →
-        Metric.thickening δ (C i) ⊆ U := by
-    obtain ⟨ε, hε, hεU⟩ := (hC i).exists_thickening_subset_open hU (hCU i)
-    exact ⟨ε, hε, fun δ _ hδε => (Metric.thickening_mono hδε.le _).trans hεU⟩
-  obtain ⟨εU, hεU, hinside⟩ :=
-    exists_pos_uniform_finite (fun i δ => Metric.thickening δ (C i) ⊆ U) hinside
-  let P := {p : ι × ι // p.1 ≠ p.2}
-  have hseparate (p : P) :
-      ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε →
-        Disjoint (Metric.thickening δ (C p.1.1))
-          (Metric.thickening δ (C p.1.2)) := by
-    obtain ⟨ε, hε, hεdis⟩ :=
-      (hdis p.2).exists_thickenings (hC p.1.1) (hC p.1.2).isClosed
-    exact ⟨ε, hε, fun δ _ hδε => hεdis.mono
-      (Metric.thickening_mono hδε.le _) (Metric.thickening_mono hδε.le _)⟩
-  obtain ⟨εD, hεD, hseparate⟩ := exists_pos_uniform_finite
-    (fun p : P => fun δ => Disjoint (Metric.thickening δ (C p.1.1))
-      (Metric.thickening δ (C p.1.2))) hseparate
-  let ε := min εU εD / 2
-  have hε : 0 < ε := div_pos (lt_min hεU hεD) (by norm_num)
-  have hεU' : ε < εU :=
-    (half_lt_self (lt_min hεU hεD)).trans_le (min_le_left εU εD)
-  have hεD' : ε < εD :=
-    (half_lt_self (lt_min hεU hεD)).trans_le (min_le_right εU εD)
-  refine ⟨fun i => Metric.thickening ε (C i), ?_, ?_⟩
-  · intro i
-    exact ⟨Metric.isOpen_thickening, Metric.self_subset_thickening hε _,
-      hinside i ε hε hεU'⟩
-  · intro i j hij
-    exact hseparate ⟨(i, j), hij⟩ ε hε hεD'
 
 open Classical in
 theorem IsCombinatorialManifold.exists_graphDualCell_piercing_with_nested_common_neighborhoods
@@ -270,8 +204,11 @@ theorem IsCombinatorialManifold.exists_piercings_with_pairwise_disjoint_nested_c
       exact hij (hwinj hwij)
     exact disjoint_splittingDisk_space K (hL (hedge i)) (hL (hedge j)) hedgeNe
       (by rw [Finset.card_pair (hvw i), Finset.card_pair (hvw j)])
-  obtain ⟨V, hV, hVdis⟩ :=
-    exists_pairwise_disjoint_open_neighborhoods D hDcompact hDdis hU hDU
+  obtain ⟨V, hVopen, hDV, hVU, -, hVdis⟩ :=
+    DifferentialGeometry.Topology.exists_locallyFinite_pairwise_disjoint_open_supersets
+      D (fun i => (hDcompact i).isClosed) (locallyFinite_of_finite D) hDdis hU hDU
+  have hV (i : ι) : IsOpen (V i) ∧ D i ⊆ V i ∧ V i ⊆ U :=
+    ⟨hVopen i, hDV i, hVU i⟩
   have hpierce (i : ι) :=
     hK.exists_graphDualCell_piercing_with_nested_common_neighborhoods K L hL hcard
       (hvw i) (hedge i) (hV i).1 (hV i).2.1

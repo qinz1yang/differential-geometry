@@ -7755,6 +7755,7 @@ import DifferentialGeometry.Topology.LocalDegree.SphereVanishing
 import DifferentialGeometry.Topology.LocalDegree.TriangularCoordinateLinear
 import DifferentialGeometry.Topology.LocalDegree.ZeroSphere
 import DifferentialGeometry.Topology.LocalLipschitzVariation
+import DifferentialGeometry.Topology.LocallyFiniteSeparation
 import DifferentialGeometry.Topology.LocallyPathConnected
 import DifferentialGeometry.Topology.LoopSpace.AdjunctionTransport
 import DifferentialGeometry.Topology.LoopSpace.AffineLift

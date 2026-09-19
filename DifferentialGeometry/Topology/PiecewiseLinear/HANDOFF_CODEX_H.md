@@ -4127,3 +4127,33 @@ proof is not part of this checkpoint: the current H compiler lease admits
 only `Topology.(PiecewiseLinear|Homotopy).*`, so that natural top-level module
 cannot yet receive a focused module check.  No duplicate public conclusion is
 introduced here.
+
+## 84. 2026-09-19 natural locally finite separation API — done
+
+`Topology/LocallyFiniteSeparation.lean` now contains the reusable metric-free
+theorem
+`DifferentialGeometry.Topology.exists_locallyFinite_pairwise_disjoint_open_supersets`.
+In a normal paracompact space, every locally finite pairwise-disjoint family of
+closed subsets lying in one open set has a locally finite pairwise-disjoint
+family of open supersets subordinate to that open set.  The proof uses a
+precise locally finite refinement and the shrinking lemma.
+
+`LocallyFiniteSplittingDisks.lean` imports this theorem instead of retaining a
+private copy.  `DualCellPiercingNeighborhoods.lean` also uses it for finite
+splitting-disk families through `locallyFinite_of_finite`; the previous metric
+uniform-thickening proof and its finite-minimum helper have been deleted.
+Thus the finite and locally finite conclusions share one canonical theorem,
+while both existing geometric public signatures and their nonempty models are
+unchanged.  The new leaf is registered in `DifferentialGeometry.lean`.
+
+The natural module and both consumers passed the isolated private checker with
+no diagnostics and left shared outputs unchanged.  The strict external audit
+dynamically checked all seventeen non-automatic declarations in the three
+target modules together with ten critical reused declarations.  Every axiom
+closure was contained in `{propext, Classical.choice, Quot.sound}`, and all
+thirteen applicable environment linters passed.
+
+This closes the API-placement and proof-duplication gap recorded in Section
+83.  Compatible cellwise modifications, positive geometric stability radii
+for Conditions (2)--(8), the standard PL solid-torus input, and `Moise351`
+remain open.

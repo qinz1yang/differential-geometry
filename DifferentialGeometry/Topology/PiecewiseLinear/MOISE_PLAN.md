@@ -1253,6 +1253,8 @@ Compact smoothing is not claimed complete.
 
 - **Locally finite splitting-disk ballness (2026-09-19).**
   `LocallyFinitePLPieceIn.isPLBall_splittingDisk` now derives ballness for the exact splitting disk from finite local cofaces, the combinatorial face-link sphere, the upper-link radial PL homeomorphism, and the barycentric closed-star theorem, with no globally finite ambient complex and no ballness hypothesis.  A countable disjoint union of translated finite combinatorial PL three-spheres supplies a genuinely noncompact locally finite three-manifold with a real edge, and `exists_noncompact_locallyFinite_splittingDisk_isPLBall_model` verifies the endpoint there.  Three focused checks were clean; the strict audit covered 85 module declarations and 24 reused declarations with only the standard three axioms and all 13 linters.  Compatible cellwise modifications, stability radii, the solid-torus input, and `Moise351` remain open.
+- **Locally finite separation API (2026-09-19).**
+  `Topology/LocallyFiniteSeparation.lean` now provides the canonical metric-free separation theorem for locally finite pairwise-disjoint closed families in normal paracompact spaces.  Both the finite piercing construction and the locally finite splitting-disk construction consume it, so the former metric thickening proof and the latter private copy are gone.  The new leaf is registered in the root aggregate; three focused checks were clean, and the strict audit covered 17 module declarations plus 10 reused declarations with only the standard three axioms and all 13 linters.
 
 ### Half-prism acceptance update (2026-09-19 UTC)
 
