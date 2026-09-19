@@ -11424,3 +11424,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampAngleComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampCurvatureBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampPersistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampEndpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampGlobalExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLoopEmbedding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCylinderTopology
