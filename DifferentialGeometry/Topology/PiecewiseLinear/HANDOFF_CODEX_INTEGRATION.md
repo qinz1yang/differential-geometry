@@ -535,3 +535,31 @@ steps. E3 retains its lane and waits for those actual geometric inputs rather
 than adding more conditional wrappers. `exists_separated_along_branch`, Case 3/4
 L2 and its complexity drop, the complete double-end chart, the trimmed union,
 and the arbitrary-monodromy mapping-torus endpoint are still not delivered.
+
+## 15. 2026-09-19 Continuous lane rounds and one-hour audit
+
+The owner supplied the previous four-lane workflow and asked to try it. The
+adapted current rules are in `FOUR_LANE_WORKFLOW.md`: retain the four existing
+tasks, give each a coherent mathematical round, checkpoint closed layers without
+requiring mathematical redispatch, and intervene only at delivery or for an
+urgent stop/restart. F and S use Astra max; h and E3 use Sol high. E3 retains its
+blocked separation lane rather than generating more conditional wrappers.
+
+The compiler policy now trials one root worker plus at most two private lane
+checkers, guarded by process reservations, a named mutex, and measured memory.
+The external admission probe passed with zero diagnostics. Shared artifacts
+remain read-only, and private/source/audit acceptance remains distinct from the
+independent full-source root gate. Resource admission is implemented in the
+external round helper; the old single-token helper must not be used for new
+rounds. Current authorizations are in `.lake/round-compiler-leases/`.
+
+`PROGRESS_AUDIT_20260918_1548_1648.md` records the fixed preceding hour. Seven
+mathematical commits delivered +1228/-4 Lean lines, but this includes source
+written earlier. Actual in-window leaf source changes were +742/-16, including
+265 net unverified draft lines. No new complete Moise headline closed. The
+former serial queue caused 16--25 minute waits and is the reason for this trial.
+
+At this coordination checkpoint, b3bbb416c, 1da809615, c252597c7, and the later
+F delivery c315e29f5 await integration acceptance. Do not treat these as already
+merged. The root build still targets source head 0e7ba393d; this documentation
+checkpoint does not change Lean source or restart that build.
