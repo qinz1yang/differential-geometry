@@ -2237,3 +2237,69 @@ the final arbitrary-shell Moise304 endpoint/integration are not claimed here.
 The previously reported missing ball/wall/cap producer for an original
 essential disk is closed by this round. Independent acceptance remains with
 the coordinator; the feature branch audit is not an acceptance substitute.
+
+
+### M304 arbitrary-shell sphere endpoint from the Loop Theorem (2026-09-19 UTC)
+
+Author-verified in this feature branch; independent integration acceptance is
+pending. The only native change is thirteen added lines in the existing
+SphericalShellCompression leaf: moise304_of_moise252 (h252 : Moise252) : Moise304.
+There are no deleted native lines, new modules, signature changes or extra
+public wrapper declarations. MoiseChain, the E3 lane and the h-circle lane
+are unchanged.
+
+The exact conclusion quantifies over every original X, B0, B1 in Euclidean
+three-space with IsSphericalShell X B0 B1, and constructs B with IsPLSphere 2 B,
+B contained in interior X and Separates B B0 B1. The proof obtains an actual
+connected separator minimizing bettiOne from the existing native selection
+theorem. If it is not a sphere, the previous compression producer supplies a
+connected separator with strictly smaller bettiOne in the same shell and for
+the same targets, contradicting minimality. The supplied hypothesis is only
+h252; no disk, annulus, compression ball, minimality or sphere is assumed.
+
+The unchanged moise305_tame_of_moise304 consumes moise304_of_moise252 h252.
+This gives the full existing Moise305Tame statement: the original two nested
+topological cells and their shell, with a bicollared outer frontier, produce
+an actual intermediate PL3 ball. Its native proof uses SphereNesting and the
+proved PL Schoenflies chain. No extra Schoenflies hypothesis was introduced.
+
+Two new explicit-h252 models use the concrete nonempty norm band 1 <= norm <= 2
+and the same spheres of radii one and two. One constructs the separating PL2
+sphere; the other constructs an actual PL3 ball containing the closed unit
+ball in its interior and contained in the radius-two open ball. The latter
+also verifies its nonempty PL2 frontier lies in 1 < norm < 2 and separates the
+same targets. The outer bicollar is constructed by radial exponential scaling.
+The previous three unconditional disk/ball/compression models are retained.
+These conditional consumers do not independently prove Moise252.
+
+The complete audit checks 31 nonautomatic native declarations, 91 critical
+reuse entries, ten models (three unconditional, seven with explicit h252),
+and three model helpers. All transitive axiom closures contain only the
+approved foundational axioms; all 13 applicable linters pass. The endpoint,
+unchanged tame consumer and SphereNesting have zero-diagnostic private
+compile receipts. Other frozen dependency receipts retain their actual dates.
+
+A separate kernel-body and type dependency traversal covers 9309 native
+constants for moise304_of_moise252 and 7184 for the tame consumer. It includes
+private declarations and records every edge and non-native boundary module.
+Neither closure contains Moise303 or wide Moise264. Live source search finds
+only the Moise264 definition in MoiseChain, not a use in this chain; no
+Moise303 declaration is present in this checkout. The book route and E3's
+separate 30.3 proof are therefore not prerequisites of this compiled route.
+This does not claim the full wider Moise264 statement has been proved.
+
+Thirty-three source/object/receipt sets and all evidence are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/shell-endpoint-checkpoint/`.
+Manifest SHA256: `6D9EBB844D1C8660963E136D047B81C29BD62CD9F70D06F699EE47BEB59FDEE6`.
+Final zero-diagnostic audit: 2026-09-19T20:22:52.2507249Z. The interval from the first successful
+endpoint compile to this final audit is 782.934 seconds; it is not a
+measurement of the entire round's effort. The source import closure contains
+910 native modules and 1934 edges, is acyclic and avoids HurewiczLowDegrees.
+The existing leaf remains registered in the unchanged flat aggregate.
+The owner-stopped root build was not resumed; shared outputs were untouched.
+
+Remaining inputs and acceptance: Moise252 is still an explicit upstream
+input; Moise305Tame retains its bicollared-outer-frontier condition. Neither
+unconditional Moise304 nor general Moise305 is claimed. The arbitrary-shell
+conditional endpoint is now closed in the author lane, pending the
+coordinator's independent replay and integration acceptance.
