@@ -4363,3 +4363,46 @@ families, and both nested-neighborhood families as the finite polyhedral input.
 After that, one still needs a separate theorem proving exact transport of the
 canonical barycentric derived-neighborhood construction under the produced
 `IsGlueIso`.  No invariance under an unrelated later subdivision is asserted.
+
+## 90. 2026-09-19 actual trivalent compatible triangulation — done
+
+`ManifoldHomeomorphTriangulation.lean` was generalized from a standard
+Euclidean ambient space to an arbitrary finite-dimensional real normed vector
+space.  The proof chooses the canonical finite-basis linear equivalence to a
+standard Euclidean space, proves the coordinate representative piecewise
+affine there, and composes back with the affine linear equivalence.  The public
+signatures now apply directly to the actual `Fin 5 → ℝ` carrier without
+changing that carrier or replacing its complex.
+
+`TrivalentDualCellCompatibleTriangulation.lean` introduces the finite
+`TrivalentPiercingSetIndex`.  Its fourteen values name the original graph,
+three piercing circles, the central boundary surface, three branch boundary
+surfaces, and the three outer and three inner common annular neighborhoods.
+The theorems `isPolyhedron_trivalentPiercingSet` and
+`trivalentPiercingSet_subset` derive, rather than assume, that every named set
+is a polyhedron contained in the original carrier.  They use the finite source
+surface subcomplexes already present in each common-annular-derived-neighborhood
+certificate.
+
+`exists_trivalent_graphDualCell_compatible_triangulation_model` consumes the
+actual carrier-preserving perturbation from Section 88.  It retains the real
+trivalent graph, the moved piercing point, and exact pointwise fixing of the
+graph.  It then returns one pair of finite source and target subdivisions of
+the original `K`, an `IsGlueIso` whose simplicial map equals the intrinsic
+coordinate representative on all of `K.space`, and for every one of the
+fourteen named sets an exact source subcomplex and an exact target image
+subcomplex.
+
+Both changed modules passed their isolated private checks with no diagnostics
+and left shared outputs unchanged.  The joint strict audit covered all twenty
+non-automatic declarations in the two modules plus fifteen critical reused
+declarations.  Every closure was contained in `{propext, Classical.choice,
+Quot.sound}`, and all thirteen applicable environment linters passed.  The new
+consumer leaf is registered in the flat root aggregate.
+
+The remaining representation obligation is now narrow and explicit: prove
+that an `IsGlueIso` carries the canonical barycentric `derivedNeighborhood`
+of a source subcomplex exactly to the canonical derived neighborhood of its
+transported target subcomplex, then instantiate that theorem for the named
+inner and outer neighborhoods.  No arbitrary-subdivision invariance is used or
+claimed.
