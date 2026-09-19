@@ -98,7 +98,7 @@ theorem exists_trivalent_graphDualCell_relative_supported_perturbation_model :
         (A B : Fin 3 → Set (Fin 5 → ℝ)) (U : Set (Fin 5 → ℝ))
         (δ r : ℝ) (p : Fin 5 → ℝ) (h : (Fin 5 → ℝ) ≃ₜ (Fin 5 → ℝ)),
       K.faces.Finite ∧ L.faces.Finite ∧ IsCombinatorialManifold 3 K ∧
-      L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
+      IsPLSphere 3 K.space ∧ L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
       Function.Injective w ∧ (∀ i, v ≠ w i) ∧
       (∀ u, u ≠ v →
         (@insert (Fin 5 → ℝ) (Finset (Fin 5 → ℝ))
@@ -142,7 +142,8 @@ theorem exists_trivalent_graphDualCell_relative_supported_perturbation_model :
           (f i '' (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
             (graphDualCell K L (w i))).space) := by
   let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
-  obtain ⟨K, L, v, w, hKfin, hLfin, hK, hLK, hcard, hwinj, hvw, hneighbors⟩ :=
+  obtain ⟨K, L, v, w, hKfin, hLfin, hK, hKsphere, hLK, hcard, hwinj, hvw,
+    hneighbors⟩ :=
     exists_trivalent_graph_subcomplex_model
   let _ : Finite K.faces := hKfin.to_subtype
   let _ : Finite L.faces := hLfin.to_subtype
@@ -206,8 +207,8 @@ theorem exists_trivalent_graphDualCell_relative_supported_perturbation_model :
         (f i '' (boundaryComplex 3 (graphDualCell K L (w i))).space) := by
     rcases hdata i with ⟨hJ, -, -, hf, hCsub, hfixf, hCball, hinter, hAiU, hAiAB⟩
     exact ⟨hJ, hf, hCsub, hfixf, hCball, hinter, hAiU, hAiAB⟩
-  refine ⟨K, L, v, w, J, C, f, A, B, U, δ, r, p, h, hKfin, hLfin, hK, hLK,
-    hcard, hwinj, hvw, hneighbors, rfl, hdata', hpairJ, hpairA, hpairB, hδ,
+  refine ⟨K, L, v, w, J, C, f, A, B, U, δ, r, p, h, hKfin, hLfin, hK, hKsphere,
+    hLK, hcard, hwinj, hvw, hneighbors, rfl, hdata', hpairJ, hpairA, hpairB, hδ,
     hpJ, hpL, hr, hrU, hh, hmove, hfix, hfixL, hfixU, hclose,
     himage, hpairHA, hpairHB, ?_, ?_⟩
   · intro i
@@ -225,7 +226,8 @@ theorem exists_trivalent_graphDualCell_carrier_supported_perturbation_model :
         (J C : Fin 3 → Set (Fin 5 → ℝ))
         (f : Fin 3 → (Fin 5 → ℝ) → Fin 5 → ℝ)
         (A B : Fin 3 → Set (Fin 5 → ℝ)) (U : Set (Fin 5 → ℝ)) (δ : ℝ),
-      L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
+      IsPLSphere 3 K.space ∧ L.faces ⊆ K.faces ∧
+      (∀ s ∈ L.faces, s.card ≤ 2) ∧
       Function.Injective w ∧ (∀ i, v ≠ w i) ∧
       (∀ u, u ≠ v →
         (@insert (Fin 5 → ℝ) (Finset (Fin 5 → ℝ))
@@ -274,7 +276,7 @@ theorem exists_trivalent_graphDualCell_carrier_supported_perturbation_model :
           O ⊆ h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' A i)) := by
   let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
   obtain ⟨K, L, v, w, J, C, f, A, B, U, δ, r, p, k,
-    hKfin, hLfin, hK, hLK, hcard, hwinj, hvw, hneighbors, hU,
+    hKfin, hLfin, hK, hKsphere, hLK, hcard, hwinj, hvw, hneighbors, hU,
     hdata, hpairJ, hpairA, hpairB, hδ, hpJ, hpL, hr, hrU,
     hk, hkmove, hkfix, hkfixL, hkfixU, hkclose, hkAU, hkpairA, hkpairB,
     hkopen, hktrace⟩ :=
@@ -401,7 +403,7 @@ theorem exists_trivalent_graphDualCell_carrier_supported_perturbation_model :
     · intro x hx
       exact hOA ⟨hx, x.property⟩
   refine ⟨K, L, hKfin, hLfin, hK, v, w, J, C, f, A, B, U, δ,
-    hLK, hcard, hwinj, hvw, hneighbors, hU, hdata,
+    hKsphere, hLK, hcard, hwinj, hvw, hneighbors, hU, hdata,
     hpairJ, hpairA, hpairB, hδ, ?_⟩
   exact ⟨pK, S, h, g, hpJ, hpL, hS, hSVF, hh, hhi, hhmove, hhfix,
     hhfixF, hhfixV, hhclose, hgK, hgOff, ⟨hginj, hgsurj⟩, hgimageK,

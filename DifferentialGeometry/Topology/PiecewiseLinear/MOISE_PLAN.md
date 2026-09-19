@@ -1630,3 +1630,25 @@ extension/general-position implementation for the same actual perturbations.
 E3 remains on original inner traces and physical caps. These are completed-round
 handoffs, not new parallel lanes. No full-root restart is triggered by elapsed
 time, and no new deadline has been inferred.
+
+
+### Actual transported trivalent solid tori delivered
+
+The H lane now has the standard solid-torus input on the actual finite
+trivalent dual-cell model. `IsParametrizedSolidTorusTransport` packages finite
+source and target combinatorial three-manifolds, exact carrier transport,
+standard topological solid-torus type, and end-matched cylindrical diagrams on
+both sides. The endpoint
+`exists_trivalent_graphDualCell_compatible_solid_torus_neighborhood_model`
+applies this package to all three real piercing circles while retaining the
+original PL 3-sphere carrier, graph-fixed nonidentity self-homeomorphism,
+specified thickening, containment in the old stable families, pairwise
+disjointness, and exact annular traces on the central and branch surfaces.
+No desired solid-torus type or parameterization is an input, and no
+arbitrary-subdivision invariance is used.
+
+All twenty-eight non-automatic declarations in the six affected modules and
+fifteen critical reuses pass the standard-three-axiom audit and all thirteen
+environment linters. The remaining H obligations are cross-stage locally
+finite compatible modifications, Moise 35.1 Conditions (3)--(8), and the
+assembled `Moise351` endpoint.

@@ -20,7 +20,7 @@ theorem exists_trivalent_graph_subcomplex_model :
     ∃ (K L : Geometry.SimplicialComplex ℝ (Fin 5 → ℝ))
         (v : Fin 5 → ℝ) (w : Fin 3 → Fin 5 → ℝ),
       K.faces.Finite ∧ L.faces.Finite ∧ IsCombinatorialManifold 3 K ∧
-      L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
+      IsPLSphere 3 K.space ∧ L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
       Function.Injective w ∧ (∀ i, v ≠ w i) ∧
       ∀ u, u ≠ v →
         (@insert (Fin 5 → ℝ) (Finset (Fin 5 → ℝ))
@@ -90,6 +90,7 @@ theorem exists_trivalent_graph_subcomplex_model :
       exact hedgeL i
   exact ⟨K, L, v, w, hKfin, hLfin,
     (isPLSphere_simplexBoundary_std 3).isCombinatorialManifold,
+    isPLSphere_simplexBoundary_std 3,
     hLK, hcard, hwinj, hvw, hneighbors⟩
 
 open Classical in
@@ -120,7 +121,7 @@ theorem exists_trivalent_graphDualCell_piercing_neighborhood_model :
       Pairwise (fun i j => Disjoint (A i) (A j)) ∧
       Pairwise fun i j => Disjoint (B i) (B j) := by
   let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
-  obtain ⟨K, L, v, w, hKfin, hLfin, hK, hLK, hcard, hwinj, hvw, hneighbors⟩ :=
+  obtain ⟨K, L, v, w, hKfin, hLfin, hK, -, hLK, hcard, hwinj, hvw, hneighbors⟩ :=
     exists_trivalent_graph_subcomplex_model
   let _ : Finite K.faces := hKfin.to_subtype
   obtain ⟨J, C, f, A, B, hdata, hpairJ, hpairA, hpairB⟩ :=
@@ -168,7 +169,7 @@ theorem exists_trivalent_graphDualCell_piercing_neighborhood_stability_model :
         Pairwise (fun i j => Disjoint (g i '' A i) (g j '' A j)) ∧
         Pairwise fun i j => Disjoint (g i '' B i) (g j '' B j) := by
   let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
-  obtain ⟨K, L, v, w, hKfin, hLfin, hK, hLK, hcard, hwinj, hvw, hneighbors⟩ :=
+  obtain ⟨K, L, v, w, hKfin, hLfin, hK, -, hLK, hcard, hwinj, hvw, hneighbors⟩ :=
     exists_trivalent_graph_subcomplex_model
   let _ : Finite K.faces := hKfin.to_subtype
   let U := Metric.thickening 1 K.space

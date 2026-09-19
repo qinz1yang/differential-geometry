@@ -131,17 +131,20 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
         (v : Fin 5 → ℝ) (w : Fin 3 → Fin 5 → ℝ)
         (J : Fin 3 → Set (Fin 5 → ℝ))
         (f : Fin 3 → (Fin 5 → ℝ) → Fin 5 → ℝ)
-        (A B : Fin 3 → Set (Fin 5 → ℝ))
+        (A B : Fin 3 → Set (Fin 5 → ℝ)) (U : Set (Fin 5 → ℝ))
         (p : K.space) (h : K.space ≃ₜ K.space)
         (K₀ K₁ : Geometry.SimplicialComplex ℝ (Fin 5 → ℝ))
         (q' : (Fin 5 → ℝ) → Fin 5 → ℝ)
         (D : TrivalentPiercingSetIndex → Geometry.SimplicialComplex ℝ (Fin 5 → ℝ)),
-      L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
+      IsPLSphere 3 K.space ∧ L.faces ⊆ K.faces ∧
+      (∀ s ∈ L.faces, s.card ≤ 2) ∧
       Function.Injective w ∧ (∀ i, v ≠ w i) ∧
       (∀ u, u ≠ v →
         (@insert (Fin 5 → ℝ) (Finset (Fin 5 → ℝ))
           (@Finset.instInsert (Fin 5 → ℝ) (Classical.decEq _)) v {u} ∈ L.faces ↔
           u ∈ Set.range w)) ∧
+      U = Metric.thickening 1 K.space ∧
+      (∀ i, A i ⊆ U) ∧
       (∀ i,
         IsPLSphere 1 (J i) ∧
         IsNestedCommonAnnularDerivedNeighborhood K (A i) (B i) (J i)
@@ -182,7 +185,7 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
          (D t).space = q '' trivalentPiercingSet K L v w J f A B t) := by
   let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
   obtain ⟨K, L, hKfin, hLfin, hK, v, w, J, C, f, A, B, U, δ,
-    hLK, hcard, hwinj, hvw, hneighbors, hU, hdata,
+    hKsphere, hLK, hcard, hwinj, hvw, hneighbors, hU, hdata,
     hpairJ, hpairA, hpairB, hδ, hpert⟩ :=
     exists_trivalent_graphDualCell_carrier_supported_perturbation_model
   let _ : Finite K.faces := hKfin.to_subtype
@@ -201,6 +204,9 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
           (graphDualCell K L (w i))).space) := by
     rcases hdata i with ⟨hJ, hf, hCsub, hfixf, hCball, hinter, hAU, hAB⟩
     exact ⟨hJ, hAB⟩
+  have hAU (i : Fin 3) : A i ⊆ U := by
+    rcases hdata i with ⟨-, -, -, -, -, -, hi, -⟩
+    exact hi
   have hedge (i : Fin 3) : {v, w i} ∈ L.faces :=
     (hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩
   have hv : {v} ∈ L.faces :=
@@ -229,8 +235,9 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
       (trivalentPiercingSet K L v w J f A B)
       (isPolyhedron_trivalentPiercingSet K L v w J f A B hfamily)
       (trivalentPiercingSet_subset K L hLK v w J f A B fun i => (hfamily i).2)
-  refine ⟨K, L, hKfin, hLfin, hK, v, w, J, f, A, B, p, h, K₀, K₁, q', D,
-    hLK, hcard, hwinj, hvw, hneighbors, hfamily, hcentralSphere, hbranchSphere,
+  refine ⟨K, L, hKfin, hLfin, hK, v, w, J, f, A, B, U, p, h, K₀, K₁, q', D,
+    hKsphere, hLK, hcard, hwinj, hvw, hneighbors, hU, hAU, hfamily, hcentralSphere,
+    hbranchSphere,
     hpairA, hpairB, hpJ, hpL, ?_⟩
   exact ⟨hh, hh', hmove, hfixL, hK₀K, hK₀fin, hK₁K, hK₁fin, hglue,
     hsimple, hsource, htarget⟩

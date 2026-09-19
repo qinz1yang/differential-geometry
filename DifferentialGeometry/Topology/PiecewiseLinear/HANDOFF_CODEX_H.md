@@ -4519,3 +4519,46 @@ This closes the representation gap recorded in Sections 88--92 for the real
 trivalent model.  It does not yet identify these three-dimensional common
 neighborhoods as standard PL solid tori, construct cross-stage locally finite
 compatible modifications, or prove Conditions (3)--(8) and `Moise351`.
+
+## 94. 2026-09-19 actual transported solid-torus neighborhoods — done
+
+`CommonCircleSolidTorusTransport.lean` records the natural source-target
+package `IsParametrizedSolidTorusTransport`.  Its source and target are finite
+three-dimensional combinatorial manifolds with exactly related carriers; both
+carriers are standard topological solid tori, and both carry cylindrical
+diagrams over the standard PL 2-disk whose two ends agree.  The producer
+`IsCommonAnnularDerivedNeighborhood.isParametrizedSolidTorusTransport` applies
+the existing solid-torus theorem independently to a common annular derived
+neighborhood and its exact transported common neighborhood.  The auxiliary
+`circle_subset_ambient` is proved from the retained common subdivision rather
+than assumed.
+
+The actual trivalent pipeline now retains the stronger fact that its original
+carrier is a PL 3-sphere and retains the specified open set
+`U = Metric.thickening 1 K.space`.  The fresh outer neighborhoods remain in
+`U`, while each fresh inner neighborhood remains inside its old stable inner
+neighborhood.  The new endpoint
+`exists_trivalent_graphDualCell_compatible_solid_torus_neighborhood_model`
+therefore gives, for all three real piercing circles, source and target
+standard solid-torus neighborhoods with cylindrical parameterizations.  It
+also retains the original graph, the graph-fixed nonidentity carrier
+self-homeomorphism, the exact source-target simplicial map, pairwise
+disjointness on both sides, and the common-neighborhood certificates whose
+equalities identify both surface traces with intrinsic annular derived
+neighborhoods.  In particular the target solid-torus carrier is exactly the
+simplicial-map image of the source carrier; no arbitrary-subdivision
+invariance is used.
+
+All six affected modules passed ordered isolated private checks with no
+diagnostics and left shared outputs unchanged.  The strict external audit
+dynamically checked twenty-eight non-automatic declarations in those modules
+together with fifteen critical reused declarations.  Every axiom closure was
+contained in `{propext, Classical.choice, Quot.sound}`, and all thirteen
+applicable environment linters passed.  Both new leaves are registered in the
+flat root aggregate; no full-root build was run under the standing owner
+instruction.
+
+This closes the standard PL solid-torus input for the actual finite trivalent
+model.  It does not construct compatible modifications across a locally
+finite exhaustion and does not prove Moise 35.1 Conditions (3)--(8) or the
+final `Moise351` endpoint.
