@@ -4533,3 +4533,35 @@ accepted source. F/S/h compiler leases were renewed administratively to
 2026-09-20 00:57 UTC; they are renewable and are not user deadlines. The saved
 automation prompt is updated after this checkpoint and read back byte-for-byte.
 The completed morning report is preserved.
+
+## 94. Q.2a delivered after the physical-surface acceptance
+
+The physical-surface proof checkpoint is pushed as ec849f400. E3 then explicitly
+delivered clean pushed1dff5b63c. LimitSeparation constructs a closed limiting
+separator, proves uniform eventual equality on every compact set disjoint from
+the closed exceptional set, and derives local stabilization from genuinely
+locally finite change supports in the punctured space. The compact-path
+contradiction keeps the original targets separated. Its actual real-line
+model C_n={0,1/(n+1)} is never eventually stationary; supports become locally
+finite only after removing0, and both fixed targets are nonempty.
+
+Source and six matching private artifacts were frozen in the sixty-first
+batch. The author reports five native declarations, two public endpoints,
+one actual private model, seven key reuses,13 lint and allowed axioms. This
+is pending independent replay and root registration, not new acceptance.
+The previous physicalc347/c10 acceptance was notified at this explicit boundary.
+
+The same E3 task now proceeds to Q.2b: construct the actual global annular
+parameterization from compatible integer-indexed PL annuli and natural
+incidence/end-control conditions, prove injectivity and inverse continuity,
+add the center and prove open2-disk topology and exact closure. The two ends,
+center and rim remain distinct. A true infinite PL polygonal-annulus model
+must realize both end conditions; an ordinary Euclidean circle is not a PL
+polygon. No final homeomorphism, open-disk or closure identity may be assumed.
+The original-geometry production of this annular family remains Q.2c;32.1 is
+not claimed. Natural AnnularExhaustion/Pseudocell modules have exact private
+compile grants, with naming/structure review required before public additions.
+The renewable E3 compiler lease ends2026-09-20 01:17 UTC, not a user deadline.
+
+M304 was checked once after its new878 delivery and remains active on the same
+torus-recognition round; no continuation message or extra lane was sent.
