@@ -231,3 +231,33 @@ theorem space_slice_contMDiffOn (c : CurveMap M) (J : Set ℝ)
 end CurveMap
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : RealTimeInterval} {a b : ℝ}
+
+theorem SmoothMetricWindow.exists_right_extension
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) :
+    ∃ b' : ℝ, b < b' ∧ ∃ B' : SmoothMetricWindow (I := I) (M := M) D a b',
+      B'.family = B.family := by
+  obtain ⟨l, b', hb, hregular⟩ :=
+    D.exists_Icc_regular (B.regular ⟨B.lt.le, le_rfl⟩)
+  refine ⟨b', hb.2, {
+    family := B.family
+    smooth := B.smooth
+    lt := B.lt.trans hb.2
+    regular := ?_ }, rfl⟩
+  intro t ht
+  by_cases htb : t ≤ b
+  · exact B.regular ⟨ht.1, htb⟩
+  · exact hregular ⟨hb.1.le.trans (lt_of_not_ge htb).le, ht.2⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
