@@ -168,3 +168,15 @@ Lean delta +340/-0 including four root imports, excluding 50 Markdown lines.
 Receipt: .lake/verified-fourteenth-lane-delivery-20260919.json. E3 ace162dcd and
 h 97d4a948d are queued; both received their next same-lane round only on
 delivery. S 4627710d3 cap comparison remains queued for independent acceptance.
+
+## Additional producer-interface blocker
+
+The fixed normal-system relative-neighborhood carrier has a source-reviewed
+missing-point obstruction for an image edge with an outside ambient coface.
+F is checkpointing the kernel-checked counterexample and was authorized at
+this blocker to construct a genuine compatible neighborhood triangulation
+and coherently repair NormalSystem. Independent counterexample replay remains
+pending. Exact carrier, SDR, source lift and boundary contracts must remain.
+Accepted conditional descent does not certify an inhabited NormalSystem.
+S 3c08c2aba vertex/edge handles is queued; S continued to triangle handles at
+delivery. All four tasks continue one lane each; the full build stays stopped.

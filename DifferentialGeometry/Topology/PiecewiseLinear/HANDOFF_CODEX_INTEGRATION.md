@@ -1173,3 +1173,34 @@ including four root imports; 50 handoff Markdown lines excluded. Root closure
 reaches 9320 project modules including itself with no missing source. The
 full-source build remains stopped; focused proof work continues to make
 progress and no broad compatibility failure has required a restart.
+
+## 31. Normal-system carrier obstruction and authorized repair (2026-09-19 UTC)
+
+F reported a genuine fixed-relative-neighborhood obstruction. The coordinator
+read the full RelativeSimplexNeighborhood proof and the SingularCell formula:
+if the preserved image contains a nondegenerate edge with an ambient coface
+outside that image, a concrete barycentric point belongs to the ordinary
+derived neighborhood but is absent from the relative restricted carrier.
+Carrier equality would force every ambient coface of every fixed edge into
+the image. This blocks the ordinary singular-image construction under those
+hypotheses. F's module check passed; its final concrete tetrahedron/facet
+audit and frozen checkpoint were still pending when this decision was made.
+Independent integration replay is not yet claimed.
+
+The owner delegated route decisions for the autonomous work window. The
+coordinator approved F's repair at this reported blocker: first checkpoint
+the counterexample, then actually construct a finite compatible neighborhood
+triangulation preserving image faces, exact ordinary-derived-neighborhood
+carrier and three-manifold/boundary structure. Update NormalSystem coherently
+and rebuild its real consumers. Preserve SDR, source lift, boundary loop and
+strict complexity contracts. Do not add a false hdeep condition, delete the
+carrier equality or declare a newly assumed package to be a producer.
+The separate finite-cover realization and conditional strict-descent proofs
+remain accepted; they do not establish an inhabited NormalSystem interface.
+
+S 3c08c2aba vertex/edge handles is newly queued. At delivery S continued its
+compact-smoothing lane toward actual triangle two-handle product pairs, with
+explicit review of boundary/relative-handle cases. E3 ace162dcd likewise
+continued only at delivery toward simultaneous subdivisions and exact disk
+traces. All four tasks have one active lane with the requested models.
+Decision: .lake/normal-system-neighborhood-repair-decision-20260919.json.

@@ -28,12 +28,25 @@ regular-neighborhood relation in 35.1. Preserve noncompact scope and pointwise
 error in 35.1. Check quantifiers, nonempty instances and actual consumers.
 A compiling Prop is not an accepted theorem statement or a proof of it.
 
+F now owns an additional correction within its existing cover-production
+lane: the fixed normalSystemManifoldComplex formula uses a relative second
+derived complex preserving the entire image but requires the ordinary
+derived-neighborhood carrier. The source-reviewed missing-point theorem
+RelativeSimplexNeighborhood obstructs this equality for a fixed edge with an
+ambient coface outside the image. Independent counterexample replay is queued.
+The coordinator authorized a genuine compatible-neighborhood triangulation
+producer and the necessary coherent NormalSystem API correction. Preserve
+image faces, the exact carrier, manifold/boundary structure and SDR; do not
+add the false neighborhood hypothesis or treat another assumed package as a
+producer. This takes priority over further conditional cover assembly.
+
+
 ### Four existing tasks: one current lane each
 
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Construct the full ambient cover diagram and compatible smaller neighborhood. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
+| F / gpt-6-astra max | Repair the fixed normal-system neighborhood formula through an actual compatible triangulation, then construct the full cover diagram. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
@@ -913,8 +926,9 @@ projection and fiber equations and preserves manifold structure/connectedness.
 
 The remaining lift construction must still produce a complete nonempty
 NormalSystem and its boundary-compatible smaller neighborhood. In particular,
-the fixed relativeDerivedNeighborhood carrier equation in the current
-normal-system interface is under investigation; no general obstruction is yet
-claimed. The concrete simplex-times-Bool model tests finite-cover realization,
+the fixed relativeDerivedNeighborhood carrier equation has a source-reviewed
+missing-point obstruction under explicit fixed-edge/coface hypotheses. Its
+independent replay and an actual compatible-triangulation repair are next;
+no universal impossibility theorem for every NormalSystem is claimed. The concrete simplex-times-Bool model tests finite-cover realization,
 not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
 is newly queued and E3 continues simultaneous subdivisions and actual traces.
