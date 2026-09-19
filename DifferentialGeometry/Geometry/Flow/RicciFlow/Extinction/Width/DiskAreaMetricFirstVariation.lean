@@ -171,3 +171,52 @@ theorem SmoothDisk.hasDerivAt_diskArea_metricFamily
   exact hKderiv'
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+section
+
+noncomputable section
+
+open Bundle Manifold Set MeasureTheory Filter
+open scoped Manifold ContDiff Topology
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  [T2Space Q] [I.Boundaryless]
+
+theorem SmoothDisk.hasDerivAt_diskArea_metricFamily_of_uniqueDiffWithinAt
+    [CompactSpace Q] [SigmaCompactSpace Q]
+    (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
+    (u : SmoothDisk (I := I) (Q := Q)) (g : ℝ → SmoothRiemannianMetric I Q)
+    (J : Set ℝ) {D : RealTimeInterval} {t₀ : ℝ}
+    {hG : MetricFamilySmoothOn D g} (ht₀ : D.regular ∈ 𝓝 t₀)
+    (hJ : UniqueDiffWithinAt ℝ J t₀) (hconf : u.IsConformal (g t₀)) :
+    IntegrableOn (diskExtension (u.metricVariationDensity g J t₀)) (Metric.closedBall (0 : ℂ) 1) ∧
+      HasDerivAt (fun t : ℝ => diskArea (g t) u.map)
+        ((1 / 2) * ∫ z in Metric.closedBall (0 : ℂ) 1,
+          diskExtension (u.metricVariationDensity g J t₀) z) t₀ := by
+  have he : u.metricVariationDensity g J t₀ = u.metricVariationDensity g univ t₀ := by
+    funext z
+    have hdiff (v : ℂ) : DifferentiableAt ℝ (fun t =>
+        (g t).inner (u.map z) (u.differential z v) (u.differential z v)) t₀ :=
+      ((hG.coeff (u.map z) (u.differential z v) (u.differential z v)).contDiffAt ht₀).differentiableAt (by simp)
+    simp only [SmoothDisk.metricVariationDensity]
+    split_ifs
+    · rw [(hdiff 1).hasDerivAt.hasDerivWithinAt.derivWithin hJ,
+        (hdiff Complex.I).hasDerivAt.hasDerivWithinAt.derivWithin hJ,
+        derivWithin_univ, derivWithin_univ]
+    · rfl
+  rw [he]
+  exact SmoothDisk.hasDerivAt_diskArea_metricFamily (hG := hG) c u g univ ht₀ univ_mem hconf
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+end

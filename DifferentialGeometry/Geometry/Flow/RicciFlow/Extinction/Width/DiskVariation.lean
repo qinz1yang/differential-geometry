@@ -488,45 +488,5 @@ def SmoothDisk.transportedArea (u : SmoothDisk (I := I) (Q := Q))
     (g : ℝ → SmoothRiemannianMetric I Q) (Phi : ℝ → Diffeomorph I I Q Q ∞) (t : ℝ) : ℝ :=
   diskArea (g t) (fun z => Phi t (u.map z))
 
-variable [SigmaCompactSpace Q] {D : RealTimeInterval} {a b : ℝ}
-
-theorem rfs_plateau_upper_comparison (W : SmoothMetricWindow (I := I) (M := Q) D a b)
-    (t₀ : ℝ) (ht₀ : t₀ ∈ Ico a b)
-    (gamma : ℝ → RegularLoop I Q)
-    (hgamma : (curveOfLoopFamily (fun t => (gamma t).toContinuousLoop)).SmoothOn
-      (I := I) (Icc a b))
-    (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
-    (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
-    (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
-    (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
-    (hconformal : u.IsConformal (W.family.metric t₀))
-    (hharmonic : u.IsHarmonic (W.family.metric t₀))
-    (hmin : ∀ v : SmoothDisk (I := I) (Q := Q),
-      (∀ theta, v.map (diskBoundary theta) = gamma t₀ theta) →
-        diskArea (W.family.metric t₀) u.map ≤ diskArea (W.family.metric t₀) v.map)
-    (Phi : ℝ → Diffeomorph I I Q Q ∞)
-    (hPhi : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : Q × ℝ => Phi p.2 p.1)
-      (univ ×ˢ Icc a b))
-    (hid : ∀ q, Phi t₀ q = q)
-    (hboundary : ∀ t ∈ Icc a b, ∀ theta, Phi t (gamma t₀ theta) = gamma t theta) :
-    let V := u.isotopyVelocity Phi (Icc a b) t₀ hid
-    let metricTerm := u.metricVariationDensity W.family.metric (Icc a b) t₀
-    let variation := (1 / 2 : ℝ) *
-      (∫ z in Metric.closedBall (0 : ℂ) 1, diskExtension metricTerm z) -
-        u.boundaryFlux (W.family.metric t₀) V
-    IntegrableOn (diskExtension metricTerm) (Metric.closedBall (0 : ℂ) 1) ∧
-      IntervalIntegrable (u.boundaryFluxDensity (W.family.metric t₀) V) volume 0 1 ∧
-      (∀ t ∈ Icc a b,
-        loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) t ≤
-          u.transportedArea W.family.metric Phi t) ∧
-      loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) t₀ =
-        u.transportedArea W.family.metric Phi t₀ ∧
-      HasDerivWithinAt (u.transportedArea W.family.metric Phi) variation (Icc a b) t₀ ∧
-      ∀ epsilon > 0, ∃ delta > 0, ∀ h ∈ Ioo (0 : ℝ) delta, t₀ + h ≤ b →
-        (loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) (t₀ + h) -
-          loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) t₀) / h ≤
-            variation + epsilon := by
-  sorry
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width

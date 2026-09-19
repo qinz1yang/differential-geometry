@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonVariation
 import DifferentialGeometry.Topology.StandardModel
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 
 noncomputable section
 
@@ -274,3 +275,90 @@ theorem rfs_plateau_upper_comparison_of_minimizingSmoothDisk_of_density_of_openI
     Phi T hTopen hTsub hPhi hid hboundary
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+section
+
+noncomputable section
+open Bundle Manifold Set MeasureTheory Filter
+open scoped Manifold ContDiff Topology ENNReal NNReal
+open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+open Surgery.Topology CurveShortening
+
+theorem rfs_plateau_upper_comparison
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+    [hBoundary : I.Boundaryless] [hT2 : T2Space Q] [hCompact : CompactSpace Q]
+    [SigmaCompactSpace Q] {D : RealTimeInterval} {a b : ℝ}
+    (W : SmoothMetricWindow (I := I) (M := Q) D a b)
+    (t₀ : ℝ) (ht₀ : t₀ ∈ Ico a b)
+    (gamma : ℝ → RegularLoop I Q)
+    (hgamma : (curveOfLoopFamily (fun t => (gamma t).toContinuousLoop)).SmoothOn
+      (I := I) (Icc a b))
+    (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
+    (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
+    (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
+    (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
+    (hconformal : u.IsConformal (W.family.metric t₀))
+    (hharmonic : u.IsHarmonic (W.family.metric t₀))
+    (hmin : ∀ v : SmoothDisk (I := I) (Q := Q),
+      (∀ theta, v.map (diskBoundary theta) = gamma t₀ theta) →
+        diskArea (W.family.metric t₀) u.map ≤ diskArea (W.family.metric t₀) v.map)
+    (Phi : ℝ → Diffeomorph I I Q Q ∞)
+    (hPhi : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : Q × ℝ => Phi p.2 p.1)
+      (univ ×ˢ Icc a b))
+    (hid : ∀ q, Phi t₀ q = q)
+    (hboundary : ∀ t ∈ Icc a b, ∀ theta, Phi t (gamma t₀ theta) = gamma t theta) :
+    let V := u.isotopyVelocity Phi (Icc a b) t₀ hid
+    let metricTerm := u.metricVariationDensity W.family.metric (Icc a b) t₀
+    let variation := (1 / 2 : ℝ) *
+      (∫ z in Metric.closedBall (0 : ℂ) 1, diskExtension metricTerm z) -
+        u.boundaryFlux (W.family.metric t₀) V
+    IntegrableOn (diskExtension metricTerm) (Metric.closedBall (0 : ℂ) 1) ∧
+      IntervalIntegrable (u.boundaryFluxDensity (W.family.metric t₀) V) volume 0 1 ∧
+      (∀ t ∈ Icc a b,
+        loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) t ≤
+          u.transportedArea W.family.metric Phi t) ∧
+      loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) t₀ =
+        u.transportedArea W.family.metric Phi t₀ ∧
+      HasDerivWithinAt (u.transportedArea W.family.metric Phi) variation (Icc a b) t₀ ∧
+      ∀ epsilon > 0, ∃ delta > 0, ∀ h ∈ Ioo (0 : ℝ) delta, t₀ + h ≤ b →
+        (loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) (t₀ + h) -
+          loopFamilyLeastArea W.family.metric (fun v => (gamma v).toContinuousLoop) t₀) / h ≤
+            variation + epsilon := by
+  classical
+  have ht₀Icc : t₀ ∈ Icc a b := ⟨ht₀.1, ht₀.2.le⟩
+  have hmin' : ∀ v : DiskCompetitor (W.family.metric t₀) (gamma t₀).toContinuousLoop,
+      diskArea (W.family.metric t₀) u.map ≤ diskArea (W.family.metric t₀) v.1.map := by
+    intro v
+    have hγtsmooth : ContMDiff 𝓘(ℝ, ℝ) I ∞
+        (loopLift (gamma t₀).toContinuousLoop) := by
+      have h := CurveMap.space_slice_contMDiffOn
+        (curveOfLoopFamily (fun v => (gamma v).toContinuousLoop)) (Icc a b) hgamma t₀ ht₀Icc
+      rwa [contMDiffOn_univ] at h
+    obtain ⟨vj, hvj, hlim⟩ := smooth_exact_disk_density
+      (W.family.metric t₀) (regularLoopSlice (fun v => (gamma v).toContinuousLoop)
+        hgamma t₀ ht₀Icc) hγtsmooth v
+    exact ge_of_tendsto' hlim (fun j => hmin (vj j) (hvj j))
+  let c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E :=
+    DifferentialGeometry.Geometry.Topology.standardModelCopy (I := I) (M := Q)
+      (e := ContinuousLinearEquiv.refl ℝ E)
+  let _ : CompactSpace c.Q :=
+    DifferentialGeometry.Geometry.Topology.StandardModelCopy.compactSpace c
+  obtain ⟨hint, hflux, hderiv⟩ :=
+    SmoothDisk.hasDerivWithinAt_transportedArea_isotopy_flux_on_Icc c W.smooth u
+      hconformal hharmonic ht₀ W.regular Phi hPhi hid
+  exact rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_and_transportedAreaDeriv
+    W t₀ ht₀ gamma hgamma hemb himm hctr u sigma htrace hconformal hharmonic hmin'
+    Phi hPhi hid hboundary hint hflux hderiv
+
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+end
