@@ -4,6 +4,10 @@ Current execution and evidence are in [MOISE_PLAN.md](MOISE_PLAN.md) and the
 latest [integration handoff](HANDOFF_CODEX_INTEGRATION.md). The exact source,
 compiled declarations and transitive axioms outrank historical route notes.
 
+F through d68c5adc5 is independently accepted in integration section 96.
+The quantitative same-perturbation and W union N crossing layer remains local;
+full projected-disk normal structure and descent are open.
+
 ## Current main chain
 
 | Book node | Source interface / construction | Current obligation |

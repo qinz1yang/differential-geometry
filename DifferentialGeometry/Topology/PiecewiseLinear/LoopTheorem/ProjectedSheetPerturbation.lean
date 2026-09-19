@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.PiecewiseLinear.HalfSpaceGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChange
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularLocal
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell
@@ -216,7 +217,8 @@ private theorem exists_small_displacement_preserving_crossing
     {a : E → E} (ha : IsPiecewiseAffineOn a univ) {k : NNReal}
     (halip : LipschitzWith k a) (hma : ∀ x, m (a x) = 0)
     {M : ℝ} (hM : ∀ x, ‖a x‖ ≤ M) {ε : ℝ} (hε : 0 < ε) :
-    ∃ (t : ℝ) (h : E ≃ₜ E), 0 < t ∧ t * (k : ℝ) < 1 ∧ IsPLHomeomorphOn h univ univ ∧
+    ∃ (t : ℝ) (h : E ≃ₜ E), 0 < t ∧ t * (k : ℝ) < 1 ∧
+      ‖ℓ‖ * (t * (k : ℝ)) * ‖d‖ < 1 ∧ IsPLHomeomorphOn h univ univ ∧
       (∀ x, h x = x + t • a x) ∧ (∀ x, dist (h x) x < ε) ∧
       (∀ x, m (h x) = m x) ∧
       ∀ y ∈ h '' ((P : Set E) ∩ {x | 0 ≤ m x}) ∩
@@ -275,13 +277,280 @@ private theorem exists_small_displacement_preserving_crossing
   have hheight (x : E) : m (h x) = m x := by
     change m (x + t • a x) = m x
     rw [map_add, map_smul, hma, smul_zero, add_zero]
-  refine ⟨t, h, ht, hkt, hh, fun _ => rfl, ?_, hheight, ?_⟩
+  refine ⟨t, h, ht, hkt, hktℓ, hh, fun _ => rfl, ?_, hheight, ?_⟩
   · intro x
     change dist (x + t • a x) x < ε
     rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos ht]
     exact (mul_le_mul_of_nonneg_left (hM x) ht.le).trans_lt htM
   · exact crossing_of_lipschitz_displacement P ℓ m hP hQ hI hPQ hu hd hℓd hmd
       hb hblip hktℓ h hh (fun _ => rfl) (fun x => by rw [hheight]; exact ⟨Iff.rfl, Iff.rfl⟩)
+private theorem exists_singularTwoCell_preserving_boundary_crossings_of_flat_sheets
+    (D : SingularTwoCell (EuclideanSpace ℝ (Fin 3)))
+    {P Q A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hPQ : P ∪ Q = D.domain) (hP : IsPolyhedron P) (hQ : IsPolyhedron Q)
+    (hA : IsPolyhedron A) (hB : IsPolyhedron B) (hAP : A ⊆ P) (hBQ : B ⊆ Q)
+    (hAB : Disjoint A B) (hinjP : InjOn D P)
+    (hfA : IsPLHomeomorphOn D A (D '' A)) (hfB : IsPLHomeomorphOn D B (D '' B))
+    (hloc : IsLocallyInjective (D.domain.domRestrict D))
+    (hcard : ∀ z, (D.domain ∩ D ⁻¹' {z}).encard ≤ 2)
+    {U C V W : Set (EuclideanSpace ℝ (Fin 3))}
+    (hVU : V ⊆ U) (hW : IsOpen W) (hWV : W ⊆ V)
+    (hseam : ∀ x ∈ P ∩ Q, D x ∉ closure U)
+    (hinjQ : InjOn D (Q ∩ D ⁻¹' U))
+    (hcover : ∀ z ∈ U, D.domain ∩ D ⁻¹' {z} ⊆ A ∪ B)
+    (S : Submodule ℝ (EuclideanSpace ℝ (Fin 3)))
+    (ℓ m : EuclideanSpace ℝ (Fin 3) →L[ℝ] ℝ)
+    (hS : Module.finrank ℝ S = 2)
+    (hu : ∃ u ∈ S ⊓ LinearMap.ker ℓ.toLinearMap, m u = 1)
+    {d : EuclideanSpace ℝ (Fin 3)} (hd : d ∈ S) (hℓd : ℓ d = 1) (hmd : m d = 0)
+    (hflatA : ∀ z ∈ V, z ∈ D '' A ↔ z ∈ S ∧ 0 ≤ m z)
+    (hflatB : ∀ z ∈ V, z ∈ D '' B ↔ ℓ z = 0 ∧ 0 ≤ m z)
+    (hC : ∀ z ∈ U, z ∈ C ↔ 0 ≤ m z)
+    (hBd : ∀ z ∈ U, z ∈ frontier C ↔ m z = 0)
+    (hmap : MapsTo D D.domain C)
+    (hproper : D.domain ∩ D ⁻¹' frontier C = frontier D.domain)
+    {a : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
+    (ha : IsPiecewiseAffineOn a univ) {k : NNReal} (halip : LipschitzWith k a)
+    (hk : k < 1) (hkℓ : (‖ℓ‖₊ * k) * ‖d‖₊ < 1)
+    (hzero : EqOn a (fun _ => 0) Uᶜ) (hplane : ∀ z, m z = 0 → m (a z) = 0)
+    (h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3))
+    (hh : IsPLHomeomorphOn h univ univ) (hformula : ∀ z, h z = z + a z)
+    (hheight : ∀ z, (m (h z) = 0 ↔ m z = 0) ∧ (0 ≤ m (h z) ↔ 0 ≤ m z))
+    (hpreV : ∀ z ∈ W, h.symm z ∈ V) {ε : ℝ} (hε : 0 < ε)
+    (hclose : ∀ z, dist (h z) z < ε) :
+    ∃ F : SingularTwoCell (EuclideanSpace ℝ (Fin 3)), F.domain = D.domain ∧
+      EqOn F (h ∘ D) P ∧ EqOn F D Q ∧ EqOn F D Pᶜ ∧
+      (∀ x, dist (F x) (D x) < ε) ∧ MapsTo F F.domain C ∧
+      F.domain ∩ F ⁻¹' frontier C = frontier F.domain ∧
+      F '' F.domain ∩ frontier C = range F.boundary ∧
+      IsLocallyInjective (F.domain.domRestrict F) ∧
+      (∀ z, (F.domain ∩ F ⁻¹' {z}).encard ≤ 2) ∧
+      (∀ z ∉ U, F ⁻¹' {z} = D ⁻¹' {z}) ∧
+      (∀ z ∈ W ∩ doublePointSet F F.domain,
+        (z ∈ frontier C ∧ HasPLBoundaryDoubleCrossingAt F F.domain C z) ∨
+        (z ∉ frontier C ∧ HasPLDoubleCrossingAt F F.domain z)) ∧
+      ∃ H : ContinuousMap (unitInterval × frontier D.domain) (EuclideanSpace ℝ (Fin 3)),
+        (∀ x, H (0, x) = D x) ∧ (∀ x, H (1, x) = F x) ∧
+        ∀ s x, dist (H (s, x)) (D x) < ε ∧ H (s, x) ∈ frontier C ∧
+          (D x ∉ U → H (s, x) = D x) := by
+  classical
+  have hWU : W ⊆ U := hWV.trans hVU
+  have hℓ : ℓ.toLinearMap ≠ 0 := by
+    intro heq
+    have hd0 : ℓ d = 0 := congrArg (fun f : _ →ₗ[ℝ] ℝ => f d) heq
+    exact zero_ne_one (hd0.symm.trans hℓd)
+  have hT : Module.finrank ℝ (LinearMap.ker ℓ.toLinearMap) = 2 := by
+    have hr := LinearMap.finrank_range_add_finrank_ker ℓ.toLinearMap
+    rw [LinearMap.range_eq_top.mpr (LinearMap.surjective_of_ne_zero hℓ),
+      finrank_top, Module.finrank_self] at hr
+    have hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 3 := by simp
+    omega
+  have hST : S ⊔ LinearMap.ker ℓ.toLinearMap = ⊤ := by
+    apply top_unique
+    intro z _
+    have hker : z - ℓ z • d ∈ LinearMap.ker ℓ.toLinearMap := by
+      change ℓ (z - ℓ z • d) = 0
+      rw [map_sub, map_smul, hℓd, smul_eq_mul, mul_one, sub_self]
+    have hz := Submodule.add_mem (S ⊔ LinearMap.ker ℓ.toLinearMap)
+      (Submodule.mem_sup_left (S.smul_mem (ℓ z) hd)) (Submodule.mem_sup_right hker)
+    have heq : ℓ z • d + (z - ℓ z • d) = z := by abel
+    exact heq ▸ hz
+  have hI : Module.finrank ℝ (S ⊓ LinearMap.ker ℓ.toLinearMap :
+      Submodule ℝ (EuclideanSpace ℝ (Fin 3))) = 1 := by
+    have hr := Submodule.finrank_sup_add_finrank_inf_eq S (LinearMap.ker ℓ.toLinearMap)
+    rw [hST, finrank_top, hS, hT] at hr
+    have hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 3 := by simp
+    omega
+  have hcross := crossing_of_lipschitz_displacement S ℓ m hS hT hI hST hu hd hℓd hmd
+    ha halip hkℓ h hh hformula hheight
+  have hfix : EqOn h id Uᶜ := by
+    intro z hz
+    rw [hformula, hzero hz, add_zero]
+    rfl
+  have hpre (z : EuclideanSpace ℝ (Fin 3)) (hz : z ∈ U) : h.symm z ∈ U := by
+    by_contra hnot
+    have heq : z = h.symm z := (h.apply_symm_apply z).symm.trans (hfix hnot)
+    exact hnot (heq ▸ hz)
+  have hmaps : MapsTo h U U := by
+    intro z hz
+    by_contra hnot
+    have heq : h z = z := h.injective (hfix hnot)
+    exact hnot (heq.symm ▸ hz)
+  have hpres (z : EuclideanSpace ℝ (Fin 3)) :
+      (h z ∈ C ↔ z ∈ C) ∧ (h z ∈ frontier C ↔ z ∈ frontier C) := by
+    by_cases hz : z ∈ U
+    · rw [hC _ (hmaps hz), hC _ hz, hBd _ (hmaps hz), hBd _ hz]
+      exact ⟨(hheight z).2, (hheight z).1⟩
+    · rw [hfix hz]
+      exact ⟨Iff.rfl, Iff.rfl⟩
+  have hhPL : IsPL 3 3 h := fun z =>
+    ⟨h.continuous.continuousAt.continuousWithinAt, hh.isPiecewiseAffineOn z (mem_univ z)⟩
+  have hf : IsPLOn 2 3 D (P ∪ Q) := hPQ.symm ▸ D.isPLOn
+  have hlocPQ : IsLocallyInjective ((P ∪ Q).domRestrict D) := hPQ.symm ▸ hloc
+  have hcardPQ : ∀ z, ((P ∪ Q) ∩ D ⁻¹' {z}).encard ≤ 2 := hPQ.symm ▸ hcard
+  obtain ⟨g, hg, hgloc, hgcard, hgP, hgQ, hgOff, hgfiber⟩ :=
+    exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective hf hP hQ hlocPQ hcardPQ
+      hinjP hhPL h.injective hfix hseam hinjQ
+  rw [hPQ] at hg hgloc hgcard
+  have hPK : P ⊆ D.domain := hPQ ▸ subset_union_left
+  have hQK : Q ⊆ D.domain := hPQ ▸ subset_union_right
+  have hAK : A ⊆ D.domain := hAP.trans hPK
+  have hBK : B ⊆ D.domain := hBQ.trans hQK
+  have hgAeq : EqOn g (h ∘ D) A := hgP.mono hAP
+  have hgBeq : EqOn g D B := hgQ.mono hBQ
+  have hgAimage : g '' A = h '' (D '' A) := by
+    rw [← image_comp]
+    exact hgAeq.image_eq
+  have hgBimage : g '' B = D '' B := hgBeq.image_eq
+  have hgA : IsPLHomeomorphOn g A (g '' A) := by
+    rw [hgAimage]
+    have hDA := hA.image_of_isPiecewiseAffineOn hfA.isPiecewiseAffineOn hfA.bijOn.injOn
+    exact (hfA.trans (hh.restrict hDA (subset_univ _))).congr hgAeq
+  have hgB : IsPLHomeomorphOn g B (g '' B) := by
+    rw [hgBimage]
+    exact hfB.congr hgBeq
+  have hgcover : ∀ z ∈ U, D.domain ∩ g ⁻¹' {z} ⊆ A ∪ B := by
+    intro z hz x hx
+    by_cases hxP : x ∈ P
+    · have hDx : D x = h.symm z := by
+        apply h.injective
+        rw [h.apply_symm_apply]
+        exact (hgP hxP).symm.trans hx.2
+      rcases hcover (h.symm z) (hpre z hz) ⟨hx.1, hDx⟩ with hxA | hxB
+      · exact Or.inl hxA
+      · exact False.elim (hseam x ⟨hxP, hBQ hxB⟩
+          (subset_closure (hDx.symm ▸ hpre z hz)))
+    · have hDx : D x = z := (hgOff hxP).symm.trans hx.2
+      exact Or.inr ((hcover z hz ⟨hx.1, hDx⟩).resolve_left (fun hxA => hxP (hAP hxA)))
+  have hmem (T : Set (EuclideanSpace ℝ (Fin 3))) (z : EuclideanSpace ℝ (Fin 3)) :
+      z ∈ h '' T ↔ h.symm z ∈ T := by
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      simpa only [h.symm_apply_apply] using hw
+    · intro hz
+      exact ⟨h.symm z, hz, h.apply_symm_apply z⟩
+  have hmodelA : ∀ z ∈ W, z ∈ g '' A ↔ z ∈ h '' ((S : Set _) ∩ {w | 0 ≤ m w}) := by
+    intro z hz
+    rw [hgAimage, hmem, hmem]
+    exact hflatA _ (hpreV z hz)
+  have hmodelB : ∀ z ∈ W, z ∈ g '' B ↔ ℓ z = 0 ∧ 0 ≤ m z := by
+    intro z hz
+    rw [hgBimage]
+    exact hflatB z (hWV hz)
+  have hgpres (x : EuclideanSpace ℝ (Fin 2)) :
+      (g x ∈ C ↔ D x ∈ C) ∧ (g x ∈ frontier C ↔ D x ∈ frontier C) := by
+    by_cases hxP : x ∈ P
+    · rw [hgP hxP]
+      exact hpres (D x)
+    · rw [hgOff hxP]
+      exact ⟨Iff.rfl, Iff.rfl⟩
+  have hgproper : D.domain ∩ g ⁻¹' frontier C = frontier D.domain := by
+    rw [← hproper]
+    ext x
+    exact and_congr_right fun _ => (hgpres x).2
+  let F : SingularTwoCell (EuclideanSpace ℝ (Fin 3)) :=
+    { domain := D.domain
+      isPLBall_domain := D.isPLBall_domain
+      toFun := g
+      isPLOn := hg }
+  have hgclose (x : EuclideanSpace ℝ (Fin 2)) : dist (g x) (D x) < ε := by
+    by_cases hxP : x ∈ P
+    · rw [hgP hxP]
+      exact hclose (D x)
+    · rw [hgOff hxP, dist_self]
+      exact hε
+  have hinter : F '' F.domain ∩ frontier C = range F.boundary := by
+    rw [← image_inter_preimage]
+    change g '' (D.domain ∩ g ⁻¹' frontier C) = range F.boundary
+    rw [hgproper]
+    ext z
+    exact ⟨fun ⟨x, hx, hxz⟩ => ⟨⟨x, hx⟩, hxz⟩,
+      fun ⟨x, hxz⟩ => ⟨x, x.2, hxz⟩⟩
+  refine ⟨F, rfl, hgP, hgQ, hgOff, hgclose,
+    fun x hx => (hgpres x).1.mpr (hmap hx), hgproper, hinter, hgloc, hgcard,
+    hgfiber, ?_, ?_⟩
+  · intro z hz
+    have hzAB := (mem_doublePointSet_iff_mem_image_inter_of_injOn g hAK hBK hAB
+      hgA.bijOn.injOn hgB.bijOn.injOn (hgcover z (hWU hz.1))).mp hz.2
+    have hnear : ∀ᶠ w in 𝓝 z, D.domain ∩ g ⁻¹' {w} ⊆ A ∪ B :=
+      Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => hgcover w (hWU hw)
+    have hAnear : ∀ᶠ w in 𝓝 z, w ∈ h '' ((S : Set _) ∩ {v | 0 ≤ m v}) ↔ w ∈ g '' A :=
+      Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => (hmodelA w hw).symm
+    have hBnear : ∀ᶠ w in 𝓝 z,
+        w ∈ (((LinearMap.ker ℓ.toLinearMap : Submodule ℝ _) : Set _) ∩ {v | 0 ≤ m v}) ↔
+          w ∈ g '' B :=
+      Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => (hmodelB w hw).symm
+    rcases hcross z ⟨(hmodelA z hz.1).mp hzAB.1, (hmodelB z hz.1).mp hzAB.2⟩ with
+      ⟨hzeroz, hcz⟩ | ⟨hposz, hcz⟩
+    · refine Or.inl ⟨(hBd z (hWU hz.1)).mpr hzeroz, ?_⟩
+      have hCnear : ∀ᶠ w in 𝓝 z, w ∈ {v | 0 ≤ m v} ↔ w ∈ C :=
+        Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => (hC w (hWU hw)).symm
+      exact hasPLBoundaryDoubleCrossingAt_of_crossing_and_eventually_fiber_subset
+        F.continuousOn hAK hBK hA.isClosed hB.isClosed hAB hgA hgB hz.2
+        (hcz.congr hCnear hAnear hBnear) hnear
+    · refine Or.inr ⟨fun hzBd => hposz.ne' ((hBd z (hWU hz.1)).mp hzBd), ?_⟩
+      exact hasPLDoubleCrossingAt_of_crossing_and_eventually_fiber_subset F.continuousOn
+        hAK hBK hA.isClosed hB.isClosed hAB hgA hgB hz.2 (hcz.congr hAnear hBnear) hnear
+  · have hcontD : Continuous (fun x : frontier D.domain => D x) := D.boundary.continuous
+    have hcontg : Continuous (fun x : frontier D.domain => g x) :=
+      (F.continuousOn.mono D.frontier_subset_domain).domRestrict
+    let H : ContinuousMap (unitInterval × frontier D.domain) (EuclideanSpace ℝ (Fin 3)) :=
+      ⟨fun z => D z.2 + (z.1 : ℝ) • (g z.2 - D z.2),
+        (hcontD.comp continuous_snd).add
+          ((continuous_subtype_val.comp continuous_fst).smul
+            ((hcontg.comp continuous_snd).sub (hcontD.comp continuous_snd)))⟩
+    refine ⟨H, fun x => by simp [H], fun x => by simp [H, F], ?_⟩
+    intro s x
+    have hdist : dist (H (s, x)) (D x) < ε := by
+      calc dist (H (s, x)) (D x) = (s : ℝ) * dist (g x) (D x) := by
+            simp only [H, ContinuousMap.coe_mk, dist_eq_norm, add_sub_cancel_left,
+              norm_smul, Real.norm_eq_abs, abs_of_nonneg s.property.1]
+        _ ≤ dist (g x) (D x) := mul_le_of_le_one_left dist_nonneg s.property.2
+        _ < ε := hgclose x
+    have hDbd : D x ∈ frontier C := (hproper.superset x.property).2
+    have hHfix (hxU : D x ∉ U) : H (s, x) = D x := by
+      have hgeq : g x = D x := by
+        by_cases hxP : (x : EuclideanSpace ℝ (Fin 2)) ∈ P
+        · exact (hgP hxP).trans (hfix hxU)
+        · exact hgOff hxP
+      change D x + (s : ℝ) • (g x - D x) = D x
+      rw [hgeq, sub_self, smul_zero, add_zero]
+    refine ⟨hdist, ?_, hHfix⟩
+    by_cases hxP : (x : EuclideanSpace ℝ (Fin 2)) ∈ P
+    · by_cases hxU : D x ∈ U
+      · let r : ℝ := s
+        have hr : 0 ≤ r := s.property.1
+        have hrk : r * (k : ℝ) < 1 :=
+          (mul_le_of_le_one_left k.property s.property.2).trans_lt hk
+        have hpa : IsPiecewiseAffineOn (fun z => r • a z) univ :=
+          ha.affine_comp (r • (LinearMap.id : _ →ₗ[ℝ] _)).toAffineMap
+        have hlipa : LipschitzWith (⟨r, hr⟩ * k) (fun z => r • a z) := by
+          apply LipschitzWith.of_dist_le_mul
+          intro z w
+          change dist (r • a z) (r • a w) ≤ (r * (k : ℝ)) * dist z w
+          rw [dist_smul₀, Real.norm_eq_abs, abs_of_nonneg hr]
+          exact (mul_le_mul_of_nonneg_left (halip.dist_le_mul z w) hr).trans_eq
+            (mul_assoc _ _ _).symm
+        have hj := isPLHomeomorphOn_id_add_of_lipschitz hpa hlipa hrk
+        have heq : H (s, x) = D x + r • a (D x) := by
+          change D x + (s : ℝ) • (g x - D x) = _
+          rw [hgP hxP, Function.comp_apply, hformula, add_sub_cancel_left]
+        have hHU : H (s, x) ∈ U := by
+          rw [heq]
+          by_contra hnot
+          have hself : (D x + r • a (D x)) + r • a (D x + r • a (D x)) =
+              D x + r • a (D x) := by rw [hzero hnot, smul_zero, add_zero]
+          have hident := hj.bijOn.injOn (mem_univ _) (mem_univ _) hself
+          exact hnot (hident.symm ▸ hxU)
+        apply (hBd _ hHU).mpr
+        rw [heq, map_add, map_smul, hplane _ ((hBd _ hxU).mp hDbd), smul_zero, add_zero]
+        exact (hBd _ hxU).mp hDbd
+      · exact (hHfix hxU).symm ▸ hDbd
+    · have hgeq : g x = D x := hgOff hxP
+      have heq : H (s, x) = D x := by
+        change D x + (s : ℝ) • (g x - D x) = D x
+        rw [hgeq, sub_self, smul_zero, add_zero]
+      exact heq.symm ▸ hDbd
 open Classical in
 theorem SingularTwoCell.exists_small_perturbation_preserving_boundary_crossings_of_flat_sheets
     (D : SingularTwoCell (EuclideanSpace ℝ (Fin 3)))
@@ -379,7 +648,7 @@ theorem SingularTwoCell.exists_small_perturbation_preserving_boundary_crossings_
       ((hJ.isCompact.image_of_continuousOn hv.continuousOn).insert 0).isBounded
   obtain ⟨M, -, hMbound⟩ := hbounded.exists_pos_norm_lt
   have hM : ∀ z, ‖a z‖ ≤ M := fun z => (hMbound _ (harange z)).le
-  obtain ⟨t, h, ht, htk, hh, hformula, hcloseSmall, hheight, hcross⟩ :=
+  obtain ⟨t, h, ht, htk, htkℓ, hh, hformula, hcloseSmall, hheight, -⟩ :=
     exists_small_displacement_preserving_crossing S ℓ m hS hT hI hST hu hd hℓd hmd
       ha halip hma hM (lt_min hε (half_pos hr))
   have hclose (z : EuclideanSpace ℝ (Fin 3)) : dist (h z) z < ε :=
@@ -393,197 +662,357 @@ theorem SingularTwoCell.exists_small_perturbation_preserving_boundary_crossings_
     rw [add_halves] at hdistw
     exact hrV (thickening_subset_cthickening r Z
       (mem_thickening_iff.mpr ⟨w, hw, hdistw⟩))
-  have hfix : EqOn h id Uᶜ := by
+  have hb : IsPiecewiseAffineOn (fun z => t • a z) univ :=
+    ha.affine_comp (t • (LinearMap.id : _ →ₗ[ℝ] _)).toAffineMap
+  have hblip : LipschitzWith (⟨t, ht.le⟩ * k) (fun z => t • a z) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro z w
+    change dist (t • a z) (t • a w) ≤ (t * (k : ℝ)) * dist z w
+    rw [dist_smul₀, Real.norm_eq_abs, abs_of_pos ht]
+    exact (mul_le_mul_of_nonneg_left (halip.dist_le_mul z w) ht.le).trans_eq
+      (mul_assoc _ _ _).symm
+  have hbzero : EqOn (fun z => t • a z) (fun _ => 0) Uᶜ := by
     intro z hz
-    rw [hformula, hzero hz, smul_zero, add_zero]
-    rfl
-  have hpre (z : EuclideanSpace ℝ (Fin 3)) (hz : z ∈ U) : h.symm z ∈ U := by
-    by_contra hnot
-    have heq : z = h.symm z := (h.apply_symm_apply z).symm.trans (hfix hnot)
-    exact hnot (heq ▸ hz)
-  have hmaps : MapsTo h U U := by
+    change t • a z = 0
+    rw [hzero hz, smul_zero]
+  have hbplane (z : EuclideanSpace ℝ (Fin 3)) (_hz : m z = 0) : m (t • a z) = 0 := by
+    rw [map_smul, hma, smul_zero]
+  obtain ⟨F, hFdom, hFP, hFQ, hFoff, hFclose, hFmap, hFproper, hFimage, hFloc, hFcard,
+    hFfiber, hFcross, hFhom⟩ :=
+    exists_singularTwoCell_preserving_boundary_crossings_of_flat_sheets D hPQ hP hQ hA hB
+      hAP hBQ hAB hinjP hfA hfB hloc hcard hVU hW hWV hseam hinjQ hcover S ℓ m hS hu hd
+      hℓd hmd hflatA hflatB hC hBd hmap hproper hb hblip htk htkℓ hbzero hbplane h hh
+      hformula (fun z => by rw [hheight]; exact ⟨Iff.rfl, Iff.rfl⟩) hpreV hε hclose
+  refine ⟨W, t, F, hW, hZW, hWV, ht, hFdom, ?_, hFQ, hFoff, hFclose, hFmap, hFproper,
+    hFimage, hFloc, hFcard, hFfiber, hFcross, hFhom⟩
+  intro x hx
+  exact (hFP hx.1).trans ((hformula (D x)).trans (by rw [hagree hx.2]))
+
+open Classical in
+theorem SingularTwoCell.exists_simplicial_perturbation_preserving_boundary_crossings_of_flat_sheets
+    (D : SingularTwoCell (EuclideanSpace ℝ (Fin 3)))
+    {P Q A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hPQ : P ∪ Q = D.domain) (hP : IsPolyhedron P) (hQ : IsPolyhedron Q)
+    (hA : IsPolyhedron A) (hB : IsPolyhedron B) (hAP : A ⊆ P) (hBQ : B ⊆ Q)
+    (hAB : Disjoint A B) (hinjP : InjOn D P)
+    (hfA : IsPLHomeomorphOn D A (D '' A)) (hfB : IsPLHomeomorphOn D B (D '' B))
+    (hloc : IsLocallyInjective (D.domain.domRestrict D))
+    (hcard : ∀ z, (D.domain ∩ D ⁻¹' {z}).encard ≤ 2)
+    {U C V Z : Set (EuclideanSpace ℝ (Fin 3))} (hU : IsOpen U)
+    (hV : IsOpen V) (hVU : V ⊆ U) (hZ : IsCompact Z) (hZV : Z ⊆ V)
+    (hseam : ∀ x ∈ P ∩ Q, D x ∉ closure U)
+    (hinjQ : InjOn D (Q ∩ D ⁻¹' U))
+    (hcover : ∀ z ∈ U, D.domain ∩ D ⁻¹' {z} ⊆ A ∪ B)
+    (S : Submodule ℝ (EuclideanSpace ℝ (Fin 3)))
+    (ℓ m : EuclideanSpace ℝ (Fin 3) →L[ℝ] ℝ)
+    (hS : Module.finrank ℝ S = 2)
+    (hu : ∃ u ∈ S ⊓ LinearMap.ker ℓ.toLinearMap, m u = 1)
+    {d : EuclideanSpace ℝ (Fin 3)} (hd : d ∈ S) (hℓd : ℓ d = 1) (hmd : m d = 0)
+    (hflatA : ∀ z ∈ V, z ∈ D '' A ↔ z ∈ S ∧ 0 ≤ m z)
+    (hflatB : ∀ z ∈ V, z ∈ D '' B ↔ ℓ z = 0 ∧ 0 ≤ m z)
+    (hC : ∀ z ∈ U, z ∈ C ↔ 0 ≤ m z)
+    (hBd : ∀ z ∈ U, z ∈ frontier C ↔ m z = 0)
+    (hmap : MapsTo D D.domain C)
+    (hproper : D.domain ∩ D ⁻¹' frontier C = frontier D.domain)
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite K.faces]
+    (hKU : K.space ⊆ U) (hKm : ∀ v ∈ K.vertices, 0 ≤ m v) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ φ : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+      (∀ v ∈ K.vertices, dist (φ v) v < δ) →
+      (∀ v ∈ K.vertices, m v = 0 → m (φ v) = 0) →
+      ∃ (W : Set (EuclideanSpace ℝ (Fin 3)))
+        (F : SingularTwoCell (EuclideanSpace ℝ (Fin 3))),
+        IsOpen W ∧ Z ⊆ W ∧ W ⊆ V ∧ F.domain = D.domain ∧
+        EqOn F (simplicialMap K φ ∘ D) (P ∩ D ⁻¹' K.space) ∧
+        EqOn F D Q ∧ EqOn F D Pᶜ ∧
+        (∀ x, dist (F x) (D x) < ε) ∧ MapsTo F F.domain C ∧
+        F.domain ∩ F ⁻¹' frontier C = frontier F.domain ∧
+        F '' F.domain ∩ frontier C = range F.boundary ∧
+        IsLocallyInjective (F.domain.domRestrict F) ∧
+        (∀ z, (F.domain ∩ F ⁻¹' {z}).encard ≤ 2) ∧
+        (∀ z ∉ U, F ⁻¹' {z} = D ⁻¹' {z}) ∧
+        (∀ z ∈ W ∩ doublePointSet F F.domain,
+          (z ∈ frontier C ∧ HasPLBoundaryDoubleCrossingAt F F.domain C z) ∨
+          (z ∉ frontier C ∧ HasPLDoubleCrossingAt F F.domain z)) ∧
+        ∃ H : ContinuousMap (unitInterval × frontier D.domain) (EuclideanSpace ℝ (Fin 3)),
+          (∀ x, H (0, x) = D x) ∧ (∀ x, H (1, x) = F x) ∧
+          ∀ s x, dist (H (s, x)) (D x) < ε ∧ H (s, x) ∈ frontier C ∧
+            (D x ∉ U → H (s, x) = D x) := by
+  obtain ⟨r, hr, hrV⟩ := hZ.exists_cthickening_subset_open hV hZV
+  let W := thickening (r / 2) Z
+  have hW : IsOpen W := isOpen_thickening
+  have hZW : Z ⊆ W := self_subset_thickening (half_pos hr) Z
+  have hWV : W ⊆ V := by
     intro z hz
-    by_contra hnot
-    have heq : h z = z := h.injective (hfix hnot)
-    exact hnot (heq.symm ▸ hz)
-  have hpres (z : EuclideanSpace ℝ (Fin 3)) :
-      (h z ∈ C ↔ z ∈ C) ∧ (h z ∈ frontier C ↔ z ∈ frontier C) := by
-    by_cases hz : z ∈ U
-    · rw [hC _ (hmaps hz), hC _ hz, hBd _ (hmaps hz), hBd _ hz, hheight]
-      exact ⟨Iff.rfl, Iff.rfl⟩
-    · rw [hfix hz]
-      exact ⟨Iff.rfl, Iff.rfl⟩
-  have hhPL : IsPL 3 3 h := fun z =>
-    ⟨h.continuous.continuousAt.continuousWithinAt, hh.isPiecewiseAffineOn z (mem_univ z)⟩
-  have hf : IsPLOn 2 3 D (P ∪ Q) := hPQ.symm ▸ D.isPLOn
-  have hlocPQ : IsLocallyInjective ((P ∪ Q).domRestrict D) := hPQ.symm ▸ hloc
-  have hcardPQ : ∀ z, ((P ∪ Q) ∩ D ⁻¹' {z}).encard ≤ 2 := hPQ.symm ▸ hcard
-  obtain ⟨g, hg, hgloc, hgcard, hgP, hgQ, hgOff, hgfiber⟩ :=
-    exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective hf hP hQ hlocPQ hcardPQ
-      hinjP hhPL h.injective hfix hseam hinjQ
-  rw [hPQ] at hg hgloc hgcard
+    obtain ⟨w, hw, hzw⟩ := mem_thickening_iff.mp hz
+    exact hrV (thickening_subset_cthickening r Z
+      (mem_thickening_iff.mpr ⟨w, hw, hzw.trans (half_lt_self hr)⟩))
+  have hm : m.toLinearMap ≠ 0 := by
+    intro heq
+    obtain ⟨u, -, hmu⟩ := hu
+    have hz : m u = 0 := congrArg (fun f : _ →ₗ[ℝ] ℝ => f u) heq
+    exact zero_ne_one (hz.symm.trans hmu)
+  let R : ℝ := ‖ℓ‖ * ‖d‖ + 1
+  have hR : 0 < R := by dsimp only [R]; positivity
+  obtain ⟨δ, hδ, hext⟩ :=
+    exists_lipschitz_displacement_extending_vertex_perturbation_preserving_halfSpace
+      K m.toLinearMap hm hKm hU hKU (lt_min hε (half_pos hr))
+      (show 0 < 1 / (2 * R) by positivity)
+  refine ⟨δ, hδ, fun φ hφ hφplane => ?_⟩
+  obtain ⟨a, k, ha, halip, hkR, hk1, hnorm, hzero, hplane, hagree, hh, hheight⟩ :=
+    hext φ hφ hφplane
+  let h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3) :=
+    (Homeomorph.Set.univ _).symm.trans (hh.homeomorph.trans (Homeomorph.Set.univ _))
+  have hformula (z : EuclideanSpace ℝ (Fin 3)) : h z = z + a z := rfl
+  have hcloseSmall (z : EuclideanSpace ℝ (Fin 3)) : dist (h z) z < min ε (r / 2) := by
+    rw [hformula, dist_eq_norm, add_sub_cancel_left]
+    exact hnorm z
+  have hkℓ : (‖ℓ‖₊ * k) * ‖d‖₊ < 1 := by
+    have hbound := (lt_div_iff₀ (show 0 < 2 * R by positivity)).mp hkR
+    have hnormle : ‖ℓ‖ * ‖d‖ ≤ R := le_add_of_nonneg_right zero_le_one
+    change ‖ℓ‖ * (k : ℝ) * ‖d‖ < 1
+    calc ‖ℓ‖ * (k : ℝ) * ‖d‖ = (k : ℝ) * (‖ℓ‖ * ‖d‖) := by ring
+      _ ≤ (k : ℝ) * R := mul_le_mul_of_nonneg_left hnormle k.property
+      _ < 1 := by nlinarith
+  have hpreV (z : EuclideanSpace ℝ (Fin 3)) (hz : z ∈ W) : h.symm z ∈ V := by
+    obtain ⟨w, hw, hzw⟩ := mem_thickening_iff.mp hz
+    have hdist : dist (h.symm z) z < r / 2 := by
+      simpa only [h.apply_symm_apply, dist_comm] using
+        (hcloseSmall (h.symm z)).trans_le (min_le_right _ _)
+    have hdistw := (dist_triangle (h.symm z) z w).trans_lt (add_lt_add hdist hzw)
+    rw [add_halves] at hdistw
+    exact hrV (thickening_subset_cthickening r Z
+      (mem_thickening_iff.mpr ⟨w, hw, hdistw⟩))
+  obtain ⟨F, hFdom, hFP, hFQ, hFoff, hFclose, hFmap, hFproper, hFimage, hFloc, hFcard,
+    hFfiber, hFcross, hFhom⟩ :=
+    exists_singularTwoCell_preserving_boundary_crossings_of_flat_sheets D hPQ hP hQ hA hB
+      hAP hBQ hAB hinjP hfA hfB hloc hcard hVU hW hWV hseam hinjQ hcover S ℓ m hS hu hd
+      hℓd hmd hflatA hflatB hC hBd hmap hproper ha halip hk1 hkℓ hzero hplane h hh
+      hformula hheight hpreV hε (fun z => (hcloseSmall z).trans_le (min_le_left _ _))
+  refine ⟨W, F, hW, hZW, hWV, hFdom, ?_, hFQ, hFoff, hFclose, hFmap, hFproper,
+    hFimage, hFloc, hFcard, hFfiber, hFcross, hFhom⟩
+  intro x hx
+  exact (hFP hx.1).trans (hagree hx.2)
+
+open Classical in
+theorem SingularTwoCell.exists_generalPosition_preserving_flat_boundary_crossings
+    (D : SingularTwoCell (EuclideanSpace ℝ (Fin 3)))
+    {P Q A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hPQ : P ∪ Q = D.domain) (hP : IsPolyhedron P) (hQ : IsPolyhedron Q)
+    (hA : IsPolyhedron A) (hB : IsPolyhedron B) (hAP : A ⊆ P) (hBQ : B ⊆ Q)
+    (hAB : Disjoint A B) (hinjP : InjOn D P)
+    (hfA : IsPLHomeomorphOn D A (D '' A)) (hfB : IsPLHomeomorphOn D B (D '' B))
+    (hloc : IsLocallyInjective (D.domain.domRestrict D))
+    (hcard : ∀ z, (D.domain ∩ D ⁻¹' {z}).encard ≤ 2)
+    {U C V Z : Set (EuclideanSpace ℝ (Fin 3))} (hU : IsOpen U)
+    (hV : IsOpen V) (hVU : V ⊆ U) (hZ : IsCompact Z) (hZV : Z ⊆ V)
+    (hseam : ∀ x ∈ P ∩ Q, D x ∉ closure U)
+    (hinjQ : InjOn D (Q ∩ D ⁻¹' U))
+    (hcover : ∀ z ∈ U, D.domain ∩ D ⁻¹' {z} ⊆ A ∪ B)
+    (S : Submodule ℝ (EuclideanSpace ℝ (Fin 3)))
+    (ℓ m : EuclideanSpace ℝ (Fin 3) →L[ℝ] ℝ)
+    (hS : Module.finrank ℝ S = 2)
+    (hu : ∃ u ∈ S ⊓ LinearMap.ker ℓ.toLinearMap, m u = 1)
+    {d : EuclideanSpace ℝ (Fin 3)} (hd : d ∈ S) (hℓd : ℓ d = 1) (hmd : m d = 0)
+    (hflatA : ∀ z ∈ V, z ∈ D '' A ↔ z ∈ S ∧ 0 ≤ m z)
+    (hflatB : ∀ z ∈ V, z ∈ D '' B ↔ ℓ z = 0 ∧ 0 ≤ m z)
+    (hC : ∀ z ∈ U, z ∈ C ↔ 0 ≤ m z)
+    (hBd : ∀ z ∈ U, z ∈ frontier C ↔ m z = 0)
+    (hmap : MapsTo D D.domain C)
+    (hproper : D.domain ∩ D ⁻¹' frontier C = frontier D.domain)
+    {R T : Set (EuclideanSpace ℝ (Fin 2))} (hR : IsPolyhedron R) (hT : IsPolyhedron T)
+    (hRA : R ⊆ A) (hTB : T ⊆ B)
+    (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+    [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K)
+    (hL : IsCombinatorialManifoldWithBoundary 2 L)
+    (hKspace : K.space = D '' R) (hLspace : L.space = D '' T)
+    (hKU : K.space ⊆ U) (hLU : L.space ⊆ U)
+    (hKboundary : ∀ z ∈ K.space, m z = 0 → z ∈ (boundaryComplex 2 K).space)
+    (hLboundary : ∀ z ∈ L.space, m z = 0 → z ∈ (boundaryComplex 2 L).space)
+    {O Y : Set (EuclideanSpace ℝ (Fin 3))} (hO : IsOpen O) (hOU : O ⊆ U)
+    (hY : IsCompact Y) (hYO : Y ⊆ O)
+    (hinner : ∀ z ∈ O, D.domain ∩ D ⁻¹' {z} ⊆ R ∪ T) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (W N : Set (EuclideanSpace ℝ (Fin 3)))
+      (F : SingularTwoCell (EuclideanSpace ℝ (Fin 3)))
+      (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+      IsOpen W ∧ Z ⊆ W ∧ W ⊆ V ∧ IsOpen N ∧ Y ⊆ N ∧ N ⊆ O ∧
+      F.domain = D.domain ∧ EqOn F D Q ∧ EqOn F D Pᶜ ∧
+      (∀ x, dist (F x) (D x) < ε) ∧ MapsTo F F.domain C ∧
+      F.domain ∩ F ⁻¹' frontier C = frontier F.domain ∧
+      F '' F.domain ∩ frontier C = range F.boundary ∧
+      IsLocallyInjective (F.domain.domRestrict F) ∧
+      (∀ z, (F.domain ∩ F ⁻¹' {z}).encard ≤ 2) ∧
+      (∀ z ∉ U, F ⁻¹' {z} = D ⁻¹' {z}) ∧ G.faces.Finite ∧
+      G.space = F '' R ∩ F '' T ∧ IsCombinatorialManifoldWithBoundary 1 G ∧
+      G.space ∩ N = doublePointSet F F.domain ∩ N ∧
+      (∀ z ∈ (W ∪ N) ∩ doublePointSet F F.domain,
+        (z ∈ frontier C ∧ HasPLBoundaryDoubleCrossingAt F F.domain C z) ∨
+        (z ∉ frontier C ∧ HasPLDoubleCrossingAt F F.domain z)) ∧
+      ∃ H : ContinuousMap (unitInterval × frontier D.domain) (EuclideanSpace ℝ (Fin 3)),
+        (∀ x, H (0, x) = D x) ∧ (∀ x, H (1, x) = F x) ∧
+        ∀ t x, dist (H (t, x)) (D x) < ε ∧ H (t, x) ∈ frontier C ∧
+          (D x ∉ U → H (t, x) = D x) := by
   have hPK : P ⊆ D.domain := hPQ ▸ subset_union_left
   have hQK : Q ⊆ D.domain := hPQ ▸ subset_union_right
-  have hAK : A ⊆ D.domain := hAP.trans hPK
-  have hBK : B ⊆ D.domain := hBQ.trans hQK
-  have hgAeq : EqOn g (h ∘ D) A := hgP.mono hAP
-  have hgBeq : EqOn g D B := hgQ.mono hBQ
-  have hgAimage : g '' A = h '' (D '' A) := by
-    rw [← image_comp]
-    exact hgAeq.image_eq
-  have hgBimage : g '' B = D '' B := hgBeq.image_eq
-  have hgA : IsPLHomeomorphOn g A (g '' A) := by
-    rw [hgAimage]
-    have hDA := hA.image_of_isPiecewiseAffineOn hfA.isPiecewiseAffineOn hfA.bijOn.injOn
-    exact (hfA.trans (hh.restrict hDA (subset_univ _))).congr hgAeq
-  have hgB : IsPLHomeomorphOn g B (g '' B) := by
-    rw [hgBimage]
-    exact hfB.congr hgBeq
-  have hgcover : ∀ z ∈ U, D.domain ∩ g ⁻¹' {z} ⊆ A ∪ B := by
+  have hRP : R ⊆ P := hRA.trans hAP
+  have hTQ : T ⊆ Q := hTB.trans hBQ
+  have hRD : R ⊆ D.domain := hRP.trans hPK
+  have hTD : T ⊆ D.domain := hTQ.trans hQK
+  have hKm : ∀ z ∈ K.vertices, 0 ≤ m z := by
+    intro z hz
+    have hzK := K.subset_space hz (Finset.mem_singleton_self z)
+    obtain ⟨x, hx, rfl⟩ := hKspace ▸ hzK
+    exact (hC _ (hKU hzK)).mp (hmap (hRD hx))
+  have hLm : ∀ z ∈ L.vertices, 0 ≤ m z := by
+    intro z hz
+    have hzL := L.subset_space hz (Finset.mem_singleton_self z)
+    obtain ⟨x, hx, rfl⟩ := hLspace ▸ hzL
+    exact (hC _ (hLU hzL)).mp (hmap (hTD hx))
+  have hm : m.toLinearMap ≠ 0 := by
+    intro heq
+    obtain ⟨u, -, hmu⟩ := hu
+    have hz : m u = 0 := congrArg (fun f : _ →ₗ[ℝ] ℝ => f u) heq
+    exact zero_ne_one (hz.symm.trans hmu)
+  obtain ⟨r, hr, hrV⟩ := hZ.exists_cthickening_subset_open hV hZV
+  obtain ⟨q, hq, hqO⟩ := hY.exists_cthickening_subset_open hO hYO
+  let W := thickening (r / 2) Z
+  let N := thickening (q / 2) Y
+  have hW : IsOpen W := isOpen_thickening
+  have hN : IsOpen N := isOpen_thickening
+  have hZW : Z ⊆ W := self_subset_thickening (half_pos hr) Z
+  have hYN : Y ⊆ N := self_subset_thickening (half_pos hq) Y
+  have hthick {s : ℝ} (hs : 0 < s) {X B : Set (EuclideanSpace ℝ (Fin 3))}
+      (hXB : cthickening s X ⊆ B) : thickening (s / 2) X ⊆ B := by
+    intro z hz
+    obtain ⟨w, hw, hzw⟩ := mem_thickening_iff.mp hz
+    exact hXB (thickening_subset_cthickening s X
+      (mem_thickening_iff.mpr ⟨w, hw, hzw.trans (half_lt_self hs)⟩))
+  have hWV : W ⊆ V := hthick hr hrV
+  have hNO : N ⊆ O := hthick hq hqO
+  let c : ℝ := ‖ℓ‖ * ‖d‖ + 1
+  have hc : 0 < c := by dsimp only [c]; positivity
+  obtain ⟨j, G, k, hklip, hkc, hk1, hj, hjclose, hjfix, hjheight, hGfin, hGspace,
+    hGman, hGcross⟩ :=
+    exists_small_homeomorph_generalPosition_in_halfSpace_with_lipschitz_displacement
+      K L hK hL (by simp) m.toLinearMap hm hKm hLm
+      (by convert hKboundary using 1; congr!)
+      (by convert hLboundary using 1; congr!) hU hKU hLU
+      (lt_min hε (lt_min (half_pos hr) (half_pos hq)))
+      (show 0 < 1 / (2 * c) by positivity)
+  let h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3) :=
+    (Homeomorph.Set.univ _).symm.trans (hj.homeomorph.trans (Homeomorph.Set.univ _))
+  have hh : IsPLHomeomorphOn h univ univ := hj
+  let a : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3) := fun z => h z - z
+  have ha : IsPiecewiseAffineOn a univ := by
+    have hn := isPiecewiseAffineOn_of_affine (-(AffineMap.id ℝ (EuclideanSpace ℝ (Fin 3))))
+      isOpen_univ
+    simpa only [a, sub_eq_add_neg, AffineMap.coe_neg, Pi.neg_apply, AffineMap.id_apply] using
+      hh.isPiecewiseAffineOn.add hn
+  have halip : LipschitzWith k a := hklip
+  have hzero : EqOn a (fun _ => 0) Uᶜ := by
+    intro z hz
+    change j z - z = 0
+    rw [hjfix hz]
+    exact sub_self z
+  have hplane (z : EuclideanSpace ℝ (Fin 3)) (hz : m z = 0) : m (a z) = 0 := by
+    change m (j z - z) = 0
+    have hjz : m (j z) = 0 := (hjheight z).1.mpr hz
+    rw [map_sub, hjz, hz, sub_self]
+  have hformula (z : EuclideanSpace ℝ (Fin 3)) : h z = z + a z := by dsimp only [a]; abel
+  have hkℓ : (‖ℓ‖₊ * k) * ‖d‖₊ < 1 := by
+    have hbound := (lt_div_iff₀ (show 0 < 2 * c by positivity)).mp hkc
+    have hnormle : ‖ℓ‖ * ‖d‖ ≤ c := le_add_of_nonneg_right zero_le_one
+    change ‖ℓ‖ * (k : ℝ) * ‖d‖ < 1
+    calc ‖ℓ‖ * (k : ℝ) * ‖d‖ = (k : ℝ) * (‖ℓ‖ * ‖d‖) := by ring
+      _ ≤ (k : ℝ) * c := mul_le_mul_of_nonneg_left hnormle k.property
+      _ < 1 := by nlinarith
+  have hpre {s : ℝ} {X B : Set (EuclideanSpace ℝ (Fin 3))}
+      (hXB : cthickening s X ⊆ B) (hsmall : ∀ z, dist (h z) z < s / 2)
+      {z : EuclideanSpace ℝ (Fin 3)} (hz : z ∈ thickening (s / 2) X) : h.symm z ∈ B := by
+    obtain ⟨w, hw, hzw⟩ := mem_thickening_iff.mp hz
+    have hdist : dist (h.symm z) z < s / 2 := by
+      simpa only [h.apply_symm_apply, dist_comm] using hsmall (h.symm z)
+    have hdistw := (dist_triangle (h.symm z) z w).trans_lt (add_lt_add hdist hzw)
+    rw [add_halves] at hdistw
+    exact hXB (thickening_subset_cthickening s X
+      (mem_thickening_iff.mpr ⟨w, hw, hdistw⟩))
+  have hpreV : ∀ z ∈ W, h.symm z ∈ V := fun _ hz => hpre hrV
+    (fun z => (hjclose z).trans_le ((min_le_right _ _).trans (min_le_left _ _))) hz
+  have hpreO : ∀ z ∈ N, h.symm z ∈ O := fun _ hz => hpre hqO
+    (fun z => (hjclose z).trans_le ((min_le_right _ _).trans (min_le_right _ _))) hz
+  obtain ⟨F, hFdom, hFP, hFQ, hFoff, hFclose, hFmap, hFproper, hFimage, hFloc, hFcard,
+    hFfiber, hFcross, hFhom⟩ :=
+    exists_singularTwoCell_preserving_boundary_crossings_of_flat_sheets D hPQ hP hQ hA hB
+      hAP hBQ hAB hinjP hfA hfB hloc hcard hVU hW hWV hseam hinjQ hcover S ℓ m hS hu hd
+      hℓd hmd hflatA hflatB hC hBd hmap hproper ha halip hk1 hkℓ hzero hplane h hh
+      hformula hjheight hpreV hε (fun z => (hjclose z).trans_le (min_le_left _ _))
+  have hRDF : R ⊆ F.domain := hFdom.symm ▸ hRD
+  have hTDF : T ⊆ F.domain := hFdom.symm ▸ hTD
+  have hRT : Disjoint R T := hAB.mono hRA hTB
+  have hFReq : EqOn F (h ∘ D) R := hFP.mono hRP
+  have hFTeq : EqOn F D T := hFQ.mono hTQ
+  have hFRimage : F '' R = h '' K.space := by
+    rw [hKspace, ← image_comp]
+    exact hFReq.image_eq
+  have hFTimage : F '' T = L.space := hFTeq.image_eq.trans hLspace.symm
+  have hDR : IsPLHomeomorphOn D R K.space := hKspace.symm ▸ hfA.restrict hR hRA
+  have hFR : IsPLHomeomorphOn F R (F '' R) := by
+    rw [hFRimage]
+    exact (hDR.trans (hh.restrict (isPolyhedron_space K) (subset_univ _))).congr hFReq
+  have hFT : IsPLHomeomorphOn F T (F '' T) := by
+    rw [hFTeq.image_eq]
+    exact (hfB.restrict hT hTB).congr hFTeq
+  have hGactual : G.space = F '' R ∩ F '' T := by
+    rw [hFRimage, hFTimage]
+    exact hGspace
+  have hFinner : ∀ z ∈ N, F.domain ∩ F ⁻¹' {z} ⊆ R ∪ T := by
     intro z hz x hx
+    have hxD : x ∈ D.domain := hFdom ▸ hx.1
     by_cases hxP : x ∈ P
     · have hDx : D x = h.symm z := by
         apply h.injective
         rw [h.apply_symm_apply]
-        exact (hgP hxP).symm.trans hx.2
-      rcases hcover (h.symm z) (hpre z hz) ⟨hx.1, hDx⟩ with hxA | hxB
-      · exact Or.inl hxA
-      · exact False.elim (hseam x ⟨hxP, hBQ hxB⟩
-          (subset_closure (hDx.symm ▸ hpre z hz)))
-    · have hDx : D x = z := (hgOff hxP).symm.trans hx.2
-      exact Or.inr ((hcover z hz ⟨hx.1, hDx⟩).resolve_left (fun hxA => hxP (hAP hxA)))
-  have hmem (T : Set (EuclideanSpace ℝ (Fin 3))) (z : EuclideanSpace ℝ (Fin 3)) :
-      z ∈ h '' T ↔ h.symm z ∈ T := by
-    constructor
-    · rintro ⟨w, hw, rfl⟩
-      simpa only [h.symm_apply_apply] using hw
-    · intro hz
-      exact ⟨h.symm z, hz, h.apply_symm_apply z⟩
-  have hmodelA : ∀ z ∈ W, z ∈ g '' A ↔ z ∈ h '' ((S : Set _) ∩ {w | 0 ≤ m w}) := by
+        exact (hFP hxP).symm.trans hx.2
+      rcases hinner (h.symm z) (hpreO z hz) ⟨hxD, hDx⟩ with hxR | hxT
+      · exact Or.inl hxR
+      · exact False.elim (hseam x ⟨hxP, hTQ hxT⟩
+          (subset_closure (hDx.symm ▸ hOU (hpreO z hz))))
+    · have hDx : D x = z := (hFoff hxP).symm.trans hx.2
+      exact Or.inr ((hinner z (hNO hz) ⟨hxD, hDx⟩).resolve_left (fun hxR => hxP (hRP hxR)))
+  have hdouble (z : EuclideanSpace ℝ (Fin 3)) (hz : z ∈ N) :
+      z ∈ G.space ↔ z ∈ doublePointSet F F.domain := by
+    rw [hGactual]
+    exact (mem_doublePointSet_iff_mem_image_inter_of_injOn F hRDF hTDF hRT
+      hFR.bijOn.injOn hFT.bijOn.injOn (hFinner z hz)).symm
+  have hNcross : ∀ z ∈ N ∩ doublePointSet F F.domain,
+      (z ∈ frontier C ∧ HasPLBoundaryDoubleCrossingAt F F.domain C z) ∨
+      (z ∉ frontier C ∧ HasPLDoubleCrossingAt F F.domain z) := by
     intro z hz
-    rw [hgAimage, hmem, hmem]
-    exact hflatA _ (hpreV z hz)
-  have hmodelB : ∀ z ∈ W, z ∈ g '' B ↔ ℓ z = 0 ∧ 0 ≤ m z := by
-    intro z hz
-    rw [hgBimage]
-    exact hflatB z (hWV hz)
-  have hgpres (x : EuclideanSpace ℝ (Fin 2)) :
-      (g x ∈ C ↔ D x ∈ C) ∧ (g x ∈ frontier C ↔ D x ∈ frontier C) := by
-    by_cases hxP : x ∈ P
-    · rw [hgP hxP]
-      exact hpres (D x)
-    · rw [hgOff hxP]
-      exact ⟨Iff.rfl, Iff.rfl⟩
-  have hgproper : D.domain ∩ g ⁻¹' frontier C = frontier D.domain := by
-    rw [← hproper]
-    ext x
-    exact and_congr_right fun _ => (hgpres x).2
-  let F : SingularTwoCell (EuclideanSpace ℝ (Fin 3)) :=
-    { domain := D.domain
-      isPLBall_domain := D.isPLBall_domain
-      toFun := g
-      isPLOn := hg }
-  have hgclose (x : EuclideanSpace ℝ (Fin 2)) : dist (g x) (D x) < ε := by
-    by_cases hxP : x ∈ P
-    · rw [hgP hxP]
-      exact hclose (D x)
-    · rw [hgOff hxP, dist_self]
-      exact hε
-  have hinter : F '' F.domain ∩ frontier C = range F.boundary := by
-    rw [← image_inter_preimage]
-    change g '' (D.domain ∩ g ⁻¹' frontier C) = range F.boundary
-    rw [hgproper]
-    ext z
-    exact ⟨fun ⟨x, hx, hxz⟩ => ⟨⟨x, hx⟩, hxz⟩,
-      fun ⟨x, hxz⟩ => ⟨x, x.2, hxz⟩⟩
-  refine ⟨W, t, F, hW, hZW, hWV, ht, rfl, ?_, hgQ, hgOff, hgclose,
-    fun x hx => (hgpres x).1.mpr (hmap hx), hgproper, hinter, hgloc, hgcard,
-    hgfiber, ?_, ?_⟩
-  · intro x hx
-    exact (hgP hx.1).trans ((hformula (D x)).trans (by rw [hagree hx.2]))
-  · intro z hz
-    have hzAB := (mem_doublePointSet_iff_mem_image_inter_of_injOn g hAK hBK hAB
-      hgA.bijOn.injOn hgB.bijOn.injOn (hgcover z (hWU hz.1))).mp hz.2
-    have hnear : ∀ᶠ w in 𝓝 z, D.domain ∩ g ⁻¹' {w} ⊆ A ∪ B :=
-      Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => hgcover w (hWU hw)
-    have hAnear : ∀ᶠ w in 𝓝 z, w ∈ h '' ((S : Set _) ∩ {v | 0 ≤ m v}) ↔ w ∈ g '' A :=
-      Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => (hmodelA w hw).symm
-    have hBnear : ∀ᶠ w in 𝓝 z,
-        w ∈ (((LinearMap.ker ℓ.toLinearMap : Submodule ℝ _) : Set _) ∩ {v | 0 ≤ m v}) ↔
-          w ∈ g '' B :=
-      Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => (hmodelB w hw).symm
-    rcases hcross z ⟨(hmodelA z hz.1).mp hzAB.1, (hmodelB z hz.1).mp hzAB.2⟩ with
-      ⟨hzeroz, hcz⟩ | ⟨hposz, hcz⟩
-    · refine Or.inl ⟨(hBd z (hWU hz.1)).mpr hzeroz, ?_⟩
-      have hCnear : ∀ᶠ w in 𝓝 z, w ∈ {v | 0 ≤ m v} ↔ w ∈ C :=
-        Filter.Eventually.mono (hW.mem_nhds hz.1) fun w hw => (hC w (hWU hw)).symm
+    have hnear : ∀ᶠ w in 𝓝 z, F.domain ∩ F ⁻¹' {w} ⊆ R ∪ T :=
+      Filter.Eventually.mono (hN.mem_nhds hz.1) fun w hw => hFinner w hw
+    have hGcross' : ∀ y ∈ G.space,
+        (m y = 0 ∧ HasPLBoundaryCrossingAt {x | 0 ≤ m x} (h '' K.space) L.space y) ∨
+        (0 < m y ∧ HasPLCrossingAt (h '' K.space) L.space y) := hGcross
+    rcases hGcross' z ((hdouble z hz.1).mpr hz.2) with ⟨hz0, hc⟩ | ⟨hzpos, hc⟩
+    · refine Or.inl ⟨(hBd _ (hOU (hNO hz.1))).mpr hz0, ?_⟩
+      rw [← hFRimage, ← hFTimage] at hc
+      have hCnear : ∀ᶠ w in 𝓝 z, w ∈ {x | 0 ≤ m x} ↔ w ∈ C :=
+        Filter.Eventually.mono (hN.mem_nhds hz.1) fun w hw => (hC w (hOU (hNO hw))).symm
       exact hasPLBoundaryDoubleCrossingAt_of_crossing_and_eventually_fiber_subset
-        F.continuousOn hAK hBK hA.isClosed hB.isClosed hAB hgA hgB hz.2
-        (hcz.congr hCnear hAnear hBnear) hnear
-    · refine Or.inr ⟨fun hzBd => hposz.ne' ((hBd z (hWU hz.1)).mp hzBd), ?_⟩
+        F.continuousOn hRDF hTDF hR.isClosed hT.isClosed hRT hFR hFT hz.2
+        (hc.congr hCnear (Filter.Eventually.of_forall fun _ => Iff.rfl)
+          (Filter.Eventually.of_forall fun _ => Iff.rfl)) hnear
+    · refine Or.inr ⟨fun hzBd => hzpos.ne' ((hBd _ (hOU (hNO hz.1))).mp hzBd), ?_⟩
+      rw [← hFRimage, ← hFTimage] at hc
       exact hasPLDoubleCrossingAt_of_crossing_and_eventually_fiber_subset F.continuousOn
-        hAK hBK hA.isClosed hB.isClosed hAB hgA hgB hz.2 (hcz.congr hAnear hBnear) hnear
-  · have hcontD : Continuous (fun x : frontier D.domain => D x) := D.boundary.continuous
-    have hcontg : Continuous (fun x : frontier D.domain => g x) :=
-      (F.continuousOn.mono D.frontier_subset_domain).domRestrict
-    let H : ContinuousMap (unitInterval × frontier D.domain) (EuclideanSpace ℝ (Fin 3)) :=
-      ⟨fun z => D z.2 + (z.1 : ℝ) • (g z.2 - D z.2),
-        (hcontD.comp continuous_snd).add
-          ((continuous_subtype_val.comp continuous_fst).smul
-            ((hcontg.comp continuous_snd).sub (hcontD.comp continuous_snd)))⟩
-    refine ⟨H, fun x => by simp [H], fun x => by simp [H, F], ?_⟩
-    intro s x
-    have hdist : dist (H (s, x)) (D x) < ε := by
-      calc dist (H (s, x)) (D x) = (s : ℝ) * dist (g x) (D x) := by
-            simp only [H, ContinuousMap.coe_mk, dist_eq_norm, add_sub_cancel_left,
-              norm_smul, Real.norm_eq_abs, abs_of_nonneg s.property.1]
-        _ ≤ dist (g x) (D x) := mul_le_of_le_one_left dist_nonneg s.property.2
-        _ < ε := hgclose x
-    have hDbd : D x ∈ frontier C := (hproper.superset x.property).2
-    have hHfix (hxU : D x ∉ U) : H (s, x) = D x := by
-      have hgeq : g x = D x := by
-        by_cases hxP : (x : EuclideanSpace ℝ (Fin 2)) ∈ P
-        · exact (hgP hxP).trans (hfix hxU)
-        · exact hgOff hxP
-      change D x + (s : ℝ) • (g x - D x) = D x
-      rw [hgeq, sub_self, smul_zero, add_zero]
-    refine ⟨hdist, ?_, hHfix⟩
-    by_cases hxP : (x : EuclideanSpace ℝ (Fin 2)) ∈ P
-    · by_cases hxU : D x ∈ U
-      · let r : ℝ := (s : ℝ) * t
-        have hr : 0 ≤ r := mul_nonneg s.property.1 ht.le
-        have hrk : r * (k : ℝ) < 1 := by
-          calc r * (k : ℝ) = (s : ℝ) * (t * (k : ℝ)) := mul_assoc _ _ _
-            _ ≤ t * (k : ℝ) :=
-              mul_le_of_le_one_left (mul_nonneg ht.le k.property) s.property.2
-            _ < 1 := htk
-        have hpa : IsPiecewiseAffineOn (fun z => r • a z) univ :=
-          ha.affine_comp (r • (LinearMap.id : _ →ₗ[ℝ] _)).toAffineMap
-        have hlipa : LipschitzWith (⟨r, hr⟩ * k) (fun z => r • a z) := by
-          apply LipschitzWith.of_dist_le_mul
-          intro z w
-          change dist (r • a z) (r • a w) ≤ (r * (k : ℝ)) * dist z w
-          rw [dist_smul₀, Real.norm_eq_abs, abs_of_nonneg hr]
-          exact (mul_le_mul_of_nonneg_left (halip.dist_le_mul z w) hr).trans_eq
-            (mul_assoc _ _ _).symm
-        have hj := isPLHomeomorphOn_id_add_of_lipschitz hpa hlipa hrk
-        have heq : H (s, x) = D x + r • a (D x) := by
-          change D x + (s : ℝ) • (g x - D x) = _
-          rw [hgP hxP, Function.comp_apply, hformula, add_sub_cancel_left, smul_smul]
-        have hHU : H (s, x) ∈ U := by
-          rw [heq]
-          by_contra hnot
-          have hself : (D x + r • a (D x)) + r • a (D x + r • a (D x)) =
-              D x + r • a (D x) := by rw [hzero hnot, smul_zero, add_zero]
-          have hident := hj.bijOn.injOn (mem_univ _) (mem_univ _) hself
-          exact hnot (hident.symm ▸ hxU)
-        apply (hBd _ hHU).mpr
-        rw [heq, map_add, map_smul, hma, smul_zero, add_zero]
-        exact (hBd _ hxU).mp hDbd
-      · exact (hHfix hxU).symm ▸ hDbd
-    · have hgeq : g x = D x := hgOff hxP
-      have heq : H (s, x) = D x := by
-        change D x + (s : ℝ) • (g x - D x) = D x
-        rw [hgeq, sub_self, smul_zero, add_zero]
-      exact heq.symm ▸ hDbd
+        hRDF hTDF hR.isClosed hT.isClosed hRT hFR hFT hz.2 hc hnear
+  refine ⟨W, N, F, G, hW, hZW, hWV, hN, hYN, hNO, hFdom, hFQ, hFoff, hFclose, hFmap,
+    hFproper, hFimage, hFloc, hFcard, hFfiber, hGfin, hGactual, hGman, ?_, ?_, hFhom⟩
+  · ext z
+    exact and_congr_left (fun hz => hdouble z hz)
+  · intro z hz
+    rcases hz.1 with hzW | hzN
+    · exact hFcross z ⟨hzW, hz.2⟩
+    · exact hNcross z ⟨hzN, hz.2⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

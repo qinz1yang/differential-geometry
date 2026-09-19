@@ -18,7 +18,7 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
-### Latest live frontier (2026-09-19, locally finite separating limits accepted)
+### Latest live frontier (2026-09-19, controlled projected-sheet perturbations accepted)
 
 This snapshot and the latest integration-handoff sections supersede dated
 paragraphs below. The resumed stage has no new deadline. Five existing tasks
@@ -26,11 +26,25 @@ keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 
 | Lane | Independently accepted frontier | Current mathematical gate |
 |---|---|---|
-| F | through71b0b003e | Actual arbitrary boundary-chart normalization and joint protection/transition/core coverage.06a/d68 are queued. The later protected-polyhedron layer has an author audit; two old consumer formatting repairs are authorized at its idle boundary before checkpointing. |
+| F | throughd68c5adc5 including06a171025 | The same actual perturbation and W union N crossing consumer are independently accepted in section96. Full projected-disk boundary/transition normalization remains open. Later protected-polyhedron author layers require separate replay. |
 | h | throughe85a235df | Produce actual nonstationary locally finite supported modifications with compatible subdivisions, original graph and transported neighborhoods.72fa/c1bd finite solid-torus and generic limit layers are frozen pending replay; a single-increment model does not close arbitrary-stage geometry. |
 | E3 | through1dff5b63c | Physical caps and original-target separation are accepted in section92; Q.2a locally finite separating limits are independently accepted in section95. E3 continues Q.2b: two-ended annular exhaustion, adding the center, actual open disk and exact closure. |
 | M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878 original toroidal-shell incompressibility, parity and actual sphere exclusion are frozen pending replay. Genuine PL torus recognition is still open; author continues the same30.6 lane. |
 | S | throughc0f4df1b1 | Produce original-function extended-arc and relative normal-form geometry in an adequate support region.5b/c011/2544 common coordinates,876 small-frame obstruction andc60 cubic lowering in a produced enlarged strip are frozen pending replay. General finite cancellation/compact smoothing remain open. |
+
+
+Section 96 independently accepts F through d68c5adc5, including 06a171025:
+the same actual relative perturbation retains quantitative Lipschitz
+displacement and preserves old flat boundary crossings while producing new
+interior crossings on W union N. Four modules, 25 nonautomatic declarations
+(22 in changed leaves and three in an unchanged direct consumer), 20 key
+reuses and 12 classified probe declarations pass with zero diagnostics and
+only foundational axioms. Seven new public theorems preserve all seven old
+public signatures. Three positive geometric assertions and one actual PL
+conjugation counterexample are separate from seven helpers and one macro.
+Git Lean delta is +871/-217. This is a single-chart layer, not coverage of the
+whole transition region or a complete projected NormalSystem normalization.
+The later protected-polyhedron author layer is outside this acceptance.
 
 The exact sphere endpoint moise304_of_moise252 remains conditional on the
 unresolved Moise252. Its independently checked kernel type/body traversals

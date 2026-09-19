@@ -4611,3 +4611,60 @@ or given another lane. E3 already continues Q.2b; actual two-ended annulus
 gluing, adding the center and exact open-disk closure remain open. Q.2c must
 still produce that family from the original geometry. This acceptance does
 not close32.1,25.2, unconditional30.4, general approximation or compact smoothing.
+
+## 96. Independent quantitative projected-sheet perturbation acceptance
+
+The sixty-third batch accepts F's exact frozen 06a171025/d68c5adc5 source.
+HalfSpacePerturbation constructs a small Lipschitz displacement extending the
+actual vertex perturbation, tangent on the boundary hyperplane, zero outside
+the specified support, and with id plus displacement a half-space-preserving
+PL homeomorphism. HalfSpaceGeneralPosition retains that bound for the same
+chosen relative general-position map, including the actual inverse/composition
+estimate. The old public existence statements remain corollaries with their
+original signatures.
+
+ProjectedSheetPerturbation uses that same displacement to retain the old flat
+crossing neighborhood W and produce the new crossing neighborhood N. The
+actual domain, boundary preimage, boundary homotopy, old fibers outside the
+support and local injectivity/fiber bound are retained. The selected graph
+agrees with the actual double-point set on N; crossings are proved on W union
+N only. Complete transition coverage and arbitrary boundary-chart assembly
+are not proved. No normalization of an arbitrary original singular map is
+claimed. The final intended input is an upstairs embedded disk projected
+through the actual double cover.
+
+Four modules were freshly compiled: three changed leaves and the unchanged
+ProjectedBoundaryPosition direct consumer. Compilation took 53.3771185 seconds
+including admission; the combined audit took 64.5496359 seconds. All 25 native
+nonautomatic declarations (22 changed-module and three consumer declarations),
+20 key reuses and 12 external declarations pass 13 applicable linters. Their
+transitive axioms are contained in propext, Classical.choice and Quot.sound.
+All seven old public signatures remain unchanged; seven public theorems are
+new. Exact source bytes agree with the frozen author source. Source review
+also records old/new variable and namespace scopes.
+
+The external suite has three actual positive coordinate assertions, one
+actual compactly supported PL-conjugation counterexample, seven helpers and
+one generated macro declaration. The relative-simplex assertion does not
+assert that its intersection graph is nonempty. None is a complete original
+NormalSystem model. The counterexample disproves arbitrary PL conjugation
+preserving arbitrarily small displacement Lipschitz constants; it does not
+disprove the global normalization theorem.
+
+Git Lean delta is +871/-217 in three existing leaves, with no new root import.
+Ten previously accepted source/object-matching prerequisites are privately
+reused. Actual setups bind only this batch's canonical object paths and the
+same integration checkout source. Static root reachability remains 9662
+modules without missing sources or cycles; no full-root build was run.
+The receipt is .lake/verified-sixtythird-lane-delivery-20260919.json. Frozen
+source, full census, model source, setups and receipts are in
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtythird-batch-20260919.
+
+M304's later 5461ed200 integral Hurewicz-one layer was delivered during this
+review. Its complete author checkpoint was copied and hash-checked: 306 files,
+48 source/receipt groups, including the large kernel dependency evidence.
+The author reports three new leaves, 384 native lines and 22 declarations;
+the surjectivity input is path connectedness. Abelianization isomorphism,
+rational Betti bounds and torus recognition are explicitly not claimed.
+This is frozen evidence only, pending independent integration acceptance.
+The author continues the existing 30.6 round; no extra task was sent.

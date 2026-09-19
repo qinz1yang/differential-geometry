@@ -19,7 +19,12 @@ wide Moise264. The narrower essential-disk, compatible annulus/ball/caps and
 same-target strict Betti decrease are already produced. Do not assign them
 again as open prerequisites of this conditional sphere endpoint.
 
-F retains actual NormalSystem boundary/transition normalization. E3's physical
+F through d68c5adc5, including 06a171025, is independently accepted in section96:
+quantitative control of the same actual perturbation and the single-chart W union N
+crossing consumer. Seven new public theorems preserve seven old signatures;
+25 native declarations, 20 reuses and four actual geometric assertions pass.
+The other eight probe declarations are helpers or generated notation. Full
+projected-disk boundary/transition normalization remains open. E3's physical
 surface splitting and original-target separation throughc347/c10 are now
 independently accepted in section92, including an actual three-dimensional
 torus/meridian model. Q.2a1dff is independently accepted in section95, including
