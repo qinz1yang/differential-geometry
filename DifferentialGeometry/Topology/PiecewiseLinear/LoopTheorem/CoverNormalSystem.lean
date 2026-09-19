@@ -40,7 +40,7 @@ namespace NormalSystem
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-theorem exists_doubleCoverReduction_of_isCoveringMap
+theorem exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isCoveringMap
     (S : NormalSystem E)
     (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
       frontier S.sourceComplex.space)
@@ -48,10 +48,13 @@ theorem exists_doubleCoverReduction_of_isCoveringMap
     {X : Type*} [TopologicalSpace X] [PreconnectedSpace X]
     (p : X → S.manifoldComplex.space) (hp : IsCoveringMap p)
     (hcard : ∀ y, (p ⁻¹' {y}).encard = 2) :
-    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N))),
-      Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N)))
+      (R : DoubleCoverReduction S T),
+      T.basepoint = T.boundaryLoop 0 ∧
       T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
-        frontier T.sourceComplex.space := by
+        frontier T.sourceComplex.space ∧
+      ∀ x ∈ T.boundaryNeighborhood.space,
+        S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x) := by
   let K := S.manifoldComplex
   let D := S.sourceComplex
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
@@ -75,25 +78,29 @@ theorem exists_doubleCoverReduction_of_isCoveringMap
   obtain ⟨e₀, he₀⟩ := nonempty_of_encard_ne_zero (s := p ⁻¹' {y₀}) (by rw [hcard]; norm_num)
   have h₀ : p e₀ =
       ⟨simplicialMap D S.vertexMap x₀, simplicialMap_mapsTo D K S.vertexMap hφ x₀.2⟩ := he₀
-  have hV : S.boundaryNeighborhood.space ∈ 𝓝ˢ[(PiecewiseLinear.boundaryComplex 3 K).space]
-      (simplicialMap D S.vertexMap '' (PiecewiseLinear.boundaryComplex 2 D).space) := by
+  let O := (closure (S.boundaryComplex.space \ S.boundaryNeighborhood.space))ᶜ
+  have hO : IsOpen O := isClosed_closure.isOpen_compl
+  have hloopO : S.loopComplex.space ⊆ O := by
+    intro x hx hxcl
+    have hnhds : S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] x :=
+      derivedNeighborhood_mem_nhdsWithin (K := S.boundaryComplex)
+        S.loop_faces_subset_boundary hx
+    obtain ⟨U, hU, hUB⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hnhds
+    obtain ⟨y, hyU, hybd, hyB⟩ := mem_closure_iff_nhds.mp hxcl U hU
+    exact hyB (hUB ⟨hyU, hybd⟩)
+  have hOB : O ∩ S.boundaryComplex.space ⊆ S.boundaryNeighborhood.space := by
+    rintro x ⟨hxO, hxbd⟩
+    by_contra hxB
+    exact hxO (subset_closure ⟨hxbd, hxB⟩)
+  have hV : O ∩ S.boundaryNeighborhood.space ∈
+      𝓝ˢ[(PiecewiseLinear.boundaryComplex 3 K).space]
+        (simplicialMap D S.vertexMap '' (PiecewiseLinear.boundaryComplex 2 D).space) := by
     rw [← hfront]
-    change S.boundaryNeighborhood.space ∈ 𝓝ˢ[S.boundaryComplex.space]
+    change O ∩ S.boundaryNeighborhood.space ∈ 𝓝ˢ[S.boundaryComplex.space]
       (S.singularMap '' frontier D.space)
     have hloop : S.singularMap '' frontier D.space = S.loopComplex.space := S.loop_space.symm
     rw [hloop]
-    let O := (closure (S.boundaryComplex.space \ S.boundaryNeighborhood.space))ᶜ
-    refine mem_nhdsSetWithin.mpr ⟨O, isClosed_closure.isOpen_compl, ?_, ?_⟩
-    · intro x hx hxcl
-      have hnhds : S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] x :=
-        derivedNeighborhood_mem_nhdsWithin (K := S.boundaryComplex)
-          S.loop_faces_subset_boundary hx
-      obtain ⟨U, hU, hUB⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hnhds
-      obtain ⟨y, hyU, hybd, hyB⟩ := mem_closure_iff_nhds.mp hxcl U hU
-      exact hyB (hUB ⟨hyU, hybd⟩)
-    · rintro x ⟨hxO, hxbd⟩
-      by_contra hxB
-      exact hxO (subset_closure ⟨hxbd, hxB⟩)
+    exact mem_nhdsSetWithin.mpr ⟨O, hO, hloopO, fun x hx => ⟨hx.1, hOB hx⟩⟩
   obtain ⟨ψ, hψ, A, C, T₀, hAL, -, hfaces, hAspace, hCspace,
     hT₀, hCT₀, htrace, hproperT₀, hmapB, hproj, -⟩ :=
     exists_simplicialMap_lift_derivedNeighborhood K p S.isManifold D hD S.vertexMap hφ
@@ -127,7 +134,7 @@ theorem exists_doubleCoverReduction_of_isCoveringMap
       (((isPiecewiseAffineOn_simplicialMap D ψ).continuousOn.domRestrict).comp
         a.continuous).subtype_mk _⟩
   let β : C(B.space, S.boundaryNeighborhoodSpace) :=
-    ⟨fun x => ⟨q x, hmapB x.2⟩,
+    ⟨fun x => ⟨q x, (hmapB x.2).2⟩,
       ((isPiecewiseAffineOn_coveringBaseMap K p).continuousOn.mono hBL).domRestrict.subtype_mk _⟩
   have hβγ : β.comp γ = S.boundaryLoop := by
     ext θ
@@ -185,10 +192,30 @@ theorem exists_doubleCoverReduction_of_isCoveringMap
       normalSubgroup_eq := rfl }
   have hconn : IsPreconnected T.ambientComplex.space := isPreconnected_coveringComplex_space K p hp
   refine ⟨Nat.card (coveringVertex K p), T,
-    ⟨{ toDoubleCoverDiagram := R, complexity_lt := R.complexity_lt_of_isPreconnected hconn }⟩,
-    rfl, ?_⟩
-  exact hproperT₀.trans hfront.symm
+    { toDoubleCoverDiagram := R, complexity_lt := R.complexity_lt_of_isPreconnected hconn },
+    rfl, hproperT₀.trans hfront.symm, ?_⟩
+  intro x hx
+  have hxO : q x ∈ O := (hmapB hx).1
+  filter_upwards [mem_nhdsWithin_of_mem_nhds (hO.mem_nhds hxO), self_mem_nhdsWithin]
+    with y hyO hybd
+  exact hOB ⟨hyO, hybd⟩
 
+open Classical in
+theorem exists_doubleCoverReduction_of_isCoveringMap
+    (S : NormalSystem E)
+    (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+      frontier S.sourceComplex.space)
+    (hbase : S.basepoint = S.boundaryLoop 0)
+    {X : Type*} [TopologicalSpace X] [PreconnectedSpace X]
+    (p : X → S.manifoldComplex.space) (hp : IsCoveringMap p)
+    (hcard : ∀ y, (p ⁻¹' {y}).encard = 2) :
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N))),
+      Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
+      T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+        frontier T.sourceComplex.space := by
+  obtain ⟨N, T, R, hbaseT, hproperT, -⟩ :=
+    exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isCoveringMap S hproper hbase p hp hcard
+  exact ⟨N, T, ⟨R⟩, hbaseT, hproperT⟩
 end NormalSystem
 
 end DifferentialGeometry.Topology.PiecewiseLinear

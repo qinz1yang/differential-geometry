@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerPolyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
+
+/-! Disk decompositions and relative disk selection on PL two-spheres. -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -290,5 +297,41 @@ theorem exists_isPLBall_pair_of_isPLSphere_two
     · exact Or.inr (subset_closure ⟨hxB, hxD₀⟩)
   exact ⟨D₀, D₁, q₀, q₁, hq₀, hq₁, hq₀boundary, hq₁boundary,
     hunion, hintersection⟩
+
+open Classical in
+theorem IsPLSphere.exists_isPLBall_with_boundary_disjoint_of_isPreconnected
+    {S D J : Set E} (hS : IsPLSphere 2 S) (hD : IsPreconnected D)
+    (hDS : D ⊆ S) (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) (hDJ : Disjoint D J) :
+    ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
+      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ S ∧
+      Disjoint D Q ∧ q '' stdSimplexBoundary 2 = J := by
+  obtain ⟨Q₀, Q₁, q₀, q₁, hq₀, hq₁, hq₀boundary, hq₁boundary, hcover, hinter⟩ :=
+    exists_isPLBall_pair_of_isPLSphere_two hS hJ hJS
+  have hQ₀closed : IsClosed Q₀ := (show IsPLBall 2 Q₀ from ⟨q₀, hq₀⟩).isPolyhedron.isClosed
+  have hQ₁closed : IsClosed Q₁ := (show IsPLBall 2 Q₁ from ⟨q₁, hq₁⟩).isPolyhedron.isClosed
+  have hside : D ⊆ Q₀ ∨ D ⊆ Q₁ := by
+    apply isPreconnected_iff_subset_of_disjoint_closed.mp hD
+      Q₀ Q₁ hQ₀closed hQ₁closed (hDS.trans hcover.symm.subset)
+    rw [hinter, hDJ.inter_eq]
+  rcases hside with hDQ₀ | hDQ₁
+  · refine ⟨Q₁, q₁, hq₁, subset_union_right.trans hcover.subset, ?_, hq₁boundary⟩
+    apply disjoint_left.mpr
+    intro x hxD hxQ₁
+    exact disjoint_left.mp hDJ hxD (hinter.subset ⟨hDQ₀ hxD, hxQ₁⟩)
+  · refine ⟨Q₀, q₀, hq₀, subset_union_left.trans hcover.subset, ?_, hq₀boundary⟩
+    apply disjoint_left.mpr
+    intro x hxD hxQ₀
+    exact disjoint_left.mp hDJ hxD (hinter.subset ⟨hxQ₀, hDQ₁ hxD⟩)
+
+open Classical in
+theorem IsPLBall.exists_disjoint_isPLBall_with_boundary_of_isPLSphere_two
+    {G : Type} [NormedAddCommGroup G] [NormedSpace ℝ G] [FiniteDimensional ℝ G]
+    {S D J : Set G} (hD : IsPLBall 2 D) (hS : IsPLSphere 2 S)
+    (hDS : D ⊆ S) (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) (hDJ : Disjoint D J) :
+    ∃ (Q : Set G) (q : (Fin 3 → ℝ) → G),
+      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ S ∧
+      Disjoint D Q ∧ q '' stdSimplexBoundary 2 = J := by
+  exact hS.exists_isPLBall_with_boundary_disjoint_of_isPreconnected
+    hD.isConnected.isPreconnected hDS hJ hJS hDJ
 
 end DifferentialGeometry.Topology.PiecewiseLinear

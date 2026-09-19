@@ -1,82 +1,78 @@
 # Current Moise dependency chain (2026-09-19 UTC)
 
-This is the dependency summary. Current execution and ownership are in
-[MOISE_PLAN.md](MOISE_PLAN.md); source/book evidence is in
-[ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md).
+Current execution and evidence are in [MOISE_PLAN.md](MOISE_PLAN.md) and the
+latest [integration handoff](HANDOFF_CODEX_INTEGRATION.md). The exact source,
+compiled declarations and transitive axioms outrank historical route notes.
 
-The compiled plApproximationManifold_three_of_moise352 consumes Moise352 3.
-It proves conditional PL approximation assembly, not Moise352. A smooth
-structure also needs an independent PL-to-smooth producer. Compact smoothing
-suffices for the final compact consumer; approximation must retain noncompact
-domains and variable positive error. The project is not reduced to a single
-remaining input or final assembly.
+F through d68c5adc5 is independently accepted in integration section 96.
+The quantitative same-perturbation and W union N crossing layer remains local;
+full projected-disk normal structure and descent are open.
+
+The owner has raised 25.2 to the first risk priority; the next-round four-to-one
+allocation and upstairs-surgery obligations are in
+[LOOP_THEOREM_RISK_PLAN_20260919.md](LOOP_THEOREM_RISK_PLAN_20260919.md).
+Current active rounds are not interrupted.
 
 ## Current main chain
 
 | Book node | Source interface / construction | Current obligation |
 | --- | --- | --- |
-| 25.1 | Moise251 and conditional Stallings induction | Open. F constructs the actual cover and projected embedded disk for Lemma 2; Lemma 1 and whole-branch separation remain obligations. |
-| 25.2 | Moise252 | h repairs non-nullhomotopy of the new disk boundary. The arrow from 25.1 still needs proper boundary push-off and proof. |
-| 26.4 | Moise264 | Boundary non-nullhomotopy is recorded; proof is open. Needs corrected 25.2, relative subdivision and compression, not just a bicollar. |
-| 30.3 | Geometric splitting and separation | E3: annulus connectivity accepted; half-prism cut cells 1cea2fbe7 queued. Produce compatible neighborhoods and trace equations from the original disk pair before separation assembly. |
-| 30.4 | Moise304 | E3 owns assembly; 26.4, 28.19 and 30.3 remain open dependencies. |
-| 30.5 | moise305_tame_of_moise304 | Accepted conditional tame arrow and bicollar producers; Moise304 remains an input. General wild Moise305 is open and is not an extra prerequisite of this tame arrow. |
-| 30.6 | Moise306 | Open; compression/separation, 26.4, van Kampen and surface inputs. It does not depend on 30.7. |
-| 30.7 | Moise307 | Open; uses 30.6, 28.1 and relevant CST constructions. |
-| 30.8 | Moise308 | Defined, unproved; spine/generator construction remains. |
-| 31--32 | Canonical configurations, tubes and pseudocells | Follow the detailed plan; definitions/conditional infrastructure do not certify endpoints. |
-| 33.1 | Moise331 | Current fixed-neighborhood statement is invalid. h must choose a genuine regular neighborhood inside U with actual three-dimensional ambient neighborhood data. |
-| 34.1 | Moise341 | Open; consumes corrected 33.1 and the tame neighborhood inputs. |
-| 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and regular-neighborhood relation. Keep noncompact scope and pointwise error; proof remains open. |
-| 35.2 | Moise352 in Transition361 | Open classical approximation input. |
-| 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Compiled conditional consumers; they do not produce Moise352. |
-| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate active S lane after accepted finite 24.11/24.12 through 434d5352c; compact smoothing remains open. |
+| 25.1 | Moise251 and conditional Stallings induction | Actual projected embedded-disk normal structure and Lemma2 descent remain open. Four tasks target distinct25.2 obligations at their next delivery; the sphere EmbeddedDisk and actual cover producers already exist. |
+| 25.2 | Corrected orientable Moise252 | Essential boundary condition is present and accepted. The unconditional Loop Theorem producer remains open. |
+| 26.4 | Corrected Moise264 | General interior-surface kernel-to-disk theorem remains open. The implemented spherical-shell route uses the narrower proved conditional producers directly. |
+| 30.3 | Actual geometric splitting and separation | Independently accepted throughc347/c10: actual finite-surface caps and separation by the same result for the original targets, with a full R3 model. Still relevant to later local surgery and section32. |
+| 30.4 | moise304_of_moise252 : Moise252 -> Moise304 | Independently accepted from 3717074e9. Exact original shell and targets; least-Betti separator and actual compression. No Moise303 or broad Moise264 dependency in kernel type/body closure. |
+| 30.5 | moise305_tame_of_moise304 | Independently replayed with the new 304 producer and a concrete nested-ball model. Retains unresolved Moise252 and the outer-frontier bicollar. General wild305 remains open. |
+| 30.6 | Moise306 | Through e8dc3d37d the author produced an actual incompressible Betti2 separator, pending replay. Genuine PL torus recognition remains open; M304 moved to25.2 at this completed delivery. No30.7 dependency. |
+| 30.7 | Moise307 | Open; follows30.6 and relevant collar/CST constructions. |
+| 30.8 | Moise308 | Current intermediate-spine premise is too weak for the book consumer. Needs generation via inclusion from the original inner spine; notified at M304 delivery. |
+| 31--32 | Configurations, tubes and pseudocells | E3 Q.2a locally finite limit separation is independently accepted through1dff, with exact infinite nonstationary limit model. Its current Q.2b constructs two-ended annulus gluing, actual open body and exact closure.32.4 may consume a given pseudocell independently. |
+| 33.1 | Corrected Moise331 | The existential small regular-neighborhood contract and branching graph inputs are accepted; unconditional theorem remains open. |
+| 34.1 | Moise341 | Open; consumes genuine33.1 and tame neighborhood results. |
+| 35.1 | Corrected Moise351 | Actual locally finite graph/regular-neighborhood input is accepted. h constructs compatible local modifications; Conditions3–8 and endpoint remain open. |
+| 35.2 | Moise352 in Transition361 | Open general approximation producer; retain noncompact overlaps and positive variable error. |
+| 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Conditional consumers; do not produce Moise352. |
+| Compact smoothability | Independent S lane | Common coordinates, support obstruction and enlarged-strip cubic lowering queued. Original-function extended arc, sufficient support and relative normal form remain open before finite cancellation and compact smoothing. |
 
-## Side inputs and exact distinctions
+## What the accepted sphere endpoint changes
 
-- Current source has an unconditional three-dimensional PL Schoenflies
-  producer, included in the fresh endpoint audit; it is no longer an open lane.
-- S's accepted cylindrical classification constructs equal-end diagrams.
-  The later product and finite native 24.11/24.12 through 434d5352c are now
-  independently accepted (41 module declarations, 33 critical reused
-  declarations, 13 clean linters and an actual nonempty instance). S now works
-  on compact PL smoothing. Full 24.9/24.10
-  equivalence does not follow merely from that special construction.
-- The accepted trimmed-arc ball pair omits both endpoint vertex cells.
-  h's full-arc containment 0a0876425 awaits acceptance; it does not supply
-  simultaneous normalization or two compatible branch sheets.
-- E3's conjugated homotopies b195204ed and path replacement b5e36cfe5 are
-  independently accepted: 35 declarations plus 12 critical reused declarations
-  pass standard-axiom and 13-linter checks. A compatible global branch chart
-  and actual geometric 30.3 split data remain open.
-- F's collapse delivery 495a3e343 awaits acceptance and diagnoses unrestricted
-  source fibers. The positive route projects the inductively embedded disk,
-  distinguishing the full cover from the smaller regular neighborhood.
-- 26.4 and 28.19 remain gates for 30.4. The 28.20 Euler identity alone is not
-  the geometric 30.3 separation argument.
-- Section 33 homology/PL surface-classification inputs remain explicit in the
-  detailed plan; old dated estimates do not close them.
+The implemented route is corrected25.2 -> actual essential disk in the same
+shell -> compatible disk/ball/wall/caps -> same-target strict Betti decrease
+-> minimum separator is a PL 2 sphere -> tame 30.5. The last implication also
+uses the genuine outer-frontier bicollar. It does not introduce a general
+wild-cell complement theorem. The accepted physical30.3 layer and the open
+full26.4 theorem are not
+prerequisites of this checked sphere endpoint.
 
-## Current contract review hold
+Integration section 89 records two fresh modules, seven native declarations,
+fourteen reused declarations, two real conditional models and an assembled
+consumer. All thirteen applicable linters and approved axioms pass. The
+kernel traversals inspect types and proof bodies of 9328 and7200 native
+constants. Imported but unused nodes are distinguished from proof dependencies.
 
-h's 585cc71a0 delivery is not accepted: its Moise331 one-manifold hypothesis
-excludes branching graphs, and its 35.1 raw-star tower lacks evidence that it
-is a genuine regular neighborhood. h is correcting both in the same lane.
+## Independent smoothing and support conditions
 
-## Acceptance and change rules
+PL approximation and compact PL smoothing are separate missing producers.
+For the actual cubic/logistic saddle-minimum example, a small open frame can
+contain both critical points and their connection while fixed exterior values
+force a new local minimum. S 876319180 records this obstruction; independent
+integration replay is pending. Common injective coordinates alone do not
+provide room for cancellation. S has delivered an actual enlarged-strip cubic lowering model, pending
+independent replay. Its next original-function producer constructs the
+extended arc and relative normal form with sufficient support and checks the
+real compact-smoothing consumer's needs.
 
-Repair defective public contracts deliberately and rebuild actual consumers;
-a consumed signature is not a reason to preserve an invalid statement. Do not
-weaken the classical conclusion or package it as a hypothesis.
-A disk's boundary is its parametrized source boundary, not its ambient frontier
-in three-space.
+## Verification boundaries
 
-The five disconnected endpoint-chain modules and PLSchoenflies now have direct
-root imports. Static traversal reaches all six and 9265 project modules;
-this repairs coverage without certifying root compilation. The owner stopped
-the full-source build on 2026-09-19 at 02:00 UTC; outputs are retained with no
-automatic restart. Seven-leaf/26-declaration focused checks passed, but no
-full-source success is claimed.
+The252/331/351 contract repairs and h's original-carrier transport throughe85
+are independently accepted. F through71, E3 through1dff and S throughc0
+remain their independently accepted frontiers. Later author source and model
+reports enter the frozen queue before independent acceptance.
+
+All current endpoint modules are root reachable; the exact source closure
+contains9661 modules without missing sources or cycles. Full-root compilation
+remains deferred under the owner's discretionary build policy. A clean local
+build or a committed source file does not certify unconditional headlines.
 
 ## Dated history below (not current assignments or acceptance)
 
@@ -109,10 +105,16 @@ status and tentative cost estimates. Current scope and ownership are above.
 - 定理 3（`S''_i ∩ S''_{i+2} = ∅`）：三行，由 `D_i ∩ D_{i+2} = ∅`。
 - 定理 4：用 30.8 的路径与一维闭链的同调计算。
 
-所以 §31 的代价主要在**写下定义**和 30.7/30.8 的重复应用，不在新数学。计划里把 §31 与 §32 并列为"未开始的硬块"
-是高估了；真正硬的是 §32（管与伪胞腔）、§33、§34。
+§31.1–31.3 的原文证明很短，但形式化成本仍取决于实际 30.7/30.8 接口、同一构形的
+相容选择及 31.4 的生成元运输。2026-09-19 的研究发现现有 Moise308 尚不足以供它消费，
+因此不能据原文篇幅认定这部分只剩定义。
 
-## §32 确认是最硬的一块（书页 223–225）
+## §32 的无限构造与伪胞腔（书页 223–229）
+
+2026-09-19 补充：[本轮研究](SECTION32_RESEARCH_20260919.md)以当前源码更新这一历史分析。
+局部多面体和 LocallyFinitePLPieceIn 已存在；缺口是实际相容族、两端控制、无限手术分离
+与伪胞腔拓扑。32.4 可独立于32.1存在性推进。Moise308目前缺少原内侧脊向任意中间环面
+的生成元运输，§31不能直接消费现有弱接口；不再以“便宜”代替该生产者。
 
 定义层：1 维复形 `K` 在 PL 3-流形 `M` 中的正则邻域 `N`，每条边 `σ¹` 中点处的正交 2-胞腔 `D`（**分裂盘**）把 `N` 切成
 含单个顶点的多面体 3-胞腔 `C_v`（**对偶胞腔**）；`h : N ↔ N' ⊆ M'` 同胚（不必 PL），`N'` 叫**管**，像叫 `N'` 的分裂盘与对偶胞腔。
@@ -120,10 +122,11 @@ status and tentative cost estimates. Current scope and ownership are above.
 书里明说：这里构造出的伪胞腔一般**连边界处都不局部连通**。
 
 定理 32.1 的证明把 `Int D' − {P'}` 分解成双向无穷的同心环带列 `…A₋₁, A₀, A₁…`，对每三个相继的 `S_i, S_{i+1}, S_{i+2}`
-套用 §31 的典范构形，再做 Lemma 1–3 与若干步分裂。**这是全书这一段里唯一需要无穷构造的地方**，也是 §32 真正的难点。
+套用 §31 的典范构形，再做 Lemma 1–3 与若干步分裂。需要分别证明有限局部手术、
+去掉中心与边界后的局部稳定，以及最终的分离、开盘拓扑和精确闭包。
 
-因此顺序是 30.7 / 30.8 → §31（便宜）→ §32（硬）→ §33 → §34。把 §31 从"硬块"里拿掉之后，
-剩下的硬块是 §32、§33、§34 三章加上环定理 §25。
+实际依赖为 30.7 / 加强的 30.8 → §31 → 32.1 → 32.2/32.3 → §33 → §34。
+给定伪胞腔后的 32.4 与无限局部稳定引理可独立于 32.1 的存在性证明推进。
 
 ## §33 的两个被漏掉的前置（书页 236–238，重要）
 

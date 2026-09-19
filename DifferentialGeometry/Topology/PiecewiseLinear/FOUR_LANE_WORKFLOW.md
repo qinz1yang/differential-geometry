@@ -8,21 +8,27 @@ handoff and the individual lane handoffs.
 
 ## Ownership and round boundaries
 
-- F: projected embedded disks and source-faithful double-cover reduction,
-  gpt-6-astra, max.
-- h: repair the Moise252/331/351 contracts and regular-neighborhood witnesses,
-  gpt-5.6-sol, max.
-- E3: the actual 30.3 splitting/separation construction,
-  gpt-5.6-sol, max.
-- M304: Moise 30.4 spherical-shell theorem, gpt-6-astra, max; task
-  01a0b7e8-6789-72c2-afe3-522847f439bb, branch codex/moise-304. Construct an
-  independent actual producer while E3 finishes 30.3. In particular, 28.19 and
-  the initial separating surface are legitimate dependencies within this lane.
-- S: compact PL three-manifold smoothing, gpt-6-astra, max; assigned at the
-  finite 24.12 delivery 434d5352c. The finite CST deliveries are independently
-  accepted; the smoothing lane is separate and remains open.
-- The coordinator validates, integrates, records decisions, and supplies exact
+The latest mathematical assignments are in
+[MOISE_PLAN.md](MOISE_PLAN.md) and the owner-approved risk allocation in
+[LOOP_THEOREM_RISK_PLAN_20260919.md](LOOP_THEOREM_RISK_PLAN_20260919.md).
+Historical task names identify existing tasks, not permanent subject ownership.
+
+At each task's next explicit delivery or genuine blocking handoff:
+
+- F, Astra max: actual projected embedded-disk relative normal structure.
+- M304, Astra max: upstairs Lemma 2/L2 surgery in the original double cover.
+- h, Sol max: compatible simultaneous two-sheet charts along a whole branch.
+- E3, Sol max: actual sphere-base and tower-interface assembly.
+- S, Astra max: retain the independent compact PL smoothing producer lane.
+- The coordinator validates, integrates, records decisions and supplies exact
   interfaces. It does not write the main mathematical proofs.
+
+M304 moved to upstairs L2 at the complete e8dc3d37d delivery. The current
+h infinite-modification and E3 Q.2b rounds finish a saveable layer before
+their handoffs. Do not send the new lane while the old round is
+active. The target is four tasks on 25.2 and one on independent smoothing;
+no new task, subagent or compiler slot is authorized. Preserve all frozen
+downstream work and its honest pending-acceptance status.
 
 The owner upgraded h and E3 to Sol max for subsequent assignments on 2026-09-19
 UTC. Apply the explicit model and effort on their next dispatch; do not interrupt
@@ -45,9 +51,12 @@ verification, continue independent source work when possible. Never count an
 active turn containing waits as continuous mathematical work.
 
 The owner changed scheduled follow-up to hourly checks on 2026-09-19 UTC.
-The existing automation runs at minute 19 of each hour, with its final check
-at 14:19 UTC / 07:19 America/Los_Angeles. It retains quiet notifications for
-unchanged state. This cadence does not add mid-round task interventions.
+The existing automation runs at minute 19 of each hour. The former overnight
+window ended at 14:19 UTC / 07:19 America/Los_Angeles; the owner subsequently
+resumed work, with no new deadline. It retains quiet notifications for unchanged
+state. This cadence does not add mid-round task interventions. Current deliveries,
+acceptances and assignments are recorded in the resumed-stage ledger; the cutoff
+section below describes the earlier historical stopping point.
 
 ## Assignment and evidence
 
@@ -92,7 +101,13 @@ under `.lake/round-compiler-leases/`. The helper is
 `C:/Users/liao9/AppData/Local/Temp/codex-moise-lane-check-round.ps1`.
 
 Shared artifacts remain read-only. Private import overrides require successful
-receipts and exact current source hashes. Recompile affected consumers after a
+receipts and exact current source hashes. Also require the canonical output
+path for that module and the exact source path in the authorized checkout.
+Frozen author evidence and superseded-attempt archives must never become
+import candidates merely because a checker scans its output tree recursively.
+Record and inspect actual setup bindings; use a private corrected checker or
+keep archives outside its search tree. The section85 integration replay caught
+and repaired this problem before acceptance. Recompile affected consumers after a
 public change. The trial preserves strict header/long-line checks, the standard
 syntax lint set, and all 13 applicable environment linters. Only docBlame and
 docBlameThm are excluded. Every nonautomatic completed declaration and critical

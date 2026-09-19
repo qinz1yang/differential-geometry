@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.BallRegularClosed
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientPointMove
 import DifferentialGeometry.Topology.PiecewiseLinear.ConePairExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
+
+/-! Piecewise linear parametrizations of balls with a prescribed interior point. -/
 
 open Set
 

@@ -12,7 +12,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodPolygon
 # Geometric double-cover reductions of normal systems
 -/
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear.NormalSystem
 
@@ -34,16 +34,19 @@ theorem isConnected_manifoldComplex_space (S : NormalSystem E) :
 variable [FiniteDimensional ℝ E]
 
 open Classical in
-theorem exists_doubleCoverReduction_of_not_isOrientable
+theorem exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_not_isOrientable
     (S : NormalSystem E)
     (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
       frontier S.sourceComplex.space)
     (hbase : S.basepoint = S.boundaryLoop 0)
     (hnot : ¬S.IsOrientableManifold) :
-    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N))),
-      Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N)))
+      (R : DoubleCoverReduction S T),
+      T.basepoint = T.boundaryLoop 0 ∧
       T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
-        frontier T.sourceComplex.space := by
+        frontier T.sourceComplex.space ∧
+      ∀ x ∈ T.boundaryNeighborhood.space,
+        S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x) := by
   let K := S.manifoldComplex
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ : ConnectedSpace K.space :=
@@ -56,7 +59,7 @@ theorem exists_doubleCoverReduction_of_not_isOrientable
   let p := e ∘ ε.toBoolCocycle.toFiberBundleCore.proj
   let _ : ConnectedSpace ε.toBoolCocycle.toFiberBundleCore.TotalSpace :=
     ε.connectedSpace_iff.mpr hε
-  apply S.exists_doubleCoverReduction_of_isCoveringMap hproper hbase p
+  apply S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isCoveringMap hproper hbase p
     (ε.isCoveringMap.homeomorph_comp e)
   intro y
   have hfiber : p ⁻¹' {y} =
@@ -68,16 +71,19 @@ theorem exists_doubleCoverReduction_of_not_isOrientable
   rfl
 
 open Classical in
-theorem exists_doubleCoverReduction_of_isOrientable_of_boundaryComponent_not_isPLSphere
+theorem exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isOrientable_of_not_isPLSphere
     (S : NormalSystem E)
     (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
       frontier S.sourceComplex.space)
     (hbase : S.basepoint = S.boundaryLoop 0)
     (hor : S.IsOrientableManifold) (hnot : ¬IsPLSphere 2 S.boundaryComponent) :
-    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N))),
-      Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N)))
+      (R : DoubleCoverReduction S T),
+      T.basepoint = T.boundaryLoop 0 ∧
       T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
-        frontier T.sourceComplex.space := by
+        frontier T.sourceComplex.space ∧
+      ∀ x ∈ T.boundaryNeighborhood.space,
+        S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x) := by
   let K := S.manifoldComplex
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ : Finite S.boundaryComplex.faces := S.boundaryComplex_faces_finite.to_subtype
@@ -97,11 +103,63 @@ theorem exists_doubleCoverReduction_of_isOrientable_of_boundaryComponent_not_isP
       K S.isManifold hor c (hc ▸ hnot)
   let _ : ConnectedSpace ε.toBoolCocycle.toFiberBundleCore.TotalSpace :=
     ε.connectedSpace_iff.mpr hε
-  apply S.exists_doubleCoverReduction_of_isCoveringMap hproper hbase
+  apply S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isCoveringMap hproper hbase
     ε.toBoolCocycle.toFiberBundleCore.proj ε.isCoveringMap
   intro y
   rw [← (ε.finite_fiber y).cast_ncard_eq, ← Nat.card_coe_set_eq, ε.card_fiber]
   rfl
+
+open Classical in
+theorem exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_not_isPLSphere
+    (S : NormalSystem E)
+    (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+      frontier S.sourceComplex.space)
+    (hbase : S.basepoint = S.boundaryLoop 0)
+    (hnot : ¬IsPLSphere 2 S.boundaryComponent) :
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N)))
+      (R : DoubleCoverReduction S T),
+      T.basepoint = T.boundaryLoop 0 ∧
+      T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+        frontier T.sourceComplex.space ∧
+      ∀ x ∈ T.boundaryNeighborhood.space,
+        S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x) := by
+  by_cases hor : S.IsOrientableManifold
+  · exact S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isOrientable_of_not_isPLSphere
+      hproper hbase hor hnot
+  · exact S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_not_isOrientable
+      hproper hbase hor
+
+open Classical in
+theorem exists_doubleCoverReduction_of_not_isOrientable
+    (S : NormalSystem E)
+    (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+      frontier S.sourceComplex.space)
+    (hbase : S.basepoint = S.boundaryLoop 0)
+    (hnot : ¬S.IsOrientableManifold) :
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N))),
+      Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
+      T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+        frontier T.sourceComplex.space := by
+  obtain ⟨N, T, R, hbaseT, hproperT, -⟩ :=
+    S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_not_isOrientable
+      hproper hbase hnot
+  exact ⟨N, T, ⟨R⟩, hbaseT, hproperT⟩
+
+open Classical in
+theorem exists_doubleCoverReduction_of_isOrientable_of_boundaryComponent_not_isPLSphere
+    (S : NormalSystem E)
+    (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+      frontier S.sourceComplex.space)
+    (hbase : S.basepoint = S.boundaryLoop 0)
+    (hor : S.IsOrientableManifold) (hnot : ¬IsPLSphere 2 S.boundaryComponent) :
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N))),
+      Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
+      T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+        frontier T.sourceComplex.space := by
+  obtain ⟨N, T, R, hbaseT, hproperT, -⟩ :=
+    S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_isOrientable_of_not_isPLSphere
+      hproper hbase hor hnot
+  exact ⟨N, T, ⟨R⟩, hbaseT, hproperT⟩
 
 open Classical in
 theorem exists_doubleCoverReduction_of_boundaryComponent_not_isPLSphere
@@ -114,9 +172,9 @@ theorem exists_doubleCoverReduction_of_boundaryComponent_not_isPLSphere
       Nonempty (DoubleCoverReduction S T) ∧ T.basepoint = T.boundaryLoop 0 ∧
       T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
         frontier T.sourceComplex.space := by
-  by_cases hor : S.IsOrientableManifold
-  · exact S.exists_doubleCoverReduction_of_isOrientable_of_boundaryComponent_not_isPLSphere
-      hproper hbase hor hnot
-  · exact S.exists_doubleCoverReduction_of_not_isOrientable hproper hbase hor
+  obtain ⟨N, T, R, hbaseT, hproperT, -⟩ :=
+    S.exists_doubleCoverReduction_boundary_mem_nhdsWithin_of_not_isPLSphere
+      hproper hbase hnot
+  exact ⟨N, T, ⟨R⟩, hbaseT, hproperT⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear.NormalSystem
