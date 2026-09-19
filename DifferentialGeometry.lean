@@ -8965,6 +8965,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleTriangulation
 import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridian
+import DifferentialGeometry.Topology.Morse.CubicCancellation
 
 /-!
 # Differential geometry and geometric analysis

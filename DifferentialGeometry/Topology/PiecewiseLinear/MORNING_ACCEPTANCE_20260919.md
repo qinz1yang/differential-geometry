@@ -2043,3 +2043,37 @@ Lean delta: +114/-0, including two root imports. Static root reachability is
 Receipt: .lake/verified-fortyfifth-lane-delivery-20260919.json. The full root
 build remains stopped. This concrete meridian does not prove the loop theorem
 for arbitrary essential boundary loops or Moise304 for a prescribed shell.
+
+## 66. Actual compactly supported cancellation of a planar cubic pair (2026-09-19 UTC)
+
+S source f081c3b24 is independently accepted. For every positive a, the plane
+function x^3/3 - a*x + y^2 has a smooth compactly supported perturbation with
+no critical point anywhere. A scaled one-dimensional bump removes its
+derivative zeros; quantitative transverse cutoff bounds rule out new critical
+points in the transition region. The general quadratic-suspension result
+works from an actual one-dimensional compactly supported regularization.
+
+The original critical set is exactly x^2 = a, y = 0. At a = 1, the independent
+model proves exactly two critical points, a nonidentical critical-point-free
+replacement, and exact equality outside a positive finite radius. Its support
+radius is existential: no arbitrarily small support or prescribed-frame
+support is claimed.
+
+The new module compiled in 11.919 seconds. The combined audit
+took 29.585 seconds including admission. All six nonautomatic
+native declarations, including one private estimate, thirteen critical reuse
+entries and three probe declarations pass the approved axiom bound; native
+and probe declarations pass all thirteen applicable linters with zero
+diagnostics. The probes are two concrete critical-set properties and one
+actual geometric existence theorem.
+
+Lean delta: +231/-0, including one root import. Static root reachability is
+9602 modules including the root, without missing project sources or cycles.
+Receipt: .lake/verified-fortysixth-lane-delivery-20260919.json. No private
+prerequisite object was copied and unchanged dependencies were not freshly
+rebuilt. The full root build remains stopped.
+
+Arbitrary surface critical-region pairing and connecting arcs, geometric
+reduction into this model with support in a specified frame, finite iteration,
+the original strip product/isotopy, crossing seams and compact PL3 smoothing
+remain open. S has delivered a clean checkpoint and stopped its round.

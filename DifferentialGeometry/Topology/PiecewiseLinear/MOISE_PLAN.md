@@ -454,6 +454,15 @@ The boundary inclusion has a nontrivial fundamental-group kernel. General
 loop-theorem production and prescribed-shell Moise304 remain open. Two new
 leaves, two native declarations and three probes pass; see handoff section 65.
 
+### Planar cancellation gate (2026-09-19 UTC)
+
+S through f081c3b24 is independently accepted: an actual compactly supported
+critical-point-free replacement of every positive-parameter planar cubic pair,
+with an exact two-critical-point/nonidentical/exterior-fixed a=1 model. The
+support is not prescribed. General surface pairing and geometric reduction,
+finite iteration and strip assembly remain open. S stopped its round cleanly;
+see handoff section 66.
+
 ## 1. 目标与接口
 
 - 数学目标：Hausdorff、第二可数的紧致无边界拓扑三维流形 `M`，在同一 carrier、同一拓扑上存在光滑结构。
