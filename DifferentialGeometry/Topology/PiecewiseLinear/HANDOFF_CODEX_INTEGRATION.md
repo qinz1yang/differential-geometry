@@ -801,3 +801,30 @@ normal-form work. E3 now owns Moise 30.4 assembly on Sol max, first the genuine
 30.3 geometric splitting/separation step. Original T owned 30.5's conditional
 tame arrow, not 30.4. F/h/S keep their current lanes. h's subsequent full-arc
 containment checkpoint `0a0876425` is received but not yet independently accepted.
+
+## 21. Owner audit verified and route reprioritized (2026-09-19)
+
+See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md) for exact source and
+original-book evidence. The three reported Moise252/331/351 contract defects are
+confirmed; h began their repair at its completed 0a0876425 delivery boundary.
+The normalization remedy is sharpened: original pp184,188-189 apply Lemma 2 to
+a newly embedded disk projected from a two-sheeted cover after induction, not
+to the unchanged arbitrary NormalSystem map. PL projection, boundary/subgroup
+compatibility, and the distinction between the full cover and its smaller regular
+neighborhood are missing from the current reduction interface. This priority
+is queued for F's next delivery, without interrupting its current work.
+
+The original-book dependency is 30.6 -> 30.7; the reverse table edge was removed.
+Compact PL smoothing is an independent open producer. Noncompact variable-error
+PL approximation stays in scope. Five approximation/smoothing chain modules
+are absent from root reachability. The coordinator freshly compiled those five
+and PLSchoenflies/TameNestedCells, audited all 26 declarations with standard
+axioms and 13 applicable environment linters, and obtained zero diagnostics.
+Only one pre-existing ChartGluing long line needed wrapping. Receipt:
+`.lake/verified-route-audit-20260919.json`. No classical input Prop was proved.
+
+The exact root-import patch is prepared under the external audit directory and
+has not been applied. Automatic review rejected interrupting the active root
+build; no stop executed. Apply the patch at a noninterrupting build boundary
+and run the expanded root gate. The current root gate continues and does not
+cover those five modules; its completion is not claimed.

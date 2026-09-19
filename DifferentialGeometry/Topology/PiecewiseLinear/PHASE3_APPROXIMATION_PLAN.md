@@ -5,6 +5,30 @@
 来源：Moise, *Geometric Topology in Dimensions 2 and 3*（GTM 47，本机 PDF 副本，书页 p ≈ PDF 页 p+10）。
 "Moise a.b" 指该书 §a 定理 b；"L a.b" 指 §a 引理 b。
 
+## 2026-09-19 audited priorities (supersedes stale status prose)
+
+See [the source and original-book audit](ROUTE_AUDIT_20260919.md). Three contracts
+in MoiseChain need repair before use: Moise252 must retain the new boundary's
+non-nullhomotopy; Moise331 must choose a sufficiently small genuine regular
+neighborhood; Moise351 needs a one-dimensional locally finite polyhedral input
+and the actual regular-neighborhood relation. h owns these repairs at its next
+completed-work boundary and is now running that round on Sol max.
+
+The normal-form producer must follow the actual source route. Section 25, Lemma 2 is only
+for locally injective maps with fibers at most two; Section 25, Lemma 3 supplies such a map
+by projecting an embedded disk from a two-sheeted cover after induction. The
+cover, PL projection, smaller normal-system neighborhood, boundary and subgroup
+relations must be constructed. Do not infer those properties for an arbitrary
+original NormalSystem or from DoubleCarrier. F receives this priority at its next
+delivery; no running round is interrupted. E3 owns I.4 through I.3, while S keeps
+the actual CST lane. The dependency direction is 30.6 -> 30.7, never the reverse.
+
+Phase 3 proves only PL approximation and the resulting PL atlas. Compact PL
+smoothing is an independent open phase with its own producer and acceptance.
+The approximation stage must retain noncompact open sets and pointwise shrinking
+error control. Five existing endpoint-chain modules were missing from root
+reachability; endpoint coverage and fresh checks are separate required gates.
+
 ## 0. 目标命题与已证消费者
 
 Phase 3 的唯一终点是一条定理：
@@ -25,7 +49,7 @@ def PLApproximationManifold (n : ℕ) : Prop :=
     ∃ f : M₁ ≃ₜ M₂, IsPL n n f ∧ ∀ x, dist (f x) (h x) < φ x
 ```
 
-已证（Phase 1）的下游链，Phase 3 完成后自动变成无条件定理：
+已证（Phase 1）的条件性下游链：Phase 3 只解除 PL 逼近与 PL 图册的输入；光滑端点仍另需 Phase 2 的 B：
 
 - `plApproximation_of_plApproximationManifold : PLApproximationManifold n → PLApproximation n`（A′ → A）。
 - `exists_chartedSpace_hasGroupoid_plGroupoid_of_plApproximation`：A → 紧致 T2 拓扑 `n`-流形有 PL 图册（Moise 三角剖分定理的图册形式）。

@@ -224,7 +224,8 @@ theorem exists_atlasOn_univ_of_plApproximation (hA : PLApproximation.{u} n) :
   have hlc : LocallyCompactSpace X :=
     ChartedSpace.locallyCompactSpace (H := EuclideanSpace ℝ (Fin n)) (M := X)
   have key : ∀ s : Finset X,
-      Nonempty (AtlasOn (plGroupoid n) (⋃ x ∈ s, (chartAt (EuclideanSpace ℝ (Fin n)) x).source)) := by
+      Nonempty (AtlasOn (plGroupoid n)
+        (⋃ x ∈ s, (chartAt (EuclideanSpace ℝ (Fin n)) x).source)) := by
     intro s
     induction s using Finset.induction_on with
     | empty => exact ⟨(AtlasOn.empty _).congr (by simp)⟩

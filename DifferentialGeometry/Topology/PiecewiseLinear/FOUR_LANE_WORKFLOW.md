@@ -7,7 +7,8 @@ handoff and the individual lane handoffs.
 ## Ownership and round boundaries
 
 - F: boundary geometry and branch charts, gpt-6-astra, max.
-- h: arc-cell and ball-pair constructions, gpt-5.6-sol, max.
+- h: repair the Moise252/331/351 contracts and regular-neighborhood witnesses,
+  gpt-5.6-sol, max.
 - E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
   gpt-5.6-sol, max.
 - S: mapping-torus, Moebius, and orientation constructions, gpt-6-astra, max.
