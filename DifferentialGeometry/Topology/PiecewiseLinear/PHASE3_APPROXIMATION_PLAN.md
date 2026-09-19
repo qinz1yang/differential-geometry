@@ -709,3 +709,17 @@ three instances and 13 linters with standard axioms and zero diagnostics.
 Frozen evidence is under `moise304-reading/annulus-components-checkpoint/`.
 The cube model verifies both actual components and their exact boundary
 circles. Disjoint cap production, ambient separation and full 30.4 remain open.
+
+### M304 separating annulus caps and Betti descent (2026-09-19 UTC)
+
+`SurfaceBoundaryCapping.lean` constructs actual disjoint closed caps of two
+disjoint connected surface components. `AnnulusCapping.lean` now derives two
+finite connected orientable nonspherical closed surfaces from a separating
+essential circle and supplied disjoint disk caps. Their first Betti numbers
+sum to the source first Betti number and each is strictly smaller. The two
+module checks and the audit of five native declarations, 13 reused entries,
+three geometric models, four instances and 13 linters pass with standard
+axioms and zero diagnostics. The new actual model gives two disjoint cube
+boundaries with Euler two and first Betti zero. Frozen evidence is under
+`moise304-reading/separating-annulus-capping-checkpoint/`. Cap production,
+ambient separation transfer and full 30.4 remain open.

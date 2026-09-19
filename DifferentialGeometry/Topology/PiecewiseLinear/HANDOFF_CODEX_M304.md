@@ -911,3 +911,43 @@ receipts and the complete audit are under
 `moise304-reading/annulus-components-checkpoint/`. Root builds remain stopped
 and shared artifacts are unchanged. Disjoint cap production, preservation of
 ambient separation and the final 30.4 induction remain open.
+
+## Disjoint separating caps and strict Betti descent (2026-09-19 UTC)
+
+`SurfaceBoundaryCapping.lean` now constructs a finite connected closed surface
+from one actual disk capping its entire boundary, with Euler increment one.
+It also caps two disjoint connected surfaces by two actual disjoint disks,
+proves the results remain disjoint, retains their exact carriers, and proves
+the sum of Euler characteristics increases by two. Cross-intersections are
+excluded using the complete boundary and union-intersection equations.
+
+`IsCombinatorialManifold.exists_capped_pair_of_separating_essential_annulus`
+in `AnnulusCapping.lean` obtains the actual complementary components and
+applies this cap construction. The two finite connected closed surfaces are
+disjoint and orientable in ambient dimension three. If either were a sphere,
+its disk complement together with the corresponding half-annulus would
+nullhomotope the original circle inclusion, contradicting the essential-circle
+hypothesis. Thus both are nonspheres. Their Euler sum is the original Euler
+characteristic plus two, their first Betti numbers sum to the original first
+Betti number, and each is strictly smaller. The exact resulting union is
+`R union D0 union D1`. No decrease by two for each separate component is claimed.
+
+Both changed modules compile with zero diagnostics; AnnulusCapping takes
+14.272 seconds including admission. The final silent audit takes 48.159
+seconds and checks five native declarations (three new and two retained),
+13 reused entries, three actual geometric models and four explicit local
+instances. All 13 applicable linters pass, all transitive axiom closures are
+standard, and the final audit emits zero diagnostics. The new model attaches
+two disjoint bottom-and-side prism disks to two distinct horizontal square
+disks. The resulting actual carriers are disjoint cube boundaries, each with
+Euler two and first Betti number zero. The old connected annulus with two caps
+and the simplex-hemisphere model in every positive dimension also pass. These
+are geometric capping tests; no explicit essential separating genus-two
+surface model is claimed.
+
+Both prior public signatures are unchanged. Frozen sources, receipts, objects,
+audit and census are under
+`moise304-reading/separating-annulus-capping-checkpoint/`. The actual disjoint
+caps and separation-preserving geometric push remain inputs from E3; the
+30.4 induction is still open. Root builds remain stopped and shared outputs
+are unchanged.
