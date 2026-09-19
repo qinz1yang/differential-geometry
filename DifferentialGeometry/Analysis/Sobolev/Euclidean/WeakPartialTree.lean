@@ -1,9 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 
 noncomputable section
 
 open Filter MeasureTheory Set
-open scoped ENNReal
+open scoped ENNReal Topology
 
 namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
 
@@ -205,5 +206,98 @@ theorem exists_lp_weak_partial_tree_of_finite_orders
   have hw := hTw (m + 1) m (by omega) β i
   rw [he] at hw
   exact hw
+
+theorem continuousOn_wkpNorm_of_finite_weak_partial_tree
+    {A : Type*} [TopologicalSpace A] {s : Set A}
+    {p : ℝ≥0∞} [Fact (1 ≤ p)] {Ω : Set E} (hΩ : IsOpen Ω) (N : ℕ)
+    (U : ∀ m : ℕ, (Fin m → Fin d) → A → Lp ℝ p (volume.restrict Ω))
+    (hcont : ∀ m ≤ N, ∀ β, ContinuousOn (U m β) s)
+    (hweak : ∀ m < N, ∀ β i, ∀ t ∈ s, DeGiorgi.HasWeakPartialDeriv i
+      (U (m + 1) (Fin.cons i β) t) (U m β t) Ω) :
+    ContinuousOn (fun t => (iteratedWeakSobolevNorm N p
+      (U 0 (fun i => Fin.elim0 i) t) Ω).toReal) s := by
+  have hp : 1 ≤ p := Fact.out
+  have hmem : ∀ k n β, n + k ≤ N → ∀ t ∈ s, MemWkp k p (U n β t) Ω := by
+    intro k
+    induction k with
+    | zero =>
+      intro n β hn t ht
+      exact Lp.memLp (U n β t)
+    | succ k ih =>
+      intro n β hn t ht
+      exact memWkp_succ_of_hasWeakPartialDeriv hp hΩ (Lp.memLp (U n β t))
+        (fun i => ih (n + 1) (Fin.cons i β) (by omega) t ht) (fun i => hweak n (by omega) β i t ht)
+  have hnode : ∀ k n β, n + k ≤ N → ContinuousOn
+      (fun t => (iteratedWeakSobolevNorm k p (U n β t) Ω).toReal) s := by
+    intro k
+    induction k with
+    | zero =>
+      intro n β hn
+      simpa only [wkpNorm_zero, Lp.norm_def] using (hcont n (by omega) β).norm
+    | succ k ih =>
+      intro n β hn
+      have heq : EqOn (fun t => (iteratedWeakSobolevNorm (k + 1) p (U n β t) Ω).toReal)
+          (fun t => ‖U n β t‖ + ∑ i : Fin d,
+            (iteratedWeakSobolevNorm k p (U (n + 1) (Fin.cons i β) t) Ω).toReal) s := by
+        intro t ht
+        have hu := hmem (k + 1) n β hn t ht
+        have he (i : Fin d) : chosenWeakPartialOrZero p i (U n β t) Ω =ᵐ[volume.restrict Ω]
+            U (n + 1) (Fin.cons i β) t :=
+          DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ
+            (chosenWeakPartialOrZero_isWeakPartial_of_mem hu.memW1p i)
+            (hweak n (by omega) β i t ht)
+            ((chosenWeakPartialOrZero_memLp_of_mem hu.memW1p i).locallyIntegrable hp)
+            ((Lp.memLp (U (n + 1) (Fin.cons i β) t)).locallyIntegrable hp)
+        dsimp only
+        rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial]
+        simp_rw [wkpNorm_congr_ae hp hΩ (he _)]
+        rw [ENNReal.toReal_add (Lp.memLp (U n β t)).2.ne
+          (ENNReal.sum_ne_top.mpr fun i _ =>
+            (wkpNorm_lt_top_of_memWkp (hmem k (n + 1) (Fin.cons i β) (by omega) t ht)).ne),
+          ENNReal.toReal_sum (fun i _ =>
+            (wkpNorm_lt_top_of_memWkp (hmem k (n + 1) (Fin.cons i β) (by omega) t ht)).ne)]
+        rfl
+      exact ((hcont n (by omega) β).norm.add
+        (continuousOn_finsetSum _ fun i _ => ih (n + 1) (Fin.cons i β) (by omega))).congr heq
+  exact hnode N 0 (fun i => Fin.elim0 i) (by omega)
+
+theorem tendsto_wkpNorm_sub_of_finite_weak_partial_tree
+    {A : Type*} [TopologicalSpace A] {s : Set A}
+    {p : ℝ≥0∞} [Fact (1 ≤ p)] {Ω : Set E} (hΩ : IsOpen Ω) (N : ℕ)
+    (U : ∀ m : ℕ, (Fin m → Fin d) → A → Lp ℝ p (volume.restrict Ω))
+    (hcont : ∀ m ≤ N, ∀ β, ContinuousOn (U m β) s)
+    (hweak : ∀ m < N, ∀ β i, ∀ t ∈ s, DeGiorgi.HasWeakPartialDeriv i
+      (U (m + 1) (Fin.cons i β) t) (U m β t) Ω)
+    {t₀ : A} (ht₀ : t₀ ∈ s) :
+    Tendsto (fun t => (iteratedWeakSobolevNorm N p
+      (fun z => U 0 (fun i => Fin.elim0 i) t z - U 0 (fun i => Fin.elim0 i) t₀ z) Ω).toReal)
+      (𝓝[s] t₀) (𝓝 0) := by
+  have hp : 1 ≤ p := Fact.out
+  have hlp (m β t) : LocallyIntegrable (U m β t) (volume.restrict Ω) :=
+    (Lp.memLp (U m β t)).locallyIntegrable hp
+  have hw (m) (hm : m < N) (β i) (t) (ht : t ∈ s) : DeGiorgi.HasWeakPartialDeriv i
+      (U (m + 1) (Fin.cons i β) t - U (m + 1) (Fin.cons i β) t₀ : Lp ℝ p (volume.restrict Ω))
+      (U m β t - U m β t₀ : Lp ℝ p (volume.restrict Ω)) Ω := by
+    have hadd := DeGiorgi.HasWeakPartialDeriv.add (hweak m hm β i t ht)
+      (DeGiorgi.HasWeakPartialDeriv.const_smul (hweak m hm β i t₀ ht₀) (-1))
+      (hlp m β t) (by simpa only [smul_eq_mul, neg_one_mul, Pi.neg_def] using (hlp m β t₀).neg)
+      (hlp (m + 1) (Fin.cons i β) t)
+      (by simpa only [smul_eq_mul, neg_one_mul, Pi.neg_def] using (hlp (m + 1) (Fin.cons i β) t₀).neg)
+    have hsub : DeGiorgi.HasWeakPartialDeriv i
+        (fun z => U (m + 1) (Fin.cons i β) t z - U (m + 1) (Fin.cons i β) t₀ z)
+        (fun z => U m β t z - U m β t₀ z) Ω := by
+      simpa only [Pi.add_def, smul_eq_mul, neg_one_mul, sub_eq_add_neg] using hadd
+    exact hsub.congr_ae (Filter.EventuallyEq.symm (Lp.coeFn_sub _ _))
+      (Filter.EventuallyEq.symm (Lp.coeFn_sub _ _))
+  have hc := continuousOn_wkpNorm_of_finite_weak_partial_tree hΩ N
+    (fun m β t => U m β t - U m β t₀)
+    (fun m hm β => (hcont m hm β).sub continuousOn_const) hw
+  have hc' : ContinuousOn (fun t => (iteratedWeakSobolevNorm N p
+      (fun z => U 0 (fun i => Fin.elim0 i) t z - U 0 (fun i => Fin.elim0 i) t₀ z) Ω).toReal) s :=
+    hc.congr fun t _ => congrArg ENNReal.toReal
+      (wkpNorm_congr_ae hp hΩ (Lp.coeFn_sub _ _)).symm
+  have hlim := hc' t₀ ht₀
+  simpa only [ContinuousWithinAt, sub_self, wkpNorm_zero_fun_zero hp hΩ, ENNReal.toReal_zero] using hlim
+
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

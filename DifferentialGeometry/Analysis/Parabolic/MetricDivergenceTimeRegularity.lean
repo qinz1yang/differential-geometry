@@ -80,6 +80,56 @@ theorem exists_local_timeH1_weak_partial_trees_of_metric_divergence_equation
   exact TimeSobolev.exists_timeH1_of_finite_weak_partial_trees hcd hΩ₀ m P Q
     (fun k _ γ i => hPweak k γ i) (fun k _ γ i => hQweak k γ i) hroot m le_rfl β
 
+private theorem exists_timeH1_partial_tree_of_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∀ F : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ m β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => F (m + 1) (Fin.cons i β) (t, z)) (fun z => F m β (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+            ∫ p, F 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      ∃ W : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) →
+          TimeSobolev.timeH1 (Lp ℝ 2 (volume.restrict Ω₀)) (d - c),
+        (∀ᵐ t ∂TimeSobolev.timeMeasure (d - c),
+          ((W 0 (fun i => Fin.elim0 i)).toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
+            fun z => U (c + t, z)) ∧
+        ∀ m β i, ∀ᵐ t ∂TimeSobolev.timeMeasure (d - c), DeGiorgi.HasWeakPartialDeriv i
+          ((W (m + 1) (Fin.cons i β)).toFun t) ((W m β).toFun t) Ω₀ := by
+  intro μ ν ρ A U K F hK hF hweak
+  obtain ⟨P, Q, hP, hPweak, hQweak, htime⟩ :=
+    exists_local_timeH1_weak_partial_trees_of_metric_divergence_equation
+      hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hweak
+  choose W hW using htime
+  have hshift : MeasurePreserving (fun t : ℝ => c + t)
+      (TimeSobolev.timeMeasure (d - c)) (volume.restrict (Icc c d)) := by
+    have h := (measurePreserving_add_right volume c).restrict_image_emb
+      (Homeomorph.addRight c).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (d - c))
+    simpa only [TimeSobolev.timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm c] using h
+  have hWweak (m β i) : ∀ᵐ t ∂TimeSobolev.timeMeasure (d - c), DeGiorgi.HasWeakPartialDeriv i
+      ((W (m + 1) (Fin.cons i β)).toFun t) ((W m β).toFun t) Ω₀ := by
+    filter_upwards [hW m β, hW (m + 1) (Fin.cons i β),
+      hshift.quasiMeasurePreserving.ae (hPweak m β i)] with t ht hc hw
+    exact hw.congr_ae (Filter.EventuallyEq.symm ht.1) (Filter.EventuallyEq.symm hc.1)
+  refine ⟨W, ?_, hWweak⟩
+  filter_upwards [hW 0 (fun i => Fin.elim0 i),
+    hshift.quasiMeasurePreserving.ae (Measure.ae_ae_of_ae_prod hP)] with t ht hu
+  exact ht.1.trans hu
+
 theorem exists_local_timeH1_with_smooth_spatial_slices_of_metric_divergence_equation
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
     (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
@@ -110,25 +160,50 @@ theorem exists_local_timeH1_with_smooth_spatial_slices_of_metric_divergence_equa
           ContDiffOn ℝ (∞ : WithTop ℕ∞) v Ω₀ ∧
             (w.toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] v := by
   intro μ ν ρ A U K F hK hF hweak
-  obtain ⟨P, Q, hP, hPweak, hQweak, htime⟩ :=
-    exists_local_timeH1_weak_partial_trees_of_metric_divergence_equation
-      hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hweak
-  choose W hW using htime
-  have hshift : MeasurePreserving (fun t : ℝ => c + t)
-      (TimeSobolev.timeMeasure (d - c)) (volume.restrict (Icc c d)) := by
-    have h := (measurePreserving_add_right volume c).restrict_image_emb
-      (Homeomorph.addRight c).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (d - c))
-    simpa only [TimeSobolev.timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm c] using h
-  have hWweak (m β i) : ∀ᵐ t ∂TimeSobolev.timeMeasure (d - c), DeGiorgi.HasWeakPartialDeriv i
-      ((W (m + 1) (Fin.cons i β)).toFun t) ((W m β).toFun t) Ω₀ := by
-    filter_upwards [hW m β, hW (m + 1) (Fin.cons i β),
-      hshift.quasiMeasurePreserving.ae (hPweak m β i)] with t ht hc hw
-    exact hw.congr_ae (Filter.EventuallyEq.symm ht.1) (Filter.EventuallyEq.symm hc.1)
-  refine ⟨W 0 (fun i => Fin.elim0 i), ?_, ?_⟩
-  · filter_upwards [hW 0 (fun i => Fin.elim0 i),
-      hshift.quasiMeasurePreserving.ae (Measure.ae_ae_of_ae_prod hP)] with t ht hu
-    exact ht.1.trans hu
-  · exact TimeSobolev.exists_contDiffOn_ae_eq_toFun_of_weak_partial_tree
-      (sub_pos.mpr hcd) hΩ₀ W hWweak
+  obtain ⟨W, hW, hWweak⟩ := exists_timeH1_partial_tree_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hweak
+  exact ⟨W 0 (fun i => Fin.elim0 i), hW,
+    TimeSobolev.exists_contDiffOn_ae_eq_toFun_of_weak_partial_tree (sub_pos.mpr hcd) hΩ₀ W hWweak⟩
+
+theorem exists_local_timeH1_with_sobolev_continuity_of_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∀ F : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ m β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => F (m + 1) (Fin.cons i β) (t, z)) (fun z => F m β (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+            ∫ p, F 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      ∃ w : TimeSobolev.timeH1 (Lp ℝ 2 (volume.restrict Ω₀)) (d - c),
+        (∀ᵐ t ∂TimeSobolev.timeMeasure (d - c),
+          (w.toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] fun z => U (c + t, z)) ∧
+        ∀ N : ℕ,
+          (∀ t ∈ Icc (0 : ℝ) (d - c), Sobolev.Euclidean.MemWkp N 2 (w.toFun t) Ω₀) ∧
+          ∀ t₀ ∈ Icc (0 : ℝ) (d - c),
+            Tendsto (fun t => (Sobolev.Euclidean.iteratedWeakSobolevNorm N 2
+              (fun z => w.toFun t z - w.toFun t₀ z) Ω₀).toReal)
+              (𝓝[Icc (0 : ℝ) (d - c)] t₀) (𝓝 0) := by
+  intro μ ν ρ A U K F hK hF hweak
+  obtain ⟨W, hW, hWweak⟩ := exists_timeH1_partial_tree_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hweak
+  refine ⟨W 0 (fun i => Fin.elim0 i), hW, fun N => ⟨?_, ?_⟩⟩
+  · exact fun t ht => TimeSobolev.memWkp_toFun_of_weak_partial_tree
+      (sub_pos.mpr hcd) hΩ₀ W hWweak t ht N
+  · exact TimeSobolev.tendsto_wkpNorm_sub_toFun_of_weak_partial_tree
+      (sub_pos.mpr hcd) hΩ₀ W hWweak N
 
 end DifferentialGeometry.Analysis.Parabolic
