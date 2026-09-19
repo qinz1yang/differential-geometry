@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.HamiltonIveyRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.MaximumPrinciple
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
@@ -841,6 +842,69 @@ theorem hamiltonIveyPinchingBound_quotient_tendsto {K : Real} (hK : 0 ≤ K) :
     exact hCle s (le_of_lt hspos)
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (div_nonneg hnn (le_of_lt hspos))]
   linarith
+
+private theorem half_neg_le_hamiltonIveyPinchingBound_of_fixedHamiltonIveyRegion
+    {a₀ a R ν : ℝ} (ha₀ : 0 < a₀) (ha : a₀ ≤ a)
+    (h : (R, ν) ∈ fixedHamiltonIveyRegion a) :
+    -ν / 2 ≤ hamiltonIveyPinchingBound ((2 * a₀)⁻¹) R := by
+  by_cases hν : 0 ≤ ν
+  · exact (by linarith : -ν / 2 ≤ 0).trans
+      (hamiltonIveyPinchingBound_nonneg (by positivity) R)
+  have hX : 0 < -ν := by linarith
+  have hbar : fixedHamiltonIveyBarrier a (-ν) ≤ R := h.resolve_left hν
+  have hbar₀ : fixedHamiltonIveyBarrier a₀ (-ν) ≤ R := by
+    apply le_trans ?_ hbar
+    unfold fixedHamiltonIveyBarrier
+    apply mul_le_mul_of_nonneg_left _ hX.le
+    exact sub_le_sub_right (Real.log_le_log (mul_pos ha₀ hX)
+      (mul_le_mul_of_nonneg_right ha hX.le)) 3
+  unfold hamiltonIveyPinchingBound
+  refine le_csInf ⟨1 * max R 0 + 2 * 1 * (2 * a₀)⁻¹ * Real.exp (2 + (2 * 1 : ℝ)⁻¹),
+    1, one_pos, rfl⟩ ?_
+  rintro y ⟨d, hd, rfl⟩
+  have hK : 0 < (2 * a₀)⁻¹ := by positivity
+  have hbarhalf : hamiltonIveyBarrier ((2 * a₀)⁻¹) 0 (-ν / 2) ≤ R / 2 := by
+    have heq := two_mul_hamiltonIveyBarrier_eq_fixedHamiltonIveyBarrier
+      (K := (2 * a₀)⁻¹) (t := 0) hK le_rfl hX
+    have hparam : (2 * (2 * a₀)⁻¹)⁻¹ + 0 = a₀ := by field_simp; ring
+    rw [hparam] at heq
+    linarith
+  have hlin := pinchHeight_le_linear_sectionalSum_of_barrier hK hd le_rfl
+    (by positivity : 0 ≤ -ν / 2) hbarhalf
+  have hmax : d * R ≤ d * max R 0 := mul_le_mul_of_nonneg_left (le_max_left _ _) hd.le
+  simp only [mul_zero, add_zero, div_one] at hlin
+  nlinarith
+
+theorem exists_admissiblePinchingFunction_neg_le_of_fixedHamiltonIveyRegion
+    {a₀ : ℝ} (ha₀ : 0 < a₀) :
+    ∃ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi ∧
+      ∀ a : ℝ, a₀ ≤ a → ∀ R ν : ℝ,
+        (R, ν) ∈ fixedHamiltonIveyRegion a → -ν ≤ Phi R := by
+  let K := (2 * a₀)⁻¹
+  have hK : 0 < K := by dsimp [K]; positivity
+  obtain ⟨Phi₀, hPhi₀, hge⟩ := exists_admissiblePinchingFunction_ge
+    (psi := fun R => 2 * hamiltonIveyPinchingBound K R)
+    (fun x _ y _ hxy => mul_le_mul_of_nonneg_left
+      (hamiltonIveyPinchingBound_monotone hK.le hxy) (by norm_num))
+    (fun R _ => mul_nonneg (by norm_num) (hamiltonIveyPinchingBound_nonneg hK.le R))
+    (by
+      have hlim := (hamiltonIveyPinchingBound_quotient_tendsto hK.le).const_mul 2
+      simpa only [mul_zero, mul_div_assoc] using hlim)
+  let C := 2 * K * Real.exp 3
+  have hC : 0 ≤ C := by dsimp [C]; positivity
+  refine ⟨fun R => Phi₀ R + C, hPhi₀.add_const hC, ?_⟩
+  intro a ha R ν h
+  have hb := half_neg_le_hamiltonIveyPinchingBound_of_fixedHamiltonIveyRegion ha₀ ha h
+  change -ν / 2 ≤ hamiltonIveyPinchingBound K R at hb
+  by_cases hR : 0 ≤ R
+  · have hm := hge R hR
+    dsimp only
+    linarith
+  · have hm := hamiltonIveyPinchingBound_le_of_nonpos hK.le (le_of_not_ge hR)
+    have hp := hPhi₀.pos R
+    dsimp [C]
+    nlinarith
+
 
 omit [SigmaCompactSpace M] in
 private theorem neg_leastCurvatureOperatorEigenvalueAt_le_hamiltonIveyPinchingBound
