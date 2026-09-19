@@ -990,3 +990,33 @@ chain faces, first demonstrated by an actual nonempty n=1 complex and chain.
 Both endpoint vertex cells remain omitted. The closed higher-ambient-dimensional
 local cell-pair API is not invalidated by this finding. See integration handoff
 section 17 for the exact acceptance boundary and ongoing task assignment.
+
+## 2026-09-19 Actual double frontier closed; normal-form starting map remains open
+
+F's BoundaryDouble and LoopTheorem/DoubleCarrier are independently accepted at
+integration source `0351480fd2`. For the genuine second-copy carrier C and
+boundary Bd, frontier C = Bd is proved, including the exact chart-target
+frontier equality and boundary germ. The produced singular two-cell is tied to
+the same NormalSystem and retains all original outputs. Its pointwise fibers
+are exactly those of the original singularMap. Thus the actual frontier/germ
+obligation is closed; the old double construction does not improve fibers.
+
+NormalSystem has no explicit local-injectivity or two-point-fiber field. The
+existing chart/general-position producers require these inputs already.
+F's proposed boundary-fixed inner-triangle collapse explains geometrically why
+the unchanged-map route is inadequate, but the complete refined NormalSystem
+construction is not yet a Lean result. F is now formalizing that construction.
+Do not report an unconditional Lean counterexample from the current delivery.
+The positive obligation remains to produce an appropriately regular changed
+map and an actual boundary-neighborhood homotopy preserving the avoided normal
+subgroup class; ordinary general position does not automatically remove triple
+points. An old EqOn relationship to S.singularMap cannot be reused for a changed
+map without a new proof.
+
+E3's endpoint-moving buffered model, empty tagged double-point set, and continuous
+compactly supported homotopies are independently accepted in the same batch.
+The model permits tangential endpoint motion while preserving the end-face sets.
+Actual two-sheet traces, compatible double-end charts, homotopy inside the real
+boundary neighborhood, and source-disk pasting are still needed for the general
+branch-separation and L2 endpoints. See integration handoff section 18 for the
+53-declaration verification and the exact division of subsequent work.

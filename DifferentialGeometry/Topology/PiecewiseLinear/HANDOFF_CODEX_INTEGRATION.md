@@ -643,3 +643,63 @@ cylinder's boundary inclusion and monodromy identification; E3 independently
 advances closed-fold separation with tangential endpoint motion and continuous
 boundary-preserving homotopy. All four existing tasks remain assigned. No new
 subagents were created and no running lane was interrupted for this batch.
+
+## 18. Fifth delivery: actual double carriers and moving endpoints (2026-09-19)
+
+The source checkpoint is `0351480fd2f39cd3c9d1d4404973a7f1aa105912`.
+F's `74c919f9` and `a8e470266` were merged by `9956ac4fe`; E3's `8e366a560`,
+`ee701b2e2`, and `83558ae5a` were merged by `0351480fd`. All five new leaves are
+registered in the flat root. The delivered Lean diff adds 684 leaf-source lines
+and five root imports, with no deletions; it is not an hourly writing count.
+
+F's BoundaryDouble proves the actual second copy's frontier equals its genuine
+boundaryComplex image, and transports this equality to the precise frontier
+inside any open chart target and to the corresponding germ. DoubleCarrier
+binds the same D produced by the existing NormalSystem double constructor to
+that actual carrier and boundary, retains the original seven outputs, and
+proves an exact pointwise equality between its fibers and the original singular
+map's fibers. This closes the real frontier/germ obligation, not the missing
+normal-form or crossing producer. The original map's fibers are transported,
+not improved. F's inner-triangle collapse description is still an unformalized
+geometric construction; neither a complete Lean replacement NormalSystem nor
+an unconditional existence counterexample is certified by this delivery.
+
+E3's SlabWedgeEndpointPush translates the closed slab into a larger slab's
+interior and conjugates the already verified pushes. For positive padding,
+the complete closed folds have disjoint images, including their endpoints.
+Every first-coordinate fiber is preserved as a set, and the pushes have compact
+support. SlabWedgeEndpointDoublePoint proves the tagged model's double-point
+set is empty. SlabWedgeEndpointHomotopy constructs jointly continuous homotopies
+from identity to both pushes, preserves each end face throughout, and fixes the
+support complement. Its loop constructions are ambient model homotopies; they
+do not yet certify a homotopy inside an actual NormalSystem boundary neighborhood.
+No joint PL assertion or intermediate-time PL-homeomorphism assertion is made.
+
+The coordinator independently recompiled all five leaves and all their direct
+source consumers. The silent audit selected every nonautomatic declaration:
+3 + 1 + 22 + 7 + 20 = 53 declarations, including private declarations if present.
+Every transitive axiom closure uses only the three standard foundational axioms;
+all 13 applicable default environment linters passed, excluding only docBlame
+and docBlameThm. Strict syntax, header, and long-line checks returned exit 0 with
+zero diagnostics. Source hygiene, root registration, and git diff --check passed.
+Receipts, source and committed-blob hashes, and the complete census are retained
+under `C:/Users/liao9/AppData/Local/Temp/codex-integration-fifth-batch-20260919`
+and `.lake/verified-fifth-lane-delivery-20260919.json`.
+
+Only SlabWedgePush and SlabWedgeDoublePoint private prerequisites were reused,
+after source and object checks. Other imported project objects remain shared;
+the independent full-source gate is still running. Its one-worker build was
+restarted once at this delivery boundary on the source checkpoint above,
+preserving private compiled outputs. The subsequent documentation commit leaves
+its Lean source unchanged. Root success is not claimed.
+
+Both delivered tasks immediately received new complete rounds. E3 now runs
+Sol max, as explicitly requested by the owner: construct chart-conjugated
+homotopies with proved support/target preservation, then a single pasted source
+map and boundary homotopy. F continues Astra max: formalize the boundary-fixed,
+surjective source-triangle collapse and its complete NormalSystem refinement,
+with explicit nondegenerate witnesses and preserved fields. The latter closes
+the invalid unchanged-map route and supplies actual source-refinement machinery;
+it does not replace the positive normal-form producer. h remains on its active
+nonvacuity repair and will use Sol max at its next dispatch; S continues its
+active disk-cylinder boundary round. No active task was interrupted for status.
