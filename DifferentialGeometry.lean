@@ -757,6 +757,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametr
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
 import DifferentialGeometry.Analysis.Integration.Integral.HalfPlaneLaplacian
 import DifferentialGeometry.Analysis.Integration.Integral.Laplacian
+import DifferentialGeometry.Analysis.Integration.Integral.ParametricDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.ParametricIntervalContinuity
 import DifferentialGeometry.Analysis.Integration.Integral.Prod
 import DifferentialGeometry.Analysis.Integration.IntervalEndpointBound

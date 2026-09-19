@@ -77,3 +77,54 @@ theorem metricFamilySmoothOn_parameterPullback
     exact hpair (frame i) (frame j) (hframe.contMDiffOn i) (hframe.contMDiffOn j)
 
 end DifferentialGeometry.Geometry
+
+end
+
+section
+
+noncomputable section
+open Set Function Bundle Manifold DifferentialGeometry Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Topology ContDiff Bundle Manifold
+namespace DifferentialGeometry.Geometry
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  [T2Space M]
+
+theorem contMDiffOn_parameterPullbackQuadratic_of_uniqueDiffOn
+    {D : RealTimeInterval} {G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) M}
+    (hG : MetricFamilySmoothOn D G)
+    {Phi : ℝ → M ≃ₘ⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ M} {T : Set ℝ}
+    (hT : UniqueDiffOn ℝ T) (hTsub : T ⊆ D.regular)
+    (hPhi : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, E) ∞
+      (fun p : ℝ × M => Phi p.1 p.2) (T ×ˢ univ)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E))) 𝓘(ℝ, ℝ) ∞
+      (fun q : ℝ × TangentBundle 𝓘(ℝ, E) M =>
+        (Diffeomorph.pullbackMetric (G q.1) (Phi q.1)).inner q.2.proj q.2.2 q.2.2)
+      (T ×ˢ univ) := by
+  intro q hq
+  let tau : ℝ × TangentBundle 𝓘(ℝ, E) M → ℝ := fun p => p.1
+  let U : ℝ × TangentBundle 𝓘(ℝ, E) M → M := fun p => p.2.proj
+  let W : ℝ × TangentBundle 𝓘(ℝ, E) M → TangentBundle 𝓘(ℝ, E) M := fun p => p.2
+  have htau : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E)))
+      𝓘(ℝ, ℝ) ∞ tau (T ×ˢ univ) q := by
+    exact contMDiffWithinAt_fst
+  have hU : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E)))
+      𝓘(ℝ, E) ∞ U (T ×ˢ univ) q := by
+    exact (contMDiffAt_proj (IB := 𝓘(ℝ, E)) (TangentSpace 𝓘(ℝ, E))).comp_contMDiffWithinAt q
+      contMDiffWithinAt_snd
+  have hW : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E)))
+      (𝓘(ℝ, E).prod 𝓘(ℝ, E)) ∞
+      (fun p => TotalSpace.mk' E (U p) (W p).2) (T ×ˢ univ) q := by
+    simpa [U, W] using contMDiffWithinAt_snd
+  have hreg : D.regular ∈ 𝓝 (tau q) :=
+    D.regular_isOpen.mem_nhds (hTsub hq.1)
+  have hh := contMDiffWithinAt_parameterPullbackPairing_of_uniqueDiffOn hG hT hPhi
+      htau hU hq.1 (fun p hp => hp.1) hreg
+      hW hW
+  simpa [tau, U, W] using hh
+end DifferentialGeometry.Geometry
+
+end
+
+end

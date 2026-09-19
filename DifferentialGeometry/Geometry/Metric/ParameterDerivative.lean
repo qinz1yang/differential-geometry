@@ -41,3 +41,43 @@ theorem contDiffAt_deriv_fst {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ
   exact hd.contDiffAt
 
 end DifferentialGeometry.Geometry
+
+end
+
+section
+
+noncomputable section
+
+open Set Function Bundle Manifold
+open scoped Topology ContDiff Bundle Manifold
+
+namespace DifferentialGeometry.Geometry
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem contMDiffOn_derivWithin_fst {f : ℝ × M → ℝ} {T : Set ℝ} {U : Set M}
+    (hT : UniqueDiffOn ℝ T)
+    (hf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ f (T ×ˢ U)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × M => derivWithin (fun r => f (r, p.2)) T p.1) (T ×ˢ U) := by
+  intro q hq
+  have hcomp : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun p : (ℝ × M) × ℝ => f (p.2, p.1.2)) ((T ×ˢ U) ×ˢ T) (q, q.1) :=
+    (hf q hq).comp (f := fun p : (ℝ × M) × ℝ => (p.2, p.1.2)) (q, q.1)
+      (contMDiffWithinAt_snd.prodMk contMDiffWithinAt_fst.snd)
+      (fun p hp => ⟨hp.2, hp.1.2⟩)
+  have h := ContMDiffWithinAt.mfderivWithin_apply (m := ∞)
+    (f := fun p : ℝ × M => fun r : ℝ => f (r, p.2))
+    (g := Prod.fst) (g₁ := id) (g₂ := fun _ : ℝ × M => (1 : ℝ))
+    hcomp contMDiffWithinAt_fst contMDiffWithinAt_id contMDiffWithinAt_const (by simp)
+    (mapsTo_id _) hq (fun _ hp => hp.1) hT.uniqueMDiffOn
+  simpa only [inTangentCoordinates_model_space, id_eq, mfderivWithin_eq_fderivWithin,
+    derivWithin] using h
+
+end DifferentialGeometry.Geometry
+
+end
+
+end

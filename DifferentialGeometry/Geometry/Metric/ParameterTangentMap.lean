@@ -71,3 +71,71 @@ theorem contMDiffOn_parameter_tangentMap {A : ℝ × M → N} {T : Set ℝ}
     (((hA _ ⟨hq.1, mem_univ _⟩).contMDiffAt (hopen.mem_nhds ⟨hq.1, mem_univ _⟩)).mdifferentiableAt (by simp)) q.2.2
 
 end DifferentialGeometry.Geometry
+
+end
+
+section
+
+noncomputable section
+
+open Set Function Bundle Manifold
+open scoped Topology ContDiff Bundle Manifold
+
+namespace DifferentialGeometry.Geometry
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace F N] [IsManifold 𝓘(ℝ, F) ∞ N]
+
+omit [IsManifold 𝓘(ℝ, E) ∞ M] [IsManifold 𝓘(ℝ, F) ∞ N] in
+theorem mfderivWithin_parameter_slice {A : ℝ × M → N} {T : Set ℝ} {t : ℝ} {x : M}
+    (ht : t ∈ T)
+    (hA : MDifferentiableWithinAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, F) A
+      (T ×ˢ univ) (t, x)) (v : TangentSpace 𝓘(ℝ, E) x) :
+    mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) (fun y => A (t, y)) x v =
+      mfderivWithin (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, F) A
+        (T ×ˢ univ) (t, x) (0, v) := by
+  have h := mfderivWithin_comp x hA
+    ((mdifferentiableAt_const.prodMk mdifferentiableAt_id :
+      MDifferentiableAt 𝓘(ℝ, E) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E))
+        (fun y : M => (t, y)) x).mdifferentiableWithinAt (s := univ))
+    (show MapsTo (fun y : M => (t, y)) univ (T ×ˢ univ) from fun _ _ => ⟨ht, trivial⟩)
+    (uniqueMDiffWithinAt_univ 𝓘(ℝ, E))
+  simp only [mfderivWithin_univ, mfderiv_prod_right] at h
+  exact congrArg (fun L => L v) h
+
+set_option backward.isDefEq.respectTransparency false in
+theorem contMDiffOn_parameter_tangentMap_of_uniqueDiffOn {A : ℝ × M → N} {T : Set ℝ}
+    (hT : UniqueDiffOn ℝ T)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, F) ∞ A (T ×ˢ univ)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E))) (𝓘(ℝ, F).prod 𝓘(ℝ, F)) ∞
+      (fun q : ℝ × TangentBundle 𝓘(ℝ, E) M => TotalSpace.mk' F (A (q.1, q.2.proj))
+        (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) (fun y => A (q.1, y)) q.2.proj q.2.2)) (T ×ˢ univ) := by
+  let J := 𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)
+  let lift : ℝ × TangentBundle 𝓘(ℝ, E) M → TangentBundle J (ℝ × M) := fun q =>
+    TotalSpace.mk' (ℝ × E) (q.1, q.2.proj) (0, q.2.2)
+  have hzero : ContMDiff (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E)))
+      (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
+      (fun q : ℝ × TangentBundle 𝓘(ℝ, E) M =>
+        TotalSpace.mk' ℝ (E := TangentSpace 𝓘(ℝ, ℝ)) q.1 0) :=
+    (contMDiff_zeroSection (F := ℝ) (IB := 𝓘(ℝ, ℝ)) ℝ (TangentSpace 𝓘(ℝ, ℝ))).comp contMDiff_fst
+  have hlift : ContMDiff (𝓘(ℝ, ℝ).prod (𝓘(ℝ, E).prod 𝓘(ℝ, E)))
+      (J.prod 𝓘(ℝ, ℝ × E)) ∞ lift :=
+    (contMDiff_equivTangentBundleProd_symm (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, E))).comp
+      (hzero.prodMk contMDiff_snd)
+  have hprod : UniqueMDiffOn J (T ×ˢ (univ : Set M)) :=
+    hT.uniqueMDiffOn.prod uniqueMDiffOn_univ
+  have htan := hA.contMDiffOn_tangentMapWithin (m := ∞) (by simp) hprod
+  apply (htan.comp hlift.contMDiffOn (fun q hq => ⟨hq.1, mem_univ _⟩)).congr
+  intro q hq
+  dsimp only [Function.comp_apply, tangentMapWithin, lift]
+  congr 1
+  exact mfderivWithin_parameter_slice hq.1
+    ((hA _ ⟨hq.1, mem_univ _⟩).mdifferentiableWithinAt (by simp)) q.2.2
+
+end DifferentialGeometry.Geometry
+
+end
+
+end
