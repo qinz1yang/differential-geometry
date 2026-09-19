@@ -572,3 +572,45 @@ actual separating-circle component-closure obligation in dimension two.
 Attaching caps, proving their closed-manifold structure and descent,
 compression via 26.4, E3's separation-preserving geometry and the full
 30.4 endpoint remain open.
+
+## Gluing along entire boundaries (2026-09-19 UTC)
+
+`SphereGluing.lean` proves `isPLSphere_union_of_isPLBall`: two finite
+PL n-balls meeting exactly in
+both entire intrinsic boundaries have a PL n-sphere as their actual union.
+The statement includes dimension zero. In positive dimension the proof
+extends the common boundary map across one ball and transports the existing
+double construction to the actual union.
+
+`BoundaryGluing.lean` proves `isCombinatorialManifold_unionComplex` in every
+dimension, with no orientability or connectedness assumptions. At common
+boundary vertices the two ball links glue to a sphere; other vertices retain
+their original spherical links. `isCombinatorialManifold_of_space_eq_union`
+allows any finite triangulation of the union, and
+`exists_isCombinatorialManifold_space_union` constructs one. These statements
+take the two actual manifold pieces and their exact entire-boundary overlap;
+the resulting closed-manifold structure is proved, not supplied.
+
+`ComplexUnion.lean` supplies realizations of compatible intersections,
+intersection and union links, and a common finite triangulation whose
+restrictions subdivide each original complex. This last construction
+handles distinct carriers and does not assume matching triangulations.
+
+All eight new declarations in the three modules compile with zero diagnostics.
+Final checks take 10.007 seconds for ComplexUnion, 10.429 for SphereGluing,
+and 10.262 for BoundaryGluing, including admission. The silent audit takes
+45.727 seconds: eight declarations, ten critical reused entries, three
+geometric models and all 13 applicable environment linters pass, with only
+standard foundational axioms. The models cover two distinct points forming
+a zero-sphere, the two explicit hemispheres of standard simplex boundaries
+in every positive dimension, and two overlapping intervals with an exact
+intersection carrier. External-model instance, arithmetic and import issues
+were repaired before the passing audit.
+
+All three leaves are registered in the flat root. Evidence is frozen in
+`moise304-reading/boundary-gluing-checkpoint/`, including raw and normalized
+source identities, private objects, receipts, audit source and census.
+No existing public signature changed. The root build remains stopped and
+shared artifacts remain untouched. Instantiation on the actual separating
+circle components, their cap Euler identities and strict descent are next;
+26.4 compression, E3's separation-preserving geometry and full 30.4 remain open.

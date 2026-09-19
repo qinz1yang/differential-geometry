@@ -8794,3 +8794,6 @@ import DifferentialGeometry.Topology.Connected.BicollarSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarDiskPair
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleComponentClosure
+import DifferentialGeometry.Topology.PiecewiseLinear.ComplexUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.SphereGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryGluing

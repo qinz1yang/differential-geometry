@@ -143,8 +143,12 @@ surfaces with boundary. For a closed source both boundaries are precisely
 the original circle; the version with boundary also identifies the inherited
 old-boundary parts. Seven new declarations and one retained declaration,
 ten reused entries, three concrete models and 13 linters pass; two old
-consumers compile unchanged. Attaching caps, the closed capped-manifold
-structure and exclusion of spherical components remain open. Full nonorientable 28.19
+consumers compile unchanged. General entire-boundary gluing is now checked
+in every dimension: two balls give a sphere, and two manifolds with boundary
+give a closed manifold on their actual union, even with initially unrelated
+triangulations. Eight new declarations, ten reused entries, three geometric
+models and 13 linters pass. Instantiation on the actual capped components,
+their Euler identities and exclusion of spherical components remain open. Full nonorientable 28.19
 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized

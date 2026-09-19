@@ -108,7 +108,12 @@ the original circle, together with inherited boundary parts when present.
 Both closures are finite, connected and orientable. Seven new declarations
 and one retained declaration, ten reused entries, three geometric models
 and 13 linters pass; both old neighborhood consumers compile unchanged.
-Attaching caps and the capped-component geometry are next.
+Entire-boundary gluing now proves the closed-manifold structure of the
+actual union in every dimension, using a constructed common triangulation.
+Two balls meeting in their entire boundaries give a sphere, including
+dimension zero. Eight declarations, ten reused entries, three geometric
+models and 13 linters pass. Instantiating caps on the actual component
+closures and proving their Euler identities are next.
 E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
