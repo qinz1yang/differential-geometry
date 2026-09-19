@@ -2771,3 +2771,109 @@ local checks; the separate integration source rebuild remains pending.
 The next mathematical obligation is still section 42 step 2: expose the combined
 cut model's cone data and the second base sphere's containment in the outer sphere
 union the gluing disk. The trimmed arc-chain ball-pair induction is not complete.
+
+## 44. 2026-09-18 Combined cut-model cone data — done
+
+`exists_cutModel_data` now also returns the boundary complex `L` of the outer
+tetrahedron together with all eight facts required by section 42 step 2:
+
+- `L.faces.Finite`, `IsConeBase p₁ L`, and `IsPLSphere 2 L.space`;
+- `coneSet p₁ L.space = coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space`;
+- `coneSet p₁ {y₁, y₂} = coneSet p₁ {z, y₁} ∪ coneSet p₂ {z, y₂}`;
+- `y₁ ∈ L.space`, `y₂ ∈ L.space`, and
+  `L₂.space ⊆ L.space ∪ coneSet z L₀.space`.
+
+The witness is `simplexBoundary {c, d, A, B} hTout`.  The cone and marked-ray
+equalities reuse the already proved convex-hull cut and arc equalities.  The last
+containment is proved facewise from `simplexBoundary_space`: deleting `d` gives
+the gluing face, deleting `m` gives the opposite outer face, and the two remaining
+faces map into outer faces because `m ∈ segment ℝ c d`.  No additional hypothesis
+was added.  Both consumers of `exists_cutModel_data` were synchronized, and
+`BallPairCutConfig` is now registered directly in the flat root aggregate.
+
+Strict private checks used token `H-CutModel-Strict-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  In dependency
+order, `BallPairCutConfig` and `BallPairRelativeGluing` both compiled with exit 0,
+zero diagnostics, source-stable receipts, the standard linter set, and explicit
+header and long-line checks.  An external silent audit covered all twelve
+non-automatic declarations in the two modules; every axiom is in
+`{propext, Classical.choice, Quot.sound}`, and all environment linters other than
+`docBlame` and `docBlameThm` passed.  The strict checks wrote no shared artifact.
+
+Before the strict run, the inherited `check-f.ps1` was mistakenly invoked three
+times.  That obsolete helper disables the header and long-line checks and deletes
+the shared target object before compiling; all three attempts failed, leaving the
+shared `BallPairCutConfig.olean` and `.ilean` absent.  The coordinator rebuilt the
+unchanged integration version with the strict flags and restored those two shared
+objects before the final H checks.  The verified H objects and their receipts
+remain private and were not copied into the shared library.
+
+The remaining section 42 obligation is the trimmed arc-chain ball-pair induction
+over the non-endpoint cells.  The old full-chain statement remains false and must
+not be reinstated.
+
+## 45. 2026-09-18 Interior arc-chain cell ball pair — done
+
+`ArcCellBallPair.lean` proves
+`IsCombinatorialManifold.isPLBallPair_derivedNeighborhoodCell_arcChainFace`.
+For an injective simplicial arc chain in a closed combinatorial 3-manifold and an
+index satisfying `1 ≤ j` and `j + 1 ≤ 2 * n`, the single derived-neighborhood
+cell at `arcChainFace v j`, paired with its trace on `arcComplexIn K v n`, is an
+`IsPLBallPair 2 1`.
+
+The proof identifies the cell with the cone over the upper link at the face
+centroid.  The two adjacent arc-chain faces give distinct marked points in that
+upper-link 2-sphere.  Cone-base radial injectivity then supplies the standard
+conical arc pair, while `derivedNeighborhoodCell_inter_arcComplexIn_space`
+identifies its two radial segments with the actual arc trace.  The hypotheses
+exclude the two endpoint vertex cells; no nondegeneracy hypothesis beyond those
+index inequalities was added.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict private
+verification used token `H-ArcCell-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module check
+and external silent audit both exited 0 with zero diagnostics and unchanged
+shared outputs.  The audit enumerated the module's single non-automatic
+declaration, checked its direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all default environment
+linters other than `docBlame` and `docBlameThm`.
+
+This closes only the one-cell input.  The induction proving an `IsPLBallPair 2 1`
+for the union of all non-endpoint cells `1 ≤ j ≤ 2 * n - 1` remains open; the
+false full-chain statement including the endpoint cells remains forbidden.
+
+## 46. 2026-09-18 Adjacent arc-cell gluing data — done
+
+`ArcCellGluing.lean` supplies the geometric input for the trimmed-union
+induction without assuming any union is already a ball pair.  It introduces the
+natural objects `arcCellApex`, `arcCellCrossing`, `arcCellBase`, and
+`arcCellInterfaceBase`, then proves:
+
+- each cell and each adjacent-cell intersection has its exact conical form;
+- cell bases are PL 2-spheres and interface bases are PL 1-spheres, with the
+  required cone-base and finiteness data;
+- the conical interface disk lies in both cell bases;
+- the preceding and following crossing points lie in the corresponding
+  `closure (base \ interface) \ interface`, as required by the marked relative
+  extension theorem;
+- the arc trace in an interior cell is exactly the cone on its preceding and
+  following crossing points.
+
+The nonmembership part is not a generic-position assumption.  A preceding
+crossing belongs to cell `j - 1`; if it also belonged to the `j,j+1` interface,
+it would lie in the disjoint nonadjacent cells `j - 1` and `j + 1`.  The following
+crossing is treated symmetrically.  The hypotheses `1 ≤ j` and
+`j + 2 ≤ 2 * n` are precisely the index conditions needed for these arguments.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict private
+verification used token `H-ArcCellGluing-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module check
+and external silent audit both exited 0 with zero diagnostics and unchanged
+shared outputs.  The audit dynamically enumerated all twenty non-automatic
+declarations, also checked sixteen direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all default environment
+linters other than `docBlame` and `docBlameThm`.
+
+The remaining obligation is to use these data with
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` and the combined cut model
+to carry out the normalized induction over cells `1` through `2 * n - 1`.

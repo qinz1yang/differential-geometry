@@ -2780,3 +2780,80 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   3. 任务 3：`doublePointSet G' = doublePointSet G \ branchCarrier` 的模型层版本，再写分支层所需陈述；
      图卡共轭等 F 的双端平板图卡（`Bd₁ = {p.1 = 0} ∪ {p.1 = c'}`）交付后再做。
   4. 主人的交接文件在整合分支的 `HANDOFF_CODEX_INTEGRATION.md`。
+
+## 84. 2026-09-18 E3-M3：紧支撑平板楔形推移模型
+
+状态：**已闭合**。新模块 `SlabWedgePush.lean` 给出显式帽函数
+`slabWedgeHat c p = max 0 (min p.1 (c - p.1) - |p.2.1| - |p.2.2|) / 4`，以及沿
+`(0, 1, 1)` 和 `(0, -1, -1)` 的两张推移。
+
+- `hasCompactSupport_slabWedgeHat`、`isPiecewiseAffineOn_slabWedgeHat`、
+  `lipschitzWith_slabWedgeHat`：帽函数有紧支撑、分片仿射，Lipschitz 常数为 `3 / 4 < 1`。
+- `isPLHomeomorphOn_positiveWedgePush`、`isPLHomeomorphOn_negativeWedgePush` 与
+  `positiveWedgePushHomeomorph`、`negativeWedgePushHomeomorph`：由
+  `isPLHomeomorphOn_id_add_of_lipschitz` 得到全局 PL 同胚及其逆。
+- `eqOn_*_compl_support`、`eqOn_*_slabBoundary`、`mapsTo_*_wedgeSlab` 与
+  `mapsTo_*_wedgeSlabInterior`：支撑外恒等，两个端面逐点不动，闭平板与开平板均保持。
+- 端点障碍已按正确数学形式钉死：任何逐点固定左端点的两张推移都不可能让闭折片像不交
+  （`not_disjoint_image_positive_negative_slabFold_of_fix_left_endpoint`）。本模型满足精确等式
+  `image_positiveSlabFold_inter_image_negativeSlabFold`：闭折片像的交恰为
+  `{(0, 0, 0), (c, 0, 0)}`；去掉两端面后由
+  `disjoint_positive_negative_wedge_push_on_slabInterior` 得到真正不交。
+- 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgePush.json`。
+  初始外部静默审计覆盖显式公开声明及复用的 `isPLHomeomorphOn_id_add_of_lipschitz`；整合分支
+  `22e845e90` 随后补做精确 census，覆盖本模块全部 52 个非自动声明（含两条 private）及该复用声明，
+  并运行 13 个适用环境 linter，exit `0`、零诊断；每条传递公理闭包均为
+  `propext / Classical.choice / Quot.sound` 的子集。初始审计收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：把两张折片标记成不交的源片后，显式计算模型映射的 `doublePointSet`；随后才由 F 的双端分支图卡
+  与 `Pasting/SingularPasting` 接口提升回一般环境。
+
+## 85. 2026-09-18 E3-M3：楔形模型的精确双点集
+
+状态：**已闭合**。新模块 `SlabWedgeDoublePoint.lean` 把正、负折片放入 Bool 标记的互不相交源片，
+从而把同一片内的单射性与跨片碰撞完全分开。
+
+- `doublePointSet_slabWedgeTaggedMap`：对任意两组源点 `A B`，标记模型映射在
+  `slabWedgeTaggedSource A B` 上的双点集精确等于
+  `positiveWedgePush c '' A ∩ negativeWedgePush c '' B`。证明直接复用
+  `mem_doublePointSet_iff_mem_image_inter_of_injOn`，两片内的单射性来自 §84 的两个全局同胚。
+- `doublePointSet_slabWedgeTaggedMap_closed`：当 `0 ≤ c` 时，闭折片模型的双点集恰为
+  `{(0, 0, 0), (c, 0, 0)}`。
+- `doublePointSet_slabWedgeTaggedMap_open`：限制到 `0 < p.1 < c` 后双点集严格为空。
+- 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeDoublePoint.json`。
+  外部静默审计动态核对本模块恰有 12 条非自动声明，另审计 3 条关键复用声明；全部公理闭包只含
+  `propext / Classical.choice / Quot.sound`，13 个适用环境 linter（只排除 `docBlame`、`docBlameThm`）
+  零诊断。审计收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：由 F 的双端边界交叉图卡把此模型共轭回一般分支，再用 `Pasting/SingularPasting` 粘回源盘。
+  局部 crossing 搬运优先复用 `CutAndPaste.lean` 中现有的
+  `exists_crossing_patches_of_source_changes` 及两条 `transport_*_of_source_changes`，不另造双原像标签交换。
+
+## 86. 2026-09-18 E3-M3：楔形推移的实际图卡共轭与紧支撑兼容
+
+状态：**已闭合**。新模块 `SlabWedgeConjugation.lean` 完成不依赖完整弧链图卡的实际环境转运层。
+
+- `OpenPartialHomeomorph.disjoint_conjugateMap_images`：两张不同映射经同一开偏同胚共轭后，像的不交性从
+  坐标目标精确搬回源空间；这补足原 `disjoint_conjugateMap_image` 只处理“一张推移、一张不动”的限制。
+- `mapsTo_of_injective_eqOn_compl`：单射且在 `Cᶜ` 上恒等的自映射保持 `C`，用于把模型紧支撑逐层穿过
+  内、外两张图卡。
+- `slab_wedge_conjugate_properties`：对内图卡 `e` 与实际 PL 图卡 `E`，只假设帽函数支撑落在
+  `e.target`，并允许实际两片 `A B` 是正、负开折片的**任意子集**。结论给出正、负两张嵌套共轭均为
+  全局 PL 单射、共享拉回后的紧支撑、支撑外逐点恒等、各自保持该支撑，且
+  `positiveSlabWedgeConjugate E e c '' slabWedgeChartSet E e A` 与
+  `negativeSlabWedgeConjugate E e c '' slabWedgeChartSet E e B` 不交。
+  此陈述没有要求整张无界折片进入局部图卡，也没有假设最终 carrier 分离结论。
+- 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeConjugation.json`。
+  外部静默审计动态核对本模块恰有 7 条非自动声明，另审计 6 条关键复用声明；全部公理闭包只含
+  `propext / Classical.choice / Quot.sound`，13 个适用环境 linter（只排除 `docBlame`、`docBlameThm`）
+  零诊断。审计收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- **确切未闭合接口**：对完整边界分支 `cb`，仍需一个双端弧链图卡，给出同一组 `E,e,c,A,B` 使两张实际胞腔片
+  的迹分别落入 `slabWedgeChartSet E e A/B`，整条 branch fiber 由这两片覆盖，并把 `BdM` 在两个端点
+  同时识别为平板端面 `p.1 = 0` 与 `p.1 = c`。F 当前的局部 boundary-double 图卡与
+  `BoundaryBranchSheets` 只交付局部交叉图卡、带一致标签的多面体源片邻域及分支纤维覆盖；尚缺
+  **实际胞腔迹落入坐标折片**以及**两个端点的边界相容**。缺少这两项时不能陈述最终
+  `exists_separated_along_branch`，也不能把 Case 3/4 的 `L₂` 与复杂度下降宣称闭合。
