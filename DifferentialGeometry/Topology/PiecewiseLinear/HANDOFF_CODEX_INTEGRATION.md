@@ -4752,3 +4752,18 @@ and backward-orbit identification. The name was absent in both checkouts;
 the exact private compiler module was granted in S's lease, without widening
 the Analysis pattern or allowing writes to existing foreign source. This is
 an interface-permission reply inside the same lane, not an extra assignment.
+
+## 99. Owner stop and Claude takeover (2026-09-19 UTC)
+
+The owner stopped Codex usage because of remaining account limits and requested
+a Claude handoff. All five tasks are idle, automation moise and all compiler
+leases are paused. See HANDOFF_CLAUDE_20260919.md and the exact local state in
+.lake/claude-handoff-state-20260919.json. Uncommitted source is preserved, with
+binary patches and raw-byte snapshots in batch64/claude-handoff-snapshots.
+Batch64 has seven clean module receipts and its full audit passed, but final
+source/setup review, acceptance receipt and source commit remain unfinished.
+The last independently accepted Lean checkpoint remains 08248ce9d.
+h delivered5fb, merged10264ff and was assigned whole-branch two-sheet charts
+at that delivery boundary before this pause. M304 deck drafts remain
+unverified; the ambient-cover versus regular-neighborhood interface gap is
+recorded in the takeover file. Do not resume Codex tasks automatically.

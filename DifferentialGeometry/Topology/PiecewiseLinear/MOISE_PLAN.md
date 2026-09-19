@@ -1,5 +1,10 @@
 # Moise 光滑化（拓扑三维流形 → 兼容光滑结构）阶段计划
 
+> PAUSED for Claude takeover (2026-09-19 UTC). Owner stopped all Codex usage.
+> Read HANDOFF_CLAUDE_20260919.md and .lake/claude-handoff-state-20260919.json first.
+> All five tasks and compiler leases are paused; automation moise is PAUSED.
+> Batch64 has successful checks but is NOT finally accepted or committed.
+
 统一记录本任务的目标、复用审计、证明路线、阶段与验证。其他文档只引用本文件，不另开状态表。
 日期均为绝对日期。路径省略 `DifferentialGeometry/` 前缀时指本库源码树。
 
