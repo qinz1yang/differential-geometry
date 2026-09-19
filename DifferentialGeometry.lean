@@ -869,6 +869,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.NullSets
 import DifferentialGeometry.Analysis.Integration.Measure.Pullback
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
+import DifferentialGeometry.Analysis.Integration.Measure.PullbackPartial
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackGradient
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
@@ -3376,6 +3377,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Restriction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Volume
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Completeness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
