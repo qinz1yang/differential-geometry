@@ -43,9 +43,10 @@ remaining input or final assembly.
 - The accepted trimmed-arc ball pair omits both endpoint vertex cells.
   h's full-arc containment 0a0876425 awaits acceptance; it does not supply
   simultaneous normalization or two compatible branch sheets.
-- E3's conjugated homotopies b195204ed await acceptance and still need a
-  compatible global branch chart. Its new path-replacement layer b5e36cfe5
-  also awaits acceptance; 30.3 still needs actual geometric split data.
+- E3's conjugated homotopies b195204ed and path replacement b5e36cfe5 are
+  independently accepted: 35 declarations plus 12 critical reused declarations
+  pass standard-axiom and 13-linter checks. A compatible global branch chart
+  and actual geometric 30.3 split data remain open.
 - F's collapse delivery 495a3e343 awaits acceptance and diagnoses unrestricted
   source fibers. The positive route projects the inductively embedded disk,
   distinguishing the full cover from the smaller regular neighborhood.

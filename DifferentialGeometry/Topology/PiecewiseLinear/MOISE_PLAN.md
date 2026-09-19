@@ -76,7 +76,9 @@ See [FOUR_LANE_WORKFLOW.md](FOUR_LANE_WORKFLOW.md).
 
 ### Acceptance queue and full-root hold
 
-E3 b195204ed and b5e36cfe5, h 0a0876425, F 495a3e343 and S aa6ff83be await
+E3 b195204ed and b5e36cfe5 are independently accepted: two modules, 35
+nonautomatic declarations and 12 key reused declarations pass the axiom/lint
+audit. h 0a0876425, F 495a3e343 and eefa65bae, and S aa6ff83be still await
 independent integration acceptance. S reports the actual disk-times-circle
 product and finite 24.11 CST construction; this is not an integration-accepted
 24.11 or a proof of 24.12. Preserve S's extraction of IsTopologicalSolidTorus

@@ -2922,3 +2922,45 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
 - 一般环境仍未闭合：F 的实际迹/双端面图卡是把 §87–§89 模型产物接成
   `exists_separated_along_branch` 的必要下游输入；本轮没有越过这一表示层缺口。
+
+## 90. 2026-09-18 E3-M3：端面可动推移的实际 PL 图卡共轭
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointConjugation.lean` 把 §87–§89 的缓冲闭折叠推移和
+紧支撑同伦经内、外两张真实 PL 开图卡共轭回一般 PL 3-流形。
+
+- `OpenPartialHomeomorph.continuous_conjugateMap_family` 是真的时间依赖共轭定理：由
+  `unitInterval × Y → Y` 的联合连续性、紧支撑和每时刻目标保持，得到
+  `unitInterval × X → X` 的联合连续性。图卡源内用偏同胚的局部连续性，图卡源外用紧支撑拉回的
+  闭性与支撑外恒等性粘合，没有把联合连续当成假设。
+- `mapsTo_positiveBufferedWedgeHomotopy_target` 与负向版本先证缓冲支撑凸，再由直线插值和
+  终点同胚保持支撑，确实证明整条坐标同伦留在图卡目标中；未把目标保持性外加为黑箱假设。
+- `continuous_positiveBufferedSlabWedgeConjugateHomotopy` 与负向版本给出两张实际环境联合连续同伦；
+  `*_zero`/`*_one` 标明恒等与最终共轭端点，`eqOn_*_compl_support` 证同一拉回紧支撑外全程逐点不动。
+- `positiveBufferedSlabWedgeConjugateHomotopy_mem_boundary_iff` 与负向版本由第一坐标不变及两层
+  `conjugateMap_mem_iff` 证实际边界点集在每一时刻都双向保持。
+- `buffered_slab_wedge_conjugate_properties` 保留 §86 的旧开端点 API，对新闭折叠版本另给出两张最终
+  共轭的 PL 性、单射性、紧支撑外恒等、支撑保持，以及 `0 < ρ` 时正负闭折叠的实际像不交。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 25 条
+  非自动声明，另审计 12 条关键复用声明；全部传递公理闭包只含
+  `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointConjugation.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 本层不修改 `NormalSystem` 生产者，也不声称 `exists_separated_along_branch`。下一层必须把正、负两张同伦粘成
+  **同一张**改动后的源盘映射，并在现有源片邻域契约上核对重叠相等、边界参数和原边界邻域内的自由同伦。
+
+## 91. 2026-09-19 I.3：30.3 的道路替换核心
+
+状态：**已闭合一个独立基础层；30.3 整体仍为 partial**。
+
+- `Connected/Separation.lean` 新增 `JoinedIn.compl_of_frontier_replacement`。若闭集 `N` 外 `C` 与 `C'`
+  相同，安全边界 `frontier N \ C'` 道路连通且避开 `C`，则任何端点在 `N` 外、避开 `C'` 的道路都可改成
+  避开 `C` 的道路。证明取原道路命中 `N` 的参数闭集的最小值和最大值，证明两个极值像落在
+  `frontier N`，再以安全边界中的道路替换两者之间的整段；这正形式化书页 215 把折线 `PQ` 强制移出
+  `C₁³` 的步骤，不使用并不存在的一般全局收缩。
+- `Separates.of_frontier_replacement` 把上述道路替换与 `joinedIn_compl_of_not_separates` 合成：原 `C` 分离
+  `H,K` 时，局部替换后的 `C'` 仍分离 `H,K`。空端集也由已有分离引理覆盖。
+- 聚焦检查 exit `0`、零诊断、共享产物未改动。外部静默审计覆盖本模块全部 10 个非自动声明；每条传递
+  公理闭包均为 `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。
+- 30.3 尚缺的几何接线是：从实际嵌入分裂盘 `Δ` 及 `D₂ ∩ N(Δ)` 的两 3-胞腔构造书中的
+  `N = C₁³` 与替换面 `C' = (C - Int A₁) ∪ Δ₁`，并证明
+  `frontier N \ C' = Int A' ∪ Int Δ₂` 的道路连通性、其避开 `C` 性以及 `N` 外两面的精确相等。

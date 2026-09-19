@@ -890,3 +890,47 @@ registers PLSchoenflies. Apply and recheck coverage at the next source integrati
 stage. The seven-leaf, 26-declaration focused audit remains valid only in its
 recorded scope. This checkpoint changes documentation only: no Lean source,
 root imports or compilation were changed/launched for plan correction.
+
+## 23. Twelve-hour authorization and eighth acceptance (2026-09-19 UTC)
+
+The owner authorized autonomous preparation, parallel scheduling and acceptance
+for twelve hours from 02:19 UTC, through 14:19 UTC (07:19 Los Angeles).
+The thread heartbeat Moise twelve-hour advancement checks at fifteen-minute
+intervals and handles delivery/idle/blocker transitions; it does not interrupt
+active rounds. F/S remain Astra max and h/E3 Sol max, one lane each.
+Existing private compiler leases extend to that deadline with concurrency
+limits unchanged. The full-source build remains stopped with outputs retained.
+
+E3's b195204ed and b5e36cfe5 are independently accepted in the integration
+checkout. Separation adds actual first/last-hit path replacement and the
+resulting separation-preservation theorem. SlabWedgeEndpointConjugation proves
+joint continuity of the transported homotopies, compact support, preservation
+of boundary membership, and PL/injective/disjoint final maps, from explicitly
+supplied compatible charts. It does not construct the whole-branch chart or
+the actual local split-cell geometry required for 30.3.
+
+Both modules compiled with exit 0 and zero diagnostics. The independent silent
+audit covers all 10 + 25 = 35 nonautomatic module declarations (27 newly added),
+12 critical reused declarations, standard foundational axioms only and all
+13 applicable environment linters. Audit wall time including admission:
+59.968 seconds. Six unchanged private prerequisites were reused
+only after comparing successful receipts, current source identities, normalized
+integration source and object hashes; other upstream imports remain shared.
+This is focused acceptance, not a completed full-source build.
+
+Receipt: .lake/verified-eighth-lane-delivery-20260919.json.
+Objects and audit evidence: external codex-integration-eighth-batch-20260919
+directory. The audit source is preserved in the receipt and its temporary Lean
+probe removed. The merge keeps the already corrected Phase 3 plan when resolving
+its single documentation conflict. One new leaf is registered in the flat root.
+
+The accepted source diff is +643/-0 Lean lines, including one root import.
+These proofs were authored before this overnight window; count them as newly
+accepted queued work, not newly written overnight proofs. E3 continues actual
+geometric split data at the previously dispatched natural delivery boundary.
+F eefa65bae's projected embedded-disk layer is newly queued for independent
+acceptance; its requested read-only MoiseChain compilation permission is granted.
+
+Morning accounting is recorded in MORNING_ACCEPTANCE_20260919.md and the local
+overnight campaign ledger. At the deadline stop starting new proof rounds,
+record remaining active work and delivery points, and prepare the final review.
