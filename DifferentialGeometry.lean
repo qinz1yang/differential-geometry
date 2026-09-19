@@ -11483,3 +11483,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.EuclideanCoordinates
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.LinearEquiv
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Mixed
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Spacetime
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.FiniteOrder
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.SpacetimeRegularity

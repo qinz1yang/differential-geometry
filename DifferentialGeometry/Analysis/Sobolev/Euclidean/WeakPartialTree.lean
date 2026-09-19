@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
 
 noncomputable section
@@ -149,3 +150,42 @@ theorem ae_memWkp_and_memLp_wkpNorm_of_weak_partial_tree
     (fun n _ => hLp n) (fun n _ => hweak n)
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
+
+noncomputable section
+
+open Filter MeasureTheory Set
+open scoped ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d : ℕ}
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+theorem memWkp_of_finite_weak_partial_tree
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω) (K : ℕ)
+    (u : ∀ n : ℕ, (Fin n → Fin d) → E → ℝ)
+    (hLp : ∀ n ≤ K, ∀ α, MemLp (u n α) p (volume.restrict Ω))
+    (hweak : ∀ n < K, ∀ α i,
+      DeGiorgi.HasWeakPartialDeriv i (u (n + 1) (Fin.cons i α)) (u n α) Ω) :
+    MemWkp K p (u 0 (fun i : Fin 0 => Fin.elim0 i)) Ω := by
+  have hnode : ∀ k n α, n + k ≤ K → MemWkp k p (u n α) Ω := by
+    intro k
+    induction k with
+    | zero =>
+        intro n α hn
+        exact hLp n (by omega) α
+    | succ k ih =>
+        intro n α hn
+        apply memWkp_succ_of_hasWeakPartialDeriv hp hΩ (hLp n (by omega) α)
+        · intro i
+          exact ih (n + 1) (Fin.cons i α) (by omega)
+        · intro i
+          exact hweak n (by omega) α i
+  exact hnode K 0 (fun i : Fin 0 => Fin.elim0 i) (by omega)
+
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
