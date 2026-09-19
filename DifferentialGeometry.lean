@@ -1153,6 +1153,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientScalarSourc
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatInteriorRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatMixedTimeSpatialRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
@@ -1222,6 +1223,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakExistence
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakFormIntegration
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSourceBound
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakLimit
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakSpatialDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakTimeDerivativeBound
