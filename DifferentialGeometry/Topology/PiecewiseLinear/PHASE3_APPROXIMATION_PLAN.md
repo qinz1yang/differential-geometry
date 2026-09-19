@@ -871,3 +871,32 @@ preserved separation. It does not produce embedded splitting disks or safe
 replacement neighborhoods for arbitrary surfaces in Moise 30.4. Those general
 26.4/30.3 obligations remain in their existing lanes. Root builds remain
 stopped; shared E outputs and other lanes' source files were not changed.
+
+
+### M304 native three-ball target production (2026-09-19 UTC)
+
+`IsCylindricalDiagram.exists_separating_ball_pair` now constructs actual
+PL three-ball targets for any disk cylindrical diagram carrying a finite
+three-manifold in an ambient real normed space of dimension three. Their
+interiors are nonempty, they are disjoint, the first lies inside the remaining
+prism interior, and the second lies outside the full three-manifold. Both
+the original side and the capped side separate these targets. The target
+locations, nonemptiness and separations are produced, not assumed.
+
+The premise-free native `exists_embedded_torus_compression_separating_balls`
+retains every essential-circle, annulus, complement, proper disk, exact-cap
+and Betti field of the original torus compression, and adds these same actual
+ball targets with their locations and both separations. The original and
+point-target theorem signatures are unchanged. The three-ball witness is
+therefore no longer confined to external audit evidence.
+
+Both changed modules compile without diagnostics. The complete audit covers
+seven native declarations, 26 critical reuses and six concrete certificates,
+including a certificate coupling the same essential circle and proper disk
+to the native ball targets and first-Betti descent from two to zero. All 13
+applicable linters pass and all axiom closures contain only standard
+foundational axioms. The reachable import graph remains acyclic, with 565
+native modules and 1119 edges. Three source/object/receipt sets and the audit
+are frozen at `moise304-reading/torus-ball-targets-checkpoint/` with raw and
+normalized source hashes. Root builds remain stopped and shared E outputs
+are unchanged. General 26.4/30.3 and arbitrary-shell 30.4 remain open gates.
