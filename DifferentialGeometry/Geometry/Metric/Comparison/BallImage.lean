@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import DifferentialGeometry.Topology.FirstExit
@@ -148,5 +149,98 @@ theorem ball_subset_image_closedBall_of_enorm_mfderiv_symm_le
       _ = (C : ℝ) * A + r := add_comm _ _
       _ < R := hmargin
   linarith
+
+theorem image_eball_subset_closedEBall_of_quad_le
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+    [PseudoEMetricSpace N] [RiemannianBundle (fun y : N => TangentSpace J y)]
+    [IsRiemannianManifold J N]
+    {n : WithTop ℕ∞} (Φ : PartialDiffeomorph I J M N n) (hn : 1 ≤ n)
+    {O : M} {r r₂ C : ℝ}
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
+    (hgnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hhnorm : ∀ (y : N) (w : TangentSpace J y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (h.inner y w w)))
+    (hrr₂ : r ≤ r₂) (hC : 0 ≤ C)
+    (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source)
+    (hquad : ∀ x ∈ Metric.closedEBall O (ENNReal.ofReal r₂),
+      ∀ v : TangentSpace I x,
+        h.inner ((Φ : M → N) x)
+          (mfderiv I J (Φ : M → N) x v) (mfderiv I J (Φ : M → N) x v) ≤
+          C * g.inner x v v) :
+    (Φ : M → N) '' Metric.eball O (ENNReal.ofReal r) ⊆
+      Metric.closedEBall ((Φ : M → N) O)
+        (ENNReal.ofReal (Real.sqrt C * r)) := by
+  rintro _ ⟨x, hx, rfl⟩
+  rw [Metric.mem_eball, edist_comm, IsRiemannianManifold.out (I := I) O x] at hx
+  obtain ⟨γ, hγ0, hγ1, hγC, hγlen⟩ :=
+    Manifold.exists_lt_of_riemannianEDist_lt (I := I) hx
+  have hrange : ∀ t ∈ Set.Icc (0 : ℝ) 1,
+      γ t ∈ Metric.closedEBall O (ENNReal.ofReal r₂) := by
+    intro t ht
+    rw [Metric.mem_closedEBall, edist_comm, IsRiemannianManifold.out (I := I) O (γ t)]
+    calc
+      Manifold.riemannianEDist I O (γ t)
+          ≤ Manifold.pathELength (I := I) γ 0 t := by
+        refine Manifold.riemannianEDist_le_pathELength
+          (hγC.mono (Set.Icc_subset_Icc le_rfl ht.2)) hγ0 rfl ht.1
+      _ ≤ Manifold.pathELength (I := I) γ 0 1 :=
+        Manifold.pathELength_mono (I := I) (γ := γ) (a' := 0) (b' := 1) le_rfl ht.2
+      _ ≤ ENNReal.ofReal r := le_of_lt hγlen
+      _ ≤ ENNReal.ofReal r₂ := ENNReal.ofReal_le_ofReal hrr₂
+  have hcomp : ContMDiffOn 𝓘(ℝ, ℝ) J 1 ((Φ : M → N) ∘ γ) (Set.Icc 0 1) :=
+    (Φ.contMDiffOn_toFun.of_le hn).comp hγC
+      (fun t ht => hsub (hrange t ht))
+  have hlen : Manifold.pathELength (I := J) ((Φ : M → N) ∘ γ) 0 1 ≤
+      ENNReal.ofReal (Real.sqrt C) * Manifold.pathELength (I := I) γ 0 1 := by
+    rw [Manifold.pathELength_eq_lintegral_mfderiv_Ioo,
+      Manifold.pathELength_eq_lintegral_mfderiv_Ioo,
+      ← MeasureTheory.lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    refine MeasureTheory.lintegral_mono_ae
+      (Filter.eventually_of_mem
+        (MeasureTheory.self_mem_ae_restrict measurableSet_Ioo) ?_)
+    intro t ht
+    have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := Set.mem_Icc_of_Ioo ht
+    have hγt := hrange t htIcc
+    have hγd : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t := by
+      refine ((hγC.contMDiffAt ?_).mdifferentiableAt (by norm_num))
+      exact Icc_mem_nhds ht.1 ht.2
+    have hΦd : MDifferentiableAt I J (Φ : M → N) (γ t) :=
+      ((Φ.contMDiffOn_toFun.of_le hn).contMDiffAt
+        (Φ.open_source.mem_nhds (hsub hγt))).mdifferentiableAt one_ne_zero
+    rw [mfderiv_comp_apply t hΦd hγd 1]
+    set w := mfderiv 𝓘(ℝ, ℝ) I γ t 1
+    calc
+      ‖mfderiv I J (Φ : M → N) (γ t) w‖ₑ =
+          ENNReal.ofReal (Real.sqrt (h.inner ((Φ : M → N) (γ t))
+            (mfderiv I J (Φ : M → N) (γ t) w)
+            (mfderiv I J (Φ : M → N) (γ t) w))) := hhnorm _ _
+      _ ≤ ENNReal.ofReal (Real.sqrt (C * g.inner (γ t) w w)) :=
+        ENNReal.ofReal_le_ofReal (Real.sqrt_le_sqrt (hquad (γ t) hγt w))
+      _ = ENNReal.ofReal (Real.sqrt C)
+          * ENNReal.ofReal (Real.sqrt (g.inner (γ t) w w)) := by
+        rw [Real.sqrt_mul hC, ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+      _ = ENNReal.ofReal (Real.sqrt C) * ‖w‖ₑ := by
+        rw [hgnorm (γ t) w]
+  rw [Metric.mem_closedEBall, edist_comm,
+    IsRiemannianManifold.out (I := J) ((Φ : M → N) O) ((Φ : M → N) x),
+    ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+  calc
+    Manifold.riemannianEDist J ((Φ : M → N) O) ((Φ : M → N) x)
+        ≤ Manifold.pathELength (I := J) ((Φ : M → N) ∘ γ) 0 1 := by
+      refine Manifold.riemannianEDist_le_pathELength hcomp ?_ ?_ zero_le_one
+      · simp [Function.comp, hγ0]
+      · simp [Function.comp, hγ1]
+    _ ≤ ENNReal.ofReal (Real.sqrt C) * Manifold.pathELength (I := I) γ 0 1 := hlen
+    _ ≤ ENNReal.ofReal (Real.sqrt C) * ENNReal.ofReal r := by
+      gcongr
+
 
 end DifferentialGeometry.PartialDiffeomorph
