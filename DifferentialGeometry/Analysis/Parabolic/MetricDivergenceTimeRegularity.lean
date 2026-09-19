@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceHigherRegularity
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
+import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceSecondTimeDerivative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeSecondWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakPartialRegularity
 
 noncomputable section
@@ -205,5 +205,147 @@ theorem exists_local_timeH1_with_sobolev_continuity_of_metric_divergence_equatio
       (sub_pos.mpr hcd) hΩ₀ W hWweak t ht N
   · exact TimeSobolev.tendsto_wkpNorm_sub_toFun_of_weak_partial_tree
       (sub_pos.mpr hcd) hΩ₀ W hWweak N
+
+theorem exists_local_contDiffOn_timeH1_of_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∀ F : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ m < 2, ∀ β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => F (m + 1) (Fin.cons i β) (t, z)) (fun z => F m β (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+            ∫ p, F 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      let μ₀ := μ.restrict (Icc c d)
+      let ν₀ := μ₀.prod (volume.restrict Ω₀)
+      ∀ Ft : Lp ℝ 2 ν₀,
+        (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+          tsupport φ ⊆ Ioo c d ×ˢ Ω₀ →
+          (∫ p, F 0 (fun i => Fin.elim0 i) p * fderiv ℝ φ p (1, 0) ∂ν₀) =
+            -∫ p, Ft p * φ p ∂ν₀) →
+        ∃ w : TimeSobolev.timeH1 (Lp ℝ 2 (volume.restrict Ω₀)) (d - c),
+          ContDiffOn ℝ 1 w.toFun (Icc (0 : ℝ) (d - c)) ∧
+          ∀ᵐ t ∂TimeSobolev.timeMeasure (d - c),
+            (w.toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] fun z => U (c + t, z) := by
+  intro μ ν ρ A U K F hK hF hweak μ₀ ν₀ Ft hFt
+  obtain ⟨R, Rt, hR, hRt⟩ := exists_local_second_weak_time_derivative_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hweak Ft hFt
+  have hμ₀ : μ₀ = volume.restrict (Icc c d) := by
+    change (volume.restrict (Icc a b)).restrict (Icc c d) = volume.restrict (Icc c d)
+    rw [Measure.restrict_restrict measurableSet_Icc,
+      inter_eq_left.mpr (Icc_subset_Icc hac.le hdb.le)]
+  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
+  have hmeasure : ν₀ ≤ ν :=
+    Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
+  have hUm := (Lp.memLp U).mono_measure hmeasure
+  let U₀ := hUm.toLp U
+  have hU₀ : U₀ =ᵐ[ν₀] U := hUm.coeFn_toLp
+  have hroot (φ : ℝ × EuStd → ℝ) (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+      (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ioo c d ×ˢ Ω₀) :
+      (∫ p, U₀ p * fderiv ℝ φ p (1, 0) ∂ν₀) = -∫ p, R p * φ p ∂ν₀ := by
+    refine (integral_congr_ae ?_).trans (hR φ hφ hφc hφs)
+    filter_upwards [hU₀] with p hp
+    rw [hp]
+  have hregular : ∃ w v : TimeSobolev.timeH1 (Lp ℝ 2 (volume.restrict Ω₀)) (d - c),
+      (∀ᵐ t ∂TimeSobolev.timeMeasure (d - c),
+        ((w.toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] fun z => U₀ (c + t, z)) ∧
+        ((v.toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] fun z => R (c + t, z)) ∧
+        ((v.deriv t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] fun z => Rt (c + t, z))) ∧
+      w.deriv = v.toFunL2 ∧
+      ContDiffOn ℝ 1 w.toFun (Icc (0 : ℝ) (d - c)) ∧
+      EqOn (derivWithin w.toFun (Icc (0 : ℝ) (d - c))) v.toFun (Icc (0 : ℝ) (d - c)) := by
+    have hgeneral := TimeSobolev.exists_contDiffOn_timeH1_of_second_spacetime_weak_deriv
+      (ν := volume) hcd hΩ₀
+    rw [← hμ₀] at hgeneral
+    exact hgeneral U₀ R Rt hroot hRt
+  obtain ⟨w, v, hw, _, hc, _⟩ := hregular
+  have hshift : MeasurePreserving (fun t : ℝ => c + t) (TimeSobolev.timeMeasure (d - c)) μ₀ := by
+    rw [hμ₀]
+    have h := (measurePreserving_add_right volume c).restrict_image_emb
+      (Homeomorph.addRight c).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (d - c))
+    simpa only [TimeSobolev.timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm c] using h
+  refine ⟨w, hc, ?_⟩
+  filter_upwards [hw, hshift.quasiMeasurePreserving.ae (Measure.ae_ae_of_ae_prod hU₀)] with t ht hu
+  exact ht.1.trans hu
+
+theorem exists_local_contDiffOn_timeH1_of_homogeneous_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν)) →
+      ∃ w : TimeSobolev.timeH1 (Lp ℝ 2 (volume.restrict Ω₀)) (d - c),
+        ContDiffOn ℝ 1 w.toFun (Icc (0 : ℝ) (d - c)) ∧
+        ∀ᵐ t ∂TimeSobolev.timeMeasure (d - c),
+          (w.toFun t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀] fun z => U (c + t, z) := by
+  intro μ ν ρ A U K hK hweak
+  let μ₀ := μ.restrict (Icc c d)
+  let ν₀ := μ₀.prod (volume.restrict Ω₀)
+  let F : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν := fun _ _ => 0
+  have hzero : (0 : Lp ℝ 2 ν) =ᵐ[ν] (fun _ => 0) := Lp.coeFn_zero ℝ 2 ν
+  have hF (m β i) : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => F (m + 1) (Fin.cons i β) (t, z)) (fun z => F m β (t, z)) Ω := by
+    filter_upwards [Measure.ae_ae_of_ae_prod hzero] with t ht
+    have hz : DeGiorgi.HasWeakPartialDeriv i (fun _ => 0) (fun _ => 0) Ω := by
+      intro φ hφ hφc hφs
+      simp
+    exact hz.congr_ae (Filter.EventuallyEq.symm ht) (Filter.EventuallyEq.symm ht)
+  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
+  have hmeasure : ν₀ ≤ ν :=
+    Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
+  apply exists_local_contDiffOn_timeH1_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK
+    (fun m _ β i => hF m β i) ?_ (0 : Lp ℝ 2 ν₀) ?_
+  · intro φ hφ hφc hφs
+    have hz : (∫ p, F 0 (fun i => Fin.elim0 i) p * φ p ∂ν) = 0 := by
+      trans ∫ p, (0 : ℝ) ∂ν
+      · apply integral_congr_ae
+        filter_upwards [hzero] with p hp
+        change (0 : Lp ℝ 2 ν) p * φ p = 0
+        rw [hp, zero_mul]
+      · exact integral_zero _ _
+    rw [hz, sub_zero]
+    exact hweak φ hφ hφc hφs
+  · intro φ hφ hφc hφs
+    have hz : (∫ p, F 0 (fun i => Fin.elim0 i) p * fderiv ℝ φ p (1, 0) ∂ν₀) = 0 := by
+      trans ∫ p, (0 : ℝ) ∂ν₀
+      · apply integral_congr_ae
+        filter_upwards [hzero.filter_mono (ae_mono hmeasure)] with p hp
+        change (0 : Lp ℝ 2 ν) p * fderiv ℝ φ p (1, 0) = 0
+        rw [hp, zero_mul]
+      · exact integral_zero _ _
+    have hzt : (∫ p, (0 : Lp ℝ 2 ν₀) p * φ p ∂ν₀) = 0 := by
+      trans ∫ p, (0 : ℝ) ∂ν₀
+      · apply integral_congr_ae
+        filter_upwards [Lp.coeFn_zero ℝ 2 ν₀] with p hp
+        simp only [hp, Pi.zero_apply, zero_mul]
+      · exact integral_zero _ _
+    rw [hz, hzt, neg_zero]
 
 end DifferentialGeometry.Analysis.Parabolic
