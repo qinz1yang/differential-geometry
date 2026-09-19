@@ -504,21 +504,17 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 | E.1 | **35.1**：PL 3-流形 `M₁` 中 1 维多面体 `K`（可非紧、闭于 `U`）、`U ⊇ K` 开、`h : U → M₂` 同胚（到像）、`φ` 连续正 ⟹ 正则邻域 `N` 与 PLH `f : N ↔ X ⊆ M₂`，`X ∈ 𝓝ˢ (h '' K)`，φ-逼近。证明：`ε(A) = inf φ\|A`、对偶胞腔改造（Figure 35.1）、逐胞腔用 A.6（在图卡内）、条件 (2)–(8)、L1–L3（D.3、极小性条件）、拼接 | `theorem exists_regularNeighborhood_plh_approx_manifold ...`（流形层，F6.1/F6.2 的局部有限性） | E.2 | h repairs Moise351 input/output first: a locally finite one-dimensional polyhedron and a genuine regular-neighborhood relation. Noncompact scope/variable error retained; proof remains open. | 6k–10k |
 
 **E.1 陈述复核（2026-09-19）。** `IsLocallyFiniteRegularNeighborhoodOf`
-现逐层使用真正的 `derivedNeighborhood`，并分别用 `IsGlueIso` 记录图子复形和
-导出邻域在相邻层间的像子复形；集合单调性不再代替单纯相容性。进一步复核原书的单一局部有限三角剖分定义后，
-接口现还要求 `CompatibleStrongDeformationRetractSystem`：逐层强形变收缩在共同旧点上相容，且下一邻域层是总并集中的
-相对邻域。`toStrongDeformationRetract` 已从这些局部数据证明总并集到图并集的实际强形变收缩；不能再把
-`IsGlueIso` 本身当作无穷远处的收缩相容性。
-这些完全通用的搬运、穷竭拼接与连续性接口现归于
-`Topology/Homotopy/DeformationRetract.lean`，PL 层只负责生产和消费几何数据。
-`derivedNeighborhoodCompatibleStrongDeformationRetractSystem` 已进一步证明单个直线复形的有限子复形穷竭确实生产这种系统：
-环境面递增、图在旧面上精确限制且相邻导出邻域有 interior 缓冲即可，重心投影相容性由
-`derivedNeighborhoodBarycentricProjection_eq_of_restrict` 推出，不是输入。现有可变坐标塔尚缺旧导出邻域包含于保留 core、
-后一层图在像 core 上的精确限制及片参数在该邻域上的一致性，故两个独立 `IsGlueIso` 仍不能直接消费此生产者。
-`PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` 给出有限常值塔构造，
-`exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` 在三维球内部的一条单纯边上
-给出 `N/K/U` 均非空且带全局收缩的实际模型。`Moise351` 的非紧范围、相对闭输入和逐点误差不变；
-非恒定塔仍须从同一个局部有限三角剖分生产相对邻域穷竭和相容收缩，再完成对偶胞腔改造及逼近证明。
+现以 `IsDerivedNeighborhoodExhaustion` 记录一个固定欧氏实现中的单一局部有限直线复形 `J`、穷尽 `J.faces` 的递增有限
+环境子复形 `A i`、同一实现中的图子复形 `L i`、旧面上的精确限制、导出邻域的相对邻域穷尽，以及总导出邻域到流形的
+单个嵌入。旧的两组可变坐标 `IsGlueIso` 和自由给定的
+`Nonempty CompatibleStrongDeformationRetractSystem` 均已删除。
+`derivedNeighborhoodCompatibleStrongDeformationRetractSystem` 从这些面限制数据证明规范重心投影及线性同伦相容，
+`toStrongDeformationRetract` 再证明总并集到图并集的实际强形变收缩；相容性不再是关系的输入。
+通用搬运、穷竭拼接与连续性接口归于 `Topology/Homotopy/DeformationRetract.lean`，PL 层只生产几何数据。
+`PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` 给出有限常值穷尽，
+`exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` 在三维球内部的一条单纯边上给出 `N/K/U` 均非空且带全局收缩的
+实际模型。`Moise351` 的非紧范围、相对闭输入和逐点误差不变；下一步须给这个新接口一个非恒定非紧模型，随后完成
+对偶胞腔改造及逼近证明。
 | E.2 | **35.2**：局部有限、可非紧的多面体 3-流形带边上的到像同胚可任意小地逼近为到像 PL 同胚；不增加像集结论。证明待 E.1 与流形层 A.1–A.6。 | `Transition361.lean`：`def Moise352 (n : ℕ) : Prop := ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁] [MetricSpace M₂] [SecondCountableTopology M₂] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂] [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)] {K : Set M₁}, IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n K → ∀ {h : M₁ → M₂}, Topology.IsEmbedding (K.domRestrict h) → ∀ φ : M₁ → ℝ, ContinuousOn φ K → (∀ x ∈ K, 0 < φ x) → ∃ f : M₁ → M₂, IsPLHomeomorphInto n f K ∧ ∀ x ∈ K, dist (f x) (h x) < φ x`。`IsPLHomeomorphInto n f K := IsPLOn n n f K ∧ Set.InjOn f K ∧ ∀ y ∈ f '' K, ∃ g : M₂ → M₁, IsPLWithinAt n n g (f '' K) y ∧ Set.LeftInvOn g f K`。 | E.3 | 命题与接口已定义，35.2 本身未证（2026-09-15，§12.1 检查点）：逐点逆映射形式兼容空源；`isPLHomeomorphInto_iff_exists_inverse` 证明源非空时等价于单个总逆映射的双向 `IsPLOn` 形式。`Set.domRestrict` 是旧 `Set.restrict` 的无弃用警告名称。两定义、连续性、逆映射 PL 性、开像和 `Moise352.exists_approx_of_isOpen` 已检查 exit=0、零 warning；AuditF115 十项仅标准三公理。源域不要求闭或紧，不把 35.2 当成已证定理。 | 4k–6k |
 | E.3 | 36.1 的过渡（Moise 8.4 的三维版）：整个 U 一次应用 35.2，穷竭及边界距离控制证明像集相等 | `exists_plh_approx_of_isOpen (h352 : Moise352.{u} 3)`：`{U : Set M₁} → IsOpen U → Topology.IsEmbedding (U.domRestrict h) → ContinuousOn φ U → (∀ x ∈ U, 0 < φ x) → ∃ f : M₁ → M₂, IsPLHomeomorphInto 3 f U ∧ f '' U = h '' U ∧ ∀ x ∈ U, dist (f x) (h x) < φ x`；流形实例与 E.2 相同。 | E.4 | done（条件于 `Moise352 3`，2026-09-15）：`Transition361.lean` 的 `exists_plh_approx_of_isOpen` 具有本行完整结论；一般正维版本为 `Moise352.exists_approx_image_eq_of_isOpen`。对整个 U 一次应用 35.2，用 F6.3 塔的紧致阶段构造穷竭；连续正误差控制使像留在原连通分支，并使阶段前沿避开上一阶段。每条紧致路径被某阶段捕获，连通性与前沿分离给满射，故无需假设阶段本身连通。`IsPLHomeomorphInto.image_polyhedralBoundary` 由 M.3 与不变域给 `f(Bd P) = Fr(f(P))`；拓扑层前沿搬运不要求先三角剖分像集。包含空 U、空源情形，不增加开像或像集假设。聚焦检查 exit=0、零 warning；AuditF116 十五项仅标准三公理。 | 3k–5k |
 | E.4 | **端点**与推论、公理审计 | `theorem plApproximationManifold_three_of_moise352 (h352 : Moise352.{u} 3) : PLApproximationManifold.{u} 3`（`Endgame.lean`）。E.3 取 U = univ，由像集等式得满射，连续单射经 E.0 得开映射，组装同胚；`IsPLOn` 于 univ 给 `IsPL`。 | 书中 `FND-SMOOTHABILITY` 链（与 Phase 2 合成） | done（条件于 `Moise352 3`，2026-09-15）：`plApproximationManifold_three_of_moise352` 已证明，两个新模块分别聚焦检查 exit=0、零 warning；AuditF117 包含最终端点的十六个声明均仅 `propext`、`Classical.choice`、`Quot.sound`。35.2 本身仍未证，未把该条件端点记成无条件光滑化。 | 1k |

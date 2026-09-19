@@ -126,81 +126,86 @@ theorem exists_tetrahedron_oneSkeleton :
   · simpa only [hgraph] using (SimpleGraph.connected_top : (⊤ : SimpleGraph L.vertices).Connected)
   · exact ⟨Classical.choice hnonempty, hdegree _⟩
 
-namespace LocallyFinitePieceTower
+open Classical in
+def derivedNeighborhoodExhaustionAmbient {m : ℕ}
+    (A L : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m))) :
+    Set (EuclideanSpace ℝ (Fin m)) :=
+  ⋃ i, (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space
 
 open Classical in
-def derivedNeighborhoodImage {U : Set X} (T : LocallyFinitePieceTower n X U)
-    (G : ∀ i, Geometry.SimplicialComplex ℝ
-      (EuclideanSpace ℝ (Fin (T.piece i).ambientDim))) (i : ℕ) : Set X :=
-  (T.piece i).piece.map ''
-    (@derivedNeighborhood _ _ _ (Classical.decEq _)
-      (T.piece i).piece.complex (G i)).space
+def derivedNeighborhoodExhaustionCore {m : ℕ}
+    (A L : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m))) :
+    Set (derivedNeighborhoodExhaustionAmbient A L) :=
+  deformationRetractExhaustionCore (fun i => (L i).space)
+    (fun i => (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space)
 
-end LocallyFinitePieceTower
+open Classical in
+def IsDerivedNeighborhoodExhaustion (N K : Set X) : Prop :=
+  ∃ (m : ℕ)
+    (J : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m)))
+    (A L : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m)))
+    (f : derivedNeighborhoodExhaustionAmbient A L → X),
+    J.faces = ⋃ i, (A i).faces ∧
+    LocallyFinite (fun s : J.faces =>
+      (Subtype.val : J.space → EuclideanSpace ℝ (Fin m)) ⁻¹'
+        convexHull ℝ ((s : Finset (EuclideanSpace ℝ (Fin m))) :
+          Set (EuclideanSpace ℝ (Fin m)))) ∧
+    (∀ i, (A i).faces.Finite) ∧
+    (∀ i, (L i).faces ⊆ (A i).faces) ∧
+    (∀ i s, s ∈ (L i).faces → s.card ≤ 2) ∧
+    (∀ i, IsCombinatorialManifoldWithBoundary n (A i)) ∧
+    (∀ i, IsCombinatorialManifoldWithBoundary n
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i))) ∧
+    Monotone (fun i => (A i).faces) ∧
+    Monotone (fun i => (L i).faces) ∧
+    (∀ {i j}, i ≤ j → ∀ s ∈ (A i).faces,
+      s ∈ (L j).faces → s ∈ (L i).faces) ∧
+    (∀ i {x : EuclideanSpace ℝ (Fin m)},
+      x ∈ (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space →
+        (@derivedNeighborhood _ _ _ (Classical.decEq _) (A (i + 1)) (L (i + 1))).space ∈
+          nhdsWithin x (derivedNeighborhoodExhaustionAmbient A L)) ∧
+    IsEmbedding f ∧
+    Set.range f = N ∧
+    f '' derivedNeighborhoodExhaustionCore A L = K
 
 open Classical in
 def IsLocallyFiniteRegularNeighborhoodOf (N K U : Set X) : Prop :=
-  ∃ (T : LocallyFinitePieceTower n X U)
-    (G : ∀ i, Geometry.SimplicialComplex ℝ
-      (EuclideanSpace ℝ (Fin (T.piece i).ambientDim)))
-    (GImage : ∀ i, Geometry.SimplicialComplex ℝ
-      (EuclideanSpace ℝ (Fin (T.piece (i + 1)).ambientDim)))
-    (DImage : ∀ i, Geometry.SimplicialComplex ℝ
-      (EuclideanSpace ℝ (Fin (T.piece (i + 1)).ambientDim))),
-    Nonempty (CompatibleStrongDeformationRetractSystem
-      (fun i => (T.piece i).piece.map '' (G i).space)
-      (T.derivedNeighborhoodImage G)) ∧
-    (∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex) ∧
-    (∀ i, (G i).faces ⊆ (T.core i).faces) ∧
-    (∀ i s, s ∈ (G i).faces → s.card ≤ 2) ∧
-    (∀ i, (GImage i).faces ⊆ (G (i + 1)).faces) ∧
-    (∀ i, IsGlueIso (G i) (GImage i) (T.embed i) (T.embedInv i)) ∧
-    (∀ i, (DImage i).faces ⊆
-      (@derivedNeighborhood _ _ _ (Classical.decEq _)
-        (T.piece (i + 1)).piece.complex (G (i + 1))).faces) ∧
-    (∀ i, IsGlueIso
-      (@derivedNeighborhood _ _ _ (Classical.decEq _)
-        (T.piece i).piece.complex (G i)) (DImage i)
-        (T.embed i) (T.embedInv i)) ∧
-    (⋃ i, (T.piece i).piece.map '' (G i).space) = K ∧
-    (∀ i, IsCombinatorialManifoldWithBoundary n
-      (@derivedNeighborhood _ _ _ (Classical.decEq _)
-        (T.piece i).piece.complex (G i))) ∧
-    Monotone (T.derivedNeighborhoodImage G) ∧
-    N = ⋃ i, T.derivedNeighborhoodImage G i ∧
+  IsDerivedNeighborhoodExhaustion (n := n) N K ∧
     N ∈ nhdsSet K ∧
     N ⊆ U ∧
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.mem_nhdsSet {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ∈ nhdsSet K := by
-  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
-    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
-  exact hnhds
+  exact h.2.1
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.subset {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ⊆ U := by
-  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
-    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
-  exact hNU
+  exact h.2.2.1
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.isLocallyFinitePolyhedralManifoldWithBoundary
     {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N := by
-  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
-    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
-  exact hmanifold
+  exact h.2.2.2
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] in
+open Classical in
+theorem IsDerivedNeighborhoodExhaustion.nonempty_strongDeformationRetract
+    {N K : Set X} (h : IsDerivedNeighborhoodExhaustion (n := n) N K) :
+    Nonempty (StrongDeformationRetract {x : N | (x : X) ∈ K}) := by
+  obtain ⟨m, J, A, L, f, hJ, hlocal, hfinite, hLA, hcard, hambient, hderived,
+    hAmono, hLmono, hrestrict, hnhds, hf, hN, hK⟩ := h
+  let _ : ∀ i, Finite (A i).faces := fun i => (hfinite i).to_subtype
+  let R := derivedNeighborhoodCompatibleStrongDeformationRetractSystem A L hLA hAmono
+    hLmono hrestrict hnhds
+  rw [← hN, ← hK]
+  exact ⟨R.toStrongDeformationRetract.embeddingImage f hf⟩
 
 open Classical in
 theorem IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract
     {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
     Nonempty (StrongDeformationRetract {x : N | (x : X) ∈ K}) := by
-  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
-    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
-  let R := Classical.choice hR
-  subst K
-  subst N
-  exact ⟨R.toStrongDeformationRetract⟩
+  exact h.1.nonempty_strongDeformationRetract
 
 open Classical in
 noncomputable def IsLocallyFiniteRegularNeighborhoodOf.strongDeformationRetract
@@ -226,64 +231,64 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
         (@derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G).space)
       (P.piece.map '' G.space) U := by
   let D := @derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G
+  let A : ℕ → Geometry.SimplicialComplex ℝ
+      (EuclideanSpace ℝ (Fin P.ambientDim)) := fun _ => P.piece.complex
+  let L : ℕ → Geometry.SimplicialComplex ℝ
+      (EuclideanSpace ℝ (Fin P.ambientDim)) := fun _ => G
   let _ : Finite P.piece.complex.faces := P.piece.finite_faces.to_subtype
   have hDspace : D.space ⊆ P.piece.complex.space := by
     change (@derivedNeighborhood _ _ _ (Classical.decEq _)
       P.piece.complex G).space ⊆ P.piece.complex.space
     exact @derivedNeighborhood_space_subset _ _ _ (Classical.decEq _)
       P.piece.complex G
-  let f : D.space → X :=
-    (fun x : P.piece.complex.space => P.piece.map x) ∘ Set.inclusion hDspace
+  have hExhaustionSpace : derivedNeighborhoodExhaustionAmbient A L ⊆
+      P.piece.complex.space := by
+    intro x hx
+    obtain ⟨i, hxi⟩ := Set.mem_iUnion.mp hx
+    exact hDspace (by simpa only [A, L, D] using hxi)
+  let f : derivedNeighborhoodExhaustionAmbient A L → X :=
+    (fun x : P.piece.complex.space => P.piece.map x) ∘
+      Set.inclusion hExhaustionSpace
   have hf : IsEmbedding f :=
-    P.piece.isClosedEmbedding.isEmbedding.comp (IsEmbedding.inclusion hDspace)
+    P.piece.isClosedEmbedding.isEmbedding.comp (IsEmbedding.inclusion hExhaustionSpace)
   have hfrange : Set.range f = P.piece.map '' D.space := by
     ext y
     constructor
     · rintro ⟨x, rfl⟩
-      exact ⟨x, x.2, rfl⟩
+      obtain ⟨i, hxi⟩ := Set.mem_iUnion.mp x.2
+      exact ⟨x, by simpa only [A, L, D] using hxi, rfl⟩
     · rintro ⟨x, hx, rfl⟩
-      exact ⟨⟨x, hx⟩, rfl⟩
-  have hfcore : f '' derivedNeighborhoodSubcomplex P.piece.complex G =
+      let y : derivedNeighborhoodExhaustionAmbient A L :=
+        ⟨x, Set.mem_iUnion.mpr ⟨0, by simpa only [A, L, D] using hx⟩⟩
+      exact ⟨y, rfl⟩
+  have hfcore : f '' derivedNeighborhoodExhaustionCore A L =
       P.piece.map '' G.space := by
     ext y
     constructor
     · rintro ⟨x, hx, rfl⟩
-      exact ⟨x, hx, rfl⟩
+      change (x : EuclideanSpace ℝ (Fin P.ambientDim)) ∈ ⋃ i, (L i).space at hx
+      obtain ⟨i, hxi⟩ := Set.mem_iUnion.mp hx
+      exact ⟨x, by simpa only [L] using hxi, rfl⟩
     · rintro ⟨x, hx, rfl⟩
-      let y : D.space := ⟨x, subcomplex_space_subset_derivedNeighborhood hG hx⟩
-      exact ⟨y, hx, rfl⟩
-  have rstage : StrongDeformationRetract
-      (deformationRetractStageCore (P.piece.map '' G.space)
-        (P.piece.map '' D.space)) := by
-    rw [← hfcore, ← hfrange]
-    exact (derivedNeighborhoodStrongDeformationRetract hG).embeddingImage f hf
-  let R := CompatibleStrongDeformationRetractSystem.const
-    (Set.image_mono (subcomplex_space_subset_derivedNeighborhood hG)) rstage
-  have hR : CompatibleStrongDeformationRetractSystem
-      (fun _ => P.piece.map '' G.space)
-      ((LocallyFinitePieceTower.ofPiece P).derivedNeighborhoodImage (fun _ => G)) := by
-    change CompatibleStrongDeformationRetractSystem
-      (fun _ => P.piece.map '' G.space) (fun _ => P.piece.map '' D.space)
-    exact R
-  refine ⟨LocallyFinitePieceTower.ofPiece P, (fun _ => G), (fun _ => G), (fun _ => D), ⟨hR⟩,
-    fun _ => hambient,
-    fun _ => hG, fun _ => hcard, fun _ => Subset.rfl, ?_, fun _ => Subset.rfl,
-    ?_, ?_, fun _ => hderived, ?_, ?_, hnhds, ?_, ?_⟩
-  · intro i
-    change IsGlueIso G G id id
-    exact ⟨fun s hs => by simpa using hs, fun s hs => by simpa using hs,
-      fun _ _ _ _ => rfl, fun _ _ _ _ => rfl⟩
-  · intro i
-    change IsGlueIso D D id id
-    exact ⟨fun s hs => by simpa using hs, fun s hs => by simpa using hs,
-      fun _ _ _ _ => rfl, fun _ _ _ _ => rfl⟩
-  · exact iUnion_const (ι := ℕ) (P.piece.map '' G.space)
+      let z : derivedNeighborhoodExhaustionAmbient A L :=
+        ⟨x, Set.mem_iUnion.mpr ⟨0, by
+          simpa only [A, L, D] using subcomplex_space_subset_derivedNeighborhood hG hx⟩⟩
+      refine ⟨z, ?_, rfl⟩
+      change (z : EuclideanSpace ℝ (Fin P.ambientDim)) ∈ ⋃ i, (L i).space
+      exact Set.mem_iUnion.mpr ⟨0, by simpa only [L] using hx⟩
+  refine ⟨⟨P.ambientDim, P.piece.complex, A, L, f, ?_, locallyFinite_of_finite _,
+    fun _ => P.piece.finite_faces, fun _ => hG, fun _ => hcard, fun _ => hambient,
+    fun _ => hderived, ?_, ?_, ?_, ?_, hf, hfrange, hfcore⟩, hnhds, ?_, ?_⟩
+  · exact (iUnion_const (ι := ℕ) P.piece.complex.faces).symm
   · intro i j hij
-    simp only [LocallyFinitePieceTower.derivedNeighborhoodImage,
-      LocallyFinitePieceTower.ofPiece]
     exact Subset.rfl
-  · exact (iUnion_const (ι := ℕ)
-      (P.piece.map '' D.space)).symm
+  · intro i j hij
+    exact Subset.rfl
+  · intro i j hij s hsA hsL
+    simpa only [A, L] using hsL
+  · intro i x hx
+    simpa only [derivedNeighborhoodExhaustionAmbient, A, L, iUnion_const] using
+      (self_mem_nhdsWithin : D.space ∈ nhdsWithin x D.space)
   · rintro x ⟨y, hy, rfl⟩
     let _ : DecidableEq (EuclideanSpace ℝ (Fin P.ambientDim)) := Classical.decEq _
     exact P.piece.bijOn.mapsTo (derivedNeighborhood_space_subset P.piece.complex G hy)

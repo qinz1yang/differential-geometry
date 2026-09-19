@@ -602,8 +602,9 @@ noncomputable def derivedNeighborhoodCompatibleStrongDeformationRetractSystem
     (hK : Monotone fun i => (K i).faces) (hL : Monotone fun i => (L i).faces)
     (hrestrict : ∀ {i j}, i ≤ j → ∀ s ∈ (K i).faces,
       s ∈ (L j).faces → s ∈ (L i).faces)
-    (hinterior : ∀ i, (derivedNeighborhood (K i) (L i)).space ⊆
-      interior (derivedNeighborhood (K (i + 1)) (L (i + 1))).space) :
+    (hnhds : ∀ i {x : E}, x ∈ (derivedNeighborhood (K i) (L i)).space →
+      (derivedNeighborhood (K (i + 1)) (L (i + 1))).space ∈
+        𝓝[⋃ j, (derivedNeighborhood (K j) (L j)).space] x) :
     CompatibleStrongDeformationRetractSystem
       (fun i => (L i).space) (fun i => (derivedNeighborhood (K i) (L i)).space) where
   core_subset := fun i => subcomplex_space_subset_derivedNeighborhood (hLK i)
@@ -631,7 +632,7 @@ noncomputable def derivedNeighborhoodCompatibleStrongDeformationRetractSystem
       (derivedNeighborhood_space_subset (K i) (L i) hxi)]
   ambient_mem_nhdsWithin := by
     intro i x hx
-    exact mem_nhdsWithin_of_mem_nhds (mem_interior_iff_mem_nhds.mp (hinterior i hx))
+    exact hnhds i hx
 
 open Classical in
 noncomputable def derivedNeighborhoodFundamentalGroupEquiv

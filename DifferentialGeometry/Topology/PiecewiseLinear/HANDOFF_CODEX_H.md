@@ -3578,11 +3578,12 @@ The constructor
 `derivedNeighborhoodCompatibleStrongDeformationRetractSystem` applies this
 naturality to a nested sequence of finite ambient complexes `K i` and graph
 subcomplexes `L i`.  Its hypotheses are geometric: face monotonicity, exact
-restriction of `L j` to every old `K i`, and an interior buffer from each
-derived-neighborhood support to the next.  It produces the full compatible
-system using the already proved canonical barycentric strong deformation
-retract at every stage.  Neither retraction compatibility nor homotopy
-compatibility appears as an input.
+restriction of `L j` to every old `K i`, and the assertion that the next
+derived-neighborhood support is a relative neighborhood of the current stage
+inside the total union.  It produces the full compatible system using the
+already proved canonical barycentric strong deformation retract at every
+stage.  Neither retraction compatibility nor homotopy compatibility appears
+as an input.
 
 This also isolates the precise defect in the present
 `IsLocallyFiniteRegularNeighborhoodOf` data.  `IsGlueIso` records only the
@@ -3602,8 +3603,48 @@ reused declarations.  Every axiom closure was contained in
 `{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
 environment linters passed.
 
-The next step is to replace the free compatible-system field by coherent
-single-triangulation restriction data (including derived-neighborhood
-containment in the preserved core and exact graph restriction), derive the
-system with this constructor after transport to the manifold, and instantiate
-it on a nonconstant noncompact model.
+The free compatible-system field identified here is removed in §70.  A
+nonconstant noncompact model of the corrected geometric exhaustion remains the
+next independent sanity check.
+
+## 70. 2026-09-19 single-triangulation regular-neighborhood interface — done
+
+The regular-neighborhood relation no longer tries to recover one infinite
+triangulation from unrelated finite coordinate systems.  The new
+`IsDerivedNeighborhoodExhaustion N K` data contains one locally finite
+simplicial complex `J` in a fixed Euclidean space, finite ambient subcomplexes
+`A i` whose face sets increase and exhaust `J.faces`, and graph subcomplexes
+`L i` in the same realization.  The graph face sets increase and restrict
+exactly on every old ambient face.  The canonical derived neighborhoods have
+the required next-stage relative-neighborhood property, and one embedding of
+their total union has range `N` and carries the graph union exactly onto `K`.
+
+`IsDerivedNeighborhoodExhaustion.nonempty_strongDeformationRetract` installs
+the finite-face instances, invokes
+`derivedNeighborhoodCompatibleStrongDeformationRetractSystem`, glues its
+canonical stage homotopies, and transports the resulting global strong
+deformation retract through the single embedding.  Thus compatibility is a
+theorem of the actual nested barycentric geometry.  It is no longer a field of
+`IsLocallyFiniteRegularNeighborhoodOf` and cannot be supplied independently of
+the triangulation.
+
+`PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` now realizes
+the same interface with a constant finite exhaustion.  It uses the finite
+complex itself as `J`, proves local finiteness from finiteness of its faces,
+and uses the restricted piece parametrization as the one embedding.  The
+public regular-neighborhood endpoints, the nonempty interior-arc model, and
+the solid-torus extraction in `MoiseChain` retain their signatures.
+
+Private checks of `DerivedNeighborhoodRetraction`, `PolyhedralGraph`,
+`ArcChainNeighborhood`, and `MoiseChain` exited zero with no diagnostics and
+left shared outputs unchanged.  The external strict audit dynamically checked
+all one hundred fifty-five non-automatic declarations in the six relevant
+homotopy and PL modules plus twenty directly reused declarations.  Every axiom
+closure was contained in `{propext, Classical.choice, Quot.sound}`, and all
+thirteen applicable environment linters passed.
+
+The former variable-coordinate `GImage`/`DImage` fields and the free
+`Nonempty CompatibleStrongDeformationRetractSystem` have been deleted.  The
+next separate obligation is a nonconstant noncompact instance of
+`IsDerivedNeighborhoodExhaustion`, followed by the dual-cell modification and
+pointwise-error homeomorphism needed for Moise 35.1 itself.

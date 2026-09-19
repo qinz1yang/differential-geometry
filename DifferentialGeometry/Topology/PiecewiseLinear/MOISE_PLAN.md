@@ -896,3 +896,10 @@ inline comments and declaration docstrings remain disallowed.
   exit=0、零 warning；严格审计 64 个本模块声明与 9 个复用声明，公理仅标准三公理，13 项适用 linter 全通过。
   现有 35.1 关系仍缺把此定理接到塔的条件：旧导出邻域未保证落在 `core i`，且后一层图未保证在像 core 上恰为旧图；
   单独的 `GImage`/`DImage IsGlueIso` 不能推出规范投影相容。下一步须修正该几何接口并给非恒定非紧实例。
+- 2026-09-19（H 车道单一三角剖分接口修正）：`IsDerivedNeighborhoodExhaustion` 现直接记录固定欧氏实现中的单一局部有限
+  复形 `J`、面集递增且穷尽 `J` 的有限环境层 `A i`、同一实现中的图层 `L i`、旧环境面上的精确限制、导出邻域的
+  相对邻域穷尽，以及总并集到流形的一个嵌入。`IsLocallyFiniteRegularNeighborhoodOf` 不再含自由给定的相容 SDR，也不再
+  使用两组彼此不足以约束重心投影的 `GImage`/`DImage IsGlueIso`。规范阶段收缩由
+  `derivedNeighborhoodCompatibleStrongDeformationRetractSystem` 从上述几何数据推出，再搬到 `N ↘ K`。有限构造、内部弧模型与
+  `MoiseChain` 的公开签名不变。四个私有模块检查均 exit=0、零诊断；严格审计覆盖 155 个模块声明与 20 个直接复用声明，
+  公理仅标准三公理，13 项适用 linter 全通过。下一独立检查点是非恒定非紧实例；35.1 的对偶胞腔改造与逐点误差 PL 同胚仍未证明。
