@@ -44,7 +44,7 @@ smoothing is an independent open phase with its own producer and acceptance.
 The approximation stage must retain noncompact open sets and pointwise shrinking
 error control. Five existing endpoint-chain modules were missing from root
 reachability; all six planned direct imports are now present and statically
-reachable, with 9352 project modules (including the root) in the root closure. The owner
+reachable, with 9363 project modules (including the root) in the root closure. The owner
 stopped the full-source build at 2026-09-19 02:00 UTC, retaining outputs with
 a discretionary restart only when compatibility verification or prolonged
 all-lane blockage warrants it. Seven leaves/26 declarations passed focused checks;
@@ -64,9 +64,15 @@ critical reused producers is accepted; see the seventeenth delivery receipt.
 The independently accepted radial-annulus layer identifies the shell frontier
 and simply connected interior, and locates an actual initial separating
 surface inside that interior. All 24 declarations, ten supporting declarations
-and three radial-shell models pass independent axiom/lint replay. E3 retains
-30.3; compression via 26.4, the annular construction 28.19, strict Betti
-descent and the full PL-sphere endpoint 30.4 remain open.
+and three radial-shell models pass independent axiom/lint replay.
+The finite-ambient input to compression is source-constructed in 7c051baf7:
+actual nullhomotopies are captured in a finite polyhedral neighborhood inside
+the specified open set, and a connected non-spherical closed surface there
+has a nontrivial fundamental-group element killed by inclusion. All five new
+declarations, nine reused entries, two circle-model declarations and 13 linters
+pass independent replay; this layer is accepted.
+E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
+strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 
 Phase 3 的唯一终点是一条定理：

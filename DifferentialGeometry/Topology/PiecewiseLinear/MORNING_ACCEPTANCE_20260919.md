@@ -394,3 +394,56 @@ finite face ordering and actual stage assembly; its one added compiler permit
 is the natural metric-free SimplicialComplex.FaceFiltration module. Smooth
 attaching/framing, corner rounding, smooth two-sphere classification and the
 compact smoothing endpoint remain open.
+
+## Finite nullhomotopy capture and nontrivial surface kernel
+
+M304 7c051baf7 is independently accepted. Three fresh source checks took
+29.778 seconds; the complete five-declaration, nine-reuse-entry and two-model
+audit took 48.397 seconds, including admission. All final checks exit 0
+with zero diagnostics, only standard foundational axioms and 13 clean
+environment linters. Two accepted private prerequisites were reused after
+current source and object identity checks; other upstream artifacts remain
+shared read-only. This is focused verification, not a full-root build.
+
+An actual representative loop and nullhomotopy are captured together with
+the given compact set in a finite combinatorial manifold neighborhood inside
+the specified open set. The relative endpoint homotopy is rebuilt there.
+For a connected nonspherical closed combinatorial surface in a simply
+connected open set, this produces a nontrivial fundamental-group element
+killed in such a finite neighborhood, with the surface wholly off its boundary.
+No compression disk is assumed or produced. The concrete complex-unit-circle
+model uses a nontrivial element and the radius-two disk; it validates the
+general capture construction, not a concrete closed two-surface instance.
+
+Lean +167/-0 comprises 164 lines in three leaf modules and three flat-root
+imports. Receipt: .lake/verified-twentysecond-lane-delivery-20260919.json.
+Static root reachability is 9363 project modules including the root, with no
+missing project source or cycle. Besides the three new modules, this import
+path newly reaches eight existing homology/surface-recognition modules; these
+are not counted as new code or fresh source checks. The only earlier diagnostic
+was an overlong output-path line in the coordinator's external probe; its
+corrected final replay is clean. Exact probe source and both attempts are retained.
+
+The compression disk 26.4, annular-neighborhood conclusion 28.19, actual 30.3
+splitting, Betti descent and the complete sphere endpoint 30.4 remain open.
+M304 e39955ff6 circle-neighborhood cylindrical diagrams, S 73a6d1984 +
+6690962e1 full PL handle filtration, and F c98ea5828 NormalSystem migration
+are delivered but still await independent integration acceptance. S was
+continued at its delivery boundary toward actual smooth attachment/corner
+geometry; M304 and F continue their current mathematical lanes.
+
+## Initial source-boundary gate in the covering induction
+
+A source-level review and rendered Moise pages 187-188 distinguish image
+intersection with the ambient boundary from source preimage boundary equality.
+NormalSystem currently carries only the former. The existing
+NormalSingularCellData fiber theorem proves the latter when genuine normal
+data are available; the injective inward-push and already-nonsingular-cell
+projection producers do not supply it for the arbitrary initial source.
+F is constructing a source-dependent relative PL collar push, preserving
+the actual boundary map and subgroup avoidance. It precedes the initial
+complexity choice; later covers must preserve this property and prove strict
+descent on the same source. No properness field or assumed normal-data package
+substitutes for that producer, and no full NormalSystem counterexample is
+claimed. The decision and book images are frozen in
+.lake/normal-system-source-boundary-decision-20260919.json.

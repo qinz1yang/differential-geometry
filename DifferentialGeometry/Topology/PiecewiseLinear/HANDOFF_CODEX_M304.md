@@ -101,8 +101,54 @@ an OCR error, not an error in the book. The weak bound is sharp for a
 separating compression of a genus-two surface into two tori. The formal
 induction should prove this bound and hence strict decrease from p1(M1).
 
-Next: capture an actual nullhomotopy in a finite polyhedral neighborhood
-inside the shell interior to provide the ambient input to 26.4. The
+The spherical-shell checkpoint is
+0289bdaf43bb4f8447fb4c19ac20c319448ba35b, pushed on codex/moise-304.
+
+## Finite ambient nullhomotopies (2026-09-19 UTC)
+
+`FundamentalGroup/SimplyConnected.lean` proves that a path-connected space
+is simply connected exactly when its fundamental group at any chosen
+basepoint is trivial. Its contrapositive produces a nontrivial element at
+that basepoint. The proof uses the existing change-of-basepoint equivalence
+and the nullhomotopy characterization of simple connectivity.
+
+`NullhomotopyNeighborhood.lean` solves the finite-ambient obligation in the
+compression argument. Given a compact subset S of an open U and an element
+g of its fundamental group whose image in U is trivial, it chooses an
+actual representative loop and nullhomotopy. It captures S together with
+that homotopy's compact image in a finite full-dimensional combinatorial
+manifold neighborhood N contained in U. It reconstructs the relative
+endpoint homotopy in N, proving that g is still killed there. Simple
+connectivity of U gives the corresponding corollary without assuming a
+nullhomotopy or a neighborhood.
+
+`SurfaceCompression.lean` applies this construction to any connected finite
+closed combinatorial surface which is not a PL sphere, inside a simply
+connected open set. At any chosen basepoint it produces a nontrivial group
+element and a finite ambient manifold N, with the surface disjoint from
+N's combinatorial boundary and the inclusion killing that element. It
+uses the previously proved PL-sphere recognition from simple connectivity.
+Neither Moise264 nor a compressing disk is assumed or claimed by this
+producer. These are the actual finite-environment inputs required by 26.4.
+
+The three source modules pass zero-diagnostic focused checks in 7.747,
+11.715 and 11.650 seconds respectively, including admission. The concrete
+audit model takes the complex unit circle, proves its fundamental group
+nontrivial using the existing integer equivalence, and constructs a finite
+planar manifold neighborhood inside the radius-two disk killing an actual
+nontrivial element. This checks the construction beyond the trivial loop.
+The final silent audit took 47.693 seconds including admission, with zero
+diagnostics. All five new declarations, nine reused entries and two concrete
+models have only standard foundational axioms. All 13 applicable environment
+linters pass. The audit source, census, source snapshots, receipts and object
+hashes are frozen in `moise304-reading/nullhomotopy-neighborhood-checkpoint/`.
+Earlier external-model errors concerned TypeTag lemma namespaces and sphere
+membership notation; those were corrected. No source proof debt remains.
+
+Next: the actual annular neighborhood of a polygonal circle in an orientable
+surface. The existing derived-cell construction and two-dimensional disk
+gluing are available; the cyclic decomposition's dimension restriction
+must be removed naturally and its current consumers rechecked. The
 compressing-disk theorem 26.4, annular-neighborhood construction 28.19,
 E3's actual 30.3 splitting geometry and strict Betti descent remain distinct
 obligations before the PL-sphere endpoint can be claimed.

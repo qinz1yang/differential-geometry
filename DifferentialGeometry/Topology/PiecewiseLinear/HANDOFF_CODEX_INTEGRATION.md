@@ -1486,3 +1486,39 @@ finite face ordering and actual stage assembly; its one added compiler permit
 is the natural metric-free SimplicialComplex.FaceFiltration module. Smooth
 attaching/framing, corner rounding, smooth two-sphere classification and the
 compact smoothing endpoint remain open.
+
+## 41. Finite nullhomotopy capture and surface kernel (2026-09-19 UTC)
+
+M304 7c051baf7 is independently accepted: three fresh modules, five complete
+nonautomatic declarations, nine reused entries and two nontrivial circle-model
+declarations; 13 environment linters, standard axioms, zero final diagnostics.
+Compile/audit times are 29.778/48.397 seconds including admission.
+Lean +167/-0; exact evidence is .lake/verified-twentysecond-lane-delivery-20260919.json.
+The source constructs actual finite neighborhoods containing nullhomotopies and
+nontrivial surface kernel elements. Moise264 and the compression/annular/splitting
+steps remain open. The circle model exercises capture, not a closed surface.
+Root static closure is 9363, including eight previously unreachable existing
+homology/surface-recognition modules reached by the three new imports. Full-root
+compilation remains stopped, with focused accepted prerequisites reused.
+
+## 42. Source-boundary repair and delivery queue (2026-09-19 UTC)
+
+F c98ea5828 reports completion of the genuine NormalSystem neighborhood migration
+and 55 source consumer checks; independent integration remains queued along with
+ff8d66dcf and f2ea6cf4f. The next actual obstruction is source boundary properness,
+which does not follow merely by rewriting image_inter_boundary. The source and
+rendered book pages 187-188 were independently reviewed. F continues an actual
+source-dependent relative PL collar push before the initial complexity choice.
+The existing CutAndPaste normal-data fiber theorem is genuine, but does not
+construct normal data for an arbitrary NormalSystem. Do not make LemmaTwo
+normalization an input to the preceding general covering reduction. No full
+NormalSystem counterexample has been certified. See the persisted source-boundary
+decision for exact evidence and scope.
+
+S 73a6d1984 + 6690962e1 actual global PL handle filtration and M304 e39955ff6
+actual circle-neighborhood cylinder are queued. S was resumed only at its
+completed round, toward a real smooth attachment or corner producer. The
+coordinator supplied twelve identity-checked accepted private prerequisite
+objects for M304's existing neighborhood consumer compatibility
+checks; no shared artifact was written. E3's canonical free-triangle correction
+remains deferred to its next delivery; h continues its global geometric lane.
