@@ -1,8 +1,17 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchCrosscut
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
 import DifferentialGeometry.External.Schoenflies.BoundaryContinuity2
 import Mathlib.Tactic.Group
+
+/-!
+# Cut and paste
+-/
 
 open Set Topology
 
@@ -433,7 +442,7 @@ theorem restrict_space_mem_nhdsWithin_doublePointSet
 open Classical in
 theorem isCombinatorialManifoldWithBoundary_restrict_of_space_mem_nhdsWithin
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {K : Geometry.SimplicialComplex ℝ E}
     (hK : IsCombinatorialManifoldWithBoundary 1 K) (Q : Set E)
     (hnhds : ∀ x ∈ (restrict K Q).space,
       (restrict K Q).space ∈ 𝓝[K.space] x) :
@@ -481,7 +490,7 @@ theorem mem_boundaryComplex_one_space_iff_of_space_mem_nhdsWithin
 open Classical in
 theorem map_boundaryComplex_eq_inter_of_space_mem_nhdsWithin
     {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [TopologicalSpace M]
+    [FiniteDimensional ℝ E]
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
     (f : E → M) {oldS S BdM : Set M}
     (hK : IsCombinatorialManifoldWithBoundary 1 K)
@@ -535,7 +544,7 @@ private structure BoundaryComplexImage
 open Classical in
 private theorem boundaryComplexImage_of_space_mem_nhdsWithin
     {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [TopologicalSpace M]
+    [FiniteDimensional ℝ E]
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
     (f : E → M) {oldS S BdM : Set M}
     (hK : IsCombinatorialManifoldWithBoundary 1 K)
@@ -806,7 +815,7 @@ private theorem isPLHomeomorphOn_trans_inter
     {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
     [NormedAddCommGroup G] [NormedSpace ℝ G]
-    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [FiniteDimensional ℝ G]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ G]
     {f : E → F} {g : F → G} {P : Set E} {Q A : Set F} {B : Set G}
     (hf : IsPLHomeomorphOn f P Q) (hg : IsPLHomeomorphOn g A B) :
     IsPLHomeomorphOn (g ∘ f) (P ∩ f ⁻¹' A)

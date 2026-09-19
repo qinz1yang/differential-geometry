@@ -1,5 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
 import DifferentialGeometry.Topology.Covering.TwoSheetComponents
+
+/-!
+# Double point cover
+-/
 
 open Set Topology
 
@@ -417,7 +426,7 @@ theorem doublePointProjection_connected_or_two_components [T2Space M]
         ∃ e : connectedComponent y ≃ₜ J,
           ∀ z : connectedComponent y,
             e z = J.restrictPreimage (doublePointProjection D D.domain) z := by
-  apply DifferentialGeometry.Topology.Covering.connectedSpace_or_exists_exactly_two_components_restrictPreimage
+  apply Topology.Covering.connectedSpace_or_exists_exactly_two_components_restrictPreimage
     J hD.doublePointProjection_isCoveringMap hD.doublePointProjection_isClosedMap
   intro y
   exact hD.doublePointProjection_fiber_encard_eq_two y

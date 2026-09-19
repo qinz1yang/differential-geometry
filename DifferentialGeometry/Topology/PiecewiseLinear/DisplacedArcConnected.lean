@@ -1,5 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BranchCollarPrismLevel
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcSubset
+
+/-!
+# Displaced arc connected
+-/
 
 open Set
 
@@ -116,7 +125,7 @@ theorem exists_isPLHomeomorphOn_Icc_displacedArc_of_isConnected (D : SingularTwo
       IsPLHomeomorphOn θ (Icc (0 : ℝ) 1) (closure W) ∧
       closure W ⊆ frontier D.domain ∧ closure W \ W ⊆ {θ 0, θ 1} := by
   obtain ⟨θ, hθ⟩ :=
-    D.isPLBall_domain.isPLSphere_frontier.exists_isPLHomeomorphOn_Icc_closure_of_isConnected_of_ssubset
+D.isPLBall_domain.isPLSphere_frontier.exists_isPLHomeomorphOn_Icc_closure_of_isConnected_of_ssubset
       hconn hne hproper
   exact ⟨θ, hθ, hproper.1,
     sdiff_subset_endpoints_of_isConnected_of_closure_eq hθ hconn rfl⟩

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.BasepointChange
 import DifferentialGeometry.Topology.LoopSpace.FreeHomotopyInjection
 import DifferentialGeometry.Topology.LoopSpace.FreeHomotopySurjection
@@ -5,7 +10,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
-import DifferentialGeometry.Topology.PiecewiseLinear.RelativeDerivedNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexTriangulation
+
+/-!
+# Singular cells and compatible normal neighborhoods
+-/
 
 open Set Topology
 
@@ -483,26 +492,27 @@ theorem simplicialComplexity_eq_zero_iff_injOn_simplicialMap
 
 open Classical in
 noncomputable def normalSystemManifoldComplex
-    (K L : Geometry.SimplicialComplex ℝ E) (hL : L.faces ⊆ K.faces) :
+    {K L : Geometry.SimplicialComplex ℝ E} (T : DerivedNeighborhoodTriangulation K L) :
     Geometry.SimplicialComplex ℝ E :=
-  relativeDerivedNeighborhood hL L
+  T.complex
 
 open Classical in
 noncomputable def normalSystemBoundaryComplex
-    (K L : Geometry.SimplicialComplex ℝ E) (hL : L.faces ⊆ K.faces) :
+    {K L : Geometry.SimplicialComplex ℝ E} (T : DerivedNeighborhoodTriangulation K L) :
     Geometry.SimplicialComplex ℝ E :=
-  boundaryComplex 3 (normalSystemManifoldComplex K L hL)
+  boundaryComplex 3 (normalSystemManifoldComplex T)
 
 open Classical in
 noncomputable def normalSystemBoundaryNeighborhood
-    (K L C : Geometry.SimplicialComplex ℝ E) (hL : L.faces ⊆ K.faces) :
-    Geometry.SimplicialComplex ℝ E :=
-  derivedNeighborhood (normalSystemBoundaryComplex K L hL) C
+    {K L : Geometry.SimplicialComplex ℝ E} (T : DerivedNeighborhoodTriangulation K L)
+    (C : Geometry.SimplicialComplex ℝ E) : Geometry.SimplicialComplex ℝ E :=
+  derivedNeighborhood (normalSystemBoundaryComplex T) C
 
 open Classical in
 abbrev normalSystemBoundaryNeighborhoodSpace
-    (K L C : Geometry.SimplicialComplex ℝ E) (hL : L.faces ⊆ K.faces) :=
-  (normalSystemBoundaryNeighborhood K L C hL).space
+    {K L : Geometry.SimplicialComplex ℝ E} (T : DerivedNeighborhoodTriangulation K L)
+    (C : Geometry.SimplicialComplex ℝ E) :=
+  (normalSystemBoundaryNeighborhood T C).space
 
 open Classical in
 noncomputable def normalSystemLoopConjugacyClass
@@ -523,32 +533,24 @@ structure NormalSystem (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] wh
   source_faces_map : ∀ s ∈ sourceComplex.faces, s.image vertexMap ∈ imageComplex.faces
   image_space : imageComplex.space = simplicialMap sourceComplex vertexMap '' sourceComplex.space
   image_faces_subset_ambient : imageComplex.faces ⊆ ambientComplex.faces
+  neighborhood : DerivedNeighborhoodTriangulation ambientComplex imageComplex
   isManifold : IsCombinatorialManifoldWithBoundary 3
-    (normalSystemManifoldComplex ambientComplex imageComplex image_faces_subset_ambient)
-  manifold_space :
-    (normalSystemManifoldComplex ambientComplex imageComplex
-      image_faces_subset_ambient).space =
-        (derivedNeighborhood ambientComplex imageComplex).space
+    (normalSystemManifoldComplex neighborhood)
   loop_space : loopComplex.space =
     simplicialMap sourceComplex vertexMap '' frontier sourceComplex.space
   loop_faces_subset_boundary : loopComplex.faces ⊆
-    (normalSystemBoundaryComplex ambientComplex imageComplex
-      image_faces_subset_ambient).faces
+    (normalSystemBoundaryComplex neighborhood).faces
   image_inter_boundary : imageComplex.space ∩
-    (normalSystemBoundaryComplex ambientComplex imageComplex
-      image_faces_subset_ambient).space = loopComplex.space
-  basepoint : normalSystemBoundaryNeighborhoodSpace ambientComplex imageComplex loopComplex
-    image_faces_subset_ambient
+    (normalSystemBoundaryComplex neighborhood).space = loopComplex.space
+  basepoint : normalSystemBoundaryNeighborhoodSpace neighborhood loopComplex
   boundaryLoop : freeLoop
-    (normalSystemBoundaryNeighborhoodSpace ambientComplex imageComplex loopComplex
-      image_faces_subset_ambient)
+    (normalSystemBoundaryNeighborhoodSpace neighborhood loopComplex)
   boundaryParam : loopCircle ≃ₜ frontier sourceComplex.space
   boundaryLoop_eq : ∀ θ, (boundaryLoop θ : E) =
     simplicialMap sourceComplex vertexMap (boundaryParam θ)
   connector : Path basepoint (boundaryLoop 0)
   normalSubgroup : Subgroup (FundamentalGroup
-    (normalSystemBoundaryNeighborhoodSpace ambientComplex imageComplex loopComplex
-      image_faces_subset_ambient) basepoint)
+    (normalSystemBoundaryNeighborhoodSpace neighborhood loopComplex) basepoint)
   normal : normalSubgroup.Normal
   loopClass_avoids_normal : ¬conjugacyClassMeets
     (normalSystemLoopConjugacyClass basepoint boundaryLoop connector) normalSubgroup
@@ -575,22 +577,25 @@ theorem boundaryLoop_range (S : NormalSystem E) :
 
 open Classical in
 noncomputable def manifoldComplex (S : NormalSystem E) : Geometry.SimplicialComplex ℝ E :=
-  normalSystemManifoldComplex S.ambientComplex S.imageComplex S.image_faces_subset_ambient
+  normalSystemManifoldComplex S.neighborhood
+
+open Classical in
+theorem manifold_space (S : NormalSystem E) :
+    S.manifoldComplex.space = (derivedNeighborhood S.ambientComplex S.imageComplex).space :=
+  S.neighborhood.space_eq
 
 open Classical in
 noncomputable def boundaryComplex (S : NormalSystem E) : Geometry.SimplicialComplex ℝ E :=
-  normalSystemBoundaryComplex S.ambientComplex S.imageComplex S.image_faces_subset_ambient
+  normalSystemBoundaryComplex S.neighborhood
 
 open Classical in
 noncomputable def boundaryNeighborhood (S : NormalSystem E) :
     Geometry.SimplicialComplex ℝ E :=
-  normalSystemBoundaryNeighborhood S.ambientComplex S.imageComplex S.loopComplex
-    S.image_faces_subset_ambient
+  normalSystemBoundaryNeighborhood S.neighborhood S.loopComplex
 
 open Classical in
 abbrev boundaryNeighborhoodSpace (S : NormalSystem E) :=
-  normalSystemBoundaryNeighborhoodSpace S.ambientComplex S.imageComplex S.loopComplex
-    S.image_faces_subset_ambient
+  normalSystemBoundaryNeighborhoodSpace S.neighborhood S.loopComplex
 
 open Classical in
 noncomputable def singularMap (S : NormalSystem E) : EuclideanSpace ℝ (Fin 2) → E :=
@@ -634,10 +639,8 @@ theorem singularMap_mapsTo_image (S : NormalSystem E) :
 
 open Classical in
 theorem image_faces_subset_manifoldComplex (S : NormalSystem E) :
-    S.imageComplex.faces ⊆ S.manifoldComplex.faces := by
-  let _ : Finite S.ambientComplex.faces := S.finite_ambient.to_subtype
-  exact faces_subset_relativeDerivedNeighborhood S.image_faces_subset_ambient S.imageComplex
-    Subset.rfl S.image_faces_subset_ambient
+    S.imageComplex.faces ⊆ S.manifoldComplex.faces :=
+  S.neighborhood.faces_subset
 
 open Classical in
 theorem image_space_subset_manifoldComplex (S : NormalSystem E) :
@@ -657,10 +660,8 @@ theorem singularMap_mapsTo_manifoldComplex (S : NormalSystem E) :
   S.singularMap_mapsTo_image.mono_right S.image_space_subset_manifoldComplex
 
 open Classical in
-theorem manifoldComplex_faces_finite (S : NormalSystem E) : S.manifoldComplex.faces.Finite := by
-  let _ : Finite S.ambientComplex.faces := S.finite_ambient.to_subtype
-  exact relativeDerivedNeighborhood_faces_finite
-    S.image_faces_subset_ambient S.imageComplex
+theorem manifoldComplex_faces_finite (S : NormalSystem E) : S.manifoldComplex.faces.Finite :=
+  S.neighborhood.finite_faces
 
 open Classical in
 theorem boundaryComplex_faces_finite (S : NormalSystem E) : S.boundaryComplex.faces.Finite := by

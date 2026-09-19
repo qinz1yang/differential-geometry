@@ -41,17 +41,34 @@ image faces, the exact carrier, manifold/boundary structure and SDR; do not
 add the false neighborhood hypothesis or treat another assumed package as a
 producer. The actual compatible triangulation producer c49f666ab + 8728c1b09 is now
 independently accepted, including exact carrier, intrinsic boundary and SDR
-in a nonempty model. The minimal NormalSystem migration c98ea5828 and all
-55 affected consumer source checks have passed on the F lane; the lane
-reports a clean final environment audit; independent acceptance is pending.
+in a nonempty model. The minimal NormalSystem migration c98ea5828 is now independently accepted
+with ff8d66dcf and f2ea6cf4f. All 55 affected consumers, two new producer
+modules and three missing old prerequisites were freshly checked. The full
+628-declaration audit covers the thirteen author-modified modules and
+32 further modules receiving required headers (one also needs an API lint
+repair), with fourteen reused entries,
+three geometric models and all thirteen applicable environment linters.
+Every final check has zero diagnostics and only standard foundational axioms.
+The models validate actual neighborhood geometry and an actual anchored
+double-cover lift; they are not a full NormalSystem subgroup/avoidance instance.
+The exact boundary trace and same-source-complex simplicial lift are actual
+producers. General normalization and the complete cover diagram remain open.
 
 A further source-level gate is now explicit: imageComplex intersect boundary =
 loopComplex does not supply the required source preimage boundary equality.
 The existing NormalSingularCellData fiber theorem supplies it only after actual
 normal data are present; the injective inward-push and NonsingularCell projection
 producers cannot be used circularly to initialize a general cover reduction.
-F is constructing an actual source-dependent relative PL collar push for the
-initial singular disk, preserving its boundary loop and subgroup avoidance.
+F has delivered 9b8e3c3da, an actual source-dependent relative PL collar
+push preserving the boundary map and proving exact source boundary preimage;
+its source has been reviewed and independent replay is queued. The covering
+boundary theorem d0d3d3468, singular image-subcomplex producer 451717c77 and
+relative small boundary-neighborhood producer c4b2edb95 are also queued.
+Later reported lifts 3e4695ab3 and d2fa2d933 assemble actual boundary-preserving
+simplicial lifts and controlled upstairs neighborhoods; independent replay is
+pending. The initial push yields a general piecewise affine map, so a compatible
+triangulation for a possibly noninjective map is still a separate initial gate.
+An image-triangulation theorem requiring injectivity cannot supply that step.
 This preprocessing precedes the initial complexity choice; it need not decrease
 the old disk complexity. Later cover lifts must preserve source properness and
 prove strict descent on the same source complex. Until that initial producer and
@@ -69,10 +86,10 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Repair the fixed normal-system neighborhood formula through an actual compatible triangulation, then construct the full cover diagram. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
+| F / gpt-6-astra max | The compatible NormalSystem migration, exact boundary trace and anchored same-source lift through c98ea5828 are independently accepted. Initial source-relative boundary push and further cover/boundary producers through d2fa2d933 are delivered and queued; initial noninjective PWA triangulation remains open. | Assemble the actual cover diagram and smaller upstairs neighborhood with subgroup avoidance and strict descent, then Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator, exact shell geometry and finite nullhomotopy/kernel production through 7c051baf7 are independently accepted; e39955ff6 actual circle-neighborhood cylinder is queued. | Continue the actual 28.19 annular-neighborhood producer and compression induction. Keep 26.4 and E3 actual 30.3 as open gates; the PL sphere remains unproved. |
-| S / gpt-6-astra max | Compact PL three-manifold smoothing. Local handles through 78d96386b are independently accepted; 73a6d1984 + 6690962e1 actual global PL handle filtration awaits independent acceptance. | Continue actual smooth attachment or corner geometry from the PL filtration, then framing and two-sphere classification. Compact smoothing remains open. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator, exact shell geometry and finite nullhomotopy/kernel production through 7c051baf7 are independently accepted; e39955ff6 actual circle-neighborhood cylinder and 193898ba4 arbitrarily small orientable annular neighborhoods and aea8f27c2 core-fixed bicollars are queued. | Construct the complementary disk-plus-bicollar pair for E3, then continue 28.19 and compression induction. Keep 26.4 and E3 actual 30.3 as open gates; the PL sphere remains unproved. |
+| S / gpt-6-astra max | Compact PL three-manifold smoothing. Local handles through 78d96386b are independently accepted; 73a6d1984 + 6690962e1 actual global PL handle filtration and 2162e20eb local rounded-corner producers await independent acceptance. | Construct the full attaching-band chart family, including polygon vertices, with smooth transitions and compatibility with the existing old atlas, then framing and two-sphere classification. Compact smoothing remains open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve

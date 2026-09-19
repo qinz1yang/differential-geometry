@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.Cell.Coordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellAttachmentKernel
@@ -5,6 +10,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereSchoenflies
 import Mathlib.Algebra.Group.Subgroup.Ker
 import Mathlib.Data.List.FinRange
+
+/-!
+# Boundary generation
+-/
 
 open Set
 open scoped ContinuousMap
@@ -747,7 +756,8 @@ theorem isClosed_diskAttachmentStage [FiniteDimensional ℝ E]
   induction l with
   | nil => exact isClosed_sphereWithDiskInteriorsRemoved D hB
   | cons i l ih =>
-      exact ih.union (show IsClosed (D i) from (show IsPLBall 2 (D i) from ⟨q i, hq i⟩).isPolyhedron.isClosed)
+      exact ih.union
+        (show IsClosed (D i) from (show IsPLBall 2 (D i) from ⟨q i, hq i⟩).isPolyhedron.isClosed)
 
 open Classical in
 theorem disk_inter_sphereWithDiskInteriorsRemoved [FiniteDimensional ℝ E]

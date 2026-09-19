@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9341 project modules including the root, no missing
+are now registered and statically reachable (9407 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -447,3 +447,72 @@ descent on the same source. No properness field or assumed normal-data package
 substitutes for that producer, and no full NormalSystem counterexample is
 claimed. The decision and book images are frozen in
 .lake/normal-system-source-boundary-decision-20260919.json.
+
+## Compatible normal-system neighborhoods and anchored lifts accepted
+
+F ff8d66dcf + f2ea6cf4f + c98ea5828 are independently accepted. The NormalSystem
+carrier now uses the actual compatible triangulation, retaining original image
+faces, the ordinary derived-neighborhood carrier, manifold boundary and SDR.
+The new boundary theorem gives the exact intrinsic trace along the original
+subcomplex. The finite-cover theorem constructs a simplicial lift on the same
+source PL-ball complex, with projection and selected-anchor equations; it does
+not assume an already constructed lift or injectivity of the vertex map.
+
+Final focused verification comprises 60 current-source modules: 55 interface
+consumers, two new modules and three pre-existing missing prerequisites.
+Source checks took 696.399 seconds including admission. The
+81.711-second silent audit loads all sixty together and checks all
+628 nonautomatic declarations in 45 modified leaves (64 private),
+fourteen supporting entries, three concrete models and thirteen environment
+linters. Of those declarations, 341 belong to the thirteen
+author-modified modules; the new producer modules contribute eight declarations.
+All final compiler/audit checks exit zero without diagnostics; all checked
+axiom closures are subsets of propext, Classical.choice and Quot.sound.
+
+The actual tetrahedron/facet models validate nonempty compatible neighborhoods,
+exact boundary trace and SDR. The tetrahedron-times-Bool cover model validates
+the selected-sheet lift. These do not instantiate every NormalSystem subgroup
+and avoidance field. General source normalization, full covering induction and
+the ring-theorem endpoint are still unproved.
+
+The accepted Lean diff is +762/-69. F's delivered source accounts for +349/-61;
+378 added lines are required copyright/module headers in 41 existing leaves
+and the root; another 27 lines repair previously missing consumer root imports.
+The header additions themselves preserve the full imports/proof body exactly.
+Seven old API lint findings additionally required one camel-case definition
+rename and seven redundant-instance removals (including a dependent private
+helper), contributing +8/-8 to the diff. All thirteen affected consumers were
+recompiled. No linter was suppressed. Conclusions are unchanged; redundant hypotheses
+are removed.
+Header/import maintenance is not mathematical proof progress. Two preliminary
+source-check failures (a missing old object and a missing required header),
+nineteen superseded pre-header checks and thirteen pre-API-repair checks are
+retained separately. The audit also retains the performance restart and the
+pre-repair lint findings. Its final module-index enumeration is checked equal
+to a full environment census. StallingsInduction is an existing import-only
+compatibility file with zero declarations, explicitly recorded in the census.
+
+The root now reaches 9407 project modules including itself, without missing
+project sources or cycles. The two new producer imports plus 27 old consumer
+imports newly reach 44 modules: two new and 42 existing. Fifteen of those
+existing dependencies are reached through the consumers and are not additional
+fresh source checks. The root build remains stopped; this is targeted source
+and combined-import verification, not a full-source certificate.
+
+Receipt: .lake/verified-twentythird-lane-delivery-20260919.json. Exact audit
+source, full declaration census, source/object identities, all attempts and
+timings are frozen. The external Lean probe is removed after freezing.
+
+Next acceptance queue: S 73a6d1984 + 6690962e1 full finite PL handle filtration;
+M304 e39955ff6 + 193898ba4 actual cylindrical and annular neighborhoods; F
+d0d3d3468 + 451717c77 + 9b8e3c3da + c4b2edb95 boundary-preserving cover/source
+and smaller-neighborhood constructions. S 2162e20eb local rounded-corner producers and M304 aea8f27c2
+core-fixed bicollars are also delivered and queued. S was continued only after
+its complete corner round toward the whole attaching-band atlas and smooth
+transitions relative to the old atlas. Other active rounds continue without
+routine intervention. h and E3 checkpoints remain subject to their pending
+contract/architecture reviews at delivery, not routine mid-round interruption.
+F also reports 3e4695ab3 + d2fa2d933 actual boundary-preserving lifted
+subcomplexes and controlled upstairs neighborhoods. These are queued, while
+compatible triangulation of the general singular PWA map after the initial
+source-relative push remains an explicit gate.

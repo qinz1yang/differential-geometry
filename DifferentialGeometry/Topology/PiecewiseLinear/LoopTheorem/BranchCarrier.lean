@@ -1,8 +1,17 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
 import DifferentialGeometry.Topology.PiecewiseLinear.OneManifoldClassification
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceTransition
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricBoundaryPair
+
+/-!
+# Branch carrier
+-/
 
 open Set Topology
 
@@ -51,7 +60,8 @@ def branchComplex (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
   faces := {s ∈ T.complex.faces | (s : Set _) ⊆ T.branchVertices c}
   isRelLowerSet_faces := by
     rintro s ⟨hs, hsc⟩
-    refine ⟨T.complex.nonempty_of_mem_faces hs, fun t hts ht => ⟨T.complex.down_closed hs hts ht, ?_⟩⟩
+    refine ⟨T.complex.nonempty_of_mem_faces hs,
+      fun t hts ht => ⟨T.complex.down_closed hs hts ht, ?_⟩⟩
     exact (Finset.coe_subset.mpr hts).trans hsc
   indep hs := T.complex.indep hs.1
   inter_subset_convexHull hs ht := T.complex.inter_subset_convexHull hs.1 ht.1
@@ -340,7 +350,8 @@ theorem space_eq_iUnion_branchComplex
 open Classical in
 theorem pairwise_disjoint_branchComplex_space
     (T : NormalSingularSetTriangulation D BdM) :
-    Pairwise fun c d : T.Branch => Disjoint (T.branchComplex c).space (T.branchComplex d).space := by
+    Pairwise fun c d : T.Branch =>
+      Disjoint (T.branchComplex c).space (T.branchComplex d).space := by
   intro c d hcd
   apply Set.disjoint_left.mpr
   intro x hxc hxd
