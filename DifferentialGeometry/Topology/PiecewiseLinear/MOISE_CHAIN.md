@@ -902,6 +902,24 @@ E3 核对后三条事实（`HANDOFF_CODEX_L.md` §80–§81）：
 决定：采纳 3。阻塞接口改为**板状图卡**：沿整条分支的乘积邻域中两张片是坐标平面、`M` 是板 `{0 ≤ x ≤ c} × ℝ²`、
 `Bd M` 是两个端面 `{x = 0}` 与 `{x = c}`（F 的 `TransversePlaneNormalForm` 在两端各用一次 + F 的链 + H 的球对）。
 滑动机制（`ModelSlide*`、`ChartSlide*`、`BranchSlide*`）保留为已证基础设施，但不在主链路径上。
+F 局部板图卡（2026-09-18，**局部生产层 done；完整链 partial**）：`BoundaryCrossingChart.lean`
+从已有 `HasPLBoundaryCrossingAt` 生产近端/远端的板与端面 iff，两片在这些端点图卡中
+有双向像契约，分支映为板中坐标轴；内部图卡缩到开板，但对两片仅保留单向平面包含。
+实际弧链到具体转写复形 `N₁` 的两点截面/异侧性、以及整条链的片保持过渡仍未闭合。
+转写输入允许 `M = N`，不能独自产生这些契约；未标记球对也不等于两片保持。
+聚焦检查与 `AuditF286` 均 exit=0、零诊断，五项声明仅标准三公理，默认适用环境 linters 通过。
+确切声明、输入退化检查和验证边界见 `HANDOFF_CODEX_F.md` §19.146；独立根重编仍待协调者完成。
+`BoundaryDoubleCrossingChart.lean` 的实际双点集半轴图卡层 **done**（§19.147）：
+`HasPLBoundaryDoubleCrossingAt.exists_openPartialHomeomorph_doublePointSet` 及其
+`_of_halfSpace_chart` 版本给出真实载体、边界、两片与实际双点集的双向像契约，并保留全纤维覆盖；
+`HasPLBoundaryCrossingAt.not_eventuallyEq` 排除两片 germ 重合。聚焦检查与 `AuditF287`
+均 exit=0、零诊断，四项声明仅标准三公理，默认适用环境 linters 通过。
+任意 `NormalSingularCellData` 尚不能恢复真实载体；相邻胞腔两片匹配和全局单射图卡仍未闭合。
+`BoundaryBranchSheets.lean` 的源片邻域生产层 **done**（§19.148）：从触边分支的实际两条源弧构造不交多面体
+源片邻域，各片嵌入且保留 PL 映射，并在含整条分支的开集内覆盖全纤维、精确刻画双点集。
+一致源侧标签由生产者给出；相邻环境胞腔片迹匹配及全局图卡仍 partial。
+聚焦检查和 `AuditF288` 均 exit=0、零诊断；2 项本模块声明与 3 项复用端点仅标准三公理，
+13 项适用环境 linters 全通过。端点为 `NormalSingularCellData.exists_polyhedral_sheet_neighborhoods_of_boundaryBranch`。
 
 ## 2026-09-18 Codex: essential boundary in the extended loop theorem
 

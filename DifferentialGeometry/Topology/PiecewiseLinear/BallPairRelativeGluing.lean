@@ -55,8 +55,9 @@ theorem isPLBallPair_union_of_coneSet_disk [FiniteDimensional ℝ E]
     IsPLBallPair 2 1 (coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space)
       (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) := by
   classical
-  obtain ⟨P₁, P₂, w, u₁, u₂, M₁, M₂, M₀, hfM₁, hfM₂, hfM₀, hcM₁, hcM₂, hcM₀, hsM₁, hsM₂, hsM₀,
-    hDM₁, hDM₂, hu₁M, hu₁D, hu₂M, hu₂D, hmeetM, -, -, -, -, -, -, hpairM⟩ :=
+  obtain ⟨P₁, P₂, w, u₁, u₂, M₁, M₂, M₀, M, hfM₁, hfM₂, hfM₀, hcM₁, hcM₂, hcM₀, hsM₁,
+    hsM₂, hsM₀, hDM₁, hDM₂, hu₁M, hu₁D, hu₂M, hu₂D, hmeetM, -, -, -, -, -, -, hpairM,
+    -, -, -, -, -, -, -, -⟩ :=
     exists_cutModel_data (E := E) hn
   have _ : Finite L₁.faces := hfin₁.to_subtype
   have _ : Finite L₂.faces := hfin₂.to_subtype

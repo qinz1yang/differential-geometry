@@ -1,5 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairCutModel
 import DifferentialGeometry.Topology.PiecewiseLinear.MidpointIndependence
+
+/-!
+# A cut model for gluing ball pairs
+-/
 
 open Set
 
@@ -90,7 +99,7 @@ theorem coneSet_simplexBoundary_space {T : Finset E}
     coneComplex_simplexBoundary_space hT hcard hp]
 
 theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ E = 3) :
-    ∃ (p₁ p₂ z y₁ y₂ : E) (L₁ L₂ L₀ : Geometry.SimplicialComplex ℝ E),
+    ∃ (p₁ p₂ z y₁ y₂ : E) (L₁ L₂ L₀ L : Geometry.SimplicialComplex ℝ E),
       L₁.faces.Finite ∧ L₂.faces.Finite ∧ L₀.faces.Finite ∧
       IsConeBase p₁ L₁ ∧ IsConeBase p₂ L₂ ∧ IsConeBase z L₀ ∧
       IsPLSphere 2 L₁.space ∧ IsPLSphere 2 L₂.space ∧ IsPLSphere 1 L₀.space ∧
@@ -107,7 +116,13 @@ theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ 
       IsPLBallPair 2 1 (coneSet p₂ L₂.space) (coneSet p₂ ({z, y₂} : Set E)) ∧
       IsPLBallPair 1 0 (coneSet z L₀.space) {z} ∧
       IsPLBallPair 2 1 (coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space)
-        (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) := by
+        (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) ∧
+      L.faces.Finite ∧ IsConeBase p₁ L ∧ IsPLSphere 2 L.space ∧
+      coneSet p₁ L.space = coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space ∧
+      coneSet p₁ ({y₁, y₂} : Set E) =
+        coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E) ∧
+      y₁ ∈ L.space ∧ y₂ ∈ L.space ∧
+      L₂.space ⊆ L.space ∪ coneSet z L₀.space := by
   classical
   obtain ⟨T, hT, hTcard, -, -, -⟩ :=
     exists_affineIndependent_openSimplex_subset (E := E) (n := 2) (by rw [hn]) (0 : E)
@@ -247,12 +262,16 @@ theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ 
     rw [Finset.card_insert_of_notMem hdmF, Finset.card_insert_of_notMem hmF, hFcard]
   have hcard₀ : ({m, A, B} : Finset E).card = 1 + 2 := by
     rw [Finset.card_insert_of_notMem hmF, hFcard]
+  have hcard : ({c, d, A, B} : Finset E).card = 2 + 2 := by
+    rw [Finset.card_insert_of_notMem hcdF, Finset.card_insert_of_notMem hdF, hFcard]
   have h2₁ : 2 ≤ ({c, m, A, B} : Finset E).card := by omega
   have h2₂ : 2 ≤ ({d, m, A, B} : Finset E).card := by omega
   have h2₀ : 2 ≤ ({m, A, B} : Finset E).card := by omega
+  have h2 : 2 ≤ ({c, d, A, B} : Finset E).card := by omega
   have hcone₁ := coneSet_simplexBoundary_space hT h2₁ hp₁
   have hcone₂ := coneSet_simplexBoundary_space hTin h2₂ hq
   have hcone₀ := coneSet_simplexBoundary_space hFm h2₀ hz
+  have hcone := coneSet_simplexBoundary_space hTout h2 hp
   have hA₁ : coneSet p ({z, c} : Set E) = segment ℝ p c ∪ segment ℝ p z := by
     rw [coneSet_pair_eq_union_segment, Set.union_comm]
   have hA₂ : coneSet q ({z, d} : Set E) = segment ℝ z d := by
@@ -283,12 +302,79 @@ theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ 
     (simplexBoundary _ hTin).convexHull_subset_space
       (mem_simplexBoundary_faces_iff.mpr ⟨Finset.subset_insert d _,
         ⟨m, Finset.mem_insert_self m _⟩, fun h => hdmF (h ▸ Finset.mem_insert_self d _)⟩) hx
+  have hmseg : m ∈ segment ℝ c d :=
+    ⟨1 / 2, 1 / 2, by norm_num, by norm_num, by norm_num, by rw [hd]; module⟩
+  have hfacetA :
+      convexHull ℝ ((({d, m, A, B} : Finset E).erase A : Finset E) : Set E) ⊆
+        convexHull ℝ ((({c, d, A, B} : Finset E).erase A : Finset E) : Set E) := by
+    apply convexHull_min
+    · intro v hv
+      simp only [Finset.mem_coe, Finset.mem_erase, Finset.mem_insert,
+        Finset.mem_singleton] at hv
+      rcases hv.2 with hvd | hvm | hvA | hvB
+      · subst v
+        exact subset_convexHull ℝ _ (by simp [hdA])
+      · subst v
+        exact (convex_convexHull ℝ _).segment_subset
+          (subset_convexHull ℝ _ (by simp [hcA]))
+          (subset_convexHull ℝ _ (by simp [hdA])) hmseg
+      · exact (hv.1 hvA).elim
+      · subst v
+        exact subset_convexHull ℝ _ (by simp [Ne.symm hAB])
+    · exact convex_convexHull ℝ _
+  have hfacetB :
+      convexHull ℝ ((({d, m, A, B} : Finset E).erase B : Finset E) : Set E) ⊆
+        convexHull ℝ ((({c, d, A, B} : Finset E).erase B : Finset E) : Set E) := by
+    apply convexHull_min
+    · intro v hv
+      simp only [Finset.mem_coe, Finset.mem_erase, Finset.mem_insert,
+        Finset.mem_singleton] at hv
+      rcases hv.2 with hvd | hvm | hvA | hvB
+      · subst v
+        exact subset_convexHull ℝ _ (by simp [hdB])
+      · subst v
+        exact (convex_convexHull ℝ _).segment_subset
+          (subset_convexHull ℝ _ (by simp [hcB]))
+          (subset_convexHull ℝ _ (by simp [hdB])) hmseg
+      · subst v
+        exact subset_convexHull ℝ _ (by simp [hAB])
+      · exact (hv.1 hvB).elim
+    · exact convex_convexHull ℝ _
+  have hL₂sub : (simplexBoundary ({d, m, A, B} : Finset E) hTin).space ⊆
+      (simplexBoundary ({c, d, A, B} : Finset E) hTout).space ∪
+        coneSet z (simplexBoundary ({m, A, B} : Finset E) hFm).space := by
+    rw [simplexBoundary_space _ hTin h2₂, simplexBoundary_space _ hTout h2, hcone₀]
+    intro x hx
+    obtain ⟨v, hv, hxv⟩ := Set.mem_iUnion₂.mp hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hv
+    rcases hv with hvd | hvm | hvA | hvB
+    · subst v
+      exact Or.inr
+        (by simpa [hcd, hcm, hcA, hcB, hdm, hdA, hdB, hmA, hmB, hAB] using hxv)
+    · subst v
+      refine Or.inl (Set.mem_iUnion₂.mpr ⟨c, by simp, ?_⟩)
+      have herase : ({d, m, A, B} : Finset E).erase m =
+          ({c, d, A, B} : Finset E).erase c := by
+        calc
+          ({d, m, A, B} : Finset E).erase m =
+              insert d (({m, A, B} : Finset E).erase m) :=
+            Finset.erase_insert_of_ne hdm
+          _ = {d, A, B} := by rw [Finset.erase_insert hmF]
+          _ = ({c, d, A, B} : Finset E).erase c := (Finset.erase_insert hcdF).symm
+      rw [herase] at hxv
+      exact hxv
+    · subst v
+      exact Or.inl (Set.mem_iUnion₂.mpr ⟨A, by simp, hfacetA hxv⟩)
+    · subst v
+      exact Or.inl (Set.mem_iUnion₂.mpr ⟨B, by simp, hfacetB hxv⟩)
   refine ⟨p, q, z, c, d, simplexBoundary ({c, m, A, B} : Finset E) hT,
     simplexBoundary ({d, m, A, B} : Finset E) hTin, simplexBoundary ({m, A, B} : Finset E) hFm,
+    simplexBoundary ({c, d, A, B} : Finset E) hTout,
     simplexBoundary_faces_finite _ hT, simplexBoundary_faces_finite _ hTin,
     simplexBoundary_faces_finite _ hFm, isConeBase_simplexBoundary hT h2₁ hp₁,
     isConeBase_simplexBoundary hTin h2₂ hq, isConeBase_simplexBoundary hFm h2₀ hz, ?_, ?_, ?_,
-    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
+    ?_⟩
   · rw [simplexBoundary_space _ hT h2₁]
     exact isPLSphere_biUnion_erase _ hT hcard₁
   · rw [simplexBoundary_space _ hTin h2₂]
@@ -321,6 +407,16 @@ theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ 
     exact hface.1
   · rw [hcone₁, hcone₂, harc, hcut]
     exact hunion
+  · exact simplexBoundary_faces_finite _ hTout
+  · exact isConeBase_simplexBoundary hTout h2 hp
+  · rw [simplexBoundary_space _ hTout h2]
+    exact isPLSphere_biUnion_erase _ hTout hcard
+  · rw [hcone, hcone₁, hcone₂]
+    exact hcut.symm
+  · rw [coneSet_pair_eq_union_segment, harc]
+  · exact vertex_mem_simplexBoundary_space hTout (by simp) h2
+  · exact vertex_mem_simplexBoundary_space hTout (by simp) h2
+  · exact hL₂sub
 
 theorem exists_isPLBallPair_cut_model [FiniteDimensional ℝ E] (hn : Module.finrank ℝ E = 3) :
     ∃ (C₁ C₂ arc : Set E) (z : E),
@@ -329,8 +425,9 @@ theorem exists_isPLBallPair_cut_model [FiniteDimensional ℝ E] (hn : Module.fin
       IsPLBallPair 2 1 C₂ (C₂ ∩ arc) ∧
       IsPLBallPair 1 0 (C₁ ∩ C₂) {z} ∧
       C₁ ∩ C₂ ∩ arc = {z} := by
-  obtain ⟨p₁, p₂, z, y₁, y₂, L₁, L₂, L₀, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
-    hmeet, hI₁, hI₂, hI₀, hpair₁, hpair₂, hpair₀, hpair⟩ := exists_cutModel_data hn
+  obtain ⟨p₁, p₂, z, y₁, y₂, L₁, L₂, L₀, L, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
+    hmeet, hI₁, hI₂, hI₀, hpair₁, hpair₂, hpair₀, hpair, -, -, -, -, -, -, -, -⟩ :=
+    exists_cutModel_data hn
   refine ⟨coneSet p₁ L₁.space, coneSet p₂ L₂.space,
     coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E), z, hpair, ?_, ?_, ?_, ?_⟩
   · rw [hI₁]

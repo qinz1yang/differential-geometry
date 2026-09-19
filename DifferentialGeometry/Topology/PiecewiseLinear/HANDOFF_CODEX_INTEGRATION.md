@@ -2,6 +2,7 @@
 
 写于用量耗尽时。本文件是整合层的单点入口：先读它，再按 §4 进各车道的 HANDOFF 最后几节。
 主链结构与今日全部决定的原文在 `MOISE_CHAIN.md`（本目录）末尾七节，此处只给可执行的摘要。
+四车道**怎么运作**（节奏、任务书模板、核验清单、今日抓到的失效类型与对应检查、换人信号、专用分支）在同目录 `FOUR_LANE_PLAYBOOK.md`。
 
 ## 0. 进入时立刻做的事
 
@@ -362,3 +363,203 @@ are not; standard applicable linters and axiom checks remain mandatory. Scratch
 probes stay outside the project tree. HW remains separate until section 5 passes.
 The tame 30.5 layer is complete only as the explicit `Moise304` implication.
 No F5.2 redesign, Case 1/2, or section 31/32 expansion is assigned here.
+
+## 12. First delivery from the four existing tasks (2026-09-18)
+
+All four existing tasks now own one lane and report directly to the coordinator.
+No new subagent was created for this flow. F and S run `gpt-6-astra` at `max`;
+E3 and h run `gpt-5.6-sol` at `high`. Their first verified layers are integrated:
+
+| Task | Published lane checkpoint | Integration merge | Verified mathematical result |
+| --- | --- | --- | --- |
+| S | `af1264891` | `f3154028e` | All ten unordered pairs of the five square triangles have exact intersections: four segments, three singleton vertices, and three empty intersections. |
+| h | `a90eb99c8`, maintenance note `d07ed19ea` | `8b3fc56ad` | The combined cut model supplies the actual outer cone, marked two-ray cone, marked points, and the outer-boundary inclusion; both ball-pair consumers use the stronger producer. |
+| F | `1fbdc358f` | `49ce60444` | Local boundary crossings produce left/right slab charts with exact carrier, frontier, and two-sheet images. The interior crossing supplies the carrier/frontier contract and one-way plane containment for the sheets. |
+| E3 | `54a96de92` | `3d2a74597` | An explicit compactly supported PL wedge push fixes both slab ends. The closed fold images intersect exactly in the two endpoints; the open-slab fold images are disjoint. |
+
+The coordinator recompiled all five affected integration leaves:
+`MobiusSquare`, `BallPairCutConfig`, `BallPairRelativeGluing`,
+`BoundaryCrossingChart`, and `SlabWedgePush`. All returned exit 0 with no
+warnings or other diagnostics, using the standard syntax linter set and explicit
+header and long-line checks. The combined silent audit selected every
+nonautomatic declaration from these modules, including private declarations:
+25 + 8 + 4 + 5 + 52 = 94 declarations, plus the reused
+`isPLHomeomorphOn_id_add_of_lipschitz` producer. All 95 transitive axiom closures
+use only `propext`, `Classical.choice`, and `Quot.sound`; all 13 default applicable
+environment linters passed, excluding only `docBlame` and `docBlameThm`.
+The earlier E3 external probe checked axioms only; this combined audit supplies
+the missing environment-linter check and the exact declaration census.
+
+Private module receipts, source hashes, setup/import mappings, the combined
+receipt, and `audit-coverage.txt` are retained outside the checkout under
+`C:\Users\liao9\AppData\Local\Temp\codex-integration-batch-20260918`.
+The local checks reuse imported project objects, so they do not certify the
+full current-source dependency closure. The independent full-root build was
+restarted at source checkpoint `3d2a74597df73418048e6a6e35cd498d360700dd` and remains
+in progress. A subsequent documentation-only commit has identical Lean source.
+No full-root success is claimed.
+
+The current memory-safe compiler policy supersedes the initial two-worker
+setting in section 10: one full-root worker and at most one private lane worker.
+The private checker requires at least 12 GiB of free commit headroom before
+starting alongside the root build. Only the coordinator grants compiler windows;
+actual UTC start/end times and the queue live in `.lake/lane-compiler-lease.json`.
+Completed windows are retained in `.lake/lane-compiler-history.jsonl`.
+Use the coordinator's external `codex-moise-lane-check.ps1`, which writes only
+private outputs, matches dependency source hashes, and passes precise `importArts`
+entries. A partial project directory must not be prepended to `LEAN_PATH`:
+Lean resolves the namespace root there and can hide other imported modules.
+The obsolete scripts that delete shared objects before compilation are forbidden.
+The deleted baseline `BallPairCutConfig` objects from h's obsolete-script attempt
+were rebuilt from the original integration source, independently import-tested,
+and restored; `.lake/cutconfig-shared-cache-restoration.json` records the repair.
+
+Each task keeps its lane after its first delivery. The next source drafts are
+pending verification, not completed theorems:
+
+| Task | Next bounded obligation | Current verification state |
+| --- | --- | --- |
+| S | `MobiusSquareMap`: five affine charts and flip-compatible seam gluing. Global quotient injectivity and mapping-torus embedding remain later obligations. | Compiler window granted after the integration audit. |
+| h | `ArcCellBallPair`: a single non-endpoint derived-neighborhood cell is a marked ball pair. The trimmed union induction remains open and must handle chain nondegeneracy. | Source ready; next in the queue. |
+| E3 | `SlabWedgeDoublePoint`: tagged source sheets and the exact closed/open double-point formulas. | Source ready; queued after h. |
+| F | `BoundaryDoubleCrossingChart`: the actual double-point set has a bidirectional half-axis chart, with the local carrier/frontier identification. | Source ready; queued after E3. |
+
+F found a genuine upstream boundary: `HasPLNormalDoubleCrossingAt` existentially
+packages a local carrier without identifying it with the advertised ambient
+carrier/boundary. `SingularChart` does preserve the real carrier when supplied
+its boundary chart, but there is no completed global normal-cell producer that
+recovers the lost compatibility. The finite arc-chain level-circle/opposite-side
+and marked-sheet extension obligations therefore remain open. The new local
+chart theorem must not be described as the completed global slab construction.
+HW remains unmerged under the original gate; tame 30.5 still depends explicitly
+on `Moise304`. The owner choices in section 6 remain unchanged.
+
+## 13. Second four-task delivery and delivery-only coordination (2026-09-18)
+
+The owner clarified the coordination rule: do not intervene frequently during a
+lane run. Hand off at delivered results or when an urgent stop/restart is required;
+do not send routine status requests, repeated acknowledgements, or mid-run task
+additions. A source-ready report reserves a queue position without interrupting
+the active checker. A lease expiry alone does not authorize killing or taking an
+active compiler. The four task identities, model choices, and exclusive lanes in
+section 11 remain unchanged.
+
+The second batch was merged at this delivery boundary:
+
+| Task | Published checkpoint | Integration merge | Exact completed layer |
+| --- | --- | --- | --- |
+| S | `6f43fde68` | `d08358768` | Affine PL charts for all five triangles and compatibility across ordinary overlaps and the flip seam. This layer does not yet construct the global quotient embedding. |
+| h | `89cc18610` | `526de7e6a` | A single non-endpoint derived-neighborhood cell with its arc trace is `IsPLBallPair 2 1`. This is not the trimmed union induction. |
+| E3 | `3b142c900` | `7f326baf3` | Tagged disjoint source sheets give an exact image-intersection formula for double points; the closed model has precisely the two fixed endpoints, while the open model has no double points. |
+| F | `7302186ab` | `79a63a784` | Actual boundary double-point germs have a bidirectional half-axis chart with full fiber coverage; the constructed local carrier has the stated local frontier. Boundary crossing sheets cannot have equal germs. |
+
+After merging, the coordinator strictly recompiled `MobiusSquareMap`,
+`ArcCellBallPair`, `SlabWedgeDoublePoint`, and `BoundaryDoubleCrossingChart`.
+All four returned exit 0 and zero diagnostics with explicit header/long-line
+checks. The combined silent audit dynamically selected all nonautomatic
+declarations, including private declarations: 15 + 1 + 12 + 4 = 32. Every
+transitive axiom is in `{propext, Classical.choice, Quot.sound}`; all 13 default
+applicable environment linters passed, excluding only the two documentation
+presence linters. `git diff --check` passed.
+
+Receipts, exact integration source hashes, newline-normalized correspondence to
+the delivered lane sources, committed blob identities, and the full declaration
+census are retained under
+`C:\Users\liao9\AppData\Local\Temp\codex-integration-second-batch-20260918`.
+The three required upstream private objects were reused only after exact current
+source-hash checks. Other imported project objects remain shared, so this local
+acceptance is not the independent full-source closure gate.
+
+The full-root build was briefly restarted once at this batch boundary, preserving
+its private outputs, on source checkpoint
+`79a63a78483b400b18447e9bc4061d21d8ea40fd`. It continues with one worker. The final
+handoff-only commit has identical Lean source; root success is still unclaimed.
+Its live state remains `.lake/root-build-final-status.json`.
+
+S now owns the private compilation window for its source-ready global PL gluing
+layer in `MobiusSquareMap`; h's `ArcCellGluing` and E3's
+`SlabWedgeConjugation` follow in that order. These drafts are not certified by the
+32-declaration audit above. F continues its source-side lane on coherent labels
+for actual branch sheets and matching adjacent cell traces. The missing real
+carrier/boundary compatibility and the complete injective double-end arc-chain
+chart remain explicit obligations. Full trimmed-union gluing and the mapping-torus
+embedding also remain open. No task's local conditional layer is counted as any
+of these endpoints.
+
+## 14. Third delivery: square gluing, cell interfaces, and coherent sheets (2026-09-18)
+
+The third batch was integrated at the next four-task delivery boundary:
+
+| Task | Published checkpoint | Integration merge | Exact completed layer |
+| --- | --- | --- | --- |
+| S | `f17036dd1` | `8ebe5c9ac` | A PWA square map with the complete flip seam and exactly the specified flip-only fibers produces a PL homeomorphism from `mobiusComplex.space` onto its image. This is a model bridge; an arbitrary reversing-disk mapping-torus still needs the actual compatible strip. |
+| h | `3840d85cd` | `4e071d655` | Adjacent arc cells have the exact cone intersection, sphere bases, interface inclusion on both boundaries, marked crossing conditions, and the normalized arc trace. The full trimmed union is still open. |
+| E3 | `c0aa574b3` | `0db91d236` | Wedge pushes transport through PL charts to injective PL maps with compact common support, identity off support, support preservation, and disjoint images of actual subsets of the two open folds. |
+| F | `f774beb3e` | `0e7ba393d` | A genuine boundary branch produces two fixed disjoint polyhedral source neighborhoods, each embedded by the singular cell map, and an open neighborhood of the whole branch with full two-sheet fiber coverage and an exact double-point image-intersection formula. No PL two-ball neighborhood is claimed. |
+
+The coordinator recompiled all four touched integration leaves with the strict
+syntax set and explicit header/long-line checks: `MobiusSquareMap`,
+`ArcCellGluing`, `SlabWedgeConjugation`, and `BoundaryBranchSheets`. All checks
+returned exit 0 and zero diagnostics. The combined silent audit dynamically
+selected all 27 + 20 + 7 + 2 = 56 nonautomatic declarations, including private
+declarations. Their transitive axiom closures contain only the three standard
+foundational axioms, and all 13 applicable default environment linters passed.
+Only `docBlame` and `docBlameThm` were excluded. `git diff --check` passed.
+
+Private receipts, source and committed-blob identities, and the declaration
+census are under
+`C:\Users\liao9\AppData\Local\Temp\codex-integration-third-batch-20260918`.
+Three private prerequisite objects were reused after exact source-hash checks;
+other imported project objects remain shared. The independent full-root build
+was restarted once for this delivered batch, preserving its outputs, at source
+checkpoint `0e7ba393dca87d8390d956cd0dba446b2cb046f3`. It remains running and is not
+certified complete. The subsequent handoff-only commit has identical Lean source.
+
+F reported and the coordinator reproduced a compiler-lease clock bug: PowerShell
+can deserialize a JSON UTC timestamp directly as `DateTime` with `Kind=Utc`.
+Parsing that object again through its local display string loses the kind and
+can move the apparent expiry seven hours later. The external private checker
+now preserves `DateTime.Kind`, uses `DateTimeOffset.UtcDateTime` when applicable,
+and parses only strings with invariant culture and `RoundtripKind`. Tests of all
+three input representations and the expiry boundary passed; the receipt is
+`.lake/compiler-expiry-utc-fix.json`. The delivered lane checks completed within
+their real UTC windows. The delivery-only coordination rule remains in force.
+
+The next private window belongs to h for its source-ready marked-extension
+output `G y = y'` and the two updated consumers in `BallPairRelativeGluing`.
+S follows with `CircleLiftOrientation` and `CirclePrismComparison`, which aim to
+produce a compatible cylinder/arc strip using existing circle pseudo-isotopy.
+These drafts are unverified. F continues matching its fixed source sheets with
+crossing germs, before the ambient cell-trace and real-boundary compatibility
+steps. E3 retains its lane and waits for those actual geometric inputs rather
+than adding more conditional wrappers. `exists_separated_along_branch`, Case 3/4
+L2 and its complexity drop, the complete double-end chart, the trimmed union,
+and the arbitrary-monodromy mapping-torus endpoint are still not delivered.
+
+## 15. 2026-09-19 Continuous lane rounds and one-hour audit
+
+The owner supplied the previous four-lane workflow and asked to try it. The
+adapted current rules are in `FOUR_LANE_WORKFLOW.md`: retain the four existing
+tasks, give each a coherent mathematical round, checkpoint closed layers without
+requiring mathematical redispatch, and intervene only at delivery or for an
+urgent stop/restart. F and S use Astra max; h and E3 use Sol high. E3 retains its
+blocked separation lane rather than generating more conditional wrappers.
+
+The compiler policy now trials one root worker plus at most two private lane
+checkers, guarded by process reservations, a named mutex, and measured memory.
+The external admission probe passed with zero diagnostics. Shared artifacts
+remain read-only, and private/source/audit acceptance remains distinct from the
+independent full-source root gate. Resource admission is implemented in the
+external round helper; the old single-token helper must not be used for new
+rounds. Current authorizations are in `.lake/round-compiler-leases/`.
+
+`PROGRESS_AUDIT_20260918_1548_1648.md` records the fixed preceding hour. Seven
+mathematical commits delivered +1228/-4 Lean lines, but this includes source
+written earlier. Actual in-window leaf source changes were +742/-16, including
+265 net unverified draft lines. No new complete Moise headline closed. The
+former serial queue caused 16--25 minute waits and is the reason for this trial.
+
+At this coordination checkpoint, b3bbb416c, 1da809615, c252597c7, and the later
+F delivery c315e29f5 await integration acceptance. Do not treat these as already
+merged. The root build still targets source head 0e7ba393d; this documentation
+checkpoint does not change Lean source or restart that build.
