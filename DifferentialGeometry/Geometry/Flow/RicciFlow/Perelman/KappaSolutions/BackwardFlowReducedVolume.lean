@@ -188,6 +188,16 @@ theorem exists_backward_flow_reducedLength_limit_with_mass
           (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I)
             (Phi.atTime (I := I) (X := X) (L := L) t) k) ∧
           (∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)) ∧
+        ∃ (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M),
+          (∀ K : Set L.M, IsCompact K → ∀ᶠ i in atTop,
+            ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+              ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+                (G i t).inner x v w = ((X.term (phi i)).S.base.metric t).inner
+                  (Phi.map i x) (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w)) ∧
+          (∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+            ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ i ≥ N,
+              ∀ t ∈ Icc a b,
+                metricDerivNormSupOn K r (G i t) (L.S.base.metric t) R < epsilon) ∧
         ∃ ell : C(L.M × Icc (1 : ℝ) T, ℝ),
           (∀ z, 0 ≤ ell z) ∧ ell (L.basepoint, ⟨1, le_rfl, hT⟩) ≤ A ∧
           (∀ R : ℝ, 0 ≤ R → ∃ K : ℝ≥0,
@@ -204,10 +214,10 @@ theorem exists_backward_flow_reducedLength_limit_with_mass
                 asymptoticReducedVolume F.S 0 p := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   obtain ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv,
-      ell, hnonneg, hbaseLimit, hLip, hpotential⟩ :=
-    exists_backward_flow_reducedLength_limit F hF p tau htau q hbase hT
+      R, G, hG, hmetric, ell, hnonneg, hbaseLimit, hLip, hpotential⟩ :=
+    exists_backward_flow_reducedLength_limit_with_uniform_metric_convergence F hF p tau htau q hbase hT
   refine ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv,
-    ell, hnonneg, hbaseLimit, hLip, hpotential, ?_⟩
+    R, G, hG, hmetric, ell, hnonneg, hbaseLimit, hLip, hpotential, ?_⟩
   intro theta
   have htheta : 0 < (theta : ℝ) := zero_lt_one.trans_le theta.property.1
   have ht : 1 - (theta : ℝ) ≤ 0 := sub_nonpos.mpr theta.property.1

@@ -376,6 +376,67 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.sigmaCompact
 variable (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
 
+theorem exists_backward_flow_reducedLength_limit_with_uniform_metric_convergence
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
+    {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A)
+    {T : ℝ} (hT : 1 ≤ T) :
+    let X := backwardFlowSequence F tau htau q
+    ∃ (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval) (phi : ℕ → ℕ),
+      StrictMono phi ∧ ∃ Phi : PointedCGHMaps (I := I) X (L.atTime 0) phi,
+        ConnectedSpace L.M ∧ (∀ t : ℝ, t ≤ 0 → MetricComplete (L.atTime t)) ∧
+        (∀ t : ℝ, t ≤ 0 → ∃ C : MetricConvergenceData (I := I) (Phi.atTime (I := I) (X := X) (L := L) t),
+          (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I)
+            (Phi.atTime (I := I) (X := X) (L := L) t) k) ∧
+          (∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)) ∧
+        ∃ (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M),
+          (∀ K : Set L.M, IsCompact K → ∀ᶠ i in atTop,
+            ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+              ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+                (G i t).inner x v w = ((X.term (phi i)).S.base.metric t).inner
+                  (Phi.map i x) (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w)) ∧
+          (∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+            ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ i ≥ N,
+              ∀ t ∈ Icc a b,
+                metricDerivNormSupOn K r (G i t) (L.S.base.metric t) R < epsilon) ∧
+        ∃ ell : C(L.M × Icc (1 : ℝ) T, ℝ),
+          (∀ z, 0 ≤ ell z) ∧ ell (L.basepoint, ⟨1, le_rfl, hT⟩) ≤ A ∧
+          (∀ R : ℝ, 0 ≤ R → ∃ K : ℝ≥0,
+            ∀ x ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint R,
+            ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint R,
+            ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
+              (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|)) ∧
+          ∀ S : Set (L.M × Icc (1 : ℝ) T), IsCompact S → TendstoUniformlyOn
+            (fun i z => redLength F.S 0 p (Phi.map i z.1) (tau (phi i) * z.2)) ell atTop S := by
+  let X := backwardFlowSequence F tau htau q
+  obtain ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv, R, G, hG, hmetric⟩ :=
+    exists_backward_flow_compactness_with_uniform_metric_convergence F hF p tau htau q hbase
+  let _ : ConnectedSpace L.M := hconnected
+  let _ : ConnectedSpace (L.atTime 0).M := hconnected
+  let Phi0 := backwardFlowZeroMaps F tau htau q L Phi
+  obtain ⟨C, _, href⟩ := hconv 0 le_rfl
+  obtain ⟨C0, href0⟩ := exists_backward_flow_zero_metric_convergence F tau htau q L Phi C
+    (fun k => href k)
+  obtain ⟨psi, ell, hpsi, hnonneg, hbaseLimit, hLip, hpotential⟩ :=
+    exists_reducedLength_limit_on_rescaled_time_interval F hF p tau htau q hbase
+      (L.atTime 0) Phi0 C0 href0 (hcomplete 0 le_rfl) hT
+  refine ⟨L, phi ∘ psi, hphi.comp hpsi, Phi.compSubseq psi hpsi, hconnected, hcomplete,
+    ?_, R, (fun i t => G (psi i) t), ?_, ?_, ell, hnonneg, hbaseLimit, hLip, hpotential⟩
+  · intro t ht
+    obtain ⟨C, hcanonical, href⟩ := hconv t ht
+    refine ⟨C.compSubseq psi hpsi, ?_, ?_⟩
+    · intro i
+      change MetricSourceData.compSubseq psi hpsi i (C.domain (psi i)) = _
+      rw [hcanonical]
+      rfl
+    · intro i
+      exact href (psi i)
+  · intro K hK
+    exact hpsi.tendsto_atTop.eventually (hG K hK)
+  · intro a b hab K hK r epsilon hepsilon
+    obtain ⟨N, hN⟩ := hmetric a b hab K hK r epsilon hepsilon
+    exact ⟨N, fun i hi t ht => hN (psi i) (hi.trans (hpsi.id_le i)) t ht⟩
+
 theorem exists_backward_flow_reducedLength_limit
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
@@ -398,28 +459,9 @@ theorem exists_backward_flow_reducedLength_limit
               (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|)) ∧
           ∀ S : Set (L.M × Icc (1 : ℝ) T), IsCompact S → TendstoUniformlyOn
             (fun i z => redLength F.S 0 p (Phi.map i z.1) (tau (phi i) * z.2)) ell atTop S := by
-  let X := backwardFlowSequence F tau htau q
-  obtain ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv⟩ :=
-    exists_backward_flow_compactness F hF p tau htau q hbase
-  let _ : ConnectedSpace L.M := hconnected
-  let _ : ConnectedSpace (L.atTime 0).M := hconnected
-  let Phi0 := backwardFlowZeroMaps F tau htau q L Phi
-  obtain ⟨C, _, href⟩ := hconv 0 le_rfl
-  obtain ⟨C0, href0⟩ := exists_backward_flow_zero_metric_convergence F tau htau q L Phi C
-    (fun k => href k)
-  obtain ⟨psi, ell, hpsi, hnonneg, hbaseLimit, hLip, hpotential⟩ :=
-    exists_reducedLength_limit_on_rescaled_time_interval F hF p tau htau q hbase
-      (L.atTime 0) Phi0 C0 href0 (hcomplete 0 le_rfl) hT
-  refine ⟨L, phi ∘ psi, hphi.comp hpsi, Phi.compSubseq psi hpsi, hconnected, hcomplete,
-    ?_, ell, hnonneg, hbaseLimit, hLip, hpotential⟩
-  intro t ht
-  obtain ⟨C, hcanonical, href⟩ := hconv t ht
-  refine ⟨C.compSubseq psi hpsi, ?_, ?_⟩
-  · intro i
-    change MetricSourceData.compSubseq psi hpsi i (C.domain (psi i)) = _
-    rw [hcanonical]
-    rfl
-  · intro i
-    exact href (psi i)
+  obtain ⟨L, phi, hphi, Phi, hconn, hcomp, hconv, R, G, hG, hmetric, hell⟩ :=
+    exists_backward_flow_reducedLength_limit_with_uniform_metric_convergence
+      F hF p tau htau q hbase hT
+  exact ⟨L, phi, hphi, Phi, hconn, hcomp, hconv, hell⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

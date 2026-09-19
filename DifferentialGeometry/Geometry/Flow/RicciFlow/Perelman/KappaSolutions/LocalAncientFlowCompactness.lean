@@ -26,8 +26,10 @@ open scoped _root_.Manifold ContDiff _root_.Topology
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 section
 
@@ -38,7 +40,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
-theorem exists_local_ancient_flow_compactness
+theorem exists_local_ancient_flow_compactness_with_uniform_metric_convergence
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = ancientTimeInterval)
     (hcomplete : FlowMetricComplete (I := I) X)
@@ -69,7 +71,7 @@ theorem exists_local_ancient_flow_compactness
         (let _ : TopologicalSpace L.M := L.topology
          ConnectedSpace L.M) ∧
         (∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t)) ∧
-        ∀ t ∈ X.D.carrier,
+        (∀ t ∈ X.D.carrier,
           ∃ C : MetricConvergenceData (I := I) (Phi.atTime (L := L) t),
             (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
               (I := I) (Phi.atTime (L := L) t) k) ∧
@@ -81,7 +83,17 @@ theorem exists_local_ancient_flow_compactness
                 (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.charted
               let _ : IsManifold I ∞
                 (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.smooth
-              D.referenceMetric = D.limitMetric) := by
+              D.referenceMetric = D.limitMetric)) ∧
+        ∃ (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M),
+          (∀ K : Set L.M, IsCompact K → ∀ᶠ i in atTop,
+            ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+              ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+                (G i t).inner x v w = ((X.term (phi i)).S.base.metric t).inner
+                  (Phi.map i x) (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w)) ∧
+          (∀ a b : ℝ, Icc a b ⊆ X.D.carrier → ∀ K : Set L.M, IsCompact K →
+            ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ i ≥ N,
+              ∀ t ∈ Icc a b,
+                metricDerivNormSupOn K p (G i t) (L.S.base.metric t) R < epsilon) := by
   classical
   have h0 : (0 : ℝ) ∈ X.D.carrier := by
     simp only [hD, ancientTimeInterval_carrier, mem_Iic, le_refl]
@@ -151,7 +163,7 @@ theorem exists_local_ancient_flow_compactness
       source_exhausts := (Phi.compSubseq co.φ co.strictMono).source_exhausts
       base_mem := (Phi.compSubseq co.φ co.strictMono).base_mem
       basepoint_map := (Phi.compSubseq co.φ co.strictMono).basepoint_map }
-  refine ⟨L, mc.subseq ∘ co.φ, mc.strictMono.comp co.strictMono, Psi, hconnectedP, ?_, ?_⟩
+  refine ⟨L, mc.subseq ∘ co.φ, mc.strictMono.comp co.strictMono, Psi, hconnectedP, ?_, ?_, ?_⟩
   · intro t ht
     have ht0 : t ≤ 0 := by simpa only [hcarrier, mem_Iic] using ht
     obtain ⟨c, hc, hb⟩ := hlow (1 - t) (by linarith)
@@ -163,6 +175,64 @@ theorem exists_local_ancient_flow_compactness
   · intro t ht
     have ht0 : t ≤ 0 := by simpa only [hcarrier, mem_Iic] using ht
     exact co.exists_canonicalMetricConvergenceData Phi ht0
+  · refine ⟨P.metric, (fun i t => G (co.φ i) t), ?_, ?_⟩
+    · intro K hK
+      exact co.strictMono.tendsto_atTop.eventually (hG K hK)
+    · intro a b hab K hK p epsilon hepsilon
+      obtain ⟨n, hn⟩ := exists_nat_ge (-a)
+      obtain ⟨N, hN⟩ := (co.convergenceOn n).convergence K hK p epsilon hepsilon
+      refine ⟨N, fun i hi t ht => hN i hi t ?_⟩
+      have ht0 : t ≤ 0 := by simpa only [hcarrier, mem_Iic] using hab ht
+      exact ⟨by linarith [ht.1], ht0⟩
+
+theorem exists_local_ancient_flow_compactness
+    (X : PointedFlowSeq.{u, uE, uH} (I := I))
+    (hD : X.D = ancientTimeInterval)
+    (hcomplete : FlowMetricComplete (I := I) X)
+    (hconnected : ∀ i : ℕ,
+      let _ : TopologicalSpace (X.term i).M := (X.term i).topology
+      ConnectedSpace (X.term i).M)
+    (hinj : FlowScaleInjectivityBound (I := I) X)
+    (hlocal : ∀ A : ℝ, 0 < A → ∀ T : ℝ, 0 < T → ∃ K : ℝ, 0 ≤ K ∧
+      ∀ᶠ i in atTop,
+        let _ : TopologicalSpace (X.term i).M := (X.term i).topology
+        let _ : ChartedSpace H (X.term i).M := (X.term i).charted
+        let _ : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+        ∀ t ∈ Set.Icc (-T) 0, ∀ x : (X.term i).M,
+          riemannianEDistOf (I := I) ((X.term i).S.base.metric 0)
+              (X.term i).basepoint x ≤ ENNReal.ofReal A →
+            (X.term i).rmNormSq (I := I) t x ≤ K)
+    (hlower : ∀ T : ℝ, 0 < T → ∃ c : ℝ, 0 < c ∧
+      ∀ᶠ i in atTop,
+        let _ : TopologicalSpace (X.term i).M := (X.term i).topology
+        let _ : ChartedSpace H (X.term i).M := (X.term i).charted
+        let _ : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+        ∀ t ∈ Set.Icc (-T) 0, ∀ x : (X.term i).M, ∀ v : TangentSpace I x,
+          c * ((X.term i).S.base.metric 0).inner x v v ≤
+            ((X.term i).S.base.metric t).inner x v v) :
+    ∃ (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ),
+      StrictMono phi ∧
+      ∃ Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi,
+        (let _ : TopologicalSpace L.M := L.topology
+         ConnectedSpace L.M) ∧
+        (∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t)) ∧
+        ∀ t ∈ X.D.carrier,
+          ∃ C : MetricConvergenceData (I := I) (Phi.atTime (L := L) t),
+            (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
+              (I := I) (Phi.atTime (L := L) t) k) ∧
+            (∀ k,
+              let D := C.domain k
+              let _ : TopologicalSpace
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.topology
+              let _ : ChartedSpace H
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.charted
+              let _ : IsManifold I ∞
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.smooth
+              D.referenceMetric = D.limitMetric) := by
+  obtain ⟨L, phi, hphi, Phi, hconn, hcomp, hconv, _⟩ :=
+    exists_local_ancient_flow_compactness_with_uniform_metric_convergence
+      X hD hcomplete hconnected hinj hlocal hlower
+  exact ⟨L, phi, hphi, Phi, hconn, hcomp, hconv⟩
 
 end
 

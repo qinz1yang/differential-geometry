@@ -22,7 +22,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem exists_backward_flow_compactness
+theorem exists_backward_flow_compactness_with_uniform_metric_convergence
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A) :
@@ -30,7 +30,7 @@ theorem exists_backward_flow_compactness
     ∃ (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval) (phi : ℕ → ℕ),
       StrictMono phi ∧ ∃ Phi : PointedCGHMaps (I := I) X (L.atTime 0) phi,
         ConnectedSpace L.M ∧ (∀ t : ℝ, t ≤ 0 → MetricComplete (L.atTime t)) ∧
-        ∀ t : ℝ, t ≤ 0 → ∃ C : MetricConvergenceData (I := I) (Phi.atTime (I := I) (X := X) (L := L) t),
+        (∀ t : ℝ, t ≤ 0 → ∃ C : MetricConvergenceData (I := I) (Phi.atTime (I := I) (X := X) (L := L) t),
           (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I)
             (Phi.atTime (I := I) (X := X) (L := L) t) k) ∧
           (∀ k,
@@ -38,7 +38,17 @@ theorem exists_backward_flow_compactness
             let _ : TopologicalSpace (MetricSourceDomain (I := I) (Phi.atTime (I := I) (X := X) (L := L) t) k) := D.topology
             let _ : ChartedSpace H (MetricSourceDomain (I := I) (Phi.atTime (I := I) (X := X) (L := L) t) k) := D.charted
             let _ : IsManifold I ∞ (MetricSourceDomain (I := I) (Phi.atTime (I := I) (X := X) (L := L) t) k) := D.smooth
-            D.referenceMetric = D.limitMetric) := by
+            D.referenceMetric = D.limitMetric)) ∧
+        ∃ (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M),
+          (∀ K : Set L.M, IsCompact K → ∀ᶠ i in atTop,
+            ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+              ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+                (G i t).inner x v w = ((X.term (phi i)).S.base.metric t).inner
+                  (Phi.map i x) (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w)) ∧
+          (∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+            ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ i ≥ N,
+              ∀ t ∈ Icc a b,
+                metricDerivNormSupOn K p (G i t) (L.S.base.metric t) R < epsilon) := by
   let X := backwardFlowSequence F tau htau q
   have htime (i : ℕ) (t : ℝ) (ht : t ≤ 0) : tau i * (t - 1) ≤ -tau i := by
     nlinarith [mul_nonpos_of_nonneg_of_nonpos (htau i).le ht]
@@ -94,11 +104,32 @@ theorem exists_backward_flow_compactness
       ((htime i t ht.2).trans (neg_nonpos.mpr (htau i).le))
       (neg_nonpos.mpr (htau i).le) (htime i t ht.2)
   have hcarrier : X.D.carrier = Iic 0 := rfl
-  obtain ⟨L, phi, hphi, Phi, hconn, hcomp, hconv⟩ :=
-    exists_local_ancient_flow_compactness X rfl hcomplete hconnected hinj hlocal hlower
-  refine ⟨L, phi, hphi, Phi, hconn, ?_, ?_⟩
+  obtain ⟨L, phi, hphi, Phi, hconn, hcomp, hconv, hmetric⟩ :=
+    exists_local_ancient_flow_compactness_with_uniform_metric_convergence X rfl hcomplete hconnected hinj hlocal hlower
+  refine ⟨L, phi, hphi, Phi, hconn, ?_, ?_, hmetric⟩
   · intro t ht
     exact hcomp t ht
   · simpa only [hcarrier, Set.mem_Iic] using hconv
+
+theorem exists_backward_flow_compactness
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
+    {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A) :
+    let X := backwardFlowSequence F tau htau q
+    ∃ (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval) (phi : ℕ → ℕ),
+      StrictMono phi ∧ ∃ Phi : PointedCGHMaps (I := I) X (L.atTime 0) phi,
+        ConnectedSpace L.M ∧ (∀ t : ℝ, t ≤ 0 → MetricComplete (L.atTime t)) ∧
+        ∀ t : ℝ, t ≤ 0 → ∃ C : MetricConvergenceData (I := I) (Phi.atTime (I := I) (X := X) (L := L) t),
+          (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I)
+            (Phi.atTime (I := I) (X := X) (L := L) t) k) ∧
+          (∀ k,
+            let D := C.domain k
+            let _ : TopologicalSpace (MetricSourceDomain (I := I) (Phi.atTime (I := I) (X := X) (L := L) t) k) := D.topology
+            let _ : ChartedSpace H (MetricSourceDomain (I := I) (Phi.atTime (I := I) (X := X) (L := L) t) k) := D.charted
+            let _ : IsManifold I ∞ (MetricSourceDomain (I := I) (Phi.atTime (I := I) (X := X) (L := L) t) k) := D.smooth
+            D.referenceMetric = D.limitMetric) := by
+  obtain ⟨L, phi, hphi, Phi, hconn, hcomp, hconv, _⟩ :=
+    exists_backward_flow_compactness_with_uniform_metric_convergence F hF p tau htau q hbase
+  exact ⟨L, phi, hphi, Phi, hconn, hcomp, hconv⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
