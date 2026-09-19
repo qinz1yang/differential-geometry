@@ -23,21 +23,24 @@ local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 local notation "EuN" => EuclideanSpace ℝ (Fin n)
 local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 
-theorem ae_memWkp_two_and_memLp_wkpNorm_chartInverse_of_weak_second_partials
-    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+theorem ae_memWkp_add_two_and_memLp_wkpNorm_chartInverse_of_weak_second_partials
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z} {m : ℕ}
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
     (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
     (hΩ₀ : IsOpen Ω₀) (hsub : Ω₀ ⊆ Ω)
     {v : Z → H1ComplDirichlet q} (hv : MemLp v 2 μ)
     (H : Fin (Module.finrank ℝ EuN) → Fin (Module.finrank ℝ EuN) →
-      Lp ℝ 2 (μ.prod (volume.restrict Ω₀)))
+      Z × EuStd → ℝ)
     (hH : ∀ i k, ∀ᵐ t ∂μ,
       DeGiorgi.HasWeakPartialDeriv k (fun z => H i k (t, z))
-        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t)) Ω₀) :
-    (∀ᵐ t ∂μ, MemWkp 2 2 (fun z => H1ComplDirichletToLp q (v t)
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t)) Ω₀)
+    (hHmem : ∀ i j, ∀ᵐ t ∂μ, MemWkp m 2 (fun z => H i j (t, z)) Ω₀)
+    (hHnorm : ∀ i j, MemLp (fun t => (iteratedWeakSobolevNorm m 2
+      (fun z => H i j (t, z)) Ω₀).toReal) 2 μ) :
+    (∀ᵐ t ∂μ, MemWkp (m + 2) 2 (fun z => H1ComplDirichletToLp q (v t)
       ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω₀) ∧
-      MemLp (fun t => (iteratedWeakSobolevNorm 2 2
+      MemLp (fun t => (iteratedWeakSobolevNorm (m + 2) 2
         (fun z => H1ComplDirichletToLp q (v t)
           ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω₀).toReal) 2 μ := by
   let vLp := hv.toLp v
@@ -67,9 +70,9 @@ theorem ae_memWkp_two_and_memLp_wkpNorm_chartInverse_of_weak_second_partials
       (fun z => H i k (t, z)) (fun z => W i (t, z)) Ω₀ := by
     filter_upwards [hH i k, heqW i] with t ht he
     exact hasWeakPartialDeriv_congr_ae hΩ₀ k he.symm ht
-  have hWreg (i) := ae_memWkp_one_and_memLp_wkpNorm_of_weak_partials
+  have hWreg (i) := ae_memWkp_succ_and_memLp_wkpNorm_of_weak_partials
     hΩ₀ (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num) (hW i)
-    (fun k => Lp.memLp (H i k)) (hsecond i)
+    (hHmem i) (hHnorm i) (hsecond i)
   have hfirst (i) : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
       (fun z => W i (t, z)) (fun z => U (t, z)) Ω₀ :=
     (hasWeakPartialDeriv_dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs μ i vLp).mono
@@ -83,5 +86,30 @@ theorem ae_memWkp_two_and_memLp_wkpNorm_chartInverse_of_weak_second_partials
   · apply hnorm.ae_eq
     filter_upwards [heqU] with t ht
     exact congrArg ENNReal.toReal (wkpNorm_congr_ae (by norm_num) hΩ₀ ht)
+
+theorem ae_memWkp_two_and_memLp_wkpNorm_chartInverse_of_weak_second_partials
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hsub : Ω₀ ⊆ Ω)
+    {v : Z → H1ComplDirichlet q} (hv : MemLp v 2 μ)
+    (H : Fin (Module.finrank ℝ EuN) → Fin (Module.finrank ℝ EuN) →
+      Lp ℝ 2 (μ.prod (volume.restrict Ω₀)))
+    (hH : ∀ i k, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv k (fun z => H i k (t, z))
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t)) Ω₀) :
+    (∀ᵐ t ∂μ, MemWkp 2 2 (fun z => H1ComplDirichletToLp q (v t)
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω₀) ∧
+      MemLp (fun t => (iteratedWeakSobolevNorm 2 2
+        (fun z => H1ComplDirichletToLp q (v t)
+          ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω₀).toReal) 2 μ := by
+  apply ae_memWkp_add_two_and_memLp_wkpNorm_chartInverse_of_weak_second_partials
+    (m := 0) q α hΩ hΩc hΩs hΩ₀ hsub hv (fun i j p => H i j p) hH
+  · intro i j
+    exact ((Lp.memLp (H i j)).prodMk_left (by norm_num)).mono
+      (fun _ ht => MemWkp.zero_iff_memLp.mpr ht)
+  · intro i j
+    simpa only [wkpNorm_zero] using (Lp.memLp (H i j)).eLpNorm_toReal (by norm_num)
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
