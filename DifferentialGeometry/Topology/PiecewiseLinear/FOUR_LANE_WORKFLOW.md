@@ -12,9 +12,9 @@ handoff and the individual lane handoffs.
   gpt-5.6-sol, max.
 - E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
   gpt-5.6-sol, max.
-- S: 24.12, from one generating polygon's nullhomotopy to an actual CST
-  neighborhood, gpt-6-astra, max. Compact PL smoothing is a separate next
-  lane at delivery or a genuine blocker, not a simultaneous assignment.
+- S: compact PL three-manifold smoothing, gpt-6-astra, max; assigned at the
+  finite 24.12 delivery 434d5352c. The finite CST deliveries are independently
+  accepted; the smoothing lane is separate and remains open.
 - The coordinator validates, integrates, records decisions, and supplies exact
   interfaces. It does not write the main mathematical proofs.
 
@@ -92,9 +92,10 @@ Review the complete scoped diff, worktree ownership, source provenance, branch
 and remote state, prohibited constructs, and exact mathematical claims.
 Recompile every changed leaf in the integration checkout, and audit cross-import
 compatibility. Keep focused verification separate from the incomplete, stopped
-full-source gate. Repair disconnected endpoint imports before the future root
-gate is counted as endpoint coverage. Preserve raw and normalized source
-identities when Windows line endings differ. A clean Git push is archival evidence, not proof evidence.
+full-source gate. Endpoint imports are now statically reachable, but the
+future root compilation gate is still required. Preserve raw and normalized
+source identities when Windows line endings differ. A clean Git push is archival
+evidence, not proof evidence.
 
 Report exact declarations, check durations and exit codes, audit coverage, and
 remaining obligations. Distinguish newly written source, verified deliveries,

@@ -2964,3 +2964,23 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 30.3 尚缺的几何接线是：从实际嵌入分裂盘 `Δ` 及 `D₂ ∩ N(Δ)` 的两 3-胞腔构造书中的
   `N = C₁³` 与替换面 `C' = (C - Int A₁) ∪ Δ₁`，并证明
   `frontier N \ C' = Int A' ∪ Int Δ₂` 的道路连通性、其避开 `C` 性以及 `N` 外两面的精确相等。
+
+## 92. 2026-09-19 I.3：PL 2-球面去掉两不交盘的道路连通性
+
+状态：**已闭合一个独立几何层；30.3 整体仍为 partial**。
+
+- 新模块 `SurfaceSplitAnnulus.lean` 的 `IsPLSphere.isPathConnected_one` 证明 PL 1-球面道路连通；
+  `IsPLSphere.isPathConnected_sdiff_union_of_disjoint_isPLBall_two` 证明 PL 2-球面去掉两张互不相交的
+  PL 2-胞腔后道路连通。
+- 证明不使用“环带补集道路连通”的假设：把任意盘对通过
+  `exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk` 搬到实际棱柱 `L.space × [0,1]` 边界上的两个端盘；
+  `boundaryComplex_space_prism` 将其补集精确识别为
+  `(boundaryComplex 2 L).space × (0,1)`，两因子的道路连通性给出结论。这同时提供了一个可满足的
+  非退化具体模型。
+- 私有聚焦检查 exit `0`、零诊断、共享产物未改动。外部静默审计动态核对本模块恰有 2 条
+  非自动声明，并审计 5 条关键复用声明；全部传递公理闭包只含
+  `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。收据在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceSplitAnnulus.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 下一层仍须从书中的实际正则邻域分解产出 `C₁³`、其边界上两张不交盘
+  `D₂ ∩ N(Δ)` 与 `Δ₁`，以及替换面与原面在 `C₁³` 外的精确相等；本层没有把这些结论包装为输入。

@@ -34,8 +34,8 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | Construct the embedded-disk projection used by the original section 25 cover induction. | Prove local injectivity and fibers of size at most two for the projected disk; construct PL, lift, boundary and subgroup compatibility with strict complexity descent. Then close the remaining Lemma 2 branch-separation producer. |
-| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path-replacement layer b5e36cfe5 delivered; next connect the actual split cells. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
-| S / gpt-6-astra max | Close 24.12 from nullhomotopy of one actual generating polygon loop. | Derive all-loop nullhomotopy with basepoint/generator control, then apply the actual CST producer. At delivery or a genuine blocker, hand off to the separate compact PL smoothing lane. |
+| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement and annulus 18f861c89 are accepted; cut-cell layer 1cea2fbe7 is queued. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
+| S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
@@ -56,6 +56,13 @@ Existing rounds continue. Handoff at delivery or an urgent stop/restart; do not
 send routine status prompts, add a simultaneous lane, or create subagents.
 See [FOUR_LANE_WORKFLOW.md](FOUR_LANE_WORKFLOW.md).
 
+h's first repair delivery through 585cc71a0 is held for source correction:
+Moise331 incorrectly restricts graphs to one-manifolds, excluding branch
+vertices needed in section 34. Its proposed 35.1 neighborhood relation uses raw
+regularNeighborhoodIn stars without the derived/global compatibility evidence
+required for genuine regular neighborhoods. h continues the same repair lane;
+no acceptance of these contracts is claimed.
+
 ### Subsequent mathematical gates
 
 1. Accept corrected contracts and a real cover/projection construction; complete
@@ -73,6 +80,12 @@ See [FOUR_LANE_WORKFLOW.md](FOUR_LANE_WORKFLOW.md).
    Finite PL handle production, smooth attaching/framing, corner rounding and
    smooth classification of terminal two-sphere boundaries remain open.
    The eventual compact assembly does not prove unrestricted PLSmoothing 3.
+4. S now runs compact PL smoothing as a separate phase, after its reported
+   finite 24.12 delivery through 434d5352c.
+   First audit finite triangulation, handle attachment, circle/framing and
+   sphere-extension producers. This candidate construction remains to be
+   established. Its compact theorem needs a compact assembly theorem and
+   does not prove the unrestricted PLSmoothing 3.
 5. Only after both inputs are produced, assemble a smooth structure on the
    same carrier and topology and audit its transitive axioms.
 
@@ -80,26 +93,30 @@ See [FOUR_LANE_WORKFLOW.md](FOUR_LANE_WORKFLOW.md).
 
 E3 b195204ed and b5e36cfe5 are independently accepted: two modules, 35
 nonautomatic declarations and 12 key reused declarations pass the axiom/lint
-audit. h 0a0876425, F 495a3e343 and eefa65bae, and S aa6ff83be still await
-independent integration acceptance. S reports the actual disk-times-circle
-product and finite 24.11 CST construction; this is not an integration-accepted
-24.11 or a proof of 24.12. Preserve S's extraction of IsTopologicalSolidTorus
-when integrating h's separate MoiseChain repairs.
+audit. h 0a0876425 and F through 51b4ee8ad still await
+independent integration acceptance. S's actual disk-times-circle product and
+finite native 24.11/24.12 through 434d5352c are independently accepted: ten
+modules, 41 declarations, 33 critical reused declarations, 13 clean linters
+and a nonempty endpoint instance. Preserve S's
+extraction of IsTopologicalSolidTorus when integrating h's separate MoiseChain
+repairs.
 
 The owner stopped the independent full-source build at 2026-09-19 02:00 UTC.
 Completed artifacts are retained; no automatic restart is scheduled. The run
 is incomplete, not a successful full-root gate. Lane checks continue under
 the existing two-private-checker admission policy.
 
-The six-import root coverage patch is prepared but UNAPPLIED: Approximation,
+The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
+Static traversal reaches all six and 9304 project modules, with no missing
+project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused
 checks covering 26 nonautomatic declarations, standard axioms and all 13
 applicable environment linters; this does not establish full-source success.
 
-Next integration work is to review and replay pending deliveries, repair
-flat-root coverage, and check changed modules, dependents and endpoint axioms.
+Next integration work is to review and replay pending deliveries and check
+changed modules, dependents and endpoint axioms. Root coverage is repaired.
 The root build stays stopped under the owner's instruction. When verification
 is resumed, reuse retained artifacts and check the expanded import graph before
 treating a root success as endpoint coverage.

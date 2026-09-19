@@ -934,3 +934,92 @@ acceptance; its requested read-only MoiseChain compilation permission is granted
 Morning accounting is recorded in MORNING_ACCEPTANCE_20260919.md and the local
 overnight campaign ledger. At the deadline stop starting new proof rounds,
 record remaining active work and delivery points, and prepare the final review.
+
+## 24. Contract review hold, root coverage and smoothing handoff (2026-09-19 UTC)
+
+h delivered contracts through 585cc71a0, but source review found two unresolved
+defects before integration. Moise331's one-manifold input excludes branching
+graphs permitted on book p230 and needed for section 34. PolyhedralGraph's
+regular-neighborhood relation uses raw regularNeighborhoodIn stages without
+appropriate derived subdivision/global compatibility evidence. h was handed
+these exact review findings and nonempty-instance requirements at delivery;
+its lane remains contract repair. Do not merge/count this delivery as accepted
+merely because its private compiler/linter checks passed.
+
+The prepared six-import patch is now applied to the flat root. Static traversal
+with nested comments excluded reaches all six and 9265 project modules, with no
+missing project source. The seven endpoint audit modules retain their exact
+previously checked Git blobs. Evidence:
+.lake/root-endpoint-coverage-20260919.json.
+No Lean proof was changed for coverage; no full-root build was started or
+certified. Existing stopped-build outputs remain intact.
+
+S delivered 434d5352c for a finite native 24.12 generating-loop-to-CST endpoint.
+It is queued with the earlier product/CST delivery for independent acceptance.
+At that natural boundary S began the separate compact PL-smoothing lane on
+Astra max: audit actual triangulation/handle/circle/sphere producers, then prove
+a missing mathematical layer rather than add a conclusion-shaped assumption.
+E3 delivered 18f861c89 for path connectedness of a PL sphere minus two disjoint
+PL disks; it is queued and E3 continues the actual local split-cell geometry.
+F continues actual ambient-cover reduction after its projection delivery.
+All four tasks retain one lane each; private checker capacity remains two.
+
+## 25. Finite polygon solid-torus acceptance (2026-09-19 UTC)
+
+S through 434d5352c is merged and independently checked. The actual compact
+cylindrical quotient gives the standard disk-times-circle homeomorphism. The
+original solid-torus definition moves unchanged into SolidTorus; MoiseChain
+retains its 25 statements, including the three still-held contracts.
+NeighborhoodSolidTorus produces a CST from orientable derived neighborhoods;
+NeighborhoodContractiblePolygon proves finite native 24.12 from one actual
+spanning polygon cycle's free nullhomotopy. Integer powers, changes of basepoint,
+all-loop nullhomotopy and neighborhood orientability are derived internally.
+
+All ten changed modules freshly compiled, zero diagnostics. The independent
+census covers 41 nonautomatic declarations (15 new, one unchanged relocation,
+25 unchanged MoiseChain declarations), 33 distinct critical reused declarations,
+standard axioms only and 13 applicable environment linters. A concrete triangle
+in a tetrahedron supplies the actual nullhomotopic generating cycle and a
+nonempty CST conclusion. Eleven unchanged private prerequisites were reused
+with checked receipt/source/object identities; other upstream imports remain
+shared. This is not a full-source build.
+
+Evidence: .lake/verified-ninth-lane-delivery-20260919.json and external
+codex-integration-ninth-batch-20260919. Audit and concrete probe sources are
+preserved in the receipt before removing temporary Lean probes. The root
+registers all nine new leaves; static traversal reaches 9303 local modules with
+no missing source. General 24.9/24.10 classification, infinite triangulations
+and compact PL smoothing are not inferred from this finite acceptance.
+
+Accepted Lean diff against the previous integration is +503/-4. The delta
+since S's window-start f54be2f43 is +103/-4 (including headers and root imports);
+keep these distinct from newly accepted pre-window work. No root build restart.
+F's 51b4ee8ad ambient-cover/projection layer and E3's 18f861c89 annulus remain
+queued. Requested module compile scopes were extended at delivery boundaries
+for F's relative boundary inward push and S's topological sphere/cell gluing.
+Neither extension grants ownership of another lane's files.
+
+## 26. Split-annulus acceptance and next geometric producer (2026-09-19 UTC)
+
+E3 18f861c89 is merged and independently accepted: SurfaceSplitAnnulus freshly
+compiles with zero diagnostics; dynamic census verifies exactly two module
+declarations, five critical reused declarations, standard axioms only and
+13 clean environment linters. The proof transports the actual disk pair to
+prism endpoints and proves the complement is the boundary circle times an open
+interval. Eight unchanged private prerequisites were reused with receipt, source
+and object identity checks. This is focused acceptance, not a full-source build.
+
+Receipt: .lake/verified-tenth-lane-delivery-20260919.json. Source delta +124/-0
+Lean lines (including header/root import), committed after the overnight starting
+head 525a65813. Root static closure now reaches 9304 local modules without missing
+source; all previously audited endpoint leaf blobs remain unchanged.
+
+E3 subsequently delivered 1cea2fbe7: actual half-prism cells, endpoint disks and
+frontier formulas from a supplied PLPieceIn chart. It is pending acceptance.
+At that delivery boundary E3 continued the missing producer from book p215
+original Delta/D1/D2 input: construct a compatible neighborhood and actual
+C/C-prime traces, then apply the accepted separation replacement. Given-prism
+consumers do not produce that compatibility. The full-neighborhood boundary
+formula differs from the safe boundary of the half-cell; preserve this distinction.
+
+No new subagent/task, extra lane, or full-root restart was introduced.
