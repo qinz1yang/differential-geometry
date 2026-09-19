@@ -298,6 +298,51 @@ private theorem mixed_actual_bound (G g : SmoothRiemannianMetric I M)
 
 end Local
 
+section ManifoldBounds
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [BoundarylessManifold I M] [T2Space M]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+theorem exists_mixed_iterCov_bound
+    (r j : ℕ) (hr : 0 < r) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    ∃ C > 0, ∀ (G g : SmoothRiemannianMetric I M)
+      (T : Tensor0SField (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) r) (q : M),
+      (∀ s, s < j → Real.sqrt (normSq0S G q (3 + s)
+        (iterCov G 3 (metricLoweredConnectionDifferenceField G g) s q)) ≤ a) →
+      (∀ s, s ≤ j → Real.sqrt (normSq0S G q (r + s) (iterCov G r T s q)) ≤ b) →
+      ∀ k l, k + l ≤ j → Real.sqrt (normSq0S G q ((r + k) + l)
+        (iterCov G (r + k) (iterCov g r T k) l q)) ≤ C := by
+  let ae := Real.sqrt (Module.finrank ℝ E : ℝ) * a
+  have hae : 0 ≤ ae := mul_nonneg (Real.sqrt_nonneg _) ha
+  let P := mixedRecurrence r ae b
+  have hP : ∀ k l, 0 ≤ P k l := mixedRecurrence_nonneg r ae b hae hb
+  let C := 1 + ∑ k ∈ Finset.range (j + 1), ∑ l ∈ Finset.range (j + 1), P k l
+  have hC : 0 < C := by
+    have hsum : 0 ≤ ∑ k ∈ Finset.range (j + 1),
+        ∑ l ∈ Finset.range (j + 1), P k l :=
+      Finset.sum_nonneg fun k _ => Finset.sum_nonneg fun l _ => hP k l
+    dsimp only [C]
+    linarith
+  refine ⟨C, hC, ?_⟩
+  intro G g T q hA hT k l hkl
+  have h := mixed_actual_bound G g hr T q j a b ha hA hT k l hkl
+  have hk : k ∈ Finset.range (j + 1) := Finset.mem_range.mpr (by omega)
+  have hl : l ∈ Finset.range (j + 1) := Finset.mem_range.mpr (by omega)
+  have hinner : P k l ≤ ∑ t ∈ Finset.range (j + 1), P k t :=
+    Finset.single_le_sum (fun t _ => hP k t) hl
+  have houter : (∑ t ∈ Finset.range (j + 1), P k t) ≤
+      ∑ s ∈ Finset.range (j + 1), ∑ t ∈ Finset.range (j + 1), P s t :=
+    Finset.single_le_sum (fun s _ => Finset.sum_nonneg fun t _ => hP s t) hk
+  exact h.trans ((hinner.trans houter).trans (by dsimp only [C]; linarith))
+
+
+end ManifoldBounds
+
 section Euclidean
 
 open TopologicalSpace
