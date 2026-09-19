@@ -864,3 +864,12 @@ inline comments and declaration docstrings remain disallowed.
   `h` 下多面体胞腔的像，`frontier C₂'` 双领口；双领口情形已由 `TubularExcision.lean:170` + `SphereH1.lean:189` +
   `JordanBrouwer.lean:28` 无条件证出（纯拓扑，已 `#print axioms` 核实）。H-M3 漏查了这一支。决定：以 `Moise305Tame`
   （加 `IsBicollared (frontier C₂)`）替代，估约 1k–2k 行；不实现 wild 球面的 Alexander 对偶。详见 `MOISE_CHAIN.md` 同名条目。
+- 2026-09-19（H 车道 35.1 陈述与非空性修正）：`PolyhedralGraph.lean` 的
+  `IsLocallyFiniteRegularNeighborhoodOf` 改用真正的二次 `derivedNeighborhood`，并以图像子复形、邻域像子复形和两组
+  `IsGlueIso` 记录相邻有限层的单纯相容性；`ArcChainNeighborhood.lean` 的
+  `exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` 在三维 PL 球内部边上给出 `N/K/U` 均非空的实际实例。
+  `Moise351` 保留非紧、相对闭和逐点误差量词，经典证明仍未完成。三个模块私有检查 exit=0、零 warning；严格审计
+  动态覆盖 40 个本模块声明，并单独审计 `LocallyFinitePieceTower.ofPiece`、`derivedNeighborhood` 及其面/空间/邻域接口、
+  `secondDerived_isSubdivision`、`IsCombinatorialManifoldWithBoundary.derivedNeighborhood`、有限片流形桥、内部弧生产者、
+  `arcComplexIn` 面接口、`chartPieceOfComplex` 与 `subset_interior_iff_mem_nhdsSet` 等 15 个复用声明。全部仅依赖
+  `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。

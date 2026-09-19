@@ -3331,15 +3331,16 @@ graph witness.
 
 `IsLocallyFiniteRegularNeighborhoodOf N K U` is relative to an ambient piece
 tower of `U`.  It selects graph subcomplexes in the finite cores, requires
-their faces to remain graph faces under successive tower embeddings, and
-requires their images to exhaust exactly `K`.  At every stage it uses the
-library's actual `regularNeighborhoodIn` construction, requires the resulting
-complex to be an ambient-dimensional combinatorial manifold with boundary,
-and requires the mapped stage neighborhoods to form a monotone family whose
-union is exactly `N`.  The relation additionally records the intrinsic
-consequences needed downstream: `N` is an ordinary neighborhood of `K`, lies
-in `U`, and is a locally finite polyhedral manifold with boundary.  Projection
-theorems expose these three properties without hiding the triangulation data.
+their images to exhaust exactly `K`, and records the image subcomplex of every
+successive tower embedding by an `IsGlueIso`.  At every stage it uses the
+library's actual second-derived `derivedNeighborhood`, not a raw closed-star
+construction.  A second `IsGlueIso` identifies the image of each derived
+neighborhood with a subcomplex of the next one.  The mapped stage
+neighborhoods form a monotone family whose union is exactly `N`.  The relation
+also records the intrinsic consequences needed downstream: `N` is an ordinary
+neighborhood of `K`, lies in `U`, and is a locally finite polyhedral manifold
+with boundary.  Projection theorems expose these three properties without
+hiding the triangulation data.
 
 The new leaf is registered in the flat root aggregate.  It compiled with zero
 diagnostics and unchanged shared outputs under round token
@@ -3369,9 +3370,10 @@ hypothesis.
 The output neighborhood now satisfies
 `IsLocallyFiniteRegularNeighborhoodOf (n := 3) N K U`.  Consequently the
 statement retains the ambient rectilinear tower, its compatible graph
-subcomplexes, and the stagewise regular-neighborhood construction rather than
-recording only that `N` happens to be an ordinary polyhedral 3-manifold
-neighborhood.  The approximating map is a PL homeomorphism into the target on
+subcomplexes, the stagewise second-derived neighborhoods, and their explicit
+cross-stage simplicial identifications rather than recording only that `N`
+happens to be an ordinary polyhedral 3-manifold neighborhood.  The
+approximating map is a PL homeomorphism into the target on
 this exact `N`, its image is a neighborhood of `h '' K`, and the original
 pointwise error bound is unchanged.
 
@@ -3426,3 +3428,47 @@ audit dynamically enumerated all thirty-five non-automatic declarations in
 the two modules, checked twelve directly reused graph and simplicial-complex
 declarations, found only `{propext, Classical.choice, Quot.sound}`, and passed
 all thirteen applicable environment linters.
+
+## 66. 2026-09-19 Moise 35.1 derived-neighborhood correction — done
+
+The §63 vocabulary has been repaired after review against book pages 247–248.
+`LocallyFinitePieceTower.derivedNeighborhoodImage` now maps the actual
+`derivedNeighborhood` in the second barycentric subdivision.  The relation
+`IsLocallyFiniteRegularNeighborhoodOf` carries image subcomplexes for both the
+graph and its derived neighborhood and an `IsGlueIso` at every transition;
+mere set-theoretic monotonicity is no longer standing in for simplicial
+compatibility.  The graph images and neighborhood images still exhaust
+exactly `K` and `N`, respectively, and the ordinary-neighborhood, containment,
+and locally finite manifold conclusions are unchanged.
+
+`PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` proves the
+relation for a finite honest derived neighborhood via the constant piece
+tower.  `exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` applies it
+to the interior one-edge arc already constructed in a triangulated PL
+three-ball.  It produces actual sets `N`, `K`, and `U`, proves all three are
+nonempty, takes `N` to be the image of the second-derived neighborhood, and
+obtains the ordinary-neighborhood property from the proved inclusion of the
+arc in its interior.  Thus satisfiability is checked geometrically rather than
+by a constructor whose regular-neighborhood hypotheses are merely assumed.
+
+The implementation fixes `Classical.decEq` explicitly at the occurrences of
+`derivedNeighborhood` inside the relation.  This is not an exposed hypothesis:
+it only prevents Lean's native Euclidean `DecidableEq` and the classical
+instance from producing definitionally different copies of the same finite
+complex.  The public endpoints remain under `open Classical in` and acquire no
+`DecidableEq` parameter.
+
+Private checks of `PolyhedralGraph`, `ArcChainNeighborhood`, and `MoiseChain`
+all exited zero with no diagnostics and left shared outputs unchanged.  The
+external strict audit dynamically checked forty non-automatic declarations in
+those modules plus fifteen directly reused declarations; every axiom closure
+was contained in `{propext, Classical.choice, Quot.sound}`, and all thirteen
+applicable environment linters passed.
+
+This closes the statement and nonvacuity repair, not Moise 35.1 itself.  The
+remaining classical work is the locally finite rectilinear triangulation and
+the compatible dual-cell modifications on a nonconstant tower, including the
+compatibility of the stage deformation retractions/collapses, followed by the
+pointwise-error PL-homeomorphism construction.  `Moise351` therefore remains a
+noncompact, pointwise-error `Prop` awaiting proof; none of these obligations
+has been repackaged as an equivalent premise.

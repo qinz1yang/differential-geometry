@@ -1095,9 +1095,14 @@ The previous T delivery proves only `Moise304 -> Moise305Tame`.
 
 ## Route audit corrections (2026-09-19)
 
-See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). Moise252, Moise331 and
-Moise351 are not accepted source-faithful contracts until h's assigned repairs
-land. Normalization should first produce the Lemma 2 input by projecting the
+See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). The H-lane source now
+contains the assigned contract repairs for Moise252, Moise331, and Moise351;
+integration acceptance remains a separate review gate. In particular,
+`IsLocallyFiniteRegularNeighborhoodOf` uses actual second-derived neighborhoods,
+explicit graph and neighborhood `IsGlueIso` transition data, and an actual
+nonempty interior-arc model. `Moise351` retains the relatively closed locally
+finite graph input, noncompact scope, and pointwise error, but is not proved.
+Normalization should first produce the Lemma 2 input by projecting the
 inductively embedded disk from the actual two-sheeted cover; the arbitrary
 original NormalSystem need not have two-point fibers. The cover and restricted
 regular neighborhood must remain distinct. The verified original-book order is

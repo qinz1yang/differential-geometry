@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneratedSubcomplex
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePieceTower
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundary
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
@@ -125,11 +126,12 @@ theorem exists_tetrahedron_oneSkeleton :
 namespace LocallyFinitePieceTower
 
 open Classical in
-def regularNeighborhoodImage {U : Set X} (T : LocallyFinitePieceTower n X U)
+def derivedNeighborhoodImage {U : Set X} (T : LocallyFinitePieceTower n X U)
     (G : ∀ i, Geometry.SimplicialComplex ℝ
       (EuclideanSpace ℝ (Fin (T.piece i).ambientDim))) (i : ℕ) : Set X :=
   (T.piece i).piece.map ''
-    (regularNeighborhoodIn (T.piece i).piece.complex (G i).space).space
+    (@derivedNeighborhood _ _ _ (Classical.decEq _)
+      (T.piece i).piece.complex (G i)).space
 
 end LocallyFinitePieceTower
 
@@ -137,34 +139,93 @@ open Classical in
 def IsLocallyFiniteRegularNeighborhoodOf (N K U : Set X) : Prop :=
   ∃ (T : LocallyFinitePieceTower n X U)
     (G : ∀ i, Geometry.SimplicialComplex ℝ
-      (EuclideanSpace ℝ (Fin (T.piece i).ambientDim))),
+      (EuclideanSpace ℝ (Fin (T.piece i).ambientDim)))
+    (GImage : ∀ i, Geometry.SimplicialComplex ℝ
+      (EuclideanSpace ℝ (Fin (T.piece (i + 1)).ambientDim)))
+    (DImage : ∀ i, Geometry.SimplicialComplex ℝ
+      (EuclideanSpace ℝ (Fin (T.piece (i + 1)).ambientDim))),
     (∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex) ∧
     (∀ i, (G i).faces ⊆ (T.core i).faces) ∧
     (∀ i s, s ∈ (G i).faces → s.card ≤ 2) ∧
-    (∀ i s, s ∈ (G i).faces → s.image (T.embed i) ∈ (G (i + 1)).faces) ∧
+    (∀ i, (GImage i).faces ⊆ (G (i + 1)).faces) ∧
+    (∀ i, IsGlueIso (G i) (GImage i) (T.embed i) (T.embedInv i)) ∧
+    (∀ i, (DImage i).faces ⊆
+      (@derivedNeighborhood _ _ _ (Classical.decEq _)
+        (T.piece (i + 1)).piece.complex (G (i + 1))).faces) ∧
+    (∀ i, IsGlueIso
+      (@derivedNeighborhood _ _ _ (Classical.decEq _)
+        (T.piece i).piece.complex (G i)) (DImage i)
+        (T.embed i) (T.embedInv i)) ∧
     (⋃ i, (T.piece i).piece.map '' (G i).space) = K ∧
     (∀ i, IsCombinatorialManifoldWithBoundary n
-      (regularNeighborhoodIn (T.piece i).piece.complex (G i).space)) ∧
-    Monotone (T.regularNeighborhoodImage G) ∧
-    N = ⋃ i, T.regularNeighborhoodImage G i ∧
+      (@derivedNeighborhood _ _ _ (Classical.decEq _)
+        (T.piece i).piece.complex (G i))) ∧
+    Monotone (T.derivedNeighborhoodImage G) ∧
+    N = ⋃ i, T.derivedNeighborhoodImage G i ∧
     N ∈ nhdsSet K ∧
     N ⊆ U ∧
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.mem_nhdsSet {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ∈ nhdsSet K := by
-  obtain ⟨T, G, -, -, -, -, -, -, -, -, hN, -, -⟩ := h
+  obtain ⟨T, G, GImage, DImage, -, -, -, -, -, -, -, -, -, -, -, hN, -, -⟩ := h
   exact hN
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.subset {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ⊆ U := by
-  obtain ⟨T, G, -, -, -, -, -, -, -, -, -, hNU, -⟩ := h
+  obtain ⟨T, G, GImage, DImage, -, -, -, -, -, -, -, -, -, -, -, -, hNU, -⟩ := h
   exact hNU
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.isLocallyFinitePolyhedralManifoldWithBoundary
     {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N := by
-  obtain ⟨T, G, -, -, -, -, -, -, -, -, -, -, hN⟩ := h
+  obtain ⟨T, G, GImage, DImage, -, -, -, -, -, -, -, -, -, -, -, -, -, hN⟩ := h
   exact hN
+
+open Classical in
+theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Set X}
+    (P : PLPiece n X U)
+    (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin P.ambientDim)))
+    (hG : G.faces ⊆ P.piece.complex.faces)
+    (hcard : ∀ s ∈ G.faces, s.card ≤ 2)
+    (hambient : IsCombinatorialManifoldWithBoundary n P.piece.complex)
+    (hderived : IsCombinatorialManifoldWithBoundary n
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G))
+    (hnhds : P.piece.map ''
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G).space ∈
+      nhdsSet (P.piece.map '' G.space)) :
+    IsLocallyFiniteRegularNeighborhoodOf (n := n)
+      (P.piece.map ''
+        (@derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G).space)
+      (P.piece.map '' G.space) U := by
+  let D := @derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G
+  let _ : Finite P.piece.complex.faces := P.piece.finite_faces.to_subtype
+  refine ⟨LocallyFinitePieceTower.ofPiece P, (fun _ => G), (fun _ => G), (fun _ => D),
+    fun _ => hambient,
+    fun _ => hG, fun _ => hcard, fun _ => Subset.rfl, ?_, fun _ => Subset.rfl,
+    ?_, ?_, fun _ => hderived, ?_, ?_, hnhds, ?_, ?_⟩
+  · intro i
+    change IsGlueIso G G id id
+    exact ⟨fun s hs => by simpa using hs, fun s hs => by simpa using hs,
+      fun _ _ _ _ => rfl, fun _ _ _ _ => rfl⟩
+  · intro i
+    change IsGlueIso D D id id
+    exact ⟨fun s hs => by simpa using hs, fun s hs => by simpa using hs,
+      fun _ _ _ _ => rfl, fun _ _ _ _ => rfl⟩
+  · exact iUnion_const (ι := ℕ) (P.piece.map '' G.space)
+  · intro i j hij
+    simp only [LocallyFinitePieceTower.derivedNeighborhoodImage,
+      LocallyFinitePieceTower.ofPiece]
+    exact Subset.rfl
+  · exact (iUnion_const (ι := ℕ)
+      (P.piece.map '' D.space)).symm
+  · rintro x ⟨y, hy, rfl⟩
+    let _ : DecidableEq (EuclideanSpace ℝ (Fin P.ambientDim)) := Classical.decEq _
+    exact P.piece.bijOn.mapsTo (derivedNeighborhood_space_subset P.piece.complex G hy)
+  · let _ : DecidableEq (EuclideanSpace ℝ (Fin P.ambientDim)) := Classical.decEq _
+    let P' := P.piece.subdivide (secondDerived P.piece.complex)
+      (secondDerived_isSubdivision P.piece.complex) (Set.toFinite _)
+    let D' := P'.restrict D (derivedNeighborhood_faces_subset P.piece.complex G)
+    exact (isPolyhedralManifoldWithBoundary_of_pieceIn D' hderived).isLocallyFinite
 
 end DifferentialGeometry.Topology.PiecewiseLinear
