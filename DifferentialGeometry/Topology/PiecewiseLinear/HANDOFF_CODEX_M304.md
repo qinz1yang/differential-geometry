@@ -762,3 +762,57 @@ private artifacts, receipts, audit and census are under
 by the owner; shared artifacts are untouched. Disjoint cap construction and
 their attachment remain the next layer. This is not yet the full nonseparating
 compression or 30.4, and does not assert preservation of ambient separation.
+
+
+## Disjoint caps and exact nonseparating Betti descent (2026-09-19 UTC)
+
+`ComplexUnion.lean` gains the actual link equalities at a nonempty face absent
+from one summand. `ManifoldDisjointUnion.lean` proves manifold-with-boundary
+closure under disjoint union in every dimension, including zero, together
+with exact boundary face and carrier formulas. These results require neither
+finite-dimensional ambient space nor finite complexes; the finite realization
+corollary assumes only finite faces. A private face-disjointness lemma is
+included in the audit.
+
+`ManifoldCapping.lean` now constructs a closed manifold by attaching two actual
+disjoint PL balls along their whole boundaries; it retains the original
+single-ball API. `SurfaceBoundaryCapping.lean` specializes to a connected
+surface with two boundary circles and constructs a finite closed connected
+surface with Euler characteristic increased by two. Neither the final
+manifold nor its Euler equation is a supplied hypothesis.
+
+`IsCombinatorialManifold.exists_capped_annulus_complement` in
+`AnnulusCapping.lean` consumes an actual annulus decomposition of a closed
+connected surface in ambient dimension three, a connected complementary
+surface, and two actual disjoint disk caps with exact intersection and
+endpoint-boundary equations. It produces the closed connected orientable
+capped surface, proves its Euler characteristic is the source value plus two,
+and proves `bettiOne result + 2 = bettiOne source` and strict descent. The
+annulus Euler equation is derived from the actual geometric decomposition.
+The cap existence and separation-preserving geometric push remain inputs
+for the E3 integration; disks sharing the original spanning disk do not
+satisfy the disjointness hypothesis.
+
+All five changed modules compile with zero diagnostics in 10.615, 9.972,
+10.355, 9.706 and 11.428 seconds including admission. BoundaryGluing,
+EulerUnion and the existing separating-circle capping consumers are also
+freshly rechecked. The final silent audit takes 48.002 seconds and checks all
+15 module declarations (ten new, including one private, and five retained),
+ten critical reused entries, four geometric models and four explicit local
+instances. All 13 applicable linters pass; all axiom closures contain only
+standard foundational axioms; the final run has zero diagnostics. Models
+cover two distinct points, two separated intervals with their exact boundary
+and Euler characteristic, the cube's side annulus capped by its two disjoint
+horizontal disks, and the retained simplex-hemisphere cap in every positive
+dimension. The cube model produces a connected closed surface with Euler
+two and first Betti number zero. It tests the cap producer, not a nontrivial
+source-torus instance of the annulus Betti theorem. External zero-dimensional
+model elaboration and one line-width warning were repaired before the final
+passing audit; the five mathematical sources needed no repair.
+
+All three new leaves are registered in the flat aggregate. Frozen identities,
+objects, receipts, models and audit are under
+`moise304-reading/annulus-capping-checkpoint/`. The root build remains stopped;
+shared artifacts are unchanged. Actual essential disk production, disjoint
+cap geometry, ambient separation preservation and the final 30.4 induction
+are still not claimed complete.

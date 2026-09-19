@@ -1037,3 +1037,18 @@ three models and all 13 applicable linters pass with standard axioms and zero
 diagnostics. Frozen evidence is under
 `moise304-reading/annulus-complement-checkpoint/`. Disjoint cap attachment,
 ambient separation preservation and full 30.4 remain open.
+
+
+### M304 disjoint caps and exact Betti descent (2026-09-19 UTC)
+
+Actual disjoint disk caps now construct the finite closed connected surface
+and prove its Euler characteristic increases by two. `AnnulusCapping.lean`
+combines this with an actual annulus decomposition in ambient dimension three
+to prove `bettiOne result + 2 = bettiOne source`. The five changed modules,
+15 declarations (ten new), ten critical reused entries, four geometric models,
+four explicit instances and all 13 applicable linters pass with standard
+axioms and zero final diagnostics. Frozen evidence is under
+`moise304-reading/annulus-capping-checkpoint/`. The input caps are actual
+disjoint disks with exact boundary and intersection equations; their geometric
+production and preservation of ambient separation remain E3 work. No full
+30.4 completion is claimed.

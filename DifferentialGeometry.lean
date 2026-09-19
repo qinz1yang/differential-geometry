@@ -8809,3 +8809,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusComplement
 import DifferentialGeometry.Topology.Connected.BicollarComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusEuler
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceAnnulusComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldDisjointUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceBoundaryCapping
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCapping

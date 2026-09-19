@@ -67,6 +67,38 @@ theorem geometricLink_space_unionComplex [DecidableEq E]
     · exact ⟨t, ⟨hne, hdisj, Or.inl ht⟩, hxt⟩
     · exact ⟨t, ⟨hne, hdisj, Or.inr ht⟩, hxt⟩
 
+theorem geometricLink_unionComplex_of_notMem_right [DecidableEq E]
+    (K L : Geometry.SimplicialComplex ℝ E)
+    (h : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E) ⊆
+        convexHull ℝ ((s : Set E) ∩ (t : Set E)))
+    {s : Finset E} (hne : s.Nonempty) (hs : s ∉ L.faces) :
+    SimplicialComplex.geometricLink (unionComplex K L h) s =
+      SimplicialComplex.geometricLink K s := by
+  ext t
+  simp only [mem_geometricLink_faces_iff, mem_unionComplex_faces_iff]
+  constructor
+  · rintro ⟨ht, hdis, hmem | hmem⟩
+    · exact ⟨ht, hdis, hmem⟩
+    · exact (hs (L.down_closed hmem Finset.subset_union_left hne)).elim
+  · exact fun ht => ⟨ht.1, ht.2.1, Or.inl ht.2.2⟩
+
+theorem geometricLink_unionComplex_of_notMem_left [DecidableEq E]
+    (K L : Geometry.SimplicialComplex ℝ E)
+    (h : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E) ⊆
+        convexHull ℝ ((s : Set E) ∩ (t : Set E)))
+    {s : Finset E} (hne : s.Nonempty) (hs : s ∉ K.faces) :
+    SimplicialComplex.geometricLink (unionComplex K L h) s =
+      SimplicialComplex.geometricLink L s := by
+  ext t
+  simp only [mem_geometricLink_faces_iff, mem_unionComplex_faces_iff]
+  constructor
+  · rintro ⟨ht, hdis, hmem | hmem⟩
+    · exact (hs (K.down_closed hmem Finset.subset_union_left hne)).elim
+    · exact ⟨ht, hdis, hmem⟩
+  · exact fun ht => ⟨ht.1, ht.2.1, Or.inr ht.2.2⟩
+
 theorem exists_simplicialComplex_space_union [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] :
     ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧
