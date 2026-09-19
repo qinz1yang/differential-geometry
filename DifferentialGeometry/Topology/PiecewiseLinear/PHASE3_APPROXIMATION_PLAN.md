@@ -771,3 +771,38 @@ all axiom closures are standard. Frozen evidence is under
 `moise304-reading/essential-singular-disk-checkpoint/`. This is singular disk
 production only: embedded disks from 26.4, physical disjoint caps and ambient
 separation are still needed for full 30.4. Root builds remain stopped.
+
+
+### M304 embedded positive-genus compression (2026-09-19 UTC)
+
+The premise-free native `exists_embedded_torus_compression` constructs an
+actual finite embedded torus K in Euclidean three-space, a nonseparating
+essential PL circle C, its PL annular neighborhood W, and the same connected
+complement R = closure(K minus W). A fixed standard triangle circle is first
+thickened to a finite embedded solid torus; the untwisted disk cylindrical
+diagram supplies all subsequent objects. A middle cross-section is an actual
+embedded spanning disk with intersection K exactly C. Two other cross-sections
+are actual nonempty disjoint PL cap disks. Their intersections with both K
+and R equal exactly their prescribed boundary circles, which are the two
+ends of W. Native annulus capping gives an actual PL sphere P with first Betti
+number zero; the same chain proves first Betti number two for K and strict
+descent. The product homeomorphism and non-nullhomotopy of C are independently
+retained in the statement, as is connectedness of K minus C.
+
+Seven new natural-topic leaves are registered in the flat root aggregate.
+AnnulusComplement now reuses the extracted annulus boundary/triangulation API;
+its public signature is unchanged. All eight new/changed sources and three
+existing consumers compile without diagnostics. The complete audit covers
+12 native declarations, 18 critical reused entries and three concrete
+nondegeneracy certificates, with all 13 applicable linters and only standard
+foundational axioms. The native reachable import graph has 561 modules and
+1110 edges without cycles. Eleven source/object/receipt sets, the passing
+audit and raw/normalized hashes are frozen under
+`moise304-reading/torus-compression-checkpoint/`.
+
+This closes a genuine positive-genus nonempty compression instance, including
+the geometric disk/cap producers for this torus. It does not supply arbitrary
+30.4 surfaces with disjoint caps or prescribed ambient separator targets.
+The unrestricted embedded-disk producer and general separation-preserving
+compression remain upstream obligations. Root builds remain stopped; shared
+E outputs and other lanes' source files were not changed.
