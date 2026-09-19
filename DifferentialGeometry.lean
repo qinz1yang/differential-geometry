@@ -8740,3 +8740,6 @@ import DifferentialGeometry.Topology.Homotopy.FreeLoopNullhomotopy
 import DifferentialGeometry.Topology.Homotopy.CyclicLoopMap
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonNullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodContractiblePolygon
+import DifferentialGeometry.Topology.Homeomorph.SphereExtension
+import DifferentialGeometry.Topology.Attachment.Homeomorph
+import DifferentialGeometry.Topology.Attachment.CellExtension

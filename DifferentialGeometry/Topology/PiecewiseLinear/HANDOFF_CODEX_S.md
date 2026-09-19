@@ -6026,3 +6026,134 @@ C.6 remains partial: general CST-to-diagram wiring and arbitrary-CST 24.10
 comparison are not closed by this result. Integration replay and the independent
 full-source/root build remain the coordinator's separate gate. The current
 24.12 assignment is complete; compact PL-to-smooth work awaits the next round.
+
+## Cell attachment under prescribed boundary reparametrization (2026-09-19)
+
+Status: done for this topological layer of the separate compact PL smoothing
+round. The compact smooth-structure producer remains open. Integration was
+merged at `cdd1ba16a`; the two sides of the plan conflict were retained under
+the standing rule. This round changes no other lane's mathematical sources.
+
+### Actual inputs and candidate proof chain
+
+`exists_pLTriangulation_isCombinatorialManifold` in `Combinatorial.lean` produces
+an actual finite `PLTriangulation n X` with `IsCombinatorialManifold n T.complex`
+from a nonempty compact T2 PL atlas. The triangulation carries a continuous
+bijection onto X and the two PL chart conditions. No smoothing input occurs.
+The empty-space case must be handled separately by the eventual compact theorem.
+This does not yet supply a finite handle sequence or attaching maps.
+
+`Handle.standardHandleIsManifold` supplies smooth standard handle models, but
+`Morse.ManifoldCellAttachment.exists_contMDiff_isClosedEmbedding_attachingRegion`
+requires an already smooth manifold, a smooth Morse function and its actual
+critical-point data. `BoundaryCollar.exists_boundaryAttachment_smooth_atlas`
+requires an already smooth manifold with compact boundary and attaches its
+collar; it is not a constructor for a general PL handle attachment.
+`sphere_isotopy_iff_positive_radial_derivative` starts with a diffeomorphism
+of the standard smooth two-sphere; it is not a smooth classification of an
+arbitrary surface merely homeomorphic to the two-sphere.
+
+The existing `Manifold.interiorChartedSpace`, `interiorIsManifold` and
+`interiorAtlasDiffeomorph` already convert a boundaryless manifold modeled
+with corners to the vector-space model, with the identity as diffeomorphism.
+The old Phase 2 audit's missing-conversion note is superseded by this source.
+No new PLSmoothing predicate, assumed smoothing model or duplicate model
+transport was introduced. The nine selected input declarations were freshly
+audited with only standard axioms, exit 0 and zero diagnostics, in
+12.453 seconds; their 511-module native import closure excludes
+`HurewiczLowDegrees`.
+
+Candidate chain: actual finite combinatorial triangulation -> finite PL
+handle decomposition -> smoothing the attaching disks/annuli and their
+framings -> general smooth handle attachment with corner rounding -> smooth
+standardization of terminal two-sphere boundaries -> cap comparison -> the
+existing boundaryless interior atlas -> the existing same-topology transport.
+The new result closes the cap-comparison step, without a smooth extension
+at the cone vertex. It does not assert completion of the other arrows.
+
+### Closed mathematical result
+
+`Topology/Homeomorph/SphereExtension.lean` constructs `sphereRadialHomeomorph`
+for any homeomorphism between unit spheres of two real normed spaces. Its
+forward and inverse functions are the existing continuous radial extensions;
+the proof identifies their exact normalized directions and cancels the sphere
+homeomorphism. It preserves norms, fixes zero and restricts to the prescribed
+sphere map. `closedBallHomeomorphExtension` gives the resulting closed-ball
+homeomorphism and its exact boundary formula. No finite-dimensionality,
+compactness, smoothness or extra nonempty hypothesis is needed.
+
+`Topology/Attachment/Homeomorph.lean` constructs `adjunctionHomeomorph` from
+an equivalence of attaching sets, homeomorphisms of the cell and lower spaces,
+and the two commuting attaching squares. It descends the explicit sum map to
+the actual quotient and constructs its inverse; both continuous maps and the
+cell/lower formulas are proved. The attaching set needs no topology. This
+extends the existing handle comparison's fixed-cell situation; it does not
+modify the existing `Handle.adjunctionCongr` or its consumers.
+
+`Topology/Attachment/CellExtension.lean` constructs
+`closedCellHomeomorphExtension`, with
+`closedCellHomeomorphExtension_boundary` giving the exact inclusion equation.
+`cellAdjunctionHomeomorph` takes
+`a : CellBoundary n ≃ₜ CellBoundary m`, `f : X ≃ₜ Y`, and
+`hphi : forall x, f (phi x) = psi (a x)`, and returns
+`CellAdjunctionSpace n phi ≃ₜ CellAdjunctionSpace m psi`.
+Its lower map is precisely f, and its cell map is precisely the radial
+extension of a. The two formulas are public theorems. The conversions between
+norm predicates and sphere predicates use the canonical set-congruence
+homeomorphism locally, keeping this topological layer independent of the
+large smooth-handle module.
+
+### Verification and nondegenerate application
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `SphereExtension` | 14.196 | 9.285 | 8 (1 private) | 6 |
+| `Homeomorph` | 10.119 | 11.185 | 5 (2 private) | 4 |
+| `CellExtension` | 58.714 | 10.048 | 6 (0 private) | 4 |
+
+All three final compile runs and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 19 nonautomatic declarations
+(including three private ones), 14 critical reuse entries and all 13 applicable
+environment linters per module pass. Every axiom set is a subset of
+propext/Classical.choice/Quot.sound. Times include resource admission.
+
+The concrete nonempty three-dimensional capping test glues one `ClosedCell 3`
+to another along `CellBoundary 3`. The prescribed boundary map is antipodal.
+The actual quotient homeomorphism fixes the entire lower three-ball and maps
+the cap by the radial extension. A point with norm 1/2 is explicitly sent to
+its negative, a distinct interior point. Thus the tested extension is not
+vacuous or the identity. The test and its seven critical producers (eight
+axiom entries total) passed with exit 0 and zero diagnostics in 21.166
+seconds. The test makes no unproved smoothness claim about the seam or center.
+
+Source SHA256 values:
+
+- `DifferentialGeometry.Topology.Homeomorph.SphereExtension`: `573AA340B9B5F9AF01625A9020314683DDCA77D18211B17CE41CAD406A129DAC`.
+- `DifferentialGeometry.Topology.Attachment.Homeomorph`: `C36F16AE7F48A47E36B2CB4B5786AD550DFF5FD2B91935E2A4DBB9674D9DF95A`.
+- `DifferentialGeometry.Topology.Attachment.CellExtension`: `DEF75D719395AA405195A6BFC16041BBF145D2E5F7783C8244EB33187D452F2F`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CellExtension-round-verification.json`. It retains raw/normalized source
+identities, private object identities, compile/audit receipts and timings,
+complete declaration/reuse/linter censuses, exact audit and test source bytes,
+input-source closure and hygiene/root-registration checks. Shared artifacts
+remain read-only. All new leaves are registered once in the flat root.
+Source, root imports, this handoff and the Phase 2 plan update are committed
+together as one closed cell-attachment result; no VENDOR source changed.
+
+### Remaining exact compact-smoothing obligations
+
+- Produce a finite PL handle decomposition and its actual attaching embeddings
+  from the finite combinatorial three-manifold, preserving the lower-space
+  homeomorphisms needed by induction. No native producer was found.
+- For an already smooth lower manifold with boundary and a general smooth
+  attaching embedding, construct the attached smooth atlas and round corners;
+  the Morse and collar-specific producers do not give this input direction.
+- Smooth the actual PL attaching circles/annuli in the smooth boundary surface
+  with the required framing, retaining a compatible ambient homeomorphism.
+- From an arbitrary smooth closed surface and a homeomorphism to standard S2,
+  produce a diffeomorphism to S2; standard-sphere self-isotopy does not supply it.
+- Assemble compatible finite stages and then use the existing interior atlas
+  and same-topology transport. No compact or noncompact PLSmoothing 3 theorem
+  has been proved in this round; the approximation phase retains its noncompact
+  statement. Independent integration replay and the full-root gate are separate.
