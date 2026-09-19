@@ -150,4 +150,38 @@ theorem exists_isPLHomeomorphOn_moves_point_dist_lt [Nontrivial E]
         _ < ε := half_lt_self hε
     · simpa [hfix hx] using hε
 
+open Classical in
+theorem exists_isPLHomeomorphOn_moves_point_dist_lt_eqOn [Nontrivial E]
+    {F U : Set E} (hF : IsClosed F) (hU : IsOpen U) {p : E}
+    (hpU : p ∈ U) (hpF : p ∉ F) {ε : ℝ} (hε : 0 < ε) :
+    ∃ r : ℝ, 0 < r ∧ Metric.ball p r ⊆ U \ F ∧
+      ∃ h : E ≃ₜ E,
+        IsPLHomeomorphOn h univ univ ∧ h p ≠ p ∧
+        EqOn h id (Metric.ball p r)ᶜ ∧ EqOn h id F ∧ EqOn h id Uᶜ ∧
+        ∀ x, dist (h x) x < ε := by
+  obtain ⟨R, hR, hRU⟩ := Metric.isOpen_iff.mp (hU.sdiff hF) p ⟨hpU, hpF⟩
+  let η := min ε R
+  have hη : 0 < η := lt_min hε hR
+  obtain ⟨h, hh, hmove, hfix, hclose⟩ :=
+    exists_isPLHomeomorphOn_moves_point_dist_lt (p := p) hη
+  have hr : 0 < η / 4 := by positivity
+  have hrR : η / 4 < R := by
+    calc
+      η / 4 < η := by linarith
+      _ ≤ R := min_le_right ε R
+  have hball : Metric.ball p (η / 4) ⊆ U \ F := by
+    intro x hx
+    exact hRU (Metric.mem_ball.mpr ((Metric.mem_ball.mp hx).trans hrR))
+  refine ⟨η / 4, hr, hball, h, hh, hmove, hfix, ?_, ?_, ?_⟩
+  · intro x hxF
+    apply hfix
+    intro hx
+    exact (hball hx).2 hxF
+  · intro x hxU
+    apply hfix
+    intro hx
+    exact hxU (hball hx).1
+  · intro x
+    exact (hclose x).trans_le (min_le_left ε R)
+
 end DifferentialGeometry.Topology.PiecewiseLinear

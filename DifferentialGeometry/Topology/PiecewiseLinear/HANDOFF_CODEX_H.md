@@ -4245,3 +4245,43 @@ sets are derived neighborhoods in one compatible finite triangulation, nor
 that the perturbation fixes the original graph.  A graph-relative supported
 move, cross-stage compatible modifications, Moise 35.1 Conditions (3)--(8),
 the standard PL solid-torus input, and `Moise351` remain open.
+
+## 87. 2026-09-19 graph-relative supported perturbation — done
+
+`AmbientPointMove.lean` now proves the natural relative theorem
+`exists_isPLHomeomorphOn_moves_point_dist_lt_eqOn`.  For a closed protected
+set `F`, an allowed open set `U`, a point `p ∈ U \ F`, and a positive error
+bound, it constructs a positive-radius ball contained in `U \ F` and an
+actual nonidentity ambient PL homeomorphism supported in that ball.  The map
+fixes `F` and `Uᶜ` pointwise and has the prescribed global displacement
+bound.  Closedness and avoidance are genuine hypotheses on the input geometry;
+the homeomorphism and its nonidentity are constructed.
+
+`exists_trivalent_graphDualCell_relative_supported_perturbation_model` applies
+this theorem to the actual standard 4-simplex-boundary trivalent model.  It
+chooses a point of the first piercing circle different from the incident edge
+centroid.  The exact theorem `splittingDisk_space_inter` then proves from the
+model geometry that this point is outside `L.space`.  Consequently the returned
+support ball lies in `U \ L.space`, the perturbation fixes the entire original
+graph, and it still consumes the previously constructed positive stability
+radius.  The transformed outer neighborhoods remain in `U`, both transformed
+layers remain pairwise disjoint, and all transported open nesting and four
+surface-trace certificates from Section 86 are retained.
+
+Both changed modules passed the isolated private checker with no diagnostics
+and left shared outputs unchanged.  The strict external audit dynamically
+checked all six non-automatic declarations in the two modules together with
+thirteen critical reused declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.  The already root-registered perturbation module
+remains the public leaf.
+
+This closes the graph-relative prerequisite.  The exact remaining obligation
+is not set-theoretic transport: one must construct a finite PL triangulation
+compatible simultaneously with the original graph, both boundary surfaces,
+and the supported modification, then identify the modified neighborhoods as
+canonical derived neighborhoods in that structure.  An arbitrary PL
+homeomorphism sends a derived neighborhood only to the image of a derived
+neighborhood; it does not preserve the chosen barycentric-derived construction.
+No such false invariance is asserted.  Conditions (3)--(8), cross-stage
+compatibility, the standard PL solid-torus input, and `Moise351` remain open.
