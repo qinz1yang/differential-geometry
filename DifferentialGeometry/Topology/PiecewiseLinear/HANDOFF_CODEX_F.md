@@ -4312,3 +4312,66 @@ Subtype.val⁻¹'(ι''∂K)。没有另加 boundary germ 或局部平坦性假�
 本层不生产正规化映射或 crossing。继续把实际 `NormalSystem.exists_singular_two_cell_in_double`
 所生产的同一个 D 绑定到 C/Bd，并保留精确纤维信息。已确认当前 `NormalSystem` 不含局部单射
 或二重纤维约束，不能把这些当作包装丢掉的字段。下一审计 AuditF292。
+
+### 19.152 实际 NormalSystem 的载体输出与正规化起点障碍（2026-09-19 UTC）
+
+**done：`LoopTheorem/DoubleCarrier.lean`。**
+`NormalSystem.exists_singular_two_cell_in_double_with_frontier` 消费真实 S，调用现有
+`exists_singular_two_cell_in_double` 生产同一个 D，保留原来的七项输出，额外证明：
+
+- 对每个 x∈S.sourceComplex.space，`D.domain ∩ D⁻¹'{D x}` 精确等于
+  `S.sourceComplex.space ∩ S.singularMap⁻¹'{S.singularMap x}`；
+- `MapsTo D D.domain C`，其中 C 是真实第二拷贝的载体在 double.space 中的拉回；
+- `frontier C = Bd`，Bd 是同一第二拷贝中实际 boundaryComplex 的拉回；
+- `D''D.domain ∩ frontier C = range D.boundary`；
+- 在任意图卡 e 的源域点 y，`frontier(e''(e.source∩C))` 与 `e''(e.source∩Bd)` 的 germ 相同。
+
+C、Bd 由 S 的实际 manifoldComplex 和 glueEmbed₂ 定义，D 来自原生产者，没有自由选择不相关对象。
+旧端点和所有公共定义均保持兼容。MapsTo 与边界交等式是从原证明输出中可提取的信息；frontier
+及其图卡 germ 则真正使用 §19.151 的新几何证明。没有把结构定义当作这些事实的证明。
+
+**首次真实障碍：原始 D 的正规化起点，而非 frontier。** `MoiseChain.lean:29` 的 Moise251
+量化任意 NormalSystem。`LoopTheorem/SingularCell.lean:514` 的 NormalSystem 要求源为 PL 2-球、
+映射为逐单形映射、具有指定像和边界环路及其非平凡群类；它没有局部单射、单形非退化或二重纤维字段。
+`LemmaTwo.lean:136` 的构造只把原映射通过第二拷贝单射 ι 搬入 double；新增的精确纤维等式正式表明
+它不会改善原来的纤维。故不能在保持原 EqOn 的同一个 D 上无条件补上 locallyInjective/fiber_le_two。
+
+相比之下，`SingularChart.lean:155` 的真实 M 单图卡生产者，以及
+`SingularGeneralPosition.lean:3067` 的基础半空间生产者，都要求输入映射已局部单射且纤维至多二；
+前者还要求整张被处理的有限源复形像落在给定相对半空间图卡。它们的证明中已经保留指定 M 的
+boundary crossing，并没有藏着从一般 NormalSystem 产生这两项输入的构造。
+`GeneralPositionWithin` 的流形局部修改也以相同两项正规性为输入。全局 `IsNormalSingularCell`
+存在生产者尚未落地，因而不能从一个已完成的全局证明里补取 relative crossing 字段。
+
+**实际类型的退化模型（几何论证，未单独 Lean 实例化）。** 从任一有效 NormalSystem S 取源的
+一个二维面 σ=[a,b,c]，重心 o，取内三角形顶点 uᵢ=(o+vᵢ)/2，其中 (v₀,v₁,v₂)=(a,b,c)。
+把 σ 分成内三角形及六个环带三角形 `[uᵢ,vᵢ,vᵢ₊₁]`、`[uᵢ,vᵢ₊₁,uᵢ₊₁]`，下标模 3。
+设 q 在旧顶点及 σ 外恒等，三个 uᵢ 全映到 a，并在每片仿射延拓。它在 ∂σ 恒等；
+`[u₁,b,c]` 映满 σ，故 q(σ)=σ；整个内三角形却被压到 a。复合原 singularMap 后，新顶点像
+全是原 σ 的顶点像，所以每个新面的像仍是旧 imageComplex 的面。源载体、圆盘性、整体像、
+边界逐点参数、imageComplex、ambientComplex、实际 C/Bd、边界邻域、环路、connector、正规子群
+及 loopClass_avoids_normal 全保持，仍满足 NormalSystem 的全部字段；内三角形产生无限纤维，
+局部单射失败。此模型说明缺口在真实 NormalSystem 类型内，不依赖 §19.150 的任意边界替换。
+形式化交付仅包含上述精确纤维传递定理；这段有限三角形重剖分尚未单独构造成 Lean 记录。
+
+**下一条最小生产义务（未写成消费者假设，亦未宣称已证）。** 从实际 S 的映射产生允许改变的
+D₁，保留源圆盘、MapsTo D₁ C、`D₁''domain ∩ Bd = range D₁.boundary`，并生产局部单射和二重纤维。
+边界不能默认逐点固定，因为原边界映射本身也可能退化；需要在原
+S.boundaryNeighborhoodSpace 内生产与 S.boundaryLoop 自由同伦的 γ，并把 D₁ 的边界参数与
+ι∘γ 逐点绑定，以便由真实同伦保留避开 S.normalSubgroup 的环路类。这里未要求未经论证的任意小
+扰动，更不把三重点消去当作自动一般位置。其后还须实现实际 C 的相对半空间图卡与保持旧 crossing
+的有限图卡归纳，再生产指定 C 的 crossing 和精确奇点剖分。原 EqOn 只能用于未改动的原 D，
+不能在换成 D₁ 后继续无条件套用 `BoundaryWordDoubleCell` 对原 S.singularMap 的纤维推导。
+
+本轮在此实际起点/API 障碍处交付。环境胞腔片迹、保持两片的相邻过渡、全局单射图卡仍 blocked；
+本轮已闭合的真实 frontier/germ 无须重做。没有向消费者添加这些缺失前提，没有改其它车道源码。
+
+验证：DoubleCarrier 聚焦检查 exit=0、零诊断、12.95 秒；AuditF292 exit=0、零诊断、46.54 秒。
+全部一项非自动声明、三项关键复用端点及对照的 SingularChart 指定 M 生产者，共五项传递公理
+闭包仅标准三公理；十三项适用环境 linters 全通过。严格语法、header、longLine 检查开启，
+sourceStable=true。源码 SHA256 为
+`2D4584B446855148FE0A21EE483017F01C2156D89A7D37A00A0EC11492B77615`。
+私有回执在 `codex-f-boundary-private/DoubleCarrier-checkpoint.json` 和 `AuditF292.json`。
+新模块实际消费 BoundaryDouble；两个旧生产者均未改签名，没有需重编的旧消费者。两叶已登记根聚合，
+整库根检仍由整合者负责。所有探针均在树外，检查后移除；共享产物未写；源码、根登记和本记录同次提交。
+下一审计 AuditF293。MOISE_CHAIN 的新起点障碍由整合者依本轮所有权记录。
