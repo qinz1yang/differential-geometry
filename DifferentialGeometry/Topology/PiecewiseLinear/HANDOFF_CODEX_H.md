@@ -3121,3 +3121,27 @@ This supplies the required nonvacuity witness before migration of the
 normalization chain.  The primary boundary-manifold base theorem can now use
 interiority of `arcChainFace v 1`; later successor stages use the corresponding
 interiority assumption for every retained face.
+
+## 55. 2026-09-18 Interior arc-cell links — done
+
+`ArcCellGluing.lean` now exposes the boundary-manifold versions needed by the
+normalization chain.  For a retained interior chain face,
+`isPLSphere_arcCellBase_of_interior` proves that its cell base is a PL
+2-sphere.  For two adjacent chain faces,
+`isPLSphere_arcCellInterfaceBase_of_interior_left` proves that their interface
+base is a PL 1-sphere when the left retained face is interior.  Both results
+are direct specializations of the interior barycentric upper-link theorems from
+§53; all conical identities, containments, and marked crossing facts remain
+unchanged and require no manifold hypothesis.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  The external
+silent audit dynamically enumerated all twenty-two non-automatic declarations,
+checked the eighteen direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+The normalization base and successor can therefore replace global closedness
+by `IsCombinatorialManifoldWithBoundary 3 K` plus interiority of the retained
+chain faces.
