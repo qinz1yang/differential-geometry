@@ -4444,3 +4444,40 @@ those neighborhoods by this theorem, and inherit containment, disjointness,
 and nesting from the old stability neighborhoods by subset.  Alternatively it
 must strengthen the compatible-triangulation producer so that those fresh
 source subdivisions and their target transports are returned together.
+
+## 92. 2026-09-19 transported common annular derived neighborhoods — done
+
+`CommonCircleNeighborhoodTransport.lean` implements the first option from
+Section 91 as a reusable producer.
+`IsGlueIso.exists_common_annular_derivedNeighborhood_transport` starts with a
+circle lying on two PL 2-spheres in the source carrier and an arbitrary open
+neighborhood of that circle.  It constructs a fresh source common annular
+derived neighborhood inside the prescribed open set, transports its ambient,
+circle, and two surface subcomplexes through a compatible subdivision of the
+given `IsGlueIso`, and proves that the exact image is a common annular derived
+neighborhood of the three transported sets in the target carrier.
+
+The proof does not reuse the old barycentric set.  It uses
+`IsSubdivision.simplicialMap_simplicialMap_eq`, added to
+`DerivedNeighborhoodTransport.lean`, to show that interpolation on the fresh
+source subdivision still equals the original simplicial homeomorphism.  It
+then applies Section 91 to the new source neighborhood, derives target
+relative-neighborhood membership directly from the target derived
+neighborhood, recovers both exact surface traces by restriction naturality,
+and rebuilds the two standard PL annulus parameterizations on the transported
+surface complexes.
+
+Both modules passed their isolated private checks with no diagnostics and
+left shared outputs unchanged.  The joint strict external audit covered all
+nine non-automatic declarations in the two modules and fifteen critical
+reused declarations; every closure used only `propext`, `Classical.choice`,
+and `Quot.sound`, and all thirteen applicable environment linters passed.  The
+new leaf is registered in the flat root aggregate.
+
+The remaining consumer step is finite and geometric: apply this theorem twice
+per piercing circle, first inside an open set whose relative trace lies in the
+old outer stability neighborhood, then inside the intersection of a relative
+open neighborhood of the fresh outer set with one lying in the old inner
+stability neighborhood.  This will give fresh nested source neighborhoods and
+their exactly transported nested target neighborhoods; containment and
+pairwise disjointness then descend from the old stable families by subset.

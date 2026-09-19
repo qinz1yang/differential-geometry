@@ -95,6 +95,17 @@ theorem IsGlueIso.secondDerived (h : IsGlueIso K K' φ ψ) :
         (simplicialMap K' ψ)) :=
   h.barycentricSubdivision.barycentricSubdivision
 
+omit [DecidableEq E] [DecidableEq F] in
+open Classical in
+theorem IsSubdivision.simplicialMap_simplicialMap_eq [FiniteDimensional ℝ E]
+    {R : Geometry.SimplicialComplex ℝ E} (hR : IsSubdivision R K) (f : E → F) :
+    EqOn (simplicialMap R (simplicialMap K f)) (simplicialMap K f) R.space := by
+  apply simplicialMap_eq_of_forall_affineOn
+  intro u hu
+  obtain ⟨s, hs, hus⟩ := hR.exists_face_subset hu
+  obtain ⟨A, hA⟩ := exists_affineMap_eqOn_simplicialMap K f hs
+  exact ⟨A, hA.mono hus⟩
+
 omit [DecidableEq F] in
 theorem simplicialMap_derivedNeighborhood_eq [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) (f : E → F) :
