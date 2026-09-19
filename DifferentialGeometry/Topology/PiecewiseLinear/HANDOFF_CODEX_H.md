@@ -3240,3 +3240,31 @@ silent audit dynamically enumerated both non-automatic declarations, checked
 twelve direct reused declarations, found only
 `{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
 environment linters.
+
+## 60. 2026-09-18 Full interior arc ball neighborhood — done
+
+`ArcChainNeighborhood.lean` now proves that if every face of an injective
+simplicial arc chain lies outside the boundary complex of a finite
+combinatorial 3-manifold with boundary, then the full arc complex, including
+both endpoint vertices, lies in the interior of its derived neighborhood.
+That derived neighborhood is a PL 3-ball contained in the ambient complex.
+The packaged endpoint
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_neighborhood_arcComplexIn`
+therefore supplies a set `C` with `IsPLBall 3 C`, the entire arc complex inside
+`interior C`, and `C ⊆ K.space`.
+
+The proof first converts the facewise interior hypothesis into
+`(arcComplexIn K v n).space ⊆ interior K.space` using the exact frontier
+description by the boundary complex.  The derived-neighborhood theorem then
+provides a neighborhood within `K.space` at every arc point; intersecting it
+with the ambient interior upgrades this to an ordinary neighborhood in the
+derived neighborhood.  This avoids treating the trimmed ball pair of §58 as
+if it already contained the endpoint cells.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  Its external
+silent audit dynamically enumerated all three non-automatic declarations,
+checked fourteen direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.  The new leaf is registered in the flat root aggregate.
