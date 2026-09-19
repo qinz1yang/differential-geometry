@@ -4400,9 +4400,47 @@ declarations.  Every closure was contained in `{propext, Classical.choice,
 Quot.sound}`, and all thirteen applicable environment linters passed.  The new
 consumer leaf is registered in the flat root aggregate.
 
-The remaining representation obligation is now narrow and explicit: prove
-that an `IsGlueIso` carries the canonical barycentric `derivedNeighborhood`
-of a source subcomplex exactly to the canonical derived neighborhood of its
-transported target subcomplex, then instantiate that theorem for the named
-inner and outer neighborhoods.  No arbitrary-subdivision invariance is used or
-claimed.
+The remaining representation obligation at this checkpoint was the naturality
+of the canonical barycentric construction under the produced `IsGlueIso`.
+Section 91 closes that general theorem.  It also corrects the proposed direct
+instantiation: the old inner and outer sets were canonical derived
+neighborhoods in their own earlier witness subdivisions, not in the new
+source complex `K₀`.  They therefore cannot be identified with
+`derivedNeighborhood K₀` merely because they are now subcomplex carriers.
+No arbitrary-subdivision invariance is used or claimed.
+
+## 91. 2026-09-19 exact transport of canonical derived neighborhoods — done
+
+`DerivedNeighborhoodTransport.lean` proves the missing naturality theorem at
+the level where it is true.  `IsGlueIso.simplicialMap_centroid` shows directly
+that the simplicial map sends the centroid of every source face to the
+centroid of its image face.  `IsGlueIso.image_isFlag` then transports chains
+of faces, and `IsGlueIso.barycentricSubdivision` and
+`IsGlueIso.secondDerived` lift an arbitrary glue isomorphism through the first
+and second barycentric subdivisions.
+
+`IsGlueIso.derivedNeighborhood` transports the defining flag condition in
+both directions for a subcomplex glue isomorphism compatible with the ambient
+one.  Its carrier corollary `IsGlueIso.image_derivedNeighborhood` uses
+`simplicialMap_derivedNeighborhood_eq` to remove the final redundant
+interpolation and gives the exact equality
+`simplicialMap (barycentricSubdivision K) (simplicialMap K φ) ''
+  (derivedNeighborhood K L).space = (derivedNeighborhood K' L').space`.
+No finiteness or finite-dimensional hypothesis is needed for the complex-level
+isomorphism; only the carrier simplification uses finite dimensionality.
+
+The module passed the isolated private checker with no diagnostics and left
+shared outputs unchanged.  The strict external audit covered all seven
+non-automatic declarations and ten critical reused declarations; every axiom
+closure was contained in `{propext, Classical.choice, Quot.sound}`, and all
+thirteen applicable environment linters passed.  The leaf is registered in
+the flat root aggregate.
+
+This closes the abstract transport result but does not falsely reclassify the
+old named sets `A i` and `B i`.  The next consumer must construct fresh,
+sufficiently small canonical neighborhoods of each transported circle on a
+source subdivision compatible with the actual glue isomorphism, transport
+those neighborhoods by this theorem, and inherit containment, disjointness,
+and nesting from the old stability neighborhoods by subset.  Alternatively it
+must strengthen the compatible-triangulation producer so that those fresh
+source subdivisions and their target transports are returned together.
