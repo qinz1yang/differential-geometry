@@ -2899,3 +2899,26 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
 - 未闭合：连续紧支撑同伦与环类保持；F 的实际迹/双端面图卡仍是把此空双点集提升为一般环境
   `exists_separated_along_branch` 的下游输入。
+
+## 89. 2026-09-18 E3-M3：紧支撑同伦与环类保持
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointHomotopy.lean` 用直线插值
+`p + t • (positiveBufferedWedgePush c ρ p - p)`（负向同理）给出从恒等映射到 §87 两张推移的显式
+`ContinuousMap.Homotopy`。
+
+- `positiveBufferedWedgeHomotopy`、`negativeBufferedWedgeHomotopy`：证明的是参数与空间变量的联合连续性；
+  不声称联合映射为 PL。
+- 两条 `*_fst` 与 `mapsTo_*_fstFiber`：同伦全过程第一坐标严格不变，因此每个端面分别保持在自身内；
+  两条 `*_eq_of_not_mem_support` 证明同一个紧支撑外在所有时刻逐点固定。
+- `positiveBufferedWedgeFreeLoopHomotopy`、`negativeBufferedWedgeFreeLoopHomotopy` 及两条 `*_homotopic`：
+  对任意自由环，后复合正、负推移均与原环自由同伦，因而保持自然的自由环同伦类。
+- `positiveBufferedWedgeBasedLoop`、`negativeBufferedWedgeBasedLoop` 与两条 `*BasedLoopHomotopy_fixed`：
+  当基点在支撑外时，后复合仍是同一基点的环，而且上述同伦在每个参数时刻都固定该基点。
+- 没有额外声称每个中间时刻都是 PL 同胚；本轮消费者只需要联合连续、端面保持和紧支撑外固定。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 20 条非自动声明，
+  另审计 6 条关键复用声明；全部传递公理闭包只含 `propext / Classical.choice / Quot.sound` 的子集，
+  13 个适用环境 linter 零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointHomotopy.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 一般环境仍未闭合：F 的实际迹/双端面图卡是把 §87–§89 模型产物接成
+  `exists_separated_along_branch` 的必要下游输入；本轮没有越过这一表示层缺口。
