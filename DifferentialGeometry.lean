@@ -5959,6 +5959,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Redu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostTwoPointCoercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostTwoPointReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHamiltonJacobi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHeatTest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHamiltonJacobiPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedVolumeNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedVolumeNormedSpaceGeneral
@@ -6304,6 +6305,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Speed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.WeakBarrier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HeatTest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.EndpointControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.UniformUpperBound
@@ -8077,6 +8079,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.Barrier
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
+import DifferentialGeometry.Geometry.Operator.Laplacian.Comparison
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Operator.Laplacian.TensorInner
 import DifferentialGeometry.Geometry.Operator.Laplacian.Viscosity
