@@ -794,6 +794,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Integration.Lp.FiniteCover
 import DifferentialGeometry.Analysis.Integration.Lp.Lifting
 import DifferentialGeometry.Analysis.Integration.Lp.Multiplication
+import DifferentialGeometry.Analysis.Integration.Lp.Operator
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
@@ -859,6 +860,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityJointSmooth
 import DifferentialGeometry.Analysis.Integration.Measure.ParamDensitySmoothness
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.AreaFormula
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Composition
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Euclidean
