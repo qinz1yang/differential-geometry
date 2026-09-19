@@ -31,9 +31,10 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 F now owns an additional correction within its existing cover-production
 lane: the fixed normalSystemManifoldComplex formula uses a relative second
 derived complex preserving the entire image but requires the ordinary
-derived-neighborhood carrier. The source-reviewed missing-point theorem
-RelativeSimplexNeighborhood obstructs this equality for a fixed edge with an
-ambient coface outside the image. Independent counterexample replay is queued.
+derived-neighborhood carrier. The independently accepted missing-point theorem
+RelativeSimplexNeighborhood (b240763e0) obstructs this equality for a fixed edge
+with an ambient coface outside the image. The actual tetrahedron/facet instance
+and the current NormalSystem coface consumer both pass kernel/axiom/lint replay.
 The coordinator authorized a genuine compatible-neighborhood triangulation
 producer and the necessary coherent NormalSystem API correction. Preserve
 image faces, the exact carrier, manifold/boundary structure and SDR; do not
@@ -926,9 +927,9 @@ projection and fiber equations and preserves manifold structure/connectedness.
 
 The remaining lift construction must still produce a complete nonempty
 NormalSystem and its boundary-compatible smaller neighborhood. In particular,
-the fixed relativeDerivedNeighborhood carrier equation has a source-reviewed
-missing-point obstruction under explicit fixed-edge/coface hypotheses. Its
-independent replay and an actual compatible-triangulation repair are next;
+the fixed relativeDerivedNeighborhood carrier equation has an independently
+verified missing-point obstruction under explicit fixed-edge/coface hypotheses.
+The actual compatible-triangulation repair is next;
 no universal impossibility theorem for every NormalSystem is claimed. The concrete simplex-times-Bool model tests finite-cover realization,
 not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
 is newly queued and E3 continues simultaneous subdivisions and actual traces.

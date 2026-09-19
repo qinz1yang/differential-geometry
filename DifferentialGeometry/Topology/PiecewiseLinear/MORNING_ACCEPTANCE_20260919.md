@@ -180,3 +180,14 @@ pending. Exact carrier, SDR, source lift and boundary contracts must remain.
 Accepted conditional descent does not certify an inhabited NormalSystem.
 S 3c08c2aba vertex/edge handles is queued; S continued to triangle handles at
 delivery. All four tasks continue one lane each; the full build stays stopped.
+
+## Carrier counterexample independently accepted
+
+F b240763e0 passes independent replay: four new nonautomatic declarations
+(two public, two private), five critical reuse entries, one actual tetrahedron/
+facet model, one current NormalSystem consumer and 13 applicable linters.
+Module 14.916 seconds; audit 51.441 seconds, including admission, zero
+diagnostics and only standard axioms. Lean +184/-0 including the root import.
+Receipt: .lake/verified-fifteenth-lane-delivery-20260919.json. This is a proved
+negative interface result with a required producer repair, not completion of
+the loop theorem or a universal proof that all NormalSystems are empty.

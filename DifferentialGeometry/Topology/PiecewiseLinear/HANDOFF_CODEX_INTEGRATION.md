@@ -1204,3 +1204,28 @@ explicit review of boundary/relative-handle cases. E3 ace162dcd likewise
 continued only at delivery toward simultaneous subdivisions and exact disk
 traces. All four tasks have one active lane with the requested models.
 Decision: .lake/normal-system-neighborhood-repair-decision-20260919.json.
+
+## 32. Independently verified carrier counterexample (2026-09-19 UTC)
+
+F b240763e0 is accepted after independent integration replay. The single
+RelativeSimplexNeighborhood module compiled in 14.916 seconds and the audit
+completed in 51.441 seconds, including admission, with zero diagnostics.
+All four nonautomatic declarations (two public, two private), five critical
+reuse entries, the actual tetrahedron/facet model and a current NormalSystem
+consumer pass the standard-axiom audit and 13 applicable environment linters.
+No private prerequisite object was reused; upstream imports remained shared
+and read-only.
+
+The model has a genuine PL 3-ball and a PL 2-ball face and exhibits a point
+missing from the fixed relative neighborhood. The consumer proves that the
+current NormalSystem carrier equation forces every ambient coface of each
+image edge back into the image. This verifies the interface obstruction under
+its exact hypotheses; it does not prove that every possible NormalSystem is
+empty. The approved repair is to produce a genuine compatible triangulation
+while retaining exact carrier and SDR, not to add a false local-neighborhood
+hypothesis or discard the geometric relation. F continues that same lane.
+
+Receipt: .lake/verified-fifteenth-lane-delivery-20260919.json. Lean +184/-0
+including one root import; 27 handoff Markdown lines excluded. This checkpoint
+records a negative result and repair obligation, not new progress toward an
+unconditional loop theorem. Full-root compilation remains stopped.
