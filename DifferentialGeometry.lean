@@ -5,6 +5,7 @@ import DifferentialGeometry.Analysis.Calculus.Asymptotics.FlatExponentialIntegra
 import DifferentialGeometry.Analysis.Calculus.BumpPerturbation
 import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
+import DifferentialGeometry.Analysis.Calculus.Compactness.LocalArzelaAscoli
 import DifferentialGeometry.Analysis.Calculus.Compactness.BilinearForm
 import DifferentialGeometry.Analysis.Calculus.Compactness.DiagonalSubsequence
 import DifferentialGeometry.Analysis.Calculus.Compactness.EventuallyBounded
