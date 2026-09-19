@@ -39,7 +39,10 @@ The coordinator authorized a genuine compatible-neighborhood triangulation
 producer and the necessary coherent NormalSystem API correction. Preserve
 image faces, the exact carrier, manifold/boundary structure and SDR; do not
 add the false neighborhood hypothesis or treat another assumed package as a
-producer. This takes priority over further conditional cover assembly.
+producer. The actual compatible triangulation producer c49f666ab + 8728c1b09 is now
+independently accepted, including exact carrier, intrinsic boundary and SDR
+in a nonempty model. F continues the minimal NormalSystem migration and all
+55 affected consumer checks. This takes priority over conditional cover assembly.
 
 
 ### Five tasks: one current lane each
@@ -52,7 +55,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | Repair the fixed normal-system neighborhood formula through an actual compatible triangulation, then construct the full cover diagram. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
-| E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd awaits independent acceptance. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
+| E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
 | M304 / gpt-6-astra max | Own 30.4 directly: read the original proof and construct an independent actual producer toward the spherical-shell theorem. | Initial separating surface, compression induction or the actual 28.19 annulus construction can proceed beside E3. Keep 26.4 and 30.3 as explicit open dependencies; do not count a conclusion-shaped wrapper as production. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
@@ -149,7 +152,7 @@ and keep the existing one-root-worker/two-private-checker resource policy.
 
 The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
-Static traversal reaches all six and 9314 project modules including the root,
+Static traversal reaches all six and 9341 project modules including the root,
 with no missing project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused
@@ -999,3 +1002,18 @@ Two/three-handle product pairs, finite global assembly, smooth attachments and
 framings, corner rounding and the smooth two-sphere input remain open. S is
 already continuing the triangle two-handle layer. No smooth radial extension
 at the center or completed compact smoothing theorem is claimed.
+
+
+### Source review: actual producers and conditional gluing
+
+F's two real compatible-neighborhood construction modules through 8728c1b09
+are independently accepted: 18 declarations, nine key reused declarations,
+two nonempty models and 13 clean linters, only standard axioms. The old fixed
+NormalSystem formula is being replaced; consumer migration is not yet accepted.
+h's a598916fd glues supplied compatible stage SDRs and produces the finite
+constant case, but the nonconstant geometric system and its relation to the
+book's single locally finite derived triangulation remain open. h continued
+that real producer at its completed-round boundary. E3's ace162dcd is held
+because its 1206-line disk module duplicates 917 lines of canonical
+FreeTriangleNeighborhood; a generalization with boundary corollary is due at
+the next delivery, without interrupting the current geometric proof.

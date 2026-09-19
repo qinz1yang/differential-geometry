@@ -1328,3 +1328,55 @@ Lean +145/-0 includes two flat-root imports. Receipt:
 source/object identities, all timings and logs are retained. Static root
 reachability is 9339 project modules including the root; the full-source
 build remains stopped and no Moise304 endpoint completion is claimed.
+
+
+## 37. Actual compatible neighborhood triangulation accepted (2026-09-19 UTC)
+
+F c49f666ab and 8728c1b09 are independently accepted. Two modules compiled
+in 20.563 seconds; all 18 nonautomatic declarations (including two private),
+nine critical reused declarations, two actual tetrahedron/facet models and
+13 environment linters pass the 42.856-second audit. All checks exit 0
+with zero diagnostics and standard foundational axioms. Shared upstream
+objects remain read-only; no private prerequisite objects were reused.
+
+RelativeSimplexRefinement first makes the fixed subcomplex full, then chooses
+relative derived centers near its actual faces. It constructs a finite
+subdivision retaining every original face and shrinking the closed star into
+any prescribed positive thickening or open neighborhood. RelativeSimplexTriangulation
+keeps that star away from the closed complementary polyhedron, performs the
+relative extension there and takes the exact closed complementary carrier.
+The resulting actual finite triangulation retains the original subcomplex,
+has precisely the ordinary derived-neighborhood carrier, is a combinatorial
+manifold and has exactly the original intrinsic boundary. Its strong
+deformation retract fixes the subcomplex. The concrete tests include epsilon
+1/100 and a nonempty triangulated tetrahedral face neighborhood with that SDR.
+
+This closes the geometric construction needed to replace the invalid fixed
+relative formula. NormalSystem's field migration and its 55 affected modules
+are F's current verification round; the full interface repair and ring theorem
+are not yet accepted. Long-line-only repairs in those actual consumers are
+authorized after their warnings were observed, preserving scope and semantics.
+
+Lean +304/-0 includes two root imports; 49 handoff Markdown lines are excluded.
+Receipt: .lake/verified-eighteenth-lane-delivery-20260919.json. Exact audit source,
+source/object hashes, all check times and logs are retained. The static root
+closure now has 9341 project modules including the root. Full-root
+compilation remains stopped.
+
+### Pending source-review gates
+
+h a598916fd adds a compatible stagewise SDR system and a true constant-tower
+producer. Its global gluing theorem is conditional on that system; a geometric
+nonconstant producer and the relation to the book's global regular neighborhood
+are still open. At its completed round, h continued those obligations and the
+natural Homotopy placement of general transport/gluing machinery. No global
+35.1 producer or corrected full relation is accepted here.
+
+E3 ace162dcd remains held at source review: SurfaceSplitDiskNeighborhood has
+917 exact matching lines with the existing 964-line FreeTriangleNeighborhood
+(the new file has 1206 lines). The weaker interior-subcomplex argument should
+generalize the canonical development, with the old boundary case retained as
+a corollary, instead of duplicating the proof. The first copied subface lemma
+already has the identical existing public signature. This is an API/duplication
+gate, not a mathematical counterexample or compiler failure. Return the precise
+correction at E3's next delivery; do not interrupt its active 30.3 geometry round.

@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9339 project modules including the root, no missing
+are now registered and statically reachable (9341 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -246,5 +246,45 @@ shell localization; E3 retains actual 30.3 geometry.
 Lean +145/-0 includes two flat-root imports. Receipt:
 .lake/verified-seventeenth-lane-delivery-20260919.json. Exact probe source,
 source/object identities, all timings and logs are retained. Static root
-reachability is 9339 project modules including the root; the full-source
+reachability is 9341 project modules including the root; the full-source
 build remains stopped and no Moise304 endpoint completion is claimed.
+
+
+## Actual compatible neighborhood triangulation
+
+F c49f666ab and 8728c1b09 are independently accepted. Two modules compiled
+in 20.563 seconds; all 18 nonautomatic declarations (including two private),
+nine critical reused declarations, two actual tetrahedron/facet models and
+13 environment linters pass the 42.856-second audit. All checks exit 0
+with zero diagnostics and standard foundational axioms. Shared upstream
+objects remain read-only; no private prerequisite objects were reused.
+
+RelativeSimplexRefinement first makes the fixed subcomplex full, then chooses
+relative derived centers near its actual faces. It constructs a finite
+subdivision retaining every original face and shrinking the closed star into
+any prescribed positive thickening or open neighborhood. RelativeSimplexTriangulation
+keeps that star away from the closed complementary polyhedron, performs the
+relative extension there and takes the exact closed complementary carrier.
+The resulting actual finite triangulation retains the original subcomplex,
+has precisely the ordinary derived-neighborhood carrier, is a combinatorial
+manifold and has exactly the original intrinsic boundary. Its strong
+deformation retract fixes the subcomplex. The concrete tests include epsilon
+1/100 and a nonempty triangulated tetrahedral face neighborhood with that SDR.
+
+This closes the geometric construction needed to replace the invalid fixed
+relative formula. NormalSystem's field migration and its 55 affected modules
+are F's current verification round; the full interface repair and ring theorem
+are not yet accepted. Long-line-only repairs in those actual consumers are
+authorized after their warnings were observed, preserving scope and semantics.
+
+Lean +304/-0 includes two root imports; 49 handoff Markdown lines are excluded.
+Receipt: .lake/verified-eighteenth-lane-delivery-20260919.json. Exact audit source,
+source/object hashes, all check times and logs are retained. The static root
+closure now has 9341 project modules including the root. Full-root
+compilation remains stopped.
+
+E3 ace162dcd is held for duplicated canonical free-triangle proofs; its new
+source is not counted among independently accepted Lean lines. h a598916fd
+provides conditional global SDR gluing plus a finite producer; nonconstant
+geometric compatibility and the full regular-neighborhood relation remain
+under review. Both continue their own existing lanes.
