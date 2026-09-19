@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeIntersection
@@ -5,6 +10,10 @@ import DifferentialGeometry.Topology.Connected.ClosedCover
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeBase
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplementLink
+
+/-!
+# Components of polyhedral cone complements
+-/
 
 open Set
 

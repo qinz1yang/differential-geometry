@@ -149,13 +149,14 @@ conjugate-family theorem. The old unitInterval consumers now reuse it without
 a name collision. These actual isotopies work in the fixed Euclidean atlas,
 retaining framing at every height and all three corners. They do not produce
 relative smoothing in an arbitrary old atlas or charts across a gluing seam.
-S subsequently delivered bounded-displacement Alexander localization and
-actual planar whole-disk/germ extension through f88028fd8, queued for independent
-replay. The latter gives no displacement bound. At the completed delivery
-0af777267, S resumed the actual orientation-compatible compactly supported
-germ/relative planar annulus producer needed for the same old-atlas 0-handle.
-The fixed-near-ends strip follows only after that producer closes. Compact PL
-smoothing remains open. See integration handoff section 53.
+S subsequently delivered bounded-displacement Alexander localization,
+actual planar whole-disk/germ extension, supported germ isotopy linearization
+2086c2aac, and general nested Jordan annuli with simultaneous compatible
+boundary extension ab12b25d1. These author-verified layers await independent
+replay. At completed delivery 75d0ce3a1, S continued the real relative 0-handle
+consumer in an arbitrary old smooth atlas. The fixed-near-ends strip and
+cross-seam charts follow that interface. Compact PL smoothing remains open.
+See integration handoff sections 53 and 56.
 
 h's corrected contracts, same-PL-triangulation exhaustion, real noncompact
 three-dimensional edge model and graph dual-cell ballness through 2086d1064
@@ -190,12 +191,20 @@ were rechecked with required headers only. The essential Betti theorem starts
 from an actual separating compression disk with exact boundary intersection;
 its existence is not supplied. The raw caps share that disk and do not give
 ambient separation transfer. The concrete cube tests have zero Betti numbers
-and do not instantiate strict essential-circle descent. Later annulus
-components, disjoint-cap Betti/compression consumers and actual minimum-Betti
-separators through ac3673685 are delivered and queued. M304 now constructs
-the actual essential-boundary PL singular filling input for 26.4 inside the
-finite ambient neighborhood. Embedded compression disk existence, actual
-30.3 splitting and the final 30.4 induction remain open.
+and do not instantiate strict essential-circle descent. The later annulus
+components, supplied-disjoint-cap Betti/compression chain and actual
+minimum-Betti separators through ac3673685 are now independently accepted.
+All 29 fresh modules, 180 native declarations (40 new), 78 critical reuse
+entries, 39 classified probes and thirteen applicable linters pass with zero
+diagnostics and standard axioms. The enlarged spanning disks still share the
+original disk; the later compression theorem explicitly requires disjoint
+caps and separation of their capped union. The general shell minimizer is not
+known to have beta zero. M304's actual essential-boundary PL singular filling
+inside one finite ambient neighborhood b80e381fc is delivered and queued for
+independent replay. At that delivery M304 continued a real positive-genus
+compression configuration to exercise the strict Betti descent. Embedded
+compression disk existence, actual 30.3 splitting and the final 30.4 induction
+remain open. See integration handoff section 56.
 
 The held E3 disk-neighborhood chain through 8e0373385 is now independently
 accepted: fifteen fresh modules and all 81 native declarations (58 new),
@@ -225,8 +234,8 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | h / gpt-5.6-sol max | Corrected contracts, PL exhaustion, actual noncompact edge model and graph dual-cell balls through 2086d1064 accepted. Piercing and common-restriction layers through 347cb4d3e queued. Active common nested ambient neighborhoods with four exact annular traces. | Preserve same graph, PL triangulation and locally finite error data. Arbitrary open-ambient neighborhoods, full Moise statements and solid-torus PL type remain open. Continuous-error specialization is explicit. |
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | Actual local traces through 8e0373385 accepted. Relative closed-carrier separation 45c848746 and interior-WB3 boundary trace 8ad00b74a queued. At be67795fa completed delivery resumed the current 30.3 interior bridge. | Construct interior prism/local traces and original R3 separation with a genuine 3D disk-pair model. Old whole-branch chart issue is not this lane's prerequisite. Physical cap separation and full 30.3 remain open. |
-| M304 / gpt-6-astra max | Own 30.4. Geometry through a10d3b2df accepted. Annulus/capping/compression and actual minimum-Betti separator through ac3673685 queued. | Produce the essential-boundary PL singular filling in a finite ambient neighborhood as input to 26.4. Embedded disk, physical caps and separation of their union remain upstream; no general Betti-zero or full 30.4 claim. |
-| S / gpt-6-astra max | Finite handles, new-cell atlases, and supported fixed-Euclidean corner/whole-annulus smoothing through adefc71d0 accepted. Actual Alexander localization and planar full-disk/germ extension through f88028fd8 delivered and queued. | Continue one orientation-compatible supported germ/relative planar annulus round for actual old-atlas 0-handle smoothing. Global extension alone supplies no displacement bound. Strip, seam charts and compact 3D smoothing remain open. |
+| M304 / gpt-6-astra max | Own 30.4. Annulus components, conditional strict compression and actual minimum-Betti separators through ac3673685 independently accepted. Actual essential PL singular disk b80e381fc delivered and queued. | Construct an actual positive-genus essential-circle compression configuration and consume the existing strict Betti theorem. Preserve F's embedded-disk and E3's general physical-cap/separation ownership. No general beta-zero or full 30.4 claim. |
+| S / gpt-6-astra max | Finite handles, new-cell atlases and fixed-Euclidean annulus smoothing through adefc71d0 accepted. Alexander/planar extension, supported germ isotopy 2086c2aac and nested Jordan annuli ab12b25d1 delivered and queued. | At completed 75d0ce3a1 round continued actual old-atlas relative 0-handle consumer. Fixed-end strip and cross-seam charts follow it; compact 3D smoothing remains open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve

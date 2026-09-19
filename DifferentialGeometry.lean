@@ -8906,6 +8906,16 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SphereNeighborh
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoublePoints
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleInvolution
+import DifferentialGeometry.Topology.Connected.BicollarComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCapping
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusComponents
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusEuler
+import DifferentialGeometry.Topology.PiecewiseLinear.CurvePrism
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldDisjointUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskAnnulus
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceAnnulusComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceBoundaryCapping
 
 /-!
 # Differential geometry and geometric analysis

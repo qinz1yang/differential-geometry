@@ -65,4 +65,46 @@ theorem connectedComponentIn_sdiff_inter_eq_sdiff
     exact (connectedComponentIn_subset _ _ hz).2 ⟨hzA, hzB⟩
   exact ⟨hyA, fun hyB => hyU.2 ⟨hyA, hyB⟩⟩
 
+theorem isPreconnected_inter_connectedComponentIn
+    {X : Type*} [TopologicalSpace X] {S N : Set X} (hS : IsPreconnected S)
+    (hSN : S ⊆ N) (x : X) : IsPreconnected (S ∩ connectedComponentIn N x) := by
+  by_cases hne : (S ∩ connectedComponentIn N x).Nonempty
+  · obtain ⟨y, hyS, hyC⟩ := hne
+    have hsub := hS.subset_connectedComponentIn hyS hSN
+    rw [← connectedComponentIn_eq hyC] at hsub
+    rwa [inter_eq_left.mpr hsub]
+  · rw [not_nonempty_iff_eq_empty.mp hne]
+    exact isPreconnected_empty
+
+theorem connectedComponentIn_union_inter_eq
+    {X : Type*} [TopologicalSpace X] {A B : Set X} (hA : IsClosed A) (hB : IsClosed B)
+    (hinter : IsPreconnected (A ∩ B)) {x : X} (hx : x ∈ A) :
+    connectedComponentIn (A ∪ B) x ∩ A = connectedComponentIn A x := by
+  let C := connectedComponentIn (A ∪ B) x
+  let P := ((↑) : C → X) ⁻¹' A
+  let Q := ((↑) : C → X) ⁻¹' B
+  have hP : IsClosed P := hA.preimage continuous_subtype_val
+  have hQ : IsClosed Q := hB.preimage continuous_subtype_val
+  have hcover : P ∪ Q = univ := eq_univ_of_forall fun y =>
+    connectedComponentIn_subset (A ∪ B) x y.property
+  have hconn : IsPreconnected (P ∪ Q) := by
+    rw [hcover]
+    let _ : PreconnectedSpace C := Subtype.preconnectedSpace isPreconnected_connectedComponentIn
+    exact isPreconnected_univ
+  have hPQ : IsPreconnected (P ∩ Q) := by
+    change IsPreconnected ((((↑) : C → X) ⁻¹' A) ∩ (((↑) : C → X) ⁻¹' B))
+    rw [← preimage_inter, ← _root_.Topology.IsInducing.subtypeVal.isPreconnected_image,
+      Subtype.image_preimage_coe, inter_comm]
+    exact isPreconnected_inter_connectedComponentIn hinter
+      (inter_subset_left.trans subset_union_left) x
+  have hPc := isPreconnected_left_of_isClosed_union hP hQ hconn hPQ
+  have hCA : IsPreconnected (C ∩ A) := by
+    simpa only [P, Subtype.image_preimage_coe] using
+      (_root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mpr hPc)
+  apply Subset.antisymm
+  · exact hCA.subset_connectedComponentIn ⟨mem_connectedComponentIn (Or.inl hx), hx⟩
+      inter_subset_right
+  · exact fun y hy => ⟨connectedComponentIn_mono x subset_union_left hy,
+      connectedComponentIn_subset A x hy⟩
+
 end DifferentialGeometry.Topology

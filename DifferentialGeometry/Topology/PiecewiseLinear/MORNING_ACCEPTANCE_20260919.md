@@ -1387,3 +1387,92 @@ merged in E3's 34cbfb86a. No active task was interrupted for a routine status
 request, and no additional task or checker was created. h and S retain their
 current mathematical rounds. General loop-theorem descent, physical cap
 separation, full 30.4 and compact smoothing remain open.
+
+## Actual annulus compression and minimum-Betti separators (2026-09-19 UTC)
+
+M304's frozen source through ac3673685 is independently accepted. Nineteen
+author-modified leaves and ten old direct consumers were freshly compiled.
+Ten new leaves are registered in the flat root. The general bicollar-complement
+component lemmas, finite annulus/complement construction, exact boundary traces,
+and Euler equations refer to the same actual annulus and complement. The
+component link and boundary-restriction lemmas handle every nonempty face,
+including the boundary convention in dimension zero. Existing vertex-link,
+spanning-disk and spherical-shell theorem signatures are unchanged: all 29 old
+theorem signatures in those three files match modulo whitespace.
+
+The common-annulus spanning-disk construction produces two enlarged disks
+with the prescribed boundary circles and exact complement intersections. They
+still meet in the original spanning disk. They are not disjoint physical caps.
+The later capping theorems explicitly require actual disjoint caps. For a
+connected annulus complement they produce a connected closed surface with
+beta(new) + 2 = beta(old). For a separating essential circle they produce two
+disjoint capped nonspherical components whose Betti numbers sum to beta(old),
+with each strictly smaller. If the capped union separates the given two
+preconnected sets, Phragmen-Brouwer selects a connected closed two-sided
+separator of strictly smaller Betti number. Physical cap separation and
+preservation of union separation remain E3 inputs.
+
+There is also an actual minimum-Betti separator producer. It minimizes over
+a nonempty family supplied by an existing finite connected closed separator
+inside the specified open set. The shell specialization proves that every
+competing preconnected separator lies in the shell, so its minimum is over all
+finite connected closed competitors with the advertised separation. The
+general minimum separator is not proved spherical; no general beta-zero or
+Moise304 theorem is claimed.
+
+The 29 fresh checks took 329.991 seconds including admission; the combined
+audit took 61.451 seconds. All 180 native nonautomatic declarations
+(three private), 78 critical reuse entries (63 distinct), and 39 classified
+external probe declarations have only approved foundational axioms. Forty
+native declarations are new explicit declarations; there are no newly counted
+structure-generated members in this batch. All thirteen applicable environment
+linters and source checks pass with zero diagnostics. These counts include
+definitions and existing conditional interfaces, not just proved endpoints.
+
+The 39 probes comprise 23 actual geometric theorems, two conditional consumers,
+one empty-set edge case, and thirteen local equality instances. Concrete
+examples include a rectangle prism, cube annulus/complement, disjoint capped
+cube boundaries, separated intervals and points, two enlargements of the same
+actual disk, a finite ambient neighborhood killing a nontrivial circle class,
+and radial-shell separators. A cube comparison proves beta zero and the sphere
+conclusion for one actual minimizing separator. None of these examples is a
+positive-genus essential-circle compression configuration. That model gap is
+kept separate from the verified general conditional compression theorem.
+
+Fifty-three accepted private prerequisite objects were reused only after
+matching current raw source and recorded object hashes. No shared artifacts
+were written. Four existing consumers received their required file headers;
+two long type lines in BoundaryHomology were wrapped. Their mathematical
+tokens and scopes are unchanged. MoiseChain, the newly accepted F
+SphereNeighborhood consumer, and the other old consumers were checked without
+altering their mathematics. The public-name search found one repeated basename
+for the general minimum-separator theorem and its IsSphericalShell method;
+their fully qualified names differ. The signature-accounting script needed to
+recognize a direct proof term as well as a tactic proof; no Lean check failed.
+
+Accepted integration Lean delta: +1796/-67. This is +1746/-65 in the nineteen
+frozen author leaves, ten root imports, and +40/-2 in the four style-only
+consumers (36 required header lines and two line wraps). Relative to M304's
+window-start cbfe4a73f, those selected branch files have a committed delta
+of +2376/-14.
+These baselines are not additive and do not measure typing time. Markdown,
+external probes and generated objects are excluded. The complete receipt is
+.lake/verified-thirtysixth-lane-delivery-20260919.json; it freezes raw and normalized source
+identities, object hashes, all declaration types and axioms, author evidence,
+probe classifications, compatibility evidence and durations. Static root
+coverage now reaches 9510 project modules including the root, with no missing
+project source or import cycle. The full-root build remains stopped; this is
+focused compatibility acceptance, not a fresh full-root build.
+
+M304 subsequently delivered b80e381fc, the actual essential PL singular-disk
+producer inside one finite ambient neighborhood. This is queued for independent
+replay, not included in the acceptance above and not an embedded-disk claim.
+At that completed delivery M304 continued a concrete positive-genus compression
+configuration, using the native capping/Betti chain, without duplicating E3's
+general 30.3 geometry or F's 26.4 work. S delivered supported germ linearization
+2086c2aac and general nested Jordan annuli with both prescribed boundaries
+ab12b25d1, merged integration at 75d0ce3a1, and continued the actual old-atlas
+0-handle consumer at its completed delivery. Those S layers also await independent
+replay. F, h and E3 were not interrupted or given second lanes. General embedded
+compression disks, physical cap separation, full 30.4, and compact smoothing
+remain open.
