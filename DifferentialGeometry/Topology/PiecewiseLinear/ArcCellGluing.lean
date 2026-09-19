@@ -190,7 +190,7 @@ theorem previous_arcCellCrossing_not_mem_interface
     (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
     (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
     (hinj : ∀ i ≤ n, ∀ k ≤ n, v i = v k → i = k)
-    {j : ℕ} (hj0 : 1 ≤ j) (hjn : j + 2 ≤ 2 * n) :
+    {j : ℕ} (hj0 : 1 ≤ j) (hjn : j + 1 ≤ 2 * n) :
     arcCellCrossing v (j - 1) ∉
       coneSet (arcCellCrossing v j) (arcCellInterfaceBase K v j).space := by
   intro hmem
@@ -232,7 +232,7 @@ theorem previous_arcCellCrossing_mem_closure_diff_interface
     (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
     (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
     (hinj : ∀ i ≤ n, ∀ k ≤ n, v i = v k → i = k)
-    {j : ℕ} (hj0 : 1 ≤ j) (hjn : j + 2 ≤ 2 * n) :
+    {j : ℕ} (hj0 : 1 ≤ j) (hjn : j + 1 ≤ 2 * n) :
     arcCellCrossing v (j - 1) ∈ closure
         ((arcCellBase K v j).space \
           coneSet (arcCellCrossing v j) (arcCellInterfaceBase K v j).space) \

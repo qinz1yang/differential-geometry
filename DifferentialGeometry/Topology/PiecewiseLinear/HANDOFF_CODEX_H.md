@@ -2935,3 +2935,23 @@ The remaining proof layer is now purely the relative-extension construction:
 build the base normalized state at `k = 1`, advance it with the two marked cone
 extensions at each successor, and extract the ball-pair conclusion at
 `k = 2 * n - 1`.
+
+## 49. 2026-09-18 Natural preceding-crossing bound — done
+
+The upper index hypothesis of
+`previous_arcCellCrossing_not_mem_interface` and
+`previous_arcCellCrossing_mem_closure_diff_interface` is now the natural
+`j + 1 ≤ 2 * n`.  Their proofs only use the three cells at indices `j - 1`,
+`j`, and `j + 1`; the former `j + 2 ≤ 2 * n` assumption was unused.  This
+weakening is essential at the base state `j = 1` when `n = 1`, where the two
+non-endpoint cells consist of the single cell at index one.
+
+There are no committed downstream call sites of these two declarations yet;
+the source-ready normalized base state is their first consumer.  Strict private
+verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated all twenty
+non-automatic declarations, checked sixteen direct reused declarations, found
+only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.
