@@ -2955,3 +2955,36 @@ and unchanged shared outputs.  The audit dynamically enumerated all twenty
 non-automatic declarations, checked sixteen direct reused declarations, found
 only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
 applicable environment linters.
+
+## 50. 2026-09-18 Normalized first trimmed arc cell — done
+
+`ArcCellNormalization.lean` proves
+`exists_normalized_trimmedArcCellUnion_one`.  For every nonempty injective
+simplicial arc chain in a finite closed combinatorial 3-manifold, it identifies
+the first non-endpoint derived-neighborhood cell with the first lobe of the
+three-dimensional cut model.  Simultaneously it sends the cell's arc trace to
+the standard two-segment cone, its outgoing interface disk to the standard cut
+disk, the outgoing crossing to the cut-disk apex, and the fixed near crossing
+to the marked point off that disk.
+
+The proof uses the natural `j + 1 ≤ 2 * n` preceding-crossing bound, so the
+construction includes the actual `n = 1` instance.  It constructs the
+interface map from a PL homeomorphism of its link circle and applies
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked`; no normalized state or
+ball-pair conclusion is assumed.  Exact cell and trace identities then replace
+the source cone by `trimmedArcCellUnion K v 1` and its intersection with
+`arcComplexIn K v n`.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict
+private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated the module's
+single non-automatic declaration, checked twenty-three reused declarations,
+found only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.
+
+The remaining construction is the successor step: map the next cell to the
+second cut-model lobe relative to the current outgoing disk, glue the two maps,
+and normalize the resulting outer ball back to the first lobe while preserving
+the fixed near marked point.
