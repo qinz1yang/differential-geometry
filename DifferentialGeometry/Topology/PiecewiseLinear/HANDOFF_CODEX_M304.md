@@ -1799,3 +1799,91 @@ Final audit completion is 2026-09-19T17:43:57.5655663Z. The individual receipt
 times are recorded in the manifest, including valid earlier receipts for
 unchanged dependencies. Full Moise264 and arbitrary-shell Moise304 remain
 open; independent integration acceptance is not claimed.
+
+## Kernels in actual finite cut boundaries (2026-09-19 UTC)
+
+The open-side kernel is now transported to the actual closed cut manifold
+and its actual connected boundary component. This completes that bridge
+when the original ambient complex K is simply connected. The kernel element
+produced after van Kampen splitting is constructed anew; it is not asserted
+to equal an initially supplied element.
+
+`FundamentalGroup/BicollarBoundary.lean` defines the zero section into the
+canonical open-cover overlap and its projection to the original surface.
+It proves `fundamentalGroup_map_collarMiddleInclusion_bijective`, using the
+native collar-middle homeomorphism and contractibility of the interval.
+The two `negativeRetraction_comp_collarMiddleInclusion` and
+`positiveRetraction_comp_collarMiddleInclusion` equalities identify the
+composites through the existing native retractions with the literal boundary
+inclusions into the closed sides. Thus
+`exists_nontrivial_fundamentalGroup_kernel_boundary_of_simplyConnectedSpace`
+produces a nontrivial group element killed by one actual closed-side map.
+These are equalities of continuous maps and their induced based group maps,
+including the required basepoint casts.
+
+`Connected/ClosedCover.lean` adds
+`closure_connectedComponentIn_sdiff_inter_eq_or_eq`: for a closed cover with
+connected dense exclusive parts, the closure of each complement component
+equals one of the two original closed sets. `SurfaceCutKernel.lean` derives
+the connected dense exclusive parts from the native connectedness and
+density of manifold interiors. Its
+`closure_collar_component_eq_of_manifold_pair` consequently identifies the
+actual collar side closures with the supplied finite cut complexes A,B.
+
+`exists_nontrivial_fundamentalGroup_kernel_of_manifold_pair` transfers the
+closed-side kernel into the literal inclusion of L into one of those same
+A,B. `exists_boundary_component_kernel_of_manifold_pair` transports it
+further into the actual `connectedComponentComplex` boundary inclusion,
+using the proved equality of its space with L. No closed-side or boundary
+kernel is an input to either theorem.
+
+The full producer
+`IsCombinatorialManifoldWithBoundary.exists_boundary_component_kernel_of_interior_surface`
+starts with the original finite simply connected WB3 complex K, a finite
+connected closed PL2 surface L in its interior, a nontrivial element of
+pi1(L), and an arbitrary prescribed relative neighborhood U. In real
+ambient dimension three it constructs a collar of L into that original K
+whose entire image lies in U, a finite connected orientable WB3 cut piece
+R inside K, its exact boundary L union (R intersect old boundary K), and
+an actual boundary component equal to L carrying a nontrivial kernel into
+R. This covers any such simply connected K, not only balls. The enclosing
+simplex remains only an orientability proof device and never replaces K.
+
+`FundamentalGroup/Nullhomotopy.lean` adds
+`exists_non_nullhomotopic_freeLoop_of_nontrivial_fundamentalGroup_kernel`.
+For an arbitrary continuous map it converts a proved nontrivial based-group
+kernel into a free loop nonnullhomotopic in its source and nullhomotopic
+after that map. It reuses the native path-to-circle and nullhomotopy API.
+
+The external actual model fixes one nonempty finite PL ball K and its
+embedded connected beta-two torus L. It invokes the complete producer for
+that same K,L and U = interior K, retains the original pi1(L)-to-pi1(K)
+kernel, and verifies the actual cut boundary, its nontrivial kernel and the
+corresponding essential free loop together. It does not invoke Moise252,
+construct an embedded essential disk, or assert singular-disk normalization.
+
+All 22 nonautomatic declarations in the four changed/new mathematical
+modules, 43 critical reused declarations, the actual model and its three
+private helpers pass the transitive axiom audit with only propext,
+Classical.choice and Quot.sound. All 13 applicable linters pass; all checks
+have zero diagnostics. Five former public signatures are preserved. Both
+new leaves are registered once in the flat root. The native dependency
+graph has 527 modules and 1024 edges, is acyclic and avoids
+HurewiczLowDegrees. The stopped root build is not restarted, and shared E
+outputs and F/E3/h/S mathematical sources are untouched.
+
+Thirteen source-matching source/object/receipt sets, the complete external
+audit, declaration census and source review are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/surface-cut-kernel-checkpoint/`.
+Manifest SHA256:
+`080A9AD86A7A930F66371D76EE824CCECDEB73D2DA387A6F02F7F400C0FA08AA`.
+Final audit completion is 2026-09-19T18:20:39.5754872Z. Individual receipt
+times distinguish newly checked modules from unchanged earlier dependencies.
+
+The general ambient-kernel version still requires an open-cover construction
+for the original separating closed cut without ambient simple connectivity.
+The existing outward-collar and domain-retraction APIs are the next native
+route under investigation. Nonseparating cuts, general ambient orientability
+and the actual Moise252 theorem remain separate upstream obligations.
+Full Moise264 and arbitrary-shell Moise304 remain open; independent
+integration acceptance is not claimed.

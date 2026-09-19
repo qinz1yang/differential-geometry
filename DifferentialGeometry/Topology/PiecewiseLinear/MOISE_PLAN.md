@@ -2005,3 +2005,42 @@ frozen receipts. No full-root build or independent acceptance is claimed.
 Nine source-matching private module receipt sets and the final audit are
 frozen at `moise304-reading/surface-cutting-checkpoint/`, manifest SHA256
 `2B430531079C51AF7D64907068EC554DA6D77FD463A60ABEDE4C582AE76F8552`.
+
+### M304 actual cut-boundary kernels (2026-09-19 UTC)
+
+For the original finite simply connected WB3 complex K and a connected
+closed interior PL2 surface L in real ambient dimension three,
+`SurfaceCutKernel` now constructs an actual finite connected orientable
+closed cut piece R inside K, its exact boundary including old-boundary
+pieces, and an actual boundary-component label whose space equals L.
+That boundary inclusion has a proved nontrivial fundamental-group kernel.
+The collar retains the original K,L and the prescribed relative
+neighborhood U.
+
+The proof uses the native open collar cover and retractions. New explicit
+zero-section/projection maps induce an overlap-to-L group isomorphism;
+their composites through both native retractions are the literal closed
+boundary inclusions. Connected dense manifold interiors identify the side
+closures with the supplied finite cut manifolds. Equality with the actual
+boundary component then transports the kernel without assuming it or
+identifying the newly produced element with the original source element.
+The general continuous-map theorem in `FundamentalGroup/Nullhomotopy`
+converts it into a free loop essential in that component and null in R.
+
+The actual geometric model keeps the original nonempty finite PL ball and
+embedded beta-two torus throughout, and verifies the actual cut boundary,
+kernel and essential free loop together. It produces no embedded disk.
+General ambient-kernel transport without simple connectivity, nonseparating
+cuts and the actual Moise252 proof remain open. Full Moise264 and arbitrary-
+shell Moise304 are not marked complete.
+
+All 22 declarations in four changed/new modules, 43 critical reuses, the
+actual model and three helpers have standard transitive axioms; all 13
+applicable linters pass with zero diagnostics. Five former public
+signatures are unchanged. Both new leaves are registered once; the native
+graph has 527 modules and 1024 edges without cycles or HurewiczLowDegrees.
+Thirteen source-matching private receipt sets and the final audit are frozen
+at `moise304-reading/surface-cut-kernel-checkpoint/`, manifest SHA256
+`080A9AD86A7A930F66371D76EE824CCECDEB73D2DA387A6F02F7F400C0FA08AA`.
+See HANDOFF_CODEX_M304.md for exact APIs and limits. No full-root build or
+independent integration acceptance is claimed.

@@ -107,4 +107,20 @@ theorem connectedComponentIn_union_inter_eq
   · exact fun y hy => ⟨connectedComponentIn_mono x subset_union_left hy,
       connectedComponentIn_subset A x hy⟩
 
+theorem closure_connectedComponentIn_sdiff_inter_eq_or_eq
+    {X : Type*} [TopologicalSpace X] {A B : Set X} {x : X}
+    (hA : IsClosed A) (hB : IsClosed B)
+    (hconnA : IsPreconnected (A \ B)) (hconnB : IsPreconnected (B \ A))
+    (hclA : closure (A \ B) = A) (hclB : closure (B \ A) = B)
+    (hx : x ∈ (A ∪ B) \ (A ∩ B)) :
+    closure (connectedComponentIn ((A ∪ B) \ (A ∩ B)) x) = A ∨
+      closure (connectedComponentIn ((A ∪ B) \ (A ∩ B)) x) = B := by
+  rcases hx.1 with hxA | hxB
+  · exact Or.inl ((congrArg closure (connectedComponentIn_sdiff_inter_eq_sdiff hA hB
+      hconnA ⟨hxA, fun h => hx.2 ⟨hxA, h⟩⟩)).trans hclA)
+  · right
+    rw [union_comm A B, inter_comm A B]
+    exact (congrArg closure (connectedComponentIn_sdiff_inter_eq_sdiff hB hA
+      hconnB ⟨hxB, fun h => hx.2 ⟨h, hxB⟩⟩)).trans hclB
+
 end DifferentialGeometry.Topology
