@@ -2857,3 +2857,27 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   `BoundaryBranchSheets` 只交付局部交叉图卡、带一致标签的多面体源片邻域及分支纤维覆盖；尚缺
   **实际胞腔迹落入坐标折片**以及**两个端点的边界相容**。缺少这两项时不能陈述最终
   `exists_separated_along_branch`，也不能把 Case 3/4 的 `L₂` 与复杂度下降宣称闭合。
+
+## 87. 2026-09-18 E3-M3：端面可动的缓冲平板楔形推移
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointPush.lean` 把 §84 的帽函数沿第一坐标平移 `ρ`，在长度
+`c + 2ρ` 的扩展平板上应用原正、负楔形推移，再平移回来。自然参数版本只要求分离时 `0 < ρ`；
+`c = 1, ρ = 1` 的先导实例由两条端点公式立即给出帽高 `1 / 4`。
+
+- `bufferedSlabWedgeHat_left_endpoint`、`bufferedSlabWedgeHat_right_endpoint`：当 `0 ≤ c`、`0 ≤ ρ` 时，
+  原平板两个端点 `(0,0,0)`、`(c,0,0)` 的帽高均为 `ρ / 4`，所以端点不再固定。
+- `isPLHomeomorphOn_positiveBufferedWedgePush`、`isPLHomeomorphOn_negativeBufferedWedgePush`：直接把
+  §84 的全局 PL 同胚与两次平移共轭，不重做 Lipschitz 证明；同时给出对应的全局 `Homeomorph`。
+- `isCompact_bufferedSlabWedgeSupport` 与两条 `eqOn_*_compl_support`：扩展支撑是原紧支撑的平移像，
+  两张推移在其外逐点恒等。
+- 两条 `*_fst` 与 `image_*_fstFiber`：第一坐标逐点保持，而且每个第一坐标纤维的像严格等于自身；特别地
+  `image_*_wedgeSlabBoundary` 证明两个端面集合均被保持，而不是逐点固定。
+- `disjoint_positive_negative_bufferedWedgePush_on_slabFold`：对 `0 < ρ`，原闭折片（包含两个端点）的
+  正、负推移像严格不交。证明把闭折片平移进扩展平板的开内部，复用 §84 的开折片不交定理。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 22 条非自动声明，
+  另审计 8 条关键复用声明；每条传递公理闭包均为 `propext / Classical.choice / Quot.sound` 的子集，
+  13 个适用环境 linter（只排除 `docBlame`、`docBlameThm`）零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointPush.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：把这两张新推移装进 Bool 标记源片并推出 `doublePointSet = ∅`；连续同伦、自由环类保持及支撑外
+  基点的定基同伦；F 的实际迹/双端面图卡仍是一般环境提升的下游输入。
