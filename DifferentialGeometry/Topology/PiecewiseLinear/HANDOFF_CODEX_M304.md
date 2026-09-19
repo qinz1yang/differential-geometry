@@ -867,3 +867,47 @@ receipts, audit and census are under
 actual witnesses for the later local split construction. The geometric push
 to disjoint caps, ambient separation transfer and full 30.4 remain open; root
 builds remain stopped and shared artifacts were not modified.
+
+## Components of annulus complements (2026-09-19 UTC)
+
+The canonical `Connected/ClosedCover.lean` now proves the component
+intersection formula for a closed cover with preconnected overlap, without
+separation or finite-dimensional assumptions. `Connected/BicollarComplement.lean`
+uses it to identify each component of the closed annulus complement with
+the corresponding component of the circle complement intersected with that
+closed complement. Every circle-complement component meets the closed
+complement. Connectedness is therefore equivalent, and a bicollar in a
+connected locally connected space gives at most two complementary components.
+The prior nonseparating-complement signature is unchanged.
+
+`ComponentComplex.lean` now proves equality of geometric links for arbitrary
+nonempty faces in a component, and restriction formulas for the boundary
+complex and its carrier in every dimension, including zero. These formulas
+require neither finite dimensionality nor a manifold hypothesis. The existing
+vertex-link theorem is a corollary. Required headers and two old line widths
+were repaired while preserving the old public signatures.
+
+`AnnulusComponents.lean` constructs two actual finite connected disjoint
+surface complexes from a separating annulus complement. They cover the same
+given complement, and their entire boundaries are respectively the negative
+and positive endpoint circles of the given bicollar. The source complex is
+only required to be finite and preconnected; the complement supplies the
+surface-with-boundary hypothesis. Closed-cover connectedness rules out both
+end circles lying in one component, so the endpoint assignment is proved.
+
+All four changed modules compile without diagnostics. Four existing consumers
+are freshly rechecked. The silent audit takes 50.934 seconds including admission
+and covers 28 native declarations (11 new, including one private), 12 reused
+entries, six actual models, one retained conditional consumer and three
+explicit local instances. All 13 applicable linters pass and all axiom closures
+contain only standard foundational axioms. The new cube model constructs the
+two disjoint complementary surface complexes and proves their exact opposite
+boundary circles; the retained point bicollar, interval and empty-set models
+check the topological interfaces. Three external-model elaboration failures
+were repaired before the final passing audit.
+
+The new leaf is registered in the flat root. Frozen source identities, objects,
+receipts and the complete audit are under
+`moise304-reading/annulus-components-checkpoint/`. Root builds remain stopped
+and shared artifacts are unchanged. Disjoint cap production, preservation of
+ambient separation and the final 30.4 induction remain open.

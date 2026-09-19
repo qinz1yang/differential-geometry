@@ -695,3 +695,17 @@ and zero diagnostics. All three older public signatures are unchanged.
 Frozen evidence is under `moise304-reading/spanning-disk-annulus-checkpoint/`.
 The enlarged disks still share the original disk; disjoint caps and full 30.4
 are not claimed.
+
+### M304 components and endpoint circles (2026-09-19 UTC)
+
+`AnnulusComponents.lean` produces the two finite connected disjoint surface
+components of a separating annulus complement and assigns their complete
+boundaries to the given negative and positive endpoint circles. General
+closed-cover and bicollar component formulas, plus boundary restriction to a
+component in every dimension, supply the proof. Four changed modules and four
+existing consumers pass focused compilation. The audit checks 28 native
+declarations, 12 reused entries, six actual models, one conditional consumer,
+three instances and 13 linters with standard axioms and zero diagnostics.
+Frozen evidence is under `moise304-reading/annulus-components-checkpoint/`.
+The cube model verifies both actual components and their exact boundary
+circles. Disjoint cap production, ambient separation and full 30.4 remain open.
