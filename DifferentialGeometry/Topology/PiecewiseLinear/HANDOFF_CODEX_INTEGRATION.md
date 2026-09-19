@@ -998,3 +998,28 @@ F's 51b4ee8ad ambient-cover/projection layer and E3's 18f861c89 annulus remain
 queued. Requested module compile scopes were extended at delivery boundaries
 for F's relative boundary inward push and S's topological sphere/cell gluing.
 Neither extension grants ownership of another lane's files.
+
+## 26. Split-annulus acceptance and next geometric producer (2026-09-19 UTC)
+
+E3 18f861c89 is merged and independently accepted: SurfaceSplitAnnulus freshly
+compiles with zero diagnostics; dynamic census verifies exactly two module
+declarations, five critical reused declarations, standard axioms only and
+13 clean environment linters. The proof transports the actual disk pair to
+prism endpoints and proves the complement is the boundary circle times an open
+interval. Eight unchanged private prerequisites were reused with receipt, source
+and object identity checks. This is focused acceptance, not a full-source build.
+
+Receipt: .lake/verified-tenth-lane-delivery-20260919.json. Source delta +124/-0
+Lean lines (including header/root import), committed after the overnight starting
+head 525a65813. Root static closure now reaches 9304 local modules without missing
+source; all previously audited endpoint leaf blobs remain unchanged.
+
+E3 subsequently delivered 1cea2fbe7: actual half-prism cells, endpoint disks and
+frontier formulas from a supplied PLPieceIn chart. It is pending acceptance.
+At that delivery boundary E3 continued the missing producer from book p215
+original Delta/D1/D2 input: construct a compatible neighborhood and actual
+C/C-prime traces, then apply the accepted separation replacement. Given-prism
+consumers do not produce that compatibility. The full-neighborhood boundary
+formula differs from the safe boundary of the half-cell; preserve this distinction.
+
+No new subagent/task, extra lane, or full-root restart was introduced.

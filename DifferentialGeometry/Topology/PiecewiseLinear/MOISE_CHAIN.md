@@ -18,7 +18,7 @@ remaining input or final assembly.
 | 25.1 | Moise251 and conditional Stallings induction | Open. F constructs the actual cover and projected embedded disk for Lemma 2; Lemma 1 and whole-branch separation remain obligations. |
 | 25.2 | Moise252 | h repairs non-nullhomotopy of the new disk boundary. The arrow from 25.1 still needs proper boundary push-off and proof. |
 | 26.4 | Moise264 | Boundary non-nullhomotopy is recorded; proof is open. Needs corrected 25.2, relative subdivision and compression, not just a bicollar. |
-| 30.3 | Geometric splitting and separation | E3: connect the actual split cells to the delivered path-replacement lemmas. Euler data alone do not construct the separating surface. |
+| 30.3 | Geometric splitting and separation | E3: annulus connectivity accepted; half-prism cut cells 1cea2fbe7 queued. Produce compatible neighborhoods and trace equations from the original disk pair before separation assembly. |
 | 30.4 | Moise304 | E3 owns assembly; 26.4, 28.19 and 30.3 remain open dependencies. |
 | 30.5 | moise305_tame_of_moise304 | Accepted conditional tame arrow and bicollar producers; Moise304 remains an input. General wild Moise305 is open and is not an extra prerequisite of this tame arrow. |
 | 30.6 | Moise306 | Open; compression/separation, 26.4, van Kampen and surface inputs. It does not depend on 30.7. |

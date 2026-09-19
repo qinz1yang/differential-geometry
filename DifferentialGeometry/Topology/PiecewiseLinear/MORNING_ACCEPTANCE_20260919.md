@@ -29,6 +29,16 @@ Against S's overnight starting head f54be2f43, the newly committed source delta
 is +103/-4; the remainder was queued before this window. These are different
 diff baselines and should not be summed. Receipt: .lake/verified-ninth-lane-delivery-20260919.json.
 
+E3 18f861c89 is independently accepted: one freshly compiled module, two new
+declarations, five critical reused declarations, standard axioms and 13 clean
+linters. The proof identifies the complement of the two closed disks with a
+circle times an open interval. Accepted/source delta since E3's window-start
+525a65813: +124/-0 Lean lines including the root import and file header.
+Receipt: .lake/verified-tenth-lane-delivery-20260919.json.
+
+Commit deltas record durable source changes, not active work duration or exact
+time of typing; a post-start commit may contain earlier uncommitted work.
+
 ## Continuing priorities
 
 h: correct the held Moise331/351 repairs; F: actual ambient-cover reduction
@@ -39,7 +49,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9303 project modules, no missing
+are now registered and statically reachable (9304 project modules, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -50,8 +60,9 @@ h 585cc71a0 is held: the 33.1 one-manifold hypothesis wrongly excludes
 branching graphs, and the proposed 35.1 raw-star tower does not yet establish
 a genuine global regular-neighborhood relation. h continues corrections.
 F 51b4ee8ad's actual covering projection is queued for independent acceptance.
-E3 18f861c89 reports the sphere-minus-two-disks connectedness
-producer, also pending acceptance. None is counted as an accepted endpoint.
+E3 1cea2fbe7 reports actual half-prism cut cells from a supplied compatible
+chart, pending acceptance. The compatible neighborhood producer from the
+original disk pair remains open and is E3's continuing round.
 
 ## Required final update
 

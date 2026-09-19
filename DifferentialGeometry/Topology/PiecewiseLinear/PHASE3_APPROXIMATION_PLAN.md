@@ -22,20 +22,20 @@ by projecting an embedded disk from a two-sheeted cover after induction. The
 cover, PL projection, smaller normal-system neighborhood, boundary and subgroup
 relations must be constructed. Do not infer those properties for an arbitrary
 original NormalSystem or from DoubleCarrier. F received this priority after
-delivering 495a3e343; no running round was interrupted. E3 owns I.4 through I.3, while S keeps
-24.12: one actual generating polygon's nullhomotopy -> all loops -> actual CST.
-S's product/finite 24.11 delivery aa6ff83be and reported finite 24.12 endpoint
-434d5352c await independent acceptance. S now owns the separate compact
-PL-smoothing lane.
-E3 delivered path replacement at b5e36cfe5 and continues the actual geometric
-split-data construction, still within 30.3. The direction is 30.6 -> 30.7.
+delivering 495a3e343; no running round was interrupted. F's actual full-cover
+projection layer through 51b4ee8ad is queued for independent acceptance.
+E3 owns I.4 through I.3. S's product and finite native 24.11/24.12 through
+434d5352c are independently accepted; S now owns compact PL smoothing.
+E3's path replacement and annulus connectivity through 18f861c89 are accepted;
+its half-prism cut-cell construction 1cea2fbe7 is queued. The compatible local
+neighborhood and exact trace equations from the original disk pair remain open. The direction is 30.6 -> 30.7.
 
 Phase 3 proves only PL approximation and the resulting PL atlas. Compact PL
 smoothing is an independent open phase with its own producer and acceptance.
 The approximation stage must retain noncompact open sets and pointwise shrinking
 error control. Five existing endpoint-chain modules were missing from root
 reachability; all six planned direct imports are now present and statically
-reachable, with 9265 project modules in the root closure. The owner
+reachable, with 9304 project modules in the root closure. The owner
 stopped the full-source build at 2026-09-19 02:00 UTC, retaining outputs with
 no automatic restart. Seven leaves/26 declarations passed focused checks;
 full-source acceptance remains incomplete. Current rounds and the acceptance
