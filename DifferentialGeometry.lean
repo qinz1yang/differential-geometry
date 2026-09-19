@@ -810,6 +810,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Steklov
 import DifferentialGeometry.Analysis.Integration.Lp.ZeroExtension
 import DifferentialGeometry.Analysis.Integration.LpLimit
 import DifferentialGeometry.Analysis.Integration.LpNorm
+import DifferentialGeometry.Analysis.Integration.Measure.Affine
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Derived
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.StandardInstances
@@ -1861,6 +1862,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevSupportPromotion
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.TwoTermSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Commutation
@@ -2169,6 +2171,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.RestrictedDiffQuotLp
 import DifferentialGeometry.Analysis.Sobolev.Tools.SteklovAverage
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Tools.Translation
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeAffine
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeClassical
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeCommutation
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeFiniteSum

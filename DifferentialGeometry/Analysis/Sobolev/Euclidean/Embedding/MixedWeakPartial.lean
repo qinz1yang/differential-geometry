@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeAffine
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 noncomputable section
@@ -75,35 +76,13 @@ private theorem hasWeakPartialDeriv_comp_spaceTimeEquiv
         -∫ p, V p * φ p ∂(volume.restrict J).prod (volume.restrict Ω)) :
     DeGiorgi.HasWeakPartialDeriv i (fun x => V (spaceTimeEquiv x))
       (fun x => U (spaceTimeEquiv x)) (spaceTimeEquiv ⁻¹' (J ×ˢ Ω)) := by
-  let e := spaceTimeEquiv (d := d)
+  apply weak_deriv_comp_affineEquiv (spaceTimeEquiv (d := d)).toContinuousAffineEquiv
+    (μ := volume) (ν := (volume : Measure ℝ).prod (volume : Measure E))
+    (EuclideanSpace.single i 1)
   intro φ hφ hφc hφs
-  let ψ : ℝ × E → ℝ := φ ∘ e.symm
-  have hψ : ContDiff ℝ (⊤ : ℕ∞) ψ := hφ.comp e.symm.contDiff
-  have hψc : HasCompactSupport ψ := hφc.comp_homeomorph e.symm.toHomeomorph
-  have hψs : tsupport ψ ⊆ J ×ˢ Ω := by
-    intro p hp
-    have hp' := hφs (tsupport_comp_subset_preimage (f := e.symm) φ e.symm.continuous hp)
-    simpa only [e, mem_preimage, ContinuousLinearEquiv.apply_symm_apply] using hp'
-  have hderiv (x : X) : fderiv ℝ ψ (e x) (e (EuclideanSpace.single i 1)) =
-      fderiv ℝ φ x (EuclideanSpace.single i 1) := by
-    have he : ψ ∘ e = φ := by ext x; simp [ψ]
-    have hd := fderiv_comp x (hψ.differentiable (by simp) (e x)) e.differentiableAt
-    rw [he] at hd
-    simpa only [ContinuousLinearEquiv.fderiv, ContinuousLinearMap.comp_apply,
-      ContinuousLinearEquiv.coe_coe] using
-      (congrArg (fun L => L (EuclideanSpace.single i 1)) hd).symm
-  have hν := spaceTimeEquiv_restrict_measurePreserving J Ω
-  have hem := e.toHomeomorph.isClosedEmbedding.measurableEmbedding
-  calc
-    _ = ∫ x, U (e x) * fderiv ℝ ψ (e x) (e (EuclideanSpace.single i 1))
-        ∂volume.restrict (e ⁻¹' (J ×ˢ Ω)) := by simp only [hderiv]; rfl
-    _ = ∫ p, U p * fderiv ℝ ψ p (e (EuclideanSpace.single i 1))
-        ∂(volume.restrict J).prod (volume.restrict Ω) := hν.integral_comp hem
-          (fun p => U p * fderiv ℝ ψ p (e (EuclideanSpace.single i 1)))
-    _ = -∫ p, V p * ψ p ∂(volume.restrict J).prod (volume.restrict Ω) := h ψ hψ hψc hψs
-    _ = -∫ x, V (e x) * ψ (e x) ∂volume.restrict (e ⁻¹' (J ×ˢ Ω)) := by
-      rw [hν.integral_comp hem (fun p => V p * ψ p)]
-    _ = _ := by simp only [ψ, Function.comp_apply, ContinuousLinearEquiv.symm_apply_apply]; rfl
+  have hlinear : (spaceTimeEquiv (d := d)).toContinuousAffineEquiv.toAffineEquiv.linear
+      (EuclideanSpace.single i 1) = spaceTimeEquiv (EuclideanSpace.single i 1) := rfl
+  simpa only [hlinear, ← Measure.prod_restrict] using h φ hφ hφc hφs
 
 private theorem memWkp_comp_spaceTimeEquiv_of_mixed_weak_partial_trees
     {J : Set ℝ} {Ω : Set E} (hJ : IsOpen J) (hΩ : IsOpen Ω)
