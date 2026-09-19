@@ -30,12 +30,19 @@ precedence over these recorded next assignments.
 | E3 | Sol max | Actual sphere-base and tower-interface assembly | Connect the already-produced spherical EmbeddedDisk to the induction's natural output, carrying the source-boundary and basepoint invariants; identify or repair the real triangulation/interface obstruction without repeating Jordan or inward-push proofs. |
 | S | Astra max | Existing independent compact PL smoothing lane | Continue the original-function sufficient-support and relative normal-form producer, then actual cancellation; preserve the small-frame counterexample. |
 
-M304 finishes the current useful 30.6 checkpoint before changing lanes. Its
-task name and branch need not change. The Hurewicz-one checkpoint 5461ed200 is
-frozen, not independently accepted. h's current infinite-modification work and
+M304 saved the useful 30.6 checkpoint e8dc3d37d before changing lanes. Its
+task name and branch stay unchanged. The Hurewicz-one and shell-homology layers
+are frozen, not independently accepted. h's current infinite-modification work and
 E3's current Q.2b annular construction likewise keep their current round;
 their saved output remains reusable. The four-to-one allocation is the target
-after delivery boundaries, not a claim that those changes were already sent.
+after delivery boundaries; h and E3 have not yet received their new assignments.
+
+Activation record: M304 delivered the complete e8dc3d37d homology layer during
+this decision and has now been handed the upstairs L2 round. The author
+checkpoint is frozen pending replay; actual torus recognition remains open.
+F continues its 25.2 round. h/E3 changes await their own delivery boundaries.
+S continued at e24808bce and received one exact new InvariantAxis private
+module grant in its author checkout, with no additional compiler resources.
 
 ## Corrections to the supplied audit
 

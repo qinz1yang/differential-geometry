@@ -14,6 +14,8 @@ focus respectively on projected-disk normal structure, upstairs L2 surgery,
 whole-branch charts and actual sphere/tower assembly; S keeps compact smoothing.
 Current rounds continue to a safe delivery. Do not launch new downstream rounds
 in place of the recorded25.2 assignments.
+M304 has since delivered the complete e8dc3d37d homology layer and moved to
+upstairs Lemma2/L2 at that boundary; h/E3 changes remain pending their deliveries.
 The corrected Moise252/331/351 contracts are independently accepted; their
 unconditional theorem producers remain open. The original source/book audit
 remains historical evidence of why these repairs were needed.

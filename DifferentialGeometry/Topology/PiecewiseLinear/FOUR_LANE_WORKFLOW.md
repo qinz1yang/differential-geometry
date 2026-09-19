@@ -23,8 +23,9 @@ At each task's next explicit delivery or genuine blocking handoff:
 - The coordinator validates, integrates, records decisions and supplies exact
   interfaces. It does not write the main mathematical proofs.
 
-The current 30.6, infinite-modification and Q.2b rounds finish a saveable layer
-before those task handoffs. Do not send the new lane while the old round is
+M304 moved to upstairs L2 at the complete e8dc3d37d delivery. The current
+h infinite-modification and E3 Q.2b rounds finish a saveable layer before
+their handoffs. Do not send the new lane while the old round is
 active. The target is four tasks on 25.2 and one on independent smoothing;
 no new task, subagent or compiler slot is authorized. Preserve all frozen
 downstream work and its honest pending-acceptance status.

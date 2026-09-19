@@ -4720,3 +4720,35 @@ h(u)+z^2 normal form. Its local radial-line formula alone does not identify
 the original gamma with the other radial side; that is the next real local
 dynamics obligation. No other active task received a routine message or a
 second lane. The four-to-one allocation remains pending their own boundaries.
+
+## 98. First risk handoff activated at M304's complete homology delivery
+
+M304 delivered e8dc3d37d after 5461ed200: four new leaves, author-reported
+408 native lines and 24 declarations, ending in the actual original shell's
+incompressible separating surface with Betti one equal to two and Euler
+characteristic zero. Moise252 remains an explicit input. Numerical invariants
+do not supply a PL torus homeomorphism; Moise306 remains partial.
+The exact shell-homology manifest is
+c94b17e527ca290be0d767a75548e3235e77ed4723c30b6d456e4a4e1307a751.
+All 330 files, 52 source/receipt groups and 17 evidence files were copied and
+hash checked in the sixty-third batch. This remains frozen author evidence,
+not independent acceptance; only through371 is accepted for this task.
+
+At this explicit complete-layer delivery the coordinator activated the
+owner's risk decision: the same M304 task, Astra max, now takes upstairs
+Lemma2/L2 in the original double cover. The next torus-recognition step and
+30.7 are deferred. The dispatch requests an actual embedded replacement,
+deck-related intersection and branch-orbit accounting, boundary-word
+avoidance and strict descent, then one canonical projection. It protects
+the existing F/h source ownership and requires exact-module coordination for
+substantive CutAndPaste changes. No sixth task or second concurrent lane was
+created. The same private checker lease was renewed for three hours as
+administration, without adding resources or creating a user deadline.
+
+F continues its existing25.2 round. h and E3 still await their own delivery
+boundaries. S already continued at its e248 delivery, then requested one
+natural dry-ODE module, Analysis.ODE.InvariantAxis, for local invariant-axis
+and backward-orbit identification. The name was absent in both checkouts;
+the exact private compiler module was granted in S's lease, without widening
+the Analysis pattern or allowing writes to existing foreign source. This is
+an interface-permission reply inside the same lane, not an extra assignment.

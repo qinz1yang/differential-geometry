@@ -26,7 +26,8 @@ M304 takes upstairs Lemma 2/L2 surgery; h takes whole-branch two-sheet charts;
 E3 takes the actual sphere-base/tower-interface assembly. S keeps independent
 compact smoothing. These four changes occur only at each task's next explicit
 delivery or genuine blocking handoff. Current active rounds remain intact;
-the target four-to-one allocation has not yet been dispatched to all tasks.
+M304 has now moved to upstairs L2 at its complete e8dc3d37d delivery; h/E3
+changes still await their own boundaries. S continued at its e24808bce delivery.
 No new task, subagent, extra lane or compiler slot is created.
 
 The audit's projection insight is adopted as the primary route. Existing
@@ -48,7 +49,7 @@ keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 | F | throughd68c5adc5 including06a171025 | The same actual perturbation and W union N crossing consumer are independently accepted in section96. Full projected-disk boundary/transition normalization remains open. Later protected-polyhedron author layers require separate replay. |
 | h | throughe85a235df | Produce actual nonstationary locally finite supported modifications with compatible subdivisions, original graph and transported neighborhoods.72fa/c1bd finite solid-torus and generic limit layers are frozen pending replay; a single-increment model does not close arbitrary-stage geometry. |
 | E3 | through1dff5b63c | Physical caps and original-target separation are accepted in section92; Q.2a locally finite separating limits are independently accepted in section95. E3 continues Q.2b: two-ended annular exhaustion, adding the center, actual open disk and exact closure. |
-| M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878/546 original toroidal-shell geometry and integral Hurewicz-one are frozen pending replay. Current30.6 round continues; next delivery changes to upstairs Lemma2 under the owner risk decision. |
+| M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878/546/e8 original toroidal-shell geometry, Hurewicz and actual Betti2 separator are frozen pending replay. The completee8 delivery triggered the new upstairs Lemma2/L2 round; actual torus recognition remains open. |
 | S | throughc0f4df1b1 | Produce original-function extended-arc and relative normal-form geometry in an adequate support region.5b/c011/2544 common coordinates,876 small-frame obstruction,c60 cubic lowering ande24808bce actual descending branch are frozen pending replay. The e248 delivery has continued into actual branch/gamma gluing and relative normal form. General finite cancellation/compact smoothing remain open. |
 
 
@@ -102,7 +103,7 @@ O' minus O is not automatically preserved. The next geometric producer must
 supply adequate original-function support and relative normal form, not assume
 a final cancellation chart or perturbation.
 
-The later M304 Hurewicz-one checkpoint has306 frozen files/48 source
+The later M304 shell-homology checkpoint has330 frozen files/52 source
 receipt groups. The earlier unresolved-root recognition checkpoint remains
 invalid; only recognition-final and sphere-exclusion evidence enter replay.
 The h limit theorem consumes genuine increments satisfying its core equations;

@@ -23,7 +23,7 @@ Current active rounds are not interrupted.
 | 30.3 | Actual geometric splitting and separation | Independently accepted throughc347/c10: actual finite-surface caps and separation by the same result for the original targets, with a full R3 model. Still relevant to later local surgery and section32. |
 | 30.4 | moise304_of_moise252 : Moise252 -> Moise304 | Independently accepted from 3717074e9. Exact original shell and targets; least-Betti separator and actual compression. No Moise303 or broad Moise264 dependency in kernel type/body closure. |
 | 30.5 | moise305_tame_of_moise304 | Independently replayed with the new 304 producer and a concrete nested-ball model. Retains unresolved Moise252 and the outer-frontier bicollar. General wild305 remains open. |
-| 30.6 | Moise306 | M304: original toroidal-shell incompressibility/parity and sphere exclusion through878 delivered pending replay. Genuine PL torus recognition remains open. No30.7 dependency. |
+| 30.6 | Moise306 | Through e8dc3d37d the author produced an actual incompressible Betti2 separator, pending replay. Genuine PL torus recognition remains open; M304 moved to25.2 at this completed delivery. No30.7 dependency. |
 | 30.7 | Moise307 | Open; follows30.6 and relevant collar/CST constructions. |
 | 30.8 | Moise308 | Current intermediate-spine premise is too weak for the book consumer. Needs generation via inclusion from the original inner spine; notified at M304 delivery. |
 | 31--32 | Configurations, tubes and pseudocells | E3 Q.2a locally finite limit separation is independently accepted through1dff, with exact infinite nonstationary limit model. Its current Q.2b constructs two-ended annulus gluing, actual open body and exact closure.32.4 may consume a given pseudocell independently. |
