@@ -4249,3 +4249,55 @@ Other active rounds were not polled for status or given new tasks. The queue
 after this acceptance is M304371, E3c10, F06a/d68 and S5b/c011. New changes and
 proof dependencies will be accepted independently before the plan treats them
 as proved. The hourly automation is updated from these exact boundaries.
+
+## 87. Section32 source research and the missing30.8 transport contract
+
+At the owner's explicit research request, the coordinator read and rendered
+book223–229, checked31 on220–222, the early33 consumers on230–232 and30.8
+on218, against integration c32baee8c. The result is
+[SECTION32_RESEARCH_20260919.md](SECTION32_RESEARCH_20260919.md).
+No Lean was added or deleted and no new compile/axiom certificate is claimed.
+
+Existing IsLocallyPolyhedral, LocallyFinitePLPieceIn, compact finite-piece
+control and locally finite splitting-disk APIs are reusable. The missing
+representation is a topological open body, designated possibly wild rim and
+an allowed exceptional center. Neither the full carrier nor its rim may be
+assumed PL; designated Int/Bd must not become ambient interior/frontier.
+The32.1 construction has two ends, one at the center and one at the boundary.
+Its hard gates are a single compatible integer annulus family, supported
+finite surgeries, local stabilization preserving separation, an actual
+open-disk homeomorphism and exact boundary closure.32.4 can be proved for a
+given pseudocell independently of32.1 existence. The old Q line forecast is
+historical; the detailed plan now records proof gates instead.
+
+An additional contract mismatch was found in MoiseChain.Moise308: its premise
+IsSpine S J already concerns the intermediate S. Original30.8 requires the
+spine of the inner S1 to generate the fundamental group of every admissible
+intermediate S. The actual inclusion-map transport is needed by31.2/31.4.
+It is recorded as a deferred M304 handoff for the next delivery, without
+interrupting active30.6. No sixth task or subagent was created.
+
+## 88. S common coordinates delivered during section32 research
+
+S delivered and pushed2544d9120c0666c0924ee5a63add801aaa90101d, parentc0117ca09,
+with a clean author checkout. The coordinator read the exact new producer
+exists_saddle_minimum_common_coordinates and its original-data hypotheses.
+Its common partial diffeomorphism contains both actual critical points and
+the original full closed strip, with exact open-overlap identities. It does
+not assert the required common cubic function identity or actual cancellation.
+
+The author reports nine modules, twelve source declarations,29 reused entries,
+27 model declarations and13 linters, with Lean+882/-8. These are pending author
+verification claims, not independent acceptance. The raw1,048,878-byte evidence
+file was separately copied and SHA256 checked:
+5d1cb432b8b50aa316e5754c67e154a5d58eaff1c7fe5dca19fcb31d28ed570f.
+Its saved path is recorded in .lake/resumed-stage-20260919.json. The entire
+5b/c011/2544 chain remains queued after previously accepted c0.
+
+Only at this completed boundary, S received its next Astra max round:
+derive the controlled common cubic identity from the actual quadratic endpoint
+charts and original strip, or construct supported cancellation directly in
+the same original frame. Final cubic/cancellation conclusions cannot be new
+premises. The existing private compile lease was renewed for three hours;
+resource limits and file ownership are unchanged. No active lane was polled
+or given an additional lane for the research request.

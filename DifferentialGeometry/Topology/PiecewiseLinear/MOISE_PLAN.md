@@ -31,7 +31,7 @@ one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 | h | throughe85a235df | Actual standard solid-torus identification of the newly transported neighborhoods, then compatible locally finite modifications. |
 | E3 | throughddade8562 | Prove the same physical capped result separates the original H/Q, then Moise303. Newc10 is queued. |
 | M304 | through8fe07bd87 | Exact conditional Moise252-to-Moise304 endpoint371 is frozen for independent replay. The completed-boundary next lane is original toroidal-shell30.6, preserving actual kernel/compression and torus identification obligations. |
-| S | throughc0f4df1b1 | Globally injective common cancellation domain containing both critical neighborhoods and the original strip, using delivered height/gauge alignment. New5b/c011 is queued. |
+| S | throughc0f4df1b1 | Actual controlled cubic identity or direct supported cancellation from the same original function/frame. Common coordinates through2544d9120 were delivered;5b/c011/2544 remain queued for independent acceptance. |
 
 h's accepted seven-module layer has 36 audited native entries, including
 seventeen new reusable theorems and three new actual-model assertions. It
@@ -63,10 +63,29 @@ dependencies. At that delivery boundary M304 moved to the original
 toroidal-shell30.6 lane, then30.7. Moise252 remains explicit unresolved upstream;
 unconditional304 and general305 have not been proved. See section86.
 
-S's common regular height coordinates and both affine gauges with a shared
-positive width remain frozen, pending independent acceptance. That regular
-chart does not include the critical points; the active round constructs a
-common cancellation domain containing them. See section84.
+S's later2544d9120 source constructs common injective coordinates including
+both actual critical points and the original closed strip; the author byte
+receipt was frozen at delivery. The5b/c011/2544 chain still awaits independent
+acceptance. The next completed-boundary round derives a controlled cubic
+function identity or direct supported cancellation, preserving the original
+function and frame. Common coordinates alone are not a cancellation theorem.
+See integration section88.
+
+### Section32 research and an additional upstream contract gate
+
+[The section32 research](SECTION32_RESEARCH_20260919.md) checks book pages
+218,220–232 against current source. Existing local-polyhedral and locally finite
+PL-piece APIs can be reused; pseudocells need a separate topological body/rim/
+center representation. The infinite construction has two ends, requires local
+stabilization away from both, and must prove the final open-disk topology and
+exact closure.32.4 is an independent consumer of a given pseudocell.
+
+Moise308 currently assumes the original circle is already a spine of the
+intermediate torus. The book needs generation in every admissible intermediate
+torus from a spine of the inner torus. Preserve this missing inclusion-map
+bridge before consuming31.2/31.4. It is deferred to M304's next delivery;
+the active30.6 round is not interrupted. Q's old18–27k estimate is historical,
+not an execution budget or completion metric. No sixth task was started.
 
 Current source and receipts remain authoritative. Full-root compilation stays
 deferred and may restart only for a concrete compatibility or stalled-work
