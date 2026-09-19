@@ -5525,3 +5525,52 @@ equality or a separate manifold proof for the circle diagram's image is not
 needed to force positive boundary monodromy. Existing disk pseudo-isotopy and
 cylindrical comparison APIs can consume that result. The full CST endpoints and
 contractible-polygon assembly remain outside this completed layer.
+
+## Boundary side of a disk cylindrical diagram (2026-09-18)
+
+Status: done for the side-image inclusion, with no extra boundary hypothesis.
+`CylindricalBoundary.lean` proves
+`IsCylindricalDiagram.image_side_subset_boundaryComplex`: for finite complexes
+`D`, `M`, a PL 2-ball `D.space`, a combinatorial 3-manifold with boundary `M`,
+and an actual cylindrical diagram `f` on `D.space` with image `M.space`,
+`f '' ((boundaryComplex 2 D).space ×ˢ Icc 0 1)` lies in
+`(boundaryComplex 3 M).space`. The two ambient finite-dimensional real normed
+spaces may differ. Orientability and Schoenflies are not hypotheses.
+
+The public `image_strip_mem_nhdsWithin` proves that a strip around an interior
+height maps to a relative neighborhood in the diagram image. Compact images of
+the two discarded strips form a closed set avoiding the point, since an
+interior-height fiber is a singleton. The private open-height side lemma
+triangulates the strip and its image, uses the prism boundary formula and PL
+boundary invariance, then uses local boundary invariance for the relative
+neighborhood. Continuity and closedness of the target boundary add heights
+zero and one. The whole prism is never assumed injective.
+
+Verification: final focused compile exit 0, zero diagnostics, 12.504 seconds;
+full dynamic audit exit 0, zero diagnostics, 84.222 seconds. These are measured
+outer-helper times, including any resource-admission wait. All three
+nonautomatic declarations (two public and one private), five directly reused
+critical producers, and all 13 applicable environment linters pass. Axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+A nonempty actual instance is the derived neighborhood of a triangular circle
+in a tetrahedron. The external probe constructs the finite target manifold and
+its disk cylindrical diagram, and separately constructs a finite complex whose
+space equals that diagram's standard disk. Both declarations and the neighborhood producer pass the axiom audit;
+exit 0, zero diagnostics, 23.431 seconds including admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalBoundary-verification.json` records source and object hashes,
+normalized source identity, all compile/audit receipts, timings, declaration
+inventory, and reused producers. The instance audit and its three axiom rows
+are preserved alongside it. Source SHA256:
+`00E7E7158864F226C994BA18E5A0B8101DEF1C07361E5F85631A424CA9C9FA7E`.
+Static checks pass; the native import closure has 425 modules and excludes
+`HurewiczLowDegrees`. New source, flat-root import, this record and the C.7 row
+are one mathematical commit. Shared artifacts stay read-only; the integration
+root build is a separate coordinator gate.
+
+Remaining in this round: restrict to the boundary cylindrical diagram, force
+positive boundary monodromy from target orientability, and connect disk
+pseudo-isotopy and comparison. The full C.7 headline is still partial.
