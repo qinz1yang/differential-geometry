@@ -1305,3 +1305,85 @@ consumer. They require actual physical caps and separation of their union;
 they do not construct those upstream data. Independent replay is pending.
 M304 continues an actual minimum-Betti separator construction in the same 30.4
 lane. F, E3 and S retain their current rounds; no task or checker was added.
+
+## Spherical embedded disks and projected double-point geometry (2026-09-19 UTC)
+
+F's source through 8a00ab535 is independently accepted in seven changed
+modules, with five new leaves registered in the flat root. Connected interiors
+and the actual opposite sides of boundary circles in a PL sphere produce an
+exact punctured-sphere neighborhood. The spherical NormalSystem case now
+constructs a proper embedded PL disk with its boundary loop outside the given
+normal subgroup. The natural EmbeddedDisk interface preserves the actual
+domain, map, boundary preimage, loop, connector and subgroup avoidance. Its
+adapter retains the old NonsingularCell API. Boundary monotonicity and the
+actual inclusion/comap data return the disk to the original manifold boundary.
+All seven old signatures in SphereCase and SourceNormalSystem are unchanged,
+including the existing private equality instance; the legacy return consumer
+also passes a fresh Lean check. No additional project leaf imports either old
+module outside the seven modules checked here.
+
+Given a genuine double-cover diagram and an upstairs embedded disk, the
+projected map is exactly the projection composed with that disk map. It has
+the proved original boundary preimage, subgroup avoidance, local injectivity
+and at most two preimages per point. Its actual double-point projection is a
+two-sheeted covering. The off-diagonal collision relation and double sets are
+polyhedral, and the unique partner defines a fixed-point-free PL involution
+preserving the boundary trace. These are actual producers from those inputs;
+they do not produce the cover, eliminate singularities, or prove downstairs
+embedding. The explicit double-rectangle test has a two-dimensional double
+image, so this layer cannot be cited as a normal-double-curve theorem.
+
+The seven independent module checks took 82.773 seconds including
+admission. The combined audit took 53.382 seconds. All 62 native
+nonautomatic declarations (one private), 42 critical reused entries (37
+distinct), and 26 external probe declarations have only approved foundational
+axioms. All thirteen applicable environment linters and source checks pass
+with zero diagnostics. Fifty-five native declarations are new to integration:
+43 explicit declarations and 12 structure-generated members. These counts
+include definitions and structural API, not only mathematical theorems.
+
+The probes are separately classified: nine actual geometric theorems, eleven
+conditional consumers, two rectangle-model definitions and four local equality
+instances. The actual models use a triangle interior, tetrahedral facet and
+opposite disk, one-hole and unpunctured spherical neighborhoods, an inward
+pushed tetrahedral disk, a Euclidean planar disk, two interval sheets and the
+two real rectangles. The conditional consumers assume their stated
+NormalSystem, NonsingularCell or double-cover/EmbeddedDisk data. A complete
+nonempty subgroup-avoiding NormalSystem and a complete projected-disk diagram
+are not independently instantiated here. That distinction remains a recorded
+validation limit; the real geometric models must not be relabelled as those
+stronger instances.
+
+Thirty-three accepted private prerequisite objects were reused only after
+matching both current raw source and recorded object hashes. No shared
+artifacts were written. There were no failed Lean audit attempts. The external
+accounting parser needed to recognize the old private local equality instance;
+this did not require changing Lean source. A library-wide public-name search
+found no duplicate public basenames for the newly explicit declarations.
+
+Accepted integration Lean delta: +1228/-34, consisting of +1223/-34 in the
+seven frozen author leaves and five new root imports. Relative to F's
+window-start eefa65bae, those same branch files have a committed delta of
++1493/-0.
+The baselines differ and are not additive; these figures do not measure time
+spent typing. Markdown, diagnostics and external probes are excluded. Receipt:
+.lake/verified-thirtyfifth-lane-delivery-20260919.json. It freezes source/object identities,
+all declaration types and axioms, author evidence, concrete/conditional probe
+classification, lint results, signature compatibility and check durations.
+The flat root now reaches 9500 project modules including itself, with no
+missing project source or import cycle. The full-root build remains stopped;
+this certifies the focused integration scope, not a fresh transitive root build.
+
+F's later equivariant relative triangulation remains in its active round and
+is not included. M304 delivered ac3673685, an actual minimum-Betti separator,
+which joins its annulus/capping/compression queue. At that delivery M304
+continued actual PL singular filling and essential boundary input for 26.4;
+the general minimum separator is not known to be spherical. E3's 8ad00b74a
+interior-WB3 boundary trace is queued. Its be67795fa delivery had returned to
+the older whole-branch chart obstruction; the coordinator handed it back to
+the actual 30.3 interior-prism, local-trace and original-R3 separation bridge
+at that completed round. The canonical conjugate-family repair was already
+merged in E3's 34cbfb86a. No active task was interrupted for a routine status
+request, and no additional task or checker was created. h and S retain their
+current mathematical rounds. General loop-theorem descent, physical cap
+separation, full 30.4 and compact smoothing remain open.

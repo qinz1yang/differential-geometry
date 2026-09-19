@@ -8901,6 +8901,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TriangleCornerSmoothing
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleAnnulusSmoothing
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcChainNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInteriorConnected
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SphereNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoublePoints
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleInvolution
 
 /-!
 # Differential geometry and geometric analysis
