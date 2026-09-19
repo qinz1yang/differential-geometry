@@ -535,3 +535,55 @@ steps. E3 retains its lane and waits for those actual geometric inputs rather
 than adding more conditional wrappers. `exists_separated_along_branch`, Case 3/4
 L2 and its complexity drop, the complete double-end chart, the trimmed union,
 and the arbitrary-monodromy mapping-torus endpoint are still not delivered.
+
+## 15. 2026-09-19 Continuous lane rounds and one-hour audit
+
+The owner supplied the previous four-lane workflow and asked to try it. The
+adapted current rules are in `FOUR_LANE_WORKFLOW.md`: retain the four existing
+tasks, give each a coherent mathematical round, checkpoint closed layers without
+requiring mathematical redispatch, and intervene only at delivery or for an
+urgent stop/restart. F and S use Astra max; h and E3 use Sol high. E3 retains its
+blocked separation lane rather than generating more conditional wrappers.
+
+The compiler policy now trials one root worker plus at most two private lane
+checkers, guarded by process reservations, a named mutex, and measured memory.
+The external admission probe passed with zero diagnostics. Shared artifacts
+remain read-only, and private/source/audit acceptance remains distinct from the
+independent full-source root gate. Resource admission is implemented in the
+external round helper; the old single-token helper must not be used for new
+rounds. Current authorizations are in `.lake/round-compiler-leases/`.
+
+`PROGRESS_AUDIT_20260918_1548_1648.md` records the fixed preceding hour. Seven
+mathematical commits delivered +1228/-4 Lean lines, but this includes source
+written earlier. Actual in-window leaf source changes were +742/-16, including
+265 net unverified draft lines. No new complete Moise headline closed. The
+former serial queue caused 16--25 minute waits and is the reason for this trial.
+
+At this coordination checkpoint, b3bbb416c, 1da809615, c252597c7, and the later
+F delivery c315e29f5 await integration acceptance. Do not treat these as already
+merged. The root build still targets source head 0e7ba393d; this documentation
+checkpoint does not change Lean source or restart that build.
+
+## 16. 2026-09-19 E3 resumed on closed-fold endpoint separation
+
+The owner explicitly asked to end E3's wait. E3 now has an independent producer
+round: construct compactly supported PL wedge pushes that preserve each slab
+end face as a set while moving the two collision endpoints within those faces;
+prove disjoint images of the complete closed folds and the empty tagged double
+point set; then supply continuous boundary-preserving homotopies. The existing
+pointwise-fixed-endpoint API remains intact.
+
+This task addresses the explicit obstruction already proved in SlabWedgePush:
+fixed collision endpoints prevent disjoint closed-fold images. A candidate is
+to translate the closed slab by a positive padding into the interior of the
+larger slab, conjugate the existing two pushes, and translate back. It must be
+verified, including actual instances and its boundary-loop consumer conditions;
+it is not yet an accepted proof or a replacement for F's actual branch chart.
+Joint continuity of a time-dependent homotopy must not be mistaken for joint
+piecewise affinity. General-environment separation and the L2 endpoint remain
+open until their actual producers and consumers are verified.
+
+E3 continues in its existing Sol-high task and original worktree, owns only its
+SlabWedge development and handoff, and has round token E3-round-20260919 under
+the same resource-admission helper as the other lanes. There is no further wait
+for F before this round can proceed, and no per-lemma mathematical redispatch.
