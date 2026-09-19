@@ -136,19 +136,26 @@ def Moise307 : Prop :=
 
 open Classical in
 def Moise331 : Prop :=
-  ∀ (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (_ : Finite T.faces) (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
-    L.faces ⊆ T.faces → (∀ s ∈ L.faces, s.card ≤ 2) → IsConnected L.space →
+  ∀ (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (_ : Finite L.faces),
+    IsCombinatorialManifold 1 L → IsConnected L.space →
     ∀ U : Set (EuclideanSpace ℝ (Fin 3)), IsOpen U → L.space ⊆ U →
     ∀ h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-      ContinuousOn h U → InjOn h U →
+      Topology.IsEmbedding (U.domRestrict h) →
     ∀ ε : ℝ, 0 < ε →
-      ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-        (derivedNeighborhood T L).space ⊆ U ∧
-        IsPLHomeomorphOn f (derivedNeighborhood T L).space
-          (f '' (derivedNeighborhood T L).space) ∧
-        f '' (derivedNeighborhood T L).space ∈ nhdsSet (h '' L.space) ∧
-        ∀ x ∈ (derivedNeighborhood T L).space, dist (f x) (h x) < ε
+      ∃ (T L' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+        T.faces.Finite ∧
+        IsSubdivision L' L ∧
+        L'.faces ⊆ T.faces ∧
+        IsCombinatorialManifoldWithBoundary 3 T ∧
+        T.space ∈ nhdsSet L.space ∧
+        IsCombinatorialManifoldWithBoundary 3 (derivedNeighborhood T L') ∧
+        (derivedNeighborhood T L').space ∈ nhdsSet L.space ∧
+        (derivedNeighborhood T L').space ⊆ U ∧
+        ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+          IsPLHomeomorphOn f (derivedNeighborhood T L').space
+            (f '' (derivedNeighborhood T L').space) ∧
+          f '' (derivedNeighborhood T L').space ∈ nhdsSet (h '' L.space) ∧
+          ∀ x ∈ (derivedNeighborhood T L').space, dist (f x) (h x) < ε
 
 open Classical in
 def Moise351 (n : ℕ) : Prop :=

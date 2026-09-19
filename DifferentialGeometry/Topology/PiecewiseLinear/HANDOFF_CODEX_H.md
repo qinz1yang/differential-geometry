@@ -3286,3 +3286,37 @@ shared outputs under round token `h-round-20260919`.  The external audit
 dynamically enumerated all twenty-six non-automatic declarations of
 `MoiseChain`, found only `{propext, Classical.choice, Quot.sound}`, and passed
 all thirteen applicable environment linters.
+
+## 62. 2026-09-18 Corrected contract for Moise 33.1 — done
+
+`Moise331` now matches Theorem 33.1 on book page 230.  Its input is a finite
+connected combinatorial one-manifold, so `isCombinatorialManifold_one_iff`
+supplies both one-dimensionality and the two distinct neighbors at every
+vertex required by the source's "without end-points" hypothesis.  The map on
+the open neighborhood is now an embedding of the restricted domain, hence a
+homeomorphism onto its image rather than merely a continuous injection.
+
+The conclusion no longer uses a derived neighborhood of a fixed ambient
+complex.  It selects a finite combinatorial 3-manifold `T`, a subdivision
+`L'` of the input graph carried as a subcomplex of `T`, and the actual derived
+regular neighborhood `derivedNeighborhood T L'`.  The contract records that
+both `T.space` and this derived neighborhood are ordinary neighborhoods of
+the original graph, that the latter is itself a combinatorial 3-manifold with
+boundary, and that it lies in the prescribed open set `U`; the approximating
+PL homeomorphism is defined on exactly this selectable neighborhood.
+
+The discarded contract fails for `T = L` equal to a single-vertex complex,
+`U = univ`, and `h = id`: the fixed derived neighborhood is a singleton and
+therefore is not a neighborhood of its image in three-space.  An external
+Lean probe also proves that the single-vertex complex cannot satisfy the new
+`IsCombinatorialManifold 1` hypothesis.  Thus the repair removes the false
+fixed output and excludes the source-forbidden endpoint example without
+assuming the desired conclusion.
+
+No Lean theorem currently destructures `Moise331`; its planned consumer is
+§34.1, plan row G.6.  `MoiseChain` and its direct downstream importer
+`TameNestedCells` both compiled with zero diagnostics and unchanged shared
+outputs.  The external audit dynamically enumerated all twenty-six
+non-automatic declarations of `MoiseChain`, checked four semantic producer
+declarations, found only `{propext, Classical.choice, Quot.sound}`, and passed
+all thirteen applicable environment linters.
