@@ -8737,3 +8737,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodSolidTorus
 import DifferentialGeometry.Topology.Homotopy.FreeLoopNullhomotopy
 import DifferentialGeometry.Topology.Homotopy.CyclicLoopMap
+import DifferentialGeometry.Topology.PiecewiseLinear.PolygonNullhomotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodContractiblePolygon

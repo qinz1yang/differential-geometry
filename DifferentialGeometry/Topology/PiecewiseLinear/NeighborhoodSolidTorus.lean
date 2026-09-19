@@ -56,15 +56,31 @@ theorem exists_cyclic_derivedNeighborhoodCell_decomposition_disjoint
       (fun h => hjk (e.injective (Subtype.ext h)))
 
 open Classical in
+theorem isCombinatorialSolidTorus_derivedNeighborhood_of_isOrientable
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space)
+    (hor : @IsOrientable E _ _ 3 (derivedNeighborhood K L)
+      (derivedNeighborhood_faces_finite K L).to_subtype) :
+    IsCombinatorialSolidTorus (derivedNeighborhood K L).space := by
+  let _ : Finite (derivedNeighborhood K L).faces :=
+    (derivedNeighborhood_faces_finite K L).to_subtype
+  obtain ⟨f, hf⟩ := exists_cylindricalDiagram_derivedNeighborhood_circle K L hK hLK hL hconn
+  have htor := hf.isTopologicalSolidTorus_of_isOrientable (isPLBall_stdSimplex 2)
+    (derivedNeighborhood K L) (hK.derivedNeighborhood L) hor
+  obtain ⟨n, hn, e, hcover, hball, hpair, _, _⟩ :=
+    exists_cyclic_derivedNeighborhoodCell_decomposition_disjoint K L hK hLK hL hconn
+  exact ⟨htor, n, hn, fun i => derivedNeighborhoodCell K (e i).val,
+    fun i => derivedNeighborhoodCell_faces_finite K (e i).val, hcover, hball, hpair⟩
+
+open Classical in
 theorem isCombinatorialSolidTorus_derivedNeighborhood_circle
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
     (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) (hor : IsOrientable 3 K) :
     IsCombinatorialSolidTorus (derivedNeighborhood K L).space := by
-  obtain ⟨n, hn, e, hcover, hball, hpair, _, _⟩ :=
-    exists_cyclic_derivedNeighborhoodCell_decomposition_disjoint K L hK hLK hL hconn
-  exact ⟨isTopologicalSolidTorus_derivedNeighborhood_circle K L hK hLK hL hconn hor,
-    n, hn, fun i => derivedNeighborhoodCell K (e i).val,
-    fun i => derivedNeighborhoodCell_faces_finite K (e i).val, hcover, hball, hpair⟩
+  obtain ⟨horN, _⟩ := exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle
+    K L hK hLK hL hconn hor
+  exact isCombinatorialSolidTorus_derivedNeighborhood_of_isOrientable K L hK hLK hL hconn horN
 
 end DifferentialGeometry.Topology.PiecewiseLinear

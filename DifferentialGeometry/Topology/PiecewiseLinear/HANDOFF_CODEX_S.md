@@ -5943,3 +5943,86 @@ Source, flat root import, this entry and the C.7 plan update form one commit.
 All verification used private artifacts; the independent integration root gate
 remains separate. The polygon generation and final 24.12 CST application are
 being completed in the same assigned round.
+
+## Nullhomotopic polygons have combinatorial solid-torus neighborhoods (2026-09-19)
+
+Status: done for Moise 24.12 in the finite native setting. Together with the
+preserved 24.11 endpoint, this closes the finite native C.7 forms. The earlier
+transport layers were committed with their records as `f446f4968` and `f54be2f43`.
+
+Endpoint:
+`isCombinatorialSolidTorus_derivedNeighborhood_of_nullhomotopic_cycle`
+in `NeighborhoodContractiblePolygon.lean`. Let K be a finite combinatorial
+3-manifold with boundary and P a finite closed combinatorial 1-manifold
+subcomplex. The input gamma is an actual spanning simple cycle of P's edge
+graph, traversed once. Its precise free-nullhomotopy hypothesis is
+`(pathToCircle (walkPath (gamma.map (edgeGraphHom hPK)))).Nullhomotopic`.
+The conclusion is `IsCombinatorialSolidTorus (derivedNeighborhood K P).space`.
+Ambient orientability, connectedness, cyclic generation and nullhomotopy of
+all loops are not additional hypotheses. No Schoenflies or diagram witness
+is assumed. This entry does not assert the infinite-triangulation form.
+
+`PolygonNullhomotopy.lean` proves path-connectedness from the actual spanning
+cycle, and `map_homotopic_refl_of_nullhomotopic_spanning_cycle` proves triviality
+of every loop map at every base point from that one cycle's free nullhomotopy.
+The existing `exists_homotopic_loopZPow_walkPath` supplies cyclic generation
+from the actual bijective circle parametrization and the homotopy between
+uniform arc and walk parametrizations. The earlier free/based equivalence,
+integer-power lemma and change-of-basepoint isomorphism handle arbitrary
+constant endpoints, reversed orientation, negative powers and conjugation.
+`walkPath_map` identifies the exact ambient inclusion in the final consumer.
+
+`NeighborhoodSolidTorus.lean` now exposes the natural primary
+`isCombinatorialSolidTorus_derivedNeighborhood_of_isOrientable`, requiring
+orientability of the neighborhood itself. Its cylindrical diagram, standard
+product and cyclic cell decomposition are actual existing producers. The
+24.11 theorem retains its exact public signature and is a corollary. The
+24.12 proof obtains the neighborhood orientation from the existing
+`isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon`, supplying
+its all-basepoint/all-loop input internally; the existing generation and
+second-derived-neighborhood inclusion/homeomorphism identities remain intact.
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `PolygonNullhomotopy` | 12.796 | 11.670 | 2 | 4 |
+| `NeighborhoodSolidTorus` | 12.083 | 11.788 | 3 | 5 |
+| `NeighborhoodContractiblePolygon` | 12.011 | 11.715 | 1 | 5 |
+
+All three compile and complete dynamic audit runs exited 0, with zero errors,
+warnings or info diagnostics. Each module passed all 13 applicable environment
+linters; every nonautomatic declaration and every listed critical reused
+producer has only standard foundational axioms. Including the two earlier
+transport modules, the round covers five modules, nine nonautomatic declarations
+and twenty critical reuse entries. Those nine comprise seven new declarations
+and two preserved declarations rechecked after their module changed. Times
+include resource admission; no shared artifact was modified.
+
+The final nonempty finite test reconstructs a tetrahedron, the triangular
+boundary of one of its faces, a spanning simple cycle of length at least three
+and that cycle's free nullhomotopy in the tetrahedron. It applies the final
+24.12 endpoint using only this single-loop input and produces a nonempty actual
+solid-torus neighborhood. The final probe and its eight axiom entries passed
+with exit 0, zero diagnostics in 12.091 seconds. Its fixed concrete
+function-space equality instance is explicitly the same classical instance
+used by the derived-neighborhood endpoint; no resource override was used.
+The earlier input probe passed separately and is retained in the evidence.
+
+Source SHA256 values for this checkpoint:
+
+- `PolygonNullhomotopy`: `94F4115298CB3A2F76E18B695AA9BBB2740BA5EAF19657FC929C425A47E3C811`.
+- `NeighborhoodSolidTorus`: `B1182C0AA1223A5CD64CBF23A044B482468797FA64F78FBFC4CD40C9E3B30223`.
+- `NeighborhoodContractiblePolygon`: `4E994877833628C01EA8D353E32971B344B9143F1BF35C070F28F3CBB328D8AC`.
+
+Complete evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`NullPolygon-round-verification.json`. It freezes raw and normalized source
+hashes, private object hashes, receipts, timings, all declaration/reuse/linter
+censuses, exact audit and instance sources, the preserved 24.11 signature and
+source-hygiene checks. All five native import closures exclude
+`HurewiczLowDegrees`. New leaves are registered exactly once in the flat root.
+Source, root imports, this entry and the C.7 plan row are one mathematical
+checkpoint. No vendored source changed, so no VENDOR entry is required.
+
+C.6 remains partial: general CST-to-diagram wiring and arbitrary-CST 24.10
+comparison are not closed by this result. Integration replay and the independent
+full-source/root build remain the coordinator's separate gate. The current
+24.12 assignment is complete; compact PL-to-smooth work awaits the next round.
