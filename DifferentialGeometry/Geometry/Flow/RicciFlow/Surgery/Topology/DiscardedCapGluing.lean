@@ -140,3 +140,68 @@ theorem exists_unique_continuousMap_discarded_of_compact_core
   exact E.exists_unique_continuousMap_discarded_of_boundary_eq fCore fCap hboundary
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.CutCapTopology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.CutCapTopology
+
+variable {M Q D N Y : Type*} [TopologicalSpace M] [TopologicalSpace Q]
+  [TopologicalSpace D] [TopologicalSpace N] [TopologicalSpace Y]
+  (E : CutCapTopology M Q D N)
+  [CompactSpace {x : E.tubes.core // x ∉ E.retainedCore}] [T2Space D]
+  (fCore : C({x : E.tubes.core // x ∉ E.retainedCore}, Y))
+  (fCap : (b : {b : E.tubes.Boundary // E.capDiscarded b}) → C(ThreeBall, Y))
+  (hboundary : ∀ (b : {b : E.tubes.Boundary // E.capDiscarded b}) (s : Sphere 2),
+    fCap b (sphereToThreeBall s) = fCore
+      ⟨E.tubes.coreBoundarySphere b.1 (E.capping.attaching b.1 s),
+        E.capDiscarded_coreBoundarySphere_not_mem_retainedCore b.1 b.2 _⟩)
+
+theorem discardedDesc_injective_of_cap_intersections
+    (hcore : Injective fCore) (hcap : ∀ b, Injective (fCap b))
+    (hinter : ∀ b, range fCore ∩ range (fCap b) = range (fCap b ∘ sphereToThreeBall))
+    (hdisj : Pairwise fun b c => Disjoint (range (fCap b)) (range (fCap c))) :
+    Injective (E.discardedDesc fCore fCap hboundary) := by
+  have hcover (x : D) : x ∈ range E.discardedCoreInclusion ∪
+      ⋃ b : {b : E.tubes.Boundary // E.capDiscarded b}, range (E.discardedCap b.1 b.2) := by
+    rw [E.discardedCoreInclusion_union_discardedCaps]
+    exact mem_univ _
+  have hcross (x : {x : E.tubes.core // x ∉ E.retainedCore})
+      (b : {b : E.tubes.Boundary // E.capDiscarded b}) (y : ThreeBall)
+      (hxy : fCore x = fCap b y) : E.discardedCoreInclusion x = E.discardedCap b.1 b.2 y := by
+    have hy : fCap b y ∈ range fCore ∩ range (fCap b) := ⟨⟨x, hxy⟩, mem_range_self _⟩
+    rw [hinter b] at hy
+    obtain ⟨s, hs⟩ := hy
+    have hys : sphereToThreeBall s = y := hcap b hs
+    have hxs : x = ⟨E.tubes.coreBoundarySphere b.1 (E.capping.attaching b.1 s),
+        E.capDiscarded_coreBoundarySphere_not_mem_retainedCore b.1 b.2 _⟩ := by
+      apply hcore
+      exact hxy.trans (hs.symm.trans (hboundary b s))
+    rw [← hys, hxs, E.discardedCap_boundary]
+  intro x y hxy
+  rcases hcover x with ⟨a, rfl⟩ | hx
+  · rcases hcover y with ⟨a', rfl⟩ | hy
+    · rw [E.discardedDesc_core, E.discardedDesc_core] at hxy
+      exact congrArg E.discardedCoreInclusion (hcore hxy)
+    · obtain ⟨b, z, rfl⟩ := mem_iUnion.mp hy
+      rw [E.discardedDesc_core, E.discardedDesc_cap] at hxy
+      exact hcross a b z hxy
+  · obtain ⟨b, z, rfl⟩ := mem_iUnion.mp hx
+    rcases hcover y with ⟨a, rfl⟩ | hy
+    · rw [E.discardedDesc_cap, E.discardedDesc_core] at hxy
+      exact (hcross a b z hxy.symm).symm
+    · obtain ⟨c, z', rfl⟩ := mem_iUnion.mp hy
+      rw [E.discardedDesc_cap, E.discardedDesc_cap] at hxy
+      by_cases hbc : b = c
+      · subst c
+        exact congrArg (E.discardedCap b.1 b.2) (hcap b hxy)
+      · exact (disjoint_left.mp (hdisj hbc) (mem_range_self z) ⟨z', hxy.symm⟩).elim
+
+theorem discardedDesc_surjective_of_cover
+    (hcover : range fCore ∪ (⋃ b, range (fCap b)) = univ) :
+    Surjective (E.discardedDesc fCore fCap hboundary) := by
+  intro y
+  have hy : y ∈ range fCore ∪ (⋃ b, range (fCap b)) := by rw [hcover]; trivial
+  rcases hy with ⟨x, rfl⟩ | hy
+  · exact ⟨E.discardedCoreInclusion x, E.discardedDesc_core fCore fCap hboundary x⟩
+  · obtain ⟨b, x, rfl⟩ := mem_iUnion.mp hy
+    exact ⟨E.discardedCap b.1 b.2 x, E.discardedDesc_cap fCore fCap hboundary b x⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.CutCapTopology

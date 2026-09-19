@@ -11491,3 +11491,4 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.FiniteOrder
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SpacetimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalBall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.LocalInverseCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapDiffeomorph
