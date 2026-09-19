@@ -4285,3 +4285,46 @@ homeomorphism sends a derived neighborhood only to the image of a derived
 neighborhood; it does not preserve the chosen barycentric-derived construction.
 No such false invariance is asserted.  Conditions (3)--(8), cross-stage
 compatibility, the standard PL solid-torus input, and `Moise351` remain open.
+
+## 88. 2026-09-19 original-carrier PL perturbation — done
+
+`ManifoldPointMove.lean` proves the natural positive-dimensional manifold
+theorem `exists_isPL_homeomorph_moves_point_dist_lt_eqOn`.  In any metrized PL
+`n`-manifold with `0 < n`, a point in an allowed open set and outside a closed
+protected set can be moved by an actual PL self-homeomorphism of the same
+manifold.  The map and its inverse are PL, its support lies in a compact subset
+of the allowed set minus the protected set, it fixes both the protected set and
+the complement of the allowed set pointwise, and its global displacement is
+below the prescribed positive bound.  The proof chooses a compact coordinate
+ball, applies the supported Euclidean point move, uses the existing uniform
+conjugation radius, and conjugates through the actual PL chart; neither the
+manifold self-homeomorphism nor its nonidentity is an input.
+
+`exists_trivalent_graphDualCell_carrier_supported_perturbation_model` applies
+the theorem to the original carrier of the standard trivalent model.  The
+chosen real piercing point remains the one proved outside `L.space`.  The
+resulting `K.space ≃ₜ K.space` moves it, fixes the graph preimage, is compactly
+supported away from that graph, and is smaller than the existing stability
+radius.  Its underlying ambient-valued extension is proved to be a bijection,
+to preserve `K.space` exactly, to fix `L.space` and `Uᶜ`, and to preserve the
+outer-neighborhood containment and both pairwise-disjoint families.  Relative
+open nesting is transported intrinsically inside `K.space`.  No continuity or
+PL claim is made for that auxiliary ambient-valued extension: the certified PL
+homeomorphism is the self-homeomorphism of the original carrier.
+
+Both changed Lean modules passed the isolated private checker with no
+diagnostics and left shared outputs unchanged.  The strict external audit
+dynamically checked all four non-automatic declarations in the two target
+modules together with fourteen critical reused declarations.  Every axiom
+closure was contained in `{propext, Classical.choice, Quot.sound}`, and all
+thirteen applicable environment linters passed.  The new natural leaf is
+registered in `DifferentialGeometry.lean`.
+
+This repairs the exact ambient gap in Section 87: the modification no longer
+replaces the original carrier by `h '' K.space`.  The remaining representation
+obligation is still a finite triangulation simultaneously compatible with the
+original graph, the two boundary surfaces, and this intrinsic PL
+self-homeomorphism, followed by an affine-on-faces identification of the
+modified neighborhoods with canonical derived neighborhoods in that common
+structure.  An arbitrary PL map or a later unrelated refinement does not
+preserve the old barycentric-derived set, and no such invariance is asserted.
