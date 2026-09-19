@@ -1102,3 +1102,34 @@ Receipt: .lake/verified-twelfth-lane-delivery-20260919.json. Lean delta +565/-17
 including four root imports; 65 handoff Markdown lines excluded. Root closure
 is 9314 project modules including itself, no missing source. No full-source
 build or restart was performed.
+
+## 29. Half-prism cut cells and a nonempty Euclidean model (2026-09-19 UTC)
+
+E3 1cea2fbe7 is merged and independently accepted. SurfaceSplitNeighborhood
+freshly compiled in 11.382 seconds including admission, zero diagnostics.
+The 45.730-second silent audit including admission checks all three new
+nonautomatic declarations, seven critical reuse entries, one concrete box
+model and all 13 applicable environment linters. Axiom sets contain only
+propext, Classical.choice and Quot.sound. Nine unchanged accepted prerequisites
+were privately reused with source/receipt/object identities; other upstream
+imports remain shared and read-only.
+
+The actual PLPieceIn prism is restricted to a half-prism. The output records
+a polyhedral 3-ball, two nonempty disjoint boundary 2-balls and exact equality
+of the remaining frontier with the side annulus image, which is path connected.
+The independent box model constructs the chart from a linear coordinate map
+and triangulated unit square times [0,2], then applies the new theorem at
+0 < 1 < 2. This checks a genuinely inhabited input and output.
+
+This remains conditional on a supplied compatible prism chart. E3 continues
+the chart and trace construction from the original splitting disk pair; no
+complete 30.3 or 30.4 is claimed. The first external test attempt used the
+wrong restriction API for a closed polyhedron and was corrected in the probe;
+its failure evidence is retained, and the delivered source was unchanged.
+
+Receipt: .lake/verified-thirteenth-lane-delivery-20260919.json. Lean delta
++195/-0 includes one root import; Markdown excluded. Root closure now reaches
+9316 project modules including itself: SurfaceSplitNeighborhood also brings
+the existing PolyhedralBallTopology into reach. Full-source build remains
+stopped. F ec3b6b063 and h 97d4a948d are newly queued for independent review;
+S 4627710d3 remains queued. No active lane was interrupted for status.

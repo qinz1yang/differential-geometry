@@ -34,7 +34,7 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | Construct the full ambient cover diagram and strict complexity descent. Proper projected disks through 3c7d44e19 are accepted. | Produce the actual cover and compatible smaller neighborhood, prove strict descent, then close Lemma 2 branch separation. |
-| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement and annulus 18f861c89 are accepted; cut-cell layer 1cea2fbe7 is queued. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
+| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
@@ -887,3 +887,14 @@ inline comments and declaration docstrings remain disallowed.
   `h` 下多面体胞腔的像，`frontier C₂'` 双领口；双领口情形已由 `TubularExcision.lean:170` + `SphereH1.lean:189` +
   `JordanBrouwer.lean:28` 无条件证出（纯拓扑，已 `#print axioms` 核实）。H-M3 漏查了这一支。决定：以 `Moise305Tame`
   （加 `IsBicollared (frontier C₂)`）替代，估约 1k–2k 行；不实现 wild 球面的 Alexander 对偶。详见 `MOISE_CHAIN.md` 同名条目。
+
+### Half-prism acceptance update (2026-09-19 UTC)
+
+E3 1cea2fbe7 is independently accepted: the supplied compatible PLPieceIn chart
+produces the half-prism ball, its disjoint endpoint disks, exact safe frontier
+and path connectedness. All three declarations, seven critical reuse entries,
+an actual nonempty Euclidean box model and 13 applicable linters pass. The
+original Delta/D1/D2-to-compatible-chart construction is still E3's active gap.
+F ec3b6b063 strict descent and h 97d4a948d derived-neighborhood corrections
+are delivered but not yet independently accepted. h continues the same lane
+by testing and proving the global regular-neighborhood meaning of its tower.

@@ -49,7 +49,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9314 project modules including the root, no missing
+are now registered and statically reachable (9316 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -61,8 +61,8 @@ branching graphs, and the proposed 35.1 raw-star tower does not yet establish
 a genuine global regular-neighborhood relation. h continues corrections.
 F through 3c7d44e19 is accepted, including the inward-push/proper-projection
 layer. S 4627710d3 sphere/cell attachment awaits acceptance.
-E3 1cea2fbe7 reports actual half-prism cut cells from a supplied compatible
-chart, pending acceptance. The compatible neighborhood producer from the
+E3 1cea2fbe7 half-prism cut cells from a supplied compatible
+chart are now independently accepted. The compatible neighborhood producer from the
 original disk pair remains open and is E3's continuing round.
 
 ## Required final update
@@ -127,3 +127,20 @@ Lean delta +565/-17 against the preceding accepted F layer/integration;
 delta within the overnight window, not a measurement of typing time.
 Receipt: .lake/verified-twelfth-lane-delivery-20260919.json.
 F continues strict descent within its current round and was not interrupted.
+
+## Half-prism cut cells
+
+E3 1cea2fbe7 is independently accepted: one fresh module, three new declarations,
+seven critical reuse entries, one nonempty Euclidean box model and 13 applicable
+linters, all zero diagnostics and standard axioms. Module check 11.382 seconds;
+successful audit 45.730 seconds, both including resource admission. The first
+external test attempt needed a restriction-API correction; no delivery source
+changed. Nine accepted prerequisites were privately reused with identity checks.
+
+The three-dimensional box cut constructs nonempty ball and boundary disks,
+with exact side-frontier equality and path connectedness. It does not produce
+the compatible chart from the original splitting disks. Lean delta +195/-0
+against the previous integration commit, including one root import, excluding
+Markdown. Receipt: .lake/verified-thirteenth-lane-delivery-20260919.json.
+F ec3b6b063 strict descent and h 97d4a948d neighborhood repair are queued;
+h has continued at its delivery boundary to global neighborhood compatibility.
