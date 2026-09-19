@@ -18,7 +18,7 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
-### Latest live frontier (2026-09-19, compression and height handoffs)
+### Latest live frontier (2026-09-19, compression accepted and sphere endpoint frozen)
 
 This snapshot and the latest integration-handoff sections take precedence over
 dated development paragraphs below, including their old deadlines and active
@@ -30,7 +30,7 @@ one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 | F | through71b0b003e | Relative general position fixing an actual protected polyhedron; exact whole-transition coverage for the same disk. New06a/d68 source is queued. |
 | h | throughe85a235df | Actual standard solid-torus identification of the newly transported neighborhoods, then compatible locally finite modifications. |
 | E3 | throughddade8562 | Prove the same physical capped result separates the original H/Q, then Moise303. Newc10 is queued. |
-| M304 | through01fc05b8c | Close the exact Moise252-to-Moise304 conditional sphere endpoint using the least-Betti separator and delivered actual compression. New7a/96/412/06/714/8fe is queued; Moise252 stays explicit unresolved upstream. |
+| M304 | through8fe07bd87 | Exact conditional Moise252-to-Moise304 endpoint371 is frozen for independent replay. The completed-boundary next lane is original toroidal-shell30.6, preserving actual kernel/compression and torus identification obligations. |
 | S | throughc0f4df1b1 | Globally injective common cancellation domain containing both critical neighborhoods and the original strip, using delivered height/gauge alignment. New5b/c011 is queued. |
 
 h's accepted seven-module layer has 36 audited native entries, including
@@ -48,13 +48,25 @@ condition in canonical GeneralPosition, and proves actual coverage. This is a
 change of local strategy; full relative normalization remains open. Canonical
 GeneralPosition author-only write ownership is recorded. See section82.
 
-M304 has now delivered the compatible actual disk/ball/wall/caps construction
-and original-shell strict decrease, while S has delivered common regular
-height coordinates and both affine gauges with a shared positive width.
-These source-reviewed layers are frozen, not independently accepted yet.
-Sections83--84 record evidence and the two completed-boundary handoffs. The
-regular height chart does not include critical points; Moise252 remains an
-explicit unproved input to the planned shell endpoint.
+M304's original-disk ball/wall/caps, actual cut-boundary kernel and same-target
+strict Betti decrease are independently accepted in section85:30 fresh modules,
+165 native entries,84 reuse entries,one actual torus model family,13 linters
+and approved axioms; Lean+2031/-20. Exact private import bindings were checked
+after rejecting nested frozen-author/archived objects; all30 modules were
+replayed without project-source changes. Eleven leaves are root registered,
+with source reachability9660; this is not a full-root build certificate.
+
+Later3717074e9 proves the exact Moise252-to-Moise304 sphere endpoint in the
+author checkout. It is frozen for independent replay, including actual
+norm-shell/tame models and the claimed absence of303/broad264 kernel
+dependencies. At that delivery boundary M304 moved to the original
+toroidal-shell30.6 lane, then30.7. Moise252 remains explicit unresolved upstream;
+unconditional304 and general305 have not been proved. See section86.
+
+S's common regular height coordinates and both affine gauges with a shared
+positive width remain frozen, pending independent acceptance. That regular
+chart does not include the critical points; the active round constructs a
+common cancellation domain containing them. See section84.
 
 Current source and receipts remain authoritative. Full-root compilation stays
 deferred and may restart only for a concrete compatibility or stalled-work

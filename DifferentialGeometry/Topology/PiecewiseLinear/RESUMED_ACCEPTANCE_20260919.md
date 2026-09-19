@@ -907,3 +907,114 @@ M304 and S were renewed for their new authorized rounds. The current pending
 queue is M304 through8fe, E3 throughc10, F throughd68 and S throughc011. The
 accepted count stays ten for this resumed stage. No root build was started.
 The saved hourly automation is synchronized with these queues and scopes.
+
+## 85. Original-disk compression and cut-boundary kernel independently accepted
+
+M304 through8fe07bd87 is independently accepted from frozen checkpoints
+7a1632779, 96ba235a4, 41220900e, 06af1e40d, 714b1599a and 8fe07bd87.
+Sixteen changed leaves match the frozen author bytes exactly: eleven new
+leaves and five compatible extensions. Fourteen existing prerequisites and
+consumers were also compiled freshly. The accepted SurfaceComplement header
+is retained; its source was not replaced by the older author copy.
+
+The general open-cover kernel proof uses actual Van Kampen amalgam injections.
+Reoriented collars, a genuine zero-section homotopy equivalence and retractions
+fixing the actual boundary inclusions carry a nontrivial kernel into a closed
+side. This primary bridge does not assume a simply connected ambient space.
+For an actual finite connected interior surface in a finite three-manifold
+in Euclidean three-space, the cut gives finite connected sides with exact
+intersection, old-boundary decomposition and the original surface as a real
+boundary component. The kernel is transported to that component inclusion.
+
+The finite connected neighborhood retains the same original loop and actual
+nullhomotopy, using the union of the surface and nullhomotopy image. Applying
+explicit h252 to the actual cut side produces an essential embedded disk.
+The proof derives old-boundary avoidance, exact disk/surface intersection and
+essentiality in the original surface. This is a conditional consumer of the
+Loop Theorem; Moise252 itself remains an unproved upstream input.
+
+For the same given essential disk, the native relative disk-neighborhood and
+centered-prism producers yield a three-dimensional PL compression ball in
+every specified open neighborhood of that disk. A common positive thickness
+is chosen by compactness; injectivity excludes the original prism end faces.
+The same reparametrized prism produces the original surface wall, disjoint
+caps, exact frontier and intersection equations, and both labeled end circles.
+No final product neighborhood, compression ball or cap package is assumed.
+In the same original spherical shell, existing separation and Betti machinery
+then produces an actual capped component separating the same two targets with
+strictly smaller first Betti number. This endpoint for a given essential disk
+has no h252 input; the nonspherical-separator disk producer retains h252.
+
+Thirty final isolated module checks took 329.977 seconds and the
+joint audit took 61.649 seconds, including compiler admission. All
+165 native nonautomatic declarations, 84 critical reuse entries and eleven
+external model/helper declarations have only approved foundational axioms.
+The native and external suites pass all thirteen applicable environment
+linters, with zero final errors, warnings or other diagnostics. The 84 reuse
+entries include 29 already in the native census and
+55 distinct entries outside it. The native census includes 56 new explicit
+declarations (49 theorem/lemma declarations and 7 definitions;
+51 public and 5 private), plus 109 retained declarations.
+The left-inverse API in Retraction extracts an already existing local proof;
+it is not wholly new mathematics. 13 old public source signatures are retained.
+
+The eleven external declarations comprise three helpers and eight assertions
+on one actual embedded beta-two torus family and its disk, enclosing ball and
+shell constructions. Three assertions are unconditional and five explicitly
+retain h252. The concrete disk interior and both shell targets are nonempty.
+The strongest unconditional fixture quantifies every open neighborhood of the
+same disk and jointly checks the produced ball, wall, caps, exact traces and
+same-target strict decrease. These are not eight independent model families.
+
+The initial direct-import schedule missed transitive batch dependencies and
+was corrected. The exact census then rejected recursive discovery of nested
+archived and newly frozen author objects: one rejected environment included
+the later371 endpoint. Separately, the source scanner missed one retained
+theorem whose name is written on the following line; its correction gives the
+full165-declaration census, including five in SurfaceSplitDiskNeighborhood.
+A private copy of the checker now admits only the canonical output path for
+each module and an exact source path in the authorized integration checkout.
+The shared helper and other active lanes were not changed. All thirty modules
+were replayed under the corrected binding; every final module/audit setup was
+checked against it. Rejected attempts and source/object identities are kept;
+393.605 seconds of superseded successful module checks are recorded separately.
+No project source or proof was changed to repair this verification problem.
+
+Accepted Lean delta is +2031/-20, including eleven flat-root imports.
+All 101 private reused prerequisites match current raw source and previously
+accepted object hashes. Static root coverage is 9660 project modules including
+the root, without missing sources or cycles. Full-root compilation remains
+deferred. Receipt: .lake/verified-fiftyninth-lane-delivery-20260919.json.
+These are frozen-source acceptance counts, not typing time or headline progress.
+
+## 86. Conditional sphere endpoint frozen; original toroidal-shell round started
+
+M304 subsequently completed and pushed3717074e9 on parent8fe07bd87. Its author
+checkout was clean and equal to origin when frozen. All 216 evidence files,
+33 source/object/receipt sets and complete dependency graphs were copied and
+hash-checked; manifest6d9ebb844d1c8660963e136d047b81c29bd62cd9f70d06f699ee47beb59fdee6.
+This later endpoint is not included in section85 acceptance.
+
+The thirteen new source lines prove moise304_of_moise252 (h252 : Moise252) :
+Moise304. They use the existing least-Betti connected separator; if it is not
+a sphere, the same-shell strict decrease contradicts minimality. The exact
+original X/B0/B1 quantifiers remain, without extra disk, cap or sphere inputs.
+The author also checked the unchanged tame30.5 consumer and two concrete
+norm-shell models with the same radius-one/radius-two targets. Its kernel
+dependency traversal reports no Moise303 or broad Moise264 in either endpoint;
+that claim and the new models await independent replay. Unconditional304 and
+general305 remain open; tame305 retains its outer-frontier bicollar condition.
+
+At this completed boundary only, M304 received one next Astra max lane:
+Moise30.6 for the same arbitrary original toroidal shell. Produce actual finite
+connected separators, use real inclusion-kernel/compression and surface-group
+or homological information to identify a minimal separator as a torus, keeping
+Moise252 explicit when consumed. Do not transplant spherical-shell simple
+connectivity or assume the final torus. The audited book direction is30.6 to
+30.7. The natural CylinderImage module has a single-module author-checkout
+private compile grant; this is no extra lane or resource allowance.
+
+Other active rounds were not polled for status or given new tasks. The queue
+after this acceptance is M304371, E3c10, F06a/d68 and S5b/c011. New changes and
+proof dependencies will be accepted independently before the plan treats them
+as proved. The hourly automation is updated from these exact boundaries.

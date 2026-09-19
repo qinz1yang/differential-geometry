@@ -95,7 +95,13 @@ under `.lake/round-compiler-leases/`. The helper is
 `C:/Users/liao9/AppData/Local/Temp/codex-moise-lane-check-round.ps1`.
 
 Shared artifacts remain read-only. Private import overrides require successful
-receipts and exact current source hashes. Recompile affected consumers after a
+receipts and exact current source hashes. Also require the canonical output
+path for that module and the exact source path in the authorized checkout.
+Frozen author evidence and superseded-attempt archives must never become
+import candidates merely because a checker scans its output tree recursively.
+Record and inspect actual setup bindings; use a private corrected checker or
+keep archives outside its search tree. The section85 integration replay caught
+and repaired this problem before acceptance. Recompile affected consumers after a
 public change. The trial preserves strict header/long-line checks, the standard
 syntax lint set, and all 13 applicable environment linters. Only docBlame and
 docBlameThm are excluded. Every nonautomatic completed declaration and critical
