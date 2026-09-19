@@ -2,11 +2,12 @@ import Mathlib.Topology.Algebra.ContinuousAffineEquiv
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 import Mathlib.MeasureTheory.Measure.Haar.Unique
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
 noncomputable section
 
 open MeasureTheory Set
-open scoped ENNReal
+open scoped ENNReal Topology
 
 namespace ContinuousAffineEquiv
 
@@ -47,6 +48,24 @@ theorem MemLp.comp_affineEquiv
     (hm.restrict_preimage_emb e.toHomeomorph.isClosedEmbedding.measurableEmbedding Ω)
   rw [Measure.isAddLeftInvariant_eq_smul (μ.map e) ν, Measure.restrict_smul]
   exact hf.smul_measure ENNReal.coe_ne_top
+
+theorem LocallyIntegrableOn.comp_affineEquiv
+    {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [TopologicalSpace G] [ContinuousENorm G]
+    [MeasurableSpace E] [BorelSpace E] [MeasurableSpace F] [BorelSpace F]
+    (e : E ≃ᴬ[ℝ] F) {μ : Measure E} {ν : Measure F}
+    [Measure.IsAddHaarMeasure μ] [Measure.IsAddHaarMeasure ν]
+    {Ω : Set F} {f : F → G} (hf : LocallyIntegrableOn f Ω ν) :
+    LocallyIntegrableOn (f ∘ e) (e ⁻¹' Ω) μ := by
+  intro x hx
+  obtain ⟨W, hW, hfW⟩ := hf (e x) hx
+  refine ⟨e ⁻¹' W, ?_, ?_⟩
+  · exact (e.continuous.continuousAt.continuousWithinAt.tendsto_nhdsWithin
+      (fun y (hy : y ∈ e ⁻¹' Ω) => hy)) hW
+  · exact memLp_one_iff_integrable.mp
+      ((memLp_one_iff_integrable.mpr hfW).comp_affineEquiv e)
+
 
 end MeasureTheory
 

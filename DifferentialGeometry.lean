@@ -1622,6 +1622,7 @@ import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Smoothing.Sobo
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Bounds
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Calculus
 import DifferentialGeometry.Analysis.Parabolic.SecondOrderWeakRegularity
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationAffine
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationClassical
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.ContinuousInterior
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.FiniteCover
