@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatEvolution
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalDivergence
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSecondDerivative
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
 
@@ -104,6 +105,53 @@ theorem exists_local_second_weak_derivative_of_heat_timeH1
   exact exists_lp_second_weak_derivative_of_local_diffQuot_bound_restrict
     q α hΩ hΩc hΩs (Icc a b) u (hη.of_le (by simp)) hηc hΩ₀
       (fun z hz => hηone z (Metric.self_subset_cthickening _ (subset_closure hz))) hδ hroom hbound
+
+theorem exists_local_lp_divergence_of_heat_timeH1
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {T : ℝ} (hT : 0 ≤ T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (q : SmoothRiemannianMetric I_hs M)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M, ∀ w : TangentSpace I_hs x,
+      Cg⁻¹ * q.inner x w w ≤ (g t).inner x w w ∧
+        (g t).inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_hs) (M := M) (g t) ≤
+        Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {a b : ℝ} (ha : 0 < a) (hb : b < T)
+    (u : timeL2 (H1ComplDirichlet q) T)
+    (f : timeL2 (Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q)) T)
+    (w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T)
+    (hwmass : ∀ᵐ t ∂timeMeasure T, ∀ z,
+      w.toFun t z = inner ℝ (H1ComplDirichletToLp q (u t)) (H1ComplDirichletToLp q z))
+    (hwderiv : ∀ᵐ t ∂timeMeasure T, ∀ ht : t ∈ Icc (0 : ℝ) T, ∀ z,
+      w.deriv t z = dirichletWeakFormCompl (g t) 0 0 0 (by intro x; simp)
+        hCg (hequiv t ht) Cv hCv0 hCvtop (hvol t ht) (u t)
+        (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap (g t) q) z) +
+          inner ℝ (f t) (H1ComplDirichletToLp q z)) :
+    let μ := (timeMeasure T).restrict (Icc a b)
+    let A := fun i j (p : ℝ × EuStd) =>
+      Laplacian.MetricExtension.weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    ∃ F : Lp ℝ 2 (μ.prod (volume.restrict Ω₀)),
+      ∀ (φ : ℝ × EuStd → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ univ ×ˢ Ω₀ →
+        (∫ p, F p * φ p ∂μ.prod (volume.restrict Ω₀)) =
+          -∑ i, ∑ j, ∫ p, A i j p * V i p *
+            fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂μ.prod (volume.restrict Ω₀) := by
+  intro μ A V
+  have hΩ₀c : IsCompact (closure Ω₀) :=
+    hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
+  obtain ⟨H, hH, _⟩ := exists_local_second_weak_derivative_of_heat_timeH1 hG hT hreg q
+    hCg hequiv Cv hCv0 hCvtop hvol α hΩ hΩc hΩs hΩ₀ hΩ₀c hΩ₀Ω ha hb u f w hwmass hwderiv
+  obtain ⟨F, _, hF⟩ := exists_lp_divergence_localWeakPartial_of_hasWeakPartialDeriv
+    hG isCompact_Icc hreg (ae_restrict_mem measurableSet_Icc) q u α hΩ hΩc hΩs hΩ₀
+    (subset_closure.trans hΩ₀Ω) (Icc a b) H hH
+  exact ⟨F, hF⟩
 
 theorem exists_local_dirichlet_heat_solution_with_interior_h2
     {D : RealTimeInterval}
