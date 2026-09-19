@@ -23,6 +23,11 @@ def IsLocallyFinitePolyhedralGraph (K : Set X) : Prop :=
   ∃ T : LocallyFinitePieceTower n X K,
     ∀ i s, s ∈ (T.piece i).piece.complex.faces → s.card ≤ 2
 
+theorem PLPiece.isLocallyFinitePolyhedralGraph {K : Set X} (P : PLPiece n X K)
+    (hP : ∀ s, s ∈ P.piece.complex.faces → s.card ≤ 2) :
+    IsLocallyFinitePolyhedralGraph (n := n) K :=
+  ⟨LocallyFinitePieceTower.ofPiece P, fun _ => hP⟩
+
 namespace LocallyFinitePieceTower
 
 open Classical in

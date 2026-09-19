@@ -11,6 +11,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialApproximation
 
 /-!
@@ -158,19 +159,19 @@ def Moise331 : Prop :=
           ∀ x ∈ (derivedNeighborhood T L').space, dist (f x) (h x) < ε
 
 open Classical in
-def Moise351 (n : ℕ) : Prop :=
+def Moise351 : Prop :=
   ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
     [MetricSpace M₂] [SecondCountableTopology M₂]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
-    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
+    [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
     {U : Set M₁} (_ : IsOpen U) {K : Set M₁} (_ : K ⊆ U) (_ : IsClosed (((↑) : U → M₁) ⁻¹' K))
+    (_ : IsLocallyFinitePolyhedralGraph (n := 3) K)
     {h : M₁ → M₂} (_ : Topology.IsEmbedding (U.domRestrict h))
     (φ : M₁ → ℝ) (_ : ContinuousOn φ U) (_ : ∀ x ∈ U, 0 < φ x),
     ∃ N : Set M₁,
-      IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N ∧
-      K ⊆ interior N ∧ N ⊆ U ∧
-      ∃ f : M₁ → M₂, IsPLHomeomorphInto n f N ∧
+      IsLocallyFiniteRegularNeighborhoodOf (n := 3) N K U ∧
+      ∃ f : M₁ → M₂, IsPLHomeomorphInto 3 f N ∧
         f '' N ∈ nhdsSet (h '' K) ∧ ∀ x ∈ N, dist (f x) (h x) < φ x
 
 def PLMapApproximation : Prop :=

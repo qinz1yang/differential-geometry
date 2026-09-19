@@ -3343,8 +3343,52 @@ theorems expose these three properties without hiding the triangulation data.
 
 The new leaf is registered in the flat root aggregate.  It compiled with zero
 diagnostics and unchanged shared outputs under round token
-`h-round-20260919`.  Its external audit dynamically enumerated all six
+`h-round-20260919`.  Its external audit dynamically enumerated all seven
 non-automatic declarations, checked four direct foundational declarations,
 found only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
-applicable environment linters.  `Moise351` is the next consumer; no theorem
-of §35.1 is claimed by this definition layer.
+applicable environment linters.  The following contract layer consumes this
+vocabulary in `Moise351`; no theorem of §35.1 is claimed by the definition
+layer itself.
+
+The additional constructor `PLPiece.isLocallyFinitePolyhedralGraph` verifies
+that every honest finite graph piece gives an instance of the locally finite
+predicate through the constant piece tower; the interface is therefore not
+limited to a postulated theorem output.
+
+## 64. 2026-09-18 Corrected contract for Moise 35.1 — done
+
+`Moise351` now states the three-dimensional theorem on book pages 247–248.
+Both source and target carry PL 3-manifold structures.  The source set `K`
+must satisfy `IsLocallyFinitePolyhedralGraph (n := 3) K`, may remain
+noncompact, and is still required to be relatively closed in the prescribed
+open set `U`.  The restricted map remains an embedding, hence a homeomorphism
+onto its image.  The error function remains continuous and pointwise positive
+on all of `U`; it has not been replaced by a compactness or constant-error
+hypothesis.
+
+The output neighborhood now satisfies
+`IsLocallyFiniteRegularNeighborhoodOf (n := 3) N K U`.  Consequently the
+statement retains the ambient rectilinear tower, its compatible graph
+subcomplexes, and the stagewise regular-neighborhood construction rather than
+recording only that `N` happens to be an ordinary polyhedral 3-manifold
+neighborhood.  The approximating map is a PL homeomorphism into the target on
+this exact `N`, its image is a neighborhood of `h '' K`, and the original
+pointwise error bound is unchanged.
+
+The old interface imposed no dimension condition on `K`: taking `K = U`
+already satisfied its set-theoretic input whenever `U` was closed in itself,
+regardless of whether `U` was one-dimensional.  It also allowed an output
+manifold neighborhood with no regular-neighborhood relation to `K`.  The new
+finite-piece constructor above supplies the positive model check for the graph
+predicate, while the explicit tower relation prevents an unrelated ordinary
+neighborhood from serving as the §35.1 witness.
+
+No Lean declaration currently consumes `Moise351`; §35.2 is its planned
+mathematical consumer, while the present `Moise352` interface remains an
+independent conditional node.  `PolyhedralGraph`, `MoiseChain`, and the direct
+downstream importer `TameNestedCells` compiled with zero diagnostics and
+unchanged shared outputs.  The two external audits dynamically enumerated
+seven and twenty-six non-automatic declarations respectively, checked the
+four foundational and six semantic reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
