@@ -101,11 +101,11 @@ theorem isPLBallPair_union_of_coneSet_disk [FiniteDimensional ℝ E]
   have hgim₂ : g '' (({z, y₂} : Set E) ∩ coneSet z L₀.space) =
       ({w, u₂} : Set E) ∩ coneSet w M₀.space := by
     rw [pair_inter_coneSet hy₂D, pair_inter_coneSet hu₂D, Set.image_singleton, hgz]
-  obtain ⟨G₁, hG₁, hG₁eq, -, hG₁X, -⟩ :=
+  obtain ⟨G₁, hG₁, hG₁eq, -, hG₁X, -, -⟩ :=
     exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked hL₁ hX₁ hS₁ hcM₁ hsM₁ hDball hD₁ hDM₁ hg
       ⟨subset_closure ⟨hy₁, hy₁D⟩, hy₁D⟩ ⟨subset_closure ⟨hu₁M, hu₁D⟩, hu₁D⟩
       (pair_eq_inter_coneSet_union hy₁D) (pair_eq_inter_coneSet_union hu₁D) hgim
-  obtain ⟨G₂, hG₂, hG₂eq, -, hG₂X, -⟩ :=
+  obtain ⟨G₂, hG₂, hG₂eq, -, hG₂X, -, -⟩ :=
     exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked hL₂ hX₂ hS₂ hcM₂ hsM₂ hDball hD₂ hDM₂ hg
       ⟨subset_closure ⟨hy₂, hy₂D⟩, hy₂D⟩ ⟨subset_closure ⟨hu₂M, hu₂D⟩, hu₂D⟩
       (pair_eq_inter_coneSet_union hy₂D) (pair_eq_inter_coneSet_union hu₂D) hgim₂

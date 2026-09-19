@@ -2857,3 +2857,68 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   `BoundaryBranchSheets` 只交付局部交叉图卡、带一致标签的多面体源片邻域及分支纤维覆盖；尚缺
   **实际胞腔迹落入坐标折片**以及**两个端点的边界相容**。缺少这两项时不能陈述最终
   `exists_separated_along_branch`，也不能把 Case 3/4 的 `L₂` 与复杂度下降宣称闭合。
+
+## 87. 2026-09-18 E3-M3：端面可动的缓冲平板楔形推移
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointPush.lean` 把 §84 的帽函数沿第一坐标平移 `ρ`，在长度
+`c + 2ρ` 的扩展平板上应用原正、负楔形推移，再平移回来。自然参数版本只要求分离时 `0 < ρ`；
+`c = 1, ρ = 1` 的先导实例由两条端点公式立即给出帽高 `1 / 4`。
+
+- `bufferedSlabWedgeHat_left_endpoint`、`bufferedSlabWedgeHat_right_endpoint`：当 `0 ≤ c`、`0 ≤ ρ` 时，
+  原平板两个端点 `(0,0,0)`、`(c,0,0)` 的帽高均为 `ρ / 4`，所以端点不再固定。
+- `isPLHomeomorphOn_positiveBufferedWedgePush`、`isPLHomeomorphOn_negativeBufferedWedgePush`：直接把
+  §84 的全局 PL 同胚与两次平移共轭，不重做 Lipschitz 证明；同时给出对应的全局 `Homeomorph`。
+- `isCompact_bufferedSlabWedgeSupport` 与两条 `eqOn_*_compl_support`：扩展支撑是原紧支撑的平移像，
+  两张推移在其外逐点恒等。
+- 两条 `*_fst` 与 `image_*_fstFiber`：第一坐标逐点保持，而且每个第一坐标纤维的像严格等于自身；特别地
+  `image_*_wedgeSlabBoundary` 证明两个端面集合均被保持，而不是逐点固定。
+- `disjoint_positive_negative_bufferedWedgePush_on_slabFold`：对 `0 < ρ`，原闭折片（包含两个端点）的
+  正、负推移像严格不交。证明把闭折片平移进扩展平板的开内部，复用 §84 的开折片不交定理。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 22 条非自动声明，
+  另审计 8 条关键复用声明；每条传递公理闭包均为 `propext / Classical.choice / Quot.sound` 的子集，
+  13 个适用环境 linter（只排除 `docBlame`、`docBlameThm`）零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointPush.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：把这两张新推移装进 Bool 标记源片并推出 `doublePointSet = ∅`；连续同伦、自由环类保持及支撑外
+  基点的定基同伦；F 的实际迹/双端面图卡仍是一般环境提升的下游输入。
+
+## 88. 2026-09-18 E3-M3：端面可动楔形模型的空双点集
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointDoublePoint.lean` 复用 §85 的 Bool 标记源片，把 §87 的
+正、负缓冲推移合成一张模型映射。
+
+- `doublePointSet_bufferedSlabWedgeTaggedMap`：对任意源片 `A B`，双点集精确等于
+  `positiveBufferedWedgePush c ρ '' A ∩ negativeBufferedWedgePush c ρ '' B`；两张片内的单射性来自
+  §87 的两个全局同胚，跨片双点仍由同一个通用双点集分解引理给出。
+- `doublePointSet_bufferedSlabWedgeTaggedMap_closed`：当 `0 < ρ` 时，在完整闭折片
+  `positiveSlabFold c`、`negativeSlabFold c`（含两个端点）上的双点集严格等于 `∅`，无额外分离假设。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 7 条非自动声明，
+  另审计 5 条关键复用声明；全部传递公理闭包只含 `propext / Classical.choice / Quot.sound` 的子集，
+  13 个适用环境 linter 零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointDoublePoint.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：连续紧支撑同伦与环类保持；F 的实际迹/双端面图卡仍是把此空双点集提升为一般环境
+  `exists_separated_along_branch` 的下游输入。
+
+## 89. 2026-09-18 E3-M3：紧支撑同伦与环类保持
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointHomotopy.lean` 用直线插值
+`p + t • (positiveBufferedWedgePush c ρ p - p)`（负向同理）给出从恒等映射到 §87 两张推移的显式
+`ContinuousMap.Homotopy`。
+
+- `positiveBufferedWedgeHomotopy`、`negativeBufferedWedgeHomotopy`：证明的是参数与空间变量的联合连续性；
+  不声称联合映射为 PL。
+- 两条 `*_fst` 与 `mapsTo_*_fstFiber`：同伦全过程第一坐标严格不变，因此每个端面分别保持在自身内；
+  两条 `*_eq_of_not_mem_support` 证明同一个紧支撑外在所有时刻逐点固定。
+- `positiveBufferedWedgeFreeLoopHomotopy`、`negativeBufferedWedgeFreeLoopHomotopy` 及两条 `*_homotopic`：
+  对任意自由环，后复合正、负推移均与原环自由同伦，因而保持自然的自由环同伦类。
+- `positiveBufferedWedgeBasedLoop`、`negativeBufferedWedgeBasedLoop` 与两条 `*BasedLoopHomotopy_fixed`：
+  当基点在支撑外时，后复合仍是同一基点的环，而且上述同伦在每个参数时刻都固定该基点。
+- 没有额外声称每个中间时刻都是 PL 同胚；本轮消费者只需要联合连续、端面保持和紧支撑外固定。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 20 条非自动声明，
+  另审计 6 条关键复用声明；全部传递公理闭包只含 `propext / Classical.choice / Quot.sound` 的子集，
+  13 个适用环境 linter 零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointHomotopy.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 一般环境仍未闭合：F 的实际迹/双端面图卡是把 §87–§89 模型产物接成
+  `exists_separated_along_branch` 的必要下游输入；本轮没有越过这一表示层缺口。
