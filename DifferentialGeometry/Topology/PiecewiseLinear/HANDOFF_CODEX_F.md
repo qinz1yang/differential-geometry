@@ -4166,3 +4166,120 @@ F 检查进程已结束；源码、根登记、本记录与 `MOISE_CHAIN.md` 状
 源码、根登记、交接与计划同提交交付。完整板图卡仍 partial，下一步是固定源片与既有 crossing
 片的局部 germ 对齐，再生产相邻胞腔片迹匹配；真实载体/边界兼容继续保持显式。
 下一审计编号为 `AuditF289.lean`。
+
+### 19.149 固定分支源片的 crossing germ 对齐（2026-09-18）
+
+§19.148 的一致多面体源片生产者已在 `f774beb3e` 推送。本层保持同一 `S/T` 标签，
+从 `NormalSingularCellData.crossing` 的逐点局部源片导出它们在这些固定片上的 crossing。
+
+**固定源片 crossing germ 对齐层 done：`BoundaryBranchCrossing.lean`。** 端点
+`NormalSingularCellData.exists_polyhedral_crossing_sheets_of_boundaryBranch` 保留原生产者的
+两条源弧及共同分支坐标、不交多面体邻域、各片嵌入、整条分支附近的全纤维覆盖和精确双点集等式，
+再对每个分支点给出同序的固定 `S/T` 图卡像 crossing。内点得到 `HasPLCrossingAt`；
+触边点得到相对于已有存在量化载体的 `HasPLBoundaryCrossingAt`，不把该载体认作真实 `M`。
+
+证明使用 Mathlib 的 `IsInducing.image_mem_nhdsWithin`：同一原像点的两个嵌入相对邻域
+有相同像 germ。两张逐点 crossing 源片的基点不能落在同一固定片上，否则与该片单射性矛盾；
+按这个判别排序后，复用现有 crossing `congr` 搬运。`CutAndPaste` 的源坐标变换与标记锥延拓
+未改动或复制。固定片先于分支点量化，故标签不会随逐点选择交换。
+
+验证：统一私有检查脚本在 `F-BranchCrossing-20260918` 窗口内于
+2026-09-18 23:56:59 UTC 完成模块检查，最终一次用时 13.22 秒，exit=0、零诊断、
+sourceStable=true；标准语法 linter 集、header 与 longLine 均启用。初检的两处 elaboration
+问题仅涉及集合子类型标注和交子空间交换后的秩等式，修正后未改变陈述。
+外部静默 `AuditF289.lean` 于 23:58:12 UTC 完成，用时 46.19 秒：全部七项非自动声明
+（一个公开生产者、六个私有引理）及四项直接复用端点，共十一项传递公理闭包仅含
+`propext`、`Classical.choice`、`Quot.sound`。复用项为 §19.148 源片生产者、Mathlib 的
+`IsInducing.image_mem_nhdsWithin` 及两种 crossing 的 `congr`。
+默认环境 linter 集仅排除 `docBlame`、`docBlameThm`，显式断言恰有十三项且全部通过；
+审计 exit=0、零诊断。最终源码 SHA256 为
+`6B49F2ED351C8077422DF39C4D9348C6AEF9D43129385DC898D20E15CBDA1E6D`。
+回执、空日志、importArts 与私有产物位于
+`C:\Users\liao9\AppData\Local\Temp\codex-f-boundary-private`；共享对象未改写。
+外部审计探针检查后移除，保留 `AuditF289.json` 与 `branch-crossing-checkpoint.json`。
+本轮复用源 hash 匹配的私有依赖和既有共享对象；不宣称完整传递源码已重编，独立根检查由协调者负责。
+源码、根登记、交接与计划同一数学提交交付。完整图卡仍 partial：环境胞腔的边界片迹匹配、
+保持两片的相邻过渡、全局单射性，以及真实 carrier/boundary 兼容均未由本层解决。
+下一审计编号为 `AuditF290.lean`。
+
+### 19.150 真实环境边界兼容的输入障碍及保持全部字段的模型（2026-09-19 UTC）
+
+本轮先在干净 F 分支合并整合分支，合并提交为 `254674860`，包含整合检查点 `182754a01`。
+按本轮连续范围检查环境胞腔片迹、真实边界、相邻过渡及全局图卡。首次不能由现有输入落地的义务
+是**真实载体/边界与 boundary crossing 的兼容**；按首个真实障碍交付规则在此收口。
+
+**负面结果 done：`BoundaryCarrierCompatibility.lean`。** 两个公开端点位于
+`NormalSingularCellData` 命名空间：
+
+1. `not_mem_interior_image_of_mem_doublePointSet_boundary`：触边双点不在整个圆盘像的环境内部。
+   证明复用 §19.147 的实际双点半轴图卡及其全纤维覆盖，把整个圆盘像局部包含到已有 `Mloc`，
+   再用半空间边界点不属内部导出结论。
+2. `exists_boundary_extension_not_isImage_slab_ends`：给定任意原有 `hD` 和真实触边分支 `c`，
+   令 `Bd* = BdM ∪ (D '' D.domain)ᶜ`，实际构造
+   `hD' : NormalSingularCellData D Bd* B` 及触边分支 `c'`，证明 `branchCarrier c' = branchCarrier c`，
+   并生产 `y ∈ branchCarrier c ∩ BdM`，满足对任意开部分同胚 `e`（不限 PL）、`y ∈ e.source`
+   及任意实数 `r,s`，均有
+   `¬ e.IsImage Bd* {z : ℝ × ℝ × ℝ | z.1 = r ∨ z.1 = s}`。
+
+这是保持全部输入字段的参数化反例构造。私有 `of_boundary_eqOn_image` 逐项构造记录：
+`D`、`locallyInjective`、`fiber_le_two`、`boundary_image_subset`、奇异复形、PLPiece、map_space
+保持原样；`image_inter_boundary` 和 `map_boundary` 由 `Bd*` 与 `BdM` 在圆盘像上相同得到；
+`crossing` 复用原图卡和原 `Mloc`，因为 `HasPLNormalDoubleCrossingAt` 只询问该双点是否属于边界。
+分支类型、触边性和载体由相同复形直接保持，没有把一个未绑定的对象拿来代替生产者输出。
+原触边分支的边界交非平凡定理实际生产 `y`，故反图卡结论的作用点并不为空。
+
+反图卡机制：圆盘像紧致闭；上述 `y` 属于其补集的闭包。任何含 `y` 的开图卡源域都含有
+圆盘像之外的点，而这些点处于 `Bd*` 的环境内部。两个端面之并的内部为空，开部分同胚保持
+局部内部，因此不可能有要求的双向像契约。该证明同时排除了只靠重新挑选 crossing 图卡修复
+当前抽象 `BdM` 输入的路线。
+
+**具体坐标模型（几何说明，未计入 Lean 审计）。** 用自然线性坐标识别二维、三维欧氏空间，
+取 `R=[0,1]×[0,3]`，`D(s,t)=(s,γ(t))`，其中
+
+- `0≤t≤1` 时 `γ(t)=(-2+4t,0)`；
+- `1≤t≤2` 时 `γ(t)=(4-2t,2t-2)`；
+- `2≤t≤3` 时 `γ(t)=(0,10-4t)`。
+
+这是一张 PL 矩形盘；三条折线段只在相邻端点及原点相交。原点恰有 `t=1/2,5/2` 两个原像，
+相邻折线段不回折重合，所以局部单射且纤维至多二。双点集恰为 `[0,1]×{(0,0)}`，可取单边
+复形及恒等参数化；内点为两整平面 crossing，两端为 `s≥0`、`s≤1` 的半空间 crossing。
+取真实盒子 `C=[0,1]×[-2,3]×[-2,3]`、`BdM=frontier C`、`B=BdM`。折线的两个外端点在盒子
+边界，其余折线点在横截面内部，故 `D '' R ∩ BdM = D '' frontier R`；奇异线段只在两个端点
+碰到 `BdM`，所有正规胞腔条件都有对应数据。将这个输入送入上述边界替换构造后，圆盘、双点
+及所有现有字段继续成立，`Bd*` 却不是该盒子的真实边界，且不存在端面图卡。
+形式化端点是从任意给定触边实例产生完整的新实例；没有宣称本段坐标模型已经在 Lean 中实例化。
+
+**主链实际输入核对。** 这项反例约束的是仅凭 `NormalSingularCellData` 的推导能力。
+`LoopTheorem/SingularCell.lean:491,514` 的 `NormalSystem` 确实携带组合三流形及其真实
+`boundaryComplex 3 K`。`LoopTheorem/LemmaTwo.lean:136` 的
+`NormalSystem.exists_singular_two_cell_in_double` 也保留真实第二拷贝
+`ι = simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)` 的圆盘像、边界像和交集等式。
+上述 `Bd*` 替换不满足“等于该真实边界”的额外要求，因此不是 `Moise251` 或这个更强实例的反例。
+但是这条桥只生产 `SingularTwoCell`；`BoundaryWordDoubleCell.lean:11` 后续正规性仍接受任意
+`BdM` 的 `hD`。`LoopTheorem/NormalCell.lean:69` 没有真实载体参数或该等式，
+`SingularNormalForm.lean:233` 的 boundary 分支只存在量化 `Mloc`，没有其边界与真实 `BdM` 的 germ 关系。
+
+**所需最弱生产者条款（未加作 Lean 假设）。** 对实际第二拷贝载体 `C` 和实际边界 `Bd`，
+正规化所生产的映射在每个 `y ∈ doublePointSet D D.domain ∩ Bd` 需要生产原有 atlas 图卡 `E` 和
+`HasPLBoundaryDoubleCrossingAt (E ∘ D) (D.domain ∩ D ⁻¹' E.source)
+  (E '' (E.source ∩ C)) (E y)`；还需由实际三流形边界的几何证明，在该点附近
+`frontier (E '' (E.source ∩ C))` 与 `E '' (E.source ∩ Bd)` 的 germ 相同。
+等价可先输出原 `Mloc` 连同这两个 germ 对齐事实，然后使用已有 `congr` 和 §19.147 图卡。
+这要求保留实际生产者的相对边界信息，不是让消费者假设最终端面图卡或环境片迹。
+`SingularChart.lean:155` 的 `exists_small_map_doublePointSet_normal_form_in_boundary_chart`
+已经在单图卡生产者中给出**指定真实 M** 的 boundary-double-crossing，且保留到 Bd 的边界条件；
+应从其全局正规化/实际 double 实例中保留并导出此条款。当前范围不修改公共定义语义，亦不重开
+全局正规化生产者。实际环境片迹与真实边界联合生产、保持两片的相邻过渡及全局单射图卡均仍 blocked。
+
+验证：本轮统一资源准入 helper 使用 `F-round-20260919`，模块检查于
+2026-09-19 00:18:13 UTC 完成，用时 11.85 秒，exit=0、零诊断、sourceStable=true。
+外部静默 `AuditF290` 于 00:20:29 UTC 完成，用时 45.37 秒：六项全部非自动声明
+（两个公开定理、三个私有定理、一个私有定义）与三项关键复用端点，共九项传递公理闭包
+仅含标准三公理；十三项适用环境 linters 全部通过，仅排除 docBlame/docBlameThm。
+严格语法 linter、header、longLine 启用，审计 exit=0、零诊断。
+源码 SHA256 为 `412A3E957C53CA7834EF236D01DD097F38B0C1A18AE9BD5781CB9D663E29FB56`。
+私有回执位于 `C:\Users\liao9\AppData\Local\Temp\codex-f-boundary-private`，包括 `AuditF290.json`
+及 `boundary-carrier-checkpoint.json`；共享产物未改写，外部探针检查后移除。新叶仅被根聚合登记，
+没有被修改的旧消费者；独立根重编由协调者负责，本模块验证不宣称整库检查通过。
+Lean 源码、根登记与本记录同一数学提交；MOISE_CHAIN 的负面结论请由整合者按本轮所有权记录。
+本轮在此真实输入障碍处交付，下一审计编号为 `AuditF291.lean`。
