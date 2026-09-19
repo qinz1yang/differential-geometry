@@ -386,6 +386,104 @@ theorem integral_adjoint_chartPullback_eq_integral_euclidean
 
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
+theorem integral_adjoint_chartPullback_eq_neg_sum_integral
+    {q : SmoothRiemannianMetric I_hs M}
+    (h : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (X : Cₛ^∞⟮I_hs; EuN, (TangentSpace I_hs : M → Type _)⟯)
+    (a : ℝ)
+    (u : H1ComplDirichlet q) {ψ : EuStd → ℝ}
+    (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ Ω) :
+    let e := toEuclidean (E := EuN)
+    let ρ := fun z => chartDensityOnE (I := I_hs) h α (e.symm z)
+    let A := fun i j z => chartInvGramOnE (I := I_hs) h α i j (e.symm z)
+    let B := fun i z => chartCoeffOnE (I := I_hs) α X i (e.symm z)
+    let v := fun z => H1ComplDirichletToLp q u ((extChartAt I_hs α).symm (e.symm z))
+    let test := smoothScalarDirichletChartPullback q α hψ hψc
+      (hψs.trans (subset_closure.trans hΩs))
+    (∫ x, H1ComplDirichletToLp q u x *
+      (ΔGWithBoundary (I := I_hs) h test.smooth test.interior_support x -
+        tangentSectionAction (I := I_hs) X test.toFun x -
+        divergence (I := I_hs) (leviCivitaConnectionOfMetric h) X x * test.toFun x -
+        a * test.toFun x) ∂riemannianVolumeMeasure (I := I_hs) (M := M) h) =
+      -(∑ i, ∫ z in Ω, dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u z *
+        ((∑ j, A i j z * fderiv ℝ ψ z (EuclideanSpace.single j 1)) * ρ z -
+          B i z * ρ z * ψ z)) - ∫ z in Ω, ρ z * v z * (a * ψ z) := by
+  intro e ρ A B v test
+  have hsrc : tsupport test.toFun ⊆ (chartAt (EuclideanHalfSpace n) α).source := by
+    intro x hx
+    obtain ⟨y, ⟨z, hz, rfl⟩, rfl⟩ := tsupport_chartPullback_subset α hψc
+      ((hψs.trans (subset_closure.trans hΩs)).trans (image_mono interior_subset)) hx
+    have hz' := (hψs.trans (subset_closure.trans hΩs)) hz
+    obtain ⟨z', hz', heq⟩ := hz'
+    subst z
+    have hm := (extChartAt I_hs α).map_target (interior_subset hz')
+    simpa only [ContinuousLinearEquiv.symm_apply_apply, extChartAt_source] using hm
+  rw [integral_adjoint_chartPullback_eq_integral_euclidean h α X a
+      (H1ComplDirichletToLp q u) test ψ hsrc rfl]
+  refine (Sobolev.Euclidean.integral_adjoint_eq_integral_of_tsupport_subset
+    ((toEuclidean (E := EuN)).toHomeomorph.isOpenMap _ isOpen_interior).measurableSet
+      (subset_closure.trans hΩs) hψs v ρ
+      (fun z => localDivergence (I := I_hs) h α X ((extChartAt I_hs α).symm (e.symm z)))
+      (fun _ => a) A B).trans ?_
+  exact integral_chart_adjoint_sub_potential_eq_neg_sum_integral q h α hΩ hΩc hΩs X u
+    (b := fun _ => a) continuousOn_const hψ hψc hψs
+
+theorem integral_mul_laplacian_chartPullback_eq_neg_sum_integral
+    {q : SmoothRiemannianMetric I_hs M}
+    (h : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (u : H1ComplDirichlet q) {ψ : EuStd → ℝ}
+    (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ Ω) :
+    (∫ x, H1ComplDirichletToLp q u x * laplacian (leviCivitaConnectionOfMetric h) h
+      (chartPullback I_hs α ψ) x ∂riemannianVolumeMeasure (I := I_hs) (M := M) h) =
+      -(∑ i, ∫ z in Ω, dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u z *
+        ((∑ j, chartInvGramOnE (I := I_hs) h α i j ((toEuclidean (E := EuN)).symm z) *
+          fderiv ℝ ψ z (EuclideanSpace.single j 1)) *
+            chartDensityOnE (I := I_hs) h α ((toEuclidean (E := EuN)).symm z))) := by
+  let test := smoothScalarDirichletChartPullback q α hψ hψc
+    (hψs.trans (subset_closure.trans hΩs))
+  have he := integral_adjoint_chartPullback_eq_neg_sum_integral h α hΩ hΩc hΩs 0 0 u
+    hψ hψc hψs
+  have hleft : (∫ x, H1ComplDirichletToLp q u x *
+      laplacian (leviCivitaConnectionOfMetric h) h (chartPullback I_hs α ψ) x
+      ∂riemannianVolumeMeasure (I := I_hs) (M := M) h) =
+      ∫ x, H1ComplDirichletToLp q u x *
+        (ΔGWithBoundary (I := I_hs) h test.smooth test.interior_support x -
+          tangentSectionAction (I := I_hs) 0 test.toFun x -
+          divergence (I := I_hs) (leviCivitaConnectionOfMetric h)
+            (0 : Cₛ^∞⟮I_hs; EuN, (TangentSpace I_hs : M → Type _)⟯) x * test.toFun x -
+          0 * test.toFun x) ∂riemannianVolumeMeasure (I := I_hs) (M := M) h := by
+    apply integral_congr_ae
+    exact Eventually.of_forall fun x => by
+      dsimp only
+      rw [tangentSectionAction_zero_of_X_zero (hx := by rfl)]
+      simp only [ContMDiffSection.coe_zero]
+      rw [divergence_zero]
+      simp only [zero_mul, sub_zero]
+      rw [Δ_g_with_boundary_def, divergence_g_with_boundary_eq_divergence_metricCov]
+      rfl
+  refine hleft.trans (he.trans ?_)
+  simp only [zero_mul, mul_zero, integral_zero, sub_zero]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i _
+  apply setIntegral_congr_fun hΩ.measurableSet
+  intro z hz
+  dsimp only
+  have hzt : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
+    obtain ⟨y, hy, rfl⟩ := hΩs (subset_closure hz)
+    simpa only [ContinuousLinearEquiv.symm_apply_apply] using interior_subset hy
+  have hb : chartCoeffOnE (I := I_hs) α 0 i ((toEuclidean (E := EuN)).symm z) = 0 := by
+    rw [chartCoeffOnE, chartCoeff_def,
+      (trivializationAt EuN (TangentSpace I_hs) α).apply_eq_prod_continuousLinearEquivAt ℝ _
+        (extChartAt_symm_mem_trivializationAt_baseSet α hzt)]
+    simp only [ContMDiffSection.coe_zero, Pi.zero_apply, map_zero, Finsupp.zero_apply]
+  rw [hb]
+  simp only [zero_mul, sub_zero]
+
 theorem dirichletWeakFormCompl_apply_eq_integral_chart
     {q : SmoothRiemannianMetric I_hs M}
     (h : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
@@ -413,27 +511,8 @@ theorem dirichletWeakFormCompl_apply_eq_integral_chart
         ((∑ j, A i j z * fderiv ℝ ψ z (EuclideanSpace.single j 1)) * ρ z -
           B i z * ρ z * ψ z)) - ∫ z in Ω, ρ z * v z * (a * ψ z) := by
   intro e ρ A B v
-  let test := smoothScalarDirichletChartPullback q α hψ hψc
-    (hψs.trans (subset_closure.trans hΩs))
-  have hsrc : tsupport test.toFun ⊆ (chartAt (EuclideanHalfSpace n) α).source := by
-    intro x hx
-    obtain ⟨y, ⟨z, hz, rfl⟩, rfl⟩ := tsupport_chartPullback_subset α hψc
-      ((hψs.trans (subset_closure.trans hΩs)).trans (image_mono interior_subset)) hx
-    have hz' := (hψs.trans (subset_closure.trans hΩs)) hz
-    obtain ⟨z', hz', heq⟩ := hz'
-    subst z
-    have hm := (extChartAt I_hs α).map_target (interior_subset hz')
-    simpa only [ContinuousLinearEquiv.symm_apply_apply, extChartAt_source] using hm
-  rw [dirichletWeakFormCompl_apply_eq_integral_adjoint,
-    integral_adjoint_chartPullback_eq_integral_euclidean h α X a
-      (H1ComplDirichletToLp q u) test ψ hsrc rfl]
-  refine (Sobolev.Euclidean.integral_adjoint_eq_integral_of_tsupport_subset
-    ((toEuclidean (E := EuN)).toHomeomorph.isOpenMap _ isOpen_interior).measurableSet
-      (subset_closure.trans hΩs) hψs v ρ
-      (fun z => localDivergence (I := I_hs) h α X ((extChartAt I_hs α).symm (e.symm z)))
-      (fun _ => a) A B).trans ?_
-  exact integral_chart_adjoint_sub_potential_eq_neg_sum_integral q h α hΩ hΩc hΩs X u
-    (b := fun _ => a) continuousOn_const hψ hψc hψs
+  rw [dirichletWeakFormCompl_apply_eq_integral_adjoint]
+  exact integral_adjoint_chartPullback_eq_neg_sum_integral h α hΩ hΩc hΩs X a u hψ hψc hψs
 
 
 private theorem dirichletLocalWeakPartialLp_smooth_chartPullback_coeFn
