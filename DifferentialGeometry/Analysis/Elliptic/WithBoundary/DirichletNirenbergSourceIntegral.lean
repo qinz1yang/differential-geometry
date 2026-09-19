@@ -252,4 +252,64 @@ theorem abs_integral_mul_integral_mul_smoothMul_dirichletNirenbergTest_le
   exact abs_integral_mul_smoothMul_dirichletNirenbergTest_le q α hΩ hΩc hΩs
     φ (v t) ht hη hηc hηb k hηd hε h hroom
 
+theorem abs_integral_mul_integral_mul_smoothMul_dirichletNirenbergTest_le_of_mul_chartDensity
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (φ : C^∞⟮I_hs, M; ℝ⟯)
+    (hφ : ∀ z ∈ Ω, chartDensity (I := I_hs) q α
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)) *
+        φ ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)) = 1)
+    (v : Lp (H1ComplDirichlet q) 2 μ)
+    (f : Lp (Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q)) 2 μ)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηb : ∀ x, |η x| ≤ 1) (k : Fin (Module.finrank ℝ EuN)) {N : ℝ}
+    (hηd : ∀ x, |fderiv ℝ η x (EuclideanSpace.single k 1)| ≤ N)
+    {ε : ℝ} (hε : 0 < ε) (h : ℝ) (hroom : Metric.cthickening |h| (tsupport η) ⊆ Ω)
+    {ζ : Z → ℝ} (hζ : MemLp ζ ∞ μ) (hζpos : ∀ᵐ t ∂μ, 0 ≤ ζ t) :
+    let x := fun z => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+    let U := fun t z => H1ComplDirichletToLp q (v t) (x z)
+    |∫ t, ζ t * (∫ y, f t y * H1ComplDirichletToLp q (smoothMulH1ComplDirichlet q φ
+        (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hroom (v t))) y
+        ∂riemannianVolumeMeasure (I := I_hs) (M := M) q) ∂μ| ≤
+      ε * (∫ t, ζ t * (∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (v t)) z)^2) ∂μ) +
+      (2 * ε)⁻¹ * (∫ t, ζ t * (∫ z in Ω, (f t (x z))^2) ∂μ) +
+      4 * ε * N^2 * (∫ t, ζ t * (∫ z in tsupport η,
+        (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (U t) z)^2) ∂μ) := by
+  intro x U
+  let L := (H1ComplDirichletToLp q).comp ((smoothMulH1ComplDirichlet q φ).comp
+    (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hroom))
+  have hS : Integrable (fun t => ∫ y, f t y * L (v t) y
+      ∂riemannianVolumeMeasure (I := I_hs) (M := M) q) μ := by
+    have hi := L2.integrable_inner (𝕜 := ℝ) f (L.compLpL 2 μ v)
+    apply hi.congr
+    filter_upwards [L.coeFn_compLpL v] with t ht
+    rw [ht, L2.inner_def]
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall fun y => by simp only [Real.inner_apply]
+  let R := chartRestrictionLp q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset)) 2
+  let F := Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) (R.compLpL 2 μ f)
+  have hFc : ∀ᵐ t ∂μ, (fun z => F (t, z)) =ᵐ[volume.restrict Ω] fun z => f t (x z) := by
+    filter_upwards [Lp.uncurry_compLpL_coeFn (𝕜 := ℝ) (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) R f]
+      with t ht
+    exact ht.trans (chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) 2 (f t))
+  have hF : Integrable (fun t => ∫ z in Ω, (f t (x z))^2) μ := by
+    apply (Lp.memLp F).integrable_sq.integral_prod_left.congr
+    filter_upwards [hFc] with t ht
+    exact integral_congr_ae (ht.mono fun z hz => congrArg (fun r : ℝ => r ^ 2) hz)
+  have hA := DifferentialGeometry.Analysis.Sobolev.integrable_integral_sq_cutoff_diffQuot_comp
+    hΩ.measurableSet (hη.continuous.memLp_of_hasCompactSupport hηc) k h hroom
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k) (Lp.memLp v)
+  have hB := integrable_integral_sq_diffQuot_chartInverse_on q α hΩ hΩc hΩs
+    (isClosed_tsupport η).measurableSet k h hroom (Lp.memLp v)
+  apply (integrable_mul_and_abs_integral_le_of_bound ε ((2 * ε)⁻¹) (4 * ε * N^2)
+    hS.aestronglyMeasurable hA hF hB ?_ hζ hζpos).2
+  exact Filter.Eventually.of_forall fun t =>
+    abs_integral_mul_smoothMul_dirichletNirenbergTest_le_of_mul_chartDensity
+      q α hΩ hΩc hΩs φ hφ (f t) (v t) hη hηc hηb k hηd hε h hroom
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
