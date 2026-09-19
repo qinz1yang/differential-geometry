@@ -9007,6 +9007,7 @@ import DifferentialGeometry.Topology.Manifold.CompactLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.FlowSection
 import DifferentialGeometry.Topology.Morse.SaddleImmersion
 import DifferentialGeometry.Topology.Morse.SaddleMinimumCoordinates
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedSheetPerturbation
 /-!
 # Differential geometry and geometric analysis
 -/

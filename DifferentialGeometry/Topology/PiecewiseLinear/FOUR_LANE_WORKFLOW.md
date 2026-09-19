@@ -45,9 +45,12 @@ verification, continue independent source work when possible. Never count an
 active turn containing waits as continuous mathematical work.
 
 The owner changed scheduled follow-up to hourly checks on 2026-09-19 UTC.
-The existing automation runs at minute 19 of each hour, with its final check
-at 14:19 UTC / 07:19 America/Los_Angeles. It retains quiet notifications for
-unchanged state. This cadence does not add mid-round task interventions.
+The existing automation runs at minute 19 of each hour. The former overnight
+window ended at 14:19 UTC / 07:19 America/Los_Angeles; the owner subsequently
+resumed work, with no new deadline. It retains quiet notifications for unchanged
+state. This cadence does not add mid-round task interventions. Current deliveries,
+acceptances and assignments are recorded in the resumed-stage ledger; the cutoff
+section below describes the earlier historical stopping point.
 
 ## Assignment and evidence
 

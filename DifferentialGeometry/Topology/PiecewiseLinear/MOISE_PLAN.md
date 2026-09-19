@@ -1582,3 +1582,39 @@ Compilation remains limited to two private checkers, one per lane, and at most
 one root worker and three Lean processes. The whole-root gate remains deferred;
 its next run requires an actual compatibility or stalled-work reason, not an
 elapsed-time trigger. Static root coverage is 9642 modules including the root.
+
+
+### Flat-sheet relative perturbation accepted; actual interior-disk gate
+
+Integration section 78 accepts frozen F 71b0b003e: one actual projected-disk
+perturbation theorem and five geometric helpers. One sheet moves and the other
+physical sheet remains fixed; a quantitative PL correction proves their
+boundary and interior crossings. Actual source patches, disk domain, target C,
+boundary preimage and small boundary homotopy are preserved. The theorem still
+assumes simultaneous flat coordinates, local injectivity, at-most-two fibers
+and a boundary-tangent displacement on J. Its explicit nonempty half-plane
+model checks the geometric core, not a complete NormalSystem. Full transition
+coverage, actual inner-perturbation matching and global relative normalization
+remain F's active round in the canonical half-space files.
+
+Six native declarations, seven key reuses, six mathematical fixture declarations
+and one audit-only macro pass the full axiom/lint check. Accepted Lean is
++590/-0 including one root import. Root static coverage is 9643 modules;
+the whole-root compilation gate remains deferred.
+
+M304's new 41220900e general ambient-inclusion kernel layer is frozen with
+7a/96 and still awaits independent acceptance. Its primary has removed ambient
+simple connectivity; the full original-K producer still assumes connected K/L
+and real ambient dimension three. The next round has been dispatched at its
+completed delivery: use the actual boundary kernel and the explicitly unresolved
+Moise252 to construct an essential embedded disk in the original K interior,
+prove old-boundary avoidance and essentiality transport to L, and supply the
+actual original-shell compression step. This does not prove Moise252 or the
+full arbitrary-ambient/disconnected/nonseparating Moise264 contract. Do not
+repeat accepted compression-component, target-separation or Betti arithmetic.
+
+Current frozen independent queues are M304 through 41220900e, h e85a235df and
+E3 c10b83586. S through c0 and F through71 are accepted. Existing active lanes
+continue unchanged; deferred acceptance messages wait for their next completed
+delivery. The task cadence remains hourly, without a new deadline or automatic
+root rebuild, and existing two-private-checker resource limits remain in force.

@@ -3759,3 +3759,90 @@ tasks and model settings, has no new deadline, and only hands off at deliveries
 or genuine urgent stops. Administrative compiler leases were renewed to
 2026-09-19 21:23:56 UTC without creating a mathematical stopping deadline.
 Earlier overnight records and the morning report remain intact.
+
+## 78. Flat-sheet relative displacement accepted; ambient-kernel handoff
+
+F 71b0b003e is independently accepted from its frozen bytes. The new
+LoopTheorem/ProjectedSheetPerturbation leaf contains one public actual-disk
+perturbation theorem and five private geometric lemmas. A displacement h=id+a
+moves one sheet while the other physical sheet stays fixed. A second explicit
+correction x -> x + ell(a(x)) d, with d in the first plane and in the boundary
+height kernel, gives simultaneous PL straightening. Bounds on both Lipschitz
+constants make these maps homeomorphisms. This proves boundary and interior
+crossings of the moved sheet with the original other sheet; uniform C0
+closeness alone is not used as crossing stability.
+
+For a supplied actual locally injective SingularTwoCell with fibers of size
+at most two, the public theorem modifies its outer patch P, fixes Q and P's
+complement, and retains the same disk domain, target C and exact boundary
+preimage. The original seam is outside closure U, and the actual embedded
+patches A/B cover all fibers over U. On the compact prescribed set J the
+modified map equals D(x)+t*v(D(x)). Compact thickening about Z ensures the
+produced crossing neighborhood W and its inverse images stay in V, where
+the original sheets are simultaneously flat. The straight boundary homotopy
+stays in the original frontier C and fixes original images outside U. The
+perturbed disk's boundary image is identified exactly; the original boundary
+image is not claimed to stay pointwise fixed.
+
+One fresh module compiles in 13.769 seconds; the final combined audit takes
+43.863 seconds including admission. All six native declarations, seven
+critical reuses and six mathematical fixture declarations have only approved
+foundational axioms. The complete native and external suites pass thirteen
+applicable environment linters, with zero final diagnostics. Whole-module
+enumeration also finds one audit-only macro used to name a private producer.
+The first audit count omitted this macro; the final census includes and
+checks it too. This is a diagnostic enumeration repair, not a project proof
+change. Both external audit attempts are frozen in the receipt.
+
+The six fixture declarations describe one actual coordinate-half-plane family:
+three coordinate functionals, a type alias, a plane-rank lemma, and a nonidentity
+supported motion with actual boundary and interior crossings. The prescribed
+nonzero displacement at the origin extends inside the radius-two ball; h(0)
+is proved nonzero, and the other physical plane stays fixed. This checks the
+private geometric producer. It is not a complete SingularTwoCell or
+NormalSystem instance, and the seven total external declarations are not
+seven independent mathematical models.
+
+The accepted source still requires simultaneous flat coordinates and a
+displacement taking values in the boundary-height kernel everywhere on J.
+Matching arbitrary actual inner general-position perturbations, compatible
+charts across the whole transition region, full relative normalization and
+Moise Lemma 2 remain unfinished. Original local injectivity and the two-fiber
+bound are still inputs. F's active canonical HalfSpacePerturbation /
+HalfSpaceGeneralPosition round continues without a status interruption.
+
+Accepted Lean delta is +590/-0, comprising 589 source lines and one root
+import. The one new leaf is registered exactly once. Root static reachability
+is 9643 project modules including the root, with no missing sources or cycles.
+Nine private prerequisite objects match current raw sources and previously
+accepted object hashes. Full-root compilation remains deferred. Receipt:
+.lake/verified-fiftyseventh-lane-delivery-20260919.json.
+
+M304 completed and pushed 41220900e after 96ba235a4. Its checkpoint directory
+was copied and checked as 98 frozen files, including fifteen source/object/
+receipt families; the manifest hash is
+8f96c466ccc27fb5683f03258247ae40693fe8eff66d16ad4ccc7e5dbf06c0ea.
+This source is queued with 7a/96, not independently accepted. The primary
+closed-cover and actual cut-boundary kernel theorems now accept a nontrivial
+kernel of the original ambient inclusion without requiring ambient simple
+connectivity. The full geometric producer still retains connected K/L and
+real ambient dimension three. The actual test ambient remains the original
+ball with its beta-two torus; a nonsimply-connected geometric test is not
+claimed.
+
+At that completed delivery boundary, M304 received its next full Astra max
+round: turn this actual boundary kernel into an essential embedded interior
+disk for the same original K/L, explicitly consuming the unresolved Moise252,
+and supply the missing disk/circle inputs of the actual original-shell
+compression consumer. Prove avoidance of the old K boundary and transport of
+the exact boundary and essentiality statements. Do not assume the desired
+disk or final closed-side kernel. Full disconnected-surface, nonseparating-cut
+and arbitrary-ambient Moise264 generality remain separate unless the actual
+consumer requires them; reducing to one surface component must not silently
+allow the disk to meet the others. F/E3/h/S remain on their active lanes.
+
+The workflow's introductory hourly-cadence paragraph now explicitly distinguishes
+the historical 14:19 cutoff from the owner-authorized resumed stage with no
+new deadline. The old morning record is preserved. Current independent queues
+are M304 through 41220900e, h e85a235df and E3 c10b83586. Automation remains
+hourly and receives these acceptance and handoff updates through the app API.
