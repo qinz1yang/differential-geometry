@@ -1,3 +1,4 @@
+import Mathlib.Topology.UniformSpace.UniformConvergence
 import DifferentialGeometry.Analysis.Convex.Differentiability
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
@@ -51,6 +52,20 @@ theorem supConvolutionOn_sub_mem_Icc_of_lipschitzOnWith
     rintro _ ⟨y, hy, rfl⟩
     exact quadratic_penalty_bound hu hε hx hy
   exact ⟨sub_nonneg.mpr hlo, by linarith⟩
+
+theorem tendstoUniformlyOn_supConvolutionOn_of_lipschitzOnWith
+    {X : Type*} [PseudoMetricSpace X] {u : X → ℝ} {s : Set X} {K : ℝ≥0}
+    (hu : LipschitzOnWith K u s) :
+    TendstoUniformlyOn (fun ε => supConvolutionOn s u ε) u (𝓝[>] (0 : ℝ)) s := by
+  have ht : Tendsto (fun ε : ℝ => ε * (K : ℝ) ^ 2 / 2) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h : Continuous (fun ε : ℝ => ε * (K : ℝ) ^ 2 / 2) := by fun_prop
+    simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro δ hδ
+  filter_upwards [self_mem_nhdsWithin, ht.eventually_lt_const hδ] with ε hε he x hx
+  have hb := supConvolutionOn_sub_mem_Icc_of_lipschitzOnWith hu hε hx
+  rw [Real.dist_eq, abs_sub_comm, abs_of_nonneg hb.1]
+  exact hb.2.trans_lt he
 
 theorem exists_supConvolutionOn_eq_of_isCompact
     {u : X → ℝ} {s : Set X} (hs : IsCompact s) (hne : s.Nonempty)

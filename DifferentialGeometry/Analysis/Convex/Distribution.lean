@@ -18,8 +18,10 @@ private theorem integral_hessian_apply_le_of_integral_identity
     (hB : ∀ᵐ x ∂μ, (B x).flip = B x ∧ ∃ p : E →L[ℝ] ℝ,
       (fun y => u y - u x - p (y - x) - (1 / 2 : ℝ) * B x (y - x) (y - x))
         =o[𝓝 x] (fun y => ‖y - x‖ ^ 2))
+    {Ω : Set E} (hΩ : IsOpen Ω)
     {φ : E → ℝ} (hφ : Continuous φ) (hφc : HasCompactSupport φ)
-    (hφ0 : ∀ x, 0 ≤ φ x) {V : E → E} (hV : Continuous V)
+    (hφs : tsupport φ ⊆ Ω) (hφ0 : ∀ x, 0 ≤ φ x)
+    {V : E → E} (hV : ContinuousOn V Ω)
     {K : E → ℝ} (hK : Continuous K) (hKc : HasCompactSupport K)
     (hidentity : ∀ g : E → ℝ, ContDiff ℝ 2 g →
       (∫ x, fderiv ℝ (fderiv ℝ g) x (V x) (V x) * φ x ∂μ) = ∫ x, g x * K x ∂μ) :
@@ -81,13 +83,16 @@ private theorem integral_hessian_apply_le_of_integral_identity
     simp_rw [hIBP]
     simpa only [Function.comp_def, smul_eq_mul, mul_comm] using hI.comp hrt
   have hFi (n : ℕ) : Integrable (fun x => fderiv ℝ (fderiv ℝ (g (r n))) x (V x) (V x) * φ x) μ := by
-    have hc : Continuous (fun x => fderiv ℝ (fderiv ℝ (g (r n))) x (V x) (V x)) :=
-      ((((hg (hr n)).fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)).clm_apply
+    have hc : ContinuousOn (fun x => fderiv ℝ (fderiv ℝ (g (r n))) x (V x) (V x)) Ω :=
+      ((((hg (hr n)).fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)).continuousOn.clm_apply
         hV).clm_apply hV
-    exact (hc.mul hφ).integrable_of_hasCompactSupport hφc.mul_left
+    exact ((hc.mul hφ.continuousOn).continuous_of_tsupport_subset hΩ
+      (tsupport_mul_subset_right.trans hφs)).integrable_of_hasCompactSupport hφc.mul_left
   have hlower : Integrable (fun x => -A (V x) (V x) * φ x) μ := by
-    have hc : Continuous (fun x => -A (V x) (V x) * φ x) := by fun_prop
-    exact hc.integrable_of_hasCompactSupport hφc.mul_left
+    have hc : ContinuousOn (fun x => -A (V x) (V x) * φ x) Ω :=
+      (((A.continuous.comp_continuousOn hV).clm_apply hV).neg).mul hφ.continuousOn
+    exact (hc.continuous_of_tsupport_subset hΩ
+      (tsupport_mul_subset_right.trans hφs)).integrable_of_hasCompactSupport hφc.mul_left
   have hbound (n : ℕ) : (fun x => -A (V x) (V x) * φ x) ≤ᵐ[μ]
       (fun x => fderiv ℝ (fderiv ℝ (g (r n))) x (V x) (V x) * φ x) :=
     ae_of_all μ fun x => mul_le_mul_of_nonneg_right (hlow (hr n) x) (hφ0 x)
@@ -111,8 +116,10 @@ theorem ConvexOn.integral_hessian_vector_field_le
     (hB : ∀ᵐ x ∂μ, (B x).flip = B x ∧ ∃ p : E →L[ℝ] ℝ,
       (fun y => u y - u x - p (y - x) - (1 / 2 : ℝ) * B x (y - x) (y - x))
         =o[𝓝 x] (fun y => ‖y - x‖ ^ 2))
+    {Ω : Set E} (hΩ : IsOpen Ω)
     {φ : E → ℝ} (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ)
-    (hφ0 : ∀ x, 0 ≤ φ x) {V : E → E} (hV : ContDiff ℝ 2 V) :
+    (hφs : tsupport φ ⊆ Ω) (hφ0 : ∀ x, 0 ≤ φ x)
+    {V : E → E} (hV : ContDiffOn ℝ 2 V Ω) :
     Integrable (fun x => B x (V x) (V x) * φ x) μ ∧
       (∫ x, B x (V x) (V x) * φ x ∂μ) ≤
         ∑ i, ∑ j, ∫ x, u x * fderiv ℝ
@@ -124,9 +131,11 @@ theorem ConvexOn.integral_hessian_vector_field_le
       (continuousOn_univ.mp (hu.continuousOn isOpen_univ)).sub hq
     simpa only [add_sub_cancel_right] using h
   let ψ (i j : ι) : E → ℝ := fun x => b.repr (V x) i * b.repr (V x) j * φ x
+  have hψs (i j : ι) : tsupport (ψ i j) ⊆ Ω := tsupport_mul_subset_right.trans hφs
   have hψ (i j : ι) : ContDiff ℝ 2 (ψ i j) :=
-    (((b.coord i).toContinuousLinearMap.contDiff.comp hV).mul
-      ((b.coord j).toContinuousLinearMap.contDiff.comp hV)).mul hφ
+    ((((b.coord i).toContinuousLinearMap.contDiff.comp_contDiffOn hV).mul
+      ((b.coord j).toContinuousLinearMap.contDiff.comp_contDiffOn hV)).mul
+        hφ.contDiffOn).contDiff_of_tsupport_subset hΩ (hψs i j)
   have hψc (i j : ι) : HasCompactSupport (ψ i j) := hφc.mul_left
   let D (i j : ι) : E → ℝ := fun x => fderiv ℝ (fderiv ℝ (ψ i j)) x (b j) (b i)
   have hD (i j : ι) : Continuous (D i j) :=
@@ -135,6 +144,9 @@ theorem ConvexOn.integral_hessian_vector_field_le
   have hDc (i j : ι) : HasCompactSupport (D i j) :=
     (((hψc i j).fderiv ℝ).fderiv_apply ℝ (b j)).comp_left
       (g := fun C : E →L[ℝ] ℝ => C (b i)) rfl
+  have hDs (i j : ι) : tsupport (D i j) ⊆ Ω :=
+    ((tsupport_comp_subset (g := fun C : E →L[ℝ] ℝ => C (b i)) rfl _).trans
+      ((tsupport_fderiv_apply_subset ℝ (b j)).trans (tsupport_fderiv_subset ℝ))).trans (hψs i j)
   let K : E → ℝ := fun x => ∑ i, ∑ j, D i j x
   have hK : Continuous K := continuous_finsetSum _ fun i _ =>
     continuous_finsetSum _ fun j _ => hD i j
@@ -154,13 +166,21 @@ theorem ConvexOn.integral_hessian_vector_field_le
       (fun i _ => integrable_finsetSum Finset.univ (fun j _ => hi i j))]
     exact Finset.sum_congr rfl (fun i _ => integral_finsetSum Finset.univ (fun j _ => hi i j))
   obtain ⟨hi, hle⟩ := integral_hessian_apply_le_of_integral_identity A hA hu hB
-    hφ.continuous hφc hφ0 hV.continuous hK hKc (fun f hf => by
+    hΩ hφ.continuous hφc hφs hφ0 hV.continuousOn hK hKc (fun f hf => by
       rw [hsum f hf.continuous]
       have h := DifferentialGeometry.Analysis.integral_fderiv_fderiv_apply_mul_eq
-        (μ := μ) b isOpen_univ (hf.differentiable (by norm_num)).differentiableOn
+        (μ := μ) b hΩ (hf.differentiable (by norm_num)).differentiableOn
         (hf.fderiv_right (m := 1) (by norm_num)).locallyLipschitz.locallyLipschitzOn
-        hV.contDiffOn hV.contDiffOn hφ hφc (subset_univ _)
-      simpa only [Measure.restrict_univ] using h)
+        hV hV hφ hφc hφs
+      have hz (x : E) (hx : x ∉ Ω) :
+          fderiv ℝ (fderiv ℝ f) x (V x) (V x) * φ x = 0 := by
+        rw [image_eq_zero_of_notMem_tsupport (f := φ) (fun h => hx (hφs h)), mul_zero]
+      have hDz (i j : ι) : (∫ x in Ω, f x * D i j x ∂μ) = ∫ x, f x * D i j x ∂μ :=
+        setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => by
+          rw [image_eq_zero_of_notMem_tsupport (f := D i j) (fun h => hx (hDs i j h)), mul_zero])
+      change (∫ x in Ω, fderiv ℝ (fderiv ℝ f) x (V x) (V x) * φ x ∂μ) =
+        ∑ i, ∑ j, ∫ x in Ω, f x * D i j x ∂μ at h
+      simpa only [setIntegral_eq_integral_of_forall_compl_eq_zero hz, hDz] using h)
   exact ⟨hi, hle.trans_eq (hsum u huc)⟩
 
 theorem ConvexOn.integral_hessian_apply_le
@@ -177,8 +197,8 @@ theorem ConvexOn.integral_hessian_apply_le
     Integrable (fun x => B x v v * φ x) μ ∧
       (∫ x, B x v v * φ x ∂μ) ≤ ∫ x, u x * fderiv ℝ (fderiv ℝ φ) x v v ∂μ := by
   let b := Module.finBasis ℝ E
-  obtain ⟨hi, hle⟩ := hu.integral_hessian_vector_field_le b A hA hB hφ hφc hφ0
-    (V := fun _ => v) contDiff_const
+  obtain ⟨hi, hle⟩ := hu.integral_hessian_vector_field_le b A hA hB isOpen_univ hφ hφc (subset_univ _) hφ0
+    (V := fun _ => v) contDiffOn_const
   have huc : Continuous u := by
     have hq : Continuous (fun x => (1 / 2 : ℝ) * A x x) := by fun_prop
     have h : Continuous (fun x => (u x + (1 / 2 : ℝ) * A x x) - (1 / 2 : ℝ) * A x x) :=
