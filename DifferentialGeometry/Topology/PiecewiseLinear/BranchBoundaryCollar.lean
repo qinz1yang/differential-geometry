@@ -7,6 +7,24 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BranchSeparationBoundary
 
 /-!
 # Branch boundary collar
+
+## Status (2026-09-20)
+
+`NormalSingularCellData.exists_separated_cell_boundary_preimage_along_boundary_branch` has
+no instance at a boundary branch: its chart data `E`, `e`, `hesrc`, the band and placement
+clauses `hAt`, `hBt`, `hSK`, `hW`, `hA`, `hB`, `hdom`, `hinjP`, `hinjQ`, `hPcQ` and the
+boundary model `hBdE`, `hBd₁` are jointly refuted by
+`NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`): `hSK`, `hdom`, `hinjP`, `hinjQ`, `hPcQ` put every carrier point
+in `D '' P ∩ D '' Q`, `hA` and `hB` then confine it to `slideBandA c ∩ slideBandQ a b`, inside
+the first coordinate axis, which the single plane `(e y).1 = 0` meets only at the origin, while
+a boundary branch meets `BdM` in two distinct carrier points. The theorem is a correct
+conditional statement and is off the dependency path of Moise's Lemma 2. The collar transfer
+lemmas above it (`image_inter_boundary_of_collarExtension`,
+`range_boundary_subset_of_collarExtension`) are general and reusable. The live boundary-branch
+route is the cross seam resolution (`LoopTheorem/CrossSeamResolution.lean`), whose missing
+input is `IsCrossSeamTubeProducer`; a future slide route needs a *double-ended* boundary model.
+See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology

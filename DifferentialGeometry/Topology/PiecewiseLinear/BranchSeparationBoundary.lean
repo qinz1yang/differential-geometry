@@ -8,6 +8,21 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BranchSlideEndpoint
 
 /-!
 # Branch separation boundary
+
+## Status (2026-09-20)
+
+`NormalSingularCellData.exists_separated_along_boundary_branch` produces the slide `h`, and
+`exists_separated_cell_along_boundary_branch` in addition the slid cell
+`P.piecewise (h ∘ D) D`, from the single-plane boundary chart of `exists_separated_slide_fwd`
+above. Their boundary reflection and displacement clauses are read at `Bd := BdM` by supplying
+`hBdE`, `hBd₁`, and that combination at a boundary branch is refuted by
+`NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`); see also
+`NormalSingularCellData.exists_separated_cell_boundary_preimage_along_boundary_branch`
+(`BranchBoundaryCollar.lean`). These results stay valid as stated but have no consumer on
+the path of Moise's Lemma 2 today. The live boundary-branch route is the cross seam resolution
+(`LoopTheorem/CrossSeamResolution.lean`), whose missing input is `IsCrossSeamTubeProducer`.
+See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology

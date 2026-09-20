@@ -9,6 +9,23 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
 
 /-!
 # Branch complexity drop
+
+## Status (2026-09-20)
+
+`eq_of_separated_fiber`, `vertexCollisionPairs_subset_of_doublePointSet_subset_sdiff`,
+`simplicialComplexity_lt_of_doublePointSet_subset_sdiff` and
+`exists_simplicialComplexity_lt_of_doublePointSet_subset_sdiff` are general and reusable: a
+double point set losing a branch drops the simplicial complexity. They mention no chart and no
+boundary.
+
+Only `NormalSingularCellData.exists_separated_cell_simplicialComplexity_lt_along_boundary_branch`
+consumes the boundary slide chart data `hSK`, `hA`, `hB`, `hdom`, `hinjP`, `hinjQ`, `hPcQ`.
+Applied on the path of Moise's Lemma 2, with `cb` a boundary branch and the reflection clause of
+its conclusion read at `Bd := BdM` through `hBdE`, `hBd₁`, that set is refuted by
+`NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`), so that one endpoint has no instance there. The live
+boundary-branch route is the cross seam resolution (`LoopTheorem/CrossSeamResolution.lean`),
+whose missing input is `IsCrossSeamTubeProducer`. See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology

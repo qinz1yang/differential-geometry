@@ -10,6 +10,22 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ModelSlideFwd
 
 /-!
 # Lune cell
+
+## Status (2026-09-20)
+
+`exists_lune_singularTwoCell` builds the lune cell inside the boundary slide chart, sharing `E`,
+`e`, `hsupp`, `hBdE` and `hBd₁` with
+`NormalSingularCellData.exists_separated_cell_boundary_preimage_along_boundary_branch`
+(`BranchBoundaryCollar.lean:81`). Its intended consumer supplies that chart together with the
+placement clauses `hSK`, `hA`, `hB`, `hdom`, `hinjP`, `hinjQ`, `hPcQ` at a boundary branch, and
+that combined set is refuted by
+`NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`): the chart straightens the branch onto the axis, which meets the
+boundary plane `(e y).1 = 0` only at the origin, while a boundary branch has two distinct
+endpoints on `BdM`. So this file has no consumer on the path of Moise's Lemma 2 today; the lune
+model `luneModelMap` and its lemmas are untouched and stay valid. The live boundary-branch
+route is the cross seam resolution (`LoopTheorem/CrossSeamResolution.lean`), whose missing
+input is `IsCrossSeamTubeProducer`. See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology

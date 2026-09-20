@@ -8,6 +8,20 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
 
 /-!
 # Branch separation
+
+## Status (2026-09-20)
+
+`NormalSingularCellData.exists_separated_along_branch` and
+`exists_separated_cell_along_branch` carry only a *tube* boundary model: their `Bd₁` clause is
+read through `(e y).2 ∈ T`, a condition on the last two coordinates, so the vacuity below does
+not touch them and they remain the general branch slide. What is dead is the single-plane
+specialisation: replacing that clause by `hBdE`, `hBd₁` with `(e y).1 = 0` at a boundary branch,
+as `BranchSeparationBoundary.lean` and `BranchBoundaryCollar.lean` do, gives a hypothesis set
+refuted by `NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`), so no boundary-branch consumer of this file lies on the path of
+Moise's Lemma 2 today. The live boundary-branch route is the cross seam resolution
+(`LoopTheorem/CrossSeamResolution.lean`), whose missing input is `IsCrossSeamTubeProducer`.
+See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology

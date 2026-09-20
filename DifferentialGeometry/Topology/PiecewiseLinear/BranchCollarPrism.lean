@@ -8,6 +8,22 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PrismArc
 
 /-!
 # Branch collar prism
+
+## Status (2026-09-20)
+
+`exists_boundarySweep_of_prism_over_arc` and
+`exists_collarExtension_image_inter_boundary_of_prism_over_arc` collar the slid cell
+`P.piecewise (hslide ∘ D) D` by a prism over a boundary arc, for the slide route of
+`BranchSeparationBoundary.lean` / `BranchBoundaryCollar.lean`. That route has no instance at a
+boundary branch: `NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`) refutes the chart hypotheses of
+`NormalSingularCellData.exists_separated_cell_boundary_preimage_along_boundary_branch`
+(`BranchBoundaryCollar.lean:81`), so no consumer of this file lies on the path of Moise's
+Lemma 2 today. The results, and `prismSweep` with the PL lemmas above it, stay valid as stated;
+any future consumer must supply a *double-ended* boundary model, met at both endpoints of the
+branch. The live boundary-branch route is the cross seam resolution
+(`LoopTheorem/CrossSeamResolution.lean`), whose missing input is `IsCrossSeamTubeProducer`.
+See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology

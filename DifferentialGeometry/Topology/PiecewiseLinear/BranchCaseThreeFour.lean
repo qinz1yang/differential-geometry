@@ -8,6 +8,22 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordFourArcs
 
 /-!
 # Branch case three four
+
+## Status (2026-09-20)
+
+`exists_four_arc_word_and_simplicialComplexity_lt_of_boundaryBranch` takes the binders `E`, `e`,
+`hsupp`, ..., `hclean` of
+`NormalSingularCellData.exists_separated_cell_simplicialComplexity_lt_along_boundary_branch`
+(`BranchComplexityDrop.lean`), that is, the boundary slide chart data. The statement itself is
+not vacuous, since its conclusion quantifies `Bd` and `Bd₁`. But applying it at `Bd := BdM`,
+which is what Moise's Lemma 2 needs, means supplying `hBdE` and `hBd₁` alongside `hc`, `hSK`,
+`hA`, `hB`, `hdom`, `hinjP`, `hinjQ`, `hPcQ`, and that set is refuted by
+`NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`
+(`BoundarySlideVacuity.lean`). The four-arc-word half of the conclusion is independently
+available as `NormalSingularCellData.exists_boundary_four_arc_word_of_boundaryBranch`
+(`BoundaryWordFourArcs.lean`), which is on the live path; the live boundary-branch route is the
+cross seam resolution (`LoopTheorem/CrossSeamResolution.lean`), whose missing input is
+`IsCrossSeamTubeProducer`. See `HANDOFF_CODEX_L.md` §81.3-81.4.
 -/
 
 open Set Topology
