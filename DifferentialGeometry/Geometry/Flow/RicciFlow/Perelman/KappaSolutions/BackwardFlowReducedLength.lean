@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthTimeComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTailEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowCompactness
@@ -454,6 +456,45 @@ theorem backward_flow_limit_redLength_le_quadratic_distance
   have hsquare := (sq_le_sq₀ (Real.sqrt_nonneg _) (by positivity)).mpr hroot
   rw [Real.sq_sqrt hnonneg] at hsquare
   exact htime.trans (mul_le_mul_of_nonneg_left hsquare (by positivity))
+
+theorem normGradSqFun_backward_flow_limit_redLength_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M] {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    {t : ℝ} (ht : t < 1)
+    (C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) t))
+    (href : ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
+    (hcomplete : MetricComplete (L.atTime t))
+    (ell : L.M → ℝ)
+    (hell : ∀ x, Tendsto
+      (fun n => redLength F.S 0 p (Phi.map n x) (tau (subseq n) * (1 - t))) atTop (𝓝 (ell x)))
+    (x : L.M) : Geometry.Operator.normGradSqFun (L.S.base.metric t) ell x ≤ 3 * ell x / (1 - t) := by
+  have htheta : 0 < 1 - t := sub_pos.mpr ht
+  have hell0 (y : L.M) : 0 ≤ ell y := by
+    apply ge_of_tendsto (hell y)
+    exact Eventually.of_forall fun n =>
+      backward_length_nonneg F hF p (Phi.map n y) (mul_pos (htau (subseq n)) htheta)
+  let K : ℝ≥0 := ⟨Real.sqrt 3 / (2 * Real.sqrt (1 - t)), by positivity⟩
+  have hLip (y z : L.M) : edist (Real.sqrt (ell y)) (Real.sqrt (ell z)) ≤
+      (K : ENNReal) * riemannianEDistOf (L.S.base.metric t) y z := by
+    have h := abs_sqrt_backward_flow_limit_redLength_sub_le_distance
+      F hF p tau htau q L Phi ht C href hcomplete ell hell y z
+    have h' : |Real.sqrt (ell y) - Real.sqrt (ell z)| ≤
+        (K : ℝ) * (riemannianEDistOf (L.S.base.metric t) y z).toReal := h
+    have he := ENNReal.ofReal_le_ofReal h'
+    rw [ENNReal.ofReal_mul K.coe_nonneg,
+      ENNReal.ofReal_toReal (riemannianEDistOf_ne_top (L.S.base.metric t) y z)] at he
+    simpa only [edist_dist, Real.dist_eq, ENNReal.coe_nnreal_eq] using he
+  have h := Geometry.Riemannian.grad_norm_sq_le_of_sqrt_lipschitz (L.S.base.metric t) hell0 hLip x
+  calc
+    _ ≤ 4 * (K : ℝ) ^ 2 * ell x := h
+    _ = _ := by
+      change 4 * (Real.sqrt 3 / (2 * Real.sqrt (1 - t))) ^ 2 * ell x = 3 * ell x / (1 - t)
+      rw [div_pow, mul_pow, Real.sq_sqrt htheta.le, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)]
+      field_simp
+      ring
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
