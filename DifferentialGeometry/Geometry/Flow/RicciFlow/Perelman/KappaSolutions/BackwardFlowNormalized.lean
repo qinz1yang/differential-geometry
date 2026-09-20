@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeRigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowRigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassNonflat
 
@@ -85,7 +86,7 @@ theorem backward_flow_reducedLength_limit_normalized_shrinker_and_mass
     convert h using 1
     rfl
 
-theorem backward_flow_reducedLength_limit_scalar_pos_of_asymptoticReducedVolume_ne_one
+theorem backward_flow_reducedLength_limit_scalar_pos
     (F : PointedFlowData.{u, 0, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
     (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
@@ -118,9 +119,10 @@ theorem backward_flow_reducedLength_limit_scalar_pos_of_asymptoticReducedVolume_
       ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData
         (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) t) i)
     (hcomplete : ∀ t ∈ Icc (1 - T) (0 : ℝ), MetricComplete (L.atTime t))
-    (hmass : asymptoticReducedVolume F.S 0 p ≠ 1)
     {t : ℝ} (ht : t ∈ Ioo 1 T) (x : L.M) :
     0 < metricScalarAt (L.S.base.metric (1 - t)) x := by
+  have hmass : asymptoticReducedVolume F.S 0 p ≠ 1 :=
+    (ancient_asymptoticReducedVolume_lt_one F hdim hF p).ne
   let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := ⟨by omega⟩
   let _ : ConnectedSpace L.M := { toNonempty := ⟨L.basepoint⟩ }
   obtain ⟨hf, hsol, heq⟩ := backward_flow_reducedLength_limit_normalized_shrinker_and_mass
