@@ -32,6 +32,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.SymmetricCutoff
 import DifferentialGeometry.Analysis.Calculus.CutoffIntegral
 import DifferentialGeometry.Analysis.Calculus.CutoffPerturbation
 import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
+import DifferentialGeometry.Analysis.Calculus.Rademacher
 import DifferentialGeometry.Analysis.Calculus.Derivative.AlmostEverywhereLipschitz
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.BoundaryNormalDerivative
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianCoordinates
@@ -11374,7 +11375,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHamiltonJacobi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatTest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatComparison
+import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
+import DifferentialGeometry.Analysis.Viscosity.Differentiability
 import DifferentialGeometry.Analysis.Viscosity.Stability
 import DifferentialGeometry.Analysis.Viscosity.ColeHopf
 import DifferentialGeometry.Analysis.Viscosity.Comparison

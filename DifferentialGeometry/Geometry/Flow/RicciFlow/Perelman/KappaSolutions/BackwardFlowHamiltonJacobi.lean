@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import Mathlib.Topology.Order.ProjIcc
 import DifferentialGeometry.Topology.LocallyUniformConvergence
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
+import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
+import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Spacetime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthContinuity
 import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHamiltonJacobiPullback
@@ -15,7 +17,7 @@ open Filter Set
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
-open scoped _root_.Manifold ContDiff BigOperators _root_.Topology
+open scoped _root_.Manifold ContDiff BigOperators _root_.Topology NNReal
 universe u uE uH
 
 section Coordinates
@@ -542,6 +544,83 @@ theorem backward_flow_reducedLength_limit_hamilton_jacobi_tests_in_chart
   rw [scaleMetric_inner] at hh
   exact hh
 
+
+theorem backward_flow_reducedLength_limit_hamilton_jacobi_ae_in_chart
+    [MeasurableSpace E] [BorelSpace E]
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M]
+    {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M)
+    (hG : ∀ K : Set L.M, IsCompact K → ∀ᶠ n in atTop,
+      ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source n ∧
+        ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+          (G n t).inner x v w = (((backwardFlowSequence F tau htau q).term (subseq n)).S.base.metric t).inner
+            (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x w))
+    (hmetric : ∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc a b,
+        metricDerivNormSupOn K r (G n t) (L.S.base.metric t) R < epsilon)
+    {T : ℝ} (hT : 1 < T) (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hell : ∀ Q : Set (L.M × Icc (1 : ℝ) T), IsCompact Q → TendstoUniformlyOn
+      (fun n w => redLength F.S 0 p (Phi.map n w.1) (tau (subseq n) * w.2)) ell atTop Q)
+    (hLip : ∀ B : ℝ, 0 ≤ B → ∃ K : ℝ≥0,
+      ∀ x ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
+      ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
+      ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
+        (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
+    (a : L.M) (μ : MeasureTheory.Measure (ℝ × E)) [μ.IsAddHaarMeasure] :
+    let f := fun w : ℝ × E => ell ((extChartAt I a).symm w.2, projIcc 1 T hT.le w.1)
+    ∀ᵐ z ∂μ.restrict (Ioo 1 T ×ˢ (extChartAt I a).target),
+      fderiv ℝ f z (1, 0) + (1 / 2 : ℝ) *
+        ∑ k : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          chartInvGramOnE (I := I) (L.S.base.metric (1 - z.1)) a k j z.2 *
+            fderiv ℝ f z (0, chartModelBasis E j) * fderiv ℝ f z (0, chartModelBasis E k) -
+        (1 / 2 : ℝ) * metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2) +
+        f z / (2 * z.1) = 0 := by
+  let _ : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ : LocallyCompactSpace L.M := ChartedSpace.locallyCompactSpace H L.M
+  let f := fun w : ℝ × E => ell ((extChartAt I a).symm w.2, projIcc 1 T hT.le w.1)
+  let Ω := Ioo (1 : ℝ) T ×ˢ (extChartAt I a).target
+  have hΩ : IsOpen Ω := isOpen_Ioo.prod (isOpen_extChartAt_target (I := I) a)
+  have hf : LocallyLipschitzOn Ω f :=
+    (Geometry.Riemannian.locallyLipschitzOn_comp_extChartAt_symm_of_spacetime_bounds
+      (L.S.base.metric 0) L.basepoint hT.le ell hLip a).mono
+      (fun _ hz => ⟨mem_univ _, hz.2⟩)
+  let HJ : (ℝ × E) → ℝ → ((ℝ × E) →L[ℝ] ℝ) → ℝ := fun z r p =>
+    p (1, 0) + (1 / 2 : ℝ) * ∑ k : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+      chartInvGramOnE (I := I) (L.S.base.metric (1 - z.1)) a k j z.2 *
+        p (0, chartModelBasis E j) * p (0, chartModelBasis E k) -
+      (1 / 2 : ℝ) * metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2) +
+      r / (2 * z.1)
+  apply DifferentialGeometry.Analysis.HamiltonJacobi.ae_eq_zero_of_tests_of_locallyLipschitzOn
+    (H := HJ) hΩ hf
+  · intro z hz φ hφ
+    exact (backward_flow_reducedLength_limit_hamilton_jacobi_tests_in_chart
+      F hF p tau htau q L Phi R G hG hmetric hT ell hell a hz φ
+        (hφ.of_le (by simp)).contDiffAt).1
+  · intro z hz φ hφ
+    exact (backward_flow_reducedLength_limit_hamilton_jacobi_tests_in_chart
+      F hF p tau htau q L Phi R G hG hmetric hT ell hell a hz φ
+        (hφ.of_le (by simp)).contDiffAt).2
+  · obtain ⟨hA, hR⟩ := backward_solution_chart_coefficients_continuous L a
+    intro z hz
+    have hz' : z.1 ∈ Ioi 1 ×ˢ (extChartAt I a).target := ⟨hz.1.1.1, hz.1.2⟩
+    have hdom := (isOpen_Ioi.prod (isOpen_extChartAt_target (I := I) a)).mem_nhds hz'
+    have hAc (k j : Fin (Module.finrank ℝ E)) : ContinuousAt
+        (fun w : (ℝ × E) × ℝ × ((ℝ × E) →L[ℝ] ℝ) =>
+          chartInvGramOnE (I := I) (L.S.base.metric (1 - w.1.1)) a k j w.1.2) z :=
+      ((hA k j z.1 hz').continuousAt hdom).comp continuousAt_fst
+    have hRc : ContinuousAt
+        (fun w : (ℝ × E) × ℝ × ((ℝ × E) →L[ℝ] ℝ) =>
+          metricScalarAt (L.S.base.metric (1 - w.1.1)) ((extChartAt I a).symm w.1.2)) z :=
+      ((hR z.1 hz').continuousAt hdom).comp continuousAt_fst
+    have htime : 2 * z.1.1 ≠ 0 := mul_ne_zero two_ne_zero (ne_of_gt (zero_lt_one.trans hz.1.1.1))
+    apply ContinuousAt.continuousWithinAt
+    dsimp only [HJ]
+    fun_prop (disch := exact htime)
 
 end BackwardFlow
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
