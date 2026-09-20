@@ -1,6 +1,7 @@
+import DifferentialGeometry.Analysis.Calculus.Rademacher
 import DifferentialGeometry.Analysis.Integration.Lp.FiniteCover
 import Mathlib.Analysis.Calculus.LineDeriv.Measurable
-import Mathlib.Topology.MetricSpace.Lipschitz
+import DifferentialGeometry.Topology.MetricSpace.Lipschitz
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
 noncomputable section
@@ -69,3 +70,20 @@ theorem LocallyLipschitzOn.integrable_lineDeriv_mul_of_hasCompactSupport
       filter_upwards [hφ.continuousAt.eventually_ne hx] with y hy
       exact hfg (subset_tsupport φ hy)
     rw [heq.lineDeriv_eq]
+
+theorem LocallyLipschitzOn.integrable_fderiv_fderiv_mul_of_hasCompactSupport
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    {u ψ : E → ℝ} {Ω : Set E} (hdu : LocallyLipschitzOn Ω (fderiv ℝ u)) (hΩ : IsOpen Ω)
+    (hψ : Continuous ψ) (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ Ω) (v w : E) :
+    Integrable (fun x => fderiv ℝ (fderiv ℝ u) x v w * ψ x) μ := by
+  apply (integrableOn_iff_integrable_of_support_subset
+    ((subset_tsupport _).trans (tsupport_mul_subset_right.trans hψs))).mp
+  have hw : LocallyLipschitzOn Ω (fun x => fderiv ℝ u x w) :=
+    ((ContinuousLinearMap.apply ℝ ℝ w).lipschitz.locallyLipschitz.locallyLipschitzOn).comp
+      hdu (Set.mapsTo_univ _ _)
+  apply (hw.integrable_lineDeriv_mul_of_hasCompactSupport hψ hψc hψs v).integrableOn.congr
+  filter_upwards [hdu.ae_differentiableAt hΩ] with x hx
+  rw [(hx.clm_apply (differentiableAt_const w)).lineDeriv_eq_fderiv,
+    fderiv_clm_apply hx (differentiableAt_const w)]
+  simp

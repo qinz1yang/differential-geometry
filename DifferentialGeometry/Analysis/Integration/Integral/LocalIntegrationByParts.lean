@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Integration.Lp.Lipschitz
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
 import DifferentialGeometry.Analysis.Calculus.Rademacher
 import DifferentialGeometry.Topology.MetricSpace.Lipschitz
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
@@ -123,5 +125,53 @@ theorem integral_fderiv_fderiv_mul_eq_of_locallyLipschitzOn_fderiv
       ∫ x in Ω, fderiv ℝ (fderiv ℝ u) x v w * φ x ∂μ :=
     integral_congr_ae (hd.mul (.refl _ _))
   linarith
+
+theorem integral_fderiv_fderiv_apply_mul_eq
+    {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Fintype ι]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    (b : Module.Basis ι ℝ E) {Ω : Set E} (hΩ : IsOpen Ω)
+    {u φ : E → ℝ} (hu : DifferentiableOn ℝ u Ω)
+    (hdu : LocallyLipschitzOn Ω (fderiv ℝ u))
+    {V W : E → E} (hV : ContDiffOn ℝ 2 V Ω) (hW : ContDiffOn ℝ 2 W Ω)
+    (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ω) :
+    (∫ x in Ω, fderiv ℝ (fderiv ℝ u) x (V x) (W x) * φ x ∂μ) =
+      ∑ i, ∑ j, ∫ x in Ω, u x * fderiv ℝ
+        (fderiv ℝ (fun y => b.repr (V y) i * b.repr (W y) j * φ y)) x (b j) (b i) ∂μ := by
+  let : FiniteDimensional ℝ E := b.finiteDimensional_of_finite
+  let ψ (i j : ι) : E → ℝ := fun x => b.repr (V x) i * b.repr (W x) j * φ x
+  have hψc (i j : ι) : HasCompactSupport (ψ i j) := hφc.mul_left
+  have hψs (i j : ι) : tsupport (ψ i j) ⊆ Ω := tsupport_mul_subset_right.trans hφs
+  have hψ (i j : ι) : ContDiff ℝ 2 (ψ i j) := by
+    have hi : ContDiffOn ℝ 2 (fun x => b.repr (V x) i) Ω :=
+      (b.coord i).toContinuousLinearMap.contDiff.comp_contDiffOn hV
+    have hj : ContDiffOn ℝ 2 (fun x => b.repr (W x) j) Ω :=
+      (b.coord j).toContinuousLinearMap.contDiff.comp_contDiffOn hW
+    exact ((hi.mul hj).mul hφ.contDiffOn).contDiff_of_tsupport_subset hΩ (hψs i j)
+  have hi (i j : ι) : IntegrableOn
+      (fun x => fderiv ℝ (fderiv ℝ u) x (b i) (b j) * ψ i j x) Ω μ :=
+    (hdu.integrable_fderiv_fderiv_mul_of_hasCompactSupport hΩ
+      (hψ i j).continuous (hψc i j) (hψs i j) _ _).integrableOn
+  have hexp (x : E) : fderiv ℝ (fderiv ℝ u) x (V x) (W x) * φ x =
+      ∑ i, ∑ j, fderiv ℝ (fderiv ℝ u) x (b i) (b j) * ψ i j x := by
+    conv_lhs => rw [← b.sum_repr (V x), ← b.sum_repr (W x)]
+    simp only [map_sum, map_smul, sum_apply, smul_apply, smul_eq_mul,
+      Finset.sum_mul, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    dsimp only [ψ]
+    ring
+  simp_rw [hexp]
+  rw [integral_finsetSum Finset.univ
+    (fun i _ => integrable_finsetSum Finset.univ (fun j _ => hi i j))]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [integral_finsetSum Finset.univ (fun j _ => hi i j)]
+  apply Finset.sum_congr rfl
+  intro j _
+  exact integral_fderiv_fderiv_mul_eq_of_locallyLipschitzOn_fderiv hΩ hu hdu
+    (hψ i j) (hψc i j) (hψs i j) _ _
 
 end DifferentialGeometry.Analysis

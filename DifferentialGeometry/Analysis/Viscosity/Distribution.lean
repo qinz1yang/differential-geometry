@@ -10,22 +10,6 @@ open MeasureTheory Set
 
 namespace DifferentialGeometry.Analysis.Viscosity
 
-private theorem integrableOn_hessian_mul
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
-    {u ψ : E → ℝ} {Ω : Set E} (hΩ : IsOpen Ω)
-    (hdu : LocallyLipschitzOn Ω (fderiv ℝ u))
-    (hψ : Continuous ψ) (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ Ω) (v w : E) :
-    IntegrableOn (fun x => fderiv ℝ (fderiv ℝ u) x v w * ψ x) Ω μ := by
-  have hw : LocallyLipschitzOn Ω (fun x => fderiv ℝ u x w) :=
-    ((ContinuousLinearMap.apply ℝ ℝ w).lipschitz.locallyLipschitz.locallyLipschitzOn).comp
-      hdu (Set.mapsTo_univ _ _)
-  apply (hw.integrable_lineDeriv_mul_of_hasCompactSupport hψ hψc hψs v).integrableOn.congr
-  filter_upwards [hdu.ae_differentiableAt hΩ] with x hx
-  rw [(hx.clm_apply (differentiableAt_const w)).lineDeriv_eq_fderiv,
-    fderiv_clm_apply hx (differentiableAt_const w)]
-  simp
-
 theorem distribution_le_of_upper_tests_of_locallyLipschitzOn_fderiv
     {E ι κ : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
@@ -66,8 +50,8 @@ theorem distribution_le_of_upper_tests_of_locallyLipschitzOn_fderiv
           c x * u x - r x)).lowerSemicontinuous
   have hintA (i : ι) : IntegrableOn
       (fun x => a i x * fderiv ℝ (fderiv ℝ u) x (v i) (w i) * φ x) Ω μ := by
-    have h := integrableOn_hessian_mul (μ := μ) hΩ hdu (htesta i).continuous hφc.mul_left
-      (tsupport_mul_subset_right.trans hφs) (v i) (w i)
+    have h := (hdu.integrable_fderiv_fderiv_mul_of_hasCompactSupport (μ := μ) hΩ
+      (htesta i).continuous hφc.mul_left (tsupport_mul_subset_right.trans hφs) (v i) (w i)).integrableOn (s := Ω)
     convert h using 1
     ext x
     ring
