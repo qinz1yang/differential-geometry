@@ -9080,6 +9080,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWit
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedSeamResolution
 import DifferentialGeometry.Topology.PiecewiseLinear.SkeletonReduction
 import DifferentialGeometry.Topology.PiecewiseLinear.SeamBoundaryHomotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush
 /-!
 # Differential geometry and geometric analysis
 -/
