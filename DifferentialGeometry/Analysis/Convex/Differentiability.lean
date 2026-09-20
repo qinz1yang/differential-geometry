@@ -30,6 +30,41 @@ theorem ConvexOn.le_sub_of_hasFDerivWithinAt
   simpa only [slope_def_field, Function.comp_apply, γ, AffineMap.lineMap_apply_zero,
     AffineMap.lineMap_apply_one, sub_zero, div_one] using h
 
+theorem ConvexOn.fderiv_fderiv_nonneg
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f : E → ℝ} {s : Set E} (hf : ConvexOn ℝ s f)
+    {x : E} (hs : s ∈ 𝓝 x) (hd : DifferentiableOn ℝ f s) (v : E) :
+    0 ≤ fderiv ℝ (fderiv ℝ f) x v v := by
+  by_cases hdd : DifferentiableAt ℝ (fderiv ℝ f) x
+  swap
+  · simp only [fderiv_zero_of_not_differentiableAt hdd, zero_apply, le_refl]
+  let γ : ℝ →ᵃ[ℝ] E := AffineMap.lineMap x (x + v)
+  have hγ (t : ℝ) : HasDerivAt γ v t := by
+    simpa only [γ, add_sub_cancel_left] using
+      (AffineMap.hasDerivAt_lineMap (a := x) (b := x + v) (x := t))
+  let S := γ ⁻¹' interior s
+  have hS : S ∈ 𝓝 (0 : ℝ) := by
+    have hγ0 : γ 0 = x := AffineMap.lineMap_apply_zero _ _
+    exact (hγ 0).continuousAt.preimage_mem_nhds (hγ0.symm ▸ interior_mem_nhds.mpr hs)
+  have hD (t : ℝ) (ht : t ∈ S) : HasDerivAt (f ∘ γ) (fderiv ℝ f (γ t) v) t :=
+    (hd.differentiableAt (mem_interior_iff_mem_nhds.mp ht)).hasFDerivAt.comp_hasDerivAt t (hγ t)
+  have hconv : ConvexOn ℝ S (f ∘ γ) := (hf.subset interior_subset hf.1.interior).comp_affineMap γ
+  have hmon := hconv.monotoneOn_deriv (fun t ht => (hD t ht).differentiableAt)
+  have hDD : HasDerivAt (fun t : ℝ => fderiv ℝ f (γ t) v)
+      (fderiv ℝ (fderiv ℝ f) x v v) 0 := by
+    have hg : HasDerivAt (fun t : ℝ => fderiv ℝ f (γ t))
+        (fderiv ℝ (fderiv ℝ f) x v) 0 := by
+      have hh : HasFDerivAt (fderiv ℝ f) (fderiv ℝ (fderiv ℝ f) x) (γ 0) := by
+        simpa only [γ, AffineMap.lineMap_apply_zero] using hdd.hasFDerivAt
+      exact hh.comp_hasDerivAt 0 (hγ 0)
+    simpa only [map_zero, add_zero] using hg.clm_apply (hasDerivAt_const (0 : ℝ) v)
+  have heq : deriv (f ∘ γ) =ᶠ[𝓝 (0 : ℝ)] (fun t => fderiv ℝ f (γ t) v) := by
+    filter_upwards [hS] with t ht
+    exact (hD t ht).deriv
+  have h := hmon.derivWithin_nonneg (x := (0 : ℝ))
+  rw [derivWithin_of_mem_nhds hS, (hDD.congr_of_eventuallyEq heq).deriv] at h
+  exact h
+
 theorem ConvexOn.continuousWithinAt_fderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {f : E → ℝ} {s : Set E} (hf : ConvexOn ℝ s f)
