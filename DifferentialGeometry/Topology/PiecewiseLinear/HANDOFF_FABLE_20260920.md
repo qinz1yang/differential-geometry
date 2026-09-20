@@ -84,10 +84,16 @@ descent step's hypotheses are reachable only through general position.
    needs is `ChartLocalApproximation.lean` (34.1 in one chart, proved from `Moise341`).
    `Moise308` **is** misaimed (book 30.8 is about a spine of the *inner* torus of a nested pair).
    §§34–35 are written up lemma by lemma in `consult/A-section34-lemma-list.md`; prompt A2 asks
-   for the replacement DAG. The non-compact **inward push** is nearly closed: COMPOSE stage
-   pushes, never glue them (a stage fixes its own seam); limit theorem, tapered push, stage
-   frame and boundary exhaustion are in; the collar-level stage push and the recursion remain.
-   `ToleranceControl.lean` has the tolerance-selection lemmas.
+   for the replacement DAG, answered in `consult/A2-answer-digest.md` (three transcription
+   errors of ours corrected against the printed pages; the open-source reduction; preparation
+   nodes P0–P8 separated from the seven extension stages; the correct 30.8). **The inward push
+   is PROVED**: `moise352InwardPush_three : Moise352InwardPush.{u} 3`
+   (`Moise352InwardPushProof.lean`, audited as the verbatim def, plugs into
+   `moise352_of_inwardPush_of_skeletonExtension`). Method: COMPOSE stage pushes, never glue them
+   (a stage fixes its own seam); compact local model chosen for `A ∪ C`; "moved once, fixed
+   forever"; tolerance telescoped through `(h, ψ)`. `ToleranceControl.lean` has the
+   tolerance-selection lemmas; `FourSpokeDisk.lean` and `DerivedCellSubcomplex.lean` are the
+   first bricks of the marked tube.
 
 ### Eight, not seven
 

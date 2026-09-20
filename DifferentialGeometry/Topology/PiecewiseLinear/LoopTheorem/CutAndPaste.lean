@@ -1149,6 +1149,31 @@ private theorem transport_boundaryDoubleCrossing_of_source_changes
       (hruPull huSu).symm.trans (hrr.trans (hrvPull hvSv))
     exact (huv (hpullbackInj huQ₀ hvQ₀ hpull)).elim
 
+/-- **A two arc boundary parametrisation is read off its first arc pointwise.**  Let the
+boundary circle of a singular two cell `G` be parametrised by one homeomorphism `e` in two ways
+at once: in the target by the concatenation of two paths `σ`, `ω` of the ambient space, and in
+the source by the concatenation of two paths `ρ`, `κ` of the frontier.  Then the two first
+halves agree, so in particular the endpoints of `σ` are the values of `G` at the endpoints of
+`ρ`.  The statement is on `Path.extend`, which carries no membership proof in its argument; the
+two second halves agree for the same reason, by `Path.extend_trans_of_half_le`. -/
+theorem apply_extend_eq_of_boundaryParam {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {G : SingularTwoCell M} {x y : M}
+    {σ : Path x y} {ω : Path y x} {a' b' : frontier G.domain} {ρ : Path a' b'}
+    {κ : Path b' a'} {e : loopCircle ≃ₜ frontier G.domain}
+    (hparam : ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ)
+    (heparam : ∀ θ, e θ = pathToCircle (ρ.trans κ) θ) {t : ℝ}
+    (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+    G ((ρ.extend t : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = σ.extend t := by
+  have hle : t / 2 ≤ 1 / 2 := by linarith [ht.2]
+  have hmem : t / 2 ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have h1 := hparam ((t / 2 : ℝ) : loopCircle)
+  have h2 := heparam ((t / 2 : ℝ) : loopCircle)
+  rw [pathToCircle_coe_eq_extend _ hmem] at h1
+  rw [pathToCircle_coe_eq_extend _ hmem] at h2
+  rw [h2, Path.extend_trans_of_le_half _ _ hle, Path.extend_trans_of_le_half _ _ hle,
+    show 2 * (t / 2) = t from by ring] at h1
+  exact h1
+
 namespace NormalSingularCellData
 
 open Classical in
@@ -1219,32 +1244,103 @@ theorem exists_three_cells_of_boundaryBranch
     hdisjoint₁₃, hfun₁, hfun₂, hfun₃,
     htrace₁, htrace₃, hcut₁, hcut₃⟩
 
-open Classical in
-theorem exists_cross_reglued_cell_of_boundaryBranch
+/-- **The three piece cut of a boundary branch, as a predicate on its objects.**  The two
+crosscuts `A` and `C` of the preimage of the branch `c`, the four marked points `p`, `q` on `A`
+and `r`, `s` on `C`, the piecewise linear identification `g` of `A` with `C` and the three cells
+`D₁`, `D₂`, `D₃` that the two crosscuts cut `D` into satisfy the conclusion of
+`NormalSingularCellData.exists_three_cells_of_boundaryBranch` with every object named.  The
+conjuncts are those of that theorem, in its order, with its three pieces spelled as the domains
+of `D₁`, `D₂`, `D₃`.  Naming the cut is what lets the producers below share one cut instead of
+choosing three of their own under three independent applications of `Classical.choice`. -/
+def IsBoundaryBranchCut {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    (A C : Set (EuclideanSpace ℝ (Fin 2))) (p q r s : EuclideanSpace ℝ (Fin 2))
+    (g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+    (D₁ D₂ D₃ : SingularTwoCell M) : Prop :=
+  IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+  hD.branchPreimage c = A ∪ C ∧
+  IsPLHomeomorphOn (hD.branchCoordinate c) A
+    (hD.singularSet.branchComplex c).space ∧
+  IsPLHomeomorphOn (hD.branchCoordinate c) C
+    (hD.singularSet.branchComplex c).space ∧
+  IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
+  D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
+  D₁.domain ∩ D₂.domain = A ∧
+  D₂.domain ∩ D₃.domain = C ∧
+  A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
+  C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
+  Disjoint D₁.domain D₃.domain ∧
+  D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun ∧
+  IsPLBall 1 (D₁.domain ∩ frontier D.domain) ∧
+  IsPLBall 1 (D₃.domain ∩ frontier D.domain) ∧
+  Schoenflies.IsCutPair (frontier D₁.domain) p q A
+    (D₁.domain ∩ frontier D.domain) ∧
+  Schoenflies.IsCutPair (frontier D₃.domain) r s C
+    (D₃.domain ∩ frontier D.domain)
+
+/-- **Every boundary branch carries such a cut.**  This is
+`NormalSingularCellData.exists_three_cells_of_boundaryBranch` restated in the vocabulary of
+`NormalSingularCellData.IsBoundaryBranchCut`; the two statements have the same content, and the
+cut produced here is the single input the three producers below share. -/
+theorem exists_isBoundaryBranchCut_of_boundaryBranch
     {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
     {D : SingularTwoCell M} {BdM B : Set M}
     (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
-    ∃ A C U₁ U₂ U₃ P Q P' Q' A' R T : Set (EuclideanSpace ℝ (Fin 2)),
-    ∃ p q r s a b : EuclideanSpace ℝ (Fin 2),
-    ∃ g f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ (A C : Set (EuclideanSpace ℝ (Fin 2))) (p q r s : EuclideanSpace ℝ (Fin 2))
+      (g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+      (D₁ D₂ D₃ : SingularTwoCell M),
+      hD.IsBoundaryBranchCut c A C p q r s g D₁ D₂ D₃ := by
+  obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, hCcoordinate, p, q, r, s, g, hg, hcompat,
+    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, hA₂, hC₂, hC₃,
+    hdisjoint₁₃, hfun₁, hfun₂, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
+    hD.exists_three_cells_of_boundaryBranch hc
+  exact ⟨A, C, p, q, r, s, g, D₁, D₂, D₃, hA, hC, hAC, hcover, hAcoordinate, hCcoordinate,
+    hg, hcompat, hdomains, hinter₁₂, hinter₂₃, hA₁, hA₂, hC₂, hC₃, hdisjoint₁₃,
+    hfun₁, hfun₂, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩
+
+open Classical in
+/-- **The cross reglued cell of a fixed boundary branch cut.**  The core of
+`NormalSingularCellData.exists_cross_reglued_cell_of_boundaryBranch`: the three piece cut is an
+input, so the two crosscuts, the four marked points, the identification `g` and the three pieces
+are the given ones and not freshly chosen.  Everything the regluing itself produces stays
+existential: the two model balls `P`, `Q` of the intermediate cell `H`, the two model balls `P'`,
+`Q'` of the reglued cell `G`, the displaced seam `A'`, the two boundary arcs `R`, `T` with their
+common endpoints `a`, `b`, the four coordinate maps and the two cells.  The first conjunct is the
+conclusion of the old producer with the three pieces spelled as the domains of `D₁`, `D₂`, `D₃`;
+the second records the two arc boundary word again, with the images of its two arcs described
+through the cut and its two endpoints named as the `D` images of the two marked points of `A`. -/
+theorem exists_cross_reglued_cell_of_cut
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {A C : Set (EuclideanSpace ℝ (Fin 2))} {p q r s : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    {D₁ D₂ D₃ : SingularTwoCell M}
+    (hcut : hD.IsBoundaryBranchCut c A C p q r s g D₁ D₂ D₃) :
+    ∃ P Q P' Q' A' R T : Set (EuclideanSpace ℝ (Fin 2)),
+    ∃ a b : EuclideanSpace ℝ (Fin 2),
+    ∃ f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
     ∃ H G : SingularTwoCell M,
-      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      (IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
       hD.branchPreimage c = A ∪ C ∧
       IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
       p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
       ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
-      U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
-      Disjoint U₁ U₃ ∧
+      D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧ D₁.domain ∩ D₂.domain = A ∧
+      D₂.domain ∩ D₃.domain = C ∧
+      Disjoint D₁.domain D₃.domain ∧
       IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
-      IsPLHomeomorphOn f₁ P U₁ ∧ IsPLHomeomorphOn f₂ Q U₂ ∧
+      IsPLHomeomorphOn f₁ P D₁.domain ∧ IsPLHomeomorphOn f₂ Q D₂.domain ∧
       f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = C ∧
       EqOn H (D ∘ f₁) P ∧ EqOn H (D ∘ f₂) Q ∧
       A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧ Disjoint A' (P ∩ Q) ∧
       A' ⊆ frontier H.domain ∧ IsPLHomeomorphOn (g ∘ f₂) A' C ∧
       IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
-      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' U₃ ∧
+      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' D₃.domain ∧
       h '' (P' ∩ Q') = A' ∧ f₃ '' (P' ∩ Q') = C ∧
       EqOn G (H ∘ h) P' ∧ EqOn G (D ∘ f₃) Q' ∧
       Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
@@ -1258,8 +1354,8 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
           (e : loopCircle ≃ₜ frontier G.domain),
         Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
           (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
-          G '' R = D '' ((U₁ ∪ U₂) ∩ frontier D.domain) ∧
-          G '' T = D '' (U₃ ∩ frontier D.domain) ∧
+          G '' R = D '' ((D₁.domain ∪ D₂.domain) ∩ frontier D.domain) ∧
+          G '' T = D '' (D₃.domain ∩ frontier D.domain) ∧
           G '' frontier G.domain = D '' frontier D.domain ∧
           ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
             Function.Injective ρ ∧ Function.Injective κ ∧
@@ -1267,11 +1363,16 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
               EuclideanSpace ℝ (Fin 2))) = R ∧
             Set.range (fun t => ((κ t : frontier G.domain) :
               EuclideanSpace ℝ (Fin 2))) = T ∧
-            ∀ θ, e θ = pathToCircle (ρ.trans κ) θ := by
-  obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
-    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, -, hA₂, hC₂, -,
-    hdisjoint₁₃, hfun₁, hfun₂, hfun₃, -, -, hcut₁, hcut₃⟩ :=
-    hD.exists_three_cells_of_boundaryBranch hc
+            ∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
+      ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+        Set.range σ = D '' ((D₁.domain ∪ D₂.domain) ∩ frontier D.domain) ∧
+        Set.range ω = D '' (D₃.domain ∩ frontier D.domain) ∧
+        (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+        ((x = D p ∧ y = D q) ∨ (x = D q ∧ y = D p)) := by
+  obtain ⟨hA, hC, hAC, hcover, hAcoordinate, -, hg, hcompat,
+    hdomains, hinter₁₂, hinter₂₃, -, hA₂, hC₂, -,
+    hdisjoint₁₃, hfun₁, hfun₂, hfun₃, -, -, hcut₁, hcut₃⟩ := hcut
   have hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A := by
     intro x hx
     change D₁.toFun x = D₂.toFun (g x)
@@ -1403,8 +1504,75 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
           simp only [union_inter_distrib_right]
       _ = D '' (D.domain ∩ frontier D.domain) := by rw [hdomains]
       _ = D '' frontier D.domain := by rw [hDfront]
-  exact ⟨A, C, D₁.domain, D₂.domain, D₃.domain, P, Q, P', Q', A', R, T,
-    p, q, r, s, a, b, g, f₁, f₂, h, f₃, H, G, hA, hC, hAC, hcover, hg,
+  have hRT : R ∩ T = {a, b} := by
+    apply Subset.antisymm
+    · rintro z ⟨hzR, hzT⟩
+      have hzP' : z ∈ P' :=
+        hP'.isPolyhedron.isClosed.frontier_subset (hcutP'.snd_subset hzR)
+      have hzQ' : z ∈ Q' :=
+        hQ'.isPolyhedron.isClosed.frontier_subset (hcutQ'.snd_subset hzT)
+      exact hcutP'.inter_eq.subset ⟨⟨hzP', hzQ'⟩, hzR⟩
+    · rintro z (rfl | rfl)
+      · exact ⟨hcutP'.snd.left_mem, hcutQ'.snd.left_mem⟩
+      · exact ⟨hcutP'.snd.right_mem, hcutQ'.snd.right_mem⟩
+  have ha'mem : ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) ∈ R ∩ T := by
+    constructor
+    · rw [← hρrange]
+      exact ⟨0, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) ρ.source⟩
+    · rw [← hκrange]
+      exact ⟨1, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) κ.target⟩
+  have hb'mem : ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) ∈ R ∩ T := by
+    constructor
+    · rw [← hρrange]
+      exact ⟨1, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) ρ.target⟩
+    · rw [← hκrange]
+      exact ⟨0, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) κ.source⟩
+  have ha'ab : ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = a ∨
+      ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = b := by
+    have hmem := hRT.subset ha'mem
+    simpa using hmem
+  have hb'ab : ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = a ∨
+      ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = b := by
+    have hmem := hRT.subset hb'mem
+    simpa using hmem
+  have hne : ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) ≠
+      ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) := by
+    intro hab
+    have h01 : (0 : unitInterval) = 1 := by
+      apply hρinj
+      rw [ρ.source, ρ.target]
+      exact Subtype.ext hab
+    have hreal : ((0 : unitInterval) : ℝ) = ((1 : unitInterval) : ℝ) :=
+      congrArg (fun z : unitInterval => (z : ℝ)) h01
+    norm_num at hreal
+  have hGa : G a = D p :=
+    calc G a = D (f₃ a) := hG₃' hcutP'.fst.left_mem.2
+      _ = D (g p) := congrArg D hf₃a
+      _ = D p := (hcompat hcut₁.fst.left_mem).symm
+  have hGb : G b = D q :=
+    calc G b = D (f₃ b) := hG₃' hcutP'.fst.right_mem.2
+      _ = D (g q) := congrArg D hf₃b
+      _ = D q := (hcompat hcut₁.fst.right_mem).symm
+  have hxa : G ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = x := by
+    have hval := apply_extend_eq_of_boundaryParam hboundaryParam heparam
+      (by norm_num : (0 : ℝ) ∈ Set.Icc (0 : ℝ) 1)
+    rwa [Path.extend_zero, Path.extend_zero] at hval
+  have hyb : G ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = y := by
+    have hval := apply_extend_eq_of_boundaryParam hboundaryParam heparam
+      (by norm_num : (1 : ℝ) ∈ Set.Icc (0 : ℝ) 1)
+    rwa [Path.extend_one, Path.extend_one] at hval
+  have hendpoints : (x = D p ∧ y = D q) ∨ (x = D q ∧ y = D p) := by
+    rcases ha'ab with ha | ha <;> rcases hb'ab with hb | hb
+    · exact absurd (ha.trans hb.symm) hne
+    · exact Or.inl ⟨by rw [← hxa, ha, hGa], by rw [← hyb, hb, hGb]⟩
+    · exact Or.inr ⟨by rw [← hxa, ha, hGb], by rw [← hyb, hb, hGa]⟩
+    · exact absurd (ha.trans hb.symm) hne
+  exact ⟨P, Q, P', Q', A', R, T, a, b, f₁, f₂, h, f₃, H, G,
+    ⟨hA, hC, hAC, hcover, hg,
     hcompat, hcut₁.fst.left_mem, hcut₁.fst.right_mem, hcut₃.fst.left_mem,
     hcut₃.fst.right_mem, horientation, hdomains, hinter₁₂, hinter₂₃,
     hdisjoint₁₃, hP, hQ, hHdomain, hf₁, hf₂, hf₁seam, hf₂seam, hH₁', hH₂',
@@ -1412,23 +1580,91 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
     hf₃seam, hGH, hG₃', hcutP', hcutQ', hR, hT, hfrontG, hha, hhb,
     hf₃a, hf₃b, hGimage, hbranchPersists,
     x, y, σ, ω, e, hσrange, hωrange, hboundaryParam, hGRimage, hGTimage,
-    hfrontierImage, a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, heparam⟩
+    hfrontierImage, a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, heparam⟩,
+    x, y, σ, ω, e, hσrange.trans hGRimage, hωrange.trans hGTimage,
+    hboundaryParam, hendpoints⟩
 
 open Classical in
-theorem exists_boundary_surgery_cell_of_boundaryBranch
+theorem exists_cross_reglued_cell_of_boundaryBranch
     {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
     {D : SingularTwoCell M} {BdM B : Set M}
     (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
-    ∃ A C U V : Set (EuclideanSpace ℝ (Fin 2)),
-    ∃ p q r s : EuclideanSpace ℝ (Fin 2),
-    ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
-    ∃ G : SingularTwoCell M,
-    ∃ pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ A C U₁ U₂ U₃ P Q P' Q' A' R T : Set (EuclideanSpace ℝ (Fin 2)),
+    ∃ p q r s a b : EuclideanSpace ℝ (Fin 2),
+    ∃ g f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ H G : SingularTwoCell M,
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
       hD.branchPreimage c = A ∪ C ∧
-      IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
+      IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
+      p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
+      ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
+      U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
+      Disjoint U₁ U₃ ∧
+      IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
+      IsPLHomeomorphOn f₁ P U₁ ∧ IsPLHomeomorphOn f₂ Q U₂ ∧
+      f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = C ∧
+      EqOn H (D ∘ f₁) P ∧ EqOn H (D ∘ f₂) Q ∧
+      A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧ Disjoint A' (P ∩ Q) ∧
+      A' ⊆ frontier H.domain ∧ IsPLHomeomorphOn (g ∘ f₂) A' C ∧
+      IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
+      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' U₃ ∧
+      h '' (P' ∩ Q') = A' ∧ f₃ '' (P' ∩ Q') = C ∧
+      EqOn G (H ∘ h) P' ∧ EqOn G (D ∘ f₃) Q' ∧
+      Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
+      Schoenflies.IsCutPair (frontier Q') a b (P' ∩ Q') T ∧
+      IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier G.domain = R ∪ T ∧
+      h a = Function.invFunOn f₂ Q p ∧ h b = Function.invFunOn f₂ Q q ∧
+      f₃ a = g p ∧ f₃ b = g q ∧
+      G '' G.domain ⊆ D '' D.domain ∧
+      hD.singularSet.branchCarrier c ⊆ doublePointSet G G.domain ∧
+      ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+        Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
+          (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+          G '' R = D '' ((U₁ ∪ U₂) ∩ frontier D.domain) ∧
+          G '' T = D '' (U₃ ∩ frontier D.domain) ∧
+          G '' frontier G.domain = D '' frontier D.domain ∧
+          ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
+            Function.Injective ρ ∧ Function.Injective κ ∧
+            Set.range (fun t => ((ρ t : frontier G.domain) :
+              EuclideanSpace ℝ (Fin 2))) = R ∧
+            Set.range (fun t => ((κ t : frontier G.domain) :
+              EuclideanSpace ℝ (Fin 2))) = T ∧
+            ∀ θ, e θ = pathToCircle (ρ.trans κ) θ := by
+  obtain ⟨A, C, p, q, r, s, g, D₁, D₂, D₃, hcut⟩ :=
+    hD.exists_isBoundaryBranchCut_of_boundaryBranch hc
+  obtain ⟨P, Q, P', Q', A', R, T, a, b, f₁, f₂, h, f₃, H, G, hbody, -⟩ :=
+    hD.exists_cross_reglued_cell_of_cut hcut
+  exact ⟨A, C, D₁.domain, D₂.domain, D₃.domain, P, Q, P', Q', A', R, T,
+    p, q, r, s, a, b, g, f₁, f₂, h, f₃, H, G, hbody⟩
+
+open Classical in
+/-- **The direct boundary surgery cell of a fixed boundary branch cut.**  The core of
+`NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch`: the three piece cut is
+an input, so the two crosscuts, the four marked points, the identification `g`, the two boundary
+arcs and the three closed pieces are the given ones.  Only the glued cell `G` and its pullback
+into the domain of `D` stay existential.  The first conjunct is the conclusion of the old
+producer with the two arcs spelled as the traces of `D₁` and `D₃` on the boundary circle and the
+three pieces spelled as the domains of `D₁`, `D₂`, `D₃`; the second records the two arc boundary
+word again, with its two endpoints named as the `D` images of the two marked points of `A`. -/
+theorem exists_boundary_surgery_cell_of_cut
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {A C : Set (EuclideanSpace ℝ (Fin 2))} {p q r s : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    {D₁ D₂ D₃ : SingularTwoCell M}
+    (hcut : hD.IsBoundaryBranchCut c A C p q r s g D₁ D₂ D₃) :
+    ∃ G : SingularTwoCell M,
+    ∃ pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      (IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      hD.branchPreimage c = A ∪ C ∧
+      IsPLBall 1 (D₁.domain ∩ frontier D.domain) ∧
+      IsPLBall 1 (D₃.domain ∩ frontier D.domain) ∧
+      Disjoint (D₁.domain ∩ frontier D.domain) (D₃.domain ∩ frontier D.domain) ∧
       IsPLHomeomorphOn g A C ∧
       p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
       EqOn D (D ∘ g) A ∧
@@ -1438,7 +1674,8 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       EqOn (D ∘ pullback) G G.domain ∧
       Disjoint (pullback '' G.domain) C ∧
       G '' G.domain ⊆ D '' D.domain ∧
-      Set.range G.boundary = D '' (U ∪ V) ∧
+      Set.range G.boundary = D '' ((D₁.domain ∩ frontier D.domain) ∪
+        (D₃.domain ∩ frontier D.domain)) ∧
       G '' G.domain ∩ BdM = Set.range G.boundary ∧
       Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B ∧
       (∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W) ∧
@@ -1449,27 +1686,34 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
        Nonempty (NormalSingularCellData G BdM B) ∧
        ∃ (x y : M) (σ : Path x y) (ω : Path y x)
           (e : loopCircle ≃ₜ frontier G.domain),
-         Set.range σ = D '' U ∧ Set.range ω = D '' V ∧
+         Set.range σ = D '' (D₁.domain ∩ frontier D.domain) ∧
+         Set.range ω = D '' (D₃.domain ∩ frontier D.domain) ∧
            (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
            ∃ R T : Set (EuclideanSpace ℝ (Fin 2)),
            ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
              frontier G.domain = R ∪ T ∧
-             G '' R = D '' U ∧ G '' T = D '' V ∧
+             G '' R = D '' (D₁.domain ∩ frontier D.domain) ∧
+             G '' T = D '' (D₃.domain ∩ frontier D.domain) ∧
              Function.Injective ρ ∧ Function.Injective κ ∧
              Set.range (fun t => ((ρ t : frontier G.domain) :
                EuclideanSpace ℝ (Fin 2))) = R ∧
              Set.range (fun t => ((κ t : frontier G.domain) :
                EuclideanSpace ℝ (Fin 2))) = T ∧
              (∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
-             ∃ U₁ U₂ U₃ : Set (EuclideanSpace ℝ (Fin 2)),
-               IsClosed U₁ ∧ IsClosed U₂ ∧ IsClosed U₃ ∧
-               U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
-               D.domain \ U₂ ⊆ pullback '' G.domain ∧
-               Disjoint (pullback '' G.domain) (U₂ \ A) := by
-  obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
-    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
-    hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
-    hD.exists_three_cells_of_boundaryBranch hc
+             IsClosed D₁.domain ∧ IsClosed D₂.domain ∧ IsClosed D₃.domain ∧
+             D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
+             D₁.domain ∩ D₂.domain = A ∧ D₂.domain ∩ D₃.domain = C ∧
+             D.domain \ D₂.domain ⊆ pullback '' G.domain ∧
+             Disjoint (pullback '' G.domain) (D₂.domain \ A)) ∧
+      ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+        Set.range σ = D '' (D₁.domain ∩ frontier D.domain) ∧
+        Set.range ω = D '' (D₃.domain ∩ frontier D.domain) ∧
+        (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+        ((x = D p ∧ y = D q) ∨ (x = D q ∧ y = D p)) := by
+  obtain ⟨hA, hC, hAC, hcover, hAcoordinate, -, hg, hcompat,
+    hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
+    hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ := hcut
   have hcompat₁₃ : EqOn D₁ (D₃ ∘ g) A := by
     intro x hx
     change D₁.toFun x = D₃.toFun (g x)
@@ -2338,9 +2582,60 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       image_inter_boundary := himageBoundary
       singularSet := Classical.choice hGsingular
       crossing := hGcrossing }⟩
-  exact ⟨A, C, D₁.domain ∩ frontier D.domain,
-    D₃.domain ∩ frontier D.domain, p, q, r, s, g, G, pullback,
-    hA, hC, hAC, hcover, htrace₁, htrace₃,
+  have ha'mem : ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) ∈ R ∩ T := by
+    constructor
+    · rw [← hρrange]
+      exact ⟨0, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) ρ.source⟩
+    · rw [← hκrange]
+      exact ⟨1, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) κ.target⟩
+  have hb'mem : ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) ∈ R ∩ T := by
+    constructor
+    · rw [← hρrange]
+      exact ⟨1, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) ρ.target⟩
+    · rw [← hκrange]
+      exact ⟨0, congrArg (fun z : frontier G.domain =>
+        (z : EuclideanSpace ℝ (Fin 2))) κ.source⟩
+  have ha'ab : ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = a ∨
+      ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = b := by
+    have hmem := hRT.subset ha'mem
+    simpa using hmem
+  have hb'ab : ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = a ∨
+      ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = b := by
+    have hmem := hRT.subset hb'mem
+    simpa using hmem
+  have hnea : ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) ≠
+      ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) := by
+    intro hab
+    have h01 : (0 : unitInterval) = 1 := by
+      apply hρinj
+      rw [ρ.source, ρ.target]
+      exact Subtype.ext hab
+    have hreal : ((0 : unitInterval) : ℝ) = ((1 : unitInterval) : ℝ) :=
+      congrArg (fun z : unitInterval => (z : ℝ)) h01
+    norm_num at hreal
+  have hGa : G a = D p :=
+    calc G a = D₁ (f₁ a) := hG₁ hcutP.fst.left_mem.1
+      _ = D (f₁ a) := congrFun hfun₁ (f₁ a)
+      _ = D p := congrArg D hf₁a
+  have hGb : G b = D q :=
+    calc G b = D₁ (f₁ b) := hG₁ hcutP.fst.right_mem.1
+      _ = D (f₁ b) := congrFun hfun₁ (f₁ b)
+      _ = D q := congrArg D hf₁b
+  have hendpoints :
+      (G ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = D p ∧
+        G ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = D q) ∨
+      (G ((a' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = D q ∧
+        G ((b' : frontier G.domain) : EuclideanSpace ℝ (Fin 2)) = D p) := by
+    rcases ha'ab with ha | ha <;> rcases hb'ab with hb | hb
+    · exact absurd (ha.trans hb.symm) hnea
+    · exact Or.inl ⟨by rw [ha, hGa], by rw [hb, hGb]⟩
+    · exact Or.inr ⟨by rw [ha, hGb], by rw [hb, hGa]⟩
+    · exact absurd (ha.trans hb.symm) hnea
+  exact ⟨G, pullback,
+    ⟨hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg,
     hcut₁.fst.left_mem, hcut₁.fst.right_mem,
     hcut₃.fst.left_mem, hcut₃.fst.right_mem, hcompat, horientation,
@@ -2349,11 +2644,82 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
      hdouble, hremove, hGsingular, hGnormal,
      G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam,
      R, T, a', b', ρ, κ, hfrontG, hGR, hGT, hρinj, hκinj, hρrange, hκrange, he,
-     D₁.domain, D₂.domain, D₃.domain,
      D₁.isPLBall_domain.isPolyhedron.isClosed,
      D₂.isPLBall_domain.isPolyhedron.isClosed,
      D₃.isPLBall_domain.isPolyhedron.isClosed,
-     hdomains, hinter₁₂, hinter₂₃, hkept, hband⟩
+     hdomains, hinter₁₂, hinter₂₃, hkept, hband⟩,
+    G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam,
+    hendpoints⟩
+
+open Classical in
+theorem exists_boundary_surgery_cell_of_boundaryBranch
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ A C U V : Set (EuclideanSpace ℝ (Fin 2)),
+    ∃ p q r s : EuclideanSpace ℝ (Fin 2),
+    ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ G : SingularTwoCell M,
+    ∃ pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      hD.branchPreimage c = A ∪ C ∧
+      IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
+      IsPLHomeomorphOn g A C ∧
+      p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
+      EqOn D (D ∘ g) A ∧
+      ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
+      MapsTo pullback G.domain D.domain ∧
+      InjOn pullback G.domain ∧
+      EqOn (D ∘ pullback) G G.domain ∧
+      Disjoint (pullback '' G.domain) C ∧
+      G '' G.domain ⊆ D '' D.domain ∧
+      Set.range G.boundary = D '' (U ∪ V) ∧
+      G '' G.domain ∩ BdM = Set.range G.boundary ∧
+      Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B ∧
+      (∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W) ∧
+      (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) ∧
+       doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
+       Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) ∧
+       Nonempty (NormalSingularSetTriangulation G BdM) ∧
+       Nonempty (NormalSingularCellData G BdM B) ∧
+       ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+         Set.range σ = D '' U ∧ Set.range ω = D '' V ∧
+           (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+           ∃ R T : Set (EuclideanSpace ℝ (Fin 2)),
+           ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
+             frontier G.domain = R ∪ T ∧
+             G '' R = D '' U ∧ G '' T = D '' V ∧
+             Function.Injective ρ ∧ Function.Injective κ ∧
+             Set.range (fun t => ((ρ t : frontier G.domain) :
+               EuclideanSpace ℝ (Fin 2))) = R ∧
+             Set.range (fun t => ((κ t : frontier G.domain) :
+               EuclideanSpace ℝ (Fin 2))) = T ∧
+             (∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
+             ∃ U₁ U₂ U₃ : Set (EuclideanSpace ℝ (Fin 2)),
+               IsClosed U₁ ∧ IsClosed U₂ ∧ IsClosed U₃ ∧
+               U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
+               D.domain \ U₂ ⊆ pullback '' G.domain ∧
+               Disjoint (pullback '' G.domain) (U₂ \ A) := by
+  obtain ⟨A, C, p, q, r, s, g, D₁, D₂, D₃, hcut⟩ :=
+    hD.exists_isBoundaryBranchCut_of_boundaryBranch hc
+  obtain ⟨G, pullback, ⟨hA, hC, hAC, hcover, hU, hV, hUV, hg, hpA, hqA, hrC, hsC,
+    hcompat, horientation, hmaps, hinj, hfactor, hmiss, hGimage, hrange,
+    himageBoundary, hrangeB, hinterB, hlocal, hfiber, hdouble, hremove,
+    htriangulated, hnormal, x, y, σ, ω, e, hσrange, hωrange, hboundaryParam,
+    R, T, a', b', ρ, κ, hfrontG, hGR, hGT, hρinj, hκinj, hρrange, hκrange, he,
+    hclosed₁, hclosed₂, hclosed₃, hdomains, hinter₁₂, hinter₂₃, hkept, hband⟩, -⟩ :=
+    hD.exists_boundary_surgery_cell_of_cut hcut
+  exact ⟨A, C, D₁.domain ∩ frontier D.domain, D₃.domain ∩ frontier D.domain,
+    p, q, r, s, g, G, pullback, hA, hC, hAC, hcover, hU, hV, hUV, hg, hpA, hqA, hrC, hsC,
+    hcompat, horientation, hmaps, hinj, hfactor, hmiss, hGimage, hrange,
+    himageBoundary, hrangeB, hinterB, hlocal, hfiber, hdouble, hremove,
+    htriangulated, hnormal, x, y, σ, ω, e, hσrange, hωrange, hboundaryParam,
+    R, T, a', b', ρ, κ, hfrontG, hGR, hGT, hρinj, hκinj, hρrange, hκrange, he,
+    D₁.domain, D₂.domain, D₃.domain, hclosed₁, hclosed₂, hclosed₃, hdomains,
+    hinter₁₂, hinter₂₃, hkept, hband⟩
 
 end NormalSingularCellData
 

@@ -61,7 +61,14 @@ theorem exists_homeomorph_loopCircle_of_isLoop
   exact ⟨Continuous.homeoOfEquivCompactToT2 (f := e₀) hFcontinuous, fun _ => rfl⟩
 
 open Classical in
-theorem exists_boundaryParam_four_paths
+/-- **The four arc parametrisation of a boundary circle, with its arcs injective.**  The core
+of `exists_boundaryParam_four_paths`: the same four paths and the same parametrising
+homeomorphism, together with the injectivity of each of the four paths.  Injectivity is not
+extra geometry but the injectivity on the unit interval of the four arc parametrisations that
+`Schoenflies.IsArcBetween` already carries, read on the four paths built from them; it is what
+`Path.Homotopic.of_injective_of_range_eq` consumes when the arcs are compared with a word of
+the ambient loop space. -/
+theorem exists_injective_boundaryParam_four_paths
     {P A₁ A₂ A₃ A₄ : Set (EuclideanSpace ℝ (Fin 2))}
     {p q r s : EuclideanSpace ℝ (Fin 2)}
     (h₁ : Schoenflies.IsArcBetween A₁ p q) (h₂ : Schoenflies.IsArcBetween A₂ q r)
@@ -72,13 +79,15 @@ theorem exists_boundaryParam_four_paths
     (hfront : frontier P = A₁ ∪ (A₂ ∪ (A₃ ∪ A₄))) :
     ∃ (p' q' r' s' : frontier P) (σ : Path p' q') (τ : Path q' r') (υ : Path r' s')
         (φ : Path s' p') (ev : loopCircle ≃ₜ frontier P),
-      (p' : EuclideanSpace ℝ (Fin 2)) = p ∧ (q' : EuclideanSpace ℝ (Fin 2)) = q ∧
+      ((p' : EuclideanSpace ℝ (Fin 2)) = p ∧ (q' : EuclideanSpace ℝ (Fin 2)) = q ∧
       (r' : EuclideanSpace ℝ (Fin 2)) = r ∧ (s' : EuclideanSpace ℝ (Fin 2)) = s ∧
       Set.range (fun t => ((σ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₁ ∧
       Set.range (fun t => ((τ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₂ ∧
       Set.range (fun t => ((υ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₃ ∧
       Set.range (fun t => ((φ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₄ ∧
-      ∀ θ, ev θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ := by
+      ∀ θ, ev θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ) ∧
+      Function.Injective ⇑σ ∧ Function.Injective ⇑τ ∧
+      Function.Injective ⇑υ ∧ Function.Injective ⇑φ := by
   have hpfront : p ∈ frontier P := by rw [hfront]; exact Or.inl h₁.left_mem
   have hqfront : q ∈ frontier P := by rw [hfront]; exact Or.inl h₁.right_mem
   have hrfront : r ∈ frontier P := by
@@ -266,7 +275,8 @@ theorem exists_boundaryParam_four_paths
   obtain ⟨ev, hev⟩ :=
     exists_homeomorph_loopCircle_of_isLoop (σ.trans (τ.trans (υ.trans φ))) hloop hline₁
       hrange
-  refine ⟨p', q', r', s', σ, τ, υ, φ, ev, rfl, rfl, rfl, rfl, ?_, ?_, ?_, ?_, hev⟩
+  refine ⟨p', q', r', s', σ, τ, υ, φ, ev,
+    ⟨rfl, rfl, rfl, rfl, ?_, ?_, ?_, ?_, hev⟩, ?_, ?_, ?_, ?_⟩
   · ext x
     constructor
     · rintro ⟨t, rfl⟩
@@ -307,6 +317,37 @@ theorem exists_boundaryParam_four_paths
       rw [← hf₄im] at hx
       obtain ⟨t, ht, htx⟩ := hx
       exact ⟨⟨t, ht⟩, htx⟩
+  · intro z₁ z₂ hz
+    exact Subtype.ext (hf₁i z₁.2 z₂.2 (congrArg Subtype.val hz))
+  · intro z₁ z₂ hz
+    exact Subtype.ext (hf₂i z₁.2 z₂.2 (congrArg Subtype.val hz))
+  · intro z₁ z₂ hz
+    exact Subtype.ext (hf₃i z₁.2 z₂.2 (congrArg Subtype.val hz))
+  · intro z₁ z₂ hz
+    exact Subtype.ext (hf₄i z₁.2 z₂.2 (congrArg Subtype.val hz))
+
+open Classical in
+theorem exists_boundaryParam_four_paths
+    {P A₁ A₂ A₃ A₄ : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (h₁ : Schoenflies.IsArcBetween A₁ p q) (h₂ : Schoenflies.IsArcBetween A₂ q r)
+    (h₃ : Schoenflies.IsArcBetween A₃ r s) (h₄ : Schoenflies.IsArcBetween A₄ s p)
+    (hm₃₄ : ∀ z ∈ A₃, z ∈ A₄ → z = s)
+    (hm₂ : ∀ z ∈ A₂, z ∈ A₃ ∪ A₄ → z = r)
+    (hm₁ : ∀ z ∈ A₁, z ∈ A₂ ∪ (A₃ ∪ A₄) → z = p ∨ z = q)
+    (hfront : frontier P = A₁ ∪ (A₂ ∪ (A₃ ∪ A₄))) :
+    ∃ (p' q' r' s' : frontier P) (σ : Path p' q') (τ : Path q' r') (υ : Path r' s')
+        (φ : Path s' p') (ev : loopCircle ≃ₜ frontier P),
+      (p' : EuclideanSpace ℝ (Fin 2)) = p ∧ (q' : EuclideanSpace ℝ (Fin 2)) = q ∧
+      (r' : EuclideanSpace ℝ (Fin 2)) = r ∧ (s' : EuclideanSpace ℝ (Fin 2)) = s ∧
+      Set.range (fun t => ((σ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₁ ∧
+      Set.range (fun t => ((τ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₂ ∧
+      Set.range (fun t => ((υ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₃ ∧
+      Set.range (fun t => ((φ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = A₄ ∧
+      ∀ θ, ev θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ := by
+  obtain ⟨p', q', r', s', σ, τ, υ, φ, ev, hbody, -⟩ :=
+    exists_injective_boundaryParam_four_paths h₁ h₂ h₃ h₄ hm₃₄ hm₂ hm₁ hfront
+  exact ⟨p', q', r', s', σ, τ, υ, φ, ev, hbody⟩
 
 open Classical in
 theorem exists_four_arcs_of_two_disjoint_subarcs
@@ -492,6 +533,149 @@ theorem not_loopClassMeets_or_not_loopClassMeets_of_four_boundary_arcs_preservin
 namespace NormalSingularCellData
 
 open Classical in
+/-- **The four arc boundary word of a fixed boundary branch cut.**  The core of
+`NormalSingularCellData.exists_boundary_four_arc_word_of_boundaryBranch`: the cut is an input,
+so the two crosscuts and the two marked points `p`, `q` are the given ones, and the first and
+the third arc of the word are the traces of `D₁` and `D₃` on the boundary circle of `D`.  The
+second and the fourth arc, and the two marked points `u`, `v` on `C`, stay existential; they are
+cut out of the complementary arc and are not named by the cut.  The first conjunct is the
+conclusion of the old producer; the appended ones record what the comparison with a word of an
+ambient loop space needs: the four arcs are injective, the two marked points on `C` are `r` and
+`s` in one of the two orders, consecutive arcs meet only at the marked point between them, and
+the trace of `D₁ ∪ D₂` on the boundary circle is the union of the first, the second and the
+fourth arc. -/
+theorem exists_boundary_four_arc_word_of_cut
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {A C : Set (EuclideanSpace ℝ (Fin 2))} {p q r s : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    {D₁ D₂ D₃ : SingularTwoCell M}
+    (hcut : hD.IsBoundaryBranchCut c A C p q r s g D₁ D₂ D₃) :
+    ∃ (A₂ A₄ : Set (EuclideanSpace ℝ (Fin 2))) (u v : EuclideanSpace ℝ (Fin 2))
+        (p' q' u' v' : frontier D.domain)
+        (σ : Path p' q') (τ : Path q' u') (υ : Path u' v') (φ : Path v' p')
+        (ev : loopCircle ≃ₜ frontier D.domain),
+      (IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      hD.branchPreimage c = A ∪ C ∧
+      Schoenflies.IsArcBetween A p q ∧ Schoenflies.IsArcBetween C u v ∧
+      (p' : EuclideanSpace ℝ (Fin 2)) = p ∧ (q' : EuclideanSpace ℝ (Fin 2)) = q ∧
+      (u' : EuclideanSpace ℝ (Fin 2)) = u ∧ (v' : EuclideanSpace ℝ (Fin 2)) = v ∧
+      Set.range (fun t => ((σ t : frontier D.domain) : EuclideanSpace ℝ (Fin 2))) =
+        D₁.domain ∩ frontier D.domain ∧
+      Set.range (fun t => ((τ t : frontier D.domain) : EuclideanSpace ℝ (Fin 2))) = A₂ ∧
+      Set.range (fun t => ((υ t : frontier D.domain) : EuclideanSpace ℝ (Fin 2))) =
+        D₃.domain ∩ frontier D.domain ∧
+      Set.range (fun t => ((φ t : frontier D.domain) : EuclideanSpace ℝ (Fin 2))) = A₄ ∧
+      frontier D.domain = (D₁.domain ∩ frontier D.domain) ∪
+        (A₂ ∪ ((D₃.domain ∩ frontier D.domain) ∪ A₄)) ∧
+      (∀ θ, ev θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ) ∧
+      ((D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p))) ∧
+      Function.Injective ⇑σ ∧ Function.Injective ⇑τ ∧
+      Function.Injective ⇑υ ∧ Function.Injective ⇑φ ∧
+      ((u = r ∧ v = s) ∨ (u = s ∧ v = r)) ∧
+      (∀ z ∈ D₃.domain ∩ frontier D.domain, z ∈ A₄ → z = v) ∧
+      (∀ z ∈ A₂, z ∈ (D₃.domain ∩ frontier D.domain) ∪ A₄ → z = u) ∧
+      (∀ z ∈ D₁.domain ∩ frontier D.domain,
+        z ∈ A₂ ∪ ((D₃.domain ∩ frontier D.domain) ∪ A₄) → z = p ∨ z = q) ∧
+      (D₁.domain ∪ D₂.domain) ∩ frontier D.domain =
+        A₂ ∪ ((D₁.domain ∩ frontier D.domain) ∪ A₄) := by
+  obtain ⟨hAb, hCb, hAC, hcover, -, -, hg, hcompat, hdomains, -, hinter₂₃, -, -, -, -,
+    hdisjoint₁₃, -, -, -, -, -, hcut₁, hcut₃⟩ := hcut
+  have horientation :=
+    IsPLHomeomorphOn.maps_arc_endpoints hAb hCb hcut₁.fst hcut₃.fst hg
+  have hdisjS : Disjoint (D₁.domain ∩ frontier D.domain)
+      (D₃.domain ∩ frontier D.domain) :=
+    hdisjoint₁₃.mono inter_subset_left inter_subset_left
+  obtain ⟨u, v, T₂, T₄, huv, hT₂, hS₃arc, hT₄, hm₃₄, hm₂, hm₁, hJ⟩ :=
+    exists_four_arcs_of_two_disjoint_subarcs D.isPLBall_domain.isPLSphere_frontier
+      hcut₁.snd hcut₃.snd inter_subset_right inter_subset_right hdisjS
+  obtain ⟨p', q', u', v', σ, τ, υ, φ, ev,
+    ⟨hp', hq', hu', hv', hr₁, hr₂, hr₃, hr₄, hev⟩, hσinj, hτinj, hυinj, hφinj⟩ :=
+    exists_injective_boundaryParam_four_paths hcut₁.snd hT₂ hS₃arc hT₄ hm₃₄ hm₂ hm₁ hJ
+  have hDp : D p = D (g p) := hcompat hcut₁.fst.left_mem
+  have hDq : D q = D (g q) := hcompat hcut₁.fst.right_mem
+  have hCbuv : Schoenflies.IsArcBetween C u v := by
+    rcases huv with ⟨hu, hv⟩ | ⟨hu, hv⟩
+    · rw [hu, hv]; exact hcut₃.fst
+    · rw [hu, hv]; exact hcut₃.fst.reverse
+  have hpair : (D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p) := by
+    rcases huv with ⟨hu, hv⟩ | ⟨hu, hv⟩ <;>
+      rcases horientation with ⟨hgp, hgq⟩ | ⟨hgp, hgq⟩
+    · exact Or.inl ⟨by rw [hu, ← hgp]; exact hDp.symm,
+        by rw [hv, ← hgq]; exact hDq.symm⟩
+    · exact Or.inr ⟨by rw [hu, ← hgq]; exact hDq.symm,
+        by rw [hv, ← hgp]; exact hDp.symm⟩
+    · exact Or.inr ⟨by rw [hu, ← hgq]; exact hDq.symm,
+        by rw [hv, ← hgp]; exact hDp.symm⟩
+    · exact Or.inl ⟨by rw [hu, ← hgp]; exact hDp.symm,
+        by rw [hv, ← hgq]; exact hDq.symm⟩
+  have hCuv : u ∈ C ∧ v ∈ C := by
+    rcases huv with ⟨hu, hv⟩ | ⟨hu, hv⟩
+    · exact ⟨by rw [hu]; exact hcut₃.fst.left_mem,
+        by rw [hv]; exact hcut₃.fst.right_mem⟩
+    · exact ⟨by rw [hu]; exact hcut₃.fst.right_mem,
+        by rw [hv]; exact hcut₃.fst.left_mem⟩
+  have hCD₂ : C ⊆ D₂.domain := by
+    rw [← hinter₂₃]
+    exact inter_subset_left
+  have huT₂ : u ∈ T₂ := hT₂.right_mem
+  have hvT₄ : v ∈ T₄ := hT₄.left_mem
+  have hrs : ∀ z ∈ ({r, s} : Set (EuclideanSpace ℝ (Fin 2))), z ∈ T₂ ∪ T₄ := by
+    rcases huv with ⟨hu, hv⟩ | ⟨hu, hv⟩
+    · rintro z (rfl | rfl)
+      · exact Or.inl (hu ▸ huT₂)
+      · exact Or.inr (hv ▸ hvT₄)
+    · rintro z (rfl | rfl)
+      · exact Or.inr (hv ▸ hvT₄)
+      · exact Or.inl (hu ▸ huT₂)
+  have hkey : (D₁.domain ∪ D₂.domain) ∩ frontier D.domain =
+      T₂ ∪ ((D₁.domain ∩ frontier D.domain) ∪ T₄) := by
+    apply Subset.antisymm
+    · rintro z ⟨hz12, hzf⟩
+      have hzJ : z ∈ (D₁.domain ∩ frontier D.domain) ∪
+          (T₂ ∪ ((D₃.domain ∩ frontier D.domain) ∪ T₄)) := hJ ▸ hzf
+      rcases hzJ with hz₁ | hz₂ | hz₃ | hz₄
+      · exact Or.inr (Or.inl hz₁)
+      · exact Or.inl hz₂
+      · rcases hz12 with hzD₁ | hzD₂
+        · exact absurd hz₃.1 (Set.disjoint_left.mp hdisjoint₁₃ hzD₁)
+        · have hzC : z ∈ C := hinter₂₃.subset ⟨hzD₂, hz₃.1⟩
+          have hzrs : z ∈ ({r, s} : Set (EuclideanSpace ℝ (Fin 2))) :=
+            hcut₃.inter_eq.subset ⟨hzC, hz₃⟩
+          rcases hrs z hzrs with hzT₂ | hzT₄
+          · exact Or.inl hzT₂
+          · exact Or.inr (Or.inr hzT₄)
+      · exact Or.inr (Or.inr hz₄)
+    · rintro z (hzT₂ | hz₁ | hzT₄)
+      · have hzf : z ∈ frontier D.domain := by
+          rw [hJ]
+          exact Or.inr (Or.inl hzT₂)
+        refine ⟨?_, hzf⟩
+        rcases hdomains.symm.subset (D.frontier_subset_domain hzf) with
+          (hzD₁ | hzD₂) | hzD₃
+        · exact Or.inl hzD₁
+        · exact Or.inr hzD₂
+        · have hzu : z = u := hm₂ z hzT₂ (Or.inl ⟨hzD₃, hzf⟩)
+          exact Or.inr (hCD₂ (by rw [hzu]; exact hCuv.1))
+      · exact ⟨Or.inl hz₁.1, hz₁.2⟩
+      · have hzf : z ∈ frontier D.domain := by
+          rw [hJ]
+          exact Or.inr (Or.inr (Or.inr hzT₄))
+        refine ⟨?_, hzf⟩
+        rcases hdomains.symm.subset (D.frontier_subset_domain hzf) with
+          (hzD₁ | hzD₂) | hzD₃
+        · exact Or.inl hzD₁
+        · exact Or.inr hzD₂
+        · have hzv : z = v := hm₃₄ z ⟨hzD₃, hzf⟩ hzT₄
+          exact Or.inr (hCD₂ (by rw [hzv]; exact hCuv.2))
+  exact ⟨T₂, T₄, u, v, p', q', u', v', σ, τ, υ, φ, ev,
+    ⟨hAb, hCb, hAC, hcover, hcut₁.fst, hCbuv, hp', hq', hu', hv',
+      hr₁, hr₂, hr₃, hr₄, hJ, hev, hpair⟩,
+    hσinj, hτinj, hυinj, hφinj, huv, hm₃₄, hm₂, hm₁, hkey⟩
+
+open Classical in
 theorem exists_boundary_four_arc_word_of_boundaryBranch
     {M : Type u} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -514,40 +698,12 @@ theorem exists_boundary_four_arc_word_of_boundaryBranch
       frontier D.domain = A₁ ∪ (A₂ ∪ (A₃ ∪ A₄)) ∧
       (∀ θ, ev θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ) ∧
       ((D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p)) := by
-  obtain ⟨Ab, Cb, hAb, hCb, hAC, hcover, -, -, p, q, r, s, g, hg, hcompat,
-    D₁, D₂, D₃, -, -, -, -, -, -, -, hdisjoint₁₃,
-    -, -, -, -, -, hcut₁, hcut₃⟩ :=
-    hD.exists_three_cells_of_boundaryBranch hc
-  have horientation :=
-    IsPLHomeomorphOn.maps_arc_endpoints hAb hCb hcut₁.fst hcut₃.fst hg
-  have hdisjS : Disjoint (D₁.domain ∩ frontier D.domain)
-      (D₃.domain ∩ frontier D.domain) :=
-    hdisjoint₁₃.mono inter_subset_left inter_subset_left
-  obtain ⟨u, v, T₂, T₄, huv, hT₂, hS₃arc, hT₄, hm₃₄, hm₂, hm₁, hJ⟩ :=
-    exists_four_arcs_of_two_disjoint_subarcs D.isPLBall_domain.isPLSphere_frontier
-      hcut₁.snd hcut₃.snd inter_subset_right inter_subset_right hdisjS
-  obtain ⟨p', q', u', v', σ, τ, υ, φ, ev, hp', hq', hu', hv', hr₁, hr₂, hr₃, hr₄, hev⟩ :=
-    exists_boundaryParam_four_paths hcut₁.snd hT₂ hS₃arc hT₄ hm₃₄ hm₂ hm₁ hJ
-  have hDp : D p = D (g p) := hcompat hcut₁.fst.left_mem
-  have hDq : D q = D (g q) := hcompat hcut₁.fst.right_mem
-  have hCbuv : Schoenflies.IsArcBetween Cb u v := by
-    rcases huv with ⟨hu, hv⟩ | ⟨hu, hv⟩
-    · rw [hu, hv]; exact hcut₃.fst
-    · rw [hu, hv]; exact hcut₃.fst.reverse
-  have hpair : (D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p) := by
-    rcases huv with ⟨hu, hv⟩ | ⟨hu, hv⟩ <;>
-      rcases horientation with ⟨hgp, hgq⟩ | ⟨hgp, hgq⟩
-    · exact Or.inl ⟨by rw [hu, ← hgp]; exact hDp.symm,
-        by rw [hv, ← hgq]; exact hDq.symm⟩
-    · exact Or.inr ⟨by rw [hu, ← hgq]; exact hDq.symm,
-        by rw [hv, ← hgp]; exact hDp.symm⟩
-    · exact Or.inr ⟨by rw [hu, ← hgq]; exact hDq.symm,
-        by rw [hv, ← hgp]; exact hDp.symm⟩
-    · exact Or.inl ⟨by rw [hu, ← hgp]; exact hDp.symm,
-        by rw [hv, ← hgq]; exact hDq.symm⟩
-  exact ⟨Ab, Cb, D₁.domain ∩ frontier D.domain, T₂, D₃.domain ∩ frontier D.domain, T₄,
-    p, q, u, v, p', q', u', v', σ, τ, υ, φ, ev, hAb, hCb, hAC, hcover, hcut₁.fst, hCbuv,
-    hp', hq', hu', hv', hr₁, hr₂, hr₃, hr₄, hJ, hev, hpair⟩
+  obtain ⟨A, C, p, q, r, s, g, D₁, D₂, D₃, hcut⟩ :=
+    hD.exists_isBoundaryBranchCut_of_boundaryBranch hc
+  obtain ⟨A₂, A₄, u, v, p', q', u', v', σ, τ, υ, φ, ev, hbody, -⟩ :=
+    hD.exists_boundary_four_arc_word_of_cut hcut
+  exact ⟨A, C, D₁.domain ∩ frontier D.domain, A₂, D₃.domain ∩ frontier D.domain, A₄,
+    p, q, u, v, p', q', u', v', σ, τ, υ, φ, ev, hbody⟩
 
 end NormalSingularCellData
 
