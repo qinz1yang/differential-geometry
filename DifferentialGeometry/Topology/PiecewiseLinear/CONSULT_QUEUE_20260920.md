@@ -42,8 +42,53 @@ except where marked. Reading downwards is the order the induction uses.
 | Word elimination picks the surviving candidate | `BoundaryBranchDescent.lean` | proved, given the boundary words |
 | The boundary words as parametrised loops | — | **open — prompt 4** |
 
-The closed-branch case has its Case 1 exclusion proved
-(`ClosedBranchOrientability.lean`) with three named inputs still open; see prompt 3.
+### The closed case: the Case 1 exclusion is off the dependency path
+
+`ClosedBranchOrientability.lean` proves that closed Case 1 cannot occur over an
+orientable target complex. The answer to prompt 3 establishes that **this is not a step
+in Lemma 2**, and two of the assumptions behind the prompt were mine and were wrong.
+
+*Correction 1, mine.* Prompt 3 asserted that "intermediate systems need not be
+orientable even though the bottom one is", on the reading that `CoverReduction.lean`'s
+non-orientable branch means orientation can be lost going up. **That is false for the
+actual tower.** A tower step is a covering complex followed by a derived neighbourhood
+(`CoverNormalSystem.lean:49`, `:108`, `:106`), and both operations preserve
+orientability, so an orientable bottom forces every stage orientable by induction. The
+producer's `by_cases hor : S.IsOrientableManifold`
+(`CoverReduction.lean:126`) handles non-orientable *starting* systems; it does not
+create non-orientability during ascent.
+
+*Correction 2, consequential.* Since `LemmaTwoStatement` carries **no** orientability
+hypothesis, non-orientable downstairs targets are allowed, and **Case 1 must be handled
+by an actual surgery rather than universally excluded**. Building the induction around
+the exclusion would aim at the wrong target. The exclusion stays correct and useful as a
+consistency check for orientable applications, but it is not on the proof's dependency
+path — so the three inputs prompt 3 lists as open are not three obligations of the
+general Case 1 surgery. Only the marked tube model and its connection to the source
+branch are; the orientation transport is needed for the optional exclusion alone.
+
+Two pieces of mathematics from that answer that are worth keeping:
+
+* **What the connected sheet cover records.** A connected two-sheeted branch preimage
+  says one traversal of the branch exchanges the two sheet germs. That **alone does not
+  determine tube orientability**. Connected sheet cover *plus an annular source
+  neighbourhood* (automatic, since the preimage circle is embedded in the interior of
+  the source disk, so its normal line bundle is trivial) *plus an ordinary crossing*
+  does: the annulus forces the ray permutation to be a diagonal reflection rather than a
+  quarter turn, and the transverse orientation is then reversed, so the ambient tube is
+  non-orientable. In bundle terms the sheet cover is the orientation double cover of
+  `ν_{C/N}`, whence `p` connected ⟺ `⟨w₁(N), [C]⟩ = 1`.
+* **The correct orientation transport**, for whenever the exclusion is wanted: it needs a
+  genuine **codimension-zero local PL embedding** of the tube into the ambient manifold,
+  not injectivity of the cylinder parametrisation. A solid torus also has a non-injective
+  cylindrical parametrisation. An arbitrary PL map, an image containment, or surjectivity
+  onto some set is not sufficient.
+
+Also flagged, and it is a real gap: determining the *ray permutation* is not the same as
+obtaining the *pointwise formula* `h (x, y) = (y, x)`. Straightening an arbitrary PL
+monodromy to `Prod.swap`, through PL homeomorphisms preserving the cross, is a
+substantive further step, and the producer must supply the whole **marked pair**
+`(D², X)`, not an unmarked disk bundle or an abstract covering circle.
 
 ### Correction: the direct candidate admits no branch bijection
 
