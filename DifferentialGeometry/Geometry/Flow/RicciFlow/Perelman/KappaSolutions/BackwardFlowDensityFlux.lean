@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedVolume
-import DifferentialGeometry.Analysis.Integration.Integral.DistanceCutoff
-import DifferentialGeometry.Analysis.Integration.Measure.Gradient
+import DifferentialGeometry.Analysis.Integration.Integral.GradientCutoff
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
 
 
@@ -126,52 +125,24 @@ private theorem backward_flow_limit_cutoff_flux_integrable_and_tendsto
     L.isSolution.smoothMetric.metricCLMSection_continuousOn_carrier.comp_continuous
       ((continuous_const.sub (continuous_subtype_val.comp continuous_fst)).prodMk continuous_snd)
       (fun z => ⟨show 1 - (z.1 : ℝ) ≤ 0 from sub_nonpos.mpr z.1.property.1, mem_univ _⟩)
-  let V : ∀ z : Icc (1 : ℝ) T × L.M, TangentSpace I z.2 :=
-    fun z => (ρ z * ψ z.1) • gradFun (h z.1) (u z.1) z.2
-  have hV (z : Icc (1 : ℝ) T × L.M) :
-      Real.sqrt ((h z.1).inner z.2 (V z) (V z)) ≤
-        C * (1 + (riemannianEDistOf g L.basepoint z.2).toReal) *
-          (|ψ z.1| * (ρ z * u z.1 z.2)) := by
-    rw [sqrt_inner_smul, abs_mul, abs_of_nonneg (hρ0 z)]
-    calc
-      _ ≤ (ρ z * |ψ z.1|) *
-          (C * (1 + (riemannianEDistOf g L.basepoint z.2).toReal) * u z.1 z.2) :=
-        mul_le_mul_of_nonneg_left (hC z.1 z.2) (mul_nonneg (hρ0 z) (abs_nonneg _))
-      _ = _ := by ring
-  have hmeas (b : NNReal) : AEStronglyMeasurable (fun z : Icc (1 : ℝ) T × L.M =>
-      (h z.1).inner z.2 (V z) (gradFun (h z.1) (fun y => Analysis.CutoffProfile.evalue
-        ((b : ℝ≥0∞) * riemannianEDistOf g L.basepoint y)) z.2))
-        (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) := by
-    have hc : Continuous (fun z : Icc (1 : ℝ) T × L.M => Analysis.CutoffProfile.evalue
-        ((b : ℝ≥0∞) * riemannianEDistOf g L.basepoint z.2)) :=
-      Analysis.CutoffProfile.continuous_evalue.comp
-        ((ENNReal.continuous_const_mul ENNReal.coe_ne_top).comp
-          ((continuous_riemannianEDist g L.basepoint).comp continuous_snd))
-    have hg := Analysis.measurable_inner_gradFun_with_param h hhc (f := u)
-      (h := fun _ y => Analysis.CutoffProfile.evalue
-        ((b : ℝ≥0∞) * riemannianEDistOf g L.basepoint y)) huc hc
-    have hh : Measurable (fun z : Icc (1 : ℝ) T × L.M =>
-        ρ z * ψ z.1 * (h z.1).inner z.2 (gradFun (h z.1) (u z.1) z.2)
-          (gradFun (h z.1) (fun y => Analysis.CutoffProfile.evalue
-            ((b : ℝ≥0∞) * riemannianEDistOf g L.basepoint y)) z.2)) :=
-      (hρc.mul (ψ.continuous.comp continuous_fst)).measurable.mul hg
-    simpa only [V, ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul] using
-      hh.aestronglyMeasurable
+  have hw' : Integrable (fun z => |ρ z * ψ z.1| * u z.1 z.2)
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) := by
+    apply hw.congr
+    filter_upwards [] with z
+    rw [abs_mul, abs_of_nonneg (hρ0 z)]
+    ring
+  have hv := (hρc.mul (ψ.continuous.comp continuous_fst)).measurable
   constructor
   · intro b
-    have hi := Analysis.integrable_inner_grad_distance_cutoff
-      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) b g (fun z => h z.1)
-      (Eventually.of_forall fun z => hgh z.1) L.basepoint Prod.snd V C hw
-      (Eventually.of_forall fun z => mul_nonneg (abs_nonneg _) (mul_nonneg (hρ0 z) (hu0 z.1 z.2)))
-      (Eventually.of_forall hV) (hmeas b)
-    simpa only [V, ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul] using hi
+    exact Analysis.integrable_mul_inner_grad_distance_cutoff
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) b g h hhc
+      (Eventually.of_forall fun z => hgh z.1) huc (Eventually.of_forall fun z => hu0 z.1 z.2)
+      hv hw' L.basepoint C (Eventually.of_forall fun z => hC z.1 z.2)
   · intro ι l _ a ha
-    have hflux := Analysis.tendsto_integral_abs_inner_grad_distance_cutoff
-      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) a ha g (fun z => h z.1)
-      (Eventually.of_forall fun z => hgh z.1) L.basepoint Prod.snd V C hw
-      (Eventually.of_forall fun z => mul_nonneg (abs_nonneg _) (mul_nonneg (hρ0 z) (hu0 z.1 z.2)))
-      (Eventually.of_forall hV) (Eventually.of_forall fun i => hmeas (a i))
-    simpa only [V, ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul] using hflux
+    exact Analysis.tendsto_integral_abs_mul_inner_grad_distance_cutoff
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) a ha g h hhc
+      (Eventually.of_forall fun z => hgh z.1) huc (Eventually.of_forall fun z => hu0 z.1 z.2)
+      hv hw' L.basepoint C (Eventually.of_forall fun z => hC z.1 z.2)
 
 theorem integrable_backward_flow_limit_perelmanDensity_cutoff_flux
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
