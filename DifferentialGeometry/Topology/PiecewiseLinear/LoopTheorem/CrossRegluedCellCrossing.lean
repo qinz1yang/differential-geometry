@@ -506,7 +506,7 @@ theorem NormalSingularCellData.exists_cross_reglued_cell_crossing_of_boundaryBra
     hdisjoint₁₃, hP, hQ, hHdomain, hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂,
     hA'def, -, hA'seam, -, -, hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
     -, -, -, -, -, -, -, -, -,
-    hGimage, hbranch, x, y, σ, ω, e, -, -, hboundaryParam⟩ :=
+    hGimage, hbranch, x, y, σ, ω, e, -, -, hboundaryParam, -⟩ :=
     hD.exists_cross_reglued_cell_of_boundaryBranch hc
   exact ⟨G, hGimage, hbranch,
     hD.doublePointSet_crossReglued_eq hAC hcover hg hcompat hdomains hinter₁₂ hinter₂₃

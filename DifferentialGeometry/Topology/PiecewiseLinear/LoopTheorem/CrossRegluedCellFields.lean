@@ -56,11 +56,10 @@ here one by one rather than added to the producer's conclusion as a bundled norm
 
 `Set.range G.boundary ⊆ B` and `G '' G.domain ∩ BdM = Set.range G.boundary` both reduce, given
 `hD.boundary_image_subset` and `hD.image_inter_boundary`, to the single equality
-`G '' frontier G.domain = D '' frontier D.domain`, and that equality does *not* follow from
-the recorded conclusions of `exists_cross_reglued_cell_of_boundaryBranch`: those conclusions
-never mention `frontier D.domain`.  Three further facts, all available where the producer is
-proved, suffice and are listed in the report accompanying this file; the shortest repair is to
-add the equality itself to the producer's conclusion.
+`G '' frontier G.domain = D '' frontier D.domain`, which the elementary fields proved here do
+not touch.  That equality is now recorded by `exists_cross_reglued_cell_of_boundaryBranch`
+itself, together with the two boundary arc images it is assembled from, and the two fields are
+read off it in `LoopTheorem.CrossRegluedCellPredicate`.
 -/
 
 open Set Topology
@@ -981,7 +980,7 @@ theorem NormalSingularCellData.exists_cross_reglued_cell_fields_of_boundaryBranc
     hdisjoint₁₃, hP, hQ, hHdomain, hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂,
     hA'def, -, hA'seam, -, -, hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
     -, -, -, -, -, -, -, -, -,
-    hGimage, hbranch, x, y, σ, ω, e, -, -, hboundaryParam⟩ :=
+    hGimage, hbranch, x, y, σ, ω, e, -, -, hboundaryParam, -⟩ :=
     hD.exists_cross_reglued_cell_of_boundaryBranch hc
   exact ⟨G, hGimage, hbranch,
     hD.doublePointSet_crossReglued_eq hAC hcover hg hcompat hdomains hinter₁₂ hinter₂₃

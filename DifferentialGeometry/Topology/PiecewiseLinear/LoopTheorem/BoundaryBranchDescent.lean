@@ -227,7 +227,7 @@ theorem exists_boundary_surgery_candidate_of_boundaryBranch [T2Space M]
     -, -, -, -, -, -, -, -, -, -, -, -, -, -,
     -, -, -, -, himage, -, -, -, -, -, -,
     hsub, hdisjoint, -, hG,
-    y, z, α, ω, e, -, -, hparam⟩ :=
+    y, z, α, ω, e, -, -, hparam, -⟩ :=
     hD.exists_boundary_surgery_cell_of_boundaryBranch hc
   exact ⟨G, hG, hsub, hdisjoint, himage, e, y, z, α, ω, hparam⟩
 

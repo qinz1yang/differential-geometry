@@ -9093,6 +9093,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TaperedInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.InwardPushComposition
 import DifferentialGeometry.Topology.PiecewiseLinear.NormalCrossingTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCellNormalFields
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellPredicate
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduction
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCellProperness
+import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteBoundaryExhaustion
 /-!
 # Differential geometry and geometric analysis
 -/

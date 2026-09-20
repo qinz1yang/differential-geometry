@@ -30,16 +30,11 @@ whose boundary word is `σ * φ * ν * τ`: its two boundary arcs are the images
 
 Main results.
 
-* `image_cutArc_eq_of_isPLHomeomorphOn`: a PL homeomorphism of two dimensional PL balls
-  carrying one arc of a cut pair of the source frontier onto one arc of a cut pair of the
-  target frontier carries the complementary arc onto the complementary arc.  This is the
-  transport step that every boundary identification below is made of.
-* `frontier_middle_eq_union_seams`: for a cover of a set by three closed pieces meeting in
-  two seams, the frontier of the middle piece is its trace on the ambient frontier together
-  with the two seams.
-* `isCutPair_snd_eq_of_union_eq` and `isCutPair_image_endpoints_of_isPLHomeomorphOn`: the two
-  small identifications that turn the previous item into a statement about the complementary
-  arc of a seam.
+* `isCutPair_image_endpoints_of_isPLHomeomorphOn`: the small identification that renames the
+  cut points of a seam through the PL homeomorphism between the two seams.  The transport
+  steps every boundary identification below is made of — `image_cutArc_eq_of_isPLHomeomorphOn`,
+  `frontier_middle_eq_union_seams` and `isCutPair_snd_eq_of_union_eq` — now live in
+  `LoopTheorem.CellGluing`, which also uses them.
 * `SingularTwoCell.exists_direct_reglued_cell_with_boundary_arcs`: the candidate obtained by
   gluing the two outer pieces along the seam identification, with its boundary decomposed
   into the `D` images of the traces of `D₁` and of `D₃`.
@@ -59,115 +54,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
-
-/-- Transport of a cut pair through a PL homeomorphism of two dimensional PL balls.  If `f`
-maps `X` PL homeomorphically onto `Y`, if `S` and `R` are the two arcs of `frontier X`
-determined by `p` and `q`, and if `A` and `T` are the two arcs of `frontier Y` determined by
-the images of `p` and `q`, then `f` carrying `S` onto `A` forces it to carry `R` onto `T`. -/
-theorem image_cutArc_eq_of_isPLHomeomorphOn
-    {X Y S R A T : Set (EuclideanSpace ℝ (Fin 2))}
-    {p q a b : EuclideanSpace ℝ (Fin 2)}
-    {f : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
-    (hX : IsPLBall 2 X) (hY : IsPLBall 2 Y) (hf : IsPLHomeomorphOn f X Y)
-    (hcutX : Schoenflies.IsCutPair (frontier X) p q S R)
-    (hfS : f '' S = A) (hfp : f p = a) (hfq : f q = b)
-    (hcutY : Schoenflies.IsCutPair (frontier Y) a b A T) :
-    f '' R = T := by
-  have hfront : IsPLHomeomorphOn f (frontier X) (frontier Y) := by
-    rw [← hf.image_frontier (by simp) hX.isPolyhedron.isClosed hY.isPolyhedron.isClosed]
-    exact hf.restrict hX.isPLSphere_frontier.isPolyhedron
-      hX.isPolyhedron.isClosed.frontier_subset
-  have himage := hcutX.image hfront.isPiecewiseAffineOn.continuousOn hfront.bijOn.injOn
-  rw [hfront.image_eq, hfS, hfp, hfq] at himage
-  rcases DifferentialGeometry.Topology.PlanarJordan.eq_or_eq_of_isArcBetween_subset_isCutPair
-    hcutY himage.snd himage.snd_subset with hbad | hgood
-  · exact (himage.ne hbad.symm).elim
-  · exact hgood
-
-/-- The frontier of the middle piece of a three piece cut.  If three closed sets cover `W`,
-if the first and the second meet in `A`, the second and the third in `C`, and if both seams
-lie in the frontier of the middle piece, then that frontier is exactly the trace of the
-middle piece on `frontier W` together with the two seams. -/
-theorem frontier_middle_eq_union_seams
-    {W U₁ U₂ U₃ A C : Set (EuclideanSpace ℝ (Fin 2))}
-    (hcover : U₁ ∪ U₂ ∪ U₃ = W)
-    (h₁closed : IsClosed U₁) (h₂closed : IsClosed U₂) (h₃closed : IsClosed U₃)
-    (hinter₁₂ : U₁ ∩ U₂ = A) (hinter₂₃ : U₂ ∩ U₃ = C)
-    (hA₂ : A ⊆ frontier U₂) (hC₂ : C ⊆ frontier U₂) :
-    frontier U₂ = (U₂ ∩ frontier W) ∪ A ∪ C := by
-  have hU₂W : U₂ ⊆ W := by
-    intro x hx
-    rw [← hcover]
-    exact Or.inl (Or.inr hx)
-  apply Subset.antisymm
-  · intro x hx
-    have hxU₂ : x ∈ U₂ := h₂closed.frontier_subset hx
-    by_cases hxW : x ∈ frontier W
-    · exact Or.inl (Or.inl ⟨hxU₂, hxW⟩)
-    by_cases hxA : x ∈ A
-    · exact Or.inl (Or.inr hxA)
-    by_cases hxC : x ∈ C
-    · exact Or.inr hxC
-    exfalso
-    have hxint : x ∈ interior W := by
-      by_contra hxint
-      exact hxW ((mem_frontier_iff_notMem_interior (hU₂W hxU₂)).mpr hxint)
-    have hxU₁ : x ∉ U₁ := fun h => hxA (hinter₁₂ ▸ ⟨h, hxU₂⟩)
-    have hxU₃ : x ∉ U₃ := fun h => hxC (hinter₂₃ ▸ ⟨hxU₂, h⟩)
-    have hopen : IsOpen (interior W ∩ (U₁ ∪ U₃)ᶜ) :=
-      isOpen_interior.inter (h₁closed.union h₃closed).isOpen_compl
-    have hmem : x ∈ interior W ∩ (U₁ ∪ U₃)ᶜ := by
-      refine ⟨hxint, ?_⟩
-      simp only [mem_compl_iff, mem_union, not_or]
-      exact ⟨hxU₁, hxU₃⟩
-    have hsub : interior W ∩ (U₁ ∪ U₃)ᶜ ⊆ U₂ := by
-      rintro y ⟨hyW, hy⟩
-      simp only [mem_compl_iff, mem_union, not_or] at hy
-      have hycover : y ∈ U₁ ∪ U₂ ∪ U₃ := by
-        rw [hcover]
-        exact interior_subset hyW
-      rcases hycover with (hy₁ | hy₂) | hy₃
-      · exact (hy.1 hy₁).elim
-      · exact hy₂
-      · exact (hy.2 hy₃).elim
-    exact (mem_frontier_iff_notMem_interior hxU₂).mp hx
-      (interior_maximal hsub hopen hmem)
-  · refine union_subset (union_subset ?_ hA₂) hC₂
-    rintro x ⟨hxU₂, hxW⟩
-    refine (mem_frontier_iff_notMem_interior hxU₂).mpr ?_
-    intro hxint
-    exact (mem_frontier_iff_notMem_interior (hU₂W hxU₂)).mp hxW
-      (interior_mono hU₂W hxint)
-
-/-- Identification of the complementary arc of a seam.  If the curve `J` is covered by
-`T ∪ A` and `C`, if `C` meets `T ∪ A` only in the two cut points, and if both cut points lie
-in `T`, then the arc of `J` complementary to `C` is exactly `T ∪ A`. -/
-theorem isCutPair_snd_eq_of_union_eq
-    {J T A C S : Set (EuclideanSpace ℝ (Fin 2))} {r s : EuclideanSpace ℝ (Fin 2)}
-    (hcut : Schoenflies.IsCutPair J r s C S) (hJ : J = T ∪ A ∪ C)
-    (hmeet : C ∩ (T ∪ A) ⊆ {r, s}) (hr : r ∈ T) (hs : s ∈ T) :
-    S = T ∪ A := by
-  apply Subset.antisymm
-  · intro x hxS
-    have hxJ : x ∈ J := hcut.snd_subset hxS
-    rw [hJ] at hxJ
-    rcases hxJ with hxTA | hxC
-    · exact hxTA
-    · have hxpair : x ∈ ({r, s} : Set (EuclideanSpace ℝ (Fin 2))) :=
-        hcut.inter_eq.subset ⟨hxC, hxS⟩
-      rcases hxpair with rfl | rfl
-      · exact Or.inl hr
-      · exact Or.inl hs
-  · intro x hx
-    have hxJ : x ∈ J := by
-      rw [hJ]
-      exact Or.inl hx
-    rcases hcut.union_eq.symm.subset hxJ with hxC | hxS
-    · have hxpair : x ∈ ({r, s} : Set (EuclideanSpace ℝ (Fin 2))) := hmeet ⟨hxC, hx⟩
-      rcases hxpair with rfl | rfl
-      · exact hcut.snd.left_mem
-      · exact hcut.snd.right_mem
-    · exact hxS
 
 /-- Renaming the cut points of a seam through a PL homeomorphism of the two seams.  A PL
 homeomorphism from the arc `A` with endpoints `p` and `q` onto the arc `C` with endpoints
@@ -287,7 +173,7 @@ theorem exists_direct_reglued_cell_with_boundary_arcs
     · rintro x (rfl | rfl)
       · exact ⟨hcutP.snd.left_mem, hcutQ.snd.left_mem⟩
       · exact ⟨hcutP.snd.right_mem, hcutQ.snd.right_mem⟩
-  obtain ⟨a', b', ρ, κ, ev, hρrange, hκrange, hev⟩ :=
+  obtain ⟨a', b', ρ, κ, ev, hρrange, hκrange, hev, -, -⟩ :=
     exists_boundaryParam_paths_of_isCutPair_union hcutP.snd hcutQ.snd hRT hfrontG
   refine ⟨G, R, T, hR, hT, hfrontG, hGR, hGT, hGimage, G.boundary a',
     G.boundary b', ρ.map G.boundary.continuous, κ.map G.boundary.continuous, ev,
@@ -599,7 +485,7 @@ theorem exists_cross_reglued_cell_with_boundary_arcs
     · rintro x (rfl | rfl)
       · exact ⟨hcutP'.snd.left_mem, hcutQ'.snd.left_mem⟩
       · exact ⟨hcutP'.snd.right_mem, hcutQ'.snd.right_mem⟩
-  obtain ⟨a', b', ρ, κ, ev, hρrange, hκrange, hev⟩ :=
+  obtain ⟨a', b', ρ, κ, ev, hρrange, hκrange, hev, -, -⟩ :=
     exists_boundaryParam_paths_of_isCutPair_union hcutP'.snd hcutQ'.snd hR'T' hfrontG
   refine ⟨G, R', T', hR', hT', hfrontG, hGR', hGT', hGimage, G.boundary a',
     G.boundary b', ρ.map G.boundary.continuous, κ.map G.boundary.continuous, ev,

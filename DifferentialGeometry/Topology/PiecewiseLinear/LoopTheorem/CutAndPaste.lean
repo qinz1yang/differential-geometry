@@ -1257,9 +1257,19 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
       ∃ (x y : M) (σ : Path x y) (ω : Path y x)
           (e : loopCircle ≃ₜ frontier G.domain),
         Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
-          ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
+          (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+          G '' R = D '' ((U₁ ∪ U₂) ∩ frontier D.domain) ∧
+          G '' T = D '' (U₃ ∩ frontier D.domain) ∧
+          G '' frontier G.domain = D '' frontier D.domain ∧
+          ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
+            Function.Injective ρ ∧ Function.Injective κ ∧
+            Set.range (fun t => ((ρ t : frontier G.domain) :
+              EuclideanSpace ℝ (Fin 2))) = R ∧
+            Set.range (fun t => ((κ t : frontier G.domain) :
+              EuclideanSpace ℝ (Fin 2))) = T ∧
+            ∀ θ, e θ = pathToCircle (ρ.trans κ) θ := by
   obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
-    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, hA₂, hC₂, hC₃,
+    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, -, hA₂, hC₂, -,
     hdisjoint₁₃, hfun₁, hfun₂, hfun₃, -, -, hcut₁, hcut₃⟩ :=
     hD.exists_three_cells_of_boundaryBranch hc
   have hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A := by
@@ -1272,15 +1282,26 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
     change D₂.toFun x = D₃.toFun (g x)
     rw [hfun₂, hfun₃]
     exact hcompat hx
+  have horientation :=
+    IsPLHomeomorphOn.maps_arc_endpoints hA hC hcut₁.fst hcut₃.fst hg
+  have hcut₃' : Schoenflies.IsCutPair (frontier D₃.domain) (g p) (g q) C
+      (D₃.domain ∩ frontier D.domain) := by
+    rcases horientation with hor | hor
+    · simpa only [hor.1, hor.2] using hcut₃
+    · have hrev : Schoenflies.IsCutPair (frontier D₃.domain) s r C
+          (D₃.domain ∩ frontier D.domain) :=
+        ⟨hcut₃.fst.reverse, hcut₃.snd.reverse, hcut₃.union_eq, by
+          rw [hcut₃.inter_eq, pair_comm]⟩
+      simpa only [hor.1, hor.2] using hrev
   obtain ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
     hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, hA'def, hA', hA'seam, hA'front, hk,
     hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
     a, b, R, T, hcutP', hcutQ', hR, hT, hfrontG, hha, hhb, hf₃a, hf₃b,
-    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam⟩ :=
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam, hGRimage, hGTimage,
+    a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, heparam⟩ :=
     D₁.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs D₂ D₃ hA hAC
-      hcut₁.fst hA₁ hA₂ hC₂ hC₃ hg hcompat₁₂ hcompat₂₃
-  have horientation :=
-    IsPLHomeomorphOn.maps_arc_endpoints hA hC hcut₁.fst hcut₃.fst hg
+      hdomains hinter₁₂ hinter₂₃ hA₂ hC₂ hcut₁ hcut₃' hg hcompat₁₂ hcompat₂₃
+      hfun₁ hfun₂ hfun₃
   have hH₁' : EqOn H (D ∘ f₁) P := by
     intro z hz
     simpa only [Function.comp_apply, hfun₁] using hH₁ hz
@@ -1368,6 +1389,20 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
         _ = D (f₂ (j v)) := hH₂' hjvQ
         _ = D v := congrArg D (hf₂.bijOn.invOn_invFunOn.2 hvD₂)
     exact ⟨z₁, hz₁G, z₂, hz₂G, hz₁ne₂, hGz₁.trans hvz, hGz₂.trans hvz⟩
+  have hfrontierImage : G '' frontier G.domain = D '' frontier D.domain := by
+    have hDfront : D.domain ∩ frontier D.domain = frontier D.domain :=
+      inter_eq_right.mpr D.frontier_subset_domain
+    calc
+      G '' frontier G.domain = G '' (R ∪ T) := congrArg (G '' ·) hfrontG
+      _ = G '' R ∪ G '' T := image_union G R T
+      _ = D '' ((D₁.domain ∪ D₂.domain) ∩ frontier D.domain) ∪
+          D '' (D₃.domain ∩ frontier D.domain) := congrArg₂ (· ∪ ·) hGRimage hGTimage
+      _ = D '' (((D₁.domain ∪ D₂.domain) ∩ frontier D.domain) ∪
+          (D₃.domain ∩ frontier D.domain)) := (image_union D _ _).symm
+      _ = D '' ((D₁.domain ∪ D₂.domain ∪ D₃.domain) ∩ frontier D.domain) := by
+          simp only [union_inter_distrib_right]
+      _ = D '' (D.domain ∩ frontier D.domain) := by rw [hdomains]
+      _ = D '' frontier D.domain := by rw [hDfront]
   exact ⟨A, C, D₁.domain, D₂.domain, D₃.domain, P, Q, P', Q', A', R, T,
     p, q, r, s, a, b, g, f₁, f₂, h, f₃, H, G, hA, hC, hAC, hcover, hg,
     hcompat, hcut₁.fst.left_mem, hcut₁.fst.right_mem, hcut₃.fst.left_mem,
@@ -1376,7 +1411,8 @@ theorem exists_cross_reglued_cell_of_boundaryBranch
     hA'def, hA', hA'seam, hA'front, hk, hP', hQ', hGdomain, hh, hf₃, hhseam,
     hf₃seam, hGH, hG₃', hcutP', hcutQ', hR, hT, hfrontG, hha, hhb,
     hf₃a, hf₃b, hGimage, hbranchPersists,
-    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam⟩
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam, hGRimage, hGTimage,
+    hfrontierImage, a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, heparam⟩
 
 open Classical in
 theorem exists_boundary_surgery_cell_of_boundaryBranch
@@ -1414,7 +1450,22 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
        ∃ (x y : M) (σ : Path x y) (ω : Path y x)
           (e : loopCircle ≃ₜ frontier G.domain),
          Set.range σ = D '' U ∧ Set.range ω = D '' V ∧
-           ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
+           (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+           ∃ R T : Set (EuclideanSpace ℝ (Fin 2)),
+           ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
+             frontier G.domain = R ∪ T ∧
+             G '' R = D '' U ∧ G '' T = D '' V ∧
+             Function.Injective ρ ∧ Function.Injective κ ∧
+             Set.range (fun t => ((ρ t : frontier G.domain) :
+               EuclideanSpace ℝ (Fin 2))) = R ∧
+             Set.range (fun t => ((κ t : frontier G.domain) :
+               EuclideanSpace ℝ (Fin 2))) = T ∧
+             (∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
+             ∃ U₁ U₂ U₃ : Set (EuclideanSpace ℝ (Fin 2)),
+               IsClosed U₁ ∧ IsClosed U₂ ∧ IsClosed U₃ ∧
+               U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
+               D.domain \ U₂ ⊆ pullback '' G.domain ∧
+               Disjoint (pullback '' G.domain) (U₂ \ A) := by
   obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
@@ -1493,7 +1544,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     · rintro x (rfl | rfl)
       · exact ⟨hcutP.snd.left_mem, hcutQ.snd.left_mem⟩
       · exact ⟨hcutP.snd.right_mem, hcutQ.snd.right_mem⟩
-  obtain ⟨a', b', ρ, κ, e, hρrange, hκrange, he⟩ :=
+  obtain ⟨a', b', ρ, κ, e, hρrange, hκrange, he, hρinj, hκinj⟩ :=
     exists_boundaryParam_paths_of_isCutPair_union hcutP.snd hcutQ.snd hRT hfrontG
   let σ : Path (G.boundary a') (G.boundary b') := ρ.map G.boundary.continuous
   let ω : Path (G.boundary b') (G.boundary a') := κ.map G.boundary.continuous
@@ -2249,6 +2300,36 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
   have hinterB : G '' G.domain ∩ BdM ⊆ B := by
     rw [himageBoundary]
     exact hrangeB
+  have hCD₂ : C ⊆ D₂.domain := by
+    rw [← hinter₂₃]
+    exact inter_subset_left
+  have hkept : D.domain \ D₂.domain ⊆ pullback '' G.domain := by
+    intro z hz
+    have hzD : z ∈ D.domain := hz.1
+    rw [← hdomains] at hzD
+    rcases hzD with (hzD₁ | hzD₂) | hzD₃
+    · obtain ⟨w, hwP, hwz⟩ := hf₁.bijOn.surjOn hzD₁
+      refine ⟨w, hGdomain.symm.subset (Or.inl hwP), ?_⟩
+      change (if w ∈ P then f₁ w else f₃ w) = z
+      rw [if_pos hwP, hwz]
+    · exact absurd hzD₂ hz.2
+    · obtain ⟨w, hwQ, hwz⟩ := hf₃.bijOn.surjOn hzD₃
+      have hwP : w ∉ P := by
+        intro hwP
+        have hzC : z ∈ C := by
+          rw [← hf₃seam]
+          exact ⟨w, ⟨hwP, hwQ⟩, hwz⟩
+        exact hz.2 (hCD₂ hzC)
+      refine ⟨w, hGdomain.symm.subset (Or.inr hwQ), ?_⟩
+      change (if w ∈ P then f₁ w else f₃ w) = z
+      rw [if_neg hwP, hwz]
+  have hband : Disjoint (pullback '' G.domain) (D₂.domain \ A) := by
+    apply Set.disjoint_left.mpr
+    rintro _ ⟨w, hw, rfl⟩ hz
+    rcases hpullback_outer hw with h₁ | h₃
+    · exact hz.2 (hinter₁₂.subset ⟨h₁, hz.1⟩)
+    · exact Set.disjoint_left.mp hpullback_disjoint_C ⟨w, hw, rfl⟩
+        (hinter₂₃.subset ⟨hz.1, h₃⟩)
   have hGnormal : Nonempty (NormalSingularCellData G BdM B) :=
     ⟨{
       locallyInjective := hlocallyInjective
@@ -2266,7 +2347,13 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     hpullback_mem, hpullback_inj, hpullback_apply, hpullback_disjoint_C,
      hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
      hdouble, hremove, hGsingular, hGnormal,
-     G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam⟩
+     G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam,
+     R, T, a', b', ρ, κ, hfrontG, hGR, hGT, hρinj, hκinj, hρrange, hκrange, he,
+     D₁.domain, D₂.domain, D₃.domain,
+     D₁.isPLBall_domain.isPolyhedron.isClosed,
+     D₂.isPLBall_domain.isPolyhedron.isClosed,
+     D₃.isPLBall_domain.isPolyhedron.isClosed,
+     hdomains, hinter₁₂, hinter₂₃, hkept, hband⟩
 
 end NormalSingularCellData
 
