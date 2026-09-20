@@ -4767,3 +4767,75 @@ h delivered5fb, merged10264ff and was assigned whole-branch two-sheet charts
 at that delivery boundary before this pause. M304 deck drafts remain
 unverified; the ambient-cover versus regular-neighborhood interface gap is
 recorded in the takeover file. Do not resume Codex tasks automatically.
+
+## 100. Independent protected-polyhedron relative general-position acceptance
+
+The sixty-fourth batch accepts F's exact frozen fad7930be source: four changed
+leaves and three unchanged direct consumers. GeneralPosition now produces, for
+a fixed actual closed polyhedron Q, a piecewise affine Lipschitz vertex
+function vanishing on Q, its Lipschitz displacement extending that vertex
+perturbation while fixing Q pointwise, and a small PL homeomorphism putting the
+complex in general position off Q with that quantitative displacement. The
+compatible subdivision is constructed inside the producer rather than assumed.
+ProjectedSheetPerturbation adds the flat-core consumer, which keeps the actual
+crossings on the protected core using the simultaneous flat sheets and the same
+quantitative displacement.
+
+The mathematical scope is exactly that. The final disk consumer assumes its
+support lies in the interior and preserves the original boundary pointwise.
+Arbitrary boundary charts and complete global projected-disk normalization are
+not handled, and no Moise252 endpoint follows. Later F commits 478a65991 and
+0c080405f, and F's current dirty half-space extension, are outside this batch
+and still require separate frozen-source acceptance.
+
+Seven modules were freshly compiled in the integration checkout: the four
+changed leaves plus the unchanged HalfSpacePerturbation, HalfSpaceGeneralPosition
+and ProjectedBoundaryPosition consumers. Compilation took 111.5246326 seconds
+including admission; the combined audit took 57.9625805 seconds and ended at
+23:30:05 UTC. All 322 native nonautomatic declarations (306 changed-module and
+16 consumer declarations) and 10 critical reuses pass 13 applicable environment
+linters with zero diagnostic lines, and their transitive axioms are contained in
+propext, Classical.choice and Quot.sound. Five public theorems are new. The 291
+other old public signatures are unchanged; the single public signature change is
+the explicitly authorized removal of the unused FiniteDimensional instance
+argument on neighbors_eq_pair_of_transverse_cofaces, recorded with both exact
+signatures in authorized-signature-changes.json. HeightProjection and
+SingularGeneralPosition change only by authorized line wrapping.
+
+The thirteen probe declarations are five positive geometry assertions, six model
+helpers and two notation-generated macro declarations. They are not thirteen
+NormalSystem models and no complete NormalSystem model is claimed.
+
+Git Lean delta is +955/-271 across the four existing leaves, with no new root
+import. All eight private setups bind 108 import artifacts, every one of them to
+this batch's own canonical object in its authorized output root and to the same
+integration checkout source, whose hash was rechecked at review time. The shared
+read-only build was not written: its newest artifact predates the batch by more
+than a day. Static root reachability remains 9662 modules and 37534 edges with
+no missing source and no cycle; no full-root build was run.
+
+This batch also adds a check the previous acceptances did not perform. The
+private setups only override the modules a batch compiles itself; the other 288
+prerequisites in the audit's import closure resolve through LEAN_PATH from the
+shared read-only build. Each shared .ilean records the exact source range of
+every declaration name, so re-reading those ranges out of the integration source
+identifies the source the shared object was actually built from. 2547 of 2606
+ranges reproduce their declaration name exactly and 51 more are anonymous
+instances or notation-generated macros, which do not carry their name in the
+source. Exactly two modules drift. Topology.InvarianceOfDomainManifold's shared
+object predates a purely additive edit adding
+invariance_of_domain_isOpen_image_of_finrank_eq, with no line removed or changed.
+Topology.PiecewiseLinear.BoundaryFaces' shared object predates an edit adding
+isPLSphere_geometricLink_of_not_mem_boundaryComplex whose only non-additive line
+is one re-wrapped rw tactic. Every declaration the two shared objects contain is
+still present with the same statement, and both current sources are sorry-free,
+so no declaration in this batch depends on a changed statement. Refreshing those
+two objects is queued for the next batch. The full per-declaration evidence is in
+shared-prerequisite-fingerprint.json.
+
+The receipt is .lake/verified-sixtyfourth-lane-delivery-20260919.json. Frozen
+source, full census, probe source, setups, receipts, the source and binding
+reviews and the shared-prerequisite fingerprint are in
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtyfourth-batch-20260919.
+This acceptance was completed by Claude after the owner's stop; Codex automation
+moise and all five lane tasks remain paused and were not resumed for it.

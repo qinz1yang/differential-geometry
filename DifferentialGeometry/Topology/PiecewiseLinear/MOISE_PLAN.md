@@ -1,9 +1,10 @@
 # Moise 光滑化（拓扑三维流形 → 兼容光滑结构）阶段计划
 
-> PAUSED for Claude takeover (2026-09-19 UTC). Owner stopped all Codex usage.
+> Claude takeover (2026-09-19 UTC). Owner stopped all Codex usage.
 > Read HANDOFF_CLAUDE_20260919.md and .lake/claude-handoff-state-20260919.json first.
-> All five tasks and compiler leases are paused; automation moise is PAUSED.
-> Batch64 has successful checks but is NOT finally accepted or committed.
+> All five Codex tasks and their compiler leases stay paused; automation moise is
+> PAUSED and must not be resumed. Batch64 is now independently accepted and
+> committed; see section 100 and .lake/verified-sixtyfourth-lane-delivery-20260919.json.
 
 统一记录本任务的目标、复用审计、证明路线、阶段与验证。其他文档只引用本文件，不另开状态表。
 日期均为绝对日期。路径省略 `DifferentialGeometry/` 前缀时指本库源码树。
@@ -43,7 +44,7 @@ count/descent and exact tower assembly remain the priorities. Tower vertex
 collision complexity is not normal-disk branch complexity. The conditional
 304 endpoint does not remove the other outstanding section34 inputs.
 
-### Latest live frontier (2026-09-19, controlled projected-sheet perturbations accepted)
+### Latest live frontier (2026-09-19, protected-polyhedron relative general position accepted)
 
 This snapshot and the latest integration-handoff sections supersede dated
 paragraphs below. The resumed stage has no new deadline. Five existing tasks
@@ -51,7 +52,7 @@ keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 
 | Lane | Independently accepted frontier | Current mathematical gate |
 |---|---|---|
-| F | throughd68c5adc5 including06a171025 | The same actual perturbation and W union N crossing consumer are independently accepted in section96. Full projected-disk boundary/transition normalization remains open. Later protected-polyhedron author layers require separate replay. |
+| F | through fad7930be including d68c5adc5 and 06a171025 | The protected-polyhedron relative general-position producer and its flat-core consumer are independently accepted in section 100. The producer fixes one actual closed polyhedron Q, builds its own compatible subdivision and gives crossings off Q; the disk consumer still assumes interior support and preserves the original boundary pointwise. Arbitrary boundary charts and full projected-disk normalization remain open. Later F layers 478a65991/0c080405f and the dirty half-space extension require separate frozen-source acceptance. |
 | h | throughe85a235df | Produce actual nonstationary locally finite supported modifications with compatible subdivisions, original graph and transported neighborhoods.72fa/c1bd finite solid-torus and generic limit layers are frozen pending replay; a single-increment model does not close arbitrary-stage geometry. |
 | E3 | through1dff5b63c | Physical caps and original-target separation are accepted in section92; Q.2a locally finite separating limits are independently accepted in section95. E3 continues Q.2b: two-ended annular exhaustion, adding the center, actual open disk and exact closure. |
 | M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878/546/e8 original toroidal-shell geometry, Hurewicz and actual Betti2 separator are frozen pending replay. The completee8 delivery triggered the new upstairs Lemma2/L2 round; actual torus recognition remains open. |
@@ -70,6 +71,23 @@ conjugation counterexample are separate from seven helpers and one macro.
 Git Lean delta is +871/-217. This is a single-chart layer, not coverage of the
 whole transition region or a complete projected NormalSystem normalization.
 The later protected-polyhedron author layer is outside this acceptance.
+
+Section 100 independently accepts F through fad7930be. For a fixed actual closed
+polyhedron Q it produces the piecewise affine Lipschitz vertex function vanishing
+on Q, the Lipschitz displacement extending that perturbation while fixing Q
+pointwise, and the small general-position PL homeomorphism off Q; the flat-core
+consumer retains crossings on the protected core. Seven modules, 322 nonautomatic
+declarations (306 in the four changed leaves and 16 in three unchanged consumers)
+and 10 critical reuses pass 13 linters with zero diagnostics and only foundational
+axioms. Five public theorems are new and 291 old public signatures are unchanged;
+the one authorized signature change removes an unused FiniteDimensional instance
+argument. Git Lean delta is +955/-271. The thirteen probes are five positive
+geometry assertions, six helpers and two macros, not NormalSystem models. The
+batch additionally fingerprints the 288 prerequisites resolved from the shared
+read-only build against their recorded declaration ranges; two of them predate
+purely additive edits that change no existing statement, and refreshing those two
+objects is queued. This is a protected-relative layer, not complete projected-disk
+normalization and not a Moise252 endpoint.
 
 The exact sphere endpoint moise304_of_moise252 remains conditional on the
 unresolved Moise252. Its independently checked kernel type/body traversals

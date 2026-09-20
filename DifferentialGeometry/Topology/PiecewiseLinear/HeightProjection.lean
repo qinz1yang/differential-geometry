@@ -104,7 +104,8 @@ theorem eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber
     intro v
     by_cases hvlevel : ℓ v = ℓ p
     · by_cases hvK : v ∈ K.space
-      · filter_upwards [eventually_exists_mem_carrierFace_eq_height_of_unique_vertex_in_fiber K ℓ hunique hvK hvlevel hε] with f hf
+      · filter_upwards [eventually_exists_mem_carrierFace_eq_height_of_unique_vertex_in_fiber K ℓ
+          hunique hvK hvlevel hε] with f hf
         obtain ⟨y, hy, hfy, hyclose, hyfix⟩ := hf
         exact ⟨y, hyclose, fun _ => hfy, fun _ => hy,
           fun h => hyfix (h.resolve_left (not_not.mpr hvlevel))⟩
@@ -149,10 +150,12 @@ theorem eventually_exists_vertexMap_eq_height_on_fiber
   eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber K ℓ hℓ
     (fun _ hv h => hinj hv hp h) hA hε
 
-theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_in_fiber [FiniteDimensional ℝ E]
+theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_in_fiber
+  [FiniteDimensional ℝ E]
     (K R : Geometry.SimplicialComplex ℝ E) [Finite R.faces]
     (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0)
-    {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) {U : Set E} (hU : IsOpen U) (hRU : R.space ⊆ U)
+    {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) {U : Set E} (hU : IsOpen U) (hRU :
+      R.space ⊆ U)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ h : E → E,
       IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
@@ -163,7 +166,8 @@ theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_
   obtain ⟨δ, hδ, hext⟩ := exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation R hU hRU hε
   have hRfin : R.vertices.Finite :=
     Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)
-  filter_upwards [eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber K ℓ hℓ hunique hRfin hδ] with f hf
+  filter_upwards [eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber K ℓ hℓ
+    hunique hRfin hδ] with f hf
   obtain ⟨φ, -, hfixK, hfixLevel, hclose, hlevel, hcarrier⟩ := hf
   obtain ⟨h, hh, hhclose, hhfix, hhφ⟩ := hext φ hclose
   have hvertices : EqOn h φ R.vertices := by
