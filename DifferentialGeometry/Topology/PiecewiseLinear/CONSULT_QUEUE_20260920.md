@@ -428,12 +428,36 @@ read another branch.
 
 Moise 35.2 — PL approximation of a topological embedding of one PL manifold in
 another — is reduced to one compact statement, and all the packaging around it is
-proved. **Read the correction in the status section above first**: the obligation
-`Moise352Stages` is *false*, because it fixed the tolerance as a sequence
-`ε : ℕ → ℝ` before the family while also demanding agreement between consecutive
-stages, which pins the approximation to `h` itself. The repaired obligation takes a
-**pointwise** tolerance `φ : M₁ → ℝ` bounded below by a positive constant on each
-compact stage:
+proved. **Two successive formulations of that statement have turned out to be false,
+and you need both before the questions make sense.**
+
+*First formulation, `Moise352Stages`, false for every `n ≥ 1`.* It fixed the tolerance
+as a sequence `ε : ℕ → ℝ` **before** the family, while also demanding
+`EqOn (f (i+1)) (f i) (T.coreSpace i)`. The stages increase, so agreement forces
+`f j = f i` on `T.coreSpace i` for every `j ≥ i`; then for `x ∈ T.coreSpace j` the error
+clause reads `dist (f j x) (h x) < ε i` for **every** `i ≥ j` at once. Feed it
+`ε i = 1/(i+1)` and `f j` is pinned to `h`. So it asserted that every topological
+embedding is *exactly PL* on every compact stage — false at `n = 1`, `M₁ = M₂ = ℝ`,
+`h x = x³`. The implication is proved in Lean as
+`Moise352Stages.exists_isPLHomeomorphInto_eqOn`.
+
+*Second formulation, `Moise352StageStep`, also false.* It replaced the sequence by a
+**pointwise** `φ : M₁ → ℝ` bounded **below** by a positive constant on each compact
+stage — but not above. Take `φ` constant and large: on a bounded stage both closeness
+constraints go vacuous, `g` becomes an arbitrary PL embedding of `T.coreSpace i`, and
+the relative clause degenerates into *"any PL embedding of a stage extends to a PL
+embedding of the next"* — an **extension** statement, not an approximation statement.
+False at `n = 2` (an annulus embedded in the plane so its inner boundary circle encloses
+the image admits no extension over the disc, by Jordan) and at `n = 3` (a knotted solid
+torus in a ball: an extension would unknot it, contradicting Alexander).
+
+Also worth knowing, not formalised: **`Moise352 n` is presumably false for `n ≥ 5`**,
+since it would approximate any homeomorphism of closed PL `n`-manifolds by a PL
+embedding, necessarily surjective and hence a PL homeomorphism, contradicting the known
+homeomorphic-but-not-PL-homeomorphic manifolds in high dimensions. So the stage step
+should be expected true only for small `n`, and a dimension-free proof of it is an error.
+
+For reference, the second (false) formulation, since the questions refer to it:
 
 ```lean
 def Moise352StageStep (n : ℕ) : Prop :=
