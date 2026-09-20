@@ -11389,6 +11389,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHamiltonJacobi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatTest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatDistribution
 import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
