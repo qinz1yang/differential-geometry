@@ -9063,6 +9063,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoEndpoin
 import DifferentialGeometry.Topology.PiecewiseLinear.CylinderSplice
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DiskPushOff
 import DifferentialGeometry.Topology.PiecewiseLinear.InteriorDiskCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.CompactEmbeddingApproximation
 /-!
 # Differential geometry and geometric analysis
 -/
