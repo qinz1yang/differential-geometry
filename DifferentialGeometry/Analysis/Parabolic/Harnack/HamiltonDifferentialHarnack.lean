@@ -1333,7 +1333,6 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound_on
         (fun p : ℝ × M => normGradSqFun (I := I) g (f p.1) p.2)
         (D.regular ×ˢ univ) := by
       exact normGradSqFun_contMDiffOn (I := I) (M := M) (D := D) g f hlog'
-        (fun τ hτ => hlogslice τ (D.regular_subset hτ))
     exact hNnorm.congr (by intro p hp; rw [hN_eq p.1 p.2])
   have hNslice : ∀ τ : ℝ, τ ∈ D.regular → ContMDiff I 𝓘(ℝ, ℝ) ∞ (N τ) := by
     intro τ hτ x

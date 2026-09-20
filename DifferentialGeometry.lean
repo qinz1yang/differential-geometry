@@ -36,6 +36,7 @@ import DifferentialGeometry.Analysis.Calculus.CutoffPerturbation
 import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
 import DifferentialGeometry.Analysis.Calculus.Rademacher
 import DifferentialGeometry.Analysis.Calculus.Derivative.AlmostEverywhereLipschitz
+import DifferentialGeometry.Analysis.Calculus.Derivative.Measurable
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.BoundaryNormalDerivative
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianCoordinates
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign
@@ -10856,6 +10857,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.ScalarCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelWitness
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleLinearizedLift
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityContinuity
+import DifferentialGeometry.Analysis.Integration.Measure.Gradient
 import DifferentialGeometry.Analysis.Integration.Measure.Family.CompactSupportContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.CutoffContinuity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.DifferenceNorm

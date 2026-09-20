@@ -42,7 +42,7 @@ private theorem hamilton_jacobi_test_in_chart
     ((hasDerivAt_id t).prodMk (hasDerivAt_const t (extChartAt I p x)))
   have hs := hphi.hasFDerivAt.comp (extChartAt I p x)
     ((hasFDerivAt_const t (extChartAt I p x)).prodMk (hasFDerivAt_id (extChartAt I p x)))
-  have hg := normGradSqFun_comp_extChartAt g p hx hxint hs.differentiableAt
+  have hg := normGradSqFun_comp_extChartAt g p (f := phi ∘ Prod.mk t) hx hxint
   have hdt : deriv (fun s => phi (s, extChartAt I p x)) t =
       fderiv ℝ phi (t, extChartAt I p x) (1, 0) := by
     simpa only [Function.comp_def, id_eq] using ht.deriv

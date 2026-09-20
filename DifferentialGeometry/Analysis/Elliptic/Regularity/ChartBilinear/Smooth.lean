@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartLocalLaplacian
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartMeasureEquiv
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
-import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
@@ -242,85 +242,6 @@ private lemma chartPullback_chartTestPullback_eq (α : M) (ψ : EuclN → ℝ)
   change ψ ((toEuclidean (E := E)) ((extChartAt I α) x)) = ψ y
   rw [h_right_inv, h_apply_inv]
 
-omit [NeZero (Module.finrank ℝ E)] in
-theorem gradInner_eq_invGramMatrix_partials_smooth
-    (g : SmoothRiemannianMetric I M) (α : M)
-    {f h : M → ℝ}
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
-    {x : M} (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target) :
-    g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x) =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g α x i j *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α h) (extChartAt I α x) := by
-  classical
-  have hf_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ) f x :=
-    hf.mdifferentiable (by simp) x
-  have hh_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ) h x :=
-    hh.mdifferentiable (by simp) x
-  rw [← gradChartLocal_eq_gradFun (I := I) g α hf_mdiff hx hx_int]
-  rw [← gradChartLocal_eq_gradFun (I := I) g α hh_mdiff hx hx_int]
-  have h_grad_h_decomp : gradChartLocal (I := I) g α h x =
-      ∑ k, gradChartCoeff (I := I) g α h k x •
-        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x := by rfl
-  rw [h_grad_h_decomp]
-  have h_pull : g.inner x (gradChartLocal (I := I) g α f x)
-        (∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α h k x •
-          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α h k x *
-          g.inner x (gradChartLocal (I := I) g α f x)
-            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) := by
-    rw [map_sum]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [ContinuousLinearMap.map_smul, smul_eq_mul]
-  rw [h_pull]
-  have h_after_basis :
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α h k x *
-          g.inner x (gradChartLocal (I := I) g α f x)
-            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α h k x *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k]
-  rw [h_after_basis]
-  have h_substitute :
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α h k x *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        (∑ q : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g α x k q *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (scalarOnE (I := I) α h) (extChartAt I α x)) *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rfl
-  rw [h_substitute]
-  have h_distribute :
-      ∑ k : Fin (Module.finrank ℝ E),
-        (∑ q : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g α x k q *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (scalarOnE (I := I) α h) (extChartAt I α x)) *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g α x i j *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α h) (extChartAt I α x) := by
-    refine Finset.sum_congr rfl ?_
-    intro i _
-    rw [Finset.sum_mul]
-    refine Finset.sum_congr rfl ?_
-    intro j _
-    ring
-  rw [h_distribute]
-
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private lemma fderiv_chartPullback_eq_partialDeriv_scalarOnE
     [I.Boundaryless] (α : M) (f : M → ℝ)
@@ -359,12 +280,10 @@ private lemma fderiv_chartPullback_eq_partialDeriv_scalarOnE
   rfl
 
 private theorem densityOnEuclid_inner_grad_eq_principalIntegrand
-    [I.Boundaryless] [T2Space M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
-    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cs : HasCompactSupport ψ)
-    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    {f : M → ℝ}
+    {ψ : EuclN → ℝ}
     (B : SmoothEllipticBilinearForm (Module.finrank ℝ E) (Set.univ : Set EuclN))
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hB_match : ∀ i j : Fin (Module.finrank ℝ E),
@@ -391,10 +310,8 @@ private theorem densityOnEuclid_inner_grad_eq_principalIntegrand
       rw [hx_def]; exact (extChartAt I α).right_inv h_target
     rw [h_φx]
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) α h_target
-  have hψM : ContMDiff I 𝓘(ℝ, ℝ) ∞ (chartTestPullback (I := I) (M := M) α ψ) :=
-    chartTestPullback_contMDiff (I := I) (M := M) α hψ hψ_cs hψ_support
-  have h_step1 := gradInner_eq_invGramMatrix_partials_smooth
-    (I := I) g α hf hψM hx_base hx_int
+  have h_step1 := inner_gradFun_eq_chartInvGram_sum
+    (I := I) g α f (chartTestPullback (I := I) (M := M) α ψ) hx_base hx_int
   rw [h_step1]
   rw [show densityOnEuclid (I := I) g α y *
         ∑ i, ∑ j, chartInvGramMatrix (I := I) g α x i j *
@@ -612,7 +529,7 @@ private theorem bilinear_identity_of_support_in_chartTarget
     by_cases hy_in_Kmain : y ∈ euclideanChartImageOfTsupport (I := I) (M := M) α f
     · rw [hu_def]
       exact densityOnEuclid_inner_grad_eq_principalIntegrand
-        (I := I) g α hf hψ hψ_cs hψ_support B hy (hB_match y hy_in_Kmain)
+        (I := I) g α B hy (hB_match y hy_in_Kmain)
     · set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
       have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
         toEuclidean_symm_mem_target (I := I) hy
