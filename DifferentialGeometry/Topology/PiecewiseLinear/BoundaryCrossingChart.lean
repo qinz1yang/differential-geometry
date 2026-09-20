@@ -258,4 +258,122 @@ theorem HasPLCrossingAt.exists_openPartialHomeomorph_slab_interior
   · exact fun y hy => (hOsub hy).2.2.2.2.2.1
   · exact fun y hy => (hOsub hy).2.2.2.2.2.2
 
+/-- A two-sided PL crossing of `A` and `B` at `x`: some PL chart centred at `x` carries the
+two local sheets onto two transverse two-dimensional subspaces meeting along a line.  This
+is strictly stronger than `HasPLCrossingAt`, which also allows a sheet to be a half-plane
+with a free edge through `x`. -/
+def HasPLTwoSidedCrossingAt {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (A B : Set F) (x : F) : Prop :=
+  ∃ (U V : Set F) (h : F → F) (P Q : Submodule ℝ F),
+    IsOpen U ∧ IsOpen V ∧ x ∈ U ∧ IsPLHomeomorphOn h U V ∧ h x = 0 ∧
+      Module.finrank ℝ P = 2 ∧ Module.finrank ℝ Q = 2 ∧
+        Module.finrank ℝ (P ⊓ Q : Submodule ℝ F) = 1 ∧ P ⊔ Q = ⊤ ∧
+          ∀ᶠ y in 𝓝 x, (y ∈ A ↔ h y ∈ P) ∧ (y ∈ B ↔ h y ∈ Q)
+
+/-- A two-sided PL crossing is a PL crossing whose two half-space functionals vanish. -/
+theorem HasPLTwoSidedCrossingAt.hasPLCrossingAt {F : Type*} [NormedAddCommGroup F]
+    [NormedSpace ℝ F] {A B : Set F} {x : F} (hx : HasPLTwoSidedCrossingAt A B x) :
+    HasPLCrossingAt A B x := by
+  obtain ⟨U, V, h, P, Q, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hnear⟩ := hx
+  refine ⟨U, V, h, P, Q, 0, 0, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, Or.inl rfl,
+    Or.inl rfl, Or.inl rfl, ?_⟩
+  filter_upwards [hnear] with y hy
+  refine ⟨?_, ?_⟩
+  · simpa only [LinearMap.zero_apply, le_refl, and_true] using hy.1
+  · simpa only [LinearMap.zero_apply, le_refl, and_true] using hy.2
+
+/-- Normal form for a two-sided PL crossing: after a linear change of coordinates both sheets
+are full coordinate planes near `x`, with no half-space restriction. -/
+theorem HasPLTwoSidedCrossingAt.exists_linearEquiv_normalForm {A B : Set E} {x : E}
+    (hx : HasPLTwoSidedCrossingAt A B x) :
+    ∃ (U V : Set E) (h : E → E) (L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ),
+      IsOpen U ∧ IsOpen V ∧ x ∈ U ∧ IsPLHomeomorphOn h U V ∧ h x = 0 ∧
+        ∀ᶠ y in 𝓝 x, (y ∈ A ↔ (L (h y)).2.2 = 0) ∧ (y ∈ B ↔ (L (h y)).2.1 = 0) := by
+  obtain ⟨U, V, h, P, Q, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hnear⟩ := hx
+  obtain ⟨L, h1, h2⟩ := exists_linearEquiv_of_transverse_planes hP hQ hI hsup
+  refine ⟨U, V, h, L, hU, hV, hxU, hh, hhx, ?_⟩
+  filter_upwards [hnear] with y hy
+  exact ⟨hy.1.trans (h1 (h y)), hy.2.trans (h2 (h y))⟩
+
+/-- Interior slab chart with the sheet clauses stated as full zero-set equalities.  This is
+the strengthening of `HasPLCrossingAt.exists_openPartialHomeomorph_slab_interior` needed by
+transition-sign arguments, and it uses two-sidedness of the crossing: a sheet that is only a
+half-plane with a free edge through `x` is a two-manifold with boundary near `x` and is
+therefore carried onto no open subset of a coordinate plane by any homeomorphism. -/
+theorem HasPLTwoSidedCrossingAt.exists_openPartialHomeomorph_slab_interior_isImage
+    {M A B W : Set E} {x : E} (hx : HasPLTwoSidedCrossingAt A B x) (hxM : x ∈ interior M)
+    (hW : W ∈ 𝓝 x) {c r : ℝ} (hr : 0 < r) (hrc : r < c) :
+    ∃ e : OpenPartialHomeomorph E (ℝ × ℝ × ℝ),
+      x ∈ e.source ∧ e.source ⊆ W ∧ e x = (r, 0, 0) ∧
+        IsPiecewiseAffineOn e e.source ∧ IsPiecewiseAffineOn e.symm e.target ∧
+          (∀ y ∈ e.source, 0 < (e y).1 ∧ (e y).1 < c) ∧
+            e.IsImage M {z | 0 ≤ z.1 ∧ z.1 ≤ c} ∧
+              e.IsImage (frontier M) {z | z.1 = 0 ∨ z.1 = c} ∧
+                e.IsImage A {z | z.2.2 = 0} ∧
+                  e.IsImage B {z | z.2.1 = 0} ∧
+                    e.IsImage (A ∩ B) {z | z.2 = 0} := by
+  obtain ⟨U, V, h, L, hU, hV, hxU, hh, hhx, hnear⟩ := hx.exists_linearEquiv_normalForm
+  let t : (ℝ × ℝ × ℝ) ≃ₜ (ℝ × ℝ × ℝ) := Homeomorph.addRight (r, 0, 0)
+  let φ : E → ℝ × ℝ × ℝ := fun y => t (L (h y))
+  have hV' : IsOpen ((fun y => L y) '' V) :=
+    L.toContinuousLinearEquiv.toHomeomorph.isOpenMap V hV
+  have ht : IsPiecewiseAffineOn t univ :=
+    (isPLHomeomorphOn_add_const (r, (0 : ℝ), (0 : ℝ))).isPiecewiseAffineOn
+  have hφ : IsPLHomeomorphOn φ U (t '' ((fun y => L y) '' V)) :=
+    (hh.trans (isPLHomeomorphOn_linearEquiv L hV)).postcomp_openPartialHomeomorph
+      t.toOpenPartialHomeomorph ht (subset_univ _)
+  have hφopen : IsOpen (t '' ((fun y => L y) '' V)) := t.isOpenMap _ hV'
+  have hφx : φ x = (r, 0, 0) := by
+    change L (h x) + (r, 0, 0) = (r, 0, 0)
+    rw [hhx, map_zero, zero_add]
+  have hsheetA : ∀ y : E, (φ y).2.2 = (L (h y)).2.2 := by
+    intro y
+    change (L (h y)).2.2 + 0 = (L (h y)).2.2
+    rw [add_zero]
+  have hsheetB : ∀ y : E, (φ y).2.1 = (L (h y)).2.1 := by
+    intro y
+    change (L (h y)).2.1 + 0 = (L (h y)).2.1
+    rw [add_zero]
+  have hcont : ContinuousAt (fun y => (φ y).1) x :=
+    (hφ.isPiecewiseAffineOn.continuousOn.continuousAt (hU.mem_nhds hxU)).fst
+  have hgt : {y | 0 < (φ y).1} ∈ 𝓝 x :=
+    hcont.preimage_mem_nhds (Ioi_mem_nhds (by simpa only [hφx] using hr))
+  have hlt : {y | (φ y).1 < c} ∈ 𝓝 x :=
+    hcont.preimage_mem_nhds (Iio_mem_nhds (by simpa only [hφx] using hrc))
+  have hN : {y | y ∈ U ∧ y ∈ W ∧ y ∈ interior M ∧ 0 < (φ y).1 ∧ (φ y).1 < c ∧
+      (y ∈ A ↔ (φ y).2.2 = 0) ∧ (y ∈ B ↔ (φ y).2.1 = 0)} ∈ 𝓝 x := by
+    filter_upwards [hU.mem_nhds hxU, hW, isOpen_interior.mem_nhds hxM, hgt, hlt, hnear]
+      with y hyU hyW hyM hygt hylt hy
+    refine ⟨hyU, hyW, hyM, hygt, hylt, ?_, ?_⟩
+    · rw [hsheetA y]
+      exact hy.1
+    · rw [hsheetB y]
+      exact hy.2
+  obtain ⟨O, hOsub, hO, hxO⟩ := mem_nhds_iff.mp hN
+  have hOU : O ⊆ U := fun y hy => (hOsub hy).1
+  have hO' : IsOpen (φ '' O) := hφ.isOpen_image_of_isOpen hφopen hO hOU
+  have hφO := hφ.restrict_isOpen hO hOU hO'
+  let e := hφO.toOpenPartialHomeomorph hO hO'
+  refine ⟨e, hxO, fun y hy => (hOsub hy).2.1, hφx, hφO.isPiecewiseAffineOn,
+    hφO.isPiecewiseAffineOn_invFunOn, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact fun y hy => ⟨(hOsub hy).2.2.2.1, (hOsub hy).2.2.2.2.1⟩
+  · intro y hy
+    exact iff_of_true ⟨(hOsub hy).2.2.2.1.le, (hOsub hy).2.2.2.2.1.le⟩
+      (interior_subset (hOsub hy).2.2.1)
+  · intro y hy
+    have hnot : y ∉ frontier M :=
+      (mem_interior_iff_notMem_frontier (interior_subset (hOsub hy).2.2.1)).mp
+        (hOsub hy).2.2.1
+    exact iff_of_false (fun hz => hz.elim (hOsub hy).2.2.2.1.ne'
+      (hOsub hy).2.2.2.2.1.ne) hnot
+  · intro y hy
+    exact (hOsub hy).2.2.2.2.2.1.symm
+  · intro y hy
+    exact (hOsub hy).2.2.2.2.2.2.symm
+  · intro y hy
+    change (φ y).2 = 0 ↔ y ∈ A ∩ B
+    rw [mem_inter_iff, (hOsub hy).2.2.2.2.2.1, (hOsub hy).2.2.2.2.2.2, Prod.ext_iff,
+      Prod.fst_zero, Prod.snd_zero]
+    tauto
+
 end DifferentialGeometry.Topology.PiecewiseLinear
