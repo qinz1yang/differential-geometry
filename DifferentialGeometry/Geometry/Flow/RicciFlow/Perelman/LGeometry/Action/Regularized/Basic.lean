@@ -86,4 +86,15 @@ theorem lRegularizedAction_congr
   rw [hval, hvel]
 
 
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+theorem lRegularizedAction_const
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (p : M) (a b : ℝ) :
+    lRegularizedAction S T (fun _ => p) a b =
+      ∫ s in a..b, 2 * s ^ 2 * S.scalar (T - s ^ 2) p := by
+  have hv (s : ℝ) : lVelocity (I := I) (fun _ : ℝ => p) s = 0 := by
+    simp only [lVelocity, mfderiv_const]
+    rfl
+  simp only [lRegularizedAction, lRegularizedLagrangian, hv, map_zero, mul_zero, zero_add]
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
