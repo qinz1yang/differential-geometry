@@ -9072,6 +9072,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTube
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactRelativeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystemWitness
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
 /-!
 # Differential geometry and geometric analysis
 -/
