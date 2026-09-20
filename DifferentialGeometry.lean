@@ -123,6 +123,7 @@ import DifferentialGeometry.Analysis.Calculus.MapConvergence.SmoothInverseOn
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.TwoParameter
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.WeightedCompactTime
 import DifferentialGeometry.Analysis.Calculus.Matrix.Determinant
+import DifferentialGeometry.Analysis.Calculus.Matrix.Factorization
 import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
 import DifferentialGeometry.Analysis.Calculus.Multilinear
 import DifferentialGeometry.Analysis.Calculus.MultilinearPullback
