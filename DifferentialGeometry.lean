@@ -12031,3 +12031,16 @@ import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
 import DifferentialGeometry.Geometry.Metric.Pullback.Retraction
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Coordinates
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakLowerSemicontinuity
+import DifferentialGeometry.Analysis.Calculus.Interpolation.AffineLipschitz
+import DifferentialGeometry.Analysis.Integration.Integral.QuadraticDerivative
+import DifferentialGeometry.Analysis.Integration.Integral.Selection
+import DifferentialGeometry.Analysis.Integration.Lp.QuadraticDomination
+import DifferentialGeometry.Analysis.Integration.Measure.Polar.Complex
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Polar
+import DifferentialGeometry.Analysis.Sobolev.Interpolation.AnnulusComparison
+import DifferentialGeometry.Analysis.Sobolev.Interpolation.AnnulusEnergy
+import DifferentialGeometry.Analysis.Sobolev.Interpolation.Cylinder
+import DifferentialGeometry.Analysis.Sobolev.Interval.UniformConvergence
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.LocalComparison
+import DifferentialGeometry.Topology.LoopSpace.ThinAnnulus
+import DifferentialGeometry.Topology.MetricSpace.CompactInterpolation
