@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
@@ -378,6 +379,25 @@ theorem lip_of_grad_norm_le
     simp only [edist_self, riemannianEDistOf_self, mul_zero, le_refl]
   · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
     exact lip_of_grad_norm_le_ne (I := I) g hg hu hgrad
+
+open scoped ContDiff in
+theorem exists_lipschitz_constant_of_smooth_compact_support
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] (g : SmoothRiemannianMetric I M) (hg : RiemannianMetricComplete g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (hc : HasCompactSupport f) :
+    ∃ C : ℝ≥0, ∀ x y, edist (f x) (f y) ≤ C * riemannianEDistOf g x y := by
+  have hN : Continuous (fun x => Real.sqrt (normGradSqFun g f x)) :=
+    Real.continuous_sqrt.comp (normGradSqFun_continuous g hf)
+  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuousOn hN.continuousOn
+  refine ⟨⟨max B 0, le_max_right B 0⟩, lip_of_grad_norm_le g hg hf ?_⟩
+  intro x
+  by_cases hx : x ∈ tsupport f
+  · exact ((le_abs_self _).trans (hB x hx)).trans (le_max_left B 0)
+  · have hz : gradFun g f x = 0 := by
+      by_contra hn
+      exact hx (support_gradFun_subset g f hn)
+    simp only [hz, map_zero, Real.sqrt_zero]
+    exact le_max_right B 0
+
 
 end Riemannian
 end Geometry

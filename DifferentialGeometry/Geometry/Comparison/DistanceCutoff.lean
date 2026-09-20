@@ -141,4 +141,96 @@ theorem abs_inner_grad_distance_cutoff_le_of_linear_growth
       (mul_le_mul_of_nonneg_left (add_le_add_right hr.le _) (by
         exact mul_nonneg Analysis.CutoffProfile.derivBound_nonneg C.coe_nonneg)) hw
 
+section
+open Filter
+open scoped ENNReal NNReal Topology Bundle
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem hasCompactSupport_distance_cutoff
+    (g : SmoothRiemannianMetric I M) (hg : RiemannianMetricComplete g) (o : M)
+    {a : ℝ≥0} (ha : 0 < a) :
+    HasCompactSupport (fun x => Analysis.CutoffProfile.evalue
+      ((a : ℝ≥0∞) * riemannianEDistOf g o x)) := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let _ : Subsingleton E := Module.finrank_zero_iff.mp hdim
+    let _ : Subsingleton H := I.injective.subsingleton
+    let _ : DiscreteTopology M := ChartedSpace.discreteTopology H M
+    let _ : Bundle.RiemannianBundle (fun y : M => TangentSpace I y) := ⟨g.toRiemannianMetric⟩
+    apply (isCompact_singleton (x := o)).of_isClosed_subset (isClosed_tsupport _)
+    apply closure_minimal _ isClosed_singleton
+    intro x hx
+    have hfin : riemannianEDistOf g o x ≠ ⊤ := by
+      intro htop
+      apply hx
+      apply Analysis.CutoffProfile.evalue_zero_of_ge
+      rw [htop, ENNReal.mul_top (by exact_mod_cast ha.ne')]
+      exact le_top
+    have hfin' : _root_.Manifold.riemannianEDist I o x < ⊤ := lt_top_iff_ne_top.mpr hfin
+    obtain ⟨γ, hγ0, hγ1, hγ, _⟩ :=
+      _root_.Manifold.exists_lt_locally_constant_of_riemannianEDist_lt hfin' zero_lt_one
+    have hox : o = x := by
+      rw [← hγ0, ← hγ1]
+      exact TotallyDisconnectedSpace.eq_of_continuous γ hγ.continuous 0 1
+    exact mem_singleton_iff.mpr hox.symm
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    have haR : (0 : ℝ) < a := ha
+    have hK := hg.closedEBall_isCompact o (2 / (a : ℝ))
+    apply hK.of_isClosed_subset (isClosed_tsupport _)
+    apply closure_minimal _ hK.isClosed
+    intro x hx
+    by_contra hn
+    have hd : ENNReal.ofReal (2 / (a : ℝ)) ≤ riemannianEDistOf g o x :=
+      (not_le.mp hn).le
+    apply hx
+    apply Analysis.CutoffProfile.evalue_zero_of_ge
+    have hmul := mul_le_mul_right hd (a : ℝ≥0∞)
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul haR.le] at hmul
+    have hcoef : (a : ℝ) * (2 / a) = 2 := by field_simp
+    simpa only [hcoef, ENNReal.ofReal_ofNat, ENNReal.ofReal_coe_nnreal] using hmul
+
+omit [I.Boundaryless] [SigmaCompactSpace M] in
+theorem eventually_distance_cutoff_eq_one_on_isCompact
+    [PreconnectedSpace M] (g : SmoothRiemannianMetric I M) (o : M)
+    {K : Set M} (hK : IsCompact K) {ι : Type*} {l : Filter ι}
+    (a : ι → ℝ≥0) (ha : Tendsto a l (𝓝 0)) :
+    ∀ᶠ i in l, ∀ x ∈ K, Analysis.CutoffProfile.evalue
+      ((a i : ℝ≥0∞) * riemannianEDistOf g o x) = 1 := by
+  have hd : Continuous (fun x => (riemannianEDistOf g o x).toReal) :=
+    continuous_iff_continuousAt.mpr fun x =>
+      (ENNReal.continuousAt_toReal (riemannianEDistOf_ne_top g o x)).comp
+        (continuous_riemannianEDist g o).continuousAt
+  obtain ⟨B, hB⟩ := hK.exists_bound_of_continuousOn hd.continuousOn
+  have haR : Tendsto (fun i => (a i : ℝ)) l (𝓝 0) :=
+    NNReal.continuous_coe.continuousAt.tendsto.comp ha
+  have hab : Tendsto (fun i => (a i : ℝ) * B) l (𝓝 0) := by
+    simpa only [zero_mul] using haR.mul_const B
+  filter_upwards [hab.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1))] with i hi x hx
+  apply Analysis.CutoffProfile.evalue_one_of_le
+  apply (ENNReal.toReal_le_toReal
+    (ENNReal.mul_ne_top ENNReal.coe_ne_top (riemannianEDistOf_ne_top g o x)) ENNReal.one_ne_top).mp
+  simp only [ENNReal.toReal_mul, ENNReal.coe_toReal, ENNReal.toReal_one]
+  have hxB : (riemannianEDistOf g o x).toReal ≤ B := by
+    simpa only [Real.norm_eq_abs, abs_of_nonneg ENNReal.toReal_nonneg] using hB x hx
+  exact (mul_le_mul_of_nonneg_left hxB (a i).coe_nonneg).trans hi.le
+
+omit [I.Boundaryless] [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem edist_distance_cutoff_le
+    (g : SmoothRiemannianMetric I M) (o : M) (a : ℝ≥0) (x y : M) :
+    edist (Analysis.CutoffProfile.evalue ((a : ℝ≥0∞) * riemannianEDistOf g o x))
+      (Analysis.CutoffProfile.evalue ((a : ℝ≥0∞) * riemannianEDistOf g o y)) ≤
+      (⟨Analysis.CutoffProfile.derivBound, Analysis.CutoffProfile.derivBound_nonneg⟩ * a : ℝ≥0) *
+        riemannianEDistOf g x y := by
+  let : LocallyCompactSpace M := _root_.Manifold.locallyCompact_of_finiteDimensional I
+  let : Bundle.RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  exact Analysis.CutoffProfile.lipschitzWith_edist a o x y
+
+
+end
+
 end DifferentialGeometry.Geometry.Riemannian

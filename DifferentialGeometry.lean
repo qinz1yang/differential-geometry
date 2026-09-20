@@ -1713,6 +1713,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakPartialRegularity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationDensity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationTensor
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationManifold
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationExhaustion
 import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint
 import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.SecondJet
 import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.Value
@@ -11402,6 +11403,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatTest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatDistribution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatEquation
 import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
