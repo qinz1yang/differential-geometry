@@ -4934,6 +4934,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critical.Tame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Distribution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Viscosity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.WeakEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
@@ -5768,6 +5769,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostBaseTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityHeatTest
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityHeatDistribution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityGaussian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityMeasurability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeConvergence
