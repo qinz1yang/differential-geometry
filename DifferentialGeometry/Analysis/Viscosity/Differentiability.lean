@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Calculus.Taylor
+import DifferentialGeometry.Analysis.Calculus.Rademacher
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Module.FiniteDimension
@@ -155,5 +157,133 @@ theorem exists_smooth_lower_test_near_differentiable_point
     rw [fderiv_neg, sub_neg_eq_add] at hp
     have heq : -fderiv ℝ φ y - fderiv ℝ u x = -(fderiv ℝ φ y + fderiv ℝ u x) := by abel
     simpa only [heq, norm_neg] using hp
+
+private theorem taylor_polynomial_derivatives
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (x : E) (c : ℝ) (p : E →L[ℝ] ℝ) (B : E →L[ℝ] E →L[ℝ] ℝ) (hB : B.flip = B) :
+    let P := fun y => c + p (y - x) + (1 / 2 : ℝ) * B (y - x) (y - x)
+    ContDiff ℝ (⊤ : ℕ∞) P ∧ P x = c ∧ fderiv ℝ P x = p ∧ fderiv ℝ (fderiv ℝ P) x = B := by
+  intro P
+  have hP : ContDiff ℝ (⊤ : ℕ∞) P :=
+    (contDiff_const.add (p.contDiff.comp (contDiff_id.sub contDiff_const))).add
+      (contDiff_const.mul ((B.contDiff.comp (contDiff_id.sub contDiff_const)).clm_apply
+        (contDiff_id.sub contDiff_const)))
+  have hderiv (y : E) : HasFDerivAt P (p + B (y - x)) y := by
+    have hs := (hasFDerivAt_id (𝕜 := ℝ) y).sub_const x
+    have hlin : HasFDerivAt (fun z => c + p (z - x)) p y := by
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using
+        (p.hasFDerivAt.comp y hs).const_add c
+    have hquad : HasFDerivAt (fun z => (1 / 2 : ℝ) * B (z - x) (z - x)) (B (y - x)) y := by
+      have h := ((B.hasFDerivAt.comp y hs).clm_apply hs).const_mul (1 / 2 : ℝ)
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq, hB,
+        ← two_smul ℝ, smul_smul, one_div_mul_cancel (by norm_num : (2 : ℝ) ≠ 0), one_smul] using h
+    exact hlin.fun_add hquad
+  refine ⟨hP, by simp [P], ?_, ?_⟩
+  · simpa only [sub_self, map_zero, add_zero] using (hderiv x).fderiv
+  · have heq : fderiv ℝ P = fun y => p + B (y - x) := funext fun y => (hderiv y).fderiv
+    rw [heq]
+    have hd := (B.hasFDerivAt.comp x ((hasFDerivAt_id (𝕜 := ℝ) x).sub_const x)).const_add p
+    simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using hd.fderiv
+
+theorem second_order_le_zero_of_upper_tests_of_differentiableAt_fderiv
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {u : E → ℝ} {x : E}
+    (hu : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ u y)
+    (hdu : DifferentiableAt ℝ (fderiv ℝ u) x)
+    {H : (E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ) → ℝ}
+    (hsub : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
+      IsLocalMax (fun z => u z - φ z) x → H (fderiv ℝ φ x) (fderiv ℝ (fderiv ℝ φ) x) ≤ 0)
+    (hH : LowerSemicontinuousAt (fun z : (E →L[ℝ] ℝ) × (E →L[ℝ] E →L[ℝ] ℝ) => H z.1 z.2)
+      (fderiv ℝ u x, fderiv ℝ (fderiv ℝ u) x)) :
+    H (fderiv ℝ u x) (fderiv ℝ (fderiv ℝ u) x) ≤ 0 := by
+  let p := fderiv ℝ u x
+  let B := fderiv ℝ (fderiv ℝ u) x
+  have hu' : ∀ᶠ y in 𝓝 x, HasFDerivAt u (fderiv ℝ u y) y := hu.mono (fun _ h => h.hasFDerivAt)
+  have hB : B.flip = B := by
+    ext v w
+    exact (second_derivative_symmetric_of_eventually_of_real hu' hdu.hasFDerivAt v w).symm
+  have htaylor := DifferentialGeometry.Analysis.second_order_taylor_isLittleO hu' hdu.hasFDerivAt
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    (Module.finBasis ℝ E).equivFunL.trans
+      (EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin (Module.finrank ℝ E))).symm
+  let Q : E →L[ℝ] E →L[ℝ] ℝ :=
+    (ContinuousLinearMap.precomp ℝ e.toContinuousLinearMap).comp
+      ((innerSL ℝ).comp e.toContinuousLinearMap)
+  have hQ : Q.flip = Q := by
+    ext v w
+    change inner ℝ (e w) (e v) = inner ℝ (e v) (e w)
+    exact real_inner_comm (e v) (e w)
+  have hQdiag (v : E) : Q v v = ‖e v‖ ^ 2 := by
+    change inner ℝ (e v) (e v) = ‖e v‖ ^ 2
+    exact real_inner_self_eq_norm_sq _
+  let C := (‖e.symm.toContinuousLinearMap‖ + 1) ^ 2
+  have hC : 0 < C := by dsimp [C]; positivity
+  have hbound (v : E) : ‖v‖ ^ 2 ≤ C * Q v v := by
+    rw [hQdiag]
+    have hn : ‖v‖ ≤ (‖e.symm.toContinuousLinearMap‖ + 1) * ‖e v‖ := by
+      calc
+        ‖v‖ = ‖e.symm (e v)‖ := by rw [e.symm_apply_apply]
+        _ ≤ ‖e.symm.toContinuousLinearMap‖ * ‖e v‖ := e.symm.toContinuousLinearMap.le_opNorm _
+        _ ≤ (‖e.symm.toContinuousLinearMap‖ + 1) * ‖e v‖ := by gcongr; linarith
+    have hs := pow_le_pow_left₀ (norm_nonneg v) hn 2
+    simpa only [mul_pow, C] using hs
+  have htest (ε : ℝ) (hε : 0 < ε) : H p (B + (2 * ε) • Q) ≤ 0 := by
+    let φ := fun y => u x + p (y - x) + (1 / 2 : ℝ) * (B + (2 * ε) • Q) (y - x) (y - x)
+    have hsym : (B + (2 * ε) • Q).flip = B + (2 * ε) • Q := by
+      ext v w
+      simp only [ContinuousLinearMap.flip_apply, add_apply, smul_apply, smul_eq_mul]
+      rw [show B w v = B v w from congrArg (fun A : E →L[ℝ] E →L[ℝ] ℝ => A v w) hB,
+        show Q w v = Q v w from congrArg (fun A : E →L[ℝ] E →L[ℝ] ℝ => A v w) hQ]
+    obtain ⟨hφ, hφx, hφD, hφDD⟩ := taylor_polynomial_derivatives x (u x) p (B + (2 * ε) • Q) hsym
+    change ContDiff ℝ (⊤ : ℕ∞) φ at hφ
+    change φ x = u x at hφx
+    change fderiv ℝ φ x = p at hφD
+    change fderiv ℝ (fderiv ℝ φ) x = B + (2 * ε) • Q at hφDD
+    have hm : IsLocalMax (fun z => u z - φ z) x := by
+      have he := htaylor.def (div_pos hε hC)
+      filter_upwards [he] with y hy
+      change u y - φ y ≤ u x - φ x
+      rw [hφx, sub_self]
+      have hrem : u y - u x - p (y - x) - (1 / 2 : ℝ) * B (y - x) (y - x) ≤
+          (ε / C) * ‖y - x‖ ^ 2 := by
+        apply (le_abs_self _).trans
+        simpa only [p, B, smul_eq_mul, Real.norm_eq_abs, norm_pow, norm_norm, abs_norm] using hy
+      have hquad : (ε / C) * ‖y - x‖ ^ 2 ≤ ε * Q (y - x) (y - x) := by
+        calc
+          (ε / C) * ‖y - x‖ ^ 2 ≤ (ε / C) * (C * Q (y - x) (y - x)) :=
+            mul_le_mul_of_nonneg_left (hbound _) (div_pos hε hC).le
+          _ = ε * Q (y - x) (y - x) := by field_simp
+      simp only [φ, add_apply, smul_apply, smul_eq_mul]
+      linarith
+    simpa only [hφD, hφDD] using hsub φ hφ hm
+  by_contra hn
+  have hp : 0 < H p B := lt_of_not_ge hn
+  have hJ : ContinuousAt (fun ε : ℝ => (p, B + (2 * ε) • Q)) 0 := by fun_prop
+  have hnear : ∀ᶠ ε : ℝ in 𝓝 0, 0 < H p (B + (2 * ε) • Q) := by
+    have hh : ∀ᶠ z in 𝓝 (p, B), 0 < H z.1 z.2 := hH 0 hp
+    have hJ' : Filter.Tendsto (fun ε : ℝ => (p, B + (2 * ε) • Q)) (𝓝 0) (𝓝 (p, B)) := by
+      simpa only [ContinuousAt, mul_zero, zero_smul, add_zero] using hJ
+    exact hJ' hh
+  obtain ⟨ε, hε, hpos⟩ := ((show ∀ᶠ ε : ℝ in 𝓝[>] 0, 0 < ε from self_mem_nhdsWithin).and
+    (nhdsWithin_le_nhds hnear)).exists
+  exact (not_lt_of_ge (htest ε hε)) hpos
+
+theorem ae_second_order_le_zero_of_upper_tests_of_locallyLipschitzOn_fderiv
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {μ : MeasureTheory.Measure E} [μ.IsAddHaarMeasure]
+    {u : E → ℝ} {Ω : Set E} (hΩ : IsOpen Ω) (hu : DifferentiableOn ℝ u Ω)
+    (hdu : LocallyLipschitzOn Ω (fderiv ℝ u))
+    {H : E → (E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ) → ℝ}
+    (hsub : ∀ x ∈ Ω, ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
+      IsLocalMax (fun z => u z - φ z) x → H x (fderiv ℝ φ x) (fderiv ℝ (fderiv ℝ φ) x) ≤ 0)
+    (hH : ∀ x ∈ Ω, LowerSemicontinuous
+      (fun z : (E →L[ℝ] ℝ) × (E →L[ℝ] E →L[ℝ] ℝ) => H x z.1 z.2)) :
+    ∀ᵐ x ∂μ.restrict Ω, H x (fderiv ℝ u x) (fderiv ℝ (fderiv ℝ u) x) ≤ 0 := by
+  filter_upwards [hdu.ae_differentiableAt hΩ, MeasureTheory.ae_restrict_mem hΩ.measurableSet]
+    with x hx hxΩ
+  apply second_order_le_zero_of_upper_tests_of_differentiableAt_fderiv ?_ hx (hsub x hxΩ)
+    (hH x hxΩ _)
+  filter_upwards [hΩ.mem_nhds hxΩ] with y hy
+  exact (hu y hy).differentiableAt (hΩ.mem_nhds hy)
 
 end DifferentialGeometry.Analysis.Viscosity

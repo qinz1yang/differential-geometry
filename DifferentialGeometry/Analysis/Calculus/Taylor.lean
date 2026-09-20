@@ -1,6 +1,8 @@
 import Mathlib.Analysis.Calculus.ContDiff.Defs
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.CompMul
@@ -205,6 +207,38 @@ theorem fderiv_fderiv_translate (g : E → ℝ) (hg : ContDiff ℝ 2 g) (c y : E
     fderiv ℝ (fderiv ℝ (fun z : E => g (z + c))) y
         = fderiv ℝ (fun z : E => fderiv ℝ g (z + c)) y := by rw [hfun]
     _ = fderiv ℝ (fderiv ℝ g) (y + c) := fderiv_translate (fderiv ℝ g) c y hd
+
+theorem second_order_taylor_isLittleO
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {f' : E → E →L[ℝ] F} {f'' : E →L[ℝ] E →L[ℝ] F} {x : E}
+    (hf : ∀ᶠ y in 𝓝 x, HasFDerivAt f (f' y) y) (hD : HasFDerivAt f' f'' x) :
+    (fun y => f y - f x - f' x (y - x) - (1 / 2 : ℝ) • f'' (y - x) (y - x))
+      =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  have hsym : f''.flip = f'' := by
+    ext v w
+    exact (second_derivative_symmetric_of_eventually_of_real hf hD v w).symm
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hf
+  let P : E → F := fun y => f y - f x - f' x (y - x) - (1 / 2 : ℝ) • f'' (y - x) (y - x)
+  let P' : E → E →L[ℝ] F := fun y => f' y - f' x - f'' (y - x)
+  have hP (y : E) (hy : y ∈ Metric.ball x r) : HasFDerivAt P (P' y) y := by
+    have hs := (hasFDerivAt_id (𝕜 := ℝ) y).sub_const x
+    have hlin : HasFDerivAt (fun z => f' x (z - x)) (f' x) y := by
+      simpa only [ContinuousLinearMap.comp_id, Function.comp_def, id_eq] using
+        (f' x).hasFDerivAt.comp y hs
+    have hquad : HasFDerivAt (fun z => (1 / 2 : ℝ) • f'' (z - x) (z - x))
+        (f'' (y - x)) y := by
+      have h := ((f''.hasFDerivAt.comp y hs).clm_apply hs).const_smul (1 / 2 : ℝ)
+      simpa only [ContinuousLinearMap.comp_id, Function.comp_def, id_eq, hsym, Pi.smul_def,
+        ← two_smul ℝ, smul_smul, one_div_mul_cancel (by norm_num : (2 : ℝ) ≠ 0), one_smul] using h
+    exact (((hball hy).sub_const (f x)).sub hlin).sub hquad
+  have hp : P' =o[𝓝[Metric.ball x r] x] (fun y => ‖y - x‖ ^ 1) := by
+    simpa only [P', pow_one] using hD.isLittleO.norm_right.mono nhdsWithin_le_nhds
+  have h := (convex_ball x r).isLittleO_pow_succ (Metric.mem_ball_self hr)
+    (fun y hy => (hP y hy).hasFDerivWithinAt) hp
+  rw [Metric.isOpen_ball.nhdsWithin_eq (Metric.mem_ball_self hr)] at h
+  simpa only [P, sub_self, map_zero, smul_zero, sub_zero] using h
+
 
 namespace Calculus
 
