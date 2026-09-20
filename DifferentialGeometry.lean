@@ -9085,6 +9085,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWitnessDoors
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingLocality
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellFields
 /-!
 # Differential geometry and geometric analysis
 -/
