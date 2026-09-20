@@ -2,7 +2,7 @@
 
 One file per prompt, under `consult/`. Each is self-contained. To consult, paste:
 
-> Read the prompt at <link> (public GitHub repository, read the `moise-integration`
+> Read the prompt at <link> (the owner's GitHub repository, read the `moise-integration`
 > branch) and answer every question in it.
 
 | Prompt | File |

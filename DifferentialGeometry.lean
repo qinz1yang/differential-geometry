@@ -9088,6 +9088,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingLocality
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellFields
 import DifferentialGeometry.Topology.LoopSpace.InjectivePathReparam
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellCrossing
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDiskOfDoubleCell
+import DifferentialGeometry.Topology.PiecewiseLinear.TaperedInwardPush
+import DifferentialGeometry.Topology.PiecewiseLinear.InwardPushComposition
+import DifferentialGeometry.Topology.PiecewiseLinear.NormalCrossingTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCellNormalFields
 /-!
 # Differential geometry and geometric analysis
 -/

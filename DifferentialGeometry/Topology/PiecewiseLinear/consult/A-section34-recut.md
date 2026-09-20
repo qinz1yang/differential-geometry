@@ -2,7 +2,7 @@
 
 *Consultation prompt, self-contained. Answer in English or Chinese.*
 
-**Where to look.** Public repository
+**Where to look.** Repository (private; reachable through the owner's GitHub account)
 **https://github.com/liao9yuan/differential-geometry-dev**, branch **`moise-integration`**
 (https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration). Read the head
 of that branch only; every other branch diverges and line numbers will not match. Lean paths
