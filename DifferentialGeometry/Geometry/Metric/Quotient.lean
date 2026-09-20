@@ -654,6 +654,21 @@ private theorem exists_lift_edist_lt
       simp only [Function.comp_apply]
       rw [hder]
 
+theorem le_edistOf_of_coveringMap_localPullMetric
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (h : SmoothRiemannianMetric J P)
+    {f : M → P}
+    (hf : IsLocalDiffeomorph I J ∞ f)
+    (hcover : IsCoveringMap f)
+    (hpull : localPullMetric h f hf = g)
+    {r : ENNReal} (x : M) (z : P)
+    (hlower : ∀ x' : M, f x' = z → r ≤ riemannianEDistOf (I := I) g x x') :
+    r ≤ riemannianEDistOf (I := J) h (f x) z := by
+  by_contra! hlt
+  obtain ⟨x', hx', hshort⟩ := exists_lift_edist_lt g h hf hcover hpull rfl hlt
+  exact (not_lt_of_ge (hlower x' hx')) hshort
+
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem RiemannianMetricComplete.of_coveringMap_localPullMetric
