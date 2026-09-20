@@ -9058,6 +9058,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InteriorTwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordElimination
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InnermostCleanDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoEndpoint
 /-!
 # Differential geometry and geometric analysis
 -/
