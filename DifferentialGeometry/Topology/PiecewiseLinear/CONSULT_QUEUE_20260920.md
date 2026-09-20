@@ -11,7 +11,7 @@ line numbers do not match; every prompt below says so.
 
 | # | Question | Unblocks | Status |
 | --- | --- | --- | --- |
-| 1 | Relative product tube along a branch arc | Lemma 2, the last geometric brick of the boundary case | ready |
+| 1 | Relative product tube along a branch arc | Lemma 2, the last geometric brick of the boundary case | ready — **but see the tube correction below before sending it** |
 | 2 | What the 35.2 stage recursion actually is, and injectivity in it | Moise 35.2 — **currently has no valid route** | ready |
 | 3 | Where closed-branch Case 1 actually occurs in the tower | Lemma 2, closed case | ready |
 | 4 | Lifting the boundary word from ranges to parametrised loops | Lemma 2, the selection step | ready |
@@ -200,6 +200,55 @@ than against the notes:
   `CompactEmbeddingApproximation`, and what it is missing is injectivity — see
   prompt 2. Whether `Moise341` is the right thing to consume is precisely question
   2.Q2.
+
+### Third correction: the tube contract as written is uninhabited
+
+**`CrossSeamTubeCore` / `CrossSeamTubeData` (`LoopTheorem/CrossSeamTube.lean:170`, `:228`)
+are uninhabited** for any normal singular cell with a boundary branch over a Hausdorff
+manifold. Two fields collide:
+
+```
+isOpen_tube          : IsOpen tube                               -- :173
+image_crossingFigure : chart '' crossingFigure = figure ∩ tube   -- :184
+```
+
+`crossingFigure ⊆ spliceCylinder` is compact and `chart` is continuous there, so the
+left side is compact, hence **closed**; the right side is relatively **open** in
+`figure = D '' D.domain`, which is connected, and the set is nonempty since it contains
+`chart '' spliceCore = branchCarrier c`. A nonempty clopen subset of a connected space
+is everything, so `D '' D.domain ⊆ U` and `chart '' crossingFigure = D '' D.domain`.
+With `double_inter_tube` that forces `doublePointSet D D.domain = branchCarrier c`,
+complexity exactly 1, so `complexity_lt_of_tube` could only ever descend 1 → 0 and the
+induction it exists to serve cannot run. Worse: `chart` is injective and continuous on
+a compact set, hence a homeomorphism onto its image, so
+`D '' D.domain \ branchCarrier c` would have exactly **four** components, while its
+preimage `D.domain \ (A ∪ C)` is covered by the three cells of
+`exists_three_cells_of_boundaryBranch`, each connected after removing arcs of its own
+frontier — three connected images cannot have four components.
+
+Consequences. Everything built on the tube is **vacuous, not wrong**:
+`exists_resolved_cell_of_tube`, `crossSeamResolutionDataOfTube`, `complexity_lt_of_tube`,
+and `ResolvedCellNormal.lean`'s `normalOfResolvedCell` / `normalOfTube`. The *model*
+layer below it is unaffected — `CrossSeamResolution.lean` is about the model and stands,
+and `bentFigure = crossingFigure` shows the reglue changes only the pairing of the four
+half sheets, exactly as intended. So is `BranchDeletion.lean`, `BranchInjection.lean`
+and the descent selection, none of which mention the tube.
+
+**How it got through.** The file carries a non-vacuity witness,
+`crossSeamTubeCore_spliceEmbedding` (`:208`) — and it passes only by taking
+`tube := univ` and `figure := chart '' crossingFigure`, i.e. by instantiating exactly
+the degenerate configuration the argument shows is forced. The witness was reviewed for
+existence but not for degeneracy. Any future witness on this chain should come with
+explicit strictness theorems beside it.
+
+**The repair direction**, and it has a working analogue in the tree:
+`IsCylindricalDiagram` (`PiecewiseLinear/CylindricalDiagram.lean:10`) states its image
+clause as `f '' (P ×ˢ Icc 0 1) = S`, against the **closed image**, with no open set
+anywhere. The surface clause of the tube wants to be relative to `chart '' spliceCylinder`
+rather than to an open `U`. **Prompt 1 below still asks about the old clause three, so
+fix that clause before sending it** — or better, ask the consultant for the right clause
+directly, since we have now written three statements on this chain that turned out
+false.
 
 ### Non-vacuity: `NormalSystem` is now known to be inhabited
 
