@@ -200,11 +200,13 @@ import DifferentialGeometry.Analysis.Complex.ConformalGradientHolder
 import DifferentialGeometry.Analysis.Complex.DiskBoundaryChart
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Complex.SquareRoot
+import DifferentialGeometry.Analysis.Convex.Differentiability
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.MovingSetDistance
 import DifferentialGeometry.Analysis.Convex.NormalCone
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
+import DifferentialGeometry.Analysis.Convex.Proximal
 import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Convex.SupConvolution
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
