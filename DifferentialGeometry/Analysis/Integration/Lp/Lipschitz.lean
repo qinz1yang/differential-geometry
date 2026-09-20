@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Lp.FiniteCover
 import Mathlib.Analysis.Calculus.LineDeriv.Measurable
 import Mathlib.Topology.MetricSpace.Lipschitz
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
 noncomputable section
 
@@ -47,3 +48,24 @@ theorem LocallyLipschitzOn.memLp_lineDeriv_of_isCompact
     MemLp (fun x => lineDeriv ℝ f x v) p (μ.restrict B) := by
   let : IsFiniteMeasure (μ.restrict B) := isFiniteMeasure_restrict.mpr hμB
   exact (hf.memLp_top_lineDeriv_of_isCompact hΩ hB hBΩ v).mono_exponent le_top
+
+theorem LocallyLipschitzOn.integrable_lineDeriv_mul_of_hasCompactSupport
+    [IsFiniteMeasureOnCompacts μ] {f φ : E → ℝ} {Ω : Set E}
+    (hf : LocallyLipschitzOn Ω f) (hφ : Continuous φ)
+    (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ω) (v : E) :
+    Integrable (fun x => lineDeriv ℝ f x v * φ x) μ := by
+  obtain ⟨C, hC⟩ := (hf.mono hφs).exists_lipschitzOnWith_of_compact hφc
+  obtain ⟨g, hg, hfg⟩ := hC.extend_real
+  have hgLp : MemLp (fun x => lineDeriv ℝ g x v) ∞ μ :=
+    memLp_top_of_bound (aestronglyMeasurable_lineDeriv hg.continuous μ)
+      (C * ‖v‖) (.of_forall fun _ => norm_lineDeriv_le_of_lipschitz ℝ hg)
+  have hint : Integrable (fun x => lineDeriv ℝ g x v * φ x) μ :=
+    (hφ.integrable_of_hasCompactSupport hφc).mul_of_top_right hgLp
+  apply hint.congr
+  filter_upwards with x
+  by_cases hx : φ x = 0
+  · rw [hx, mul_zero, mul_zero]
+  · have heq : f =ᶠ[𝓝 x] g := by
+      filter_upwards [hφ.continuousAt.eventually_ne hx] with y hy
+      exact hfg (subset_tsupport φ hy)
+    rw [heq.lineDeriv_eq]

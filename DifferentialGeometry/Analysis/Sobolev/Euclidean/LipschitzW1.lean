@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.Rademacher
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
@@ -70,79 +71,13 @@ theorem lip_of_local_comp
     · rw [hzero hxK, hzero (fun hyK ↦ hyU (hK_sub hyK)), edist_self]
       exact bot_le
 
-private theorem hasWeakPartialDeriv_of_lipschitz
-    {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
-    (hf : LipschitzWith C f) (i : Fin d) :
-    DeGiorgi.HasWeakPartialDeriv i
-      (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Omega := by
-  intro phi hphi hphi_support hphi_sub
-  obtain ⟨D, hphi_lip⟩ : ∃ D, LipschitzWith D phi :=
-    ContDiff.lipschitzWith_of_hasCompactSupport hphi_support hphi (by simp)
-  let ei : E := EuclideanSpace.single i 1
-  have hline_phi : ∀ x, lineDeriv ℝ phi x (-ei) = -fderiv ℝ phi x ei := by
-    intro x
-    rw [(hphi.differentiable (by simp) x).lineDeriv_eq_fderiv]
-    simp only [map_neg]
-  have hderiv_sub : tsupport (fun x => fderiv ℝ phi x ei) ⊆ Omega :=
-    (tsupport_fderiv_apply_subset ℝ ei).trans hphi_sub
-  have hibp :=
-    LipschitzWith.integral_lineDeriv_mul_eq
-      (μ := volume) hf hphi_lip hphi_support ei
-  simp_rw [hline_phi] at hibp
-  have hleft_zero :
-      ∀ x, x ∉ Omega → lineDeriv ℝ f x ei * phi x = 0 := by
-    intro x hx
-    have hphi_x : phi x = 0 := by
-      by_contra hne
-      exact hx (hphi_sub (subset_tsupport _ hne))
-    simp only [hphi_x, mul_zero]
-  have hright_zero :
-      ∀ x, x ∉ Omega → (-fderiv ℝ phi x ei) * f x = 0 := by
-    intro x hx
-    have hderiv_x : fderiv ℝ phi x ei = 0 := by
-      by_contra hne
-      exact hx (hderiv_sub (subset_tsupport _ hne))
-    simp only [hderiv_x, neg_zero, zero_mul]
-  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hleft_zero,
-      ← setIntegral_eq_integral_of_forall_compl_eq_zero hright_zero] at hibp
-  have hibp' :
-      ∫ x in Omega, lineDeriv ℝ f x ei * phi x =
-        -∫ x in Omega, f x * fderiv ℝ phi x ei := by
-    rw [show (∫ x in Omega, (-fderiv ℝ phi x ei) * f x) =
-        -∫ x in Omega, f x * fderiv ℝ phi x ei by
-      simp_rw [neg_mul, mul_comm]
-      rw [integral_neg]] at hibp
-    exact hibp
-  have hneg := congrArg Neg.neg hibp'
-  simpa only [ei, neg_neg] using hneg.symm
-
 theorem hasWeakPartialDeriv_of_locallyLipschitzOn
     {f : E → ℝ} {Ω : Set E} (hf : LocallyLipschitzOn Ω f) (i : Fin d) :
     DeGiorgi.HasWeakPartialDeriv i
       (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Ω := by
   intro φ hφ hφc hφs
-  obtain ⟨C, hC⟩ := (hf.mono hφs).exists_lipschitzOnWith_of_compact hφc
-  obtain ⟨g, hg, hfg⟩ := hC.extend_real
-  have hleft (x : E) : f x * fderiv ℝ φ x (EuclideanSpace.single i 1) =
-      g x * fderiv ℝ φ x (EuclideanSpace.single i 1) := by
-    by_cases hx : fderiv ℝ φ x (EuclideanSpace.single i 1) = 0
-    · rw [hx, mul_zero, mul_zero]
-    · rw [hfg ((tsupport_fderiv_apply_subset ℝ _)
-        (subset_tsupport (fun y => fderiv ℝ φ y (EuclideanSpace.single i 1)) hx))]
-  have hright (x : E) : lineDeriv ℝ g x (EuclideanSpace.single i 1) * φ x =
-      lineDeriv ℝ f x (EuclideanSpace.single i 1) * φ x := by
-    by_cases hx : φ x = 0
-    · rw [hx, mul_zero, mul_zero]
-    · have heq : f =ᶠ[𝓝 x] g := by
-        filter_upwards [hφ.continuous.continuousAt.eventually_ne hx] with y hy
-        exact hfg (subset_tsupport φ hy)
-      rw [heq.lineDeriv_eq]
-  calc
-    _ = ∫ x in Ω, g x * fderiv ℝ φ x (EuclideanSpace.single i 1) :=
-      integral_congr_ae (Eventually.of_forall hleft)
-    _ = -∫ x in Ω, lineDeriv ℝ g x (EuclideanSpace.single i 1) * φ x :=
-      hasWeakPartialDeriv_of_lipschitz hg i φ hφ hφc hφs
-    _ = _ := congrArg Neg.neg (integral_congr_ae (Eventually.of_forall hright))
+  exact DifferentialGeometry.Analysis.integral_mul_fderiv_eq_neg_lineDeriv_mul_of_locallyLipschitzOn
+    hf (hφ.of_le (by simp)) hφc hφs (EuclideanSpace.single i 1)
 
 theorem hasWeakPart_of_lip
     {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}

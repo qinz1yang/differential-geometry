@@ -11378,6 +11378,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
+import DifferentialGeometry.Analysis.Viscosity.Distribution
 import DifferentialGeometry.Analysis.Viscosity.Stability
 import DifferentialGeometry.Analysis.Viscosity.ColeHopf
 import DifferentialGeometry.Analysis.Viscosity.Comparison
