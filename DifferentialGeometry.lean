@@ -11454,3 +11454,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedRankTri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TerminalRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.NonnegativeRicci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.HarmonicGradient
+import DifferentialGeometry.Geometry.Operator.Laplacian.Isometry

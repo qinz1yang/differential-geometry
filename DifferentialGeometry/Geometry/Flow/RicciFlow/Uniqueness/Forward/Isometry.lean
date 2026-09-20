@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.NonnegativeRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Compact
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 
@@ -39,5 +40,43 @@ theorem ricci_flow_pullback_eq_of_initial_isometry
   simpa only [Diffeomorph.pullbackMetric_inner,
     DifferentialGeometry.CheegerGromovCompactness.ricciTensor_pullback] using
     hpde t ht (Φ x) (mfderiv I I Φ x v) (mfderiv I I Φ x w)
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Geometry.Riemannian DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.CheegerGromovCompactness
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+
+theorem ricci_flow_pullback_eq_on_slab_of_initial_isometry
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a₀ a b : ℝ} (hbuffer : a₀ < a) (hab : a < b)
+    (hslab : Icc a₀ b ⊆ D.carrier) (hreg : Ioc a₀ b ⊆ D.regular)
+    (hcomplete : RiemannianMetricComplete (S.base.metric a₀))
+    (hcurv : ∃ K : ℝ, 0 ≤ K ∧ ∀ t ∈ Icc a₀ b, ∀ x,
+      normSq0S (S.base.metric t) x 4 (S.base.rm04 t x) ≤ K)
+    (hRic : BonnetMyers.RicciBoundedBelow (I := I) (S.base.metric a) 0)
+    (Phi : M ≃ₘ⟮I, I⟯ M)
+    (hinitial : Diffeomorph.pullbackMetricCross (S.base.metric a) Phi = S.base.metric a) :
+    ∀ t ∈ Icc a b, Diffeomorph.pullbackMetricCross (S.base.metric t) Phi = S.base.metric t := by
+  have hcurvPull : ∃ K : ℝ, 0 ≤ K ∧ ∀ t ∈ Icc a₀ b, ∀ x,
+      normSq0S ((S.pullback Phi).base.metric t) x 4 ((S.pullback Phi).base.rm04 t x) ≤ K := by
+    obtain ⟨K, hK, h⟩ := hcurv
+    refine ⟨K, hK, fun t ht x => ?_⟩
+    change normSq0S (Diffeomorph.pullbackMetricCross (S.base.metric t) Phi) x 4
+      (metricRm04At (Diffeomorph.pullbackMetricCross (S.base.metric t) Phi) x) ≤ K
+    rw [riemannNormSq_cross]
+    exact h t ht (Phi x)
+  have he := forward_unique_on_slab_of_ricci_nonnegative S (S.pullback Phi)
+    hS (hS.pullback S Phi) hbuffer hab hslab hreg hcomplete
+    (RiemannianMetricComplete.pullbackCross _ Phi hcomplete)
+    hcurv hcurvPull hRic hinitial.symm
+  exact fun t ht => (he t ht).symm
 
 end DifferentialGeometry.PDE.RicciFlow
