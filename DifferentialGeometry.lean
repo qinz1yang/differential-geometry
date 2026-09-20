@@ -12202,3 +12202,5 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.StressConverg
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.StressCoordinates
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakPullback
 import DifferentialGeometry.Tensor.BilinearForm.PositiveSemidefinite
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauBoundaryRegularity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.BoundarySmoothness
