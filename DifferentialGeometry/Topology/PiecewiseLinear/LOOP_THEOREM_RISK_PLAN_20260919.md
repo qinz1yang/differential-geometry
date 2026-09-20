@@ -25,7 +25,7 @@ precedence over these recorded next assignments.
 | Existing task | Model | Assignment at its next delivery boundary | Concrete first delivery |
 | --- | --- | --- | --- |
 | F | Astra max | Actual projected embedded disk to relative normal singular disk | Preserve the same cover, original disk/boundary data and avoidance while jointly choosing protected, transition and core regions; prove the required crossing structure on their actual full union. |
-| M304 | Astra max | Lemma 2 surgery upstairs, beginning with L2 | Construct an actual embedded replacement disk and its deck-related intersections in the original cover; prove one genuine branch-removal case with exact support, boundary alternative and strict descent. |
+| M304 | Astra max | General downstairs Lemma 2, reallocated 2026-09-19 | For an at-most-two-to-one locally injective PL singular disk, prove one genuine branch-removal case with exact support, boundary-word alternative and strict descent of the projected disk's branch complexity. The statement must not mention DoubleCoverDiagram. Upstairs equivariant surgery is retained only as an alternative implementation and carries the extra obligation that every step still admits an embedded lift. |
 | h | Sol max | Whole-branch simultaneous two-sheet geometry | Produce an injective PL slab chart along the entire actual compact branch, with both sheets, correct endpoint faces and deck-conjugate side choices; a compatible finite chart chain is acceptable only with actual gluing equations. |
 | E3 | Sol max | Actual sphere-base and tower-interface assembly | Connect the already-produced spherical EmbeddedDisk to the induction's natural output, carrying the source-boundary and basepoint invariants; identify or repair the real triangulation/interface obstruction without repeating Jordan or inward-push proofs. |
 | S | Astra max | Existing independent compact PL smoothing lane | Continue the original-function sufficient-support and relative normal-form producer, then actual cancellation; preserve the small-frame counterexample. |
@@ -249,6 +249,116 @@ traversal, from which avoidance for the single traversal follows; a
 parametrization conversion lemma is therefore provable and must be proved rather
 than assumed, and image-set equality must not be silently upgraded to loop
 equality.
+
+### Owner decision 2026-09-19: M304 moves to the general downstairs Lemma 2
+
+Following the consultation above, the owner reallocated M304 from upstairs L2
+surgery to the general downstairs Lemma 2. Moise composes the upstairs embedded
+disk with the covering projection and applies Lemma 2 to the resulting
+at-most-two-to-one locally injective PL singular disk, so the public main theorem
+does not mention a double cover. This converges M304 with the branch geometry F
+and h are already building; the three lanes now feed one theorem. The deck
+involution remains worth having as a standalone reusable lemma, and upstairs
+equivariant surgery stays available as an alternative, but neither is on the
+primary path. Do not maintain two duplicate surgery developments.
+
+### h: the straight-axis slab chart is boundary-only, and three separate repairs
+are needed
+
+A closed branch admits no injective whole-branch straight-axis chart, for a reason
+much more elementary than any twisting obstruction. Composing such a chart with
+the first coordinate would be a continuous injection of a circle into the real
+line; its image would be a nondegenerate compact interval and the map a
+homeomorphism onto it, but deleting an interior preimage disconnects the interval
+and does not disconnect the circle. This is independent of knotting, sheet
+exchange, coorientability and the ambient fundamental group.
+
+Neither repair considered earlier removes it. Requiring the normal cocycle to sum
+to zero leaves the circle a circle, and every connected finite cover of a circle
+is again a circle, so passing to the orientation double cover cannot turn the
+branch into an interval. The earlier record of "zero cocycle or orientation double
+cover, with no third option" is withdrawn. A closed branch needs a different
+model: a cut into arcs with several charts, a tubular neighborhood over the circle
+with the branch as zero section, or a mapping-torus model recording the monodromy.
+The untwisted closed-branch model is the solid torus with the two sheets given by
+two diameter directions in each disk fibre, not a slab over a real interval.
+
+The side data are two independent signs, not one. For ordered sheets
+`S` at `z3 = 0` and `T` at `z2 = 0`, the linear map `(x, u, v) |-> (x, -u, v)`
+preserves both sheet planes, the axis, the slab and each end face while reversing
+only the `u` sides, so all four sign combinations occur and the earlier
+"preserve both or reverse both" dichotomy is false. The correct cocycle is valued
+in the square of `ZMod 2`, and `exists_sideChoice_of_chain` is applied to each
+coordinate separately; no diagonal relation has to be proved to solve the chain.
+A single bit becomes correct only after proving compatibility with an orientation
+of the transverse plane together with an orientation of the branch; ambient
+orientation alone does not suffice, since a transition may reverse the
+longitudinal direction and one transverse direction at once. A determinant records
+only the product of the two signs and cannot separate both-preserved from
+both-reversed.
+
+The provable transition statement needs full zero-set equalities. If `e` and `f`
+are coordinate maps and `O` is a nonempty connected open subset of their common
+source on which `(e z)_i = 0` if and only if `(f z)_i = 0` for the two transverse
+coordinates, then there are unique signs with `sgn ((f z)_i) = sigma_i * sgn ((e z)_i)`
+throughout `O`. Connectedness alone suffices and piecewise linearity is not needed.
+This has a concrete consequence for the existing charts: `slab_left` and
+`slab_right` already state the sheet clauses as `IsImage` equalities, but
+`slab_interior` states them only as one-directional implications, so the
+transition result does not apply to interior charts as currently stated.
+Strengthening the interior chart to `IsImage` is a prerequisite.
+
+The ambient-chart worry was partly misplaced and partly real. A compact PL arc in
+the interior of a PL three-manifold does have a coordinate-ball neighborhood,
+because an arc is collapsible and a regular neighborhood of a collapsible
+polyhedron in a PL manifold is a ball. The earlier suggestion that a knotted
+circle cannot lie in one coordinate ball is wrong: a polygonal trefoil lies in a
+large ball. Lying in a coordinate ball, having a ball regular neighborhood, and
+admitting a straight-axis chart are three different properties. In any case the
+prerequisite can be avoided: the polyhedral gluing lemma admits source polyhedra
+in an arbitrary finite-dimensional vector space, so the product map can be built
+on the realized manifold complex in its existing Euclidean realization and the
+relatively open neighborhood transferred back, without first placing the whole
+carrier inside one atlas chart.
+
+The most serious finding is that the current input type is too weak. The boundary
+alternative produced by `exists_polyhedral_crossing_sheets_of_boundaryBranch`
+carries an existential ambient set that is not identified with the actual manifold
+carrier, and its boundary is not tied to the image of the honest boundary set.
+`exists_boundary_extension_not_isImage_slab_ends` then shows that a theorem
+quantified over an arbitrary `NormalSingularCellData D BdM B`, even with
+`IsBoundaryBranch`, cannot produce the slab-end conclusion. Describing the
+boundary set informally as the honest one does not supply the missing hypothesis;
+the formal input must tie it to a genuine manifold carrier and provide the
+boundary-relative crossing geometry.
+
+The target is therefore a boundary-branch simultaneous product theorem with local
+hypotheses and a global conclusion: for a proper PL arc with both endpoints on the
+boundary, two labeled sheets meeting exactly along the arc, the standard PL
+crossing model at interior points and its relative half-space version at the
+endpoints, every relatively open neighborhood contains one on which a PL
+homeomorphism onto the product of the unit interval with an open square carries
+the arc to the axis, the boundary intersection to the two end faces, and the two
+sheets to the two coordinate slices. The global product map is the conclusion, not
+a hypothesis.
+
+Matching signs do not make two charts agree: `(x, u, v) |-> (x, 2 * u, 3 * v)` has
+the same signs as the identity and preserves every relevant plane. The real
+two-piece lemma `exists_isPLHomeomorphOn_union` additionally requires agreement on
+the overlap and surjectivity onto the target intersection, which is where global
+injectivity comes from. The construction should build controlled blocks along a
+subdivided arc, normalize the marked transverse interfaces by an actual relative
+PL extension rather than by signs alone, and glue into ordered longitudinal blocks
+by induction, proving injectivity from intersection control.
+
+Verification scope: this answer is source-level inspection and book-preview
+reading, with nothing compiled. The consultant obtained Moise's page 183, which
+confirms that 25.2 follows from 25.1 with trivial normal subgroup plus moving the
+disk interior off the boundary, but could not retrieve the later branch-surgery
+argument. Whether Moise's surgery acts only along boundary branches therefore
+remains unverified, and the repository's boundary-only sheet producer is not
+evidence for it. The chart interface must be boundary-only regardless; if a
+closed-branch operation is needed elsewhere it requires a different interface.
 
 ## Delivery and validation priorities
 
