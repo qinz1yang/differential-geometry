@@ -496,8 +496,8 @@ theorem transportedSourceMetric_ricci_nonneg
     (Diffeomorph.pullbackMetric (I := I)
       (sourceMetric.restrictOpen (I := I) (nestedSourceOpen (I := I) Phi k₀ k)) F)
       x v v
-  rw [ricciTensor_pullback (I := I), ricciTensor_restrictOpen (I := I),
-    ricciTensor_pullback (I := I), ricciTensor_restrictOpen (I := I)]
+  rw [ricciTensor_pullback (I := I), DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (I := I),
+    ricciTensor_pullback (I := I), DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (I := I)]
   simpa only [zero_mul] using (hRic (subseq k) _ _)
 
 end TransportedMetrics
@@ -599,7 +599,7 @@ theorem ricciBoundedBelow_zero_of_open_restrictions
   let vU : TangentSpace I xU := v
   have hRic : 0 ≤ ricciTensor (I := I) (g.restrictOpen (I := I) U) xU vU vU := by
     simpa only [zero_mul] using hRicU xU vU
-  have hrestrict := ricciTensor_restrictOpen (I := I) g U xU vU vU
+  have hrestrict := DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (I := I) g U xU vU vU
   have hRic' : 0 ≤ ricciTensor (I := I) g (xU : M)
       (mfderiv I I (Subtype.val : U → M) xU vU)
       (mfderiv I I (Subtype.val : U → M) xU vU) := hRic.trans_eq hrestrict

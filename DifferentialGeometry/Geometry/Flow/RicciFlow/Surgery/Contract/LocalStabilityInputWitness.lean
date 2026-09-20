@@ -64,7 +64,7 @@ noncomputable def flatBallSolution (i : ℕ) :
 theorem ricciTensor_flatBallMetric_eq_zero (L : ℝ) (x : ↥(ModelBall L))
     (v w : TangentSpace ThreeModel x) :
     ricciTensor (I := ThreeModel) (M := ↥(ModelBall L)) (flatBallMetric L) x v w = 0 := by
-  rw [flatBallMetric, ricciTensor_restrictOpen]
+  rw [flatBallMetric, DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen]
   exact euclideanMetric_ricciTensor (x : ThreeSpace)
     (mfderiv ThreeModel ThreeModel (Subtype.val : ↥(ModelBall L) → ThreeSpace) x v)
     (mfderiv ThreeModel ThreeModel (Subtype.val : ↥(ModelBall L) → ThreeSpace) x w)

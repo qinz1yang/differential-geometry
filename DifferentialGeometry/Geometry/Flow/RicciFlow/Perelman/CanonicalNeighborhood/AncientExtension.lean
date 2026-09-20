@@ -205,14 +205,6 @@ theorem good_point_buffered_canonical {kappa alpha theta : ℝ}
                   metricDistance (S.base.metric t) y z ≤ C / Real.sqrt (S.scalar t x)) := by
   sorry
 
-theorem terminal_limit_global_bound {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X → TerminalDerivativeBounds X → Nonempty (TerminalLimit X) := by
-  sorry
-
-
 theorem first_backward_slab {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →

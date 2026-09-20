@@ -36,7 +36,7 @@ private theorem slabOpenPullback_ricci
   let : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp (Geometry.isSigmaCompact_of_isOpen I3 V.isOpen)
   rw [openPullbackMetric, CheegerGromovCompactness.ricciTensor_pullback]
-  erw [ricciTensor_restrictOpen g V (PartialDiffeomorph.toOpensDiffeo F hU y),
+  erw [DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen g V (PartialDiffeomorph.toOpensDiffeo F hU y),
     mfderiv_subtype_val_apply, mfderiv_subtype_val_apply,
     PartialDiffeomorph.mfderiv_toOpensDiffeo F hU y v,
     PartialDiffeomorph.mfderiv_toOpensDiffeo F hU y w]
@@ -65,7 +65,7 @@ theorem MetricComparisonOn.ricciQuadratic_sub_le
   have hb := KappaSolutions.metricRicci_difference_le_relative_two_jets
     ((h s).restrictOpen U) (openPullbackMetric F U hU (g s)) y heps heps1 hsmall hjet v
   have hp := slabOpenPullback_ricci F U hU (g s) y v v
-  have hr := ricciTensor_restrictOpen (h s) U y v v
+  have hr := DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (h s) U y v v
   erw [mfderiv_subtype_val_apply] at hr
   have herror := congrArg₂ (fun r q : ℝ => |r - q|) hp hr
   exact (le_of_eq herror.symm).trans hb

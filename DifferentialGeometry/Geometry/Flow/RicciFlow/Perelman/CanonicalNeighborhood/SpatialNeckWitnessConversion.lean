@@ -7,6 +7,13 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.OpenTensorJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderReferenceModel
+import DifferentialGeometry.Geometry.Metric.Construction.TensorOpenExtension
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Locality
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Topology.Manifold.OpenEmbedding
+import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 
 set_option autoImplicit false
 noncomputable section
@@ -259,5 +266,333 @@ theorem exists_spatialNeckWitness_of_spatialNeck {eps : ℝ} (heps : 0 < eps) :
   change nk.map (D (nk.center, 0)) = p
   rw [cylinderAxialScale_central]
   exact nk.center_eq
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+private local instance inverseNeckSphereDimension :
+    Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+  {g : SmoothRiemannianMetric I3 M} {yStar : SpatialNeckSphere} {p : M} {eta eps : ℝ}
+
+private theorem spatialNeckWitness_partialDiffeomorph
+    (W : SpatialNeckWitness g yStar p eta) :
+    ∃ F : PartialDiffeomorph IC I3 Cylinder M ∞,
+      F.source = spatialNeckBuffer eta ∧
+      ∀ z : spatialNeckBuffer eta, F z.val = W.embedding z := by
+  let U := spatialNeckBuffer eta
+  have hUne : Nonempty U := ⟨spatialNeckCentralPoint eta W.epsilon_pos yStar⟩
+  obtain ⟨V, C, _hV, hC, _⟩ :=
+    DifferentialGeometry.Topology.Manifold.exists_diffeomorph_onto_range_of_injective_immersion
+      W.embedding W.smooth_embedding.contMDiff W.smooth_embedding.isEmbedding.injective
+      W.differential_injective
+      (by simp [Module.finrank_prod, ThreeSpace])
+  have hVne : Nonempty V := ⟨C (spatialNeckCentralPoint eta W.epsilon_pos yStar)⟩
+  let iU := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph IC U hUne
+  let iV := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I3 V hVne
+  let F := (iU.symm.trans C.toPartialDiffeomorph).trans iV
+  have hsource : F.source = U := by
+    ext x
+    change ((x ∈ iU.target ∧ iU.symm x ∈ (univ : Set U)) ∧
+      C (iU.symm x) ∈ (univ : Set V)) ↔ x ∈ U
+    simp only [mem_univ, and_true, iU,
+      DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_target]
+    rfl
+  refine ⟨F, hsource, ?_⟩
+  intro z
+  change (C (iU.symm z.val) : M) = W.embedding z
+  rw [show iU.symm z.val = z from
+    DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_symm_apply
+      IC U hUne z.property]
+  exact hC z
+
+private theorem cylinderReference_zero_eq_inverse_axial :
+    cylinderReferenceMetric 0 = scaleMetric 2 (by norm_num)
+      (DifferentialGeometry.Diffeomorph.pullbackMetricCross unitCylinderMetric
+        (cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity))) := by
+  rw [← DifferentialGeometry.Diffeomorph.pullbackMetricCross_scaleMetric,
+    DifferentialGeometry.Diffeomorph.pullbackMetricCross_eq_pullbackMetric,
+    ← cylinderAxialScale_symm]
+  change cylinderReferenceMetric 0 = doubleSphereCylinderMetric
+  apply SmoothRiemannianMetric.ext_inner
+  intro z v w
+  have hC := cylinderReferenceMetric_zero_inner z v w
+  have hD := doubleSphereCylinderMetric_inner z.1 z.2 v.1 w.1 v.2 w.2
+  exact hC.trans hD.symm
+
+private theorem spatialNeckWitness_embedding_deriv
+    (W : SpatialNeckWitness g yStar p eta)
+    (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    (hsource : F.source = spatialNeckBuffer eta)
+    (hmap : ∀ z : spatialNeckBuffer eta, F z.val = W.embedding z)
+    (x : spatialNeckBuffer eta) (v : TangentSpace SpatialNeckCylinderModel x) :
+    mfderiv SpatialNeckCylinderModel I3 W.embedding x v =
+      mfderiv SpatialNeckCylinderModel I3 F x.val v := by
+  have hfun : (F ∘ (Subtype.val : spatialNeckBuffer eta → Cylinder)) = W.embedding := funext hmap
+  have hF := F.mdifferentiableAt (by simp) (by rw [hsource]; exact x.property)
+  have hval : MDifferentiableAt SpatialNeckCylinderModel SpatialNeckCylinderModel
+      (Subtype.val : spatialNeckBuffer eta → Cylinder) x :=
+    (contMDiff_subtype_val (I := SpatialNeckCylinderModel) (U := spatialNeckBuffer eta)
+      (n := ∞)).mdifferentiableAt (by decide)
+  have h := mfderiv_comp x hF hval
+  rw [hfun, mfderiv_subtype_val] at h
+  exact DFunLike.congr_fun h v
+
+private theorem spatialNeckWitness_inverse_derivNorm
+    (W : SpatialNeckWitness g yStar p eta)
+    (Eext : Tensor0SField (I := IC) (M := Cylinder) (n := ∞) 2)
+    (hEext : ∀ x : spatialNeckBuffer eta, x.val ∈ univ ×ˢ Icc (-eta⁻¹) eta⁻¹ →
+      ∀ v : Fin 2 → TangentSpace IC x,
+        Eext x.val v =
+          (metricTensorField W.normalizedMetric -
+            metricTensorField (unitCylinderMetric.restrictOpen (spatialNeckBuffer eta))) x v)
+    (a : ℕ) (z : Cylinder)
+    (hz : cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z ∈ univ ×ˢ Ioo (-eta⁻¹) eta⁻¹)
+    (hzu : cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z ∈ spatialNeckBuffer eta) :
+    tensor02CovDerivNormWith a
+      ((2 : ℝ) • pullbackTensor02FieldCross
+        (cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)) Eext)
+      (cylinderReferenceMetric 0) (cylinderReferenceMetric 0) z =
+    (Real.sqrt ((2 : ℝ)⁻¹ ^ (a + 2)) * 2) *
+      metricDerivNorm a W.normalizedMetric
+        (unitCylinderMetric.restrictOpen (spatialNeckBuffer eta))
+        (unitCylinderMetric.restrictOpen (spatialNeckBuffer eta))
+        ⟨cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z, hzu⟩ := by
+  let D := cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)
+  let U := spatialNeckBuffer eta
+  let V : Set Cylinder := univ ×ˢ Ioo (-eta⁻¹) eta⁻¹
+  let E : Tensor0SField (I := IC) (M := U) (n := ∞) 2 :=
+    metricTensorField W.normalizedMetric - metricTensorField (unitCylinderMetric.restrictOpen U)
+  let x : U := ⟨D z, hzu⟩
+  have hnear : {w : U | w.val ∈ V} ∈ 𝓝 x :=
+    ((isOpen_univ.prod isOpen_Ioo).preimage continuous_subtype_val).mem_nhds hz
+  have heq : ∀ᶠ w : U in 𝓝 x, restrictOpen0S (I := IC) 2 (V := U) Eext w = E w := by
+    filter_upwards [hnear] with w hw
+    ext v
+    exact hEext w ⟨hw.1, hw.2.1.le, hw.2.2.le⟩ v
+  calc
+    tensor02CovDerivNormWith a ((2 : ℝ) • pullbackTensor02FieldCross D Eext)
+        (cylinderReferenceMetric 0) (cylinderReferenceMetric 0) z =
+        (Real.sqrt ((2 : ℝ)⁻¹ ^ (a + 2)) * 2) *
+          tensor02CovDerivNormWith a Eext unitCylinderMetric unitCylinderMetric (D z) := by
+      rw [cylinderReference_zero_eq_inverse_axial]
+      change tensor02CovDerivNormWith a ((2 : ℝ) • pullbackTensor02FieldCross D Eext)
+        (scaleMetric 2 (by norm_num)
+          (DifferentialGeometry.Diffeomorph.pullbackMetricCross unitCylinderMetric D))
+        (scaleMetric 2 (by norm_num)
+          (DifferentialGeometry.Diffeomorph.pullbackMetricCross unitCylinderMetric D)) z = _
+      rw [tensor02CovDerivNormWith_smul_scaleMetric,
+        tensor02CovDerivNormWith_pullbackTensor02FieldCross]
+      norm_num
+    _ = (Real.sqrt ((2 : ℝ)⁻¹ ^ (a + 2)) * 2) *
+        tensor02CovDerivNormWith a (restrictOpen0S (I := IC) 2 (V := U) Eext)
+          (unitCylinderMetric.restrictOpen U) (unitCylinderMetric.restrictOpen U) x := by
+      rw [tensor02CovDerivNormWith_restrictOpen0S]
+    _ = (Real.sqrt ((2 : ℝ)⁻¹ ^ (a + 2)) * 2) *
+        tensor02CovDerivNormWith a E (unitCylinderMetric.restrictOpen U)
+          (unitCylinderMetric.restrictOpen U) x := by
+      rw [tensor02CovDerivNormWith_eq_of_eventuallyEq _ _ _ _ a x heq]
+    _ = _ := by
+      rw [tensor02CovDerivNormWith_metricTensorField_sub_eq_metricDerivNorm]
+
+private theorem spatialNeckWitness_inverse_tensor
+    (W : SpatialNeckWitness g yStar p eta)
+    (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    (hsource : F.source = spatialNeckBuffer eta)
+    (hmap : ∀ z : spatialNeckBuffer eta, F z.val = W.embedding z)
+    (Eext : Tensor0SField (I := IC) (M := Cylinder) (n := ∞) 2)
+    (hEext : ∀ x : spatialNeckBuffer eta, x.val ∈ univ ×ˢ Icc (-eta⁻¹) eta⁻¹ →
+      ∀ v : Fin 2 → TangentSpace IC x,
+        Eext x.val v =
+          (metricTensorField W.normalizedMetric -
+            metricTensorField (unitCylinderMetric.restrictOpen (spatialNeckBuffer eta))) x v)
+    (z : Cylinder)
+    (hz : cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z ∈ univ ×ˢ Icc (-eta⁻¹) eta⁻¹)
+    (hzu : cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z ∈ spatialNeckBuffer eta)
+    (v : Fin 2 → TangentSpace SpatialNeckCylinderModel z) :
+    (((2 : ℝ) • pullbackTensor02FieldCross
+      (cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)) Eext) +
+      metricTensorField (cylinderReferenceMetric 0)) z v =
+      (scaleMetric (metricScalarAt g p) W.scalar_pos g).inner
+        (((cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)).toPartialDiffeomorph.trans F) z)
+        (mfderiv SpatialNeckCylinderModel I3
+          ((cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)).toPartialDiffeomorph.trans F) z (v 0))
+        (mfderiv SpatialNeckCylinderModel I3
+          ((cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)).toPartialDiffeomorph.trans F) z (v 1)) := by
+  let D := cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)
+  let Phi := D.toPartialDiffeomorph.trans F
+  let x : spatialNeckBuffer eta := ⟨D z, hzu⟩
+  have hF := F.mdifferentiableAt (by simp) (by rw [hsource]; exact x.property)
+  have hD := D.mdifferentiable (by simp) z
+  have hcomp (w : TangentSpace SpatialNeckCylinderModel z) :
+      mfderiv SpatialNeckCylinderModel I3 Phi z w =
+        mfderiv SpatialNeckCylinderModel I3 F (D z)
+          (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z w) :=
+    mfderiv_comp_apply z hF hD w
+  have hnormalized := W.normalized_inner x
+    (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 0))
+    (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 1))
+  rw [spatialNeckScale_inv_sq g p W.scalar_pos] at hnormalized
+  erw [spatialNeckWitness_embedding_deriv W F hsource hmap x
+      (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 0)),
+    spatialNeckWitness_embedding_deriv W F hsource hmap x
+      (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 1))] at hnormalized
+  have href := congrArg (fun h : SmoothRiemannianMetric IC Cylinder => h.inner z (v 0) (v 1))
+    cylinderReference_zero_eq_inverse_axial
+  rw [scaleMetric_inner, DifferentialGeometry.Diffeomorph.pullbackMetricCross_inner] at href
+  change 2 * pullbackTensor02FieldCross D Eext z v +
+    (cylinderReferenceMetric 0).inner z (v 0) (v 1) =
+    (scaleMetric (metricScalarAt g p) W.scalar_pos g).inner (Phi z)
+      (mfderiv SpatialNeckCylinderModel I3 Phi z (v 0))
+      (mfderiv SpatialNeckCylinderModel I3 Phi z (v 1))
+  rw [pullbackTensor02FieldCross_apply]
+  erw [hEext x hz (fun j => mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v j))]
+  change 2 * (W.normalizedMetric.inner x
+    (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 0))
+    (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 1)) -
+    unitCylinderMetric.inner (D z) (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 0))
+      (mfderiv SpatialNeckCylinderModel SpatialNeckCylinderModel D z (v 1))) + _ = _
+  rw [hnormalized, href, scaleMetric_inner, show Phi z = W.embedding x from hmap x]
+  erw [hcomp (v 0), hcomp (v 1)]
+  ring
+
+theorem _root_.DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.SpatialNeckWitness.exists_spatialNeck
+    (W : SpatialNeckWitness g yStar p eta) (heps : 0 < eps)
+    (hsmall : eps < 1 / 11) (heta : eta ≤ eps) :
+    ∃ nk : SpatialNeck g eps p,
+      nk.center = yStar ∧
+      nk.map.source =
+        (cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)) ⁻¹' spatialNeckBuffer eta ∧
+      ∀ z : Cylinder,
+        ∀ hz : cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z ∈ spatialNeckBuffer eta,
+          nk.map z = W.embedding ⟨cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity) z, hz⟩ := by
+  classical
+  let D := cylinderAxialScale (Real.sqrt 2)⁻¹ (by positivity)
+  let U := spatialNeckBuffer eta
+  let K : Set Cylinder := univ ×ˢ Icc (-eta⁻¹) eta⁻¹
+  let V : Set Cylinder := univ ×ˢ Ioo (-eta⁻¹) eta⁻¹
+  let A : Set Cylinder := univ ×ˢ Ioo (-eps⁻¹) eps⁻¹
+  have hK : IsCompact K := isCompact_univ.prod isCompact_Icc
+  have hKU : K ⊆ U := by
+    intro z hz
+    change -eta⁻¹ - 1 < z.2 ∧ z.2 < eta⁻¹ + 1
+    constructor <;> linarith [hz.2.1, hz.2.2]
+  have hVK : V ⊆ K := fun z hz => ⟨hz.1, hz.2.1.le, hz.2.2.le⟩
+  have hinv : eps⁻¹ ≤ eta⁻¹ := inv_anti₀ W.epsilon_pos heta
+  have hord : Nat.ceil eps⁻¹ ≤ Nat.ceil eta⁻¹ := Nat.ceil_le_ceil hinv
+  have hcpos : 0 < (Real.sqrt (2 : ℝ))⁻¹ := by positivity
+  have hcle : (Real.sqrt (2 : ℝ))⁻¹ ≤ 1 := by
+    apply (inv_le_one₀ (by positivity : 0 < Real.sqrt (2 : ℝ))).2
+    nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Real.sqrt_nonneg (2 : ℝ)]
+  have hdomain (z : Cylinder) (hz : z ∈ A) : D z ∈ V := by
+    have hlo := mul_lt_mul_of_pos_left hz.2.1 hcpos
+    have hhi := mul_lt_mul_of_pos_left hz.2.2 hcpos
+    have hprod := mul_le_mul_of_nonneg_right hcle (inv_nonneg.mpr heps.le)
+    refine ⟨mem_univ _, ?_, ?_⟩ <;>
+      dsimp only [D, cylinderAxialScale_apply] <;> nlinarith
+  obtain ⟨F, hsource, hmap⟩ := spatialNeckWitness_partialDiffeomorph W
+  let Phi := D.toPartialDiffeomorph.trans F
+  have hPhiSource : Phi.source = D ⁻¹' U := by
+    ext z
+    change (z ∈ (univ : Set Cylinder) ∧ D z ∈ F.source) ↔ D z ∈ U
+    rw [hsource]
+    simp only [mem_univ, true_and]
+    change D z ∈ (spatialNeckBuffer eta : Set _) ↔ D z ∈ (spatialNeckBuffer eta : Set _)
+    rfl
+  have hPhi (z : Cylinder) (hz : D z ∈ U) : Phi z = W.embedding ⟨D z, hz⟩ :=
+    hmap ⟨D z, hz⟩
+  let E : Tensor0SField (I := IC) (M := U) (n := ∞) 2 :=
+    metricTensorField W.normalizedMetric - metricTensorField (unitCylinderMetric.restrictOpen U)
+  obtain ⟨Eext, hEext⟩ := exists_tensor0SField_eqOn_openSubtype 2 U hK hKU E
+  let T : Tensor0SField (I := IC) (M := Cylinder) (n := ∞) 2 :=
+    (2 : ℝ) • pullbackTensor02FieldCross D Eext
+  let P : Tensor0SField (I := IC) (M := Cylinder) (n := ∞) 2 :=
+    T + metricTensorField (cylinderReferenceMetric 0)
+  have hbound (a : ℕ) (ha : a ≤ Nat.ceil eps⁻¹) (z : Cylinder) (hz : z ∈ A) :
+      tensor02CovDerivNormWith a T (cylinderReferenceMetric 0)
+        (cylinderReferenceMetric 0) z ≤ eps := by
+    rw [spatialNeckWitness_inverse_derivNorm W Eext hEext a z
+      (hdomain z hz) (hKU (hVK (hdomain z hz)))]
+    have hpow : (2 : ℝ)⁻¹ ^ (a + 2) ≤ (2 : ℝ)⁻¹ ^ 2 :=
+      pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+    have hsqrt : Real.sqrt ((2 : ℝ)⁻¹ ^ (a + 2)) * 2 ≤ 1 := by
+      norm_num at hpow
+      nlinarith [Real.sq_sqrt (by positivity : 0 ≤ (2 : ℝ)⁻¹ ^ (a + 2)),
+        Real.sqrt_nonneg ((2 : ℝ)⁻¹ ^ (a + 2))]
+    have hmetric := W.metricDerivNorm_lt a (ha.trans hord)
+      ⟨D z, hKU (hVK (hdomain z hz))⟩
+      ⟨(hdomain z hz).2.1.le, (hdomain z hz).2.2.le⟩
+    calc
+      _ ≤ (Real.sqrt ((2 : ℝ)⁻¹ ^ (a + 2)) * 2) * eta :=
+        mul_le_mul_of_nonneg_left hmetric.le (by positivity)
+      _ ≤ eta := by nlinarith [W.epsilon_pos]
+      _ ≤ eps := heta
+  let cmp : MetricComparisonOn (fun _ => cylinderReferenceMetric 0)
+      (fun _ => scaleMetric (metricScalarAt g p) W.scalar_pos g) Phi A {0}
+      (Nat.ceil eps⁻¹) eps :=
+    { pullback := fun _ => P
+      pullback_eq := fun _ z hz v => spatialNeckWitness_inverse_tensor W F hsource hmap Eext hEext
+        z (hVK (hdomain z hz)) (hKU (hVK (hdomain z hz))) v
+      jet := fun b _ => if b = 0 then T else 0
+      jet_zero := by
+        intro s z v
+        change T z v = T z v + (cylinderReferenceMetric 0).inner z (v 0) (v 1) -
+          (cylinderReferenceMetric 0).inner z (v 0) (v 1)
+        ring
+      jet_succ := by
+        intro b s _hs z _hz v
+        simp only [if_neg (Nat.add_one_ne_zero b)]
+        change 0 = derivWithin (fun _ => (if b = 0 then T else 0) z v) ({0} : Set ℝ) s
+        simp only [derivWithin_fun_const, Pi.zero_apply]
+      equivalence := by
+        intro s _hs z hz v
+        apply tensor_apply_bounds_of_metricTensorErrorNorm_le P (cylinderReferenceMetric 0) _ v
+        have hPT : P - metricTensorField (cylinderReferenceMetric 0) = T := by
+          dsimp only [P]
+          abel
+        have hh := hbound 0 (by omega) z hz
+        rw [← hPT] at hh
+        exact hh
+      close := by
+        intro a b hab s _hs z hz
+        by_cases hb : b = 0
+        · simpa only [if_pos hb] using hbound a (by omega) z hz
+        · rw [if_neg hb, tensor02CovDerivNormWith,
+            tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_zero_tensor]
+          simpa only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
+            MetricFiberData.inner, map_zero, Real.sqrt_zero] using heps.le }
+  refine ⟨{
+    eps_pos := heps
+    eps_small := hsmall
+    Q_pos := W.scalar_pos
+    cylinder := cylinderReference
+    map := Phi
+    center := yStar
+    center_eq := ?_
+    domain := ?_
+    comparison := cmp }, rfl, hPhiSource, hPhi⟩
+  · have hz : D (yStar, 0) ∈ U := by
+      rw [cylinderAxialScale_central]
+      exact (spatialNeckCentralPoint eta W.epsilon_pos yStar).property
+    rw [hPhi (yStar, 0) hz]
+    convert W.marked using 1
+    apply congrArg W.embedding
+    exact Subtype.ext (cylinderAxialScale_central _ _ _)
+  · intro z hz
+    rw [hPhiSource]
+    exact hKU (hVK (hdomain z hz))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

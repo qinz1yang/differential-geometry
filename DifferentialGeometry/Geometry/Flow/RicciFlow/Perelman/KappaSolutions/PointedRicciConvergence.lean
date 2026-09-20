@@ -74,7 +74,7 @@ private theorem canonicalRicci_restrict (k : ℕ)
     (x : MetricSourceDomain (I := I) Phi k) (v : TangentSpace I x) :
     ricciTensor (I := I) (L.metric.restrictOpen (I := I) (metricSourceOpenSubset Phi k)) x v v =
       ricciTensor (I := I) L.metric (x : L.M) v v := by
-  have h := ricciTensor_restrictOpen L.metric (metricSourceOpenSubset Phi k) x v v
+  have h := DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen L.metric (metricSourceOpenSubset Phi k) x v v
   erw [mfderiv_subtype_val_apply] at h
   exact h
 
@@ -88,7 +88,7 @@ private theorem canonicalRicci_pullback (k : ℕ)
         (mfderiv I I (Phi.map k) (x : L.M) v)
         (mfderiv I I (Phi.map k) (x : L.M) v) := by
   rw [DifferentialGeometry.CheegerGromovCompactness.ricciTensor_pullback]
-  erw [ricciTensor_restrictOpen (X.obj (subseq k)).metric
+  erw [DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (X.obj (subseq k)).metric
     (metricTargetOpenSubset Phi k) (metricSourceTargetDiffeomorph Phi k x)
     (mfderiv I I (metricSourceTargetDiffeomorph Phi k) x v)
     (mfderiv I I (metricSourceTargetDiffeomorph Phi k) x v)]

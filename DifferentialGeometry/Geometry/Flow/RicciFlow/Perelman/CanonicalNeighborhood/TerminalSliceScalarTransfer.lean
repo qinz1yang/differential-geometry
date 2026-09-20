@@ -164,7 +164,7 @@ theorem metricComparisonOn_scalar_sub_le_of_ball
       mfderiv_subtype_val_apply (I := I3) (sourceOpen F) xu v
     change |ricciTensor (I := I3) ((h s).restrictOpen (sourceOpen F)) xu v v| ≤
       Kb * ((h s).restrictOpen (sourceOpen F)).inner xu v v
-    rw [ricciTensor_restrictOpen, SmoothRiemannianMetric.restrictOpen_inner, hv]
+    rw [DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen, SmoothRiemannianMetric.restrictOpen_inner, hv]
     exact hKb (xu : N) hxu v
   have hmain := metricScalar_difference_le_relative_two_jets (I := I3)
     (g := witnessModelMetric F h s) (h := witnessPullbackMetric F g s) xu
@@ -177,7 +177,7 @@ end SliceBridge
 
 theorem ricci_quadratic_form_bound_of_slice_rm_bound
     {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N]
-    [T2Space N] [SigmaCompactSpace N]
+    [T2Space N]
     {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := N) D) {t C : ℝ}
     (hC : ∀ x : N, FlowMetricBall.rmNormSq S t x ≤ C) :
     ∀ (y : N) (v : TangentSpace I3 y),

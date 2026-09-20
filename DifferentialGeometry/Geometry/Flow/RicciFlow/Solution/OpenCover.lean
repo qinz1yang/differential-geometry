@@ -32,7 +32,7 @@ theorem isSolutionOn_of_open_cover
         (vec2 v w)) t at h
     rw [metricRicciAt_apply_eq_ricciTensor (I := I) ((g t).restrictOpen (U i))
       (⟨x, hxi⟩ : U i) v w] at h
-    have hr := ricciTensor_restrictOpen (I := I) (g t) (U i) (⟨x, hxi⟩ : U i) v w
+    have hr := DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (I := I) (g t) (U i) (⟨x, hxi⟩ : U i) v w
     rw [mfderiv_subtype_val (I := I) (U i) (⟨x, hxi⟩ : U i)] at hr
     exact h.congr_deriv (congrArg (fun r : ℝ => -2 * r) hr)
   · apply continuousOn_of_open_cover_prod U hcover

@@ -156,7 +156,7 @@ theorem compRestrict_pde
       (I := I) (g s) (connectedComponentOpen (I := I) p) x v w
     simpa only [vM, wM, mfderiv_subtype_val_apply] using hopen
   · exact congrArg (fun z : ℝ => (-2 : ℝ) * z)
-      (ricciTensor_restrictOpen (I := I) (g t) (connectedComponentOpen (I := I) p) x v w)
+      (DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (I := I) (g t) (connectedComponentOpen (I := I) p) x v w)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

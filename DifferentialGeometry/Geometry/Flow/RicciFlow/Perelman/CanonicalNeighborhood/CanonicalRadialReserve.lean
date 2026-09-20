@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
-
 set_option autoImplicit false
 noncomputable section
 open Set
@@ -62,3 +61,41 @@ theorem CanonicalWitness.exists_radial_reserve
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
+
+set_option autoImplicit false
+noncomputable section
+open Set Filter
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+  {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+
+theorem CanonicalWitness.domain_subset_closedBall_of_one_le_scalar
+    {eps C1 C2 : ℝ} {x : M} {t : ℝ}
+    (W : CanonicalWitness S eps C1 C2 x t) (hQ : 1 ≤ S.scalar t x) :
+    W.domain.carrier ⊆ riemannianClosedBallOf (S.base.metric t) x (2 * C1) := by
+  have hsqrt : 1 ≤ Real.sqrt (S.scalar t x) := by
+    simpa only [Real.sqrt_one] using Real.sqrt_le_sqrt hQ
+  have hsqrtpos : 0 < Real.sqrt (S.scalar t x) := Real.sqrt_pos.mpr W.Q_pos
+  have hrpos : 0 < W.radius :=
+    (inv_pos.mpr hsqrtpos).trans_le W.radius_lower
+  have hC1pos : 0 < C1 := by
+    have hh := (le_div_iff₀ hsqrtpos).mp W.radius_upper
+    exact (mul_pos hrpos hsqrtpos).trans_le hh
+  have hrad : W.radius ≤ C1 :=
+    W.radius_upper.trans (div_le_self hC1pos.le hsqrt)
+  intro y hy
+  exact (W.inside_ball hy).le.trans
+    (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hrad (by norm_num)))
+
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
