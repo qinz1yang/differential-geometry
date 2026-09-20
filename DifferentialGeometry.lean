@@ -202,6 +202,7 @@ import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Complex.SquareRoot
 import DifferentialGeometry.Analysis.Convex.Convolution
 import DifferentialGeometry.Analysis.Convex.Differentiability
+import DifferentialGeometry.Analysis.Convex.Distribution
 import DifferentialGeometry.Analysis.Convex.Integral
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
@@ -767,6 +768,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
+import DifferentialGeometry.Analysis.Integration.Integral.Convergence
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
 import DifferentialGeometry.Analysis.Integration.Integral.HalfPlaneLaplacian
 import DifferentialGeometry.Analysis.Integration.Integral.Laplacian

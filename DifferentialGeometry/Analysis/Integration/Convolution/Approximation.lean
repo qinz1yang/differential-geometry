@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.Asymptotics
 import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 import Mathlib.Analysis.Calculus.BumpFunction.Convolution
+import Mathlib.Topology.UniformSpace.LocallyUniformConvergence
 
 noncomputable section
 open Set Filter MeasureTheory Metric
@@ -236,3 +237,56 @@ theorem DifferentialGeometry.Analysis.tendsto_fderiv_fderiv_convolution_rescale_
   apply tendsto_pi_nhds.mpr
   intro w
   exact tendsto_fderiv_fderiv_convolution_rescale_apply_of_isLittleO hκ hc hmass hu hB htaylor v w
+
+theorem MeasureTheory.tendstoLocallyUniformly_convolution_right
+    {E F ι : Type*} [NormedAddCommGroup E] [MeasurableSpace E]
+    [BorelSpace E] [SecondCountableTopology E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {μ : Measure E} [μ.IsAddLeftInvariant] [SFinite μ]
+    {l : Filter ι} {κ : ι → E → ℝ} {f : E → F}
+    (hκ : ∀ᶠ i in l, ∀ x, 0 ≤ κ i x)
+    (hmass : ∀ᶠ i in l, ∫ x, κ i x ∂μ = 1)
+    (hs : Tendsto (fun i => Function.support (κ i)) l (𝓝 (0 : E)).smallSets)
+    (hf : Continuous f) :
+    TendstoLocallyUniformly
+      (fun i => κ i ⋆[ContinuousLinearMap.lsmul ℝ ℝ, μ] f) f l := by
+  apply tendstoLocallyUniformly_iff_forall_tendsto.mpr
+  intro x
+  have hconv : Tendsto (fun p : ι × E =>
+      (κ p.1 ⋆[ContinuousLinearMap.lsmul ℝ ℝ, μ] f) p.2)
+      (l ×ˢ 𝓝 x) (𝓝 (f x)) :=
+    convolution_tendsto_right (tendsto_fst.eventually hκ) (tendsto_fst.eventually hmass)
+      (hs.comp tendsto_fst) (Eventually.of_forall fun _ => hf.aestronglyMeasurable)
+      ((hf.tendsto x).comp tendsto_snd) tendsto_snd
+  exact (((hf.tendsto x).comp tendsto_snd).prodMk_nhds hconv).mono_right (nhds_le_uniformity _)
+
+theorem DifferentialGeometry.Analysis.tendstoLocallyUniformly_convolution_rescale
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {μ : Measure E} [μ.IsAddHaarMeasure] {κ : E → ℝ}
+    (hκ : ∀ x, 0 ≤ κ x) (hc : Bornology.IsBounded (Function.support κ))
+    (hmass : ∫ x, κ x ∂μ = 1) {f : E → F} (hf : Continuous f) :
+    TendstoLocallyUniformly
+      (fun r : ℝ => (fun z => (r ^ Module.finrank ℝ E)⁻¹ * κ (r⁻¹ • z))
+        ⋆[ContinuousLinearMap.lsmul ℝ ℝ, μ] f) f (𝓝[>] 0) := by
+  apply MeasureTheory.tendstoLocallyUniformly_convolution_right _ _ _ hf
+  · filter_upwards [self_mem_nhdsWithin] with r hr z
+    exact mul_nonneg (inv_nonneg.mpr (pow_nonneg (le_of_lt hr) _)) (hκ _)
+  · filter_upwards [self_mem_nhdsWithin] with r hr
+    change 0 < r at hr
+    rw [integral_const_mul, μ.integral_comp_inv_smul_of_nonneg κ hr.le, hmass]
+    simp only [smul_eq_mul, mul_one, inv_mul_cancel₀ (pow_ne_zero _ hr.ne')]
+  · obtain ⟨R, hR, hbound⟩ := hc.exists_pos_norm_le
+    rw [Metric.nhds_basis_ball.smallSets.tendsto_right_iff]
+    intro ε hε
+    filter_upwards [self_mem_nhdsWithin,
+      (tendsto_id.mono_left nhdsWithin_le_nhds).eventually (gt_mem_nhds (div_pos hε hR))]
+      with r hr hsmall
+    intro z hz
+    change (r ^ Module.finrank ℝ E)⁻¹ * κ (r⁻¹ • z) ≠ 0 at hz
+    have hz' := hbound (r⁻¹ • z) (mul_ne_zero_iff.mp hz).2
+    have hr' : 0 < r := hr
+    have heq : z = r • (r⁻¹ • z) := by simp only [smul_smul, mul_inv_cancel₀ hr'.ne', one_smul]
+    rw [Metric.mem_ball, dist_zero_right, heq, norm_smul, Real.norm_of_nonneg hr'.le]
+    exact (mul_le_mul_of_nonneg_left hz' hr'.le).trans_lt ((lt_div_iff₀ hR).mp hsmall)
