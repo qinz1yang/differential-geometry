@@ -112,6 +112,7 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
 import DifferentialGeometry.Analysis.Calculus.LevelPreservation
 import DifferentialGeometry.Analysis.Calculus.LocalExtrema
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
+import DifferentialGeometry.Analysis.Calculus.Manifold.LipschitzApproximation
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Jet
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Algebra
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic
