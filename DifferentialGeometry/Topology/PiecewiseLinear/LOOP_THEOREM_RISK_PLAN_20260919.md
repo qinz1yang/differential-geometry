@@ -94,6 +94,13 @@ entry point or certify a new headline theorem.
 
 ## Preferred Lemma 2 construction
 
+Superseded in part: see the consultation outcomes below. Moise composes the
+upstairs disk with the projection and applies a general downstairs Lemma 2, so
+the primary route is the downstairs construction and upstairs equivariant
+surgery is the alternative. Deck invariance of the smaller neighborhood, assumed
+as an open question below, is false. The obligations listed here remain correct
+for whichever route is used.
+
 Use the proposed upstairs surgery as the first implementation route. Reuse
 existing L1, boundary-word alternatives, supported wedge deformations and
 strict-descent results where their actual hypotheses match. Keep a fallback
@@ -131,6 +138,117 @@ It must establish all of the following, rather than accept them as inputs:
 The projection route removes arbitrary raw-NormalSystem normalization from
 the primary path. It does not remove relative general position for the actual
 projected disk, global branch geometry, boundary alternatives or strict descent.
+
+## External consultation outcomes (2026-09-19, Claude takeover)
+
+Two questions were sent out with the exact source pinned to commit 1aaf882ee and
+answered against that source. Both answers are source-level inspection, not
+compiled patches. The findings below are recorded as settled mathematics; the
+resulting lane reallocation is a separate owner decision.
+
+### E3: fixed-target-face realization is false
+
+Asking an `EmbeddedDisk` to supply `NonsingularCell.source_faces_map` against the
+given `S.manifoldComplex` forces the disk boundary into that complex's
+one-skeleton. Counterexamples, in increasing strength:
+
+- One tetrahedron with all its faces, and the properly embedded affine disk cut
+  out by x + y + z = 1 / 2. Its boundary meets the relative interior of an
+  original two-dimensional face, so no simplicially embedded disk into that
+  complex has the same boundary image.
+- The same complex has every two-simplex in the tetrahedron boundary, so it
+  contains no properly embedded subcomplex disk at all. Ambient isotopy, with
+  nothing held fixed, therefore cannot repair it either.
+- Genus-two handlebody, meridian system A, B, and repeated boundary band sums
+  giving disks with boundary class a + n b. A finite complex has finitely many
+  subcomplexes, so some n fails; an explicit bound is the sum of the absolute
+  values of an integral simplicial cocycle over the boundary one-skeleton.
+- Inside a fixed normal system: push a short boundary arc off a target edge
+  within the two-dimensional boundary neighborhood. The result is still a proper
+  PL disk with a homotopic boundary loop and the same connector data, but its
+  boundary image leaves the one-skeleton.
+
+These refute a universal conversion preserving the supplied boundary image. They
+do not by themselves refute the unconstrained existential `Moise251`, which is a
+separate and stronger combinatorial assertion.
+
+Moise's own statements do not ask for a subcomplex. Theorem 25.1 replaces the
+singular disk by a nonsingular PL two-cell with boundary in the same component
+and the same avoidance, prescribing neither the boundary loop nor target
+simplices; Theorem 25.2 asks only for a polyhedral disk with the properness and
+essential-boundary conditions. `Moise252` as already defined in MoiseChain.lean
+contains no fixed-face conclusion and needs no weakening. The extra requirement
+enters only through `Moise251`'s use of `NonsingularCell`.
+
+Correction to the two repairs considered earlier: both relax the legacy
+fixed-target requirement. Adding a `targetComplex` field with an `IsSubdivision`
+certificate admits the old witnesses, but that proves only old implies new, not
+that the new specification preserves the old requirement. Neither repair may be
+described as preserving `Moise251`.
+
+The positive replacement is accepted and proved: `EmbeddedDiskTriangulation.lean`
+realizes the disk simplicially in a finite subdivision without moving it, with
+the vertex map taken to be the disk's own map. The subdivision must be adapted to
+the disk; iterated barycentric subdivision keeps vertices rational and cannot
+realize a disk with an irrational corner on an original edge.
+
+### M304: deck invariance of the smaller neighborhood is false, and the book
+organization is projection first
+
+Deck invariance of `T.manifoldComplex.space` does not hold in general. Regular
+neighborhood naturality gives only that the involution carries the neighborhood
+of a set to the neighborhood of its image, and the image of one lift need not be
+invariant. A direct obstruction: a small relative regular neighborhood of a
+properly embedded lifted PL disk is a three-ball, and a fixed-point-free
+involution cannot preserve a ball. An explicit solid-torus model with a connected
+two-fold cover in the circle direction realizes this. So the earlier hypothesis
+that upstairs surgery could stay in the smaller neighborhood is refuted, and
+option (b), the whole ambient cover, is the correct home for upstairs surgery.
+
+Under (b) the right boundary and subgroup are the preimages
+`T.ambientComplex.space` intersected with the projection preimage of the
+downstairs boundary neighborhood and of `S.boundaryComplex.space`. Both are
+involution-invariant because the projection is deck-invariant and the ambient
+cover is preserved; no statement about the smaller neighborhood is needed. The
+ambient equality `T.ambientComplex.space = projection preimage of the downstairs
+manifold` is neither needed nor appropriate, since the projection's values
+outside the covering space are not part of the covering geometry. Note also that
+the strict inclusion of the smaller neighborhood in the ambient cover is only an
+inclusion by construction; strictness would need its own argument.
+
+More important than (b): Moise's Chapter 25, book pages 184 to 189, composes the
+upstairs embedded disk with the covering projection and then applies the general
+Lemma 2 downstairs to the resulting at-most-two-to-one locally injective PL
+singular disk. Lemma 2 there accepts a general such disk and does not mention a
+double cover. The natural public main theorem therefore should not depend on
+`DoubleCoverDiagram`. Upstairs equivariant surgery remains a legitimate
+alternative implementation, but it carries the extra obligation that every step
+still admits an embedded lift. This converges the M304 objective with the branch
+geometry that F and h are already building.
+
+Descent must be measured against the branch complexity of the projected disk, not
+of the upstairs embedding, which is zero because that map is injective. Upstairs
+branch counting is by deck orbits of connected components; halving a component
+count is wrong, since a downstairs circle branch may lift either to two
+interchanged circles or to one circle covering it twice.
+
+Two mechanical findings. The ambient deck involution is constructible from
+accepted machinery: every point of a two-fold cover lies in the double-point
+preimage of the projection, so
+`IsPiecewiseAffineOn.exists_isPLHomeomorphOn_doublePointPreimage_involution`
+applied to the whole cover yields it. The paused M304 draft failed only on the
+final membership transport; the recommended repair states the fiber bound
+explicitly, rewrites the membership along the pair identity, and finishes with a
+`simpa` through `mem_insert_iff` and `mem_singleton_iff`.
+
+One new obligation was surfaced. `EmbeddedDisk.boundary_range` asserts only
+equality of boundary image sets. A general singular disk's boundary word needs an
+actual parametrization of the source boundary circle. For an embedded disk the
+boundary image is a circle and the stored loop is some integer power of a single
+traversal, from which avoidance for the single traversal follows; a
+parametrization conversion lemma is therefore provable and must be proved rather
+than assumed, and image-set equality must not be silently upgraded to loop
+equality.
 
 ## Delivery and validation priorities
 
