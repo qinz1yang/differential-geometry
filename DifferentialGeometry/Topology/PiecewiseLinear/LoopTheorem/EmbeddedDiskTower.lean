@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalBasepoint
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SphereCase
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MoiseChainPL
 
 /-!
 # The Stallings tower at the level of embedded disks
@@ -162,5 +163,24 @@ theorem nonempty_embeddedDisk_of_lemmaTwo_of_properness
   fun S => exists_embeddedDisk_of_stallings_induction_general
     (fun reduction hproper' hbase' hdisk' => lemmaTwo reduction hproper' hbase' hdisk')
     S (properness S)
+
+
+/-- `Moise252` follows from Lemma 2 alone.  The tower supplies an embedded disk for every normal
+system whose singular map is proper, and the bridge of `MoiseChainPL` only ever applies it to
+normal systems built by `exists_normalSystem_of_isPiecewiseAffineOn`, whose specification records
+exactly that properness.  So no separate properness hypothesis survives, and the orientability
+hypothesis of `Moise252` is consumed inside the cover step rather than here. -/
+theorem moise252_of_lemmaTwo
+    (lemmaTwo :
+      ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+        {M : ℕ} {S : NormalSystem F} {T : NormalSystem (EuclideanSpace ℝ (Fin M))},
+        NormalSystem.DoubleCoverReduction S T →
+        T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+          frontier T.sourceComplex.space →
+        T.basepoint = T.boundaryLoop 0 →
+        Nonempty (NormalSystem.EmbeddedDisk T) → Nonempty (NormalSystem.EmbeddedDisk S)) :
+    Moise252 :=
+  moise252_of_normalSystemDiskOfProper fun S hproper =>
+    exists_embeddedDisk_of_stallings_induction_general lemmaTwo S hproper
 
 end DifferentialGeometry.Topology.PiecewiseLinear

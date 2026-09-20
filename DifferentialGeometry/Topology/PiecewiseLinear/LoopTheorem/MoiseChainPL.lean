@@ -467,7 +467,9 @@ orientability hypothesis of `Moise252` is not needed for these steps; it is cons
 loop theorem, that is, inside `hdisk`. -/
 theorem exists_polyhedralDisk_of_normalSystemDisk {E : Type}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (hdisk : ∀ S : NormalSystem E, Nonempty (NormalSystem.EmbeddedDisk S))
+    (hdisk : ∀ S : NormalSystem E,
+      S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+        frontier S.sourceComplex.space → Nonempty (NormalSystem.EmbeddedDisk S))
     (K : Geometry.SimplicialComplex ℝ E) (hKfin : Finite K.faces)
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (c : ConnectedComponents (boundaryComplex 3 K).space)
@@ -506,7 +508,7 @@ theorem exists_polyhedralDisk_of_normalSystemDisk {E : Type}
     · rintro _ ⟨z, hz, rfl⟩
       exact (hOV.symm.subset (hfbd hz)).1
     · exact hOV.subset
-  obtain ⟨S, -, hsubdiv, -, -, -, -, hSB, β, hbase, hβ, -, hNcomap⟩ :=
+  obtain ⟨S, hsource, hsubdiv, -, -, -, hproperS, hSB, β, hbase, hβ, -, hNcomap⟩ :=
     exists_normalSystem_of_isPiecewiseAffineOn K hK hP hf hfmap (hfbd.mono_right hVB) hnbhd a δ hδ
       (⊥ : Subgroup (FundamentalGroup
         (connectedComponentComplex (boundaryComplex 3 K) c).space (δ 0)))
@@ -515,13 +517,31 @@ theorem exists_polyhedralDisk_of_normalSystemDisk {E : Type}
     rw [S.manifold_space]
     exact (derivedNeighborhood_space_subset S.ambientComplex S.imageComplex).trans
       hsubdiv.space_eq.subset
-  exact exists_polyhedralDisk_of_embeddedDisk K hK (Classical.choice (hdisk S)) hSK
+  have hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+      frontier S.sourceComplex.space := hproperS.trans (congrArg frontier hsource.symm)
+  exact exists_polyhedralDisk_of_embeddedDisk K hK (Classical.choice (hdisk S hproper)) hSK
     (fun z hz => (hSB hz).1) β hβ hbase hNcomap
+
+/-- `Moise252` follows from a producer that is allowed to assume properness of the singular map.
+This is the form the Stallings tower supplies, and it is strictly weaker to require than the
+unconditional `Moise251PLGeneral`, because the normal system built here is constructed by
+`exists_normalSystem_of_isPiecewiseAffineOn`, whose specification already records that its
+singular map is proper. -/
+theorem moise252_of_normalSystemDiskOfProper
+    (hdisk : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+      (S : NormalSystem E),
+      S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+        frontier S.sourceComplex.space → Nonempty (NormalSystem.EmbeddedDisk S)) :
+    Moise252 := by
+  intro E _ _ _ K hKfin hK _ c hsub γ hnull hess
+  exact exists_polyhedralDisk_of_normalSystemDisk (fun S hp => hdisk S hp) K hKfin hK c hsub γ
+    hnull hess
 
 /-- `Moise252` follows from the embedded disk producer in its general form. -/
 theorem moise252_of_moise251PLGeneral (h251 : Moise251PLGeneral) : Moise252 := by
   intro E _ _ _ K hKfin hK _ c hsub γ hnull hess
-  exact exists_polyhedralDisk_of_normalSystemDisk (fun S => h251 S) K hKfin hK c hsub γ hnull hess
+  exact exists_polyhedralDisk_of_normalSystemDisk (fun S _ => h251 S) K hKfin hK c hsub γ hnull
+    hess
 
 /-- For a Euclidean ambient space the producer supplied by `Moise251PL` is already in the shape
 consumed by `exists_polyhedralDisk_of_normalSystemDisk`, so for
