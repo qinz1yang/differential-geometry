@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 open Bundle DifferentialGeometry.Tensor0SBundle MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u uE uH
 
@@ -92,12 +92,12 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter Manifold Set MeasureTheory
+open Bundle Filter _root_.DifferentialGeometry.Manifold Set MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -180,7 +180,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff _root_.Topology ENNReal
 
 universe u
 

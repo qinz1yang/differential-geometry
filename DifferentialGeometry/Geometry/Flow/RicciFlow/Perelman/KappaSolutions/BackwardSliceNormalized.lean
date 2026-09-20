@@ -23,7 +23,6 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
     (F : PointedFlowData.{u, 0, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
     (hescape : Tendsto tau atTop atTop) (q : ℕ → F.M)
     {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A) :
@@ -42,7 +41,7 @@ theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
           normalizedShrinkerMass P.metric f = asymptoticReducedVolume F.S 0 p ∧
           ∀ K : Set P.M, IsCompact K → TendstoUniformlyOn
             (fun i x => redLength F.S 0 p (Psi.map i x) (tau (phi i))) f atTop K := by
-  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := neZero_finrank_of_isAncientKappaSolution F hF
   let sigma := fun i => tau i / 2
   have hsigma (i : ℕ) : 0 < sigma i := half_pos (htau i)
   have hsbase (i : ℕ) : redLength F.S 0 p (q i) (sigma i) ≤
@@ -63,10 +62,10 @@ theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
   have hsescape := hses.comp hphi.tendsto_atTop
   obtain ⟨hf, hsol, hmass⟩ := backward_flow_reducedLength_limit_normalized_shrinker_and_mass
     F hF p sigma hsigma q L Phi R G hG hmetric (by norm_num : (1 : ℝ) < 3)
-    ell hell hLip hdim hsescape hconv' hcomp' (t := 2) (by norm_num)
+    ell hell hLip hsescape hconv' hcomp' (t := 2) (by norm_num)
   have hpos := backward_flow_reducedLength_limit_scalar_pos
     F hF p sigma hsigma q L Phi R G hG hmetric (by norm_num : (1 : ℝ) < 3)
-    ell hell hLip hdim hsescape hconv' hcomp' (t := 2) (by norm_num)
+    ell hell hLip hsescape hconv' hcomp' (t := 2) (by norm_num)
   let P : PointedRiemannianManifold.{u, 0, uH} (I := I) :=
     { L.atTime (-1) with metric := scaleMetric (2 : ℝ)⁻¹ (by norm_num) (L.S.base.metric (-1)) }
   let Psi : PointedRiemannianConvergenceMaps (backwardSliceSequence F tau htau q) P phi := {
@@ -157,10 +156,10 @@ theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
     simpa only [Function.comp_def, hscale, theta] using h'
 
 
-theorem exists_samePole_normalized_asymptotic_shrinker_of_finrank_eq_three
+theorem exists_samePole_normalized_asymptotic_shrinker_of_euclidean_model
     (F : PointedFlowData.{u, 0, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3) (p : F.M)
+    (p : F.M)
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop) :
     ∃ (q : ℕ → F.M) (L : PointedRiemannianManifold.{u, 0, uH} (I := I)) (phi : ℕ → ℕ),
       StrictMono phi ∧
@@ -189,7 +188,7 @@ theorem exists_samePole_normalized_asymptotic_shrinker_of_finrank_eq_three
   obtain ⟨L, phi, hphi, Phi, C, hcanonical, _href, hcomplete, hconnected,
     hpos, hcone, f, hsol, hmass, _hpotential⟩ :=
     exists_backward_slice_normalized_shrinker_of_reducedLength_bound
-      F hF hdim p tau htau hescape q hq
+      F hF p tau htau hescape q hq
   refine ⟨q, L, phi, hphi, hq, Phi, C, hcanonical, hcomplete, hconnected,
     ⟨L.basepoint, (hpos L.basepoint).ne'⟩, ?_, f, hsol.2.1, ?_, ?_⟩
   · intro x m c v w

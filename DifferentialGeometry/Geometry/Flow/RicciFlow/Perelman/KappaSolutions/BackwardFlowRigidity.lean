@@ -44,7 +44,6 @@ theorem backward_flow_limit_perelmanDensity_contMDiffOn
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -62,7 +61,7 @@ theorem backward_flow_limit_perelmanDensity_contMDiffOn
   have hz : (w.1, extChartAt I w.2 w.2) ∈ Ioo 1 T ×ˢ (extChartAt I w.2).target :=
     ⟨hw.1, mem_extChartAt_target (I := I) w.2⟩
   have h := ((backward_flow_limit_perelmanDensity_contDiffOn_in_chart
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete w.2).contDiffAt
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete w.2).contDiffAt
       ((isOpen_Ioo.prod (isOpen_extChartAt_target (I := I) w.2)).mem_nhds hz)).contMDiffAt
   simpa only [Function.comp_def, extChartAt_prod, PartialEquiv.prod_coe_symm,
     extChartAt_model_space_eq_id, PartialEquiv.refl_symm, PartialEquiv.refl_coe,
@@ -93,7 +92,6 @@ theorem backward_flow_limit_perelmanDensity_isHeatPotOn
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -107,7 +105,7 @@ theorem backward_flow_limit_perelmanDensity_isHeatPotOn
       (fun r => perelmanDensity (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) r
         (fun x => ell (x, projIcc 1 T hT.le r))) := by
   have hu := backward_flow_limit_perelmanDensity_contMDiffOn
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete
   refine ⟨hu, hu.continuousOn, ?_, ?_⟩
   · intro t ht
     have h := hu.comp (contMDiffOn_const.prodMk contMDiffOn_id)
@@ -120,7 +118,7 @@ theorem backward_flow_limit_perelmanDensity_isHeatPotOn
       (fun r hr => show 1 - r < 0 from sub_neg.mpr hr.1) hu (by
         intro a φ hφ hφc hφs
         exact (backward_flow_limit_perelmanDensity_weak_eq_in_chart
-          F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete
+          F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete
           a hφ hφc hφs).symm) ht x
     simpa only [neg_mul, sub_eq_add_neg] using he
 
@@ -149,7 +147,6 @@ theorem backward_flow_reducedLength_limit_hamilton_jacobi_eq
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -169,7 +166,7 @@ theorem backward_flow_reducedLength_limit_hamilton_jacobi_eq
     (isOpen_extChartAt_target (I := I) x).interior_eq.symm ▸ hz
   have hU : DifferentiableAt ℝ U (t, z) :=
     ((backward_flow_reducedLength_limit_contDiffOn_in_chart
-      F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete x).contDiffAt
+      F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete x).contDiffAt
         ((isOpen_Ioo.prod (isOpen_extChartAt_target (I := I) x)).mem_nhds ⟨ht, hz⟩)).differentiableAt (by simp)
   have htime : deriv (fun r => f r x) t = fderiv ℝ U (t, z) (1, 0) := by
     have h := hU.hasFDerivAt.comp_hasDerivAt t
@@ -190,7 +187,7 @@ theorem backward_flow_reducedLength_limit_hamilton_jacobi_eq
   dsimp only [z] at hpartial
   simp_rw [hpartial] at hgrad
   have hchart := backward_flow_reducedLength_limit_hamilton_jacobi_eq_in_chart
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete x
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete x
       (z := (t, z)) ⟨ht, hz⟩
   change fderiv ℝ U (t, z) (1, 0) + (1 / 2 : ℝ) *
     ∑ k, ∑ j, chartInvGramOnE (L.S.base.metric (1 - t)) x k j z *
@@ -231,7 +228,6 @@ theorem backward_flow_reducedLength_limit_gradientRicciSoliton_and_hamiltonNorma
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -246,13 +242,13 @@ theorem backward_flow_reducedLength_limit_gradientRicciSoliton_and_hamiltonNorma
       Geometry.hamiltonNormalized (L.S.base.metric (1 - t))
         ⟨(fun x => ell (x, projIcc 1 T hT.le t)), hf⟩ (1 / t) := by
   have hu := backward_flow_limit_perelmanDensity_isHeatPotOn
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete
   apply gradientRicciSoliton_and_hamiltonNormalized_of_conjugate_density_and_hamilton_jacobi
     L.S L.isSolution 1 (fun r x => ell (x, projIcc 1 T hT.le r)) hu ht
     (zero_lt_one.trans ht.1) (show 1 - t < 0 from sub_neg.mpr ht.1)
   intro r hr hrpos x
   have h := backward_flow_reducedLength_limit_hamilton_jacobi_eq
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete hr x
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete hr x
   simpa only [reverseFamily, flowG, normGradSqFun_def, DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun] using h
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

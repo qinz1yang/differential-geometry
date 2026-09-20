@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 universe u
 

@@ -36,7 +36,6 @@ private local instance (P : PointedRiemannianManifold.{u, uE, uH} I) :
 
 theorem normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I)) {phi : ℕ → ℕ}
     (hescape : Tendsto (tau ∘ phi) atTop atTop)
@@ -47,7 +46,7 @@ theorem normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit
     (hlim : ∀ x, Tendsto (fun i => redLength F.S 0 p (Phi.map i x) (tau (phi i)))
       atTop (𝓝 (ell x))) :
     normalizedShrinkerMass P.metric ell = asymptoticReducedVolume F.S 0 p := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   let _ : ConnectedSpace F.M := hF.connected
   let X := backwardSliceSequence F tau htau q
   let c : ℝ := (Module.finrank ℝ E : ℝ) / 2 * Real.log (4 * Real.pi)
@@ -89,7 +88,7 @@ theorem normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit
     (fun x => ENNReal.continuous_ofReal.continuousAt.tendsto.comp
       (Real.continuous_exp.continuousAt.tendsto.comp ((hlim x).neg.sub_const c))) htotal
   intro ε hε
-  obtain ⟨N, hN⟩ := ancientKappaThree_exp_neg_redLength_uniform_tightness F hF hdim
+  obtain ⟨N, hN⟩ := ancient_exp_neg_redLength_uniform_tightness F hF
     (ell P.basepoint + 1) hε
   refine ⟨N, ?_⟩
   have hbase : ∀ᶠ i in atTop,
@@ -141,7 +140,6 @@ variable (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
 
 theorem exists_backward_slice_reducedLength_limit_with_mass
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
     (hescape : Tendsto tau atTop atTop) (q : ℕ → F.M)
     {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A) :
@@ -158,13 +156,13 @@ theorem exists_backward_slice_reducedLength_limit_with_mass
           (∀ K : Set P.M, IsCompact K → TendstoUniformlyOn
             (fun i x => redLength F.S 0 p (Phi.map i x) (tau (phi i))) ell atTop K) ∧
           normalizedShrinkerMass P.metric ell = asymptoticReducedVolume F.S 0 p := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   obtain ⟨P, phi, hphi, Phi, C, hcanonical, href, hcomplete, hconnected,
       ell, hnonneg, hbaseLimit, hLip, hconv⟩ :=
     exists_backward_slice_reducedLength_limit F hF p tau htau q hbase
   refine ⟨P, phi, hphi, Phi, C, hcanonical, href, hcomplete, hconnected,
     ell, hnonneg, hbaseLimit, hLip, hconv, ?_⟩
-  exact normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit F hF hdim
+  exact normalizedShrinkerMass_eq_asymptoticReducedVolume_of_reducedLength_limit F hF
     p tau htau q P (hescape.comp hphi.tendsto_atTop) Phi C hcanonical hcomplete ell
     (fun x => (hconv {x} isCompact_singleton).tendsto_at (mem_singleton x))
 

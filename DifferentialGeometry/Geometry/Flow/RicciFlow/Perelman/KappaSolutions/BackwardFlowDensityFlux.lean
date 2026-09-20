@@ -27,7 +27,6 @@ private local instance (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInte
 private theorem backward_flow_limit_cutoff_flux_integrable_and_tendsto
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -60,7 +59,7 @@ private theorem backward_flow_limit_cutoff_flux_integrable_and_tendsto
           Tendsto (fun i => ∫ z, |f (a i) z|
             ∂(μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0)))) l (𝓝 0) := by
   intro f
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   let _ : SecondCountableTopology H := I.secondCountableTopology
   let _ : SecondCountableTopology L.M := ChartedSpace.secondCountable_of_sigmaCompact H L.M
   let g := L.S.base.metric 0
@@ -81,7 +80,7 @@ private theorem backward_flow_limit_cutoff_flux_integrable_and_tendsto
     exact canonicalSourceData_referenceMetric_eq_limitMetric _ i
   have hm : Integrable (fun z => ρ z * u z.1 z.2)
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) :=
-    integrable_backward_flow_limit_perelmanDensity F hF hdim p tau htau q L hescape Phi
+    integrable_backward_flow_limit_perelmanDensity F hF p tau htau q L hescape Phi
       hconv' (fun theta => hcomplete (1 - theta) (ht theta)) ell hlim μ g
   have hw : Integrable (fun z => |ψ z.1| * (ρ z * u z.1 z.2))
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) g)) :=
@@ -147,7 +146,6 @@ private theorem backward_flow_limit_cutoff_flux_integrable_and_tendsto
 theorem integrable_backward_flow_limit_perelmanDensity_cutoff_flux
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -176,12 +174,11 @@ theorem integrable_backward_flow_limit_perelmanDensity_cutoff_flux
             ((b : ℝ≥0∞) * riemannianEDistOf (L.S.base.metric 0) L.basepoint y)) z.2))
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) := by
   exact (backward_flow_limit_cutoff_flux_integrable_and_tendsto.{u, uE, uH, 0}
-    F hF hdim p tau htau q L hescape Phi hT hconv hcomplete ell hlim μ ψ).1 b
+    F hF p tau htau q L hescape Phi hT hconv hcomplete ell hlim μ ψ).1 b
 
 theorem tendsto_integral_abs_backward_flow_limit_perelmanDensity_cutoff_flux
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -211,12 +208,11 @@ theorem tendsto_integral_abs_backward_flow_limit_perelmanDensity_cutoff_flux
             ((a i : ℝ≥0∞) * riemannianEDistOf (L.S.base.metric 0) L.basepoint y)) z.2)|
       ∂(μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0)))) l (𝓝 0) := by
   exact (backward_flow_limit_cutoff_flux_integrable_and_tendsto
-    F hF hdim p tau htau q L hescape Phi hT hconv hcomplete ell hlim μ ψ).2 a ha
+    F hF p tau htau q L hescape Phi hT hconv hcomplete ell hlim μ ψ).2 a ha
 
 theorem tendsto_integral_backward_flow_limit_perelmanDensity_cutoff_flux
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -255,11 +251,11 @@ theorem tendsto_integral_backward_flow_limit_perelmanDensity_cutoff_flux
     riemannianVolumeDensity (L.S.base.metric 0) (g z.1) z.2 * ψ z.1 * V i z
   have hi (i : ι) : Integrable (w i)
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) :=
-    integrable_backward_flow_limit_perelmanDensity_cutoff_flux F hF hdim p tau htau q L hescape
+    integrable_backward_flow_limit_perelmanDensity_cutoff_flux F hF p tau htau q L hescape
       Phi hT hconv hcomplete ell hlim μ ψ (a i)
   have habs : Tendsto (fun i => ∫ z, |w i z|
       ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) l (𝓝 0) :=
-    tendsto_integral_abs_backward_flow_limit_perelmanDensity_cutoff_flux F hF hdim p tau htau q L hescape
+    tendsto_integral_abs_backward_flow_limit_perelmanDensity_cutoff_flux F hF p tau htau q L hescape
       Phi hT hconv hcomplete ell hlim μ ψ a ha
   have hlimw : Tendsto (fun i => ∫ z, w i z
       ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) l (𝓝 0) := by

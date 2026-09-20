@@ -41,7 +41,6 @@ private local instance (P : PointedRiemannianManifold.{u, uE, uH} I) :
 
 theorem lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     {theta : ℝ} (htheta : 0 < theta)
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I)) {phi : ℕ → ℕ}
@@ -56,7 +55,7 @@ theorem lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_li
     (∫⁻ x, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) theta ell x)
       ∂riemannianVolumeMeasure (I := I) (M := P.M) P.metric) =
         asymptoticReducedVolume F.S 0 p := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   let _ : ConnectedSpace F.M := hF.connected
   let X := (backwardFlowSequence F tau htau q).atTime (1 - theta)
   let sigma : ℕ → ℝ := fun i => tau i * theta
@@ -112,7 +111,7 @@ theorem lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_li
     (fun x => ENNReal.continuous_ofReal.continuousAt.tendsto.comp
       (tendsto_const_nhds.mul (Real.continuous_exp.continuousAt.tendsto.comp (hlim x).neg))) htotal
   intro ε hε
-  obtain ⟨N, hN⟩ := ancientKappaThree_exp_neg_redLength_uniform_tightness F hF hdim
+  obtain ⟨N, hN⟩ := ancient_exp_neg_redLength_uniform_tightness F hF
     (ell P.basepoint + 1) hε
   refine ⟨Real.sqrt theta * N, ?_⟩
   have hbase : ∀ᶠ i in atTop,
@@ -179,7 +178,6 @@ variable (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
 
 theorem exists_backward_flow_reducedLength_limit_with_mass
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
     (hescape : Tendsto tau atTop atTop) (q : ℕ → F.M)
     {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A)
@@ -216,7 +214,7 @@ theorem exists_backward_flow_reducedLength_limit_with_mass
               (fun y => ell (y, theta)) x)
               ∂riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric (1 - theta))) =
                 asymptoticReducedVolume F.S 0 p := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   obtain ⟨L, phi, hphi, Phi, hconnected, hcomplete, hconv,
       R, G, hG, hmetric, ell, hnonneg, hbaseLimit, hLip, hpotential⟩ :=
     exists_backward_flow_reducedLength_limit_with_uniform_metric_convergence F hF p tau htau q hbase hT
@@ -226,7 +224,7 @@ theorem exists_backward_flow_reducedLength_limit_with_mass
   have htheta : 0 < (theta : ℝ) := zero_lt_one.trans_le theta.property.1
   have ht : 1 - (theta : ℝ) ≤ 0 := sub_nonpos.mpr theta.property.1
   obtain ⟨C, hcanonical, _⟩ := hconv (1 - theta) ht
-  apply lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF hdim
+  apply lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF
     p tau htau q htheta (L.atTime (1 - theta)) (hescape.comp hphi.tendsto_atTop)
     (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta))
     C hcanonical (hcomplete (1 - theta) ht) (fun y => ell (y, theta))
@@ -260,7 +258,6 @@ private local instance (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInte
 theorem integrable_backward_flow_limit_perelmanDensity
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {subseq : ℕ → ℕ} (hescape : Tendsto (tau ∘ subseq) atTop atTop)
@@ -312,7 +309,7 @@ theorem integrable_backward_flow_limit_perelmanDensity
     exact (mul_pos (prefactor_pos _ htheta) (Real.exp_pos _)).le
   simp_rw [Real.norm_eq_abs, abs_of_nonneg (hnonneg _)]
   obtain ⟨C, hcanonical⟩ := hconv theta
-  have hmass := lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF hdim
+  have hmass := lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF
     p tau htau q htheta (L.atTime (1 - theta)) hescape
     (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta))
     C hcanonical (hcomplete theta) (fun y => ell (y, theta)) (hlim theta)
@@ -320,7 +317,6 @@ theorem integrable_backward_flow_limit_perelmanDensity
 theorem tendsto_integral_backward_flow_limit_perelmanDensity_cutoff
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -356,7 +352,7 @@ theorem tendsto_integral_backward_flow_limit_perelmanDensity_cutoff
     perelmanDensity (Module.finrank ℝ E) theta (fun y => ell (y, theta))
   have hm : Integrable (fun z => ρ z * u z.1 z.2)
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R)) :=
-    integrable_backward_flow_limit_perelmanDensity F hF hdim p tau htau q L hescape Phi
+    integrable_backward_flow_limit_perelmanDensity F hF p tau htau q L hescape Phi
       hconv hcomplete ell hlim μ R
   have hw : Integrable (fun z => ψ z.1 * (ρ z * u z.1 z.2))
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R)) :=
@@ -379,7 +375,7 @@ theorem tendsto_integral_backward_flow_limit_perelmanDensity_cutoff
     rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall hu0) hu.aestronglyMeasurable]
     obtain ⟨C, hC⟩ := hconv theta
     exact congrArg ENNReal.toReal
-      (lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF hdim
+      (lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF
         p tau htau q (zero_lt_one.trans_le theta.property.1) (L.atTime (1 - theta)) hescape
         (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta))
         C hC (hcomplete theta) (fun y => ell (y, theta)) (hlim theta))

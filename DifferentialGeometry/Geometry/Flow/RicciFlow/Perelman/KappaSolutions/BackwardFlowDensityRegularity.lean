@@ -46,7 +46,6 @@ theorem backward_flow_limit_perelmanDensity_contDiffOn_in_chart
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -60,7 +59,7 @@ theorem backward_flow_limit_perelmanDensity_contDiffOn_in_chart
         (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I α).symm w.2))
       (Ioo 1 T ×ˢ (extChartAt I α).target) := by
   let _ : NeZero n := ⟨by
-    have hn : n = 3 := by simpa using hdim
+    have hn : 2 ≤ n := by simpa using two_le_finrank_of_isAncientKappaSolution F hF
     omega⟩
   let _ : LocallyCompactSpace H := I.locallyCompactSpace
   let _ : LocallyCompactSpace L.M := ChartedSpace.locallyCompactSpace H L.M
@@ -79,7 +78,7 @@ theorem backward_flow_limit_perelmanDensity_contDiffOn_in_chart
       (fun _ hw => ⟨zero_lt_one.trans hw.1.1, hw.2⟩))
   intro φ hφ hφc hφs
   exact (backward_flow_limit_perelmanDensity_weak_eq_in_chart
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete
     α hφ hφc hφs).symm
 
 theorem backward_flow_reducedLength_limit_contDiffOn_in_chart
@@ -107,7 +106,6 @@ theorem backward_flow_reducedLength_limit_contDiffOn_in_chart
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -123,7 +121,7 @@ theorem backward_flow_reducedLength_limit_contDiffOn_in_chart
   let u := fun t => perelmanDensity (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) t (f t)
   let Ω := Ioo 1 T ×ˢ (extChartAt I α).target
   have hu := backward_flow_limit_perelmanDensity_contDiffOn_in_chart
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete α
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete α
   have huM : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) 𝓘(ℝ) ∞
       (fun p : ℝ × EuclideanSpace ℝ (Fin n) => u p.1 p.2) Ω := by
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
@@ -162,7 +160,6 @@ theorem backward_flow_reducedLength_limit_hamilton_jacobi_eq_in_chart
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -182,11 +179,11 @@ theorem backward_flow_reducedLength_limit_hamilton_jacobi_eq_in_chart
             fderiv ℝ f z (0, chartModelBasis (EuclideanSpace ℝ (Fin n)) k) -
       (1 / 2 : ℝ) * metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I α).symm z.2) +
       f z / (2 * z.1) = 0 := by
-  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := neZero_finrank_of_isAncientKappaSolution F hF
   let f := fun w : ℝ × EuclideanSpace ℝ (Fin n) =>
     ell ((extChartAt I α).symm w.2, projIcc 1 T hT.le w.1)
   have hf := backward_flow_reducedLength_limit_contDiffOn_in_chart
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete α
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete α
   have htest := backward_flow_reducedLength_limit_hamilton_jacobi_tests_in_chart
     F hF p tau htau q L Phi R G hG hmetric hT ell hell α hz f
       ((hf.of_le (by simp)).contDiffAt

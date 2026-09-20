@@ -9,7 +9,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -238,7 +238,7 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 universe u uE uH
 

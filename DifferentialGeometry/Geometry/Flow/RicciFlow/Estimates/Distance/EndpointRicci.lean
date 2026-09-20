@@ -19,7 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem upperRightDiniLE_moving_distance_of_endpoint_ricci_bounds
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
-    (hdim : Module.finrank ℝ E = 3) {T t B vx vy : ℝ}
+    (hdim : 2 ≤ Module.finrank ℝ E) {T t B vx vy : ℝ}
     (ht : 0 < t) (hB : 0 < B) (hreg : T - t ∈ D.regular)
     (hcomplete : RiemannianMetricComplete (I := I) (S.base.metric (T - t)))
     (x y : ℝ → M) (hx : ContMDiffAt 𝓘(ℝ, ℝ) I 1 x t)
@@ -37,13 +37,14 @@ theorem upperRightDiniLE_moving_distance_of_endpoint_ricci_bounds
         3 * B ^ 2 / t * (S.base.metric (T - t)).inner z w w) :
     UpperRightDiniLE
       (fun s => (riemannianEDistOf (S.base.metric (T - s)) (x s) (y s)).toReal)
-      t (8 * B / Real.sqrt t + vx + vy) := by
+      t ((2 * (Module.finrank ℝ E : ℝ) + 2) * B / Real.sqrt t + vx + vy) := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
-  let K := 3 * B ^ 2 / (2 * t)
+  let K := 3 * B ^ 2 / (((Module.finrank ℝ E : ℝ) - 1) * t)
   let r := Real.sqrt t / B
   have hr : 0 < r := div_pos (Real.sqrt_pos.mpr ht) hB
+  have hdim' : (2 : ℝ) ≤ Module.finrank ℝ E := by exact_mod_cast hdim
+  have hdimpos : 0 < (Module.finrank ℝ E : ℝ) - 1 := by linarith
   have hK : 0 ≤ K := by dsimp only [K]; positivity
-  have hdim' : (Module.finrank ℝ E : ℝ) - 1 = 2 := by rw [hdim]; norm_num
   have hRic' : ∀ z : M, ∀ w : TangentSpace I z,
       (riemannianEDistOf (S.base.metric (T - t)) (x t) z < ENNReal.ofReal r ∨
         riemannianEDistOf (S.base.metric (T - t)) (y t) z < ENNReal.ofReal r) →
@@ -51,29 +52,29 @@ theorem upperRightDiniLE_moving_distance_of_endpoint_ricci_bounds
         ((Module.finrank ℝ E : ℝ) - 1) * K * (S.base.metric (T - t)).inner z w w := by
     intro z w hw
     have hh := hRic z w hw
-    rw [hdim']
     convert hh using 1
     dsimp only [K]
-    ring
+    field_simp [hdimpos.ne']
   have hroot : (Real.sqrt t) ^ 2 = t := Real.sq_sqrt ht.le
   have hrootne : Real.sqrt t ≠ 0 := (Real.sqrt_pos.mpr ht).ne'
   have hlongcoef : 2 * ((Module.finrank ℝ E : ℝ) - 1) *
-      ((2 / 3 : ℝ) * K * r + 1 / r) = 8 * B / Real.sqrt t := by
-    rw [hdim']
+      ((2 / 3 : ℝ) * K * r + 1 / r) =
+        (2 * (Module.finrank ℝ E : ℝ) + 2) * B / Real.sqrt t := by
     dsimp only [K, r]
-    field_simp [ht.ne', hB.ne', hrootne]
-    nlinarith only [hroot]
+    rw [← hroot, Real.sqrt_sq (Real.sqrt_nonneg t)]
+    field_simp [hB.ne', hrootne, hdimpos.ne']
+    ring
   have hshortcoef : 2 * ((Module.finrank ℝ E : ℝ) - 1) * K * r ≤
-      8 * B / Real.sqrt t := by
-    rw [hdim']
-    dsimp only [K, r]
-    have heq : 2 * 2 * (3 * B ^ 2 / (2 * t)) * (Real.sqrt t / B) =
+      (2 * (Module.finrank ℝ E : ℝ) + 2) * B / Real.sqrt t := by
+    have heq : 2 * ((Module.finrank ℝ E : ℝ) - 1) * K * r =
         6 * B / Real.sqrt t := by
-      field_simp [ht.ne', hB.ne', hrootne]
-      nlinarith only [hroot]
+      dsimp only [K, r]
+      rw [← hroot, Real.sqrt_sq (Real.sqrt_nonneg t)]
+      field_simp [hB.ne', hrootne, hdimpos.ne']
+      norm_num
     rw [heq]
     apply div_le_div_of_nonneg_right _ (Real.sqrt_nonneg t)
-    linarith
+    exact mul_le_mul_of_nonneg_right (by linarith) hB.le
   intro ε hε
   by_cases hshort : (riemannianEDistOf (S.base.metric (T - t)) (x t) (y t)).toReal < 2 * r
   · filter_upwards [eventually_slope_riemannianEDistOf_lt_of_lt_two_mul S hS hreg

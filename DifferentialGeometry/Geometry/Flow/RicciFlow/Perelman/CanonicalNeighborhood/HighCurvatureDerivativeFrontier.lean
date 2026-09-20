@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 section TensorSucc
 
@@ -42,7 +42,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact

@@ -29,7 +29,6 @@ private local instance (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInte
 private theorem tendsto_backward_flow_cutoff_tensor_mass
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -67,7 +66,7 @@ private theorem tendsto_backward_flow_cutoff_tensor_mass
   have hm : Integrable (fun z : Icc (1 : ℝ) T × L.M =>
       riemannianVolumeDensity R (g z.1) z.2 * u z.1 z.2)
       (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R)) :=
-    integrable_backward_flow_limit_perelmanDensity F hF hdim p tau htau q L hescape Phi
+    integrable_backward_flow_limit_perelmanDensity F hF p tau htau q L hescape Phi
       hconv hcomplete ell hlim μ R
   have hp := hm.bdd_mul (c := ‖ψ‖) (ψ.continuous.comp continuous_fst).aestronglyMeasurable
     (Eventually.of_forall fun z => ψ.norm_coe_le_norm z.1)
@@ -83,7 +82,7 @@ private theorem tendsto_backward_flow_cutoff_tensor_mass
   have hlimit : Tendsto (fun i => ∫ z, w i z
       ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R)) l
       (𝓝 ((∫ theta, ψ theta ∂μ) * (asymptoticReducedVolume F.S 0 p).toReal)) :=
-    tendsto_integral_backward_flow_limit_perelmanDensity_cutoff F hF hdim p tau htau q L hescape Phi
+    tendsto_integral_backward_flow_limit_perelmanDensity_cutoff F hF p tau htau q L hescape Phi
       hconv hcomplete ell hlim μ R ψ a ha
   have heq (i : ι) : (∫ z, w i z
       ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R)) =
@@ -125,7 +124,6 @@ private theorem integral_subtype_comap_smul_eq_of_tsupport_subset
 private theorem tendsto_backward_flow_cutoff_defect
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -166,7 +164,7 @@ private theorem tendsto_backward_flow_cutoff_defect
   let ψ₀ : C(Icc (1 : ℝ) T, ℝ) := ⟨fun t => ψ t, hψ.continuous.comp continuous_subtype_val⟩
   let ψ₁ : C(Icc (1 : ℝ) T, ℝ) := ⟨fun t => deriv ψ t,
     (hψ.continuous_deriv le_rfl).comp continuous_subtype_val⟩
-  have hm := tendsto_backward_flow_cutoff_tensor_mass F hF hdim p tau htau q L hescape Phi
+  have hm := tendsto_backward_flow_cutoff_tensor_mass F hF p tau htau q L hescape Phi
     (fun theta => hconv (1 - theta) ⟨sub_le_sub_left theta.property.2 1,
       sub_nonpos.mpr theta.property.1⟩)
     (fun theta => hcomplete (1 - theta) ⟨sub_le_sub_left theta.property.2 1,
@@ -182,7 +180,7 @@ private theorem tendsto_backward_flow_cutoff_defect
     rw [ha0, hb0, sub_self]
   rw [hz, zero_mul] at hm
   have hf := tendsto_integral_backward_flow_limit_perelmanDensity_cutoff_flux
-    F hF hdim p tau htau q L hescape Phi hT.le hconv hcomplete ell hlim μ ψ₀ a ha
+    F hF p tau htau q L hescape Phi hT.le hconv hcomplete ell hlim μ ψ₀ a ha
   have hresult := hm.sub hf
   simp only [sub_zero] at hresult
   have hψcc : tsupport ψ ⊆ Icc 1 T := hψs.trans Ioo_subset_Icc_self
@@ -227,7 +225,6 @@ private local instance (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInte
 private theorem integrable_backward_flow_cutoff_flux_slice
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (hdim : Module.finrank ℝ E = 3)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M]
@@ -254,7 +251,7 @@ private theorem integrable_backward_flow_cutoff_flux_slice
   let _ := riemannianVolumeMeasure_sigmaFinite (L.S.base.metric 0)
   let ψ : C(Icc (1 : ℝ) T, ℝ) := ⟨fun _ => 1, continuous_const⟩
   have hi := integrable_backward_flow_limit_perelmanDensity_cutoff_flux
-    F hF hdim p tau htau q L hescape Phi hT hconv hcomplete ell hlim (Measure.dirac theta) ψ a
+    F hF p tau htau q L hescape Phi hT hconv hcomplete ell hlim (Measure.dirac theta) ψ a
   simp only [ψ, ContinuousMap.coe_mk, mul_one] at hi
   have hi' := hi.prod_right_ae
   rw [ae_dirac_eq] at hi'
@@ -314,7 +311,6 @@ theorem backward_flow_limit_perelmanDensity_tensor_weak_eq_in_chart
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ E = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -338,7 +334,7 @@ theorem backward_flow_limit_perelmanDensity_tensor_weak_eq_in_chart
       ∂riemannianVolumeMeasure (I := I) (M := L.M) (g t)) =
       ∫ t, deriv ψ t * ∫ x, u t x * χ x
         ∂riemannianVolumeMeasure (I := I) (M := L.M) (g t) := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; decide⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   let _ : LocallyCompactSpace H := I.locallyCompactSpace
   let _ : LocallyCompactSpace L.M := ChartedSpace.locallyCompactSpace H L.M
   let _ : Nonempty L.M := ⟨L.basepoint⟩
@@ -408,10 +404,10 @@ theorem backward_flow_limit_perelmanDensity_tensor_weak_eq_in_chart
     (fun n t ht => ?_)
     (Geometry.Riemannian.eventually_distance_cutoff_eq_one_on_isCompact
       (L.S.base.metric 0) L.basepoint hχc a ha)
-    (tendsto_backward_flow_cutoff_defect F hF hdim p tau htau q L hescape Phi hT
+    (tendsto_backward_flow_cutoff_defect F hF p tau htau q L hescape Phi hT
       hconv hcomplete ell hlim hψ hψs a ha)
   have ht' : t ∈ Icc (1 : ℝ) T := ⟨ht.1.le, ht.2.le⟩
-  have hi := integrable_backward_flow_cutoff_flux_slice F hF hdim p tau htau q L hescape Phi hT.le
+  have hi := integrable_backward_flow_cutoff_flux_slice F hF p tau htau q L hescape Phi hT.le
     hconv hcomplete ell hlim (a n) ⟨t, ht'⟩
   simpa only [g, u, ζ, ContinuousMap.coe_mk, projIcc_of_mem hT.le ht'] using hi
 
@@ -444,7 +440,6 @@ theorem backward_flow_limit_perelmanDensity_weak_eq_in_chart
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ E = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -462,7 +457,7 @@ theorem backward_flow_limit_perelmanDensity_weak_eq_in_chart
     (∑ i, ∑ j, ∫ w, (A w i j * ρ w) * lineDeriv ℝ u w (0, chartModelBasis E j) *
       fderiv ℝ φ w (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) =
         ∫ w, ρ w * u w * fderiv ℝ φ w (1, 0) ∂volume.prod (modelHaar (E := E)) := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; decide⟩
+  let _ : NeZero (Module.finrank ℝ E) := neZero_finrank_of_isAncientKappaSolution F hF
   let _ : LocallyCompactSpace H := I.locallyCompactSpace
   let _ : LocallyCompactSpace L.M := ChartedSpace.locallyCompactSpace H L.M
   let u : ℝ → C(L.M, ℝ) := fun t =>
@@ -482,7 +477,7 @@ theorem backward_flow_limit_perelmanDensity_weak_eq_in_chart
       hψc hψs hψ0)
     (fun χ hχsm hχc hχs hχ0 ψ hψ hψc hψs hψ0 =>
       (backward_flow_limit_perelmanDensity_tensor_weak_eq_in_chart
-        F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete
+        F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete
         α χ hχc hχ0 hχsm hχs (hψ.of_le (by simp)) hψc hψs hψ0).2.2)
     hφ hφc hφs
   have hmap : ContinuousOn (fun z : ℝ × L.M => (1 - z.1, z.2))

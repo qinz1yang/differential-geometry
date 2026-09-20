@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 

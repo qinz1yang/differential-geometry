@@ -46,7 +46,6 @@ theorem backward_flow_reducedLength_limit_normalized_shrinker_and_mass
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -66,7 +65,7 @@ theorem backward_flow_reducedLength_limit_normalized_shrinker_and_mass
   have hs : 1 - t ∈ Icc (1 - T) (0 : ℝ) := ⟨by linarith [ht.2], by linarith [ht.1]⟩
   obtain ⟨hf, hsol, hham⟩ :=
     backward_flow_reducedLength_limit_gradientRicciSoliton_and_hamiltonNormalized
-      F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete ht
+      F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete ht
   refine ⟨hf, ?_, ?_⟩
   · have hc : RiemannianMetricComplete (L.S.base.metric (1 - t)) := ⟨hcomplete (1 - t) hs⟩
     simpa only [one_div] using Geometry.normalizedGradientRicciSoliton_scaleMetric_of_hamiltonNormalized
@@ -74,7 +73,7 @@ theorem backward_flow_reducedLength_limit_normalized_shrinker_and_mass
   · rw [normalizedShrinkerMass_scaleMetric_inv_eq_lintegral_perelmanDensity _ htpos]
     obtain ⟨C, hcanonical⟩ := hconv (1 - t) hs
     apply lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit
-      F hF hdim p tau htau q htpos (L.atTime (1 - t)) hescape
+      F hF p tau htau q htpos (L.atTime (1 - t)) hescape
       (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) (1 - t))
       C hcanonical (hcomplete (1 - t) hs)
     intro x
@@ -111,7 +110,6 @@ theorem backward_flow_reducedLength_limit_scalar_pos
       ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
       ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
         (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     (hescape : Tendsto (tau ∘ subseq) atTop atTop)
     (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
       ∃ C : MetricConvergenceData (Phi.atTime
@@ -123,10 +121,10 @@ theorem backward_flow_reducedLength_limit_scalar_pos
     0 < metricScalarAt (L.S.base.metric (1 - t)) x := by
   have hmass : asymptoticReducedVolume F.S 0 p ≠ 1 :=
     (ancient_asymptoticReducedVolume_lt_one F hF p).ne
-  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := neZero_finrank_of_isAncientKappaSolution F hF
   let _ : ConnectedSpace L.M := { toNonempty := ⟨L.basepoint⟩ }
   obtain ⟨hf, hsol, heq⟩ := backward_flow_reducedLength_limit_normalized_shrinker_and_mass
-    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete ht
+    F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hescape hconv hcomplete ht
   have hs := scalar_pos_of_normalizedShrinkerMass_ne_one hsol (by
     change normalizedShrinkerMass _ (fun x => ell (x, projIcc 1 T hT.le t)) ≠ 1
     rwa [heq]) x

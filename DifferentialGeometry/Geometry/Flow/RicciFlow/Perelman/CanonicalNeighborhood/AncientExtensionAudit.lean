@@ -13,7 +13,7 @@ universe u
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact

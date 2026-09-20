@@ -6,12 +6,12 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Set
+open Bundle _root_.DifferentialGeometry.Manifold Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u uE uH
 
