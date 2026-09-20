@@ -12007,3 +12007,15 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Reparametriza
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Retraction
 import DifferentialGeometry.Tensor.LinearAlgebra.ComplexDeterminant
 import DifferentialGeometry.Tensor.LinearAlgebra.PlanarBilinear
+import DifferentialGeometry.Analysis.Complex.CircleRotation
+import DifferentialGeometry.Analysis.Integration.Integral.IsometricDerivative
+import DifferentialGeometry.Analysis.Integration.Lp.EuclideanColumns
+import DifferentialGeometry.Analysis.Integration.Lp.OperatorConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.EmbeddedLimit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Lipschitz
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.UnitBall
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Gradient.Columns
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Gradient.QuadraticLowerSemicontinuity
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzWitness
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.WeakLimit
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakCompactness
