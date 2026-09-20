@@ -220,8 +220,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\liao9\AppData\Local
 | `claude-agent-e-20260919` | `…\claude-moise-agent-e` |
 
 Leases are in `D:\differential-geometry-moise-int\.lake\round-compiler-leases\*.json` and
-expire **2026-09-21T06:00:00Z**. Ask the human to extend them; a worker rewriting its own
-compiler authorization is flagged as self-modification, correctly.
+expire **2026-09-22T06:00:00Z**. Ask the human to extend them; a worker rewriting its own
+compiler authorization is flagged as self-modification, correctly. When they lapse the
+checker throws `Compiler authorization expired` and every lane stops mid-chain, so check the
+remaining window before starting anything long.
 
 Success is exactly `Verified ... with no diagnostics; shared outputs unchanged.` A ten-minute
 admission failure is ordinary queueing — re-run. The shared build's `MoiseChain` artifact is
