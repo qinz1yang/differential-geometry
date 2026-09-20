@@ -920,6 +920,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.TightConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.UniformIntegrability
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
+import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityIntegrability
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityFamily
 import DifferentialGeometry.Analysis.Integration.PolarAnnulus
 import DifferentialGeometry.Analysis.Integration.RadialIntegral

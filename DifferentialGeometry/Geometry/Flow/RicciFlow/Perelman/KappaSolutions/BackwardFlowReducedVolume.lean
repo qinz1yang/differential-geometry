@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityIntegrability
+import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeTightness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientAsymptoticReducedVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowReducedLength
@@ -232,4 +235,85 @@ theorem exists_backward_flow_reducedLength_limit_with_mass
   have hh := (hpotential {(x, theta)} isCompact_singleton).tendsto_at (mem_singleton (x, theta))
   exact hh
 
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+open Filter Set MeasureTheory
+open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow.Entropy
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+private local instance (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval) :
+    MeasurableSpace L.M := borel L.M
+private local instance (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval) :
+    BorelSpace L.M := ⟨rfl⟩
+
+theorem integrable_backward_flow_limit_perelmanDensity
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (hdim : Module.finrank ℝ E = 3)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {subseq : ℕ → ℕ} (hescape : Tendsto (tau ∘ subseq) atTop atTop)
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    {T : ℝ}
+    (hconv : ∀ theta : Icc (1 : ℝ) T,
+      ∃ C : MetricConvergenceData (Phi.atTime
+        (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta)),
+      ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData
+        (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta)) i)
+    (hcomplete : ∀ theta : Icc (1 : ℝ) T, MetricComplete (L.atTime (1 - theta)))
+    (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hlim : ∀ theta : Icc (1 : ℝ) T, ∀ x : L.M,
+      Tendsto (fun i => redLength F.S 0 p (Phi.map i x) (tau (subseq i) * theta))
+        atTop (𝓝 (ell (x, theta))))
+    (μ : MeasureTheory.Measure (Icc (1 : ℝ) T)) [IsFiniteMeasure μ]
+    (R : SmoothRiemannianMetric I L.M) :
+    Integrable (fun z : Icc (1 : ℝ) T × L.M =>
+      riemannianVolumeDensity R (L.S.base.metric (1 - z.1)) z.2 *
+        perelmanDensity (Module.finrank ℝ E) z.1 (fun y => ell (y, z.1)) z.2)
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R)) := by
+  have hρ := riemannianVolumeDensity_family_continuousOn R L.S.base.metric
+    L.isSolution.smoothMetric.chartGramMatrix_continuousOn_carrier
+  have hρc : Continuous (fun z : Icc (1 : ℝ) T × L.M =>
+      riemannianVolumeDensity R (L.S.base.metric (1 - z.1)) z.2) :=
+    hρ.comp_continuous
+      ((continuous_const.sub (continuous_subtype_val.comp continuous_fst)).prodMk continuous_snd)
+      (fun z => ⟨show 1 - (z.1 : ℝ) ≤ 0 from sub_nonpos.mpr z.1.property.1, mem_univ _⟩)
+  have hu : Continuous (fun z : Icc (1 : ℝ) T × L.M =>
+      perelmanDensity (Module.finrank ℝ E) z.1 (fun y => ell (y, z.1)) z.2) := by
+    unfold perelmanDensity perelmanDensityPrefactor
+    apply Continuous.mul
+    · apply Continuous.rpow_const
+        (continuous_const.mul (continuous_subtype_val.comp continuous_fst))
+      intro z
+      exact Or.inl (mul_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero)
+        (ne_of_gt (zero_lt_one.trans_le z.1.property.1)))
+    · exact Real.continuous_exp.comp (ell.continuous.comp continuous_swap).neg
+  have hw := (hρc.mul hu).aestronglyMeasurable
+    (μ := μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) R))
+  apply integrable_prod_volumeDensity_smul_of_lintegral_norm_le μ R
+    (fun theta => L.S.base.metric (1 - theta))
+    (fun z => perelmanDensity (Module.finrank ℝ E) z.1 (fun y => ell (y, z.1)) z.2) hw
+    (C := 1) ENNReal.one_ne_top
+  filter_upwards [] with theta
+  have htheta : 0 < (theta : ℝ) := zero_lt_one.trans_le theta.property.1
+  have hnonneg (x : L.M) : 0 ≤ perelmanDensity (Module.finrank ℝ E) theta
+      (fun y => ell (y, theta)) x := by
+    exact (mul_pos (prefactor_pos _ htheta) (Real.exp_pos _)).le
+  simp_rw [Real.norm_eq_abs, abs_of_nonneg (hnonneg _)]
+  obtain ⟨C, hcanonical⟩ := hconv theta
+  have hmass := lintegral_perelmanDensity_eq_asymptoticReducedVolume_of_backward_flow_limit F hF hdim
+    p tau htau q htheta (L.atTime (1 - theta)) hescape
+    (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta))
+    C hcanonical (hcomplete theta) (fun y => ell (y, theta)) (hlim theta)
+  exact hmass.le.trans (ancient_asymptoticReducedVolume_le_one F hF p)
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

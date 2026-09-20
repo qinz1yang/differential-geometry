@@ -66,7 +66,8 @@ theorem chartGramMatrix_continuousOn
     ContinuousOn
       (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
-  exact (chartGramMatrix_contDiffOn hG hJ α i j).continuousOn
+  exact (hG.chartGramMatrix_continuousOn_carrier α i j).mono
+    (Set.prod_mono (hJ.trans D.regular_subset) Set.Subset.rfl)
 
 omit [CompleteSpace E] in
 private theorem partialDeriv_contDiffOn
