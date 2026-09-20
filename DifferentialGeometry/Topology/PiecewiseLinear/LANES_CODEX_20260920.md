@@ -25,9 +25,18 @@
    重合……），并**读对象是怎么构造的**，不只读它的结论记录了什么。发现陈述为假 = 成功：给出
    反例并**停下报告**，不要绕过去修。本链上已有十条陈述这样被发现是假的（交接文档 §4）。
 7. 家规（模块编译抓不到的）：无未使用的假设/实例绑定；`def`/`abbrev`/`structure` 名字不含下划线；
-   新公开名全树唯一；行 ≤ 100 码点；每个公开声明和结构字段有 docstring；docstring 行不以裸
-   `structure`/`instance`/`theorem`/`def` 开头；无 `sorry`/`admit`/`native_decide`/新 `axiom`。
-8. 书：`D:\differential-geometry-moise-plan\.lake\scratch\moise_gtm47.pdf`（书页 + 10 = 一基 PDF
+   新公开名全树唯一；行 ≤ 100 码点；无 `sorry`/`admit`/`native_decide`/新 `axiom`。
+   **文档口径以本检出的 `AGENTS.md` 为准（owner 2026-09-20 裁定）：** 非 vendored 的 Lean 源码
+   **不写行内注释、不写声明 docstring**；只保留必需的版权/作者头和紧跟 import 之后的模块
+   docstring（简洁、数学化；模块 docstring 的行不以裸 `structure`/`instance`/`theorem`/`def`
+   开头）。上一任 handoff 里"每个公开声明都要 docstring"的说法作废。Claude 车道今天提交的文件
+   带有声明 docstring，属于历史遗留：**不要为此做批量清理**（会触发大范围重编译）；只有当你因
+   本车道任务本来就要修改某个文件时，顺手把该文件的声明 docstring 去掉，并把其中不可丢的数学
+   说明（假设清单、反例记录）并入模块 docstring 或相应的 `.md`。
+8. 每块砖的聚焦检查与审计输出都要**落盘**为 `.lake/scratch/Audit<砖块>.log`；若 workflow 支持
+   环境 linter（Batteries `#lint`，排除 `docBlame`/`docBlameThm` 后的 13 个），一并运行并保存。
+   lead 目前没有编译授权（所有 `claude-*` lease 处于 paused），验收只能以这些日志为准。
+9. 书：`D:\differential-geometry-moise-plan\.lake\scratch\moise_gtm47.pdf`（书页 + 10 = 一基 PDF
    页）。**转述的书上条款在使用前要对页核实**——我们自己的清单里出过三处誊写错误。
 
 ## 1. 验收报告模板（每块砖一份，或每次交付一份）
