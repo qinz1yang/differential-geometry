@@ -9123,6 +9123,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSquareWitness
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenSourceReduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LabelledNormalization
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise352OfOpen
+import DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSectorFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeAbstract
 /-!
 # Differential geometry and geometric analysis
 -/
