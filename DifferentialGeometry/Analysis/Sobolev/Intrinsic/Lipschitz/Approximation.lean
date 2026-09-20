@@ -406,7 +406,7 @@ private lemma local_grad_l2_le
       Real.sqrt (g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x)) ≤
         q x := by
     filter_upwards [DifferentialGeometry.Analysis.Sobolev.Chart.ae_mdiff_of_lip
-      (I := I) (M := M) g hu hB] with x hux
+      (I := I) (M := M) g hu] with x hux
     by_cases hxK : x ∈ K
     · have hxsrc : x ∈ (chartAt H α).source := hKs hxK
       have hvx : MDifferentiableAt I 𝓘(ℝ, ℝ) v x :=
@@ -596,7 +596,7 @@ theorem grad_sub_l2_le
   have hmdiff : ∀ᵐ x ∂riemannianMeasure (I := I) g (chartAtlasPOU I M),
       MDifferentiableAt I 𝓘(ℝ, ℝ) u x :=
     DifferentialGeometry.Analysis.Sobolev.Chart.ae_mdiff_of_lip
-      (I := I) (M := M) g hu hB
+      (I := I) (M := M) g hu
   have hglobal : ∀ᵐ x ∂riemannianMeasure (I := I) g (chartAtlasPOU I M),
       Real.sqrt (g.inner x
           (gradFun (I := I) g (fun y => u y - v y) x)
