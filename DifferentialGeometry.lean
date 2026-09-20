@@ -8146,6 +8146,7 @@ import DifferentialGeometry.Geometry.Operator.Gradient.CotangentSharpSmoothness
 import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
+import DifferentialGeometry.Geometry.Operator.Gradient.PartitionOfUnity
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquaredTime
 import DifferentialGeometry.Geometry.Operator.Gradient.PowerBounds
