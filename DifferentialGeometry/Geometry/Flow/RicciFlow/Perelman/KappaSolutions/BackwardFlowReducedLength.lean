@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthTimeComparison
@@ -495,6 +496,35 @@ theorem normGradSqFun_backward_flow_limit_redLength_le
       rw [div_pow, mul_pow, Real.sq_sqrt htheta.le, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)]
       field_simp
       ring
+
+theorem normGradSqFun_backward_flow_limit_perelmanDensity_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M] {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    {t : ℝ} (ht : t < 1)
+    (C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) t))
+    (href : ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
+    (hcomplete : MetricComplete (L.atTime t))
+    (ell : L.M → ℝ)
+    (hell : ∀ x, Tendsto
+      (fun n => redLength F.S 0 p (Phi.map n x) (tau (subseq n) * (1 - t))) atTop (𝓝 (ell x)))
+    (x : L.M) : Geometry.Operator.normGradSqFun (L.S.base.metric t)
+      (Entropy.perelmanDensity (Module.finrank ℝ E) (1 - t) ell) x ≤
+        3 * ell x / (1 - t) * Entropy.perelmanDensity (Module.finrank ℝ E) (1 - t) ell x ^ 2 := by
+  have heq : Geometry.Operator.normGradSqFun (L.S.base.metric t)
+      (Entropy.perelmanDensity (Module.finrank ℝ E) (1 - t) ell) x =
+        Entropy.perelmanDensity (Module.finrank ℝ E) (1 - t) ell x ^ 2 *
+          Geometry.Operator.normGradSqFun (L.S.base.metric t) ell x :=
+    Entropy.density_grad_sq (L.S.base.metric t) (Module.finrank ℝ E) (1 - t) ell x
+  rw [heq]
+  have h := normGradSqFun_backward_flow_limit_redLength_le
+    F hF p tau htau q L Phi ht C href hcomplete ell hell x
+  calc
+    _ ≤ Entropy.perelmanDensity (Module.finrank ℝ E) (1 - t) ell x ^ 2 *
+        (3 * ell x / (1 - t)) := mul_le_mul_of_nonneg_left h (sq_nonneg _)
+    _ = _ := mul_comm _ _
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

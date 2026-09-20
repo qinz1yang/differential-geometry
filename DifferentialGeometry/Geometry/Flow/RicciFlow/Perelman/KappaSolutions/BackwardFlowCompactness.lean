@@ -133,3 +133,47 @@ theorem exists_backward_flow_compactness
   exact ⟨L, phi, hphi, Phi, hconn, hcomp, hconv⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Filter Set
+open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
+open scoped _root_.Manifold ContDiff _root_.Topology
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+
+theorem backward_flow_limit_metric_inner_antitoneOn
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    (hmetric : ∀ t : ℝ, t ≤ 0 → ∀ x : L.M, ∀ v : TangentSpace I x,
+      Tendsto (fun n => (((backwardFlowSequence F tau htau q).term (subseq n)).S.base.metric t).inner
+        (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x v))
+        atTop (𝓝 ((L.S.base.metric t).inner x v v)))
+    (x : L.M) (v : TangentSpace I x) :
+    AntitoneOn (fun t => (L.S.base.metric t).inner x v v) (Iic 0) := by
+  intro s hs t ht hst
+  apply le_of_tendsto_of_tendsto (hmetric t ht x v) (hmetric s hs x v)
+  filter_upwards [] with n
+  rw [backwardFlowSequence_metric, backwardFlowSequence_metric]
+  change (tau (subseq n))⁻¹ * (F.S.base.metric (tau (subseq n) * (t - 1))).inner
+    (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x v) ≤
+    (tau (subseq n))⁻¹ * (F.S.base.metric (tau (subseq n) * (s - 1))).inner
+      (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x v)
+  apply mul_le_mul_of_nonneg_left _ (inv_nonneg.mpr (htau (subseq n)).le)
+  apply ancientModel_metric_inner_antitoneOn F hF
+  · exact mul_nonpos_of_nonneg_of_nonpos (htau (subseq n)).le (sub_nonpos.mpr (le_trans hs zero_le_one))
+  · exact mul_nonpos_of_nonneg_of_nonpos (htau (subseq n)).le (sub_nonpos.mpr (le_trans ht zero_le_one))
+  · exact mul_le_mul_of_nonneg_left (sub_le_sub_right hst 1) (htau (subseq n)).le
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
