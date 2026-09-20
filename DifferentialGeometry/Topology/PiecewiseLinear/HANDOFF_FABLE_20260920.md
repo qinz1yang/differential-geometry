@@ -1,220 +1,269 @@
-# Handoff prompt — Moise Lemma 2 and 35.2
-
-*(Self-contained. Paste whole. Answer in English or Chinese.)*
-
-## Where to look
+# Handoff — Moise Lemma 2 and 35.2
 
 Repository **https://github.com/liao9yuan/differential-geometry-dev**, branch
 **`moise-integration`**, browsable at
 **https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration**.
-Read the head of that branch; no other branch matches these line numbers.
+Local checkout `D:\differential-geometry-moise-int`, branch `codex/moise-integration`.
 
-The book is Moise, *Geometric Topology in Dimensions 2 and 3*, GTM 47. Printed pages
-cited below were read directly and are reliable.
+The book is Moise, *Geometric Topology in Dimensions 2 and 3*, GTM 47, available locally at
+`D:\differential-geometry-moise-plan\.lake\scratch\moise_gtm47.pdf`. **Offset: book page + 9
+= zero-based PDF index**, so book p. 251 is PDF page 261 one-based; verified against running
+heads. Read it directly rather than guessing — doing so overturned an entire invented route.
 
-## What this is
+## The two chains
 
-A Lean 4 / Mathlib formalisation of Moise's route to the 3-dimensional triangulation
-theorem. Two chains are assembled. Every arrow is a **proved** theorem whose transitive
-axioms are exactly `propext, Classical.choice, Quot.sound`:
+Every arrow is a proved theorem with transitive axioms exactly `propext, Classical.choice,
+Quot.sound`:
 
 ```
 LemmaTwoStatement --moise252_of_lemmaTwo--> Moise252 --moise304_of_moise252-->
     Moise304 --moise305_tame_of_moise304--> Moise305Tame
 
-Moise351 --(§34 transition, open)--> Moise352 --plApproximationManifold_three_of_moise352-->
-    PLApproximationManifold 3
+Moise352InwardPush 3 ∧ Moise351 ∧ Moise352SkeletonExtension 3
+    --moise352_of_inwardPush_of_skeletonExtension--> Moise352 3
+    --plApproximationManifold_three_of_moise352--> PLApproximationManifold 3
 ```
 
-`LemmaTwoStatement` (`LoopTheorem/LemmaTwoEndpoint.lean`) is Moise's Lemma 2 in the shape
-the Stallings tower consumes. `NormalSystem` is now known to be inhabited
-(`LoopTheorem/NormalSystemWitness.lean`, unconditional), so the chain is not vacuous at
-its base.
+`NormalSystem` is known to be inhabited (`LoopTheorem/NormalSystemWitness.lean`,
+unconditional), so the first chain is not vacuous at its base.
 
-## Read this before proposing anything: five statements here were false
+---
 
-Work on this chain has a specific failure mode. Five statements that everyone treated as
+# Read this first: six statements here were FALSE
+
+This is the single most important thing to know. Six statements that everyone treated as
 "true but unproved" turned out to be **false**, each found only when someone actually
-instantiated them. Please assume your first formulation of anything below is also wrong
-until you have instantiated it.
+instantiated them or read the construction. **Four of the six were authored by the
+coordinator.** Assume your own first formulation of anything below is wrong until it
+compiles against something concrete.
 
 1. **The direct surgery's surjectivity.** `D.domain \ C ⊆ pullback '' G.domain` is false:
    `exists_boundary_surgery_cell_of_boundaryBranch` glues the two *outer* cells of
-   `exists_three_cells_of_boundaryBranch` and **discards the middle band**, so
-   `pullback '' G.domain = D.domain \ (D₂.domain \ A)`. Any interior point of `D₂.domain`
-   refutes it. Consequence: the direct candidate admits no branch *bijection*, only an
-   injection. Nobody had read the construction, only the recorded conclusions.
-2. **`Moise352Stages`.** It fixed a tolerance sequence `ε : ℕ → ℝ` before the family while
-   demanding agreement between consecutive stages; since stages increase, that pins the
-   approximation to `h` itself. False at `n = 1`, `h x = x³`.
-3. **`Moise352StageStep`**, the repair of 2. It used a pointwise `φ` bounded below but not
-   above; taking `φ` large makes the closeness constraints vacuous and degenerates the
-   relative clause into an *extension* statement, false at `n = 2` by Jordan and at
-   `n = 3` by Alexander. Both 2 and 3 were **inventions** — see §2 below for what Moise
-   actually does.
-4. **`CrossSeamTubeCore`** was uninhabited: it equated the compact `chart '' crossingFigure`
+   `exists_three_cells_of_boundaryBranch` and **discards the middle band**. Any interior
+   point of `D₂.domain` refutes it. Consequence: the direct candidate admits no branch
+   *bijection*, only an injection.
+2. **`Moise352Stages`** — an invented recursion. It fixed a tolerance sequence before the
+   family while demanding agreement between consecutive stages; since stages increase, that
+   pins the approximation to `h`. False at `n = 1`, `h x = x³`.
+3. **`Moise352StageStep`** — the repair of 2, also invented, also false. Its tolerance was
+   bounded below but not above; taking it large degenerates the relative clause into an
+   *extension* statement, false at `n = 2` by Jordan and `n = 3` by Alexander.
+4. **`CrossSeamTubeCore` was uninhabited.** It equated the compact `chart '' crossingFigure`
    with the relatively open `figure ∩ tube`, which is clopen in the connected `figure` and
-   hence all of it. Repaired to compare against `chart '' spliceCylinder`. It had a
-   non-vacuity witness, and the witness was degenerate — it took `tube := univ` and
-   `figure := chart '' crossingFigure`.
-5. **`hcross`**, a hypothesis of the descent selection. With `pathToCircle` and Mathlib's
-   nested `Path.trans`, the four-arc word `σ.trans (φ.trans (υ.trans τ))` satisfies
-   `w 0 = w (3/4) = a`. Literal identification with an injective boundary parametrisation
-   would put `ρ a` in the resolved cell's double point set, which
-   `CrossSeamResolutionData` excludes. So the comparison must be **up to free homotopy**,
-   not literal.
+   hence all of it — forcing complexity exactly 1, so the induction it served could not run.
+   **It had a non-vacuity witness, and the witness was degenerate**: it took `tube := univ`
+   and `figure := chart '' crossingFigure`. Repaired; the audit now requires strictness
+   theorems beside any witness.
+5. **`hcross`**, a hypothesis of the descent selection, was *impossible*, not unproved. With
+   `pathToCircle` and Mathlib's nested `Path.trans`, the four-arc word visits `a` at circle
+   parameters `0` and `3/4`; a literal identification with an injective parametrisation puts
+   `ρ a` in the resolved cell's double point set, which `CrossSeamResolutionData` excludes.
+   Replaced by comparison up to free homotopy.
+6. **The frontier collar.** "A collar `frontier K × [0,1] ≅ V ∩ K` restricting to the
+   identity on `frontier K × {0}`" is false: every open set is a locally finite polyhedral
+   3-manifold with boundary, so take `K = {0}ᶜ` in `ℝ³`, whose frontier `{0}` is **disjoint
+   from `K`** while a collar lands in `V ∩ K ⊆ K`. The correct set is `K \ interior K`,
+   Moise's own `K ∖ Int K`.
 
-The two reliable tells were: nobody read how the object was *constructed*, only what the
-statement *recorded*; and nobody tested the quantifiers at their extremes.
+**The two reliable tells**, every time: nobody read how the object was *constructed*, only
+what the theorem's statement *recorded*; and nobody tested the quantifiers at their extremes
+(empty, degenerate, very large, very small).
 
 ---
 
-## 1. The normal-crossing product tube — the last geometric brick of Lemma 2
+# Open problem 1 — the normal-crossing product tube
 
-**This is the most valuable open problem here.**
+**The largest single gap on the Lemma 2 chain.** Everything around it is built:
+`LoopTheorem/CrossSeamResolution.lean` (model seam repair, branch deleted exactly),
+`CrossSeamTube.lean` (transport, repaired contract, non-degenerate witness),
+`ResolvedCellNormal.lean` (all six normality fields), `BranchDeletion.lean` (deleted
+triangulation and branch bijection), `BranchInjection.lean` (the direct candidate's
+injection, with "every other branch is wholly kept or wholly lost, never cut"),
+`BoundaryBranchDescent.lean` (uniform descent, word elimination),
+`BoundaryWordWitness.lean` (homotopical boundary comparison), `SeamBoundaryHomotopy.lean`
+(the model homotopy and a witness producer, **in `X`**), and
+`LoopTheorem/BoundaryCaseReduction.lean`, which assembles the whole boundary case into one
+theorem whose hypotheses are every remaining gap.
 
-Moise's Lemma 2 inducts on the branch complexity of the singular set of a normal singular
-2-cell. For a **boundary** branch `c` the model-level work is done: replacing the two bent
-transverse arcs by the two disjoint chords `x + y = ±1` of the cross-section square,
-fiberwise along the base interval, deletes the branch exactly
-(`LoopTheorem/CrossSeamResolution.lean`, `doublePointSet crossSeamResolve bentSource = ∅`).
-The transport of that model result to a global cell is proved
-(`LoopTheorem/CrossSeamTube.lean`), as is the resolved cell's normality
-(`LoopTheorem/ResolvedCellNormal.lean`, all six fields), the deleted triangulation and
-branch bijection (`LoopTheorem/BranchDeletion.lean`), the direct candidate's branch
-injection (`LoopTheorem/BranchInjection.lean`), and the uniform descent and word-elimination
-selection (`LoopTheorem/BoundaryBranchDescent.lean`).
+`IsCrossSeamTubeProducer` (end of `CrossSeamTube.lean`), in the repaired form:
 
-What is missing is the tube itself, `IsCrossSeamTubeProducer`. In the repaired form:
-
-> Let `M` be a PL 3-manifold charted over `EuclideanSpace ℝ (Fin 3)`, `D : SingularTwoCell M`,
-> `hD : NormalSingularCellData D BdM B`, and `c` a **boundary** branch of `hD.singularSet`.
-> Then there are an open `U ⊆ M` and `Φ : (ℝ × ℝ) × ℝ → M` with
-> (i) `Φ` continuous and injective on `spliceCylinder = ([-1,1]×[-1,1]) × [0,1]`, with
-> `Φ '' spliceCylinder ⊆ U`;
-> (ii) `Φ '' ({(0,0)} × [0,1]) = hD.singularSet.branchCarrier c`;
+> For `hD : NormalSingularCellData D BdM B` and `c` a **boundary** branch, there are an open
+> `U ⊆ M` and `Φ : (ℝ × ℝ) × ℝ → M` with (i) `Φ` continuous and injective on
+> `spliceCylinder`, image in `U`; (ii) `Φ '' ({(0,0)} × [0,1]) = branchCarrier c`;
 > (iii) `Φ '' (cross × [0,1]) = D '' D.domain ∩ Φ '' spliceCylinder`;
-> (iv) `doublePointSet D D.domain ∩ U = hD.singularSet.branchCarrier c`.
+> (iv) `doublePointSet D D.domain ∩ U = branchCarrier c`.
 
-Clauses (ii) and (iii) are the *relative* content: not merely a ball neighbourhood of the
-arc, but one meeting the singular surface in the standard transverse cross swept along the
-arc. Note (iii) compares against the **closed** cylinder image — comparing against the open
-`U`, as the first version did, makes the structure uninhabited (refutation 4).
+Clause (iii) compares against the **closed** cylinder image — against the open `U` it is the
+refutation of item 4 above. Clauses (ii) and (iii) are the *relative* content: not a ball
+neighbourhood of the arc, but one meeting the singular surface in the standard transverse
+cross swept along the arc.
 
-What a prover may use: `hD.singularSet.complex` is finite and a combinatorial 1-manifold
-with boundary; the branch carrier is a polyhedral **arc** with endpoints on `BdM`, so the
-tube is a half-tube; `pairwise_disjoint_branchCarrier` plus finiteness of `Branch` give (iv)
-for small `U`; `hD.fiber_le_two` gives exactly two sheets hence four half sheets; and
-`hD.crossing` gives `HasPLNormalDoubleCrossingAt` at **each** double point in **some**
-chart. The absolute regular-neighbourhood theorem is available:
-`ArcChainNeighborhood.lean:57` gives a PL **ball** neighbourhood of a simplicial arc in a
-finite combinatorial 3-manifold.
+Available: `hD.singularSet.complex` is finite and a combinatorial 1-manifold; the branch
+carrier is a polyhedral **arc** with endpoints on `BdM`, so the tube is a half-tube;
+`pairwise_disjoint_branchCarrier` plus finiteness give (iv) for small `U`; `hD.fiber_le_two`
+gives four half sheets; `hD.crossing` gives `HasPLNormalDoubleCrossingAt` at **each** double
+point in **some** chart. `ArcChainNeighborhood.lean:57` gives the **absolute** PL ball
+neighbourhood of a simplicial arc.
 
-**The gap is exactly the passage from the pointwise normal form to one product chart valid
-along the whole arc** — a *relative* regular neighbourhood theorem for the pair
-(3-manifold, 2-complex), where only the absolute one exists.
+**The gap is the passage from the pointwise normal form to one product chart valid along the
+whole arc** — a *relative* regular neighbourhood theorem for the pair (3-manifold,
+2-complex). Four further properties are needed downstream by
+`CrossSeamTubeData.normalOfResolvedCell` and probably belong in the statement: charts at
+outside double points disjoint from the cylinder; the end cross sections lying in `B`; the
+source strips running end to end; and the tube meeting `BdM` only in its end cross sections.
 
-Four further properties are needed downstream by
-`CrossSeamTubeData.normalOfResolvedCell` and should probably be part of the statement:
-every double point of the reglued cell outside the tube has an atlas chart at it whose
-source is disjoint from `Φ '' spliceCylinder`; the two end cross sections lie in the
-boundary surface `B`; over the tube a source point lies on the boundary of the source disk
-exactly when it lies over an endpoint of the base interval; and the tube meets `BdM` only
-in its two end cross sections.
+Is it true, with which hypotheses? Is it a published relative regular neighbourhood theorem
+(Rourke–Sanderson, Hudson, Zeeman)? Does Moise prove it, on which page? **Or is it false** —
+can the four sheets be locally knotted?
 
-**Questions.** Is this true, with which exact hypotheses? Is it a consequence of a
-published relative regular neighbourhood theorem — Rourke–Sanderson, Hudson, Zeeman — and
-if so which, with the precise statement and what must be checked to apply it? Does Moise
-prove it, and on which printed page? Is the whole-arc product actually needed, or does he
-use a local product at each point plus compactness? **And is it false** — can the four
-sheets be locally knotted, or the branch wild? A considered counterexample is the most
-valuable answer you could give.
+# Open problem 2 — the §34 simplex-by-simplex transition
+
+Moise's actual proof of 35.2 (printed p. 251, read directly) performs **no stagewise
+recursion**. It pushes `K` into `Int K`, reduces to an open neighbourhood, subdivides so each
+simplex has small image, applies 35.1 to a regular neighbourhood of the **1-skeleton**, and
+then: *"the transition from Theorem 35.1 to Theorem 35.2 is essentially the same as the
+transition from Theorem 33.1 to Theorem 34.1; the argument in Section 34 treated the
+simplexes of `K` essentially one at a time."*
+
+`Moise352SkeletonExtension` (`SkeletonReduction.lean:208`) is that transition, stated
+**without** a fineness hypothesis — the tree has no global subdivision across a piece tower,
+since every mesh theorem needs `[Finite K.faces]`, so the obligation must choose its own
+subdivision and 1-skeleton, and is handed `Moise351` for every graph in every open subset to
+let it.
+
+§34's own proof (pp. 239–246) subdivides with a link condition, takes a regular neighbourhood
+of `K¹` with splitting disks decomposing it into dual cells, applies 33.1, and extends over
+2- and 3-simplexes using solid tori, spines (30.8) and general position (30.5). For a
+2-simplex `σ`, the union `N_σ` of dual cells at its vertices is a **solid torus**.
+
+Questions: the precise statement for a locally finite `K` in a general PL 3-manifold rather
+than a polyhedral 3-cell in `ℝ³`; which of §34's Lemmas 1–10 generalise verbatim; whether
+Moise's "essentially the same" elides a real difficulty in the non-compact, non-Euclidean
+setting.
+
+# Open problem 3 — the non-compact inward push
+
+`Moise352InwardPush 3` is **proved for compact `K`**
+(`ControlledInwardPush.lean`, `IsPolyhedralManifoldWithBoundary.exists_isPLOn_injOn_leftInvOn_dist_lt`).
+Every step is insensitive to compactness **except the collar**.
+
+After refutation 6, the corrected target is: for a locally finite polyhedral `n`-manifold
+with boundary `K` in a PL `n`-manifold, a PL homeomorphism of `(K \ interior K) × [0,1]` onto
+a neighbourhood of `K \ interior K` **in `K`**, identity on the zero level.
+`LocallyFiniteCollar.lean` proves the needed structure on that set
+(`isLocallyPolyhedralManifold_sdiff_interior`, via "the stages' frontiers glue").
+
+The obstruction: **the tree's polyhedral-manifold vocabulary is compact-only.**
+`IsPolyhedralManifold` is compact by construction, so the triangulated global form cannot be
+stated; one would need a `LocallyFinitePieceTower` on `K \ interior K`, and
+`N i ∩ (K \ interior K)` is a compact polyhedron that need not be a surface with boundary, so
+the exhaustion needs regular neighbourhoods inside the stage frontiers.
+
+# Open problem 4 — the boundary words
+
+`BoundaryCaseReduction.lean` needs `BoundaryWordWitness`es for both candidates. Both recorded
+boundary descriptions are **two-arc words valued in `M`**, while the witness needs a word in
+`X` (the ambient loop space carrying the normal subgroup — in the tower
+`S.boundaryNeighborhoodSpace`, **not** `BdM` and **not** `M`; a homotopy in `M` is worthless
+since the candidate boundaries already bound disks there). Two shifts: manifold → ambient
+loop space, which is mechanical, and **two arcs → four**, which is the real obligation.
+
+# Open problem 5 — closed branch Case 1
+
+The Case 1 exclusion (`ClosedBranchOrientability.lean`) is correct but **off the dependency
+path**: `LemmaTwoStatement` has no orientability hypothesis, a genuine tower above an
+orientable bottom does not acquire non-orientable stages, so Case 1 must be **handled**, not
+excluded. The model replacement is built (`ClosedSeamResolution.lean`): the chords
+`x - y = ±1`, which `Prod.swap` exchanges, give an untwisted band rather than a Möbius band,
+with the rejected alternative `x + y = ±1` formalised to show the choice is forced.
+
+Missing: that a real closed branch carries a cylindrical diagram with end map `Prod.swap`,
+and the **straightening** of an arbitrary PL monodromy to `Prod.swap` — determining the ray
+permutation is *not* the pointwise normal form. Also, `Quotient spliceSetoid` carries **no
+topology and no PL structure** anywhere in the tree, so "the replacement is an annulus"
+cannot even be *stated* about it.
+
+# Open problem 6 — the cheap fixes
+
+Each is small and each removes obligations from `BoundaryCaseReduction.lean`. These are the
+ones to hand to a worker rather than think about.
+
+* **M1**: the witness selection theorems ask for a branch *bijection*; `BranchInjection`
+  proves only an injection, which is all `complexity_lt_of_injective_origin` needs. A sibling
+  calling `ofBranchInjection` — about six lines in `BoundaryWordWitness.lean`.
+* **M4**: `CrossSeamRegluedData.normal` is a field, which makes `normalOfTube` unusable (it
+  takes the bundle whose field is what it produces). Delete the field, as its own docstring
+  proposes, and restate `doublePointSet_cell_eq` on the five geometric fields.
+* **M7**: `exists_cross_reglued_cell_of_boundaryBranch` never asserts the reglued cell is
+  normal (verified: zero occurrences of `NormalSingularCellData G` in its conclusion). Adding
+  `Nonempty (NormalSingularCellData G BdM B)` to it collapses four obligations to field
+  projections.
+* **M9**: a `BoundaryWordWitness.ofManifoldRealization` turning a manifold-valued boundary
+  parametrisation into a witness — about ten lines, using `hρ.isInducing` to lift.
+* **M2**: `hdisk` and `hendDisks` are the same inclusion in two spellings; moving
+  `spliceEndDisks` down from `ResolvedCellNormal` into `CrossSeamTube` removes a four-line
+  conversion.
+* **M8** (not cheap, flagged here for completeness): `hGcrossing` is strictly stronger than
+  the `crossing` field and is **not** obtainable by shrinking, since `atlas` need not be
+  closed under restriction to opens.
 
 ---
 
-## 2. The §34 transition — the only remaining obligation of Moise 35.2
+# Verification protocol — non-negotiable
 
-Moise's actual proof of 35.2 was read on printed **p. 251** and is short:
+**Never run a writing git command.** No `add`, `commit`, `push`, `checkout`, `stash`,
+`reset`, `restore`, `clean`. Read-only git is fine. The coordinator commits everything; hand
+back a manifest of verified files.
 
-> **Theorem 2.** Let `M₁`, `M₂` be PL 3-manifolds, `K` a polyhedral 3-manifold with
-> boundary in `M₁`, `h` a homeomorphism `K → M₂`, `φ` strongly positive on `K`. Then there
-> is a PLH `f : K → M₂` which is a `φ`-approximation of `h`.
->
-> PROOF. Virtually a repetition of Theorem 34.1. As before, `K` can be moved into `Int K`
-> by a PLH as close to the identity as we please; thus the theorem reduces to the case in
-> which `h` and `φ` are defined on an open `U ⊇ K`, and then to `K` closed in `M₁` with
-> `φ ≫ 0` on all of `M₁`. Now subdivide `K` so that for each simplex `σ`,
-> `diam h(|St σ|) < inf φ` on `|St σ|`. Then take a regular neighborhood `N` of the
-> 1-skeleton `K¹` and a PLH `f : N ↔ N' ⊂ M₂` which is a `φ`-approximation of `h|N`, with
-> `N'` a neighborhood of `h(K¹)` — and for every `φ' ≫ 0` we can make `f` a
-> `φ'`-approximation. **Thus the transition from 35.1 to 35.2 is essentially the same as
-> the transition from 33.1 to 34.1; the argument in §34 treated the simplexes of `K`
-> essentially one at a time.**
+Each worker owns **exactly one new `.lean` file** and may append **exactly one** import line
+to `DifferentialGeometry.lean`, append-only — several workers append there concurrently, so
+never reorder or rewrite it.
 
-`φ ≫ 0` is *strongly positive*, defined on printed p. 247: everywhere positive and bounded
-away from 0 on every compact set.
+**Run the helper scripts from PowerShell, not Bash** — Bash eats the backslashes in a Windows
+path, seeds into a mangled directory, and the checker then silently falls back to the shared
+build and fails on a module nobody touched.
 
-The input, printed **p. 248**, Theorem 1 of §35 — **this is 35.1, and the tree's `Moise351`
-(`MoiseChain.lean:191`) is a faithful rendering of it**:
+Re-run the prepare script immediately before **every** checker run:
 
-> Let `K` be a 1-dimensional polyhedron in a PL 3-manifold `M₁`, `U` an open set containing
-> `K`, `h` a homeomorphism of `U` into a PL 3-manifold `M₂`, `φ` strongly positive on `U`.
-> Then there is a regular neighborhood `N` of `K` in `U` and a PLH `f : N ↔ X ⊂ M₂` such
-> that (1) `X` is a neighborhood of `h(K)` and (2) `f` is a `φ`-approximation of `h|N`.
+```
+python C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\prepare-private-root.py <OUTPUT_ROOT> <Module.Name>
+```
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token <TOKEN> -OutputRoot <OUTPUT_ROOT> -Module <Module.Name>
+```
 
-§34's own proof (printed pp. 239–246) subdivides with a link condition, takes a regular
-neighbourhood `N` of `K¹` with splitting disks at edge midpoints decomposing `N` into dual
-cells, applies 33.1, and then extends over the 2- and 3-simplexes using solid tori, spines
-(Theorem 30.8) and general position (Theorem 30.5). For a 2-simplex `σ`, the union `N_σ` of
-the dual cells containing vertices of `σ` is a **solid torus**.
+Free lanes, one per worker:
 
-**Questions.** What is the precise statement of the simplex-by-simplex extension, in a form
-that applies to a locally finite `K` in a general PL 3-manifold rather than a polyhedral
-3-cell in `ℝ³`? Which of §34's Lemmas 1–10 generalise verbatim and which need the ambient
-change? Is the local finiteness handled by supports, or does it need an extra argument?
-Moise says the transition is "essentially the same" — is that accurate, or does the
-non-compact, non-Euclidean setting introduce a real difficulty he is eliding?
+| Token | OutputRoot |
+|---|---|
+| `claude-agent-a-20260919` | `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a` |
+| `claude-agent-b-20260919` | `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b` |
+| `claude-agent-c-20260919` | `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c` |
+| `claude-agent-d-20260919` | `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d` |
+| `claude-agent-e-20260919` | `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e` |
 
-Also: is there a shorter modern route? A. J. S. Hamilton, *The triangulation of
-3-manifolds*, Quart. J. Math. Oxford (2) 27 (1976) 63–70, Theorem 2.2 (printed p. 68) is a
-controlled **relative uniqueness** theorem that would give the endpoint in one step, but it
-depends on Whitehead's immersion theorem, Wall's end compactification, Waldhausen–Scott
-rigidity and torus unfurling. Given that Moise's own route is available and its input is
-already correctly stated here, is Hamilton a shortcut or a detour?
+Success is exactly `Verified ... with no diagnostics; shared outputs unchanged.` The global
+mutex admits **two** Lean workers at a time, so a ten-minute admission failure is ordinary
+queueing — re-run. The shared build's `MoiseChain` artifact is known stale; the prepare
+script detects it and a line reading `M stale refreshed` is that fix working. Never run two
+Lean processes in one worker. `E:\differential-geometry-dev` is read-only.
 
----
+**House rules the module compile does not catch**, each of which bounces a delivery at the
+coordinator's audit: no unused hypotheses or instance binders; **no underscore in any
+`def`/`abbrev`/`structure` name** (`defsWithUnderscore`; `theorem`/`lemma` keep snake_case);
+every new public name unique tree-wide, checked with `grep -rE` (this shell's locale rejects
+`-P`); lines ≤ 100 Unicode codepoints; a Mathlib docstring on every public declaration and
+structure field; no docstring line starting with the bare word
+`structure`/`instance`/`theorem`/`def`; no `sorry`, `admit`, `native_decide`, or new `axiom`;
+`autoImplicit` off. `Homeomorph.toContinuousMap` does not exist in Mathlib v4.33.1.
 
-## 3. Closed-branch Case 1
+**Non-vacuity is mandatory and is checked.** Anything introduced as a structure or `Prop`
+must be instantiated, and the instance must come with **strictness theorems** showing it is
+not degenerate — "the ambient is strictly larger than the model", "the double point set is
+strictly larger than the one branch". A witness that takes the ambient to be the model will
+be rejected. Refutation 4 above passed review precisely because nobody checked its witness
+for degeneracy.
 
-`LemmaTwoStatement` carries **no** orientability hypothesis, and a genuine Stallings tower
-above an orientable bottom does not acquire non-orientable stages — a tower step is a
-covering complex followed by a derived neighbourhood, both of which preserve orientability.
-So non-orientable downstairs targets are allowed, and Case 1 — a closed branch whose
-complete preimage is a single circle doubly covering it — must be **handled**, not excluded.
-`LoopTheorem/../ClosedBranchOrientability.lean` proves the exclusion over an orientable
-target complex; it is correct but off the dependency path.
-
-The model-level replacement is the closed analogue of §1's chords: in the square, replace
-the cross by the two disjoint chords `x - y = ±1`, which `Prod.swap` **exchanges**, so the
-quotient by the period identification `(z,0) ~ (swap z, 1)` is an embedded **annulus**
-rather than a Möbius band — two strips exchanged, returning after two traversals without
-reversal.
-
-What is missing is the same shape as §1: that an actual closed branch carries a cylindrical
-diagram over a triangulated square with end map `Prod.swap`, and the **straightening** of an
-arbitrary PL monodromy to `Prod.swap` through PL homeomorphisms preserving the cross.
-Determining the *ray permutation* is not the same as obtaining the *pointwise formula*: the
-connected sheet cover says one traversal exchanges the two sheet germs, and the annular
-source neighbourhood (automatic, the preimage circle being embedded in the interior of the
-source disk) then forces a diagonal reflection rather than a quarter turn — but the
-producer must supply the whole **marked pair** `(D², X)`, not an unmarked disk bundle.
-
----
-
-## What would help most
-
-Exact mathematical statements, not strategy. Printed-page citations where you rely on
-Moise, and an explicit note where you could not verify. Lean-ish statements are welcome but
-the mathematics matters more. If something already built here is aimed at the wrong target,
-say so plainly — given the record above, that is the likeliest useful finding, and it is
-worth more than a confirmation.
+**Never weaken a statement to make it provable.** Several of these obligations are consumed
+verbatim by proved reductions, and a weakened version silently breaks the route. If a target
+is false, say so with a counterexample — that has been the most valuable outcome six times.
