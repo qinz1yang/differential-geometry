@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
+import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.Family.Descent
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabJetBootstrap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalJointSpatialJets
@@ -8,13 +11,15 @@ noncomputable section
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Analysis DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
+
+section InnerProductModel
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -133,10 +138,10 @@ theorem chartGram_contDiffOn_of_spatialJets
     have hflow := jetRicciFlow_chartGram (I := I) (g t) p hyint
       (hAt.differentiableAt (by simp)) hG1 hG2 i j
     exact (hentry.hasDerivAt (isOpen_Ioo.mem_nhds ht)).congr_deriv hflow.symm
-  exact contDiffOn_of_closed_jet_pde hab hV hΩ (fun t _ => hstatic t) hΦ hmap
+  exact Perelman.CanonicalNeighborhood.FiniteHorn.contDiffOn_of_closed_jet_pde hab hV hΩ (fun t _ => hstatic t) hΦ hmap
     (fun r => chartGramPi_jets_continuousOn g p hVt r (hjets r)) htime
 
-theorem solution_metricCLMSection_contMDiffOn_closed
+private theorem solution_metricCLMSection_contMDiffOn_closed_of_innerProductSpace
     [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
@@ -148,7 +153,7 @@ theorem solution_metricCLMSection_contMDiffOn_closed
       (Icc c b ×ˢ (Set.univ : Set M)) := by
   apply metricCLMSection_jointContMDiffOn_of_chartGram_on (I := I) S.base.metric (Icc c b)
   intro x i j
-  have hjets := solution_chartGram_jets_continuousOn_closed S hS hac hcb hslab hreg x
+  have hjets := Perelman.CanonicalNeighborhood.FiniteHorn.solution_chartGram_jets_continuousOn_closed S hS hac hcb hslab hreg x
   have hmetric : ∀ t ∈ Ioo c b, ∀ y : M, ∀ v w : TangentSpace I y,
       HasDerivAt (fun s => (S.base.metric s).inner y v w)
         (-2 * ricciTensor (I := I) (S.base.metric t) y v w) t := by
@@ -180,8 +185,47 @@ theorem solution_metricCLMSection_contMDiffOn_closed
   rw [(extChartAt I x).left_inv (hsource hp.2)]
 
 
+end InnerProductModel
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+
+theorem solution_metricCLMSection_contMDiffOn_closed
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (S.base.metric p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (Icc c b ×ˢ (Set.univ : Set M)) := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · apply metricCLMSection_jointContMDiffOn_of_chartGram_on
+    intro x i
+    have hi := i.isLt
+    omega
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    (Module.finBasis ℝ E).equivFun.toContinuousLinearEquiv.trans
+      (EuclideanSpace.equiv (Fin (Module.finrank ℝ E)) ℝ).symm
+  let J := I.transContinuousLinearEquiv e
+  let Phi := ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e
+  let U : SolutionOn (I := J) (M := M) D := S.pullback Phi.symm
+  have hU : IsSolutionOn U := hS.pullback S Phi.symm
+  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))) :=
+    ⟨by simpa using hdim⟩
+  have hjoint := solution_metricCLMSection_contMDiffOn_closed_of_innerProductSpace
+    U hU hac hcb hslab hreg
+  apply metricCLMSection_jointContMDiffOn_of_surjective_localPullMetric
+    U.base.metric (Icc c b) hjoint S.base.metric Phi.symm Phi.symm.isLocalDiffeomorph
+    Phi.symm.surjective
+  intro t ht
+  exact (Diffeomorph.pullbackMetricCross_eq_localPullMetric (S.base.metric t) Phi.symm).symm
+
+
 theorem solution_chartGram_contDiffOn_closed
-    [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
     (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular) (p : M) :
@@ -194,4 +238,4 @@ theorem solution_chartGram_contDiffOn_closed
   exact fun i j => chartGramOnE_joint_contDiffOn S.base.metric (Icc c b)
     (solution_metricCLMSection_contMDiffOn_closed S hS hac hcb hslab hreg) p i j
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+end DifferentialGeometry.PDE.RicciFlow
