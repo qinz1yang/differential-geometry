@@ -8,9 +8,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Filter Set
+open Bundle _root_.Manifold Filter Set
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 
 def ordinaryMetricJetPolynomial {n : ℕ} (q : ℕ) (slots : Fin 2 → Fin n) :
@@ -78,7 +78,7 @@ end Coefficients
 section Ancient
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
@@ -87,7 +87,7 @@ private local instance ordinaryClosedMetricC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] in
 private theorem ordinary_metric_time_jets_of_mixed_fields
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)

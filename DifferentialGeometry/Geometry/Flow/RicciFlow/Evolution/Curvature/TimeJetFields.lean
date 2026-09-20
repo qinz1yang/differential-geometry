@@ -9,9 +9,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Filter Set
+open Bundle _root_.Manifold Filter Set
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
@@ -98,6 +98,7 @@ private theorem exists_mixed_curvature_fields_of_polynomial
     (Filter.eventuallyEq_of_mem self_mem_nhdsWithin fun s hs => hA q s hs x)
     (hA q t ht x)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_ancient_mixed_curvature_fields
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {b : ℝ} (hcarrier : D.carrier = Iic b) (hregular : D.regular = Iio b) (p : ℕ) :
@@ -133,6 +134,7 @@ theorem exists_ancient_mixed_curvature_fields
   intro q t ht x basis
   simpa only [hcarrier] using hactual q t ht x basis
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_mixed_curvature_fields_on_closed_interval
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)

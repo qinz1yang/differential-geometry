@@ -87,8 +87,8 @@ private theorem flatModelMetric_inner_mul (s a c : ℝ) :
   ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space N] [SigmaCompactSpace N]
-  [ConnectedSpace N] in
-theorem TerminalSurfaceProduct.pullbackMetricCross_Phi
+  [ConnectedSpace N] [Nonempty N] in
+theorem TerminalSurfaceProduct.pullbackMetricCross_Phi [Inhabited N]
     {g : SmoothRiemannianMetric I N} (P : TerminalSurfaceProduct (I := I) g) :
     Diffeomorph.pullbackMetricCross (liftedMetric (I := I) g) P.Phi =
       P.h.prod (flatModelMetric ℝ) := by

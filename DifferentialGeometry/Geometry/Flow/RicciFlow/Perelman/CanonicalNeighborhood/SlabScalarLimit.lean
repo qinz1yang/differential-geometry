@@ -13,7 +13,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ThreeSpace)
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 universe u
 

@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ThreeSpace)
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u
 

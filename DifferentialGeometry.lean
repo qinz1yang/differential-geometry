@@ -6211,6 +6211,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Term
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductEuclidean
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductBasepoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductModelTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalConstantRankFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalConstantRankDichotomyFrontier
@@ -8002,6 +8003,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductConjugatio
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductFamily
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DimensionOne
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Flat
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Basepoint
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Metric.UniversalCover.ParallelSubbundle
@@ -8430,6 +8432,7 @@ import DifferentialGeometry.Topology.Connected.SeparatingCollarStrip
 import DifferentialGeometry.Topology.Connected.TwoComponentPartition
 import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
 import DifferentialGeometry.Topology.Covering.AddCircleLift
+import DifferentialGeometry.Topology.Covering.Basepoint
 import DifferentialGeometry.Topology.Covering.Basic
 import DifferentialGeometry.Topology.Covering.BoolCocycle
 import DifferentialGeometry.Topology.Covering.CoveringMap
@@ -11442,3 +11445,6 @@ import DifferentialGeometry.Analysis.Elliptic.EndomorphismKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.ClosedMetricGauge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.ClosedCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedRankTrichotomy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TerminalRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedKernel

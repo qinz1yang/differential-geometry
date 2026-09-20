@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open DifferentialGeometry.Tensor.Coordinates
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
@@ -26,7 +26,7 @@ private local instance localExtensionC1 : IsManifold I 1 M :=
 private local instance localExtensionC2 : IsManifold I 2 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 private theorem ambient_time_jet_eq_in_restricted_chart
     (V : TopologicalSpace.Opens M) [SigmaCompactSpace V]
     {D : RealTimeInterval} (T : SolutionOn (I := I) (M := V) D) (hT : IsSolutionOn T)
