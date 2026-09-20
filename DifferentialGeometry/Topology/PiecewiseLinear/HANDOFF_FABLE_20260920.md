@@ -17,6 +17,100 @@ once replaced an entire invented recursion with Moise's actual three-line argume
 
 ---
 
+## Update — end of the second lead session, 2026-09-20. Read this before the rest
+
+Everything below this section is the brief the session started from. It is kept because its
+warnings stand, but several of its statements are now superseded; this section says which.
+External consultation is run through `consult/` (one self-contained prompt per file, answers
+digested next to them with the checked claims marked); the consultant reads the owner's
+repository `liao9yuan/differential-geometry-dev`, branch `moise-integration`, which is **not**
+this checkout's `origin` — sync it with
+`%TEMP%\claude-moise-integration-private\sync-mirror.sh` (no force; see the script header).
+
+### The chains now
+
+```
+GeneralPositionInDoubleBufferedStatement ∧ DescentStepStatement
+    --lemmaTwoBufferedStatement_of_generalPosition_of_descentStep-->
+  LemmaTwoBufferedStatement --moise252_of_lemmaTwoBuffered--> Moise252 --> Moise304 --> Moise305Tame
+```
+
+(`LoopTheorem/LemmaTwoSpine.lean`, `LoopTheorem/LemmaTwoBuffered.lean`.) `LemmaTwoStatement` is
+no longer an undecomposed root. The three legs are proved: the **entry** cell is the projected
+disk `DoubleCoverDiagram.exists_projected_singular_two_cell_in_double`
+(`LoopTheorem/ProjectedCellInDouble.lean:23`, packaged in `ProjectedCellNormalFields.lean`) —
+*not* the cell of `LemmaTwo.lean:145`, as item 6 below says; the **induction** is
+`LoopTheorem/ComplexityInduction.lean`, generic in a motive; the **return** leg is
+`LoopTheorem/EmbeddedDiskOfDoubleCell.lean`, straight to `EmbeddedDisk S`. The motive carries the
+side of `BdM` in the double, the boundary buffer `∀ z ∈ range ∂, B ∈ 𝓝[Bd] z`, and the loop
+clause. The buffer is supplied by the cover producers but dropped by the wrapper feeding
+`LemmaTwoStatement`; the buffered route re-runs the Stallings inductions against the unwrapped
+producer. **Hole that remains:** nothing in the tree inhabits `NormalSingularCellData`; the
+descent step's hypotheses are reachable only through general position.
+
+### Open obligations, as now understood
+
+1. **General position across charts** (`GeneralPositionInDoubleBufferedStatement`; prompt C and
+   its digest, which includes a review against the tree). `singularSet` is a **consequence** of
+   the other five fields: `LoopTheorem/SingularSetOfCrossing.lean` has the chain up to the local
+   line / half-line germ, the packaging into a 1-manifold complex is in progress. For `crossing`
+   the existing local theorems normalise only a ball `W` around **one** double point, produced
+   after `V`, so they cannot drive an induction; the needed relative theorem with a *prescribed*
+   `W ⋐ V` is a **modification of the ~3000-line half-space chain**
+   `SingularGeneralPosition.lean:2969 → :1607 → :3183` (expose `:1523`'s arbitrary-subset general
+   position; generalise `boundaryComplex 2 K` to a subcomplex `L`; relative vertex perturbation
+   on a `relDerived` subdivision). The induction invariant needs `V_j ⊆ ⋃ Wᵢ`
+   (`DoublePointFibreAgreement.lean`); the step lemma is `NormalCrossingTransport.lean`.
+2. **Descent step, boundary branch.** Assembly hypotheses 45 → 36
+   (`CrossRegluedCellPredicate`, `BoundarySurgeryCellPredicate`; both pin an existentially
+   produced cell with the producer's **full** conclusion — a corollary quantified over all cells
+   with the *recorded* conclusions is a trap, `G = D` satisfies them). The resolved cell is now
+   **constructed** from a PL reading (`CrossSeamResolvedCell.lean`), with a non-degenerate
+   inhabitant (`CrossSeamReadingWitness.lean`: a touching seam goes in, no double point comes
+   out). Remaining: (i) the PL boundary-relative **tube**, by the marked dual-cell induction
+   (digests B and B2: tube relative to the chosen half `W`; two page labelings, not one `Bool`;
+   end-point link = top of the model box plus its walls; boundary adaptation Theorem A because
+   the crossing predicate's half-space is existential and not tied to `W`; all new geometry is
+   2-dimensional — T₄, T₄-cap — then cone and glue); (ii) the **four-page source trace** of the
+   cross reglue (Theorem D) feeding `PLCrossSeamReading`; (iii) the **boundary word witnesses**,
+   blocked only because the three producers cut the source under independent choices — a
+   shared-cut refactor is in progress (`BoundaryWordWitnessOfCell.lean` has the bricks).
+3. **Descent step, closed branches.** Untouched this session. The planned "straighten the
+   monodromy to `Prod.swap`" is **false** (`h(x,y) = (ψ y, ψ x)`, `h² ≠ id`): the target is a PL
+   isotopy of pairs plus a mapping-torus equivalence, the ray permutation being pinned by the
+   *annular* source neighbourhood (digest B, last section).
+4. **35.2.** `Moise352SkeletonExtension n` is `Moise352 n` with two hypotheses inserted — the
+   "reduction" is modus ponens (prompt A). `Moise341` is **not** misstated (p. 239); what §35
+   needs is `ChartLocalApproximation.lean` (34.1 in one chart, proved from `Moise341`).
+   `Moise308` **is** misaimed (book 30.8 is about a spine of the *inner* torus of a nested pair).
+   §§34–35 are written up lemma by lemma in `consult/A-section34-lemma-list.md`; prompt A2 asks
+   for the replacement DAG. The non-compact **inward push** is nearly closed: COMPOSE stage
+   pushes, never glue them (a stage fixes its own seam); limit theorem, tapered push, stage
+   frame and boundary exhaustion are in; the collar-level stage push and the recursion remain.
+   `ToleranceControl.lean` has the tolerance-selection lemmas.
+
+### Eight, not seven
+
+The list of false statements below has grown: (8) conjugating a closed-branch monodromy to
+`Prod.swap`; and, caught *before* they were stated in Lean: the `∀ G` corollary; the
+consultant's induction invariant without `V_j ⊆ ⋃ Wᵢ`; "general position lowers complexity"
+(`y = |x|`, `y = −|x| + ε` become two crossings); "C⁰-small and locally injective keeps fibres
+≤ 2" (a zig-zag path through the origin three times); target cells locally finite in all of
+`M₂` (`h x = x / (1 + ‖x‖)`); the end-point chart equality `W = {t ≥ 0}`
+(`H = {t = −min(|x|,|y|)}`); `∀ x, f x ∉ B` for a tapered push with vanishing height.
+
+### Working method that held up
+
+Read-only refute-or-scope lanes first; then **resume the same agent** to execute its own plan
+(it keeps file:line knowledge) until its context is heavy, then hand a fresh worker the module
+docstrings. Sequence lanes by reverse import closure; an edit to `CutAndPaste`/`CellGluing`
+needs an exclusive window (their closure is ~20 modules plus this session's new files).
+Every delivery: focused compile by the lane, then the external audit probe (13 linters, axioms,
+aggregate clash) by a dedicated audit lane, then commit by explicit path. Five compiler leases
+bound the number of compiling lanes; the mutex admits two Lean processes.
+
+---
+
 ## The two chains
 
 Every arrow is a proved theorem whose transitive axioms are exactly `propext,

@@ -90,19 +90,15 @@ one witness.
 parametrisation `spliceEmbedding`, which `crossSeamTubeCore_spliceEmbedding` already shows
 satisfies the geometric tube contract in a non-degenerate configuration.
 
-An inhabitant of `PLCrossSeamReading` itself is *not* given here, and none of the statements
-above claims one. By the four facts listed above any such inhabitant is necessarily the
-non-degenerate configuration: a single source disk carrying two disjoint sub-disks that run
-through the tube on the two bent sheets, joined through a nonempty complementary face whose
-image leaves the parametrised cylinder between the four lateral walls. Producing it means
-writing out an explicit model cell: a rectangle `Icc 0 5 ×ˢ Icc 0 1` of the source plane with
-`sourcePos = Icc 1 2 ×ˢ Icc 0 1`, `sourceNeg = Icc 3 4 ×ˢ Icc 0 1`, the two bent arc
-parametrisations `a ↦ (max (3 - 2 * a) 0, min (3 - 2 * a) 0)` and
-`a ↦ (min (2 * a - 7) 0, max (2 * a - 7) 0)` on them, and a complementary face whose image
-leaves the cross section square, which takes eight affine pieces in all: one out of each free
-end and two for the connector between the two sheets, since the straight segment between two
-lateral wall points of the square runs back through the square. That construction is left to
-the producer lane; nothing above depends on it.
+An inhabitant of `PLCrossSeamReading` itself is not built here, since it needs an explicit
+model cell rather than the general theory above. By the four facts listed above any such
+inhabitant is necessarily the non-degenerate configuration: a single source disk carrying two
+disjoint sub-disks that run through the tube on the two bent sheets, joined through a nonempty
+complementary face whose image leaves the parametrised cylinder between the four lateral walls.
+One is built in
+`DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamReadingWitness`, which also
+checks that the cross reglue it reads really does have a double point inside the tube while the
+resolved cell built from it has none.
 -/
 
 open Set

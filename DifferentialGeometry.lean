@@ -9110,6 +9110,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteLocalModel
 import DifferentialGeometry.Topology.PiecewiseLinear.DoublePointFibreAgreement
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetOfCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.StageInwardPushFrame
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamReadingWitness
 /-!
 # Differential geometry and geometric analysis
 -/
