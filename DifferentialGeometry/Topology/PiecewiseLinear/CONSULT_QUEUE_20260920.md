@@ -13,11 +13,14 @@ line numbers do not match; every prompt below says so.
 | --- | --- | --- | --- |
 | 1 | Relative product tube along a branch arc | Lemma 2, the last geometric brick of the boundary case | ready |
 | 2 | Injectivity in the relative compact PL approximation | Moise 35.2, and 35.1/34.1 behind it | ready |
-| 3 | Where closed-branch Case 1 actually occurs in the tower | Lemma 2, closed case | drafting |
-| 4 | Boundary room and the free-homotopy lift | Lemma 2, the selection step | drafting |
+| 3 | Where closed-branch Case 1 actually occurs in the tower | Lemma 2, closed case | ready |
+| 4 | Lifting the boundary word from ranges to parametrised loops | Lemma 2, the selection step | ready |
 
-Entries 3 and 4 depend on lane reports still in flight; they will be filled in
-below as those land, and this line is what to check on waking.
+All four are written and paste-ready. Prompt 1 is the most valuable: it is the only
+one of the four that is a genuinely missing *theorem* rather than a missing
+bookkeeping step, and lane C has since restated its four clauses in Lean-exact form
+as `IsCrossSeamTubeProducer` (`LoopTheorem/CrossSeamTube.lean`), which is the precise
+target for an answer.
 
 ## The status these prompts rest on
 
@@ -272,21 +275,175 @@ statements, and a plain statement if something already built is aimed wrong.
 
 ## 3. Where closed-branch Case 1 actually occurs in the tower
 
-*Drafting — waiting on the lane that is instantiating the exclusion on the splice
-model.* The previous consultation established the key precision: the orientability
-in `CylindricalMonodromy.lean:78` is that of the **diagram's own target complex**
-(the triangulated tube with induced orientation), not of the ambient manifold, so
-there is no contradiction with `Moise252` requiring `IsOrientable 3 K`. The residual
-question is whether Case 1 — a closed branch whose preimage is a single circle
-doubly covering it, forcing the reflection model `(x,y,0) ~ (y,x,1)` — actually
-arises at some stage of the Stallings tower, and if so what the induction does with
-it. This will be written up once the exclusion is instantiated concretely.
+*(Self-contained. Paste whole. Answer in English or Chinese.)*
 
-## 4. Boundary room and the free-homotopy lift
+### Where to look
 
-*Drafting — waiting on the lane assembling the selection step.* The two boundary
-candidates now both descend (see prompt 1), so the selection logic is "both descend,
-pick the one the word elimination allows". What is not yet pinned down is the
-boundary room hypothesis that `CutAndPaste` needs and the free-homotopy lift that
-carries the boundary class up the tower. The prompt will state whichever of those
-the lane could not discharge, verbatim.
+Public repository **https://github.com/qinz1yang/differential-geometry-dev**,
+branch **`codex/moise-integration`**, commit **`b5ad49d39`** or later. Do not read
+another branch; they diverge and line numbers will not match.
+
+### State
+
+Moise's closed Case 1 handles a closed branch whose complete preimage is a **single**
+circle doubly covering the image circle, by splicing a cylinder with the
+identification `(x, y, 0) ~ (y, x, 1)` — a mapping torus whose end map is the
+coordinate swap, a reflection. A previous consultation resolved the apparent tension
+with orientability, and the resolution is now **proved**, in
+`DifferentialGeometry/Topology/PiecewiseLinear/ClosedBranchOrientability.lean`
+(747 lines, 46 declarations, axioms exactly `propext, Classical.choice, Quot.sound`):
+
+```lean
+theorem not_isCylindricalDiagram_swap_of_isOrientable {F : Type*} [NormedAddCommGroup F]
+    [NormedSpace ℝ F] [FiniteDimensional ℝ F] {f : (ℝ × ℝ) × ℝ → F}
+    (D : Geometry.SimplicialComplex ℝ (ℝ × ℝ)) (M : Geometry.SimplicialComplex ℝ F)
+    [Finite D.faces] [Finite M.faces] (hD : D.space = spliceSquare)
+    (hM : IsCombinatorialManifoldWithBoundary 3 M) (hor : IsOrientable 3 M)
+    (hf : IsCylindricalDiagram f D.space M.space)
+    (hfu : ∀ x ∈ D.space, f (x, 0) = f (Prod.swap x, 1)) : False
+```
+
+together with the concrete instance
+`not_isPLCirclePositive_spliceSquareBoundary_swap : ¬ IsPLCirclePositive
+spliceSquareBoundary Prod.swap`, which makes the exclusion non-vacuous. The
+mathematical core is a cyclic-order argument done directly on the increasing circle
+lift: for `α < β < γ < δ < α + 1` with `ψ↑α = ↑β` and `ψ↑γ = ↑δ`, one gets
+`ψ↑β ≠ ↑α`; applying it twice gives `ψ(ψ↑α) = ↑γ`, contradicting the sheet exchange
+being an involution on the four rays. The four rays land in the required cyclic order
+unconditionally, because cutting the square's boundary at the two `crossingArcY` rays
+puts exactly one `crossingArcX` ray in each open arc.
+
+The precision the earlier consultation insisted on is preserved and is the crux of
+the remaining question: `M` here is the **diagram's own target complex** — a
+triangulation of the tube, since `IsCylindricalDiagram f D.space M.space` makes
+`M.space` the image of the whole diagram — and *not* the ambient 3-manifold.
+
+### The questions
+
+**Q1.** The exclusion needs `IsOrientable 3 M` for the tube's own triangulation.
+`Moise252` hypothesises `IsOrientable 3 K` for the ambient complex. What is the
+correct transport step from the second to the first, and under what hypotheses is it
+valid? A tube embedded in an orientable 3-manifold inherits an orientation, but the
+tube here is the image of a diagram and need not be embedded. State the exact
+condition.
+
+**Q2.** Given Q1, does Case 1 arise **only** at non-orientable stages of the
+Stallings tower? `DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/CoverReduction.lean`
+handles the non-orientable case by passing to the double cover, so intermediate
+systems need not be orientable even though the bottom one is. Please argue from the
+geometry, not from the formalisation. If Case 1 *can* arise over an orientable
+ambient, the reflection model must be wrong there — say what replaces it.
+
+**Q3.** What exactly is "the branch's preimage is a single circle doubly covering it"
+in terms of the branch's normal bundle inside the disk image, and does that datum
+determine the orientability of a neighbourhood? The tree's dichotomy is
+`branchPreimage_isPLSphere_or_exists_two_isPLSpheres_of_not_boundaryBranch`,
+`DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/BranchPreimage.lean:1119`.
+
+**Q4.** The three inputs the induction must still supply, none of them proved, are:
+(i) that the Case 1 tube of a real closed branch carries a cylindrical diagram over a
+triangulated square with end map `Prod.swap` — `CylinderSplice.lean` states the
+matching fact only conditionally, as `spliceRel_iff_of_isCylindricalDiagram`, and
+constructs no such diagram; (ii) the orientability transport of Q1; (iii) matching
+the one-circle branch of the dichotomy to the modelled case, with the two sheets
+meeting the cross-section in the four rays `spliceEnds`. Which of these three does
+Moise actually prove, and where (printed page)? Which does he treat as obvious, and
+is he right to?
+
+**Q5.** Is the exclusion even the right tool? It is stated as an exclusion to use
+*alongside* the general reflection model, not in place of it. If Moise's proof simply
+handles Case 1 by the splice and never needs to exclude it, say so — we would rather
+delete a correct theorem we do not need than build an induction around it.
+
+### Constraints on the answer
+
+Exact statements, printed-page citations, no weakening of existing statements, and a
+plain statement if something already built is aimed at the wrong target.
+
+## 4. Lifting the boundary word from ranges to parametrised loops
+
+*(Self-contained. Paste whole. Answer in English or Chinese.)*
+
+### Where to look
+
+Public repository **https://github.com/qinz1yang/differential-geometry-dev**,
+branch **`codex/moise-integration`**, commit **`b5ad49d39`** or later. Do not read
+another branch.
+
+### State
+
+The selection step of Moise's Lemma 2 for a boundary branch is now assembled, in
+`DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/BoundaryBranchDescent.lean`.
+Both candidates — the direct surgery and the cross reglue repaired by
+`CrossSeamResolutionData` — enter through one door,
+
+```lean
+structure NormalSingularCellData.DescendingSurgery (hD : NormalSingularCellData D BdM B) where
+  cell : SingularTwoCell M
+  normal : NormalSingularCellData cell BdM B
+  complexity_lt : normal.singularSet.complexity < hD.singularSet.complexity
+```
+
+so the descent is literally uniform, and the word elimination then picks whichever of
+the two avoids the normal subgroup. The multiplication-order question is settled and
+needs no further inversion at this level: `BoundaryWordConnectors` and
+`CutAndPaste.lean:2907` already instantiate `BoundaryWordElimination` at the inverses
+of the four connector classes, because Mathlib's `FundamentalGroup` satisfies
+`g * h = h ⬝ g`, and everything in the new file is in the traversal convention.
+
+What blocks the theorem from being stated purely `_of_boundaryBranch` is **not** a
+group-theoretic issue. It is that the tree records the boundary curves of both
+candidates only as **sets**, and the elimination needs them as **parametrised loops**.
+
+### The gap, exactly
+
+For the direct candidate, the tree gives
+`Set.range Gd.boundary = D '' (U ∪ V)`, and separately
+`∀ θ, Gd (e θ) = pathToCircle (α.trans ω) θ` with `Set.range α = D '' U` and
+`Set.range ω = D '' V`. What is needed is
+
+> there is a parametrisation `edirect : loopCircle ≃ₜ frontier Gd.domain` with
+> `∀ θ, ρ (pathToCircle (σ.trans υ.symm) θ) = Gd (edirect θ)`,
+
+where `σ, τ, υ, φ` are the images in `X` of the four arcs of `frontier D.domain` at
+the cut. For the cross candidate the same is needed for
+`pathToCircle (σ.trans (φ.trans (υ.trans τ)))` in the endpoint-reversing case and
+`pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))` in the preserving case — and
+that one is strictly harder, because `CrossSeamResolutionData` records no boundary
+parametrisation at all and nothing yet says the seam resolution leaves the boundary
+curve of the raw cross reglue unchanged. `ReplacementDisk.lean` identifies the cross
+candidate's two boundary arcs as `D`-images of
+`(D₁.domain ∪ D₂.domain) ∩ frontier D.domain` and `D₃.domain ∩ frontier D.domain`,
+again at set level only.
+
+### The questions
+
+**Q1.** Does Moise actually need the parametrised statement, or does his argument go
+through with the boundary class determined up to free homotopy by the four arcs and
+their endpoints? If the latter, what is the exact weaker statement, and what makes it
+enough for the elimination?
+
+**Q2.** What is the standard way to lift "the boundary of the surgered disk is the
+union of these two arcs" to "it is this specific concatenation, traversed in this
+order"? Presumably the cut-and-paste construction produces the parametrisation for
+free and the tree simply discarded it. Is that right, and is there a reason it could
+fail — for instance can the two arcs meet in more than their endpoints?
+
+**Q3.** For the cross candidate specifically: does the cross-seam resolution move the
+boundary curve at all? The model theorems say the replacement is the identity on the
+four lateral attaching intervals and is supported in the cross-section disks
+(`crossSeamResolve*_eqOn_lateral`, `segment_crossSeamResolvePos_subset`), which
+suggests the boundary moves only inside the two end disks of the tube. Is "the
+boundary curve is unchanged up to a homotopy supported in the end disks" true, and is
+it enough?
+
+**Q4.** Is `DescendingSurgery` the right common shape, or does Moise's induction need
+more carried along — for instance the image containment `G '' G.domain ⊆ D '' D.domain`,
+which the direct candidate satisfies but the cross candidate only satisfies as
+`⊆ D '' D.domain ∪ U`? If the induction needs the stronger form, the cross candidate
+as built is aimed wrong and we should know now.
+
+### Constraints on the answer
+
+Exact statements, printed-page citations, no weakening of existing statements, and a
+plain statement if something already built is aimed at the wrong target.
