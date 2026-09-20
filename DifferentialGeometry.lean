@@ -151,6 +151,7 @@ import DifferentialGeometry.Analysis.Calculus.Sard
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Minimum
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.SectionComposition
+import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Equiv
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Logarithm
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Prod
 import DifferentialGeometry.Analysis.Calculus.Seminorm.Radial

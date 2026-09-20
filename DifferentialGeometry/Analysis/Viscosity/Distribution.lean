@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Equiv
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Lipschitz
 import DifferentialGeometry.Analysis.Viscosity.SupConvolution
 import Mathlib.Topology.MetricSpace.Thickening
@@ -436,7 +437,7 @@ private theorem distribution_le_of_upper_tests_on_compact
     simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
   exact le_of_tendsto_of_tendsto hlim hzeroLim hineq
 
-theorem distribution_le_of_upper_tests_of_locallyLipschitzOn
+private theorem distribution_le_of_upper_tests_of_locallyLipschitzOn_of_innerProductSpace
     {E ι κ : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [Fintype ι] [Fintype κ]
     [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
     (e : Module.Basis ι ℝ E) {Ω : Set E} (hΩ : IsOpen Ω)
@@ -505,5 +506,92 @@ theorem distribution_le_of_upper_tests_of_locallyLipschitzOn
       simp only [zero_mul, add_zero]
       linarith) hφ hφc hUφ hφ0
   simpa only [zero_mul, zero_sub, neg_sub] using h
+
+theorem distribution_le_of_upper_tests_of_locallyLipschitzOn
+    {E ι κ : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Fintype ι] [Fintype κ]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    (e : Module.Basis ι ℝ E) {Ω : Set E} (hΩ : IsOpen Ω)
+    {u : E → ℝ} (hu : LocallyLipschitzOn Ω u)
+    {V : κ → E → E} {W : E → E} {c r : E → ℝ}
+    (hV : ∀ k, ContDiffOn ℝ 2 (V k) Ω) (hW : ContDiffOn ℝ 1 W Ω)
+    (hc : LocallyLipschitzOn Ω c) (hr : LocallyLipschitzOn Ω r)
+    (hind : ∀ x ∈ Ω, LinearIndependent ℝ (fun k => V k x))
+    (hsub : ∀ x ∈ Ω, ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
+      IsLocalMax (fun y => u y - ψ y) x →
+      -(∑ k, fderiv ℝ (fderiv ℝ ψ) x (V k x) (V k x)) +
+        fderiv ℝ ψ x (W x) + c x * u x ≤ r x)
+    {φ : E → ℝ} (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ Ω) (hφ0 : ∀ x, 0 ≤ φ x) :
+    -(∑ k, ∑ i, ∑ j, ∫ x, u x * fderiv ℝ
+        (fderiv ℝ (fun y => e.repr (V k y) i * e.repr (V k y) j * φ y)) x (e j) (e i) ∂μ) -
+      (∑ i, ∫ x, u x * fderiv ℝ (fun y => e.repr (W y) i * φ y) x (e i) ∂μ) +
+      (∫ x, (c x * u x - r x) * φ x ∂μ) ≤ 0 := by
+  classical
+  let : FiniteDimensional ℝ E := e.finiteDimensional_of_finite
+  let F := EuclideanSpace ℝ ι
+  let A : E ≃L[ℝ] F := e.equivFunL.trans (EuclideanSpace.equiv (𝕜 := ℝ) (ι := ι)).symm
+  let eF : Module.Basis ι ℝ F := e.map A.toLinearEquiv
+  let ΩF : Set F := A.symm ⁻¹' Ω
+  let uF : F → ℝ := u ∘ A.symm
+  let VF (k : κ) : F → F := fun y => A (V k (A.symm y))
+  let WF : F → F := fun y => A (W (A.symm y))
+  let cF : F → ℝ := c ∘ A.symm
+  let rF : F → ℝ := r ∘ A.symm
+  let φF : F → ℝ := φ ∘ A.symm
+  have hΩF : IsOpen ΩF := hΩ.preimage A.symm.continuous
+  have huF : LocallyLipschitzOn ΩF uF := hu.comp
+    A.symm.lipschitz.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
+  have hcF : LocallyLipschitzOn ΩF cF := hc.comp
+    A.symm.lipschitz.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
+  have hrF : LocallyLipschitzOn ΩF rF := hr.comp
+    A.symm.lipschitz.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
+  have hVF (k : κ) : ContDiffOn ℝ 2 (VF k) ΩF :=
+    A.contDiff.comp_contDiffOn ((hV k).comp A.symm.contDiff.contDiffOn (fun _ hx => hx))
+  have hWF : ContDiffOn ℝ 1 WF ΩF :=
+    A.contDiff.comp_contDiffOn (hW.comp A.symm.contDiff.contDiffOn (fun _ hx => hx))
+  have hindF (x : F) (hx : x ∈ ΩF) : LinearIndependent ℝ (fun k => VF k x) :=
+    (hind (A.symm x) hx).map' A.toLinearMap (LinearMap.ker_eq_bot.mpr A.injective)
+  have hfirst (f : F → ℝ) (x v : E) :
+      fderiv ℝ (f ∘ A) x v = fderiv ℝ f (A x) (A v) := by
+    rw [A.comp_right_fderiv]
+    rfl
+  have hsubF (x : F) (hx : x ∈ ΩF) (ψ : F → ℝ) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
+      (hm : IsLocalMax (fun y => uF y - ψ y) x) :
+      -(∑ k, fderiv ℝ (fderiv ℝ ψ) x (VF k x) (VF k x)) +
+        fderiv ℝ ψ x (WF x) + cF x * uF x ≤ rF x := by
+    have hm' : IsLocalMax (fun y => uF y - ψ y) (A (A.symm x)) := by
+      simpa only [A.apply_symm_apply] using hm
+    have hmE : IsLocalMax (fun y => u y - (ψ ∘ A) y) (A.symm x) := by
+      simpa only [Function.comp_def, uF, A.symm_apply_apply] using hm'.comp_continuous A.continuousAt
+    have h := hsub (A.symm x) hx (ψ ∘ A) (hψ.comp A.contDiff) hmE
+    simp_rw [A.comp_right_fderiv_fderiv, hfirst, A.apply_symm_apply] at h
+    exact h
+  have hφF : ContDiff ℝ 2 φF := hφ.comp A.symm.contDiff
+  have hφFc : HasCompactSupport φF := hφc.comp_homeomorph A.symm.toHomeomorph
+  have hφFs : tsupport φF ⊆ ΩF := by
+    change tsupport (φ ∘ A.symm.toHomeomorph) ⊆ A.symm ⁻¹' Ω
+    rw [tsupport_comp_eq_preimage]
+    exact preimage_mono hφs
+  have h := distribution_le_of_upper_tests_of_locallyLipschitzOn_of_innerProductSpace (μ := μ.map A) eF hΩF
+    huF hVF hWF hcF hrF hindF hsubF hφF hφFc hφFs (fun y => hφ0 (A.symm y))
+  have hrepr (y : F) (i : ι) : eF.repr y i = e.repr (A.symm y) i := rfl
+  have hBasis (i : ι) : A.symm (eF i) = e i := by simp [eF]
+  have hweightA (k : κ) (i j : ι) :
+      (fun y => eF.repr (VF k y) i * eF.repr (VF k y) j * φF y) =
+        (fun x => e.repr (V k x) i * e.repr (V k x) j * φ x) ∘ A.symm := by
+    funext y
+    simp only [hrepr, VF, φF, Function.comp_def, A.symm_apply_apply]
+  have hweightB (i : ι) : (fun y => eF.repr (WF y) i * φF y) =
+      (fun x => e.repr (W x) i * φ x) ∘ A.symm := by
+    funext y
+    simp only [hrepr, WF, φF, Function.comp_def, A.symm_apply_apply]
+  have hInt (f : F → ℝ) : (∫ y, f y ∂μ.map A) = ∫ x, f (A x) ∂μ :=
+    integral_map_equiv A.toHomeomorph.toMeasurableEquiv f
+  have hD (f : E → ℝ) (x v : F) :
+      fderiv ℝ (f ∘ A.symm) x v = fderiv ℝ f (A.symm x) (A.symm v) := by
+    rw [A.symm.comp_right_fderiv]
+    rfl
+  simp_rw [hweightA, hweightB, A.symm.comp_right_fderiv_fderiv, hD, hBasis, hInt] at h
+  simpa only [uF, cF, rF, φF, Function.comp_def, A.symm_apply_apply] using h
 
 end DifferentialGeometry.Analysis.Viscosity
