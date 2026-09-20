@@ -364,39 +364,40 @@ theorem abs_sqrt_backward_flow_limit_redLength_sub_le_distance
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     [PreconnectedSpace L.M] {subseq : ℕ → ℕ}
     (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
-    {theta : ℝ} (htheta : 0 < theta)
-    (C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta)))
+    {t : ℝ} (ht : t < 1)
+    (C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) t))
     (href : ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
-    (hcomplete : MetricComplete (L.atTime (1 - theta)))
+    (hcomplete : MetricComplete (L.atTime t))
     (ell : L.M → ℝ)
     (hell : ∀ x, Tendsto
-      (fun n => redLength F.S 0 p (Phi.map n x) (tau (subseq n) * theta)) atTop (𝓝 (ell x)))
+      (fun n => redLength F.S 0 p (Phi.map n x) (tau (subseq n) * (1 - t))) atTop (𝓝 (ell x)))
     (x y : L.M) :
-    |Real.sqrt (ell x) - Real.sqrt (ell y)| ≤ Real.sqrt 3 / (2 * Real.sqrt theta) *
-      (riemannianEDistOf (L.S.base.metric (1 - theta)) x y).toReal := by
+    |Real.sqrt (ell x) - Real.sqrt (ell y)| ≤ Real.sqrt 3 / (2 * Real.sqrt (1 - t)) *
+      (riemannianEDistOf (L.S.base.metric t) x y).toReal := by
+  have htheta : 0 < 1 - t := sub_pos.mpr ht
   let _ : TopologicalSpace F.M := F.topology
   let _ : ChartedSpace H F.M := F.charted
   let _ : IsManifold I ∞ F.M := F.smooth
-  let X := (backwardFlowSequence F tau htau q).atTime (1 - theta)
-  let P := L.atTime (1 - theta)
+  let X := (backwardFlowSequence F tau htau q).atTime t
+  let P := L.atTime t
   let _ : PreconnectedSpace P.M := inferInstanceAs (PreconnectedSpace L.M)
-  let Psi : PointedRiemannianConvergenceMaps X P subseq := Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta)
+  let Psi : PointedRiemannianConvergenceMaps X P subseq := Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) t
   let f : ∀ n : ℕ, (X.obj n).M → ℝ :=
-    fun n z => Real.sqrt (redLength F.S 0 p z (tau n * theta))
-  let K : ℝ≥0 := ⟨Real.sqrt 3 / (2 * Real.sqrt theta), by positivity⟩
+    fun n z => Real.sqrt (redLength F.S 0 p z (tau n * (1 - t)))
+  let K : ℝ≥0 := ⟨Real.sqrt 3 / (2 * Real.sqrt (1 - t)), by positivity⟩
   have hLip (n : ℕ) (a b : F.M) : |f n a - f n b| ≤
       (K : ℝ) * (riemannianEDistOf (X.obj n).metric a b).toReal := by
     have h := abs_sqrt_redLength_sub_le_rescaled_distance F hF p a b (mul_pos (htau n) htheta)
-    change |Real.sqrt (redLength F.S 0 p a (tau n * theta)) -
-      Real.sqrt (redLength F.S 0 p b (tau n * theta))| ≤ (K : ℝ) *
+    change |Real.sqrt (redLength F.S 0 p a (tau n * (1 - t))) -
+      Real.sqrt (redLength F.S 0 p b (tau n * (1 - t)))| ≤ (K : ℝ) *
         (riemannianEDistOf (scaleMetric (tau n)⁻¹ (inv_pos.mpr (htau n))
-          (F.S.base.metric (-tau n + (1 - theta) / (tau n)⁻¹))) a b).toReal
-    rw [show -tau n + (1 - theta) / (tau n)⁻¹ = -(tau n * theta) by rw [div_inv_eq_mul]; ring]
+          (F.S.base.metric (-tau n + t / (tau n)⁻¹))) a b).toReal
+    rw [show -tau n + t / (tau n)⁻¹ = -(tau n * (1 - t)) by rw [div_inv_eq_mul]; ring]
     rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)]
     rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)] at h
     convert h using 1
-    change (Real.sqrt 3 / (2 * Real.sqrt theta)) *
-      (Real.sqrt (tau n)⁻¹ * (riemannianEDistOf (F.S.base.metric (-(tau n * theta))) a b).toReal) = _
+    change (Real.sqrt 3 / (2 * Real.sqrt (1 - t))) *
+      (Real.sqrt (tau n)⁻¹ * (riemannianEDistOf (F.S.base.metric (-(tau n * (1 - t)))) a b).toReal) = _
     rw [Real.sqrt_inv, Real.sqrt_inv, Real.sqrt_mul (htau n).le]
     field_simp [ne_of_gt (Real.sqrt_pos.mpr htheta)]
   have hpoint (z : P.M) : Tendsto (fun n => f (subseq n) (Psi.map n z))
@@ -414,6 +415,45 @@ theorem abs_sqrt_backward_flow_limit_redLength_sub_le_distance
   have hh := hg (show P.M from x) (show P.M from y)
   rw [heq, heq] at hh
   exact hh
+
+theorem backward_flow_limit_redLength_le_quadratic_distance
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M] {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    (C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) 0))
+    (href : ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
+    (hcomplete : MetricComplete (L.atTime 0))
+    {T : ℝ} (hT : 1 ≤ T) (ell : L.M × Icc (1 : ℝ) T → ℝ)
+    (hell : ∀ w, Tendsto
+      (fun n => redLength F.S 0 p (Phi.map n w.1) (tau (subseq n) * w.2)) atTop (𝓝 (ell w)))
+    (x : L.M) (theta : Icc (1 : ℝ) T) :
+    ell (x, theta) ≤ (1 + 3 * T ^ 2) *
+      (Real.sqrt (ell (L.basepoint, ⟨1, le_rfl, hT⟩)) + Real.sqrt 3 / 2 *
+        (riemannianEDistOf (L.S.base.metric 0) L.basepoint x).toReal) ^ 2 := by
+  let oneTime : Icc (1 : ℝ) T := ⟨1, le_rfl, hT⟩
+  have htime : ell (x, theta) ≤ (1 + 3 * T ^ 2) * ell (x, oneTime) := by
+    apply le_of_tendsto_of_tendsto (hell (x, theta)) ((hell (x, oneTime)).const_mul _)
+    exact Eventually.of_forall fun n => by
+      simpa only [oneTime, mul_one] using redLength_le_mul_on_rescaled_time_interval
+        F hF p (Phi.map n x) (htau (subseq n)) theta.property
+  have hnonneg : 0 ≤ ell (x, oneTime) := by
+    apply ge_of_tendsto (hell (x, oneTime))
+    exact Eventually.of_forall fun n => by
+      simpa only [oneTime, mul_one] using
+        backward_length_nonneg F hF p (Phi.map n x) (htau (subseq n))
+  have h := abs_sqrt_backward_flow_limit_redLength_sub_le_distance
+    F hF p tau htau q L Phi (t := 0) zero_lt_one C href hcomplete
+    (fun y => ell (y, oneTime))
+    (fun y => by simpa only [oneTime, sub_zero] using hell (y, oneTime)) L.basepoint x
+  simp only [sub_zero, Real.sqrt_one, mul_one] at h
+  have hroot : Real.sqrt (ell (x, oneTime)) ≤ Real.sqrt (ell (L.basepoint, oneTime)) +
+      Real.sqrt 3 / 2 * (riemannianEDistOf (L.S.base.metric 0) L.basepoint x).toReal := by
+    linarith only [(abs_le.mp h).1]
+  have hsquare := (sq_le_sq₀ (Real.sqrt_nonneg _) (by positivity)).mpr hroot
+  rw [Real.sq_sqrt hnonneg] at hsquare
+  exact htime.trans (mul_le_mul_of_nonneg_left hsquare (by positivity))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

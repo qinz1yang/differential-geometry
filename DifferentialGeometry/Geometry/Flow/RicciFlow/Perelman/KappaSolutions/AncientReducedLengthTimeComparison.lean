@@ -476,11 +476,11 @@ private theorem sqrt_ratio_bounds {tau s t T : ℝ} (htau : 0 < tau)
     have hdiv : b / a ≤ (t - s) + 1 := (div_le_iff₀ ha).mpr (by nlinarith)
     linarith
 
-private theorem redLength_rescaled_time_le
+theorem redLength_le_mul_on_rescaled_time_interval
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (p q : F.M) {tau T A t : ℝ} (htau : 0 < tau)
-    (ht : t ∈ Set.Icc 1 T) (hbase : redLength F.S 0 p q tau ≤ A) :
-    redLength F.S 0 p q (tau * t) ≤ (1 + 3 * T ^ 2) * max A 0 := by
+    (p q : F.M) {tau T t : ℝ} (htau : 0 < tau)
+    (ht : t ∈ Set.Icc 1 T) :
+    redLength F.S 0 p q (tau * t) ≤ (1 + 3 * T ^ 2) * redLength F.S 0 p q tau := by
   let a := Real.sqrt tau
   let b := Real.sqrt (tau * t)
   have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht.1
@@ -505,14 +505,15 @@ private theorem redLength_rescaled_time_le
   have hcoef : a / b + 3 * b * (b - a) / tau ≤ 1 + 3 * T ^ 2 := by
     rw [heq]
     nlinarith only [hfirst, hsq, hr0]
-  have hcoef0 : 0 ≤ a / b + 3 * b * (b - a) / tau := by
-    exact add_nonneg (by positivity) (div_nonneg (mul_nonneg (by positivity)
-      (sub_nonneg.mpr hab)) htau.le)
-  calc
-    _ ≤ (a / b + 3 * b * (b - a) / tau) * redLength F.S 0 p q tau := hforward
-    _ ≤ (a / b + 3 * b * (b - a) / tau) * max A 0 :=
-      mul_le_mul_of_nonneg_left (hbase.trans (le_max_left A 0)) hcoef0
-    _ ≤ _ := mul_le_mul_of_nonneg_right hcoef (le_max_right A 0)
+  exact hforward.trans (mul_le_mul_of_nonneg_right hcoef (time_length_nonneg F hF p q htau))
+
+private theorem redLength_rescaled_time_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q : F.M) {tau T A t : ℝ} (htau : 0 < tau)
+    (ht : t ∈ Set.Icc 1 T) (hbase : redLength F.S 0 p q tau ≤ A) :
+    redLength F.S 0 p q (tau * t) ≤ (1 + 3 * T ^ 2) * max A 0 :=
+  (redLength_le_mul_on_rescaled_time_interval F hF p q htau ht).trans
+    (mul_le_mul_of_nonneg_left (hbase.trans (le_max_left A 0)) (by positivity))
 
 private theorem abs_redLength_sub_le_on_rescaled_time_interval
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
