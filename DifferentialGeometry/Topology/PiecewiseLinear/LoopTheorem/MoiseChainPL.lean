@@ -112,13 +112,6 @@ section Subcomplex
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-/-- The space of a subcomplex is contained in the space of the ambient complex. -/
-theorem space_subset_space_of_faces_subset {K B : Geometry.SimplicialComplex ℝ E}
-    (hBK : B.faces ⊆ K.faces) : B.space ⊆ K.space := by
-  intro x hx
-  obtain ⟨s, hs, hxs⟩ := B.mem_space_iff.mp hx
-  exact K.convexHull_subset_space (hBK hs) hxs
-
 /-- For a point of a subcomplex the carrier face of the ambient complex already spans inside the
 subcomplex.  This is the mechanism by which a simplicial approximation of a map that sends a set
 into a subcomplex again sends that set into the subcomplex. -/
@@ -127,7 +120,7 @@ theorem convexHull_carrierFace_subset_of_mem_subcomplex
     convexHull ℝ ((carrierFace K y : Finset E) : Set E) ⊆ B.space := by
   classical
   obtain ⟨s, hs, hys⟩ := B.mem_space_iff.mp hy
-  have hyK : y ∈ K.space := space_subset_space_of_faces_subset hBK hy
+  have hyK : y ∈ K.space := space_mono_of_faces_subset hBK hy
   have hsub : carrierFace K y ⊆ s := carrierFace_subset hyK (hBK hs) hys
   exact (convexHull_mono (Finset.coe_subset.mpr hsub)).trans (B.convexHull_subset_space hs)
 
@@ -136,7 +129,7 @@ of the subcomplex space that contains the point. -/
 theorem convexHull_carrierFace_subset_connectedComponentIn
     {K B : Geometry.SimplicialComplex ℝ E} (hBK : B.faces ⊆ K.faces) {y : E} (hy : y ∈ B.space) :
     convexHull ℝ ((carrierFace K y : Finset E) : Set E) ⊆ connectedComponentIn B.space y := by
-  have hyK : y ∈ K.space := space_subset_space_of_faces_subset hBK hy
+  have hyK : y ∈ K.space := space_mono_of_faces_subset hBK hy
   exact (convex_convexHull ℝ _).isPreconnected.subset_connectedComponentIn
     (mem_convexHull_carrierFace hyK)
     (convexHull_carrierFace_subset_of_mem_subcomplex hBK hy)
@@ -495,7 +488,7 @@ theorem exists_polyhedralDisk_of_normalSystemDisk {E : Type}
   let _ : Finite K.faces := hKfin
   have hVB : (connectedComponentComplex (boundaryComplex 3 K) c).space ⊆
       (boundaryComplex 3 K).space :=
-    space_subset_space_of_faces_subset (restrict_faces_subset (boundaryComplex 3 K) _)
+    space_mono_of_faces_subset (restrict_faces_subset (boundaryComplex 3 K) _)
   have hVcomp : ∀ z ∈ (connectedComponentComplex (boundaryComplex 3 K) c).space,
       connectedComponentIn (boundaryComplex 3 K).space z =
         (connectedComponentComplex (boundaryComplex 3 K) c).space := fun z hz =>
