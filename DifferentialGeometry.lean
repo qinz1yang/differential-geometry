@@ -9053,6 +9053,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskPrism
 import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalShellCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.TwoSidedCrossingProducer
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDescent
 /-!
 # Differential geometry and geometric analysis
 -/
