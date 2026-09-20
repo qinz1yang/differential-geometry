@@ -14,7 +14,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open DifferentialGeometry.PDE.RicciFlow.DimensionThree
   (flow_time_slice_dichotomy_of_sectionalCurvature_eq_zero_at_later_time)
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 
