@@ -206,6 +206,7 @@ import DifferentialGeometry.Analysis.Convex.MovingSetDistance
 import DifferentialGeometry.Analysis.Convex.NormalCone
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
 import DifferentialGeometry.Analysis.Convex.SupportFunction
+import DifferentialGeometry.Analysis.Convex.SupConvolution
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
 import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Analysis.DenseExtension
@@ -11379,6 +11380,7 @@ import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
 import DifferentialGeometry.Analysis.Viscosity.Distribution
+import DifferentialGeometry.Analysis.Viscosity.SupConvolution
 import DifferentialGeometry.Analysis.Viscosity.Stability
 import DifferentialGeometry.Analysis.Viscosity.ColeHopf
 import DifferentialGeometry.Analysis.Viscosity.Comparison
