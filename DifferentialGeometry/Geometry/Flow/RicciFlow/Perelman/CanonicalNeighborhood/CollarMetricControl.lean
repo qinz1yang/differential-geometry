@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.MetricDistanceTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
 import Mathlib.Analysis.Normed.Module.Connected
@@ -13,75 +14,6 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
 
-section Maps
-
-variable {E E' : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [NormedAddCommGroup E'] [NormedSpace ℝ E']
-    {H H' : Type*} [TopologicalSpace H] [TopologicalSpace H']
-    {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ E' H'}
-    {M N : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem metricPathELength_map_le (h : SmoothRiemannianMetric J N)
-    (g : SmoothRiemannianMetric I M) (F : N → M)
-    {gamma : ℝ → N} {a b L : ℝ} (hL : 0 ≤ L)
-    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) J 1 gamma (Icc a b))
-    (hF : ∀ s ∈ Ioo a b, MDifferentiableAt J I F (gamma s))
-    (hupper : ∀ s ∈ Ioo a b, ∀ v : TangentSpace J (gamma s),
-      g.inner (F (gamma s)) (mfderiv J I F (gamma s) v)
-        (mfderiv J I F (gamma s) v) ≤ L ^ 2 * h.inner (gamma s) v v) :
-    metricPathELength g (F ∘ gamma) a b ≤
-      ENNReal.ofReal L * metricPathELength h gamma a b := by
-  rw [metricPathELength_eq, metricPathELength_eq,
-    ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  refine setLIntegral_mono' measurableSet_Ioo fun s hs => ?_
-  have hgd := (hgamma.contMDiffAt (Icc_mem_nhds hs.1 hs.2)).mdifferentiableAt
-    (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
-  rw [← ENNReal.ofReal_mul hL]
-  apply ENNReal.ofReal_le_ofReal
-  change Real.sqrt (g.inner (F (gamma s))
-    (mfderiv 𝓘(ℝ, ℝ) I (F ∘ gamma) s 1)
-    (mfderiv 𝓘(ℝ, ℝ) I (F ∘ gamma) s 1)) ≤ _
-  rw [mfderiv_comp_apply s (hF s hs) hgd]
-  calc
-    _ ≤ Real.sqrt (L ^ 2 * h.inner (gamma s)
-        (mfderiv 𝓘(ℝ, ℝ) J gamma s 1) (mfderiv 𝓘(ℝ, ℝ) J gamma s 1)) :=
-      Real.sqrt_le_sqrt (hupper s hs _)
-    _ = _ := by rw [Real.sqrt_mul (sq_nonneg L), Real.sqrt_sq hL]
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem metricPathELength_map_ge (h : SmoothRiemannianMetric J N)
-    (g : SmoothRiemannianMetric I M) (F : N → M)
-    {gamma : ℝ → N} {a b L : ℝ} (hL : 0 ≤ L)
-    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) J 1 gamma (Icc a b))
-    (hF : ∀ s ∈ Ioo a b, MDifferentiableAt J I F (gamma s))
-    (hlower : ∀ s ∈ Ioo a b, ∀ v : TangentSpace J (gamma s),
-      L ^ 2 * h.inner (gamma s) v v ≤
-        g.inner (F (gamma s)) (mfderiv J I F (gamma s) v)
-          (mfderiv J I F (gamma s) v)) :
-    ENNReal.ofReal L * metricPathELength h gamma a b ≤
-      metricPathELength g (F ∘ gamma) a b := by
-  rw [metricPathELength_eq, metricPathELength_eq,
-    ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  refine setLIntegral_mono' measurableSet_Ioo fun s hs => ?_
-  have hgd := (hgamma.contMDiffAt (Icc_mem_nhds hs.1 hs.2)).mdifferentiableAt
-    (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
-  rw [← ENNReal.ofReal_mul hL]
-  apply ENNReal.ofReal_le_ofReal
-  change _ ≤ Real.sqrt (g.inner (F (gamma s))
-    (mfderiv 𝓘(ℝ, ℝ) I (F ∘ gamma) s 1)
-    (mfderiv 𝓘(ℝ, ℝ) I (F ∘ gamma) s 1))
-  rw [mfderiv_comp_apply s (hF s hs) hgd]
-  calc
-    _ = Real.sqrt (L ^ 2 * h.inner (gamma s)
-        (mfderiv 𝓘(ℝ, ℝ) J gamma s 1) (mfderiv 𝓘(ℝ, ℝ) J gamma s 1)) := by
-      rw [Real.sqrt_mul (sq_nonneg L), Real.sqrt_sq hL]
-    _ ≤ _ := Real.sqrt_le_sqrt (hlower s hs _)
-
-end Maps
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

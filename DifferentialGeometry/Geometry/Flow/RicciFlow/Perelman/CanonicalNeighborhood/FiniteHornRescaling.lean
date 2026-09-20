@@ -152,3 +152,44 @@ theorem AnnularConvergence.exists_rescaled_annular_capture_bounds
     exact ⟨y, w, hyw, hnear, hbound y w hyw⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+open Filter Set
+open scoped Topology Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
+
+attribute [local instance] EndAngles.metric
+
+theorem exists_tendsto_curvature_radial_scale
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) (ray : EndRay H.endpoint)
+    (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Ioc 0 ray.length) (hzero : Tendsto d atTop (𝓝 0))
+    {B : ℝ} (hupper : ∀ᶠ i in atTop,
+      metricScalarAt g (ray.point (d i)) * d i ^ 2 ≤ B) :
+    ∃ (rho : ℕ → ℕ) (lambda : ℝ), StrictMono rho ∧ 0 < lambda ∧ lambda ≤ Real.sqrt B ∧
+      Tendsto (fun i => Real.sqrt
+        (metricScalarAt g (ray.point (d (rho i))) * d (rho i) ^ 2)) atTop (𝓝 lambda) := by
+  obtain ⟨c, hc, hlower⟩ := finite_horn_two_scale_lower_bound H ray d hd hzero
+  have hmem : ∀ᶠ i in atTop,
+      metricScalarAt g (ray.point (d i)) * d i ^ 2 ∈ Icc c B := hlower.and hupper
+  obtain ⟨q, hq, rho, hrho, hlim⟩ := isCompact_Icc.tendsto_subseq' hmem.frequently
+  exact ⟨rho, Real.sqrt q, hrho, Real.sqrt_pos.mpr (hc.trans_le hq.1),
+    Real.sqrt_le_sqrt hq.2, Real.continuous_sqrt.continuousAt.tendsto.comp hlim⟩
+
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+end

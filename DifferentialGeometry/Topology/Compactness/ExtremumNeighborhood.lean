@@ -65,3 +65,24 @@ theorem Continuous.exists_superlevel_subset_of_unique_maximum {M : Type*} [Topol
         exact (hmax x hne).not_ge hx
       exact heq ▸ hp)
   exact ⟨ε, hε, fun _ hx => hhigh ⟨mem_univ _, hx⟩⟩
+
+section
+
+open Filter Set
+open scoped Topology
+
+theorem Continuous.exists_pos_sublevel_subset_of_unique_zero
+    {B : Type*} [TopologicalSpace B] [CompactSpace B]
+    {rho : B → ℝ} (hrho : Continuous rho) (hnonneg : ∀ x, 0 ≤ rho x)
+    {o : B} (hzero : ∀ x, rho x = 0 → x = o) {D : Set B} (hD : D ∈ 𝓝 o) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ x, rho x < ε → x ∈ D := by
+  obtain ⟨W, hWD, hW, hoW⟩ := mem_nhds_iff.mp hD
+  obtain ⟨ε, hε, hsub⟩ := isCompact_univ.exists_pos_sublevel_subset hrho.continuousOn hW
+    (a := 0) (by
+      rintro x ⟨_, hx⟩
+      have hx0 : rho x = 0 := le_antisymm hx (hnonneg x)
+      exact hzero x hx0 ▸ hoW)
+  refine ⟨ε, hε, fun x hx => hWD (hsub ⟨mem_univ x, ?_⟩)⟩
+  simpa only [mem_preimage, mem_Iic, zero_add] using hx.le
+
+end

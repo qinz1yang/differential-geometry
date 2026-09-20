@@ -27,6 +27,7 @@ theorem metricDistance_scaleMetric (c : ℝ) (hc : 0 < c)
   rw [metricDistance, metricDistance, edistOf_scale, ENNReal.toReal_mul,
     ENNReal.toReal_ofReal (Real.sqrt_nonneg c)]
 
+omit [SigmaCompactSpace M] in
 theorem metricDistance_le_of_roundComponent_diameterBound
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {eps : ℝ} {x : M} {t : ℝ} (RC : RoundComponent S eps x t Set.univ)
