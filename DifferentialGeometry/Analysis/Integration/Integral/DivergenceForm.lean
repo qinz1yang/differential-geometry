@@ -122,4 +122,63 @@ theorem integral_second_order_adjoint_eq_divergence
       ext x
       ring
 
+theorem integral_weighted_parabolic_adjoint_eq_divergence
+    {E ι κ : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    [Fintype ι] [Fintype κ] {Ω : Set E} (hΩ : IsOpen Ω)
+    {u : E → ℝ} (hu : LocallyLipschitzOn Ω u)
+    {A : ι → κ → E → ℝ} {b : κ → E → ℝ} {ρ c : E → ℝ}
+    (hA : ∀ i j, ContDiffOn ℝ 2 (fun x => A i j x * ρ x) Ω)
+    (hρ : ContDiffOn ℝ 1 ρ Ω) (v : ι → E) (w : κ → E) (t : E)
+    (hdiv : ∀ x ∈ Ω, ∀ j, (∑ i, fderiv ℝ (fun y => A i j y * ρ y) x (v i)) + b j x * ρ x = 0)
+    (ht : ∀ x ∈ Ω, fderiv ℝ ρ x t = c x * ρ x)
+    {φ : E → ℝ} (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ Ω) :
+    -(∑ i, ∑ j, ∫ x, u x * fderiv ℝ (fderiv ℝ (fun y => A i j y * (ρ y * φ y)))
+      x (w j) (v i) ∂μ) - (∫ x, u x * fderiv ℝ (fun y => ρ y * φ y) x t ∂μ) -
+      (∑ j, ∫ x, u x * fderiv ℝ (fun y => b j y * (ρ y * φ y)) x (w j) ∂μ) +
+      (∫ x, c x * u x * (ρ x * φ x) ∂μ) =
+        (∑ i, ∑ j, ∫ x, (A i j x * ρ x) * lineDeriv ℝ u x (w j) * fderiv ℝ φ x (v i) ∂μ) -
+          ∫ x, ρ x * u x * fderiv ℝ φ x t ∂μ := by
+  have hs := integral_second_order_adjoint_eq_divergence (μ := μ) hΩ hu hA v w hdiv hφ hφc hφs
+  simp only [mul_assoc] at hs
+  have hdρ : ContinuousOn (fun x => fderiv ℝ ρ x t) Ω :=
+    (hρ.continuousOn_fderiv_of_isOpen hΩ le_rfl).clm_apply continuousOn_const
+  have hi₁ : Integrable (fun x => ρ x * u x * fderiv ℝ φ x t) μ :=
+    (((hρ.continuousOn.mul hu.continuousOn).mul
+      ((hφ.continuous_fderiv (by norm_num)).clm_apply continuous_const).continuousOn).continuous_of_tsupport_subset
+      hΩ (tsupport_mul_subset_right.trans ((tsupport_fderiv_apply_subset ℝ t).trans hφs))).integrable_of_hasCompactSupport
+        (hφc.fderiv_apply ℝ t).mul_left
+  have hi₂ : Integrable (fun x => u x * fderiv ℝ ρ x t * φ x) μ :=
+    (((hu.continuousOn.mul hdρ).mul hφ.continuous.continuousOn).continuous_of_tsupport_subset hΩ
+      (tsupport_mul_subset_right.trans hφs)).integrable_of_hasCompactSupport hφc.mul_left
+  have hpotential (x : E) : c x * u x * (ρ x * φ x) = u x * fderiv ℝ ρ x t * φ x := by
+    by_cases hx : x ∈ Ω
+    · rw [ht x hx]
+      ring
+    · rw [image_eq_zero_of_notMem_tsupport (f := φ) (fun h => hx (hφs h))]
+      ring
+  have hproduct (x : E) : u x * fderiv ℝ (fun y => ρ y * φ y) x t =
+      ρ x * u x * fderiv ℝ φ x t + u x * fderiv ℝ ρ x t * φ x := by
+    by_cases hx : x ∈ Ω
+    · rw [fderiv_fun_mul ((hρ.contDiffAt (hΩ.mem_nhds hx)).differentiableAt one_ne_zero)
+        (hφ.differentiable (by norm_num) x)]
+      simp only [add_apply, smul_apply, smul_eq_mul]
+      ring
+    · rw [fderiv_of_notMem_tsupport ℝ (fun h => hx ((tsupport_mul_subset_right.trans hφs) h)),
+        fderiv_of_notMem_tsupport ℝ (fun h => hx (hφs h)),
+        image_eq_zero_of_notMem_tsupport (f := φ) (fun h => hx (hφs h))]
+      simp
+  have htime : (∫ x, u x * fderiv ℝ (fun y => ρ y * φ y) x t ∂μ) =
+      (∫ x, ρ x * u x * fderiv ℝ φ x t ∂μ) + ∫ x, c x * u x * (ρ x * φ x) ∂μ := by
+    simp_rw [hproduct, hpotential]
+    exact integral_add hi₁ hi₂
+  have hs' :
+      -(∑ i, ∑ j, ∫ x, u x * fderiv ℝ (fderiv ℝ (fun y => A i j y * (ρ y * φ y)))
+        x (w j) (v i) ∂μ) -
+        (∑ j, ∫ x, u x * fderiv ℝ (fun y => b j y * (ρ y * φ y)) x (w j) ∂μ) =
+          ∑ i, ∑ j, ∫ x, (A i j x * ρ x) * lineDeriv ℝ u x (w j) * fderiv ℝ φ x (v i) ∂μ := by
+    simpa only [mul_assoc] using hs
+  linarith only [hs', htime]
+
 end DifferentialGeometry.Analysis
