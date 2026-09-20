@@ -158,7 +158,7 @@ theorem backward_flow_limit_perelmanDensity_distribution_le_in_chart
     simp_rw [mul_sub, Finset.sum_sub_distrib] at hupper
     linarith only [hupper]
 
-theorem backward_flow_limit_perelmanDensity_weak_le_in_chart
+private theorem backward_flow_limit_perelmanDensity_weak_le_in_chart_of_contDiff
     [MeasurableSpace (ℝ × E)] [BorelSpace (ℝ × E)]
     (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
@@ -228,5 +228,104 @@ theorem backward_flow_limit_perelmanDensity_weak_le_in_chart
   dsimp only [u, ρ, SolutionOn.scalar, SolutionFamily.scalar] at hdist hid
   rw [hid] at hdist
   exact sub_nonpos.mp hdist
+
+theorem backward_flow_limit_perelmanDensity_weak_le_in_chart
+    [MeasurableSpace (ℝ × E)] [BorelSpace (ℝ × E)]
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M]
+    {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M)
+    (hG : ∀ K : Set L.M, IsCompact K → ∀ᶠ n in atTop,
+      ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source n ∧
+        ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+          (G n t).inner x v w = (((backwardFlowSequence F tau htau q).term (subseq n)).S.base.metric t).inner
+            (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x w))
+    (hmetric : ∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc a b,
+        metricDerivNormSupOn K r (G n t) (L.S.base.metric t) R < epsilon)
+    {T : ℝ} (hT : 1 < T) (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hell : ∀ Q : Set (L.M × Icc (1 : ℝ) T), IsCompact Q → TendstoUniformlyOn
+      (fun n w => redLength F.S 0 p (Phi.map n w.1) (tau (subseq n) * w.2)) ell atTop Q)
+    (hLip : ∀ B : ℝ, 0 ≤ B → ∃ K : ℝ≥0,
+      ∀ x ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
+      ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
+      ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
+        (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
+    (a : L.M) (μ : Measure (ℝ × E)) [μ.IsAddHaarMeasure]
+    {φ : ℝ × E → ℝ} (hφ : LocallyLipschitzOn (Ioo 1 T ×ˢ (extChartAt I a).target) φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ Ioo 1 T ×ˢ (extChartAt I a).target) (hφ0 : ∀ x, 0 ≤ φ x) :
+    let u := fun w : ℝ × E => perelmanDensity (Module.finrank ℝ E) w.1
+      (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I a).symm w.2)
+    let ρ := fun w : ℝ × E => chartDensityOnE (L.S.base.metric (1 - w.1)) a w.2
+    let A := fun w : ℝ × E => fun i j : Fin (Module.finrank ℝ E) =>
+      chartInvGramOnE (L.S.base.metric (1 - w.1)) a i j w.2;
+    (∑ i, ∑ j, ∫ w, (A w i j * ρ w) * lineDeriv ℝ u w (0, chartModelBasis E j) *
+      fderiv ℝ φ w (0, chartModelBasis E i) ∂μ) ≤
+        ∫ w, ρ w * u w * fderiv ℝ φ w (1, 0) ∂μ := by
+  intro u ρ A
+  let _ : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ : LocallyCompactSpace L.M := ChartedSpace.locallyCompactSpace H L.M
+  let Ω := Ioo (1 : ℝ) T ×ˢ (extChartAt I a).target
+  have hΩ : IsOpen Ω := isOpen_Ioo.prod (isOpen_extChartAt_target (I := I) a)
+  have hu : LocallyLipschitzOn Ω u :=
+    (locallyLipschitzOn_perelmanDensity_in_chart_of_spacetime_bounds
+      (L.S.base.metric 0) L.basepoint hT.le ell hLip a (Module.finrank ℝ E)).mono
+      (fun _ hw => ⟨zero_lt_one.trans hw.1.1, hw.2⟩)
+  have hρ : ContDiffOn ℝ ∞ ρ Ω := by
+    have h := chartDensityOnE_family_contDiffOn L.isSolution.smoothMetric Subset.rfl a
+    have hm : ContDiff ℝ ∞ (fun w : ℝ × E => (1 - w.1, w.2)) :=
+      (contDiff_const.sub contDiff_fst).prodMk contDiff_snd
+    have hh := h.comp (s := Ω) hm.contDiffOn
+      (fun w hw => ⟨sub_neg.mpr hw.1.1, hw.2⟩)
+    exact hh
+  have hmap : ContDiff ℝ ∞ (fun w : ℝ × E => (1 - w.1, w.2)) :=
+    (contDiff_const.sub contDiff_fst).prodMk contDiff_snd
+  have hmaps : MapsTo (fun w : ℝ × E => (1 - w.1, w.2)) Ω
+      (Iio 0 ×ˢ interior (extChartAt I a).target) := by
+    intro w hw
+    exact ⟨sub_neg.mpr hw.1.1, by simpa only [(isOpen_extChartAt_target (I := I) a).interior_eq] using hw.2⟩
+  have hAc (i j : Fin (Module.finrank ℝ E)) : ContDiffOn ℝ ∞ (fun w => A w i j) Ω := by
+    have h := MetricFamilySmoothOn.chartInvGramOnE_contDiffOn (I := I) (M := L.M)
+      (D := ancientTimeInterval) (g_fam := L.S.base.metric) L.isSolution.smoothMetric
+      (J := Iio 0) Subset.rfl a i j
+    have hh := h.comp hmap.contDiffOn hmaps
+    exact hh
+  have hdu (j : Fin (Module.finrank ℝ E)) :
+      LocallyIntegrableOn (fun w => lineDeriv ℝ u w (0, chartModelBasis E j)) Ω μ := by
+    apply (locallyIntegrableOn_iff hΩ.isLocallyClosed).mpr
+    intro K hKΩ hK
+    exact memLp_one_iff_integrable.mp
+      (hu.memLp_lineDeriv_of_isCompact hΩ hK hKΩ hK.measure_ne_top (0, chartModelBasis E j) 1)
+  let b : Option (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → (ℝ × E) → ℝ
+    | none => fun w => ρ w * u w
+    | some ij => fun w => -((A w ij.1 ij.2 * ρ w) * lineDeriv ℝ u w (0, chartModelBasis E ij.2))
+  let v : Option (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → ℝ × E
+    | none => (1, 0)
+    | some ij => (0, chartModelBasis E ij.1)
+  have hb (i) : LocallyIntegrableOn (b i) Ω μ := by
+    cases i with
+    | none => exact (hρ.continuousOn.mul hu.continuousOn).locallyIntegrableOn hΩ.measurableSet
+    | some ij => exact ((hdu ij.2).continuousOn_mul
+        ((hAc ij.1 ij.2).continuousOn.mul hρ.continuousOn) hΩ.isLocallyClosed).neg
+  have hsum (ψ : ℝ × E → ℝ) :
+      (∑ i, ∫ w, b i w * fderiv ℝ ψ w (v i) ∂μ) =
+        (∫ w, ρ w * u w * fderiv ℝ ψ w (1, 0) ∂μ) -
+          ∑ i, ∑ j, ∫ w, (A w i j * ρ w) * lineDeriv ℝ u w (0, chartModelBasis E j) *
+            fderiv ℝ ψ w (0, chartModelBasis E i) ∂μ := by
+    simp only [Fintype.sum_option, Fintype.sum_prod_type, b, v, neg_mul,
+      integral_neg, Finset.sum_neg_distrib]
+    ring
+  have h := Analysis.sum_integral_mul_fderiv_nonneg_of_contDiff_test hΩ hb v
+    (fun ψ hψ hψc hψs hψ0 => by
+      rw [hsum]
+      exact sub_nonneg.mpr (backward_flow_limit_perelmanDensity_weak_le_in_chart_of_contDiff
+        F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip a μ
+        (hψ.of_le (WithTop.coe_le_coe.mpr le_top)) hψc hψs hψ0)) hφ hφc hφs hφ0
+  rw [hsum] at h
+  exact sub_nonneg.mp h
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

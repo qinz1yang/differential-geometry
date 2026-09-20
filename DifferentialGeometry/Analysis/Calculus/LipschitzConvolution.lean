@@ -227,3 +227,54 @@ theorem exists_contDiff_lipschitz_tendstoUniformly_fderiv
       hφ hφ_ratio hf hs
 
 end LipschitzWith
+
+namespace LipschitzWith
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [MeasurableSpace E] [BorelSpace E] [FiniteDimensional ℝ E]
+  {μ : Measure E} [μ.IsAddHaarMeasure]
+
+theorem exists_contDiff_nonneg_tsupport_subset_tendstoUniformly_fderiv
+    {f : E → ℝ} {C : ℝ≥0} (hf : LipschitzWith C f)
+    (hf0 : ∀ x, 0 ≤ f x) (hfc : HasCompactSupport f)
+    {Ω : Set E} (hΩ : IsOpen Ω) (hfs : tsupport f ⊆ Ω) :
+    ∃ K : Set E, IsCompact K ∧ K ⊆ Ω ∧ tsupport f ⊆ K ∧
+      ∃ g : ℕ → E → ℝ, (∀ n, ContDiff ℝ ∞ (g n)) ∧
+        (∀ n, LipschitzWith C (g n)) ∧ (∀ n, tsupport (g n) ⊆ K) ∧
+        (∀ n x, 0 ≤ g n x) ∧ TendstoUniformly g f atTop ∧
+        ∀ᵐ x ∂μ, Tendsto (fun n => fderiv ℝ (g n) x) atTop (𝓝 (fderiv ℝ f x)) := by
+  obtain ⟨δ, hδ, hδΩ⟩ := hfc.isCompact.exists_cthickening_subset_open hΩ hfs
+  let φ (n : ℕ) : ContDiffBump (0 : E) :=
+    ⟨(δ / ((n : ℝ) + 1)) / 2, δ / ((n : ℝ) + 1), by positivity,
+      half_lt_self (by positivity)⟩
+  have hφ : Tendsto (fun n => (φ n).rOut) atTop (𝓝 0) := by
+    simpa only [φ, mul_one_div, mul_zero] using
+      tendsto_one_div_add_atTop_nhds_zero_nat.const_mul δ
+  have hφ_ratio : ∀ᶠ n in atTop, (φ n).rOut ≤ 2 * (φ n).rIn := by
+    filter_upwards [] with n
+    dsimp [φ]
+    linarith
+  have hrad (n : ℕ) : (φ n).rOut ≤ δ := by
+    dsimp only [φ]
+    exact div_le_self hδ.le (by have := Nat.cast_nonneg (α := ℝ) n; linarith)
+  refine ⟨cthickening δ (tsupport f), hfc.isCompact.cthickening, hδΩ,
+    self_subset_cthickening (tsupport f),
+    fun n => (φ n).normed μ ⋆[lsmul ℝ ℝ, μ] f, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro n
+    exact (φ n).hasCompactSupport_normed.contDiff_convolution_left (lsmul ℝ ℝ)
+      (φ n).contDiff_normed hf.continuous.locallyIntegrable
+  · exact fun n => (φ n).lipschitz_normed_convolution hf
+  · intro n
+    apply closure_minimal _ isClosed_cthickening
+    intro x hx
+    obtain ⟨y, hy, z, hz, rfl⟩ := support_convolution_subset_swap (lsmul ℝ ℝ) hx
+    apply mem_cthickening_of_dist_le (y + z) y δ (tsupport f) (subset_tsupport f hy)
+    have hz' : dist z 0 < (φ n).rOut := by
+      simpa only [(φ n).support_normed_eq, mem_ball] using hz
+    simpa only [dist_eq_norm, add_sub_cancel_left, sub_zero] using hz'.le.trans (hrad n)
+  · intro n x
+    exact integral_nonneg fun y => mul_nonneg ((φ n).nonneg_normed y) (hf0 (x - y))
+  · exact ContDiffBump.convolution_tendstoUniformly_of_lipschitz hφ hf
+  · exact ContDiffBump.ae_fderiv_normed_convolution_tendsto_of_lipschitz hφ hφ_ratio hf
+
+end LipschitzWith

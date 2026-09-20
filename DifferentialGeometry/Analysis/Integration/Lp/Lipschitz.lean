@@ -87,3 +87,18 @@ theorem LocallyLipschitzOn.integrable_fderiv_fderiv_mul_of_hasCompactSupport
   rw [(hx.clm_apply (differentiableAt_const w)).lineDeriv_eq_fderiv,
     fderiv_clm_apply hx (differentiableAt_const w)]
   simp
+
+theorem MeasureTheory.LocallyIntegrableOn.integrable_mul_fderiv_of_hasCompactSupport
+    {b φ : E → ℝ} {Ω : Set E} (hb : LocallyIntegrableOn b Ω μ)
+    (hΩ : IsOpen Ω) (hφ : LocallyLipschitzOn Ω φ)
+    (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ω) (v : E) :
+    Integrable (fun x => b x * fderiv ℝ φ x v) μ := by
+  obtain ⟨C, hC⟩ := hφ.exists_lipschitzWith_of_hasCompactSupport hΩ hφc hφs
+  have hs : Function.support (fun x => b x * fderiv ℝ φ x v) ⊆ tsupport φ :=
+    (subset_tsupport _).trans (tsupport_mul_subset_right.trans (tsupport_fderiv_apply_subset ℝ v))
+  apply (integrableOn_iff_integrable_of_support_subset hs).mp
+  apply (hb.integrableOn_compact_subset hφs hφc).mul_bdd (c := (C : ℝ) * ‖v‖)
+    (measurable_fderiv_apply_const ℝ φ v).aestronglyMeasurable
+  filter_upwards [] with x
+  exact ((fderiv ℝ φ x).le_opNorm v).trans
+    (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hC) (norm_nonneg _))
