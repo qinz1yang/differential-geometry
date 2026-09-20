@@ -104,3 +104,48 @@ theorem exists_bounded_pullback_metric_coefficients_of_embedding
 end CompactEmbedding
 
 end DifferentialGeometry.Geometry
+
+end
+
+noncomputable section
+
+open Manifold Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry
+
+variable {E F H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M]
+
+theorem pullbackMetricCoefficients_fderiv_retraction
+    (g : SmoothRiemannianMetric I M) {Φ : M → F} {r : F → M} {x : F}
+    (hΦ : MDifferentiableAt I 𝓘(ℝ, F) Φ (r x))
+    (hr : MDifferentiableAt 𝓘(ℝ, F) I r x)
+    (hrΦ : MDifferentiableAt 𝓘(ℝ, F) I r (Φ (r x)))
+    (hleft : Function.LeftInverse r Φ) (v w : F) :
+    pullbackMetricCoefficients g r (Φ (r x))
+      (fderiv ℝ (Φ ∘ r) x v) (fderiv ℝ (Φ ∘ r) x w) =
+        pullbackMetricCoefficients g r x v w := by
+  exact pullbackMetricCoefficients_comp_fderiv_of_leftInverse g hΦ hrΦ hleft hr v w
+
+theorem pullbackMetricCoefficients_fderiv_retraction_of_contMDiffOn
+    (g : SmoothRiemannianMetric I M) {Φ : M → F} {r : F → M} {U : Set F}
+    (hΦ : ContMDiff I 𝓘(ℝ, F) 1 Φ) (hU : IsOpen U)
+    (hr : ContMDiffOn 𝓘(ℝ, F) I 1 r U)
+    (hΦU : range Φ ⊆ U) (hleft : Function.LeftInverse r Φ)
+    {x : F} (hx : x ∈ U) (v w : F) :
+    pullbackMetricCoefficients g r (Φ (r x))
+      (fderiv ℝ (Φ ∘ r) x v) (fderiv ℝ (Φ ∘ r) x w) =
+        pullbackMetricCoefficients g r x v w := by
+  exact pullbackMetricCoefficients_fderiv_retraction g
+    (hΦ.mdifferentiableAt one_ne_zero)
+    (((hr x hx).contMDiffAt (hU.mem_nhds hx)).mdifferentiableAt one_ne_zero)
+    (((hr (Φ (r x)) (hΦU (mem_range_self (r x)))).contMDiffAt
+      (hU.mem_nhds (hΦU (mem_range_self (r x))))).mdifferentiableAt one_ne_zero)
+    hleft v w
+
+end DifferentialGeometry.Geometry
+
+end

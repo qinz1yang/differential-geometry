@@ -12081,3 +12081,17 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Coercivity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.InteriorEnergy
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Campanato
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.ContinuousRepresentative
+import DifferentialGeometry.Analysis.Integration.Lp.QuadraticBounds
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Approximation.ContinuousTests
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Composition
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.MetricEnergy.CoordinateVariation
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.MetricEnergy.FirstVariation
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.MetricEnergy.WeakTests
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Variation
+import DifferentialGeometry.Geometry.HarmonicMap.ChartMetric
+import DifferentialGeometry.Geometry.HarmonicMap.Variation
+import DifferentialGeometry.Geometry.HarmonicMap.WeakCoordinates
+import DifferentialGeometry.Geometry.HarmonicMap.WeakEquation
+import DifferentialGeometry.Geometry.Metric.Pullback.Chart
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.FirstVariation
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.WeakHarmonicMap
