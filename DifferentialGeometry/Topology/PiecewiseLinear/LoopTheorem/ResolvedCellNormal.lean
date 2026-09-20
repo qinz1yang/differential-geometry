@@ -19,14 +19,22 @@ with the corresponding properties of the reglued cell `G`, so that `normal` can 
 
 ## The shape of every proof
 
-Every argument is the case split `G x ∈ U` or `G x ∉ U` of
-`CrossSeamRegluedData.mem_tube_or_notMem_tube`. Inside the tube the resolved cell is the model
-chord resolution read through the tube parametrisation, where it is injective
-(`CrossSeamTubeData.injOn_resolved_tube`) and takes its values in the tube
-(`CrossSeamTubeData.mapsTo_resolved_tube`); outside the tube it is `G`, and its values avoid the
-tube. The two halves never interfere, because the first lands in the tube and the second does
-not: that separation is what makes local injectivity, the fibre bound and the double point
+Every argument is the case split `G x ∈ T.chart '' spliceCylinder` or
+`G x ∉ T.chart '' spliceCylinder` of `CrossSeamRegluedData.mem_tube_or_notMem_tube`, taken at
+the closed parametrised cylinder and not at the open tube `U`. Over the cylinder the resolved
+cell is the model chord resolution read through the tube parametrisation, where it is injective
+(`CrossSeamTubeData.injOn_resolved_tube`) and takes its values in the cylinder
+(`CrossSeamTubeData.mapsTo_resolved_tube`); off the cylinder it is `G`, and its values avoid the
+cylinder. The two halves never interfere, because the first lands in the cylinder and the second
+does not: that separation is what makes local injectivity, the fibre bound and the double point
 inclusion transfer without any further geometric input.
+
+The split set is `T.chart '' spliceCylinder` because that is how the fields of
+`CrossSeamRegluedData` are stated: splitting along the open `U` would equate a compact image
+with a relatively open piece of the connected image of the source disk, and so force the whole
+reglued cell into the tube. The declarations below keep the word `tube` in their names, but the
+set they split along is the closed parametrised cylinder throughout;
+`CrossSeamTubeCore.image_subset_tube` is what carries a conclusion back to `U`.
 
 ## What is proved and what is assumed
 
@@ -40,15 +48,17 @@ Of the six fields of `NormalSingularCellData`, five are established here, and
 * `locallyInjective` and `fiber_le_two` need nothing but the same two properties of `G`;
 * `crossing` needs the crossing property of `G` at the double points lying outside the tube,
   witnessed by a chart whose source misses the parametrised model cylinder. The extra clause is
-  unavoidable here: `HasPLDoubleCrossingAt` constrains the whole source set `D.domain ∩ D ⁻¹'
-  e.source`, and that set changes with the resolution exactly over the part of the chart lying
-  in the tube. Once the chart source misses the cylinder the two source sets are equal and
-  `HasPLNormalDoubleCrossingAt.congr_source` finishes;
+  unavoidable here: `HasPLDoubleCrossingAt` constrains the whole source set
+  `D.domain ∩ D ⁻¹' e.source`, and that set changes with the resolution exactly over the part
+  of the chart lying in the cylinder. Once the chart source misses the cylinder the two source
+  sets are equal and `HasPLNormalDoubleCrossingAt.congr_source` finishes. The double points of
+  the resolved cell come out off the cylinder, and the field `hdouble` places them off the whole
+  tube, so the hypothesis is still stated at the tube;
 * `boundary_image_subset` and `image_inter_boundary` need the two end cross sections
   `spliceEndDisks` of the tube: the resolution does move the boundary curve of the cell, inside
   the two end disks and nowhere else, so the statements that the end disks lie in the boundary
-  surface `B` and that the tube meets `BdM` only in them are genuine extra inputs. They are
-  taken as the named hypotheses `hendDisks`, `hends`, `htubeBdM` and `hBdM`.
+  surface `B` and that the parametrised cylinder meets `BdM` only in them are genuine extra
+  inputs. They are taken as the named hypotheses `hendDisks`, `hends`, `htubeBdM` and `hBdM`.
 -/
 
 open Set Topology
@@ -116,8 +126,9 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fi
   {D G cell : SingularTwoCell M} {BdM B U : Set M} {hD : NormalSingularCellData D BdM B}
   {c : hD.singularSet.Branch}
 
-/-- Away from the tube the resolved cell takes its values outside the tube. This is the
-unbundled form of `CrossSeamRegluedData.cell_notMem_tube`. -/
+/-- Off the preimage of a set the resolved cell takes its values outside that set. This is the
+unbundled form of `CrossSeamRegluedData.cell_notMem_tube`; it mentions no tube data, so it
+applies at the parametrised cylinder, which is where the split is actually taken. -/
 theorem notMem_tube_of_eqOn_compl (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' U))
     {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ G.domain \ ⇑G ⁻¹' U) : ⇑cell x ∉ U := by
   rw [hcompl hx]
@@ -125,38 +136,44 @@ theorem notMem_tube_of_eqOn_compl (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' 
 
 namespace CrossSeamTubeData
 
-/-- Over the tube a resolved cell covers exactly the parametrised replacement figure. This is
-the unbundled form of `CrossSeamRegluedData.image_cell_tube`, restated without that bundle so
-that the derivation of normality does not go through the very field it removes. -/
+/-- Over the parametrised cylinder a resolved cell covers exactly the parametrised replacement
+figure. This is the unbundled form of `CrossSeamRegluedData.image_cell_tube`, restated without
+that bundle so that the derivation of normality does not go through the very field it
+removes. -/
 theorem image_resolved_tube (T : CrossSeamTubeData hD c U)
     {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' U) bentSource)
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord) (G.domain ∩ ⇑G ⁻¹' U)) :
-    ⇑cell '' (G.domain ∩ ⇑G ⁻¹' U) = T.chart '' spliceFigure := by
-  have h : ⇑cell '' (G.domain ∩ ⇑G ⁻¹' U)
-      = (T.chart ∘ crossSeamResolve ∘ coord) '' (G.domain ∩ ⇑G ⁻¹' U) :=
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))) :
+    ⇑cell '' (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) = T.chart '' spliceFigure := by
+  have h : ⇑cell '' (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))
+      = (T.chart ∘ crossSeamResolve ∘ coord) ''
+        (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) :=
     Set.image_congr fun x hx => hresolved hx
   rw [h, Set.image_comp, Set.image_comp, hcoord.image_eq, image_crossSeamResolve]
 
-/-- The resolution keeps the part of the source disk lying over the tube inside the tube. This
-is the unbundled form of `CrossSeamRegluedData.mapsTo_cell_tube`. -/
+/-- The resolution keeps the part of the source disk lying over the parametrised cylinder inside
+that cylinder. This is the unbundled form of `CrossSeamRegluedData.mapsTo_cell_tube`. -/
 theorem mapsTo_resolved_tube (T : CrossSeamTubeData hD c U)
     {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' U) bentSource)
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord) (G.domain ∩ ⇑G ⁻¹' U)) :
-    MapsTo cell (G.domain ∩ ⇑G ⁻¹' U) U := by
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))) :
+    MapsTo cell (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))
+      (T.chart '' spliceCylinder) := by
   intro x hx
-  have h : ⇑cell x ∈ ⇑cell '' (G.domain ∩ ⇑G ⁻¹' U) := ⟨x, hx, rfl⟩
+  have h : ⇑cell x ∈ ⇑cell '' (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) := ⟨x, hx, rfl⟩
   rw [T.image_resolved_tube hcoord hresolved] at h
-  exact T.isTube.image_subset_tube (Set.image_mono spliceFigure_subset_spliceCylinder h)
+  exact Set.image_mono spliceFigure_subset_spliceCylinder h
 
-/-- The resolution is injective over the tube: the two chord sheets are disjoint. This is the
-unbundled form of `CrossSeamRegluedData.injOn_cell_tube`. -/
+/-- The resolution is injective over the parametrised cylinder: the two chord sheets are
+disjoint. This is the unbundled form of `CrossSeamRegluedData.injOn_cell_tube`. -/
 theorem injOn_resolved_tube (T : CrossSeamTubeData hD c U)
     {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' U) bentSource)
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord) (G.domain ∩ ⇑G ⁻¹' U)) :
-    InjOn cell (G.domain ∩ ⇑G ⁻¹' U) := by
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))) :
+    InjOn cell (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) := by
   intro x hx z hz hxz
   have hxm : coord x ∈ bentSource := hcoord.mapsTo hx
   have hzm : coord z ∈ bentSource := hcoord.mapsTo hz
@@ -174,35 +191,38 @@ theorem injOn_resolved_tube (T : CrossSeamTubeData hD c U)
   exact hcoord.injOn hx hz (injOn_crossSeamResolve hxm hzm hmodel)
 
 /-- **Every double point of the resolved cell is a double point of the reglued cell lying
-outside the tube.** Inside the tube the resolution is injective, and a value taken inside the
-tube is never taken again outside it, so no double point survives in the tube and no new one is
-created. This is the local form of `CrossSeamRegluedData.doublePointSet_cell_eq` that the
-crossing condition consumes; unlike that statement it needs no hypothesis on `G`. -/
+outside the parametrised cylinder.** Over the cylinder the resolution is injective, and a value
+taken in the cylinder is never taken again off it, so no double point survives in the cylinder
+and no new one is created. This is the local form of
+`CrossSeamRegluedData.doublePointSet_cell_eq` that the crossing condition consumes; unlike that
+statement it needs no hypothesis on `G`. -/
 theorem doublePointSet_resolved_subset (T : CrossSeamTubeData hD c U)
     {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
     (hdomain : cell.domain = G.domain)
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' U) bentSource)
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord) (G.domain ∩ ⇑G ⁻¹' U))
-    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' U)) :
-    doublePointSet cell cell.domain ⊆ doublePointSet G G.domain \ U := by
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder))) :
+    doublePointSet cell cell.domain ⊆
+      doublePointSet G G.domain \ T.chart '' spliceCylinder := by
   rintro y ⟨x, hx, z, hz, hxz, hyx, hyz⟩
   rw [hdomain] at hx hz
-  by_cases hxU : ⇑G x ∈ U
-  · by_cases hzU : ⇑G z ∈ U
+  by_cases hxU : ⇑G x ∈ T.chart '' spliceCylinder
+  · by_cases hzU : ⇑G z ∈ T.chart '' spliceCylinder
     · exact absurd (T.injOn_resolved_tube hcoord hresolved ⟨hx, hxU⟩ ⟨hz, hzU⟩
         (hyx.trans hyz.symm)) hxz
-    · have h1 : y ∈ U := by
+    · have h1 : y ∈ T.chart '' spliceCylinder := by
         rw [← hyx]
         exact T.mapsTo_resolved_tube hcoord hresolved ⟨hx, hxU⟩
-      have h2 : y ∉ U := by
+      have h2 : y ∉ T.chart '' spliceCylinder := by
         rw [← hyz]
         exact notMem_tube_of_eqOn_compl hcompl ⟨hz, hzU⟩
       exact absurd h1 h2
-  · by_cases hzU : ⇑G z ∈ U
-    · have h1 : y ∈ U := by
+  · by_cases hzU : ⇑G z ∈ T.chart '' spliceCylinder
+    · have h1 : y ∈ T.chart '' spliceCylinder := by
         rw [← hyz]
         exact T.mapsTo_resolved_tube hcoord hresolved ⟨hz, hzU⟩
-      have h2 : y ∉ U := by
+      have h2 : y ∉ T.chart '' spliceCylinder := by
         rw [← hyx]
         exact notMem_tube_of_eqOn_compl hcompl ⟨hx, hxU⟩
       exact absurd h1 h2
@@ -228,21 +248,28 @@ Their content is:
   cell for the reglued cell `G`, which is not itself asserted to be normal;
 * `hGcrossing` : at each of its double points lying outside the tube, `G` has a normal double
   crossing in a chart whose source misses the parametrised model cylinder. The last clause is
-  what makes the source set of the crossing condition unchanged by the resolution;
+  what makes the source set of the crossing condition unchanged by the resolution. The double
+  points of the resolved cell are located off the *cylinder* by
+  `doublePointSet_resolved_subset`, but `hdouble` together with
+  `CrossSeamTubeData.doublePointSet_sdiff_branchCarrier` puts them off the whole tube, so this
+  hypothesis does not have to be strengthened to the cylinder;
 * `hendDisks` : the two end cross sections of the tube lie in the boundary surface `B`;
-* `hends` : over the tube, a point of the source disk lies on the boundary of the source disk
-  exactly when it lies over one of the two ends of the base interval, that is, the two source
-  strips run from one end of the tube to the other;
-* `htubeBdM` : the tube meets the boundary of the manifold only in its two end cross sections;
+* `hends` : over the parametrised cylinder, a point of the source disk lies on the boundary of
+  the source disk exactly when it lies over one of the two ends of the base interval, that is,
+  the two source strips run from one end of the cylinder to the other;
+* `htubeBdM` : the parametrised cylinder meets the boundary of the manifold only in its two end
+  cross sections;
 * `hBdM` : the surface `B` in which the boundary curve of the cell runs lies in the boundary
   `BdM` of the manifold. -/
 noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
     {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
     (hdomain : cell.domain = G.domain)
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' U) bentSource)
-    (hreglued : EqOn G (T.chart ∘ crossSeamInclude ∘ coord) (G.domain ∩ ⇑G ⁻¹' U))
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord) (G.domain ∩ ⇑G ⁻¹' U))
-    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' U))
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hreglued : EqOn G (T.chart ∘ crossSeamInclude ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
     (hdouble : doublePointSet cell cell.domain =
       doublePointSet D D.domain \ hD.singularSet.branchCarrier c)
     (hGinj : ∀ x ∈ G.domain, ∃ V ∈ 𝓝[G.domain] x, InjOn G V)
@@ -255,9 +282,9 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
           HasPLNormalDoubleCrossingAt (e ∘ G) (G.domain ∩ ⇑G ⁻¹' e.source)
             (e '' (e.source ∩ BdM)) (e y))
     (hendDisks : T.chart '' spliceEndDisks ⊆ B)
-    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' U,
+    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
       x ∈ frontier G.domain ↔ (coord x).2.2 = 0 ∨ (coord x).2.2 = 1)
-    (htubeBdM : U ∩ BdM ⊆ T.chart '' spliceEndDisks)
+    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
     (hBdM : B ⊆ BdM) :
     NormalSingularCellData cell BdM B where
   locallyInjective := by
@@ -266,12 +293,12 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
     obtain ⟨V, hV, hinj⟩ := hGinj x hx
     refine ⟨V ∩ G.domain, Filter.inter_mem hV self_mem_nhdsWithin, ?_⟩
     intro x₁ h₁ x₂ h₂ heq
-    by_cases h₁U : ⇑G x₁ ∈ U
-    · by_cases h₂U : ⇑G x₂ ∈ U
+    by_cases h₁U : ⇑G x₁ ∈ T.chart '' spliceCylinder
+    · by_cases h₂U : ⇑G x₂ ∈ T.chart '' spliceCylinder
       · exact T.injOn_resolved_tube hcoord hresolved ⟨h₁.2, h₁U⟩ ⟨h₂.2, h₂U⟩ heq
       · exact absurd (heq ▸ T.mapsTo_resolved_tube hcoord hresolved ⟨h₁.2, h₁U⟩)
           (notMem_tube_of_eqOn_compl hcompl ⟨h₂.2, h₂U⟩)
-    · by_cases h₂U : ⇑G x₂ ∈ U
+    · by_cases h₂U : ⇑G x₂ ∈ T.chart '' spliceCylinder
       · exact absurd (heq ▸ notMem_tube_of_eqOn_compl hcompl ⟨h₁.2, h₁U⟩)
           (fun hmem => hmem (T.mapsTo_resolved_tube hcoord hresolved ⟨h₂.2, h₂U⟩))
       · refine hinj h₁.1 h₂.1 ?_
@@ -280,21 +307,21 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
   fiber_le_two := by
     intro y
     rw [hdomain]
-    by_cases hyU : y ∈ U
+    by_cases hyU : y ∈ T.chart '' spliceCylinder
     · refine le_trans (Set.encard_le_one_iff.mpr ?_) (by norm_num)
       intro a b ha hb
-      have hatube : a ∈ G.domain ∩ ⇑G ⁻¹' U := by
+      have hatube : a ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder) := by
         refine ⟨ha.1, ?_⟩
         by_contra hnot
         exact notMem_tube_of_eqOn_compl hcompl ⟨ha.1, hnot⟩ (ha.2 ▸ hyU)
-      have hbtube : b ∈ G.domain ∩ ⇑G ⁻¹' U := by
+      have hbtube : b ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder) := by
         refine ⟨hb.1, ?_⟩
         by_contra hnot
         exact notMem_tube_of_eqOn_compl hcompl ⟨hb.1, hnot⟩ (hb.2 ▸ hyU)
       exact T.injOn_resolved_tube hcoord hresolved hatube hbtube (ha.2.trans hb.2.symm)
     · refine le_trans (Set.encard_le_encard ?_) (hGfiber y)
       rintro a ⟨ha, hay⟩
-      have hacompl : a ∈ G.domain \ ⇑G ⁻¹' U := by
+      have hacompl : a ∈ G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder) := by
         refine ⟨ha, fun hmem => hyU ?_⟩
         rw [← hay]
         exact T.mapsTo_resolved_tube hcoord hresolved ⟨ha, hmem⟩
@@ -303,7 +330,7 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
     rw [SingularTwoCell.range_boundary_eq_image_frontier, hdomain]
     rintro _ ⟨x, hx, rfl⟩
     have hxdom : x ∈ G.domain := G.frontier_subset_domain hx
-    by_cases hxU : ⇑G x ∈ U
+    by_cases hxU : ⇑G x ∈ T.chart '' spliceCylinder
     · rw [hresolved ⟨hxdom, hxU⟩]
       exact hendDisks ⟨crossSeamResolve (coord x),
         crossSeamResolve_mem_spliceEndDisks (hcoord.mapsTo ⟨hxdom, hxU⟩)
@@ -314,7 +341,7 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
     rw [SingularTwoCell.range_boundary_eq_image_frontier, hdomain]
     apply Subset.antisymm
     · rintro _ ⟨⟨x, hx, rfl⟩, hbd⟩
-      by_cases hxU : ⇑G x ∈ U
+      by_cases hxU : ⇑G x ∈ T.chart '' spliceCylinder
       · refine ⟨x, (hends x ⟨hx, hxU⟩).mpr ?_, rfl⟩
         obtain ⟨p, hp, hpx⟩ :=
           htubeBdM ⟨T.mapsTo_resolved_tube hcoord hresolved ⟨hx, hxU⟩, hbd⟩
@@ -336,14 +363,14 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
         rw [hGimage, SingularTwoCell.range_boundary_eq_image_frontier] at hmem
         obtain ⟨x', hx', hGx'⟩ := hmem
         have hx'dom : x' ∈ G.domain := G.frontier_subset_domain hx'
-        have hx'U : ⇑G x' ∉ U := by
+        have hx'U : ⇑G x' ∉ T.chart '' spliceCylinder := by
           rw [hGx']
           exact hxU
         exact ⟨x', hx', by rw [hcompl ⟨hx'dom, hx'U⟩, hcompl ⟨hx, hxU⟩]; exact hGx'⟩
     · rintro _ ⟨x, hx, rfl⟩
       have hxdom : x ∈ G.domain := G.frontier_subset_domain hx
       refine ⟨⟨x, hxdom, rfl⟩, ?_⟩
-      by_cases hxU : ⇑G x ∈ U
+      by_cases hxU : ⇑G x ∈ T.chart '' spliceCylinder
       · rw [hresolved ⟨hxdom, hxU⟩]
         refine hBdM (hendDisks ⟨crossSeamResolve (coord x), ?_, rfl⟩)
         exact crossSeamResolve_mem_spliceEndDisks (hcoord.mapsTo ⟨hxdom, hxU⟩)
@@ -355,10 +382,15 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
   singularSet := hD.singularSet.deletedBranchTriangulation c hdouble
   crossing := by
     intro y hy
-    obtain ⟨hyG, hyU⟩ :=
-      T.doublePointSet_resolved_subset hdomain hcoord hresolved hcompl hy
+    have hyU : y ∉ U := by
+      have hyD := hy
+      rw [hdouble, T.doublePointSet_sdiff_branchCarrier] at hyD
+      exact hyD.2
+    have hyG : y ∈ doublePointSet G G.domain :=
+      (T.doublePointSet_resolved_subset hdomain hcoord hresolved hcompl hy).1
     obtain ⟨e, he, hye, hdis, hcross⟩ := hGcrossing y hyG hyU
-    have hnot : ∀ x ∈ G.domain, ⇑G x ∈ e.source ∨ ⇑cell x ∈ e.source → ⇑G x ∉ U := by
+    have hnot : ∀ x ∈ G.domain, ⇑G x ∈ e.source ∨ ⇑cell x ∈ e.source →
+        ⇑G x ∉ T.chart '' spliceCylinder := by
       rintro x hx (hsrc | hsrc) hmem
       · refine Set.disjoint_left.mp hdis hsrc ⟨crossSeamInclude (coord x), ?_, ?_⟩
         · refine bentFigure_subset_spliceCylinder ?_
@@ -396,11 +428,16 @@ proof passes only the six geometric fields of `R` to
 `CrossSeamTubeData.normalOfResolvedCell`, so the field `normal` of `CrossSeamRegluedData` may
 be deleted and every use of `R.normal` replaced by `R.normalOfTube` applied to the same extra
 hypotheses. The hypothesis `hGD`, which says that the cross reglue changes no double point
-outside the tube, is the one already consumed by
+outside the parametrised cylinder, is the one already consumed by
 `CrossSeamRegluedData.doublePointSet_cell_eq`; the remaining hypotheses are described at
-`CrossSeamTubeData.normalOfResolvedCell`. -/
+`CrossSeamTubeData.normalOfResolvedCell`.
+
+`hGD` is stated at the closed parametrised cylinder and not at the open tube `U`, and the tube
+form does not imply it: it constrains nothing about the double points of `G` lying in `U` but
+off the cylinder. Every other hypothesis is either unchanged or holds on the smaller set. -/
 noncomputable def normalOfTube (R : CrossSeamRegluedData T G)
-    (hGD : doublePointSet G G.domain \ U = doublePointSet D D.domain \ U)
+    (hGD : doublePointSet G G.domain \ T.chart '' spliceCylinder =
+      doublePointSet D D.domain \ T.chart '' spliceCylinder)
     (hGinj : ∀ x ∈ G.domain, ∃ V ∈ 𝓝[G.domain] x, InjOn G V)
     (hGfiber : ∀ y, (G.domain ∩ ⇑G ⁻¹' {y}).encard ≤ 2)
     (hGboundary : Set.range ⇑G.boundary ⊆ B)
@@ -411,9 +448,9 @@ noncomputable def normalOfTube (R : CrossSeamRegluedData T G)
           HasPLNormalDoubleCrossingAt (e ∘ G) (G.domain ∩ ⇑G ⁻¹' e.source)
             (e '' (e.source ∩ BdM)) (e y))
     (hendDisks : T.chart '' spliceEndDisks ⊆ B)
-    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' U,
+    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
       x ∈ frontier G.domain ↔ (R.coord x).2.2 = 0 ∨ (R.coord x).2.2 = 1)
-    (htubeBdM : U ∩ BdM ⊆ T.chart '' spliceEndDisks)
+    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
     (hBdM : B ⊆ BdM) :
     NormalSingularCellData R.cell BdM B :=
   T.normalOfResolvedCell R.domain_eq R.bijOn_coord R.reglued_eq R.resolved_eq R.eqOn_compl
