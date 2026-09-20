@@ -185,24 +185,18 @@ private theorem taylor_polynomial_derivatives
     have hd := (B.hasFDerivAt.comp x ((hasFDerivAt_id (𝕜 := ℝ) x).sub_const x)).const_add p
     simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using hd.fderiv
 
-theorem second_order_le_zero_of_upper_tests_of_differentiableAt_fderiv
+theorem second_order_le_zero_of_upper_tests_of_isLittleO
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {u : E → ℝ} {x : E}
-    (hu : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ u y)
-    (hdu : DifferentiableAt ℝ (fderiv ℝ u) x)
+    {p : E →L[ℝ] ℝ} {B : E →L[ℝ] E →L[ℝ] ℝ} (hB : B.flip = B)
+    (htaylor : (fun y => u y - u x - p (y - x) - (1 / 2 : ℝ) * B (y - x) (y - x))
+      =o[𝓝 x] (fun y => ‖y - x‖ ^ 2))
     {H : (E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ) → ℝ}
     (hsub : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
       IsLocalMax (fun z => u z - φ z) x → H (fderiv ℝ φ x) (fderiv ℝ (fderiv ℝ φ) x) ≤ 0)
     (hH : LowerSemicontinuousAt (fun z : (E →L[ℝ] ℝ) × (E →L[ℝ] E →L[ℝ] ℝ) => H z.1 z.2)
-      (fderiv ℝ u x, fderiv ℝ (fderiv ℝ u) x)) :
-    H (fderiv ℝ u x) (fderiv ℝ (fderiv ℝ u) x) ≤ 0 := by
-  let p := fderiv ℝ u x
-  let B := fderiv ℝ (fderiv ℝ u) x
-  have hu' : ∀ᶠ y in 𝓝 x, HasFDerivAt u (fderiv ℝ u y) y := hu.mono (fun _ h => h.hasFDerivAt)
-  have hB : B.flip = B := by
-    ext v w
-    exact (second_derivative_symmetric_of_eventually_of_real hu' hdu.hasFDerivAt v w).symm
-  have htaylor := DifferentialGeometry.Analysis.second_order_taylor_isLittleO hu' hdu.hasFDerivAt
+      (p, B)) :
+    H p B ≤ 0 := by
   let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     (Module.finBasis ℝ E).equivFunL.trans
       (EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin (Module.finrank ℝ E))).symm
@@ -247,7 +241,7 @@ theorem second_order_le_zero_of_upper_tests_of_differentiableAt_fderiv
       have hrem : u y - u x - p (y - x) - (1 / 2 : ℝ) * B (y - x) (y - x) ≤
           (ε / C) * ‖y - x‖ ^ 2 := by
         apply (le_abs_self _).trans
-        simpa only [p, B, smul_eq_mul, Real.norm_eq_abs, norm_pow, norm_norm, abs_norm] using hy
+        simpa only [Real.norm_eq_abs, norm_pow, norm_norm, abs_norm] using hy
       have hquad : (ε / C) * ‖y - x‖ ^ 2 ≤ ε * Q (y - x) (y - x) := by
         calc
           (ε / C) * ‖y - x‖ ^ 2 ≤ (ε / C) * (C * Q (y - x) (y - x)) :=
@@ -267,6 +261,25 @@ theorem second_order_le_zero_of_upper_tests_of_differentiableAt_fderiv
   obtain ⟨ε, hε, hpos⟩ := ((show ∀ᶠ ε : ℝ in 𝓝[>] 0, 0 < ε from self_mem_nhdsWithin).and
     (nhdsWithin_le_nhds hnear)).exists
   exact (not_lt_of_ge (htest ε hε)) hpos
+
+theorem second_order_le_zero_of_upper_tests_of_differentiableAt_fderiv
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {u : E → ℝ} {x : E}
+    (hu : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ u y)
+    (hdu : DifferentiableAt ℝ (fderiv ℝ u) x)
+    {H : (E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ) → ℝ}
+    (hsub : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
+      IsLocalMax (fun z => u z - φ z) x → H (fderiv ℝ φ x) (fderiv ℝ (fderiv ℝ φ) x) ≤ 0)
+    (hH : LowerSemicontinuousAt (fun z : (E →L[ℝ] ℝ) × (E →L[ℝ] E →L[ℝ] ℝ) => H z.1 z.2)
+      (fderiv ℝ u x, fderiv ℝ (fderiv ℝ u) x)) :
+    H (fderiv ℝ u x) (fderiv ℝ (fderiv ℝ u) x) ≤ 0 := by
+  have hu' : ∀ᶠ y in 𝓝 x, HasFDerivAt u (fderiv ℝ u y) y := hu.mono (fun _ h => h.hasFDerivAt)
+  have hB : (fderiv ℝ (fderiv ℝ u) x).flip = fderiv ℝ (fderiv ℝ u) x := by
+    ext v w
+    exact (second_derivative_symmetric_of_eventually_of_real hu' hdu.hasFDerivAt v w).symm
+  apply second_order_le_zero_of_upper_tests_of_isLittleO hB ?_ hsub hH
+  simpa only [smul_eq_mul] using
+    DifferentialGeometry.Analysis.second_order_taylor_isLittleO hu' hdu.hasFDerivAt
 
 theorem ae_second_order_le_zero_of_upper_tests_of_locallyLipschitzOn_fderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

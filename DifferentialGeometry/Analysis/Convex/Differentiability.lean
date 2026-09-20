@@ -220,3 +220,42 @@ theorem ConvexOn.alexandrov
     hU hfU hx.hasFDerivWithinAt
   refine ⟨hdx, B, hsym, ?_⟩
   simpa only [hdiag, smul_eq_mul] using h
+
+theorem ConvexOn.alexandrov_sub_contDiffOn
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    {f g : E → ℝ} {s : Set E} (hf : ConvexOn ℝ s f)
+    (hg : ContDiffOn ℝ 2 g (interior s)) :
+    ∀ᵐ x ∂μ.restrict (interior s), DifferentiableAt ℝ (f - g) x ∧
+      ∃ B : E →L[ℝ] E →L[ℝ] ℝ, B.flip = B ∧
+        (fun y => (f - g) y - (f - g) x - fderiv ℝ (f - g) x (y - x) -
+          (1 / 2 : ℝ) * B (y - x) (y - x)) =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  filter_upwards [hf.alexandrov (μ := μ), ae_restrict_mem isOpen_interior.measurableSet]
+    with x hx hxs
+  obtain ⟨hdx, B, hB, hjet⟩ := hx
+  have hgx : ContDiffAt ℝ 2 g x := (hg x hxs).contDiffAt (isOpen_interior.mem_nhds hxs)
+  have hdg := hgx.differentiableAt (by norm_num)
+  have hnear : ∀ᶠ y in 𝓝 x, HasFDerivAt g (fderiv ℝ g y) y :=
+    (hgx.eventually (by norm_num)).mono (fun _ h => (h.differentiableAt (by norm_num)).hasFDerivAt)
+  have hDD : HasFDerivAt (fderiv ℝ g) (fderiv ℝ (fderiv ℝ g) x) x :=
+    ((hgx.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)).hasFDerivAt
+  let C := fderiv ℝ (fderiv ℝ g) x
+  have hC : C.flip = C := by
+    ext v w
+    exact (second_derivative_symmetric_of_eventually_of_real hnear hDD v w).symm
+  refine ⟨hdx.sub hdg, B - C, ?_, ?_⟩
+  · ext v w
+    change B w v - C w v = B v w - C v w
+    rw [show B w v = B v w from congrArg (fun A : E →L[ℝ] E →L[ℝ] ℝ => A v w) hB,
+      show C w v = C v w from congrArg (fun A : E →L[ℝ] E →L[ℝ] ℝ => A v w) hC]
+  · have h := hjet.sub (DifferentialGeometry.Analysis.second_order_taylor_isLittleO hnear hDD)
+    have heq : (fun y => (f - g) y - (f - g) x - fderiv ℝ (f - g) x (y - x) -
+        (1 / 2 : ℝ) * (B - C) (y - x) (y - x)) =
+        (fun y => f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) * B (y - x) (y - x)) -
+        (fun y => g y - g x - fderiv ℝ g x (y - x) - (1 / 2 : ℝ) • C (y - x) (y - x)) := by
+      funext y
+      rw [fderiv_sub hdx hdg]
+      simp only [Pi.sub_apply, sub_apply, smul_eq_mul]
+      ring
+    rw [heq]
+    exact h

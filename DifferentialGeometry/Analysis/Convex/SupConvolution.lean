@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Convex.Differentiability
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
@@ -123,6 +124,22 @@ theorem convexOn_supConvolutionOn_add_norm_sq
     (mul_le_mul_of_nonneg_left (hle z hy) hb)
   rw [← hlin, ← hid (a • x + b • z) y] at hsum
   linarith
+
+theorem ae_second_order_taylor_supConvolutionOn
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {μ : MeasureTheory.Measure E} [μ.IsAddHaarMeasure]
+    {u : E → ℝ} {s : Set E} (hs : s.Nonempty) (hu : BddAbove (u '' s))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᵐ x ∂μ, DifferentiableAt ℝ (supConvolutionOn s u ε) x ∧
+      ∃ B : E →L[ℝ] E →L[ℝ] ℝ, B.flip = B ∧
+        (fun y => supConvolutionOn s u ε y - supConvolutionOn s u ε x -
+          fderiv ℝ (supConvolutionOn s u ε) x (y - x) - (1 / 2 : ℝ) * B (y - x) (y - x))
+          =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  have hq : ContDiff ℝ 2 (fun z : E => ‖z‖ ^ 2 / (2 * ε)) :=
+    (contDiff_norm_sq ℝ).div_const _
+  have h := (convexOn_supConvolutionOn_add_norm_sq hs hu hε).alexandrov_sub_contDiffOn
+    (μ := μ) hq.contDiffOn
+  simpa only [Pi.sub_def, add_sub_cancel_right, interior_univ, MeasureTheory.Measure.restrict_univ] using h
 
 theorem isLocalMax_sub_penalized_comp_of_supConvolutionOn
     {X : Type*} [PseudoMetricSpace X] {u φ : X → ℝ} {s : Set X}
