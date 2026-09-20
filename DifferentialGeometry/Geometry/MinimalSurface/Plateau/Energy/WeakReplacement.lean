@@ -5,6 +5,8 @@ import DifferentialGeometry.Analysis.Integration.Lp.StrongConvergence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakLocalComparison
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Locality
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BoundedDerivative
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.ZeroExtension
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Integrability
 
 noncomputable section
 
@@ -283,6 +285,169 @@ theorem weak_replacement_energy_le_of_disk_energy_minimizing_sequence
       (Metric.closedBall_subset_ball hρ1))
     (fun j => (integrable_quadratic_weakGrad_column hK A hA hq hqK j).mono_set
       (Metric.closedBall_subset_ball hρc)) hcomp
+
+end DifferentialGeometry.Geometry
+
+end
+
+noncomputable section
+open Manifold Set Filter MeasureTheory
+open DifferentialGeometry.Topology
+open DifferentialGeometry.Analysis
+open DifferentialGeometry.Analysis.Sobolev.Euclidean
+open scoped Manifold ContDiff Topology NNReal ENNReal
+
+namespace DifferentialGeometry.Geometry
+
+local notation "V" => EuclideanSpace ℝ (Fin 2)
+
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {ι : Type*} [Fintype ι]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M]
+  [IsManifold 𝓘(ℝ, E) ∞ M] [T2Space M] [CompactSpace M] [PreconnectedSpace M]
+
+local notation "F" => EuclideanSpace ℝ ι
+
+theorem weak_replacement_energy_le_on_interior_ball_of_disk_energy_minimizing_sequence
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {Φ : M → F}
+    (hΦ : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, F) ∞ Φ)
+    {r : F → M} {U : Set F} (hU : IsOpen U)
+    (hr : ContMDiffOn 𝓘(ℝ, F) 𝓘(ℝ, E) ∞ r U)
+    (hΦU : range Φ ⊆ U) (hleft : Function.LeftInverse r Φ)
+    {γ : freeLoop M} (u : ℕ → C(closedDisk, M))
+    (hu : ∀ n, u n ∈ weaklyMonotoneDiskCompetitors g γ)
+    (hmin : Tendsto (fun n => riemannianDiskEnergy g (u n)) atTop
+      (𝓝 (sInf ((fun v : C(closedDisk, M) => riemannianDiskEnergy g v) ''
+        weaklyMonotoneDiskCompetitors g γ))))
+    (hs : ∀ n i, DeGiorgi.MemW1pWitness 2
+      (fun x => Φ (diskExtension (u n) (Complex.orthonormalBasisOneI.repr.symm x)) i)
+      (Metric.ball 0 1))
+    (w : V → F) (hw : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => w x i) (Metric.ball 0 1))
+    (hrep : ∀ n i j, (fun x => (hs n i).weakGrad x j) =ᵐ[
+      volume.restrict (Metric.ball (0 : V) 1)]
+      (fun x => fderiv ℝ
+        (fun y => Φ (diskExtension (u n) (Complex.orthonormalBasisOneI.repr.symm y)) i)
+        x (EuclideanSpace.single j 1)))
+    (hL2 : Tendsto (fun n => eLpNorm (fun x =>
+      Φ (diskExtension (u n) (Complex.orthonormalBasisOneI.repr.symm x)) - w x)
+      2 (volume.restrict (Metric.ball 0 1))) atTop (𝓝 0))
+    (hae : ∀ᵐ x ∂volume.restrict (Metric.ball (0 : V) 1),
+      Tendsto (fun n => Φ (diskExtension (u n) (Complex.orthonormalBasisOneI.repr.symm x)))
+        atTop (𝓝 (w x)))
+    (hweak : ∀ i (z : Lp V 2 (volume.restrict (Metric.ball 0 1))),
+      Tendsto (fun n => inner ℝ (DeGiorgi.gradLpOfWitness (hs n i)) z) atTop
+        (𝓝 (inner ℝ (DeGiorgi.gradLpOfWitness (hw i)) z)))
+    {b : V} {a c : ℝ} (ha : 0 < a) (hac : a < c) (hbc : ‖b‖ + c < 1)
+    (q : V → F) (hq : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => q x i) (Metric.ball b c))
+    (hqK : ∀ᵐ x ∂volume.restrict (Metric.ball b c), q x ∈ range Φ)
+    (hqw : q =ᵐ[volume.restrict (Metric.ball b c \ Metric.closedBall b a)] w) :
+    (∑ j : Fin 2, ∫ x in Metric.closedBall b a,
+      pullbackMetricCoefficients g r (w x) (WithLp.toLp 2 (fun i => (hw i).weakGrad x j))
+        (WithLp.toLp 2 (fun i => (hw i).weakGrad x j))) ≤
+      ∑ j : Fin 2, ∫ x in Metric.closedBall b a,
+        pullbackMetricCoefficients g r (q x) (WithLp.toLp 2 (fun i => (hq i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hq i).weakGrad x j)) := by
+  have hball : Metric.ball b c ⊆ Metric.ball (0 : V) 1 := by
+    intro x hx
+    rw [Metric.mem_ball, dist_zero_right]
+    have hx' : ‖x - b‖ < c := by simpa only [Metric.mem_ball, dist_eq_norm] using hx
+    have hn : ‖x‖ ≤ ‖x - b‖ + ‖b‖ := by simpa only [sub_add_cancel] using norm_add_le (x - b) b
+    linarith
+  obtain ⟨v, ⟨hv⟩, hvq, hvw⟩ := exists_weak_extension_of_eq_on_collar
+    Metric.isOpen_ball ha.le hac hball hw hq hqw
+  let K := range Φ
+  let A := pullbackMetricCoefficients g r
+  have hK : IsCompact K := isCompact_range hΦ.continuous
+  have hA : ContinuousOn A K :=
+    (contDiffOn_pullback_metric_coefficients g hU hr).continuousOn.mono hΦU
+  have hwK : ∀ᵐ x ∂volume.restrict (Metric.ball (0 : V) 1), w x ∈ K :=
+    hae.mono fun x hx => hK.isClosed.mem_of_tendsto hx
+      (Eventually.of_forall fun n => mem_range_self _)
+  have hvK : ∀ᵐ x ∂volume.restrict (Metric.ball (0 : V) 1), v x ∈ K := by
+    have hqae := (ae_restrict_iff' Metric.isOpen_ball.measurableSet).mp hqK
+    have hveq := (ae_restrict_iff' Metric.isOpen_ball.measurableSet).mp hvq
+    have hvweq := (ae_restrict_iff' (Metric.isOpen_ball.measurableSet.diff
+      Metric.isClosed_closedBall.measurableSet)).mp hvw
+    filter_upwards [hwK, ae_restrict_mem Metric.isOpen_ball.measurableSet,
+      ae_restrict_of_ae hqae, ae_restrict_of_ae hveq, ae_restrict_of_ae hvweq]
+      with x hxK hx hxq hxvq hxvw
+    by_cases hxc : x ∈ Metric.ball b c
+    · rw [hxvq hxc]
+      exact hxq hxc
+    · rw [hxvw ⟨hx, fun hxa => hxc (Metric.closedBall_subset_ball hac hxa)⟩]
+      exact hxK
+  let a₀ := (‖b‖ + c + 1) / 2
+  let c₀ := (a₀ + 1) / 2
+  have hca₀ : ‖b‖ + c < a₀ := by dsimp only [a₀]; linarith
+  have ha₀1 : a₀ < 1 := by dsimp only [a₀]; linarith
+  have ha₀ : 0 < a₀ := by
+    have hc := ha.trans hac
+    have hn := norm_nonneg b
+    dsimp only [a₀]
+    linarith
+  have ha₀c₀ : a₀ < c₀ := by dsimp only [c₀]; linarith
+  have hc₀1 : c₀ < 1 := by dsimp only [c₀]; linarith
+  have hinner : Metric.closedBall b a ⊆ Metric.closedBall (0 : V) a₀ := by
+    intro x hx
+    rw [Metric.mem_closedBall, dist_zero_right]
+    have hx' : ‖x - b‖ ≤ a := by simpa only [Metric.mem_closedBall, dist_eq_norm] using hx
+    have hn : ‖x‖ ≤ ‖x - b‖ + ‖b‖ := by simpa only [sub_add_cancel] using norm_add_le (x - b) b
+    linarith
+  let hv₀ (i : ι) := DeGiorgi.MemW1pWitness.restrict Metric.isOpen_ball
+    (Metric.ball_subset_ball hc₀1.le) (hv i)
+  have hvw₀ : v =ᵐ[volume.restrict
+      (Metric.ball (0 : V) c₀ \ Metric.closedBall 0 a₀)] w :=
+    ae_restrict_of_ae_restrict_of_subset (sdiff_subset_sdiff
+      (Metric.ball_subset_ball hc₀1.le) hinner) hvw
+  have hcomp := weak_replacement_energy_le_of_disk_energy_minimizing_sequence
+    g hΦ hU hr hΦU hleft u hu hmin hs w hw hrep hL2 hae hweak ha₀ ha₀c₀ hc₀1 v hv₀
+    (ae_restrict_of_ae_restrict_of_subset (Metric.ball_subset_ball hc₀1.le) hvK) hvw₀
+  let ew := fun x => ∑ j : Fin 2, A (w x)
+    (WithLp.toLp 2 (fun i => (hw i).weakGrad x j))
+    (WithLp.toLp 2 (fun i => (hw i).weakGrad x j))
+  let ev := fun x => ∑ j : Fin 2, A (v x)
+    (WithLp.toLp 2 (fun i => (hv i).weakGrad x j))
+    (WithLp.toLp 2 (fun i => (hv i).weakGrad x j))
+  have hiw (j : Fin 2) := integrable_quadratic_weakGrad_column hK A hA hw hwK j
+  have hiv (j : Fin 2) := integrable_quadratic_weakGrad_column hK A hA hv hvK j
+  have houter : Metric.closedBall (0 : V) a₀ ⊆ Metric.ball (0 : V) 1 :=
+    Metric.closedBall_subset_ball ha₀1
+  have hiw₀ : IntegrableOn ew (Metric.closedBall (0 : V) a₀) :=
+    (integrable_sum_quadratic_weakGrad hw hK A hA hwK).mono_set houter
+  have hiv₀ : IntegrableOn ev (Metric.closedBall (0 : V) a₀) :=
+    (integrable_sum_quadratic_weakGrad hv hK A hA hvK).mono_set houter
+  have hcomp' : (∫ x in Metric.closedBall (0 : V) a₀, ew x) ≤
+      ∫ x in Metric.closedBall (0 : V) a₀, ev x := by
+    rw [integral_finsetSum _ (fun j _ => (hiw j).mono_set houter),
+      integral_finsetSum _ (fun j _ => (hiv j).mono_set houter)]
+    exact hcomp
+  have hcoll := quadratic_weakGrad_columns_ae_eq_of_ae_eq
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    (Metric.isOpen_ball.sdiff Metric.isClosed_closedBall) sdiff_subset
+    hw hv hvw.symm (fun _ y => A y)
+  have hsum : ew =ᵐ[volume.restrict
+      (Metric.closedBall (0 : V) a₀ \ Metric.closedBall b a)] ev :=
+    (ae_restrict_of_ae_restrict_of_subset (sdiff_subset_sdiff_left houter) hcoll).mono
+      fun x hx => Finset.sum_congr rfl fun j _ => hx j
+  have hsmall := setIntegral_le_of_ae_eq_on_sdiff Metric.isClosed_closedBall.measurableSet
+    hinner hiw₀ hiv₀ hsum hcomp'
+  let hvB (i : ι) := DeGiorgi.MemW1pWitness.restrict Metric.isOpen_ball hball (hv i)
+  have heq := quadratic_weakGrad_columns_ae_eq_of_ae_eq
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) Metric.isOpen_ball (Subset.rfl)
+    hvB hq hvq (fun _ y => A y)
+  have heq' : (∫ x in Metric.closedBall b a, ev x) =
+      ∑ j : Fin 2, ∫ x in Metric.closedBall b a, A (q x)
+        (WithLp.toLp 2 (fun i => (hq i).weakGrad x j))
+        (WithLp.toLp 2 (fun i => (hq i).weakGrad x j)) := by
+    rw [integral_finsetSum _ (fun j _ => (hiv j).mono_set (hinner.trans houter))]
+    apply Finset.sum_congr rfl
+    intro j hj
+    apply integral_congr_ae
+    exact (ae_restrict_of_ae_restrict_of_subset (Metric.closedBall_subset_ball hac) heq).mono
+      fun x hx => hx j
+  rw [heq', integral_finsetSum _ (fun j _ => (hiw j).mono_set (hinner.trans houter))] at hsmall
+  exact hsmall
 
 end DifferentialGeometry.Geometry
 

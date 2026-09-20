@@ -3,6 +3,8 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
+section
+
 open Filter Topology
 
 namespace Real
@@ -156,3 +158,93 @@ theorem exists_geometric_scale_bound
     _ = _ := by ring
 
 end DifferentialGeometry.Analysis.Asymptotics
+
+end
+
+noncomputable section
+open Filter Set
+open scoped Topology
+
+namespace DifferentialGeometry.Analysis
+
+theorem le_pow_mul_of_half_le
+    {E : ℝ → ℝ} {δ θ : ℝ} (hδ : 0 < δ) (hθ : 0 ≤ θ)
+    (hstep : ∀ R ∈ Ioc (0 : ℝ) δ, E (R / 2) ≤ θ * E R) (k : ℕ) :
+    E (δ / (2 : ℝ) ^ k) ≤ θ ^ k * E δ := by
+  have h := le_geom (u := fun j : ℕ => E (δ / (2 : ℝ) ^ j)) hθ k
+    (fun j _ => by
+      have hRpos : 0 < δ / (2 : ℝ) ^ j := div_pos hδ (pow_pos (by norm_num) j)
+      have hRle : δ / (2 : ℝ) ^ j ≤ δ :=
+        div_le_self hδ.le (one_le_pow₀ (by norm_num : (1 : ℝ) ≤ 2))
+      rw [pow_succ, ← div_div]
+      exact hstep _ ⟨hRpos, hRle⟩)
+  simpa only [pow_zero, div_one] using h
+
+end DifferentialGeometry.Analysis
+
+end
+
+noncomputable section
+open Set Filter
+open scoped Topology
+
+namespace DifferentialGeometry.Analysis
+
+theorem exists_power_bound_of_half_contraction {θ : ℝ} (hθ : 0 ≤ θ) (hθ1 : θ < 1) :
+    ∃ α : ℝ, 0 < α ∧ α ≤ 1 ∧ ∀ (E : ℝ → ℝ) (δ M : ℝ),
+      0 < δ → 0 ≤ M → E δ ≤ M →
+      MonotoneOn E (Ioc (0 : ℝ) δ) →
+      (∀ r ∈ Ioc (0 : ℝ) δ, E (r / 2) ≤ θ * E r) →
+      ∀ r ∈ Ioc (0 : ℝ) δ,
+        E r ≤ ((2 : ℝ) ^ (2 * α) * M / δ ^ (2 * α)) * r ^ (2 * α) := by
+  have hlim : Tendsto (fun a : ℝ => (1 / 2 : ℝ) ^ (2 * a)) (𝓝 0) (𝓝 1) := by
+    simpa only [Function.comp_def, id_eq, mul_zero, Real.rpow_zero] using
+      ((Real.continuous_const_rpow (by norm_num : (1 / 2 : ℝ) ≠ 0)).comp
+        (continuous_id.const_mul (2 : ℝ))).tendsto 0
+  have hsmall : ∀ᶠ a : ℝ in 𝓝[>] (0 : ℝ), θ < (1 / 2 : ℝ) ^ (2 * a) :=
+    (hlim.eventually (Ioi_mem_nhds hθ1)).filter_mono nhdsWithin_le_nhds
+  have hpos : ∀ᶠ a : ℝ in 𝓝[>] (0 : ℝ), 0 < a := self_mem_nhdsWithin
+  have hone : ∀ᶠ a : ℝ in 𝓝[>] (0 : ℝ), a < 1 :=
+    Filter.Eventually.filter_mono nhdsWithin_le_nhds
+      (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1))
+  obtain ⟨α, hα, hα1, hαθ⟩ := (hpos.and (hone.and hsmall)).exists
+  refine ⟨α, hα, hα1.le, ?_⟩
+  intro E δ M hδ hM hE hmono hstep r hr
+  obtain ⟨n, hnlo, hnhi⟩ := exists_nat_pow_near_of_lt_one
+    (div_pos hr.1 hδ) ((div_le_one hδ).mpr hr.2)
+    (by norm_num : (0 : ℝ) < 1 / 2) (by norm_num : (1 / 2 : ℝ) < 1)
+  have hscale (k : ℕ) : δ / (2 : ℝ) ^ k = (1 / 2 : ℝ) ^ k * δ := by
+    rw [one_div, inv_pow, div_eq_mul_inv, mul_comm]
+  have hspos : 0 < δ / (2 : ℝ) ^ n := div_pos hδ (pow_pos (by norm_num) n)
+  have hsle : δ / (2 : ℝ) ^ n ≤ δ :=
+    div_le_self hδ.le (one_le_pow₀ (by norm_num : (1 : ℝ) ≤ 2))
+  have hrle : r ≤ δ / (2 : ℝ) ^ n := by
+    rw [hscale]
+    exact (div_le_iff₀ hδ).mp hnhi
+  have hbase := le_pow_mul_of_half_le hδ hθ hstep n
+  have hEpow : E r ≤ θ ^ n * M :=
+    (hmono hr ⟨hspos, hsle⟩ hrle).trans
+      (hbase.trans (mul_le_mul_of_nonneg_left hE (pow_nonneg hθ n)))
+  have hpower : θ ^ n ≤ ((1 / 2 : ℝ) ^ n) ^ (2 * α) := by
+    rw [← Real.rpow_pow_comm (by norm_num : (0 : ℝ) ≤ 1 / 2)]
+    exact pow_le_pow_left₀ hθ hαθ.le n
+  have hrad : (1 / 2 : ℝ) ^ n ≤ 2 * r / δ := by
+    rw [pow_succ] at hnlo
+    have hl := (lt_div_iff₀ hδ).mp hnlo
+    apply (le_div_iff₀ hδ).mpr
+    nlinarith
+  have hp := Real.rpow_le_rpow (pow_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2) n)
+    hrad (by positivity : 0 ≤ 2 * α)
+  calc
+    E r ≤ θ ^ n * M := hEpow
+    _ ≤ (((1 / 2 : ℝ) ^ n) ^ (2 * α)) * M :=
+      mul_le_mul_of_nonneg_right hpower hM
+    _ ≤ (2 * r / δ) ^ (2 * α) * M := mul_le_mul_of_nonneg_right hp hM
+    _ = ((2 : ℝ) ^ (2 * α) * M / δ ^ (2 * α)) * r ^ (2 * α) := by
+      rw [Real.div_rpow (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hr.1.le) hδ.le,
+        Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 2) hr.1.le]
+      ring
+
+end DifferentialGeometry.Analysis
+
+end

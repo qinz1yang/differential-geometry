@@ -103,3 +103,57 @@ theorem integral_quadratic_comp_add_smul_plane
 end DifferentialGeometry.Analysis
 
 end
+
+noncomputable section
+open Set MeasureTheory
+
+namespace DifferentialGeometry.Analysis
+
+
+
+theorem preimage_smul_ball_zero_plane {a : ℝ} (ha : 0 < a) (R : ℝ) :
+    (fun x : EuclideanSpace ℝ (Fin 2) => a • x) ⁻¹' Metric.ball 0 R =
+      Metric.ball 0 (R / a) := by
+  ext x
+  simp only [mem_preimage, Metric.mem_ball, dist_zero_right, norm_smul,
+    Real.norm_eq_abs, abs_of_pos ha]
+  rw [lt_div_iff₀ ha, mul_comm a]
+
+theorem preimage_smul_closedBall_zero_plane {a : ℝ} (ha : 0 < a) (R : ℝ) :
+    (fun x : EuclideanSpace ℝ (Fin 2) => a • x) ⁻¹' Metric.closedBall 0 R =
+      Metric.closedBall 0 (R / a) := by
+  ext x
+  simp only [mem_preimage, Metric.mem_closedBall, dist_zero_right, norm_smul,
+    Real.norm_eq_abs, abs_of_pos ha]
+  rw [le_div_iff₀ ha, mul_comm a]
+
+end DifferentialGeometry.Analysis
+
+end
+
+noncomputable section
+open Set MeasureTheory
+
+namespace DifferentialGeometry.Analysis
+
+local notation "V" => EuclideanSpace ℝ (Fin 2)
+
+theorem preimage_add_smul_ball_plane (b z : V) {a : ℝ} (ha : 0 < a) (R : ℝ) :
+    (fun x : V => b + a • x) ⁻¹' Metric.ball (b + a • z) R =
+      Metric.ball z (R / a) := by
+  ext x
+  simp only [mem_preimage, Metric.mem_ball, dist_add_left, dist_smul₀,
+    Real.norm_eq_abs, abs_of_pos ha]
+  rw [lt_div_iff₀ ha, mul_comm a]
+
+theorem preimage_add_smul_closedBall_plane (b z : V) {a : ℝ} (ha : 0 < a) (R : ℝ) :
+    (fun x : V => b + a • x) ⁻¹' Metric.closedBall (b + a • z) R =
+      Metric.closedBall z (R / a) := by
+  ext x
+  simp only [mem_preimage, Metric.mem_closedBall, dist_add_left, dist_smul₀,
+    Real.norm_eq_abs, abs_of_pos ha]
+  rw [le_div_iff₀ ha, mul_comm a]
+
+end DifferentialGeometry.Analysis
+
+end
