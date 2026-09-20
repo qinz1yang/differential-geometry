@@ -9107,6 +9107,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWit
 import DifferentialGeometry.Topology.PiecewiseLinear.TaperedInwardPushFixing
 import DifferentialGeometry.Topology.PiecewiseLinear.InwardPushStages
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteLocalModel
+import DifferentialGeometry.Topology.PiecewiseLinear.DoublePointFibreAgreement
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetOfCrossing
+import DifferentialGeometry.Topology.PiecewiseLinear.StageInwardPushFrame
 /-!
 # Differential geometry and geometric analysis
 -/
