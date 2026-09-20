@@ -10524,6 +10524,7 @@ import DifferentialGeometry.Topology.Simplex.TetrahedronGenLoop
 import DifferentialGeometry.Topology.Simplex.FourSimplexCubeRelation
 import DifferentialGeometry.Topology.Simplex.FourSimplexHomotopyRelation
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.ClosedBall
+import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.Interpolation
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.OpenSubtype
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCoreL2

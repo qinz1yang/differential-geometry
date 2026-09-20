@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Convex.SupConvolution
 import DifferentialGeometry.Analysis.Calculus.Taylor
+import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.Interpolation
 
 noncomputable section
 
@@ -170,5 +171,94 @@ theorem nondivergence_le_of_upper_test_supConvolutionOn
   have hzeroth := mul_le_mul_of_nonneg_left hv hc
   rw [map_sub]
   nlinarith
+
+theorem nondivergence_le_of_upper_test_supConvolutionOn_of_lipschitzOnWith
+    {E ι : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [Fintype ι]
+    {u : E → ℝ} {s : Set E} {K : ℝ≥0} (hs : IsCompact s) (hu : LipschitzOnWith K u s)
+    {ε : ℝ} (hε : 0 < ε) {x : E} (hx : Metric.closedBall x (2 * ε * K) ⊆ interior s)
+    {σ : E → ι → E} {b : E → E} {c r : E → ℝ}
+    {Kσ : ι → ℝ≥0} {Kb Kc Kr : ℝ≥0} {M : ℝ}
+    (hσ : ∀ i, LipschitzOnWith (Kσ i) (fun z => σ z i) s)
+    (hb : LipschitzOnWith Kb b s) (hc : LipschitzOnWith Kc c s)
+    (hr : LipschitzOnWith Kr r s) (hM : ∀ z ∈ s, |u z| ≤ M)
+    (hcpos : ∀ z ∈ interior s, 0 ≤ c z)
+    (hind : ∀ z ∈ interior s, LinearIndependent ℝ (σ z))
+    (hsub : ∀ y ∈ interior s, ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
+      IsLocalMax (fun z => u z - ψ z) y →
+      -(∑ i, fderiv ℝ (fderiv ℝ ψ) y (σ y i) (σ y i)) +
+        fderiv ℝ ψ y (b y) + c y * u y ≤ r y)
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+    (hm : IsLocalMax (fun z => supConvolutionOn s u ε z - φ z) x) :
+    -(∑ i, fderiv ℝ (fderiv ℝ φ) x (σ x i) (σ x i)) +
+      fderiv ℝ φ x (b x) + c x * supConvolutionOn s u ε x ≤
+        r x + ε * (4 * (K : ℝ) ^ 2 * (∑ i, (Kσ i : ℝ) ^ 2) +
+          4 * Kb * (K : ℝ) ^ 2 + 2 * K * (Kc * M + Kr)) := by
+  have hxs : x ∈ s := interior_subset (hx (Metric.mem_closedBall_self (by positivity)))
+  obtain ⟨y, hy, hmax⟩ := exists_supConvolutionOn_eq_of_isCompact hs ⟨x, hxs⟩
+    hu.continuousOn.upperSemicontinuousOn ε x
+  have hdist := dist_le_of_supConvolutionOn_eq hu hε hxs hy hmax
+  have hyi : y ∈ interior s := hx (by simpa only [Metric.mem_closedBall, dist_comm] using hdist)
+  have hbound : BddAbove (u '' s) := hs.bddAbove_image hu.continuousOn
+  obtain ⟨A, hA⟩ := (hind y hyi).exists_continuousLinearMap_apply_eq (σ x)
+  have hle := nondivergence_le_of_upper_test_supConvolutionOn hbound hε hyi hmax hφ hm
+    (hcpos y hyi) A hA (hsub y hyi)
+  have hv : |supConvolutionOn s u ε x| ≤ M := by
+    apply abs_le.mpr
+    constructor
+    · have hlow := (supConvolutionOn_sub_mem_Icc_of_lipschitzOnWith hu hε hxs).1
+      have hmlo := (abs_le.mp (hM x hxs)).1
+      linarith
+    · rw [hmax]
+      exact (sub_le_self _ (div_nonneg (sq_nonneg _) (by positivity))).trans
+        ((le_abs_self _).trans (hM y hy))
+  have hgrad : ‖fderiv ℝ φ x‖ ≤ 2 * K := by
+    rw [fderiv_eq_of_upper_test_supConvolutionOn hbound hε hy hmax
+      (hφ.differentiable (by simp) x) hm, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hε), innerSL_apply_norm]
+    rw [← dist_eq_norm, dist_comm]
+    calc
+      ε⁻¹ * dist x y ≤ ε⁻¹ * (2 * ε * K) := mul_le_mul_of_nonneg_left hdist (by positivity)
+      _ = 2 * K := by field_simp
+  have hdiff (i : ι) : ‖σ x i - σ y i‖ ≤ (Kσ i : ℝ) * (2 * ε * K) := by
+    have h := (hσ i).dist_le_mul x hxs y hy
+    rw [dist_eq_norm] at h
+    exact h.trans (mul_le_mul_of_nonneg_left hdist (Kσ i).coe_nonneg)
+  have hsum : ε⁻¹ * (∑ i, ‖σ x i - σ y i‖ ^ 2) ≤
+      ε * (4 * (K : ℝ) ^ 2 * (∑ i, (Kσ i : ℝ) ^ 2)) := by
+    calc
+      _ ≤ ε⁻¹ * (∑ i, ((Kσ i : ℝ) * (2 * ε * K)) ^ 2) := by
+        apply mul_le_mul_of_nonneg_left _ (by positivity)
+        exact Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) (hdiff i) 2
+      _ = _ := by
+        simp_rw [mul_pow]
+        rw [← Finset.sum_mul]
+        field_simp
+        ring
+  have hbxy : ‖b x - b y‖ ≤ Kb * (2 * ε * K) := by
+    have h := hb.dist_le_mul x hxs y hy
+    rw [dist_eq_norm] at h
+    exact h.trans (mul_le_mul_of_nonneg_left hdist Kb.coe_nonneg)
+  have hdrift : fderiv ℝ φ x (b x - b y) ≤ ε * (4 * Kb * (K : ℝ) ^ 2) := by
+    calc
+      _ ≤ ‖fderiv ℝ φ x (b x - b y)‖ := le_abs_self _
+      _ ≤ ‖fderiv ℝ φ x‖ * ‖b x - b y‖ := (fderiv ℝ φ x).le_opNorm _
+      _ ≤ (2 * K) * (Kb * (2 * ε * K)) := mul_le_mul hgrad hbxy (norm_nonneg _) (by positivity)
+      _ = _ := by ring
+  have hcx : |c x - c y| ≤ Kc * (2 * ε * K) := by
+    have h := hc.dist_le_mul x hxs y hy
+    rw [Real.dist_eq] at h
+    exact h.trans (mul_le_mul_of_nonneg_left hdist Kc.coe_nonneg)
+  have hzero : (c x - c y) * supConvolutionOn s u ε x ≤ Kc * (2 * ε * K) * M := by
+    calc
+      _ ≤ |(c x - c y) * supConvolutionOn s u ε x| := le_abs_self _
+      _ = |c x - c y| * |supConvolutionOn s u ε x| := abs_mul _ _
+      _ ≤ _ := mul_le_mul hcx hv (abs_nonneg _) (by positivity)
+  have hrxy : r y ≤ r x + Kr * (2 * ε * K) := by
+    have hh := hr.dist_le_mul y hy x hxs
+    rw [Real.dist_eq, dist_comm] at hh
+    have hh' := (le_abs_self (r y - r x)).trans
+      (hh.trans (mul_le_mul_of_nonneg_left hdist Kr.coe_nonneg))
+    linarith
+  linarith
 
 end DifferentialGeometry.Analysis.Viscosity
