@@ -12044,3 +12044,5 @@ import DifferentialGeometry.Analysis.Sobolev.Interval.UniformConvergence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.LocalComparison
 import DifferentialGeometry.Topology.LoopSpace.ThinAnnulus
 import DifferentialGeometry.Topology.MetricSpace.CompactInterpolation
+import DifferentialGeometry.Analysis.Integration.Lp.MovingBall
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakLocalComparison
