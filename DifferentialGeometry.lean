@@ -776,6 +776,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivati
 import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import DifferentialGeometry.Analysis.Integration.Integral.CutoffProfile
 import DifferentialGeometry.Analysis.Integration.Integral.DistanceCutoff
+import DifferentialGeometry.Analysis.Integration.Integral.VolumeGrowth
 import DifferentialGeometry.Analysis.Integration.Integral.GradientCutoff
 import DifferentialGeometry.Analysis.Integration.Integral.DivergenceForm
 import DifferentialGeometry.Analysis.Integration.Integral.TensorTest
@@ -7933,6 +7934,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.ComponentBounds
+import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.CotangentNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.CovariantSlotNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.LoweringNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.TensorProductNorm
