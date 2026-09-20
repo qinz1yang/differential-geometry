@@ -9074,6 +9074,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CompactRelativeApproximatio
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystemWitness
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.StageTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ResolvedCellNormal
 /-!
 # Differential geometry and geometric analysis
 -/
