@@ -9078,6 +9078,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ResolvedCellNor
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchInjection
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWitness
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedSeamResolution
+import DifferentialGeometry.Topology.PiecewiseLinear.SkeletonReduction
 /-!
 # Differential geometry and geometric analysis
 -/
