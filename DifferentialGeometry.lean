@@ -4894,6 +4894,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientCurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientUniversalCoverTrichotomy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel

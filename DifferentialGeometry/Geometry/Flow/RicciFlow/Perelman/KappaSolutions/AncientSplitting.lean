@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.UniversalCover
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UniversalCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureSurface
@@ -392,7 +393,37 @@ theorem ancient_fixed_universal_cover_product_of_null_plane
               (mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) I Phi (y, s) (v, a))
               (mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) I Phi (y, s) (w, c)) =
             (G.S.family.metric t).inner y v w + a * c := by
-  sorry
+  let _ : ConnectedSpace F.M := hconnected
+  have hnonflat : ∃ t ≤ (0 : ℝ), ∃ x : F.M, metricRm04At (F.S.base.metric t) x ≠ 0 := by
+    obtain ⟨t, ht, x, hx⟩ := hnotFlat
+    refine ⟨t, ht, x, ?_⟩
+    intro hz
+    apply hx
+    exact (DifferentialGeometry.Tensor0SBundle.normSq0S_eq_zero_iff _ x 4 _).mpr hz
+  have hcone := pointedFlow_metricAlgebraicCurvatureTensorAt_mem_nonnegativeCone F hcurvature
+  have hzero := ancient_leastCurvatureOperatorEigenvalueAt_eq_zero_of_null_plane
+    F hdim hcurvature t₀ ht₀ x₀ v₀ w₀ hplane hnull
+  have htri := curvatureOperatorImageAt_finrank_trichotomy_at_right_endpoint
+    F.S F.isSolution hdim (a := t₀ - 1) (b := t₀) (by linarith)
+    (fun r hr => hr.2.trans ht₀) (fun r hr => hr.2.trans_le ht₀)
+    (fun r hr => hcone r (hr.2.trans ht₀))
+  have hrank : Module.finrank ℝ (curvatureOperatorImageAt (F.S.base.metric t₀) x₀
+      (metricAlgebraicCurvatureTensorAt (F.S.base.metric t₀) x₀)) = 1 := by
+    rcases htri with hz | ho | hthree
+    · have hp := curvatureOperatorImageAt_finrank_pos_of_complete_ancient_nonflat
+        F.S F.isSolution hdim (fun _ hr => hr) (fun _ hr => hr)
+        (fun r hr => ⟨hcomplete r hr⟩) hbounded hnonflat ht₀ x₀
+      exact False.elim ((Nat.ne_of_gt hp) (hz x₀))
+    · exact ho x₀
+    · have hp := Geometry.Curvature.DimensionThree.leastCurvatureOperatorEigenvalueAt_pos_of_image_finrank_eq_three
+        (F.S.base.metric t₀) x₀ hdim (metricAlgebraicCurvatureTensorAt (F.S.base.metric t₀) x₀)
+        (hcone t₀ ht₀ x₀) (hthree x₀)
+      exact False.elim ((ne_of_gt hp) hzero)
+  apply ancient_fixed_universal_cover_product_of_curvatureOperatorImage_rank_eq_one
+    F hdim hconnected hcomplete
+  exact curvatureOperatorImageAt_finrank_eq_one_of_complete_ancient_rank_one
+    F.S F.isSolution hdim (fun _ hr => hr) (fun _ hr => hr)
+    (fun r hr => ⟨hcomplete r hr⟩) hbounded ht₀ x₀ hrank
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
