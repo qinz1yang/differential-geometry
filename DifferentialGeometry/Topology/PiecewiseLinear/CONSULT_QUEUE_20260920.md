@@ -30,9 +30,9 @@ transitive axioms exactly `propext, Classical.choice, Quot.sound`. Every node in
 **bold** is an open `Prop` with no producer.
 
 ```
-  LemmaTwoStatement                      Moise352Stages n
-        │ moise252_of_lemmaTwo                 │ moise352_of_stages
-        │ EmbeddedDiskTower.lean:173           │ LocallyFiniteApproximation.lean:479
+  LemmaTwoStatement                      Moise352StageStep n
+        │ moise252_of_lemmaTwo                 │ moise352_of_stageStep
+        │ EmbeddedDiskTower.lean:173           │ CompactRelativeApproximation.lean
         ▼                                      ▼
      Moise252                               Moise352 n
         │ moise304_of_moise252                 │ plApproximationManifold_three_of_moise352
@@ -46,9 +46,46 @@ transitive axioms exactly `propext, Classical.choice, Quot.sound`. Every node in
 ```
 
 So at this moment the two assembled chains have **exactly two open roots**:
-**`LemmaTwoStatement`** and **`Moise352Stages 3`**. Prompt 1 attacks the last
-geometric brick of the first; prompt 2 attacks the core of the second. Nothing else
-on either chain is missing.
+**`LemmaTwoStatement`** and **`Moise352StageStep 3`**. Prompt 1 attacks the last
+geometric brick of the first; prompt 2 attacks the core of the second.
+
+### Correction: `Moise352Stages` is false, and was the wrong target
+
+An earlier version of this file named `Moise352Stages 3` as the second root. **That
+was wrong: `Moise352Stages n` is false for every `n ≥ 1`**, so it is not an open
+problem but a dead end, and `moise352_of_stages`
+(`LocallyFiniteApproximation.lean:479`) is a valid implication from a false
+hypothesis.
+
+The defect is the quantifier packaging, not the geometry. `Moise352Stages` takes the
+tolerance as a sequence `ε : ℕ → ℝ` fixed *before* the family, while also demanding
+`EqOn (f (i+1)) (f i) (T.coreSpace i)`. The stages increase
+(`T.coreSpace i ⊆ T.N i ⊆ T.coreSpace (i+1)`, `LocallyFiniteApproximation.lean:20`),
+so the agreement clause forces `f j = f i` on `T.coreSpace i` for every `j ≥ i`; then
+for `x ∈ T.coreSpace j` the error clause reads `dist (f j x) (h x) < ε i` for **every**
+`i ≥ j` at once. Feed it `ε i = 1/(i+1)` and `f j` is pinned to `h`. So
+`Moise352Stages n` asserts that every topological embedding of a locally finite PL
+manifold *is exactly PL* on every compact stage — false already for `n = 1`,
+`M₁ = M₂ = ℝ`, `h x = x³`. The implication is proved in Lean as
+`Moise352Stages.exists_isPLHomeomorphInto_eqOn`; the counterexample tower is a stated
+remark, not formalised.
+
+The repair is confined to the packaging: the tolerance must be a **pointwise**
+`φ : M₁ → ℝ`, bounded below by a positive constant on each compact stage. Then on
+`T.coreSpace i` the conclusion of the step *is* its own hypothesis transported along
+`EqOn`, and no tolerance is ever asked to shrink where a map is already fixed. That
+is `Moise352StageStep n`, and `moise352_of_stageStep` carries all the bookkeeping.
+`exists_isPLHomeomorphInto_dist_lt_of_stages` has the same defect in its `hstages`
+binder and is equally unusable; `exists_isPLHomeomorphInto_of_stages`, which takes a
+pointwise `φ`, is fine and is what the repaired route goes through.
+
+A second caveat on the same chain, not formalised: **`Moise352 n` is presumably false
+for `n ≥ 5`.** By the argument shape of `plApproximationManifold_three_of_moise352`
+it would approximate any homeomorphism of closed PL `n`-manifolds by a PL embedding,
+necessarily surjective and hence a PL homeomorphism, contradicting the known
+homeomorphic-but-not-PL-homeomorphic manifolds in high dimensions. So
+`Moise352StageStep n` should be expected true only for small `n`, and any consultant
+who claims a dimension-free proof of it has made an error.
 
 Two status corrections worth recording, both verified against current source rather
 than against the notes:
@@ -65,21 +102,53 @@ than against the notes:
   time it was written. That matters because `moise252_of_lemmaTwo` proves the
   *repaired* `Moise252`, so Lemma 2 buys more than the notes suggest.
 * `Moise331`, `Moise341` and `Moise351` are all still open, but **none of them is
-  currently wired into the `Moise352Stages` reduction**. The reduction as built goes
+  currently wired into the 35.2 reduction**. The reduction as built goes
   through `plManifoldMapApproximation` (proved, `MoiseChain.lean:243`) and
   `CompactEmbeddingApproximation`, and what it is missing is injectivity — see
   prompt 2. Whether `Moise341` is the right thing to consume is precisely question
   2.Q2.
 
-One thing that neither `lake build` nor `#print axioms` can check, and that is not
-yet done: **non-vacuity anchors.** A vacuous `Prop` — one whose hypotheses nothing
-satisfies — passes both. `LemmaTwoStatement` quantifies over
-`NormalSystem.DoubleCoverReduction`, and `NormalSystem` (`SingularCell.lean:524`) is
-a twenty-odd-field structure; nobody has yet exhibited one. Until that is done, a
-proof of `LemmaTwoStatement` would be worth less than it looks. The tree does this
-correctly elsewhere — `ArcChainNeighborhood.lean:73`
-`exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` is a worked witness — so
-the pattern to copy exists. This is queued as work, not as a consultation.
+### Non-vacuity: `NormalSystem` is now known to be inhabited
+
+Neither `lake build` nor `#print axioms` can see a vacuous `Prop` — one whose
+hypotheses nothing satisfies — and until tonight nobody had exhibited a single
+`NormalSystem` (`SingularCell.lean:524`, twenty-odd fields), so a proof of
+`LemmaTwoStatement` would have been worth less than it looked. That hole is now
+closed at the base:
+
+```lean
+theorem nonempty_normalSystem_euclideanSpace_three :
+    Nonempty (NormalSystem (EuclideanSpace ℝ (Fin 3)))
+theorem exists_normalSystem_euclideanSpace_three :
+    ∃ S : NormalSystem (EuclideanSpace ℝ (Fin 3)),
+      S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+        frontier S.sourceComplex.space ∧
+      S.basepoint = S.boundaryLoop 0
+```
+
+unconditional, axioms exactly `propext, Classical.choice, Quot.sound`. The two extra
+conjuncts are two of the three side conditions `LemmaTwoStatement` puts on its
+covering system, so those are shown satisfiable too. The witness is a meridian of an
+embedded solid torus, fed to the tree's existing producer
+`exists_normalSystem_of_isPiecewiseAffineOn` (`LoopTheorem/SourceNormalSystem.lean:130`),
+which nobody had ever supplied with concrete input.
+
+What is **still** not anchored, and is worth a consultant's attention if prompt 1 or 3
+is answered cheaply:
+
+* a normal system with **non-empty singular set**. `S.complexity ≠ 0` iff the singular
+  map is not injective, and the producer exposes the singular map only on the
+  frontier, the interior coming from an opaque inward push. The only lever is a
+  non-injective boundary loop, and that fails structurally: a degree-one non-injective
+  map `S¹ → J` admits no continuous section, so essentiality cannot be transported by
+  a retraction. This needs either a from-scratch combinatorial normal system or a spur
+  cancellation free-homotopy lemma the tree does not have.
+* `Nonempty (EmbeddedDisk S)` for that witness — for the meridian configuration this
+  is Dehn's lemma, and note the obstruction argument is unavailable in both
+  directions: by Dehn's lemma such a disk *does* exist, so one cannot prove the
+  witness singular by contradiction either.
+* `Nonempty (DoubleCoverReduction S T)`, which additionally needs strict complexity
+  descent. Untouched.
 
 ---
 
@@ -202,52 +271,89 @@ read another branch.
 ### State
 
 Moise 35.2 — PL approximation of a topological embedding of one PL manifold in
-another — has been reduced twice.
+another — is reduced to one compact statement, and all the packaging around it is
+proved. **Read the correction in the status section above first**: the obligation
+`Moise352Stages` is *false*, because it fixed the tolerance as a sequence
+`ε : ℕ → ℝ` before the family while also demanding agreement between consecutive
+stages, which pins the approximation to `h` itself. The repaired obligation takes a
+**pointwise** tolerance `φ : M₁ → ℝ` bounded below by a positive constant on each
+compact stage:
 
-1. `DifferentialGeometry/Topology/PiecewiseLinear/LocallyFiniteApproximation.lean:479`
-   proves `moise352_of_stages : Moise352Stages n → Moise352 n`. All the non-compact
-   content (limit of the stages, keeping injectivity, keeping the PL local inverse,
-   converting stagewise constant errors into a prescribed continuous positive error)
-   is done there. The remaining obligation `Moise352Stages` is at `:461` and asks,
-   on each compact stage `T.coreSpace i` and for each constant tolerance `ε i`, for a
-   PL embedding approximating `h` and **agreeing with the previous stage's map on the
-   previous stage**.
-2. `DifferentialGeometry/Topology/PiecewiseLinear/CompactEmbeddingApproximation.lean`
+```lean
+def Moise352StageStep (n : ℕ) : Prop :=
+  ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
+    [MetricSpace M₂] [SecondCountableTopology M₂]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
+    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+    {K : Set M₁} (T : LocallyFinitePieceTower n M₁ K),
+    (∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex) →
+    ∀ {h : M₁ → M₂}, Topology.IsEmbedding (K.domRestrict h) →
+    ∀ {φ : M₁ → ℝ}, (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ x ∈ T.coreSpace i, c ≤ φ x) →
+      (∃ f, IsPLOn n n f (T.coreSpace 0) ∧ InjOn f (T.coreSpace 0) ∧
+          ∀ x ∈ T.coreSpace 0, dist (f x) (h x) < φ x) ∧
+        ∀ (i : ℕ) (g : M₁ → M₂), IsPLHomeomorphInto n g (T.coreSpace i) →
+          (∀ x ∈ T.coreSpace i, dist (g x) (h x) < φ x) →
+          ∃ f, IsPLOn n n f (T.coreSpace (i + 1)) ∧ InjOn f (T.coreSpace (i + 1)) ∧
+            EqOn f g (T.coreSpace i) ∧ ∀ x ∈ T.coreSpace (i + 1), dist (f x) (h x) < φ x
+```
+
+with `moise352_of_stageStep : Moise352StageStep n → Moise352 n` proved in
+`CompactRelativeApproximation.lean`, carrying the separation constants, the antitone
+tolerance, the recursion and the limit. In words the two unproved statements are:
+**(1) absolute** — a PL, injective, `φ`-close map on the first compact stage;
+**(2) relative** — given a PL embedding `g` of stage `i` that is `φ`-close to `h`, a
+PL injective map on stage `i+1` agreeing with `g` on stage `i` and still `φ`-close.
+(1) is (2) with the previous stage empty. The pointwise `φ` is the whole repair: on
+stage `i` the conclusion of (2) *is* its own hypothesis transported along `EqOn`, so
+no tolerance is ever asked to shrink where a map is already fixed.
+
+Also available:
+
+1. `DifferentialGeometry/Topology/PiecewiseLinear/CompactEmbeddingApproximation.lean`
    reduces the compact statement to **injectivity**: the local-inverse clause of
    `IsPLHomeomorphInto` is discharged on a compact set.
 
-And the PL-map half, *with the agreement clause*, is already proved:
-`DifferentialGeometry/Topology/PiecewiseLinear/MoiseChain.lean:234`
-`PLManifoldMapApproximation`, proved at `:243` from `exists_isPLOn_dist_lt_eqOn`:
+And the PL-**map** half, *with the agreement clause*, is already proved, and is
+**dimension-free**: `exists_isPLOn_dist_lt_eqOn` (`ManifoldApproximation.lean:347`)
+is general in `{n m : ℕ}`,
 
 ```
-IsPolyhedron P → IsPolyhedron Q → Q ⊆ P → ContinuousOn f P → IsPLOn n 3 f Q → 0 < ε →
-  ∃ g, IsPLOn n 3 g P ∧ EqOn g f Q ∧ ∀ x ∈ P, dist (g x) (f x) < ε
+IsPolyhedron P → IsPolyhedron Q → Q ⊆ P → ContinuousOn f P → IsPLOn n m f Q → 0 < ε →
+  ∃ g, IsPLOn n m g P ∧ EqOn g f Q ∧ ∀ x ∈ P, dist (g x) (f x) < ε
 ```
 
-So the gap is exactly this: **the approximating PL map can be chosen injective on
-the stage, relatively to the previous stage.**
+(`PLManifoldMapApproximation`, `MoiseChain.lean:234`, is only its target-dimension-3
+specialisation, which is why it looks narrower than it is.)
 
-The tree also carries `Moise341` (`MoiseChain.lean:99`), the PL-ball case in
-`EuclideanSpace ℝ (Fin 3)` with a constant ε and hypotheses `ContinuousOn h C`,
-`InjOn h C`; it is an open obligation here. `Moise351` (`:191`) is the locally
-finite *polyhedral graph* case and is a different statement. `Moise331` (`:136`) is
-the regular-neighbourhood-of-a-graph statement, also open; an earlier audit found
-and the tree has since repaired the quantifier-order defect, so `Moise331` now
-existentially chooses the neighbourhood inside the prescribed open `U`.
+Two concrete things stand between that and clause (2), neither done. **Transport**:
+`exists_isPLOn_dist_lt_eqOn` lives on polyhedra in `EuclideanSpace ℝ (Fin n)` while
+the stages are `(T.piece (i+1)).piece.map` images — a tractable brick. **A continuous
+interpolant**: the recursion has `g` on the old stage and `h` on the new part, and
+the naive splice is discontinuous. And then **injectivity**, which is the genuinely
+open part.
+
+For orientation: `Moise341` (`MoiseChain.lean:99`) is the PL-**ball** case in
+`EuclideanSpace ℝ (Fin 3)`, constant `ε`, no agreement clause, and its conclusion
+`IsPLHomeomorphOn` is the *normed-space* notion (`Polyhedron.lean:13`), not the
+manifold-level `IsPLOn`. `Moise351` (`:191`) is the locally finite polyhedral *graph*
+case. `Moise331` (`:136`) is the regular neighbourhood of a graph; its earlier
+quantifier-order defect is repaired, so it now chooses the neighbourhood inside the
+prescribed open `U`. All three are open.
 
 ### The questions
 
-**Q1.** Write the injectivity statement precisely, in the relative form
-`Moise352Stages` needs: a topological embedding `h` of a compact PL manifold pair,
-a PL map `g` already ε-close to `h` and already agreeing with a PL embedding on a
-subpolyhedron `Q`, and the conclusion that `g` can be modified off `Q` to be a PL
-embedding still ε-close. State the exact hypotheses on the pair and on `Q`.
+**Q1.** Is `Moise352StageStep` the right statement, or is the packaging still wrong?
+Specifically: is requiring `φ` to be bounded below by a positive constant on each
+compact stage harmless, or does it lose generality Moise needs? And is the relative
+clause strong enough to iterate? Please check this rather than assume it — the
+previous version of this obligation was outright false for exactly this kind of
+reason, and we would rather find a second packaging error now than build on it.
 
-**Q2.** Does `Moise341` imply it? `Moise352Stages` is stated for arbitrary `n` and
-an arbitrary charted PL target `M₂`, while `Moise341` is fixed at dimension 3 with
-target `EuclideanSpace ℝ (Fin 3)` and domain a PL ball. If the implication needs
-`n = 3`, say where. If it needs more than the ball case, say exactly what.
+**Q2.** Does `Moise341` imply clause (1)? It is the local, ball-shaped, absolute,
+dimension-3 core, and deriving clause (1) from it appears to need chart localisation,
+a PL-ball cover of the stage, and a ball-by-ball gluing induction preserving
+injectivity — which is Moise 34.1 → 35.1 and is unstarted here. Confirm or correct
+that, and say precisely what the gluing induction needs.
 
 **Q3.** Moise's route to 34.1 goes through 33.1 and is long. Is there a shorter
 modern route to the *relative* compact statement in dimension 3 — Bing's side
