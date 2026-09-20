@@ -161,23 +161,22 @@ complexity induction — `DescendingSurgery` is consumed only inside the selecti
 there is no cell-level induction to a `NonsingularCell`; (iii) transport back to
 `NonsingularCell S → EmbeddedDisk S`, partly present.
 
-**One unverified draft is in the working tree.**
-`LoopTheorem/CrossRegluedCellCrossing.lean` is untracked and **does not compile** — its last
-receipt is exit 1 with 17 diagnostics and no longer matches the file, so it was still being
-edited when work stopped. `DifferentialGeometry.lean` carries its import line in the working
-tree only; HEAD is clean and does not reference it. Either finish it or delete both, but do
-not commit it as it stands. What it aims at, so you can judge it without the transcript: for
-every double point of the reglued cell **off** the branch carrier, the `crossing` field of
-`NormalSingularCellData` for `G` — proved from `hD.crossing` at that point (a `D` double point
-by `doublePointSet_crossReglued_eq`), shrunk off the compact branch carrier by
-`inter_preimage_of_isOpen`, pulled back along `crossRegluedPullback` where it is a PL
-homeomorphism, and enlarged by `mono_of_subset`. With the crossing clause already discharged,
-finishing it makes `hGcrossing` dischargeable from the producer, and the natural next step is
-then a corollary of the assembled theorem consuming `exists_cross_reglued_cell_*` directly,
-which would drop `hGim`, `hGD`, `hGinj`, `hGfiber` and `hGcrossing` at once — leaving
-`hGboundary`/`hGimage`, the frontier-image export gap, and the tube-level clauses.
+**`hGcrossing` is now dischargeable from the producer.**
+`exists_cross_reglued_cell_crossing_outside_of_boundaryBranch`
+(`LoopTheorem/CrossRegluedCellCrossing.lean`, commit `4906eb088`) concludes exactly the
+`hGcrossing` binder of `BoundaryCaseReduction.lean:201`, unconditionally given `hD` and
+`hc : IsBoundaryBranch c`. Refutation 7 bounds it from above: the crossing field cannot hold
+*on* the branch carrier, so "off the branch carrier" is the strongest form available, and it
+is what the assembly asks for.
 
-**The next concrete task**, and it needs an exclusive window because `CellGluing.lean` and
+**So the immediate next step is cheap:** a corollary of
+`exists_descendingSurgery_of_crossSeamTube_reversing` that consumes
+`exists_cross_reglued_cell_*` directly. That drops `hGim`, `hGD`, `hGinj`, `hGfiber` and
+`hGcrossing` from the obligation list at once, leaving `hGboundary` and `hGimage` — the
+frontier-image export gap below — and the tube-level clauses. Do this before the harder work;
+it is the largest reduction in the obligation count available for the least effort.
+
+**The next structural task**, which needs an exclusive window because `CellGluing.lean` and
 `CutAndPaste.lean` sit in the closure of ten-plus modules: a **producer-strengthening pass**
 adding to their conclusions the frontier equality `G '' frontier G.domain = D '' frontier
 D.domain` (which closes two of the reglued cell's five fields) and the source
