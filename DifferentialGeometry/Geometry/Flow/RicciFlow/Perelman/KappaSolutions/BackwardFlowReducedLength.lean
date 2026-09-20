@@ -526,6 +526,75 @@ theorem normGradSqFun_backward_flow_limit_perelmanDensity_le
         (3 * ell x / (1 - t)) := mul_le_mul_of_nonneg_left h (sq_nonneg _)
     _ = _ := mul_comm _ _
 
+theorem exists_backward_flow_limit_perelmanDensity_gradient_le_linear_distance
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M] {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    {T : ℝ} (hT : 1 ≤ T)
+    (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
+      ∃ C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) t),
+        ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
+    (hcomplete : ∀ t ∈ Icc (1 - T) (0 : ℝ), MetricComplete (L.atTime t))
+    (ell : L.M × Icc (1 : ℝ) T → ℝ)
+    (hell : ∀ w, Tendsto
+      (fun n => redLength F.S 0 p (Phi.map n w.1) (tau (subseq n) * w.2)) atTop (𝓝 (ell w))) :
+    ∃ C : ℝ≥0, ∀ theta : Icc (1 : ℝ) T, ∀ x : L.M,
+      Real.sqrt (Geometry.Operator.normGradSqFun (L.S.base.metric (1 - theta))
+        (Entropy.perelmanDensity (Module.finrank ℝ E) theta (fun y => ell (y, theta))) x) ≤
+          C * (1 + (riemannianEDistOf (L.S.base.metric 0) L.basepoint x).toReal) *
+            Entropy.perelmanDensity (Module.finrank ℝ E) theta (fun y => ell (y, theta)) x := by
+  let A := Real.sqrt (ell (L.basepoint, ⟨1, le_rfl, hT⟩))
+  let B := Real.sqrt 3 / 2
+  let K := 1 + 3 * T ^ 2
+  have hA : 0 ≤ A := Real.sqrt_nonneg _
+  have hB : 0 ≤ B := by dsimp only [B]; positivity
+  have hK : 0 ≤ K := by dsimp only [K]; positivity
+  let C : ℝ≥0 := ⟨Real.sqrt (3 * K) * (A + B), by positivity⟩
+  refine ⟨C, ?_⟩
+  intro theta x
+  have ht : 1 - (theta : ℝ) ∈ Icc (1 - T) (0 : ℝ) :=
+    ⟨sub_le_sub_left theta.property.2 1, sub_nonpos.mpr theta.property.1⟩
+  have hzero : (0 : ℝ) ∈ Icc (1 - T) (0 : ℝ) := ⟨sub_nonpos.mpr hT, le_rfl⟩
+  have htheta : 0 < (theta : ℝ) := zero_lt_one.trans_le theta.property.1
+  obtain ⟨C0, href0⟩ := hconv 0 hzero
+  obtain ⟨Ct, hreft⟩ := hconv (1 - theta) ht
+  have hg := normGradSqFun_backward_flow_limit_perelmanDensity_le F hF p tau htau q L Phi
+    (t := 1 - theta) (by linarith) Ct hreft (hcomplete _ ht)
+    (fun y => ell (y, theta)) (fun y => by simpa only [sub_sub_cancel] using hell (y, theta)) x
+  simp only [sub_sub_cancel] at hg
+  have hq := backward_flow_limit_redLength_le_quadratic_distance
+    F hF p tau htau q L Phi C0 href0 (hcomplete 0 hzero) hT ell hell x theta
+  let r := (riemannianEDistOf (L.S.base.metric 0) L.basepoint x).toReal
+  have hr : 0 ≤ r := ENNReal.toReal_nonneg
+  have hl0 : 0 ≤ ell (x, theta) := by
+    apply ge_of_tendsto (hell (x, theta))
+    exact Eventually.of_forall fun n => backward_length_nonneg F hF p (Phi.map n x)
+      (mul_pos (htau (subseq n)) htheta)
+  let u := Entropy.perelmanDensity (Module.finrank ℝ E) theta (fun y => ell (y, theta)) x
+  have hu : 0 ≤ u := by
+    exact le_of_lt (mul_pos (Entropy.prefactor_pos (Module.finrank ℝ E) htheta) (Real.exp_pos _))
+  have hlin : A + B * r ≤ (A + B) * (1 + r) := by
+    nlinarith [mul_nonneg hA hr]
+  have hsq : (A + B * r) ^ 2 ≤ ((A + B) * (1 + r)) ^ 2 :=
+    (sq_le_sq₀ (by positivity) (by positivity)).mpr hlin
+  have hq' : ell (x, theta) ≤ K * ((A + B) * (1 + r)) ^ 2 :=
+    hq.trans (mul_le_mul_of_nonneg_left hsq hK)
+  have hdiv : 3 * ell (x, theta) / (theta : ℝ) ≤ 3 * ell (x, theta) :=
+    div_le_self (by positivity) theta.property.1
+  have hsqC : ((C : ℝ) * (1 + r) * u) ^ 2 =
+      3 * K * ((A + B) * (1 + r)) ^ 2 * u ^ 2 := by
+    change (Real.sqrt (3 * K) * (A + B) * (1 + r) * u) ^ 2 = _
+    simp only [mul_pow, Real.sq_sqrt (show 0 ≤ 3 * K by positivity)]
+    ring
+  apply (Real.sqrt_le_iff).mpr
+  refine ⟨by positivity, ?_⟩
+  change Geometry.Operator.normGradSqFun _ _ x ≤ ((C : ℝ) * (1 + r) * u) ^ 2
+  rw [hsqC]
+  exact hg.trans ((mul_le_mul_of_nonneg_right hdiv (sq_nonneg u)).trans
+    (mul_le_mul_of_nonneg_right (by nlinarith only [hq']) (sq_nonneg u)))
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

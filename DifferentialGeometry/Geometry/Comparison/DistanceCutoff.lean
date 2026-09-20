@@ -104,4 +104,41 @@ theorem support_gradFun_distance_cutoff_subset
       exact (Analysis.CutoffProfile.evalue_mem_Icc _).1
     exact hx (gradientFun_eq_zero_of_isLocalMin h hmin hd)
 
+omit [SigmaCompactSpace M] in
+open scoped ENNReal NNReal in
+open Geometry.Operator in
+theorem abs_inner_grad_distance_cutoff_le_of_linear_growth
+    (g h : SmoothRiemannianMetric I M) (hgh : ∀ x v, g.inner x v v ≤ h.inner x v v)
+    (o : M) (a C : ℝ≥0) (x : M) (v : TangentSpace I x) {w : ℝ} (hw : 0 ≤ w)
+    (hv : Real.sqrt (h.inner x v v) ≤ C * (1 + (riemannianEDistOf g o x).toReal) * w) :
+    |h.inner x v (gradFun h (fun y => Analysis.CutoffProfile.evalue
+      ((a : ℝ≥0∞) * riemannianEDistOf g o y)) x)| ≤
+        Analysis.CutoffProfile.derivBound * C * (a + 2) * w := by
+  let f : M → ℝ := fun y => Analysis.CutoffProfile.evalue
+    ((a : ℝ≥0∞) * riemannianEDistOf g o y)
+  by_cases hz : gradFun h f x = 0
+  · change |h.inner x v (gradFun h f x)| ≤ _
+    rw [hz, map_zero, abs_zero]
+    exact mul_nonneg (mul_nonneg (mul_nonneg Analysis.CutoffProfile.derivBound_nonneg C.coe_nonneg)
+      (by positivity)) hw
+  have hs := support_gradFun_distance_cutoff_subset g h o a hz
+  have hr : (a : ℝ) * (riemannianEDistOf g o x).toReal < 2 := by
+    have hp : (a : ℝ≥0∞) * riemannianEDistOf g o x ≠ ⊤ :=
+      ne_top_of_le_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) hs.2.le
+    have hh := (ENNReal.toReal_lt_toReal hp (by norm_num)).mpr hs.2
+    simpa only [ENNReal.toReal_mul, ENNReal.coe_toReal, ENNReal.toReal_ofNat] using hh
+  have hc := grad_norm_distance_cutoff_le g h hgh o a x
+  calc
+    _ ≤ Real.sqrt (h.inner x v v) *
+        Real.sqrt (h.inner x (gradFun h f x) (gradFun h f x)) :=
+      abs_inner_le_sqrt_mul_sqrt h x v (gradFun h f x)
+    _ ≤ (C * (1 + (riemannianEDistOf g o x).toReal) * w) *
+        (Analysis.CutoffProfile.derivBound * a) :=
+      mul_le_mul hv hc (Real.sqrt_nonneg _) (by positivity)
+    _ = Analysis.CutoffProfile.derivBound * C *
+        (a + a * (riemannianEDistOf g o x).toReal) * w := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (add_le_add_right hr.le _) (by
+        exact mul_nonneg Analysis.CutoffProfile.derivBound_nonneg C.coe_nonneg)) hw
+
 end DifferentialGeometry.Geometry.Riemannian

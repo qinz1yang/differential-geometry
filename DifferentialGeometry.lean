@@ -771,6 +771,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.Asymptotics
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
+import DifferentialGeometry.Analysis.Integration.Integral.DistanceCutoff
 import DifferentialGeometry.Analysis.Integration.Integral.DivergenceForm
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
 import DifferentialGeometry.Analysis.Integration.Integral.Convergence
