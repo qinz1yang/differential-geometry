@@ -12129,3 +12129,15 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.ChartEner
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.GradientHolder
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.HarmonicComparison
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.SmoothHarmonicMap
+import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous.Energy
+import DifferentialGeometry.Analysis.Calculus.Interpolation.MonotoneSpline
+import DifferentialGeometry.Analysis.Calculus.Interpolation.RadialCone
+import DifferentialGeometry.Analysis.Integration.Integral.ExhaustingBalls
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.RadialEnergy
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Integrability
+import DifferentialGeometry.Analysis.Sobolev.Interpolation.BoundaryRecovery
+import DifferentialGeometry.Analysis.Sobolev.Interpolation.MonotoneBoundary
+import DifferentialGeometry.Geometry.Metric.Pullback.Continuity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.BoundaryRecovery
+import DifferentialGeometry.Topology.LoopSpace.PeriodicExtension
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
