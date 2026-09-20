@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopClassReparametrization
+import DifferentialGeometry.Topology.LoopSpace.CircleDegree
 
 /-!
 # Parametrizing the boundary circle of a proper PL embedded disk
@@ -40,12 +41,12 @@ Main results.
   homotopy class of the stored loop is the `n`-th power of the class of the single traversal,
   the avoidance condition transfers, with no injectivity hypothesis.
 
-Two of the transfers are qualified, and deliberately so.  The structure `EmbeddedDisk` relates
-`boundaryLoop` to `map` only through equality of image sets, so nothing in it forces `ρ` to have
-degree `±1`.  What is still missing is the identification of the free homotopy class of
-`paramLoop a ∘ ρ` with the `n`-th power of the class of `paramLoop a`, the hypothesis `hpow`
-of the last theorem.  That step needs a degree theory for self maps of `loopCircle`, which is
-not developed here.
+The structure `EmbeddedDisk` relates `boundaryLoop` to `map` only through equality of image
+sets, so nothing in it forces `ρ` to have degree `±1`.  The identification of the free homotopy
+class of `paramLoop a ∘ ρ` with the `n`-th power of the class of `paramLoop a` is supplied by
+`FreeLoop.conjugacyClass_comp_of_lift_intShift`, so the hypothesis `hpow` is discharged here and
+`EmbeddedDisk.not_loopClassMeets_paramLoop` and `EmbeddedDisk.exists_param_boundaryLoop` need
+neither it nor any injectivity assumption.
 -/
 
 open Set Topology
@@ -328,5 +329,34 @@ theorem EmbeddedDisk.exists_reparametrization_intShift {S : NormalSystem E} (D :
   obtain ⟨ρ, hsurj, hfac⟩ := D.exists_reparametrization a
   obtain ⟨F, n, hF, hshift⟩ := exists_real_lift_intShift ρ
   exact ⟨ρ, F, n, hsurj, hfac, hF, hshift⟩
+
+
+/-- Unconditional transfer of the avoidance condition to the single traversal.  The
+reparametrization relating the stored boundary loop to the parametrized traversal has a degree,
+and precomposition by a degree `n` self map of the circle raises the free homotopy class to its
+`n`-th power, so the hypothesis `hpow` above is discharged rather than assumed.  No injectivity
+assumption on the stored loop is needed. -/
+theorem EmbeddedDisk.not_loopClassMeets_paramLoop {S : NormalSystem E}
+    [PathConnectedSpace S.boundaryNeighborhoodSpace] (D : EmbeddedDisk S)
+    (a : loopCircle ≃ₜ frontier D.domain) :
+    ¬loopClassMeets (D.paramLoop a) S.basepoint S.normalSubgroup := by
+  obtain ⟨ρ, F, n, -, hfac, hF, hshift⟩ := D.exists_reparametrization_intShift a
+  refine D.not_loopClassMeets_paramLoop_of_conjugacyClass_eq_zpow a n ?_
+  rw [hfac]
+  exact FreeLoop.conjugacyClass_comp_of_lift_intShift (D.paramLoop a) ρ F F.continuous n
+    hF hshift S.basepoint
+
+/-- A proper PL embedded disk has a parametrized boundary traversal whose image is the stored
+boundary image and whose class still avoids the normal subgroup.  Unlike
+`EmbeddedDisk.exists_param_boundaryLoop_of_injective` this needs no injectivity hypothesis on the
+stored boundary loop. -/
+theorem EmbeddedDisk.exists_param_boundaryLoop {S : NormalSystem E}
+    [PathConnectedSpace S.boundaryNeighborhoodSpace] (D : EmbeddedDisk S) :
+    ∃ (a : loopCircle ≃ₜ frontier D.domain) (γ : freeLoop S.boundaryNeighborhoodSpace),
+      (∀ θ, (γ θ : E) = D.map (a θ)) ∧
+        range (fun θ => (γ θ : E)) = D.map '' frontier D.domain ∧
+        ¬loopClassMeets γ S.basepoint S.normalSubgroup := by
+  obtain ⟨a⟩ := D.nonempty_boundaryParam
+  exact ⟨a, D.paramLoop a, fun _ => rfl, D.paramLoop_range a, D.not_loopClassMeets_paramLoop a⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear.NormalSystem
