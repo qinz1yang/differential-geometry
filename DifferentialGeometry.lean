@@ -8792,6 +8792,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryGenerat
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CombinatorialBoundaryPush
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CutAndPaste
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ReplacementDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SphereCase
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.StallingsInduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LuneCell
