@@ -156,12 +156,13 @@ theorem backward_flow_limit_metric_inner_antitoneOn
     (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {subseq : ℕ → ℕ}
     (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
-    (hmetric : ∀ t : ℝ, t ≤ 0 → ∀ x : L.M, ∀ v : TangentSpace I x,
+    {J : Set ℝ} (hJ : J ⊆ Iic 0)
+    (hmetric : ∀ t : ℝ, t ∈ J → ∀ x : L.M, ∀ v : TangentSpace I x,
       Tendsto (fun n => (((backwardFlowSequence F tau htau q).term (subseq n)).S.base.metric t).inner
         (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x v))
         atTop (𝓝 ((L.S.base.metric t).inner x v v)))
     (x : L.M) (v : TangentSpace I x) :
-    AntitoneOn (fun t => (L.S.base.metric t).inner x v v) (Iic 0) := by
+    AntitoneOn (fun t => (L.S.base.metric t).inner x v v) J := by
   intro s hs t ht hst
   apply le_of_tendsto_of_tendsto (hmetric t ht x v) (hmetric s hs x v)
   filter_upwards [] with n
@@ -172,8 +173,8 @@ theorem backward_flow_limit_metric_inner_antitoneOn
       (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x v)
   apply mul_le_mul_of_nonneg_left _ (inv_nonneg.mpr (htau (subseq n)).le)
   apply ancientModel_metric_inner_antitoneOn F hF
-  · exact mul_nonpos_of_nonneg_of_nonpos (htau (subseq n)).le (sub_nonpos.mpr (le_trans hs zero_le_one))
-  · exact mul_nonpos_of_nonneg_of_nonpos (htau (subseq n)).le (sub_nonpos.mpr (le_trans ht zero_le_one))
+  · exact mul_nonpos_of_nonneg_of_nonpos (htau (subseq n)).le (sub_nonpos.mpr (le_trans (hJ hs) zero_le_one))
+  · exact mul_nonpos_of_nonneg_of_nonpos (htau (subseq n)).le (sub_nonpos.mpr (le_trans (hJ ht) zero_le_one))
   · exact mul_le_mul_of_nonneg_left (sub_le_sub_right hst 1) (htau (subseq n)).le
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
