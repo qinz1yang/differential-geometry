@@ -9,6 +9,22 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CompactEmbeddingApproximati
 /-!
 # Relative piecewise linear approximation on the compact stages of a piece tower
 
+**The obligation this file isolates, `Moise352StageStep`, is itself false, and the whole
+stagewise architecture is not Moise's.**  `StageTransport.lean` refutes it: its tolerance is
+bounded below but not above, so taking the tolerance large makes both closeness constraints
+vacuous and degenerates the relative clause into an *extension* statement, false at `n = 2`
+by Jordan and at `n = 3` by Alexander.  Moise's own proof of 35.2, read from the book at
+printed p. 251, performs **no stagewise recursion at all**: it pushes `K` into `Int K`,
+reduces to an open neighbourhood, subdivides, applies 35.1 to a regular neighbourhood of the
+1-skeleton, and extends over the 2- and 3-simplexes one at a time by the section 34
+argument.  See `SkeletonReduction.lean`.
+
+What this file establishes and keeps is the **refutation of the previous obligation**,
+`Moise352Stages.exists_isPLHomeomorphInto_eqOn`, together with
+`LocallyFinitePieceTower.eqOn_coreSpace_of_le` and the tolerance bookkeeping, which are
+sound.  `moise352_of_stageStep` is a valid implication from a false hypothesis and is
+retained as a record, not as a route.
+
 `Moise352` asks for a piecewise linear approximation of a topological embedding of a locally
 finite polyhedral manifold with boundary, within a prescribed continuous positive error.
 `LocallyFiniteApproximation` carries out the passage from the compact stages of a

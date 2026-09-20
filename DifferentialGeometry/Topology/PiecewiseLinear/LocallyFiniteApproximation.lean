@@ -8,6 +8,23 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 /-!
 # Limits of stagewise approximations over a locally finite piece tower
 
+**This file is not on the route to `Moise352`, and the stagewise architecture it was built
+for is not Moise's.**  Moise's own proof of 35.2 was read directly from the book, printed
+p. 251: it performs no stagewise recursion at all.  It pushes `K` into `Int K` by a PL
+homeomorphism close to the identity, reduces to `h` and the error function being defined on
+an open set containing `K`, subdivides so that each simplex has small image, applies 35.1 to
+a regular neighbourhood of the **1-skeleton**, and then extends over the 2- and 3-simplexes
+one at a time by the argument of section 34.  The tree's `Moise351` (`MoiseChain.lean:191`)
+is a faithful rendering of that input.  See `SkeletonReduction.lean`.
+
+Consequently `moise352_of_stages` below is a valid implication from a **false** hypothesis:
+`Moise352Stages` is refuted in `CompactRelativeApproximation.lean`, and its successor
+`Moise352StageStep` is refuted in `StageTransport.lean`.  Both are kept as records of the
+refutation, not as obligations.  What survives here as genuine infrastructure is the gluing
+and limit machinery — `exists_forall_eqOn_coreSpace`, `exists_glue_of_eqOn`,
+`exists_isPLHomeomorphInto_of_stages` and the separation estimates — which takes a pointwise
+error function and is independent of the refuted packaging.
+
 `Moise352` asks for a piecewise linear approximation of a topological embedding of a
 locally finite, possibly non-compact, polyhedral manifold with boundary, with the error
 controlled by a continuous positive function rather than by a constant.  Applying a
