@@ -4961,6 +4961,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.LowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Smoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Lipschitz
