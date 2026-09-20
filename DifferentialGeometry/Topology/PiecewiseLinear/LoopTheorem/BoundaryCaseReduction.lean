@@ -119,11 +119,13 @@ whether it is a genuine mathematical obligation or bookkeeping.
   it, all four would become the fields `locallyInjective`, `fiber_le_two`,
   `boundary_image_subset` and `image_inter_boundary`, which they match verbatim.
 * `hGcrossing`: the normal double crossing condition at the double points of `G` lying outside
-  the tube, with the extra clause that the crossing chart misses the parametrised cylinder.
-  Genuine theorem, and strictly stronger than the field `crossing` of
-  `NormalSingularCellData`, which carries no such clause; the extra clause is what makes the
-  crossing condition survive the resolution, and it is not obtained by shrinking a chart,
-  since a shrunk chart need not lie in `atlas`.
+  the tube.  Genuine theorem, and exactly the field `crossing` of `NormalSingularCellData` for
+  the cross reglued cell, restricted to those double points; no clause about the crossing chart
+  is attached to it.  The extra clause it used to carry, that the chart source misses the
+  parametrised cylinder, has been discharged by the locality of crossing conditions
+  (`SingularCrossingLocality`): a normal double crossing only sees the map near the fibre over
+  its double point, so the crossing of `G` transfers to the resolved cell over the part of the
+  chart lying off the parametrised cylinder, where the two cells agree.
 
 *The tube level hypotheses of `CrossSeamTubeData.normalOfResolvedCell`,
 `LoopTheorem.ResolvedCellNormal`.*
@@ -198,9 +200,8 @@ theorem exists_descendingSurgery_of_crossSeamTube_reversing [T2Space M]
     (hGimage : ⇑G '' G.domain ∩ BdM = Set.range ⇑G.boundary)
     (hGcrossing : ∀ y ∈ doublePointSet G G.domain, y ∉ U →
       ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-        Disjoint e.source (T.chart '' spliceCylinder) ∧
-          HasPLNormalDoubleCrossingAt (e ∘ G) (G.domain ∩ ⇑G ⁻¹' e.source)
-            (e '' (e.source ∩ BdM)) (e y))
+        HasPLNormalDoubleCrossingAt (e ∘ G) (G.domain ∩ ⇑G ⁻¹' e.source)
+          (e '' (e.source ∩ BdM)) (e y))
     (hendDisks : T.chart '' spliceEndDisks ⊆ B)
     (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
       x ∈ frontier G.domain ↔ (coord x).2.2 = 0 ∨ (coord x).2.2 = 1)
