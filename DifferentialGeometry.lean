@@ -4365,6 +4365,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDiffe
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciTelescope
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureNullity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Covariant
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.ParsevalTrace
@@ -4423,6 +4424,7 @@ import DifferentialGeometry.Geometry.Curvature.CurveReparametrization
 import DifferentialGeometry.Geometry.Curvature.Cylinder
 import DifferentialGeometry.Geometry.Curvature.Cylinder.ProductMetric
 import DifferentialGeometry.Geometry.Curvature.DerivativeIsometry
+import DifferentialGeometry.Geometry.Curvature.DimensionOne.Derivatives
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Algebra.Curvature
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Algebra.Pinching
@@ -5023,6 +5025,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Fi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.MixedCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeReaction
@@ -11261,6 +11264,7 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Orientation
 import DifferentialGeometry.Topology.Manifold.OrientationExhaustion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedNoncollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedTerminalDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLimitCompactness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.OrientedCylinderExclusion
 import DifferentialGeometry.Topology.Manifold.AddCircle.AffinePeriodicLift
