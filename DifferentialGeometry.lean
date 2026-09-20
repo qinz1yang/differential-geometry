@@ -9128,6 +9128,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeAbstract
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceReading
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSource
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProperness
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetChartGerm
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetLocalModel
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetOfCell
 /-!
 # Differential geometry and geometric analysis
 -/
