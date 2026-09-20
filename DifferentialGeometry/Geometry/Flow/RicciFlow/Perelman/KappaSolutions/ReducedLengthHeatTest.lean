@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedLengthHamiltonJacobi
 import DifferentialGeometry.Geometry.Operator.Laplacian.Coordinates
+import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.JointDifferentialOperator
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthBaseTime
@@ -335,6 +336,69 @@ theorem ancient_redLength_conjugate_heat_lower_test
   have halgebra : ((Module.finrank ℝ E : ℝ) / 2 - redLength F.S 0 p q tau) / tau +
       2 * (redLength F.S 0 p q tau / (2 * tau)) = (Module.finrank ℝ E : ℝ) / (2 * tau) := by ring
   linarith
+
+theorem ancient_redLength_conjugate_heat_lower_test_in_chart
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) {tau : ℝ} (htau : 0 < tau)
+    (p a q : F.M) (hq : q ∈ (chartAt H a).source) (phi : ℝ × E → ℝ)
+    (hphi : ContDiffAt ℝ 2 phi (tau, extChartAt I a q))
+    (hmin : IsLocalMin (fun z : ℝ × E => redLength F.S 0 p ((extChartAt I a).symm z.2) z.1 - phi z)
+      (tau, extChartAt I a q)) :
+    0 ≤ fderiv ℝ phi (tau, extChartAt I a q) (1, 0) -
+      (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartInvGramOnE (F.S.base.metric (-tau)) a i j (extChartAt I a q) *
+          (fderiv ℝ (fderiv ℝ phi) (tau, extChartAt I a q) (0, chartModelBasis E i) (0, chartModelBasis E j) -
+            ∑ k : Fin (Module.finrank ℝ E),
+              chartChristoffel (F.S.base.metric (-tau)) a i j k (extChartAt I a q) *
+                fderiv ℝ phi (tau, extChartAt I a q) (0, chartModelBasis E k))) +
+      (∑ k : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartInvGramOnE (F.S.base.metric (-tau)) a k j (extChartAt I a q) *
+          fderiv ℝ phi (tau, extChartAt I a q) (0, chartModelBasis E j) *
+          fderiv ℝ phi (tau, extChartAt I a q) (0, chartModelBasis E k)) -
+      F.S.scalar (-tau) q + (Module.finrank ℝ E : ℝ) / (2 * tau) := by
+  have hqs : q ∈ (extChartAt I a).source := by simpa only [extChartAt_source] using hq
+  have hchart : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ × E) 2
+      (fun z : ℝ × F.M => (z.1, extChartAt I a z.2)) (tau, q) :=
+    (contMDiffAt_prod_module_iff _).mpr ⟨contMDiffAt_fst,
+      (contMDiffAt_extChartAt' hq).comp (tau, q) (f := Prod.snd) contMDiffAt_snd⟩
+  have hphiM : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) 2
+      (fun z : ℝ × F.M => phi (z.1, extChartAt I a z.2)) (tau, q) :=
+    hphi.contMDiffAt.comp (tau, q) hchart
+  have htest : IsLocalMin (fun z : ℝ × F.M =>
+      redLength F.S 0 p z.2 z.1 - phi (z.1, extChartAt I a z.2)) (tau, q) := by
+    have hsrc : ∀ᶠ z : ℝ × F.M in 𝓝 (tau, q), z.2 ∈ (extChartAt I a).source :=
+      continuous_snd.continuousAt.eventually (by
+        change (extChartAt I a).source ∈ 𝓝 q
+        simpa only [extChartAt_source] using (chartAt H a).open_source.mem_nhds hq)
+    filter_upwards [hchart.continuousAt.tendsto.eventually hmin, hsrc] with z hz hzs
+    simpa only [(extChartAt I a).left_inv hqs, (extChartAt I a).left_inv hzs] using hz
+  have hh := ancient_redLength_conjugate_heat_lower_test F hF htau p q
+    (fun z => phi (z.1, extChartAt I a z.2)) hphiM htest
+  have hd := (hphi.differentiableAt (by norm_num)).hasFDerivAt.comp_hasDerivAt tau
+    ((hasDerivAt_id tau).prodMk (hasDerivAt_const tau (extChartAt I a q)))
+  have hdt : deriv (fun t => phi (t, extChartAt I a q)) tau =
+      fderiv ℝ phi (tau, extChartAt I a q) (1, 0) := by
+    simpa only [Function.comp_def, id_eq] using hd.deriv
+  have hs := (hphi.differentiableAt (by norm_num)).hasFDerivAt.comp (extChartAt I a q)
+    ((hasFDerivAt_const tau (extChartAt I a q)).prodMk (hasFDerivAt_id (extChartAt I a q)))
+  have hp (v : E) : fderiv ℝ (fun y => phi (tau, y)) (extChartAt I a q) v =
+      fderiv ℝ phi (tau, extChartAt I a q) (0, v) := by
+    have he := congrArg (fun L : E →L[ℝ] ℝ => L v) hs.fderiv
+    simpa only [Function.comp_def, id_eq, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.prod_apply, zero_apply, ContinuousLinearMap.id_apply] using he
+  have hqi : extChartAt I a q ∈ interior (extChartAt I a).target := by
+    rw [(isOpen_extChartAt_target (I := I) a).interior_eq]
+    exact (extChartAt I a).map_source hqs
+  have hgrad := normGradSqFun_comp_extChartAt (F.S.base.metric (-tau)) a
+    (f := fun y => phi (tau, y)) hq hqi
+  simp_rw [hp] at hgrad
+  dsimp only [Function.comp_def] at hgrad
+  change 0 ≤ deriv (fun t => phi (t, extChartAt I a q)) tau -
+      laplacian (LeviCivita (F.S.base.metric (-tau))) (F.S.base.metric (-tau))
+        (fun y => phi (tau, extChartAt I a y)) q +
+      normGradSqFun (F.S.base.metric (-tau)) (fun y => phi (tau, extChartAt I a y)) q -
+      F.S.scalar (-tau) q + (Module.finrank ℝ E : ℝ) / (2 * tau) at hh
+  rwa [hdt, laplacian_time_slice_comp_extChartAt (F.S.base.metric (-tau)) a hq phi hphi,
+    hgrad] at hh
 
 end Ancient
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

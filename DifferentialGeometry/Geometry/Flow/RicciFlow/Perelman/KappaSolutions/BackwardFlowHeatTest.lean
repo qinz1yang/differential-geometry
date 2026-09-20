@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import Mathlib.Topology.Order.ProjIcc
 import DifferentialGeometry.Topology.LocallyUniformConvergence
 import DifferentialGeometry.Analysis.Viscosity.Stability
-import DifferentialGeometry.Analysis.Viscosity.ColeHopf
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Viscosity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthContinuity
 import DifferentialGeometry.Geometry.Operator.Laplacian.Coordinates
@@ -554,29 +554,10 @@ theorem perelmanDensity_upper_test_of_rescaled_reducedLength_limit_in_chart
         metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2) * u z ≤ 0 := by
   let n := Module.finrank ℝ E
   let f := fun w : ℝ × E => ell ((extChartAt I a).symm w.2, projIcc 1 T hT.le w.1)
-  let u := fun w : ℝ × E => perelmanDensity n w.1
-    (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I a).symm w.2)
-  let q : ℝ → ℝ := fun t => (n : ℝ) / 2 * Real.log (4 * Real.pi * t)
   let A := fun i j => chartInvGramOnE (I := I) (L.S.base.metric (1 - z.1)) a i j z.2
   let B := fun i j k => chartChristoffel (I := I) (L.S.base.metric (1 - z.1)) a i j k z.2
   let d : E := ∑ i : Fin n, ∑ j : Fin n, ∑ k : Fin n, (A i j * B i j k) • chartModelBasis E k
   have htime : 0 < z.1 := zero_lt_one.trans hz.1.1
-  have hbase : 0 < 4 * Real.pi * z.1 := mul_pos (mul_pos (by norm_num) Real.pi_pos) htime
-  have hq : ContDiffAt ℝ 2 q z.1 :=
-    contDiffAt_const.mul ((contDiffAt_const.mul contDiffAt_id).log hbase.ne')
-  have hqderiv : deriv q z.1 = (n : ℝ) / (2 * z.1) := by
-    have hh := (((hasDerivAt_id z.1).const_mul (4 * Real.pi)).log hbase.ne').const_mul ((n : ℝ) / 2)
-    have heq := hh.deriv
-    change deriv q z.1 = _ at heq
-    rw [heq]
-    simp only [id_eq]
-    field_simp
-  have hu (w : ℝ × E) (ht : 0 < w.1) : Real.exp (-(f w + q w.1)) = u w := by
-    have hb : 0 < 4 * Real.pi * w.1 := mul_pos (mul_pos (by norm_num) Real.pi_pos) ht
-    dsimp only [u, perelmanDensity, perelmanDensityPrefactor, f, q]
-    rw [Real.rpow_eq_pow, Real.rpow_def_of_pos hb, ← Real.exp_add]
-    congr 1
-    ring
   have hD (P : (ℝ × E) →L[ℝ] ℝ) : P (1, d) = P (1, 0) +
       ∑ i : Fin n, ∑ j : Fin n, A i j * ∑ k : Fin n, B i j k * P (0, chartModelBasis E k) := by
     have heq : ((1 : ℝ), d) = (1, (0 : E)) + (0, d) := by ext <;> simp
@@ -601,20 +582,14 @@ theorem perelmanDensity_upper_test_of_rescaled_reducedLength_limit_in_chart
     ring
   dsimp only
   intro hmax
-  have hmax' : IsLocalMax (fun w => Real.exp (-(f w + q w.1)) - phi w) z := by
-    have hn : ∀ᶠ w : ℝ × E in 𝓝 z, 0 < w.1 :=
-      continuous_fst.continuousAt.eventually (lt_mem_nhds htime)
-    filter_upwards [hmax, hn] with w hw ht
-    rw [hu z htime, hu w ht]
-    exact hw
-  have hh := DifferentialGeometry.Analysis.Viscosity.cole_hopf_upper_test_add_time
-    f z d (chartModelBasis E) A (-metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2))
-    q hq (fun psi hpsi hmin => ?_) phi hphi hmax'
-  · rw [hop, hu z htime] at hh
-    simpa only [A, B, u, n, neg_mul, sub_eq_add_neg, neg_neg] using hh
+  have hh := perelmanDensity_upper_test_of_conjugate_heat_lower_test n f htime d
+    (chartModelBasis E) A (metricScalarAt (L.S.base.metric (1 - z.1)) ((extChartAt I a).symm z.2))
+    (fun psi hpsi hmin => ?_) phi hphi hmax
+  · rw [hop] at hh
+    exact hh
   · have h := conjugate_heat_lower_test_of_rescaled_reducedLength_limit_in_chart
       F hF p c hc L Phi R G hG hmetric hT ell hell a hz psi hpsi hmin
-    rw [hop, hquad, hqderiv]
+    rw [hop, hquad]
     exact h
 
 theorem backward_flow_limit_perelmanDensity_upper_test_in_chart
