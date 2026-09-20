@@ -2,6 +2,7 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Normed.Operator.Bilinear
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 noncomputable section
 
@@ -44,3 +45,36 @@ theorem radial_inverse_quadratic_energy
   field_simp
 
 end DifferentialGeometry.Analysis
+
+end
+
+section
+
+namespace DifferentialGeometry.Analysis
+
+theorem bilinear_quadratic_sub_quarter_turn
+    (Q : ℂ →L[ℝ] ℂ →L[ℝ] ℝ) (e : ℂ) :
+    Q e e - Q (Complex.I * e) (Complex.I * e) =
+      (e.re ^ 2 - e.im ^ 2) * Q 1 1 +
+        (2 * e.re * e.im) * Q 1 Complex.I +
+        (2 * e.re * e.im) * Q Complex.I 1 +
+        (e.im ^ 2 - e.re ^ 2) * Q Complex.I Complex.I := by
+  have hcoord (z : ℂ) : z = z.re • (1 : ℂ) + z.im • Complex.I := by
+    simpa only [Complex.real_smul, mul_one] using (Complex.re_add_im z).symm
+  have hexpand (z : ℂ) :
+      Q z z =
+        z.re * (z.re * Q 1 1 + z.im * Q 1 Complex.I) +
+          z.im * (z.re * Q Complex.I 1 + z.im * Q Complex.I Complex.I) := by
+    calc
+      Q z z = Q (z.re • (1 : ℂ) + z.im • Complex.I)
+          (z.re • (1 : ℂ) + z.im • Complex.I) :=
+        congrArg₂ (fun x y : ℂ => Q x y) (hcoord z) (hcoord z)
+      _ = _ := by
+        simp only [map_add, map_smul, add_apply, smul_apply, smul_eq_mul]
+        ring
+  rw [hexpand e, hexpand (Complex.I * e), Complex.I_mul_re, Complex.I_mul_im]
+  ring
+
+end DifferentialGeometry.Analysis
+
+end
