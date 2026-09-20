@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
+import DifferentialGeometry.Analysis.Calculus.Rademacher
 import DifferentialGeometry.Analysis.Calculus.Derivative.Measurable
 import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
 import Mathlib.Topology.Instances.Matrix
@@ -177,5 +180,87 @@ theorem measurable_inner_gradFun_with_param
   simpa only [Subtype.image_preimage_coe] using hh
 
 end Parameter
+
+end DifferentialGeometry.Analysis
+
+namespace DifferentialGeometry.Analysis
+open Geometry.Operator Tensor.Coordinates Integral.DivergenceTheorem
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+private theorem ae_inner_gradFun_eq_chartInvGram_lineDeriv
+    [MeasurableSpace E] [BorelSpace E]
+    (g : SmoothRiemannianMetric I M) (α : M) (u h : M → ℝ)
+    (hu : LocallyLipschitzOn (extChartAt I α).target (scalarOnE (I := I) α u))
+    (μ : Measure E) [μ.IsAddHaarMeasure] :
+    ∀ᵐ y ∂μ.restrict (extChartAt I α).target,
+      g.inner ((extChartAt I α).symm y)
+        (gradFun g u ((extChartAt I α).symm y))
+        (gradFun g h ((extChartAt I α).symm y)) =
+      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartInvGramOnE g α i j y *
+          lineDeriv ℝ (scalarOnE (I := I) α u) y (chartModelBasis E j) *
+          fderiv ℝ (chartPullZero (I := I) α h) y (chartModelBasis E i) := by
+  have hΩ := isOpen_extChartAt_target (I := I) α
+  filter_upwards [hu.ae_differentiableAt hΩ, ae_restrict_mem hΩ.measurableSet] with y huy hy
+  have hsource : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+    simpa only [extChartAt_source_eq_chartAt_source] using (extChartAt I α).map_target hy
+  have hbase : (extChartAt I α).symm y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rwa [trivializationAt_baseSet_eq_chartAt_source]
+  have hin : extChartAt I α ((extChartAt I α).symm y) ∈ interior (extChartAt I α).target := by
+    rw [(extChartAt I α).right_inv hy, hΩ.interior_eq]
+    exact hy
+  have heq : chartPullZero (I := I) α h =ᶠ[𝓝 y] scalarOnE (I := I) α h := by
+    filter_upwards [hΩ.mem_nhds hy] with z hz
+    exact chartPullZero_mem α h hz
+  rw [g.symm, inner_gradFun_eq_chartInvGram_sum g α h u hbase hin]
+  simp only [partialDeriv, (extChartAt I α).right_inv hy, chartInvGramOnE_def,
+    heq.fderiv_eq, huy.lineDeriv_eq_fderiv]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  ring
+
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+open Integral.Measure in
+theorem integral_inner_gradFun_eq_integral_chartDensity
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (α : M) (u h : M → ℝ)
+    (hu : LocallyLipschitzOn (extChartAt I α).target (scalarOnE (I := I) α u))
+    (hc : HasCompactSupport h) (hs : tsupport h ⊆ (chartAt H α).source) :
+    (∫ x, g.inner x (gradFun g u x) (gradFun g h x)
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) =
+    ∫ y in (extChartAt I α).target, chartDensityOnE g α y *
+      (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartInvGramOnE g α i j y *
+          lineDeriv ℝ (scalarOnE (I := I) α u) y (chartModelBasis E j) *
+          fderiv ℝ (chartPullZero (I := I) α h) y (chartModelBasis E i))
+      ∂modelHaar := by
+  let f : M → ℝ := fun x => g.inner x (gradFun g u x) (gradFun g h x)
+  have hfs : tsupport f ⊆ tsupport h := by
+    apply closure_minimal _ (isClosed_tsupport h)
+    intro x hx
+    apply support_gradFun_subset (I := I) g h
+    intro hz
+    apply hx
+    change (g.inner x (gradFun g u x)) (gradFun g h x) = 0
+    change gradFun (I := I) g h x = (0 : TangentSpace I x) at hz
+    exact (congrArg (g.inner x (gradFun g u x)) hz).trans (map_zero _)
+  have hfc : HasCompactSupport f := hc.of_isClosed_subset (isClosed_tsupport f) hfs
+  have hfm : AEStronglyMeasurable f (chartLocalMeasure g α) :=
+    (measurable_inner_gradFun g u h).aestronglyMeasurable
+  rw [integral_riemannianVolumeMeasure_eq_chartDensity_of_tsupport_subset
+    g α hfc (hfs.trans hs) hfm]
+  apply integral_congr_ae
+  filter_upwards [ae_inner_gradFun_eq_chartInvGram_lineDeriv g α u h hu (modelHaar (E := E))]
+    with y hy
+  change chartDensityOnE g α y * f ((extChartAt I α).symm y) = _
+  rw [show f ((extChartAt I α).symm y) = _ from hy]
 
 end DifferentialGeometry.Analysis
