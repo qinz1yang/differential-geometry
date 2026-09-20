@@ -4,10 +4,11 @@ Paste-ready prompts for GPT Pro / Fable / Astra. Each one is self-contained: it
 names the repository, the branch and the commit, so the consultant reads the right
 tree. Ordered by how much they unblock.
 
-Repository **https://github.com/qinz1yang/differential-geometry-dev**,
-branch **`codex/moise-integration`**, commit **`b5ad49d39`**.
-Other branches (`main`, `Moise`, `candidate`, other `codex/*`) diverge and their
-line numbers do not match; every prompt below says so.
+Repository **https://github.com/liao9yuan/differential-geometry-dev**, branch
+**`moise-integration`**, browsable at
+**https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration**.
+Read the head of that branch. Every other branch of that repository diverges and its
+line numbers will not match; every prompt below repeats the warning.
 
 | # | Question | Unblocks | Status |
 | --- | --- | --- | --- |
@@ -300,16 +301,17 @@ is answered cheaply:
 
 ### Where to look
 
-Public repository **https://github.com/qinz1yang/differential-geometry-dev**,
-branch **`codex/moise-integration`**, commit **`b5ad49d39`**.
+Public repository **https://github.com/liao9yuan/differential-geometry-dev**, branch
+**`moise-integration`**, browsable at
+**https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration**.
 
 ```
-git clone https://github.com/qinz1yang/differential-geometry-dev
-cd differential-geometry-dev && git checkout b5ad49d39
+git clone https://github.com/liao9yuan/differential-geometry-dev
+cd differential-geometry-dev && git checkout moise-integration
 ```
 
-Do not read `main`, `Moise`, `candidate` or another `codex/*` branch; they diverge
-and line numbers will not match. Paths below are from the repository root.
+Read the head of that branch. Do not read any other branch of that repository; they
+diverge and line numbers will not match. Paths below are from the repository root.
 
 ### State
 
@@ -420,9 +422,11 @@ interval — the two source strips run from one end of the tube to the other;
 
 ### Where to look
 
-Public repository **https://github.com/qinz1yang/differential-geometry-dev**,
-branch **`codex/moise-integration`**, commit **`b5ad49d39`**. Same warning: do not
-read another branch.
+Public repository **https://github.com/liao9yuan/differential-geometry-dev**, branch
+**`moise-integration`**, browsable at
+**https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration**.
+Read the head of that branch; do not read any other branch, they diverge and line
+numbers will not match.
 
 ### State
 
@@ -577,9 +581,11 @@ statements, and a plain statement if something already built is aimed wrong.
 
 ### Where to look
 
-Public repository **https://github.com/qinz1yang/differential-geometry-dev**,
-branch **`codex/moise-integration`**, commit **`b5ad49d39`** or later. Do not read
-another branch; they diverge and line numbers will not match.
+Public repository **https://github.com/liao9yuan/differential-geometry-dev**, branch
+**`moise-integration`**, browsable at
+**https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration**.
+Read the head of that branch; do not read any other branch, they diverge and line
+numbers will not match.
 
 ### State
 
@@ -664,9 +670,11 @@ plain statement if something already built is aimed at the wrong target.
 
 ### Where to look
 
-Public repository **https://github.com/qinz1yang/differential-geometry-dev**,
-branch **`codex/moise-integration`**, commit **`b5ad49d39`** or later. Do not read
-another branch.
+Public repository **https://github.com/liao9yuan/differential-geometry-dev**, branch
+**`moise-integration`**, browsable at
+**https://github.com/liao9yuan/differential-geometry-dev/tree/moise-integration**.
+Read the head of that branch; do not read any other branch, they diverge and line
+numbers will not match.
 
 ### State
 
