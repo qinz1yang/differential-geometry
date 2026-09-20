@@ -22,6 +22,35 @@ bookkeeping step, and lane C has since restated its four clauses in Lean-exact f
 as `IsCrossSeamTubeProducer` (`LoopTheorem/CrossSeamTube.lean`), which is the precise
 target for an answer.
 
+## The Lemma 2 frontier, as of this file
+
+The boundary-branch case is assembled end to end and every step below is proved
+except where marked. Reading downwards is the order the induction uses.
+
+| Step | Where | State |
+| --- | --- | --- |
+| Model seam repair: the branch is deleted exactly | `CrossSeamResolution.lean` | proved |
+| Transport of the model repair to a global cell | `CrossSeamTube.lean` | proved, given a tube |
+| The tube itself | `IsCrossSeamTubeProducer` | **open — prompt 1** |
+| Triangulation of the double point set minus a branch | `BranchDeletion.lean` | proved |
+| Branch bijection `Branch ≃ {b ≠ c}` | `BranchDeletion.lean` | proved, for *any* such triangulation |
+| Normality of the resolved cell, five of six fields | `CrossSeamRegluedData.normal` | **open** |
+| `hGD`: the reglue changes no double point outside the tube | belongs with `CutAndPaste.lean` | **open** |
+| Surjectivity `D.domain \ C ⊆ pullback '' G.domain` | `CutAndPaste.lean:1382` | **open — one conjunct** |
+| Uniform descent through one door | `BoundaryBranchDescent.lean` | proved |
+| Word elimination picks the surviving candidate | `BoundaryBranchDescent.lean` | proved, given the boundary words |
+| The boundary words as parametrised loops | — | **open — prompt 4** |
+
+The closed-branch case has its Case 1 exclusion proved
+(`ClosedBranchOrientability.lean`) with three named inputs still open; see prompt 3.
+
+Of the open items, only the tube and the boundary-word parametrisation look like real
+theorems. The surjectivity is one conjunct that the existing construction almost
+certainly already satisfies but does not export; `hGD` and the five normality fields
+are bookkeeping over constructions that exist. That is the honest shape of the
+remaining work: one geometric theorem, one parametrisation question, and a
+bookkeeping tail.
+
 ## The status these prompts rest on
 
 Read this first; it is what makes the two prompts the right two. Every arrow below
