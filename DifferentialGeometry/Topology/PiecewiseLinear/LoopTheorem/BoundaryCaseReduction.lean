@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWitnessDoors
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ResolvedCellNormal
 import DifferentialGeometry.Topology.PiecewiseLinear.SeamBoundaryHomotopy
 
@@ -20,12 +21,13 @@ boundary case can be read, and counted, in one place.
 Given a normal crossing product tube `T` around a boundary branch `c` and the cross reglued
 cell `G` read in the normal form of that tube:
 
-* the double point equality of the resolved cell is obtained inside the proof from
-  `CrossSeamTubeData.doublePointSet_resolved_subset` and
-  `CrossSeamTubeData.doublePointSet_sdiff_image_spliceCylinder`.  It is *not* taken from
-  `CrossSeamRegluedData.doublePointSet_cell_eq`, because that statement needs the bundle whose
-  field `normal` is exactly what is being produced;
-* `CrossSeamTubeData.normalOfResolvedCell` then makes the resolved cell normal;
+* the five geometric fields of the normal form are bundled into a `CrossSeamRegluedData`, which
+  no longer carries a `normal` field, so the bundle is available before the normality of the
+  resolved cell is known, and the two conclusions drawn from it below are not circular;
+* the double point equality of the resolved cell is
+  `CrossSeamRegluedData.doublePointSet_cell_eq` applied to that bundle;
+* `CrossSeamRegluedData.normalOfTube` then makes the resolved cell normal, and its output is
+  what `crossSeamResolutionDataOfTube` takes as its explicit argument `hnormal`;
 * `NormalSingularCellData.deletedBranchEquiv` and
   `NormalSingularCellData.branchCarrier_deletedBranchEquiv` supply the branch correspondence
   that `crossSeamResolutionDataOfTube` asks for, so the cross candidate reaches
@@ -34,19 +36,21 @@ cell `G` read in the normal form of that tube:
   cross reglued cell into one for the resolved cell, over the same four arc word.  Its seven
   boundary trace hypotheses are derived here from the five geometric fields of the normal form
   plus a closed cover of the boundary circle, so only the cover itself stays open;
-* `NormalSingularCellData.exists_descendingSurgery_not_loopClassMeets_reversing_witness`
-  selects between the cross candidate and the direct candidate by the four arc word dichotomy.
+* `exists_descendingSurgery_not_loopClassMeets_reversing_witness_of_injection` of
+  `LoopTheorem.BoundaryWitnessDoors` selects between the cross candidate and the direct
+  candidate by the four arc word dichotomy.
 
 ## Two hypotheses that turned out to be one
 
 The end disk hypothesis `hdisk` of `exists_boundaryWordWitness_of_crossSeamBoundary`, that the
 two end cross sections of the tube lie in the image of the inclusion `ρ` of the ambient loop
-space, is *not* listed below.  It is derived from `hendDisks`, which is already a tube level
-hypothesis of `CrossSeamTubeData.normalOfResolvedCell`, together with `B ⊆ Set.range ρ`.  The
-two modules therefore agree: the ambient loop space has to contain the boundary surface `B`,
-and once it does, the end disks are automatically in it.  In particular the end disk
-hypothesis of the homotopy producer and the tube's own hypotheses are jointly satisfiable, and
-the second implies the first.
+space, is *not* listed below.  Both modules now phrase the end disks by the same model set
+`spliceEndDisks`, so `hdisk` is literally `hendDisks.trans hrange`: the tube level hypothesis
+`T.chart '' spliceEndDisks ⊆ B` of `CrossSeamTubeData.normalOfResolvedCell` composed with
+`B ⊆ Set.range ρ`.  The two modules therefore agree: the ambient loop space has to contain the
+boundary surface `B`, and once it does, the end disks are automatically in it.  In particular
+the end disk hypothesis of the homotopy producer and the tube's own hypotheses are jointly
+satisfiable, and the second implies the first.
 
 ## The shape of the cover that must not be used
 
@@ -133,11 +137,13 @@ whether it is a genuine mathematical obligation or bookkeeping.
   `NormalSingularCellData.exists_boundary_surgery_candidate_of_boundaryBranch` in
   `LoopTheorem.BoundaryBranchDescent`, which returns its normality as a `Nonempty`.
   Bookkeeping.
-* `ebranch`: genuine theorem, and known to be the wrong shape.  `LoopTheorem.BranchInjection`
-  proves that every branch other than `c` is wholly kept or wholly lost by the direct surgery,
-  which yields an *injection* `NormalSingularCellData.DescendingSurgery.ofBranchInjection` and
-  not the bijection asked for here.  The selection theorem consumed below still routes the
-  direct candidate through `DescendingSurgery.ofBranchEquiv`.
+* `origin`, `hinj`, `hmiss`: exactly what `LoopTheorem.BranchInjection` proves for the direct
+  surgery.  Every branch of `D` other than `c` is wholly kept or wholly lost by that surgery,
+  whence an *injection* of the branches of `Gd` into the branches of `D` missing `c`, which
+  `NormalSingularCellData.DescendingSurgery.ofBranchInjection` turns into a descending surgery.
+  The selection consumed below goes through the injection door of
+  `LoopTheorem.BoundaryWitnessDoors`, so a bijection of branches is no longer asked for
+  anywhere on this path.
 
 *The ambient loop space and the boundary homotopy, `SeamBoundaryHomotopy`.*
 
@@ -201,7 +207,8 @@ theorem exists_descendingSurgery_of_crossSeamTube_reversing [T2Space M]
     (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
     (hBdM : B ⊆ BdM)
     {Gd : SingularTwoCell M} (hGd : NormalSingularCellData Gd BdM B)
-    (ebranch : hGd.singularSet.Branch ≃ {b : hD.singularSet.Branch // b ≠ c})
+    (origin : hGd.singularSet.Branch → hD.singularSet.Branch)
+    (hinj : Function.Injective origin) (hmiss : ∀ b, origin b ≠ c)
     {Q : Type w} [TopologicalSpace Q] {p' q' u' v' : Q}
     (σ₀ : Path p' q') (τ₀ : Path q' u') (υ₀ : Path u' v') (φ₀ : Path v' p')
     (ev : loopCircle → Q)
@@ -223,22 +230,18 @@ theorem exists_descendingSurgery_of_crossSeamTube_reversing [T2Space M]
     ∃ (S : hD.DescendingSurgery) (e : loopCircle ≃ₜ frontier S.cell.domain) (δ : freeLoop X),
       (∀ θ, ρ (δ θ) = S.cell (e θ)) ∧ ¬loopClassMeets δ x N := by
   classical
+  -- The cross reglued cell and its chord resolution, bundled in the normal form of the tube.
+  let R : CrossSeamRegluedData T G :=
+    { cell := cell, domain_eq := hdomain, coord := coord, bijOn_coord := hcoord,
+      reglued_eq := hreglued, resolved_eq := hresolved, eqOn_compl := hcompl }
   -- The resolved cell deletes exactly the carrier of the branch `c`.
   have hdouble : doublePointSet cell cell.domain =
-      doublePointSet D D.domain \ hD.singularSet.branchCarrier c := by
-    rw [T.doublePointSet_sdiff_image_spliceCylinder, ← hGD]
-    refine Subset.antisymm
-      (T.doublePointSet_resolved_subset hdomain hcoord hresolved hcompl) ?_
-    rintro y ⟨⟨x₁, hx₁, x₂, hx₂, hne, hy₁, hy₂⟩, hycyl⟩
-    have h₁ : ⇑G x₁ ∉ T.chart '' spliceCylinder := by rw [hy₁]; exact hycyl
-    have h₂ : ⇑G x₂ ∉ T.chart '' spliceCylinder := by rw [hy₂]; exact hycyl
-    refine ⟨x₁, ?_, x₂, ?_, hne, (hcompl ⟨hx₁, h₁⟩).trans hy₁, (hcompl ⟨hx₂, h₂⟩).trans hy₂⟩
-    · rw [hdomain]; exact hx₁
-    · rw [hdomain]; exact hx₂
+      doublePointSet D D.domain \ hD.singularSet.branchCarrier c :=
+    R.doublePointSet_cell_eq hGD
   -- The resolved cell is again a normal singular cell over the same boundary data.
   have hcell : NormalSingularCellData cell BdM B :=
-    T.normalOfResolvedCell hdomain hcoord hreglued hresolved hcompl hdouble hGinj hGfiber
-      hGboundary hGimage hGcrossing hendDisks hends htubeBdM hBdM
+    R.normalOfTube hGD hGinj hGfiber hGboundary hGimage hGcrossing hendDisks hends htubeBdM
+      hBdM
   -- The boundary circle of `G` lies in the source disk of `G`.
   have hdom : ∀ θ : loopCircle, (Wraw.param θ : EuclideanSpace ℝ (Fin 2)) ∈ G.domain :=
     fun θ => G.frontier_subset_domain (Wraw.param θ).2
@@ -263,22 +266,17 @@ theorem exists_descendingSurgery_of_crossSeamTube_reversing [T2Space M]
       exact (hresolved hmem).trans ((congrArg T.chart hmodel).trans (hreglued hmem).symm)
     · exact hcompl ⟨hdom θ, hcyl⟩
   -- The end disks of the tube lie in the ambient loop space, because they lie in `B`.
-  have hdisk : ∀ p ∈ spliceSquare, ∀ t : ℝ, t = 0 ∨ t = 1 →
-      T.chart (p, t) ∈ Set.range ρ := by
-    intro p hp t ht
-    have htmem : t ∈ ({0, 1} : Set ℝ) := by rcases ht with h | h <;> simp [h]
-    exact hrange (hendDisks ⟨(p, t), ⟨hp, htmem⟩, rfl⟩)
+  have hdisk : T.chart '' spliceEndDisks ⊆ Set.range ρ := Subset.trans hendDisks hrange
   -- The resolved cell inherits the boundary word witness of the raw cross reglue.
   obtain ⟨Wcross⟩ := exists_boundaryWordWitness_of_crossSeamBoundary (cell := cell) hρ hdomain
     T.isTube.continuousOn_chart Wraw hΩ₁ hΩ₂ hcover
     (co := fun θ => coord ↑(Wraw.param θ)) hcocont (fun θ hθ => hcoord.mapsTo (hmem₁ θ hθ))
     (fun θ hθ => hreglued (hmem₁ θ hθ)) (fun θ hθ => hresolved (hmem₁ θ hθ)) hrest hlateral
     (fun θ hθ => (hends _ (hmem₁ θ hθ)).mp (Wraw.param θ).2) hdisk
-  exact exists_descendingSurgery_not_loopClassMeets_reversing_witness hGd ebranch
-    (crossSeamResolutionDataOfTube (T := T) (G := G)
-      { cell := cell, domain_eq := hdomain, coord := coord, bijOn_coord := hcoord,
-        reglued_eq := hreglued, resolved_eq := hresolved, eqOn_compl := hcompl,
-        normal := hcell } hGim hGD (hD.deletedBranchEquiv hcell c hdouble)
+  exact exists_descendingSurgery_not_loopClassMeets_reversing_witness_of_injection hGd origin
+    hinj hmiss
+    (crossSeamResolutionDataOfTube (T := T) (G := G) R hcell hGim hGD
+      (hD.deletedBranchEquiv hcell c hdouble)
       fun b => hD.branchCarrier_deletedBranchEquiv hcell c hdouble b)
     σ₀ τ₀ υ₀ φ₀ ev hev hσ hτ hυ hφ γ hγ hγN Wdirect Wcross
 

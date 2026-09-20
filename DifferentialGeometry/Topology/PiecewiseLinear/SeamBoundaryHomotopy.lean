@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWitness
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTube
 
 /-!
 # The boundary homotopy of the cross seam resolution
@@ -48,12 +49,12 @@ is the hypothesis that the strips meet the source boundary exactly in their two 
 The conclusion is a homotopy **in the ambient loop space `X`**, not in the manifold.  This is
 the point of the statement and not a formality: the candidate boundary curves already bound
 disks in the manifold, so a homotopy there would carry no information for the elimination
-step.  The hypothesis that pays for it is `hdisk`, which asks that the two *end disks* of the
-tube lie in the image of the inclusion `ρ : X → M`; together with `hγ`, which puts the raw
-curve in that image, it covers the whole track of the homotopy, because
-`crossSeamResolveHomotopy_mem_endDisk` confines the moving part to the end disks.  The lift is
-then unique and continuous because `ρ` is a topological embedding, which is what the inclusion
-of a boundary neighbourhood subspace is.  The homotopy is stationary on all of `Ω₂`, including
+step.  The hypothesis that pays for it is `hdisk`, which asks that the parametrised end disks
+`chart '' spliceEndDisks` of the tube lie in the image of the inclusion `ρ : X → M`; together
+with `hγ`, which puts the raw curve in that image, it covers the whole track of the homotopy,
+because `crossSeamResolveHomotopy_mem_endDisk` confines the moving part to the end disks.  The
+lift is then unique and continuous because `ρ` is a topological embedding, which is what the
+inclusion of a boundary neighbourhood subspace is.  The homotopy is stationary on `Ω₂`, including
 the overlap with `Ω₁`.
 
 ## The producer
@@ -246,11 +247,12 @@ coordinate is lateral, and over `Ω₁` the base coordinate is an endpoint of th
 which is the hypothesis that the two strips meet the source boundary exactly in their end
 edges.
 
-The conclusion is a homotopy in `X`.  The two hypotheses that buy it are `hdisk`, the two end
-disks of the tube lie in the image of the inclusion `ρ`, and `hγ`, the raw boundary curve is
-read in `X`; together they cover the whole track of the homotopy, since the moving part of it
-lies in the end disks and nothing else moves.  A homotopy in the manifold would be worthless
-here, because the candidate boundary curves already bound disks there.
+The conclusion is a homotopy in `X`.  The two hypotheses that buy it are `hdisk`, the
+parametrised end disks `chart '' spliceEndDisks` of the tube lie in the image of the inclusion
+`ρ`, and `hγ`, the raw boundary curve is read in `X`; together they cover the whole track of
+the homotopy, since the moving part of it lies in the end disks and nothing else moves.
+A homotopy in the manifold would be worthless here, because the candidate boundary curves
+already bound disks there.
 
 The homotopy is stationary on the whole of `Ω₂`, overlap included, and on `Ω₁` its track stays
 in the cross section disk of the point it starts from. -/
@@ -266,7 +268,7 @@ theorem exists_lift_homotopic_of_crossSeamBoundary
     (hrest : ∀ θ ∈ Ω₂, h θ = g θ)
     (hlateral : ∀ θ ∈ Ω₁ ∩ Ω₂, (co θ).2.1 ∈ spliceSquareBoundary)
     (hends : ∀ θ ∈ Ω₁, (co θ).2.2 = 0 ∨ (co θ).2.2 = 1)
-    (hdisk : ∀ p ∈ spliceSquare, ∀ t : ℝ, t = 0 ∨ t = 1 → chart (p, t) ∈ range ρ)
+    (hdisk : chart '' spliceEndDisks ⊆ Set.range ρ)
     (γ : C(Θ, X)) (hγ : ∀ θ, ρ (γ θ) = g θ) :
     ∃ (δ : C(Θ, X)) (H : ContinuousMap.Homotopy γ δ), (∀ θ, ρ (δ θ) = h θ) ∧
       (∀ θ ∈ Ω₂, ∀ s : unitInterval, H (s, θ) = γ θ) ∧
@@ -335,8 +337,13 @@ theorem exists_lift_homotopic_of_crossSeamBoundary
     intro z
     by_cases hz : z.2 ∈ Ω₁
     · have hmem := crossSeamResolveHomotopy_mem_endDisk z.1.2 (hsource hz)
+      have hend : (crossSeamResolveHomotopy (z.1 : ℝ) (co z.2)).2 ∈ ({0, 1} : Set ℝ) := by
+        rw [crossSeamResolveHomotopy_snd]
+        rcases hends z.2 hz with h | h
+        · exact Or.inl h
+        · exact Or.inr (Set.mem_singleton_iff.mpr h)
       rw [hFstrip z hz]
-      exact hdisk _ hmem.1 _ (hends z.2 hz)
+      exact hdisk ⟨_, ⟨hmem.1, hend⟩, rfl⟩
     · rw [hFout z hz]
       exact ⟨γ z.2, hγ z.2⟩
   choose L hL using hFrange
@@ -385,7 +392,7 @@ theorem exists_boundaryWordWitness_of_crossSeamBoundary
     (hrest : ∀ θ ∈ Ω₂, cell (W.param θ) = G (W.param θ))
     (hlateral : ∀ θ ∈ Ω₁ ∩ Ω₂, (co θ).2.1 ∈ spliceSquareBoundary)
     (hends : ∀ θ ∈ Ω₁, (co θ).2.2 = 0 ∨ (co θ).2.2 = 1)
-    (hdisk : ∀ p ∈ spliceSquare, ∀ t : ℝ, t = 0 ∨ t = 1 → chart (p, t) ∈ range ρ) :
+    (hdisk : chart '' spliceEndDisks ⊆ Set.range ρ) :
     Nonempty (BoundaryWordWitness cell ρ word) := by
   let e : loopCircle ≃ₜ frontier cell.domain :=
     W.param.trans (Homeomorph.setCongr (congrArg frontier hdomain)).symm
@@ -493,13 +500,10 @@ theorem exists_lift_homotopic_crossSeamExample :
     have hpt : (crossSeamExampleCoord t).2.1 = ((1 : ℝ), (0 : ℝ)) := Prod.ext ht rfl
     rw [hpt]
     refine mem_spliceSquareBoundary.mpr ⟨⟨⟨?_, ?_⟩, ?_, ?_⟩, Or.inr (Or.inl rfl)⟩ <;> norm_num
-  have hdisk : ∀ p ∈ spliceSquare, ∀ t : ℝ, t = 0 ∨ t = 1 →
-      (id (p, t) : (ℝ × ℝ) × ℝ) ∈ range crossSeamExampleIncl := by
-    intro p hp t ht
-    refine ⟨⟨(p, t), hp, ?_⟩, rfl⟩
-    rcases ht with hq | hq
-    · rw [hq]; exact ⟨le_refl 0, zero_le_one⟩
-    · rw [hq]; exact ⟨zero_le_one, le_refl 1⟩
+  have hdisk : (id : (ℝ × ℝ) × ℝ → (ℝ × ℝ) × ℝ) '' spliceEndDisks ⊆
+      Set.range crossSeamExampleIncl := by
+    rw [Set.image_id, Subtype.range_coe]
+    exact spliceEndDisks_subset_spliceCylinder
   obtain ⟨δ, H, hδ, -, -⟩ := exists_lift_homotopic_of_crossSeamBoundary
     (ρ := crossSeamExampleIncl) (chart := id) (Θ := unitInterval)
     IsEmbedding.subtypeVal continuousOn_id isClosed_univ
@@ -557,13 +561,10 @@ theorem exists_lift_homotopic_crossSeamLoopExample :
       (_ : ContinuousMap.Homotopy crossSeamExampleCentreLoop δ),
       (∀ θ, crossSeamExampleIncl (δ θ) = crossSeamResolve crossSeamExampleCentre) ∧
         δ ≠ crossSeamExampleCentreLoop := by
-  have hdisk : ∀ p ∈ spliceSquare, ∀ t : ℝ, t = 0 ∨ t = 1 →
-      (id (p, t) : (ℝ × ℝ) × ℝ) ∈ range crossSeamExampleIncl := by
-    intro p hp t ht
-    refine ⟨⟨(p, t), hp, ?_⟩, rfl⟩
-    rcases ht with hq | hq
-    · rw [hq]; exact ⟨le_refl 0, zero_le_one⟩
-    · rw [hq]; exact ⟨zero_le_one, le_refl 1⟩
+  have hdisk : (id : (ℝ × ℝ) × ℝ → (ℝ × ℝ) × ℝ) '' spliceEndDisks ⊆
+      Set.range crossSeamExampleIncl := by
+    rw [Set.image_id, Subtype.range_coe]
+    exact spliceEndDisks_subset_spliceCylinder
   obtain ⟨δ, H, hδ, -, -⟩ := exists_lift_homotopic_of_crossSeamBoundary
     (ρ := crossSeamExampleIncl) (chart := id) (Θ := loopCircle)
     (co := fun _ => crossSeamExampleCentre)

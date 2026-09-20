@@ -11,11 +11,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingSource
 # The resolved cell of a cross seam resolution is again normal
 
 `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTube` carries the model
-computation of the cross seam resolution into the manifold, but it *assumes* the normality of
-the resolved cell: `CrossSeamRegluedData` has a field `normal : NormalSingularCellData cell
-BdM B`. This file discharges that field from the remaining six fields of the structure together
-with the corresponding properties of the reglued cell `G`, so that `normal` can be deleted from
-`CrossSeamRegluedData` and replaced by `CrossSeamRegluedData.normalOfTube`.
+computation of the cross seam resolution into the manifold. It does *not* assume the normality
+of the resolved cell: `CrossSeamRegluedData` carries only the six geometric fields, and this
+file derives the normality from them together with the corresponding properties of the reglued
+cell `G`. `CrossSeamRegluedData.normalOfTube` is the resulting producer, and the consumers of
+`CrossSeamTube` take its output as the explicit hypothesis `hnormal`.
 
 ## The shape of every proof
 
@@ -80,45 +80,6 @@ theorem SingularTwoCell.range_boundary_eq_image_frontier {M : Type u} [Topologic
     exact ⟨x, x.property, rfl⟩
   · rintro ⟨x, hx, rfl⟩
     exact ⟨⟨x, hx⟩, rfl⟩
-
-/-! ### The two end cross sections of the model cylinder -/
-
-/-- The two end cross sections of the model cylinder: the cross section squares lying over the
-two endpoints of the base interval. For a boundary branch these are the two disks in which the
-tube meets the boundary of the manifold, and they are the only place where the seam resolution
-moves the boundary curve of the cell. -/
-def spliceEndDisks : Set ((ℝ × ℝ) × ℝ) := spliceSquare ×ˢ ({0, 1} : Set ℝ)
-
-/-- The two end cross sections lie in the model cylinder. -/
-theorem spliceEndDisks_subset_spliceCylinder : spliceEndDisks ⊆ spliceCylinder := by
-  rintro p ⟨hp, ht⟩
-  refine ⟨hp, ?_⟩
-  rcases ht with h | h
-  · rw [h]
-    exact ⟨le_refl (0 : ℝ), zero_le_one⟩
-  · rw [Set.mem_singleton_iff.mp h]
-    exact ⟨zero_le_one, le_refl (1 : ℝ)⟩
-
-/-- The fiberwise resolution does not move the base coordinate, on either source strip. -/
-theorem crossSeamResolve_snd (q : Bool × ((ℝ × ℝ) × ℝ)) : (crossSeamResolve q).2 = q.2.2 := by
-  obtain ⟨b, x⟩ := q
-  cases b
-  · exact crossSeamResolveNeg_snd x
-  · exact crossSeamResolvePos_snd x
-
-/-- A point of the model source lying over an end of the base interval is carried by the
-resolution into the corresponding end cross section: the resolution acts on the cross section
-only. -/
-theorem crossSeamResolve_mem_spliceEndDisks {q : Bool × ((ℝ × ℝ) × ℝ)} (hq : q ∈ bentSource)
-    (hend : q.2.2 = 0 ∨ q.2.2 = 1) : crossSeamResolve q ∈ spliceEndDisks := by
-  have hfig : crossSeamResolve q ∈ spliceFigure := by
-    rw [← image_crossSeamResolve]
-    exact ⟨q, hq, rfl⟩
-  refine ⟨(spliceFigure_subset_spliceCylinder hfig).1, ?_⟩
-  rw [crossSeamResolve_snd]
-  rcases hend with h | h
-  · exact Or.inl h
-  · exact Or.inr (Set.mem_singleton_iff.mpr h)
 
 /-! ### The resolved cell over and away from the tube -/
 
@@ -238,7 +199,7 @@ theorem doublePointSet_resolved_subset (T : CrossSeamTubeData hD c U)
 
 /-- **The resolved cell of a cross seam resolution is again a normal singular cell.** The data
 `hdomain`, `hcoord`, `hreglued`, `hresolved` and `hcompl` are exactly the geometric fields of
-`CrossSeamRegluedData` other than `normal`, and `hdouble` is its conclusion
+`CrossSeamRegluedData`, and `hdouble` is its conclusion
 `CrossSeamRegluedData.doublePointSet_cell_eq`; the remaining hypotheses are the properties of
 the reglued cell `G` and of the tube that the resolution uses.
 
@@ -417,20 +378,22 @@ noncomputable def normalOfResolvedCell (T : CrossSeamTubeData hD c U)
 
 end CrossSeamTubeData
 
-/-! ### The assumed field of the reglued data is derivable -/
+/-! ### The normality of the resolved cell, in bundled form -/
 
 namespace CrossSeamRegluedData
 
 variable {T : CrossSeamTubeData hD c U}
 
-/-- **The `normal` field of `CrossSeamRegluedData` is derivable from its other fields.** The
-proof passes only the six geometric fields of `R` to
-`CrossSeamTubeData.normalOfResolvedCell`, so the field `normal` of `CrossSeamRegluedData` may
-be deleted and every use of `R.normal` replaced by `R.normalOfTube` applied to the same extra
-hypotheses. The hypothesis `hGD`, which says that the cross reglue changes no double point
-outside the parametrised cylinder, is the one already consumed by
+/-- **The normality of the resolved cell of a `CrossSeamRegluedData`.** The structure carries no
+`normal` field: that field has been deleted, and this is its producer. The proof passes only the
+six geometric fields of `R` to `CrossSeamTubeData.normalOfResolvedCell`, so every consumer that
+needs the normality of `R.cell` takes the output of `R.normalOfTube`, applied to the extra
+hypotheses below, as an explicit argument. The hypothesis `hGD`, which says that the cross
+reglue changes no double point outside the parametrised cylinder, is the one already consumed by
 `CrossSeamRegluedData.doublePointSet_cell_eq`; the remaining hypotheses are described at
-`CrossSeamTubeData.normalOfResolvedCell`.
+`CrossSeamTubeData.normalOfResolvedCell`. The end edge hypothesis `hends` is phrased through
+`R.coord`, the model coordinate field of `R`, and not through a separately quantified
+coordinate.
 
 `hGD` is stated at the closed parametrised cylinder and not at the open tube `U`, and the tube
 form does not imply it: it constrains nothing about the double points of `G` lying in `U` but

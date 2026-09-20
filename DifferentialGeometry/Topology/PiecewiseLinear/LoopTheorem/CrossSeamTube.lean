@@ -89,8 +89,10 @@ From that data alone the following are proved.
   the two double point fields of `CrossSeamResolutionData`.
 
 `exists_resolved_cell_of_tube` is the resulting partial producer and
-`crossSeamResolutionDataOfTube` upgrades it to a full `CrossSeamResolutionData` once the branch
-correspondence is supplied.
+`crossSeamResolutionDataOfTube` upgrades it to a full `CrossSeamResolutionData` once the
+normality of the resolved cell and the branch correspondence are supplied. The normality is
+not a field of `CrossSeamRegluedData`: it is produced from the other fields by
+`CrossSeamRegluedData.normalOfTube`.
 -/
 
 open Set
@@ -167,6 +169,45 @@ theorem spliceSquareBoundary_prod_subset_spliceCylinder :
     spliceSquareBoundary ×ˢ Icc (0 : ℝ) 1 ⊆ spliceCylinder := by
   rintro p ⟨h, ht⟩
   exact ⟨h.1, ht⟩
+
+/-! ### The two end cross sections of the model cylinder -/
+
+/-- The two end cross sections of the model cylinder: the cross section squares lying over the
+two endpoints of the base interval. For a boundary branch these are the two disks in which the
+tube meets the boundary of the manifold, and they are the only place where the seam resolution
+moves the boundary curve of the cell. -/
+def spliceEndDisks : Set ((ℝ × ℝ) × ℝ) := spliceSquare ×ˢ ({0, 1} : Set ℝ)
+
+/-- The two end cross sections lie in the model cylinder. -/
+theorem spliceEndDisks_subset_spliceCylinder : spliceEndDisks ⊆ spliceCylinder := by
+  rintro p ⟨hp, ht⟩
+  refine ⟨hp, ?_⟩
+  rcases ht with h | h
+  · rw [h]
+    exact ⟨le_refl (0 : ℝ), zero_le_one⟩
+  · rw [Set.mem_singleton_iff.mp h]
+    exact ⟨zero_le_one, le_refl (1 : ℝ)⟩
+
+/-- The fiberwise resolution does not move the base coordinate, on either source strip. -/
+theorem crossSeamResolve_snd (q : Bool × ((ℝ × ℝ) × ℝ)) : (crossSeamResolve q).2 = q.2.2 := by
+  obtain ⟨b, x⟩ := q
+  cases b
+  · exact crossSeamResolveNeg_snd x
+  · exact crossSeamResolvePos_snd x
+
+/-- A point of the model source lying over an end of the base interval is carried by the
+resolution into the corresponding end cross section: the resolution acts on the cross section
+only. -/
+theorem crossSeamResolve_mem_spliceEndDisks {q : Bool × ((ℝ × ℝ) × ℝ)} (hq : q ∈ bentSource)
+    (hend : q.2.2 = 0 ∨ q.2.2 = 1) : crossSeamResolve q ∈ spliceEndDisks := by
+  have hfig : crossSeamResolve q ∈ spliceFigure := by
+    rw [← image_crossSeamResolve]
+    exact ⟨q, hq, rfl⟩
+  refine ⟨(spliceFigure_subset_spliceCylinder hfig).1, ?_⟩
+  rw [crossSeamResolve_snd]
+  rcases hend with h | h
+  · exact Or.inl h
+  · exact Or.inr (Set.mem_singleton_iff.mpr h)
 
 /-! ### The contract of a normal crossing product tube -/
 
@@ -599,8 +640,11 @@ Each field is one geometric fact:
   `crossSeamInclude`, that is, each strip is sent to its bent transverse sheet;
 * `resolved_eq` : over the parametrised cylinder the resolved map is the model chord resolution
   `crossSeamResolve`, that is, each strip is sent to its chord sheet;
-* `eqOn_compl` : away from the parametrised cylinder the resolution changes nothing;
-* `normal` : the resolved cell is again a normal singular cell over the same boundary data.
+* `eqOn_compl` : away from the parametrised cylinder the resolution changes nothing.
+
+The normality of the resolved cell is *not* a field: it follows from the fields above together
+with the corresponding properties of `G`, and is produced by
+`CrossSeamRegluedData.normalOfTube`.
 
 The source is split along the closed set `T.chart '' spliceCylinder` and not along the open
 `U`. With `U` the first three fields compute `⇑G '' G.domain ∩ U`, which is relatively open in
@@ -631,8 +675,6 @@ structure CrossSeamRegluedData {M : Type u} [TopologicalSpace M]
     (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))
   /-- Away from the parametrised cylinder the resolution changes nothing. -/
   eqOn_compl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder))
-  /-- The resolved cell is again a normal singular cell over the same boundary data. -/
-  normal : NormalSingularCellData cell BdM B
 
 namespace CrossSeamRegluedData
 
@@ -814,7 +856,8 @@ product tube around the branch `c` and the cross reglued cell `G` read in the no
 tube, the resolved cell is again normal, its double point set is exactly the old one with the
 carrier of `c` removed, and its image stays inside the old image together with the tube.
 
-The hypotheses that are not proved here are `hGim`, which is a conclusion of
+The hypotheses that are not proved here are `hnormal`, the normality of the resolved cell, which
+is produced from `R` by `CrossSeamRegluedData.normalOfTube`, `hGim`, which is a conclusion of
 `NormalSingularCellData.exists_cross_reglued_cell_of_boundaryBranch`, and `hGD`, which says that
 the cross reglue changes no double point outside the parametrised cylinder.
 
@@ -822,6 +865,7 @@ The two remaining fields of `CrossSeamResolutionData`, the branch correspondence
 compatibility with branch carriers, are supplied separately in
 `crossSeamResolutionDataOfTube`. -/
 theorem exists_resolved_cell_of_tube (R : CrossSeamRegluedData T G)
+    (hnormal : NormalSingularCellData R.cell BdM B)
     (hGim : G '' G.domain ⊆ D '' D.domain)
     (hGD : doublePointSet G G.domain \ T.chart '' spliceCylinder =
       doublePointSet D D.domain \ T.chart '' spliceCylinder) :
@@ -829,38 +873,41 @@ theorem exists_resolved_cell_of_tube (R : CrossSeamRegluedData T G)
       doublePointSet cell cell.domain =
           doublePointSet D D.domain \ hD.singularSet.branchCarrier c ∧
         cell '' cell.domain ⊆ D '' D.domain ∪ U :=
-  ⟨R.cell, R.normal, R.doublePointSet_cell_eq hGD, R.image_cell_subset hGim⟩
+  ⟨R.cell, hnormal, R.doublePointSet_cell_eq hGD, R.image_cell_subset hGim⟩
 
 /-- **The full contract of a geometric cross seam resolution.** The two double point fields come
-from the tube by `exists_resolved_cell_of_tube`; the branch correspondence `e` and its
+from the tube by `exists_resolved_cell_of_tube`; the normality `hnormal` of the resolved cell is
+supplied by `CrossSeamRegluedData.normalOfTube`, and the branch correspondence `e` and its
 compatibility `he` with branch carriers are taken as hypotheses, since they belong to the
 combinatorics of the resolved triangulation rather than to the seam resolution. -/
 def crossSeamResolutionDataOfTube (R : CrossSeamRegluedData T G)
+    (hnormal : NormalSingularCellData R.cell BdM B)
     (hGim : G '' G.domain ⊆ D '' D.domain)
     (hGD : doublePointSet G G.domain \ T.chart '' spliceCylinder =
       doublePointSet D D.domain \ T.chart '' spliceCylinder)
-    (e : R.normal.singularSet.Branch ≃ {b : hD.singularSet.Branch // b ≠ c})
-    (he : ∀ b, R.normal.singularSet.branchCarrier b =
+    (e : hnormal.singularSet.Branch ≃ {b : hD.singularSet.Branch // b ≠ c})
+    (he : ∀ b, hnormal.singularSet.branchCarrier b =
       hD.singularSet.branchCarrier (e b).1) :
     CrossSeamResolutionData hD c U where
   cell := R.cell
-  normal := R.normal
+  normal := hnormal
   doublePointSet_eq := R.doublePointSet_cell_eq hGD
   branchEquiv := e
   branchCarrier_eq := he
   image_subset := R.image_cell_subset hGim
 
 /-- **The complexity drops strictly.** The descent that Moise's induction consumes, obtained from
-the tube together with the branch correspondence. -/
+the tube together with the normality of the resolved cell and the branch correspondence. -/
 theorem complexity_lt_of_tube (R : CrossSeamRegluedData T G)
+    (hnormal : NormalSingularCellData R.cell BdM B)
     (hGim : G '' G.domain ⊆ D '' D.domain)
     (hGD : doublePointSet G G.domain \ T.chart '' spliceCylinder =
       doublePointSet D D.domain \ T.chart '' spliceCylinder)
-    (e : R.normal.singularSet.Branch ≃ {b : hD.singularSet.Branch // b ≠ c})
-    (he : ∀ b, R.normal.singularSet.branchCarrier b =
+    (e : hnormal.singularSet.Branch ≃ {b : hD.singularSet.Branch // b ≠ c})
+    (he : ∀ b, hnormal.singularSet.branchCarrier b =
       hD.singularSet.branchCarrier (e b).1) :
-    R.normal.singularSet.complexity < hD.singularSet.complexity :=
-  (crossSeamResolutionDataOfTube R hGim hGD e he).complexity_lt
+    hnormal.singularSet.complexity < hD.singularSet.complexity :=
+  (crossSeamResolutionDataOfTube R hnormal hGim hGD e he).complexity_lt
 
 /-! ### The statement that is not proved -/
 
