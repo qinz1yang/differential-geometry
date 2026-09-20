@@ -9073,6 +9073,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchD
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactRelativeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystemWitness
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
+import DifferentialGeometry.Topology.PiecewiseLinear.StageTransport
 /-!
 # Differential geometry and geometric analysis
 -/

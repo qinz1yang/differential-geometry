@@ -12,7 +12,7 @@ line numbers do not match; every prompt below says so.
 | # | Question | Unblocks | Status |
 | --- | --- | --- | --- |
 | 1 | Relative product tube along a branch arc | Lemma 2, the last geometric brick of the boundary case | ready |
-| 2 | Injectivity in the relative compact PL approximation | Moise 35.2, and 35.1/34.1 behind it | ready |
+| 2 | What the 35.2 stage recursion actually is, and injectivity in it | Moise 35.2 — **currently has no valid route** | ready |
 | 3 | Where closed-branch Case 1 actually occurs in the tower | Lemma 2, closed case | ready |
 | 4 | Lifting the boundary word from ranges to parametrised loops | Lemma 2, the selection step | ready |
 
@@ -99,9 +99,12 @@ transitive axioms exactly `propext, Classical.choice, Quot.sound`. Every node in
    Moise305Tame
 ```
 
-So at this moment the two assembled chains have **exactly two open roots**:
-**`LemmaTwoStatement`** and **`Moise352StageStep 3`**. Prompt 1 attacks the last
-geometric brick of the first; prompt 2 attacks the core of the second.
+**The second column of that diagram is no longer valid.** `Moise352StageStep` is also
+false — see the second correction below — so `moise352_of_stageStep` joins
+`moise352_of_stages` as a valid implication from a false hypothesis, and **the 35.2
+chain currently has no route to `Moise352` at all**. The first column stands:
+`LemmaTwoStatement` is a genuine open root and prompt 1 attacks the last geometric
+brick under it.
 
 ### Correction: `Moise352Stages` is false, and was the wrong target
 
@@ -140,6 +143,42 @@ necessarily surjective and hence a PL homeomorphism, contradicting the known
 homeomorphic-but-not-PL-homeomorphic manifolds in high dimensions. So
 `Moise352StageStep n` should be expected true only for small `n`, and any consultant
 who claims a dimension-free proof of it has made an error.
+
+### Second correction: `Moise352StageStep` is false too
+
+The repair above fixed the tolerance's *shape* but not its *quantifier*, and the
+relative clause is false for a different reason. `φ` is required to be bounded **below**
+by a positive constant on each stage (`CompactRelativeApproximation.lean:217`) and is
+not bounded above. Take `φ` constant and large: on a bounded stage both closeness
+constraints become vacuous, `g` becomes an arbitrary PL embedding of `T.coreSpace i`,
+and the clause asserts that **any** PL embedding of a stage extends to a PL embedding of
+the next one agreeing with it — an *extension* statement, not an approximation
+statement. That is false already at `n = 2` (an annulus embedded in the plane so that
+its inner boundary circle encloses the image admits no extension over the disc, by
+Jordan) and at `n = 3` (a knotted solid torus inside a ball: an extension would unknot
+it, contradicting Alexander). Not formalised — no counterexample tower is built.
+
+The right quantifier order is `η` **before** `g`: *there is `η > 0` such that every PL
+embedding of stage `i` which is `η`-close to `h` extends to stage `i+1` within `ε`.*
+That form is proved in `StageTransport.lean`, modulo injectivity alone, as
+`exists_pos_forall_exists_isPLOn_injOn_eqOn_dist_lt_coreSpace_succ`. The absolute clause
+needs no repair and is reduced outright.
+
+**But the repaired clause does not assemble, and this is the finding that matters most
+for planning.** Any valid `η` satisfies `η ≤ ε` whenever the previous stage is nonempty,
+because the produced `f` equals `g` there, so the `ε`-bound must already hold for `g`.
+A recursion therefore forces the tolerances to **increase** along the tower,
+`δ_k < η_k(δ_{k+1}) ≤ δ_{k+1}`, while the constants extracted from a pointwise `φ`
+**decrease**. So the present `exists_isPLHomeomorphInto_of_stages` route, which demands
+exact agreement on the whole previous stage, cannot consume it. What is needed is
+agreement on a strictly *smaller* stage than the one the tolerance is controlled on, or
+a diagonal/limiting argument. Neither is attempted.
+
+So the honest status of 35.2 is not "one open compact theorem" but "the stage recursion
+itself is not yet correctly formulated", and that is what prompt 2 should now be asked.
+Two successive formulations have been false, each for a quantifier reason, which is why
+prompt 2's first question is about the shape of the recursion rather than about its
+content.
 
 Two status corrections worth recording, both verified against current source rather
 than against the notes:
@@ -396,12 +435,24 @@ prescribed open `U`. All three are open.
 
 ### The questions
 
-**Q1.** Is `Moise352StageStep` the right statement, or is the packaging still wrong?
-Specifically: is requiring `φ` to be bounded below by a positive constant on each
-compact stage harmless, or does it lose generality Moise needs? And is the relative
-clause strong enough to iterate? Please check this rather than assume it — the
-previous version of this obligation was outright false for exactly this kind of
-reason, and we would rather find a second packaging error now than build on it.
+**Q1. What is the right stage recursion?** This is now the main question, because two
+successive formulations of it have been *false*, each for a quantifier reason — see both
+corrections in the status section. `Moise352Stages` fixed a tolerance sequence before the
+family and thereby pinned the approximation to `h`. `Moise352StageStep` used a pointwise
+`φ` bounded below but not above, so its relative clause degenerated into an extension
+statement, refuted by an annulus in the plane and by a knotted solid torus in a ball.
+Please write down the statement Moise's §35 induction actually uses, in a form that is
+both true and iterable, rather than repairing ours again.
+
+**Q1a.** The repaired relative clause with `η` quantified before `g` is proved modulo
+injectivity. But any valid `η` satisfies `η ≤ ε` when the previous stage is nonempty,
+since the produced map equals `g` there. So a recursion forces tolerances to *increase*
+along the tower while the constants from a pointwise `φ` *decrease*, and the existing
+assembly, which demands exact agreement on the whole previous stage, cannot consume it.
+Is the standard fix (i) agreement on a strictly smaller stage than the one the tolerance
+controls, (ii) a diagonal or limiting argument over the whole tower, or (iii) something
+else entirely? What exactly does Moise do here — please cite the page, because this is
+the step we have twice got wrong by guessing.
 
 **Q2.** Does `Moise341` imply clause (1)? It is the local, ball-shaped, absolute,
 dimension-3 core, and deriving clause (1) from it appears to need chart localisation,
