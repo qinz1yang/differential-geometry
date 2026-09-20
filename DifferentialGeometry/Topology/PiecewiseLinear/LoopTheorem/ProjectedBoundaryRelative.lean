@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHalfSpace
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHomotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingLocality
 
 /-!
 # Boundary normalization preserving crossings near a closed set
@@ -14,145 +15,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBounda
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-section FiberGerms
-
-variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-
-private theorem isPLHomeomorphOn_inter_preimage_isOpen {f : E → F} {A : Set E}
-    (hf : IsPLHomeomorphOn f A (f '' A)) {U : Set F} (hU : IsOpen U) :
-    IsPLHomeomorphOn f (A ∩ f ⁻¹' U) (f '' (A ∩ f ⁻¹' U)) := by
-  have hinj : InjOn f (A ∩ f ⁻¹' U) := hf.bijOn.injOn.mono inter_subset_left
-  refine ⟨hinj.bijOn_image, ?_, ?_⟩
-  · simpa only [Function.id_comp] using
-      (isPiecewiseAffineOn_id (u := U) hU).comp hf.isPiecewiseAffineOn
-  · rw [image_inter_preimage]
-    refine (hf.isPiecewiseAffineOn_invFunOn.inter_of_isOpen hU).congr ?_
-    rintro y ⟨⟨x, hx, rfl⟩, hfx⟩
-    rw [hinj.leftInvOn_invFunOn ⟨hx, hfx⟩, hf.bijOn.injOn.leftInvOn_invFunOn hx]
-
-private theorem crossing_sheet_of_eq_fiber {f g : E → F} {P Q A : Set E} {a : E}
-    {y : F} {U : Set F} (hU : IsOpen U) (hyU : y ∈ U)
-    (hfiber : ∀ z ∈ U, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z})
-    (hg : ContinuousOn g Q) (ha : a ∈ A) (hfa : f a = y) (hAP : A ⊆ P)
-    (hA : A ∈ 𝓝[P] a) (hfA : IsPLHomeomorphOn f A (f '' A)) :
-    a ∈ A ∩ f ⁻¹' U ∧ g a = y ∧ A ∩ f ⁻¹' U ⊆ Q ∧
-      A ∩ f ⁻¹' U ∈ 𝓝[Q] a ∧
-      IsPLHomeomorphOn g (A ∩ f ⁻¹' U) (g '' (A ∩ f ⁻¹' U)) ∧
-      g '' (A ∩ f ⁻¹' U) = f '' A ∩ U := by
-  have hforward (x : E) (hx : x ∈ P) (hfx : f x ∈ U) : x ∈ Q ∧ g x = f x :=
-    (hfiber (f x) hfx).subset ⟨hx, rfl⟩
-  have hback (x : E) (hx : x ∈ Q) (hgx : g x ∈ U) : x ∈ P ∧ f x = g x :=
-    (hfiber (g x) hgx).superset ⟨hx, rfl⟩
-  have haU : f a ∈ U := hfa.symm ▸ hyU
-  have haQ : a ∈ Q := (hforward a (hAP ha) haU).1
-  have hga : g a = y := (hforward a (hAP ha) haU).2.trans hfa
-  have hEq : EqOn g f (A ∩ f ⁻¹' U) := fun x hx => (hforward x (hAP hx.1) hx.2).2
-  have himage : g '' (A ∩ f ⁻¹' U) = f '' A ∩ U :=
-    hEq.image_eq.trans (image_inter_preimage f A U)
-  refine ⟨⟨ha, haU⟩, hga, fun x hx => (hforward x (hAP hx.1) hx.2).1, ?_, ?_, himage⟩
-  · obtain ⟨O, hO, hOA⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hA
-    have hpre : g ⁻¹' U ∈ 𝓝[Q] a := (hg a haQ) (hga.symm ▸ hU.mem_nhds hyU)
-    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds hO, hpre] with x hxQ hxO hxU
-    have hx := hback x hxQ hxU
-    exact ⟨hOA ⟨hxO, hx.1⟩, show f x ∈ U from hx.2.symm ▸ hxU⟩
-  · rw [hEq.image_eq]
-    exact (isPLHomeomorphOn_inter_preimage_isOpen hfA hU).congr hEq
-
-private theorem hasPLDoubleCrossingAt_of_eventually_eq_fiber {f g : E → F}
-    {P Q : Set E} {y : F} (hg : ContinuousOn g Q)
-    (hfiber : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z})
-    (hcross : HasPLDoubleCrossingAt f P y) : HasPLDoubleCrossingAt g Q y := by
-  obtain ⟨U, hUsub, hU, hyU⟩ := mem_nhds_iff.mp hfiber
-  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hc, hcov⟩ := hcross
-  obtain ⟨ha', hga, hAQ, hA', hgA, himgA⟩ :=
-    crossing_sheet_of_eq_fiber hU hyU hUsub hg ha hfa hAP hA hfA
-  obtain ⟨hb', hgb, hBQ, hB', hgB, himgB⟩ :=
-    crossing_sheet_of_eq_fiber hU hyU hUsub hg hb hfb hBP hB hfB
-  refine ⟨a, b, A ∩ f ⁻¹' U, B ∩ f ⁻¹' U, ha', hb', hga, hgb, hAQ, hBQ,
-    hdis.mono inter_subset_left inter_subset_left, hA', hB', hgA, hgB, ?_, ?_⟩
-  · rw [himgA, himgB]
-    apply hc.congr <;> filter_upwards [hU.mem_nhds hyU] with z hz <;> simp only [mem_inter_iff, hz,
-      and_true]
-  · filter_upwards [hcov, hU.mem_nhds hyU] with z hz hzU x hx
-    have hx' : x ∈ P ∩ f ⁻¹' {z} := (hUsub hzU).superset hx
-    have hxU : f x ∈ U := (mem_singleton_iff.mp hx'.2).symm ▸ hzU
-    exact (hz hx').elim (fun h => Or.inl ⟨h, hxU⟩) (fun h => Or.inr ⟨h, hxU⟩)
-
-private theorem hasPLBoundaryDoubleCrossingAt_of_eventually_eq_fiber {f g : E → F}
-    {P Q : Set E} {M : Set F} {y : F} (hg : ContinuousOn g Q)
-    (hfiber : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z})
-    (hcross : HasPLBoundaryDoubleCrossingAt f P M y) :
-    HasPLBoundaryDoubleCrossingAt g Q M y := by
-  obtain ⟨U, hUsub, hU, hyU⟩ := mem_nhds_iff.mp hfiber
-  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hc, hcov⟩ := hcross
-  obtain ⟨ha', hga, hAQ, hA', hgA, himgA⟩ :=
-    crossing_sheet_of_eq_fiber hU hyU hUsub hg ha hfa hAP hA hfA
-  obtain ⟨hb', hgb, hBQ, hB', hgB, himgB⟩ :=
-    crossing_sheet_of_eq_fiber hU hyU hUsub hg hb hfb hBP hB hfB
-  refine ⟨a, b, A ∩ f ⁻¹' U, B ∩ f ⁻¹' U, ha', hb', hga, hgb, hAQ, hBQ,
-    hdis.mono inter_subset_left inter_subset_left, hA', hB', hgA, hgB, ?_, ?_⟩
-  · rw [himgA, himgB]
-    apply hc.congr (Filter.Eventually.of_forall fun _ => Iff.rfl) <;>
-      filter_upwards [hU.mem_nhds hyU] with z hz <;> simp only [mem_inter_iff, hz, and_true]
-  · filter_upwards [hcov, hU.mem_nhds hyU] with z hz hzU x hx
-    have hx' : x ∈ P ∩ f ⁻¹' {z} := (hUsub hzU).superset hx
-    have hxU : f x ∈ U := (mem_singleton_iff.mp hx'.2).symm ▸ hzU
-    exact (hz hx').elim (fun h => Or.inl ⟨h, hxU⟩) (fun h => Or.inr ⟨h, hxU⟩)
-
-end FiberGerms
-
-private theorem eventually_eq_fiber_in_chart {X E : Type*} [TopologicalSpace X]
-    {d : ℕ}
-    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin d)))
-    {f g : E → X} (P : Set E) {y : X} (hy : y ∈ e.source)
-    (hfiber : ∀ᶠ z in 𝓝 y, f ⁻¹' {z} = g ⁻¹' {z}) :
-    ∀ᶠ z in 𝓝 (e y), (P ∩ f ⁻¹' e.source) ∩ (e ∘ f) ⁻¹' {z} =
-      (P ∩ g ⁻¹' e.source) ∩ (e ∘ g) ⁻¹' {z} := by
-  have hback : ∀ᶠ z in 𝓝 (e y), f ⁻¹' {e.symm z} = g ⁻¹' {e.symm z} := by
-    have h := (e.continuousAt_symm (e.map_source hy))
-      (show ∀ᶠ z in 𝓝 (e.symm (e y)), f ⁻¹' {z} = g ⁻¹' {z} from by rwa [e.left_inv hy])
-    exact h
-  filter_upwards [e.open_target.mem_nhds (e.map_source hy), hback] with z hz heq
-  have hiff (u : E → X) (x : E) :
-      x ∈ (P ∩ u ⁻¹' e.source) ∩ (e ∘ u) ⁻¹' {z} ↔ x ∈ P ∧ u x = e.symm z := by
-    constructor
-    · rintro ⟨⟨hxP, hxu⟩, hxz⟩
-      refine ⟨hxP, ?_⟩
-      have hxz' : e (u x) = z := hxz
-      rw [← hxz', e.left_inv hxu]
-    · rintro ⟨hxP, hxu⟩
-      refine ⟨⟨hxP, ?_⟩, ?_⟩
-      · change u x ∈ e.source
-        rw [hxu]
-        exact e.map_target hz
-      · change e (u x) = z
-        rw [hxu, e.right_inv hz]
-  ext x
-  rw [hiff f, hiff g]
-  exact and_congr_right fun _ => Set.ext_iff.mp heq x
-
-private theorem crossings_in_chart_congr_of_eventually_eq_fiber
-    {X E : Type*} [TopologicalSpace X] [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {d : ℕ}
-    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin d)))
-    {f g : E → X} {P : Set E} (hf : ContinuousOn f P) (hg : ContinuousOn g P)
-    {y : X} (hy : y ∈ e.source) (hfiber : ∀ᶠ z in 𝓝 y, f ⁻¹' {z} = g ⁻¹' {z}) :
-    (HasPLDoubleCrossingAt (e ∘ f) (P ∩ f ⁻¹' e.source) (e y) ↔
-      HasPLDoubleCrossingAt (e ∘ g) (P ∩ g ⁻¹' e.source) (e y)) ∧
-      ∀ M, HasPLBoundaryDoubleCrossingAt (e ∘ f) (P ∩ f ⁻¹' e.source) M (e y) ↔
-        HasPLBoundaryDoubleCrossingAt (e ∘ g) (P ∩ g ⁻¹' e.source) M (e y) := by
-  have heq := eventually_eq_fiber_in_chart e P hy hfiber
-  have heq' := heq.mono fun _ h => h.symm
-  have hfc : ContinuousOn (e ∘ f) (P ∩ f ⁻¹' e.source) :=
-    e.continuousOn.comp (hf.mono inter_subset_left) (fun _ hx => hx.2)
-  have hgc : ContinuousOn (e ∘ g) (P ∩ g ⁻¹' e.source) :=
-    e.continuousOn.comp (hg.mono inter_subset_left) (fun _ hx => hx.2)
-  exact ⟨⟨hasPLDoubleCrossingAt_of_eventually_eq_fiber hgc heq,
-    hasPLDoubleCrossingAt_of_eventually_eq_fiber hfc heq'⟩,
-    fun _ => ⟨hasPLBoundaryDoubleCrossingAt_of_eventually_eq_fiber hgc heq,
-      hasPLBoundaryDoubleCrossingAt_of_eventually_eq_fiber hfc heq'⟩⟩
 
 theorem SingularTwoCell.exists_small_boundary_doubleCrossing_away_from_isClosed
     {X : Type*} [MetricSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
@@ -220,7 +82,8 @@ theorem SingularTwoCell.exists_small_boundary_doubleCrossing_away_from_isClosed
     have hlocal : ∀ᶠ w in 𝓝 z, D ⁻¹' {w} = A ⁻¹' {w} :=
       Filter.Eventually.mono (hO.mem_nhds hz) fun w hw => (hfixO w hw).symm
     simpa only [hdom] using
-      crossings_in_chart_congr_of_eventually_eq_fiber c D.continuousOn hAg hzc hlocal
+      hasPLDoubleCrossingAt_comp_openPartialHomeomorph_iff_of_eventually_eq_fiber c
+        D.continuousOn hAg hzc hlocal
   · intro t x
     refine ⟨(hH t x).1, (hH t x).2.1, ?_⟩
     intro hxO

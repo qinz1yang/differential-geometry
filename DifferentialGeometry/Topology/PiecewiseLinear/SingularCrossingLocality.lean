@@ -185,4 +185,104 @@ theorem HasPLNormalDoubleCrossingAt.of_eqOn_sdiff_preimage_of_isClosed {f g : E 
       exact show f x ∉ C from fun hxC => hgx (hmaps ⟨hx.1, hxC⟩)
   exact h.of_eqOn_of_isOpen hg hC.isOpen_compl (show y ∈ Cᶜ from hy) hPP' hfg'
 
+/-- Eventually equal fibres near `y` are witnessed by a single open set: if the fibre of `f`
+in `P` and the fibre of `g` in `Q` agree over every point near `y`, then there is an open set
+`U` containing `y` whose two shrunk sources agree and on which `f` and `g` agree. -/
+theorem exists_isOpen_inter_preimage_eq_of_eventually_eq_fiber {α β : Type*}
+    [TopologicalSpace β] {f g : α → β} {P Q : Set α} {y : β}
+    (hfiber : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z}) :
+    ∃ U : Set β, IsOpen U ∧ y ∈ U ∧ P ∩ f ⁻¹' U = Q ∩ g ⁻¹' U ∧ EqOn f g (P ∩ f ⁻¹' U) := by
+  obtain ⟨U, hUsub, hU, hyU⟩ := mem_nhds_iff.mp hfiber
+  have hforward : ∀ x ∈ P, f x ∈ U → x ∈ Q ∧ g x = f x := fun x hx hfx =>
+    (hUsub hfx).subset ⟨hx, rfl⟩
+  have hback : ∀ x ∈ Q, g x ∈ U → x ∈ P ∧ f x = g x := fun x hx hgx =>
+    (hUsub hgx).superset ⟨hx, rfl⟩
+  refine ⟨U, hU, hyU, Subset.antisymm (fun x hx => ⟨(hforward x hx.1 hx.2).1, ?_⟩)
+    (fun x hx => ⟨(hback x hx.1 hx.2).1, ?_⟩), fun x hx => (hforward x hx.1 hx.2).2.symm⟩
+  · change g x ∈ U
+    rw [(hforward x hx.1 hx.2).2]
+    exact hx.2
+  · change f x ∈ U
+    rw [(hback x hx.1 hx.2).2]
+    exact hx.2
+
+/-- A PL double crossing at `y` transfers to any map `g` on a source `Q` whose fibres agree
+with those of `f` on `P` over every point near `y`. -/
+theorem HasPLDoubleCrossingAt.of_eventually_eq_fiber {f g : E → F} {P Q : Set E} {y : F}
+    (hg : ContinuousOn g Q) (hfiber : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z})
+    (h : HasPLDoubleCrossingAt f P y) : HasPLDoubleCrossingAt g Q y := by
+  obtain ⟨U, hU, hyU, hPQ, hfg⟩ := exists_isOpen_inter_preimage_eq_of_eventually_eq_fiber hfiber
+  exact h.of_eqOn_of_isOpen hg hU hyU hPQ hfg
+
+/-- A PL boundary double crossing at `y` transfers to any map `g` on a source `Q` whose fibres
+agree with those of `f` on `P` over every point near `y`. -/
+theorem HasPLBoundaryDoubleCrossingAt.of_eventually_eq_fiber {f g : E → F} {P Q : Set E}
+    {Mb : Set F} {y : F} (hg : ContinuousOn g Q)
+    (hfiber : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z})
+    (h : HasPLBoundaryDoubleCrossingAt f P Mb y) : HasPLBoundaryDoubleCrossingAt g Q Mb y := by
+  obtain ⟨U, hU, hyU, hPQ, hfg⟩ := exists_isOpen_inter_preimage_eq_of_eventually_eq_fiber hfiber
+  exact h.of_eqOn_of_isOpen hg hU hyU hPQ hfg
+
+/-- A PL normal double crossing at `y` transfers to any map `g` on a source `Q` whose fibres
+agree with those of `f` on `P` over every point near `y`. -/
+theorem HasPLNormalDoubleCrossingAt.of_eventually_eq_fiber {f g : E → F} {P Q : Set E}
+    {Bd : Set F} {y : F} (hg : ContinuousOn g Q)
+    (hfiber : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} = Q ∩ g ⁻¹' {z})
+    (h : HasPLNormalDoubleCrossingAt f P Bd y) : HasPLNormalDoubleCrossingAt g Q Bd y := by
+  obtain ⟨U, hU, hyU, hPQ, hfg⟩ := exists_isOpen_inter_preimage_eq_of_eventually_eq_fiber hfiber
+  exact h.of_eqOn_of_isOpen hg hU hyU hPQ hfg
+
+/-- Fibres of `e ∘ f` and of `e ∘ g` over points near `e y`, taken inside the parts of the
+source lying over the chart domain, agree as soon as the fibres of `f` and `g` agree near `y`. -/
+theorem eventually_eq_fiber_comp_openPartialHomeomorph {X α : Type*} [TopologicalSpace X]
+    {d : ℕ} (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin d))) {f g : α → X} (P : Set α)
+    {y : X} (hy : y ∈ e.source) (hfiber : ∀ᶠ z in 𝓝 y, f ⁻¹' {z} = g ⁻¹' {z}) :
+    ∀ᶠ z in 𝓝 (e y), (P ∩ f ⁻¹' e.source) ∩ (e ∘ f) ⁻¹' {z} =
+      (P ∩ g ⁻¹' e.source) ∩ (e ∘ g) ⁻¹' {z} := by
+  have hback : ∀ᶠ z in 𝓝 (e y), f ⁻¹' {e.symm z} = g ⁻¹' {e.symm z} := by
+    have h := (e.continuousAt_symm (e.map_source hy))
+      (show ∀ᶠ z in 𝓝 (e.symm (e y)), f ⁻¹' {z} = g ⁻¹' {z} from by rwa [e.left_inv hy])
+    exact h
+  filter_upwards [e.open_target.mem_nhds (e.map_source hy), hback] with z hz heq
+  have hiff (u : α → X) (x : α) :
+      x ∈ (P ∩ u ⁻¹' e.source) ∩ (e ∘ u) ⁻¹' {z} ↔ x ∈ P ∧ u x = e.symm z := by
+    constructor
+    · rintro ⟨⟨hxP, hxu⟩, hxz⟩
+      refine ⟨hxP, ?_⟩
+      have hxz' : e (u x) = z := hxz
+      rw [← hxz', e.left_inv hxu]
+    · rintro ⟨hxP, hxu⟩
+      refine ⟨⟨hxP, ?_⟩, ?_⟩
+      · change u x ∈ e.source
+        rw [hxu]
+        exact e.map_target hz
+      · change e (u x) = z
+        rw [hxu, e.right_inv hz]
+  ext x
+  rw [hiff f, hiff g]
+  exact and_congr_right fun _ => Set.ext_iff.mp heq x
+
+/-- Read in a chart `e` around `y`, the plain and the boundary PL double crossing conditions
+for `e ∘ f` and for `e ∘ g` at `e y` agree, as soon as the fibres of `f` and `g` agree near
+`y`. The sources are the parts of `P` lying over the chart domain. -/
+theorem hasPLDoubleCrossingAt_comp_openPartialHomeomorph_iff_of_eventually_eq_fiber
+    {X : Type*} [TopologicalSpace X] {d : ℕ}
+    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin d))) {f g : E → X} {P : Set E}
+    (hf : ContinuousOn f P) (hg : ContinuousOn g P) {y : X} (hy : y ∈ e.source)
+    (hfiber : ∀ᶠ z in 𝓝 y, f ⁻¹' {z} = g ⁻¹' {z}) :
+    (HasPLDoubleCrossingAt (e ∘ f) (P ∩ f ⁻¹' e.source) (e y) ↔
+      HasPLDoubleCrossingAt (e ∘ g) (P ∩ g ⁻¹' e.source) (e y)) ∧
+      ∀ M, HasPLBoundaryDoubleCrossingAt (e ∘ f) (P ∩ f ⁻¹' e.source) M (e y) ↔
+        HasPLBoundaryDoubleCrossingAt (e ∘ g) (P ∩ g ⁻¹' e.source) M (e y) := by
+  have heq := eventually_eq_fiber_comp_openPartialHomeomorph e P hy hfiber
+  have heq' := heq.mono fun _ h => h.symm
+  have hfc : ContinuousOn (e ∘ f) (P ∩ f ⁻¹' e.source) :=
+    e.continuousOn.comp (hf.mono inter_subset_left) (fun _ hx => hx.2)
+  have hgc : ContinuousOn (e ∘ g) (P ∩ g ⁻¹' e.source) :=
+    e.continuousOn.comp (hg.mono inter_subset_left) (fun _ hx => hx.2)
+  exact ⟨⟨HasPLDoubleCrossingAt.of_eventually_eq_fiber hgc heq,
+    HasPLDoubleCrossingAt.of_eventually_eq_fiber hfc heq'⟩,
+    fun _ => ⟨HasPLBoundaryDoubleCrossingAt.of_eventually_eq_fiber hgc heq,
+      HasPLBoundaryDoubleCrossingAt.of_eventually_eq_fiber hfc heq'⟩⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
