@@ -9087,6 +9087,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWitness
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingLocality
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellFields
 import DifferentialGeometry.Topology.LoopSpace.InjectivePathReparam
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellCrossing
 /-!
 # Differential geometry and geometric analysis
 -/
