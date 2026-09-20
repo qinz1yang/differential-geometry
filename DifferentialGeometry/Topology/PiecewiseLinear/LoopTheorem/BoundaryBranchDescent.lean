@@ -81,11 +81,17 @@ Two geometric inputs are taken as hypotheses rather than proved.
    `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` records that the
    double point set of the replacement is contained in that of `D` and misses the carrier of
    `c`, but not that the remaining branches survive; and a subset of a one dimensional complex
-   can have more branches than the complex, so the inclusion alone is not a descent.  What is
-   missing is the covering statement that the pullback image of the replacement domain
-   exhausts `D.domain` off the deleted strip, from which the bijection required by
-   `ofBranchEquiv` follows.  The selection theorems therefore take the bijection itself as the
-   argument `ebranch`.
+   can have more branches than the complex, so the inclusion alone is not a descent.  The
+   selection theorems therefore take the bijection itself as the argument `ebranch`.
+
+   The covering statement that would have supplied that bijection — that the pullback image of
+   the replacement domain exhausts `D.domain` off the deleted strip — is **false** of the
+   direct surgery, which glues the two outer cells of `exists_three_cells_of_boundaryBranch`
+   and discards the interior of the middle band.  The direct candidate loses every branch with
+   a sheet there, so it supports an *injection* of branches and not a bijection, which is all
+   that `NormalSingularSetTriangulation.complexity_lt_of_injective_origin` needs.  Taking
+   `ebranch` as a hypothesis keeps these theorems correct; supplying it for the direct
+   candidate is the separate work.
 2. *The boundary words of the two candidates.*  Both surgery endpoints parametrise the
    boundary circle of their replacement cell as a concatenation of two paths whose *ranges*
    are named arcs of `frontier D.domain`, and `CrossSeamResolutionData` records no boundary

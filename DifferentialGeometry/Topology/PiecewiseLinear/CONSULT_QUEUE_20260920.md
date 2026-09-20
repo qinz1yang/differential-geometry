@@ -36,7 +36,7 @@ except where marked. Reading downwards is the order the induction uses.
 | Branch bijection `Branch ≃ {b ≠ c}` | `BranchDeletion.lean` | proved, for *any* such triangulation |
 | Normality of the resolved cell, five of six fields | `CrossSeamRegluedData.normal` | **open** |
 | `hGD`: the reglue changes no double point outside the tube | belongs with `CutAndPaste.lean` | **open** |
-| Surjectivity `D.domain \ C ⊆ pullback '' G.domain` | `CutAndPaste.lean:1382` | **open — one conjunct** |
+| Branch *injection* for the direct candidate | `BranchDescent.lean:91` is the consumer | **open** |
 | Uniform descent through one door | `BoundaryBranchDescent.lean` | proved |
 | Word elimination picks the surviving candidate | `BoundaryBranchDescent.lean` | proved, given the boundary words |
 | The boundary words as parametrised loops | — | **open — prompt 4** |
@@ -44,12 +44,37 @@ except where marked. Reading downwards is the order the induction uses.
 The closed-branch case has its Case 1 exclusion proved
 (`ClosedBranchOrientability.lean`) with three named inputs still open; see prompt 3.
 
+### Correction: the direct candidate admits no branch bijection
+
+An earlier row of this table read *"Surjectivity `D.domain \ C ⊆ pullback '' G.domain`
+— open, one conjunct"*, on the reading that the existing construction satisfies it but
+does not export it. **It does not satisfy it; the statement is false of the direct
+surgery.** The direct surgery glues the two *outer* cells of
+`exists_three_cells_of_boundaryBranch` and discards the middle band. With its notation,
+`pullback '' G.domain = D₁.domain ∪ (D₃.domain \ C) = D.domain \ (D₂.domain \ A)`, and
+since `A, C ⊆ frontier D₂.domain` (`CutAndPaste.lean:1197–1198`), any point of
+`interior D₂.domain` — nonempty, as `D₂.domain` is a 2-ball — lies in `D.domain \ C`
+and in neither outer cell. So the direct candidate genuinely loses every branch with a
+sheet in the middle band, and `doublePointSet G G.domain = doublePointSet D D.domain \
+branchCarrier c` is false for it too.
+
+This is the mathematics, not a Lean artefact: the direct candidate is `D₁ ∪_g D₃`. The
+cross candidate is the one that uses all three pieces, which is exactly why it retains
+the branch and needs the seam resolution. The two candidates were never symmetric here.
+
+The repair is that a **bijection was never needed**.
+`NormalSingularSetTriangulation.complexity_lt_of_injective_origin`
+(`BranchDescent.lean:91`) takes an *injection* `T'.Branch → T.Branch` missing `c`, which
+is what the direct candidate really supports. `BranchDeletion.lean`'s conditional
+theorems stay correct and keep the cross candidate as their producer; the direct
+candidate needs a new door taking an injection.
+
 Of the open items, only the tube and the boundary-word parametrisation look like real
-theorems. The surjectivity is one conjunct that the existing construction almost
-certainly already satisfies but does not export; `hGD` and the five normality fields
-are bookkeeping over constructions that exist. That is the honest shape of the
-remaining work: one geometric theorem, one parametrisation question, and a
-bookkeeping tail.
+theorems. The branch injection and `hGD` are bookkeeping over constructions that exist,
+as are the five outstanding normality fields. That is the honest shape of the remaining
+work: one geometric theorem, one parametrisation question, and a bookkeeping tail — with
+the caveat, twice demonstrated tonight, that items in the tail can turn out to be false
+rather than merely unproved.
 
 ## The status these prompts rest on
 

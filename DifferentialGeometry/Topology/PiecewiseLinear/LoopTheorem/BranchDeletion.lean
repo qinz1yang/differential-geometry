@@ -67,11 +67,26 @@ The last section is the branch bookkeeping of the direct boundary surgery, that 
 `hD.branchPreimage c = A ∪ C` for the two sheets over the branch and `pullback` for the map that
 reads the replacement domain inside `D.domain`, the recorded conclusions give
 `MapsTo pullback G.domain D.domain`, `InjOn pullback G.domain`, `EqOn (D ∘ pullback) G G.domain`
-and `Disjoint (pullback '' G.domain) C`, which bound `pullback '' G.domain ⊆ D.domain \ C` but do
-not say that the replacement covers all of `D.domain \ C`.  That covering is taken here as the
-explicit hypothesis `hsurj` of
-`NormalSingularCellData.doublePointSet_eq_sdiff_of_boundarySurgery`; everything downstream of it,
-including the branch bijection, is proved.
+and `Disjoint (pullback '' G.domain) C`, which bound `pullback '' G.domain ⊆ D.domain \ C`.  The
+covering `D.domain \ C ⊆ pullback '' G.domain` is taken here as the explicit hypothesis `hsurj`
+of `NormalSingularCellData.doublePointSet_eq_sdiff_of_boundarySurgery`; everything downstream of
+it, including the branch bijection, is proved.
+
+**That hypothesis is not satisfied by the direct surgery, and the theorems below are therefore
+conditional results without a producer.**  The direct surgery glues the two *outer* cells of
+`exists_three_cells_of_boundaryBranch` and discards the middle band: with its notation,
+`pullback '' G.domain = D₁.domain ∪ (D₃.domain \ C) = D.domain \ (D₂.domain \ A)`.  Since
+`A ⊆ frontier D₂.domain` and `C ⊆ frontier D₂.domain` (`CutAndPaste.lean:1197`), any point of
+`interior D₂.domain` — nonempty, as `D₂.domain` is a two ball — lies in `D.domain \ C` and in
+neither `D₁.domain` nor `D₃.domain`.  So `hsurj` fails, and with it the conclusion: the direct
+surgery loses every branch with a sheet in the interior of the middle band, and admits no
+bijection of branches with the complement of `c`.
+
+The descent it does support is an *injection* of branches, which is all that
+`NormalSingularSetTriangulation.complexity_lt_of_injective_origin` requires.  The statements
+below are kept because they are correct and are the right tool for any surgery that really does
+exhaust the complement of the deleted sheet; the cross candidate's resolved cell is one, via
+`CrossSeamRegluedData.doublePointSet_cell_eq`.
 -/
 
 open Set Topology
@@ -642,9 +657,12 @@ domain inside `D.domain`, the replacement cell has exactly the double point set 
 carrier of `c` removed.
 
 The hypothesis `hsurj`, that the pullback image exhausts `D.domain` off the deleted sheet `C`, is
-**not** among the recorded conclusions of that endpoint; the recorded conclusions give only the
-opposite inclusion `pullback '' G.domain ⊆ D.domain \ C`.  It is the surjectivity that rules out
-a replacement which merely has fewer double points, such as a nonsingular subdisk. -/
+the surjectivity that rules out a replacement which merely has fewer double points, such as a
+nonsingular subdisk.  It is **not** among the recorded conclusions of that endpoint, and it is
+**false** of it: the direct surgery discards the interior of the middle cell, so its pullback
+image is `D.domain \ (D₂.domain \ A)`, strictly smaller than `D.domain \ C`.  See the module
+docstring.  This theorem is therefore a correct conditional statement whose producer is some
+other surgery, not the direct one. -/
 theorem doublePointSet_eq_sdiff_of_boundarySurgery (hD : NormalSingularCellData D BdM B)
     (c : hD.singularSet.Branch) {A C : Set (EuclideanSpace ℝ (Fin 2))}
     {g pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
