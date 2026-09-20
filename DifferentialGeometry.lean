@@ -11393,6 +11393,7 @@ import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
 import DifferentialGeometry.Analysis.Viscosity.Distribution
+import DifferentialGeometry.Analysis.Viscosity.Parabolic
 import DifferentialGeometry.Analysis.Viscosity.SupConvolution
 import DifferentialGeometry.Analysis.Viscosity.Stability
 import DifferentialGeometry.Analysis.Viscosity.ColeHopf
