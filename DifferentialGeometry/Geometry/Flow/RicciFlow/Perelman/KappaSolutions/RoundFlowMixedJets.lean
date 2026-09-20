@@ -213,7 +213,7 @@ theorem sphericalSpaceFormFlow_normalized_scalar_terminal_eq_one {kappa : ℝ}
     {t : ℝ} (ht : t ≤ 0) (x : F.M) (z : F.M) :
     (universalNormalizedFlow F hF ht x).S.scalar 0 z = 1 := by
   have hQ : 0 < F.S.scalar t x :=
-    ancientKappa_scalar_pos F roundThreeSpace_finrank hF ht x
+    ancientKappa_scalar_pos F hF ht x
   have hval : (universalNormalizedFlow F hF ht x).S.scalar 0 z =
       (F.S.scalar t x)⁻¹ * F.S.scalar t z := by
     have h := congrFun (congrFun (curvatureNormalizedSolution_scalar F.S t (F.S.scalar t x)
@@ -231,7 +231,7 @@ theorem exists_round_mixed_jet_bound (a b : ℕ) :
   refine ⟨C, hC, ?_⟩
   intro kappa F hF hround t ht x
   set Q : ℝ := F.S.scalar t x with hQdef
-  have hQ : 0 < Q := ancientKappa_scalar_pos F roundThreeSpace_finrank hF ht x
+  have hQ : 0 < Q := ancientKappa_scalar_pos F hF ht x
   have hG : KLim kappa (universalNormalizedFlow F hF ht x) :=
     ancientKappaThree_toKLim (universalNormalizedFlow F hF ht x)
       (universalNormalizedFlow_isAncientKappaSolution F hF ht x) roundThreeSpace_finrank

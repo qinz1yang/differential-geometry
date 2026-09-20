@@ -55,7 +55,7 @@ theorem exists_universal_mixed_jet_bound_of_not_round (a b : ℕ) :
   refine ⟨C, hC, ?_⟩
   intro kappa F hF hnotround t ht x
   set Q : ℝ := F.S.scalar t x with hQdef
-  have hQ : 0 < Q := ancientKappa_scalar_pos F threeSpace_finrank hF ht x
+  have hQ : 0 < Q := ancientKappa_scalar_pos F hF ht x
   have hG : KLim universalKappaConstant (universalNormalizedFlow F hF ht x) :=
     ancientKappaThree_toKLim (universalNormalizedFlow F hF ht x)
       (universalNormalizedFlow_isAncientKappaSolution_universal F hF hnotround ht x)
@@ -88,7 +88,7 @@ theorem exists_universal_mixed_jet_bound (a b : ℕ) {C₁ : ℝ}
   refine ⟨max C₀ C₁, lt_max_of_lt_left hC₀, ?_⟩
   intro kappa F hF t ht x
   have hR : 0 ≤ F.S.scalar t x ^ mixedCurvatureWeight a b :=
-    Real.rpow_nonneg (ancientKappa_scalar_pos F threeSpace_finrank hF ht x).le _
+    Real.rpow_nonneg (ancientKappa_scalar_pos F hF ht x).le _
   by_cases hsph : IsShrinkingSphericalSpaceFormFlow (I := I3) F
   · exact (hround kappa F hF hsph t ht x).trans
       (mul_le_mul_of_nonneg_right (le_max_right _ _) hR)

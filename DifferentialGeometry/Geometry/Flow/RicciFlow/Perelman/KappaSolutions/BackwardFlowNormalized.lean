@@ -122,7 +122,7 @@ theorem backward_flow_reducedLength_limit_scalar_pos
     {t : ℝ} (ht : t ∈ Ioo 1 T) (x : L.M) :
     0 < metricScalarAt (L.S.base.metric (1 - t)) x := by
   have hmass : asymptoticReducedVolume F.S 0 p ≠ 1 :=
-    (ancient_asymptoticReducedVolume_lt_one F hdim hF p).ne
+    (ancient_asymptoticReducedVolume_lt_one F hF p).ne
   let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := ⟨by omega⟩
   let _ : ConnectedSpace L.M := { toNonempty := ⟨L.basepoint⟩ }
   obtain ⟨hf, hsol, heq⟩ := backward_flow_reducedLength_limit_normalized_shrinker_and_mass

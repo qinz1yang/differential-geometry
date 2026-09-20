@@ -18,12 +18,14 @@ open scoped Manifold ContDiff _root_.Topology BigOperators
 
 universe u uE uH
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
-variable [FiniteDimensional Real E] [CompleteSpace E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {D : RealTimeInterval}
 variable (F : PointedFlowData.{u, uE, uH} (I := I) D)
+
+private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 local instance scalarPositiveTopology : TopologicalSpace F.M := F.topology
 local instance scalarPositiveCharted : ChartedSpace H F.M := F.charted
@@ -90,23 +92,11 @@ theorem ancientKappa_rmNormSqBounded (hdim : Module.finrank Real E = 3)
     (Real.sqrt_nonneg 3) hC (ancientKappa_rmNormLeScalar F hdim hF)⟩
 
 omit [I.Boundaryless] in
-private theorem ancientKappa_regularSlabBound (hdim : Module.finrank Real E = 3)
-    (hF : IsAncientKappaSolution kappa F) :
-    ∀ a b : Real, Set.Icc a b ⊆ D.regular →
-      ∃ C : Real, ∀ t ∈ Set.Icc a b, ∀ x : F.M,
-        normSq0S (I := I) (F.S.base.metric t) x 4 (F.S.base.rm04 t x) ≤ C := by
-  obtain ⟨C, _, hC⟩ := ancientKappa_rmNormSqBounded F hdim hF
-  intro a b hslab
-  refine ⟨(Real.sqrt 3 * C) ^ 2, ?_⟩
-  intro t ht x
-  exact hC t (D.regular_subset (hslab ht)) x
-
-omit [I.Boundaryless] in
 theorem ancientKappa_rmNormSq_eq_zero_of_scalar_eq_zero
-    (hdim : Module.finrank Real E = 3) (hF : IsAncientKappaSolution kappa F)
+    (hF : IsAncientKappaSolution kappa F)
     {t : Real} (ht : t ≤ 0) (x : F.M) (hx : F.S.scalar t x = 0) :
     F.rmNormSq (I := I) t x = 0 := by
-  have hbound := ancientKappa_rmNormLeScalar F hdim hF t
+  have hbound := ancientKappa_rmNormLeScalar_finrank F hF t
     (by simpa only [hF.carrier_eq, Set.mem_Iic] using ht) x
   rw [hx, mul_zero] at hbound
   have hzero : Real.sqrt (F.rmNormSq (I := I) t x) = 0 :=
@@ -116,11 +106,14 @@ theorem ancientKappa_rmNormSq_eq_zero_of_scalar_eq_zero
   exact hsquare.symm
 
 theorem ancientKappa_past_flat_of_scalar_eq_zero
-    (hdim : Module.finrank Real E = 3) (hF : IsAncientKappaSolution kappa F)
+    (hF : IsAncientKappaSolution kappa F)
     {s t : Real} (hst : s < t) (ht : t ≤ 0) (x : F.M)
     (hx : F.S.scalar t x = 0) :
     ∀ y : F.M, F.rmNormSq (I := I) s y = 0 := by
-  let : NeZero (Module.finrank Real E) := ⟨by omega⟩
+  let : NeZero (Module.finrank Real E) := by
+    obtain ⟨r, _hr, y, hy⟩ := hF.notFlat
+    exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
+      (F.S.base.metric r) y (by decide : 0 < 4) (F.S.base.rm04 r y) hy⟩
   let : ConnectedSpace F.M := hF.connected
   let m : Real := (s + t) / 2
   have hsm : s < m := by dsimp only [m]; linarith
@@ -134,7 +127,7 @@ theorem ancientKappa_past_flat_of_scalar_eq_zero
   intro y
   have hHarnack := hamilton_ancient_trace_harnack_distance (I := I) F.S F.isSolution
     (fun r hr => ancientKappa_complete F hF hr)
-    (ancientKappa_regularSlabBound F hdim hF)
+    (ancientKappa_regularSlabBound_finrank F hF)
     (fun r hr z => ancientKappa_operator_nonnegative F hF (D.regular_subset hr) z)
     hsm (by
       intro r hr
@@ -147,9 +140,9 @@ theorem ancientKappa_past_flat_of_scalar_eq_zero
         (4 * (m - s))))
     have hn := ancientKappa_scalar_nonneg F hF (hst.le.trans ht) y
     nlinarith
-  exact ancientKappa_rmNormSq_eq_zero_of_scalar_eq_zero F hdim hF (hst.le.trans ht) y hsy
+  exact ancientKappa_rmNormSq_eq_zero_of_scalar_eq_zero F hF (hst.le.trans ht) y hsy
 
-theorem ancientKappa_scalar_pos (hdim : Module.finrank Real E = 3)
+theorem ancientKappa_scalar_pos
     (hF : IsAncientKappaSolution kappa F) {t : Real} (ht : t ≤ 0) (x : F.M) :
     0 < F.S.scalar t x := by
   apply lt_of_le_of_ne (ancientKappa_scalar_nonneg F hF ht x)
@@ -165,8 +158,8 @@ theorem ancientKappa_scalar_pos (hdim : Module.finrank Real E = 3)
     dsimp only [a]
     linarith [min_le_left tw t]
   have ha0 : a < 0 := hat.trans_le ht
-  have hflat := ancientKappa_past_flat_of_scalar_eq_zero F hdim hF hat ht x hx
-  obtain ⟨C, _, hC⟩ := ancientKappa_rmNormSqBounded F hdim hF
+  have hflat := ancientKappa_past_flat_of_scalar_eq_zero F hF hat ht x hx
+  obtain ⟨C, hC⟩ := ancientKappa_rmNormSqBounded_finrank F hF
   have hforward := complete_forward_flatness F ha0
     (by
       intro r hr
@@ -175,7 +168,7 @@ theorem ancientKappa_scalar_pos (hdim : Module.finrank Real E = 3)
       intro r hr
       simpa only [hF.regular_eq, Set.mem_Iio] using hr.2)
     (fun r hr => hF.complete r (by simpa only [hF.carrier_eq, Set.mem_Iic] using hr.2))
-    ⟨(Real.sqrt 3 * C) ^ 2, fun r hr z =>
+    ⟨C, fun r hr z =>
       hC r (by simpa only [hF.carrier_eq, Set.mem_Iic] using hr.2) z⟩ hflat
   exact hy (hforward tw ⟨hatw.le, htw0⟩ y)
 

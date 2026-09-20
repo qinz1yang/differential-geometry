@@ -159,7 +159,6 @@ theorem ancient_redLength_gradientRicciSoliton_and_hamiltonNormalized_of_constan
   simpa only [zero_sub] using h
 
 theorem ancient_asymptoticReducedVolume_lt_one
-    (hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M) :
     asymptoticReducedVolume F.S 0 p < 1 := by
   apply lt_of_le_of_ne (ancient_asymptoticReducedVolume_le_one F hF p)
@@ -183,6 +182,6 @@ theorem ancient_asymptoticReducedVolume_lt_one
       ancient_redLength_gradientRicciSoliton_and_hamiltonNormalized_of_constant_reducedVolume
         F hF p ha hab hvol (t := tau) ⟨half_lt_self htau.1, by linarith⟩
     exact ⟨hf, by simpa only [zero_sub] using hn⟩
-  exact (ne_of_gt (ancientKappa_scalar_pos F hdim hF le_rfl p)) hzero
+  exact (ne_of_gt (ancientKappa_scalar_pos F hF le_rfl p)) hzero
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

@@ -36,7 +36,7 @@ theorem ancientKappaThree_universal_noncollapsed
     PointedFlowNoncollapsedAllScales F universalKappaConstant := by
   intro t B hRm
   let Q : ℝ := F.S.scalar t B.center
-  have hQ : 0 < Q := ancientKappa_scalar_pos F hdim hF t.2 B.center
+  have hQ : 0 < Q := ancientKappa_scalar_pos F hF t.2 B.center
   let G := curvatureNormalizedFlow F rfl rfl t Q hQ t.2 B.center
   have hG : IsAncientKappaSolution kappa G :=
     isAncientKappaSolution_curvatureNormalizedFlow F hF t Q hQ t.2 B.center rfl

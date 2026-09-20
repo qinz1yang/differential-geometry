@@ -553,19 +553,12 @@ theorem inverse_curvature_derivative_bounds
 
 end GoodPointDerivatives
 
-section Compactness
+section CurvatureBounds
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
-variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]
-variable {H : Type uH} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
-abbrev PointedFlowSqrtRmNormLeScalar
-    (F : PointedFlowData.{u, uE, uH} (I := I) D) (Cn : Real) : Prop :=
-  PointedFlowRmNormLeScalar (I := I) F Cn
-
-omit [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem pointedFlow_rmNormSq_nonneg
     (F : PointedFlowData.{u, uE, uH} (I := I) D) (t : Real) (y : F.M) :
     0 ≤ F.rmNormSq (I := I) t y := by
@@ -580,7 +573,6 @@ theorem pointedFlow_rmNormSq_nonneg
   exact Tensor0SBundle.normSq0S_nonneg (I := I) (F.S.family.metric t) y 4
     (F.S.base.rm04 t y)
 
-omit [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem pointedFlowRmNormSqBounded_of_scalarBounded
     (F : PointedFlowData.{u, uE, uH} (I := I) D) {C Cn : Real}
     (hCn : 0 ≤ Cn)
@@ -604,6 +596,21 @@ theorem pointedFlowRmNormSqBounded_of_scalarBounded
   have h5 : Real.sqrt (F.rmNormSq (I := I) t y) ^ 2 = F.rmNormSq (I := I) t y :=
     Real.sq_sqrt h4
   nlinarith [Real.sqrt_nonneg (F.rmNormSq (I := I) t y)]
+
+end CurvatureBounds
+
+section Compactness
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+
+abbrev PointedFlowSqrtRmNormLeScalar
+    (F : PointedFlowData.{u, uE, uH} (I := I) D) (Cn : Real) : Prop :=
+  PointedFlowRmNormLeScalar (I := I) F Cn
+
 
 theorem movingShi_of_ancient_kappa_solution
     (F : PointedFlowData.{u, uE, uH} (I := I) D) {kappa C Cn : Real}

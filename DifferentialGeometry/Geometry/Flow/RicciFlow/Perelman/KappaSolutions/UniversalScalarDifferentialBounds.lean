@@ -78,7 +78,7 @@ theorem abs_scalarDifferential_le_of_universal {C₁ : ℝ}
     |scalarDifferential (I := I3) F.S t x v| ≤
       9 * C₁ * F.S.scalar t x * Real.sqrt (F.S.scalar t x) *
         Real.sqrt ((F.S.base.metric t).inner x v v) := by
-  have hR : 0 < F.S.scalar t x := ancientKappa_scalar_pos F threeSpace_finrank hF ht x
+  have hR : 0 < F.S.scalar t x := ancientKappa_scalar_pos F hF ht x
   have hbase := abs_scalarDifferential_le (I := I3) F.S t x v
   rw [threeSpace_finrank_cast] at hbase
   have hjet : Real.sqrt (nablaKRm04NormSqIntrinsic (I := I3) F.S 1 t x) =
@@ -106,7 +106,7 @@ theorem abs_deriv_scalar_le_of_universal {C₀ C₂ : ℝ}
     (hF : IsAncientKappaSolution (I := I3) kappa F) {t : ℝ} (ht : t < 0) (x : F.M) :
     |deriv (fun s : ℝ => F.S.scalar s x) t| ≤
       (729 * C₂ + 162 * C₀ ^ 2) * F.S.scalar t x ^ 2 := by
-  have hR : 0 < F.S.scalar t x := ancientKappa_scalar_pos F threeSpace_finrank hF ht.le x
+  have hR : 0 < F.S.scalar t x := ancientKappa_scalar_pos F hF ht.le x
   have htreg : t ∈ ancientTimeInterval.regular := by
     simpa only [ancientTimeInterval_regular, Set.mem_Iio] using ht
   have hnhds : ancientTimeInterval.carrier ∈ nhds t :=
@@ -219,7 +219,7 @@ theorem exists_universal_scalarDifferentialBounds {C₀ C₁ C₂ : ℝ}
   intro kappa F hF t htc x
   have ht : t ≤ 0 := by
     simpa only [ancientTimeInterval_carrier, Set.mem_Iic] using htc
-  have hR : 0 < F.S.scalar t x := ancientKappa_scalar_pos F threeSpace_finrank hF ht x
+  have hR : 0 < F.S.scalar t x := ancientKappa_scalar_pos F hF ht x
   refine ⟨?_, ?_, ?_⟩
   · intro v
     have hgrad := abs_scalarDifferential_le_of_universal h10 kappa F hF ht x v
@@ -270,7 +270,7 @@ theorem ancientKappa_scalar_scale_comparison_of_universal {C₀ C₁ C₂ : ℝ}
   obtain ⟨η, hη, hb⟩ := exists_universal_scalarDifferentialBounds.{u} h00 h10 h20
   refine ⟨η, hη, ?_⟩
   intro kappa F hF
-  exact ancientKappa_scalar_scale_comparison_three F threeSpace_finrank hF hη (hb kappa F hF)
+  exact ancientKappa_scalar_scale_comparison F hF hη (hb kappa F hF)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
