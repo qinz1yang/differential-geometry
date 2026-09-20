@@ -4939,6 +4939,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.LowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Lipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Span
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Flow
@@ -7440,6 +7441,7 @@ import DifferentialGeometry.Geometry.Metric.BundleSetDistance
 import DifferentialGeometry.Geometry.Metric.ChartDistanceComparison
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.DistanceComparison
+import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Spacetime
 import DifferentialGeometry.Geometry.Metric.CompactDerivative
 import DifferentialGeometry.Geometry.Metric.CompactExistence
 import DifferentialGeometry.Geometry.Metric.CompactInjectivity
@@ -10359,6 +10361,7 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarNorm
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ScalarComposition
 import DifferentialGeometry.Topology.MetricSpace.DenseExtension
+import DifferentialGeometry.Topology.MetricSpace.Lipschitz
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Product
 import DifferentialGeometry.Topology.ContinuousMap.CompactRange
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.ScalarContinuous
