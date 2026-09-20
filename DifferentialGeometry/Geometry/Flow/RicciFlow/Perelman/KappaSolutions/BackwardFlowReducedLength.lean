@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedLengthTimeComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTailEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowCompactness
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.BallImage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Analysis.Calculus.Compactness.LocalArzelaAscoli
 
@@ -357,6 +357,63 @@ private theorem exists_backward_flow_zero_metric_convergence
       ∀ k, (C0.domain k).referenceMetric = (C0.domain k).limitMetric := by
   exact exists_metricConvergence_of_heq_maps
     (backwardFlowSequence_atZero F tau htau q) HEq.rfl C href
+
+theorem abs_sqrt_backward_flow_limit_redLength_sub_le_distance
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M] {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    {theta : ℝ} (htheta : 0 < theta)
+    (C : MetricConvergenceData (Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta)))
+    (href : ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
+    (hcomplete : MetricComplete (L.atTime (1 - theta)))
+    (ell : L.M → ℝ)
+    (hell : ∀ x, Tendsto
+      (fun n => redLength F.S 0 p (Phi.map n x) (tau (subseq n) * theta)) atTop (𝓝 (ell x)))
+    (x y : L.M) :
+    |Real.sqrt (ell x) - Real.sqrt (ell y)| ≤ Real.sqrt 3 / (2 * Real.sqrt theta) *
+      (riemannianEDistOf (L.S.base.metric (1 - theta)) x y).toReal := by
+  let _ : TopologicalSpace F.M := F.topology
+  let _ : ChartedSpace H F.M := F.charted
+  let _ : IsManifold I ∞ F.M := F.smooth
+  let X := (backwardFlowSequence F tau htau q).atTime (1 - theta)
+  let P := L.atTime (1 - theta)
+  let _ : PreconnectedSpace P.M := inferInstanceAs (PreconnectedSpace L.M)
+  let Psi : PointedRiemannianConvergenceMaps X P subseq := Phi.atTime (I := I) (X := backwardFlowSequence F tau htau q) (L := L) (1 - theta)
+  let f : ∀ n : ℕ, (X.obj n).M → ℝ :=
+    fun n z => Real.sqrt (redLength F.S 0 p z (tau n * theta))
+  let K : ℝ≥0 := ⟨Real.sqrt 3 / (2 * Real.sqrt theta), by positivity⟩
+  have hLip (n : ℕ) (a b : F.M) : |f n a - f n b| ≤
+      (K : ℝ) * (riemannianEDistOf (X.obj n).metric a b).toReal := by
+    have h := abs_sqrt_redLength_sub_le_rescaled_distance F hF p a b (mul_pos (htau n) htheta)
+    change |Real.sqrt (redLength F.S 0 p a (tau n * theta)) -
+      Real.sqrt (redLength F.S 0 p b (tau n * theta))| ≤ (K : ℝ) *
+        (riemannianEDistOf (scaleMetric (tau n)⁻¹ (inv_pos.mpr (htau n))
+          (F.S.base.metric (-tau n + (1 - theta) / (tau n)⁻¹))) a b).toReal
+    rw [show -tau n + (1 - theta) / (tau n)⁻¹ = -(tau n * theta) by rw [div_inv_eq_mul]; ring]
+    rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)]
+    rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)] at h
+    convert h using 1
+    change (Real.sqrt 3 / (2 * Real.sqrt theta)) *
+      (Real.sqrt (tau n)⁻¹ * (riemannianEDistOf (F.S.base.metric (-(tau n * theta))) a b).toReal) = _
+    rw [Real.sqrt_inv, Real.sqrt_inv, Real.sqrt_mul (htau n).le]
+    field_simp [ne_of_gt (Real.sqrt_pos.mpr htheta)]
+  have hpoint (z : P.M) : Tendsto (fun n => f (subseq n) (Psi.map n z))
+      atTop (𝓝 (Real.sqrt (ell z))) := Real.continuous_sqrt.continuousAt.tendsto.comp (hell z)
+  have hbdd : ∃ B : ℝ, ∀ᶠ n in atTop, |f (subseq n) (X.obj (subseq n)).basepoint| ≤ B := by
+    obtain ⟨B, hB⟩ := (hpoint P.basepoint).abs.isBoundedUnder_le.eventually_le
+    refine ⟨B, hB.mono fun n hn => ?_⟩
+    have hbase : Psi.map n P.basepoint = (X.obj (subseq n)).basepoint := Psi.basepoint_map n
+    rwa [hbase] at hn
+  obtain ⟨psi, g, hpsi, hg, hconv⟩ :=
+    Psi.exists_lipschitz_subseq_limit C href hcomplete f K hLip hbdd
+  have heq (z : P.M) : g z = Real.sqrt (ell z) :=
+    tendsto_nhds_unique ((hconv {z} isCompact_singleton).tendsto_at (mem_singleton z))
+      ((hpoint z).comp hpsi.tendsto_atTop)
+  have hh := hg (show P.M from x) (show P.M from y)
+  rw [heq, heq] at hh
+  exact hh
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
