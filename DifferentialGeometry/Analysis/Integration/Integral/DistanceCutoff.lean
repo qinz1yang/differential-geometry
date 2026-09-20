@@ -14,6 +14,25 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
 
+theorem integrable_inner_grad_distance_cutoff
+    {Q : Type*} [MeasurableSpace Q] (μ : Measure Q) (a : ℝ≥0)
+    (g : SmoothRiemannianMetric I M) (h : Q → SmoothRiemannianMetric I M)
+    (hgh : ∀ᵐ q ∂μ, ∀ x v, g.inner x v v ≤ (h q).inner x v v)
+    (o : M) (x : Q → M) (V : ∀ q, TangentSpace I (x q))
+    (C : ℝ≥0) {w : Q → ℝ} (hw : Integrable w μ) (hw0 : ∀ᵐ q ∂μ, 0 ≤ w q)
+    (hV : ∀ᵐ q ∂μ, Real.sqrt ((h q).inner (x q) (V q) (V q)) ≤
+      C * (1 + (riemannianEDistOf g o (x q)).toReal) * w q)
+    (hmeas : AEStronglyMeasurable (fun q => (h q).inner (x q) (V q)
+      (gradFun (h q) (fun y => CutoffProfile.evalue
+        ((a : ℝ≥0∞) * riemannianEDistOf g o y)) (x q))) μ) :
+    Integrable (fun q => (h q).inner (x q) (V q)
+      (gradFun (h q) (fun y => CutoffProfile.evalue
+        ((a : ℝ≥0∞) * riemannianEDistOf g o y)) (x q))) μ := by
+  apply (hw.const_mul (CutoffProfile.derivBound * C * (a + 2))).mono' hmeas
+  filter_upwards [hw0, hV, hgh] with q hqw hqV hqg
+  rw [Real.norm_eq_abs]
+  exact abs_inner_grad_distance_cutoff_le_of_linear_growth g (h q) hqg o a C (x q) (V q) hqw hqV
+
 theorem tendsto_integral_abs_inner_grad_distance_cutoff
     {Q ι : Type*} [MeasurableSpace Q] (μ : Measure Q)
     {l : Filter ι} [l.IsCountablyGenerated] (a : ι → ℝ≥0) (ha : Tendsto a l (𝓝 0))
