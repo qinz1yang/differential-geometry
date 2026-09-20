@@ -55,7 +55,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open DifferentialGeometry.Tensor0SBundle MeasureTheory
+open DifferentialGeometry.Tensor0SBundle _root_.MeasureTheory
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 universe u

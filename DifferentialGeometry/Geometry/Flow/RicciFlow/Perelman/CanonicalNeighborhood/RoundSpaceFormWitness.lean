@@ -16,7 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open Bundle MeasureTheory
+open Bundle _root_.MeasureTheory
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Tensor0SBundle
 
 universe u

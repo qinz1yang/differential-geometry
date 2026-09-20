@@ -9,7 +9,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
-open Bundle DifferentialGeometry.Tensor0SBundle MeasureTheory
+open Bundle DifferentialGeometry.Tensor0SBundle _root_.MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
@@ -92,7 +92,7 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter _root_.DifferentialGeometry.Manifold Set MeasureTheory
+open Bundle Filter _root_.DifferentialGeometry.Manifold Set _root_.MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure

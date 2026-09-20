@@ -11436,3 +11436,5 @@ import DifferentialGeometry.Analysis.Viscosity.Comparison
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.ModelChange
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ModelChange
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.ModelChange
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassNaturality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTimeRestriction

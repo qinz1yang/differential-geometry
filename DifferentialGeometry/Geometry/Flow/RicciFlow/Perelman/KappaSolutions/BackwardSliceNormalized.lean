@@ -1,3 +1,9 @@
+import DifferentialGeometry.Geometry.Curvature.ModelChange
+import DifferentialGeometry.Geometry.Operator.ModelChange
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientPullback
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.ModelChange
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.ModelChange
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowNormalized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricJetScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedCurvatureOperator
@@ -11,7 +17,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
 open scoped _root_.Manifold ContDiff _root_.Topology
-universe u uH
+universe u uE uH
+section EuclideanModel
 variable {n : ℕ} {H : Type uH} [TopologicalSpace H]
   {I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H} [I.Boundaryless]
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
@@ -20,7 +27,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
 
-theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
+private theorem exists_backward_slice_normalized_shrinker_of_euclidean_model
     (F : PointedFlowData.{u, 0, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
@@ -156,46 +163,97 @@ theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
     simpa only [Function.comp_def, hscale, theta] using h'
 
 
-theorem exists_samePole_normalized_asymptotic_shrinker_of_euclidean_model
-    (F : PointedFlowData.{u, 0, uH} (I := I) ancientTimeInterval)
+end EuclideanModel
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact
+
+theorem exists_backward_slice_normalized_shrinker_of_reducedLength_bound
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (p : F.M)
-    (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop) :
-    ∃ (q : ℕ → F.M) (L : PointedRiemannianManifold.{u, 0, uH} (I := I)) (phi : ℕ → ℕ),
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
+    (hescape : Tendsto tau atTop atTop) (q : ℕ → F.M)
+    {A : ℝ} (hbase : ∀ i, redLength F.S 0 p (q i) (tau i) ≤ A) :
+    ∃ (P : PointedRiemannianManifold.{u, uE, uH} (I := I)) (phi : ℕ → ℕ),
       StrictMono phi ∧
-      (∀ i, lCost F.S 0 p (q i) (tau i) / (2 * Real.sqrt (tau i)) ≤
-        (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) : ℝ) / 2) ∧
-      ∃ (Phi : PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi)
-        (C : MetricConvergenceData (I := I) Phi),
-        (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Phi k) ∧
-        MetricComplete (I := I) L ∧
-        (let _ : TopologicalSpace L.M := L.topology
-         let _ : ChartedSpace H L.M := L.charted
-         let _ : IsManifold I ∞ L.M := L.smooth
-         let _ : T2Space L.M := L.t2
-         let _ : SigmaCompactSpace L.M := L.sigmaCompact
-         ConnectedSpace L.M ∧
-         (∃ x : L.M, metricScalarAt L.metric x ≠ 0) ∧
-         (∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ) (v w : Fin n → TangentSpace I x),
-           0 ≤ ∑ i, ∑ j, c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j)) ∧
-         ∃ f : C^∞⟮I, L.M; ℝ⟯,
-           Geometry.gradientRicciSoliton L.metric f 1 ∧
-           IsHamiltonNormalizedPotential L.metric f ∧
-           Tendsto (fun i => intrinsicReducedVolume F.S 0 p (tau (phi i)))
-             atTop (𝓝 (normalizedShrinkerMass L.metric f))) := by
-  classical
-  choose q hq using fun i => exists_redLength_le_half_finrank_of_ancient F hF p (htau i)
-  obtain ⟨L, phi, hphi, Phi, C, hcanonical, _href, hcomplete, hconnected,
-    hpos, hcone, f, hsol, hmass, _hpotential⟩ :=
-    exists_backward_slice_normalized_shrinker_of_reducedLength_bound
-      F hF p tau htau hescape q hq
-  refine ⟨q, L, phi, hphi, hq, Phi, C, hcanonical, hcomplete, hconnected,
-    ⟨L.basepoint, (hpos L.basepoint).ne'⟩, ?_, f, hsol.2.1, ?_, ?_⟩
-  · intro x m c v w
-    exact (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
-      L.metric x).mp (hcone x) m c v w
-  · exact Geometry.normalizedGradientRicciSoliton_potential_equation hsol
-  · rw [hmass]
-    exact (ancient_reducedVolume_tendsto_atTop F hF p).comp (hescape.comp hphi.tendsto_atTop)
+      ∃ (Psi : PointedRiemannianConvergenceMaps (backwardSliceSequence F tau htau q) P phi)
+        (C : MetricConvergenceData Psi),
+        (∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData Psi i) ∧
+        (∀ i, (C.domain i).referenceMetric = (C.domain i).limitMetric) ∧
+        MetricComplete P ∧ ConnectedSpace P.M ∧
+        (∀ x : P.M, 0 < metricScalarAt P.metric x) ∧
+        (∀ x : P.M, metricAlgebraicCurvatureTensorAt P.metric x ∈
+          algebraicCurvatureOperatorNonnegativeCone) ∧
+        ∃ f : C^∞⟮I, P.M; ℝ⟯,
+          Geometry.normalizedGradientRicciSoliton P.metric f ∧
+          normalizedShrinkerMass P.metric f = asymptoticReducedVolume F.S 0 p ∧
+          ∀ K : Set P.M, IsCompact K → TendstoUniformlyOn
+            (fun i x => redLength F.S 0 p (Psi.map i x) (tau (phi i))) f atTop K := by
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) := toEuclidean
+  let J := I.transContinuousLinearEquiv e
+  let Phi : F.M ≃ₘ⟮I, J⟯ F.M := ContinuousLinearEquiv.toTransContinuousLinearEquiv I F.M e
+  let G := F.pullback Phi.symm
+  have hG : IsAncientKappaSolution kappa G := F.pullback_isAncientKappaSolution Phi.symm hF
+  have hell (x : F.M) (t : ℝ) : redLength G.S 0 p x t = redLength F.S 0 p x t := by
+    exact congrArg (fun a => a / (2 * Real.sqrt t)) (lCost_pullback_cross F.S Phi.symm 0 p x t)
+  obtain ⟨P, phi, hphi, Psi, C, hcanonical, _href, hcomplete, hconnected,
+    hpos, hcone, f, hsol, hmass, hpotential⟩ :=
+    exists_backward_slice_normalized_shrinker_of_euclidean_model G hG p tau htau hescape q
+      (fun i => (hell (q i) (tau i)).trans_le (hbase i))
+  obtain ⟨L, rfl⟩ := PointedRiemannianManifold.transContinuousLinearEquiv_surjective e P
+  change PointedRiemannianConvergenceMaps ((backwardSliceSequence F tau htau q).transContinuousLinearEquiv e)
+    (L.transContinuousLinearEquiv e) phi at Psi
+  obtain ⟨C', hcanonical', href'⟩ :=
+    exists_canonicalMetricConvergenceData_of_transContinuousLinearEquiv e C hcanonical
+  let Xi : L.M ≃ₘ⟮I, J⟯ L.M := ContinuousLinearEquiv.toTransContinuousLinearEquiv I L.M e
+  let f' : C^∞⟮I, L.M; ℝ⟯ := f.comp Xi.toContMDiffMap
+  have hcomplete' : RiemannianMetricComplete L.metric := by
+    have h := RiemannianMetricComplete.pullbackCross (L.metric.transContinuousLinearEquiv e)
+      Xi ⟨hcomplete⟩
+    rwa [SmoothRiemannianMetric.pullback_transContinuousLinearEquiv] at h
+  have hsol' : Geometry.normalizedGradientRicciSoliton L.metric f' := by
+    refine ⟨hcomplete', ?_, ?_⟩
+    · have h := Geometry.gradientRicciSoliton_pullbackCross hsol.2.1 Xi
+      change Geometry.gradientRicciSoliton
+        (Diffeomorph.pullbackMetricCross (L.metric.transContinuousLinearEquiv e) Xi) f' 1 at h
+      rwa [SmoothRiemannianMetric.pullback_transContinuousLinearEquiv] at h
+    · intro x
+      have h := hsol.2.2 x
+      change metricScalarAt (L.metric.transContinuousLinearEquiv e) x +
+        Geometry.Operator.normGradSqFun (L.metric.transContinuousLinearEquiv e) f' x = f' x at h
+      rwa [metricScalarAt_transContinuousLinearEquiv,
+        Geometry.Operator.normGradSqFun_transContinuousLinearEquiv L.metric e f' x
+          (f'.contMDiff.mdifferentiableAt (by simp))] at h
+  refine ⟨L, phi, hphi, Psi.ofTransContinuousLinearEquiv e, C', hcanonical', href',
+    hcomplete'.complete, hconnected, ?_, ?_, f', hsol', ?_, ?_⟩
+  · intro x
+    exact (metricScalarAt_transContinuousLinearEquiv L.metric e x).symm ▸ hpos x
+  · intro x
+    have hc : metricAlgebraicCurvatureTensorAt
+        (Diffeomorph.pullbackMetricCross (L.metric.transContinuousLinearEquiv e) Xi) x ∈
+          algebraicCurvatureOperatorNonnegativeCone := by
+      apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff _ x).mpr
+      intro m c v w
+      simp_rw [metricRm04Standard_pullbackCross]
+      exact (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
+        (L.metric.transContinuousLinearEquiv e) x).mp (hcone x) m c _ _
+    rwa [SmoothRiemannianMetric.pullback_transContinuousLinearEquiv] at hc
+  · have hv : asymptoticReducedVolume G.S 0 p = asymptoticReducedVolume F.S 0 p := by
+      unfold asymptoticReducedVolume
+      apply iInf_congr
+      intro t
+      exact redVolume_transContinuousLinearEquiv F.S e 0 p t
+    exact (normalizedShrinkerMass_transContinuousLinearEquiv L.metric e f').symm.trans
+      (hmass.trans hv)
+  · intro K hK
+    apply (hpotential K hK).congr
+    exact Filter.Eventually.of_forall fun i x _ => hell (Psi.map i x) (tau (phi i))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

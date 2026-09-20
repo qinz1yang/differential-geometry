@@ -6,7 +6,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter _root_.DifferentialGeometry.Manifold Set MeasureTheory
+open Bundle Filter _root_.DifferentialGeometry.Manifold Set _root_.MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
