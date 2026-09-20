@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Coordinates.RadialPairing
 import DifferentialGeometry.Geometry.Connection.ParallelLine
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
@@ -2431,5 +2432,156 @@ theorem ContMDiffVectorSubbundle.exists_local_product_of_rank_eq_one
       K, J, phi, hproduct, -, -, -, -⟩ :=
     ContMDiffVectorSubbundle.exists_local_product_chart_of_rank_eq_one g S hSrank hS x
   exact ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel, K, J, phi, hproduct⟩
+
+theorem exists_local_flow_coordinates_of_unit_gradient
+    (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
+    (hUopen : IsOpen U) (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯)
+    (hunit : ∀ y ∈ U, g.inner y (s y) (s y) = 1)
+    (f : M → ℝ) (hfx : f x = 0)
+    (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
+    (hdf : ∀ y ∈ U, ∀ v : TangentSpace I y,
+      mvfderiv (I := I) f y v = g.inner y (s y) v) :
+    ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace g x (s x) × ℝ) M ∞),
+      IsOpen K ∧ (0 : perpSpace g x (s x)) ∈ K ∧ IsOpen J ∧ (0 : ℝ) ∈ J ∧
+      phi.source = K ×ˢ J ∧ phi (0, 0) = x ∧ phi.target ⊆ U ∧ IsPreconnected J ∧
+      (∀ k ∈ K, ∀ t ∈ J, f (phi (k, t)) = t) ∧
+      (∀ k ∈ K, ∀ t ∈ J, ∀ a : ℝ,
+        (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+          (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (0, a)) =
+        a • s (phi (k, t))) ∧
+      ∃ (X : (y : M) → TangentSpace I y)
+        (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+          (fun y : M => (⟨y, X y⟩ : TangentBundle I M)))
+        (hXcompact : IsCompact (tsupport X)) (W : Set M),
+        IsOpen W ∧ W ⊆ U ∧ Set.EqOn X (fun y => s y) W ∧
+        (∀ k ∈ K, ∀ t ∈ J, phi (k, t) ∈ W) ∧
+        (∀ k ∈ K, ∀ t ∈ J,
+          phi (k, t) = DifferentialGeometry.Analysis.ODE.curveAt X
+            (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
+              X hX hXcompact) (phi (k, 0)) t) ∧
+        ∀ k ∈ K, ∀ t ∈ J, ∀ q ∈ Set.uIcc 0 t,
+          DifferentialGeometry.Analysis.ODE.curveAt X
+            (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
+              X hX hXcompact) (phi (k, 0)) q ∈ W := by
+  obtain ⟨X, hX, hXcompact, hXeq⟩ :=
+    exists_compactlySupported_extension_eq_eventually hUopen hxU s
+  obtain ⟨W, A, B, delta, K, J, phi, hWopen, -, hWU, hWEq,
+      -, -, -, -, -, -, -, hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hEqPhi,
+      -, -, hbasePath, hflowPath, hJconnected⟩ :=
+    exists_rectangular_correctedFlowMap g x hUopen hxU s f hunit hfx hf hdf
+      X hX hXcompact hXeq
+  let Y : perpSpace g x (s x) → M := fun k => phi (k, 0)
+  have hY : ContMDiffOn (perpModel g x (s x)) I ∞ Y K := by
+    intro k hk
+    have hsource : (k, (0 : ℝ)) ∈ phi.source := by
+      rw [hphiSource]
+      exact ⟨hk, hzeroJ⟩
+    have hphiAt : ContMDiffAt ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I ∞
+        (fun z : perpSpace g x (s x) × ℝ => phi z) (k, 0) :=
+      (phi.contMDiffOn_toFun (k, 0) hsource).contMDiffAt
+        (phi.open_source.mem_nhds hsource)
+    exact (hphiAt.comp k (contMDiffAt_id.prodMk contMDiffAt_const)).contMDiffWithinAt
+  have hYlevel : ∀ k ∈ K, f (Y k) = 0 := by
+    intro k hk
+    have hlevel := correctedFlowMap_zero_level_of_basePath g x hUopen s f hunit hf hdf
+      X hX hXcompact hWU hWEq hbasePath k hk
+    change f (phi (k, (0 : ℝ))) = 0
+    rw [← hEqPhi ⟨hk, hzeroJ⟩]
+    exact hlevel
+  have hflowPath' : ∀ k ∈ K, ∀ t ∈ J, ∀ r ∈ Set.uIcc 0 t,
+      globalFlowDiffeomorph X hX hXcompact r (Y k) ∈ W := by
+    intro k hk t ht r hr
+    exact hflowPath k hk t ht r hr
+  have hflowEq : ∀ k ∈ K, ∀ t ∈ J,
+      globalFlowDiffeomorph X hX hXcompact t (Y k) = phi (k, t) := by
+    intro k hk t ht
+    calc
+      globalFlowDiffeomorph X hX hXcompact t (Y k) =
+          globalFlowDiffeomorph X hX hXcompact t
+            (correctedFlowMap X hX hXcompact g x (s x) f (k, 0)) := by
+        rw [show Y k = phi (k, 0) by rfl, ← hEqPhi ⟨hk, hzeroJ⟩]
+      _ = correctedFlowMap X hX hXcompact g x (s x) f (k, t) := by
+        exact (correctedFlowMap_eq_flow_of_base g x s f X hX hXcompact k t).symm
+      _ = phi (k, t) := hEqPhi ⟨hk, ht⟩
+  have hphiZero : phi (0, 0) = x := by
+    calc
+      phi (0, 0) = correctedFlowMap X hX hXcompact g x (s x) f (0, 0) :=
+        (hEqPhi ⟨hzeroK, hzeroJ⟩).symm
+      _ = x := by
+        change DifferentialGeometry.Analysis.ODE.curveAt X
+          (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
+            X hX hXcompact)
+          (adaptedBaseMap g x (s x) 0)
+          (0 - f (adaptedBaseMap g x (s x) 0)) = x
+        rw [adaptedBaseMap_zero, hfx, sub_zero]
+        exact DifferentialGeometry.Analysis.ODE.curveAt_zero X
+          (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
+            X hX hXcompact) x
+  have hderivEq (k : perpSpace g x (s x)) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) :
+      mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ =>
+            globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) (k, t) =
+        mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t) := by
+    have hEqFlow :
+        (fun z : perpSpace g x (s x) × ℝ =>
+          globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) =ᶠ[
+            𝓝 (k, t)]
+          (fun z : perpSpace g x (s x) × ℝ => phi z) := by
+      have hprod : K ×ˢ J ∈ 𝓝 (k, t) :=
+        prod_mem_nhds (hKopen.mem_nhds hk) (hJopen.mem_nhds ht)
+      filter_upwards [hprod] with z hz
+      calc
+        globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1) =
+            globalFlowDiffeomorph X hX hXcompact z.2
+              (correctedFlowMap X hX hXcompact g x (s x) f (z.1, 0)) := by
+          have hEqPhi0 : correctedFlowMap X hX hXcompact g x (s x) f (z.1, 0) =
+              phi (z.1, 0) := hEqPhi (show (z.1, (0 : ℝ)) ∈ K ×ˢ J from
+                ⟨hz.1, hzeroJ⟩)
+          simpa [Y] using congrArg (globalFlowDiffeomorph X hX hXcompact z.2)
+            hEqPhi0.symm
+        _ = correctedFlowMap X hX hXcompact g x (s x) f (z.1, z.2) := by
+          exact (correctedFlowMap_eq_flow_of_base g x s f X hX hXcompact z.1 z.2).symm
+        _ = phi z := hEqPhi ⟨hz.1, hz.2⟩
+    exact hEqFlow.mfderiv_eq
+  have hphiW (k : perpSpace g x (s x)) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) :
+      phi (k, t) ∈ W := by
+    rw [← hflowEq k hk t ht]
+    exact hflowPath' k hk t ht t Set.right_mem_uIcc
+  refine ⟨K, J, phi, hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hphiZero,
+    ?_, hJconnected, ?_, ?_, ?_⟩
+  · intro y hy
+    have hySource := phi.map_target hy
+    rw [hphiSource] at hySource
+    have hyW := hphiW (phi.symm y).1 hySource.1 (phi.symm y).2 hySource.2
+    have hyU := hWU hyW
+    change phi (phi.symm y) ∈ U at hyU
+    have heq : phi (phi.symm y) = y := phi.right_inv' hy
+    exact heq ▸ hyU
+  · intro k hk t ht
+    have hpot := globalFlow_potential_eq_add_of_path g X hX hXcompact hUopen s f
+      hunit hf hdf t (Y k)
+      (fun r hr => hWU (hflowPath' k hk t ht r hr))
+      (fun r hr => hWEq (hflowPath' k hk t ht r hr))
+    rw [hflowEq k hk t ht, hYlevel k hk, zero_add] at hpot
+    exact hpot
+  · intro k hk t ht a
+    rw [← hderivEq k hk t ht]
+    have h := globalFlow_mfderiv_product_decomposition g x s X hX hXcompact
+      hKopen Y hY k hk t (0 : TangentSpace (perpModel g x (s x)) k) a
+    simp only [map_zero, add_zero] at h
+    change _ = a • X (globalFlowDiffeomorph X hX hXcompact t (Y k)) at h
+    rw [hflowEq k hk t ht, hWEq (hphiW k hk t ht)] at h
+    exact h
+  · refine ⟨X, hX, hXcompact, W, hWopen, hWU, hWEq, hphiW, ?_, ?_⟩
+    · intro k hk t ht
+      exact (hflowEq k hk t ht).symm
+    · intro k hk t ht q hq
+      exact hflowPath' k hk t ht q hq
 
 end DifferentialGeometry.Geometry.Connection

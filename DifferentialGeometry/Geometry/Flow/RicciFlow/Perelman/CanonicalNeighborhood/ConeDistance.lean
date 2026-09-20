@@ -228,3 +228,29 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 end
 
 end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+variable {Y : Type*} [MetricSpace Y]
+
+theorem openConeDistance_radial_smul (c : ℝ) (z w : ℝ × Y) :
+    openConeDistance (c * z.1, z.2) (c * w.1, w.2) =
+      |c| * openConeDistance z w := by
+  unfold openConeDistance
+  rw [show (c * z.1) ^ 2 + (c * w.1) ^ 2 -
+        2 * (c * z.1) * (c * w.1) * Real.cos (min Real.pi (dist z.2 w.2)) =
+      c ^ 2 * (z.1 ^ 2 + w.1 ^ 2 -
+        2 * z.1 * w.1 * Real.cos (min Real.pi (dist z.2 w.2))) by ring,
+    Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq_eq_abs]
+
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+end

@@ -139,3 +139,77 @@ theorem metric_differential_le_of_edist_le
 end Comparison
 
 end DifferentialGeometry.Geometry
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+open Filter
+open scoped Topology Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+variable {E H M V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space (TangentBundle I M)] [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+theorem sqrt_inner_mfderiv_eq_of_local_distance_scaling
+    (g h : SmoothRiemannianMetric I M) {u v : V → M} {x : V}
+    (hu : MDifferentiableAt 𝓘(ℝ, V) I u x) (hv : MDifferentiableAt 𝓘(ℝ, V) I v x)
+    (c : ℝ) (hdist : ∀ᶠ y in 𝓝 x, (riemannianEDistOf h (v x) (v y)).toReal =
+      c * (riemannianEDistOf g (u x) (u y)).toReal) (w : V) :
+    Real.sqrt (h.inner (v x) (mfderiv 𝓘(ℝ, V) I v x w) (mfderiv 𝓘(ℝ, V) I v x w)) =
+      c * Real.sqrt (g.inner (u x) (mfderiv 𝓘(ℝ, V) I u x w) (mfderiv 𝓘(ℝ, V) I u x w)) := by
+  have hpath : Tendsto (fun t : ℝ => x + t⁻¹ • w) atTop (𝓝 x) := by
+    simpa only [zero_smul, add_zero] using
+      (tendsto_const_nhds (x := x)).add
+        ((tendsto_inv_atTop_zero : Tendsto (fun t : ℝ => t⁻¹) atTop (𝓝 0)).smul
+          (tendsto_const_nhds (x := w)))
+  have heq : (fun t : ℝ => |t| * (riemannianEDistOf h (v x) (v (x + t⁻¹ • w))).toReal) =ᶠ[atTop]
+      (fun t : ℝ => c * (|t| * (riemannianEDistOf g (u x) (u (x + t⁻¹ • w))).toReal)) := by
+    filter_upwards [hpath.eventually hdist] with t ht
+    rw [ht]
+    ring
+  exact tendsto_nhds_unique ((tendsto_riemannianEDistOf_ray h hv w).congr' heq)
+    (tendsto_const_nhds.mul (tendsto_riemannianEDistOf_ray g hu w))
+
+set_option backward.isDefEq.respectTransparency false in
+theorem inner_mfderiv_eq_of_local_distance_scaling
+    (g h : SmoothRiemannianMetric I M) {u v : V → M} {x : V}
+    (hu : MDifferentiableAt 𝓘(ℝ, V) I u x) (hv : MDifferentiableAt 𝓘(ℝ, V) I v x)
+    (c : ℝ) (hdist : ∀ᶠ y in 𝓝 x, (riemannianEDistOf h (v x) (v y)).toReal =
+      c * (riemannianEDistOf g (u x) (u y)).toReal) (w z : V) :
+    h.inner (v x) (mfderiv 𝓘(ℝ, V) I v x w) (mfderiv 𝓘(ℝ, V) I v x z) =
+      c ^ 2 * g.inner (u x) (mfderiv 𝓘(ℝ, V) I u x w) (mfderiv 𝓘(ℝ, V) I u x z) := by
+  have hsq (q : V) : h.inner (v x) (mfderiv 𝓘(ℝ, V) I v x q) (mfderiv 𝓘(ℝ, V) I v x q) =
+      c ^ 2 * g.inner (u x) (mfderiv 𝓘(ℝ, V) I u x q) (mfderiv 𝓘(ℝ, V) I u x q) := by
+    have he := sqrt_inner_mfderiv_eq_of_local_distance_scaling g h hu hv c hdist q
+    have hnonnegH := metric_inner_self_nonneg h (v x) (mfderiv 𝓘(ℝ, V) I v x q)
+    have hnonnegG := metric_inner_self_nonneg g (u x) (mfderiv 𝓘(ℝ, V) I u x q)
+    rw [← Real.sq_sqrt hnonnegH, ← Real.sq_sqrt hnonnegG, he, mul_pow]
+  have hs := hsq (w + z)
+  change h.inner (v x)
+    ((mfderiv 𝓘(ℝ, V) I v x : V →L[ℝ] E) (w + z))
+    ((mfderiv 𝓘(ℝ, V) I v x : V →L[ℝ] E) (w + z)) =
+    c ^ 2 * g.inner (u x)
+      ((mfderiv 𝓘(ℝ, V) I u x : V →L[ℝ] E) (w + z))
+      ((mfderiv 𝓘(ℝ, V) I u x : V →L[ℝ] E) (w + z)) at hs
+  simp only [map_add, add_apply] at hs
+  have hw := hsq w
+  have hz := hsq z
+  have hsymG := g.symm (u x) (mfderiv 𝓘(ℝ, V) I u x w) (mfderiv 𝓘(ℝ, V) I u x z)
+  have hsymH := h.symm (v x) (mfderiv 𝓘(ℝ, V) I v x w) (mfderiv 𝓘(ℝ, V) I v x z)
+  nlinarith
+
+end DifferentialGeometry.Geometry
+
+end
+
+end
