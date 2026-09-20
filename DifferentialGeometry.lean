@@ -4898,6 +4898,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankPe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientUniversalCoverTrichotomy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureLine
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CylinderPreservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureNullity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvaturePlane
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
@@ -11454,5 +11455,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedRankTri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TerminalRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.NonnegativeRicci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Cylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.HarmonicGradient
 import DifferentialGeometry.Geometry.Operator.Laplacian.Isometry
