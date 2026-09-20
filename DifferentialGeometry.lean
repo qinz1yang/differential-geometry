@@ -12253,3 +12253,14 @@ import DifferentialGeometry.Analysis.Elliptic.Planar.Conductivity.AlternatingCro
 import DifferentialGeometry.Analysis.Elliptic.Planar.Conductivity.Noncritical
 import DifferentialGeometry.Analysis.Elliptic.Planar.Conductivity.LevelSet
 import DifferentialGeometry.Analysis.Elliptic.Planar.Conductivity.Univalent
+import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Argument
+import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Basic
+import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Transitivity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Boundary.EmbeddedLoop
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Boundary.Orientation
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.CompactMinimizer
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ConformalReparametrization
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Normalization
+import DifferentialGeometry.Topology.LoopSpace.DiskAutomorphism
+import DifferentialGeometry.Topology.LoopSpace.SpanningDisk.Reparametrization
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Composition
