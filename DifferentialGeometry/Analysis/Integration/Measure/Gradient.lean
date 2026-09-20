@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Integration.Lp.Lipschitz
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
 import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Calculus.Rademacher
@@ -262,5 +264,105 @@ theorem integral_inner_gradFun_eq_integral_chartDensity
     with y hy
   change chartDensityOnE g α y * f ((extChartAt I α).symm y) = _
   rw [show f ((extChartAt I α).symm y) = _ from hy]
+
+open Integral.Measure
+
+omit [I.Boundaryless] in
+private theorem integrable_chart_iff
+    (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
+    (hf : AEStronglyMeasurable f (chartLocalMeasure g α)) :
+    Integrable f (chartLocalMeasure g α) ↔
+      IntegrableOn (fun y => chartDensityOnE g α y * f ((extChartAt I α).symm y))
+        (extChartAt I α).target (modelHaar (E := E)) := by
+  let μ := (modelHaar (E := E)).restrict (extChartAt I α).target
+  let w : E → ENNReal := fun y => ENNReal.ofReal (chartDensityOnE g α y)
+  have hmap : AEMeasurable (extChartAt I α).symm (μ.withDensity w) :=
+    (aemeasurable_extChartAt_symm_restrict_target (I := I) α).mono_ac
+      (withDensity_absolutelyContinuous μ w)
+  change Integrable f (Measure.map (extChartAt I α).symm (μ.withDensity w)) ↔ _
+  have hf' : AEStronglyMeasurable f (Measure.map (extChartAt I α).symm (μ.withDensity w)) := hf
+  refine (integrable_map_measure hf' hmap).trans ?_
+  have hw : AEMeasurable w μ := aemeasurable_chartDensity_symm_pullback (I := I) g α
+  rw [integrable_withDensity_iff_integrable_smul₀' hw
+    (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  apply integrable_congr
+  filter_upwards [ae_restrict_mem (measurableSet_extChartAt_target (I := I) α)] with y hy
+  have hsrc : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+    simpa only [extChartAt_source_eq_chartAt_source] using (extChartAt I α).map_target hy
+  dsimp only [w, Function.comp_apply]
+  change (ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y))).toReal • _ =
+    chartDensity g α ((extChartAt I α).symm y) * _
+  rw [ENNReal.toReal_ofReal (chartDensity_pos g α hsrc).le, smul_eq_mul]
+
+theorem integrable_inner_gradFun_of_locallyLipschitzOn_chart
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (α : M) (u h : M → ℝ)
+    (hu : LocallyLipschitzOn (extChartAt I α).target (scalarOnE (I := I) α u))
+    (hh : LocallyLipschitzOn (extChartAt I α).target (scalarOnE (I := I) α h))
+    (hc : HasCompactSupport h) (hs : tsupport h ⊆ (chartAt H α).source) :
+    Integrable (fun x => g.inner x (gradFun g u x) (gradFun g h x))
+      (riemannianVolumeMeasure (I := I) (M := M) g) := by
+  classical
+  let f : M → ℝ := fun x => g.inner x (gradFun g u x) (gradFun g h x)
+  have hfs : tsupport f ⊆ tsupport h := by
+    apply closure_minimal _ (isClosed_tsupport h)
+    intro x hx
+    apply support_gradFun_subset (I := I) g h
+    intro hz
+    apply hx
+    change (g.inner x (gradFun g u x)) (gradFun g h x) = 0
+    change gradFun (I := I) g h x = (0 : TangentSpace I x) at hz
+    exact (congrArg (g.inner x (gradFun g u x)) hz).trans (map_zero _)
+  have hfc : HasCompactSupport f := hc.of_isClosed_subset (isClosed_tsupport f) hfs
+  have hfm : AEStronglyMeasurable f (chartLocalMeasure g α) :=
+    (measurable_inner_gradFun g u h).aestronglyMeasurable
+  have hΩ := isOpen_extChartAt_target (I := I) α
+  let b : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ :=
+    fun i j y => chartDensityOnE g α y * chartInvGramOnE g α i j y *
+      lineDeriv ℝ (scalarOnE (I := I) α u) y (chartModelBasis E j)
+  have hb (i j) : LocallyIntegrableOn (b i j) (extChartAt I α).target (modelHaar (E := E)) := by
+    have hd : LocallyIntegrableOn
+        (fun y => lineDeriv ℝ (scalarOnE (I := I) α u) y (chartModelBasis E j))
+        (extChartAt I α).target (modelHaar (E := E)) := by
+      apply (locallyIntegrableOn_iff hΩ.isLocallyClosed).mpr
+      intro K hKΩ hK
+      exact memLp_one_iff_integrable.mp
+        (hu.memLp_lineDeriv_of_isCompact hΩ hK hKΩ hK.measure_ne_top (chartModelBasis E j) 1)
+    exact hd.continuousOn_mul
+      ((chartDensityOnE_contDiffOn g α).continuousOn.mul
+        (chartInvGramOnE_contDiffOn g α i j).continuousOn) hΩ.isLocallyClosed
+  have hc' : HasCompactSupport (chartPullZero (I := I) α h) :=
+    hasCompactSupport_chartPullZero α hc hs
+  have hs' : tsupport (chartPullZero (I := I) α h) ⊆ (extChartAt I α).target :=
+    tsupport_chartPullZero_subset_target α hc hs
+  have hh' : LocallyLipschitzOn (extChartAt I α).target (chartPullZero (I := I) α h) := by
+    apply locallyLipschitzOn_iff_restrict.mpr
+    have heq : ((extChartAt I α).target).domRestrict (chartPullZero (I := I) α h) =
+        ((extChartAt I α).target).domRestrict (scalarOnE (I := I) α h) := by
+      funext y
+      exact chartPullZero_mem α h y.property
+    rw [heq]
+    exact hh.restrict
+  have hi (i j) := (hb i j).integrable_mul_fderiv_of_hasCompactSupport hΩ hh' hc' hs'
+    (chartModelBasis E i)
+  have hsum : Integrable (fun y => ∑ i, ∑ j, b i j y *
+      fderiv ℝ (chartPullZero (I := I) α h) y (chartModelBasis E i)) (modelHaar (E := E)) :=
+    integrable_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => hi i j
+  have hchart : Integrable f (chartLocalMeasure g α) := by
+    apply (integrable_chart_iff g α f hfm).mpr
+    apply hsum.integrableOn.congr
+    filter_upwards [ae_inner_gradFun_eq_chartInvGram_lineDeriv g α u h hu (modelHaar (E := E))]
+      with y hy
+    rw [show f ((extChartAt I α).symm y) = _ from hy]
+    simp only [Finset.mul_sum, b]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
+  apply (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).mp
+  change Integrable f ((riemannianVolumeMeasure (I := I) (M := M) g).restrict (tsupport f))
+  rw [riemannianVolumeMeasure_restrict_eq_chartLocalMeasure_restrict g α hfc (hfs.trans hs)]
+  exact hchart.integrableOn
 
 end DifferentialGeometry.Analysis

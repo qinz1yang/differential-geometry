@@ -775,6 +775,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByPart
 import DifferentialGeometry.Analysis.Integration.Integral.CutoffProfile
 import DifferentialGeometry.Analysis.Integration.Integral.DistanceCutoff
 import DifferentialGeometry.Analysis.Integration.Integral.DivergenceForm
+import DifferentialGeometry.Analysis.Integration.Integral.TensorTest
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
 import DifferentialGeometry.Analysis.Integration.Integral.Convergence
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
@@ -1711,6 +1712,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.Fundam
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakPartialRegularity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationDensity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationTensor
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationManifold
 import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint
 import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.SecondJet
 import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.Value

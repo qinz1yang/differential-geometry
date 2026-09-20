@@ -242,4 +242,80 @@ theorem tendsto_integral_abs_backward_flow_limit_perelmanDensity_cutoff_flux
   exact (backward_flow_limit_cutoff_flux_integrable_and_tendsto
     F hF hdim p tau htau q L hescape Phi hT hconv hcomplete ell hlim μ ψ).2 a ha
 
+theorem tendsto_integral_backward_flow_limit_perelmanDensity_cutoff_flux
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (hdim : Module.finrank ℝ E = 3)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M]
+    {subseq : ℕ → ℕ} (hescape : Tendsto (tau ∘ subseq) atTop atTop)
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    {T : ℝ} (hT : 1 ≤ T)
+    (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
+      ∃ C : MetricConvergenceData (Phi.atTime
+        (X := backwardFlowSequence F tau htau q) (L := L) t),
+      ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData
+        (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) t) i)
+    (hcomplete : ∀ t ∈ Icc (1 - T) (0 : ℝ), MetricComplete (L.atTime t))
+    (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hlim : ∀ theta : Icc (1 : ℝ) T, ∀ x : L.M,
+      Tendsto (fun i => redLength F.S 0 p (Phi.map i x) (tau (subseq i) * theta))
+        atTop (𝓝 (ell (x, theta))))
+    (μ : MeasureTheory.Measure (Icc (1 : ℝ) T)) [IsFiniteMeasure μ]
+    (ψ : C(Icc (1 : ℝ) T, ℝ))
+    {ι : Type*} {l : Filter ι} [l.IsCountablyGenerated]
+    (a : ι → ℝ≥0) (ha : Tendsto a l (𝓝 0)) :
+    Tendsto (fun i => ∫ theta : Icc (1 : ℝ) T, ψ theta *
+      ∫ x : L.M, (L.S.base.metric (1 - theta)).inner x
+        (gradFun (L.S.base.metric (1 - theta))
+          (perelmanDensity (Module.finrank ℝ E) theta (fun y => ell (y, theta))) x)
+        (gradFun (L.S.base.metric (1 - theta)) (fun y => Analysis.CutoffProfile.evalue
+          ((a i : ℝ≥0∞) * riemannianEDistOf (L.S.base.metric 0) L.basepoint y)) x)
+        ∂riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric (1 - theta)) ∂μ)
+      l (𝓝 0) := by
+  let g : Icc (1 : ℝ) T → SmoothRiemannianMetric I L.M := fun theta => L.S.base.metric (1 - theta)
+  let V : ι → Icc (1 : ℝ) T × L.M → ℝ := fun i z =>
+    (g z.1).inner z.2
+      (gradFun (g z.1) (perelmanDensity (Module.finrank ℝ E) z.1 (fun y => ell (y, z.1))) z.2)
+      (gradFun (g z.1) (fun y => Analysis.CutoffProfile.evalue
+        ((a i : ℝ≥0∞) * riemannianEDistOf (L.S.base.metric 0) L.basepoint y)) z.2)
+  let w : ι → Icc (1 : ℝ) T × L.M → ℝ := fun i z =>
+    riemannianVolumeDensity (L.S.base.metric 0) (g z.1) z.2 * ψ z.1 * V i z
+  have hi (i : ι) : Integrable (w i)
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) :=
+    integrable_backward_flow_limit_perelmanDensity_cutoff_flux F hF hdim p tau htau q L hescape
+      Phi hT hconv hcomplete ell hlim μ ψ (a i)
+  have habs : Tendsto (fun i => ∫ z, |w i z|
+      ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) l (𝓝 0) :=
+    tendsto_integral_abs_backward_flow_limit_perelmanDensity_cutoff_flux F hF hdim p tau htau q L hescape
+      Phi hT hconv hcomplete ell hlim μ ψ a ha
+  have hlimw : Tendsto (fun i => ∫ z, w i z
+      ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) l (𝓝 0) := by
+    apply squeeze_zero_norm (fun i => ?_) habs
+    simpa only [Real.norm_eq_abs] using norm_integral_le_integral_norm (w i)
+  have heq (i : ι) : (∫ z, w i z
+      ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) =
+      ∫ theta, ψ theta * ∫ x, V i (theta, x)
+        ∂riemannianVolumeMeasure (I := I) (M := L.M) (g theta) ∂μ := by
+    have hf : Integrable (fun z : Icc (1 : ℝ) T × L.M =>
+        riemannianVolumeDensity (L.S.base.metric 0) (g z.1) z.2 • (ψ z.1 * V i z))
+        (μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0))) := by
+      convert hi i using 1
+      funext z
+      simp only [w, smul_eq_mul, mul_assoc]
+    calc
+      _ = ∫ z, riemannianVolumeDensity (L.S.base.metric 0) (g z.1) z.2 • (ψ z.1 * V i z)
+          ∂μ.prod (riemannianVolumeMeasure (I := I) (M := L.M) (L.S.base.metric 0)) := by
+        apply integral_congr_ae
+        filter_upwards [] with z
+        simp only [w, smul_eq_mul, mul_assoc]
+      _ = ∫ theta, ∫ x, ψ theta * V i (theta, x)
+          ∂riemannianVolumeMeasure (I := I) (M := L.M) (g theta) ∂μ :=
+        integral_prod_volumeDensity_smul μ (L.S.base.metric 0) g (fun z => ψ z.1 * V i z) hf
+      _ = _ := by simp only [integral_const_mul]
+  simp_rw [heq] at hlimw
+  exact hlimw
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

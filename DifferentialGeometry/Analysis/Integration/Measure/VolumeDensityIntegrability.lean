@@ -83,4 +83,33 @@ theorem integrable_prod_volumeDensity_smul_of_lintegral_norm_le
   rw [lintegral_const]
   exact ENNReal.mul_lt_top hC.lt_top (measure_lt_top μ Set.univ)
 
+theorem integral_prod_volumeDensity_smul
+    {P F : Type*} [MeasurableSpace P] (μ : MeasureTheory.Measure P) [SFinite μ]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (q : SmoothRiemannianMetric I M) (g : P → SmoothRiemannianMetric I M)
+    (f : P × M → F)
+    (hf : Integrable (fun p => riemannianVolumeDensity q (g p.1) p.2 • f p)
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := M) q))) :
+    (∫ p, riemannianVolumeDensity q (g p.1) p.2 • f p
+      ∂μ.prod (riemannianVolumeMeasure (I := I) (M := M) q)) =
+      ∫ t, ∫ x, f (t, x) ∂riemannianVolumeMeasure (I := I) (M := M) (g t) ∂μ := by
+  let _ := riemannianVolumeMeasure_sigmaFinite q
+  rw [integral_prod _ hf]
+  apply integral_congr_ae
+  filter_upwards [] with t
+  exact (integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (g t) (fun x => f (t, x))).symm
+
+theorem integrable_integral_riemannianVolumeMeasure
+    {P F : Type*} [MeasurableSpace P] (μ : MeasureTheory.Measure P)
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (q : SmoothRiemannianMetric I M) (g : P → SmoothRiemannianMetric I M)
+    (f : P × M → F)
+    (hf : Integrable (fun p => riemannianVolumeDensity q (g p.1) p.2 • f p)
+      (μ.prod (riemannianVolumeMeasure (I := I) (M := M) q))) :
+    Integrable (fun t => ∫ x, f (t, x)
+      ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) μ := by
+  let _ := riemannianVolumeMeasure_sigmaFinite q
+  exact hf.integral_prod_left.congr (Eventually.of_forall fun t =>
+    (integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (g t) (fun x => f (t, x))).symm)
+
 end DifferentialGeometry.Integral.Measure
