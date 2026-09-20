@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Derivative.AlmostEverywhereLipschitz
 import Mathlib.Analysis.Calculus.ContDiff.Defs
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.FDeriv.Basic
@@ -239,6 +240,64 @@ theorem second_order_taylor_isLittleO
   rw [Metric.isOpen_ball.nhdsWithin_eq (Metric.mem_ball_self hr)] at h
   simpa only [P, sub_self, map_zero, smul_zero, sub_zero] using h
 
+theorem second_order_taylor_isLittleO_of_hasFDerivWithinAt_fderiv
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {L : NNReal} {f : E → F} {s : Set E} {x : E}
+    (hs : s ∈ 𝓝 x) (hf : LipschitzOnWith L f s)
+    {B : E →L[ℝ] E →L[ℝ] F}
+    (hD : HasFDerivWithinAt (fderiv ℝ f) B {y | DifferentiableAt ℝ f y} x) :
+    (fun y => f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) • B (y - x) (y - x))
+      =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  borelize E
+  let μ : Measure E := Measure.addHaar
+  apply Asymptotics.IsLittleO.of_bound
+  intro c hc
+  have hbound := hD.isLittleO.bound (half_pos hc)
+  obtain ⟨r, hr, hrb⟩ := Metric.mem_nhdsWithin_iff.mp hbound
+  obtain ⟨R, hR, hRs⟩ := Metric.mem_nhds_iff.mp hs
+  filter_upwards [Metric.ball_mem_nhds x (half_pos (lt_min hr hR))] with y hy
+  by_cases hxy : y = x
+  · subst y
+    simp
+  have hn : 0 < ‖y - x‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxy)
+  have hsmall : 2 * ‖y - x‖ < min r R := by
+    have hh : ‖y - x‖ < min r R / 2 := by simpa only [Metric.mem_ball, dist_eq_norm] using hy
+    linarith
+  have hbs : Metric.ball x (2 * ‖y - x‖) ⊆ s := by
+    intro z hz
+    exact hRs (lt_trans hz (hsmall.trans_le (min_le_right r R)))
+  have hLip := hf.mono hbs
+  have hdiff : ∀ᵐ z ∂μ.restrict (Metric.ball x (2 * ‖y - x‖)), DifferentiableAt ℝ f z := by
+    filter_upwards [hLip.ae_differentiableWithinAt Metric.isOpen_ball.measurableSet,
+      ae_restrict_mem Metric.isOpen_ball.measurableSet] with z hz hzb
+    exact hz.differentiableAt (Metric.isOpen_ball.mem_nhds hzb)
+  have hest : ∀ᵐ z ∂μ.restrict (Metric.ball x (2 * ‖y - x‖)),
+      ‖fderiv ℝ f z - (fderiv ℝ f x - B x) - B z‖ ≤ c * ‖y - x‖ := by
+    filter_upwards [hdiff, ae_restrict_mem Metric.isOpen_ball.measurableSet] with z hzd hzb
+    have hzr : z ∈ Metric.ball x r := lt_trans hzb (hsmall.trans_le (min_le_left r R))
+    have h := hrb ⟨hzr, hzd⟩
+    have heq : fderiv ℝ f z - (fderiv ℝ f x - B x) - B z =
+        fderiv ℝ f z - fderiv ℝ f x - B (z - x) := by rw [map_sub]; abel
+    rw [heq]
+    calc
+      _ ≤ c / 2 * ‖z - x‖ := h
+      _ ≤ c / 2 * (2 * ‖y - x‖) :=
+        mul_le_mul_of_nonneg_left (by simpa only [Metric.mem_ball, dist_eq_norm] using (Metric.mem_ball.mp hzb).le) (by positivity)
+      _ = c * ‖y - x‖ := by ring
+  have hh := norm_sub_quadratic_le_of_ae_norm_fderiv_sub_le Metric.isOpen_ball (convex_ball _ _)
+    hLip (fderiv ℝ f x - B x) B (C := ⟨c * ‖y - x‖, by positivity⟩) hest
+    (Metric.mem_ball_self (by positivity : 0 < 2 * ‖y - x‖))
+    (show y ∈ Metric.ball x (2 * ‖y - x‖) by rw [Metric.mem_ball, dist_eq_norm]; linarith)
+  have heq : f y - f x - (fderiv ℝ f x - B x) (y - x) - B x (y - x) =
+      f y - f x - fderiv ℝ f x (y - x) := by rw [sub_apply]; abel
+  rw [heq] at hh
+  change ‖f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) • B (y - x) (y - x)‖ ≤
+    (c * ‖y - x‖) * ‖y - x‖ at hh
+  change ‖f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) • B (y - x) (y - x)‖ ≤
+    c * ‖‖y - x‖ ^ 2‖
+  rw [Real.norm_of_nonneg (sq_nonneg ‖y - x‖)]
+  nlinarith only [hh]
 
 theorem fderiv_fderiv_comp_affine
     {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

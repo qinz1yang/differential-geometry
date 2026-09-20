@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Taylor
 import DifferentialGeometry.Analysis.Convex.Proximal
 import DifferentialGeometry.Analysis.Calculus.Sard
 import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
@@ -192,3 +193,30 @@ theorem ConvexOn.ae_differentiableWithinAt_fderiv
     {y | DifferentiableAt ℝ f y} x at hout
   rw [heq] at hout
   exact hout
+
+theorem ConvexOn.alexandrov
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    {f : E → ℝ} {s : Set E} (hf : ConvexOn ℝ s f) :
+    ∀ᵐ x ∂μ.restrict (interior s), DifferentiableAt ℝ f x ∧
+      ∃ B : E →L[ℝ] E →L[ℝ] ℝ, B.flip = B ∧
+        (fun y => f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) * B (y - x) (y - x))
+          =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  have hlip := (hf.subset interior_subset hf.1.interior).locallyLipschitzOn isOpen_interior
+  filter_upwards [hf.ae_differentiableWithinAt_fderiv (μ := μ),
+    hlip.ae_differentiableAt isOpen_interior, ae_restrict_mem isOpen_interior.measurableSet]
+    with x hx hdx hxs
+  obtain ⟨L, U, hU, hfU⟩ := hlip hxs
+  rw [isOpen_interior.nhdsWithin_eq hxs] at hU
+  let A := fderivWithin ℝ (fderiv ℝ f) {y | DifferentiableAt ℝ f y} x
+  let B := (1 / 2 : ℝ) • (A + A.flip)
+  have hsym : B.flip = B := by
+    simp only [B, ContinuousLinearMap.flip_smul, ContinuousLinearMap.flip_add,
+      ContinuousLinearMap.flip_flip, add_comm]
+  have hdiag (v : E) : B v v = A v v := by
+    simp only [B, smul_apply, add_apply, ContinuousLinearMap.flip_apply, smul_eq_mul]
+    ring
+  have h := DifferentialGeometry.Analysis.second_order_taylor_isLittleO_of_hasFDerivWithinAt_fderiv
+    hU hfU hx.hasFDerivWithinAt
+  refine ⟨hdx, B, hsym, ?_⟩
+  simpa only [hdiag, smul_eq_mul] using h
