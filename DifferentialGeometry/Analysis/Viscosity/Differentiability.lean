@@ -158,33 +158,6 @@ theorem exists_smooth_lower_test_near_differentiable_point
     have heq : -fderiv ℝ φ y - fderiv ℝ u x = -(fderiv ℝ φ y + fderiv ℝ u x) := by abel
     simpa only [heq, norm_neg] using hp
 
-private theorem taylor_polynomial_derivatives
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    (x : E) (c : ℝ) (p : E →L[ℝ] ℝ) (B : E →L[ℝ] E →L[ℝ] ℝ) (hB : B.flip = B) :
-    let P := fun y => c + p (y - x) + (1 / 2 : ℝ) * B (y - x) (y - x)
-    ContDiff ℝ (⊤ : ℕ∞) P ∧ P x = c ∧ fderiv ℝ P x = p ∧ fderiv ℝ (fderiv ℝ P) x = B := by
-  intro P
-  have hP : ContDiff ℝ (⊤ : ℕ∞) P :=
-    (contDiff_const.add (p.contDiff.comp (contDiff_id.sub contDiff_const))).add
-      (contDiff_const.mul ((B.contDiff.comp (contDiff_id.sub contDiff_const)).clm_apply
-        (contDiff_id.sub contDiff_const)))
-  have hderiv (y : E) : HasFDerivAt P (p + B (y - x)) y := by
-    have hs := (hasFDerivAt_id (𝕜 := ℝ) y).sub_const x
-    have hlin : HasFDerivAt (fun z => c + p (z - x)) p y := by
-      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using
-        (p.hasFDerivAt.comp y hs).const_add c
-    have hquad : HasFDerivAt (fun z => (1 / 2 : ℝ) * B (z - x) (z - x)) (B (y - x)) y := by
-      have h := ((B.hasFDerivAt.comp y hs).clm_apply hs).const_mul (1 / 2 : ℝ)
-      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq, hB,
-        ← two_smul ℝ, smul_smul, one_div_mul_cancel (by norm_num : (2 : ℝ) ≠ 0), one_smul] using h
-    exact hlin.fun_add hquad
-  refine ⟨hP, by simp [P], ?_, ?_⟩
-  · simpa only [sub_self, map_zero, add_zero] using (hderiv x).fderiv
-  · have heq : fderiv ℝ P = fun y => p + B (y - x) := funext fun y => (hderiv y).fderiv
-    rw [heq]
-    have hd := (B.hasFDerivAt.comp x ((hasFDerivAt_id (𝕜 := ℝ) x).sub_const x)).const_add p
-    simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using hd.fderiv
-
 theorem second_order_le_zero_of_upper_tests_of_isLittleO
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {u : E → ℝ} {x : E}
@@ -228,7 +201,12 @@ theorem second_order_le_zero_of_upper_tests_of_isLittleO
       simp only [ContinuousLinearMap.flip_apply, add_apply, smul_apply, smul_eq_mul]
       rw [show B w v = B v w from congrArg (fun A : E →L[ℝ] E →L[ℝ] ℝ => A v w) hB,
         show Q w v = Q v w from congrArg (fun A : E →L[ℝ] E →L[ℝ] ℝ => A v w) hQ]
-    obtain ⟨hφ, hφx, hφD, hφDD⟩ := taylor_polynomial_derivatives x (u x) p (B + (2 * ε) • Q) hsym
+    obtain ⟨hφ, hφx, hφd⟩ := DifferentialGeometry.Analysis.second_order_polynomial_derivatives
+      x (u x) p (B + (2 * ε) • Q) hsym
+    simp only [smul_eq_mul] at hφ hφx hφd
+    have hφD := (hφd x).1
+    have hφDD := (hφd x).2
+    simp only [sub_self, map_zero, add_zero] at hφD
     change ContDiff ℝ (⊤ : ℕ∞) φ at hφ
     change φ x = u x at hφx
     change fderiv ℝ φ x = p at hφD

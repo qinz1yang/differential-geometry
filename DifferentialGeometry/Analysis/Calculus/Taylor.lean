@@ -209,6 +209,34 @@ theorem fderiv_fderiv_translate (g : E → ℝ) (hg : ContDiff ℝ 2 g) (c y : E
         = fderiv ℝ (fun z : E => fderiv ℝ g (z + c)) y := by rw [hfun]
     _ = fderiv ℝ (fderiv ℝ g) (y + c) := fderiv_translate (fderiv ℝ g) c y hd
 
+theorem second_order_polynomial_derivatives
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (x : E) (c : F) (p : E →L[ℝ] F) (B : E →L[ℝ] E →L[ℝ] F) (hB : B.flip = B) :
+    let P := fun y => c + p (y - x) + (1 / 2 : ℝ) • B (y - x) (y - x)
+    ContDiff ℝ (⊤ : ℕ∞) P ∧ P x = c ∧
+      ∀ y, fderiv ℝ P y = p + B (y - x) ∧ fderiv ℝ (fderiv ℝ P) y = B := by
+  intro P
+  have hP : ContDiff ℝ (⊤ : ℕ∞) P :=
+    (contDiff_const.add (p.contDiff.comp (contDiff_id.sub contDiff_const))).add
+      (((B.contDiff.comp (contDiff_id.sub contDiff_const)).clm_apply
+        (contDiff_id.sub contDiff_const)).const_smul (1 / 2 : ℝ))
+  have hderiv (y : E) : HasFDerivAt P (p + B (y - x)) y := by
+    have hs := (hasFDerivAt_id (𝕜 := ℝ) y).sub_const x
+    have hlin : HasFDerivAt (fun z => c + p (z - x)) p y := by
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using
+        (p.hasFDerivAt.comp y hs).const_add c
+    have hquad : HasFDerivAt (fun z => (1 / 2 : ℝ) • B (z - x) (z - x)) (B (y - x)) y := by
+      have h := ((B.hasFDerivAt.comp y hs).clm_apply hs).const_smul (1 / 2 : ℝ)
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq, hB, Pi.smul_def,
+        ← two_smul ℝ, smul_smul, one_div_mul_cancel (by norm_num : (2 : ℝ) ≠ 0), one_smul] using h
+    exact hlin.fun_add hquad
+  refine ⟨hP, by simp [P], fun y => ⟨(hderiv y).fderiv, ?_⟩⟩
+  have heq : fderiv ℝ P = fun z => p + B (z - x) := funext fun z => (hderiv z).fderiv
+  rw [heq]
+  have hd := (B.hasFDerivAt.comp y ((hasFDerivAt_id (𝕜 := ℝ) y).sub_const x)).const_add p
+  simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using hd.fderiv
+
 theorem second_order_taylor_isLittleO
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]

@@ -715,6 +715,7 @@ import DifferentialGeometry.Analysis.Integration.CompactExhaustionDerivative
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionIntegral
 import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
 import DifferentialGeometry.Analysis.Integration.Convolution.Approximation
+import DifferentialGeometry.Analysis.Integration.Convolution.Derivatives
 import DifferentialGeometry.Analysis.Integration.Convolution.Laplacian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
@@ -759,6 +760,7 @@ import DifferentialGeometry.Analysis.Integration.Gaussian.AnnularIntegral
 import DifferentialGeometry.Analysis.Integration.Gaussian.DistanceCoercivity
 import DifferentialGeometry.Analysis.Integration.Gaussian.VolumeTail
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
+import DifferentialGeometry.Analysis.Integration.Integral.Asymptotics
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
