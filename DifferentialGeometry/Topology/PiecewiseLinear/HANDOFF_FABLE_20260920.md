@@ -105,6 +105,36 @@ consultant's induction invariant without `V_j ⊆ ⋃ Wᵢ`; "general position l
 `M₂` (`h x = x / (1 + ‖x‖)`); the end-point chart equality `W = {t ≥ 0}`
 (`H = {t = −min(|x|,|y|)}`); `∀ x, f x ∉ B` for a tapered push with vanishing height.
 
+### Nine: the cross candidate's `hlong` is unsatisfiable (found at lane F acceptance, COMMITTED code)
+
+`hlong : Function.Injective ⇑(τ.trans (σ.trans φ))` with `τ φ : Path b a`, `σ : Path a b` cannot
+hold: the concatenation takes the value `b` at `0` and again at `3/4`, and `a` at `1/2` and `1`.
+The preserving twin `Function.Injective ⇑(φ.symm.trans (σ.trans τ.symm))` starts with a loop
+`φ.symm : Path a a`. So every theorem carrying `hlong` is vacuous: in committed code
+`BoundaryWordWitness.exists_of_fourArcMatch_{reversing,preserving}`
+(`BoundaryWordWitnessOfCell.lean:210, 230`), their `_of_endpoints` forms and
+`exists_pair_of_fourArcMatch_{reversing,preserving}` (`BoundaryCandidatesOfCut.lean:146–254`);
+uncommitted, all of `BoundaryCaseOfCut.lean`'s assemblies, the two assemblies of
+`BoundaryCaseFromReading.lean`, and `BoundaryCaseFromCut.lean`. The module docstring claim that
+`hσinj`, `hυinj`, `hlong` are "all produced by `exists_boundaryCandidates_of_cut`" is false: the
+producer gives injectivity of the *source* arcs `σ₀ τ₀ υ₀ φ₀` of `frontier D.domain`, never of
+the letters in `X`. This is refutation 5 again (the four arc word visits `a` twice).
+
+It is not repairable by weakening `hlong` to injectivity of the three letters: the range of
+`τ·σ·φ` is a theta graph, so a path with that range and those end points is not determined up to
+homotopy (`τσφ` versus `φστ`), and in the preserving case two letters are loops, for which range
+equality does not even fix the direction. Moreover the letters need not be injective at all:
+another boundary branch with both its preimage arcs inside `D₁` makes `D ∘ σ₀` non-injective, so
+`hσinj`, `hυinj` are satisfiable but cannot be discharged in the final wiring.
+
+The repair (lane F, brick F7): match **in the source circle, arc by arc**. On each of its
+boundary arcs the candidate is `D ∘ Fᵢ` with `Fᵢ` a homeomorphism onto one of the four source
+arcs (F2's `V₁ V₂ V₃`, `F₁ = f₁∘h`, `F₂ = f₂∘h`, `F₃ = f₃`). `Fᵢ ∘ (injective source
+parametrisation)` is an injective path of `frontier D.domain` with the range of `σ₀` (or `τ₀`,
+`υ₀`, `φ₀`), hence homotopic to it or its reverse by `Path.Homotopic.of_injective_of_range_eq`
+*there*, where injectivity is true; push the homotopy to `X` along the realisation
+`f : frontier D.domain → X`, `ρ (f z) = D z`, and concatenate. No injectivity in `X` is used.
+
 ### Working method that held up
 
 Read-only refute-or-scope lanes first; then **resume the same agent** to execute its own plan

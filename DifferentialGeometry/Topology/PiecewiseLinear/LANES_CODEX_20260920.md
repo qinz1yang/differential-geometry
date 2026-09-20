@@ -113,6 +113,48 @@
 **验收重点：** 旧 producer 名字的陈述逐字未变（给 `git diff` 证据）；两个谓词模块仍能对着改过的
 producer 编译。
 
+### 车道 F 裁决（2026-09-20 晚）：F1 / F5 的两个组装 / F6 **不收**——`hlong` 不可满足
+
+F2、F3、F4 已收。F5 的 `PLCrossSeamReading.exists_boundary_cover` 数学上认可，随 F8 一起收。
+F1、F5 的两个 `…_of_plReading_of_boundaryCover`、F6 全部带假设
+`hlong : Function.Injective ⇑(τ.trans (σ.trans φ))`（`τ φ : Path b a`、`σ : Path a b`）。这条
+**不可能成立**：拼接路径在参数 `0` 与 `3/4` 都取 `b`，在 `1/2` 与 `1` 都取 `a`；preserving 情形以
+回路 `φ.symm : Path a a` 起头。所以这些定理是空洞的，`BoundaryCut…Input` 无居留。这不是车道 F
+引入的：错误在已提交的 `BoundaryWordWitnessOfCell.lean:210, 230` 与
+`BoundaryCandidatesOfCut.lean:146–254`（Claude 车道写、lead 验收时漏掉）。模块 docstring 里
+"`hσinj`、`hυinj`、`hlong` 均由 `exists_boundaryCandidates_of_cut` 产出"一句是假的：producer 给的是
+**源圆周** `frontier D.domain` 上 `σ₀ τ₀ υ₀ φ₀` 的单射性，从不是 `X` 里字母的单射性。
+
+不能靠把 `hlong` 减弱成"三个字母各自单射"来修：`τ·σ·φ` 的值域是 θ 图，值域 + 端点不决定同伦类
+（`τσφ` 对 `φστ`）；preserving 情形两个字母是回路，值域连方向都不定。而且字母在 `X` 里**本来就
+不必单射**（另一条边界支的两条原像弧都落在 `D₁` 里时 `D ∘ σ₀` 不单），所以 `hσinj`、`hυinj` 虽
+可满足，在最终接线里也无法解除。
+
+- **F7 源圆周上逐弧匹配的 witness（替换整层）。** 在 `frontier D.domain` 里比较，不在 `X` 里比较：
+  候选胞腔在它的每条边界弧上等于 `D ∘ Fᵢ`，`Fᵢ` 是到四条源弧之一的同胚（cross：F2 的
+  `V₁ V₂ V₃`、`F₁ = f₁∘h`、`F₂ = f₂∘h`、`F₃ = f₃`；direct：`exists_boundary_surgery_cell_of_cut`
+  的 `hGdR hGdT`，不够就在 core 里追加导出）。`Fᵢ ∘ (单射源参数化)` 是 `frontier D.domain` 里
+  值域等于 `σ₀`（或 `τ₀ υ₀ φ₀`）的单射路径，在**那里**用
+  `Path.Homotopic.of_injective_of_range_eq` 得到与 `σ₀` 或其反向同伦；再沿实现
+  `f : frontier D.domain → X`、`ρ (f z) = D z` 推到 `X`（`Path.map` + `Path.cast`），最后
+  `hcomp` 拼接与循环旋转。长弧 `R` 的单射参数化要在两个接缝点处切成三段（先查 Mathlib 的
+  `Path.subpath`/`Path.truncate`；没有就自己证"路径同伦于其三段子路径的拼接"）。
+  **产出：** `BoundaryWordWitness Gd ρ (direct word)` 与 `BoundaryWordWitness G ρ (cross word)`，
+  两种端点情形，带 `param = e ∨ param = neg.trans e`；假设里**不得出现** `X` 里任何路径的单射性。
+  参数化方向的二分（`hend`）照旧吸收。
+- **F8 重述 F1 / F5 / F6**：去掉 `hlong hσinj hυinj`，改接 F7。删除已提交的空洞定理
+  `exists_of_fourArcMatch_*`、`exists_of_fourArcMatch_*_of_endpoints`、
+  `exists_pair_of_fourArcMatch_*`（先 grep 确认无其它消费者）。`exists_of_twoArcMatch*` 是真的，
+  可留。
+- **F8 的形状约束（AGENTS.md 第 72–73、110 行）：** `BoundaryCutReversingInput` /
+  `BoundaryCutPreservingInput` 是 proposition-valued hypothesis packaging，`BoundaryCutCandidates`
+  是为缩短 binder 的 bundled context，owner 未授权——改成显式的 `∃ …, (导出) ∧ ∀ …, 假设 → 结论`。
+  `let _ := I` 式的结论 def 一并去掉。
+- **F7/F8 的非空洞验收：** 交一个文件外的 probe（不入库）或一条引理，说明 F8 最终定理的每条假设
+  要么由 `IsBoundaryBranchCut` + `PLCrossSeamReading` + `PLSeamTubeChart` 的某个已证 producer
+  给出，要么列在"仍是真义务"清单里并注明为什么可满足。对每条含 `Function.Injective` 的假设，
+  写出它的居留者。
+
 ## 车道 H — 跨坐标卡的一般位置（`GeneralPositionInDoubleBufferedStatement`）
 
 **读：** `consult/C-answer-digest.md`（全文，尤其末节"对树的复核"与砖块 B1–B7）。
