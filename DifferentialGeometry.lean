@@ -12079,3 +12079,5 @@ import DifferentialGeometry.Geometry.HarmonicMap.HoleFilling
 import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientBound
 import DifferentialGeometry.Geometry.Metric.Pullback.Coercivity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.InteriorEnergy
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Campanato
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.ContinuousRepresentative
