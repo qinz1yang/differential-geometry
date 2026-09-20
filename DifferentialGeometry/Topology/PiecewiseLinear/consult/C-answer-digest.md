@@ -127,3 +127,64 @@ packaging all of (4).
 **Division of labour:** P2 is a consequence of the crossing predicates + compact PL structure;
 P1 is a buffered relative producer on prescribed regions, with fixed-cover injectivity and
 global double-set localization.
+
+---
+
+# Review of this answer against the tree (read-only lane P1, same day)
+
+**Where the answer misreads the tree.**
+1. *(7) and the localization lemma are not gaps.* All three manifold-level local theorems
+   (`GeneralPositionWithin.lean:141`, `SingularManifoldLocal.lean:245`,
+   `LoopTheorem/ProjectedBoundaryLocalNormalization.lean:20` — all the same core,
+   `SingularManifoldLocal.lean:81`) conclude full fibre equality
+   `∀ z ∉ V, g ⁻¹' {z} = f ⁻¹' {z}`. That implies both lines of (7) and
+   `Σ(g) \ V = Σ(f) \ V` in two lines; the localization lemma (true as stated) is only a
+   fallback for a step without fibre control.
+2. *"`O_*` chosen by the construction" is not a defect.* `V` is universally quantified over
+   `𝓝 y`; choose `closure V ∩ C = ∅`, put `O_* := (closure V)ᶜ`, and
+   `NormalCrossingTransport.lean:215` keeps every crossing on `U \ closure V`.
+3. *Affine independence: right direction, wrong example.* The relative lemma
+   (`SingularGeneralPosition.lean:409`, consumer `:512`, all-frozen branch `:1554`) is not hit
+   by four coplanar vertices of an embedded planar disk (faces have ≤ 3 vertices, nondegenerate
+   under a star-injective map). The genuine failure is a **collinear triple (or coplanar
+   four-set) of frozen vertex images from two disjoint faces**. The fix is already in the tree
+   and thrown away: `exists_small_vertexMap_transverse_in_halfSpace` (`:1523`) gives general
+   position for *arbitrary* vertex subsets `s`, `|s| ≤ 4`, `|s ∩ B| ≤ 3`, but `:1607` and `:3183`
+   expose only `∀ s ∈ R.faces`. Carry it as an invariant; subdivide by `relDerived` rel the
+   frozen subcomplex (`GeneralPosition.lean:3824`). Honest relative template:
+   `exists_small_simplicialMap_transverse_on_subcomplex` (`GeneralPosition.lean:3803`).
+4. *A free-boundary one-chart theorem exists for interior charts*:
+   `exists_small_simplicialMap_doublePointSet_manifold` (`SingularGeneralPosition.lean:1317`,
+   wrapped at `GeneralPositionWithin.lean:55`) — any combinatorial 2-manifold with boundary, no
+   `ℓ`, no `hboundary`, a crossing at every double point. So the artificial-boundary obstruction
+   is a *half-space* problem only: `:3183`/`:3447`/`SingularChart.lean:155` take
+   `hboundary : ∀ x ∈ (boundaryComplex 2 K).space, ℓ (f x) = 0` as a hypothesis, so a cut-out
+   piece is rejected at the door. Generalising `boundaryComplex 2 K` to a subcomplex
+   `L ⊆ boundaryComplex 2 K` with `ℓ ∘ f = 0 ↔ ∈ L.space` is mechanical (`:2969` is already
+   `L`-general; `:1607` already defines `B` as the `ℓ = 0` vertices).
+
+**Where the answer is right and sharp.** Multiplicity is counted globally in the tree already.
+Side preservation (11) is present in `ProjectedBoundaryLocalNormalization`. The produced-`W`
+problem is real and **fatal for any induction driven by the existing local theorem alone**:
+`W := Metric.ball y (η/2)` inside a neighbourhood with *no third sheet*
+(`SingularManifoldLocal.lean:136`); each step leaves a shell `V \ W` where fibres changed and
+normality is not claimed, `W` is produced after `V`, so the shell cannot be made thin, and
+re-applying at shell points opens new shells. `:3183` moves **all** vertices and has no `EqOn`
+clause, so the relative version is a **modification of the ~3000-line chain**
+`:2969 → :1607 → :3183`, not a wrapper; only the boundary-degree half (`:2537–:2935`) is
+reusable unchanged.
+
+**Invariant (9) is false as written.** Step `k+1` changes fibres over `V_{k+1} ⊋ W_{k+1}`, and a
+moved sheet can meet a third unmoved sheet at a point of `V_{k+1} \ ⋃ W_j`. **Repair:** require
+`V_j ⊆ ⋃ᵢ Wᵢ` (choose the `W_j` to cover an open `U ⊇ Σ(f)`, then each `V_j` a union of `Wᵢ`'s);
+then `Σ(f_{k+1}) ⊆ ⋃ Wᵢ` is maintained. Do not assume `Σ` is 1-dimensional anywhere in the
+relative theorem (coincident sheets on an open set inside `W` are allowed).
+
+**Bricks, dependency ordered.** B1 `Σ(g) \ V = Σ(f) \ V` from fibre agreement, and the iff
+with (7) — small. B2 expose `:1523`'s arbitrary-subset general position in the conclusions of
+`:1607`, `:3183` — small. B3 `boundaryComplex 2 K → L` in `:1607`, `:3183`, `:3447`,
+`SingularChart.lean:155` — medium. B4 the cut-out piece (10) from `HasDoublePointSheetsAt`
+(`LoopTheorem/DoublePointCover.lean:26`) and `exists_isPLBall_patches_at_fiber_pair` — medium.
+B5 the relative (frozen collar) version of `:1607`/`:3183` — **large**. B6 the relative theorem
+assembled — medium. B7 the induction over the cover via `NormalCrossingTransport.lean:215` +
+B1 — medium.

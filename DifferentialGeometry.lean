@@ -9097,6 +9097,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCel
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCellProperness
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteBoundaryExhaustion
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundarySurgeryCellPredicate
+import DifferentialGeometry.Topology.PiecewiseLinear.ToleranceControl
+import DifferentialGeometry.Topology.PiecewiseLinear.ChartLocalApproximation
 /-!
 # Differential geometry and geometric analysis
 -/
