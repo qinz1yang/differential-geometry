@@ -360,6 +360,96 @@ remains unverified, and the repository's boundary-only sheet producer is not
 evidence for it. The chart interface must be boundary-only regardless; if a
 closed-branch operation is needed elsewhere it requires a different interface.
 
+### General downstairs Lemma 2: input structure, sheet edges and branch surgery
+
+Answered against commit c37a536e5. Source-level and book reading only; nothing was
+compiled for it and no axiom audit was run for it.
+
+Interior real sheet edges are impossible in a proper singular disk. For a closed PL
+two-ball A, a locally injective f into a PL three-manifold with
+A intersect the preimage of the boundary equal to the frontier of A and fibres of
+size at most two, a double point in the interior of the manifold has both preimages
+in the interior of A, so both real sheet germs are germs of boundaryless disks. Even
+the weaker condition that f carries the frontier into the boundary suffices. This
+needs neither a one-dimensional singular set nor a covering projection.
+
+This corrects an earlier entry here. The old predicate's three models are full and
+full, full and half, half and full, because it carries a disjunction that one of the
+two functionals vanishes; it does not express the boundary model in which both
+sheets are cut by the same ambient half space. The one-full-one-half model is
+therefore excluded in a proper disk as real sheet germs, not relocated to the branch
+endpoints as previously recorded. The correct models are: at an interior point, full
+neighbourhood with sheets the two coordinate planes and the double point set their
+axis; at a boundary point, the half space with both sheets and the axis cut by it,
+which is what the boundary crossing predicate already expresses. The new two-sided
+predicate belongs to the first row and must not replace the second.
+
+Properness, local injectivity and the fibre bound do not by themselves give
+transversality, so normalization remains necessary. In local coordinates the sheets
+v equals zero and v equals the absolute value of u are both PL embedded and
+boundaryless and meet in a line, yet the second lies on one side of the first; they
+cannot be carried simultaneously to two crossing coordinate planes. A covering map
+is a homeomorphism of each sheet onto a uniformly covered neighbourhood and
+constrains nothing about the relative position of the two chosen sheets, so the
+projection origin supplies no transversality either.
+
+What is available without repairing the carrier deficit: from the existing
+structure's image and boundary field, a double point outside the recorded boundary
+set has all its preimages in the interior of the disk domain, and the interior
+branch of the old crossing field then yields the double crossing predicate on the
+restricted source, which is exactly the input of an interior two-sidedness
+strengthening. The strengthening itself is an invariance of domain argument, and a
+private lemma in the boundary crossing file already implements almost the same one.
+
+For the input structure, the recommendation is the second of the three candidates:
+keep the existing normal singular cell data and add an actual carrier compatibility
+condition for the boundary crossings, either as parameters or as an extension
+structure. Rebuilding a bundled structure is mathematically fine but need not
+replace the whole old interface, and requiring a normal system with an upstairs
+embedded disk and a projection is an adapter for the tower, not the input of a
+general Lemma 2.
+
+Two interface details are load bearing. When the complex is realized in a
+high-dimensional ambient space, the frontier of its space is the ambient frontier
+and is generally not the combinatorial boundary, and a space with nonempty boundary
+cannot carry a boundaryless atlas modelled on all of three-space; the development
+already has the right device, namely the boundary double, with the copy of the
+complex inside it and the theorem identifying the frontier of that copy with the
+boundary. And equality of boundary image sets does not replace the pointwise
+factorization of the loop through the parametrization: for a singular boundary the
+same image can carry different loops, so fundamental group elements are not
+identified by image equality. Producers giving the actual factorization already
+exist in the projected boundary loop file.
+
+Closed branches are operated on, and first. Moise's Lemma 2, printed pages 184 to
+187, handles two closed cases before reducing to boundary arcs. In the first, one
+source circle doubly covers an image circle; the source annulus is replaced using a
+cylinder splice whose identification exchanges the two coordinates across the
+period, a mapping torus with sheet exchange rather than an injective chart onto a
+straight axis. In the second, an innermost closed preimage curve bounds a source
+disk whose interior meets no singular preimage, so the restriction there is an
+embedding and its image is a clean disk bounded by the branch; that disk replaces
+the map on the disk bounded by the paired curve, and the replacement is then pushed
+off, which cannot be skipped or a two-dimensional coincidence results instead of a
+one-dimensional double point set. The existing dichotomy for closed branch
+preimages, one circle or two with coordinates, matches these two cases exactly, but
+supplying that dichotomy is not the same as supplying the annulus replacement, the
+push off or the descent.
+
+Strict descent needs branch-level evidence. Since branches are finite and each is
+closed or boundary, the complexity equals the number of branches, and that count is
+the thing to decrease. A strict inclusion of singular sets is not enough, because a
+subset of an interval can be two disjoint closed subintervals. Two sufficient
+certificates: an injection of the new branches into the old ones missing at least
+one old branch; or, when a surgery splits or merges, a bijection of the unaffected
+parts together with the replacement counts, which gives strict descent exactly when
+fewer branches are created than were affected. Finally the avoidance condition and
+the descent must hold for the same candidate: the boundary cases produce two
+candidate disks and the elimination identity says only that if both candidate
+boundary classes lie in the normal subgroup then so does the original, so at least
+one candidate avoids it; proving separately that some candidate descends and that
+some candidate avoids is not enough.
+
 ## Delivery and validation priorities
 
 Review new 25.2 producers before additional downstream wrapper layers. Keep
