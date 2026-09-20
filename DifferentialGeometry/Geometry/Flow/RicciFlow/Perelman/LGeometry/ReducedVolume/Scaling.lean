@@ -21,43 +21,16 @@ theorem intrinsicReducedVolume_eq_normalizedShrinkerMass
     intrinsicReducedVolume S T p tau =
       normalizedShrinkerMass (scaleMetric tau⁻¹ (inv_pos.mpr htau) (S.base.metric (T - tau)))
         (fun q => redLength S T p q tau) := by
-  have hcoeff : (Real.sqrt tau⁻¹) ^ Module.finrank ℝ E =
-      Real.exp (-((Module.finrank ℝ E : ℝ) / 2) * Real.log tau) := by
-    have hroot : Real.sqrt tau⁻¹ = Real.exp (-(1 / 2 : ℝ) * Real.log tau) := by
-      calc
-        _ = Real.exp (Real.log (Real.sqrt tau⁻¹)) :=
-          (Real.exp_log (Real.sqrt_pos.mpr (inv_pos.mpr htau))).symm
-        _ = _ := by
-          rw [Real.log_sqrt (inv_pos.mpr htau).le, Real.log_inv]
-          congr 1
-          ring
-    rw [hroot, ← Real.exp_nat_mul]
-    congr 1
-    ring
-  unfold normalizedShrinkerMass
-  rw [volume_scaleMetric, lintegral_smul_measure, smul_eq_mul,
-    ← ENNReal.ofReal_pow (Real.sqrt_nonneg _), hcoeff,
-    ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  unfold intrinsicReducedVolume
+  rw [normalizedShrinkerMass_scaleMetric_inv_eq_lintegral_perelmanDensity _ htau]
   apply lintegral_congr
   intro q
-  rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add]
-  congr 2
+  apply congrArg ENNReal.ofReal
+  rw [perelmanDensity, ← Real.exp_log (prefactor_pos (Module.finrank ℝ E) htau),
+    log_prefactor (Module.finrank ℝ E) htau, ← Real.exp_add,
+    Real.log_mul (show 4 * Real.pi ≠ 0 by positivity) htau.ne']
+  congr 1
   dsimp only [redLength]
   ring
-
-private theorem normalizedShrinkerMass_eq_density_one
-    (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
-    normalizedShrinkerMass g f = ∫⁻ x,
-      ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) 1 f x)
-      ∂riemannianVolumeMeasure (I := I) (M := M) g := by
-  rw [normalizedShrinkerMass_eq_const_mul_lintegral,
-    ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  apply lintegral_congr
-  intro x
-  rw [← ENNReal.ofReal_mul (Real.rpow_nonneg (by positivity : (0 : ℝ) ≤ 4 * Real.pi) _)]
-  simp only [perelmanDensity, perelmanDensityPrefactor, mul_one]
-  rfl
 
 theorem intrinsicReducedVolume_eq_lintegral_perelmanDensity_scaled
     (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (p : M)
@@ -76,7 +49,7 @@ theorem intrinsicReducedVolume_eq_lintegral_perelmanDensity_scaled
     simp only [g, scaleMetric_inner]
     field_simp
   rw [intrinsicReducedVolume_eq_normalizedShrinkerMass S T p (mul_pos hc htau),
-    normalizedShrinkerMass_eq_density_one, hg]
+    normalizedShrinkerMass_eq_lintegral_perelmanDensity_one, hg]
   have h := setLIntegral_perelmanDensity_scaleMetric g htau zero_lt_one
     (fun y => redLength S T p y (c * tau)) Set.univ
   simpa only [mul_one, setLIntegral_univ] using h.symm
