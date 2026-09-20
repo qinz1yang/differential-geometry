@@ -12019,3 +12019,15 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Gradient.QuadraticLowerSe
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzWitness
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.WeakLimit
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakCompactness
+import DifferentialGeometry.Analysis.Integration.Integral.LipschitzGreen
+import DifferentialGeometry.Analysis.Integration.Integral.RegionBetween
+import DifferentialGeometry.Analysis.Integration.Measure.EuclideanPlane
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.BoundaryConvergence
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.Coordinates
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.DiskBoundary
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.DiskLimit
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.GreenLimit
+import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
+import DifferentialGeometry.Geometry.Metric.Pullback.Retraction
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Coordinates
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakLowerSemicontinuity
