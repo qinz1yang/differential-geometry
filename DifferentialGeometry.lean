@@ -9060,6 +9060,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InteriorTwoSide
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordElimination
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InnermostCleanDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoEndpoint
+import DifferentialGeometry.Topology.PiecewiseLinear.CylinderSplice
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DiskPushOff
 /-!
 # Differential geometry and geometric analysis
