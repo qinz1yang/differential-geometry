@@ -9065,6 +9065,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DiskPushOff
 import DifferentialGeometry.Topology.PiecewiseLinear.InteriorDiskCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactEmbeddingApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordConnectors
 /-!
 # Differential geometry and geometric analysis
 -/
