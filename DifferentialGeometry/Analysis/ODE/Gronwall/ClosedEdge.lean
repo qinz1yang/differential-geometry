@@ -1,4 +1,5 @@
 import Mathlib.Analysis.ODE.Gronwall
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 set_option autoImplicit false
 
@@ -8,6 +9,43 @@ open Filter Set
 open scoped Topology
 
 namespace DifferentialGeometry.Analysis.ODE
+
+theorem le_gronwallBound_of_hasDerivAt_on_Ioo
+    {u u' : ℝ → ℝ} {a b δ K ε : ℝ}
+    (hcont : ContinuousOn u (Icc a b))
+    (hderiv : ∀ t ∈ Ioo a b, HasDerivAt u (u' t) t)
+    (hinit : u a ≤ δ)
+    (hsub : ∀ t ∈ Ioo a b, u' t ≤ K * u t + ε) :
+    ∀ t ∈ Icc a b, u t ≤ gronwallBound δ K ε (t - a) := by
+  let g (t : ℝ) := gronwallBound δ K ε (t - a)
+  have hgd (t : ℝ) : HasDerivAt g (K * g t + ε) t :=
+    hasDerivAt_gronwallBound_shift δ K ε t a
+  let f (t : ℝ) := Real.exp (-K * t) * (u t - g t)
+  have hc : ContinuousOn f (Icc a b) :=
+    (Real.continuous_exp.comp (continuous_const.mul continuous_id)).continuousOn.mul
+      (hcont.sub (fun t _ => (hgd t).continuousAt.continuousWithinAt))
+  have hd (t : ℝ) (ht : t ∈ Ioo a b) :
+      HasDerivAt f (Real.exp (-K * t) * (u' t - K * u t - ε)) t := by
+    convert (((hasDerivAt_id t).const_mul (-K)).exp.mul
+      ((hderiv t ht).sub (hgd t))) using 1 <;>
+      first | rfl | (simp only [id_eq, Pi.sub_apply, mul_one]; ring)
+  have hm : AntitoneOn f (Icc a b) := by
+    apply antitoneOn_of_deriv_nonpos (convex_Icc a b) hc
+    · intro t ht
+      exact (hd t (by simpa only [interior_Icc] using ht)).differentiableAt.differentiableWithinAt
+    · intro t ht
+      have hti : t ∈ Ioo a b := by simpa only [interior_Icc] using ht
+      rw [(hd t hti).deriv]
+      exact mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le (by linarith [hsub t hti])
+  intro t ht
+  have hfa : f a ≤ 0 := by
+    have hg : g a = δ := by simp only [g, sub_self, gronwallBound_x0]
+    dsimp only [f]
+    rw [hg]
+    exact mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le (sub_nonpos.mpr hinit)
+  have hf := (hm ⟨le_rfl, ht.1.trans ht.2⟩ ht ht.1).trans hfa
+  have hn : u t - g t ≤ 0 := nonpos_of_mul_nonpos_right hf (Real.exp_pos _)
+  exact sub_nonpos.mp hn
 
 theorem gronwall_zero_on {a c K : ℝ} (hac : a < c)
     (energy energy' : ℝ → ℝ)
