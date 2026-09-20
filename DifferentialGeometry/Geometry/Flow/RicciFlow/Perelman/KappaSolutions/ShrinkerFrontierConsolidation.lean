@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -119,7 +119,6 @@ theorem ancientReducedVolume_antitone_of_terminalFrontier
 
 omit [I.Boundaryless] in
 theorem ancientReducedVolumeTerminalFrontier_of_metric_eq_const
-    [NeZero (Module.finrank ℝ E)]
     (p : G.M)
     (g : SmoothRiemannianMetric I G.M) (hconst : G.S.base.metric = fun _ => g) :
     TerminalReducedVolumeSemicontinuityInput (G := G) p :=

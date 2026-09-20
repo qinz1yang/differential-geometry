@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -68,7 +68,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 
@@ -106,6 +106,39 @@ theorem IsAncientKappaSolution.metric_inner_antitoneOn
     (fun r hr => by rw [hF.regular_eq]; exact hr.2.trans_le ht)
     hRic x v
   exact hanti ⟨le_rfl, hst⟩ ⟨hst, le_rfl⟩ hst
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.CheegerGromovCompactness
+open scoped _root_.Manifold ContDiff
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {D : RealTimeInterval} {F : PointedFlowData.{u, uE, uH} (I := I) D}
+
+private local instance metricMonotonicityTopology : TopologicalSpace F.M := F.topology
+private local instance metricMonotonicityCharted : ChartedSpace H F.M := F.charted
+private local instance metricMonotonicitySmooth : IsManifold I ∞ F.M := F.smooth
+private local instance metricMonotonicityC1 : IsManifold I 1 F.M :=
+  IsManifold.of_le (n := ∞) (by decide)
+private local instance metricMonotonicityT2 : T2Space F.M := F.t2
+
+theorem IsAncientKappaSolution.metric_inner_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    {s t : ℝ} (hst : s ≤ t) (ht : t ≤ 0)
+    (x : F.M) (v : TangentSpace I x) :
+    (F.S.base.metric t).inner x v v ≤ (F.S.base.metric s).inner x v v := by
+  exact (hF.metric_inner_antitoneOn F x v) (hst.trans ht) ht hst
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 
