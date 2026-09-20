@@ -95,7 +95,7 @@ configuration), it does not invoke 30.6/30.7 directly. **26.4 and 32.x are consu
 | `X(σ³, v)` | `= Bd C(σ³) ∩ Bd C_v` for `v` a vertex of `σ³`; a polyhedral disk lying in `Bd N` | 244 |
 | `D''_σ` | an **irreducible** disk in `Bd C_σ` whose boundary lies in `Bd N''`; then `D''_σ ∩ Bd N'' = J''_σ = Bd D''_σ` and `Bd D''_σ ⊆ Bd N''_σ` | 244 |
 | `W_i` | `Bd C''_{v_i}` with the interiors of the three splitting disks `D''_e` (`e ⊂ σ³`, `e ∋ v_i`) deleted: a 2-sphere with three holes | 245 |
-| `X_i, Y_i` | the two polyhedral disks into which the broken lines `Bd W_i ∩ Bd D''_σ` decompose `W_i`; notation chosen by the unbounded-component rule below | 245 |
+| `X_i, Y_i` | the two polyhedral disks into which the broken lines `W_i ∩ Bd D''_σ` (corrected: the lines lie in `W_i`, joining components of `Bd W_i`; their end-points are the marked points) decompose `W_i`; notation chosen by the unbounded-component rule below | 245 |
 | `X''(σ³, v_i)` | `= X_i` | 245 |
 | `C''(σ³)` | the polyhedral 3-cell bounded by the 2-sphere `⋃_i X_i ∪ ⋃_{σ ⊂ σ³} D''_σ` | 245 |
 
@@ -363,7 +363,12 @@ a polyhedral 3-cell `C''(σ³)`. Then `Int C''(σ³)` contains no point of any `
 of any `C''_v` with `v ∈ σ³`, **and none of any `C''_v` with `v ∉ σ³` — because that would
 contradict Lemma 5(7)**. Consequently `Int C''(σ³)` meets no `D''_σ`, and for `σ₁, σ₂ ⊂ σ³` with
 `σ₁ ∩ σ₂ = e` the set `D''_e ∩ Bd C''(σ³)` is a broken line with end-points on `Bd D''_{σ₁}` and
-`Bd D''_{σ₂}` and no third point of the form `Bd D''_σ ∩ Bd D''_{σ'}`.
+`Bd D''_{σ₂}` and no third point of the form `Bd D''_σ ∩ Bd D''_e`.
+**[CORRECTED 2026-09-20 against the printed page: an earlier version of this file had
+`Bd D''_σ ∩ Bd D''_{σ'}` here, an intersection that is empty anyway. The printed clause is the
+empty-sector condition on the splitting circle `Bd D''_e`, and it is what supplies the
+cyclic-order compatibility of stage 2 — so stage 2 does have a producer in the book, in this
+unnumbered paragraph; its proof still has to be formalised.]**
 
 **This paragraph is where Lemma 5(7) is consumed, and it is the only consumption of 5(7) in
 §34.** It is also the second essential use of `R³`.
@@ -444,7 +449,9 @@ p. 247 by triangulating `U` rectilinearly with respect to `M₁`.)
 5. **Annuli.** For each `e` choose small regular neighbourhoods `S_e, T_e` of `J_e` with
    `T_e ⊆ Int S_e`, so that `S_e ∩ Bd C'_v`, `S_e ∩ Bd C'_w`, `T_e ∩ Bd C'_v`, `T_e ∩ Bd C'_w`
    are annuli. Put `A_e = Bd C'_v ∩ T_e` (associated with `v`) and let `B_e` be an annulus in
-   `Bd C'_w` with `T_e ∩ Bd C'_w ⊆ Int B_e`, `B_e ⊆ Int S_e`, `B_e ⊆ S_e − T_e` (associated with
+   `Bd C'_w` with `T_e ∩ Bd C'_w ⊆ Int B_e`, `B_e ⊆ Int S_e`, `Bd B_e ⊆ S_e − T_e` **[corrected against the
+   printed page: the last clause concerns `Bd B_e`; with `B_e` it would contradict the first]**
+   (associated with
    `w`).
 6. **Third collection.** Add each `S_e` to the corresponding `C'_v`, obtaining `{C''_v}`; since
    `S_e` may be taken in any neighbourhood of `J_e`, `{C''_v}` still satisfies (1).
