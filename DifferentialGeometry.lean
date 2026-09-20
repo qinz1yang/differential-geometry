@@ -9068,6 +9068,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordConnectors
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedBranchOrientability
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolution
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTube
 /-!
 # Differential geometry and geometric analysis
 -/
