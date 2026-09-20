@@ -1,3 +1,4 @@
+import Mathlib.Topology.Instances.ENNReal.Lemmas
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
 import Mathlib.Topology.Algebra.Support
@@ -93,3 +94,47 @@ theorem LocallyLipschitzOn.exists_lipschitzWith_of_hasCompactSupport
     · simpa only [dist_comm] using hone y x hy
     · rw [image_eq_zero_of_notMem_tsupport hx, image_eq_zero_of_notMem_tsupport hy, dist_self]
       positivity
+
+open scoped ENNReal NNReal in
+theorem lipschitzWith_truncateToReal_edist {X : Type*} [PseudoEMetricSpace X]
+    (K : ℝ≥0) (R : ℝ≥0∞) (hR : R ≠ ⊤) (o : X) :
+    LipschitzWith K (fun x => ENNReal.truncateToReal R ((K : ℝ≥0∞) * edist o x)) := by
+  by_cases hK : K = 0
+  · subst K
+    simpa only [ENNReal.coe_zero, zero_mul] using
+      (LipschitzWith.const (ENNReal.truncateToReal R 0) :
+        LipschitzWith 0 (fun _ : X => ENNReal.truncateToReal R 0))
+  intro x y
+  by_cases hxy : edist x y = ⊤
+  · rw [hxy, ENNReal.mul_top (by exact_mod_cast hK)]
+    exact le_top
+  have hfin (z : X) : min R ((K : ℝ≥0∞) * edist o z) ≠ ⊤ :=
+    ne_top_of_le_ne_top hR (min_le_left _ _)
+  have hstep (z w : X) (hzw : edist z w ≠ ⊤) :
+      ENNReal.truncateToReal R ((K : ℝ≥0∞) * edist o z) ≤
+        ENNReal.truncateToReal R ((K : ℝ≥0∞) * edist o w) + (K : ℝ) * (edist z w).toReal := by
+    have hm : min R ((K : ℝ≥0∞) * edist o z) ≤
+        min R ((K : ℝ≥0∞) * edist o w) + (K : ℝ≥0∞) * edist z w := by
+      rcases le_total R ((K : ℝ≥0∞) * edist o w) with hw | hw
+      · rw [min_eq_left hw]
+        exact (min_le_left _ _).trans le_self_add
+      · rw [min_eq_right hw]
+        calc
+          _ ≤ (K : ℝ≥0∞) * edist o z := min_le_right _ _
+          _ ≤ (K : ℝ≥0∞) * (edist o w + edist w z) :=
+            mul_le_mul_right (edist_triangle o w z) _
+          _ = _ := by rw [mul_add, edist_comm w z]
+    have hf : (K : ℝ≥0∞) * edist z w ≠ ⊤ := ENNReal.mul_ne_top ENNReal.coe_ne_top hzw
+    have ht := ENNReal.toReal_mono (ENNReal.add_ne_top.mpr ⟨hfin w, hf⟩) hm
+    rwa [ENNReal.toReal_add (hfin w) hf, ENNReal.toReal_mul, ENNReal.coe_toReal] at ht
+  have hreal : dist (ENNReal.truncateToReal R ((K : ℝ≥0∞) * edist o x))
+      (ENNReal.truncateToReal R ((K : ℝ≥0∞) * edist o y)) ≤ (K : ℝ) * (edist x y).toReal := by
+    rw [Real.dist_eq, abs_sub_le_iff]
+    have h₁ := hstep x y hxy
+    have h₂ := hstep y x (by rwa [edist_comm])
+    rw [edist_comm y x] at h₂
+    constructor <;> linarith
+  rw [edist_dist]
+  have hr := ENNReal.ofReal_le_ofReal hreal
+  rwa [ENNReal.ofReal_mul K.coe_nonneg, ENNReal.ofReal_coe_nnreal,
+    ENNReal.ofReal_toReal hxy] at hr

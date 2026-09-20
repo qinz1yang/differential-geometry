@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
 import DifferentialGeometry.Geometry.Comparison.DistanceFamily
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 
@@ -50,5 +51,57 @@ theorem continuousOn_distance_cutoff
   have hmul : Continuous (fun r : ENNReal => ENNReal.ofReal a * r) :=
     ENNReal.continuous_const_mul ENNReal.ofReal_ne_top
   exact Analysis.CutoffProfile.continuous_evalue.comp_continuousOn (hmul.comp_continuousOn hd)
+
+omit [SigmaCompactSpace M] in
+open scoped Bundle ENNReal NNReal in
+open Geometry.Operator in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem grad_norm_distance_cutoff_le
+    (g h : SmoothRiemannianMetric I M) (hgh : ∀ x v, g.inner x v v ≤ h.inner x v v)
+    (o : M) (a : ℝ≥0) (x : M) :
+    Real.sqrt (h.inner x
+      (gradFun h (fun y => Analysis.CutoffProfile.evalue
+        ((a : ℝ≥0∞) * riemannianEDistOf g o y)) x)
+      (gradFun h (fun y => Analysis.CutoffProfile.evalue
+        ((a : ℝ≥0∞) * riemannianEDistOf g o y)) x)) ≤ Analysis.CutoffProfile.derivBound * a := by
+  let : LocallyCompactSpace M := _root_.Manifold.locallyCompact_of_finiteDimensional I
+  let : Bundle.RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have hlip := Analysis.CutoffProfile.lipschitzWith_edist a o
+  apply grad_norm_le_lip_all h (L := ⟨Analysis.CutoffProfile.derivBound,
+    Analysis.CutoffProfile.derivBound_nonneg⟩ * a)
+  intro y z
+  exact (hlip y z).trans (mul_le_mul_right (edistOf_mono g h hgh y z) _)
+
+omit [T2Space M] [SigmaCompactSpace M] in
+open scoped ENNReal NNReal in
+open Geometry.Operator in
+theorem support_gradFun_distance_cutoff_subset
+    (g h : SmoothRiemannianMetric I M) (o : M) (a : ℝ≥0) :
+    Function.support (fun x => gradFun h (fun y => Analysis.CutoffProfile.evalue
+        ((a : ℝ≥0∞) * riemannianEDistOf g o y)) x) ⊆
+      {x | (a : ℝ≥0∞) * riemannianEDistOf g o x ∈ Set.Ioo 1 2} := by
+  intro x hx
+  let f : M → ℝ := fun y => Analysis.CutoffProfile.evalue
+    ((a : ℝ≥0∞) * riemannianEDistOf g o y)
+  have hd : MDifferentiableAt I 𝓘(ℝ, ℝ) f x := by
+    by_contra hn
+    exact hx (gradFun_eq_zero_of_mfderiv_eq_zero h f (mfderiv_zero_of_not_mdifferentiableAt hn))
+  constructor
+  · by_contra hn
+    have hf : f x = 1 := Analysis.CutoffProfile.evalue_one_of_le (le_of_not_gt hn)
+    have hmax : IsLocalMax f x := Filter.Eventually.of_forall fun y => by
+      rw [hf]
+      exact (Analysis.CutoffProfile.evalue_mem_Icc _).2
+    exact hx (gradientFun_eq_zero_of_isLocalMax h hmax hd)
+  · by_contra hn
+    have hf : f x = 0 := Analysis.CutoffProfile.evalue_zero_of_ge (le_of_not_gt hn)
+    have hmin : IsLocalMin f x := Filter.Eventually.of_forall fun y => by
+      rw [hf]
+      exact (Analysis.CutoffProfile.evalue_mem_Icc _).1
+    exact hx (gradientFun_eq_zero_of_isLocalMin h hmin hd)
 
 end DifferentialGeometry.Geometry.Riemannian
