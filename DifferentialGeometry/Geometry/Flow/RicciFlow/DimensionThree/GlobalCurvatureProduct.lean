@@ -10,9 +10,11 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff
 
-variable {H : Type} [TopologicalSpace H]
+universe uH uM
+
+variable {H : Type uH} [TopologicalSpace H]
   {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
-  [I.Boundaryless] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+  [I.Boundaryless] {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M]
 
@@ -32,7 +34,7 @@ theorem exists_global_product_of_curvatureOperatorImage_rank_eq_one
       Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
         ⟨metricRm04At (S.family.metric t) x,
           metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1) :
-    ∃ (N : Type) (_ : TopologicalSpace N)
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
       (hcs : ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) N),
       let _ := hcs
       ∃ hmanifold : IsManifold
@@ -93,7 +95,7 @@ theorem exists_global_product_on_interval_of_curvatureOperatorImage_rank_eq_one
       Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
         ⟨metricRm04At (S.family.metric t) x,
           metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1) :
-    ∃ (N : Type) (_ : TopologicalSpace N)
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
       (hcs : ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) N),
       let _ := hcs
       ∃ hmanifold : IsManifold
