@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Lipschitz
+import DifferentialGeometry.Analysis.Viscosity.SupConvolution
+import Mathlib.Topology.MetricSpace.Thickening
 import DifferentialGeometry.Analysis.Convex.Distribution
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
@@ -8,7 +11,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Lipschitz
 noncomputable section
 
 open MeasureTheory Set
-open scoped Topology
+open scoped Topology NNReal
 
 namespace DifferentialGeometry.Analysis.Viscosity
 
@@ -256,5 +259,251 @@ theorem distribution_le_of_upper_tests_of_convexOn_add_quadratic
     (∑ i, ∫ x, u x * fderiv ℝ (ψ i) x (e i) ∂μ) +
     (∫ x, (c x * u x - r x) * φ x ∂μ) ≤ 0
   linarith
+
+open Filter (Tendsto)
+open DifferentialGeometry.Analysis.Convex (supConvolutionOn convexOn_supConvolutionOn_add_norm_sq
+  tendstoUniformlyOn_supConvolutionOn_of_lipschitzOnWith)
+
+private theorem distribution_le_of_upper_tests_on_compact
+    {E ι κ : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [Fintype ι] [Fintype κ]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    (e : Module.Basis ι ℝ E) {u : E → ℝ} {s Ω : Set E} (hs : IsCompact s) (hsne : s.Nonempty)
+    (hΩ : IsOpen Ω) {δ : ℝ} (hδ : 0 < δ) (hball : ∀ x ∈ Ω, Metric.closedBall x δ ⊆ interior s)
+    {K : ℝ≥0} (hu : LipschitzOnWith K u s)
+    {V : κ → E → E} {W : E → E} {c r : E → ℝ}
+    (hV : ∀ k, ContDiffOn ℝ 2 (V k) Ω) (hW : ContDiffOn ℝ 1 W Ω)
+    {KV : κ → ℝ≥0} {KW Kc Kr : ℝ≥0}
+    (hVL : ∀ k, LipschitzOnWith (KV k) (V k) s) (hWL : LipschitzOnWith KW W s)
+    (hc : LipschitzOnWith Kc c s) (hr : LipschitzOnWith Kr r s)
+    (hcpos : ∀ x ∈ interior s, 0 ≤ c x)
+    (hind : ∀ x ∈ interior s, LinearIndependent ℝ (fun k => V k x))
+    (hsub : ∀ x ∈ interior s, ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
+      IsLocalMax (fun y => u y - ψ y) x →
+      -(∑ k, fderiv ℝ (fderiv ℝ ψ) x (V k x) (V k x)) +
+        fderiv ℝ ψ x (W x) + c x * u x ≤ r x)
+    {φ : E → ℝ} (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ Ω) (hφ0 : ∀ x, 0 ≤ φ x) :
+    -(∑ k, ∑ i, ∑ j, ∫ x, u x * fderiv ℝ
+        (fderiv ℝ (fun y => e.repr (V k y) i * e.repr (V k y) j * φ y)) x (e j) (e i) ∂μ) -
+      (∑ i, ∫ x, u x * fderiv ℝ (fun y => e.repr (W y) i * φ y) x (e i) ∂μ) +
+      (∫ x, (c x * u x - r x) * φ x ∂μ) ≤ 0 := by
+  let : FiniteDimensional ℝ E := e.finiteDimensional_of_finite
+  have hΩs : Ω ⊆ s := fun x hx =>
+    interior_subset (hball x hx (Metric.mem_closedBall_self hδ.le))
+  have huc : ContinuousOn u Ω := hu.continuousOn.mono hΩs
+  have hcc : Continuous (fun x => c x * φ x) :=
+    (((hc.continuousOn.mono hΩs).mul hφ.continuous.continuousOn).continuous_of_tsupport_subset
+      hΩ (tsupport_mul_subset_right.trans hφs))
+  have hrc : Continuous (fun x => r x * φ x) :=
+    (((hr.continuousOn.mono hΩs).mul hφ.continuous.continuousOn).continuous_of_tsupport_subset
+      hΩ (tsupport_mul_subset_right.trans hφs))
+  have hri : Integrable (fun x => r x * φ x) μ := hrc.integrable_of_hasCompactSupport hφc.mul_left
+  obtain ⟨M, hM⟩ := hs.exists_bound_of_continuousOn hu.continuousOn
+  let C : ℝ := 4 * (K : ℝ) ^ 2 * (∑ k, (KV k : ℝ) ^ 2) +
+    4 * KW * (K : ℝ) ^ 2 + 2 * K * (Kc * M + Kr)
+  let U : ℝ → E → ℝ := fun ε => supConvolutionOn s u ε
+  let Q : ℝ → E →L[ℝ] E →L[ℝ] ℝ := fun ε => ε⁻¹ • innerSL ℝ
+  have hQsym (ε : ℝ) : (Q ε).flip = Q ε := by
+    ext v w
+    change ε⁻¹ * inner ℝ w v = ε⁻¹ * inner ℝ v w
+    rw [real_inner_comm]
+  have hsem {ε : ℝ} (hε : 0 < ε) :
+      ConvexOn ℝ univ (fun x => U ε x + (1 / 2 : ℝ) * Q ε x x) := by
+    convert convexOn_supConvolutionOn_add_norm_sq hsne (hs.bddAbove_image hu.continuousOn) hε using 1
+    funext x
+    change supConvolutionOn s u ε x + (1 / 2 : ℝ) * (ε⁻¹ * inner ℝ x x) =
+      supConvolutionOn s u ε x + ‖x‖ ^ 2 / (2 * ε)
+    rw [real_inner_self_eq_norm_sq]
+    field_simp
+  have hUt {ε : ℝ} (hε : 0 < ε) : Continuous (U ε) := by
+    have hq : Continuous (fun x => (1 / 2 : ℝ) * Q ε x x) := by fun_prop
+    have h : Continuous (fun x => (U ε x + (1 / 2 : ℝ) * Q ε x x) - (1 / 2 : ℝ) * Q ε x x) :=
+      (continuousOn_univ.mp ((hsem hε).continuousOn isOpen_univ)).sub hq
+    simpa only [add_sub_cancel_right] using h
+  have hprod (f : E → ℝ) (hf : ContinuousOn f Ω) (ψ : E → ℝ)
+      (hψ : Continuous ψ) (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ tsupport φ) :
+      Integrable (fun x => f x * ψ x) μ :=
+    ((hf.mul hψ.continuousOn).continuous_of_tsupport_subset hΩ
+      (tsupport_mul_subset_right.trans (hψs.trans hφs))).integrable_of_hasCompactSupport hψc.mul_left
+  have hconv (ψ : E → ℝ) (hψ : Continuous ψ) (hψc : HasCompactSupport ψ)
+      (hψs : tsupport ψ ⊆ tsupport φ) :
+      Tendsto (fun ε => ∫ x, U ε x * ψ x ∂μ) (𝓝[>] (0 : ℝ)) (𝓝 (∫ x, u x * ψ x ∂μ)) := by
+    have huni := (tendstoUniformlyOn_supConvolutionOn_of_lipschitzOnWith hu).mono
+      ((subset_tsupport ψ).trans (hψs.trans (hφs.trans hΩs)))
+    have hi : ∀ᶠ ε in 𝓝[>] (0 : ℝ), Integrable (fun x => ψ x • U ε x) μ := by
+      filter_upwards [self_mem_nhdsWithin] with ε hε
+      simpa only [smul_eq_mul, mul_comm] using hprod (U ε) (hUt hε).continuousOn ψ hψ hψc hψs
+    have hf : Integrable (fun x => ψ x • u x) μ := by
+      simpa only [smul_eq_mul, mul_comm] using hprod u huc ψ hψ hψc hψs
+    simpa only [smul_eq_mul, mul_comm] using
+      huni.integral_smul (hψ.integrable_of_hasCompactSupport hψc) hi hf
+  let a (k : κ) (i j : ι) : E → ℝ := fun x => e.repr (V k x) i * e.repr (V k x) j * φ x
+  have ha (k : κ) (i j : ι) : ContDiff ℝ 2 (a k i j) :=
+    ((((e.coord i).toContinuousLinearMap.contDiff.comp_contDiffOn (hV k)).mul
+      ((e.coord j).toContinuousLinearMap.contDiff.comp_contDiffOn (hV k))).mul
+        hφ.contDiffOn).contDiff_of_tsupport_subset hΩ (tsupport_mul_subset_right.trans hφs)
+  let Da (k : κ) (i j : ι) : E → ℝ := fun x => fderiv ℝ (fderiv ℝ (a k i j)) x (e j) (e i)
+  have hDa (k : κ) (i j : ι) : Continuous (Da k i j) :=
+    ((((ha k i j).fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)).clm_apply
+      continuous_const).clm_apply continuous_const
+  have hDac (k : κ) (i j : ι) : HasCompactSupport (Da k i j) := by
+    have hs : HasCompactSupport (a k i j) := hφc.mul_left
+    exact ((hs.fderiv ℝ).fderiv_apply ℝ (e j)).comp_left
+      (g := fun L : E →L[ℝ] ℝ => L (e i)) rfl
+  have hDas (k : κ) (i j : ι) : tsupport (Da k i j) ⊆ tsupport φ :=
+    ((tsupport_comp_subset (g := fun L : E →L[ℝ] ℝ => L (e i)) rfl _).trans
+      ((tsupport_fderiv_apply_subset ℝ (e j)).trans (tsupport_fderiv_subset ℝ))).trans
+        tsupport_mul_subset_right
+  let b (i : ι) : E → ℝ := fun x => e.repr (W x) i * φ x
+  have hb (i : ι) : ContDiff ℝ 1 (b i) :=
+    (((e.coord i).toContinuousLinearMap.contDiff.comp_contDiffOn hW).mul
+      (hφ.of_le (by norm_num)).contDiffOn).contDiff_of_tsupport_subset hΩ
+        (tsupport_mul_subset_right.trans hφs)
+  let Db (i : ι) : E → ℝ := fun x => fderiv ℝ (b i) x (e i)
+  have hDb (i : ι) : Continuous (Db i) :=
+    ((hb i).continuous_fderiv (by norm_num)).clm_apply continuous_const
+  have hDbc (i : ι) : HasCompactSupport (Db i) := by
+    have hs : HasCompactSupport (b i) := hφc.mul_left
+    exact hs.fderiv_apply ℝ (e i)
+  have hDbs (i : ι) : tsupport (Db i) ⊆ tsupport φ :=
+    (tsupport_fderiv_apply_subset ℝ (e i)).trans tsupport_mul_subset_right
+  let L (f : E → ℝ) : ℝ := -(∑ k, ∑ i, ∑ j, ∫ x, f x * Da k i j x ∂μ) -
+    (∑ i, ∫ x, f x * Db i x ∂μ) + (∫ x, (c x * f x - r x) * φ x ∂μ)
+  have hzero (f : E → ℝ) (hf : ContinuousOn f Ω) :
+      (∫ x, (c x * f x - r x) * φ x ∂μ) =
+        (∫ x, f x * (c x * φ x) ∂μ) - ∫ x, r x * φ x ∂μ := by
+    have hi := hprod f hf (fun x => c x * φ x) hcc hφc.mul_left tsupport_mul_subset_right
+    have heq : (fun x => (c x * f x - r x) * φ x) =
+        (fun x => f x * (c x * φ x)) - (fun x => r x * φ x) := by funext x; simp; ring
+    rw [heq]
+    exact integral_sub hi hri
+  have hlim : Tendsto (fun ε => L (U ε)) (𝓝[>] (0 : ℝ)) (𝓝 (L u)) := by
+    have h₁ := tendsto_finsetSum Finset.univ (fun k _ =>
+      tendsto_finsetSum Finset.univ (fun i _ =>
+        tendsto_finsetSum Finset.univ (fun j _ => hconv _ (hDa k i j) (hDac k i j) (hDas k i j))))
+    have h₂ := tendsto_finsetSum Finset.univ (fun i _ => hconv _ (hDb i) (hDbc i) (hDbs i))
+    have h₃ := (hconv _ hcc hφc.mul_left tsupport_mul_subset_right).sub_const (∫ x, r x * φ x ∂μ)
+    have h := (h₁.neg.sub h₂).add h₃
+    rw [← hzero u huc] at h
+    apply h.congr'
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    dsimp only [L]
+    rw [hzero (U ε) (hUt hε).continuousOn]
+  have heps : Tendsto (fun ε : ℝ => 2 * ε * K) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h : Continuous (fun ε : ℝ => 2 * ε * K) := by fun_prop
+    simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+  have hineq : ∀ᶠ ε in 𝓝[>] (0 : ℝ), L (U ε) ≤ ε * C * ∫ x, φ x ∂μ := by
+    filter_upwards [self_mem_nhdsWithin, heps.eventually_lt_const hδ] with ε hε he
+    have hsubε (x : E) (hx : x ∈ Ω) (ψ : E → ℝ) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
+        (hm : IsLocalMax (fun y => U ε y - ψ y) x) :
+        -(∑ k, fderiv ℝ (fderiv ℝ ψ) x (V k x) (V k x)) +
+          fderiv ℝ ψ x (W x) + c x * U ε x ≤ r x + ε * C :=
+      nondivergence_le_of_upper_test_supConvolutionOn_of_lipschitzOnWith hs hu hε
+        ((Metric.closedBall_subset_closedBall he.le).trans (hball x hx)) hVL hWL hc hr
+        (by simpa only [Real.norm_eq_abs] using hM) hcpos hind hsub hψ hm
+    have hi := distribution_le_of_upper_tests_of_convexOn_add_quadratic (μ := μ) e (Q ε)
+      (hQsym ε) (hsem hε) hΩ hV hW
+      ((hc.continuousOn.mono hΩs).locallyIntegrableOn hΩ.measurableSet)
+      (((hr.continuousOn.mono hΩs).add continuousOn_const).locallyIntegrableOn hΩ.measurableSet)
+      hsubε hφ hφc hφs hφ0
+    have hz : (∫ x, (c x * U ε x - (r x + ε * C)) * φ x ∂μ) =
+        (∫ x, (c x * U ε x - r x) * φ x ∂μ) - ε * C * ∫ x, φ x ∂μ := by
+      have hIz : Integrable (fun x => (c x * U ε x - r x) * φ x) μ := by
+        have hh := (hprod (U ε) (hUt hε).continuousOn (fun x => c x * φ x)
+          hcc hφc.mul_left tsupport_mul_subset_right).sub hri
+        convert hh using 1
+        funext x
+        simp only [Pi.sub_apply]
+        ring
+      have heq : (fun x => (c x * U ε x - (r x + ε * C)) * φ x) =
+          (fun x => (c x * U ε x - r x) * φ x) - (fun x => ε * C * φ x) := by
+        funext x
+        simp only [Pi.sub_apply]
+        ring
+      rw [heq]
+      change (∫ x, (c x * U ε x - r x) * φ x - ε * C * φ x ∂μ) = _
+      rw [integral_sub hIz ((hφ.continuous.integrable_of_hasCompactSupport hφc).const_mul _),
+        integral_const_mul]
+    simp only [Pi.add_apply] at hi
+    rw [hz] at hi
+    change -(∑ k, ∑ i, ∑ j, ∫ x, U ε x * Da k i j x ∂μ) -
+      (∑ i, ∫ x, U ε x * Db i x ∂μ) +
+      ((∫ x, (c x * U ε x - r x) * φ x ∂μ) - ε * C * ∫ x, φ x ∂μ) ≤ 0 at hi
+    dsimp only [L]
+    linarith
+  have hzeroLim : Tendsto (fun ε : ℝ => ε * C * ∫ x, φ x ∂μ) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h : Continuous (fun ε : ℝ => ε * C * ∫ x, φ x ∂μ) := by fun_prop
+    simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+  exact le_of_tendsto_of_tendsto hlim hzeroLim hineq
+
+theorem distribution_le_of_upper_tests_of_locallyLipschitzOn
+    {E ι κ : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [Fintype ι] [Fintype κ]
+    [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [μ.IsAddHaarMeasure]
+    (e : Module.Basis ι ℝ E) {Ω : Set E} (hΩ : IsOpen Ω)
+    {u : E → ℝ} (hu : LocallyLipschitzOn Ω u)
+    {V : κ → E → E} {W : E → E} {c r : E → ℝ}
+    (hV : ∀ k, ContDiffOn ℝ 2 (V k) Ω) (hW : ContDiffOn ℝ 1 W Ω)
+    (hc : LocallyLipschitzOn Ω c) (hr : LocallyLipschitzOn Ω r)
+    (hind : ∀ x ∈ Ω, LinearIndependent ℝ (fun k => V k x))
+    (hsub : ∀ x ∈ Ω, ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
+      IsLocalMax (fun y => u y - ψ y) x →
+      -(∑ k, fderiv ℝ (fderiv ℝ ψ) x (V k x) (V k x)) +
+        fderiv ℝ ψ x (W x) + c x * u x ≤ r x)
+    {φ : E → ℝ} (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ Ω) (hφ0 : ∀ x, 0 ≤ φ x) :
+    -(∑ k, ∑ i, ∑ j, ∫ x, u x * fderiv ℝ
+        (fderiv ℝ (fun y => e.repr (V k y) i * e.repr (V k y) j * φ y)) x (e j) (e i) ∂μ) -
+      (∑ i, ∫ x, u x * fderiv ℝ (fun y => e.repr (W y) i * φ y) x (e i) ∂μ) +
+      (∫ x, (c x * u x - r x) * φ x ∂μ) ≤ 0 := by
+  classical
+  let : FiniteDimensional ℝ E := e.finiteDimensional_of_finite
+  by_cases hne : (tsupport φ).Nonempty
+  swap
+  · have hzero : φ = 0 := by
+      funext x
+      exact image_eq_zero_of_notMem_tsupport (fun hx => hne ⟨x, hx⟩)
+    simp [hzero]
+  obtain ⟨δ, hδ, hδΩ⟩ := hφc.exists_cthickening_subset_open hΩ hφs
+  let s := Metric.cthickening δ (tsupport φ)
+  have hs : IsCompact s := hφc.cthickening
+  have hsΩ : s ⊆ Ω := hδΩ
+  have hφsi : tsupport φ ⊆ interior s :=
+    (Metric.self_subset_thickening hδ _).trans (Metric.thickening_subset_interior_cthickening _ _)
+  have hsne : s.Nonempty := hne.mono (Metric.self_subset_cthickening _)
+  obtain ⟨ρ, hρ, hρs⟩ := hφc.exists_cthickening_subset_open isOpen_interior hφsi
+  let U := Metric.thickening (ρ / 2) (tsupport φ)
+  have hUφ : tsupport φ ⊆ U := Metric.self_subset_thickening (half_pos hρ) _
+  have hUs : U ⊆ interior s :=
+    ((Metric.thickening_mono (half_le_self hρ.le) _).trans
+      (Metric.thickening_subset_cthickening _ _)).trans hρs
+  have hUΩ : U ⊆ Ω := (hUs.trans interior_subset).trans hsΩ
+  have hball (x : E) (hx : x ∈ U) : Metric.closedBall x (ρ / 2) ⊆ interior s := by
+    obtain ⟨z, hz, hxz⟩ := Metric.mem_thickening_iff.mp hx
+    intro y hy
+    have hyx : dist y x ≤ ρ / 2 := hy
+    apply hρs
+    apply Metric.thickening_subset_cthickening ρ (tsupport φ)
+    apply Metric.mem_thickening_iff.mpr
+    refine ⟨z, hz, ?_⟩
+    have ht := dist_triangle y x z
+    linarith
+  obtain ⟨K, hK⟩ := (hu.mono hsΩ).exists_lipschitzOnWith_of_compact hs
+  have hVL (k : κ) : ∃ KV, LipschitzOnWith KV (V k) s :=
+    ((((hV k).of_le (by norm_num)).locallyLipschitzOn_of_isOpen hΩ).mono hsΩ).exists_lipschitzOnWith_of_compact hs
+  choose KV hKV using hVL
+  obtain ⟨KW, hKW⟩ := ((hW.locallyLipschitzOn_of_isOpen hΩ).mono hsΩ).exists_lipschitzOnWith_of_compact hs
+  have hcu : LocallyLipschitzOn Ω (fun x => c x * u x) :=
+    ((by fun_prop : ContDiff ℝ 1 (fun z : ℝ × ℝ => z.1 * z.2)).locallyLipschitz.locallyLipschitzOn).comp
+      (hc.prodMk hu) (mapsTo_univ _ _)
+  obtain ⟨Kr, hKr⟩ := ((hr.sub hcu).mono hsΩ).exists_lipschitzOnWith_of_compact hs
+  have h := distribution_le_of_upper_tests_on_compact (μ := μ) e hs hsne Metric.isOpen_thickening
+    (half_pos hρ) hball hK (fun k => (hV k).mono hUΩ) (hW.mono hUΩ) hKV hKW
+    (c := fun _ => 0) (r := fun x => r x - c x * u x) (LipschitzWith.const (0 : ℝ)).lipschitzOnWith hKr
+    (fun _ _ => le_rfl) (fun x hx => hind x (hsΩ (interior_subset hx)))
+    (fun x hx ψ hψ hm => by
+      have h := hsub x (hsΩ (interior_subset hx)) ψ hψ hm
+      simp only [zero_mul, add_zero]
+      linarith) hφ hφc hUφ hφ0
+  simpa only [zero_mul, zero_sub, neg_sub] using h
 
 end DifferentialGeometry.Analysis.Viscosity

@@ -11,6 +11,7 @@ import DifferentialGeometry.Analysis.Calculus.Compactness.DiagonalSubsequence
 import DifferentialGeometry.Analysis.Calculus.Compactness.EventuallyBounded
 import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothMap
 import DifferentialGeometry.Analysis.Calculus.Compactness.Superposition
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Lipschitz
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
 import DifferentialGeometry.Analysis.Calculus.ContinuousLinearMapDerivative
 import DifferentialGeometry.Analysis.Calculus.ContinuousMapDerivative
