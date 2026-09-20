@@ -9100,6 +9100,13 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteBoundaryExhaus
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundarySurgeryCellPredicate
 import DifferentialGeometry.Topology.PiecewiseLinear.ToleranceControl
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartLocalApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoSpine
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffered
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolvedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWitnessOfCell
+import DifferentialGeometry.Topology.PiecewiseLinear.TaperedInwardPushFixing
+import DifferentialGeometry.Topology.PiecewiseLinear.InwardPushStages
+import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteLocalModel
 /-!
 # Differential geometry and geometric analysis
 -/
