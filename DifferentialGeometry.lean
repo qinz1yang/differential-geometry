@@ -4934,6 +4934,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critical.Tame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Distribution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.WeakEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Energy
@@ -11408,6 +11409,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatDistribution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowHeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowDensityRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardFlowRigidity
 import DifferentialGeometry.Analysis.HamiltonJacobi.Differentiability
 import DifferentialGeometry.Analysis.HamiltonJacobi.Stability
 import DifferentialGeometry.Analysis.Viscosity.Differentiability
