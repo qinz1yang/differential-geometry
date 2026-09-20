@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Integral.TensorTest
 import DifferentialGeometry.Geometry.Operator.Gradient.PartitionOfUnity
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
@@ -220,7 +221,7 @@ private theorem integral_mul_eq_chart_full
     _ = _ := setIntegral_eq_integral_of_forall_compl_eq_zero
       (fun y hy => by simp only [chartPullZero_nmem α h hy, mul_zero])
 
-private theorem tensor_weak_le_in_chart
+theorem integral_tensor_test_eq_in_chart
     {J : Set ℝ} (hJ : IsOpen J) (g : ℝ → SmoothRiemannianMetric I M)
     (α : M) (u : ℝ → C(M, ℝ))
     (hu : LocallyLipschitzOn (J ×ˢ (extChartAt I α).target)
@@ -230,25 +231,24 @@ private theorem tensor_weak_le_in_chart
     (hA : ∀ i j : Fin (Module.finrank ℝ E),
       ContinuousOn (fun z : ℝ × E => chartInvGramOnE (g z.1) α i j z.2)
         (J ×ˢ (extChartAt I α).target))
-    (hweak : ∀ φ : ℝ × E → ℝ,
-      LocallyLipschitzOn (J ×ˢ (extChartAt I α).target) φ → HasCompactSupport φ →
-      tsupport φ ⊆ J ×ˢ (extChartAt I α).target → (∀ z, 0 ≤ φ z) →
-      (∑ i, ∑ j, ∫ z, (chartInvGramOnE (g z.1) α i j z.2 * chartDensityOnE (g z.1) α z.2) *
-        lineDeriv ℝ (fun w : ℝ × E => u w.1 ((extChartAt I α).symm w.2)) z (0, chartModelBasis E j) *
-        fderiv ℝ φ z (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) ≤
-        ∫ z, chartDensityOnE (g z.1) α z.2 * u z.1 ((extChartAt I α).symm z.2) *
-          fderiv ℝ φ z (1, 0) ∂volume.prod (modelHaar (E := E)))
     (h : C(M, ℝ)) (hc : HasCompactSupport (h : M → ℝ))
-    (hs : tsupport (h : M → ℝ) ⊆ (chartAt H α).source) (h0 : ∀ x, 0 ≤ h x)
+    (hs : tsupport (h : M → ℝ) ⊆ (chartAt H α).source)
     {C : ℝ≥0} (hLip : LipschitzWith C (chartPullZero (I := I) α h))
     {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 1 ψ) (hψc : HasCompactSupport ψ)
-    (hψs : tsupport ψ ⊆ J) (hψ0 : ∀ t, 0 ≤ ψ t) :
+    (hψs : tsupport ψ ⊆ J) :
     Integrable (fun t => ψ t * ∫ x, (g t).inner x (gradFun (g t) (u t) x) (gradFun (g t) h x)
       ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) volume ∧
     Integrable (fun t => deriv ψ t * ∫ x, u t x * h x
       ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) volume ∧
-    (∫ t, ψ t * ∫ x, (g t).inner x (gradFun (g t) (u t) x) (gradFun (g t) h x)
-      ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) ≤
+    (∑ i, ∑ j, ∫ z, (chartInvGramOnE (g z.1) α i j z.2 * chartDensityOnE (g z.1) α z.2) *
+      lineDeriv ℝ (fun w : ℝ × E => u w.1 ((extChartAt I α).symm w.2)) z (0, chartModelBasis E j) *
+      fderiv ℝ (fun w : ℝ × E => ψ w.1 * chartPullZero (I := I) α h w.2) z (0, chartModelBasis E i)
+        ∂volume.prod (modelHaar (E := E))) =
+      (∫ t, ψ t * ∫ x, (g t).inner x (gradFun (g t) (u t) x) (gradFun (g t) h x)
+        ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) ∧
+    (∫ z, chartDensityOnE (g z.1) α z.2 * u z.1 ((extChartAt I α).symm z.2) *
+      fderiv ℝ (fun w : ℝ × E => ψ w.1 * chartPullZero (I := I) α h w.2) z (1, 0)
+        ∂volume.prod (modelHaar (E := E))) =
       ∫ t, deriv ψ t * ∫ x, u t x * h x
         ∂riemannianVolumeMeasure (I := I) (M := M) (g t) := by
   classical
@@ -259,31 +259,10 @@ private theorem tensor_weak_le_in_chart
     fun ij z => (chartInvGramOnE (g z.1) α ij.1 ij.2 z.2 * ρ z) *
       lineDeriv ℝ U z (0, chartModelBasis E ij.2)
   let f := chartPullZero (I := I) α h
-  let φ : ℝ × E → ℝ := fun z => ψ z.1 * f z.2
   have hΩ : IsOpen Ω := isOpen_extChartAt_target (I := I) α
   have hdom : IsOpen (J ×ˢ Ω) := hJ.prod hΩ
   have hfc : HasCompactSupport f := hasCompactSupport_chartPullZero α hc hs
   have hfs : tsupport f ⊆ Ω := tsupport_chartPullZero_subset_target α hc hs
-  have hφs : tsupport φ ⊆ tsupport ψ ×ˢ tsupport f := by
-    apply closure_minimal
-    · intro z hz
-      exact ⟨subset_tsupport _ (left_ne_zero_of_mul hz),
-        subset_tsupport _ (right_ne_zero_of_mul hz)⟩
-    · exact (isClosed_tsupport ψ).prod (isClosed_tsupport f)
-  have hφc : HasCompactSupport φ :=
-    (hψc.prod hfc).of_isClosed_subset (isClosed_tsupport φ) hφs
-  have hm : ContDiff ℝ 1 (fun z : ℝ × ℝ => z.1 * z.2) := contDiff_fst.mul contDiff_snd
-  have hφ : LocallyLipschitz φ := hm.locallyLipschitz.comp
-    ((hψ.comp contDiff_fst).locallyLipschitz.prodMk
-      (hLip.locallyLipschitz.comp (contDiff_snd : ContDiff ℝ 1 (Prod.snd : ℝ × E → E)).locallyLipschitz))
-  have hf0 (y : E) : 0 ≤ f y := by
-    by_cases hy : y ∈ Ω
-    · change 0 ≤ chartPullZero (I := I) α h y
-      rw [chartPullZero_mem α h hy]
-      exact h0 ((extChartAt I α).symm y)
-    · rw [show f y = 0 from chartPullZero_nmem α h hy]
-  have hi := hweak φ hφ.locallyLipschitzOn hφc
-    (hφs.trans (prod_mono hψs hfs)) (fun z => mul_nonneg (hψ0 z.1) (hf0 z.2))
   have hb (ij) : LocallyIntegrableOn (b ij) (J ×ˢ Ω) (volume.prod (modelHaar (E := E))) := by
     have hd : LocallyIntegrableOn
         (fun z => lineDeriv ℝ U z (0, chartModelBasis E ij.2)) (J ×ˢ Ω)
@@ -330,13 +309,73 @@ private theorem tensor_weak_le_in_chart
         deriv ψ t * ∫ x, u t x * h x ∂riemannianVolumeMeasure (I := I) (M := M) (g t) := by
     rw [integral_mul_eq_chart_full (g t) α (u t) h hc hs]
     rfl
-  refine ⟨?_, ?_, ?_⟩
-  · exact hsp.1.congr (.of_forall hflux)
-  · exact htm.1.congr (.of_forall hmass)
-  · have heqsp := hsp.2.trans (integral_congr_ae (.of_forall hflux))
-    have heqtm := htm.2.trans (integral_congr_ae (.of_forall hmass))
-    rw [← heqsp, ← heqtm]
-    simpa only [Fintype.sum_prod_type] using hi
+  refine ⟨hsp.1.congr (.of_forall hflux), htm.1.congr (.of_forall hmass), ?_, ?_⟩
+  · simpa only [Fintype.sum_prod_type] using
+      hsp.2.trans (integral_congr_ae (.of_forall hflux))
+  · exact htm.2.trans (integral_congr_ae (.of_forall hmass))
+
+private theorem tensor_weak_le_in_chart
+    {J : Set ℝ} (hJ : IsOpen J) (g : ℝ → SmoothRiemannianMetric I M)
+    (α : M) (u : ℝ → C(M, ℝ))
+    (hu : LocallyLipschitzOn (J ×ˢ (extChartAt I α).target)
+      (fun z : ℝ × E => u z.1 ((extChartAt I α).symm z.2)))
+    (hρ : ContinuousOn (fun z : ℝ × E => chartDensityOnE (g z.1) α z.2)
+      (J ×ˢ (extChartAt I α).target))
+    (hA : ∀ i j : Fin (Module.finrank ℝ E),
+      ContinuousOn (fun z : ℝ × E => chartInvGramOnE (g z.1) α i j z.2)
+        (J ×ˢ (extChartAt I α).target))
+    (hweak : ∀ φ : ℝ × E → ℝ,
+      LocallyLipschitzOn (J ×ˢ (extChartAt I α).target) φ → HasCompactSupport φ →
+      tsupport φ ⊆ J ×ˢ (extChartAt I α).target → (∀ z, 0 ≤ φ z) →
+      (∑ i, ∑ j, ∫ z, (chartInvGramOnE (g z.1) α i j z.2 * chartDensityOnE (g z.1) α z.2) *
+        lineDeriv ℝ (fun w : ℝ × E => u w.1 ((extChartAt I α).symm w.2)) z (0, chartModelBasis E j) *
+        fderiv ℝ φ z (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) ≤
+        ∫ z, chartDensityOnE (g z.1) α z.2 * u z.1 ((extChartAt I α).symm z.2) *
+          fderiv ℝ φ z (1, 0) ∂volume.prod (modelHaar (E := E)))
+    (h : C(M, ℝ)) (hc : HasCompactSupport (h : M → ℝ))
+    (hs : tsupport (h : M → ℝ) ⊆ (chartAt H α).source) (h0 : ∀ x, 0 ≤ h x)
+    {C : ℝ≥0} (hLip : LipschitzWith C (chartPullZero (I := I) α h))
+    {ψ : ℝ → ℝ} (hψ : ContDiff ℝ 1 ψ) (hψc : HasCompactSupport ψ)
+    (hψs : tsupport ψ ⊆ J) (hψ0 : ∀ t, 0 ≤ ψ t) :
+    Integrable (fun t => ψ t * ∫ x, (g t).inner x (gradFun (g t) (u t) x) (gradFun (g t) h x)
+      ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) volume ∧
+    Integrable (fun t => deriv ψ t * ∫ x, u t x * h x
+      ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) volume ∧
+    (∫ t, ψ t * ∫ x, (g t).inner x (gradFun (g t) (u t) x) (gradFun (g t) h x)
+      ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) ≤
+      ∫ t, deriv ψ t * ∫ x, u t x * h x
+        ∂riemannianVolumeMeasure (I := I) (M := M) (g t) := by
+  classical
+  let Ω := (extChartAt I α).target
+  let f := chartPullZero (I := I) α h
+  let φ : ℝ × E → ℝ := fun z => ψ z.1 * f z.2
+  have hfc : HasCompactSupport f := hasCompactSupport_chartPullZero α hc hs
+  have hfs : tsupport f ⊆ Ω := tsupport_chartPullZero_subset_target α hc hs
+  have hφs : tsupport φ ⊆ tsupport ψ ×ˢ tsupport f := by
+    apply closure_minimal
+    · intro z hz
+      exact ⟨subset_tsupport _ (left_ne_zero_of_mul hz),
+        subset_tsupport _ (right_ne_zero_of_mul hz)⟩
+    · exact (isClosed_tsupport ψ).prod (isClosed_tsupport f)
+  have hφc : HasCompactSupport φ :=
+    (hψc.prod hfc).of_isClosed_subset (isClosed_tsupport φ) hφs
+  have hm : ContDiff ℝ 1 (fun z : ℝ × ℝ => z.1 * z.2) := contDiff_fst.mul contDiff_snd
+  have hφ : LocallyLipschitz φ := hm.locallyLipschitz.comp
+    ((hψ.comp contDiff_fst).locallyLipschitz.prodMk
+      (hLip.locallyLipschitz.comp (contDiff_snd : ContDiff ℝ 1 (Prod.snd : ℝ × E → E)).locallyLipschitz))
+  have hf0 (y : E) : 0 ≤ f y := by
+    by_cases hy : y ∈ Ω
+    · change 0 ≤ chartPullZero (I := I) α h y
+      rw [chartPullZero_mem α h hy]
+      exact h0 ((extChartAt I α).symm y)
+    · rw [show f y = 0 from chartPullZero_nmem α h hy]
+  have hi := hweak φ hφ.locallyLipschitzOn hφc
+    (hφs.trans (prod_mono hψs hfs)) (fun z => mul_nonneg (hψ0 z.1) (hf0 z.2))
+  obtain ⟨hAi, hBi, hAeq, hBeq⟩ := integral_tensor_test_eq_in_chart hJ g α u hu hρ hA
+    h hc hs hLip hψ hψc hψs
+  refine ⟨hAi, hBi, ?_⟩
+  rw [← hAeq, ← hBeq]
+  exact hi
 
 end DifferentialGeometry.Analysis.Parabolic
 
@@ -553,5 +592,204 @@ theorem integral_tensor_test_le_of_chart_weak_le
   rw [integral_congr_ae (.of_forall hflux), integral_finsetSum _ (fun α _ => (hlocal α).1),
     integral_congr_ae (.of_forall hmass), integral_finsetSum _ (fun α _ => (hlocal α).2.1)]
   exact Finset.sum_le_sum fun α _ => (hlocal α).2.2
+
+end DifferentialGeometry.Analysis.Parabolic
+
+
+namespace DifferentialGeometry.Analysis.Parabolic
+open Integral.DivergenceTheorem
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+private theorem exists_contMDiff_compact_cutoff
+    {K U : Set M} (hK : IsCompact K) (hU : IsOpen U) (hs : K ⊆ U) :
+    ∃ f : C^∞⟮I, M; ℝ⟯, HasCompactSupport (f : M → ℝ) ∧ tsupport (f : M → ℝ) ⊆ U ∧
+      (∀ x ∈ K, f x = 1) ∧ ∀ x, f x ∈ Icc 0 1 := by
+  let _ : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  obtain ⟨B, hB, hKB, hBU⟩ := exists_compact_between hK hU hs
+  obtain ⟨f, hf1, hf0, hfr⟩ := exists_contMDiffMap_one_nhds_of_subset_interior
+    (n := (⊤ : ℕ∞)) I hK.isClosed hKB
+  have hfs : tsupport (f : M → ℝ) ⊆ B := by
+    apply closure_minimal _ hB.isClosed
+    intro x hx
+    by_contra hxB
+    exact hx (hf0 x hxB)
+  exact ⟨f, hB.of_isClosed_subset (isClosed_tsupport _) hfs,
+    hfs.trans hBU, fun x hx => hf1.self_of_nhdsSet x hx, hfr⟩
+
+private theorem exists_chart_tensor_majorant
+    (α : M) {J : Set ℝ} (hJ : IsOpen J)
+    {φ : ℝ × E → ℝ} (hφ : Continuous φ) (hc : HasCompactSupport φ)
+    (hs : tsupport φ ⊆ J ×ˢ (extChartAt I α).target) :
+    ∃ (ψ : ℝ → ℝ) (χ : C^∞⟮I, M; ℝ⟯),
+      ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ J ∧ (∀ t, 0 ≤ ψ t) ∧
+      HasCompactSupport (χ : M → ℝ) ∧ tsupport (χ : M → ℝ) ⊆ (chartAt H α).source ∧
+      (∀ x, 0 ≤ χ x) ∧ ∀ z, ‖φ z‖ ≤ ψ z.1 * chartPullZero (I := I) α χ z.2 := by
+  let K := Prod.snd '' tsupport φ
+  have hK : IsCompact K := hc.image continuous_snd
+  have hKt : K ⊆ (extChartAt I α).target := by
+    rintro _ ⟨z, hz, rfl⟩
+    exact (hs hz).2
+  have hKM : IsCompact ((extChartAt I α).symm '' K) :=
+    hK.image_of_continuousOn ((continuousOn_extChartAt_symm (I := I) α).mono hKt)
+  have hKsrc : (extChartAt I α).symm '' K ⊆ (chartAt H α).source := by
+    rintro _ ⟨y, hy, rfl⟩
+    simpa only [extChartAt_source] using (extChartAt I α).map_target (hKt hy)
+  obtain ⟨χ, hχc, hχs, hχ1, hχ01⟩ := exists_contMDiff_compact_cutoff (I := I) hKM
+    (chartAt H α).open_source hKsrc
+  obtain ⟨ψ, hψc, hψs, hψ1, hψ01⟩ := exists_contMDiff_compact_cutoff (I := 𝓘(ℝ, ℝ))
+    (hc.image continuous_fst) hJ (by rintro _ ⟨z, hz, rfl⟩; exact (hs hz).1)
+  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuousOn hφ.continuousOn
+  have hpull (y : E) : 0 ≤ chartPullZero (I := I) α χ y := by
+    by_cases hy : y ∈ (extChartAt I α).target
+    · rw [chartPullZero_mem α χ hy]
+      exact (hχ01 _).1
+    · rw [chartPullZero_nmem α χ hy]
+  refine ⟨fun t => max B 0 * ψ t, χ, contDiff_const.mul ψ.contMDiff.contDiff,
+    hψc.mul_left, tsupport_mul_subset_right.trans hψs,
+    fun t => mul_nonneg (le_max_right B 0) (hψ01 t).1, hχc, hχs, fun x => (hχ01 x).1, ?_⟩
+  intro z
+  dsimp only
+  by_cases hz : z ∈ tsupport φ
+  · rw [hψ1 z.1 (mem_image_of_mem _ hz), mul_one, chartPullZero_mem α χ (hs hz).2]
+    change ‖φ z‖ ≤ max B 0 * χ ((extChartAt I α).symm z.2)
+    rw [hχ1 _ (mem_image_of_mem _ (mem_image_of_mem _ hz)), mul_one]
+    exact (hB z hz).trans (le_max_left B 0)
+  · rw [image_eq_zero_of_notMem_tsupport hz, norm_zero]
+    exact mul_nonneg (mul_nonneg (le_max_right B 0) (hψ01 z.1).1) (hpull z.2)
+
+end DifferentialGeometry.Analysis.Parabolic
+namespace DifferentialGeometry.Analysis.Parabolic
+open Geometry.Operator Tensor.Coordinates Integral.DivergenceTheorem Integral.Measure
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem integral_chart_test_eq_of_tensor_test
+    {J : Set ℝ} (hJ : IsOpen J) (g : ℝ → SmoothRiemannianMetric I M)
+    (α : M) (u : ℝ → C(M, ℝ))
+    (hu : LocallyLipschitzOn (J ×ˢ (extChartAt I α).target)
+      (fun z : ℝ × E => u z.1 ((extChartAt I α).symm z.2)))
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E),
+      ContinuousOn (fun p : ℝ × M => chartGramMatrix (g p.1) α p.2 i j)
+        (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hweak : ∀ φ : ℝ × E → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ J ×ˢ (extChartAt I α).target → (∀ z, 0 ≤ φ z) →
+      (∑ i, ∑ j, ∫ z, (chartInvGramOnE (g z.1) α i j z.2 * chartDensityOnE (g z.1) α z.2) *
+        lineDeriv ℝ (fun w : ℝ × E => u w.1 ((extChartAt I α).symm w.2)) z (0, chartModelBasis E j) *
+        fderiv ℝ φ z (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) ≤
+        ∫ z, chartDensityOnE (g z.1) α z.2 * u z.1 ((extChartAt I α).symm z.2) *
+          fderiv ℝ φ z (1, 0) ∂volume.prod (modelHaar (E := E)))
+    (htensor : ∀ (χ : C(M, ℝ)), ContMDiff I 𝓘(ℝ) ∞ (χ : M → ℝ) →
+      HasCompactSupport (χ : M → ℝ) → tsupport (χ : M → ℝ) ⊆ (chartAt H α).source →
+      (∀ x, 0 ≤ χ x) → ∀ ψ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
+      HasCompactSupport ψ → tsupport ψ ⊆ J → (∀ t, 0 ≤ ψ t) →
+      (∫ t, ψ t * ∫ x, (g t).inner x (gradFun (g t) (u t) x) (gradFun (g t) χ x)
+        ∂riemannianVolumeMeasure (I := I) (M := M) (g t)) =
+        ∫ t, deriv ψ t * ∫ x, u t x * χ x
+          ∂riemannianVolumeMeasure (I := I) (M := M) (g t))
+    {φ : ℝ × E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ J ×ˢ (extChartAt I α).target) :
+    (∑ i, ∑ j, ∫ z, (chartInvGramOnE (g z.1) α i j z.2 * chartDensityOnE (g z.1) α z.2) *
+      lineDeriv ℝ (fun w : ℝ × E => u w.1 ((extChartAt I α).symm w.2)) z (0, chartModelBasis E j) *
+      fderiv ℝ φ z (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) =
+      ∫ z, chartDensityOnE (g z.1) α z.2 * u z.1 ((extChartAt I α).symm z.2) *
+        fderiv ℝ φ z (1, 0) ∂volume.prod (modelHaar (E := E)) := by
+  classical
+  have hcoef := chart_coefficients_continuousOn g α hgram
+  have hρ := hcoef.1
+  have hA := hcoef.2
+  let Ω := J ×ˢ (extChartAt I α).target
+  let U : ℝ × E → ℝ := fun z => u z.1 ((extChartAt I α).symm z.2)
+  let ρ : ℝ × E → ℝ := fun z => chartDensityOnE (g z.1) α z.2
+  let A : ℝ × E → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
+    fun z i j => chartInvGramOnE (g z.1) α i j z.2
+  let b : Option (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → ℝ × E → ℝ
+    | none => fun z => ρ z * U z
+    | some ij => fun z => -((A z ij.1 ij.2 * ρ z) * lineDeriv ℝ U z (0, chartModelBasis E ij.2))
+  let v : Option (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → ℝ × E
+    | none => (1, 0)
+    | some ij => (0, chartModelBasis E ij.1)
+  have hΩ : IsOpen Ω := hJ.prod (isOpen_extChartAt_target (I := I) α)
+  have hb : ∀ i, LocallyIntegrableOn (b i) Ω (volume.prod (modelHaar (E := E))) := by
+    intro i
+    cases i with
+    | none => exact (hρ.mul hu.continuousOn).locallyIntegrableOn hΩ.measurableSet
+    | some ij =>
+      have hd : LocallyIntegrableOn (fun z => lineDeriv ℝ U z (0, chartModelBasis E ij.2))
+          Ω (volume.prod (modelHaar (E := E))) := by
+        apply (locallyIntegrableOn_iff hΩ.isLocallyClosed).mpr
+        intro K hKΩ hK
+        exact memLp_one_iff_integrable.mp
+          (hu.memLp_lineDeriv_of_isCompact hΩ hK hKΩ hK.measure_ne_top (0, chartModelBasis E ij.2) 1)
+      exact (hd.continuousOn_mul ((hA ij.1 ij.2).mul hρ) hΩ.isLocallyClosed).neg
+  have hsum (f : ℝ × E → ℝ) :
+      (∑ i, ∫ z, b i z * fderiv ℝ f z (v i) ∂volume.prod (modelHaar (E := E))) =
+        (∫ z, ρ z * U z * fderiv ℝ f z (1, 0) ∂volume.prod (modelHaar (E := E))) -
+          ∑ i, ∑ j, ∫ z, (A z i j * ρ z) * lineDeriv ℝ U z (0, chartModelBasis E j) *
+            fderiv ℝ f z (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E)) := by
+    simp only [Fintype.sum_option, Fintype.sum_prod_type, b, v, neg_mul,
+      integral_neg, Finset.sum_neg_distrib]
+    ring
+  have hpos (f : ℝ × E → ℝ) (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hc : HasCompactSupport f)
+      (hs : tsupport f ⊆ Ω) (h0 : ∀ z, 0 ≤ f z) :
+      0 ≤ ∑ i, ∫ z, b i z * fderiv ℝ f z (v i) ∂volume.prod (modelHaar (E := E)) := by
+    rw [hsum]
+    exact sub_nonneg.mpr (hweak f hf hc hs h0)
+  obtain ⟨ψ, χ, hψ, hψc, hψs, hψ0, hχc, hχs, hχ0, hbound⟩ :=
+    exists_chart_tensor_majorant α hJ hφ.continuous hφc hφs
+  let χC : C(M, ℝ) := ⟨χ, χ.contMDiff.continuous⟩
+  let f : E → ℝ := chartPullZero (I := I) α χ
+  have hfc : HasCompactSupport f := hasCompactSupport_chartPullZero α hχc hχs
+  have hfs : tsupport f ⊆ (extChartAt I α).target := tsupport_chartPullZero_subset_target α hχc hχs
+  have hf : ContDiff ℝ (⊤ : ℕ∞) f := by
+    have hh := chartPullZero_contDiffOn_range α χ.contMDiff hχc hχs
+    simpa only [I.range_eq_univ, contDiffOn_univ] using hh
+  obtain ⟨C, hC⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hfc hf (by simp)
+  let η : ℝ × E → ℝ := fun z => ψ z.1 * f z.2
+  have hη : ContDiff ℝ (⊤ : ℕ∞) η := (hψ.comp contDiff_fst).mul (hf.comp contDiff_snd)
+  have hηsub : tsupport η ⊆ tsupport ψ ×ˢ tsupport f := by
+    apply closure_minimal
+    · intro z hz
+      exact ⟨subset_tsupport _ (left_ne_zero_of_mul hz), subset_tsupport _ (right_ne_zero_of_mul hz)⟩
+    · exact (isClosed_tsupport ψ).prod (isClosed_tsupport f)
+  have hηc : HasCompactSupport η :=
+    (hψc.prod hfc).of_isClosed_subset (isClosed_tsupport η) hηsub
+  have hηs : tsupport η ⊆ Ω := hηsub.trans (prod_mono hψs hfs)
+  have heqs := integral_tensor_test_eq_in_chart hJ g α u hu hρ hA χC
+    hχc hχs hC (hψ.of_le (by simp)) hψc hψs
+  have hzero : (∑ i, ∫ z, b i z * fderiv ℝ η z (v i) ∂volume.prod (modelHaar (E := E))) = 0 := by
+    rw [hsum]
+    change (∫ z, chartDensityOnE (g z.1) α z.2 * u z.1 ((extChartAt I α).symm z.2) *
+      fderiv ℝ η z (1, 0) ∂volume.prod (modelHaar (E := E))) -
+      (∑ i, ∑ j, ∫ z, (chartInvGramOnE (g z.1) α i j z.2 * chartDensityOnE (g z.1) α z.2) *
+        lineDeriv ℝ (fun w : ℝ × E => u w.1 ((extChartAt I α).symm w.2)) z (0, chartModelBasis E j) *
+        fderiv ℝ η z (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) = 0
+    have ht := htensor χC χ.contMDiff hχc hχs hχ0 ψ hψ hψc hψs hψ0
+    simp only [χC, ContinuousMap.coe_mk] at heqs ht
+    dsimp only [η, f]
+    rw [heqs.2.2.1, heqs.2.2.2, ht, sub_self]
+  have hupper := sum_integral_mul_fderiv_le_of_nonneg_test hΩ hb v hpos hφ hφc hφs
+    hη hηc hηs (fun z => (le_abs_self (φ z)).trans (hbound z))
+  have hlower := sum_integral_mul_fderiv_le_of_nonneg_test hΩ hb v hpos hφ.neg hφc.neg
+    (by simpa only [tsupport_fun_neg] using hφs) hη hηc hηs
+    (fun z => (neg_le_abs (φ z)).trans (hbound z))
+  have hneg : (∑ i, ∫ z, b i z * fderiv ℝ (fun y => -φ y) z (v i) ∂volume.prod (modelHaar (E := E))) =
+      -(∑ i, ∫ z, b i z * fderiv ℝ φ z (v i) ∂volume.prod (modelHaar (E := E))) := by
+    simp only [fderiv_fun_neg, neg_apply, mul_neg, integral_neg, Finset.sum_neg_distrib]
+  rw [hzero] at hupper hlower
+  rw [hneg] at hlower
+  have hz : (∑ i, ∫ z, b i z * fderiv ℝ φ z (v i) ∂volume.prod (modelHaar (E := E))) = 0 := by linarith
+  rw [hsum] at hz
+  exact (sub_eq_zero.mp hz).symm
 
 end DifferentialGeometry.Analysis.Parabolic

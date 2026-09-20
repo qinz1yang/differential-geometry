@@ -415,4 +415,88 @@ theorem backward_flow_limit_perelmanDensity_tensor_weak_eq_in_chart
     hconv hcomplete ell hlim (a n) ⟨t, ht'⟩
   simpa only [g, u, ζ, ContinuousMap.coe_mk, projIcc_of_mem hT.le ht'] using hi
 
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem backward_flow_limit_perelmanDensity_weak_eq_in_chart
+    (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (p : F.M)
+    (tau : ℕ → ℝ) (htau : ∀ n, 0 < tau n) (q : ℕ → F.M)
+    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+    [PreconnectedSpace L.M]
+    {subseq : ℕ → ℕ}
+    (Phi : PointedCGHMaps (backwardFlowSequence F tau htau q) (L.atTime 0) subseq)
+    (R : SmoothRiemannianMetric I L.M) (G : ℕ → ℝ → SmoothRiemannianMetric I L.M)
+    (hG : ∀ K : Set L.M, IsCompact K → ∀ᶠ n in atTop,
+      ∃ U : Set L.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source n ∧
+        ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+          (G n t).inner x v w = (((backwardFlowSequence F tau htau q).term (subseq n)).S.base.metric t).inner
+            (Phi.map n x) (mfderiv I I (Phi.map n) x v) (mfderiv I I (Phi.map n) x w))
+    (hmetric : ∀ a b : ℝ, Icc a b ⊆ Iic 0 → ∀ K : Set L.M, IsCompact K →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc a b,
+        metricDerivNormSupOn K r (G n t) (L.S.base.metric t) R < epsilon)
+    {T : ℝ} (hT : 1 < T) (ell : C(L.M × Icc (1 : ℝ) T, ℝ))
+    (hell : ∀ Q : Set (L.M × Icc (1 : ℝ) T), IsCompact Q → TendstoUniformlyOn
+      (fun n w => redLength F.S 0 p (Phi.map n w.1) (tau (subseq n) * w.2)) ell atTop Q)
+    (hLip : ∀ B : ℝ, 0 ≤ B → ∃ K : ℝ≥0,
+      ∀ x ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
+      ∀ y ∈ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint B,
+      ∀ s t : Icc (1 : ℝ) T, |ell (x, s) - ell (y, t)| ≤
+        (K : ℝ) * ((riemannianEDistOf (L.S.base.metric 0) x y).toReal + |(s : ℝ) - t|))
+    (hdim : Module.finrank ℝ E = 3)
+    (hescape : Tendsto (tau ∘ subseq) atTop atTop)
+    (hconv : ∀ t ∈ Icc (1 - T) (0 : ℝ),
+      ∃ C : MetricConvergenceData (Phi.atTime
+        (X := backwardFlowSequence F tau htau q) (L := L) t),
+      ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData
+        (Phi.atTime (X := backwardFlowSequence F tau htau q) (L := L) t) i)
+    (hcomplete : ∀ t ∈ Icc (1 - T) (0 : ℝ), MetricComplete (L.atTime t))
+    (α : L.M) {φ : ℝ × E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+    (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ioo 1 T ×ˢ (extChartAt I α).target) :
+    let u := fun w : ℝ × E => perelmanDensity (Module.finrank ℝ E) w.1
+      (fun x => ell (x, projIcc 1 T hT.le w.1)) ((extChartAt I α).symm w.2)
+    let ρ := fun w : ℝ × E => chartDensityOnE (L.S.base.metric (1 - w.1)) α w.2
+    let A := fun w : ℝ × E => fun i j : Fin (Module.finrank ℝ E) =>
+      chartInvGramOnE (L.S.base.metric (1 - w.1)) α i j w.2;
+    (∑ i, ∑ j, ∫ w, (A w i j * ρ w) * lineDeriv ℝ u w (0, chartModelBasis E j) *
+      fderiv ℝ φ w (0, chartModelBasis E i) ∂volume.prod (modelHaar (E := E))) =
+        ∫ w, ρ w * u w * fderiv ℝ φ w (1, 0) ∂volume.prod (modelHaar (E := E)) := by
+  let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; decide⟩
+  let _ : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ : LocallyCompactSpace L.M := ChartedSpace.locallyCompactSpace H L.M
+  let u : ℝ → C(L.M, ℝ) := fun t =>
+    ⟨perelmanDensity (Module.finrank ℝ E) t (fun x => ell (x, projIcc 1 T hT.le t)),
+      continuous_const.mul (Real.continuous_exp.comp
+        (ell.continuous.comp (continuous_id.prodMk continuous_const)).neg)⟩
+  apply Analysis.Parabolic.integral_chart_test_eq_of_tensor_test isOpen_Ioo
+    (fun t => L.S.base.metric (1 - t)) α u
+    ((locallyLipschitzOn_perelmanDensity_in_chart_of_spacetime_bounds
+      (L.S.base.metric 0) L.basepoint hT.le ell hLip α (Module.finrank ℝ E)).mono
+      (fun _ hw => ⟨zero_lt_one.trans hw.1.1, hw.2⟩))
+    (fun i j => ?_)
+    (fun ψ hψ hψc hψs hψ0 => backward_flow_limit_perelmanDensity_weak_le_in_chart
+      F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip α
+      (volume.prod (modelHaar (E := E)))
+      ((hψ.of_le (by simp) : ContDiff ℝ 1 ψ).locallyLipschitz.locallyLipschitzOn)
+      hψc hψs hψ0)
+    (fun χ hχsm hχc hχs hχ0 ψ hψ hψc hψs hψ0 =>
+      (backward_flow_limit_perelmanDensity_tensor_weak_eq_in_chart
+        F hF p tau htau q L Phi R G hG hmetric hT ell hell hLip hdim hescape hconv hcomplete
+        α χ hχc hχ0 hχsm hχs (hψ.of_le (by simp)) hψc hψs hψ0).2.2)
+    hφ hφc hφs
+  have hmap : ContinuousOn (fun z : ℝ × L.M => (1 - z.1, z.2))
+      (Ioo 1 T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+    ((continuous_const.sub continuous_fst).prodMk continuous_snd).continuousOn
+  have hmaps : MapsTo (fun z : ℝ × L.M => (1 - z.1, z.2))
+      (Ioo 1 T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)
+      (ancientTimeInterval.carrier ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+    fun z hz => ⟨show 1 - z.1 ≤ 0 from sub_nonpos.mpr hz.1.1.le, hz.2⟩
+  have hc : ContinuousOn
+      ((fun z : ℝ × L.M => chartGramMatrix (L.S.base.metric z.1) α z.2 i j) ∘
+        (fun z : ℝ × L.M => (1 - z.1, z.2)))
+      (Ioo 1 T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+    (L.isSolution.smoothMetric.chartGramMatrix_continuousOn_carrier α i j).comp hmap hmaps
+  exact hc
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
