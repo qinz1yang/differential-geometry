@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaThree
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
 
 /-!
 # Basepoint normalization of normal systems
@@ -128,6 +129,41 @@ theorem NonsingularCell.ofAtBoundaryLoop_vertexMap {S : NormalSystem E}
 theorem NonsingularCell.ofAtBoundaryLoop_boundaryLoop {S : NormalSystem E}
     (D : NonsingularCell S.atBoundaryLoop) : D.ofAtBoundaryLoop.boundaryLoop = D.boundaryLoop :=
   rfl
+
+open Classical in
+/-- Transport a proper PL embedded disk from the basepoint-normalized system back to `S`.
+The two systems share their complexes, boundary loop and neighborhoods, so only the
+connector and the avoidance condition have to move. -/
+noncomputable def EmbeddedDisk.ofAtBoundaryLoop {S : NormalSystem E}
+    (D : EmbeddedDisk S.atBoundaryLoop) : EmbeddedDisk S := by
+  let _ : S.normalSubgroup.Normal := S.normal
+  refine { D with
+    connector := S.connector.trans D.connector
+    loopClass_avoids_normal := ?_ }
+  intro h
+  apply D.loopClass_avoids_normal
+  exact (normalSystemLoopConjugacyClass_comap_changeBasepoint_iff
+    S.connector D.boundaryLoop D.connector S.normalSubgroup).mpr h
+
+@[simp]
+theorem EmbeddedDisk.ofAtBoundaryLoop_domain {S : NormalSystem E}
+    (D : EmbeddedDisk S.atBoundaryLoop) : D.ofAtBoundaryLoop.domain = D.domain :=
+  rfl
+
+@[simp]
+theorem EmbeddedDisk.ofAtBoundaryLoop_map {S : NormalSystem E}
+    (D : EmbeddedDisk S.atBoundaryLoop) : D.ofAtBoundaryLoop.map = D.map :=
+  rfl
+
+@[simp]
+theorem EmbeddedDisk.ofAtBoundaryLoop_boundaryLoop {S : NormalSystem E}
+    (D : EmbeddedDisk S.atBoundaryLoop) :
+    D.ofAtBoundaryLoop.boundaryLoop = D.boundaryLoop :=
+  rfl
+
+theorem nonempty_embeddedDisk_of_atBoundaryLoop {S : NormalSystem E}
+    (h : Nonempty (EmbeddedDisk S.atBoundaryLoop)) : Nonempty (EmbeddedDisk S) :=
+  h.map EmbeddedDisk.ofAtBoundaryLoop
 
 theorem nonempty_nonsingularCell_of_atBoundaryLoop {S : NormalSystem E}
     (h : Nonempty (NonsingularCell S.atBoundaryLoop)) : Nonempty (NonsingularCell S) :=
