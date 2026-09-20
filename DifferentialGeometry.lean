@@ -9083,6 +9083,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SkeletonReduction
 import DifferentialGeometry.Topology.PiecewiseLinear.SeamBoundaryHomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWitnessDoors
 /-!
 # Differential geometry and geometric analysis
 -/
