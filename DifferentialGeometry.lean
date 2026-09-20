@@ -7770,6 +7770,7 @@ import DifferentialGeometry.Topology.LoopSpace.BasedSwap
 import DifferentialGeometry.Topology.LoopSpace.Basic
 import DifferentialGeometry.Topology.LoopSpace.CircleCurry
 import DifferentialGeometry.Topology.LoopSpace.CircleCurryFamilies
+import DifferentialGeometry.Topology.LoopSpace.CircleDegree
 import DifferentialGeometry.Topology.LoopSpace.CircleMetric
 import DifferentialGeometry.Topology.LoopSpace.CoherentSmoothing
 import DifferentialGeometry.Topology.LoopSpace.ContinuousFilling
@@ -7923,7 +7924,9 @@ import DifferentialGeometry.Topology.Manifold.Collar.SeamDiffeomorph
 import DifferentialGeometry.Topology.Manifold.CollarPartitionError
 import DifferentialGeometry.Topology.Manifold.CollarPartitionPatch
 import DifferentialGeometry.Topology.Manifold.CollarStep
+import DifferentialGeometry.Topology.Manifold.CommonLevelCoordinates
 import DifferentialGeometry.Topology.Manifold.CompactBicollar
+import DifferentialGeometry.Topology.Manifold.CompactCutoff
 import DifferentialGeometry.Topology.Manifold.CompactPlanarIsotopy
 import DifferentialGeometry.Topology.Manifold.CompactSectionExtension
 import DifferentialGeometry.Topology.Manifold.ComplexLogarithm
@@ -7969,11 +7972,14 @@ import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.TopFormNormal
 import DifferentialGeometry.Topology.Manifold.EndpointShift
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
 import DifferentialGeometry.Topology.Manifold.ExtChartAt
+import DifferentialGeometry.Topology.Manifold.FiberAffineInterpolation
+import DifferentialGeometry.Topology.Manifold.FiberPreservingGerm
 import DifferentialGeometry.Topology.Manifold.FiniteChartBalls
 import DifferentialGeometry.Topology.Manifold.FiniteInteriorCharts
 import DifferentialGeometry.Topology.Manifold.FinitePointBumps
 import DifferentialGeometry.Topology.Manifold.FlowInjectivity
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
+import DifferentialGeometry.Topology.Manifold.GermExtension
 import DifferentialGeometry.Topology.Manifold.HalfClosedInterval
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalInclusion
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalSmoothMaps
@@ -8010,6 +8016,7 @@ import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Parametric
 import DifferentialGeometry.Topology.Manifold.Involution.LocalLift
 import DifferentialGeometry.Topology.Manifold.Involution.QuotientManifold
 import DifferentialGeometry.Topology.Manifold.Involution.QuotientProjection
+import DifferentialGeometry.Topology.Manifold.LevelChartTransition
 import DifferentialGeometry.Topology.Manifold.LieBracketNaturality
 import DifferentialGeometry.Topology.Manifold.LiftedChartLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.LinePatch
@@ -8069,7 +8076,9 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Atlas
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.CompactPasting
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.IsotopyExtension
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SmoothInverse
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
@@ -8110,6 +8119,7 @@ import DifferentialGeometry.Topology.Manifold.RegularLevel.InteriorSublevel
 import DifferentialGeometry.Topology.Manifold.RegularLevel.Sublevel
 import DifferentialGeometry.Topology.Manifold.RegularSublevel
 import DifferentialGeometry.Topology.Manifold.RegularSublevelBoundary
+import DifferentialGeometry.Topology.Manifold.RegularSurfaceChart
 import DifferentialGeometry.Topology.Manifold.RegularZero.Atlas
 import DifferentialGeometry.Topology.Manifold.RegularZero.Coordinates
 import DifferentialGeometry.Topology.Manifold.RegularZero.Tangent
@@ -8169,6 +8179,7 @@ import DifferentialGeometry.Topology.Manifold.StereographicChart
 import DifferentialGeometry.Topology.Manifold.StereographicCover
 import DifferentialGeometry.Topology.Manifold.StereographicCylinder
 import DifferentialGeometry.Topology.Manifold.StripExtension
+import DifferentialGeometry.Topology.Manifold.StripHeightCoordinates
 import DifferentialGeometry.Topology.Manifold.Submersion
 import DifferentialGeometry.Topology.Manifold.SubmersionFiber
 import DifferentialGeometry.Topology.Manifold.TransverseDerivative
@@ -8207,6 +8218,7 @@ import DifferentialGeometry.Topology.Morse.BoundarySublevels
 import DifferentialGeometry.Topology.Morse.CellAdjunction
 import DifferentialGeometry.Topology.Morse.CellAttachment
 import DifferentialGeometry.Topology.Morse.ClosedEulerCharacteristic
+import DifferentialGeometry.Topology.Morse.CompactDescent
 import DifferentialGeometry.Topology.Morse.ConstantGerm
 import DifferentialGeometry.Topology.Morse.CriticalFinite
 import DifferentialGeometry.Topology.Morse.CriticalImageNull
@@ -8214,6 +8226,8 @@ import DifferentialGeometry.Topology.Morse.CriticalPoint
 import DifferentialGeometry.Topology.Morse.CriticalPoints
 import DifferentialGeometry.Topology.Morse.CriticalSet
 import DifferentialGeometry.Topology.Morse.CriticalValues
+import DifferentialGeometry.Topology.Morse.CubicLowering
+import DifferentialGeometry.Topology.Morse.CubicSupportObstruction
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.EulerCharacteristic
 import DifferentialGeometry.Topology.Morse.Excellent
@@ -8239,6 +8253,7 @@ import DifferentialGeometry.Topology.Morse.NormalForm.Euclidean
 import DifferentialGeometry.Topology.Morse.NormalForm.Local
 import DifferentialGeometry.Topology.Morse.NormalForm.Manifold
 import DifferentialGeometry.Topology.Morse.Perturbation
+import DifferentialGeometry.Topology.Morse.RadialChartExtension
 import DifferentialGeometry.Topology.Morse.RegularLevel.Flow
 import DifferentialGeometry.Topology.Morse.RegularLevel.Isotopy
 import DifferentialGeometry.Topology.Morse.RegularLevel.LevelSet
@@ -8262,6 +8277,11 @@ import DifferentialGeometry.Topology.Morse.RelativePerturbationMorse
 import DifferentialGeometry.Topology.Morse.RelativePerturbationPositive
 import DifferentialGeometry.Topology.Morse.RelativePerturbationZeroLocus
 import DifferentialGeometry.Topology.Morse.Riemannian
+import DifferentialGeometry.Topology.Morse.SaddleBranch
+import DifferentialGeometry.Topology.Morse.SaddleMinimumAlignedCoordinates
+import DifferentialGeometry.Topology.Morse.SaddleMinimumCommonCoordinates
+import DifferentialGeometry.Topology.Morse.SaddleMinimumEndTransitions
+import DifferentialGeometry.Topology.Morse.SaddleMinimumHeightCoordinates
 import DifferentialGeometry.Topology.Morse.Separable
 import DifferentialGeometry.Topology.Morse.SmoothMorseChart
 import DifferentialGeometry.Topology.Morse.SmoothNormalForm
@@ -8272,6 +8292,7 @@ import DifferentialGeometry.Topology.Morse.SublevelEuclidean
 import DifferentialGeometry.Topology.Morse.SublevelInclusion
 import DifferentialGeometry.Topology.Morse.SublevelRestriction
 import DifferentialGeometry.Topology.Morse.SublevelTangentSection
+import DifferentialGeometry.Topology.Morse.TwoEndedChart
 import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.OpenCover.Disjoint
 import DifferentialGeometry.Topology.OpenEmbeddingFrontier
@@ -9030,6 +9051,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskBallNeighborhoo
 import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskPrism
 import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalShellCompression
+import DifferentialGeometry.Topology.PiecewiseLinear.TwoSidedCrossingProducer
 /-!
 # Differential geometry and geometric analysis
 -/

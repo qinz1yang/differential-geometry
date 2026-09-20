@@ -4839,3 +4839,54 @@ reviews and the shared-prerequisite fingerprint are in
 C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtyfourth-batch-20260919.
 This acceptance was completed by Claude after the owner's stop; Codex automation
 moise and all five lane tasks remain paused and were not resumed for it.
+
+## 101. Independent acceptance of lane S's compact-smoothing support layer
+
+Lane S's delivery e24808bce is accepted against its exact frozen blobs, taken with
+git show from S's own commit so that S's worktree was never touched and its three
+untracked drafts remain outside this batch. The range c0f4df1b1 to e24808bce is six
+checkpoints and twenty-two Lean files: twenty new leaves under Topology/Manifold
+and Topology/Morse, including two under PartialDiffeomorph, and two changed
+existing modules. Twenty root aggregate imports were added. S's own copy of
+MOISE_PLAN.md was deliberately not taken, because it predates this session's
+consultation records and lane reallocation.
+
+The mathematics is the support layer beneath compact PL smoothing: common level
+and strip height coordinates, fiber preserving germs and germ extension, level
+chart transitions, regular surface charts, compact cutoff and compact pasting,
+isotopy extension, and on the Morse side radial chart extension, two-ended charts,
+saddle minimum coordinates in aligned, common, height and end-transition form,
+cubic lowering with its support obstruction, the saddle branch, and compact
+descent. It does not produce the compact smoothing endpoint and does not claim
+PLSmoothing 3.
+
+Twenty-four modules were compiled in the integration checkout in 426.2487 seconds
+with zero diagnostics: the twenty-two delivered modules plus two unchanged
+prerequisites. All 49 native declarations, nine of them private, pass the 13
+applicable environment linters, and their transitive axioms are contained in
+propext, Classical.choice and Quot.sound. The independent audit took 38.9546
+seconds. Thirty-seven public declarations are new. The two changed modules changed
+proof bodies only: all three of their old public signatures are preserved and not
+one signature changed. No delivered file has a line comment, an over-long line, an
+unauthorized block comment or a prohibited construct.
+
+Two deviations are recorded rather than hidden. First, the two unchanged
+prerequisites, Analysis.Calculus.Inverse.LocalInverse and
+Analysis.Calculus.Derivative.ParametricIntervalIntegral, are legacy contributor
+files with no copyright header and one over-long line. They fail only the style
+linters, which touch neither elaboration nor the kernel, so they were compiled with
+those two linters disabled; the checker variant differs from the standard one by a
+single line. Every delivered module used the full flag set.
+
+Second, and more significant, the shared read-only build holds a larger version of
+both prerequisites than the integration branch. Its LocalInverse object contains a
+declaration the current source no longer has, and its ParametricIntervalIntegral
+object contains four, with ten recorded imports against the current five. This is
+not the additive drift recorded for batch 64; the integration copies are reduced
+relative to whatever the shared build was made from. Lane S and the integration
+branch hold byte-identical copies of both files, and no delivered module references
+any of the extra declarations, so both were recompiled from integration source and
+the shared objects were not used. The divergence itself is left open.
+
+The receipt is .lake/verified-lane-S-e24808bce-20260919.json. Lane S checkpoints
+after e24808bce remain unverified, and the compact smoothing endpoint stays open.

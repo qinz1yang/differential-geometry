@@ -65,6 +65,13 @@ theorem exists_saddle_minimum_flow_coordinates {f : M → ℝ}
                 (fun z : Icc (s₀ - δ) (s₀ + δ) × Icc (0 : ℝ) 1 => d (z.1, z.2)) ∧
               (∀ s ∈ Icc (s₀ - δ) (s₀ + δ), d (s, 0) = A s ∧
                 d (s, 1) ∈ (χq '' {z : MorseModel 2 | z 0 ^ 2 + z 1 ^ 2 = r ^ 2}) ∩ Oq) ∧
+              (∀ s ∈ Icc (s₀ - δ) (s₀ + δ),
+                f (d (s, 0)) = f (γ a) ∧ f (d (s, 1)) = f (γ b)) ∧
+              (∀ last : Bool,
+                let χ := if last then χq else χₚ
+                let x := γ (if last then b else a)
+                ∀ t ∈ Icc (0 : ℝ) 1,
+                  t • χ.symm x ∈ χ.source ∧ χ (t • χ.symm x) ∈ O) ∧
               (∀ t ∈ Icc (0 : ℝ) 1, d (s₀, t) = γ (t * (b - a) + a)) ∧
               ∀ s ∈ Icc (s₀ - δ) (s₀ + δ), ∀ t ∈ Icc (0 : ℝ) (τ s),
                 mvfderiv I f (Φ t (A s)) (v (Φ t (A s))) < 0 ∧
@@ -74,7 +81,7 @@ theorem exists_saddle_minimum_flow_coordinates {f : M → ℝ}
     hAsmooth, _, hAsub, _, _, ⟨s₀, hs₀, hA₀⟩, _, _⟩ :=
     exists_saddle_section_of_unique_descendingConnection hf
       BoundarylessManifold.isInteriorPoint hp hpindex hγ hunique (hOₚ.inter hO) ⟨hpOₚ, hpO⟩
-  obtain ⟨χq, hχq0, hχqq, hqn, r, b, hr, hab, hbvalue, _, _, hCsub, hCembed,
+  obtain ⟨χq, hχq0, hχqq, hqn, r, b, hr, hab, hbvalue, _, hcontain, hCsub, hCembed,
     hCimage, hγbC⟩ := exists_minimum_section_of_descendingConnection hf
       BoundarylessManifold.isInteriorPoint hq hqindex hγ a (hOq.inter hO) ⟨hqOq, hqO⟩
   let A : ℝ → M := fun t => χₚ (saddleLevelPoint ε side t)
@@ -164,13 +171,65 @@ theorem exists_saddle_minimum_flow_coordinates {f : M → ℝ}
     intro x y he
     have hh := d.injOn (hds ⟨x.1.2, x.2.2⟩) (hds ⟨y.1.2, y.2.2⟩) he
     exact Prod.ext (Subtype.ext (congrArg Prod.fst hh)) (Subtype.ext (congrArg Prod.snd hh))
+  have hheight (s : ℝ) (hs : s ∈ J) :
+      f (d (s, 0)) = f (γ a) ∧ f (d (s, 1)) = f (γ b) := by
+    rw [hd]
+    constructor
+    · change f (Φ (0 * τ s) (A s)) = f (γ a)
+      rw [zero_mul, hz]
+      exact hlevel s (hJA hs)
+    · exact (hend s (hSS (hJS hs))).2.2
+  have hpnorm : ‖χₚ.symm (γ a)‖ ≤ 2 * R := by
+    have hb := norm_saddleLevelPoint_le hR.le hεR (abs_le.mpr (Ioo_subset_Icc_self hs₀)) side
+    have hs : saddleLevelPoint ε side s₀ ∈ χₚ.source := (hsmall _ hb).1
+    have hi : χₚ.symm (γ a) = saddleLevelPoint ε side s₀ :=
+      (congrArg χₚ.symm hA₀.symm).trans (χₚ.left_inv hs)
+    rw [hi]
+    exact hb
+  have hqnorm : ‖χq.symm (γ b)‖ ≤ r := by
+    obtain ⟨z, hz, hzb⟩ := hγbC
+    change z 0 ^ 2 + z 1 ^ 2 = r ^ 2 at hz
+    have hn : ‖z‖ ≤ r := by
+      apply (pi_norm_le_iff_of_nonneg hr.le).mpr
+      intro i
+      fin_cases i
+      · change |z 0| ≤ r
+        apply (sq_le_sq₀ (abs_nonneg _) hr.le).mp
+        rw [sq_abs]
+        nlinarith [sq_nonneg (z 1)]
+      · change |z 1| ≤ r
+        apply (sq_le_sq₀ (abs_nonneg _) hr.le).mp
+        rw [sq_abs]
+        nlinarith [sq_nonneg (z 0)]
+    have hi : χq.symm (γ b) = z :=
+      (congrArg χq.symm hzb.symm).trans (χq.left_inv (hcontain z hn).1)
+    rw [hi]
+    exact hn
+  have hscale (z : MorseModel 2) (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1) : ‖t • z‖ ≤ ‖z‖ := by
+    rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+    exact mul_le_of_le_one_left (norm_nonneg z) ht.2
+  have hrays (last : Bool) :
+      let χ := if last then χq else χₚ
+      let x := γ (if last then b else a)
+      ∀ t ∈ Icc (0 : ℝ) 1, t • χ.symm x ∈ χ.source ∧ χ (t • χ.symm x) ∈ O := by
+    cases last
+    · change ∀ t ∈ Icc (0 : ℝ) 1,
+        t • χₚ.symm (γ a) ∈ χₚ.source ∧ χₚ (t • χₚ.symm (γ a)) ∈ O
+      intro t ht
+      have hh := hsmall _ ((hscale _ t ht).trans hpnorm)
+      exact ⟨hh.1, hh.2.2⟩
+    · change ∀ t ∈ Icc (0 : ℝ) 1,
+        t • χq.symm (γ b) ∈ χq.source ∧ χq (t • χq.symm (γ b)) ∈ O
+      intro t ht
+      have hh := hcontain _ ((hscale _ t ht).trans hqnorm)
+      exact ⟨hh.1, hh.2.2⟩
   refine ⟨χₚ, χq, hχₚ0, hχₚp, hχq0, hχqq, hpn, hqn,
     R, ε, r, a, b, s₀, δ / 2, side,
     hR, hε, hr, hab, by positivity, hs₀, hJA, haheight, hbvalue,
     (fun t ht => (hAsub side ⟨t, ht, rfl⟩).1), hCsub, hCembed, hCimage,
     w, hw, hwc, hwO, τ, hτ.mono (fun _ hs => hSS (hJS hs)), hτ₀,
     (fun s hs => hτpos s (hSS (hJS hs))), d, hd, hds, hdt,
-    ?_, hemb', ?_, ?_, ?_⟩
+    ?_, hemb', ?_, hheight, hrays, ?_, ?_⟩
   · intro s hs
     have hzero : d (s, 0) = A s := by rw [hd]; exact (hend s (hSS (hJS hs))).1
     have hone : d (s, 1) ∈ χq.target := by

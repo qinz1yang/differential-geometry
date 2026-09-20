@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yuan Liao
 -/
 import DifferentialGeometry.Topology.Morse.ConnectingOrbit
-import DifferentialGeometry.Topology.Manifold.CompactSectionExtension
+import DifferentialGeometry.Topology.Manifold.CompactCutoff
 import DifferentialGeometry.Topology.Diffeomorph.Flow
 import DifferentialGeometry.Analysis.Calculus.Inverse.ParameterizedInverse
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
@@ -35,37 +35,6 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M] [T2Space M]
 
-private theorem exists_supported_cutoff {K O : Set M} (hK : IsCompact K)
-    (hO : IsOpen O) (hKO : K ⊆ O) :
-    ∃ β : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ β ∧ HasCompactSupport β ∧
-      tsupport β ⊆ O ∧ β =ᶠ[𝓝ˢ K] 1 := by
-  classical
-  obtain ⟨t, b, hb⟩ :=
-    DifferentialGeometry.Topology.exists_finite_smoothBumpCovering_of_isCompact (I := I)
-      hK (fun _ => O) (fun x hx => hO.mem_nhds (hKO hx))
-  let β : M → ℝ := fun x => 1 - ∏ i : t, (1 - b i x)
-  have hβ : ContMDiff I 𝓘(ℝ, ℝ) ∞ β := by
-    apply contMDiff_const.sub
-    exact contMDiff_finsetProd fun i _ => contMDiff_const.sub (b i).contMDiff
-  have hc : IsCompact (⋃ i : t, tsupport (b i)) :=
-    isCompact_iUnion fun i => (b i).hasCompactSupport
-  have hs : tsupport β ⊆ ⋃ i : t, tsupport (b i) := by
-    apply closure_minimal ?_ hc.isClosed
-    intro x hx
-    by_contra hn
-    have hz (i : t) : b i x = 0 :=
-      image_eq_zero_of_notMem_tsupport (fun hi => hn (mem_iUnion.mpr ⟨i, hi⟩))
-    exact hx (by simp [β, hz])
-  refine ⟨β, hβ, hc.of_isClosed_subset (isClosed_tsupport β) hs, ?_, ?_⟩
-  · intro x hx
-    obtain ⟨i, hi⟩ := mem_iUnion.mp (hs hx)
-    exact (hb i).2 hi
-  · apply eventually_nhdsSet_iff_forall.mpr
-    intro x hx
-    filter_upwards [b.eventuallyEq_one x hx] with y hy
-    have hz : ∏ i : t, (1 - b i y) = 0 :=
-      Finset.prod_eq_zero (Finset.mem_univ (b.ind x hx)) (by rw [hy]; simp)
-    simp only [β, hz, sub_zero, Pi.one_apply]
 
 variable [I.Boundaryless]
 
@@ -87,7 +56,8 @@ theorem exists_descending_flow_tube {f : M → ℝ}
         ∀ t ∈ Ioo l u, ∀ x ∈ V, Diffeomorph.compactSupportFlow w hw hwc t x ∈ U := by
   let K := γ '' Icc a b
   have hK : IsCompact K := isCompact_Icc.image hγ.continuous
-  obtain ⟨β, hβ, hβc, hβO, hone⟩ := exists_supported_cutoff (I := I) hK hO hγO
+  obtain ⟨β, hβ, hβc, hβO, _, hone⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiff_cutoff_of_isCompact (I := I) hK hO hγO
   obtain ⟨N, hN, hKN, hNone⟩ := eventually_nhdsSet_iff_exists.mp hone
   have hr : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x => mvfderiv I f x (v x)) := by
     exact (contMDiff_snd_tangentBundle_modelSpace ℝ 𝓘(ℝ, ℝ)).comp
