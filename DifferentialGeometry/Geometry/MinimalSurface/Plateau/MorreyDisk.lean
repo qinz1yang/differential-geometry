@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalEnergy
+import DifferentialGeometry.Topology.LoopSpace.AffineLift
 import DifferentialGeometry.Geometry.Measure.Area.SpanningCompetitors
 import DifferentialGeometry.Analysis.Integration.Measure.UniformIntegrability
 
@@ -36,6 +37,54 @@ def IsWeaklyMonotoneOnce (σ : C(loopCircle, loopCircle)) : Prop :=
     ((Monotone ψ ∧ ∀ t, ψ (t + 1) = ψ t + 1) ∨
       (Antitone ψ ∧ ∀ t, ψ (t + 1) = ψ t - 1))
 
+
+
+open Function in
+theorem IsWeaklyMonotoneOnce.comp
+    {σ δ : C(loopCircle, loopCircle)} (hσ : IsWeaklyMonotoneOnce σ)
+    (hδ : IsWeaklyMonotoneOnce δ) : IsWeaklyMonotoneOnce (σ.comp δ) := by
+  obtain ⟨ψ, hψc, hψσ, hψsign⟩ := hσ
+  obtain ⟨f, hfc, hfδ, hfsign⟩ := hδ
+  refine ⟨ψ ∘ f, hψc.comp hfc, ?_, ?_⟩
+  · intro s
+    change (ψ (f s) : loopCircle) = σ (δ (s : loopCircle))
+    rw [hψσ, hfδ]
+  · rcases hψsign with ⟨hψm, hψp⟩ | ⟨hψm, hψp⟩
+    · rcases hfsign with ⟨hfm, hfp⟩ | ⟨hfm, hfp⟩
+      · exact Or.inl ⟨hψm.comp hfm, fun s => by simp only [Function.comp_apply, hfp, hψp]⟩
+      · refine Or.inr ⟨hψm.comp_antitone hfm, fun s => ?_⟩
+        dsimp only [Function.comp_apply]
+        rw [hfp]
+        have h := hψp (f s - 1)
+        rw [sub_add_cancel] at h
+        linarith
+    · rcases hfsign with ⟨hfm, hfp⟩ | ⟨hfm, hfp⟩
+      · exact Or.inr ⟨hψm.comp_monotone hfm, fun s => by simp only [Function.comp_apply, hfp, hψp]⟩
+      · refine Or.inl ⟨hψm.comp hfm, fun s => ?_⟩
+        dsimp only [Function.comp_apply]
+        rw [hfp]
+        have h := hψp (f s - 1)
+        rw [sub_add_cancel] at h
+        linarith
+
+open Function in
+theorem isWeaklyMonotoneOnce_symm_of_monotone_lift
+    (δ : loopCircle ≃ₜ loopCircle) (e : ℝ ≃ₜ ℝ)
+    (hlift : ∀ s : ℝ, δ (s : loopCircle) = (e s : loopCircle))
+    (hmono : Monotone e) (hperiod : ∀ s, e (s + 1) = e s + 1) :
+    IsWeaklyMonotoneOnce
+      (⟨δ.symm, δ.symm.continuous⟩ : C(loopCircle, loopCircle)) := by
+  have hstrict : StrictMono e := hmono.strictMono_of_injective e.injective
+  have hinv : Monotone e.symm := by
+    intro x y hxy
+    apply hstrict.le_iff_le.mp
+    simpa only [e.apply_symm_apply] using hxy
+  refine ⟨e.symm, e.symm.continuous, ?_,
+    Or.inl ⟨hinv, inverse_affinePeriodic e hperiod⟩⟩
+  intro s
+  apply δ.injective
+  change δ ((e.symm s : ℝ) : loopCircle) = δ (δ.symm (s : loopCircle))
+  rw [hlift, e.apply_symm_apply, δ.apply_symm_apply]
 
 
 def DiskWeakJordanTrace (γ : freeLoop M) (u : C(closedDisk, M)) : Prop :=
