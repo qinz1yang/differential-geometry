@@ -57,3 +57,56 @@ theorem ancientModel_metric_zero_le
   exact hanti ⟨le_rfl, hs⟩ ⟨hs, le_rfl⟩ hs
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+
+private local instance ancientOrderComplete : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+
+theorem IsAncientKappaSolution.metric_inner_antitoneOn
+    {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (x : F.M) (v : TangentSpace I x) :
+    AntitoneOn (fun s : ℝ => (F.S.base.metric s).inner x v v) (Set.Iic 0) := by
+  let _ : IsManifold I 1 F.M := IsManifold.of_le (n := ∞) (by decide)
+  intro s _ t ht hst
+  have hRic : ∀ r ∈ Set.Ioo s t, ∀ y : F.M, ∀ w : TangentSpace I y,
+      0 ≤ F.S.ricciAt r y (vec2 w w) := by
+    intro r hr y w
+    have hrmem : r ∈ D.carrier := by
+      rw [hF.carrier_eq]
+      exact hr.2.le.trans ht
+    apply metricRicciAt_nonnegative_of_curvatureOperator_nonnegative
+    apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
+      (I := I) (F.S.base.metric r) y).mpr
+    intro n c a b
+    simpa [SolutionFamily.rm04, metricRm04StandardAt_apply, vec4] using
+      hF.nonnegativeCurvatureOperator r hrmem y n c a b
+  have hanti := metric_inner_antitoneOn_of_ricci_nonnegative_interior F.S F.isSolution
+    (a := s) (b := t)
+    (fun r hr => by rw [hF.carrier_eq]; exact hr.2.trans ht)
+    (fun r hr => by rw [hF.regular_eq]; exact hr.2.trans_le ht)
+    hRic x v
+  exact hanti ⟨le_rfl, hst⟩ ⟨hst, le_rfl⟩ hst
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+end
