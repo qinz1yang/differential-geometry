@@ -88,3 +88,98 @@ theorem eLpNorm_comp_euclideanPlaneProdEquiv_symm
   eLpNorm_comp_measurePreserving hf measurePreserving_euclideanPlaneProdEquiv_symm_unit_disk
 
 end DifferentialGeometry.Analysis
+
+end
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Topology ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+local notation "V" => EuclideanSpace ℝ (Fin 2)
+
+theorem measurePreserving_complex_plane_repr_closedBall (b : ℝ) :
+    MeasurePreserving Complex.orthonormalBasisOneI.repr
+      (volume.restrict (Metric.closedBall (0 : ℂ) b))
+      (volume.restrict (Metric.closedBall (0 : V) b)) := by
+  have h := Complex.orthonormalBasisOneI.repr.measurePreserving.restrict_preimage
+    (s := Metric.closedBall (0 : V) b) measurableSet_closedBall
+  have heq : Complex.orthonormalBasisOneI.repr ⁻¹' Metric.closedBall (0 : V) b =
+      Metric.closedBall (0 : ℂ) b := by
+    ext z
+    simp only [mem_preimage, Metric.mem_closedBall, dist_zero_right,
+      LinearIsometryEquiv.norm_map]
+  simpa only [heq] using h
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Topology ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+theorem restrict_ball_eq_restrict_closedBall_complex (b : ℝ) :
+    volume.restrict (Metric.ball (0 : ℂ) b) =
+      volume.restrict (Metric.closedBall (0 : ℂ) b) := by
+  apply Measure.restrict_congr_set
+  have hnull : ∀ᵐ z : ℂ ∂volume, z ∉ Metric.sphere (0 : ℂ) b :=
+    measure_eq_zero_iff_ae_notMem.mp (Measure.addHaar_sphere volume (0 : ℂ) b)
+  filter_upwards [hnull] with z hz
+  apply propext
+  change dist z (0 : ℂ) < b ↔ dist z (0 : ℂ) ≤ b
+  have hne : dist z (0 : ℂ) ≠ b := hz
+  exact ⟨le_of_lt, fun h => lt_of_le_of_ne h hne⟩
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Topology ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+local notation "E" => EuclideanSpace ℝ (Fin 2)
+
+theorem measurePreserving_complex_plane_repr_ball (a : ℝ) :
+    MeasurePreserving Complex.orthonormalBasisOneI.repr
+      (volume.restrict (Metric.ball (0 : ℂ) a))
+      (volume.restrict (Metric.ball (0 : E) a)) := by
+  have h := Complex.orthonormalBasisOneI.repr.measurePreserving.restrict_preimage
+    (s := Metric.ball (0 : E) a) Metric.isOpen_ball.measurableSet
+  have heq : Complex.orthonormalBasisOneI.repr ⁻¹' Metric.ball (0 : E) a =
+      Metric.ball (0 : ℂ) a := by
+    ext z
+    simp only [mem_preimage, Metric.mem_ball, dist_zero_right,
+      LinearIsometryEquiv.norm_map]
+  simpa only [heq] using h
+
+theorem eLpNorm_comp_complex_plane_repr_ball
+    {F : Type*} [NormedAddCommGroup F] (f : E → F) (p : ℝ≥0∞) (a : ℝ) :
+    eLpNorm (f ∘ Complex.orthonormalBasisOneI.repr) p
+      (volume.restrict (Metric.ball (0 : ℂ) a)) =
+      eLpNorm f p (volume.restrict (Metric.ball (0 : E) a)) := by
+  have h :=
+    Complex.orthonormalBasisOneI.repr.toMeasurableEquiv.measurableEmbedding.eLpNorm_map_measure
+    (g := f) (p := p) (μ := volume.restrict (Metric.ball (0 : ℂ) a))
+  rw [LinearIsometryEquiv.coe_toMeasurableEquiv,
+    (measurePreserving_complex_plane_repr_ball a).map_eq] at h
+  exact h.symm
+
+theorem integral_comp_complex_plane_repr_ball (f : E → ℝ) (a : ℝ) :
+    (∫ z in Metric.ball (0 : ℂ) a, f (Complex.orthonormalBasisOneI.repr z)) =
+      ∫ x in Metric.ball (0 : E) a, f x :=
+  (measurePreserving_complex_plane_repr_ball a).integral_comp
+    Complex.orthonormalBasisOneI.repr.toMeasurableEquiv.measurableEmbedding f
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end

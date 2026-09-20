@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Integration.Lp.QuadraticDomination
 import Mathlib.Analysis.Normed.Operator.NormedSpace
 import Mathlib.Analysis.Calculus.FDeriv.Measurable
 import Mathlib.Analysis.Calculus.Rademacher
+import DifferentialGeometry.Analysis.Integration.Lp.QuadraticConvergence
+import DifferentialGeometry.Analysis.Integration.Lp.Compact
+import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Mathlib.Analysis.InnerProductSpace.PiL2
 
 noncomputable section
 
@@ -54,3 +58,58 @@ theorem tendsto_integral_quadratic_fderiv_of_eventually_lipschitz
 end Normed
 
 end DifferentialGeometry.Analysis
+
+end
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped ContDiff Topology ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d : ℕ} {ι : Type*} [Fintype ι]
+local notation "E" => EuclideanSpace ℝ (Fin d)
+local notation "F" => EuclideanSpace ℝ ι
+
+theorem tendsto_integral_target_metric_energy_of_strong_approximation
+    {S T : Set E} (hT : MeasurableSet T) (hTS : T ⊆ S)
+    {K : Set F} (hK : IsCompact K)
+    (A : F → F →L[ℝ] F →L[ℝ] ℝ) (hA : ContinuousOn A K)
+    (f : E → F) (u : ℕ → E → F)
+    (hu : ∀ n, ContDiffOn ℝ 1 (u n) S)
+    (huK : ∀ n, MapsTo (u n) S K)
+    (hfK : ∀ᵐ x ∂volume.restrict T, f x ∈ K)
+    (hae : ∀ᵐ x ∂volume.restrict T, Tendsto (fun n => u n x) atTop (𝓝 (f x)))
+    (G : Fin d → E → F) (hG : ∀ j, MemLp (G j) 2 (volume.restrict T))
+    (hdu : ∀ n j, MemLp (fun x => fderiv ℝ (u n) x (EuclideanSpace.single j 1))
+      2 (volume.restrict T))
+    (hder : ∀ j, Tendsto (fun n => eLpNorm (fun x =>
+      fderiv ℝ (u n) x (EuclideanSpace.single j 1) - G j x) 2 (volume.restrict T))
+      atTop (𝓝 0)) :
+    Tendsto (fun n => ∑ j : Fin d, ∫ x in T,
+      A (u n x) (fderiv ℝ (u n) x (EuclideanSpace.single j 1))
+        (fderiv ℝ (u n) x (EuclideanSpace.single j 1))) atTop
+      (𝓝 (∑ j : Fin d, ∫ x in T, A (f x) (G j x) (G j x))) := by
+  have hm (n : ℕ) : AEStronglyMeasurable (fun x => A (u n x)) (volume.restrict T) :=
+    ((hA.comp (hu n).continuousOn (huK n)).mono hTS).aestronglyMeasurable hT
+  have hAnorm : ContinuousOn (fun y => ‖A y‖) K :=
+    (@continuous_norm (F →L[ℝ] F →L[ℝ] ℝ) inferInstance).comp_continuousOn hA
+  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hAnorm
+  have hb (n : ℕ) : ∀ᵐ x ∂volume.restrict T, ‖A (u n x)‖ ≤ C := by
+    filter_upwards [ae_restrict_mem hT] with x hx
+    exact (le_abs_self _).trans (hC _ (huK n (hTS hx)))
+  have hc : ∀ᵐ x ∂volume.restrict T, Tendsto (fun n => A (u n x)) atTop (𝓝 (A (f x))) := by
+    filter_upwards [hae, hfK, ae_restrict_mem hT] with x hx hxK hxT
+    exact (hA (f x) hxK).tendsto.comp (tendsto_nhdsWithin_iff.mpr
+      ⟨hx, Filter.Eventually.of_forall fun n => huK n (hTS hxT)⟩)
+  apply tendsto_finsetSum
+  intro j _
+  exact tendsto_integral_quadratic_of_tendsto_eLpNorm_of_ae_tendsto
+    (fun n x => A (u n x)) (fun x => A (f x)) hm hb hc
+    (fun n x => fderiv ℝ (u n) x (EuclideanSpace.single j 1)) (G j)
+    (fun n => hdu n j) (hG j) (hder j)
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
