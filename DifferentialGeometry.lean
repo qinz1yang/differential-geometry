@@ -11438,3 +11438,4 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ModelChan
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.ModelChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTimeRestriction
+import DifferentialGeometry.Analysis.Elliptic.EndomorphismKernel

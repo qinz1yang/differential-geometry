@@ -486,7 +486,7 @@ theorem curvatureOperator_kernel_parallel_at_positive_time
   let _ : ∀ x, FiniteDimensional ℝ (V x) :=
     fun x => VectorBundle.finiteDimensional ℝ F V x
   apply PositiveSystem.kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
-    (G.metric t) (cov t) (hcov t) A (hAsymm t) (hApos t ⟨ht.1.le, ht.2⟩)
+    (G.metric t) (cov t) (hcov t) A (hApos t ⟨ht.1.le, ht.2⟩)
     (X t) (fun x => Q x (A t x)) ?_ ?_ (fun x => (hevolution t ht x).deriv)
   · intro x v hv
     rw [curvatureOperator_deriv_annihilates_kernel_at_positive_time
@@ -626,12 +626,12 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
     (hApos : ∀ t ∈ Ioc a b, ∀ x, (A t x).IsPositive)
     (X : ℝ → (x : M) → TangentSpace I x)
     (hevolution : ∀ t ∈ Ioc a b, ∀ x,
-      HasDerivAt (fun s ↦ A s x)
+      HasDerivWithinAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
           HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
-          Q x (A t x)) t) :
+          Q x (A t x)) (Ioc a b) t) :
     ∃ K : ContMDiffVectorSubbundle (I := I) (F := F) (V := V) (n := ∞),
       (∀ x, K.fiber x = (A b x).ker) ∧
       IsCovariantlyInvariantSubmoduleFamily (cov b) K.fiber ∧
@@ -643,7 +643,8 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
   have hb : b ∈ Ioc a b := ⟨hab, le_rfl⟩
   have hO : Ioo a b ⊆ Ioc a b := fun _ h => ⟨h.1, h.2.le⟩
   have hpos := fun t (ht : t ∈ Ioo a b) => hApos t (hO ht)
-  have hevol := fun t (ht : t ∈ Ioo a b) => hevolution t (hO ht)
+  have hevol := fun t (ht : t ∈ Ioo a b) x =>
+    (hevolution t (hO ht) x).hasDerivAt (Ioc_mem_nhds ht.1 ht.2)
   have hrank := fun t (ht : t ∈ Ioo a b) => hrange t (hO ht)
   have hrigidity := curvatureOperator_kernel_parallel_and_reaction_annihilated_of_constant_rank
     g cov hcov A hAspace q hrank hpos X hevol
@@ -657,17 +658,30 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
     have hcRank := hrange c (hO hc) x
     have hbRank := hrange b hb x
     omega
-  have hKb (x : M) := continuousLinearMap_kernel_eq_of_constant_on_left hab
-    (hevolution b hb x).differentiableAt.continuousAt (hK x) (hfin x)
+  have hcont (x : M) : ContinuousWithinAt (fun t => A t x) (Ioo a b) b :=
+    (hevolution b hb x).continuousWithinAt.mono hO
+  have hKb (x : M) : (A c x).ker = (A b x).ker := by
+    apply Submodule.eq_of_le_of_finrank_eq ?_ (hfin x)
+    intro v hv
+    apply LinearMap.mem_ker.mpr
+    let _ : (𝓝[Ioo a b] b).NeBot := right_nhdsWithin_Ioo_neBot hab
+    apply isClosed_singleton.mem_of_tendsto
+      ((hcont x).clm_apply continuousWithinAt_const).tendsto
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact LinearMap.mem_ker.mp ((hK x t ht).symm ▸ hv)
   have hQ (x : M) (v : V x) (hv : A b x v = 0) : Q x (A b x) v = 0 := by
-    have hcont := (hevolution b hb x).differentiableAt.continuousAt
-    exact continuousLinearMap_kernel_annihilation_of_constant_on_left hab hcont
-      (curvatureOperatorReactionEndomorphism3_contDiff.continuous.continuousAt.comp hcont)
-      (hK x) (hfin x)
-      (fun t ht v hv => hrigidity.2.1 t ht x v (LinearMap.mem_ker.mp hv))
-      v (LinearMap.mem_ker.mpr hv)
+    have hvC : v ∈ (A c x).ker := (hKb x).symm ▸ LinearMap.mem_ker.mpr hv
+    have hQcont := (curvatureOperatorReactionEndomorphism3_contDiff.continuous.continuousAt.comp_continuousWithinAt
+      (hcont x)).clm_apply (continuousWithinAt_const (b := v))
+    let _ : (𝓝[Ioo a b] b).NeBot := right_nhdsWithin_Ioo_neBot hab
+    apply isClosed_singleton.mem_of_tendsto hQcont.tendsto
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact hrigidity.2.1 t ht x v (LinearMap.mem_ker.mp ((hK x t ht).symm ▸ hvC))
   have hder (x : M) (v : V x) (hv : A b x v = 0) :
-      deriv (fun s => A s x) b v = 0 := by
+      (rawBundleEndomorphismConnLap (I := I) (g b) (cov b) (fun y => A b y) x +
+        HomConnectionGen.homBundleCovariantDerivativeGen
+          I M F V F V (cov b) (cov b) (fun y => A b y) x (X b x) +
+        Q x (A b x)) v = 0 := by
     have hvC : v ∈ (A c x).ker := (hKb x).symm ▸ LinearMap.mem_ker.mpr hv
     have hzero : ∀ t ∈ Ioc a b, A t x v = 0 := by
       intro t ht
@@ -676,20 +690,19 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
       · apply LinearMap.mem_ker.mp
         rw [hK x t ⟨ht.1, htb⟩]
         exact hvC
-    have hdiff := ((hevolution b hb x).clm_apply (hasDerivAt_const b v)).hasDerivWithinAt (s := Ioc a b)
+    have hdiff := (hevolution b hb x).clm_apply (hasDerivWithinAt_const b (Ioc a b) v)
     have hconst : HasDerivWithinAt (fun s => A s x v) 0 (Ioc a b) b :=
       (hasDerivWithinAt_const b (Ioc a b) (0 : V x)).congr hzero hv
     have hout := (hdiff.derivWithin (uniqueDiffOn_Ioc a b b hb)).symm.trans
       (hconst.derivWithin (uniqueDiffOn_Ioc a b b hb))
-    rw [← (hevolution b hb x).deriv] at hout
     simpa only [map_zero, add_zero] using hout
-  have hparallel := PositiveSystem.kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
-    (g b) (cov b) (hcov b) A (fun x => (hApos b hb x).toLinearMap.isSymmetric)
-    (hApos b hb) (X b) (fun x => Q x (A b x))
-    (fun x v hv => by rw [hder x v hv, inner_zero_left])
-    (fun x v _ => (curvatureOperatorReactionEndomorphism3_isPositive
-      (hApos b hb x).toLinearMap).inner_nonneg_left v)
-    (fun x => (hevolution b hb x).deriv)
+  have hparallel : IsCovariantlyInvariantSubmoduleFamily (cov b) (fun x => (A b x).ker) := by
+    apply DifferentialGeometry.Analysis.Elliptic.kernel_isCovariantlyInvariant_of_laplacian_add_drift_nonpos_on_kernel
+      (g b) (cov b) (hcov b) (A b) (hApos b hb) (X b)
+    intro x v hv
+    have heval := congrArg (fun z => inner ℝ z v) (hder x v hv)
+    simp only [add_apply, hQ x v hv, inner_add_left, inner_zero_left, add_zero] at heval
+    simpa only [add_apply, inner_add_left] using heval.le
   have hker : ∀ x, Module.finrank ℝ (A b x).ker = Module.finrank ℝ F - q := by
     intro x
     have hsum := (A b x).toLinearMap.finrank_range_add_finrank_ker
@@ -704,5 +717,6 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
     exact hparallel
   · intro x v hv
     exact hQ x v (LinearMap.mem_ker.mp (hKeq x ▸ hv))
+
 
 end DifferentialGeometry.Analysis.Parabolic
