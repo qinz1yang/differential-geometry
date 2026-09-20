@@ -240,6 +240,31 @@ theorem second_order_taylor_isLittleO
   simpa only [P, sub_self, map_zero, smul_zero, sub_zero] using h
 
 
+theorem fderiv_fderiv_comp_affine
+    {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {f : F → G} (A : E →L[ℝ] F) (c : F) (y v w : E)
+    (hf : ContDiffAt ℝ 2 f (c + A y)) :
+    fderiv ℝ (fderiv ℝ (fun z => f (c + A z))) y v w =
+      fderiv ℝ (fderiv ℝ f) (c + A y) (A v) (A w) := by
+  have hg (z : E) : HasFDerivAt (fun q => c + A q) A z := A.hasFDerivAt.const_add c
+  have hdf : DifferentiableAt ℝ (fderiv ℝ f) (c + A y) :=
+    (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt one_ne_zero
+  have heq : fderiv ℝ (fun z => f (c + A z)) =ᶠ[𝓝 y]
+      (fun z => (fderiv ℝ f (c + A z)).comp A) := by
+    filter_upwards [(hg y).continuousAt (hf.eventually (by norm_num))] with z hz
+    change ContDiffAt ℝ 2 f (c + A z) at hz
+    exact ((hz.differentiableAt (by norm_num)).hasFDerivAt.comp z (hg z)).fderiv
+  rw [heq.fderiv_eq]
+  have hdcomp : DifferentiableAt ℝ (fun z => fderiv ℝ f (c + A z)) y :=
+    hdf.comp y (hg y).differentiableAt
+  rw [fderiv_clm_comp hdcomp (differentiableAt_const A)]
+  have hd : fderiv ℝ (fun z => fderiv ℝ f (c + A z)) y =
+      (fderiv ℝ (fderiv ℝ f) (c + A y)).comp A :=
+    (hdf.hasFDerivAt.comp y (hg y)).fderiv
+  rw [hd]
+  simp
+
 namespace Calculus
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]

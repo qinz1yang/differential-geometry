@@ -1,3 +1,5 @@
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Convex.Function
 import Mathlib.Topology.Semicontinuity.Basic
@@ -122,6 +124,28 @@ theorem convexOn_supConvolutionOn_add_norm_sq
   rw [← hlin, ← hid (a • x + b • z) y] at hsum
   linarith
 
+theorem isLocalMax_sub_penalized_comp_of_supConvolutionOn
+    {X : Type*} [PseudoMetricSpace X] {u φ : X → ℝ} {s : Set X}
+    (hu : BddAbove (u '' s)) {ε : ℝ} (hε : 0 < ε) {x y : X}
+    (hy : y ∈ interior s)
+    (hmax : supConvolutionOn s u ε x = u y - dist x y ^ 2 / (2 * ε))
+    (hφ : IsLocalMax (fun z => supConvolutionOn s u ε z - φ z) x)
+    {T : X → X} (hT : ContinuousAt T y) (hTy : T y = x) :
+    IsLocalMax (fun z => u z - φ (T z) - dist (T z) z ^ 2 / (2 * ε)) y := by
+  have ht : Tendsto T (𝓝 y) (𝓝 x) := by
+    simpa only [ContinuousAt, hTy] using hT
+  filter_upwards [ht hφ, isOpen_interior.mem_nhds hy] with z hz hzmem
+  have hb := bddAbove_quadratic_penalty hu hε (T z)
+  have hle := le_csSup hb (mem_image_of_mem
+    (fun w => u w - dist (T z) w ^ 2 / (2 * ε)) (interior_subset hzmem))
+  change u z - dist (T z) z ^ 2 / (2 * ε) ≤ supConvolutionOn s u ε (T z) at hle
+  change supConvolutionOn s u ε (T z) - φ (T z) ≤ supConvolutionOn s u ε x - φ x at hz
+  change u z - φ (T z) - dist (T z) z ^ 2 / (2 * ε) ≤
+    u y - φ (T y) - dist (T y) y ^ 2 / (2 * ε)
+  rw [hTy]
+  rw [hmax] at hz
+  linarith
+
 theorem isLocalMax_sub_translate_of_supConvolutionOn
     {E : Type*} [NormedAddCommGroup E] {u φ : E → ℝ} {s : Set E}
     (hu : BddAbove (u '' s)) {ε : ℝ} (hε : 0 < ε) {x y : E}
@@ -129,25 +153,50 @@ theorem isLocalMax_sub_translate_of_supConvolutionOn
     (hmax : supConvolutionOn s u ε x = u y - dist x y ^ 2 / (2 * ε))
     (hφ : IsLocalMax (fun z => supConvolutionOn s u ε z - φ z) x) :
     IsLocalMax (fun z => u z - φ (x + (z - y))) y := by
-  have ht : Tendsto (fun z : E => x + (z - y)) (𝓝 y) (𝓝 x) := by
-    have hc : Continuous (fun z : E => x + (z - y)) := by fun_prop
-    simpa only [sub_self, add_zero] using hc.tendsto y
-  have hevent := ht hφ
-  filter_upwards [hevent, isOpen_interior.mem_nhds hy] with z hz hzmem
-  have hdist : dist (x + (z - y)) z = dist x y := by
+  have hT : ContinuousAt (fun z : E => x + (z - y)) y := by fun_prop
+  have hTy : x + (y - y) = x := by simp
+  have hlocal := isLocalMax_sub_penalized_comp_of_supConvolutionOn hu hε hy hmax hφ hT hTy
+  have hdist (z : E) : dist (x + (z - y)) z = dist x y := by
     simp only [dist_eq_norm]
     congr 1
     abel
-  have hle : u z - dist x y ^ 2 / (2 * ε) ≤ supConvolutionOn s u ε (x + (z - y)) := by
-    have h := le_csSup (bddAbove_quadratic_penalty hu hε (x + (z - y)))
-      (mem_image_of_mem (fun w => u w - dist (x + (z - y)) w ^ 2 / (2 * ε))
-        (interior_subset hzmem))
-    simpa only [hdist, supConvolutionOn] using h
-  change supConvolutionOn s u ε (x + (z - y)) - φ (x + (z - y)) ≤
-    supConvolutionOn s u ε x - φ x at hz
+  filter_upwards [hlocal] with z hz
+  change u z - φ (x + (z - y)) - dist (x + (z - y)) z ^ 2 / (2 * ε) ≤
+    u y - φ (x + (y - y)) - dist (x + (y - y)) y ^ 2 / (2 * ε) at hz
   change u z - φ (x + (z - y)) ≤ u y - φ (x + (y - y))
-  rw [hmax] at hz
-  rw [sub_self, add_zero]
+  simp_rw [hdist] at hz
   linarith
+
+theorem fderiv_eq_of_upper_test_supConvolutionOn
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {u φ : E → ℝ} {s : Set E} (hu : BddAbove (u '' s))
+    {ε : ℝ} (hε : 0 < ε) {x y : E} (hy : y ∈ s)
+    (hmax : supConvolutionOn s u ε x = u y - dist x y ^ 2 / (2 * ε))
+    (hφ : DifferentiableAt ℝ φ x)
+    (hm : IsLocalMax (fun z => supConvolutionOn s u ε z - φ z) x) :
+    fderiv ℝ φ x = ε⁻¹ • innerSL ℝ (y - x) := by
+  have hmin : IsLocalMin (fun z => φ z + dist z y ^ 2 / (2 * ε)) x := by
+    filter_upwards [hm] with z hz
+    have hb := bddAbove_quadratic_penalty hu hε z
+    have hle := le_csSup hb (mem_image_of_mem (fun w => u w - dist z w ^ 2 / (2 * ε)) hy)
+    change u y - dist z y ^ 2 / (2 * ε) ≤ supConvolutionOn s u ε z at hle
+    change supConvolutionOn s u ε z - φ z ≤ supConvolutionOn s u ε x - φ x at hz
+    change φ x + dist x y ^ 2 / (2 * ε) ≤ φ z + dist z y ^ 2 / (2 * ε)
+    rw [hmax] at hz
+    linarith
+  have hscalar : (2 * ε)⁻¹ * 2 = ε⁻¹ := by field_simp
+  have hdq : HasFDerivAt (fun z : E => dist z y ^ 2 / (2 * ε))
+      (ε⁻¹ • innerSL ℝ (x - y)) x := by
+    have hd : HasFDerivAt (fun z : E => (2 * ε)⁻¹ * ‖z - y‖ ^ 2)
+        (ε⁻¹ • innerSL ℝ (x - y)) x := by
+      have h := ((hasFDerivAt_id (𝕜 := ℝ) x).sub_const y).norm_sq.const_mul ((2 * ε)⁻¹)
+      simpa only [Function.comp_def, id_eq, ContinuousLinearMap.comp_id,
+        two_nsmul, ← two_smul ℝ, smul_smul, hscalar] using h
+    convert hd using 1
+    ext z
+    rw [dist_eq_norm, div_eq_mul_inv, mul_comm]
+  have hz := hmin.hasFDerivAt_eq_zero (hφ.hasFDerivAt.add hdq)
+  rw [show y - x = -(x - y) by abel, map_neg, smul_neg]
+  exact eq_neg_of_add_eq_zero_left hz
 
 end DifferentialGeometry.Analysis.Convex
