@@ -264,6 +264,16 @@ What is open, and what we found wrong with our own contract today:
   position"). Can one theorem serve both purposes, and what is its exact statement with the
   control needed to guarantee `complexity(D₂') < complexity(D)`? A generic perturbation can
   push touching sheets *through* each other; what hypothesis prevents that?
+  What the tree has for this option: the entry cell of Lemma 2, the projection of the
+  embedded disk upstairs, is proved locally injective and ≤ 2-to-1 with its boundary fields
+  (`LoopTheorem/ProjectedCellInDouble.lean:23`); Moise's first paragraph is **proved in the
+  half-space model** (`SingularGeneralPosition.lean:3447`: an ε-close simplicial map, still
+  locally injective and ≤ 2-to-1, double point set a 1-manifold with boundary on `{ℓ = 0}`,
+  a crossing at every double point, boundary kept in a prescribed neighbourhood); manifold
+  level producers exist only one double point at a time, with an "unchanged off `V`" clause
+  (`GeneralPositionWithin.lean:141`, `ProjectedBoundaryLocalNormalization.lean:20`). There is
+  **no** finite-cover induction over charts and no global assembly of the singular set, and
+  none of these theorems controls *which way* touching sheets separate.
 
   (d) *Simplicial/source-level*: `D` is simplicial for `K` and `K(Δ)` (p. 187). Is there a
   purely combinatorial description of `D₂` after the push (a different simplicial map on a

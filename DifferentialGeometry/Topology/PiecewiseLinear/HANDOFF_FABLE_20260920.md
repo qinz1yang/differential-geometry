@@ -161,6 +161,28 @@ complexity induction — `DescendingSurgery` is consumed only inside the selecti
 there is no cell-level induction to a `NonsingularCell`; (iii) transport back to
 `NonsingularCell S → EmbeddedDisk S`, partly present.
 
+> **Correction, later on 2026-09-20 (Fable lead session). Item (i) above names the wrong
+> cell.** The cell of `LemmaTwo.lean:145` is `ι ∘ S.singularMap`; it has no local injectivity
+> and no fibre bound, so no general position argument can make it normal, and it belongs to
+> the *return* leg. The entry cell of Lemma 2 is
+> `DoubleCoverDiagram.exists_projected_singular_two_cell_in_double`
+> (`LoopTheorem/ProjectedCellInDouble.lean:23`), the projection of the embedded disk upstairs,
+> and it is **proved** with local injectivity, fibres of at most two points, the two boundary
+> fields and the avoidance of `S.normalSubgroup`. Moise's first paragraph is **proved in the
+> half space model**, preserving local injectivity and the fibre bound
+> (`SingularGeneralPosition.lean:3447`; stability at `:274`, `:375`; chart form
+> `SingularChart.lean:155`). What is open in (i) is only the globalisation across charts: a
+> finite cover induction giving the `crossing` field, and the assembly of one global
+> `NormalSingularSetTriangulation`. General position is load bearing, not cosmetic: the
+> projected disk can have a *two dimensional* double point set (two disjoint sub-disks of the
+> upstairs disk exchanged by the deck involution), which the fibre bound does not exclude.
+> Item (ii) now exists, motive generic: `LoopTheorem/ComplexityInduction.lean`. For (iii) the
+> right target is the PL level `EmbeddedDisk S` directly, not `NonsingularCell S`.
+> The 35.2 chain: `Moise352SkeletonExtension n` is `Moise352 n` with two hypotheses inserted,
+> so `moise352_of_inwardPush_of_skeletonExtension` is modus ponens and records no reduction;
+> see prompt A of `CONSULT_FABLE_20260920.md`. Moise's Cases 3 and 4 construct no tube but
+> silently push the touching sheets of the cross reglue apart; see prompt B there.
+
 **`hGcrossing` is now dischargeable from the producer.**
 `exists_cross_reglued_cell_crossing_outside_of_boundaryBranch`
 (`LoopTheorem/CrossRegluedCellCrossing.lean`, commit `4906eb088`) concludes exactly the
