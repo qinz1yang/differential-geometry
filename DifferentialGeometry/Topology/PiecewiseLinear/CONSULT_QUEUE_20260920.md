@@ -34,7 +34,7 @@ except where marked. Reading downwards is the order the induction uses.
 | The tube itself | `IsCrossSeamTubeProducer` | **open — prompt 1** |
 | Triangulation of the double point set minus a branch | `BranchDeletion.lean` | proved |
 | Branch bijection `Branch ≃ {b ≠ c}` | `BranchDeletion.lean` | proved, for *any* such triangulation |
-| Normality of the resolved cell, five of six fields | `CrossSeamRegluedData.normal` | **open** |
+| Normality of the resolved cell, all six fields | `ResolvedCellNormal.lean` | proved, from four tube-level hypotheses |
 | `hGD`: the reglue changes no double point outside the tube | belongs with `CutAndPaste.lean` | **open** |
 | Branch *injection* for the direct candidate | `BranchDescent.lean:91` is the consumer | **open** |
 | Uniform descent through one door | `BoundaryBranchDescent.lean` | proved |
@@ -338,7 +338,21 @@ be much cheaper to prove.
 two-cell with a branch whose neighbourhood is not a product of that kind? Knowing
 the counterexample would tell us which hypothesis of `NormalSingularCellData` is
 load-bearing. If the four sheets can be locally knotted or the branch can be wild,
-say so plainly.
+say so plainly. **Please take this question seriously rather than as a formality**:
+two statements on this chain that everyone treated as true-but-unproved have turned
+out to be false in the last few hours, so a considered "this is false, here is the
+counterexample" is the single most valuable answer you could give.
+
+**Q5.** Four further properties of the tube are now known to be needed downstream, by
+`CrossSeamTubeData.normalOfResolvedCell` (`LoopTheorem/ResolvedCellNormal.lean`), and
+they should probably be part of the tube statement rather than separate hypotheses.
+Are they automatic for a boundary branch, or do they constrain the tube further?
+(i) every double point of the reglued cell outside the tube has an atlas chart at it
+whose source is disjoint from the parametrised cylinder; (ii) the two end cross
+sections lie in the boundary surface `B`; (iii) over the tube, a source point lies on
+the boundary of the source disk exactly when it lies over an endpoint of the base
+interval — the two source strips run from one end of the tube to the other;
+(iv) the tube meets `BdM` only in its two end cross sections.
 
 ### Constraints on the answer
 
