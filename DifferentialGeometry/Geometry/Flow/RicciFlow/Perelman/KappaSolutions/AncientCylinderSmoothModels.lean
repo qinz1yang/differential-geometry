@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 local notation "SphereAmbient" => EuclideanSpace ℝ (Fin 3)
 local notation "SphereTwo" => Metric.sphere (0 : SphereAmbient) 1

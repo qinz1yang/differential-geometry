@@ -11433,3 +11433,6 @@ import DifferentialGeometry.Analysis.Viscosity.SupConvolution
 import DifferentialGeometry.Analysis.Viscosity.Stability
 import DifferentialGeometry.Analysis.Viscosity.ColeHopf
 import DifferentialGeometry.Analysis.Viscosity.Comparison
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.ModelChange
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ModelChange
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.ModelChange

@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

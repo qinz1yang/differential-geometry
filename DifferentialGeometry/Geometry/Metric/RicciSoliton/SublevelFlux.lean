@@ -8,7 +8,7 @@ namespace DifferentialGeometry.Geometry
 
 open MeasureTheory Curvature Operator Topology.Morse
 open Integral.Measure
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

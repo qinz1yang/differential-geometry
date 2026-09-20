@@ -8,7 +8,7 @@ import DifferentialGeometry.Topology.Morse.CriticalPoints
 namespace DifferentialGeometry.Topology.Morse
 
 open Integral.DivergenceTheorem.WithBoundary
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 
@@ -46,7 +46,7 @@ end DifferentialGeometry.Topology.Morse
 namespace DifferentialGeometry.Topology.Morse
 
 open Integral.DivergenceTheorem.WithBoundary
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 
@@ -180,7 +180,9 @@ theorem levelSetMetric_transContinuousLinearEquiv_inner
       mfderiv J I id x.1 (mfderiv 𝓘(ℝ, MorseModel m) J (Subtype.val : LevelSetSpace f a → M) x z) =
         mfderiv 𝓘(ℝ, MorseModel m) I (Subtype.val : LevelSetSpace f a → M) x z :=
     (mfderiv_comp_apply x hid hi z).symm
-  rw [levelSetMetric_inner, SmoothRiemannianMetric.transContinuousLinearEquiv_inner, hD, hD]
+  rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hD
+  rw [levelSetMetric_inner, SmoothRiemannianMetric.transContinuousLinearEquiv_inner]
+  exact congrArg₂ (fun v w => g.inner x.1 v w) (hD v) (hD w)
 
 end
 

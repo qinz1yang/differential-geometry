@@ -26,7 +26,7 @@ end Set
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Set Filter
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 section Obstruction
 
@@ -142,7 +142,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Set Filter
 open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 section AncientTerminal
 

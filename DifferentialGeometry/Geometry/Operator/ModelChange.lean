@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Operator.Pullback
 
 namespace DifferentialGeometry.Geometry.Operator
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

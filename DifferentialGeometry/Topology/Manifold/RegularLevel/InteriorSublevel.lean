@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.Manifold.ContMDiff.Interior
+import DifferentialGeometry.Topology.Manifold.MFDeriv.Interior
 import DifferentialGeometry.Topology.Manifold.RegularLevel.Sublevel
 import DifferentialGeometry.Topology.Manifold.MFDeriv.ModelTransport
 import DifferentialGeometry.Topology.Manifold.Homeomorph.Transport
@@ -48,8 +50,8 @@ private theorem interiorFunction_regular {f : M → ℝ} {a : ℝ}
     hgold.comp (contMDiff_interiorAtlas_id I ∞)
   change ∀ x : U, f x = a → mfderiv (interiorModel e) 𝓘(ℝ, ℝ) (fun y : U => f y) x ≠ 0
   intro x hx hz
-  have hd := mfderiv_transContinuousLinearEquiv 𝓘(ℝ, E) e hg
-    (x := x) BoundarylessManifold.isInteriorPoint
+  have hd := mfderiv_transContinuousLinearEquiv 𝓘(ℝ, E) e (hg.mdifferentiableAt (by simp))
+    (x := x)
   have ho := mfderiv_interiorAtlas I hgold x
   have hu := mfderiv_openRestriction I hf x x.property
   have hz' : (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) f x.val).comp e.symm.toContinuousLinearMap = 0 := by

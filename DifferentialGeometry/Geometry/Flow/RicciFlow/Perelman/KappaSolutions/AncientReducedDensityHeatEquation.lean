@@ -12,7 +12,7 @@ open Filter Set _root_.MeasureTheory Bundle
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Integral.Measure Entropy
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Riemannian
-open scoped Manifold ContDiff ENNReal NNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal NNReal _root_.Topology
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -232,7 +232,7 @@ open Filter Set _root_.MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure Entropy
-open scoped Manifold ContDiff _root_.Topology NNReal ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology NNReal ENNReal
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]

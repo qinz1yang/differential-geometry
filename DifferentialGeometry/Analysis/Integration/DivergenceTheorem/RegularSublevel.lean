@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Topology.Morse
 
 open Integral.DivergenceTheorem.WithBoundary Geometry.Operator MeasureTheory Bundle
 open Integral.DivergenceTheorem
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

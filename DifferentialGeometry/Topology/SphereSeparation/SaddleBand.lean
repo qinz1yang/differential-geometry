@@ -101,8 +101,8 @@ theorem exists_ambient_isotopy_saddle_band {e : SphereTwo → EuclideanThree}
   have huniq : ∀ x, (P (e x)).2 = (P (e p)).2 →
       IsCriticalPointAt J (fun y => (P (e y)).2) x → x = p := by
     intro x hx hc
-    exact hunique x hx ((DifferentialGeometry.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
-      I L hf BoundarylessManifold.isInteriorPoint).mp hc)
+    exact hunique x hx ((DifferentialGeometry.Topology.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
+      I L (fun y => e y 2) x).mp hc)
   obtain ⟨s, hs, hsη, r, t, h, _, _, hh, χ, A, hχ, hχ0, hA, hchart, H, hH, hHi, hH0,
     hgraph, hopen, hband, hreg, hcrit, _, hpgerm, hgerm, K, hK, _, hfix⟩ :=
     Morse.exists_ambient_isotopy_saddle_band he' hnd' hindex' huniq hη
@@ -118,18 +118,18 @@ theorem exists_ambient_isotopy_saddle_band {e : SphereTwo → EuclideanThree}
   have heq : (fun y => Φ 1 (e y) 2) = fun y => (H 1 (P (e y))).2 := funext hΦh
   have hcritical (x : SphereTwo) :
       IsCriticalPointAt I (fun y => Φ 1 (e y) 2) x ↔ IsCriticalPointAt I (fun y => e y 2) x := by
-    rw [← DifferentialGeometry.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
-      I L hfg BoundarylessManifold.isInteriorPoint, heq]
-    exact (hcrit x).trans (DifferentialGeometry.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
-      I L hf BoundarylessManifold.isInteriorPoint)
+    rw [← DifferentialGeometry.Topology.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
+      I L (fun y => Φ 1 (e y) 2) x, heq]
+    exact (hcrit x).trans (DifferentialGeometry.Topology.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
+      I L (fun y => e y 2) x)
   have hpgerm' : (fun y => Φ 1 (e y) 2) =ᶠ[𝓝 p] (fun y => e y 2 + s) := by
     rw [heq]
     exact hpgerm
   have hgerm' (x : SphereTwo) (hx : IsCriticalPointAt I (fun y => e y 2) x) (hxp : x ≠ p) :
       (fun y => Φ 1 (e y) 2) =ᶠ[𝓝 x] (fun y => e y 2) := by
     rw [heq]
-    exact hgerm x ((DifferentialGeometry.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
-      I L hf BoundarylessManifold.isInteriorPoint).mpr hx) hxp
+    exact hgerm x ((DifferentialGeometry.Topology.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
+      I L (fun y => e y 2) x).mpr hx) hxp
   have hhessian (x : SphereTwo) (hx : IsCriticalPointAt I (fun y => e y 2) x) :
       chartHessianAt (fun y => Φ 1 (e ((extChartAt I x).symm y)) 2) (extChartAt I x x) =
         chartHessianAt (fun y => e ((extChartAt I x).symm y) 2) (extChartAt I x x) := by
@@ -144,8 +144,8 @@ theorem exists_ambient_isotopy_saddle_band {e : SphereTwo → EuclideanThree}
   have hregular (x : SphereTwo) (hx : Φ 1 (e x) 2 = e p 2) :
       mfderiv I 𝓘(ℝ, ℝ) (fun y => Φ 1 (e y) 2) x ≠ 0 := by
     intro hc
-    have hc' := (DifferentialGeometry.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
-      I L hfg BoundarylessManifold.isInteriorPoint).mpr hc
+    have hc' := (DifferentialGeometry.Topology.Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
+      I L (fun y => Φ 1 (e y) 2) x).mpr hc
     rw [heq] at hc'
     exact hreg x ((hΦh x).symm.trans hx) hc'
   let F := (saddleBandChart hs).toHomeomorph.trans (A.toHomeomorph.restrictFiber hA (e p 2))

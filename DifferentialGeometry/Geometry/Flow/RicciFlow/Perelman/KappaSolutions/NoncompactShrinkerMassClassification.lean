@@ -11,7 +11,7 @@ open Bundle
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff ENNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 universe u uE uH
 

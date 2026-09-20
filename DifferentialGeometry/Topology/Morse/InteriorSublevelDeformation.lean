@@ -47,7 +47,7 @@ theorem exists_sublevelHomotopyEquivUnder_of_interiorSublevel
   have hrg : ∀ x ∈ g ⁻¹' Icc a b, mfderiv J 𝓘(ℝ, ℝ) g x ≠ 0 := by
     intro x hx hc
     have hxs := (isCriticalPointAt_transContinuousLinearEquiv_iff
-      𝓘(ℝ, E) e hg BoundarylessManifold.isInteriorPoint).mp hc
+      𝓘(ℝ, E) e g x).mp hc
     have hxo := (isCriticalPointAt_interiorAtlas I hgold x).mp hxs
     exact hr x hx ((isCriticalPointAt_openRestriction I hf x x.property).mp hxo)
   have hlo : sublevel f a ⊆ (U : Set M) := fun _ hx => hinterior (hx.trans hab)

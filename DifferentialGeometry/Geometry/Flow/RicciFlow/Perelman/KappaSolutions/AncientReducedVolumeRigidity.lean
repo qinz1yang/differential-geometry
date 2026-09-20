@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure Entropy
-open scoped Manifold ContDiff _root_.Topology NNReal ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology NNReal ENNReal
 universe u uH
 variable {n : ℕ} {H : Type uH} [TopologicalSpace H]
   {I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H} [I.Boundaryless]

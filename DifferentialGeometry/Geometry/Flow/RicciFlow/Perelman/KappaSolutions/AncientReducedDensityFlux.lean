@@ -9,7 +9,7 @@ open Filter Set MeasureTheory Bundle
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Integral.Measure Entropy
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Riemannian
-open scoped Manifold ContDiff ENNReal NNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal NNReal _root_.Topology
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]

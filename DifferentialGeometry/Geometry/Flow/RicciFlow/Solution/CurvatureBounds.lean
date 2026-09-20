@@ -13,7 +13,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 section
 

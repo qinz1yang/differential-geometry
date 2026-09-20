@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Opera
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Entropy
-open scoped Manifold ContDiff _root_.Topology NNReal Matrix.Norms.Elementwise
+open scoped _root_.Manifold ContDiff _root_.Topology NNReal Matrix.Norms.Elementwise
 
 universe u uE uH
 

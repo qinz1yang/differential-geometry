@@ -10,7 +10,7 @@ open Bundle Set MeasureTheory
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H]

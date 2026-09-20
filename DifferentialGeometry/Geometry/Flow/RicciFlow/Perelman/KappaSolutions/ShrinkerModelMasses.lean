@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open MeasureTheory
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 local notation "CylI" => ModelWithCorners.prod (𝓡 2) 𝓘(ℝ, ℝ)
 local notation "S2" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1

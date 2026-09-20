@@ -26,7 +26,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator (normGradSqFun gradientFun normGradSqFun_def
   normGradSqFun_transContinuousLinearEquiv)
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
