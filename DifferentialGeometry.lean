@@ -9227,6 +9227,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSou
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedWords
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedFixture
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedBufferedFixture
+import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 /-!
 # Differential geometry and geometric analysis
 -/
