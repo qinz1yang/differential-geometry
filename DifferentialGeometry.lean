@@ -12596,3 +12596,4 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalScalarJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusMetricLimits
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CompatibleChainLimitsGeneric
+import DifferentialGeometry.Topology.ThreeManifold.TubeFrameSign
