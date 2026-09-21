@@ -264,6 +264,7 @@ theorem exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDi
           ∃ D : ℝ, 0 < D ∧ ∃ f : ℕ → ℕ, StrictMono f ∧
             ∃ (x : ∀ i, (X.term (f i)).M) (r : ℕ → ℝ)
               (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)),
+              (∀ i, 1 ≤ (X.term (f i)).S.scalar 0 (x i)) ∧
               (∀ i, 0 < r i) ∧
               Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop ∧
               Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i) * r i ^ 2) atTop atTop ∧
@@ -286,8 +287,21 @@ theorem exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDi
     exists_curvDerivNorm_bound_at_terminal_scalar_scale.{u} hkappa
   refine ⟨epsStar, hepsStar, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X hfail
-  obtain ⟨D, hD, f, hf, x, r, hr, hlarge, hQr, hcontrol⟩ :=
+  obtain ⟨D, hD, f₀, hf₀, x₀, r₀, hr₀, hlarge₀, hQr₀, hcontrol₀⟩ :=
     X.exists_terminal_scalar_point_selection hfail
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hlarge₀.eventually_ge_atTop 1)
+  let shift : ℕ → ℕ := fun i => i + N
+  have hshift : StrictMono shift := fun _ _ h => Nat.add_lt_add_right h N
+  let f := f₀ ∘ shift
+  have hf : StrictMono f := hf₀.comp hshift
+  let x := fun i => x₀ (shift i)
+  let r := r₀ ∘ shift
+  have hr := fun i => hr₀ (shift i)
+  have hlarge := hlarge₀.comp hshift.tendsto_atTop
+  have hQr := hQr₀.comp hshift.tendsto_atTop
+  have hcontrol := fun i => hcontrol₀ (shift i)
+  have hQone : ∀ i, 1 ≤ (X.term (f i)).S.scalar 0 (x i) := fun i =>
+    hN (shift i) (Nat.le_add_left N i)
   let hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i) := fun i => (hr i).2.2.2
   let Y := X.terminalCurvatureRescaledSequence f x hQ
   have hjets := rescaled_sequence_local_jets X f hf x hQ r (fun i => (hr i).1)
@@ -298,7 +312,7 @@ theorem exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDi
       Y (rescaled_sequence_complete X f x hQ) (fun i => X.connected (f i)) hjets
       (rescaled_sequence_local_injectivity X hkappa hsigma f hf x hQ hlarge
         (fun R hR => hjets R hR 0))
-  refine ⟨D + 1, by linarith, f, hf, x, r, hQ, (fun i => (hr i).1),
+  refine ⟨D + 1, by linarith, f, hf, x, r, hQ, hQone, (fun i => (hr i).1),
     hlarge, hQr, hcontrol, P, hcanonical, hconnected, hcompact, hsourceconn, hnested, ?_, ?_, ?_, ?_⟩
   · apply KappaSolutions.pointedScalar_base_eq_of_metricCG_canonical_domains
       P.convergence.metrics hcanonical
@@ -387,6 +401,7 @@ theorem exists_terminalCurvatureRescaledSequence_noncompact_metric_limit_of_not_
           ∃ D : ℝ, 0 < D ∧ ∃ f : ℕ → ℕ, StrictMono f ∧
             ∃ (x : ∀ i, (X.term (f i)).M) (r : ℕ → ℝ)
               (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)),
+              (∀ i, 1 ≤ (X.term (f i)).S.scalar 0 (x i)) ∧
               (∀ i, 0 < r i) ∧
               Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop ∧
               Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i) * r i ^ 2) atTop atTop ∧
@@ -411,7 +426,7 @@ theorem exists_terminalCurvatureRescaledSequence_noncompact_metric_limit_of_not_
     exists_parabolic_curvature_bound_at_terminal_scalar_scale.{u} hkappa
   refine ⟨min e₀ e₁, lt_min he₀ he₁, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X hfail
-  obtain ⟨D, hD, f, hf, x, r, hQ, hr, hlarge, hQr, hcontrol,
+  obtain ⟨D, hD, f, hf, x, r, hQ, hQone, hr, hlarge, hQr, hcontrol,
     P, hcanonical, hconnected, hcompact, hsourceconn, hnested, hbase, hupper, hsec, hnc⟩ :=
     hlimit eps heps (hle.trans (min_le_left _ _)) sigma hsigma Phi hPhi X hfail
   have hball : ∀ᶠ i in atTop, ∀ y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0)
@@ -429,7 +444,7 @@ theorem exists_terminalCurvatureRescaledSequence_noncompact_metric_limit_of_not_
     norm_num at hs
     exact (le_abs_self _).trans (hs.trans (mul_le_mul_of_nonneg_left hb (by norm_num)))
   have hescape := rescaled_sequence_basepoint_escapes X f hf x hQ hlarge hc hball
-  refine ⟨D, hD, f, hf, x, r, hQ, hr, hlarge, hQr, hcontrol,
+  refine ⟨D, hD, f, hf, x, r, hQ, hQone, hr, hlarge, hQr, hcontrol,
     P, hcanonical, hconnected, ?_, hcompact, hsourceconn, hnested, hbase, hupper, hsec, hnc⟩
   apply P.maps.noncompact_of_escaping_points P.convergence.metrics
     (fun i => by rw [hcanonical i]; rfl) (fun i => X.connected (f (P.subseq i)))
