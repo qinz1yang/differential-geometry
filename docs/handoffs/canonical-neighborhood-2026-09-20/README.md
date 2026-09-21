@@ -847,3 +847,30 @@ sorry warnings and no other diagnostics. Evidence is in
 `/private/tmp/wt17-source-segment-necks-build.log`,
 `/private/tmp/wt17-source-segment-necks-audit.log`, and
 `/private/tmp/wt17-source-segment-necks-root-build.log`.
+
+## Escaping-limit assembly with genuine source necks
+
+The continuation after `d559da9a6` adds
+`exists_terminal_pointed_limit_with_missing_endpoint_and_necks` in
+`NormalizedEscapeNecks.lean`. From failure of bounded curvature at distance, this
+producer returns the actual pointed limit, source convergence maps and geodesics,
+missing completion point, nonnegative limit sectional curvature, scalar divergence,
+and the prescribed quantitative curvature-distance separation. It additionally
+returns eventual strong necks centered at the actual source geodesic points as the
+limit parameter approaches the missing endpoint. Moving-point scalar convergence
+is proved through the actual inverse convergence maps, with source membership
+established from the minimizing segment and the precise target balls.
+
+The preceding escaping-limit statement is unchanged. The new conclusion constructs
+source necks; it does not yet claim necks in the incomplete limit or a realized
+finite horn. The bounded-distance theorem and the 21 retained sorrys remain open.
+This is the source part of Kleiner--Lott, Section 52, Lemma 52.14(2), in the local
+`BooksPapers/KleinerLottPerelman.pdf`.
+
+The new declaration passed thirteen declaration linters and its transitive axiom
+closure contains only `propext`, `Classical.choice`, and `Quot.sound`. The leaf build
+passed 14,212 jobs. The root build passed 20,180 jobs, with exactly the same 21
+retained sorry warnings and no other diagnostics. Evidence is in
+`/private/tmp/wt17-escape-necks-build.log`,
+`/private/tmp/wt17-escape-necks-audit.log`, and
+`/private/tmp/wt17-escape-necks-root-build.log`.
