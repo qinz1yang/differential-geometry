@@ -98,8 +98,8 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | B1.b.3 | target local finiteness `hLFt` from `T_λ ⊆ H_λ ⊆ h(U)` with `(H_λ)` locally finite in `h(U)`, without the assembled homeomorphism | **PROVED** as an exporter in `Skeleton/Section34Terminal.lean` (`exists_nhds_finite_of_subset_carrier`); what remains is producing the carriers inside `h '' U`, part of B1.b.T1 |
 | B1.b.4 | parent-carrier exporter: top-cell carriers inherited by lower cells along a chosen incident top label | **PROVED** as an exporter in `Skeleton/Section34Terminal.lean` (`carrier_subset_and_dist_lt_of_parent`) |
 | B1.b.5 | P0 fixes control data only; the neighbourhood `N`, the cut diagram and `f₁` are chosen jointly in P1 | design constraint on B1.b, not a theorem |
-| B1.c | `Moise351` (35.1, needed in *controlled* form by P1) | OPEN, no owner |
-| B1.d | `Moise341`, `Moise331` and what they rest on: §31, §32 (pseudo-cells), §33.1, surface classification 22.8–22.10 | OPEN, not started |
+| B1.c | 35.1 in **controlled** form, as P1 needs it: P0's triangulation and carriers fixed first, then `W` and a free tolerance, then the regular neighbourhood `N`, the **source cut diagram** (`C_v, D_e, d_σ, Q_t, X_{tv}, …`) and `f₁` in **one** existential, with §34 Lemma 1(2)–(4), Lemma 2 and carrier containment as conclusions (`consult/B-support-chain-scope.md` §2). `Moise351` as stated (`MoiseChain.lean:191`) is faithful to p. 248 up to three deviations but is consumed **nowhere** on the live route | OPEN, no owner; size L; proposed skeleton `ControlledGraphNeighborhood` (unblocks the P0–P5 skeleton) |
+| B1.d | `Moise341` (faithful, p. 239; one consumer, the proved chart-local form), `Moise331` (faithful, p. 230; no consumer yet) and what they rest on: §33.1 (L), §32 pseudo-cells and tubes (L, no goal-driven cut; **32.1 the most uncertain item**), §31 canonical configurations (M) ⇐ `Moise306` (faithful, UNTESTED), `Moise307` (**wrong statement**: concludes `HasCylindricalDiagram`, must conclude `IsCombinatorialSolidTorus`), `Moise308Nested` (PROVED) ⇐ a confined orientable variant of `Moise264` (plausibly from `Moise252` by cutting). Surface classification: §33 cites 22.9 once (Lemma 11), deletable; the capping route needs only `isPLSphere_two_of_faceEulerChar_eq_two` (proved). **Do not vendor** the external classification. Definitions missing: pseudo-cell, tube, handle decomposition of a tube, canonical configuration, source cut diagram | OPEN, not started; scoped 2026-09-21; proposed skeletons `Section33Approximation`, `CanonicalConfiguration`, `PseudoCellCapping`; none for 32.1–32.3 until their definitions exist |
 | B1.e | how A's output (tame 30.5, the loop theorem) enters P3/P4 | **not yet stated in Lean** — the two sides meet only in the book so far |
 
 ### C — smoothing
@@ -109,9 +109,15 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | **D1** | smooth Poincaré theorem and its use on the smooth manifold produced above | main repository. As read on 2026-09-21: `smoothPoincareConjecture` is a `Prop` definition (unproved, producers conditional) in a gitignored worktree of the main checkout, `…/Surgery/Poincare.lean:30`; hypotheses `ChartedSpace (EuclideanSpace ℝ (Fin 3))`, `IsManifold (𝓡 3) ∞`, T2, compact, connected, simply connected; `topologicalPoincareConjecture_of_smoothStructureInput` (`:56`) is already stated against our output shape. Interface mismatches are one-liners (`Nonempty (IsManifold …)`, `ULift` of the target) |
 
 ## Deliberately NOT on the goal path (may stay open forever)
-Unrestricted `Moise251`, `Moise264`; the non-orientable loop theorem and the one-circle closed case
-in a non-orientable manifold; `Moise305` (non-tame), `Moise306`, `Moise307`,
-`TopologicalCellComplementConnected`; the Hauptvermutung; boundary-relative approximation.
+Unrestricted `Moise251`; the non-orientable loop theorem and the one-circle closed case in a
+non-orientable manifold; `Moise305` (non-tame); `TopologicalCellComplementConnected`; the
+Hauptvermutung; boundary-relative approximation; cross-caps and the full classification 22.8–22.10.
+
+**Correction 2026-09-21 (lead, checked against the book pp. 217 and 221).** `Moise264`, `Moise306`
+and `Moise307` were listed here by mistake: 31.1 is "repeated applications of 30.7" and 31.2 of
+30.8 (p. 221); the proof of 30.7 starts from 30.6 and takes a polyhedral compressing 2-cell from a
+non-trivial `π₁` kernel (p. 217), which is the loop theorem for an interior two-sided surface. The
+earlier ruling came from a citation census of §§33–35 only. They are now under B1.d.
 
 ## Count (the number an audit should quote)
 Top-level OPEN items: **A1, A2, B1, C1** (+ D1 external). Expanded leaves currently open:
