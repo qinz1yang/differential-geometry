@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBoundary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonRestriction
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Diameter
 import DifferentialGeometry.Geometry.Curvature.Metric.ConstantRicci
@@ -44,24 +45,10 @@ private theorem sphere_two_path_length_lt_four (x y : Sphere 2) :
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M]
 
-attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem neck_outer_edist_comm (g : SmoothRiemannianMetric I3 M) (x y : M) :
-    riemannianEDistOf g x y = riemannianEDistOf g y x := by
-  let : Bundle.RiemannianBundle (TangentSpace I3 : M → Type _) := ⟨g.toRiemannianMetric⟩
-  exact Manifold.riemannianEDist_comm (I := I3) (x := x) (y := y)
-
-attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem neck_outer_edist_triangle (g : SmoothRiemannianMetric I3 M) (x y z : M) :
-    riemannianEDistOf g x z ≤ riemannianEDistOf g x y + riemannianEDistOf g y z := by
-  let : Bundle.RiemannianBundle (TangentSpace I3 : M → Type _) := ⟨g.toRiemannianMetric⟩
-  exact Manifold.riemannianEDist_triangle (I := I3) (x := x) (y := y) (z := z)
-
-private theorem neck_outer_transverse_edist_le {D : RealTimeInterval}
-    {S : SolutionOn (I := I3) (M := M) D} {eps : ℝ} {x : M} {t : ℝ}
-    (nk : StrongNeck S eps x t) (p q : Sphere 2) :
-    riemannianEDistOf (rescaledMetric S t (S.scalar t x) nk.Q_pos 0)
+private theorem spatial_neck_transverse_edist_le
+    {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x : M}
+    (nk : SpatialNeck g eps x) (p q : Sphere 2) :
+    riemannianEDistOf (scaleMetric (metricScalarAt g x) nk.Q_pos g)
       (nk.map (p, 0)) (nk.map (q, 0)) ≤ ENNReal.ofReal (6 * Real.sqrt (1 + eps)) := by
   obtain ⟨gamma, hstart, hend, hgamma, hlength⟩ := sphere_two_path_length_lt_four p q
   have hcyl : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun s => (gamma s, (0 : ℝ))) (Icc (0 : ℝ) 1) :=
@@ -74,7 +61,7 @@ private theorem neck_outer_transverse_edist_le {D : RealTimeInterval}
       ((nk.map : Cylinder → M) ∘ (fun s => (gamma s, (0 : ℝ)))) (Icc (0 : ℝ) 1) :=
     (nk.map.contMDiffOn_toFun.of_le (by simp)).comp hcyl (fun s hs => nk.domain (hinside s hs))
   have hdist := edistOf_le_metricPathELength
-    (rescaledMetric S t (S.scalar t x) nk.Q_pos 0) (by norm_num : (0 : ℝ) ≤ 1) hcomp
+    (scaleMetric (metricScalarAt g x) nk.Q_pos g) (by norm_num : (0 : ℝ) ≤ 1) hcomp
   simp only [Function.comp_apply, hstart, hend] at hdist
   have hupper := (collar_pathELength_bounds nk.cylinder _ nk.map nk.comparison rfl
     nk.eps_pos.le (by linarith [nk.eps_small]) (by norm_num) nk.domain hcyl hinside).2
@@ -93,67 +80,83 @@ private theorem neck_outer_transverse_edist_le {D : RealTimeInterval}
     rw [← ENNReal.ofReal_mul (Real.sqrt_nonneg _), mul_comm])))
 
 
-theorem StrongNeck.region_subset_ball {D : RealTimeInterval}
-    {S : SolutionOn (I := I3) (M := M) D} {eps : ℝ} {x : M} {t : ℝ}
-    (nk : StrongNeck S eps x t) :
-    nk.region ⊆ riemannianBallOf (S.base.metric t) x (17 / Real.sqrt (S.scalar t x)) := by
-  have hslab : (univ : Set (Sphere 2)) ×ˢ Icc (-10 : ℝ) 10 ⊆ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
-    have hi : (10 : ℝ) < eps⁻¹ := (lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr
-      (by linarith [nk.eps_small])
+theorem SpatialNeck.image_slab_subset_closedBall
+    {g : SmoothRiemannianMetric I3 M} {eps r : ℝ} {x : M}
+    (nk : SpatialNeck g eps x) (hr : 0 ≤ r) (hsmall : r < eps⁻¹) :
+    nk.map '' (univ ×ˢ Icc (-r) r) ⊆ riemannianClosedBallOf g x
+      ((r + 6) * Real.sqrt (1 + eps) / Real.sqrt (metricScalarAt g x)) := by
+  have hslab : (univ : Set (Sphere 2)) ×ˢ Icc (-r) r ⊆ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
     intro y hy
     exact ⟨hy.1, by constructor <;> linarith [hy.2.1, hy.2.2]⟩
   have hQ := Real.sqrt_pos.mpr nk.Q_pos
-  have heq := riemannianBallOf_scaleMetric (S.scalar t x) nk.Q_pos (S.base.metric t) x
-    (17 / Real.sqrt (S.scalar t x))
-  rw [mul_div_cancel₀ _ hQ.ne'] at heq
   rintro y ⟨⟨p, z⟩, hz, rfl⟩
   have haxis := collar_axial_edist_le nk.cylinder _ nk.map nk.comparison rfl
-    nk.eps_pos.le (by norm_num) nk.domain hslab p hz.2
-  have htrans := neck_outer_transverse_edist_le nk nk.center p
-  let g := rescaledMetric S t (S.scalar t x) nk.Q_pos 0
-  have htri := neck_outer_edist_triangle g (nk.map (nk.center, 0)) (nk.map (p, 0)) (nk.map (p, z))
+    nk.eps_pos.le (by simp) nk.domain hslab p hz.2
+  have htrans := spatial_neck_transverse_edist_le nk nk.center p
+  let h := scaleMetric (metricScalarAt g x) nk.Q_pos g
+  have htri := riemannianEDistOf_triangle h (nk.map (nk.center, 0))
+    (nk.map (p, 0)) (nk.map (p, z))
   rw [nk.center_eq] at htri htrans
-  have hb : riemannianEDistOf g x (nk.map (p, z)) ≤
-      ENNReal.ofReal (16 * Real.sqrt (1 + eps)) := by
-    have hax : riemannianEDistOf g (nk.map (p, 0)) (nk.map (p, z)) ≤
-        ENNReal.ofReal (10 * Real.sqrt (1 + eps)) := by
-      rw [neck_outer_edist_comm]
+  have hb : riemannianEDistOf h x (nk.map (p, z)) ≤
+      ENNReal.ofReal ((r + 6) * Real.sqrt (1 + eps)) := by
+    have hax : riemannianEDistOf h (nk.map (p, 0)) (nk.map (p, z)) ≤
+        ENNReal.ofReal (r * Real.sqrt (1 + eps)) := by
+      rw [riemannianEDistOf_comm]
       exact haxis.trans (ENNReal.ofReal_le_ofReal (by
-        have habs : |z| ≤ 10 := abs_le.mpr hz.2
+        have habs : |z| ≤ r := abs_le.mpr hz.2
         nlinarith [Real.sqrt_nonneg (1 + eps)]))
     apply (htri.trans (add_le_add htrans hax)).trans_eq
     rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
     congr 1
     ring
-  have hbound : 16 * Real.sqrt (1 + eps) < 17 := by
+  dsimp only [h] at hb
+  rw [edistOf_scale] at hb
+  change riemannianEDistOf g x (nk.map (p, z)) ≤ _
+  apply (ENNReal.mul_le_mul_iff_right (ENNReal.ofReal_ne_zero_iff.mpr hQ)
+    ENNReal.ofReal_ne_top).mp
+  rw [← ENNReal.ofReal_mul hQ.le]
+  have heq : Real.sqrt (metricScalarAt g x) *
+      ((r + 6) * Real.sqrt (1 + eps) / Real.sqrt (metricScalarAt g x)) =
+      (r + 6) * Real.sqrt (1 + eps) := by field_simp
+  rwa [heq]
+
+theorem StrongNeck.region_subset_ball {D : RealTimeInterval}
+    {S : SolutionOn (I := I3) (M := M) D} {eps : ℝ} {x : M} {t : ℝ}
+    (nk : StrongNeck S eps x t) :
+    nk.region ⊆ riemannianBallOf (S.base.metric t) x (17 / Real.sqrt (S.scalar t x)) := by
+  have hi : (10 : ℝ) < eps⁻¹ := (lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr
+    (by linarith [nk.eps_small])
+  intro y hy
+  have hb := nk.toSpatialNeck.image_slab_subset_closedBall (by norm_num : (0 : ℝ) ≤ 10) hi hy
+  change riemannianEDistOf (S.base.metric t) x y ≤
+    ENNReal.ofReal ((10 + 6) * Real.sqrt (1 + eps) / Real.sqrt (S.scalar t x)) at hb
+  have hbound : (10 + 6) * Real.sqrt (1 + eps) < 17 := by
     have hs := Real.sq_sqrt (by linarith [nk.eps_pos] : 0 ≤ 1 + eps)
     nlinarith [nk.eps_small, Real.sqrt_nonneg (1 + eps)]
-  have hfinal := hb.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by norm_num)).mpr hbound)
-  change nk.map (p, z) ∈ riemannianBallOf (S.base.metric t) x _
-  rw [← heq]
-  simpa only [g, rescaledMetric, parabolicTime_zero, riemannianBallOf, mem_ofPred_eq] using hfinal
+  exact hb.trans_lt ((ENNReal.ofReal_lt_ofReal_iff
+    (div_pos (by norm_num) (Real.sqrt_pos.mpr nk.Q_pos))).mpr
+    (div_lt_div_of_pos_right hbound (Real.sqrt_pos.mpr nk.Q_pos)))
 
 variable [T2Space M] {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
-theorem StrongNeck.ball_subset_region {eps : ℝ} {x : M} {t : ℝ}
-    (nk : StrongNeck S eps x t) :
-    riemannianBallOf (S.base.metric t) x
-      (10 * Real.sqrt (1 - eps) / Real.sqrt (S.scalar t x)) ⊆ nk.region := by
+theorem SpatialNeck.ball_subset_image_slab
+    {g : SmoothRiemannianMetric I3 M} {eps r : ℝ} {x : M}
+    (nk : SpatialNeck g eps x) (hr : 0 < r) (hsmall : r < eps⁻¹) :
+    riemannianBallOf g x
+      (r * Real.sqrt (1 - eps) / Real.sqrt (metricScalarAt g x)) ⊆ nk.map '' (univ ×ˢ Icc (-r) r) := by
   have hminus : 0 < 1 - eps := by linarith [nk.eps_small]
   have hsqrt : 0 < Real.sqrt (1 - eps) := Real.sqrt_pos.mpr hminus
-  have hslab : (univ : Set (Sphere 2)) ×ˢ Icc (-10 : ℝ) 10 ⊆ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
-    have hi : (10 : ℝ) < eps⁻¹ := (lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr
-      (by linarith [nk.eps_small])
+  have hslab : (univ : Set (Sphere 2)) ×ˢ Icc (-r : ℝ) r ⊆ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
     intro y hy
     exact ⟨hy.1, by constructor <;> linarith [hy.2.1, hy.2.2]⟩
-  have hball : riemannianClosedBallOf (nk.cylinder.metric 0) (nk.center, 0) 10 ⊆
-      univ ×ˢ Icc (-10 : ℝ) 10 := by
+  have hball : riemannianClosedBallOf (nk.cylinder.metric 0) (nk.center, 0) r ⊆
+      univ ×ˢ Icc (-r : ℝ) r := by
     simpa only [zero_sub, zero_add] using
-      nk.cylinder.closedBall_subset_slab (nk.center, 0) (by norm_num : (0 : ℝ) ≤ 10)
+      nk.cylinder.closedBall_subset_slab (nk.center, 0) hr.le
   have hcapture := ball_subset_image_of_metric_lower_crossModel (nk.cylinder.metric 0)
-    (rescaledMetric S t (S.scalar t x) nk.Q_pos 0) nk.map (nk.center, 0)
-    (L := (Real.sqrt (1 - eps))⁻¹) (by norm_num : (0 : ℝ) < 10) (inv_pos.mpr hsqrt)
-    (nk.cylinder.isCompact_closedBall (nk.center, 0) (by norm_num : (0 : ℝ) ≤ 10))
+    (scaleMetric (metricScalarAt g x) nk.Q_pos g) nk.map (nk.center, 0)
+    (L := (Real.sqrt (1 - eps))⁻¹) hr (inv_pos.mpr hsqrt)
+    (nk.cylinder.isCompact_closedBall (nk.center, 0) hr.le)
     (hball.trans (hslab.trans nk.domain)) (by
       intro y hy v
       have he := (nk.comparison.equivalence 0 (by norm_num) y (hslab (hball hy)) v).1
@@ -164,10 +167,18 @@ theorem StrongNeck.ball_subset_region {eps : ℝ} {x : M} {t : ℝ}
   have hscaled := hcapture.trans (image_mono hball)
   rw [div_inv_eq_mul, nk.center_eq] at hscaled
   have hQ := Real.sqrt_pos.mpr nk.Q_pos
-  have heq := riemannianBallOf_scaleMetric (S.scalar t x) nk.Q_pos (S.base.metric t) x
-    (10 * Real.sqrt (1 - eps) / Real.sqrt (S.scalar t x))
+  have heq := riemannianBallOf_scaleMetric (metricScalarAt g x) nk.Q_pos g x
+    (r * Real.sqrt (1 - eps) / Real.sqrt (metricScalarAt g x))
   rw [mul_div_cancel₀ _ hQ.ne'] at heq
-  simpa only [rescaledMetric, parabolicTime_zero, heq, StrongNeck.region] using hscaled
+  simpa only [heq] using hscaled
+
+theorem StrongNeck.ball_subset_region {eps : ℝ} {x : M} {t : ℝ}
+    (nk : StrongNeck S eps x t) :
+    riemannianBallOf (S.base.metric t) x
+      (10 * Real.sqrt (1 - eps) / Real.sqrt (S.scalar t x)) ⊆ nk.region := by
+  have hi : (10 : ℝ) < eps⁻¹ := (lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr
+    (by linarith [nk.eps_small])
+  exact nk.toSpatialNeck.ball_subset_image_slab (by norm_num : (0 : ℝ) < 10) hi
 
 theorem StrongNeck.closedBall_subset_region {eps r : ℝ} {x : M} {t : ℝ}
     (nk : StrongNeck S eps x t)

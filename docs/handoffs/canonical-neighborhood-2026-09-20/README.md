@@ -1018,3 +1018,24 @@ and Lemmas A.13--A.18, describe the neck overlap and chain steps. The extracted 
 of Proposition A.19 and Lemma A.20 has inconsistent separation wording: A.18 requires
 separating spheres, whereas A.19 says nonseparating. The formal argument must establish
 the correct separation property rather than copy that wording.
+
+## Compact spatial neck slabs and actual metric balls
+
+The continuation after `0d7f8cffe` generalizes the neck-region geometry to static
+spatial necks and arbitrary interior slabs. `SpatialNeck.isCompact_image_slab`,
+`isOpen_image_openSlab`, and `frontier_image_slab` prove compactness, openness, and
+the exact two-sphere frontier. `SpatialNeck.image_slab_subset_closedBall` bounds
+the slab in an actual ambient metric ball, and `ball_subset_image_slab` captures
+an actual ambient ball inside the slab using the metric lower bound. These
+statements require no completeness. The existing strong-neck region theorems
+retain their signatures and now follow as corollaries.
+
+The leaf build passed 10,814 jobs. Nine public declarations passed thirteen
+applicable declaration linters; all transitive axioms are among `propext`,
+`Classical.choice`, and `Quot.sound`. The full root passed 20,187 jobs with exactly
+21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-spatial-neck-balls-build.log`,
+`/private/tmp/wt17-spatial-neck-slabs-audit.log`, and
+`/private/tmp/wt17-spatial-neck-slabs-root-build.log`.
+
+The bounded-distance headline and the geometric end/cone producers remain open.
