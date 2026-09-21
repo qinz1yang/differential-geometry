@@ -14,5 +14,6 @@ One file per prompt, under `consult/`. Each is self-contained. To consult, paste
 | A2. Follow-up to A: the §34 contracts | [`consult/A2-section34-contracts.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/A2-section34-contracts.md) |
 | D. Vacuity audit: four hypotheses we believe are unsatisfiable, and what should replace them | [`consult/D-vacuity-audit.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/D-vacuity-audit.md) |
 | E. The closed branches of Lemma 2: can orientability delete Case 1, and how to push off in Case 2 | [`consult/E-closed-branches.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/E-closed-branches.md) |
+| F. Is Shalen's 1984 route a better way to the PL approximation theorem, given this tree? | [`consult/F-shalen-route.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/F-shalen-route.md) |
 
 Answers are digested in `consult/*-answer-digest.md` (A, A2, B, B2, C, D, E). Prompts A and B supersede prompts 1 and 2 of `CONSULT_QUEUE_20260920.md`.
