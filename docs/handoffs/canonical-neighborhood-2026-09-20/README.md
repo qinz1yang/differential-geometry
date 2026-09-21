@@ -2387,3 +2387,41 @@ unproved, and no local cone-flow patch or Poincare completion is claimed.
 
 The full root build passed 20,238 jobs with exactly 21 retained proof-hole
 warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-radius-root-build.log`.
+
+## Radial gradient identification
+
+`gradient_radius_eq_radial_velocity_of_coneDistance` now identifies the gradient
+of the cone radius with the derivative of the actual curve
+`s ↦ e.symm ((e p).1 + s, (e p).2)`. The companion
+`gradient_radius_normSq_eq_one_of_coneDistance` proves the eikonal identity.
+These retain the same local metric-identification hypotheses as the smoothness
+result, with no completeness or smooth-link assumption. The existing nonzero
+differential theorem is a corollary of the shared private radial calibration.
+
+The new natural metric lemma in `Geometry/Metric/Distance/Differential.lean`
+bounds a scalar function's differential from an eventual Riemannian-distance
+bound at the point. It realizes any tangent vector by a smooth curve and uses
+the established one-sided distance-to-speed limit; the scalar function need only
+be differentiable at that point. The elementary cone-radius Lipschitz inequality
+is proved directly from the cone cosine formula. Together they bound the gradient
+norm above by one; the actual radial unit segment with radius derivative one
+then forces equality of the gradient and radial velocity by positive definiteness.
+
+The essential gap closed is radial calibration, needed for the radial metric
+coefficient and orthogonality in a cone chart. Five declarations passed all
+thirteen declaration linters and have only the three approved axioms. Evidence:
+`/private/tmp/wt17-cone-gradient-audit.log`; the changed leaf build passed 4,264
+jobs without diagnostics in `/private/tmp/wt17-cone-gradient-build.log`.
+The actual source-limit identification and full `ConeChart` remain open.
+
+The next local geometric step can reuse `intrinsicExp_smooth` in
+`Geometry/Exponential/Intrinsic/Velocity.lean` and `geo_eqOn_of_initial` in
+`Geometry/Exponential/Intrinsic/Geodesic/Basic.lean`: after the local complete
+metric extension, short radial metric segments should equal geodesics with
+initial velocity equal to the radius gradient. Smoothness of the exponential
+map then supplies joint smoothness of radial motion. The cone metric identity
+still needs its tangential scaling and regular-level coordinate construction;
+none of those conclusions is inferred merely from a smooth regular radius.
+
+The full root build passed 20,239 jobs with exactly 21 retained proof-hole
+warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-gradient-root-build.log`.

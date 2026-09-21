@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Distance.LocalSegmentSmoothness
 import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Geometry.Metric.Distance.Differential
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegmentRegularity
 
 set_option autoImplicit false
@@ -7,6 +9,7 @@ noncomputable section
 open Bundle Filter Manifold Set
 open scoped Topology Manifold ContDiff ENNReal
 namespace DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Analysis.Calculus
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -104,7 +107,7 @@ theorem contMDiffOn_radius_of_coneDistance
   filter_upwards [e.open_source.mem_nhds hp] with x hx
   exact (Real.sqrt_sq (hpositive (e x) (e.map_source hx)).le).symm
 
-theorem mfderiv_radius_ne_zero_of_coneDistance
+private theorem radial_curve_calibration
     (g : SmoothRiemannianMetric I M)
     (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
     (e : OpenPartialHomeomorph M (ℝ × Y))
@@ -112,10 +115,14 @@ theorem mfderiv_radius_ne_zero_of_coneDistance
     (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
       dist x y = Metric.coneDistance (e x) (e y))
     {p : M} (hp : p ∈ e.source) :
-    mfderiv I 𝓘(ℝ, ℝ) (fun x => (e x).1) p ≠ 0 := by
+    let f : ℝ → M := fun s => e.symm ((e p).1 + s, (e p).2)
+    let v : E := mfderiv 𝓘(ℝ, ℝ) I f 0 1
+    ContMDiffAt 𝓘(ℝ, ℝ) I ∞ f 0 ∧ Geodesic.HasGeodesicEquationAt g f 0 ∧
+      g.inner p v v = 1 ∧ mvfderiv (I := I) (fun x => (e x).1) p v = 1 := by
   let r := (e p).1
   let u := (e p).2
   let f : ℝ → M := fun s => e.symm (r + s, u)
+  let ρ : M → ℝ := fun x => (e x).1
   obtain ⟨R, hR, hradial⟩ := exists_radial_interval e hp
   have hfmem (s : ℝ) (hs : s ∈ Icc (-R) R) : f s ∈ e.source :=
     e.map_target (hradial s hs)
@@ -132,33 +139,101 @@ theorem mfderiv_radius_ne_zero_of_coneDistance
       Metric.coneDistance_same_direction]
     congr 1
     ring
-  have hfs := (contMDiffAt_and_geodesicEquationAt_of_metric_segment g hmetric f 0
-    hR (by simpa only [zero_add] using hfdist)).1
-  have hρ := (contMDiffOn_radius_of_coneDistance g hmetric e hpositive hdist).contMDiffAt
-    (e.open_source.mem_nhds hp)
-  have heq : (fun s => (e (f s)).1) =ᶠ[𝓝 0] fun s => r + s := by
+  have hreg := contMDiffAt_and_geodesicEquationAt_of_metric_segment g hmetric f 0
+    hR (by simpa only [zero_add] using hfdist)
+  have hρ : MDifferentiableAt I 𝓘(ℝ, ℝ) ρ p :=
+    ((contMDiffOn_radius_of_coneDistance g hmetric e hpositive hdist).contMDiffAt
+      (e.open_source.mem_nhds hp)).mdifferentiableAt (by decide)
+  let v : TangentSpace I p := (mfderiv 𝓘(ℝ, ℝ) I f 0 1 : E)
+  have hv : g.inner p v v = 1 := by
+    have hh := hreg.2.2
+    change g.inner (f 0) (v : E) (v : E) = 1 at hh
+    rwa [hf0] at hh
+  have heq : (fun s => ρ (f s)) =ᶠ[𝓝 0] fun s => r + s := by
     filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hR] with s hs
     have hm : s ∈ Icc (-R) R := by
       rw [Metric.mem_ball, Real.dist_eq, sub_zero] at hs
       exact ⟨(abs_lt.mp hs).1.le, (abs_lt.mp hs).2.le⟩
     exact congrArg Prod.fst (hfeq s hm)
+  have hcomp := hasDerivAt_comp_mfderiv_along I ρ f 0
+    (by simpa only [hf0] using hρ) (hreg.1.mdifferentiableAt (by decide))
+  change HasDerivAt (fun s => ρ (f s)) (mvfderiv (I := I) ρ (f 0) (v : E)) 0 at hcomp
+  rw [hf0] at hcomp
+  have hrate : mvfderiv (I := I) ρ p v = 1 :=
+    hcomp.unique (((hasDerivAt_id (0 : ℝ)).const_add r).congr_of_eventuallyEq heq)
+  exact ⟨hreg.1, hreg.2.1, hv, hrate⟩
+
+theorem gradient_radius_eq_radial_velocity_of_coneDistance
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (e : OpenPartialHomeomorph M (ℝ × Y))
+    (hpositive : ∀ z ∈ e.target, 0 < z.1)
+    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
+      dist x y = Metric.coneDistance (e x) (e y))
+    {p : M} (hp : p ∈ e.source) :
+    (gradientFun g (fun x => (e x).1) p : E) =
+      (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => e.symm ((e p).1 + s, (e p).2)) 0 1 : E) := by
+  let ρ : M → ℝ := fun x => (e x).1
+  let v : TangentSpace I p :=
+    (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => e.symm ((e p).1 + s, (e p).2)) 0 1 : E)
+  have hcal := radial_curve_calibration g hmetric e hpositive hdist hp
+  have hv : g.inner p v v = 1 := hcal.2.2.1
+  have hrate : mvfderiv (I := I) ρ p v = 1 := hcal.2.2.2
+  have hρ : MDifferentiableAt I 𝓘(ℝ, ℝ) ρ p :=
+    ((contMDiffOn_radius_of_coneDistance g hmetric e hpositive hdist).contMDiffAt
+      (e.open_source.mem_nhds hp)).mdifferentiableAt (by decide)
+  have hlip : ∀ᶠ x in 𝓝 p, |ρ x - ρ p| ≤
+      1 * (riemannianEDistOf g x p).toReal := by
+    filter_upwards [e.open_source.mem_nhds hp] with x hx
+    have h := Metric.abs_radius_sub_le_coneDistance
+      (hpositive (e x) (e.map_source hx)).le (hpositive (e p) (e.map_source hp)).le
+    rw [← hdist x hx p hp] at h
+    simpa only [one_mul, ← hmetric, edist_dist, ENNReal.toReal_ofReal dist_nonneg] using h
+  let G : TangentSpace I p := gradientFun g ρ p
+  have hGv : g.inner p G v = 1 := (inner_gradientFun g ρ p v).trans hrate
+  have hvG : g.inner p v G = 1 := (g.symm p v G).trans hGv
+  have hGGnn : 0 ≤ g.inner p G G := metric_inner_self_nonneg g p G
+  have hGG : g.inner p G G ≤ 1 := by
+    have h := abs_mvfderiv_le_of_eventually_riemannian_distance_bound g ρ p 1 hρ hlip G
+    rw [← inner_gradientFun g ρ p G, abs_of_nonneg hGGnn, one_mul] at h
+    have hs := Real.sq_sqrt hGGnn
+    have hm := mul_self_le_mul_self hGGnn h
+    nlinarith only [h, hs, hm, Real.sqrt_nonneg (g.inner p G G)]
+  have hsmall : g.inner p (G - v) (G - v) ≤ 0 := by
+    simp only [map_sub, sub_apply, hGv, hvG, hv]
+    linarith only [hGG]
+  have hzero : G - v = 0 := by
+    by_contra hne
+    exact (not_lt_of_ge hsmall) (g.pos p (G - v) hne)
+  exact sub_eq_zero.mp hzero
+
+theorem mfderiv_radius_ne_zero_of_coneDistance
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (e : OpenPartialHomeomorph M (ℝ × Y))
+    (hpositive : ∀ z ∈ e.target, 0 < z.1)
+    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
+      dist x y = Metric.coneDistance (e x) (e y))
+    {p : M} (hp : p ∈ e.source) :
+    mfderiv I 𝓘(ℝ, ℝ) (fun x => (e x).1) p ≠ 0 := by
+  have hrate := (radial_curve_calibration g hmetric e hpositive hdist hp).2.2.2
   intro hzero
-  have hchain := mfderiv_comp (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := 𝓘(ℝ, ℝ))
-    (f := f) (g := fun x => (e x).1) 0
-    (by simpa only [hf0] using hρ.mdifferentiableAt (by decide))
-    (hfs.mdifferentiableAt (by decide))
-  have hzero' : mfderiv I 𝓘(ℝ, ℝ) (fun x => (e x).1) (f 0) = 0 := by
-    rw [hf0]
-    exact hzero
-  rw [hzero', ContinuousLinearMap.zero_comp] at hchain
-  have hdf : fderiv ℝ (fun s => (e (f s)).1) 0 = 0 := by
-    simpa only [mfderiv_eq_fderiv, Function.comp_def] using! hchain
-  rw [heq.fderiv_eq] at hdf
-  have hone : fderiv ℝ (fun s : ℝ => r + s) 0 1 = 1 := by
-    simpa only [id_eq, ContinuousLinearMap.id_apply] using
-      congrArg (fun D : ℝ →L[ℝ] ℝ => D 1)
-        (((hasFDerivAt_id (0 : ℝ)).const_add r).fderiv)
-  have hz := congrArg (fun D : ℝ →L[ℝ] ℝ => D 1) hdf
-  exact one_ne_zero (hone.symm.trans hz)
+  simp only [mvfderiv, hzero, ContinuousLinearMap.comp_zero] at hrate
+  change (0 : ℝ) = 1 at hrate
+  exact zero_ne_one hrate
+
+theorem gradient_radius_normSq_eq_one_of_coneDistance
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (e : OpenPartialHomeomorph M (ℝ × Y))
+    (hpositive : ∀ z ∈ e.target, 0 < z.1)
+    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
+      dist x y = Metric.coneDistance (e x) (e y))
+    {p : M} (hp : p ∈ e.source) :
+    g.inner p (gradientFun g (fun x => (e x).1) p)
+      (gradientFun g (fun x => (e x).1) p) = 1 := by
+  have heq := gradient_radius_eq_radial_velocity_of_coneDistance g hmetric e hpositive hdist hp
+  erw [heq]
+  exact (radial_curve_calibration g hmetric e hpositive hdist hp).2.2.1
 
 end DifferentialGeometry.Geometry.Riemannian

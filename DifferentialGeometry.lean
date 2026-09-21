@@ -7678,6 +7678,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.Boundary
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 import DifferentialGeometry.Geometry.Metric.Distance.Completion
 import DifferentialGeometry.Geometry.Metric.Distance.LocalCompletion
+import DifferentialGeometry.Geometry.Metric.Distance.Differential
 import DifferentialGeometry.Geometry.Metric.Distance.PathLength
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Distance.Topology

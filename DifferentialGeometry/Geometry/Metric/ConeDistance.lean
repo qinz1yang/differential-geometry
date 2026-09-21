@@ -99,4 +99,13 @@ theorem coneDistance_eq_zero_iff {Y : Type*} [MetricSpace Y] {x y : ℝ × Y}
     · rwa [h.1] at ht
   exact Prod.ext heq (dist_eq_zero.mp hd)
 
+theorem abs_radius_sub_le_coneDistance {Y : Type*} [PseudoMetricSpace Y]
+    {x y : ℝ × Y} (hx : 0 ≤ x.1) (hy : 0 ≤ y.1) :
+    |x.1 - y.1| ≤ Metric.coneDistance x y := by
+  have hs := Metric.coneDistance_sq hx hy
+  have hc := mul_le_mul_of_nonneg_left (Real.cos_le_one (min Real.pi (dist x.2 y.2)))
+    (show 0 ≤ 2 * x.1 * y.1 by positivity)
+  have hn := Metric.coneDistance_nonneg x y
+  nlinarith only [hs, hc, hn, sq_abs (x.1 - y.1), abs_nonneg (x.1 - y.1)]
+
 end Metric
