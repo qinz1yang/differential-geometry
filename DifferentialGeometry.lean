@@ -5486,9 +5486,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CollarNoReturn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CollarShortening
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactArmLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCurveMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactDomainTransport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactMetricSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactPathAvoidance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactSlabVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonComposition
@@ -7669,6 +7667,9 @@ import DifferentialGeometry.Geometry.Metric.DirectLimit.Properness
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Metric.Distance.Boundary
+import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
+import DifferentialGeometry.Geometry.Metric.Distance.Completion
+import DifferentialGeometry.Geometry.Metric.Distance.PathLength
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.DistancePullback
@@ -10442,7 +10443,9 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarComposi
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarNorm
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ScalarComposition
+import DifferentialGeometry.Topology.MetricSpace.CompactBall
 import DifferentialGeometry.Topology.MetricSpace.DenseExtension
+import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
 import DifferentialGeometry.Topology.MetricSpace.GeodesicSeparator
 import DifferentialGeometry.Topology.MetricSpace.Lipschitz
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Product

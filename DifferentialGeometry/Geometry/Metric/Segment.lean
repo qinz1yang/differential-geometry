@@ -5,6 +5,8 @@ import Mathlib.Topology.Order.OrderClosed
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 open Set
 
@@ -64,6 +66,101 @@ theorem exists_completion_endpoint_of_isometry
     hdist.congr' (Eventually.of_forall fun s => hG.dist_eq s t)
   rw [tendsto_nhds_unique hdist'' hdist', Real.dist_eq,
     abs_of_nonneg (sub_nonneg.mpr t.property.2.le)]
+
+
+variable {X : Type*} [PseudoMetricSpace X]
+
+private theorem dist_rescaled_segment
+    {r : ℝ} (hr : 0 < r) (a : Icc (0 : ℝ) 1 → X)
+    (ha : ∀ s t, dist (a s) (a t) = r * dist s t)
+    {s t : ℝ} (hs : s ∈ Icc 0 r) (ht : t ∈ Icc 0 r) :
+    dist (a (projIcc 0 1 zero_le_one (s / r)))
+      (a (projIcc 0 1 zero_le_one (t / r))) = |s - t| := by
+  have hs' : s / r ∈ Icc (0 : ℝ) 1 :=
+    ⟨div_nonneg hs.1 hr.le, (div_le_one hr).mpr hs.2⟩
+  have ht' : t / r ∈ Icc (0 : ℝ) 1 :=
+    ⟨div_nonneg ht.1 hr.le, (div_le_one hr).mpr ht.2⟩
+  rw [ha, Subtype.dist_eq, Real.dist_eq, projIcc_of_mem zero_le_one hs', projIcc_of_mem zero_le_one ht']
+  rw [← sub_div, abs_div, abs_of_pos hr, mul_div_cancel₀ _ hr.ne']
+
+theorem dist_lt_dist_add_dist_of_geodesic_avoidance
+    {p x y : X} (hx : 0 < dist x p) (hy : 0 < dist y p)
+    (a b : Icc (0 : ℝ) 1 → X)
+    (ha0 : a ⟨0, by norm_num⟩ = x) (ha1 : a ⟨1, by norm_num⟩ = p)
+    (hb0 : b ⟨0, by norm_num⟩ = y) (hb1 : b ⟨1, by norm_num⟩ = p)
+    (ha : ∀ s t, dist (a s) (a t) = dist x p * dist s t)
+    (hb : ∀ s t, dist (b s) (b t) = dist y p * dist s t)
+    (havoid : ∀ (gamma : ℝ → X) (u v w : ℝ), u < v → v < w →
+      (∀ s ∈ Icc u w, ∀ t ∈ Icc u w, dist (gamma s) (gamma t) = |s - t|) →
+      gamma v ≠ p) :
+    dist x y < dist x p + dist p y := by
+  classical
+  by_contra hnot
+  have heq : dist x y = dist x p + dist y p := by
+    rw [dist_comm y p]
+    exact le_antisymm (dist_triangle x p y) (not_lt.mp hnot)
+  let r := dist x p
+  let s := dist y p
+  change 0 < r at hx
+  change 0 < s at hy
+  let A (t : ℝ) := a (projIcc 0 1 zero_le_one (t / r))
+  let B (t : ℝ) := b (projIcc 0 1 zero_le_one (t / s))
+  have hA0 : A 0 = x := by simpa only [A, zero_div, projIcc_left] using ha0
+  have hAr : A r = p := by simpa only [A, div_self hx.ne', projIcc_right] using ha1
+  have hB0 : B 0 = y := by simpa only [B, zero_div, projIcc_left] using hb0
+  have hBs : B s = p := by simpa only [B, div_self hy.ne', projIcc_right] using hb1
+  have hA (t : ℝ) (ht : t ∈ Icc 0 r) (u : ℝ) (hu : u ∈ Icc 0 r) :
+      dist (A t) (A u) = |t - u| := dist_rescaled_segment hx a ha ht hu
+  have hB (t : ℝ) (ht : t ∈ Icc 0 s) (u : ℝ) (hu : u ∈ Icc 0 s) :
+      dist (B t) (B u) = |t - u| := dist_rescaled_segment hy b hb ht hu
+  let gamma (t : ℝ) := if t ≤ r then A t else B (r + s - t)
+  have hg0 : gamma 0 = x := by simpa only [gamma, if_pos hx.le] using hA0
+  have hgend : gamma (r + s) = y := by
+    have hgt : ¬ r + s ≤ r := by linarith only [hy]
+    simpa only [gamma, if_neg hgt, sub_self] using hB0
+  have hgr : gamma r = p := by simpa only [gamma, if_pos le_rfl] using hAr
+  have hordered (t : ℝ) (ht : t ∈ Icc 0 (r + s))
+      (u : ℝ) (hu : u ∈ Icc 0 (r + s)) (htu : t ≤ u) :
+      dist (gamma t) (gamma u) ≤ u - t := by
+    by_cases htr : t ≤ r
+    · by_cases hur : u ≤ r
+      · rw [show gamma t = A t from if_pos htr, show gamma u = A u from if_pos hur,
+          hA t ⟨ht.1, htr⟩ u ⟨hu.1, hur⟩, abs_of_nonpos (sub_nonpos.mpr htu)]
+        linarith only []
+      · have hru : r ≤ u := (not_le.mp hur).le
+        have harg : r + s - u ∈ Icc (0 : ℝ) s :=
+          ⟨sub_nonneg.mpr hu.2, by linarith only [hru]⟩
+        have hleft := hA t ⟨ht.1, htr⟩ r ⟨hx.le, le_rfl⟩
+        have hright := hB s ⟨hy.le, le_rfl⟩ (r + s - u) harg
+        rw [hAr, abs_of_nonpos (sub_nonpos.mpr htr)] at hleft
+        rw [hBs, abs_of_nonneg (by linarith only [hru] : 0 ≤ s - (r + s - u))] at hright
+        have htri := dist_triangle (A t) p (B (r + s - u))
+        rw [hleft, hright] at htri
+        rw [show gamma t = A t from if_pos htr, show gamma u = B (r + s - u) from if_neg hur]
+        linarith only [htri]
+    · have hur : ¬ u ≤ r := fun h => htr (htu.trans h)
+      have hrt : r ≤ t := (not_le.mp htr).le
+      have hru : r ≤ u := (not_le.mp hur).le
+      rw [show gamma t = B (r + s - t) from if_neg htr,
+        show gamma u = B (r + s - u) from if_neg hur,
+        hB (r + s - t) ⟨sub_nonneg.mpr ht.2, by linarith only [hrt]⟩
+          (r + s - u) ⟨sub_nonneg.mpr hu.2, by linarith only [hru]⟩,
+        abs_of_nonneg (by linarith only [htu] : 0 ≤ r + s - t - (r + s - u))]
+      linarith only []
+  have hLip : LipschitzOnWith 1 gamma (Icc 0 (r + s)) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro t ht u hu
+    simp only [NNReal.coe_one, one_mul, Real.dist_eq]
+    rcases le_total t u with htu | hut
+    · rw [abs_of_nonpos (sub_nonpos.mpr htu)]
+      linarith only [hordered t ht u hu htu]
+    · rw [dist_comm (gamma t), abs_of_nonneg (sub_nonneg.mpr hut)]
+      exact hordered u hu t ht hut
+  have hiso := isometry_Icc_of_lipschitzOnWith_of_dist_eq hLip
+    (show dist (gamma 0) (gamma (r + s)) = r + s - 0 by rw [hg0, hgend, sub_zero]; exact heq)
+  apply havoid gamma 0 r (r + s) hx (by linarith only [hy]) _ hgr
+  intro t ht u hu
+  exact hiso.dist_eq ⟨t, ht⟩ ⟨u, hu⟩
 
 
 end DifferentialGeometry.Geometry

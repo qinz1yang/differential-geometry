@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornAnnulusCompactness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCurveMinimizer
+import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 
 set_option autoImplicit false
 noncomputable section
@@ -40,7 +40,7 @@ theorem finiteHorn_isCompact_subradial_closedBall (g : SmoothRiemannianMetric I3
   rw [UniformSpace.Completion.dist_eq] at htri
   linarith
 
-variable [T2Space (TangentBundle I3 W)] [SigmaCompactSpace W]
+variable [SigmaCompactSpace W]
 
 theorem finiteHorn_exists_subradial_minimizer (g : SmoothRiemannianMetric I3 W)
     (H : FiniteHorn g) :
@@ -63,34 +63,9 @@ theorem finiteHorn_exists_subradial_minimizer (g : SmoothRiemannianMetric I3 W)
   have hxyR : dist x y < R := by dsimp [R]; linarith
   have hR : R < dist (x : UniformSpace.Completion W) H.endpoint := by dsimp [R]; linarith
   have hK := hcpt x hx R hR
-  let eta : ℝ := (R - dist x y) / 2
-  have heta : 0 < eta := half_pos (sub_pos.mpr hxyR)
-  have hfinite : riemannianEDistOf g x y ≠ ⊤ := by
-    rw [H.edist_eq_ofReal_dist]
-    exact ENNReal.ofReal_ne_top
-  have htrap : ∀ gamma : ℝ → W,
-      ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc (0 : ℝ) 1) →
-      gamma 0 = x → gamma 1 = y →
-      metricPathELength g gamma 0 1 ≤ riemannianEDistOf g x y + ENNReal.ofReal eta →
-      ∀ s ∈ Icc (0 : ℝ) 1, gamma s ∈ Metric.closedBall x R := by
-    intro gamma hsmooth hstart _hend hnear s hs
-    have hprefix := edistOf_le_metricPathELength g hs.1
-      (hsmooth.mono (Icc_subset_Icc le_rfl hs.2))
-    rw [hstart] at hprefix
-    have hbound := (hprefix.trans (metricPathELength_mono g gamma le_rfl hs.2)).trans hnear
-    rw [H.edist_eq_ofReal_dist, H.edist_eq_ofReal_dist,
-      ← ENNReal.ofReal_add dist_nonneg heta.le] at hbound
-    have hreal : dist x (gamma s) ≤ dist x y + eta :=
-      (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hbound
-    change dist (gamma s) x ≤ R
-    rw [dist_comm]
-    dsimp [eta] at hreal
-    linarith
-  obtain ⟨gamma, hstart, hend, hsmooth, hmem, hlength, hsub⟩ :=
-    exists_smooth_minimizer_with_subinterval_lengths g hK heta hfinite htrap
-  refine ⟨R, hxyR, hR, hK, gamma, hstart, hend, hsmooth, hmem, ?_, ?_⟩
-  · simpa only [H.edist_eq_ofReal_dist] using hlength
-  · intro a ha b hb
-    simpa only [H.edist_eq_ofReal_dist] using hsub a ha b hb
+  obtain ⟨gamma, hstart, hend, hsmooth, hmem, hlength, hsub, _, _⟩ :=
+    Geometry.exists_smooth_geodesic_minimizer_of_isCompact_closedBall g
+      (fun x y => (edist_dist x y).trans (edist_eq_ofReal_dist g H x y).symm) hK hxyR
+  exact ⟨R, hxyR, hR, hK, gamma, hstart, hend, hsmooth, hmem, hlength, hsub⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

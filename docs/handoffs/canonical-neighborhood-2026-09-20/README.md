@@ -1672,3 +1672,64 @@ Mathematical references: the supplied attachment, Section 1; Kleiner–Lott,
 Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Appendix A, Lemmas A.4 and A.7.
 The next comparison step uses Chow–Lu–Ni, GSM77,
 `tex/chapters/chapter1.tex`, labels `Eagles tour` and `doh!`.
+
+### Smooth minimizing connectors near the missing completion point
+
+The local-minimizer gap following endpoint exclusion is now proved in a general
+Riemannian API. `Geometry.exists_completion_segment_of_punctured_compact_ball`
+constructs a minimizing metric segment from a sufficiently nearby regular point
+to the completion point. Its inputs are an actual compact completion ball whose
+only potentially missing point is its center, together with agreement of the
+metric and Riemannian distance. It does not require a preconstructed axial ray.
+The proof uses dense approximation, prescribed-radius sphere points, smooth
+minimizers in compact buffers, and Arzela–Ascoli.
+
+`Geometry.dist_lt_dist_add_dist_of_geodesic_avoidance` shows that two such segments,
+if their endpoint distances added exactly, would concatenate to a minimizing
+segment passing through the missing point. The exclusion proved in the preceding
+checkpoint therefore supplies a strict triangle gap.
+`Geometry.exists_smooth_geodesic_minimizer_of_punctured_compact_ball` uses that gap
+to keep all sufficiently near-minimizing curves away from the puncture, and uses
+an explicit outer-radius buffer to trap them in a compact annulus. The compact
+trapping engine then constructs a smooth minimizing geodesic, its subinterval
+length formula, its geodesic equation on the entire parameter interval, and its
+constant squared speed. The resulting theorem
+`Geometry.exists_smooth_geodesic_minimizer_of_completion_point_avoidance` applies
+to every pair of regular points at distance less than one third of the compact
+ball's radius from its center.
+
+The Riemannian engines now live in `Geometry/Metric/Distance/CompactMinimizer.lean`
+and `Geometry/Metric/Distance/Completion.lean`. General subinterval-length control
+lives in `Geometry/Metric/Distance/PathLength.lean`; metric segment compactness
+was moved without proof changes to `Topology/MetricSpace/GeodesicCompactness.lean`.
+The old finite-horn sphere and subradial-minimizer results are corollaries of the
+more general API. The latter no longer requires a caller-supplied Hausdorff
+instance for its tangent bundle. The normalized end producer's exact public
+statement is unchanged; it already supplies the compact punctured ball and the
+endpoint-exclusion facts used by the new engine.
+
+Twenty-one changed or relocated public declarations passed all thirteen
+declaration linters. Their transitive axiom closures contain only `propext`,
+`Classical.choice`, and `Quot.sound`. The new connector leaf passed 4,240 jobs;
+the full root passed 20,211 jobs with exactly 21 retained sorry warnings and no
+other diagnostics. Evidence: `/private/tmp/wt17-completion-connectors-build.log`,
+`/private/tmp/wt17-geodesic-avoidance-build.log`,
+`/private/tmp/wt17-completion-minimizers-audit.log`, and
+`/private/tmp/wt17-completion-minimizers-root-build.log`. The complete source diff
+and the unchanged normalized-producer statement were reviewed.
+
+The next essential gap is localized squared-distance comparison at the missing
+endpoint, using these actual connectors and then a limit in the comparison
+center. The directions/cone producer, scale comparison and cone contradiction,
+and uniform buffered source curvature estimates with fixed-order terminal Shi
+bounds remain unfinished. `bounded_curvature_at_distance` still has its original
+statement and proof hole. This layer encountered Lean elaboration and import
+issues, resolved without resource overrides. It did not reveal a persistent
+mathematical blockage; these failures do not indicate a need to switch to Ultra.
+
+References: the user's September 21 attachment, Sections 1–2; Morgan–Tian,
+`BooksPapers/MorganTianPoincare.pdf`, Appendix A, Lemmas A.4 and A.7; the next
+comparison step is Chow–Lu–Ni, GSM77, `tex/chapters/chapter1.tex`, labels
+`Eagles tour` and `doh!`. The user's newly supplied Alexandrov library locations
+and the Alexander–Kapovitch–Petrunin source repository are saved in the global
+`/Users/bennettchow/.codex/AGENTS.md` for future formalization work.

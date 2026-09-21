@@ -219,6 +219,52 @@ private theorem scalar_distance_lower_bound_of_mem_neck_ball
   have hfactor : (1 : ℝ) / 2 ≤ 1 - 4323 * eps := by linarith only [hsmall]
   nlinarith only [mul_le_mul_of_nonneg_right hfactor (sq_nonneg eps⁻¹)]
 
+private theorem axis_mem_interior_of_frontier_eq_central_sphere
+    {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    (metric : SmoothRiemannianMetric I3 M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf metric x y)
+    {r eps : ℝ} (hsmall : eps < 1 / 1000000)
+    (gamma : C(Ico 0 r, M)) (hgamma : Isometry gamma)
+    (a b : Ico (0 : ℝ) r) (hab : (a : ℝ) < b)
+    (nk : SpatialNeck metric eps (gamma a))
+    (hstep : (b : ℝ) - a = (eps⁻¹ / 40) / Real.sqrt (metricScalarAt metric (gamma a)))
+    {U : Set M} (hfront : frontier U = nk.map '' (univ ×ˢ {(0 : ℝ)}))
+    (hstart : gamma b ∈ interior U) :
+    ∀ v : Ico (0 : ℝ) r, (b : ℝ) ≤ v → gamma v ∈ interior U := by
+  have hI : IsPreconnected (Ici b) := by
+    apply Topology.IsInducing.subtypeVal.isPreconnected_image.mp
+    have heq : Subtype.val '' Ici b = Ico (b : ℝ) r := by
+      ext v
+      constructor
+      · rintro ⟨w, hw, rfl⟩
+        exact ⟨hw, w.property.2⟩
+      · intro hv
+        exact ⟨⟨v, b.property.1.trans hv.1, hv.2⟩, hv.1, rfl⟩
+    rw [heq]
+    exact isPreconnected_Ico
+  have hP : IsPreconnected (gamma '' Ici b) := hI.image _ gamma.continuous.continuousOn
+  have havoid : Disjoint (gamma '' Ici b) (frontier U) := by
+    apply Set.disjoint_left.mpr
+    rintro z ⟨v, hv, rfl⟩ hz
+    rw [hfront] at hz
+    have hb := nk.central_sphere_subset_closedBall hz
+    change riemannianEDistOf metric (gamma a) (gamma v) ≤
+      ENNReal.ofReal (7 / Real.sqrt (metricScalarAt metric (gamma a))) at hb
+    rw [← hmetric, hgamma.edist_eq, edist_dist, Subtype.dist_eq, Real.dist_eq] at hb
+    rw [abs_of_nonpos (sub_nonpos.mpr (hab.le.trans hv)), neg_sub] at hb
+    have hreal := (ENNReal.ofReal_le_ofReal_iff
+      (div_nonneg (by norm_num : (0 : ℝ) ≤ 7) (Real.sqrt_nonneg _))).mp hb
+    have hi : (1000000 : ℝ) < eps⁻¹ :=
+      (lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr (by simpa only [one_div] using hsmall)
+    have hnum : (7 : ℝ) < eps⁻¹ / 40 := by linarith only [hi]
+    have hd := div_lt_div_of_pos_right hnum (Real.sqrt_pos.mpr nk.Q_pos)
+    change (v : ℝ) - a ≤ _ at hreal
+    have hv' : (b : ℝ) ≤ v := hv
+    linarith only [hv', hreal, hd, hstep]
+  have hsub := DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+    hP havoid ⟨gamma b, ⟨b, show b ≤ b from le_rfl, rfl⟩, hstart⟩
+  exact fun v hv => hsub ⟨v, hv, rfl⟩
+
 private theorem inv_sq_div_eight_gt_of_small {alpha : ℝ}
     (ha : 0 < alpha) (hsmall : alpha < 1 / 2000000) :
     196 < ((2 * alpha)⁻¹) ^ 2 / 8 := by
@@ -816,51 +862,9 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
         (univ ×ˢ Icc (0 : ℝ) 1)) 1))
     apply hseam 0
     exact ⟨((nk 2).center, 0), ⟨mem_univ _, rfl⟩, (nk 2).center_eq⟩
-  have haxisTail : ∀ v : Ico 0 F.radius, (t 2 : ℝ) ≤ v →
-      g v ∈ interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
-    have hI : IsPreconnected (Ici (incl (t 2))) := by
-      apply Topology.IsInducing.subtypeVal.isPreconnected_image.mp
-      have heq : Subtype.val '' Ici (incl (t 2)) = Ico (t 2 : ℝ) F.radius := by
-        ext v
-        constructor
-        · rintro ⟨w, hw, rfl⟩
-          exact ⟨hw, w.property.2⟩
-        · intro hv
-          exact ⟨⟨v, (incl (t 2)).property.1.trans hv.1, hv.2⟩, hv.1, rfl⟩
-      rw [heq]
-      exact isPreconnected_Ico
-    have hP : IsPreconnected (g '' Ici (incl (t 2))) :=
-      hI.image _ g.continuous.continuousOn
-    have havoid : Disjoint (g '' Ici (incl (t 2)))
-        (frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) := by
-      apply Set.disjoint_left.mpr
-      rintro z ⟨v, hv, rfl⟩ hz
-      rw [hfrontTail] at hz
-      have hb := (nk 1).central_sphere_subset_closedBall hz
-      change edist (g (incl (t 1))) (g v) ≤
-        ENNReal.ofReal (7 / Real.sqrt (metricScalarAt L.metric (g (incl (t 1))))) at hb
-      have hv' : (t 2 : ℝ) ≤ (v : ℝ) := hv
-      have ht12 := hmono (by norm_num : (1 : ℕ) < 2)
-      rw [hg.edist_eq, edist_dist, Subtype.dist_eq, Real.dist_eq] at hb
-      change ENNReal.ofReal |(t 1 : ℝ) - v| ≤ _ at hb
-      rw [abs_of_nonpos (sub_nonpos.mpr (ht12.le.trans hv')), neg_sub] at hb
-      have hreal := (ENNReal.ofReal_le_ofReal_iff
-        (div_nonneg (by norm_num : (0 : ℝ) ≤ 7) (Real.sqrt_nonneg _))).mp hb
-      have hi : (1000000 : ℝ) < (2 * alpha)⁻¹ :=
-        (lt_inv_comm₀ (by norm_num) (by positivity : 0 < 2 * alpha)).mpr
-          (by norm_num only [one_div]; linarith only [hsmall])
-      have hnum : (7 : ℝ) < (2 * alpha)⁻¹ / 40 := by linarith only [hi]
-      have hd := div_lt_div_of_pos_right hnum (Real.sqrt_pos.mpr (nk 1).Q_pos)
-      have hstep1 := hstep 1
-      change (t 2 : ℝ) - t 1 = ((2 * alpha)⁻¹ / 40) /
-        Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) at hstep1
-      change (v : ℝ) - (t 1 : ℝ) ≤ _ at hreal
-      change 7 / Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) <
-        ((2 * alpha)⁻¹ / 40) / Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) at hd
-      linarith only [hv', hreal, hd, hstep1]
-    have hsub := DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
-      hP havoid ⟨g (incl (t 2)), ⟨incl (t 2), (show incl (t 2) ≤ incl (t 2) from le_rfl), rfl⟩, hstart⟩
-    exact fun v hv => hsub ⟨v, hv, rfl⟩
+  have haxisTail := axis_mem_interior_of_frontier_eq_central_sphere L.metric (fun _ _ => rfl)
+    (by linarith only [hsmall] : 2 * alpha < 1 / 1000000) g hg (incl (t 1)) (incl (t 2))
+    (hmono (by decide : (1 : ℕ) < 2)) (nk 1) (hstep 1) hfrontTail hstart
   have hcollapse (n : ℕ) (x : L.M) (hx : x ∈ ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) :
       dist q (x : UniformSpace.Completion L.M) ≤ (11 / 5) * (F.radius - (t n : ℝ)) := by
     have hb := ((hannuli n).2.2.2.2.2.2 hx).1
@@ -1008,15 +1012,16 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     (ann 1 '' (univ ×ˢ Icc (0 : ℝ) 1)) (hcann 1) hBcover
     hfrontRegions hcenters (inv_sq_div_eight_gt_of_small ha hsmall)
     (fun n x hx => hquantAnn (n + 2) x hx)
-  exact ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
-    hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
-    q, hq, hdist, hmissing,
+  refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
+    hcompact, hbase, hsec, ?_⟩
+  refine ⟨phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow, q, hq, hdist, hmissing,
     fun tau hR => (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR),
-    hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
+    hnecks, ?_⟩
+  refine ⟨incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
     hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
-    haxisTail, hcollapse, hquantAnn, hwindowCapture, E, theta, htheta0, htheta,
-    hE, hsections, D, hD,
-    gW, fun _ => rfl, hgW, hnkW, hcompletion⟩
+    haxisTail, hcollapse, hquantAnn, hwindowCapture, ?_⟩
+  refine ⟨E, theta, htheta0, htheta, hE, hsections, D, hD, gW, fun _ => rfl, hgW, hnkW, ?_⟩
+  exact hcompletion
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

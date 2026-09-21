@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCurveMinimizer
+import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AmbientCollarShortening
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 
@@ -46,7 +46,7 @@ theorem exists_fixed_collar_minimizer_depth :
   rw [hbeta0, hbeta1] at hdist
   have hfinite : riemannianEDistOf (g 0) (F (p, 0)) (F (q, 0)) ≠ ⊤ :=
     ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hdist.trans hlength)
-  apply exists_smooth_minimizer_of_compact_trapping (g 0) hcpt
+  apply Geometry.exists_smooth_minimizer_of_compact_trapping (g 0) hcpt
     (delta := 1 / 2) (by norm_num) hfinite
   intro gamma hsmooth hstart hend hnear
   apply htrap C h g F U times order eps cmp hmetric heps hepsHalf hzero hsource hslab

@@ -7,7 +7,7 @@ noncomputable section
 open Filter Set BoundedContinuousFunction
 open scoped Topology NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+namespace Metric
 
 variable {X : Type*} [MetricSpace X]
 
@@ -96,4 +96,4 @@ theorem exists_metric_segment_of_compact_lipschitz_curves
     rw [hzero, hone]
     exact hpq
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+end Metric
