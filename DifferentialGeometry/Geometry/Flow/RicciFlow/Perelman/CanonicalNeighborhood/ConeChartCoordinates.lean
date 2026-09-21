@@ -65,8 +65,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {g : SmoothRiemannianMetric I3 M} {U : Set M}
 
-attribute [local instance] ConeChart.topology ConeChart.charted ConeChart.smooth
-  ConeChart.t2 ConeChart.sigmaCompact
+attribute [local instance] DifferentialGeometry.Geometry.Riemannian.ConeChart.topology DifferentialGeometry.Geometry.Riemannian.ConeChart.charted DifferentialGeometry.Geometry.Riemannian.ConeChart.smooth
+  DifferentialGeometry.Geometry.Riemannian.ConeChart.t2 DifferentialGeometry.Geometry.Riemannian.ConeChart.sigmaCompact
 
 
 def ConeChart.coordinates (C : ConeChart g U) (s : C.surface) :

@@ -2466,3 +2466,67 @@ approximation alone constructs a local cone-flow patch or closes the headline.
 
 The full root build passed 20,240 jobs with exactly 21 retained proof-hole
 warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-dilation-root-build.log`.
+
+## Actual smooth cone-chart construction from an open metric identification
+
+`Geometry/Metric/ConeChart/Construction.lean` proves
+`Riemannian.exists_cone_chart_of_coneDistance`. Given a smooth Riemannian
+manifold of dimension `m + 1`, an open partial homeomorphism to `ℝ × Y` with
+positive radius preserving the cone distance on its source, and a point in that
+source, it produces a `ConeChart m g U` with the point in `U` and
+`U ⊆ e.source`. The link `Y` is only a pseudometric space; completeness,
+link smoothness, and a supplied cone tensor identity are not hypotheses.
+
+The producer chooses actual coordinates for the regular radius level, constructs
+its smooth immersion, equips it with the induced metric divided by the level
+radius squared, and extends it radially using the proved smooth dilation.
+Differentiating radius along this map makes the mixed metric terms zero; the
+unit radius gradient gives radial coefficient one, and the dilation theorem
+gives the tangential `r² k` term. This full tensor identity proves the derivative
+invertible, so the existing inverse-function theorem supplies a partial
+diffeomorphism. Its restriction lies in the genuine radial domain and its target
+contains the chosen point, ruling out an empty-chart witness.
+
+The geometric `ConeChart` structure now lives in the metric topic home, with
+arbitrary ambient dimension and an independent surface universe. The existing
+finite-horn type is its dimension-three specialization with the original surface
+universe. Its fields are unchanged. The existing cone-coordinate and terminal
+exclusion declarations consume that specialization. The regular-level theorem
+was generalized in its existing topic home to arbitrary finite-dimensional model
+spaces and Euclidean product coordinates; the old public coordinate theorem is
+now a corollary with its original signature. Four regular-level declarations
+passed thirteen declaration linters and retain only approved axioms; evidence is
+`/private/tmp/wt17-regular-product-audit.log`.
+
+This closes the metric-cone-to-smooth-chart implication. It does not yet produce
+an open cone-distance identification for the actual terminal flow. The remaining
+producer must take the actual normalized end, its pointed source comparison
+maps, its punctured-cone annulus approximations, and the selected local terminal
+flow limit, and produce an open partial homeomorphism around the terminal
+basepoint preserving cone distances. Smooth convergence controls tensors on
+fixed compact subsets of comparison charts; cone approximation controls metric
+annuli of the end. To relate them, the composed source maps still need buffered
+containment, vanishing pairwise distance distortion, and coverage of a fixed cone
+ball. Those are the input obligations of the already-proved compact approximation
+isometry theorem. They are not implied by merely placing the two convergence
+statements next to each other.
+
+No repeated mathematical failure has been established in this layer. The resolved
+errors concerned dependent tangent-space norms, product manifold models, and
+coercions. The headline remains unchanged and unproved; a cone chart produced
+from a supplied open identification is not yet an actual local cone-flow patch.
+
+The cone-chart leaf and the existing terminal exclusion dependent built successfully
+(11,795 jobs, no diagnostics). Eleven chart, coordinate, and exclusion declarations
+passed all thirteen applicable declaration linters; their exact types and transitive
+axioms are recorded in `/private/tmp/wt17-cone-chart-audit.log`. An external consumer
+probe combines the new metric-identification producer directly with
+`solution_cone_terminal_exclusion` on a genuine closed backward slab. It compiles
+with only `propext`, `Classical.choice`, and `Quot.sound`; evidence is
+`/private/tmp/wt17-cone-exclusion-consumer.log`. The probe does not assume an ancient
+flow or an extension beyond the terminal endpoint.
+
+The full root build passed 20,242 jobs with exactly 21 retained proof-hole
+warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-chart-root-build.log`.
+The original `bounded_curvature_at_distance` declaration and its proof hole are
+unchanged.
