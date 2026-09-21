@@ -139,6 +139,17 @@ a tube `S_e` and a core; the one-sided margin between an altered ball `C'_w` and
 different ball; and the source disjointness of two altered balls whose vertices are not the two
 ends of an edge, which is what rules out two thin fingers of non-adjacent cells meeting away from
 every tube.
+Added after review AC, the one certificate about *whole* overlaps: writing
+`section34CellThickening h C' ε w` for the `ε_w`-neighbourhood `⋃_{x ∈ C'_w} B (h x, ε_w)` of the
+source of a pierced ball, the thickened overlaps `V_{e₁} ∩ V_{e₂}` of two different edges are
+disjoint.  The tube margins do not give it: for three pairwise adjacent vertices the preparation
+constrains only the tubes `S_e`, the *non-adjacent* balls and the piercing circles, and three
+balls can have pairwise disjoint intersection circles and still share an interior point, as the
+three octahedra `|x ± 1| + |y| + |z| ≤ 2`, `|x| + |y| + |z| ≤ 1.8` do.  A whole triple cover far
+from every circle would give two different edges the same points of the deletion, so the
+intersection disks of page 251 could not be pairwise disjoint.  The certificate is about the
+source and the already chosen `ε`, so a producer chooses the altered balls with disjoint source
+overlaps first and the scales afterwards, never the other way round.
 
 `section34MarginConditions` proves from them, for every family of embeddings `ε`-close to `h` on
 the `C''_v`, condition (2), the disjointness half of condition (5), the disjointness half of
@@ -148,16 +159,23 @@ the outside half of condition (4), and the three certificates the single removal
 `h '' Kcore v ⊆ interior (G_v '' C'_v)`, the disjointness of a core image from a tube and of a
 vertex marker from a foreign ball, and `mem_nhdsSet_iUnion_image_of_section34Core` turns the core
 containment into the neighbourhood clause of Moise's condition (6); that clause is therefore no
-longer a field of `Section34PiercingConditions`.  What the package still owes is the containments
+longer a field of `Section34PiercingConditions`.  `section34OverlapConditions` proves, from the
+whole-overlap certificate of the preparation and closeness on the `C'_v` alone, the penultimate
+field of the package: the closed overlaps `G_v(C'_v) ∩ G_w(C'_w)` of two different edges are
+disjoint, which is what makes the intersection disks of the deletion pairwise disjoint.  Its only
+step is `G_w '' C'_w ⊆ section34CellThickening h C' ε w`, so it needs neither the cell structure
+nor the embedding property, and it is the analogue for the whole overlaps of what
+`section34MarkerConditions` is for the markers.  What the package still owes is the containments
 in interiors of images whose ambient set is a solid torus and not a piecewise linear cell, for
-which `mem_interior_image_of_notMem_image_boundary` gives no help, and the two new fields the
-deletion consumes: the closed overlaps `G_v(C'_v) ∩ G_w(C'_w)` of two different edges are
-disjoint, which is what makes the intersection disks of the deletion pairwise disjoint; and
-`h '' simplexBody 𝒦' v` misses the image of every *other* altered ball, which is what keeps the
-marker of `v` out of the balls deleted from `G_v(C'_v)`.  Both are conditions on the image
-configuration alone and are preserved by a surgery supported in one tube, exactly as Moise's
-(2)--(8) are; the per-ball marker itself is not a field, because the off-support equality of one
-removal step carries it, as `section34Core_of_eqOn_off_support` does for the whole core.
+which `mem_interior_image_of_notMem_image_boundary` gives no help.  Both image configuration
+fields — the whole-overlap disjointness and the exclusion of `h '' simplexBody 𝒦' v` from the
+image of every *other* altered ball, which keeps the marker of `v` out of the balls deleted from
+`G_v(C'_v)` — are conditions on the image configuration alone and are preserved by a surgery
+supported in one tube, exactly as Moise's (2)--(8) are; they stay fields for that reason, since
+the families produced by the removal steps carry no closeness certificate and the two exporters
+no longer apply to them.  The per-ball marker itself is not a field, because the off-support
+equality of one removal step carries it, as `section34Core_of_eqOn_off_support` does for the
+whole core.
 
 The outer torus of a triangle is **not** chosen by the preparation.  With `Q` already fixed, a
 common chart does not let an arbitrary `Q` fit inside a torus having the prescribed circle as
@@ -893,6 +911,11 @@ def Section34OuterTorus {U : Set M₁} (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3
     B = h '' simplexRim 𝒦 s.1 →
     ¬ D ⊆ ⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w
 
+def section34CellThickening {U : Set M₁} {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
+    (h : M₁ → M₂) (Cp : Section34VertexIndex 𝒦 𝒦' → Set M₁)
+    (ε : Section34VertexIndex 𝒦 𝒦' → ℝ) (w : Section34VertexIndex 𝒦 𝒦') : Set M₂ :=
+  ⋃ x ∈ Cp w, Metric.ball (h x) (ε w)
+
 def Section34VertexPreparation (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
     (h : M₁ → M₂) (src : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
     (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
@@ -969,9 +992,14 @@ def Section34VertexPreparation (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPiece
     (∀ z ∈ Cp w, dist (h z) (F z) < ε w) → h '' Kcore w ⊆ interior (F '' Cp w)) ∧
   (∀ e w, ∀ x ∈ Sn e, ∀ y ∈ Kcore w, ε (ends e).1 + ε w < dist (h x) (h y)) ∧
   (∀ w w', w ≠ w' → ∀ x ∈ Cp w', ∀ y ∈ simplexBody 𝒦' w.1, ε w' < dist (h x) (h y)) ∧
-  ∀ w w', w ≠ w' → (¬ ∃ e : Section34EdgeIndex 𝒦 𝒦',
+  (∀ w w', w ≠ w' → (¬ ∃ e : Section34EdgeIndex 𝒦 𝒦',
       (w = (ends e).1 ∧ w' = (ends e).2) ∨ (w = (ends e).2 ∧ w' = (ends e).1)) →
-    Disjoint (Cp w) (Cp w')
+    Disjoint (Cp w) (Cp w')) ∧
+  ∀ e d, e ≠ d →
+    Disjoint (section34CellThickening h Cp ε (ends e).1 ∩
+        section34CellThickening h Cp ε (ends e).2)
+      (section34CellThickening h Cp ε (ends d).1 ∩
+        section34CellThickening h Cp ε (ends d).2)
 
 def Section34PiercingConditions (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
     (h : M₁ → M₂) (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
@@ -1090,6 +1118,22 @@ theorem section34MarkerConditions
     have d2 : dist (G w' x) (h y) = 0 := by rw [hxy]; exact dist_self _
     have dt := dist_triangle (h x) (G w' x) (h y)
     linarith [hvmar w w' hne x hx y hy]
+
+omit [FiniteDimensional ℝ Ea] in
+theorem section34OverlapConditions
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
+    (hGdist : ∀ w, ∀ z ∈ Cp w, dist (h z) (G w z) < ε w) :
+    ∀ e d, e ≠ d →
+      Disjoint (G (ends e).1 '' Cp (ends e).1 ∩ G (ends e).2 '' Cp (ends e).2)
+        (G (ends d).1 '' Cp (ends d).1 ∩ G (ends d).2 '' Cp (ends d).2) := by
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
+    -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hover⟩ := hprep
+  have himg : ∀ w, G w '' Cp w ⊆ section34CellThickening h Cp ε w := by
+    rintro w _ ⟨z, hz, rfl⟩
+    exact mem_biUnion hz (Metric.mem_ball'.mpr (hGdist w z hz))
+  exact fun e d hne => (hover e d hne).mono (inter_subset_inter (himg _) (himg _))
+    (inter_subset_inter (himg _) (himg _))
 
 omit [FiniteDimensional ℝ Ea] in
 theorem section34MarginConditions

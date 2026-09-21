@@ -62,7 +62,9 @@ and `B_e ⊆ Bd C'_w` with their designated boundary circles and their source si
 outside marking, the middle annulus `B_e⁰ ⊆ B_e ∩ Int T_e` with its two collar circles, the
 enlarged cells `C''_v ⊇ C_v ∪ C'_v ∪ ⋃_{e ∋ v} S_e`, one piecewise linear chart of `M₂`
 containing `h '' C''_v`, and only then the tolerances `ε_v`, two-sided wherever two
-approximations meet.  It no longer chooses the outer torus.
+approximations meet, together with the whole-overlap certificate that the `ε_v`-thickenings
+`section34CellThickening h C' ε` of two different edges have disjoint pairwise intersections.
+It no longer chooses the outer torus.
 
 The outer torus and the fine carriers are chosen **together**, by the leaf that chooses `Q`.  A
 common chart is far too weak: with `U = M₁ = M₂ = ℝ³`, `h` an affine shear and the `Q_w` large,
@@ -88,9 +90,11 @@ from every target tube, the disjointness of a tube from the boundary of a ball o
 is not one of its ends, the disjointness of the images of two pierced balls with disjoint
 sources, the pairwise disjointness of the closed overlaps `G_v(C'_v) ∩ G_w(C'_w)` of different
 edges, and the exclusion of `h '' simplexBody 𝒦' v` from the image of every other pierced ball.
-All but the last two are proved by `section34MarginConditions` for an `ε`-close family; the last
-two are conditions on the image configuration that one removal step, being supported in one
-tube, preserves.  The neighbourhood clause of Moise's (6) is **no longer a field**: it is
+All but the last two are proved by `section34MarginConditions` for an `ε`-close family, the
+penultimate one by `section34OverlapConditions` and the last by `section34MarkerConditions` for
+the same family; both remain fields because they are conditions on the image configuration that
+one removal step, being supported in one tube, preserves, while the families it produces have no
+closeness certificate.  The neighbourhood clause of Moise's (6) is **no longer a field**: it is
 `mem_nhdsSet_iUnion_image_of_section34Core` applied to the core containment, which holds for the
 `ε`-close family by the preparation's stability scale and is carried through every removal step
 by `section34Core_of_eqOn_off_support`, from the off-support equality alone.  The per-ball marker
@@ -105,7 +109,18 @@ containment of the intersection polygons in the two relative interiors, which th
 **in the target subspace `h '' U`**, not in `⋃ Q`: thin spikes on far tubes accumulate at points
 of `h '' U` lying in no `C''_v`.
 
-The leaves, with content and review state.  The quantitative leaf of the previous snapshot,
+The leaves, with content and review state.  After review AC five of the seven are **frozen**:
+`exists_section34CutFrame`, `exists_section34ProtectedCircleRemovalStep`,
+`exists_section34ProtectedCircleRemoval`, `exists_section34DeletedBalls` and
+`exists_section34EdgeMatching`; the first three were not re-examined by that review and the last
+two were read and passed, the deletion with the literal difference formula kept and the matching
+as an interface.  The two **unreviewed after the repair** are `exists_section34VertexPreparation`,
+which gained the whole-overlap certificate, and `exists_section34PiercingPackage`, which lost the
+obligation to produce the closed overlap field out of nothing.  No leaf of this file assumes
+piecewise linear Schoenflies in `ℝ³`: `SchoenfliesFoundations.schoenflies_input : SchoenfliesInput`
+is proved in the tree, so that input is unconditional here; what the deletion still needs beyond
+it is the cutting disk, the new boundary sphere and the transport back to `IsPLCellOn`.
+The quantitative leaf of the previous snapshot,
 `image_subset_of_dist_lt_of_isPLCellOn`, is **deleted as false**: under an arbitrary compatible
 metric a small distance does not put a point in the region the perturbed boundary sphere
 encloses, and its docstring's "what is missing is exactly degree" was wrong.  Its correct form
@@ -113,30 +128,43 @@ is an existence of scale, and that form is proved, not assumed, in
 `PiecewiseLinear.PLCellOnStability`; it is consumed here only through the preparation's
 certified field.
 
-`exists_section34CutFrame` (steps 1--5): **changed after review W (joint outer torus),
-unreviewed**.  Added to the earlier statement, which was reviewed three times: the two outputs
+`exists_section34CutFrame` (steps 1--5): **frozen**.  Changed after review W (joint outer
+torus).  Added to the earlier statement, which was reviewed three times: the two outputs
 `ct` and `Sd`, and the single clause `Section34OuterTorus 𝒦 𝒦' h Q ct Sd`.  Nothing else
 changed.  It produces `𝒦'`, the cut frame, the regular neighbourhood `N = ⋃ C_v` of the one
 skeleton inside `W`, the assignment `car` with finite fibres, the fine carriers `Q v`, the
 carrier separation, and now the triangle charts and outer tori.
 
-`exists_section34VertexPreparation` (**FIX of review Z, unreviewed**): it now also produces the
+`exists_section34VertexPreparation` (**FIX of reviews Z and AC, unreviewed**): it produces the
 family `Kcore`, with the three clauses above, the two-sided margin between a tube and a core, the
 one-sided margin between a pierced ball and the vertex of a different ball, and the source
-disjointness of two pierced balls whose vertices are not the two ends of an edge.  The last is
-what rules out two thin fingers of non-adjacent cells meeting away from every tube, which no
-earlier clause forbade.
+disjointness of two pierced balls whose vertices are not the two ends of an edge, which rules out
+two thin fingers of non-adjacent cells meeting away from every tube.  The repair of review AC is
+one further clause, the only one about *whole* overlaps: writing
+`V_w = section34CellThickening h C' ε w = ⋃_{x ∈ C'_w} B (h x, ε_w)`, the sets
+`V_{(ends e).1} ∩ V_{(ends e).2}` of two different edges are disjoint.  The tube margins do not
+imply it, because they separate the thin supports `S_e` around the piercing circles while three
+balls can have pairwise disjoint intersection circles and still share an interior point far from
+all three, as the octahedra `|x ± 1| + |y| + |z| ≤ 2`, `|x| + |y| + |z| ≤ 1.8` do, and such a
+triple cover would give two different edges common points of the deletion.  The clause speaks
+about the source and the already chosen `ε`, so a producer makes the source overlaps of different
+edges disjoint first and chooses the scales afterwards, by compactness and local finiteness,
+never the other way round.
 
-`exists_section34PiercingPackage` (**changed after reviews W and Z, unreviewed**): it receives
+`exists_section34PiercingPackage` (**changed after reviews W, Z and AC, unreviewed**): it receives
 `hQsub : ∀ w, Q w ⊆ h '' U` and the carrier local finiteness `hQlfU` in that subspace, which is
-what `locallyFinite_support_of_section34CutFrame` turns into the package's `hSpLF`.  What it
-still owes is only the clauses that `section34MarginConditions` and `section34MarkerConditions`
-do not give: the containments whose ambient set is a solid torus rather than a cell, the
-component certificates of (7), the general position of (8), and the pairwise disjointness of the
-closed overlaps of different edges, which is the whole-overlap control the deletion needs and
-which "tubes avoid outer ball boundaries" does not give.
+what `locallyFinite_support_of_section34CutFrame` turns into the package's `hSpLF`.  The closed
+overlap field is no longer its own obligation: `section34OverlapConditions` derives it from the
+preparation's new certificate and the closeness of the family the leaf itself outputs, exactly as
+`section34MarkerConditions` derives the exclusion of a marker from a foreign ball, and the proof
+of the leaf has only to apply it.  What it still owes is the clauses that the three exporters do
+not give: the containments whose ambient set is a solid torus rather than a cell, the component
+certificates of (7), and the general position of (8).  Both image configuration clauses stay
+fields of `Section34PiercingConditions`, because the families produced by the removal steps carry
+no closeness certificate and no exporter applies to them, while a surgery supported in one tube
+preserves both.
 
-`exists_section34ProtectedCircleRemovalStep` (**FIX of review W, restated**): one modification
+`exists_section34ProtectedCircleRemovalStep` (**frozen**, restated at review W): one modification
 inside `Int S'_{e₀}`.  It already concludes `Section34PiercingConditions` for the new family, and
 its first field is `∀ w, IsPLHomeomorphInto 3 (G' w) (C''_w)`, so the replacement is a piecewise
 linear embedding of all of `C''_w` and not a set level surgery.  That the markers and the
@@ -144,12 +172,12 @@ boundaries of the balls of the other vertices are untouched is no longer assumed
 proved `section34Step_eqOn_marker_and_boundary`, from the `EqOn` off the support together with
 the two new disjointness certificates.
 
-`exists_section34ProtectedCircleRemoval` (reviewed **OK**): the text is unchanged except for the
-one identifier `Kcore` that the preparation now takes; its content changed only through
+`exists_section34ProtectedCircleRemoval` (**frozen**, reviewed OK): the text is unchanged except
+for the one identifier `Kcore` that the preparation now takes; its content changed only through
 `Section34PiercingConditions`, which lost the neighbourhood clause and gained the two image
 configuration clauses.
 
-`exists_section34DeletedBalls` (**FIX of review Z, unreviewed**): the first half of page 251.  It
+`exists_section34DeletedBalls` (**frozen** at review AC): the first half of page 251.  It
 keeps the literal deletion formula and now **receives** the core containment for its own family
 of maps, which is the one fact that closeness to `h` would give and that the removal steps
 forget; a periodic translation `G_w = L(x + a)` of the whole configuration satisfies every other
@@ -158,9 +186,12 @@ outputs the `3`-cell certificates of the `D_v`, the intersection disks with thei
 certificates and exact meets, the markers and the neighbourhood clause.  The adjacency criterion
 and the disjointness of different intersection disks left the leaf: they are proved in the
 assembly from the preparation's non-adjacent source disjointness and the package's whole-overlap
-field.
+field.  Review AC kept the literal difference and recorded that the cap-by-cap deletion of one
+ball, `A \ Int B` for two balls whose boundaries meet in one transverse circle, is where the
+genuine piecewise linear topology sits; that single-cap lemma is a note of the digest and not a
+declaration of this file.
 
-`exists_section34EdgeMatching` (**changed after reviews W and Z, unreviewed**): only the three
+`exists_section34EdgeMatching` (**frozen** at review AC as an interface): only the three
 stage relative matching is left.  It now also receives `hDvQ` and `hDnbhd`, which the assembly
 has, and outputs the maps `G'` of the *original* cells with `G' w '' C_w = D_v`, their
 compatibility and exact meets, the rim containment and the nested torus certificate, whose outer
@@ -174,7 +205,7 @@ the assembly, which in particular proves conditions (2) and (3) of Section 34 Le
 carrier separation and the combinatorics of the splitting disks, the `ψ` estimate, the generator
 clause from the nested torus certificate, and now the adjacency criterion, the disjointness of
 the intersection disks and `D_v ⊆ Q v`.  Proved in `Section34Frame`:
-`section34MarginConditions`, `section34MarkerConditions`,
+`section34MarginConditions`, `section34MarkerConditions`, `section34OverlapConditions`,
 `mem_nhdsSet_iUnion_image_of_section34Core`, `section34FaceTorus_subset_outerTorus`,
 `mem_interior_image_of_notMem_image_boundary`, `finite_splitDisk_of_section34CutFrame` and
 `locallyFinite_support_of_section34CutFrame`.  Proved in `PiecewiseLinear.PLCellOnStability`:
@@ -591,7 +622,7 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
   obtain ⟨Cp, CpBd, Cc, CcBd, Kcore, ends, Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁, ε,
       hprep⟩ := exists_section34VertexPreparation hU hh hframe hN hQint
   obtain ⟨-, -, hsubs, -, hcpcell, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
-    -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hnonadj⟩ := id hprep
+    -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hnonadj, -⟩ := id hprep
   obtain ⟨G₀, hG₀, hG₀dist⟩ := h341.exists_section34VertexApproximation hh hprep
   obtain ⟨Sp, Tp, cnt, Pg, G₁, hpack, hG₁dist⟩ :=
     exists_section34PiercingPackage hU hh hframe hN hQsub hQlfU hprep hG₀ hG₀dist
