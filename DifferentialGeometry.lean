@@ -5499,6 +5499,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedSegmentNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedSpatialNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckOverlap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonSectionalCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonReflexive
@@ -9617,6 +9619,7 @@ import DifferentialGeometry.Topology.Order.FiniteSeparation
 import DifferentialGeometry.Topology.Order.IntermediateValue
 import DifferentialGeometry.Topology.Order.Interval
 import DifferentialGeometry.Topology.Order.IntervalContinuation
+import DifferentialGeometry.Topology.Order.Iteration
 import DifferentialGeometry.Topology.Order.IntervalPush
 import DifferentialGeometry.Topology.Order.LiminfSum
 import DifferentialGeometry.Topology.OrderedCollar

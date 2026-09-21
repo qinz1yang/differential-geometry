@@ -1076,3 +1076,34 @@ other diagnostics. The overlap module has no dependency on `FiniteHornStructure`
 The bounded-distance headline is still open. The next construction chooses necks
 along the limiting geodesic with steps proportional to their curvature scales,
 proves that they approach the missing endpoint, and assembles the end geometry.
+
+## Curvature-scale neck sequences and disjoint central spheres
+
+The continuation after `3d53774e2` constructs a sequence of necks along an actual
+isometric curve with the previously proved scalar-distance separation.
+`exists_spatialNeck_sequence_along_isometric_curve` produces strictly increasing
+parameters tending to the missing endpoint, with increments exactly one fortieth
+of the coordinate-window radius divided by the square root of the center scalar
+curvature. Each intervening curve segment lies in the corresponding inner neck
+slab. Adjacent cross-sections are related by smooth graphs and sphere
+diffeomorphisms, and all central spheres are pairwise disjoint.
+
+The iteration argument lives in `Topology/Order/Iteration.lean`: the primary
+result works in a conditionally complete linear order with its order topology;
+the continuous-step corollary additionally uses an ordered additive group with
+continuous addition. `SpatialNeckSeparation.lean` proves disjointness from an
+actual lower bound on the distance between centers, using the scalar comparison
+at a hypothetical common point and the metric bounds on central spheres. These
+results require neither complete ambient manifolds nor ancient source flows.
+
+Four public declarations passed thirteen applicable declaration linters and have
+only the three approved axioms. The leaf passed 11,179 jobs and the full root
+passed 20,192 jobs with exactly the same 21 retained sorry warnings. Evidence:
+`/private/tmp/wt17-spatial-neck-sequence-build.log`,
+`/private/tmp/wt17-spatial-neck-sequence-audit.log`, and
+`/private/tmp/wt17-spatial-neck-sequence-root-build.log`.
+
+The next application restricts the produced incomplete limit geodesic to a tail
+where every point has a spatial neck. The ordered neck sequence must still be
+assembled into a finite end and used to construct the cone. The bounded-distance
+headline remains open.
