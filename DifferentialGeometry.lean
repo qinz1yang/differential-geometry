@@ -12479,3 +12479,14 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.CircleAnchor
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.HomogeneousChart
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartFilling
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.IntrinsicReplacement
+import DifferentialGeometry.Analysis.Asymptotics.SmallDrop
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.LocalDefect
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Nonconcentration
+import DifferentialGeometry.Topology.MetricSpace.TruncatedDistance
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.BoundaryIdentity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.TargetBoundaryIdentity
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.ZeroTraceRange
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartComparison
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.LocalLowerSemicontinuity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartLocalization
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartMinimality

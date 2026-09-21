@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
 import DifferentialGeometry.Analysis.Integration.PlaneScaling
 
+section
+
 noncomputable section
 open Set MeasureTheory
 open scoped ENNReal
@@ -159,5 +161,50 @@ theorem weak_replacement_minimality_comp_add_smul_center
   exact hew.trans_le (hcomp.trans_eq heq')
 
 end DifferentialGeometry.Analysis
+
+end
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+open Set MeasureTheory Filter Metric
+open scoped ENNReal
+
+namespace DifferentialGeometry.Analysis
+
+theorem preimage_affine_ball_self
+    (b : EuclideanSpace ℝ (Fin 2)) {r : ℝ} (hr : 0 < r) :
+    (fun x : EuclideanSpace ℝ (Fin 2) => b + r • x) ⁻¹' ball b r = ball 0 1 := by
+  ext x
+  simp only [mem_preimage, mem_ball, dist_eq_norm, add_sub_cancel_left,
+    norm_smul, Real.norm_eq_abs, abs_of_pos hr, sub_zero]
+  rw [mul_lt_iff_lt_one_right hr]
+
+theorem integral_quadratic_weakGrad_compAddSmul_ball
+    {m : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin 2))}
+    {w : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin m)}
+    (hw : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => w x i) Ω)
+    (A : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin m) →L[ℝ]
+      EuclideanSpace ℝ (Fin m) →L[ℝ] ℝ)
+    (b : EuclideanSpace ℝ (Fin 2)) {r : ℝ} (hr : 0 < r) (j : Fin 2) :
+    (∫ x in ball (0 : EuclideanSpace ℝ (Fin 2)) 1,
+      A (b + r • x)
+        (WithLp.toLp 2 (fun i => ((hw i).compAddSmul b hr.ne').weakGrad x j))
+        (WithLp.toLp 2 (fun i => ((hw i).compAddSmul b hr.ne').weakGrad x j))) =
+      ∫ x in ball b r,
+        A x (WithLp.toLp 2 (fun i => (hw i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hw i).weakGrad x j)) := by
+  have h := integral_quadratic_comp_add_smul_plane A
+    (fun x => WithLp.toLp 2 (fun i => (hw i).weakGrad x j)) b hr.ne' (ball b r)
+  rw [preimage_affine_ball_self b hr] at h
+  simpa only [DeGiorgi.weakGrad_column_compAddSmul] using h
+
+end DifferentialGeometry.Analysis
+
+end
 
 end

@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Integration.Measure.Affine
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import Mathlib.Tactic.Ring
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
+
+section
 
 noncomputable section
 
@@ -122,5 +125,50 @@ theorem weakGrad_column_compAddSmul
   simp only [MemW1pWitness.compAddSmul, PiLp.smul_apply]
 
 end DeGiorgi
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Set Filter MeasureTheory Metric
+open scoped Topology ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d : ℕ} {ι : Type*}
+
+local notation "E" => EuclideanSpace ℝ (Fin d)
+local notation "F" => EuclideanSpace ℝ ι
+
+theorem exists_translated_memW1pWitness_of_eqOn
+    {p : ℝ≥0∞} {Ω : Set E} {f g : E → F}
+    (hf : ∀ i, DeGiorgi.MemW1pWitness p (fun x => f x i) Ω)
+    {b : E} {R : ℝ} (hball : ball b R ⊆ Ω) (hfg : EqOn f g (ball b R)) :
+    ∃ hg : ∀ i, DeGiorgi.MemW1pWitness p (fun x => g (b + x) i) (ball (0 : E) R),
+      ∀ i x, (hg i).weakGrad x = (hf i).weakGrad (b + x) := by
+  have hmaps : ball (0 : E) R ⊆ (fun x => b + (1 : ℝ) • x) ⁻¹' Ω := by
+    intro x hx
+    apply hball
+    simpa only [one_smul, mem_ball, dist_eq_norm, add_sub_cancel_left, sub_zero] using hx
+  have heq (i : ι) : (fun x => f (b + (1 : ℝ) • x) i) =ᵐ[volume.restrict (ball (0 : E) R)]
+      (fun x => g (b + x) i) := by
+    filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
+    have hxB : b + x ∈ ball b R := by
+      simpa only [mem_ball, dist_eq_norm, add_sub_cancel_left, sub_zero] using hx
+    simpa only [one_smul] using congrArg (fun y : F => y i) (hfg hxB)
+  let hg := fun i =>
+    (((hf i).compAddSmul b (one_ne_zero : (1 : ℝ) ≠ 0)).restrict isOpen_ball hmaps).congr (heq i)
+  refine ⟨hg, ?_⟩
+  intro i x
+  change (1 : ℝ) • (hf i).weakGrad (b + (1 : ℝ) • x) = (hf i).weakGrad (b + x)
+  rw [one_smul, one_smul]
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
 
 end
