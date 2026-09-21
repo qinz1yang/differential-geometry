@@ -1201,3 +1201,33 @@ sorry warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-normalized-neck-locally-finite-build.log`,
 `/private/tmp/wt17-neck-local-finiteness-audit.log`, and
 `/private/tmp/wt17-neck-local-finiteness-root-build.log`.
+
+## Distance along arbitrary axial segments
+
+The continuation after `9c677ac68` generalizes the collar distance estimate from a
+segment ending at height zero to arbitrary endpoints. The new
+`collar_axial_segment_edist_le` needs only containment of the actual vertical
+segment in the comparison domain. The original `collar_axial_edist_le` keeps its
+signature and is now a corollary. Its duplicate private distance-commutativity
+lemma was removed in favor of the metric-distance API.
+
+`SpatialNeck.edist_same_fiber_le` applies this estimate with the exact curvature
+rescaling. `SpatialNeck.central_sphere_subset_closedBall` exposes the radius
+`7 / sqrt R` bound previously private in the sphere-separation proof. That proof
+now consumes the public ball-containment statement. These estimates prepare
+bounds for graph annuli from both endpoint centers, needed for quantitative
+separation and gluing of the annular union.
+
+The geometry is the elementary axial/transverse length comparison in
+Morgan–Tian, *Ricci Flow and the Poincaré Conjecture*, Appendix A, §2 (in particular
+the diameter conclusion of Lemma A.4), in the read-only local
+`Geometrization/BooksPapers/MorganTianPoincare.pdf`. The finite-end and cone
+producers, and the bounded-distance headline, remain open.
+
+Five declarations passed thirteen declaration linters, with only `propext`,
+`Classical.choice`, and `Quot.sound` in all inspected axiom closures. The changed
+leaf and separation dependent passed 11,178 jobs. The full root passed 20,198
+jobs with exactly 21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-spatial-neck-fiber-distance-build.log`,
+`/private/tmp/wt17-axial-distance-audit.log`, and
+`/private/tmp/wt17-axial-distance-root-build.log`.

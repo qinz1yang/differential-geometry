@@ -80,6 +80,29 @@ private theorem spatial_neck_transverse_edist_le
     rw [← ENNReal.ofReal_mul (Real.sqrt_nonneg _), mul_comm])))
 
 
+theorem SpatialNeck.edist_same_fiber_le
+    {g : SmoothRiemannianMetric I3 M} {eps a b : ℝ} {x : M}
+    (nk : SpatialNeck g eps x) (p : Sphere 2)
+    (ha : a ∈ Ioo (-eps⁻¹) eps⁻¹) (hb : b ∈ Ioo (-eps⁻¹) eps⁻¹) :
+    riemannianEDistOf g (nk.map (p, a)) (nk.map (p, b)) ≤
+      ENNReal.ofReal (Real.sqrt (1 + eps) * |a - b| / Real.sqrt (metricScalarAt g x)) := by
+  have hseg : ∀ u ∈ uIcc a b, (p, u) ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
+    intro u hu
+    exact ⟨mem_univ _, (lt_min ha.1 hb.1).trans_le hu.1,
+      hu.2.trans_lt (max_lt ha.2 hb.2)⟩
+  have hscaled := collar_axial_segment_edist_le nk.cylinder _ nk.map nk.comparison rfl
+    nk.eps_pos.le (by simp) nk.domain p hseg
+  rw [edistOf_scale] at hscaled
+  have hQ := Real.sqrt_pos.mpr nk.Q_pos
+  apply (ENNReal.mul_le_mul_iff_right (ENNReal.ofReal_ne_zero_iff.mpr hQ)
+    ENNReal.ofReal_ne_top).mp
+  rw [← ENNReal.ofReal_mul hQ.le]
+  have heq : Real.sqrt (metricScalarAt g x) *
+      (Real.sqrt (1 + eps) * |a - b| / Real.sqrt (metricScalarAt g x)) =
+      Real.sqrt (1 + eps) * |a - b| := by field_simp
+  rwa [heq]
+
+
 theorem SpatialNeck.image_slab_subset_closedBall
     {g : SmoothRiemannianMetric I3 M} {eps r : ℝ} {x : M}
     (nk : SpatialNeck g eps x) (hr : 0 ≤ r) (hsmall : r < eps⁻¹) :
@@ -119,6 +142,20 @@ theorem SpatialNeck.image_slab_subset_closedBall
       ((r + 6) * Real.sqrt (1 + eps) / Real.sqrt (metricScalarAt g x)) =
       (r + 6) * Real.sqrt (1 + eps) := by field_simp
   rwa [heq]
+
+theorem SpatialNeck.central_sphere_subset_closedBall
+    {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x : M}
+    (nk : SpatialNeck g eps x) :
+    nk.map '' (univ ×ˢ ({0} : Set ℝ)) ⊆
+      riemannianClosedBallOf g x (7 / Real.sqrt (metricScalarAt g x)) := by
+  intro z hz
+  have hz' : z ∈ nk.map '' (univ ×ˢ Icc (-(0 : ℝ)) 0) := by simpa using hz
+  have hb := nk.image_slab_subset_closedBall le_rfl (inv_pos.mpr nk.eps_pos) hz'
+  have hnum : ((0 : ℝ) + 6) * Real.sqrt (1 + eps) ≤ 7 := by
+    have hh := Real.sq_sqrt (by linarith [nk.eps_pos] : 0 ≤ 1 + eps)
+    nlinarith [nk.eps_small, Real.sqrt_nonneg (1 + eps)]
+  exact hb.trans (ENNReal.ofReal_le_ofReal
+    (div_le_div_of_nonneg_right hnum (Real.sqrt_nonneg _)))
 
 theorem StrongNeck.region_subset_ball {D : RealTimeInterval}
     {S : SolutionOn (I := I3) (M := M) D} {eps : ℝ} {x : M} {t : ℝ}

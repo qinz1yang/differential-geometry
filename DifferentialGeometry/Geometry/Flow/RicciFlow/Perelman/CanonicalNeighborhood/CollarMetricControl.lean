@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Analysis.Normed.Module.Connected
 
 set_option autoImplicit false
@@ -143,31 +144,19 @@ universe u
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M]
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem collar_metric_edist_comm (g : SmoothRiemannianMetric I3 M) (x y : M) :
-    riemannianEDistOf (I := I3) g x y = riemannianEDistOf (I := I3) g y x := by
-  let : Bundle.RiemannianBundle (TangentSpace I3 : M → Type _) := ⟨g.toRiemannianMetric⟩
-  exact Manifold.riemannianEDist_comm
-
-theorem collar_axial_edist_le (C : CylinderReference)
+theorem collar_axial_segment_edist_le (C : CylinderReference)
     (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
     {U : Set Cylinder} {times : Set ℝ}
-    {order : ℕ} {eps R : ℝ} {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    {order : ℕ} {eps : ℝ} {h : ℝ → SmoothRiemannianMetric IC Cylinder}
     (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
     (heps : 0 ≤ eps) (hzero : 0 ∈ times) (hsource : U ⊆ F.source)
-    (hslab : Set.univ ×ˢ Set.Icc (-R) R ⊆ U) (p : Sphere 2) {k : ℝ}
-    (hk : k ∈ Set.Icc (-R) R) :
-    riemannianEDistOf (g 0) (F (p, k)) (F (p, 0)) ≤
-      ENNReal.ofReal (Real.sqrt (1 + eps) * |k|) := by
-  have hR : 0 ≤ R := by linarith [hk.1, hk.2]
-  have key : ∀ {a b : ℝ}, a ≤ b → a ∈ Set.Icc (-R) R →
-      b ∈ Set.Icc (-R) R →
-        riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
-          ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) := by
-    intro a b hab ha hb
-    have hmem : ∀ u ∈ Set.Icc a b, u ∈ Set.Icc (-R) R :=
-      fun u hu => ⟨ha.1.trans hu.1, hu.2.trans hb.2⟩
+    (p : Sphere 2) {a b : ℝ} (hsegment : ∀ u ∈ uIcc a b, (p, u) ∈ U) :
+    riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+      ENNReal.ofReal (Real.sqrt (1 + eps) * |a - b|) := by
+  have key : ∀ {a b : ℝ}, a ≤ b → (∀ u ∈ Icc a b, (p, u) ∈ U) →
+      riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+        ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) := by
+    intro a b hab hU
     have hconst : ContMDiffOn 𝓘(ℝ, ℝ) I2 1 (fun _ : ℝ => p) (Set.Icc a b) :=
       contMDiffOn_const
     have hid : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun u : ℝ => u) (Set.Icc a b) :=
@@ -175,8 +164,6 @@ theorem collar_axial_edist_le (C : CylinderReference)
     have hgamma : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun u : ℝ => ((p, u) : Cylinder))
         (Set.Icc a b) :=
       hconst.prodMk hid
-    have hU : ∀ u ∈ Set.Icc a b, ((p, u) : Cylinder) ∈ U :=
-      fun u hu => hslab ⟨mem_univ _, hmem u hu⟩
     have hFgamma : ContMDiffOn 𝓘(ℝ, ℝ) I3 1
         ((F : Cylinder → M) ∘ (fun u : ℝ => ((p, u) : Cylinder))) (Set.Icc a b) :=
       (F.contMDiffOn_toFun.of_le (by simp)).comp hgamma fun u hu => hsource (hU u hu)
@@ -199,12 +186,30 @@ theorem collar_axial_edist_le (C : CylinderReference)
             mul_le_mul' le_rfl hmodel
       _ = ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) :=
             (ENNReal.ofReal_mul (Real.sqrt_nonneg _)).symm
-  rcases le_total 0 k with h0 | hk0
-  · have h1 := key (a := 0) (b := k) h0 ⟨by linarith, by linarith⟩ hk
-    rw [collar_metric_edist_comm (g 0) (F (p, 0)) (F (p, k))] at h1
-    simpa [abs_of_nonneg h0] using h1
-  · have h1 := key (a := k) (b := 0) hk0 hk ⟨by linarith, by linarith⟩
-    simpa [abs_of_nonpos hk0] using h1
+  rcases le_total a b with hab | hba
+  · have hh := key hab (fun u hu => hsegment u (by rwa [uIcc_of_le hab]))
+    simpa only [abs_of_nonpos (sub_nonpos.mpr hab), neg_sub] using hh
+  · have hh := key hba (fun u hu => hsegment u (by rwa [uIcc_of_ge hba]))
+    rw [riemannianEDistOf_comm] at hh
+    simpa only [abs_of_nonneg (sub_nonneg.mpr hba)] using hh
+
+
+theorem collar_axial_edist_le (C : CylinderReference)
+    (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    {U : Set Cylinder} {times : Set ℝ}
+    {order : ℕ} {eps R : ℝ} {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
+    (heps : 0 ≤ eps) (hzero : 0 ∈ times) (hsource : U ⊆ F.source)
+    (hslab : Set.univ ×ˢ Set.Icc (-R) R ⊆ U) (p : Sphere 2) {k : ℝ}
+    (hk : k ∈ Set.Icc (-R) R) :
+    riemannianEDistOf (g 0) (F (p, k)) (F (p, 0)) ≤
+      ENNReal.ofReal (Real.sqrt (1 + eps) * |k|) := by
+  have hR : 0 ≤ R := by linarith [hk.1, hk.2]
+  have hseg : ∀ u ∈ uIcc k 0, (p, u) ∈ U := by
+    intro u hu
+    exact hslab ⟨mem_univ _, uIcc_subset_Icc hk ⟨by linarith, hR⟩ hu⟩
+  simpa only [sub_zero] using
+    collar_axial_segment_edist_le C g F cmp hmetric heps hzero hsource p hseg
 
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
