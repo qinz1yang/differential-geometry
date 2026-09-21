@@ -3450,6 +3450,85 @@ theorem not_loopClassMeets_or_not_loopClassMeets_of_endpoint_preserving_reconnec
     (loopRepresentativeAlong_preserving_reconnection_first q c σ υ)
     (loopRepresentativeAlong_preserving_reconnection_second q c σ τ υ φ) hL
 
+
+open Classical in
+theorem exists_cross_reglued_source_segments_of_cut
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {A C : Set (EuclideanSpace ℝ (Fin 2))} {p q r s : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    {D₁ D₂ D₃ : SingularTwoCell M}
+    (hcut : hD.IsBoundaryBranchCut c A C p q r s g D₁ D₂ D₃) :
+    ∃ (H G : SingularTwoCell M)
+      (P Q P' Q' R T : Set (EuclideanSpace ℝ (Fin 2)))
+      (f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+      (a b : EuclideanSpace ℝ (Fin 2))
+      (ρ : ℝ → EuclideanSpace ℝ (Fin 2)) (t₁ t₂ : ℝ),
+      IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
+      IsPLHomeomorphOn f₁ P D₁.domain ∧ IsPLHomeomorphOn f₂ Q D₂.domain ∧
+      EqOn H (D.toFun ∘ f₁) P ∧ EqOn H (D.toFun ∘ f₂) Q ∧
+      IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
+      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' D₃.domain ∧
+      EqOn G (H.toFun ∘ h) P' ∧ EqOn G (D.toFun ∘ f₃) Q' ∧
+      Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
+      Schoenflies.IsCutPair (frontier Q') a b (P' ∩ Q') T ∧
+      IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier G.domain = R ∪ T ∧
+      h a = Function.invFunOn f₂ Q p ∧ h b = Function.invFunOn f₂ Q q ∧
+      f₃ a = g p ∧ f₃ b = g q ∧
+      ContinuousOn ρ (Set.Icc 0 1) ∧ Set.InjOn ρ (Set.Icc 0 1) ∧
+      ρ '' Set.Icc 0 1 = R ∧
+      ((ρ 0 = a ∧ ρ 1 = b) ∨ (ρ 0 = b ∧ ρ 1 = a)) ∧
+      t₁ ∈ Set.Icc 0 1 ∧ t₂ ∈ Set.Icc 0 1 ∧ t₁ < t₂ ∧
+      (∀ t ∈ Set.Icc 0 t₁, G (ρ t) = D (f₂ (h (ρ t)))) ∧
+      (∀ t ∈ Set.Icc t₁ t₂, G (ρ t) = D (f₁ (h (ρ t)))) ∧
+      (∀ t ∈ Set.Icc t₂ 1, G (ρ t) = D (f₂ (h (ρ t)))) ∧
+      (∀ z ∈ T, G z = D (f₃ z)) := by
+  obtain ⟨hA, hC, hAC, hcover, hAcoordinate, -, hg, hcompat,
+    hdomains, hinter₁₂, hinter₂₃, -, hA₂, hC₂, -, hdisjoint₁₃,
+    hfun₁, hfun₂, hfun₃, -, -, hcut₁, hcut₃⟩ := hcut
+  have hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A := by
+    intro x hx
+    change D₁.toFun x = D₂.toFun (g x)
+    rw [hfun₁, hfun₂]
+    exact hcompat hx
+  have hcompat₂₃ : EqOn D₂ (D₃ ∘ g) A := by
+    intro x hx
+    change D₂.toFun x = D₃.toFun (g x)
+    rw [hfun₂, hfun₃]
+    exact hcompat hx
+  have horientation :=
+    IsPLHomeomorphOn.maps_arc_endpoints hA hC hcut₁.fst hcut₃.fst hg
+  have hcut₃' : Schoenflies.IsCutPair (frontier D₃.domain) (g p) (g q) C
+      (D₃.domain ∩ frontier D.domain) := by
+    rcases horientation with hor | hor
+    · simpa only [hor.1, hor.2] using hcut₃
+    · have hrev : Schoenflies.IsCutPair (frontier D₃.domain) s r C
+          (D₃.domain ∩ frontier D.domain) :=
+        ⟨hcut₃.fst.reverse, hcut₃.snd.reverse, hcut₃.union_eq, by
+          rw [hcut₃.inter_eq, pair_comm]⟩
+      simpa only [hor.1, hor.2] using hrev
+  obtain ⟨H, G, P, Q, P', Q', R, T, f₁, f₂, h, f₃, a, b, ρ, t₁, t₂,
+    hP, hQ, hHdomain, hf₁, hf₂, hH₁, hH₂, hP', hQ', hGdomain, hh, hf₃,
+    hGH, hG₃, hcutP', hcutQ', hR', hT', hfrontG, hha, hhb, hf₃a, hf₃b,
+    hρc, hρi, hρimage, hρends, ht₁, ht₂, htlt, hρleft, hρmid, hρright, hT⟩ :=
+    exists_cross_glue_source_segments D₁ D₂ D₃ hA hAC hdomains hinter₁₂ hinter₂₃
+      hA₂ hC₂ hcut₁ hcut₃' hg hcompat₁₂ hcompat₂₃ hfun₁ hfun₂ hfun₃
+  have hH₁' : EqOn H (D.toFun ∘ f₁) P := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₁] using hH₁ hz
+  have hH₂' : EqOn H (D.toFun ∘ f₂) Q := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₂] using hH₂ hz
+  have hG₃' : EqOn G (D.toFun ∘ f₃) Q' := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₃] using hG₃ hz
+  exact ⟨H, G, P, Q, P', Q', R, T, f₁, f₂, h, f₃, a, b, ρ, t₁, t₂,
+    hP, hQ, hHdomain, hf₁, hf₂, hH₁', hH₂', hP', hQ', hGdomain, hh, hf₃,
+    hGH, hG₃', hcutP', hcutQ', hR', hT', hfrontG, hha, hhb, hf₃a, hf₃b,
+    hρc, hρi, hρimage, hρends, ht₁, ht₂, htlt, hρleft, hρmid, hρright, hT⟩
+
 end
 
 end DifferentialGeometry.Topology.PiecewiseLinear

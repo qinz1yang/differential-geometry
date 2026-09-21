@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.LoopSpace.InjectivePathReparam
-import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordFourArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWitness
 
 /-!
@@ -14,8 +13,7 @@ The boundary case assemblies of `LoopTheorem.CrossRegluedCellPredicate` and
 `LoopTheorem.BoundarySurgeryCellPredicate` still take the two boundary word witnesses
 `Wdirect` and `Wraw` as hypotheses.  Both candidate producers of `LoopTheorem.CutAndPaste`
 now record the boundary circle of their cell as a *two arc* loop of `M`, together with
-injective source parametrisations of the two arcs, while the assemblies compare that circle
-with a *four arc* word of the ambient loop space `X`.  This file supplies the passage.
+injective source parametrisations of the two arcs.  This file supplies the two arc passage.
 
 ## The brick
 
@@ -35,33 +33,11 @@ the witness is the image of a relative homotopy of paths under
 `DifferentialGeometry.Topology.pathToCircle_homotopic`.  `T2Space X` is not assumed: it comes
 from `Topology.IsEmbedding.t2Space`, the ambient loop space being embedded in a Hausdorff `M`.
 
-## The four candidate words
+## The source-side cross match
 
-The endpoint preserving direct word `σ.trans υ` is the brick itself.  The endpoint reversing
-direct word `σ.trans υ.symm` is `BoundaryWordWitness.exists_of_twoArcMatch_reversing`, with
-`Q := υ.symm`.  The two cross words are four letters long while the cross reglued cell has a
-*two* arc boundary, and the split is not at the start of the word: the recorded arcs of the
-cross reglue carry `τ.trans (σ.trans φ)` and `υ` in the reversing case, and
-`φ.symm.trans (σ.trans τ.symm)` and `υ` in the preserving case.  A cyclic rotation closes the
-gap — `DifferentialGeometry.Topology.pathToCircle_trans_homotopic_comm` together with
-`Path.Homotopic.trans_assoc` — and `BoundaryWordWitness.ofHomotopicWord` carries a witness
-across it.  This is `BoundaryWordWitness.exists_of_fourArcMatch_reversing` and its endpoint
-preserving twin.
-
-## What this file does not do, and why
-
-It does not produce the witnesses *from the two cell predicates alone*.  The two range
-equalities above are the whole content of the match, and they cannot be stated at the level
-of `NormalSingularCellData.IsBoundarySurgeryCell` or
-`NormalSingularCellData.IsCrossRegluedCell`: those predicates quantify their arcs `U`, `V`,
-`R`, `T` and their boundary paths existentially, and nothing in them ties those arcs to the
-four arcs of `frontier D.domain` produced by
-`NormalSingularCellData.exists_boundary_four_arc_word_of_boundaryBranch`.  The two producers
-call `NormalSingularCellData.exists_three_cells_of_boundaryBranch` independently, under
-separate `Classical.choice`s, so the three piece decomposition behind the candidate is not
-the one behind the four arcs.  Closing that is an export question in `LoopTheorem.CutAndPaste`
-and `BoundaryWordFourArcs` — one producer delivering the four arcs *and* the candidate — and
-not a homotopical one; every homotopical step is discharged here.
+The source-side cross match is supplied by `LoopTheorem.BoundaryCaseFromSource`, where
+injective arcs are compared on the source boundary and path homotopies are pushed through a
+continuous realisation map.
 -/
 
 open Set Topology
@@ -199,51 +175,6 @@ theorem exists_of_twoArcMatch_reversing [T2Space M] (hρ : IsEmbedding ρ)
     have h : υ (unitInterval.symm s) = υ (unitInterval.symm t) := hst
     exact unitInterval.symm_bijective.injective (hυ h)
   · rwa [Path.symm_range]
-
-/-! ### The four arc words of the cross candidate -/
-
-/-- **The endpoint reversing cross candidate word.**  The cross reglued cell has a two arc
-boundary while the word `σ.trans (φ.trans (υ.trans τ))` has four letters, and the boundary
-splits the word not at its start but before `τ`: the recorded arcs carry
-`τ.trans (σ.trans φ)` and `υ`.  A cyclic rotation of a free loop is freely homotopic to it,
-so the witness over the concatenation in the recorded order is a witness over the word. -/
-theorem exists_of_fourArcMatch_reversing [T2Space M] (hρ : IsEmbedding ρ)
-    (e : loopCircle ≃ₜ frontier G.domain) {a b : X} {σ υ : Path a b} {τ φ : Path b a}
-    (hlong : Function.Injective ⇑(τ.trans (σ.trans φ))) (hυ : Function.Injective ⇑υ)
-    {α : Path (ρ b) (ρ a)} {ω : Path (ρ a) (ρ b)}
-    (hparam : ∀ θ, G (e θ) = pathToCircle (α.trans ω) θ)
-    (hα : Set.range ⇑α = ρ '' Set.range ⇑(τ.trans (σ.trans φ)))
-    (hω : Set.range ⇑ω = ρ '' Set.range ⇑υ) :
-    Nonempty (BoundaryWordWitness G ρ (pathToCircle (σ.trans (φ.trans (υ.trans τ))))) := by
-  obtain ⟨W⟩ := exists_of_twoArcMatch hρ e hlong hυ hparam hα hω
-  have h₁ := pathToCircle_homotopic (Path.Homotopic.trans_assoc τ (σ.trans φ) υ)
-  have h₂ := pathToCircle_trans_homotopic_comm τ ((σ.trans φ).trans υ)
-  have h₃ := pathToCircle_homotopic (Path.Homotopic.trans_assoc (σ.trans φ) υ τ)
-  have h₄ := pathToCircle_homotopic (Path.Homotopic.trans_assoc σ φ (υ.trans τ))
-  exact ⟨W.ofHomotopicWord (((h₁.trans h₂).trans h₃).trans h₄)⟩
-
-/-- **The endpoint preserving cross candidate word.**  The endpoint preserving twin of
-`BoundaryWordWitness.exists_of_fourArcMatch_reversing`: here the second and the fourth letter
-are loops and are traversed backwards, the word is
-`σ.trans (τ.symm.trans (υ.trans φ.symm))`, and the recorded arcs of the cross reglue carry
-`φ.symm.trans (σ.trans τ.symm)` and `υ`. -/
-theorem exists_of_fourArcMatch_preserving [T2Space M] (hρ : IsEmbedding ρ)
-    (e : loopCircle ≃ₜ frontier G.domain) {a b : X} {σ : Path a b} {τ : Path b b}
-    {υ : Path b a} {φ : Path a a}
-    (hlong : Function.Injective ⇑(φ.symm.trans (σ.trans τ.symm)))
-    (hυ : Function.Injective ⇑υ)
-    {α : Path (ρ a) (ρ b)} {ω : Path (ρ b) (ρ a)}
-    (hparam : ∀ θ, G (e θ) = pathToCircle (α.trans ω) θ)
-    (hα : Set.range ⇑α = ρ '' Set.range ⇑(φ.symm.trans (σ.trans τ.symm)))
-    (hω : Set.range ⇑ω = ρ '' Set.range ⇑υ) :
-    Nonempty (BoundaryWordWitness G ρ
-      (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))))) := by
-  obtain ⟨W⟩ := exists_of_twoArcMatch hρ e hlong hυ hparam hα hω
-  have h₁ := pathToCircle_homotopic (Path.Homotopic.trans_assoc φ.symm (σ.trans τ.symm) υ)
-  have h₂ := pathToCircle_trans_homotopic_comm φ.symm ((σ.trans τ.symm).trans υ)
-  have h₃ := pathToCircle_homotopic (Path.Homotopic.trans_assoc (σ.trans τ.symm) υ φ.symm)
-  have h₄ := pathToCircle_homotopic (Path.Homotopic.trans_assoc σ τ.symm (υ.trans φ.symm))
-  exact ⟨W.ofHomotopicWord (((h₁.trans h₂).trans h₃).trans h₄)⟩
 
 /-! ### Non-vacuity -/
 
