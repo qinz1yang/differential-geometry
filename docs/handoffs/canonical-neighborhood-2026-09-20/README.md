@@ -1133,3 +1133,37 @@ Pairwise disjoint spheres are not yet an assembled finite horn and do not by
 themselves assert separation of the entire ambient manifold. The annular assembly,
 finite-end geometry, and cone producer remain necessary. The bounded-distance
 headline remains open.
+
+## Annuli between successive spatial neck cross-sections
+
+The continuation after `cf64b2344` constructs actual compact annuli between
+successive central spheres. `SpatialNeck.exists_annulus_in_nearby_neck` produces a
+partial diffeomorphism defined on a neighborhood of the full closed unit cylinder,
+with explicit endpoint maps, the exact two-sphere frontier, and containment in the
+preceding neck's controlled window. Both the isometric-curve neck-sequence theorem
+and `exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence`
+now retain these annuli in their conclusions.
+
+The general graph-band homeomorphism and diffeomorphism now require distinct
+endpoint values rather than an ordering. The closed-strip image is the unordered
+band between the two graphs. `exists_graphBand_partialDiffeomorph` proves the
+compact-image and frontier statements in arbitrary manifold product charts.
+The generic image/interior/frontier results for open partial homeomorphisms were
+moved into `Topology/OpenPartialHomeomorph/Images.lean`; the existing cap-transport
+signatures remain as corollaries, and the duplicate private neck-frontier argument
+was removed.
+
+The geometric input follows Morgan–Tian, *Ricci Flow and the Poincaré Conjecture*,
+Appendix A, Proposition A.11(4), in
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/MorganTianPoincare.pdf`.
+No ambient separation or annulus-interior disjointness is asserted by this layer.
+The global fitting and end-frontier arguments of Lemmas A.13–A.15 still require
+proof, as does the cone producer. `bounded_curvature_at_distance` remains open.
+
+Twenty-four declarations passed thirteen declaration linters. Every inspected
+axiom closure contains only `propext`, `Classical.choice`, and `Quot.sound`.
+The normalized leaf passed 14,120 jobs. The full root passed 20,195 jobs with
+exactly 21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-normalized-annuli-build.log`,
+`/private/tmp/wt17-neck-annuli-audit.log`, and
+`/private/tmp/wt17-neck-annuli-root-build.log`.

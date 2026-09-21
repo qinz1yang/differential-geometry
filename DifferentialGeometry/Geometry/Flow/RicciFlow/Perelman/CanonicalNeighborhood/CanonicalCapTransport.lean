@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalAlternativeTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactDomainTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainTransition
+import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images
 
 set_option autoImplicit false
 noncomputable section
@@ -33,37 +34,18 @@ theorem partialDiffeomorph_image_inter_of_subset_source (F : PartialDiffeomorph 
 
 theorem partialDiffeomorph_isImage_image_of_subset_source (F : PartialDiffeomorph I3 I3 M N ∞)
     {s : Set M} (hs : s ⊆ F.source) :
-    F.toOpenPartialHomeomorph.IsImage s (F '' s) := by
-  apply OpenPartialHomeomorph.IsImage.of_image_eq
-  change ↑F.toPartialEquiv '' (F.source ∩ s) = F.target ∩ ↑F.toPartialEquiv '' s
-  have ht : ↑F.toPartialEquiv '' s ⊆ F.target := by
-    rintro _ ⟨x, hx, rfl⟩
-    exact F.map_source' (hs hx)
-  rw [inter_eq_right.mpr hs, inter_eq_right.mpr ht]
+    F.toOpenPartialHomeomorph.IsImage s (F '' s) :=
+  F.toOpenPartialHomeomorph.isImage_image_of_subset_source hs
 
 theorem partialDiffeomorph_image_interior_of_subset_source (F : PartialDiffeomorph I3 I3 M N ∞)
     {s : Set M} (hs : s ⊆ F.source) :
-    F '' interior s = interior (F '' s) := by
-  have h := (partialDiffeomorph_isImage_image_of_subset_source F hs).interior.image_eq
-  change F '' (F.source ∩ interior s) = F.target ∩ interior (F '' s) at h
-  have ht : F '' s ⊆ F.target := by
-    rintro _ ⟨x, hx, rfl⟩
-    exact F.map_source' (hs hx)
-  rw [inter_eq_right.mpr (interior_subset.trans hs),
-    inter_eq_right.mpr (interior_subset.trans ht)] at h
-  exact h
+    F '' interior s = interior (F '' s) :=
+  F.toOpenPartialHomeomorph.image_interior_of_subset_source hs
 
 theorem partialDiffeomorph_image_frontier_of_subset_source (F : PartialDiffeomorph I3 I3 M N ∞)
     {s : Set M} (hs : s ⊆ F.source) (hsc : IsClosed s) (htc : IsClosed (F '' s)) :
-    F '' frontier s = frontier (F '' s) := by
-  have h := (partialDiffeomorph_isImage_image_of_subset_source F hs).frontier.image_eq
-  change F '' (F.source ∩ frontier s) = F.target ∩ frontier (F '' s) at h
-  have ht : F '' s ⊆ F.target := by
-    rintro _ ⟨x, hx, rfl⟩
-    exact F.map_source' (hs hx)
-  rw [inter_eq_right.mpr (hsc.frontier_subset.trans hs),
-    inter_eq_right.mpr (htc.frontier_subset.trans ht)] at h
-  exact h
+    F '' frontier s = frontier (F '' s) :=
+  F.toOpenPartialHomeomorph.image_frontier_of_subset_source hs hsc htc
 
 variable {P : Type u} [TopologicalSpace P] [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P]
   [T2Space P] [SigmaCompactSpace P]

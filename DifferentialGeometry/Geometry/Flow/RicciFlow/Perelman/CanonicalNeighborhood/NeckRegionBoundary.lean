@@ -1,48 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonRestriction
 import Mathlib.Topology.Constructions.SumProd
-import Mathlib.Topology.OpenPartialHomeomorph.IsImage
+import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images
 import Mathlib.Topology.Order.DenselyOrdered
 
 set_option autoImplicit false
 noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
-
-section ImageFrontier
-
-variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
-variable {H : Type*} [TopologicalSpace H]
-variable {H' : Type*} [TopologicalSpace H']
-variable {I : ModelWithCorners 𝕜 E H} {J : ModelWithCorners 𝕜 E' H'}
-variable {P : Type*} [TopologicalSpace P] [ChartedSpace H P]
-variable {Q : Type*} [TopologicalSpace Q] [ChartedSpace H' Q]
-variable {n : WithTop ℕ∞}
-
-private theorem image_frontier_of_partialDiffeomorph (Φ : PartialDiffeomorph I J P Q n)
-    {s : Set P} (hs : s ⊆ Φ.source) (hcs : IsClosed s) (hci : IsClosed (Φ '' s)) :
-    Φ '' frontier s = frontier (Φ '' s) := by
-  have hImage : Φ.toOpenPartialHomeomorph.IsImage s (Φ '' s) := by
-    apply OpenPartialHomeomorph.IsImage.of_image_eq
-    change Φ '' (Φ.source ∩ s) = Φ.target ∩ Φ '' s
-    have ht : Φ '' s ⊆ Φ.target := by
-      rintro y ⟨x, hx, rfl⟩
-      exact Φ.map_source' (hs hx)
-    rw [inter_eq_right.mpr hs, inter_eq_right.mpr ht]
-  have hs0 : frontier s ⊆ Φ.source :=
-    fun x hx => hs (hcs.closure_eq ▸ frontier_subset_closure hx)
-  have ht0 : frontier (Φ '' s) ⊆ Φ '' s :=
-    fun y hy => hci.closure_eq ▸ frontier_subset_closure hy
-  have ht : frontier (Φ '' s) ⊆ Φ.target := by
-    rintro y hy
-    obtain ⟨x, hx, rfl⟩ := ht0 hy
-    exact Φ.map_source' (hs hx)
-  have h := hImage.frontier.image_eq
-  change Φ '' (Φ.source ∩ frontier s) = Φ.target ∩ frontier (Φ '' s) at h
-  simpa only [inter_eq_right.mpr hs0, inter_eq_right.mpr ht] using h
-
-end ImageFrontier
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -81,7 +45,7 @@ theorem SpatialNeck.frontier_image_slab
   have hsub : univ ×ˢ Icc a b ⊆ nk.map.source := by
     intro y hy
     exact nk.domain ⟨hy.1, ha.trans_le hy.2.1, hy.2.2.trans_lt hb⟩
-  have h := image_frontier_of_partialDiffeomorph nk.map hsub
+  have h := nk.map.toOpenPartialHomeomorph.image_frontier_of_subset_source hsub
     (isClosed_univ.prod isClosed_Icc) (nk.isCompact_image_slab ha hb).isClosed
   rw [frontier_univ_prod_eq, frontier_Icc hab] at h
   exact h.symm

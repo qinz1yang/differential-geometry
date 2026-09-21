@@ -107,7 +107,18 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                               ∀ p, (nk n).map (p, height p) = (nk (n + 1)).map (eta p, 0)) ∧
                             Pairwise (fun i j =>
                               Disjoint ((nk i).map '' (univ ×ˢ ({0} : Set ℝ)))
-                                ((nk j).map '' (univ ×ˢ ({0} : Set ℝ)))) := by
+                                ((nk j).map '' (univ ×ˢ ({0} : Set ℝ)))) ∧
+                            (∀ n, ∃ eta : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
+                              ∃ Ψ : PartialDiffeomorph IC I3 Cylinder L.M ∞,
+                                (univ ×ˢ Icc (0 : ℝ) 1 ⊆ Ψ.source) ∧
+                                (∀ p, Ψ (p, 0) = (nk n).map (p, 0)) ∧
+                                (∀ p, Ψ (p, 1) = (nk (n + 1)).map (eta p, 0)) ∧
+                                IsCompact (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                (frontier (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+                                  (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) ∪
+                                    (nk (n + 1)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+                                Ψ '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+                                  (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹)) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -151,12 +162,12 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
       (hquant (incl tau) (hgood (incl tau) tau.property.1).1)
     rw [hdist] at hh
     exact hh
-  obtain ⟨t, nk, _ht0, hmono, hlim, hstep, _hcover, hgraph, hdisjoint⟩ :=
+  obtain ⟨t, nk, _ht0, hmono, hlim, hstep, _hcover, hgraph, hdisjoint, hannuli⟩ :=
     exists_spatialNeck_sequence_along_isometric_curve L.metric har (by linarith) curve hcurve
       (fun tau => (hgood (incl tau) tau.property.1).2) hquant'
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
-    q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint⟩
+    q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint, hannuli⟩
   intro tau hR
   exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
 

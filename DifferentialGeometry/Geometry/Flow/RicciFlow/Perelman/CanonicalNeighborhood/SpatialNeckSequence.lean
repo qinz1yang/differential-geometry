@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckAnnulus
 import DifferentialGeometry.Topology.Order.Iteration
 
 set_option autoImplicit false
@@ -34,7 +35,18 @@ theorem exists_spatialNeck_sequence_along_isometric_curve
         (∀ p, height p ∈ Ioo (-eps⁻¹) eps⁻¹) ∧
         ∀ p, (nk n).map (p, height p) = (nk (n + 1)).map (eta p, 0)) ∧
       Pairwise (fun i j => Disjoint ((nk i).map '' (univ ×ˢ ({0} : Set ℝ)))
-        ((nk j).map '' (univ ×ˢ ({0} : Set ℝ)))) := by
+        ((nk j).map '' (univ ×ˢ ({0} : Set ℝ)))) ∧
+      (∀ n, ∃ eta : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
+        ∃ Ψ : PartialDiffeomorph IC I3 Cylinder M ∞,
+          (univ ×ˢ Icc (0 : ℝ) 1 ⊆ Ψ.source) ∧
+          (∀ p, Ψ (p, 0) = (nk n).map (p, 0)) ∧
+          (∀ p, Ψ (p, 1) = (nk (n + 1)).map (eta p, 0)) ∧
+          IsCompact (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+          (frontier (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+            (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) ∪
+              (nk (n + 1)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+          Ψ '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+            (nk n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) := by
   classical
   have heps : 0 < eps := (Classical.choice (hnecks ⟨a, le_rfl, hab⟩)).eps_pos
   let neck (t : Ico a b) := Classical.choice (hnecks t)
@@ -96,7 +108,7 @@ theorem exists_spatialNeck_sequence_along_isometric_curve
       (eps⁻¹ / 40) / Real.sqrt (metricScalarAt g (gamma (s i))) at hs
     apply (ENNReal.ofReal_lt_ofReal_iff (sub_pos.mpr (hmono hij))).mpr
     linarith [hmono.monotone (Nat.succ_le_of_lt hij)]
-  refine ⟨s, nk, hs0, hmono, hlim, ?_, hcover, ?_, ?_⟩
+  refine ⟨s, nk, hs0, hmono, hlim, ?_, hcover, ?_, ?_, ?_⟩
   · intro n
     have hh := hstep n
     change (s (n + 1) : ℝ) = (s n : ℝ) +
@@ -110,5 +122,9 @@ theorem exists_spatialNeck_sequence_along_isometric_curve
     rcases lt_or_gt_of_ne hij with hlt | hgt
     · exact hdisjoint i j hlt
     · exact (hdisjoint j i hgt).symm
+  · intro n
+    exact (nk n).exists_annulus_in_nearby_neck (nk (n + 1)) hsmall
+      (hcover n (s (n + 1)) (hmono.monotone (Nat.le_succ n)) le_rfl)
+      (hdisjoint n (n + 1) (Nat.lt_succ_self n))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
