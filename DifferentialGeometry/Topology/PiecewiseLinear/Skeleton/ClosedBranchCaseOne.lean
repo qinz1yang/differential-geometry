@@ -41,13 +41,16 @@ proved two sided collar puts on the `Q` side of `J`.
 
 The leaf.
 
-* `exists_isSourceTrackedBranchTube` (item 8, owner W-B, reviewed 2026-09-21, frozen): a
-  cylindrical diagram over a `2`-ball cross section whose target is `derivedNeighborhood R Lc` for
-  a finite subdivision `R` of the ambient complex and some complex `Lc`, containing the branch
-  carrier in its intrinsic interior, whose cross section circle meets the trace of the cell in
-  exactly four marked points at every level, together with the parametrisation of that circle
-  putting the four rays in cyclic order and with the source realisation of the four rays along
-  the branch.  It carries no orientability hypothesis and no orientability clause.  The clause
+* `exists_isSourceTrackedBranchTube` (item 8, owner W-B, reviewed 2026-09-21; weakened the same
+  day by dropping the two clauses `trace` and `branchInterior`, which no proof consumed — the
+  end map permuting the four rays is the explicit clause `mapsTo`, and both external tube
+  counterexamples are excluded by `derived` and `realisation`; the conclusion is strictly weaker
+  than the reviewed one, so the review's OK carries over): a cylindrical diagram over a `2`-ball
+  cross section whose target is `derivedNeighborhood R Lc` for a finite subdivision `R` of the
+  ambient complex and some complex `Lc`, whose end map permutes four marked points of the cross
+  section circle, together with the parametrisation of that circle putting the four rays in
+  cyclic order and with the source realisation of the four rays along the branch.  It carries
+  no orientability hypothesis and no orientability clause.  The clause
   `derived` does not ask that `Lc` be a subcomplex of `R`, nor that `Lc.space` be the branch; the
   intended producer takes `Lc = restrict R Γ` for a common subdivision `R` in which the branch
   and the image of the cell are subcomplexes, and must choose `R`, the tube, the cylindrical

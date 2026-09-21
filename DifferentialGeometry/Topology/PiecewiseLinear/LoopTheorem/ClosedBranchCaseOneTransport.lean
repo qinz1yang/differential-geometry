@@ -22,9 +22,8 @@ such a chart at every point of `J`.
 
 A source tracked branch tube is a cylindrical diagram `φ` over a two ball cross section `Pc` whose
 target is a derived neighbourhood `N` of the branch inside a finite subdivision of the ambient
-complex, with end map `u` satisfying `φ (x, 0) = φ (u x, 1)` and four marked rays `r` in cyclic
-order, such that at every level the lateral trace meets the image of the cell in exactly those
-four rays, and such that each ray is realised in the source: continuous arcs `a i` in `J` and
+complex, with end map `u` satisfying `φ (x, 0) = φ (u x, 1)` and permuting four marked rays `r`
+in cyclic order, such that each ray is realised in the source: continuous arcs `a i` in `J` and
 nowhere vanishing collar coordinates `s i` with `φ (r i, t) = ι (D (ρ (a i t, s i t)))` over one
 circuit of the branch, the four pairs `(a i 0, sign (s i 0))` distinct and alternating, that is
 `a 0 0 = a 2 0`, `a 1 0 = a 3 0` and `a 0 0 ≠ a 1 0`.  The predicate has no orientability clause.
@@ -244,12 +243,8 @@ structure IsSourceTrackedBranchTube {M : Type u} [TopologicalSpace M]
   isEndMap : IsPLHomeomorphOn u Pc.space Pc.space
   seam : ∀ x ∈ Pc.space, φ (x, 0) = φ (u x, 1)
   mapsTo : MapsTo u (Set.range r) (Set.range r)
-  trace : ∀ t ∈ Icc (0 : ℝ) 1,
-    φ '' ((boundaryComplex 2 Pc).space ×ˢ {t}) ∩ ι '' (⇑D '' D.domain) =
-      Set.range fun i => φ (r i, t)
   derived : ∃ R Lc : Geometry.SimplicialComplex ℝ E,
     R.faces.Finite ∧ IsSubdivision R L ∧ N = derivedNeighborhood R Lc
-  branchInterior : ι '' hD.singularSet.branchCarrier c ⊆ N.space \ (boundaryComplex 3 N).space
   cyclic : ∃ (g : loopCircle → V) (v : Fin 4 → ℝ), Continuous g ∧
     BijOn g univ (boundaryComplex 2 Pc).space ∧ v 0 < v 1 ∧ v 1 < v 2 ∧ v 2 < v 3 ∧
       v 3 < v 0 + 1 ∧ ∀ i, r i = g ((v i : ℝ) : loopCircle)
