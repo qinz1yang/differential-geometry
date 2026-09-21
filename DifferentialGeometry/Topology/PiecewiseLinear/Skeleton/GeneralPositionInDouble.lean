@@ -10,8 +10,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffere
 /-!
 # Sorry-first skeleton of general position in the double
 
-The assembly `generalPositionInDoubleBuffered` below is proved for real from the ten leaves of
-this file, from the proved cover theorem `exists_finiteAdaptedCover_of_compactSpace`, from the
+The assembly `generalPositionInDoubleBuffered` below is proved for real from the twelve leaves
+of this file, from the proved cover theorem `exists_finiteAdaptedCover_of_compactSpace`, from the
 proved bridge `eq_regionGluedMap_of_eqOn`, from
 `SingularTwoCell.nonempty_normalSingularCellData_of_fields`, from
 `doublePointSet_subset_of_preimage_singleton_eq_off` and from
@@ -21,8 +21,8 @@ of the whole double by regions `closure (W j) ⊆ V j` with `closure (V j)` insi
 chart, a transition subdivision on every closed overlap, then a chart-by-chart induction.
 
 The induction invariant has two halves.  After the step for the cell `D k`, with
-`Z k = ⋃ j < k, closure (W j)`, (a) the crossings are PL normal double crossings over an open set
-containing `Z k`, and (b) for every later index `m`, over the compact transition zone
+`Z k = ⋃ j < k, closure (W j)`, (a) the crossings are PL normal double crossings over an open
+set containing `Z k`, and (b) for every later index `m`, over the compact transition zone
 `Z k ∩ closure (V m \ closure (W m))` the crossings are *margin stable in the chart* `ec m`:
 `HasStableCrossingBlocks`.  Half (b) is what consult L §2 shows a seed needs, and what consult O
 §2 localises: on the final subdivision a simplex with a frozen vertex misses `closure (W k)` by
@@ -48,6 +48,56 @@ and no transverse `w` exists.  After review R that clause, and the skeleton clau
 fire only at a *free interior germ*: a double point off `BdM` whose whole fibre lies in the
 interior of triangles of `R` with no frozen vertex.  The translate above is such a germ, so the
 counterexample of consult O §3 is still excluded.
+
+Free means free *in the source*, and that is a neighbourhood condition.  Review V refuted the
+predicate used until the seventh iteration with `ec = ecw = id`, `ℓ = t`, `Ac = Lc = ∅`, `Rc = R`
+an interior source triangle with an edge whose image runs from `(-1, 0, 2)` to `(1, 0, 2)`, an
+unmoved rectangle `{x = 0, |y| ≤ 1, 1 ≤ t ≤ 3}` outside `R` and a wall triangle `F ⊆ {x = 0}` of
+`Qw` with `(0, 0, 2) ∈ relint F`: for every `τ < 1 / 10` the edge still crosses the rectangle, so
+some `y ∈ F` is a double point whose second preimage is *outside* `R`, the universal quantifier
+over the simplices of `R` containing it is empty, and the old predicate called that germ free —
+making `hwallfold` unsatisfiable.  `FreeSourceGerm R Ac g S y` now asks, of every fibre point,
+both `R.space ∈ 𝓝[S] x` and that no simplex of `R` containing `x` has a frozen vertex;
+`mem_space_of_freeSourceGerm` records that a free source germ has its whole fibre in `R.space`,
+which is exactly what the counterexample violates.  `IsFreeDoubleGerm` is that together with
+`y ∉ BdM`, `IsFreeBoundaryDoubleGerm` together with `y ∈ BdM`, and `IsFreeInteriorDoubleGerm`
+adds that every fibre point is interior to a triangle.
+
+Four strata, not two.  The claim that the degeneracies exempted from the wall conditions are
+handled by equality retention is **withdrawn**: `isStableCrossingBlock_of_eqOn_compl` covers only
+blocks whose whole preimage is untouched, and mixed germs do not satisfy whole-block fibre
+equality.  A double point `y` of the glued map that has to be checked now falls in exactly one of
+four strata, each with its own argument.
+
+* Off the compact `Kp`.  `Kt` is the compact set of the seed leaf with `⇑D '' Rc.space ⊆
+  interior Kt` and both images of `Rc.space` inside `Kt`; the assembly chooses a compact `Kp`
+  with `Kt ⊆ interior Kp ⊆ Kp ⊆ V` by `exists_compact_between`.  Over `Ktᶜ` the two maps have the
+  same fibres, and `hWK` proves there is no double point of the new map in `closure (W k) \ Kt`
+  at all, so the part of (b) outside `Kp` is carried over the *compact* set
+  `Q_out = Z ∩ P m \ interior Kp ⊆ Ktᶜ` by the proved chain
+  `hasStableCrossingBlocksIn_of_isCompact_subset`, then
+  `hasStableCrossingBlocksIn_of_preimage_singleton_eq`, then
+  `HasStableCrossingBlocks.union` and `HasStableCrossingBlocks.mono_doublePointSet`.  This is the
+  compact localisation of review V §4; a finite block cover of the possibly non-compact
+  `Z ∩ P m \ Kt` is never asked for.
+* Free interior germs over `Kp`: the wall clauses `hwallskel`, `hwalltrans`, `hwallfold` of the
+  generic leaf, consumed by the crossing leaf.
+* Free boundary germs over `Kp`: the new clause `hboundaryAffine` of the generic leaf.
+* Non-free (mixed and frozen) germs over `Kp`: the new leaf
+  `exists_laterMarginBlocks_of_mixedGerms`, which is *not* equality retention.
+
+`hasStableCrossingBlocksIn_of_isCompact_subset` is a leaf, not a theorem.  Its proof needs, for
+each double point `y` of the compact `Q'` inside an inner block of the given family, a block
+recentred at `y`: the affine equivalence `A` composed with the translation by `-A (ec y)`, a
+radius `r' ≤ r / 2` small enough that the recentred box lies inside the old block and inside `N`
+(continuity of `ec` and of `A`), the sheets cut down to `SA ∩ f ⁻¹' B'`, `SB ∩ f ⁻¹' B'`, and the
+boundary branch kept when `ℓ (ec y) = 0` but replaced by the interior branch when `ℓ (ec y) > 0`
+(whence `hBdchart`).  The finite subfamily comes from compactness of `doublePointSet f S`, which
+is why the statement carries `IsCompact S`, `ContinuousOn f S` and the injectivity scale: with
+`UniformInjectivityScale S f κ` the set `{(x, z) ∈ S × S | κ ≤ dist x z, f x = f z}` is compact
+and its image is the double point set.  The relative neighbourhood clauses need `MapsTo f S C`
+and `hCchart` on the physical side.  Missing local API: `IsPiecewiseAffineOn` and
+`IsPLHomeomorphOn` under restriction to a subset and under postcomposition with a translation.
 
 `IsStableCrossingBlock` is not satisfiable by degenerate data over a set carrying double points.
 Over a double point of the block the two graph projections force two *different* sheets:
@@ -116,13 +166,17 @@ unperturbed vertex map (`exists_admissibleVertexMap_of_adaptedChart`), so the se
 made vacuous by a tiny `τ`, and `Bv` is determined by `R` and `Lc`, so the seed leaf quantifies
 over `Bv` and `φ` together and the generic leaf returns both.
 
-The pairing is gone; localisation stays.  `K` is compact, contained in `V`, and chosen in the
-seed leaf before `φ`, with `⇑D '' Rc.space ⊆ interior K`.  Over `Z ∩ K` the old crossings that a
-frozen or mixed simplex can meet are protected by the seed leaf's `hprot`; off `K` the crossing
-leaf transports by the identity, because
+The pairing is gone; localisation stays.  `Kt` is compact, contained in `V`, and chosen in the
+seed leaf before `φ`, with `⇑D '' Rc.space ⊆ interior Kt`.  Over `Z ∩ Kt` the old crossings that
+a frozen or mixed simplex can meet are protected by the seed leaf's `hprot`; off `Kt` half (a) is
+transported by the identity, because
 `preimage_singleton_eq_of_eqOn_compl_of_image_subset` turns `EqOn ⇑D' ⇑D Rc.spaceᶜ` together with
-the two image bounds into `⇑D' ⁻¹' {y} = ⇑D ⁻¹' {y}` for every `y ∉ K`; on the free part the
-crossings are recognised afresh from the guard.  Review R ruled that on entirely free simplices
+the two image bounds into `⇑D' ⁻¹' {y} = ⇑D ⁻¹' {y}` for every `y ∉ Kt`, and half (b) off `Kp` is
+the proved first stratum above; on the free part the crossings are recognised afresh from the
+guard.  Every double point over `closure (W k)` is free in the source, which the proved theorem
+`freeSourceGerm_of_mem_closure` gets from `hactive`, `hsep`, `hΩcover`, `hΩR`, `hNbfr` and
+`hNbA`; so the mixed layer meets the *old* region only, and its leaf is stated over the set
+`Z ∩ P i ∩ Kp` alone.  Review R ruled that on entirely free simplices
 the four-point guard together with the source manifold condition, local injectivity and `hpzero`
 already gives interior transversality and transversality of the boundary traces, so no further
 general-position clause is added for them.  In particular **no** wall condition forbids boundary
@@ -131,8 +185,8 @@ boundary vertices are collinear, and that is exactly the boundary model, not a d
 earlier claim that the complete source-sheet recognition at edge–triangle points follows from
 the guard is withdrawn; it is an open obligation of `exists_normalCrossings_of_gluedCell`.
 
-The leaves, with owner and review state.  The five leaves marked frozen are byte-identical with
-the reviewed snapshot; every other leaf changed after review R and is unreviewed.
+The leaves, with owner and review state.  The eight leaves marked frozen are byte-identical with
+the reviewed snapshot; every other leaf changed after review V or is new.
 
 `exists_adaptedHalfSpaceChart_in_double` (lane H, reviewed 2026-09-21, frozen): every point of
 the double of a combinatorial three manifold with boundary has arbitrarily small charts of the
@@ -151,20 +205,25 @@ the glued cell on the whole disk, with the buffered boundary homotopy.
 the control complex `T`, the scales `κ`, `δ`, `ε` and the three buffers, all before the
 perturbation.
 
-`exists_transitionSubdivisionOnOverlap` (changed after review R, unreviewed): on a compact
+`exists_transitionSubdivisionOnOverlap` (lane H, reviewed 2026-09-21, frozen): on a compact
 overlap of two adapted charts, a finite complex in the first chart's target covering a whole
 *neighbourhood* of the overlap, `⇑ec '' N ⊆ interior Q.space`, on whose faces the transition is
 affine.  Review R refuted the covered-set version: `N = {y}` and a one-vertex complex satisfy it
 while covering no neighbourhood.  Consult O §4 forbids assuming the transitions affine.
 
-`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` (changed after review R, unreviewed): a
+`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` (lane H, reviewed 2026-09-21, frozen): a
 margin-stable block is a PL normal double crossing at each double point of its *inner* block.
 Under the old predicate this was FALSE by the re-pairing model above; the genuine-sheet clauses
 are exactly what a proof consumes.  Its consumer is not the assembly but the proof of
 `exists_protectedSubdivision_in_adaptedChart`, whose `hprot` has to produce normality of the
 glued map on the frozen and mixed part from the blocks that survive the perturbation.
 
-`exists_protectedSubdivision_in_adaptedChart` (changed after review R, unreviewed): the seed,
+`hasStableCrossingBlocksIn_of_isCompact_subset` (new after review V, unreviewed): the compact
+localisation lemma of review V §4, with the hypotheses and the missing API listed above.  It is
+the only input of the first stratum, and the assembly uses it on `Q_out = Z ∩ P m \ interior Kp`
+with `N = Ktᶜ`.
+
+`exists_protectedSubdivision_in_adaptedChart` (lane H, reviewed 2026-09-21, frozen): the seed,
 consuming (b) at `m = k` in its strengthened form, so the two genuine local source sheets are
 given and no recovery of sheets from normality is needed.  It fixes `R`, `τ` and `K` before any
 vertex map and asserts, for every admissible `φ`, the control clauses, the protection of the old
@@ -175,15 +234,31 @@ preparation certificate; `Z ∩ closure (V \ closure W)` is compact because `Z` 
 is a compact space, and its closed buffer lies in `ec.source` because the cover theorem returns
 `closure (V j) ⊆ ec.source`.
 
-`exists_genericVertexMap_in_adaptedChart` (changed after review R, unreviewed): relative
+`exists_genericVertexMap_in_adaptedChart` (changed after review V, unreviewed): relative
 multi-chart generic production, with the wall conditions stratified.  Beside admissibility and
 the relative guard it produces, for every later chart of the fixed finite family and every free
 interior germ of the new double point set inside the fixed compact overlap, that the germ misses
 the one-skeleton of the transition complex and that near it the double point set is exactly a
 two-sided straight segment, of unit direction transverse to every two-face carrying the point;
 and, for every free germ, that a double point on the image of a source edge misses the
-two-skeleton.  Free means `IsFreeDoubleGerm`: the image is off `BdM` and no simplex of `R`
-meeting the fibre has a frozen vertex.  Review R refuted the unstratified clauses.  Freezing a
+two-skeleton; and, new after review V, the clause `hboundaryAffine`: at every *free boundary*
+germ `y` and in every later chart `i` there are an open `O₁ ∋ ec y` and an affine `A` with
+`ecw i ∘ ec.symm = A` on `O₁ ∩ {ℓ ≥ 0}`.  The tree has no cross-section of a complex by a
+hyperplane — `restrict` selects a subcomplex — so the clause is stated directly and not as
+"`ec y` misses the one-skeleton of the complex induced by `Qw i` on `{ℓ = 0}`"; the two are
+equivalent, and the second is what a density proof produces.  The bad set of the boundary plane
+is `{ℓ = 0} ∩ conv F` over the two-faces `F` of `Qw i` with `aff F ⊄ {ℓ = 0}`, a finite union of
+lines in that plane; a boundary double point is a crossing of two boundary traces and moves with
+two free parameters inside `ker ℓ`, since admissibility keeps boundary vertices at height zero,
+so it avoids that bad set generically.  Off the bad set the physical half-neighbourhood of `ec y`
+meets exactly one three-face of `Qw i` (plus a two-face inside `{ℓ = 0}`, whose two cofaces lie
+on opposite sides), and the transition is affine there.  Review V's counterexample —
+`H (x, y, t) = (x, y, t)` for `y ≤ 3 x` and `(y / 3, -2 x + 5 y / 3, t)` for `y ≥ 3 x`, with
+`A : y = t` and `B : y = x + t` crossing at the origin of `{t ≥ 0}` — is a free boundary germ
+sitting on the wall `y = 3 x`, which is transverse to the boundary plane; the two determinants
+are `1` and `2 / 3`, so no affine map agrees with `H` on a half-neighbourhood of the origin, and
+`hboundaryAffine` fails there.  That configuration is excluded, not repaired.
+Review R refuted the unstratified clauses.  Freezing a
 neighbourhood of both sheets of an old double curve that lies on an edge of `Qw i` leaves every
 admissible `φ` with that curve, contradicting the old `hwallskel`; and the cone over the
 quadrilateral with boundary vertices `(-1,-1,0), (1,1,0), (-1,1,0), (1,-1,0)` and apex
@@ -191,29 +266,59 @@ quadrilateral with boundary vertices `(-1,-1,0), (1,1,0), (-1,1,0), (1,-1,0)` an
 crossing boundary edges inside that wall for every admissible `φ`, because all four corners are
 `Bv` vertices and stay in `{ℓ = 0}`, contradicting the old `hwallfold`.  Both are now exempt: the
 first has no free germ at all, the second is a germ on `BdM`.  Degeneracies forced by frozen data
-carry no wall condition; their retention is `isStableCrossingBlock_of_eqOn_compl` and
-`isStableCrossingBlock_of_preimage_singleton_eq`.
+carry no wall condition; they belong to the fourth stratum and are the content of the mixed-layer
+leaf, not of equality retention.
 
-`exists_normalCrossings_of_gluedCell` (changed after review R, unreviewed): recognition on
-the free part, protection on the frozen and mixed part, identity transport off `K`, and the
-production of (b) for every later chart over `(Z ∪ closure W) ∩ closure (V m \ closure (W m))`.
-Review R refuted the previous hypothesis list with `Z = Nw = ∅`, `ℓw = 0` and `Pw = {y}` for a
-new boundary double point `y`: everything held vacuously, yet no output block can contain `y`,
-since an interior block must miss `BdM` while a boundary block needs `(A z).2.2 = ℓw i z` for an
-affine equivalence `A`, which `ℓw i = 0` forbids.  The leaf now also receives that the later
-charts lie in the maximal atlas, that `ℓw i ≠ 0`, the two adaptedness equivalences of `ecw i`,
-`ℓw i` for `C` and for `BdM`, `K ∩ (Z ∪ closure W) ∩ Pw i ⊆ Nw i`,
-`⇑ec '' Nw i ⊆ interior (Qw i).space`, `IsClosed Z` and `IsClosed (Pw i)`.  Each is supplied at
-the single call site by the proved cover theorem, by `exists_transitionSubdivisionOnOverlap` or
-by `exists_protectedSubdivision_in_adaptedChart`; the degenerate input above violates both
-`ℓw i ≠ 0` and, since `y` lies in `K ∩ closure W ∩ Pw i`, the covering hypothesis.
+`exists_laterMarginBlocks_of_mixedGerms` (new after review V, **NEEDS_PROOF — mathematically
+unverified; an external consult is open (`consult/U-mixed-later-margin.md`)**): for one later
+chart `i`, the glued map of an admissible controlled vertex map has margin-stable blocks with
+some `η' > 0` over the set of its double points in `Z ∩ Pw i ∩ Kp` that are *not* free source
+germs.  Its inputs are the old invariant (b) in the chart `i` over `Z ∩ Pw i`, the conclusions of
+the seed leaf — `hprot`, and `hpersist`, the current-chart blocks with margin `η / 2` — and the
+control certificate `hinj`, `hinj'`, `hfiber`.  Do not read it as equality retention: `hprot`
+gives normality only, `hpersist` the current chart only, and the old invariant concerns the old
+map, so none of the three gives the later-chart margin of the *new* map.  It is not vacuous: on
+the fixture the double curve leaves `W` through the frozen ring, and the germs there have a
+preimage on a simplex with a frozen vertex, so they are not free.  It is not trivially true
+either.  A *new* mixed double point over `Z` — one with a moved preimage and a preimage on a
+frozen or mixed simplex — is exactly the hard case, and consult O §3 shows that an old margin in
+a later chart gives no safe ball in the current chart's parameters; the wall clauses do not fire
+there, because they fire only at free germs.  What *is* proved is that this cannot happen over
+the new region: `freeSourceGerm_of_mem_closure` shows every double point over `closure (W k)` is
+a free source germ, which is why the leaf is stated over `Z ∩ Pw i ∩ Kp` and not over
+`(Z ∪ closure W) ∩ Pw i ∩ Kp`.  This is the leaf most likely still wrong.
+
+`exists_normalCrossings_of_gluedCell` (changed after review V, unreviewed): recognition on
+the free part, protection on the frozen and mixed part, identity transport of (a) off `Kt`, and
+the production of (b) for every later chart over `(Z ∪ closure W) ∩ closure (V m \ closure (W m))
+∩ Kp` — the part of (b) outside `Kp` was removed from the leaf and is now proved in the assembly.
+The leaf no longer receives the old invariant `hlater`, which went to the mixed-layer leaf; it
+receives instead `hmixed`, `hboundaryAffine`, the compact `Kp` with `Kt ⊆ interior Kp ⊆ V`, and
+the seam data `Nb` needed to apply `freeSourceGerm_of_mem_closure`.  So its four inputs are one
+per stratum: `hwallskel`/`hwalltrans`/`hwallfold` for free interior germs, `hboundaryAffine` for
+free boundary germs, `hmixed` for the non-free germs, and, off `Kp`, nothing — the assembly does
+that part.  Review R refuted the previous hypothesis list with `Z = Nw = ∅`, `ℓw = 0` and
+`Pw = {y}` for a new boundary double point `y`: everything held vacuously, yet no output block
+can contain `y`, since an interior block must miss `BdM` while a boundary block needs
+`(A z).2.2 = ℓw i z` for an affine equivalence `A`, which `ℓw i = 0` forbids.  The leaf therefore
+also receives that the later charts lie in the maximal atlas, that `ℓw i ≠ 0`, the two
+adaptedness equivalences of `ecw i`, `ℓw i` for `C` and for `BdM`,
+`Kp ∩ (Z ∪ closure W) ∩ Pw i ⊆ Nw i`, `⇑ec '' Nw i ⊆ interior (Qw i).space`, `IsClosed Z` and
+`IsClosed (Pw i)`.  Each is supplied at the single call site by the proved cover theorem, by
+`exists_transitionSubdivisionOnOverlap` or by `exists_protectedSubdivision_in_adaptedChart`; the
+degenerate input above violates both `ℓw i ≠ 0` and, since `y` lies in
+`Kp ∩ closure W ∩ Pw i`, the covering hypothesis.
 
 Fixture.  In the double-ball model, two transverse planar disks joined by a PL band avoiding
 their intersection line into one proper immersed disk, a frozen outer ring, a later chart that is
 a non-trivial affine shear and a non-zero small perturbation in the free region satisfy every
-hypothesis of every changed leaf, with a non-empty double point set, a non-empty block family
-and free interior germs along the interior of the intersection arc, so no changed leaf is
-trivially true on it and no changed leaf is satisfied by a degenerate witness.
+hypothesis of every changed leaf, with a non-empty double point set, a non-empty block family,
+free interior germs along the interior of the intersection arc, free boundary germs where that
+arc meets `BdM`, and non-free germs where it leaves `W` through the frozen ring; so no changed
+leaf is trivially true on it, no changed leaf is satisfied by a degenerate witness, and none of
+the four strata is empty on it.  The unmoved rectangle of review V §2 is *not* a free germ on
+that fixture, since its outside preimage fails `R.space ∈ 𝓝[S] x`, while the interior double
+points of the fixture are free germs, so the wall clauses are not vacuous.
 -/
 
 open Set Topology
@@ -425,11 +530,20 @@ noncomputable def blockSheetProjB (ec : OpenPartialHomeomorph M (EuclideanSpace 
     EuclideanSpace ℝ (Fin 2) → ℝ × ℝ :=
   fun x => ((A (ec (f x))).1, (A (ec (f x))).2.2)
 
+def FreeSourceGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (y : M) : Prop :=
+  ∀ x ∈ S ∩ g ⁻¹' {y}, R.space ∈ 𝓝[S] x ∧ ∀ σ ∈ R.faces,
+    x ∈ convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))) → ∀ v ∈ σ, v ∉ Ac.space
+
 def IsFreeDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (BdM : Set M)
     (y : M) : Prop :=
-  y ∉ BdM ∧ ∀ x ∈ S ∩ g ⁻¹' {y}, ∀ σ ∈ R.faces,
-    x ∈ convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))) → ∀ v ∈ σ, v ∉ Ac.space
+  y ∉ BdM ∧ FreeSourceGerm R Ac g S y
+
+def IsFreeBoundaryDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (BdM : Set M)
+    (y : M) : Prop :=
+  y ∈ BdM ∧ FreeSourceGerm R Ac g S y
 
 def IsFreeInteriorDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (BdM : Set M)
@@ -439,23 +553,51 @@ def IsFreeInteriorDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSp
       x ∈ interior (convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
 
 omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem mem_space_of_freeSourceGerm
+    {R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
+    {g : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))} {y : M}
+    (h : FreeSourceGerm R Ac g S y) {x : EuclideanSpace ℝ (Fin 2)}
+    (hx : x ∈ S ∩ g ⁻¹' {y}) : x ∈ R.space :=
+  mem_of_mem_nhdsWithin hx.1 (h x hx).1
+
+omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem freeSourceGerm_of_frozenSpace_eq_empty
+    {R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
+    {g : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))} {y : M}
+    (hAc : Ac.space = ∅) (hnhds : ∀ x ∈ S ∩ g ⁻¹' {y}, R.space ∈ 𝓝[S] x) :
+    FreeSourceGerm R Ac g S y := by
+  refine fun x hx => ⟨hnhds x hx, fun _ _ _ v _ => ?_⟩
+  rw [hAc]
+  exact notMem_empty v
+
+omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem isFreeDoubleGerm_of_frozenSpace_eq_empty
     {R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
     {g : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))} {BdM : Set M}
-    {y : M} (hAc : Ac.space = ∅) (hy : y ∉ BdM) : IsFreeDoubleGerm R Ac g S BdM y := by
-  refine ⟨hy, fun _ _ _ _ _ v _ => ?_⟩
-  rw [hAc]
-  exact notMem_empty v
+    {y : M} (hAc : Ac.space = ∅) (hy : y ∉ BdM)
+    (hnhds : ∀ x ∈ S ∩ g ⁻¹' {y}, R.space ∈ 𝓝[S] x) :
+    IsFreeDoubleGerm R Ac g S BdM y :=
+  ⟨hy, freeSourceGerm_of_frozenSpace_eq_empty hAc hnhds⟩
+
+omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem isFreeBoundaryDoubleGerm_of_frozenSpace_eq_empty
+    {R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
+    {g : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))} {BdM : Set M}
+    {y : M} (hAc : Ac.space = ∅) (hy : y ∈ BdM)
+    (hnhds : ∀ x ∈ S ∩ g ⁻¹' {y}, R.space ∈ 𝓝[S] x) :
+    IsFreeBoundaryDoubleGerm R Ac g S BdM y :=
+  ⟨hy, freeSourceGerm_of_frozenSpace_eq_empty hAc hnhds⟩
 
 omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem isFreeInteriorDoubleGerm_of_frozenSpace_eq_empty
     {R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
     {g : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))} {BdM : Set M}
     {y : M} (hAc : Ac.space = ∅) (hy : y ∉ BdM)
+    (hnhds : ∀ x ∈ S ∩ g ⁻¹' {y}, R.space ∈ 𝓝[S] x)
     (hint : ∀ x ∈ S ∩ g ⁻¹' {y}, ∃ σ ∈ R.faces, σ.card = 3 ∧
       x ∈ interior (convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))) :
     IsFreeInteriorDoubleGerm R Ac g S BdM y :=
-  ⟨isFreeDoubleGerm_of_frozenSpace_eq_empty hAc hy, hint⟩
+  ⟨isFreeDoubleGerm_of_frozenSpace_eq_empty hAc hy hnhds, hint⟩
 
 def IsStableCrossingBlock (f : EuclideanSpace ℝ (Fin 2) → M)
     (S : Set (EuclideanSpace ℝ (Fin 2)))
@@ -550,6 +692,68 @@ theorem HasStableCrossingBlocks.mono {f : EuclideanSpace ℝ (Fin 2) → M}
   obtain ⟨hη, m, A, r, tlo, SA, SB, a, b, La, Lb, hcov, hblk⟩ := h
   exact ⟨hη, m, A, r, tlo, SA, SB, a, b, La, Lb,
     (inter_subset_inter Subset.rfl hQ).trans hcov, hblk⟩
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem IsStableCrossingBlock.mono_margin {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM : Set M}
+    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
+    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η η' : ℝ}
+    (h : IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η)
+    (hη' : 0 < η') (hle : η' ≤ η) :
+    IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η' :=
+  ⟨h.1, hη', h.2.2.1, h.2.2.2.1, h.2.2.2.2.1.trans (by linarith), h.2.2.2.2.2⟩
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem HasStableCrossingBlocks.mono_doublePointSet {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q Q' : Set M} {η : ℝ}
+    (h : HasStableCrossingBlocks f S ec ℓ BdM Q η)
+    (hQ : doublePointSet f S ∩ Q' ⊆ doublePointSet f S ∩ Q) :
+    HasStableCrossingBlocks f S ec ℓ BdM Q' η := by
+  obtain ⟨hη, m, A, r, tlo, SA, SB, a, b, La, Lb, hcov, hblk⟩ := h
+  exact ⟨hη, m, A, r, tlo, SA, SB, a, b, La, Lb, hQ.trans hcov, hblk⟩
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem HasStableCrossingBlocks.union {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q₁ Q₂ : Set M} {η₁ η₂ : ℝ}
+    (h₁ : HasStableCrossingBlocks f S ec ℓ BdM Q₁ η₁)
+    (h₂ : HasStableCrossingBlocks f S ec ℓ BdM Q₂ η₂) :
+    HasStableCrossingBlocks f S ec ℓ BdM (Q₁ ∪ Q₂) (min η₁ η₂) := by
+  obtain ⟨hη₁, m₁, A₁, r₁, t₁, SA₁, SB₁, a₁, b₁, La₁, Lb₁, hcov₁, hblk₁⟩ := h₁
+  obtain ⟨hη₂, m₂, A₂, r₂, t₂, SA₂, SB₂, a₂, b₂, La₂, Lb₂, hcov₂, hblk₂⟩ := h₂
+  refine ⟨lt_min hη₁ hη₂, m₁ + m₂, Fin.addCases A₁ A₂, Fin.addCases r₁ r₂,
+    Fin.addCases t₁ t₂, Fin.addCases SA₁ SA₂, Fin.addCases SB₁ SB₂, Fin.addCases a₁ a₂,
+    Fin.addCases b₁ b₂, Fin.addCases La₁ La₂, Fin.addCases Lb₁ Lb₂, ?_, ?_⟩
+  · rintro y ⟨hy, hQ | hQ⟩
+    · obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov₁ ⟨hy, hQ⟩)
+      refine mem_iUnion.2 ⟨Fin.castAdd m₂ i, ?_⟩
+      simpa only [Fin.addCases_left] using hi
+    · obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov₂ ⟨hy, hQ⟩)
+      refine mem_iUnion.2 ⟨Fin.natAdd m₁ i, ?_⟩
+      simpa only [Fin.addCases_right] using hi
+  · refine Fin.addCases (fun i => ?_) fun i => ?_
+    · simpa only [Fin.addCases_left] using
+        (hblk₁ i).mono_margin (lt_min hη₁ hη₂) (min_le_left _ _)
+    · simpa only [Fin.addCases_right] using
+        (hblk₂ i).mono_margin (lt_min hη₁ hη₂) (min_le_right _ _)
+
+theorem hasStableCrossingBlocksIn_of_isCompact_subset [T2Space M]
+    {f : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM C Q Q' N : Set M} {η κ : ℝ}
+    (h : HasStableCrossingBlocks f S ec ℓ BdM Q η)
+    (hScpt : IsCompact S) (hcont : ContinuousOn f S) (hmapC : MapsTo f S C)
+    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
+    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
+    (hκ : 0 < κ) (hinj : UniformInjectivityScale S f κ)
+    (hQ' : IsCompact Q') (hsub : Q' ⊆ Q) (hN : IsOpen N) (hQN : Q' ⊆ N) :
+    HasStableCrossingBlocksIn f S ec ℓ BdM Q' N η := by
+  sorry
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem hasStableCrossingBlocks_of_doublePointSet_inter_eq_empty
@@ -1056,6 +1260,12 @@ theorem exists_genericVertexMap_in_adaptedChart (D : SingularTwoCell M) {BdM C V
               (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
             AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2)))) ∧
         (∀ i : ι, ∀ y ∈ doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Nw i,
+          IsFreeBoundaryDoubleGerm R Ac (regionGluedMap D ec R φ Rc) D.domain BdM y →
+            ∃ (O : Set (EuclideanSpace ℝ (Fin 3)))
+              (A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3)),
+              IsOpen O ∧ ec y ∈ O ∧
+                EqOn (fun z => ecw i (ec.symm z)) A (O ∩ {z | 0 ≤ ℓ z})) ∧
+        (∀ i : ι, ∀ y ∈ doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Nw i,
           IsFreeInteriorDoubleGerm R Ac (regionGluedMap D ec R φ Rc) D.domain BdM y →
             ec y ∉ complexSkeleton 1 (Qw i)) ∧
         (∀ i : ι, ∀ y ∈ doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Nw i,
@@ -1123,8 +1333,113 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
   sorry
 
 open Classical in
+theorem freeSourceGerm_of_mem_closure (D : SingularTwoCell M) {W V : Set M} {ε : ℝ}
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (Rc Ac Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
+    {φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)}
+    (hsub : IsSubdivision Rs Rc) (hVec : V ⊆ ec.source) (hΩ : IsOpen Ω)
+    (hΩcover : D.domain ∩ ⇑D ⁻¹' closure W ⊆ Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space)
+    (hNbfr : Rc.space \ Ω ⊆ Nb) (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
+    (hsmall : ∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε)
+    (hactive : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
+      dist z (ec (D x)) < ε → ec.symm z ∈ closure W → x ∈ Rc.space \ Ac.space)
+    (hsep : ∀ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) →
+      Disjoint (simplicialMap Rs φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
+        (⇑ec '' closure W))
+    (hmaps : MapsTo (simplicialMap Rs φ) Rc.space (⇑ec '' V))
+    {y : M} (hy : y ∈ closure W) :
+    FreeSourceGerm Rs Ac (regionGluedMap D ec Rs φ Rc) D.domain y := by
+  classical
+  intro x hx
+  have hxdom : x ∈ D.domain := hx.1
+  have hxy : regionGluedMap D ec Rs φ Rc x = y := hx.2
+  have hxR : x ∈ Rc.space := by
+    by_contra hxR
+    have hDx : D x = y := by
+      rw [← hxy]
+      simp only [regionGluedMap, if_neg hxR]
+    exact hxR (hΩR ⟨hxdom, hΩcover ⟨hxdom, by simp only [mem_preimage, hDx]; exact hy⟩⟩)
+  have hgx : ec.symm (simplicialMap Rs φ x) = y := by
+    rw [← hxy]
+    simp only [regionGluedMap, if_pos hxR]
+  have hxA : x ∈ Rc.space \ Ac.space :=
+    hactive x hxR _ (hsmall x hxR) (by rw [hgx]; exact hy)
+  have hxΩ : x ∈ Ω := by
+    by_contra hxo
+    exact hxA.2 (hNbA ⟨hxR, hNbfr ⟨hxR, hxo⟩⟩)
+  refine ⟨?_, ?_⟩
+  · rw [hsub.space_eq]
+    exact mem_nhdsWithin.2 ⟨Ω, hΩ, hxΩ, fun z hz => hΩR ⟨hz.2, hz.1⟩⟩
+  · intro σ hσ hxσ v hv hvA
+    obtain ⟨w, hwV, hw⟩ := hmaps hxR
+    have hecy : ec y = simplicialMap Rs φ x := by
+      rw [← hgx, ← hw, ec.left_inv (hVec hwV)]
+    exact Set.disjoint_left.mp (hsep σ hσ ⟨v, hv, hvA⟩) ⟨x, hxσ, rfl⟩ ⟨y, hy, hecy⟩
+
+open Classical in
+theorem exists_laterMarginBlocks_of_mixedGerms (D : SingularTwoCell M)
+    {BdM C Z W V K Kp : Set M} {ε η κ ηl : ℝ}
+    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
+    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
+    (hmapC : MapsTo (⇑D) D.domain C) (hκ : 0 < κ)
+    (hinj : UniformInjectivityScale D.domain (⇑D) κ)
+    (hZclosed : IsClosed Z) (hWV : closure W ⊆ V) (hVopen : IsOpen V)
+    (hKcpt : IsCompact K) (hKpcpt : IsCompact Kp) (hKKp : K ⊆ interior Kp) (hKpV : Kp ⊆ V)
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
+    (hℓ : ℓ ≠ 0) (hVec : closure V ⊆ ec.source)
+    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
+    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
+    (Rc Lc Ac Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
+    (hRfin : Rc.faces.Finite) (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
+    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
+    (hsub : IsSubdivision Rs Rc) (hRsfin : Rs.faces.Finite) (hε : 0 < ε)
+    (hsmall : ∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε)
+    (hpzero : ∀ x ∈ Rc.space, ℓ (simplicialMap Rs φ x) = 0 ↔ x ∈ Lc.space)
+    (hfrozen : EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space)
+    (hactive : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
+      dist z (ec (D x)) < ε → ec.symm z ∈ closure W → x ∈ Rc.space \ Ac.space)
+    (hsep : ∀ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) →
+      Disjoint (simplicialMap Rs φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
+        (⇑ec '' closure W))
+    (hmaps : MapsTo (simplicialMap Rs φ) Rc.space (⇑ec '' V))
+    (hDK : ⇑D '' Rc.space ⊆ K)
+    (hD'K : regionGluedMap D ec Rs φ Rc '' Rc.space ⊆ K)
+    (hinj' : UniformInjectivityScale D.domain (regionGluedMap D ec Rs φ Rc) κ)
+    (hpersist : HasStableCrossingBlocks (regionGluedMap D ec Rs φ Rc) D.domain ec ℓ BdM
+      (Z ∩ closure (V \ closure W)) η)
+    (hprot : ∀ y ∈ doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Z ∩ K,
+      (∃ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) ∧
+          (D.domain ∩ regionGluedMap D ec Rs φ Rc ⁻¹' {y} ∩
+            convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2)))).Nonempty) →
+        ∃ e₁ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₁.source ∧
+          HasPLNormalDoubleCrossingAt (⇑e₁ ∘ regionGluedMap D ec Rs φ Rc)
+            (D.domain ∩ regionGluedMap D ec Rs φ Rc ⁻¹' e₁.source)
+            (⇑e₁ '' (e₁.source ∩ BdM)) (e₁ y))
+    (ecw : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓw : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)
+    (Qw : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (Nw Pw : Set M)
+    (hNcpt : IsCompact Nw) (hNec : Nw ⊆ ec.source) (hNecw : Nw ⊆ ecw.source)
+    (hPw : Pw ⊆ ecw.source) (hQfin : Qw.faces.Finite)
+    (hQcover : ⇑ec '' Nw ⊆ interior Qw.space)
+    (hQaff : ∀ s ∈ Qw.faces, ∃ A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
+      EqOn (fun z => ecw (ec.symm z)) A (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))))
+    (hecw : ecw ∈ (plGroupoid 3).maximalAtlas M) (hℓw : ℓw ≠ 0)
+    (hCw : ∀ x ∈ ecw.source, x ∈ C ↔ 0 ≤ ℓw (ecw x))
+    (hBdw : ∀ x ∈ ecw.source, x ∈ BdM ↔ ℓw (ecw x) = 0)
+    (hPclosed : IsClosed Pw) (hPcover : Kp ∩ (Z ∪ closure W) ∩ Pw ⊆ Nw)
+    (hlater : HasStableCrossingBlocks (⇑D) D.domain ecw ℓw BdM (Z ∩ Pw) ηl) :
+    ∃ η' : ℝ, 0 < η' ∧
+      HasStableCrossingBlocks (regionGluedMap D ec Rs φ Rc) D.domain ecw ℓw BdM
+        ((Z ∩ Pw ∩ Kp) \
+          {y | FreeSourceGerm Rs Ac (regionGluedMap D ec Rs φ Rc) D.domain y}) η' := by
+  sorry
+
+open Classical in
 theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
-    {BdM C Z O W V K : Set M} {ε η κ : ℝ}
+    {BdM C Z O W V K Kp : Set M} {ε η κ : ℝ}
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
     (hfiber' : ∀ y, (D'.domain ∩ ⇑D' ⁻¹' {y}).encard ≤ 2)
     (hloc' : ∀ x ∈ D'.domain, ∃ U ∈ 𝓝[D'.domain] x, InjOn (⇑D') U)
@@ -1137,19 +1452,21 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
           (e₀ '' (e₀.source ∩ BdM)) (e₀ y))
     (hOopen : IsOpen O) (hZO : Z ⊆ O) (hZclosed : IsClosed Z)
     (hWopen : IsOpen W) (hWV : closure W ⊆ V) (hVopen : IsOpen V) (hKclosed : IsClosed K)
+    (hKpcpt : IsCompact Kp) (hKKp : K ⊆ interior Kp) (hKpV : Kp ⊆ V)
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
     (hℓ : ℓ ≠ 0) (hVec : closure V ⊆ ec.source)
     (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
     (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
     (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω : Set (EuclideanSpace ℝ (Fin 2))}
+    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
     (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
     (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
     (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
     (hDK : ⇑D '' Rc.space ⊆ K) (hD'K : ⇑D' '' Rc.space ⊆ K)
     (hΩ : IsOpen Ω) (hΩcover : D.domain ∩ ⇑D ⁻¹' closure W ⊆ Ω)
-    (hΩR : D.domain ∩ Ω ⊆ Rc.space)
+    (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb) (hNbfr : Rc.space \ Ω ⊆ Nb)
+    (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
     (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
     (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
@@ -1184,7 +1501,7 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
     (ι : Type) [Finite ι] (ecw : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓw : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ))
     (Qw : ι → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (Nw Pw : ι → Set M) (ηw : ι → ℝ)
+    (Nw Pw : ι → Set M)
     (hNcpt : ∀ i, IsCompact (Nw i)) (hNec : ∀ i, Nw i ⊆ ec.source)
     (hNecw : ∀ i, Nw i ⊆ (ecw i).source) (hPw : ∀ i, Pw i ⊆ (ecw i).source)
     (hQfin : ∀ i, (Qw i).faces.Finite)
@@ -1197,9 +1514,18 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
     (hCw : ∀ i, ∀ x ∈ (ecw i).source, x ∈ C ↔ 0 ≤ ℓw i (ecw i x))
     (hBdw : ∀ i, ∀ x ∈ (ecw i).source, x ∈ BdM ↔ ℓw i (ecw i x) = 0)
     (hPclosed : ∀ i, IsClosed (Pw i))
-    (hPcover : ∀ i, K ∩ (Z ∪ closure W) ∩ Pw i ⊆ Nw i)
-    (hlater : ∀ i, HasStableCrossingBlocks (⇑D) D.domain (ecw i) (ℓw i) BdM
-      (Z ∩ Pw i) (ηw i))
+    (hPcover : ∀ i, Kp ∩ (Z ∪ closure W) ∩ Pw i ⊆ Nw i)
+    (hmixed : ∀ i : ι, ∃ η' : ℝ, 0 < η' ∧
+      HasStableCrossingBlocks (regionGluedMap D ec Rs φ Rc) D.domain (ecw i) (ℓw i) BdM
+        ((Z ∩ Pw i ∩ Kp) \
+          {y | FreeSourceGerm Rs Ac (regionGluedMap D ec Rs φ Rc) D.domain y}) η')
+    (hboundaryAffine : ∀ i : ι,
+      ∀ y ∈ doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Nw i,
+      IsFreeBoundaryDoubleGerm Rs Ac (regionGluedMap D ec Rs φ Rc) D.domain BdM y →
+        ∃ (O₁ : Set (EuclideanSpace ℝ (Fin 3)))
+          (A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3)),
+          IsOpen O₁ ∧ ec y ∈ O₁ ∧
+            EqOn (fun z => ecw i (ec.symm z)) A (O₁ ∩ {z | 0 ≤ ℓ z}))
     (hwallskel : ∀ i : ι, ∀ y ∈ doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Nw i,
       IsFreeInteriorDoubleGerm Rs Ac (regionGluedMap D ec Rs φ Rc) D.domain BdM y →
         ec y ∉ complexSkeleton 1 (Qw i))
@@ -1228,7 +1554,7 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
               (e₁ '' (e₁.source ∩ BdM)) (e₁ y)) ∧
       ∀ i : ι, ∃ η' : ℝ, 0 < η' ∧
         HasStableCrossingBlocks (⇑D') D'.domain (ecw i) (ℓw i) BdM
-          ((Z ∪ closure W) ∩ Pw i) η' := by
+          ((Z ∪ closure W) ∩ Pw i ∩ Kp) η' := by
   sorry
 
 end MetricAmbient
@@ -1351,7 +1677,10 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
               hBdchart Rc Lc Ac hRfin hRman hLR hAR hRdom hRV hLspace hΩ hΩR hNb hNbfr hNbA
               (hWV k) hAfree hstk T hTfin hTspace hTstar hκ hδ hε hcert hconv
           have : Finite ↥(Set.Ioo k n) := (Set.finite_Ioo k n).to_subtype
-          obtain ⟨Bv, φ, hadm, hguard, hwallskel, hwalltrans, hwallfold⟩ :=
+          have : LocallyCompactSpace (double 3 K).space :=
+            ChartedSpace.locallyCompactSpace (H := EuclideanSpace ℝ (Fin 3)) _
+          obtain ⟨Kp, hKpcpt, hKKp, hKpV⟩ := exists_compact_between hKcpt (hVopen k) hKV
+          obtain ⟨Bv, φ, hadm, hguard, hboundaryAffine, hwallskel, hwalltrans, hwallfold⟩ :=
             exists_genericVertexMap_in_adaptedChart cell hcellpr hcellC ec ℓ hℓ hVec hCchart
               hBdchart Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin ↥(Set.Ioo k n)
               (fun i => ecf i.1 (Set.mem_Ioo.mp i.2).2)
@@ -1386,6 +1715,19 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           have hD'K : ⇑cell' '' Rc.space ⊆ Kt := by
             rw [hbridge]
             exact hgK
+          have hWK : ∀ y ∈ doublePointSet (⇑cell') cell.domain, y ∈ closure (W k) →
+              y ∈ Kt := by
+            rintro y ⟨x, hxd, z, hzd, hxz, hxy, hzy⟩ hyW
+            by_contra hyK
+            have hxR : x ∉ Rc.space := by
+              intro hx
+              refine hyK ?_
+              rw [← hxy]
+              exact hD'K ⟨x, hx, rfl⟩
+            have hDx : cell x = y := by rw [← hxy, hglueoff hxR]
+            exact hxR (hΩR ⟨hxd, hΩcover ⟨hxd, by simp only [mem_preimage, hDx]; exact hyW⟩⟩)
+          have hfibKt : ∀ z ∉ Kt, ⇑cell' ⁻¹' {z} = ⇑cell ⁻¹' {z} := fun z hz =>
+            preimage_singleton_eq_of_eqOn_compl_of_image_subset hglueoff hDK hD'K hz
           obtain ⟨hC', hfibV, hloc', hcard', hpr', H, hH0, hH1, hHtrack⟩ :=
             exists_globalInvariants_of_gluedCell cell cell' hcellpr hcellC hcellbuf hκ hcert
               hclose hstar' ec ℓ (hVopen k) hVec hCchart hBdchart Rc Lc Ac hRfin hRman hRdom
@@ -1401,20 +1743,50 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
             (hcert (⇑cell) (fun x _ => by rw [dist_self]; exact hδ) hTstar).1
           have hinjD' : UniformInjectivityScale cell.domain (⇑cell') κ :=
             (hcert (⇑cell') hclose hstar').1
+          have hinjG : UniformInjectivityScale cell.domain
+              (regionGluedMap cell ec R φ Rc) κ := by
+            rw [← hbridge]
+            exact hinjD'
+          have hmixed : ∀ i : ↥(Set.Ioo k n), ∃ η' : ℝ, 0 < η' ∧
+              HasStableCrossingBlocks (regionGluedMap cell ec R φ Rc) cell.domain
+                (ecf i.1 (Set.mem_Ioo.mp i.2).2) (ℓf i.1 (Set.mem_Ioo.mp i.2).2) Bd
+                ((((⋃ j, ⋃ (_ : j < k), closure (W j)) ∩
+                    closure (V i.1 \ closure (W i.1))) ∩ Kp) \
+                  {y | FreeSourceGerm R Ac (regionGluedMap cell ec R φ Rc) cell.domain y})
+                η' := fun i =>
+            exists_laterMarginBlocks_of_mixedGerms cell hcellfib hcellpr hcellC hκ hinjD
+              hZclosed (hWV k) (hVopen k) hKcpt hKpcpt hKKp hKpV ec ℓ hec hℓ hVcl hCchart
+              hBdchart Rc Lc Ac R φ hRfin hRdom hRV hLspace hsub hRsfin hε hsmall hpzero
+              hfrozen hactive hsep hmaps hDK hgK hinjG hpersist hprot
+              (ecf i.1 (Set.mem_Ioo.mp i.2).2) (ℓf i.1 (Set.mem_Ioo.mp i.2).2)
+              (Qf k hk i.1 (Set.mem_Ioo.mp i.2).2) (closure (V k) ∩ closure (V i.1))
+              (closure (V i.1 \ closure (W i.1)))
+              ((isClosed_closure.inter isClosed_closure).isCompact)
+              (inter_subset_left.trans hVcl)
+              (inter_subset_right.trans (hVclf i.1 (Set.mem_Ioo.mp i.2).2))
+              ((closure_mono Set.sdiff_subset).trans (hVclf i.1 (Set.mem_Ioo.mp i.2).2))
+              (hQfin k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (hQcover k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (hQaff k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (hecf i.1 (Set.mem_Ioo.mp i.2).2) (hℓf i.1 (Set.mem_Ioo.mp i.2).2)
+              (hCf i.1 (Set.mem_Ioo.mp i.2).2) (hBdf i.1 (Set.mem_Ioo.mp i.2).2)
+              isClosed_closure
+              (fun x hx => ⟨subset_closure (hKpV hx.1.1),
+                closure_mono Set.sdiff_subset hx.2⟩)
+              (hlaterfam i).choose_spec.2
           obtain ⟨⟨O', hO'open, hO'Z, hcross'⟩, hstable'⟩ :=
             exists_normalCrossings_of_gluedCell cell cell' hcellfib hcard' hloc' hκ hinjD
               hinjD' hcellpr
               hOkcross hOkopen hOkZ hZclosed (hWopen k) (hWV k) (hVopen k) hKcpt.isClosed
-              ec ℓ hec hℓ
+              hKpcpt hKKp hKpV ec ℓ hec hℓ
               hVcl hCchart hBdchart Rc Lc Ac hRfin hRman hRdom hRV hLspace hDK hD'K hΩ
-              hΩcover hΩR R Bv φ hε hsub hRsfin hadm.2.1 hsmall hpnonneg hpzero hfrozen
-              hactive hsep hmaps hguard hprot hpersist ↥(Set.Ioo k n)
+              hΩcover hΩR hNb hNbfr hNbA R Bv φ hε hsub hRsfin hadm.2.1 hsmall hpnonneg
+              hpzero hfrozen hactive hsep hmaps hguard hprot hpersist ↥(Set.Ioo k n)
               (fun i => ecf i.1 (Set.mem_Ioo.mp i.2).2)
               (fun i => ℓf i.1 (Set.mem_Ioo.mp i.2).2)
               (fun i => Qf k hk i.1 (Set.mem_Ioo.mp i.2).2)
               (fun i => closure (V k) ∩ closure (V i.1))
               (fun i => closure (V i.1 \ closure (W i.1)))
-              (fun i => (hlaterfam i).choose)
               (fun _ => (isClosed_closure.inter isClosed_closure).isCompact)
               (fun _ => inter_subset_left.trans hVcl)
               (fun i => inter_subset_right.trans (hVclf i.1 (Set.mem_Ioo.mp i.2).2))
@@ -1428,10 +1800,28 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
               (fun i => hCf i.1 (Set.mem_Ioo.mp i.2).2)
               (fun i => hBdf i.1 (Set.mem_Ioo.mp i.2).2)
               (fun _ => isClosed_closure)
-              (fun _ x hx => ⟨subset_closure (hKV hx.1.1),
+              (fun _ x hx => ⟨subset_closure (hKpV hx.1.1),
                 closure_mono Set.sdiff_subset hx.2⟩)
-              (fun i => (hlaterfam i).choose_spec.2)
+              hmixed hboundaryAffine
               hwallskel hwalltrans hwallfold hdom' hglue hglueoff
+          have hstout : ∀ i : ↥(Set.Ioo k n),
+              HasStableCrossingBlocks (⇑cell') cell.domain
+                (ecf i.1 (Set.mem_Ioo.mp i.2).2) (ℓf i.1 (Set.mem_Ioo.mp i.2).2) Bd
+                (((⋃ j, ⋃ (_ : j < k), closure (W j)) ∩
+                  closure (V i.1 \ closure (W i.1))) \ interior Kp)
+                (hlaterfam i).choose := by
+            intro i
+            have hQN : (((⋃ j, ⋃ (_ : j < k), closure (W j)) ∩
+                closure (V i.1 \ closure (W i.1))) \ interior Kp) ⊆ Ktᶜ :=
+              fun z hz hzK => hz.2 (hKKp hzK)
+            have hin := hasStableCrossingBlocksIn_of_isCompact_subset
+              (hlaterfam i).choose_spec.2
+              cell.isPLBall_domain.isPolyhedron.isCompact cell.continuousOn hcellC
+              (hCf i.1 (Set.mem_Ioo.mp i.2).2) (hBdf i.1 (Set.mem_Ioo.mp i.2).2) hκ hinjD
+              (((hZclosed.inter isClosed_closure).sdiff isOpen_interior).isCompact)
+              Set.sdiff_subset hKcpt.isClosed.isOpen_compl hQN
+            exact (hasStableCrossingBlocksIn_of_preimage_singleton_eq hin hQN
+              fun z hz => by rw [hfibKt z hz]).toHasStableCrossingBlocks
           have hbuf' : ∀ z ∈ Set.range cell'.boundary, B ∈ 𝓝[Bd] z := by
             rintro _ ⟨x, rfl⟩
             have hx : (x : EuclideanSpace ℝ (Fin 2)) ∈ frontier cell.domain := by
@@ -1455,7 +1845,19 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           · intro m hm hkm
             have hik : m ∈ Set.Ioo k n := Set.mem_Ioo.mpr ⟨by omega, hm⟩
             obtain ⟨ηm, hηm, hstm⟩ := hstable' ⟨m, hik⟩
-            exact ⟨ηm, hηm, hstm.mono (inter_subset_inter hZsucc Subset.rfl)⟩
+            rw [hdom'] at hstm
+            refine ⟨min ηm (hlaterfam ⟨m, hik⟩).choose,
+              lt_min hηm (hlaterfam ⟨m, hik⟩).choose_spec.1, ?_⟩
+            rw [hdom']
+            refine (hstm.union (hstout ⟨m, hik⟩)).mono_doublePointSet ?_
+            rintro y ⟨hy, hyZ, hyP⟩
+            refine ⟨hy, ?_⟩
+            by_cases hyKp : y ∈ Kp
+            · exact Or.inl ⟨⟨hZsucc hyZ, hyP⟩, hyKp⟩
+            · refine Or.inr ⟨⟨?_, hyP⟩, fun hint => hyKp (interior_subset hint)⟩
+              rcases hZsucc hyZ with hZ | hW
+              · exact hZ
+              · exact absurd (interior_subset (hKKp (hWK y hy hW))) hyKp
         · refine ⟨cell, Ok, b, g, hdom, hcellC, hcellloc, hcellfib, hcellpr, hcellbuf,
             hcelldp, hOkopen, ?_, hOkcross, ?_, hbsurj, hbparam, hbavoid⟩
           · refine iUnion_subset fun j => iUnion_subset fun hj => ?_
