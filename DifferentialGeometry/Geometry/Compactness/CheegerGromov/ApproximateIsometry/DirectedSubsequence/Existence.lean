@@ -25,7 +25,7 @@ namespace DifferentialGeometry
 namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators ENNReal
-open Bundle Manifold
+open Bundle Manifold Filter
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -51,8 +51,40 @@ private lemma sepNextCov_nonneg {c0 cov δ B : ℝ} (hfeed : 0 ≤ sepEnvelope c
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : HasPairwiseApproximateIsometries (X := X) P) :
+private theorem exists_directed_approximations_on_buffered_balls
+    (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
+    (r R eta : ℕ → ℝ) (ro rm : ℕ → ℕ → ℝ)
+    (hr : ∀ j, 0 < r j) (hR : ∀ j, 0 < R j)
+    (hro : ∀ j l, r j < ro j l)
+    (hrm₁ : ∀ j l, ro j (l + 1) < rm j l)
+    (hrm₂ : ∀ j l, rm j l < ro j l)
+    (hrmR : ∀ j l, rm j l ≤ R j)
+    (heta : ∀ j, 0 < eta j ∧ eta j < 1)
+    (hbudget : ∀ j l c0, c0 ≤ 1 / 2 → c0 ≤ 2 * sepTail j l → c0 ≤ eta j)
+    (himage : ∀ j l, Real.sqrt (1 + eta j) * rm j l < R (j + l))
+    (hstepImage : ∀ j l, Real.sqrt (1 + (1 / 2 : ℝ) ^ (j + 1)) * rm j l < ro (j + 1) l)
+    (hB : ∀ j : ℕ,
+    ∃ k₀ : Nat, ∀ k ℓ : Nat, k₀ ≤ k → k₀ ≤ ℓ →
+      letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
+      letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
+      letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+      letI : T2Space (X.obj k).M := (X.obj k).t2
+      letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+      letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.obj k).M := (X.obj k).smooth
+      letI : TopologicalSpace (X.obj ℓ).M := (X.obj ℓ).topology
+      letI : ChartedSpace H (X.obj ℓ).M := (X.obj ℓ).charted
+      letI : IsManifold I ∞ (X.obj ℓ).M := (X.obj ℓ).smooth
+      letI : T2Space (X.obj ℓ).M := (X.obj ℓ).t2
+      letI : SigmaCompactSpace (X.obj ℓ).M := (X.obj ℓ).sigmaCompact
+      letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.obj ℓ).M := (X.obj ℓ).smooth
+      letI : MetricSpace (X.obj k).M := (P k).ms
+      letI : MetricSpace (X.obj ℓ).M := (P ℓ).ms
+      ∃ Phi : PartialDiffeomorph I I (X.obj k).M (X.obj ℓ).M (∞ : WithTop ℕ∞),
+        Metric.closedBall (X.obj k).basepoint (R j) ⊆ Phi.source ∧
+        Phi (X.obj k).basepoint = (X.obj ℓ).basepoint ∧
+        Nonempty (PartialDiffeomorphMetricApproximation (I := I)
+          (Metric.closedBall (X.obj k).basepoint (R j))
+          ((1 / 2 : ℝ) ^ (j + 1)) j Phi (X.obj k).metric (X.obj ℓ).metric)) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧
       (letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
        letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
@@ -65,18 +97,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         (∀ j, (Ψ j : (X.obj (σ j)).M → (X.obj (σ (j + 1))).M) ((X.obj (σ j)).basepoint)
             = (X.obj (σ (j + 1))).basepoint) ∧
         ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ, ∃ j₀ : ℕ, ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
-          Nonempty (PartialDiffeomorphMetricApproximation (I := I)
-            (Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ j)) ε p
+          Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
+            (Metric.closedBall ((X.obj (σ j)).basepoint) (r j)) (min ε (eta j)) ε p
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ j l)
             (X.obj (σ j)).metric (X.obj (σ (j + l))).metric)) := by
   classical
-  have hrpos : ∀ j : ℕ, (0 : ℝ) < (2 : ℝ) ^ (j + 1) := fun j => by positivity
-  have hepos : ∀ j : ℕ, (0 : ℝ) < (1 / 2 : ℝ) ^ (j + 1) := fun j => by positivity
-  have helt : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 1) < 1 :=
-    fun j => pow_lt_one₀ (by norm_num) (by norm_num) (by omega)
-  set T : ℕ → ℕ := fun j =>
-    (HasPairwiseApproximateIsometries.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
-      (helt j) j).choose with hT
+  set T : ℕ → ℕ := fun j => (hB j).choose with hT
   obtain ⟨σ, hσmono, hσge⟩ := exists_strictMono_ge T
   refine ⟨σ, hσmono, ?_⟩
   let : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
@@ -102,14 +128,13 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
     ⟨hσge j, le_trans (hσge j) (le_of_lt (hσmono (Nat.lt_succ_self j)))⟩
   have hΨex : ∀ j : ℕ,
       ∃ Φ : PartialDiffeomorph I I (X.obj (σ j)).M (X.obj (σ (j + 1))).M (∞ : WithTop ℕ∞),
-        Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ (j + 1)) ⊆ Φ.source ∧
+        Metric.closedBall ((X.obj (σ j)).basepoint) (R j) ⊆ Φ.source ∧
         (Φ : (X.obj (σ j)).M → (X.obj (σ (j + 1))).M) ((X.obj (σ j)).basepoint)
           = (X.obj (σ (j + 1))).basepoint ∧
         Nonempty (PartialDiffeomorphMetricApproximation (I := I)
-          (Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ (j + 1)))
+          (Metric.closedBall ((X.obj (σ j)).basepoint) (R j))
           ((1 / 2 : ℝ) ^ (j + 1)) j Φ (X.obj (σ j)).metric (X.obj (σ (j + 1))).metric) :=
-    fun j => (HasPairwiseApproximateIsometries.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
-      (helt j) j).choose_spec (σ j) (σ (j + 1)) (hstep j).1 (hstep j).2
+    fun j => (hB j).choose_spec (σ j) (σ (j + 1)) (hstep j).1 (hstep j).2
   choose Ψ hΨsource hΨbase hΨdata using hΨex
   refine ⟨Ψ, hΨbase, ?_⟩
   intro ε hε hε1 p
@@ -129,20 +154,18 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       0 ≤ c0 ∧ 0 ≤ cov ∧ c0 ≤ ε ∧ cov ≤ ε ∧ c0 ≤ 1 / 2 ∧ cov ≤ 1 / 2 ∧
       c0 ≤ 2 * sepTail s l ∧ cov ≤ sepBeta B * sepTail s l ∧
       Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
-        (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 1)))) c0 cov p
+        (Metric.ball ((X.obj (σ s)).basepoint) (ro s l)) c0 cov p
         (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
         (X.obj (σ s)).metric (X.obj (σ (s + l))).metric) ∧
       (∀ m (hm : s + l = m), Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
-        (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 1)))) c0 cov p
+        (Metric.ball ((X.obj (σ s)).basepoint) (ro s l)) c0 cov p
         (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l s m hm)
         (X.obj (σ s)).metric (X.obj (σ m)).metric)) by
     intro l
-    obtain ⟨c0, cov, _hc0non, _hcovnon, hc0e, hcove, _, _, _, _, ⟨⟨D⟩, _⟩⟩ :=
+    obtain ⟨c0, cov, _hc0non, _hcovnon, hc0e, hcove, hc0half, _, hc0budget, _, ⟨⟨D⟩, _⟩⟩ :=
       hacc l j le_rfl
-    have hlt : (2 : ℝ) ^ j < (2 : ℝ) ^ j * (1 + (1 / 2 : ℝ) ^ (l + 1)) := by
-      have : (0 : ℝ) < (2 : ℝ) ^ j * (1 / 2 : ℝ) ^ (l + 1) := by positivity
-      nlinarith [this]
-    exact ⟨(D.mono (Metric.closedBall_subset_ball hlt) le_rfl le_rfl).toMetricApproximation hε hε1 hc0e hcove⟩
+    exact ⟨D.mono (Metric.closedBall_subset_ball (hro j l))
+      (le_min hc0e (hbudget j l c0 hc0half hc0budget)) hcove⟩
   intro l
   induction l with
   | zero =>
@@ -153,12 +176,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       · simp [sepTail]
       · exact ⟨
           partial_diffeomorph_metric_approximation_bounds_refl (I := I)
-            (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (0 + 1))))
+            (Metric.ball ((X.obj (σ s)).basepoint) (ro s 0))
             (X.obj (σ s)).metric p,
           fun m hm => by
             cases hm
             exact partial_diffeomorph_metric_approximation_bounds_refl (I := I)
-              (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (0 + 1))))
+              (Metric.ball ((X.obj (σ s)).basepoint) (ro s 0))
               (X.obj (σ s)).metric p⟩
   | succ l ih =>
       intro s hs
@@ -269,18 +292,17 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         exact le_trans hc0NextBudget (le_trans htwoTail_le_betaTail htailNextHalf)
       have hcovNextHalf : covNext ≤ 1 / 2 := by
         exact le_trans hcovNextBudget htailNextHalf
-      let Rcur : ℝ := openRadius s l
-      let Rnext : ℝ := openRadius s (l + 1)
-      let Rmid : ℝ := midRadius s l
+      let Rcur : ℝ := ro s l
+      let Rnext : ℝ := ro s (l + 1)
+      let Rmid : ℝ := rm s l
       have hRnext_pos : 0 < Rnext := by
-        exact openRadius_pos s (l + 1)
+        exact (hr s).trans (hro s (l + 1))
       have hRmid_pos : 0 < Rmid := by
-        dsimp [Rmid, midRadius]
-        positivity
+        exact ((hr s).trans (hro s (l + 1))).trans (hrm₁ s l)
       have hRnext_lt_Rmid : Rnext < Rmid := by
-        simpa [Rnext, Rmid] using openRadius_succ_lt_midRadius s l
+        simpa [Rnext, Rmid] using hrm₁ s l
       have hRmid_lt_Rcur : Rmid < Rcur := by
-        simpa [Rmid, Rcur] using midRadius_lt_openRadius s l
+        simpa [Rmid, Rcur] using hrm₂ s l
       let U₁ : TopologicalSpace.Opens (X.obj (σ s)).M :=
         ⟨Metric.ball ((X.obj (σ s)).basepoint) Rmid, by
           have hb :
@@ -291,12 +313,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             exact Metric.isOpen_ball
           rwa [ProperMetricOn.top_eq (X.obj (σ s)) (P (σ s))] at hb⟩
       let K₂ : TopologicalSpace.Opens (X.obj (σ (s + l))).M :=
-        ⟨Metric.ball ((X.obj (σ (s + l))).basepoint) ((2 : ℝ) ^ (s + l + 1)),
+        ⟨Metric.ball ((X.obj (σ (s + l))).basepoint) (R (s + l)),
           by
             have hb :
                 @IsOpen (X.obj (σ (s + l))).M
                   (P (σ (s + l))).ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
-                  (Metric.ball ((X.obj (σ (s + l))).basepoint) ((2 : ℝ) ^ (s + l + 1))) := by
+                  (Metric.ball ((X.obj (σ (s + l))).basepoint) (R (s + l))) := by
               let : MetricSpace (X.obj (σ (s + l))).M := (P (σ (s + l))).ms
               exact Metric.isOpen_ball
             rwa [ProperMetricOn.top_eq (X.obj (σ (s + l))) (P (σ (s + l)))] at hb⟩
@@ -304,7 +326,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         ⟨⟨(X.obj (σ s)).basepoint, Metric.mem_ball_self hRmid_pos⟩⟩
       have hK₂_nonempty : Nonempty K₂ :=
         ⟨⟨(X.obj (σ (s + l))).basepoint,
-          Metric.mem_ball_self (by positivity : (0 : ℝ) < (2 : ℝ) ^ (s + l + 1))⟩⟩
+          Metric.mem_ball_self (hR (s + l))⟩⟩
       have hU₁_source : (U₁ : Set (X.obj (σ s)).M) ⊆
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l).source := by
         intro x hx
@@ -331,12 +353,18 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         rw [Metric.closedEBall_ofReal hRmid_pos.le]
         exact Metric.closedBall_subset_ball hRmid_lt_Rcur
       have hdata_mid : MapMetricApproximationOn (I := I)
-          (Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid)) (1 / 2) p
+          (Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid)) (eta s) 0
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
             (X.obj (σ s)).M → (X.obj (σ (s + l))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + l))).metric :=
-        (DforAcc.forward.mono hclosed_mid_sub le_rfl le_rfl).toMetricApproximation
-          (by norm_num) (by norm_num) hc0F2 hcovF2
+        { eps_pos := (heta s).1
+          eps_lt_one := (heta s).2
+          smoothOn := DforAcc.forward.smoothOn.mono hclosed_mid_sub
+          pullback := DforAcc.forward.pullback
+          pullback_apply := fun x hx v => DforAcc.forward.pullback_apply x (hclosed_mid_sub hx) v
+          c0_small := fun x hx => (DforAcc.forward.c0_small x (hclosed_mid_sub hx)).trans
+            (hbudget s l c0F hc0F2 hc0Fbudget)
+          cov_deriv_small := fun a ha₁ ha₀ => False.elim (by omega) }
       have hsrc_mid :
           Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid) ⊆
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l).source :=
@@ -352,7 +380,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
               (X.obj (σ s)).M → (X.obj (σ (s + l))).M) ''
               Metric.ball ((X.obj (σ s)).basepoint) Rmid ⊆
-            Metric.ball ((X.obj (σ (s + l))).basepoint) ((2 : ℝ) ^ (s + l + 1)) := by
+            Metric.ball ((X.obj (σ (s + l))).basepoint) (R (s + l)) := by
         have htmp :
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
                 (X.obj (σ s)).M → (X.obj (σ (s + l))).M) ''
@@ -361,7 +389,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
                 ((chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
                     (X.obj (σ s)).M → (X.obj (σ (s + l))).M)
                   ((X.obj (σ s)).basepoint))
-                ((2 : ℝ) ^ (s + l + 1)) :=
+                (R (s + l)) :=
           MapMetricApproximationOn.image_metric_ball_subset (I := I)
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
             (by
@@ -372,11 +400,8 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               intro x v
               exact (Geometry.Riemannian.isMetricNorm_of_riemannianBundle
                 (I := I) (X.obj (σ (s + l))).metric) x v)
-            hRmid_pos le_rfl (by norm_num : (0 : ℝ) ≤ 1 / 2)
-            (by
-              simpa [Rmid] using
-                (sqrt_one_add_mul_midRadius_lt_two_pow (a := (1 / 2 : ℝ)) s l
-                  (by norm_num) (by norm_num)))
+            hRmid_pos le_rfl (heta s).1.le
+            (himage s l)
             hdata_mid hsrc_mid
         intro y hy
         simpa [hcenter] using htmp hy
@@ -433,12 +458,10 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       have hstepR_half : δR ≤ 1 / 2 := by
         dsimp [δR]
         exact half_pow_succ_le_half s
-      have hRmid_le_step : Rmid ≤ (2 : ℝ) ^ (s + 1) := by
-        change midRadius s l ≤ (2 : ℝ) ^ (s + 1)
-        exact midRadius_le_two_pow_succ s l
+      have hRmid_le_step : Rmid ≤ R s := hrmR s l
       have hU₁_sub_step :
           (U₁ : Set (X.obj (σ s)).M) ⊆
-            Metric.closedBall ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ (s + 1)) := by
+            Metric.closedBall ((X.obj (σ s)).basepoint) (R s) := by
         intro x hx
         exact Metric.closedBall_subset_closedBall hRmid_le_step (Metric.ball_subset_closedBall hx)
       have DstepRopen : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set (X.obj (σ s)).M)
@@ -448,14 +471,14 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         exact (DstepR_p.mono hU₁_sub_step le_rfl DstepR.forward.eps_lt_one).toSeparateBounds
       let Ktail : TopologicalSpace.Opens (X.obj (σ (s + 1))).M :=
         ⟨Metric.ball ((X.obj (σ (s + 1))).basepoint)
-            (openRadius (s + 1) l),
+            (ro (s + 1) l),
           (P (σ (s + 1))).isOpen_ball (X.obj (σ (s + 1)))
             ((X.obj (σ (s + 1))).basepoint)
-            (openRadius (s + 1) l)⟩
+            (ro (s + 1) l)⟩
       have hKtail_nonempty : Nonempty Ktail := by
         dsimp [Ktail]
         exact (P (σ (s + 1))).ball_nonempty (X.obj (σ (s + 1)))
-          ((X.obj (σ (s + 1))).basepoint) (openRadius_pos (s + 1) l)
+          ((X.obj (σ (s + 1))).basepoint) ((hr (s + 1)).trans (hro (s + 1) l))
       have DtailR_Ktail : PartialDiffeomorphMetricApproximationBounds (I := I) (Ktail : Set (X.obj (σ (s + 1))).M)
           c0R covR p
           (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
@@ -469,20 +492,14 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       let KmidE : Set (X.obj (σ s)).M :=
         Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid)
       have hclosed_mid_step : KmidE ⊆
-            Metric.closedBall ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ (s + 1)) := by
+            Metric.closedBall ((X.obj (σ s)).basepoint) (R s) := by
         dsimp [KmidE]
         rw [Metric.closedEBall_ofReal hRmid_pos.le]
         exact Metric.closedBall_subset_closedBall hRmid_le_step
       have hsrc_step_mid : KmidE ⊆ (Ψ s).source :=
         fun x hx => hΨsource s (hclosed_mid_step hx)
-      have hRmid_le_mid0 : Rmid ≤ midRadius s 0 := by
-        change midRadius s l ≤ midRadius s 0
-        exact midRadius_le_zero s l
       have hstep_image_radius :
-          Real.sqrt (1 + δR) * Rmid < openRadius (s + 1) l := by
-        change Real.sqrt (1 + δR) * midRadius s l
-          < openRadius (s + 1) l
-        exact sqrt_one_add_mul_midRadius_lt_next_openRadius s l hδRpos hstepR_half
+          Real.sqrt (1 + δR) * Rmid < ro (s + 1) l := hstepImage s l
       have himg_step_mid :
           (Ψ s : (X.obj (σ s)).M → (X.obj (σ (s + 1))).M) '' (U₁ : Set (X.obj (σ s)).M) ⊆
             (Ktail : Set (X.obj (σ (s + 1))).M) := by
@@ -491,7 +508,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
                 Metric.ball ((X.obj (σ s)).basepoint) Rmid ⊆
               Metric.ball ((Ψ s : (X.obj (σ s)).M → (X.obj (σ (s + 1))).M)
                   ((X.obj (σ s)).basepoint))
-                ((2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1))) :=
+                (ro (s + 1) l) :=
           MapMetricApproximationOn.image_metric_ball_subset_of_closedEBall_subset (I := I) (Ψ s)
             (by
               intro x v
@@ -504,7 +521,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             hRmid_pos le_rfl hδR0 hstep_image_radius hclosed_mid_step DstepR_p.forward
             hsrc_step_mid
         intro y hy
-        simpa [Ktail, openRadius, hΨbase s] using htmp hy
+        simpa [Ktail, hΨbase s] using htmp hy
       have hqR1 : sepEnvelope c0R covR ≤ 1 :=
         sepEnvelope_le_one hc0R2 (le_trans hcovR2 (by norm_num : (1 / 2 : ℝ) ≤ 1))
       have hcovR_out : sepEnvelope c0R covR + δR * C ≤ covNext := by
@@ -689,9 +706,248 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               (s + (l + 1)) rfl)
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hRightClosed.mono Metric.ball_subset_closedBall le_rfl le_rfl
-      exact ⟨⟨by simpa [Rnext, openRadius] using hLeftOpen⟩, fun m hm => by
+      exact ⟨⟨by simpa [Rnext] using hLeftOpen⟩, fun m hm => by
         cases hm
-        exact ⟨by simpa [Rnext, openRadius] using hRightOpen⟩⟩
+        exact ⟨by simpa [Rnext] using hRightOpen⟩⟩
+
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
+    ∃ σ : ℕ → ℕ, StrictMono σ ∧
+      (letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
+       letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
+       letI : ∀ j, IsManifold I ∞ (X.obj (σ j)).M := fun j => (X.obj (σ j)).smooth
+       letI : ∀ j, T2Space (X.obj (σ j)).M := fun j => (X.obj (σ j)).t2
+       letI : ∀ j, SigmaCompactSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).sigmaCompact
+       letI : ∀ j, MetricSpace (X.obj (σ j)).M := fun j => (P (σ j)).ms
+       ∃ Ψ : ∀ j, PartialDiffeomorph I I (X.obj (σ j)).M (X.obj (σ (j + 1))).M
+          (∞ : WithTop ℕ∞),
+        (∀ j, (Ψ j : (X.obj (σ j)).M → (X.obj (σ (j + 1))).M) ((X.obj (σ j)).basepoint)
+            = (X.obj (σ (j + 1))).basepoint) ∧
+        ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ, ∃ j₀ : ℕ, ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
+          Nonempty (PartialDiffeomorphMetricApproximation (I := I)
+            (Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ j)) ε p
+            (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ j l)
+            (X.obj (σ j)).metric (X.obj (σ (j + l))).metric)) := by
+  obtain ⟨σ, hσ, hout⟩ := exists_directed_approximations_on_buffered_balls P
+    (fun j => (2 : ℝ) ^ j) (fun j => (2 : ℝ) ^ (j + 1)) (fun _ => 1 / 2)
+    openRadius midRadius (fun _ => by positivity) (fun _ => by positivity)
+    two_pow_lt_openRadius openRadius_succ_lt_midRadius midRadius_lt_openRadius
+    midRadius_le_two_pow_succ (fun _ => by norm_num)
+    (fun _ _ _ h _ => h)
+    (fun j l => sqrt_one_add_mul_midRadius_lt_two_pow j l (by norm_num) (by norm_num))
+    (fun j l => sqrt_one_add_mul_midRadius_lt_next_openRadius j l (by positivity)
+      (half_pow_succ_le_half j)) (fun j =>
+      HasPairwiseApproximateIsometries.exists_partial_approximate_isometry P B
+        ((2 : ℝ) ^ (j + 1)) (by positivity) ((1 / 2 : ℝ) ^ (j + 1)) (by positivity)
+        (pow_lt_one₀ (by norm_num) (by norm_num) (by omega)) j)
+  refine ⟨σ, hσ, ?_⟩
+  let : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
+  let : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
+  let : ∀ j, IsManifold I ∞ (X.obj (σ j)).M := fun j => (X.obj (σ j)).smooth
+  let : ∀ j, T2Space (X.obj (σ j)).M := fun j => (X.obj (σ j)).t2
+  let : ∀ j, SigmaCompactSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).sigmaCompact
+  let : ∀ j, MetricSpace (X.obj (σ j)).M := fun j => (P (σ j)).ms
+  obtain ⟨Ψ, hbase, happrox⟩ := hout
+  refine ⟨Ψ, hbase, fun ε hε hε1 p => ?_⟩
+  obtain ⟨j₀, hj₀⟩ := happrox ε hε hε1 p
+  refine ⟨j₀, fun j hj l => ?_⟩
+  obtain ⟨D⟩ := hj₀ j hj l
+  exact ⟨D.toMetricApproximation hε hε1 (min_le_left _ _) le_rfl⟩
+
+private def finiteRadius (rho : ℝ) (j : ℕ) : ℝ := rho * Real.exp (-4 * (1 / 2 : ℝ) ^ j)
+private def finiteOpenRadius (rho : ℝ) (j l : ℕ) : ℝ :=
+  rho * Real.exp ((-4 + (1 / 2 : ℝ) ^ (l + 1)) * (1 / 2 : ℝ) ^ j)
+private def finiteMidRadius (rho : ℝ) (j l : ℕ) : ℝ :=
+  rho * Real.exp ((-4 + ((1 / 2 : ℝ) ^ (l + 1) + (1 / 2 : ℝ) ^ (l + 2)) / 2) *
+    (1 / 2 : ℝ) ^ j)
+private def finiteRadiusError (j : ℕ) : ℝ := min (1 / 2) (2 * (1 / 2 : ℝ) ^ j)
+
+private theorem finiteRadius_pos {rho : ℝ} (hrho : 0 < rho) (j : ℕ) : 0 < finiteRadius rho j := by
+  unfold finiteRadius
+  positivity
+
+private theorem finiteRadius_lt {rho : ℝ} (hrho : 0 < rho) (j : ℕ) : finiteRadius rho j < rho := by
+  unfold finiteRadius
+  exact mul_lt_of_lt_one_right hrho (Real.exp_lt_one_iff.mpr (by nlinarith [show (0 : ℝ) < (1 / 2 : ℝ) ^ j by positivity]))
+
+private theorem finiteRadius_lt_open {rho : ℝ} (hrho : 0 < rho) (j l : ℕ) :
+    finiteRadius rho j < finiteOpenRadius rho j l := by
+  apply mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr _) hrho
+  have := mul_pos (show (0 : ℝ) < (1 / 2 : ℝ) ^ (l + 1) by positivity)
+    (show (0 : ℝ) < (1 / 2 : ℝ) ^ j by positivity)
+  nlinarith
+
+private theorem finiteOpenRadius_lt_mid {rho : ℝ} (hrho : 0 < rho) (j l : ℕ) :
+    finiteOpenRadius rho j (l + 1) < finiteMidRadius rho j l := by
+  apply mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr _) hrho
+  have hx : (0 : ℝ) < (1 / 2 : ℝ) ^ j := by positivity
+  have hy : (0 : ℝ) < (1 / 2 : ℝ) ^ (l + 1) := by positivity
+  simp only [pow_succ] at *
+  nlinarith [mul_pos hx hy]
+
+private theorem finiteMidRadius_lt_open {rho : ℝ} (hrho : 0 < rho) (j l : ℕ) :
+    finiteMidRadius rho j l < finiteOpenRadius rho j l := by
+  apply mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr _) hrho
+  have hx : (0 : ℝ) < (1 / 2 : ℝ) ^ j := by positivity
+  have hy : (0 : ℝ) < (1 / 2 : ℝ) ^ (l + 1) := by positivity
+  simp only [pow_succ] at *
+  nlinarith [mul_pos hx hy]
+
+private theorem finiteMidRadius_le_next {rho : ℝ} (hrho : 0 < rho) (j l : ℕ) :
+    finiteMidRadius rho j l ≤ finiteRadius rho (j + 1) := by
+  apply mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr _) hrho.le
+  have hx : (0 : ℝ) < (1 / 2 : ℝ) ^ j := by positivity
+  have hy := half_pow_succ_le_half l
+  have hp := mul_le_mul_of_nonneg_left hy hx.le
+  simp only [pow_succ] at *
+  nlinarith
+
+private theorem finiteRadiusError_pos (j : ℕ) : 0 < finiteRadiusError j := by
+  unfold finiteRadiusError
+  positivity
+
+private theorem finiteRadiusError_lt_one (j : ℕ) : finiteRadiusError j < 1 :=
+  (min_le_left _ _).trans_lt (by norm_num)
+
+private theorem finiteRadiusError_budget (j l : ℕ) {c0 : ℝ}
+    (hh : c0 ≤ 1 / 2) (ht : c0 ≤ 2 * sepTail j l) : c0 ≤ finiteRadiusError j :=
+  le_min hh (ht.trans (mul_le_mul_of_nonneg_left (sepTail_le_half_pow j l) (by norm_num)))
+
+private theorem sqrt_mul_exp_le {rho : ℝ} (hrho : 0 ≤ rho) (a b : ℝ) :
+    Real.sqrt (1 + a) * (rho * Real.exp b) ≤ rho * Real.exp (a / 2 + b) := by
+  have hs : Real.sqrt (1 + a) ≤ Real.exp (a / 2) := by
+    rw [Real.exp_half]
+    exact Real.sqrt_le_sqrt (by linarith [Real.add_one_le_exp a])
+  calc
+    _ ≤ Real.exp (a / 2) * (rho * Real.exp b) := mul_le_mul_of_nonneg_right hs (by positivity)
+    _ = rho * Real.exp (a / 2 + b) := by rw [Real.exp_add]; ring
+
+private theorem finiteMidRadius_image {rho : ℝ} (hrho : 0 < rho) (j l : ℕ) :
+    Real.sqrt (1 + finiteRadiusError j) * finiteMidRadius rho j l <
+      finiteRadius rho (j + l + 1) := by
+  refine (sqrt_mul_exp_le hrho.le _ _).trans_lt ?_
+  apply mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr _) hrho
+  have hx : (0 : ℝ) < (1 / 2 : ℝ) ^ j := by positivity
+  have hz : (1 / 2 : ℝ) ^ l ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+  have hp := mul_le_mul_of_nonneg_left hz hx.le
+  have he : finiteRadiusError j ≤ 2 * (1 / 2 : ℝ) ^ j := min_le_right _ _
+  simp only [pow_add, pow_succ] at *
+  nlinarith
+
+private theorem finiteMidRadius_step_image {rho : ℝ} (hrho : 0 < rho) (j l : ℕ) :
+    Real.sqrt (1 + (1 / 2 : ℝ) ^ (j + 1)) * finiteMidRadius rho j l <
+      finiteOpenRadius rho (j + 1) l := by
+  refine (sqrt_mul_exp_le hrho.le _ _).trans_lt ?_
+  apply mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr _) hrho
+  have hx : (0 : ℝ) < (1 / 2 : ℝ) ^ j := by positivity
+  have hy : (0 : ℝ) ≤ (1 / 2 : ℝ) ^ (l + 1) := by positivity
+  have hy' := half_pow_succ_le_half l
+  have hp := mul_le_mul_of_nonneg_left hy' hx.le
+  have hp0 := mul_nonneg hy hx.le
+  simp only [pow_succ] at *
+  nlinarith
+
+private theorem finiteRadius_image {rho : ℝ} (hrho : 0 < rho) (j : ℕ) :
+    Real.sqrt (1 + finiteRadiusError j) * finiteRadius rho j < finiteRadius rho (j + 1) := by
+  refine (sqrt_mul_exp_le hrho.le _ _).trans_lt ?_
+  apply mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr _) hrho
+  have hx : (0 : ℝ) < (1 / 2 : ℝ) ^ j := by positivity
+  have he : finiteRadiusError j ≤ 2 * (1 / 2 : ℝ) ^ j := min_le_right _ _
+  rw [pow_succ]
+  linarith
+
+private theorem finiteRadius_tendsto (rho : ℝ) : Tendsto (finiteRadius rho) atTop (nhds rho) := by
+  have hp : Tendsto (fun j : ℕ => (1 / 2 : ℝ) ^ j) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+  unfold finiteRadius
+  simpa only [Function.comp_apply, mul_zero, Real.exp_zero, mul_one] using
+    (((Real.continuous_exp.tendsto (-4 * 0)).comp (hp.const_mul (-4))).const_mul rho)
+
+private theorem finiteRadiusError_tendsto : Tendsto finiteRadiusError atTop (nhds 0) := by
+  have hp : Tendsto (fun j : ℕ => (1 / 2 : ℝ) ^ j) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+  unfold finiteRadiusError
+  simpa only [mul_zero, min_eq_right (by norm_num : (0 : ℝ) ≤ 1 / 2)] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 / 2 : ℝ)) atTop (nhds (1 / 2))).min
+      (hp.const_mul 2)
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_directed_approximate_isometry_subsequence_within_radius
+    (P : ∀ k, ProperMetricOn (I := I) (X.obj k)) {rho : ℝ} (hrho : 0 < rho)
+    (hB : ∀ r : ℝ, 0 < r → r < rho → ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ,
+    ∃ k₀ : Nat, ∀ k ℓ : Nat, k₀ ≤ k → k₀ ≤ ℓ →
+      letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
+      letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
+      letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+      letI : T2Space (X.obj k).M := (X.obj k).t2
+      letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+      letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.obj k).M := (X.obj k).smooth
+      letI : TopologicalSpace (X.obj ℓ).M := (X.obj ℓ).topology
+      letI : ChartedSpace H (X.obj ℓ).M := (X.obj ℓ).charted
+      letI : IsManifold I ∞ (X.obj ℓ).M := (X.obj ℓ).smooth
+      letI : T2Space (X.obj ℓ).M := (X.obj ℓ).t2
+      letI : SigmaCompactSpace (X.obj ℓ).M := (X.obj ℓ).sigmaCompact
+      letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.obj ℓ).M := (X.obj ℓ).smooth
+      letI : MetricSpace (X.obj k).M := (P k).ms
+      letI : MetricSpace (X.obj ℓ).M := (P ℓ).ms
+      ∃ Phi : PartialDiffeomorph I I (X.obj k).M (X.obj ℓ).M (∞ : WithTop ℕ∞),
+        Phi (X.obj k).basepoint = (X.obj ℓ).basepoint ∧
+        Nonempty (PartialDiffeomorphMetricApproximation (I := I)
+          (Metric.closedBall (X.obj k).basepoint r)
+          ε p Phi (X.obj k).metric (X.obj ℓ).metric)) :
+    ∃ σ : ℕ → ℕ, StrictMono σ ∧ ∃ r eta : ℕ → ℝ,
+      (∀ j, 0 < r j ∧ r j < rho ∧ 0 < eta j ∧ eta j < 1 ∧
+        Real.sqrt (1 + eta j) * r j < r (j + 1)) ∧
+      Tendsto r atTop (nhds rho) ∧ Tendsto eta atTop (nhds 0) ∧
+      (letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
+       letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
+       letI : ∀ j, IsManifold I ∞ (X.obj (σ j)).M := fun j => (X.obj (σ j)).smooth
+       letI : ∀ j, T2Space (X.obj (σ j)).M := fun j => (X.obj (σ j)).t2
+       letI : ∀ j, SigmaCompactSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).sigmaCompact
+       letI : ∀ j, MetricSpace (X.obj (σ j)).M := fun j => (P (σ j)).ms
+       ∃ Ψ : ∀ j, PartialDiffeomorph I I (X.obj (σ j)).M (X.obj (σ (j + 1))).M
+          (∞ : WithTop ℕ∞),
+        (∀ j, (Ψ j : (X.obj (σ j)).M → (X.obj (σ (j + 1))).M) ((X.obj (σ j)).basepoint)
+            = (X.obj (σ (j + 1))).basepoint) ∧
+        ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ, ∃ j₀ : ℕ, ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
+          Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
+            (Metric.closedBall ((X.obj (σ j)).basepoint) (r j)) (min ε (eta j)) ε p
+            (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ j l)
+            (X.obj (σ j)).metric (X.obj (σ (j + l))).metric)) := by
+  obtain ⟨σ, hσ, hout⟩ := exists_directed_approximations_on_buffered_balls P
+    (finiteRadius rho) (fun j => finiteRadius rho (j + 1)) finiteRadiusError
+    (finiteOpenRadius rho) (finiteMidRadius rho)
+    (finiteRadius_pos hrho) (fun j => finiteRadius_pos hrho (j + 1))
+    (finiteRadius_lt_open hrho) (finiteOpenRadius_lt_mid hrho) (finiteMidRadius_lt_open hrho)
+    (finiteMidRadius_le_next hrho)
+    (fun j => ⟨finiteRadiusError_pos j, finiteRadiusError_lt_one j⟩)
+    (fun j l _ hh ht => finiteRadiusError_budget j l hh ht)
+    (finiteMidRadius_image hrho) (finiteMidRadius_step_image hrho) (by
+      intro j
+      obtain ⟨N, hN⟩ := hB (finiteRadius rho (j + 1)) (finiteRadius_pos hrho _)
+        (finiteRadius_lt hrho _) ((1 / 2 : ℝ) ^ (j + 1)) (by positivity)
+        (pow_lt_one₀ (by norm_num) (by norm_num) (by omega)) j
+      refine ⟨N, fun k l hk hl => ?_⟩
+      let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+      let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+      let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+      let : T2Space (X.obj k).M := (X.obj k).t2
+      let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+      let : MetricSpace (X.obj k).M := (P k).ms
+      let : TopologicalSpace (X.obj l).M := (X.obj l).topology
+      let : ChartedSpace H (X.obj l).M := (X.obj l).charted
+      let : IsManifold I ∞ (X.obj l).M := (X.obj l).smooth
+      let : T2Space (X.obj l).M := (X.obj l).t2
+      let : SigmaCompactSpace (X.obj l).M := (X.obj l).sigmaCompact
+      let : MetricSpace (X.obj l).M := (P l).ms
+      obtain ⟨Ψ, hbase, ⟨D⟩⟩ := hN k l hk hl
+      exact ⟨Ψ, D.source_sub, hbase, ⟨D⟩⟩)
+  exact ⟨σ, hσ, finiteRadius rho, finiteRadiusError,
+    fun j => ⟨finiteRadius_pos hrho j, finiteRadius_lt hrho j, finiteRadiusError_pos j,
+      finiteRadiusError_lt_one j, finiteRadius_image hrho j⟩,
+    finiteRadius_tendsto rho, finiteRadiusError_tendsto, hout⟩
 
 end Endpoint
 

@@ -388,3 +388,26 @@ diagnostics; the full project build passed 20,162 jobs. Evidence is in
 `/private/tmp/wt17-geodesic-tail-audit.log` and
 `/private/tmp/wt17-geodesic-tail-root-build.log`. The headline still requires the
 smooth incomplete limit and the subsequent horn/cone construction.
+
+## Directed comparisons below the escape radius
+
+`exists_directed_approximate_isometry_subsequence_within_radius` now constructs
+successor comparison maps whose arbitrary finite compositions remain controlled on
+closed balls with radii tending to a prescribed positive finite radius. The zero-order
+error tends to zero fast enough that each such ball maps strictly inside the next
+ball. Covariant derivative errors are controlled separately at each fixed order;
+no common all-order bound is asserted. The original unbounded-radius directed
+subsequence theorem retains its statement and is a corollary of the shared proof.
+
+The two changed leaves elaborated freshly without diagnostics. Three public
+declarations passed all 13 applicable declaration linters and standard-only
+transitive axiom checks. The full project build passed 20,162 jobs with the 21
+retained proof-hole warnings. Evidence is in
+`/private/tmp/wt17-directed-finite-audit.log`,
+`/private/tmp/wt17-directed-finite-fresh-error.log`,
+`/private/tmp/wt17-directed-finite-fresh-existence.log`, and
+`/private/tmp/wt17-directed-finite-root-build.log`.
+
+These maps supply the geometric input for compatible metric limits on the inner
+balls. The incomplete limit, geodesic endpoint, and horn/cone producer remain the
+active work; the headline's existing proof hole is unchanged.
