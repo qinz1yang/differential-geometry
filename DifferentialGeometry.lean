@@ -11463,3 +11463,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Nonnegati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Cylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.HarmonicGradient
 import DifferentialGeometry.Geometry.Operator.Laplacian.Isometry
+import DifferentialGeometry.Geometry.Metric.PointPicking
+import DifferentialGeometry.Geometry.Metric.RiemannianPointPicking
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedPointSelection

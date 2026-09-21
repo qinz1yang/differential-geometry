@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticScalarRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialPointSelection
+import DifferentialGeometry.Geometry.Metric.PointPicking
 
 set_option autoImplicit false
 
@@ -75,57 +76,14 @@ private theorem ascr_exists_weighted_maximum
       dist y x ≤ R ∧ 0 < f x ∧ f y * R ^ 2 ≤ f x * sigma ^ 2 ∧
       ∀ z : X, dist z x < eta * sigma →
         f z ≤ ((1 - eta)⁻¹) ^ 2 * f x := by
-  let F : X → ℝ := fun z => f z * (R - dist y z) ^ 2
-  have hF : Continuous F :=
-    hf.mul ((continuous_const.sub (continuous_const.dist continuous_id)).pow 2)
-  obtain ⟨x, hx, hmax⟩ := (isCompact_closedBall y R).exists_isMaxOn
-    ⟨y, by simpa only [Metric.mem_closedBall, dist_self] using hR.le⟩ hF.continuousOn
-  let sigma : ℝ := R - dist y x
-  have hxle : dist y x ≤ R := by
-    simpa only [Metric.mem_closedBall, dist_comm] using hx
-  have hsigma : 0 ≤ sigma := sub_nonneg.mpr hxle
-  have hsigmaR : sigma ≤ R := by
-    dsimp only [sigma]
-    linarith [dist_nonneg (x := y) (y := x)]
-  have hweight : f y * R ^ 2 ≤ f x * sigma ^ 2 := by
-    have hyball : y ∈ Metric.closedBall y R := by
-      simpa only [Metric.mem_closedBall, dist_self] using hR.le
-    have hymax : F y ≤ F x := hmax hyball
-    simpa only [F, sigma, dist_self, sub_zero] using hymax
-  have hpositive : 0 < f y * R ^ 2 := mul_pos hy (sq_pos_of_pos hR)
-  have hsigma_pos : 0 < sigma := by
-    by_contra hn
-    have hz : sigma = 0 := le_antisymm (le_of_not_gt hn) hsigma
-    rw [hz, zero_pow (by decide), mul_zero] at hweight
-    exact (not_le_of_gt hpositive) hweight
-  have hfx : 0 < f x :=
-    (mul_pos_iff_of_pos_right (sq_pos_of_pos hsigma_pos)).mp
-      (hpositive.trans_le hweight)
-  refine ⟨x, sigma, hsigma_pos, hsigmaR, hxle, hfx, hweight, ?_⟩
-  intro z hz
-  by_cases hfz : 0 ≤ f z
-  · have hz' : dist x z < eta * sigma := by simpa only [dist_comm] using hz
-    have htri := dist_triangle y x z
-    have hslack : (1 - eta) * sigma ≤ R - dist y z := by
-      dsimp only [sigma] at hz' ⊢
-      nlinarith
-    have hslack_pos : 0 < (1 - eta) * sigma :=
-      mul_pos (sub_pos.mpr heta1) hsigma_pos
-    have hzball : z ∈ Metric.closedBall y R := by
-      rw [Metric.mem_closedBall, dist_comm]
-      linarith
-    have hsquare : ((1 - eta) * sigma) ^ 2 ≤ (R - dist y z) ^ 2 :=
-      (sq_le_sq₀ hslack_pos.le (hslack_pos.le.trans hslack)).mpr hslack
-    have hprod := mul_le_mul_of_nonneg_left hsquare hfz
-    have hmaxz : f z * (R - dist y z) ^ 2 ≤ f x * sigma ^ 2 := hmax hzball
-    have hcancel : f z * (1 - eta) ^ 2 ≤ f x := by
-      apply (mul_le_mul_iff_left₀ (sq_pos_of_pos hsigma_pos)).mp
-      nlinarith [hprod, hmaxz]
-    have hdiv : f z ≤ f x / (1 - eta) ^ 2 :=
-      (le_div_iff₀ (sq_pos_of_pos (sub_pos.mpr heta1))).mpr hcancel
-    simpa only [div_eq_mul_inv, inv_pow, mul_comm] using hdiv
-  · exact (le_of_lt (lt_of_not_ge hfz)).trans
-      (mul_nonneg (sq_nonneg _) hfx.le)
+  obtain ⟨x, hx, hfx, hweight, hcontrol⟩ := Metric.exists_weighted_point_selection
+    (isCompact_closedBall y R) hf.continuousOn
+    (by simpa only [dist_self] using hR) hy heta1
+  refine ⟨x, R - dist y x, sub_pos.mpr hx, sub_le_self _ dist_nonneg,
+    hx.le, hfx, ?_, ?_⟩
+  · simpa only [dist_self, sub_zero] using hweight
+  · intro z hz
+    exact (hcontrol z (by simpa only [dist_comm] using hz.le)).2
 
 omit [ProperSpace X] in
 private theorem ascr_disjoint_subsequence
