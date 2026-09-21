@@ -129,3 +129,54 @@ producer that protects the pairing of the two source sheets. **Fixture:** a prop
 in the 3-ball with a transverse double arc, non-empty frozen outer ring, a small non-identity
 perturbation on a fixed control subdivision, protected and active regions allowed to meet.
 **Most likely surprise:** the ABAB/AABB pairing change near frozen exemptions — not `hsep`.
+
+## Third review (snapshot `94791ab1c755`, 2026-09-21)
+Docstring errors: "one `ε` also converts chart error to ambient distance" is wrong; and "`χ` need
+not be the identity" does not show that the pairing certificate and genericity are jointly producible.
+
+| Leaf | Verdict | Reason |
+|---|---|---|
+| `exists_normalizationPreparation_on_prescribedRegion` | **FALSE** | whole-source certificate has the right quantifiers; the conversion buffer wrongly reuses the same `ε` |
+| `exists_small_vertexMap_relative_in_adaptedChart` | **FIX** | fixed control and pairing protection are *stability* obligations, not by-products of a generic choice |
+| `exists_globalInvariants_of_gluedCell` | **OK — freeze** | `hcert hclose hstar` give whole-source control; seam and chart buffers build the boundary homotopy |
+| `exists_normalCrossings_of_gluedCell` | **FALSE** | transport through the pairing is sufficient; active recognition lost `MapsTo (simplicialMap Rs φ) Rc.space (ec '' V)` |
+
+* **Preparation.** Flat torus `(ℝ/20ℤ)³`, `S = [−1,1]²`, `D = (s,t,0)`, `ec q = q/2`, `V = B(0,1)`,
+  `Rc = [−¼,¼]²`, `Ac` = the ring `3/16 ≤ ‖·‖∞ ≤ ¼`, `W = B(0,⅛)`, `Z = {0}`, `O = V`, `B = M`: the
+  chart buffer forces `ε ≤ ½` at `x = 0`; `z = ¾ ε e₁` has chart error `< ε` and ambient error
+  `3ε/2`. **Repair:** choose `T, κ, δ_amb` first, then `ε_chart`, then perturb:
+  `(∀ g, (∀ x ∈ D.domain, dist (g x) (D x) < δ) → StarInj T g → UniformInjectivityScale D.domain g κ
+  ∧ ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2) ∧ (∀ x ∈ Rc.space, ∀ z, dist z (ec (D x)) < ε →
+  z ∈ ⇑ec '' V ∧ dist (ec.symm z) (D x) < δ)`; `hcert/hclose` use `δ`, `hsmall` and the chart
+  buffer use `ε` (the order of `ManifoldApproximation.lean`). Suppliers: the first cited theorem
+  allows any target; `exists_fiber_encard_le_two_of_close_of_injOn_starComplex` still has
+  `[NormedAddCommGroup F]` — its proof uses only distance, compactness and three-point separation,
+  so generalise to `[MetricSpace F]`, or compose with the ambient inclusion of the double.
+* **Relative perturbation — split stability from generic choice.**
+  Stability preparation: `∃ R τ, 0 < τ ∧ ∀ φ, A_R φ τ → StarInj T g_φ ∧ Pair D g_φ`, with `R` a
+  **fixed** subdivision on which `ec ∘ D` is facewise affine and `A_R` = vertex error `< τ`, frozen
+  vertices equal, physical boundary vertices at height zero, the others at positive height; `R`
+  and `τ` also secure `hsep`, the valid chart range and the cut-out's seam conditions beforehand.
+  Generic choice: `∀ τ > 0, ∃ φ, A_R φ τ ∧ hguard`. The expensive part is the pairing stability;
+  one cannot take a generic perturbation first and add the certificate afterwards.
+  **Localise the pairing:** choose `K ⋐ V` compact with `D(|Rc|) ∪ g_φ(|Rc|) ⊆ K`; produce the
+  full-preimage pairing only near `Z ∩ K`; on the open set `O \ K` transport by the identity. The
+  two crossing models are used side by side — no need to glue one `χ, ψ`. Not `Z ∩ V` (not compact;
+  `Vᶜ` is not an open neighbourhood of boundary points).
+* **Crossings.** Without `hmaps` one cannot get `ec (D' x) = simplicialMap Rs φ x` from `hglue`:
+  `ec.symm` is unconstrained off `ec.target`. Counterexample: the fold `D' = (|s|,t,h)` with
+  `p_φ = (10+s, t, h)`, `ec = id` on `(−3,3)³` and `ec.symm (p_φ (s,t)) := D' (s,t)` off the target,
+  `Ac = ∅`, `Ω = univ`, `ε = 11`: all half-space and guard clauses hold, pairing with
+  `χ = ψ = id` far away, yet two sheets coincide in `W`. **Repair:** pass
+  `(hmaps : MapsTo (simplicialMap Rs φ) Rc.space (⇑ec '' V))` (the frozen gluing leaf already
+  receives it). On point (iii): the pairing gives `ψ '' (S ∩ D⁻¹{q}) = S ∩ D'⁻¹{χ q}`, so new double
+  points are old ones, no extra sheet enters, `hχbd` transports the boundary models; no hypothesis
+  that `ψ` preserves the source boundary is needed; with a certificate for all of `Z`, `O₀` and
+  `hfibV` become redundant for this half.
+
+**Missing obligations:** the pairing-stability producer on a fixed subdivision; the metric version
+of the multiplicity lemma; the chart-range parameter of the crossing leaf. **Fixture:** a proper PL
+disk in the 3-ball already in general position with one transverse double arc, `Rc` the whole disk,
+`Ac = Lc = ∂S`, a small non-identity shear fixing the boundary plane, `ψ = id`, `Z` and `W`
+overlapping. **Most likely surprise:** writing "both scales are chosen before the perturbation" as
+"one scale does not grow under the inverse chart".
