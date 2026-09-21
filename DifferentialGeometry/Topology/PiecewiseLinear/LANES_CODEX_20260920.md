@@ -354,3 +354,57 @@ LocallyFiniteSolidTorusModification,SolidTorusOpenNeighborhood,CommonCircleSolid
 界、令下一个界 → 0，以及粗容差 + 不可延拓嵌入；(d) 局部有限探针：指标类型、环境/子空间、对递增族查点有限；
 (e) `∃ d, H d`、`∀ d, H d → ∃ o, C d o`、`∃ o, C d₀ o` 三者互不替代；恒等特化（如 `exists_of_twoArcMatch_self`）
 不是居留者。
+
+---
+
+## 车道 C — 闭支（Moise p. 185，Case 1 / Case 2）；lead 于 2026-09-20 夜做的只读 scoping
+
+**书上说的（PDF p. 195，已对页）：** Case 1：`Γ` 的完整原像是**一个**多边形 `J`，`D|J` 恰为二对一；取 `Γ` 的正则邻域
+作柱形图，端面粘合 `(x,y,0) ∼ (y,x,1)`，把两张矩形换成 `x − y = ±1` 两个平面的截面，得到环带 `A'`，重定义
+`D|A`。Case 2：原像是**两个**不交多边形 `J₁, J₂`；取 `J₁` inmost（它围的 2-胞腔里没有别的原像多边形），则 `Γ` 围出
+`|D|` 里的嵌入 2-胞腔 `Δ₁`；把 `J₂` 的内部同胚地映到 `Δ₁`，再"推离 `Δ₁` 的一个邻域"。书里**只有这几句**。
+
+**树里已有：** 选择定理 `NormalSingularCellData.exists_innermost_cleanDisk_of_exists_not_boundaryBranch`
+（`LoopTheorem/InnermostCleanDisk.lean:221`）已经给出干净盘 `Q`（`frontier Q = J`，
+`doublePointPreimage ∩ Q = J`，`D '' interior Q` 无二重点）**以及二分**：`branchPreimage c = J`（Case 1）或
+`= J ∪ T`、`Disjoint J T`、`InjOn D Q`（Case 2）。还有：球的边界同胚延拓 `exists_isPLHomeomorphOn_of_frontier`
+（`BallFrontier.lean:102`）；`DescendingSurgery.ofBranchInjection`（`LoopTheorem/BranchInjection.lean:301`）；
+`SingularTwoCell.nonempty_normalSingularCellData_of_fields`（H1：`singularSet` 由五个字段推出）；模型层
+`CylinderSplice`、`ClosedSeamResolution`、`ClosedBranchOrientability`。**缺的：** 从真实闭支到 `DescendingSurgery`
+的一切；闭支目前没有任何 surgery 构造子。
+
+**三个子情形，难度差别很大：**
+
+| 子情形 | 需要什么 | 判断 |
+| --- | --- | --- |
+| **2a 嵌套**（`Q ⊂ interior E₂`，`E₂` 为 `T` 围的盘） | 只在源里剪贴：`G = D` 于 `E₂` 外，`G = D ∘ k` 于 `E₂`，`k : E₂ → Q` 延拓 `T → J` 的识别。**不需要管子，也不需要推离**（`J` 连同它外侧的一圈都在 `E₂` 里被覆盖掉了）。边界附近 `G = D`，三条不变量（侧、缓冲、避开子群）逐字继承 | **现在就能做**，约 0.8–1.5k 行 |
+| **2b 不交**（`Q ∩ E₂ = ∅`） | 直接覆盖会让 `Δ₁` 整张盘成为二重点，必须沿平行曲线 cap off：取 `Δ₁` 的正则邻域球 `N`，`∂N ∩ |D|` 是三条平行圆（`X_out`、`Y_out`、`Y_in` 各一条），`∂N` 上由 `Y_out` 那条圆围出、不含另两条的盘 `Δ'` 满足 `Δ' ∩ |D| = ∂Δ'`；把 `E₂` 外扩到该圆的原像，映到 `Δ'` | 中等，约 1.5–3k 行；先 scoping：`SpanningDiskBallNeighborhood`、`SpanningDiskPrism`、`BicollarEmbedding` 能复用多少 |
+| **Case 1**（连通二重覆盖） | 扭转圆盘丛管子：车道 S 的 S3（内部标记锥）+ S6（绕圆周闭合的链）+ S8（cross-disk 同痕，**不是**共轭到 `Prod.swap`）+ 映射环面等价，然后 `ClosedSeamResolution` | **现在做不了**，排在车道 S 之后 |
+
+**砖块（每块先反驳后证明；每条强假设按 D 答复的纪律在端点/极端处取值）：**
+- **C1 嵌套替换 cell。** 输入：选择定理的 Case 2 输出 + `E₂`（`IsPLBall 2 E₂`、`frontier E₂ = T`、
+  `Q ⊆ interior E₂`）+ 识别 `g : T → J`（`IsPLHomeomorphOn`，`EqOn D (D ∘ g) T`——先查 `branchPreimage` 的 API 里
+  有没有这条识别；没有就从 `InjOn D J`、`InjOn D T`、`D '' J = D '' T` 造）。产出 `G`：`G.domain = D.domain`、
+  `EqOn G D (D.domain \ interior E₂)`、`EqOn G (D ∘ k) E₂`。**∀G 陷阱：** 用谓词 `IsNestedDiskReplacementCell hD c G`
+  = 这个 producer 的**完整**结论（固定 `G`），不要只记几条性质。
+- **C2 弯折处的局部单射。** `G` 在 `T` 的点处局部单射：`crossing` 字段给出 `Γ` 处四张半页只沿 `Γ` 相交；`G` 在 `T`
+  两侧分别是 `Y_out`（`T` 外侧）与 `X_in = D(Q)`。**接点检验：** `T` 上 `D = D ∘ g` 保证连续；`E₂` 内部
+  `G = D ∘ k` 单射（`InjOn D Q`）。
+- **C3 二重点集 = 整支的并。** 每条别的支的每个原像分量连通且与 `J ∪ T` 不交，又不在 `Q` 里（干净），所以**整个**
+  落在环带 `E₂ \ Q`（被覆盖掉）或整个在 `E₂` 外（保留）；`D '' interior Q` 无二重点 ⇒ 新映射不产生新二重点。故
+  `doublePointSet G` 是若干**整条**旧支之并且不含 `c` ⇒ origin 单射、错过 `c` ⇒ `ofBranchInjection`。（对照
+  `BranchDescent` 的警告：严格包含本身不够，这里靠的是"整支"。）纤维 ≤ 2 同理。
+- **C4 2a 的组装：** `∃ Sg : hD.DescendingSurgery, MapsTo … C ∧ 缓冲 ∧ 避开子群`——后三条因 `G` 在
+  `frontier D.domain` 的一个邻域上等于 `D` 而逐字继承（`c`、`δ` 原样可用）。结论形状直接对齐
+  `DescentStepStatement`（`LemmaTwoSpine.lean:124`），别重蹈 F10 的覆辙。
+- **C5 2b 的 scoping（只读）**，然后 C6 2b 的证明。
+- **C7 Case 1**：等 S3/S6/S8。
+- **非空洞夹具：** 2a——平面里一条自交一次的闭曲线上方的"帽子"模型，或直接取 `D(s,t)` 为一张盘与一个嵌套的浅碗相交
+  成一个圆；要求复杂度 ≥ 1 且 Case 2a 的全部假设在**同一个**元组上成立。
+
+**需要 owner 拍板的一点（会改变 Case 1 的工作量，但动公共陈述）：** `Moise252`（`MoiseChain.lean:36`）**本来就带**
+`IsOrientable 3 K`，而 `LemmaTwoStatement` / `DescentStepStatement` 不带。在可定向的 `M` 里 Case 1 **不会发生**：给 `Δ`、
+`M`、`J` 定向，对 `Γ` 上一点的有序原像对 `(a,b)` 取标架 `(t, n_a, n_b)` 的符号 `σ(a,b) = −σ(b,a) ≠ 0`；绕 `Γ` 一圈
+`(a,b) ↦ (b,a)`，连续性给 `σ(a,b) = σ(b,a)`，矛盾。这个排除**不需要管子**（现有的
+`IsCylindricalDiagram.not_closedBranchCase1` 需要先有柱形图）。若把可定向性沿塔传下去（可定向流形的覆盖仍可定向），
+Case 1 整块可以删掉，闭支只剩 2a + 2b。代价：`NormalSystem` 世界的几条已证归约要带着这个假设重过一遍。
