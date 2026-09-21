@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricCurvatureDifference
+import DifferentialGeometry.Geometry.Curvature.MetricDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.Basic
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Local
 import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone

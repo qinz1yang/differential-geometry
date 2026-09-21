@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactScalarConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceEntropyContinuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import Mathlib.Topology.UniformSpace.CompactConvergence

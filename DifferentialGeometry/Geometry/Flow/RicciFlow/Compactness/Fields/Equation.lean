@@ -328,11 +328,8 @@ theorem gSeqExt_ricci
           (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
         ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w := by
     have h :=
-      @ricciTensor_restrictOpen E _ _ _ _ H _ I P.M
-        P.topology P.charted P.smooth P.t2
-        (by infer_instance) (by infer_instance)
-        (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-        sourceT2 (by infer_instance) (by infer_instance) xsrc
+      DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen (I := I)
+        (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k) xsrc
         (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
     rw [mfderiv_subtype_val_apply, mfderiv_subtype_val_apply] at h
     exact h

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactScalarConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.HarnackPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
@@ -45,30 +45,6 @@ local instance pointedScalarApproxT2 (k : ℕ) : T2Space (X.obj k).M := (X.obj k
 local instance pointedScalarApproxSigma (k : ℕ) :
     SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
 
-local instance pointedScalarSourceTopology (k : ℕ) :
-    TopologicalSpace (MetricSourceDomain (I := I) Phi k) := metricSourceDomainTopology Phi k
-local instance pointedScalarSourceCharted (k : ℕ) :
-    ChartedSpace H (MetricSourceDomain (I := I) Phi k) := metricSourceDomainChartedSpace Phi k
-local instance pointedScalarSourceSmooth (k : ℕ) :
-    IsManifold I ∞ (MetricSourceDomain (I := I) Phi k) := metric_source_domain_smooth Phi k
-local instance pointedScalarSourceT2 (k : ℕ) :
-    T2Space (MetricSourceDomain (I := I) Phi k) := metric_source_domain_t2 Phi k
-local instance pointedScalarSourceSigma (k : ℕ) :
-    SigmaCompactSpace (MetricSourceDomain (I := I) Phi k) :=
-  metric_source_domain_sigma_compact Phi k (PointedRiemannianConvergenceMaps.isSigmaCompact_source Phi k)
-
-local instance pointedScalarTargetTopology (k : ℕ) :
-    TopologicalSpace (MetricTargetDomain (I := I) Phi k) := metricTargetDomainTopology Phi k
-local instance pointedScalarTargetCharted (k : ℕ) :
-    ChartedSpace H (MetricTargetDomain (I := I) Phi k) := metricTargetDomainChartedSpace Phi k
-local instance pointedScalarTargetSmooth (k : ℕ) :
-    IsManifold I ∞ (MetricTargetDomain (I := I) Phi k) := metric_target_domain_smooth Phi k
-local instance pointedScalarTargetT2 (k : ℕ) :
-    T2Space (MetricTargetDomain (I := I) Phi k) := metric_target_domain_t2 Phi k
-local instance pointedScalarTargetSigma (k : ℕ) :
-    SigmaCompactSpace (MetricTargetDomain (I := I) Phi k) :=
-  metric_target_domain_sigma_compact Phi k (PointedRiemannianConvergenceMaps.isSigmaCompact_target Phi k)
-
 variable {Phi}
 
 theorem pointedScalar_tendsto_of_canonical_metric_convergence
@@ -78,74 +54,8 @@ theorem pointedScalar_tendsto_of_canonical_metric_convergence
     (x : L.M) :
     Tendsto (fun k => metricScalarAt (I := I) (X.obj (subseq k)).metric (Phi.map k x))
       atTop (𝓝 (metricScalarAt (I := I) L.metric x)) := by
-  let n : ℝ := Module.finrank ℝ E
-  let Kb : ℝ := n * Real.sqrt
-    (normSq0S (I := I) L.metric x 2 (metricRicciAt (I := I) L.metric x))
-  let B : ℝ := n ^ 2 * (864 + 2 * Kb)
-  have hn : 0 ≤ n := Nat.cast_nonneg _
-  have hKb0 : 0 ≤ Kb := mul_nonneg hn (Real.sqrt_nonneg _)
-  have hB0 : 0 ≤ B := by dsimp only [B]; positivity
-  have hKb (v : TangentSpace I x) :
-      |ricciTensor (I := I) L.metric x v v| ≤ Kb * L.metric.inner x v v := by
-    rw [← metricRicciAt_apply_eq_ricciTensor (I := I) L.metric x v v]
-    exact tensor02_quadForm_abs_le_normSq0S L.metric (metricRicciAt (I := I) L.metric x) v
-  apply Metric.tendsto_atTop.mpr
-  intro epsilon hepsilon
-  let delta : ℝ := min 1 (min (1 / (2 * (n + 1))) (epsilon / (B + 1)))
-  have hd0 : 0 < delta := by dsimp only [delta]; positivity
-  have hd1 : delta ≤ 1 := min_le_left _ _
-  have hdn : n * delta ≤ 1 / 2 := by
-    have ht : delta ≤ 1 / (2 * (n + 1)) :=
-      (min_le_right _ _).trans (min_le_left _ _)
-    have hm := (le_div_iff₀ (by positivity : 0 < 2 * (n + 1))).mp ht
-    nlinarith [hd0.le]
-  have hdB : B * delta < epsilon := by
-    have ht : delta ≤ epsilon / (B + 1) :=
-      (min_le_right _ _).trans (min_le_right _ _)
-    have hm := (le_div_iff₀ (by positivity : 0 < B + 1)).mp ht
-    nlinarith
-  obtain ⟨k0, hk0⟩ := hconv {x} isCompact_singleton delta hd0
-  refine ⟨k0, fun k hk => ?_⟩
-  obtain ⟨hsource, hsup⟩ := hk0 k hk
-  let xu : MetricSourceDomain (I := I) Phi k := ⟨x, hsource (Set.mem_singleton x)⟩
-  let gU := L.metric.restrictOpen (I := I) (metricSourceOpenSubset Phi k)
-  let hU := Diffeomorph.pullbackMetric (I := I)
-    ((X.obj (subseq k)).metric.restrictOpen (I := I) (metricTargetOpenSubset Phi k))
-    (metricSourceTargetDiffeomorph Phi k)
-  have hcompact : IsCompact (metricSourceCompactSet (I := I) Phi k {x}) :=
-    metric_source_compact_set_is_compact (I := I) Phi k isCompact_singleton hsource
-  change metricDerivNormSupOn (I := I)
-    (metricSourceCompactSet (I := I) Phi k {x}) 2 hU gU gU < delta at hsup
-  have hjet (a : ℕ) (ha : a ≤ 2) : metricDerivNorm (I := I) a hU gU gU xu ≤ delta := by
-    have ht := derivNorm_le_sup (I := I) hcompact ha
-      hU gU gU (x := xu) (Set.mem_singleton x)
-    exact ht.trans hsup.le
-  have hKbU (v : TangentSpace I xu) :
-      |ricciTensor (I := I) gU xu v v| ≤ Kb * gU.inner xu v v := by
-    have hr := ricciTensor_restrictOpen L.metric (metricSourceOpenSubset Phi k) xu v v
-    erw [mfderiv_subtype_val_apply] at hr
-    change ricciTensor (I := I) gU xu v v = ricciTensor (I := I) L.metric x v v at hr
-    rw [hr]
-    change |ricciTensor (I := I) L.metric x v v| ≤ Kb * L.metric.inner x v v
-    exact hKb v
-  have hb := metricScalar_difference_le_relative_two_jets gU hU xu hd0.le hd1 hdn
-    hjet hKbU
-  have hlim : metricScalarAt (I := I) gU xu = metricScalarAt (I := I) L.metric x :=
-    metricScalarAt_restrictOpen L.metric (metricSourceOpenSubset Phi k) xu
-  have hpull : metricScalarAt (I := I) hU xu =
-      metricScalarAt (I := I) (X.obj (subseq k)).metric (Phi.map k x) := by
-    calc
-      _ = metricScalarAt (I := I)
-          ((X.obj (subseq k)).metric.restrictOpen (I := I) (metricTargetOpenSubset Phi k))
-          (metricSourceTargetDiffeomorph Phi k xu) := metricScalarAt_pullback _ _ _
-      _ = _ := by
-        have hr := metricScalarAt_restrictOpen (X.obj (subseq k)).metric
-          (metricTargetOpenSubset Phi k) (metricSourceTargetDiffeomorph Phi k xu)
-        erw [metric_source_target_diffeomorph_apply] at hr
-        exact hr
-  rw [hpull, hlim] at hb
-  rw [Real.dist_eq]
-  exact hb.trans_lt hdB
+  exact (pointedScalar_tendstoUniformlyOn_of_canonical_metric_convergence
+    isCompact_singleton (hconv {x} isCompact_singleton)).tendsto_at (mem_singleton x)
 
 theorem pointedScalar_tendsto_of_metricCG_canonical_domains
     (C : MetricConvergenceData (I := I) Phi)

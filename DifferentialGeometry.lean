@@ -3471,6 +3471,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Curves
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Distance
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Connected
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Scalar
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
@@ -4528,6 +4529,7 @@ import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Curvature.Metric.Sectional
 import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone
 import DifferentialGeometry.Geometry.Curvature.MetricPairing
+import DifferentialGeometry.Geometry.Curvature.MetricDifference
 import DifferentialGeometry.Geometry.Curvature.ModelChange
 import DifferentialGeometry.Geometry.Curvature.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
@@ -5880,7 +5882,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Coll
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactEntropyConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactPointedChartControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactPoisson
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactScalarConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactnessFrontierReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ComparisonTimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompleteMetricMinimizingCurve
@@ -5990,7 +5991,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Loca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalSmoothConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalVolumeOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalVolumeVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricCurvatureDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricJetScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricRicciDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricSeparatedSubsequence
@@ -10955,6 +10955,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedEx
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedCompactMetricBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.CompactBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
+import DifferentialGeometry.Geometry.Metric.Convergence.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.TimeLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureUpperSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalLeastEigenvalue

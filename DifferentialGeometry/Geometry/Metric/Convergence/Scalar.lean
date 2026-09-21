@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricCurvatureDifference
+import DifferentialGeometry.Geometry.Curvature.MetricDifference
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity

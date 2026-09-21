@@ -643,3 +643,51 @@ linters and have only `propext`, `Classical.choice`, and `Quot.sound` in their t
 axiom closures. Evidence is in `/private/tmp/wt17-completion-foundations-build.log`,
 `/private/tmp/wt17-normalized-completion-build.log`, and
 `/private/tmp/wt17-completion-audit.log`.
+
+## Scalar divergence at the completion endpoint
+
+The continuation after `b60a19263596b0317d3d281a7ecd4f219d94c6a1` strengthens
+`exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDistance`
+with scalar curvature tending to positive infinity along the escaping segment at its
+completion endpoint. The earlier limit, source geodesic, convergence, and exact
+completion-distance data are retained. The construction engine first proves divergence
+of absolute scalar curvature. The application uses the proved nonnegative sectional
+curvature of the limit to recover the signed conclusion.
+
+The proof uses scalar convergence at actual moving source points and a quantitative
+source separation estimate from local propagation. If the limit scalar at a point near
+the missing endpoint stayed bounded, its approximating source points would remain a
+fixed positive distance from the escaping endpoints. The remaining geodesic lengths
+tend to zero there, a contradiction. Actual membership in the convergence maps' targets
+is proved before using inverse maps. This develops the scalar-divergence step in
+Kleiner--Lott, Section 52, proof of Lemma 52.14, printed page 2703 (PDF page 117), in
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+
+The general scalar-convergence API now lives in
+`Geometry/Compactness/CheegerGromov/Pointed/Convergence/Scalar.lean`. Uniform convergence
+on compact sets follows from canonical relative metric convergence at order two;
+moving-point and actual inverse-image forms follow from it. The new primary statements
+use a finite-dimensional normed model and derive its completeness locally. Existing
+pointwise and compact scalar-control statements are compatibility corollaries.
+
+The static metric-curvature difference and scalar-convergence developments moved to
+`Geometry/Curvature/MetricDifference.lean` and `Geometry/Metric/Convergence/Scalar.lean`,
+with their established declaration names, scopes, and proofs preserved. Static curvature
+restriction identities moved from the flow restriction file into the existing
+`Geometry/Curvature/RicciRestriction.lean`. The duplicate Ricci restriction proof was
+removed in favor of the existing, more general canonical theorem, re-exported for
+compatibility. A positional consumer was updated and an unused completeness assumption
+was removed from dependent restriction lemmas.
+
+The bounded-distance headline remains unchanged and open. The source inventory remains
+21 proof holes. Neck and cone producers remain active mathematical work.
+
+The normalized application build passed 13,986 jobs without diagnostics. The final
+root build passed all 20,170 jobs with exactly the 21 retained `sorry` warnings and
+no other diagnostics. Twenty-two added, moved, generalized, or affected declarations
+passed all thirteen declaration linters; every inspected transitive axiom closure
+contains only a subset of `propext`, `Classical.choice`, and `Quot.sound`. Exact
+signatures and evidence are recorded in
+`/private/tmp/wt17-normalized-scalar-escape-repair-build.log`,
+`/private/tmp/wt17-scalar-endpoint-final-root-build.log`, and
+`/private/tmp/wt17-scalar-convergence-final-audit.log`.
