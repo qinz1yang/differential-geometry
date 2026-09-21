@@ -73,9 +73,9 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 ### B — §34–35 side
 | ID | Item | Status |
 |---|---|---|
-| **B1** | `Moise352Open 3` (`OpenSourceReduction.lean:297`) | **OPEN**; no proved reduction below it yet |
-| B1.a | terminal labelled PL-cell assembly + corrected endpoint (`E3_ASSEMBLY_DESIGN_20260920.md`) | open, in progress; will replace B1 by B1.b |
-| B1.b | the final-diagram producer = P0–P8: controlled frame, joint graph selection, generator transfer, face balls, protected compression, bigon slide, normalization, exterior face disks, tetrahedron and vertex recognition | open, not started; proved ingredients: `moise308Nested`, link connectivity, marked-circle sectors, locally finite PL gluing, labelled normalization, tolerance control, chart-local 34.1 **from** `Moise341` |
+| **B1** | `Moise352Open 3` (`OpenSourceReduction.lean:297`) | **OPEN**; reduced (proved, `moise352Open_of_section34CellDiagram`, `Section34Endpoint.lean`) to the single obligation **`Section34CellDiagram`** = B1.b |
+| B1.a | terminal labelled PL-cell assembly + corrected endpoint | **PROVED** `exists_isPLHomeomorphInto_of_labelledCells` (`LabelledCellAssembly.lean`), manifold-level locally finite PL pasting with inverse (`LocallyFinitePLPastingManifold.lean`). Non-vacuity witness so far only in dimension 0; the tetrahedron witness is owed — until it exists the ball-extension rows are UNTESTED |
+| B1.b | `Section34CellDiagram` (the final-diagram producer = P0–P8): controlled frame, joint graph selection, generator transfer, face balls, protected compression, bigon slide, normalization, exterior face disks, tetrahedron and vertex recognition | open, not started; proved ingredients: `moise308Nested`, link connectivity, marked-circle sectors, locally finite PL gluing, labelled normalization, tolerance control, chart-local 34.1 **from** `Moise341` |
 | B1.c | `Moise351` (35.1, needed in *controlled* form by P1) | OPEN, no owner |
 | B1.d | `Moise341`, `Moise331` and what they rest on: §31, §32 (pseudo-cells), §33.1, surface classification 22.8–22.10 | OPEN, not started |
 | B1.e | how A's output (tame 30.5, the loop theorem) enters P3/P4 | **not yet stated in Lean** — the two sides meet only in the book so far |
@@ -93,4 +93,4 @@ in a non-orientable manifold; `Moise305` (non-tame), `Moise306`, `Moise307`,
 
 ## Count (the number an audit should quote)
 Top-level OPEN items: **A1, A2, B1, C1** (+ D1 external). Expanded leaves currently open:
-**A: 4 + 7 = 11** (A2.1 closed), **B: 5**, **C: 1**. Leaves closed since this page was created: 0.
+**A: 4 + 7 = 11** (A2.1 closed), **B: 4** (B1.a closed), **C: 1**. Leaves closed since this page was created: 1 (B1.a).

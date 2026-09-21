@@ -9172,6 +9172,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTubeCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneSource
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLPastingManifold
+import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
+import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssemblyWitness
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34Endpoint
 /-!
 # Differential geometry and geometric analysis
 -/
