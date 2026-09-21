@@ -9162,6 +9162,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNes
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReductionOrientable
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReductionOrientableProducer
+import DifferentialGeometry.Topology.PiecewiseLinear.LinkGraphConnectivity
+import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLHomeomorphGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.MarkedCircleSector
+import DifferentialGeometry.Topology.PiecewiseLinear.Moise308NestedShell
+import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 /-!
 # Differential geometry and geometric analysis
 -/
