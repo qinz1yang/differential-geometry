@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartLocalApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLPastingManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
@@ -63,10 +64,30 @@ the cut, not a consequence of the cut frame: nothing in the cut frame forbids a 
 lying inside a dual ball.
 
 `Section34NormalPlus` is the configuration after step P5.  `Section34VertexPreparation` and
-`Section34PiercingConditions` are the two packages of Moise 35.1: the enlarged cells `C''_v`
-with their tolerances `ε_v` fixed *before* any map, and conditions (2)--(8) of pages 249--250
-with the annuli `A_e`, `B_e`, the regular neighbourhoods `S_e`, `T_e` of the piercing circles
-and the two boundary circles of each annulus.
+`Section34PiercingConditions` are the two packages of Moise 35.1, pages 248--250, and they
+separate the *pierced* cells `C'_v` from the *enlarged* cells `C''_v`.  The preparation fixes,
+before any map: `C'_v` with `C_v ⊆ C'_v`, the piercing circle `Bd C'_v ∩ Bd C'_w` inside the
+splitting disk `D_e`, the two compatible regular neighbourhoods `T_e ⊆ Int S_e` of that circle,
+the annuli `A_e = Bd C'_v ∩ T_e` and `B_e ⊆ Bd C'_w` with their designated boundary circles,
+the enlarged cells `C''_v ⊇ C'_v ∪ ⋃_{e ∋ v} S_e`, one target piecewise linear chart per vertex
+and per triangle, and only then the tolerances `ε_v`.  Taking `A_e` on `Bd C''_v` instead would
+make condition (3) contradictory: `G_v` is an embedding of `C''_v`, so `G_v (Bd C''_v)` is the
+frontier of `G_v (C''_v)` and misses `Int G_v(T_e)`, while the two pierced boundaries do meet.
+The homological input of Lemma 1 on page 250 is recorded as
+`CarriesFundamentalGroupOnto (Ab₀ e) (Tn e)`, the same for `Ab₁ e`, and
+`CarriesFundamentalGroupOnto (Ab₀ e) (Sn e)`: with `S_e`, `T_e` solid tori this is the
+statement that a boundary circle of `A_e` generates the first homotopy group of the small tube
+and stays essential in the large one, which is what "`Z_{J_0} ∼ 0` on `S'_e` is absurd" uses.
+
+`IsAnnulusOn A A₀ A₁` is a topological annulus with its two end circles named; the model is the
+product of a circle with an interval, exactly as `IsToroidalShell` uses the product of a torus
+with an interval.  Condition (8) of page 249 is not the containment of the intersection
+polygons in the two relative interiors: the two annuli `{(θ, u, 0)}` and `{(θ, u, |u|)}` meet in
+one circle interior to both and are tangent, not crossing, along it.  The package therefore asks
+for the local crossing model at every intersection point, through the tree's `HasPLCrossingAt`
+read in a piecewise linear chart of `M₂`.  The target supports `Sp e`, `Tp e` and the circle
+count `cnt e` are fields, so that the circle removal of Lemmas 2 and 3 is a single step with a
+fixed, locally finite support and a strictly decreasing count.
 
 `carriesFundamentalGroupOnto_of_nestedSolidTorus` is proved, not assumed: it transports the
 unconditional `moise308Nested` from `ℝ³` to a subset of a metrised piecewise linear
@@ -101,6 +122,38 @@ theorem IsPLCellOn.nonempty {d : ℕ} {S B : Set M} (hS : IsPLCellOn d S B) : S.
   exact (IsPLBall.nonempty ⟨r, hr⟩).image u
 
 end Cell
+
+section Annulus
+
+variable {M : Type*} [TopologicalSpace M]
+
+def IsAnnulusOn (A A₀ A₁ : Set M) : Prop :=
+  ∃ φ : (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × Set.Icc (0 : ℝ) 1) ≃ₜ A,
+    A₀ = Subtype.val '' (φ '' {p | (p.2 : ℝ) = 0}) ∧
+    A₁ = Subtype.val '' (φ '' {p | (p.2 : ℝ) = 1})
+
+theorem isAnnulusOn_univ_prod :
+    IsAnnulusOn
+        (univ : Set (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × Set.Icc (0 : ℝ) 1))
+        {p | (p.2 : ℝ) = 0} {p | (p.2 : ℝ) = 1} ∧
+      Disjoint
+        {p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × Set.Icc (0 : ℝ) 1 |
+          (p.2 : ℝ) = 0}
+        {p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × Set.Icc (0 : ℝ) 1 |
+          (p.2 : ℝ) = 1} := by
+  have key : ∀ S : Set (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × Set.Icc (0 : ℝ) 1),
+      Subtype.val '' ((Homeomorph.Set.univ
+        (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × Set.Icc (0 : ℝ) 1)).symm '' S) = S := by
+    intro S
+    refine Subset.antisymm ?_ ?_
+    · rintro _ ⟨_, ⟨z, hz, rfl⟩, rfl⟩
+      exact hz
+    · exact fun x hx => ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+  refine ⟨⟨(Homeomorph.Set.univ _).symm, (key _).symm, (key _).symm⟩,
+    Set.disjoint_left.mpr fun p hp hp' => ?_⟩
+  exact absurd (hp.symm.trans hp') zero_ne_one
+
+end Annulus
 
 inductive Section34Label (Vx Tt Ed Fc Pa Ar Eg Mk : Type v) : Type v
   | vertexBall (v : Vx)
@@ -645,59 +698,87 @@ def Section34ResidualPlus {U : Set M₁} (𝒦 𝒦' : LocallyFinitePLPieceIn Ea
 def Section34VertexPreparation (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
     (h : M₁ → M₂) (src : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
     (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁)
+    (ends : Section34EdgeIndex 𝒦 𝒦' →
+      Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
+    (Cp CpBd Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁)
+    (Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
     (ε : Section34VertexIndex 𝒦 𝒦' → ℝ) : Prop :=
+  (∀ e, (ends e).1 ≠ (ends e).2 ∧
+    (e.1 : Set Ea) = ((ends e).1.1 : Set Ea) ∪ ((ends e).2.1 : Set Ea) ∧
+    src (.splitDisk e) = src (.vertexBall (ends e).1) ∩ src (.vertexBall (ends e).2)) ∧
+  (∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) ∧
   (∀ w, IsPLCellOn 3 (Cc w) (CcBd w)) ∧
-  (∀ w, src (.vertexBall w) ⊆ interior (Cc w)) ∧
-  (∀ w, Cc w ⊆ U) ∧
+  (∀ w, src (.vertexBall w) ⊆ Cp w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U) ∧
+  (∀ w, simplexBody 𝒦' w.1 ⊆ interior (Cp w)) ∧
   (∀ w, h '' Cc w ⊆ interior (Q w)) ∧
+  (∀ x ∈ ⋃ w, Cc w, ∃ V ∈ 𝓝 x, {w | (Cc w ∩ V).Nonempty}.Finite) ∧
+  (∀ e, IsPolyhedralSphere (n := 3) 1 (CpBd (ends e).1 ∩ CpBd (ends e).2) ∧
+    CpBd (ends e).1 ∩ CpBd (ends e).2 ⊆ src (.splitDisk e)) ∧
+  (∀ e, IsLocallyFiniteRegularNeighborhoodOf (n := 3) (Sn e)
+      (CpBd (ends e).1 ∩ CpBd (ends e).2) U ∧
+    IsLocallyFiniteRegularNeighborhoodOf (n := 3) (Tn e)
+      (CpBd (ends e).1 ∩ CpBd (ends e).2) U) ∧
+  (∀ e, Tn e ⊆ interior (Sn e) ∧ IsTopologicalSolidTorus (Sn e) ∧
+    IsTopologicalSolidTorus (Tn e) ∧ Disjoint (Sn e) (graphSkeletonSpace 𝒦)) ∧
+  (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 → Sn e ⊆ Cc w) ∧
+  (∀ e, Aa e = CpBd (ends e).1 ∩ Tn e ∧ IsAnnulusOn (Aa e) (Ab₀ e) (Ab₁ e)) ∧
+  (∀ e, Bb e ⊆ CpBd (ends e).2 ∧ IsAnnulusOn (Bb e) (Bb₀ e) (Bb₁ e)) ∧
+  (∀ e, Tn e ∩ CpBd (ends e).2 ⊆ Bb e \ (Bb₀ e ∪ Bb₁ e)) ∧
+  (∀ e, Bb e ⊆ interior (Sn e) ∧ Bb₀ e ∪ Bb₁ e ⊆ Sn e \ Tn e) ∧
+  (∀ e, CarriesFundamentalGroupOnto (Ab₀ e) (Tn e) ∧
+    CarriesFundamentalGroupOnto (Ab₁ e) (Tn e) ∧
+    CarriesFundamentalGroupOnto (Ab₀ e) (Sn e)) ∧
   (∀ w, 0 < ε w) ∧
   (∀ w, ∀ x ∈ Cc w, Metric.ball (h x) (ε w) ⊆ interior (Q w)) ∧
   (∀ w, ∀ x ∈ CcBd w, ∀ y ∈ h '' simplexBody 𝒦' w.1, ε w < dist (h x) y) ∧
-  ∀ x ∈ ⋃ w, Cc w, ∃ V ∈ 𝓝 x, {w | (Cc w ∩ V).Nonempty}.Finite
+  (∀ w, ∀ x ∈ CpBd w, ∀ y ∈ h '' simplexBody 𝒦' w.1, ε w < dist (h x) y) ∧
+  (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 →
+    ∀ x ∈ Bb₀ e ∪ Bb₁ e, ∀ y ∈ Tn e, ε w < dist (h x) (h y)) ∧
+  (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 →
+    ∀ x ∈ Sn e, ∀ y ∈ graphSkeletonSpace 𝒦, ε w < dist (h x) (h y)) ∧
+  (∀ w, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, h '' Cc w ⊆ c.source) ∧
+  ∀ s : Section34SimplexIndex 𝒦 3, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂,
+    (⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w) ⊆ c.source
 
 def Section34PiercingConditions (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
-    (h : M₁ → M₂) (src : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-    (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁)
+    (h : M₁ → M₂) (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
     (ends : Section34EdgeIndex 𝒦 𝒦' →
       Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
-    (Sn Tn Aa Bb Ab₀ Ab₁ Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
+    (Cp CpBd Cc : Section34VertexIndex 𝒦 𝒦' → Set M₁)
+    (Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
+    (Sp Tp : Section34EdgeIndex 𝒦 𝒦' → Set M₂) (cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ)
+    (Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂)
     (G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) : Prop :=
-  (∀ e, (ends e).1 ≠ (ends e).2 ∧
-    (e.1 : Set Ea) = ((ends e).1.1 : Set Ea) ∪ ((ends e).2.1 : Set Ea)) ∧
-  (∀ w, src (.vertexBall w) ⊆ Cc w) ∧
-  (∀ e, Tn e ⊆ interior (Sn e) ∧ Sn e ⊆ U ∧ Disjoint (Sn e) (graphSkeletonSpace 𝒦)) ∧
-  (∀ e, Aa e = CcBd (ends e).1 ∩ Tn e) ∧
-  (∀ e, Bb e ⊆ CcBd (ends e).2 ∧ Tn e ∩ CcBd (ends e).2 ⊆ Bb e \ (Bb₀ e ∪ Bb₁ e)) ∧
-  (∀ e, Bb e ⊆ interior (Sn e) ∧ Bb₀ e ∪ Bb₁ e ⊆ Sn e \ Tn e) ∧
-  (∀ e, IsPolyhedralSphere (n := 3) 1 (Ab₀ e) ∧ IsPolyhedralSphere (n := 3) 1 (Ab₁ e) ∧
-    IsPolyhedralSphere (n := 3) 1 (Bb₀ e) ∧ IsPolyhedralSphere (n := 3) 1 (Bb₁ e)) ∧
-  (∀ e, Disjoint (Ab₀ e) (Ab₁ e) ∧ Disjoint (Bb₀ e) (Bb₁ e) ∧
-    Ab₀ e ∪ Ab₁ e ⊆ Aa e ∧ Bb₀ e ∪ Bb₁ e ⊆ Bb e) ∧
   (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) ∧
   (∀ w, G w '' Cc w ⊆ Q w) ∧
   (∀ e, G (ends e).2 '' Sn e ⊆ Q (ends e).1 ∧ G (ends e).1 '' Sn e ⊆ Q (ends e).2) ∧
-  (∀ e, G (ends e).1 '' CcBd (ends e).1 ∩ G (ends e).2 '' CcBd (ends e).2 ⊆
+  (∀ e, Sp e = G (ends e).1 '' Sn e ∧ Tp e = G (ends e).1 '' Tn e) ∧
+  (∀ y ∈ ⋃ e, Sp e, ∃ V ∈ 𝓝 y, {e | (Sp e ∩ V).Nonempty}.Finite) ∧
+  (∀ e, G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2 ⊆
     G (ends e).1 '' (Aa e \ (Ab₀ e ∪ Ab₁ e)) ∩
-      G (ends e).2 '' (Bb e \ (Bb₀ e ∪ Bb₁ e)) ∩ interior (G (ends e).1 '' Tn e)) ∧
-  (∀ e, G (ends e).1 '' Ab₀ e ⊆ interior (G (ends e).2 '' Cc (ends e).2) ∧
-    Disjoint (G (ends e).1 '' Ab₁ e) (G (ends e).2 '' Cc (ends e).2)) ∧
-  (∀ e, G (ends e).2 '' Bb e ⊆ interior (G (ends e).1 '' Sn e) ∧
-    Disjoint (G (ends e).2 '' (Bb₀ e ∪ Bb₁ e)) (G (ends e).1 '' Tn e)) ∧
-  ((⋃ w, G w '' Cc w) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦)) ∧
-  (∀ e, ∃ y₀ ∈ G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cc (ends e).1,
-    ∀ z ∈ G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cc (ends e).1, z ∉ G (ends e).1 '' Tn e →
-      z ∈ connectedComponentIn (G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cc (ends e).1) y₀) ∧
-  (∀ e, ∃ y₀ ∈ G (ends e).2 '' Bb e \ G (ends e).1 '' Cc (ends e).1,
-    ∀ z ∈ G (ends e).2 '' Bb e \ G (ends e).1 '' Cc (ends e).1, z ∉ G (ends e).1 '' Tn e →
-      z ∈ connectedComponentIn (G (ends e).2 '' Bb e \ G (ends e).1 '' Cc (ends e).1) y₀) ∧
-  ∀ e, ∃ (m : ℕ) (P : ℕ → Set M₂),
-    (G (ends e).1 '' Aa e ∩ G (ends e).2 '' Bb e = ⋃ i < m, P i) ∧
-    (∀ i < m, IsPolyhedralSphere (n := 3) 1 (P i)) ∧
-    (∀ i < m, ∀ j < m, i ≠ j → Disjoint (P i) (P j)) ∧
-    ∀ i < m, P i ⊆ G (ends e).1 '' (Aa e \ (Ab₀ e ∪ Ab₁ e)) ∩
-      G (ends e).2 '' (Bb e \ (Bb₀ e ∪ Bb₁ e))
+      G (ends e).2 '' (Bb e \ (Bb₀ e ∪ Bb₁ e)) ∩ interior (Tp e)) ∧
+  (∀ e, G (ends e).1 '' Ab₀ e ⊆ interior (G (ends e).2 '' Cp (ends e).2) ∧
+    Disjoint (G (ends e).1 '' Ab₁ e) (G (ends e).2 '' Cp (ends e).2)) ∧
+  (∀ e, G (ends e).2 '' Bb e ⊆ interior (Sp e) ∧
+    Disjoint (G (ends e).2 '' (Bb₀ e ∪ Bb₁ e)) (Tp e)) ∧
+  ((⋃ w, G w '' Cp w) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦)) ∧
+  (∀ e, Disjoint (Sp e) (h '' graphSkeletonSpace 𝒦)) ∧
+  (∀ e, ∃ y₀ ∈ G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cp (ends e).1,
+    ∀ z ∈ G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cp (ends e).1, z ∉ Tp e →
+      z ∈ connectedComponentIn (G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cp (ends e).1) y₀) ∧
+  (∀ e, ∃ y₀ ∈ G (ends e).2 '' Bb e \ G (ends e).1 '' Cp (ends e).1,
+    ∀ z ∈ G (ends e).2 '' Bb e \ G (ends e).1 '' Cp (ends e).1, z ∉ Tp e →
+      z ∈ connectedComponentIn (G (ends e).2 '' Bb e \ G (ends e).1 '' Cp (ends e).1) y₀) ∧
+  (∀ e, 0 < cnt e ∧
+    G (ends e).1 '' Aa e ∩ G (ends e).2 '' Bb e = ⋃ i < cnt e, Pg e i) ∧
+  (∀ e, ∀ i < cnt e, IsPolyhedralSphere (n := 3) 1 (Pg e i) ∧
+    Pg e i ⊆ G (ends e).1 '' (Aa e \ (Ab₀ e ∪ Ab₁ e)) ∩
+      G (ends e).2 '' (Bb e \ (Bb₀ e ∪ Bb₁ e))) ∧
+  (∀ e, ∀ i < cnt e, ∀ j < cnt e, i ≠ j → Disjoint (Pg e i) (Pg e j)) ∧
+  ∀ e, ∀ y ∈ G (ends e).1 '' Aa e ∩ G (ends e).2 '' Bb e,
+    ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, y ∈ c.source ∧
+      HasPLCrossingAt (c '' (G (ends e).1 '' Aa e ∩ c.source))
+        (c '' (G (ends e).2 '' Bb e ∩ c.source)) (c y)
 
 end Frames
 

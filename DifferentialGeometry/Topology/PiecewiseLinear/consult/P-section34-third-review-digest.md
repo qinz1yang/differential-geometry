@@ -83,3 +83,28 @@ degree-2 vertices, all eight labels, `h = g ∘ ψ`; the initial approximation l
 removable pair of transverse intersection circles. **Most likely surprise:** a control field
 produced upstream does not reach a universal downstream leaf — "fine in the intended application"
 hides a counterexample to the leaf itself.
+
+## Worker's due-diligence results (2026-09-21, before the third repair)
+* **(3) contradictory with `A_e = ∂C''_v ∩ T_e` — partly disagree, then verified.** As the file
+  stood the package never asked `Sn e, Tn e ⊆ Cc w`, so `G_v '' Tn e` was the image of an
+  uncontrolled map and (3) was *satisfiable* — the defect was uncontrolled values, which is worse.
+  Once `T_e ⊆ C''_v` is recorded the reviewer is right (`IsPLHomeomorphInto.image_frontier`,
+  `Transition361.lean:216`). Repaired: `Aa e = CpBd (ends e).1 ∩ Tn e`, `Bb e ⊆ CpBd (ends e).2`,
+  `Cp w ⊆ Cc w`, `Sn e ⊆ Cc w`.
+* **Tangent annuli vs the old (8) — verified** clause by clause (`m = 1`, `P 0` the tangency circle).
+  Repaired with the tree's `HasPLCrossingAt` (`GeneralPosition.lean:2370`) through a chart of the
+  maximal atlas.
+* **`hQsep` — verified, and the counterexample cannot be re-run**: `α` puts `q ∈ src (.vertexBall w)`
+  for a non-incident `w`, so `h '' C_w ⊆ interior (Q w)` gives `g q ∈ Q w ∩ h '' |σ|` and `hQsep w σ`
+  fails. Rim containment also needs local finiteness of the carriers: `hQlf` is passed too.
+* **Owed P6 lemma not proved; the missing fact is named:** *a compact polyhedron of dimension ≤ 1
+  has empty interior relative to a PL 2-cell*. The tree's `IsPLBall.interior_eq_empty_of_lt_finrank`
+  (`BallFrontier.lean:77`) and `interior_eq_empty_of_affineSubspace_ne_top`
+  (`GeneralPosition.lean:357`) are about *ambient* interiors and cannot separate a 1-polyhedron from
+  a 2-cell inside `ℝ³`. The rest of the reduction is done on paper (distinct triangles put a foreign
+  arc inside `graphSkeletonSpace 𝒦 ⊆ interior N`).
+* Worker's own doubts: `exists_section34ProtectedCircleRemoval` asks `cnt' e = 1` for all labels at
+  once with local finiteness of the supports stated inside `⋃ e, Sp e`, not inside `h '' U` —
+  supports accumulating at the frontier of `h '' U` are not excluded and the infinite composition of
+  single steps may fail to be continuous; and `exists_section34PiercingPackage` must deliver the
+  crossing model, the support equations and `0 < cnt e` jointly.

@@ -31,9 +31,12 @@ are the obligations that remain on P0 and on Lemmas 9--11 of Section 33.
 Two face relations occur, and step P8 is split along them.  `section34Face src l` is the nesting
 ideal of the source cells, which is what the terminal exporter consumes; `Section34CutLe` is the
 reflexive transitive closure of the explicit codimension-one incidences of the cut diagram.
-Their agreement on the source cut is `section34SourceFace_iff_cutLe`, a source-side obligation:
-the cut frame alone does not forbid a face disk from lying inside a dual ball, which is exactly
-the counterexample of review K.  `section34TargetRecognition` consumes that bridge and no longer
+Their agreement on the source cut is `section34SourceFace_iff_cutLe`, a source-side obligation
+about the remaining seam combinatorics.  A face disk inside a dual ball is *already* excluded by
+the exact intersection `a_{vσ} = C_v ∩ d_σ` of the cut frame together with the cell clauses:
+`d_σ ⊆ C_v` would make one set simultaneously a piecewise linear `1`-cell and a `2`-cell, and
+for a non-incident vertex the intersection is empty by a further clause.
+`section34TargetRecognition` consumes that bridge and no longer
 concludes that the target family consists of piecewise linear cells, because each of the eight
 kinds is already a cell by an input clause of `Section34NormalPlus`, `Section34FaceDiskFamily`
 or `Section34ResidualPlus`; the assembly reads that off by cases.
@@ -46,29 +49,33 @@ boundary passes the component test although it is not outside, which made P7 fal
 
 The leaves, with content and review state.
 
-`exists_section34NormalFamily` (P0--P5, changed after review N, unreviewed): the realisation
-ambient, the triangulation and its subdivision, the source cut diagram, the carrier system,
-P1's neighbourhood and map, the target neighbourhood pieces, the face balls and everything
-`Section34NormalPlus` asks.
+`exists_section34NormalFamily` (P0--P5): reviewed 2026-09-21 OK, frozen pending the lead's
+due-diligence pass; the realisation ambient, the triangulation and its subdivision, the source
+cut diagram, the carrier system, P1's neighbourhood and map, the target neighbourhood pieces,
+the face balls and everything `Section34NormalPlus` asks.
 
-`exists_section34FaceDisks` (P6): reviewed 2026-09-21 OK, pending the lead's due-diligence
-check; the statement changed only through the shared frame, whose cut frame now carries
-`IsCombinatorialManifold 3 𝒦.complex`, `IsSubdivision 𝒦'.complex 𝒦.complex` and
+`exists_section34FaceDisks` (P6): reviewed 2026-09-21 OK, frozen pending the lead's
+due-diligence pass; the statement changed only through the shared frame, whose cut frame now
+carries `IsCombinatorialManifold 3 𝒦.complex`, `IsSubdivision 𝒦'.complex 𝒦.complex` and
 `𝒦'.map = 𝒦.map`, without which a face of `𝒦` need not meet the subdivided graph in at least
 three seams and the cyclic seam argument has no input.  It produces the exterior face disks
-`Δ_σ ⊆ ∂C_σ` with their arcs and marked points.
+`Δ_σ ⊆ ∂C_σ` with their arcs and marked points.  Its full input excludes a foreign face arc
+`a_{vτ} ⊆ d_σ` with `τ ≠ σ`; that exclusion is the derived lemma
+`section34_faceArc_subset_faceDisk_iff`, owed to this file and not a missing clause of the
+statement.
 
-`exists_section34ResidualBalls` (P7, changed after review N, unreviewed): the residual
-tetrahedron balls `R_t` with the three intrinsic boundary decompositions, the no-other-marked-
-point clause of page 245, and `R_t ⊆ H_t`, now with `H_t` a closed piecewise linear ball.
+`exists_section34ResidualBalls` (P7): reviewed 2026-09-21 OK, frozen pending the lead's
+due-diligence pass; the residual tetrahedron balls `R_t` with the three intrinsic boundary
+decompositions, the no-other-marked-point clause of page 245, and `R_t ⊆ H_t`, now with `H_t` a
+closed piecewise linear ball.
 
-`section34SourceFace_iff_cutLe` (P8, source side, new after review N, unreviewed): on the
-source cut, inclusion of cells is exactly the reflexive transitive closure of the
-codimension-one incidences.
+`section34SourceFace_iff_cutLe` (P8, source side): reviewed 2026-09-21 OK, frozen pending the
+lead's due-diligence pass; on the source cut, inclusion of cells is exactly the reflexive
+transitive closure of the codimension-one incidences.
 
-`section34TargetRecognition` (P8, target side, changed after review N, unreviewed): the target
-family has intrinsic boundary the union of its proper faces and exact pairwise intersections,
-for the face relation read off the source.
+`section34TargetRecognition` (P8, target side): reviewed 2026-09-21 OK, frozen pending the
+lead's due-diligence pass; the target family has intrinsic boundary the union of its proper
+faces and exact pairwise intersections, for the face relation read off the source.
 
 Proved here, not a leaf: the packaging of the eight kinds into the existential of
 `Section34CellDiagram`, including the cell clause by cases, the parametrisations, the charts,
