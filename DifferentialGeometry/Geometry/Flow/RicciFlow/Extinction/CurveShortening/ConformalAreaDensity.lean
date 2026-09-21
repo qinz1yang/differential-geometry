@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Measure.Area.Manifold
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalEnergy
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 
+section
+
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Filter
@@ -139,3 +141,74 @@ theorem SmoothDisk.transportedAreaVariation_le_of_isConformal_isHarmonic
 end Curvature
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Bundle Manifold Set MeasureTheory Filter
+open scoped Manifold ContDiff Topology
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
+  [T2Space Q] [CompactSpace Q]
+
+theorem SmoothDisk.transportedAreaVariation_le_of_isConformal_isHarmonic_of_uniqueDiffWithinAt
+    (hdim : Module.finrank ℝ E = 3)
+    (F : SolutionFamily (I := 𝓘(ℝ, E)) (M := Q))
+    (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) {J : Set ℝ} {t : ℝ} (hJ : UniqueDiffWithinAt ℝ J t)
+    (gamma : RegularLoop 𝓘(ℝ, E) Q) (sigma : SmoothWeaklyMonotoneCircleMap)
+    (htrace : ∀ theta, u.map (diskBoundary theta) = gamma (sigma.map theta))
+    (hnonconstant : ¬ ∃ q : Q, ∀ z : Disk, u.map z = q)
+    (hconformal : u.IsConformal (F.metric t)) (hharmonic : u.IsHarmonic (F.metric t))
+    (hgamma : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (loopLift gamma.toContinuousLoop))
+    (himm : ∀ x, loopVelocity (I := 𝓘(ℝ, E)) gamma.toContinuousLoop x ≠ 0)
+    (hderiv : ∀ z : Disk, ∀ X Y : E,
+      HasDerivAt (fun r : ℝ => (F.metric r).inner (u.map z) X Y)
+        (-2 * ricciTensor (I := 𝓘(ℝ, E)) (F.metric t) (u.map z) X Y) t)
+    (V : ∀ z : Disk, TangentSpace 𝓘(ℝ, E) (u.map z))
+    (hintFlux : IntervalIntegrable (u.boundaryFluxDensity (F.metric t) V) volume (0 : ℝ) 1)
+    (hintError : IntervalIntegrable (fun x : ℝ => Real.sqrt
+      ((F.metric t).inner (u.map (diskBoundary (x : Surgery.Topology.Circle)))
+        (u.boundaryNormalVelocityError (F.metric t) gamma sigma htrace V x)
+        (u.boundaryNormalVelocityError (F.metric t) gamma sigma htrace V x)) *
+        u.boundarySpeed (F.metric t) x) volume (0 : ℝ) 1)
+    (hintScalar : IntegrableOn (diskExtension (fun z : Disk =>
+      metricScalarAt (I := 𝓘(ℝ, E)) (F.metric t) (u.map z) *
+        u.conformalFactor (F.metric t) z)) (Metric.closedBall (0 : ℂ) 1))
+    (hbdd : BddBelow (Set.range (F.scalar t))) :
+    (1 / 2 : ℝ) * (∫ z in Metric.closedBall (0 : ℂ) 1,
+        diskExtension (u.metricVariationDensity F.metric J t) z) -
+        u.boundaryFlux (F.metric t) V ≤
+      -2 * Real.pi -
+        CurveShortening.scalarMinimum F t * diskArea (F.metric t) u.map / 2 +
+        u.boundaryAreaError (F.metric t) gamma sigma htrace V := by
+  have he : u.metricVariationDensity F.metric J t = u.metricVariationDensity F.metric univ t := by
+    funext z
+    have hdiff (v : ℂ) : DifferentiableAt ℝ (fun r : ℝ =>
+        (F.metric r).inner (u.map z) (u.differential z v) (u.differential z v)) t :=
+      (hderiv z (u.differential z v) (u.differential z v)).differentiableAt
+    simp only [SmoothDisk.metricVariationDensity]
+    split_ifs
+    · rw [(hdiff 1).hasDerivAt.hasDerivWithinAt.derivWithin hJ,
+        (hdiff Complex.I).hasDerivAt.hasDerivWithinAt.derivWithin hJ,
+        derivWithin_univ, derivWithin_univ]
+    · rfl
+  rw [he]
+  exact SmoothDisk.transportedAreaVariation_le_of_isConformal_isHarmonic hdim F u univ_mem
+    gamma sigma htrace hnonconstant hconformal hharmonic hgamma himm hderiv V hintFlux
+    hintError hintScalar hbdd
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
+
+end
+
+end

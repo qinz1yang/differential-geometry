@@ -25,19 +25,6 @@ variable {D : RealTimeInterval} {a b : ℝ}
 include hBoundary hT2 hCompact hNonempty
 
 
-theorem rfs_csf_embedded_area (B : RicciBackground (I := I) (M := M) D a b)
-    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)
-    (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
-    (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) :
-    ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
-      (loopFamilyLeastArea B.family.metric γ (t + h) -
-          loopFamilyLeastArea B.family.metric γ t) / h ≤
-        -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
-          (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε := by
-  sorry
-
 omit hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_generic_curves (B : RicciBackground (I := I) (M := M) D a b)
     (hdim : Module.finrank ℝ E = 3) {N : ℕ}
@@ -69,23 +56,6 @@ theorem rfs_csf_generic_curves (B : RicciBackground (I := I) (M := M) D a b)
   exact exists_generic_loopFamily_approximation_sequence hdim e B.family.metric
     B.smooth B.lt B.regular γ hγ hi
 
-theorem rfs_csf_immersed_area (B : RicciBackground (I := I) (M := M) D a b)
-    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)
-    (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
-    ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
-      (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
-        areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤
-          loopFamilyLeastArea B.family.metric γ s +
-            ∫ v in s..t, areaIntegratingFactor B.family s v *
-              (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v)) ∧
-      (∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
-        (loopFamilyLeastArea B.family.metric γ (t + h) -
-            loopFamilyLeastArea B.family.metric γ t) / h ≤
-          -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
-            (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) := by
-  sorry
 
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

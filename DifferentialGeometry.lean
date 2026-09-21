@@ -12367,3 +12367,10 @@ import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Geometry.Neck.SpatialDiameter
 import DifferentialGeometry.Geometry.Neck.UnboundedComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Boundary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Congruence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Diffeomorphism
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Diffeomorphism
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.MinimizingDisk
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Embedded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Immersed
