@@ -1506,3 +1506,39 @@ other diagnostics. Evidence:
 `/private/tmp/wt17-normalized-capture-leaf-build.log`,
 `/private/tmp/wt17-compact-endpoint-audit.log`, and
 `/private/tmp/wt17-compact-endpoint-root-build.log`.
+
+## Scalar divergence throughout the intrinsic end
+
+The continuation after `35bbca7e0` strengthens the normalized producer with
+scalar curvature tending to infinity along the pullback of the intrinsic
+endpoint neighborhood filter to the open end. This quantifies over every
+approach through the end, rather than only the selected axis points. The actual
+restricted necks give lower bounds throughout the compact annuli, and their
+center curvatures tend to infinity. The compact neighborhood already produced
+contains the endpoint and the union of these annuli. An approach to a missing
+completion point escapes every compact subset, so the finitely many exceptional
+annuli do not obstruct divergence.
+
+`SpatialNeck.scalar_bounds_on_image_window` exposes both scalar comparison
+bounds throughout the full neck image. Two general topology results in
+`Topology/Compactness/Cocompact.lean` handle escape from compact sets under a
+continuous map at a point outside its range, and divergence along a compact
+cover with eventually divergent lower bounds. They require no continuity of
+the bounded function, no local finiteness or countability of the cover, and
+only a preorder on its values. The application constructs the restrictions
+of the actual necks and annuli inside its private endpoint lemma. This keeps
+the coherent intrinsic metric instances explicit and avoids expensive repeated
+restriction transport in the large normalized producer. No resource overrides
+or linter suppressions were introduced.
+
+All four changed public declarations passed thirteen declaration linters and
+have only the approved foundational axioms. The compactness and scalar-chart
+leaves passed 11,144 jobs together. The normalized leaf and affected neck
+dependents passed 14,143 jobs without diagnostics. The full root passed 20,206
+jobs with exactly 21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-cocompact-scalar-leaf-build.log`,
+`/private/tmp/wt17-normalized-scalar-leaf-build.log`,
+`/private/tmp/wt17-endpoint-scalar-audit.log`, and
+`/private/tmp/wt17-endpoint-scalar-root-build.log`.
+The bounded-distance headline, finite-horn construction, and cone producer
+remain open.

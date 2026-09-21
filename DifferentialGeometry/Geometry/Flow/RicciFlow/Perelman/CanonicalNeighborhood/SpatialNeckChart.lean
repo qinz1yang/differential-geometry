@@ -77,4 +77,16 @@ theorem SpatialNeck.abs_scalar_ratio_sub_one_le (nk : SpatialNeck g eps x)
   rw [nk.cylindricalChart_region]
   exact ⟨y, ⟨⟨y, hy⟩, mem_univ _, rfl⟩, rfl⟩
 
+theorem SpatialNeck.scalar_bounds_on_image_window (nk : SpatialNeck g eps x)
+    {y : M} (hy : y ∈ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) :
+    (1 - 4323 * eps) * metricScalarAt g x ≤ metricScalarAt g y ∧
+      metricScalarAt g y ≤ (1 + 4323 * eps) * metricScalarAt g x := by
+  obtain ⟨z, hz, rfl⟩ := hy
+  obtain ⟨hl, hu⟩ := abs_le.mp (nk.abs_scalar_ratio_sub_one_le hz)
+  constructor
+  · apply (le_div_iff₀ nk.Q_pos).mp
+    linarith
+  · apply (div_le_iff₀ nk.Q_pos).mp
+    linarith
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
