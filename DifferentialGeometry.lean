@@ -12415,3 +12415,7 @@ import DifferentialGeometry.Topology.Covering.SmoothLift.Regularity
 import DifferentialGeometry.Geometry.Metric.Restriction.Ball
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentTimeShift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentModelTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.InteriorDiskTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.MinimizingDiskTransport
+import DifferentialGeometry.Topology.StandardModelChartedSpace
