@@ -15,8 +15,41 @@ Current active rounds are not interrupted.
 
 ## Current main chain
 
+| 结点 | 书中定理（页） | Lean `Prop` | 现状 |
+|---|---|---|---|
+| 25.1 | Stallings 形式的环定理（183） | `Moise251` ✔已陈述 | 开。L1 已有条件版（E3 `SphereCase`）；L2 卡在"沿分支切开并分离"（`NIGHT_PLAN` §11）；L3 未开始 |
+| 25.2 | 环定理第一形式（183） | `Moise252` ✔陈述已按原书修正 | 开。输出盘的边界位于原边界分支且在该分支中不零伦；不强求它与输入环路同伦。**箭头便宜**：书上从 25.1 推出只用"把 `Int|D₁|` 推离 `Bd M`"，即 S 已交付的 I2 |
+| 26.4 | 扩展环定理（193） | `Moise264` ✔已修正陈述 | 开。结论已补盘边界包含映射在曲面中非零伦；用 25.2 与 26.3 双领（S 已交付） |
+| 30.4 | 球壳定理（216） | `Moise304` ✔已陈述 | 开。用 26.4、23.8、26.1（S 已证）、28.19、28.20（H 已证）、30.3 |
+| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` 已陈述；`moise305_tame_of_moise304` 已证 | §34 的 tame 条件箭头及双领口生产者已合入；30.4 仍是显式未证输入。一般 wild 版仍开，旧 10k–18k 前置不适用于 tame 路线 |
+| 30.6 | 环壳定理（216–217） | `Moise306` ✔已陈述 | 开。用 30.7、van Kampen、§22 |
+| 30.7 | 拓扑实心环面之间有 CST（217） | `Moise307` ✔已陈述 | 开。用 30.6、28.1、24.9–24.12（S 正在做） |
+| 30.8 | 脊生成 `π(S)`（218） | `Moise308` | 开。用 §31 |
+| 31.1–31.2 | 典范实心环面构形 | `Moise311` | 开 |
+| 32.1–32.4 | 管、对偶胞腔、伪胞腔 | `Moise321` | 开。定义层可先建（F4.3 partial） |
+| 33.1 | 线性图的正则邻域逼近 | `Moise331` ✔陈述已按原书修正 | 开。输入直接要求面至多二点、存在边、载体连通且每个顶点邻居数不为 1，允许 §34 所需的分叉顶点；输出选择 `U` 中的三维环境三角剖分、图的细分及其 derived regular neighborhood。四面体一骨架已验证可实例化该陈述，经典定理证明仍开 |
+| 34.1 | PL 球上的逼近 | `Moise341` ✔已陈述 | 开 |
+| 35.1 | 流形中 1 维多面体的正则邻域逼近 | `Moise351` ✔陈述已按原书修正 | 开。固定三维 PL 流形；`K` 是可非紧的局部有限 1-维多面体且相对闭于 `U`；输出的正则邻域关系现含相对内点穷竭、相容逐层收缩及实际全局强形变收缩 |
+| 35.2 | 局部有限多面体 3-流形上的逼近 | `Moise352` ✔已陈述 | 开；`Transition361.lean` 已定义 |
+| 36.1 | 开集上的逼近 | — | **已证**，条件于 `Moise352`（`Transition361.lean`、`Endgame.lean`） |
 | Book node | Source interface / construction | Current obligation |
 | --- | --- | --- |
+| 25.1 | Moise251 and conditional Stallings induction | Open. F constructs the actual cover and projected embedded disk for Lemma 2; Lemma 1 and whole-branch separation remain obligations. |
+| 25.2 | Moise252 | h repairs non-nullhomotopy of the new disk boundary. The arrow from 25.1 still needs proper boundary push-off and proof. |
+| 26.4 | Moise264 | Boundary non-nullhomotopy is recorded; proof is open. Needs corrected 25.2, relative subdivision and compression, not just a bicollar. |
+| 30.3 | Geometric splitting and separation | E3: annulus connectivity accepted; half-prism cut cells 1cea2fbe7 queued. Produce compatible neighborhoods and trace equations from the original disk pair before separation assembly. |
+| 30.4 | Moise304 | E3 owns assembly; 26.4, 28.19 and 30.3 remain open dependencies. |
+| 30.5 | moise305_tame_of_moise304 | Accepted conditional tame arrow and bicollar producers; Moise304 remains an input. General wild Moise305 is open and is not an extra prerequisite of this tame arrow. |
+| 30.6 | Moise306 | Open; compression/separation, 26.4, van Kampen and surface inputs. It does not depend on 30.7. |
+| 30.7 | Moise307 | Open; uses 30.6, 28.1 and relevant CST constructions. |
+| 30.8 | Moise308 | Defined, unproved; spine/generator construction remains. |
+| 31--32 | Canonical configurations, tubes and pseudocells | Follow the detailed plan; definitions/conditional infrastructure do not certify endpoints. |
+| 33.1 | Moise331 | Statement repaired: native graph conditions allow branching and exclude the isolated graph and degree-one endpoints; the output chooses a genuine regular neighborhood inside U with actual three-dimensional ambient data. The classical proof remains open. |
+| 34.1 | Moise341 | Open; consumes corrected 33.1 and the tame neighborhood inputs. |
+| 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and the global regular-neighborhood relation. The latter now constructs a global strong deformation retract from compatible stage contractions and a relative-neighborhood exhaustion. Keep noncompact scope and pointwise error; proof remains open. |
+| 35.2 | Moise352 in Transition361 | Open classical approximation input. |
+| 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Compiled conditional consumers; they do not produce Moise352. |
+| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate active S lane after accepted finite 24.11/24.12 through 434d5352c; compact smoothing remains open. |
 | 25.1 | Moise251 and conditional Stallings induction | Actual projected embedded-disk normal structure and Lemma2 descent remain open. Four tasks target distinct25.2 obligations at their next delivery; the sphere EmbeddedDisk and actual cover producers already exist. |
 | 25.2 | Corrected orientable Moise252 | Essential boundary condition is present and accepted. The unconditional Loop Theorem producer remains open. |
 | 26.4 | Corrected Moise264 | General interior-surface kernel-to-disk theorem remains open. The implemented spherical-shell route uses the narrower proved conditional producers directly. |
@@ -1090,9 +1123,19 @@ The previous T delivery proves only `Moise304 -> Moise305Tame`.
 
 ## Route audit corrections (2026-09-19)
 
-See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). Moise252, Moise331 and
-Moise351 are not accepted source-faithful contracts until h's assigned repairs
-land. Normalization should first produce the Lemma 2 input by projecting the
+See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). The H-lane source now
+contains the assigned contract repairs for Moise252, Moise331, and Moise351;
+integration acceptance remains a separate review gate. In particular,
+`IsLocallyFiniteRegularNeighborhoodOf` uses actual second-derived neighborhoods
+in one locally finite PL triangulation of its open ambient set, exact old-face
+restriction, relative-neighborhood exhaustion, and an actual nonempty
+interior-arc model.  Its PL exhaustion forgets to a topology-only exhaustion
+that constructs a global strong deformation retract of `N` onto `K`; a bare
+topological embedding is not treated as a rectilinear ambient triangulation.
+`Moise351` retains the
+relatively closed locally finite graph input, noncompact scope, and pointwise
+error, but is not proved.
+Normalization should first produce the Lemma 2 input by projecting the
 inductively embedded disk from the actual two-sheeted cover; the arbitrary
 original NormalSystem need not have two-point fibers. The cover and restricted
 regular neighborhood must remain distinct. The verified original-book order is

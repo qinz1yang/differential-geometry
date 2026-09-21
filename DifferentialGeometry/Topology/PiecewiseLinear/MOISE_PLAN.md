@@ -1507,6 +1507,91 @@ Compact smoothing is not claimed complete.
   `h` 下多面体胞腔的像，`frontier C₂'` 双领口；双领口情形已由 `TubularExcision.lean:170` + `SphereH1.lean:189` +
   `JordanBrouwer.lean:28` 无条件证出（纯拓扑，已 `#print axioms` 核实）。H-M3 漏查了这一支。决定：以 `Moise305Tame`
   （加 `IsBicollared (frontier C₂)`）替代，估约 1k–2k 行；不实现 wild 球面的 Alexander 对偶。详见 `MOISE_CHAIN.md` 同名条目。
+- 2026-09-19（H 车道 35.1 陈述与非空性修正）：`PolyhedralGraph.lean` 的
+  `IsLocallyFiniteRegularNeighborhoodOf` 改用真正的二次 `derivedNeighborhood`，并以图像子复形、邻域像子复形和两组
+  `IsGlueIso` 记录相邻有限层的单纯相容性；`ArcChainNeighborhood.lean` 的
+  `exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` 在三维 PL 球内部边上给出 `N/K/U` 均非空的实际实例。
+  `Moise351` 保留非紧、相对闭和逐点误差量词，经典证明仍未完成。三个模块私有检查 exit=0、零 warning；严格审计
+  动态覆盖 40 个本模块声明，并单独审计 `LocallyFinitePieceTower.ofPiece`、`derivedNeighborhood` 及其面/空间/邻域接口、
+  `secondDerived_isSubdivision`、`IsCombinatorialManifoldWithBoundary.derivedNeighborhood`、有限片流形桥、内部弧生产者、
+  `arcComplexIn` 面接口、`chartPieceOfComplex` 与 `subset_interior_iff_mem_nhdsSet` 等 15 个复用声明。全部仅依赖
+  `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。
+- 2026-09-19（H 车道 35.1 全局正则邻域修正）：复核原书书页 155、247–248 后确认，仅有逐层二次导出邻域与
+  `IsGlueIso` 不足以保证无限并集为同一个正则邻域：后层新增图顶点会改变旧层重心投影，且没有相对邻域穷竭时逐层连续映射
+  无法保证在并集上连续。`Topology/Homotopy/DeformationRetract.lean` 的
+  `CompatibleStrongDeformationRetractSystem`，记录逐层强形变收缩、全对阶段相容性和下一层相对总并集的邻域性质；
+  `toStrongDeformationRetract` 用最早出现层和 `continuous_of_cover_nhds` 实际粘出总并集到核心并集的强形变收缩。
+  `IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract` / `strongDeformationRetract` 因而给出 `N ↘ K`。
+  有限构造把 `derivedNeighborhoodStrongDeformationRetract` 经 `PLPieceIn.isClosedEmbedding` 搬到片像并取常值相容系统；
+  内部非空弧实例与 `MoiseChain` 均重编通过。四模块聚焦检查 exit=0、零 warning；严格审计动态覆盖 69 个本模块声明及
+  14 个直接复用声明，公理仅 `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。35.1 本身仍开：
+  非恒定生产者必须从单个局部有限直线三角剖分与相容对偶胞腔改造构造该系统，不能把全局收缩另作结论型假设。
+- 2026-09-19（H 车道通用收缩接口归位）：`StrongDeformationRetract.homeomorphImage` / `embeddingImage`、
+  `CompatibleStrongDeformationRetractSystem` 及其总并集连续性证明已从 PL 专用叶移入
+  `Topology/Homotopy/DeformationRetract.lean`；三个集合辅助定义同时去掉无用的拓扑假设。原 PL 叶与根聚合 import 已删除，
+  `PolyhedralGraph`、非空弧模型及 `MoiseChain` 签名不变。四模块私有检查 exit=0、零 warning；严格审计动态覆盖 88 个
+  本模块声明与 14 个直接复用声明，公理仅 `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。
+  这只闭合自然归位；35.1 的非恒定几何生产者仍须从单个局部有限三角剖分推出相容性。
+- 2026-09-19（H 车道导出邻域限制自然性）：`derivedNeighborhood_faces_mono` 与
+  `derivedNeighborhoodBarycentricProjection_eq_of_restrict` 证明：环境有限子复形递增且图子复形在旧面上精确不变时，
+  规范重心投影及其线性同伦在旧导出邻域上不变。`derivedNeighborhoodCompatibleStrongDeformationRetractSystem`
+  再由面单调、精确限制和逐层 interior 缓冲实际生产相容强形变收缩系统，不把相容性作为输入。两模块私有检查
+  exit=0、零 warning；严格审计 64 个本模块声明与 9 个复用声明，公理仅标准三公理，13 项适用 linter 全通过。
+  现有 35.1 关系仍缺把此定理接到塔的条件：旧导出邻域未保证落在 `core i`，且后一层图未保证在像 core 上恰为旧图；
+  单独的 `GImage`/`DImage IsGlueIso` 不能推出规范投影相容。下一步须修正该几何接口并给非恒定非紧实例。
+- 2026-09-19（H 车道单一三角剖分接口修正）：`IsDerivedNeighborhoodExhaustion` 现直接记录固定欧氏实现中的单一局部有限
+  复形 `J`、面集递增且穷尽 `J` 的有限环境层 `A i`、同一实现中的图层 `L i`、旧环境面上的精确限制、导出邻域的
+  相对邻域穷尽，以及总并集到流形的一个嵌入。`IsLocallyFiniteRegularNeighborhoodOf` 不再含自由给定的相容 SDR，也不再
+  使用两组彼此不足以约束重心投影的 `GImage`/`DImage IsGlueIso`。规范阶段收缩由
+  `derivedNeighborhoodCompatibleStrongDeformationRetractSystem` 从上述几何数据推出，再搬到 `N ↘ K`。有限构造、内部弧模型与
+  `MoiseChain` 的公开签名不变。四个私有模块检查均 exit=0、零诊断；严格审计覆盖 155 个模块声明与 20 个直接复用声明，
+  公理仅标准三公理，13 项适用 linter 全通过。下一独立检查点是非恒定非紧实例；35.1 的对偶胞腔改造与逐点误差 PL 同胚仍未证明。
+- 2026-09-19（H 车道非恒定非紧实例）：`noncompact_derivedNeighborhoodExhaustion_nat` 在
+  `EuclideanSpace ℝ (Fin 1)` 中取一个自然数的拓扑嵌入，以全部像点的零维复形为单一局部有限 `J`，并令 `A i = L i`
+  为前 `i+1` 个顶点的复形。证明内实际得到面集严格单调、有限层穷尽 `J.faces`、逐层导出邻域相对邻域性、总支撑到 `ℕ`
+  的同胚及 core 等于全空间；结论同时给 `IsDerivedNeighborhoodExhaustion (n := 0) univ univ` 与目标非紧性。
+  `PolyhedralGraph` 私有聚焦检查 exit=0、零诊断；严格审计动态覆盖六模块 160 个声明与 27 个直接复用声明，公理仅标准三公理，
+  13 项适用 linter 全通过。这是新接口的实际 sanity check；35.1 的一维对偶胞腔改造与逐点误差 PL 同胚仍开。
+- 2026-09-19（H 车道同环境 PL 正则邻域）：原书 155、247–248 页的文本与页面复核确认，35.1 的正则邻域必须来自 `U` 的同一个相对环境为 PL 的三角剖分；
+  旧 `IsDerivedNeighborhoodExhaustion` 中的单个拓扑嵌入只足以搬运 SDR。新 `LocallyFinitePLPieceIn` 记录局部有限复形到 `U` 的嵌入参数化及正反图卡逐片仿射性；
+  `IsPLDerivedNeighborhoodExhaustion` 将全部有限环境层、图层和导出邻域绑定到该单一实现，并证明忘却到纯拓扑穷尽及 `N ⊆ U`。`IsLocallyFiniteRegularNeighborhoodOf` 现消费这一加强层，
+  `PLPieceIn.toLocallyFinite` 给出有限生产者，弧模型与 `Moise351` 公开签名不变。三个消费模块聚焦检查零诊断；严格审计 176 个模块声明加 28 个直接复用声明，仅标准三公理，13 项 linter 全过。
+- 2026-09-19（H 车道非紧三维 PL 导出邻域模型）：`PolyhedralGraph.lean` 的
+  `exists_noncompact_isPLDerivedNeighborhoodExhaustion_three_with_edge` 从一个含内部单边弧的有限组合 3-球出发，取整数方向彼此分离的仿射平移，并以对称有限区间形成非恒定环境层与图层。全体分量组成同一个局部有限欧氏复形，恒等映射给 `LocallyFinitePLPieceIn`；旗标的分量唯一性给导出邻域的逐分量面/空间公式和严格旧面限制，局部有限闭分量族的外部并之补集给下一层相对邻域。端点同时证明总导出邻域非紧、核心含非退化线段，并由规范相容穷竭得到全局强形变收缩。私有聚焦检查 exit=0、零诊断；严格审计六模块 196 项及 39 项直接复用声明，仅 `propext`、`Classical.choice`、`Quot.sound`，13 项 linter 全过。零维实例继续只作接口 sanity check；35.1 的实际对偶胞腔改造与逐点误差 PL 同胚仍未证明。
+- 2026-09-19（H 车道 F4.3 顶点对偶胞腔球性）：`DualCellDecomposition.lean` 的
+  `IsCombinatorialManifold.isPLBall_graphDualCell` 已证明有限组合 3-流形中图的每个 `graphDualCell` 是 PL 3-球。证明在粗顶点对偶球内把它分解为中心顶点与各关联边形心的对偶球；中心交集是 PL 2-球，不同关联边形心不可比较，故附加球两两不交，再用有限边界盘粘合。聚焦检查零诊断；严格审计模块 11 项与 19 项直接复用声明，只含标准三公理且 13 项 linter 全过。F4.3 与计划 R8 由此闭合；35.1 尚需逐边穿孔、环带嵌套、局部有限误差选择及逐胞腔逼近拼接。
+- 2026-09-19（H 车道 35.1 有限刺穿层）：`DualCellPiercing.lean` 的
+  `IsCombinatorialManifold.exists_graphDualCell_piercing` 将标准 2-单形的仿射内缩边界搬到实际 splitting disk 的相对内部，再用 `BoundaryInwardPush` 只固定该圆并内推相邻图双胞腔；所得像仍是包含于原胞腔的 PL 3-球，且与中心胞腔精确交于该圆。`exists_graphDualCell_piercings_of_trivalent_vertex` 对邻点恰由一个单射 `Fin 3` 枚举的真实三价顶点同时构造三条刺穿圆，并由不同 splitting disk 的不交性证明它们两两不交。没有结论型输入。聚焦检查零诊断；严格审计模块 12 项与 14 项直接复用声明，仅标准三公理，13 项 linter 全过。35.1 尚缺嵌套正则邻域及四个边界环带、局部有限误差选择和逐胞腔逼近拼接。
+- 2026-09-19（H 车道 35.1 刺穿边界环带）：`NestedCircleBicollar.lean` 从球面圆的实际 PL 双领口生产任意指定相对邻域内的内外嵌套环带，用开集 `O` 显式证明内环带落在外环带的球面相对内部。`DualCellPiercingAnnuli.lean` 将其应用到实际中心 `graphDualCell` 边界和内推后邻胞腔的搬运边界，给出 Figure 35.1 的四条边界环带；三价端点同时产生三组数据并保留刺穿圆两两不交。聚焦检查零诊断；严格审计两模块 5 项新声明及 12 项关键复用声明，仅标准三公理，13 项 linter 全过。四环带仍未识别为同一对三维正则邻域 `T_e ⊂ Int S_e` 的截迹；这一公共实心环面对、局部有限误差选择与逐胞腔拼接仍开。
+- 2026-09-19（H 车道 35.1 公共派生邻域）：`DerivedNeighborhoodRestriction.lean` 证明环境派生邻域与子复形的交精确等于子复形内的派生邻域。`CommonCircleDerivedNeighborhood.lean` 同时三角剖分公共核与两个紧多面体，在任意指定开集内生产环境派生邻域，并证明其两个截迹的精确等式和原环境中的相对邻域性。两模块私有检查零诊断；严格审计 3 项新声明和 10 项关键复用声明，仅 `propext`、`Classical.choice`、`Quot.sound`，13 项 linter 全过。公共正则邻域的组合层由此闭合，下一条记录继续完成环带分类与嵌套构造。
+- 2026-09-19（H 车道 35.1 实际刺穿的嵌套公共环带邻域）：`CommonCircleNeighborhood.lean` 将公共环境细分、圆核、两个曲面子复形、全部面包含、相对邻域证书与两个精确截迹保存在同一谓词中，并用曲面圆邻域定理把两截迹都识别为标准 PL 环带；在第一个相对邻域所给开集中重做一次得到内外嵌套。`DualCellPiercingNeighborhoods.lean` 把它接到实际 `graphDualCell` 刺穿，保留改造邻胞腔、精确交圆等式和四个精确环带截迹。一般三价端点仍以精确邻点枚举为假设；`TrivalentDualCellNeighborhoodModel.lean` 在标准 4-单形边界及由同一顶点发出的三条边所生成的图子复形上证明该假设并构造三组真实实例。四模块私有检查零诊断；严格审计 13 项新声明和 20 项关键复用声明，仅标准三公理，13 项 linter 全过。未声称环境派生邻域为标准 PL 实心环面，因为尚无相应三维 PL 类型生产者；局部有限同步选择、受控逐胞腔修改和拼接仍开。
+- 2026-09-19（H 车道 35.1 局部有限误差控制）：`LocallyFiniteErrorControl.lean` 在 `LocallyFinitePLPieceIn` 上从连续正逐点误差为每个紧单形选择正的统一下界，再用单形载体族的 point-finite 性同时选择所有顶点正尺度，使每个尺度严格小于所有关联面的阈值。这闭合书页 250 中局部有限性负责的纯数值选择，不把条件 (2)–(8) 的几何稳定性包装成假设结论。模块私有检查零诊断；严格审计 3 项新声明和 5 项关键复用声明，仅标准三公理，13 项 linter 全过。当前真实缺口是为各局部包含、分离、一般位置和有限交条件生产正稳定阈值；此外 `Moise341` 仍只是未证命题。
+- 2026-09-19（H 车道 35.1 任意邻接族刺穿）：`DualCellPiercingNeighborhoods.lean` 将三价专用构造提升为自然的一般主定理 `IsCombinatorialManifold.exists_piercings_with_nested_common_neighborhoods`：对一个顶点的任意单射索引完整邻接族，同时生产逐边刺穿圆、改造邻球、PL 映射与两层嵌套公共环境派生邻域，并证明刺穿圆两两不交；原 `Fin 3` 定理成为直接推论。生产模块与实际三价模型消费端私有检查零诊断；严格审计模块全部 3 项声明和 2 项关键复用声明，仅标准三公理，13 项 linter 全过。未声称环境邻域两两不交或逐胞腔修改已相容，这两点仍受条件 (2)–(8) 的正稳定阈值缺口约束。
+- 2026-09-19（H 车道 35.1 有限星的互不交嵌套公共邻域）：`IsCombinatorialManifold.exists_piercings_with_pairwise_disjoint_nested_common_neighborhoods` 对有限邻接族利用实际分裂盘的紧性与两两不交性，在指定开集内先取两两不交开加厚，再构造逐边外、内两层公共派生邻域；两层各自两两不交，并保留所有刺穿见证和精确环带截迹。实际三价模型已消费强端点，不是条件实例。两模块私有检查零诊断；严格审计 8 项模块声明和 7 项关键复用声明，仅标准三公理，13 项 linter 全过。现余跨局部有限穷竭的兼容修改与条件 (2)–(8) 的正稳定半径。
+- 2026-09-19（H 车道 35.1 局部有限分裂盘支撑隔离）：`LocallyFiniteSplittingDisks.lean` 对同一个 `LocallyFinitePLPieceIn` 的所有边证明分裂盘逐个只有有限面，并证明其环境实现组成局部有限、两两不交的闭集族；`exists_locallyFinite_pairwise_disjoint_open_splittingDisk_neighborhoods` 用精确局部有限细化与 shrinking lemma，在任意指定公共开集内同时给出局部有限、两两不交的开邻域。`PolyhedralGraph.lean` 新导出的 `exists_noncompact_locallyFinite_simplicialComplex_three_with_edge` 和端点 `exists_noncompact_splittingDisk_neighborhood_family_three` 给出欧氏三维空间中含实际边的非紧非空模型。两模块私有检查零诊断；严格审计两模块 63 项非自动声明及 18 项直接复用声明，仅标准三公理，13 项 linter 全过。该层只闭合单一局部有限三角剖分中的开支撑隔离；现有分裂盘 PL 2-球定理仍需全局有限环境，跨层相容逐胞腔修改、条件 (2)–(8) 的正稳定半径、PL 实心环面分类与 `Moise351` 仍开。
+
+- **Locally finite splitting-disk ballness (2026-09-19).**
+  `LocallyFinitePLPieceIn.isPLBall_splittingDisk` now derives ballness for the exact splitting disk from finite local cofaces, the combinatorial face-link sphere, the upper-link radial PL homeomorphism, and the barycentric closed-star theorem, with no globally finite ambient complex and no ballness hypothesis.  A countable disjoint union of translated finite combinatorial PL three-spheres supplies a genuinely noncompact locally finite three-manifold with a real edge, and `exists_noncompact_locallyFinite_splittingDisk_isPLBall_model` verifies the endpoint there.  Three focused checks were clean; the strict audit covered 85 module declarations and 24 reused declarations with only the standard three axioms and all 13 linters.  Compatible cellwise modifications, stability radii, the solid-torus input, and `Moise351` remain open.
+- **Locally finite separation API (2026-09-19).**
+  `Topology/LocallyFiniteSeparation.lean` now provides the canonical metric-free separation theorem for locally finite pairwise-disjoint closed families in normal paracompact spaces.  Both the finite piercing construction and the locally finite splitting-disk construction consume it, so the former metric thickening proof and the latter private copy are gone.  The new leaf is registered in the root aggregate; three focused checks were clean, and the strict audit covered 17 module declarations plus 10 reused declarations with only the standard three axioms and all 13 linters.
+- **Finite piercing-neighborhood perturbation stability (2026-09-19).**
+  The metric theorem now lives at its natural home as `Topology.Compactness.exists_perturbation_radius_preserving_containment_pairwise_disjoint`; it assumes only finite compact outer sets, open containment, inner-to-outer inclusions, and pairwise disjointness.  `DualCellPiercingStability.lean` retains the derived-neighborhood result as a direct corollary.  The standard 4-simplex-boundary trivalent graph supplies an actual nonempty consumer with `U = Metric.thickening 1 K.space`.
+- **Supported nonidentity perturbation of piercing neighborhoods (2026-09-19).**
+  `exists_isPLHomeomorphOn_moves_point_dist_lt` constructs an actual ambient PL self-homeomorphism moving a prescribed point, fixed outside an `ε/4` ball and globally `ε`-close to the identity.  `exists_trivalent_graphDualCell_supported_perturbation_model` chooses a point on an actual piercing circle and consumes the previously produced `δ`; transformed outer neighborhoods remain in `U`, both transformed layers stay pairwise disjoint, open nesting transports exactly, and all four surface intersections retain their finite common-subdivision and intrinsic derived-neighborhood witnesses.  The new leaf is root-registered; four focused checks were clean, and the joint strict audit covered 11 target declarations plus 12 reused declarations with only the standard three axioms and all 13 linters.  The transformed sets are not yet proved to be derived neighborhoods in one compatible finite triangulation, and the move is not graph-relative; Conditions (3)--(8), cross-stage compatibility, the solid-torus input, and `Moise351` remain open.
+- **Graph-relative supported perturbation of piercing neighborhoods (2026-09-19).**
+  `exists_isPLHomeomorphOn_moves_point_dist_lt_eqOn` constructs the relative ambient move for a closed protected set inside an allowed open support.  In the actual trivalent consumer, a point of the first piercing circle is chosen away from the incident edge centroid, and `splittingDisk_space_inter` proves that it is outside the original graph.  Hence `exists_trivalent_graphDualCell_relative_supported_perturbation_model` has a positive support ball in `U \ L.space`, fixes all of `L.space` and `Uᶜ`, moves that point, stays below the stability radius, and retains transformed containment, pairwise disjointness, open nesting, and all four image-derived-neighborhood trace certificates.  Both changed modules checked cleanly; the strict audit covered all 6 target declarations and 13 critical reused declarations with only the standard three axioms and all 13 linters.  The remaining representation obligation is a finite triangulation simultaneously compatible with the graph, both surfaces, and the modification, followed by a proof that the modified sets are canonical derived neighborhoods there.  Arbitrary PL homeomorphisms do not preserve a chosen barycentric-derived construction.  Conditions (3)--(8), cross-stage compatibility, the solid-torus input, and `Moise351` remain open.
+- **Original-carrier PL perturbation of piercing neighborhoods (2026-09-19).**
+  `exists_isPL_homeomorph_moves_point_dist_lt_eqOn` conjugates a supported Euclidean point move through an actual PL chart of any positive-dimensional metrized PL manifold.  It produces a PL self-homeomorphism of the same carrier, with PL inverse, compact support inside the allowed open set minus the protected closed set, exact pointwise fixing, a moved prescribed point, and the requested global displacement bound.  `exists_trivalent_graphDualCell_carrier_supported_perturbation_model` applies it to the original `K.space` of the real trivalent model.  The move fixes the graph preimage and preserves the original carrier; its auxiliary ambient-valued extension is proved only to be a bijection preserving `K.space`, fixing `L.space` and `Uᶜ`, and retaining containment, pairwise disjointness, and intrinsic open nesting.  It is deliberately not advertised as an ambient continuous or PL map.  Both target modules checked cleanly; the strict audit covered all 4 target declarations and 14 critical reused declarations with only the standard three axioms and all 13 linters.  The new leaf is root-registered.  This repairs the former `h '' K.space` replacement.  The remaining exact gap is a finite triangulation compatible with the graph, both boundary surfaces, and this carrier self-homeomorphism, together with an affine-on-faces proof identifying the modified neighborhoods as canonical derived neighborhoods.  An arbitrary PL map or later unrelated refinement does not preserve the old barycentric-derived set.
+- **Compatible triangulation of intrinsic PL homeomorphisms (2026-09-19).**
+  `PLPieceIn.isPLHomeomorphOn_conjugate` and `PLPieceIn.map_conjugate_eqOn` give the exact coordinate representative of an intrinsic PL self-homeomorphism on a finite piece.  `PLPieceIn.exists_compatible_isGlueIso_of_homeomorph` simultaneously makes any finite family of polyhedra into source subcomplexes, simplicializes that representative on finite source and target subdivisions, and transports every named source subcomplex to a target subcomplex whose carrier is exactly its image.  The focused check was clean; the strict audit covered all 3 target declarations plus 13 critical reused declarations with only the standard three axioms and all 13 linters.  Thus the common finite triangulation and affine-on-faces layer is a proved reusable producer.  The trivalent consumer still must package the graph, both surface families, and inner/outer neighborhoods as the finite input family; exact transport of the canonical barycentric-derived construction under the resulting `IsGlueIso` remains separate and is not inferred from arbitrary subdivision invariance.
+- **Actual trivalent compatible triangulation (2026-09-19).**
+  `TrivalentPiercingSetIndex` and `trivalentPiercingSet` package the graph, three piercing circles, central surface, three branch surfaces, and three inner/outer neighborhood pairs into one finite family.  `isPolyhedron_trivalentPiercingSet` and `trivalentPiercingSet_subset` derive all fourteen polyhedron and carrier facts from the existing common-annular-derived-neighborhood witnesses.  `exists_trivalent_graphDualCell_compatible_triangulation_model` applies the now arbitrary-finite-dimensional `PLPieceIn.exists_compatible_isGlueIso_of_homeomorph` to the actual graph-fixed nonidentity carrier perturbation and returns one pair of finite source/target subdivisions with exact source and image subcomplexes for every family member.  Both modules checked cleanly; the joint strict audit covered all 20 non-automatic declarations plus 15 critical reused declarations with only the standard three axioms and all 13 linters.  Exact `IsGlueIso` transport of canonical barycentric derived neighborhoods remains the representation gap; unrelated later subdivisions are still not asserted to preserve them.
+- **Exact glue-isomorphism transport of canonical derived neighborhoods (2026-09-19).**
+  `DerivedNeighborhoodTransport.lean` proves centroid transport, flag transport, the induced glue isomorphisms on the first and second barycentric subdivisions, and `IsGlueIso.derivedNeighborhood`.  `IsGlueIso.image_derivedNeighborhood` identifies the target carrier exactly after proving that the final interpolation reproduces the already facewise-affine second-derived map.  The focused private check was clean; the strict audit covered all 7 module declarations plus 10 critical reused declarations with only the standard three axioms and all 13 linters.  This closes the abstract naturality gap.  It does not identify the old `A/B` sets, which were canonical in earlier witness subdivisions, with derived neighborhoods of the later common source complex.  The next consumer must construct fresh sufficiently small canonical source neighborhoods compatible with the glue isomorphism and then transport them, inheriting containment, pairwise disjointness, and nesting by inclusion in the old stability neighborhoods.
+- **Transported common annular derived neighborhoods (2026-09-19).**
+  `IsGlueIso.exists_common_annular_derivedNeighborhood_transport` constructs a fresh common derived neighborhood of a source circle on two PL 2-spheres inside any prescribed open set, transports the ambient, circle, and surface subcomplexes through a compatible subdivision of the glue isomorphism, and proves that the exact image is again an `IsCommonAnnularDerivedNeighborhood` of the transported data.  The target proof includes relative-neighborhood membership, both exact surface traces, and both standard PL annulus parametrizations.  `IsSubdivision.simplicialMap_simplicialMap_eq` removes the redundant interpolation on the fresh source subdivision.  Both focused checks were clean; the joint strict audit covered all 9 declarations in the two transport modules plus 15 critical reused declarations with only the standard three axioms and all 13 linters.  The remaining trivalent consumer invokes this producer twice per circle inside relative open subsets of the old stable outer and inner families, then inherits nesting and pairwise disjointness by subset.
+- **Actual trivalent transported nested neighborhoods (2026-09-19).**
+  `IsNestedCommonAnnularDerivedNeighborhood.image_of_isPLHomeomorphOn` transports the relative-open nesting witness through the carrier homeomorphism, and `IsGlueIso.exists_nested_common_annular_derivedNeighborhood_transport` rebuilds a fresh source pair inside independently prescribed outer and inner open controls while proving the complete nested predicate for its exact target images.  `exists_trivalent_graphDualCell_compatible_nested_neighborhood_model` applies this construction to all three real piercing circles.  The fresh source layers lie in the old stable outer and inner families, so both source families are pairwise disjoint; injectivity of the glue-isomorphism simplicial map gives the corresponding target-image statements.  The endpoint retains the nonidentity graph-fixed carrier PL self-homeomorphism and the finite compatible subdivisions.  Three focused checks were clean; the strict audit covered all 21 non-automatic declarations in the changed modules plus 15 critical reused declarations with only the standard three axioms and all 13 linters.  The new leaf is root-registered.  Standard PL solid-torus recognition, locally finite cross-stage compatibility, Conditions (3)--(8), and `Moise351` remain open.
 
 ### Half-prism acceptance update (2026-09-19 UTC)
 
@@ -2943,6 +3028,130 @@ E3 remains on original inner traces and physical caps. These are completed-round
 handoffs, not new parallel lanes. No full-root restart is triggered by elapsed
 time, and no new deadline has been inferred.
 
+
+### Actual transported trivalent solid tori delivered
+
+The H lane now has the standard solid-torus input on the actual finite
+trivalent dual-cell model. `IsParametrizedSolidTorusTransport` packages finite
+source and target combinatorial three-manifolds, exact carrier transport,
+standard topological solid-torus type, and end-matched cylindrical diagrams on
+both sides. The endpoint
+`exists_trivalent_graphDualCell_compatible_solid_torus_neighborhood_model`
+applies this package to all three real piercing circles while retaining the
+original PL 3-sphere carrier, graph-fixed nonidentity self-homeomorphism,
+specified thickening, containment in the old stable families, pairwise
+disjointness, and exact annular traces on the central and branch surfaces.
+No desired solid-torus type or parameterization is an input, and no
+arbitrary-subdivision invariance is used.
+
+All twenty-eight non-automatic declarations in the six affected modules and
+fifteen critical reuses pass the standard-three-axiom audit and all thirteen
+environment linters. The remaining H obligations are cross-stage locally
+finite compatible modifications, Moise 35.1 Conditions (3)--(8), and the
+assembled `Moise351` endpoint.
+
+
+### Locally finite PL-homeomorphism limit mechanism delivered
+
+The H lane now has the reusable limit half of the cross-stage construction.
+`PLHomeomorphIncrementSystem` starts from actual PL self-homeomorphism
+increments that fix the current exhaustion core and preserve every core. Its
+cumulative maps form a compatible tower, and local finiteness proves that the
+canonical pointwise limit is locally one finite stage. Applying the same
+argument to the inverse tower yields an actual PL self-homeomorphism. Every
+compact subset is eventually fixed at the level of exact equality between the
+finite stages and the limit; neither the compatible family nor its limit is an
+input.
+
+The actual trivalent endpoint consumes the graph-fixed nonidentity carrier
+self-homeomorphism and retains, in the same choice, the compatible source and
+target subdivisions, nested surface traces, pairwise-disjoint families, and
+the three source-target standard solid-torus transports. Its first increment
+is genuinely nonidentity and its limit is exactly the original modification.
+The strict audit covers all forty-four new module declarations and seven key
+reuses with only the standard three axioms and all thirteen linters.
+
+This does not yet produce compatible nontrivial increments on every relevant
+stage of an arbitrary noncompact exhaustion. The remaining H producer must
+choose each supported modification together with its new standard solid-torus
+neighborhoods, compatible subdivisions and surface traces while preserving all
+earlier cores. After that input is constructed, the delivered tower theorem
+supplies the locally finite limit. Moise 35.1 Conditions (3)--(8) and
+`Moise351` therefore remain open.
+
+
+### Infinite supported shell modifications delivered
+
+The H lane now constructs, rather than assumes, a genuinely infinite family
+of compatible PL modifications. A compact-core exhaustion is extracted from
+the existing locally finite piece tower. On a connected noncompact carrier
+every successive open shell is nonempty, and the manifold point-move theorem
+produces a nonidentity PL self-homeomorphism with compact support in that
+shell. These supports are pairwise disjoint and locally finite. Each move fixes
+the old core and, because its support is contained in the next core, preserves
+every later core as well. Thus the all-core preservation condition used by the
+limit theorem is a consequence of the natural shell support geometry, not an
+extra consumer assumption.
+
+The Euclidean three-dimensional consumer uses an actual locally finite tower
+of finite combinatorial 3-manifolds, protects a nonempty polygonal segment and
+has a distinct nonzero move at every selected stage. Consecutive cumulative
+maps are never equal, the PL limit moves an injective infinite sequence of
+points, all stages and the limit fix the protected segment, and every compact
+set stabilizes exactly. All seventy-three module declarations and seven key
+reuses pass the standard-three-axiom audit and all thirteen linters.
+
+The remaining local geometric step is to choose, in the same shellwise
+construction, the transported source and target standard solid tori,
+compatible subdivisions and exact surface traces supplied in the finite
+trivalent model. The current infinite consumer protects a compact segment and
+does not yet assemble a locally finite trivalent dual-cell family. Conditions
+(3)--(8) and `Moise351` remain open.
+
+
+### Parametrized solid tori localized in arbitrary open sets
+
+The standard-solid-torus input is now local.  Every nonempty open subset of a
+three-dimensional finite-dimensional real normed space contains a finite
+combinatorial 3-manifold with boundary whose carrier is a standard
+topological solid torus, has nonempty ambient interior, and carries a standard
+PL 2-disk cylindrical parametrization with equal ends.  The construction uses
+an actual polygonal circle and the existing solid-torus theorem, then moves
+the entire finite complex into the requested open set by a positive affine
+contraction and translation.  Affine transport preserves both the
+cylindrical diagram and the standard solid-torus type.
+
+All three declarations and nine key reuses pass the standard-three-axiom
+audit and all thirteen linters.  This gives a standard solid torus in every
+nonempty compact-exhaustion shell, but does not yet couple it to the supported
+nonidentity increment at that stage.  It also does not provide the two
+graph-dual-cell boundary surfaces, their exact annular traces, a common
+compatible subdivision, or Conditions (3)--(8).
+
+
+### Infinite shellwise standard-solid-torus transports delivered
+
+The H lane now chooses the nonidentity modification and a parametrized
+standard solid torus together at every stage of the compact exhaustion.  Each
+finite combinatorial solid torus lies wholly in its open shell, and the
+compact support of the stage homeomorphism lies in the torus interior.  The
+torus family is therefore pairwise disjoint and locally finite.  Every exact
+target carrier is the image of its source carrier and equals it setwise, so
+each stage has an `IsParametrizedSolidTorusTransport` with finite source and
+target complexes, standard topological type, and equal-end cylindrical
+parameters.  Each homeomorphism nevertheless moves a selected interior point.
+
+The Euclidean three-dimensional consumer has infinitely many distinct
+stages, one nonzero move and one solid-torus transport per shell, a PL limit
+moving an injective sequence of points, preservation of a nonempty compact
+polygonal segment, and exact eventual stabilization on compact subsets.  All
+twenty declarations and eight key reuses pass the standard-three-axiom audit
+and all thirteen linters.
+
+The remaining representation layer is an ambient source/target subdivision
+simultaneously compatible with the locally finite graph, the modifications
+and both graph-dual-cell boundary surfaces.  The two exact annular surface
+traces and Conditions (3)--(8) are therefore still open.
 
 ### Actual Morse flow coordinates accepted; current five-lane gates
 
