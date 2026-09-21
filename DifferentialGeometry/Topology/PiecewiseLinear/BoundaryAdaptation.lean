@@ -10,6 +10,32 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBounda
 
 /-!
 # Boundary-relative PL tube data
+
+`IsPLBoundarySide D W BdM` says that the singular two cell `D` lies on one side `W` of the
+manifold boundary `BdM`: the image lies in the closed set `W`, the image of the open cell lies
+in `interior W`, the boundary `BdM` is closed, and at every point of the boundary curve one PL
+chart presents `W` as a half space whose face is `BdM`.
+
+The clause `IsClosed BdM` is not decoration.  In `IsPLBoundaryTubeProducer` the set `BdM` is
+universally quantified, and the conclusion asks a whole three dimensional tube around a
+boundary branch to meet `BdM` in its two end disks only, while every other clause constrains
+`BdM` near the boundary curve alone.  Without closedness one may take `BdM` to be the union of
+the true boundary with `V \ D '' D.domain` for a small open ball `V` around an interior point
+of the branch: properness, the crossing charts, the side condition along the boundary curve and
+the buffer all still hold, yet the interior of any tube around that branch has open image and
+therefore meets `V \ D '' D.domain`, so `chart '' spliceCylinder ∩ BdM = chart '' spliceEndDisks`
+is unsatisfiable.  A closed `BdM` cannot contain such a set, since a point of
+`D '' D.domain ∩ V` lies in its closure but not in it.
+
+With that clause, `IsPLBoundarySide.image_sdiff_frontier_subset_interior_sdiff` converts
+properness of `D` over the boundary, `D.domain ∩ D ⁻¹' BdM = frontier D.domain`, which
+`NormalSingularCellData.preimage_boundary_eq_frontier` supplies for a normal cell, into
+`D '' (D.domain \ frontier D.domain) ⊆ interior (W \ BdM)`: the open cell misses `BdM`
+altogether and stays in the open side.  That is the form the surgery consumers use to place an
+adapted cap.
+
+At the double of a compact combinatorial three manifold with boundary the clause is free,
+because `Bd` is there the frontier of `C`.
 -/
 
 open Set Topology
@@ -32,8 +58,22 @@ def IsPLBoundarySide {M : Type u} [TopologicalSpace M]
     (D : SingularTwoCell M) (W BdM : Set M) : Prop :=
   D '' D.domain ⊆ W ∧
     IsClosed W ∧
+    IsClosed BdM ∧
     D '' (D.domain \ frontier D.domain) ⊆ interior W ∧
     ∀ z ∈ D '' frontier D.domain, IsPLHalfSpacePairAt W BdM z
+
+theorem IsPLBoundarySide.image_sdiff_frontier_subset_interior_sdiff {M : Type u}
+    [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {W BdM : Set M} (hside : IsPLBoundarySide D W BdM)
+    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain) :
+    D '' (D.domain \ frontier D.domain) ⊆ interior (W \ BdM) := by
+  obtain ⟨-, -, hBd, hint, -⟩ := hside
+  have hsub : interior W ∩ BdMᶜ ⊆ interior (W \ BdM) := by
+    rw [Set.sdiff_eq, interior_inter, hBd.isOpen_compl.interior_eq]
+  rintro _ ⟨x, hx, rfl⟩
+  refine hsub ⟨hint ⟨x, hx, rfl⟩, fun hmem => hx.2 ?_⟩
+  rw [← hproper]
+  exact ⟨hx.1, hmem⟩
 
 def IsPLBoundaryTubeProducer (M : Type u) [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] : Prop :=
@@ -94,7 +134,10 @@ theorem isPLBoundarySide_double
     exact frontier_preimage_glued₂_space_in_double K hK
   have hinterior : interior C = C \ Bd := by
     rw [← self_sdiff_frontier C, hfront]
-  refine ⟨image_subset_iff.mpr hmap, hclosed, ?_, ?_⟩
+  have hBdclosed : IsClosed Bd := by
+    rw [← hfront]
+    exact isClosed_frontier
+  refine ⟨image_subset_iff.mpr hmap, hclosed, hBdclosed, ?_, ?_⟩
   · intro y hy
     obtain ⟨x, hx, rfl⟩ := hy
     rw [hinterior]

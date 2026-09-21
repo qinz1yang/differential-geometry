@@ -60,15 +60,19 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | A1.b | relative half-space general position freezing an **interior collar** (guard `(s ∩ B).card ≤ finrank (ker ℓ) + 1`), producing normal crossings on `closure W` | open, not started (delivered version vacuous) |
 | A1.c | induction over a finite cover with the **whole** union `U = ⋃ W j` | lemma exists uncommitted (`doublePointSet_subset_iUnion_of_buffered_steps`), crossing induction to be rebuilt on it |
 | A1.d | global assembly: one cell `A`, same domain, maps-to, boundary neighbourhood, boundary loop avoidance (homotopy `H`, `hmap`, `hsurj` are free inputs today) | open |
-| **A2** | `DescentStepOrientableStatement` (`LoopTheorem/LemmaTwoOrientable.lean:61`) | **OPEN** |
+| **A2** | `DescentStepOrientableStatement` (`LoopTheorem/LemmaTwoOrientable.lean:61`) | **OPEN**; leaves = the `sorry`s of `Skeleton/DescentStepOrientable.lean` (reviewed: `consult/G-descent-skeleton-review-digest.md`) |
 | A2.1 | closed branch, two circles, nested | **PROVED** `exists_descendingSurgery_of_nested_innermost_cleanDisk` (`LoopTheorem/ClosedBranchNestedDescent.lean:245`) |
-| A2.2 | closed branch, two circles, disjoint: adapted clean-cap neighbourhood | open, not started |
-| A2.3 | closed branch, one circle: impossible in an orientable manifold | open, in progress (`consult/C-or1-design.md`, 11 items) |
-| A2.4a | boundary branch: PL tube with side containment, boundary equality, end-disk buffer — the obligation is now stated: `IsPLBoundaryTubeProducer` (`BoundaryAdaptation.lean:38`), with `isPLBoundarySide_double` proving that the double's side satisfies its hypothesis | open (lane S; planar four-spoke layer proved; marked cone, chain, boundary adaptation to come) |
-| A2.4b | boundary branch: both boundary word witnesses from **one** cut, parametrisation exposed | open (F9; source-segment exports proved, source-match theorems under revision) |
-| A2.4c | boundary branch: assemblies conclude side + buffer as the statement asks | open (F10) |
+| A2.2a | closed branch, two circles, disjoint — geometric cap producer: for every open `V` with `D(Q) ⊆ V ⊆ interior (C \ BdM)`, a larger source disk `E'` and a PL embedded cap `Δ' ⊆ V` (leaf `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`) | open, not started; statement **new** (from review G, not yet re-reviewed) |
+| A2.2b | the same — surgery consumer: cut-and-paste along the cap, branch retention, the three invariants (leaf `exists_descendingSurgery_of_adaptedCleanCap`); the disjoint analogue of `IsNestedDiskReplacementCell` does not exist yet | open, not started; statement **new** |
+| A2.3 | closed branch, one circle: impossible in an orientable manifold (leaf `not_branchPreimage_eq_of_isOrientable`; own skeleton `Skeleton/ClosedBranchCaseOne.lean`, 4 leaves, review pending) | open, in progress; statement **frozen** |
+| A2.4a | boundary branch: PL tube with side containment, boundary equality, end-disk buffer (leaf `isPLBoundaryTubeProducer_double`; `IsPLBoundarySide` now carries `IsClosed BdM`, `BoundaryAdaptation.lean:56`) | open (lane S); statement **frozen** |
+| A2.4a′ | realisation of the boundary neighbourhood in the double (leaf `NormalSystem.exists_boundaryNeighborhood_realization`) | open (lane S); **frozen** |
+| A2.4a″ | the quarter-turned tube chart is again a PL seam tube chart (leaf `nonempty_plSeamTubeChart_comp_crossQuarterTurn`) | open (lane S); statement **new**, small |
+| A2.4b | boundary branch: both boundary word witnesses from **one** cut (leaf `exists_boundaryWordWitnesses_of_cut`) | open (F9); **frozen** |
+| A2.4b′ | the PL reading, for the tube chart **or** its quarter turn, given the tube's boundary equality (leaf `exists_plCrossSeamReading_of_isCrossRegluedCell`) | open (lanes F/S); **frozen** after repair |
+| A2.4c | boundary branch: assemblies conclude side + buffer (leaves `exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing`, `…_preserving`) | open (F10); **frozen** |
 | A2.4d | joint non-degenerate fixture: branch + both candidates + tube + reading + both witnesses on one tuple | open (F11); until it exists A2.4 is UNTESTED |
-| A2.5 | wiring A2.1–A2.4 into the statement (selection dichotomy is proved) | open |
+| A2.5 | wiring into the statement | **PROVED modulo the leaves above**: `descentStepOrientableStatement` in `Skeleton/DescentStepOrientable.lean` compiles with exactly 10 `sorry` leaves and none in the assembly (checked 2026-09-21) |
 
 ### B — §34–35 side
 | ID | Item | Status |
@@ -98,4 +102,4 @@ in a non-orientable manifold; `Moise305` (non-tame), `Moise306`, `Moise307`,
 
 ## Count (the number an audit should quote)
 Top-level OPEN items: **A1, A2, B1, C1** (+ D1 external). Expanded leaves currently open:
-**A: 4 + 7 = 11** (A2.1 closed), **B: 4 + 4 = 8** (B1.a closed; B1.b split into B1.b.1–4 on 2026-09-21, a refinement, not new work), **C: 1**. Leaves closed since this page was created: 1 (B1.a).
+**A: 4 + 10 = 14** (A2.1 closed; A2's open leaves are now exactly the 10 `sorry`s of `Skeleton/DescentStepOrientable.lean` — a finer cut after review G, not new work), **B: 4 + 4 = 8** (B1.a closed; B1.b split into B1.b.1–4 on 2026-09-21, a refinement, not new work), **C: 1**. Leaves closed since this page was created: 1 (B1.a).

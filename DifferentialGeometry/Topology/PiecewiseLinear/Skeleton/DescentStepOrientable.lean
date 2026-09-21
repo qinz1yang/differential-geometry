@@ -13,52 +13,84 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrienta
 /-!
 # Sorry-first skeleton of the orientable descent step
 
-The assembly `descentStepOrientableStatement` below is proved for real from the eight leaves of
-this file and from the proved producers of the tree; every `sorry` is a leaf, none is inside the
-assembly.  The leaves are open obligations and none of them has been reviewed.
+The assembly `descentStepOrientableStatement` below is proved for real from the ten leaves of
+this file and from the proved producers of the tree; every `sorry` is a leaf, none is inside an
+assembly.  An external review of the 2026-09-20 snapshot `06a96eb1de64` is digested in
+`consult/G-descent-skeleton-review-digest.md`; the three defects it found are repaired here.
 
-`not_branchPreimage_eq_of_isOrientable` (lane C, C-or1, not yet reviewed): in an orientable
-combinatorial 3-manifold no closed branch of a normal singular two cell has a connected complete
-preimage.  Shape taken from `consult/C-or1-design.md`, final theorem, stated for an arbitrary
-orientable complex rather than only for the double.
+Repair 1, boundary separation.  `IsPLBoundarySide` now carries `IsClosed BdM`, without which the
+universally quantified `BdM` may swallow an open set around an interior point of a branch and no
+tube can satisfy `chart '' spliceCylinder ∩ BdM = chart '' spliceEndDisks`.
+`IsPLBoundarySide.image_sdiff_frontier_subset_interior_sdiff` is the consequence the surgery
+consumers use, `D '' (D.domain \ frontier D.domain) ⊆ interior (W \ BdM)`, from properness.
 
-`NormalSingularCellData.exists_descendingSurgery_of_disjoint_innermost_cleanDisk` (lane C, 2b,
-not yet reviewed): the descending surgery of the second closed case when the innermost clean
-disk `Q` is disjoint from the disk `E` bounded by the other preimage circle.  Hypotheses are
-those of the proved nested endpoint `exists_descendingSurgery_of_nested_innermost_cleanDisk`,
-with `Disjoint Q E` in place of `Q ⊆ interior E`, with `Q ⊆ interior D.domain` added because the
-adapted clean cap has to be chosen inside the side, and with the side hypothesis strengthened
-from `MapsTo D D.domain C` to `IsPLBoundarySide D C BdM`, which is what places the image of `Q`
-in the interior of the side.
+Repair 2, the 2b split.  The old single 2b leaf is now the proved theorem
+`exists_descendingSurgery_of_disjoint_innermost_cleanDisk`, which chooses
+`V := interior (C \ BdM)` by repair 1 and then calls the two new leaves: the geometric cap
+producer `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`, whose conclusion mentions no
+surgery, and the cut and paste consumer `exists_descendingSurgery_of_adaptedCleanCap`.
 
-`isPLBoundaryTubeProducer_double` (lane S, not yet reviewed): the double of a combinatorial
-3-manifold with boundary admits boundary-relative PL product tubes around boundary branches.
-The statement is `IsPLBoundaryTubeProducer` of `BoundaryAdaptation` verbatim, at the double.
+Repair 3, the reading leaf.  `crossQuarterTurn` is the quarter turn `(x, y, t) ↦ (-y, x, t)` of
+the model cylinder, which fixes `spliceCylinder`, `spliceCore`, `crossingFigure`,
+`spliceEndDisks` and the lateral wall but exchanges the two adjacent bent sheet pairings, so a
+reading exists only up to it; the leaf receives the tube boundary equality and concludes a
+disjunction.  `crossSeamTubeDataQuarterTurn` repackages the tube along that turn for real, and
+the invariance of the four producer conclusions is proved from the image equalities; only the
+piecewise linear structure of the turned chart is left open.
 
-`NormalSingularCellData.exists_boundaryWordWitnesses_of_cut` (lane F, F9, not yet reviewed):
-from one boundary branch cut, both candidates together with both boundary word witnesses over
-the four arc words, in the endpoint reversing and in the endpoint preserving alternative.  The
-cell-level half of this conclusion is already proved by
-`NormalSingularCellData.exists_boundaryCandidates_of_cut`; what is open is the passage from the
-recorded two arc parametrisations to the witnesses, through the source-arc matches of
-`LoopTheorem.BoundaryCaseFromSource`.
+The leaves, with owner and review state.
 
-`exists_plCrossSeamReading_of_isCrossRegluedCell` (lane F and lane S seam, not yet reviewed):
-the cross reglued cell of a boundary branch is read in the normal form of any PL boundary tube
-around that branch.  This is the touching seam of Moise's Case 3/4.
+`not_branchPreimage_eq_of_isOrientable` (lane C, C-or1, reviewed 2026-09-21 (external),
+statement frozen): in an orientable combinatorial 3-manifold no closed branch of a normal
+singular two cell has a connected complete preimage.
 
-`NormalSystem.exists_boundaryNeighborhood_realization` (new, not yet reviewed): the boundary
-neighborhood of a normal system embeds in the double compatibly with `ι`, and the boundary
-circle of a normal cell factors continuously through it.  This is the ambient loop space the
-boundary word witnesses are stated over.
+`isPLBoundaryTubeProducer_double` (lane S, reviewed 2026-09-21 (external), repaired by repair 1,
+statement frozen): the double of a combinatorial 3-manifold with boundary admits
+boundary-relative PL product tubes around boundary branches.  The statement is
+`IsPLBoundaryTubeProducer` of `BoundaryAdaptation` verbatim, at the double; the closedness of
+`BdM` now travels inside `IsPLBoundarySide`.
 
-`exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing` and
-`..._preserving` (lane F, F10, not yet reviewed): the two boundary case assemblies of
+`NormalSystem.exists_boundaryNeighborhood_realization` (lane S, reviewed 2026-09-21 (external),
+statement frozen): the boundary neighborhood of a normal system embeds in the double compatibly
+with `ι`, and the boundary circle of a normal cell factors continuously through it.
+
+`NormalSingularCellData.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` (lane C, 2b cap,
+new, not yet reviewed; its content is the producer prescribed by the 2026-09-21 review): for
+every open `V` with `D '' Q ⊆ V ⊆ interior (W \ BdM)` there are a larger source disk `E'` and a
+PL embedded cap parametrised by a singular two cell on `E'`, lying in `V`, agreeing with `D` on
+`frontier E'` and meeting `D '' D.domain` in that circle only.  No surgery occurs in the
+conclusion; the expensive step behind it is the adapted-neighbourhood trace theorem.
+
+`NormalSingularCellData.exists_descendingSurgery_of_adaptedCleanCap` (lane C, 2b surgery, new,
+not yet reviewed): from that cap data, the descending surgery with the three invariants, in the
+style of the proved nested endpoint `exists_descendingSurgery_of_isNestedDiskReplacementCell`.
+It is cut and paste along `frontier E'` plus whole or nothing branch retention, and it is left
+open because the disjoint analogue of `IsNestedDiskReplacementCell`, of its normality producer
+and of its branch injection is not in the tree.
+
+`NormalSingularCellData.exists_boundaryWordWitnesses_of_cut` (lane F, F9, reviewed 2026-09-21
+(external), statement frozen): from one boundary branch cut, both candidates together with both
+boundary word witnesses over the four arc words, in the endpoint reversing and in the endpoint
+preserving alternative.  The preserving word is the one the review confirmed; no
+orientation-preserving comparison is added.
+
+`exists_plCrossSeamReading_of_isCrossRegluedCell` (lane F and lane S seam, reviewed 2026-09-21
+(external), repaired by repair 3, statement frozen): the cross reglued cell of a boundary branch
+is read in the normal form of the given PL boundary tube, or in the normal form of its quarter
+turn.  The hypothesis `T.chart '' spliceCylinder ∩ BdM = T.chart '' spliceEndDisks` is the tube
+boundary equality the reading's boundary clause needs and the old statement did not receive.
+
+`nonempty_plSeamTubeChart_comp_crossQuarterTurn` (lane S, new, not yet reviewed): the quarter
+turn of a PL seam tube chart is again one.  Everything else about the turned tube is proved in
+`crossSeamTubeDataQuarterTurn`; what is open is only the transport of `PLPieceIn` along the
+linear automorphism `crossQuarterTurn`, which preserves `spliceCylinder`.
+
+`exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing` and `..._preserving` (lane F,
+F10, reviewed 2026-09-21 (external), statement frozen): the two boundary case assemblies of
 `LoopTheorem.BoundarySurgeryCellPredicate` with the side and the boundary buffer added to the
-conclusion.  They supersede those two assemblies, whose conclusion records neither clause, so
-the skeleton calls these and not them; the four added hypotheses are the side of `D`, the
-containment of the parametrised cylinder in the side, the buffer of `D` and the buffer of the
-end disks, all supplied by `isPLBoundarySide_double_of_normal` and by the tube producer.
+conclusion.  They supersede those two assemblies, whose conclusion records neither clause; the
+four added hypotheses are supplied by `isPLBoundarySide_double_of_normal` and by the tube
+producer.  Both leaves share one inheritance lemma.
 -/
 
 open Set Topology
@@ -66,6 +98,113 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u v w
+
+def crossQuarterTurn (p : (ℝ × ℝ) × ℝ) : (ℝ × ℝ) × ℝ := ((-p.1.2, p.1.1), p.2)
+
+theorem crossQuarterTurn_iterate_four (p : (ℝ × ℝ) × ℝ) :
+    crossQuarterTurn (crossQuarterTurn (crossQuarterTurn (crossQuarterTurn p))) = p := by
+  obtain ⟨⟨a, b⟩, t⟩ := p
+  simp [crossQuarterTurn]
+
+theorem injective_crossQuarterTurn : Function.Injective crossQuarterTurn :=
+  Function.LeftInverse.injective
+    (g := fun p => crossQuarterTurn (crossQuarterTurn (crossQuarterTurn p)))
+    crossQuarterTurn_iterate_four
+
+theorem continuous_crossQuarterTurn : Continuous crossQuarterTurn := by
+  unfold crossQuarterTurn
+  exact (continuous_fst.snd.neg.prodMk continuous_fst.fst).prodMk continuous_snd
+
+theorem image_crossQuarterTurn_of_mapsTo {S : Set ((ℝ × ℝ) × ℝ)}
+    (h : MapsTo crossQuarterTurn S S) : crossQuarterTurn '' S = S := by
+  refine Subset.antisymm ?_ fun p hp => ⟨_, h (h (h hp)), crossQuarterTurn_iterate_four p⟩
+  rintro _ ⟨p, hp, rfl⟩
+  exact h hp
+
+theorem mapsTo_crossQuarterTurn_prod {S : Set (ℝ × ℝ)} {I : Set ℝ}
+    (hS : MapsTo (fun q : ℝ × ℝ => (-q.2, q.1)) S S) :
+    MapsTo crossQuarterTurn (S ×ˢ I) (S ×ˢ I) :=
+  fun _ hp => ⟨hS hp.1, hp.2⟩
+
+theorem mapsTo_crossQuarterTurn_spliceSquare :
+    MapsTo (fun q : ℝ × ℝ => (-q.2, q.1)) spliceSquare spliceSquare := by
+  rintro ⟨a, b⟩ ⟨ha, hb⟩
+  refine ⟨?_, ha⟩
+  rw [Set.mem_Icc] at hb ⊢
+  exact ⟨by linarith [hb.2], by linarith [hb.1]⟩
+
+theorem mapsTo_crossQuarterTurn_origin :
+    MapsTo (fun q : ℝ × ℝ => (-q.2, q.1)) ({((0 : ℝ), (0 : ℝ))} : Set (ℝ × ℝ))
+      ({((0 : ℝ), (0 : ℝ))} : Set (ℝ × ℝ)) := by
+  intro q hq
+  rw [Set.mem_singleton_iff] at hq
+  subst hq
+  simp
+
+theorem mapsTo_crossQuarterTurn_crossingArc :
+    MapsTo (fun q : ℝ × ℝ => (-q.2, q.1)) (crossingArcX ∪ crossingArcY)
+      (crossingArcX ∪ crossingArcY) := by
+  rintro q (⟨hq, hx⟩ | ⟨hq, hy⟩)
+  · exact Or.inr ⟨mapsTo_crossQuarterTurn_spliceSquare hq, hx⟩
+  · refine Or.inl ⟨mapsTo_crossQuarterTurn_spliceSquare hq, ?_⟩
+    change -q.2 = 0
+    simp [hy]
+
+theorem mapsTo_crossQuarterTurn_spliceSquareBoundary :
+    MapsTo (fun q : ℝ × ℝ => (-q.2, q.1)) spliceSquareBoundary spliceSquareBoundary := by
+  rintro q ⟨hq, hb⟩
+  refine ⟨mapsTo_crossQuarterTurn_spliceSquare hq, ?_⟩
+  rcases hb with h | h | h | h
+  · exact Or.inr (Or.inr (Or.inl h))
+  · exact Or.inr (Or.inr (Or.inr h))
+  · refine Or.inr (Or.inl ?_)
+    change -q.2 = 1
+    simp [h]
+  · refine Or.inl ?_
+    change -q.2 = -1
+    simp [h]
+
+theorem mapsTo_crossQuarterTurn_spliceCylinder :
+    MapsTo crossQuarterTurn spliceCylinder spliceCylinder :=
+  mapsTo_crossQuarterTurn_prod mapsTo_crossQuarterTurn_spliceSquare
+
+theorem mapsTo_crossQuarterTurn_spliceEndDisks :
+    MapsTo crossQuarterTurn spliceEndDisks spliceEndDisks :=
+  mapsTo_crossQuarterTurn_prod mapsTo_crossQuarterTurn_spliceSquare
+
+theorem mapsTo_crossQuarterTurn_spliceCore :
+    MapsTo crossQuarterTurn spliceCore spliceCore :=
+  mapsTo_crossQuarterTurn_prod mapsTo_crossQuarterTurn_origin
+
+theorem mapsTo_crossQuarterTurn_crossingFigure :
+    MapsTo crossQuarterTurn crossingFigure crossingFigure :=
+  mapsTo_crossQuarterTurn_prod mapsTo_crossQuarterTurn_crossingArc
+
+theorem mapsTo_crossQuarterTurn_lateral :
+    MapsTo crossQuarterTurn (spliceSquareBoundary ×ˢ Icc (0 : ℝ) 1)
+      (spliceSquareBoundary ×ˢ Icc (0 : ℝ) 1) :=
+  mapsTo_crossQuarterTurn_prod mapsTo_crossQuarterTurn_spliceSquareBoundary
+
+theorem image_crossQuarterTurn_spliceCylinder :
+    crossQuarterTurn '' spliceCylinder = spliceCylinder :=
+  image_crossQuarterTurn_of_mapsTo mapsTo_crossQuarterTurn_spliceCylinder
+
+theorem image_crossQuarterTurn_spliceEndDisks :
+    crossQuarterTurn '' spliceEndDisks = spliceEndDisks :=
+  image_crossQuarterTurn_of_mapsTo mapsTo_crossQuarterTurn_spliceEndDisks
+
+theorem image_crossQuarterTurn_spliceCore :
+    crossQuarterTurn '' spliceCore = spliceCore :=
+  image_crossQuarterTurn_of_mapsTo mapsTo_crossQuarterTurn_spliceCore
+
+theorem image_crossQuarterTurn_crossingFigure :
+    crossQuarterTurn '' crossingFigure = crossingFigure :=
+  image_crossQuarterTurn_of_mapsTo mapsTo_crossQuarterTurn_crossingFigure
+
+theorem image_crossQuarterTurn_lateral :
+    crossQuarterTurn '' (spliceSquareBoundary ×ˢ Icc (0 : ℝ) 1) =
+      spliceSquareBoundary ×ˢ Icc (0 : ℝ) 1 :=
+  image_crossQuarterTurn_of_mapsTo mapsTo_crossQuarterTurn_lateral
 
 theorem not_branchPreimage_eq_of_isOrientable
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
@@ -114,6 +253,53 @@ namespace NormalSingularCellData
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
 
+theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
+    {J T Q E : Set (EuclideanSpace ℝ (Fin 2))}
+    {k : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hJ : IsPLSphere 1 J) (hT : IsPLSphere 1 T) (hJT : Disjoint J T)
+    (hpre : hD.branchPreimage c = J ∪ T)
+    (hQ : IsPLBall 2 Q) (hQsub : Q ⊆ interior D.domain) (hfrontQ : frontier Q = J)
+    (hclean : doublePointPreimage (⇑D) D.domain ∩ Q = J) (hinj : InjOn (⇑D) Q)
+    (hE : IsPLBall 2 E) (hfrontE : frontier E = T)
+    (hk : IsPLHomeomorphOn k E Q) (hkT : k '' T = J) (hkcompat : EqOn (⇑D) (⇑D ∘ k) T)
+    (hdisjoint : Disjoint Q E)
+    {V W : Set M} (hV : IsOpen V) (hQV : ⇑D '' Q ⊆ V) (hVW : V ⊆ interior (W \ BdM)) :
+    ∃ (E' : Set (EuclideanSpace ℝ (Fin 2))) (Δ : SingularTwoCell M),
+      IsPLBall 2 E' ∧ E ⊆ interior E' ∧ E' ⊆ interior D.domain ∧ Disjoint Q E' ∧
+        (E' \ E) ∩ doublePointPreimage (⇑D) D.domain = ∅ ∧
+          Δ.domain = E' ∧ InjOn (⇑Δ) E' ∧ ⇑Δ '' E' ⊆ V ∧ EqOn (⇑Δ) (⇑D) (frontier E') ∧
+            ⇑Δ '' E' ∩ ⇑D '' D.domain = ⇑D '' frontier E' := by
+  sorry
+
+theorem exists_descendingSurgery_of_adaptedCleanCap [T2Space M]
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
+    {J T Q E E' : Set (EuclideanSpace ℝ (Fin 2))}
+    {k : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hJ : IsPLSphere 1 J) (hT : IsPLSphere 1 T) (hJT : Disjoint J T)
+    (hpre : hD.branchPreimage c = J ∪ T)
+    (hQ : IsPLBall 2 Q) (hQsub : Q ⊆ interior D.domain) (hfrontQ : frontier Q = J)
+    (hclean : doublePointPreimage (⇑D) D.domain ∩ Q = J) (hinj : InjOn (⇑D) Q)
+    (hE : IsPLBall 2 E) (hfrontE : frontier E = T)
+    (hk : IsPLHomeomorphOn k E Q) (hkT : k '' T = J) (hkcompat : EqOn (⇑D) (⇑D ∘ k) T)
+    (hdisjoint : Disjoint Q E)
+    {C : Set M} (hside : IsPLBoundarySide D C BdM)
+    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
+    (Δ : SingularTwoCell M)
+    (hE' : IsPLBall 2 E') (hEE' : E ⊆ interior E') (hE'int : E' ⊆ interior D.domain)
+    (hQE' : Disjoint Q E') (hE'clean : (E' \ E) ∩ doublePointPreimage (⇑D) D.domain = ∅)
+    (hΔdom : Δ.domain = E') (hΔinj : InjOn (⇑Δ) E')
+    (hΔside : ⇑Δ '' E' ⊆ interior (C \ BdM)) (hΔbd : EqOn (⇑Δ) (⇑D) (frontier E'))
+    (hΔmeet : ⇑Δ '' E' ∩ ⇑D '' D.domain = ⇑D '' frontier E')
+    {Θ : Type v} [TopologicalSpace Θ] {Y : Type w} {ρ : M → Y} {γ : Θ → Y}
+    (e : Θ ≃ₜ frontier D.domain) (hloop : ∀ θ, ρ (⇑D (e θ)) = γ θ) :
+    ∃ Sg : hD.DescendingSurgery, MapsTo (⇑Sg.cell) Sg.cell.domain C ∧
+      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
+        ∃ e' : Θ ≃ₜ frontier Sg.cell.domain, ∀ θ, ρ (⇑Sg.cell (e' θ)) = γ θ := by
+  sorry
+
 theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
     (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
@@ -133,7 +319,18 @@ theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
     ∃ Sg : hD.DescendingSurgery, MapsTo (⇑Sg.cell) Sg.cell.domain C ∧
       (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
         ∃ e' : Θ ≃ₜ frontier Sg.cell.domain, ∀ θ, ρ (⇑Sg.cell (e' θ)) = γ θ := by
-  sorry
+  have hQopen : Q ⊆ D.domain \ frontier D.domain := fun z hz =>
+    ⟨interior_subset (hQsub hz), fun hfr =>
+      (mem_frontier_iff_notMem_interior (interior_subset (hQsub hz))).mp hfr (hQsub hz)⟩
+  have hQV : ⇑D '' Q ⊆ interior (C \ BdM) :=
+    (Set.image_mono hQopen).trans
+      (hside.image_sdiff_frontier_subset_interior_sdiff hD.preimage_boundary_eq_frontier)
+  obtain ⟨E', Δ, hE', hEE', hE'int, hQE', hE'clean, hΔdom, hΔinj, hΔside, hΔbd, hΔmeet⟩ :=
+    hD.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk hc hJ hT hJT hpre hQ hQsub
+      hfrontQ hclean hinj hE hfrontE hk hkT hkcompat hdisjoint isOpen_interior hQV Subset.rfl
+  exact hD.exists_descendingSurgery_of_adaptedCleanCap hc hJ hT hJT hpre hQ hQsub hfrontQ
+    hclean hinj hE hfrontE hk hkT hkcompat hdisjoint hside hbuffer Δ hE' hEE' hE'int hQE'
+    hE'clean hΔdom hΔinj hΔside hΔbd hΔmeet e hloop
 
 theorem exists_boundaryWordWitnesses_of_cut [T2Space M]
     (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
@@ -171,9 +368,60 @@ theorem exists_plCrossSeamReading_of_isCrossRegluedCell
     {D : SingularTwoCell M} {BdM B U : Set M} {hD : NormalSingularCellData D BdM B}
     {c : hD.singularSet.Branch} (T : CrossSeamTubeData hD c U)
     (hchart : PLSeamTubeChart M T.chart)
+    (htubeBdM : T.chart '' spliceCylinder ∩ BdM = T.chart '' spliceEndDisks)
     {G : SingularTwoCell M} (hG : hD.IsCrossRegluedCell c G) :
-    Nonempty (PLCrossSeamReading T.chart G) := by
+    Nonempty (PLCrossSeamReading T.chart G) ∨
+      Nonempty (PLCrossSeamReading (T.chart ∘ crossQuarterTurn) G) := by
   sorry
+
+theorem nonempty_plSeamTubeChart_comp_crossQuarterTurn
+    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {chart : (ℝ × ℝ) × ℝ → M} (C : PLSeamTubeChart M chart) :
+    Nonempty (PLSeamTubeChart M (chart ∘ crossQuarterTurn)) := by
+  sorry
+
+def crossSeamTubeDataQuarterTurn {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {D : SingularTwoCell M} {BdM B U : Set M}
+    {hD : NormalSingularCellData D BdM B} {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) : CrossSeamTubeData hD c U where
+  chart := T.chart ∘ crossQuarterTurn
+  isTube :=
+    { isOpen_tube := T.isTube.isOpen_tube
+      continuousOn_chart := T.isTube.continuousOn_chart.comp
+        continuous_crossQuarterTurn.continuousOn mapsTo_crossQuarterTurn_spliceCylinder
+      injOn_chart := T.isTube.injOn_chart.comp injective_crossQuarterTurn.injOn
+        mapsTo_crossQuarterTurn_spliceCylinder
+      image_subset_tube := by
+        rw [Set.image_comp, image_crossQuarterTurn_spliceCylinder]
+        exact T.isTube.image_subset_tube
+      image_spliceCore := by
+        rw [Set.image_comp, image_crossQuarterTurn_spliceCore]
+        exact T.isTube.image_spliceCore
+      image_crossingFigure := by
+        rw [Set.image_comp, image_crossQuarterTurn_crossingFigure, Set.image_comp,
+          image_crossQuarterTurn_spliceCylinder]
+        exact T.isTube.image_crossingFigure
+      double_inter_tube := T.isTube.double_inter_tube }
+
+theorem crossSeamTubeDataQuarterTurn_chart {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {D : SingularTwoCell M} {BdM B U : Set M}
+    {hD : NormalSingularCellData D BdM B} {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) :
+    (crossSeamTubeDataQuarterTurn T).chart = T.chart ∘ crossQuarterTurn := rfl
+
+theorem image_crossSeamTubeDataQuarterTurn_spliceCylinder {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {D : SingularTwoCell M} {BdM B U : Set M}
+    {hD : NormalSingularCellData D BdM B} {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) :
+    (crossSeamTubeDataQuarterTurn T).chart '' spliceCylinder = T.chart '' spliceCylinder := by
+  rw [crossSeamTubeDataQuarterTurn_chart, Set.image_comp, image_crossQuarterTurn_spliceCylinder]
+
+theorem image_crossSeamTubeDataQuarterTurn_spliceEndDisks {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {D : SingularTwoCell M} {BdM B U : Set M}
+    {hD : NormalSingularCellData D BdM B} {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) :
+    (crossSeamTubeDataQuarterTurn T).chart '' spliceEndDisks = T.chart '' spliceEndDisks := by
+  rw [crossSeamTubeDataQuarterTurn_chart, Set.image_comp, image_crossQuarterTurn_spliceEndDisks]
 
 namespace NormalSingularCellData
 
@@ -277,6 +525,87 @@ theorem exists_descendingSurgery_side_buffer_of_crossSeamTube_preserving
       (∀ θ, ρ (δ θ) = Sg.cell (e θ)) ∧ ¬loopClassMeets δ x N := by
   sorry
 
+theorem exists_descendingSurgery_of_crossSeamReading [T2Space M] {U W : Set M}
+    {hD : NormalSingularCellData D BdM B} {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) (Ct : PLSeamTubeChart M T.chart)
+    {G : SingularTwoCell M} (R : PLCrossSeamReading T.chart G)
+    (hG : hD.IsCrossRegluedCell c G)
+    (hendDisks : T.chart '' spliceEndDisks ⊆ B)
+    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
+    (hBdM : B ⊆ BdM)
+    (hside : MapsTo (⇑D) D.domain W)
+    (htubeW : T.chart '' spliceCylinder ⊆ W)
+    (hbufferD : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
+    (hendBuffer : ∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[BdM] z)
+    {Gd : SingularTwoCell M} (hGd : hD.IsBoundarySurgeryCell c Gd)
+    {Θ : Type w} [TopologicalSpace Θ] {p' q' u' v' : Θ}
+    (σ₀ : Path p' q') (τ₀ : Path q' u') (υ₀ : Path u' v') (φ₀ : Path v' p')
+    (ev : loopCircle → Θ)
+    (hev : ∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ)
+    {X : Type v} [TopologicalSpace X] [PathConnectedSpace X] (f : Θ → X) {x : X}
+    (γ : freeLoop X) (hγ : ∀ θ, γ θ = f (ev θ))
+    {N : Subgroup (FundamentalGroup X x)} [N.Normal] (hγN : ¬loopClassMeets γ x N)
+    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
+    (hcase :
+      (∃ (a b : X) (σ υ : Path a b) (τ φ : Path b a),
+          (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+          (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
+          Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ.symm))) ∧
+          Nonempty (BoundaryWordWitness G ρ
+            (pathToCircle (σ.trans (φ.trans (υ.trans τ)))))) ∨
+        (∃ (a b : X) (σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a),
+          (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+          (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
+          Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ))) ∧
+          Nonempty (BoundaryWordWitness G ρ
+            (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))))))) :
+    ∃ (Sg : hD.DescendingSurgery) (e : loopCircle ≃ₜ frontier Sg.cell.domain)
+      (δ : freeLoop X),
+      MapsTo (⇑Sg.cell) Sg.cell.domain W ∧
+      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
+      (∀ θ, ρ (δ θ) = Sg.cell (e θ)) ∧ ¬loopClassMeets δ x N := by
+  have hends : ∀ z ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
+      z ∈ frontier G.domain ↔ (R.coord z).2.2 = 0 ∨ (R.coord z).2.2 = 1 := by
+    intro z hz
+    have hz' : z ∈ R.tubeSource := by
+      rw [R.tubeSource_eq]
+      exact hz
+    exact R.boundary_iff_end z hz'
+  have hdomainR : (R.resolvedCell Ct).domain = G.domain := rfl
+  have hcoordR : BijOn R.coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder))
+      bentSource := by
+    rw [← R.tubeSource_eq]
+    exact R.bijOn_coord
+  have hregluedR : EqOn (⇑G) (T.chart ∘ crossSeamInclude ∘ R.coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) := by
+    rw [← R.tubeSource_eq]
+    exact R.reglued_eq
+  have hresolvedR : EqOn (⇑(R.resolvedCell Ct)) (T.chart ∘ crossSeamResolve ∘ R.coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) := by
+    rw [← R.tubeSource_eq]
+    intro z hz
+    exact R.resolvedCell_apply_of_mem Ct hz
+  have hcomplR : EqOn (⇑(R.resolvedCell Ct)) (⇑G)
+      (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder)) := by
+    intro z hz
+    refine R.resolvedCell_apply_of_notMem Ct fun hzs => ?_
+    rw [R.tubeSource_eq] at hzs
+    exact hz.2 hzs.2
+  rcases hcase with ⟨a, b, σ, υ, τ, φ, hσ, hτ, hυ, hφ, ⟨Wd⟩, ⟨Wr⟩⟩ |
+    ⟨a, b, σ, τ, υ, φ, hσ, hτ, hυ, hφ, ⟨Wd⟩, ⟨Wr⟩⟩
+  · obtain ⟨Ω₁, Ω₂, hΩ₁, hΩ₂, hcover, hcocont, hΩ₁tube, hΩ₁max, hlateral⟩ :=
+      R.exists_boundary_cover Wr.param
+    exact exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing T hdomainR hcoordR
+      hregluedR hresolvedR hcomplR hG hendDisks hends htubeBdM hBdM hside htubeW hbufferD
+      hendBuffer hGd σ₀ τ₀ υ₀ φ₀ ev hev hσ hτ hυ hφ γ hγ hγN hρ hrange Wd Wr hΩ₁ hΩ₂ hcover
+      hcocont hΩ₁tube hΩ₁max hlateral
+  · obtain ⟨Ω₁, Ω₂, hΩ₁, hΩ₂, hcover, hcocont, hΩ₁tube, hΩ₁max, hlateral⟩ :=
+      R.exists_boundary_cover Wr.param
+    exact exists_descendingSurgery_side_buffer_of_crossSeamTube_preserving T hdomainR hcoordR
+      hregluedR hresolvedR hcomplR hG hendDisks hends htubeBdM hBdM hside htubeW hbufferD
+      hendBuffer hGd σ₀ τ₀ υ₀ φ₀ ev hev hσ hτ hυ hφ γ hγ hγN hρ hrange Wd Wr hΩ₁ hΩ₂ hcover
+      hcocont hΩ₁tube hΩ₁max hlateral
+
 end NormalSingularCellData
 
 open Classical in
@@ -348,56 +677,46 @@ theorem descentStepOrientableStatement : DescentStepOrientableStatement := by
       rw [hγcomp]
       exact fun hmeet =>
         hδN ((loopClassMeets_comp_circleHomeomorph_iff δ (ev.trans cD.symm) _ _).mp hmeet)
-    obtain ⟨R⟩ := exists_plCrossSeamReading_of_isCrossRegluedCell Tt Ct hG
-    have hends : ∀ z ∈ G.domain ∩ ⇑G ⁻¹' (Tt.chart '' spliceCylinder),
-        z ∈ frontier G.domain ↔ (R.coord z).2.2 = 0 ∨ (R.coord z).2.2 = 1 := by
-      intro z hz
-      have hz' : z ∈ R.tubeSource := by
-        rw [R.tubeSource_eq]
-        exact hz
-      exact R.boundary_iff_end z hz'
-    have hdomainR : (R.resolvedCell Ct).domain = G.domain := rfl
-    have hcoordR : BijOn R.coord (G.domain ∩ ⇑G ⁻¹' (Tt.chart '' spliceCylinder))
-        bentSource := by
-      rw [← R.tubeSource_eq]
-      exact R.bijOn_coord
-    have hregluedR : EqOn (⇑G) (Tt.chart ∘ crossSeamInclude ∘ R.coord)
-        (G.domain ∩ ⇑G ⁻¹' (Tt.chart '' spliceCylinder)) := by
-      rw [← R.tubeSource_eq]
-      exact R.reglued_eq
-    have hresolvedR : EqOn (⇑(R.resolvedCell Ct)) (Tt.chart ∘ crossSeamResolve ∘ R.coord)
-        (G.domain ∩ ⇑G ⁻¹' (Tt.chart '' spliceCylinder)) := by
-      rw [← R.tubeSource_eq]
-      intro z hz
-      exact R.resolvedCell_apply_of_mem Ct hz
-    have hcomplR : EqOn (⇑(R.resolvedCell Ct)) (⇑G)
-        (G.domain \ ⇑G ⁻¹' (Tt.chart '' spliceCylinder)) := by
-      intro z hz
-      refine R.resolvedCell_apply_of_notMem Ct fun hzs => ?_
-      rw [R.tubeSource_eq] at hzs
-      exact hz.2 hzs.2
     have := S.normal
-    rcases hcase with ⟨a, b, σ, υ, τ, φ, hσ, hτ, hυ, hφ, ⟨Wd⟩, ⟨Wr⟩⟩ |
-      ⟨a, b, σ, τ, υ, φ, hσ, hτ, hυ, hφ, ⟨Wd⟩, ⟨Wr⟩⟩
-    · obtain ⟨Ω₁, Ω₂, hΩ₁, hΩ₂, hcover, hcocont, hΩ₁tube, hΩ₁max, hlateral⟩ :=
-        R.exists_boundary_cover Wr.param
+    rcases exists_plCrossSeamReading_of_isCrossRegluedCell Tt Ct htubeBd hG with hR | hR
+    · obtain ⟨R⟩ := hR
       obtain ⟨Sg, e', δ', hSgC, hSgB, hSge, hSgN⟩ :=
-        NormalSingularCellData.exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing
-          Tt hdomainR hcoordR hregluedR hresolvedR hcomplR hG hendDisks hends htubeBd.subset
-          hBBd hmapC htubeC hbuffer hendBuffer hGd σ₀ τ₀ υ₀ φ₀ (fun θ => ev θ) hev hσ hτ hυ hφ
-          ⟨fun θ => fr (ev θ), hcont⟩ (fun _ => rfl) hγN hρ hρrange Wd Wr hΩ₁ hΩ₂ hcover
-          hcocont hΩ₁tube hΩ₁max hlateral
+        NormalSingularCellData.exists_descendingSurgery_of_crossSeamReading Tt Ct R hG
+          hendDisks htubeBd.subset hBBd hmapC htubeC hbuffer hendBuffer hGd σ₀ τ₀ υ₀ φ₀
+          (fun θ => ev θ) hev fr ⟨fun θ => fr (ev θ), hcont⟩ (fun _ => rfl) hγN hρ hρrange
+          hcase
       refine ⟨Sg, hSgC, hSgB, e', δ', fun θ => ?_, hSgN⟩
       rw [← hSge θ]
       exact hρι (δ' θ)
-    · obtain ⟨Ω₁, Ω₂, hΩ₁, hΩ₂, hcover, hcocont, hΩ₁tube, hΩ₁max, hlateral⟩ :=
-        R.exists_boundary_cover Wr.param
+    · obtain ⟨R⟩ := hR
+      obtain ⟨Ct'⟩ := nonempty_plSeamTubeChart_comp_crossQuarterTurn Ct
+      have Rt : PLCrossSeamReading (crossSeamTubeDataQuarterTurn Tt).chart G := R
+      have Ctt : PLSeamTubeChart _ (crossSeamTubeDataQuarterTurn Tt).chart := Ct'
+      have hcyl : (crossSeamTubeDataQuarterTurn Tt).chart '' spliceCylinder =
+          Tt.chart '' spliceCylinder :=
+        image_crossSeamTubeDataQuarterTurn_spliceCylinder Tt
+      have hend : (crossSeamTubeDataQuarterTurn Tt).chart '' spliceEndDisks =
+          Tt.chart '' spliceEndDisks :=
+        image_crossSeamTubeDataQuarterTurn_spliceEndDisks Tt
+      have hendDisks' : (crossSeamTubeDataQuarterTurn Tt).chart '' spliceEndDisks ⊆ B := by
+        rw [hend]
+        exact hendDisks
+      have htubeBd' : (crossSeamTubeDataQuarterTurn Tt).chart '' spliceCylinder ∩ Bd ⊆
+          (crossSeamTubeDataQuarterTurn Tt).chart '' spliceEndDisks := by
+        rw [hcyl, hend]
+        exact htubeBd.subset
+      have htubeC' : (crossSeamTubeDataQuarterTurn Tt).chart '' spliceCylinder ⊆ C := by
+        rw [hcyl]
+        exact htubeC
+      have hendBuffer' : ∀ z ∈ (crossSeamTubeDataQuarterTurn Tt).chart '' spliceEndDisks,
+          B ∈ 𝓝[Bd] z := by
+        rw [hend]
+        exact hendBuffer
       obtain ⟨Sg, e', δ', hSgC, hSgB, hSge, hSgN⟩ :=
-        NormalSingularCellData.exists_descendingSurgery_side_buffer_of_crossSeamTube_preserving
-          Tt hdomainR hcoordR hregluedR hresolvedR hcomplR hG hendDisks hends htubeBd.subset
-          hBBd hmapC htubeC hbuffer hendBuffer hGd σ₀ τ₀ υ₀ φ₀ (fun θ => ev θ) hev hσ hτ hυ hφ
-          ⟨fun θ => fr (ev θ), hcont⟩ (fun _ => rfl) hγN hρ hρrange Wd Wr hΩ₁ hΩ₂ hcover
-          hcocont hΩ₁tube hΩ₁max hlateral
+        NormalSingularCellData.exists_descendingSurgery_of_crossSeamReading
+          (crossSeamTubeDataQuarterTurn Tt) Ctt Rt hG hendDisks' htubeBd' hBBd hmapC htubeC'
+          hbuffer hendBuffer' hGd σ₀ τ₀ υ₀ φ₀ (fun θ => ev θ) hev fr
+          ⟨fun θ => fr (ev θ), hcont⟩ (fun _ => rfl) hγN hρ hρrange hcase
       refine ⟨Sg, hSgC, hSgB, e', δ', fun θ => ?_, hSgN⟩
       rw [← hSge θ]
       exact hρι (δ' θ)
