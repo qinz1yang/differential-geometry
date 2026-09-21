@@ -180,3 +180,51 @@ disk in the 3-ball already in general position with one transverse double arc, `
 `Ac = Lc = ∂S`, a small non-identity shear fixing the boundary plane, `ψ = id`, `Z` and `W`
 overlapping. **Most likely surprise:** writing "both scales are chosen before the perturbation" as
 "one scale does not grow under the inverse chart".
+
+## Fourth review (snapshot `3be6d2b15412`, 2026-09-21)
+**The reviewer withdraws the third review's suggestion "pairing preserved for *all* admissible
+vertex perturbations": too strong.** Fixing the subdivision and shrinking `τ` does not make an
+arbitrary PL normal crossing stable in the *current* chart coordinates. Our docstring's guarantee
+to that effect is false.
+
+| Leaf | Verdict | Reason |
+|---|---|---|
+| `exists_normalizationPreparation_on_prescribedRegion` | **OK — freeze** | `T, κ, δ, ε` all precede the perturbation; conversion `ε → δ`. (The multiplicity supplier still needs its `[MetricSpace]` generalisation.) |
+| `exists_pairingStableSubdivision_in_adaptedChart` | **FALSE** | a normal *folded* double crossing becomes a tangency under arbitrarily small admissible perturbations; the pairing conclusion fails |
+| `exists_guardedVertexMap_in_adaptedChart` | **OK** (as stated) | frozen vertices, boundary heights and the relative guard are compatible; it only chooses vertices |
+| `exists_normalCrossings_of_gluedCell` | **OK — freeze** | `hmaps` present; full pairing handles `Z ∩ K`, full fibre equality handles the open set `O ∩ Kᶜ`, boundary case included; normal region `G_W ∪ U' ∪ (O ∩ Kᶜ)`, no `O₀` needed |
+
+* **`K` is quantified correctly** (`D(|Rc|) ⊆ int K`, `K ⋐ V`, then shrink `τ`); protecting `Z ∩ K`
+  suffices. **No full-subcomplex hypothesis is needed**: facewise affine + non-negative height +
+  old zero set `= Lc.space` give `|σ| ∩ Lc.space = conv {v ∈ σ : v ∈ Lc.space}`, i.e.
+  `restrict R Lc.space` is full; with the same zero vertex set and non-negative barycentric
+  coefficients this yields the new `hpzero`.
+* **Counterexample to the universal pairing.** In a coordinate block of a large flat 3-torus:
+  `S = [0,6] × [−1,1]`, `D(s,t) = (c s, 2 + t)`, `c` through
+  `(0,1), (0,0), (3,0), (3,3), (−3,3), (0,0), (1,1)` at the integers; `C = M`, `BdM = D(∂S)`,
+  `ec = id` on `Q = (−½,½)² × (3/2,5/2)`, `ℓ = z`, `O = V = Q`, `y₀ = (0,0,2)`,
+  `W = B(y₀, 1/100)`, `Z = closure W`; `Rc` = the two source rectangles
+  `P_i = [i − 1/16, i + 1/16] × [−¼,¼]`, `i = 1, 5`, `Ac` = their outer rings, `Lc = ∅`. Old rays
+  `A: (1,0), (0,1)`, `B: (1,1), (−1,1)` — cyclic order ABAB, a genuine normal crossing (straightened
+  by a sectorwise PL map). `hsep` forces all faces adjacent to the two preimages of `y₀` to be free;
+  translate the **free vertices of sheet B** by `a·(1,0,0)`, `a > 0` small: still admissible, but
+  near `q = (a,0,2) ∈ Z ∩ int K` sheet A is `y = 0` and sheet B is `y = |x − a|`: **tangent, not
+  crossing**. Smaller `τ`, another `K`, a finer `R` do not help; the guard is not even involved.
+* **Revised interface.** Let `𝒫_R` be the finite vertex-parameter space with the linear constraints
+  (frozen vertices fixed, physical boundary vertices at height zero). Stability leaf:
+  `∃ R τ K (𝒢 ⊆ 𝒫_R), 𝒢.Nonempty ∧ IsOpen 𝒢 (in 𝒫_R) ∧ ∀ φ ∈ 𝒢, Admissible_τ φ ∧ Controlled φ ∧
+  Pair_{Z ∩ K} D g_φ` — `Controlled` = the present conclusions other than pairing. The old vertex
+  map need **not** be interior to `𝒢`. The generic choice must be made **inside `𝒢`** (a density
+  statement for the guard), not by taking any output of the present guarded leaf. Constructing
+  `𝒢` and proving it non-empty is the substantive geometric obligation.
+* **Also missing from the stability leaf:** the cut-out's seam conditions, to be passed by the
+  caller: `hΩ : IsOpen Ω`, `hΩR : D.domain ∩ Ω ⊆ Rc.space`, `hNb : IsOpen Nb`,
+  `hNbfr : Rc.space \ Ω ⊆ Nb`, `hNbA : Rc.space ∩ Nb ⊆ Ac.space` — otherwise translating an
+  unfrozen flat `Rc` can overlap a neighbouring unmoved sheet and break `StarInj T`.
+
+**Missing obligation:** a controlled, non-empty, open family of pairing-protecting perturbations
+admitting a generic choice — not one more scale. **Fixture:** a proper PL immersed disk with two
+*flat* sheets crossing transversally, non-empty frozen outer ring, `Z ∩ W ≠ ∅`, a non-identity small
+perturbation inside the open set of parameters keeping transversality. **Most likely surprise:**
+"some PL coordinates straighten the double crossing" is not "every small vertex perturbation in
+the present coordinates keeps it a double crossing".
