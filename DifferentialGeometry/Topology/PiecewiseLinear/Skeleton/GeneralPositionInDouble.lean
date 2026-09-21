@@ -10,215 +10,146 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffere
 /-!
 # Sorry-first skeleton of general position in the double
 
-The assembly `generalPositionInDoubleBuffered` below is proved for real from the eight leaves of
+The assembly `generalPositionInDoubleBuffered` below is proved for real from the ten leaves of
 this file, from the proved cover theorem `exists_finiteAdaptedCover_of_compactSpace`, from the
 proved bridge `eq_regionGluedMap_of_eqOn`, from
 `SingularTwoCell.nonempty_normalSingularCellData_of_fields`, from
 `doublePointSet_subset_of_preimage_singleton_eq_off` and from
 `exists_boundary_loop_of_buffered_homotopy`; every `sorry` is a leaf, none is inside the
 assembly.  The chain is: adapted half-space charts at every point of the double, a finite cover
-of the whole double by regions `closure (W j) ⊆ V j` with `V j` inside one adapted chart, then a
-chart-by-chart induction whose step cuts out a source piece carrying all sheets over
-`closure (W k)`, chooses **before any perturbation** a control complex `T` of the whole source
-disk, an injectivity scale `κ`, an ambient perturbation size `δ`, a chart perturbation size `ε`
-and three uniform buffers, then a fixed control subdivision `R`, a vertex tolerance `τ`, a
-compact target buffer `K` and a seed `φ₀` with a radius `ρ` of pairing-protecting vertex maps,
-only then chooses a guarded `φ` inside the sup-ball of radius `ρ` around `φ₀`, glues the result
-back literally, re-establishes the global invariants together with the buffered boundary
-homotopy, and only then recognises the crossings; at the last index every double point lies in
-the already normalised region, which is the `crossing` field of `NormalSingularCellData`.
+of the whole double by regions `closure (W j) ⊆ V j` with `closure (V j)` inside one adapted
+chart, a transition subdivision on every closed overlap, then a chart-by-chart induction.
 
-Two scales, not one.  The third external review (snapshot `94791ab1c755`, digested in
-`consult/J-generalposition-skeleton-review-digest.md`) refuted the claim that a single `ε` can
-both keep the perturbed chart image inside `⇑ec '' V` and measure the ambient error, and that
-claim is **withdrawn**: on the flat torus `(ℝ/20ℤ)³` with `D = (s, t, 0)`, `ec q = q / 2` and
-`V = B (0, 1)` the chart buffer forces `ε ≤ 1 / 2` at the origin while the inverse chart doubles
-the error, so `z = 3 ε e₁ / 4` has chart error `< ε` and ambient error `3 ε / 2`.  Preparation
-now returns an ambient `δ` and a chart `ε` with the conversion
-`dist z (ec (D x)) < ε → z ∈ ⇑ec '' V ∧ dist (ec.symm z) (D x) < δ`, satisfiable there for
-`ε ≤ δ / 2`; `hcert` and `hclose` measure in `M` with `δ`, while `hsmall`, the chart buffer, the
-active buffer and the boundary track buffer measure in the chart with `ε`.
+The induction invariant has two halves.  After the step for the cell `D k`, with
+`Z k = ⋃ j < k, closure (W j)`, (a) the crossings are PL normal double crossings over an open set
+containing `Z k`, and (b) for every later index `m`, over the compact transition zone
+`Z k ∩ closure (V m \ closure (W m))` the crossings are *margin stable in the chart* `ec m`:
+`HasStableCrossingBlocks`.  Half (b) is what consult L §2 shows a seed needs, and what consult O
+§2 localises: on the final subdivision a simplex with a frozen vertex misses `closure (W k)` by
+`hsep`, so the old crossings it can disturb lie over `Z k ∩ closure (V k \ closure (W k))`, and
+there the two complete local source sheets are buffered graphs `u = a (v, t)`, `v = b (u, t)`
+with `Lip a · Lip b ≤ 1 - η`; the unperturbed map is then the centre of the ball of admissible
+vertex maps, so no seed `φ₀`, no radius `ρ` and no pairing certificate `χ, ψ` are needed, and
+`VertexParameterSpace`, `IsVertexSupOpen` and `VertexSupBall` are gone with them.  Consult O §3
+shows (b) is *not* an open condition in the current chart's vertex parameters, which is why the
+generic choice leaf now carries wall conditions for the later charts.
 
-Stability near a seed, not for every admissible perturbation.  The fourth external review
-(snapshot `3be6d2b15412`) withdrew its own earlier suggestion, and the guarantee that a fixed
-subdivision and a small enough `τ` keep the source sheet pairing for *every* admissible vertex
-map is **withdrawn** with it: for `D (s, t) = (c s, 2 + t)` with `c` polygonal through
-`(0, 1), (0, 0), (3, 0), (3, 3), (-3, 3), (0, 0), (1, 1)`, the two source rectangles over `s = 1`
-and `s = 5` meet the chart block in two wedges whose four rays alternate, a genuine normal
-crossing whose bent model is `A : (1, 0), (0, 1)` against `B : (1, 1), (-1, 1)`, and translating
-the free vertices of the second wedge by `a • (1, 0, 0)` — admissible below every tolerance —
-replaces it by the sheet `y = 0` met by the sheet `y = |x - a|`.  The fifth external review
-(snapshot `c18a78c78212`) corrects how that last pair is to be read: as interior points of two
-*complete* local sheets, `y = 0` and `y = |x|` is a **tangency**, which the normal models
-exclude, not a normal double crossing; it is the bad perturbed configuration, never the old one,
-whose rays are the alternating `A : (1, 0), (0, 1)`, `B : (1, 1), (-1, 1)` just described.  The
-stability leaf therefore returns a seed `φ₀` with a radius `ρ` and asserts admissibility, the
-control clauses and the pairing only for the vertex maps of the parameter space that are
-`ρ`-close to `φ₀` at every vertex; exhibiting such a seed is the geometric obligation, not a
-formality: the local example that follows does not replace it.  In the model
-above `φ₀` can be the opposite translate `-a • (0, 1, 0)`, where the two sheets meet in the
-single transverse crossing at `(a, 0)` of two flat pieces, and the bad translates simply fall
-outside the ball.  The unperturbed map is *not* required to be the seed.
+The counterexample of consult O §3.  In the later chart `H (x, y, t) = (h (x, y), t)` with `h`
+the sector map that is `(y / 3, -2 x + 5 y / 3)` on `3 x ≤ y ≤ 4 x`, `(4 x / 3, y + 2 x / 3)` on
+`y ≥ 4 x` and the identity elsewhere, the two flat sheets `y = 0` and `y = x` have a strict graph
+margin in both charts, yet translating both by `(a, 3 a, 0)` puts their crossing line on the wall
+`y = 3 x`, where the four rays become `A : (1, 0), (0, 1)` and `B : (1, 1), (-1, 1)` — the bent
+model without margin, and one further small move of `B` makes it a tangency.  So an old margin in
+a later chart gives no safe ball in the current chart's parameters, and the double curve must be
+kept transverse to the walls: that translate is excluded by the transversality clause
+`hwalltrans` of `exists_genericVertexMap_in_adaptedChart`, because the translated double line
+`x = a, y = 3 a` lies *inside* the wall `y = 3 x`, so its direction lies in the wall's direction
+and no transverse `w` exists.
 
-The parameter space is the finite one.  `VertexParameterSpace D ec ℓ Lc Ac R` collects the maps
-sending every vertex of `R` in `Ac.space` to `ec (⇑D v)` and every vertex in `Lc.space` into
-`LinearMap.ker ℓ`; `IsVertexSupOpen R P 𝒢` says `𝒢 ⊆ P` and that every `φ ∈ 𝒢` admits a radius
-`ρ > 0` with every `φ' ∈ P` whose values on `R.vertices` are `ρ`-close to those of `φ` again in
-`𝒢`.  That already forces membership in `𝒢` to depend only on the values on `R.vertices`, by
-`IsVertexSupOpen.mem_of_eqOn_vertices`, so no separate clause is needed, and it keeps the free
-vertices genuinely movable inside `𝒢`, which is what the generic choice consumes.  The
-stability leaf is stated in the equivalent seed form: it returns `φ₀` in
-`VertexParameterSpace D ec ℓ Lc Ac R` together with `ρ > 0` and concludes for every `φ` of that
-parameter space with `dist (φ v) (φ₀ v) < ρ` at every `v ∈ R.vertices`.  The assembly rebuilds
-the family the generic leaf consumes as
-`𝒢 := VertexSupBall R (VertexParameterSpace D ec ℓ Lc Ac R) φ₀ ρ`, the sup-metric ball around
-`φ₀`; `mem_vertexSupBall_self` gives `𝒢.Nonempty` and `isVertexSupOpen_vertexSupBall` gives
-`IsVertexSupOpen R (VertexParameterSpace D ec ℓ Lc Ac R) 𝒢`, and since the ball is defined by
-`∃ r < ρ, ∀ v ∈ R.vertices, dist (φ v) (φ₀ v) ≤ r`, each of its members satisfies the seed's
-strict hypothesis at the same radius, so no shrinking of `ρ` is needed.
+`IsStableCrossingBlock` is not satisfiable by degenerate data over a set carrying double points.
+Over a double point of the block the two graph projections force two *different* sheets:
+`sheets_nonempty_of_isStableCrossingBlock` proves that both `SA` and `SB` meet the fibre, so a
+one-sheet or sheet-free block is impossible, and `HasStableCrossingBlocks` demands that the
+half-size blocks cover `doublePointSet ∩ Q`; combining the two,
+`exists_sheets_of_hasStableCrossingBlocks` proves that over *every* double point of `Q` the
+family produces two disjoint sheets through that point, so a block-free family is impossible as
+soon as `doublePointSet ∩ Q ≠ ∅`; `0 < η` is a field, so an `η`-free reading is impossible too.
+`hasStableCrossingBlocks_of_doublePointSet_inter_eq_empty` gives the base case `Z 0 = ∅` and
+nothing more, and `isStableCrossingBlock_of_flatSheets` inhabits the block predicate with
+`η = 1`: two transverse coordinate planes, `a = b = 0`, `La = Lb = 0`.  The uniform separation of
+the remaining source from the block is not a separate field: the full-preimage equality
+`S ∩ f ⁻¹' chartBlock = SA ∪ SB` already places every other source point outside the block, and
+a uniform distance from the half-size block follows from compactness of the source; a separate
+uniform field would not survive `isStableCrossingBlock_of_eqOn_compl`.
+
+The folded counterexample of the fourth external review violates (b).  Its two complete local
+sheets are the bent `L = {y = 0, x ≥ 0} ∪ {x = 0, y ≥ 0}` and the bent `V = {y = |x|}`, both
+times the crossing line.  In any affine coordinates the two ray directions of `L` must have
+`|U| ≤ La |V|` and those of `V` must have `|V| ≤ Lb |U|`; since the two `V`-values of the `L`
+rays have opposite signs, adding gives `|p| + |q| ≤ La (|r| + |s|) = La |V (e₂ - e₁)| ≤ La Lb
+(|p| + |q|)`, hence `1 ≤ La Lb`, contradicting `La Lb ≤ 1 - η`.  So that configuration is not a
+hypothesis of the seed leaf, and the seed leaf is not refuted by it; the flat fixture (two flat
+sheets crossing transversally inside the chart, frozen outer ring, `Z ∩ W ≠ ∅`) does satisfy
+(b) with `η = 1`, so the seed leaf is not vacuous either.
+
+Two scales, not one.  The third external review refuted the claim that a single `ε` can both
+keep the perturbed chart image inside `⇑ec '' V` and measure the ambient error: on the flat torus
+`(ℝ/20ℤ)³` with `D = (s, t, 0)`, `ec q = q / 2` and `V = B (0, 1)` the chart buffer forces
+`ε ≤ 1 / 2` at the origin while the inverse chart doubles the error.  Preparation returns an
+ambient `δ` and a chart `ε` with the conversion
+`dist z (ec (D x)) < ε → z ∈ ⇑ec '' V ∧ dist (ec.symm z) (D x) < δ`; `hcert` and `hclose` measure
+in `M` with `δ`, while `hsmall`, the chart buffer, the active buffer and the boundary track
+buffer measure in the chart with `ε`.
 
 Admissibility is the `Prop`-valued `AdmissibleVertexMap`: vertex error `< τ`, equality with
 `ec ∘ ⇑D` at vertices of the frozen collar, height zero exactly at the physical boundary vertices
 `Bv`, positive height at all other vertices.  It is inhabited for every `τ > 0` by the
-unperturbed vertex map `fun v => ec (D v)`, strict positivity included
-(`exists_admissibleVertexMap_of_adaptedChart`): `hproper` puts a vertex of `Rc.space \ Lc.space`
-off `BdM`, so its height is nonzero, and `hmapC` with `hCchart` makes every height nonnegative.
-Frozen vertices are no exception, whether they sit at height zero or above: those on `Lc.space`
-lie in `Bv` and have height zero, the others have positive height.  Through
-`mem_vertexParameterSpace_of_admissibleVertexMap` this gives `nonempty_vertexParameterSpace`, so
-the ambient parameter space is never empty and the stability leaf cannot be made vacuous by a
-tiny `τ`.  The boundary vertex set `Bv` is determined by `R` and `Lc` — `↑Bv ⊆ R.vertices`
-together with `v ∈ Bv ↔ v ∈ Lc.space` on `R.vertices` pins it, as two such sets have the same
-elements — so the stability leaf returns it beside `R` and the generic leaf receives it instead
-of choosing a second one.
+unperturbed vertex map (`exists_admissibleVertexMap_of_adaptedChart`), so the seed leaf cannot be
+made vacuous by a tiny `τ`, and `Bv` is determined by `R` and `Lc`, so the seed leaf quantifies
+over `Bv` and `φ` together and the generic leaf returns both.
 
-The pairing is localised.  `K` is compact, contained in `V`, and chosen in the stability leaf
-*before* `φ`, with `⇑D '' Rc.space ⊆ interior K`; that interior buffer is what makes
-`regionGluedMap D ec R φ Rc '' Rc.space ⊆ K` a consequence of the tolerance `τ` instead of an
-extra assumption, and it is asserted for every `φ` the seed controls.  The full-preimage
-certificate `U, U', χ, ψ` is produced only near the compact set `Z ∩ K`; off `K` the crossing
-leaf transports
-by the identity, because `preimage_singleton_eq_of_eqOn_compl_of_image_subset` turns
-`EqOn ⇑D' ⇑D Rc.spaceᶜ` together with the two image bounds into `⇑D' ⁻¹' {y} = ⇑D ⁻¹' {y}` for
-every `y ∉ K`.  `Z ∩ V` would not do: it is not compact, and `Vᶜ` is not a neighbourhood of a
-boundary point of `V`.  Since `Z ⊆ O` with `O` open, the transport half needs no shrunk `O₀`, so
-the open set `O₀` and the fibre agreement `hfibV` are gone from the crossing leaf, and with them
-`O₀`, `Z` and `O` from the preparation leaf.
-
-The four earlier refuted counterexamples are recorded, each with the clause that now kills it;
-the fifth, the folded crossing above, is what removed the quantifier over all admissible vertex
-maps from the stability leaf.  The fold
-`D = (s, t, 1 - max |s| |t|)`, `D' = (|s|, t, 1 - max |s| |t|)` on `Rc = S ∩ {s ≤ 0}` with
-`Ac = {0} × [-1, 1]` and `Ω = ∅` satisfied every hypothesis of the old invariants leaf although
-`D'` folds along the seam, and it is excluded because `hNbfr` and `hNbA` force
-`Rc.space ⊆ Ac.space` when `Ω = ∅`, so `hfrozen` leaves the cell unchanged there.  The pairing
-change `ABAB → AABB`, in which the four rays of two transverse source sheets are re-paired by an
-arbitrarily small perturbation with every frozen exemption respected, is excluded because the
-crossing leaf consumes a PL homeomorphism `ψ` of the **full** source preimage conjugating `⇑D`
-into `⇑D'` near `Z ∩ K`, and that model's crossing point lies in `⇑D '' Rc.space ⊆ K`, so the
-localisation does not release it.  The flat torus above is excluded by the two scales.  The fold
-with `p_φ = (10 + s, t, h)`, `ec = id` on `(-3, 3)³`, `Ac = ∅`, `Ω = univ` and `ε = 11`, whose
-inverse chart is unconstrained off `ec.target`, is excluded by
-`hmaps : MapsTo (simplicialMap Rs φ) Rc.space (⇑ec '' V)`, which the stability leaf produces and
-the frozen gluing leaf already received.
-
-Non-degeneracy of the pairing certificate is part of its statement: `Z ∩ K ⊆ U'` together with
-`χ '' U = U'` forbids the empty solution `U = ∅` whenever `Z ∩ K ≠ ∅`, and `IsPLHomeomorphOn`
-asks for a bijection onto `D.domain ∩ regionGluedMap D ec R φ Rc ⁻¹' U'`, so no sheet may leave
-or enter.
-
-Instance binders.  The control certificate compares a competitor `g` with `⇑D` in the metric of
-the ambient manifold, which the skeleton's `[TopologicalSpace M]` does not supply.  The five
-leaves that mention that comparison are therefore stated for `[MetricSpace M]`, whose topology is
-the one they already used; the assembly instantiates `M` by `(double 3 K).space`, a subtype of
-the normed space `E × E × ℝ`, so `Subtype.metricSpace` supplies it.  Preparation and the
-stability leaf also take `[CompactSpace M]`, which the assembly has from `isPolyhedron_space`,
-and which is what lets `K` be chosen compact inside `V` and `Z ∩ K` be treated as compact.
+The pairing is gone; localisation stays.  `K` is compact, contained in `V`, and chosen in the
+seed leaf before `φ`, with `⇑D '' Rc.space ⊆ interior K`.  Over `Z ∩ K` the old crossings that a
+frozen or mixed simplex can meet are protected by the seed leaf's `hprot`; off `K` the crossing
+leaf transports by the identity, because
+`preimage_singleton_eq_of_eqOn_compl_of_image_subset` turns `EqOn ⇑D' ⇑D Rc.spaceᶜ` together with
+the two image bounds into `⇑D' ⁻¹' {y} = ⇑D ⁻¹' {y}` for every `y ∉ K`; on the free part the
+crossings are recognised afresh from the guard, which in dimension three already yields the
+recognition conditions of consult O §1 (an edge and a triangle meet in one point interior to
+both, no edge–edge and no vertex–triangle incidence, two triangles span `⊤`), and inside
+`LinearMap.ker ℓ` the boundary traces of different sheets cross transversally away from boundary
+vertices because no three of four boundary vertices are collinear, the third vertices being at
+strictly positive height by admissibility.
 
 The leaves, with owner and review state.
 
-`exists_adaptedHalfSpaceChart_in_double` (lane H, H8 and (11), reviewed 2026-09-21, frozen):
-every point of the double of a combinatorial three manifold with boundary has arbitrarily small
-charts of the maximal `plGroupoid 3` atlas adapted to the actual pair, `x ∈ C ↔ 0 ≤ ℓ (ec x)` and
-`x ∈ Bd ↔ ℓ (ec x) = 0`.
+`exists_adaptedHalfSpaceChart_in_double` (lane H, reviewed 2026-09-21, frozen): every point of
+the double of a combinatorial three manifold with boundary has arbitrarily small charts of the
+maximal `plGroupoid 3` atlas adapted to the actual pair.
 
-`SingularTwoCell.exists_cutOutPiece_of_closure_subset` (lane H, H4 and B4, reviewed 2026-09-21,
-frozen): the cut-out source piece with boundary.  `Rc` is a finite combinatorial two manifold
-with boundary inside the source disk, `Lc` its physical boundary part, `Ω` an open set with
-`D.domain ∩ ⇑D ⁻¹' closure V₀ ⊆ Ω` and `D.domain ∩ Ω ⊆ Rc.space`, which is condition (10); `Ac`
-is the frozen collar subcomplex, a neighbourhood in `Rc.space` of the artificial frontier
-`Rc.space \ Ω`, and `Disjoint Ac.space (⇑D ⁻¹' closure V₀)` keeps it off the region to normalise.
+`SingularTwoCell.exists_cutOutPiece_of_closure_subset` (lane H, reviewed 2026-09-21, frozen): the
+cut-out source piece with boundary, its frozen collar `Ac` and the seam data `Ω`, `Nb`.
 
-`exists_gluedCell_of_vertexMap_in_adaptedChart` (lane H, H6b, reviewed 2026-09-21, frozen): the
-literal gluing.  On the same source disk, `EqOn ⇑D' (ec.symm ∘ simplicialMap Rs φ) Rc.space` and
-`EqOn ⇑D' ⇑D Rc.spaceᶜ` on the whole complement, which is what makes unrestricted preimages of
-`D'` computable from the two pieces.  Its statement is unchanged and its binders are unchanged;
-`eq_regionGluedMap_of_eqOn` turns those two equalities into the single equation
-`⇑D' = regionGluedMap D ec Rs φ Rc`, so the leaves downstream can speak about the literal glued
-function without the frozen statement being touched.
+`exists_gluedCell_of_vertexMap_in_adaptedChart` (lane H, reviewed 2026-09-21, frozen): the
+literal gluing, with equality on the whole complement.
 
-`exists_globalInvariants_of_gluedCell` (lane H, H6c, reviewed 2026-09-21, frozen): the invariants
-of the glued cell on the whole disk, from the preparation certificate `hcert`, the ambient
-closeness `hclose` and `hstar`, together with the seam neighbourhood hypotheses `hNb`, `hNbfr`,
-`hNbA` of the cut-out leaf, without which injectivity on each side of the seam does not give
-injectivity across it.  The only change forced by the two scales is a binder: the scale list
-`{ε κ : ℝ}` became `{ε δ κ : ℝ}` and `hcert`, `hclose` now measure the ambient error with `δ`
-while `hsmall`, `hchartbuf`, `hbdbuf` keep the chart error `ε`.  The conclusion carries the
-target `C`, the fibre agreement off `V`, local injectivity, the multiplicity bound, properness
-against `BdM`, and the boundary homotopy whose whole track stays in `BdM` with `B` as a relative
-neighbourhood, which is condition (12).
+`exists_globalInvariants_of_gluedCell` (lane H, reviewed 2026-09-21, frozen): the invariants of
+the glued cell on the whole disk, with the buffered boundary homotopy.
 
-`exists_normalizationPreparation_on_prescribedRegion` (lane H, H6a, reviewed 2026-09-21, frozen):
-everything chosen *before* the perturbation.  A control complex `T` of the whole
-source disk on which `⇑D` is star injective, the scale `κ`, the ambient size `δ`, the chart size
-`ε`, the certificate that every competitor `g` that is `δ`-close to `⇑D` on the whole disk in `M`
-and star injective on `T` has `κ` as a uniform injectivity scale and at most two preimages over
-each point, and three buffers: the combined chart-range and conversion buffer, the active buffer
-keeping `ε`-competitors of frozen points off `closure W`, and the boundary track buffer, which is
-condition (12).
+`exists_normalizationPreparation_on_prescribedRegion` (lane H, reviewed 2026-09-21, frozen):
+the control complex `T`, the scales `κ`, `δ`, `ε` and the three buffers, all before the
+perturbation.
 
-`exists_pairingStableSubdivision_in_adaptedChart` (lane H, H5a, seed form after the fifth
-review; statement not refuted, general existence of the seed UNVERIFIED — see
-`consult/L-pairing-seed.md`; do not prove before that consult is answered): the stability half
-of the old perturbation leaf.  `R`, `τ`, `K`, the boundary vertex set `Bv`, the seed `φ₀` and
-the radius `ρ` are all fixed before any vertex map is chosen, and admissibility, the control
-clauses and the pairing certificate near `Z ∩ K` are asserted only for the members of
-`VertexParameterSpace D ec ℓ Lc Ac R` whose values on `R.vertices` are within `ρ` of those of
-`φ₀`.  It also receives the cut-out's seam conditions `hΩ`, `hΩR`, `hNb`, `hNbfr`, `hNbA`,
-without which an unfrozen flat `Rc` can be translated onto a neighbouring unmoved sheet and
-`StarInj T` fails on the seam.  The trap recorded by the fifth review: after a normalization one
-passes to a common subdivision, and openness of the old family does not upgrade to the parameter
-space of that subdivision, because the new free vertices must move independently instead of
-being tied to affine combinations of the old ones, so the seed must be produced on the final
-`R`.
+`exists_transitionSubdivisionOnOverlap` (redesigned after consult O, unreviewed): on a compact
+overlap of two adapted charts, a finite complex in the first chart's target covering the overlap
+on whose faces the transition is affine.  Consult O §4 forbids assuming the transitions affine.
 
-`exists_guardedVertexMap_in_adaptedChart` (lane H, H5b, reviewed 2026-09-21, frozen): the
-generic half, now a density statement inside an arbitrary non-empty
-vertex-sup-open `𝒢` for the fixed `R` and `Bv`.  The affine independence conclusion keeps the
-guard `(s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1`, since four boundary vertices are
-coplanar and dropping it makes the leaf false, with the frozen part of `s` exempted in the
-relative form.  The exemptions are what makes the failure set nowhere dense: a vertex of `s`
-outside `Ac.space` and outside `Lc.space` moves in an open subset of the chart target and has to
-miss the affine span of at most three other images, a vertex outside `Ac.space` but in `Lc.space`
-moves in an open subset of `LinearMap.ker ℓ` and has to miss the intersection of that span with
-`LinearMap.ker ℓ`, which is proper unless the three others lie in `LinearMap.ker ℓ`, and then
-`hproper`, `hLspace` and `hBdchart` put all four of them in `Bv` and the guard is not invoked.
-The reviewer's approval of 2026-09-21 was given for the old `∀ τ > 0, ∃ Bv φ` form; that form
-follows from this one applied to `VertexSupBall R (VertexParameterSpace D ec ℓ Lc Ac R)
-(fun v => ec (D v)) τ` for a radius small enough for the finitely many strict inequalities
-`0 < ℓ (ec (D v))`, `v ∈ R.vertices \ Bv`, to survive, so no second leaf is kept.  The fifth
-review froze the present form: the frozen-part antecedent does not depend on the free vertices,
-so either it already fails — the branch where two frozen vertices carry equal images, which no
-proof may skip — and the failure set is empty, or it holds and each of the finitely many failure
-sets is a proper algebraic subset of the parameter space, a finite union of which is nowhere
-dense.
+`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` (redesigned after consult O, unreviewed):
+a margin-stable block is a PL normal double crossing at each of its double points.  The
+implication is not short — it has to produce the two embedded sheets, the PL crossing model and
+the fibre germ — so it is a named leaf and not a sanity lemma.
 
-`exists_normalCrossings_of_gluedCell` (lane H, H6d, reviewed 2026-09-21, frozen):
-recognition on the active target and transport on the protected one.  Over `closure W` the
-crossings are read off the guarded affine independence, `hfrozen`, `hactive` and `hsep`, and
-`hmaps` is what ties `hglue` to the chart; over `Z ∩ K` they are transported by the pairing
-certificate, and over `Z \ K` by the identity, since `O` is open, `Z ⊆ O` and the fibres agree
-off `K`.  The output is one open `O' ⊇ Z ∪ closure W` carrying normal crossings.
+`exists_protectedSubdivision_in_adaptedChart` (redesigned after consult O, unreviewed): the seed,
+consuming (b) at `m = k`.  It fixes `R`, `τ` and `K` before any vertex map and asserts, for every
+admissible `φ`, the control clauses, the protection of the old crossings over `Z ∩ K` that a
+simplex with a frozen vertex takes part in, and the survival of the stable blocks with margin
+`η / 2`.  The limit argument of consult O §2 needs the *predetermined* injectivity scale, so the
+leaf also receives `κ`, `hcert` and the conversion `hconv` of the preparation certificate, which
+the pairing leaf it replaces did not have; `Z ∩ closure (V \ closure W)` is compact because `Z` is
+closed and `M` is a compact space, and its closed buffer lies in `ec.source` because the cover
+theorem now returns `closure (V j) ⊆ ec.source`.
+
+`exists_genericVertexMap_in_adaptedChart` (redesigned after consult O, unreviewed): relative
+multi-chart generic production.  Beside admissibility and the relative guard it produces, for
+every later chart of the fixed finite family, the wall conditions of consult L §3 and O §4 on the
+fixed compact overlaps: the double curve misses the one-skeleton of the transition complex,
+crosses its two-faces transversally, and no image of a source edge meets a wall on the double
+curve.  Degeneracies forced by frozen data are exempt exactly as in the guard; their retention is
+the proved `isStableCrossingBlock_of_eqOn_compl`.
+
+`exists_normalCrossings_of_gluedCell` (redesigned after consult O, unreviewed): recognition on
+the free part, protection on the frozen and mixed part, identity transport off `K`, and the
+production of (b) for every later chart over `(Z ∪ closure W) ∩ closure (V m \ closure (W m))`.
 -/
 
 open Set Topology
@@ -278,6 +209,13 @@ theorem preimage_singleton_eq_of_eqOn_compl_of_image_subset {α β : Type*} {f f
       exact absurd (h ▸ hf (mem_image_of_mem f hx)) hy
   · simp only [mem_preimage, mem_singleton_iff, hoff hx]
 
+def blockBox (r tlo : ℝ) : Set (ℝ × ℝ × ℝ) :=
+  {p | |p.1| ≤ r ∧ |p.2.1| ≤ r ∧ p.2.2 ∈ Icc tlo r}
+
+def complexSkeleton {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (n : ℕ)
+    (K : Geometry.SimplicialComplex ℝ E) : Set E :=
+  ⋃ (s : Finset E) (_ : s ∈ K.faces) (_ : s.card ≤ n + 1), convexHull ℝ (s : Set E)
+
 section Ambient
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -294,31 +232,36 @@ theorem exists_finiteAdaptedCover_of_compactSpace [T2Space M] [CompactSpace M] (
         (∀ j, n ≤ j → W j = ∅) ∧ (⋃ j, W j) = univ ∧
         ∀ j < n, ∃ (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
           (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ),
-          ec ∈ (plGroupoid 3).maximalAtlas M ∧ ℓ ≠ 0 ∧ V j ⊆ ec.source ∧
+          ec ∈ (plGroupoid 3).maximalAtlas M ∧ ℓ ≠ 0 ∧ closure (V j) ⊆ ec.source ∧
             (∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x)) ∧
             (∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0) := by
   have : LocallyCompactSpace M :=
     ChartedSpace.locallyCompactSpace (H := EuclideanSpace ℝ (Fin 3)) M
-  have key : ∀ y : M, ∃ (Wy : Set M)
+  have key : ∀ y : M, ∃ (Wy Vy : Set M)
       (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
       (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ),
-      IsOpen Wy ∧ y ∈ Wy ∧ closure Wy ⊆ ec.source ∧
+      IsOpen Wy ∧ y ∈ Wy ∧ IsOpen Vy ∧ closure Wy ⊆ Vy ∧ closure Vy ⊆ ec.source ∧
         ec ∈ (plGroupoid 3).maximalAtlas M ∧ ℓ ≠ 0 ∧
         (∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x)) ∧
         (∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0) := by
     intro y
     obtain ⟨ec, ℓ, hec, hℓ, hy, -, hC, hBd⟩ := hchart y univ Filter.univ_mem
     obtain ⟨s, hs, hsub, hcomp⟩ := local_compact_nhds (ec.open_source.mem_nhds hy)
-    refine ⟨interior s, ec, ℓ, isOpen_interior, mem_interior_iff_mem_nhds.2 hs, ?_, hec, hℓ,
-      hC, hBd⟩
-    exact (closure_mono interior_subset).trans
-      (hcomp.isClosed.closure_eq.subset.trans hsub)
-  choose Wy ecy ℓy hWopen hymem hWcl hecm hℓne hCm hBdm using key
+    have hVopen : IsOpen (interior s) := isOpen_interior
+    have hyV : y ∈ interior s := mem_interior_iff_mem_nhds.2 hs
+    have hclV : closure (interior s) ⊆ ec.source :=
+      (closure_mono interior_subset).trans (hcomp.isClosed.closure_eq.subset.trans hsub)
+    obtain ⟨s', hs', hsub', hcomp'⟩ := local_compact_nhds (hVopen.mem_nhds hyV)
+    exact ⟨interior s', interior s, ec, ℓ, isOpen_interior,
+      mem_interior_iff_mem_nhds.2 hs', hVopen,
+      (closure_mono interior_subset).trans (hcomp'.isClosed.closure_eq.subset.trans hsub'),
+      hclV, hec, hℓ, hC, hBd⟩
+  choose Wy Vy ecy ℓy hWopen hymem hVyopen hWVy hVycl hecm hℓne hCm hBdm using key
   obtain ⟨t, -, hcover⟩ :=
     isCompact_univ.elim_nhds_subcover Wy fun y _ => (hWopen y).mem_nhds (hymem y)
   let p : ∀ j : ℕ, j < t.card → M := fun j h => ((t.equivFin.symm ⟨j, h⟩ : {x // x ∈ t}) : M)
   refine ⟨t.card, fun j => if h : j < t.card then Wy (p j h) else ∅,
-    fun j => if h : j < t.card then (ecy (p j h)).source else ∅, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    fun j => if h : j < t.card then Vy (p j h) else ∅, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro j
     by_cases h : j < t.card
     · simp only [dif_pos h]
@@ -328,13 +271,13 @@ theorem exists_finiteAdaptedCover_of_compactSpace [T2Space M] [CompactSpace M] (
   · intro j
     by_cases h : j < t.card
     · simp only [dif_pos h]
-      exact (ecy _).open_source
+      exact hVyopen _
     · simp only [dif_neg h]
       exact isOpen_empty
   · intro j
     by_cases h : j < t.card
     · simp only [dif_pos h]
-      exact hWcl _
+      exact hWVy _
     · simp only [dif_neg h, closure_empty]
       exact Subset.rfl
   · intro j hj
@@ -350,7 +293,7 @@ theorem exists_finiteAdaptedCover_of_compactSpace [T2Space M] [CompactSpace M] (
   · intro j hj
     refine ⟨ecy (p j hj), ℓy (p j hj), hecm _, hℓne _, ?_, hCm _, hBdm _⟩
     simp only [dif_pos hj]
-    exact Subset.rfl
+    exact hVycl _
 
 theorem SingularTwoCell.exists_cutOutPiece_of_closure_subset [T2Space M] (D : SingularTwoCell M)
     {V₀ V : Set M} (hV : IsOpen V) (hV₀ : closure V₀ ⊆ V) :
@@ -384,6 +327,219 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart [T2Space M] (D : SingularT
     ∃ D' : SingularTwoCell M, D'.domain = D.domain ∧
       EqOn (⇑D') (fun x => ec.symm (simplicialMap Rs φ x)) Rc.space ∧
       EqOn (⇑D') (⇑D) Rc.spaceᶜ := by
+  sorry
+
+def chartBlock (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ) : Set M :=
+  ec.source ∩ ⇑ec ⁻¹' (⇑A ⁻¹' blockBox r tlo)
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem chartBlock_mono_of_half (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) {r tlo : ℝ} (hr : 0 ≤ r) (ht : tlo ≤ 0) :
+    chartBlock ec A (r / 2) (tlo / 2) ⊆ chartBlock ec A r tlo := by
+  intro x hx
+  obtain ⟨hxs, hxb⟩ := hx
+  refine ⟨hxs, ?_⟩
+  simp only [mem_preimage, blockBox, mem_ofPred_eq, mem_Icc] at hxb ⊢
+  exact ⟨hxb.1.trans (by linarith), hxb.2.1.trans (by linarith),
+    by linarith [hxb.2.2.1], by linarith [hxb.2.2.2]⟩
+
+def IsStableCrossingBlock (f : EuclideanSpace ℝ (Fin 2) → M)
+    (S : Set (EuclideanSpace ℝ (Fin 2)))
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (BdM : Set M)
+    (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ)
+    (SA SB : Set (EuclideanSpace ℝ (Fin 2))) (a b : ℝ × ℝ → ℝ) (La Lb η : ℝ) : Prop :=
+  0 < r ∧ 0 < η ∧ 0 ≤ La ∧ 0 ≤ Lb ∧ La * Lb ≤ 1 - η ∧
+    ((tlo = -r ∧ Disjoint (chartBlock ec A r tlo) BdM) ∨
+        (tlo = 0 ∧ (∀ z, (A z).2.2 = ℓ z) ∧
+          ∀ x ∈ SA ∪ SB, (x ∈ frontier S ↔ (A (ec (f x))).2.2 = 0))) ∧
+    S ∩ f ⁻¹' chartBlock ec A r tlo = SA ∪ SB ∧ Disjoint SA SB ∧
+    (∀ x ∈ SA, (A (ec (f x))).1 = a ((A (ec (f x))).2.1, (A (ec (f x))).2.2)) ∧
+    (∀ x ∈ SB, (A (ec (f x))).2.1 = b ((A (ec (f x))).1, (A (ec (f x))).2.2)) ∧
+    InjOn (fun x => ((A (ec (f x))).2.1, (A (ec (f x))).2.2)) SA ∧
+    InjOn (fun x => ((A (ec (f x))).1, (A (ec (f x))).2.2)) SB ∧
+    (∀ v v' t : ℝ, |a (v, t) - a (v', t)| ≤ La * |v - v'|) ∧
+    (∀ u u' t : ℝ, |b (u, t) - b (u', t)| ≤ Lb * |u - u'|) ∧
+    IsPiecewiseAffineOn a univ ∧ IsPiecewiseAffineOn b univ
+
+def HasStableCrossingBlocks (f : EuclideanSpace ℝ (Fin 2) → M)
+    (S : Set (EuclideanSpace ℝ (Fin 2)))
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (BdM Q : Set M) (η : ℝ) : Prop :=
+  0 < η ∧ ∃ (m : ℕ) (A : Fin m → (EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ))
+      (r tlo : Fin m → ℝ) (SA SB : Fin m → Set (EuclideanSpace ℝ (Fin 2)))
+      (a b : Fin m → ℝ × ℝ → ℝ) (La Lb : Fin m → ℝ),
+      doublePointSet f S ∩ Q ⊆ ⋃ i, chartBlock ec (A i) (r i / 2) (tlo i / 2) ∧
+        ∀ i, IsStableCrossingBlock f S ec ℓ BdM (A i) (r i) (tlo i) (SA i) (SB i) (a i) (b i)
+          (La i) (Lb i) η
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem HasStableCrossingBlocks.mono {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q Q' : Set M} {η : ℝ}
+    (h : HasStableCrossingBlocks f S ec ℓ BdM Q η) (hQ : Q' ⊆ Q) :
+    HasStableCrossingBlocks f S ec ℓ BdM Q' η := by
+  obtain ⟨hη, m, A, r, tlo, SA, SB, a, b, La, Lb, hcov, hblk⟩ := h
+  exact ⟨hη, m, A, r, tlo, SA, SB, a, b, La, Lb,
+    (inter_subset_inter Subset.rfl hQ).trans hcov, hblk⟩
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem hasStableCrossingBlocks_of_doublePointSet_inter_eq_empty
+    {f : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q : Set M} {η : ℝ}
+    (hQ : doublePointSet f S ∩ Q = ∅) (hη : 0 < η) :
+    HasStableCrossingBlocks f S ec ℓ BdM Q η := by
+  refine ⟨hη, 0, Fin.elim0, Fin.elim0, Fin.elim0, Fin.elim0, Fin.elim0, Fin.elim0, Fin.elim0,
+    Fin.elim0, Fin.elim0, ?_, fun i => i.elim0⟩
+  rw [hQ]
+  exact empty_subset _
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem sheets_nonempty_of_isStableCrossingBlock {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM : Set M}
+    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
+    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η : ℝ}
+    (h : IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η) {y : M}
+    (hy : y ∈ doublePointSet f S) (hyB : y ∈ chartBlock ec A r tlo) :
+    (SA ∩ f ⁻¹' {y}).Nonempty ∧ (SB ∩ f ⁻¹' {y}).Nonempty := by
+  obtain ⟨-, -, -, -, -, -, hpre, -, -, -, hinjA, hinjB, -, -, -, -⟩ := h
+  obtain ⟨x, hxS, z, hzS, hxz, hxy, hzy⟩ := hy
+  have hfeq : f x = f z := by rw [hxy, hzy]
+  have hxmem : x ∈ SA ∪ SB := by
+    rw [← hpre]
+    exact ⟨hxS, by simp only [mem_preimage, hxy]; exact hyB⟩
+  have hzmem : z ∈ SA ∪ SB := by
+    rw [← hpre]
+    exact ⟨hzS, by simp only [mem_preimage, hzy]; exact hyB⟩
+  have hnotA : ¬(x ∈ SA ∧ z ∈ SA) := by
+    rintro ⟨hxA, hzA⟩
+    exact hxz (hinjA hxA hzA (by simp only [hfeq]))
+  have hnotB : ¬(x ∈ SB ∧ z ∈ SB) := by
+    rintro ⟨hxB, hzB⟩
+    exact hxz (hinjB hxB hzB (by simp only [hfeq]))
+  rcases hxmem with hxA | hxB
+  · rcases hzmem with hzA | hzB
+    · exact absurd ⟨hxA, hzA⟩ hnotA
+    · exact ⟨⟨x, hxA, hxy⟩, ⟨z, hzB, hzy⟩⟩
+  · rcases hzmem with hzA | hzB
+    · exact ⟨⟨z, hzA, hzy⟩, ⟨x, hxB, hxy⟩⟩
+    · exact absurd ⟨hxB, hzB⟩ hnotB
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem exists_sheets_of_hasStableCrossingBlocks {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q : Set M} {η : ℝ}
+    (h : HasStableCrossingBlocks f S ec ℓ BdM Q η) {y : M}
+    (hy : y ∈ doublePointSet f S ∩ Q) :
+    ∃ SA' SB' : Set (EuclideanSpace ℝ (Fin 2)),
+      Disjoint SA' SB' ∧ (SA' ∩ f ⁻¹' {y}).Nonempty ∧ (SB' ∩ f ⁻¹' {y}).Nonempty := by
+  obtain ⟨-, m, A, r, tlo, SA, SB, a, b, La, Lb, hcov, hblk⟩ := h
+  obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov hy)
+  obtain ⟨hr0, -, -, -, -, hside, -, hdisj, -, -, -, -, -, -, -, -⟩ := hblk i
+  have ht : tlo i ≤ 0 := by
+    rcases hside with ⟨h1, -⟩ | ⟨h1, -, -⟩
+    · rw [h1]; linarith
+    · exact le_of_eq h1
+  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock (hblk i) hy.1
+    (chartBlock_mono_of_half ec (A i) (le_of_lt hr0) ht hi)
+  exact ⟨SA i, SB i, hdisj, hA, hB⟩
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem isStableCrossingBlock_of_flatSheets {f : EuclideanSpace ℝ (Fin 2) → M}
+    {S : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM : Set M}
+    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r : ℝ}
+    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} (hr : 0 < r)
+    (hBd : Disjoint (chartBlock ec A r (-r)) BdM)
+    (hpre : S ∩ f ⁻¹' chartBlock ec A r (-r) = SA ∪ SB) (hdisj : Disjoint SA SB)
+    (hA : ∀ x ∈ SA, (A (ec (f x))).1 = 0) (hB : ∀ x ∈ SB, (A (ec (f x))).2.1 = 0)
+    (hinjA : InjOn (fun x => ((A (ec (f x))).2.1, (A (ec (f x))).2.2)) SA)
+    (hinjB : InjOn (fun x => ((A (ec (f x))).1, (A (ec (f x))).2.2)) SB) :
+    IsStableCrossingBlock f S ec ℓ BdM A r (-r) SA SB (fun _ => 0) (fun _ => 0) 0 0 1 := by
+  have hpa : IsPiecewiseAffineOn (fun _ : ℝ × ℝ => (0 : ℝ)) univ :=
+    (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ (ℝ × ℝ) (0 : ℝ)) isOpen_univ).congr
+      fun _ _ => rfl
+  refine ⟨hr, one_pos, le_rfl, le_rfl, by norm_num, Or.inl ⟨rfl, hBd⟩, hpre, hdisj, hA, hB,
+    hinjA, hinjB, ?_, ?_, hpa, hpa⟩
+  · intro v v' t
+    simp
+  · intro u u' t
+    simp
+
+omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
+theorem isStableCrossingBlock_of_eqOn_compl {f g : EuclideanSpace ℝ (Fin 2) → M}
+    {S Rgn : Set (EuclideanSpace ℝ (Fin 2))}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM : Set M}
+    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
+    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η : ℝ}
+    (h : IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η)
+    (hoff : EqOn g f Rgnᶜ) (hfree : Disjoint Rgn (S ∩ f ⁻¹' chartBlock ec A r tlo))
+    (hfree' : Disjoint Rgn (S ∩ g ⁻¹' chartBlock ec A r tlo)) :
+    IsStableCrossingBlock g S ec ℓ BdM A r tlo SA SB a b La Lb η := by
+  obtain ⟨hr, hη, hLa, hLb, hmar, hside, hpre, hdisj, hgA, hgB, hiA, hiB, hLipa, hLipb,
+    hpa, hpb⟩ := h
+  have hgeq : ∀ x ∈ SA ∪ SB, g x = f x := by
+    intro x hx
+    have hxpre : x ∈ S ∩ f ⁻¹' chartBlock ec A r tlo := by rw [hpre]; exact hx
+    exact hoff fun hxR => (disjoint_left.mp hfree hxR) hxpre
+  have hpre' : S ∩ g ⁻¹' chartBlock ec A r tlo = SA ∪ SB := by
+    refine Subset.antisymm (fun x hx => ?_) fun x hx => ?_
+    · have hxR : x ∉ Rgn := fun hxR => (disjoint_left.mp hfree' hxR) hx
+      rw [← hpre]
+      exact ⟨hx.1, by simp only [mem_preimage, ← hoff hxR]; exact hx.2⟩
+    · have hxpre : x ∈ S ∩ f ⁻¹' chartBlock ec A r tlo := by rw [hpre]; exact hx
+      exact ⟨hxpre.1, by simp only [mem_preimage, hgeq x hx]; exact hxpre.2⟩
+  refine ⟨hr, hη, hLa, hLb, hmar, ?_, hpre', hdisj, ?_, ?_, ?_, ?_, hLipa, hLipb, hpa, hpb⟩
+  · rcases hside with ⟨h1, h2⟩ | ⟨h1, h2, h3⟩
+    · exact Or.inl ⟨h1, h2⟩
+    · refine Or.inr ⟨h1, h2, fun x hx => ?_⟩
+      rw [hgeq x hx]
+      exact h3 x hx
+  · intro x hx
+    rw [hgeq x (Or.inl hx)]
+    exact hgA x hx
+  · intro x hx
+    rw [hgeq x (Or.inr hx)]
+    exact hgB x hx
+  · intro x hx z hz hxz
+    simp only [hgeq x (Or.inl hx), hgeq z (Or.inl hz)] at hxz
+    exact hiA hx hz hxz
+  · intro x hx z hz hxz
+    simp only [hgeq x (Or.inr hx), hgeq z (Or.inr hz)] at hxz
+    exact hiB hx hz hxz
+
+theorem exists_transitionSubdivisionOnOverlap
+    (ec ec' : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (hec : ec ∈ (plGroupoid 3).maximalAtlas M) (hec' : ec' ∈ (plGroupoid 3).maximalAtlas M)
+    (N : Set M) (hN : IsCompact N) (hNec : N ⊆ ec.source) (hNec' : N ⊆ ec'.source) :
+    ∃ Q : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      Q.faces.Finite ∧ ⇑ec '' N ⊆ Q.space ∧
+        Q.space ⊆ ⇑ec '' (ec.source ∩ ec'.source) ∧
+        ∀ s ∈ Q.faces, ∃ A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
+          EqOn (fun z => ec' (ec.symm z)) A
+            (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))) := by
+  sorry
+
+theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock (D : SingularTwoCell M)
+    {BdM : Set M} (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
+    (hℓ : ℓ ≠ 0) (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
+    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
+    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η : ℝ}
+    (h : IsStableCrossingBlock (⇑D) D.domain ec ℓ BdM A r tlo SA SB a b La Lb η) {y : M}
+    (hy : y ∈ doublePointSet (⇑D) D.domain)
+    (hyB : y ∈ chartBlock ec A (r / 2) (tlo / 2)) :
+    ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
+      HasPLNormalDoubleCrossingAt (⇑e ∘ ⇑D) (D.domain ∩ ⇑D ⁻¹' e.source)
+        (⇑e '' (e.source ∩ BdM)) (e y) := by
   sorry
 
 def AdmissibleVertexMap (D : SingularTwoCell M)
@@ -451,82 +607,6 @@ theorem exists_admissibleVertexMap_of_adaptedChart (D : SingularTwoCell M) {BdM 
       exact hvL (by rw [hLspace]; exact ⟨hvRc, hfr⟩)
     exact lt_of_le_of_ne ((hCchart (D v) (hsrc v hv)).1 (hmapC (hRdom hvRc))) (Ne.symm hne)
 
-def VertexParameterSpace (D : SingularTwoCell M)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)
-    (Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) :
-    Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) :=
-  {φ | (∀ v ∈ R.vertices, v ∈ Ac.space → φ v = ec (D v)) ∧
-    ∀ v ∈ R.vertices, v ∈ Lc.space → ℓ (φ v) = 0}
-
-def IsVertexSupOpen (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (P 𝒢 : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))) : Prop :=
-  𝒢 ⊆ P ∧ ∀ φ ∈ 𝒢, ∃ ρ > 0, ∀ φ' ∈ P,
-    (∀ v ∈ R.vertices, dist (φ' v) (φ v) < ρ) → φ' ∈ 𝒢
-
-def VertexSupBall (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (P : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)))
-    (φ₀ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) (ρ : ℝ) :
-    Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) :=
-  {φ | φ ∈ P ∧ ∃ r < ρ, ∀ v ∈ R.vertices, dist (φ v) (φ₀ v) ≤ r}
-
-theorem mem_vertexParameterSpace_of_admissibleVertexMap {D : SingularTwoCell M}
-    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
-    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ}
-    {Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
-    {Bv : Finset (EuclideanSpace ℝ (Fin 2))}
-    {φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)} {τ : ℝ}
-    (h : AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ) :
-    φ ∈ VertexParameterSpace D ec ℓ Lc Ac R :=
-  ⟨h.2.2.2.1, fun v hv hvL => h.2.2.2.2.1 v hv ((h.2.1 v hv).2 hvL)⟩
-
-open Classical in
-theorem nonempty_vertexParameterSpace (D : SingularTwoCell M) {BdM C V : Set M}
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hVec : V ⊆ ec.source)
-    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
-    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
-    (Rc Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (hRsfin : R.faces.Finite) (hsub : IsSubdivision R Rc)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain) :
-    (VertexParameterSpace D ec ℓ Lc Ac R).Nonempty := by
-  obtain ⟨Bv, hadm⟩ := exists_admissibleVertexMap_of_adaptedChart D hproper hmapC ec ℓ hVec
-    hCchart hBdchart Rc Lc Ac R hRsfin hsub hRdom hRV hLspace (τ := 1) zero_lt_one
-  exact ⟨_, mem_vertexParameterSpace_of_admissibleVertexMap hadm⟩
-
-theorem IsVertexSupOpen.mem_of_eqOn_vertices
-    {R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
-    {P 𝒢 : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))}
-    {φ φ' : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)}
-    (h : IsVertexSupOpen R P 𝒢) (hφ : φ ∈ 𝒢) (hφ' : φ' ∈ P)
-    (heq : ∀ v ∈ R.vertices, φ' v = φ v) : φ' ∈ 𝒢 := by
-  obtain ⟨ρ, hρ, hball⟩ := h.2 φ hφ
-  refine hball φ' hφ' fun v hv => ?_
-  rw [heq v hv, dist_self]
-  exact hρ
-
-theorem mem_vertexSupBall_self {R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
-    {P : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))}
-    {φ₀ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)} {ρ : ℝ}
-    (hφ₀ : φ₀ ∈ P) (hρ : 0 < ρ) : φ₀ ∈ VertexSupBall R P φ₀ ρ :=
-  ⟨hφ₀, 0, hρ, fun _ _ => le_of_eq (dist_self _)⟩
-
-theorem isVertexSupOpen_vertexSupBall
-    (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (P : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)))
-    (φ₀ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) (ρ : ℝ) :
-    IsVertexSupOpen R P (VertexSupBall R P φ₀ ρ) := by
-  refine ⟨fun φ hφ => hφ.1, fun φ hφ => ?_⟩
-  obtain ⟨-, r, hr, hball⟩ := hφ
-  refine ⟨(ρ - r) / 2, by linarith, fun φ' hφ' hclose =>
-    ⟨hφ', r + (ρ - r) / 2, by linarith, fun v hv => ?_⟩⟩
-  calc dist (φ' v) (φ₀ v) ≤ dist (φ' v) (φ v) + dist (φ v) (φ₀ v) := dist_triangle _ _ _
-    _ ≤ (ρ - r) / 2 + r := add_le_add (le_of_lt (hclose v hv)) (hball v hv)
-    _ = r + (ρ - r) / 2 := by ring
-
 end Ambient
 
 section MetricAmbient
@@ -582,8 +662,8 @@ theorem exists_normalizationPreparation_on_prescribedRegion [CompactSpace M]
   sorry
 
 open Classical in
-theorem exists_pairingStableSubdivision_in_adaptedChart [CompactSpace M]
-    (D : SingularTwoCell M) {BdM C Z O W V : Set M}
+theorem exists_protectedSubdivision_in_adaptedChart [CompactSpace M]
+    (D : SingularTwoCell M) {BdM C Z O W V : Set M} {η κ δ ε : ℝ}
     (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
@@ -595,7 +675,7 @@ theorem exists_pairingStableSubdivision_in_adaptedChart [CompactSpace M]
     (hZclosed : IsClosed Z) (hOopen : IsOpen O) (hZO : Z ⊆ O)
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
-    (hℓ : ℓ ≠ 0) (hVopen : IsOpen V) (hVec : V ⊆ ec.source)
+    (hℓ : ℓ ≠ 0) (hVopen : IsOpen V) (hVec : closure V ⊆ ec.source)
     (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
     (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
     (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
@@ -607,23 +687,25 @@ theorem exists_pairingStableSubdivision_in_adaptedChart [CompactSpace M]
     (hΩ : IsOpen Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb)
     (hNbfr : Rc.space \ Ω ⊆ Nb) (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
     (hWV : closure W ⊆ V) (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W))
+    (hstable : HasStableCrossingBlocks (⇑D) D.domain ec ℓ BdM
+      (Z ∩ closure (V \ closure W)) η)
     (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (hTfin : T.faces.Finite)
     (hTspace : T.space = D.domain) (hTstar : StarInj T (⇑D))
-    {ε : ℝ} (hε : 0 < ε) :
-    ∃ (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (τ : ℝ) (K : Set M)
-      (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-      (φ₀ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) (ρ : ℝ),
+    (hκ : 0 < κ) (hδ : 0 < δ) (hε : 0 < ε)
+    (hcert : ∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < δ) →
+      StarInj T g → UniformInjectivityScale D.domain g κ ∧
+        ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2)
+    (hconv : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
+      dist z (ec (D x)) < ε → z ∈ ⇑ec '' V ∧ dist (ec.symm z) (D x) < δ) :
+    ∃ (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (τ : ℝ) (K : Set M),
       0 < τ ∧ IsSubdivision R Rc ∧ R.faces.Finite ∧
         (∀ s ∈ R.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
           EqOn (fun x => ec (D x)) A
             (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 2))))) ∧
         IsCompact K ∧ K ⊆ V ∧ ⇑D '' Rc.space ⊆ interior K ∧
-        (Bv : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices ∧
-        (∀ v ∈ R.vertices, v ∈ Bv ↔ v ∈ Lc.space) ∧
-        φ₀ ∈ VertexParameterSpace D ec ℓ Lc Ac R ∧ 0 < ρ ∧
-        ∀ φ ∈ VertexParameterSpace D ec ℓ Lc Ac R,
-          (∀ v ∈ R.vertices, dist (φ v) (φ₀ v) < ρ) →
-          AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ ∧
+        ∀ (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
+          (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)),
+          AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ →
           IsPiecewiseAffineOn (simplicialMap R φ) Rc.space ∧
             (∀ x ∈ Rc.space, dist (simplicialMap R φ x) (ec (D x)) < ε) ∧
             EqOn (simplicialMap R φ) (fun x => ec (D x)) Ac.space ∧
@@ -636,18 +718,20 @@ theorem exists_pairingStableSubdivision_in_adaptedChart [CompactSpace M]
             MapsTo (simplicialMap R φ) Rc.space (⇑ec '' V) ∧
             regionGluedMap D ec R φ Rc '' Rc.space ⊆ K ∧
             StarInj T (regionGluedMap D ec R φ Rc) ∧
-            ∃ (U U' : Set M) (χ : M → M)
-              (ψ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)),
-              IsOpen U ∧ IsOpen U' ∧ U ⊆ O ∧ Z ∩ K ⊆ U' ∧
-                IsPLHomeomorphInto 3 χ U ∧ χ '' U = U' ∧ χ '' (U ∩ BdM) = U' ∩ BdM ∧
-                IsPLHomeomorphOn ψ (D.domain ∩ ⇑D ⁻¹' U)
-                  (D.domain ∩ regionGluedMap D ec R φ Rc ⁻¹' U') ∧
-                ∀ x ∈ D.domain ∩ ⇑D ⁻¹' U,
-                  regionGluedMap D ec R φ Rc (ψ x) = χ (D x) := by
+            (∀ y ∈ doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Z ∩ K,
+              (∃ σ ∈ R.faces, (∃ v ∈ σ, v ∈ Ac.space) ∧
+                  (D.domain ∩ regionGluedMap D ec R φ Rc ⁻¹' {y} ∩
+                    convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2)))).Nonempty) →
+                ∃ e₁ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₁.source ∧
+                  HasPLNormalDoubleCrossingAt (⇑e₁ ∘ regionGluedMap D ec R φ Rc)
+                    (D.domain ∩ regionGluedMap D ec R φ Rc ⁻¹' e₁.source)
+                    (⇑e₁ '' (e₁.source ∩ BdM)) (e₁ y)) ∧
+            HasStableCrossingBlocks (regionGluedMap D ec R φ Rc) D.domain ec ℓ BdM
+              (Z ∩ closure (V \ closure W)) (η / 2) := by
   sorry
 
 open Classical in
-theorem exists_guardedVertexMap_in_adaptedChart (D : SingularTwoCell M) {BdM C V : Set M}
+theorem exists_genericVertexMap_in_adaptedChart (D : SingularTwoCell M) {BdM C V : Set M}
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
     (hmapC : MapsTo (⇑D) D.domain C)
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
@@ -660,17 +744,41 @@ theorem exists_guardedVertexMap_in_adaptedChart (D : SingularTwoCell M) {BdM C V
     (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
     (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (hsub : IsSubdivision R Rc) (hRsfin : R.faces.Finite)
-    (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-    (hBvsub : (Bv : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices)
-    (hBvL : ∀ v ∈ R.vertices, v ∈ Bv ↔ v ∈ Lc.space)
-    (𝒢 : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))) (hGne : 𝒢.Nonempty)
-    (hGopen : IsVertexSupOpen R (VertexParameterSpace D ec ℓ Lc Ac R) 𝒢) :
-    ∃ φ ∈ 𝒢, ∀ s : Finset (EuclideanSpace ℝ (Fin 2)),
-      (s : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices → s.card ≤ 4 →
-        (s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
-        AffineIndependent ℝ
-          (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
-        AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2))) := by
+    (ι : Type) [Finite ι] (ecw : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (Qw : ι → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (Nw : ι → Set M)
+    (hNcpt : ∀ i, IsCompact (Nw i)) (hNec : ∀ i, Nw i ⊆ ec.source)
+    (hNecw : ∀ i, Nw i ⊆ (ecw i).source) (hQfin : ∀ i, (Qw i).faces.Finite)
+    (hQcover : ∀ i, ⇑ec '' Nw i ⊆ (Qw i).space)
+    (hQsrc : ∀ i, (Qw i).space ⊆ ⇑ec '' (ec.source ∩ (ecw i).source))
+    (hQaff : ∀ i, ∀ s ∈ (Qw i).faces,
+      ∃ A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
+        EqOn (fun z => ecw i (ec.symm z)) A
+          (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))))
+    {τ : ℝ} (hτ : 0 < τ) :
+    ∃ (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
+      (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)),
+      AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ ∧
+        (∀ s : Finset (EuclideanSpace ℝ (Fin 2)),
+          (s : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices → s.card ≤ 4 →
+            (s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
+            AffineIndependent ℝ
+              (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
+            AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2)))) ∧
+        (∀ i : ι,
+          Disjoint (⇑ec '' (doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Nw i))
+            (complexSkeleton 1 (Qw i))) ∧
+        (∀ i : ι, ∀ y ∈ doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Nw i,
+          ∀ F ∈ (Qw i).faces, F.card = 3 →
+            ec y ∈ convexHull ℝ (F : Set (EuclideanSpace ℝ (Fin 3))) →
+              ∃ w : EuclideanSpace ℝ (Fin 3),
+                w ∉ vectorSpan ℝ (F : Set (EuclideanSpace ℝ (Fin 3))) ∧ ∃ ρ > 0,
+                  ⇑ec '' (doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ ec.source) ∩
+                    Metric.ball (ec y) ρ ⊆ {z | ∃ c : ℝ, z = ec y + c • w}) ∧
+        ∀ i : ι, ∀ σ ∈ R.faces, σ.card ≤ 2 →
+          Disjoint
+            (simplicialMap R φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))) ∩
+              ⇑ec '' (doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Nw i))
+            (complexSkeleton 2 (Qw i)) := by
   sorry
 
 theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
@@ -721,11 +829,12 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
 
 open Classical in
 theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
-    {BdM C Z O U U' W V K : Set M} {ε : ℝ} {χ : M → M}
-    {ψ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    {BdM C Z O W V K : Set M} {ε η κ : ℝ}
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
     (hfiber' : ∀ y, (D'.domain ∩ ⇑D' ⁻¹' {y}).encard ≤ 2)
     (hloc' : ∀ x ∈ D'.domain, ∃ U ∈ 𝓝[D'.domain] x, InjOn (⇑D') U)
+    (hκ : 0 < κ) (hinj : UniformInjectivityScale D.domain (⇑D) κ)
+    (hinj' : UniformInjectivityScale D.domain (⇑D') κ)
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
     (hnormal : ∀ y ∈ doublePointSet (⇑D) D.domain ∩ O,
       ∃ e₀ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₀.source ∧
@@ -733,14 +842,9 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
           (e₀ '' (e₀.source ∩ BdM)) (e₀ y))
     (hOopen : IsOpen O) (hZO : Z ⊆ O)
     (hWopen : IsOpen W) (hWV : closure W ⊆ V) (hVopen : IsOpen V) (hKclosed : IsClosed K)
-    (hUopen : IsOpen U) (hU'open : IsOpen U') (hUO : U ⊆ O) (hZKU' : Z ∩ K ⊆ U')
-    (hχ : IsPLHomeomorphInto 3 χ U) (hχimage : χ '' U = U')
-    (hχbd : χ '' (U ∩ BdM) = U' ∩ BdM)
-    (hψ : IsPLHomeomorphOn ψ (D.domain ∩ ⇑D ⁻¹' U) (D.domain ∩ ⇑D' ⁻¹' U'))
-    (hpair : ∀ x ∈ D.domain ∩ ⇑D ⁻¹' U, D' (ψ x) = χ (D x))
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
-    (hℓ : ℓ ≠ 0) (hVec : V ⊆ ec.source)
+    (hℓ : ℓ ≠ 0) (hVec : closure V ⊆ ec.source)
     (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
     (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
     (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
@@ -772,14 +876,55 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
         AffineIndependent ℝ
           (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
         AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2))))
+    (hprot : ∀ y ∈ doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Z ∩ K,
+      (∃ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) ∧
+          (D.domain ∩ regionGluedMap D ec Rs φ Rc ⁻¹' {y} ∩
+            convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2)))).Nonempty) →
+        ∃ e₁ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₁.source ∧
+          HasPLNormalDoubleCrossingAt (⇑e₁ ∘ regionGluedMap D ec Rs φ Rc)
+            (D.domain ∩ regionGluedMap D ec Rs φ Rc ⁻¹' e₁.source)
+            (⇑e₁ '' (e₁.source ∩ BdM)) (e₁ y))
+    (hpersist : HasStableCrossingBlocks (regionGluedMap D ec Rs φ Rc) D.domain ec ℓ BdM
+      (Z ∩ closure (V \ closure W)) η)
+    (ι : Type) [Finite ι] (ecw : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓw : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ))
+    (Qw : ι → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+    (Nw Pw : ι → Set M) (ηw : ι → ℝ)
+    (hNcpt : ∀ i, IsCompact (Nw i)) (hNec : ∀ i, Nw i ⊆ ec.source)
+    (hNecw : ∀ i, Nw i ⊆ (ecw i).source) (hPw : ∀ i, Pw i ⊆ (ecw i).source)
+    (hQfin : ∀ i, (Qw i).faces.Finite) (hQcover : ∀ i, ⇑ec '' Nw i ⊆ (Qw i).space)
+    (hQaff : ∀ i, ∀ s ∈ (Qw i).faces,
+      ∃ A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
+        EqOn (fun z => ecw i (ec.symm z)) A
+          (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))))
+    (hlater : ∀ i, HasStableCrossingBlocks (⇑D) D.domain (ecw i) (ℓw i) BdM
+      (Z ∩ Pw i) (ηw i))
+    (hwallskel : ∀ i : ι,
+      Disjoint (⇑ec '' (doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Nw i))
+        (complexSkeleton 1 (Qw i)))
+    (hwalltrans : ∀ i : ι, ∀ y ∈ doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Nw i,
+      ∀ F ∈ (Qw i).faces, F.card = 3 →
+        ec y ∈ convexHull ℝ (F : Set (EuclideanSpace ℝ (Fin 3))) →
+          ∃ w : EuclideanSpace ℝ (Fin 3),
+            w ∉ vectorSpan ℝ (F : Set (EuclideanSpace ℝ (Fin 3))) ∧ ∃ ρ > 0,
+              ⇑ec '' (doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ ec.source) ∩
+                Metric.ball (ec y) ρ ⊆ {z | ∃ c : ℝ, z = ec y + c • w})
+    (hwallfold : ∀ i : ι, ∀ σ ∈ Rs.faces, σ.card ≤ 2 →
+      Disjoint
+        (simplicialMap Rs φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))) ∩
+          ⇑ec '' (doublePointSet (regionGluedMap D ec Rs φ Rc) D.domain ∩ Nw i))
+        (complexSkeleton 2 (Qw i)))
     (hdom' : D'.domain = D.domain)
     (hglue : EqOn (⇑D') (fun x => ec.symm (simplicialMap Rs φ x)) Rc.space)
     (hglueoff : EqOn (⇑D') (⇑D) Rc.spaceᶜ) :
-    ∃ O' : Set M, IsOpen O' ∧ Z ∪ closure W ⊆ O' ∧
-      ∀ y ∈ doublePointSet (⇑D') D'.domain ∩ O',
-        ∃ e₁ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₁.source ∧
-          HasPLNormalDoubleCrossingAt (e₁ ∘ ⇑D') (D'.domain ∩ ⇑D' ⁻¹' e₁.source)
-            (e₁ '' (e₁.source ∩ BdM)) (e₁ y) := by
+    (∃ O' : Set M, IsOpen O' ∧ Z ∪ closure W ⊆ O' ∧
+        ∀ y ∈ doublePointSet (⇑D') D'.domain ∩ O',
+          ∃ e₁ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₁.source ∧
+            HasPLNormalDoubleCrossingAt (e₁ ∘ ⇑D') (D'.domain ∩ ⇑D' ⁻¹' e₁.source)
+              (e₁ '' (e₁.source ∩ BdM)) (e₁ y)) ∧
+      ∀ i : ι, ∃ η' : ℝ, 0 < η' ∧
+        HasStableCrossingBlocks (⇑D') D'.domain (ecw i) (ℓw i) BdM
+          ((Z ∪ closure W) ∩ Pw i) η' := by
   sorry
 
 end MetricAmbient
@@ -802,6 +947,20 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
   obtain ⟨n, W, V, hWopen, hVopen, hWV, hWn, huniv, hcharts⟩ :=
     exists_finiteAdaptedCover_of_compactSpace Bd C
       fun y U hU => exists_adaptedHalfSpaceChart_in_double K S.isManifold y U hU
+  choose ecf ℓf hecf hℓf hVclf hCf hBdf using hcharts
+  have hoverlap : ∀ (j : ℕ) (hj : j < n) (m : ℕ) (hm : m < n),
+      ∃ Q : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+        Q.faces.Finite ∧ ⇑(ecf j hj) '' (closure (V j) ∩ closure (V m)) ⊆ Q.space ∧
+          Q.space ⊆ ⇑(ecf j hj) '' ((ecf j hj).source ∩ (ecf m hm).source) ∧
+          ∀ s ∈ Q.faces, ∃ A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
+            EqOn (fun z => ecf m hm ((ecf j hj).symm z)) A
+              (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))) :=
+    fun j hj m hm =>
+      exists_transitionSubdivisionOnOverlap (ecf j hj) (ecf m hm) (hecf j hj) (hecf m hm)
+        (closure (V j) ∩ closure (V m))
+        ((isClosed_closure.inter isClosed_closure).isCompact)
+        (inter_subset_left.trans (hVclf j hj)) (inter_subset_right.trans (hVclf m hm))
+  choose Qf hQfin hQcover hQsrc hQaff using hoverlap
   have hVW : ∀ j, V j ⊆ ⋃ i, W i := by
     intro j
     rw [huniv]
@@ -829,6 +988,9 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           ∃ e₂ ∈ atlas (EuclideanSpace ℝ (Fin 3)) (double 3 K).space, y ∈ e₂.source ∧
             HasPLNormalDoubleCrossingAt (e₂ ∘ ⇑cell) (cell.domain ∩ ⇑cell ⁻¹' e₂.source)
               (e₂ '' (e₂.source ∩ Bd)) (e₂ y)) ∧
+        (∀ (m : ℕ) (hm : m < n), k ≤ m → ∃ ηm : ℝ, 0 < ηm ∧
+          HasStableCrossingBlocks (⇑cell) cell.domain (ecf m hm) (ℓf m hm) Bd
+            ((⋃ j, ⋃ (_ : j < k), closure (W j)) ∩ closure (V m \ closure (W m))) ηm) ∧
         Function.Surjective b ∧
         (∀ θ, ((cell (b θ) : (double 3 K).space) : E × E × ℝ) = ι (g θ)) ∧
         ¬loopClassMeets g S.basepoint S.normalSubgroup := by
@@ -836,19 +998,41 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
     induction k with
     | zero =>
         refine ⟨G, ∅, β, γ, rfl, hmapC, hloc, hfiber, hproper, hbuffer, hdpG, isOpen_empty,
-          ?_, ?_, hsurj, hparam, havoid⟩
+          ?_, ?_, ?_, hsurj, hparam, havoid⟩
         · exact iUnion_subset fun j => iUnion_subset fun hj => absurd hj (Nat.not_lt_zero j)
         · exact fun y hy => absurd hy.2 (notMem_empty y)
+        · intro m hm _
+          have hz : (⋃ j, ⋃ (_ : j < 0), closure (W j)) = (∅ : Set (double 3 K).space) :=
+            eq_empty_of_subset_empty (iUnion_subset fun j => iUnion_subset fun hj =>
+              absurd hj (Nat.not_lt_zero j))
+          refine ⟨1, one_pos,
+            hasStableCrossingBlocks_of_doublePointSet_inter_eq_empty ?_ one_pos⟩
+          rw [hz, empty_inter, inter_empty]
     | succ k ih =>
         obtain ⟨cell, Ok, b, g, hdom, hcellC, hcellloc, hcellfib, hcellpr, hcellbuf,
-          hcelldp, hOkopen, hOkZ, hOkcross, hbsurj, hbparam, hbavoid⟩ := ih
+          hcelldp, hOkopen, hOkZ, hOkcross, hcellstb, hbsurj, hbparam, hbavoid⟩ := ih
+        have hZsucc : (⋃ j, ⋃ (_ : j < k + 1), closure (W j)) ⊆
+            (⋃ j, ⋃ (_ : j < k), closure (W j)) ∪ closure (W k) := by
+          refine iUnion_subset fun j => iUnion_subset fun hj => ?_
+          rcases lt_or_eq_of_le (Nat.lt_succ_iff.mp hj) with h | h
+          · exact fun x hx => mem_union_left _ (mem_iUnion.2 ⟨j, mem_iUnion.2 ⟨h, hx⟩⟩)
+          · subst h
+            exact fun x hx => mem_union_right _ hx
         by_cases hk : k < n
-        · obtain ⟨ec, ℓ, hec, hℓ, hVec, hCchart, hBdchart⟩ := hcharts k hk
+        · set ec := ecf k hk with hecdef
+          set ℓ := ℓf k hk with hℓdef
+          have hec : ec ∈ (plGroupoid 3).maximalAtlas (double 3 K).space := hecf k hk
+          have hℓ : ℓ ≠ 0 := hℓf k hk
+          have hVcl : closure (V k) ⊆ ec.source := hVclf k hk
+          have hVec : V k ⊆ ec.source := subset_closure.trans hVcl
+          have hCchart := hCf k hk
+          have hBdchart := hBdf k hk
           obtain ⟨Rc, Lc, Ac, Ω, Nb, hRfin, hRman, hLR, hAR, hRdom, hRV, hLspace, hΩ,
             hΩcover, hΩR, hNb, hNbfr, hNbA, hAfree⟩ :=
             cell.exists_cutOutPiece_of_closure_subset (V₀ := W k) (hVopen k) (hWV k)
           have hZclosed : IsClosed (⋃ j, ⋃ (_ : j < k), closure (W j)) :=
             Set.Finite.isClosed_biUnion (Set.finite_lt_nat k) fun j _ => isClosed_closure
+          obtain ⟨ηk, hηk, hstk⟩ := hcellstb k hk le_rfl
           obtain ⟨T, κ, δ, ε, hκ, hδ, hε, hTfin, hTspace, hTstar, hcert, hconv, hactive,
             hbdbuf⟩ :=
             exists_normalizationPreparation_on_prescribedRegion cell hcellloc hcellfib
@@ -856,26 +1040,27 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           have hchartbuf : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
               dist z (ec (cell x)) < ε → z ∈ ⇑ec '' V k :=
             fun x hx z hz => (hconv x hx z hz).1
-          obtain ⟨R, τ, Kt, Bv, φ₀, ρ, -, hsub, hRsfin, -, hKcpt, -, hDKint, hBvsub, hBvL,
-            hφ₀P, hρ, hseed⟩ :=
-            exists_pairingStableSubdivision_in_adaptedChart cell hcellloc hcellfib hcellpr
-              hcellC hOkcross hZclosed hOkopen hOkZ ec ℓ hec hℓ (hVopen k) hVec hCchart
+          obtain ⟨R, τ, Kt, hτ, hsub, hRsfin, -, hKcpt, -, hDKint, hcontrol⟩ :=
+            exists_protectedSubdivision_in_adaptedChart cell hcellloc hcellfib hcellpr
+              hcellC hOkcross hZclosed hOkopen hOkZ ec ℓ hec hℓ (hVopen k) hVcl hCchart
               hBdchart Rc Lc Ac hRfin hRman hLR hAR hRdom hRV hLspace hΩ hΩR hNb hNbfr hNbA
-              (hWV k) hAfree T hTfin hTspace hTstar hε
-          have hGne :
-              (VertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ).Nonempty :=
-            ⟨φ₀, mem_vertexSupBall_self hφ₀P hρ⟩
-          have hGopen : IsVertexSupOpen R (VertexParameterSpace cell ec ℓ Lc Ac R)
-              (VertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ) :=
-            isVertexSupOpen_vertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ
-          obtain ⟨φ, hφG, hguard⟩ :=
-            exists_guardedVertexMap_in_adaptedChart cell hcellpr hcellC ec ℓ hℓ hVec hCchart
-              hBdchart Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin Bv hBvsub hBvL
-              (VertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ) hGne hGopen
-          obtain ⟨hφP, r, hrρ, hrball⟩ := hφG
-          obtain ⟨hadm, hpl, hsmall, hfrozen, hpnonneg, hpzero, hsep, hmaps, hgK, hstar, U, U',
-            χ, ψ, hUopen, hU'open, hUO, hZKU', hχ, hχimage, hχbd, hψ, hpair⟩ :=
-            hseed φ hφP fun v hv => lt_of_le_of_lt (hrball v hv) hrρ
+              (hWV k) hAfree hstk T hTfin hTspace hTstar hκ hδ hε hcert hconv
+          have : Finite ↥(Set.Ioo k n) := (Set.finite_Ioo k n).to_subtype
+          obtain ⟨Bv, φ, hadm, hguard, hwallskel, hwalltrans, hwallfold⟩ :=
+            exists_genericVertexMap_in_adaptedChart cell hcellpr hcellC ec ℓ hℓ hVec hCchart
+              hBdchart Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin ↥(Set.Ioo k n)
+              (fun i => ecf i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => Qf k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => closure (V k) ∩ closure (V i.1))
+              (fun _ => (isClosed_closure.inter isClosed_closure).isCompact)
+              (fun _ => inter_subset_left.trans hVcl)
+              (fun i => inter_subset_right.trans (hVclf i.1 (Set.mem_Ioo.mp i.2).2))
+              (fun i => hQfin k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => hQcover k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => hQsrc k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => hQaff k hk i.1 (Set.mem_Ioo.mp i.2).2) hτ
+          obtain ⟨hpl, hsmall, hfrozen, hpnonneg, hpzero, hsep, hmaps, hgK, hstar, hprot,
+            hpersist⟩ := hcontrol Bv φ hadm
           obtain ⟨cell', hdom', hglue, hglueoff⟩ :=
             exists_gluedCell_of_vertexMap_in_adaptedChart cell (hVopen k) ec hec hVec Rc Ac
               hRfin hRman hAR hRdom hRV hΩ hΩR hNb hNbfr hNbA R φ hsub hRsfin hfrozen hpl
@@ -896,26 +1081,44 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           have hD'K : ⇑cell' '' Rc.space ⊆ Kt := by
             rw [hbridge]
             exact hgK
-          have hψ' : IsPLHomeomorphOn ψ (cell.domain ∩ ⇑cell ⁻¹' U)
-              (cell.domain ∩ ⇑cell' ⁻¹' U') := by
-            rw [hbridge]
-            exact hψ
-          have hpair' : ∀ x ∈ cell.domain ∩ ⇑cell ⁻¹' U, cell' (ψ x) = χ (cell x) := by
-            intro x hx
-            rw [hbridge]
-            exact hpair x hx
           obtain ⟨hC', hfibV, hloc', hcard', hpr', H, hH0, hH1, hHtrack⟩ :=
             exists_globalInvariants_of_gluedCell cell cell' hcellpr hcellC hcellbuf hκ hcert
               hclose hstar' ec ℓ (hVopen k) hVec hCchart hBdchart Rc Lc Ac hRfin hRman hRdom
               hRV hLspace hΩ hΩR hNb hNbfr hNbA R φ hsub hsmall hfrozen hpnonneg hpzero
               hchartbuf hbdbuf hdom' hglue hglueoff
-          obtain ⟨O', hO'open, hO'Z, hcross'⟩ :=
-            exists_normalCrossings_of_gluedCell cell cell' hcellfib hcard' hloc' hcellpr hOkcross
-              hOkopen hOkZ (hWopen k) (hWV k) (hVopen k) hKcpt.isClosed hUopen hU'open hUO
-              hZKU' hχ hχimage hχbd hψ' hpair' ec ℓ hec hℓ hVec hCchart hBdchart Rc Lc Ac
-              hRfin hRman hRdom hRV hLspace hDK hD'K hΩ hΩcover hΩR R Bv φ hε hsub hRsfin
-              hadm.2.1 hsmall hpnonneg hpzero hfrozen hactive hsep hmaps hguard hdom' hglue
-              hglueoff
+          have hlaterfam : ∀ i : ↥(Set.Ioo k n), ∃ ηm : ℝ, 0 < ηm ∧
+              HasStableCrossingBlocks (⇑cell) cell.domain
+                (ecf i.1 (Set.mem_Ioo.mp i.2).2) (ℓf i.1 (Set.mem_Ioo.mp i.2).2) Bd
+                ((⋃ j, ⋃ (_ : j < k), closure (W j)) ∩
+                  closure (V i.1 \ closure (W i.1))) ηm :=
+            fun i => hcellstb i.1 (Set.mem_Ioo.mp i.2).2 (le_of_lt (Set.mem_Ioo.mp i.2).1)
+          have hinjD : UniformInjectivityScale cell.domain (⇑cell) κ :=
+            (hcert (⇑cell) (fun x _ => by rw [dist_self]; exact hδ) hTstar).1
+          have hinjD' : UniformInjectivityScale cell.domain (⇑cell') κ :=
+            (hcert (⇑cell') hclose hstar').1
+          obtain ⟨⟨O', hO'open, hO'Z, hcross'⟩, hstable'⟩ :=
+            exists_normalCrossings_of_gluedCell cell cell' hcellfib hcard' hloc' hκ hinjD
+              hinjD' hcellpr
+              hOkcross hOkopen hOkZ (hWopen k) (hWV k) (hVopen k) hKcpt.isClosed ec ℓ hec hℓ
+              hVcl hCchart hBdchart Rc Lc Ac hRfin hRman hRdom hRV hLspace hDK hD'K hΩ
+              hΩcover hΩR R Bv φ hε hsub hRsfin hadm.2.1 hsmall hpnonneg hpzero hfrozen
+              hactive hsep hmaps hguard hprot hpersist ↥(Set.Ioo k n)
+              (fun i => ecf i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => ℓf i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => Qf k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => closure (V k) ∩ closure (V i.1))
+              (fun i => closure (V i.1 \ closure (W i.1)))
+              (fun i => (hlaterfam i).choose)
+              (fun _ => (isClosed_closure.inter isClosed_closure).isCompact)
+              (fun _ => inter_subset_left.trans hVcl)
+              (fun i => inter_subset_right.trans (hVclf i.1 (Set.mem_Ioo.mp i.2).2))
+              (fun i => (closure_mono Set.sdiff_subset).trans
+                (hVclf i.1 (Set.mem_Ioo.mp i.2).2))
+              (fun i => hQfin k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => hQcover k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => hQaff k hk i.1 (Set.mem_Ioo.mp i.2).2)
+              (fun i => (hlaterfam i).choose_spec.2)
+              hwallskel hwalltrans hwallfold hdom' hglue hglueoff
           have hbuf' : ∀ z ∈ Set.range cell'.boundary, B ∈ 𝓝[Bd] z := by
             rintro _ ⟨x, rfl⟩
             have hx : (x : EuclideanSpace ℝ (Fin 2)) ∈ frontier cell.domain := by
@@ -934,22 +1137,22 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
             exists_boundary_loop_of_buffered_homotopy S K cell cell' b g hdom' hC' hbparam
               hbavoid hbsurj H hH0 hH1 hHB hBspace
           refine ⟨cell', O', ⟨c, c.continuous⟩, δ₀, hdom'.trans hdom, hC', hloc', hcard',
-            hpr', hbuf', hdpnew, hO'open, ?_, hcross', c.surjective, hcδ, hδavoid⟩
-          refine iUnion_subset fun j => iUnion_subset fun hj => ?_
-          by_cases hjk : j < k
-          · exact fun x hx =>
-              hO'Z (mem_union_left _ (mem_iUnion.2 ⟨j, mem_iUnion.2 ⟨hjk, hx⟩⟩))
-          · have hjeq : j = k := by omega
-            subst hjeq
-            exact fun x hx => hO'Z (mem_union_right _ hx)
+            hpr', hbuf', hdpnew, hO'open, ?_, hcross', ?_, c.surjective, hcδ, hδavoid⟩
+          · exact hZsucc.trans hO'Z
+          · intro m hm hkm
+            have hik : m ∈ Set.Ioo k n := Set.mem_Ioo.mpr ⟨by omega, hm⟩
+            obtain ⟨ηm, hηm, hstm⟩ := hstable' ⟨m, hik⟩
+            exact ⟨ηm, hηm, hstm.mono (inter_subset_inter hZsucc Subset.rfl)⟩
         · refine ⟨cell, Ok, b, g, hdom, hcellC, hcellloc, hcellfib, hcellpr, hcellbuf,
-            hcelldp, hOkopen, ?_, hOkcross, hbsurj, hbparam, hbavoid⟩
-          refine iUnion_subset fun j => iUnion_subset fun hj => ?_
-          by_cases hjk : j < k
-          · exact fun x hx => hOkZ (mem_iUnion.2 ⟨j, mem_iUnion.2 ⟨hjk, hx⟩⟩)
-          · rw [hWn j (by omega), closure_empty]
-            exact empty_subset _
-  obtain ⟨A, On, b, g, hdom, hAC, hAloc, hAfib, hApr, hAbuf, hAdp, -, hOnZ, hAcross,
+            hcelldp, hOkopen, ?_, hOkcross, ?_, hbsurj, hbparam, hbavoid⟩
+          · refine iUnion_subset fun j => iUnion_subset fun hj => ?_
+            by_cases hjk : j < k
+            · exact fun x hx => hOkZ (mem_iUnion.2 ⟨j, mem_iUnion.2 ⟨hjk, hx⟩⟩)
+            · rw [hWn j (by omega), closure_empty]
+              exact empty_subset _
+          · intro m hm hkm
+            exact absurd hm (by have := not_lt.mp hk; omega)
+  obtain ⟨A, On, b, g, hdom, hAC, hAloc, hAfib, hApr, hAbuf, hAdp, -, hOnZ, hAcross, -,
     hbsurj, hbparam, hbavoid⟩ := key n
   have hAcross' : ∀ y ∈ doublePointSet (⇑A) A.domain,
       ∃ e₃ ∈ atlas (EuclideanSpace ℝ (Fin 3)) (double 3 K).space, y ∈ e₃.source ∧
