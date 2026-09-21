@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngle
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 set_option autoImplicit false
 noncomputable section
@@ -103,5 +104,26 @@ theorem min_mul_dist_div_le_dist_of_radialComparisonAngle_nonincreasing
       (hmono.1 hs ⟨hr, le_rfl⟩ ht hs.2))
   exact min_mul_div_le_of_comparisonAngle_le hr hs.1 ht.1 dist_nonneg hbig.2
     hsmall.1 hsmall.2 hangle
+
+theorem dist_le_mul_limitingRadialAngle
+    (hrad : IsRadialFamily z L gamma) {i j : ι} {s : ℝ}
+    (hsi : s ∈ Ioc 0 (L i)) (hsj : s ∈ Ioc 0 (L j)) :
+    dist (gamma i s) (gamma j s) ≤ s * limitingRadialAngle L gamma i j := by
+  let theta := limitingRadialAngle L gamma i j
+  have htheta := limitingRadialAngle_mem_Icc gamma
+    (hsi.1.trans_le hsi.2) (hsj.1.trans_le hsj.2)
+  have hsin : 0 ≤ Real.sin (theta / 2) :=
+    Real.sin_nonneg_of_nonneg_of_le_pi (by linarith [htheta.1])
+      (by linarith [htheta.2, Real.pi_pos])
+  have hcos : Real.cos theta = 1 - 2 * Real.sin (theta / 2) ^ 2 := by
+    rw [show theta = 2 * (theta / 2) by ring, Real.cos_two_mul_eq_one_sub]
+    ring_nf
+  have hsq : s ^ 2 + s ^ 2 - 2 * s * s * Real.cos theta =
+      (2 * s * Real.sin (theta / 2)) ^ 2 := by rw [hcos]; ring
+  have hh := dist_le_sqrt_limitingRadialAngle hrad hsi hsj
+  change dist (gamma i s) (gamma j s) ≤ Real.sqrt (s ^ 2 + s ^ 2 - 2 * s * s * Real.cos theta) at hh
+  rw [hsq, Real.sqrt_sq (mul_nonneg (mul_nonneg (by norm_num) hsi.1.le) hsin)] at hh
+  have hsinle := Real.sin_le (show 0 ≤ theta / 2 by linarith [htheta.1])
+  exact hh.trans (by nlinarith [mul_le_mul_of_nonneg_left hsinle hsi.1.le])
 
 end DifferentialGeometry.Toponogov

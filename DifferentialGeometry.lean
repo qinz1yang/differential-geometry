@@ -11538,3 +11538,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckPacking
 import DifferentialGeometry.Topology.MetricSpace.TotallyBounded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndDirections
+import DifferentialGeometry.Geometry.Comparison.Toponogov.AngleKernelCompactness
+import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialNets
+import DifferentialGeometry.Geometry.Comparison.Toponogov.CompletionRadialNets

@@ -2041,3 +2041,51 @@ containment, closed-terminal smooth flow patch, and smooth cone-chart
 identification still remain. The recent difficulties were Lean instance and
 elaboration issues; no persistent mathematical blockage has appeared, and
 this checkpoint gives no reason to switch to Ultra.
+
+### Finite radial nets on actual small spheres
+
+The normalized-end producer now also constructs, for each positive relative
+error, a finite family of unit-speed minimizing radial segments with a common
+positive length. At every smaller positive radius, their points approximate
+every actual point on that sphere within the prescribed error times the radius.
+The public theorem retains all earlier binders and conclusions; this was checked
+by removing just the added sphere-net conjunct and comparing normalized text.
+
+`dist_le_mul_limitingRadialAngle` proves the equal-radius bound
+`dist(gamma_i(s), gamma_j(s)) ≤ s * angle(i,j)` from the already proved cosine-law
+bound. `AngleKernel.totallyBounded_iff_finset_angle_net` selects representatives
+of a finite angular net. `exists_finset_radial_net` chooses a positive common
+length for those finitely many representatives. The generic completion theorem
+`exists_radial_sphere_nets_of_totallyBounded_limiting_directions` applies this
+to the family of all short minimizing segments and uses the actual compact-ball
+minimizer theorem to represent every nearby point. It is applied inside the
+existing restricted-end construction, with its actual intrinsic metric and
+the compact-direction producer from the preceding checkpoint. No extension
+of all radial segments to one fixed positive length is required.
+
+`exists_finset_radial_annulus_net` additionally combines a finite angular net
+with a finite radial grid. It produces fixed finitely many direction-radius
+pairs whose scaled points approximate every represented point in an annulus,
+uniformly for all sufficiently small positive scales. Its radial-family
+hypotheses are provided by the short minimizing segments of the constructed
+end. Pairwise rescaled distances already converge by
+`tendsto_rescaled_radial_distance`; joining these facts into the annular cone
+approximation is the next step. This is the finite-net argument of Morgan–Tian,
+`BooksPapers/MorganTianPoincare.pdf`, Section 10.4, Corollary 10.28 and
+Proposition 10.29, using the distance comparison of Lemma 10.25.
+
+Six public declarations passed all thirteen declaration linters and have only
+`propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The actual normalized-end assembly passed 14,181 jobs. The full root build
+passed 20,225 jobs with exactly 21 retained `sorry` warnings and no other
+diagnostics. Evidence: `/private/tmp/wt17-normalized-sphere-nets-build.log`,
+`/private/tmp/wt17-radial-nets-audit.log`, and
+`/private/tmp/wt17-radial-nets-root-build.log`.
+
+The essential gap closed is finite radial covering of the actual shrinking
+spheres. The remaining geometric work is annular cone approximation and
+identification of the smooth cone chart. The source-ball containment and local
+closed-terminal smooth flow limit also remain. The headline theorem is still
+unproved, and the retained hole count remains 21. The implementation fixes were
+ordinary typeclass and elaboration issues, not a persistent mathematical
+blockage; no switch to Ultra is indicated by this checkpoint.
