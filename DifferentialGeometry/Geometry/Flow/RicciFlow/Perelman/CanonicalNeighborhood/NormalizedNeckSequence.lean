@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLimitNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocallyFinite
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
+import DifferentialGeometry.Geometry.Metric.CurveVariation.Restriction
 import DifferentialGeometry.Topology.Homeomorph.CylinderChain
 import DifferentialGeometry.Topology.Homeomorph.Interior
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
@@ -176,9 +178,26 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                           Ψ (n + 1) (theta n p, s)) ∧
                                     ∃ D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ
                                       interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
-                                      ∀ (p : Sphere 2) (s : Ioi (0 : ℝ)),
+                                      (∀ (p : Sphere 2) (s : Ioi (0 : ℝ)),
                                         (D (p, s) : L.M) =
-                                          (E (p, Set.inclusion Ioi_subset_Ici_self s) : L.M) := by
+                                          (E (p, Set.inclusion Ioi_subset_Ici_self s) : L.M)) ∧
+                                      let W : TopologicalSpace.Opens L.M :=
+                                        ⟨interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
+                                          isOpen_interior⟩
+                                      ∃ gW : C(Ico (t 2 : ℝ) F.radius, W),
+                                        (∀ v : Ico (t 2 : ℝ) F.radius, (gW v : L.M) =
+                                          g ⟨v, (t 2).property.1.trans v.property.1, v.property.2⟩) ∧
+                                        (∀ v w : Ico (t 2 : ℝ) F.radius,
+                                          riemannianEDistOf (L.metric.restrictOpen W) (gW v) (gW w) =
+                                            edist v w) ∧
+                                        ∀ᶠ n in atTop, ∃ hn : (t 2 : ℝ) ≤ t n,
+                                          ∃ nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha)
+                                            (gW ⟨t n, hn, (t n).property.2⟩),
+                                            nkW.map.source = (nk n).map.source ∩
+                                              (nk n).map ⁻¹' (W : Set L.M) ∧
+                                            (∀ y ∈ univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹,
+                                              (nkW.map y : L.M) = (nk n).map y) ∧
+                                            ∀ y : W, nkW.map.symm y = (nk n).map.symm (y : L.M) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -434,12 +453,51 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     · rintro ⟨p, hp⟩
       exact ⟨(p, 0), ⟨mem_univ _, rfl⟩, (hEzero p).symm.trans hp⟩
   let D := E.restrictProdIoi hfrontE
+  let W : TopologicalSpace.Opens L.M :=
+    ⟨interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)), isOpen_interior⟩
+  let tailIncl : Ico (t 2 : ℝ) F.radius → Ico 0 F.radius :=
+    fun v => ⟨v, (incl (t 2)).property.1.trans v.property.1, v.property.2⟩
+  let gW : C(Ico (t 2 : ℝ) F.radius, W) :=
+    ⟨fun v => ⟨g (tailIncl v), haxisTail (tailIncl v) v.property.1⟩,
+      (g.continuous.comp (continuous_subtype_val.subtype_mk _)).subtype_mk _⟩
+  have hgW (v w : Ico (t 2 : ℝ) F.radius) :
+      riemannianEDistOf (L.metric.restrictOpen W) (gW v) (gW w) = edist v w := by
+    apply le_antisymm
+    · have hbound (v w : Ico (t 2 : ℝ) F.radius) :
+          riemannianEDistOf L.metric (gW v) (gW w) ≤ (1 : ℝ≥0∞) * edist v w := by
+        change edist (g (tailIncl v)) (g (tailIncl w)) ≤ 1 * edist v w
+        rw [hg.edist_eq, one_mul]
+        rfl
+      have h := DifferentialGeometry.Geometry.riemannianEDistOf_restrictOpen_le_of_lipschitz
+        L.metric W ordConnected_Ico (C := 1) hbound v w
+      simpa only [ENNReal.coe_one, one_mul] using h
+    · have h := riemannianEDistOf_le_restrictOpen L.metric W (gW v) (gW w)
+      change edist (g (tailIncl v)) (g (tailIncl w)) ≤ _ at h
+      rw [hg.edist_eq] at h
+      exact h
+  have hnkW : ∀ᶠ n in atTop, ∃ hn : (t 2 : ℝ) ≤ t n,
+      ∃ nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha)
+        (gW ⟨t n, hn, (t n).property.2⟩),
+        nkW.map.source = (nk n).map.source ∩ (nk n).map ⁻¹' (W : Set L.M) ∧
+        (∀ y ∈ univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹,
+          (nkW.map y : L.M) = (nk n).map y) ∧
+        ∀ y : W, nkW.map.symm y = (nk n).map.symm (y : L.M) := by
+    filter_upwards [hwindowCapture, eventually_ge_atTop 2] with n hn h2n
+    let x : W := gW ⟨t n, hmono.monotone h2n, (t n).property.2⟩
+    let nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha) x :=
+      (nk n).restrictOpen (U := W) (x := x) hn
+    refine ⟨hmono.monotone h2n, nkW, ?_, ?_, ?_⟩
+    · exact SpatialNeck.restrictOpen_map_source (U := W) (x := x) (nk n) hn
+    · intro y hy
+      exact SpatialNeck.restrictOpen_map_coe (U := W) (x := x) (nk n) hn (hn ⟨y, hy, rfl⟩)
+    · exact SpatialNeck.restrictOpen_map_symm (U := W) (x := x) (nk n) hn
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
     hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
-    haxisTail, hcollapse, hwindowCapture, E, theta, htheta0, htheta, ?_, D, ?_⟩
+    haxisTail, hcollapse, hwindowCapture, E, theta, htheta0, htheta, ?_, D, ?_,
+    gW, fun _ => rfl, hgW, hnkW⟩
   · intro tau hR
     exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
   · intro n p s

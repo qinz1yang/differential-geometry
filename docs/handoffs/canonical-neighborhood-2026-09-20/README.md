@@ -1396,3 +1396,37 @@ otherwise clean. Evidence:
 `/private/tmp/wt17-normalized-neck-capture-leaf-build.log`,
 `/private/tmp/wt17-neck-window-capture-audit.log`, and
 `/private/tmp/wt17-neck-window-capture-root-build.log`.
+
+
+## The metric on the actual open annular end
+
+The continuation after `00ca7b42b` transports the full spatial-neck charts to
+the restriction of the limit metric to the constructed open annular end. The
+constructor preserves the scalar normalization, pullback metric, jets, and
+finite-order comparison estimates. Its source, forward inclusion, and inverse
+compatibility laws are public. The normalized producer returns these actual
+restricted necks at every sufficiently late selected center, with those same
+compatibility laws.
+
+The limiting axis now has an actual continuous lift into the open end, and its
+intrinsic Riemannian distances equal its parameter distances. The general
+metric result proves that a Lipschitz curve on any order-connected subset of
+the real line keeps its Lipschitz constant after restriction to an open set.
+It uses the existing preservation of continuous-curve variation, and derives
+continuity from the ambient distance estimate. No smoothness of the limiting
+axis or global glued cylinder is assumed. This supplies the intrinsic axis
+used in Kleiner–Lott, *Notes on Perelman's papers*, section 52, Step 2 following
+Lemma 52.14, in `Geometrization/BooksPapers/KleinerLottPerelman.pdf`. The metric
+completion of the whole end and the finite-horn and cone producers are still
+unproved; the bounded-distance headline remains open.
+
+Six declarations passed thirteen declaration linters and have only approved
+foundational axioms. The spatial-neck restriction leaf passed 10,804 jobs,
+the curve restriction leaf 3,616 jobs, and the normalized dependent 14,140
+jobs, without diagnostics. The full root passed 20,203 jobs with exactly the
+21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-spatial-neck-restriction-leaf-build.log`,
+`/private/tmp/wt17-curve-lipschitz-restriction-leaf-build.log`,
+`/private/tmp/wt17-normalized-intrinsic-leaf-build.log`,
+`/private/tmp/wt17-open-end-metric-audit.log`, and
+`/private/tmp/wt17-open-end-metric-root-build.log`.
