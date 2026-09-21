@@ -12468,3 +12468,14 @@ import DifferentialGeometry.Topology.LoopSpace.CircleParameter
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.Compactness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.IntrinsicPolar
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.CircleCompactness
+import DifferentialGeometry.Analysis.Integration.Convolution.ConvexRange
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.TargetApproximation.Convex
+import DifferentialGeometry.Analysis.Sobolev.Interpolation.ConvexAnnulus
+import DifferentialGeometry.Topology.MetricSpace.BallPasting
+import DifferentialGeometry.Geometry.Metric.ChartDistance.FirstExit
+import DifferentialGeometry.Geometry.Metric.ChartDistance.InverseMetric
+import DifferentialGeometry.Geometry.Metric.CurveEnergy.Chart
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.CircleAnchor
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.HomogeneousChart
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartFilling
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.IntrinsicReplacement

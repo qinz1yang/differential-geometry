@@ -7,6 +7,12 @@ import DifferentialGeometry.Analysis.Integration.Measure.Affine
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
+import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+
+section
 
 noncomputable section
 
@@ -155,5 +161,91 @@ theorem preimage_add_smul_closedBall_plane (b z : V) {a : ℝ} (ha : 0 < a) (R :
   rw [le_div_iff₀ ha, mul_comm a]
 
 end DifferentialGeometry.Analysis
+
+end
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+open Set Filter MeasureTheory Metric
+open scoped Topology ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis
+
+theorem integral_comp_add_complex_coordinates_closedBall
+    (f : EuclideanSpace ℝ (Fin 2) → ℝ) (b : EuclideanSpace ℝ (Fin 2)) (R : ℝ) :
+    (∫ z in closedBall (0 : ℂ) R, f (b + Complex.orthonormalBasisOneI.repr z)) =
+      ∫ x in closedBall b R, f x := by
+  let e := Complex.orthonormalBasisOneI.repr
+  let a : ℂ ≃ᵐ EuclideanSpace ℝ (Fin 2) :=
+    e.toHomeomorph.toMeasurableEquiv.trans (MeasurableEquiv.addLeft b)
+  have ha : MeasurePreserving a :=
+    (measurePreserving_add_left (volume : Measure (EuclideanSpace ℝ (Fin 2))) b).comp
+      e.measurePreserving
+  have hpre : a ⁻¹' closedBall b R = closedBall (0 : ℂ) R := by
+    ext z
+    change dist (b + e z) b ≤ R ↔ dist z 0 ≤ R
+    simp only [dist_eq_norm, add_sub_cancel_left, e.norm_map, sub_zero]
+  have h := ha.setIntegral_preimage_emb a.measurableEmbedding f (closedBall b R)
+  rw [hpre] at h
+  exact h
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem fderiv_comp_add_complex_coordinates
+    (f : EuclideanSpace ℝ (Fin 2) → F) (b : EuclideanSpace ℝ (Fin 2)) (z ξ : ℂ) :
+    fderiv ℝ (fun w => f (b + Complex.orthonormalBasisOneI.repr w)) z ξ =
+      fderiv ℝ f (b + Complex.orthonormalBasisOneI.repr z)
+        (Complex.orthonormalBasisOneI.repr ξ) := by
+  let e := Complex.orthonormalBasisOneI.repr
+  have h := e.toContinuousLinearEquiv.comp_right_fderiv (f := fun x => f (b + x)) (x := z)
+  have hd := congrArg (fun L : ℂ →L[ℝ] F => L ξ) h
+  change fderiv ℝ (fun w => f (b + e w)) z ξ =
+    fderiv ℝ (fun x => f (b + x)) (e z) (e ξ) at hd
+  rw [fderiv_comp_add_left] at hd
+  exact hd
+
+theorem integral_quadratic_fderiv_comp_complex_coordinates_closedBall
+    (A : F → F →L[ℝ] F →L[ℝ] ℝ) (f : EuclideanSpace ℝ (Fin 2) → F)
+    (b : EuclideanSpace ℝ (Fin 2)) (R : ℝ)
+    (hint : ∀ j : Fin 2, IntegrableOn (fun x =>
+      A (f x) (fderiv ℝ f x (EuclideanSpace.single j 1))
+        (fderiv ℝ f x (EuclideanSpace.single j 1))) (closedBall b R)) :
+    let q : ℂ → F := fun z => f (b + Complex.orthonormalBasisOneI.repr z)
+    (∫ z in closedBall (0 : ℂ) R,
+      (A (q z) (fderiv ℝ q z 1) (fderiv ℝ q z 1) +
+        A (q z) (fderiv ℝ q z Complex.I) (fderiv ℝ q z Complex.I)) / 2) =
+      (1 / 2 : ℝ) * ∑ j : Fin 2, ∫ x in closedBall b R,
+        A (f x) (fderiv ℝ f x (EuclideanSpace.single j 1))
+          (fderiv ℝ f x (EuclideanSpace.single j 1)) := by
+  intro q
+  have h0 : Complex.orthonormalBasisOneI.repr (1 : ℂ) = EuclideanSpace.single 0 1 := by
+    ext i
+    fin_cases i <;> simp
+  have h1 : Complex.orthonormalBasisOneI.repr Complex.I = EuclideanSpace.single 1 1 := by
+    ext i
+    fin_cases i <;> simp
+  simp only [q, fderiv_comp_add_complex_coordinates, h0, h1]
+  have hchange := integral_comp_add_complex_coordinates_closedBall
+    (fun x => (A (f x) (fderiv ℝ f x (EuclideanSpace.single 0 1))
+        (fderiv ℝ f x (EuclideanSpace.single 0 1)) +
+      A (f x) (fderiv ℝ f x (EuclideanSpace.single 1 1))
+        (fderiv ℝ f x (EuclideanSpace.single 1 1))) / 2) b R
+  trans ∫ x in closedBall b R,
+    (A (f x) (fderiv ℝ f x (EuclideanSpace.single 0 1))
+        (fderiv ℝ f x (EuclideanSpace.single 0 1)) +
+      A (f x) (fderiv ℝ f x (EuclideanSpace.single 1 1))
+        (fderiv ℝ f x (EuclideanSpace.single 1 1))) / 2
+  · exact hchange
+  · rw [Fin.sum_univ_two, integral_div, integral_add (hint 0) (hint 1)]
+    ring
+
+end DifferentialGeometry.Analysis
+
+end
 
 end
