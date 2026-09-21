@@ -1167,3 +1167,37 @@ exactly 21 retained sorry warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-normalized-annuli-build.log`,
 `/private/tmp/wt17-neck-annuli-audit.log`, and
 `/private/tmp/wt17-neck-annuli-root-build.log`.
+
+## Local finiteness and the closed annular union
+
+The continuation after `9b1a1f335` proves local finiteness of neck windows from
+scalar curvature divergence. `SpatialNeck.locallyFinite_of_scalar_tendsto_atTop`
+allows arbitrary index sets with the cofinite filter and varying neck tolerances
+bounded by a common value below `1 / 4323`. The scalar-ratio estimate yields a
+positive multiple of center curvature as a lower bound throughout each window.
+The general topology input,
+`UpperSemicontinuous.locallyFinite_of_tendsto_lower_bound`, works for upper
+semicontinuous maps into a preorder with no maximal elements.
+
+The normalized escape producer now chooses an explicit family of annulus maps
+and retains local finiteness of both their images and the containing neck windows.
+Their union is closed, connected, and noncompact in the smooth limit, and its
+frontier is contained in the union of the central spheres. The endpoint maps
+remain explicit. Connectedness uses the actual common central spheres; local
+finiteness rules out compactness of the infinite union. The general
+`LocallyFinite.frontier_iUnion_subset` provides the frontier inclusion.
+
+This is the local-finiteness mechanism used in Morgan–Tian, *Ricci Flow and the
+Poincaré Conjecture*, Appendix A, Lemma A.15, in the read-only local
+`Geometrization/BooksPapers/MorganTianPoincare.pdf`. The current statement does not
+yet assert that only the outermost sphere is on the frontier. Quantitative
+annulus separation, fitting at adjacent spheres, the finite-end geometry, and
+the cone producer remain to be proved. The bounded-distance headline is open.
+
+Four declarations passed thirteen declaration linters, with only `propext`,
+`Classical.choice`, and `Quot.sound` in the inspected axiom closures. The normalized
+leaf passed 14,123 jobs. The full root passed 20,198 jobs with exactly 21 retained
+sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-normalized-neck-locally-finite-build.log`,
+`/private/tmp/wt17-neck-local-finiteness-audit.log`, and
+`/private/tmp/wt17-neck-local-finiteness-root-build.log`.

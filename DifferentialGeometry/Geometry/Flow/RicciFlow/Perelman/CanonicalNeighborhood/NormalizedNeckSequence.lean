@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLimitNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocallyFinite
+import DifferentialGeometry.Topology.LocallyFinite.Frontier
+import Mathlib.Topology.Compactness.LocallyFinite
 set_option autoImplicit false
 noncomputable section
 
@@ -108,17 +111,25 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                             Pairwise (fun i j =>
                               Disjoint ((nk i).map '' (univ ×ˢ ({0} : Set ℝ)))
                                 ((nk j).map '' (univ ×ˢ ({0} : Set ℝ)))) ∧
-                            (∀ n, ∃ eta : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
-                              ∃ Ψ : PartialDiffeomorph IC I3 Cylinder L.M ∞,
-                                (univ ×ˢ Icc (0 : ℝ) 1 ⊆ Ψ.source) ∧
-                                (∀ p, Ψ (p, 0) = (nk n).map (p, 0)) ∧
-                                (∀ p, Ψ (p, 1) = (nk (n + 1)).map (eta p, 0)) ∧
-                                IsCompact (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
-                                (frontier (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) =
-                                  (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) ∪
-                                    (nk (n + 1)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
-                                Ψ '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
-                                  (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹)) := by
+                            LocallyFinite (fun n =>
+                              (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹)) ∧
+                            ∃ eta : ℕ → Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
+                              ∃ Ψ : ℕ → PartialDiffeomorph IC I3 Cylinder L.M ∞,
+                                (∀ n, (univ ×ˢ Icc (0 : ℝ) 1 ⊆ (Ψ n).source) ∧
+                                  (∀ p, Ψ n (p, 0) = (nk n).map (p, 0)) ∧
+                                  (∀ p, Ψ n (p, 1) = (nk (n + 1)).map (eta n p, 0)) ∧
+                                  IsCompact (Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                  (frontier (Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+                                    (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) ∪
+                                      (nk (n + 1)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+                                  Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+                                    (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹)) ∧
+                                LocallyFinite (fun n => Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                IsClosed (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                IsConnected (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                ¬ IsCompact (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                frontier (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
+                                  ⋃ n, (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -165,9 +176,52 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
   obtain ⟨t, nk, _ht0, hmono, hlim, hstep, _hcover, hgraph, hdisjoint, hannuli⟩ :=
     exists_spatialNeck_sequence_along_isometric_curve L.metric har (by linarith) curve hcurve
       (fun tau => (hgood (incl tau) tau.property.1).2) hquant'
+  have htend : Tendsto (incl ∘ t) atTop
+      (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) :=
+    tendsto_comap_iff.mpr hlim
+  have hscalar : Tendsto (fun n => metricScalarAt L.metric (g (incl (t n)))) cofinite atTop := by
+    rw [Nat.cofinite_eq_atTop]
+    exact hblow.comp htend
+  have hlocal := SpatialNeck.locallyFinite_of_scalar_tendsto_atTop nk
+    (eta := 2 * alpha) (by linarith : 2 * alpha < 1 / 4323) (fun _ => le_rfl) hscalar
+  choose eta ann hsource hleft hright hcann hfrann hsubann using hannuli
+  have hlocalAnn := hlocal.subset hsubann
+  have hclosedAnn := hlocalAnn.isClosed_iUnion (fun n => (hcann n).isClosed)
+  let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank
+      (by simp [ThreeSpace] : 1 < Module.finrank ℝ ThreeSpace)) (0 : ThreeSpace)
+      (by norm_num : (0 : ℝ) ≤ 1))
+  have hconnAnn (n : ℕ) : IsConnected (ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
+    (isConnected_univ.prod (isConnected_Icc zero_le_one)).image _
+      ((ann n).contMDiffOn_toFun.continuousOn.mono (hsource n))
+  have hconnUnion : IsConnected (⋃ n, ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+    apply IsConnected.iUnion_of_chain hconnAnn
+    intro n
+    let p : Sphere 2 := Classical.choice inferInstance
+    refine ⟨ann n (p, 1), ⟨(p, 1), ⟨mem_univ _, by simp⟩, rfl⟩,
+      ⟨(eta n p, 0), ⟨mem_univ _, by simp⟩, ?_⟩⟩
+    change ann (n + 1) (eta n p, 0) = ann n (p, 1)
+    rw [hleft, hright]
+  have hnotCompact : ¬ IsCompact (⋃ n, ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+    intro hc
+    apply (Set.infinite_univ : (univ : Set ℕ).Infinite)
+    apply (hlocalAnn.finite_nonempty_inter_compact hc).subset
+    intro n _
+    obtain ⟨y, hy⟩ := (hconnAnn n).nonempty
+    exact ⟨y, hy, mem_iUnion.mpr ⟨n, hy⟩⟩
+  have hfrontAnn : frontier (⋃ n, ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
+      ⋃ n, (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) := by
+    intro y hy
+    obtain ⟨n, hn⟩ := mem_iUnion.mp (hlocalAnn.frontier_iUnion_subset hy)
+    rw [hfrann n] at hn
+    rcases hn with hn | hn
+    · exact mem_iUnion.mpr ⟨n, hn⟩
+    · exact mem_iUnion.mpr ⟨n + 1, hn⟩
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
-    q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint, hannuli⟩
+    q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
+    hlocal, eta, ann, fun n => ⟨hsource n, hleft n, hright n, hcann n, hfrann n, hsubann n⟩,
+    hlocalAnn, hclosedAnn, hconnUnion, hnotCompact, hfrontAnn⟩
   intro tau hR
   exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
 
