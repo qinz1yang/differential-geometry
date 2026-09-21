@@ -4,6 +4,9 @@ import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import Mathlib.Tactic.Ring
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
+import DifferentialGeometry.External.DeGiorgi.PositivePart
+
+section
 
 section
 
@@ -166,6 +169,38 @@ theorem exists_translated_memW1pWitness_of_eqOn
   intro i x
   change (1 : ℝ) • (hf i).weakGrad (b + (1 : ℝ) • x) = (hf i).weakGrad (b + x)
   rw [one_smul, one_smul]
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Topology ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d m : ℕ}
+
+local notation "V" => EuclideanSpace ℝ (Fin d)
+local notation "F" => EuclideanSpace ℝ (Fin m)
+
+theorem exists_memW1pWitness_add_const
+    {Ω : Set V} [IsFiniteMeasure (volume.restrict Ω)] (hΩ : IsOpen Ω) {z : V → F}
+    (hz : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => z x i) Ω) (y₀ : F) :
+    ∃ hw : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => (z x + y₀) i) Ω,
+      ∀ i, (hw i).weakGrad = (hz i).weakGrad := by
+  let hw (i : Fin m) : DeGiorgi.MemW1pWitness 2 (fun x => (z x + y₀) i) Ω :=
+    ((hz i).subConst hΩ (-y₀ i)).congr
+    (Eventually.of_forall fun x => by simp only [PiLp.add_apply, sub_neg_eq_add])
+  exact ⟨hw, fun _ => rfl⟩
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
 

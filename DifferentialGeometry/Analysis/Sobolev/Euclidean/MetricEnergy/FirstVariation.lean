@@ -5,6 +5,10 @@ import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 import DifferentialGeometry.Analysis.Integration.Lp.Bilinear
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Locality
+import Mathlib.Topology.MetricSpace.Thickening
+
+section
 
 noncomputable section
 open Set Filter MeasureTheory
@@ -135,7 +139,9 @@ private theorem hasDerivAt_integral_metric_energy
   have hresult := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := μ) (F := f) (F' := f') (bound := fun x => C * ∑ j : ι,
       (P * (‖v j x‖ + ‖w j x‖) ^ 2 + 2 * ‖w j x‖ * (‖v j x‖ + ‖w j x‖))) hnear
-    (by filter_upwards [hnear] with t ht; exact hfm t (by simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using ht))
+    (by
+      filter_upwards [hnear] with t ht
+      exact hfm t (by simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using ht))
     hf0 (hf'm 0 (by simpa using hδ)) ?_
     (integrable_sum_quadratic_bound hv hw C P) ?_
   · simpa only [f, f', U, W, zero_smul, add_zero] using hresult
@@ -154,7 +160,9 @@ private theorem hasDerivAt_integral_metric_energy
         rw [← (hasDerivAt_quadraticVariation A (u x) (φ x) (v j x) (w j x) t hAt).deriv]
         exact norm_deriv_quadraticVariation_le A (u x) (φ x) (v j x) (w j x) t C P hAt
           (ht'.le.trans hδone) (hφ x) (hbu x hx t ht').2.1 (hbu x hx t ht').2.2
-      _ = C * ∑ j : ι, (P * (‖v j x‖ + ‖w j x‖) ^ 2 + 2 * ‖w j x‖ * (‖v j x‖ + ‖w j x‖)) := (Finset.mul_sum ..).symm
+      _ = C * ∑ j : ι,
+          (P * (‖v j x‖ + ‖w j x‖) ^ 2 + 2 * ‖w j x‖ * (‖v j x‖ + ‖w j x‖)) :=
+        (Finset.mul_sum ..).symm
   · exact huK.mono fun x hx t ht => hdiff x hx t
       (by simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using ht)
 
@@ -164,14 +172,21 @@ section SobolevCoordinates
 
 variable {d n : ℕ}
 
-local instance energyFormNormedAdd : NormedAddCommGroup ((EuclideanSpace ℝ (Fin n)) →L[ℝ] (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ) :=
+local instance energyFormNormedAdd :
+    NormedAddCommGroup ((EuclideanSpace ℝ (Fin n)) →L[ℝ]
+      (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
-local instance energyFormNormedSpace : NormedSpace ℝ ((EuclideanSpace ℝ (Fin n)) →L[ℝ] (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ) :=
+local instance energyFormNormedSpace :
+    NormedSpace ℝ ((EuclideanSpace ℝ (Fin n)) →L[ℝ]
+      (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-variable {Ω : Set (EuclideanSpace ℝ (Fin d))} {u : (EuclideanSpace ℝ (Fin d)) → (EuclideanSpace ℝ (Fin n))}
+variable {Ω : Set (EuclideanSpace ℝ (Fin d))}
+  {u : (EuclideanSpace ℝ (Fin d)) → (EuclideanSpace ℝ (Fin n))}
 
-def metricDirichletEnergy (A : (EuclideanSpace ℝ (Fin n)) → (EuclideanSpace ℝ (Fin n)) →L[ℝ] (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ)
+def metricDirichletEnergy
+    (A : (EuclideanSpace ℝ (Fin n)) → (EuclideanSpace ℝ (Fin n)) →L[ℝ]
+      (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ)
     (hu : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => u x i) Ω) : ℝ :=
   ∫ x in Ω, ∑ j : Fin d,
     A (u x) (DeGiorgi.weakGradientColumn hu x j) (DeGiorgi.weakGradientColumn hu x j)
@@ -190,11 +205,13 @@ theorem metricDirichletEnergy_affine_variation_zero
 
 theorem hasDerivAt_metricDirichletEnergy_affine_variation
     (hΩ : IsOpen Ω) (hu : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => u x i) Ω)
-    {A : (EuclideanSpace ℝ (Fin n)) → (EuclideanSpace ℝ (Fin n)) →L[ℝ] (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ} {V K : Set (EuclideanSpace ℝ (Fin n))}
+    {A : (EuclideanSpace ℝ (Fin n)) → (EuclideanSpace ℝ (Fin n)) →L[ℝ]
+      (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ} {V K : Set (EuclideanSpace ℝ (Fin n))}
     (hV : IsOpen V) (hA : ContDiffOn ℝ 1 A V) (hK : IsCompact K) (hKV : K ⊆ V)
     (huK : ∀ᵐ x ∂volume.restrict Ω, u x ∈ K)
     (hsym : ∀ y ∈ K, ∀ v w : (EuclideanSpace ℝ (Fin n)), A y v w = A y w v)
-    {φ : (EuclideanSpace ℝ (Fin d)) → (EuclideanSpace ℝ (Fin n))} (hφ : ContDiff ℝ ∞ φ) (hφs : HasCompactSupport φ) :
+    {φ : (EuclideanSpace ℝ (Fin d)) → (EuclideanSpace ℝ (Fin n))}
+    (hφ : ContDiff ℝ ∞ φ) (hφs : HasCompactSupport φ) :
     IntegrableOn (fun x => ∑ j : Fin d,
       ((fderiv ℝ A (u x) (φ x)) (DeGiorgi.weakGradientColumn hu x j)
           (DeGiorgi.weakGradientColumn hu x j) +
@@ -217,7 +234,8 @@ theorem hasDerivAt_metricDirichletEnergy_affine_variation
       (volume.restrict Ω) := by
     have hc : Continuous (fun x => fderiv ℝ φ x (EuclideanSpace.single j 1)) :=
       (hφ.continuous_fderiv (by simp)).clm_apply continuous_const
-    exact (hc.memLp_of_hasCompactSupport (μ := volume) (p := 2) (hφs.fderiv_apply (𝕜 := ℝ) _)).restrict Ω
+    exact (hc.memLp_of_hasCompactSupport (μ := volume) (p := 2)
+      (hφs.fderiv_apply (𝕜 := ℝ) _)).restrict Ω
   obtain ⟨P₀, hP₀⟩ := hφ.continuous.bounded_above_of_compact_support hφs
   let P := max P₀ 0
   have hP : 0 ≤ P := le_max_right _ _
@@ -227,15 +245,18 @@ theorem hasDerivAt_metricDirichletEnergy_affine_variation
         ((fderiv ℝ A (u x) (φ x)) (DeGiorgi.weakGradientColumn hu x j)
             (DeGiorgi.weakGradientColumn hu x j) +
           A (u x) (fderiv ℝ φ x (EuclideanSpace.single j 1)) (DeGiorgi.weakGradientColumn hu x j) +
-          A (u x) (DeGiorgi.weakGradientColumn hu x j) (fderiv ℝ φ x (EuclideanSpace.single j 1)))) =ᵐ[volume.restrict Ω]
+          A (u x) (DeGiorgi.weakGradientColumn hu x j)
+            (fderiv ℝ φ x (EuclideanSpace.single j 1)))) =ᵐ[volume.restrict Ω]
       (fun x => ∑ j : Fin d,
         ((fderiv ℝ A (u x) (φ x)) (DeGiorgi.weakGradientColumn hu x j)
             (DeGiorgi.weakGradientColumn hu x j) +
-          2 * A (u x) (DeGiorgi.weakGradientColumn hu x j) (fderiv ℝ φ x (EuclideanSpace.single j 1)))) := by
+          2 * A (u x) (DeGiorgi.weakGradientColumn hu x j)
+            (fderiv ℝ φ x (EuclideanSpace.single j 1)))) := by
     filter_upwards [huK] with x hx
     apply Finset.sum_congr rfl
     intro j hj
-    rw [hsym (u x) hx (fderiv ℝ φ x (EuclideanSpace.single j 1)) (DeGiorgi.weakGradientColumn hu x j)]
+    rw [hsym (u x) hx (fderiv ℝ φ x (EuclideanSpace.single j 1))
+      (DeGiorgi.weakGradientColumn hu x j)]
     ring
   refine ⟨hint.congr heq, ?_⟩
   have hfunc : (fun t : ℝ => metricDirichletEnergy A
@@ -252,11 +273,13 @@ theorem hasDerivAt_metricDirichletEnergy_affine_variation
 
 theorem integral_metric_energy_variation_eq_zero_of_isLocalMin
     (hΩ : IsOpen Ω) (hu : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => u x i) Ω)
-    {A : (EuclideanSpace ℝ (Fin n)) → (EuclideanSpace ℝ (Fin n)) →L[ℝ] (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ} {V K : Set (EuclideanSpace ℝ (Fin n))}
+    {A : (EuclideanSpace ℝ (Fin n)) → (EuclideanSpace ℝ (Fin n)) →L[ℝ]
+      (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ} {V K : Set (EuclideanSpace ℝ (Fin n))}
     (hV : IsOpen V) (hA : ContDiffOn ℝ 1 A V) (hK : IsCompact K) (hKV : K ⊆ V)
     (huK : ∀ᵐ x ∂volume.restrict Ω, u x ∈ K)
     (hsym : ∀ y ∈ K, ∀ v w : (EuclideanSpace ℝ (Fin n)), A y v w = A y w v)
-    {φ : (EuclideanSpace ℝ (Fin d)) → (EuclideanSpace ℝ (Fin n))} (hφ : ContDiff ℝ ∞ φ) (hφs : HasCompactSupport φ)
+    {φ : (EuclideanSpace ℝ (Fin d)) → (EuclideanSpace ℝ (Fin n))}
+    (hφ : ContDiff ℝ ∞ φ) (hφs : HasCompactSupport φ)
     (hmin : IsLocalMin (fun t : ℝ => metricDirichletEnergy A
       (DeGiorgi.componentAffineVariationWitness hΩ hu hφ hφs t)) 0) :
     (∫ x in Ω, (∑ j : Fin d,
@@ -342,5 +365,116 @@ theorem integrable_metric_weakGradientColumn_of_compact_range
     (hfK.mono fun x hx => hC (mem_image_of_mem _ hx)) j
 
 end DifferentialGeometry.Analysis.Sobolev
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Set Filter MeasureTheory Metric
+open scoped Topology ContDiff ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev
+
+variable {d m : ℕ} [NeZero d]
+
+local notation "E" => EuclideanSpace ℝ (Fin d)
+local notation "F" => EuclideanSpace ℝ (Fin m)
+
+theorem integral_metric_energy_variation_eq_zero_of_ball_minimality
+    {z : E → F} {R a : ℝ}
+    (hz : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => z x i) (ball (0 : E) R))
+    (hzc : ContinuousOn z (ball (0 : E) R)) (hzrange : MapsTo z (ball (0 : E) R) (ball 0 a))
+    {U : Set F} (hU : IsOpen U) (hKU : closedBall (0 : F) a ⊆ U)
+    (B : F → F →L[ℝ] F →L[ℝ] ℝ) (hB : ContDiffOn ℝ 1 B U)
+    (hsym : ∀ y ∈ closedBall (0 : F) a, ∀ v w, B y v w = B y w v)
+    (hmin : ∀ s : ℝ, 0 < s → s < R → ∀ q : E → F,
+      ∀ hq : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => q x i) (ball (0 : E) s),
+      (∀ i, DeGiorgi.MemW01p 2 (fun x => q x i - z x i) (ball (0 : E) s)) →
+      (∀ᵐ x ∂volume.restrict (ball (0 : E) s), q x ∈ closedBall (0 : F) a) →
+      (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball (0 : E) s,
+        B (z x) (DeGiorgi.weakGradientColumn hz x j) (DeGiorgi.weakGradientColumn hz x j)) ≤
+        (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball (0 : E) s,
+          B (q x) (DeGiorgi.weakGradientColumn hq x j) (DeGiorgi.weakGradientColumn hq x j)))
+    {s : ℝ} (hs : 0 < s) (hsR : s < R) {φ : E → F}
+    (hφ : ContDiff ℝ ∞ φ) (hφsupp : tsupport φ ⊆ ball (0 : E) s) :
+    (∫ x in ball (0 : E) s, ∑ j : Fin d,
+      ((fderiv ℝ B (z x) (φ x))
+          (DeGiorgi.weakGradientColumn hz x j) (DeGiorgi.weakGradientColumn hz x j) +
+        2 * B (z x) (DeGiorgi.weakGradientColumn hz x j)
+          (fderiv ℝ φ x (EuclideanSpace.single j 1)))) = 0 := by
+  classical
+  have hsub : ball (0 : E) s ⊆ ball (0 : E) R := ball_subset_ball hsR.le
+  have hclosed : closedBall (0 : E) s ⊆ ball (0 : E) R := closedBall_subset_ball hsR
+  let hzs (i : Fin m) := (hz i).restrict isOpen_ball hsub
+  have hφcompact : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : E) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφsupp.trans ball_subset_closedBall)
+  let Kz := z '' closedBall (0 : E) s
+  have hKz : IsCompact Kz := (isCompact_closedBall (0 : E) s).image_of_continuousOn
+    (hzc.mono hclosed)
+  have hKzball : Kz ⊆ ball (0 : F) a := by
+    rintro y ⟨x, hx, rfl⟩
+    exact hzrange (hclosed hx)
+  obtain ⟨δ, hδ, hδK⟩ := hKz.exists_thickening_subset_open isOpen_ball hKzball
+  obtain ⟨C₀, hC₀⟩ := hφ.continuous.bounded_above_of_compact_support hφcompact
+  let C : ℝ := max C₀ 0 + 1
+  have hC : 0 < C := by dsimp only [C]; positivity
+  have hφbound (x : E) : ‖φ x‖ ≤ C := (hC₀ x).trans (by dsimp only [C]; linarith [le_max_left C₀ 0])
+  have hqrange : ∀ᶠ t in 𝓝 (0 : ℝ),
+      MapsTo (fun x => z x + t • φ x) (ball (0 : E) s) (closedBall (0 : F) a) := by
+    filter_upwards [ball_mem_nhds (0 : ℝ) (div_pos hδ hC)] with t ht x hx
+    apply ball_subset_closedBall
+    apply hδK
+    apply mem_thickening_iff.mpr
+    refine ⟨z x, mem_image_of_mem z (ball_subset_closedBall hx), ?_⟩
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+    have ht' : |t| < δ / C := by simpa only [mem_ball, dist_zero_right, Real.norm_eq_abs] using ht
+    exact (mul_le_mul_of_nonneg_left (hφbound x) (abs_nonneg t)).trans_lt
+      ((lt_div_iff₀ hC).mp ht')
+  have hzK : ∀ᵐ x ∂volume.restrict (ball (0 : E) s), z x ∈ closedBall (0 : F) a := by
+    filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
+    exact ball_subset_closedBall (hzrange (hsub hx))
+  have hbaseInt (j : Fin d) : IntegrableOn (fun x => B (z x)
+      (DeGiorgi.weakGradientColumn hzs x j) (DeGiorgi.weakGradientColumn hzs x j))
+        (ball (0 : E) s) :=
+    Euclidean.integrable_quadratic_weakGrad_column_of_compact_range hzs
+      (isCompact_closedBall (0 : F) a) hzK B (hB.continuousOn.mono hKU) j
+  have hminvar : ∀ᶠ t in 𝓝 (0 : ℝ), metricDirichletEnergy B hzs ≤
+      metricDirichletEnergy B (DeGiorgi.componentAffineVariationWitness
+        isOpen_ball hzs hφ hφcompact t) := by
+    filter_upwards [hqrange] with t htrange
+    let ht := DeGiorgi.componentAffineVariationWitness isOpen_ball hzs hφ hφcompact t
+    have htrace (i : Fin m) : DeGiorgi.MemW01p 2
+        (fun x => (z x + t • φ x) i - z x i) (ball (0 : E) s) := by
+      have hh := (DeGiorgi.memW01p_of_contDiffComponentHasCompactSupport_subset
+        (p := 2) isOpen_ball hφ hφcompact hφsupp i).smul t
+      convert hh using 1
+      funext x
+      simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, add_sub_cancel_left]
+    have hqK : ∀ᵐ x ∂volume.restrict (ball (0 : E) s), z x + t • φ x ∈ closedBall (0 : F) a := by
+      filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
+      exact htrange hx
+    have hvarInt (j : Fin d) : IntegrableOn (fun x => B (z x + t • φ x)
+        (DeGiorgi.weakGradientColumn ht x j) (DeGiorgi.weakGradientColumn ht x j))
+          (ball (0 : E) s) :=
+      Euclidean.integrable_quadratic_weakGrad_column_of_compact_range ht
+        (isCompact_closedBall (0 : F) a) hqK B (hB.continuousOn.mono hKU) j
+    have hle := hmin s hs hsR (fun x => z x + t • φ x) ht htrace hqK
+    unfold metricDirichletEnergy
+    rw [integral_finsetSum _ (fun j _ => hbaseInt j),
+      integral_finsetSum _ (fun j _ => hvarInt j)]
+    have hgrad : DeGiorgi.weakGradientColumn hzs = DeGiorgi.weakGradientColumn hz := rfl
+    rw [hgrad]
+    linarith [hle]
+  exact integral_metric_energy_variation_eq_zero_of_eventually_energy_le isOpen_ball hzs
+    hU hB (isCompact_closedBall (0 : F) a) hKU hzK hsym hφ hφcompact hminvar
+
+end DifferentialGeometry.Analysis.Sobolev
+
+end
 
 end
