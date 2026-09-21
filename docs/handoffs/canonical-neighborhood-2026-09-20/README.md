@@ -2165,3 +2165,40 @@ includes the genuine terminal endpoint and does not require completeness of
 the fixed local manifold. Its needed local input data still must be produced
 from the original sources using the established curvature-scale windows and
 fixed-order Shi estimates.
+
+
+## Buffered source balls and closed-terminal Shi estimates
+
+The source estimates needed for a local flow patch are now verified.
+`exists_parabolic_curvature_bound_on_normalized_end` applies the established
+normalized source-scale window to centers of the constructed incomplete end.
+It produces compact buffered end balls, captures actual source balls by the
+comparison maps using first exit, and bounds source curvature on a backward
+parabolic cylinder. Scalar convergence ties the source scale to the actual
+end scalar. The missing endpoint stays outside these balls.
+
+The general theorem `shi_curvDerivNorm_on_terminal_ball` gives a fixed-order
+bound throughout the final half of a closed backward interval on a smaller
+frozen terminal ball. Metric comparison captures moving-time balls inside
+the compact controlled region; the existing terminal Shi theorem then applies
+on sliding intervals. Its constants depend on derivative order. Completeness,
+a common positive-time extension, and exact source nonnegative Ricci curvature
+are not assumptions. The generic scaled-ball compactness lemma is placed in
+`Topology/MetricSpace/CompactBall.lean`.
+
+All three new public declarations passed thirteen declaration linters and
+have only the standard foundational axioms. Changed leaves and dependents
+compiled, and `lake build DifferentialGeometry` passed 20,229 jobs with the
+21 retained proof-hole warnings. Evidence is in
+`/private/tmp/wt17-end-window-audit.log` and
+`/private/tmp/wt17-end-window-root-build.log`.
+
+This closes the analytical and ball-containment input gap. The requested next
+milestone remains an actual local cone-flow patch satisfying
+`solution_cone_terminal_exclusion`. The existing local terminal metric
+compactness theorem and closed-terminal flow engine can provide the smooth
+patch. Identifying its distance with the cone approximation and constructing
+a smooth `ConeChart` remain unproved. The headline and its statement are
+unchanged. No mathematical contradiction or repeated failed mathematical
+implication has been established; the resolved failures in this layer were
+Lean elaboration and algebra issues.
