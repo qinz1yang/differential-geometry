@@ -79,3 +79,25 @@ Also: `hpre` is redundant given `hmc`.
 **Most likely surprise after the repair:** the cyclic splice — a construction can preserve the
 unlabelled four-page configuration while losing which source sheet and collar side each page is.
 The half-turn and the quarter-turn isolate the two ways that loss defeats the argument.
+
+## Follow-up review of the repaired skeleton (snapshot `b78a0d15cc11`, 2026-09-21)
+`exists_isSourceTrackedBranchTube`: **OK — frozen.**
+* `cyclic` (index order = cyclic order) and the `0–2`, `1–3` pairing of `realisation` are
+  compatible. Möbius fixture: `x = (z+u)/2`, `y = (z−u)/2`, end map `U(x,y) = (y,x)`,
+  `r = ((δ,0), (0,δ), (−δ,0), (0,−δ))`, `a₀ = a₂ = [t]`, `a₁ = a₃ = [t+1]`, signs `(+,+,−,−)`.
+  `{0,2},{1,3}` = two sides of one source sheet; the monodromy is the **reflection** `(0 1)(2 3)`,
+  not a quarter turn; `cyclic` does not ask `U` to preserve the order, nor `aᵢ 0 = aᵢ 1`.
+* `derived` asks more than inclusion but is attainable: start from `Lc = restrict R Γ`,
+  `N = derivedNeighborhood R Lc` for the common subdivision of `ClosedBranchCaseOneTubeCarrier`;
+  **choose `R`, `N`, `φ` and the source arcs together** — an arbitrary small neighbourhood may have
+  a boundary that folds back under the collar projection. Our docstring was wrong on two points
+  (fixed): `derived` does not ask `Lc ⊆ R` nor `Lc.space = Γ`; and recording `derived` instead of
+  `N.space ⊆ L.space` is an interface choice (a general equal-dimension restriction lemma via a
+  common subdivision and `IsOrientable.of_le` would do), not a mathematical necessity.
+* Labels must come from the alternating four rays of the crossing and be transported along the
+  given collar; they cannot be chosen after the fact.
+* **Substance of the leaf / most likely surprise:** the marked cell normalisation and gluing
+  *relative to the given `ρ`*. The existing link/cylinder normalisation controls unmarked set
+  images only, not the base-point projection to the same collar and the four continuous arcs.
+* Fixture: the Möbius model capped in `ℝP² × I`, placed in the double `ℝP² × S¹` (closed ambient);
+  a solid Klein bottle alone cannot carry the whole disk.

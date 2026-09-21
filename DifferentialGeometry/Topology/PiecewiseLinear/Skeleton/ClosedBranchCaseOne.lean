@@ -31,13 +31,25 @@ The leaves.
   manifold in which the sheet through that point is `(e z).2.2 = 0`, the sheet through its deck
   partner is `(e z).2.1 = 0`, the branch carrier is `(e z).2 = 0`, and on each sheet the positive
   half is the half that the proved two sided collar puts on the `Q` side of `J`.
-* `exists_isSourceTrackedBranchTube` (item 8, owner W-B, new, unreviewed): a cylindrical diagram
-  over a `2`-ball cross section whose target is a derived neighbourhood of a subcomplex of a
-  subdivision of the ambient complex, containing the branch carrier in its intrinsic interior,
-  whose cross section circle meets the trace of the cell in exactly four marked points at every
-  level, together with the parametrisation of that circle putting the four rays in cyclic order
-  and with the source realisation of the four rays along the branch.  It carries no orientability
-  hypothesis and no orientability clause.
+* `exists_isSourceTrackedBranchTube` (item 8, owner W-B, reviewed 2026-09-21, frozen): a
+  cylindrical diagram over a `2`-ball cross section whose target is `derivedNeighborhood R Lc` for
+  a finite subdivision `R` of the ambient complex and some complex `Lc`, containing the branch
+  carrier in its intrinsic interior, whose cross section circle meets the trace of the cell in
+  exactly four marked points at every level, together with the parametrisation of that circle
+  putting the four rays in cyclic order and with the source realisation of the four rays along
+  the branch.  It carries no orientability hypothesis and no orientability clause.  The clause
+  `derived` does not ask that `Lc` be a subcomplex of `R`, nor that `Lc.space` be the branch; the
+  intended producer takes `Lc = restrict R Γ` for a common subdivision `R` in which the branch
+  and the image of the cell are subcomplexes, and must choose `R`, the tube, the cylindrical
+  parametrisation and the source arcs together.  The labels come from the alternating four rays
+  of the crossing, transported along the given collar; they cannot be chosen after the fact.
+  The cyclic order `0, 1, 2, 3` and the pairing `0`–`2`, `1`–`3` (the two sides of one source
+  sheet) are compatible: on the Möbius fixture `r = ((δ,0), (0,δ), (-δ,0), (0,-δ))`,
+  `a 0 = a 2 = [t]`, `a 1 = a 3 = [t+1]`, signs `(+,+,-,-)`, and the end map is the reflection
+  `(0 1)(2 3)`, which `cyclic` does not ask to preserve the order.  The substance of the leaf is
+  the marked cell normalisation and gluing relative to the given `ρ`: the existing unmarked
+  link and cylinder normalisation controls set images only, not the four continuous source
+  arcs over the same collar.
 
 The 2026-09-21 external review of the snapshot `06a96eb1de64` found the old item 8 vacuous (its
 input was the orientable closed case itself) and the old items 9 and 10 false: an abstractly
@@ -60,8 +72,11 @@ the two false leaves by consequences of one transport statement.  The covering i
 lift of one circuit in a connected two sheeted cover of the circle ends at the other fibre point,
 which is `apply_one_ne_apply_zero_of_fiber_encard_eq_two` together with the two element fibre.
 Orientability of the tube is no longer assumed: it is derived in the assembly from ambient
-orientability through `isOrientable_derivedNeighborhood_of_isSubdivision`, which is why the
-predicate records the derived neighbourhood presentation and not a bare inclusion of spaces.
+orientability through `isOrientable_derivedNeighborhood_of_isSubdivision`.  Recording the
+derived neighbourhood presentation is an interface choice made because that lemma exists; it is
+not a mathematical necessity.  The inclusion `N.space ⊆ L.space`, which `derived` implies, would
+serve as well together with a general restriction lemma for orientability in equal dimension
+(common subdivision, `IsOrientable.of_le`, invariance under subdivision).
 
 Three adaptations of the reviewed interface.  `BranchTime` is spelled `unitInterval`, so that
 `pathToCircle_coe` and `unitInterval_to_loopCircle_surjective` apply without a translation.  The
@@ -76,7 +91,7 @@ Departures from `consult/C-or1-design.md`, forced by the proved pieces or by typ
   the opposite of the design's `κ`.  All in/out clauses use `Ioc 0 1`.
 * The marked chart is indexed by the source point `a ∈ J`, not by the branch point `⇑D a`.  The
   design's clause `∀ y ∈ Γ, ∀ a ∈ J, ⇑D a = y → IsMarkedCrossingChartAt … y a (sheet y)` is not
-  satisfiable: one chart `e` would have to present both the sheet through `a` and the sheet
+  unsatisfiable: one chart `e` would have to present both the sheet through `a` and the sheet
   through `τ a` as `(e z).2.2 = 0`, forcing the two sheets to agree near `⇑D a`, while the same
   chart makes their intersection the `1`-dimensional set `(e z).2 = 0`.
 * The chart carries no `IsPiecewiseAffineOn` clause.  `IsPiecewiseAffineOn e e.source` for
@@ -92,7 +107,9 @@ Departures from `consult/C-or1-design.md`, forced by the proved pieces or by typ
 * The four arc sphere normalisation is not a leaf here: `FourArcSphere.lean` already proves
   `exists_isPLHomeomorphOn_fourArcSphere_of_isPLHomeomorphOn_Icc` in the required form.  It is a
   tool of item 8 and is not consumed by this assembly, so this skeleton does not test its
-  interface; that file is deliberately not imported.
+  interface; that file is deliberately not imported.  Its application at every branch vertex,
+  with actual four arc parametrisations, the two separation hypotheses and the permutation
+  condition, remains part of item 8.
 -/
 
 open Set Topology
