@@ -114,9 +114,11 @@ The leaves, with content and review state.  After review AC five of the seven ar
 `exists_section34ProtectedCircleRemoval`, `exists_section34DeletedBalls` and
 `exists_section34EdgeMatching`; the first three were not re-examined by that review and the last
 two were read and passed, the deletion with the literal difference formula kept and the matching
-as an interface.  The two **unreviewed after the repair** are `exists_section34VertexPreparation`,
-which gained the whole-overlap certificate, and `exists_section34PiercingPackage`, which lost the
-obligation to produce the closed overlap field out of nothing.  No leaf of this file assumes
+as an interface.  The other two, `exists_section34VertexPreparation` and
+`exists_section34PiercingPackage`, were passed by the eighth review in everything but their
+**supply interface**, repaired here and unreviewed in that respect only: the preparation now
+receives a single chart around the image of each vertex ball, and the package receives
+`Moise341` instead of one given approximating family.  No leaf of this file assumes
 piecewise linear Schoenflies in `ℝ³`: `SchoenfliesFoundations.schoenflies_input : SchoenfliesInput`
 is proved in the tree, so that input is unconditional here; what the deletion still needs beyond
 it is the cutting disk, the new boundary sphere and the transport back to `IsPLCellOn`.
@@ -149,7 +151,16 @@ all three, as the octahedra `|x ± 1| + |y| + |z| ≤ 2`, `|x| + |y| + |z| ≤ 1
 triple cover would give two different edges common points of the deletion.  The clause speaks
 about the source and the already chosen `ε`, so a producer makes the source overlaps of different
 edges disjoint first and chooses the scales afterwards, by compactness and local finiteness,
-never the other way round.
+never the other way round.  The eighth review confirmed that the clause is producible also when
+three graph vertices are pairwise adjacent: the cut frame makes different splitting disks
+disjoint, since a vertex ball meeting the disk of `e` is an end of `e`; the producer localises
+each *whole lens* `C'_a ∩ C'_b` in a neighbourhood `O_e` of its own disk with the `O_e` pairwise
+disjoint, and then uses that `N_r(A) ∩ N_r(B) ⊆ O` for small `r` when `A ∩ B ⊆ O`, vertex by
+vertex over the finitely many incident edges.  The same review found the one missing input:
+the preparation must output a single chart containing `h '' C''_v` while `C_v ⊆ C''_v`, and a
+compact set lies in finitely many charts, not in one; `hCchart` supplies a chart around
+`h '' C_v`, which the assembly has from the carrier control through `hQint` and `hQH`, and the
+enlarged ball is chosen inside its preimage.
 
 `exists_section34PiercingPackage` (**changed after reviews W, Z and AC, unreviewed**): it receives
 `hQsub : ∀ w, Q w ⊆ h '' U` and the carrier local finiteness `hQlfU` in that subspace, which is
@@ -159,10 +170,16 @@ preparation's new certificate and the closeness of the family the leaf itself ou
 `section34MarkerConditions` derives the exclusion of a marker from a foreign ball, and the proof
 of the leaf has only to apply it.  What it still owes is the clauses that the three exporters do
 not give: the containments whose ambient set is a solid torus rather than a cell, the component
-certificates of (7), and the general position of (8).  Both image configuration clauses stay
-fields of `Section34PiercingConditions`, because the families produced by the removal steps carry
-no closeness certificate and no exporter applies to them, while a surgery supported in one tube
-preserves both.
+certificates of (7), and the general position of (8).  Those need scales that the given `ε`
+does not certify, the certified field protecting only the cores, which avoid the tubes; that a
+smaller sufficient scale exists for the source configuration does not make the given `ε` that
+scale.  So, after the eighth review, the leaf no longer receives one family within `ε`: it
+receives `Moise341`, chooses auxiliary scales `δ_w ≤ ε_w` for the containments, the sides and the
+components, approximates within them and perturbs into general position; the public `ε` and the
+preparation are unchanged, and the output is still within `ε`.  Both image configuration clauses
+stay fields of `Section34PiercingConditions`, because the families produced by the removal steps
+carry no closeness certificate and no exporter applies to them, while a surgery supported in one
+tube preserves both.
 
 `exists_section34ProtectedCircleRemovalStep` (**frozen**, restated at review W): one modification
 inside `Int S'_{e₀}`.  It already concludes `Section34PiercingConditions` for the new family, and
@@ -291,7 +308,9 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
     (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
     (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
       (graphSkeletonSpace 𝒦) U)
-    (hQint : ∀ w, h '' src (Section34Label.vertexBall w) ⊆ interior (Q w)) :
+    (hQint : ∀ w, h '' src (Section34Label.vertexBall w) ⊆ interior (Q w))
+    (hCchart : ∀ w : Section34VertexIndex 𝒦 𝒦', ∃ c ∈ (plGroupoid 3).maximalAtlas M₂,
+      h '' src (Section34Label.vertexBall w) ⊆ c.source) :
     ∃ (Cp CpBd Cc CcBd Kcore : Section34VertexIndex 𝒦 𝒦' → Set M₁)
       (ends : Section34EdgeIndex 𝒦 𝒦' →
         Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
@@ -353,16 +372,14 @@ theorem Moise341.exists_section34VertexApproximation (h341 : Moise341)
 
 theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology M₁]
     [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
+    (h341 : Moise341) (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
     (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
     (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
       (graphSkeletonSpace 𝒦) U)
     (hQsub : ∀ w, Q w ⊆ h '' U)
     (hQlfU : LocallyFinite fun w => {y : h '' U | (y : M₂) ∈ Q w})
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (Cc w))
-    (hGdist : ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w) :
+      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
     ∃ (Sp Tp : Section34EdgeIndex 𝒦 𝒦' → Set M₂) (cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ)
       (Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂)
       (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂),
@@ -600,7 +617,7 @@ end Leaves
 theorem controlledGraphNeighborhood (h341 : Moise341) :
     ControlledGraphNeighborhoodStatement.{u} := by
   intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh Ea _ _ _ 𝒦 h𝒦 η H hH W hW hΓW hWU ψ hψc hψpos
-  obtain ⟨-, hHsub, hHlf, -, hHcell, -⟩ := id hH
+  obtain ⟨-, hHsub, hHlf, -, hHcell, hHchart⟩ := id hH
   obtain ⟨𝒦', src, srcBd, car, Q, ct, Sd, hframe, hN, hNW, hcarF, hcarS, hcarfib, hQint, hQH,
       hQsmall, hQsep, -, htorus⟩ :=
     exists_section34CutFrame hU hh 𝒦 h𝒦 η H hH hW hΓW hWU ψ hψc hψpos
@@ -620,12 +637,13 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
       {y : h '' U | (y : M₂) ∈ Q w} :=
     locallyFinite_subtype_of_subset_carriers (h '' U) Q H car hQH hcarfib hHfib
   obtain ⟨Cp, CpBd, Cc, CcBd, Kcore, ends, Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁, ε,
-      hprep⟩ := exists_section34VertexPreparation hU hh hframe hN hQint
+      hprep⟩ := exists_section34VertexPreparation hU hh hframe hN hQint fun w => by
+    obtain ⟨c, hc, hcs⟩ := hHchart _ (hcarF w)
+    exact ⟨c, hc, (((hQint w).trans interior_subset).trans (hQH w)).trans hcs⟩
   obtain ⟨-, -, hsubs, -, hcpcell, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
     -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hnonadj, -⟩ := id hprep
-  obtain ⟨G₀, hG₀, hG₀dist⟩ := h341.exists_section34VertexApproximation hh hprep
   obtain ⟨Sp, Tp, cnt, Pg, G₁, hpack, hG₁dist⟩ :=
-    exists_section34PiercingPackage hU hh hframe hN hQsub hQlfU hprep hG₀ hG₀dist
+    exists_section34PiercingPackage h341 hU hh hframe hN hQsub hQlfU hprep
   obtain ⟨-, -, -, hSpdef, -, -, -, -, -, -, hGp₁, -⟩ := id hpack
   obtain ⟨hcore₁, hkdisj₁, -⟩ := section34MarkerConditions hprep hGp₁ hG₁dist
   have hSpK : ∀ w e, Disjoint (h '' Kcore w) (Sp e) := by
