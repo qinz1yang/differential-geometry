@@ -9181,6 +9181,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.RelativeGeneralPositionSubc
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPositionInDoubleBufferedInduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPositionInDoubleRelative
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPositionInDoubleAssembly
+import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssemblyFixture
 /-!
 # Differential geometry and geometric analysis
 -/
