@@ -13,5 +13,6 @@ One file per prompt, under `consult/`. Each is self-contained. To consult, paste
 | B2. Follow-up to B: the marked chain along the branch | [`consult/B2-marked-chain.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/B2-marked-chain.md) |
 | A2. Follow-up to A: the §34 contracts | [`consult/A2-section34-contracts.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/A2-section34-contracts.md) |
 | D. Vacuity audit: four hypotheses we believe are unsatisfiable, and what should replace them | [`consult/D-vacuity-audit.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/D-vacuity-audit.md) |
+| E. The closed branches of Lemma 2: can orientability delete Case 1, and how to push off in Case 2 | [`consult/E-closed-branches.md`](https://github.com/liao9yuan/differential-geometry-dev/blob/moise-integration/DifferentialGeometry/Topology/PiecewiseLinear/consult/E-closed-branches.md) |
 
 Answers are digested in `consult/*-answer-digest.md` (A, A2, B, B2, C, D). Prompts A and B supersede prompts 1 and 2 of `CONSULT_QUEUE_20260920.md`.
