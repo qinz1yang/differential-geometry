@@ -66,6 +66,33 @@ theorem IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theore
   exact ⟨hboundary, hnon⟩
 
 open Classical in
+theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_fundamentalGroup_map_eq_one
+    (h252 : Moise252) (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+    (hL : IsCombinatorialManifold 2 L) (hdim : Module.finrank ℝ E = 3)
+    (hLc : IsConnected L.space) {U : Set E} (hU : IsOpen U) (hLU : L.space ⊆ U)
+    (x : L.space) (g : FundamentalGroup L.space x) (hg : g ≠ 1)
+    (hmap : FundamentalGroup.map (⟨Set.inclusion hLU, continuous_inclusion hLU⟩ :
+      C(L.space, U)) x g = 1) :
+    ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
+      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ U ∧
+      D ∩ L.space = r '' stdSimplexBoundary 2 ∧
+      ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ L.space,
+        ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
+          C(r '' stdSimplexBoundary 2, L.space)).Nullhomotopic := by
+  obtain ⟨K, hKfin, hK, hKc, hLK, hKU, hnull⟩ :=
+    exists_connected_neighborhood_fundamentalGroup_map_eq_one hdim
+      (isPolyhedron_space L).isCompact hLc hU hLU x g hmap
+  let _ : Finite K.faces := hKfin.to_subtype
+  have hLint : L.space ⊆ K.space \ (boundaryComplex 3 K).space := by
+    rw [← frontier_space_eq_boundaryComplex_space_of_finrank hdim K hK]
+    exact fun y hy => ⟨interior_subset (hLK hy), fun hz => hz.2 (hLK hy)⟩
+  obtain ⟨_, _, _, D, r, hr, hDK, hmeet, hboundary, hnon⟩ :=
+    IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theorem
+      h252 hK hL hdim hLint hKc.isPreconnected hLc x g hg (hnull _)
+      (mem_nhdsSetWithin.mpr ⟨U, hU, hLU, inter_subset_left⟩)
+  exact ⟨D, r, hr, hDK.trans (sdiff_subset.trans hKU), hmeet, hboundary, hnon⟩
+
+open Classical in
 theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_loop_theorem
     (h252 : Moise252) (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
     (hL : IsCombinatorialManifold 2 L) (hdim : Module.finrank ℝ E = 3)

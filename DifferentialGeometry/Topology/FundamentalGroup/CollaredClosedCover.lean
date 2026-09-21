@@ -3,7 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
-import DifferentialGeometry.Topology.Connected.ClosedCover
+import DifferentialGeometry.Topology.Connected.CollaredCover
 import DifferentialGeometry.Topology.FundamentalGroup.OpenCoverKernel
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarInjection
@@ -58,67 +58,17 @@ theorem exists_nontrivial_fundamentalGroup_kernel_of_closed_cover
   have hP : IsClosed P := hPcl ▸ isClosed_closure
   have hQ : IsClosed Q := hQcl ▸ isClosed_closure
   have hQP : Q ∪ P = univ := (union_comm Q P).trans hcover
-  have hPi := interior_eq_compl_of_closure_sdiff_eq hcover hQcl
-  have hQi := interior_eq_compl_of_closure_sdiff_eq hQP hPcl
   have hPf : frontier P = Set.range e :=
     (frontier_eq_inter_of_closure_sdiff_eq hcover hPcl hQcl).trans hmeet
   have hQf : frontier Q = Set.range e :=
     (frontier_eq_inter_of_closure_sdiff_eq hQP hQcl hPcl).trans
       ((inter_comm Q P).trans hmeet)
-  obtain ⟨d, _, hdP⟩ := c.exists_outward_collar_of_frontier_zero
-    (closure_interior_eq_of_closure_sdiff_eq hcover hPcl hQcl)
-    (c.frontier_zero_of_disjoint_rest (hPf.trans (union_empty _).symm) (disjoint_empty _))
-  have hdQ (p : S × ℝ) : d.toFun p ∈ Q ↔ 0 ≤ p.2 := by
-    constructor
-    · intro hp
-      by_contra ht
-      have hpP := (hdP p).mpr (le_of_lt (lt_of_not_ge ht))
-      have hzero := (d.frontier_zero_of_disjoint_rest
-        (hPf.trans (union_empty _).symm) (disjoint_empty _) p).mp
-          (hPf.symm ▸ hmeet.subset ⟨hpP, hp⟩)
-      exact (ne_of_lt (lt_of_not_ge ht)) hzero
-    · intro ht
-      rcases eq_or_lt_of_le ht with he | hp
-      · have heq : d.toFun p = e p.1 := by
-          rw [show p = (p.1, 0) from Prod.ext rfl he.symm, d.zero_eq]
-        exact hmeet.symm.subset ⟨p.1, heq.symm⟩ |>.2
-      · exact (hcover.symm ▸ mem_univ (d.toFun p) : d.toFun p ∈ P ∪ Q).resolve_left
-          (fun h => (not_le_of_gt hp) ((hdP p).mp h))
-  have hdrQ (p : S × ℝ) : d.reverse.toFun p ∈ Q ↔ p.2 ≤ 0 := by
-    change d.toFun (p.1, -p.2) ∈ Q ↔ p.2 ≤ 0
-    rw [hdQ]
-    exact neg_nonneg
-  have hrange : d.reverse.range = d.range := by
-    ext x
-    constructor
-    · rintro ⟨p, rfl⟩
-      exact ⟨(p.1, -p.2), rfl⟩
-    · rintro ⟨p, rfl⟩
-      refine ⟨(p.1, -p.2), ?_⟩
-      change d.toFun (p.1, - -p.2) = d.toFun p
-      simp only [neg_neg]
+  obtain ⟨d, _, hdP, hdrQ, hUV, hUVinter⟩ :=
+    c.exists_open_cover_of_closed_cover hcover hmeet hPcl hQcl
   let U := d.domainNeighborhood P
   let V := d.reverse.domainNeighborhood Q
   have hU : IsOpen U := d.isOpen_domainNeighborhood P
   have hV : IsOpen V := d.reverse.isOpen_domainNeighborhood Q
-  have hUV : U ∪ V = univ := by
-    apply eq_univ_of_forall
-    intro x
-    rcases (hcover.symm ▸ mem_univ x : x ∈ P ∪ Q) with hp | hq
-    · exact Or.inl (d.subset_domainNeighborhood hP hPf.subset hp)
-    · exact Or.inr (d.reverse.subset_domainNeighborhood hQ hQf.subset hq)
-  have hUVinter : U ∩ V = d.range := by
-    change (interior P ∪ d.range) ∩ (interior Q ∪ d.reverse.range) = d.range
-    rw [hrange, hPi, hQi]
-    ext x
-    constructor
-    · rintro ⟨hp | hr, hq | hr⟩
-      · exact False.elim ((hcover.symm ▸ mem_univ x : x ∈ P ∪ Q).elim hq hp)
-      · exact hr
-      · exact hr
-      · exact hr
-    · intro hr
-      exact ⟨Or.inr hr, Or.inr hr⟩
   let _ : PathConnectedSpace U := d.pathConnectedSpace_domainNeighborhood hP hPf.subset hdP
   let _ : PathConnectedSpace V := d.reverse.pathConnectedSpace_domainNeighborhood hQ hQf.subset hdrQ
   let j : d.range ≃ₜ ↑(U ∩ V) := (Homeomorph.setCongr hUVinter).symm

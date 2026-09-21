@@ -470,7 +470,68 @@ and the PL-sphere endpoint remain open. A third source-checked layer captures
 actual nullhomotopies in finite polyhedral neighborhoods and constructs a
 nontrivial inclusion-kernel element for each non-spherical connected closed
 surface inside a simply connected open set. It supplies the finite ambient
-inputs to 26.4 without assuming 26.4 or a compressing disk. Exact evidence
+inputs to 26.4 without assuming 26.4 or a compressing disk. A fourth checked
+layer constructs the cyclic two-disk neighborhood of a surface circle,
+prescribed disjoint boundary-arc maps, rectangle parametrizations and the
+actual interval-fiber cylindrical diagram of that neighborhood. All 28
+declarations in seven mathematical modules, ten reused producers, three
+nondegenerate models and 13 applicable linters pass; all five direct old
+consumers compile. A fifth checked layer constructs the Mobius model of
+the reversing interval end map, excludes it inside an orientable surface,
+and untwists the remaining diagram to produce an actual PL annulus. It also
+constructs an annular neighborhood of any PL circle in an orientable finite
+surface inside every prescribed open neighborhood. Its 12 declarations,
+12 reused entries, three actual models and 13 applicable linters pass.
+A sixth checked layer fixes the original circle pointwise as the middle
+circle of an arbitrarily small PL bicollar in the surface interior. It
+proves circle-map extension across two-spheres and preservation of interior
+neighborhoods under PL embeddings, then transports a spherical bicollar
+through the constructed annular neighborhood. All seven new declarations,
+12 reused producers, three geometric models and 13 applicable linters pass.
+A seventh checked layer adjoins the two halves of the circle bicollar to
+an actual spanning disk. It produces two actual PL disks meeting exactly
+in the original disk, each containing it away from its intrinsic boundary.
+Their union is a relative neighborhood of the disk in the surface-disk
+union, with prescribed neighborhood control on the added parts. All five
+new declarations, ten reused entries, three models and 13 linters pass.
+Instantiation into E3's later disk-pair subdivision endpoint awaits accepted
+downstream artifacts. An eighth checked layer extracts an actual disk
+parametrization from a sphere capped by a disk with the exact boundary
+intersection. It constructs nullhomotopies through PL balls and along
+cylinders ending in them, including transport from the capped sphere's
+complement. Six declarations, ten reused entries, three geometric models
+and 13 applicable linters pass. The actual capped components and their
+maps back to the source surface still have to be constructed before this
+can exclude spherical components in compression. Four checked Betti
+corollaries now consume actual `SurfaceSplitAndCap` data: a connected
+orientable result has first Betti number exactly two below the source;
+for a disjoint union of two connected orientable non-spheres each first
+Betti number is strictly below the source. Their full axiom and 13-linter
+audit passes. A further checked layer constructs the at-most-two component
+description of a surface minus a PL circle. In the separating case the
+actual two component closures cover the surface and meet exactly in the
+circle. This uses the produced bicollar, not a supplied decomposition.
+Eight declarations, eight reused entries, three concrete models and all
+13 applicable linters pass. Actual local disk pairs now prove that the
+separating-circle component closures are finite connected orientable
+surfaces with boundary. For a closed source both boundaries are precisely
+the original circle; the version with boundary also identifies the inherited
+old-boundary parts. Seven new declarations and one retained declaration,
+ten reused entries, three concrete models and 13 linters pass; two old
+consumers compile unchanged. General entire-boundary gluing is now checked
+in every dimension: two balls give a sphere, and two manifolds with boundary
+give a closed manifold on their actual union, even with initially unrelated
+triangulations. Eight new declarations, ten reused entries, three geometric
+models and 13 linters pass. Actual separating-circle component closures are
+now capped by the given spanning disk to produce two connected closed
+surfaces with Euler sum equal to the source Euler characteristic plus two.
+In ambient dimension three, essentiality excludes both caps from being
+spheres and gives an exact Betti sum and strict descent for each. Six new
+declarations, eleven reused entries, three models and 13 linters pass.
+The raw caps share the given disk; nonseparating compression and preservation
+of the original separation are still open. Full nonorientable 28.19
+and the spherical-shell
+endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
 
@@ -1480,6 +1541,401 @@ not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
 is newly queued and E3 continues simultaneous subdivisions and actual traces.
 
 
+### M304 surface-region complement checkpoint (2026-09-19 UTC)
+
+`CircleArcComplement.lean` and `SurfaceSubcomplexComplement.lean` construct
+actual complementary arcs and finite surface-region complements with the exact
+boundary carrier. Three new declarations, two retained ClosedCover declarations,
+nine critical reused entries and three models pass the standard-axiom and
+13-linter audit with zero diagnostics. Frozen evidence is in
+`moise304-reading/surface-complement-checkpoint/`. The connected annulus core
+and nonseparating-circle caps are still in progress; full 30.4 remains open.
+
+
+### M304 nonseparating annulus complement checkpoint (2026-09-19 UTC)
+
+`SurfaceAnnulusComplement.lean` constructs a finite connected orientable
+surface with boundary as the exact closed complement of an arbitrarily small
+PL annulus around a nonseparating circle. It retains the actual bicollar and
+both disjoint endpoint circles, and proves the Euler characteristic is
+unchanged. Twelve declarations (nine new), twelve critical reused entries,
+three models and all 13 applicable linters pass with standard axioms and zero
+diagnostics. Frozen evidence is under
+`moise304-reading/annulus-complement-checkpoint/`. Disjoint cap attachment,
+ambient separation preservation and full 30.4 remain open.
+
+
+### M304 disjoint caps and exact Betti descent (2026-09-19 UTC)
+
+Actual disjoint disk caps now construct the finite closed connected surface
+and prove its Euler characteristic increases by two. `AnnulusCapping.lean`
+combines this with an actual annulus decomposition in ambient dimension three
+to prove `bettiOne result + 2 = bettiOne source`. The five changed modules,
+15 declarations (ten new), ten critical reused entries, four geometric models,
+four explicit instances and all 13 applicable linters pass with standard
+axioms and zero final diagnostics. Frozen evidence is under
+`moise304-reading/annulus-capping-checkpoint/`. The input caps are actual
+disjoint disks with exact boundary and intersection equations; their geometric
+production and preservation of ambient separation remain E3 work. No full
+30.4 completion is claimed.
+
+
+### M304 common spanning-disk and annulus witnesses (2026-09-19 UTC)
+
+`SpanningDiskAnnulus.lean` produces the annulus, finite orientable complement
+and enlarged spanning disks together, with common endpoint boundary circles,
+exact intersections, unchanged Euler characteristic, carrier-cover equations
+and the relative-neighborhood data for E3. It covers separating and
+nonseparating circles and derives connectedness in the latter case. Six
+native declarations, ten reused entries, three geometric models, one retained
+conditional consumer, two instances and 13 linters pass with standard axioms
+and zero diagnostics. All three older public signatures are unchanged.
+Frozen evidence is under `moise304-reading/spanning-disk-annulus-checkpoint/`.
+The enlarged disks still share the original disk; disjoint caps and full 30.4
+are not claimed.
+
+### M304 components and endpoint circles (2026-09-19 UTC)
+
+`AnnulusComponents.lean` produces the two finite connected disjoint surface
+components of a separating annulus complement and assigns their complete
+boundaries to the given negative and positive endpoint circles. General
+closed-cover and bicollar component formulas, plus boundary restriction to a
+component in every dimension, supply the proof. Four changed modules and four
+existing consumers pass focused compilation. The audit checks 28 native
+declarations, 12 reused entries, six actual models, one conditional consumer,
+three instances and 13 linters with standard axioms and zero diagnostics.
+Frozen evidence is under `moise304-reading/annulus-components-checkpoint/`.
+The cube model verifies both actual components and their exact boundary
+circles. Disjoint cap production, ambient separation and full 30.4 remain open.
+
+### M304 separating annulus caps and Betti descent (2026-09-19 UTC)
+
+`SurfaceBoundaryCapping.lean` constructs actual disjoint closed caps of two
+disjoint connected surface components. `AnnulusCapping.lean` now derives two
+finite connected orientable nonspherical closed surfaces from a separating
+essential circle and supplied disjoint disk caps. Their first Betti numbers
+sum to the source first Betti number and each is strictly smaller. The two
+module checks and the audit of five native declarations, 13 reused entries,
+three geometric models, four instances and 13 linters pass with standard
+axioms and zero diagnostics. The new actual model gives two disjoint cube
+boundaries with Euler two and first Betti zero. Frozen evidence is under
+`moise304-reading/separating-annulus-capping-checkpoint/`. Cap production,
+ambient separation transfer and full 30.4 remain open.
+
+### M304 smaller separating surface after capping (2026-09-19 UTC)
+
+`SurfaceCompression.lean` combines both annulus-complement cases into a
+proved compression step. Actual disjoint caps and separation by their union
+produce a finite connected orientable two-sided closed separator contained
+in that union, with strictly smaller first Betti number. The separating case
+uses the actual capped pair and Phragmen-Brouwer. Both native declarations,
+ten reused entries, three concrete probes and 13 linters pass with standard
+axioms and zero diagnostics. Frozen evidence is under
+`moise304-reading/surface-compression-checkpoint/`. Essential disk production,
+disjoint cap geometry and separation of the capped union are still upstream
+obligations; full 30.4 is not claimed.
+
+### M304 actual minimal Betti separators (2026-09-19 UTC)
+
+The general compact-set separator construction now produces an actual
+finite connected closed separator of minimal first Betti number in the
+specified open region. The spherical-shell specialization lies in the shell
+interior and is minimal among all finite connected closed separators of its
+two boundary components. Both changed modules and two existing consumers
+compile without diagnostics; the audit checks 19 native declarations,
+11 reused entries, five concrete models and 13 linters with standard axioms.
+A cube comparison proves a produced two-point separator has Betti zero and
+is a PL sphere. Frozen evidence is under
+`moise304-reading/minimal-separator-checkpoint/`. The general shell minimizer
+is not yet proved spherical; the essential disk and separation-preserving
+disjoint cap producers are still needed for full 30.4.
+
+
+### M304 essential singular disk production (2026-09-19 UTC)
+
+From a finite connected nonspherical closed surface inside an open simply
+connected U, the new SurfaceCompression producer constructs an actual PL
+singular disk with a planar PL two-ball domain and an actual finite WB3
+neighborhood N contained in U. Both the entire surface and disk image lie
+in the same N interior. Exact boundary equations and a free homotopy to
+the original nontrivial loop retain non-nullhomotopy on the surface; that
+original class is also proved trivial in the same N. Reusable open-target
+relative approximation, arbitrary planar PL disk extension, and free-loop
+filling are separate native leaves. Five changed/new sources and one
+unchanged key dependency compile without diagnostics. The audit covers
+11 native declarations, 13 reused entries, two nondegenerate geometric
+models with four supporting declarations, and all 13 applicable linters;
+all axiom closures are standard. Frozen evidence is under
+`moise304-reading/essential-singular-disk-checkpoint/`. This is singular disk
+production only: embedded disks from 26.4, physical disjoint caps and ambient
+separation are still needed for full 30.4. Root builds remain stopped.
+
+
+### M304 embedded positive-genus compression (2026-09-19 UTC)
+
+The premise-free native `exists_embedded_torus_compression` constructs an
+actual finite embedded torus K in Euclidean three-space, a nonseparating
+essential PL circle C, its PL annular neighborhood W, and the same connected
+complement R = closure(K minus W). A fixed standard triangle circle is first
+thickened to a finite embedded solid torus; the untwisted disk cylindrical
+diagram supplies all subsequent objects. A middle cross-section is an actual
+embedded spanning disk with intersection K exactly C. Two other cross-sections
+are actual nonempty disjoint PL cap disks. Their intersections with both K
+and R equal exactly their prescribed boundary circles, which are the two
+ends of W. Native annulus capping gives an actual PL sphere P with first Betti
+number zero; the same chain proves first Betti number two for K and strict
+descent. The product homeomorphism and non-nullhomotopy of C are independently
+retained in the statement, as is connectedness of K minus C.
+
+Seven new natural-topic leaves are registered in the flat root aggregate.
+AnnulusComplement now reuses the extracted annulus boundary/triangulation API;
+its public signature is unchanged. All eight new/changed sources and three
+existing consumers compile without diagnostics. The complete audit covers
+12 native declarations, 18 critical reused entries and three concrete
+nondegeneracy certificates, with all 13 applicable linters and only standard
+foundational axioms. The native reachable import graph has 561 modules and
+1110 edges without cycles. Eleven source/object/receipt sets, the passing
+audit and raw/normalized hashes are frozen under
+`moise304-reading/torus-compression-checkpoint/`.
+
+This closes a genuine positive-genus nonempty compression instance, including
+the geometric disk/cap producers for this torus. It does not supply arbitrary
+30.4 surfaces with disjoint caps or prescribed ambient separator targets.
+The unrestricted embedded-disk producer and general separation-preserving
+compression remain upstream obligations. Root builds remain stopped; shared
+E outputs and other lanes' source files were not changed.
+
+
+### M304 full frontier of a disk cylindrical diagram (2026-09-19 UTC)
+
+`IsCylindricalDiagram.image_side_eq_boundaryComplex` and
+`IsCylindricalDiagram.frontier_eq_image_side` identify the entire boundary
+of a finite embedded three-manifold carried by a disk cylindrical diagram
+with the actual cylindrical side image. No pointwise untwisted-end hypothesis
+is needed. Interior strip charts first put any remaining frontier in the
+bottom disk. The native closed-surface complement producer would turn an
+extra boundary component into a nonempty closed surface inside that disk;
+the new general `IsCombinatorialManifold.not_subset_of_isPLBall` excludes
+this by invariance of domain. It applies in every positive dimension.
+
+Both new leaves are registered in the flat root. Their final source bytes
+compile with zero diagnostics. The audit checks all four native declarations,
+nine critical reused declarations and an actual triangle solid-torus example
+with nonempty interior and exact full frontier, all with only standard
+foundational axioms. All 13 applicable linters pass. The reachable native
+import graph has 477 modules and 919 edges and is acyclic. Sources, objects,
+receipts, audit and raw/normalized hashes are frozen at
+`moise304-reading/cylindrical-frontier-checkpoint/`.
+
+This supplies the missing ambient-boundary identity for the concrete torus
+compression. Common actual separator targets are the next obligation; this
+checkpoint does not assert general separation-preserving compression or
+close Moise 30.4. Root builds remain stopped and shared E outputs are unchanged.
+
+
+### M304 common actual targets for torus compression (2026-09-19 UTC)
+
+The premise-free native `exists_embedded_torus_compression_separating_points`
+retains the same embedded torus, essential nonseparating circle, annulus,
+connected complementary annulus, proper spanning disk, exact disjoint caps,
+and first-Betti descent from two to zero. It additionally returns the actual
+finite solid torus N and identifies the original surface with frontier N.
+The capped sphere is exactly the frontier of the remaining embedded disk
+prism, an actual three-ball B. It produces q in interior B and z outside N,
+proves q and z distinct, and proves that both surfaces separate {q} and {z}.
+The original `exists_embedded_torus_compression` keeps its exact public
+signature and is now a corollary of this stronger producer.
+
+`IsPLHomeomorphOn.frontier_prism_image` gives the general ambient-frontier
+identity for embedded disk prisms. The new cylindrical separation API works
+for any targets H contained in the remaining ball interior and K contained
+in the full three-manifold exterior. It derives both separations from the
+actual frontier identities; neither separation is assumed.
+
+All three new/changed modules compile without diagnostics, and both new
+leaves are registered in the flat root. The complete audit checks five native
+declarations, 25 critical reused declarations and five external certificates,
+with all 13 applicable linters and only standard foundational axioms. The
+certificates recheck the original nonempty disjoint caps and essential proper
+disk, then certify common nonempty open regions and two actual disjoint PL
+three-ball targets with nonempty interiors for the same torus/sphere pair.
+The two-ball certificate is external audit evidence, not a separate native
+public theorem. The reachable native import graph has 565 modules and 1118
+edges, with no cycles. Three source/object/receipt sets, the audit, census and
+raw/normalized hashes are frozen at `moise304-reading/torus-separation-checkpoint/`.
+
+This closes the concrete positive-genus compression instance through actual
+preserved separation. It does not produce embedded splitting disks or safe
+replacement neighborhoods for arbitrary surfaces in Moise 30.4. Those general
+26.4/30.3 obligations remain in their existing lanes. Root builds remain
+stopped; shared E outputs and other lanes' source files were not changed.
+
+
+### M304 native three-ball target production (2026-09-19 UTC)
+
+`IsCylindricalDiagram.exists_separating_ball_pair` now constructs actual
+PL three-ball targets for any disk cylindrical diagram carrying a finite
+three-manifold in an ambient real normed space of dimension three. Their
+interiors are nonempty, they are disjoint, the first lies inside the remaining
+prism interior, and the second lies outside the full three-manifold. Both
+the original side and the capped side separate these targets. The target
+locations, nonemptiness and separations are produced, not assumed.
+
+The premise-free native `exists_embedded_torus_compression_separating_balls`
+retains every essential-circle, annulus, complement, proper disk, exact-cap
+and Betti field of the original torus compression, and adds these same actual
+ball targets with their locations and both separations. The original and
+point-target theorem signatures are unchanged. The three-ball witness is
+therefore no longer confined to external audit evidence.
+
+Both changed modules compile without diagnostics. The complete audit covers
+seven native declarations, 26 critical reuses and six concrete certificates,
+including a certificate coupling the same essential circle and proper disk
+to the native ball targets and first-Betti descent from two to zero. All 13
+applicable linters pass and all axiom closures contain only standard
+foundational axioms. The reachable import graph remains acyclic, with 565
+native modules and 1119 edges. Three source/object/receipt sets and the audit
+are frozen at `moise304-reading/torus-ball-targets-checkpoint/` with raw and
+normalized source hashes. Root builds remain stopped and shared E outputs
+are unchanged. General 26.4/30.3 and arbitrary-shell 30.4 remain open gates.
+
+
+### M304 positive-genus compression in an actual spherical shell (2026-09-19 UTC)
+
+The premise-free `exists_embedded_torus_compression_in_spherical_shell`
+retains every original same-object torus, essential nonseparating circle,
+annulus, complement, proper spanning disk, exact disjoint caps and first-Betti
+2-to-0 field. It constructs a positive-width distance-band spherical shell.
+The torus, capped PL sphere, entire left compression three-ball and middle
+spanning disk lie in this shell's interior. Both surfaces separate the shell's
+actual inner and outer metric boundary spheres.
+
+The general `exists_isSphericalShell_separating_frontiers` only assumes a
+compact outer set N, a subset B of N and a nonempty interior of B. It constructs
+a round shell containing N minus interior B and both frontiers in its interior,
+and proves that both frontiers separate the shell boundary spheres. B need
+not be closed. Spherical shells are also transported through embeddings, and
+the standard norm-band example is extended to distance bands about any center.
+All earlier SphericalShell declarations are retained unchanged; TorusShell is
+registered in the flat root.
+
+The new combined import first exposed a stale inherited MoiseChain object that
+still defined IsTopologicalSolidTorus internally. Current source already
+imports the canonical SolidTorus definition. A readonly private refresh of
+MoiseChain resolved the collision; SphericalShell, TorusShell and the existing
+TameNestedCells consumer then compiled with zero diagnostics. Neither readonly
+source nor any MoiseChain contract was edited, and shared E outputs remain
+unchanged.
+
+The final audit covers all 20 native declarations in the two changed/new
+leaves, 31 critical reuses and nine concrete certificates, with all 13 applicable
+linters and only standard foundational axioms. The certificates keep the same
+essential disk inside the actual shell, check an open inner set for the general
+frontier producer, and instantiate the existing Betti-minimal separator producer
+on this shell: its first Betti number is zero and native sphere recognition
+proves it is a PL sphere. The reachable native graph has 618 modules and 1236
+edges and is acyclic. Four source/object/receipt sets, including the two readonly
+refreshes, are frozen with audit and raw/normalized hashes at
+`moise304-reading/torus-shell-checkpoint/`.
+
+This is a concrete positive-genus instance with an actual Moise304 shell input.
+It does not prove Moise304 for an arbitrary supplied shell. General embedded-disk
+and safe replacement-neighborhood producers remain upstream gates. Root builds
+remain stopped as instructed.
+
+### M304 embedded meridian and nontrivial boundary kernel (2026-09-19 UTC)
+
+The premise-free `exists_embedded_solid_torus_meridian` projects the same
+embedded solid torus, quarter-height circle and spanning disk from the actual
+torus-compression producer. It retains the exact disk-boundary parametrization,
+frontier intersection, connected boundary complement and first Betti number two.
+The disk minus its boundary lies in the solid torus interior and is nonempty.
+The same circle inclusion is not nullhomotopic in the torus boundary, but is
+nullhomotopic inside the solid torus through that embedded disk. A loop on this
+circle has nontrivial image in the boundary fundamental group and trivial image
+in the solid torus fundamental group.
+
+The general `fundamentalGroup_map_eq_one_of_nullhomotopic` belongs in
+Topology/FundamentalGroup/Nullhomotopy. It works for arbitrary topological spaces
+and every basepoint, without connectivity or separation hypotheses. It uses the
+existing free-to-based nullhomotopy equivalence; no new contraction assumptions
+are introduced into the concrete meridian producer. Both new leaves are in the
+flat root aggregate.
+
+Both modules compile with zero diagnostics. All two native declarations, eight
+critical reuses and three independent certificates have only standard
+foundational axioms. All 13 applicable linters pass. The certificates preserve
+the same nonempty proper disk and circle, derive a genuinely nontrivial kernel
+and noninjective boundary inclusion, and check that the generic nullhomotopy
+lemma does not need connectivity. The native import graph is acyclic with 571
+modules and 1128 edges. Two complete source/object/receipt sets and the audit
+are frozen at `moise304-reading/torus-meridian-checkpoint/` with raw and normalized
+source hashes. Root builds remain stopped; shared E outputs are unchanged.
+This is an actual solid-torus instance, not a general embedded-disk producer for
+arbitrary three-manifolds or a proof of arbitrary-shell Moise304.
+
+### M304 essential meridians at every cylinder height (2026-09-19 UTC)
+
+`IsCylindricalDiagram.exists_essential_slice_disk` is a generic producer for
+finite embedded cylindrical three-manifolds with a PL disk as cross-section and
+pointwise identified ends. For every t in the closed interval [0,1], it supplies
+an actual parametrized slice disk, its exact boundary circle and exact ambient
+frontier trace. The disk minus its boundary is nonempty and lies in the ambient
+manifold interior. The boundary circle is nonseparating and not nullhomotopic in
+the manifold frontier, but is nullhomotopic inside the same manifold through
+that slice disk. No torus or compression conclusion is assumed.
+
+`IsCylindricalDiagram.isConnected_sdiff_slice` now accepts the closed interval,
+including the glued end slices. Its assumptions still require neither untwisted
+ends nor a finite-dimensional target. The original two other CylindricalCircle
+signatures are unchanged. CylindricalFrontier and all three existing torus
+consumers were privately rebuilt after this deliberate hypothesis weakening.
+The new CylindricalMeridian leaf is registered in the flat root.
+
+Six modules compile without diagnostics. The audit covers all four native
+declarations in the two changed/new leaves, 12 critical reuses and two actual
+model certificates. The first constructs one embedded solid torus and validates
+all its slice disks simultaneously. The second checks both glued ends, their
+nonempty disk interiors and disjointness from the middle disk. All 13 applicable
+linters pass and every axiom closure uses only standard foundational axioms.
+The reachable native graph is acyclic with 479 modules and 922 edges. Six complete
+source/object/receipt sets and the audit are frozen with raw and normalized
+source hashes at `moise304-reading/cylindrical-meridian-checkpoint/`.
+Root builds remain stopped and shared E outputs remain untouched. Arbitrary-shell
+Moise304 and a general embedded-disk producer remain separate open gates.
+
+### M304 boundary-only endpoint data and general cylindrical compression (2026-09-19 UTC)
+
+`IsCylindricalDiagram.image_subcylinder_inter_slice` now requires only equality
+of the two endpoint images of the subcylinder. Its conclusion no longer assumes
+pointwise endpoint agreement on the entire cylinder cross-section. The proof
+uses endpoint injectivity and the actual invariant endpoint sets. It still
+requires no finite-dimensional source or target. Its former CylindricalProduct
+import has been removed.
+
+This removes the endpoint agreement hypothesis entirely from the capping
+producer. Its canonical name is now `IsCylindricalDiagram.exists_capped_surface`,
+replacing `exists_capped_surface_of_eq_ends`. For any embedded PL disk cylindrical
+diagram in a three-dimensional real normed space, the same actual annulus,
+complement and two disjoint caps produce a PL sphere, with exact cap traces and
+first Betti numbers two and zero. No pointwise endpoint agreement is assumed.
+All existing Lean callers have been updated; the three TorusCompression public
+statements remain exactly unchanged.
+
+The essential-slice-disk producer now requires pointwise endpoint agreement
+only on the disk boundary circle. The interior of the cross-section is no longer
+constrained by that additional equation. All closed-interval heights, exact
+proper disk traces and both nullhomotopy conclusions are retained.
+
+Seven affected modules and the final external audit compile without diagnostics.
+All eight native declarations in the four changed leaves, 12 critical reuses
+and two actual all-height/glued-end model certificates have only standard
+foundational axioms. All 13 applicable linters pass. The native import graph is
+acyclic with 566 modules and 1120 edges. Seven source/object/receipt sets and the
+complete audit are frozen with raw and normalized source hashes at
+`moise304-reading/cylindrical-boundary-checkpoint/`. No root build or shared E
+output write was performed. Arbitrary-shell Moise304 and the remaining upstream
+embedded-disk and replacement-neighborhood producers are not claimed complete.
 ### Compact smoothing: cap comparison and actual graph handles accepted
 
 S 4627710d3 and 3c08c2aba passed independent integration replay: seven fresh
@@ -1532,6 +1988,797 @@ gaps; no new tasks/subagents, no routine mid-round status requests and no
 automatic full-root rebuild. New-stage receipts live in
 .lake/resumed-stage-20260919.json; the prior morning accounting is preserved.
 
+### M304 prescribed-shell common annular neighborhood (2026-09-19 UTC)
+
+The canonical common-circle construction now covers arbitrary finite orientable
+surfaces with boundary, preserving both old sphere-only signatures as consumers.
+The same common derived neighborhood is constructed as a finite WB3 solid torus
+inside any prescribed open U, with actual annular traces on both supplied surfaces.
+For an actual spanning disk, it avoids a prescribed closed forbidden set and
+leaves a proved nonempty part of the disk outside the neighborhood. The spherical
+shell specialization retains the given shell and its original inner/outer
+boundary targets and constructs the neighborhood in that shell's interior.
+
+All 19 declarations in the three changed/new and two unchanged dependency leaves,
+18 critical reuses, two actual essential-torus-disk certificates and 13 linters
+pass with standard axioms and zero diagnostics. The older nested sphere consumer
+and its trivalent graph model also compile unchanged. Fourteen private module
+checks and the complete audit are frozen at
+`moise304-reading/common-spanning-checkpoint/`; the native reachable graph has
+600 modules and 1201 edges without cycles. No full-root verification is claimed.
+
+The annuli are not yet marked by the original surface bicollar or aligned with
+the splitting-prism endpoints. E3 retains that interface. The input embedded
+disk is supplied; no general embedded-disk producer, disjoint caps, or proof
+that a capped union separates the original targets is inferred. Arbitrary-shell
+Moise 30.4 remains open. See `HANDOFF_CODEX_M304.md` for the exact native APIs,
+integration provenance, concrete nondegeneracy evidence and remaining gates.
+
+### M304 local separation transfer along the original disk (2026-09-19 UTC)
+
+The supplied common annular neighborhood now feeds the actual enlarged-disk
+and splitting-ball producers. `SpanningDiskSeparation` constructs a finite
+PL ball B in the prescribed open region and a finite polyhedral separator
+P = closure(S minus B) union frontier B. It proves original-disk containment
+in frontier B, exact original-surface traces in B, agreement with S outside
+B, separation of the original targets, and a nonempty added part. The shell
+version constructs the common solid torus and retains the original X,B0,B1;
+the full disk's containment in interior X is an explicit geometric input.
+
+The general producer only assumes a compact relative neighborhood A; the
+common-annular case is its corollary. The two mathematical modules contribute
+four new declarations. All 15 declarations in those modules, 18 critical reuses,
+two actual essential-disk
+models and 13 linters pass with standard axioms and zero diagnostics.
+Thirteen private module checks and the complete audit are frozen at
+`moise304-reading/spanning-separation-final-checkpoint/`. The native graph has
+848 modules and 1789 edges without cycles. No full-root build is claimed.
+
+P is not asserted to be a closed surface. The local boundary disks M,Q meet
+on a proved nonempty circle, so they are not the required disjoint final caps.
+The accepted integration capping/realization interfaces were inspected and
+remain the canonical consumers after E3's original-boundary marking is
+available. A separation proof for that actual capped surface and a general
+embedded essential-disk producer remain open; arbitrary-shell 30.4 is not
+marked complete.
+
+### M304 separation of a genuine capped surface (2026-09-19 UTC)
+
+`SurfaceCappingSeparation` now proves separation of the literal retained
+surface union two end disks, given an actual PL compression ball N with
+S intersect N = W and frontier N = W union D0 union D1. The shell theorem
+retains the original X,B0,B1, proves containment in interior X and agreement
+with S outside N, and proves separation of those same original targets.
+Separation of the final union is not an input.
+
+The proof derives the needed one-sided local behavior from the native PL
+surface neighborhood and complement-component theorems. It constructs
+U minus N on one original side and proves its frontier lies in the actual
+capped union. Its generic topological calculation and its regular-closed
+region version are reusable beyond the PL ball corollary. This does not use
+separation of the previous, larger polyhedral P to infer separation of the
+smaller final surface.
+
+All 18 declarations in five mathematical modules, 16 critical reuses, an
+actual essential-torus compression in its original shell, and 13 linters
+pass with standard axioms and zero diagnostics. The test discards the
+model's previous post-capping separation and proves it again by the new
+transport theorem, retaining nonempty targets, disjoint disks, Betti numbers
+2 and 0, the proper essential spanning disk, and the exact prism traces.
+Thirteen private module checks include the eight direct dependents. The
+native graph has 545 modules and 1085 edges without cycles. No full-root
+build is claimed. See `HANDOFF_CODEX_M304.md` for proof and receipt details.
+
+The remaining arbitrary-shell 30.4 gates are production of the embedded
+essential disk and alignment of the original surface with the actual
+compression wall/end circles. Separation transport is now proved once those
+geometric inputs exist; the accepted capping/realization APIs still provide
+the canonical closed-manifold realization. No E3 geometric file is changed.
+
+### M304 connected separating component and strict Betti descent (2026-09-19 UTC)
+
+`SurfaceCompressionSeparation` now constructs the finite connected closed
+surface P from an original separator S, an essential circle with centered
+annulus, and actual PL compression-ball/disjoint-cap geometry. It constructs
+the retained WB2 surface R, derives the annular neighborhood and cap traces,
+proves separation of the cap union, and selects an actual connected component
+P that still separates the original targets and has strictly smaller first
+Betti number. The original-shell version retains X,B0,B1 and proves P lies
+in interior X. No result manifold, final separation or Betti decrease is an
+input to these new producers.
+
+Both essential-circle cases use the pre-existing native capping chain.
+The nonseparating case decreases beta by two. In the separating case the
+original essential circle, the actual half-annulus cylinder and spherical
+disk-complement theorem prove that neither capped component is a sphere;
+their positive Betti numbers sum to the original one. Phragmen-Brouwer
+selects a component preserving separation. The former `SurfaceCompression`
+consumer retains its public signature and now follows the stronger component
+theorem. The actual torus test discards its old final separation and invokes
+the new original-shell producer, verifies the produced component equals the
+literal capped sphere, and retains source/result beta 2/0 and the original
+proper essential disk, caps and nonempty targets.
+
+The critical `SphericalDiskComplement` receives only coordinator-authorized
+line wrapping and its required header. The physical capping proofs remain
+canonical native reuses. See `HANDOFF_CODEX_M304.md` for exact theorem names,
+proof mechanisms, model scope and verification receipts. General production
+of an embedded essential disk and E3's actual original-wall/cap marking
+remain open; unrestricted arbitrary-shell Moise 30.4 is not complete.
+
+All 14 declarations in the three changed/new mathematical modules, 26
+critical reuses, the actual torus model and 13 applicable linters pass with
+standard axioms and zero diagnostics. The new leaf is registered in the
+flat root; ten former public signatures are unchanged. The reachable native
+graph has 605 modules and 1216 edges without cycles. Fourteen source-matching
+module receipt sets and the final audit are frozen at
+`moise304-reading/compression-separation-checkpoint/`. No full-root build or
+independent integration acceptance is claimed.
+
+### M304 finite surface cuts and side kernels (2026-09-19 UTC)
+
+`SurfaceCutting` now constructs actual finite connected WB3 cut complexes
+A,B for an original connected finite K and connected separating interior
+surface L. It proves A union B = K, A intersect B = L, exact boundaries
+including the old boundary pieces, and actual boundary-component labels
+whose spaces equal L. In real ambient dimension three it derives separation
+and orientability of the cut pieces. Its separate collar producer retains
+the literal inclusion into the original K and the supplied relative
+neighborhood.
+
+`FundamentalGroup/OpenCoverKernel` proves that a nontrivial overlap element
+killed in the original ambient space forces a nontrivial kernel into one
+of the two members of an actual open path-connected cover. The proof uses
+native van Kampen and injectivity in an amalgamated product. The
+`BicollarKernel` specialization constructs such a side kernel when the
+original ambient space is simply connected and the compact connected
+collared surface is not. It does not assume the desired side kernel.
+
+The actual model keeps one finite PL ball K and its embedded beta-two
+torus L throughout: it obtains the actual orientable cut manifolds and
+boundary components, a nontrivial pi1(L)-to-pi1(K) kernel, and an open-side
+kernel from a collar contained in interior K. Transport from those open
+sides to the finite cut manifolds and their boundary inclusions remains
+unproved. General Moise252-to-Moise264, including the full component,
+nonseparating and ambient hypotheses, is still open. No embedded essential
+disk or arbitrary singular-disk normalization is claimed; F and E3 retain
+their proof and compression-geometry lanes.
+
+The eight native declarations, 27 critical reuses, one actual model with
+four private helpers and 13 linters pass the axiom audit with standard
+foundational axioms and zero diagnostics. The three new leaves are registered
+in the flat root. Their native graph has 508 modules and 989 edges without
+cycles or HurewiczLowDegrees. All existing mathematical sources are
+unchanged. See HANDOFF_CODEX_M304.md for exact APIs, proof mechanisms and
+frozen receipts. No full-root build or independent acceptance is claimed.
+
+Nine source-matching private module receipt sets and the final audit are
+frozen at `moise304-reading/surface-cutting-checkpoint/`, manifest SHA256
+`2B430531079C51AF7D64907068EC554DA6D77FD463A60ABEDE4C582AE76F8552`.
+
+### M304 actual cut-boundary kernels (2026-09-19 UTC)
+
+For the original finite simply connected WB3 complex K and a connected
+closed interior PL2 surface L in real ambient dimension three,
+`SurfaceCutKernel` now constructs an actual finite connected orientable
+closed cut piece R inside K, its exact boundary including old-boundary
+pieces, and an actual boundary-component label whose space equals L.
+That boundary inclusion has a proved nontrivial fundamental-group kernel.
+The collar retains the original K,L and the prescribed relative
+neighborhood U.
+
+The proof uses the native open collar cover and retractions. New explicit
+zero-section/projection maps induce an overlap-to-L group isomorphism;
+their composites through both native retractions are the literal closed
+boundary inclusions. Connected dense manifold interiors identify the side
+closures with the supplied finite cut manifolds. Equality with the actual
+boundary component then transports the kernel without assuming it or
+identifying the newly produced element with the original source element.
+The general continuous-map theorem in `FundamentalGroup/Nullhomotopy`
+converts it into a free loop essential in that component and null in R.
+
+The actual geometric model keeps the original nonempty finite PL ball and
+embedded beta-two torus throughout, and verifies the actual cut boundary,
+kernel and essential free loop together. It produces no embedded disk.
+General ambient-kernel transport without simple connectivity, nonseparating
+cuts and the actual Moise252 proof remain open. Full Moise264 and arbitrary-
+shell Moise304 are not marked complete.
+
+All 22 declarations in four changed/new modules, 43 critical reuses, the
+actual model and three helpers have standard transitive axioms; all 13
+applicable linters pass with zero diagnostics. Five former public
+signatures are unchanged. Both new leaves are registered once; the native
+graph has 527 modules and 1024 edges without cycles or HurewiczLowDegrees.
+Thirteen source-matching private receipt sets and the final audit are frozen
+at `moise304-reading/surface-cut-kernel-checkpoint/`, manifest SHA256
+`080A9AD86A7A930F66371D76EE824CCECDEB73D2DA387A6F02F7F400C0FA08AA`.
+See HANDOFF_CODEX_M304.md for exact APIs and limits. No full-root build or
+independent integration acceptance is claimed.
+
+### M304 transfer of an original ambient inclusion kernel (2026-09-19 UTC)
+
+`CollaredClosedCover` now constructs a nontrivial kernel into one actual
+closed side from a nontrivial kernel of the original collared inclusion
+into the ambient space. Ambient simple connectivity is removed. The proof
+constructs the two open domain neighborhoods, identifies their overlap with
+the collar range, and proves the zero-section, ambient-map and native
+retraction squares commute with their based-group casts. Dense exclusive
+sides supply the regular-closed and frontier identities needed to orient
+the collar. Native van Kampen produces the new side element.
+
+The general manifold-pair and actual boundary-component theorems in
+`SurfaceCutKernel` use those maps on the same finite A,B and L in any
+finite-dimensional real ambient space. The complete original-K producer
+`exists_boundary_component_kernel_of_interior_inclusion` accepts the actual
+source inclusion kernel and preserves K,L,U. It constructs an orientable
+finite cut piece, exact boundary trace and actual boundary-component kernel
+for connected K,L in real ambient dimension three. The earlier simply
+connected results are now corollaries. Two redundant local-path-connectedness
+instances are removed; eighteen other former public signatures remain.
+
+The actual nonempty original ball and beta-two torus model invokes this
+general producer and verifies its actual boundary kernel and essential free
+loop together. The model ambient remains a ball. All 37 declarations in
+five changed/new modules, 54 critical reuses, the model and three helpers
+have standard transitive axioms; all 13 applicable linters pass with zero
+diagnostics. The registered native graph has 527 modules and 1032 edges
+without cycles or HurewiczLowDegrees.
+
+Fifteen source-matching private receipt sets and the complete audit are
+frozen at `moise304-reading/collared-closed-cover-checkpoint/`, manifest SHA256
+`8F96C466CCC27FB5683F03258247AE40693FE8EFF66D16AD4CCC7E5DBF06C0EA`.
+See HANDOFF_CODEX_M304.md for exact statements and maps. Full Moise264
+component/ambient generality, nonseparating cuts, the actual Moise252 proof
+and embedded essential disks remain open. No full-root build or independent
+acceptance is claimed; arbitrary-shell Moise304 is not complete.
+
+
+### M304 essential disks conditional on Moise252 (2026-09-19 UTC)
+
+`SurfaceEssentialDisk` now consumes the explicit `h252 : Moise252` on the
+actual boundary-component kernel produced in the original K. For finite
+connected closed PL2 L in a finite preconnected WB3 K in ambient dimension
+three, it produces an embedded essential disk in K minus the old boundary,
+with exact intersection with the original L and nonnullhomotopic boundary
+inclusion into L. It retains the prescribed-neighborhood collar. Avoidance
+of the old boundary and transport from the actual boundary label are proved.
+
+The connected nullhomotopy-neighborhood API produces a finite connected
+ambient neighborhood containing the same actual nullhomotopy. It gives the
+new disk producer in any prescribed simply connected open neighborhood.
+The original-shell specialization retains X, S, B0 and B1, produces the
+essential disk/circle and centered annulus, and connects those same objects
+to the existing target-preserving compression theorem. The actual ball,
+wall, caps and their trace equations remain explicit geometric inputs;
+their general producer is not claimed.
+
+Seven existing public signatures are preserved. All 15 declarations across
+the three changed/new modules and unchanged actual consumer, 74 critical
+reuse entries, two unconditional actual geometric models, two explicitly
+h252-conditional models and three helpers have standard transitive axioms.
+All 13 applicable linters and the final private audit pass with zero
+diagnostics. The registered source graph has 698 modules and 1427 edges
+without cycles or HurewiczLowDegrees.
+
+23 source-matching private receipt sets are frozen at
+`moise304-reading/essential-disk-checkpoint/`, manifest SHA256
+`4C0794FAAC0C53E13EF333D6FCE8388E3AD08F80CC44A4379A7F6757CA7266B9`.
+See HANDOFF_CODEX_M304.md for exact APIs, actual-model scope and receipt
+time. No full-root build or independent acceptance is claimed. The actual
+Moise252 proof, full Moise264 generality, general compression-ball geometry
+and arbitrary-shell Moise304 remain open.
+
+
+### M304 relative ball neighborhoods of the original spanning disk (2026-09-19 UTC)
+
+The new registered SpanningDiskBallNeighborhood leaf proves two geometric
+producers. exists_isPLBall_neighborhood_of_proper_disk starts with an actual
+properly embedded PL disk in a finite WB3 K and a prescribed open U
+containing that disk. Exhaustion and the native disk derived-neighborhood
+theorem produce a finite PL3 ball B inside K and U, containing the entire
+original disk and a relative neighborhood of every disk point. The disk
+meets frontier B in exactly its original rim, and boundary K is a relative
+neighborhood of that rim in frontier B.
+
+exists_isPLBall_neighborhood_of_spanning_disk starts with the original
+finite connected closed surface S inside a finite preconnected WB3 K in
+ambient dimension three, and the actual original D/r in interior K with
+D intersect S equal to its rim. Connectedness of the disk interior puts
+the whole disk in one actual cut side; density recovers its boundary.
+The first producer is applied on that side inside U intersect interior K.
+It produces B containing the same D, with D minus S in interior B,
+D intersect frontier B equal to the rim, S intersect B contained in
+frontier B, and S a relative neighborhood of the rim in frontier B.
+No relative product chart or final compression ball/cap package is an input.
+
+The new actual-model consumer retains the original beta-two torus, ball,
+h252-produced essential disk and U = interior K and checks all these
+properties together. The geometric producers themselves do not use h252.
+The audit separately retains two unconditional geometry models and three
+h252-conditional consumers. All 17 declarations in the audited layer,
+79 critical reuse entries, five models and three helpers have standard
+transitive axioms; all 13 applicable linters and the final private audit
+pass without diagnostics. The two new declarations and their actual
+derived-disk and centered-prism dependencies have fresh private receipts.
+
+Twenty-six source/object/receipt sets and complete audit evidence are frozen
+at `C:/Users/liao9/AppData/Local/Temp/moise304-reading/relative-ball-checkpoint/`.
+Manifest SHA256: `31444C22AB47B279280A535C0D73EB291839B2BE58F8A3409E4024B9F7277E8A`.
+Final audit completion: 2026-09-19T19:34:51.8777909Z. The new native import graph has 508
+modules and 1000 edges, is acyclic and avoids HurewiczLowDegrees.
+This is a dependency-closed checkpoint inside the ongoing compression-ball
+round. The smaller centered prism, exact side wall and disjoint cap
+construction are not yet delivered by this checkpoint. No other lane
+source or shared output is changed; the stopped root build is not restarted.
+
+
+### M304 compression balls for the same original disk and shell (2026-09-19 UTC)
+
+Done in this feature branch, pending independent integration acceptance:
+the geometric compression producer no longer requires a supplied product
+neighborhood, compression ball, side wall, caps, or equivalent final geometry.
+The preceding relative-ball layer is checkpoint 714b1599a29980d7fb7e74571a838fbb26475ff5.
+
+SpanningDiskPrism proves the centered-prism construction and its boundary
+geometry. IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood
+uses the native centered-prism theorem on the same original D/r, then
+compactness of the standard rim to choose one positive thickness whose
+entire side wall lies in the original surface. Strictly smaller thickness
+excludes both old end faces. Injectivity gives exact surface trace.
+IsCombinatorialManifold.exists_centered_prism_neighborhood_of_spanning_disk
+constructs the needed auxiliary ball internally from the original finite
+connected closed surface and disk, in any prescribed open U containing D.
+The auxiliary ball and cut side are not hypotheses of this public result.
+IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism takes the two actual
+end faces of that same prism and proves their disjointness, exact frontier
+union, cap/wall intersections, and both labeled rim identities. Its
+intermediate prism input is produced by the preceding theorem.
+
+SpanningDiskCompression exposes
+IsCombinatorialManifold.exists_compression_neighborhood_of_spanning_disk.
+For the same D/r and S it returns N, W, D0/D1, f, rho, r0/r1, with
+N a PL3 ball contained in U, D contained in N, D minus S inside interior N,
+D intersect frontier N equal to the original rim, and N a relative
+neighborhood of all D in S union D. The prism has f(x,0) = r(x).
+S intersect N equals W; W is a relative neighborhood of the rim in S.
+The rim parameterization satisfies rho(r(x),t) = f(x,t), fixes the rim at
+t = 0, and matches the two cap boundary labels exactly. The caps are
+disjoint and frontier N = W union D0 union D1. W and the caps are chosen
+compatibly from this D, not from an arbitrary previously selected annulus.
+The neighborhood proof uses only the annulus-complement leaf, without an
+import of the higher compression-separation consumer.
+
+SphericalShellCompression exposes
+IsSphericalShell.exists_compression_of_essential_disk. It preserves the
+given X, B0, B1, S, D/r and prescribed U, constructs all the above geometry
+inside U intersect interior X, and applies the unchanged separation/Betti
+consumer to produce an actual connected component P of the capped surface.
+P remains in interior X, separates the same B0/B1, and has strictly smaller
+bettiOne than S. No Loop Theorem hypothesis is needed once the actual
+essential disk is supplied. Its sibling
+IsSphericalShell.exists_separating_component_bettiOne_lt_of_loop_theorem
+obtains that disk using the explicit h252 input and gives strict Betti
+decrease for an arbitrary nonspherical connected separator in the same shell.
+
+Verification: all three new modules compile without diagnostics; the
+compression leaf and shell consumer were rebuilt after narrowing imports.
+All 25 declarations in the cumulative native audit, 84 critical reuse
+entries, eight actual models and three model helpers have only approved
+foundational axioms. All 13 applicable linters pass. The eight models are
+three unconditional models and five explicit-h252 conditional consumers.
+The new unconditional and conditional compression models both retain a
+nonempty actual disk in the original beta-two torus and shell with nonempty
+targets, and quantify over every open neighborhood of that same disk.
+They check all ball/wall/cap, centered parameterization, relative neighborhood,
+component, target and Betti conclusions together. A separate conditional
+model consumes the new arbitrary-shell strict-decrease theorem directly.
+
+Thirty source/object/receipt sets and the complete audit are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/compression-checkpoint/`.
+Manifest SHA256: `7FE6FE9B969793268DA6857A4880FA26962828724136D282FC88181C73CF5C4B`.
+Final zero-diagnostic audit completion: 2026-09-19T19:59:17.5691222Z.
+The native import graph has 907 modules and 1927 edges, is acyclic,
+and avoids HurewiczLowDegrees. All three leaves are registered in the flat
+root. The owner-stopped root build was not restarted; all output is private.
+No other lane source or shared object is modified.
+
+Remaining scope: the actual Moise252 proof, broader Moise264 generality and
+the final arbitrary-shell Moise304 endpoint/integration are not claimed here.
+The previously reported missing ball/wall/cap producer for an original
+essential disk is closed by this round. Independent acceptance remains with
+the coordinator; the feature branch audit is not an acceptance substitute.
+
+
+### M304 arbitrary-shell sphere endpoint from the Loop Theorem (2026-09-19 UTC)
+
+Author-verified in this feature branch; independent integration acceptance is
+pending. The only native change is thirteen added lines in the existing
+SphericalShellCompression leaf: moise304_of_moise252 (h252 : Moise252) : Moise304.
+There are no deleted native lines, new modules, signature changes or extra
+public wrapper declarations. MoiseChain, the E3 lane and the h-circle lane
+are unchanged.
+
+The exact conclusion quantifies over every original X, B0, B1 in Euclidean
+three-space with IsSphericalShell X B0 B1, and constructs B with IsPLSphere 2 B,
+B contained in interior X and Separates B B0 B1. The proof obtains an actual
+connected separator minimizing bettiOne from the existing native selection
+theorem. If it is not a sphere, the previous compression producer supplies a
+connected separator with strictly smaller bettiOne in the same shell and for
+the same targets, contradicting minimality. The supplied hypothesis is only
+h252; no disk, annulus, compression ball, minimality or sphere is assumed.
+
+The unchanged moise305_tame_of_moise304 consumes moise304_of_moise252 h252.
+This gives the full existing Moise305Tame statement: the original two nested
+topological cells and their shell, with a bicollared outer frontier, produce
+an actual intermediate PL3 ball. Its native proof uses SphereNesting and the
+proved PL Schoenflies chain. No extra Schoenflies hypothesis was introduced.
+
+Two new explicit-h252 models use the concrete nonempty norm band 1 <= norm <= 2
+and the same spheres of radii one and two. One constructs the separating PL2
+sphere; the other constructs an actual PL3 ball containing the closed unit
+ball in its interior and contained in the radius-two open ball. The latter
+also verifies its nonempty PL2 frontier lies in 1 < norm < 2 and separates the
+same targets. The outer bicollar is constructed by radial exponential scaling.
+The previous three unconditional disk/ball/compression models are retained.
+These conditional consumers do not independently prove Moise252.
+
+The complete audit checks 31 nonautomatic native declarations, 91 critical
+reuse entries, ten models (three unconditional, seven with explicit h252),
+and three model helpers. All transitive axiom closures contain only the
+approved foundational axioms; all 13 applicable linters pass. The endpoint,
+unchanged tame consumer and SphereNesting have zero-diagnostic private
+compile receipts. Other frozen dependency receipts retain their actual dates.
+
+A separate kernel-body and type dependency traversal covers 9309 native
+constants for moise304_of_moise252 and 7184 for the tame consumer. It includes
+private declarations and records every edge and non-native boundary module.
+Neither closure contains Moise303 or wide Moise264. Live source search finds
+only the Moise264 definition in MoiseChain, not a use in this chain; no
+Moise303 declaration is present in this checkout. The book route and E3's
+separate 30.3 proof are therefore not prerequisites of this compiled route.
+This does not claim the full wider Moise264 statement has been proved.
+
+Thirty-three source/object/receipt sets and all evidence are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/shell-endpoint-checkpoint/`.
+Manifest SHA256: `6D9EBB844D1C8660963E136D047B81C29BD62CD9F70D06F699EE47BEB59FDEE6`.
+Final zero-diagnostic audit: 2026-09-19T20:22:52.2507249Z. The interval from the first successful
+endpoint compile to this final audit is 782.934 seconds; it is not a
+measurement of the entire round's effort. The source import closure contains
+910 native modules and 1934 edges, is acyclic and avoids HurewiczLowDegrees.
+The existing leaf remains registered in the unchanged flat aggregate.
+The owner-stopped root build was not resumed; shared outputs were untouched.
+
+Remaining inputs and acceptance: Moise252 is still an explicit upstream
+input; Moise305Tame retains its bicollared-outer-frontier condition. Neither
+unconditional Moise304 nor general Moise305 is claimed. The arbitrary-shell
+conditional endpoint is now closed in the author lane, pending the
+coordinator's independent replay and integration acceptance.
+
+
+### M304 original toroidal-shell incompressibility and fundamental groups (2026-09-19 UTC)
+
+Author-verified mathematical checkpoint; Moise306 and Moise307 remain open.
+Six new leaves and one existing leaf contribute 595 added native lines,
+zero deleted native lines, 34 source declarations and one generated local
+notation constant. The flat aggregate gains exactly six imports. Existing
+declarations in SurfaceEssentialDisk and all other earlier APIs are unchanged.
+MoiseChain and other lanes are unchanged; independent integration is pending.
+
+The new actual-kernel disk producer in SurfaceEssentialDisk takes a nonidentity
+loop killed by the inclusion into its prescribed open neighborhood, without
+an ambient simple-connectivity assumption. SurfaceIncompressibility then
+constructs a lower-Betti connected separator for the same two targets from
+that kernel. A minimal separator consequently has injective inclusion on
+fundamental groups. All disk and compression geometry is produced using the
+explicit upstream Moise252 input and the existing checked relative machinery.
+
+Manifold.CylinderImage proves the interior and frontier formulas for embedded
+compact manifold cylinders by invariance of domain. ToroidalShell applies
+them to the original homeomorphism in IsToroidalShell Y T0 T1: frontier Y is
+exactly T0 union T1, and interior Y is homeomorphic to the torus times (0,1).
+It constructs a finite connected oriented two-sided PL2 separator in this
+original interior and an actual minimum of bettiOne for these original
+targets. ToroidalShellCompression's
+IsToroidalShell.exists_connected_separating_surface_fundamentalGroup_map_injective
+produces that separator with injective inclusion into interior Y from h252.
+No minimum, sphere, torus, compression disk or classification is assumed.
+
+FundamentalGroup.Torus computes the torus group at every basepoint as Z x Z.
+ToroidalShellFundamentalGroup transfers this to both Y and interior Y and
+proves both actual endpoint inclusions T0 -> Y and T1 -> Y induce bijections
+on fundamental groups. These are the native group inputs for the book's
+sphere-exclusion argument, not a completed sphere-exclusion theorem.
+
+The new unconditional model starts from the existing actual embedded PL
+torus, constructs its ambient bicollar, and restricts that embedding to a
+closed unit cylinder. Its shell, interior and both targets are nonempty;
+the targets are disjoint; its interior is proved not simply connected.
+A second unconditional model constructs its minimum separator. A third,
+with explicit h252, constructs an incompressible separator of exactly those
+same targets and proves its fundamental group commutative. No standard
+shell is substituted for the arbitrary shell in the public results.
+
+The cumulative audit checks 66 nonautomatic native constants (including the
+local notation constant), 106 critical reuse entries, thirteen models (five
+unconditional, eight with explicit h252), and four model helpers. Every
+checked transitive axiom closure uses only the approved foundational axioms,
+and all 13 applicable linters pass. Every changed leaf has a private compile
+receipt with zero diagnostics. Kernel type-and-body traversals for the
+separator, interior group computation and left endpoint inclusion contain
+no Moise303 or wide Moise264. The source import closure has 912 native
+modules and 1938 edges, no cycles or HurewiczLowDegrees.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/toroidal-checkpoint
+contains 39 source/receipt sets, raw and normalized source identities,
+AuditToroidal.lean, toroidal-census.json, ToroidalModels.lean, source review,
+compiled dependency closures and timing. Manifest SHA256: 215C4D6BFEE73F394D4B8908EB424E518FD5BFAEDAB99EABAE3827865521560C.
+Final zero-diagnostic audit: 2026-09-19T21:07:56.0084065Z. The compile-to-audit window is
+1660.493 seconds, not total effort.
+The owner-stopped root build remains stopped; shared artifacts are untouched.
+
+The remaining geometric obligations are exact: (1) a PL2 sphere in interior Y
+cannot separate T0 and T1, using the actual cut sides and the endpoint group
+isomorphisms; (2) a connected closed orientable finite PL2 surface with the
+resulting nontrivial fundamental group embedded in Z x Z is homeomorphic to
+S1 x S1. The current SurfaceInvariants API computes counts from an already
+supplied handle profile; it does not construct that profile or a torus
+homeomorphism. SurfaceSphereRecognition handles Euler characteristic two,
+not the required Euler-zero orientable case. Betti number two alone has not
+been used as torus recognition. Work toward these obligations continues;
+this checkpoint does not claim Moise306, Moise307 or Moise252 complete.
+
+
+### M304 parity and commutative-cover primitives; exact recognition frontier (2026-09-19 UTC)
+
+The preceding original-shell layer is committed and pushed as
+6f227c0576feb906bb14e8bb693bc8e7d0fdaf72. Its 39 frozen source/receipt sets were
+checked again against working-tree raw bytes, committed normalized bytes,
+and all artifact hashes. This follow-on layer adds two registered leaves,
+three proved declarations and 90 native lines, with zero deletions or
+changes to previous declarations. Across the toroidal round this is
+685 native lines, eight new leaves and 37 source declarations plus
+one generated local-notation constant.
+
+SurfaceEulerParity proves
+IsCombinatorialManifold.even_eulerChar_of_finrank_eq_three and
+IsCombinatorialManifold.even_bettiOne_of_finrank_eq_three for any connected
+finite closed PL2 surface in a three-dimensional real normed space.
+The proof produces its actual bounded PL3 filling with that exact boundary,
+uses the boundary Euler formula, and uses the already proved orientability
+and rational Euler-Betti formula. No handle profile or parity assumption is
+introduced. The added unconditional models check an actual embedded torus
+and the actual minimum separator in the non-simply-connected shell model.
+
+FundamentalGroup.CommutativeCover proves
+simplyConnectedSpace_or_of_open_cover_of_isMulCommutative. For a two-set
+open cover with path-connected sides and simply connected intersection,
+commutativity of the ambient fundamental group forces at least one side
+to be simply connected. The proof applies the native van Kampen free-product
+isomorphism and proves two nonidentity letters from different factors cannot
+commute by uniqueness of reduced words. Ambient simple connectivity is not
+an assumption. This closes the group's free-product obstruction on book
+page 217, but does not yet construct the actual cut cover of the original Y.
+
+The round reaches two explicit geometric frontiers. First, for the ORIGINAL
+IsToroidalShell Y T0 T1, prove that no IsPLSphere 2 S with S inside interior Y
+can satisfy Separates S T0 T1. Required construction: the closures of the
+two components of Y minus S, their path connectivity and regular-closed
+properties, a collar contained in original Y, the corresponding open cover,
+and factorization of the two actual endpoint maps through their own sides.
+The group isomorphisms and commutative-cover obstruction are proved; the
+closed-cover kernel theorem is for actual nontrivial boundary kernels and
+cannot substitute for this sphere case. The older negative/positive collar
+cover intersection API assumes the ambient space simply connected and
+therefore cannot be instantiated at this toroidal Y.
+
+Second, construct a torus homeomorphism for a connected closed orientable
+finite PL2 surface with nontrivial commutative fundamental group (here it
+embeds into Z x Z). The weaker intermediate numerical statements do not
+give that homeomorphism. SurfaceInvariants only starts from a supplied
+handle/crosscap profile; SurfaceSphereRecognition only treats Euler
+characteristic two. A native polygonal presentation/classification or a
+proved orientable Euler-zero torus-recognition construction is missing.
+The PI1-to-integral-H1/abelianization step used by the book is also not
+supplied by the checked path-cone vanishing API. No blocked HurewiczLowDegrees
+import, new axiom, sorry or conclusion-shaped hypothesis has been added.
+
+Moise306 remains PARTIAL at these actual geometric interfaces. Moise307 is
+not started, in accordance with the required 30.6 -> 30.7 order. Neither the
+incompressible separator nor parity is reported as IsPLTorus, and the
+explicit upstream Moise252 input remains unresolved. Independent integration
+acceptance remains pending.
+
+Final cumulative verification: 69 nonautomatic native constants, 112 critical
+reuse entries, fifteen actual models (seven unconditional, eight with h252),
+four model helpers, and all 13 applicable linters. All audited axiom closures
+contain only the approved foundational axioms; changed-module compiles and
+the full audit have zero diagnostics. Five kernel body/type traversals show
+no Moise303 or wide Moise264. The source graph has 940 native modules
+and 2019 edges, with no cycle or HurewiczLowDegrees.
+The owner-stopped root build was not run; shared outputs remain untouched.
+
+Frozen final evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/recognition-final-checkpoint
+contains 41 source/receipt sets, the complete audit/census, actual models,
+kernel dependency reports and source/timing review. Manifest SHA256:
+D04395C683F14D90E0886B7F637B0E536E8E7F6DC1F6103CF98120009B7D9F87.
+Final zero-diagnostic audit: 2026-09-19T21:21:28.6825480Z; 2473.167 seconds since the first
+successful changed-module compile, not a measurement of total effort.
+
+
+## M304 original toroidal-shell sphere exclusion checkpoint, 2026-09-19
+
+This entry supersedes the sphere-exclusion frontier of checkpoint 8236587e5.
+The arbitrary ORIGINAL IsToroidalShell Y T0 T1 now satisfies
+IsToroidalShell.not_separates_of_isPLSphere: an IsPLSphere 2 S contained
+in interior Y cannot separate the original endpoint sets T0 and T1.
+This theorem has no Moise252 input. The finite-surface corollary
+IsToroidalShell.not_simplyConnectedSpace_of_separates also has no Moise252
+input. Combining it with the existing minimum/compression producer gives
+IsToroidalShell.exists_non_simply_connected_separating_surface_fundamentalGroup_map_injective
+with the same explicit h252 input as before.
+
+The sphere proof constructs the Schoenflies ball D with frontier D = S.
+Its actual closed sides in Y are P = val^(-1)(D) and
+Q = val^(-1)((interior D)^c). Frontier S inside interior Y gives the exact
+relative closure equalities closure(P \ Q) = P and closure(Q \ P) = Q.
+A given sphere collar is shrunk into interior Y and codomain-restricted to Y.
+The collar determines an open cover whose intersection is exactly its range.
+Connectedness of the closed sides follows from the connected closed-cover
+intersection; open collar neighborhoods are path connected and retract to
+the actual sides. No side, regularity, connectivity, intersection identity,
+kernel, or non-sphere hypothesis is supplied by the caller.
+
+The simply connected sphere makes the collar intersection simply connected.
+The commutative-cover obstruction therefore makes P or Q simply connected.
+Schoenflies component connectivity and the ORIGINAL separation relation put
+T0 and T1 in opposite actual sides. Each actual endpoint inclusion T_i -> Y
+is written as T_i -> P -> Y or T_i -> Q -> Y. A simply connected middle
+space makes its fundamental-group map trivial, contradicting the checked
+surjectivity of that actual endpoint map onto pi1(Y) isomorphic to Z x Z.
+All pre-existing public signatures are preserved; the old closed-cover kernel
+proof now reuses the extracted open-cover construction.
+
+Changes: 389 native lines added, 53 removed; eleven new declarations,
+four new leaf modules registered in the flat root, eight changed native modules.
+Cumulative verification covers 87 nonautomatic native constants, 119 critical
+reuse entries, eighteen actual models (nine unconditional and nine conditional
+on h252), four model helpers and all thirteen applicable linters. Every audited
+axiom closure is a subset of propext, Classical.choice and Quot.sound. Fresh
+changed-module compilation and the complete audit produced zero diagnostics.
+Nine exact kernel type/body dependency traversals contain no Moise303 or wide
+Moise264. The source import graph has 951 modules and
+2049 edges, with no cycle or HurewiczLowDegrees.
+The explicit owner stop on the root build remains in force. Shared outputs
+were not changed. Independent integration replay is still pending.
+
+The remaining Moise306 frontier is the actual torus homeomorphism of the
+produced connected closed orientable finite PL surface, now proved non-simply
+connected and with fundamental group injecting into pi1(interior Y) = Z x Z.
+SurfaceSphereRecognition supplies only Euler-characteristic-two recognition;
+SurfaceInvariants consumes a supplied handle/crosscap profile. Neither proves
+the needed torus recognition. The checked PathCones/FieldPathCones API proves
+degree-one homology vanishing under simple connectivity, not the general
+pi1-to-integral-H1 abelianization comparison needed by the book's rank argument.
+No numerical invariant or supplied profile is being counted as IsPLTorus.
+Moise307 remains unstarted, and Moise252 remains an explicit unresolved input.
+
+Before later Moise307/308 consumers, repair the Moise308 spine contract:
+the book's inner S1 spine must generate pi1 of every intermediate S through
+the actual inclusion map. The current contract assumes a spine of intermediate
+S itself. Preserve that true result, add the missing inclusion transport, and
+do not consume Moise312/314 until this transport is proved. MoiseChain was not
+edited in this checkpoint.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/sphere-exclusion-checkpoint
+45 source/receipt groups. Manifest SHA256: 69B2B74D52D5C659058B905AB9B216AF35F0FAF4CDAB3F5B14EB22E04ABFE701.
+Complete zero-diagnostic audit: 2026-09-19T21:54:51.8379979Z.
+Kernel dependency audit: 2026-09-19T21:57:34.0194709Z.
+
+
+## M304 degree-one Hurewicz homomorphism checkpoint, 2026-09-19
+
+The original toroidal-shell sphere exclusion from 87826c69c remains unchanged.
+A general integral degree-one Hurewicz homomorphism now exists for every
+based topological space. hurewiczOne_surjective proves its surjectivity for
+every PathConnectedSpace, with no simple connectivity, manifold, compactness,
+local path connectivity, or finite complex assumption.
+
+PathConcatenation gives an explicit singular triangle for any composable
+paths; its boundary is q - (p.trans q) + p. PathHomotopy triangulates an
+arbitrary endpoint-fixed path homotopy into two singular triangles, with
+constant-path corrections, and proves that homotopic path chains differ by
+a boundary. HurewiczOne descends the resulting loop class to the actual
+fundamental group, respecting Mathlib's reversed concatenation convention.
+Surjectivity closes every singular edge using chosen basepoint paths; their
+endpoint corrections cancel for every cycle. The proof compares the actual
+linear maps on the singular-chain basis and then uses the cycle quotient.
+
+Three new leaf modules, 384 native source lines, eighteen public and four
+private declarations; all three are registered in the flat root. Every
+changed module compiled with zero diagnostics. The cumulative main audit
+checks 109 native constants, 133 critical reuse entries, twenty models and
+four helpers under all thirteen applicable linters. A separate checked model
+adds two reuse entries and one actual circle model: there exists an actual
+loop whose integral homology coordinate is exactly 1, using the independently
+checked sphere top homology equivalence. The other two new models exercise
+surjectivity on the circle and torus with explicitly nontrivial fundamental
+groups. Thus the cumulative evidence has 135 reuse entries and twenty-one
+models (twelve unconditional, nine retaining h252).
+
+All checked axiom closures contain only a subset of propext,
+Classical.choice and Quot.sound. Twelve actual kernel type/body dependency
+traversals are nonempty and avoid Moise303 and wide Moise264. The native
+source import graph has 954 modules and 2052 edges,
+with no cycle or HurewiczLowDegrees. No shared outputs were changed. The
+explicit owner root-build stop remains in force; integration replay is pending.
+
+This checkpoint proves the map and its surjectivity, not the abelianization
+isomorphism, rational coefficient comparison, Betti-one rank bound, or actual
+surface-to-torus homeomorphism. Those remain the Moise306 recognition frontier.
+Moise307 is not yet started. Moise252 remains an explicit unresolved input.
+The earlier Moise308 original-inner-spine inclusion-transport obligation is
+unchanged; MoiseChain and other lanes were not edited.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/hurewicz-one-checkpoint
+48 source/receipt groups. Manifest SHA256: 53E017AC78CAC17877AF7EF20F662CFB3602F1E09405B05B4884F4F01E891D84.
+Main audit: 2026-09-19T22:35:19.9060986Z.
+Circle model audit: 2026-09-19T22:39:46.2922313Z.
+Kernel dependency audit: 2026-09-19T22:33:14.9531106Z.
+
+
+## M304 original-shell Betti-two checkpoint, 2026-09-19
+
+The actual incompressible separator in the original prescribed toroidal shell
+now has rational first Betti number exactly 2 and Euler characteristic 0.
+IsToroidalShell.bettiOne_eq_two_of_separates_of_fundamentalGroup_map_injective
+uses injectivity of the actual inclusion at one actual basepoint. It requires
+no Loop Theorem input once that injectivity is supplied. The existence endpoint
+IsToroidalShell.exists_separating_surface_bettiOne_eq_two retains the explicit
+unresolved h252 : Moise252 and returns the same original-shell separation,
+containment, two-sidedness and every-basepoint inclusion injectivity.
+
+FieldCycles gives the linear cycle quotient. FieldHurewiczOne constructs the
+field-coefficient degree-one map and proves that its image spans first homology
+for every PathConnectedSpace. This is a spanning statement, not set surjectivity
+over an arbitrary field. FundamentalGroupRank proves the natural upper bound
+when the fundamental group embeds in the multiplicative group of a finitely
+generated torsion-free abelian group: use its finite free integer basis and the
+field spanning theorem. For the actual shell inclusion the target is Z x Z,
+so Betti one is at most 2. The checked embedded-surface parity and original-shell
+sphere exclusion then give equality. No abelianization-isomorphism theorem or
+unproved coefficient-comparison theorem is assumed.
+
+Four new leaf modules, 408 native source lines, twenty public and four
+private declarations; all four are registered in the flat root. Each compiled
+with zero diagnostics. The cumulative main audit checks 133 native constants,
+143 reuse entries, twenty-four models and four helpers under all thirteen
+applicable linters. The retained independent integral-circle unit-coordinate
+model adds two reuse entries and one model: total 145 reuse entries and twenty-five
+models (fifteen unconditional, ten retaining h252). New models check arbitrary
+field rank bounds on Circle and Circle x Circle, the actual original-shell
+Betti-two separator, and a nonzero rational Hurewicz image on an independently
+constructed actual embedded torus.
+
+All checked axiom closures contain only a subset of propext, Classical.choice
+and Quot.sound. Sixteen kernel type/body closures are nonempty and avoid
+Moise303 and wide Moise264. The native import graph has 958 modules and
+2060 edges, no cycle, and no HurewiczLowDegrees dependency.
+No shared outputs changed. The explicit owner root-build stop remains active;
+integration replay is pending.
+
+Actual torus recognition remains open: no homeomorphism has yet been produced
+from these numerical invariants, so Moise306 is partial and Moise307 has not
+started. A concrete next route is an actual essential spanning disk (using
+h252), nonseparating compression to a sphere, then the checked spherical disk-pair
+matching, cylindrical gluing and orientable monodromy APIs to reconstruct the
+surface-to-torus homeomorphism. These are remaining obligations, not conclusions
+of this checkpoint. MoiseChain, the original-inner-spine Moise308 obligation,
+and other lanes remain unchanged.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/shell-homology-checkpoint
+52 source/receipt groups. Manifest SHA256: C94B17E527CA290BE0D767A75548E3235E77ED4723C30B6D456E4A4E1307A751.
+Main audit: 2026-09-19T23:03:40.1144416Z.
+Kernel dependency audit: 2026-09-19T23:05:08.6478958Z.
 ### Resumed-stage cylinder gluing gate
 
 M304 734c87b5f is independently accepted: three existing cylinder/meridian
