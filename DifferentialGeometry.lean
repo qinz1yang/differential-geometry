@@ -12394,3 +12394,6 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroTrace.LipschitzCutoff
 import DifferentialGeometry.Analysis.Sobolev.MetricTarget.Compactness
 import DifferentialGeometry.Topology.Compactness.CountableSubsequence
 import DifferentialGeometry.Topology.MetricSpace.DistanceConvergence
+import DifferentialGeometry.Topology.Diffeomorph.FiberwiseAffine
+import DifferentialGeometry.Topology.Manifold.ProductChartGluing
+import DifferentialGeometry.Geometry.Neck.ProductChart
