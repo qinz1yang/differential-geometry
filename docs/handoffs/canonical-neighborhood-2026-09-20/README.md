@@ -503,3 +503,51 @@ root. Temporary evidence is in `/private/tmp/wt17-speed-leaves-build.log`,
 After the final Lean edit, the full root build passed 20,166 jobs with the same 21 retained
 `sorry` warnings and no other diagnostics. The root evidence is
 `/private/tmp/wt17-curve-compactness-root-build.log`.
+
+
+## Distance preservation and source endpoints
+
+The continuation after `e293f9c47` proves
+`PointedRiemannianConvergenceMaps.limsup_edist_le` in the new
+`Geometry/Compactness/CheegerGromov/Pointed/Convergence/Distance.lean` leaf. Upper metric
+bounds tending to one on each compact set imply upper semicontinuity of source distances
+between images of converging limit points. The proof maps nearly shortest paths in compact
+sets and controls the errors at moving endpoints in compact neighborhoods. The limit need
+not be complete or connected.
+
+`PointedRiemannianConvergenceMaps.exists_isometric_curve_subseq_limit` strengthens the
+previous curve producer when the source curves are minimizing with their unit-speed
+parametrizations. Its output retains uniform convergence of the actual inverse images on
+compact parameter sets and gives `Isometry` for the limiting half-open segment. The proof
+establishes eventual actual target membership before using either inverse identity.
+
+`PointedRiemannianConvergenceMaps.tendsto_edist_curve_endpoint_zero` proves the endpoint
+comparison needed for the missing-endpoint contradiction. If a pulled-back curve has an
+endpoint in the smooth limit, then its source endpoints approach the images of that point
+in source intrinsic distance. The source endpoints need not belong to the maps' targets.
+Only C1 regularity on the supplied closed intervals, a fixed finite speed bound in their
+interiors, convergence at interior parameters, and local upper metric bounds are used.
+
+The general metric-valued interval speed estimate now lives in
+`Geometry/Metric/CurveSpeed.lean`, with the existing global flat-model theorem as a
+corollary. The curve producers reuse it. Its raw norm-valued foundation remains
+`Manifold.riemannianEDist_le_of_curve_speed_bound` in `Geometry/Metric/Path/Speed.lean`.
+
+This develops the minimizing-segment and endpoint argument following Kleiner--Lott,
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`,
+Section 52, Step 2, after (52.13), printed pages 2702--2703. The application to the actual
+normalized escaping sequence, its missing endpoint, and the neck/cone producers remain
+active proof work. The bounded-distance headline is unchanged; there are still 21 source
+proof holes.
+
+The changed leaves compiled without diagnostics. Six new or changed declarations passed
+all thirteen declaration linters and have only `propext`, `Classical.choice`, and
+`Quot.sound` in their transitive axiom closures. Temporary evidence is in
+`/private/tmp/wt17-pointed-distance-build.log`,
+`/private/tmp/wt17-metric-curve-speed-build.log`,
+`/private/tmp/wt17-curves-endpoint-build.log`, and
+`/private/tmp/wt17-curve-distances-audit.log`.
+
+After the final Lean edit, the full root build passed 20,167 jobs with the same 21 retained
+`sorry` warnings and no other diagnostics. The root evidence is
+`/private/tmp/wt17-curve-distances-root-build.log`.

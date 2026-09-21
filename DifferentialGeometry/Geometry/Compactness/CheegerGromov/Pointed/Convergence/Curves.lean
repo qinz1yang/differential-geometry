@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
-import DifferentialGeometry.Geometry.Metric.Path.Speed
+import DifferentialGeometry.Geometry.Metric.CurveSpeed
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Distance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
@@ -32,10 +34,9 @@ private theorem inverse_curve_edist_le
         (mfderiv I J (Φ : M → N) z v) (mfderiv I J (Φ : M → N) z v)) :
     riemannianEDistOf g (Φ.symm (γ a)) (Φ.symm (γ b)) ≤
       ENNReal.ofReal C * ENNReal.ofReal (b - a) := by
-  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
   have hsmooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 ((Φ.symm : N → M) ∘ γ) (Icc a b) :=
     (Φ.symm.contMDiffOn_toFun.of_le (by simp)).comp hγ hstay
-  apply Manifold.riemannianEDist_le_of_curve_speed_bound hab hsmooth
+  apply Geometry.riemannianEDistOf_le_of_curve_speed_bound g hab hsmooth
   intro t ht
   have hzT := hstay t ⟨ht.1.le, ht.2.le⟩
   have hgd := (hγ.contMDiffAt (Icc_mem_nhds ht.1 ht.2)).mdifferentiableAt (by decide)
@@ -65,12 +66,8 @@ private theorem inverse_curve_edist_le
       have hh := mul_le_mul_of_nonneg_left (hunit t ht) (sq_nonneg C)
       rw [mul_one] at hh
       exact hh)
-  rw [mfderiv_comp_apply t (Φ.symm.mdifferentiableAt (by simp) hzT) hgd,
-    ← ofReal_norm, norm_eq_sqrt_real_inner]
-  change ENNReal.ofReal (Real.sqrt (g.inner (Φ.symm (γ t))
-    (mfderiv J I (Φ.symm : N → M) (γ t) w)
-    (mfderiv J I (Φ.symm : N → M) (γ t) w))) ≤ ENNReal.ofReal C
-  exact ENNReal.ofReal_le_ofReal ((Real.sqrt_le_sqrt hbound).trans_eq (Real.sqrt_sq hC))
+  rw [mfderiv_comp_apply t (Φ.symm.mdifferentiableAt (by simp) hzT) hgd]
+  exact (Real.sqrt_le_sqrt hbound).trans_eq (Real.sqrt_sq hC)
 
 
 universe u uE uH
@@ -128,17 +125,12 @@ theorem PointedRiemannianConvergenceMaps.exists_curve_subseq_limit
   have hbaseDist (n : ℕ) (t : ℝ) (ht : t ∈ Icc 0 (ell n)) :
       riemannianEDistOf (X.obj (σ n)).metric (X.obj (σ n)).basepoint (γ n t) ≤
         ENNReal.ofReal t := by
-    let : RiemannianBundle (TangentSpace I : (X.obj (σ n)).M → Type _) :=
-      ⟨(X.obj (σ n)).metric.toRiemannianMetric⟩
-    have hh := Manifold.riemannianEDist_le_of_curve_speed_bound (C := 1) ht.1
-      ((hγ n).mono (Icc_subset_Icc le_rfl ht.2)) (by
+    have hh := Geometry.riemannianEDistOf_le_of_curve_speed_bound (X.obj (σ n)).metric
+      (C := 1) ht.1 ((hγ n).mono (Icc_subset_Icc le_rfl ht.2)) (by
         intro s hs
-        rw [← ofReal_norm, norm_eq_sqrt_real_inner]
-        change ENNReal.ofReal (Real.sqrt ((X.obj (σ n)).metric.inner (γ n s)
-          (mfderiv 𝓘(ℝ, ℝ) I (γ n) s 1) (mfderiv 𝓘(ℝ, ℝ) I (γ n) s 1))) ≤ 1
-        simpa only [Real.sqrt_one, ENNReal.ofReal_one] using
-          ENNReal.ofReal_le_ofReal (Real.sqrt_le_sqrt (hspeed n s ⟨hs.1, hs.2.trans_le ht.2⟩)))
-    simp only [sub_zero, one_mul, hstart n] at hh
+        simpa only [Real.sqrt_one] using
+          Real.sqrt_le_sqrt (hspeed n s ⟨hs.1, hs.2.trans_le ht.2⟩))
+    simp only [sub_zero, ENNReal.ofReal_one, one_mul, hstart n] at hh
     exact hh
   have hstay (n : ℕ) (t : ℝ) (ht : t ∈ Icc 0 (τ n)) :
       γ n t ∈ (Φ.partialDiffeomorph n).target := by
@@ -218,5 +210,180 @@ theorem PointedRiemannianConvergenceMaps.exists_curve_subseq_limit
     exact hfzero (phi n)
   rw [heq] at hc
   exact tendsto_nhds_unique hc tendsto_const_nhds
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem PointedRiemannianConvergenceMaps.exists_isometric_curve_subseq_limit
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)} {σ : ℕ → ℕ}
+    (Φ : PointedRiemannianConvergenceMaps X L σ) {rho : ℝ} (hrho : 0 < rho)
+    (r ell : ℕ → ℝ) (hr : ∀ n, 0 < r n) (hell : ∀ n, 0 ≤ ell n)
+    (hrconv : Tendsto r atTop (𝓝 rho)) (hellconv : Tendsto ell atTop (𝓝 rho))
+    (htarget : ∀ n, riemannianBallOf (X.obj (σ n)).metric
+      (X.obj (σ n)).basepoint (r n) ⊆ Φ.target n)
+    (hlower : ∀ ε : ℝ, 0 < ε → ∀ᶠ n in atTop,
+      ∀ x ∈ Φ.source n, ∀ v : TangentSpace I x,
+        (1 - ε) * L.metric.inner x v v ≤
+          (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+            (mfderiv I I (Φ.partialDiffeomorph n) x v)
+            (mfderiv I I (Φ.partialDiffeomorph n) x v))
+    (hupper : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ n in atTop,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v) ≤ C ^ 2 * L.metric.inner x v v)
+    (hcompact : ∀ R : ℝ, 0 ≤ R → R < rho →
+      IsCompact (riemannianClosedBallOf L.metric L.basepoint R))
+    (γ : ∀ n, ℝ → (X.obj (σ n)).M)
+    (hγ : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (γ n) (Icc 0 (ell n)))
+    (hstart : ∀ n, γ n 0 = (X.obj (σ n)).basepoint)
+    (hspeed : ∀ n, ∀ t ∈ Ioo 0 (ell n),
+      (X.obj (σ n)).metric.inner (γ n t)
+        (mfderiv 𝓘(ℝ, ℝ) I (γ n) t 1) (mfderiv 𝓘(ℝ, ℝ) I (γ n) t 1) ≤ 1)
+    (hmin : ∀ n, ∀ s ∈ Icc 0 (ell n), ∀ t ∈ Icc 0 (ell n),
+      edist s t ≤ riemannianEDistOf (X.obj (σ n)).metric (γ n s) (γ n t)) :
+    let _ : EMetricSpace L.M := L.emetricSpace
+    ∃ (phi : ℕ → ℕ) (g : C(Ico 0 rho, L.M)), StrictMono phi ∧ Isometry g ∧
+      g ⟨0, le_rfl, hrho⟩ = L.basepoint ∧
+      ∀ A : Set (Ico 0 rho), IsCompact A →
+        TendstoUniformlyOn
+          (fun n (t : Ico 0 rho) => (Φ.partialDiffeomorph (phi n)).symm (γ (phi n) t))
+          g atTop A := by
+  let : EMetricSpace L.M := L.emetricSpace
+  obtain ⟨phi, g, hphi, hLip, hbase, hconv⟩ :=
+    Φ.exists_curve_subseq_limit hrho r ell hr hell hrconv hellconv htarget hlower
+      hcompact γ hγ hstart hspeed
+  refine ⟨phi, g, hphi, ?_, hbase, hconv⟩
+  have hbaseDist (n : ℕ) (t : ℝ) (ht : t ∈ Icc 0 (ell n)) :
+      riemannianEDistOf (X.obj (σ n)).metric (X.obj (σ n)).basepoint (γ n t) ≤
+        ENNReal.ofReal t := by
+    have hh := Geometry.riemannianEDistOf_le_of_curve_speed_bound (X.obj (σ n)).metric
+      (C := 1) ht.1 ((hγ n).mono (Icc_subset_Icc le_rfl ht.2)) (by
+        intro s hs
+        simpa only [Real.sqrt_one] using
+          Real.sqrt_le_sqrt (hspeed n s ⟨hs.1, hs.2.trans_le ht.2⟩))
+    simp only [sub_zero, ENNReal.ofReal_one, one_mul, hstart n] at hh
+    exact hh
+  have hstay (t : Ico 0 rho) : ∀ᶠ n in atTop,
+      γ n t ∈ (Φ.partialDiffeomorph n).target ∧ (t : ℝ) ∈ Icc 0 (ell n) := by
+    filter_upwards [hrconv.eventually (eventually_gt_nhds t.property.2),
+      hellconv.eventually (eventually_gt_nhds t.property.2)] with n hn hn'
+    refine ⟨htarget n ?_, t.property.1, hn'.le⟩
+    exact (hbaseDist n t ⟨t.property.1, hn'.le⟩).trans_lt
+      ((ENNReal.ofReal_lt_ofReal_iff (hr n)).mpr hn)
+  let Ψ := Φ.compSubseq phi hphi
+  have hupper' : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ n in atTop,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (X.obj ((σ ∘ phi) n)).metric.inner (Ψ.partialDiffeomorph n x)
+          (mfderiv I I (Ψ.partialDiffeomorph n) x v)
+          (mfderiv I I (Ψ.partialDiffeomorph n) x v) ≤ C ^ 2 * L.metric.inner x v v := by
+    intro K hK C hC
+    exact hphi.tendsto_atTop (hupper K hK C hC)
+  intro s t
+  apply le_antisymm
+  · simpa only [ENNReal.coe_one, one_mul] using hLip s t
+  have hs := (hconv {s} isCompact_singleton).tendsto_at (mem_singleton s)
+  have ht := (hconv {t} isCompact_singleton).tendsto_at (mem_singleton t)
+  have hlim := Ψ.limsup_edist_le hupper' hs ht
+  have hevent : ∀ᶠ n in atTop, edist s t ≤
+      riemannianEDistOf (X.obj ((σ ∘ phi) n)).metric
+        (Ψ.partialDiffeomorph n ((Φ.partialDiffeomorph (phi n)).symm (γ (phi n) s)))
+        (Ψ.partialDiffeomorph n ((Φ.partialDiffeomorph (phi n)).symm (γ (phi n) t))) := by
+    filter_upwards [hphi.tendsto_atTop (hstay s), hphi.tendsto_atTop (hstay t)] with n hn hn'
+    change edist (s : ℝ) (t : ℝ) ≤
+      riemannianEDistOf (X.obj (σ (phi n))).metric
+        (Φ.partialDiffeomorph (phi n) ((Φ.partialDiffeomorph (phi n)).symm (γ (phi n) s)))
+        (Φ.partialDiffeomorph (phi n) ((Φ.partialDiffeomorph (phi n)).symm (γ (phi n) t)))
+    have hs_inv : Φ.partialDiffeomorph (phi n)
+        ((Φ.partialDiffeomorph (phi n)).symm (γ (phi n) s)) = γ (phi n) s :=
+      (Φ.partialDiffeomorph (phi n)).right_inv hn.1
+    have ht_inv : Φ.partialDiffeomorph (phi n)
+        ((Φ.partialDiffeomorph (phi n)).symm (γ (phi n) t)) = γ (phi n) t :=
+      (Φ.partialDiffeomorph (phi n)).right_inv hn'.1
+    rw [hs_inv, ht_inv]
+    exact hmin (phi n) s hn.2 t hn'.2
+  have hlower' := limsup_le_limsup hevent
+  rw [limsup_const] at hlower'
+  exact hlower'.trans hlim
+
+theorem PointedRiemannianConvergenceMaps.tendsto_edist_curve_endpoint_zero
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)} {σ : ℕ → ℕ}
+    (Φ : PointedRiemannianConvergenceMaps X L σ)
+    (hupper : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ n in atTop,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v) ≤ C ^ 2 * L.metric.inner x v v)
+    {a b : ℝ} (hab : a < b) (ell : ℕ → ℝ) (hell : Tendsto ell atTop (𝓝 b))
+    (γ : ∀ n, ℝ → (X.obj (σ n)).M) (C : ℝ≥0)
+    (hγ : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (γ n) (Icc a (ell n)))
+    (hspeed : ∀ n, ∀ t ∈ Ioo a (ell n),
+      Real.sqrt ((X.obj (σ n)).metric.inner (γ n t)
+        (mfderiv 𝓘(ℝ, ℝ) I (γ n) t 1) (mfderiv 𝓘(ℝ, ℝ) I (γ n) t 1)) ≤ C)
+    (g : ℝ → L.M)
+    (hconv : ∀ t ∈ Ico a b, Tendsto
+      (fun n => (Φ.partialDiffeomorph n).symm (γ n t)) atTop (𝓝 (g t)))
+    (hstay : ∀ t ∈ Ico a b, ∀ᶠ n in atTop, γ n t ∈ (Φ.partialDiffeomorph n).target)
+    {x : L.M} (hend : Tendsto g (𝓝[<] b) (𝓝 x)) :
+    Tendsto (fun n => riemannianEDistOf (X.obj (σ n)).metric
+      (γ n (ell n)) (Φ.partialDiffeomorph n x)) atTop (𝓝 0) := by
+  let : EMetricSpace L.M := L.emetricSpace
+  apply ENNReal.tendsto_nhds_zero.mpr
+  intro ε hε
+  obtain ⟨R, _, hR0, hRε⟩ := ENNReal.lt_iff_exists_real_btwn.mp hε
+  have hR : 0 < R := ENNReal.ofReal_pos.mp hR0
+  have hhalf : 0 < ENNReal.ofReal (R / 2) := ENNReal.ofReal_pos.mpr (by linarith)
+  have hgdist : Tendsto (fun t => edist (g t) x) (𝓝[<] b) (𝓝 0) := by
+    simpa only [edist_self] using hend.edist (tendsto_const_nhds (x := x))
+  have hlength : Tendsto (fun t : ℝ => ENNReal.ofReal (C : ℝ) * ENNReal.ofReal (b - t))
+      (𝓝[<] b) (𝓝 0) := by
+    have ht : Tendsto (fun t : ℝ => b - t) (𝓝[<] b) (𝓝 0) := by
+      have hi : Tendsto (id : ℝ → ℝ) (𝓝[<] b) (𝓝 b) := tendsto_id.mono_left inf_le_left
+      simpa only [id_eq, sub_self] using (tendsto_const_nhds (x := b)).sub hi
+    have hh := ENNReal.Tendsto.const_mul
+      (a := ENNReal.ofReal (C : ℝ))
+      (ENNReal.continuous_ofReal.continuousAt.tendsto.comp ht)
+      (Or.inr ENNReal.ofReal_ne_top)
+    simp only [ENNReal.ofReal_zero, mul_zero] at hh
+    exact hh
+  have hchoose : ∀ᶠ t in 𝓝[<] b, t ∈ Ioo a b ∧
+      edist (g t) x < ENNReal.ofReal (R / 2) ∧
+      ENNReal.ofReal (C : ℝ) * ENNReal.ofReal (b - t) < ENNReal.ofReal (R / 2) := by
+    filter_upwards [(eventually_gt_nhds hab).filter_mono inf_le_left, self_mem_nhdsWithin,
+      hgdist.eventually (eventually_lt_nhds hhalf),
+      hlength.eventually (eventually_lt_nhds hhalf)] with t hta htb hd hl
+    exact ⟨⟨hta, htb⟩, hd, hl⟩
+  obtain ⟨t, ht, hdist, hlen⟩ := hchoose.exists
+  have hlim := Φ.limsup_edist_le hupper (hconv t ⟨ht.1.le, ht.2⟩)
+    (tendsto_const_nhds (x := x))
+  have hmap : ∀ᶠ n in atTop, riemannianEDistOf (X.obj (σ n)).metric
+      (γ n t) (Φ.partialDiffeomorph n x) < ENNReal.ofReal (R / 2) := by
+    filter_upwards [eventually_lt_of_limsup_lt (hlim.trans_lt hdist),
+      hstay t ⟨ht.1.le, ht.2⟩] with n hn hs
+    have heq : Φ.partialDiffeomorph n ((Φ.partialDiffeomorph n).symm (γ n t)) = γ n t :=
+      (Φ.partialDiffeomorph n).right_inv hs
+    rwa [heq] at hn
+  have hremain : Tendsto (fun n => ENNReal.ofReal (C : ℝ) * ENNReal.ofReal (ell n - t))
+      atTop (𝓝 (ENNReal.ofReal (C : ℝ) * ENNReal.ofReal (b - t))) :=
+    ENNReal.Tendsto.const_mul
+      (ENNReal.continuous_ofReal.continuousAt.tendsto.comp (hell.sub_const t))
+      (Or.inr ENNReal.ofReal_ne_top)
+  filter_upwards [hmap, hell.eventually (eventually_gt_nhds ht.2),
+    hremain.eventually (eventually_lt_nhds hlen)] with n hn htn hrem
+  have hspeedDist := Geometry.riemannianEDistOf_le_of_curve_speed_bound (X.obj (σ n)).metric
+    htn.le ((hγ n).mono (Icc_subset_Icc ht.1.le le_rfl))
+    (fun s hs => hspeed n s ⟨ht.1.trans hs.1, hs.2⟩)
+  have hshort : riemannianEDistOf (X.obj (σ n)).metric (γ n (ell n)) (γ n t) <
+      ENNReal.ofReal (R / 2) := by
+    rw [riemannianEDistOf_comm]
+    exact hspeedDist.trans_lt hrem
+  calc
+    _ ≤ riemannianEDistOf (X.obj (σ n)).metric (γ n (ell n)) (γ n t) +
+        riemannianEDistOf (X.obj (σ n)).metric (γ n t) (Φ.partialDiffeomorph n x) :=
+      riemannianEDistOf_triangle _ _ _ _
+    _ ≤ ENNReal.ofReal (R / 2) + ENNReal.ofReal (R / 2) := add_le_add hshort.le hn.le
+    _ = ENNReal.ofReal R := by rw [← ENNReal.ofReal_add (by linarith) (by linarith)]; congr 1; ring
+    _ ≤ ε := hRε.le
 
 end DifferentialGeometry.CheegerGromovCompactness
