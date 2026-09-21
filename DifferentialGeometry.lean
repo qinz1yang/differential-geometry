@@ -9188,6 +9188,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFro
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseOfCut
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromReading
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromTube
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 /-!
 # Differential geometry and geometric analysis
 -/
