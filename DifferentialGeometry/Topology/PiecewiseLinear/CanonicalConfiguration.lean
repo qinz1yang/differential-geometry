@@ -36,9 +36,10 @@ Deviations from the printed definition, all recorded here rather than in the cod
   figure shows.
 * "Polyhedral solid torus" on page 221 is the cyclic chain of polyhedral three-cells, so
   `IsCombinatorialSolidTorus` is used for `S'' j`; `Moise307`, the producer named in the proof
-  of 31.1, concludes `HasCylindricalDiagram` instead, so 31.1 still owes the bridge of 28.1
-  between the two.  `Moise312` is the consumer that matches `Moise308Nested`, whose hypothesis
-  is already `IsCombinatorialSolidTorus`.
+  of 31.1, concludes `HasCylindricalDiagram` instead, so 31.1 still owes the bridge from a
+  cylindrical diagram to the cyclic chain, obtained by slicing the cylinder; the converse
+  direction is Theorem 28.1 and is not needed here.  `Moise312` is the consumer that matches
+  `Moise308Nested`, whose hypothesis is already `IsCombinatorialSolidTorus`.
 * "Carries a generator of `π(S'' j)`" is spelled as surjectivity of the map induced on
   fundamental groups by the inclusion, which is the content of `CarriesFundamentalGroupOnto` of
   `Section34Frame` and equivalent to the `Subgroup.closure … = ⊤` form of `Moise308`; that

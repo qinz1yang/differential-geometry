@@ -43,16 +43,23 @@ the `Ec e` of the edges.  Page 228 also constructs the `Cpp v` as closures of th
 
 The numbered propositions.  `Moise321` is Theorem 1 of page 224 with its clauses (1)-(4);
 clause (3), "`Int E` separates `v'₁` from `v'₂` in `Int (C'₁ ∪ C'₂)`", is stated as `Separates`
-inside the subspace `Int (C'₁ ∪ C'₂)`, never in `ℝ³`.  `Moise322` is Theorem 2 of page 227 with
-clauses (5), (6) and the printed "exactly two components", rendered by two disjoint connected
-sets covering the complement such that every preconnected subset of the complement lies in one
-of them.  `Moise323` is Theorem 3 of page 228: its clauses (7), (9), (10) are the fields of
+inside the subspace `Int (C'₁ ∪ C'₂)`, never in `ℝ³`.  `Moise322` is Theorem 2 of page 227.  The
+book says that the pseudo-cell of Theorem 1 *can be chosen so that* (5) and (6) hold, so it is
+one producer of one `E` with all of (1)-(6): the statement repeats clauses (3) and (4), adds
+the printed "exactly two components", rendered by two disjoint connected sets covering the
+complement such that every preconnected subset of the complement lies in one of them, and
+labels them as the proof does, `U₁` containing `h u` and `U₂` containing `h v`.  Without the
+labels the separation of the two vertices could not be recovered, and `Moise321` follows from
+`Moise322`.  `Moise323` is Theorem 3 of page 228: its clauses (7), (9), (10) are the fields of
 `IsHandleDecompositionOfTube`, and clause (8) is the extra conclusion `Cpp v ⊆ V v` for an
 arbitrary prescribed neighbourhood `V v` of `h '' C v`; this is the only metric clause of the
 whole chain and the one that Section 33's Lemma 1 consumes.  `Moise324` is Theorem 4 of pages
 228-229 for an arbitrary pseudo-cell of `ℝ³`, which Section 33 uses in its Lemma 8 and in its
-endgame; the two-cells it produces are piecewise linear and their boundaries are intrinsic,
-read off a parametrisation of the standard two-simplex.
+endgame; the two-cell `Δ₁` it produces is piecewise linear and its boundary is intrinsic, read
+off a parametrisation of the standard two-simplex, while the two-cell `D_J` that the boundary
+bounds in `E` is only a topological two-cell with `P` in its interior: a piecewise linear `D_J`
+around `P` inside `E` would make `E` locally polyhedral at its centre, which is false for the
+wild pseudo-cells that Section 32 constructs.
 
 Section 32 does not use the notion the book introduces on page 232 under the reading "loop
 theorem disk"; that is a Section 33 notion and is not defined here.
@@ -359,6 +366,12 @@ def Moise322 : Prop :=
       ∃ (Ec Eint Ebd U₁ U₂ : Set (EuclideanSpace ℝ (Fin 3))),
         IsPseudoCell Ec Eint Ebd (h (({u, v} : Finset _).centroid ℝ id)) ∧
         Ebd = h '' Dbd {u, v} ∧ Ec ⊆ W ∧
+        DifferentialGeometry.Topology.Separates
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' Eint)
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {h u})
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {h v}) ∧
+        Ec ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)} ∧
+        h u ∈ U₁ ∧ h v ∈ U₂ ∧
         IsConnected U₁ ∧ IsConnected U₂ ∧ Disjoint U₁ U₂ ∧
         U₁ ∪ U₂ = (h '' C u ∪ h '' C v) \ Ec ∧
         (∀ V : Set (EuclideanSpace ℝ (Fin 3)), IsPreconnected V →
@@ -392,10 +405,8 @@ def Moise324 : Prop :=
         Δbd = r '' stdSimplexBoundary 2 ∧
         Δ ⊆ Metric.ball P δ ∧
         Δbd = Δ ∩ Ec ∧
-        ∃ (DJ : Set (EuclideanSpace ℝ (Fin 3))) (s : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-          IsPLHomeomorphOn s (stdSimplex ℝ (Fin 3)) DJ ∧ DJ ⊆ Ec ∧
-          Δbd = s '' stdSimplexBoundary 2 ∧
-          P ∈ DJ \ s '' stdSimplexBoundary 2
+        ∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
+          IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec ∧ DJ \ DJint = Δbd ∧ P ∈ DJint
 
 end Statements
 
