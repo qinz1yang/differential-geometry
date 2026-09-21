@@ -11558,5 +11558,6 @@ import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialConeApproximatio
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeApproximation
 import DifferentialGeometry.Topology.MetricSpace.ContinuousDistance
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeMetric
+import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeConvergence
 import DifferentialGeometry.Geometry.Metric.ConeAnnulus
 import DifferentialGeometry.Topology.MetricSpace.CompactApproximation

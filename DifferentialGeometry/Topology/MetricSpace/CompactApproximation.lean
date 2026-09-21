@@ -11,14 +11,14 @@ open scoped Topology
 
 namespace Metric
 
-theorem exists_isometry_of_compact_approximation
+theorem exists_isometry_mapClusterPt_of_compact_approximation
     {X Y : Type*} [MetricSpace X] [MetricSpace Y] [CompactSpace X] [CompactSpace Y]
     {ι : Type*} {l : Filter ι} [l.NeBot] (f : ι → X → Y)
     {eps : ι → ℝ} (heps : Tendsto eps l (𝓝 0))
     (hdist : ∀ᶠ i in l, ∀ x y, |dist (f i x) (f i y) - dist x y| ≤ eps i)
     (p : X) (R : ℝ)
     (hcover : ∀ᶠ i in l, ∀ y ∈ ball (f i p) R, ∃ x, dist y (f i x) ≤ eps i) :
-    ∃ F : X → Y, Isometry F ∧ ball (F p) R ⊆ range F := by
+    ∃ F : X → Y, Isometry F ∧ MapClusterPt F l f ∧ ball (F p) R ⊆ range F := by
   classical
   obtain ⟨F, _, hF⟩ := (isCompact_univ : IsCompact (univ : Set (X → Y))).exists_mapClusterPt
     (u := f) (f := l) (by simp)
@@ -32,7 +32,7 @@ theorem exists_isometry_of_compact_approximation
       le_of_tendsto_of_tendsto (((hconv x).dist (hconv y)).sub tendsto_const_nhds).abs
         (heps.mono_left hUl) (Filter.Eventually.mono (hUl hdist) fun i hi => hi x y)
     exact sub_eq_zero.mp (abs_nonpos_iff.mp hh)
-  refine ⟨F, hFiso, ?_⟩
+  refine ⟨F, hFiso, hF, ?_⟩
   intro y hy
   change dist y (F p) < R at hy
   have hyU : ∀ᶠ i in (U : Filter ι), dist y (f i p) < R :=
@@ -60,5 +60,17 @@ theorem exists_isometry_of_compact_approximation
     linarith only [hi, hd, ht]
   have heq : y = F x := dist_le_zero.mp (le_of_tendsto_of_tendsto tendsto_const_nhds hsum hle)
   exact ⟨x, heq.symm⟩
+
+theorem exists_isometry_of_compact_approximation
+    {X Y : Type*} [MetricSpace X] [MetricSpace Y] [CompactSpace X] [CompactSpace Y]
+    {ι : Type*} {l : Filter ι} [l.NeBot] (f : ι → X → Y)
+    {eps : ι → ℝ} (heps : Tendsto eps l (𝓝 0))
+    (hdist : ∀ᶠ i in l, ∀ x y, |dist (f i x) (f i y) - dist x y| ≤ eps i)
+    (p : X) (R : ℝ)
+    (hcover : ∀ᶠ i in l, ∀ y ∈ ball (f i p) R, ∃ x, dist y (f i x) ≤ eps i) :
+    ∃ F : X → Y, Isometry F ∧ ball (F p) R ⊆ range F := by
+  obtain ⟨F, hF, _, hcoverF⟩ := exists_isometry_mapClusterPt_of_compact_approximation
+    f heps hdist p R hcover
+  exact ⟨F, hF, hcoverF⟩
 
 end Metric

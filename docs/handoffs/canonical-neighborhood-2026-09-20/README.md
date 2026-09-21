@@ -2679,3 +2679,47 @@ a sufficiently small terminal ball using the lower and upper scalar-distance
 bounds. This avoids extracting a separate limit of radial scale factors; the
 compact approximation theorem already allows its approximation centers to vary.
 That assembly remains to be proved.
+
+
+### Exact cone coordinates from rescaled end comparisons
+
+`PuncturedConeConvergence.lean` proves
+`PuncturedConeApproximation.exists_local_isometry_of_rescaled_convergence` and
+`PuncturedConeApproximation.exists_cone_coordinates_of_rescaled_convergence`.
+The hypotheses are compactness of a fixed source ball, maps with uniformly
+vanishing additive distance error after rescaling by positive radii tending to
+zero, actual inner-ball coverage, and positive lower and finite upper bounds for
+the rescaled distance of the centers from the completion endpoint. There is no
+smoothness assumption on the direction space or on the approximation maps.
+
+The proof chooses a fixed cone annulus, restricts to a sufficiently small source
+ball, and transfers annular density back through the actual inner-ball coverage.
+The compact approximation engine produces an exact isometry covering a cone ball.
+Its new primary theorem also retains the map-cluster-point property, so the
+approximate radial bounds pass to the limiting basepoint. The original
+`Metric.exists_isometry_of_compact_approximation` statement is preserved as a
+corollary. Keeping the limiting basepoint strictly inside the annulus is essential
+when converting the isometry to an open partial homeomorphism into the full
+radial product. The resulting coordinates have positive radius and exactly the
+cone-distance formula required by the already proved smooth cone-chart producer.
+
+**Gap closed:** approximate cone geometry plus the produced fixed-ball distance
+and coverage data now yield actual open metric cone coordinates. A compiled
+external consumer combines the new coordinates, the smooth `ConeChart` producer,
+and `solution_cone_terminal_exclusion`, using only approved axioms. **Remaining:**
+convert the curvature-scaled metric estimates of the normalized-end flow producer
+into the rescaled metric hypotheses, and assemble the end inputs from the long
+normalized-neck theorem. The actual normalized-end contradiction and
+`bounded_curvature_at_distance` are not yet proved.
+
+Verification: the compact approximation leaf and new cone convergence leaf built
+without diagnostics (1,564 and 4,332 jobs). Five written declarations passed all
+thirteen declaration linters, with only `propext`, `Classical.choice`, and
+`Quot.sound` in the transitive closures of the four public declarations.
+The full root build passed 20,245 jobs with exactly 21 retained proof-hole warnings
+and no other diagnostics. Evidence:
+`/private/tmp/wt17-compact-approximation-cluster-build.log`,
+`/private/tmp/wt17-punctured-cone-convergence-build.log`,
+`/private/tmp/wt17-punctured-cone-convergence-lint.log`,
+`/private/tmp/wt17-punctured-cone-convergence-root-build.log`, and
+`/private/tmp/wt17-rescaled-cone-flow-exclusion.lean` / `.log`.
