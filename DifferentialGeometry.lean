@@ -12602,3 +12602,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryAbsorption
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticCollapseLength
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Adapter
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Tame
