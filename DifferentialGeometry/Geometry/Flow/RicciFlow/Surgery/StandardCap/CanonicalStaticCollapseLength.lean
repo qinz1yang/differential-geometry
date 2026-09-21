@@ -102,6 +102,3 @@ theorem CanonicalStaticInsertionWitness.collapse_length_of_toNormalizedNeck
   exact hp
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
-
-set_option linter.hashCommand false in
-#lint-
