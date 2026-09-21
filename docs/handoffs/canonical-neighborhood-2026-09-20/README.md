@@ -813,3 +813,37 @@ exactly the 21 retained sorry warnings and no other diagnostics. Evidence is in
 `/private/tmp/wt17-almost-line-neck-interface-build.log`,
 `/private/tmp/wt17-long-segment-necks-audit.log`, and
 `/private/tmp/wt17-long-segment-necks-root-build.log`.
+
+## Strong necks in the actual normalized sources
+
+The continuation after `4347c4c14` proves the finite-interval source application.
+`WindowedSegmentNecks.lean` transfers a minimizing segment into the ancient model
+using quantitative inverse-distance control on a buffered compact metric ball,
+produces a model strong neck, and transfers the neck back to the source.
+`NormalizedSegmentNecks.lean` supplies the source orientation and time-window
+regularity directly from `NormalizedSequence.higher_good` and the actual interval
+carrier. It proves that a high-curvature point on a minimizing segment is a strong
+neck center when both remaining segment lengths are large in its curvature scale.
+This includes the genuine terminal endpoint and requires no positive-time extension
+or nonnegative source Ricci curvature.
+
+The same module passes scalar and segment-length limits into the neck theorem.
+Together with scalar divergence and the previously proved quantitative remaining
+length bound, it yields eventual source necks near the missing endpoint. The next
+assembly connects this statement to all the actual witnesses returned by the
+escaping-limit producer. The geometric limit's necks and the horn/cone producers
+remain unfinished; the bounded-distance headline remains open.
+
+These are the source-model and long-segment steps of Kleiner--Lott, Section 52,
+Lemma 52.14(2), using Section 49, Proposition 49.1, in the local
+`BooksPapers/KleinerLottPerelman.pdf`. Morgan--Tian, Chapter 10, Propositions 10.7
+and 10.12, remains the companion reference for the subsequent finite-end geometry.
+
+Both new leaves are registered. All five new public declarations passed thirteen
+declaration linters and have only the permitted standard axioms in their transitive
+closures. The final leaf build passed 14,087 jobs; its only warnings were inherited
+retained sorrys. The root build passed 20,179 jobs with exactly the same 21 retained
+sorry warnings and no other diagnostics. Evidence is in
+`/private/tmp/wt17-source-segment-necks-build.log`,
+`/private/tmp/wt17-source-segment-necks-audit.log`, and
+`/private/tmp/wt17-source-segment-necks-root-build.log`.
