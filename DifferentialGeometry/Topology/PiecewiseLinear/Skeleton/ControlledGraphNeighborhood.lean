@@ -9,14 +9,17 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 # Sorry-first skeleton of the controlled form of Moise 35.1
 
 The assembly `controlledGraphNeighborhood` proves the endpoint
-`ControlledGraphNeighborhoodStatement` for real from the four leaves of this file; every `sorry`
-is a leaf and none sits inside an assembly.  The chain is: the source cut diagram of a
-subdivision together with the fine carriers (steps 1--5 of pages 248--249), the vertex stage
-through the proved chart local `Moise341` (step 6, page 249), the edge stage carrying the
-annulus package, conditions (2)--(8), Lemmas 1--3 and the deletion that produces the target
-cells (steps 7--13, pages 249--251), the two control clauses of Section 34 Lemma 1(4) and
-Lemma 2, and finally the locally finite pasting, which is proved in `Section34Frame` from
-`exists_isPLHomeomorphInto_union_of_locallyFinite_pieces`.
+`ControlledGraphNeighborhoodStatement` for real from the six leaves of this file; every `sorry`
+is a leaf and none sits inside an assembly.  The endpoint is **not** a producer of
+`Section34NormalPlus`: it supplies P1 only, that is the cut frame and the graph frame,
+conditional on `Moise341`.  The carrier control of P0, the exterior clause and the Lemma 11
+trace certificate remain obligations of the other half.
+
+The realisation ambient `Ea` is universally quantified in the endpoint, next to the
+triangulation it realises; it is never the chart model.  `LocallyFinitePLPieceIn Ea 3 M₁ U`
+realises all of `U` inside `Ea`, so writing `EuclideanSpace ℝ (Fin 3)` there would exclude
+`U = S³`.  `IsCombinatorialManifold 3 𝒦.complex`, `IsSubdivision 𝒦'.complex 𝒦.complex` and
+`𝒦'.map = 𝒦.map` now sit inside `Section34CutFrame`, so the conclusion still carries them.
 
 Quantifier order is the content.  The triangulation `𝒦` and the carrier control `(η, H)` come
 first, because Section 34 chooses them once for the whole approximation problem; only then the
@@ -25,69 +28,60 @@ supplies afresh; and the subdivision `𝒦'`, the cut diagram, the regular neigh
 stand in one existential, because Lemma 1's incidence clauses are read off a jointly chosen
 neighbourhood and map and cannot be imposed on an arbitrary output of plain `Moise351`.
 
-All vocabulary is now the one copy in `Section34Frame`: `Section34Label`, `IsPLCellOn`,
-`section34Dim`, `section34Face`, the typed index sets, `Section34CutFrame`,
-`Section34GraphFrame`, `Section34CarrierControl`, `CarriesFundamentalGroupOnto`, and the proved
-exporters `exists_nhds_finite_of_subset_carriers` and
-`exists_isPLHomeomorphInto_dualCellPaste`.  The earlier duplicates `Section34CutLabel`,
-`IsControlledPLCell`, `section34CutDim`, `section34CutFace` are gone; a skeleton cannot be
-imported, since the focused checker offers a module to importers only from a receipt with zero
-diagnostics, so the shared names had to become a module of their own.
+Pages 248--250 are followed literally: the preparation certificates are fixed **before** any
+map.  `Section34VertexPreparation` produces the enlarged cells `C''_v`, the confinement
+`h '' C''_v ⊆ Int (Q v)` and the tolerances `ε_v` with `B(h x, ε_v) ⊆ Int (Q v)` on `C''_v` and
+`ε_v < dist (h x) (h v)` for `x ∈ Bd C''_v`; only then does the chart local `Moise341` supply
+maps `ε_v`-close to `h` on `C''_v`, which a map shrinking `C''_v` into a small tetrahedron
+cannot be.  `Section34PiercingConditions` is conditions (2)--(8) with the annuli `A_e`, `B_e`,
+the regular neighbourhoods `S_e ⊃ T_e` of the piercing circles and the two boundary circles of
+each annulus.  Conditions (7) and (8) are stated as "all components off `T'_e` lie in one
+component" and "the intersection is a finite disjoint family of polygons lying in the two cell
+interiors"; the crossing in Moise's sense is recorded only through that last containment.
 
-Index question for the external reviewer.  Dual balls and splitting disks are indexed by the
-vertices and edges of the subdivision `𝒦'` lying in `graphSkeletonSpace 𝒦`, because only a
-subdivision can put the regular neighbourhood inside the prescribed `W` and respect the free
-tolerance `ψ`; face disks and residual balls are indexed by the triangles and tetrahedra of `𝒦`
-itself, because `h '' simplexRim 𝒦 s` has to lie in the solid torus built from dual balls, which
-is false for a triangle of `𝒦'` interior to a triangle of `𝒦`.  Mixed incidence is therefore
-`Section34Incident`, membership of the `𝒦'`-vertices in the closed `𝒦`-simplex, and the digest's
-exact flag `Pa ≃ {(t,v) : v ∈ t}` is read in that sense.  Whether the reviewer intends the same
-reading is not settled.
+`h x = x + a` with `f₁ = id` and `Q_v = ℝ³`, the periodic translation that refuted the old
+meridian leaf, is now excluded at the joint producer: the marker clause, the rim containment
+and the nested-torus certificate are **outputs** of the last edge leaf, and `J ⊆ T` already
+fails for it.  The generator clause itself is no longer a leaf:
+`carriesFundamentalGroupOnto_of_nestedSolidTorus` is proved in `Section34Frame` from the
+unconditional `moise308Nested`, transported along the certificate's homeomorphism of pairs.
 
-No forgetful corollary to `Moise351` is proved, and it is not short.  Three things block it.
-`Moise351` starts from an arbitrary `K` with `IsLocallyFinitePolyhedralGraph (n := 3) K`, closed
-in `U`, whereas the endpoint starts from a triangulation of `U` whose one skeleton is the graph;
-producing one from the other is the relative triangulation theorem, absent here.  `Moise351`
-supplies only the tolerance, whereas the endpoint also asks for a carrier control, whose
-existence needs `h '' U` to be a neighbourhood of each `h '' S_t`, that is invariance of domain
-for `h`, and a locally finite carrier family; both are separate producers.  And `Moise351`'s
-local finiteness of `K` is carried relative to `K` itself while the conclusion needs it relative
-to `U`; with `K` closed in `U` the two agree, but that reduction is nowhere in the tree.
-
-The Lemma 2 clause is `CarriesFundamentalGroupOnto J T`, that is `J ⊆ T` together with
-surjectivity of `FundamentalGroup.map` of the inclusion at every base point of `J`.  For `J` a
-polygon and `T` a solid torus this is exactly "J carries a generator of `π(T)`"; no singular
-homology statement is used.
+No forgetful corollary to `Moise351` is proved, and it is not short.  `Moise351` starts from an
+arbitrary locally finite polyhedral graph closed in `U`, whereas the endpoint starts from a
+triangulation of `U` whose one skeleton is the graph; it supplies only the tolerance, not a
+carrier control; and its local finiteness is carried relative to the graph, not relative to `U`.
 
 The leaves, with content and review state.
 
-`exists_section34CutFrame` (steps 1--5, changed by the index decision, unreviewed): the
-subdivision `𝒦'` of `𝒦` with the same realisation map, the cut frame, the regular neighbourhood
-`N = ⋃ C_v` of the one skeleton of `𝒦` inside `W`, the assignment `car` of a simplex of `𝒦` to
-every dual cell with `C_v ⊆ S_(car v)` and finite fibres, and the fine carriers `Q v` with
-`h '' C_v ⊆ interior (Q v)`, `Q v ⊆ H (car v)`, pairwise distances in `Q v` below `ψ`, and the
-separation `Q v ∩ h '' σ ≠ ∅ → Section34Incident v σ` that conditions (2) and (3) are read off.
+`exists_section34CutFrame` (steps 1--5): reviewed 2026-09-21 OK, pending the lead's
+due-diligence check; statement changed, by the realisation ambient and by the move of the
+subdivision clauses into `Section34CutFrame`.  It produces `𝒦'`, the cut frame, the regular
+neighbourhood `N = ⋃ C_v` of the one skeleton inside `W`, the assignment `car` with finite
+fibres, and the fine carriers `Q v`.
 
-`Moise341.exists_section34VertexApproximation` (step 6, unreviewed): conditional on `Moise341`,
-which is an explicit hypothesis of this leaf and of the endpoint theorem, the piecewise linear
-embeddings of the disjoint locally finite family of dual balls confined to the fine carriers,
-with piecewise linear cell images.  Its intended supplier is the proved chart local
-`Moise341.exists_isPLHomeomorphInto_dist_lt_of_mapsTo_chart`.
+`exists_section34VertexPreparation` (preparation certificates, new after review N, unreviewed):
+the enlarged cells, the buffers and the tolerances, all before any map.
 
-`exists_section34EdgeMatching` (steps 7--13, unreviewed): the alteration that makes the family
-match along the splitting disks, that is `EqOn` on `C_v ∩ C_w` and the exact meet
-`G v '' (C_v ∩ C_w) = G v '' C_v ∩ G w '' C_w`, still confined to the fine carriers, with the
-union a neighbourhood of `h '' |𝒦¹|`.  This is the leaf most likely to be mis-sized: it carries
-the piercing alteration, the `A_e`/`B_e` package, 27.3, Lemmas 1--3 and the minimality argument
-in one statement.
+`Moise341.exists_section34VertexApproximation` (step 6, changed after review N, unreviewed):
+conditional on `Moise341`, a piecewise linear embedding of each `C''_v` that is an
+`ε_v`-approximation of `h` there.  Its supplier is the proved chart local
+`Moise341.exists_isPLHomeomorphInto_dist_lt_of_mapsTo_chart`, whose shape it matches.
 
-`section34MeridianAndNeighborhood` (Section 34 Lemma 1(4) and Lemma 2, changed by the index
-decision, unreviewed): for the pasted map, the vertex point clause, `h '' ∂σ ⊆ interior (T_σ)`
-and the generator clause, for the triangles of `𝒦`.
+`exists_section34PiercingPackage` (the piercing alteration and conditions (2)--(8), new after
+review N, unreviewed): the annulus package and the general position of (8).
+
+`exists_section34ProtectedCircleRemoval` (Lemmas 1--3, new after review N, unreviewed): a
+label-wise finite descent with locally finite supports, not a minimisation of a possibly
+infinite total count, ending with every `A'_e ∩ B'_e` connected.
+
+`exists_section34EdgeMatching` (the deletion and the three stage extension, changed after
+review N, unreviewed): the joint producer.  It outputs the exact meet, the marker clause, the
+rim containment and the nested-torus certificate; the initial approximations are not preserved,
+conditions (2)--(8) are what is carried, and the `ψ` estimate comes from the fine carriers.
 
 Proved here, not leaves: the assembly, which in particular proves conditions (2) and (3) of
-Section 34 Lemma 1 from the carrier separation and the combinatorics of the splitting disks, and
-the `ψ` estimate from the fine carriers.
+Section 34 Lemma 1 from the carrier separation and the combinatorics of the splitting disks,
+the `ψ` estimate, and the generator clause from the nested-torus certificate.
 -/
 
 open Set Topology
@@ -102,51 +96,51 @@ def ControlledGraphNeighborhoodStatement : Prop :=
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
     [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)] {U : Set M₁}, IsOpen U →
     ∀ {h : M₁ → M₂}, Topology.IsEmbedding (U.domRestrict h) →
-    ∀ 𝒦 : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U,
-      IsCombinatorialManifold 3 𝒦.complex →
-    ∀ (η : M₁ → ℝ) (H : Finset (EuclideanSpace ℝ (Fin 3)) → Set M₂),
-      Section34CarrierControl U 𝒦 h η H →
+    ∀ (Ea : Type) [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
+      (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U), IsCombinatorialManifold 3 𝒦.complex →
+    ∀ (η : M₁ → ℝ) (H : Finset Ea → Set M₂), Section34CarrierControl U 𝒦 h η H →
     ∀ {W : Set M₁}, IsOpen W → graphSkeletonSpace 𝒦 ⊆ W → W ⊆ U →
     ∀ ψ : M₁ → ℝ, ContinuousOn ψ U → (∀ x ∈ U, 0 < ψ x) →
-    ∃ (𝒦' : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U)
+    ∃ (𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
       (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-      (car : Section34VertexIndex 𝒦 𝒦' → Finset (EuclideanSpace ℝ (Fin 3))) (f₁ : M₁ → M₂),
-      IsSubdivision 𝒦'.complex 𝒦.complex ∧ 𝒦'.map = 𝒦.map ∧
-        Section34CutFrame U 𝒦 𝒦' src srcBd ∧
+      (car : Section34VertexIndex 𝒦 𝒦' → Finset Ea) (f₁ : M₁ → M₂),
+      Section34CutFrame U 𝒦 𝒦' src srcBd ∧
         Section34GraphFrame U W h ψ H 𝒦 𝒦' src car f₁
 
 section Leaves
 
-variable {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
+variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
+  {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
   [MetricSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] {U W : Set M₁} {h : M₁ → M₂}
-  {η ψ : M₁ → ℝ} {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set M₂}
-  {𝒦 𝒦' : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U}
+  {η ψ : M₁ → ℝ} {H : Finset Ea → Set M₂}
+  {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
   {src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁}
-  {car : Section34VertexIndex 𝒦 𝒦' → Finset (EuclideanSpace ℝ (Fin 3))}
   {Q : Section34VertexIndex 𝒦 𝒦' → Set M₂}
+  {Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁}
+  {ε : Section34VertexIndex 𝒦 𝒦' → ℝ}
+  {ends : Section34EdgeIndex 𝒦 𝒦' →
+    Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦'}
+  {Sn Tn Aa Bb Ab₀ Ab₁ Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁}
   {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
 
 theorem exists_section34CutFrame [T2Space M₁] [SecondCountableTopology M₁]
     [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
     (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
-    (𝒦 : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U)
-    (h𝒦 : IsCombinatorialManifold 3 𝒦.complex)
-    (η : M₁ → ℝ) (H : Finset (EuclideanSpace ℝ (Fin 3)) → Set M₂)
-    (hH : Section34CarrierControl U 𝒦 h η H)
+    (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) (h𝒦 : IsCombinatorialManifold 3 𝒦.complex)
+    (η : M₁ → ℝ) (H : Finset Ea → Set M₂) (hH : Section34CarrierControl U 𝒦 h η H)
     (hW : IsOpen W) (hΓW : graphSkeletonSpace 𝒦 ⊆ W) (hWU : W ⊆ U)
     (ψ : M₁ → ℝ) (hψc : ContinuousOn ψ U) (hψpos : ∀ x ∈ U, 0 < ψ x) :
-    ∃ (𝒦' : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U)
+    ∃ (𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
       (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-      (car : Section34VertexIndex 𝒦 𝒦' → Finset (EuclideanSpace ℝ (Fin 3)))
+      (car : Section34VertexIndex 𝒦 𝒦' → Finset Ea)
       (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂),
-      IsSubdivision 𝒦'.complex 𝒦.complex ∧ 𝒦'.map = 𝒦.map ∧
-        Section34CutFrame U 𝒦 𝒦' src srcBd ∧
+      Section34CutFrame U 𝒦 𝒦' src srcBd ∧
         IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
           (graphSkeletonSpace 𝒦) U ∧
         section34CutNeighborhood src ⊆ W ∧
         (∀ w, car w ∈ 𝒦.complex.faces) ∧
         (∀ w, src (.vertexBall w) ⊆ Section34CarrierSupport 𝒦 (car w)) ∧
-        (∀ t : Finset (EuclideanSpace ℝ (Fin 3)), {w | car w = t}.Finite) ∧
+        (∀ t : Finset Ea, {w | car w = t}.Finite) ∧
         (∀ w, h '' src (.vertexBall w) ⊆ interior (Q w)) ∧
         (∀ w, Q w ⊆ H (car w)) ∧
         (∀ w, ∀ x ∈ src (.vertexBall w), ∀ y ∈ Q w, ∀ z ∈ Q w, dist y z < ψ x) ∧
@@ -154,17 +148,58 @@ theorem exists_section34CutFrame [T2Space M₁] [SecondCountableTopology M₁]
           (Q w ∩ h '' simplexBody 𝒦 s.1).Nonempty → Section34Incident w.1 s.1 := by
   sorry
 
+theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopology M₁]
+    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
+    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
+    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
+      (graphSkeletonSpace 𝒦) U)
+    (hQint : ∀ w, h '' src (.vertexBall w) ⊆ interior (Q w))
+    (hQsmall : ∀ w, ∀ x ∈ src (Section34Label.vertexBall w), ∀ y ∈ Q w, ∀ z ∈ Q w,
+      dist y z < ψ x) :
+    ∃ (Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁) (ε : Section34VertexIndex 𝒦 𝒦' → ℝ),
+      Section34VertexPreparation U 𝒦 𝒦' h src Q Cc CcBd ε := by
+  sorry
+
 theorem Moise341.exists_section34VertexApproximation (h341 : Moise341) [T2Space M₁]
     [SecondCountableTopology M₁] [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)]
     [HasGroupoid M₂ (plGroupoid 3)] (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hQ : ∀ w, h '' src (.vertexBall w) ⊆ interior (Q w)) :
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q Cc CcBd ε) :
     ∃ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
-      (∀ w, IsPLHomeomorphInto 3 (G w) (src (.vertexBall w))) ∧
-        (∀ w, G w '' src (.vertexBall w) ⊆ Q w) ∧
-        ∀ w, IsPLCellOn 3 (G w '' src (.vertexBall w))
-          (G w '' srcBd (.vertexBall w)) := by
+      (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) ∧
+        ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w := by
+  sorry
+
+theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology M₁]
+    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
+    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
+    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
+      (graphSkeletonSpace 𝒦) U)
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q Cc CcBd ε)
+    (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (Cc w))
+    (hGdist : ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w) :
+    ∃ (ends : Section34EdgeIndex 𝒦 𝒦' →
+        Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
+      (Sn Tn Aa Bb Ab₀ Ab₁ Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
+      (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂),
+      Section34PiercingConditions U 𝒦 𝒦' h src Q Cc CcBd ends Sn Tn Aa Bb Ab₀ Ab₁ Bb₀ Bb₁
+        G' := by
+  sorry
+
+theorem exists_section34ProtectedCircleRemoval [T2Space M₁] [SecondCountableTopology M₁]
+    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
+    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
+    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q Cc CcBd ε)
+    (hpack : Section34PiercingConditions U 𝒦 𝒦' h src Q Cc CcBd ends Sn Tn Aa Bb Ab₀ Ab₁
+      Bb₀ Bb₁ G) :
+    ∃ G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
+      Section34PiercingConditions U 𝒦 𝒦' h src Q Cc CcBd ends Sn Tn Aa Bb Ab₀ Ab₁ Bb₀ Bb₁
+          G' ∧
+        ∀ e, IsConnected (G' (ends e).1 '' Aa e ∩ G' (ends e).2 '' Bb e) := by
   sorry
 
 theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M₁]
@@ -173,56 +208,52 @@ theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M�
     (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
     (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
       (graphSkeletonSpace 𝒦) U)
-    (hQ : ∀ w, h '' src (.vertexBall w) ⊆ interior (Q w))
-    (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (src (.vertexBall w)))
-    (hGQ : ∀ w, G w '' src (.vertexBall w) ⊆ Q w)
-    (hGcell : ∀ w, IsPLCellOn 3 (G w '' src (.vertexBall w))
-      (G w '' srcBd (.vertexBall w))) :
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q Cc CcBd ε)
+    (hpack : Section34PiercingConditions U 𝒦 𝒦' h src Q Cc CcBd ends Sn Tn Aa Bb Ab₀ Ab₁
+      Bb₀ Bb₁ G)
+    (hconn : ∀ e, IsConnected (G (ends e).1 '' Aa e ∩ G (ends e).2 '' Bb e)) :
     ∃ G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
       (∀ w, IsPLHomeomorphInto 3 (G' w) (src (.vertexBall w))) ∧
         (∀ w, G' w '' src (.vertexBall w) ⊆ Q w) ∧
         (∀ w w', EqOn (G' w) (G' w') (src (.vertexBall w) ∩ src (.vertexBall w'))) ∧
         (∀ w w', G' w '' (src (.vertexBall w) ∩ src (.vertexBall w')) =
           G' w '' src (.vertexBall w) ∩ G' w' '' src (.vertexBall w')) ∧
-        (⋃ w, G' w '' src (.vertexBall w)) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦) := by
-  sorry
-
-theorem section34MeridianAndNeighborhood [T2Space M₁] [SecondCountableTopology M₁]
-    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    {f₁ : M₁ → M₂} (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
-      (graphSkeletonSpace 𝒦) U)
-    (hQ : ∀ w, h '' src (.vertexBall w) ⊆ interior (Q w))
-    (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (src (.vertexBall w)))
-    (hGQ : ∀ w, G w '' src (.vertexBall w) ⊆ Q w)
-    (hf₁ : IsPLHomeomorphInto 3 f₁ (section34CutNeighborhood src))
-    (hagree : ∀ w, EqOn f₁ (G w) (src (.vertexBall w)))
-    (hnbhd : f₁ '' section34CutNeighborhood src ∈ nhdsSet (h '' graphSkeletonSpace 𝒦)) :
-    (∀ w, h '' simplexBody 𝒦' w.1 ⊆ interior (f₁ '' src (.vertexBall w))) ∧
-      (∀ s : Section34SimplexIndex 𝒦 3, h '' simplexRim 𝒦 s.1 ⊆
-        interior (section34FaceTorus (fun w => f₁ '' src (.vertexBall w)) s)) ∧
-      ∀ s : Section34SimplexIndex 𝒦 3,
-        CarriesFundamentalGroupOnto (h '' simplexRim 𝒦 s.1)
-          (section34FaceTorus (fun w => f₁ '' src (.vertexBall w)) s) := by
+        ((⋃ w, G' w '' src (.vertexBall w)) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦)) ∧
+        (∀ w, h '' simplexBody 𝒦' w.1 ⊆ interior (G' w '' src (.vertexBall w))) ∧
+        (∀ s : Section34SimplexIndex 𝒦 3, h '' simplexRim 𝒦 s.1 ⊆
+          interior (section34FaceTorus (fun w => G' w '' src (.vertexBall w)) s)) ∧
+        ∀ s : Section34SimplexIndex 𝒦 3,
+          ∃ (S₁ S₂ Te Je : Set (EuclideanSpace ℝ (Fin 3)))
+            (Φ : section34FaceTorus (fun w => G' w '' src (.vertexBall w)) s ≃ₜ Te),
+            (∀ y : section34FaceTorus (fun w => G' w '' src (.vertexBall w)) s,
+                (y : M₂) ∈ h '' simplexRim 𝒦 s.1 ↔
+                  (Φ y : EuclideanSpace ℝ (Fin 3)) ∈ Je) ∧
+              IsTopologicalSolidTorus S₁ ∧ IsTopologicalSolidTorus S₂ ∧
+              IsCombinatorialSolidTorus Te ∧ S₁ ⊆ interior Te ∧ Te ⊆ interior S₂ ∧
+              IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂) ∧
+              IsSpine S₁ Je ∧ Je ⊆ Te := by
   sorry
 
 end Leaves
 
 theorem controlledGraphNeighborhood (h341 : Moise341) :
     ControlledGraphNeighborhoodStatement.{u} := by
-  intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh 𝒦 h𝒦 η H hH W hW hΓW hWU ψ hψc hψpos
-  obtain ⟨hHint, hHsub, hHlf, hHdiam⟩ := hH
-  obtain ⟨𝒦', src, srcBd, car, Q, hsubdiv, hmapeq, hframe, hN, hNW, hcarF, hcarS, hcarfib,
-    hQint, hQH, hQsmall, hQsep⟩ :=
-    exists_section34CutFrame hU hh 𝒦 h𝒦 η H ⟨hHint, hHsub, hHlf, hHdiam⟩ hW hΓW hWU ψ hψc
-      hψpos
-  obtain ⟨G₀, hG₀, hG₀Q, hG₀cell⟩ :=
-    h341.exists_section34VertexApproximation hU hh hframe hQint
-  obtain ⟨G, hG, hGQ, hcompat, hmeet, hGnbhd⟩ :=
-    exists_section34EdgeMatching hU hh hframe hN hQint hG₀ hG₀Q hG₀cell
-  obtain ⟨hcell, -, -, -, hLF, hcover, -, -, -, -, -, -, -, -, -, -, -, -, -, hsplit⟩ :=
-    id hframe
+  intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh Ea _ _ _ 𝒦 h𝒦 η H hH W hW hΓW hWU ψ hψc hψpos
+  obtain ⟨-, hHsub, hHlf, -, -⟩ := id hH
+  obtain ⟨𝒦', src, srcBd, car, Q, hframe, hN, hNW, hcarF, hcarS, hcarfib, hQint, hQH,
+      hQsmall, hQsep⟩ :=
+    exists_section34CutFrame hU hh 𝒦 h𝒦 η H hH hW hΓW hWU ψ hψc hψpos
+  obtain ⟨Cc, CcBd, ε, hprep⟩ :=
+    exists_section34VertexPreparation (ψ := ψ) hU hh hframe hN hQint hQsmall
+  obtain ⟨G₀, hG₀, hG₀dist⟩ := h341.exists_section34VertexApproximation hU hh hframe hprep
+  obtain ⟨ends, Sn, Tn, Aa, Bb, Ab₀, Ab₁, Bb₀, Bb₁, G₁, hpack⟩ :=
+    exists_section34PiercingPackage hU hh hframe hN hprep hG₀ hG₀dist
+  obtain ⟨G₂, hpack₂, hconn⟩ :=
+    exists_section34ProtectedCircleRemoval hU hh hframe hprep hpack
+  obtain ⟨G, hG, hGQ, hcompat, hmeet, hGnbhd, hmarker, hrim, hcert⟩ :=
+    exists_section34EdgeMatching hU hh hframe hN hprep hpack₂ hconn
+  obtain ⟨-, -, -, hcell, -, -, -, hLF, hcover, -, -, -, -, -, -, -, -, -, -, -, -, -,
+      hsplit, -⟩ := id hframe
   have hCclosed : ∀ w, IsClosed (src (Section34Label.vertexBall w)) := fun w =>
     (hcell _).isCompact.isClosed
   have hDclosed : ∀ w, IsClosed (G w '' src (Section34Label.vertexBall w)) := fun w =>
@@ -255,6 +286,8 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
       hDclosed hG hcompat hmeet hsrcLF htgtLF
   have himg : ∀ w, f₁ '' src (Section34Label.vertexBall w) =
       G w '' src (Section34Label.vertexBall w) := fun w => (hf₁G w).image_eq
+  have hfun : (fun w => f₁ '' src (Section34Label.vertexBall w)) =
+      fun w => G w '' src (Section34Label.vertexBall w) := funext himg
   have hf₁Q : ∀ w, f₁ '' src (Section34Label.vertexBall w) ⊆ Q w := by
     intro w
     rw [himg w]
@@ -264,14 +297,22 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
         ⋃ w, G w '' src (Section34Label.vertexBall w) := hf₁im
     rw [hrw]
     exact hGnbhd
-  obtain ⟨hvertexInt, hrim, hmeridian⟩ :=
-    section34MeridianAndNeighborhood hU hh hframe hN hQint hG hGQ hf₁ hf₁G hnbhd
-  refine ⟨𝒦', src, srcBd, car, f₁, hsubdiv, hmapeq, hframe, hN, hNW, hf₁, hnbhd, ?_,
-    hvertexInt, ?_, ?_, hrim, hmeridian, hcarF, hcarS, hcarfib, ?_⟩
+  have hmer : ∀ s : Section34SimplexIndex 𝒦 3,
+      CarriesFundamentalGroupOnto (h '' simplexRim 𝒦 s.1)
+        (section34FaceTorus (fun w => G w '' src (Section34Label.vertexBall w)) s) := by
+    intro s
+    obtain ⟨S₁, S₂, Te, Je, Φ, hΦ, hS₁, hS₂, hTe, h₁T, hT₂, hshell, hspine, hJe⟩ := hcert s
+    exact carriesFundamentalGroupOnto_of_nestedSolidTorus
+      ((hrim s).trans interior_subset) Φ hΦ hS₁ hS₂ hTe h₁T hT₂ hshell hspine hJe
+  refine ⟨𝒦', src, srcBd, car, f₁, hframe, hN, hNW, hf₁, hnbhd, ?_, ?_, ?_, ?_, ?_, ?_,
+    hcarF, hcarS, hcarfib, ?_⟩
   · intro x hx
     obtain ⟨w, hw⟩ := mem_iUnion.mp hx
     refine hQsmall w x hw (f₁ x) (hf₁Q w ⟨x, hw, rfl⟩) (h x) ?_
     exact interior_subset (hQint w ⟨x, hw, rfl⟩)
+  · intro w
+    rw [himg w]
+    exact hmarker w
   · intro e s hne
     obtain ⟨w, w', hww', hunion, hdisk⟩ := hsplit e
     have hwsub : src (Section34Label.splitDisk e) ⊆
@@ -286,13 +327,19 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
       refine hQsep w' s ?_
       obtain ⟨y, hy₁, hy₂⟩ := hne
       exact ⟨y, hf₁Q w' (image_mono hw'sub hy₁), hy₂⟩
-    change ((e.1 : Finset (EuclideanSpace ℝ (Fin 3))) : Set (EuclideanSpace ℝ (Fin 3))) ⊆
-      convexHull ℝ (s.1 : Set (EuclideanSpace ℝ (Fin 3)))
-    rw [hunion, Finset.coe_union]
-    exact union_subset hw hw'
+    have hkey : ((e.1 : Finset Ea) : Set Ea) ⊆ convexHull ℝ ((s.1 : Finset Ea) : Set Ea) := by
+      rw [hunion]
+      exact union_subset hw hw'
+    exact hkey
   · intro w s hne
     obtain ⟨y, hy₁, hy₂⟩ := hne
     exact hQsep w s ⟨y, hf₁Q w hy₁, hy₂⟩
+  · intro s
+    rw [hfun]
+    exact hrim s
+  · intro s
+    rw [hfun]
+    exact hmer s
   · intro w
     refine union_subset ?_ ((hf₁Q w).trans (hQH w))
     exact fun y hy => hQH w (interior_subset (hQint w hy))

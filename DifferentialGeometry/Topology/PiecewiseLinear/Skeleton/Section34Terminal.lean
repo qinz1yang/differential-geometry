@@ -9,69 +9,72 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 # Sorry-first skeleton of the terminal half of Section 34
 
 The assembly `section34CellDiagram` below proves the endpoint `Section34CellDiagram` for real
-from the four leaves of this file; every `sorry` is a leaf and none sits inside an assembly.
+from the five leaves of this file; every `sorry` is a leaf and none sits inside an assembly.
 The chain is: the configuration after step P5 (`exists_section34NormalFamily`), the exterior
 face disks of step P6 (`exists_section34FaceDisks`), the residual tetrahedron balls of step P7
-(`exists_section34ResidualBalls`), the target recognition of step P8
+(`exists_section34ResidualBalls`), the source face order of step P8
+(`section34SourceFace_iff_cutLe`) and the target recognition it feeds
 (`section34TargetRecognition`), then the exporters, which are proved in `Section34Frame`.
 
-All vocabulary is the one copy in `Section34Frame`.  The leaves now run over the typed cut
-frame, so the eight index types are the incident pairs of a triangulation `𝒦` of `U` and a
-subdivision `𝒦'` of it, and no projection is a free parameter; the label type of the diagram is
-`ULift` of `Section34CutLabelOf 𝒦 𝒦'`, which lives in `Type 0` because a simplex is a finite
-set of points of `EuclideanSpace ℝ (Fin 3)`.
+The realisation ambient is existential here, because this half *produces* the triangulation:
+`exists_section34NormalFamily` outputs `N` together with `𝒦, 𝒦' : LocallyFinitePLPieceIn
+(EuclideanSpace ℝ (Fin N)) 3 M₁ U`.  Fixing `N = 3` would ask that all of `U` embed in `ℝ³`,
+which fails already for `U = S³` with `h` the antipodal map.  A fixed finite `N` keeps the label
+type in `Type 0`, so its `ULift` lands in `Type u` and the endpoint `Section34CellDiagram.{u}`
+still applies; the other leaves of this file are generic in the ambient `Ea`.
 
-Changes made after external review K, and hence unreviewed: `Section34NormalFamily` is replaced
-by `Section34NormalPlus`, the conjunction of the cut frame, the carrier control of P0, the
-graph frame of P1 with `V_v = f₁ '' C_v` and `E_e = f₁ '' D_e`, the exterior clause and the
-Lemma 11 trace certificate with the remaining normal-family clauses; P7 produces
-`Section34ResidualPlus`, with the three intrinsic boundary decompositions of the digest.  The
-clauses of the old `Section34NormalFamily` that the typed cut frame supplies are dropped: the
-cell, boundary, intersection, dimension-drop, local finiteness and cover clauses, the four
-incidence inclusions with their projections `arV arF mkE mkF paT paV egT egE`, and the top-cell
-clause.  The old free carrier `car : Λ → Set M₂` is dropped as well: carriers are now
-`H (section34LabelSimplex cr l)`, with `H` the `𝒦`-simplex-indexed carrier system of
-`Section34CarrierControl`, which is what makes local finiteness in `h '' U` real.
+The other half of Section 34, `ControlledGraphNeighborhoodStatement`, is **not** a producer of
+`Section34NormalPlus`: it supplies P1 only, the cut frame and the graph frame, conditional on
+`Moise341`.  The carrier control of P0, the exterior clause and the Lemma 11 trace certificate
+are the obligations that remain on P0 and on Lemmas 9--11 of Section 33.
 
-Index question for the external reviewer.  Dual balls and splitting disks are indexed by the
-vertices and edges of `𝒦'` lying in `graphSkeletonSpace 𝒦`; face disks and residual balls by
-the triangles and tetrahedra of `𝒦`, because `∂σ` has to lie in the one skeleton of `𝒦`.  The
-digest's exact flags `Pa ≃ {(t,v) : v ∈ t}`, `Ar ≃ {(σ,v) : v ∈ σ}`, `Eg ≃ {(t,e) : e < t}`,
-`Mk ≃ {(σ,e) : e < σ}` are therefore read through `Section34Incident`, membership of the
-`𝒦'`-vertices in the closed `𝒦`-simplex.  Whether the reviewer intends the same reading is not
-settled.
+Two face relations occur, and step P8 is split along them.  `section34Face src l` is the nesting
+ideal of the source cells, which is what the terminal exporter consumes; `Section34CutLe` is the
+reflexive transitive closure of the explicit codimension-one incidences of the cut diagram.
+Their agreement on the source cut is `section34SourceFace_iff_cutLe`, a source-side obligation:
+the cut frame alone does not forbid a face disk from lying inside a dual ball, which is exactly
+the counterexample of review K.  `section34TargetRecognition` consumes that bridge and no longer
+concludes that the target family consists of piecewise linear cells, because each of the eight
+kinds is already a cell by an input clause of `Section34NormalPlus`, `Section34FaceDiskFamily`
+or `Section34ResidualPlus`; the assembly reads that off by cases.
 
-The leaves, with content, owner and review state.
+Carriers are `H (section34LabelSimplex cr l)`, with `H` the `𝒦`-simplex-indexed carrier system
+of `Section34CarrierControl`, which is what makes local finiteness in `h '' U` real.  Since
+review N that system also asks `IsPLCellOn 3 (H t) (frontier (H t))`: a carrier names an
+exterior in `Section34Exterior`, and for a carrier with a hole a component touching an inner
+boundary passes the component test although it is not outside, which made P7 false.
 
-`exists_section34NormalFamily` (P0--P5, owner the lead's workers, changed after review K,
-unreviewed): the triangulation and its subdivision, the source cut diagram, the carrier system,
+The leaves, with content and review state.
+
+`exists_section34NormalFamily` (P0--P5, changed after review N, unreviewed): the realisation
+ambient, the triangulation and its subdivision, the source cut diagram, the carrier system,
 P1's neighbourhood and map, the target neighbourhood pieces, the face balls and everything
-`Section34NormalPlus` asks.  It is also the endpoint of the other skeleton, which produces the
-cut and graph frames only; the carrier control, the exterior clause and the trace certificate
-are the obligations that remain on P0 and on Lemmas 9--11.
+`Section34NormalPlus` asks.
 
-`exists_section34FaceDisks` (P6, owner the lead's workers, changed after review K, unreviewed):
-the exterior face disks `Δ_σ ⊆ ∂C_σ`, each a piecewise linear 2-cell meeting `⋃ V_v` exactly in
-its own boundary, that boundary lying on the frontier of `⋃ V_v`, pairwise disjoint, meeting
-`V_v` in the arc `a''_{vσ}` for an incident pair and not at all otherwise, meeting the splitting
-circle `∂E_e` in the single point `p''_{σe}` for an incident pair and not at all otherwise.
+`exists_section34FaceDisks` (P6): reviewed 2026-09-21 OK, pending the lead's due-diligence
+check; the statement changed only through the shared frame, whose cut frame now carries
+`IsCombinatorialManifold 3 𝒦.complex`, `IsSubdivision 𝒦'.complex 𝒦.complex` and
+`𝒦'.map = 𝒦.map`, without which a face of `𝒦` need not meet the subdivided graph in at least
+three seams and the cyclic seam argument has no input.  It produces the exterior face disks
+`Δ_σ ⊆ ∂C_σ` with their arcs and marked points.
 
-`exists_section34ResidualBalls` (P7, owner the lead's workers, changed after review K,
-unreviewed): the residual tetrahedron balls `R_t` with the intrinsic boundary decomposition
-`∂R_t = ⋃_{σ<t} Δ_σ ∪ ⋃_{v∈t} X_{tv}`, the patches `X''_{tv} = R_t ∩ V_v` with
-`∂X_{tv} = ⋃_{v∈σ<t} a_{vσ} ∪ ⋃_{v∈e<t} I_{te}`, the arcs `I''_{te} = R_t ∩ E_e` with
-`∂I_{te}` the marked points of the triangles of `t` through `e`, the no-other-marked-point
-clause of page 245, and `R_t ⊆ H_t`.
+`exists_section34ResidualBalls` (P7, changed after review N, unreviewed): the residual
+tetrahedron balls `R_t` with the three intrinsic boundary decompositions, the no-other-marked-
+point clause of page 245, and `R_t ⊆ H_t`, now with `H_t` a closed piecewise linear ball.
 
-`section34TargetRecognition` (P8, owner the lead's workers, changed after review K,
-unreviewed): the whole labelled target family is a family of piecewise linear cells of the same
-dimensions, with intrinsic boundary the union of its proper faces and with exact pairwise
-intersections, for the face relation read off the source.
+`section34SourceFace_iff_cutLe` (P8, source side, new after review N, unreviewed): on the
+source cut, inclusion of cells is exactly the reflexive transitive closure of the
+codimension-one incidences.
+
+`section34TargetRecognition` (P8, target side, changed after review N, unreviewed): the target
+family has intrinsic boundary the union of its proper faces and exact pairwise intersections,
+for the face relation read off the source.
 
 Proved here, not a leaf: the packaging of the eight kinds into the existential of
-`Section34CellDiagram`, including the parametrisations, the charts, the `ULift` of the label
-type and the carrier `fun l => H (section34LabelSimplex cr (par l))`, whose local finiteness
-comes from the carrier control together with the finite fibres of `cr` and of the parent map.
+`Section34CellDiagram`, including the cell clause by cases, the parametrisations, the charts,
+the `ULift` of the label type and the carrier `fun l => H (section34LabelSimplex cr (par l))`,
+whose local finiteness comes from the carrier control together with the finite fibres of `cr`
+and of the parent map.
 -/
 
 open Set Topology
@@ -82,13 +85,14 @@ universe u
 
 section Diagram
 
-variable {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
+variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
+  {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
   [MetricSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
   {U : Set M₁} {h : M₁ → M₂} {η : M₁ → ℝ}
-  {𝒦 𝒦' : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U}
+  {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
   {src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁}
-  {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set M₂}
-  {cr : Section34VertexIndex 𝒦 𝒦' → Finset (EuclideanSpace ℝ (Fin 3))} {f₁ : M₁ → M₂}
+  {H : Finset Ea → Set M₂}
+  {cr : Section34VertexIndex 𝒦 𝒦' → Finset Ea} {f₁ : M₁ → M₂}
   {tgtV tgtVBd : Section34VertexIndex 𝒦 𝒦' → Set M₂}
   {tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂}
   {fbl fblBd tgtD tgtDBd : Section34SimplexIndex 𝒦 3 → Set M₂}
@@ -103,10 +107,10 @@ theorem exists_section34NormalFamily [T2Space M₁] [SecondCountableTopology M�
     [HasGroupoid M₂ (plGroupoid 3)] (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h)) (hηc : ContinuousOn η U)
     (hηpos : ∀ x ∈ U, 0 < η x) :
-    ∃ (𝒦 𝒦' : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin 3)) 3 M₁ U)
+    ∃ (N : ℕ) (𝒦 𝒦' : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin N)) 3 M₁ U)
       (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-      (H : Finset (EuclideanSpace ℝ (Fin 3)) → Set M₂)
-      (cr : Section34VertexIndex 𝒦 𝒦' → Finset (EuclideanSpace ℝ (Fin 3))) (f₁ : M₁ → M₂)
+      (H : Finset (EuclideanSpace ℝ (Fin N)) → Set M₂)
+      (cr : Section34VertexIndex 𝒦 𝒦' → Finset (EuclideanSpace ℝ (Fin N))) (f₁ : M₁ → M₂)
       (tgtV tgtVBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
       (tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
       (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
@@ -134,6 +138,12 @@ theorem exists_section34ResidualBalls
         tgtI tgtIBd := by
   sorry
 
+theorem section34SourceFace_iff_cutLe
+    (hdata : Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd
+      fbl fblBd) :
+    ∀ l m : Section34CutLabelOf 𝒦 𝒦', src m ⊆ src l ↔ Section34CutLe m l := by
+  sorry
+
 theorem section34TargetRecognition
     (hdata : Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd
       fbl fblBd)
@@ -141,12 +151,12 @@ theorem section34TargetRecognition
       tgtP)
     (hres : Section34ResidualPlus 𝒦 𝒦' H tgtV tgtE tgtEBd tgtD tgtA tgtP tgtR tgtRBd tgtX
       tgtXBd tgtI tgtIBd)
+    (hface : ∀ l m : Section34CutLabelOf 𝒦 𝒦', src m ⊆ src l ↔ Section34CutLe m l)
     (tc tcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₂)
     (htc : tc = section34Cell tgtV tgtR tgtE tgtD tgtX tgtA tgtI tgtP)
     (htcBd : tcBd = section34Cell tgtVBd tgtRBd tgtEBd tgtDBd tgtXBd tgtABd tgtIBd
       fun _ => ∅) :
-    (∀ l, IsPLCellOn (section34Dim l) (tc l) (tcBd l)) ∧
-      (∀ l, tcBd l = ⋃ m ∈ section34Face src l \ {l}, tc m) ∧
+    (∀ l, tcBd l = ⋃ m ∈ section34Face src l \ {l}, tc m) ∧
       ∀ l m, tc l ∩ tc m = ⋃ k ∈ section34Face src l ∩ section34Face src m, tc k := by
   sorry
 
@@ -155,23 +165,37 @@ end Diagram
 theorem section34CellDiagram : Section34CellDiagram.{u} := by
   classical
   intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh η hηc hηpos
-  obtain ⟨𝒦, 𝒦', src, srcBd, H, cr, f₁, tgtV, tgtVBd, tgtE, tgtEBd, fbl, fblBd, hdata⟩ :=
+  obtain ⟨N, 𝒦, 𝒦', src, srcBd, H, cr, f₁, tgtV, tgtVBd, tgtE, tgtEBd, fbl, fblBd, hdata⟩ :=
     exists_section34NormalFamily (η := η) hU hh hηc hηpos
   obtain ⟨tgtD, tgtDBd, tgtA, tgtABd, tgtP, hdisk⟩ := exists_section34FaceDisks hdata
   obtain ⟨tgtR, tgtRBd, tgtX, tgtXBd, tgtI, tgtIBd, hres⟩ :=
     exists_section34ResidualBalls hdata hdisk
+  have hface := section34SourceFace_iff_cutLe hdata
   set tc : Section34CutLabelOf 𝒦 𝒦' → Set M₂ :=
     section34Cell tgtV tgtR tgtE tgtD tgtX tgtA tgtI tgtP with htcdef
   set tcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₂ :=
     section34Cell tgtVBd tgtRBd tgtEBd tgtDBd tgtXBd tgtABd tgtIBd (fun _ => ∅) with htcbddef
-  obtain ⟨htcell, htbd, htinter⟩ :=
-    section34TargetRecognition hdata hdisk hres tc tcBd htcdef htcbddef
-  obtain ⟨hcut, hctrl, hgraph, -, -, htgtVdef, -, -, -, -, -, htetraCar, -, -, -, -, -⟩ := hdata
-  obtain ⟨hsc, hsbd, hsinter, hsdim, hsLF, hscover, -, -, -, -, -, -, -, -, hparent, -,
-    hsupT, -, -, -⟩ := hcut
-  obtain ⟨-, hHsub, hHlf, hHdiam⟩ := hctrl
+  obtain ⟨htbd, htinter⟩ :=
+    section34TargetRecognition hdata hdisk hres hface tc tcBd htcdef htcbddef
+  obtain ⟨hcut, hctrl, hgraph, -, -, htgtVdef, -, hVcell, hEcell, -, -, htetraCar, -, -, -,
+    -, -⟩ := id hdata
+  obtain ⟨hDcell, -, -, -, -, hAcell, -, -, hPcell, -, -, -⟩ := id hdisk
+  obtain ⟨hRcell, hXcell, hIcell, -, -, -, -, -, -, -, -, -, -, -, -, hresCar⟩ := id hres
+  obtain ⟨-, -, -, hsc, hsbd, hsinter, hsdim, hsLF, hscover, -, -, -, -, -, -, -, -, hparent,
+    -, hsupT, -, -, -, -⟩ := hcut
+  obtain ⟨-, hHsub, hHlf, hHdiam, -⟩ := hctrl
   obtain ⟨-, -, -, -, -, -, -, -, -, -, hcrF, hsupV, hcrfib, hcrH⟩ := hgraph
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hresCar⟩ := hres
+  have htcell : ∀ l, IsPLCellOn (section34Dim l) (tc l) (tcBd l) := by
+    intro l
+    cases l with
+    | vertexBall w => exact hVcell w
+    | tetraBall t => exact hRcell t
+    | splitDisk e => exact hEcell e
+    | faceDisk s => exact hDcell s
+    | patch x => exact hXcell x
+    | faceArc a => exact hAcell a
+    | edgeArc i => exact hIcell i
+    | markedPoint p => exact hPcell p
   have hne : ∀ l, (src l).Nonempty := fun l => (hsc l).nonempty
   have hcpt : ∀ l, IsCompact (src l) := fun l => (hsc l).isCompact
   have hsubU : ∀ l, src l ⊆ U := fun l => hscover ▸ subset_iUnion src l
@@ -226,7 +250,7 @@ theorem section34CellDiagram : Section34CellDiagram.{u} := by
     finite_face_of_locallyFinite U src m hne (hcpt m) hsubU hsLF
   have hfib : ∀ m, {l | par l = m}.Finite := fun m =>
     (hfacefin m).subset fun l hl => hl ▸ hparsub l
-  have hsimplexfib : ∀ σ : Finset (EuclideanSpace ℝ (Fin 3)),
+  have hsimplexfib : ∀ σ : Finset (EuclideanSpace ℝ (Fin N)),
       {m : Section34CutLabelOf 𝒦 𝒦' | section34Dim m = 3 ∧
         section34LabelSimplex cr m = σ}.Finite := by
     intro σ
@@ -238,7 +262,7 @@ theorem section34CellDiagram : Section34CellDiagram.{u} := by
     rcases section34Dim_eq_three hm3 with ⟨w, rfl⟩ | ⟨t, rfl⟩
     · exact Or.inl ⟨w, hmσ, rfl⟩
     · exact Or.inr ⟨t, hmσ, rfl⟩
-  have hparfib : ∀ σ : Finset (EuclideanSpace ℝ (Fin 3)),
+  have hparfib : ∀ σ : Finset (EuclideanSpace ℝ (Fin N)),
       {l : Section34CutLabelOf 𝒦 𝒦' | section34LabelSimplex cr (par l) = σ}.Finite := by
     intro σ
     refine ((hsimplexfib σ).biUnion fun m _ => hfib m).subset fun l hl => ?_

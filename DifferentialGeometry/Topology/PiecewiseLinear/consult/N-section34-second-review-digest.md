@@ -91,3 +91,26 @@ flags bridge; marker and nested-torus certificates kept through approximation an
 kinds; `h = g ∘ ψ`, `g` a non-zero PL translation, `ψ` non-PL supported in one residual cell and
 fixing `N`; `f₁ = g`. **Most likely surprise:** handing a property the producer "can jointly choose"
 to a universal consumer that only sees the final sets and an arbitrary map.
+
+## Worker's due-diligence results on the [–] items (2026-09-21, before the repair was applied)
+* **P7 carrier with a hole — gap VERIFIED**, construction not re-verified: nothing in
+  `Section34CarrierControl`/`Section34Exterior` made `H t` a ball, connected, closed or open, so
+  `H t = B \ Int B_q` passes every clause while the component test accepts an inner point. The
+  reviewer's compactly supported `a` was not re-checked, but the gap suffices. Repair applied for
+  **all** faces: `∀ t ∈ 𝒦.complex.faces, IsPLCellOn 3 (H t) (frontier (H t))` in `CarrierControl`.
+* **P6 "OK" — PARTLY DISAGREE.** Of the facts the reviewer's cyclic-seam mod-2 argument uses, the
+  old `NormalPlus` did **not** supply "at least three seams" nor "the `γ_e` cut `∂T_σ` into
+  cyclically arranged annuli": the frame had no `IsCombinatorialManifold 3 𝒦.complex`, no
+  `IsSubdivision`, no equality of realisation maps, and `Section34EdgeIndex` asks only `card = 2`
+  and body in the graph skeleton. These three clauses now head `Section34CutFrame`. **Residual gap,
+  open:** `∂d_σ = ⋃_v a_{vσ}` holds only up to *foreign* face arcs — no clause excludes
+  `src (.faceArc a) ⊆ src (.faceDisk s)` with `a.1.1 ≠ s`. P6's own statement left unchanged
+  (conservative); **do not treat P6 as frozen** until this is settled.
+* **`h '' U = ⋃_α interior (H α)` — VERIFIED** from `bijOn`, non-empty faces and the first two
+  control clauses; `IsOpen (h '' U)` was not added anywhere.
+* Also found: `moise308Nested` lives in `EuclideanSpace ℝ (Fin 3)` while `T_σ ⊆ M₂`; the
+  generator consumer is a theorem only through a homeomorphism-of-pairs transport
+  (`carriesFundamentalGroupOnto_of_homeomorph`), which the nested-torus certificate now carries.
+  Worker's own doubt: `Section34PiercingConditions` records Moise's general position (8) only as
+  "finite disjoint polygons in `Int A'_e ∩ Int B'_e`" — the *crossing* of the two annuli is not
+  expressed, and Lemma 1's mod-2 argument needs it.
