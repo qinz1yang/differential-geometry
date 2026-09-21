@@ -4366,6 +4366,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDiffe
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureNullity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Covariant
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.ParsevalTrace
