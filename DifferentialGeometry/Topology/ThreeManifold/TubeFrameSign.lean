@@ -55,3 +55,18 @@ theorem tubeFrame_apply (a : T.Index) (z : S2)
       mfderiv CI (𝓡 3) (T.tube a) (z, t) (normalFirstModelBasis z b t i) := rfl
 
 end DifferentialGeometry.Topology.SphericalTubeSystem
+
+namespace DifferentialGeometry.Topology.SphericalTubeSystem
+universe u
+local notation "Interval" => Set.Icc (-2 : ℝ) 2
+local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
+variable {M : ClosedOrientedManifold.{u} 3} (T : SphericalTubeSystem M)
+
+theorem continuous_intervalVector (r : ℝ) :
+    Continuous (fun t : Interval =>
+      (⟨t, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc t).symm r⟩ :
+        TangentBundle (𝓡∂ 1) Interval)) := by
+  exact (DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.continuous.comp
+    (continuous_id.prodMk continuous_const))
+
+end DifferentialGeometry.Topology.SphericalTubeSystem
