@@ -73,3 +73,20 @@ scale; per-ball membership retention; isolation of whole overlaps, not only of c
 **Fixture:** periodic tetrahedral triangulation, non-identity affine shear, fine carriers, standard
 piercing; one removable extra circle in one tube. **Biggest surprise:** after closeness is
 forgotten, `h(K)` covered by the union does not mean each `h w` is still in the ball labelled `w`.
+
+## Worker's due-diligence results (2026-09-21, before the sixth repair)
+* **Detour: verified.** Nothing bounds `Cp` from below on the graph (only the single vertex point);
+  `Disjoint (Sn e) graph` plus the tube/graph margin even force the piercing circle off the graph.
+* **Deleted balls: both verified.** With every `G w := L (· + a)` all 21 package clauses are
+  homeomorphic transports of source clauses (nothing tied `G w` to `h` per ball); the only source
+  disjointness was conditional, so already-intersecting non-adjacent fingers were legal.
+* **No-filling-disk clause: agreed to be derivable, clause kept.** The derivation needs two private
+  declarations (`fundamentalGroupSolidTorusEquivInt`, `euclideanCircleHomeomorph`) in files the worker
+  may not edit; the clause has no consumer; dropping it would break the frozen leaf's byte-identity.
+  Owed cleanup, not an obligation of the chain.
+* **Stability theorem PROVED** (`PLCellOnStability.lean`): `F` stays a continuous injection;
+  invariance of domain, local connectedness of a charted space, components of small balls, a finite
+  subcover, `δ` the minimum of the scales. No degree, no leaf remainder.
+* Not done for budget, not because false: the single-cap lemma as its own leaf; rim containment
+  proved out of the matching leaf (route: rim ⊆ graph, then `hDnbhd`, then remove the finitely many
+  non-incident closed `Dv w`; needs downward closure of the faces and an index bijection).

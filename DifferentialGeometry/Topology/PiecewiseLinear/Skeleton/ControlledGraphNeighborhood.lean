@@ -4,14 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStability
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 
 /-!
 # Sorry-first skeleton of the controlled form of Moise 35.1
 
 The assembly `controlledGraphNeighborhood` proves the endpoint
-`ControlledGraphNeighborhoodStatement` for real from the eight leaves of this file; every `sorry`
-is a leaf and none sits inside an assembly.  The endpoint statement is unchanged by review W.
+`ControlledGraphNeighborhoodStatement` for real from the seven leaves of this file; every `sorry`
+is a leaf and none sits inside an assembly.  The endpoint statement is unchanged by reviews W
+and Z.
 It changed earlier only through `Section34CarrierControl`, which also asks that each carrier
 `H t` lie in one piecewise linear chart of `M₂`.  The endpoint is **not** a producer of
 `Section34NormalPlus`: it supplies
@@ -43,7 +45,17 @@ neighbourhood of it, so `C_v ⊆ C'_v` is not claimed; what the later stages nee
 `C_v ⊆ C''_v`, and that is what the preparation records.
 
 `Section34VertexPreparation` fixes, before any map, the endpoint assignment of the edges, `C'_v`
-with the graph core in `Int C'_v`, the piercing circle `Bd C'_v ∩ Bd C'_w` inside the splitting
+with a **compact core** `Kcore v ⊆ C'_v \ Bd C'_v` containing the vertex of `v`, the whole family
+of cores covering `graphSkeletonSpace 𝒦`, and the stability scale certifying that `ε_v` is small
+enough that every piecewise linear embedding of `C'_v` within `ε_v` of `h` keeps `h '' Kcore v`
+inside the interior of the image; without the cover a legal preparation may pierce along a
+detour and leave an interior point of an original edge outside every `C'_v`, and then no
+`ε`-close family covers its image, so the neighbourhood clause of Moise's (6) is unproducible.
+The scale is not a new assumption: `exists_dist_lt_image_interior_stable_of_isPLCellOn` of
+`PiecewiseLinear.PLCellOnStability` produces one for each `(C'_v, Kcore v, h)`, from invariance
+of domain, the compactness of the core and the local connectedness of a charted space over
+`EuclideanSpace ℝ (Fin 3)`.  The preparation also fixes the piercing circle `Bd C'_v ∩ Bd C'_w`
+inside the splitting
 disk, the two compatible regular neighbourhoods `T_e ⊆ Int S_e` of that circle with their solid
 torus structure, the pairwise disjointness of the tubes `S_e`, the annuli `A_e = Bd C'_v ∩ T_e`
 and `B_e ⊆ Bd C'_w` with their designated boundary circles and their source side inside and
@@ -69,16 +81,22 @@ lies in one chart, which is the hypothesis of the proved chart local
 `Moise341.exists_isPLHomeomorphInto_dist_lt_of_mapsTo_chart`, and the result is conjugated back
 by `exists_isPLHomeomorphInto_of_isPLHomeomorphOn`.
 
-`Section34PiercingConditions` is conditions (2)--(8) together with four geometric certificates
-the removal step and the matching consume: that `G_w` is a piecewise linear embedding of the
-pierced ball `C'_w` and not only of `C''_w`, the disjointness of every marker from every target
-tube, the disjointness of a tube from the boundary of a ball of a vertex that is not one of its
-ends, and the disjointness of the images of two pierced balls with disjoint sources.  The last
-three are proved by `section34MarginConditions`; the first is what
-`section34Marker_of_dist_lt` turns, through `image_interior_stable_of_dist_lt` and the margin
-between `Bd C'_w` and the marker, into the per-ball marker
-`h '' simplexBody 𝒦' w ⊆ interior (G w '' C'_w)`, which is therefore no longer a field.  The
-restriction of an `IsPLHomeomorphInto` to a subset is not available in the tree, which is why
+`Section34PiercingConditions` is conditions (2)--(8) together with six geometric certificates
+the removal step, the deletion and the matching consume: that `G_w` is a piecewise linear
+embedding of the pierced ball `C'_w` and not only of `C''_w`, the disjointness of every marker
+from every target tube, the disjointness of a tube from the boundary of a ball of a vertex that
+is not one of its ends, the disjointness of the images of two pierced balls with disjoint
+sources, the pairwise disjointness of the closed overlaps `G_v(C'_v) ∩ G_w(C'_w)` of different
+edges, and the exclusion of `h '' simplexBody 𝒦' v` from the image of every other pierced ball.
+All but the last two are proved by `section34MarginConditions` for an `ε`-close family; the last
+two are conditions on the image configuration that one removal step, being supported in one
+tube, preserves.  The neighbourhood clause of Moise's (6) is **no longer a field**: it is
+`mem_nhdsSet_iUnion_image_of_section34Core` applied to the core containment, which holds for the
+`ε`-close family by the preparation's stability scale and is carried through every removal step
+by `section34Core_of_eqOn_off_support`, from the off-support equality alone.  The per-ball marker
+is likewise not a field but a consequence, through `section34Marker_of_dist_lt`, of the core
+containment and `simplexBody 𝒦' w ⊆ Kcore w`.
+The restriction of an `IsPLHomeomorphInto` to a subset is not available in the tree, which is why
 the embedding of `C'_w` has to be asked for and cannot be cut down from that of `C''_w`.  The
 general position clause is the local crossing model
 `HasPLCrossingAt` read in a piecewise linear chart at every intersection point, not the
@@ -87,17 +105,13 @@ containment of the intersection polygons in the two relative interiors, which th
 **in the target subspace `h '' U`**, not in `⋃ Q`: thin spikes on far tubes accumulate at points
 of `h '' U` lying in no `C''_v`.
 
-The leaves, with content and review state.
-
-`image_interior_stable_of_dist_lt` (**new, unreviewed**): the one degree-theoretic input.  For a
-piecewise linear `3`-cell `S` with intrinsic boundary `B`, two embeddings of `S` that are
-`ε`-close on `S`, and a compact `K ⊆ S \ B` whose `F`-image is at distance at least `ε` from
-`F '' B`, the conclusion `F '' K ⊆ G '' S`.  Only this containment is a leaf; the upgrade from
-`G '' S` to `interior (G '' S)` is the proved `mem_interior_image_of_notMem_image_boundary` of
-`Section34Frame`, because `G '' B = frontier (G '' S)` splits the complement of `G '' B` into
-the interior of `G '' S` and the exterior.  What is missing is exactly the statement that the
-exterior component is excluded, that is the equality of the degrees of two `ε`-close embeddings
-of the boundary sphere about a point `ε`-far from both images; the tree has no degree.
+The leaves, with content and review state.  The quantitative leaf of the previous snapshot,
+`image_subset_of_dist_lt_of_isPLCellOn`, is **deleted as false**: under an arbitrary compatible
+metric a small distance does not put a point in the region the perturbed boundary sphere
+encloses, and its docstring's "what is missing is exactly degree" was wrong.  Its correct form
+is an existence of scale, and that form is proved, not assumed, in
+`PiecewiseLinear.PLCellOnStability`; it is consumed here only through the preparation's
+certified field.
 
 `exists_section34CutFrame` (steps 1--5): **changed after review W (joint outer torus),
 unreviewed**.  Added to the earlier statement, which was reviewed three times: the two outputs
@@ -106,18 +120,21 @@ changed.  It produces `𝒦'`, the cut frame, the regular neighbourhood `N = ⋃
 skeleton inside `W`, the assignment `car` with finite fibres, the fine carriers `Q v`, the
 carrier separation, and now the triangle charts and outer tori.
 
-`exists_section34VertexPreparation` (**changed after review W, unreviewed**): it no longer
-receives `hQchart` and no longer produces `ct`, `Sd` or their clauses; it gained the middle
-annulus `B_e⁰` with its two collars, the collar margin, the tube-versus-marker and
-tube-versus-foreign-boundary margins, and the margin between two pierced balls with disjoint
-sources.
+`exists_section34VertexPreparation` (**FIX of review Z, unreviewed**): it now also produces the
+family `Kcore`, with the three clauses above, the two-sided margin between a tube and a core, the
+one-sided margin between a pierced ball and the vertex of a different ball, and the source
+disjointness of two pierced balls whose vertices are not the two ends of an edge.  The last is
+what rules out two thin fingers of non-adjacent cells meeting away from every tube, which no
+earlier clause forbade.
 
-`exists_section34PiercingPackage` (**changed after review W, unreviewed**): it now receives
+`exists_section34PiercingPackage` (**changed after reviews W and Z, unreviewed**): it receives
 `hQsub : ∀ w, Q w ⊆ h '' U` and the carrier local finiteness `hQlfU` in that subspace, which is
 what `locallyFinite_support_of_section34CutFrame` turns into the package's `hSpLF`.  What it
-still owes is only the clauses that `section34MarginConditions` and
-`image_interior_stable_of_dist_lt` do not give: the containments whose ambient set is a solid
-torus rather than a cell, the component certificates of (7), and the general position of (8).
+still owes is only the clauses that `section34MarginConditions` and `section34MarkerConditions`
+do not give: the containments whose ambient set is a solid torus rather than a cell, the
+component certificates of (7), the general position of (8), and the pairwise disjointness of the
+closed overlaps of different edges, which is the whole-overlap control the deletion needs and
+which "tubes avoid outer ball boundaries" does not give.
 
 `exists_section34ProtectedCircleRemovalStep` (**FIX of review W, restated**): one modification
 inside `Int S'_{e₀}`.  It already concludes `Section34PiercingConditions` for the new family, and
@@ -127,29 +144,41 @@ boundaries of the balls of the other vertices are untouched is no longer assumed
 proved `section34Step_eqOn_marker_and_boundary`, from the `EqOn` off the support together with
 the two new disjointness certificates.
 
-`exists_section34ProtectedCircleRemoval` (reviewed **OK**): unchanged except that `hprep` names
-the three new sets of the preparation and no longer names `ct`, `Sd`.
+`exists_section34ProtectedCircleRemoval` (reviewed **OK**): the text is unchanged except for the
+one identifier `Kcore` that the preparation now takes; its content changed only through
+`Section34PiercingConditions`, which lost the neighbourhood clause and gained the two image
+configuration clauses.
 
-`exists_section34DeletedBalls` (**new, unreviewed**): the first half of page 251.  It outputs the
-deleted balls `D_v = G_w(C'_w)` minus the interiors of the pierced balls of the other end of
-each incident edge, their `3`-cell certificates, the prescribed intersection disks `D_v ∩ D_w`
-with their `2`-cell certificates and exact meets, disjointness of different intersections, the
-adjacency criterion, and the markers.
+`exists_section34DeletedBalls` (**FIX of review Z, unreviewed**): the first half of page 251.  It
+keeps the literal deletion formula and now **receives** the core containment for its own family
+of maps, which is the one fact that closeness to `h` would give and that the removal steps
+forget; a periodic translation `G_w = L(x + a)` of the whole configuration satisfies every other
+hypothesis and destroys the per-ball marker, so the marker cannot be an output without it.  It
+outputs the `3`-cell certificates of the `D_v`, the intersection disks with their `2`-cell
+certificates and exact meets, the markers and the neighbourhood clause.  The adjacency criterion
+and the disjointness of different intersection disks left the leaf: they are proved in the
+assembly from the preparation's non-adjacent source disjointness and the package's whole-overlap
+field.
 
-`exists_section34EdgeMatching` (**changed after review W, unreviewed**): only the three stage
-relative matching is left.  It receives the certificates above and outputs the maps `G'` of the
-*original* cells with `G' w '' C_w = D_v`, their compatibility and exact meets, the rim
-containment and the nested torus certificate, whose outer torus and chart are the `S_{2σ}` and
-`c_σ` of `Section34OuterTorus` and whose only new datum is the inner torus `S_{1σ}`.
+`exists_section34EdgeMatching` (**changed after reviews W and Z, unreviewed**): only the three
+stage relative matching is left.  It now also receives `hDvQ` and `hDnbhd`, which the assembly
+has, and outputs the maps `G'` of the *original* cells with `G' w '' C_w = D_v`, their
+compatibility and exact meets, the rim containment and the nested torus certificate, whose outer
+torus and chart are the `S_{2σ}` and `c_σ` of `Section34OuterTorus` and whose only new datum is
+the inner torus `S_{1σ}`.
 
 Proved here, not leaves: `Moise341.exists_section34VertexApproximation`,
-`image_interior_stable_of_dist_lt`, `section34Step_eqOn_marker_and_boundary`,
-`exists_section34PiercingConditions_count_le_one`, and the assembly, which in particular proves
-conditions (2) and (3) of Section 34 Lemma 1 from the carrier separation and the combinatorics
-of the splitting disks, the `ψ` estimate, and the generator clause from the nested torus
-certificate.  Proved in `Section34Frame`: `section34MarginConditions`,
-`section34FaceTorus_subset_outerTorus`, `mem_interior_image_of_notMem_image_boundary`,
-`finite_splitDisk_of_section34CutFrame` and `locallyFinite_support_of_section34CutFrame`.
+`section34Marker_of_dist_lt`, `section34Core_of_eqOn_off_support`,
+`section34Step_eqOn_marker_and_boundary`, `exists_section34PiercingConditions_count_le_one`, and
+the assembly, which in particular proves conditions (2) and (3) of Section 34 Lemma 1 from the
+carrier separation and the combinatorics of the splitting disks, the `ψ` estimate, the generator
+clause from the nested torus certificate, and now the adjacency criterion, the disjointness of
+the intersection disks and `D_v ⊆ Q v`.  Proved in `Section34Frame`:
+`section34MarginConditions`, `section34MarkerConditions`,
+`mem_nhdsSet_iUnion_image_of_section34Core`, `section34FaceTorus_subset_outerTorus`,
+`mem_interior_image_of_notMem_image_boundary`, `finite_splitDisk_of_section34CutFrame` and
+`locallyFinite_support_of_section34CutFrame`.  Proved in `PiecewiseLinear.PLCellOnStability`:
+`exists_dist_lt_image_interior_stable_of_isPLCellOn`.
 -/
 
 open Set Topology
@@ -184,7 +213,7 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
   {src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁}
   {Q : Section34VertexIndex 𝒦 𝒦' → Set M₂}
-  {Cp CpBd Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁}
+  {Cp CpBd Cc CcBd Kcore : Section34VertexIndex 𝒦 𝒦' → Set M₁}
   {ε : Section34VertexIndex 𝒦 𝒦' → ℝ}
   {ct : Section34SimplexIndex 𝒦 3 → OpenPartialHomeomorph M₂ (EuclideanSpace ℝ (Fin 3))}
   {Sd : Section34SimplexIndex 𝒦 3 → Set (EuclideanSpace ℝ (Fin 3))}
@@ -194,27 +223,6 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {Sp Tp : Section34EdgeIndex 𝒦 𝒦' → Set M₂} {cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ}
   {Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂}
   {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
-
-theorem image_subset_of_dist_lt_of_isPLCellOn {S B Kc : Set M₁} {F G : M₁ → M₂} {δ : ℝ}
-    (hS : IsPLCellOn 3 S B) (hG : IsPLHomeomorphInto 3 G S) (hFc : ContinuousOn F S)
-    (hFi : InjOn F S) (hKc : Kc ⊆ S \ B) (hclose : ∀ z ∈ S, dist (F z) (G z) < δ)
-    (hfar : ∀ x ∈ Kc, ∀ y ∈ B, δ ≤ dist (F x) (F y)) :
-    F '' Kc ⊆ G '' S := by
-  sorry
-
-theorem image_interior_stable_of_dist_lt {S B Kc : Set M₁} {F G : M₁ → M₂} {δ : ℝ}
-    (hS : IsPLCellOn 3 S B) (hG : IsPLHomeomorphInto 3 G S) (hFc : ContinuousOn F S)
-    (hFi : InjOn F S) (hKc : Kc ⊆ S \ B) (hclose : ∀ z ∈ S, dist (F z) (G z) < δ)
-    (hfar : ∀ x ∈ Kc, ∀ y ∈ B, δ ≤ dist (F x) (F y)) :
-    F '' Kc ⊆ interior (G '' S) := by
-  have himg := image_subset_of_dist_lt_of_isPLCellOn hS hG hFc hFi hKc hclose hfar
-  rintro _ ⟨x, hx, rfl⟩
-  refine mem_interior_image_of_notMem_image_boundary hS hG (himg ⟨x, hx, rfl⟩) ?_
-  rintro ⟨y, hy, hxy⟩
-  have h1 : dist (F y) (G y) < δ := hclose y (hS.boundary_subset hy)
-  have h2 : δ ≤ dist (F x) (F y) := hfar x hx y hy
-  rw [hxy, dist_comm] at h1
-  linarith
 
 theorem exists_section34CutFrame [T2Space M₁] [SecondCountableTopology M₁]
     [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
@@ -253,19 +261,19 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
     (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
       (graphSkeletonSpace 𝒦) U)
     (hQint : ∀ w, h '' src (Section34Label.vertexBall w) ⊆ interior (Q w)) :
-    ∃ (Cp CpBd Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁)
+    ∃ (Cp CpBd Cc CcBd Kcore : Section34VertexIndex 𝒦 𝒦' → Set M₁)
       (ends : Section34EdgeIndex 𝒦 𝒦' →
         Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
       (Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
       (ε : Section34VertexIndex 𝒦 𝒦' → ℝ),
-      Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+      Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
         Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε := by
   sorry
 
 omit [FiniteDimensional ℝ Ea] in
 theorem Moise341.exists_section34VertexApproximation (h341 : Moise341)
     [HasGroupoid M₂ (plGroupoid 3)] (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
     ∃ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
       (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) ∧
@@ -320,7 +328,7 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
       (graphSkeletonSpace 𝒦) U)
     (hQsub : ∀ w, Q w ⊆ h '' U)
     (hQlfU : LocallyFinite fun w => {y : h '' U | (y : M₂) ∈ Q w})
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (Cc w))
     (hGdist : ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w) :
@@ -333,7 +341,7 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
   sorry
 
 theorem exists_section34ProtectedCircleRemovalStep
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
       Bb₁ Sp Tp cnt Pg G)
@@ -350,36 +358,40 @@ theorem exists_section34ProtectedCircleRemovalStep
   sorry
 
 omit [FiniteDimensional ℝ Ea] in
-theorem section34Marker_of_dist_lt (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
+theorem section34Marker_of_dist_lt
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hGp : ∀ w, IsPLHomeomorphInto 3 (G w) (Cp w))
     (hGdist : ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w) (w : Section34VertexIndex 𝒦 𝒦') :
     h '' simplexBody 𝒦' w.1 ⊆ interior (G w '' Cp w) := by
-  obtain ⟨-, -, hsubs, -, hcpcell, hbody, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
-    -, -, -, hcpmar, -⟩ := hprep
-  have hcp : ∀ v, IsPLCellOn 3 (Cp v) (CpBd v) := hcpcell
-  have hCpU : Cp w ⊆ U := (hsubs w).2.1.trans (hsubs w).2.2
-  have hcontU : ContinuousOn h U := continuousOn_iff_continuous_domRestrict.mpr hh.continuous
-  have hinjU : InjOn h U := by
-    intro x hx y hy hxy
-    have hxy' : U.domRestrict h ⟨x, hx⟩ = U.domRestrict h ⟨y, hy⟩ := hxy
-    exact congrArg Subtype.val (hh.injective hxy')
-  refine image_interior_stable_of_dist_lt (δ := ε w) (hcp w) (hGp w) (hcontU.mono hCpU)
-    (hinjU.mono hCpU) ?_ ?_ ?_
-  · rw [(hcp w).sdiff_boundary_eq_interior]
-    exact hbody w
-  · intro z hz
-    rw [dist_comm]
-    exact hGdist w z ((hsubs w).2.1 hz)
-  · intro x hx y hy
-    have hlt := hcpmar w y hy (h x) ⟨x, hx, rfl⟩
-    rw [dist_comm] at hlt
-    exact hlt.le
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
+    -, -, -, -, -, -, -, -, -, -, hkc, -⟩ := id hprep
+  exact (image_mono (hkc w).2.1).trans ((section34MarkerConditions hprep hGp hGdist).1 w)
+
+omit [FiniteDimensional ℝ Ea] in
+theorem section34Core_of_eqOn_off_support (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂)
+    (hcp : ∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) (hCpCc : ∀ w, Cp w ⊆ Cc w)
+    (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (Cp w))
+    (hG' : ∀ w, IsPLHomeomorphInto 3 (G' w) (Cp w))
+    (hcore : ∀ w, h '' Kcore w ⊆ interior (G w '' Cp w))
+    (hdisj : ∀ w e, Disjoint (h '' Kcore w) (Sp e))
+    (hoff : ∀ w, EqOn (G' w) (G w) {x ∈ Cc w | ∀ e, G w x ∉ interior (Sp e)}) :
+    ∀ w, h '' Kcore w ⊆ interior (G' w '' Cp w) := by
+  intro w y hy
+  have h1 : y ∈ G w '' (Cp w \ CpBd w) := by
+    rw [((hcp w).image_boundary_interior (hG w)).2]
+    exact hcore w hy
+  obtain ⟨x, hx, hxy⟩ := h1
+  have hoffx : x ∈ {x ∈ Cc w | ∀ e, G w x ∉ interior (Sp e)} := by
+    refine ⟨hCpCc w hx.1, fun e hmem => ?_⟩
+    have hmem' : y ∈ Sp e := by rw [← hxy]; exact interior_subset hmem
+    exact Set.disjoint_left.mp (hdisj w e) hy hmem'
+  rw [← ((hcp w).image_boundary_interior (hG' w)).2]
+  exact ⟨x, hx, (hoff w hoffx).trans hxy⟩
 
 omit [FiniteDimensional ℝ Ea] in
 theorem section34Step_eqOn_marker_and_boundary
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
       Bb₁ Sp Tp cnt Pg G)
@@ -388,7 +400,7 @@ theorem section34Step_eqOn_marker_and_boundary
     (∀ w, EqOn (G' w) (G w) (simplexBody 𝒦' w.1)) ∧
       ∀ w, w ≠ (ends e₀).1 → w ≠ (ends e₀).2 → EqOn (G' w) (G w) (CpBd w) := by
   obtain ⟨-, -, hsubs, -, hcpcell, hbody, -⟩ := hprep
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, hmark, hbd, -⟩ := hpack
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hmark, hbd, -⟩ := hpack
   have hcp : ∀ w, IsPLCellOn 3 (Cp w) (CpBd w) := hcpcell
   constructor
   · intro w
@@ -401,7 +413,7 @@ theorem section34Step_eqOn_marker_and_boundary
     · exact ((hbd e₀ w hw1 hw2).symm).mono_right interior_subset
 
 theorem exists_section34PiercingConditions_count_le_one
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (e₀ : Section34EdgeIndex 𝒦 𝒦')
     (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
@@ -459,7 +471,7 @@ theorem exists_section34PiercingConditions_count_le_one
         · exact fun w x hx => (hcore₂ w hx).trans (hcore w hx)
 
 theorem exists_section34ProtectedCircleRemoval
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
       Bb₁ Sp Tp cnt Pg G)
@@ -481,24 +493,21 @@ theorem exists_section34DeletedBalls [T2Space M₁] [SecondCountableTopology M�
     (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
       (graphSkeletonSpace 𝒦) U)
     (hQlf : ∀ y ∈ ⋃ w, Q w, ∃ V ∈ 𝓝 y, {w | (Q w ∩ V).Nonempty}.Finite)
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
       Bb₁ Sp Tp cnt Pg G)
-    (hone : ∀ e, cnt e = 1) :
+    (hone : ∀ e, cnt e = 1)
+    (hcore : ∀ w, h '' Kcore w ⊆ interior (G w '' Cp w)) :
     ∃ (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
       (Dd DdBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂),
       (∀ w, Dv w = G w '' Cp w \
         ⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : (ends e).2 = w),
           interior (G (ends e).1 '' Cp (ends e).1)) ∧
         (∀ w, IsPLCellOn 3 (Dv w) (DvBd w)) ∧
-        (∀ w, Dv w ⊆ Q w) ∧
         (∀ e, IsPLCellOn 2 (Dd e) (DdBd e)) ∧
         (∀ e, Dv (ends e).1 ∩ Dv (ends e).2 = Dd e) ∧
         (∀ e, Dd e ⊆ DvBd (ends e).1 ∩ DvBd (ends e).2) ∧
-        (∀ w w', w ≠ w' → (Dv w ∩ Dv w').Nonempty → ∃ e : Section34EdgeIndex 𝒦 𝒦',
-          (w = (ends e).1 ∧ w' = (ends e).2) ∨ (w = (ends e).2 ∧ w' = (ends e).1)) ∧
-        (∀ e d, e ≠ d → Disjoint (Dd e) (Dd d)) ∧
         (∀ w, h '' simplexBody 𝒦' w.1 ⊆ interior (Dv w)) ∧
         (⋃ w, Dv w) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦) := by
   sorry
@@ -513,7 +522,7 @@ theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M�
       (Q w ∩ h '' simplexBody 𝒦 s.1).Nonempty → Section34Incident w.1 s.1)
     (hQlf : ∀ y ∈ ⋃ w, Q w, ∃ V ∈ 𝓝 y, {w | (Q w ∩ V).Nonempty}.Finite)
     (htor : Section34OuterTorus 𝒦 𝒦' h Q ct Sd)
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
       Bb₁ Sp Tp cnt Pg G)
@@ -528,7 +537,9 @@ theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M�
     (hDdBd : ∀ e, Dd e ⊆ DvBd (ends e).1 ∩ DvBd (ends e).2)
     (hDadj : ∀ w w', w ≠ w' → (Dv w ∩ Dv w').Nonempty → ∃ e : Section34EdgeIndex 𝒦 𝒦',
       (w = (ends e).1 ∧ w' = (ends e).2) ∨ (w = (ends e).2 ∧ w' = (ends e).1))
-    (hDddisj : ∀ e d, e ≠ d → Disjoint (Dd e) (Dd d)) :
+    (hDddisj : ∀ e d, e ≠ d → Disjoint (Dd e) (Dd d))
+    (hDvQ : ∀ w, Dv w ⊆ Q w)
+    (hDnbhd : (⋃ w, Dv w) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦)) :
     ∃ G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
       (∀ w, IsPLHomeomorphInto 3 (G' w) (src (.vertexBall w))) ∧
         (∀ w, G' w '' src (.vertexBall w) = Dv w) ∧
@@ -577,21 +588,51 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
   have hQlfU : LocallyFinite fun w : Section34VertexIndex 𝒦 𝒦' =>
       {y : h '' U | (y : M₂) ∈ Q w} :=
     locallyFinite_subtype_of_subset_carriers (h '' U) Q H car hQH hcarfib hHfib
-  obtain ⟨Cp, CpBd, Cc, CcBd, ends, Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁, ε,
+  obtain ⟨Cp, CpBd, Cc, CcBd, Kcore, ends, Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁, ε,
       hprep⟩ := exists_section34VertexPreparation hU hh hframe hN hQint
+  obtain ⟨-, -, hsubs, -, hcpcell, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
+    -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hnonadj⟩ := id hprep
   obtain ⟨G₀, hG₀, hG₀dist⟩ := h341.exists_section34VertexApproximation hh hprep
-  obtain ⟨Sp, Tp, cnt, Pg, G₁, hpack, -⟩ :=
+  obtain ⟨Sp, Tp, cnt, Pg, G₁, hpack, hG₁dist⟩ :=
     exists_section34PiercingPackage hU hh hframe hN hQsub hQlfU hprep hG₀ hG₀dist
+  obtain ⟨-, -, -, hSpdef, -, -, -, -, -, -, hGp₁, -⟩ := id hpack
+  obtain ⟨hcore₁, hkdisj₁, -⟩ := section34MarkerConditions hprep hGp₁ hG₁dist
+  have hSpK : ∀ w e, Disjoint (h '' Kcore w) (Sp e) := by
+    intro w e
+    rw [(hSpdef e).1]
+    exact hkdisj₁ w e
   have hK : ∀ w, IsCompact (H (car w)) ∧ Q w ⊆ H (car w) ∧ H (car w) ⊆ h '' U := fun w =>
     ⟨(hHcell _ (hcarF w)).isCompact, hQH w, hHsub _ (hcarF w)⟩
-  obtain ⟨G₂, cnt₂, Pg₂, hpack₂, hone, -, -⟩ :=
+  obtain ⟨G₂, cnt₂, Pg₂, hpack₂, hone, hoff₂, -⟩ :=
     exists_section34ProtectedCircleRemoval hprep hpack (fun w => H (car w)) hK
-  obtain ⟨Dv, DvBd, Dd, DdBd, hDvdef, hDv, hDvQ, hDd, hDmeet, hDdBd, hDadj, hDddisj, hDmark,
-      hDnbhd⟩ :=
-    exists_section34DeletedBalls hU hh hframe hN hQlf hprep hpack₂ hone
+  obtain ⟨-, hGQ₂, -, -, -, -, -, -, -, -, hGp₂, -, -, hCpdisj₂, -, -, -, -, -, -, hLdisj₂,
+    -⟩ := id hpack₂
+  have hcore₂ : ∀ w, h '' Kcore w ⊆ interior (G₂ w '' Cp w) :=
+    section34Core_of_eqOn_off_support G₂ hcpcell (fun w => (hsubs w).2.1) hGp₁ hGp₂ hcore₁
+      hSpK hoff₂
+  obtain ⟨Dv, DvBd, Dd, DdBd, hDvdef, hDv, hDd, hDmeet, hDdBd, hDmark, hDnbhd⟩ :=
+    exists_section34DeletedBalls hU hh hframe hN hQlf hprep hpack₂ hone hcore₂
+  have hDvP : ∀ w, Dv w ⊆ G₂ w '' Cp w := by
+    intro w
+    rw [hDvdef w]
+    exact Set.sdiff_subset
+  have hDvQ : ∀ w, Dv w ⊆ Q w := fun w =>
+    (hDvP w).trans ((image_mono (hsubs w).2.1).trans (hGQ₂ w))
+  have hDadj : ∀ w w', w ≠ w' → (Dv w ∩ Dv w').Nonempty → ∃ e : Section34EdgeIndex 𝒦 𝒦',
+      (w = (ends e).1 ∧ w' = (ends e).2) ∨ (w = (ends e).2 ∧ w' = (ends e).1) := by
+    intro w w' hne hmeet
+    by_contra hcon
+    obtain ⟨y, hy₁, hy₂⟩ := hmeet
+    exact Set.disjoint_left.mp (hCpdisj₂ w w' (hnonadj w w' hne hcon)) (hDvP w hy₁)
+      (hDvP w' hy₂)
+  have hDddisj : ∀ e d, e ≠ d → Disjoint (Dd e) (Dd d) := by
+    intro e d hne
+    rw [← hDmeet e, ← hDmeet d]
+    exact (hLdisj₂ e d hne).mono (inter_subset_inter (hDvP _) (hDvP _))
+      (inter_subset_inter (hDvP _) (hDvP _))
   obtain ⟨G, hG, hGD, hcompat, hmeet, hrim, hcert⟩ :=
     exists_section34EdgeMatching hU hh hframe hN hQsep hQlf htorus hprep hpack₂ Dv DvBd Dd
-      DdBd hDvdef hDv hDd hDmeet hDdBd hDadj hDddisj
+      DdBd hDvdef hDv hDd hDmeet hDdBd hDadj hDddisj hDvQ hDnbhd
   have hGQ : ∀ w, G w '' src (Section34Label.vertexBall w) ⊆ Q w := by
     intro w
     rw [hGD w]

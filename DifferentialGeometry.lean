@@ -9196,6 +9196,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSou
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductCut
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnInterior
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStability
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceArc
 /-!
 # Differential geometry and geometric analysis
