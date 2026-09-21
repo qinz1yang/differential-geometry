@@ -1430,3 +1430,43 @@ jobs, without diagnostics. The full root passed 20,203 jobs with exactly the
 `/private/tmp/wt17-normalized-intrinsic-leaf-build.log`,
 `/private/tmp/wt17-open-end-metric-audit.log`, and
 `/private/tmp/wt17-open-end-metric-root-build.log`.
+
+
+## The intrinsic completion endpoint
+
+The continuation after `1220dcf55` constructs the endpoint of the axis in the
+completion of the open end with its intrinsic Riemannian metric. Its distance
+to every axis point is exactly the remaining parameter length. The inclusion
+into the original limit is Lipschitz, and its induced completion map sends this
+new endpoint to the original missing completion point. This proves that the
+intrinsic endpoint is missing as well. The produced cylinder homeomorphism
+supplies path connectedness of the end. Local compactness proves that the end
+embeds openly into its intrinsic completion.
+
+The proof explicitly uses the metric, extended distance, and uniform structure
+of the restricted Riemannian metric. These are kept coherent across the subtype
+and completion constructions; the ambient subtype distance is not substituted
+for the intrinsic distance. The endpoint transport is private proof glue over
+the existing isometric-segment completion theorem. The general dense-embedding
+API proves that a dense inducing map from a weakly locally compact space to a
+Hausdorff space has open range, with the corresponding open-embedding result.
+
+The full spatial-neck window also has a proved open-ball containment bound
+`(eps⁻¹ + 6) * sqrt (1 + eps) / sqrt R`, obtained from the slab bounds. This is
+available for the next step: controlling whole late annuli in the intrinsic
+completion, as required in Kleiner–Lott, *Notes on Perelman's papers*, section
+52, Step 2 following Lemma 52.14, in
+`Geometrization/BooksPapers/KleinerLottPerelman.pdf`. Compactness and neighborhood
+capture for the whole completed end, the finite-horn and cone producers, and
+the bounded-distance headline remain open.
+
+Four public declarations passed thirteen declaration linters and have only
+approved foundational axioms. The neck-ball leaf passed 10,815 jobs, the dense
+embedding leaf 909 jobs, and the normalized dependent 14,141 jobs, without
+diagnostics. The full root passed 20,204 jobs with exactly 21 retained sorry
+warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-neck-window-ball-leaf-build.log`,
+`/private/tmp/wt17-dense-embedding-open-leaf-build.log`,
+`/private/tmp/wt17-normalized-completion-leaf-build.log`,
+`/private/tmp/wt17-intrinsic-completion-audit.log`, and
+`/private/tmp/wt17-intrinsic-completion-root-build.log`.

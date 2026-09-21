@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocallyFinite
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Restriction
+import DifferentialGeometry.Geometry.Metric.Distance.Topology
+import DifferentialGeometry.Topology.DenseEmbedding
 import DifferentialGeometry.Topology.Homeomorph.CylinderChain
 import DifferentialGeometry.Topology.Homeomorph.Interior
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
@@ -27,6 +29,72 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
+
+private theorem exists_restricted_completion_endpoint
+    {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold I3 ∞ M]
+    (g : SmoothRiemannianMetric I3 M)
+    (hM : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (W : TopologicalSpace.Opens M) [PathConnectedSpace W]
+    {a b : ℝ} (hab : a < b) (γ : C(Ico a b, W))
+    (hγ : ∀ v w, riemannianEDistOf (g.restrictOpen W) (γ v) (γ w) = edist v w)
+    (q : UniformSpace.Completion M)
+    (hq : Tendsto (fun t => ((γ t : M) : UniformSpace.Completion M))
+      (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (𝓝 q))
+    (hmissing : q ∉ range (fun x : M => (x : UniformSpace.Completion M))) :
+    let mW : MetricSpace W :=
+      let _ : PseudoMetricSpace W := (g.restrictOpen W).toPseudoMetricSpace
+      MetricSpace.ofT0PseudoMetricSpace W
+    let _ : PseudoMetricSpace W := mW.toPseudoMetricSpace
+    let _ : UniformSpace W := mW.toPseudoMetricSpace.toUniformSpace
+    let eW : PseudoEMetricSpace W :=
+      @PseudoMetricSpace.toPseudoEMetricSpace W mW.toPseudoMetricSpace
+    let : WeakPseudoEMetricSpace W := @PseudoEMetricSpace.toWeakPseudoEMetricSpace W eW
+    ∃ qW : UniformSpace.Completion W,
+      Tendsto (fun t => (γ t : UniformSpace.Completion W))
+        (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (𝓝 qW) ∧
+      (∀ t : Ico a b, dist qW (γ t : UniformSpace.Completion W) = b - t) ∧
+      qW ∉ range (fun x : W => (x : UniformSpace.Completion W)) ∧
+      UniformSpace.Completion.map (Subtype.val : W → M) qW = q ∧
+      Topology.IsOpenEmbedding (fun x : W => (x : UniformSpace.Completion W)) := by
+  let mW : MetricSpace W :=
+    let _ : PseudoMetricSpace W := (g.restrictOpen W).toPseudoMetricSpace
+    MetricSpace.ofT0PseudoMetricSpace W
+  let _ : PseudoMetricSpace W := mW.toPseudoMetricSpace
+  let _ : UniformSpace W := mW.toPseudoMetricSpace.toUniformSpace
+  let eW : PseudoEMetricSpace W :=
+    @PseudoMetricSpace.toPseudoEMetricSpace W mW.toPseudoMetricSpace
+  let : WeakPseudoEMetricSpace W := @PseudoEMetricSpace.toWeakPseudoEMetricSpace W eW
+  have hmetricW (x y : W) : edist x y = riemannianEDistOf (g.restrictOpen W) x y :=
+    (g.restrictOpen W).toPseudoMetricSpace_edist x y
+  have hγ' : Isometry (γ : Ico a b → W) := by
+    intro v w
+    rw [hmetricW]
+    exact hγ v w
+  obtain ⟨qW, hqW, hdistW⟩ := Geometry.exists_completion_endpoint_of_isometry hab hγ'
+  have hi : LipschitzWith 1 (Subtype.val : W → M) := by
+    intro x y
+    rw [ENNReal.coe_one, one_mul, hM, hmetricW]
+    exact riemannianEDistOf_le_restrictOpen g W x y
+  have hmap : UniformSpace.Completion.map (Subtype.val : W → M) qW = q := by
+    let l : Filter (Ico a b) := comap Subtype.val (𝓝 b)
+    have hne : NeBot (map (Subtype.val : Ico a b → ℝ) l) := by
+      rw [map_comap_setCoe_val]
+      exact right_nhdsWithin_Ico_neBot hab
+    let _ : NeBot l := hne.of_map
+    have hcomp := (UniformSpace.Completion.continuous_map (f := (Subtype.val : W → M))).continuousAt.tendsto.comp hqW
+    have heq : Tendsto (fun t => ((γ t : M) : UniformSpace.Completion M)) l
+        (𝓝 (UniformSpace.Completion.map (Subtype.val : W → M) qW)) := by
+      apply hcomp.congr'
+      exact Eventually.of_forall fun t => UniformSpace.Completion.map_coe hi.uniformContinuous (γ t)
+    exact tendsto_nhds_unique heq hq
+  refine ⟨qW, hqW, hdistW, ?_, hmap, ?_⟩
+  · rintro ⟨x, rfl⟩
+    rw [UniformSpace.Completion.map_coe hi.uniformContinuous] at hmap
+    exact hmissing ⟨x, hmap⟩
+  · let _ : LocallyCompactSpace W := ChartedSpace.locallyCompactSpace ThreeSpace W
+    exact (UniformSpace.Completion.isDenseEmbedding_coe).isOpenEmbedding
+
 
 theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence
     {kappa : ℝ} (hkappa : 0 < kappa) {A : ℝ} (hA : 0 ≤ A)
@@ -190,14 +258,36 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                         (∀ v w : Ico (t 2 : ℝ) F.radius,
                                           riemannianEDistOf (L.metric.restrictOpen W) (gW v) (gW w) =
                                             edist v w) ∧
-                                        ∀ᶠ n in atTop, ∃ hn : (t 2 : ℝ) ≤ t n,
+                                        (∀ᶠ n in atTop, ∃ hn : (t 2 : ℝ) ≤ t n,
                                           ∃ nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha)
                                             (gW ⟨t n, hn, (t n).property.2⟩),
                                             nkW.map.source = (nk n).map.source ∩
                                               (nk n).map ⁻¹' (W : Set L.M) ∧
                                             (∀ y ∈ univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹,
                                               (nkW.map y : L.M) = (nk n).map y) ∧
-                                            ∀ y : W, nkW.map.symm y = (nk n).map.symm (y : L.M) := by
+                                            ∀ y : W, nkW.map.symm y = (nk n).map.symm (y : L.M)) ∧
+                                        ∃ hW : PathConnectedSpace W,
+                                          let _ : PathConnectedSpace W := hW
+                                          let mW : MetricSpace W :=
+                                            let _ : PseudoMetricSpace W :=
+                                              (L.metric.restrictOpen W).toPseudoMetricSpace
+                                            MetricSpace.ofT0PseudoMetricSpace W
+                                          let _ : PseudoMetricSpace W := mW.toPseudoMetricSpace
+                                          let _ : UniformSpace W := mW.toPseudoMetricSpace.toUniformSpace
+                                          let eW : PseudoEMetricSpace W :=
+                                            @PseudoMetricSpace.toPseudoEMetricSpace W mW.toPseudoMetricSpace
+                                          let _ : WeakPseudoEMetricSpace W :=
+                                            @PseudoEMetricSpace.toWeakPseudoEMetricSpace W eW
+                                          ∃ qW : UniformSpace.Completion W,
+                                            Tendsto (fun v => (gW v : UniformSpace.Completion W))
+                                              (comap (Subtype.val : Ico (t 2 : ℝ) F.radius → ℝ)
+                                                (𝓝 F.radius)) (𝓝 qW) ∧
+                                            (∀ v : Ico (t 2 : ℝ) F.radius,
+                                              dist qW (gW v : UniformSpace.Completion W) = F.radius - v) ∧
+                                            qW ∉ range (fun x : W => (x : UniformSpace.Completion W)) ∧
+                                            UniformSpace.Completion.map (Subtype.val : W → L.M) qW = q ∧
+                                            Topology.IsOpenEmbedding
+                                              (fun x : W => (x : UniformSpace.Completion W)) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -491,13 +581,25 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     · intro y hy
       exact SpatialNeck.restrictOpen_map_coe (U := W) (x := x) (nk n) hn (hn ⟨y, hy, rfl⟩)
     · exact SpatialNeck.restrictOpen_map_symm (U := W) (x := x) (nk n) hn
+  have hW : PathConnectedSpace W := by
+    let _ : ConnectedSpace (Ioi (0 : ℝ)) := isConnected_iff_connectedSpace.mp isConnected_Ioi
+    let _ : ConnectedSpace W := D.surjective.connectedSpace D.continuous
+    let _ : LocallyPathConnectedSpace W := ChartedSpace.locallyPathConnectedSpace ThreeSpace W
+    exact pathConnectedSpace_iff_connectedSpace.mpr inferInstance
+  let _ : PathConnectedSpace W := hW
+  have htailT : Tendsto tailIncl
+      (comap (Subtype.val : Ico (t 2 : ℝ) F.radius → ℝ) (𝓝 F.radius))
+      (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) :=
+    tendsto_comap_iff.mpr tendsto_comap
+  have hcompletion := exists_restricted_completion_endpoint L.metric (fun _ _ => rfl)
+    W (t 2).property.2 gW hgW q (hq.comp htailT) hmissing
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
     hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
     haxisTail, hcollapse, hwindowCapture, E, theta, htheta0, htheta, ?_, D, ?_,
-    gW, fun _ => rfl, hgW, hnkW⟩
+    gW, fun _ => rfl, hgW, hnkW, hW, hcompletion⟩
   · intro tau hR
     exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
   · intro n p s

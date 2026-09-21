@@ -143,6 +143,24 @@ theorem SpatialNeck.image_slab_subset_closedBall
       (r + 6) * Real.sqrt (1 + eps) := by field_simp
   rwa [heq]
 
+theorem SpatialNeck.image_window_subset_ball
+    {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x : M}
+    (nk : SpatialNeck g eps x) :
+    nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ riemannianBallOf g x
+      ((eps⁻¹ + 6) * Real.sqrt (1 + eps) / Real.sqrt (metricScalarAt g x)) := by
+  rintro y ⟨⟨p, z⟩, hz, rfl⟩
+  have habs : |z| < eps⁻¹ := abs_lt.mpr hz.2
+  have hbound := nk.image_slab_subset_closedBall (abs_nonneg z) habs
+    ⟨(p, z), ⟨mem_univ _, neg_abs_le z, le_abs_self z⟩, rfl⟩
+  change riemannianEDistOf g x (nk.map (p, z)) ≤
+    ENNReal.ofReal ((|z| + 6) * Real.sqrt (1 + eps) / Real.sqrt (metricScalarAt g x)) at hbound
+  change riemannianEDistOf g x (nk.map (p, z)) < _
+  apply hbound.trans_lt
+  apply (ENNReal.ofReal_lt_ofReal_iff_of_nonneg (by positivity)).mpr
+  exact div_lt_div_of_pos_right
+    (mul_lt_mul_of_pos_right (by linarith : |z| + 6 < eps⁻¹ + 6) (Real.sqrt_pos.mpr (by linarith [nk.eps_pos])))
+    (Real.sqrt_pos.mpr nk.Q_pos)
+
 theorem SpatialNeck.central_sphere_subset_closedBall
     {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x : M}
     (nk : SpatialNeck g eps x) :
