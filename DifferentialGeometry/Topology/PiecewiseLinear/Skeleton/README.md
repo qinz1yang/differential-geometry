@@ -29,3 +29,11 @@ confined to this directory.
    `sorry`s of that file (`grep -c "sorry" Skeleton/<Chain>.lean`).
 6. No declaration docstrings or comments, as everywhere; the module docstring lists the leaves
    with one line each (what it says, which lane owns it, reviewed or not).
+
+7. **A skeleton cannot be imported by anything, not even by another skeleton** (found 2026-09-21):
+   the focused checker only offers a module to importers when its receipt has zero diagnostics,
+   and every skeleton has `sorry` warnings. Vocabulary shared by two skeletons (predicates,
+   index types, proved exporters) therefore lives in a *real* module with no `sorry`
+   (e.g. `Section34Frame.lean`, `LoopTheorem/ClosedBranchCaseOneTransport.lean`), imported by
+   both. When one skeleton's endpoint is another skeleton's leaf, the two statements are kept
+   textually identical and compared by diff, not by import.
