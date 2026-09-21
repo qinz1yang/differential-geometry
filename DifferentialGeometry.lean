@@ -9167,6 +9167,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLHomeomorphGl
 import DifferentialGeometry.Topology.PiecewiseLinear.MarkedCircleSector
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise308NestedShell
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
+import DifferentialGeometry.Topology.LoopSpace.PathLoopInjectivity
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
 /-!
 # Differential geometry and geometric analysis
 -/

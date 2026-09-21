@@ -18,7 +18,7 @@ orientable case is needed (simply connected ⇒ orientable); only existence of s
 3. Whoever commits a change to the hypothesis list of any endpoint named here updates this page
    **in the same commit**. An audit that disagrees with this page must point to the declaration
    (file:line) that proves the item, or the page stands.
-4. Last verified against source: **2026-09-20 night, commit `121e705fc`**.
+4. Last verified against source: **2026-09-20 night, commit of `BoundaryAdaptation.lean`**.
 
 ## How to audit (no compiler needed)
 
@@ -64,7 +64,7 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | A2.1 | closed branch, two circles, nested | **PROVED** `exists_descendingSurgery_of_nested_innermost_cleanDisk` (`LoopTheorem/ClosedBranchNestedDescent.lean:245`) |
 | A2.2 | closed branch, two circles, disjoint: adapted clean-cap neighbourhood | open, not started |
 | A2.3 | closed branch, one circle: impossible in an orientable manifold | open, in progress (`consult/C-or1-design.md`, 11 items) |
-| A2.4a | boundary branch: PL tube with side containment, boundary equality, end-disk buffer | open (lane S; planar four-spoke layer proved, producer statement under revision) |
+| A2.4a | boundary branch: PL tube with side containment, boundary equality, end-disk buffer — the obligation is now stated: `IsPLBoundaryTubeProducer` (`BoundaryAdaptation.lean:38`), with `isPLBoundarySide_double` proving that the double's side satisfies its hypothesis | open (lane S; planar four-spoke layer proved; marked cone, chain, boundary adaptation to come) |
 | A2.4b | boundary branch: both boundary word witnesses from **one** cut, parametrisation exposed | open (F9; source-segment exports proved, source-match theorems under revision) |
 | A2.4c | boundary branch: assemblies conclude side + buffer as the statement asks | open (F10) |
 | A2.4d | joint non-degenerate fixture: branch + both candidates + tube + reading + both witnesses on one tuple | open (F11); until it exists A2.4 is UNTESTED |
