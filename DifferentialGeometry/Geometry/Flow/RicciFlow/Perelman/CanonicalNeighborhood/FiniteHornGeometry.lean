@@ -135,6 +135,19 @@ structure StrongNeck {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D
     (⌈eps⁻¹⌉₊) eps
 
 
+structure SpatialNeck (g : SmoothRiemannianMetric I3 M) (eps : ℝ) (x : M) where
+  eps_pos : 0 < eps
+  eps_small : eps < 1 / 11
+  Q_pos : 0 < metricScalarAt g x
+  cylinder : CylinderReference
+  map : PartialDiffeomorph IC I3 Cylinder M ∞
+  center : Sphere 2
+  center_eq : map (center, 0) = x
+  domain : Set.univ ×ˢ Set.Ioo (-eps⁻¹) eps⁻¹ ⊆ map.source
+  comparison : MetricComparisonOn (fun _ => cylinder.metric 0)
+    (fun _ => scaleMetric (metricScalarAt g x) Q_pos g) map
+    (Set.univ ×ˢ Set.Ioo (-eps⁻¹) eps⁻¹) {0} (⌈eps⁻¹⌉₊) eps
+
 structure LocalNeck {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D)
     (eps : ℝ) (x : M) (t : ℝ) (U : Set M) where
   strong : StrongNeck S eps x t

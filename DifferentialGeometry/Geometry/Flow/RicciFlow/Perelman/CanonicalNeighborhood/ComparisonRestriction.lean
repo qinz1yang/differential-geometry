@@ -83,4 +83,20 @@ def MetricComparisonOn.freezeTime
           MetricFiberData.inner, map_zero, Real.sqrt_zero]
       exact hz.le.trans heps
 
+def StrongNeck.toSpatialNeck {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {S : SolutionOn (I := I3) (M := M) D}
+    {eps t : ℝ} {x : M} (nk : StrongNeck S eps x t) :
+    SpatialNeck (S.base.metric t) eps x where
+  eps_pos := nk.eps_pos
+  eps_small := nk.eps_small
+  Q_pos := nk.Q_pos
+  cylinder := nk.cylinder
+  map := nk.map
+  center := nk.center
+  center_eq := nk.center_eq
+  domain := nk.domain
+  comparison := by
+    have C := nk.comparison.freezeTime (t := 0) (by norm_num) nk.eps_pos.le {0}
+    simpa only [rescaledMetric, parabolicTime_zero, SolutionOn.scalar, SolutionFamily.scalar] using C
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

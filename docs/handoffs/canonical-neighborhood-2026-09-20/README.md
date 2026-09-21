@@ -874,3 +874,36 @@ retained sorry warnings and no other diagnostics. Evidence is in
 `/private/tmp/wt17-escape-necks-build.log`,
 `/private/tmp/wt17-escape-necks-audit.log`, and
 `/private/tmp/wt17-escape-necks-root-build.log`.
+
+## Inverse metric control and spatial neck transport
+
+The continuation after `27ff63d12` proves compact, fixed-order convergence of
+metric differences measured in the approximating metric's connection and norm.
+`Pointed/Convergence/InverseMetric.lean` gives this inverse comparison from canonical
+pointed convergence, without completeness or boundarylessness assumptions.
+`StaticComparison.lean` constructs an actual static `MetricComparisonOn` on a compact
+set from the local pulled-back metric and its derivative bounds, by smooth tensor
+extension. Its pullback is tied to the supplied map by the derivative equation.
+
+`StrongNeck.toSpatialNeck` freezes the genuine terminal slice. The new local spatial
+neck transport theorem uses the actual partial diffeomorphism, proves its map
+equation, and requires only the compact cylinder buffer needed for tensor extension.
+`SpatialNeck` moved unchanged into `FiniteHornGeometry.lean`. Replacing the accidental
+`ComparisonComposition` import of `AncientExtension` removes the path from the source
+neck producers back to the bounded-distance headline. `WindowedModelLimit` now
+imports its terminal window lemma directly.
+
+These are comparison steps toward Kleiner--Lott Section 52, Lemma 52.14(2), in
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+The actual inverse-map comparison, limit necks, and horn/cone producers remain
+unfinished. The bounded-distance headline and the same 21 retained sorrys remain open.
+
+All four new public declarations passed thirteen declaration linters and have only
+`propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The affected-consumer build passed 14,213 jobs. The additional static-comparison and
+direct-import repair build passed 13,847 jobs. The final root build passed 20,182
+jobs, with exactly 21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-inverse-metric-spatial-neck-build.log`,
+`/private/tmp/wt17-static-comparison-build.log`,
+`/private/tmp/wt17-inverse-metric-spatial-neck-audit.log`, and
+`/private/tmp/wt17-inverse-metric-spatial-neck-root-build.log`.
