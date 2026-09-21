@@ -12528,3 +12528,8 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.NoncompactMin
 import DifferentialGeometry.Geometry.Metric.Completeness.Transport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HomogeneousCoordinatesTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClassical.Morrey
+import DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectiveCapCore
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderDiagonalSlab
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectiveCapDomain
+import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition

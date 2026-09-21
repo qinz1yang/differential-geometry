@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientHomeomorph
+import DifferentialGeometry.Topology.ProjectiveSpace.CylinderQuotientSmoothModels
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Descent
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThreeManifold
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
@@ -248,3 +251,46 @@ theorem cylinderAntipodalQuotientDiffeomorph_pullbackMetric :
   exact h
 
 end DifferentialGeometry.Geometry
+
+end
+
+section
+noncomputable section
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.CylinderDiagonalQuotient
+
+private theorem exists_diffeomorph_orbitQuotient
+    : ∃ e : CylinderDiagonalQuotient ≃ₘ⟮
+        (𝓡 2).prod 𝓘(Real, Real), (𝓡 2).prod 𝓘(Real, Real)⟯
+        DifferentialGeometry.Geometry.CylinderDiagonalQuotient, ∀ p,
+      e (proj p) = DifferentialGeometry.Geometry.cylinderDiagonalQuotientMap p := by
+  obtain ⟨e, he⟩ := exists_homeomorph_orbitQuotient
+  obtain ⟨D, hD⟩ := exists_diffeomorph_of_homeomorph_comp_localDiffeomorph
+    proj isLocalDiffeomorph_proj surjective_proj
+    DifferentialGeometry.Geometry.cylinderDiagonalQuotientMap
+    DifferentialGeometry.Geometry.cylinderDiagonalQuotientMap_isLocalDiffeomorph
+    e he
+  exact ⟨D, fun p => (congrFun hD (proj p)).trans (he p)⟩
+
+theorem exists_diffeomorph_puncturedRealProjectiveThreeSpace :
+    ∃ e : CylinderDiagonalQuotient ≃ₘ⟮(𝓡 2).prod 𝓘(Real, Real), 𝓡 3⟯
+        PuncturedRealProjectiveThreeSpace,
+      ∀ p : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real,
+        e (proj p) =
+          ⟨realProjectiveSpaceQuotientMap
+            (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture p).1,
+            (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture p).2⟩ := by
+  obtain ⟨e, he⟩ := exists_diffeomorph_orbitQuotient
+  refine ⟨e.trans DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph, ?_⟩
+  intro p
+  change DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph
+    (e (proj p)) = _
+  rw [he p]
+  exact DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph_apply p
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.CylinderDiagonalQuotient
+
+end
+
+end

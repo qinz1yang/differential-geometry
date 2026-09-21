@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.PartialChartEmbedding
 import DifferentialGeometry.Topology.Manifold.AmbientNormalOrientation
 import DifferentialGeometry.Topology.Manifold.AmbientSectionExtension
 import DifferentialGeometry.Topology.Manifold.TransverseFlow
@@ -76,3 +77,33 @@ theorem SphereAntipodalQuotient.not_isSmoothEmbedding_euclideanThree
   exact not_cooriented_projective_embedding f (C.coorientedAtlas O) hf.isEmbedding.injective
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+theorem SphereAntipodalQuotient.not_range_subset_partialDiffeomorph_target
+    {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (e : SphereAntipodalQuotient → M)
+    (he : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
+    (chart : PartialDiffeomorph (𝓡 3) (𝓡 3) (EuclideanSpace ℝ (Fin 3)) M ∞) :
+    ¬ range e ⊆ chart.target := by
+  intro hsub
+  exact SphereAntipodalQuotient.not_isSmoothEmbedding_euclideanThree (chart.symm ∘ e)
+    (DifferentialGeometry.Topology.isSmoothEmbedding_comp_partialDiffeomorph
+      chart.symm he hsub)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+end
