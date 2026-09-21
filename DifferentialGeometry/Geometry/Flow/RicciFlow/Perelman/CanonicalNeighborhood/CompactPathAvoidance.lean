@@ -3,6 +3,7 @@ import Mathlib.Topology.EMetricSpace.BoundedVariation
 import Mathlib.Topology.UniformSpace.Compact
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
+import DifferentialGeometry.Geometry.Comparison.Toponogov.RemoteTriangle
 
 set_option autoImplicit false
 
@@ -240,21 +241,6 @@ theorem exists_partition_eventually_rectifiable_path_avoiding_ball
 
 
 
-def RemotePointTriangle {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H]
-    (I : ModelWithCorners ℝ E H) : Prop :=
-  ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
-      [SigmaCompactSpace M] [ConnectedSpace M] (g : SmoothRiemannianMetric I M),
-    ¬ CompactSpace M →
-      RiemannianMetricComplete (I := I) g →
-        Geometry.Riemannian.SectionalBoundedBelow (I := I) g 0 →
-          ∀ p : M, ∃ Dray : ℝ, ∀ y : M,
-            Dray < (riemannianEDistOf (I := I) g p y).toReal →
-              ∃ w : M,
-                (riemannianEDistOf (I := I) g y w).toReal =
-                    (riemannianEDistOf (I := I) g p y).toReal ∧
-                  3 / 2 * (riemannianEDistOf (I := I) g p y).toReal ≤
-                    (riemannianEDistOf (I := I) g p w).toReal
 
 end
 
