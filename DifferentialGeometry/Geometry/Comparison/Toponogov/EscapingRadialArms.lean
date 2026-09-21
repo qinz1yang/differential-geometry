@@ -44,13 +44,17 @@ variable [RiemannianBundle (fun x : M => TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)] [ConnectedSpace M]
 
+omit [ConnectedSpace M] in
 theorem exists_unit_intrinsic_vector_of_pos_distance
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p q : M) (hd : 0 < (riemannianEDist I p q).toReal) :
     ∃ w : TangentSpace I p, g.inner p w w = 1 ∧
       intrinsicGeodesic (I := I) g hEnorm p w (riemannianEDist I p q).toReal = q := by
   obtain ⟨v, hvend, hvlen⟩ := minExp_of_ne_top (I := I) g hEnorm p q
-    (riemannianEDist_ne_top (I := I) p q)
+    (by
+      intro htop
+      rw [htop, ENNReal.toReal_top] at hd
+      exact lt_irrefl 0 hd)
   let d : ℝ := (riemannianEDist I p q).toReal
   let w : TangentSpace I p := d⁻¹ • v
   have hdpos : 0 < d := hd
@@ -70,6 +74,7 @@ theorem exists_unit_intrinsic_vector_of_pos_distance
       (intrinsicGeodesic_smul (I := I) g hEnorm p w d).symm
     _ = q := by rw [hsmul, hvend]
 
+omit [ConnectedSpace M] in
 theorem exists_convergent_fast_radial_arms
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x : ℕ → M) (lam : ℕ → ℝ)
