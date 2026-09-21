@@ -226,6 +226,11 @@ F1、F5 的两个 `…_of_plReading_of_boundaryCover`、F6 全部带假设
 第 82–83 行：七个阶段是在**整个**局部有限族上一次完成的 PL 延拓 E1–E7，误差估计**只**来自载体包含
 (C1) `h(C_v) ∪ V_v ⊂ H_v`、`h(Q_t) ∪ R_t ⊂ H_t` 与 `diam H_α < η`，没有任何 `ε` 序列。
 
+- **第二处独立的假：P0 的载体按塔的阶段 `i` 编号。** `carrierCore i : h '' coreSpace i ⊆ carrier i` 加
+  `carrierSmall i : ∀ x ∈ coreSpace i, ∀ y ∈ carrier i, dist y (h x) < η x`，而 `coreSpace` 递增：同一阶段里
+  两点 `x ≠ x'` 给出 `dist (h x') (h x) < η x`，取 `η ≡ dist (h x) (h x') / 2` 即矛盾。所以
+  `Section34SourceData D η` 对小 `η` 无居留，P0 为假。A2 摘要里载体 `H_α` 是按局部有限三角剖分的
+  **单形 `α`** 编号的（`h(|St α|) ⊂ Int H_α`，`diam H_α < η` 于 `|St α|`）。
 - **E3.6′ 重做装配**：删掉 `Section34StageContract`、`exists_stage_maps`、`exists_approximation`。
   P8 的产出是**块与关联式**（(V)、(TT)），不是阶段映射。装配定理内部用 E3.3（阶段 2）、E3.4（阶段
   2b–7，局部有限族一次延拓）把 E1–E7 真的做出来，得到 `f : U → M₂` PL 嵌入；`dist (f x) (h x) < φ x`
