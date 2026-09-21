@@ -6788,6 +6788,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Solution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Sphere
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ChartGramContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.VolumeContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.VolumeGrowth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ScalarBlowup
@@ -7026,6 +7029,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EuclideanLocalClassTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EndpointAntitone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EuclideanSimplexGeneratorCriterion
@@ -8281,6 +8285,7 @@ import DifferentialGeometry.Topology.Compactness.UniformInjectivity
 import DifferentialGeometry.Topology.Connected.BallComplement
 import DifferentialGeometry.Topology.Connected.CollarCover
 import DifferentialGeometry.Topology.Connected.CoverBySides
+import DifferentialGeometry.Topology.Connected.SublevelBarrierSelection
 import DifferentialGeometry.Topology.Connected.Dense
 import DifferentialGeometry.Topology.Connected.DomainEquality
 import DifferentialGeometry.Topology.Connected.EndpointCollarStrip
