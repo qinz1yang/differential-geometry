@@ -739,3 +739,42 @@ as corollaries. Evidence is in
 `/private/tmp/wt17-quantitative-escape-interface-build.log`,
 `/private/tmp/wt17-quantitative-escape-final-root-build.log`, and
 `/private/tmp/wt17-quantitative-escape-audit.log`.
+
+
+## Intrinsic lines, cylinder classification, and source necks
+
+The continuation after `490e0e62a` proves that an oriented three-dimensional
+ancient kappa-solution containing an intrinsic minimizing line at any time at
+or before zero is a round shrinking cylinder, with one diffeomorphism realizing
+the product metric at all times. Without orientability, the remaining alternatives
+are the cylinder and the antipodal sphere product. The reflected cylinder quotient
+is excluded by its actual covering metric.
+
+The exclusion has reusable foundations in `Topology/Covering/Line.lean` and
+`Geometry/Metric/Cylinder/Line.lean`. A continuous lift of a hypothetical line has
+absolute height bounded below; the covering distance estimate and reflection force
+that height to preserve distances up to a bounded error, which contradicts the
+intermediate value theorem. Compactness of the cross-section supplies the bounded
+error in the Riemannian application. These results require no curvature hypothesis.
+
+`KappaSolutions/AncientCylinderLine.lean` combines this exclusion with the proved
+null-plane and fixed-cylinder classification. `KappaSolutions/PointedLineNeck.lean`
+then constructs eventual source neck witnesses from canonical pointed metric
+convergence to an ancient limit containing a line. It derives the limit's scalar
+normalization from convergence and excludes the antipodal sphere product using
+orientations on the approximating manifolds. The conclusion identifies every neck
+embedding with the actual convergence map. This is the compactness and splitting
+step underlying Kleiner--Lott, Section 49, Proposition 49.1 (printed page 2692,
+PDF page 106 of `BooksPapers/KleinerLottPerelman.pdf`). Quantitative long-segment
+neck production and its use near the missing endpoint remain the next work.
+
+All four new leaves are registered in the flat root. The cylinder and pointed-neck
+leaf builds passed without diagnostics. Six public declarations passed thirteen
+declaration linters, and all six have only `propext`, `Classical.choice`, and
+`Quot.sound` in their transitive axiom closures. The final root build passed
+20,175 jobs with the same 21 retained sorry warnings and no other diagnostics.
+Evidence is in `/private/tmp/wt17-ancient-cylinder-line-build.log`,
+`/private/tmp/wt17-pointed-line-neck-build.log`,
+`/private/tmp/wt17-cylinder-line-audit.log`, and
+`/private/tmp/wt17-cylinder-line-root-build.log`.
+The bounded-distance headline remains unchanged and open.

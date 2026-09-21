@@ -5765,6 +5765,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCovariantContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCurvatureDichotomy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderBranch
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderDeckClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderFixedModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderNoTranslation
@@ -6138,6 +6139,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Spat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckCoreSize
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckCurveLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckDetection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedLineNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckEscapingContradiction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckExitLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckHighCurvature
@@ -7629,6 +7631,7 @@ import DifferentialGeometry.Geometry.Metric.CurveUnitTangent
 import DifferentialGeometry.Geometry.Metric.CurveVariation
 import DifferentialGeometry.Geometry.Metric.Cylinder
 import DifferentialGeometry.Geometry.Metric.Cylinder.IsometryExtension
+import DifferentialGeometry.Geometry.Metric.Cylinder.Line
 import DifferentialGeometry.Geometry.Metric.Cylinder.TangentFraming
 import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Geometry.Metric.CylinderRotation
@@ -8471,6 +8474,7 @@ import DifferentialGeometry.Topology.Covering.FundamentalGroup.Countability
 import DifferentialGeometry.Topology.Covering.ImmersionLift
 import DifferentialGeometry.Topology.Covering.Intervals
 import DifferentialGeometry.Topology.Covering.Lifting
+import DifferentialGeometry.Topology.Covering.Line
 import DifferentialGeometry.Topology.Covering.OrderedFiber
 import DifferentialGeometry.Topology.Covering.PuncturedSpaceCylinderCover
 import DifferentialGeometry.Topology.Covering.QuotientDeckGroup
