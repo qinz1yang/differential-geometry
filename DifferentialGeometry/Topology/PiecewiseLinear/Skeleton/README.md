@@ -37,3 +37,12 @@ confined to this directory.
    (e.g. `Section34Frame.lean`, `LoopTheorem/ClosedBranchCaseOneTransport.lean`), imported by
    both. When one skeleton's endpoint is another skeleton's leaf, the two statements are kept
    textually identical and compared by diff, not by import.
+
+8. **External verdicts are evidence, not rulings** (owner, 2026-09-21). Before a leaf is restated
+   on a FALSE verdict, the counterexample is checked clause by clause against the actual Lean
+   hypotheses, and the digest records "counterexample verified by <who>" or "not verified". A
+   proposed repair is tested against the shared fixture and against the earlier counterexamples
+   before it is adopted; a repair that adds a universal quantifier is suspect (one such repair was
+   withdrawn by the reviewer a round later). An OK verdict freezes the *statement*: whoever proves
+   the leaf first tries to refute it and stops if it looks false. Claims about the book or the
+   tree are checked against the source before they change `FREE_INPUTS.md`.
