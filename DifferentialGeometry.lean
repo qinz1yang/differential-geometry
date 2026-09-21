@@ -12608,3 +12608,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalDeepLocalCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalCapCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalCanonicalWitness
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.DoubledTame

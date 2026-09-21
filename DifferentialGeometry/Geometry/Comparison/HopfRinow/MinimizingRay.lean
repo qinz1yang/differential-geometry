@@ -310,3 +310,49 @@ end Geometry
 end DifferentialGeometry
 
 end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Bundle
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [MetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] [ConnectedSpace M] [NoncompactSpace M]
+  [RiemannianBundle (fun x : M => TangentSpace I x)]
+  [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+  [IsRiemannianManifold I M] [CompleteSpace M]
+
+theorem exists_isometric_ray (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g) (p : M) :
+    ∃ c : ℝ≥0 → M, Isometry c ∧ c 0 = p := by
+  obtain ⟨gamma, hgamma⟩ := exists_minimizing_ray g hEnorm p
+  let c : ℝ≥0 → M := fun s => gamma s
+  refine ⟨c, ?_, hgamma.start_eq⟩
+  apply Isometry.of_dist_eq
+  intro s t
+  have hdist (s t : ℝ≥0) (hst : s ≤ t) : dist (c s) (c t) = (t : ℝ) - s := by
+    have hstreal : (s : ℝ) ≤ (t : ℝ) := hst
+    have hh := hgamma.edist_eq s.coe_nonneg hstreal
+    rw [← IsRiemannianManifold.out (I := I), edist_dist] at hh
+    have h := congrArg ENNReal.toReal hh
+    simpa only [ENNReal.toReal_ofReal dist_nonneg, ENNReal.toReal_ofReal (sub_nonneg.mpr hstreal)] using h
+  rcases le_total s t with hst | hts
+  · rw [hdist s t hst, NNReal.dist_eq, abs_of_nonpos (sub_nonpos.mpr (show (s : ℝ) ≤ t from hst))]
+    ring
+  · rw [dist_comm, hdist t s hts, NNReal.dist_eq, abs_of_nonneg (sub_nonneg.mpr (show (t : ℝ) ≤ s from hts))]
+
+end DifferentialGeometry.Geometry.Riemannian
+
+end
+
+end
