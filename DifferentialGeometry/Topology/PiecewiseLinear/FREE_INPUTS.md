@@ -55,11 +55,13 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 
 | ID | Item | Status |
 |---|---|---|
-| **A1** | `GeneralPositionInDoubleBufferedStatement` (`LoopTheorem/LemmaTwoBuffered.lean:167`) | **OPEN** |
-| A1.a | cut-out piece for a source disk **with boundary** satisfying "all sheets through the region" | open, not started (delivered version is uninstantiable) |
-| A1.b | relative half-space general position freezing an **interior collar** (guard `(s ∩ B).card ≤ finrank (ker ℓ) + 1`), producing normal crossings on `closure W` | open, not started (delivered version vacuous) |
-| A1.c | induction over a finite cover with the **whole** union `U = ⋃ W j` | whole-union invariant **committed** (`doublePointSet_subset_iUnion_of_buffered_steps`, `LoopTheorem/GeneralPositionInDoubleBufferedInduction.lean:17`); the crossing induction on top of it is delivered by lane H but not yet reviewed |
-| A1.d | global assembly: one cell `A`, same domain, maps-to, boundary neighbourhood, boundary loop avoidance (homotopy `H`, `hmap`, `hsurj` are free inputs today) | open |
+| **A1** | `GeneralPositionInDoubleBufferedStatement` (`LoopTheorem/LemmaTwoBuffered.lean:167`) | **OPEN**; leaves = the `sorry`s of `Skeleton/GeneralPositionInDouble.lean` (external review pending) |
+| A1.1 | adapted half-space charts of the double, arbitrarily small: `x ∈ C ↔ 0 ≤ ℓ (e x)`, `x ∈ Bd ↔ ℓ (e x) = 0` (leaf `exists_adaptedHalfSpaceChart_in_double`) | open (lane H); **unreviewed** |
+| A1.2 | finite adapted cover of the double point set with the whole-union invariant `V j ⊆ ⋃ i, W i` (leaf `exists_finiteAdaptedCover_of_doublePointSet`) | open (lane H); **unreviewed** |
+| A1.3 | cut-out piece of a source disk **with boundary**: all sheets through the region, frozen outer collar (leaf `SingularTwoCell.exists_cutOutPiece_of_closure_subset`) | open (lane H); **unreviewed** |
+| A1.4 | relative guarded half-space general position in an adapted chart, frozen collar, guard `(s ∩ B).card ≤ finrank (ker ℓ) + 1` (leaf `exists_small_vertexMap_relative_in_adaptedChart`) | open (lane H); **unreviewed**; the worker flags the frozen-part exemption and `Rc.vertices ⊆ Rs.vertices` as the likely defects |
+| A1.5 | one normalization step on a prescribed region: same domain, maps to `C`, fibres unchanged off `V`, crossings on `O' ⊇ Z ∪ closure W`, buffered boundary homotopy (leaf `exists_normalizationStep_on_prescribedRegion`) | open (lane H); **unreviewed** |
+| A1.6 | chart-by-chart induction, extraction of `crossing`, boundary loop (from the committed `exists_boundary_loop_of_buffered_homotopy`), assembly | **PROVED modulo A1.1–A1.5**: `Skeleton/GeneralPositionInDouble.lean` compiles with exactly 5 `sorry` leaves and none in the assembly (checked 2026-09-21) |
 | **A2** | `DescentStepOrientableStatement` (`LoopTheorem/LemmaTwoOrientable.lean:61`) | **OPEN**; leaves = the `sorry`s of `Skeleton/DescentStepOrientable.lean` (reviewed: `consult/G-descent-skeleton-review-digest.md`) |
 | A2.1 | closed branch, two circles, nested | **PROVED** `exists_descendingSurgery_of_nested_innermost_cleanDisk` (`LoopTheorem/ClosedBranchNestedDescent.lean:245`) |
 | A2.2a | closed branch, two circles, disjoint — geometric cap producer: for every open `V` with `D(Q) ⊆ V ⊆ interior (C \ BdM)`, a larger source disk `E'` and a PL embedded cap `Δ' ⊆ V` (leaf `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`) | open, not started; statement **new** (from review G, not yet re-reviewed) |
@@ -102,4 +104,4 @@ in a non-orientable manifold; `Moise305` (non-tame), `Moise306`, `Moise307`,
 
 ## Count (the number an audit should quote)
 Top-level OPEN items: **A1, A2, B1, C1** (+ D1 external). Expanded leaves currently open:
-**A: 4 + 10 = 14** (A2.1 closed; A2's open leaves are now exactly the 10 `sorry`s of `Skeleton/DescentStepOrientable.lean` — a finer cut after review G, not new work), **B: 4 + 4 = 8** (B1.a closed; B1.b split into B1.b.1–4 on 2026-09-21, a refinement, not new work), **C: 1**. Leaves closed since this page was created: 1 (B1.a).
+**A: 5 + 10 = 15** (A2.1 closed; A2's open leaves are now exactly the 10 `sorry`s of `Skeleton/DescentStepOrientable.lean` — a finer cut after review G, not new work), **B: 4 + 4 = 8** (B1.a closed; B1.b split into B1.b.1–4 on 2026-09-21, a refinement, not new work), **C: 1**. Leaves closed since this page was created: 1 (B1.a).
