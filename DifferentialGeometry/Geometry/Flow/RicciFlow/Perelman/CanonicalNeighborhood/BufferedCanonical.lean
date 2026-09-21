@@ -122,3 +122,60 @@ theorem CanonicalWitness.exists_bufferedCanonical
   exact hcap cap ⟨hdepth, halteq'⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+  {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+  {eps A C alpha H : ℝ} {p : M} {t : ℝ}
+
+theorem CanonicalWitness.exists_bufferedCanonical_of_neck
+    (K : CanonicalWitness S eps A C p t) (heps : eps < alpha)
+    (nk : LocalNeck S eps p t K.domain.carrier) (hneck : K.alternative = CanonicalAlternative.neck nk) :
+    ∃ B : BufferedCanonical S alpha (max A C + 1) H p t,
+      B.tolerance = eps ∧ B.witness.domain = K.domain ∧ B.witness.radius = K.radius ∧
+      ∃ nk' : LocalNeck S B.tolerance p t B.witness.domain.carrier,
+        B.witness.alternative = CanonicalAlternative.neck nk' ∧ HEq nk' nk := by
+  obtain ⟨_hC, hA, hC', hscalar, hrm, hvolume⟩ := K.strict_curvature_volume_reserves
+  let K' := K.enlarge_constants hA.le hC'.le
+  have halt : K'.alternative = CanonicalAlternative.neck nk := by
+    change K.alternative.mono_constant (zero_lt_one.trans_le K.one_le_comparison_constant) hC'.le K.Q_pos.le = _
+    rw [hneck]
+    rfl
+  obtain ⟨a, b, margin, ha, _har, hm, hab, hinner, houter⟩ := K'.exists_radial_reserve
+  let B : BufferedCanonical S alpha (max A C + 1) H p t := {
+    tolerance := eps
+    tolerance_pos := K.eps_pos
+    tolerance_lt := heps
+    witness := K'
+    a := a
+    b := b
+    margin := margin
+    a_pos := ha
+    margin_pos := hm
+    radial_margin := hab.le
+    inner_ball := hinner
+    outer_ball := houter
+    scalar_reserve := hscalar
+    rm_reserve := hrm
+    volume_reserve := fun hv => hvolume (by
+      simpa only [K', CanonicalWitness.enlarge_constants_requiresVolume] using hv)
+    cap_collar := by
+      intro cap hc
+      obtain ⟨depth, heq⟩ := hc
+      rw [halt] at heq
+      cases heq }
+  exact ⟨B, rfl, rfl, rfl, nk, halt, HEq.rfl⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end

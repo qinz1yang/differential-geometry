@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Positivity
+import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactPositiveCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactAncientPositive
@@ -32,7 +34,11 @@ theorem exists_positive_canonicalWitness_of_compact_ancientKappa
   have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
   have hpos := ancientKappa_curvatureOperatorPositive_of_compact F hF hdim
   have hsec : HasPositiveSectionalCurvature (F.S.base.metric t) :=
-    (hasPositiveSectionalCurvature_iff_forall_curvatureOperatorPositiveAt (F.S.base.metric t) hdim).mpr (hpos t ht)
+    fun y v w hvw => ((curvatureOperatorPositiveAt_iff_sectional
+      (F.S.base.metric t) y hdim).mp (hpos t ht y)) v w (by
+        simpa only [Geometry.Riemannian.sectionalCurvatureDenominator_def] using
+          Geometry.Riemannian.sectionalCurvatureDenominator_pos_of_linearIndependent
+            (F.S.base.metric t) y v w hvw)
   obtain ⟨c, hc, hclower⟩ := exists_pos_secLower_of_compact_positive_sectional (F.S.base.metric t) hsec
   exact exists_positive_canonicalWitness_of_compact ht
     (fun y => ancientKappa_scalar_pos F hdim hF ht y) data hc hclower
@@ -47,7 +53,11 @@ theorem exists_bufferedCanonical_of_compact_ancientKappa_of_positiveComponent
   have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
   have hpos := ancientKappa_curvatureOperatorPositive_of_compact F hF hdim
   have hsec : HasPositiveSectionalCurvature (F.S.base.metric t) :=
-    (hasPositiveSectionalCurvature_iff_forall_curvatureOperatorPositiveAt (F.S.base.metric t) hdim).mpr (hpos t ht)
+    fun y v w hvw => ((curvatureOperatorPositiveAt_iff_sectional
+      (F.S.base.metric t) y hdim).mp (hpos t ht y)) v w (by
+        simpa only [Geometry.Riemannian.sectionalCurvatureDenominator_def] using
+          Geometry.Riemannian.sectionalCurvatureDenominator_pos_of_linearIndependent
+            (F.S.base.metric t) y v w hvw)
   obtain ⟨c, hc, hclower⟩ := exists_pos_secLower_of_compact_positive_sectional (F.S.base.metric t) hsec
   exact exists_bufferedCanonical_of_compact_positive ht
     (fun y => ancientKappa_scalar_pos F hdim hF ht y) data hc hclower
