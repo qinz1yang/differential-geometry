@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Cylinder
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Geometry.Curvature.Product
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
@@ -52,6 +53,16 @@ theorem cylinderReferenceMetric_zero_inner (y : Cylinder) (v w : TangentSpace IC
           (show ThreeSpace from mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) y.1 w.1)
       + v.2 * w.2 := by
   simpa using cylinderReferenceMetric_inner 0 le_rfl y v w
+
+theorem CylinderReference.metric_zero_eq_roundCylinder (C : CylinderReference) :
+    C.metric 0 = DifferentialGeometry.Geometry.Metric.roundCylinderMetric
+      (E := ThreeSpace) (n := 2) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [C.inner_eq 0 le_rfl, DifferentialGeometry.Geometry.Metric.roundCylinderMetric_inner]
+  norm_num
+  rfl
+
 
 theorem cylinderReferenceMetric_scalar (s : ℝ) (hs : s ≤ 0) (y : Cylinder) :
     metricScalarAt (cylinderReferenceMetric s) y = (1 - s)⁻¹ := by

@@ -1039,3 +1039,40 @@ applicable declaration linters; all transitive axioms are among `propext`,
 `/private/tmp/wt17-spatial-neck-slabs-root-build.log`.
 
 The bounded-distance headline and the geometric end/cone producers remain open.
+
+## Spatial neck charts, curvature ratios, and actual overlap graphs
+
+The continuation after `09ac601c7` connects spatial necks to the existing generic
+cylindrical-chart API. `MetricComparisonOn.metricDerivNorm_of_local_metric`
+generalizes the existing open-pullback derivative identity to arbitrary finite-dimensional
+normed source models and independent source/target universes. The
+old same-model theorem keeps its signature as a corollary.
+`CylinderReference.metric_zero_eq_roundCylinder` identifies the static model.
+`SpatialNeck.cylindricalChart` uses the actual partial diffeomorphism on its full
+controlled window; its `metricCloseOn` estimate and scalar-ratio estimate follow
+from the existing covariant-jet and cylindrical curvature APIs.
+
+`SpatialNeck.image_slab_subset_of_center_mem_slab` is an actual overlap producer:
+for sufficiently small precision, if the second center is in a slab of the first
+neck of radius at most one tenth of its coordinate window, every slab of the
+second neck of the same maximum radius lies in the first neck's full chart.
+Scalar comparison controls the relative scales; the triangle inequality and the
+proved ball-capture theorem establish the containment. No completeness is assumed.
+`SpatialNeck.exists_graph_in_nearby_neck` then constructs a smooth graph and a
+sphere diffeomorphism for every cross-section in that smaller slab. It consumes
+the existing least-Ricci alignment and transverse product-chart graph theorems.
+This is the contained-sphere portion of Morgan--Tian, `MorganTianPoincare.pdf`,
+Appendix A, Proposition A.11(4), with quantitative containment supplied explicitly.
+
+Nine declarations passed all thirteen applicable declaration linters and have
+only the three approved foundational axioms. The final leaf passed 11,176 jobs;
+the full root passed 20,189 jobs with exactly 21 retained sorry warnings and no
+other diagnostics. The overlap module has no dependency on `FiniteHornStructure`
+(2,471 reachable project modules inspected). Evidence:
+`/private/tmp/wt17-spatial-neck-overlap-build.log`,
+`/private/tmp/wt17-spatial-neck-overlap-audit.log`, and
+`/private/tmp/wt17-spatial-neck-overlap-root-build.log`.
+
+The bounded-distance headline is still open. The next construction chooses necks
+along the limiting geodesic with steps proportional to their curvature scales,
+proves that they approach the missing endpoint, and assembles the end geometry.
