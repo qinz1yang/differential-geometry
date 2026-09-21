@@ -11,96 +11,116 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffere
 # Sorry-first skeleton of general position in the double
 
 The assembly `generalPositionInDoubleBuffered` below is proved for real from the seven leaves of
-this file, from the proved cover theorem `exists_finiteAdaptedCover_of_compactSpace`, from
+this file, from the proved cover theorem `exists_finiteAdaptedCover_of_compactSpace`, from the
+proved bridge `eq_regionGluedMap_of_eqOn`, from
 `SingularTwoCell.nonempty_normalSingularCellData_of_fields`, from
 `doublePointSet_subset_of_preimage_singleton_eq_off` and from
 `exists_boundary_loop_of_buffered_homotopy`; every `sorry` is a leaf, none is inside the
 assembly.  The chain is: adapted half-space charts at every point of the double, a finite cover
 of the whole double by regions `closure (W j) ⊆ V j` with `V j` inside one adapted chart, then a
 chart-by-chart induction whose step cuts out a source piece carrying all sheets over
-`closure (W k)`, prepares a fixed injectivity scale and three uniform buffers, perturbs the
+`closure (W k)`, chooses **before any perturbation** a control complex `T` of the whole source
+disk, an injectivity scale `κ`, a perturbation size `ε` and four uniform buffers, perturbs the
 vertex map of that piece relative to the frozen collar, glues the result back literally,
 re-establishes the global invariants together with the buffered boundary homotopy, and only then
 recognises the crossings; at the last index every double point lies in the already normalised
 region, which is the `crossing` field of `NormalSingularCellData`.
 
-The external review of the 2026-09-20 snapshot `9dc7c8023c09` is digested in
-`consult/J-generalposition-skeleton-review-digest.md`, and its three corrections to the previous
-module docstring are applied.  (a) A finite adapted cover does not follow from adapted charts
-near the double point set only: the old cover leaf forced `⋃ j, W j` to be clopen and was false,
-so it is replaced by a cover of a compact `M` built from charts at *every* point, which is small
-enough to be proved here outright.  (b) The old last leaf never related `D'` to `Rs`, `Bv`, `φ`,
-so its difficulty was not reduced to the vertex perturbation; it is replaced by four leaves whose
-conclusions all mention the perturbation.  (c) Sign: interior charts of the chosen copy have
-`ℓ > 0` on the whole chart domain and interior charts of the other copy have `ℓ < 0`; the single
-half-space form of the chart leaf allows both, so no disjunction is needed.
+The second external review (snapshot `08eca8995a81`, digested in
+`consult/J-generalposition-skeleton-review-digest.md`) refuted the transport guarantee that the
+previous module docstring claimed, and that guarantee is **withdrawn**: a closed buffer together
+with an `ε` fixed beforehand is not a crossing-stability certificate, and the scale `θ` that the
+old vertex map leaf returned *with* the perturbation was not a predetermined control at all.
+Transport of the old crossings across `Z ∩ V` is now an explicit source-sheet pairing certificate
+produced by the perturbation leaf, and the two a-posteriori scales `η`, `θ` are replaced by one
+predetermined whole-source control certificate carried by `StarInj`.
 
-One deviation from the digest is recorded here.  Item 3 of its leaf 5 section asks the glued cell
-to preserve full fibres over an open `O₀ ⊇ Z`.  Preserving fibres over `O₀` means freezing the
-source over `⇑D ⁻¹' O₀`; the frozen collar of the cut-out leaf is required to be disjoint from
-`⇑D ⁻¹' closure W`, so that clause would force `Z ∩ closure W = ∅`, which the induction never
-provides.  The protected target is therefore carried by the closed `Z` with `Z ⊆ O₀` and
-`closure O₀ ⊆ O`, by the fibre agreement off `V`, and by the perturbation scale `ε` fixed before
-the perturbation; transporting the old crossings across `Z ∩ V` is an explicit obligation of the
-crossing leaf rather than a consequence of a fibre equality.
+The two counterexamples of that review are recorded, each with the clause that now kills it.  The
+fold `D = (s, t, 1 - max |s| |t|)`, `D' = (|s|, t, 1 - max |s| |t|)` on `Rc = S ∩ {s ≤ 0}` with
+`Ac = {0} × [-1, 1]` and `Ω = ∅` satisfied every hypothesis of the old invariants leaf although
+`D'` folds along the seam, and it is excluded because `hNbfr` and `hNbA` now force
+`Rc.space ⊆ Ac.space` when `Ω = ∅`, so `hfrozen` leaves the cell unchanged there.  The pairing
+change `ABAB → AABB`, in which the four rays of two transverse source sheets are re-paired by an
+arbitrarily small perturbation with every frozen exemption respected, satisfied every hypothesis
+of the old crossing leaf, and it is excluded because the transport half now consumes a PL
+homeomorphism `ψ` of the **full** source preimage conjugating `⇑D` into `⇑D'`, which no
+re-pairing of the four branches allows.
+
+Non-degeneracy of the pairing certificate is part of its statement: `Z ⊆ U'` together with
+`χ '' U = U'` forbids the empty solution `U = ∅` whenever `Z ≠ ∅`, and `IsPLHomeomorphOn` asks
+for a bijection onto `D.domain ∩ ⇑D' ⁻¹' U'`, so no sheet may leave or enter.  Nothing in the
+certificate asks `χ` to be the identity, so it stays satisfiable when `Z` meets `closure W`.
+
+Instance binders.  The control certificate compares a competitor `g` with `⇑D` in the metric of
+the ambient manifold, which the skeleton's `[TopologicalSpace M]` does not supply.  The four
+leaves that mention that comparison are therefore stated for `[MetricSpace M]`, whose topology is
+the one they already used; the assembly instantiates `M` by `(double 3 K).space`, a subtype of
+the normed space `E × E × ℝ`, so `Subtype.metricSpace` supplies it.  Preparation and the vertex
+map also take `[CompactSpace M]`, which the assembly has from `isPolyhedron_space`, and which is
+what lets a closed `Z` be shrunk inside `O` and be treated as compact.
 
 The leaves, with owner and review state.
 
-`exists_adaptedHalfSpaceChart_in_double` (lane H, H8 and (11), reviewed 2026-09-21 (external),
-statement frozen): every point of the double of a combinatorial three manifold with boundary has
-arbitrarily small charts of the maximal `plGroupoid 3` atlas adapted to the actual pair,
-`x ∈ C ↔ 0 ≤ ℓ (ec x)` and `x ∈ Bd ↔ ℓ (ec x) = 0`.
+`exists_adaptedHalfSpaceChart_in_double` (lane H, H8 and (11), reviewed 2026-09-21, frozen):
+every point of the double of a combinatorial three manifold with boundary has arbitrarily small
+charts of the maximal `plGroupoid 3` atlas adapted to the actual pair, `x ∈ C ↔ 0 ≤ ℓ (ec x)` and
+`x ∈ Bd ↔ ℓ (ec x) = 0`.
 
-`SingularTwoCell.exists_cutOutPiece_of_closure_subset` (lane H, H4 and B4, reviewed 2026-09-21
-(external), statement frozen): the cut-out source piece with boundary.  `Rc` is a finite
-combinatorial two manifold with boundary inside the source disk, `Lc` its physical boundary part,
-`Ω` an open set with `D.domain ∩ ⇑D ⁻¹' closure V₀ ⊆ Ω` and `D.domain ∩ Ω ⊆ Rc.space`, which is
-condition (10), all sheets through the region counted in the whole source; `Ac` is the frozen
-collar subcomplex, a neighbourhood in `Rc.space` of the artificial frontier `Rc.space \ Ω`, and
-`Disjoint Ac.space (⇑D ⁻¹' closure V₀)` keeps the frozen set off the region to be normalised.
+`SingularTwoCell.exists_cutOutPiece_of_closure_subset` (lane H, H4 and B4, reviewed 2026-09-21,
+frozen): the cut-out source piece with boundary.  `Rc` is a finite combinatorial two manifold
+with boundary inside the source disk, `Lc` its physical boundary part, `Ω` an open set with
+`D.domain ∩ ⇑D ⁻¹' closure V₀ ⊆ Ω` and `D.domain ∩ Ω ⊆ Rc.space`, which is condition (10); `Ac`
+is the frozen collar subcomplex, a neighbourhood in `Rc.space` of the artificial frontier
+`Rc.space \ Ω`, and `Disjoint Ac.space (⇑D ⁻¹' closure V₀)` keeps it off the region to normalise.
 
-`exists_normalizationPreparation_on_prescribedRegion` (lane H, H6a, new, unreviewed): everything
-chosen *before* the perturbation.  A fixed `UniformInjectivityScale D.domain (⇑D) η` on the whole
-source disk, an open `O₀` with `Z ⊆ O₀` and `closure O₀ ⊆ O` around the closed protected target,
-and a perturbation size `ε` with three uniform buffers: the chart buffer, which keeps every
-`ε`-competitor of `ec ∘ ⇑D` inside `ec '' V` and hence supplies the `MapsTo` clause the gluing
-leaf needs; the side buffer, which keeps `ε`-competitors over the half-space sign of `V`; and the
-boundary track buffer, which keeps every `ε`-competitor over the physical boundary inside the
-relative neighbourhood `B`, which is condition (12).
-
-`exists_small_vertexMap_relative_in_adaptedChart` (lane H, H5 and B5, repaired after the review,
-new in this form, unreviewed): the relative guarded half-space general position on that piece,
-read in the adapted chart.  The new vertex map agrees with `ec ∘ ⇑D` on `Ac.space` only; the
-half-space conditions are kept with the physical boundary subcomplex `Lc` in place of
-`boundaryComplex 2 Rc`; the affine independence conclusion is the guarded arbitrary-subset form
-of `exists_small_vertexMap_transverse_in_halfSpace`, with the guard
-`(s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1` retained, since four boundary vertices
-are coplanar and dropping it makes the leaf false, and with the frozen part of `s` exempted in
-the relative form `AffineIndependent (φ on s ∩ Ac.space) → AffineIndependent (φ on s)`.  The
-review's two repairs are the certificate `hsep`, which localises the exempt configurations by
-keeping every face that meets the frozen collar off `ec '' closure W`, and the retained scale
-`θ`, an injectivity scale of the perturbed map on `Rc.space` alone.
-
-`exists_gluedCell_of_vertexMap_in_adaptedChart` (lane H, H6b, new, unreviewed): the literal
-gluing.  On the same source disk, `EqOn ⇑D' (ec.symm ∘ simplicialMap Rs φ) Rc.space` and
+`exists_gluedCell_of_vertexMap_in_adaptedChart` (lane H, H6b, reviewed 2026-09-21, frozen): the
+literal gluing.  On the same source disk, `EqOn ⇑D' (ec.symm ∘ simplicialMap Rs φ) Rc.space` and
 `EqOn ⇑D' ⇑D Rc.spaceᶜ` on the whole complement, which is what makes unrestricted preimages of
-`D'` computable from the two pieces.  The seam is covered by `Rc.space \ Ω ⊆ Nb` and
-`Rc.space ∩ Nb ⊆ Ac.space`, where the two formulas already agree.
+`D'` computable from the two pieces.  Its statement is unchanged and its binders are unchanged;
+`eq_regionGluedMap_of_eqOn` turns those two equalities into the single equation
+`⇑D' = regionGluedMap D ec Rs φ Rc`, so the leaves downstream can speak about the literal glued
+function without the frozen statement being touched.
 
-`exists_globalInvariants_of_gluedCell` (lane H, H6c, new, unreviewed): the invariants of the
-glued cell on the whole disk, from the two scales.  `θ` bounds the multiplicity inside the piece
-and `η` outside it; neither alone bounds the multiplicity of `D'`, since a new double curve in
-the piece can meet a third unchanged sheet in the transition region, which is why both are
-hypotheses here.  The conclusion carries the target `C`, the fibre agreement off `V`, local
-injectivity, the multiplicity bound, properness against `BdM`, and the boundary homotopy whose
-whole track stays in `BdM` and has `B` as a relative neighbourhood, which is condition (12).
+`exists_normalizationPreparation_on_prescribedRegion` (lane H, H6a, changed after second review,
+unreviewed): everything chosen *before* the perturbation.  A control complex `T` of the whole
+source disk on which `⇑D` is star injective, one scale `κ`, one perturbation size `ε`, the open
+`O₀` with `Z ⊆ O₀` and `closure O₀ ⊆ O`, and the certificate that *every* competitor `g` that is
+`ε`-close to `⇑D` on the whole disk and star injective on `T` has `κ` as a uniform injectivity
+scale and at most two preimages over each point.  The four buffers are the chart buffer, which
+supplies the `MapsTo` clause of the gluing leaf; the conversion buffer, which turns an `ε`-error
+measured in the chart into an `ε`-error measured in `M`; the active buffer, which keeps
+`ε`-competitors of frozen points off `closure W`; and the boundary track buffer, which is
+condition (12).
 
-`exists_normalCrossings_of_gluedCell` (lane H, H6d, new, unreviewed): recognition on the active
-target and transport on the protected one.  Over `closure W` the crossings are read off the
-guarded affine independence and the certificate `hsep`, which is what excludes the coincident
-sheet configurations the guard exempts; over `Z` they are transported, off `V` by the fibre
-agreement and inside `V` by the scale `ε` fixed before the perturbation on the compact
-`closure O₀ ⊆ O`.  The output is one open `O' ⊇ Z ∪ closure W` carrying normal crossings.
+`exists_small_vertexMap_relative_in_adaptedChart` (lane H, H5 and B5, changed after second
+review, unreviewed): the relative guarded half-space general position on that piece, read in the
+adapted chart.  The new vertex map agrees with `ec ∘ ⇑D` on `Ac.space` only; the half-space
+conditions keep the physical boundary subcomplex `Lc` in place of `boundaryComplex 2 Rc`; the
+affine independence conclusion keeps the guard
+`(s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1`, since four boundary vertices are
+coplanar and dropping it makes the leaf false, with the frozen part of `s` exempted in the
+relative form.  The leaf now receives `T` and `StarInj T ⇑D` and *produces* `StarInj T` for the
+literal glued function, so the control fixed before the perturbation is the control the
+invariants leaf consumes, and it produces the source-sheet pairing certificate over the protected
+region; `hsep`, which keeps every face meeting the frozen collar off `ec '' closure W`, stays.
+
+`exists_globalInvariants_of_gluedCell` (lane H, H6c, changed after second review, unreviewed):
+the invariants of the glued cell on the whole disk.  The two a-posteriori scales are gone: the
+leaf consumes the preparation certificate together with `StarInj T ⇑D'` and the `ε`-closeness of
+`⇑D'` to `⇑D`, both established before it is called, and it now also receives the seam
+neighbourhood hypotheses `hNb`, `hNbfr`, `hNbA` of the cut-out leaf, without which injectivity on
+each side of the seam does not give injectivity across it.  The conclusion carries the target
+`C`, the fibre agreement off `V`, local injectivity, the multiplicity bound, properness against
+`BdM`, and the boundary homotopy whose whole track stays in `BdM` with `B` as a relative
+neighbourhood, which is condition (12).
+
+`exists_normalCrossings_of_gluedCell` (lane H, H6d, changed after second review, unreviewed):
+recognition on the active target and transport on the protected one.  Over `closure W` the
+crossings are read off the guarded affine independence, `hfrozen` and the certificate `hsep`,
+which is what excludes the coincident sheet configurations the guard exempts; over `Z` they are
+transported, off `V` by the fibre agreement on `O₀`, and inside `V` by the pairing certificate,
+which is now a hypothesis instead of a hoped-for consequence of a scale.  The output is one open
+`O' ⊇ Z ∪ closure W` carrying normal crossings.
 -/
 
 open Set Topology
@@ -127,6 +147,27 @@ theorem exists_adaptedHalfSpaceChart_in_double {E : Type} [NormedAddCommGroup E]
           (∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x)) ∧
           (∀ x ∈ ec.source, x ∈ Bd ↔ ℓ (ec x) = 0) := by
   sorry
+
+def UniformInjectivityScale {α : Type*} [PseudoMetricSpace α] {β : Type*} (S : Set α)
+    (f : α → β) (η : ℝ) : Prop :=
+  ∀ x ∈ S, ∀ y ∈ S, dist x y < η → f x = f y → x = y
+
+theorem uniformInjectivityScale_of_injOn {α : Type*} [PseudoMetricSpace α] {β : Type*}
+    {S : Set α} {f : α → β} (h : InjOn f S) (η : ℝ) : UniformInjectivityScale S f η :=
+  fun _ hx _ hy _ hxy => h hx hy hxy
+
+open Classical in
+def StarInj {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {β : Type*}
+    (T : Geometry.SimplicialComplex ℝ E) (g : E → β) : Prop :=
+  ∀ v ∈ T.vertices, InjOn g (starComplex T v).space
+
+open Classical in
+theorem starInj_of_injOn {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {β : Type*}
+    {T : Geometry.SimplicialComplex ℝ E} {g : E → β} (h : InjOn g T.space) : StarInj T g := by
+  intro v _
+  exact Set.InjOn.mono (space_mono_of_faces_subset (starComplex_faces_subset T v)) h
+
+section Ambient
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
 
@@ -213,84 +254,6 @@ theorem SingularTwoCell.exists_cutOutPiece_of_closure_subset [T2Space M] (D : Si
         Disjoint Ac.space (⇑D ⁻¹' closure V₀) := by
   sorry
 
-def UniformInjectivityScale {α : Type*} [PseudoMetricSpace α] {β : Type*} (S : Set α)
-    (f : α → β) (η : ℝ) : Prop :=
-  ∀ x ∈ S, ∀ y ∈ S, dist x y < η → f x = f y → x = y
-
-theorem uniformInjectivityScale_of_injOn {α : Type*} [PseudoMetricSpace α] {β : Type*}
-    {S : Set α} {f : α → β} (h : InjOn f S) (η : ℝ) : UniformInjectivityScale S f η :=
-  fun _ hx _ hy _ hxy => h hx hy hxy
-
-theorem exists_normalizationPreparation_on_prescribedRegion [T2Space M] (D : SingularTwoCell M)
-    {BdM B Z O W V : Set M}
-    (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
-    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
-    (hZclosed : IsClosed Z) (hOopen : IsOpen O) (hZO : Z ⊆ O)
-    (hVopen : IsOpen V) (hWopen : IsOpen W) (hWV : closure W ⊆ V)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))) (hVec : V ⊆ ec.source)
-    (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
-    (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
-    (hLR : Lc.faces ⊆ Rc.faces) (hAR : Ac.faces ⊆ Rc.faces)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hΩ : IsOpen Ω) (hΩcover : D.domain ∩ ⇑D ⁻¹' closure W ⊆ Ω)
-    (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb) (hNbfr : Rc.space \ Ω ⊆ Nb)
-    (hNbA : Rc.space ∩ Nb ⊆ Ac.space) (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W)) :
-    ∃ (ε η : ℝ) (O₀ : Set M), 0 < ε ∧ 0 < η ∧
-      UniformInjectivityScale D.domain (⇑D) η ∧
-      IsOpen O₀ ∧ Z ⊆ O₀ ∧ closure O₀ ⊆ O ∧
-      (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-        dist z (ec (D x)) < ε → z ∈ ⇑ec '' V) ∧
-      (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-        dist z (ec (D x)) < ε → ec.symm z ∈ closure W → x ∈ Rc.space \ Ac.space) ∧
-      ∀ x ∈ Rc.space ∩ frontier D.domain, ∀ z : EuclideanSpace ℝ (Fin 3),
-        dist z (ec (D x)) < ε → ec.symm z ∈ BdM → B ∈ 𝓝[BdM] (ec.symm z) := by
-  sorry
-
-open Classical in
-theorem exists_small_vertexMap_relative_in_adaptedChart [T2Space M] (D : SingularTwoCell M)
-    {BdM C W V : Set M} (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
-    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
-    (hℓ : ℓ ≠ 0) (hVec : V ⊆ ec.source)
-    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
-    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
-    (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
-    (hLR : Lc.faces ⊆ Rc.faces) (hAR : Ac.faces ⊆ Rc.faces)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hWV : closure W ⊆ V) (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W))
-    {ε : ℝ} (hε : 0 < ε) :
-    ∃ (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-      (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-      (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) (θ : ℝ),
-      IsSubdivision Rs Rc ∧ Rs.faces.Finite ∧ 0 < θ ∧
-        (Bv : Set (EuclideanSpace ℝ (Fin 2))) ⊆ Rs.vertices ∧
-        (∀ v ∈ Rs.vertices, v ∈ Bv ↔ v ∈ Lc.space) ∧
-        EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space ∧
-        IsPiecewiseAffineOn (simplicialMap Rs φ) Rc.space ∧
-        (∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε) ∧
-        IsLocallyInjective (Rc.space.domRestrict (simplicialMap Rs φ)) ∧
-        (∀ y, (Rc.space ∩ simplicialMap Rs φ ⁻¹' {y}).encard ≤ 2) ∧
-        UniformInjectivityScale Rc.space (simplicialMap Rs φ) θ ∧
-        (∀ x ∈ Rc.space, 0 ≤ ℓ (simplicialMap Rs φ x)) ∧
-        (∀ x ∈ Rc.space, ℓ (simplicialMap Rs φ x) = 0 ↔ x ∈ Lc.space) ∧
-        (∀ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) →
-          Disjoint (simplicialMap Rs φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
-            (⇑ec '' closure W)) ∧
-        ∀ s : Finset (EuclideanSpace ℝ (Fin 2)),
-          (s : Set (EuclideanSpace ℝ (Fin 2))) ⊆ Rs.vertices → s.card ≤ 4 →
-            (s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
-            AffineIndependent ℝ
-              (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
-            AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2))) := by
-  sorry
-
 theorem exists_gluedCell_of_vertexMap_in_adaptedChart [T2Space M] (D : SingularTwoCell M)
     {V : Set M} (hVopen : IsOpen V)
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
@@ -312,33 +275,146 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart [T2Space M] (D : SingularT
       EqOn (⇑D') (⇑D) Rc.spaceᶜ := by
   sorry
 
-theorem exists_globalInvariants_of_gluedCell [T2Space M] (D D' : SingularTwoCell M)
-    {BdM B C V : Set M} {ε η θ : ℝ}
+end Ambient
+
+section MetricAmbient
+
+variable {M : Type u} [MetricSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+
+open Classical in
+noncomputable def regionGluedMap (D : SingularTwoCell M)
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
+    (Rc : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) :
+    EuclideanSpace ℝ (Fin 2) → M :=
+  fun x => if x ∈ Rc.space then ec.symm (simplicialMap Rs φ x) else D x
+
+theorem eq_regionGluedMap_of_eqOn {D D' : SingularTwoCell M}
+    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
+    {Rs Rc : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
+    {φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)}
+    (hglue : EqOn (⇑D') (fun x => ec.symm (simplicialMap Rs φ x)) Rc.space)
+    (hglueoff : EqOn (⇑D') (⇑D) Rc.spaceᶜ) :
+    ⇑D' = regionGluedMap D ec Rs φ Rc := by
+  classical
+  funext x
+  by_cases hx : x ∈ Rc.space
+  · simp only [regionGluedMap, if_pos hx]
+    exact hglue hx
+  · simp only [regionGluedMap, if_neg hx]
+    exact hglueoff hx
+
+theorem exists_normalizationPreparation_on_prescribedRegion [CompactSpace M]
+    (D : SingularTwoCell M) {BdM B Z O W V : Set M}
+    (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
+    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
+    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
+    (hZclosed : IsClosed Z) (hOopen : IsOpen O) (hZO : Z ⊆ O)
+    (hVopen : IsOpen V) (hWV : closure W ⊆ V)
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))) (hVec : V ⊆ ec.source)
+    (Rc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    (hRfin : Rc.faces.Finite) (hAR : Ac.faces ⊆ Rc.faces)
+    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
+    (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W)) :
+    ∃ (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (κ ε : ℝ) (O₀ : Set M),
+      0 < κ ∧ 0 < ε ∧ T.faces.Finite ∧ T.space = D.domain ∧ StarInj T (⇑D) ∧
+        IsOpen O₀ ∧ Z ⊆ O₀ ∧ closure O₀ ⊆ O ∧
+        (∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < ε) →
+          StarInj T g → UniformInjectivityScale D.domain g κ ∧
+            ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2) ∧
+        (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
+          dist z (ec (D x)) < ε → z ∈ ⇑ec '' V) ∧
+        (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
+          dist z (ec (D x)) < ε → dist (ec.symm z) (D x) < ε) ∧
+        (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
+          dist z (ec (D x)) < ε → ec.symm z ∈ closure W → x ∈ Rc.space \ Ac.space) ∧
+        ∀ x ∈ Rc.space ∩ frontier D.domain, ∀ z : EuclideanSpace ℝ (Fin 3),
+          dist z (ec (D x)) < ε → ec.symm z ∈ BdM → B ∈ 𝓝[BdM] (ec.symm z) := by
+  sorry
+
+open Classical in
+theorem exists_small_vertexMap_relative_in_adaptedChart [CompactSpace M]
+    (D : SingularTwoCell M) {BdM C Z O W V : Set M}
     (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
     (hmapC : MapsTo (⇑D) D.domain C)
-    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
-    (hε : 0 < ε) (hη : 0 < η) (hθ : 0 < θ)
-    (hscale : UniformInjectivityScale D.domain (⇑D) η)
+    (hnormal : ∀ y ∈ doublePointSet (⇑D) D.domain ∩ O,
+      ∃ e₀ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₀.source ∧
+        HasPLNormalDoubleCrossingAt (e₀ ∘ ⇑D) (D.domain ∩ ⇑D ⁻¹' e₀.source)
+          (e₀ '' (e₀.source ∩ BdM)) (e₀ y))
+    (hZclosed : IsClosed Z) (hOopen : IsOpen O) (hZO : Z ⊆ O)
+    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
+    (hℓ : ℓ ≠ 0) (hVopen : IsOpen V) (hVec : V ⊆ ec.source)
+    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
+    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
+    (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
+    (hLR : Lc.faces ⊆ Rc.faces) (hAR : Ac.faces ⊆ Rc.faces)
+    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
+    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
+    (hWV : closure W ⊆ V) (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W))
+    (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (hTfin : T.faces.Finite)
+    (hTspace : T.space = D.domain) (hTstar : StarInj T (⇑D))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+      (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
+      (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)),
+      IsSubdivision Rs Rc ∧ Rs.faces.Finite ∧
+        (Bv : Set (EuclideanSpace ℝ (Fin 2))) ⊆ Rs.vertices ∧
+        (∀ v ∈ Rs.vertices, v ∈ Bv ↔ v ∈ Lc.space) ∧
+        EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space ∧
+        IsPiecewiseAffineOn (simplicialMap Rs φ) Rc.space ∧
+        (∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε) ∧
+        StarInj T (regionGluedMap D ec Rs φ Rc) ∧
+        (∀ x ∈ Rc.space, 0 ≤ ℓ (simplicialMap Rs φ x)) ∧
+        (∀ x ∈ Rc.space, ℓ (simplicialMap Rs φ x) = 0 ↔ x ∈ Lc.space) ∧
+        (∀ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) →
+          Disjoint (simplicialMap Rs φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
+            (⇑ec '' closure W)) ∧
+        (∃ (U U' : Set M) (χ : M → M)
+          (ψ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)),
+          IsOpen U ∧ IsOpen U' ∧ U ⊆ O ∧ Z ⊆ U' ∧
+            IsPLHomeomorphInto 3 χ U ∧ χ '' U = U' ∧ χ '' (U ∩ BdM) = U' ∩ BdM ∧
+            IsPLHomeomorphOn ψ (D.domain ∩ ⇑D ⁻¹' U)
+              (D.domain ∩ regionGluedMap D ec Rs φ Rc ⁻¹' U') ∧
+            ∀ x ∈ D.domain ∩ ⇑D ⁻¹' U, regionGluedMap D ec Rs φ Rc (ψ x) = χ (D x)) ∧
+        ∀ s : Finset (EuclideanSpace ℝ (Fin 2)),
+          (s : Set (EuclideanSpace ℝ (Fin 2))) ⊆ Rs.vertices → s.card ≤ 4 →
+            (s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
+            AffineIndependent ℝ
+              (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
+            AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2))) := by
+  sorry
+
+theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
+    {BdM B C V : Set M} {ε κ : ℝ}
+    {T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
+    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
+    (hmapC : MapsTo (⇑D) D.domain C)
+    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z) (hκ : 0 < κ)
+    (hcert : ∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < ε) →
+      StarInj T g → UniformInjectivityScale D.domain g κ ∧
+        ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2)
+    (hclose : ∀ x ∈ D.domain, dist (D' x) (D x) < ε) (hstar : StarInj T (⇑D'))
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hVopen : IsOpen V) (hVec : V ⊆ ec.source)
     (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
     (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
     (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω : Set (EuclideanSpace ℝ (Fin 2))}
+    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
     (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
     (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
     (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hΩ : IsOpen Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space)
+    (hΩ : IsOpen Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb)
+    (hNbfr : Rc.space \ Ω ⊆ Nb) (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
     (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
     (hsub : IsSubdivision Rs Rc)
     (hsmall : ∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε)
     (hfrozen : EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space)
-    (hplocinj : IsLocallyInjective (Rc.space.domRestrict (simplicialMap Rs φ)))
-    (hpcard : ∀ y, (Rc.space ∩ simplicialMap Rs φ ⁻¹' {y}).encard ≤ 2)
-    (hpscale : UniformInjectivityScale Rc.space (simplicialMap Rs φ) θ)
     (hpnonneg : ∀ x ∈ Rc.space, 0 ≤ ℓ (simplicialMap Rs φ x))
     (hpzero : ∀ x ∈ Rc.space, ℓ (simplicialMap Rs φ x) = 0 ↔ x ∈ Lc.space)
     (hchartbuf : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
@@ -360,8 +436,9 @@ theorem exists_globalInvariants_of_gluedCell [T2Space M] (D D' : SingularTwoCell
   sorry
 
 open Classical in
-theorem exists_normalCrossings_of_gluedCell [T2Space M] (D D' : SingularTwoCell M)
-    {BdM C Z O O₀ W V : Set M} {ε θ : ℝ}
+theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
+    {BdM C Z O O₀ U U' W V : Set M} {ε : ℝ} {χ : M → M}
+    {ψ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
     (hfiber' : ∀ y, (D'.domain ∩ ⇑D' ⁻¹' {y}).encard ≤ 2)
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
@@ -372,6 +449,11 @@ theorem exists_normalCrossings_of_gluedCell [T2Space M] (D D' : SingularTwoCell 
     (hZclosed : IsClosed Z) (hZO₀ : Z ⊆ O₀) (hO₀open : IsOpen O₀) (hO₀O : closure O₀ ⊆ O)
     (hWopen : IsOpen W) (hWV : closure W ⊆ V) (hVopen : IsOpen V)
     (hfibV : ∀ z ∉ V, (⇑D') ⁻¹' {z} = (⇑D) ⁻¹' {z})
+    (hUopen : IsOpen U) (hU'open : IsOpen U') (hUO : U ⊆ O) (hZU' : Z ⊆ U')
+    (hχ : IsPLHomeomorphInto 3 χ U) (hχimage : χ '' U = U')
+    (hχbd : χ '' (U ∩ BdM) = U' ∩ BdM)
+    (hψ : IsPLHomeomorphOn ψ (D.domain ∩ ⇑D ⁻¹' U) (D.domain ∩ ⇑D' ⁻¹' U'))
+    (hpair : ∀ x ∈ D.domain ∩ ⇑D ⁻¹' U, D' (ψ x) = χ (D x))
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
     (hℓ : ℓ ≠ 0) (hVec : V ⊆ ec.source)
@@ -387,12 +469,12 @@ theorem exists_normalCrossings_of_gluedCell [T2Space M] (D D' : SingularTwoCell 
     (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
     (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
-    (hε : 0 < ε) (hθ : 0 < θ) (hsub : IsSubdivision Rs Rc) (hRsfin : Rs.faces.Finite)
+    (hε : 0 < ε) (hsub : IsSubdivision Rs Rc) (hRsfin : Rs.faces.Finite)
     (hBvL : ∀ v ∈ Rs.vertices, v ∈ Bv ↔ v ∈ Lc.space)
     (hsmall : ∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε)
-    (hpscale : UniformInjectivityScale Rc.space (simplicialMap Rs φ) θ)
     (hpnonneg : ∀ x ∈ Rc.space, 0 ≤ ℓ (simplicialMap Rs φ x))
     (hpzero : ∀ x ∈ Rc.space, ℓ (simplicialMap Rs φ x) = 0 ↔ x ∈ Lc.space)
+    (hfrozen : EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space)
     (hactive : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
       dist z (ec (D x)) < ε → ec.symm z ∈ closure W → x ∈ Rc.space \ Ac.space)
     (hsep : ∀ σ ∈ Rs.faces, (∃ v ∈ σ, v ∈ Ac.space) →
@@ -413,6 +495,8 @@ theorem exists_normalCrossings_of_gluedCell [T2Space M] (D D' : SingularTwoCell 
           HasPLNormalDoubleCrossingAt (e₁ ∘ ⇑D') (D'.domain ∩ ⇑D' ⁻¹' e₁.source)
             (e₁ '' (e₁.source ∩ BdM)) (e₁ y) := by
   sorry
+
+end MetricAmbient
 
 open Classical in
 theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStatement := by
@@ -479,31 +563,55 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
             cell.exists_cutOutPiece_of_closure_subset (V₀ := W k) (hVopen k) (hWV k)
           have hZclosed : IsClosed (⋃ j, ⋃ (_ : j < k), closure (W j)) :=
             Set.Finite.isClosed_biUnion (Set.finite_lt_nat k) fun j _ => isClosed_closure
-          obtain ⟨ε, η, O₀, hε, hη, hscale, hO₀open, hZO₀, hO₀O, hchartbuf, hactive,
-            hbdbuf⟩ :=
-            exists_normalizationPreparation_on_prescribedRegion cell hcellloc hcellbuf
-              hZclosed hOkopen hOkZ (hVopen k) (hWopen k) (hWV k) ec hVec Rc Lc Ac hRfin
-              hRman hLR hAR hRdom hRV hLspace hΩ hΩcover hΩR hNb hNbfr hNbA hAfree
-          obtain ⟨Rs, Bv, φ, θ, hsub, hRsfin, hθ, hBvsub, hBvL, hfrozen, hpl, hsmall,
-            hplocinj, hpcard, hpscale, hpnonneg, hpzero, hsep, hguard⟩ :=
+          obtain ⟨T, κ, ε, O₀, hκ, hε, hTfin, hTspace, hTstar, hO₀open, hZO₀, hO₀O, hcert,
+            hchartbuf, hconv, hactive, hbdbuf⟩ :=
+            exists_normalizationPreparation_on_prescribedRegion cell hcellloc hcellfib
+              hcellbuf hZclosed hOkopen hOkZ (hVopen k) (hWV k) ec hVec Rc Ac hRfin hAR
+              hRdom hRV hAfree
+          obtain ⟨Rs, Bv, φ, hsub, hRsfin, -, hBvL, hfrozen, hpl, hsmall, hstar, hpnonneg,
+            hpzero, hsep, ⟨U, U', χ, ψ, hUopen, hU'open, hUO, hZU', hχ, hχimage, hχbd, hψ,
+            hpair⟩, hguard⟩ :=
             exists_small_vertexMap_relative_in_adaptedChart cell hcellloc hcellfib hcellpr
-              hcellC ec ℓ hec hℓ hVec hCchart hBdchart Rc Lc Ac hRfin hRman hLR hAR hRdom
-              hRV hLspace (hWV k) hAfree hε
+              hcellC hOkcross hZclosed hOkopen hOkZ ec ℓ hec hℓ (hVopen k) hVec hCchart
+              hBdchart Rc Lc Ac hRfin hRman hLR hAR hRdom hRV hLspace (hWV k) hAfree T hTfin
+              hTspace hTstar hε
           obtain ⟨cell', hdom', hglue, hglueoff⟩ :=
             exists_gluedCell_of_vertexMap_in_adaptedChart cell (hVopen k) ec hec hVec Rc Ac
               hRfin hRman hAR hRdom hRV hΩ hΩR hNb hNbfr hNbA Rs φ hsub hRsfin hfrozen hpl
               fun x hx => hchartbuf x hx _ (hsmall x hx)
+          have hbridge : ⇑cell' = regionGluedMap cell ec Rs φ Rc :=
+            eq_regionGluedMap_of_eqOn hglue hglueoff
+          have hclose : ∀ x ∈ cell.domain, dist (cell' x) (cell x) < ε := by
+            intro x _
+            by_cases hxR : x ∈ Rc.space
+            · have hxv : cell' x = ec.symm (simplicialMap Rs φ x) := hglue hxR
+              rw [hxv]
+              exact hconv x hxR _ (hsmall x hxR)
+            · have hxv : cell' x = cell x := hglueoff hxR
+              rw [hxv, dist_self]
+              exact hε
+          have hstar' : StarInj T (⇑cell') := by
+            rw [hbridge]
+            exact hstar
+          have hψ' : IsPLHomeomorphOn ψ (cell.domain ∩ ⇑cell ⁻¹' U)
+              (cell.domain ∩ ⇑cell' ⁻¹' U') := by
+            rw [hbridge]
+            exact hψ
+          have hpair' : ∀ x ∈ cell.domain ∩ ⇑cell ⁻¹' U, cell' (ψ x) = χ (cell x) := by
+            intro x hx
+            rw [hbridge]
+            exact hpair x hx
           obtain ⟨hC', hfibV, hloc', hcard', hpr', H, hH0, hH1, hHtrack⟩ :=
-            exists_globalInvariants_of_gluedCell cell cell' hcellloc hcellfib hcellpr
-              hcellC hcellbuf hε hη hθ hscale ec ℓ (hVopen k) hVec hCchart hBdchart Rc Lc Ac
-              hRfin hRman hRdom hRV hLspace hΩ hΩR Rs φ hsub hsmall hfrozen hplocinj hpcard
-              hpscale hpnonneg hpzero hchartbuf hbdbuf hdom' hglue hglueoff
+            exists_globalInvariants_of_gluedCell cell cell' hcellpr hcellC hcellbuf hκ hcert
+              hclose hstar' ec ℓ (hVopen k) hVec hCchart hBdchart Rc Lc Ac hRfin hRman hRdom
+              hRV hLspace hΩ hΩR hNb hNbfr hNbA Rs φ hsub hsmall hfrozen hpnonneg hpzero
+              hchartbuf hbdbuf hdom' hglue hglueoff
           obtain ⟨O', hO'open, hO'Z, hcross'⟩ :=
             exists_normalCrossings_of_gluedCell cell cell' hcellfib hcard' hcellpr hOkcross
-              hZclosed hZO₀ hO₀open hO₀O (hWopen k) (hWV k) (hVopen k) hfibV ec ℓ hec hℓ
-              hVec hCchart hBdchart Rc Lc Ac hRfin hRman hRdom hRV hLspace hΩ hΩcover hΩR
-              Rs Bv φ hε hθ hsub hRsfin hBvL hsmall hpscale hpnonneg hpzero hactive hsep
-              hguard hdom' hglue hglueoff
+              hZclosed hZO₀ hO₀open hO₀O (hWopen k) (hWV k) (hVopen k) hfibV hUopen hU'open
+              hUO hZU' hχ hχimage hχbd hψ' hpair' ec ℓ hec hℓ hVec hCchart hBdchart Rc Lc Ac
+              hRfin hRman hRdom hRV hLspace hΩ hΩcover hΩR Rs Bv φ hε hsub hRsfin hBvL
+              hsmall hpnonneg hpzero hfrozen hactive hsep hguard hdom' hglue hglueoff
           have hbuf' : ∀ z ∈ Set.range cell'.boundary, B ∈ 𝓝[Bd] z := by
             rintro _ ⟨x, rfl⟩
             have hx : (x : EuclideanSpace ℝ (Fin 2)) ∈ frontier cell.domain := by
