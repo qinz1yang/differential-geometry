@@ -9189,6 +9189,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseOfC
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromReading
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromTube
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProduct
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductNormal
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductBranch
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductCut
 /-!
 # Differential geometry and geometric analysis
 -/

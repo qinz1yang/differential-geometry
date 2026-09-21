@@ -5316,3 +5316,214 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFro
 本批证明可解除 `FREE_INPUTS.md` 的 A2.4b 和 A2.4c（三个 Skeleton 叶子），
 由 lead 在重放后更换 Skeleton 中的证明并同步账本。A2.4a、A2.4b′ 和 A2.4d 本批未关闭。
 其余本车道尚未登记的 F2–F8 文件不在这份新增修改清单内；禁止把其他车道脏文件一起暂存。
+
+
+### 19.182 Lane F / F11 preserving product model / partial (2026-09-21)
+
+**结论与范围。** F11 联合夹具仍是 **partial**；`FREE_INPUTS.md` 的 A2.4d 仍 OPEN，
+共用叶子 A2.4b′ `exists_plCrossSeamReading_of_isCrossRegluedCell` 仍 OPEN。
+本批闭合的是同一元组上的原始正规盘、两条真实边界支、实际管子、显式 cross 候选及其 reading。
+没有把单独选择的两个 cell 当作同一个候选；`crossRegluedProductCell_isCrossRegluedCell`
+证明 reading 所指的具体 `crossRegluedProductCell` 正是该 branch 的 cross 候选。
+本批尚无 direct 候选与两个词 witness 的联合结论，也没有完整的 F11 验收结论。
+提交哈希：无；按车道规则没有运行写入型 git 命令，交由 lead 审读和提交。
+
+**文件。** 仅新建以下四个 Lean 文件，未改已有 Lean 文件的陈述或证明：
+
+- `LoopTheorem/CrossRegluedSourceProduct.lean`：952 行，59 个公开声明；原始横交条带及带额外 curl
+  的弯片模型、精确纤维分类、局部单射、真实边界 properness、紧侧与管子的边界等式。
+- `LoopTheorem/CrossRegluedSourceProductNormal.lean`：687 行，5 个公开声明；全部双点处的内部/边界
+  normal crossing，双点集的 1 维带边组合流形三角剖分，`NormalSingularCellData` 的居留者。
+- `LoopTheorem/CrossRegluedSourceProductBranch.lean`：136 行，10 个公开声明；实际 branch 与 Bool 的
+  等价、复杂度恰为 2、两条支均为边界支、接到所选支的 `CrossSeamTubeData`。
+- `LoopTheorem/CrossRegluedSourceProductCut.lean`：718 行，3 个公开声明；显式 preserving cut、
+  中间带反射后的真实 cross 候选、将原盘/branch/tube/cross/reading 放在一个元组上的定理。
+
+既有未提交的 `CrossRegluedSource.lean`、`CrossRegluedSourceProperness.lean`、
+`CrossRegluedSourceReading.lean` 不属本批新增修改；其它车道的脏文件也不属本批。
+
+**模型与非退化性。** 源为 `seamWitnessPlane '' ([0,5] × [0,1])`。所有下面的坐标先经
+`seamWitnessPlane` 或 `spliceEmbedding` 放到欧氏空间，不把任意线性等价冒称为标准坐标恒等映射。
+
+- 原盘 `crossingProductCell` 的双点集恰为两条纵线：
+  `spliceEmbedding '' (({(0,0)} ∪ {(0,3)}) × [0,1])`。
+  第一条的两个原像横坐标为 `3/2, 7/2`；第二条为 `62/15, 47/10`。
+  精确纤维分类排除了第三个原像与额外双点；两条支的所有端点都落在实际边界上。
+- `crossingProductSide = spliceEmbedding '' (([-3,2] × [-3,5]) × [0,1])` 是紧 PL 3-ball；
+  `BdM = frontier crossingProductSide`。已证原盘 properness 与边界像等式。
+  **尚未声称** `IsPLBoundarySide crossingProductCell crossingProductSide BdM` 已生产：
+  该谓词的角点半空间图卡字段仍待补。
+- 保留的右端帽 `7/2 ≤ s ≤ 5` 含 curl 的两个原像。
+  `crossingProductCell_boundary_not_injOn` 给出该帽边界在目标中确实不单射；
+  探针具体验证 `(62/15,0)` 与 `(47/10,0)` 不同，均映到 `((0,3),0)`。
+- `crossingProductCell_complexity_eq_two` 对每一份该盘的真实奇异集三角剖分证明复杂度为 2，
+  不以复杂度或分支分类为假设。`crossingProductCell_exists_branch_equiv` 把两个几何分支与实际
+  `singularSet.Branch` 一一对应。
+- cut 的 A、C 是 `s=3/2`、`s=7/2`；三片依次为 `[0,3/2]`、`[3/2,7/2]`、`[7/2,5]`
+  乘以 `[0,1]`。接缝识别是 `(s,t) ↦ (s+2,t)`，中间片使用 `(s,t) ↦ (5-s,t)` 重粘。
+  全部 `IsBoundaryBranchCut` 和 `IsCrossRegluedCell` 字段（含边界弧的源参数化）已实证。
+- 这给出未旋转 chart 的相邻配对 `(X⁺,Y⁻)`、`(X⁻,Y⁺)`；已有
+  `crossRegluedProductReading : PLCrossSeamReading spliceEmbedding crossRegluedProductCell`
+  正是这个具体 cross 候选的 reading。`crossRegluedProductReading_tubeSource_ssubset`
+  证明源严格大于管内部分。没有向冻结叶子添加定向比较或其它假设。
+
+**关键最终陈述（Lean 原文）。**
+
+```lean
+theorem crossingProductCell_exists_crossReading {B : Set (EuclideanSpace ℝ (Fin 3))}
+    (hB : Set.range crossingProductCell.boundary ⊆ B) :
+    ∃ (hD : NormalSingularCellData crossingProductCell (frontier crossingProductSide) B)
+      (c d : hD.singularSet.Branch)
+      (T : CrossSeamTubeData hD c (spliceEmbedding '' tubeWitnessTube)),
+      hD.singularSet.complexity = 2 ∧ c ≠ d ∧
+      hD.singularSet.IsBoundaryBranch c ∧ hD.singularSet.IsBoundaryBranch d ∧
+      hD.singularSet.branchCarrier c = spliceEmbedding '' spliceCore ∧
+      hD.singularSet.branchCarrier d = crossingProductBranchCarrier true ∧
+      hD.IsCrossRegluedCell c crossRegluedProductCell ∧
+      T.chart = ⇑spliceEmbedding ∧
+      Nonempty (PLSeamTubeChart (EuclideanSpace ℝ (Fin 3)) T.chart) ∧
+      Nonempty (PLCrossSeamReading T.chart crossRegluedProductCell) ∧
+      T.chart '' spliceCylinder ⊆ crossingProductSide ∧
+      T.chart '' spliceCylinder ∩ frontier crossingProductSide = T.chart '' spliceEndDisks
+```
+
+这里唯一自由的命题输入 `hB` 是边界像包含于 B；`hD`、branch、tube、cross 身份与 reading
+全部在结论中同时生产。探针取 `B := Set.range crossingProductCell.boundary`，用 `subset_refl`
+解除 `hB`，验证这些对象确有居留者。这个取法只检验本定理，**不**提供 F11 所需的正则邻域
+与缓冲，绝不作为完整 fixture 替代品。
+
+**新公开名（完整名）。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap
+DifferentialGeometry.Topology.PiecewiseLinear.isPiecewiseAffineOn_crossRegluedProductMap
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap_eq_seamModelMap
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap_notMem_spliceCylinder
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap_mem_spliceCylinder_iff
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_eq_on_tubeSource
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_preimage_spliceCylinder
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductReading
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductReading_tubeSource_ssubset
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap_curl_first
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap_curl_second
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_curl_mem_doublePointSet
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_curl_notMem_tube
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_snd
+DifferentialGeometry.Topology.PiecewiseLinear.isPiecewiseAffineOn_crossingProductMap
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_eq_crossRegluedProductMap_of_le
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_eq_crossRegluedProductMap_of_ge
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_core_first
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_core_second
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_curl_first
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_curl_second
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_eq_iff_of_lt
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_eq_iff
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_doublePointSet
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_doublePointSet
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_eq_or_eq_of_eq
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_fiber_le_two
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_fiber_le_two
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_injOn_strip
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_locallyInjective
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductBox
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductSide
+DifferentialGeometry.Topology.PiecewiseLinear.isHPolytope_crossingProductBox
+DifferentialGeometry.Topology.PiecewiseLinear.isCompact_crossingProductSide
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_bounds
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_mapsTo_box
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_mem_frontier_box_iff
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_mapsTo_side
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_preimage_frontier_side
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_image_inter_frontier_side
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_boundary_not_injOn
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_eq_crossRegluedProductMap_reflection
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductMap_eq_crossingProductMap_reflection
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_image
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_image
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_image_crossingFigure
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_doublePointSet_inter_tube
+DifferentialGeometry.Topology.PiecewiseLinear.crossSeamTubeCore_crossingProductCell
+DifferentialGeometry.Topology.PiecewiseLinear.spliceCylinder_subset_crossingProductBox
+DifferentialGeometry.Topology.PiecewiseLinear.spliceCylinder_inter_frontier_crossingProductBox
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTube_boundary
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTube_side
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_of_mem_core_horizontal
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_of_mem_core_vertical
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_of_mem_curl_horizontal
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_of_mem_curl_vertical
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductMap_hasPLNormalDoubleCrossingAt
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_hasPLNormalDoubleCrossingAt
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_singular_complex
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_nonempty_normalSingularSetTriangulation
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_nonempty_normalSingularCellData
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductBranchCarrier
+DifferentialGeometry.Topology.PiecewiseLinear.isCompact_crossingProductBranchCarrier
+DifferentialGeometry.Topology.PiecewiseLinear.isConnected_crossingProductBranchCarrier
+DifferentialGeometry.Topology.PiecewiseLinear.pairwise_disjoint_crossingProductBranchCarrier
+DifferentialGeometry.Topology.PiecewiseLinear.iUnion_crossingProductBranchCarrier
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductBranchCarrier_mem_boundary
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_branch_equiv
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_complexity_eq_two
+DifferentialGeometry.Topology.PiecewiseLinear.isPLBall_crossingProductSide
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_boundaryTube
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_preserving_cut
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_isCrossRegluedCell
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_crossReading
+```
+
+**给 lead 的 import 行；本批未改根聚合。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProduct
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductNormal
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductBranch
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductCut
+```
+
+**验证证据（本工作树 `.lake/scratch/`，均已落盘）。**
+
+- `CheckF11-Product.log`、`CheckF11-ProductNormal.log`、`CheckF11-ProductBranch.log`、
+  `CheckF11-ProductCut.log`：最终聚焦检查各 exit=0，零 warning/error。
+- `AuditF11ProductFamily.log`：四模块 **77** 个公开声明的传递公理闭包均只含
+  `{propext, Classical.choice, Quot.sound}`，exit=0。原始审计文件和名字清单一并保留。
+- `LintF11Product.log`：76 个声明及 45 个自动生成声明；
+  `LintF11NormalBranchCut.log`：分别为 32+19、10+2、43+12；每模块均运行全部 13 个环境
+  linter，全部 0 errors、exit=0。中途发现的私有 iff 参数显隐与无效 tactic 问题已修正并重跑。
+- `F11ProductTypesNonvacuity.log`：关键定理完整类型断言、同一元组的实际居留、复杂度 2、
+  两支不同、源严格包含、源弧单射、非单射目标边界的具体点，exit=0。
+- `F11ProductNameProbe.log`：77 个新公开名在 Skeleton 外各只有一个声明；四模块共同导入通过。
+- `F11ProductSourceReview.log`：零禁用构造、零新增命题打包结构、无行内/声明注释、行长 ≤100，
+  `git diff --check` exit=0。`F11ProductReceipt.json` 保存最终源码、olean 与日志哈希。
+- 使用 `check-f-private.ps1` / `audit-f-private.ps1`，F 的 Lean 调用串行；输出仅在本工作树
+  `.lake/scratch/F-private/lib/lean`。无 lake build、无共享 olean 覆写、无 Skeleton import。
+
+**非空洞清单及极端测试。**
+
+- normal crossing 的每一处来自四张显式仿射源片与孤立纤维邻域；奇异集来自两段实线段的
+  不交并三角剖分。`hD` 不再是假设中的未实现接口。
+- branch 与 tube 来自同一个 `hD`；core branch 的等式由 Bool 等价生产。
+  cross 身份来自同一个 cut 的逐点粘合，并未从像相等反推身份。
+- 单射性只用于源弧或 PL 同胚，探针展示 `(s,t)` 的源参数化居留。目标 curl 边界明确不单射；
+  未恢复历史上不可能的 `hlong` 或 X 中路径的单射性假设。
+- 空/常值/复杂度零模型由精确双点集和复杂度 2 排除；两条接缝以及高度端点均不同；
+  在 `t=0`、`t=1` 用半空间 crossing，`0<t<1` 用内部 crossing。
+  本批没有容差或局部有限族，纪律 (c)/(d) 无相应参数。
+
+**剩余义务（不得算作已闭合自由输入）。**
+
+1. 固定这里的原盘、cut、cross 候选及 tube，构造 direct 候选和**同一套四个源弧**的两个
+   `BoundaryWordWitness`。不能再次独立调用 existential producer 取得另一个 G 后把已有 reading
+   接过去；需要让两个 witness 的 cross 参数逐字就是 `crossRegluedProductCell`，或证明保留源弧
+   点态数据的同胚搬运。preserving 的词仍为 `σ.trans (τ.symm.trans (υ.trans φ.symm))`。
+2. 在实际侧边界中取边界像图的正则邻域 B，给出 `X=B`、`ρ=Subtype.val` 的实现、
+   `N=⊥` 下原边界环类非平凡、原边界及两个端盘上的 `B ∈ 𝓝[BdM] z`，并补齐
+   `IsPLBoundarySide` 的所有字段。把 B 取整张球面会使环类非平凡条件失败，不能用作替代。
+3. 在同一 resolved cell 上验证 curl 支保留而 core 支被删除；随后完成 reversing 的显式模型。
+4. 共用冻结叶子：对任意 `hG : hD.IsCrossRegluedCell c G`，由实际源粘合生产四个完整的 PL 页，
+   证明沿 branch 区间的相邻配对恒定，分成原 chart 或 quarter turn，再调用 F4。
+   当前仅证明本显式 preserving 模型取原 chart；尚无这个一般生产者，未削弱冻结陈述。
+
+本批沿顾问 G 指定的带 curl 产品模型推进；未发现新的反例，没有把任何开放义务回填为假设。
