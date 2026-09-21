@@ -24,10 +24,12 @@ hypothesis of any kind.
 
 Carriers are indexed by the cell labels, not by the stages of a tower and not by the simplices
 of a triangulation of `U` in one Euclidean chart: a stage-indexed family cannot be locally
-finite in `h '' U`, and there is no locally finite triangulation theorem for an arbitrary open
-subset of a three-dimensional piecewise linear manifold.  Local finiteness of the two cell
-families is required in their own unions, that is in the subspaces `U` and `⋃ l, targetCell l`,
-and never in the ambient manifolds.
+finite in `h '' U`, and this repository has not formalised a compatible locally finite
+triangulation of an arbitrary open subset of a piecewise linear 3-manifold (the theorem is
+true; what need not exist is a realisation of the whole triangulation in one chart).  Local
+finiteness of the two cell families is required in their own unions, that is in the subspaces
+`U` and `⋃ l, targetCell l`, and never in the ambient manifolds.  The smallness hypothesis
+bounds pairwise distances inside a carrier, which is a bound on its diameter only up to `≤`.
 
 `Section34CellDiagram` is an **open obligation**: no producer of it is proved here, and the
 only evidence for its inhabitability at present is the assembly theorem it feeds, whose

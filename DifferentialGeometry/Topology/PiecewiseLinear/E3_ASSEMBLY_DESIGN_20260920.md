@@ -22,8 +22,10 @@ is vacuous:
 
 `Section34CarrierControl` triangulates `U` by one complex in ℝ³, which forces `U` to embed in ℝ³;
 the tree's only producer for an arbitrary open `U` is `exists_locallyFinitePieceTower_of_isOpen`
-(compact pieces with their own ambient dimensions), and there is no locally finite triangulation
-theorem for open PL 3-manifolds. **Carriers must be indexed by the cell labels.**
+(compact pieces with their own ambient dimensions), and this repository has not formalised
+a compatible locally finite triangulation of an open PL 3-manifold (the theorem is true; a
+realisation of the whole triangulation in one chart need not exist).
+**Carriers must be indexed by the cell labels.**
 The same ambient-frontier defect makes `UniformBallExtension.lean:17` degenerate at `d = 1, 2`
 and `SourceCutDiagramCertificate.lean:100` (`patchFrontier`) uninhabited.
 

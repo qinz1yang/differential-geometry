@@ -18,7 +18,7 @@ orientable case is needed (simply connected ⇒ orientable); only existence of s
 3. Whoever commits a change to the hypothesis list of any endpoint named here updates this page
    **in the same commit**. An audit that disagrees with this page must point to the declaration
    (file:line) that proves the item, or the page stands.
-4. Last verified against source: **2026-09-20 night, commit of `BoundaryAdaptation.lean`**.
+4. Last verified against source: **2026-09-21, commit of `consult/H-section34-celldiagram-review-digest.md`**.
 
 ## How to audit (no compiler needed)
 
@@ -75,7 +75,12 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 |---|---|---|
 | **B1** | `Moise352Open 3` (`OpenSourceReduction.lean:297`) | **OPEN**; reduced (proved, `moise352Open_of_section34CellDiagram`, `Section34Endpoint.lean`) to the single obligation **`Section34CellDiagram`** = B1.b |
 | B1.a | terminal labelled PL-cell assembly + corrected endpoint | **PROVED** `exists_isPLHomeomorphInto_of_labelledCells` (`LabelledCellAssembly.lean`), manifold-level locally finite PL pasting with inverse (`LocallyFinitePLPastingManifold.lean`). Non-vacuity witness so far only in dimension 0; the tetrahedron witness is owed — until it exists the ball-extension rows are UNTESTED |
-| B1.b | `Section34CellDiagram` (the final-diagram producer = P0–P8): controlled frame, joint graph selection, generator transfer, face balls, protected compression, bigon slide, normalization, exterior face disks, tetrahedron and vertex recognition | open, not started; proved ingredients: `moise308Nested`, link connectivity, marked-circle sectors, locally finite PL gluing, labelled normalization, tolerance control, chart-local 34.1 **from** `Moise341` |
+| B1.b | `Section34CellDiagram` (the final-diagram producer = P0–P8): controlled frame, joint graph selection, generator transfer, face balls, protected compression, bigon slide, normalization, exterior face disks, tetrahedron and vertex recognition | open, not started; statement externally reviewed **OK** (`consult/H-section34-celldiagram-review-digest.md`); proved ingredients: `moise308Nested`, link connectivity, marked-circle sectors, locally finite PL gluing, labelled normalization, tolerance control, chart-local 34.1 **from** `Moise341` |
+| B1.b.1 | controlled source triangulation: a compatible locally finite triangulation of an arbitrary open subset of an atlas-defined PL 3-manifold, subordinate to P0's control supports (true classically; **not formalised here**) | open, not started |
+| B1.b.2 | target recognition: PL-ball presentations, intrinsic boundaries and exact intersections of `V_v, E_e, Δ_σ, X''_{tv}, R_t, a'', I'', p''` (P1, P6–P8, marked-sector condition) | open, not started |
+| B1.b.3 | target local finiteness `hLFt` from `T_λ ⊆ H_λ ⊆ h(U)` with `(H_λ)` locally finite in `h(U)`, without the assembled homeomorphism | open, not started (reviewer's "most likely surprise") |
+| B1.b.4 | parent-carrier exporter: top-cell carriers inherited by lower cells along a chosen incident top label | open, small |
+| B1.b.5 | P0 fixes control data only; the neighbourhood `N`, the cut diagram and `f₁` are chosen jointly in P1 | design constraint on B1.b, not a theorem |
 | B1.c | `Moise351` (35.1, needed in *controlled* form by P1) | OPEN, no owner |
 | B1.d | `Moise341`, `Moise331` and what they rest on: §31, §32 (pseudo-cells), §33.1, surface classification 22.8–22.10 | OPEN, not started |
 | B1.e | how A's output (tame 30.5, the loop theorem) enters P3/P4 | **not yet stated in Lean** — the two sides meet only in the book so far |
@@ -93,4 +98,4 @@ in a non-orientable manifold; `Moise305` (non-tame), `Moise306`, `Moise307`,
 
 ## Count (the number an audit should quote)
 Top-level OPEN items: **A1, A2, B1, C1** (+ D1 external). Expanded leaves currently open:
-**A: 4 + 7 = 11** (A2.1 closed), **B: 4** (B1.a closed), **C: 1**. Leaves closed since this page was created: 1 (B1.a).
+**A: 4 + 7 = 11** (A2.1 closed), **B: 4 + 4 = 8** (B1.a closed; B1.b split into B1.b.1–4 on 2026-09-21, a refinement, not new work), **C: 1**. Leaves closed since this page was created: 1 (B1.a).
