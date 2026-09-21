@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Neck.NormalizedDatum
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckDatum
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalDiffeomorphEmbedding
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
 
 set_option autoImplicit false
 noncomputable section
@@ -313,3 +314,54 @@ theorem roundCylinderDatum_retainedSide_countermodel (δ : ℝ) (hδ : 0 < δ) (
     norm_num
 
 end DifferentialGeometry.Geometry.Neck
+
+
+namespace DifferentialGeometry.Geometry.Neck.normalizedDatum
+
+open DifferentialGeometry
+open DifferentialGeometry.Geometry.Metric
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.Topology.Manifold
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold ThreeModel ∞ M] [T2Space M]
+variable {g : SmoothRiemannianMetric ThreeModel M} {x₀ : M} {δ : ℝ} {k : ℕ}
+
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
+
+def toNormalizedNeck (d : normalizedDatum g x₀ δ k) :
+    NormalizedNeck g δ k := by
+  refine ⟨d.precision_pos, d.precision_lt_one, spherePoint, x₀,
+    ⟨d.map, d.smooth.continuous⟩, ?_, ?_, metricScalarAt g x₀, d.scalar_pos, rfl,
+    d.normalizedMetric, ?_, ?_⟩
+  · exact DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_of_injective_mfderiv
+      d.smooth d.injective d.immersion (by simp [ThreeSpace])
+  · exact d.center_eq
+  · exact d.normalizedMetric_inner
+  · have hE := d.error_lt
+    change metricDerivENormSupOn (controlledCylinder δ) k d.normalizedMetric
+      (referenceMetric δ) (referenceMetric δ) < ENNReal.ofReal δ at hE
+    rw [metricDerivENormSupOn_eq_ofReal_of_isCompact
+      (isCompact_controlledCylinder δ) k d.normalizedMetric (referenceMetric δ) (referenceMetric δ)] at hE
+    have hnorm : metricDerivNormSupOn (controlledCylinder δ) k d.normalizedMetric
+        (referenceMetric δ) (referenceMetric δ) < δ :=
+      (ENNReal.ofReal_lt_ofReal_iff d.precision_pos).mp hE
+    have hset : controlledCylinder δ = neckClosedTest δ := by
+      ext x
+      rfl
+    rw [hset] at hnorm
+    rw [← referenceMetric_eq_roundCylinderMetric_neckBuffer δ]
+    exact hnorm
+
+@[simp] theorem toNormalizedNeck_chart (d : normalizedDatum g x₀ δ k) :
+    (d.toNormalizedNeck.chart : neckBuffer δ → M) = d.map := by
+  rfl
+
+@[simp] theorem toNormalizedNeck_center (d : normalizedDatum g x₀ δ k) :
+    d.toNormalizedNeck.center = x₀ := rfl
+
+@[simp] theorem toNormalizedNeck_sphereMark (d : normalizedDatum g x₀ δ k) :
+    d.toNormalizedNeck.sphereMark = spherePoint := rfl
+
+end DifferentialGeometry.Geometry.Neck.normalizedDatum
