@@ -167,6 +167,38 @@ theorem canonical_neighborhood_local_propagation {kappa : ℝ} (hkappa : 0 < kap
       (I := I3) (by simp [ThreeSpace]) hkappa)
 
 
+theorem eventually_scalar_le_of_edist_tendsto_zero {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+            ∀ (s : ℕ → ℝ) (z y : ∀ i, (X.term i).M) (A : ℝ),
+              (∀ᶠ i in atTop, s i ∈ Icc (-(X.depth i / 2)) 0) →
+              (∀ᶠ i in atTop, |(X.term i).S.scalar (s i) (z i)| ≤ A) →
+              Tendsto (fun i => riemannianEDistOf ((X.term i).S.base.metric (s i))
+                (z i) (y i)) atTop (𝓝 0) →
+              ∀ᶠ i in atTop, (X.term i).S.scalar (s i) (y i) ≤ 4 * (1 + A) := by
+  obtain ⟨epsStar, c, C, hepsStar, hc, _, hprop⟩ := canonical_neighborhood_local_propagation hkappa
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X s z y A hs hA hd
+  have hAnonneg : 0 ≤ A := by
+    obtain ⟨i, hi⟩ := hA.exists
+    exact (abs_nonneg _).trans hi
+  have hr : 0 < c / Real.sqrt (1 + A) := div_pos hc (Real.sqrt_pos.mpr (by linarith))
+  filter_upwards [hprop eps heps hle sigma hsigma Phi hPhi X, hs, hA,
+    hd.eventually (eventually_lt_nhds (ENNReal.ofReal_pos.mpr hr))] with i hi hsi hAi hdi
+  have hL : 0 < 1 + |(X.term i).S.scalar (s i) (z i)| := by positivity
+  have hradius : c / Real.sqrt (1 + A) ≤
+      c / Real.sqrt (1 + |(X.term i).S.scalar (s i) (z i)|) :=
+    div_le_div_of_nonneg_left hc.le (Real.sqrt_pos.mpr hL)
+      (Real.sqrt_le_sqrt (by linarith))
+  have hmem : (y i, s i) ∈ frozenBackwardCylinder (X.term i).S (z i) (s i) c c
+      (1 + |(X.term i).S.scalar (s i) (z i)|) := by
+    exact ⟨hdi.le.trans (ENNReal.ofReal_le_ofReal hradius),
+      ⟨by linarith [div_pos hc hL], le_rfl⟩⟩
+  exact ((hi (s i) hsi (z i)).2 (y i) (s i) hmem).2.1.trans (by linarith)
+
+
 theorem NormalizedSequence.pinching_error_eventually
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
     (hPhi : AdmissiblePinchingFunction Phi) {L0 eta : ℝ} (heta : 0 < eta) :

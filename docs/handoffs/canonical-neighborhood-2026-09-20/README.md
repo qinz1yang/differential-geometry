@@ -551,3 +551,60 @@ all thirteen declaration linters and have only `propext`, `Classical.choice`, an
 After the final Lean edit, the full root build passed 20,167 jobs with the same 21 retained
 `sorry` warnings and no other diagnostics. The root evidence is
 `/private/tmp/wt17-curve-distances-root-build.log`.
+
+
+## The actual escaping segment and its missing endpoint
+
+The continuation after `85be0c06e6305b8dda7c1de45d300674ff7c82ca` proves
+`exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDistance` in the new
+`CanonicalNeighborhood/NormalizedEscapeLimit.lean` leaf. Starting from a normalized
+sequence and failure of `BoundedAtDistance`, it now produces the actual finite-radius
+terminal pointed limit together with an isometric curve on `[0, F.radius)`. This curve
+starts at the limit basepoint and has no limit in the smooth manifold at `F.radius`.
+
+The conclusion retains the earlier canonical metric convergence, exact source-ball
+targets, relative metric bounds, compact inner limit balls, base scalar one, and
+nonnegative limit sectional curvature. It also retains a strict further subsequence,
+the actual source geodesics ending at `F.points`, and uniform convergence of their actual
+inverse images on compact parameter sets. Each retained source geodesic is smooth,
+unit speed, and minimizing. Its final high-curvature tail begins at scalar two, stays
+above two after that point, and has length greater than a fixed positive constant
+chosen from kappa. These tail statements currently concern the source curves; their
+limit scalar and neck properties are still to be proved.
+
+The construction engine `exists_isometric_curve_with_missing_endpoint` works from the
+produced escaping points, converging source radii, canonical pointed metric convergence,
+whole-domain lower metric estimates, and compact inner limit balls. Compact upper metric
+estimates are derived from canonical metric convergence rather than requested again.
+The proof selects an initial tail of the escaping sequence, obtains the source geodesics
+from `exists_high_curvature_geodesic_tail`, and applies the general isometric curve
+compactness theorem. A hypothetical smooth endpoint would force the source endpoints
+to approach its comparison-map images in source distance.
+
+`not_tendsto_edist_zero_of_scalar_tendsto_atTop` rules that out. Scalar convergence at the
+fixed smooth point bounds the scalars of its images. The new
+`eventually_scalar_le_of_edist_tendsto_zero` in `ModelCurvaturePropagation.lean` transfers
+a bounded scalar estimate between coalescing source points. It follows from the proved
+local propagation theorem and works at varying times in the controlled last half of each
+source interval. Applying it would bound the escaping scalars, contradicting their
+divergence. No nonnegative source Ricci assumption, common future extension, or ancient
+source solution is used.
+
+This proves the missing-segment-endpoint step following Kleiner--Lott Section 52, Step 2,
+after (52.13), printed pages 2702--2703 of
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+The completion endpoint, limiting high-curvature tail, neck tube, and cone producers
+remain active work. `FiniteHorn.bounded_curvature_at_distance` is unchanged and remains
+open. The source inventory still has 21 proof holes.
+
+The changed source leaves and their direct dependencies compiled without diagnostics.
+Four new public declarations passed all thirteen declaration linters, and each transitive
+axiom closure contains only `propext`, `Classical.choice`, and `Quot.sound`. The new leaf
+is registered in the flat root. Temporary evidence is in
+`/private/tmp/wt17-scalar-coalescence-build.log`,
+`/private/tmp/wt17-missing-endpoint-build.log`, and
+`/private/tmp/wt17-missing-endpoint-audit.log`.
+
+After the final Lean edit, the full root build passed 20,168 jobs with the same 21 retained
+`sorry` warnings and no other diagnostics. The root evidence is
+`/private/tmp/wt17-missing-endpoint-root-build.log`.
