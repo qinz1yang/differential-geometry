@@ -39,7 +39,8 @@ theorem IsMorreyDisk.exists_smooth_extension (g : SmoothRiemannianMetric 𝓘(�
     rw [← hb, diskExtension_coe]
     exact hv.symm
   have hreg : DiskSmoothUpToBoundary (E := E) u :=
-    contMDiffOn_closedDisk_of_embedded_loop g (by norm_num : (0 : ℝ) < 1) hγ.embedding hγ.smooth hγ.immersed
+    contMDiffOn_closedDisk_of_embedded_loop g (by norm_num : (0 : ℝ) < 1)
+      hγ.embedding hγ.smooth hγ.immersed
       (u.continuous.comp diskRetraction_lipschitz.continuous).continuousOn hu.smoothInterior htrace
       (fun z hz => (hu.conformal z hz).1) (fun z hz => (hu.conformal z hz).2) hu.harmonic
   let : FiniteDimensional ℝ E := .of_finrank_pos (by rw [hd]; norm_num)
@@ -58,12 +59,12 @@ theorem IsMorreyDisk.exists_smooth_extension (g : SmoothRiemannianMetric 𝓘(�
 theorem selectedMorreyDisk_smoothUpToBoundary (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (hd : Module.finrank ℝ E = 3) (hcomplete : RiemannianMetricComplete g)
     (hregular : HomogeneouslyRegularMetric g)
-    (γ : freeLoop M) (hγ : IsSmoothEmbeddedLoop (E := E) γ) (hnull : γ.Nullhomotopic)
+    (γ : freeLoop M) (hγ : IsSmoothEmbeddedLoop (E := E) γ)
     (hfinite : (spanningDiskCompetitors g γ).Nonempty) :
     DiskSmoothUpToBoundary (E := E)
-      (selectedMorreyDisk g hd hcomplete hregular γ hγ hnull hfinite) := by
+      (selectedMorreyDisk g hcomplete hregular γ hγ hfinite) := by
   obtain ⟨U, hU⟩ := IsMorreyDisk.exists_smooth_extension g hd hγ
-    (selectedMorreyDisk_isMorrey g hd hcomplete hregular γ hγ hnull hfinite)
+    (selectedMorreyDisk_isMorrey g hcomplete hregular γ hγ hfinite)
   exact hU.smoothUpToBoundary
 
 end DifferentialGeometry.Geometry

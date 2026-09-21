@@ -247,33 +247,6 @@ theorem compact_homogeneous_regularity
       exact hCb (Φ p) i j y (hcube hy)
 
 
-theorem classical_plateau_morrey_of_finite_lipschitz
-    [I.Boundaryless] [T2Space Q]
-    (g : SmoothRiemannianMetric I Q) (hdim : Module.finrank ℝ E = 3)
-    (d : EMetricSpace Q)
-    (htop : d.toUniformSpace.toTopologicalSpace = (inferInstance : TopologicalSpace Q))
-    (hdist : ∀ p q : Q, @edist Q d.toEDist p q = riemannianEDistOf g p q)
-    (hcomplete : @CompleteSpace Q d.toUniformSpace)
-    (hcoords : HomogeneousCoordinates g 3)
-    (gamma : Width.RegularLoop I Q)
-    (hsmooth : ContMDiff 𝓘(ℝ, ℝ) I ∞ (Width.loopLift gamma.toContinuousLoop))
-    (hemb : Topology.IsEmbedding (gamma : Surgery.Topology.Circle → Q))
-    (himm : ∀ t, Width.loopVelocity (I := I) gamma.toContinuousLoop t ≠ 0)
-    (hctr : Surgery.Topology.IsContractibleLoop gamma.toContinuousLoop)
-    (v : Width.LipschitzDisk g) (htracev : ∀ theta, v.map (Width.diskBoundary theta) = gamma theta)
-    (hvfinite : IntegrableOn (Width.diskJacobian g v.map) (Metric.closedBall (0 : ℂ) 1)) :
-    ∃ u : InteriorSmoothDisk (I := I) (Q := Q),
-      u.IsConformal g ∧ u.IsHarmonic g ∧
-      Width.IsSignedWeaklyMonotoneTrace u.map gamma.toContinuousLoop ∧
-      IntegrableOn (Width.diskJacobian g u.map) (Metric.closedBall (0 : ℂ) 1) ∧
-      (∀ w : Width.LipschitzDisk g,
-        (∀ theta, w.map (Width.diskBoundary theta) = gamma theta) →
-        Width.diskArea g u.map ≤ Width.diskArea g w.map) ∧
-      ∀ w : Width.SmoothDisk (I := I) (Q := Q),
-        (∀ theta, w.map (Width.diskBoundary theta) = gamma theta) →
-        Width.diskArea g u.map ≤ Width.diskArea g w.map := by
-  sorry
-
 omit [CompleteSpace E] in
 theorem finite_lipschitz_spanning_disk [I.Boundaryless] [T2Space Q] [CompactSpace Q]
     (g : SmoothRiemannianMetric I Q) (gamma : Width.RegularLoop I Q)
@@ -284,33 +257,6 @@ theorem finite_lipschitz_spanning_disk [I.Boundaryless] [T2Space Q] [CompactSpac
   obtain ⟨v⟩ := Width.rfs_disk_competitor_exists g gamma.toContinuousLoop hctr
     (Width.RegularLoop.isLipschitz (I := I) g gamma)
   exact ⟨v.1, v.2, v.1.integrable_jacobian g⟩
-
-theorem classical_plateau_morrey
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q]
-    (g : SmoothRiemannianMetric I Q) (hdim : Module.finrank ℝ E = 3)
-    (d : EMetricSpace Q)
-    (htop : d.toUniformSpace.toTopologicalSpace = (inferInstance : TopologicalSpace Q))
-    (hdist : ∀ p q : Q, @edist Q d.toEDist p q = riemannianEDistOf g p q)
-    (hcomplete : @CompleteSpace Q d.toUniformSpace)
-    (hcoords : HomogeneousCoordinates g 3)
-    (gamma : Width.RegularLoop I Q)
-    (hsmooth : ContMDiff 𝓘(ℝ, ℝ) I ∞ (Width.loopLift gamma.toContinuousLoop))
-    (hemb : Topology.IsEmbedding (gamma : Surgery.Topology.Circle → Q))
-    (himm : ∀ t, Width.loopVelocity (I := I) gamma.toContinuousLoop t ≠ 0)
-    (hctr : Surgery.Topology.IsContractibleLoop gamma.toContinuousLoop) :
-    ∃ u : InteriorSmoothDisk (I := I) (Q := Q),
-      u.IsConformal g ∧ u.IsHarmonic g ∧
-      Width.IsSignedWeaklyMonotoneTrace u.map gamma.toContinuousLoop ∧
-      IntegrableOn (Width.diskJacobian g u.map) (Metric.closedBall (0 : ℂ) 1) ∧
-      (∀ w : Width.LipschitzDisk g,
-        (∀ theta, w.map (Width.diskBoundary theta) = gamma theta) →
-        Width.diskArea g u.map ≤ Width.diskArea g w.map) ∧
-      ∀ w : Width.SmoothDisk (I := I) (Q := Q),
-        (∀ theta, w.map (Width.diskBoundary theta) = gamma theta) →
-        Width.diskArea g u.map ≤ Width.diskArea g w.map := by
-  obtain ⟨v, hvtrace, hvfinite⟩ := finite_lipschitz_spanning_disk g gamma hctr
-  exact classical_plateau_morrey_of_finite_lipschitz g hdim d htop hdist hcomplete
-    hcoords gamma hsmooth hemb himm hctr v hvtrace hvfinite
 
 theorem classical_plateau_boundary_regularity
     [I.Boundaryless] [T2Space Q]

@@ -25,16 +25,16 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem selectedMorreyDisk_conformal_output (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (hd : Module.finrank ℝ E = 3) (hcomplete : RiemannianMetricComplete g)
     (hregular : HomogeneouslyRegularMetric g)
-    (γ : freeLoop M) (hγ : IsSmoothEmbeddedLoop (E := E) γ) (hnull : γ.Nullhomotopic)
+    (γ : freeLoop M) (hγ : IsSmoothEmbeddedLoop (E := E) γ)
     (hfinite : (spanningDiskCompetitors g γ).Nonempty) :
     ∃ (v : C(closedDisk, M)) (σ : C(loopCircle, loopCircle)) (U : ℂ → M),
-      (v = selectedMorreyDisk g hd hcomplete hregular γ hγ hnull hfinite ∨
-        v = (selectedMorreyDisk g hd hcomplete hregular γ hγ hnull hfinite).comp
+      (v = selectedMorreyDisk g hcomplete hregular γ hγ hfinite ∨
+        v = (selectedMorreyDisk g hcomplete hregular γ hγ hfinite).comp
           ⟨diskReflection, diskReflection.continuous⟩) ∧
       riemannianDiskArea g v =
-        riemannianDiskArea g (selectedMorreyDisk g hd hcomplete hregular γ hγ hnull hfinite) ∧
+        riemannianDiskArea g (selectedMorreyDisk g hcomplete hregular γ hγ hfinite) ∧
       IsConformalMinimizingDisk g γ v σ U := by
-  have hu := selectedMorreyDisk_isMorrey g hd hcomplete hregular γ hγ hnull hfinite
+  have hu := selectedMorreyDisk_isMorrey g hcomplete hregular γ hγ hfinite
   exact hu.exists_conformal_minimizing_disk g hd hγ
     (hu.exists_smooth_extension g hd hγ)
 
@@ -47,10 +47,10 @@ theorem selectedMorreyDisk_area_eq_leastSpanningArea [CompactSpace M]
     (γ : lipschitzContractibleLoop g) (hγ : IsSmoothEmbeddedLoop (E := E) γ.val.val)
     (hfinite : (spanningDiskCompetitors g γ.val.val).Nonempty) :
     riemannianDiskArea g
-      (selectedMorreyDisk g hd hcomplete hregular γ.val.val hγ γ.val.property hfinite) =
+      (selectedMorreyDisk g hcomplete hregular γ.val.val hγ hfinite) =
       leastSpanningArea g γ := by
   obtain ⟨v, σ, U, _, heq, hv⟩ := selectedMorreyDisk_conformal_output g hd hcomplete hregular
-    γ.val.val hγ γ.val.property hfinite
+    γ.val.val hγ hfinite
   exact heq.symm.trans (hv.area_eq_leastSpanningArea hγ.smooth)
 
 end DifferentialGeometry.Geometry

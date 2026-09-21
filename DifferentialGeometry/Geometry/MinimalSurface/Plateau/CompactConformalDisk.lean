@@ -39,7 +39,7 @@ theorem selectedMorreyDisk_conformal_output_of_compact
     let hregular := homogeneouslyRegularMetric_of_compact g hd
     let hfinite := spanningDiskCompetitors_nonempty_of_compact g
       γ.property.choose_spec γ.val.property
-    let u := selectedMorreyDisk g hd hcomplete hregular γ.val.val hγ γ.val.property hfinite
+    let u := selectedMorreyDisk g hcomplete hregular γ.val.val hγ hfinite
     ∃ (v : C(closedDisk, M)) (σ : C(loopCircle, loopCircle)) (U : ℂ → M),
       (v = u ∨ v = u.comp ⟨diskReflection, diskReflection.continuous⟩) ∧
       riemannianDiskArea g v = riemannianDiskArea g u ∧
@@ -48,7 +48,7 @@ theorem selectedMorreyDisk_conformal_output_of_compact
   dsimp only
   obtain ⟨v, σ, U, hid, harea, hconf⟩ := selectedMorreyDisk_conformal_output g hd
     (riemannianMetricComplete_of_compact g) (homogeneouslyRegularMetric_of_compact g hd)
-    γ.val.val hγ γ.val.property
+    γ.val.val hγ
     (spanningDiskCompetitors_nonempty_of_compact g γ.property.choose_spec γ.val.property)
   exact ⟨v, σ, U, hid, harea, hconf, hconf.area_eq_leastSpanningArea hγ.smooth⟩
 
