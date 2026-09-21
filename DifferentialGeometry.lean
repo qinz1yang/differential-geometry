@@ -5507,8 +5507,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonSectionalCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonReflexive
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompleteMetricSegment
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompleteTriangleEquality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConcurrentKernelHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConcurrentRicciEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeBlowupLimitReduction
@@ -7397,7 +7395,10 @@ import DifferentialGeometry.Geometry.Geodesic.Maximal.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Basic
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Speed
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegment
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegmentRegularity
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Ray
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.TriangleEquality
 import DifferentialGeometry.Geometry.Geodesic.Naturality.GramPullback
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
@@ -7671,6 +7672,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Metric.Distance.Boundary
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 import DifferentialGeometry.Geometry.Metric.Distance.Completion
+import DifferentialGeometry.Geometry.Metric.Distance.LocalCompletion
 import DifferentialGeometry.Geometry.Metric.Distance.PathLength
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Distance.Topology

@@ -1778,3 +1778,67 @@ References: Chow–Lu–Ni, GSM77, `tex/chapters/chapter1.tex`, labels `Eagles t
 and `doh!`; Kleiner–Lott, `BooksPapers/KleinerLottPerelman.pdf`, Section 52,
 Step 2; the user's September 21 attachment, Section 2. Radial comparison will
 feed Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Section 10.4, Lemma 10.21.
+
+### Radial comparison through the completion endpoint
+
+`Toponogov.convexOn_squared_distance_defect_along_completion_segment`
+proves squared-distance convexity along an actual unit-speed metric segment
+starting at the missing point. Its distance center may be any completion point
+in the smaller ball. The compact punctured-ball covering realizes all positive
+parameter points in the smooth manifold. A new general metric-segment regularity
+lemma proves smoothness, the geodesic equation, and unit speed locally there.
+The previous connector-based comparison theorem applies on the open interval;
+continuity extends the inequality to both parameter endpoints.
+
+`Toponogov.radialComparisonAngle_nonincreasing_of_completion_segments` then
+proves monotonicity in each radial variable for every family of such segments.
+It applies convex secant monotonicity to the squared-distance defect and the
+Euclidean cosine law. Thus the analytic hypothesis for the existing limiting
+radial-angle construction is now produced from the actual local completion
+geometry; it is no longer a separate assumed comparison property.
+
+The regularity engine is
+`Geometry.Riemannian.contMDiffAt_and_geodesicEquationAt_of_metric_segment` in
+`Geometry/Geodesic/Minimizing/MetricSegmentRegularity.lean`. Its auxiliary metric
+is produced by `Geometry.exists_riemannianMetricComplete_eqOn_ball` in
+`Geometry/Metric/Distance/LocalCompletion.lean`: near each point it agrees with
+the original metric, preserves distances in a smaller ball, and is complete on
+the manifold. This auxiliary construction requires neither a boundaryless model
+nor a positive dimension. The stronger regularity theorem uses the standard
+boundaryless positive-dimensional context.
+
+The complete triangle-equality and metric-segment results moved to
+`Geometry/Geodesic/Minimizing/TriangleEquality.lean` and `MetricSegment.lean`.
+Their unnecessary connectedness assumptions were removed: positive finite
+Riemannian distance supplies the needed finite-distance Hopf–Rinow input.
+The two finite-horn local-completion and ray-regularity APIs retain their original
+statements as corollaries. The global smooth tube is not used by the new general
+completion-comparison proof.
+
+Thirteen changed or relocated public declarations passed all thirteen declaration
+linters, with transitive axiom closures contained in `propext`, `Classical.choice`,
+and `Quot.sound`. The regularity leaves and direct dependents passed 10,857 jobs;
+the radial-comparison leaf passed 4,319 jobs. Evidence:
+`/private/tmp/wt17-metric-regularity-build.log`,
+`/private/tmp/wt17-radial-comparison-build.log`, and
+`/private/tmp/wt17-radial-comparison-audit.log`.
+
+The full root build passed 20,215 jobs with exactly the 21 retained `sorry`
+warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-radial-comparison-root-build.log`. The segment-lifting consumer
+now imports its annulus-compactness dependency explicitly.
+
+The reduced essential gap is comparison along radial segments with a missing
+parameter endpoint, including the angle monotonicity required for directions.
+The direction-space compactness and cone-convergence producer, two-ray scale
+comparison, smooth local cone limit, and uniform buffered source curvature with
+fixed-order terminal Shi bounds remain open. The bounded-distance headline is
+unchanged. The failures in this layer were metric-instance elaboration and an
+explicit import needed after dependency cleanup; no persistent mathematical
+blockage was encountered and no switch to Ultra is indicated by these failures.
+
+References: the user's September 21 attachment, Sections 2–3; Chow–Lu–Ni, GSM77,
+`tex/chapters/chapter1.tex`, `Eagles tour` and `doh!`; Morgan–Tian,
+`BooksPapers/MorganTianPoincare.pdf`, Section 10.4, Lemma 10.21. The subsequent
+limiting-angle triangle inequality uses the existing unequal-radius Euclidean
+sector proof, not the invalid finite-angle assertion in the printed Lemma 10.22.

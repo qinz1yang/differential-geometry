@@ -4,11 +4,10 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Filter Manifold Set
 open scoped Topology Manifold ContDiff ENNReal
-open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Comparison.Toponogov
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -21,7 +20,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)] [ConnectedSpace M]
+  [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
 
 theorem intrinsicGeodesic_continues_of_distance_add
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
@@ -56,7 +55,6 @@ theorem intrinsicGeodesic_continues_of_distance_add
     _ = sigma b := by rw [hvelocity]
     _ = q := hvend
 
-omit [ConnectedSpace M] in
 theorem unit_intrinsic_vector_eq_of_short_endpoint
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
     (p : M) {u v : TangentSpace I p} (hu : g.inner p u u = 1) (hv : g.inner p v v = 1)
@@ -203,4 +201,4 @@ theorem exists_intrinsicGeodesic_eq_centered_metric_segment
   · have h := hvall ⟨-(s : ℝ), ⟨neg_nonneg.mpr hs, by linarith [s.property.1]⟩⟩
     simpa only [minus, neg_zero, neg_neg, hveq, hneg] using h
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+end DifferentialGeometry.Geometry.Riemannian

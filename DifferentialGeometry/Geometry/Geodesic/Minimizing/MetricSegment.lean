@@ -1,13 +1,12 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompleteTriangleEquality
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.TriangleEquality
 
 set_option autoImplicit false
 noncomputable section
 open Bundle Filter Manifold Set
 open scoped Topology Manifold ContDiff ENNReal
-open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -20,7 +19,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)] [ConnectedSpace M]
+  [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
 
 theorem exists_intrinsicGeodesic_eq_metric_segment
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
@@ -64,4 +63,4 @@ theorem exists_intrinsicGeodesic_eq_metric_segment
       (f zero) (f s) u hu hr (sub_pos.mpr hrs) hfull hremaining
     simpa only [show r + ((s : ℝ) - r) = s by ring] using hcontinue.symm
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+end DifferentialGeometry.Geometry.Riemannian

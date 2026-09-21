@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Convex.Closure
 import DifferentialGeometry.Geometry.Geodesic.EquationGerm
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegmentRegularity
+import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngle
 import DifferentialGeometry.Geometry.Metric.Distance.Completion
 import DifferentialGeometry.Geometry.Comparison.Toponogov.SquaredDistanceDefectConvexity
 import DifferentialGeometry.Geometry.Curve.Reparametrization
@@ -264,5 +266,186 @@ theorem exists_minimizing_geodesic_with_completion_comparison
     rw [add_zero, add_zero, ← mul_sub, abs_mul, abs_of_pos (inv_pos.mpr hL),
       ← mul_assoc, mul_inv_cancel₀ hL.ne', one_mul] at hd
     exact hd
+
+private theorem unitSpeedGeodesicOn_of_dist_eq
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    {beta : ℝ → M} {J : Set ℝ} (hJ : IsOpen J)
+    (hdist : ∀ s ∈ J, ∀ t ∈ J, dist (beta s) (beta t) = |s - t|) :
+    UnitSpeedGeodesicOn g beta J := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hpoint (t : ℝ) (ht : t ∈ J) :
+      ContMDiffAt 𝓘(ℝ, ℝ) I ∞ beta t ∧ HasGeodesicEquationAt g beta t ∧
+      g.inner (beta t) (mfderiv 𝓘(ℝ, ℝ) I beta t 1) (mfderiv 𝓘(ℝ, ℝ) I beta t 1) = 1 := by
+    obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp (hJ.mem_nhds ht)
+    have hmem (s : ℝ) (hs : s ∈ Icc (-(r / 2)) (r / 2)) : t + s ∈ J := by
+      apply hball
+      change |t + s - t| < r
+      rw [add_sub_cancel_left]
+      exact (abs_le.mpr hs).trans_lt (half_lt_self hr)
+    apply contMDiffAt_and_geodesicEquationAt_of_metric_segment g hmetric beta t (half_pos hr)
+    intro s hs v hv
+    rw [hdist _ (hmem s hs) _ (hmem v hv)]
+    congr 1
+    ring
+  have hsmooth : ContMDiffOn 𝓘(ℝ, ℝ) I ∞ beta J :=
+    fun t ht => (hpoint t ht).1.contMDiffWithinAt
+  have hgeo : IsGeodesicOn g beta J := fun t ht => (hpoint t ht).2.1
+  refine ⟨hsmooth.continuousOn, hsmooth.mono interior_subset, ?_, fun t ht => (hpoint t ht).2.2⟩
+  intro t ht
+  have h := isGeodesicAt_of_isGeodesicOn g (hJ.mem_nhds ht) hgeo hsmooth.continuousOn
+  simpa only [sub_self, add_comm] using isGeodesicAt_comp_add h t
+
+private theorem convexOn_squared_distance_defect_along_completion_segment_regular_center
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (hsec : HasNonnegativeSectionalCurvature g)
+    {z : UniformSpace.Completion M} (hz : z ∉ range (fun x : M => (x : UniformSpace.Completion M)))
+    {r : ℝ} (hcompact : IsCompact (Metric.closedBall z r))
+    (hcover : Metric.closedBall z r ⊆ insert z (range (fun x : M => (x : UniformSpace.Completion M))))
+    (havoid : ∀ (beta : ℝ → UniformSpace.Completion M) (u v w : ℝ), u < v → v < w →
+      (∀ s ∈ Icc u w, ∀ t ∈ Icc u w, dist (beta s) (beta t) = |s - t|) → beta v ≠ z)
+    {p : M} (hp : dist (p : UniformSpace.Completion M) z < r / 3)
+    {gamma : ℝ → UniformSpace.Completion M} {L : ℝ} (hL : 0 < L) (hLr : L < r / 3)
+    (hzero : gamma 0 = z)
+    (hdist : ∀ s ∈ Icc 0 L, ∀ t ∈ Icc 0 L, dist (gamma s) (gamma t) = |s - t|) :
+    ConvexOn ℝ (Icc 0 L) (fun t => t ^ 2 - dist (p : UniformSpace.Completion M) (gamma t) ^ 2) := by
+  classical
+  have hrad (t : ℝ) (ht : t ∈ Icc 0 L) : dist (gamma t) z = t := by
+    simpa only [hzero, sub_zero, abs_of_nonneg ht.1] using hdist t ht 0 ⟨le_rfl, hL.le⟩
+  have hregular (t : ℝ) (ht : t ∈ Ioc 0 L) : ∃ x : M, (x : UniformSpace.Completion M) = gamma t := by
+    have hball : gamma t ∈ Metric.closedBall z r := by
+      change dist (gamma t) z ≤ r
+      rw [hrad t ⟨ht.1.le, ht.2⟩]
+      linarith only [ht.2, hLr, hL]
+    rcases hcover hball with heq | hreg
+    · have h := hrad t ⟨ht.1.le, ht.2⟩
+      rw [heq, dist_self] at h
+      exact False.elim (ht.1.ne' h.symm)
+    · exact hreg
+  let beta (t : ℝ) : M := if ht : t ∈ Ioc 0 L then (hregular t ht).choose else p
+  have hbeta (t : ℝ) (ht : t ∈ Ioc 0 L) : (beta t : UniformSpace.Completion M) = gamma t := by
+    dsimp only [beta]
+    rw [dif_pos ht]
+    exact (hregular t ht).choose_spec
+  have hunit : UnitSpeedGeodesicOn g beta (Ioo 0 L) := by
+    apply unitSpeedGeodesicOn_of_dist_eq g hmetric isOpen_Ioo
+    intro s hs t ht
+    rw [← UniformSpace.Completion.dist_eq, hbeta s ⟨hs.1, hs.2.le⟩, hbeta t ⟨ht.1, ht.2.le⟩]
+    exact hdist s ⟨hs.1.le, hs.2.le⟩ t ⟨ht.1.le, ht.2.le⟩
+  have hsmall (t : ℝ) (ht : t ∈ Ioo 0 L) : dist (beta t : UniformSpace.Completion M) z < r / 3 := by
+    rw [hbeta t ⟨ht.1, ht.2.le⟩, hrad t ⟨ht.1.le, ht.2.le⟩]
+    exact ht.2.trans hLr
+  have hconv := convexOn_squared_distance_defect_of_completion_point_avoidance
+    g hmetric hsec hz hcompact hcover havoid hp (convex_Ioo 0 L) hunit hsmall
+  have hconv' : ConvexOn ℝ (Ioo 0 L)
+      (fun t => t ^ 2 - dist (p : UniformSpace.Completion M) (gamma t) ^ 2) := by
+    apply hconv.congr
+    intro t ht
+    dsimp only
+    rw [← hbeta t ⟨ht.1, ht.2.le⟩, UniformSpace.Completion.dist_eq]
+  have hLip : LipschitzOnWith 1 gamma (Icc 0 L) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro s hs t ht
+    rw [hdist s hs t ht, Real.dist_eq, NNReal.coe_one, one_mul]
+  have hcont : ContinuousOn (fun t => t ^ 2 - dist (p : UniformSpace.Completion M) (gamma t) ^ 2)
+      (closure (Ioo 0 L)) := by
+    rw [closure_Ioo hL.ne]
+    have hd : ContinuousOn (fun t => dist (p : UniformSpace.Completion M) (gamma t)) (Icc 0 L) :=
+      fun t ht => tendsto_const_nhds.dist (hLip.continuousOn t ht)
+    exact (continuousOn_id.pow 2).sub (hd.pow 2)
+  simpa only [closure_Ioo hL.ne] using hconv'.closure_of_continuousOn hcont
+
+theorem convexOn_squared_distance_defect_along_completion_segment
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (hsec : HasNonnegativeSectionalCurvature g)
+    {z : UniformSpace.Completion M} (hz : z ∉ range (fun x : M => (x : UniformSpace.Completion M)))
+    {r : ℝ} (hcompact : IsCompact (Metric.closedBall z r))
+    (hcover : Metric.closedBall z r ⊆ insert z (range (fun x : M => (x : UniformSpace.Completion M))))
+    (havoid : ∀ (beta : ℝ → UniformSpace.Completion M) (u v w : ℝ), u < v → v < w →
+      (∀ s ∈ Icc u w, ∀ t ∈ Icc u w, dist (beta s) (beta t) = |s - t|) → beta v ≠ z)
+    {p : UniformSpace.Completion M} (hp : dist p z < r / 3)
+    {gamma : ℝ → UniformSpace.Completion M} {L : ℝ} (hL : 0 < L) (hLr : L < r / 3)
+    (hzero : gamma 0 = z)
+    (hdist : ∀ s ∈ Icc 0 L, ∀ t ∈ Icc 0 L, dist (gamma s) (gamma t) = |s - t|) :
+    ConvexOn ℝ (Icc 0 L) (fun t => t ^ 2 - dist p (gamma t) ^ 2) := by
+  by_cases hpz : p = z
+  · subst p
+    apply (convexOn_const (0 : ℝ) (convex_Icc 0 L)).congr
+    intro t ht
+    have hd := hdist 0 ⟨le_rfl, hL.le⟩ t ht
+    rw [hzero, zero_sub, abs_neg, abs_of_nonneg ht.1] at hd
+    dsimp only
+    rw [hd, sub_self]
+  · have hpball : p ∈ Metric.closedBall z r := by
+      change dist p z ≤ r
+      linarith only [hp, hLr, hL]
+    rcases hcover hpball with heq | ⟨q, hq⟩
+    · exact False.elim (hpz heq)
+    · subst p
+      exact convexOn_squared_distance_defect_along_completion_segment_regular_center
+        g hmetric hsec hz hcompact hcover havoid hp hL hLr hzero hdist
+
+private theorem comparisonAngle_shorten_first_of_completion_segment
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (hsec : HasNonnegativeSectionalCurvature g)
+    {z : UniformSpace.Completion M} (hz : z ∉ range (fun x : M => (x : UniformSpace.Completion M)))
+    {r : ℝ} (hcompact : IsCompact (Metric.closedBall z r))
+    (hcover : Metric.closedBall z r ⊆ insert z (range (fun x : M => (x : UniformSpace.Completion M))))
+    (havoid : ∀ (beta : ℝ → UniformSpace.Completion M) (u v w : ℝ), u < v → v < w →
+      (∀ s ∈ Icc u w, ∀ t ∈ Icc u w, dist (beta s) (beta t) = |s - t|) → beta v ≠ z)
+    {p : UniformSpace.Completion M} {b : ℝ} (hb : 0 < b) (hbr : b < r / 3) (hp : dist p z = b)
+    {gamma : ℝ → UniformSpace.Completion M} {L : ℝ} (hL : 0 < L) (hLr : L < r / 3)
+    (hzero : gamma 0 = z)
+    (hdist : ∀ s ∈ Icc 0 L, ∀ t ∈ Icc 0 L, dist (gamma s) (gamma t) = |s - t|)
+    {a₁ a₂ : ℝ} (ha₁ : 0 < a₁) (ha₁₂ : a₁ ≤ a₂) (ha₂ : a₂ ≤ L) :
+    comparisonAngle a₂ b (dist (gamma a₂) p) ≤ comparisonAngle a₁ b (dist (gamma a₁) p) := by
+  let F : ℝ → ℝ := fun s => s ^ 2 + b ^ 2 - dist (gamma s) p ^ 2
+  have hbase := convexOn_squared_distance_defect_along_completion_segment g hmetric hsec
+    hz hcompact hcover havoid (hp.trans_lt hbr) hL hLr hzero hdist
+  have hF : ConvexOn ℝ (Icc 0 L) F := by
+    convert! hbase.add_const (b ^ 2) using 1
+    funext s
+    dsimp only [F, Pi.add_apply]
+    rw [dist_comm p]
+    ring
+  have hzeroF : F 0 = 0 := by
+    dsimp only [F]
+    rw [hzero, dist_comm z, hp]
+    ring
+  have hratio := Geometry.Comparison.Toponogov.convex_quotient_mono hF hzeroF ha₁ ha₁₂ ha₂
+  have hdiv := div_le_div_of_nonneg_right hratio (by positivity : 0 ≤ 2 * b)
+  dsimp only [comparisonAngle]
+  apply Real.arccos_le_arccos
+  convert! hdiv using 1 <;> dsimp only [F, comparisonCosine] <;> ring
+
+theorem radialComparisonAngle_nonincreasing_of_completion_segments
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    (hsec : HasNonnegativeSectionalCurvature g)
+    {z : UniformSpace.Completion M} (hz : z ∉ range (fun x : M => (x : UniformSpace.Completion M)))
+    {r : ℝ} (hcompact : IsCompact (Metric.closedBall z r))
+    (hcover : Metric.closedBall z r ⊆ insert z (range (fun x : M => (x : UniformSpace.Completion M))))
+    (havoid : ∀ (beta : ℝ → UniformSpace.Completion M) (u v w : ℝ), u < v → v < w →
+      (∀ s ∈ Icc u w, ∀ t ∈ Icc u w, dist (beta s) (beta t) = |s - t|) → beta v ≠ z)
+    {ι : Type*} {L : ι → ℝ} {gamma : ι → ℝ → UniformSpace.Completion M}
+    (hL : ∀ i, 0 < L i) (hLr : ∀ i, L i < r / 3) (hzero : ∀ i, gamma i 0 = z)
+    (hdist : ∀ i, ∀ s ∈ Icc 0 (L i), ∀ t ∈ Icc 0 (L i), dist (gamma i s) (gamma i t) = |s - t|)
+    (i j : ι) :
+    CoordinatewiseNonincreasingOn (L i) (L j) (radialComparisonAngle gamma i j) := by
+  have hrad (k : ι) (t : ℝ) (ht : t ∈ Ioc 0 (L k)) : dist (gamma k t) z = t := by
+    simpa only [hzero k, sub_zero, abs_of_pos ht.1] using
+      hdist k t ⟨ht.1.le, ht.2⟩ 0 ⟨le_rfl, (hL k).le⟩
+  constructor
+  · intro s₁ s₂ t hs₁ hs₂ ht hs
+    exact comparisonAngle_shorten_first_of_completion_segment g hmetric hsec hz hcompact hcover havoid
+      ht.1 (ht.2.trans_lt (hLr j)) (hrad j t ht) (hL i) (hLr i) (hzero i) (hdist i) hs₁.1 hs hs₂.2
+  · intro s t₁ t₂ hs ht₁ ht₂ ht
+    have h := comparisonAngle_shorten_first_of_completion_segment g hmetric hsec hz hcompact hcover havoid
+      hs.1 (hs.2.trans_lt (hLr i)) (hrad i s hs) (hL j) (hLr j) (hzero j) (hdist j) ht₁.1 ht ht₂.2
+    simpa only [radialComparisonAngle, comparisonAngle_comm, dist_comm] using h
+
 
 end DifferentialGeometry.Toponogov
