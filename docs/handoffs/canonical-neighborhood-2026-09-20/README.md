@@ -1231,3 +1231,34 @@ jobs with exactly 21 retained sorry warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-spatial-neck-fiber-distance-build.log`,
 `/private/tmp/wt17-axial-distance-audit.log`, and
 `/private/tmp/wt17-axial-distance-root-build.log`.
+
+## Two-center bounds for the actual annuli
+
+The continuation after `df87dc141` proves graph-band containment in explicit
+closed balls around both neck centers. The first estimate permits different
+neck tolerances and arbitrary graph functions; regularity is needed only for
+the annulus construction. The annulus producer retains its actual height
+interpolation. The new metric version derives positive slab radius and chart
+containment from the center-distance bound.
+
+For the neck sequence, a slab radius `eps⁻¹ / 36` gives containment of each
+annulus in balls about both adjacent centers of radius
+`(3 * eps⁻¹ / 100) / sqrt R`, exactly six-fifths of the center spacing. The
+normalized escape producer now retains these bounds for its actual annulus
+family. The inputs are the axial and central-sphere length estimates and the
+proved scalar comparison on the overlapping neck. This is the quantitative
+geometry behind Morgan–Tian, *Ricci Flow and the Poincaré Conjecture*, Appendix A,
+Proposition A.11 and the chain arguments in Lemmas A.13–A.16, in the read-only
+`Geometrization/BooksPapers/MorganTianPoincare.pdf`.
+
+All five changed public declarations passed thirteen declaration linters and
+have only the approved foundational axioms. The annulus leaf passed 11,178 jobs,
+the sequence leaf 11,181 jobs, and the normalized dependent 14,123 jobs. The full
+root passed 20,198 jobs with exactly 21 retained sorry warnings and no other
+diagnostics. The bounded-distance headline remains open; nonadjacent annulus
+separation and adjacent fitting are the next geometric steps. Evidence:
+`/private/tmp/wt17-annulus-two-center-leaf-build.log`,
+`/private/tmp/wt17-sequence-annulus-balls-leaf-build.log`,
+`/private/tmp/wt17-normalized-annulus-balls-build.log`,
+`/private/tmp/wt17-annulus-balls-audit.log`, and
+`/private/tmp/wt17-annulus-balls-root-build.log`.

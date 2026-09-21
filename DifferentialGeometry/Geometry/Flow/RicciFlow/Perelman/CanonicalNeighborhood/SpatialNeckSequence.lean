@@ -45,8 +45,13 @@ theorem exists_spatialNeck_sequence_along_isometric_curve
           (frontier (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1)) =
             (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) ∪
               (nk (n + 1)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+          (Ψ '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+            (nk n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) ∧
           Ψ '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
-            (nk n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) := by
+            riemannianClosedBallOf g (gamma (s n))
+              ((3 * eps⁻¹ / 100) / Real.sqrt (metricScalarAt g (gamma (s n)))) ∩
+            riemannianClosedBallOf g (gamma (s (n + 1)))
+              ((3 * eps⁻¹ / 100) / Real.sqrt (metricScalarAt g (gamma (s n))))) := by
   classical
   have heps : 0 < eps := (Classical.choice (hnecks ⟨a, le_rfl, hab⟩)).eps_pos
   let neck (t : Ico a b) := Classical.choice (hnecks t)
@@ -123,8 +128,70 @@ theorem exists_spatialNeck_sequence_along_isometric_curve
     · exact hdisjoint i j hlt
     · exact (hdisjoint j i hgt).symm
   · intro n
-    exact (nk n).exists_annulus_in_nearby_neck (nk (n + 1)) hsmall
-      (hcover n (s (n + 1)) (hmono.monotone (Nat.le_succ n)) le_rfl)
-      (hdisjoint n (n + 1) (Nat.lt_succ_self n))
+    have hi : (1000000 : ℝ) < eps⁻¹ := (lt_inv_comm₀ (by norm_num) heps).mpr
+      (by simpa only [one_div] using hsmall)
+    have hy := hcover n (s (n + 1)) (hmono.monotone (Nat.le_succ n)) le_rfl
+    have hratio : |metricScalarAt g (gamma (s (n + 1))) /
+        metricScalarAt g (gamma (s n)) - 1| ≤ 4323 * eps := by
+      obtain ⟨z, hz, hzval⟩ := hy
+      rw [← hzval]
+      exact (nk n).abs_scalar_ratio_sub_one_le
+        ⟨hz.1, by linarith [hz.2.1], by linarith [hz.2.2]⟩
+    have hQn : metricScalarAt g (gamma (s n)) ≤
+        4 * metricScalarAt g (gamma (s (n + 1))) := by
+      have hh : (1 : ℝ) / 2 ≤ metricScalarAt g (gamma (s (n + 1))) /
+          metricScalarAt g (gamma (s n)) := by linarith [(abs_le.mp hratio).1]
+      have hh' := (le_div_iff₀ (hQ (s n))).mp hh
+      linarith [hQ (s (n + 1))]
+    have hsQ : Real.sqrt (metricScalarAt g (gamma (s n))) ≤
+        2 * Real.sqrt (metricScalarAt g (gamma (s (n + 1)))) := by
+      nlinarith [Real.sq_sqrt (hQ (s n)).le, Real.sq_sqrt (hQ (s (n + 1))).le,
+        Real.sqrt_nonneg (metricScalarAt g (gamma (s n))),
+        Real.sqrt_nonneg (metricScalarAt g (gamma (s (n + 1))))]
+    have hdiv : 7 / Real.sqrt (metricScalarAt g (gamma (s (n + 1)))) ≤
+        14 / Real.sqrt (metricScalarAt g (gamma (s n))) := by
+      apply (div_le_div_iff₀ (Real.sqrt_pos.mpr (hQ (s (n + 1))))
+        (Real.sqrt_pos.mpr (hQ (s n)))).mpr
+      linarith
+    have hm : 99 / 100 ≤ Real.sqrt (1 - eps) := by
+      nlinarith [Real.sq_sqrt (by linarith : 0 ≤ 1 - eps), Real.sqrt_nonneg (1 - eps)]
+    have hp : Real.sqrt (1 + eps) ≤ 101 / 100 := by
+      nlinarith [Real.sq_sqrt (by linarith : 0 ≤ 1 + eps), Real.sqrt_nonneg (1 + eps)]
+    have hn : eps⁻¹ / 40 + 14 < (eps⁻¹ / 36) * Real.sqrt (1 - eps) := by
+      nlinarith [mul_le_mul_of_nonneg_left hm (by linarith : 0 ≤ eps⁻¹ / 36)]
+    have hnear : riemannianEDistOf g (gamma (s n)) (gamma (s (n + 1))) +
+        ENNReal.ofReal (7 / Real.sqrt (metricScalarAt g (gamma (s (n + 1))))) <
+        ENNReal.ofReal ((eps⁻¹ / 36) * Real.sqrt (1 - eps) /
+          Real.sqrt (metricScalarAt g (gamma (s n)))) := by
+      rw [hgamma, edist_dist, Subtype.dist_eq, Real.dist_eq,
+        abs_of_nonpos (sub_nonpos.mpr (hmono (Nat.lt_succ_self n)).le), neg_sub]
+      have hs := hstep n
+      change (s (n + 1) : ℝ) = (s n : ℝ) +
+        (eps⁻¹ / 40) / Real.sqrt (metricScalarAt g (gamma (s n))) at hs
+      have hgap : (s (n + 1) : ℝ) - s n =
+          (eps⁻¹ / 40) / Real.sqrt (metricScalarAt g (gamma (s n))) := by linarith
+      rw [hgap]
+      apply lt_of_le_of_lt (add_le_add le_rfl (ENNReal.ofReal_le_ofReal hdiv))
+      rw [← ENNReal.ofReal_add (by positivity) (by positivity), ← add_div]
+      exact (ENNReal.ofReal_lt_ofReal_iff
+        (div_pos (lt_of_le_of_lt (by linarith) hn)
+          (Real.sqrt_pos.mpr (hQ (s n))))).mpr
+        (div_lt_div_of_pos_right hn (Real.sqrt_pos.mpr (hQ (s n))))
+    obtain ⟨eta, Ψ, hsource, hleft, hright, hc, hf, hsub, hballs⟩ :=
+      (nk n).exists_annulus_in_intersection_closedBalls (nk (n + 1)) hsmall
+        (by linarith : eps⁻¹ / 36 ≤ eps⁻¹ / 10) hnear
+        (hdisjoint n (n + 1) (Nat.lt_succ_self n))
+    refine ⟨eta, Ψ, hsource, hleft, hright, hc, hf, hsub, ?_⟩
+    intro z hz
+    have hb := hballs hz
+    constructor
+    · apply hb.1.trans (ENNReal.ofReal_le_ofReal _)
+      apply div_le_div_of_nonneg_right _ (Real.sqrt_nonneg _)
+      nlinarith [mul_le_mul_of_nonneg_left hp (by linarith : 0 ≤ eps⁻¹ / 36 + 6)]
+    · apply hb.2.trans (ENNReal.ofReal_le_ofReal _)
+      apply (add_le_add le_rfl hdiv).trans
+      rw [← add_div]
+      apply div_le_div_of_nonneg_right _ (Real.sqrt_nonneg _)
+      nlinarith [mul_le_mul_of_nonneg_left hp (by linarith : 0 ≤ eps⁻¹ / 36)]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

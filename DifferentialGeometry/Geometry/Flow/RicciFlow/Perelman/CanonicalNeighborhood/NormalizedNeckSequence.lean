@@ -122,8 +122,15 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                   (frontier (Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) =
                                     (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) ∪
                                       (nk (n + 1)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
-                                  Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+                                  (Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
                                     (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹)) ∧
+                                  Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+                                    riemannianClosedBallOf L.metric (g (t n))
+                                      ((3 * (2 * alpha)⁻¹ / 100) /
+                                        Real.sqrt (metricScalarAt L.metric (g (t n)))) ∩
+                                    riemannianClosedBallOf L.metric (g (t (n + 1)))
+                                      ((3 * (2 * alpha)⁻¹ / 100) /
+                                        Real.sqrt (metricScalarAt L.metric (g (t n))))) ∧
                                 LocallyFinite (fun n => Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 IsClosed (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 IsConnected (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
@@ -184,7 +191,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     exact hblow.comp htend
   have hlocal := SpatialNeck.locallyFinite_of_scalar_tendsto_atTop nk
     (eta := 2 * alpha) (by linarith : 2 * alpha < 1 / 4323) (fun _ => le_rfl) hscalar
-  choose eta ann hsource hleft hright hcann hfrann hsubann using hannuli
+  choose eta ann hsource hleft hright hcann hfrann hsubann hballs using hannuli
   have hlocalAnn := hlocal.subset hsubann
   have hclosedAnn := hlocalAnn.isClosed_iUnion (fun n => (hcann n).isClosed)
   let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
@@ -220,7 +227,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
-    hlocal, eta, ann, fun n => ⟨hsource n, hleft n, hright n, hcann n, hfrann n, hsubann n⟩,
+    hlocal, eta, ann, fun n => ⟨hsource n, hleft n, hright n, hcann n, hfrann n, hsubann n, hballs n⟩,
     hlocalAnn, hclosedAnn, hconnUnion, hnotCompact, hfrontAnn⟩
   intro tau hR
   exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
