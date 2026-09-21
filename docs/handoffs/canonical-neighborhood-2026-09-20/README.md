@@ -2530,3 +2530,61 @@ The full root build passed 20,242 jobs with exactly 21 retained proof-hole
 warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-chart-root-build.log`.
 The original `bounded_curvature_at_distance` declaration and its proof hole are
 unchanged.
+
+## Original-source scalar rescaling and buffered comparison
+
+`NormalizedSourceComparison.lean` proves
+`exists_terminal_rescaled_source_comparison`. Its input is the original normalized
+sequence, a strict source subsequence, canonical terminal metric convergence,
+an open subset of the limit, selected points with scalar curvature at least two,
+and compact end balls of radius `4 R / sqrt(Q_n)`. It derives the needed
+quadratic estimates from canonical metric convergence; no separate metric
+comparison or desired distance estimate is assumed.
+
+The theorem selects a strict diagonal `k`, uses the actual scalar `q_n` at the
+mapped point in the original source, proves `q_n >= 1` and `q_n / Q_n -> 1`, and
+forms the existing `terminalCurvatureRescale` of the actual reindexed flows.
+The displayed target metric is the terminal metric of that normalized sequence.
+The comparison map is the actual open inclusion followed by the selected
+canonical comparison map. It is not a free existential map. For the end metric
+scaled by `q_n`, the radius-`R` ball is compact and lies in the map source.
+The pullback metric lies between `1 - 1/(n+2)` and `1 + 1/(n+2)` times the scaled
+end metric. The source closed ball of radius `R/4` is contained in the image of
+that end ball, and pairwise distances on the inner `R/8` end ball satisfy the
+corresponding square-root bounds. Ball capture uses the established compact
+first-exit theorem, and distance control uses the established buffered
+cross-model comparison theorem.
+
+These hypotheses follow on a tail from the constructed normalized end:
+its scalar curvature tends to infinity, and
+`exists_parabolic_curvature_bound_on_normalized_end` supplies compact balls of
+radius `8 a / sqrt(Q_n)`, so take `R = 2 a`. Taking a tail preserves convergence
+of the points to the missing endpoint and the existing bounds on `Q_n d_n^2`.
+The scalar ratio preserves those bounds for the actual source normalization.
+This closes the end-to-original-source comparison step. The next producer must
+compose the inverses of these maps with the local terminal compactness maps,
+prove containment of a fixed compact terminal neighborhood, and apply the cone
+annulus approximation with vanishing distortion and coverage. The final open
+cone-distance identification, the local cone-flow patch, and the headline are
+still unproved.
+
+The classical geometric role is the comparison of the smooth pointed limit
+with the cone annulus in Kleiner--Lott, *Notes on Perelman's papers*, Section 41,
+proof of Theorem 41.2 immediately before Lemma 41.4 (printed page 2675), together
+with the finite-horn source setup in Section 52, Step 2. The local source is
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+The source-flow hypotheses here remain almost-pinched finite-interval hypotheses;
+MSM163, `tex/chapters/chapter20.tex`, Lemma `notes_and_commentary:lbl477`, cannot be
+applied directly because it assumes nonnegative curvature operator and scalar
+monotonicity on each source.
+
+The new leaf built 11,776 jobs without diagnostics. Its public declaration passed
+all thirteen declaration linters and has exactly the approved transitive axioms
+`propext`, `Classical.choice`, and `Quot.sound`. The full root build passed
+20,243 jobs with the same 21 retained proof-hole warnings and no other diagnostics.
+Evidence: `/private/tmp/wt17-normalized-source-comparison-build.log`,
+`/private/tmp/wt17-normalized-source-comparison-audit.log`, and
+`/private/tmp/wt17-normalized-source-comparison-root-build.log`.
+No persistent mathematical blockage was established. The corrected failures
+were Lean normalization of scaled metric inequalities and insufficiently sharp
+auxiliary numerical bounds in one buffer calculation.
