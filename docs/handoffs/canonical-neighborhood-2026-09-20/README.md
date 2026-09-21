@@ -105,10 +105,78 @@ All three declarations are in the `FiniteHorn` namespace stated above. The two n
 are registered in the flat root. The existing sublevel derivative proof now uses the scalar-scale
 derivative theorem; its public statements are unchanged.
 
+## Curvature escape limits
+
+The continuation through proof commit `a97df9972a9b6edec91aec778a753e4d12359b70` constructs
+actual metric and backward-flow limits from failure of `BoundedAtDistance`. These are genuine
+producers from the normalized source hypotheses, not assumptions of a limit or a cone.
+
+- `e04d3b15691c9a3e80182fb921986184675bbe42` proves the constant metric-scaling laws for
+  `curvCovDeriv`, `curvDerivNormSq`, and `curvDerivNorm` in
+  `Geometry/Curvature/CurvatureOperator/Derivatives/Scaling.lean`. For scaling factor `c > 0`,
+  the derivative norm of order `m` scales by `1 / (c * sqrt(c)^m)`. The statements use finite
+  dimensional normed model spaces; no inner product, boundaryless, or positive-dimension
+  hypothesis is imposed.
+- `21cb0927f3ff935d28af981647d41b5f100c4f7f` constructs a complete terminal metric limit in
+  `Perelman/CanonicalNeighborhood/NormalizedMetricLimit.lean`. Its actual source metrics are
+  the selected terminal metrics scaled by their center scalar curvatures. Every fixed ball
+  eventually lies in the selected source ball. The scalar-scale derivative bounds and actual
+  local injectivity theorem give smooth pointed compactness. The limit has base scalar one,
+  global scalar at most two, nonnegative sectional curvature, and kappa noncollapse at all scales.
+- `5bb0fa727e0e7d1dd7d0a7376ae3e9994116e665` proves that this metric limit is noncompact.
+  A uniform bound on a fixed original terminal base ball forces high-curvature centers outside
+  that ball. Thus the original basepoints escape to infinity in the rescaled source metrics.
+  A compact pointed limit would eventually globalize its convergence maps onto the connected
+  sources, contradicting escape. The reusable result is
+  `PointedRiemannianConvergenceMaps.noncompact_of_escaping_points` in
+  `Geometry/Compactness/CheegerGromov/Pointed/Convergence/Compact.lean`.
+- `a97df9972a9b6edec91aec778a753e4d12359b70` constructs a normalized rescaled flow sequence,
+  an oriented terminal limit of that sequence, and an actual closed backward extension.
+  `NormalizedSequence.terminalCurvatureRescale` in `NormalizedRescaling.lean` preserves
+  the finite source intervals, source-dependent curvature bounds, completeness, noncollapse,
+  pinching, and oriented higher-curvature model witnesses. Both depth and pinching scale are
+  multiplied by the center scalar curvature. A tail ensures every selected center scalar is
+  at least one, as needed for the higher-curvature threshold.
+
+The final two producers are
+`exists_noncompact_terminalLimit_of_not_boundedAtDistance` in `NormalizedTerminalLimit.lean`
+and `exists_noncompact_backwardExtension_of_not_boundedAtDistance` in
+`NormalizedBackwardLimit.lean`, both in the `FiniteHorn` namespace. Their conclusions retain
+actual selected source points, radii, containment in one fixed source base ball, center curvature
+`Q_i` and products `Q_i r_i^2` tending to infinity, and the exact normalized rescaled sequence to
+which the limit belongs. The terminal limit is noncompact and has scalar curvature at most two. The
+backward extension includes smooth convergence of the selected source flows, completeness,
+nonnegative sectional curvature, and compact-time global curvature bounds on a genuine closed
+interval `[-delta, 0]`, with `delta > 0`.
+
+`TerminalLimit.ofMetricCompactLimit` exposes the existing terminal-limit construction as an actual
+object, preserving its space and maps definitionally. The previous existential theorem remains
+with its original statement. The six existing normalized reindexing declarations moved verbatim
+from `EscapeReindexingReduction.lean` to `NormalizedReindexing.lean`; this makes them available
+below the unresolved bounded-distance theorem. Four generic compact-limit globalization
+results moved from `KappaSolutions/CompactLimitGlobalization.lean` to the pointed-convergence
+`Compact.lean` module, preserving their names and statements. All new leaves are registered in
+the flat root.
+
+The backward-extension producer uses the already-proved
+`exists_backward_extension_of_model_curvature_bound` and the proved ancient-kappa model bound.
+It does not invoke `bounded_curvature_at_distance`, `terminal_limit_global_bound`, or
+`ancient_extension` in its proof closure. Its current import graph nevertheless reaches
+`FiniteHornStructure.lean` through the existing backward-slab infrastructure. A future consumer
+inside that file will need to separate the existing lower curvature-control declarations from
+its headline to avoid a module import cycle; the lower metric and terminal-limit producers do
+not import that file.
+
 ## Mathematical references
 
 The read-only library is `/Users/bennettchow/Documents/Codex/RicciFlowBooksLatex`.
 
+- MSM135, `tex/chapters/chapter3.tex`, `notes_and_commentary:lbl334`: compactness of complete
+  pointed metrics under curvature derivative and injectivity bounds. The formal construction uses
+  the existing local-ball version, after deriving its actual source estimates. Label `lbl335`
+  assumes an open time interval containing zero; it is not used to infer a positive-time source
+  extension. Label `lbl338`, with equations `lbl339` and `lbl340`, records the initial metric
+  comparison and derivative hypotheses for controlling evolving metrics.
 - MSM144, `tex/chapters/chapter14.tex`, `notes_and_commentary:lbl550`: local higher derivative
   estimates on a compact initial ball, including positive times up to the terminal time. The new
   terminal-ball theorem supplies the earlier ball and its curvature bound before using the
@@ -128,9 +196,9 @@ The read-only library is `/Users/bennettchow/Documents/Codex/RicciFlowBooksLatex
 `bounded_curvature_at_distance` in `FiniteHornStructure.lean` is still unproved, with its original
 source text unchanged. Its remaining mathematical obstacle is scalar control at arbitrary bounded
 terminal distance. The derivative producer above is ready once that scalar estimate is obtained.
-The new point-picking and parabolic-control producers prepare the escape case for geometric
-compactness and exclusion, but do not supply that exclusion. A local ball estimate cannot by
-itself exclude finite-distance curvature escape.
+The point-picking, metric-limit, and backward-slab producers now supply actual geometric
+limits for the escape case. They do not supply the geometric exclusion of that case. A local ball
+estimate cannot by itself exclude finite-distance curvature escape.
 
 The high-curvature blowup theorem and the full Poincare development are not complete. The previous
 handoff's cautions concerning cone exclusion versus cone construction, terminal limit construction,
@@ -197,6 +265,55 @@ on all ten new public declarations listed above, the three moved declarations
 `curvDerivNorm_eq_zero_of_finrank_le_one` in `DifferentialGeometry.CheegerGromovCompactness`, and
 `exists_ascrPointSelection` and `exists_scalarAscrPointSelection` in the kappa-solution namespace.
 Query both `#check @...` and `#print axioms ...` for each declaration.
+
+## Verification of the limit checkpoint
+
+The source snapshot `a97df9972a9b6edec91aec778a753e4d12359b70` passed the full root build:
+**20,158 jobs**, exactly **21 retained `sorry` warnings**, and no other diagnostics. Twelve
+changed source modules were also freshly elaborated with the exact repository options and
+zero diagnostics. No Lean source was edited during these builds.
+
+The combined declaration audit checked **22 declarations with all 13 applicable linters**.
+All passed. Each exact elaborated statement was queried, and every transitive axiom closure
+is contained in `{propext, Classical.choice, Quot.sound}`. The inventory is:
+
+- In `DifferentialGeometry.CheegerGromovCompactness`: `curvCovDeriv_scaleMetric`,
+  `curvDerivNormSq_scaleMetric`, `curvDerivNorm_scaleMetric`, and
+  `PointedRiemannianConvergenceMaps.noncompact_of_escaping_points`.
+- In `DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions`:
+  `partialDiffeomorph_target_eq_univ_of_compact_source`, `globalDiffeomorphOfUniv`,
+  `compactLimit_eventually_source_eq_univ`, and `compactLimit_eventually_globalizes`.
+- In the `FiniteHorn.NormalizedSequence` namespace: `terminalCurvatureRescaledSequence`,
+  `terminalCurvatureRescale`, `reindex`, `reindex_term`, `reindex_interval`, `reindex_depth`,
+  `reindex_scale`, and `reindex_id`.
+- In `FiniteHorn`: `exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDistance`,
+  `exists_terminalCurvatureRescaledSequence_noncompact_metric_limit_of_not_boundedAtDistance`,
+  `TerminalLimit.ofMetricCompactLimit`, `terminal_limit_of_metric_compact_limit`,
+  `exists_noncompact_terminalLimit_of_not_boundedAtDistance`, and
+  `exists_noncompact_backwardExtension_of_not_boundedAtDistance`.
+
+The audit imports `NormalizedBackwardLimit`; use the earlier handoff's `getChecks`/`lintCore`
+pattern on this inventory and query `#check @...` and `#print axioms ...` for every entry.
+Local evidence is `/private/tmp/wt17-normalized-limits-audit.lean` and `.log`; the twelve empty
+fresh-elaboration logs are in `/private/tmp/wt17-normalized-limits-fresh/`.
+
+The original handoff's `verify.sh` passed again, including its seven fresh source elaborations,
+nine-declaration linter/axiom audit, and original-statement compatibility probes. It confirms
+**21 actual `sorry`s in 11 files** and exactly the same three reachable holes in
+`arbitrary_high_curvature_blowup`: `bounded_curvature_at_distance`,
+`terminal_limit_global_bound`, and `ancient_extension`. Evidence is in
+`/private/tmp/wt17-kappa-verification.BxXsAv`; the command log is
+`/private/tmp/wt17-normalized-limits-verification.log`. The complete `FiniteHornStructure.lean`
+source still compares identically to the original handoff commit. `git diff --check` passed.
+
+Reproduce the limit builds with:
+
+```sh
+lake build DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedBackwardLimit \
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EscapeReindexingReduction
+lake build DifferentialGeometry
+bash docs/handoffs/kappa-solutions-2026-09-20/verify.sh
+```
 
 The new proof layers pass their mathematical, API, compiler, linter, and axiom checks. The
 requested `bounded_curvature_at_distance` theorem is **Not accepted** as a completed proof:
