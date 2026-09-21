@@ -264,3 +264,25 @@ F1、F5 的两个 `…_of_plReading_of_boundaryCover`、F6 全部带假设
   `WORKING_STATUS`/lease 上协调。
 - **验收新增一条（两次都栽在这里）：对每条 `Function.Injective` 假设，在端点 `0`、`1` 和每个拼接点
   处取值；对每个 `Path x x` 类型的对象，禁止出现单射假设。**
+
+---
+
+## 旧分支尾部盘点（2026-09-20 晚，lead 核对；对照本地 `codex/moise-integration` HEAD 的**内容**，不看提交数）
+
+五条旧分支都停在 2026-09-19（最后 16:27），本地与 `origin` 同 SHA，**没有丢失风险**。integration 当时按
+批次**拷贝文件**验收，不是 git merge，所以"未合并提交数"（29–48）没有意义；按 blob 比较：与 integration
+不同或缺失的共约 15.6k 行，其中约 10.7k 行是各车道自己的 `HANDOFF_CODEX_*.md` / `MOISE_PLAN.md` 日志
+（integration 从不收），根聚合 import 约 150 行，**Lean 约 4.3k 行**：
+
+| 分支 | 未进 integration 的 Lean | 判定 |
+| --- | --- | --- |
+| `codex/moise-s` | 0（34 个 Lean 文件逐字相同） | 已全部并入，无事 |
+| `codex/moise-e3` | 116 行，`LimitSeparation.lean` 里两个 `private` 模型引理；integration 的版本更新 | 可弃 |
+| `codex/moise-304` | 19 个新文件 1836 行 + 30 行 | 主交付 `moise304_of_moise252` **已在** integration。尾部是 toroidal shell 计划（30.6/30.7 式：`ToroidalShell*`、`SurfaceIncompressibility`、`SurfaceEulerParity`、collared cover）——A2 答复明确"30.6–30.7 不需要"，E3.1 的 `moise308Nested` 不经它们：**对主链是沉没成本（约 1.1k 行）**。其中通用的 `Homology/HurewiczOne*`、`FundamentalGroupRank`、`Path*`、`FundamentalGroup/Torus`（约 750 行）可能在 P3/P4a 的 `H₁ → H₁(T_σ)` 满射条款处有用，到时再按批次验收，不现在收 |
+| `codex/moise-h` | 7 个新文件 1671 行 + 43 行（35.1：局部有限支撑的 PL 修改、同胚塔极限、实心环面邻域） | **活的，但无人接手。** `Moise351` 在 integration 里仍是未证假设，P1 消费它，新路线没有绕开 35.1。尾部多为基础设施与 `…_model` 存在性例子，不是 `Moise351` 的 producer。注意 A2 摘要 P1："35.1 的任意输出不能冻结后宣称满足 (G)"——接手前先做一次只读 scoping，确认 `Moise351` 的陈述是否要改成受控版本 |
+| `codex/moise-smoothing` | `HalfSpaceGeneralPosition.lean` +265、`HalfSpacePerturbation.lean` +323/−47 | **活的，且与新车道 H 正在做的事重叠。** 新增 `exists_small_homeomorph_generalPosition_off_polyhedron_in_halfSpace`、`…_with_chart_displacements`、`…_with_local_conjugates`、`exists_lipschitz_displacement_extending_vertex_perturbation_fixing_polyhedron_in_halfSpace`、`IsPiecewiseAffineOn.exists_polyhedron_lipschitz_displacement`——正是"半空间内、固定一个多面体的相对扰动"。对象是环境同胚而非奇异映射，但顶点扰动 + Lipschitz 延拓的引擎相同 |
+
+**对车道 H 的指令（H0，先于 B4–B6）：** 读 `git show codex/moise-smoothing:…/HalfSpacePerturbation.lean` 与
+`HalfSpaceGeneralPosition.lean` 的上述声明，报告哪些可直接复用于相对一般位置（替代你们新写的
+`GeneralPositionInDoubleRelativeHalfSpace`/`…RelativePerturbation` 中的重复部分）；可复用的，作为对这两个已提交
+文件的 append-only 批次交验收（检查 + 审计 + lint 日志）。这些尾部都只有作者自检，未经独立审计。
