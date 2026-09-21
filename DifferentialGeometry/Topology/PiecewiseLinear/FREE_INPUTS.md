@@ -24,7 +24,9 @@ orientable case is needed (simply connected ⇒ orientable); only existence of s
 
 ```
 # theorems whose conclusion is a named obligation (must print a line for an item to be CLOSED)
-grep -rnE "^theorem [A-Za-z0-9_']+ *: *(Moise352Open|GeneralPositionInDoubleBufferedStatement|DescentStepOrientableStatement|PLSmoothingModel|Moise351|Moise341|Moise331)\b" DifferentialGeometry
+grep -rnE "^theorem [A-Za-z0-9_']+ *: *(Moise352Open|GeneralPositionInDoubleBufferedStatement|DescentStepOrientableStatement|PLSmoothingModel|Moise351|Moise341|Moise331)(\.\{u\})?( [0-9]+)? *:=" DifferentialGeometry
+# a line `theorem foo : Item → …` CONSUMES the item and is excluded by the pattern; the pattern
+# does catch proved items (try it with Moise308Nested in place of the list)
 # hypotheses of the endpoints
 grep -n -A4 "^theorem moise304_of_generalPositionBuffered_of_descentStepOrientable" DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/CoverReductionOrientableProducer.lean
 grep -n -A3 "^theorem plApproximationManifold_three_of_open" DifferentialGeometry/Topology/PiecewiseLinear/Moise352OfOpen.lean
@@ -58,8 +60,8 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | A1.b | relative half-space general position freezing an **interior collar** (guard `(s ∩ B).card ≤ finrank (ker ℓ) + 1`), producing normal crossings on `closure W` | open, not started (delivered version vacuous) |
 | A1.c | induction over a finite cover with the **whole** union `U = ⋃ W j` | lemma exists uncommitted (`doublePointSet_subset_iUnion_of_buffered_steps`), crossing induction to be rebuilt on it |
 | A1.d | global assembly: one cell `A`, same domain, maps-to, boundary neighbourhood, boundary loop avoidance (homotopy `H`, `hmap`, `hsurj` are free inputs today) | open |
-| **A2** | `DescentStepOrientableStatement` (`LoopTheorem/LemmaTwoOrientable.lean`) | **OPEN** |
-| A2.1 | closed branch, two circles, nested | **PROVED** `exists_descendingSurgery_of_nested_innermost_cleanDisk` (`LoopTheorem/ClosedBranchNestedDescent.lean:284`) |
+| **A2** | `DescentStepOrientableStatement` (`LoopTheorem/LemmaTwoOrientable.lean:61`) | **OPEN** |
+| A2.1 | closed branch, two circles, nested | **PROVED** `exists_descendingSurgery_of_nested_innermost_cleanDisk` (`LoopTheorem/ClosedBranchNestedDescent.lean:245`) |
 | A2.2 | closed branch, two circles, disjoint: adapted clean-cap neighbourhood | open, not started |
 | A2.3 | closed branch, one circle: impossible in an orientable manifold | open, in progress (`consult/C-or1-design.md`, 11 items) |
 | A2.4a | boundary branch: PL tube with side containment, boundary equality, end-disk buffer | open (lane S; planar four-spoke layer proved, producer statement under revision) |
