@@ -36,7 +36,16 @@ incidence lemmas `wallSystemStar_inter_wall_subset`,
 `wallSystemStar_subset_union_wallSystemCell` are proved theorems, not recorded hypotheses.
 `C` and `BdM` are the unions of the cells of designated subcomplexes `Cf`, `Bf`, so that
 `subset_iUnion_wallSystemCell_of_eq_boundary` proves that the physical boundary is covered by
-walls.  `wallSystemCell_subset_layer` derives `wall w ⊆ Eb' i` from the star clause.  The
+walls.  Since `M` is the closed double, `wallSides` asks of *every* wall that it have exactly
+two three cells, and `boundarySides` asks of a wall of `Bf` only that exactly one of them lie
+in `Cf`: uniqueness among all cells would be unsatisfiable, because a wall of `BdM` is a face
+of one cell of `C` and of its mirror copy.  `wallIncidence_simplexBoundary` and
+`exists_wallIncidence_of_fourSimplexBoundary` inhabit the combinatorial fields
+(`finiteFaces`, `dimLe`, `memCell`, `wallSides`, and a non-empty wall set) with the boundary
+complex of a four simplex, a genuine triangulated closed three manifold; they also exhibit the
+two distinct three cells of a wall, which is what makes uniqueness inside `Cf` the only
+satisfiable form.  `wallSystemCell_subset_layer` derives `wall w ⊆ Eb' i` from the star clause.
+The
 certificate also carries the two compact layers, the adaptedness of every chart of the finite
 family to the pair `(C, BdM)`, and the affineness of every such chart on the `ρ`-preimages of
 the simplices lying in its compact layer: `ec i = A ∘ ρ` there.
@@ -182,10 +191,16 @@ It fixes `R`, `τ₀` and the compact `Kt` before any vertex map and asserts, fo
 assembly path**: `hprot`, because all normality now comes from the blocks, and `hpersist`, the
 current-chart blocks with margin `η / 2`, because those blocks carry no support type.
 
-`exists_commonWallComplex` (design Y, changed after review AB, unreviewed): from one finite
-complex realising `M` in the ambient `Ea` — at the endpoint the double complex itself, with `ρ`
-the subtype coercion — one common wall system for the fixed finite atlas and the physical
-boundary, with the two compact layers and the star clause.
+`exists_commonWallComplex` (design Y, changed after review AB, unreviewed): stated for the
+double itself, so that the realisation is the given one: from the finite chart family, its
+adaptedness to the pair and a cover `⋃ i, V i = univ` of the double, a *subdivision* `Q` of the
+double complex `double 3 K`, with `ρ` the subtype coercion, forming a common wall system with
+the two compact layers and the star clause.  Its proof has to subdivide `double 3 K` so that
+`C` and `BdM` become subcomplexes — they are subpolyhedra because every chart of the cover
+reads them as a half space `0 ≤ ℓ` and its boundary plane, and the cover is finite — and then
+to subdivide further so that every chart becomes affine on the cells of its compact layer,
+which is where `exists_transitionSubdivisionOnOverlap` enters.  Without the cover hypothesis
+the statement is false: with `n = 0` nothing constrains `C`, and `eqC` cannot be produced.
 
 `wallProductBlock_transport` (design Y, changed after review AB, unreviewed): the computation
 (*) from the certificate's `chartAffine`, transporting a wall product block of one chart to a
@@ -217,7 +232,10 @@ receives the continuity `hgcont` and the two-point fibres `hgfiber` of the *new*
 
 The leaf most likely still wrong is `wallProductBlocks_stable_on_fixedSubdivision`: it is the
 one that has to convert "the old wall blocks survive" into "the new blocks are again
-wall-adapted for the same fixed wall system", and the digest proves the margin part only modulo
+wall-adapted for the same fixed wall system", and it is *not* asked in Lean to keep the same
+wall for the centre region of a type (ii) block — that is recorded here as a proof obligation
+and as a question for the reviewer, not as a clause of the statement.  The digest proves the
+margin part only modulo
 the seam estimate `Lip ((p_φ − p₀) ∘ q⁻¹) ≤ C ‖φ − φ₀‖_∞`; that the new type (ii) block keeps
 the *same* wall as the old one is what its proof has to arrange by keeping the wall and its
 normal coordinate and re-choosing only the source sheets and the small box.
@@ -954,11 +972,10 @@ structure IsCommonWallSystem (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M →
   facesBd : Bf ⊆ wallSystemWalls Q
   eqC : C = ⋃ c ∈ Cf, wallSystemCell ρ c
   eqBd : BdM = ⋃ w ∈ Bf, wallSystemCell ρ w
-  wallSides : ∀ w ∈ wallSystemWalls Q, w ∉ Bf → ∃ cm ∈ wallSystemCells Q,
+  wallSides : ∀ w ∈ wallSystemWalls Q, ∃ cm ∈ wallSystemCells Q,
     ∃ cp ∈ wallSystemCells Q, cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
       ∀ c ∈ wallSystemCells Q, w ⊆ c → c = cm ∨ c = cp
-  boundarySides : ∀ w ∈ Bf, ∃ c ∈ Cf, w ⊆ c ∧
-    ∀ c' ∈ wallSystemCells Q, w ⊆ c' → c' = c
+  boundarySides : ∀ w ∈ Bf, ∃ c ∈ Cf, w ⊆ c ∧ ∀ c' ∈ Cf, w ⊆ c' → c' = c
   starLayer : ∀ i, ∀ c ∈ wallSystemCells Q, (wallSystemCell ρ c ∩ Eb i).Nonempty →
     wallSystemCell ρ c ⊆ Eb' i
   layerSubset : ∀ i, Eb i ⊆ Eb' i
@@ -1208,6 +1225,100 @@ theorem subset_iUnion_wallSystemCell_of_eq_boundary {Q : Geometry.SimplicialComp
     BdM ⊆ ⋃ w ∈ wallSystemWalls Q, wallSystemCell ρ w := by
   rw [heq]
   exact iUnion₂_subset fun w hw x hx => mem_iUnion₂.2 ⟨w, hfaces hw, hx⟩
+
+theorem wallIncidence_simplexBoundary {T : Finset Ea}
+    (hT : AffineIndependent ℝ ((↑) : T → Ea)) (hcard : T.card = 5) :
+    (simplexBoundary T hT).faces.Finite ∧
+      (∀ s ∈ (simplexBoundary T hT).faces, s.card ≤ 4) ∧
+      (∀ s ∈ (simplexBoundary T hT).faces,
+        ∃ c ∈ wallSystemCells (simplexBoundary T hT), s ⊆ c) ∧
+      (wallSystemWalls (simplexBoundary T hT)).Nonempty ∧
+      ∀ w ∈ wallSystemWalls (simplexBoundary T hT),
+        ∃ cm ∈ wallSystemCells (simplexBoundary T hT),
+          ∃ cp ∈ wallSystemCells (simplexBoundary T hT), cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
+            ∀ c ∈ wallSystemCells (simplexBoundary T hT), w ⊆ c → c = cm ∨ c = cp := by
+  classical
+  have hface : ∀ s : Finset Ea,
+      s ∈ (simplexBoundary T hT).faces ↔ s ⊆ T ∧ s.Nonempty ∧ s ≠ T :=
+    fun _ => mem_simplexBoundary_faces_iff
+  have hcardle : ∀ s ∈ (simplexBoundary T hT).faces, s.card ≤ 4 := by
+    intro s hs
+    obtain ⟨hsT, -, hne⟩ := (hface s).1 hs
+    have hle := Finset.card_le_card hsT
+    by_contra hlt
+    exact hne (Finset.eq_of_subset_of_card_le hsT (by omega))
+  have hcell : ∀ z ∈ T, ∀ w : Finset Ea, w ⊆ T → w.card = 3 → z ∉ w →
+      insert z w ∈ wallSystemCells (simplexBoundary T hT) := by
+    intro z hzT w hwT hw3 hzw
+    have hins : (insert z w).card = 4 := by
+      rw [Finset.card_insert_of_notMem hzw, hw3]
+    refine ⟨(hface _).2 ⟨Finset.insert_subset hzT hwT, Finset.insert_nonempty z w, ?_⟩, hins⟩
+    intro hEq
+    rw [hEq, hcard] at hins
+    omega
+  refine ⟨simplexBoundary_faces_finite T hT, hcardle, ?_, ?_, ?_⟩
+  · intro s hs
+    obtain ⟨hsT, hsne, -⟩ := (hface s).1 hs
+    obtain ⟨c, hsc, hcT, hc4⟩ :=
+      Finset.exists_subsuperset_card_eq hsT (hcardle s hs) (by omega)
+    refine ⟨c, ⟨(hface c).2 ⟨hcT, Finset.card_pos.mp (by omega), ?_⟩, hc4⟩, hsc⟩
+    intro hEq
+    rw [hEq, hcard] at hc4
+    omega
+  · obtain ⟨w, hwT, hw3⟩ := Finset.exists_subset_card_eq (s := T) (n := 3) (by omega)
+    refine ⟨w, (hface w).2 ⟨hwT, Finset.card_pos.mp (by omega), ?_⟩, hw3⟩
+    intro hEq
+    rw [hEq, hcard] at hw3
+    omega
+  · rintro w ⟨hwf, hw3⟩
+    obtain ⟨hwT, -, -⟩ := (hface w).1 hwf
+    have hsd : (T \ w).card = 2 := by
+      rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hwT, hcard, hw3]
+    obtain ⟨u, v, huv, huvT⟩ := Finset.card_eq_two.mp hsd
+    have huTw : u ∈ T \ w := by rw [huvT]; exact Finset.mem_insert_self u {v}
+    have hvTw : v ∈ T \ w := by
+      rw [huvT]
+      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self v)
+    refine ⟨insert u w, hcell u (Finset.mem_sdiff.mp huTw).1 w hwT hw3
+        (Finset.mem_sdiff.mp huTw).2, insert v w,
+      hcell v (Finset.mem_sdiff.mp hvTw).1 w hwT hw3 (Finset.mem_sdiff.mp hvTw).2, ?_,
+      Finset.subset_insert u w, Finset.subset_insert v w, ?_⟩
+    · intro hEq
+      have hv : v ∈ insert u w := by rw [hEq]; exact Finset.mem_insert_self v w
+      rcases Finset.mem_insert.mp hv with h1 | h1
+      · exact huv h1.symm
+      · exact (Finset.mem_sdiff.mp hvTw).2 h1
+    · rintro c ⟨hcf, hc4⟩ hwc
+      obtain ⟨hcT, -, -⟩ := (hface c).1 hcf
+      have hcw : (c \ w).card = 1 := by
+        rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hwc, hc4, hw3]
+      obtain ⟨z, hz⟩ := Finset.card_eq_one.mp hcw
+      have hzc : z ∈ c \ w := by rw [hz]; exact Finset.mem_singleton_self z
+      have hzmem : z ∈ T \ w :=
+        Finset.mem_sdiff.mpr ⟨hcT (Finset.mem_sdiff.mp hzc).1, (Finset.mem_sdiff.mp hzc).2⟩
+      have hcz : c = insert z w := by
+        have h1 : w ∪ c \ w = c := Finset.union_sdiff_of_subset hwc
+        rw [hz] at h1
+        rw [← h1]
+        ext a
+        simp only [Finset.mem_union, Finset.mem_singleton, Finset.mem_insert]
+        tauto
+      rw [huvT] at hzmem
+      rcases Finset.mem_insert.mp hzmem with rfl | hzv
+      · exact Or.inl hcz
+      · rw [Finset.mem_singleton.mp hzv] at hcz
+        exact Or.inr hcz
+
+theorem exists_wallIncidence_of_fourSimplexBoundary :
+    ∃ Q : Geometry.SimplicialComplex ℝ (Fin (3 + 2) → ℝ), Q.faces.Finite ∧
+      (∀ s ∈ Q.faces, s.card ≤ 4) ∧ (∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) ∧
+      (wallSystemWalls Q).Nonempty ∧
+      ∀ w ∈ wallSystemWalls Q, ∃ cm ∈ wallSystemCells Q, ∃ cp ∈ wallSystemCells Q,
+        cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
+          ∀ c ∈ wallSystemCells Q, w ⊆ c → c = cm ∨ c = cp :=
+  ⟨simplexBoundary (stdVertices 3) (stdVertices_affineIndependent 3),
+    wallIncidence_simplexBoundary (stdVertices_affineIndependent 3) (card_stdVertices 3)⟩
+
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem eqOn_wallPlane_of_eqOn_transition
@@ -1539,20 +1650,28 @@ theorem exists_normalCrossing_of_hasWallProductBlocks (D : SingularTwoCell M)
   exact hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock D (ec (j i)) (ℓ (j i))
     (hec (j i)) (hℓ (j i)) (hBdchart (j i)) (hblk i).1 hy.1 hi
 
-theorem exists_commonWallComplex [T2Space M] [CompactSpace M] {BdM C : Set M} {n : ℕ}
-    (Q₀ : Geometry.SimplicialComplex ℝ Ea) (ρ₀ : M → Ea) (hQ₀ : Q₀.faces.Finite)
-    (hρcont : Continuous ρ₀) (hρinj : Function.Injective ρ₀)
-    (hρrange : Set.range ρ₀ = Q₀.space) (V : Fin n → Set M)
-    (ec : Fin n → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : Fin n → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ))
-    (hec : ∀ i, ec i ∈ (plGroupoid 3).maximalAtlas M) (hℓ : ∀ i, ℓ i ≠ 0)
-    (hCchart : ∀ i, ∀ x ∈ (ec i).source, x ∈ C ↔ 0 ≤ ℓ i (ec i x))
-    (hBdchart : ∀ i, ∀ x ∈ (ec i).source, x ∈ BdM ↔ ℓ i (ec i x) = 0)
-    (hVcl : ∀ i, closure (V i) ⊆ (ec i).source) :
-    ∃ (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) (Cf Bf : Set (Finset Ea))
-      (Eb Eb' : Fin n → Set M),
-      (∀ i, closure (V i) ⊆ interior (Eb i)) ∧
-        IsCommonWallSystem Q ρ Cf Bf BdM C ec ℓ Eb Eb' := by
+open Classical in
+theorem exists_commonWallComplex {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (n : ℕ) :
+    letI := combinatorialChartedSpace (double 3 K)
+      (isCombinatorialManifold_double_succ_succ K hK)
+    let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
+    let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
+    let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
+      (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
+    ∀ (V : Fin n → Set (double 3 K).space)
+      (ec : Fin n → OpenPartialHomeomorph (double 3 K).space (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : Fin n → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)),
+      (∀ i, ec i ∈ (plGroupoid 3).maximalAtlas (double 3 K).space) → (∀ i, ℓ i ≠ 0) →
+        (∀ i, ∀ x ∈ (ec i).source, x ∈ C ↔ 0 ≤ ℓ i (ec i x)) →
+        (∀ i, ∀ x ∈ (ec i).source, x ∈ Bd ↔ ℓ i (ec i x) = 0) →
+        (∀ i, closure (V i) ⊆ (ec i).source) → (⋃ i, V i) = univ →
+        ∃ (Q : Geometry.SimplicialComplex ℝ (E × E × ℝ))
+          (Cf Bf : Set (Finset (E × E × ℝ))) (Eb Eb' : Fin n → Set (double 3 K).space),
+          IsSubdivision Q (double 3 K) ∧ (∀ i, closure (V i) ⊆ interior (Eb i)) ∧
+            IsCommonWallSystem Q ((↑) : (double 3 K).space → E × E × ℝ) Cf Bf Bd C
+              ec ℓ Eb Eb' := by
   sorry
 
 theorem wallProductBlock_transport [T2Space M] {f : EuclideanSpace ℝ (Fin 2) → M}
@@ -1884,7 +2003,7 @@ theorem wallProductBlocks_stable_on_fixedSubdivision [CompactSpace M] (D : Singu
     {BdM C Z W V Kt : Set M} {ι : Type}
     (ecf : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓf : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M)
-    (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) {Cf Bf : Set (Finset Ea)}
+    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)}
     {η κ δ ε τ₀ : ℝ} (i₀ : ι)
     (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
     (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
@@ -1935,7 +2054,7 @@ open Classical in
 theorem exists_wallGenericVertexMap (D : SingularTwoCell M) {BdM C V : Set M} {ι : Type}
     (ecf : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓf : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M)
-    (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) {Cf Bf : Set (Finset Ea)} (i₀ : ι)
+    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)} (i₀ : ι)
     (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
     (hmapC : MapsTo (⇑D) D.domain C) (hVec : V ⊆ (ecf i₀).source)
@@ -1983,7 +2102,7 @@ open Classical in
 theorem wallProductBlocks_of_wallGenericity (D : SingularTwoCell M) {BdM C W V Kt : Set M}
     {ι : Type} (ecf : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓf : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M)
-    (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) {Cf Bf : Set (Finset Ea)}
+    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)}
     {ε κ : ℝ} (i₀ : ι)
     (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
@@ -2061,14 +2180,23 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
     exists_finiteAdaptedCover_of_compactSpace Bd C
       fun y U hU => exists_adaptedHalfSpaceChart_in_double K S.isManifold y U hU
   choose ecf ℓf hecf hℓf hVclf hCf hBdf using hcharts
-  obtain ⟨Qc, ρc, Cf, Bf, Eb, Eb', hVEint, hsys⟩ :=
-    exists_commonWallComplex (BdM := Bd) (C := C) (double 3 K)
-      ((↑) : (double 3 K).space → E × E × ℝ) (Set.toFinite _) continuous_subtype_val
-      Subtype.val_injective Subtype.range_coe (fun i : Fin n => V i.1)
+  have hVcover : (⋃ i : Fin n, V i.1) = univ := by
+    refine eq_univ_of_forall fun x => ?_
+    have hx : x ∈ ⋃ j, W j := by
+      rw [huniv]
+      exact mem_univ x
+    obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+    have hjn : j < n := by
+      by_contra hjn
+      rw [hWn j (not_lt.mp hjn)] at hj
+      exact absurd hj (notMem_empty x)
+    exact mem_iUnion.2 ⟨⟨j, hjn⟩, hWV j (subset_closure hj)⟩
+  obtain ⟨Qc, Cf, Bf, Eb, Eb', hQsub, hVEint, hsys⟩ :=
+    exists_commonWallComplex K S.isManifold n (fun i : Fin n => V i.1)
       (fun i : Fin n => ecf i.1 i.isLt) (fun i : Fin n => ℓf i.1 i.isLt)
       (fun i : Fin n => hecf i.1 i.isLt) (fun i : Fin n => hℓf i.1 i.isLt)
       (fun i : Fin n => hCf i.1 i.isLt) (fun i : Fin n => hBdf i.1 i.isLt)
-      (fun i : Fin n => hVclf i.1 i.isLt)
+      (fun i : Fin n => hVclf i.1 i.isLt) hVcover
   have hVW : ∀ j, V j ⊆ ⋃ i, W i := by
     intro j
     rw [huniv]
@@ -2092,7 +2220,8 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
         (∀ z ∈ Set.range cl.boundary, B ∈ 𝓝[Bd] z) ∧
         doublePointSet (⇑cl) cl.domain ⊆ ⋃ j, W j ∧ 0 < ηk ∧
         HasWallProductBlocks (⇑cl) cl.domain (fun i : Fin n => ecf i.1 i.isLt)
-          (fun i : Fin n => ℓf i.1 i.isLt) Eb Bd C Qc ρc
+          (fun i : Fin n => ℓf i.1 i.isLt) Eb Bd C Qc
+          ((↑) : (double 3 K).space → E × E × ℝ)
           (⋃ j, ⋃ (_ : j < k), closure (W j)) ηk ∧
         Function.Surjective bdry ∧
         (∀ θ, ((cl (bdry θ) : (double 3 K).space) : E × E × ℝ) = ι (gl θ)) ∧
@@ -2150,13 +2279,13 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           obtain ⟨τ, hτ, hτle, hstab⟩ :=
             wallProductBlocks_stable_on_fixedSubdivision cl
               (fun i : Fin n => ecf i.1 i.isLt) (fun i : Fin n => ℓf i.1 i.isLt) Eb Eb'
-              Qc ρc ⟨k, hk⟩ hsys hclloc hclfib hclpr hclC hZclosed (hVopen k) hVcl
+              ⟨k, hk⟩ hsys hclloc hclfib hclpr hclC hZclosed (hVopen k) hVcl
               (hWV k) (hVEint ⟨k, hk⟩) Rc Lc Ac R T hRfin hRdom hRV hLspace hΩ hΩcover
               hΩR hNb hNbfr hNbA hsub hRsfin hκ hδ hε hτ₀ hlinear hcert hconv hactive
               hKcpt hKV hDKint hwp
           obtain ⟨Bv, φ, hadm, hguard, hgenskel, hgenfold, hgencross⟩ :=
             exists_wallGenericVertexMap cl (fun i : Fin n => ecf i.1 i.isLt)
-              (fun i : Fin n => ℓf i.1 i.isLt) Eb Eb' Qc ρc ⟨k, hk⟩ hsys hclpr hclC hVec
+              (fun i : Fin n => ℓf i.1 i.isLt) Eb Eb' ⟨k, hk⟩ hsys hclpr hclC hVec
               Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin hlinear hτ
           obtain ⟨hpl, hsmall, hfrozen, hpnonneg, hpzero, hsep, hmaps, hgK, hstarG, -, -⟩ :=
             hcontrol Bv φ (hadm.mono hτle)
@@ -2202,7 +2331,7 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
               hΩcover hΩR hNbfr hNbA hsmall hactive hsep hmaps hy
           obtain ⟨ηw, hηw, hwpW⟩ :=
             wallProductBlocks_of_wallGenericity cl (fun i : Fin n => ecf i.1 i.isLt)
-              (fun i : Fin n => ℓf i.1 i.isLt) Eb Eb' Qc ρc ⟨k, hk⟩ hsys hclfib hclpr
+              (fun i : Fin n => ℓf i.1 i.isLt) Eb Eb' ⟨k, hk⟩ hsys hclfib hclpr
               hclC hκ (hVopen k) hVcl (hWV k)
               ((hWV k).trans (subset_closure.trans (hVEint ⟨k, hk⟩))) Rc Lc Ac R Bv φ
               hRfin hRdom hRV hLspace hsub hRsfin hε hadm.2.1 hsmall hpnonneg hpzero
@@ -2210,8 +2339,8 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
               hgencross
           have hwpNext : HasWallProductBlocks (⇑cl') cl'.domain
               (fun i : Fin n => ecf i.1 i.isLt) (fun i : Fin n => ℓf i.1 i.isLt)
-              Eb Bd C Qc ρc (⋃ j, ⋃ (_ : j < k + 1), closure (W j))
-              (min (ηk / 2) ηw) := by
+              Eb Bd C Qc ((↑) : (double 3 K).space → E × E × ℝ)
+              (⋃ j, ⋃ (_ : j < k + 1), closure (W j)) (min (ηk / 2) ηw) := by
             rw [hdom', hbridge]
             exact (hwpZ.union hwpW).mono hZsucc
           have hbuf' : ∀ z ∈ Set.range cl'.boundary, B ∈ 𝓝[Bd] z := by
