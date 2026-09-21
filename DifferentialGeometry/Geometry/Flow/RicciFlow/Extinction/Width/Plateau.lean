@@ -1197,17 +1197,5 @@ theorem conformal_disk_attains_exact_area (g : SmoothRiemannianMetric I Q)
     have hle := leastArea_le_competitor g γ.toContinuousLoop hctr (γ.isLipschitz g) v
     simpa only [hv, hulip] using hle
 
-theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
-    (hdim : Module.finrank ℝ E = 3) (γ : RegularLoop I Q)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hemb : Topology.IsEmbedding (γ : Surgery.Topology.Circle → Q))
-    (himm : ∀ t : ℝ, loopVelocity (I := I) γ.toContinuousLoop t ≠ 0)
-    (hctr : Surgery.Topology.IsContractibleLoop γ.toContinuousLoop) :
-    ∃ u : SmoothDisk (I := I) (Q := Q), ∃ σ : SmoothWeaklyMonotoneCircleMap,
-      (∀ θ, u.map (diskBoundary θ) = γ (σ.map θ)) ∧
-      u.IsConformal g ∧ u.IsHarmonic g ∧
-      ∀ v : SmoothDisk (I := I) (Q := Q),
-        (∀ θ, v.map (diskBoundary θ) = γ θ) → diskArea g u.map ≤ diskArea g v.map := by
-  sorry
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width

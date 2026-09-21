@@ -790,4 +790,61 @@ theorem disk_curvature_inequality [hBoundary : I.Boundaryless] [hT2 : T2Space Q]
     (fun x => SmoothDisk.boundaryCurvatureDensity_comp_diffeomorph c.equiv g u γ hγ himm sigma
       htrace htrace' x)
 
+theorem SmoothDisk.isConformal_comp_diffeomorph_symm [T2Space A]
+    (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
+    (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
+    (h : u.IsConformal (Diffeomorph.pullbackMetricCross g Φ.symm)) :
+    (SmoothDisk.comp_diffeomorph Φ.symm u).IsConformal g := by
+  let v := SmoothDisk.comp_diffeomorph Φ.symm u
+  have hext (v₁ v₂ : SmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
+      (hm : v₁.map = v₂.map) : v₁ = v₂ := by
+    cases v₁
+    cases v₂
+    cases hm
+    rfl
+  have hback : SmoothDisk.comp_diffeomorph Φ v = u := by
+    apply hext
+    exact ContinuousMap.ext fun z => Φ.apply_symm_apply (u.map z)
+  have hforward : (SmoothDisk.comp_diffeomorph Φ v).IsConformal
+      (Diffeomorph.pullbackMetricCross g Φ.symm) := by
+    rw [hback]
+    exact h
+  change v.IsConformal g
+  intro z
+  refine ⟨?_, ?_⟩
+  · exact (SmoothDisk.inner_comp_diffeomorph Φ g v z 1 Complex.I).symm.trans
+      (hforward z).1
+  · exact (SmoothDisk.inner_comp_diffeomorph Φ g v z 1 1).symm.trans
+      ((hforward z).2.trans
+        (SmoothDisk.inner_comp_diffeomorph Φ g v z Complex.I Complex.I))
+
+theorem SmoothDisk.isHarmonic_comp_diffeomorph_symm
+    [I.Boundaryless] [T2Space Q] [T2Space A]
+    (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
+    (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
+    (h : u.IsHarmonic (Diffeomorph.pullbackMetricCross g Φ.symm)) :
+    (SmoothDisk.comp_diffeomorph Φ.symm u).IsHarmonic g := by
+  intro z F
+  let G : DiskLocalExtension (I := 𝓘(ℝ, E)) u.map z := {
+    map := fun w => Φ (F.map w)
+    domain := F.domain
+    isOpen_domain := F.isOpen_domain
+    mem_domain := F.mem_domain
+    smooth := Φ.contMDiff.comp_contMDiffOn F.smooth
+    agrees := by
+      intro w hw
+      have hF : F.map w = Φ.symm (u.map ⟨w, hw.2⟩) :=
+        (F.agrees hw).trans
+          (diskExtension_coe (SmoothDisk.comp_diffeomorph Φ.symm u).map ⟨w, hw.2⟩)
+      change Φ (F.map w) = diskExtension u.map w
+      rw [hF, Φ.apply_symm_apply]
+      exact (diskExtension_coe u.map ⟨w, hw.2⟩).symm }
+  have hzero : diskLocalTension (Diffeomorph.pullbackMetricCross g Φ.symm)
+      (fun w => Φ (F.map w)) z = 0 := h z G
+  have hnat := diskLocalTension_natCrossAt (g := g) (Φ := Φ)
+    (F := F.map) (F.smooth.contMDiffAt (F.isOpen_domain.mem_nhds F.mem_domain))
+  exact (mfderiv_eq_zero_iff_of_diffeomorph Φ (diskLocalTension g F.map z)).mp
+    (hnat.symm.trans hzero)
+
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width

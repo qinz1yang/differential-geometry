@@ -12366,3 +12366,4 @@ import DifferentialGeometry.Geometry.Neck.SeparatingSphere
 import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Geometry.Neck.SpatialDiameter
 import DifferentialGeometry.Geometry.Neck.UnboundedComponent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauExistence
