@@ -1,5 +1,7 @@
 # Codex 四车道分派（E3 / F / H / S）— 2026-09-20
 
+> **进度口径只有一个：[`FREE_INPUTS.md`](FREE_INPUTS.md)。** 任何审计、汇报、百分比都对照那一页的开放项清单；条件定理不算完成。改动任何端点的假设表时，同一次提交里更新那一页。
+
 分派人：Claude（Fable 5.1，lead）。检出 `D:\differential-geometry-moise-int`，分支
 `codex/moise-integration`。各车道此前在做什么一律不管，以本文件为准。验证、编译、审计用你们
 自己的 workflow；本文件只规定**任务、文件所有权、验收标准、报告格式**。
