@@ -212,3 +212,50 @@ F1、F5 的两个 `…_of_plReading_of_boundaryCover`、F6 全部带假设
   `P0 ∧ … ∧ P8 → Moise352Open 3`（七个延拓阶段 + 插入的 2b 阶段用 E3.3/E3.4）。**陷阱：**任何一个
   节点若带着 `Moise352` 的结论，就是又一次 modus ponens——逐个说明为什么不是。顺序：先
   E3.1–E3.4（小而独立），再 E3.5，最后 E3.6。
+
+### 车道 E3 裁决（2026-09-20 晚）：E3.6 **不收**——`Section34StageContract` 无居留，端点空洞
+
+`Section34StageContract.extend`：对**任意**正序列 `ε`、任意在 `coreSpace i` 上 `ε i`-接近 `h` 的 PL
+嵌入 `g`，存在 `f`，`EqOn f g (coreSpace i)` 且在 `coreSpace (i+1)` 上 `ε (i+1)`-接近。取
+`ε (i+1) < dist (g x₀) (h x₀) < ε i`（`x₀ ∈ coreSpace i`）：`f x₀ = g x₀`，结论不成立。再取 `ε` 很大，
+它又是"任何 PL 嵌入都可延拓"（打结实心环面，Alexander）。所以 P8 为假、`Section34Contracts` 为假、
+`section34Open_of_contracts` 空洞。它消费的 `exists_isPLHomeomorphInto_dist_lt_of_stages` 正是本树
+**已经记录为不可用**的那条（`CONSULT_QUEUE_20260920.md:163–221`、
+`CompactRelativeApproximation.lean:50`：`Moise352Stages` 迫使 `f = h`；`Moise352StageStep` 也假；
+修好的子句又装配不起来）。A2 摘要第 125 行写明：§34 是"有限改动地构造**块**，**不是**逼近映射的塔"；
+第 82–83 行：七个阶段是在**整个**局部有限族上一次完成的 PL 延拓 E1–E7，误差估计**只**来自载体包含
+(C1) `h(C_v) ∪ V_v ⊂ H_v`、`h(Q_t) ∪ R_t ⊂ H_t` 与 `diam H_α < η`，没有任何 `ε` 序列。
+
+- **E3.6′ 重做装配**：删掉 `Section34StageContract`、`exists_stage_maps`、`exists_approximation`。
+  P8 的产出是**块与关联式**（(V)、(TT)），不是阶段映射。装配定理内部用 E3.3（阶段 2）、E3.4（阶段
+  2b–7，局部有限族一次延拓）把 E1–E7 真的做出来，得到 `f : U → M₂` PL 嵌入；`dist (f x) (h x) < φ x`
+  由 (C0)+(C1) 推出（`x ∈ Q_t ⇒ f x, h x ∈ H_t`，`diam H_t < η`）。如果这一步暂时做不完，就交
+  `P0 ∧ … ∧ P8 ∧ (E1–E7 的某几步) → Moise352Open 3`，但每个留下的节点必须过下面的检查。
+- **每个 P_i 的验收检查（写进报告）**：(a) 在极端处取值——大 `ε`/大 `η`、相邻阶段、空/单点族；
+  (b) 说明它为什么不蕴含"任意 PL 嵌入可延拓"或"`h` 本身是 PL"；(c) 指出 A2 摘要里它对应的行。
+- E3.1–E3.5 的文件（`Moise308Nested*`、`LinkGraphConnectivity`、`MarkedCircleSector`、
+  `UniformBallExtension`、`SourceCutDiagram*`）**尚未收到验收报告与日志**，请按 §1 模板逐块补交。
+
+### 车道 F 裁决之二：F7 三条里只有 reversing cross 可用
+
+- `exists_of_sourceCrossMatch_preserving` **又是空洞的**：`φ₀ : Path p p`、`τ₀ : Path q q` 被要求
+  `Function.Injective`——回路 `γ 0 = γ 1`，不可能。而且类型放错了层：**源圆周**上四条弧永远是
+  `σ₀ : p→q`、`τ₀ : q→u`、`υ₀ : u→v`、`φ₀ : v→p`（四个不同的点），只有过了 `f` 之后
+  （`f u = f q`、`f v = f p`）`τ`、`φ` 才成为 `X` 里的回路。结论的词也错了：preserving 的 cross 词是
+  `σ.trans (τ.symm.trans (υ.trans φ.symm))`（真实边界是 `τ · σ⁻¹ · φ · υ⁻¹`：`σ₀`、`υ₀` 被**反向**
+  走），不是 `D` 自己的词 `σ τ υ φ`。
+- `exists_of_sourceArcMatch`（direct）可满足，但**套不上真实的 direct 候选**：它要求
+  `P₀ : Path p q`、`Q₀ : Path q p` 共用两个源端点；真实的两条源弧是 `σ₀ : p→q` 与 `υ₀ : u→v`
+  （reversing 时反向走 `υ₀`），四个端点互不相同。把第二条弧的端点放开成 `{p' q' : Q}`。
+- 建议的形状：把 `pushSourceHomotopy` 公开成**单弧**引理，正向与反向各一条
+  （`P₁ : Path q p`、`range P₁ = range P₀` ⇒ `P₁.map ≃ (P₀.map).symm`）；四个词（direct/cross ×
+  reversing/preserving）各自用 `hcomp` + 循环旋转拼。整体参数化方向（`e` 或 `neg.trans e`）照旧二分。
+- `BoundaryCaseFromCut.lean` 现在是 8 行 `export`，无内容——删文件。`BoundaryCaseFromSource.lean`、
+  `BoundaryCaseFromReading.lean` 缺版权头与模块 docstring（AGENTS.md 第 80–81 行）。
+- **F8 的"真实接口缺口"成立，授权改 core。** 在 `CellGluing`/`CutAndPaste` 的 cross 与 surgery 两个
+  core 里**追加导出**（旧名字陈述逐字不变）：长弧 `R` 的单射源参数化 `ρ` 的两个接缝参数
+  `t₁ < t₂`，以及三段上的逐点式 `G (ρ t) = D (F₂ (ρ t))`、`D (F₁ …)`、`D (F₂ …)`（F2 的
+  `V₁ V₂ V₃`/`F₁ F₂ F₃` 已给出 `G = D ∘ Fᵢ`）；`T` 上 `G = D ∘ F₃`。需要独占窗口，先在
+  `WORKING_STATUS`/lease 上协调。
+- **验收新增一条（两次都栽在这里）：对每条 `Function.Injective` 假设，在端点 `0`、`1` 和每个拼接点
+  处取值；对每个 `Path x x` 类型的对象，禁止出现单射假设。**

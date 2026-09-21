@@ -135,6 +135,20 @@ parametrisation)` is an injective path of `frontier D.domain` with the range of 
 *there*, where injectivity is true; push the homotopy to `X` along the realisation
 `f : frontier D.domain → X`, `ρ (f z) = D z`, and concatenate. No injectivity in `X` is used.
 
+### Ten and eleven, both caught at acceptance the same evening (nothing committed)
+
+(10) Lane E3's `Section34StageContract.extend` — every PL embedding of stage `i` that is
+`ε i`-close extends, *agreeing with it*, to one `ε (i+1)`-close on stage `i+1`, for every positive
+sequence `ε` — is uninhabited (`ε (i+1) < dist (g x₀) (h x₀) < ε i`), and for large `ε` it is the
+knotted-solid-torus extension statement. It is `Moise352Stages`/`Moise352StageStep` again, which
+`CONSULT_QUEUE_20260920.md:163–221` already records as false, consumed through the lemma that
+file calls unusable. §34 is not a tower of approximating maps: the error estimate comes from the
+carrier inclusions (C1) alone (`consult/A2-answer-digest.md:82–83, 125`).
+(11) Lane F's first repair of nine asked a *loop* of the source circle to be injective
+(`φ₀ : Path p p`). On the source circle the four arcs join four distinct points; the letters
+become loops only after the realisation `f`. Acceptance rule added to the lanes file: evaluate
+every injectivity hypothesis at `0`, `1` and every junction; no injectivity on a `Path x x`.
+
 ### Working method that held up
 
 Read-only refute-or-scope lanes first; then **resume the same agent** to execute its own plan
