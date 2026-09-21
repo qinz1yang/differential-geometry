@@ -12397,3 +12397,5 @@ import DifferentialGeometry.Topology.MetricSpace.DistanceConvergence
 import DifferentialGeometry.Topology.Diffeomorph.FiberwiseAffine
 import DifferentialGeometry.Topology.Manifold.ProductChartGluing
 import DifferentialGeometry.Geometry.Neck.ProductChart
+import DifferentialGeometry.Analysis.Integration.Integral.Recovery
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.RecoveryStationarity

@@ -4,6 +4,10 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.StressCoordin
 import DifferentialGeometry.Analysis.Integration.Lp.QuadraticResidual
 import DifferentialGeometry.Analysis.Complex.HolomorphicMoments
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Attainment
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.BoundaryRecovery
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.RecoveryStationarity
+
+section
 
 noncomputable section
 
@@ -292,5 +296,53 @@ theorem diskMapConformalAt_of_minimizing_sequence
     v (hvs.of_le (by simp)) hvw hvK q hq hΓ τ hτ hτ0 hτ1 hτ2 htrace hψ hC hper
 
 end DifferentialGeometry.Geometry
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Manifold Set Filter MeasureTheory
+open DifferentialGeometry.Topology
+open scoped Manifold ContDiff Topology NNReal ENNReal
+
+namespace DifferentialGeometry.Geometry
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  [T3Space M] [PreconnectedSpace M]
+
+theorem diskMapConformalAt_of_harmonic_energy_minimizer
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (γ : freeLoop M)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1 (fun t : ℝ => γ (t : loopCircle)))
+    (q : C(closedDisk, M)) (hq : DiskSmoothInterior (E := E) q)
+    (hharm : ∀ z ∈ Metric.ball (0 : ℂ) 1, diskMapTension g (diskExtension q) z = 0)
+    (hE : IntegrableOn (diskMapEnergyDensity g (diskExtension q))
+      (Metric.closedBall (0 : ℂ) 1))
+    (τ : C(loopCircle, loopCircle)) (hτ : IsWeaklyMonotoneOnce τ)
+    (hτ0 : τ 0 = 0) (hτ1 : τ ((1 / 3 : ℝ) : loopCircle) = ((1 / 3 : ℝ) : loopCircle))
+    (hτ2 : τ ((2 / 3 : ℝ) : loopCircle) = ((2 / 3 : ℝ) : loopCircle))
+    (htrace : diskTrace q = γ.comp τ)
+    (hmin : riemannianDiskEnergy g q = sInf
+      ((fun u : C(closedDisk, M) => riemannianDiskEnergy g u) ''
+        weaklyMonotoneDiskCompetitors g γ)) :
+    ∀ z ∈ Metric.ball (0 : ℂ) 1, DiskMapConformalAt g (diskExtension q) z := by
+  have hhol := differentiableOn_hopfDifferentialCoefficient g Metric.isOpen_ball hq hharm
+  obtain ⟨qn, τn, a, hqn, _, _, ha, halim, hcore, _, henergy, _⟩ :=
+    exists_weakly_monotone_disks_tendsto_energy_of_contMDiffOn
+      g γ hγ q (hq.of_le (by simp)) hE τ hτ hτ0 hτ1 hτ2 htrace
+  apply diskMapConformalAt_of_holomorphic_hopf_of_radial_variations g q hhol
+    (hE.mono_set Metric.ball_subset_closedBall)
+  intro ψ hψ hLip hper
+  obtain ⟨C, hC⟩ := hLip
+  exact radialDiskEnergyFirstVariation_eq_zero_of_exhausting_recovery
+    g q qn hqn (fun n => (ha n).2.le) halim hcore hE henergy hmin hψ hC hper
+
+end DifferentialGeometry.Geometry
+
+end
 
 end

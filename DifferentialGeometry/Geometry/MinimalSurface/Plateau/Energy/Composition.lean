@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Lipschitz
 import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldRademacher
 
+section
+
 noncomputable section
 
 open Manifold Set MeasureTheory
@@ -119,3 +121,47 @@ theorem exists_integral_norm_fderiv_comp_diskExtension_sq_le
     integral_mono_ae hi (he.const_mul (4 * (C : ℝ) ^ 2)) hpoint'
 
 end DifferentialGeometry.Geometry
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Manifold Set Filter MeasureTheory
+open DifferentialGeometry.Topology
+open scoped Manifold ContDiff ENNReal NNReal Topology
+
+namespace DifferentialGeometry.Geometry
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {M : Type*} [TopologicalSpace M] [ChartedSpace E M]
+  [IsManifold 𝓘(ℝ, E) ∞ M]
+
+variable [FiniteDimensional ℝ F] [T2Space M]
+
+theorem integrableOn_norm_fderiv_comp_of_hasCompactSupport_of_disk_energy
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {Φ : M → F}
+    (hΦ : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, F) 1 Φ) (hΦs : HasCompactSupport Φ)
+    {u : ℂ → M} (hu : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) 1 u (Metric.ball (0 : ℂ) 1))
+    (hE : IntegrableOn (diskMapEnergyDensity g u) (Metric.ball (0 : ℂ) 1)) :
+    IntegrableOn (fun z => ‖fderiv ℝ (Φ ∘ u) z‖ ^ 2) (Metric.ball (0 : ℂ) 1) := by
+  let : MeasurableSpace F := borel F
+  let : BorelSpace F := ⟨rfl⟩
+  obtain ⟨C, hC⟩ := exists_metric_mfderiv_bound_of_hasCompactSupport g hΦ hΦs
+  apply Integrable.mono' (hE.const_mul (4 * (C : ℝ) ^ 2))
+    ((measurable_fderiv ℝ (Φ ∘ u)).norm.pow_const 2).aestronglyMeasurable
+  filter_upwards [ae_restrict_mem Metric.isOpen_ball.measurableSet] with z hz
+  rw [Real.norm_of_nonneg (sq_nonneg _)]
+  exact norm_fderiv_comp_sq_le_diskMapEnergyDensity g hΦ hC
+    ((hu.contMDiffAt (Metric.isOpen_ball.mem_nhds hz)).mdifferentiableAt one_ne_zero)
+
+end DifferentialGeometry.Geometry
+
+end
+
+end
