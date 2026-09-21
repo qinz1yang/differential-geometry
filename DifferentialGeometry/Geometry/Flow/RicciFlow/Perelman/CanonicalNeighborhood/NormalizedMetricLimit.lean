@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Compact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedCurvatureWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
@@ -348,5 +349,91 @@ theorem exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDi
         simpa only [hdim, ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow hs.le] using h)
     intro y s _ hs hcurv
     simpa only [hdim, ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow hs.le] using hn y s hs hcurv
+
+private theorem rescaled_sequence_basepoint_escapes
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (hf : StrictMono f) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i))
+    (hlarge : Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop)
+    {rho C : ℝ} (hrho : 0 < rho)
+    (hbound : ∀ᶠ i in atTop, ∀ y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0)
+      (X.term i).basepoint rho, (X.term i).S.scalar 0 y ≤ C) :
+    Tendsto (fun i => (riemannianEDistOf
+      ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric
+      (x i) (X.term (f i)).basepoint).toReal) atTop atTop := by
+  apply tendsto_atTop_mono' atTop _ ((Real.tendsto_sqrt_atTop.comp hlarge).atTop_mul_const hrho)
+  filter_upwards [hf.tendsto_atTop.eventually hbound, hlarge.eventually_gt_atTop C]
+    with i hi hQi
+  have : ConnectedSpace (X.term (f i)).M := X.connected (f i)
+  have hdist : rho ≤ (riemannianEDistOf ((X.term (f i)).S.base.metric 0)
+      (X.term (f i)).basepoint (x i)).toReal := by
+    by_contra hd
+    have hmem : x i ∈ riemannianClosedBallOf ((X.term (f i)).S.base.metric 0)
+        (X.term (f i)).basepoint rho :=
+      (ENNReal.le_ofReal_iff_toReal_le (riemannianEDistOf_ne_top _ _ _) hrho.le).mpr
+        (le_of_not_ge hd)
+    exact (not_le.mpr hQi) (hi (x i) hmem)
+  change _ ≤ (riemannianEDistOf (scaleMetric ((X.term (f i)).S.scalar 0 (x i)) (hQ i)
+    ((X.term (f i)).S.base.metric 0)) (x i) (X.term (f i)).basepoint).toReal
+  rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _),
+    riemannianEDistOf_comm ((X.term (f i)).S.base.metric 0)]
+  exact mul_le_mul_of_nonneg_left hdist (Real.sqrt_nonneg _)
+
+theorem exists_terminalCurvatureRescaledSequence_noncompact_metric_limit_of_not_boundedAtDistance
+    {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ sigma : ℝ, 0 < sigma → ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ¬ BoundedAtDistance X →
+          ∃ D : ℝ, 0 < D ∧ ∃ f : ℕ → ℕ, StrictMono f ∧
+            ∃ (x : ∀ i, (X.term (f i)).M) (r : ℕ → ℝ)
+              (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)),
+              (∀ i, 0 < r i) ∧
+              Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop ∧
+              Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i) * r i ^ 2) atTop atTop ∧
+              (∀ i y, metricDistance ((X.term (f i)).S.base.metric 0) (x i) y ≤ r i →
+                metricDistance ((X.term (f i)).S.base.metric 0) (X.term (f i)).basepoint y < D ∧
+                (X.term (f i)).S.scalar 0 y ≤ 2 * (X.term (f i)).S.scalar 0 (x i)) ∧
+              ∃ P : MetricCompactLimit (X.terminalCurvatureRescaledSequence f x hQ),
+                (∀ k, P.convergence.metrics.domain k =
+                  CanonicalMetricCompactness.canonicalSourceData P.maps k) ∧
+                ConnectedSpace P.limit.M ∧ NoncompactSpace P.limit.M ∧
+                (∀ n, IsCompact (closure (P.maps.source n))) ∧
+                (∀ n, IsConnected (P.maps.source n)) ∧
+                (∀ n, closure (P.maps.source n) ⊆ P.maps.source (n + 1)) ∧
+                metricScalarAt P.limit.metric P.limit.basepoint = 1 ∧
+                (∀ y : P.limit.M, metricScalarAt P.limit.metric y ≤ 2) ∧
+                (∀ (y : P.limit.M) (v w : TangentSpace I3 y),
+                  0 ≤ metricRm04StandardAt P.limit.metric y v w w v) ∧
+                MetricNoncollapsed P.limit kappa univ := by
+  obtain ⟨e₀, he₀, hlimit⟩ :=
+    exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDistance.{u} hkappa
+  obtain ⟨e₁, c, C, he₁, hc, _, hprop⟩ :=
+    exists_parabolic_curvature_bound_at_terminal_scalar_scale.{u} hkappa
+  refine ⟨min e₀ e₁, lt_min he₀ he₁, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X hfail
+  obtain ⟨D, hD, f, hf, x, r, hQ, hr, hlarge, hQr, hcontrol,
+    P, hcanonical, hconnected, hcompact, hsourceconn, hnested, hbase, hupper, hsec, hnc⟩ :=
+    hlimit eps heps (hle.trans (min_le_left _ _)) sigma hsigma Phi hPhi X hfail
+  have hball : ∀ᶠ i in atTop, ∀ y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0)
+      (X.term i).basepoint c, (X.term i).S.scalar 0 y ≤ 9 * C := by
+    filter_upwards [hprop eps heps (hle.trans (min_le_right _ _)) sigma hsigma Phi hPhi X]
+      with i hi y hy
+    have hb := (hi 1 le_rfl (X.term i).basepoint (X.base_one i).le).2
+      0 ⟨by linarith, le_rfl⟩ y (by simpa only [Real.sqrt_one, div_one] using hy)
+    rw [mul_one] at hb
+    have hs := scalar_abs_le_rm (I := I3) ((X.term i).S.base.metric 0) y
+    have hdim : Module.finrank ℝ (TangentSpace I3 y) = 3 := by
+      change Module.finrank ℝ ThreeSpace = 3
+      simp [ThreeSpace]
+    rw [hdim] at hs
+    norm_num at hs
+    exact (le_abs_self _).trans (hs.trans (mul_le_mul_of_nonneg_left hb (by norm_num)))
+  have hescape := rescaled_sequence_basepoint_escapes X f hf x hQ hlarge hc hball
+  refine ⟨D, hD, f, hf, x, r, hQ, hr, hlarge, hQr, hcontrol,
+    P, hcanonical, hconnected, ?_, hcompact, hsourceconn, hnested, hbase, hupper, hsec, hnc⟩
+  apply P.maps.noncompact_of_escaping_points P.convergence.metrics
+    (fun i => by rw [hcanonical i]; rfl) (fun i => X.connected (f (P.subseq i)))
+    (fun i => (X.term (f (P.subseq i))).basepoint)
+  exact hescape.comp P.strictMono.tendsto_atTop
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

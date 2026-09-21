@@ -3462,6 +3462,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactne
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalJets
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.NormalCharts
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ConnectedComponent
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Compact
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainEmbedding
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
@@ -5872,7 +5873,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cano
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CollapsedBallGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CollapsedReducedVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactEntropyConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactLimitGlobalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactPointedChartControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactPoisson
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactScalarConvergence
