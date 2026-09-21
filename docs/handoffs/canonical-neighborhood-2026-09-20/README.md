@@ -2723,3 +2723,47 @@ and no other diagnostics. Evidence:
 `/private/tmp/wt17-punctured-cone-convergence-lint.log`,
 `/private/tmp/wt17-punctured-cone-convergence-root-build.log`, and
 `/private/tmp/wt17-rescaled-cone-flow-exclusion.lean` / `.log`.
+
+
+## Cone exclusion for the produced normalized-end backward flow
+
+The continuation after `b33c610db23f264e368ab47a2d3b8d49ae7485ef` proves
+`normalized_end_cone_exclusion` in `NormalizedConeExclusion.lean`. It consumes the
+canonical terminal limit, its intrinsic punctured end, and the established
+curvature-distance bounds. The previously proved
+`exists_local_backward_limit_on_normalized_end` supplies an actual backward
+Ricci flow, nonnegative sectional curvature through the terminal endpoint,
+terminal scalar curvature one, partial diffeomorphisms, compact balls, actual
+ball capture, and uniform distance convergence.
+
+The source curvature scale divided by the end curvature tends to one. Taking
+cone approximation scales to be the reciprocal square roots of the actual
+source curvatures puts the rescaled centers in one fixed annulus. The exact
+cone-coordinate theorem and the smooth cone-chart constructor then produce a
+local terminal cone chart containing the scalar-one basepoint. Applying
+`solution_cone_terminal_exclusion` to the produced backward flow gives the
+contradiction. No cone chart, backward flow, or desired uniform source estimate
+is added to the normalized-end inputs.
+
+This closes the geometric bridge from the normalized-end flow producer to the
+existing cone exclusion. The bounded-distance headline remains open at this
+checkpoint: its next consumer must extract the center sequence and all these
+end hypotheses from
+`exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence`.
+The proved terminal derivative theorem can then be applied to the resulting
+bounded-distance estimate. The 21 pre-existing proof holes are unchanged.
+
+The reference pattern is Kleiner--Lott, *Notes on Perelman's papers*, Theorem
+41.2, Case 1, and Lemma 41.4 (printed page 2675), in
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+Only the local cone-identification and exclusion argument is used here; the
+finite-interval normalized sources are not treated as ancient kappa-solutions.
+
+The leaf passed 14,044 jobs without diagnostics. Six declarations passed all
+thirteen applicable declaration linters. The public theorem's transitive
+axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`. The full root
+passed 20,246 jobs with exactly 21 retained sorry warnings and no other
+diagnostics. Evidence:
+`/private/tmp/wt17-normalized-cone-exclusion-build.log`,
+`/private/tmp/wt17-normalized-cone-exclusion-audit.log`, and
+`/private/tmp/wt17-normalized-cone-exclusion-root-build.log`.
