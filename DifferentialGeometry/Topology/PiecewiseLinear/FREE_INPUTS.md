@@ -58,7 +58,7 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | **A1** | `GeneralPositionInDoubleBufferedStatement` (`LoopTheorem/LemmaTwoBuffered.lean:167`) | **OPEN** |
 | A1.a | cut-out piece for a source disk **with boundary** satisfying "all sheets through the region" | open, not started (delivered version is uninstantiable) |
 | A1.b | relative half-space general position freezing an **interior collar** (guard `(s ∩ B).card ≤ finrank (ker ℓ) + 1`), producing normal crossings on `closure W` | open, not started (delivered version vacuous) |
-| A1.c | induction over a finite cover with the **whole** union `U = ⋃ W j` | lemma exists uncommitted (`doublePointSet_subset_iUnion_of_buffered_steps`), crossing induction to be rebuilt on it |
+| A1.c | induction over a finite cover with the **whole** union `U = ⋃ W j` | whole-union invariant **committed** (`doublePointSet_subset_iUnion_of_buffered_steps`, `LoopTheorem/GeneralPositionInDoubleBufferedInduction.lean:17`); the crossing induction on top of it is delivered by lane H but not yet reviewed |
 | A1.d | global assembly: one cell `A`, same domain, maps-to, boundary neighbourhood, boundary loop avoidance (homotopy `H`, `hmap`, `hsurj` are free inputs today) | open |
 | **A2** | `DescentStepOrientableStatement` (`LoopTheorem/LemmaTwoOrientable.lean:61`) | **OPEN**; leaves = the `sorry`s of `Skeleton/DescentStepOrientable.lean` (reviewed: `consult/G-descent-skeleton-review-digest.md`) |
 | A2.1 | closed branch, two circles, nested | **PROVED** `exists_descendingSurgery_of_nested_innermost_cleanDisk` (`LoopTheorem/ClosedBranchNestedDescent.lean:245`) |
