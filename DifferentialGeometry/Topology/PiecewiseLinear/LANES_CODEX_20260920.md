@@ -408,3 +408,28 @@ LocallyFiniteSolidTorusModification,SolidTorusOpenNeighborhood,CommonCircleSolid
 `(a,b) ↦ (b,a)`，连续性给 `σ(a,b) = σ(b,a)`，矛盾。这个排除**不需要管子**（现有的
 `IsCylindricalDiagram.not_closedBranchCase1` 需要先有柱形图）。若把可定向性沿塔传下去（可定向流形的覆盖仍可定向），
 Case 1 整块可以删掉，闭支只剩 2a + 2b。代价：`NormalSystem` 世界的几条已证归约要带着这个假设重过一遍。
+
+### 车道 S 裁决（`BoundaryAdaptation.lean`，2026-09-20 夜）：不收——`IsPLBoundaryTubeProducer` 对 `W` 全称，是**假的**
+
+日志这次是真的（13 项 linter、公理审计、检查 exit 0），`mem_relInterior_iff` 与 `not_injective_path_loop` 也都对。
+但按 D 答复的纪律把集合参数取到极端：令 **`W := D '' D.domain`**。假设 `D '' D.domain ⊆ W` 成立，结论却要求
+`T.chart '' spliceCylinder ⊆ W`——一个嵌入的三维实心柱落在二维多面体里，不可能。所以只要存在带边界支的正规
+cell（D 答复给了两个模型），`IsPLBoundaryTubeProducer M` 就为假，任何以它为假设的定理都空洞。
+
+- **修法：** `W` 必须是"侧"。把应用里真实成立、且 Theorem A（S7）要消费的条件写成假设：`W` 闭；
+  `D '' (D.domain \ frontier D.domain) ⊆ interior W`（在 double 里由 `MapsTo D _ C`、properness 与
+  `interior C = C \ Bd` 推出）；在 `D (frontier D.domain)` 的每一点，`(W, BdM)` 局部是 PL 半空间对（适配到**实际**
+  `(W, H)` 的卡，不是存在量化的半空间）。交付时附一条引理：double 里的 `C`、`Bd` 满足这些假设。
+- `PLBoundaryTube` 结构**没有居留者**（`NormalSingularCellData` 目前全树无居留，短期也给不出），三个字段又只是
+  三条命题：去掉结构，producer 的结论写成显式的 `∃ U T (piece : PLSeamTubeChart M T.chart), … ∧ … ∧ …`。
+  `closed_subset`、`end_buffer_subset` 是字段别名，`full_conjunction` 只是重排字段——删。
+- `crossSeamTubeCore_spliceEmbedding_nonempty_nondegenerate` 是四条已有事实的合取，属于 D 答复明说"不算"的那一类
+  （模型层的 core，不是接在真实正规 cell 上的 `CrossSeamTubeData`）；`CrossSeamTubeNondegenerate` 一并删。真正的
+  联合夹具是 F11。
+- 端盘缓冲直接写成消费者的形状 `∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[BdM] z`（`DescentStepStatement` 用的就是它）；
+  `relInterior` 若无第二个使用者就不要引入新词汇。
+- `not_injective_path_loop` 是通用引理：放进 `Topology/LoopSpace/`（车道 F 也要用），不要放在管子文件里。
+- 缺模块 docstring（AGENTS.md 第 80–81 行）。
+- 对已提交的 `LoopTheorem/CrossSeamTube.lean:928` 加 `[T2Space M]`：违反了本车道"不改已提交文件"，而且该文件在
+  几乎所有 Lemma 2 模块的闭包里。这个 def 没有 Lean 消费者，并将被修正后的 producer 取代——**请还原这处改动**，
+  在新文件的模块 docstring 里注明旧 def 已被取代；等 Lemma C 落地时再随清理一并删除。
