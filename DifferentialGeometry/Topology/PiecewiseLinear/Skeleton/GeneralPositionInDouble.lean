@@ -22,8 +22,8 @@ chart-by-chart induction whose step cuts out a source piece carrying all sheets 
 `closure (W k)`, chooses **before any perturbation** a control complex `T` of the whole source
 disk, an injectivity scale `κ`, an ambient perturbation size `δ`, a chart perturbation size `ε`
 and three uniform buffers, then a fixed control subdivision `R`, a vertex tolerance `τ`, a
-compact target buffer `K` and a non-empty open family `𝒢` of pairing-protecting vertex maps,
-only then chooses a guarded `φ` inside `𝒢`, glues the result
+compact target buffer `K` and a seed `φ₀` with a radius `ρ` of pairing-protecting vertex maps,
+only then chooses a guarded `φ` inside the sup-ball of radius `ρ` around `φ₀`, glues the result
 back literally, re-establishes the global invariants together with the buffered boundary
 homotopy, and only then recognises the crossings; at the last index every double point lies in
 the already normalised region, which is the `crossing` field of `NormalSingularCellData`.
@@ -39,19 +39,26 @@ now returns an ambient `δ` and a chart `ε` with the conversion
 `ε ≤ δ / 2`; `hcert` and `hclose` measure in `M` with `δ`, while `hsmall`, the chart buffer, the
 active buffer and the boundary track buffer measure in the chart with `ε`.
 
-Stability inside an open family, not for every admissible perturbation.  The fourth external
-review (snapshot `3be6d2b15412`) withdrew its own earlier suggestion, and the guarantee that a
-fixed subdivision and a small enough `τ` keep the source sheet pairing for *every* admissible
-vertex map is **withdrawn** with it: for `D (s, t) = (c s, 2 + t)` with `c` polygonal through
+Stability near a seed, not for every admissible perturbation.  The fourth external review
+(snapshot `3be6d2b15412`) withdrew its own earlier suggestion, and the guarantee that a fixed
+subdivision and a small enough `τ` keep the source sheet pairing for *every* admissible vertex
+map is **withdrawn** with it: for `D (s, t) = (c s, 2 + t)` with `c` polygonal through
 `(0, 1), (0, 0), (3, 0), (3, 3), (-3, 3), (0, 0), (1, 1)`, the two source rectangles over `s = 1`
-and `s = 5` meet the chart block in wedges whose four rays alternate, a genuine normal crossing,
-and translating the free vertices of the second wedge by `a • (1, 0, 0)` — admissible below every
-tolerance — turns that crossing into the tangency of `y = |x - a|` against `y = 0`.  The
-stability leaf therefore returns a family `𝒢` of vertex maps and asserts admissibility, the
-control clauses and the pairing only for its members; exhibiting `𝒢` non-empty and open is the
-geometric obligation, not a formality.  In the model above `𝒢` can be centred at the opposite
-translate `-a • (0, 1, 0)`, where the two sheets meet in the single transverse crossing at
-`(a, 0)` of two flat pieces, and the bad translates simply stay outside `𝒢`.
+and `s = 5` meet the chart block in two wedges whose four rays alternate, a genuine normal
+crossing whose bent model is `A : (1, 0), (0, 1)` against `B : (1, 1), (-1, 1)`, and translating
+the free vertices of the second wedge by `a • (1, 0, 0)` — admissible below every tolerance —
+replaces it by the sheet `y = 0` met by the sheet `y = |x - a|`.  The fifth external review
+(snapshot `c18a78c78212`) corrects how that last pair is to be read: as interior points of two
+*complete* local sheets, `y = 0` and `y = |x|` is a **tangency**, which the normal models
+exclude, not a normal double crossing; it is the bad perturbed configuration, never the old one,
+whose rays are the alternating `A : (1, 0), (0, 1)`, `B : (1, 1), (-1, 1)` just described.  The
+stability leaf therefore returns a seed `φ₀` with a radius `ρ` and asserts admissibility, the
+control clauses and the pairing only for the vertex maps of the parameter space that are
+`ρ`-close to `φ₀` at every vertex; exhibiting such a seed is the geometric obligation, not a
+formality: the local example that follows does not replace it.  In the model
+above `φ₀` can be the opposite translate `-a • (0, 1, 0)`, where the two sheets meet in the
+single transverse crossing at `(a, 0)` of two flat pieces, and the bad translates simply fall
+outside the ball.  The unperturbed map is *not* required to be the seed.
 
 The parameter space is the finite one.  `VertexParameterSpace D ec ℓ Lc Ac R` collects the maps
 sending every vertex of `R` in `Ac.space` to `ec (⇑D v)` and every vertex in `Lc.space` into
@@ -59,12 +66,16 @@ sending every vertex of `R` in `Ac.space` to `ec (⇑D v)` and every vertex in `
 `ρ > 0` with every `φ' ∈ P` whose values on `R.vertices` are `ρ`-close to those of `φ` again in
 `𝒢`.  That already forces membership in `𝒢` to depend only on the values on `R.vertices`, by
 `IsVertexSupOpen.mem_of_eqOn_vertices`, so no separate clause is needed, and it keeps the free
-vertices genuinely movable inside `𝒢`, which is what the generic choice consumes.
-`VertexSupBall R P φ₀ ρ` is the sup-metric ball around `φ₀`; `isVertexSupOpen_vertexSupBall`
-proves it open in that sense and `mem_vertexSupBall_self` that it contains its centre, so on the
-fixture of two flat sheets crossing transversally with a frozen outer ring one may take `𝒢` to be
-a small sup-ball around the unperturbed map.  The unperturbed map is *not* required to lie in
-`𝒢`.
+vertices genuinely movable inside `𝒢`, which is what the generic choice consumes.  The
+stability leaf is stated in the equivalent seed form: it returns `φ₀` in
+`VertexParameterSpace D ec ℓ Lc Ac R` together with `ρ > 0` and concludes for every `φ` of that
+parameter space with `dist (φ v) (φ₀ v) < ρ` at every `v ∈ R.vertices`.  The assembly rebuilds
+the family the generic leaf consumes as
+`𝒢 := VertexSupBall R (VertexParameterSpace D ec ℓ Lc Ac R) φ₀ ρ`, the sup-metric ball around
+`φ₀`; `mem_vertexSupBall_self` gives `𝒢.Nonempty` and `isVertexSupOpen_vertexSupBall` gives
+`IsVertexSupOpen R (VertexParameterSpace D ec ℓ Lc Ac R) 𝒢`, and since the ball is defined by
+`∃ r < ρ, ∀ v ∈ R.vertices, dist (φ v) (φ₀ v) ≤ r`, each of its members satisfies the seed's
+strict hypothesis at the same radius, so no shrinking of `ρ` is needed.
 
 Admissibility is the `Prop`-valued `AdmissibleVertexMap`: vertex error `< τ`, equality with
 `ec ∘ ⇑D` at vertices of the frozen collar, height zero exactly at the physical boundary vertices
@@ -84,8 +95,9 @@ of choosing a second one.
 The pairing is localised.  `K` is compact, contained in `V`, and chosen in the stability leaf
 *before* `φ`, with `⇑D '' Rc.space ⊆ interior K`; that interior buffer is what makes
 `regionGluedMap D ec R φ Rc '' Rc.space ⊆ K` a consequence of the tolerance `τ` instead of an
-extra assumption, and it is asserted for every `φ ∈ 𝒢`.  The full-preimage certificate
-`U, U', χ, ψ` is produced only near the compact set `Z ∩ K`; off `K` the crossing leaf transports
+extra assumption, and it is asserted for every `φ` the seed controls.  The full-preimage
+certificate `U, U', χ, ψ` is produced only near the compact set `Z ∩ K`; off `K` the crossing
+leaf transports
 by the identity, because `preimage_singleton_eq_of_eqOn_compl_of_image_subset` turns
 `EqOn ⇑D' ⇑D Rc.spaceᶜ` together with the two image bounds into `⇑D' ⁻¹' {y} = ⇑D ⁻¹' {y}` for
 every `y ∉ K`.  `Z ∩ V` would not do: it is not compact, and `Vᶜ` is not a neighbourhood of a
@@ -165,16 +177,23 @@ each point, and three buffers: the combined chart-range and conversion buffer, t
 keeping `ε`-competitors of frozen points off `closure W`, and the boundary track buffer, which is
 condition (12).
 
-`exists_pairingStableSubdivision_in_adaptedChart` (lane H, H5a, changed after the fourth review,
-unreviewed): the stability half of the old perturbation leaf.  `R`, `τ`, `K`, the boundary vertex
-set `Bv` and the family `𝒢` are fixed before any vertex map is chosen; `𝒢` is non-empty and
-vertex-sup-open in `VertexParameterSpace D ec ℓ Lc Ac R`, and admissibility, the control clauses
-and the pairing certificate near `Z ∩ K` are asserted for its members only.  It now also receives
-the cut-out's seam conditions `hΩ`, `hΩR`, `hNb`, `hNbfr`, `hNbA`, without which an unfrozen flat
-`Rc` can be translated onto a neighbouring unmoved sheet and `StarInj T` fails on the seam.
+`exists_pairingStableSubdivision_in_adaptedChart` (lane H, H5a, seed form after the fifth
+review; statement not refuted, general existence of the seed UNVERIFIED — see
+`consult/L-pairing-seed.md`; do not prove before that consult is answered): the stability half
+of the old perturbation leaf.  `R`, `τ`, `K`, the boundary vertex set `Bv`, the seed `φ₀` and
+the radius `ρ` are all fixed before any vertex map is chosen, and admissibility, the control
+clauses and the pairing certificate near `Z ∩ K` are asserted only for the members of
+`VertexParameterSpace D ec ℓ Lc Ac R` whose values on `R.vertices` are within `ρ` of those of
+`φ₀`.  It also receives the cut-out's seam conditions `hΩ`, `hΩR`, `hNb`, `hNbfr`, `hNbA`,
+without which an unfrozen flat `Rc` can be translated onto a neighbouring unmoved sheet and
+`StarInj T` fails on the seam.  The trap recorded by the fifth review: after a normalization one
+passes to a common subdivision, and openness of the old family does not upgrade to the parameter
+space of that subdivision, because the new free vertices must move independently instead of
+being tied to affine combinations of the old ones, so the seed must be produced on the final
+`R`.
 
-`exists_guardedVertexMap_in_adaptedChart` (lane H, H5b, changed after the fourth review,
-unreviewed): the generic half, now a density statement inside an arbitrary non-empty
+`exists_guardedVertexMap_in_adaptedChart` (lane H, H5b, reviewed 2026-09-21, frozen): the
+generic half, now a density statement inside an arbitrary non-empty
 vertex-sup-open `𝒢` for the fixed `R` and `Bv`.  The affine independence conclusion keeps the
 guard `(s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1`, since four boundary vertices are
 coplanar and dropping it makes the leaf false, with the frozen part of `s` exempted in the
@@ -187,7 +206,12 @@ moves in an open subset of `LinearMap.ker ℓ` and has to miss the intersection 
 The reviewer's approval of 2026-09-21 was given for the old `∀ τ > 0, ∃ Bv φ` form; that form
 follows from this one applied to `VertexSupBall R (VertexParameterSpace D ec ℓ Lc Ac R)
 (fun v => ec (D v)) τ` for a radius small enough for the finitely many strict inequalities
-`0 < ℓ (ec (D v))`, `v ∈ R.vertices \ Bv`, to survive, so no second leaf is kept.
+`0 < ℓ (ec (D v))`, `v ∈ R.vertices \ Bv`, to survive, so no second leaf is kept.  The fifth
+review froze the present form: the frozen-part antecedent does not depend on the free vertices,
+so either it already fails — the branch where two frozen vertices carry equal images, which no
+proof may skip — and the failure set is empty, or it holds and each of the finitely many failure
+sets is a proper algebraic subset of the parameter space, a finite union of which is nowhere
+dense.
 
 `exists_normalCrossings_of_gluedCell` (lane H, H6d, reviewed 2026-09-21, frozen):
 recognition on the active target and transport on the protected one.  Over `closure W` the
@@ -588,7 +612,7 @@ theorem exists_pairingStableSubdivision_in_adaptedChart [CompactSpace M]
     {ε : ℝ} (hε : 0 < ε) :
     ∃ (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (τ : ℝ) (K : Set M)
       (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-      (𝒢 : Set (EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))),
+      (φ₀ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) (ρ : ℝ),
       0 < τ ∧ IsSubdivision R Rc ∧ R.faces.Finite ∧
         (∀ s ∈ R.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
           EqOn (fun x => ec (D x)) A
@@ -596,8 +620,10 @@ theorem exists_pairingStableSubdivision_in_adaptedChart [CompactSpace M]
         IsCompact K ∧ K ⊆ V ∧ ⇑D '' Rc.space ⊆ interior K ∧
         (Bv : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices ∧
         (∀ v ∈ R.vertices, v ∈ Bv ↔ v ∈ Lc.space) ∧
-        𝒢.Nonempty ∧ IsVertexSupOpen R (VertexParameterSpace D ec ℓ Lc Ac R) 𝒢 ∧
-        ∀ φ ∈ 𝒢, AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ ∧
+        φ₀ ∈ VertexParameterSpace D ec ℓ Lc Ac R ∧ 0 < ρ ∧
+        ∀ φ ∈ VertexParameterSpace D ec ℓ Lc Ac R,
+          (∀ v ∈ R.vertices, dist (φ v) (φ₀ v) < ρ) →
+          AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ ∧
           IsPiecewiseAffineOn (simplicialMap R φ) Rc.space ∧
             (∀ x ∈ Rc.space, dist (simplicialMap R φ x) (ec (D x)) < ε) ∧
             EqOn (simplicialMap R φ) (fun x => ec (D x)) Ac.space ∧
@@ -829,18 +855,26 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           have hchartbuf : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
               dist z (ec (cell x)) < ε → z ∈ ⇑ec '' V k :=
             fun x hx z hz => (hconv x hx z hz).1
-          obtain ⟨R, τ, Kt, Bv, 𝒢, -, hsub, hRsfin, -, hKcpt, -, hDKint, hBvsub, hBvL, hGne,
-            hGopen, hstable⟩ :=
+          obtain ⟨R, τ, Kt, Bv, φ₀, ρ, -, hsub, hRsfin, -, hKcpt, -, hDKint, hBvsub, hBvL,
+            hφ₀P, hρ, hseed⟩ :=
             exists_pairingStableSubdivision_in_adaptedChart cell hcellloc hcellfib hcellpr
               hcellC hOkcross hZclosed hOkopen hOkZ ec ℓ hec hℓ (hVopen k) hVec hCchart
               hBdchart Rc Lc Ac hRfin hRman hLR hAR hRdom hRV hLspace hΩ hΩR hNb hNbfr hNbA
               (hWV k) hAfree T hTfin hTspace hTstar hε
+          have hGne :
+              (VertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ).Nonempty :=
+            ⟨φ₀, mem_vertexSupBall_self hφ₀P hρ⟩
+          have hGopen : IsVertexSupOpen R (VertexParameterSpace cell ec ℓ Lc Ac R)
+              (VertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ) :=
+            isVertexSupOpen_vertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ
           obtain ⟨φ, hφG, hguard⟩ :=
             exists_guardedVertexMap_in_adaptedChart cell hcellpr hcellC ec ℓ hℓ hVec hCchart
-              hBdchart Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin Bv hBvsub hBvL 𝒢 hGne
-              hGopen
+              hBdchart Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin Bv hBvsub hBvL
+              (VertexSupBall R (VertexParameterSpace cell ec ℓ Lc Ac R) φ₀ ρ) hGne hGopen
+          obtain ⟨hφP, r, hrρ, hrball⟩ := hφG
           obtain ⟨hadm, hpl, hsmall, hfrozen, hpnonneg, hpzero, hsep, hmaps, hgK, hstar, U, U',
-            χ, ψ, hUopen, hU'open, hUO, hZKU', hχ, hχimage, hχbd, hψ, hpair⟩ := hstable φ hφG
+            χ, ψ, hUopen, hU'open, hUO, hZKU', hχ, hχimage, hχbd, hψ, hpair⟩ :=
+            hseed φ hφP fun v hv => lt_of_le_of_lt (hrball v hv) hrρ
           obtain ⟨cell', hdom', hglue, hglueoff⟩ :=
             exists_gluedCell_of_vertexMap_in_adaptedChart cell (hVopen k) ec hec hVec Rc Ac
               hRfin hRman hAR hRdom hRV hΩ hΩR hNb hNbfr hNbA R φ hsub hRsfin hfrozen hpl
