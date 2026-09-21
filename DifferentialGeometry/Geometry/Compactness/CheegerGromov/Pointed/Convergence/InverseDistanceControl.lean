@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricInverse
+import DifferentialGeometry.Geometry.Metric.Comparison.Inverse
 
 set_option autoImplicit false
 
@@ -44,7 +44,7 @@ private theorem quadratic_comparison_of_relative_error
 
 section BufferedComparison
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M N : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -113,7 +113,7 @@ end BufferedComparison
 
 section Pointed
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

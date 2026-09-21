@@ -778,3 +778,38 @@ Evidence is in `/private/tmp/wt17-ancient-cylinder-line-build.log`,
 `/private/tmp/wt17-cylinder-line-audit.log`, and
 `/private/tmp/wt17-cylinder-line-root-build.log`.
 The bounded-distance headline remains unchanged and open.
+
+
+## Long minimizing segments produce strong necks
+
+The continuation after `923e29242` proves a quantitative strong-neck producer for
+normalized oriented ancient kappa-solutions. For each neck tolerance, sufficiently
+long almost-isometric segments through the basepoint force a genuine strong neck.
+The exact minimizing-segment statement is a corollary. The proof constructs a line
+in a compactness limit, classifies that limit as the normalized shrinking cylinder,
+and transfers its finite-order spacetime comparison back to the approximating
+solutions. It does not treat finite-interval source flows as ancient solutions.
+
+The underlying line-limit theorem allows distances between segment points to have
+multiplicative errors tending to zero. The inverse-metric and inverse-distance
+foundations, and the generic pointed line-limit construction, now live under
+`Geometry/Metric/Comparison` and
+`Geometry/Compactness/CheegerGromov/Pointed/Convergence`. Existing namespaces and
+public declarations are preserved; model-space hypotheses are generalized from
+inner product spaces to finite-dimensional normed spaces. Static ball capture was
+also separated from its flow-specific witness application.
+
+This is the compactness and splitting argument of Kleiner--Lott, Section 49,
+Proposition 49.1 and Corollary 49.2, used in Section 52, Lemma 52.14(2), in
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+The application to actual windowed source models is the next step; the
+bounded-distance headline remains open, with 21 retained source sorrys.
+
+All twenty added, moved, or affected declarations passed thirteen declaration
+linters and have standard-axiom-only transitive closures. Changed leaves and
+consumers built without diagnostics. The final root build passed 20,177 jobs with
+exactly the 21 retained sorry warnings and no other diagnostics. Evidence is in
+`/private/tmp/wt17-long-segment-necks-build.log`,
+`/private/tmp/wt17-almost-line-neck-interface-build.log`,
+`/private/tmp/wt17-long-segment-necks-audit.log`, and
+`/private/tmp/wt17-long-segment-necks-root-build.log`.

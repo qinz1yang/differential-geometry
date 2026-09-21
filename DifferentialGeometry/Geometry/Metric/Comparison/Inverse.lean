@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessBallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.BallCapture
 
 set_option autoImplicit false
 
@@ -61,7 +61,7 @@ end Differential
 
 section Capture
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M N : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

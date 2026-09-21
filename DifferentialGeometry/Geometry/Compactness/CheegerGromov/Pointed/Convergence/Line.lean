@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedDistanceLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistance
 import DifferentialGeometry.Geometry.Comparison.Splitting.MetricApproximateLineLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Ordered
 
@@ -19,7 +19,7 @@ universe u uE uH
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -162,6 +162,90 @@ theorem exists_pointed_line_of_approximate_opposite_rays
   refine ⟨gamma, hgamma, Set.mem_singleton_iff.mp hzero, ?_⟩
   intro s t
   rw [hrealizes, hgamma.dist_eq, Real.dist_eq]
+
+theorem exists_pointed_line_of_asymptotically_isometric_curves
+    (C : MetricConvergenceData Φ)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (hcomplete : MetricComplete L) (hconnected : ConnectedSpace L.M)
+    (γ : ∀ k : ℕ, ℝ → (X.obj (subseq k)).M)
+    (hcenter : ∀ k, γ k 0 = (X.obj (subseq k)).basepoint)
+    (hdist : ∀ s t : ℝ, Tendsto (fun k =>
+      riemannianEDistOf (X.obj (subseq k)).metric (γ k s) (γ k t))
+      atTop (𝓝 (ENNReal.ofReal |s - t|))) :
+    let P := properMetricOn L hcomplete hconnected
+    let _ : MetricSpace L.M := P.ms.replaceTopology (ProperMetricOn.top_eq L P).symm
+    ∃ gamma : ℝ → L.M, Isometry gamma ∧ gamma 0 = L.basepoint ∧
+      ∀ s t : ℝ, riemannianEDistOf L.metric (gamma s) (gamma t) =
+        ENNReal.ofReal |s - t| := by
+  apply exists_pointed_line_of_approximate_opposite_rays C hreference hcomplete hconnected
+    γ (fun k t => γ k (-t)) hcenter (fun k => by simpa using hcenter k)
+  · intro s t _ _
+    exact hdist s t
+  · intro s t _ _
+    have heq : -s - -t = -(s - t) := by ring
+    simpa only [heq, abs_neg] using hdist (-s) (-t)
+  · intro t ht
+    simpa only [sub_neg_eq_add, ← two_mul,
+      abs_of_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) ht)] using hdist t (-t)
+
+theorem exists_pointed_line_of_growing_almost_isometric_segments
+    (C : MetricConvergenceData Φ)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (hcomplete : MetricComplete L) (hconnected : ConnectedSpace L.M)
+    (γ : ∀ k : ℕ, ℝ → (X.obj (subseq k)).M)
+    (hcenter : ∀ k, γ k 0 = (X.obj (subseq k)).basepoint)
+    (r : ℕ → ℝ) (hr : Tendsto r atTop atTop)
+    (η : ℕ → ℝ) (hη : Tendsto η atTop (𝓝 0))
+    (hsegment : ∀ k, ∀ s ∈ Set.Icc (-r k) (r k), ∀ t ∈ Set.Icc (-r k) (r k),
+      ENNReal.ofReal ((1 - η k) * |s - t|) ≤
+        riemannianEDistOf (X.obj (subseq k)).metric (γ k s) (γ k t) ∧
+      riemannianEDistOf (X.obj (subseq k)).metric (γ k s) (γ k t) ≤
+        ENNReal.ofReal ((1 + η k) * |s - t|)) :
+    let P := properMetricOn L hcomplete hconnected
+    let _ : MetricSpace L.M := P.ms.replaceTopology (ProperMetricOn.top_eq L P).symm
+    ∃ gamma : ℝ → L.M, Isometry gamma ∧ gamma 0 = L.basepoint ∧
+      ∀ s t : ℝ, riemannianEDistOf L.metric (gamma s) (gamma t) =
+        ENNReal.ofReal |s - t| := by
+  apply exists_pointed_line_of_asymptotically_isometric_curves C hreference hcomplete hconnected
+    γ hcenter
+  intro s t
+  have hbounds : ∀ᶠ k in atTop,
+      ENNReal.ofReal ((1 - η k) * |s - t|) ≤
+        riemannianEDistOf (X.obj (subseq k)).metric (γ k s) (γ k t) ∧
+      riemannianEDistOf (X.obj (subseq k)).metric (γ k s) (γ k t) ≤
+        ENNReal.ofReal ((1 + η k) * |s - t|) := by
+    filter_upwards [hr.eventually (eventually_ge_atTop (max |s| |t|))] with k hk
+    exact hsegment k s (abs_le.mp ((le_max_left _ _).trans hk))
+      t (abs_le.mp ((le_max_right _ _).trans hk))
+  have hlow : Tendsto (fun k => ENNReal.ofReal ((1 - η k) * |s - t|))
+      atTop (𝓝 (ENNReal.ofReal |s - t|)) := by
+    simpa only [sub_zero, one_mul] using
+      ENNReal.tendsto_ofReal (((tendsto_const_nhds (x := (1 : ℝ))).sub hη).mul_const |s - t|)
+  have hupp : Tendsto (fun k => ENNReal.ofReal ((1 + η k) * |s - t|))
+      atTop (𝓝 (ENNReal.ofReal |s - t|)) := by
+    simpa only [add_zero, one_mul] using
+      ENNReal.tendsto_ofReal (((tendsto_const_nhds (x := (1 : ℝ))).add hη).mul_const |s - t|)
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow hupp
+    (hbounds.mono fun _ h => h.1) (hbounds.mono fun _ h => h.2)
+
+theorem exists_pointed_line_of_growing_minimizing_segments
+    (C : MetricConvergenceData Φ)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (hcomplete : MetricComplete L) (hconnected : ConnectedSpace L.M)
+    (γ : ∀ k : ℕ, ℝ → (X.obj (subseq k)).M)
+    (hcenter : ∀ k, γ k 0 = (X.obj (subseq k)).basepoint)
+    (r : ℕ → ℝ) (hr : Tendsto r atTop atTop)
+    (hsegment : ∀ k, ∀ s ∈ Set.Icc (-r k) (r k), ∀ t ∈ Set.Icc (-r k) (r k),
+      riemannianEDistOf (X.obj (subseq k)).metric (γ k s) (γ k t) = ENNReal.ofReal |s - t|) :
+    let P := properMetricOn L hcomplete hconnected
+    let _ : MetricSpace L.M := P.ms.replaceTopology (ProperMetricOn.top_eq L P).symm
+    ∃ gamma : ℝ → L.M, Isometry gamma ∧ gamma 0 = L.basepoint ∧
+      ∀ s t : ℝ, riemannianEDistOf L.metric (gamma s) (gamma t) =
+        ENNReal.ofReal |s - t| := by
+  apply exists_pointed_line_of_growing_almost_isometric_segments C hreference hcomplete
+    hconnected γ hcenter r hr (fun _ => 0) tendsto_const_nhds
+  intro k s hs t ht
+  simp only [sub_zero, add_zero, one_mul, hsegment k s hs t ht, le_refl, and_self]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

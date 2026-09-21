@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedInverseDistanceControl
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistanceControl
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 
 set_option autoImplicit false
@@ -78,7 +78,7 @@ private theorem ennreal_tendsto_of_eventual_multiplicative_comparison
   exact (ENNReal.tendsto_ofReal hreal).congr'
     (hbfinite.mono fun i hi => ENNReal.ofReal_toReal hi)
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
