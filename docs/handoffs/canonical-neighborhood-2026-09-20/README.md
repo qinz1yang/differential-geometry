@@ -1328,3 +1328,42 @@ other diagnostics. Evidence:
 `/private/tmp/wt17-homeomorph-closed-cover-leaf-build.log`,
 `/private/tmp/wt17-annular-endpoint-closed-cover-audit.log`, and
 `/private/tmp/wt17-annular-endpoint-closed-cover-root-build.log`.
+
+
+## Actual cylinder parametrizations of the annular end
+
+The continuation after `a7ce2cb39` constructs a homeomorphism from
+`Sphere 2 × Ici 0` onto the actual normalized annular tail, and a compatible
+homeomorphism from `Sphere 2 × Ioi 0` onto its interior. The first map agrees on
+every unit strip with the produced partial diffeomorphism, after the recursively
+determined sphere reparametrizations. The second map is the restriction of the
+first through the canonical inclusion of the positive half-line.
+
+The general cylinder-chain theorem works for arbitrary topological
+cross-sections and ambient spaces. It glues locally finite closed cylinder
+pieces with the actual specified boundary identifications; nonadjacent pieces
+are disjoint, and adjacent pieces intersect exactly in their common boundary.
+The forward and inverse compatibility proofs both use those geometric
+conditions. The separate interior-restriction API works over any partially
+ordered topological parameter space, with no order-topology assumption. It
+retains forward and inverse compatibility with the original homeomorphism.
+These give the topological cylinder in the annular-chain construction of
+Morgan–Tian, *Ricci Flow and the Poincaré Conjecture*, Appendix A, Lemmas
+A.13–A.16, in `Geometrization/BooksPapers/MorganTianPoincare.pdf`.
+
+These are topological parametrizations; no smoothness across glued seams is
+claimed. The existing `GlobalNeckTube` interface is still unchanged. Inspection
+found that its consumers use smoothness of individual barrier spheres, in
+addition to the topological tube properties. The finite-horn and cone producers
+and the bounded-distance headline remain open.
+
+Five public declarations passed thirteen declaration linters with only approved
+foundational axioms. The cylinder-chain leaf passed 1,619 jobs, the interior
+restriction leaf 915 jobs, and the normalized dependent 14,133 jobs, with no
+diagnostics. The full root passed 20,202 jobs with exactly 21 retained sorry
+warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-cylinder-chain-leaf-build.log`,
+`/private/tmp/wt17-homeomorph-interior-leaf-build.log`,
+`/private/tmp/wt17-normalized-cylinder-leaf-build.log`,
+`/private/tmp/wt17-normalized-cylinder-audit.log`, and
+`/private/tmp/wt17-normalized-cylinder-root-build.log`.

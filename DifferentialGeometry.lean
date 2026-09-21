@@ -8653,6 +8653,7 @@ import DifferentialGeometry.Topology.Handle.SimplyConnected
 import DifferentialGeometry.Topology.Handle.SimplyConnectedInterface
 import DifferentialGeometry.Topology.Homeomorph.AffinePeriodic
 import DifferentialGeometry.Topology.Homeomorph.HeightBand
+import DifferentialGeometry.Topology.Homeomorph.Interior
 import DifferentialGeometry.Topology.Homeomorph.SphereAffine
 import DifferentialGeometry.Topology.Homology.AffineCarriers
 import DifferentialGeometry.Topology.Homology.AffineChains
@@ -11286,6 +11287,7 @@ import DifferentialGeometry.Topology.Handle.HalfBallAbsorption
 import DifferentialGeometry.Topology.SphereSeparation.FlatCapAbsorption
 import DifferentialGeometry.Topology.SphereSeparation.FlatCapRegions
 import DifferentialGeometry.Topology.Homeomorph.CylinderCap
+import DifferentialGeometry.Topology.Homeomorph.CylinderChain
 import DifferentialGeometry.Topology.Embedding.FlatCapTransport
 import DifferentialGeometry.Topology.SphereSeparation.FlatCapTransport
 import DifferentialGeometry.Topology.SphereSeparation.FlatCapReconstruction

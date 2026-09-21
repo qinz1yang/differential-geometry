@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLimitNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocallyFinite
+import DifferentialGeometry.Topology.Homeomorph.CylinderChain
+import DifferentialGeometry.Topology.Homeomorph.Interior
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
 import Mathlib.Topology.Compactness.LocallyFinite
 set_option autoImplicit false
@@ -156,9 +158,24 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                   (nk 1).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
                                 (∀ v : Ico 0 F.radius, (t 2 : ℝ) ≤ v →
                                   g v ∈ interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) ∧
-                                ∀ n (x : L.M), x ∈ Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) →
+                                (∀ n (x : L.M), x ∈ Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) →
                                   dist q (x : UniformSpace.Completion L.M) ≤
-                                    (11 / 5) * (F.radius - (t n : ℝ)) := by
+                                    (11 / 5) * (F.radius - (t n : ℝ))) ∧
+                                ∃ E : Sphere 2 × Ici (0 : ℝ) ≃ₜ
+                                  (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
+                                  ∃ theta : ℕ → Sphere 2 ≃ₜ Sphere 2,
+                                    theta 0 = Homeomorph.refl (Sphere 2) ∧
+                                    (∀ n, theta (n + 1) =
+                                      (theta n).trans (eta (n + 1)).toHomeomorph) ∧
+                                    (∀ (n : ℕ) (p : Sphere 2) (s : Icc (0 : ℝ) 1),
+                                      (E (p, ⟨n + (s : ℝ),
+                                        add_nonneg (Nat.cast_nonneg n) s.property.1⟩) : L.M) =
+                                          Ψ (n + 1) (theta n p, s)) ∧
+                                    ∃ D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ
+                                      interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
+                                      ∀ (p : Sphere 2) (s : Ioi (0 : ℝ)),
+                                        (D (p, s) : L.M) =
+                                          (E (p, Set.inclusion Ioi_subset_Ici_self s) : L.M) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -331,12 +348,70 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     have hremain := (t (n + 1)).property.2
     change _ ≤ F.radius - (t n : ℝ) + dist (g (incl (t n))) x at htriangle
     linarith
+  let unit : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ (univ ×ˢ Icc (0 : ℝ) 1 : Set Cylinder) :=
+    (((Homeomorph.Set.univ (Sphere 2)).symm).prodCongr (Homeomorph.refl _)).trans
+      (Homeomorph.Set.prod univ (Icc (0 : ℝ) 1)).symm
+  let e (n : ℕ) : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ
+      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
+    unit.trans ((ann (n + 1)).toOpenPartialHomeomorph.homeomorphOfImageSubsetSource
+      (hsource (n + 1)) rfl)
+  have he (n : ℕ) (p : Sphere 2) (s : Icc (0 : ℝ) 1) :
+      (e n (p, s) : L.M) = ann (n + 1) (p, s) := rfl
+  have hseam' (n : ℕ) (p : Sphere 2) : (e n (p, ⟨1, by simp⟩) : L.M) =
+      e (n + 1) ((eta (n + 1)).toHomeomorph p, ⟨0, by simp⟩) := by
+    rw [he, he, hright, hleft]
+    rfl
+  have hinter' (n : ℕ) :
+      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+        (ann (n + 1 + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+      range (fun p => (e n (p, ⟨1, by simp⟩) : L.M)) := by
+    rw [hinter n]
+    ext x
+    constructor
+    · rintro ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩
+      have hz' : z = 0 := hz
+      subst z
+      obtain ⟨w, rfl⟩ := (eta (n + 1)).surjective p
+      refine ⟨w, ?_⟩
+      change (e n (w, ⟨1, by simp⟩) : L.M) = x
+      rw [he, hright]
+      exact hp
+    · rintro ⟨p, hp⟩
+      change (e n (p, ⟨1, by simp⟩) : L.M) = x at hp
+      rw [he, hright] at hp
+      exact ⟨(eta (n + 1) p, 0), ⟨mem_univ _, rfl⟩, hp⟩
+  obtain ⟨E, theta, htheta0, htheta, hE⟩ :=
+    DifferentialGeometry.Topology.exists_homeomorph_iUnion_of_cylinder_chain
+      (fun n => ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) e
+      (fun n => (eta (n + 1)).toHomeomorph) (fun n => (hcann (n + 1)).isClosed)
+      (hlocalShift 1) hseam' hinter' (fun i j hij => hsep (i + 1) (j + 1) (by omega))
+  have hEzero (p : Sphere 2) : (E (p, ⟨0, by norm_num⟩) : L.M) = (nk 1).map (p, 0) := by
+    have hz := hE 0 p ⟨0, by simp⟩
+    rw [htheta0] at hz
+    simpa only [Nat.cast_zero, zero_add, Homeomorph.refl_apply, he, hleft, id_eq] using hz
+  have hfrontE : frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+      range (fun p => (E (p, ⟨0, by norm_num⟩) : L.M)) := by
+    rw [hfrontTail]
+    ext x
+    constructor
+    · rintro ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩
+      have hz' : z = 0 := hz
+      subst z
+      exact ⟨p, (hEzero p).trans hp⟩
+    · rintro ⟨p, hp⟩
+      exact ⟨(p, 0), ⟨mem_univ _, rfl⟩, (hEzero p).symm.trans hp⟩
+  let D := E.restrictProdIoi hfrontE
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
-    hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail, haxisTail, hcollapse⟩
-  intro tau hR
-  exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
+    hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
+    haxisTail, hcollapse, E, theta, htheta0, htheta, ?_, D, ?_⟩
+  · intro tau hR
+    exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
+  · intro n p s
+    exact (hE n p s).trans (he n (theta n p) s)
+  · intro p s
+    exact E.restrictProdIoi_apply_coe hfrontE p s
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
