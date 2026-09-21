@@ -12412,3 +12412,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientHomeomorph
 import DifferentialGeometry.Topology.Covering.Fiber.FiniteCardinality
 import DifferentialGeometry.Topology.Covering.SmoothLift.Regularity
+import DifferentialGeometry.Geometry.Metric.Restriction.Ball
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentTimeShift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentModelTransport
