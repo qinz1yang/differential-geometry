@@ -12375,3 +12375,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.A
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.MinimizingDisk
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Embedded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Immersed
+import DifferentialGeometry.Topology.Covering.RegionDescent
+import DifferentialGeometry.Topology.Covering.SphereLifts
+import DifferentialGeometry.Topology.Covering.SphericalBall
+import DifferentialGeometry.Topology.Diffeomorph.SphereExtension
+import DifferentialGeometry.Topology.Diffeomorph.SphereGermExtension
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.BallComplement
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Boundary
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Sphere
+import DifferentialGeometry.Topology.SphereSeparation.Innermost
+import DifferentialGeometry.Topology.SphereSeparation.InnermostBall
