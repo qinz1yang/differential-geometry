@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Normed.Module.Normalize
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Module.Ball.Action
 import Mathlib.GroupTheory.OrderOfElement
@@ -311,3 +312,55 @@ theorem realProjectivePlaneQuotientMap_eq_iff
   realProjectiveSpaceQuotientMap_eq_iff
 
 end DifferentialGeometry
+
+end
+
+section
+namespace DifferentialGeometry
+
+theorem realProjectiveSpaceQuotientMap_normalize_eq_iff
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {v w : E} (hv : v ≠ 0) (hw : w ≠ 0) :
+    realProjectiveSpaceQuotientMap
+        ⟨NormedSpace.normalize v,
+          mem_sphere_zero_iff_norm.mpr (NormedSpace.norm_normalize hv)⟩ =
+      realProjectiveSpaceQuotientMap
+        ⟨NormedSpace.normalize w,
+          mem_sphere_zero_iff_norm.mpr (NormedSpace.norm_normalize hw)⟩ ↔
+      ∃ c : ℝ, c ≠ 0 ∧ v = c • w := by
+  rw [realProjectiveSpaceQuotientMap_eq_iff]
+  constructor
+  · rintro (h | h)
+    · have hnorm : NormedSpace.normalize v = NormedSpace.normalize w :=
+        congrArg Subtype.val h
+      refine ⟨‖v‖ * ‖w‖⁻¹,
+        mul_ne_zero (norm_ne_zero_iff.mpr hv)
+          (inv_ne_zero (norm_ne_zero_iff.mpr hw)), ?_⟩
+      calc
+        v = ‖v‖ • NormedSpace.normalize v :=
+          (NormedSpace.norm_smul_normalize v).symm
+        _ = ‖v‖ • NormedSpace.normalize w := congrArg (‖v‖ • ·) hnorm
+        _ = (‖v‖ * ‖w‖⁻¹) • w := by rw [NormedSpace.normalize, smul_smul]
+    · change NormedSpace.normalize v = -NormedSpace.normalize w at h
+      refine ⟨-(‖v‖ * ‖w‖⁻¹),
+        neg_ne_zero.mpr (mul_ne_zero (norm_ne_zero_iff.mpr hv)
+          (inv_ne_zero (norm_ne_zero_iff.mpr hw))), ?_⟩
+      calc
+        v = ‖v‖ • NormedSpace.normalize v :=
+          (NormedSpace.norm_smul_normalize v).symm
+        _ = ‖v‖ • (-NormedSpace.normalize w) := congrArg (‖v‖ • ·) h
+        _ = -(‖v‖ * ‖w‖⁻¹) • w := by
+          rw [NormedSpace.normalize, smul_neg, smul_smul, neg_smul]
+  · rintro ⟨c, hc, h⟩
+    rcases lt_or_gt_of_ne hc with hneg | hpos
+    · right
+      change NormedSpace.normalize v = -NormedSpace.normalize w
+      rw [h, NormedSpace.normalize_smul_of_neg hneg]
+    · left
+      apply Subtype.ext
+      change NormedSpace.normalize v = NormedSpace.normalize w
+      rw [h, NormedSpace.normalize_smul_of_pos hpos]
+
+end DifferentialGeometry
+
+end
