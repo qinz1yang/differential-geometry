@@ -20,11 +20,11 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
-private theorem terminal_local_injectivity
+theorem NormalizedSequence.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
     (hkappa : 0 < kappa) (hsigma : 0 < sigma)
     {r R C : ℝ} (hr : 0 ≤ r) (hrR : r < R)
-    (hbound : ∀ i y, metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < R →
+    (hbound : ∀ᶠ i in atTop, ∀ y, metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < R →
       curvDerivNorm 0 ((X.term i).S.base.metric 0) y ≤ C) :
     ∃ eta : ℝ, 0 < eta ∧ ∀ᶠ i in atTop, ∀ y : (X.term i).M,
       riemannianEDistOf ((X.term i).S.base.metric 0) (X.term i).basepoint y ≤ ENNReal.ofReal r →
@@ -49,7 +49,7 @@ private theorem terminal_local_injectivity
       _ = 1 := by norm_num
   have hscale := (Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma
   refine ⟨iota * a, mul_pos hiota ha, ?_⟩
-  filter_upwards [hscale.eventually_ge_atTop 1] with i hi y hy
+  filter_upwards [hscale.eventually_ge_atTop 1, hbound] with i hi hbi y hy
   have hzero : (0 : ℝ) ∈ (X.interval i).carrier := by
     rw [X.carrier_eq]
     exact ⟨by linarith [X.depth_pos i], le_rfl⟩
@@ -70,7 +70,7 @@ private theorem terminal_local_injectivity
           _ ≤ ENNReal.ofReal R := ENNReal.ofReal_le_ofReal (by linarith)
       exact (ENNReal.toReal_lt_toReal hd.ne_top ENNReal.ofReal_ne_top).mpr hd |>.trans_eq
         (ENNReal.toReal_ofReal (hr.trans hrR.le))
-    have hj := hbound i z hz'
+    have hj := hbi z hz'
     have hsq : Tensor0SBundle.normSq0S ((X.term i).S.base.metric 0) z 4
         (metricRm04At ((X.term i).S.base.metric 0) z) ≤ C ^ 2 := by
       apply le_sq_of_sqrt_le (Tensor0SBundle.normSq0S_nonneg _ _ _ _)
@@ -131,7 +131,8 @@ theorem exists_terminal_pairwise_metric_approximation_within_radius
     exact (ENNReal.toReal_le_of_le_ofReal hr.le hy).trans_lt (by linarith)
   · intro r hr hrrho
     obtain ⟨C, _, hc⟩ := hb ((r + rho) / 2) (by linarith) (by linarith) 0
-    exact terminal_local_injectivity X hkappa hsigma hr.le (by linarith) hc
+    exact X.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
+      hkappa hsigma hr.le (by linarith) (Eventually.of_forall hc)
 
 theorem exists_terminal_pairwise_metric_approximation_of_not_boundedAtDistance
     {kappa : ℝ} (hkappa : 0 < kappa) :

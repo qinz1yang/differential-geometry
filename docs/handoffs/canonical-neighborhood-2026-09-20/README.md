@@ -2202,3 +2202,76 @@ a smooth `ConeChart` remain unproved. The headline and its statement are
 unchanged. No mathematical contradiction or repeated failed mathematical
 implication has been established; the resolved failures in this layer were
 Lean elaboration and algebra issues.
+
+
+## Local nonnegative backward flow producer
+
+The next analytic producer is `exists_nonnegative_local_backward_limit` in
+`CanonicalNeighborhood/NormalizedLocalBackwardFlow.lean`. For every sufficiently
+small normalized source sequence it constructs a local smooth backward Ricci
+flow through time zero, nonnegative sectional curvature on the whole closed
+interval, and terminal scalar one at its basepoint. It also retains actual
+time-independent partial diffeomorphisms to a strictly increasing subsequence
+of the sources, capture of a fixed source ball inside the open patch, a compact
+spatial buffer, pullback solution identities, and smooth spatial convergence
+uniformly in closed time. Completeness is imposed only on the original sources
+through `NormalizedSequence`; the local limit is not asserted complete or ancient.
+
+This producer uses the previously proved source curvature window at scalar
+scale one, the new fixed-order terminal cylinder Shi bounds, the existing
+local injectivity estimate and local terminal metric compactness theorem,
+`exists_metric_subsequence_on_closed_interval_of_terminal_convergence`, and
+`isSolutionOn_of_fixed_domain_metric_convergence`. The source pinching is
+transported to the pullbacks, then its error is sent to zero at each time.
+The new reusable `curvatureOperatorLowerBoundAt_localPullMetric_iff` is in
+`Geometry/Curvature/Naturality/Pullback/CurvatureOperator.lean`. It works for
+local diffeomorphisms between arbitrary finite-dimensional models.
+
+The old private injectivity result is generalized to eventual curvature
+bounds and reused by both its old consumer and the new flow producer. The
+local metric compactness statement now retains open-patch ball capture,
+already present in its proof; its previous consumer is updated. The closed
+terminal source estimates and these outputs match the local route in
+Morgan--Tian Section 10.5 and Kleiner--Lott Section 52, Step 2. The printed
+local compactness statement in `MSM135/tex/chapters/chapter3.tex`, label
+`notes_and_commentary:lbl354`, assumes an open time interval containing zero;
+the formal proof uses the closed-terminal engine instead. The local Shi
+reference is `MSM144/tex/chapters/chapter14.tex`, label
+`notes_and_commentary:lbl550`, with constants depending on derivative order.
+
+Changed leaves and their dependent local compactness chain passed 13,982
+jobs. Six declarations passed thirteen declaration linters and each transitive
+axiom closure contains only `propext`, `Classical.choice`, and `Quot.sound`.
+Evidence: `/private/tmp/wt17-normalized-local-backward-build.log` and
+`/private/tmp/wt17-local-backward-audit.log`. The full root build passed 20,231 jobs with exactly 21 retained proof-hole
+warnings and no other diagnostics; its log is
+`/private/tmp/wt17-local-backward-root-build.log`.
+
+The essential gap closed is production of the local flow, including the
+curvature-sign and nonflatness conditions needed by cone exclusion. It is
+not yet a cone-flow patch. To use it for the constructed normalized end,
+select and recenter a diagonal sequence of original sources with scalar
+ratios tending to one and the established buffered metric comparisons,
+then apply `NormalizedSequence.terminalCurvatureRescale` and this producer.
+The metric identification and smooth cone chart still require proof.
+
+More precisely, the remaining geometric implication takes the actual
+compact punctured completion end, its finite annular cone approximations
+with compact direction completion, the two-sided bounds on scalar times
+squared endpoint distance, and the selected source comparison maps. It
+must produce a smaller terminal neighborhood of the local flow, containing
+its scalar-one basepoint, with an actual `ConeChart`. The intended local
+route first identifies its Riemannian distance with an open positive-radius
+cone neighborhood, then proves the cone radius smooth using the two-anchor
+squared-distance identity and constructs coordinates by radial flow.
+No exact metric isometry or smooth cone chart is presently assumed or proved.
+
+Using a complete global `MetricCompactLimit` for the incomplete end does not
+meet its hypotheses; this has been avoided using the existing local engine.
+Reading a cone-distance formula as an existing smooth chart also does not
+close the implication. These are hypothesis checks, not repeated failed
+mathematical proofs. The remaining cone bridge is unformalized mathematics;
+the resolved source-construction failures were Lean instance and derivative
+elaboration issues. No persistent mathematical blockage has been established,
+and switching to Ultra is not currently justified by such a blockage. The
+headline remains unchanged and unproved, with the same 21 retained holes.

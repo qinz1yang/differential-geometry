@@ -4543,6 +4543,7 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Immersion
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Local
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CurvatureOperator
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalIterCov
 import DifferentialGeometry.Geometry.Curvature.NeckChartLeastRicci
 import DifferentialGeometry.Geometry.Curvature.Nonnegative
@@ -11521,6 +11522,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLimitNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedNeckSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLocalCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLocalBackwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedMetricLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedBackwardLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedCurvatureWindows

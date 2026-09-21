@@ -59,7 +59,7 @@ theorem exists_finite_pointed_metric_comparison_of_local_curvature_injectivity
           (∀ y : (X.obj (phi k)).M,
             riemannianEDistOf (I := I) (X.obj (phi k)).metric
               (X.obj (phi k)).basepoint y ≤ ENNReal.ofReal r →
-            y ∈ Φ '' closure (V : Set Q)) ∧
+            y ∈ Φ '' (V : Set Q)) ∧
           Φ '' closure (V : Set Q) ⊆
             {y | riemannianEDistOf (I := I) (X.obj (phi k)).metric
               (X.obj (phi k)).basepoint y < ENNReal.ofReal R} := by
@@ -156,7 +156,7 @@ theorem exists_finite_pointed_metric_comparison_of_local_curvature_injectivity
   · intro y hy
     obtain ⟨i, z, hz, rfl⟩ := hcover k y hy
     obtain ⟨q, hqV, hqeq⟩ := hcap i ⟨z, Metric.ball_subset_closedBall hz, rfl⟩
-    exact ⟨q, subset_closure hqV, (hΦF (hVΦ (subset_closure hqV))).trans hqeq⟩
+    exact ⟨q, hqV, (hΦF (hVΦ (subset_closure hqV))).trans hqeq⟩
   · intro y hy
     change edist (X.obj (phi k)).basepoint y < ENNReal.ofReal R
     rw [edist_comm]

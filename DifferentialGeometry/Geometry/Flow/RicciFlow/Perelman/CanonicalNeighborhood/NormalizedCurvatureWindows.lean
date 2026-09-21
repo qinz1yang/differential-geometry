@@ -152,4 +152,52 @@ theorem exists_curvDerivNorm_bound_at_terminal_scalar_scale {kappa : ℝ}
   rw [div_pow]
   field_simp
 
+theorem exists_curvDerivNorm_bound_on_terminal_cylinder {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar tau r : ℝ, 0 < epsStar ∧ 0 < tau ∧ 0 < r ∧
+      ∃ B : ℕ → ℝ, (∀ m, 0 ≤ B m) ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ᶠ i in atTop,
+            Icc (-(2 * tau)) 0 ⊆ (X.interval i).carrier ∧
+            Ico (-(2 * tau)) 0 ⊆ (X.interval i).regular ∧
+            ∀ m : ℕ, ∀ t ∈ Icc (-tau) 0,
+              ∀ y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0) (X.term i).basepoint r,
+                curvDerivNorm m ((X.term i).S.base.metric t) y ≤ B m := by
+  obtain ⟨epsStar, c, C, hepsStar, hc, hC, hprop⟩ :=
+    exists_parabolic_curvature_bound_at_terminal_scalar_scale.{u} hkappa
+  let B : ℕ → ℝ := fun m =>
+    shiLocalUniformBound 3 m (C * (c / 4))
+      ((c / (4 * Real.exp (9 * C * c))) * Real.sqrt C /
+        (4 * Real.exp (9 * C * (c / 4)))) * C / Real.sqrt (c / 4) ^ m
+  have hB (m : ℕ) : 0 ≤ B m := by
+    exact div_nonneg (mul_nonneg (shiLocalUniformBound_nonneg _ _ _ _) hC.le)
+      (pow_nonneg (Real.sqrt_nonneg _) _)
+  refine ⟨epsStar, c / 2, c / 4, hepsStar, by positivity, by positivity, B, hB, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X
+  filter_upwards [hprop eps heps hle sigma hsigma Phi hPhi X,
+    X.depth_tendsto.eventually_ge_atTop c] with i hi hdepth
+  have hbase : (X.term i).S.scalar 0 (X.term i).basepoint = 1 := X.base_one i
+  obtain ⟨hcarrier, hcurv⟩ := hi 1 le_rfl (X.term i).basepoint hbase.le
+  simp only [div_one, Real.sqrt_one, mul_one] at hcarrier hcurv
+  have hreg : Ico (-c) 0 ⊆ (X.interval i).regular := by
+    rw [X.regular_eq]
+    intro t ht
+    exact ⟨by linarith [ht.1, X.depth_pos i], ht.2⟩
+  have hzero : (0 : ℝ) ∈ (X.interval i).carrier := hcarrier ⟨by linarith, le_rfl⟩
+  have hcompact : IsCompact
+      (riemannianClosedBallOf ((X.term i).S.base.metric 0) (X.term i).basepoint c) :=
+    (show RiemannianMetricComplete ((X.term i).S.base.metric 0) from
+      ⟨X.complete i 0 hzero⟩).closedEBall_isCompact _ _
+  have hb := shi_curvDerivNorm_on_terminal_ball (X.term i).S (X.term i).isSolution
+    (a := -c) (b := 0) (K := C) (R := c) (by linarith) hC hc hcarrier
+    (Ioo_subset_Ico_self.trans hreg) (X.term i).basepoint hcompact
+    (fun t ht y hy => (Real.sqrt_le_iff.mp (hcurv t ht y hy)).2)
+  refine ⟨?_, ?_, ?_⟩
+  · simpa only [show 2 * (c / 2) = c by ring] using hcarrier
+  · simpa only [show 2 * (c / 2) = c by ring] using hreg
+  · simpa only [B, show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace],
+      Nat.cast_ofNat, show (3 : ℝ) ^ 2 = 9 by norm_num, zero_sub, neg_neg,
+      add_zero, neg_div] using hb
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
