@@ -25,13 +25,15 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
 
-theorem exists_strongNeck_radius_of_almost_isometric_segment (kappa : ℝ)
+theorem exists_strongNeck_radius_near_almost_isometric_segment (kappa B : ℝ)
+    (hB : 0 ≤ B)
     {epsilon : ℝ} (hepsilon : 0 < epsilon) (hsmall : epsilon < 1 / 11) :
     ∃ A delta : ℝ, 0 < A ∧ 0 < delta ∧ delta < 1 ∧
       ∀ F : PointedFlowData.{u, 0, 0} (I := ThreeModel) ancientTimeInterval,
         IsAncientKappaSolution kappa F → PointedFlowScalarAtBase F 1 →
         Nonempty (TangentOrientationSection F.M) →
-        ∀ γ : ℝ → F.M, γ 0 = F.basepoint →
+        ∀ γ : ℝ → F.M,
+          riemannianEDistOf (F.S.family.metric 0) F.basepoint (γ 0) ≤ ENNReal.ofReal B →
           (∀ s ∈ Icc (-A) A, ∀ t ∈ Icc (-A) A,
             ENNReal.ofReal ((1 - delta) * |s - t|) ≤
               riemannianEDistOf (F.S.family.metric 0) (γ s) (γ t) ∧
@@ -62,8 +64,9 @@ theorem exists_strongNeck_radius_of_almost_isometric_segment (kappa : ℝ)
     simpa only [one_div, Function.comp_def] using
       tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_right atTop (2 : ℝ)
         ((tendsto_natCast_atTop_atTop (R := ℝ)).comp hphi.tendsto_atTop))
-  obtain ⟨gamma, _, _, hline⟩ := exists_pointed_line_of_growing_almost_isometric_segments C hreference
-    (hL.complete 0 (by change (0 : ℝ) ≤ 0; exact le_rfl)) hL.connected (fun k => γ (phi k)) (fun k => hcenter (phi k))
+  obtain ⟨gamma, _, hline⟩ :=
+    exists_pointed_line_of_growing_almost_isometric_segments_with_bounded_centers C hreference
+    (hL.complete 0 (by change (0 : ℝ) ≤ 0; exact le_rfl)) hL.connected (fun k => γ (phi k)) hB (fun k => hcenter (phi k))
     (fun k => (phi k : ℝ) + 1) hr (fun k => 1 / ((phi k : ℝ) + 2)) hdelta
     (fun k => hsegment (phi k))
   obtain ⟨yStar, e, hmarked, hmetric⟩ :=
@@ -75,6 +78,28 @@ theorem exists_strongNeck_radius_of_almost_isometric_segment (kappa : ℝ)
     (by linarith)
   obtain ⟨k, W, _⟩ := hnecks.exists
   exact (hnone (phi k)).false (W.exists_strongNeck hsmall).choose
+
+theorem exists_strongNeck_radius_of_almost_isometric_segment (kappa : ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) (hsmall : epsilon < 1 / 11) :
+    ∃ A delta : ℝ, 0 < A ∧ 0 < delta ∧ delta < 1 ∧
+      ∀ F : PointedFlowData.{u, 0, 0} (I := ThreeModel) ancientTimeInterval,
+        IsAncientKappaSolution kappa F → PointedFlowScalarAtBase F 1 →
+        Nonempty (TangentOrientationSection F.M) →
+        ∀ γ : ℝ → F.M, γ 0 = F.basepoint →
+          (∀ s ∈ Icc (-A) A, ∀ t ∈ Icc (-A) A,
+            ENNReal.ofReal ((1 - delta) * |s - t|) ≤
+              riemannianEDistOf (F.S.family.metric 0) (γ s) (γ t) ∧
+            riemannianEDistOf (F.S.family.metric 0) (γ s) (γ t) ≤
+              ENNReal.ofReal ((1 + delta) * |s - t|)) →
+          Nonempty (StrongNeck F.S epsilon F.basepoint 0) := by
+  obtain ⟨A, delta, hA, hdelta, hdelta_one, hneck⟩ :=
+    exists_strongNeck_radius_near_almost_isometric_segment.{u}
+      kappa 0 le_rfl hepsilon hsmall
+  refine ⟨A, delta, hA, hdelta, hdelta_one, ?_⟩
+  intro F hF hbase horient γ hcenter hsegment
+  apply hneck F hF hbase horient γ _ hsegment
+  rw [hcenter, riemannianEDistOf_self]
+  exact bot_le
 
 
 theorem exists_strongNeck_radius_of_minimizing_segment (kappa : ℝ)

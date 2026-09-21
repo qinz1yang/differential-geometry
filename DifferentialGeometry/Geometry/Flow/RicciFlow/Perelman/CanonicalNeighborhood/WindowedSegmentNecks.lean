@@ -24,17 +24,20 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
 omit [SigmaCompactSpace M] in
-theorem WindowedModelWitness.almost_isometric_inverse_segment
-    {eps kappa A delta : ℝ} {x : M} {t : ℝ}
+theorem WindowedModelWitness.almost_isometric_inverse_segment_of_center_distance_le
+    {eps kappa A B delta : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t)
-    (hA : 0 < A) (hdelta : 0 < delta) (hdelta_one : delta < 1)
+    (hA : 0 < A) (hB : 0 ≤ B) (hdelta : 0 < delta) (hdelta_one : delta < 1)
     (heps : eps ≤ delta / (1 + delta))
-    (hradius : (1 + delta) * (3 * A + 2) ≤ modelRadius eps)
-    (γ : ℝ → M) (hcenter : γ 0 = x)
+    (hradius : (1 + delta) * (3 * (A + B) + 2) ≤ modelRadius eps)
+    (γ : ℝ → M)
+    (hcenter : riemannianEDistOf
+      (rescaledMetric S t (S.scalar t x) W.scalar_pos 0) x (γ 0) ≤ ENNReal.ofReal B)
     (hsegment : ∀ s ∈ Icc (-A) A, ∀ r ∈ Icc (-A) A,
       riemannianEDistOf (rescaledMetric S t (S.scalar t x) W.scalar_pos 0)
         (γ s) (γ r) = ENNReal.ofReal |s - r|) :
-    W.embedding.symm (γ 0) = W.model.basepoint ∧
+    riemannianEDistOf (W.model.S.family.metric 0)
+      W.model.basepoint (W.embedding.symm (γ 0)) ≤ ENNReal.ofReal ((1 + delta) * B) ∧
       ∀ s ∈ Icc (-A) A, ∀ r ∈ Icc (-A) A,
         ENNReal.ofReal ((1 - delta) * |s - r|) ≤
           riemannianEDistOf (W.model.S.family.metric 0)
@@ -43,7 +46,7 @@ theorem WindowedModelWitness.almost_isometric_inverse_segment
             (W.embedding.symm (γ s)) (W.embedding.symm (γ r)) ≤
           ENNReal.ofReal ((1 + delta) * |s - r|) := by
   let L := 1 + delta
-  let R := L * (3 * A + 2)
+  let R := L * (3 * (A + B) + 2)
   let g := W.model.S.base.metric 0
   let h := rescaledMetric S t (S.scalar t x) W.scalar_pos 0
   have hL : 0 < L := by dsimp only [L]; linarith
@@ -82,20 +85,37 @@ theorem WindowedModelWitness.almost_isometric_inverse_segment
           _ ≤ _ := mul_le_mul_of_nonneg_left hc.1 hL.le
       exact hbound.trans (mul_le_mul_of_nonneg_right hLsq hb)
   have hcontrol := KappaSolutions.inverse_distance_control_on_buffered_metric_ball
-    g h W.embedding W.model.basepoint hLone hA.le hcompact hsource
+    g h W.embedding W.model.basepoint hLone (add_nonneg hA.le hB) hcompact hsource
     (fun y hy v => (hquad y hy v).1) (fun y hy v => (hquad y hy v).2)
   have hbaseSource : W.model.basepoint ∈ W.embedding.source :=
     hsource (by change riemannianEDistOf g _ _ ≤ _; rw [riemannianEDistOf_self]; exact bot_le)
-  refine ⟨?_, ?_⟩
-  · exact (congrArg (fun z => W.embedding.symm z)
-      (hcenter.trans W.base_map.symm)).trans (W.embedding.left_inv' hbaseSource)
-  · intro s hs r hr
-    have hball (a : ℝ) (ha : a ∈ Icc (-A) A) :
-        γ a ∈ riemannianClosedBallOf h (W.embedding W.model.basepoint) A := by
-      change riemannianEDistOf h (W.embedding W.model.basepoint) (γ a) ≤ ENNReal.ofReal A
-      rw [W.base_map, ← hcenter, hsegment 0 ⟨by linarith, hA.le⟩ a ha]
+  have hinvBase : W.embedding.symm (W.embedding W.model.basepoint) = W.model.basepoint :=
+    W.embedding.left_inv' hbaseSource
+  have hbaseBall : W.embedding W.model.basepoint ∈
+      riemannianClosedBallOf h (W.embedding W.model.basepoint) (A + B) := by
+    change riemannianEDistOf h _ _ ≤ _
+    rw [riemannianEDistOf_self]
+    exact bot_le
+  have hball (a : ℝ) (ha : a ∈ Icc (-A) A) :
+      γ a ∈ riemannianClosedBallOf h (W.embedding W.model.basepoint) (A + B) := by
+    change riemannianEDistOf h (W.embedding W.model.basepoint) (γ a) ≤ _
+    rw [W.base_map]
+    have hd : riemannianEDistOf h (γ 0) (γ a) ≤ ENNReal.ofReal A := by
+      rw [hsegment 0 ⟨by linarith, hA.le⟩ a ha]
       simp only [zero_sub, abs_neg]
       exact ENNReal.ofReal_le_ofReal (abs_le.mpr ha)
+    calc
+      _ ≤ riemannianEDistOf h x (γ 0) + riemannianEDistOf h (γ 0) (γ a) :=
+        riemannianEDistOf_triangle h _ _ _
+      _ ≤ ENNReal.ofReal B + ENNReal.ofReal A := add_le_add hcenter hd
+      _ = ENNReal.ofReal (A + B) := by rw [← ENNReal.ofReal_add hB hA.le, add_comm]
+  refine ⟨?_, ?_⟩
+  · have hp := (hcontrol.2 (W.embedding W.model.basepoint) hbaseBall
+      (γ 0) (hball 0 ⟨by linarith, hA.le⟩)).1
+    rw [hinvBase, W.base_map] at hp
+    exact hp.trans ((mul_le_mul_right hcenter (ENNReal.ofReal L)).trans_eq
+      (ENNReal.ofReal_mul hL.le).symm)
+  · intro s hs r hr
     have hp := hcontrol.2 (γ s) (hball s hs) (γ r) (hball r hr)
     rw [hsegment s hs r hr] at hp
     have hupper : riemannianEDistOf g (W.embedding.symm (γ s)) (W.embedding.symm (γ r)) ≤
@@ -116,6 +136,91 @@ theorem WindowedModelWitness.almost_isometric_inverse_segment
       nlinarith [mul_nonneg (sq_nonneg delta) hn]
     exact ⟨(ENNReal.ofReal_le_ofReal hlower).trans_eq (ENNReal.ofReal_toReal hfinite), hupper⟩
 
+omit [SigmaCompactSpace M] in
+theorem WindowedModelWitness.almost_isometric_inverse_segment
+    {eps kappa A delta : ℝ} {x : M} {t : ℝ}
+    (W : WindowedModelWitness eps kappa S x t)
+    (hA : 0 < A) (hdelta : 0 < delta) (hdelta_one : delta < 1)
+    (heps : eps ≤ delta / (1 + delta))
+    (hradius : (1 + delta) * (3 * A + 2) ≤ modelRadius eps)
+    (γ : ℝ → M) (hcenter : γ 0 = x)
+    (hsegment : ∀ s ∈ Icc (-A) A, ∀ r ∈ Icc (-A) A,
+      riemannianEDistOf (rescaledMetric S t (S.scalar t x) W.scalar_pos 0)
+        (γ s) (γ r) = ENNReal.ofReal |s - r|) :
+    W.embedding.symm (γ 0) = W.model.basepoint ∧
+      ∀ s ∈ Icc (-A) A, ∀ r ∈ Icc (-A) A,
+        ENNReal.ofReal ((1 - delta) * |s - r|) ≤
+          riemannianEDistOf (W.model.S.family.metric 0)
+            (W.embedding.symm (γ s)) (W.embedding.symm (γ r)) ∧
+        riemannianEDistOf (W.model.S.family.metric 0)
+            (W.embedding.symm (γ s)) (W.embedding.symm (γ r)) ≤
+          ENNReal.ofReal ((1 + delta) * |s - r|) := by
+  have hdist : riemannianEDistOf
+      (rescaledMetric S t (S.scalar t x) W.scalar_pos 0) x (γ 0) ≤ ENNReal.ofReal 0 := by
+    rw [hcenter, riemannianEDistOf_self]
+    exact bot_le
+  have hc := W.almost_isometric_inverse_segment_of_center_distance_le
+    hA (B := 0) le_rfl hdelta hdelta_one heps (by simpa only [add_zero] using hradius)
+    γ hdist hsegment
+  refine ⟨?_, hc.2⟩
+  have hbaseSource : W.model.basepoint ∈ W.embedding.source :=
+    W.buffered_ball (by change riemannianEDistOf _ _ _ ≤ _; rw [riemannianEDistOf_self]; exact bot_le)
+  exact (congrArg (fun z => W.embedding.symm z)
+    (hcenter.trans W.base_map.symm)).trans (W.embedding.left_inv' hbaseSource)
+
+
+theorem exists_windowed_strongNeck_near_minimizing_segment (kappa B : ℝ)
+    (hB : 0 ≤ B)
+    {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 32) :
+    ∃ A epsStar : ℝ, 0 < A ∧ 0 < epsStar ∧
+      ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+        IsSolutionOn S → ∀ (eps : ℝ) (x : M) (t : ℝ)
+          (W : WindowedModelWitness eps kappa S x t),
+          eps ≤ epsStar →
+          (∀ s ∈ Ioo (-modelDepth eps) 0,
+            parabolicTime t (S.scalar t x) s ∈ D.regular) →
+          Nonempty (TangentOrientationSection W.model.M) →
+          ∀ γ : ℝ → M,
+            riemannianEDistOf (rescaledMetric S t (S.scalar t x) W.scalar_pos 0)
+              x (γ 0) ≤ ENNReal.ofReal B →
+            (∀ s ∈ Icc (-A) A, ∀ r ∈ Icc (-A) A,
+              riemannianEDistOf (rescaledMetric S t (S.scalar t x) W.scalar_pos 0)
+                (γ s) (γ r) = ENNReal.ofReal |s - r|) →
+            Nonempty (StrongNeck S (2 * alpha) x t) := by
+  have htol : neckModelTolerance alpha < 1 / 11 :=
+    (neckModelTolerance_le_smallness alpha).trans_lt
+      ((backgroundJetSmallness_ceil_lt_self _ ha hsmall).trans (by linarith))
+  obtain ⟨A, delta, hA, hdelta, hdelta_one, hneck⟩ :=
+    KappaSolutions.exists_strongNeck_radius_near_almost_isometric_segment.{u}
+      kappa (2 * B) (mul_nonneg (by norm_num) hB) (neckModelTolerance_pos ha) htol
+  obtain ⟨epsTransfer, hepsTransfer, htransfer⟩ := exists_windowed_neck_transfer_threshold.{u} ha hsmall
+  let R := (1 + delta) * (3 * (A + B) + 2)
+  have hR : 0 < R := mul_pos (by linarith) (by linarith)
+  let epsStar := min epsTransfer (min (delta / (1 + delta)) ((R + 1)⁻¹ ^ 2))
+  have hepsStar : 0 < epsStar := lt_min hepsTransfer
+    (lt_min (div_pos hdelta (by linarith)) (sq_pos_of_pos (inv_pos.mpr (by linarith))))
+  refine ⟨A, epsStar, hA, hepsStar, ?_⟩
+  intro M _ _ _ _ _ D S hS eps x t W heps hreg horient γ hcenter hsegment
+  have heps_cmp : eps ≤ delta / (1 + delta) :=
+    heps.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have heps_radius : eps ≤ (R + 1)⁻¹ ^ 2 :=
+    heps.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hradius : R ≤ modelRadius eps := by
+    have hh := modelRadius_anti W.eps_pos heps_radius
+    have heq : modelRadius ((R + 1)⁻¹ ^ 2) = R + 1 := by
+      rw [modelRadius, Real.sqrt_sq (inv_nonneg.mpr (by linarith)), inv_inv]
+    rw [heq] at hh
+    linarith
+  obtain ⟨hbase, hmodelSegment⟩ := W.almost_isometric_inverse_segment_of_center_distance_le
+    hA hB hdelta hdelta_one heps_cmp hradius γ hcenter hsegment
+  obtain ⟨nk⟩ := hneck W.model W.model_ancient W.model_scalar_base horient
+    (fun s => W.embedding.symm (γ s))
+    (hbase.trans (ENNReal.ofReal_le_ofReal (by nlinarith))) hmodelSegment
+  obtain ⟨nk', _⟩ := htransfer M D S hS eps kappa x t W
+    (heps.trans (min_le_left _ _)) hreg nk
+  exact ⟨nk'⟩
 
 theorem exists_windowed_strongNeck_of_minimizing_segment (kappa : ℝ)
     {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 32) :
@@ -134,37 +239,13 @@ theorem exists_windowed_strongNeck_of_minimizing_segment (kappa : ℝ)
               riemannianEDistOf (rescaledMetric S t (S.scalar t x) W.scalar_pos 0)
                 (γ s) (γ r) = ENNReal.ofReal |s - r|) →
             Nonempty (StrongNeck S (2 * alpha) x t) := by
-  have htol : neckModelTolerance alpha < 1 / 11 :=
-    (neckModelTolerance_le_smallness alpha).trans_lt
-      ((backgroundJetSmallness_ceil_lt_self _ ha hsmall).trans (by linarith))
-  obtain ⟨A, delta, hA, hdelta, hdelta_one, hneck⟩ :=
-    KappaSolutions.exists_strongNeck_radius_of_almost_isometric_segment.{u}
-      kappa (neckModelTolerance_pos ha) htol
-  obtain ⟨epsTransfer, hepsTransfer, htransfer⟩ := exists_windowed_neck_transfer_threshold.{u} ha hsmall
-  let R := (1 + delta) * (3 * A + 2)
-  have hR : 0 < R := mul_pos (by linarith) (by linarith)
-  let epsStar := min epsTransfer (min (delta / (1 + delta)) ((R + 1)⁻¹ ^ 2))
-  have hepsStar : 0 < epsStar := lt_min hepsTransfer
-    (lt_min (div_pos hdelta (by linarith)) (sq_pos_of_pos (inv_pos.mpr (by linarith))))
+  obtain ⟨A, epsStar, hA, hepsStar, hneck⟩ :=
+    exists_windowed_strongNeck_near_minimizing_segment.{u} kappa 0 le_rfl ha hsmall
   refine ⟨A, epsStar, hA, hepsStar, ?_⟩
   intro M _ _ _ _ _ D S hS eps x t W heps hreg horient γ hcenter hsegment
-  have heps_cmp : eps ≤ delta / (1 + delta) :=
-    heps.trans ((min_le_right _ _).trans (min_le_left _ _))
-  have heps_radius : eps ≤ (R + 1)⁻¹ ^ 2 :=
-    heps.trans ((min_le_right _ _).trans (min_le_right _ _))
-  have hradius : R ≤ modelRadius eps := by
-    have hh := modelRadius_anti W.eps_pos heps_radius
-    have heq : modelRadius ((R + 1)⁻¹ ^ 2) = R + 1 := by
-      rw [modelRadius, Real.sqrt_sq (inv_nonneg.mpr (by linarith)), inv_inv]
-    rw [heq] at hh
-    linarith
-  obtain ⟨hbase, hmodelSegment⟩ := W.almost_isometric_inverse_segment
-    hA hdelta hdelta_one heps_cmp hradius γ hcenter hsegment
-  obtain ⟨nk⟩ := hneck W.model W.model_ancient W.model_scalar_base horient
-    (fun s => W.embedding.symm (γ s)) hbase hmodelSegment
-  obtain ⟨nk', _⟩ := htransfer M D S hS eps kappa x t W
-    (heps.trans (min_le_left _ _)) hreg nk
-  exact ⟨nk'⟩
+  apply hneck M D S hS eps x t W heps hreg horient γ _ hsegment
+  rw [hcenter, riemannianEDistOf_self]
+  exact bot_le
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 end

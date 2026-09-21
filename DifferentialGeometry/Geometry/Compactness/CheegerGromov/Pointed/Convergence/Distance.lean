@@ -63,7 +63,7 @@ private theorem eventually_edist_map_lt
       rw [← ENNReal.ofReal_mul (by linarith : 0 ≤ C)]
       exact (ENNReal.ofReal_lt_ofReal_iff hR).mpr hCS
 
-private theorem edist_map_tendsto_zero
+theorem PointedRiemannianConvergenceMaps.tendsto_edist_map_zero
     (hupper : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ n in atTop,
       ∀ x ∈ K, ∀ v : TangentSpace I x,
         (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
@@ -128,8 +128,8 @@ theorem PointedRiemannianConvergenceMaps.limsup_edist_le
   let c : ℕ → ℝ≥0∞ := fun n => riemannianEDistOf (X.obj (σ n)).metric
     (Φ.partialDiffeomorph n y) (Φ.partialDiffeomorph n (w n))
   have ha : Tendsto a atTop (𝓝 0) := by
-    simpa only [a, riemannianEDistOf_comm] using edist_map_tendsto_zero Φ hupper hz
-  have hc : Tendsto c atTop (𝓝 0) := edist_map_tendsto_zero Φ hupper hw
+    simpa only [a, riemannianEDistOf_comm] using Φ.tendsto_edist_map_zero hupper hz
+  have hc : Tendsto c atTop (𝓝 0) := Φ.tendsto_edist_map_zero hupper hw
   calc
     _ ≤ limsup (a + b + c) atTop := limsup_le_limsup (Eventually.of_forall fun n => by
       exact (riemannianEDistOf_triangle _ _ _ _).trans

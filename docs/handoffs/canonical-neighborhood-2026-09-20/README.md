@@ -938,3 +938,40 @@ requires source neck image containment and alignment of the moving neck centers.
 The next geometric route under investigation allows a neck center to lie near,
 rather than exactly on, the long minimizing segment. The finite horn and cone
 producers remain unfinished.
+
+
+## Neck centers near long minimizing segments
+
+The continuation after `34f6e73d0` allows a neck center to be a bounded distance
+from the center of a long segment, measured in the scalar-normalized metric.
+`Pointed/Convergence/Line.lean` now constructs an intrinsic line when the segment
+centers remain bounded from the pointed basepoints. The line need not pass through
+the basepoint; cylinder classification needs only an intrinsic line somewhere in
+the limit. The exact-center line conclusions retain their original signatures.
+
+The resulting kappa-solution theorem propagates through `WindowedSegmentNecks`
+and `NormalizedSegmentNecks`. The windowed proof explicitly enlarges its capture
+ball by the center displacement. In a normalized finite-interval sequence, centers
+converging to the source geodesic points inherit strong necks when the scalar and
+two normalized segment lengths satisfy the original bounds. The exact-center neck
+theorems retain their original statements as corollaries. The existing map-distance
+continuity lemma was promoted to a public method without changing its proof.
+
+This implements the nearby-center step toward Kleiner--Lott Section 52, Lemma
+52.14(2), and the fixed-limit-point necks used in Morgan--Tian Chapter 10,
+Claim 10.8. The local PDFs are `KleinerLottPerelman.pdf` and
+`MorganTianPoincare.pdf` under
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers`.
+
+Twenty public declarations passed all thirteen applicable declaration linters and
+have only `propext`, `Classical.choice`, and `Quot.sound` in their axiom closures.
+The affected `NormalizedEscapeNecks` build passed 14,032 jobs. The full root passed
+20,184 jobs with exactly the same 21 retained sorry warnings and no other
+diagnostics. Evidence: `/private/tmp/wt17-normalized-near-segments-build.log`,
+`/private/tmp/wt17-near-segment-necks-audit.log`, and
+`/private/tmp/wt17-near-segment-necks-root-build.log`.
+
+The bounded-distance headline remains open. The next assembly places source necks
+at actual images of fixed limit points and captures their buffered images in a
+compact limit ball, before transporting them to spatial necks. The finite horn and
+cone producers remain unfinished.
