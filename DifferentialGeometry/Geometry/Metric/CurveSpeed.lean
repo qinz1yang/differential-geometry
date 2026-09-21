@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
-import Mathlib.Geometry.Manifold.Riemannian.PathELength
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import DifferentialGeometry.Geometry.Metric.Path.Speed
 
 
 
@@ -30,14 +29,9 @@ theorem riemannian_curve_edist_le_of_speed_bound
     simpa only [ENNReal.ofReal_coe_nnreal] using! ENNReal.ofReal_le_ofReal (hC t)
   have hordered (a b : ℝ) (hab : a ≤ b) :
       Manifold.riemannianEDist 𝓘(ℝ, E) (γ a) (γ b) ≤ (C : ℝ≥0∞) * edist a b := by
-    apply (riemannianEDist_le_pathELength hγ.contMDiffOn rfl rfl hab).trans
-    rw [pathELength_eq_lintegral_mfderiv_Icc]
-    calc
-      (∫⁻ t in Icc a b, ‖mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ t (1 : ℝ)‖ₑ) ≤
-          ∫⁻ _t in Icc a b, (C : ℝ≥0∞) := lintegral_mono (fun t => hnorm t)
-      _ = (C : ℝ≥0∞) * edist a b := by
-        rw [lintegral_const, Measure.restrict_apply_univ, Real.volume_Icc,
-          edist_dist, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hab), neg_sub]
+    have h := Manifold.riemannianEDist_le_of_curve_speed_bound hab hγ.contMDiffOn
+      (fun t _ => hnorm t)
+    simpa only [edist_dist, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hab), neg_sub] using h
   rcases le_total x y with hxy | hyx
   · exact hordered x y hxy
   · rw [riemannianEDist_comm, edist_comm x y]

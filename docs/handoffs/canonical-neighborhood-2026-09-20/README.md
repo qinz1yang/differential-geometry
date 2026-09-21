@@ -458,3 +458,48 @@ The old generalized signatures also compile as corollaries. Both new leaves are 
 the flat root. Temporary evidence is in `/private/tmp/wt17-local-limit-final-root-build.log`,
 `/private/tmp/wt17-local-limit-final-audit.log`, and
 `/private/tmp/wt17-compatible-balls-compatibility.log`.
+
+## Curve subsequences in the finite-radius limit
+
+The continuation after `8a745b1ca14c3653bfb1ba067800597d789e9dc3` proves
+`PointedRiemannianConvergenceMaps.exists_curve_subseq_limit` in the new
+`Geometry/Compactness/CheegerGromov/Pointed/Convergence/Curves.lean` leaf. It constructs a
+subsequence of the actual pulled-back source curves and a continuous 1-Lipschitz limit on
+`[0, rho)`, with the prescribed basepoint and uniform convergence on every compact parameter
+set. The inputs are source curves that are C1 on their closed segments, a unit-speed upper
+bound, lengths tending to `rho`, target-ball coverage, relative lower metric bounds tending
+to one, and compactness of the inner limit balls.
+
+The proof truncates each source curve strictly inside its actual target ball. The truncation
+lengths tend to `rho`. Inverse-map derivative identities transfer the source speed bound to
+the limit metric. For each parameter below `rho`, these estimates place the pulled-back
+points in a compact inner ball. Arzela--Ascoli then produces the curve; passing all constants
+greater than one to the limit gives the exact 1-Lipschitz bound. Completeness of the limit and
+extensions of the source curves beyond their supplied smooth intervals are not assumed.
+
+`Analysis/Calculus/Compactness/ArzelaAscoli.lean` now has the uniform-space compact-closure
+version, a metrizable-target subsequence version allowing pointwise eventual compactness,
+and `ArzelaAscoli.exists_lipschitz_subseq_limit_on_Ico` for exhausting source intervals.
+The existing scalar and vector specializations retain their signatures as corollaries.
+`Manifold.riemannianEDist_le_of_curve_speed_bound`, in `Geometry/Metric/Path/Speed.lean`,
+requires smoothness on the closed interval and a speed bound only in its interior. The
+existing Hopf--Rinow and flat-model metric speed estimates retain their signatures and use
+this general result.
+
+This supplies the compactness step for curves following Kleiner--Lott Section 52, Step 2,
+after equation (52.13), printed pages 2702--2703 of
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+Distance preservation, the missing endpoint, and the neck/cone producers remain active proof
+work. The curve theorem does not yet assert that the limit is minimizing. The bounded-distance
+headline is unchanged, and the source inventory still contains 21 proof holes.
+
+The changed leaves compiled without diagnostics. Nine new or changed declarations passed
+all thirteen applicable declaration linters, with only `propext`, `Classical.choice`, and
+`Quot.sound` in their transitive axiom closures. Both new leaves are registered in the flat
+root. Temporary evidence is in `/private/tmp/wt17-speed-leaves-build.log`,
+`/private/tmp/wt17-arzela-curves-build.log`, `/private/tmp/wt17-pointed-curves-build.log`, and
+`/private/tmp/wt17-curve-compactness-audit.log`.
+
+After the final Lean edit, the full root build passed 20,166 jobs with the same 21 retained
+`sorry` warnings and no other diagnostics. The root evidence is
+`/private/tmp/wt17-curve-compactness-root-build.log`.

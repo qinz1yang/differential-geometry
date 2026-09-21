@@ -3468,6 +3468,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainEmbedding
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.FixedDomain
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Curves
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
@@ -7771,6 +7772,7 @@ import DifferentialGeometry.Geometry.Metric.Path.Composition
 import DifferentialGeometry.Geometry.Metric.Path.Homotopy
 import DifferentialGeometry.Geometry.Metric.Path.Length
 import DifferentialGeometry.Geometry.Metric.Path.Reparametrization
+import DifferentialGeometry.Geometry.Metric.Path.Speed
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
