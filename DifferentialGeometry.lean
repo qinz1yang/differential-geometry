@@ -10624,6 +10624,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLengthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampProductLengthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAreaEvolution
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.SmallTime
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.RecenteredTame

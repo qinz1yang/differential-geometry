@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GoodWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GapComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedFamily
 
 
 
@@ -22,51 +25,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {D : RealTimeInterval} {a b : ℝ}
 
 include hT2 hCompact hConnected hBoundary
-
-theorem rfs_uniform_ramp_alternative (B : RicciBackground (I := I) (M := Q) D a b)
-    (hdim : Module.finrank ℝ E = 3)
-    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
-    (ell epsilon : ℝ) (hell : 0 < ell) (hepsilon : 0 < epsilon) :
-    ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧
-      ∀ lambda : ℝ, 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
-        c.IsSolutionOn B.family.metric lambda (Icc a b) →
-        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-        ∀ γ : ℝ → ContinuousFreeLoop Q,
-          (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
-          c.length B.family.metric lambda a ≤ L₀ →
-          c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
-          loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
-          loopLength (B.family.metric b) (γ b) < ell ∨
-            loopFamilyLeastArea B.family.metric γ b ≤
-              affineComparison B.family a b (loopFamilyLeastArea B.family.metric γ a) + epsilon := by
-  sorry
-
-theorem rfs_family_deformation (B : RicciBackground (I := I) (M := Q) D a b)
-    (hdim : Module.finrank ℝ E = 3) {d : ℕ}
-    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
-    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2))
-    (epsilon ell : ℝ) (hepsilon : 0 < epsilon) (hell : 0 < ell) :
-    ∃ lambda : ℝ, 0 < lambda ∧ lambda ≤ 1 ∧
-      ∃ solutions : Sphere 2 → ProductCurve Q,
-        ∃ deformed : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
-          @Continuous (Sphere 2) (ProductCurve Q) inferInstance
-            (smoothProductCylinderTopology e (Icc a b)) solutions ∧
-          (∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
-            (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧ (solutions p).degree = 1) ∧
-          (∀ t : Icc a b, ∀ p z,
-            ((deformed t) p).1 z = (solutions p).projection z t) ∧
-          (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
-            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
-              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
-          (∀ p, |regularLeastArea (B.family.metric a) ((deformed ⟨a, le_rfl, B.lt.le⟩) p) -
-            regularLeastArea (B.family.metric a) (Γ p)| < epsilon) ∧
-          ∀ p,
-            loopLength (B.family.metric b)
-              (((deformed ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop) < ell ∨
-            regularLeastArea (B.family.metric b) ((deformed ⟨b, B.lt.le, le_rfl⟩) p) ≤
-              affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) + epsilon := by
-  sorry
 
 omit [CompleteSpace E] [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 omit [TopologicalSpace Q] hT2 in
@@ -971,5 +929,176 @@ theorem rfs_family_deformation_of_frontier
               affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) + epsilon :=
   rfs_family_deformation_of_prepared_flow B e Γ epsilon ell hepsilon L₀ Theta₀ Ainit hL₀ hTheta₀
     hAinit hprepared hflow halt
+
+theorem rfs_uniform_ramp_alternative (B : RicciBackground (I := I) (M := Q) D a b)
+    (hdim : Module.finrank ℝ E = 3)
+    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
+    (ell epsilon : ℝ) (hell : 0 < ell) (hepsilon : 0 < epsilon) :
+    ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧
+      ∀ lambda : ℝ, 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
+        c.IsSolutionOn B.family.metric lambda (Icc a b) →
+        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+        ∀ γ : ℝ → ContinuousFreeLoop Q,
+          (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+          c.length B.family.metric lambda a ≤ L₀ →
+          c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+          loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
+          loopLength (B.family.metric b) (γ b) < ell ∨
+            loopFamilyLeastArea B.family.metric γ b ≤
+              affineComparison B.family a b (loopFamilyLeastArea B.family.metric γ a) + epsilon := by
+  apply rfs_uniform_ramp_alternative_of_frontier B hdim L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
+    ell epsilon hell hepsilon
+  · intro L Theta hL hTheta lambda hlambda _ c hc hlen hcurv t ht
+    have hlenbounds := (c.length_energy_bounds B lambda hlambda (uniqueDiffOn_Icc B.lt)
+      hc B.lt Subset.rfl Subset.rfl).2.2
+    refine ⟨(hlenbounds a ⟨le_rfl, B.lt.le⟩ t ht).1.trans
+      (mul_le_mul_of_nonneg_left hlen (Real.exp_nonneg _)),
+      (hlenbounds t ht b ⟨ht.2, le_rfl⟩).1,
+      (hlenbounds a ⟨le_rfl, B.lt.le⟩ t ht).2.trans
+        (mul_le_mul_of_nonneg_left hlen (Real.exp_nonneg _)), ?_⟩
+    exact (c.totalCurvature_add_length_le_exp B lambda hlambda (uniqueDiffOn_Icc B.lt)
+      hc B.lt Subset.rfl Subset.rfl a t ⟨le_rfl, B.lt.le⟩ ht).trans
+        (mul_le_mul_of_nonneg_left (add_le_add hcurv hlen) (Real.exp_nonneg _))
+  · exact rfs_ramp_area_bounds B Ainit hAinit
+  · intro eta heta heta_one threshold hthreshold eps heps
+    obtain ⟨d, hd, hdsmall, lambda₀, hl₀, hl₀one, hwindows⟩ :=
+      exists_ramp_window_data B L₀ Theta₀ ell eta threshold hL₀ hTheta₀ hell heta
+        (lt_of_lt_of_le zero_lt_one hthreshold) eps heps
+    refine ⟨d, hd, hdsmall, lambda₀, hl₀, hl₀one, hwindows, ?_⟩
+    intro lambda hlambda _ c hc _ _ hlen hcurv γ hγ hctr _ starts hu t ht hgood eps heps
+    have hang : ∀ x, |c.angle B.family.metric lambda x t| ≤ eta := by
+      intro x
+      rw [abs_of_pos (hu x t hgood).1]
+      exact (hu x t hgood).2
+    exact projected_leastArea_slope_le_of_angle_le B hdim hlambda heta.le heta_one
+      hL₀ hTheta₀ c hc hlen hcurv γ hγ hctr ht hang eps heps
+
+
+theorem rfs_family_deformation (B : RicciBackground (I := I) (M := Q) D a b)
+    (hdim : Module.finrank ℝ E = 3) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2))
+    (epsilon ell : ℝ) (hepsilon : 0 < epsilon) (hell : 0 < ell) :
+    ∃ lambda : ℝ, 0 < lambda ∧ lambda ≤ 1 ∧
+      ∃ solutions : Sphere 2 → ProductCurve Q,
+        ∃ deformed : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
+          @Continuous (Sphere 2) (ProductCurve Q) inferInstance
+            (smoothProductCylinderTopology e (Icc a b)) solutions ∧
+          (∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+            (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧ (solutions p).degree = 1) ∧
+          (∀ t : Icc a b, ∀ p z,
+            ((deformed t) p).1 z = (solutions p).projection z t) ∧
+          (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+          (∀ p, |regularLeastArea (B.family.metric a) ((deformed ⟨a, le_rfl, B.lt.le⟩) p) -
+            regularLeastArea (B.family.metric a) (Γ p)| < epsilon) ∧
+          ∀ p,
+            loopLength (B.family.metric b)
+              (((deformed ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop) < ell ∨
+            regularLeastArea (B.family.metric b) ((deformed ⟨b, B.lt.le, le_rfl⟩) p) ≤
+              affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) + epsilon := by
+  let factor := Real.exp (scalarComparisonBound B.family a b * (b - a))
+  have hfactor : 0 < factor := Real.exp_pos _
+  let eta := min (epsilon / 2) (epsilon / (4 * factor))
+  have heta : 0 < eta := lt_min (half_pos hepsilon) (div_pos hepsilon (mul_pos (by norm_num) hfactor))
+  have heta_lt : eta < epsilon := (min_le_left _ _).trans_lt (half_lt_self hepsilon)
+  have heta_exp : factor * eta ≤ epsilon / 2 := by
+    have he : eta ≤ epsilon / (4 * factor) := min_le_right _ _
+    have hfour : 0 < 4 * factor := by positivity
+    have hmul := (le_div_iff₀ hfour).mp he
+    nlinarith
+  obtain ⟨P, N, hN, prepared, hpolygon, hjets, hhom, harea, hL₀, hTheta₀, hAinit, hrampdata⟩ :=
+    rfs_prepared_family (B.family.metric a) e Γ eta heta
+  let L₀ := 1 + sSup (Set.range (fun p => loopLength (B.family.metric a) (Γ p).1.toContinuousLoop))
+  let Theta₀ := (N : ℝ) * Real.pi
+  let Ainit := familyMaximum (B.family.metric a) Γ + eta
+  obtain ⟨lambda₀, hl₀pos, hl₀one, halt'⟩ :=
+    rfs_uniform_ramp_alternative B hdim L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
+      ell (epsilon / 2) hell (half_pos hepsilon)
+  obtain ⟨solutions, projected, hcont, hdata, hproj, hat, hjets', hclass⟩ :=
+    rfs_prepared_family_flow B e prepared hjets lambda₀ hl₀pos
+  have hsol : ∀ p, (solutions p).IsSolutionOn B.family.metric lambda₀ (Icc a b) ∧
+      (solutions p).IsRampOn B.family.metric lambda₀ (Icc a b) ∧ (solutions p).degree = 1 :=
+    fun p => ⟨(hdata p).1, (hdata p).2.1, (hdata p).2.2.1⟩
+  have hbounds : ∀ p, (solutions p).length B.family.metric lambda₀ a ≤ L₀ ∧
+      (solutions p).totalCurvature B.family.metric lambda₀ a ≤ Theta₀ := by
+    apply rfs_prepared_family_solution_initial_bounds B lambda₀ L₀ Theta₀ prepared solutions
+    · intro p
+      have hi := hrampdata p lambda₀ hl₀pos hl₀one
+      exact ⟨⟨hi.1.1.mono (Set.prod_mono Subset.rfl (Set.subset_univ _)),
+        hi.1.2.mono (Set.prod_mono Subset.rfl (Set.subset_univ _))⟩,
+        hi.2.2.1, hi.2.2.2.1⟩
+    · exact fun p => (hdata p).1
+    · exact fun p => (hdata p).2.2.2
+  have hclassΓ : FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) =
+      FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ) :=
+    (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
+      ((ContinuousMap.Homotopic.refl contractibleRegularLoopInclusion).comp hhom)
+  refine ⟨lambda₀, hl₀pos, hl₀one, solutions, projected, hcont, hsol, hproj, ?_, ?_, ?_⟩
+  · intro t
+    exact ⟨hjets' t, (hclass t).trans hclassΓ⟩
+  · intro p
+    rw [hat]
+    linarith [harea p, heta_lt]
+  · intro p
+    set γ : ℝ → ContinuousFreeLoop Q := fun t => if ht : t ∈ Icc a b
+      then ((projected ⟨t, ht⟩) p).1.toContinuousLoop
+      else ((projected ⟨a, le_rfl, B.lt.le⟩) p).1.toContinuousLoop with hγ
+    have hγproj : ∀ t ∈ Icc a b, ∀ z, γ t z = (solutions p).projection z t := by
+      intro t ht z
+      rw [hγ]
+      simp only [dif_pos ht]
+      exact hproj ⟨t, ht⟩ p z
+    have hγctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t) := by
+      intro t ht
+      rw [hγ]
+      simp only [dif_pos ht]
+      exact (projected ⟨t, ht⟩ p).2
+    have ha_mem : a ∈ Icc a b := ⟨le_rfl, B.lt.le⟩
+    have hb_mem : b ∈ Icc a b := ⟨B.lt.le, le_rfl⟩
+    have hγa0 : γ a = (prepared p).1.toContinuousLoop := by
+      rw [hγ]
+      simp only [dif_pos ha_mem]
+      rw [hat]
+    have hγb0 : γ b = ((projected ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop := by
+      rw [hγ]
+      simp only [dif_pos hb_mem]
+    have hinit : loopFamilyLeastArea B.family.metric γ a ≤ Ainit := by
+      have h1 : regularLeastArea (B.family.metric a) (prepared p) ≤ Ainit :=
+        (hrampdata p lambda₀ hl₀pos hl₀one).2.2.2.2
+      simp only [loopFamilyLeastArea, hγa0, regularLeastArea, leastArea] at h1 ⊢
+      exact h1
+    have hγa : loopFamilyLeastArea B.family.metric γ a =
+        regularLeastArea (B.family.metric a) (prepared p) := by
+      simp only [loopFamilyLeastArea, hγa0, regularLeastArea, leastArea]
+    have hγb : loopFamilyLeastArea B.family.metric γ b =
+        regularLeastArea (B.family.metric b) ((projected ⟨b, B.lt.le, le_rfl⟩) p) := by
+      simp only [loopFamilyLeastArea, hγb0, regularLeastArea, leastArea]
+    have haff : affineComparison B.family a b (regularLeastArea (B.family.metric a) (prepared p)) ≤
+        affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) + epsilon / 2 := by
+      have h := (rfs_width_affine_comparison B).2.2.2 a ha_mem b hb_mem
+        (regularLeastArea (B.family.metric a) (Γ p))
+        (regularLeastArea (B.family.metric a) (prepared p))
+      have h2 : affineComparison B.family a b (regularLeastArea (B.family.metric a) (prepared p)) -
+          affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) ≤
+          Real.exp (scalarComparisonBound B.family a b * (b - a)) * eta :=
+        (le_abs_self (affineComparison B.family a b (regularLeastArea (B.family.metric a) (prepared p)) -
+          affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)))).trans
+          (h.trans (mul_le_mul_of_nonneg_left (harea p).le (Real.exp_nonneg _)))
+      linarith [h2, heta_exp]
+    rcases halt' lambda₀ hl₀pos le_rfl (solutions p) (hsol p).1 (hsol p).2.1 (hsol p).2.2
+      γ hγproj hγctr (hbounds p).1 (hbounds p).2 hinit with hshort | hlong
+    · exact Or.inl (by rw [← hγb0]; exact hshort)
+    · right
+      calc regularLeastArea (B.family.metric b) ((projected ⟨b, B.lt.le, le_rfl⟩) p)
+          = loopFamilyLeastArea B.family.metric γ b := hγb.symm
+        _ ≤ affineComparison B.family a b (loopFamilyLeastArea B.family.metric γ a) + epsilon / 2 := hlong
+        _ = affineComparison B.family a b (regularLeastArea (B.family.metric a) (prepared p)) +
+              epsilon / 2 := by rw [hγa]
+        _ ≤ affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) + epsilon := by
+            linarith [haff]
+
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

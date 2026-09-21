@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.Gronwall.EnergyIntegral
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Deformation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GoodWindows
 
 
 noncomputable section
