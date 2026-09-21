@@ -1262,3 +1262,38 @@ separation and adjacent fitting are the next geometric steps. Evidence:
 `/private/tmp/wt17-normalized-annulus-balls-build.log`,
 `/private/tmp/wt17-annulus-balls-audit.log`, and
 `/private/tmp/wt17-annulus-balls-root-build.log`.
+
+
+## Exact boundary of the annular tail
+
+The continuation after `46dfd2754` proves that nonadjacent annuli of the actual
+neck sequence are disjoint, that the interiors of the tail annuli are pairwise
+disjoint, and that adjacent tail annuli intersect exactly in their shared central
+sphere. The metric separation uses the two-center bounds and comparison of
+successive curvature scales. The initial annulus supplies the boundary buffer.
+
+A general collar theorem proves that each shared sphere lies in the interior
+of the union of its two adjacent annuli. It uses an actual open product chart,
+regular closedness, connectedness of the cross-section, and disjoint interiors.
+A separate locally finite closed-chain theorem then identifies the frontier of
+the tail union with its first central sphere. The normalized escape producer
+now retains all these properties, together with closedness, connectedness, and
+noncompactness of the tail union. This supplies actual seams and boundary
+identification in the annular-chain argument of Morgan–Tian, *Ricci Flow and the
+Poincaré Conjecture*, Appendix A, Proposition A.11 and Lemmas A.13–A.16, in
+`Geometrization/BooksPapers/MorganTianPoincare.pdf`. A global tube, the finite-end
+and cone producers, and the bounded-distance headline remain open.
+
+All nine changed public declarations passed thirteen declaration linters and
+have only approved foundational axioms. The regular-closed leaves passed 940
+jobs, the frontier-chain leaf 902 jobs, and the collar-union leaf 1,800 jobs.
+The final static and normalized dependent build passed 14,130 jobs without
+diagnostics. The full root passed 20,200 jobs with exactly 21 retained sorry
+warnings and no other diagnostics. The declaration audit was repeated after
+the final source cleanup. Evidence:
+`/private/tmp/wt17-regular-closed-frontier-leaf-build.log`,
+`/private/tmp/wt17-frontier-chain-leaf-build.log`,
+`/private/tmp/wt17-collar-union-leaf-build.log`,
+`/private/tmp/wt17-annular-chain-frontier-dependents-build.log`,
+`/private/tmp/wt17-annular-chain-frontier-audit.log`, and
+`/private/tmp/wt17-annular-chain-frontier-root-build.log`.

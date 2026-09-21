@@ -8460,6 +8460,7 @@ import DifferentialGeometry.Topology.Connected.FiniteChain
 import DifferentialGeometry.Topology.Connected.FiniteCollarOrder
 import DifferentialGeometry.Topology.Connected.FiniteEDistance
 import DifferentialGeometry.Topology.Connected.Frontier
+import DifferentialGeometry.Topology.Connected.FrontierChain
 import DifferentialGeometry.Topology.Connected.FrontierCover
 import DifferentialGeometry.Topology.Connected.OpenPartialHomeomorph
 import DifferentialGeometry.Topology.Connected.RectangleComplement
@@ -11511,6 +11512,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedBackwardLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedCurvatureWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedParabolicPointSelection
+import DifferentialGeometry.Topology.OpenPartialHomeomorph.CollarUnion
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images
 import DifferentialGeometry.Topology.LocallyFinite.Superlevel
 import DifferentialGeometry.Topology.LocallyFinite.Frontier

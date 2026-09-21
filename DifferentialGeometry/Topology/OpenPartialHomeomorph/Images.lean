@@ -35,4 +35,14 @@ theorem image_frontier_of_subset_source (e : OpenPartialHomeomorph X Y)
     inter_eq_right.mpr (htc.frontier_subset.trans ht)] at h
   exact h
 
+theorem closure_interior_image_of_subset_source (e : OpenPartialHomeomorph X Y)
+    {s : Set X} (hs : s ⊆ e.source) (hreg : closure (interior s) = s)
+    (hclosed : IsClosed (e '' s)) : closure (interior (e '' s)) = e '' s := by
+  apply Subset.antisymm (closure_minimal interior_subset hclosed)
+  rw [← e.image_interior_of_subset_source hs]
+  have hc : ContinuousOn e (closure (interior s)) := by
+    rw [hreg]
+    exact e.continuousOn.mono hs
+  simpa only [hreg] using hc.image_closure
+
 end OpenPartialHomeomorph

@@ -131,12 +131,29 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                     riemannianClosedBallOf L.metric (g (t (n + 1)))
                                       ((3 * (2 * alpha)⁻¹ / 100) /
                                         Real.sqrt (metricScalarAt L.metric (g (t n))))) ∧
+                                (∀ i j, i + 1 < j →
+                                  Disjoint (Ψ i '' (univ ×ˢ Icc (0 : ℝ) 1))
+                                    (Ψ j '' (univ ×ˢ Icc (0 : ℝ) 1))) ∧
+                                Pairwise (fun i j =>
+                                  Disjoint (interior (Ψ (i + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)))
+                                    (interior (Ψ (j + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)))) ∧
+                                (∀ n, (Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+                                  (Ψ (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+                                    (nk (n + 2)).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+                                (∀ n, (nk (n + 2)).map '' (univ ×ˢ ({0} : Set ℝ)) ⊆
+                                  interior ((Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∪
+                                    (Ψ (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1)))) ∧
                                 LocallyFinite (fun n => Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 IsClosed (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 IsConnected (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 ¬ IsCompact (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
-                                frontier (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
-                                  ⋃ n, (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) := by
+                                (frontier (⋃ n, Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
+                                  ⋃ n, (nk n).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+                                IsClosed (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                IsConnected (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                ¬ IsCompact (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+                                frontier (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+                                  (nk 1).map '' (univ ×ˢ ({0} : Set ℝ)) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -180,7 +197,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
       (hquant (incl tau) (hgood (incl tau) tau.property.1).1)
     rw [hdist] at hh
     exact hh
-  obtain ⟨t, nk, _ht0, hmono, hlim, hstep, _hcover, hgraph, hdisjoint, hannuli⟩ :=
+  obtain ⟨t, nk, _ht0, hmono, hlim, hstep, _hcover, hgraph, hdisjoint, eta, ann, hannuli, hsep, hinterior, hinter, hseam⟩ :=
     exists_spatialNeck_sequence_along_isometric_curve L.metric har (by linarith) curve hcurve
       (fun tau => (hgood (incl tau) tau.property.1).2) hquant'
   have htend : Tendsto (incl ∘ t) atTop
@@ -191,7 +208,12 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     exact hblow.comp htend
   have hlocal := SpatialNeck.locallyFinite_of_scalar_tendsto_atTop nk
     (eta := 2 * alpha) (by linarith : 2 * alpha < 1 / 4323) (fun _ => le_rfl) hscalar
-  choose eta ann hsource hleft hright hcann hfrann hsubann hballs using hannuli
+  have hsource := fun n => (hannuli n).1
+  have hleft := fun n => (hannuli n).2.1
+  have hright := fun n => (hannuli n).2.2.1
+  have hcann := fun n => (hannuli n).2.2.2.1
+  have hfrann := fun n => (hannuli n).2.2.2.2.1
+  have hsubann := fun n => (hannuli n).2.2.2.2.2.1
   have hlocalAnn := hlocal.subset hsubann
   have hclosedAnn := hlocalAnn.isClosed_iUnion (fun n => (hcann n).isClosed)
   let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
@@ -201,20 +223,21 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
   have hconnAnn (n : ℕ) : IsConnected (ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
     (isConnected_univ.prod (isConnected_Icc zero_le_one)).image _
       ((ann n).contMDiffOn_toFun.continuousOn.mono (hsource n))
-  have hconnUnion : IsConnected (⋃ n, ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
-    apply IsConnected.iUnion_of_chain hconnAnn
-    intro n
+  have hmeetAnn (n : ℕ) : ((ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))).Nonempty := by
     let p : Sphere 2 := Classical.choice inferInstance
     refine ⟨ann n (p, 1), ⟨(p, 1), ⟨mem_univ _, by simp⟩, rfl⟩,
       ⟨(eta n p, 0), ⟨mem_univ _, by simp⟩, ?_⟩⟩
-    change ann (n + 1) (eta n p, 0) = ann n (p, 1)
     rw [hleft, hright]
-  have hnotCompact : ¬ IsCompact (⋃ n, ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+  have hconnUnion := IsConnected.iUnion_of_chain hconnAnn hmeetAnn
+  have hlocalShift (k : ℕ) := hlocalAnn.comp_injective
+    (g := fun n : ℕ => n + k) (fun _ _ hij => Nat.add_right_cancel hij)
+  have hnotCompact (k : ℕ) : ¬ IsCompact (⋃ n, ann (n + k) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
     intro hc
     apply (Set.infinite_univ : (univ : Set ℕ).Infinite)
-    apply (hlocalAnn.finite_nonempty_inter_compact hc).subset
+    apply ((hlocalShift k).finite_nonempty_inter_compact hc).subset
     intro n _
-    obtain ⟨y, hy⟩ := (hconnAnn n).nonempty
+    obtain ⟨y, hy⟩ := (hconnAnn (n + k)).nonempty
     exact ⟨y, hy, mem_iUnion.mpr ⟨n, hy⟩⟩
   have hfrontAnn : frontier (⋃ n, ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
       ⋃ n, (nk n).map '' (univ ×ˢ ({0} : Set ℝ)) := by
@@ -224,11 +247,16 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     rcases hn with hn | hn
     · exact mem_iUnion.mpr ⟨n, hn⟩
     · exact mem_iUnion.mpr ⟨n + 1, hn⟩
+  have hclosedTail := (hlocalShift 1).isClosed_iUnion (fun n => (hcann (n + 1)).isClosed)
+  have hconnTail := IsConnected.iUnion_of_chain (fun n => hconnAnn (n + 1))
+    (fun n => hmeetAnn (n + 1))
+  have hfrontTail := hlocalAnn.frontier_iUnion_succ_eq_of_chain _
+    (fun n => (hcann n).isClosed) hfrann hseam (fun n => hsep 0 (n + 2) (by omega))
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
-    hlocal, eta, ann, fun n => ⟨hsource n, hleft n, hright n, hcann n, hfrann n, hsubann n, hballs n⟩,
-    hlocalAnn, hclosedAnn, hconnUnion, hnotCompact, hfrontAnn⟩
+    hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
+    hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail⟩
   intro tau hR
   exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
 
