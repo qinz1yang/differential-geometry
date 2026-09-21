@@ -286,3 +286,31 @@ F1、F5 的两个 `…_of_plReading_of_boundaryCover`、F6 全部带假设
 `HalfSpaceGeneralPosition.lean` 的上述声明，报告哪些可直接复用于相对一般位置（替代你们新写的
 `GeneralPositionInDoubleRelativeHalfSpace`/`…RelativePerturbation` 中的重复部分）；可复用的，作为对这两个已提交
 文件的 append-only 批次交验收（检查 + 审计 + lint 日志）。这些尾部都只有作者自检，未经独立审计。
+
+### 已合并：`codex/moise-304` 与 `codex/moise-h`（2026-09-20 夜，owner 指示；commit `daafbf482`、`13cbe0459`）
+
+真正的 git merge，两条分支现在是 integration 的祖先。根聚合**没有**用 git 的文本合并结果（它会重复 34 条
+import：车道在自己的位置登记过的模块，integration 已在末尾登记），而是 integration 自己的版本 + 末尾追加
+26 条新 import。`PHASE3_APPROXIMATION_PLAN.md` 的唯一冲突是两边在同一处追加，两边都保留。
+
+**状态：已合并，未重放。** lead 没有 compiler lease。合并时做过的源码级核对：26 个新模块 + 6 个被改的已提交
+文件（`SurfaceEssentialDisk`、`FundamentalGroup/CollaredClosedCover`、四个 `TrivalentDualCell*`）的 import 闭包共
+976 个模块，其中 integration 自 merge-base 以来只改过 `GeneralPosition`、`HeightProjection`、
+`SingularGeneralPosition`，而被合并的模块没有引用那里签名变过的 21 个声明中的任何一个；无公开重名；无
+`sorry`/`axiom`/`nolint`/`maxHeartbeats`/`set_option`/`native_decide`。车道自己的记录是"私有检查零诊断、13 项
+linter、公理闭包合规"。这 6 个文件的反向闭包只有 `SurfaceCutKernel`、`SphericalShellCompression`、
+`LemmaTwoSpine`、`LemmaTwoEndpoint`、`LemmaTwoBuffered`；四条在跑的车道的工作文件都不依赖它们，但这 11 个模块在
+共享 build 里的 olean 现在相对源码是 stale 的。
+
+**重放任务 R（任何持有 granted lease 的车道，空闲时做；不阻塞 F/H/S/E3 的砖）：** 对下列模块跑聚焦检查 +
+审计 + lint，日志存 `.lake/scratch/{Check,Audit,Lint}ReplayM304H.log`，失败的逐条报告：
+`Connected/{CollaredCover,RelativeClosedCover}`、`FundamentalGroup/{CollaredClosedCover,CollaredCut,CommutativeCover,Torus}`、
+`Homology/{FieldCycles,PathConcatenation,PathHomotopy,HurewiczOne,FieldHurewiczOne,FundamentalGroupRank}`、
+`Manifold/CylinderImage`、`PL/{SurfaceEssentialDisk,SurfaceIncompressibility,SurfaceEulerParity,ToroidalShell,
+ToroidalShellFundamentalGroup,ToroidalShellSphere,ToroidalShellCompression,ToroidalShellHomology}`、
+`PL/{TrivalentDualCellNeighborhoodModel,TrivalentDualCellPerturbationModel,TrivalentDualCellCompatibleTriangulation,
+TrivalentDualCellTransportedNeighborhoods,TrivalentDualCellSolidTorusNeighborhoods,
+TrivalentDualCellLocallyFiniteModification,LocallyFiniteHomeomorphTower,LocallyFiniteSupportedModification,
+LocallyFiniteSolidTorusModification,SolidTorusOpenNeighborhood,CommonCircleSolidTorusTransport}`，以及下游
+`SurfaceCutKernel`、`SphericalShellCompression`。这些模块的**陈述尚未经 lead 逐条阅读**（不在主链上）；谁要
+消费其中任何一条，先按今晚的空洞检查读它的假设。
