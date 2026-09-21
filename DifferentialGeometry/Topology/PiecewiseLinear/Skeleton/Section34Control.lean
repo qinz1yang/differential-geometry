@@ -31,13 +31,23 @@ Instantiating `Ea := EuclideanSpace ℝ (Fin N)` with the `N`, `𝒦`, `H` of th
 same `U, h, η` discharges both of those hypotheses verbatim; the `M₁ M₂` instance list, `hU` and
 `hh` are the same in the two statements, and the consumer leaves `η` free, so the continuity and
 positivity this endpoint assumes are not needed there.  Skeletons cannot import each other, so the
-match is by textual comparison of those binders and not by a shared `def`.
+match is by textual comparison of those binders and not by a shared `def`.  The consumer has no
+`[Nonempty M₁]` in its instance list and needs none: it takes `𝒦` as a hypothesis, and a
+`LocallyFinitePLPieceIn Ea 3 M₁ U` has a total field `map : Ea → M₁`, so `𝒦.map 0` inhabits `M₁`
+there.  Only a *producer* of such a `𝒦`, like this endpoint, has to assume it; a caller that does
+not yet hold a `𝒦` splits on `IsEmpty M₁` first, as the terminal skeleton's assembly does.
 
-Why standard chart cells suffice.  `Section34CarrierControl` never asks the carrier `H t` to hug
-the image `h '' S_t` of the support `S_t = Section34CarrierSupport 𝒦 t`: its six clauses are
+What the carrier clauses do and do not control.  `Section34CarrierControl` prescribes no
+*shape* for the carrier `H t` relative to the image `h '' S_t` of the support
+`S_t = Section34CarrierSupport 𝒦 t`; in particular `H t` is not asked to be a regular
+neighbourhood of it.  It does control distances.  Its six clauses are
 `h '' S_t ⊆ interior (H t)`, `H t ⊆ h '' U`, local finiteness of `H` in the subspace `h '' U`,
 `dist y z < η x` for `x ∈ S_t` and `y, z ∈ H t`, `IsPLCellOn 3 (H t) (frontier (H t))`, and one
-piecewise linear chart of `M₂` containing `H t`.  A closed piecewise linear `3`-cell read inside
+piecewise linear chart of `M₂` containing `H t`.  The first and the fourth already give
+`x ∈ S_t → H t ⊆ Metric.ball (h x) (η x)`, because `h x ∈ H t` and every other point of `H t` is
+at distance less than `η x` from it; so `H t` lies in the `η`-neighbourhood of `h '' S_t` and no
+separate proximity clause is owed, and a smaller scale is obtained by shrinking the input `η`
+rather than by adding a clause.  A closed piecewise linear `3`-cell read inside
 one chart of `M₂`, small enough for `η` and contained in the open set `h '' U`, meets all six as
 soon as `h '' S_t` lands in its interior.  The carriers are therefore taken from a locally finite
 cover of `h '' U` by such cells, and the subdivision is taken subordinate to the `h`-preimages of
@@ -48,7 +58,13 @@ together with Schoenflies; that leaf and the swelling leaf `exists_isOpen_locall
 that fed it are removed, and with them the cell clause of leaf (b).  No clause of
 `Section34CarrierControl` is weakened, and the endpoint is unchanged.
 
-The leaves, with content and review state.  All five are **unreviewed**.
+The leaves, with content and review state.  Review AF read all five.  Four came back OK and are
+now **frozen**: `exists_isPLCellOn_locallyFinite_cover_of_isOpen`,
+`isCombinatorialManifold_of_locallyFinitePLPieceIn`, `locallyFinite_section34CarrierSupport` and
+`exists_isSubdivision_section34CarrierSupport_subset`.  The fifth,
+`exists_locallyFinitePLPieceIn_of_isOpen`, came back **false** for a missing `[Nonempty M₁]`; the
+repair is the reviewer's own, was checked against the Lean text, and the leaf is frozen in the
+repaired form.
 
 `exists_locallyFinitePLPieceIn_of_isOpen` (a1): one locally finite complex in a *fixed* finite
 dimensional ambient realising an arbitrary open subset of a piecewise linear `3`-manifold.  The
@@ -57,7 +73,14 @@ dimension `(T.piece i).ambientDim` grows with `i`, glued by `IsGlueIso` maps; as
 locally finite complex in a single `ℝ^N` out of it is the recorded open foundational brick, not a
 short consequence of the tower API, so it is a leaf.  General position embeds a locally finite
 `3`-complex in `ℝ⁷`; the telescoping realisation with heights is the alternative, and the leaf
-fixes neither, because `N` is existential.
+fixes neither, because `N` is existential.  The reviewer's warning is that the difficulty is
+exactly this: the leaf must deliver **one** realisation in a fixed finite dimension whose
+realising complex is *topologically* locally finite, and general position gives injectivity of a
+map on an infinite complex without giving that local finiteness, so an appeal to general position
+alone does not prove (a1).  Its `[Nonempty M₁]` is necessary and not a convenience: the structure
+`LocallyFinitePLPieceIn E 3 M₁ U` carries a total field `map : E → M₁`, and
+`E = EuclideanSpace ℝ (Fin N)` is nonempty for every `N`, `N = 0` included, so for `M₁ = ∅` no
+such structure exists while every other hypothesis of the leaf still holds.
 
 `isCombinatorialManifold_of_locallyFinitePLPieceIn` (a2): the complex of *any* locally finite
 piecewise linear realisation of an *open* subset of a piecewise linear `3`-manifold is a
@@ -106,9 +129,15 @@ near `y ∈ h '' U` only finitely many `C i` meet a neighbourhood; for each such
 the nonempty supports, by (a3).  Also proved: the openness of `h '' V` for every open `V ⊆ U`,
 which is invariance of domain and is what makes `h '' U` an open set at all.
 
-Vacuity.  `U = ∅` forces `𝒦.complex.space = ∅`, so there are no faces, all six clauses of
-`Section34CarrierControl` and `IsCombinatorialManifold` are vacuous, the cell cover of the empty
-`h '' U` is empty, and any `N` will do; the endpoint allows it.  `U = M₁ = S³` is compact and
+Vacuity.  `U = ∅` is allowed and stays allowed: it forces `𝒦.complex.space = ∅`, so there are no
+faces, all six clauses of `Section34CarrierControl` and `IsCombinatorialManifold` are vacuous, the
+cell cover of the empty `h '' U` is empty, and any `N` will do.  `M₁ = ∅` is **excluded**, by the
+instance `[Nonempty M₁]` on the endpoint and on leaf (a1).  The reason is not vacuity but the
+total field `map : E → M₁` of `LocallyFinitePLPieceIn E 3 M₁ U`: with `M₁ = ∅` and `U = ∅` every
+other hypothesis holds, yet `E = EuclideanSpace ℝ (Fin N)` is nonempty for every `N`, so there is
+no such structure and the unrepaired statement was false.  The hypothesis is `[Nonempty M₁]` and
+never `U.Nonempty`: an empty open subset of a nonempty manifold must keep being allowed, and the
+already proved tower producer assumes exactly `[Nonempty X]`.  `U = M₁ = S³` is compact and
 needs `N ≥ 4`; nothing in the endpoint fixes `N = 3`.  A disconnected `U` is untouched, the
 neighbourhood assignment being pointwise.  When `η` tends to `0` at an end of `U` the cells shrink
 there, which is why (b) is stated for an arbitrary cover and (c) for an arbitrary neighbourhood
@@ -128,7 +157,7 @@ universe u
 
 def Section34ControlStatement : Prop :=
   ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
-    [MetricSpace M₂] [SecondCountableTopology M₂]
+    [Nonempty M₁] [MetricSpace M₂] [SecondCountableTopology M₂]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
     [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)] {U : Set M₁}, IsOpen U →
     ∀ {h : M₁ → M₂}, Topology.IsEmbedding (U.domRestrict h) →
@@ -153,8 +182,8 @@ theorem exists_isPLCellOn_locallyFinite_cover_of_isOpen {X : Type*} [Topological
 variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
   {M₁ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] {U : Set M₁}
 
-theorem exists_locallyFinitePLPieceIn_of_isOpen [T2Space M₁] [SecondCountableTopology M₁]
-    [HasGroupoid M₁ (plGroupoid 3)] (hU : IsOpen U) :
+theorem exists_locallyFinitePLPieceIn_of_isOpen [Nonempty M₁] [T2Space M₁]
+    [SecondCountableTopology M₁] [HasGroupoid M₁ (plGroupoid 3)] (hU : IsOpen U) :
     ∃ N : ℕ, Nonempty (LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin N)) 3 M₁ U) := by
   sorry
 
@@ -327,7 +356,7 @@ theorem exists_section34CarrierControl_of_cellCover {Ea : Type} [NormedAddCommGr
 
 theorem section34Control : Section34ControlStatement.{u} := by
   classical
-  intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh η hηc hηpos
+  intro M₁ M₂ _ _ _ _ _ _ _ _ _ _ U hU h hh η hηc hηpos
   have hcont : ContinuousOn h U := continuousOn_iff_continuous_domRestrict.mpr hh.continuous
   have hinj : InjOn h U := by
     intro x hx y hy hxy
