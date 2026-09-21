@@ -3575,6 +3575,8 @@ import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Comparison.Distance.Distribution
 import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
+import DifferentialGeometry.Geometry.Comparison.Distance.SegmentSmoothness
+import DifferentialGeometry.Geometry.Comparison.Distance.LocalSegmentSmoothness
 import DifferentialGeometry.Geometry.Comparison.Distance.Exhaustion
 import DifferentialGeometry.Geometry.Comparison.Distance.Gradient
 import DifferentialGeometry.Geometry.Comparison.Distance.Hessian
@@ -11545,6 +11547,7 @@ import DifferentialGeometry.Geometry.Comparison.Toponogov.AngleKernelCompactness
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialNets
 import DifferentialGeometry.Geometry.Comparison.Toponogov.CompletionRadialNets
 import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Geometry.Metric.ConeRadius
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialConeApproximation
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeApproximation
 import DifferentialGeometry.Topology.MetricSpace.ContinuousDistance

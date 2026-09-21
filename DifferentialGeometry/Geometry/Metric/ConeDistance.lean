@@ -20,6 +20,12 @@ theorem coneDistance_comm (x y : ℝ × Y) : coneDistance x y = coneDistance y x
   congr 1
   ring
 
+theorem coneDistance_same_direction (r s : ℝ) (u : Y) :
+    coneDistance (r, u) (s, u) = |r - s| := by
+  unfold coneDistance
+  simp only [dist_self, min_eq_right Real.pi_pos.le, Real.cos_zero, mul_one]
+  rw [show r ^ 2 + s ^ 2 - 2 * r * s = (r - s) ^ 2 by ring, Real.sqrt_sq_eq_abs]
+
 theorem coneDistance_le_abs_sub_add_mul_dist {x y : ℝ × Y} {B : ℝ}
     (hx : x.1 ∈ Icc 0 B) (hy : y.1 ∈ Icc 0 B) :
     coneDistance x y ≤ |x.1 - y.1| + B * dist x.2 y.2 := by

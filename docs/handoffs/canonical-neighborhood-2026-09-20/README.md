@@ -2334,3 +2334,56 @@ unproved; no cone chart or Poincare completion is claimed.
 
 The full root build passed 20,235 jobs with exactly 21 retained proof-hole
 warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-annulus-root-build.log`.
+
+## Smooth regular cone radius from a local metric identification
+
+`Geometry/Metric/ConeRadius.lean` proves that an open local identification
+`e : OpenPartialHomeomorph M (ℝ × Y)` whose target has positive radius and whose
+pairwise Riemannian distances equal `Metric.coneDistance (e x) (e y)` has a smooth
+radius function `x ↦ (e x).1` with nonzero differential everywhere on its source.
+The link is only a pseudometric space; no smooth structure on the link or
+completeness of the original Riemannian manifold is assumed. This closes the
+radius regularity implication, conditional on the actual open metric
+identification that remains to be constructed from the normalized sources.
+
+The proof constructs two nearby radial anchors, proves their distance functions
+smooth near the point, and applies the exact two-anchor identity for squared
+cone radius. `Geometry/Comparison/Distance/SegmentSmoothness.lean` generalizes
+the former intrinsic-ray proof to a finite unit-speed geodesic minimizing up to
+twice the anchor time; the original public ray theorem is now its corollary with
+unchanged signature. `LocalSegmentSmoothness.lean` removes completeness using
+the existing local complete-metric extension and its proved equality of nearby
+distances. It derives path connectedness from finiteness of the given intrinsic
+distance, installs the auxiliary metric explicitly, and transfers smoothness
+back to the original metric. The nonzero differential follows by differentiating
+the radius along an actual radial metric segment, using the existing theorem
+that such segments are smooth geodesics. All new leaves are registered.
+
+Seven declarations passed thirteen declaration linters; their transitive axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`. The leaf
+and coray-dependent build passed 4,266 jobs without diagnostics. Evidence:
+`/private/tmp/wt17-cone-radius-build.log` and
+`/private/tmp/wt17-cone-radius-audit.log` (including exact elaborated types).
+
+The next essential gaps remain: transfer the actual diagonal source comparison
+maps to the smooth terminal limit and prove an open cone-distance identification;
+identify radial velocity with the gradient of the smooth radius; then construct
+smooth radial coordinates with metric `dr² + r² k` and apply
+`solution_cone_terminal_exclusion` to the produced local backward flow. A smooth
+regular radius by itself is not a `ConeChart`. The compact approximation theorem
+still needs vanishing pairwise distance error and actual ball coverage assembled
+for the selected source diagonal. Finite cone nets and smooth convergence alone
+do not assert these containment and identification statements.
+
+The smaller local two-anchor argument follows the user's second attachment.
+Kleiner--Lott Lemma 41.4, in the local
+`Geometrization/BooksPapers/KleinerLottPerelman.pdf`, proves cone-radius smoothness
+by a different route through geodesic second derivatives and Rademacher's theorem.
+The present proof avoids developing that larger regularity route. The errors
+resolved here were Lean metric-instance selection and dependent derivative
+elaboration, not failures of the mathematical implication. No persistent
+mathematical blockage has been established. The headline remains unchanged and
+unproved, and no local cone-flow patch or Poincare completion is claimed.
+
+The full root build passed 20,238 jobs with exactly 21 retained proof-hole
+warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-radius-root-build.log`.
