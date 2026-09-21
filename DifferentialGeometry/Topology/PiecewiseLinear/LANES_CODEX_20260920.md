@@ -606,3 +606,18 @@ piece.piece.map = T.chart` 是 `PLSeamTubeChart` 的字段，对任何 `piece` �
 （真假、同一元组上的联合可满足性、极端取值、接点、每条假设的 producer），审过即冻结；各车道/worker 再并行填叶子。
 骨架只放在 `Skeleton/`，不进根聚合，不被任何正式文件 import。先做的骨架：A2（下降步，含边界支整条链）、A1（一般位置）、
 A2.3（C-or1）、B1（35.2 的 §34 一侧）。
+
+### 车道 H 裁决之二（2026-09-21）：四文件批次**已收**（commit `c0a63f9e6`）；其余修订等 A1 骨架外审
+
+- 已提交并登记：`RelativeGeneralPositionSubcomplex`、`…BufferedInduction`、`…Relative`（别名已删）、`…Assembly`。lead 独立审计：
+  四模块零诊断、公理闭包 ⊆ 标准三公理、13 项 linter 全过（`.lake/scratch/AcceptLaneHFour.log`）。属基础设施，**A1 仍 OPEN**。
+- 本轮其余修订（B6/H7 整并版、buffered map/assembly 只在 `C ⊆ O_*` 与 `Vᶜ` 上相等、恢复基数护栏的半空间扰动、
+  `PLPieceWithBoundary`）**暂不逐条审**：陈述审查改走骨架流程——lead 的 worker 正在写 `Skeleton/GeneralPositionInDouble.lean`
+  （叶子 `sorry`、组装真证到 `GeneralPositionInDoubleBufferedStatement`），过外审后叶子冻结，车道 H 按冻结陈述逐条证明。
+  在那之前请不要继续往 B5/B4 上堆证明；可以做的是把自己的修订文件对照骨架叶子，报告哪几条已经能直接解除。
+- 你们自己列的三条未闭合项（正 collar 内受保护二面片对的真实几何输入；适配边界卡数据 + 全局扰动 producer；最终组装）
+  与 lead 的判断一致，它们就是骨架里要单列的叶子，不得以假设形式回流。
+- **H0**：lead 已核对 `codex/moise-smoothing` 的两个文件：`HalfSpaceGeneralPosition.lean` 旧版 = integration 版 + 尾部
+  （:601 起，纯追加）；`HalfSpacePerturbation.lean` 旧版是**重构超集**（多两条 import，先证带多面体的推广再导出原定理），
+  integration 现有 13 条声明的陈述逐字相同，新增 7 个公开名在树内无重名，无声明 docstring、无超长行、无 `sorry`。
+  整文件替换需要 owner 点头（共享树上覆盖已提交文件），等批准后由 lead 执行并审计。
