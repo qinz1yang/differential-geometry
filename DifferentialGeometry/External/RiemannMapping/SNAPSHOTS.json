@@ -1,0 +1,22 @@
+[
+  {
+    "upstream_path": "LICENSE",
+    "snapshot": "upstream/LICENSE",
+    "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+  },
+  {
+    "upstream_path": "Mathlib/Topology/Algebra/Group/CompactOpen.lean",
+    "snapshot": "upstream/Mathlib/Topology/Algebra/Group/CompactOpen.lean.txt",
+    "sha256": "15cb99d3c3f2591d090eb6b69c3bf59bc8903b5ffde830c158be0f7365ab803d"
+  },
+  {
+    "upstream_path": "Mathlib/Analysis/Complex/RiemannMapping.lean",
+    "snapshot": "upstream/Mathlib/Analysis/Complex/RiemannMapping.lean.txt",
+    "sha256": "335a97ee3cf41c2f56581b80176decde8de8bb60491a342d3b7eec2146aa8caa"
+  },
+  {
+    "upstream_path": "Mathlib/Analysis/Complex/UnitDisc/Shift.lean",
+    "snapshot": "upstream/Mathlib/Analysis/Complex/UnitDisc/Shift.lean.txt",
+    "sha256": "5892b5e8a85d532b934f481af0900d564fcb76e08a4b58a3667729e4f0eb448e"
+  }
+]

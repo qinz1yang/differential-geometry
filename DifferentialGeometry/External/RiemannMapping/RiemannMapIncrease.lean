@@ -1,0 +1,183 @@
+/-
+Copyright (c) 2026 Yury Kudryashov. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yury Kudryashov
+-/
+module
+
+public import Mathlib.Analysis.Complex.RiemannMapping
+import all Mathlib.Analysis.Complex.RiemannMapping
+public import Mathlib.Analysis.Complex.BranchLogRoot
+public import DifferentialGeometry.External.RiemannMapping.UnitDisc.Shift
+public import Mathlib.Analysis.Calculus.Deriv.Pow
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv
+import Mathlib.Tactic
+
+/-!
+# Riemann mapping theorem: normalized disk maps and derivative improvement
+
+Adapted from Yury Kudryashov's draft in mathlib4 PR #33505,
+commit d43061d911b1aeae0788591da437a3b115098962.
+The exact upstream sources, license, and local modification log accompany this file.
+-/
+
+open Set Metric Function Filter
+open scoped Pointwise Topology ComplexConjugate Real BigOperators
+
+public section
+namespace Complex
+
+namespace UnitDisc
+
+@[fun_prop]
+theorem continuous_shift (z : 𝔻) : Continuous z.shift := by
+  simp only [isEmbedding_coe.continuous_iff, Function.comp_def, coe_shift]
+  exact .div (by fun_prop) (by fun_prop) fun _ ↦ shift_den_ne_zero _ _
+
+end UnitDisc
+
+theorem UnitDisc.hasDerivWithinAt_shift_comp {f : ℂ → UnitDisc} {z f' : ℂ} {s : Set ℂ}
+    (w : UnitDisc) (hf : HasDerivWithinAt (fun x ↦ ↑(f x)) f' s z) :
+    HasDerivWithinAt (fun x ↦ w.shift (f x) : ℂ → ℂ)
+      ((1 - ‖(w : ℂ)‖ ^ 2) / (1 + conj ↑w * f z) ^ 2 * f') s z := by
+  simp only [coe_shift]
+  convert! (hf.const_add (w : ℂ)).fun_div
+    ((hf.const_mul (conj (w : ℂ))).const_add 1) (UnitDisc.shift_den_ne_zero w (f z)) using 1
+  · rw [← mul_conj']
+    ring
+
+theorem UnitDisc.hasDerivAt_shift_comp {f : ℂ → UnitDisc} {z f' : ℂ} (w : UnitDisc)
+    (hf : HasDerivAt (fun x ↦ ↑(f x)) f' z) :
+    HasDerivAt (fun x ↦ w.shift (f x) : ℂ → ℂ)
+      ((1 - ‖(w : ℂ)‖ ^ 2) / (1 + conj ↑w * f z) ^ 2 * f') z :=
+  (hasDerivWithinAt_shift_comp w hf.hasDerivWithinAt).hasDerivAt univ_mem
+
+@[simp]
+theorem UnitDisc.differentiableWithinAt_shift_comp_iff {f : ℂ → UnitDisc} {z : ℂ} {s : Set ℂ}
+    (w : UnitDisc) :
+    DifferentiableWithinAt ℂ (fun x ↦ w.shift (f x) : ℂ → ℂ) s z ↔
+      DifferentiableWithinAt ℂ (f · : ℂ → ℂ) s z := by
+  refine ⟨fun h ↦ ?_, fun h ↦
+    (hasDerivWithinAt_shift_comp w h.hasDerivWithinAt).differentiableWithinAt⟩
+  simpa using (hasDerivWithinAt_shift_comp (-w) h.hasDerivWithinAt).differentiableWithinAt
+
+@[simp]
+theorem UnitDisc.differentiableOn_shift_comp_iff {f : ℂ → UnitDisc} {s : Set ℂ} (w : UnitDisc) :
+    DifferentiableOn ℂ (fun x ↦ w.shift (f x) : ℂ → ℂ) s ↔
+      DifferentiableOn ℂ (f · : ℂ → ℂ) s := by
+  simp [DifferentiableOn]
+
+@[simp]
+theorem UnitDisc.differentiableAt_shift_comp_iff {f : ℂ → UnitDisc} {z : ℂ} (w : UnitDisc) :
+    DifferentiableAt ℂ (fun x ↦ w.shift (f x) : ℂ → ℂ) z ↔
+      DifferentiableAt ℂ (f · : ℂ → ℂ) z := by
+  refine ⟨fun h ↦ ?_, fun h ↦ (hasDerivAt_shift_comp w h.hasDerivAt).differentiableAt⟩
+  simpa using (hasDerivAt_shift_comp (-w) h.hasDerivAt).differentiableAt
+
+@[simp]
+theorem UnitDisc.deriv_shift_comp (f : ℂ → UnitDisc) (z : ℂ) (w : UnitDisc) :
+    deriv (fun x ↦ w.shift (f x) : ℂ → ℂ) z =
+      (1 - ‖(w : ℂ)‖ ^ 2) / (1 + conj ↑w * f z) ^ 2 * deriv (f · : ℂ → ℂ) z := by
+  by_cases hfd : DifferentiableAt ℂ (f · : ℂ → ℂ) z
+  · exact (hasDerivAt_shift_comp w hfd.hasDerivAt).deriv
+  · rw [deriv_zero_of_not_differentiableAt hfd, deriv_zero_of_not_differentiableAt, mul_zero]
+    simpa using hfd
+
+theorem UnitDisc.deriv_shift_comp_eq_zero (f : ℂ → UnitDisc) (z : ℂ) (w : UnitDisc) :
+    deriv (fun x ↦ w.shift (f x) : ℂ → ℂ) z = 0 ↔ deriv (f · : ℂ → ℂ) z = 0 := by
+  simp only [deriv_shift_comp, mul_eq_zero, div_eq_zero_iff, pow_eq_zero_iff two_ne_zero,
+    shift_den_ne_zero, or_false]
+  apply or_iff_right
+  exact mod_cast sub_ne_zero.mpr w.sq_norm_lt_one.ne'
+
+theorem exists_map_unitDisc_injOn_deriv_ne_zero₀ {U : Set ℂ} (hUo : IsOpen U)
+    (hUc : IsSimplyConnected U) (hU : U ≠ univ) (x : ℂ) :
+    ∃ f : ℂ → UnitDisc, f x = 0 ∧ InjOn f U ∧ (∀ z ∈ U, deriv (UnitDisc.coe ∘ f) z ≠ 0) := by
+  classical
+  obtain ⟨f, hf_inj, hf_deriv⟩ :
+      ∃ f : ℂ → UnitDisc, InjOn f U ∧ ∀ z ∈ U, deriv (UnitDisc.coe ∘ f) z ≠ 0 := by
+    rcases exists_mapsTo_unitBall_injOn_deriv_ne_zero hUo hUc hU with ⟨f, hfU, hf_inj, hdf⟩
+    use fun z ↦ if hz : z ∈ U then .mk (f z) (by simpa using hfU hz) else 0
+    constructor
+    · simp +contextual [InjOn, UnitDisc.mk_inj, hf_inj.eq_iff]
+    · intro z hz
+      convert hdf z hz using 1
+      apply Filter.EventuallyEq.deriv_eq
+      filter_upwards [hUo.mem_nhds hz] with w hw
+      simp [hw]
+  use fun z ↦ (-f x).shift (f z)
+  refine ⟨?map_x, (-f x).shift.injective.comp_injOn hf_inj, ?deriv⟩
+  case map_x => simp
+  case deriv =>
+    simpa only [Function.comp_def, ne_eq, UnitDisc.deriv_shift_comp_eq_zero]
+
+theorem exist_map_unitDisc_injOn_norm_deriv_gt {U : Set ℂ} (hUo : IsOpen U)
+    (hUc : IsSimplyConnected U) (hU : U ≠ univ) {x : ℂ} (hx : x ∈ U) {f : ℂ → UnitDisc}
+    (hdf : DifferentiableOn ℂ (UnitDisc.coe ∘ f) U) (hf₀ : f x = 0) (hf_inj : InjOn f U)
+    (hsurj : ¬SurjOn f U univ) :
+    ∃ g : ℂ → UnitDisc, g x = 0 ∧ InjOn g U ∧ DifferentiableOn ℂ (UnitDisc.coe ∘ g) U ∧
+      ‖deriv (UnitDisc.coe ∘ f) x‖ < ‖deriv (UnitDisc.coe ∘ g) x‖ := by
+  by_cases hdf₀ : deriv (UnitDisc.coe ∘ f) x = 0
+  · rcases exists_map_unitDisc_injOn_deriv_ne_zero₀ hUo hUc hU x with ⟨g, hg₀, hg_inj, hdg⟩
+    refine ⟨g, hg₀, hg_inj, fun z hz ↦ ?_, ?_⟩
+    · exact (differentiableAt_of_deriv_ne_zero (hdg z hz)).differentiableWithinAt
+    · simpa [hdf₀] using hdg x hx
+  obtain ⟨c, hc⟩ : ∃ c, ∀ z ∈ U, f z ≠ c := by simpa [SurjOn, eq_univ_iff_forall] using hsurj
+  have hcf : ContinuousOn f U := by
+    rw [UnitDisc.isEmbedding_coe.continuousOn_iff]
+    exact hdf.continuousOn
+  rcases UnitDisc.exists_continuousOn_pow_eq hUc hUo ((-c).continuous_shift.comp_continuousOn hcf)
+    (by simpa) 2 with ⟨g, hgc, hgf⟩
+  have hg₀ : ∀ z ∈ U, g z ≠ 0 := by
+    intro z hz
+    suffices g z ^ (2 : ℕ+) ≠ 0 by simpa using this
+    simp [hgf, hc z hz]
+  have hdg : ∀ z ∈ U, HasDerivAt (g · : ℂ → ℂ)
+      ((1 - ‖(c : ℂ)‖ ^ 2) / (2 * g z * (1 - conj ↑c * f z) ^ 2) * deriv (f · : ℂ → ℂ) z) z := by
+    intro z hz
+    convert! (hasDerivAt_pow 2 _).of_comp_left
+      (UnitDisc.continuous_coe.continuousAt.comp <| hgc.continuousAt <| hUo.mem_nhds hz)
+      (UnitDisc.hasDerivAt_shift_comp _ <| (hdf.hasDerivAt <| hUo.mem_nhds hz))
+      (by simpa using hg₀ z hz)
+      (.of_forall fun x ↦ congr(UnitDisc.coe $(hgf x))) using 1
+    simp only [UnitDisc.coe_neg, norm_neg, map_neg, neg_mul, ← sub_eq_add_neg,
+      Function.comp_def, Nat.reduceSub, pow_one, Nat.cast_ofNat]
+    field_simp
+  have hg_sq_norm (z : ℂ) : ‖(g z : ℂ)‖ ^ 2 = ‖((-c).shift (f z) : ℂ)‖ := by
+    rw [← norm_pow, ← PNat.val_ofNat, ← UnitDisc.coe_pow, hgf, Function.comp_apply]
+  have hg_norm (z : ℂ) : ‖(g z : ℂ)‖ = √‖((-c).shift (f z) : ℂ)‖ := by
+    rw [← Real.sqrt_sq (norm_nonneg _), hg_sq_norm]
+  refine ⟨(-g x).shift ∘ g, ?map_x, ?injOn, ?deriv, ?norm_deriv⟩
+  case map_x => simp
+  case injOn =>
+    refine (-g x).shift.injective.comp_injOn fun z hz w hw hzw ↦ ?_
+    simpa [hgf, hf_inj.eq_iff hz hw] using congr($hzw ^ (2 : ℕ+))
+  case deriv =>
+    exact (-g x).differentiableOn_shift_comp_iff.mpr fun z hz ↦
+      (hdg z hz).differentiableAt.differentiableWithinAt
+  case norm_deriv =>
+    have hkey : ‖deriv (UnitDisc.coe ∘ ⇑(-g x).shift ∘ g) x‖ =
+        ‖deriv (f · : ℂ → ℂ) x‖ * (√‖(c : ℂ)‖ + √‖(c⁻¹ : ℂ)‖) / 2 := by
+      have hgx : ‖(g x : ℂ)‖ = √‖(c : ℂ)‖ := by simp [hg_norm, hf₀]
+      simp only [Function.comp_def, UnitDisc.deriv_shift_comp, (hdg x hx).deriv, norm_mul, norm_div,
+        ← mul_assoc, conj_mul', UnitDisc.coe_neg, map_neg, neg_mul]
+      conv_rhs => rw [mul_comm, mul_div_right_comm]
+      congr 1
+      norm_cast
+      have hpos₁ : 0 < 1 - ‖(c : ℂ)‖ := sub_pos.2 c.norm_lt_one
+      have hpos₂ : 0 < 1 - ‖(c : ℂ)‖ ^ 2 := sub_pos.2 c.sq_norm_lt_one
+      simp [field, hgx, hf₀, ← sub_eq_add_neg, abs_of_pos, hpos₁, hpos₂]
+      ring
+    rw [hkey, mul_div_assoc]
+    apply lt_mul_of_one_lt_right
+    · simpa using hdf₀
+    · have hc₀ : 0 < ‖(c : ℂ)‖ := by simpa [hf₀] using (hc x hx).symm
+      suffices √‖(c : ℂ)‖ * 2 < ‖(c : ℂ)‖ + 1 by simpa [field] using this
+      have : √‖(c : ℂ)‖ ≠ 1 := by simp [c.norm_ne_one]
+      rw [← sub_ne_zero, ← sq_pos_iff, sub_sq, Real.sq_sqrt] at this
+      · linear_combination this
+      · apply norm_nonneg
+
+
+end Complex
