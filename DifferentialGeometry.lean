@@ -12316,3 +12316,5 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.WeakJordanDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Reparametrization.AreaEnergy
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AreaMinimality
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Existence.Compact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactScalarMinimum
