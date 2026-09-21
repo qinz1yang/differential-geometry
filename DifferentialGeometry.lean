@@ -208,6 +208,7 @@ import DifferentialGeometry.Analysis.Complex.DiskBoundaryChart
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Complex.SquareRoot
 import DifferentialGeometry.Analysis.Convex.Convolution
+import DifferentialGeometry.Analysis.Convex.Closure
 import DifferentialGeometry.Analysis.Convex.Differentiability
 import DifferentialGeometry.Analysis.Convex.Distribution
 import DifferentialGeometry.Analysis.Convex.Integral
@@ -3736,6 +3737,7 @@ import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngleOrder
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonTriangleLimit
 import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteHinge
 import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteShortening
+import DifferentialGeometry.Geometry.Comparison.Toponogov.Completion
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ConnectorSmooth
 import DifferentialGeometry.Geometry.Comparison.Toponogov.Convexity
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ConvexityBridge

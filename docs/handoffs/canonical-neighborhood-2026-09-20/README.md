@@ -1733,3 +1733,48 @@ comparison step is Chow–Lu–Ni, GSM77, `tex/chapters/chapter1.tex`, labels
 `Eagles tour` and `doh!`. The user's newly supplied Alexandrov library locations
 and the Alexander–Kapovitch–Petrunin source repository are saved in the global
 `/Users/bennettchow/.codex/AGENTS.md` for future formalization work.
+
+### Squared-distance comparison with the missing point as center
+
+`Toponogov.convexOn_squared_distance_defect_of_completion_point_avoidance`
+now supplies localized squared-distance convexity for a fixed unit-speed smooth
+geodesic and a regular distance center. It constructs every minimizing connector
+from the actual compact punctured ball and endpoint exclusion; callers do not
+supply a connector-existence package. The existing supporting-function and second
+variation engine then applies using nonnegative sectional curvature.
+
+`Toponogov.convexOn_squared_distance_defect_at_missing_completion_point`
+keeps that geodesic fixed and approximates only the distance center by regular
+points. The resulting inequality passes to the missing completion point.
+`Toponogov.dist_sq_ge_interpolation_at_missing_completion_point` records the
+Euclidean squared-distance interpolation inequality.
+`Toponogov.exists_minimizing_geodesic_with_completion_comparison` constructs an
+actual minimizing geodesic between distinct regular points in the radius-one-tenth
+ball, proves containment in the radius-one-third ball, and proves squared-distance
+convexity on its entire closed parameter interval. Geodesic germs are used only
+in the open parameter interval; continuity supplies the endpoint inequalities.
+The general analytic extension is `ConvexOn.closure_of_continuousOn`.
+
+Six public declarations passed all thirteen declaration linters. Their transitive
+axiom closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The comparison leaf passed 4,268 jobs and the full root passed 20,213 jobs, with
+exactly 21 retained sorry warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-completion-comparison-build.log`,
+`/private/tmp/wt17-completion-comparison-audit.log`, and
+`/private/tmp/wt17-completion-comparison-root-build.log`.
+
+The reduced gap is comparison with the missing point as distance center, for
+fixed smooth geodesics and the regular-endpoint minimizers just constructed.
+Comparison along radial segments having the missing point as a parameter endpoint
+still needs to be connected to smooth regularity in the punctured region. The
+subsequent directions/cone producer, curvature-distance scale comparison, cone
+contradiction, and uniform buffered source estimate with fixed-order terminal Shi
+bounds remain unfinished. The original bounded-distance statement and its proof
+hole are unchanged. Endpoint domain and implicit-argument issues were Lean
+implementation difficulties resolved here, not persistent mathematical blockage;
+this layer gives no reason to switch to Ultra.
+
+References: Chow–Lu–Ni, GSM77, `tex/chapters/chapter1.tex`, labels `Eagles tour`
+and `doh!`; Kleiner–Lott, `BooksPapers/KleinerLottPerelman.pdf`, Section 52,
+Step 2; the user's September 21 attachment, Section 2. Radial comparison will
+feed Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Section 10.4, Lemma 10.21.
