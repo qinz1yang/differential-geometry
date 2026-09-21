@@ -161,6 +161,9 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                 (∀ n (x : L.M), x ∈ Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) →
                                   dist q (x : UniformSpace.Completion L.M) ≤
                                     (11 / 5) * (F.radius - (t n : ℝ))) ∧
+                                (∀ᶠ n in atTop,
+                                  (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) ⊆
+                                    interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) ∧
                                 ∃ E : Sphere 2 × Ici (0 : ℝ) ≃ₜ
                                   (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
                                   ∃ theta : ℕ → Sphere 2 ≃ₜ Sphere 2,
@@ -348,6 +351,36 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     have hremain := (t (n + 1)).property.2
     change _ ≤ F.radius - (t n : ℝ) + dist (g (incl (t n))) x at htriangle
     linarith
+  have hip : 0 < (2 * alpha)⁻¹ := inv_pos.mpr (mul_pos (by norm_num) ha)
+  have hfrontCompact : IsCompact
+      (frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) := by
+    rw [hfrontTail]
+    apply ((isCompact_univ : IsCompact (univ : Set (Sphere 2))).prod
+      (isCompact_singleton : IsCompact ({0} : Set ℝ))).image_of_continuousOn
+    apply (nk 1).map.contMDiffOn_toFun.continuousOn.mono
+    intro z hz
+    apply (nk 1).domain
+    refine ⟨mem_univ _, ?_⟩
+    have hz' : z.2 = 0 := hz.2
+    rw [hz']
+    exact ⟨neg_lt_zero.mpr hip, hip⟩
+  have hwindowConn : ∀ᶠ n in cofinite, IsPreconnected
+      ((nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹)) := by
+    apply Filter.Eventually.of_forall
+    intro n
+    exact (isPreconnected_univ.prod isPreconnected_Ioo).image _
+      ((nk n).map.contMDiffOn_toFun.continuousOn.mono (nk n).domain)
+  have hwindowMeet : ∀ᶠ n in cofinite,
+      ((nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) ∩
+        interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))).Nonempty := by
+    rw [Nat.cofinite_eq_atTop]
+    filter_upwards [eventually_ge_atTop 2] with n hn
+    exact ⟨g (incl (t n)),
+      ⟨((nk n).center, 0), ⟨mem_univ _, neg_lt_zero.mpr hip, hip⟩, (nk n).center_eq⟩,
+      haxisTail (incl (t n)) (hmono.monotone hn)⟩
+  have hwindowCapture := hlocal.eventually_subset_interior_of_isCompact_frontier
+    hfrontCompact hwindowConn hwindowMeet
+  rw [Nat.cofinite_eq_atTop] at hwindowCapture
   let unit : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ (univ ×ˢ Icc (0 : ℝ) 1 : Set Cylinder) :=
     (((Homeomorph.Set.univ (Sphere 2)).symm).prodCongr (Homeomorph.refl _)).trans
       (Homeomorph.Set.prod univ (Icc (0 : ℝ) 1)).symm
@@ -406,7 +439,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
     hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
-    haxisTail, hcollapse, E, theta, htheta0, htheta, ?_, D, ?_⟩
+    haxisTail, hcollapse, hwindowCapture, E, theta, htheta0, htheta, ?_, D, ?_⟩
   · intro tau hR
     exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
   · intro n p s

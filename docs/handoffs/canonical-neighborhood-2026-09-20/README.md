@@ -1367,3 +1367,32 @@ warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-normalized-cylinder-leaf-build.log`,
 `/private/tmp/wt17-normalized-cylinder-audit.log`, and
 `/private/tmp/wt17-normalized-cylinder-root-build.log`.
+
+
+## Containment of entire later neck windows
+
+The continuation after `e45ac798a` proves that every sufficiently late full
+spatial-neck window lies inside the interior of the actual annular end. The
+frontier is a compact central sphere. Local finiteness makes later windows
+avoid that sphere, while the limiting axis gives an interior point in each
+window. Connectedness then puts the entire window inside. This is an actual
+containment conclusion for the produced neck maps, with their original scale
+windows unchanged.
+
+The underlying topological theorem handles any locally finite family that is
+eventually preconnected and eventually meets the interior of a set with compact
+frontier. It requires no separation axiom or metric. The new containment is a
+further ingredient in Morgan–Tian's annular-end construction, Appendix A,
+Lemmas A.13–A.16, and allows the local neck geometry to be restricted to the
+constructed open end. The finite-horn and cone producers and the headline
+remain open.
+
+Both changed declarations passed thirteen declaration linters and have only
+approved foundational axioms. The frontier leaf passed 902 jobs, the normalized
+dependent passed 14,133 jobs, and the full root passed 20,202 jobs. Only the 21
+retained sorry warnings appeared in the full build; the leaves and audit were
+otherwise clean. Evidence:
+`/private/tmp/wt17-eventual-interior-leaf-build.log`,
+`/private/tmp/wt17-normalized-neck-capture-leaf-build.log`,
+`/private/tmp/wt17-neck-window-capture-audit.log`, and
+`/private/tmp/wt17-neck-window-capture-root-build.log`.

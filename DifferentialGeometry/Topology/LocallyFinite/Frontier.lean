@@ -1,6 +1,8 @@
-import Mathlib.Topology.LocallyFinite
+import DifferentialGeometry.Topology.Connected.Frontier
+import Mathlib.Topology.Compactness.LocallyFinite
+import Mathlib.Order.Filter.Cofinite
 
-open Set
+open Set Filter
 
 namespace LocallyFinite
 
@@ -57,5 +59,19 @@ theorem frontier_iUnion_succ_eq_of_chain {X : Type*} [TopologicalSpace X]
     cases n with
     | zero => exact hn
     | succ n => exact False.elim (hy.2 (mem_iUnion.mpr ⟨n, hn⟩))
+
+theorem eventually_subset_interior_of_isCompact_frontier
+    {X ι : Type*} [TopologicalSpace X] {A : ι → Set X} (hA : LocallyFinite A)
+    {U : Set X} (hfront : IsCompact (frontier U))
+    (hconn : ∀ᶠ i in cofinite, IsPreconnected (A i))
+    (hmeet : ∀ᶠ i in cofinite, (A i ∩ interior U).Nonempty) :
+    ∀ᶠ i in cofinite, A i ⊆ interior U := by
+  have hdisj : ∀ᶠ i in cofinite, Disjoint (A i) (frontier U) := by
+    apply Filter.eventually_cofinite.mpr
+    apply (hA.finite_nonempty_inter_compact hfront).subset
+    intro i hi
+    exact Set.not_disjoint_iff.mp hi
+  filter_upwards [hconn, hdisj, hmeet] with i hc hd hm
+  exact DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier hc hd hm
 
 end LocallyFinite
