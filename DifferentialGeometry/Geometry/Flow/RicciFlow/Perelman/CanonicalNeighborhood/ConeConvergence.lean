@@ -43,13 +43,13 @@ structure ConeAnnulusRealization {g : SmoothRiemannianMetric I3 W} (H : FiniteHo
     Filter.Tendsto err Filter.atTop (nhds 0) ∧ ∀ᶠ i in Filter.atTop,
       ∀ (γ γ' : EndRay H.endpoint) (r r' : ℝ), r ∈ Set.Icc a b → r' ∈ Set.Icc a b →
         r * d i ∈ Set.Ioc 0 γ.length → r' * d i ∈ Set.Ioc 0 γ'.length →
-        openConeDistance (conePoint angles r γ) (conePoint angles r' γ') ≤
+        Metric.coneDistance (conePoint angles r γ) (conePoint angles r' γ') ≤
           dist (γ.point (r * d i)) (γ'.point (r' * d i)) / d i + err i
   dense : ∀ a b : ℝ, 0 < a → a < b → ∃ err : ℕ → ℝ, (∀ i, 0 < err i) ∧
     Filter.Tendsto err Filter.atTop (nhds 0) ∧ ∀ᶠ i in Filter.atTop,
       ∀ r ∈ Set.Icc a b, ∀ q : UniformSpace.Completion angles.quotient,
         ∃ γ : EndRay H.endpoint, r * d i ∈ Set.Ioc 0 γ.length ∧
-          openConeDistance (r, q) (conePoint angles r γ) < err i
+          Metric.coneDistance (r, q) (conePoint angles r γ) < err i
 
 omit [SigmaCompactSpace W] in
 theorem dist_div_le_openConeDistance {g : SmoothRiemannianMetric I3 W} {H : FiniteHorn g}
@@ -57,7 +57,7 @@ theorem dist_div_le_openConeDistance {g : SmoothRiemannianMetric I3 W} {H : Fini
     (hs : s ∈ Set.Ioc 0 γ.length) (ht : t ∈ Set.Ioc 0 γ'.length) (hq : 0 < q)
     (hcmp : endComparisonAngle γ γ' s t ≤ angles.angle γ γ') :
     dist (γ.point s) (γ'.point t) / q ≤
-      openConeDistance (conePoint angles (s / q) γ) (conePoint angles (t / q) γ') := by
+      Metric.coneDistance (conePoint angles (s / q) γ) (conePoint angles (t / q) γ') := by
   have hs0 : 0 < s := hs.1
   have ht0 : 0 < t := ht.1
   obtain ⟨hθ0, hθπ⟩ := angles.range γ γ'
@@ -83,7 +83,7 @@ theorem dist_div_le_openConeDistance {g : SmoothRiemannianMetric I3 W} {H : Fini
       Real.sqrt (s ^ 2 + t ^ 2 - 2 * s * t * Real.cos (angles.angle γ γ')) := by
     have h := Real.sqrt_le_sqrt hmain
     rwa [Real.sqrt_sq (dist_nonneg)] at h
-  have hcone : openConeDistance (conePoint angles (s / q) γ) (conePoint angles (t / q) γ') =
+  have hcone : Metric.coneDistance (conePoint angles (s / q) γ) (conePoint angles (t / q) γ') =
       Real.sqrt (s ^ 2 + t ^ 2 - 2 * s * t * Real.cos (angles.angle γ γ')) / q := by
     have hdist : dist (angles.classOf γ : UniformSpace.Completion angles.quotient)
         (angles.classOf γ' : UniformSpace.Completion angles.quotient) = angles.angle γ γ' := by
@@ -99,7 +99,7 @@ theorem dist_div_le_openConeDistance {g : SmoothRiemannianMetric I3 W} {H : Fini
         ((s / q : ℝ), (angles.classOf γ : UniformSpace.Completion angles.quotient)) from rfl,
       show conePoint angles (t / q) γ' =
         ((t / q : ℝ), (angles.classOf γ' : UniformSpace.Completion angles.quotient)) from rfl]
-    rw [openConeDistance, hmin, harg]
+    rw [Metric.coneDistance, hmin, harg]
     rw [Real.sqrt_div' (x := s ^ 2 + t ^ 2 - 2 * s * t * Real.cos (angles.angle γ γ'))
       (y := q ^ 2) (by positivity)]
     rw [Real.sqrt_sq hq.le]
@@ -332,7 +332,7 @@ theorem nonempty_annularConvergence_of_coneAnnulusRealization
       ⟨mul_pos (lt_of_lt_of_le ha hr'.1) (hpos i),
         le_min hr'len.2 ((mul_le_mul_of_nonneg_right hr'.2 (le_of_lt (hpos i))).trans hiD)⟩
     have hupp : dist (γ.point (r * d i)) (γ'.point (r' * d i)) / d i ≤
-        openConeDistance (conePoint angles r γ) (conePoint angles r' γ') := by
+        Metric.coneDistance (conePoint angles r γ) (conePoint angles r' γ') := by
       have h := dist_div_le_openConeDistance angles hrlen hr'len (hpos i)
         (hangle γ γ' (r * d i) (r' * d i) hsD htD)
       rwa [mul_div_cancel_right₀ r (ne_of_gt (hpos i)),
@@ -374,13 +374,13 @@ structure ConeDistanceRealization {g : SmoothRiemannianMetric I3 W} (H : FiniteH
     Filter.Tendsto err Filter.atTop (nhds 0) ∧ ∀ᶠ i in Filter.atTop,
       ∀ (γ γ' : EndRay H.endpoint) (r r' : ℝ), r ∈ Set.Icc a b → r' ∈ Set.Icc a b →
         r * d i ∈ Set.Ioc 0 γ.length → r' * d i ∈ Set.Ioc 0 γ'.length →
-        openConeDistance (conePoint angles r γ) (conePoint angles r' γ') ≤
+        Metric.coneDistance (conePoint angles r γ) (conePoint angles r' γ') ≤
           dist (γ.point (r * d i)) (γ'.point (r' * d i)) / d i + err i
   dense : ∀ a b : ℝ, 0 < a → a < b → ∃ err : ℕ → ℝ, (∀ i, 0 < err i) ∧
     Filter.Tendsto err Filter.atTop (nhds 0) ∧ ∀ᶠ i in Filter.atTop,
       ∀ r ∈ Set.Icc a b, ∀ q : UniformSpace.Completion angles.quotient,
         ∃ γ : EndRay H.endpoint, r * d i ∈ Set.Ioc 0 γ.length ∧
-          openConeDistance (r, q) (conePoint angles r γ) < err i
+          Metric.coneDistance (r, q) (conePoint angles r γ) < err i
 
 omit [SigmaCompactSpace W] in
 theorem endComparisonAngle_le_endRayAngle {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)

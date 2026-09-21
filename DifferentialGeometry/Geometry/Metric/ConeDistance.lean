@@ -1,0 +1,60 @@
+import Mathlib.Topology.MetricSpace.Pseudo.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+
+set_option autoImplicit false
+noncomputable section
+open Set
+
+namespace Metric
+
+variable {Y : Type*} [PseudoMetricSpace Y]
+
+def coneDistance (x y : ℝ × Y) : ℝ :=
+  Real.sqrt (x.1 ^ 2 + y.1 ^ 2 - 2 * x.1 * y.1 * Real.cos (min Real.pi (dist x.2 y.2)))
+
+theorem coneDistance_nonneg (x y : ℝ × Y) : 0 ≤ coneDistance x y := Real.sqrt_nonneg _
+
+theorem coneDistance_comm (x y : ℝ × Y) : coneDistance x y = coneDistance y x := by
+  unfold coneDistance
+  rw [dist_comm y.2 x.2]
+  congr 1
+  ring
+
+theorem coneDistance_le_abs_sub_add_mul_dist {x y : ℝ × Y} {B : ℝ}
+    (hx : x.1 ∈ Icc 0 B) (hy : y.1 ∈ Icc 0 B) :
+    coneDistance x y ≤ |x.1 - y.1| + B * dist x.2 y.2 := by
+  have hB : 0 ≤ B := hx.1.trans hx.2
+  have htheta : 0 ≤ min Real.pi (dist x.2 y.2) := le_min Real.pi_pos.le dist_nonneg
+  have hthetaSq := pow_le_pow_left₀ htheta (min_le_right Real.pi (dist x.2 y.2)) 2
+  have hcos := Real.one_sub_sq_div_two_le_cos (x := min Real.pi (dist x.2 y.2))
+  have hcosBound : 1 - dist x.2 y.2 ^ 2 / 2 ≤ Real.cos (min Real.pi (dist x.2 y.2)) := by
+    linarith only [hthetaSq, hcos]
+  have hab := mul_nonneg hx.1 hy.1
+  have habB : x.1 * y.1 ≤ B ^ 2 := by
+    simpa only [pow_two] using mul_le_mul hx.2 hy.2 hy.1 hB
+  have hmul := mul_le_mul_of_nonneg_left hcosBound (show 0 ≤ 2 * x.1 * y.1 by nlinarith only [hab])
+  have hbd := mul_le_mul_of_nonneg_right habB (sq_nonneg (dist x.2 y.2))
+  unfold coneDistance
+  apply (Real.sqrt_le_iff).mpr
+  refine ⟨by positivity, ?_⟩
+  have hc := mul_nonneg (abs_nonneg (x.1 - y.1)) (mul_nonneg hB (dist_nonneg (x := x.2) (y := y.2)))
+  nlinarith only [hmul, hbd, hc, sq_abs (x.1 - y.1)]
+
+theorem coneDistance_sq {x y : ℝ × Y} (hx : 0 ≤ x.1) (hy : 0 ≤ y.1) :
+    coneDistance x y ^ 2 =
+      x.1 ^ 2 + y.1 ^ 2 - 2 * x.1 * y.1 * Real.cos (min Real.pi (dist x.2 y.2)) := by
+  apply Real.sq_sqrt
+  have hh := mul_le_mul_of_nonneg_left (Real.cos_le_one (min Real.pi (dist x.2 y.2)))
+    (show 0 ≤ 2 * x.1 * y.1 by positivity)
+  nlinarith only [hh, sq_nonneg (x.1 - y.1)]
+
+theorem coneDistance_recover_radius_sq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
+    (hab : a ≠ b) (u : Y) {x : ℝ × Y} (hx : 0 ≤ x.1) :
+    x.1 ^ 2 = a * b +
+      (b * coneDistance (a, u) x ^ 2 - a * coneDistance (b, u) x ^ 2) / (b - a) := by
+  rw [coneDistance_sq ha hx, coneDistance_sq hb hx]
+  have hne : b - a ≠ 0 := sub_ne_zero.mpr hab.symm
+  field_simp
+  ring
+
+end Metric

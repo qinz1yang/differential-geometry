@@ -2089,3 +2089,79 @@ closed-terminal smooth flow limit also remain. The headline theorem is still
 unproved, and the retained hole count remains 21. The implementation fixes were
 ordinary typeclass and elaboration issues, not a persistent mathematical
 blockage; no switch to Ultra is indicated by this checkpoint.
+
+### Finite cone approximations of the actual punctured annuli
+
+`PuncturedConeApproximation.lean` constructs minimizing radial segments to every
+point of the actual punctured completion ball, their limiting-angle kernel,
+and a compact completed direction space. For each positive annular interval
+and error, it constructs a finite net on both sides of the cosine-law cone
+approximation. Arbitrary finitely many specified direction-radius pairs can be
+included. For every sufficiently small scale, all net points are actual
+manifold points, their radial coordinates are preserved exactly, every actual
+point of the rescaled annulus is approximated, and all pairwise net distances
+have the prescribed distortion bound. This follows from finite angular and
+radial nets and the proved pairwise radial-distance limits, rather than any
+assumption of uniform angular convergence over all directions.
+
+The geometric data are recorded in `PuncturedConeApproximation`; its producer
+is `exists_punctured_annulus_cone_approximation`. The normalized-end theorem now
+returns this object for its own endpoint and compact completion ball. The
+producer is applied inside the existing end construction using its actual
+intrinsic metric, nonnegative sectional curvature, missing-point and compactness
+properties, endpoint avoidance, and the previously constructed compact direction
+spaces. All prior binders and conclusions of the public normalized-end theorem
+remain, checked by removing just this added conjunct and comparing normalized
+statement text. The desired source curvature estimate is not a premise of this
+construction.
+
+The generic cone-distance formula formerly located in `FiniteHornDefs.lean`
+was moved to `Geometry/Metric/ConeDistance.lean` as `Metric.coneDistance`, with
+the weaker pseudometric assumption. Existing cone-convergence consumers were
+updated and audited. New elementary estimates control cone-distance errors from
+angular and radial nets. `coneDistance_recover_radius_sq` proves the attachment's
+identity recovering squared radius from distances to two points on one radial
+line. Its later use is to establish smoothness of the radial coordinate on a
+smooth local limit; that smooth-chart bridge is not yet proved.
+
+The new finite-family producer is `exists_finset_radial_cone_approximation`.
+The existing radial-net statements were strengthened to retain their angular
+net property and to cover the completed cone annulus as well as the radial
+family. Their earlier conclusions are retained. This implements the finite-net
+argument of Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Section 10.4,
+Corollary 10.28 and Proposition 10.29. The radius-recovery identity comes from
+the user's September 21 attachment at
+`/Users/bennettchow/.codex/attachments/4096cdce-6157-44ee-87f0-f427c8029c0b/pasted-text.txt`.
+
+Thirty-one declarations, including the existing cone-convergence consumers,
+passed all thirteen declaration linters. Every inspected transitive axiom
+closure is contained in `propext`, `Classical.choice`, and `Quot.sound`.
+The actual normalized-end assembly passed 14,184 jobs. The full root passed
+20,228 jobs with exactly 21 retained `sorry` warnings and no other diagnostics.
+Evidence: `/private/tmp/wt17-radial-cone-approximation-build.log`,
+`/private/tmp/wt17-normalized-cone-approximation-build.log`,
+`/private/tmp/wt17-cone-approximation-audit.log`, and
+`/private/tmp/wt17-cone-approximation-root-build.log`.
+
+The essential gap closed is finite cone approximation of the entire actual
+punctured annulus, with the required quantifier order and coverage of manifold
+points. The local smooth backward flow patch, its metric-cone identification,
+and the smooth cone chart remain. The headline theorem is still a proof hole;
+the total remains 21. There has been no persistent mathematical blockage or
+reason to recommend Ultra at this checkpoint.
+
+Inspection for the next phase found existing local tools that should be reused:
+`Isometry.isCompact_closedBall_of_punctured_closedBall` in
+`Topology/MetricSpace/CompactBall.lean`,
+`PartialDiffeomorph.riemannianBallOf_subset_image_of_metric_lower` in
+`Geometry/Metric/Comparison/IntrinsicBallImage.lean`, and
+`closedBall_subset_image_of_metric_lower_crossModel` in
+`CanonicalNeighborhood/CrossModelBallCapture.lean`. These supply the actual
+first-exit ball-containment mechanism once compact buffered end balls and
+metric comparisons are installed. The general engine
+`exists_metric_subsequence_on_closed_interval_of_terminal_convergence` in
+`Flow/RicciFlow/Compactness/Metric/Solution/TerminalConvergence.lean` already
+includes the genuine terminal endpoint and does not require completeness of
+the fixed local manifold. Its needed local input data still must be produced
+from the original sources using the established curvature-scale windows and
+fixed-order Shi estimates.

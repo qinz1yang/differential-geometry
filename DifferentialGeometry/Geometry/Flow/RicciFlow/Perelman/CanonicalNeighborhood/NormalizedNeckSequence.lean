@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeApproximation
 import DifferentialGeometry.Geometry.Comparison.Toponogov.CompletionRadialNets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndDirections
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndCurvatureDistance
@@ -339,6 +340,7 @@ private theorem exists_restricted_completion_endpoint
         metricScalarAt g (γ (t n) : M) * (b - (t n : ℝ)) ^ 2 ≤ C) ∧
       ∃ delta : ℝ, 0 < delta ∧ IsCompact (Metric.closedBall qW delta) ∧
         Metric.closedBall qW delta ⊆ insert qW (range (fun x : W => (x : UniformSpace.Completion W))) ∧
+        Nonempty (DifferentialGeometry.Toponogov.PuncturedConeApproximation qW delta) ∧
         (∀ eps > 0, ∃ d ∈ Ioo 0 (delta / 3), ∃ A : Finset C(ℝ, UniformSpace.Completion W),
           (∀ ray ∈ A, ray 0 = qW ∧
             ∀ s ∈ Icc 0 d, ∀ t ∈ Icc 0 d, dist (ray s) (ray t) = |s - t|) ∧
@@ -604,13 +606,18 @@ private theorem exists_restricted_completion_endpoint
       len ray hlen hlenr hzero hmin K hK
     exact ⟨htb, Metric.compactSpace_completion_of_totallyBounded htb⟩
   refine ⟨qW, hqW, hdistW, hmissingW, hmap, hcoeOpen, hregion, hcompact, hKnhds,
-    hscalarW, hquantW, havoid, hupper, delta, hdelta, hcompactBall, hcoverBall, ?_, hdir⟩
-  intro eps heps
-  apply DifferentialGeometry.Toponogov.exists_radial_sphere_nets_of_totallyBounded_limiting_directions
-    (g.restrictOpen W) hmetricW hdelta hcompactBall hcoverBall ?_ heps
-  intro ι len ray hlen hlenr hzero hmin
-  obtain ⟨K, hK, htb, _⟩ := hdir len ray hlen hlenr hzero hmin
-  exact ⟨K, hK, htb⟩
+    hscalarW, hquantW, havoid, hupper, delta, hdelta, hcompactBall, hcoverBall, ?_, ?_, hdir⟩
+  · apply DifferentialGeometry.Toponogov.exists_punctured_annulus_cone_approximation
+      (g.restrictOpen W) hmetricW hsecW hmissingW hdelta hcompactBall hcoverBall havoid
+    intro ι len ray hlen hlenr hzero hmin
+    obtain ⟨K, hK, htb, _⟩ := hdir len ray hlen hlenr hzero hmin
+    exact ⟨K, hK, htb⟩
+  · intro eps heps
+    apply DifferentialGeometry.Toponogov.exists_radial_sphere_nets_of_totallyBounded_limiting_directions
+      (g.restrictOpen W) hmetricW hdelta hcompactBall hcoverBall ?_ heps
+    intro ι len ray hlen hlenr hzero hmin
+    obtain ⟨K, hK, htb, _⟩ := hdir len ray hlen hlenr hzero hmin
+    exact ⟨K, hK, htb⟩
 
 
 private theorem exists_neck_sequence_with_missing_completion_endpoint
@@ -789,6 +796,7 @@ private theorem exists_neck_sequence_with_missing_completion_endpoint
                               IsCompact (Metric.closedBall qW delta) ∧
                               Metric.closedBall qW delta ⊆ insert qW
                                 (range (fun x : W => (x : UniformSpace.Completion W))) ∧
+                                Nonempty (DifferentialGeometry.Toponogov.PuncturedConeApproximation qW delta) ∧
                                 (∀ eps > 0, ∃ d ∈ Ioo 0 (delta / 3), ∃ A : Finset C(ℝ, UniformSpace.Completion W),
                                   (∀ ray ∈ A, ray 0 = qW ∧
                                     ∀ s ∈ Icc 0 d, ∀ t ∈ Icc 0 d, dist (ray s) (ray t) = |s - t|) ∧
@@ -1282,6 +1290,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                               IsCompact (Metric.closedBall qW delta) ∧
                                               Metric.closedBall qW delta ⊆ insert qW
                                                 (range (fun x : W => (x : UniformSpace.Completion W))) ∧
+                                                Nonempty (DifferentialGeometry.Toponogov.PuncturedConeApproximation qW delta) ∧
                                                 (∀ eps > 0, ∃ d ∈ Ioo 0 (delta / 3), ∃ A : Finset C(ℝ, UniformSpace.Completion W),
                                                   (∀ ray ∈ A, ray 0 = qW ∧
                                                     ∀ s ∈ Icc 0 d, ∀ t ∈ Icc 0 d, dist (ray s) (ray t) = |s - t|) ∧

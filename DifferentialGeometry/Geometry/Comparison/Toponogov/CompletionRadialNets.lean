@@ -48,7 +48,7 @@ theorem exists_radial_sphere_nets_of_totallyBounded_limiting_directions
     simpa only [hzero, sub_zero, abs_of_pos hs.1, dist_comm q] using
       hmin i s ⟨hs.1.le, hs.2⟩ 0 ⟨le_rfl, (hL i).le⟩
   obtain ⟨K, hK, htb⟩ := hdir L gamma hL hLr hzero hmin
-  obtain ⟨B, d0, hd0, hBd, hB⟩ := exists_finset_radial_net hrad hL K hK htb heps
+  obtain ⟨B, d0, hd0, hBd, hB, _⟩ := exists_finset_radial_net hrad hL K hK htb heps
   let d := min d0 (r / 6)
   have hd : 0 < d := lt_min hd0 (by positivity)
   have hdr : d < r / 3 := (min_le_right _ _).trans_lt (by linarith)
