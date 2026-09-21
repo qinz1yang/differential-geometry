@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowScalarPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedGoodPointBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedUniformCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaModelCurvatureWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
@@ -229,6 +230,47 @@ theorem eventually_edist_gt_of_scalar_tendsto_atTop {kappa : ℝ} (hkappa : 0 < 
       ⟨by linarith [div_pos hc hL], le_rfl⟩⟩
   have hb := ((hi (s i) hsi (z i)).2 (y i) (s i) hmem).2.1
   linarith
+
+theorem exists_curvature_radius_lower_bound_of_scalar_tendsto_atTop {r : ℝ} (hr : 0 ≤ r) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, eps ≤ epsStar →
+      ∀ (kappa sigma : ℝ) (Phi : ℝ → ℝ) (X : NormalizedSequence.{u} eps kappa sigma Phi)
+        (s : ℕ → ℝ) (z y : ∀ i, (X.term i).M) (R d : ℝ) (ell : ℕ → ℝ),
+        (∀ᶠ i in atTop, s i ∈ Icc (-(X.depth i)) 0) → 2 < R →
+        Tendsto (fun i => (X.term i).S.scalar (s i) (z i)) atTop (𝓝 R) →
+        Tendsto (fun i => (X.term i).S.scalar (s i) (y i)) atTop atTop →
+        Tendsto ell atTop (𝓝 d) →
+        (∀ᶠ i in atTop, riemannianEDistOf ((X.term i).S.base.metric (s i)) (z i) (y i) ≤
+          ENNReal.ofReal (ell i)) → r / Real.sqrt R ≤ d := by
+  obtain ⟨C, hC, hbounds⟩ := exists_uniform_windowed_source_scalar_bounds.{u}
+  obtain ⟨epsStar, hepsStar, hbound⟩ := hbounds r hr
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps kappa sigma Phi X s z y R d ell hs hR hz hy hell hdist
+  have hR0 : 0 < R := by linarith
+  have hsep : ∀ᶠ i in atTop, ENNReal.ofReal (r / Real.sqrt ((X.term i).S.scalar (s i) (z i))) <
+      ENNReal.ofReal (ell i) := by
+    filter_upwards [hs, hz.eventually (eventually_gt_nhds hR),
+      hz.eventually (eventually_lt_nhds (lt_add_one R)),
+      hy.eventually (eventually_gt_atTop (C r * (R + 1))), hdist] with i hsi hzi hzi' hyi hdi
+    have hfar : ENNReal.ofReal (r / Real.sqrt ((X.term i).S.scalar (s i) (z i))) <
+        riemannianEDistOf ((X.term i).S.base.metric (s i)) (z i) (y i) := by
+      by_contra hh
+      obtain ⟨W, -⟩ := X.higher_good i (s i) hsi (z i) hzi.le
+      have hb := hbound (X.term i).M (X.interval i) (X.term i).S eps kappa (z i) (s i)
+        W heps (y i) (not_lt.mp hh)
+      have hmul := mul_le_mul_of_nonneg_left hzi'.le (hC r).le
+      exact (not_le.mpr hyi) ((le_abs_self _).trans (hb.trans hmul))
+    exact hfar.trans_le hdi
+  have hleft : Tendsto (fun i => ENNReal.ofReal
+      (r / Real.sqrt ((X.term i).S.scalar (s i) (z i)))) atTop (𝓝 (ENNReal.ofReal (r / Real.sqrt R))) :=
+    ENNReal.continuous_ofReal.tendsto _ |>.comp
+      (tendsto_const_nhds.div (Real.continuous_sqrt.tendsto R |>.comp hz)
+        (Real.sqrt_pos.mpr hR0).ne')
+  have hright : Tendsto (fun i => ENNReal.ofReal (ell i)) atTop (𝓝 (ENNReal.ofReal d)) :=
+    ENNReal.continuous_ofReal.tendsto d |>.comp hell
+  have hdd : 0 ≤ d := ge_of_tendsto hell (hsep.mono fun _ hi =>
+    (ENNReal.ofReal_pos.mp (lt_of_le_of_lt bot_le hi)).le)
+  exact (ENNReal.ofReal_le_ofReal_iff hdd).mp
+    (le_of_tendsto_of_tendsto hleft hright (hsep.mono fun _ hi => hi.le))
 
 theorem NormalizedSequence.pinching_error_eventually
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)

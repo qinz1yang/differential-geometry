@@ -691,3 +691,51 @@ signatures and evidence are recorded in
 `/private/tmp/wt17-normalized-scalar-escape-repair-build.log`,
 `/private/tmp/wt17-scalar-endpoint-final-root-build.log`, and
 `/private/tmp/wt17-scalar-convergence-final-audit.log`.
+
+## Quantitative curvature separation at the missing endpoint
+
+The continuation after `9b375c5f3` produces uniform curvature bounds on actual
+source balls from `WindowedModelWitness`. For each fixed normalized radius, a
+positive epsilon threshold works for every source and every model parameter.
+The curvature bound holds on the ball defined at any time in the model window,
+throughout that full window. Compactness and ball containment come from the
+proved buffered comparison and first-exit argument. The source itself is never
+treated as an ancient solution.
+
+The new module `CanonicalNeighborhood/WindowedUniformCurvature.lean` keeps this
+universal-model input above the existing `WindowedSourceCurvature.lean` transport
+interface and is registered in the flat root. Its physical-radius scalar
+corollary gives a uniform bound on balls of radius `r / sqrt(Q)` around a model
+point of scalar curvature `Q`. Applied to the higher-curvature witnesses in a
+normalized sequence, it separates bounded-scalar convergent points from points
+whose scalar curvature diverges. The comparison holds throughout the specified
+source time interval and requires no source Ricci-sign assumption.
+
+Both escaping-curve construction theorems now accept a prescribed nonnegative
+constant `A`. For a sufficiently small epsilon depending on this constant, their
+actual output satisfies `A^2 <= R * d^2` wherever `R > 2`, where `d` is the
+remaining segment length, or equivalently the distance to the constructed
+completion point. The strict scalar threshold is the one required to obtain
+higher-curvature source witnesses after convergence. Scalar divergence ensures
+that this condition holds near the endpoint. All previous source, convergence,
+completion, and curvature data remain in the conclusions. Both preceding
+statements compile as corollaries by choosing `A = 0` and forgetting the added
+estimate.
+
+This proves the quantitative separation input in Kleiner--Lott, Section 52,
+Lemma 52.14(1), printed page 2703 (PDF page 117), in
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+The threshold is allowed to shrink with `A`; the statement does not assert an
+arbitrarily large lower bound for one fixed epsilon. The neck construction in
+Lemma 52.14(2), the horn/cone producers, and the named bounded-distance headline
+remain open. The source debt inventory remains 21.
+
+The final changed-leaf and affected-consumer build passed 13,992 jobs without
+diagnostics. The final root build passed 20,171 jobs with exactly the 21 retained
+`sorry` warnings and no other diagnostics. All five added or strengthened public
+declarations passed thirteen declaration linters and have standard-axiom-only
+transitive closures. The two exact preceding construction statements also compiled
+as corollaries. Evidence is in
+`/private/tmp/wt17-quantitative-escape-interface-build.log`,
+`/private/tmp/wt17-quantitative-escape-final-root-build.log`, and
+`/private/tmp/wt17-quantitative-escape-audit.log`.

@@ -163,7 +163,48 @@ private theorem exists_geodesic_tail_curves
   choose γ s hs using hchoice
   exact ⟨N, γ, s, hs⟩
 
-theorem exists_isometric_curve_with_missing_endpoint {kappa : ℝ} (hkappa : 0 < kappa) :
+private theorem scalar_remaining_length_lower_bound_of_escaping_curves {r : ℝ} (hr : 0 ≤ r) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, eps ≤ epsStar →
+      ∀ (kappa sigma : ℝ) (Phi : ℝ → ℝ) (X : NormalizedSequence.{u} eps kappa sigma Phi)
+        (f : ℕ → ℕ), StrictMono f → ∀ p : ∀ n, (X.term (f n)).M,
+        Tendsto (fun n => (X.term (f n)).S.scalar 0 (p n)) atTop atTop →
+        ∀ (rho : ℝ) (ell : ℕ → ℝ), Tendsto ell atTop (𝓝 rho) →
+          ∀ (γ : ∀ n, Ico 0 rho → (X.term (f n)).M),
+            (∀ t : Ico 0 rho, ∀ᶠ n in atTop,
+              riemannianEDistOf ((X.term (f n)).S.base.metric 0) (γ n t) (p n) ≤
+                ENNReal.ofReal (ell n - t)) →
+          ∀ (L : PointedRiemannianManifold.{u, 0, 0} (I := I3))
+            (maps : PointedRiemannianConvergenceMaps (X.toFlowSequence.atTime 0) L f)
+            (C : MetricConvergenceData maps),
+            (∀ n, C.domain n = CanonicalMetricCompactness.canonicalSourceData maps n) →
+            ∀ g : Ico 0 rho → L.M,
+              (∀ t : Ico 0 rho, ∀ᶠ n in atTop, γ n t ∈ maps.target n) →
+              (∀ t : Ico 0 rho, Tendsto
+                (fun n => (maps.partialDiffeomorph n).symm (γ n t)) atTop (𝓝 (g t))) →
+              ∀ t : Ico 0 rho, 2 < metricScalarAt L.metric (g t) →
+                r ^ 2 ≤ metricScalarAt L.metric (g t) * (rho - t) ^ 2 := by
+  obtain ⟨epsStar, hepsStar, hsep⟩ := exists_curvature_radius_lower_bound_of_scalar_tendsto_atTop.{u} hr
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps kappa sigma Phi X f hf p hp rho ell hell γ hdist L maps C hcanonical
+    g hstay hconv t hR
+  have hscalar := pointedScalar_tendsto_of_inverse_tendsto C hcanonical
+    (fun n => γ n t) (hstay t) (hconv t)
+  have hbound := hsep eps heps kappa sigma Phi (X.reindex f hf) (fun _ => 0)
+    (fun n => γ n t) p (metricScalarAt L.metric (g t)) (rho - t) (fun n => ell n - t)
+    (Eventually.of_forall fun n => ⟨by
+      change -(X.depth (f n)) ≤ 0
+      linarith [X.depth_pos (f n)], le_rfl⟩)
+    hR hscalar hp (hell.sub_const (t : ℝ)) (hdist t)
+  have hRpos : 0 < metricScalarAt L.metric (g t) := by linarith
+  have hroot : 0 < Real.sqrt (metricScalarAt L.metric (g t)) := Real.sqrt_pos.mpr hRpos
+  have hmul := (div_le_iff₀ hroot).mp hbound
+  have hsq := pow_le_pow_left₀ hr hmul 2
+  rw [mul_pow, Real.sq_sqrt hRpos.le] at hsq
+  simpa only [mul_comm] using hsq
+
+
+theorem exists_isometric_curve_with_missing_endpoint {kappa : ℝ} (hkappa : 0 < kappa)
+    {A : ℝ} (hA : 0 ≤ A) :
     ∃ epsStar c : ℝ, 0 < epsStar ∧ 0 < c ∧
       ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
         ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
@@ -213,13 +254,19 @@ theorem exists_isometric_curve_with_missing_endpoint {kappa : ℝ} (hkappa : 0 <
                       (∀ x : L.M, ¬ Tendsto g
                         (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) (𝓝 x)) ∧
                       Tendsto (fun t => |metricScalarAt L.metric (g t)|)
-                        (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) atTop := by
+                        (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) atTop ∧
+                      ∀ t : Ico 0 rho, 2 < metricScalarAt L.metric (g t) →
+                        A ^ 2 ≤ metricScalarAt L.metric (g t) * (rho - t) ^ 2 := by
   obtain ⟨epsGeo, c, hepsGeo, hc, hgeo⟩ := exists_high_curvature_geodesic_tail hkappa
   obtain ⟨epsScalar, hepsScalar, hescape⟩ := abs_scalar_tendsto_atTop_of_escaping_curves hkappa
-  refine ⟨min epsGeo epsScalar, c, lt_min hepsGeo hepsScalar, hc, ?_⟩
+  obtain ⟨epsDistance, hepsDistance, hlength⟩ :=
+    scalar_remaining_length_lower_bound_of_escaping_curves hA
+  refine ⟨min epsGeo (min epsScalar epsDistance), c,
+    lt_min hepsGeo (lt_min hepsScalar hepsDistance), hc, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X f hf p hp rho hrho hdist L maps C hcanonical
     r hr hrconv htarget hlower hcompact
-  obtain ⟨hleGeo, hleScalar⟩ := le_min_iff.mp hle
+  obtain ⟨hleGeo, hleRest⟩ := le_min_iff.mp hle
+  obtain ⟨hleScalar, hleDistance⟩ := le_min_iff.mp hleRest
   let : EMetricSpace L.M := L.emetricSpace
   have hupper : ∀ K : Set L.M, IsCompact K → ∀ D : ℝ, 1 < D → ∀ᶠ n in atTop,
       ∀ x ∈ K, ∀ v : TangentSpace I3 x,
@@ -284,15 +331,9 @@ theorem exists_isometric_curve_with_missing_endpoint {kappa : ℝ} (hkappa : 0 <
     change (C.domain (phi n)).compSubseq phi hphi n = _
     rw [hcanonical (phi n)]
     rfl
-  have hblow : Tendsto (fun t => |metricScalarAt L.metric (g t)|)
-      (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) atTop := by
-    apply hescape eps heps hleScalar sigma hsigma Phi hPhi X (f ∘ phi) (hf.comp hphi)
-      (fun n => p (phi n)) (hp.comp hphi.tendsto_atTop) rho (ell ∘ eta)
-      ((hdist.comp hshift.tendsto_atTop).comp heta.tendsto_atTop)
-      (fun n t => γ (eta n) t) ?_ L Θ (C.compSubseq phi hphi) hcanonical' g
-      (fun t => hstay t t.property) (fun t =>
-        (hconv {t} isCompact_singleton).tendsto_at (mem_singleton t))
-    intro t
+  have hdistEnd (t : Ico 0 rho) : ∀ᶠ n in atTop,
+      riemannianEDistOf ((X.term ((f ∘ phi) n)).S.base.metric 0)
+        (γ (eta n) t) (p (phi n)) ≤ ENNReal.ofReal ((ell ∘ eta) n - t) := by
     filter_upwards [((hdist.comp hshift.tendsto_atTop).comp heta.tendsto_atTop).eventually
       (eventually_gt_nhds t.property.2)] with n hn
     have hb := Geometry.riemannianEDistOf_le_of_curve_speed_bound
@@ -306,8 +347,20 @@ theorem exists_isometric_curve_with_missing_endpoint {kappa : ℝ} (hkappa : 0 <
       (γ (eta n) t) (γ (eta n) (ell (eta n))) ≤ ENNReal.ofReal (ell (eta n) - t) at hb
     rw [hend] at hb
     exact hb
+  have hblow := hescape eps heps hleScalar sigma hsigma Phi hPhi X (f ∘ phi)
+    (hf.comp hphi) (fun n => p (phi n)) (hp.comp hphi.tendsto_atTop) rho (ell ∘ eta)
+    ((hdist.comp hshift.tendsto_atTop).comp heta.tendsto_atTop)
+    (fun n t => γ (eta n) t) hdistEnd L Θ (C.compSubseq phi hphi) hcanonical' g
+    (fun t => hstay t t.property) (fun t =>
+      (hconv {t} isCompact_singleton).tendsto_at (mem_singleton t))
+  have hquant := hlength eps hleDistance kappa sigma Phi X (f ∘ phi)
+    (hf.comp hphi) (fun n => p (phi n)) (hp.comp hphi.tendsto_atTop) rho (ell ∘ eta)
+    ((hdist.comp hshift.tendsto_atTop).comp heta.tendsto_atTop)
+    (fun n t => γ (eta n) t) hdistEnd L Θ (C.compSubseq phi hphi) hcanonical' g
+    (fun t => hstay t t.property) (fun t =>
+      (hconv {t} isCompact_singleton).tendsto_at (mem_singleton t))
   refine ⟨phi, (fun n => γ (eta n)), (fun n => s (eta n)), g, hphi, hg, hbase,
-    (fun n => hγdata (eta n)), hconv, ?_, hblow⟩
+    (fun n => hγdata (eta n)), hconv, ?_, hblow, hquant⟩
   intro x hx
   have hmap : NeBot (map (Subtype.val : Ico 0 rho → ℝ)
       (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho))) := by
@@ -320,7 +373,7 @@ theorem exists_isometric_curve_with_missing_endpoint {kappa : ℝ} (hkappa : 0 <
   exact not_tendsto_nhds_of_tendsto_atTop hblow _ hscalar
 
 theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDistance
-    {kappa : ℝ} (hkappa : 0 < kappa) :
+    {kappa : ℝ} (hkappa : 0 < kappa) {A : ℝ} (hA : 0 ≤ A) :
     ∃ epsStar c : ℝ, 0 < epsStar ∧ 0 < c ∧
       ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
         ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
@@ -384,10 +437,13 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
                           (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) (𝓝 q) ∧
                         (∀ t : Ico 0 F.radius, dist q (g t : UniformSpace.Completion L.M) =
                           F.radius - t) ∧
-                        q ∉ range (fun x : L.M => (x : UniformSpace.Completion L.M)) := by
+                        (q ∉ range (fun x : L.M => (x : UniformSpace.Completion L.M))) ∧
+                        ∀ t : Ico 0 F.radius, 2 < metricScalarAt L.metric (g t) →
+                          A ^ 2 ≤ metricScalarAt L.metric (g t) *
+                            dist q (g t : UniformSpace.Completion L.M) ^ 2 := by
   obtain ⟨epsLocal, hepsLocal, hlocal⟩ :=
     exists_terminal_pointed_convergence_of_not_boundedAtDistance hkappa
-  obtain ⟨epsCurve, c, hepsCurve, hc, hcurve⟩ := exists_isometric_curve_with_missing_endpoint hkappa
+  obtain ⟨epsCurve, c, hepsCurve, hc, hcurve⟩ := exists_isometric_curve_with_missing_endpoint hkappa hA
   refine ⟨min epsLocal epsCurve, c, lt_min hepsLocal hepsCurve, hc, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X hnot
   obtain ⟨f, hf, F, r, hr, hrT, L, maps, C, hcanonical, htargets, hmetrics,
@@ -413,7 +469,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
     obtain ⟨N, hN⟩ := hmetrics eta heta
     filter_upwards [eventually_ge_atTop N] with n hn
     exact fun x hx v => (hN n hn x hx v).1
-  obtain ⟨phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow⟩ :=
+  obtain ⟨phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow, hquant⟩ :=
     hcurve eps heps (hle.trans (min_le_right _ _)) sigma hsigma Phi hPhi X f hf
       F.points F.curvature_limit F.radius F.radius_pos F.distance_limit L maps C.metrics hcanonical
       r (fun n => (hr n).1) hrT (fun n => by rw [htargets n]) hlower hcompact
@@ -427,8 +483,11 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
   obtain ⟨q, hq, hdist⟩ := Geometry.exists_completion_endpoint_of_isometry F.radius_pos hg
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblowScalar,
-    q, hq, hdist, ?_⟩
-  rintro ⟨x, rfl⟩
-  exact hno x ((UniformSpace.Completion.isUniformInducing_coe L.M).isInducing.tendsto_nhds_iff.mpr hq)
+    q, hq, hdist, ?_, ?_⟩
+  · rintro ⟨x, rfl⟩
+    exact hno x ((UniformSpace.Completion.isUniformInducing_coe L.M).isInducing.tendsto_nhds_iff.mpr hq)
+  · intro t ht
+    rw [hdist t]
+    exact hquant t ht
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
