@@ -9157,6 +9157,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSupportedModif
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusOpenNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellLocallyFiniteModification
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellSolidTorusNeighborhoods
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNestedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNestedDescent
 /-!
 # Differential geometry and geometric analysis
 -/
