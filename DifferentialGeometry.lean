@@ -9159,6 +9159,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellLocallyFin
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellSolidTorusNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNestedCell
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNestedDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReductionOrientable
 /-!
 # Differential geometry and geometric analysis
 -/
