@@ -49,7 +49,7 @@ private theorem centralToOpen_continuousOn (δ : ℝ)
 
 private def centralPath {d : normalizedDatum g x₀ δ k}
     (γ : ℝ → neckCentralDomain δ) : ℝ → d.oriented.controlledImage :=
-  fun t => ⟨d.oriented.controlledMap (centralToOpen δ (γ t)),
+  fun t => ⟨d.oriented.controlledMap (⟨(γ t).1.1, (γ t).2⟩),
     d.oriented.controlledMap_mem_controlledImage _⟩
 
 private theorem centralPath_continuousOn {d : normalizedDatum g x₀ δ k}
@@ -71,7 +71,7 @@ private theorem centralPath_val_eq {d : normalizedDatum g x₀ δ k}
     (Subtype.val ∘ centralPath (d := d) γ) =
       (fun t => d.oriented.map (γ t).1) := by
   funext t
-  change d.oriented.controlledMap (centralToOpen δ (γ t)) = d.oriented.map (γ t).1
+  change d.oriented.controlledMap (⟨(γ t).1.1, (γ t).2⟩) = d.oriented.map (γ t).1
   rw [d.oriented.controlledMap_apply]
   rfl
 
@@ -83,7 +83,7 @@ theorem CanonicalStaticInsertionWitness.collapse_length_of_toNormalizedNeck
     (hγ : ContinuousOn γ (Icc a b)) :
     DifferentialGeometry.Geometry.riemannianCurveVariation w.data.outMetric
         (w.data.collapse ∘ (fun t =>
-          (⟨d.oriented.controlledMap (centralToOpen δ (γ t)),
+          (⟨d.oriented.controlledMap (⟨(γ t).1.1, (γ t).2⟩),
             d.oriented.controlledMap_mem_controlledImage _⟩ : d.oriented.controlledImage))) a b ≤
       DifferentialGeometry.Geometry.riemannianCurveVariation g
         (fun t => d.oriented.map (γ t).1) a b := by
@@ -95,10 +95,13 @@ theorem CanonicalStaticInsertionWitness.collapse_length_of_toNormalizedNeck
     (centralPath_continuousOn (d := d) γ hγ)] at hp
   rw [centralPath_val_eq (d := d) γ] at hp
   have hpath : centralPath (d := d) γ = (fun t =>
-      (⟨d.oriented.controlledMap (centralToOpen δ (γ t)),
+      (⟨d.oriented.controlledMap (⟨(γ t).1.1, (γ t).2⟩),
         d.oriented.controlledMap_mem_controlledImage _⟩ : d.oriented.controlledImage)) := by
     rfl
   rw [hpath] at hp
   exact hp
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+set_option linter.hashCommand false in
+#lint-
