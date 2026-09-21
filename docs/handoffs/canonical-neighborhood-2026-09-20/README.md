@@ -608,3 +608,38 @@ is registered in the flat root. Temporary evidence is in
 After the final Lean edit, the full root build passed 20,168 jobs with the same 21 retained
 `sorry` warnings and no other diagnostics. The root evidence is
 `/private/tmp/wt17-missing-endpoint-root-build.log`.
+
+
+## The completion endpoint of the escaping segment
+
+The continuation after `259beb3ad90a5c25cbf3a280e4b629932e821a45` strengthens
+`exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDistance`:
+the produced limit is path connected, and the escaping segment converges to a point
+of its canonical intrinsic metric completion outside the smooth manifold. The distance
+from that point to the segment at parameter `t` is exactly `F.radius - t`. All earlier
+source geodesic, scalar-tail, convergence, and limit curvature data are retained.
+The named bounded-distance target is still unchanged and open.
+
+Three general foundations support this construction. Positive-radius intrinsic open
+balls are path connected without completeness or finite-dimensionality assumptions.
+Pointed convergence maps with path-connected targets at infinitely many indices have
+a path-connected limit. Finally, an isometric half-open real interval in any
+pseudometric space has a completion endpoint with the exact remaining-length distance
+formula. These results live respectively in `Geometry/Metric/Distance/Ball.lean`,
+`Geometry/Compactness/CheegerGromov/Pointed/Convergence/Connected.lean`, and
+`Geometry/Metric/Segment.lean`. The new connectedness leaf is registered in the flat root.
+
+The normalized application obtains connectedness from its actual source-ball targets.
+This makes its intrinsic extended distances finite, so the existing metric-completion
+API applies. The already-proved absence of a smooth endpoint shows that the constructed
+completion point lies outside the embedded manifold. This realizes the completion
+step in Kleiner--Lott Section 52, Step 2, printed page 2703 (PDF page 117), rather than
+assuming a missing point or an arbitrary ambient metric.
+
+The three foundation leaves passed their build (4,143 jobs), and the normalized
+application and affected dependencies passed their build (13,982 jobs), without
+diagnostics. All four added or strengthened declarations passed thirteen declaration
+linters and have only `propext`, `Classical.choice`, and `Quot.sound` in their transitive
+axiom closures. Evidence is in `/private/tmp/wt17-completion-foundations-build.log`,
+`/private/tmp/wt17-normalized-completion-build.log`, and
+`/private/tmp/wt17-completion-audit.log`.

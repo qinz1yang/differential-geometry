@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedEscapeGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLocalCompactness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Curves
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Connected
+import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedScalarConvergence
 
@@ -260,6 +262,8 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
               ∃ F : FiniteControlledRadius (X.reindex f hf), ∃ r : ℕ → ℝ,
                 (∀ k, 0 < r k ∧ r k < F.radius) ∧ Tendsto r atTop (nhds F.radius) ∧
                 ∃ L : PointedRiemannianManifold.{u, 0, 0} (I := I3),
+                ∃ hL : PathConnectedSpace L.M,
+                let _ : PathConnectedSpace L.M := hL
                 ∃ maps : PointedRiemannianConvergenceMaps (X.toFlowSequence.atTime 0) L f,
                   ∃ C : PointedRiemannianConverges (X.toFlowSequence.atTime 0) L f maps,
                   (∀ k, C.metrics.domain k = CanonicalMetricCompactness.canonicalSourceData maps k) ∧
@@ -281,6 +285,8 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
                   (∀ (x : L.M) (v w : TangentSpace I3 x),
                     0 ≤ metricRm04StandardAt L.metric x v w w v) ∧
                     let _ : EMetricSpace L.M := L.emetricSpace
+                    let _ : MetricSpace L.M := EMetricSpace.toMetricSpace
+                      (fun x y => riemannianEDistOf_ne_top L.metric x y)
                     ∃ phi : ℕ → ℕ, ∃ (γ : ∀ n, ℝ → (X.term (f (phi n))).M)
                       (s : ℕ → ℝ) (g : C(Ico 0 F.radius, L.M)),
                       StrictMono phi ∧ Isometry g ∧ g ⟨0, le_rfl, F.radius_pos⟩ = L.basepoint ∧
@@ -302,8 +308,14 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
                       (∀ A : Set (Ico 0 F.radius), IsCompact A → TendstoUniformlyOn
                         (fun n (t : Ico 0 F.radius) => (maps.partialDiffeomorph (phi n)).symm (γ n t))
                         g atTop A) ∧
-                      ∀ x : L.M, ¬ Tendsto g
-                        (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) (𝓝 x) := by
+                      (∀ x : L.M, ¬ Tendsto g
+                        (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) (𝓝 x)) ∧
+                      ∃ q : UniformSpace.Completion L.M,
+                        Tendsto (fun t => (g t : UniformSpace.Completion L.M))
+                          (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) (𝓝 q) ∧
+                        (∀ t : Ico 0 F.radius, dist q (g t : UniformSpace.Completion L.M) =
+                          F.radius - t) ∧
+                        q ∉ range (fun x : L.M => (x : UniformSpace.Completion L.M)) := by
   obtain ⟨epsLocal, hepsLocal, hlocal⟩ :=
     exists_terminal_pointed_convergence_of_not_boundedAtDistance hkappa
   obtain ⟨epsCurve, c, hepsCurve, hc, hcurve⟩ := exists_isometric_curve_with_missing_endpoint hkappa
@@ -312,15 +324,35 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_of_not_boundedAtDist
   obtain ⟨f, hf, F, r, hr, hrT, L, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec⟩ := hlocal eps heps (hle.trans (min_le_left _ _))
       sigma hsigma Phi hPhi X hnot
-  refine ⟨f, hf, F, r, hr, hrT, L, maps, C, hcanonical, htargets, hmetrics,
-    hcompact, hbase, hsec, ?_⟩
-  apply hcurve eps heps (hle.trans (min_le_right _ _)) sigma hsigma Phi hPhi X f hf
-    F.points F.curvature_limit F.radius F.radius_pos F.distance_limit L maps C.metrics hcanonical
-    r (fun n => (hr n).1) hrT (fun n => by rw [htargets n])
-  · intro eta heta
+  have hL : PathConnectedSpace L.M :=
+    maps.path_connected_space_of_frequently_path_connected_targets
+      (Eventually.frequently (Eventually.of_forall fun n => by
+        rw [htargets n]
+        exact isPathConnected_riemannianBallOf ((X.term (f n)).S.base.metric 0)
+          (X.term (f n)).basepoint (hr n).1))
+  let _ : PathConnectedSpace L.M := hL
+  let _ : EMetricSpace L.M := L.emetricSpace
+  let _ : MetricSpace L.M := EMetricSpace.toMetricSpace
+    (fun x y => riemannianEDistOf_ne_top L.metric x y)
+  have hlower : ∀ eta : ℝ, 0 < eta → ∀ᶠ n in atTop,
+      ∀ x ∈ maps.source n, ∀ v : TangentSpace I3 x,
+        (1 - eta) * L.metric.inner x v v ≤
+          ((X.term (f n)).S.base.metric 0).inner (maps.partialDiffeomorph n x)
+            (mfderiv I3 I3 (maps.partialDiffeomorph n) x v)
+            (mfderiv I3 I3 (maps.partialDiffeomorph n) x v) := by
+    intro eta heta
     obtain ⟨N, hN⟩ := hmetrics eta heta
     filter_upwards [eventually_ge_atTop N] with n hn
     exact fun x hx v => (hN n hn x hx v).1
-  · exact hcompact
+  obtain ⟨phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno⟩ :=
+    hcurve eps heps (hle.trans (min_le_right _ _)) sigma hsigma Phi hPhi X f hf
+      F.points F.curvature_limit F.radius F.radius_pos F.distance_limit L maps C.metrics hcanonical
+      r (fun n => (hr n).1) hrT (fun n => by rw [htargets n]) hlower hcompact
+  obtain ⟨q, hq, hdist⟩ := Geometry.exists_completion_endpoint_of_isometry F.radius_pos hg
+  refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
+    hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno,
+    q, hq, hdist, ?_⟩
+  rintro ⟨x, rfl⟩
+  exact hno x ((UniformSpace.Completion.isUniformInducing_coe L.M).isInducing.tendsto_nhds_iff.mpr hq)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
