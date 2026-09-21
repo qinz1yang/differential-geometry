@@ -211,4 +211,73 @@ theorem PuncturedConeApproximation.exists_annulus_approximation
     rw [hrad] at hh
     exact (hh.trans_lt (hp x)).trans (by linarith)
 
+theorem PuncturedConeApproximation.exists_ball_approximation
+    (C : PuncturedConeApproximation q r) {delta eps : ℝ}
+    (hdelta : 0 < delta) (hsmall : delta < 1 / 2) (heps : 0 < eps) :
+    let _ := C.angles.metricSpace
+    let _ : MetricSpace (Metric.ConeAnnulus (1 / 2) (3 / 2)
+      (UniformSpace.Completion (Quotient C.angles.setoid))) :=
+      C.annulusMetricSpace (by norm_num : 0 < (1 / 2 : ℝ))
+    ∀ᶠ rho in 𝓝[>] (0 : ℝ), ∃ hpos : 0 < rho,
+      ∀ p : M, dist (p : UniformSpace.Completion M) q = rho →
+        ∃ F : Metric.closedBall p (delta * rho) →
+          Metric.ConeAnnulus (1 / 2) (3 / 2)
+            (UniformSpace.Completion (Quotient C.angles.setoid)),
+          (∀ x y, |dist (F x) (F y) - dist (x : M) (y : M) / rho| < eps) ∧
+          (∀ z ∈ Metric.ball (F ⟨p, Metric.mem_closedBall_self (mul_pos hdelta hpos).le⟩)
+            (delta / 2), ∃ x, dist z (F x) < eps) ∧
+          (∀ x, |((F x).1 : ℝ) - dist (x.val : UniformSpace.Completion M) q / rho| < eps) := by
+  let _ := C.angles.metricSpace
+  let _ : MetricSpace (Metric.ConeAnnulus (1 / 2) (3 / 2)
+    (UniformSpace.Completion (Quotient C.angles.setoid))) :=
+      C.annulusMetricSpace (by norm_num : 0 < (1 / 2 : ℝ))
+  dsimp only
+  let eta := min eps (delta / 8)
+  have heta : 0 < eta := lt_min heps (by positivity)
+  have hetaE : eta ≤ eps := min_le_left _ _
+  have hetaD : eta ≤ delta / 8 := min_le_right _ _
+  filter_upwards [C.exists_annulus_approximation
+    (by norm_num : 0 < (1 / 2 : ℝ)) (by norm_num : (1 / 2 : ℝ) ≤ 3 / 2) heta,
+    self_mem_nhdsWithin] with rho hrho hpos
+  change 0 < rho at hpos
+  refine ⟨hpos, ?_⟩
+  intro p hp
+  obtain ⟨A, hA, hcover, hrad⟩ := hrho
+  have hin (x : Metric.closedBall p (delta * rho)) :
+      dist (x.val : UniformSpace.Completion M) q / rho ∈ Icc (1 / 2) (3 / 2) := by
+    have hx : dist (x : M) p ≤ delta * rho := x.property
+    have ht := abs_dist_sub_le (x.val : UniformSpace.Completion M)
+      (p : UniformSpace.Completion M) q
+    rw [hp, UniformSpace.Completion.dist_eq] at ht
+    obtain ⟨hl, hu⟩ := abs_le.mp ht
+    constructor
+    · apply (le_div_iff₀ hpos).mpr
+      nlinarith only [hl, hx, mul_pos (sub_pos.mpr hsmall) hpos]
+    · apply (div_le_iff₀ hpos).mpr
+      nlinarith only [hu, hx, mul_pos (sub_pos.mpr hsmall) hpos]
+  let j (x : Metric.closedBall p (delta * rho)) :
+      {x : M // dist (x : UniformSpace.Completion M) q / rho ∈ Icc (1 / 2) (3 / 2)} :=
+    ⟨x, hin x⟩
+  let F := A ∘ j
+  let p0 : Metric.closedBall p (delta * rho) :=
+    ⟨p, Metric.mem_closedBall_self (mul_pos hdelta hpos).le⟩
+  refine ⟨F, fun x y => (hA (j x) (j y)).trans_le hetaE, ?_,
+    fun x => (hrad (j x)).trans_le hetaE⟩
+  intro z hz
+  have hz' : dist z (A (j p0)) < delta / 2 := hz
+  obtain ⟨x, hx⟩ := hcover z
+  have hpair := (abs_lt.mp (hA x (j p0))).1
+  have htri := dist_triangle (A x) z (A (j p0))
+  rw [dist_comm (A x) z] at htri
+  have hdist : dist (x : M) p / rho < delta := by
+    change -eta < dist (A x) (A (j p0)) - dist (x : M) p / rho at hpair
+    linarith only [hpair, htri, hx, hz', hetaD, hdelta]
+  have hxb : (x : M) ∈ Metric.closedBall p (delta * rho) :=
+    ((div_lt_iff₀ hpos).mp hdist).le
+  refine ⟨⟨x, hxb⟩, ?_⟩
+  have hj : j ⟨x, hxb⟩ = x := Subtype.ext rfl
+  change dist z (A (j ⟨x, hxb⟩)) < eps
+  rw [hj]
+  exact hx.trans_le hetaE
+
 end DifferentialGeometry.Toponogov

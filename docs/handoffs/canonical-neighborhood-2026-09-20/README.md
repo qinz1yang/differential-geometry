@@ -2588,3 +2588,39 @@ Evidence: `/private/tmp/wt17-normalized-source-comparison-build.log`,
 No persistent mathematical blockage was established. The corrected failures
 were Lean normalization of scaled metric inequalities and insufficiently sharp
 auxiliary numerical bounds in one buffer calculation.
+
+## Cone approximation on pointed shrinking balls
+
+`PuncturedConeApproximation.exists_ball_approximation` in
+`Geometry/Comparison/Toponogov/PuncturedConeMetric.lean` now turns the established
+annulus approximation into an actual pointed-ball approximation. For
+`0 < delta < 1/2` and any positive error, at every sufficiently small positive
+radius `rho` and every end point at distance `rho` from the missing endpoint,
+it produces a map from the closed end ball of radius `delta * rho` into the
+fixed cone annulus `[1/2, 3/2]`. Pairwise distances divided by `rho` have the
+prescribed error, the radial coordinate has the prescribed error, and every
+point in the cone ball of radius `delta/2` about the image of the center lies
+within that error of the image of a point in the actual end ball.
+
+The proof first establishes that the whole shrinking ball is contained in the
+annulus using the distance-to-endpoint triangle inequality. It applies the
+annulus approximation with error at most `delta/8`. For a point in the inner
+cone ball, annulus density gives a preimage; the pairwise distortion bound
+then proves that this preimage lies in the shrinking end ball. Thus the local
+coverage assertion is produced, not assumed.
+
+This closes the local cone-ball coverage step on the end. Its hypotheses hold
+for the existing selected points by setting `rho` equal to their distance to
+the missing endpoint and using their convergence and the proved punctured-cone
+approximation. The terminal-limit identification still requires composing the
+actual source comparisons with the smooth terminal compactness maps, with
+containment on a fixed compact terminal neighborhood and the matching rescaling.
+This theorem alone is neither the open cone chart for that terminal flow nor
+the cone contradiction.
+
+The leaf built 4,330 jobs without diagnostics; the new declaration passed all
+thirteen declaration linters with only the three approved axioms. The full root
+build passed 20,243 jobs with exactly the same 21 retained proof-hole warnings
+and no other diagnostics. Evidence: `/private/tmp/wt17-cone-ball-approximation-build.log`,
+`/private/tmp/wt17-cone-ball-approximation-audit.log`, and
+`/private/tmp/wt17-cone-ball-approximation-root-build.log`.
