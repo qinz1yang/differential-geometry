@@ -1,0 +1,31 @@
+# Skeleton — sorry-first feasibility files (owner-authorised transient frontier, 2026-09-20)
+
+**Purpose.** Validate that a whole chain fits together *before* anyone proves its hard leaves.
+A skeleton file states every open leaf as `theorem leaf … := by sorry` and **proves the assembly
+for real** from those leaves, down to the named endpoint (`DescentStepOrientableStatement`,
+`GeneralPositionInDoubleBufferedStatement`, `Moise352Open 3`, …). If the assembly does not
+compile, the interfaces do not fit — found in an hour, not after a week of proving.
+
+**Why this is allowed.** `AGENTS.md` forbids `sorry` "unless the owner … explicitly authorizes a
+transient proof frontier". The owner authorised exactly this on 2026-09-20. The authorisation is
+confined to this directory.
+
+**Rules.**
+1. Skeleton files live only in `Skeleton/`. They are **never** imported by the root aggregate or
+   by any file outside `Skeleton/`. One file per chain (leaves and assembly together), because the
+   focused checker keeps no object for a module with diagnostics.
+2. A skeleton "passes" when the focused check reports **no diagnostic other than**
+   `declaration uses 'sorry'`. Each `sorry` is a leaf; nothing else may be sorried — in
+   particular no `sorry` inside an assembly proof.
+3. **Mathematical review happens on the leaf statements, before any leaf is proved**: truth,
+   joint satisfiability on one non-degenerate tuple, extreme values of every set/tolerance
+   parameter, end points and junctions of every injectivity hypothesis, and the producer of every
+   hypothesis. Leaves may be sent to external consultation as a list.
+4. A leaf statement is **frozen** once reviewed. Whoever proves it proves *that* statement, in a
+   real file outside `Skeleton/`, with the usual focused check, audit and lint; then the skeleton
+   replaces the `sorry` by the real theorem. If a leaf turns out false or too weak, the skeleton
+   is changed first and the assembly re-checked, then the proof continues.
+5. `FREE_INPUTS.md` stays the ledger; for a chain with a skeleton its open leaves are exactly the
+   `sorry`s of that file (`grep -c "sorry" Skeleton/<Chain>.lean`).
+6. No declaration docstrings or comments, as everywhere; the module docstring lists the leaves
+   with one line each (what it says, which lane owns it, reviewed or not).

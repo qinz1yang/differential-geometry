@@ -596,3 +596,13 @@ piece.piece.map = T.chart` 是 `PLSeamTubeChart` 的字段，对任何 `piece` �
   `Fᵢ (h (ρ t)) ∈ frontier D.domain` 且值域含于对应源弧；(b) `t₁`、`t₂` 处的接点等式；(c) `T` 也给出 `Path` 值参数化；
   (d) `e : loopCircle ≃ₜ frontier G.domain` 与 `hparam`。**direct 候选目前没有任何导出**，同一个 producer 必须一并给出
   `Gd` 的两弧数据，否则 `Wdirect` 仍是自由假设。然后才是 F10（结论补"侧 + 缓冲"）与 F11（联合夹具）。
+
+---
+
+## 工作方式变更（owner，2026-09-20 夜）：先 sorry 骨架、再数学审查、最后填证明
+
+见 [`Skeleton/README.md`](Skeleton/README.md)。每条链一个骨架文件：开放叶子写成 `theorem … := by sorry`，**组装部分真的证出来**，
+一直到具名端点。骨架编译通过（除 `declaration uses 'sorry'` 外零诊断）= 接口对得上。然后只对叶子陈述做数学审查
+（真假、同一元组上的联合可满足性、极端取值、接点、每条假设的 producer），审过即冻结；各车道/worker 再并行填叶子。
+骨架只放在 `Skeleton/`，不进根聚合，不被任何正式文件 import。先做的骨架：A2（下降步，含边界支整条链）、A1（一般位置）、
+A2.3（C-or1）、B1（35.2 的 §34 一侧）。
