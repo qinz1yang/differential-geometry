@@ -40,8 +40,8 @@ theorem IsCombinatorialManifold.coveringComplex
   | succ n =>
       intro z hz
       obtain ⟨v, rfl⟩ := exists_coveringVertexPoint_of_singleton_mem K p hz
-      exact (hK (coveringVertex.base v) (coveringVertex.singleton_base_mem_faces v)).of_isPLHomeomorphOn
-        (coveringVertexLink_isGlueIso K p hp v).isPLHomeomorphOn
+      exact (hK (coveringVertex.base v) (coveringVertex.singleton_base_mem_faces v))
+        |>.of_isPLHomeomorphOn (coveringVertexLink_isGlueIso K p hp v).isPLHomeomorphOn
 
 open Classical in
 noncomputable def CoherentOrientation.coveringVertexLink {n : ℕ}
@@ -875,5 +875,93 @@ theorem isOrientable_coveringComplex_orientationCocycle
     IsOrientable n (coveringComplex (barycentricSubdivision K)
       (orientationCocycle hK o).toBoolCocycle.toFiberBundleCore.proj) :=
   ⟨orientationCocycleCoveringOrientation hK o⟩
+
+open Classical in
+theorem IsOrientable.coveringComplex {n : ℕ} (hp : IsCoveringMap p)
+    (hK : IsCombinatorialManifoldWithBoundary n K) (h : IsOrientable n K) :
+    IsOrientable n (coveringComplex K p) := by
+  cases n with
+  | zero => exact isOrientable_zero (PiecewiseLinear.coveringComplex K p)
+  | succ n =>
+      obtain ⟨o₀⟩ := h
+      let o := o₀.changeVertexOrder (linearOrderOfSTO WellOrderingRel)
+      refine ⟨{
+        vertexOrder := coveringOrientationVertexOrder (K := K) (p := p)
+        sign := fun q => o.sign (q.image (coveringBaseVertex K p))
+        sign_top := ?_
+        coherent := ?_ }⟩
+      · intro q hq hqcard
+        refine o.sign_top _ (coveringBaseFace_mem hq) ?_
+        rw [Finset.card_image_of_injOn (coveringBaseVertex_injective_on_geometricFace hq), hqcard]
+      · intro f hf hfcard hnotone
+        have hCman : IsCombinatorialManifoldWithBoundary (n + 1)
+            (PiecewiseLinear.coveringComplex K p) :=
+          isCombinatorialManifoldWithBoundary_coveringComplex K p hp hK
+        have htwo : (faceCofaces (PiecewiseLinear.coveringComplex K p) f (n + 2)).card = 2 :=
+          (hCman.card_faceCofaces_eq_one_or_two (PiecewiseLinear.coveringComplex K p) hf
+            hfcard).resolve_left hnotone
+        obtain ⟨q, w, hqw, hcofaces⟩ := Finset.card_eq_two.mp htwo
+        have hqco : q ∈ faceCofaces (PiecewiseLinear.coveringComplex K p) f (n + 2) := by
+          rw [hcofaces]
+          exact Finset.mem_insert_self q {w}
+        have hwco : w ∈ faceCofaces (PiecewiseLinear.coveringComplex K p) f (n + 2) := by
+          rw [hcofaces]
+          exact Finset.mem_insert_of_mem (Finset.mem_singleton_self w)
+        obtain ⟨hq, hqcard, hfq⟩ :=
+          (mem_faceCofaces (PiecewiseLinear.coveringComplex K p)).mp hqco
+        obtain ⟨hw, hwcard, hfw⟩ :=
+          (mem_faceCofaces (PiecewiseLinear.coveringComplex K p)).mp hwco
+        have hfB : f.image (coveringBaseVertex K p) ∈ K.faces := coveringBaseFace_mem hf
+        have hqB : q.image (coveringBaseVertex K p) ∈ K.faces := coveringBaseFace_mem hq
+        have hwB : w.image (coveringBaseVertex K p) ∈ K.faces := coveringBaseFace_mem hw
+        have hfBcard : (f.image (coveringBaseVertex K p)).card = n + 1 := by
+          rw [Finset.card_image_of_injOn (coveringBaseVertex_injective_on_geometricFace hf),
+            hfcard]
+        have hqBcard : (q.image (coveringBaseVertex K p)).card = n + 2 := by
+          rw [Finset.card_image_of_injOn (coveringBaseVertex_injective_on_geometricFace hq),
+            hqcard]
+        have hwBcard : (w.image (coveringBaseVertex K p)).card = n + 2 := by
+          rw [Finset.card_image_of_injOn (coveringBaseVertex_injective_on_geometricFace hw),
+            hwcard]
+        have hfqB : f.image (coveringBaseVertex K p) ⊆ q.image (coveringBaseVertex K p) :=
+          Finset.image_mono (coveringBaseVertex K p) hfq
+        have hfwB : f.image (coveringBaseVertex K p) ⊆ w.image (coveringBaseVertex K p) :=
+          Finset.image_mono (coveringBaseVertex K p) hfw
+        obtain ⟨z, hzf⟩ : f.Nonempty := Finset.card_pos.mp (by omega)
+        have hqwB : q.image (coveringBaseVertex K p) ≠ w.image (coveringBaseVertex K p) := by
+          intro hbase
+          exact hqw (coveringBaseFace_injective_of_inter_nonempty hp hq hw
+            ⟨z, Finset.mem_inter.mpr ⟨hfq hzf, hfw hzf⟩⟩ hbase)
+        have hpair : ({q.image (coveringBaseVertex K p), w.image (coveringBaseVertex K p)} :
+            Finset (Finset E)).card = 2 := Finset.card_pair hqwB
+        have hsub : ({q.image (coveringBaseVertex K p), w.image (coveringBaseVertex K p)} :
+            Finset (Finset E)) ⊆ faceCofaces K (f.image (coveringBaseVertex K p)) (n + 2) := by
+          intro s hs
+          rcases Finset.mem_insert.mp hs with hsq | hsw
+          · rw [hsq]
+            exact (mem_faceCofaces K).mpr ⟨hqB, hqBcard, hfqB⟩
+          · rw [Finset.mem_singleton.mp hsw]
+            exact (mem_faceCofaces K).mpr ⟨hwB, hwBcard, hfwB⟩
+        have hle : (faceCofaces K (f.image (coveringBaseVertex K p)) (n + 2)).card ≤ 2 := by
+          rcases hK.card_faceCofaces_eq_one_or_two K hfB hfBcard with hcard | hcard <;> omega
+        have heq : ({q.image (coveringBaseVertex K p), w.image (coveringBaseVertex K p)} :
+            Finset (Finset E)) = faceCofaces K (f.image (coveringBaseVertex K p)) (n + 2) :=
+          Finset.eq_of_subset_of_card_le hsub (by rw [hpair]; exact hle)
+        have hnotone' : (faceCofaces K (f.image (coveringBaseVertex K p)) (n + 2)).card ≠ 1 := by
+          rw [← heq, hpair]
+          omega
+        have hcoh : o.sign (q.image (coveringBaseVertex K p)) *
+              simplexBoundaryCoefficient (linearOrderOfSTO WellOrderingRel)
+                (q.image (coveringBaseVertex K p)) (f.image (coveringBaseVertex K p)) +
+            o.sign (w.image (coveringBaseVertex K p)) *
+              simplexBoundaryCoefficient (linearOrderOfSTO WellOrderingRel)
+                (w.image (coveringBaseVertex K p)) (f.image (coveringBaseVertex K p)) = 0 := by
+          have hzero := o.coherent (f.image (coveringBaseVertex K p)) hfB hfBcard hnotone'
+          rw [orientedBoundary_eq_sum_faceCofaces, ← heq, Finset.sum_pair hqwB] at hzero
+          exact hzero
+        rw [orientedBoundary_eq_sum_faceCofaces, hcofaces, Finset.sum_pair hqw,
+          coveringSimplexBoundaryCoefficient hq hfq (by omega),
+          coveringSimplexBoundaryCoefficient hw hfw (by omega)]
+        exact hcoh
 
 end DifferentialGeometry.Topology.PiecewiseLinear
