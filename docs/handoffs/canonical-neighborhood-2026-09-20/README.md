@@ -1953,3 +1953,43 @@ finite-order local Shi estimates. No positive-time source extension is assumed.
 
 The full root build passed 20,219 jobs with exactly 21 retained `sorry` warnings
 and no other diagnostics. Evidence: `/private/tmp/wt17-neck-scale-root-build.log`.
+
+
+### Uniform packing of actual central neck spheres
+
+`SpatialNeckPacking.lean` now proves `exists_uniform_central_sphere_cover`
+and `exists_uniform_central_sphere_packing_bound`. Compactness of the round
+sphere gives a fixed finite net. The neck's actual path-length comparison
+transports it to every central sphere in the curvature-normalized metric.
+Consequently, for each positive normalized separation, the cardinality of any
+separated finite subset of any such sphere has a common finite bound. The bound
+is chosen before the neck, its center, or any family of rays.
+
+This closes the uniform sphere-packing input in Morgan–Tian, Section 10.4,
+Lemma 10.27. Its exact downstream use is to bound a finite family of separated
+limiting directions: choose a deep actual annular frontier crossed by all its
+rays, use pairwise comparison-angle convergence at those crossings, and apply
+this packing bound. The central spheres required by this theorem are already
+provided by the restricted necks in `NormalizedNeckSequence.lean`; their compact
+tails, shrinking neighborhood property, and quantitative radius lower bound
+are also proved there. This step does not yet claim compactness of the direction
+space or construct a cone-flow patch.
+
+Both public declarations passed all thirteen declaration linters and have only
+`propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The leaf passed 10,817 build jobs. Evidence:
+`/private/tmp/wt17-neck-sphere-packing-build.log` and
+`/private/tmp/wt17-neck-packing-audit.log`.
+
+Further source inspection found that
+`NormalizedCurvatureWindows.exists_parabolic_curvature_bound_at_terminal_scalar_scale`
+already supplies a uniform `c/Q` backward window and `c/sqrt(Q)` frozen source
+ball, for every `Q ≥ 1` bounding the center scalar, with curvature at most `C Q`.
+It also handles the pinching error uniformly under this extra rescaling. Reuse
+this theorem rather than duplicating its producer. The remaining analytic work
+is containment, local closed-terminal compactness, and identification with the
+metric-cone neighborhood. This inspection refines the newer attachment's proposed
+route and does not establish that final assembly.
+
+The full root build passed 20,220 jobs, with exactly 21 retained `sorry` warnings
+and no other diagnostics. Evidence: `/private/tmp/wt17-neck-packing-root-build.log`.

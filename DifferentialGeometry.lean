@@ -11535,3 +11535,4 @@ import DifferentialGeometry.Topology.Compactness.ConvergentSeparators
 import DifferentialGeometry.Topology.Compactness.Cocompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckCurvatureDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndCurvatureDistance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckPacking
