@@ -907,3 +907,34 @@ jobs, with exactly 21 retained sorry warnings and no other diagnostics. Evidence
 `/private/tmp/wt17-static-comparison-build.log`,
 `/private/tmp/wt17-inverse-metric-spatial-neck-audit.log`, and
 `/private/tmp/wt17-inverse-metric-spatial-neck-root-build.log`.
+
+## Actual inverse comparisons and independent scale factors
+
+The continuation after `1418f1d06` adds `PointedInverseComparison.lean`. Canonical
+pointed metric convergence now produces static comparisons along the actual inverse
+convergence maps, on the actual images of compact limit sets. The proof supplies
+domain containment, pulls back the restricted limit metric through the inverse
+diffeomorphism, and verifies its derivative equation in the ambient manifolds.
+No completeness assumption is used.
+
+`ComparisonStaticScaling.lean` independently rescales the source and target metrics
+in a static comparison. Its explicit error bound accounts for the difference of
+scale factors and for each finite derivative order. The pointed inverse comparison
+therefore remains valid when the two positive scale factors converge to a common
+positive limit. This supports the distinct source and limit scalar normalizations
+needed for the neck step of Kleiner--Lott Section 52, Lemma 52.14(2).
+
+The three new public declarations passed thirteen declaration linters. Their axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`. The scaling
+leaf build passed 11,773 jobs; the final inverse comparison leaf build passed
+11,777 jobs. The root passed 20,184 jobs with the same 21 retained sorry warnings
+and no other diagnostics. Evidence: `/private/tmp/wt17-static-rescaling-build.log`,
+`/private/tmp/wt17-pointed-inverse-comparison-build.log`,
+`/private/tmp/wt17-pointed-inverse-comparison-audit.log`, and
+`/private/tmp/wt17-pointed-inverse-comparison-root-build.log`.
+
+The bounded-distance headline remains open. Actual limit neck construction still
+requires source neck image containment and alignment of the moving neck centers.
+The next geometric route under investigation allows a neck center to lie near,
+rather than exactly on, the long minimizing segment. The finite horn and cone
+producers remain unfinished.
