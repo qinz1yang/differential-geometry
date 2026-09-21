@@ -197,9 +197,6 @@ private theorem exists_directed_approximations_on_buffered_balls
       let δR : ℝ := (1 / 2 : ℝ) ^ (s + 1)
       have hδF0 : 0 ≤ δF := by positivity
       have hδR0 : 0 ≤ δR := by positivity
-      have hδRpos : 0 < δR := by
-        dsimp [δR]
-        positivity
       let c0NF : ℝ := sepNextC0 c0F covF δF
       let covNF : ℝ := sepNextCov c0F covF δF B
       let c0NR : ℝ := sepNextC0 c0R covR δR
@@ -357,14 +354,8 @@ private theorem exists_directed_approximations_on_buffered_balls
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
             (X.obj (σ s)).M → (X.obj (σ (s + l))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + l))).metric :=
-        { eps_pos := (heta s).1
-          eps_lt_one := (heta s).2
-          smoothOn := DforAcc.forward.smoothOn.mono hclosed_mid_sub
-          pullback := DforAcc.forward.pullback
-          pullback_apply := fun x hx v => DforAcc.forward.pullback_apply x (hclosed_mid_sub hx) v
-          c0_small := fun x hx => (DforAcc.forward.c0_small x (hclosed_mid_sub hx)).trans
-            (hbudget s l c0F hc0F2 hc0Fbudget)
-          cov_deriv_small := fun a ha₁ ha₀ => False.elim (by omega) }
+        (DforAcc.forward.mono hclosed_mid_sub le_rfl le_rfl).toZeroOrderMetricApproximation
+          (heta s).1 (heta s).2 (hbudget s l c0F hc0F2 hc0Fbudget)
       have hsrc_mid :
           Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid) ⊆
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l).source :=
@@ -455,9 +446,6 @@ private theorem exists_directed_approximations_on_buffered_balls
       obtain ⟨DstepR⟩ := hΨdata s
       have hp_stepR : p ≤ s := le_trans hpj hs
       have DstepR_p := DstepR.monoOrder hp_stepR
-      have hstepR_half : δR ≤ 1 / 2 := by
-        dsimp [δR]
-        exact half_pow_succ_le_half s
       have hRmid_le_step : Rmid ≤ R s := hrmR s l
       have hU₁_sub_step :
           (U₁ : Set (X.obj (σ s)).M) ⊆

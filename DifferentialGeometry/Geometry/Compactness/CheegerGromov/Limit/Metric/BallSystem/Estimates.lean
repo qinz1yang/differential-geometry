@@ -263,5 +263,61 @@ theorem tail_metric_deriv_norm_sup_lt
 
 end ApproxData
 
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [I.Boundaryless] in
+theorem chain_ambient_map_inner_bounds
+    (j₀ : ℕ) (U : ∀ n, Opens (M (j₀ + n)))
+    [∀ n, Nonempty (U n)] [∀ n, SigmaCompactSpace (U n)]
+    (S : SmoothSeqSystem I (fun n => U n)) (O₀ : U 0)
+    (g : ∀ j, SmoothRiemannianMetric I (M j))
+    (gInf : ∀ n, SmoothRiemannianMetric I (U n))
+    (hgInf : S.MetricCocycle gInf) (n : ℕ) {ε : ℝ}
+    (hbound : ∀ x : U n,
+      metricDerivNorm (I := I) 0 ((g (j₀ + n)).restrictOpen (I := I) (U n))
+        (gInf n) (gInf n) x ≤ ε) :
+    let L := pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf
+    let Φ := chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf
+    letI : TopologicalSpace L.M := L.topology
+    letI : ChartedSpace H L.M := L.charted
+    ∀ x ∈ Φ.source n, ∀ v : TangentSpace I x,
+      (1 - ε) * L.metric.inner x v v ≤
+        (g (j₀ + n)).inner (Φ.partialDiffeomorph n x)
+          (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v)
+          (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v) ∧
+      (g (j₀ + n)).inner (Φ.partialDiffeomorph n x)
+          (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v)
+          (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v) ≤
+        (1 + ε) * L.metric.inner x v v := by
+  let L := pointedDirectLimitOfMetricCocycle S O₀ gInf hgInf
+  let Φ := chainAmbientMaps (I := I) j₀ U S O₀ g gInf hgInf
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  dsimp only
+  intro x hx v
+  have hz : x ∈ Set.range (S.toSeqSystem.incl n) := hx
+  have hpull := S.limitMetric_of_mem gInf hgInf n hz v v
+  have hmapv : mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v =
+      mfderiv I I (S.inclPartialDiffeo n) x v :=
+    PartialDiffeomorph.mfderiv_liftTargetOpen (S.inclPartialDiffeo n) rfl hx v
+  have hb := inner_bounds_of_metricTensorErrorNorm_le (I := I)
+    ((g (j₀ + n)).restrictOpen (I := I) (U n)) (gInf n)
+    (K := Set.univ) (fun y _ => hbound y)
+    (Function.invFun (S.toSeqSystem.incl n) x) (Set.mem_univ _)
+    (mfderiv I I (S.inclPartialDiffeo n) x v)
+  change (1 - ε) * (S.limitMetric gInf hgInf).inner x v v ≤
+      (g (j₀ + n)).inner (Φ.partialDiffeomorph n x)
+        (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v)
+        (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v) ∧
+    (g (j₀ + n)).inner (Φ.partialDiffeomorph n x)
+        (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v)
+        (mfderiv I I (Φ.partialDiffeomorph n : L.M → M (j₀ + n)) x v) ≤
+      (1 + ε) * (S.limitMetric gInf hgInf).inner x v v
+  rw [hpull, hmapv]
+  exact hb
+
+
 end CheegerGromovCompactness
 end DifferentialGeometry

@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedTerminalDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalCurvatureInjectivity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Local
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.LocalProperness
 
 noncomputable section
 open Filter Set
@@ -178,5 +180,123 @@ theorem exists_terminal_pairwise_metric_approximation_of_not_boundedAtDistance
       distance_limit := F.distance_limit.comp hg.tendsto_atTop
       curvature_limit := F.curvature_limit.comp hg.tendsto_atTop }
   exact ⟨f ∘ g, hf.comp hg, F', hp⟩
+
+theorem exists_terminal_pointed_convergence_of_not_boundedAtDistance
+    {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+            ¬ BoundedAtDistance X → ∃ f : ℕ → ℕ, ∃ hf : StrictMono f,
+              ∃ F : FiniteControlledRadius (X.reindex f hf), ∃ r : ℕ → ℝ,
+                (∀ k, 0 < r k ∧ r k < F.radius) ∧ Tendsto r atTop (nhds F.radius) ∧
+                ∃ L : PointedRiemannianManifold.{u, 0, 0} (I := I3),
+                ∃ maps : PointedRiemannianConvergenceMaps (X.toFlowSequence.atTime 0) L f,
+                  ∃ C : PointedRiemannianConverges (X.toFlowSequence.atTime 0) L f maps,
+                  (∀ k, C.metrics.domain k = CanonicalMetricCompactness.canonicalSourceData maps k) ∧
+                  (∀ k, maps.target k = riemannianBallOf ((X.term (f k)).S.base.metric 0)
+                    (X.term (f k)).basepoint (r k)) ∧
+                  (∀ eta : ℝ, 0 < eta → ∃ N : ℕ, ∀ k : ℕ, N ≤ k →
+                    ∀ x ∈ maps.source k, ∀ v : TangentSpace I3 x,
+                      (1 - eta) * L.metric.inner x v v ≤
+                        ((X.term (f k)).S.base.metric 0).inner (maps.partialDiffeomorph k x)
+                          (mfderiv I3 I3 (maps.partialDiffeomorph k) x v)
+                          (mfderiv I3 I3 (maps.partialDiffeomorph k) x v) ∧
+                      ((X.term (f k)).S.base.metric 0).inner (maps.partialDiffeomorph k x)
+                          (mfderiv I3 I3 (maps.partialDiffeomorph k) x v)
+                          (mfderiv I3 I3 (maps.partialDiffeomorph k) x v) ≤
+                        (1 + eta) * L.metric.inner x v v) ∧
+                  (∀ R : ℝ, 0 ≤ R → R < F.radius →
+                    IsCompact (riemannianClosedBallOf L.metric L.basepoint R)) ∧
+                  metricScalarAt L.metric L.basepoint = 1 ∧
+                  ∀ (x : L.M) (v w : TangentSpace I3 x),
+                    0 ≤ metricRm04StandardAt L.metric x v w w v := by
+  obtain ⟨epsStar, hepsStar, hpairs⟩ :=
+    exists_terminal_pairwise_metric_approximation_of_not_boundedAtDistance hkappa
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X hnot
+  obtain ⟨f, hf, F, hp⟩ := hpairs eps heps hle sigma hsigma Phi hPhi X hnot
+  let Y := (X.toFlowSequence.atTime 0).subseq f
+  have hcomplete : SeqMetricComplete Y := by
+    constructor
+    intro k
+    apply X.complete (f k) 0
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos (f k)], le_rfl⟩
+  let P : ∀ k, ProperMetricOn (Y.obj k) := fun k =>
+    properMetricOn (Y.obj k) (hcomplete.complete k) (X.connected (f k))
+  obtain ⟨g, hg, r, hr, hrT, L, maps, C, hcanonical, htargets, hmetrics⟩ :=
+    exists_pointed_convergence_within_radius (I := I3) P F.radius_pos (by
+      intro r hr hrrho eta heta heta1 p
+      obtain ⟨N, hN⟩ := hp r hr hrrho eta heta heta1 p
+      refine ⟨N, fun k l hk hl => ?_⟩
+      let : MetricSpace (X.term (f k)).M := (P k).ms
+      let : MetricSpace (X.term (f l)).M := (P l).ms
+      let : MetricSpace (Y.obj k).M := (P k).ms
+      let : MetricSpace (Y.obj l).M := (P l).ms
+      obtain ⟨Ψ, hbase, ⟨D⟩⟩ := hN k l hk hl
+      refine ⟨Ψ, hbase, ⟨D.mono ?_ le_rfl heta1⟩⟩
+      intro y hy
+      change riemannianEDistOf ((Y.obj k).metric) (Y.obj k).basepoint y ≤ ENNReal.ofReal r
+      have hreal : riemannianEDistOf (Y.obj k).metric (Y.obj k).basepoint y =
+          ENNReal.ofReal (dist (Y.obj k).basepoint y) := (P k).realizes _ _
+      rw [hreal]
+      apply ENNReal.ofReal_le_ofReal
+      change dist y (Y.obj k).basepoint ≤ r at hy
+      with_unfolding_all exact (dist_comm (Y.obj k).basepoint y).le.trans hy)
+  let F' : FiniteControlledRadius (X.reindex (f ∘ g) (hf.comp hg)) :=
+    { radius := F.radius
+      radius_pos := F.radius_pos
+      inner_bound := fun r hr hrrho => by
+        obtain ⟨A, hA⟩ := F.inner_bound r hr hrrho
+        exact ⟨A, fun i y hy => hA (g i) y hy⟩
+      points := fun i => F.points (g i)
+      distance_limit := F.distance_limit.comp hg.tendsto_atTop
+      curvature_limit := F.curvature_limit.comp hg.tendsto_atTop }
+  refine ⟨f ∘ g, hf.comp hg, F', r, hr, hrT, L, maps.ofSeqSubseq f, C.ofSeqSubseq f, ?_, ?_, hmetrics, ?_, ?_, ?_⟩
+  · intro k
+    change (C.metrics.domain k).ofSeqSubseq f k = _
+    rw [hcanonical k]
+    rfl
+  · intro k
+    let : MetricSpace (Y.obj (g k)).M := (P (g k)).ms
+    change maps.target k = riemannianBallOf (Y.obj (g k)).metric (Y.obj (g k)).basepoint (r k)
+    rw [htargets k]
+    ext y
+    change dist y (Y.obj (g k)).basepoint < r k ↔
+      riemannianEDistOf (Y.obj (g k)).metric (Y.obj (g k)).basepoint y < ENNReal.ofReal (r k)
+    have hreal : riemannianEDistOf (Y.obj (g k)).metric (Y.obj (g k)).basepoint y =
+        ENNReal.ofReal (dist (Y.obj (g k)).basepoint y) := (P (g k)).realizes _ _
+    rw [hreal, ENNReal.ofReal_lt_ofReal_iff (hr k).1, dist_comm]
+  · intro R hR hRrho
+    apply maps.isCompact_closed_ball_of_target_coverage (fun k => P (g k))
+      (rho := F.radius) ?_ ?_ hR hRrho
+    · intro S hS hSrho
+      filter_upwards [hrT.eventually_const_lt hSrho] with k hk
+      let : MetricSpace (Y.obj (g k)).M := (P (g k)).ms
+      rw [htargets k]
+      intro y hy
+      have hreal : riemannianEDistOf (Y.obj (g k)).metric (Y.obj (g k)).basepoint y =
+          ENNReal.ofReal (dist (Y.obj (g k)).basepoint y) := (P (g k)).realizes _ _
+      change riemannianEDistOf (Y.obj (g k)).metric (Y.obj (g k)).basepoint y ≤
+        ENNReal.ofReal S at hy
+      rw [hreal, ENNReal.ofReal_le_ofReal_iff hS.le] at hy
+      change dist y (Y.obj (g k)).basepoint < r k
+      rw [dist_comm]
+      exact hy.trans_lt hk
+    · intro eta heta
+      obtain ⟨N, hN⟩ := hmetrics eta heta
+      filter_upwards [eventually_ge_atTop N] with k hk
+      exact fun x hx v => (hN k hk x hx v).2
+  · apply KappaSolutions.pointedScalar_base_eq_of_metricCG_canonical_domains C.metrics hcanonical
+    intro k
+    exact X.base_one (f (g k))
+  · apply sectional_nonnegative_of_pointed_admissible_pinching C.metrics hcanonical hPhi
+      (fun i => X.scale (f i)) (fun i => X.scale_pos (f i))
+      ((X.scale_tendsto.comp hf.tendsto_atTop).comp hg.tendsto_atTop)
+    intro i y
+    apply X.pinching (f i) 0 ?_ y
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos (f i)], le_rfl⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -1,4 +1,5 @@
 import Mathlib.Topology.MetricSpace.ProperSpace
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 
@@ -69,6 +70,42 @@ theorem ProperMetricOn.top_eq {I : ModelWithCorners Real E H}
     rfl
   change P.ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace = Y.topology
   rw [htop, hcan]
+
+namespace ProperMetricOn
+
+@[reducible] noncomputable def alignedMetricSpace {I : ModelWithCorners Real E H}
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (P : ProperMetricOn (I := I) Y) :
+    letI : TopologicalSpace Y.M := Y.topology
+    MetricSpace Y.M := by
+  letI : TopologicalSpace Y.M := Y.topology
+  exact P.ms.replaceTopology (ProperMetricOn.top_eq Y P).symm
+
+end ProperMetricOn
+
+attribute [local instance] PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
+theorem ProperMetricOn.isCompact_riemannianClosedBallOf {I : ModelWithCorners Real E H}
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (P : ProperMetricOn Y) (x : Y.M) (r : ℝ) :
+    IsCompact (riemannianClosedBallOf Y.metric x r) := by
+  let : MetricSpace Y.M := P.alignedMetricSpace Y
+  have heq : riemannianClosedBallOf Y.metric x r = Metric.closedBall x (max 0 r) := by
+    ext y
+    change riemannianEDistOf Y.metric x y ≤ ENNReal.ofReal r ↔ dist y x ≤ max 0 r
+    have hreal := P.realizes x y
+    change riemannianEDistOf Y.metric x y = ENNReal.ofReal (dist x y) at hreal
+    rw [hreal, show ENNReal.ofReal r = ENNReal.ofReal (max 0 r) by simp,
+      ENNReal.ofReal_le_ofReal_iff (le_max_left 0 r), dist_comm]
+  rw [heq]
+  have hcompact : @IsCompact Y.M P.ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
+      (letI : MetricSpace Y.M := P.ms; Metric.closedBall x (max 0 r)) := by
+    let : MetricSpace Y.M := P.ms
+    let : ProperSpace Y.M := P.proper
+    exact isCompact_closedBall x (max 0 r)
+  rw [P.top_eq Y] at hcompact
+  exact hcompact
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem ProperMetricOn.isRiemannianManifold {I : ModelWithCorners Real E H}

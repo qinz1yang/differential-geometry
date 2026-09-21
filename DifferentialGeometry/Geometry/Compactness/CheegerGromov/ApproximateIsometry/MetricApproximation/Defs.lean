@@ -142,6 +142,20 @@ def MapMetricApproximationBoundsOn.toMetricApproximation
   cov_deriv_small := fun a h1 h2 x hx =>
     le_trans (D.cov_small a h1 h2 x hx) hcov
 
+def MapMetricApproximationBoundsOn.toZeroOrderMetricApproximation
+    {K : Set M} {c0 cov eps : ℝ} {p : ℕ} {Phi : M → N}
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
+    (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p Phi g h)
+    (heps0 : 0 < eps) (heps1 : eps < 1) (hc0 : c0 ≤ eps) :
+    MapMetricApproximationOn (I := I) K eps 0 Phi g h where
+  eps_pos := heps0
+  eps_lt_one := heps1
+  smoothOn := D.smoothOn
+  pullback := D.pullback
+  pullback_apply := D.pullback_apply
+  c0_small := fun x hx => (D.c0_small x hx).trans hc0
+  cov_deriv_small := fun a ha hzero => False.elim (by omega)
+
 structure PartialDiffeomorphMetricApproximationBounds
     (K : Set M) (c0 cov : Real) (p : Nat)
     (Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -162,6 +176,17 @@ def PartialDiffeomorphMetricApproximationBounds.toMetricApproximation
   source_sub := D.source_sub
   forward := D.forward.toMetricApproximation heps0 heps1 hc0 hcov
   reverse := D.reverse.toMetricApproximation heps0 heps1 hc0 hcov
+
+def PartialDiffeomorphMetricApproximationBounds.toZeroOrderMetricApproximation
+    {K : Set M} {c0 cov eps : ℝ} {p : ℕ}
+    {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
+    (D : PartialDiffeomorphMetricApproximationBounds (I := I) K c0 cov p Phi g h)
+    (heps0 : 0 < eps) (heps1 : eps < 1) (hc0 : c0 ≤ eps) :
+    PartialDiffeomorphMetricApproximation (I := I) K eps 0 Phi g h where
+  source_sub := D.source_sub
+  forward := D.forward.toZeroOrderMetricApproximation heps0 heps1 hc0
+  reverse := D.reverse.toZeroOrderMetricApproximation heps0 heps1 hc0
 
 def MapMetricApproximationOn.toSeparateBounds
     {K : Set M} {eps : Real} {p : Nat} {Phi : M -> N}

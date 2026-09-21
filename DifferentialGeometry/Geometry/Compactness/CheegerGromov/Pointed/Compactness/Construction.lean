@@ -215,18 +215,6 @@ def HasUniformMetricChainBounds
         ((g (D.start + n)).restrictOpen (I := I) (tailBallOpen b D.start n))
         (tailMetric (I := I) b D.start D.limitMetric n) x ≤ Cq)
 
-namespace ProperMetricOn
-
-@[reducible] noncomputable def alignedMetricSpace
-    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
-    (P : ProperMetricOn (I := I) Y) :
-    letI : TopologicalSpace Y.M := Y.topology
-    MetricSpace Y.M := by
-  letI : TopologicalSpace Y.M := Y.topology
-  exact P.ms.replaceTopology (ProperMetricOn.top_eq Y P).symm
-
-end ProperMetricOn
-
 omit [I.Boundaryless] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private theorem alignedProper

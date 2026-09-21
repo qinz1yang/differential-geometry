@@ -411,3 +411,50 @@ retained proof-hole warnings. Evidence is in
 These maps supply the geometric input for compatible metric limits on the inner
 balls. The incomplete limit, geodesic endpoint, and horn/cone producer remain the
 active work; the headline's existing proof hole is unchanged.
+
+## Local pointed limits below the escape radius
+
+The continuation after `a8c20eeaebc21b1875867ac0c58c317ef08f8a92` proves
+`exists_pointed_convergence_within_radius` in
+`Geometry/Compactness/CheegerGromov/Pointed/Compactness/Local.lean`. Pairwise smooth metric
+approximations on every ball of radius below a positive finite radius now produce an actual
+smooth pointed limit. Its convergence maps have targets equal to specified source balls with
+radii tending to the limiting radius. The returned convergence data is explicitly canonical,
+and relative metric bounds hold on each entire comparison domain, with errors tending to zero.
+
+The compatible-chain metric-limit proofs now accept arbitrary positive ball radii and actual
+chain-image containment. Their existing power-of-two statements are preserved as corollaries.
+The zero-order approximation conversions separate the metric distortion tolerance from the
+higher derivative tolerance. `ProperMetricOn.alignedMetricSpace` moved unchanged to the proper
+metric module.
+
+`PointedRiemannianConvergenceMaps.isCompact_closed_ball_of_target_coverage`, in the new
+`Pointed/Convergence/LocalProperness.lean` leaf, transports compactness from source balls to
+strictly smaller limit balls. Its general kernel is
+`PartialDiffeomorph.isCompact_riemannianClosedBallOf_of_metric_upper` in
+`Geometry/Metric/Comparison/IntrinsicBallImage.lean`. The proof applies the existing intrinsic
+ball-image theorem to the inverse map, using an explicit radius margin and the whole-domain
+metric bound. It does not assume completeness of the limit.
+
+The application is `exists_terminal_pointed_convergence_of_not_boundedAtDistance` in
+`Perelman/CanonicalNeighborhood/NormalizedLocalCompactness.lean`. For sufficiently small
+epsilon, failure of boundedness now produces a finite controlled radius, escaping source points,
+and a smooth pointed limit of the actual terminal source metrics along the same subsequence.
+Every inner closed base ball is compact. The limit has base scalar curvature one and nonnegative
+sectional curvature, obtained by passing the source pinching to the limit. The source metrics
+are not assumed to have nonnegative curvature.
+
+This realizes the smooth-manifold and inner-ball compactness portion of Kleiner--Lott Section 52,
+Step 2, following equation (52.13), printed pages 2702--2703 of
+`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+Morgan--Tian, `MorganTianPoincare.pdf`, Chapter 10, Proposition 10.7, is the companion reference
+for the later incomplete tube. The limiting geodesic with its missing endpoint and the neck/cone
+producers remain to be proved. The bounded-distance headline is unchanged and remains open.
+
+After the final Lean edit, the full root build passed 20,164 jobs with the same 21 retained
+`sorry` warnings. Twenty declarations passed all thirteen applicable declaration linters; all
+have only `propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The old generalized signatures also compile as corollaries. Both new leaves are registered in
+the flat root. Temporary evidence is in `/private/tmp/wt17-local-limit-final-root-build.log`,
+`/private/tmp/wt17-local-limit-final-audit.log`, and
+`/private/tmp/wt17-compatible-balls-compatibility.log`.
