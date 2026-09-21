@@ -98,10 +98,10 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | B1.e | how A's output (tame 30.5, the loop theorem) enters P3/P4 | **not yet stated in Lean** — the two sides meet only in the book so far |
 
 ### C — smoothing
-| **C1** | `PLSmoothingModel 3` (`Smoothing.lean:20`) | **OPEN**, not scoped |
+| **C1** | `PLSmoothingModel 3` (`Smoothing.lean:27`) | **OPEN**; scoped 2026-09-21 (`consult/C1-smoothing-scope.md`): the goal needs only the **compact** case `PLSmoothingModelCompact 3` (homeomorphism type only; no orientability, no framing). Route: proved triangulation + proved PL handle filtration of derived neighbourhoods, a parallel smooth filtration handle by handle, cone cap. Closed since the Phase 2 audit: PL handle decomposition, triangulation bridge, Alexander cone extension, boundaryless conversion. Ten leaves sketched, not yet a skeleton; the three large ones: smooth handle attachment, taming a PL annulus in a smooth surface, recognition of a smooth surface homeomorphic to `S²` (most uncertain). Surface classification is **not** needed |
 
 ### D — external
-| **D1** | smooth Poincaré theorem and its use on the smooth manifold produced above | main repository |
+| **D1** | smooth Poincaré theorem and its use on the smooth manifold produced above | main repository. As read on 2026-09-21: `smoothPoincareConjecture` is a `Prop` definition (unproved, producers conditional) in a gitignored worktree of the main checkout, `…/Surgery/Poincare.lean:30`; hypotheses `ChartedSpace (EuclideanSpace ℝ (Fin 3))`, `IsManifold (𝓡 3) ∞`, T2, compact, connected, simply connected; `topologicalPoincareConjecture_of_smoothStructureInput` (`:56`) is already stated against our output shape. Interface mismatches are one-liners (`Nonempty (IsManifold …)`, `ULift` of the target) |
 
 ## Deliberately NOT on the goal path (may stay open forever)
 Unrestricted `Moise251`, `Moise264`; the non-orientable loop theorem and the one-circle closed case
