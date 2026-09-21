@@ -18,6 +18,60 @@ attribute [local instance] PointedRiemannianManifold.topology
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
+theorem exists_subsequence_pairwise_metric_approximation_within_radius
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (hcomplete : SeqMetricComplete (I := I) X)
+    (hconn : ∀ k, ConnectedSpace (X.obj k).M)
+    {rho : ℝ} (hrho : 0 < rho)
+    (hjets : ∀ R : ℝ, 0 < R → R < rho → ∀ p : ℕ, ∃ C : ℝ, 0 ≤ C ∧
+      ∀ᶠ k in atTop, HasLocalCurvDerivBound (I := I)
+        (X.obj k) (X.obj k).basepoint R p C)
+    (hinj : ∀ r : ℝ, 0 < r → r < rho → ∃ η : ℝ, 0 < η ∧
+      ∀ᶠ k in atTop, ∀ x : (X.obj k).M,
+        riemannianEDistOf (I := I) (X.obj k).metric (X.obj k).basepoint x ≤
+          ENNReal.ofReal r → HasInjRadiusAt (I := I) (X.obj k) x η) :
+    ∃ phi : ℕ → ℕ, StrictMono phi ∧
+      ∀ r : ℝ, 0 < r → r < rho → ∀ eps : ℝ, 0 < eps → eps < 1 → ∀ p : ℕ,
+        ∃ n₀ : ℕ, ∀ k l : ℕ, n₀ ≤ k → n₀ ≤ l →
+          ∃ Ψ : PartialDiffeomorph I I (X.obj (phi k)).M (X.obj (phi l)).M ∞,
+            Ψ (X.obj (phi k)).basepoint = (X.obj (phi l)).basepoint ∧
+            Nonempty (PartialDiffeomorphMetricApproximation
+              (riemannianClosedBallOf (X.obj (phi k)).metric (X.obj (phi k)).basepoint r)
+              eps p Ψ (X.obj (phi k)).metric (X.obj (phi l)).metric) := by
+  let radii : ℕ → ℝ := fun n => rho - rho / ((n : ℝ) + 2)
+  have hpos : ∀ n, 0 < radii n := by
+    intro n
+    have h := div_lt_self hrho (by linarith [Nat.cast_nonneg (α := ℝ) n] : (1 : ℝ) < (n : ℝ) + 2)
+    exact sub_pos.mpr h
+  have hlt : ∀ n, radii n < rho := fun n => sub_lt_self _ (by positivity)
+  have hlim : Filter.Tendsto radii atTop (nhds rho) := by
+    have hden : Filter.Tendsto (fun n : ℕ => (n : ℝ) + 2) atTop atTop :=
+      Filter.tendsto_atTop_mono (fun _ => le_add_of_nonneg_right (by norm_num))
+        tendsto_natCast_atTop_atTop
+    simpa only [sub_zero] using tendsto_const_nhds.sub
+      (tendsto_const_nhds.div_atTop hden)
+  obtain ⟨phi, hphi, hp⟩ :=
+    exists_subsequence_pairwise_partialDiffeomorph_metric_approximation_on_radii X radii (by
+      intro q f hf
+      obtain ⟨η, hη, hi⟩ := hinj (radii q) (hpos q) (hlt q)
+      have hj : ∀ p : ℕ, ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ k in atTop,
+          HasLocalCurvDerivBound ((X.subseq f).obj k) ((X.subseq f).obj k).basepoint
+            ((radii q + rho) / 2) p C := by
+        intro p
+        obtain ⟨C, hC, hbound⟩ := hjets ((radii q + rho) / 2)
+          (by linarith [hpos q]) (by linarith [hlt q]) p
+        exact ⟨C, hC, hf.tendsto_atTop.eventually hbound⟩
+      exact exists_subsequence_pairwise_metric_approximation_of_local_curvature_injectivity
+        (X.subseq f) (hcomplete.subseq f) (fun k => hconn (f k)) (hpos q).le
+        (by linarith [hlt q]) hη hj (hf.tendsto_atTop.eventually hi))
+  refine ⟨phi, hphi, fun r _ hr eps heps heps1 p => ?_⟩
+  obtain ⟨q, hq⟩ := (hlim.eventually (eventually_gt_nhds hr)).exists
+  obtain ⟨N, hN⟩ := hp q eps heps heps1 p
+  refine ⟨N, fun k l hk hl => ?_⟩
+  obtain ⟨Ψ, hbase, ⟨happrox⟩⟩ := hN k l hk hl
+  exact ⟨Ψ, hbase, ⟨happrox.mono
+    (riemannianClosedBallOf_mono _ _ hq.le) le_rfl heps1⟩⟩
+
 theorem exists_subsequence_pairwise_metric_approximation_of_local_curvature_injectivity_on_balls
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)

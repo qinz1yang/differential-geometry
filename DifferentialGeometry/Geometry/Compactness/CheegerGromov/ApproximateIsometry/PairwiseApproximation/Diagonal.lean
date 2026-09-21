@@ -55,6 +55,33 @@ private theorem pairwiseApproximationAtRadius_of_tail
   change hasPointedMetricApproximation X r ε p (phi (k - m + m)) (phi (l - m + m)) at h
   simpa only [Nat.sub_add_cancel hmK, Nat.sub_add_cancel hmL] using h
 
+theorem exists_subsequence_pairwise_partialDiffeomorph_metric_approximation_on_radii
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (radii : ℕ → ℝ)
+    (hstep : ∀ (q : ℕ) (phi : ℕ → ℕ), StrictMono phi →
+      ∃ psi : ℕ → ℕ, StrictMono psi ∧
+        ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ,
+          ∃ N : ℕ, ∀ k l : ℕ, N ≤ k → N ≤ l →
+            ∃ Ψ : PartialDiffeomorph I I (X.obj (phi (psi k))).M (X.obj (phi (psi l))).M ∞,
+              Ψ (X.obj (phi (psi k))).basepoint = (X.obj (phi (psi l))).basepoint ∧
+              Nonempty (PartialDiffeomorphMetricApproximation
+                (riemannianClosedBallOf (X.obj (phi (psi k))).metric
+                  (X.obj (phi (psi k))).basepoint (radii q))
+                ε p Ψ (X.obj (phi (psi k))).metric (X.obj (phi (psi l))).metric)) :
+    ∃ phi : ℕ → ℕ, StrictMono phi ∧
+      ∀ q : ℕ, ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ,
+        ∃ N : ℕ, ∀ k l : ℕ, N ≤ k → N ≤ l →
+          ∃ Ψ : PartialDiffeomorph I I (X.obj (phi k)).M (X.obj (phi l)).M ∞,
+            Ψ (X.obj (phi k)).basepoint = (X.obj (phi l)).basepoint ∧
+            Nonempty (PartialDiffeomorphMetricApproximation
+              (riemannianClosedBallOf (X.obj (phi k)).metric (X.obj (phi k)).basepoint (radii q))
+              ε p Ψ (X.obj (phi k)).metric (X.obj (phi l)).metric) := by
+  exact exists_diag_subseq
+    (fun q phi => pairwiseApproximationAtRadius X (radii q) phi)
+    hstep
+    (fun q phi psi hpsi h => pairwiseApproximationAtRadius_subseq X (radii q) phi psi hpsi h)
+    (fun q phi m h => pairwiseApproximationAtRadius_of_tail X (radii q) phi m h)
+
 theorem exists_subsequence_pairwise_partialDiffeomorph_metric_approximation
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hstep : ∀ (q : ℕ) (phi : ℕ → ℕ), StrictMono phi →
@@ -75,11 +102,9 @@ theorem exists_subsequence_pairwise_partialDiffeomorph_metric_approximation
             Nonempty (PartialDiffeomorphMetricApproximation
               (riemannianClosedBallOf (X.obj (phi k)).metric (X.obj (phi k)).basepoint r)
               ε p Ψ (X.obj (phi k)).metric (X.obj (phi l)).metric) := by
-  obtain ⟨phi, hphi, hP⟩ := exists_diag_subseq
-    (fun q phi => pairwiseApproximationAtRadius X ((q : ℝ) + 1) phi)
-    hstep
-    (fun q phi psi hpsi h => pairwiseApproximationAtRadius_subseq X ((q : ℝ) + 1) phi psi hpsi h)
-    (fun q phi m h => pairwiseApproximationAtRadius_of_tail X ((q : ℝ) + 1) phi m h)
+  obtain ⟨phi, hphi, hP⟩ :=
+    exists_subsequence_pairwise_partialDiffeomorph_metric_approximation_on_radii
+      X (fun q => (q : ℝ) + 1) hstep
   refine ⟨phi, hphi, fun r _ ε hε hε1 p => ?_⟩
   obtain ⟨q, hq⟩ := exists_nat_gt r
   obtain ⟨N, hN⟩ := hP q ε hε hε1 p

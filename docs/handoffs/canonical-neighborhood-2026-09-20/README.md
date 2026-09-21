@@ -324,3 +324,47 @@ Local evidence is in `/private/tmp/wt17-normalized-derivatives-audit.lean`, its 
 `/private/tmp/wt17-continuation-kappa-audit.log`. These temporary files are not portable handoff
 artifacts. The earlier handoff contains the reproducible audit-driver pattern and original
 statement compatibility probes. Its fixed job/debt counts describe its own snapshot.
+
+
+## Finite-radius source comparisons
+
+The local reference directory `/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers`
+contains `MorganTianPoincare.pdf`, `MorganTianGeom.pdf`, `KleinerLottPerelman.pdf`, and
+`BBBMP-10112010.pdf`, as well as Perelman's original papers. The user requested that these
+references be remembered for future work; the directory is now recorded in the global
+`/Users/bennettchow/.codex/AGENTS.md`. All reference sources remain unchanged.
+
+The main guides for the missing geometric construction are Kleiner--Lott, section 52,
+Step 2 (equation 52.13 and Lemma 52.14; printed pages 2702--2704), and Morgan--Tian,
+*Ricci Flow and the Poincaré Conjecture*, Chapter 10 (Theorem 10.2, Proposition 10.7,
+and Proposition 10.12; printed pages 245--264). The former matches the almost-pinched
+normalized-sequence formulation; the latter expands the incomplete-tube and cone construction.
+Neither permits replacing these source flows by ancient kappa-solutions.
+
+`CurvatureEscape.lean` now contains the existing radius-selection definitions and proofs,
+moved without changes to their statements or proof bodies out of files depending on
+`FiniteHornStructure.lean`. This makes them available below the unfinished headline.
+
+`NormalizedLocalCompactness.lean` proves
+`exists_terminal_pairwise_metric_approximation_of_not_boundedAtDistance`. For sufficiently
+small epsilon, failure of boundedness produces a strict source subsequence with an actual
+`FiniteControlledRadius` and smooth pairwise metric-comparison maps on every smaller closed
+terminal ball. The selected escape points and the comparison maps refer to the same source
+subsequence. Injectivity bounds are derived from source noncollapse and actual containment
+in a buffered ball; derivative bounds use the already proved terminal scalar-sublevel estimates.
+The generic diagonal argument now handles arbitrary countable radius families, and a new
+finite-radius compactness theorem is in the Cheeger--Gromov topic home.
+
+This gives comparison maps, not yet the incomplete limit manifold or the finite horn.
+The headline `bounded_curvature_at_distance` still has its original statement and proof hole.
+The next geometric step is to realize the comparisons as a smooth incomplete limit, retaining
+capture of each inner ball and the escaping geodesic endpoint, then construct the horn and cone.
+
+The finite-radius layer passed fresh elaboration of all eight changed Lean leaves and the
+full `lake build DifferentialGeometry` (20,160 jobs). Its 21 audited declarations passed
+13 applicable declaration linters and have only `propext`, `Classical.choice`, and
+`Quot.sound` in their transitive axiom closures. The 21 moved declaration blocks were
+checked verbatim against their preceding locations. The existing headline statement and
+proof body are unchanged. Verification logs are in `/private/tmp/wt17-finite-radius-fresh/`,
+`/private/tmp/wt17-finite-radius-audit.log`, and
+`/private/tmp/wt17-finite-radius-root-build.log`.

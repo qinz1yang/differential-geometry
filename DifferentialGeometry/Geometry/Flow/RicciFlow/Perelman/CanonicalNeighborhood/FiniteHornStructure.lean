@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeTerminalExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDirectionCompactness
@@ -1065,19 +1065,6 @@ structure ConeFlowLimit (X : FlowSequence.{u}) where
       Nonempty (MetricComparisonOn (fun s => flow.S.base.metric s)
         (rescaledMetric (X.term (subseq i)).S 0 (scale i) (scale_pos i))
         (map i) K (Set.Icc (-delta) 0) m eps)
-
-structure FiniteControlledRadius {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) where
-  radius : ℝ
-  radius_pos : 0 < radius
-  inner_bound : ∀ r : ℝ, 0 < r → r < radius → ∃ C : ℝ, ∀ i y,
-    metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r →
-      (X.term i).S.scalar 0 y ≤ C
-  points : ∀ i, (X.term i).M
-  distance_limit : Filter.Tendsto (fun i => metricDistance
-    ((X.term i).S.base.metric 0) (X.term i).basepoint (points i)) Filter.atTop (nhds radius)
-  curvature_limit : Filter.Tendsto (fun i => (X.term i).S.scalar 0 (points i))
-    Filter.atTop Filter.atTop
 
 theorem cone_terminal_exclusion {delta : ℝ} (hd : 0 < delta)
     (P : PointedFlowData.{u, 0, 0} I3 (RealTimeInterval.closed (-delta) 0 (by linarith)))

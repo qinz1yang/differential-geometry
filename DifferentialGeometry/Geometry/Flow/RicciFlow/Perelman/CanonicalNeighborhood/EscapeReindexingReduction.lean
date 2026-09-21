@@ -23,37 +23,6 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
 
-theorem curvatureBoundedWithin_reindex {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ) (hk : StrictMono k) {r : ℝ}
-    (h : CurvatureBoundedWithin X r) : CurvatureBoundedWithin (X.reindex k hk) r := by
-  obtain ⟨C, hC⟩ := h
-  exact ⟨C, fun i y hy => hC (k i) y hy⟩
-
-theorem exists_reindex_not_boundedAtDistance_of_subsequenceCurvatureEscape
-    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} {X : NormalizedSequence.{u} eps kappa sigma Phi}
-    (h : SubsequenceCurvatureEscape X) :
-    ∃ k : ℕ → ℕ, ∃ hk : StrictMono k, ¬ BoundedAtDistance (X.reindex k hk) := by
-  obtain ⟨radius, I, hradius, hI, _hinner, pts, hdist, hscal⟩ := h
-  refine ⟨I, hI, fun hbdd => ?_⟩
-  obtain ⟨C, hC⟩ := hbdd (radius + 1) (by linarith)
-  have hd : ∀ᶠ i in Filter.atTop,
-      metricDistance ((X.term (I i)).S.base.metric 0) (X.term (I i)).basepoint (pts i) <
-        radius + 1 :=
-    hdist.eventually (eventually_lt_nhds (by linarith))
-  have hs : ∀ᶠ i in Filter.atTop, C < (X.term (I i)).S.scalar 0 (pts i) :=
-    hscal.eventually_gt_atTop C
-  obtain ⟨i, hdi, hsi⟩ := (hd.and hs).exists
-  exact absurd (hC i (pts i) hdi.le) (not_le.mpr hsi)
-
-theorem exists_reindex_nonempty_finiteControlledRadius_of_subsequenceCurvatureEscape
-    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} {X : NormalizedSequence.{u} eps kappa sigma Phi}
-    (h : SubsequenceCurvatureEscape X) :
-    ∃ k : ℕ → ℕ, ∃ hk : StrictMono k, Nonempty (FiniteControlledRadius (X.reindex k hk)) := by
-  obtain ⟨radius, I, hradius, hI, hinner, pts, hdist, hscal⟩ := h
-  refine ⟨I, hI, ⟨⟨radius, hradius, ?_, pts, hdist, hscal⟩⟩⟩
-  intro r hr hrlt
-  exact curvatureBoundedWithin_reindex X I hI (hinner r hr hrlt)
-
 def ConeLimitEscapeShell.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
   ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
     ∀ X : NormalizedSequence.{v} eps kappa sigma Phi,

@@ -21,108 +21,6 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
 
-def CurvatureBoundedWithin {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) (r : ℝ) : Prop :=
-  ∃ C : ℝ, ∀ i : ℕ, ∀ y : (X.term i).M,
-    metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r →
-      (X.term i).S.scalar 0 y ≤ C
-
-def DistanceCurvatureEscape {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) : Prop :=
-  ∃ radius : ℝ, 0 ≤ radius ∧
-    (∀ r : ℝ, 0 < r → r < radius → CurvatureBoundedWithin X r) ∧
-    (∀ r : ℝ, radius < r → ∀ C : ℝ, ∃ i : ℕ, ∃ y : (X.term i).M,
-      metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r ∧
-        C < (X.term i).S.scalar 0 y)
-
-def PositiveDistanceCurvatureEscape {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) : Prop :=
-  ∃ radius : ℝ, 0 < radius ∧
-    (∀ r : ℝ, 0 < r → r < radius → CurvatureBoundedWithin X r) ∧
-    (∀ r : ℝ, radius < r → ∀ C : ℝ, ∃ i : ℕ, ∃ y : (X.term i).M,
-      metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r ∧
-        C < (X.term i).S.scalar 0 y)
-
-def RealizedDistanceCurvatureEscape {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) : Prop :=
-  ∃ radius : ℝ, 0 < radius ∧
-    (∀ r : ℝ, 0 < r → r < radius → CurvatureBoundedWithin X r) ∧
-    ∃ points : ∀ i : ℕ, (X.term i).M,
-      Filter.Tendsto (fun i : ℕ => metricDistance ((X.term i).S.base.metric 0)
-          (X.term i).basepoint (points i)) Filter.atTop (nhds radius) ∧
-      Filter.Tendsto (fun i : ℕ => (X.term i).S.scalar 0 (points i))
-        Filter.atTop Filter.atTop
-
-private theorem exists_escape_radius_core {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) (h : ¬ BoundedAtDistance X) :
-    ∃ radius : ℝ,
-      (∀ r : ℝ, 0 < r → r < radius → CurvatureBoundedWithin X r) ∧
-      (∀ r : ℝ, radius < r → ∀ C : ℝ, ∃ i : ℕ, ∃ y : (X.term i).M,
-        metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r ∧
-          C < (X.term i).S.scalar 0 y) := by
-  classical
-  simp only [BoundedAtDistance] at h
-  push Not at h
-  obtain ⟨rho, hrho, hfail⟩ := h
-  have hfail' : ∀ C : ℝ, ∃ i : ℕ, ∃ y : (X.term i).M,
-      metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y ≤ rho ∧
-        C < (X.term i).S.scalar 0 y := by
-    intro C
-    obtain ⟨i, y, hd, hs⟩ := hfail C
-    exact ⟨i, y, hd, hs⟩
-  let S : Set ℝ := {r : ℝ | CurvatureBoundedWithin X r}
-  have hS0 : (0 : ℝ) ∈ S := by
-    refine ⟨0, fun i y hy => ?_⟩
-    exact absurd hy (not_lt_of_ge ENNReal.toReal_nonneg)
-  have hSne : S.Nonempty := ⟨0, hS0⟩
-  have hSbdd : BddAbove S := by
-    refine ⟨rho, fun r hr => le_of_not_gt fun hlt => ?_⟩
-    obtain ⟨C, hC⟩ := hr
-    obtain ⟨i, y, hd, hcs⟩ := hfail' C
-    exact absurd (hC i y (lt_of_le_of_lt hd hlt)) (not_le.mpr hcs)
-  refine ⟨sSup S, ?_, ?_⟩
-  · intro r _ hlt
-    obtain ⟨s, hs, hrs⟩ := (lt_csSup_iff hSbdd hSne).mp hlt
-    obtain ⟨C, hC⟩ := hs
-    exact ⟨C, fun i y hy => hC i y (lt_trans hy hrs)⟩
-  · intro r hlt C
-    by_contra hcon
-    have hmem : r ∈ S := by
-      refine ⟨C, fun i y hy => ?_⟩
-      by_contra hgt
-      exact hcon ⟨i, y, hy, lt_of_not_ge hgt⟩
-    exact absurd (le_csSup hSbdd hmem) (not_le.mpr hlt)
-
-private theorem nonneg_of_unbounded_beyond {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    {X : NormalizedSequence.{u} eps kappa sigma Phi} {radius : ℝ}
-    (h : ∀ r : ℝ, radius < r → ∀ C : ℝ, ∃ i : ℕ, ∃ y : (X.term i).M,
-      metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r ∧
-        C < (X.term i).S.scalar 0 y) : 0 ≤ radius := by
-  by_contra hcon
-  have hlt : radius < 0 := lt_of_not_ge hcon
-  obtain ⟨i, y, hy, _⟩ := h (radius / 2) (by linarith) 0
-  have h0 : radius / 2 ≤ metricDistance ((X.term i).S.base.metric 0)
-      (X.term i).basepoint y :=
-    le_trans (by linarith) ENNReal.toReal_nonneg
-  exact absurd hy (not_lt_of_ge h0)
-
-theorem curvatureBoundedWithin_mono {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) {r r' : ℝ} (hr : r' ≤ r)
-    (h : CurvatureBoundedWithin X r) : CurvatureBoundedWithin X r' := by
-  obtain ⟨C, hC⟩ := h
-  exact ⟨C, fun i y hy => hC i y (lt_of_lt_of_le hy hr)⟩
-
-theorem boundedAtDistance_iff_forall_curvatureBoundedWithin {eps kappa sigma : ℝ}
-    {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi) :
-    BoundedAtDistance X ↔ ∀ r : ℝ, 0 < r → CurvatureBoundedWithin X r := by
-  constructor
-  · intro h r hr
-    obtain ⟨C, hC⟩ := h r hr
-    exact ⟨C, fun i y hy => hC i y hy.le⟩
-  · intro h rho hrho
-    obtain ⟨C, hC⟩ := h (rho + 1) (by linarith)
-    exact ⟨C, fun i y hy => hC i y (lt_of_le_of_lt hy (by linarith))⟩
-
 theorem curvatureBoundedWithin_of_terminalParabolicScalarBallBoundAtSameTime
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
     {start ρ : ℝ} (hstart : start ≤ 0) (hρ : 0 ≤ ρ)
@@ -148,25 +46,6 @@ theorem exists_pos_curvatureBoundedWithin_of_modelScale {kappa : ℝ}
   exact ⟨epsStar, r, hepsStar, hr, fun eps heps hle sigma hsigma Phi hPhi X =>
     curvatureBoundedWithin_of_terminalParabolicScalarBallBoundAtSameTime X le_rfl hr.le
       (hprop eps heps hle sigma hsigma Phi hPhi X r hr le_rfl)⟩
-
-theorem distanceCurvatureEscape_of_not_boundedAtDistance {eps kappa sigma : ℝ}
-    {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
-    (h : ¬ BoundedAtDistance X) : DistanceCurvatureEscape X := by
-  obtain ⟨radius, hinner, houter⟩ := exists_escape_radius_core X h
-  exact ⟨radius, nonneg_of_unbounded_beyond houter, hinner, houter⟩
-
-theorem positiveDistanceCurvatureEscape_of_curvatureBoundedWithin {eps kappa sigma : ℝ}
-    {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
-    (h : ¬ BoundedAtDistance X) {r : ℝ} (hr : 0 < r) (hb : CurvatureBoundedWithin X r) :
-    PositiveDistanceCurvatureEscape X := by
-  obtain ⟨radius, hinner, houter⟩ := exists_escape_radius_core X h
-  have hle : r ≤ radius := by
-    by_contra hcon
-    have hlt : radius < r := lt_of_not_ge hcon
-    obtain ⟨C, hC⟩ := hb
-    obtain ⟨i, y, hy, hcy⟩ := houter ((radius + r) / 2) (by linarith) C
-    exact absurd (hC i y (lt_trans hy (by linarith))) (not_le.mpr hcy)
-  exact ⟨radius, lt_of_lt_of_le hr hle, hinner, houter⟩
 
 theorem positiveDistanceCurvatureEscape_of_not_boundedAtDistance_of_modelScale
     {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
