@@ -12490,3 +12490,10 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartComparis
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.LocalLowerSemicontinuity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartLocalization
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartMinimality
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.MetricEnergy.HarmonicComparison
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Harmonic.EnergyDecay
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.MetricEnergy.HolderRegularity
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Harmonic.GradientRegularity
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.MetricEnergy.GradientRegularity
+import DifferentialGeometry.Geometry.Metric.Pullback.ConvexBounds
+import DifferentialGeometry.Geometry.HarmonicMap.ChartRegularity

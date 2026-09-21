@@ -4,6 +4,7 @@ import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import DifferentialGeometry.Analysis.Integration.Lp.Bilinear
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.ZeroTraceRange
 
 section
 
@@ -228,6 +229,193 @@ theorem quadratic_weakGrad_energy_le_on_ball_of_ae_eq_on_annulus
   rw [integral_finsetSum _ (fun j _ => (hfi j).mono_set hsub),
     integral_finsetSum _ (fun j _ => (hgi j).mono_set hsub)] at h
   exact mul_le_mul_of_nonneg_left h (by norm_num : (0 : ℝ) ≤ 1 / 2)
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Set Filter MeasureTheory Metric
+open scoped Topology ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d : ℕ} [NeZero d] {ι : Type*} [Finite ι]
+
+local notation "E" => EuclideanSpace ℝ (Fin d)
+local notation "F" => EuclideanSpace ℝ ι
+
+theorem quadratic_weakGrad_energy_le_on_ball_of_ae_eq_on_complement
+    {Ω : Set E} {f g : E → F}
+    (hf : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => f x i) Ω)
+    (hg : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => g x i) Ω)
+    {K : Set F} (hK : IsCompact K)
+    (hfK : ∀ᵐ x ∂volume.restrict Ω, f x ∈ K)
+    (hgK : ∀ᵐ x ∂volume.restrict Ω, g x ∈ K)
+    (A : F → F →L[ℝ] F →L[ℝ] ℝ) (hA : ContinuousOn A K)
+    {b c : E} {s R : ℝ} (hsub : ball c s ⊆ ball b R) (hball : ball b R ⊆ Ω)
+    (hfg : f =ᵐ[volume.restrict (ball b R \ closedBall c s)] g)
+    (hle : (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball b R,
+      A (f x) (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))
+        (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))) ≤
+      (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball b R,
+        A (g x) (WithLp.toLp 2 (fun i => (hg i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hg i).weakGrad x j)))) :
+    (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball c s,
+      A (f x) (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))
+        (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))) ≤
+      (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball c s,
+        A (g x) (WithLp.toLp 2 (fun i => (hg i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hg i).weakGrad x j))) := by
+  classical
+  let _ := Fintype.ofFinite ι
+  let Ef (j : Fin d) (x : E) := A (f x)
+    (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))
+    (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))
+  let Eg (j : Fin d) (x : E) := A (g x)
+    (WithLp.toLp 2 (fun i => (hg i).weakGrad x j))
+    (WithLp.toLp 2 (fun i => (hg i).weakGrad x j))
+  have hfi (j : Fin d) : IntegrableOn (Ef j) (ball b R) :=
+    (integrable_quadratic_weakGrad_column_of_compact_range hf hK hfK A hA j).mono_set hball
+  have hgi (j : Fin d) : IntegrableOn (Eg j) (ball b R) :=
+    (integrable_quadratic_weakGrad_column_of_compact_range hg hK hgK A hA j).mono_set hball
+  have hlocal := quadratic_weakGrad_columns_ae_eq_of_ae_eq (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    (isOpen_ball.sdiff isClosed_closedBall) (sdiff_subset.trans hball) hf hg hfg (fun _ => A)
+  have hsets : ball b R \ ball c s =ᵐ[volume] ball b R \ closedBall c s := by
+    filter_upwards [(measure_eq_zero_iff_ae_notMem).mp (Measure.addHaar_sphere volume c s)]
+      with x hx
+    have hne : dist x c ≠ s := by simpa only [mem_sphere] using hx
+    apply propext
+    change (dist x b < R ∧ ¬ dist x c < s) ↔ (dist x b < R ∧ ¬ dist x c ≤ s)
+    simp only [not_lt, not_le]
+    exact and_congr_right fun _ =>
+      ⟨fun h => lt_of_le_of_ne h hne.symm, fun h => h.le⟩
+  have hcollar : (fun x => ∑ j, Ef j x) =ᵐ[volume.restrict (ball b R \ closedBall c s)]
+      (fun x => ∑ j, Eg j x) :=
+    hlocal.mono fun x hx => Finset.sum_congr rfl fun j _ => hx j
+  have hdiff : (fun x => ∑ j, Ef j x) =ᵐ[volume.restrict (ball b R \ ball c s)]
+      (fun x => ∑ j, Eg j x) := by
+    have hμ : volume.restrict (ball b R \ ball c s) =
+        volume.restrict (ball b R \ closedBall c s) := Measure.restrict_congr_set hsets
+    exact hμ.symm ▸ hcollar
+  have hEf : IntegrableOn (fun x => ∑ j, Ef j x) (ball b R) :=
+    integrable_finsetSum _ fun j _ => hfi j
+  have hEg : IntegrableOn (fun x => ∑ j, Eg j x) (ball b R) :=
+    integrable_finsetSum _ fun j _ => hgi j
+  have hleR : (∫ x in ball b R, ∑ j, Ef j x) ≤ ∫ x in ball b R, ∑ j, Eg j x := by
+    rw [integral_finsetSum _ (fun j _ => hfi j), integral_finsetSum _ (fun j _ => hgi j)]
+    linarith [hle]
+  have h := setIntegral_le_of_ae_eq_on_sdiff measurableSet_ball hsub hEf hEg hdiff hleR
+  rw [integral_finsetSum _ (fun j _ => (hfi j).mono_set hsub),
+    integral_finsetSum _ (fun j _ => (hgi j).mono_set hsub)] at h
+  exact mul_le_mul_of_nonneg_left h (by norm_num : (0 : ℝ) ≤ 1 / 2)
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Set Filter MeasureTheory Metric
+open scoped Topology ENNReal
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d : ℕ} [NeZero d] {ι : Type*} [Finite ι]
+
+local notation "E" => EuclideanSpace ℝ (Fin d)
+local notation "F" => EuclideanSpace ℝ ι
+
+theorem quadratic_weakGrad_energy_le_on_subball_of_concentric_minimality
+    {R : ℝ} {z : E → F}
+    (hz : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => z x i) (ball (0 : E) R))
+    {K : Set F} (hK : IsCompact K) (hzK : ∀ᵐ x ∂volume.restrict (ball (0 : E) R), z x ∈ K)
+    (A : F → F →L[ℝ] F →L[ℝ] ℝ) (hA : ContinuousOn A K)
+    (hmin : ∀ t : ℝ, 0 < t → t < R → ∀ f : E → F,
+      ∀ hf : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => f x i) (ball (0 : E) t),
+      (∀ i, DeGiorgi.MemW01p 2 (fun x => f x i - z x i) (ball (0 : E) t)) →
+      (∀ᵐ x ∂volume.restrict (ball (0 : E) t), f x ∈ K) →
+      (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball (0 : E) t,
+        A (z x) (WithLp.toLp 2 (fun i => (hz i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hz i).weakGrad x j))) ≤
+        (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball (0 : E) t,
+          A (f x) (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))
+            (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))))
+    {c : E} {s : ℝ} (hs : 0 < s) (hcs : ‖c‖ + s < R)
+    (q : E → F) (hq : ∀ i, DeGiorgi.MemW1pWitness 2 (fun x => q x i) (ball c s))
+    (hqz : ∀ i, DeGiorgi.MemW01p 2 (fun x => q x i - z x i) (ball c s))
+    (hqK : ∀ᵐ x ∂volume.restrict (ball c s), q x ∈ K) :
+    (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball c s,
+      A (z x) (WithLp.toLp 2 (fun i => (hz i).weakGrad x j))
+        (WithLp.toLp 2 (fun i => (hz i).weakGrad x j))) ≤
+      (1 / 2 : ℝ) * (∑ j : Fin d, ∫ x in ball c s,
+        A (q x) (WithLp.toLp 2 (fun i => (hq i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hq i).weakGrad x j))) := by
+  classical
+  let _ := Fintype.ofFinite ι
+  obtain ⟨t, hct, htR⟩ := exists_between hcs
+  have ht : 0 < t := (add_pos_of_nonneg_of_pos (norm_nonneg c) hs).trans hct
+  have hclosed : closedBall c s ⊆ ball (0 : E) t := by
+    intro x hx
+    have hn : ‖x‖ ≤ dist x c + ‖c‖ := by
+      simpa only [dist_eq_norm, sub_add_cancel] using norm_add_le (x - c) c
+    have hd := mem_closedBall.mp hx
+    exact mem_ball_zero_iff.mpr (by linarith)
+  have hsub : ball c s ⊆ ball (0 : E) t := ball_subset_closedBall.trans hclosed
+  have htΩ : ball (0 : E) t ⊆ ball (0 : E) R := ball_subset_ball htR.le
+  obtain ⟨f, hf, hfq, hfz, hfK, hgradfq⟩ := exists_weak_extension_mem_set_of_memW01p_sub
+    isOpen_ball isOpen_ball (hsub.trans htΩ) hz hq hqz hzK hqK
+  have htrace (i : ι) : DeGiorgi.MemW01p 2 (fun x => f x i - z x i) (ball (0 : E) t) := by
+    let hd := (((hf i).restrict isOpen_ball htΩ).add
+      (((hz i).restrict isOpen_ball htΩ).smul (-1))).congr
+        (Eventually.of_forall fun x => by
+          change f x i + -1 * z x i = f x i - z x i
+          ring)
+    have hsupp : tsupport (fun x => f x i - z x i) ⊆ closedBall c s := by
+      apply closure_minimal _ isClosed_closedBall
+      intro x hx
+      apply ball_subset_closedBall
+      by_contra hxout
+      exact hx (by
+        change f x i - z x i = 0
+        rw [hfz hxout, sub_self])
+    have hcompact : HasCompactSupport (fun x => f x i - z x i) :=
+      (isCompact_closedBall c s).of_isClosed_subset (isClosed_tsupport _) hsupp
+    simpa only [ENNReal.ofReal_ofNat] using
+      DeGiorgi.memW01p_of_memW1p_of_tsupport_subset isOpen_ball (by norm_num : (1 : ℝ) < 2)
+        (by simpa only [ENNReal.ofReal_ofNat] using hd.memW1p) hcompact (hsupp.trans hclosed)
+  have hle := hmin t ht htR f (fun i => (hf i).restrict isOpen_ball htΩ) htrace
+    (ae_restrict_of_ae_restrict_of_subset htΩ hfK)
+  have heq : z =ᵐ[volume.restrict (ball (0 : E) t \ closedBall c s)] f := by
+    filter_upwards [ae_restrict_mem (measurableSet_ball.diff measurableSet_closedBall)] with x hx
+    exact (hfz (notMem_subset ball_subset_closedBall hx.2)).symm
+  have hsmall := quadratic_weakGrad_energy_le_on_ball_of_ae_eq_on_complement
+    hz hf hK hzK hfK A hA hsub htΩ heq hle
+  have hqeq : (∑ j : Fin d, ∫ x in ball c s,
+      A (f x) (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))
+        (WithLp.toLp 2 (fun i => (hf i).weakGrad x j))) =
+      ∑ j : Fin d, ∫ x in ball c s,
+        A (q x) (WithLp.toLp 2 (fun i => (hq i).weakGrad x j))
+          (WithLp.toLp 2 (fun i => (hq i).weakGrad x j)) := by
+    apply Finset.sum_congr rfl
+    intro j hj
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_ball, ae_all_iff.mpr hgradfq] with x hx hgrad
+    have hG : (WithLp.toLp 2 (fun i => (hf i).weakGrad x j) : F) =
+        WithLp.toLp 2 (fun i => (hq i).weakGrad x j) := by
+      ext i
+      exact congrArg (fun v : E => v j) (hgrad i)
+    rw [hfq hx, hG]
+  rwa [hqeq] at hsmall
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
 
