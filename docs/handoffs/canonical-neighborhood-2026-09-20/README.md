@@ -1107,3 +1107,29 @@ The next application restricts the produced incomplete limit geodesic to a tail
 where every point has a spatial neck. The ordered neck sequence must still be
 assembled into a finite end and used to construct the cone. The bounded-distance
 headline remains open.
+
+## Disjoint neck sequences produced from normalized curvature escape
+
+The continuation after `29f6bc13b` proves
+`exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence`
+in `NormalizedNeckSequence.lean`. Starting from failure of bounded curvature at
+distance, it retains the full source convergence, missing completion endpoint,
+nonnegative limit curvature, and prescribed scalar-distance separation, and
+constructs a sequence of spatial necks whose centers approach that endpoint.
+Successive central spheres are smooth graphs in the preceding neck charts, and
+all the central spheres are pairwise disjoint. A tail of the limit geodesic is
+chosen from the actual eventual neck and scalar-divergence conclusions; no neck
+sequence or cross-section producer is added as a hypothesis.
+
+The new theorem passed thirteen declaration linters and has only `propext`,
+`Classical.choice`, and `Quot.sound` in its axiom closure. The leaf passed 14,118
+jobs, and the full root passed 20,193 jobs with exactly 21 retained sorry warnings
+and no other diagnostics. Evidence:
+`/private/tmp/wt17-normalized-neck-sequence-build.log`,
+`/private/tmp/wt17-normalized-neck-sequence-audit.log`, and
+`/private/tmp/wt17-normalized-neck-sequence-root-build.log`.
+
+Pairwise disjoint spheres are not yet an assembled finite horn and do not by
+themselves assert separation of the entire ambient manifold. The annular assembly,
+finite-end geometry, and cone producer remain necessary. The bounded-distance
+headline remains open.
