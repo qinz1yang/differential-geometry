@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocallyFinite
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckCurvatureDistance
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Restriction
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Topology.Compactness.ConvergentFamily
@@ -32,12 +33,152 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
 
+private theorem exists_homeomorph_annular_end
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [T2Space M]
+    (ann : ℕ → PartialDiffeomorph IC I3 Cylinder M ∞)
+    (eta : ℕ → Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2) (F : ℕ → Cylinder → M)
+    (hsource : ∀ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (ann n).source)
+    (hleft : ∀ n p, ann n (p, 0) = F n (p, 0))
+    (hright : ∀ n p, ann n (p, 1) = F (n + 1) (eta n p, 0))
+    (hcann : ∀ n, IsCompact (ann n '' (univ ×ˢ Icc (0 : ℝ) 1)))
+    (hlocalAnn : LocallyFinite (fun n => ann n '' (univ ×ˢ Icc (0 : ℝ) 1)))
+    (hsep : ∀ i j, i + 1 < j → Disjoint (ann i '' (univ ×ˢ Icc (0 : ℝ) 1))
+      (ann j '' (univ ×ˢ Icc (0 : ℝ) 1)))
+    (hinter : ∀ n, (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+      (ann (n + 1 + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+        F (n + 1 + 1) '' (univ ×ˢ ({0} : Set ℝ)))
+    (hfrontTail : frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+      F 1 '' (univ ×ˢ ({0} : Set ℝ))) :
+    ∃ E : Sphere 2 × Ici (0 : ℝ) ≃ₜ (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
+      ∃ theta : ℕ → Sphere 2 ≃ₜ Sphere 2,
+        theta 0 = Homeomorph.refl (Sphere 2) ∧
+        (∀ n, theta (n + 1) = (theta n).trans (eta (n + 1)).toHomeomorph) ∧
+        (∀ (n : ℕ) (p : Sphere 2) (s : Icc (0 : ℝ) 1),
+          (E (p, ⟨n + (s : ℝ), add_nonneg (Nat.cast_nonneg n) s.property.1⟩) : M) =
+            ann (n + 1) (theta n p, s)) ∧
+        ∃ D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ
+            interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
+          ∀ (p : Sphere 2) (s : Ioi (0 : ℝ)), (D (p, s) : M) =
+            (E (p, ⟨s, (show 0 ≤ (s : ℝ) from s.property.le)⟩) : M) := by
+  have hlocalShift (k : ℕ) := hlocalAnn.comp_injective
+    (g := fun n : ℕ => n + k) (fun _ _ hij => Nat.add_right_cancel hij)
+  let unit : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ (univ ×ˢ Icc (0 : ℝ) 1 : Set Cylinder) :=
+    (((Homeomorph.Set.univ (Sphere 2)).symm).prodCongr (Homeomorph.refl _)).trans
+      (Homeomorph.Set.prod univ (Icc (0 : ℝ) 1)).symm
+  let e (n : ℕ) : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ
+      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
+    unit.trans ((ann (n + 1)).toOpenPartialHomeomorph.homeomorphOfImageSubsetSource
+      (hsource (n + 1)) rfl)
+  have he (n : ℕ) (p : Sphere 2) (s : Icc (0 : ℝ) 1) :
+      (e n (p, s) : M) = ann (n + 1) (p, s) := rfl
+  have hseam' (n : ℕ) (p : Sphere 2) : (e n (p, ⟨1, by simp⟩) : M) =
+      e (n + 1) ((eta (n + 1)).toHomeomorph p, ⟨0, by simp⟩) := by
+    rw [he, he, hright, hleft]
+    rfl
+  have hinter' (n : ℕ) :
+      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+        (ann (n + 1 + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+      range (fun p => (e n (p, ⟨1, by simp⟩) : M)) := by
+    rw [hinter n]
+    ext x
+    constructor
+    · rintro ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩
+      have hz' : z = 0 := hz
+      subst z
+      obtain ⟨w, rfl⟩ := (eta (n + 1)).surjective p
+      refine ⟨w, ?_⟩
+      change (e n (w, ⟨1, by simp⟩) : M) = x
+      rw [he, hright]
+      exact hp
+    · rintro ⟨p, hp⟩
+      change (e n (p, ⟨1, by simp⟩) : M) = x at hp
+      rw [he, hright] at hp
+      exact ⟨(eta (n + 1) p, 0), ⟨mem_univ _, rfl⟩, hp⟩
+  obtain ⟨E, theta, htheta0, htheta, hE⟩ :=
+    DifferentialGeometry.Topology.exists_homeomorph_iUnion_of_cylinder_chain
+      (fun n => ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) e
+      (fun n => (eta (n + 1)).toHomeomorph) (fun n => (hcann (n + 1)).isClosed)
+      (hlocalShift 1) hseam' hinter' (fun i j hij => hsep (i + 1) (j + 1) (Nat.succ_lt_succ hij))
+  have hEzero (p : Sphere 2) : (E (p, ⟨0, by norm_num⟩) : M) = F 1 (p, 0) := by
+    have hz := hE 0 p ⟨0, by simp⟩
+    rw [htheta0] at hz
+    simpa only [Nat.cast_zero, zero_add, Homeomorph.refl_apply, he, hleft, id_eq] using hz
+  have hfrontE : frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+      range (fun p => (E (p, ⟨0, by norm_num⟩) : M)) := by
+    rw [hfrontTail]
+    ext x
+    constructor
+    · rintro ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩
+      have hz' : z = 0 := hz
+      subst z
+      exact ⟨p, (hEzero p).trans hp⟩
+    · rintro ⟨p, hp⟩
+      exact ⟨(p, 0), ⟨mem_univ _, rfl⟩, (hEzero p).symm.trans hp⟩
+  let D := E.restrictProdIoi hfrontE
+  exact ⟨E, theta, htheta0, htheta,
+    fun n p s => (hE n p s).trans (he n (theta n p) s),
+    D, fun p s => E.restrictProdIoi_apply_coe hfrontE p s⟩
+
+private theorem pathConnectedSpace_of_cylinder_homeomorph
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [ConnectedSpace (Sphere 2)] (W : TopologicalSpace.Opens M)
+    (D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ W) : PathConnectedSpace W := by
+  let _ : ConnectedSpace (Ioi (0 : ℝ)) := isConnected_iff_connectedSpace.mp isConnected_Ioi
+  let _ : ConnectedSpace W := D.surjective.connectedSpace D.continuous
+  let _ : LocallyPathConnectedSpace W := ChartedSpace.locallyPathConnectedSpace ThreeSpace W
+  exact pathConnectedSpace_iff_connectedSpace.mpr inferInstance
+
+private theorem exists_restricted_neck
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold I3 ∞ M] [T2Space M]
+    (g : SmoothRiemannianMetric I3 M) (W : TopologicalSpace.Opens M)
+    {eps : ℝ} (x : W) (nk : SpatialNeck g eps (x : M))
+    (hmap : nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ (W : Set M)) :
+    ∃ nkW : SpatialNeck (g.restrictOpen W) eps x,
+      nkW.map.source = nk.map.source ∩ nk.map ⁻¹' (W : Set M) ∧
+      (∀ y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹, (nkW.map y : M) = nk.map y) ∧
+      ∀ y : W, nkW.map.symm y = nk.map.symm (y : M) := by
+  refine ⟨nk.restrictOpen (U := W) (x := x) hmap,
+    SpatialNeck.restrictOpen_map_source (U := W) (x := x) nk hmap, ?_,
+    SpatialNeck.restrictOpen_map_symm (U := W) (x := x) nk hmap⟩
+  exact fun y hy => SpatialNeck.restrictOpen_map_coe (U := W) (x := x) nk hmap
+    (hmap ⟨y, hy, rfl⟩)
+
+private theorem scalar_distance_lower_bound_of_mem_neck_ball
+    {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    (g : SmoothRiemannianMetric I3 M)
+    (hM : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    {eps : ℝ} {x : M} (nk : SpatialNeck g eps x) (hsmall : eps ≤ 1 / 8646)
+    (q : UniformSpace.Completion M)
+    (hcenter : eps⁻¹ ^ 2 ≤ metricScalarAt g x * dist q (x : UniformSpace.Completion M) ^ 2)
+    {y : M} (hy : y ∈ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹))
+    (hball : y ∈ riemannianClosedBallOf g x
+      ((3 * eps⁻¹ / 100) / Real.sqrt (metricScalarAt g x))) :
+    eps⁻¹ ^ 2 / 8 ≤ metricScalarAt g y * dist q (y : UniformSpace.Completion M) ^ 2 := by
+  have hip : 0 ≤ eps⁻¹ := (inv_pos.mpr nk.eps_pos).le
+  change riemannianEDistOf g x y ≤ ENNReal.ofReal
+    ((3 * eps⁻¹ / 100) / Real.sqrt (metricScalarAt g x)) at hball
+  rw [← hM, edist_dist] at hball
+  have hb := (ENNReal.ofReal_le_ofReal_iff (div_nonneg
+    (div_nonneg (mul_nonneg (by norm_num) hip) (by norm_num)) (Real.sqrt_nonneg _))).mp hball
+  have hnear : dist x y ≤ eps⁻¹ / (2 * Real.sqrt (metricScalarAt g x)) := by
+    apply hb.trans
+    simpa only [div_div] using div_le_div_of_nonneg_right
+      (show 3 * eps⁻¹ / 100 ≤ eps⁻¹ / 2 by linarith only [hip])
+      (Real.sqrt_nonneg (metricScalarAt g x))
+  have hlow := nk.scalar_distance_lower_bound
+    (by linarith only [hsmall] : eps ≤ 1 / 4323) q hcenter hy hnear
+  apply le_trans _ hlow
+  have hfactor : (1 : ℝ) / 2 ≤ 1 - 4323 * eps := by linarith only [hsmall]
+  nlinarith only [mul_le_mul_of_nonneg_right hfactor (sq_nonneg eps⁻¹)]
+
 private theorem exists_restricted_completion_endpoint
     {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold I3 ∞ M]
     (g : SmoothRiemannianMetric I3 M)
     (hM : ∀ x y : M, edist x y = riemannianEDistOf g x y)
-    (W : TopologicalSpace.Opens M) [PathConnectedSpace W]
+    (W : TopologicalSpace.Opens M) (D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ W)
+    [ConnectedSpace (Sphere 2)]
     {a b : ℝ} (hab : a < b) (γ : C(Ico a b, W))
     (hγ : ∀ v w, riemannianEDistOf (g.restrictOpen W) (γ v) (γ w) = edist v w)
     (q : UniformSpace.Completion M)
@@ -52,7 +193,11 @@ private theorem exists_restricted_completion_endpoint
     (hregionsNeck : ∀ n, regions n ⊆ (nk n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹))
     (hwindow : ∀ᶠ n in atTop, (nk n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ (W : Set M))
     (B : Set M) (hB : IsCompact B)
-    (hBcover : ∀ x : W, (x : M) ∉ ⋃ n, regions n → (x : M) ∈ B) :
+    (hBcover : ∀ x : W, (x : M) ∉ ⋃ n, regions n → (x : M) ∈ B)
+    {c : ℝ} (hquant : ∀ n, ∀ x ∈ regions n,
+      c ≤ metricScalarAt g x * dist q (x : UniformSpace.Completion M) ^ 2) :
+    ∃ hW : PathConnectedSpace W,
+    let _ : PathConnectedSpace W := hW
     let A (n : ℕ) : Set W := (Subtype.val : W → M) ⁻¹' regions n
     let mW : MetricSpace W :=
       let _ : PseudoMetricSpace W := (g.restrictOpen W).toPseudoMetricSpace
@@ -74,8 +219,13 @@ private theorem exists_restricted_completion_endpoint
       insert qW (⋃ n, (fun x : W => (x : UniformSpace.Completion W)) '' A n) ∈ 𝓝 qW ∧
       Tendsto (fun x : W => metricScalarAt (g.restrictOpen W) x)
         (comap (fun x : W => (x : UniformSpace.Completion W)) (𝓝 qW)) atTop ∧
+      (∀ n, ∀ x ∈ A n, c ≤ metricScalarAt (g.restrictOpen W) x *
+        dist qW (x : UniformSpace.Completion W) ^ 2) ∧
       ∃ delta : ℝ, 0 < delta ∧ IsCompact (Metric.closedBall qW delta) ∧
         Metric.closedBall qW delta ⊆ insert qW (range (fun x : W => (x : UniformSpace.Completion W))) := by
+  let hW := pathConnectedSpace_of_cylinder_homeomorph W D
+  let _ : PathConnectedSpace W := hW
+  refine ⟨hW, ?_⟩
   let A (n : ℕ) : Set W := (Subtype.val : W → M) ⁻¹' regions n
   have hA (n : ℕ) : IsCompact (A n) := by
     apply Topology.IsEmbedding.subtypeVal.isCompact_iff.mpr
@@ -140,6 +290,16 @@ private theorem exists_restricted_completion_endpoint
     rintro ⟨x, rfl⟩
     rw [UniformSpace.Completion.map_coe hi.uniformContinuous] at hmap
     exact hmissing ⟨x, hmap⟩
+  have hquantW (n : ℕ) (x : W) (hx : x ∈ A n) :
+      c ≤ metricScalarAt (g.restrictOpen W) x * dist qW (x : UniformSpace.Completion W) ^ 2 := by
+    have hnonneg : 0 ≤ metricScalarAt g (x : M) :=
+      (mul_nonneg (show 0 ≤ 1 - 4323 * eps by linarith only [hsmall]) (nk n).Q_pos.le).trans
+        ((nk n).scalar_bounds_on_image_window (hregionsNeck n hx)).1
+    have hdist := hi.completion_map.dist_le_mul qW (x : UniformSpace.Completion W)
+    rw [hmap, UniformSpace.Completion.map_coe hi.uniformContinuous, NNReal.coe_one, one_mul] at hdist
+    rw [metricScalarAt_restrictOpen]
+    exact (hquant n (x : M) hx).trans
+      (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ dist_nonneg hdist 2) hnonneg)
   let radius (n : ℕ) := (eps⁻¹ + 6) * Real.sqrt (1 + eps) /
     Real.sqrt (metricScalarAt (g.restrictOpen W) (γ (t n)))
   have hradius : Tendsto radius atTop (𝓝 0) :=
@@ -232,7 +392,7 @@ private theorem exists_restricted_completion_endpoint
     · obtain ⟨n, hn⟩ := mem_iUnion.mp hz
       obtain ⟨x, _, hx⟩ := hn
       exact mem_insert_of_mem _ ⟨x, hx⟩
-  refine ⟨qW, hqW, hdistW, hmissingW, hmap, ?_, hregion, hcompact, hKnhds, hscalarW, hball⟩
+  refine ⟨qW, hqW, hdistW, hmissingW, hmap, ?_, hregion, hcompact, hKnhds, hscalarW, hquantW, hball⟩
   let _ : LocallyCompactSpace W := ChartedSpace.locallyCompactSpace ThreeSpace W
   exact (UniformSpace.Completion.isDenseEmbedding_coe).isOpenEmbedding
 
@@ -372,6 +532,9 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                 (∀ n (x : L.M), x ∈ Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) →
                                   dist q (x : UniformSpace.Completion L.M) ≤
                                     (11 / 5) * (F.radius - (t n : ℝ))) ∧
+                                (∀ n (x : L.M), x ∈ Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) →
+                                  ((2 * alpha)⁻¹) ^ 2 / 8 ≤ metricScalarAt L.metric x *
+                                    dist q (x : UniformSpace.Completion L.M) ^ 2) ∧
                                 (∀ᶠ n in atTop,
                                   (nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) ⊆
                                     interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) ∧
@@ -444,19 +607,25 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                             Tendsto (fun x : W => metricScalarAt (L.metric.restrictOpen W) x)
                                               (comap (fun x : W => (x : UniformSpace.Completion W))
                                                 (𝓝 qW)) atTop ∧
+                                            (∀ n (x : W), (x : L.M) ∈ Ψ (n + 2) ''
+                                              (univ ×ˢ Icc (0 : ℝ) 1) →
+                                              ((2 * alpha)⁻¹) ^ 2 / 8 ≤
+                                                metricScalarAt (L.metric.restrictOpen W) x *
+                                                  dist qW (x : UniformSpace.Completion W) ^ 2) ∧
                                             ∃ delta : ℝ, 0 < delta ∧
                                               IsCompact (Metric.closedBall qW delta) ∧
                                               Metric.closedBall qW delta ⊆ insert qW
                                                 (range (fun x : W => (x : UniformSpace.Completion W))) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
-      hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
+      hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith only [hsmall])
   refine ⟨epsStar, c, hepsStar, hc, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X hnot
   obtain ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, hquant, hnecks⟩ :=
       hproduce eps heps hle sigma hsigma Phi hPhi X hnot
+  clear hproduce
   let _ : PathConnectedSpace L.M := hL
   let _ : EMetricSpace L.M := L.emetricSpace
   let _ : MetricSpace L.M := EMetricSpace.toMetricSpace
@@ -466,14 +635,14 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     (Filter.eventually_comap.mp htail)
   let a := max 0 (F.radius - delta / 2)
   have ha0 : 0 ≤ a := le_max_left _ _
-  have har : a < F.radius := max_lt F.radius_pos (by linarith)
+  have har : a < F.radius := max_lt F.radius_pos (by linarith only [hdelta])
   have hgood (tau : Ico 0 F.radius) (htau : a ≤ (tau : ℝ)) :
       2 < metricScalarAt L.metric (g tau) ∧
         Nonempty (SpatialNeck L.metric (2 * alpha) (g tau)) := by
     have hd : dist (tau : ℝ) F.radius < delta := by
       rw [Real.dist_eq, abs_of_neg (sub_neg.mpr tau.property.2), neg_sub]
       have hh : F.radius - delta / 2 ≤ (tau : ℝ) := (le_max_right _ _).trans htau
-      linarith
+      linarith only [hh, hdelta]
     exact hprop hd tau rfl
   let incl : C(Ico a F.radius, Ico 0 F.radius) :=
     ⟨fun tau => ⟨tau, ha0.trans tau.property.1, tau.property.2⟩,
@@ -492,7 +661,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     rw [hdist] at hh
     exact hh
   obtain ⟨t, nk, _ht0, hmono, hlim, hstep, _hcover, hgraph, hdisjoint, eta, ann, hannuli, hsep, hinterior, hinter, hseam⟩ :=
-    exists_spatialNeck_sequence_along_isometric_curve L.metric har (by linarith) curve hcurve
+    exists_spatialNeck_sequence_along_isometric_curve L.metric har (by linarith only [hsmall]) curve hcurve
       (fun tau => (hgood (incl tau) tau.property.1).2) hquant'
   have htend : Tendsto (incl ∘ t) atTop
       (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) :=
@@ -545,7 +714,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
   have hconnTail := IsConnected.iUnion_of_chain (fun n => hconnAnn (n + 1))
     (fun n => hmeetAnn (n + 1))
   have hfrontTail := hlocalAnn.frontier_iUnion_succ_eq_of_chain _
-    (fun n => (hcann n).isClosed) hfrann hseam (fun n => hsep 0 (n + 2) (by omega))
+    (fun n => (hcann n).isClosed) hfrann hseam (fun n => hsep 0 (n + 2) (Nat.succ_lt_succ (Nat.zero_lt_succ n)))
   have hstart : g (incl (t 2)) ∈ interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
     apply interior_mono (union_subset (subset_iUnion (fun n => ann (n + 1) ''
       (univ ×ˢ Icc (0 : ℝ) 1)) 0) (subset_iUnion (fun n => ann (n + 1) ''
@@ -584,8 +753,8 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
         (div_nonneg (by norm_num : (0 : ℝ) ≤ 7) (Real.sqrt_nonneg _))).mp hb
       have hi : (1000000 : ℝ) < (2 * alpha)⁻¹ :=
         (lt_inv_comm₀ (by norm_num) (by positivity : 0 < 2 * alpha)).mpr
-          (by norm_num only [one_div]; linarith)
-      have hnum : (7 : ℝ) < (2 * alpha)⁻¹ / 40 := by linarith
+          (by norm_num only [one_div]; linarith only [hsmall])
+      have hnum : (7 : ℝ) < (2 * alpha)⁻¹ / 40 := by linarith only [hi]
       have hd := div_lt_div_of_pos_right hnum (Real.sqrt_pos.mpr (nk 1).Q_pos)
       have hstep1 := hstep 1
       change (t 2 : ℝ) - t 1 = ((2 * alpha)⁻¹ / 40) /
@@ -593,7 +762,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
       change (v : ℝ) - (t 1 : ℝ) ≤ _ at hreal
       change 7 / Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) <
         ((2 * alpha)⁻¹ / 40) / Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) at hd
-      linarith
+      linarith only [hv', hreal, hd, hstep1]
     have hsub := DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
       hP havoid ⟨g (incl (t 2)), ⟨incl (t 2), (show incl (t 2) ≤ incl (t 2) from le_rfl), rfl⟩, hstart⟩
     exact fun v hv => hsub ⟨v, hv, rfl⟩
@@ -619,7 +788,17 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     rw [hdist, UniformSpace.Completion.dist_eq] at htriangle
     have hremain := (t (n + 1)).property.2
     change _ ≤ F.radius - (t n : ℝ) + dist (g (incl (t n))) x at htriangle
-    linarith
+    linarith only [htriangle, hb', hremain]
+  have hquantAnn (n : ℕ) (x : L.M) (hx : x ∈ ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) :
+      ((2 * alpha)⁻¹) ^ 2 / 8 ≤ metricScalarAt L.metric x *
+        dist q (x : UniformSpace.Completion L.M) ^ 2 := by
+    apply scalar_distance_lower_bound_of_mem_neck_ball L.metric (fun _ _ => rfl) (nk n)
+      (by linarith only [hsmall] : 2 * alpha ≤ 1 / 8646) q _ (hsubann n hx)
+      (((hannuli n).2.2.2.2.2.2 hx).1)
+    have hd : dist q (curve (t n) : UniformSpace.Completion L.M) = F.radius - (t n : ℝ) :=
+      hdist (incl (t n))
+    rw [hd]
+    exact hquant' (t n)
   have hip : 0 < (2 * alpha)⁻¹ := inv_pos.mpr (mul_pos (by norm_num) ha)
   have hfrontCompact : IsCompact
       (frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) := by
@@ -643,66 +822,17 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
       ((nk n).map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) ∩
         interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))).Nonempty := by
     rw [Nat.cofinite_eq_atTop]
-    filter_upwards [eventually_ge_atTop 2] with n hn
+    apply (eventually_ge_atTop 2).mono
+    intro n hn
     exact ⟨g (incl (t n)),
       ⟨((nk n).center, 0), ⟨mem_univ _, neg_lt_zero.mpr hip, hip⟩, (nk n).center_eq⟩,
       haxisTail (incl (t n)) (hmono.monotone hn)⟩
   have hwindowCapture := hlocal.eventually_subset_interior_of_isCompact_frontier
     hfrontCompact hwindowConn hwindowMeet
   rw [Nat.cofinite_eq_atTop] at hwindowCapture
-  let unit : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ (univ ×ˢ Icc (0 : ℝ) 1 : Set Cylinder) :=
-    (((Homeomorph.Set.univ (Sphere 2)).symm).prodCongr (Homeomorph.refl _)).trans
-      (Homeomorph.Set.prod univ (Icc (0 : ℝ) 1)).symm
-  let e (n : ℕ) : Sphere 2 × Icc (0 : ℝ) 1 ≃ₜ
-      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
-    unit.trans ((ann (n + 1)).toOpenPartialHomeomorph.homeomorphOfImageSubsetSource
-      (hsource (n + 1)) rfl)
-  have he (n : ℕ) (p : Sphere 2) (s : Icc (0 : ℝ) 1) :
-      (e n (p, s) : L.M) = ann (n + 1) (p, s) := rfl
-  have hseam' (n : ℕ) (p : Sphere 2) : (e n (p, ⟨1, by simp⟩) : L.M) =
-      e (n + 1) ((eta (n + 1)).toHomeomorph p, ⟨0, by simp⟩) := by
-    rw [he, he, hright, hleft]
-    rfl
-  have hinter' (n : ℕ) :
-      (ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
-        (ann (n + 1 + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
-      range (fun p => (e n (p, ⟨1, by simp⟩) : L.M)) := by
-    rw [hinter n]
-    ext x
-    constructor
-    · rintro ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩
-      have hz' : z = 0 := hz
-      subst z
-      obtain ⟨w, rfl⟩ := (eta (n + 1)).surjective p
-      refine ⟨w, ?_⟩
-      change (e n (w, ⟨1, by simp⟩) : L.M) = x
-      rw [he, hright]
-      exact hp
-    · rintro ⟨p, hp⟩
-      change (e n (p, ⟨1, by simp⟩) : L.M) = x at hp
-      rw [he, hright] at hp
-      exact ⟨(eta (n + 1) p, 0), ⟨mem_univ _, rfl⟩, hp⟩
-  obtain ⟨E, theta, htheta0, htheta, hE⟩ :=
-    DifferentialGeometry.Topology.exists_homeomorph_iUnion_of_cylinder_chain
-      (fun n => ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) e
-      (fun n => (eta (n + 1)).toHomeomorph) (fun n => (hcann (n + 1)).isClosed)
-      (hlocalShift 1) hseam' hinter' (fun i j hij => hsep (i + 1) (j + 1) (by omega))
-  have hEzero (p : Sphere 2) : (E (p, ⟨0, by norm_num⟩) : L.M) = (nk 1).map (p, 0) := by
-    have hz := hE 0 p ⟨0, by simp⟩
-    rw [htheta0] at hz
-    simpa only [Nat.cast_zero, zero_add, Homeomorph.refl_apply, he, hleft, id_eq] using hz
-  have hfrontE : frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
-      range (fun p => (E (p, ⟨0, by norm_num⟩) : L.M)) := by
-    rw [hfrontTail]
-    ext x
-    constructor
-    · rintro ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩
-      have hz' : z = 0 := hz
-      subst z
-      exact ⟨p, (hEzero p).trans hp⟩
-    · rintro ⟨p, hp⟩
-      exact ⟨(p, 0), ⟨mem_univ _, rfl⟩, (hEzero p).symm.trans hp⟩
-  let D := E.restrictProdIoi hfrontE
+  obtain ⟨E, theta, htheta0, htheta, hE, D, hD⟩ :=
+    exists_homeomorph_annular_end ann eta (fun n => (nk n).map)
+      hsource hleft hright hcann hlocalAnn hsep hinter hfrontTail
   let W : TopologicalSpace.Opens L.M :=
     ⟨interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)), isOpen_interior⟩
   let tailIncl : Ico (t 2 : ℝ) F.radius → Ico 0 F.radius :=
@@ -732,21 +862,11 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
         (∀ y ∈ univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹,
           (nkW.map y : L.M) = (nk n).map y) ∧
         ∀ y : W, nkW.map.symm y = (nk n).map.symm (y : L.M) := by
-    filter_upwards [hwindowCapture, eventually_ge_atTop 2] with n hn h2n
-    let x : W := gW ⟨t n, hmono.monotone h2n, (t n).property.2⟩
-    let nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha) x :=
-      (nk n).restrictOpen (U := W) (x := x) hn
-    refine ⟨hmono.monotone h2n, nkW, ?_, ?_, ?_⟩
-    · exact SpatialNeck.restrictOpen_map_source (U := W) (x := x) (nk n) hn
-    · intro y hy
-      exact SpatialNeck.restrictOpen_map_coe (U := W) (x := x) (nk n) hn (hn ⟨y, hy, rfl⟩)
-    · exact SpatialNeck.restrictOpen_map_symm (U := W) (x := x) (nk n) hn
-  have hW : PathConnectedSpace W := by
-    let _ : ConnectedSpace (Ioi (0 : ℝ)) := isConnected_iff_connectedSpace.mp isConnected_Ioi
-    let _ : ConnectedSpace W := D.surjective.connectedSpace D.continuous
-    let _ : LocallyPathConnectedSpace W := ChartedSpace.locallyPathConnectedSpace ThreeSpace W
-    exact pathConnectedSpace_iff_connectedSpace.mpr inferInstance
-  let _ : PathConnectedSpace W := hW
+    apply (hwindowCapture.and (eventually_ge_atTop 2)).mono
+    rintro n ⟨hn, h2n⟩
+    refine ⟨hmono.monotone h2n, ?_⟩
+    exact exists_restricted_neck L.metric W
+      (gW ⟨t n, hmono.monotone h2n, (t n).property.2⟩) (nk n) hn
   have htailT : Tendsto tailIncl
       (comap (Subtype.val : Ico (t 2 : ℝ) F.radius → ℝ) (𝓝 F.radius))
       (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) :=
@@ -759,16 +879,13 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     have hf : x ∈ frontier (⋃ k, ann (k + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
       ⟨subset_closure hu, hnotW⟩
     rw [hfrontTail] at hf
-    obtain ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩ := hf
-    have hz' : z = 0 := hz
-    subst z
     have hx0 : x ∈ ann 0 '' (univ ×ˢ Icc (0 : ℝ) 1) := by
-      refine ⟨((eta 0).symm p, 1), ⟨mem_univ _, by simp⟩, ?_⟩
-      rw [hright, (eta 0).apply_symm_apply]
-      exact hp
-    exact Set.disjoint_left.mp (hsep 0 (n + 2) (by omega)) hx0 hx
+      apply (hcann 0).isClosed.frontier_subset
+      rw [hfrann 0]
+      exact Or.inr hf
+    exact Set.disjoint_left.mp (hsep 0 (n + 2) (Nat.succ_lt_succ (Nat.zero_lt_succ n))) hx0 hx
   let u : ℕ → Ico (t 2 : ℝ) F.radius := fun n =>
-    ⟨t (n + 2), hmono.monotone (by omega : 2 ≤ n + 2), (t (n + 2)).property.2⟩
+    ⟨t (n + 2), hmono.monotone (Nat.le_add_left 2 n), (t (n + 2)).property.2⟩
   have huT : Tendsto (fun n => (u n : ℝ)) atTop (𝓝 F.radius) :=
     hlim.comp (tendsto_add_atTop_nat 2)
   have hscalarU : Tendsto (fun n => metricScalarAt L.metric (gW (u n) : L.M))
@@ -783,12 +900,13 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     | zero => exact hk
     | succ n => exact False.elim (hx (mem_iUnion.mpr ⟨n, hk⟩))
   have hcompletion := exists_restricted_completion_endpoint L.metric (fun _ _ => rfl)
-    W (t 2).property.2 gW hgW q (hq.comp htailT) hmissing
+    W D (t 2).property.2 gW hgW q (hq.comp htailT) hmissing
     (by linarith only [hsmall] : 2 * alpha < 1 / 4323) u huT hscalarU
     (fun n => ann (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1)) (fun n => hcann (n + 2)) hannW
     (fun n => nk (n + 2)) (fun n => hsubann (n + 2))
     ((tendsto_add_atTop_nat 2).eventually hwindowCapture)
     (ann 1 '' (univ ×ˢ Icc (0 : ℝ) 1)) (hcann 1) hBcover
+    (fun n x hx => hquantAnn (n + 2) x hx)
   exact ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing,
@@ -796,9 +914,8 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
     hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
-    haxisTail, hcollapse, hwindowCapture, E, theta, htheta0, htheta,
-    fun n p s => (hE n p s).trans (he n (theta n p) s),
-    D, fun p s => E.restrictProdIoi_apply_coe hfrontE p s,
-    gW, fun _ => rfl, hgW, hnkW, hW, hcompletion⟩
+    haxisTail, hcollapse, hquantAnn, hwindowCapture, E, theta, htheta0, htheta,
+    hE, D, hD,
+    gW, fun _ => rfl, hgW, hnkW, hcompletion⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -1542,3 +1542,41 @@ jobs with exactly 21 retained sorry warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-endpoint-scalar-root-build.log`.
 The bounded-distance headline, finite-horn construction, and cone producer
 remain open.
+
+## Curvature–distance lower bounds on whole annuli
+
+The continuation after `a2af37372` propagates the axis curvature–distance
+estimate to every point of every produced annulus. The normalized producer now
+returns `((2 * alpha)⁻¹)^2 / 8` as a lower bound for scalar curvature times
+squared distance to the missing endpoint. It also returns the same lower bound
+on each late annulus in the intrinsic completion of the open end. The latter
+uses the actual Lipschitz completion map and scalar-curvature naturality under
+open restriction, with nonnegative scalar curvature established before
+multiplying the distance inequality.
+
+The new `SpatialNeck.scalar_distance_lower_bound` gives the underlying estimate
+for a general scale parameter. It uses the full-window scalar comparison,
+the center's curvature–distance bound, and a half-scale distance bound. The
+sign of the scale parameter follows from that distance bound. The application
+uses the already proved Riemannian closed-ball containment of the actual
+annuli; it introduces no additional source estimate. The constants come from
+the existing annular radius and the scalar comparison factor.
+
+The annular homeomorphism assembly and the open-restriction transport remain
+private application glue over the general cylinder-chain and restriction APIs.
+Their fixed manifold contexts avoid repeatedly unfolding the normalized flow
+witnesses. The private endpoint constructor now derives path connectedness
+from the produced cylinder homeomorphism itself. Arithmetic and filter proofs
+use explicit hypotheses without resource overrides or linter suppressions.
+The global smooth tube, finite-horn and cone producers, and the requested
+bounded-distance headline remain unfinished.
+
+Both public declarations passed all thirteen declaration linters with only
+approved foundational axioms. The new leaf passed 11,144 jobs and the
+normalized dependent passed 14,144 jobs without diagnostics. The full root
+passed 20,207 jobs with exactly 21 retained sorry warnings and no other
+diagnostics. Evidence:
+`/private/tmp/wt17-neck-curvature-distance-leaf-build.log`,
+`/private/tmp/wt17-normalized-curvature-distance-leaf-build.log`,
+`/private/tmp/wt17-curvature-distance-audit.log`, and
+`/private/tmp/wt17-curvature-distance-root-build.log`.

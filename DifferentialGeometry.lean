@@ -11522,3 +11522,4 @@ import DifferentialGeometry.Topology.LocallyFinite.Frontier
 import DifferentialGeometry.Topology.DenseEmbedding
 import DifferentialGeometry.Topology.Compactness.ConvergentFamily
 import DifferentialGeometry.Topology.Compactness.Cocompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckCurvatureDistance
