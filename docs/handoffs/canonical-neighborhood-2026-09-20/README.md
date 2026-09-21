@@ -1993,3 +1993,51 @@ route and does not establish that final assembly.
 
 The full root build passed 20,220 jobs, with exactly 21 retained `sorry` warnings
 and no other diagnostics. Evidence: `/private/tmp/wt17-neck-packing-root-build.log`.
+
+### Compact limiting directions from the actual normalized end
+
+`NeckEndDirections.lean` proves a uniform cardinality bound for finite families
+of separated limiting radial directions. The uniform central-sphere packing
+bound is chosen first. For each finite family, a sufficiently deep actual tail
+frontier is crossed by every segment and the pairwise comparison angles are
+close enough to their limits. The quantitative lower bound
+`196 < R(w_n) * dist(q,w_n)^2` places each crossing beyond seven curvature radii
+from the endpoint. A cosine-law estimate transfers angular separation to
+separation on the actual central sphere. The proof requires no uniform
+convergence over all directions and no common positive length for all segments.
+
+This finite-family bound gives total boundedness of the limiting-angle quotient
+for any family of sufficiently short minimizing radial segments.
+`exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence`
+now constructs the angle kernel and proves compactness of its quotient's
+completion for its own restricted end. All geometric hypotheses are discharged
+from that construction: compact convergent annular tails, their neighborhood
+property, actual frontier necks, quantitative curvature-radius lower bound,
+sectional nonnegativity, local compact completion, and endpoint avoidance.
+The public statement retains every previous binder and conclusion, verified
+by a whitespace-normalized comparison, and appends this compactness producer.
+
+The general finite-packing criterion is placed in
+`Topology/MetricSpace/TotallyBounded.lean`. Two pre-existing general metric
+lemmas about finite nets and compact completion were moved there from
+`FiniteHornDirectionCompactness.lean`; their consumers were updated and audited.
+The headline `bounded_curvature_at_distance` statement is unchanged and remains
+unproved. There are still 21 retained proof holes.
+
+Ten declarations passed all thirteen declaration linters and have exactly
+`propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The normalized assembly passed 14,178 build jobs and the full root passed
+20,222 jobs with exactly 21 retained `sorry` warnings and no other diagnostics.
+Evidence: `/private/tmp/wt17-normalized-directions-build.log`,
+`/private/tmp/wt17-neck-directions-audit.log`, and
+`/private/tmp/wt17-neck-directions-root-build.log`.
+
+The essential gap closed is compactness of the actual end's limiting direction
+space, the producer used in Morgan–Tian, Section 10.4, Lemma 10.27. Its next
+downstream use is to choose finitely many radial segments which approximate
+every sufficiently small metric sphere, then combine their already proved
+pairwise distance limits into metric-cone convergence. The local source-ball
+containment, closed-terminal smooth flow patch, and smooth cone-chart
+identification still remain. The recent difficulties were Lean instance and
+elaboration issues; no persistent mathematical blockage has appeared, and
+this checkpoint gives no reason to switch to Ultra.

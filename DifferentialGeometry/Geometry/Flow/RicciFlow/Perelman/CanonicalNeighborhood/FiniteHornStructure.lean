@@ -174,7 +174,7 @@ theorem finite_horn_direction_compactness {g : SmoothRiemannianMetric I3 W}
       ∃ a b : EndRay H.endpoint, 0 < angles.angle a b := by
   have htb : TotallyBounded (Set.univ : Set angles.quotient) :=
     totallyBounded_quotient_of_scaleDirectionNet H angles hnet
-  exact ⟨htb, compactSpace_completion_of_totallyBounded htb,
+  exact ⟨htb, Metric.compactSpace_completion_of_totallyBounded htb,
     exists_pos_angle_of_separatedEndRays H angles (separatedEndRays_of_scaleSeparated H angles hsep)⟩
 
 

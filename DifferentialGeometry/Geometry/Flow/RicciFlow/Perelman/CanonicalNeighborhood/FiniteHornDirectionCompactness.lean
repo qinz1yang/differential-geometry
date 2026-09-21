@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.MetricSpace.TotallyBounded
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngleOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndAngle
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
@@ -17,50 +18,6 @@ universe u
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W]
-
-theorem totallyBounded_univ_iff_finset_net {α : Type*} [PseudoMetricSpace α] :
-    TotallyBounded (univ : Set α) ↔
-      ∀ ε > 0, ∃ t : Finset α, ∀ x : α, ∃ y ∈ t, dist x y < ε := by
-  constructor
-  · intro h ε hε
-    obtain ⟨t, ht, hcov⟩ := Metric.totallyBounded_iff.mp h (ε / 2) (half_pos hε)
-    refine ⟨ht.toFinset, fun x => ?_⟩
-    obtain ⟨y, hy⟩ := mem_iUnion.mp (hcov (mem_univ x))
-    obtain ⟨hyt, hxy⟩ := mem_iUnion.mp hy
-    exact ⟨y, ht.mem_toFinset.mpr hyt, by
-      rw [Metric.mem_ball] at hxy
-      linarith⟩
-  · intro h
-    rw [Metric.totallyBounded_iff]
-    intro ε hε
-    obtain ⟨t, ht⟩ := h ε hε
-    refine ⟨(t : Set α), t.finite_toSet, fun x _ => ?_⟩
-    obtain ⟨y, hyt, hxy⟩ := ht x
-    exact mem_iUnion.mpr ⟨y, mem_iUnion.mpr ⟨by simpa using hyt,
-      by rw [Metric.mem_ball]; exact hxy⟩⟩
-
-theorem compactSpace_completion_of_totallyBounded {α : Type*} [PseudoMetricSpace α]
-    (h : TotallyBounded (univ : Set α)) :
-    CompactSpace (UniformSpace.Completion α) := by
-  have htb : TotallyBounded (univ : Set (UniformSpace.Completion α)) := by
-    rw [Metric.totallyBounded_iff] at h ⊢
-    intro ε hε
-    obtain ⟨t, ht, hcov⟩ := h (ε / 2) (half_pos hε)
-    refine ⟨(fun x : α => (x : UniformSpace.Completion α)) '' t, ht.image _, ?_⟩
-    intro z _
-    obtain ⟨x, hx⟩ :=
-      (UniformSpace.Completion.denseRange_coe (α := α)).exists_dist_lt z (half_pos hε)
-    obtain ⟨y, hy⟩ := mem_iUnion.mp (hcov (mem_univ x))
-    obtain ⟨hyt, hxy⟩ := mem_iUnion.mp hy
-    refine mem_iUnion.mpr ⟨(y : UniformSpace.Completion α), mem_iUnion.mpr
-      ⟨⟨y, hyt, rfl⟩, ?_⟩⟩
-    rw [Metric.mem_ball] at hxy ⊢
-    have htri := dist_triangle z (x : UniformSpace.Completion α)
-      (y : UniformSpace.Completion α)
-    rw [UniformSpace.Completion.dist_eq] at htri
-    linarith
-  exact isCompact_univ_iff.mp
-    (isCompact_iff_totallyBounded_isComplete.mpr ⟨htb, isComplete_univ⟩)
 
 variable {g : SmoothRiemannianMetric I3 W}
 
@@ -115,7 +72,7 @@ theorem quotient_totallyBounded_iff_finset_angle_net (H : FiniteHorn g) (angles 
       ∀ ε > 0, ∃ A : Finset (EndRay H.endpoint), ∀ b : EndRay H.endpoint,
         ∃ a ∈ A, angles.angle a b < ε := by
   classical
-  rw [totallyBounded_univ_iff_finset_net]
+  rw [Metric.totallyBounded_univ_iff_finset_net]
   have honto : ∀ q : angles.quotient, ∃ a : EndRay H.endpoint, angles.classOf a = q :=
     fun q => angles.onto q
   choose rep hrep using honto
@@ -272,7 +229,7 @@ theorem finite_horn_direction_compactness_of_inputs
   have hnet'' := hnet' g H ((le_max_left H₁ H₂).trans hdepth)
   have hsep'' := hsep' g H ((le_max_right H₁ H₂).trans hdepth) angles
   have htb := totallyBounded_quotient_of_scaleDirectionNet H angles hnet''
-  exact ⟨htb, compactSpace_completion_of_totallyBounded htb,
+  exact ⟨htb, Metric.compactSpace_completion_of_totallyBounded htb,
     exists_pos_angle_of_separatedEndRays H angles hsep''⟩
 
 theorem separatedEndRays_iff_exists_pos_angle (H : FiniteHorn g) (angles : EndAngles H) :

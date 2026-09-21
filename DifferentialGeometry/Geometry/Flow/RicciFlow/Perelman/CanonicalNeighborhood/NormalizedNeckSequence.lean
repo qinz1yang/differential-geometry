@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndDirections
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndCurvatureDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLimitNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckSequence
@@ -279,7 +280,7 @@ private theorem inv_sq_div_eight_gt_of_small {alpha : ℝ}
   linarith only [hsq]
 
 private theorem exists_restricted_completion_endpoint
-    {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M]
+    {M : Type u} [MetricSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold I3 ∞ M]
     (g : SmoothRiemannianMetric I3 M)
     (hM : ∀ x y : M, edist x y = riemannianEDistOf g x y)
@@ -336,7 +337,17 @@ private theorem exists_restricted_completion_endpoint
       (∃ C : ℝ, 0 < C ∧ ∀ᶠ n in atTop,
         metricScalarAt g (γ (t n) : M) * (b - (t n : ℝ)) ^ 2 ≤ C) ∧
       ∃ delta : ℝ, 0 < delta ∧ IsCompact (Metric.closedBall qW delta) ∧
-        Metric.closedBall qW delta ⊆ insert qW (range (fun x : W => (x : UniformSpace.Completion W))) := by
+        Metric.closedBall qW delta ⊆ insert qW (range (fun x : W => (x : UniformSpace.Completion W))) ∧
+        ∀ {ι : Type u} (len : ι → ℝ) (ray : ι → C(ℝ, UniformSpace.Completion W)),
+          (∀ i, 0 < len i) → (∀ i, len i < delta / 3) → (∀ i, ray i 0 = qW) →
+          (∀ i, ∀ s ∈ Icc 0 (len i), ∀ t ∈ Icc 0 (len i),
+            dist (ray i s) (ray i t) = |s - t|) →
+          ∃ K : DifferentialGeometry.Toponogov.AngleKernel ι,
+            (∀ i j, K.angle i j = DifferentialGeometry.Toponogov.limitingRadialAngle
+              len (fun i => ray i) i j) ∧
+            let _ := K.metricSpace
+            TotallyBounded (univ : Set (Quotient K.setoid)) ∧
+              CompactSpace (UniformSpace.Completion (Quotient K.setoid)) := by
   let hW := pathConnectedSpace_of_cylinder_homeomorph W D
   let _ : PathConnectedSpace W := hW
   refine ⟨hW, ?_⟩
@@ -536,30 +547,52 @@ private theorem exists_restricted_completion_endpoint
     · obtain ⟨n, hn⟩ := mem_iUnion.mp hz
       obtain ⟨x, _, hx⟩ := hn
       exact mem_insert_of_mem _ ⟨x, hx⟩
+  let _ : LocallyCompactSpace (Ioi (0 : ℝ)) := isOpen_Ioi.locallyCompactSpace
+  let _ : SigmaCompactSpace W := isSigmaCompact_univ_iff.mp (by
+    simpa only [D.surjective.range_eq] using isSigmaCompact_range D.continuous)
+  have hsecW : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (g.restrictOpen W) := by
+    apply (DifferentialGeometry.Geometry.hasNonnegativeSectionalCurvature_iff _).mpr
+    intro x v w
+    rw [metricRm04StandardAt_restrictOpen]
+    exact hsec x _ _
+  have hcentersT : Tendsto (fun n => (γ (t n) : UniformSpace.Completion W)) atTop (𝓝 qW) :=
+    hqW.comp (tendsto_comap_iff.mpr ht)
   have hupper : ∃ C : ℝ, 0 < C ∧ ∀ᶠ n in atTop,
       metricScalarAt g (γ (t n) : M) * (b - (t n : ℝ)) ^ 2 ≤ C := by
-    let _ : LocallyCompactSpace (Ioi (0 : ℝ)) := isOpen_Ioi.locallyCompactSpace
-    let _ : SigmaCompactSpace W := isSigmaCompact_univ_iff.mp (by
-      simpa only [D.surjective.range_eq] using isSigmaCompact_range D.continuous)
-    have hsecW : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (g.restrictOpen W) := by
-      apply (DifferentialGeometry.Geometry.hasNonnegativeSectionalCurvature_iff _).mpr
-      intro x v w
-      rw [metricRm04StandardAt_restrictOpen]
-      exact hsec x _ _
     obtain ⟨delta, hdelta, hcompactBall, hcoverBall⟩ := hball
-    have hcentersT : Tendsto (fun n => (γ (t n) : UniformSpace.Completion W)) atTop (𝓝 qW) :=
-      hqW.comp (tendsto_comap_iff.mpr ht)
     obtain ⟨C, hC, hbound⟩ := exists_scalar_distance_upper_bound_of_convergent_neck_separators
       (g.restrictOpen W) hmetricW hsecW hmissingW hdelta hcompactBall hcoverBall havoid
       hA hregion hKnhds hfrontNecks hcentersT hscalar
     refine ⟨C, hC, ?_⟩
     simpa only [metricScalarAt_restrictOpen, hdistW] using hbound
-  exact ⟨qW, hqW, hdistW, hmissingW, hmap, hcoeOpen, hregion, hcompact, hKnhds,
-    hscalarW, hquantW, havoid, hupper, hball⟩
+  obtain ⟨delta, hdelta, hcompactBall, hcoverBall⟩ := hball
+  refine ⟨qW, hqW, hdistW, hmissingW, hmap, hcoeOpen, hregion, hcompact, hKnhds,
+    hscalarW, hquantW, havoid, hupper, delta, hdelta, hcompactBall, hcoverBall, ?_⟩
+  intro ι len ray hlen hlenr hzero hmin
+  have hrad : DifferentialGeometry.Toponogov.IsRadialFamily qW len (fun i => ray i) := by
+    intro i s hs
+    simpa only [hzero, sub_zero, abs_of_pos hs.1, dist_comm qW] using
+      hmin i s ⟨hs.1.le, hs.2⟩ 0 ⟨le_rfl, (hlen i).le⟩
+  have hmono (i j : ι) := DifferentialGeometry.Toponogov.radialComparisonAngle_nonincreasing_of_completion_segments
+    (g.restrictOpen W) hmetricW hsecW hmissingW hcompactBall hcoverBall havoid
+    hlen hlenr hzero hmin i j
+  let K := DifferentialGeometry.Toponogov.limitingRadialAngleKernel qW len (fun i => ray i)
+    hlen hrad (fun i s hs t ht => hmin i s ⟨hs.1.le, hs.2⟩ t ⟨ht.1.le, ht.2⟩)
+    (fun i j _ => hmono i j)
+  have hK (i j : ι) : K.angle i j =
+      DifferentialGeometry.Toponogov.limitingRadialAngle len (fun i => ray i) i j := rfl
+  refine ⟨K, hK, ?_⟩
+  let _ := K.metricSpace
+  have htb := totallyBounded_limiting_directions_of_convergent_neck_separators
+    (g.restrictOpen W) hmetricW hsecW hmissingW hcompactBall hcoverBall havoid
+    hA hregion hKnhds hfrontNecks hcentersT hscalar
+    (Eventually.of_forall (fun n => hc.trans_le (hquantW n (γ (t n)) (hcenters n))))
+    len ray hlen hlenr hzero hmin K hK
+  exact ⟨htb, Metric.compactSpace_completion_of_totallyBounded htb⟩
 
 
 private theorem exists_neck_sequence_with_missing_completion_endpoint
-    {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {M : Type u} [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     (metric : SmoothRiemannianMetric I3 M)
     (hmetric : ∀ x y : M, edist x y = riemannianEDistOf metric x y)
     {b alpha : ℝ} (hb : 0 < b) (ha : 0 < alpha) (hsmall : alpha < 1 / 2000000)
@@ -733,7 +766,17 @@ private theorem exists_neck_sequence_with_missing_completion_endpoint
                             ∃ delta : ℝ, 0 < delta ∧
                               IsCompact (Metric.closedBall qW delta) ∧
                               Metric.closedBall qW delta ⊆ insert qW
-                                (range (fun x : W => (x : UniformSpace.Completion W))) := by
+                                (range (fun x : W => (x : UniformSpace.Completion W))) ∧
+                                ∀ {ι : Type u} (len : ι → ℝ) (ray : ι → C(ℝ, UniformSpace.Completion W)),
+                                  (∀ i, 0 < len i) → (∀ i, len i < delta / 3) → (∀ i, ray i 0 = qW) →
+                                  (∀ i, ∀ s ∈ Icc 0 (len i), ∀ t ∈ Icc 0 (len i),
+                                    dist (ray i s) (ray i t) = |s - t|) →
+                                  ∃ K : DifferentialGeometry.Toponogov.AngleKernel ι,
+                                    (∀ i j, K.angle i j = DifferentialGeometry.Toponogov.limitingRadialAngle
+                                      len (fun i => ray i) i j) ∧
+                                    let _ := K.metricSpace
+                                    TotallyBounded (univ : Set (Quotient K.setoid)) ∧
+                                      CompactSpace (UniformSpace.Completion (Quotient K.setoid)) := by
   have htail := (hblow.eventually (eventually_gt_atTop 2)).and hnecks
   obtain ⟨delta, hdelta, hprop⟩ := Metric.eventually_nhds_iff.mp
     (Filter.eventually_comap.mp htail)
@@ -1211,7 +1254,17 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                             ∃ delta : ℝ, 0 < delta ∧
                                               IsCompact (Metric.closedBall qW delta) ∧
                                               Metric.closedBall qW delta ⊆ insert qW
-                                                (range (fun x : W => (x : UniformSpace.Completion W))) := by
+                                                (range (fun x : W => (x : UniformSpace.Completion W))) ∧
+                                                ∀ {ι : Type u} (len : ι → ℝ) (ray : ι → C(ℝ, UniformSpace.Completion W)),
+                                                  (∀ i, 0 < len i) → (∀ i, len i < delta / 3) → (∀ i, ray i 0 = qW) →
+                                                  (∀ i, ∀ s ∈ Icc 0 (len i), ∀ t ∈ Icc 0 (len i),
+                                                    dist (ray i s) (ray i t) = |s - t|) →
+                                                  ∃ K : DifferentialGeometry.Toponogov.AngleKernel ι,
+                                                    (∀ i j, K.angle i j = DifferentialGeometry.Toponogov.limitingRadialAngle
+                                                      len (fun i => ray i) i j) ∧
+                                                    let _ := K.metricSpace
+                                                    TotallyBounded (univ : Set (Quotient K.setoid)) ∧
+                                                      CompactSpace (UniformSpace.Completion (Quotient K.setoid)) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith only [hsmall])
