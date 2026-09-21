@@ -10,6 +10,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCas
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneSource
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTubeCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneMarkedChart
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTransport
 
 /-!
@@ -28,16 +29,18 @@ proved for real from the two leaves below and from the proved producers
 The predicates `NormalSingularCellData.IsMarkedCrossingChartAt`,
 `NormalSingularCellData.IsMarkedBranchCollar` and `IsSourceTrackedBranchTube`, the structure
 `SourceRayTransport` and every proved lemma of this chain live in
-`LoopTheorem/ClosedBranchCaseOneTransport.lean`, a real module with no `sorry`; only the two
-leaves and the assembly remain here.
+`LoopTheorem/ClosedBranchCaseOneTransport.lean`, a real module with no `sorry`; only the open
+leaf and the assembly remain here.
 
-The leaves.
+Proved since, and imported: `NormalSingularCellData.exists_isMarkedCrossingChartAt` (item 4,
+`LoopTheorem/ClosedBranchCaseOneMarkedChart.lean`, the frozen statement verbatim): at every
+point of the source circle `J` a crossing chart of the ambient manifold in which the sheet
+through that point is `(e z).2.2 = 0`, the sheet through its deck partner is `(e z).2.1 = 0`,
+the branch carrier is `(e z).2 = 0`, and on each sheet the positive half is the half that the
+proved two sided collar puts on the `Q` side of `J`.
 
-* `NormalSingularCellData.exists_isMarkedCrossingChartAt` (item 4, owner W-A, reviewed
-  2026-09-21, frozen): at every point of the source circle `J` a crossing chart of the ambient
-  manifold in which the sheet through that point is `(e z).2.2 = 0`, the sheet through its deck
-  partner is `(e z).2.1 = 0`, the branch carrier is `(e z).2 = 0`, and on each sheet the positive
-  half is the half that the proved two sided collar puts on the `Q` side of `J`.
+The leaf.
+
 * `exists_isSourceTrackedBranchTube` (item 8, owner W-B, reviewed 2026-09-21, frozen): a
   cylindrical diagram over a `2`-ball cross section whose target is `derivedNeighborhood R Lc` for
   a finite subdivision `R` of the ambient complex and some complex `Lc`, containing the branch
@@ -129,16 +132,6 @@ namespace NormalSingularCellData
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
-
-theorem exists_isMarkedCrossingChartAt (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
-    {J Q C : Set (EuclideanSpace ℝ (Fin 2))}
-    {τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
-    {ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)}
-    (hτ : hD.IsBranchDeckInvolution c J τ) (hρ : hD.IsTwoSidedBranchCollar c J Q C ρ)
-    {a : EuclideanSpace ℝ (Fin 2)} (ha : a ∈ J) :
-    ∃ e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ), hD.IsMarkedCrossingChartAt c J τ ρ a e := by
-  sorry
 
 open Classical in
 theorem exists_isMarkedBranchCollar [T2Space M] (hD : NormalSingularCellData D BdM B)

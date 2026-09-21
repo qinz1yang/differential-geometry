@@ -9183,6 +9183,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPositionInDoubleAssembly
 import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssemblyFixture
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneMarkedChart
 /-!
 # Differential geometry and geometric analysis
 -/
