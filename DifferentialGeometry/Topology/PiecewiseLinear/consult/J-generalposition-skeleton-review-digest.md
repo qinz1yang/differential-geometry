@@ -228,3 +228,35 @@ admitting a generic choice — not one more scale. **Fixture:** a proper PL imme
 perturbation inside the open set of parameters keeping transversality. **Most likely surprise:**
 "some PL coordinates straighten the double crossing" is not "every small vertex perturbation in
 the present coordinates keeps it a double crossing".
+
+## Fifth review (snapshot `c18a78c78212`, 2026-09-21)
+Correction to our question: as interior points of two complete local sheets, `y = 0` and `y = |x|`
+is a **tangency**, not a normal double crossing (Moise p. 184 excludes touching singularities); in
+the fourth review it was the *bad perturbed* model, not the old one. The docstring's local example
+(translate B downwards) is right but does not replace a general non-emptiness proof.
+
+| Leaf | Verdict | Reason |
+|---|---|---|
+| `exists_pairingStableSubdivision_in_adaptedChart` | **FIX** | not refuted; but the general existence of a non-empty open pairing family is **unverified** — cannot be frozen on the strength of a local example |
+| `exists_guardedVertexMap_in_adaptedChart` | **OK — freeze** | the frozen-part antecedent is constant on the parameter space: if false the failure set is empty; if true, `|s| ≤ 4`, `|s ∩ Bv| ≤ 3` make the failure set a proper algebraic set; a finite union is nowhere dense. Two frozen vertices with equal images fall in the first case — the proof must not skip that branch |
+
+* **`IsVertexSupOpen` is adequate.** After evaluation at the finitely many vertices the parameter
+  space is the affine product `∏_v E_v`, `E_v = {ec (D v)}` (frozen), `ker ℓ` (on `Lc` not frozen),
+  `ℝ³` (otherwise); the definition is relative sup-openness there, and the proved saturation lemma
+  closes the "non-vertex values" loophole.
+* **Expose the seed.** Equivalent restatement, to be used as the leaf: with `P_R` the present
+  `VertexParameterSpace` and `Q_{R,τ,K,Bv} φ` the *verbatim* conjunction now following `∀ φ ∈ 𝒢`,
+  `∃ R τ K Bv φ_* ρ, (present conditions on R τ K Bv) ∧ φ_* ∈ P_R ∧ 0 < ρ ∧ ∀ φ ∈ P_R,
+  (∀ v ∈ R.vertices, dist (φ v) (φ_* v) < ρ) → Q φ`; then `𝒢 := VertexSupBall R P_R φ_* ρ` and the
+  proved lemmas apply. The old vertex map need not be `φ_*`. The normalization happens *inside*
+  the leaf; no new hypothesis for the caller.
+* **Trap:** after a normalization one takes a common subdivision; openness of the old family does
+  **not** upgrade to openness in the new parameter space (new vertices constrained to affine
+  combinations of old ones give a lower-dimensional family). New free vertices must move
+  independently and `(Seed)` must be re-proved on the final `R`.
+
+**Open mathematical question (not a statement defect):** for arbitrary input, can one perform the
+controlled relative normalization keeping `Ac`, the boundary conditions, `StarInj T` and the error
+budget, and obtain the full-preimage pairing over a neighbourhood of all of `Z ∩ K`? Pointwise
+straightening charts do not give this, and Moise §25 Lemma 2's general position paragraph does not
+state this strengthened form. → consult `L-pairing-seed.md`.
