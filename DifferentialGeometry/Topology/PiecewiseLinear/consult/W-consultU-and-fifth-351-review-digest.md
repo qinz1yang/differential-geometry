@@ -94,3 +94,23 @@ cell structure after deletion. **Fixture:** locally finite triangulation of `ℝ
 affine shear, fine carriers, standard piercing tubes, one removable extra circle in one tube.
 **Biggest surprise:** "in one chart" is far weaker than "inside a torus with the prescribed circle
 as spine"; and the ambient of a local finiteness statement was wrong once more.
+
+## Worker's due-diligence results on Part 2 (2026-09-21, before the fifth repair)
+* **Preparation FALSE — verified, with a correction.** Against the leaf as it stood `Q_w = ℝ³` is
+  admissible (its only `Q`-hypotheses were `hQint`, `hQchart`). Inside the assembly the closed-ball
+  carriers force `Q` bounded, so the literal model needs a large ball — and the contradiction
+  survives: `η` is a free parameter, nothing bounds the thinness of `Q` from above, so
+  `⋃ incident Q w ⊇ h '' |σ|` is allowed; the buffer then puts a PL 2-cell bounded by the spine
+  inside the torus. Repair: the joint leaf outputs the torus **and a smallness clause** — no PL 2-cell
+  with boundary `h '' simplexRim` lies in the union of the incident `Q w`.
+* **Package FALSE — verified** (spike model); `hQsub`, `hQlfU` exist and are now proved in the
+  assembly; `hSpLF` is a proved consequence (`locallyFinite_support_of_section34CutFrame`), with the
+  finite vertex degree derived from local finiteness — no new cut-frame clause.
+* **Quantitative interior stability: one honest leaf.** `image_subset_of_dist_lt_of_isPLCellOn`
+  (`F '' Kc ⊆ G '' S` for `δ`-close embeddings of a PL 3-cell and `Kc` far from the boundary image) is
+  exactly a **degree** step: the tree has no degree theory and metric balls in a bare `MetricSpace`
+  need not be connected. The upgrade to `interior` is proved from the cell API. It does not apply
+  where the ambient is a solid torus ((3) `⊆ interior (Tp e)`, (5) `⊆ interior (Sp e)`).
+* Worker's doubt: `exists_section34DeletedBalls` — Moise asserts without proof that the deleted
+  balls `D_v` are 3-cells meeting in disks (digest T §7); the leaf pins `D_v` to the literal p. 251
+  set, the hardest unproved assertion of the chapter.
