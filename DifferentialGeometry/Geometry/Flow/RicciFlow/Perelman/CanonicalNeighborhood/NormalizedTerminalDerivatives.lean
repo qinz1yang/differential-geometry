@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelCurvaturePropagation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedCurvatureWindows
 
 noncomputable section
 
@@ -26,81 +25,14 @@ private theorem exists_eventually_curvDerivNorm_le_on_scalar_sublevel
             ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ i in atTop, ∀ p : (X.term i).M,
               (X.term i).S.scalar 0 p ≤ A →
                 curvDerivNorm (I := I3) m ((X.term i).S.base.metric 0) p ≤ B := by
-  obtain ⟨epsStar, c, C, hepsStar, hc, hC, hprop⟩ :=
-    canonical_neighborhood_local_propagation hkappa
+  obtain ⟨epsStar, hepsStar, B, hB, hmain⟩ :=
+    exists_curvDerivNorm_bound_at_terminal_scalar_scale.{u} hkappa
   refine ⟨epsStar, hepsStar, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X A m
-  let L0 : ℝ := 2 + |A|
-  let T : ℝ := c / L0
-  let R : ℝ := c / Real.sqrt L0
-  let K : ℝ := C * (L0 + 1)
-  have hL0 : 0 < L0 := by dsimp only [L0]; positivity
-  have hT : 0 < T := div_pos hc hL0
-  have hR : 0 < R := div_pos hc (Real.sqrt_pos.mpr hL0)
-  have hK : 0 < K := mul_pos hC (by linarith)
-  refine ⟨shiLocalUniformBound 3 m (K * T)
-    (R * Real.sqrt K / (4 * Real.exp (9 * K * T))) * K / Real.sqrt T ^ m,
-    div_nonneg (mul_nonneg (shiLocalUniformBound_nonneg _ _ _ _) hK.le)
-      (pow_nonneg (Real.sqrt_nonneg _) _), ?_⟩
-  filter_upwards [hprop eps heps hle sigma hsigma Phi hPhi X,
-    X.pinching_error_eventually hPhi (L0 := L0) (eta := 1) one_pos,
-    X.scale_tendsto.eventually_ge_atTop (6 * Phi 0),
-    X.depth_tendsto.eventually_gt_atTop T] with i hlocal herror hscale hdepth
-  intro p hp
-  let _ : IsManifold I3 1 (X.term i).M := IsManifold.of_le (n := ∞) (by decide)
-  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-  have hzero : (0 : ℝ) ∈ (X.interval i).carrier := by
-    rw [X.carrier_eq i]
-    exact ⟨by linarith [X.depth_pos i], le_rfl⟩
-  have hnegative : -1 ≤ (X.term i).S.scalar 0 p := by
-    have hlow := neg_six_mul_phi_zero_le_scalar (hPhi.rescale (X.scale_pos i))
-      (X.pinching i) hdim hzero p
-    have hfrac : 6 * Phi 0 / X.scale i ≤ 1 :=
-      (div_le_one (X.scale_pos i)).mpr hscale
-    have hid : -6 * rescalePinchingFunction (X.scale i) Phi 0 =
-        -(6 * Phi 0 / X.scale i) := by
-      simp only [rescalePinchingFunction, mul_zero]
-      ring
-    rw [hid] at hlow
-    linarith
-  let L : ℝ := 1 + |(X.term i).S.scalar 0 p|
-  have hL1 : 1 ≤ L := by dsimp only [L]; linarith [abs_nonneg ((X.term i).S.scalar 0 p)]
-  have hL : 0 < L := zero_lt_one.trans_le hL1
-  have hLL0 : L ≤ L0 := by
-    have habs : |(X.term i).S.scalar 0 p| ≤ 1 + |A| :=
-      abs_le.mpr ⟨by linarith [abs_nonneg A], by linarith [le_abs_self A]⟩
-    dsimp only [L, L0]
-    linarith
-  have hcarrier : Icc (-T) 0 ⊆ (X.interval i).carrier := by
-    rw [X.carrier_eq i]
-    intro s hs
-    exact ⟨by linarith [hs.1, X.depth_pos i], hs.2⟩
-  have hregular : Ico (-T) 0 ⊆ (X.interval i).regular := by
-    rw [X.regular_eq i]
-    intro s hs
-    exact ⟨by linarith [hs.1, X.depth_pos i], hs.2⟩
-  have hcompact : IsCompact (riemannianClosedBallOf ((X.term i).S.base.metric 0) p R) :=
-    (show RiemannianMetricComplete ((X.term i).S.base.metric 0) from
-      ⟨X.complete i 0 hzero⟩).closedEBall_isCompact p R
-  have hcurv : ∀ t ∈ Icc (-T) 0,
-      ∀ y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0) p R,
-        curvDerivNormSq (I := I3) 0 ((X.term i).S.base.metric t) y ≤ K ^ 2 := by
-    intro t ht y hy
-    have hmem : (y, t) ∈ frozenBackwardCylinder (X.term i).S p 0 c c L := by
-      refine ⟨hy.trans (ENNReal.ofReal_le_ofReal ?_), ?_⟩
-      · exact div_le_div_of_nonneg_left hc.le (Real.sqrt_pos.mpr hL)
-          (Real.sqrt_le_sqrt hLL0)
-      · have htime : T ≤ c / L := div_le_div_of_nonneg_left hc.le hL hLL0
-        exact ⟨by linarith [ht.1], ht.2⟩
-    have hb := (hlocal 0 ⟨by linarith [X.depth_pos i], le_rfl⟩ p).2 y t hmem
-    have hsq : Real.sqrt (FlowMetricBall.rmNormSq (X.term i).S t y) ≤ K := by
-      apply hb.2.2.trans
-      exact mul_le_mul_of_nonneg_left (by linarith [herror L ⟨hL1, hLL0⟩]) hC.le
-    exact (Real.sqrt_le_iff.mp hsq).2
-  have hb := shi_curvDerivNorm_terminal_of_terminal_ball (X.term i).S (X.term i).isSolution
-    (a := -T) (b := 0) (by linarith) hK hR hcarrier hregular p hcompact hcurv m
-  simpa only [hdim, Nat.cast_ofNat, show (3 : ℝ) ^ 2 = 9 by norm_num,
-    sub_neg_eq_add, zero_add] using hb
+  refine ⟨B m * max A 1 * Real.sqrt (max A 1) ^ m,
+    mul_nonneg (mul_nonneg (hB m) (by positivity)) (by positivity), ?_⟩
+  filter_upwards [hmain eps heps hle sigma hsigma Phi hPhi X] with i hi
+  exact fun p hp => hi (max A 1) (le_max_right _ _) p (hp.trans (le_max_left _ _)) m
 
 private theorem exists_source_curvDerivNorm_bound {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (X : NormalizedSequence.{u} eps kappa sigma Phi) (i m : ℕ) :

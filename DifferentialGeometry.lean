@@ -11466,3 +11466,5 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.Isometry
 import DifferentialGeometry.Geometry.Metric.PointPicking
 import DifferentialGeometry.Geometry.Metric.RiemannianPointPicking
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedPointSelection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedCurvatureWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedParabolicPointSelection
