@@ -263,8 +263,10 @@ theorem exists_roundSphere_path_length_bound :
       rw [two_mul, ENNReal.ofReal_add (le_max_right _ _) (le_max_right _ _)]
     _ < _ := (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2 (by linarith)
 
-theorem exists_uniform_transverse_shortcuts :
-    ∃ D : ℝ, 0 < D ∧ ∀ (C : CylinderReference) (h : ℝ → SmoothRiemannianMetric IC Cylinder)
+omit [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] in
+theorem exists_transverse_shortcuts_uniform_in_manifold :
+    ∃ D : ℝ, 0 < D ∧ ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+      [IsManifold I3 ∞ M], ∀ (C : CylinderReference) (h : ℝ → SmoothRiemannianMetric IC Cylinder)
       (g : ℝ → SmoothRiemannianMetric I3 M)
       (F : PartialDiffeomorph IC I3 Cylinder M ∞)
       (U : Set Cylinder) (times : Set ℝ) (order : ℕ) (eps z : ℝ),
@@ -277,7 +279,7 @@ theorem exists_uniform_transverse_shortcuts :
         metricPathELength (g 0) gamma 0 1 ≤ ENNReal.ofReal D := by
   obtain ⟨B, hB, hpaths⟩ := exists_roundSphere_path_length_bound
   refine ⟨2 * B, by positivity, ?_⟩
-  intro C h g F U times order eps z cmp hmetric heps heps1 hzero hsource hlevel x y
+  intro M _ _ _ C h g F U times order eps z cmp hmetric heps heps1 hzero hsource hlevel x y
   obtain ⟨gamma, hstart, hend, hgamma, hlength⟩ := hpaths x y
   have hcyl : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun s => (gamma s, z)) (Icc (0 : ℝ) 1) :=
     hgamma.prodMk contMDiffOn_const
@@ -299,5 +301,20 @@ theorem exists_uniform_transverse_shortcuts :
       _ = ENNReal.ofReal (2 * B) := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.sqrt_nonneg _), ← pow_two,
           Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), ← ENNReal.ofReal_mul (by norm_num)]
+
+theorem exists_uniform_transverse_shortcuts :
+    ∃ D : ℝ, 0 < D ∧ ∀ (C : CylinderReference) (h : ℝ → SmoothRiemannianMetric IC Cylinder)
+      (g : ℝ → SmoothRiemannianMetric I3 M)
+      (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+      (U : Set Cylinder) (times : Set ℝ) (order : ℕ) (eps z : ℝ),
+      MetricComparisonOn h g F U times order eps → h 0 = C.metric 0 →
+      0 ≤ eps → eps ≤ 1 → 0 ∈ times → U ⊆ F.source →
+      (∀ y : Sphere 2, (y, z) ∈ U) → ∀ x y : Sphere 2,
+      ∃ gamma : ℝ → M, gamma 0 = F (x, z) ∧ gamma 1 = F (y, z) ∧
+        ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc (0 : ℝ) 1) ∧
+        (∀ s ∈ Icc (0 : ℝ) 1, gamma s ∈ F '' (univ ×ˢ ({z} : Set ℝ))) ∧
+        metricPathELength (g 0) gamma 0 1 ≤ ENNReal.ofReal D := by
+  obtain ⟨D, hD, hshortcuts⟩ := exists_transverse_shortcuts_uniform_in_manifold
+  exact ⟨D, hD, hshortcuts M⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -16,13 +16,15 @@ universe u
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W]
 
-theorem exists_finiteHorn_no_endpoint_shortcut_depth :
-    ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
+omit [MetricSpace W] [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] in
+theorem exists_no_endpoint_shortcut_depth_uniform_in_manifold :
+    ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (W : Type u) [MetricSpace W] [ChartedSpace ThreeSpace W]
+      [IsManifold I3 ∞ W], ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
       H₀ ≤ H.collar_depth → ∀ a b : EndRay H.endpoint,
         dist (a.point a.length) (b.point b.length) < a.length + b.length := by
-  obtain ⟨D, hD, hshortcuts⟩ := exists_uniform_transverse_shortcuts (M := W)
+  obtain ⟨D, hD, hshortcuts⟩ := exists_transverse_shortcuts_uniform_in_manifold.{u}
   refine ⟨4 * (D + 1), by positivity, ?_⟩
-  intro g H hdepth a b
+  intro W _ _ _ g H hdepth a b
   obtain ⟨w, C, F, p, G, _hcenter, hsource, hQ, ⟨cmp⟩, _hnear, haout, hbout⟩ :=
     finiteHorn_exists_inner_collar g H (a.point a.length) (b.point b.length)
       (eta := 1) (by norm_num)
@@ -33,7 +35,7 @@ theorem exists_finiteHorn_no_endpoint_shortcut_depth :
     intro z
     exact ⟨mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
   obtain ⟨gamma, hstart, hend, hsmooth, _hmem, hlength⟩ :=
-    hshortcuts C (fun _ => C.metric 0)
+    hshortcuts W C (fun _ => C.metric 0)
       (fun _ => scaleMetric (metricScalarAt g w) hQ g) F
       (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
       (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 cmp rfl H.neck_precision_pos.le
@@ -67,6 +69,13 @@ theorem exists_finiteHorn_no_endpoint_shortcut_depth :
   rw [hleft] at htri₁
   rw [hright] at htri₂
   linarith
+
+theorem exists_finiteHorn_no_endpoint_shortcut_depth :
+    ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
+      H₀ ≤ H.collar_depth → ∀ a b : EndRay H.endpoint,
+        dist (a.point a.length) (b.point b.length) < a.length + b.length := by
+  obtain ⟨H₀, hH₀, hsave⟩ := exists_no_endpoint_shortcut_depth_uniform_in_manifold
+  exact ⟨H₀, hH₀, hsave W⟩
 
 variable [SigmaCompactSpace W]
 

@@ -9,7 +9,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -42,7 +42,7 @@ theorem hornScaleRadii_tendsto_zero {W : Type u} [MetricSpace W] [ChartedSpace T
 
 theorem nonempty_hornOnLimit_of_finiteHorn_of_frontiers {X : FlowSequence.{u}}
     {L : CheegerGromovLimit X} (horn : FiniteHorn L.metric)
-    (hdepth : hornDepthThreshold L.space ≤ horn.collar_depth)
+    (hdepth : hornDepthThreshold.{u} ≤ horn.collar_depth)
     (hnet : ScaleDirectionNet L.metric horn)
     (hsep : ScaleSeparatedEndRays L.metric horn)
     (hcone : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
@@ -62,7 +62,7 @@ theorem nonempty_hornOnLimit_of_finiteHorn_of_frontiers {X : FlowSequence.{u}}
 
 theorem finiteHorn_frontiers_of_hornOnLimit {X : FlowSequence.{u}} {L : CheegerGromovLimit X}
     (K : HornOnLimit X L) :
-    hornDepthThreshold L.space ≤ K.horn.collar_depth ∧
+    hornDepthThreshold.{u} ≤ K.horn.collar_depth ∧
       ScaleDirectionNet L.metric K.horn ∧ ScaleSeparatedEndRays L.metric K.horn ∧
       (∀ (angles : EndAngles K.horn) (ray : EndRay K.horn.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
@@ -82,21 +82,21 @@ theorem nonempty_hornOnLimit_of_collarDepthFrontiers {X : FlowSequence.{u}}
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
         ConeDistanceRealization H angles ray d)
     (horn : FiniteHorn L.metric)
-    (hdepth : max H₀ (hornDepthThreshold L.space) ≤ horn.collar_depth)
+    (hdepth : max H₀ (hornDepthThreshold.{u}) ≤ horn.collar_depth)
     (hupper : ScaleCurvatureUpperBound horn horn.axial (hornScaleRadii horn)) :
     Nonempty (HornOnLimit X L) :=
   nonempty_hornOnLimit_of_finiteHorn_of_frontiers horn
-    ((le_max_right H₀ (hornDepthThreshold L.space)).trans hdepth)
-    (hnet L.metric horn ((le_max_left H₀ (hornDepthThreshold L.space)).trans hdepth))
-    (hsep L.metric horn ((le_max_left H₀ (hornDepthThreshold L.space)).trans hdepth))
-    (hcone L.metric horn ((le_max_left H₀ (hornDepthThreshold L.space)).trans hdepth)) hupper
+    ((le_max_right H₀ (hornDepthThreshold.{u})).trans hdepth)
+    (hnet L.metric horn ((le_max_left H₀ (hornDepthThreshold.{u})).trans hdepth))
+    (hsep L.metric horn ((le_max_left H₀ (hornDepthThreshold.{u})).trans hdepth))
+    (hcone L.metric horn ((le_max_left H₀ (hornDepthThreshold.{u})).trans hdepth)) hupper
 
 def FiniteHornEndRealization.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
   ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
     ∀ X : NormalizedSequence.{v} eps kappa sigma Phi,
       RealizedDistanceCurvatureEscape X →
         ∃ L : CheegerGromovLimit X.toFlowSequence, ∃ horn : FiniteHorn L.metric,
-          hornDepthThreshold L.space ≤ horn.collar_depth ∧
+          hornDepthThreshold.{v} ≤ horn.collar_depth ∧
           ScaleDirectionNet L.metric horn ∧ ScaleSeparatedEndRays L.metric horn ∧
           (∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
             (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →

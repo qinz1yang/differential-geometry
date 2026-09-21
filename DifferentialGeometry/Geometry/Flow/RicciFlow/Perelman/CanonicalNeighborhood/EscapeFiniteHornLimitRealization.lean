@@ -16,7 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -55,7 +55,7 @@ structure HornOnLimit (X : FlowSequence.{u}) (L : CheegerGromovLimit X) where
   coneRealization : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
     (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
     ConeDistanceRealization horn angles ray d
-  depth_ok : hornDepthThreshold L.space ≤ horn.collar_depth
+  depth_ok : hornDepthThreshold.{u} ≤ horn.collar_depth
   curvatureUpper : ScaleCurvatureUpperBound horn horn.axial radii
 
 namespace RealizedFiniteHorn

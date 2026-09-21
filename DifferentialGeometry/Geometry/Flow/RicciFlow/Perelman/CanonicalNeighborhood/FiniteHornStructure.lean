@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndGeometryDepth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeTerminalExclusion
@@ -93,75 +94,20 @@ theorem finite_horn_end_rays {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g
     Nonempty (EndGeometry H) :=
   finite_horn_end_rays_of_ambientEndIsometry H (finiteHorn_ambientEndIsometry H)
 
-noncomputable def hornRayApproximationDepth (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
-  Classical.choose (exists_finiteHorn_ray_approximation_depth (W := W))
-
-noncomputable def hornEndAngleDepth (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
-  Classical.choose (finite_horn_end_angle_of_depth (W := W))
-
-noncomputable def hornAngleComparisonDepth (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
-  Classical.choose (finite_horn_endComparisonAngle_le_angle (W := W))
-
-noncomputable def hornDepthThreshold (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
-  max (max (hornRayApproximationDepth W) (hornEndAngleDepth W))
-    (max (hornAngleComparisonDepth W) 1)
-
-theorem hornRayApproximationDepth_pos (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    0 < hornRayApproximationDepth W :=
-  (Classical.choose_spec (exists_finiteHorn_ray_approximation_depth (W := W))).1
-
-theorem hornEndAngleDepth_pos (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    0 < hornEndAngleDepth W :=
-  (Classical.choose_spec (finite_horn_end_angle_of_depth (W := W))).1
-
-theorem hornAngleComparisonDepth_pos (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    0 < hornAngleComparisonDepth W :=
-  (Classical.choose_spec (finite_horn_endComparisonAngle_le_angle (W := W))).1
-
-theorem hornRayApproximationDepth_le_hornDepthThreshold (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    hornRayApproximationDepth W ≤ hornDepthThreshold W := by
-  rw [hornDepthThreshold]
-  exact le_trans (le_max_left _ _) (le_max_left _ _)
-
-theorem hornEndAngleDepth_le_hornDepthThreshold (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    hornEndAngleDepth W ≤ hornDepthThreshold W := by
-  rw [hornDepthThreshold]
-  exact le_trans (le_max_right _ _) (le_max_left _ _)
-
-theorem hornAngleComparisonDepth_le_hornDepthThreshold (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    hornAngleComparisonDepth W ≤ hornDepthThreshold W := by
-  rw [hornDepthThreshold]
-  exact le_trans (le_max_left _ _) (le_max_right _ _)
-
-theorem hornDepthThreshold_pos (W : Type u) [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
-    0 < hornDepthThreshold W := by
-  have h : 0 < hornRayApproximationDepth W := hornRayApproximationDepth_pos W
-  exact lt_of_lt_of_le h (hornRayApproximationDepth_le_hornDepthThreshold W)
-
 theorem finite_horn_ray_approximation {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (_endData : EndGeometry H)
-    (hdepth : hornRayApproximationDepth W ≤ H.collar_depth) :
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) :
     ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
       ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) → (∀ k, lo k ≤ hi k) →
       hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
-      Nonempty (RayApproximation H a b lo hi) :=
-  (Classical.choose_spec (exists_finiteHorn_ray_approximation_depth (W := W))).2 g H hdepth
+      Nonempty (RayApproximation H a b lo hi) := by
+  obtain ⟨d, hd, happ⟩ := (hornEndGeometryDepth_spec W g H hdepth).1
+  exact ⟨d, hd, fun a b lo hi hlo _ hia hib hid => happ a b lo hi hlo hia hib hid⟩
 
 theorem finite_horn_end_angle {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (_endData : EndGeometry H)
-    (hdepth : hornEndAngleDepth W ≤ H.collar_depth) : Nonempty (EndAngles H) :=
-  (Classical.choose_spec (finite_horn_end_angle_of_depth (W := W))).2 g H hdepth
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) : Nonempty (EndAngles H) :=
+  (hornEndGeometryDepth_spec W g H hdepth).2.1
 
 
 omit [SigmaCompactSpace W] in
@@ -183,12 +129,11 @@ theorem finite_horn_cone_convergence {g : SmoothRiemannianMetric I3 W}
     (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
     (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
     (hreal : ConeDistanceRealization H angles ray d)
-    (hdepth : hornAngleComparisonDepth W ≤ H.collar_depth) :
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) :
     Nonempty (AnnularConvergence H angles ray d) :=
   nonempty_annularConvergence_of_coneAnnulusRealization H angles ray d hd hzero
     (coneAnnulusRealization_of_coneDistanceRealization
-      ((Classical.choose_spec (finite_horn_endComparisonAngle_le_angle (W := W))).2 g H hdepth
-        angles)
+      ((hornEndGeometryDepth_spec W g H hdepth).2.2 angles)
       hreal)
 
 omit [SigmaCompactSpace W] in
@@ -1461,7 +1406,7 @@ structure RealizedFiniteHorn (X : FlowSequence.{u}) where
   coneRealization : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
     (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
     ConeDistanceRealization horn angles ray d
-  depth_ok : hornDepthThreshold space ≤ horn.collar_depth
+  depth_ok : hornDepthThreshold.{u} ≤ horn.collar_depth
   curvatureUpper : ScaleCurvatureUpperBound horn horn.axial radii
 
 attribute [local instance] RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted
@@ -1480,12 +1425,12 @@ theorem ray_approximation {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
       hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
       Nonempty (RayApproximation H.horn a b lo hi) :=
   finite_horn_ray_approximation H.horn endData
-    (le_trans (hornRayApproximationDepth_le_hornDepthThreshold H.space) H.depth_ok)
+    (le_trans hornEndGeometryDepth_le_hornDepthThreshold.{u} H.depth_ok)
 
 theorem end_angle {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
     (endData : EndGeometry H.horn) : Nonempty (EndAngles H.horn) :=
   finite_horn_end_angle H.horn endData
-    (le_trans (hornEndAngleDepth_le_hornDepthThreshold H.space) H.depth_ok)
+    (le_trans hornEndGeometryDepth_le_hornDepthThreshold.{u} H.depth_ok)
 
 theorem direction_compactness {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
     (endData : EndGeometry H.horn) (angles : EndAngles H.horn) :
@@ -1502,7 +1447,7 @@ theorem cone_convergence {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
     Nonempty (AnnularConvergence H.horn angles ray d) :=
   finite_horn_cone_convergence H.horn endData angles ray d hd hzero
     (H.coneRealization angles ray d hd hzero)
-    (le_trans (hornAngleComparisonDepth_le_hornDepthThreshold H.space) H.depth_ok)
+    (le_trans hornEndGeometryDepth_le_hornDepthThreshold.{u} H.depth_ok)
 
 theorem two_scale_comparison {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
     (endData : EndGeometry H.horn) (angles : EndAngles H.horn) :
