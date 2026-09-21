@@ -2275,3 +2275,62 @@ the resolved source-construction failures were Lean instance and derivative
 elaboration issues. No persistent mathematical blockage has been established,
 and switching to Ultra is not currently justified by such a blockage. The
 headline remains unchanged and unproved, with the same 21 retained holes.
+
+## Compact cone annuli and local metric identification
+
+`PuncturedConeApproximation.annulusMetricSpace` now realizes every positive-radius
+closed annulus of the completed direction space as a compact metric space with
+the cone cosine-law distance. The triangle inequality is derived from the actual
+finite source approximations, then extended by density to completed directions.
+The topology is the product topology. `Metric.ConeAnnulus` is a type synonym
+needed to keep this cone metric distinct from Lean's default maximum metric on
+a product; the compiled distance identity checks that distinction explicitly.
+
+`PuncturedConeApproximation.exists_annulus_approximation` produces maps from all
+points of each sufficiently small rescaled end annulus into this compact cone
+annulus. It retains uniform distance distortion, density in the entire target
+annulus, and error in the radial coordinate, all smaller than any prescribed
+positive tolerance. These are derived from the established finite nets, without
+assuming uniform convergence of angles over all directions. The actual normalized
+end already produces `PuncturedConeApproximation`, so no new geometric hypothesis
+is needed to use this construction there.
+
+The generic `Metric.exists_isometry_of_compact_approximation` constructs an
+isometry from a compact domain into a compact target when approximate maps have
+vanishing uniform distance error and asymptotically cover a fixed ball about the
+image of the basepoint. Its conclusion retains that the open target ball lies in
+the image. This is the precise local uniqueness step needed after transporting
+the annular approximation through the buffered source comparison maps. It does
+not require completeness of the entire end, an ancient flow, or a smooth link.
+The generic continuous-distance metric constructor and compact-approximation
+theorem live under `Topology/MetricSpace`; cone geometry lives in its metric and
+Toponogov homes. All new leaves are registered in the flat root.
+
+The essential gap reduced is the passage from finite cone formulas to actual
+compact metric targets and maps covering whole annuli. Eleven declarations
+passed thirteen declaration linters and have only `propext`, `Classical.choice`,
+and `Quot.sound` in their transitive axiom closures. The changed leaves passed
+4,331 build jobs. Evidence: `/private/tmp/wt17-cone-comparison-build.log` and
+`/private/tmp/wt17-cone-annulus-audit.log`.
+
+The local cone-flow patch is still not produced. The remaining application must
+select the actual curvature-rescaled source diagonal, transfer distance and ball
+coverage estimates to a compact neighborhood of its smooth terminal limit, then
+apply the local metric-identification theorem. A further geometric lemma must
+turn the resulting open metric cone neighborhood into a smooth `ConeChart`.
+The radius can be recovered from two nearby radial anchors using the proved
+cosine-law identity. Local smoothness of distances to those anchors, radial
+unit-speed geodesics, and smooth radial flow remain the intended route. The
+existing metric-segment regularity and local complete-metric extension results
+are available without assuming the local flow patch complete.
+
+References checked again: Morgan--Tian, Chapter 10, Section 5.2 and Claim 10.31
+(`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/MorganTianPoincare.pdf`),
+and Kleiner--Lott, Lemma 41.4 and the following cone contradiction
+(`/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottPerelman.pdf`).
+No repeated failed mathematical implication was established. The repaired errors
+were Lean instance selection and expression elaboration. The headline remains
+unproved; no cone chart or Poincare completion is claimed.
+
+The full root build passed 20,235 jobs with exactly 21 retained proof-hole
+warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-annulus-root-build.log`.

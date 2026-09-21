@@ -57,4 +57,40 @@ theorem coneDistance_recover_radius_sq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
   field_simp
   ring
 
+theorem continuous_coneDistance {Y : Type*} [PseudoMetricSpace Y] :
+    Continuous (fun p : (ℝ × Y) × (ℝ × Y) => coneDistance p.1 p.2) := by
+  unfold coneDistance
+  fun_prop
+
+
+theorem coneDistance_self {Y : Type*} [PseudoMetricSpace Y] (x : ℝ × Y) :
+    coneDistance x x = 0 := by
+  unfold coneDistance
+  simp only [dist_self, min_eq_right Real.pi_pos.le, Real.cos_zero, mul_one]
+  rw [show x.1 ^ 2 + x.1 ^ 2 - 2 * x.1 * x.1 = 0 by ring, Real.sqrt_zero]
+
+theorem coneDistance_eq_zero_iff {Y : Type*} [MetricSpace Y] {x y : ℝ × Y}
+    (hx : 0 < x.1) (hy : 0 < y.1) : coneDistance x y = 0 ↔ x = y := by
+  refine ⟨fun hzero => ?_, fun h => h ▸ coneDistance_self x⟩
+  have hsq := coneDistance_sq hx.le hy.le
+  rw [hzero, zero_pow (by decide)] at hsq
+  have hcos := Real.cos_le_one (min Real.pi (dist x.2 y.2))
+  have hnonneg := mul_nonneg (show 0 ≤ 2 * x.1 * y.1 by positivity) (sub_nonneg.mpr hcos)
+  have heq : x.1 = y.1 := by nlinarith only [hsq, hnonneg, sq_nonneg (x.1 - y.1)]
+  have hangle : Real.cos (min Real.pi (dist x.2 y.2)) = 1 := by
+    have hprod : 0 < 2 * x.1 * y.1 := by positivity
+    have hz : (2 * x.1 * y.1) *
+        (1 - Real.cos (min Real.pi (dist x.2 y.2))) = 0 := by nlinarith only [hsq, heq]
+    exact (sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_left hprod.ne')).symm
+  have ht : min Real.pi (dist x.2 y.2) = 0 :=
+    (Real.cos_eq_one_iff_of_lt_of_lt
+      (by linarith [le_min Real.pi_pos.le (dist_nonneg (x := x.2) (y := y.2)), Real.pi_pos])
+      (by linarith [min_le_left Real.pi (dist x.2 y.2), Real.pi_pos])).mp hangle
+  have hd : dist x.2 y.2 = 0 := by
+    rcases min_cases Real.pi (dist x.2 y.2) with h | h
+    · rw [h.1] at ht
+      exact False.elim (Real.pi_pos.ne' ht)
+    · rwa [h.1] at ht
+  exact Prod.ext heq (dist_eq_zero.mp hd)
+
 end Metric
