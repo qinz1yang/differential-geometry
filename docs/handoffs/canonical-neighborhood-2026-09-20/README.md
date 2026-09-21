@@ -1470,3 +1470,39 @@ warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-normalized-completion-leaf-build.log`,
 `/private/tmp/wt17-intrinsic-completion-audit.log`, and
 `/private/tmp/wt17-intrinsic-completion-root-build.log`.
+
+## Compact intrinsic neighborhoods of the endpoint
+
+The continuation after `1113bf74d` proves that the actual annuli with indices
+`n + 2`, viewed inside the open end and then its intrinsic completion, converge
+uniformly to the intrinsic endpoint. Each such annulus is compact inside the
+open end: its disjointness from the initial annulus excludes the exact outer
+frontier. The restricted neck maps contain the annuli, and the full-window
+intrinsic radius tends to zero because the center scalar curvature tends to
+infinity. The new general topology theorem
+`isCompact_insert_iUnion_of_eventually_subset` proves compactness of a family
+of compact sets with a common limiting point, for an arbitrary cofinite index
+filter and without separation assumptions.
+
+The compact union with the endpoint is also a neighborhood of the endpoint.
+Its complement in the open end lies in the initial compact annulus. The
+continuous completion map to the original limit's completion separates that
+annulus from the missing endpoint. Density and closedness then give neighborhood
+capture in the intrinsic completion. In particular, the producer now returns a
+positive radius whose intrinsic closed completion ball is compact and contained
+in the open end together with the endpoint. This supplies actual local
+compactness and excludes other completion points near the endpoint, following
+Kleiner–Lott, *Notes on Perelman's papers*, section 52, Step 2 after Lemma 52.14,
+`Geometrization/BooksPapers/KleinerLottPerelman.pdf`. The finite-horn and cone
+producers and the bounded-distance headline still require further proofs.
+
+The new compact-family declaration and strengthened normalized producer passed
+all thirteen declaration linters, and their transitive axiom closures contain
+only `propext`, `Classical.choice`, and `Quot.sound`. The compact-family leaf
+passed 867 jobs; the normalized producer passed 14,142 jobs without diagnostics.
+The full root passed 20,205 jobs with exactly 21 retained sorry warnings and no
+other diagnostics. Evidence:
+`/private/tmp/wt17-compact-convergent-family-leaf-build.log`,
+`/private/tmp/wt17-normalized-capture-leaf-build.log`,
+`/private/tmp/wt17-compact-endpoint-audit.log`, and
+`/private/tmp/wt17-compact-endpoint-root-build.log`.

@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Restriction
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
+import DifferentialGeometry.Topology.Compactness.ConvergentFamily
 import DifferentialGeometry.Topology.DenseEmbedding
 import DifferentialGeometry.Topology.Homeomorph.CylinderChain
 import DifferentialGeometry.Topology.Homeomorph.Interior
@@ -41,7 +42,13 @@ private theorem exists_restricted_completion_endpoint
     (q : UniformSpace.Completion M)
     (hq : Tendsto (fun t => ((γ t : M) : UniformSpace.Completion M))
       (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (𝓝 q))
-    (hmissing : q ∉ range (fun x : M => (x : UniformSpace.Completion M))) :
+    (hmissing : q ∉ range (fun x : M => (x : UniformSpace.Completion M)))
+    {eps : ℝ} (t : ℕ → Ico a b) (ht : Tendsto (fun n => (t n : ℝ)) atTop (𝓝 b))
+    (hscalar : Tendsto (fun n => metricScalarAt (g.restrictOpen W) (γ (t n))) atTop atTop)
+    (A : ℕ → Set W) (hA : ∀ n, IsCompact (A n))
+    (hnecks : ∀ᶠ n in atTop, ∃ nk : SpatialNeck (g.restrictOpen W) eps (γ (t n)),
+      A n ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹))
+    (B : Set M) (hB : IsCompact B) (hBcover : ∀ x : W, x ∉ ⋃ n, A n → (x : M) ∈ B) :
     let mW : MetricSpace W :=
       let _ : PseudoMetricSpace W := (g.restrictOpen W).toPseudoMetricSpace
       MetricSpace.ofT0PseudoMetricSpace W
@@ -56,7 +63,12 @@ private theorem exists_restricted_completion_endpoint
       (∀ t : Ico a b, dist qW (γ t : UniformSpace.Completion W) = b - t) ∧
       qW ∉ range (fun x : W => (x : UniformSpace.Completion W)) ∧
       UniformSpace.Completion.map (Subtype.val : W → M) qW = q ∧
-      Topology.IsOpenEmbedding (fun x : W => (x : UniformSpace.Completion W)) := by
+      Topology.IsOpenEmbedding (fun x : W => (x : UniformSpace.Completion W)) ∧
+      (∀ U ∈ 𝓝 qW, ∀ᶠ n in atTop, (fun x : W => (x : UniformSpace.Completion W)) '' A n ⊆ U) ∧
+      IsCompact (insert qW (⋃ n, (fun x : W => (x : UniformSpace.Completion W)) '' A n)) ∧
+      insert qW (⋃ n, (fun x : W => (x : UniformSpace.Completion W)) '' A n) ∈ 𝓝 qW ∧
+      ∃ delta : ℝ, 0 < delta ∧ IsCompact (Metric.closedBall qW delta) ∧
+        Metric.closedBall qW delta ⊆ insert qW (range (fun x : W => (x : UniformSpace.Completion W))) := by
   let mW : MetricSpace W :=
     let _ : PseudoMetricSpace W := (g.restrictOpen W).toPseudoMetricSpace
     MetricSpace.ofT0PseudoMetricSpace W
@@ -88,7 +100,74 @@ private theorem exists_restricted_completion_endpoint
       apply hcomp.congr'
       exact Eventually.of_forall fun t => UniformSpace.Completion.map_coe hi.uniformContinuous (γ t)
     exact tendsto_nhds_unique heq hq
-  refine ⟨qW, hqW, hdistW, ?_, hmap, ?_⟩
+  let radius (n : ℕ) := (eps⁻¹ + 6) * Real.sqrt (1 + eps) /
+    Real.sqrt (metricScalarAt (g.restrictOpen W) (γ (t n)))
+  have hradius : Tendsto radius atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (Real.tendsto_sqrt_atTop.comp hscalar)
+  have hbound : Tendsto (fun n => b - (t n : ℝ) + radius n) atTop (𝓝 0) := by
+    simpa only [sub_self, zero_add] using ((tendsto_const_nhds (x := b)).sub ht).add hradius
+  have hregion : ∀ U ∈ 𝓝 qW, ∀ᶠ n in atTop,
+      (fun x : W => (x : UniformSpace.Completion W)) '' A n ⊆ U := by
+    intro U hU
+    obtain ⟨delta, hdelta, hball⟩ := Metric.mem_nhds_iff.mp hU
+    filter_upwards [hnecks, hbound.eventually (eventually_lt_nhds hdelta)] with n hn hsmall
+    obtain ⟨nk, hnk⟩ := hn
+    rintro z ⟨y, hy, rfl⟩
+    apply hball
+    have hb := nk.image_window_subset_ball (hnk hy)
+    change riemannianEDistOf (g.restrictOpen W) (γ (t n)) y < ENNReal.ofReal (radius n) at hb
+    rw [← hmetricW, edist_dist] at hb
+    have hdist : dist (γ (t n)) y < radius n :=
+      (ENNReal.ofReal_lt_ofReal_iff_of_nonneg dist_nonneg).mp hb
+    have htri := dist_triangle qW (γ (t n) : UniformSpace.Completion W) (y : UniformSpace.Completion W)
+    rw [hdistW, UniformSpace.Completion.dist_eq] at htri
+    change dist (y : UniformSpace.Completion W) qW < delta
+    rw [dist_comm]
+    linarith
+  have hcompact := isCompact_insert_iUnion_of_eventually_subset
+    (fun n => (hA n).image (UniformSpace.Completion.continuous_coe W))
+    (fun U hU => by simpa only [Nat.cofinite_eq_atTop] using hregion U hU)
+  let K : Set (UniformSpace.Completion W) :=
+    insert qW (⋃ n, (fun x : W => (x : UniformSpace.Completion W)) '' A n)
+  let V : Set (UniformSpace.Completion W) :=
+    UniformSpace.Completion.map (Subtype.val : W → M) ⁻¹'
+      ((fun x : M => (x : UniformSpace.Completion M)) '' B)ᶜ
+  have hV : IsOpen V :=
+    ((hB.image (UniformSpace.Completion.continuous_coe M)).isClosed.isOpen_compl).preimage
+      (UniformSpace.Completion.continuous_map (f := (Subtype.val : W → M)))
+  have hqV : qW ∈ V := by
+    change UniformSpace.Completion.map (Subtype.val : W → M) qW ∉ _
+    rw [hmap]
+    rintro ⟨x, _, hx⟩
+    exact hmissing ⟨x, hx⟩
+  have hVK : V ⊆ K := by
+    apply (UniformSpace.Completion.denseRange_coe.open_subset_closure_inter hV).trans
+    apply closure_minimal _ hcompact.isClosed
+    rintro z ⟨hz, x, rfl⟩
+    have hx : x ∈ ⋃ n, A n := by
+      by_contra hx
+      apply hz
+      rw [UniformSpace.Completion.map_coe hi.uniformContinuous]
+      exact ⟨(x : M), hBcover x hx, rfl⟩
+    obtain ⟨n, hn⟩ := mem_iUnion.mp hx
+    exact mem_insert_of_mem _ (mem_iUnion.mpr ⟨n, ⟨x, hn, rfl⟩⟩)
+  have hKnhds : K ∈ 𝓝 qW := mem_of_superset (hV.mem_nhds hqV) hVK
+  have hball : ∃ delta : ℝ, 0 < delta ∧ IsCompact (Metric.closedBall qW delta) ∧
+      Metric.closedBall qW delta ⊆ insert qW
+        (range (fun x : W => (x : UniformSpace.Completion W))) := by
+    obtain ⟨r, hr, hsub⟩ := Metric.mem_nhds_iff.mp hKnhds
+    have hclosedSub : Metric.closedBall qW (r / 2) ⊆ K := by
+      intro z hz
+      apply hsub
+      exact Metric.mem_ball.mpr (lt_of_le_of_lt (Metric.mem_closedBall.mp hz) (by linarith))
+    refine ⟨r / 2, by positivity, hcompact.of_isClosed_subset Metric.isClosed_closedBall hclosedSub, ?_⟩
+    intro z hz
+    rcases hclosedSub hz with rfl | hz
+    · exact Or.inl rfl
+    · obtain ⟨n, hn⟩ := mem_iUnion.mp hz
+      obtain ⟨x, _, hx⟩ := hn
+      exact mem_insert_of_mem _ ⟨x, hx⟩
+  refine ⟨qW, hqW, hdistW, ?_, hmap, ?_, hregion, hcompact, hKnhds, hball⟩
   · rintro ⟨x, rfl⟩
     rw [UniformSpace.Completion.map_coe hi.uniformContinuous] at hmap
     exact hmissing ⟨x, hmap⟩
@@ -287,7 +366,23 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                             qW ∉ range (fun x : W => (x : UniformSpace.Completion W)) ∧
                                             UniformSpace.Completion.map (Subtype.val : W → L.M) qW = q ∧
                                             Topology.IsOpenEmbedding
-                                              (fun x : W => (x : UniformSpace.Completion W)) := by
+                                              (fun x : W => (x : UniformSpace.Completion W)) ∧
+                                            (∀ U ∈ 𝓝 qW, ∀ᶠ n in atTop,
+                                              (fun x : W => (x : UniformSpace.Completion W)) ''
+                                                {x : W | (x : L.M) ∈ Ψ (n + 2) ''
+                                                  (univ ×ˢ Icc (0 : ℝ) 1)} ⊆ U) ∧
+                                            IsCompact (insert qW (⋃ n,
+                                              (fun x : W => (x : UniformSpace.Completion W)) ''
+                                                {x : W | (x : L.M) ∈ Ψ (n + 2) ''
+                                                  (univ ×ˢ Icc (0 : ℝ) 1)})) ∧
+                                            insert qW (⋃ n,
+                                              (fun x : W => (x : UniformSpace.Completion W)) ''
+                                                {x : W | (x : L.M) ∈ Ψ (n + 2) ''
+                                                  (univ ×ˢ Icc (0 : ℝ) 1)}) ∈ 𝓝 qW ∧
+                                            ∃ delta : ℝ, 0 < delta ∧
+                                              IsCompact (Metric.closedBall qW delta) ∧
+                                              Metric.closedBall qW delta ⊆ insert qW
+                                                (range (fun x : W => (x : UniformSpace.Completion W))) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -591,8 +686,69 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
       (comap (Subtype.val : Ico (t 2 : ℝ) F.radius → ℝ) (𝓝 F.radius))
       (comap (Subtype.val : Ico 0 F.radius → ℝ) (𝓝 F.radius)) :=
     tendsto_comap_iff.mpr tendsto_comap
+  have hannW (n : ℕ) : ann (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ (W : Set L.M) := by
+    intro x hx
+    have hu : x ∈ ⋃ k, ann (k + 1) '' (univ ×ˢ Icc (0 : ℝ) 1) :=
+      mem_iUnion.mpr ⟨n + 1, hx⟩
+    by_contra hnotW
+    have hf : x ∈ frontier (⋃ k, ann (k + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
+      ⟨subset_closure hu, hnotW⟩
+    rw [hfrontTail] at hf
+    obtain ⟨⟨p, z⟩, ⟨_, hz⟩, hp⟩ := hf
+    have hz' : z = 0 := hz
+    subst z
+    have hx0 : x ∈ ann 0 '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+      refine ⟨((eta 0).symm p, 1), ⟨mem_univ _, by simp⟩, ?_⟩
+      rw [hright, (eta 0).apply_symm_apply]
+      exact hp
+    exact Set.disjoint_left.mp (hsep 0 (n + 2) (by omega)) hx0 hx
+  let u : ℕ → Ico (t 2 : ℝ) F.radius := fun n =>
+    ⟨t (n + 2), hmono.monotone (by omega : 2 ≤ n + 2), (t (n + 2)).property.2⟩
+  have huT : Tendsto (fun n => (u n : ℝ)) atTop (𝓝 F.radius) :=
+    hlim.comp (tendsto_add_atTop_nat 2)
+  have hscalarU : Tendsto (fun n => metricScalarAt (L.metric.restrictOpen W) (gW (u n)))
+      atTop atTop := by
+    have hs : Tendsto (fun n => metricScalarAt L.metric (g (incl (t n)))) atTop atTop := by
+      simpa only [Nat.cofinite_eq_atTop] using hscalar
+    apply (hs.comp (tendsto_add_atTop_nat 2)).congr'
+    exact Eventually.of_forall fun n =>
+      (metricScalarAt_restrictOpen L.metric W (gW (u n))).symm
+  let regions (n : ℕ) : Set W :=
+    (Subtype.val : W → L.M) ⁻¹' (ann (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1))
+  have hregions (n : ℕ) : IsCompact (regions n) := by
+    apply Topology.IsEmbedding.subtypeVal.isCompact_iff.mpr
+    have heq : Subtype.val '' regions n = ann (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+      ext x
+      constructor
+      · rintro ⟨y, hy, rfl⟩
+        exact hy
+      · intro hx
+        exact ⟨⟨x, hannW n hx⟩, hx, rfl⟩
+    rw [heq]
+    exact hcann (n + 2)
+  have hmodels : ∀ᶠ n in atTop,
+      ∃ nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha) (gW (u n)),
+        regions n ⊆ nkW.map '' (univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) := by
+    filter_upwards [(tendsto_add_atTop_nat 2).eventually hwindowCapture] with n hn
+    let x : W := gW (u n)
+    let nkW : SpatialNeck (L.metric.restrictOpen W) (2 * alpha) x :=
+      (nk (n + 2)).restrictOpen (U := W) (x := x) hn
+    refine ⟨nkW, ?_⟩
+    intro y hy
+    obtain ⟨z, hz, hzy⟩ := hsubann (n + 2) hy
+    refine ⟨z, hz, Subtype.ext ?_⟩
+    exact (SpatialNeck.restrictOpen_map_coe (U := W) (x := x) (nk (n + 2)) hn
+      (hn ⟨z, hz, rfl⟩)).trans hzy
+  have hBcover (x : W) (hx : x ∉ ⋃ n, regions n) :
+      (x : L.M) ∈ ann 1 '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+    obtain ⟨k, hk⟩ := mem_iUnion.mp (interior_subset x.property)
+    cases k with
+    | zero => exact hk
+    | succ n => exact False.elim (hx (mem_iUnion.mpr ⟨n, hk⟩))
   have hcompletion := exists_restricted_completion_endpoint L.metric (fun _ _ => rfl)
     W (t 2).property.2 gW hgW q (hq.comp htailT) hmissing
+    u huT hscalarU regions hregions hmodels
+    (ann 1 '' (univ ×ˢ Icc (0 : ℝ) 1)) (hcann 1) hBcover
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
