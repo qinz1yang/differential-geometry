@@ -5527,3 +5527,1181 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSou
    当前仅证明本显式 preserving 模型取原 chart；尚无这个一般生产者，未削弱冻结陈述。
 
 本批沿顾问 G 指定的带 curl 产品模型推进；未发现新的反例，没有把任何开放义务回填为假设。
+
+
+### 19.183 Lane F / F11 buffered preserving joint fixture / partial (2026-09-21)
+
+**结论。** 本砖的 preserving 联合几何夹具已闭合，整个 F11 仍 partial。
+同一个 B、hD、c、d、T、R、C、f 上有 direct/cross 两个候选、两个词 witness、真实侧边界的
+PL 半空间图卡（包括角点）、边界像图的正则邻域及两种相对缓冲。
+R.resolvedCell C 的双点集精确等于原来的 curl 支，core 支被删除。
+本砖没有关闭一般 reading 生产者 A2.4b′，没有证明 N=⊥ 的原边界环类非平凡，
+reversing 联合夹具仍待完成。A2.4d 不能标 done。
+提交哈希：无；按车道约定由 lead 审读后提交。本砖未运行写入型 git 命令，未改根聚合。
+A1.5a、A1.5b、A1.8 未投入；本砖也没有消费这些待重设计叶子。
+
+**文件与兼容性。**
+
+- `LoopTheorem/CrossRegluedSourceProductCut.lean`：只在末尾追加 295 行；原来的 718 行除末尾
+  namespace 结束语移后外逐字未变。`F11BufferedSourceReview.log` 对 HEAD 源码前缀做字节规范化
+  比较，结论 True；旧公开陈述和证明均未改。
+- 新建 `CrossRegluedSourceProductReading.lean`：同一个显式 cross 候选不允许 quarter-turn reading。
+  Skeleton 的 crossQuarterTurn 不导入，结论直接写其逐点公式；没有另造一个同名定义。
+- 新建 `CrossRegluedSourceProductSide.lean`：全体环境点处的 box 半空间图卡及 IsPLBoundarySide。
+  局部坐标取每个区间的端点距离，再用 ((x-t,y-t),min x (min y t)) 变为半空间；
+  图卡和逆图卡均全局逐片仿射，三个面相交的角点也包含在同一证明中。
+- 新建 `CrossRegluedSourceProductNeighborhood.lean`：在真实边界二球上同时三角剖分边界像图，
+  以该子复形的 derivedNeighborhood 构造 B，给出二维带边组合流形证书、边界缓冲、
+  以及 B 强形变收缩到边界像图的证书。这里没有用整张球面充当 B。
+- 新建 `CrossRegluedSourceProductTube.lean`：横截面线性缩放的实际 tube、PL 图卡、侧和边界等式，
+  从沿边界像的相对缓冲生产正半径 r 的端盘缓冲。r 可任意小，不允许 r=0。
+- 新建 `CrossRegluedSourceProductTubeReading.lean`：两条源条带同步缩小，显式重标定坐标、
+  三块补面及全部 reading 字段。候选仍逐字是 crossRegluedProductCell。
+- 新建 `CrossRegluedSourceProductFixture.lean`：同一元组的最终存在定理及 resolved 双点集公式。
+  没有新打包上下文或命题假设结构。
+- `CrossRegluedSourceTwistedModel.lean` 是随后 reversing 砖的独立开发，不在本砖验收清单中。
+
+**最终联合陈述（原文，证明在源文件中）。**
+
+```lean
+theorem crossingProductCell_exists_buffered_preserving_boundaryWordWitnesses :
+    ∃ (B : Set (EuclideanSpace ℝ (Fin 3)))
+      (hD : NormalSingularCellData crossingProductCell (frontier crossingProductSide) B)
+      (c d : hD.singularSet.Branch) (r : ℝ) (hr : 0 < r)
+      (T : CrossSeamTubeData hD c (spliceEmbedding '' tubeWitnessTube))
+      (R : PLCrossSeamReading T.chart crossRegluedProductCell)
+      (C : PLSeamTubeChart (EuclideanSpace ℝ (Fin 3)) T.chart)
+      (f : frontier crossingProductCell.domain → B)
+      (a b : B) (σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a)
+      (Gd : SingularTwoCell (EuclideanSpace ℝ (Fin 3))),
+      IsPolyhedron B ∧ B ⊆ frontier crossingProductSide ∧
+      Nonempty (StrongDeformationRetract {z : B | (z : EuclideanSpace ℝ (Fin 3)) ∈
+        Set.range crossingProductCell.boundary}) ∧
+      IsPLBoundarySide crossingProductCell crossingProductSide (frontier crossingProductSide) ∧
+      hD.singularSet.complexity = 2 ∧ c ≠ d ∧
+      hD.singularSet.IsBoundaryBranch c ∧ hD.singularSet.IsBoundaryBranch d ∧
+      hD.singularSet.branchCarrier c = spliceEmbedding '' spliceCore ∧
+      hD.singularSet.branchCarrier d = crossingProductBranchCarrier true ∧
+      r ≤ 1 ∧ T.chart = ⇑(crossingProductTubeChart r hr.ne') ∧
+      R.tubeSource ⊂ crossRegluedProductCell.domain ∧
+      T.chart '' spliceCylinder ⊆ crossingProductSide ∧
+      T.chart '' spliceCylinder ∩ frontier crossingProductSide = T.chart '' spliceEndDisks ∧
+      (∀ z ∈ Set.range crossingProductCell.boundary,
+        B ∈ 𝓝[frontier crossingProductSide] z) ∧
+      (∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[frontier crossingProductSide] z) ∧
+      Continuous f ∧ (∀ z, (f z : EuclideanSpace ℝ (Fin 3)) = crossingProductCell z) ∧
+      hD.IsBoundarySurgeryCell c Gd ∧ hD.IsCrossRegluedCell c crossRegluedProductCell ∧
+      doublePointSet (R.resolvedCell C) (R.resolvedCell C).domain =
+        hD.singularSet.branchCarrier d ∧
+      Nonempty (BoundaryWordWitness Gd (Subtype.val : B → EuclideanSpace ℝ (Fin 3))
+        (pathToCircle (σ.trans υ))) ∧
+      Nonempty (BoundaryWordWitness crossRegluedProductCell
+        (Subtype.val : B → EuclideanSpace ℝ (Fin 3))
+        (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))))) ∧
+      ∃ (p q u v : frontier crossingProductCell.domain)
+        (σ₀ : Path p q) (τ₀ : Path q u) (υ₀ : Path u v) (φ₀ : Path v p)
+        (e : loopCircle ≃ₜ frontier crossingProductCell.domain),
+        (p : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (3 / 2, 0) ∧
+        (q : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (3 / 2, 1) ∧
+        (u : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (7 / 2, 1) ∧
+        (v : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (7 / 2, 0) ∧
+        (∀ θ, e θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ) ∧
+        Function.Injective σ₀ ∧ Function.Injective τ₀ ∧
+        Function.Injective υ₀ ∧ Function.Injective φ₀ ∧
+        (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+        (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t))
+```
+
+**证明来源与非空洞清单。**
+
+1. hD 来自 `crossingProductCell_nonempty_normalSingularCellData`；双点集的两段线段、全部半空间
+   crossing 及纤维上界沿用 c7b1cb328 已收的模型。c、d 来自同一 singularSet 的 Bool 等价，
+   `complexity = 2`、`c ≠ d`、两条支均为 boundary branch 都是输出。
+2. direct 候选使用 F9 的 `exists_boundaryWordWitness_direct_of_cut` 核心；cross witness
+   独立对显式 crossRegluedProductCell 的四条源弧逐点匹配。没有独立选出另一个 G 后冒认同一对象。
+   四条源弧端点依次为 (3/2,0)、(3/2,1)、(7/2,1)、(7/2,0)，都经 seamWitnessPlane 放置。
+   目标的 τ、φ 是回路；未假设它们单射，也没有任何 X 中路径的单射性假设。
+3. B 由球面复形 K 中图子复形 L 的导出邻域构造。`derivedNeighborhood_mem_nhdsWithin`
+   给出原边界缓冲，`derivedNeighborhoodStrongDeformationRetract` 给出同伦型证书。
+4. 从 core 两端的上述缓冲选择 0<r≤1；T.chart 是 ((x,y),t) ↦ spliceEmbedding((r*x,r*y),t)。
+   sourcePos/Neg 分别是中心 3/2、7/2、半宽 r/2 的矩形；读取后它们映满 bentSheetPos/Neg。
+   所有点态粘合、端点和侧壁条款均证明，没有用源像集合相同替代路径同伦。
+5. X=B，ρ=Subtype.val，f 为实际 D.boundary 的余域限制，连续性直接来自 boundary.continuous。
+   四个 Function.Injective 结论在源圆周中由四弧参数化生产。R.tubeSource ⊊ G.domain 显式输出。
+6. `crossingProductCell_doublePointSet_resolved` 从同一 tube 的 CrossSeamRegluedData 证明
+   resolved 双点集 = crossingProductBranchCarrier true，非空 curl 支被保留。
+
+**极端测试。**
+
+- F11BufferedTypesNonvacuity.lean 对最终存在端点做完整类型断言；实际三面角点
+  spliceEmbedding((-3,-3),0)、spliceEmbedding((2,5),1) 的半空间接口均实例化。
+- r=1 与 r=1/1000000 的 reading 居留者均编译通过；正半径假设排除退化 r=0。
+  固定 B 缓冲以后才选 r，不把下一尺度的结论回填为当前假设。
+- 保留侧边界的非单射见证仍为 s=62/15 和 47/10、t=0（同像 spliceEmbedding((0,3),0)）。
+- quarter-turn 否定定理用同一 G 的连接集 s∈[1,2],t=0：两个端点强迫不同标签，而两片源闭且
+  不交，违反连接性。它与原 chart 的已证 reading 同时成立；不是比较两个不同的 G。
+- 无局部有限族参数；纪律 (d) 在本砖不适用。没有把恒等特化当成居留者。
+
+**日志与源码证据。**
+
+- 七份最终聚焦日志各 exit=0、零 warning/error：CheckF11-ProductReading.log、
+  CheckF11-ProductSide.log、CheckF11-ProductWords.log、CheckF11-ProductNeighborhood.log、
+  CheckF11-ProductTube.log、CheckF11-ProductTubeReading.log、CheckF11-ProductFixture.log。
+- AuditF11BufferedFixture.log：七模块共同导入，以下 24 个新公开声明的公理闭包均只含
+  {propext, Classical.choice, Quot.sound}，exit=0。
+- 全部 13 个环境 linter：Reading 1+1、Side 13+14、Cut 50+19、Neighborhood 5+0、Tube 17+10、
+  TubeReading 31+14、Fixture 2+0 个声明，均 0 errors。证据分别在 AuditF11BufferedFixture.log、
+  AuditF11ProductSide.log、AuditF11ProductWords.log、AuditF11ProductNeighborhood.log、
+  AuditF11ProductTube.log、AuditF11ProductFixture.log。后者的 fixture 计数 1+0 是追加 retention
+  定理前的记录，最终 2+0 以 AuditF11BufferedFixture.log 为准。
+- F11BufferedTypesNonvacuity.log：完整类型断言与上述角点/半径/非单射/错误配对探针，exit=0。
+- F11BufferedSourceReview.log：24 名在 Skeleton 外各唯一；源码禁用模式/新命题结构/正文注释
+  扫描为零，行长≤100，git diff --check exit=0。原 ProductCut 前缀未改。
+- F11BufferedReceipt.json 记录本批源码、F-private olean 与全部验收日志哈希。
+  Lean 串行运行；无 lake build，无共享 E: 源码或 olean 写入。
+
+**新公开名（统一命名空间）。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_not_nonempty_reading_quarter_turn
+DifferentialGeometry.Topology.PiecewiseLinear.isPLHalfSpacePairAt_crossingProductSide
+DifferentialGeometry.Topology.PiecewiseLinear.isPLBoundarySide_crossingProductCell
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_preserving_boundaryWordWitnesses
+DifferentialGeometry.Topology.PiecewiseLinear.isPolyhedron_crossingProductCell_boundary
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_boundary_derivedNeighborhood
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_boundary_regularNeighborhood
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeScale
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeScale_apply
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeChart
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeChart_apply
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeScale_mapsTo_cylinder
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeScale_image_core
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeScale_image_crossingFigure
+DifferentialGeometry.Topology.PiecewiseLinear.crossSeamTubeCore_crossingProductTubeChart
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeChart_side
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductTubeChart_boundary
+DifferentialGeometry.Topology.PiecewiseLinear.nonempty_plSeamTubeChart_crossingProductTubeChart
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_core_end_mem_boundary
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_tube_end_buffer
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductTubeReading
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductTubeReading_tubeSource_ssubset
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_doublePointSet_resolved
+DifferentialGeometry.Topology.PiecewiseLinear.crossingProductCell_exists_buffered_preserving_boundaryWordWitnesses
+```
+
+**交给 lead 的新增根 import；本车道未登记根文件。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductReading
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductSide
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductTube
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductTubeReading
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductFixture
+```
+
+**剩余义务。** reversing 模型的 PL 商图卡、真实正规盘、cut、reading、两个 witness 及缓冲；
+原边界环在 B 中对 N=⊥ 非平凡（本砖的 SDR 证书只保留图的同伦型，不自动证明指定环非平凡）；
+一般 IsCrossRegluedCell 的两种配对分类生产者。以上均未作为新假设加入本砖联合存在端点。
+
+
+### 19.184 Lane F / F11 reversing quotient and proper PL cell — foundation done; joint fixture partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedModel.lean、
+CrossRegluedSourceTwistedAtlas.lean、CrossRegluedSourceTwistedCell.lean。
+本砖没有改动已有 Lean 文件；无新 hypothesis bundle / structure / Prop-valued def。
+halfTurnSetoid 是实际整数半转平移作用的等价关系，不是输入假设的包装。
+未提交、未推送、未改根聚合，由 lead 验收。A1.5a / A1.5b / A1.8 未开展。
+
+**实际对象与方向。** 在 ((x,y),t) ↦ ((x+1,-y),1-t) 的商空间中，
+D(s,t)=[((s,s-1/2),t)]，源矩形 [-1/4,5/4]×[0,1]。
+两条接缝 s=0、s=1 都在源矩形内部；D(0,t)=D(1,1-t)。
+侧取商映射下 R×[-3/4,3/4]×[0,1] 的像，边界使用其真实 frontier。
+区别于 consult/D 的单坐标反射模型：这里同时翻转 y 与 t，保持局部三维定向，
+但本砖不声称已构造形式化的 orientability 实例。此改动给出另一实际 reversing 模型，
+没有放宽 F11 的词或源侧匹配要求。
+
+**已闭合。** 商投影连续、满射、开、局部同胚；商空间 Hausdorff、第二可数，
+具有实际 E3 ChartedSpace 与 plGroupoid 实例；投影是 PL。
+twistedStripCell 是实际 SingularTwoCell，局部单射、纤维 ≤2、整体不单射。
+双点集恰为 t↦D(0,t) 的 [0,1] 像，边界 properness 是精确的 preimage 等式。
+图卡过渡的 PL 证明从连续性和整数平移量局部常值推出，不把 PL 图卡作为输入假设。
+
+**关键陈述（原文）。**
+
+```lean
+theorem twistedStripMap_eq_iff {p q : ℝ × ℝ}
+    (hp : p.1 ∈ Icc (-1 / 4 : ℝ) (5 / 4))
+    (hq : q.1 ∈ Icc (-1 / 4 : ℝ) (5 / 4)) :
+    twistedStripMap p = twistedStripMap q ↔ p = q ∨
+      (p.1 = 0 ∧ q.1 = 1 ∧ q.2 = 1 - p.2) ∨
+      (p.1 = 1 ∧ q.1 = 0 ∧ q.2 = 1 - p.2)
+
+theorem isPL_halfTurnEuclideanProjection : IsPL 3 3 halfTurnEuclideanProjection
+
+theorem twistedStripCell_reversing_endpoints :
+    twistedStripCell (seamWitnessPlane (0, 0)) = twistedStripCell (seamWitnessPlane (1, 1)) ∧
+    twistedStripCell (seamWitnessPlane (0, 1)) = twistedStripCell (seamWitnessPlane (1, 0)) ∧
+    twistedStripCell (seamWitnessPlane (0, 0)) ≠ twistedStripCell (seamWitnessPlane (0, 1))
+
+theorem twistedStripCell_preimage_frontier_side :
+    twistedStripCell.domain ∩ ⇑twistedStripCell ⁻¹' frontier twistedStripSide =
+      frontier twistedStripCell.domain
+```
+
+**验证。** 三份 CheckF11-Twisted{Model,Atlas,Cell}.log 均 exit=0，零 warning/error。
+AuditF11TwistedCell.log 审计以下 51 个公开声明，仅标准三公理，exit=0；
+三个模块分别以 13 个环境 linter 检查 23+11、15+11、23+15 个声明，均 0 errors。
+F11TwistedTypesNonvacuity.log 对四个关键陈述做完整类型断言，另审计 Hausdorff、
+第二可数和 PL 群胚三个实例包装，仅标准三公理，exit=0、零 warning/error。
+F11TwistedSourceReview.log：51 名在 Skeleton 外各唯一，行长≤100，无禁用模式、
+正文注释或新命题结构，git diff --check exit=0。F11TwistedReceipt.json 保存源码、
+私有 olean 和日志哈希。单个 Lean 串行；不写共享 olean，不运行 lake build。
+
+**非空性与极端测试。** 商空间居留者 [((0,0),0)]，胞腔居留者 twistedStripCell；
+源矩形非空，s=0 与 s=1 的两点严格不同，整体不单射由 twistedStripCell_not_injOn 证明。
+实际 reversing 的四端点对为 (0,0)~(1,1)、(0,1)~(1,0)，且前两个端点像不同。
+t=1/2（反射的固定高度）仍是两个不同源点，纤维上界无退化；t=-100 的全空间接缝式
+同样成立，但没有把该点误算成源胞腔内点。局部单射实例取 s∈(-1/4,1/4)。
+公开端点没有要求任何 X 内边界路径单射。
+
+**剩余精确义务。** 本砖尚未构造
+NormalSingularCellData twistedStripCell (frontier twistedStripSide) B；
+待补 crossing、奇异支三角剖分、实际 reversing cut、两个候选、PL 管及 reading、
+两个词 witness、侧的角点半空间图卡和 B 的正则邻域/端盘缓冲。
+因此 F11 联合 reversing fixture 仍为 partial。preserving 的联合夹具见 §19.183，
+其中 N=⊥ 下原边界环的非平凡性和一般 reading 生产者依然开放。
+
+**公开名。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnTranslation
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnTranslation_zero
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnTranslation_add
+DifferentialGeometry.Topology.PiecewiseLinear.continuous_halfTurnTranslation
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnTranslationHomeomorph
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSetoid
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnQuotient
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnProjection
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnProjection_eq_iff
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnProjection_translation
+DifferentialGeometry.Topology.PiecewiseLinear.continuous_halfTurnProjection
+DifferentialGeometry.Topology.PiecewiseLinear.surjective_halfTurnProjection
+DifferentialGeometry.Topology.PiecewiseLinear.isOpenMap_halfTurnProjection
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnProjection_injOn_slab
+DifferentialGeometry.Topology.PiecewiseLinear.isLocalHomeomorph_halfTurnProjection
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap
+DifferentialGeometry.Topology.PiecewiseLinear.continuous_twistedStripMap
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_seam
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_eq_iff
+DifferentialGeometry.Topology.PiecewiseLinear.twistedSourceRect
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_fiber_le_two
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_injOn_slab
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_not_injOn
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnEuclideanProjection
+DifferentialGeometry.Topology.PiecewiseLinear.continuous_halfTurnEuclideanProjection
+DifferentialGeometry.Topology.PiecewiseLinear.surjective_halfTurnEuclideanProjection
+DifferentialGeometry.Topology.PiecewiseLinear.isLocalHomeomorph_halfTurnEuclideanProjection
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnChart
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnChart_symm
+DifferentialGeometry.Topology.PiecewiseLinear.isPL_halfTurnEuclideanProjection
+DifferentialGeometry.Topology.PiecewiseLinear.isPLBall_twistedSourceRect
+DifferentialGeometry.Topology.PiecewiseLinear.isPL_twistedStripMap
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_fiber_le_two
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_locallyInjective
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_doublePointSet
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_doublePointSet
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_not_injOn
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_reversing_endpoints
+DifferentialGeometry.Topology.PiecewiseLinear.twistedSideLift
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripSide
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnProjection_preimage_twistedStripSide
+DifferentialGeometry.Topology.PiecewiseLinear.isClosed_twistedSideLift
+DifferentialGeometry.Topology.PiecewiseLinear.isClosed_twistedStripSide
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnProjection_preimage_frontier_twistedStripSide
+DifferentialGeometry.Topology.PiecewiseLinear.frontier_twistedSourceRect
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_mem_frontier_side_iff
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_mapsTo_side
+DifferentialGeometry.Topology.PiecewiseLinear.frontier_twistedStripCell_domain
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_preimage_frontier_side
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_image_inter_frontier_side
+```
+
+**给 lead 的根 import（本车道未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedModel
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedAtlas
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedCell
+```
+
+
+### 19.185 Lane F / F11 reversing PL tube — done; joint fixture partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedChart.lean、
+CrossRegluedSourceTwistedTube.lean、CrossRegluedSourceTwistedPiece.lean。
+旧 Lean 文件未改；无新 structure 或假设包装。未提交、未推送、未改根聚合。
+
+**闭合结果与方向。** 显式商图卡来自 x∈(a−1/4,a+1/4) 的单射带；证明其属于最大 PL 图册。
+任意有限复形在该带内的投影给出实际 PLPieceIn，map 始终是半转商投影。
+管子是 π(((u−v)/16,−1/2+(u+v)/16),t)，在整个闭圆柱上单射；横页为
+D(u/16,t)，纵页为 D(1−v/16,1−t)。纵页的反向高度来自真实半转商关系。
+四页像恰等于同一个 D 的像在闭管内的部分，核心像恰等于全部双点集。
+闭管落在实际 side 内，与实际 frontier 的交恰等于两个端盘像。
+PLSeamTubeChart 的两个 PL 方向均已证明，没有作为假设输入。
+
+**联合端点（原文）。**
+
+```lean
+theorem twistedStripCell_exists_boundaryTube :
+    ∃ C : PLSeamTubeChart halfTurnQuotient twistedTubeChart,
+      C.piece.map = twistedTubeChart ∧
+      CrossSeamTubeCore twistedTubeChart
+        (⇑twistedStripCell '' twistedStripCell.domain)
+        (doublePointSet (⇑twistedStripCell) twistedStripCell.domain)
+        (doublePointSet (⇑twistedStripCell) twistedStripCell.domain)
+        (halfTurnSlabChart 0).source ∧
+      twistedTubeChart '' spliceCylinder ⊆ twistedStripSide ∧
+      twistedTubeChart '' spliceCylinder ∩ frontier twistedStripSide =
+        twistedTubeChart '' spliceEndDisks ∧
+      twistedTubeChart '' crossingFigure ⊂ ⇑twistedStripCell '' twistedStripCell.domain
+```
+
+**验证。** CheckF11-TwistedChart.log、CheckF11-TwistedTube.log、
+CheckF11-TwistedPiece.log 均 exit=0，零 warning/error。
+AuditF11TwistedTube.log 审计 34 个公开声明，仅标准三公理，exit=0；三个模块分别
+检查 11+4、19+13、10+11 个声明，13 项环境 linter 全部 0 errors。
+F11TwistedTubeTypesNonvacuity.log 包含核心、边界、严格包含、联合端点的完整类型断言，
+exit=0、零 warning/error。F11TwistedTubeSourceReview.log：34 名在 Skeleton 外各唯一，
+源码纪律通过、git diff --check exit=0。F11TwistedTubeReceipt.json 保存源码、私有 olean
+和日志哈希。仅一个 Lean，私有输出；共享库只读，不运行 lake build。
+
+**非空洞清单。** 联合端点无输入假设；C 由 nonempty_plSeamTubeChart_twistedTubeChart
+实际构造。单射性由 twistedTubeChart_injOn 给出，闭管不退化：核心两个端点像不同。
+严格性由实际源内点 D(−1/4,1/2) 给出，此点在原胞腔像中而不在闭管内。
+这里尚未用 source 的 R⊊S 代替像的严格包含；最终 reading 还需交自己的源侧严格性。
+
+**剩余精确义务。** reversing 的 NormalSingularCellData、单支复杂度与 cut、两个候选、
+reading、两个词 witness、IsPLBoundarySide 角点及正则邻域 B/端盘缓冲仍待补。
+本砖交付实际管子，不把它误报为已经依赖 hD 与支 c 的 CrossSeamTubeData。
+总体 F11 partial；preserving 的联合夹具及原边界环非平凡性义务见 §19.183。
+A1.5a / A1.5b / A1.8 保持暂停。
+
+**公开名。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlab
+DifferentialGeometry.Topology.PiecewiseLinear.isOpen_halfTurnSlab
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnEuclideanProjection_injOn_slab
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart_symm
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart_target
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart_source
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart_apply
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart_mem_maximalAtlas
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabChart_side
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeLift
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart
+DifferentialGeometry.Topology.PiecewiseLinear.continuous_twistedTubeChart
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_injOn
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_mapsTo_slab
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_core
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_horizontal
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_vertical
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_mem_image_iff
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_image_crossingFigure
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_image_core
+DifferentialGeometry.Topology.PiecewiseLinear.crossSeamTubeCore_twistedStripCell
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_side
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_boundary
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_cap_not_mem_tube
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubeChart_crossingFigure_ssubset_image
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabPiece
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabPiece_complex
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnSlabPiece_map
+DifferentialGeometry.Topology.PiecewiseLinear.twistedTubePlacement
+DifferentialGeometry.Topology.PiecewiseLinear.isPLHomeomorphOn_twistedTubePlacement
+DifferentialGeometry.Topology.PiecewiseLinear.halfTurnEuclideanProjection_comp_twistedTubePlacement
+DifferentialGeometry.Topology.PiecewiseLinear.nonempty_plSeamTubeChart_twistedTubeChart
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_boundaryTube
+```
+
+**给 lead 的根 import（本车道未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedChart
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedTube
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedPiece
+```
+
+
+### 19.186 Lane F / F11 reversing normal cell — done; joint fixture partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedSingularSet.lean、
+CrossRegluedSourceTwistedCrossing.lean；在 CrossRegluedSourceProductNormal.lean 末尾追加
+五个现有 private 引理的公开包装（坐标矩形内点/两端点 crossing、竖区间复形、
+连续线性同构后复合），在 CrossRegluedSourceTwistedPiece.lean 末尾追加全空间管子仿射 PL
+同胚。ProductNormal 旧正文逐字保留，只有尾部追加；不重写已有证明。
+无新结构、无结论型假设、无 Skeleton 导入；未提交、未推送、未登记根聚合。
+
+**真正解除的义务。** 实际双点集用一条竖线段三角剖分，两个端点精确映到实际 frontier。
+同一个 D 的每个双点现在有 atlas 中的正规 crossing 图卡；不是自由输入。
+两张源片分别是 [−1/16,1/16]×[0,1]、[15/16,17/16]×[0,1]。
+在管子坐标中其映射逐点是 ((16s,0),t)、((0,16(1−s)),1−t)，像为标准交叉矩形；
+PL 同胚在每张源片上单独证明。全部原像的局部覆盖来自原始 D 的紧源域、连续性和
+已经证明的纤维 ≤2；没有把仅两张局部曲面的交误当成整个 D 的 crossing。
+随后将 crossing 沿管子仿射同胚、欧氏线性同构、源坐标搬运到最大图册，再搬到 atlas。
+内点 t∈(0,1) 与边界 t=0,1 分别使用已有的内点/边界 crossing 引理。
+
+**端点原文。**
+
+```lean
+theorem twistedStripCell_exists_singular_complex :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      K.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 K ∧
+        K.space ⊆ halfTurnSlab 0 ∧
+        halfTurnEuclideanProjection '' K.space =
+          doublePointSet (⇑twistedStripCell) twistedStripCell.domain ∧
+        halfTurnEuclideanProjection '' (boundaryComplex 1 K).space =
+          doublePointSet (⇑twistedStripCell) twistedStripCell.domain ∩
+            frontier twistedStripSide
+
+theorem twistedStripCell_exists_normal_crossing_chart {y : halfTurnQuotient}
+    (hy : y ∈ doublePointSet (⇑twistedStripCell) twistedStripCell.domain) :
+    ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) halfTurnQuotient, y ∈ e.source ∧
+      HasPLNormalDoubleCrossingAt (e ∘ ⇑twistedStripCell)
+        (twistedStripCell.domain ∩ ⇑twistedStripCell ⁻¹' e.source)
+        (e '' (e.source ∩ frontier twistedStripSide)) (e y)
+
+theorem twistedStripCell_nonempty_normalSingularCellData {B : Set halfTurnQuotient}
+    (hB : Set.range twistedStripCell.boundary ⊆ B) :
+    Nonempty (NormalSingularCellData twistedStripCell (frontier twistedStripSide) B)
+```
+
+**验证。** 四份 CheckF11-{ProductNormalAPI,TwistedPieceAPI,TwistedSingularSet,TwistedCrossing}.log
+均 exit=0，零 warning/error。AuditF11TwistedNormal.log 的 12 个新公开声明仅标准三公理，
+exit=0；四模块 13 项环境 linter 均 0 errors，检查声明数分别 37+19、11+11、4+4、22+6。
+F11TwistedNormalTypesNonvacuity.log 对三条端点做完整类型断言，exit=0、零 warning/error。
+F11TwistedNormalSourceReview.log：12 名唯一、行长≤100、无禁用模式、无新命题结构，
+ProductNormal 旧正文不变，git diff --check exit=0。
+F11TwistedNormalReceipt.json 保存 15 个源码/私有 olean/日志哈希；其中 TwistedPiece 的
+当前源码与 olean 哈希取代 §19.185 的版本（新增尾部的一个通用 PL 同胚结果）。
+始终仅一个 Lean 进程，私有输出；不写共享库，不运行 lake build。
+
+**非空洞清单。** 最终 hB 唯一要求 range D.boundary⊆B；探针用实际
+B=range D.boundary、subset_rfl 构造 NormalSingularCellData，未假设 crossing。
+在 t=0、1/2、1 三个具体双点上均实例化完整 atlas crossing 结论；两个端点像不同。
+源片的单射性由上面的显式仿射式给出，管子单射性由 twistedTubeChart_injOn 给出；
+没有任何目标 X 内路径单射假设。此处 B 只是正常胞腔数据的边界承载集，**不声称**
+已经是带缓冲的正则邻域；后续要另给 B 并实例化该正常胞腔生产者。
+
+**剩余精确义务。** reversing 的单支复杂度与 cut、两个候选、reading 与词 witness、
+实际侧角点的 IsPLBoundarySide、正则邻域 B 及两个端盘缓冲仍待完成。
+原边界环在 B 中相对 N=⊥ 的非平凡性仍开放；一般 reading producer 仍开放。
+F11 整体 partial，A1.5a / A1.5b / A1.8 保持暂停。
+
+**新公开名。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.hasPLCrossingAt_coordinate_rectangles
+DifferentialGeometry.Topology.PiecewiseLinear.hasPLBoundaryCrossingAt_coordinate_rectangles_zero
+DifferentialGeometry.Topology.PiecewiseLinear.hasPLBoundaryCrossingAt_coordinate_rectangles_one
+DifferentialGeometry.Topology.PiecewiseLinear.exists_simplicialComplex_vertical_interval
+DifferentialGeometry.Topology.PiecewiseLinear.HasPLNormalDoubleCrossingAt.postcomp_continuousLinearEquiv
+DifferentialGeometry.Topology.PiecewiseLinear.isPLHomeomorphOn_twistedTubeLift
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripMap_core_mem_frontier_iff
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_doublePointSet_inter_frontier
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_singular_complex
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_nonempty_normalSingularSetTriangulation
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_normal_crossing_chart
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_nonempty_normalSingularCellData
+```
+
+**给 lead 的新根 import（本车道未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedSingularSet
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedCrossing
+```
+
+
+### 19.187 Lane F / F11 reversing boundary branch and its tube — done; joint fixture partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedBranch.lean；本砖不改已有 Lean 文件。
+无新结构或打包假设；未提交、未推送、未登记根聚合。
+
+**结果。** 实际双点集紧致、连通、非空。对它的任意 NormalSingularSetTriangulation，
+分支类型与 Unit 等价，唯一分支的载体就是全部双点集；因载体确实碰实际 frontier，
+它是边界支。由已有 complexity_eq_natCard_branch 得复杂度精确为 1。
+在同一个 hD 上生产 c 与 CrossSeamTubeData，并将它的 chart 固定为前两砖的显式管子，
+同时提供 PL 证书、实际侧包含、端盘交式及四页像的严格包含。
+
+**端点原文。**
+
+```lean
+theorem twistedStripCell_exists_branch_equiv
+    (T : NormalSingularSetTriangulation twistedStripCell (frontier twistedStripSide)) :
+    ∃ e : Unit ≃ T.Branch,
+      T.branchCarrier (e ()) = doublePointSet (⇑twistedStripCell) twistedStripCell.domain ∧
+        T.IsBoundaryBranch (e ())
+
+theorem twistedStripCell_complexity_eq_one
+    (T : NormalSingularSetTriangulation twistedStripCell (frontier twistedStripSide)) :
+    T.complexity = 1
+
+theorem twistedStripCell_exists_branchTube {B : Set halfTurnQuotient}
+    (hD : NormalSingularCellData twistedStripCell (frontier twistedStripSide) B) :
+    ∃ (c : hD.singularSet.Branch)
+      (T : CrossSeamTubeData hD c (halfTurnSlabChart 0).source),
+      hD.singularSet.complexity = 1 ∧ hD.singularSet.IsBoundaryBranch c ∧
+      hD.singularSet.branchCarrier c =
+        doublePointSet (⇑twistedStripCell) twistedStripCell.domain ∧
+      T.chart = twistedTubeChart ∧ Nonempty (PLSeamTubeChart halfTurnQuotient T.chart) ∧
+      T.chart '' spliceCylinder ⊆ twistedStripSide ∧
+      T.chart '' spliceCylinder ∩ frontier twistedStripSide = T.chart '' spliceEndDisks ∧
+      T.chart '' crossingFigure ⊂ ⇑twistedStripCell '' twistedStripCell.domain
+```
+
+**验证。** CheckF11-TwistedBranch.log exit=0，零 warning/error。
+AuditF11TwistedBranch.log 的 5 个公开声明仅标准三公理；13 项 linter，5 个声明，
+0 errors、exit=0。F11TwistedBranchTypesNonvacuity.log 对三条端点作完整类型断言，并
+将 hD=实际 normal cell data、B=range D.boundary 与上述管子生产者组成无输入的联合
+存在式；exit=0、零 warning/error。F11TwistedBranchSourceReview.log：5 名唯一、
+源码纪律通过、git diff --check exit=0。F11TwistedBranchReceipt.json 存 6 个源码/
+私有 olean/日志哈希。一个 Lean 进程、私有输出、不写共享库、不运行 lake build。
+
+**非空洞与剩余。** Unit 不是空类型，支载体是一条非退化闭区间，复杂度恰为 1。
+管子数据中的 hD 由 §19.186 生产，不是未实例化的前提；同一元组和严格包含由探针确认。
+B=range D.boundary 仅用于正规胞腔的居留检查，不提供端盘缓冲或正则邻域。
+reversing 的显式 cut、direct/cross 候选与词 witness、reading、实际侧角点图卡、
+B 的正则邻域/缓冲和原边界环非平凡性仍开放。总体 F11 partial。
+下一砖：显式矩形三片切割及 reversing 接缝识别。A1.5a / A1.5b / A1.8 继续暂停。
+
+**公开名。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_doublePointSet_isCompact
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_doublePointSet_isConnected
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_branch_equiv
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_complexity_eq_one
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_branchTube
+```
+
+**给 lead 的根 import（本车道未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedBranch
+```
+
+
+### 19.188 Lane F / F11 explicit reversing cut — done; joint fixture partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedCut.lean；在
+CrossRegluedSourceProductCut.lean 末尾追加 SingularTwoCell.exists_three_cells_of_rectangular_domain。
+该通用几何引理复用本文件已有的矩形边界切割证明；旧正文逐字不变。
+无新 structure 或命题假设包装。未提交、未推送、未改根聚合。
+
+**结果与方向。** 源矩形在 s=0、1 处切成三块实际 PL 2-胞腔，左右帽子宽度都是 1/4，
+中片宽度为 1。唯一边界支的全部原像精确为两条竖接缝，各自的 branchCoordinate 是
+已证明的 PL 同胚。接缝映射为 (s,t)↦(1−s,1−t) 的实际仿射对合；其目标映射相容性
+来自 D(0,t)=D(1,1−t)。端点逐点核对为 (0,0)→(1,1)、(0,1)→(1,0)。
+三片覆盖、交、边界包含、外片不交、原映射限制、两个 trace 的球性与 IsCutPair 全部已证。
+
+**端点原文。**
+
+```lean
+theorem twistedStripCell_exists_reversing_cut {B : Set halfTurnQuotient}
+    (hD : NormalSingularCellData twistedStripCell (frontier twistedStripSide) B)
+    {c : hD.singularSet.Branch}
+    (hc : hD.singularSet.branchCarrier c =
+      doublePointSet (⇑twistedStripCell) twistedStripCell.domain) :
+    ∃ D₁ D₂ D₃ : SingularTwoCell halfTurnQuotient,
+      hD.IsBoundaryBranchCut c
+        (seamWitnessPlane '' ({(0 : ℝ)} ×ˢ Icc (0 : ℝ) 1))
+        (seamWitnessPlane '' ({(1 : ℝ)} ×ˢ Icc (0 : ℝ) 1))
+        (seamWitnessPlane (0, 0)) (seamWitnessPlane (0, 1))
+        (seamWitnessPlane (1, 0)) (seamWitnessPlane (1, 1))
+        twistedStripReflection D₁ D₂ D₃ ∧
+      D₁.domain = seamWitnessPlane '' (Icc (-1 / 4 : ℝ) 0 ×ˢ Icc (0 : ℝ) 1) ∧
+      D₂.domain = seamWitnessPlane '' (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      D₃.domain = seamWitnessPlane '' (Icc (1 : ℝ) (5 / 4) ×ˢ Icc (0 : ℝ) 1)
+
+theorem twistedStripReflection_reversing_endpoints :
+    twistedStripReflection (seamWitnessPlane (0, 0)) = seamWitnessPlane (1, 1) ∧
+      twistedStripReflection (seamWitnessPlane (0, 1)) = seamWitnessPlane (1, 0)
+```
+
+**验证。** CheckF11-RectangularCutAPI.log 与 CheckF11-TwistedCut.log 均 exit=0，
+零 warning/error。AuditF11TwistedCut.log 审计 8 个新公开声明，仅标准三公理，exit=0；
+两个模块分别 51+19、16+0 个声明的 13 项 linter 全部 0 errors。
+F11TwistedCutTypesNonvacuity.log 对端点作完整类型断言，将实际 hD、c、T、D₁、D₂、D₃
+绑定在同一无输入存在式中，保留复杂度=1、T.chart=twistedTubeChart、完整 hcut 与三块域
+等式，exit=0、零 warning/error。探针检查 −1/4<0<1<5/4、两接缝端点不同、接缝对合
+确实单射。F11TwistedCutSourceReview.log：8 名唯一、源码纪律通过、旧 ProductCut 正文
+不变、git diff --check exit=0。F11TwistedCutReceipt.json 保存 9 个源码/私有 olean/日志哈希；
+ProductCut 的当前版本只在 §19.183 版本尾部再追加本几何生产者，其当前哈希以本收据为准。
+验证仍串行、私有输出、不写共享库、不运行 lake build。
+
+**假设的实际 producer。** hD 由 twistedStripCell_nonempty_normalSingularCellData 提供；
+c 与 hc 由 twistedStripCell_exists_branchTube 提供；B 取实际 range D.boundary 时 hB=subset_rfl。
+这不是最终带缓冲的 B，未冒称正规邻域闭合。公开 cut 定理未假设任何目标 X 中路径的单射性。
+
+**剩余精确义务。** 将这个 cut 的 direct/cross 候选、两个词 witness、reading 与同一个管子
+绑定；补实际侧角点图卡、B 的正规邻域/缓冲及原边界环非平凡性。
+整体 F11 partial；一般 reading producer 仍开放；A1.5a / A1.5b / A1.8 保持暂停。
+
+**新公开名。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.SingularTwoCell.exists_three_cells_of_rectangular_domain
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripReflection
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripReflection_apply
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripReflection_involutive
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripReflection_image_wall
+DifferentialGeometry.Topology.PiecewiseLinear.isPLHomeomorphOn_twistedStripReflection_wall
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_reversing_cut
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripReflection_reversing_endpoints
+```
+
+**给 lead 的根 import（本车道未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedCut
+```
+
+
+### 19.189 Lane F / F11 reversing side and corner charts — done; joint fixture partial
+
+**文件与结果。** 新建 LoopTheorem/CrossRegluedSourceTwistedSide.lean。
+在每一个商空间点取已证的半宽 1/4 的 slab 图卡，再以仿射变换
+(x,y,t)↦(x−a,16y/3+1,t) 送入 ProductSide 已证的长方体半空间图卡。
+slab 内 x−a 严格处于长方体的两个 x 面之间，因此侧集与实际 frontier 的等价式
+同时成立；所有边棱与四个源角点均包含在证明中。得到实际侧条件，无自由几何假设。
+无新 structure，无假设包装；未提交、未推送、未改根聚合。
+
+**端点原文。**
+
+```lean
+theorem isPLHalfSpacePairAt_twistedStripSide (z : halfTurnQuotient) :
+    IsPLHalfSpacePairAt twistedStripSide (frontier twistedStripSide) z
+
+theorem isPLBoundarySide_twistedStripCell :
+    IsPLBoundarySide twistedStripCell twistedStripSide (frontier twistedStripSide)
+```
+
+**验证。** CheckF11-TwistedSide.log exit=0、零 warning/error。
+AuditF11TwistedSide.log 两条端点只含标准三公理；10+8 个声明的 13 项 linter 全部 0 errors，exit=0。
+F11TwistedSideTypesNonvacuity.log 对两条完整陈述作类型断言，并在四个源角点
+(−1/4,0)、(−1/4,1)、(5/4,0)、(5/4,1) 与双支的两个端点实例化半空间条件；
+双支端点不同，exit=0。F11TwistedSideSourceReview.log：两个公开名唯一、源码纪律通过、
+git diff --check exit=0。F11TwistedSideReceipt.json 保存源码、私有 olean 与四份日志的哈希。
+验证仍串行、私有输出、不写共享库、不运行 lake build。
+
+**未闭合项。** 正在将反向 cut 的实际 cross 候选、reading、direct 候选与两个词 witness
+绑定到同一管子；反向 B 的正规邻域及缓冲、边界环非平凡性仍未闭合。
+整体 F11 partial，一般 reading producer 仍开放。A1.5a / A1.5b / A1.8 保持暂停。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedSide
+```
+
+
+### 19.190 Lane F / F11 explicit reversing cross candidate — done; joint fixture partial
+
+**文件。** 新建 CrossRegluedSourceTwistedReglued.lean 与 CrossRegluedSourceTwistedCandidate.lean；
+ProductCut 末尾追加 6 个已有矩形几何结果的公开包装，旧正文逐字不变。无新 structure。
+未提交、未推送、未改根聚合。
+
+**结果。** crossRegluedTwistedCell 使用与 twistedStripCell 完全相同的源矩形。
+一个连续分段仿射 lift 的 x 坐标在三段上分别为 s、−s、s−2，y=s−1/2，t 不变；
+过商映射后，三片逐点式分别是 D(s,t)、D(1−s,1−t)、D(s,t)。中片反射的两条接缝交换，
+并核对参数 a=(1,1)、b=(1,0)，由源圆周的两条单射弧产生边界参数。
+IsCrossRegluedCell 的全部字段闭合，包括两次拼接、接点、边界像、总像保持、原双支仍为双点。
+不要求目标空间的任何路径单射性，也未以边界词的值域代替逐弧同伦。
+
+**端点原文。**
+
+```lean
+theorem crossRegluedTwistedCell_isCrossRegluedCell {B : Set halfTurnQuotient}
+    (hD : NormalSingularCellData twistedStripCell (frontier twistedStripSide) B)
+    {c : hD.singularSet.Branch}
+    (hc : hD.singularSet.branchCarrier c =
+      doublePointSet (⇑twistedStripCell) twistedStripCell.domain) :
+    hD.IsCrossRegluedCell c crossRegluedTwistedCell
+```
+
+**验证。** CheckF11-RectangleGeometryAPI.log、CheckF11-TwistedReglued.log、
+CheckF11-TwistedCandidate.log 均 exit=0、零 warning/error。AuditF11TwistedCandidate.log 审计 26 个
+新公开声明，仅标准三公理；三个模块的 13 项 linter 分别覆盖 57+19、19+4、8+1 个声明，
+全部 0 errors、exit=0。F11TwistedCandidateTypesNonvacuity.log 包含完整类型断言，以及同一个
+无输入存在式中的 hD、唯一边界支 c、实际 T、固定 G=crossRegluedTwistedCell、真实侧条件、
+复杂度=1、T.chart=twistedTubeChart、tubeFigure 严格包含于原胞腔像；exit=0。
+另在 t=0、1/2、1 实例化 G 的双点，并验证左帽内部点不在管子中。
+F11TwistedCandidateSourceReview.log：26 名唯一、源码纪律通过、ProductCut 旧前缀不变、
+git diff --check exit=0。F11TwistedCandidateReceipt.json 保存 12 个源码/私有 olean/日志哈希。
+
+**非空洞清单。** hD 由 twistedStripCell_nonempty_normalSingularCellData 提供，c、hc 与 T 由
+exists_branchTube 提供；hcut 来自 exists_reversing_cut；单射源弧来自
+exists_boundaryParam_paths_of_isCutPair_union。联合探针的 B=range D.boundary 只证明这些
+对象联合居留，不作为缓冲正规邻域。反向模型仍需 B 的正规邻域/缓冲、direct 与两个词 witness
+以及当前正在构造的 reading；原边界环非平凡性与一般 reading producer 仍开放。
+整体 F11 partial；A1.5a / A1.5b / A1.8 保持暂停。
+
+**新公开名。**
+
+```text
+DifferentialGeometry.Topology.PiecewiseLinear.isPLBall_seamWitnessPlane_image_Icc_prod
+DifferentialGeometry.Topology.PiecewiseLinear.seamWitnessPlane_image_Icc_prod_union
+DifferentialGeometry.Topology.PiecewiseLinear.seamWitnessPlane_image_Icc_prod_inter
+DifferentialGeometry.Topology.PiecewiseLinear.seamWitnessPlane_image_Icc_prod_disjoint
+DifferentialGeometry.Topology.PiecewiseLinear.mem_frontier_seamWitnessPlane_image_Icc_prod
+DifferentialGeometry.Topology.PiecewiseLinear.isCutPair_seamWitnessPlane_rectangle_traces
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedLift
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedMap
+DifferentialGeometry.Topology.PiecewiseLinear.isPiecewiseAffineOn_crossRegluedTwistedLift
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedLift_left
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedLift_middle
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedLift_right
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedMap_left
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedMap_middle
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedMap_right
+DifferentialGeometry.Topology.PiecewiseLinear.isPL_crossRegluedTwistedMap
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell_eq_left
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell_eq_middle
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell_eq_right
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedMap_image
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell_image
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripReflection_mapsTo_middle
+DifferentialGeometry.Topology.PiecewiseLinear.isPLHomeomorphOn_twistedStripReflection_middle
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell_core_double
+DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedTwistedCell_isCrossRegluedCell
+```
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedReglued
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedCandidate
+```
+
+
+### 19.191 Lane F / F11 reversing PL reading — done; joint fixture partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedReading.lean。无新 structure；
+未提交、未推送、未改根聚合。
+
+**精确配对。** 固定 G=crossRegluedTwistedCell 与原图卡 twistedTubeChart。
+正源带是 [15/16,17/16]×[0,1]，模型坐标为
+((max(16(1−s),0), min(16(1−s),0)),1−t)；负源带是 [−1/16,1/16]×[0,1]，
+模型坐标为 ((min(16s,0),max(16s,0)),t)。两带都已证 PL 同胚到相应折页。
+通过商关系中整数位移的穷举证明管子的整个原像恰好为两带；三块闭矩形补片覆盖余域，
+重叠仅在侧壁，源边界恰在端盘。正带必须反转高度，此处没有把原/反方向混为一谈。
+
+**联合端点原文。**
+
+```lean
+theorem twistedStripCell_exists_crossReading {B : Set halfTurnQuotient}
+    (hD : NormalSingularCellData twistedStripCell (frontier twistedStripSide) B) :
+    ∃ (c : hD.singularSet.Branch)
+      (T : CrossSeamTubeData hD c (halfTurnSlabChart 0).source)
+      (R : PLCrossSeamReading T.chart crossRegluedTwistedCell)
+      (C : PLSeamTubeChart halfTurnQuotient T.chart),
+      hD.singularSet.complexity = 1 ∧ hD.singularSet.IsBoundaryBranch c ∧
+      T.chart = twistedTubeChart ∧ hD.IsCrossRegluedCell c crossRegluedTwistedCell ∧
+      IsPLBoundarySide twistedStripCell twistedStripSide (frontier twistedStripSide) ∧
+      T.chart '' spliceCylinder ⊆ twistedStripSide ∧
+      T.chart '' spliceCylinder ∩ frontier twistedStripSide = T.chart '' spliceEndDisks ∧
+      R.tubeSource ⊂ crossRegluedTwistedCell.domain ∧
+      doublePointSet (R.resolvedCell C) R.tubeSource = ∅
+```
+
+**验证。** CheckF11-TwistedReading.log exit=0、零 warning/error。
+AuditF11TwistedReading.log：3 个公开声明仅标准三公理，24+21 个声明的 13 项 linter
+全部 0 errors、exit=0。F11TwistedReadingTypesNonvacuity.log 作完整类型断言并在一个
+无输入存在式中同时实例化 hD、c、T、R、C、固定 G、真实侧与端盘等式，R.tubeSource 严格
+包含于 G.domain，且 R.resolvedCell 在同一 tubeSource 上无双点；exit=0。
+另外验证 tubeSource 与 face 非空，G 的中点确为双点。F11TwistedReadingSourceReview.log
+三名唯一、源码纪律通过、git diff --check exit=0。F11TwistedReadingReceipt.json 保存
+源码、私有 olean、四份日志共 6 个哈希。验证串行、私有输出、不写共享库。
+
+**非空洞与未闭合义务。** hD 的 producer 为 twistedStripCell_nonempty_normalSingularCellData；
+支与管子来自 exists_branchTube；固定 G 的候选条件来自 isCrossRegluedCell；侧来自
+isPLBoundarySide_twistedStripCell。上述数据不额外假设任何待证的局部几何性质。
+探针 B=range D.boundary 不冒充缓冲正规邻域。当前继续构造同一 G 的两个词 witness 与 direct
+候选；反向 B 的正规邻域/缓冲和边界环非平凡性尚未闭合；一般 reading producer 仍开放。
+整体 F11 partial；A1.5a / A1.5b / A1.8 保持暂停。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedReading
+```
+
+
+### 19.192 Lane F / F11 reversing source arcs and both words — done; buffers partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceRectangleBoundary.lean、
+CrossRegluedSourceTwistedWords.lean、CrossRegluedSourceTwistedFixture.lean。
+无新 structure；未提交、未推送、未改根聚合，也未改 core。
+
+**端点。** exists_boundaryParam_four_paths_of_rectangle 在 a<b<c<d 的整个矩形边界上
+产生四条单射源弧及圆周参数化；不是像空间中路径单射的假设。
+twistedStripCell_exists_reversing_boundaryWordWitnesses 以真实 reversing cut 构造
+实际 direct 候选和固定 crossRegluedTwistedCell 的两个词 witness。
+中片反射把上弧换成下弧、下弧换成上弧；direct 词为 σ·υ⁻¹，cross 词为 σ·φ·υ·τ。
+两次比较都在源圆周中进行，再沿 f 推到 X；未使用 pullback 连续性或 X 中路径单射性。
+
+**联合端点。** twistedStripCell_exists_reversing_boundaryWordData 只输入
+hB : range twistedStripCell.boundary ⊆ B，产生同一个 hD、唯一真实边界支 c、管子 T、
+PL reading R、PL 管图 C、f : frontier D.domain → B、四个字母、direct 候选 Gd 和两个
+witness。结论同时含复杂度 1、真实侧（含角点）、管子落在侧、端盘等于管子的侧边界交、
+R.tubeSource 严格包含于 G.domain、Wcross.param=e、四条单射源弧及逐点推送公式，
+并证明同一 resolvedCell 的整个定义域没有双点。精确 binder 在
+F11TwistedWordsTypesNonvacuity.lean 中按原文重复断言。
+
+**非空洞清单。** hB 可取 B=range D.boundary，由 subset_rfl 供应；hD 来自
+nonempty_normalSingularCellData，支、管与 c 的值域等式来自 exists_branchTube，
+实际 hcut 来自 exists_reversing_cut，侧来自 isPLBoundarySide_twistedStripCell。
+f 是 D.boundary 的子类型提升、ρ 是 Subtype.val；它们的连续、嵌入与逐点式已证。
+四条 Function.Injective 均由非退化矩形源弧 producer 输出，源端点依次为
+(0,0)、(0,1)、(1,1)、(1,0)，没有 loop 单射的假设。探针除完整联合存在式外，
+另实例化 a=0,b=1,c=3,d=7 的矩形以排除退化切片。B=range D.boundary 仅证明
+这一层的居留，不把它充作正规邻域或缓冲。
+
+**验证。** CheckF11-RectangleBoundary.log、CheckF11-TwistedWords.log、
+CheckF11-TwistedFixture.log 均 exit=0，零 warning/error。AuditF11TwistedWords.log
+审计 3 个公开端点，仅标准三公理；13 项 linter 对三个模块分别检查 6+12、5+1、1+0
+个声明，全部 0 errors，exit=0。F11TwistedWordsTypesNonvacuity.log exit=0；
+F11TwistedWordsSourceReview.log 三名唯一、源码纪律通过、git diff --check exit=0。
+F11TwistedWordsReceipt.json 保存三份源码、三个私有 olean 和六份日志共 12 个哈希。
+全程串行验证、私有输出、不写共享库。
+
+**状态。** 本块 done；F11 整体 partial。下一块为反向 B 的正规邻域与缓冲；原边界环
+在 B 中非平凡、形式化可定向性和一般 reading producer 仍为明确的未闭合义务。
+A1.5a / A1.5b / A1.8 保持暂停。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceRectangleBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedWords
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedFixture
+```
+
+
+### 19.193 Lane F / F11 reversing boundary regular neighborhood — done; end buffer partial
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTwistedNeighborhood.lean。无新 structure；
+其他 Lean 文件未改；未提交、未推送、未改根聚合。
+
+**公开端点。** PLPieceIn.isPolyhedron_inter_preimage_frontier_twistedStripSide、
+twistedStripCell_exists_boundary_polyhedralNeighborhood、
+twistedStripCell_exists_boundary_regularNeighborhood（完整命名空间均为
+DifferentialGeometry.Topology.PiecewiseLinear）。
+
+**最终陈述。**
+
+```lean
+theorem twistedStripCell_exists_boundary_regularNeighborhood :
+    ∃ B : Set halfTurnQuotient, IsCompact B ∧ Nonempty (PLPiece 3 halfTurnQuotient B) ∧
+      B ⊆ frontier twistedStripSide ∧ Set.range twistedStripCell.boundary ⊆ B ∧
+      (∀ z ∈ Set.range twistedStripCell.boundary, B ∈ 𝓝[frontier twistedStripSide] z) ∧
+      Nonempty (StrongDeformationRetract {z : B | (z : halfTurnQuotient) ∈
+        Set.range twistedStripCell.boundary})
+```
+
+**构造。** 商的边界原像是矩形的四条边乘自由横坐标；有限 PL 片中的原像逐片由仿射切片
+给出，利用紧致性拼成多面体。先以现成有限片包含紧致边界图，再限制到实际侧边界，
+令边界图的原像成为子复形，取二阶导出邻域并经片参数化搬回。强形变收缩也经该同胚搬回。
+这里只使用导出邻域投影的连续强形变收缩性质，不声称该射影映射是逐片仿射。
+
+**验证。** CheckF11-TwistedNeighborhood.log exit=0、零 warning/error。
+AuditF11TwistedNeighborhood.log 审计 3 个公开端点，仅标准三公理；13 项 linter 检查
+10+7 个声明，全部 0 errors，exit=0。F11TwistedNeighborhoodTypesNonvacuity.log
+逐字断言三个公开类型，并把 B、收缩、原边界缓冲与 §19.192 的 hD/c/T/R/C、direct、
+两个词 witness、严格源域及解析后无双点同时实例化在一个无输入存在式中；exit=0。
+F11TwistedNeighborhoodSourceReview.log 三名唯一、源码纪律与本车道 diff --check 通过。
+F11TwistedNeighborhoodReceipt.json 保存源码、私有 olean、四份日志共 6 个哈希。
+检查串行且仅写本车道私有输出。
+
+**非空性与极端测试。** 最终定理没有假设。上游有限片的紧集取完整边界图，开放集取 univ；
+边界图包含真实双支端点、已证复杂度 1，不是空集代用品。预像多面体 API 也涵盖空片，
+但完整联合探针使用严格管内源域和真实 reversing 候选，未混用不同元组的居留者。
+
+**状态。** 本块 done；整体 F11 partial。接下来缩小 tube 并接端盘缓冲，再为缩小后的
+同一 tube 搬运 reading。原边界环在 B 中非平凡及一般 reading producer 尚未证明。
+A1.5a / A1.5b / A1.8 未投入。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedNeighborhood
+```
+
+
+### 19.194 Lane F / F11 reversing tube end buffer — done; scaled reading pending
+
+**文件。** 新建 LoopTheorem/CrossRegluedSourceTubeRestriction.lean、
+CrossRegluedSourceTwistedTubeScale.lean。无新 structure，未改任何已验收陈述；未提交、未推送、
+未改根聚合，也未写共享 olean。
+
+**构造与端点。** CrossSeamTubeCore.precomp 与 PLSeamTubeChart.nonempty_precomp 给出真实
+管子限制的通用 API；后者把 PL 片限制到较小载体后搬运。twistedScaledTubeChart 仅缩放横截面，
+高度不变。crossSeamTubeCore_twistedScaledTubeChart、
+nonempty_plSeamTubeChart_twistedScaledTubeChart、twistedScaledTubeChart_side、
+twistedScaledTubeChart_boundary 证明小管仍有同一 core、位于真实侧，且边界交恰为端盘。
+twistedStripCell_core_end_mem_boundary 把两个 core 端点接到原边界图。
+
+**缓冲端点原文。**
+
+```lean
+theorem twistedStripCell_exists_tube_end_buffer_lt {B : Set halfTurnQuotient}
+    (hB : ∀ z ∈ Set.range twistedStripCell.boundary,
+      B ∈ 𝓝[frontier twistedStripSide] z) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (r : ℝ) (hr : 0 < r), r ≤ 1 ∧ r < ε ∧
+      ∀ z ∈ twistedScaledTubeChart r hr.ne' '' spliceEndDisks,
+        B ∈ 𝓝[frontier twistedStripSide] z
+```
+
+由原边界两个端点的相对邻域，经管图连续性拉回模型空间，取同一个正半径控制两端。
+不要求商空间预先带度量；只在欧氏模型中选半径。exists_tube_end_buffer 是无 ε 版本；
+twistedStripCell_exists_buffered_branchTube 同时产生 hD 的唯一边界支 c、r、T、PL 管图、
+复杂度 1、支载体等式、真实侧和端盘缓冲。全部公开名的完整列表在
+.lake/scratch/F11TwistedTubeScalePublicNames.txt（命名空间 DifferentialGeometry.Topology.PiecewiseLinear）。
+
+**验证。** CheckF11-TubeRestriction.log、CheckF11-TwistedTubeScale.log 均 exit=0，零 warning/error。
+AuditF11TwistedTubeScale.log 审计全部 11 个公开声明，仅标准三公理；13 项 linter 对两模块
+分别检查 2+0、11+1 个声明，全部 0 errors、exit=0。F11TwistedTubeScaleTypesNonvacuity.log
+包含主要端点完整类型断言，以及同一无输入存在式中的正规邻域 B、强形变收缩、原边界缓冲、
+hD/c/r/T、PL 管图、实际侧和端盘缓冲；另对每个自然数 n 验证 r<1/(n+1) 的缩小探针，exit=0。
+F11TwistedTubeScaleSourceReview.log：11 名唯一，源码纪律和本车道 diff --check 通过。
+F11TwistedTubeScaleReceipt.json 保存两份源码、两个私有 olean 和五份日志共 9 个哈希。
+
+**非空洞清单。** hB 由 §19.193 无条件的 boundary_regularNeighborhood 供应；hD 由
+nonempty_normalSingularCellData 供应；c 与载体等式由 exists_branch_equiv 供应。所有半径均
+严格大于零，端盘边界等式不靠空集合；同一 B 的收缩与两种缓冲在联合探针里同时存在。
+本块 done，F11 整体 partial；下一块为缩小后管子的 reading 与最终同元组组装。
+原边界环非平凡、形式化可定向性和一般 reading producer 仍开放。A1.5a/A1.5b/A1.8 未投入。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTubeRestriction
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedTubeScale
+```
+
+
+### 19.195 Lane F / F11 restriction of a reading to smaller tubes — done
+
+**文件与端点。** 新建 LoopTheorem/CrossRegluedSourceReadingRestriction.lean，唯一公开声明
+DifferentialGeometry.Topology.PiecewiseLinear.PLCrossSeamReading.nonempty_scale。
+未增加 structure，未修改 core、根聚合或已有陈述；未提交、未推送。
+
+```lean
+theorem PLCrossSeamReading.nonempty_scale (R : PLCrossSeamReading chart G)
+    (hchart : InjOn chart spliceCylinder) {r : ℝ} (hr : 0 < r) (hr1 : r ≤ 1) :
+    Nonempty (PLCrossSeamReading (chart ∘ crossingProductTubeScale r hr.ne') G)
+```
+
+标准环境仅为 M 的 TopologicalSpace 和 E3 ChartedSpace，G 为同一个 SingularTwoCell M。
+证明把两源片限制到旧模型坐标落在缩小圆柱的部分，再复合横截面缩放的逆线性同胚；
+补片取管外源域的闭包。两源片坐标在闭片之并上连续：若新坐标不在侧壁，旧坐标也在横向
+内部，原 overlap_lateral 排除原补片；于是小管的源域是该点的相对邻域，与管外源域闭包
+矛盾。源边界与端盘的等价由高度不变继承。没有把新的 overlap_lateral 作为假设。
+
+**验证。** CheckF11-ReadingRestriction.log exit=0、零 warning/error。
+AuditF11ReadingRestriction.log：该端点只依赖标准三公理；13 项 linter 检查 9+7 个声明，
+全部 0 errors、exit=0。F11ReadingRestrictionTypesNonvacuity.log 完整断言公开类型，并在
+preserving 与 reversing 两个已构造 reading 上，对任意 0<r≤1 同时验证新 reading 居留和
+源域严格包含；另实例化 r=1、1/2、1/(n+1)，exit=0。F11ReadingRestrictionSourceReview.log
+公开名唯一、源码纪律与本车道 diff --check 通过；F11ReadingRestrictionReceipt.json 保存
+源码、私有 olean、四份日志共 6 个哈希。所有检查串行、输出仅在 F 私有目录。
+
+**假设供应。** R 由具体模型的 crossRegluedProductReading / crossRegluedTwistedReading
+供应；图卡单射由 spliceEmbedding.injective.injOn / twistedTubeChart_injOn 供应；r>0、r≤1
+由 §19.194 的 buffered_branchTube 供应。这是从已有 reading 到缩小管子的搬运，不声称证明
+一般 exists_plCrossSeamReading_of_isCrossRegluedCell。下一块是全部反向夹具数据的同元组组装。
+A1.5a/A1.5b/A1.8 未投入。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceReadingRestriction
+```
+
+
+### 19.196 Lane F / F11 buffered reversing joint fixture — done; awaiting lead acceptance
+
+**文件与完整公开名。** 新建 LoopTheorem/CrossRegluedSourceTwistedBufferedFixture.lean；
+DifferentialGeometry.Topology.PiecewiseLinear.twistedStripCell_exists_buffered_reversing_boundaryWordWitnesses。
+无新 structure；其它 Lean 文件未改，旧陈述逐字未变；未提交、未推送、未改根聚合。
+
+**最终陈述原文。**
+
+```lean
+theorem twistedStripCell_exists_buffered_reversing_boundaryWordWitnesses :
+    ∃ (B : Set halfTurnQuotient)
+      (hD : NormalSingularCellData twistedStripCell (frontier twistedStripSide) B)
+      (c : hD.singularSet.Branch) (r : ℝ) (hr : 0 < r)
+      (T : CrossSeamTubeData hD c (halfTurnSlabChart 0).source)
+      (R : PLCrossSeamReading T.chart crossRegluedTwistedCell)
+      (C : PLSeamTubeChart halfTurnQuotient T.chart)
+      (f : frontier twistedStripCell.domain → B)
+      (a b : B) (σ υ : Path a b) (τ φ : Path b a)
+      (Gd : SingularTwoCell halfTurnQuotient),
+      IsCompact B ∧ Nonempty (PLPiece 3 halfTurnQuotient B) ∧ B ⊆ frontier twistedStripSide ∧
+      Set.range twistedStripCell.boundary ⊆ B ∧
+      Nonempty (StrongDeformationRetract {z : B | (z : halfTurnQuotient) ∈
+        Set.range twistedStripCell.boundary}) ∧
+      hD.singularSet.complexity = 1 ∧ hD.singularSet.IsBoundaryBranch c ∧
+      hD.singularSet.branchCarrier c =
+        doublePointSet (⇑twistedStripCell) twistedStripCell.domain ∧
+      r ≤ 1 ∧ T.chart = twistedScaledTubeChart r hr.ne' ∧
+      R.tubeSource ⊂ crossRegluedTwistedCell.domain ∧
+      IsPLBoundarySide twistedStripCell twistedStripSide (frontier twistedStripSide) ∧
+      T.chart '' spliceCylinder ⊆ twistedStripSide ∧
+      T.chart '' spliceCylinder ∩ frontier twistedStripSide = T.chart '' spliceEndDisks ∧
+      (∀ z ∈ Set.range twistedStripCell.boundary,
+        B ∈ 𝓝[frontier twistedStripSide] z) ∧
+      (∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[frontier twistedStripSide] z) ∧
+      Continuous f ∧ (∀ z, (f z : halfTurnQuotient) = twistedStripCell z) ∧
+      hD.IsBoundarySurgeryCell c Gd ∧ hD.IsCrossRegluedCell c crossRegluedTwistedCell ∧
+      doublePointSet (R.resolvedCell C) (R.resolvedCell C).domain = ∅ ∧
+      Nonempty (BoundaryWordWitness Gd (Subtype.val : B → halfTurnQuotient)
+        (pathToCircle (σ.trans υ.symm))) ∧
+      ∃ (p q u v : frontier twistedStripCell.domain)
+        (σ₀ : Path p q) (τ₀ : Path q u) (υ₀ : Path u v) (φ₀ : Path v p)
+        (e : loopCircle ≃ₜ frontier twistedStripCell.domain)
+        (W : BoundaryWordWitness crossRegluedTwistedCell (Subtype.val : B → halfTurnQuotient)
+          (pathToCircle (σ.trans (φ.trans (υ.trans τ))))),
+        W.param = e ∧
+        (p : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (0, 0) ∧
+        (q : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (0, 1) ∧
+        (u : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (1, 1) ∧
+        (v : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (1, 0) ∧
+        (∀ θ, e θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ) ∧
+        Function.Injective σ₀ ∧ Function.Injective τ₀ ∧
+        Function.Injective υ₀ ∧ Function.Injective φ₀ ∧
+        (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+        (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t))
+```
+
+**验证证据。** CheckF11-TwistedBufferedFixture.log exit=0，零 warning/error。
+AuditF11TwistedBufferedFixture.log：唯一公开端点的公理仅 propext、Classical.choice、Quot.sound；
+13 项 linter 对 1+0 个声明全部 0 errors、exit=0。
+F11TwistedBufferedFixtureTypesNonvacuity.log：逐字断言最终完整类型；随后把同一无输入存在式
+加强为 a≠b，仍保留所有原合取项，以两个已证不相同的支端点证明非退化；另实例化通用
+not_injective_path_loop 防回归，exit=0。F11TwistedBufferedFixtureSourceReview.log 名字唯一、
+源码纪律、本车道 diff --check 通过。F11TwistedBufferedFixtureReceipt.json 保存源码、私有
+olean、四份日志共 6 个哈希。全部验证串行且仅写 F 私有 olean。
+
+**同元组与假设供应。** 最终定理无自由假设。B、PL 片、强形变收缩、原边界缓冲由 §19.193
+同一次选择产生；hD 由该 B 的边界包含产生；c/r/T/C/端盘缓冲来自 §19.194；R 用 §19.195
+在同一缩小图卡上产生，固定 G=crossRegluedTwistedCell。f 是同一个边界映射到 B 的子类型提升。
+actual direct 候选与两个词见证来自 §19.192 的逐源弧 producer；四条单射性均是四条非闭源弧
+的已证结论，X=B 中没有单射性假设。cross 的 W.param=e 保留。解析后双点集在整个定义域
+等于空集，来自同一 hD 的唯一支删除，不只是在管中局部消失。
+
+**极端测试。** 复杂度恰为 1、r>0、R.tubeSource 严格包含于 G.domain、a≠b，排除空支、零管、
+R=S 和闭回路单射。r=1、1/2、1/(n+1) 的 reading 探针以及对固定 B 任意缩小的缓冲探针
+分别见 §19.195、§19.194；没有局部有限指标，此项不适用。
+
+**偏离与范围。** reversing 模型使用 (x,y,t)↦(x+1,−y,1−t) 的商及线性升举 y=s−1/2，
+而非 D 摘要的单反射商及绝对值升举；反向配对、真实侧、角点、管子、reading、全部源弧和两个词
+均由本模型直接验证。保持此前 §19.184 的选择，未假设形式化的可定向性。
+联合夹具所要求的 branch、两个候选、tube、reading、两个 witness、实际侧与两种缓冲现已在
+preserving（§19.183）和 reversing（本节）各自同一元组上完成，交 lead 验收 A2.4d。
+这不证明原边界环在 B 中避开 N=⊥，也不证明一般
+exists_plCrossSeamReading_of_isCrossRegluedCell；两者没有被塞入本定理的假设。
+下一块把 quarter-turn 不相容性推广到实际缩小后的同一 tube，以完成更强的配对回归测试。
+A1.5a/A1.5b/A1.8 未投入。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import
+  DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedBufferedFixture
+```
+
+
+### 19.197 Lane F / F11 quarter-turn exclusion on the full buffered tuples — done
+
+**文件与完整公开名。** 新建 LoopTheorem/CrossRegluedSourceQuarterTurn.lean，新增
+DifferentialGeometry.Topology.PiecewiseLinear.PLCrossSeamReading.not_nonempty_quarter_turn。
+本车道尚未验收的新文件 CrossRegluedSourceProductReading.lean 改为消费该通用结果：
+既有 DifferentialGeometry.Topology.PiecewiseLinear.crossRegluedProductCell_not_nonempty_reading_quarter_turn
+的陈述逐字不变，正文从专用证明换成一行推论，新增一个 import；不是只追加。
+前版保存在 .lake/scratch/F11ProductReadingBeforeQuarterTurn.lean；完整类型字节对比已通过。
+无新 structure、无 core 修改；未提交、未推送、未改根聚合。
+
+**通用陈述原文。**
+
+```lean
+theorem PLCrossSeamReading.not_nonempty_quarter_turn {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {chart : (ℝ × ℝ) × ℝ → M}
+    {G : SingularTwoCell M} (R : PLCrossSeamReading chart G)
+    (hchart : InjOn chart spliceCylinder) :
+    ¬ Nonempty (PLCrossSeamReading
+      (fun p : (ℝ × ℝ) × ℝ => chart ((-p.1.2, p.1.1), p.2)) G)
+```
+
+原 reading 的正源片连通。若转后的 reading 存在，原正片上模型点 (1,0,0) 与 (0,−1,0)
+必须分别落在新正片、新负片；它们闭且不交，却覆盖该连通片，矛盾。只需已有 reading 与
+管图单射；没有图卡定向假设，也没有任何 X 中路径单射性假设。使用字面线性旋转，不导入 Skeleton。
+
+**验证。** CheckF11-QuarterTurn.log、CheckF11-ProductReadingQuarterTurn.log 均 exit=0，
+零 warning/error。AuditF11QuarterTurn.log：通用定理和旧特例两个端点仅标准三公理；13 项
+linter 分别检查 3+3、1+0 个声明，全部 0 errors、exit=0。
+F11QuarterTurnTypesNonvacuity.log 逐字断言两端点；并分别把 §19.183 的 preserving 全元组和
+§19.196 的 reversing 全元组加强为同一 T.chart 的 quarter-turn 不存在 reading，保留原有
+B/hD/支/正半径/管/reading/direct/两个词/缓冲/严格性全部合取，exit=0。
+F11QuarterTurnSourceReview.log：两名唯一、旧特例类型字节不变、源码纪律、本车道 diff --check
+通过。F11QuarterTurnReceipt.json 保存两份源码、两个私有 olean 和五份日志共 9 个哈希；
+它取代 §19.183 收据中 ProductReading 的源码和 olean 哈希，旧日志仍作为历史证据保留。
+
+**非空性与范围。** R 已由两个无自由假设的联合夹具供应，hchart 由同一 T.isTube.injOn_chart
+供应；不是另选一个 T 的回归测试。复杂度分别为 2 与 1，r>0，R.tubeSource⊊G.domain；
+preserving 保留另一个真实 curl 支，reversing 删除唯一支。这里只判定已有配对与转后配对
+不能同时成立；一般 exists_plCrossSeamReading_of_isCrossRegluedCell 的存在 producer 仍 OPEN。
+原边界环在 B 中避开 N=⊥、reversing 商的形式化可定向性也没有在本批声称闭合。
+F11 指定的两模型联合几何夹具和配对回归已完成，等待 lead 独立验收；未改 FREE_INPUTS 的验收状态。
+A1.5a/A1.5b/A1.8 未投入，H 车道文件未改。
+
+**给 lead 的根 import（未登记）。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceQuarterTurn
+```
+
+
+### 19.198 Lane F / F11 delivery index and final verification
+
+**提交状态。** 本车道未执行写入型 git 命令。当前只读 HEAD 为
+bef4ddaa9b161b493165946797528aa740b7502c；提交、推送和根聚合登记仍交 lead。
+本批验收报告按依赖顺序为 §19.183–§19.197。聚合文件清单在
+.lake/scratch/F11DeliveryModules.txt；逐文件源码/私有 olean/日志的当前 SHA-256 和对应收据
+在 F11DeliveryManifest.json。F11DeliveryVerification.log 是末轮汇总核验。
+
+**末轮核验。** 15 份逐砖收据合并后 147 个当前哈希全部匹配；31 个模块的私有 olean 均比
+当前源码新；85 份记录日志无 error/warning；去重后的 188 个声明公理仅含标准三公理。
+31 个模块均有 13 项 linter 的 0 errors 记录。当前源码中 ProductReading 的专用证明已被
+§19.197 的通用定理推论替换，取最新收据，不把 §19.183 的旧源码哈希冒充现状。
+本车道源码与本交接文档的 diff --check exit=0；没有重跑不变模块，也未使用全库构建。
+
+**给 lead 的两条联合端点。**
+
+- preserving：crossingProductCell_exists_buffered_preserving_boundaryWordWitnesses
+  （LoopTheorem/CrossRegluedSourceProductFixture.lean，§19.183）。实际复杂度 2，指定支被删除，
+  另一个 curl 支保留；同一 B/c/d/T/R/C/direct/两个词/半空间侧及两种缓冲。
+- reversing：twistedStripCell_exists_buffered_reversing_boundaryWordWitnesses
+  （LoopTheorem/CrossRegluedSourceTwistedBufferedFixture.lean，§19.196）。实际复杂度 1，解析后
+  全域无双点；同一 B/c/r/T/R/C/direct/两个词/半空间侧及两种缓冲，Wcross.param=e。
+
+两条联合定理都没有自由假设。§19.197 的同元组探针把两者分别加强为当前小管的 quarter-turn
+没有 reading，原结论全部保留。F11 指定剩余三项和该配对回归已交齐，等待独立验收。
+一般 reading 存在叶子仍 OPEN；本批也未声称已有原边界环避开 N=⊥ 的证明。
+没有更新 lead 管理的 FREE_INPUTS 行，也没有进入 A1.5a/A1.5b/A1.8。

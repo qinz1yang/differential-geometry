@@ -715,4 +715,395 @@ theorem crossingProductCell_exists_crossReading {B : Set (EuclideanSpace ℝ (Fi
   rw [hchart]
   exact ⟨crossRegluedProductReading⟩
 
+private def placedHorizontal (t : ℝ) : Set (EuclideanSpace ℝ (Fin 2)) :=
+  seamWitnessPlane '' (Icc (3 / 2 : ℝ) (7 / 2) ×ˢ {t})
+
+private theorem mem_placedHorizontal {t : ℝ} {z : EuclideanSpace ℝ (Fin 2)} :
+    z ∈ placedHorizontal t ↔
+      (seamWitnessPlane.symm z).1 ∈ Icc (3 / 2 : ℝ) (7 / 2) ∧
+        (seamWitnessPlane.symm z).2 = t := mem_image_seamWitnessPlane
+
+private theorem isArcBetween_placedHorizontal (t : ℝ) :
+    Schoenflies.IsArcBetween (placedHorizontal t)
+      (seamWitnessPlane (3 / 2, t)) (seamWitnessPlane (7 / 2, t)) := by
+  refine ⟨fun r => seamWitnessPlane (3 / 2 + 2 * r, t),
+    (seamWitnessPlane.continuous.comp
+      ((continuous_const.add (continuous_const.mul continuous_id)).prodMk
+        continuous_const)).continuousOn, ?_, ?_, ?_, ?_⟩
+  · intro u _ v _ huv
+    have := congrArg Prod.fst (seamWitnessPlane.injective huv)
+    dsimp at this
+    linarith
+  · apply Subset.antisymm
+    · rintro z ⟨r, hr, rfl⟩
+      refine ⟨(3 / 2 + 2 * r, t), ⟨⟨?_, ?_⟩, rfl⟩, rfl⟩ <;>
+        linarith [hr.1, hr.2]
+    · rintro z ⟨⟨r, s⟩, ⟨hr, hs⟩, rfl⟩
+      have hs' : s = t := hs
+      subst s
+      refine ⟨(r - 3 / 2) / 2, ⟨?_, ?_⟩, ?_⟩
+      · linarith [hr.1]
+      · linarith [hr.2]
+      · change seamWitnessPlane (3 / 2 + 2 * ((r - 3 / 2) / 2), t) = _
+        congr 1
+        exact Prod.ext (by ring) rfl
+  · norm_num
+  · norm_num
+
+private theorem exists_product_boundary_paths :
+    ∃ (p q u v : frontier crossingProductCell.domain)
+      (σ : Path p q) (τ : Path q u) (υ : Path u v) (φ : Path v p)
+      (e : loopCircle ≃ₜ frontier crossingProductCell.domain),
+      (p : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (3 / 2, 0) ∧
+      (q : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (3 / 2, 1) ∧
+      (u : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (7 / 2, 1) ∧
+      (v : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (7 / 2, 0) ∧
+      Set.range (fun t => (σ t : EuclideanSpace ℝ (Fin 2))) =
+        placedStrip 0 (3 / 2) ∩ frontier crossingProductCell.domain ∧
+      Set.range (fun t => (τ t : EuclideanSpace ℝ (Fin 2))) = placedHorizontal 1 ∧
+      Set.range (fun t => (υ t : EuclideanSpace ℝ (Fin 2))) =
+        placedStrip (7 / 2) 5 ∩ frontier crossingProductCell.domain ∧
+      Set.range (fun t => (φ t : EuclideanSpace ℝ (Fin 2))) = placedHorizontal 0 ∧
+      (∀ θ, e θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ) ∧
+      Function.Injective σ ∧ Function.Injective τ ∧
+      Function.Injective υ ∧ Function.Injective φ := by
+  have hleft := (exists_placedStrip_trace_cut
+    (by norm_num : (0 : ℝ) < 3 / 2) (by norm_num : (3 / 2 : ℝ) < 5)).2.1.snd
+  have hright := (exists_placedStrip_trace_cut
+    (by norm_num : (0 : ℝ) < 7 / 2) (by norm_num : (7 / 2 : ℝ) < 5)).2.2.2.snd.reverse
+  have hthree : ∀ z ∈ placedStrip (7 / 2) 5 ∩ frontier crossingProductCell.domain,
+      z ∈ placedHorizontal 0 → z = seamWitnessPlane (7 / 2, 0) := by
+    intro z hz hbot
+    have h₁ := mem_placedStrip.mp hz.1
+    have h₂ := mem_placedHorizontal.mp hbot
+    apply seamWitnessPlane.symm.injective
+    rw [ContinuousLinearEquiv.symm_apply_apply]
+    exact Prod.ext (by linarith [h₁.1.1, h₂.1.2]) h₂.2
+  have htwo : ∀ z ∈ placedHorizontal 1,
+      z ∈ (placedStrip (7 / 2) 5 ∩ frontier crossingProductCell.domain) ∪
+        placedHorizontal 0 → z = seamWitnessPlane (7 / 2, 1) := by
+    intro z hz hz'
+    have h₂ := mem_placedHorizontal.mp hz
+    rcases hz' with hz' | hz'
+    · have h₃ := mem_placedStrip.mp hz'.1
+      apply seamWitnessPlane.symm.injective
+      rw [ContinuousLinearEquiv.symm_apply_apply]
+      exact Prod.ext (by linarith [h₂.1.2, h₃.1.1]) h₂.2
+    · have h₄ := mem_placedHorizontal.mp hz'
+      exact (by linarith [h₂.2, h₄.2] : False).elim
+  have hone : ∀ z ∈ placedStrip 0 (3 / 2) ∩ frontier crossingProductCell.domain,
+      z ∈ placedHorizontal 1 ∪
+        ((placedStrip (7 / 2) 5 ∩ frontier crossingProductCell.domain) ∪
+          placedHorizontal 0) →
+        z = seamWitnessPlane (3 / 2, 0) ∨ z = seamWitnessPlane (3 / 2, 1) := by
+    intro z hz hz'
+    have h₁ := mem_placedStrip.mp hz.1
+    rcases hz' with hz' | hz' | hz'
+    · have h₂ := mem_placedHorizontal.mp hz'
+      right
+      apply seamWitnessPlane.symm.injective
+      rw [ContinuousLinearEquiv.symm_apply_apply]
+      exact Prod.ext (by linarith [h₁.1.2, h₂.1.1]) h₂.2
+    · have h₃ := mem_placedStrip.mp hz'.1
+      exact (by linarith [h₁.1.2, h₃.1.1] : False).elim
+    · have h₄ := mem_placedHorizontal.mp hz'
+      left
+      apply seamWitnessPlane.symm.injective
+      rw [ContinuousLinearEquiv.symm_apply_apply]
+      exact Prod.ext (by linarith [h₁.1.2, h₄.1.1]) h₄.2
+  have hfront : frontier crossingProductCell.domain =
+      (placedStrip 0 (3 / 2) ∩ frontier crossingProductCell.domain) ∪
+        (placedHorizontal 1 ∪
+          ((placedStrip (7 / 2) 5 ∩ frontier crossingProductCell.domain) ∪
+            placedHorizontal 0)) := by
+    ext z
+    have hfrontz : z ∈ frontier crossingProductCell.domain ↔
+        ((seamWitnessPlane.symm z).1 ∈ Icc (0 : ℝ) 5 ∧
+          ((seamWitnessPlane.symm z).2 = 0 ∨ (seamWitnessPlane.symm z).2 = 1)) ∨
+        (((seamWitnessPlane.symm z).1 = 0 ∨ (seamWitnessPlane.symm z).1 = 5) ∧
+          (seamWitnessPlane.symm z).2 ∈ Icc (0 : ℝ) 1) :=
+      mem_frontier_placedStrip (by norm_num)
+    simp only [mem_union, mem_inter_iff, mem_placedStrip, mem_placedHorizontal, hfrontz,
+      mem_Icc]
+    constructor
+    · rintro (⟨hs, ht | ht⟩ | ⟨hs | hs, ht⟩)
+      · by_cases h : (seamWitnessPlane.symm z).1 ≤ 3 / 2
+        · exact Or.inl ⟨⟨⟨hs.1, h⟩, by rw [ht]; norm_num⟩, Or.inl ⟨hs, Or.inl ht⟩⟩
+        · by_cases h' : 7 / 2 ≤ (seamWitnessPlane.symm z).1
+          · exact Or.inr (Or.inr (Or.inl
+              ⟨⟨⟨h', hs.2⟩, by rw [ht]; norm_num⟩, Or.inl ⟨hs, Or.inl ht⟩⟩))
+          · exact Or.inr (Or.inr (Or.inr ⟨⟨by linarith, by linarith⟩, ht⟩))
+      · by_cases h : (seamWitnessPlane.symm z).1 ≤ 3 / 2
+        · exact Or.inl ⟨⟨⟨hs.1, h⟩, by rw [ht]; norm_num⟩, Or.inl ⟨hs, Or.inr ht⟩⟩
+        · by_cases h' : 7 / 2 ≤ (seamWitnessPlane.symm z).1
+          · exact Or.inr (Or.inr (Or.inl
+              ⟨⟨⟨h', hs.2⟩, by rw [ht]; norm_num⟩, Or.inl ⟨hs, Or.inr ht⟩⟩))
+          · exact Or.inr (Or.inl ⟨⟨by linarith, by linarith⟩, ht⟩)
+      · exact Or.inl ⟨⟨by rw [hs]; norm_num, ht⟩, Or.inr ⟨Or.inl hs, ht⟩⟩
+      · exact Or.inr (Or.inr (Or.inl
+          ⟨⟨by rw [hs]; norm_num, ht⟩, Or.inr ⟨Or.inr hs, ht⟩⟩))
+    · rintro (⟨-, h⟩ | ⟨hs, ht⟩ | ⟨-, h⟩ | ⟨hs, ht⟩)
+      · exact h
+      · exact Or.inl ⟨⟨by linarith [hs.1], by linarith [hs.2]⟩, Or.inr ht⟩
+      · exact h
+      · exact Or.inl ⟨⟨by linarith [hs.1], by linarith [hs.2]⟩, Or.inl ht⟩
+  obtain ⟨p, q, u, v, σ, τ, υ, φ, e, hbody, hinj⟩ :=
+    exists_injective_boundaryParam_four_paths hleft (isArcBetween_placedHorizontal 1)
+      hright (isArcBetween_placedHorizontal 0).reverse hthree htwo hone hfront
+  exact ⟨p, q, u, v, σ, τ, υ, φ, e, hbody.1, hbody.2.1, hbody.2.2.1,
+    hbody.2.2.2.1, hbody.2.2.2.2.1, hbody.2.2.2.2.2.1,
+    hbody.2.2.2.2.2.2.1, hbody.2.2.2.2.2.2.2.1, hbody.2.2.2.2.2.2.2.2, hinj⟩
+
+private theorem stripReflection_mapsTo_horizontal (t : ℝ) :
+    MapsTo stripReflection (placedHorizontal t) (placedHorizontal t) := by
+  rintro z ⟨⟨s, r⟩, ⟨hs, hr⟩, rfl⟩
+  have hr' : r = t := hr
+  subst r
+  rw [stripReflection_apply]
+  exact ⟨(5 - s, t), ⟨⟨by linarith [hs.2], by linarith [hs.1]⟩, rfl⟩, rfl⟩
+
+private theorem exists_reflected_horizontal_path
+    {p q u v : frontier crossingProductCell.domain} (P : Path p q) {t : ℝ}
+    (hP : Set.range (fun r => (P r : EuclideanSpace ℝ (Fin 2))) = placedHorizontal t)
+    (hu : stripReflection p = u) (hv : stripReflection q = v) :
+    ∃ Q : Path u v,
+      (∀ r, (Q r : EuclideanSpace ℝ (Fin 2)) = stripReflection (P r)) ∧
+        Set.range Q ⊆ Set.range P := by
+  have hmem (r : unitInterval) : stripReflection (P r) ∈
+      Set.range (fun s => (P s : EuclideanSpace ℝ (Fin 2))) := by
+    rw [hP]
+    apply stripReflection_mapsTo_horizontal t
+    rw [← hP]
+    exact ⟨r, rfl⟩
+  have hfront (r : unitInterval) : stripReflection (P r) ∈ frontier crossingProductCell.domain := by
+    obtain ⟨s, hs⟩ := hmem r
+    exact hs ▸ (P s).property
+  let Q : Path u v := {
+    toFun r := ⟨stripReflection (P r), hfront r⟩
+    continuous_toFun :=
+      (stripReflection.continuous_of_finiteDimensional.comp
+        (continuous_subtype_val.comp P.continuous)).subtype_mk _
+    source' := Subtype.ext (by simpa only [Path.source] using hu)
+    target' := Subtype.ext (by simpa only [Path.target] using hv) }
+  refine ⟨Q, fun _ => rfl, ?_⟩
+  rintro z ⟨r, rfl⟩
+  obtain ⟨s, hs⟩ := hmem r
+  exact ⟨s, Subtype.ext hs⟩
+
+theorem crossingProductCell_exists_preserving_boundaryWordWitnesses
+    {B : Set (EuclideanSpace ℝ (Fin 3))}
+    (hD : NormalSingularCellData crossingProductCell (frontier crossingProductSide) B)
+    {c : hD.singularSet.Branch}
+    (hc : hD.singularSet.branchCarrier c = spliceEmbedding '' spliceCore)
+    {X : Type*} [TopologicalSpace X] {ρ : X → EuclideanSpace ℝ (Fin 3)}
+    (hρ : IsEmbedding ρ) (f : frontier crossingProductCell.domain → X) (hf : Continuous f)
+    (hfρ : ∀ z : frontier crossingProductCell.domain, ρ (f z) = crossingProductCell z) :
+    ∃ (p q u v : frontier crossingProductCell.domain)
+      (σ₀ : Path p q) (τ₀ : Path q u) (υ₀ : Path u v) (φ₀ : Path v p)
+      (e : loopCircle ≃ₜ frontier crossingProductCell.domain)
+      (a b : X) (σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a)
+      (Gd : SingularTwoCell (EuclideanSpace ℝ (Fin 3))),
+      (p : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (3 / 2, 0) ∧
+      (q : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (3 / 2, 1) ∧
+      (u : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (7 / 2, 1) ∧
+      (v : EuclideanSpace ℝ (Fin 2)) = seamWitnessPlane (7 / 2, 0) ∧
+      (∀ θ, e θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ) ∧
+      Function.Injective σ₀ ∧ Function.Injective τ₀ ∧
+      Function.Injective υ₀ ∧ Function.Injective φ₀ ∧
+      (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+      (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
+      hD.IsBoundarySurgeryCell c Gd ∧
+      Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ))) ∧
+      Nonempty (BoundaryWordWitness crossRegluedProductCell ρ
+        (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))))) := by
+  obtain ⟨D₁, D₂, D₃, hcut, hD₁, -, hD₃⟩ :=
+    crossingProductCell_exists_preserving_cut hD hc
+  obtain ⟨p, q, u, v, σ₀, τ₀, υ₀, φ₀, e, hp, hq, hu, hv,
+    hrσ, hrτ, hrυ, hrφ, he, hσinj, hτinj, hυinj, hφinj⟩ := exists_product_boundary_paths
+  have huX : f u = f q := by
+    apply hρ.injective
+    rw [hfρ, hfρ, hu, hq, crossingProductCell_on_wall (Or.inr rfl),
+      crossingProductCell_on_wall (Or.inl rfl)]
+  have hvX : f v = f p := by
+    apply hρ.injective
+    rw [hfρ, hfρ, hv, hp, crossingProductCell_on_wall (Or.inr rfl),
+      crossingProductCell_on_wall (Or.inl rfl)]
+  let σ := σ₀.map hf
+  let τ : Path (f q) (f q) := (τ₀.map hf).cast rfl huX.symm
+  let υ : Path (f q) (f p) := (υ₀.map hf).cast huX.symm hvX.symm
+  let φ : Path (f p) (f p) := (φ₀.map hf).cast hvX.symm rfl
+  obtain ⟨τ₁, hτ₁, hrτ₁⟩ := exists_reflected_horizontal_path τ₀ hrτ
+    (u := u) (v := q)
+    (by rw [hq, hu, stripReflection_apply]; norm_num)
+    (by rw [hu, hq, stripReflection_apply]; norm_num)
+  obtain ⟨φ₁, hφ₁, hrφ₁⟩ := exists_reflected_horizontal_path φ₀ hrφ
+    (u := p) (v := v)
+    (by rw [hv, hp, stripReflection_apply]; norm_num)
+    (by rw [hp, hv, stripReflection_apply]; norm_num)
+  let τX : Path (f q) (f q) := (τ₁.map hf).cast huX.symm rfl
+  let φX : Path (f p) (f p) := (φ₁.map hf).cast rfl hvX.symm
+  have hτhom : τX.Homotopic τ.symm :=
+    BoundaryWordWitness.push_source_homotopy_reverse f hf hτinj hrτ₁
+      (fun _ => rfl) (fun _ => rfl)
+  have hφhom : φX.Homotopic φ.symm :=
+    BoundaryWordWitness.push_source_homotopy_reverse f hf hφinj hrφ₁
+      (fun _ => rfl) (fun _ => rfl)
+  have hσeq (t : unitInterval) : (σ.map hρ.continuous) t = crossRegluedProductCell (σ₀ t) := by
+    change ρ (f (σ₀ t)) = _
+    rw [hfρ]
+    apply (crossRegluedProductCell_eq_left _).symm
+    have hmem : (σ₀ t : EuclideanSpace ℝ (Fin 2)) ∈
+        placedStrip 0 (3 / 2) ∩ frontier crossingProductCell.domain := hrσ ▸ ⟨t, rfl⟩
+    exact hmem.1
+  have hυeq (t : unitInterval) : (υ.map hρ.continuous) t = crossRegluedProductCell (υ₀ t) := by
+    change ρ (f (υ₀ t)) = _
+    rw [hfρ]
+    apply (crossRegluedProductCell_eq_right _).symm
+    have hmem : (υ₀ t : EuclideanSpace ℝ (Fin 2)) ∈
+        placedStrip (7 / 2) 5 ∩ frontier crossingProductCell.domain := hrυ ▸ ⟨t, rfl⟩
+    exact hmem.1
+  have hτeq (t : unitInterval) : (τX.map hρ.continuous) t = crossRegluedProductCell (τ₀ t) := by
+    change ρ (f (τ₁ t)) = _
+    rw [hfρ, hτ₁]
+    apply (crossRegluedProductCell_eq_middle _).symm
+    have hmem := mem_placedHorizontal.mp (hrτ ▸ Set.mem_range_self t)
+    exact mem_placedStrip.mpr ⟨hmem.1, by rw [hmem.2]; norm_num⟩
+  have hφeq (t : unitInterval) : (φX.map hρ.continuous) t = crossRegluedProductCell (φ₀ t) := by
+    change ρ (f (φ₁ t)) = _
+    rw [hfρ, hφ₁]
+    apply (crossRegluedProductCell_eq_middle _).symm
+    have hmem := mem_placedHorizontal.mp (hrφ ▸ Set.mem_range_self t)
+    exact mem_placedStrip.mpr ⟨hmem.1, by rw [hmem.2]; norm_num⟩
+  have hwhole : ∀ t,
+      ((σ.trans (τX.trans (υ.trans φX))).map hρ.continuous) t =
+        crossRegluedProductCell ((σ₀.trans (τ₀.trans (υ₀.trans φ₀))) t) := by
+    have htail := trans_apply_eq_map
+      (f := fun z : frontier crossingProductCell.domain => crossRegluedProductCell z)
+      (α := υ₀) (β := φ₀) hυeq hφeq
+    have hmiddle := trans_apply_eq_map
+      (f := fun z : frontier crossingProductCell.domain => crossRegluedProductCell z)
+      (α := τ₀) hτeq htail
+    simpa only [Path.map_trans] using
+      trans_apply_eq_map
+        (f := fun z : frontier crossingProductCell.domain => crossRegluedProductCell z)
+        (α := σ₀) hσeq hmiddle
+  let W : BoundaryWordWitness crossRegluedProductCell ρ
+      (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))) := {
+    param := e
+    loop := pathToCircle (σ.trans (τX.trans (υ.trans φX)))
+    realizes := fun θ => by
+      change ρ (pathToCircle (σ.trans (τX.trans (υ.trans φX))) θ) =
+        crossRegluedProductCell (e θ : EuclideanSpace ℝ (Fin 2))
+      rw [he θ]
+      obtain ⟨t, rfl⟩ := unitInterval_to_loopCircle_surjective θ
+      simp only [pathToCircle_coe]
+      exact hwhole t
+    homotopic := pathToCircle_homotopic
+      ((Path.Homotopic.refl σ).hcomp (hτhom.hcomp ((Path.Homotopic.refl υ).hcomp hφhom))) }
+  obtain ⟨Gd, hGd, Wd⟩ := hD.exists_boundaryWordWitness_direct_of_cut hcut f hf hfρ
+    σ₀ υ₀ hp hq
+    (by rw [hu]; change _ = stripShift _; rw [stripShift_apply]; norm_num)
+    (by rw [hv]; change _ = stripShift _; rw [stripShift_apply]; norm_num)
+    hσinj hυinj (by rw [hD₁]; exact hrσ) (by rw [hD₃]; exact hrυ)
+    (σ := σ) (υ := υ) (fun _ => rfl) (fun _ => rfl)
+  exact ⟨p, q, u, v, σ₀, τ₀, υ₀, φ₀, e, f p, f q, σ, τ, υ, φ, Gd,
+    hp, hq, hu, hv, he, hσinj, hτinj, hυinj, hφinj,
+    (fun _ => rfl), (fun _ => rfl), (fun _ => rfl), (fun _ => rfl), hGd, Wd, ⟨W⟩⟩
+
+theorem SingularTwoCell.exists_three_cells_of_rectangular_domain
+    {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (D : SingularTwoCell M) {a b c d : ℝ} (hab : a < b) (hbc : b < c) (hcd : c < d)
+    (hdom : D.domain = seamWitnessPlane '' (Icc a d ×ˢ Icc (0 : ℝ) 1)) :
+    let S := fun l u : ℝ => seamWitnessPlane '' (Icc l u ×ˢ Icc (0 : ℝ) 1)
+    let A := seamWitnessPlane '' ({b} ×ˢ Icc (0 : ℝ) 1)
+    let C := seamWitnessPlane '' ({c} ×ˢ Icc (0 : ℝ) 1)
+    ∃ D₁ D₂ D₃ : SingularTwoCell M,
+      D₁.domain = S a b ∧ D₂.domain = S b c ∧ D₃.domain = S c d ∧
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
+      D₁.domain ∩ D₂.domain = A ∧ D₂.domain ∩ D₃.domain = C ∧
+      A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
+      C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
+      Disjoint D₁.domain D₃.domain ∧
+      D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun ∧
+      IsPLBall 1 (D₁.domain ∩ frontier D.domain) ∧
+      IsPLBall 1 (D₃.domain ∩ frontier D.domain) ∧
+      Schoenflies.IsCutPair (frontier D₁.domain)
+        (seamWitnessPlane (b, 0)) (seamWitnessPlane (b, 1)) A
+        (D₁.domain ∩ frontier D.domain) ∧
+      Schoenflies.IsCutPair (frontier D₃.domain)
+        (seamWitnessPlane (c, 0)) (seamWitnessPlane (c, 1)) C
+        (D₃.domain ∩ frontier D.domain) := by
+  let D₁ := D.restrict (isPLBall_placedStrip hab) (by
+    rw [hdom]
+    exact placedStrip_subset le_rfl (hbc.trans hcd).le)
+  let D₂ := D.restrict (isPLBall_placedStrip hbc) (by
+    rw [hdom]
+    exact placedStrip_subset hab.le hcd.le)
+  let D₃ := D.restrict (isPLBall_placedStrip hcd) (by
+    rw [hdom]
+    exact placedStrip_subset (hab.trans hbc).le le_rfl)
+  have htrace₁ := exists_placedStrip_trace_cut hab (hbc.trans hcd)
+  have htrace₃ := exists_placedStrip_trace_cut (hab.trans hbc) hcd
+  have hdom' : D.domain = placedStrip a d := hdom
+  rw [← hdom'] at htrace₁ htrace₃
+  refine ⟨D₁, D₂, D₃, rfl, rfl, rfl,
+    isPLBall_placedWall _, isPLBall_placedWall _, ?_, ?_,
+    placedStrip_inter hab.le hbc.le, placedStrip_inter hbc.le hcd.le,
+    placedWall_subset_frontier_right hab.le, placedWall_subset_frontier_left hbc.le,
+    placedWall_subset_frontier_right hbc.le, placedWall_subset_frontier_left hcd.le,
+    placedStrip_disjoint hbc, rfl, rfl, rfl,
+    htrace₁.1, htrace₃.2.2.1, htrace₁.2.1, htrace₃.2.2.2⟩
+  · apply disjoint_left.mpr
+    intro z hz hw
+    have hz' := mem_placedWall.mp hz
+    have hw' := mem_placedWall.mp hw
+    exact (ne_of_lt hbc) (hz'.1.symm.trans hw'.1)
+  · change placedStrip a b ∪ placedStrip b c ∪ placedStrip c d = D.domain
+    rw [placedStrip_union hab.le hbc.le, placedStrip_union (hab.trans hbc).le hcd.le]
+    exact hdom.symm
+
+theorem isPLBall_seamWitnessPlane_image_Icc_prod {a b : ℝ} (hab : a < b) :
+    IsPLBall 2 (seamWitnessPlane '' (Icc a b ×ˢ Icc (0 : ℝ) 1)) :=
+  isPLBall_placedStrip hab
+
+theorem seamWitnessPlane_image_Icc_prod_union {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c) :
+    seamWitnessPlane '' (Icc a b ×ˢ Icc (0 : ℝ) 1) ∪
+      seamWitnessPlane '' (Icc b c ×ˢ Icc (0 : ℝ) 1) =
+        seamWitnessPlane '' (Icc a c ×ˢ Icc (0 : ℝ) 1) :=
+  placedStrip_union hab hbc
+
+theorem seamWitnessPlane_image_Icc_prod_inter {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c) :
+    seamWitnessPlane '' (Icc a b ×ˢ Icc (0 : ℝ) 1) ∩
+      seamWitnessPlane '' (Icc b c ×ˢ Icc (0 : ℝ) 1) =
+        seamWitnessPlane '' ({b} ×ˢ Icc (0 : ℝ) 1) :=
+  placedStrip_inter hab hbc
+
+theorem seamWitnessPlane_image_Icc_prod_disjoint {a b c d : ℝ} (hbc : b < c) :
+    Disjoint (seamWitnessPlane '' (Icc a b ×ˢ Icc (0 : ℝ) 1))
+      (seamWitnessPlane '' (Icc c d ×ˢ Icc (0 : ℝ) 1)) :=
+  placedStrip_disjoint hbc
+
+theorem mem_frontier_seamWitnessPlane_image_Icc_prod {a b : ℝ} (hab : a ≤ b)
+    {z : EuclideanSpace ℝ (Fin 2)} :
+    z ∈ frontier (seamWitnessPlane '' (Icc a b ×ˢ Icc (0 : ℝ) 1)) ↔
+      ((seamWitnessPlane.symm z).1 ∈ Icc a b ∧
+        ((seamWitnessPlane.symm z).2 = 0 ∨ (seamWitnessPlane.symm z).2 = 1)) ∨
+      (((seamWitnessPlane.symm z).1 = a ∨ (seamWitnessPlane.symm z).1 = b) ∧
+        (seamWitnessPlane.symm z).2 ∈ Icc (0 : ℝ) 1) :=
+  mem_frontier_placedStrip hab
+
+theorem isCutPair_seamWitnessPlane_rectangle_traces {a s b : ℝ} (has : a < s) (hsb : s < b) :
+    let P := seamWitnessPlane '' (Icc a s ×ˢ Icc (0 : ℝ) 1)
+    let Q := seamWitnessPlane '' (Icc s b ×ˢ Icc (0 : ℝ) 1)
+    let S := seamWitnessPlane '' (Icc a b ×ˢ Icc (0 : ℝ) 1)
+    let A := seamWitnessPlane '' ({s} ×ˢ Icc (0 : ℝ) 1)
+    IsPLBall 1 (P ∩ frontier S) ∧
+      Schoenflies.IsCutPair (frontier P) (seamWitnessPlane (s, 0))
+        (seamWitnessPlane (s, 1)) A (P ∩ frontier S) ∧
+      IsPLBall 1 (Q ∩ frontier S) ∧
+      Schoenflies.IsCutPair (frontier Q) (seamWitnessPlane (s, 0))
+        (seamWitnessPlane (s, 1)) A (Q ∩ frontier S) :=
+  exists_placedStrip_trace_cut has hsb
+
 end DifferentialGeometry.Topology.PiecewiseLinear

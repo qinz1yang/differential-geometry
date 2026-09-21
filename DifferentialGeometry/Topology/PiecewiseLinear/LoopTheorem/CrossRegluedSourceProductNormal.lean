@@ -684,4 +684,42 @@ theorem crossingProductCell_nonempty_normalSingularCellData
   refine ⟨OpenPartialHomeomorph.refl (EuclideanSpace ℝ (Fin 3)), by simp, mem_univ _, ?_⟩
   simpa using crossingProductCell_hasPLNormalDoubleCrossingAt hy
 
+theorem hasPLCrossingAt_coordinate_rectangles {l b u t : ℝ}
+    (hl : l < b) (hu : b < u) (ht0 : 0 < t) (ht1 : t < 1) :
+    HasPLCrossingAt ((Icc (-1 : ℝ) 1 ×ˢ {b}) ×ˢ Icc (0 : ℝ) 1)
+      (({0} ×ˢ Icc l u) ×ˢ Icc (0 : ℝ) 1) ((0, b), t) :=
+  coordinate_rectangles_crossing hl hu ht0 ht1
+
+theorem hasPLBoundaryCrossingAt_coordinate_rectangles_zero {l b u : ℝ}
+    (hl : l < b) (hu : b < u) :
+    HasPLBoundaryCrossingAt {q : (ℝ × ℝ) × ℝ | 0 ≤ q.2}
+      ((Icc (-1 : ℝ) 1 ×ˢ {b}) ×ˢ Icc (0 : ℝ) 1)
+      (({0} ×ˢ Icc l u) ×ˢ Icc (0 : ℝ) 1) ((0, b), 0) :=
+  coordinate_rectangles_boundary_zero hl hu
+
+theorem hasPLBoundaryCrossingAt_coordinate_rectangles_one {l b u : ℝ}
+    (hl : l < b) (hu : b < u) :
+    HasPLBoundaryCrossingAt {q : (ℝ × ℝ) × ℝ | q.2 ≤ 1}
+      ((Icc (-1 : ℝ) 1 ×ˢ {b}) ×ˢ Icc (0 : ℝ) 1)
+      (({0} ×ˢ Icc l u) ×ˢ Icc (0 : ℝ) 1) ((0, b), 1) :=
+  coordinate_rectangles_boundary_one hl hu
+
+open Classical in
+theorem exists_simplicialComplex_vertical_interval (b : ℝ) :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      K.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 K ∧
+        K.space = spliceEmbedding '' ({((0 : ℝ), b)} ×ˢ Icc (0 : ℝ) 1) ∧
+          (boundaryComplex 1 K).space =
+            {spliceEmbedding ((0, b), 0), spliceEmbedding ((0, b), 1)} :=
+  exists_vertical_complex b
+
+theorem HasPLNormalDoubleCrossingAt.postcomp_continuousLinearEquiv
+    {E F V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    {f : E → F} {P : Set E} {B : Set F} {y : F}
+    (hD : HasPLNormalDoubleCrossingAt f P B y) (e : F ≃L[ℝ] V) :
+    HasPLNormalDoubleCrossingAt (e ∘ f) P (e '' B) (e y) :=
+  normal_double_crossing_postcomp_linearEquiv hD e
+
 end DifferentialGeometry.Topology.PiecewiseLinear
