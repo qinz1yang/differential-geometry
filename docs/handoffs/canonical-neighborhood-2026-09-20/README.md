@@ -975,3 +975,46 @@ The bounded-distance headline remains open. The next assembly places source neck
 at actual images of fixed limit points and captures their buffered images in a
 compact limit ball, before transporting them to spatial necks. The finite horn and
 cone producers remain unfinished.
+
+
+## Spatial necks on the incomplete curvature-escape limit
+
+The continuation after `9456d6131` proves actual spatial necks along the limiting
+geodesic approaching the missing endpoint. `PointedSegmentNecks.lean` combines
+inverse convergence, scalar convergence, and the nearby-segment theorem to place
+source strong necks exactly at the images of fixed limit points. No common future
+time interval or ancient-source hypothesis is introduced.
+
+`PointedSpatialNecks.lean` transfers these necks through the actual inverse maps.
+A quantitative radius condition captures the entire buffered neck image inside the
+image of a compact limit ball. The proof uses metric lower bounds to establish
+containment and the independently rescaled inverse comparisons to transfer the
+finite-order terminal spatial jets. It requires neither a complete limit nor
+connected source manifolds.
+
+`NormalizedLimitNecks.lean` supplies those inputs from the existing curvature-escape
+producer. Its theorem
+`exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks` preserves the
+actual pointed convergence, geodesics, nonnegative limit curvature, missing completion
+endpoint, and arbitrarily prescribed scalar-distance separation, and additionally
+produces spatial necks along the limit geodesic sufficiently near that endpoint.
+Compact balls around those points are obtained inside the already controlled
+basepoint balls. This closes the spatial-neck step in Kleiner--Lott Section 52,
+Lemma 52.14(2); the tube/end and cone constructions are still unfinished.
+
+All four new public theorems passed thirteen declaration linters and have only
+`propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The final leaf build passed 14,040 jobs. The full root passed 20,187 jobs with exactly
+21 retained sorry warnings and no other diagnostics. The import graph has no path
+from `NormalizedLimitNecks` back to `FiniteHornStructure` (6,035 modules traversed).
+Evidence: `/private/tmp/wt17-normalized-limit-necks-build.log`,
+`/private/tmp/wt17-normalized-limit-necks-audit.log`, and
+`/private/tmp/wt17-normalized-limit-necks-root-build.log`.
+
+The bounded-distance headline remains open. The next task is the geometric assembly
+of the neck neighborhoods into a finite end, retaining the actual source convergence
+needed to construct and exclude the cone. Morgan--Tian Appendix A, Proposition A.11
+and Lemmas A.13--A.18, describe the neck overlap and chain steps. The extracted text
+of Proposition A.19 and Lemma A.20 has inconsistent separation wording: A.18 requires
+separating spheres, whereas A.19 says nonseparating. The formal argument must establish
+the correct separation property rather than copy that wording.
