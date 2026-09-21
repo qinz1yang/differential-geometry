@@ -152,8 +152,13 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                 IsClosed (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 IsConnected (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
                                 ¬ IsCompact (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
-                                frontier (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
-                                  (nk 1).map '' (univ ×ˢ ({0} : Set ℝ)) := by
+                                (frontier (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+                                  (nk 1).map '' (univ ×ˢ ({0} : Set ℝ))) ∧
+                                (∀ v : Ico 0 F.radius, (t 2 : ℝ) ≤ v →
+                                  g v ∈ interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) ∧
+                                ∀ n (x : L.M), x ∈ Ψ n '' (univ ×ˢ Icc (0 : ℝ) 1) →
+                                  dist q (x : UniformSpace.Completion L.M) ≤
+                                    (11 / 5) * (F.radius - (t n : ℝ)) := by
   obtain ⟨epsStar, c, hepsStar, hc, hproduce⟩ :=
     exists_terminal_pointed_limit_with_missing_endpoint_and_spatialNecks.{u}
       hkappa (A := max A (2 * alpha)⁻¹) (hA.trans (le_max_left _ _)) ha (by linarith)
@@ -252,11 +257,85 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     (fun n => hmeetAnn (n + 1))
   have hfrontTail := hlocalAnn.frontier_iUnion_succ_eq_of_chain _
     (fun n => (hcann n).isClosed) hfrann hseam (fun n => hsep 0 (n + 2) (by omega))
+  have hstart : g (incl (t 2)) ∈ interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+    apply interior_mono (union_subset (subset_iUnion (fun n => ann (n + 1) ''
+      (univ ×ˢ Icc (0 : ℝ) 1)) 0) (subset_iUnion (fun n => ann (n + 1) ''
+        (univ ×ˢ Icc (0 : ℝ) 1)) 1))
+    apply hseam 0
+    exact ⟨((nk 2).center, 0), ⟨mem_univ _, rfl⟩, (nk 2).center_eq⟩
+  have haxisTail : ∀ v : Ico 0 F.radius, (t 2 : ℝ) ≤ v →
+      g v ∈ interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+    have hI : IsPreconnected (Ici (incl (t 2))) := by
+      apply Topology.IsInducing.subtypeVal.isPreconnected_image.mp
+      have heq : Subtype.val '' Ici (incl (t 2)) = Ico (t 2 : ℝ) F.radius := by
+        ext v
+        constructor
+        · rintro ⟨w, hw, rfl⟩
+          exact ⟨hw, w.property.2⟩
+        · intro hv
+          exact ⟨⟨v, (incl (t 2)).property.1.trans hv.1, hv.2⟩, hv.1, rfl⟩
+      rw [heq]
+      exact isPreconnected_Ico
+    have hP : IsPreconnected (g '' Ici (incl (t 2))) :=
+      hI.image _ g.continuous.continuousOn
+    have havoid : Disjoint (g '' Ici (incl (t 2)))
+        (frontier (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1))) := by
+      apply Set.disjoint_left.mpr
+      rintro z ⟨v, hv, rfl⟩ hz
+      rw [hfrontTail] at hz
+      have hb := (nk 1).central_sphere_subset_closedBall hz
+      change edist (g (incl (t 1))) (g v) ≤
+        ENNReal.ofReal (7 / Real.sqrt (metricScalarAt L.metric (g (incl (t 1))))) at hb
+      have hv' : (t 2 : ℝ) ≤ (v : ℝ) := hv
+      have ht12 := hmono (by norm_num : (1 : ℕ) < 2)
+      rw [hg.edist_eq, edist_dist, Subtype.dist_eq, Real.dist_eq] at hb
+      change ENNReal.ofReal |(t 1 : ℝ) - v| ≤ _ at hb
+      rw [abs_of_nonpos (sub_nonpos.mpr (ht12.le.trans hv')), neg_sub] at hb
+      have hreal := (ENNReal.ofReal_le_ofReal_iff
+        (div_nonneg (by norm_num : (0 : ℝ) ≤ 7) (Real.sqrt_nonneg _))).mp hb
+      have hi : (1000000 : ℝ) < (2 * alpha)⁻¹ :=
+        (lt_inv_comm₀ (by norm_num) (by positivity : 0 < 2 * alpha)).mpr
+          (by norm_num only [one_div]; linarith)
+      have hnum : (7 : ℝ) < (2 * alpha)⁻¹ / 40 := by linarith
+      have hd := div_lt_div_of_pos_right hnum (Real.sqrt_pos.mpr (nk 1).Q_pos)
+      have hstep1 := hstep 1
+      change (t 2 : ℝ) - t 1 = ((2 * alpha)⁻¹ / 40) /
+        Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) at hstep1
+      change (v : ℝ) - (t 1 : ℝ) ≤ _ at hreal
+      change 7 / Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) <
+        ((2 * alpha)⁻¹ / 40) / Real.sqrt (metricScalarAt L.metric (g (incl (t 1)))) at hd
+      linarith
+    have hsub := DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+      hP havoid ⟨g (incl (t 2)), ⟨incl (t 2), (show incl (t 2) ≤ incl (t 2) from le_rfl), rfl⟩, hstart⟩
+    exact fun v hv => hsub ⟨v, hv, rfl⟩
+  have hcollapse (n : ℕ) (x : L.M) (hx : x ∈ ann n '' (univ ×ˢ Icc (0 : ℝ) 1)) :
+      dist q (x : UniformSpace.Completion L.M) ≤ (11 / 5) * (F.radius - (t n : ℝ)) := by
+    have hb := ((hannuli n).2.2.2.2.2.2 hx).1
+    change edist (g (incl (t n))) x ≤ ENNReal.ofReal
+      ((3 * (2 * alpha)⁻¹ / 100) / Real.sqrt (metricScalarAt L.metric (g (incl (t n))))) at hb
+    rw [edist_dist] at hb
+    have hD : (3 * (2 * alpha)⁻¹ / 100) /
+        Real.sqrt (metricScalarAt L.metric (g (incl (t n)))) =
+          (6 / 5) * ((t (n + 1) : ℝ) - t n) := by
+      rw [hstep n]
+      change _ = (6 / 5) * (((2 * alpha)⁻¹ / 40) /
+        Real.sqrt (metricScalarAt L.metric (g (incl (t n)))))
+      ring
+    rw [hD] at hb
+    have hstepNonneg : 0 ≤ (t (n + 1) : ℝ) - t n :=
+      sub_nonneg.mpr (hmono.monotone (Nat.le_succ n))
+    have hb' := (ENNReal.ofReal_le_ofReal_iff (mul_nonneg (by norm_num) hstepNonneg)).mp hb
+    have htriangle := dist_triangle q
+      (g (incl (t n)) : UniformSpace.Completion L.M) (x : UniformSpace.Completion L.M)
+    rw [hdist, UniformSpace.Completion.dist_eq] at htriangle
+    have hremain := (t (n + 1)).property.2
+    change _ ≤ F.radius - (t n : ℝ) + dist (g (incl (t n))) x at htriangle
+    linarith
   refine ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,
     q, hq, hdist, hmissing, ?_, hnecks, incl ∘ t, nk, hmono, hlim, hstep, hgraph, hdisjoint,
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
-    hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail⟩
+    hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail, haxisTail, hcollapse⟩
   intro tau hR
   exact (pow_le_pow_left₀ hA (le_max_left A (2 * alpha)⁻¹) 2).trans (hquant tau hR)
 

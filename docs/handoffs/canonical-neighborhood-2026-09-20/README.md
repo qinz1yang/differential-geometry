@@ -1297,3 +1297,34 @@ the final source cleanup. Evidence:
 `/private/tmp/wt17-annular-chain-frontier-dependents-build.log`,
 `/private/tmp/wt17-annular-chain-frontier-audit.log`, and
 `/private/tmp/wt17-annular-chain-frontier-root-build.log`.
+
+
+## The limiting axis and endpoint containment
+
+The continuation after `44ca9a288` proves that the limiting geodesic, from its
+second selected neck center onward, lies in the interior of the annular tail.
+The actual seam supplies an interior starting point. The exact frontier and the
+central-sphere diameter estimate prevent the isometric geodesic from crossing
+the first sphere afterward. Every point of annulus `n` also lies within
+`(11 / 5) * (F.radius - t n)` of the same missing completion point. Thus the
+whole annuli, not only their centers, shrink toward that endpoint. These are
+quantitative ingredients of the finite-end construction in Kleiner–Lott,
+*Notes on Perelman's papers*, §52, Step 2 and Lemma 52.14, in the read-only
+`Geometrization/BooksPapers/KleinerLottPerelman.pdf`.
+
+The existing closed-cover API now glues homeomorphisms over arbitrary locally
+finite closed covers, using compatibility in both directions, and exposes the
+forward and inverse restrictions to every piece. No separation, compactness,
+or countability assumptions were added to this general construction. The
+actual cylinder-chain assembly remains the next consumer; the bounded-distance
+headline is still open.
+
+Four declarations passed thirteen declaration linters with only approved
+foundational axioms. The normalized leaf passed 14,130 jobs, and the closed-cover
+leaf passed 897 jobs, without diagnostics. The full root, including affected
+dependents, passed 20,200 jobs with exactly 21 retained sorry warnings and no
+other diagnostics. Evidence:
+`/private/tmp/wt17-normalized-annular-axis-leaf-build.log`,
+`/private/tmp/wt17-homeomorph-closed-cover-leaf-build.log`,
+`/private/tmp/wt17-annular-endpoint-closed-cover-audit.log`, and
+`/private/tmp/wt17-annular-endpoint-closed-cover-root-build.log`.
