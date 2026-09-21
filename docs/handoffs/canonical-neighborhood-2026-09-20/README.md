@@ -2624,3 +2624,58 @@ build passed 20,243 jobs with exactly the same 21 retained proof-hole warnings
 and no other diagnostics. Evidence: `/private/tmp/wt17-cone-ball-approximation-build.log`,
 `/private/tmp/wt17-cone-ball-approximation-audit.log`, and
 `/private/tmp/wt17-cone-ball-approximation-root-build.log`.
+
+
+### Backward flow with actual end comparison maps
+
+`NormalizedRescaledLimit.lean` now proves
+`exists_terminal_rescaled_local_backward_limit` and its geometric end corollary
+`exists_local_backward_limit_on_normalized_end`. The first uses canonical source
+convergence and compact curvature-scale buffers; the second obtains those buffers
+from `exists_parabolic_curvature_bound_on_normalized_end`, after taking a tail with
+end scalar at least two. The small epsilon threshold remains uniform over the
+normalized sequences and the end manifolds.
+
+The producer returns strictly increasing source and end indices, the actual source
+scalar scales (whose ratios to end scalar converge to one), and a connected local
+Ricci flow on a genuine closed backward interval. Its terminal metric has scalar
+one at the basepoint and sectional curvature is nonnegative on the whole interval.
+Actual partial diffeomorphisms from this terminal neighborhood to the end are
+constructed by composing terminal compactness maps with inverses of the source
+comparison maps. On a fixed compact terminal ball their distance error tends to
+zero uniformly, and their images contain a fixed inner ball in the rescaled end.
+Compact first-exit arguments supply the domain and coverage assertions. No common
+future extension, ancient-solution hypothesis, or all-order constant is introduced.
+
+**Gap reduced:** the local backward flow and the end approximations are now linked
+by constructed maps on a common fixed domain, with uniform distance control and
+actual inner-ball coverage. **Still open:** apply the cone approximations to these
+maps, extract the exact local cone isometry, and apply the smooth cone-chart
+producer and terminal exclusion theorem. The complete extraction of the end data
+from the long normalized-neck theorem has not yet been assembled with this new
+producer. The original `bounded_curvature_at_distance` remains a proof hole.
+
+This is the local distance-identification step in the cone argument discussed by
+Kleiner--Lott, *Notes on Perelman's papers*, Theorem 41.2, proof on printed page
+2675, followed by Lemma 41.4; local source
+`Geometrization/BooksPapers/KleinerLottPerelman.pdf`. That reference's global
+kappa-solution hypotheses are not transferred to the normalized finite-interval
+sources here: the proved normalized-sequence estimates and terminal compactness
+engine supply the flow instead.
+
+Verification: the new leaf built 13,996 jobs without diagnostics. All nine written
+declarations passed thirteen declaration linters; both public producers have only
+`propext`, `Classical.choice`, and `Quot.sound` in their transitive axiom closures.
+The full project build passed 20,244 jobs with the same 21 retained proof-hole
+warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-normalized-rescaled-limit-build.log`,
+`/private/tmp/wt17-normalized-rescaled-limit-audit.log`, and
+`/private/tmp/wt17-normalized-rescaled-limit-root-build.log`.
+
+For the next cone-identification step, using annular approximations at radius
+`1 / sqrt(actual source scalar)` makes their normalized distances agree directly
+with the newly produced comparisons. A fixed annulus can contain the centers and
+a sufficiently small terminal ball using the lower and upper scalar-distance
+bounds. This avoids extracting a separate limit of radial scale factors; the
+compact approximation theorem already allows its approximation centers to vary.
+That assembly remains to be proved.
