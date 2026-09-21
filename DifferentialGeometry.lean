@@ -9593,6 +9593,7 @@ import DifferentialGeometry.Topology.Morse.SublevelTangentSection
 import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.OpenCover.Disjoint
 import DifferentialGeometry.Topology.Order.FiniteSeparation
+import DifferentialGeometry.Topology.Order.IntermediateValue
 import DifferentialGeometry.Topology.Order.Interval
 import DifferentialGeometry.Topology.Order.IntervalContinuation
 import DifferentialGeometry.Topology.Order.IntervalPush
@@ -11471,6 +11472,7 @@ import DifferentialGeometry.Geometry.Metric.RiemannianPointPicking
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedReindexing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedEscapeGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedLocalCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedMetricLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedBackwardLimit

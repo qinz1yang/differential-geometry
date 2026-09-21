@@ -368,3 +368,23 @@ checked verbatim against their preceding locations. The existing headline statem
 proof body are unchanged. Verification logs are in `/private/tmp/wt17-finite-radius-fresh/`,
 `/private/tmp/wt17-finite-radius-audit.log`, and
 `/private/tmp/wt17-finite-radius-root-build.log`.
+
+## Source geodesic tails
+
+`NormalizedEscapeGeodesic.lean` proves `exists_high_curvature_geodesic_tail`, following
+Kleiner--Lott section 52, Step 2, immediately after equation (52.13). Uniformly for
+sufficiently small epsilon and eventually in every normalized sequence, each terminal
+point with scalar curvature greater than 12 is joined to the normalized basepoint by an
+actual smooth unit-speed minimizing geodesic. The construction selects the last point
+with scalar curvature 2, proves scalar curvature is greater than 2 on the remaining
+segment, and gives that segment a uniform positive lower length bound.
+
+Its reusable ingredients are `ContinuousOn.exists_eq_and_forall_gt` in
+`Topology/Order/IntermediateValue.lean` and
+`exists_unitSpeed_minimizing_geodesic_of_complete` in `Geometry/Geodesic/Ray.lean`.
+All three declarations passed 13 applicable declaration linters, exact-signature review,
+and standard-only transitive axiom checks. All three leaves elaborated freshly without
+diagnostics; the full project build passed 20,162 jobs. Evidence is in
+`/private/tmp/wt17-geodesic-tail-audit.log` and
+`/private/tmp/wt17-geodesic-tail-root-build.log`. The headline still requires the
+smooth incomplete limit and the subsequent horn/cone construction.
