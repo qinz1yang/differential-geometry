@@ -5062,3 +5062,257 @@ sourceStable=true，共享产物只读。源码与本记录同次提交。
 
 **partial：实际归纳解。** 原 PL 输入 → 初始系统与该系统的嵌入解 → 原目标盘两端均已接通。
 球面情形及覆盖回投消奇异仍是实际生产嵌入解所需的独立义务，本结果不取代它们。
+
+### 19.181 F9/F10：冻结的边界支叶子（2026-09-21）
+
+车道 F；验收基线 `1a7a78a2c0189d7a8ff6a98b700d929b33cd38f6`。本批没有写入型 Git 操作，
+没有登记根聚合，也没有修改 Skeleton 或其他车道源码。由 lead 独立验收、登记和提交。
+
+**F9 / done（冻结叶子的形式证明；联合夹具仍待 F11）。**
+
+文件：修改 `LoopTheorem/CellGluing.lean`、`LoopTheorem/CutAndPaste.lean`；
+续写未登记的 `LoopTheorem/BoundaryCaseOfCut.lean`。
+两个已有模块采取核心加包装：四个原公开 producer 保留原陈述，新核心在原结论末尾追加导出。
+原三段参数定理成为接受指定单射参数化的核心的包装，原陈述不变。
+对 HEAD 的文本核对覆盖 CellGluing 的全部 13 条、CutAndPaste 的全部 69 条既有定理，
+陈述逐字相同（仅统一 CRLF/LF）；证据 `F9F10SourceReview.log`。
+新增的 source-data 包装复用同一个加强后的拼接核心，不再复制拼接构造。
+
+关键公开名：
+- `DifferentialGeometry.Topology.PiecewiseLinear.exists_boundaryParam_paths_of_isCutPair_union_with_endpoints`
+- `DifferentialGeometry.Topology.PiecewiseLinear.SingularTwoCell.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs_with_source_arcs`
+- `DifferentialGeometry.Topology.PiecewiseLinear.exists_three_segment_parameters_of_injective_param`
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_cross_reglued_cell_of_cut_with_source_arcs`
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_boundary_surgery_cell_of_cut_with_source_paths`
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_boundaryWordWitness_direct_of_cut`
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_boundaryWordWitnesses_of_cut`
+
+其余随本批交回或保留的未登记公开辅助名（完整名称）：
+- `DifferentialGeometry.Topology.PiecewiseLinear.exists_cross_source_segment_equations_with_source_data`
+- `DifferentialGeometry.Topology.PiecewiseLinear.exists_cross_glue_source_segments_with_source_data`
+- `DifferentialGeometry.Topology.PiecewiseLinear.exists_cross_reglued_source_segments_of_cut_with_source_data`
+- `DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordWitness.exists_param_of_twoArcMatch`
+- `DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordWitness.exists_param_of_twoArcMatch_of_endpoints`
+- `DifferentialGeometry.Topology.PiecewiseLinear.boundaryCover_of_neg`
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_boundary_case_data_of_cut`
+- `DifferentialGeometry.Topology.PiecewiseLinear.image_range_of_frontierRealization`
+
+从同一个 `hcut` 调用四弧 producer 和加强后的 cross producer。后者同时保留 `IsCrossRegluedCell`
+所需的整套数据、两个接缝点、旧源弧的像、接缝逐点等式、两条源 `Path`、它们的端点等式与同一个 `e`。
+沿已选定的边界路径寻找接缝参数，不能另取一个与 `e` 无关的参数化。外侧两段落在第二/第四源弧，
+由连通性和这两条闭弧不交证明；中段和第三弧逐点落在第一/第三源弧。逐弧比较后沿连续 `f` 推到 `X`。
+direct witness 来自两条连续 PL 源提升，没有将集合论 `pullback` 当作连续映射。
+preserving 分支从反向读取的实际边界经 `ofReversedWord` 得到规范词；未引入保持定向的比较假设。
+
+与冻结陈述的唯一参数差别：正式 producer 去掉了多余的 `[PathConnectedSpace X]`。
+这是环境 linter 的真实 unusedArguments 发现；结论未变，假设更少。类型断言保留 Skeleton
+中的原始全部 binder，直接应用正式定理，检验原冻结叶子可原样消去。未修改 Skeleton。
+
+最终陈述：
+
+```lean
+theorem exists_boundaryWordWitnesses_of_cut [T2Space M]
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {A Cc : Set (EuclideanSpace ℝ (Fin 2))} {p q r s : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    {D₁ D₂ D₃ : SingularTwoCell M}
+    (hcut : hD.IsBoundaryBranchCut c A Cc p q r s g D₁ D₂ D₃)
+    {X : Type v} [TopologicalSpace X]
+    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
+    (f : frontier D.domain → X) (hf : Continuous f)
+    (hfρ : ∀ z : frontier D.domain, ρ (f z) = ⇑D z) :
+    ∃ (p' q' u' v' : frontier D.domain) (σ₀ : Path p' q') (τ₀ : Path q' u')
+        (υ₀ : Path u' v') (φ₀ : Path v' p') (ev : loopCircle ≃ₜ frontier D.domain)
+        (Gd G : SingularTwoCell M),
+      hD.IsBoundarySurgeryCell c Gd ∧ hD.IsCrossRegluedCell c G ∧
+      (∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ) ∧
+      ((∃ (a b : X) (σ υ : Path a b) (τ φ : Path b a),
+          (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+          (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
+          Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ.symm))) ∧
+          Nonempty (BoundaryWordWitness G ρ
+            (pathToCircle (σ.trans (φ.trans (υ.trans τ)))))) ∨
+        (∃ (a b : X) (σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a),
+          (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
+          (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
+          Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ))) ∧
+          Nonempty (BoundaryWordWitness G ρ
+            (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))))))
+```
+
+**F10 / done（两个冻结组装叶子；管子/读法 producer 仍是独立义务）。**
+
+新文件：`LoopTheorem/BoundaryCaseFromTube.lean`，两条公开定理与冻结陈述逐字一致。
+共同的私有引理先构造 resolved surgery 及其 boundary witness，并保留侧条件和边界缓冲。
+管内的像用闭柱包含控制；管外用原像包含控制。缓冲分别来自端盘缓冲和旧边界缓冲。
+最后在 direct/cross 候选中选择，所选的同一个 surgery 同时保留这些结论和正规子群避让。
+没有新增结构、Prop 包装、目标路径单射性或结论型假设。
+
+公开名：
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing`
+- `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.exists_descendingSurgery_side_buffer_of_crossSeamTube_preserving`
+
+最终陈述：
+
+```lean
+theorem exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing
+    [T2Space M] {U : Set M} {hD : NormalSingularCellData D BdM B}
+    {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) {G cell : SingularTwoCell M}
+    {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
+    (hdomain : cell.domain = G.domain)
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hreglued : EqOn G (T.chart ∘ crossSeamInclude ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hG : hD.IsCrossRegluedCell c G)
+    (hendDisks : T.chart '' spliceEndDisks ⊆ B)
+    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
+      x ∈ frontier G.domain ↔ (coord x).2.2 = 0 ∨ (coord x).2.2 = 1)
+    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
+    (hBdM : B ⊆ BdM)
+    {W : Set M} (hside : MapsTo (⇑D) D.domain W)
+    (htubeW : T.chart '' spliceCylinder ⊆ W)
+    (hbufferD : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
+    (hendBuffer : ∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[BdM] z)
+    {Gd : SingularTwoCell M} (hGd : hD.IsBoundarySurgeryCell c Gd)
+    {Q : Type w} [TopologicalSpace Q] {p' q' u' v' : Q}
+    (σ₀ : Path p' q') (τ₀ : Path q' u') (υ₀ : Path u' v') (φ₀ : Path v' p')
+    (ev : loopCircle → Q)
+    (hev : ∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ)
+    {X : Type v} [TopologicalSpace X] [PathConnectedSpace X] {f : Q → X} {x a b : X}
+    {σ υ : Path a b} {τ φ : Path b a}
+    (hσ : ∀ t, σ t = f (σ₀ t)) (hτ : ∀ t, τ t = f (τ₀ t)) (hυ : ∀ t, υ t = f (υ₀ t))
+    (hφ : ∀ t, φ t = f (φ₀ t)) (γ : freeLoop X) (hγ : ∀ θ, γ θ = f (ev θ))
+    {N : Subgroup (FundamentalGroup X x)} [N.Normal] (hγN : ¬loopClassMeets γ x N)
+    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
+    (Wdirect : BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ.symm)))
+    (Wraw : BoundaryWordWitness G ρ (pathToCircle (σ.trans (φ.trans (υ.trans τ)))))
+    {Ω₁ Ω₂ : Set loopCircle} (hΩ₁ : IsClosed Ω₁) (hΩ₂ : IsClosed Ω₂)
+    (hcover : Ω₁ ∪ Ω₂ = univ)
+    (hcocont : ContinuousOn (fun θ => coord ↑(Wraw.param θ)) Ω₁)
+    (hΩ₁tube : ∀ θ ∈ Ω₁, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder)
+    (hΩ₁max : ∀ θ, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder → θ ∈ Ω₁)
+    (hlateral : ∀ θ ∈ Ω₁ ∩ Ω₂, (coord ↑(Wraw.param θ)).2.1 ∈ spliceSquareBoundary) :
+    ∃ (Sg : hD.DescendingSurgery) (e : loopCircle ≃ₜ frontier Sg.cell.domain)
+      (δ : freeLoop X),
+      MapsTo (⇑Sg.cell) Sg.cell.domain W ∧
+      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
+      (∀ θ, ρ (δ θ) = Sg.cell (e θ)) ∧ ¬loopClassMeets δ x N
+```
+
+```lean
+theorem exists_descendingSurgery_side_buffer_of_crossSeamTube_preserving
+    [T2Space M] {U : Set M} {hD : NormalSingularCellData D BdM B}
+    {c : hD.singularSet.Branch}
+    (T : CrossSeamTubeData hD c U) {G cell : SingularTwoCell M}
+    {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
+    (hdomain : cell.domain = G.domain)
+    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
+    (hreglued : EqOn G (T.chart ∘ crossSeamInclude ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
+      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
+    (hG : hD.IsCrossRegluedCell c G)
+    (hendDisks : T.chart '' spliceEndDisks ⊆ B)
+    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
+      x ∈ frontier G.domain ↔ (coord x).2.2 = 0 ∨ (coord x).2.2 = 1)
+    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
+    (hBdM : B ⊆ BdM)
+    {W : Set M} (hside : MapsTo (⇑D) D.domain W)
+    (htubeW : T.chart '' spliceCylinder ⊆ W)
+    (hbufferD : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
+    (hendBuffer : ∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[BdM] z)
+    {Gd : SingularTwoCell M} (hGd : hD.IsBoundarySurgeryCell c Gd)
+    {Q : Type w} [TopologicalSpace Q] {p' q' u' v' : Q}
+    (σ₀ : Path p' q') (τ₀ : Path q' u') (υ₀ : Path u' v') (φ₀ : Path v' p')
+    (ev : loopCircle → Q)
+    (hev : ∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ)
+    {X : Type v} [TopologicalSpace X] [PathConnectedSpace X] {f : Q → X} {x a b : X}
+    {σ : Path a b} {τ : Path b b} {υ : Path b a} {φ : Path a a}
+    (hσ : ∀ t, σ t = f (σ₀ t)) (hτ : ∀ t, τ t = f (τ₀ t)) (hυ : ∀ t, υ t = f (υ₀ t))
+    (hφ : ∀ t, φ t = f (φ₀ t)) (γ : freeLoop X) (hγ : ∀ θ, γ θ = f (ev θ))
+    {N : Subgroup (FundamentalGroup X x)} [N.Normal] (hγN : ¬loopClassMeets γ x N)
+    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
+    (Wdirect : BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ)))
+    (Wraw : BoundaryWordWitness G ρ
+      (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))))
+    {Ω₁ Ω₂ : Set loopCircle} (hΩ₁ : IsClosed Ω₁) (hΩ₂ : IsClosed Ω₂)
+    (hcover : Ω₁ ∪ Ω₂ = univ)
+    (hcocont : ContinuousOn (fun θ => coord ↑(Wraw.param θ)) Ω₁)
+    (hΩ₁tube : ∀ θ ∈ Ω₁, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder)
+    (hΩ₁max : ∀ θ, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder → θ ∈ Ω₁)
+    (hlateral : ∀ θ ∈ Ω₁ ∩ Ω₂, (coord ↑(Wraw.param θ)).2.1 ∈ spliceSquareBoundary) :
+    ∃ (Sg : hD.DescendingSurgery) (e : loopCircle ≃ₜ frontier Sg.cell.domain)
+      (δ : freeLoop X),
+      MapsTo (⇑Sg.cell) Sg.cell.domain W ∧
+      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
+      (∀ θ, ρ (δ θ) = Sg.cell (e θ)) ∧ ¬loopClassMeets δ x N
+```
+
+**验证证据**（全部在本工作树 `.lake/scratch/`）：
+
+- 六个聚焦模块均 exit=0、零 Lean warning/error：`CheckF9-CellGluing.log`；
+  `CheckF9F10-CutAndPaste.log`；`CheckF9F10-CrossRegluedCellPredicate.log`；
+  `CheckF9F10-BoundarySurgeryCellPredicate.log`；`CheckF9F10-BoundaryCaseOfCut.log`；
+  `CheckF9F10-BoundaryCaseFromTube.log`。两个谓词消费者确已在本批产物上重新编译。
+- `AuditF9F10Completion.log`：21 项公开声明的传递公理闭包仅
+  `{propext, Classical.choice, Quot.sound}`，exit=0。
+- `LintF9F10Completion.log`：明确枚举 21 个声明，逐个确认存在后运行 13 个 linter，全部 0 errors。
+  `LintF9F10.log`：BoundaryCaseOfCut 的全部 12 个声明、BoundaryCaseFromTube 的全部 3 个声明
+  （包括私有引理）分别运行 13 个 linter，全部 0 errors。没有用空模块集或 suppressions 代替检查。
+  CutAndPaste 的四个既有 `explicitVarsOfIff` 记录仍属于先前已知的基线问题；本报告不宣称
+  整个历史模块的环境 linter 无问题，针对本批声明的上述检查完整且为零。
+- `F9F10FrozenTypes.log`：从当前 Skeleton 逐字提取三个冻结类型作为 `example`，
+  直接应用正式定理，exit=0；两个 F10 公开签名也与 Skeleton 逐字一致。
+- `F9Nonvacuity.log`：严格子弧、内部且不同的两个参数、不可单射回路探针，exit=0。
+- `F9F10NameProbe.log`：21 个被审计的公开名在 Skeleton 外各有且仅有一处声明。
+  同一审计环境同时导入两个端点模块，检验组合导入；未触碰根聚合。
+- `F9F10SourceReview.log`：82 条原声明签名一致；本批新增长行数为零；无禁用构造、
+  无诊断命令。`git diff --check` 通过。`F9F10CompletionReceipt.json` 记录源码与日志哈希。
+- 私有产物根：本工作树 `.lake/scratch/F-private/lib/lean`。使用 `check-f-private.ps1` 与
+  `audit-f-private.ps1`，沿用原验证配方，仅将输出切到私有目录并把它置于 LEAN_PATH 首位；
+  Mathlib/库依赖使用共享产物的硬链接快照。目标文件编译前删除本地 olean/ilean 再生成，
+  不覆写共享文件。F 车道全程串行运行 Lean；未运行 lake build。
+
+
+**非空洞清单与纪律 (a)–(e)。**
+
+- F9 是 `∀ hcut …, ∃ 同一组四弧和两个候选, …` 的 producer，不以候选、边界词 witness、
+  目标路径单射性为自由输入。源四弧单射性来自
+  `exists_boundary_four_arc_word_of_cut`；候选源路径单射性来自
+  `exists_boundaryParam_paths_of_isCutPair_union_with_endpoints`。`hρ` 是目标实现的嵌入，
+  不是路径单射性，实际 double 中的 boundary-neighborhood 实现仍归 S 车道。
+- F9 的 `hcut` 由 `exists_isBoundaryBranchCut_of_boundaryBranch` 提供；`hD`、边界支、
+  `f/hf/hfρ`、`hρ/hrange` 属于骨架上游输入。未把这些条件消费者声称为独立的居留定理。
+- F10 的 `Gd/G`、两套四弧词和 `Wdirect/Wraw` 由本次 F9 同时生产。
+  `hdomain/hcoord/hreglued/hresolved/hcompl` 来自读法对应的实际 resolved cell；
+  `Ω₁/Ω₂` 的七条覆盖性质由 `PLCrossSeamReading.exists_boundary_cover` 提供。
+  `T`、闭柱侧包含、端盘缓冲、管子边界等式以及 reading（原 chart 或 quarter turn）
+  仍需要 S 与 F/S 的 producer。原 cell 的 `hside/hbufferD`、`hBdM` 和环类避让来自归纳输入。
+- (a) 三段切分探针用 `S=[0,3v]`、`R=[v,2v]`、`T=S`，`v=(1,0)`，严格 `R ⊊ S`。
+  在同一参数化上调用新核心，并证明两个参数都在 `(0,1)` 内且不同，三段都非退化。
+  这只检验切分引理，不冒充完整 F11。
+- (b) 复用 `DifferentialGeometry.Topology.not_injective_path_loop` 检验任意 `Path x x`
+  都不可能单射；F9/F10 均没有这种假设。源弧的端点在推到 `X` 前仍分别是 `p→q→u→v→p`。
+- (c) 本批没有容差参数，固定当前界/下一界趋零测试不适用。
+  (d) 本批没有局部有限族，点有限性测试不适用。
+- (e) 全部结论按给定 cut 的条件 producer 记账；未以恒等特化代替居留者。
+  branch + direct/cross + tube + reading + 两个 witness 在同一非退化元组上的独立存在性
+  **仍 OPEN（F11）**。没有将 A2.4 或整个下降端点标为已闭合。
+
+**供 lead 登记的 import 行与接线。**
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromSource
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseOfCut
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromTube
+```
+
+`BoundaryCaseFromSource.lean` 是先前待登记的 F7 依赖，本批未修改。
+本批证明可解除 `FREE_INPUTS.md` 的 A2.4b 和 A2.4c（三个 Skeleton 叶子），
+由 lead 在重放后更换 Skeleton 中的证明并同步账本。A2.4a、A2.4b′ 和 A2.4d 本批未关闭。
+其余本车道尚未登记的 F2–F8 文件不在这份新增修改清单内；禁止把其他车道脏文件一起暂存。

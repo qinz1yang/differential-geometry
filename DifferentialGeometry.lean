@@ -9184,6 +9184,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssemblyFixture
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneMarkedChart
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromSource
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseOfCut
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromReading
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromTube
 /-!
 # Differential geometry and geometric analysis
 -/

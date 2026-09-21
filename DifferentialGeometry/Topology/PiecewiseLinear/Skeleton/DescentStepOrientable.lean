@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopClassReparametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromReading
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromTube
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNestedDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
@@ -76,8 +77,10 @@ It is cut and paste along `frontier E'` plus whole or nothing branch retention, 
 open because the disjoint analogue of `IsNestedDiskReplacementCell`, of its normality producer
 and of its branch injection is not in the tree.
 
-`NormalSingularCellData.exists_boundaryWordWitnesses_of_cut` (lane F, F9, reviewed 2026-09-21
-(external), statement frozen): from one boundary branch cut, both candidates together with both
+`NormalSingularCellData.exists_boundaryWordWitnesses_of_cut` (lane F, F9, PROVED in
+`LoopTheorem/BoundaryCaseOfCut.lean` with the frozen statement minus the unused instance
+`[PathConnectedSpace X]`, imported here, no longer a leaf): from one boundary branch cut, both
+candidates together with both
 boundary word witnesses over the four arc words, in the endpoint reversing and in the endpoint
 preserving alternative.  The preserving word is the one the review confirmed; no
 orientation-preserving comparison is added.
@@ -95,7 +98,8 @@ turn of a PL seam tube chart is again one.  Everything else about the turned tub
 linear automorphism `crossQuarterTurn`, which preserves `spliceCylinder`.
 
 `exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing` and `..._preserving` (lane F,
-F10, reviewed 2026-09-21 (external), statement frozen): the two boundary case assemblies of
+F10, PROVED in `LoopTheorem/BoundaryCaseFromTube.lean` with the frozen statements verbatim,
+imported here, no longer leaves): the two boundary case assemblies of
 `LoopTheorem.BoundarySurgeryCellPredicate` with the side and the boundary buffer added to the
 conclusion.  They supersede those two assemblies, whose conclusion records neither clause; the
 four added hypotheses are supplied by `isPLBoundarySide_double_of_normal` and by the tube
@@ -343,35 +347,6 @@ theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
     hclean hinj hE hfrontE hk hkT hkcompat hdisjoint hside hbuffer Δ hE' hEE' hE'int hQE'
     hE'clean hΔdom hΔinj hΔside hΔbd hΔmeet e hloop
 
-theorem exists_boundaryWordWitnesses_of_cut [T2Space M]
-    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
-    {A Cc : Set (EuclideanSpace ℝ (Fin 2))} {p q r s : EuclideanSpace ℝ (Fin 2)}
-    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
-    {D₁ D₂ D₃ : SingularTwoCell M}
-    (hcut : hD.IsBoundaryBranchCut c A Cc p q r s g D₁ D₂ D₃)
-    {X : Type v} [TopologicalSpace X] [PathConnectedSpace X]
-    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
-    (f : frontier D.domain → X) (hf : Continuous f)
-    (hfρ : ∀ z : frontier D.domain, ρ (f z) = ⇑D z) :
-    ∃ (p' q' u' v' : frontier D.domain) (σ₀ : Path p' q') (τ₀ : Path q' u')
-        (υ₀ : Path u' v') (φ₀ : Path v' p') (ev : loopCircle ≃ₜ frontier D.domain)
-        (Gd G : SingularTwoCell M),
-      hD.IsBoundarySurgeryCell c Gd ∧ hD.IsCrossRegluedCell c G ∧
-      (∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ) ∧
-      ((∃ (a b : X) (σ υ : Path a b) (τ φ : Path b a),
-          (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
-          (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
-          Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ.symm))) ∧
-          Nonempty (BoundaryWordWitness G ρ
-            (pathToCircle (σ.trans (φ.trans (υ.trans τ)))))) ∨
-        (∃ (a b : X) (σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a),
-          (∀ t, σ t = f (σ₀ t)) ∧ (∀ t, τ t = f (τ₀ t)) ∧
-          (∀ t, υ t = f (υ₀ t)) ∧ (∀ t, φ t = f (φ₀ t)) ∧
-          Nonempty (BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ))) ∧
-          Nonempty (BoundaryWordWitness G ρ
-            (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))))))) := by
-  sorry
-
 end NormalSingularCellData
 
 theorem exists_plCrossSeamReading_of_isCrossRegluedCell
@@ -438,103 +413,6 @@ namespace NormalSingularCellData
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
-
-theorem exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing
-    [T2Space M] {U : Set M} {hD : NormalSingularCellData D BdM B}
-    {c : hD.singularSet.Branch}
-    (T : CrossSeamTubeData hD c U) {G cell : SingularTwoCell M}
-    {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
-    (hdomain : cell.domain = G.domain)
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
-    (hreglued : EqOn G (T.chart ∘ crossSeamInclude ∘ coord)
-      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
-      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
-    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
-    (hG : hD.IsCrossRegluedCell c G)
-    (hendDisks : T.chart '' spliceEndDisks ⊆ B)
-    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
-      x ∈ frontier G.domain ↔ (coord x).2.2 = 0 ∨ (coord x).2.2 = 1)
-    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
-    (hBdM : B ⊆ BdM)
-    {W : Set M} (hside : MapsTo (⇑D) D.domain W)
-    (htubeW : T.chart '' spliceCylinder ⊆ W)
-    (hbufferD : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
-    (hendBuffer : ∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[BdM] z)
-    {Gd : SingularTwoCell M} (hGd : hD.IsBoundarySurgeryCell c Gd)
-    {Q : Type w} [TopologicalSpace Q] {p' q' u' v' : Q}
-    (σ₀ : Path p' q') (τ₀ : Path q' u') (υ₀ : Path u' v') (φ₀ : Path v' p')
-    (ev : loopCircle → Q)
-    (hev : ∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ)
-    {X : Type v} [TopologicalSpace X] [PathConnectedSpace X] {f : Q → X} {x a b : X}
-    {σ υ : Path a b} {τ φ : Path b a}
-    (hσ : ∀ t, σ t = f (σ₀ t)) (hτ : ∀ t, τ t = f (τ₀ t)) (hυ : ∀ t, υ t = f (υ₀ t))
-    (hφ : ∀ t, φ t = f (φ₀ t)) (γ : freeLoop X) (hγ : ∀ θ, γ θ = f (ev θ))
-    {N : Subgroup (FundamentalGroup X x)} [N.Normal] (hγN : ¬loopClassMeets γ x N)
-    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
-    (Wdirect : BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ.symm)))
-    (Wraw : BoundaryWordWitness G ρ (pathToCircle (σ.trans (φ.trans (υ.trans τ)))))
-    {Ω₁ Ω₂ : Set loopCircle} (hΩ₁ : IsClosed Ω₁) (hΩ₂ : IsClosed Ω₂)
-    (hcover : Ω₁ ∪ Ω₂ = univ)
-    (hcocont : ContinuousOn (fun θ => coord ↑(Wraw.param θ)) Ω₁)
-    (hΩ₁tube : ∀ θ ∈ Ω₁, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder)
-    (hΩ₁max : ∀ θ, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder → θ ∈ Ω₁)
-    (hlateral : ∀ θ ∈ Ω₁ ∩ Ω₂, (coord ↑(Wraw.param θ)).2.1 ∈ spliceSquareBoundary) :
-    ∃ (Sg : hD.DescendingSurgery) (e : loopCircle ≃ₜ frontier Sg.cell.domain)
-      (δ : freeLoop X),
-      MapsTo (⇑Sg.cell) Sg.cell.domain W ∧
-      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
-      (∀ θ, ρ (δ θ) = Sg.cell (e θ)) ∧ ¬loopClassMeets δ x N := by
-  sorry
-
-theorem exists_descendingSurgery_side_buffer_of_crossSeamTube_preserving
-    [T2Space M] {U : Set M} {hD : NormalSingularCellData D BdM B}
-    {c : hD.singularSet.Branch}
-    (T : CrossSeamTubeData hD c U) {G cell : SingularTwoCell M}
-    {coord : EuclideanSpace ℝ (Fin 2) → Bool × ((ℝ × ℝ) × ℝ)}
-    (hdomain : cell.domain = G.domain)
-    (hcoord : BijOn coord (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)) bentSource)
-    (hreglued : EqOn G (T.chart ∘ crossSeamInclude ∘ coord)
-      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
-    (hresolved : EqOn cell (T.chart ∘ crossSeamResolve ∘ coord)
-      (G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
-    (hcompl : EqOn cell G (G.domain \ ⇑G ⁻¹' (T.chart '' spliceCylinder)))
-    (hG : hD.IsCrossRegluedCell c G)
-    (hendDisks : T.chart '' spliceEndDisks ⊆ B)
-    (hends : ∀ x ∈ G.domain ∩ ⇑G ⁻¹' (T.chart '' spliceCylinder),
-      x ∈ frontier G.domain ↔ (coord x).2.2 = 0 ∨ (coord x).2.2 = 1)
-    (htubeBdM : T.chart '' spliceCylinder ∩ BdM ⊆ T.chart '' spliceEndDisks)
-    (hBdM : B ⊆ BdM)
-    {W : Set M} (hside : MapsTo (⇑D) D.domain W)
-    (htubeW : T.chart '' spliceCylinder ⊆ W)
-    (hbufferD : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
-    (hendBuffer : ∀ z ∈ T.chart '' spliceEndDisks, B ∈ 𝓝[BdM] z)
-    {Gd : SingularTwoCell M} (hGd : hD.IsBoundarySurgeryCell c Gd)
-    {Q : Type w} [TopologicalSpace Q] {p' q' u' v' : Q}
-    (σ₀ : Path p' q') (τ₀ : Path q' u') (υ₀ : Path u' v') (φ₀ : Path v' p')
-    (ev : loopCircle → Q)
-    (hev : ∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ)
-    {X : Type v} [TopologicalSpace X] [PathConnectedSpace X] {f : Q → X} {x a b : X}
-    {σ : Path a b} {τ : Path b b} {υ : Path b a} {φ : Path a a}
-    (hσ : ∀ t, σ t = f (σ₀ t)) (hτ : ∀ t, τ t = f (τ₀ t)) (hυ : ∀ t, υ t = f (υ₀ t))
-    (hφ : ∀ t, φ t = f (φ₀ t)) (γ : freeLoop X) (hγ : ∀ θ, γ θ = f (ev θ))
-    {N : Subgroup (FundamentalGroup X x)} [N.Normal] (hγN : ¬loopClassMeets γ x N)
-    {ρ : X → M} (hρ : IsEmbedding ρ) (hrange : B ⊆ Set.range ρ)
-    (Wdirect : BoundaryWordWitness Gd ρ (pathToCircle (σ.trans υ)))
-    (Wraw : BoundaryWordWitness G ρ
-      (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))))
-    {Ω₁ Ω₂ : Set loopCircle} (hΩ₁ : IsClosed Ω₁) (hΩ₂ : IsClosed Ω₂)
-    (hcover : Ω₁ ∪ Ω₂ = univ)
-    (hcocont : ContinuousOn (fun θ => coord ↑(Wraw.param θ)) Ω₁)
-    (hΩ₁tube : ∀ θ ∈ Ω₁, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder)
-    (hΩ₁max : ∀ θ, ⇑G ↑(Wraw.param θ) ∈ T.chart '' spliceCylinder → θ ∈ Ω₁)
-    (hlateral : ∀ θ ∈ Ω₁ ∩ Ω₂, (coord ↑(Wraw.param θ)).2.1 ∈ spliceSquareBoundary) :
-    ∃ (Sg : hD.DescendingSurgery) (e : loopCircle ≃ₜ frontier Sg.cell.domain)
-      (δ : freeLoop X),
-      MapsTo (⇑Sg.cell) Sg.cell.domain W ∧
-      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
-      (∀ θ, ρ (δ θ) = Sg.cell (e θ)) ∧ ¬loopClassMeets δ x N := by
-  sorry
 
 theorem exists_descendingSurgery_of_crossSeamReading [T2Space M] {U W : Set M}
     {hD : NormalSingularCellData D BdM B} {c : hD.singularSet.Branch}

@@ -22,7 +22,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 universe u
 
 open Classical in
-theorem exists_boundaryParam_paths_of_isCutPair_union
+theorem exists_boundaryParam_paths_of_isCutPair_union_with_endpoints
     {P R T : Set (EuclideanSpace ℝ (Fin 2))}
     {a b : EuclideanSpace ℝ (Fin 2)}
     (hR : Schoenflies.IsArcBetween R a b)
@@ -33,7 +33,9 @@ theorem exists_boundaryParam_paths_of_isCutPair_union
       Set.range (fun t => ((ρ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = R ∧
         Set.range (fun t => ((κ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = T ∧
           (∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
-            Function.Injective ρ ∧ Function.Injective κ := by
+            Function.Injective ρ ∧ Function.Injective κ ∧
+              (a' : EuclideanSpace ℝ (Fin 2)) = a ∧
+              (b' : EuclideanSpace ℝ (Fin 2)) = b := by
   have haR := hR.left_mem
   have hbR := hR.right_mem
   obtain ⟨f, hfc, hfi, hfimage, hf0, hf1⟩ := hR
@@ -166,7 +168,7 @@ theorem exists_boundaryParam_paths_of_isCutPair_union
   let e₀ : loopCircle ≃ frontier P := Equiv.ofBijective F ⟨hFinjective, hFsurjective⟩
   let e : loopCircle ≃ₜ frontier P :=
     Continuous.homeoOfEquivCompactToT2 (f := e₀) hFcontinuous
-  refine ⟨a', b', ρ, κ, e, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨a', b', ρ, κ, e, ?_, ?_, ?_, ?_, ?_, rfl, rfl⟩
   · ext x
     constructor
     · rintro ⟨t, rfl⟩
@@ -191,6 +193,22 @@ theorem exists_boundaryParam_paths_of_isCutPair_union
     rfl
   · exact fun s t hst => Subtype.ext (hfi s.property t.property (congrArg Subtype.val hst))
   · exact fun s t hst => Subtype.ext (hgi s.property t.property (congrArg Subtype.val hst))
+
+theorem exists_boundaryParam_paths_of_isCutPair_union
+    {P R T : Set (EuclideanSpace ℝ (Fin 2))}
+    {a b : EuclideanSpace ℝ (Fin 2)}
+    (hR : Schoenflies.IsArcBetween R a b)
+    (hT : Schoenflies.IsArcBetween T a b)
+    (hinter : R ∩ T = {a, b}) (hfront : frontier P = R ∪ T) :
+    ∃ (a' b' : frontier P) (ρ : Path a' b') (κ : Path b' a')
+        (e : loopCircle ≃ₜ frontier P),
+      Set.range (fun t => ((ρ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = R ∧
+        Set.range (fun t => ((κ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = T ∧
+          (∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
+            Function.Injective ρ ∧ Function.Injective κ := by
+  obtain ⟨a', b', ρ, κ, e, hρ, hκ, he, hρi, hκi, -, -⟩ :=
+    exists_boundaryParam_paths_of_isCutPair_union_with_endpoints hR hT hinter hfront
+  exact ⟨a', b', ρ, κ, e, hρ, hκ, he, hρi, hκi⟩
 
 private theorem IsPLOn.comp_isPiecewiseAffineOn
     {n m p : ℕ} {M : Type u} [TopologicalSpace M]
@@ -600,7 +618,7 @@ theorem exists_glue_of_isPLHomeomorphOn_boundary_arc
     · exact (hf₂ga hSarc.right_mem).trans (congrArg g ha₁)
 
 open Classical in
-theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
+theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs_with_source_arcs
     {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     (D₁ D₂ D₃ : SingularTwoCell M) {D : SingularTwoCell M}
@@ -659,8 +677,22 @@ theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
                 EuclideanSpace ℝ (Fin 2))) = R ∧
               Set.range (fun t => ((κ t : frontier G.domain) :
                 EuclideanSpace ℝ (Fin 2))) = T ∧
-              ∀ θ, e θ = pathToCircle (ρ.trans κ) θ := by
-  obtain ⟨H, P, Q, f₁, f₂, hP, hQ, -, hHdomain, -, -, -, hf₁, hf₂, -,
+              (∀ θ, e θ = pathToCircle (ρ.trans κ) θ) ∧
+              ∃ (R₀ T₀ SH : Set (EuclideanSpace ℝ (Fin 2)))
+                (pH qH : EuclideanSpace ℝ (Fin 2)),
+                Schoenflies.IsCutPair (frontier P) pH qH (P ∩ Q) R₀ ∧
+                Schoenflies.IsCutPair (frontier Q) pH qH (P ∩ Q) T₀ ∧
+                Schoenflies.IsCutPair (frontier H.domain)
+                  (Function.invFunOn f₂ Q a₀) (Function.invFunOn f₂ Q a₁) A' SH ∧
+                R₀ ⊆ SH ∧ SH = R₀ ∪ (SH ∩ T₀) ∧ h '' R = SH ∧
+                f₁ '' R₀ = D₁.domain ∩ frontier D.domain ∧
+                f₂ '' (SH ∩ T₀) = D₂.domain ∩ frontier D.domain ∧
+                f₃ '' T = D₃.domain ∩ frontier D.domain ∧
+                f₁ pH = a₀ ∧ f₁ qH = a₁ ∧ f₂ pH = g a₀ ∧ f₂ qH = g a₁ ∧
+                EqOn f₂ (g ∘ f₁) (P ∩ Q) ∧
+                (a' : EuclideanSpace ℝ (Fin 2)) = a ∧
+                (b' : EuclideanSpace ℝ (Fin 2)) = b := by
+  obtain ⟨H, P, Q, f₁, f₂, hP, hQ, -, hHdomain, -, -, -, hf₁, hf₂, hf₂f₁,
     hf₁seam, hf₂seam, hH₁, hH₂, pH, qH, R₀, T₀, hcutP, hcutQ, hR₀, -, hfrontH,
     hf₁pH, hf₁qH, hf₂pH, hf₂qH⟩ :=
     D₁.exists_glue_of_isPLHomeomorphOn_boundary_arc D₂ hA hcut₁.fst hcut₁.fst_subset hg
@@ -902,8 +934,9 @@ theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
     · rintro x (rfl | rfl)
       · exact ⟨hcutP'.snd.left_mem, hcutQ'.snd.left_mem⟩
       · exact ⟨hcutP'.snd.right_mem, hcutQ'.snd.right_mem⟩
-  obtain ⟨a', b', ρ, κ, e, hρrange, hκrange, he, hρinj, hκinj⟩ :=
-    exists_boundaryParam_paths_of_isCutPair_union hcutP'.snd hcutQ'.snd hRT hfrontG
+  obtain ⟨a', b', ρ, κ, e, hρrange, hκrange, he, hρinj, hκinj, ha'val, hb'val⟩ :=
+    exists_boundaryParam_paths_of_isCutPair_union_with_endpoints
+      hcutP'.snd hcutQ'.snd hRT hfrontG
   let σ : Path (G.boundary a') (G.boundary b') := ρ.map G.boundary.continuous
   let ω : Path (G.boundary b') (G.boundary a') := κ.map G.boundary.continuous
   have hσrange : Set.range σ = G '' R' := by
@@ -944,20 +977,98 @@ theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
     hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
     a, b, R', T', hcutP', hcutQ', hR', hT', hfrontG, hha, hhb, hf₃aeq, hf₃beq,
     G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam,
+    hGR'image, hGT'image, a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, he,
+    R₀, T₀, SH, pH, qH, hcutP, hcutQ, hcutH, hR₀SH, hSHsplit, hR'image,
+    hR₀image, hSHT₀image, hT'image, hf₁pH, hf₁qH, hf₂pH, hf₂qH, hf₂f₁, ha'val, hb'val⟩
+
+theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (D₁ D₂ D₃ : SingularTwoCell M) {D : SingularTwoCell M}
+    {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    (hA : IsPLBall 1 A) (hAC : Disjoint A C)
+    {a₀ a₁ : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hcover : D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain)
+    (hinter₁₂ : D₁.domain ∩ D₂.domain = A)
+    (hinter₂₃ : D₂.domain ∩ D₃.domain = C)
+    (hAfront₂ : A ⊆ frontier D₂.domain)
+    (hCfront₂ : C ⊆ frontier D₂.domain)
+    (hcut₁ : Schoenflies.IsCutPair (frontier D₁.domain) a₀ a₁ A
+      (D₁.domain ∩ frontier D.domain))
+    (hcut₃ : Schoenflies.IsCutPair (frontier D₃.domain) (g a₀) (g a₁) C
+      (D₃.domain ∩ frontier D.domain))
+    (hg : IsPLHomeomorphOn g A C)
+    (hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A)
+    (hcompat₂₃ : EqOn D₂ (D₃ ∘ g) A)
+    (hfun₁ : D₁.toFun = D.toFun) (hfun₂ : D₂.toFun = D.toFun)
+    (hfun₃ : D₃.toFun = D.toFun) :
+    ∃ (H G : SingularTwoCell M)
+      (P Q P' Q' : Set (EuclideanSpace ℝ (Fin 2)))
+      (f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+      (A' : Set (EuclideanSpace ℝ (Fin 2))),
+      IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
+      IsPLHomeomorphOn f₁ P D₁.domain ∧
+      IsPLHomeomorphOn f₂ Q D₂.domain ∧
+      f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = C ∧
+      EqOn H (D₁ ∘ f₁) P ∧ EqOn H (D₂ ∘ f₂) Q ∧
+      A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧ Disjoint A' (P ∩ Q) ∧
+      A' ⊆ frontier H.domain ∧
+      IsPLHomeomorphOn (g ∘ f₂) A' C ∧
+      IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
+      IsPLHomeomorphOn h P' H.domain ∧
+      IsPLHomeomorphOn f₃ Q' D₃.domain ∧
+      h '' (P' ∩ Q') = A' ∧ f₃ '' (P' ∩ Q') = C ∧
+      EqOn G (H ∘ h) P' ∧ EqOn G (D₃ ∘ f₃) Q' ∧
+      ∃ a b : EuclideanSpace ℝ (Fin 2),
+      ∃ R T : Set (EuclideanSpace ℝ (Fin 2)),
+        Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
+        Schoenflies.IsCutPair (frontier Q') a b (P' ∩ Q') T ∧
+        IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier G.domain = R ∪ T ∧
+        h a = Function.invFunOn f₂ Q a₀ ∧
+        h b = Function.invFunOn f₂ Q a₁ ∧
+        f₃ a = g a₀ ∧ f₃ b = g a₁ ∧
+        ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+            (e : loopCircle ≃ₜ frontier G.domain),
+          Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
+            (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+            G '' R = D '' ((D₁.domain ∪ D₂.domain) ∩ frontier D.domain) ∧
+            G '' T = D '' (D₃.domain ∩ frontier D.domain) ∧
+            ∃ (a' b' : frontier G.domain) (ρ : Path a' b') (κ : Path b' a'),
+              Function.Injective ρ ∧ Function.Injective κ ∧
+              Set.range (fun t => ((ρ t : frontier G.domain) :
+                EuclideanSpace ℝ (Fin 2))) = R ∧
+              Set.range (fun t => ((κ t : frontier G.domain) :
+                EuclideanSpace ℝ (Fin 2))) = T ∧
+              ∀ θ, e θ = pathToCircle (ρ.trans κ) θ := by
+  obtain ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
+    hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, hA'def, hA', hA'seam, hA'frontH, hk,
+    hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
+    a, b, R', T', hcutP', hcutQ', hR', hT', hfrontG, hha, hhb, hf₃aeq, hf₃beq,
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam,
+    hGR'image, hGT'image, a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, he, -⟩ :=
+    D₁.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs_with_source_arcs
+      D₂ D₃ hA hAC hcover hinter₁₂ hinter₂₃ hAfront₂ hCfront₂ hcut₁ hcut₃ hg
+      hcompat₁₂ hcompat₂₃ hfun₁ hfun₂ hfun₃
+  exact ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
+    hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, hA'def, hA', hA'seam, hA'frontH, hk,
+    hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
+    a, b, R', T', hcutP', hcutQ', hR', hT', hfrontG, hha, hhb, hf₃aeq, hf₃beq,
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam,
     hGR'image, hGT'image, a', b', ρ, κ, hρinj, hκinj, hρrange, hκrange, he⟩
 
 end SingularTwoCell
 
-theorem exists_three_segment_source_parameters
+theorem exists_three_segment_parameters_of_injective_param
     {S R T : Set (EuclideanSpace ℝ (Fin 2))}
-    {s₀ s₁ p q : EuclideanSpace ℝ (Fin 2)}
-    (hS : Schoenflies.IsArcBetween S s₀ s₁)
+    {p q : EuclideanSpace ℝ (Fin 2)}
+    (f : ℝ → EuclideanSpace ℝ (Fin 2))
+    (hfc : ContinuousOn f (Set.Icc 0 1)) (hfi : Set.InjOn f (Set.Icc 0 1))
+    (hfimage : f '' Set.Icc 0 1 = S)
     (hR : Schoenflies.IsArcBetween R p q)
     (hRsub : R ⊆ S) (hsplit : S = R ∪ (S ∩ T))
     (hpT : p ∈ T) (hqT : q ∈ T) :
-    ∃ (f : ℝ → EuclideanSpace ℝ (Fin 2)) (t₁ t₂ : ℝ),
-      ContinuousOn f (Set.Icc 0 1) ∧ Set.InjOn f (Set.Icc 0 1) ∧
-      f '' Set.Icc 0 1 = S ∧ f 0 = s₀ ∧ f 1 = s₁ ∧ f t₁ = p ∧ f t₂ = q ∧
+    ∃ t₁ t₂ : ℝ, f t₁ = p ∧ f t₂ = q ∧
       t₁ ∈ Set.Icc 0 1 ∧ t₂ ∈ Set.Icc 0 1 ∧ t₁ ≠ t₂ ∧
       ((t₁ < t₂ ∧
         (∀ t ∈ Set.Icc 0 t₁, f t ∈ T) ∧
@@ -967,8 +1078,8 @@ theorem exists_three_segment_source_parameters
         (∀ t ∈ Set.Icc 0 t₂, f t ∈ T) ∧
         (∀ t ∈ Set.Icc t₂ t₁, f t ∈ R) ∧
         (∀ t ∈ Set.Icc t₁ 1, f t ∈ T))) := by
-  have hS0 := hS
-  obtain ⟨f, hfc, hfi, hfimage, hf0, hf1⟩ := hS0
+  have hS : Schoenflies.IsArcBetween S (f 0) (f 1) :=
+    ⟨f, hfc, hfi, hfimage, rfl, rfl⟩
   have hpq : p ≠ q := by
     intro hpq
     obtain ⟨g, hgc, hgi, hgim, hg0, hg1⟩ := hR
@@ -1013,7 +1124,7 @@ theorem exists_three_segment_source_parameters
     · exact hzT
   rcases le_total s t with hstle | htsle
   · have hstlt : s < t := lt_of_le_of_ne hstle hst
-    refine ⟨f, s, t, hfc, hfi, hfimage, hf0, hf1, hsp, htq, hs, ht, hst,
+    refine ⟨s, t, hsp, htq, hs, ht, hst,
       Or.inl ⟨hstlt, ?_, ?_, ?_⟩⟩
     · intro z hz
       by_cases hzs : z = s
@@ -1036,7 +1147,7 @@ theorem exists_three_segment_source_parameters
         intro hzst
         exact hzt (le_antisymm hzst.2 hz.1)
   · have htslt : t < s := lt_of_le_of_ne htsle hst.symm
-    refine ⟨f, s, t, hfc, hfi, hfimage, hf0, hf1, hsp, htq, hs, ht, hst,
+    refine ⟨s, t, hsp, htq, hs, ht, hst,
       Or.inr ⟨htslt, ?_, ?_, ?_⟩⟩
     · intro z hz
       by_cases hzt : z = t
@@ -1058,6 +1169,31 @@ theorem exists_three_segment_source_parameters
         rw [Set.uIcc_of_ge htsle]
         intro hzts
         exact hzs (le_antisymm hzts.2 hz.1)
+
+theorem exists_three_segment_source_parameters
+    {S R T : Set (EuclideanSpace ℝ (Fin 2))}
+    {s₀ s₁ p q : EuclideanSpace ℝ (Fin 2)}
+    (hS : Schoenflies.IsArcBetween S s₀ s₁)
+    (hR : Schoenflies.IsArcBetween R p q)
+    (hRsub : R ⊆ S) (hsplit : S = R ∪ (S ∩ T))
+    (hpT : p ∈ T) (hqT : q ∈ T) :
+    ∃ (f : ℝ → EuclideanSpace ℝ (Fin 2)) (t₁ t₂ : ℝ),
+      ContinuousOn f (Set.Icc 0 1) ∧ Set.InjOn f (Set.Icc 0 1) ∧
+      f '' Set.Icc 0 1 = S ∧ f 0 = s₀ ∧ f 1 = s₁ ∧ f t₁ = p ∧ f t₂ = q ∧
+      t₁ ∈ Set.Icc 0 1 ∧ t₂ ∈ Set.Icc 0 1 ∧ t₁ ≠ t₂ ∧
+      ((t₁ < t₂ ∧
+        (∀ t ∈ Set.Icc 0 t₁, f t ∈ T) ∧
+        (∀ t ∈ Set.Icc t₁ t₂, f t ∈ R) ∧
+        (∀ t ∈ Set.Icc t₂ 1, f t ∈ T)) ∨
+       (t₂ < t₁ ∧
+        (∀ t ∈ Set.Icc 0 t₂, f t ∈ T) ∧
+        (∀ t ∈ Set.Icc t₂ t₁, f t ∈ R) ∧
+        (∀ t ∈ Set.Icc t₁ 1, f t ∈ T))) := by
+  obtain ⟨f, hfc, hfi, hfimage, hf0, hf1⟩ := hS
+  obtain ⟨t₁, t₂, h₁, h₂, ht₁, ht₂, hne, hparts⟩ :=
+    exists_three_segment_parameters_of_injective_param f hfc hfi hfimage
+      hR hRsub hsplit hpT hqT
+  exact ⟨f, t₁, t₂, hfc, hfi, hfimage, hf0, hf1, h₁, h₂, ht₁, ht₂, hne, hparts⟩
 
 theorem exists_cross_source_segment_equations
     {M : Type u} [TopologicalSpace M]
@@ -1236,6 +1372,264 @@ theorem exists_cross_source_segment_equations
       have hz : 1 - t ∈ Set.Icc 0 r₂ := by
         exact ⟨by linarith [ht.2, hr₂.1], by linarith [ht.1]⟩
       exact hEqT (1 - t) (hrevmap t htI) (hbackward.2.1 _ hz)
+
+theorem exists_cross_source_segment_equations_with_source_data
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D D₁ D₂ H G : SingularTwoCell M}
+    {P Q P' Q' R T R₀ T₀ SH : Set (EuclideanSpace ℝ (Fin 2))}
+    {pH qH s₀ s₁ a b : EuclideanSpace ℝ (Fin 2)}
+    {f₁ f₂ h f₃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hS : Schoenflies.IsArcBetween SH s₀ s₁)
+    (hR₀ : Schoenflies.IsArcBetween R₀ pH qH)
+    (hR₀sub : R₀ ⊆ SH) (hsplit : SH = R₀ ∪ (SH ∩ T₀))
+    (hpH_T₀ : pH ∈ T₀) (hqH_T₀ : qH ∈ T₀)
+    (hSHfront : SH ⊆ frontier H.domain)
+    (hRimage : h '' R = SH) (hRsub : R ⊆ P')
+    (haR : a ∈ R) (hbR : b ∈ R)
+    (hha : h a = s₀) (hhb : h b = s₁)
+    (hh : IsPLHomeomorphOn h P' H.domain)
+    (hR₀P : R₀ ⊆ P) (hT₀Q : T₀ ⊆ Q)
+    (hH₁ : EqOn H (D ∘ f₁) P) (hH₂ : EqOn H (D ∘ f₂) Q)
+    (hGH : EqOn G (H ∘ h) P')
+    (hseam : EqOn f₂ (g ∘ f₁) (P ∩ Q))
+    (hR₀image : f₁ '' R₀ = D₁.domain ∩ frontier D.domain)
+    (hSHT₀image : f₂ '' (SH ∩ T₀) = D₂.domain ∩ frontier D.domain)
+    (hTsub : T ⊆ Q') (hG₃ : EqOn G (D ∘ f₃) Q') :
+    ∃ (ρ : ℝ → EuclideanSpace ℝ (Fin 2)) (t₁ t₂ : ℝ),
+      ContinuousOn ρ (Set.Icc 0 1) ∧ Set.InjOn ρ (Set.Icc 0 1) ∧
+      ρ '' Set.Icc 0 1 = R ∧
+      ((ρ 0 = a ∧ ρ 1 = b) ∨ (ρ 0 = b ∧ ρ 1 = a)) ∧
+      t₁ ∈ Set.Icc 0 1 ∧ t₂ ∈ Set.Icc 0 1 ∧ t₁ < t₂ ∧
+      (∀ t ∈ Set.Icc 0 t₁, G (ρ t) = D (f₂ (h (ρ t)))) ∧
+      (∀ t ∈ Set.Icc t₁ t₂, G (ρ t) = D (f₁ (h (ρ t)))) ∧
+      (∀ t ∈ Set.Icc t₂ 1, G (ρ t) = D (f₂ (h (ρ t)))) ∧
+      (∀ z ∈ T, G z = D (f₃ z)) ∧
+      (∀ t ∈ Set.Icc 0 t₁, f₂ (h (ρ t)) ∈ D₂.domain ∩ frontier D.domain) ∧
+      (∀ t ∈ Set.Icc t₁ t₂, f₁ (h (ρ t)) ∈ D₁.domain ∩ frontier D.domain) ∧
+      (∀ t ∈ Set.Icc t₂ 1, f₂ (h (ρ t)) ∈ D₂.domain ∩ frontier D.domain) ∧
+      f₂ (h (ρ t₁)) = g (f₁ (h (ρ t₁))) ∧
+      f₂ (h (ρ t₂)) = g (f₁ (h (ρ t₂))) := by
+  obtain ⟨s, r₁, r₂, hsc, hsi, hsimage, hs0, hs1, hsr₁, hsr₂, hr₁, hr₂, hne,
+    hparts⟩ := exists_three_segment_source_parameters hS hR₀ hR₀sub hsplit hpH_T₀ hqH_T₀
+  have hsH : ∀ t ∈ Set.Icc (0 : ℝ) 1, s t ∈ H.domain := by
+    intro t ht
+    exact H.isPLBall_domain.isPolyhedron.isClosed.frontier_subset
+      (hSHfront (hsimage ▸ Set.mem_image_of_mem s ht))
+  let j := Function.invFunOn h P'
+  have hjc : ContinuousOn j H.domain := by
+    simpa only [j] using hh.symm.isPiecewiseAffineOn.continuousOn
+  let ρ : ℝ → EuclideanSpace ℝ (Fin 2) := j ∘ s
+  have hρc : ContinuousOn ρ (Set.Icc 0 1) := by
+    exact hjc.comp hsc hsH
+  have hρeq : ∀ t ∈ Set.Icc (0 : ℝ) 1, h (ρ t) = s t := by
+    intro t ht
+    change h (j (s t)) = s t
+    exact hh.bijOn.invOn_invFunOn.2 (hsH t ht)
+  have hρR : ∀ t ∈ Set.Icc (0 : ℝ) 1, ρ t ∈ R := by
+    intro t ht
+    have hst : s t ∈ h '' R := hRimage ▸ hsimage ▸ Set.mem_image_of_mem s ht
+    obtain ⟨z, hzR, hzs⟩ := hst
+    have hzP' : z ∈ P' := hRsub hzR
+    have hzj : j (h z) = z := hh.bijOn.invOn_invFunOn.1 hzP'
+    have hzt : ρ t = z := by
+      calc
+        ρ t = j (s t) := rfl
+        _ = j (h z) := congrArg j hzs.symm
+        _ = z := hzj
+    exact hzt ▸ hzR
+  have hρi : Set.InjOn ρ (Set.Icc (0 : ℝ) 1) := by
+    intro x hx y hy hxy
+    apply hsi hx hy
+    have h := congrArg h hxy
+    rw [hρeq x hx, hρeq y hy] at h
+    exact h
+  have hρimage : ρ '' Set.Icc (0 : ℝ) 1 = R := by
+    apply Set.Subset.antisymm
+    · rintro z ⟨t, ht, rfl⟩
+      exact hρR t ht
+    · intro z hz
+      have hzh : h z ∈ SH := hRimage ▸ Set.mem_image_of_mem h hz
+      obtain ⟨t, ht, hst⟩ := hsimage ▸ hzh
+      refine ⟨t, ht, ?_⟩
+      have hzP' : z ∈ P' := hRsub hz
+      have hzj : j (h z) = z := hh.bijOn.invOn_invFunOn.1 hzP'
+      calc
+        ρ t = j (s t) := rfl
+        _ = j (h z) := congrArg j hst
+        _ = z := hzj
+  have hEqT : ∀ t ∈ Set.Icc (0 : ℝ) 1, s t ∈ T₀ →
+      G (ρ t) = D (f₂ (h (ρ t))) := by
+    intro t ht hT
+    have hRP : ρ t ∈ P' := hRsub (hρR t ht)
+    calc
+      G (ρ t) = H (h (ρ t)) := by simpa only [Function.comp_apply] using hGH hRP
+      _ = H (s t) := congrArg H (hρeq t ht)
+      _ = D (f₂ (s t)) := hH₂ (hT₀Q hT)
+      _ = D (f₂ (h (ρ t))) := congrArg (fun z => D (f₂ z)) (hρeq t ht).symm
+  have hEqR : ∀ t ∈ Set.Icc (0 : ℝ) 1, s t ∈ R₀ →
+      G (ρ t) = D (f₁ (h (ρ t))) := by
+    intro t ht hR
+    have hRP : ρ t ∈ P' := hRsub (hρR t ht)
+    calc
+      G (ρ t) = H (h (ρ t)) := by simpa only [Function.comp_apply] using hGH hRP
+      _ = H (s t) := congrArg H (hρeq t ht)
+      _ = D (f₁ (s t)) := hH₁ (hR₀P hR)
+      _ = D (f₁ (h (ρ t))) := congrArg (fun z => D (f₁ z)) (hρeq t ht).symm
+  have hEq3 : ∀ z ∈ T, G z = D (f₃ z) := by
+    intro z hz
+    simpa only [Function.comp_apply] using hG₃ (hTsub hz)
+  have hSourceT : ∀ t ∈ Set.Icc (0 : ℝ) 1, s t ∈ T₀ →
+      f₂ (h (ρ t)) ∈ D₂.domain ∩ frontier D.domain := by
+    intro t ht hT
+    have hSHt : s t ∈ SH := by
+      rw [← hsimage]
+      exact ⟨t, ht, rfl⟩
+    have himage : f₂ (s t) ∈ D₂.domain ∩ frontier D.domain := by
+      rw [← hSHT₀image]
+      exact ⟨s t, ⟨hSHt, hT⟩, rfl⟩
+    rw [hρeq t ht]
+    exact himage
+  have hSourceR : ∀ t ∈ Set.Icc (0 : ℝ) 1, s t ∈ R₀ →
+      f₁ (h (ρ t)) ∈ D₁.domain ∩ frontier D.domain := by
+    intro t ht hR
+    have himage : f₁ (s t) ∈ D₁.domain ∩ frontier D.domain := by
+      rw [← hR₀image]
+      exact ⟨s t, hR, rfl⟩
+    rw [hρeq t ht]
+    exact himage
+  have hseamAt : ∀ t ∈ Set.Icc (0 : ℝ) 1, s t ∈ R₀ → s t ∈ T₀ →
+      f₂ (h (ρ t)) = g (f₁ (h (ρ t))) := by
+    intro t ht hR hT
+    have hP : h (ρ t) ∈ P := by
+      rw [hρeq t ht]
+      exact hR₀P hR
+    have hQ : h (ρ t) ∈ Q := by
+      rw [hρeq t ht]
+      exact hT₀Q hT
+    simpa only [Function.comp_apply] using hseam ⟨hP, hQ⟩
+  have hja : j s₀ = a := by
+    calc
+      j s₀ = j (h a) := congrArg j hha.symm
+      _ = a := hh.bijOn.invOn_invFunOn.1 (hRsub haR)
+  have hjb : j s₁ = b := by
+    calc
+      j s₁ = j (h b) := congrArg j hhb.symm
+      _ = b := hh.bijOn.invOn_invFunOn.1 (hRsub hbR)
+  rcases hparts with hforward | hbackward
+  · refine ⟨ρ, r₁, r₂, hρc, hρi, hρimage, ?_, hr₁, hr₂, hforward.1, ?_, ?_, ?_, hEq3,
+      ?_, ?_, ?_, ?_, ?_⟩
+    · left
+      constructor
+      · calc
+          ρ 0 = j (s 0) := rfl
+          _ = j s₀ := congrArg j hs0
+          _ = a := hja
+      · calc
+          ρ 1 = j (s 1) := rfl
+          _ = j s₁ := congrArg j hs1
+          _ = b := hjb
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith [ht.1], by linarith [ht.2, hr₁.2]⟩
+      exact hEqT t htI (hforward.2.1 t ht)
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith [ht.1, hr₁.1], by linarith [ht.2, hr₂.2]⟩
+      exact hEqR t htI (hforward.2.2.1 t ht)
+    · intro t ht
+      exact hEqT t ⟨by linarith [ht.1, hr₂.1], by linarith [ht.2]⟩
+        (hforward.2.2.2 t ht)
+    · intro t ht
+      exact hSourceT t ⟨by linarith [ht.1], by linarith [ht.2, hr₁.2]⟩
+        (hforward.2.1 t ⟨ht.1, ht.2⟩)
+    · intro t ht
+      exact hSourceR t ⟨by linarith [ht.1, hr₁.1], by linarith [ht.2, hr₂.2]⟩
+        (hforward.2.2.1 t ht)
+    · intro t ht
+      exact hSourceT t ⟨by linarith [ht.1, hr₂.1], by linarith [ht.2]⟩
+        (hforward.2.2.2 t ht)
+    · exact hseamAt r₁ ⟨hr₁.1, hr₁.2⟩
+        (hforward.2.2.1 r₁ ⟨le_rfl, le_of_lt hforward.1⟩)
+        (hforward.2.1 r₁ ⟨hr₁.1, le_rfl⟩)
+    · exact hseamAt r₂ ⟨hr₂.1, hr₂.2⟩
+        (hforward.2.2.1 r₂ ⟨le_of_lt hforward.1, le_rfl⟩)
+        (hforward.2.2.2 r₂ ⟨le_rfl, hr₂.2⟩)
+  · let ρ' : ℝ → EuclideanSpace ℝ (Fin 2) := fun t => ρ (1 - t)
+    have hrevmap : ∀ t ∈ Set.Icc (0 : ℝ) 1, 1 - t ∈ Set.Icc 0 1 := by
+      intro t ht
+      exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+    have hrevcont : ContinuousOn ρ' (Set.Icc (0 : ℝ) 1) := by
+      dsimp [ρ']
+      exact hρc.comp (continuousOn_const.sub continuousOn_id) hrevmap
+    have hrevinj : Set.InjOn ρ' (Set.Icc (0 : ℝ) 1) := by
+      intro x hx y hy hxy
+      have hxy' := hρi (hrevmap x hx) (hrevmap y hy) hxy
+      linarith
+    have hrevimage : ρ' '' Set.Icc (0 : ℝ) 1 = R := by
+      apply Set.Subset.antisymm
+      · rintro z ⟨t, ht, rfl⟩
+        exact hρR (1 - t) (hrevmap t ht)
+      · intro z hz
+        rw [← hρimage] at hz
+        obtain ⟨t, ht, hzt⟩ := hz
+        refine ⟨1 - t, hrevmap t ht, ?_⟩
+        dsimp [ρ']
+        rw [show 1 - (1 - t) = t by ring, hzt]
+    have hrev₁ : 1 - r₁ ∈ Set.Icc (0 : ℝ) 1 := by
+      exact ⟨by linarith [hr₁.2], by linarith [hr₁.1]⟩
+    have hrev₂ : 1 - r₂ ∈ Set.Icc (0 : ℝ) 1 := by
+      exact ⟨by linarith [hr₂.2], by linarith [hr₂.1]⟩
+    have hnewlt : 1 - r₁ < 1 - r₂ := by linarith [hbackward.1]
+    refine ⟨ρ', 1 - r₁, 1 - r₂, hrevcont, hrevinj, hrevimage, ?_, hrev₁, hrev₂,
+      hnewlt, ?_, ?_, ?_, hEq3, ?_, ?_, ?_, ?_, ?_⟩
+    · right
+      constructor
+      · change ρ (1 - 0) = b
+        rw [show 1 - (0 : ℝ) = 1 by norm_num, show ρ 1 = j (s 1) by rfl, hs1, hjb]
+      · change ρ (1 - 1) = a
+        rw [show 1 - (1 : ℝ) = 0 by norm_num, show ρ 0 = j (s 0) by rfl, hs0, hja]
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith [ht.1], by linarith [ht.2, hrev₁.2]⟩
+      have hz : 1 - t ∈ Set.Icc r₁ 1 := by
+        exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+      exact hEqT (1 - t) (hrevmap t htI) (hbackward.2.2.2 _ hz)
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 :=
+        ⟨by linarith [ht.1, hrev₁.1], by linarith [ht.2, hrev₂.2]⟩
+      have hz : 1 - t ∈ Set.Icc r₂ r₁ := by
+        exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+      exact hEqR (1 - t) (hrevmap t htI) (hbackward.2.2.1 _ hz)
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith [ht.1, hrev₂.1], by linarith [ht.2]⟩
+      have hz : 1 - t ∈ Set.Icc 0 r₂ := by
+        exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+      exact hEqT (1 - t) (hrevmap t htI) (hbackward.2.1 _ hz)
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 :=
+        ⟨by linarith [ht.1], by linarith [ht.2, hr₁.1]⟩
+      have hz : 1 - t ∈ Set.Icc r₁ 1 := by
+        exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+      exact hSourceT (1 - t) (hrevmap t htI) (hbackward.2.2.2 _ hz)
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 :=
+        ⟨by linarith [ht.1, hrev₁.1], by linarith [ht.2, hrev₂.2]⟩
+      have hz : 1 - t ∈ Set.Icc r₂ r₁ := by
+        exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+      exact hSourceR (1 - t) (hrevmap t htI) (hbackward.2.2.1 _ hz)
+    · intro t ht
+      have htI : t ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith [ht.1, hrev₂.1], by linarith [ht.2]⟩
+      have hz : 1 - t ∈ Set.Icc 0 r₂ := by
+        exact ⟨by linarith [ht.2], by linarith [ht.1]⟩
+      exact hSourceT (1 - t) (hrevmap t htI) (hbackward.2.1 _ hz)
+    · change f₂ (h (ρ (1 - (1 - r₁)))) = g (f₁ (h (ρ (1 - (1 - r₁)))))
+      rw [show 1 - (1 - r₁) = r₁ by ring]
+      exact hseamAt r₁ ⟨hr₁.1, hr₁.2⟩
+        (hbackward.2.2.1 r₁ ⟨le_of_lt hbackward.1, le_rfl⟩)
+        (hbackward.2.2.2 r₁ ⟨le_rfl, hr₁.2⟩)
+    · change f₂ (h (ρ (1 - (1 - r₂)))) = g (f₁ (h (ρ (1 - (1 - r₂)))))
+      rw [show 1 - (1 - r₂) = r₂ by ring]
+      exact hseamAt r₂ ⟨hr₂.1, hr₂.2⟩
+        (hbackward.2.2.1 r₂ ⟨le_rfl, le_of_lt hbackward.1⟩)
+        (hbackward.2.1 r₂ ⟨hr₂.1, le_rfl⟩)
 
 open Classical in
 theorem exists_cross_glue_source_segments
@@ -1527,5 +1921,111 @@ theorem exists_cross_glue_source_segments
     hP, hQ, hHdomain, hf₁, hf₂, hH₁', hH₂', hP', hQ', hGdomain, hh, hf₃,
     hGH, hG₃', hcutP', hcutQ', hR', hT', hfrontG, hha, hhb, hf₃aeq, hf₃beq,
     hρc, hρi, hρimage, hρends, ht₁, ht₂, htlt, hρleft, hρmid, hρright, hT⟩
+
+open Classical in
+theorem exists_cross_glue_source_segments_with_source_data
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (D₁ D₂ D₃ : SingularTwoCell M) {D : SingularTwoCell M}
+    {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    (hA : IsPLBall 1 A) (hAC : Disjoint A C)
+    {a₀ a₁ : EuclideanSpace ℝ (Fin 2)}
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hcover : D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain)
+    (hinter₁₂ : D₁.domain ∩ D₂.domain = A)
+    (hinter₂₃ : D₂.domain ∩ D₃.domain = C)
+    (hAfront₂ : A ⊆ frontier D₂.domain)
+    (hCfront₂ : C ⊆ frontier D₂.domain)
+    (hcut₁ : Schoenflies.IsCutPair (frontier D₁.domain) a₀ a₁ A
+      (D₁.domain ∩ frontier D.domain))
+    (hcut₃ : Schoenflies.IsCutPair (frontier D₃.domain) (g a₀) (g a₁) C
+      (D₃.domain ∩ frontier D.domain))
+    (hg : IsPLHomeomorphOn g A C)
+    (hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A)
+    (hcompat₂₃ : EqOn D₂ (D₃ ∘ g) A)
+    (hfun₁ : D₁.toFun = D.toFun)
+    (hfun₂ : D₂.toFun = D.toFun)
+    (hfun₃ : D₃.toFun = D.toFun) :
+    ∃ (H G : SingularTwoCell M)
+      (P Q P' Q' R T : Set (EuclideanSpace ℝ (Fin 2)))
+      (f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+      (a b : EuclideanSpace ℝ (Fin 2))
+      (ρ : ℝ → EuclideanSpace ℝ (Fin 2)) (t₁ t₂ : ℝ),
+      IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
+      IsPLHomeomorphOn f₁ P D₁.domain ∧ IsPLHomeomorphOn f₂ Q D₂.domain ∧
+      EqOn H (D.toFun ∘ f₁) P ∧ EqOn H (D.toFun ∘ f₂) Q ∧
+      IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
+      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' D₃.domain ∧
+      EqOn G (H.toFun ∘ h) P' ∧ EqOn G (D.toFun ∘ f₃) Q' ∧
+      Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
+      Schoenflies.IsCutPair (frontier Q') a b (P' ∩ Q') T ∧
+      IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier G.domain = R ∪ T ∧
+      h a = Function.invFunOn f₂ Q a₀ ∧ h b = Function.invFunOn f₂ Q a₁ ∧
+      f₃ a = g a₀ ∧ f₃ b = g a₁ ∧
+      ContinuousOn ρ (Set.Icc 0 1) ∧ Set.InjOn ρ (Set.Icc 0 1) ∧
+      ρ '' Set.Icc 0 1 = R ∧
+      ((ρ 0 = a ∧ ρ 1 = b) ∨ (ρ 0 = b ∧ ρ 1 = a)) ∧
+      t₁ ∈ Set.Icc 0 1 ∧ t₂ ∈ Set.Icc 0 1 ∧ t₁ < t₂ ∧
+      (∀ t ∈ Set.Icc 0 t₁, G (ρ t) = D (f₂ (h (ρ t)))) ∧
+      (∀ t ∈ Set.Icc t₁ t₂, G (ρ t) = D (f₁ (h (ρ t)))) ∧
+      (∀ t ∈ Set.Icc t₂ 1, G (ρ t) = D (f₂ (h (ρ t)))) ∧
+      (∀ z ∈ T, G z = D (f₃ z)) ∧
+      (∀ t ∈ Set.Icc 0 t₁, f₂ (h (ρ t)) ∈ D₂.domain ∩ frontier D.domain) ∧
+      (∀ t ∈ Set.Icc t₁ t₂, f₁ (h (ρ t)) ∈ D₁.domain ∩ frontier D.domain) ∧
+      (∀ t ∈ Set.Icc t₂ 1, f₂ (h (ρ t)) ∈ D₂.domain ∩ frontier D.domain) ∧
+      f₂ (h (ρ t₁)) = g (f₁ (h (ρ t₁))) ∧
+      f₂ (h (ρ t₂)) = g (f₁ (h (ρ t₂))) ∧
+      ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+        Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
+          (∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ) ∧
+          ∃ (a' b' : frontier G.domain) (ρG : Path a' b') (κG : Path b' a'),
+            Function.Injective ρG ∧ Function.Injective κG ∧
+            Set.range (fun t => ((ρG t : frontier G.domain) :
+              EuclideanSpace ℝ (Fin 2))) = R ∧
+            Set.range (fun t => ((κG t : frontier G.domain) :
+              EuclideanSpace ℝ (Fin 2))) = T ∧
+            ∀ θ, e θ = pathToCircle (ρG.trans κG) θ := by
+  obtain ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
+    hf₁, hf₂, -, -, hH₁, hH₂, -, -, -, -, -, hP', hQ', hGdomain, hh, hf₃,
+    -, -, hGH, hG₃, a, b, R, T, hcutP', hcutQ', hR, hT', hfrontG,
+    hha, hhb, hf₃a, hf₃b, x, y, σ, ω, e, hσrange, hωrange, hparam, -, -,
+    a', b', ρG, κG, hρGinj, hκGinj, hρGrange, hκGrange, he,
+    R₀, T₀, SH, pH, qH, hcutP, hcutQ, hcutH, hR₀SH, hSHsplit, hRimage,
+    hR₀image, hSHT₀image, -, -, -, -, -, hseam, -, -⟩ :=
+    D₁.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs_with_source_arcs
+      D₂ D₃ hA hAC hcover hinter₁₂ hinter₂₃ hAfront₂ hCfront₂ hcut₁ hcut₃ hg
+      hcompat₁₂ hcompat₂₃ hfun₁ hfun₂ hfun₃
+  have hH₁' : EqOn H (D.toFun ∘ f₁) P := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₁] using hH₁ hz
+  have hH₂' : EqOn H (D.toFun ∘ f₂) Q := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₂] using hH₂ hz
+  have hG₃' : EqOn G (D.toFun ∘ f₃) Q' := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₃] using hG₃ hz
+  obtain ⟨ρ, t₁, t₂, hρc, hρi, hρimage, hρends, ht₁, ht₂, htlt,
+    hρleft, hρmid, hρright, hT, hsourceLeft, hsourceMid, hsourceRight,
+    hseam₁, hseam₂⟩ :=
+    exists_cross_source_segment_equations_with_source_data (D := D) (H := H) (G := G)
+      (P := P) (Q := Q) (P' := P') (Q' := Q') (R := R) (T := T)
+      (R₀ := R₀) (T₀ := T₀) (SH := SH) (pH := pH) (qH := qH)
+      (a := a) (b := b) (f₁ := f₁) (f₂ := f₂) (h := h) (f₃ := f₃) (g := g)
+      hcutH.snd hcutP.snd hR₀SH hSHsplit hcutQ.snd.left_mem hcutQ.snd.right_mem
+      hcutH.snd_subset hRimage
+      (hcutP'.snd_subset.trans hP'.isPolyhedron.isClosed.frontier_subset)
+      hcutP'.snd.left_mem hcutP'.snd.right_mem hha hhb hh
+      (hcutP.snd_subset.trans hP.isPolyhedron.isClosed.frontier_subset)
+      (hcutQ.snd_subset.trans hQ.isPolyhedron.isClosed.frontier_subset)
+      hH₁' hH₂' hGH hseam hR₀image hSHT₀image
+      (hcutQ'.snd_subset.trans hQ'.isPolyhedron.isClosed.frontier_subset) hG₃'
+  exact ⟨H, G, P, Q, P', Q', R, T, f₁, f₂, h, f₃, a, b, ρ, t₁, t₂,
+    hP, hQ, hHdomain, hf₁, hf₂, hH₁', hH₂', hP', hQ', hGdomain, hh, hf₃,
+    hGH, hG₃', hcutP', hcutQ', hR, hT', hfrontG, hha, hhb, hf₃a, hf₃b,
+    hρc, hρi, hρimage, hρends, ht₁, ht₂, htlt, hρleft, hρmid, hρright, hT,
+    hsourceLeft, hsourceMid, hsourceRight, hseam₁, hseam₂,
+    x, y, σ, ω, e, hσrange, hωrange, hparam,
+    a', b', ρG, κG, hρGinj, hκGinj, hρGrange, hκGrange, he⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
