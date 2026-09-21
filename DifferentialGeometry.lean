@@ -12609,3 +12609,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalCapCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalCanonicalWitness
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.DoubledTame
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.DoubledTameConsumer
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.QuadraticBounds
+import DifferentialGeometry.Geometry.Metric.DirectLimit.Convergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.QuadraticBounds
+import DifferentialGeometry.Geometry.Metric.DirectLimit.Curvature
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Curvature
