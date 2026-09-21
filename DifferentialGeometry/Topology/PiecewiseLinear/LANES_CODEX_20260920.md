@@ -226,11 +226,10 @@ F1、F5 的两个 `…_of_plReading_of_boundaryCover`、F6 全部带假设
 第 82–83 行：七个阶段是在**整个**局部有限族上一次完成的 PL 延拓 E1–E7，误差估计**只**来自载体包含
 (C1) `h(C_v) ∪ V_v ⊂ H_v`、`h(Q_t) ∪ R_t ⊂ H_t` 与 `diam H_α < η`，没有任何 `ε` 序列。
 
-- **第二处独立的假：P0 的载体按塔的阶段 `i` 编号。** `carrierCore i : h '' coreSpace i ⊆ carrier i` 加
-  `carrierSmall i : ∀ x ∈ coreSpace i, ∀ y ∈ carrier i, dist y (h x) < η x`，而 `coreSpace` 递增：同一阶段里
-  两点 `x ≠ x'` 给出 `dist (h x') (h x) < η x`，取 `η ≡ dist (h x) (h x') / 2` 即矛盾。所以
-  `Section34SourceData D η` 对小 `η` 无居留，P0 为假。A2 摘要里载体 `H_α` 是按局部有限三角剖分的
-  **单形 `α`** 编号的（`h(|St α|) ⊂ Int H_α`，`diam H_α < η` 于 `|St α|`）。
+- **第二处独立的假：P0 的载体按塔的阶段 `i` 编号——对任何 `η` 都无居留。** 取 `x ∈ coreSpace k`；`coreSpace`
+  递增，所以 `x` 属于其后所有阶段，`carrierCore` 给出 `h x ∈ carrier i`（一切 `i ≥ k`），与
+  `LocallyFinite carrier`（点有限）矛盾，还没用到小性。（lead 原先的小性论证把量词写反了：塔依赖 `η`，
+  必须先固定 `U` 中两点再取 `η`；D 答复指出，已改。）A2/D 里载体 `H_α` 按局部有限三角剖分的**单形 `α`** 编号。
 - **E3.6′ 重做装配**：删掉 `Section34StageContract`、`exists_stage_maps`、`exists_approximation`。
   P8 的产出是**块与关联式**（(V)、(TT)），不是阶段映射。装配定理内部用 E3.3（阶段 2）、E3.4（阶段
   2b–7，局部有限族一次延拓）把 E1–E7 真的做出来，得到 `f : U → M₂` PL 嵌入；`dist (f x) (h x) < φ x`
@@ -314,3 +313,44 @@ TrivalentDualCellLocallyFiniteModification,LocallyFiniteHomeomorphTower,LocallyF
 LocallyFiniteSolidTorusModification,SolidTorusOpenNeighborhood,CommonCircleSolidTorusTransport}`，以及下游
 `SurfaceCutKernel`、`SphericalShellCompression`。这些模块的**陈述尚未经 lead 逐条阅读**（不在主链上）；谁要
 消费其中任何一条，先按今晚的空洞检查读它的假设。
+
+### Prompt D 的答复已回（`consult/D-answer-digest.md`）——四处空洞全部确认，三条车道的指令据此更新
+
+**车道 E3（E3.6′ 的目标形状，取代上面的草案）：**
+- 不要塔。终端装配 = **局部有限带标签 PL 胞腔装配定理**：同一分次面偏序集上的两族紧 PL 球 `(P_λ)`、`(P'_λ)`
+  （维数 ≤ 3），边界 = 真面之并，`P_λ ∩ P_μ = ⋃_{ν ≤ λ, μ} P_ν`（两侧都成立），在各自并集内局部有限 ⇒ 存在把每个
+  `P_λ` 映到 `P'_λ` 的 PL 同胚（按维数 1、2、3 归纳，每个球延拓只选一次；用局部有限闭粘合同时得到映射**和逆**）。
+  这是 E3.4 `UniformBallExtension` + E3.3 的直接消费者，E1–E7 就是它的各行。
+- `Section34FinalDiagram D η` := 上述源/靶胞腔数据（源并 = `U`）+ (C1) `h(C_v) ∪ V_v ⊂ H_v`、`h(Q_t) ∪ R_t ⊂ H_t`，
+  **不含任何"存在映射"的字段**。端点：`(∀ D η, Nonempty (Section34FinalDiagram D η)) → Moise352Open 3`，误差由
+  (C0c)+(C1)。
+- P0 的控制条款：载体按单形 `α` 编号，控制支集 `S_α = ⋃_{v ∈ α} |St̄ v|`；(C0a) `h(S_α) ⊂ Int H_α`、`H_α ⊂ h(U)`；
+  (C0b) `(H_α)` 在**子空间 `h(U)`** 内局部有限；(C0c) `∀ x ∈ S_α, ∀ y z ∈ H_α, dist y z < η x`。
+  **P0 不得冻结 `N`**：P0 只定三角剖分、载体、缓冲与对源邻域的约束；`N, f₁` 由 P1 联合选取（或把 P0、P1 合并）。
+- 各 P_i 的产出是**块与关联式**（表见摘要）；`h σ ⊂ Int C_σ` 压缩后不保留。
+- 非空洞夹具：`h = id` + 足够细的标准三角剖分给出匹配的源/靶图；P4 的测试要另外引入一个可消去的 bigon / 边界指。
+
+**车道 F：**
+- 单弧引理用更强的形式：`P₁` 只需 `range P₁ ⊆ range P₀`，不需单射、不需值域相等
+  （`P₁ = P₀ ∘ r`，`H (s,t) = P₀ ((1−s) r t + s t)`）；正向、反向各一条。
+- 类型纪律：`τ₀ : q → u` 与 `σ₀ : p → q` 在源圆周里**不能拼接**（`u ≠ p`）；逐弧在源里比较 → 过 `f` → 才在 `X` 里拼。
+  候选的证书按弧记录：落在哪条源弧、源端点的有序对（符号）、在该弧上与 `ρ ∘ f` 的逐点等式。
+- `IsBoundarySurgeryCell.pullback` 是集合论选取，**不连续**，别拿它当连续映射用；direct 候选也走逐弧的连续 PL 映射。
+- `Nonempty (BoundaryWordWitness G ρ w) ↔ Nonempty (… (w ∘ r))`（`r` 为反射）可把方向二分收成一条引理。
+- **F10 结论强度缺口（已核对 `BoundarySurgeryCellPredicate.lean:339` 对 `LemmaTwoSpine.lean:124`）：** 边界情形
+  组装只给出 surgery + 避开正规子群；`DescentStepStatement` 还要 `MapsTo Sg.cell … C`（侧）与边界缓冲
+  `∀ z ∈ range Sg.cell.boundary, B ∈ 𝓝[Bd] z`。需要管子 producer 提供 `闭柱 ⊂ C`、`端盘 ⊂ Int_{Bd} B`，组装的结论
+  据此加强（append-only 新定理）。
+- **F11 联合夹具（D 答复称"下一个决定性的非空洞测试"）：** 一个定理同时实例化真实的正规边界支、它的 direct 与
+  cross 候选、边界相对的 PL 管、PL 读法和两个边界词 witness。模型：preserving——`ℓ` 过
+  `(2,0),(−1,0),(−2,−2),(0,−1),(0,2)`，`D (s,t) = (ℓ s, t)`，唯一二重点 `ℓ (2/3) = ℓ (10/3)`；reversing——
+  `ℝ³/((x,y,z) ∼ (x+1,y,1−z))` 里 `D (s,t) = [s, |s − 1/2|, t]`。排在 F7/F8 之后。
+
+**车道 S：** `IsCrossSeamTubeProducer` 缺 `[T2Space M]`，请在真实的 double 上陈述；Lemma C 的产出必须含
+`闭柱 ⊂ C` 与 `端盘 ⊂ Int_{Bd} B`（F10 要消费）。
+
+**四条车道共用的新纪律（加进验收）：** (a) 对**同一个共享元组**测试全部假设的合取，并带 `Nondegenerate` 子句
+（非零复杂度 / 正误差 / 非 PL 的 `h`）；(b) 常备 `∀ γ : Path x x, ¬ Function.Injective γ`；(c) 容差探针：固定当前
+界、令下一个界 → 0，以及粗容差 + 不可延拓嵌入；(d) 局部有限探针：指标类型、环境/子空间、对递增族查点有限；
+(e) `∃ d, H d`、`∀ d, H d → ∃ o, C d o`、`∃ o, C d₀ o` 三者互不替代；恒等特化（如 `exists_of_twoArcMatch_self`）
+不是居留者。
