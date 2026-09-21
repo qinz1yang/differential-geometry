@@ -155,7 +155,9 @@ at all other vertices; it is inhabited for every `τ > 0` by the unperturbed ver
 which is how the generic leaf's `τ` is fed back into the frozen leaf's `τ₀`.
 
 The leaves, with owner and review state.  The eight leaves marked frozen are byte-identical with
-the reviewed snapshot; the six remaining leaves were changed after review AB and are unreviewed.
+the reviewed snapshot.  The six leaves of design Y passed the tenth review (digest AG): five as
+they stood, `exists_wallGenericVertexMap` after the one interface repair it prescribed; all
+fourteen leaves are now frozen.
 
 `exists_adaptedHalfSpaceChart_in_double` (lane H, reviewed 2026-09-21, frozen): every point of
 the double of a combinatorial three manifold with boundary has arbitrarily small charts of the
@@ -191,41 +193,54 @@ It fixes `R`, `τ₀` and the compact `Kt` before any vertex map and asserts, fo
 assembly path**: `hprot`, because all normality now comes from the blocks, and `hpersist`, the
 current-chart blocks with margin `η / 2`, because those blocks carry no support type.
 
-`exists_commonWallComplex` (design Y, changed after review AB, unreviewed): stated for the
-double itself, so that the realisation is the given one: from the finite chart family, its
-adaptedness to the pair and a cover `⋃ i, V i = univ` of the double, a *subdivision* `Q` of the
+`exists_commonWallComplex` (design Y, reviewed OK, frozen): stated for the
+double itself, so that the realisation is the given one: from the finite chart family and its
+adaptedness to the pair, a *subdivision* `Q` of the
 double complex `double 3 K`, with `ρ` the subtype coercion, forming a common wall system with
-the two compact layers and the star clause.  Its proof has to subdivide `double 3 K` so that
-`C` and `BdM` become subcomplexes — they are subpolyhedra because every chart of the cover
-reads them as a half space `0 ≤ ℓ` and its boundary plane, and the cover is finite — and then
-to subdivide further so that every chart becomes affine on the cells of its compact layer,
-which is where `exists_transitionSubdivisionOnOverlap` enters.  Without the cover hypothesis
-the statement is false: with `n = 0` nothing constrains `C`, and `eqC` cannot be produced.
+the two compact layers and the star clause.  `C` and `BdM` are subcomplexes of `double 3 K`
+already, so no cover of the double is assumed: the cover belongs to the global assembly, the
+chart readings `0 ≤ ℓ`, `ℓ = 0` supply `chartC`, `chartBd`, and `chartAtlas` supplies the piecewise
+linear compatibility; the proof subdivides so that every chart becomes affine on the cells of
+its compact layer, which is where `exists_transitionSubdivisionOnOverlap` enters.  `wallSides`
+has to come from the face incidence of a closed three manifold, `double 3 K` being one by
+`isCombinatorialManifold_double_succ_succ`, preserved under subdivision; it does not follow
+from `dimLe` and `memCell` alone.  A wall of `BdM` still has two cells, exactly one of them in
+`Cf`, which is what `boundarySides` says.
 
-`wallProductBlock_transport` (design Y, changed after review AB, unreviewed): the computation
+`wallProductBlock_transport` (design Y, reviewed OK, frozen): the computation
 (*) from the certificate's `chartAffine`, transporting a wall product block of one chart to a
 wall product block of another chart *for the same certificate*, on a smaller outer block centred
 at a prescribed inner point and localised into a prescribed open set, with the same `La`, `Lb`,
-`η`.
+`η`.  Its two proof obligations follow from the fields: a *nonempty* relatively open piece of a
+wall contains three affinely independent points and so spans the wall plane; and the affine map
+of `chartAffine` is inverted only after restriction to `affineSpan ℝ ↑c` of a three cell, where
+it is injective and both sides have dimension three, never on the whole ambient `Ea`.
 
-`hasStableCrossingBlocks_of_wallProductBlocks` (design Y, changed after review AB, unreviewed):
+`hasStableCrossingBlocks_of_wallProductBlocks` (design Y, reviewed OK, frozen):
 over a compact `Z'` inside `interior (Eb i₀)` the wall product blocks transport to margin-stable
 blocks in the chart `i₀`.  Its proof is the single-block transport plus a finite subcover of the
 compact set `doublePointSet f S ∩ Z'`, which lies in `C` by `hmapC`; `Z' ⊆ C` is *not*
 assumed.  It is the only supplier of the frozen seed's `hstable`.
 
-`wallProductBlocks_stable_on_fixedSubdivision` (design Y, changed after review AB, unreviewed):
+`wallProductBlocks_stable_on_fixedSubdivision` (design Y, reviewed OK as stated, frozen):
 on the final `R` of the frozen seed, and with its facewise affineness `hlinear`, there is
 `0 < τ ≤ τ₀` such that every admissible `φ` with error `< τ` keeps a wall-adapted certificate
-over `Z` with margin `η / 2` *for the same `Q`, `ρ`*.  No subdivision is made after `τ`.
+over `Z` with margin `η / 2` *for the same `Q`, `ρ`*.  No subdivision is made after `τ`.  "The
+same `Q`, `ρ`" is not "the same wall label block by block": the conclusion quantifies the new
+block family afresh and promises no correspondence with the old one.  The present consumer
+needs only existence; a consumer that used the old type (ii) wall would need named witnesses
+and a refinement relation with equal wall labels.
 
-`exists_wallGenericVertexMap` (design Y, changed after review AB, unreviewed): relative density
-of the finite wall conditions, for free germs only — the four-point guard, free germs avoid
+`exists_wallGenericVertexMap` (design Y, repaired as review ten prescribed, frozen): relative
+density of the finite wall conditions, for free germs only — the four-point guard, free germs avoid
 `wallSystemSkeleton Q ρ`, a double point on the image of a source edge of an *interior* free
 germ avoids every wall, and at a free interior germ on a wall the double point set accumulates
-in both adjacent open three cells.  It receives `hlinear`.
+in both adjacent open three cells.  It receives `hlinear`, and `hVE : closure V ⊆ interior (Eb i₀)`:
+`hVec` alone puts the active region in the chart, where `chartAffine` says nothing unless whole
+cells lie in the layer `Eb' i₀`; with `hVE`, the finite mesh and `hlinear` let the perturbation be
+shrunk until the interpolated image stays in the layer, and `starLayer` then reaches `chartAffine`.
 
-`wallProductBlocks_of_wallGenericity` (design Y, changed after review AB, unreviewed):
+`wallProductBlocks_of_wallGenericity` (design Y, reviewed OK, frozen):
 recognition of the four free models — three cell interior triangle-triangle, source fold edge,
 interior wall, physical boundary — giving the whole certificate over `closure (W k)`.  It
 receives the continuity `hgcont` and the two-point fibres `hgfiber` of the *new* map.
@@ -1666,7 +1681,7 @@ theorem exists_commonWallComplex {E : Type} [NormedAddCommGroup E] [NormedSpace 
       (∀ i, ec i ∈ (plGroupoid 3).maximalAtlas (double 3 K).space) → (∀ i, ℓ i ≠ 0) →
         (∀ i, ∀ x ∈ (ec i).source, x ∈ C ↔ 0 ≤ ℓ i (ec i x)) →
         (∀ i, ∀ x ∈ (ec i).source, x ∈ Bd ↔ ℓ i (ec i x) = 0) →
-        (∀ i, closure (V i) ⊆ (ec i).source) → (⋃ i, V i) = univ →
+        (∀ i, closure (V i) ⊆ (ec i).source) →
         ∃ (Q : Geometry.SimplicialComplex ℝ (E × E × ℝ))
           (Cf Bf : Set (Finset (E × E × ℝ))) (Eb Eb' : Fin n → Set (double 3 K).space),
           IsSubdivision Q (double 3 K) ∧ (∀ i, closure (V i) ⊆ interior (Eb i)) ∧
@@ -2058,6 +2073,7 @@ theorem exists_wallGenericVertexMap (D : SingularTwoCell M) {BdM C V : Set M} {�
     (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
     (hmapC : MapsTo (⇑D) D.domain C) (hVec : V ⊆ (ecf i₀).source)
+    (hVE : closure V ⊆ interior (Eb i₀))
     (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     (hLR : Lc.faces ⊆ Rc.faces) (hAR : Ac.faces ⊆ Rc.faces)
     (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
@@ -2180,23 +2196,12 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
     exists_finiteAdaptedCover_of_compactSpace Bd C
       fun y U hU => exists_adaptedHalfSpaceChart_in_double K S.isManifold y U hU
   choose ecf ℓf hecf hℓf hVclf hCf hBdf using hcharts
-  have hVcover : (⋃ i : Fin n, V i.1) = univ := by
-    refine eq_univ_of_forall fun x => ?_
-    have hx : x ∈ ⋃ j, W j := by
-      rw [huniv]
-      exact mem_univ x
-    obtain ⟨j, hj⟩ := mem_iUnion.mp hx
-    have hjn : j < n := by
-      by_contra hjn
-      rw [hWn j (not_lt.mp hjn)] at hj
-      exact absurd hj (notMem_empty x)
-    exact mem_iUnion.2 ⟨⟨j, hjn⟩, hWV j (subset_closure hj)⟩
   obtain ⟨Qc, Cf, Bf, Eb, Eb', hQsub, hVEint, hsys⟩ :=
     exists_commonWallComplex K S.isManifold n (fun i : Fin n => V i.1)
       (fun i : Fin n => ecf i.1 i.isLt) (fun i : Fin n => ℓf i.1 i.isLt)
       (fun i : Fin n => hecf i.1 i.isLt) (fun i : Fin n => hℓf i.1 i.isLt)
       (fun i : Fin n => hCf i.1 i.isLt) (fun i : Fin n => hBdf i.1 i.isLt)
-      (fun i : Fin n => hVclf i.1 i.isLt) hVcover
+      (fun i : Fin n => hVclf i.1 i.isLt)
   have hVW : ∀ j, V j ⊆ ⋃ i, W i := by
     intro j
     rw [huniv]
@@ -2286,7 +2291,7 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
           obtain ⟨Bv, φ, hadm, hguard, hgenskel, hgenfold, hgencross⟩ :=
             exists_wallGenericVertexMap cl (fun i : Fin n => ecf i.1 i.isLt)
               (fun i : Fin n => ℓf i.1 i.isLt) Eb Eb' ⟨k, hk⟩ hsys hclpr hclC hVec
-              Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin hlinear hτ
+              (hVEint ⟨k, hk⟩) Rc Lc Ac hLR hAR hRdom hRV hLspace R hsub hRsfin hlinear hτ
           obtain ⟨hpl, hsmall, hfrozen, hpnonneg, hpzero, hsep, hmaps, hgK, hstarG, -, -⟩ :=
             hcontrol Bv φ (hadm.mono hτle)
           obtain ⟨cl', hdom', hglue, hglueoff⟩ :=
