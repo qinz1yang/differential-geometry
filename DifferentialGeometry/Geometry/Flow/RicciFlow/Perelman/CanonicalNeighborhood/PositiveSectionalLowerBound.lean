@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.SectionalOrthonormalization
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Positivity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciReaction
@@ -352,3 +353,46 @@ theorem rmNormSq_le_of_secLower_zero_of_scalar_le
       rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Bundle Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [CompactSpace M]
+
+theorem exists_pos_secLower_of_compact_positive_sectional
+    (g : SmoothRiemannianMetric I3 M) (hsec : HasPositiveSectionalCurvature g) :
+    ∃ c : ℝ, 0 < c ∧ SecLower g c univ := by
+  obtain ⟨c, hc, hbound⟩ := hsec.exists_uniform_sectional_quotient_bound
+  refine ⟨c, hc, ?_⟩
+  intro x _hx u v
+  change c * (g.inner x u u * g.inner x v v - g.inner x u v ^ 2) ≤
+    metricRm04StandardAt g x u v v u
+  by_cases hlin : LinearIndependent ℝ ![u, v]
+  · exact (le_div_iff₀ (gram_determinant_pos g x u v hlin)).mp (hbound x u v hlin)
+  · rw [metricRm04StandardAt_eq_zero_of_not_linearIndependent g x u v hlin]
+    have hgram : g.inner x u u * g.inner x v v - g.inner x u v ^ 2 = 0 := by
+      by_cases hu : u = 0
+      · simp [hu]
+      · rw [LinearIndependent.pair_iff' hu] at hlin
+        push Not at hlin
+        obtain ⟨a, rfl⟩ := hlin
+        simp only [map_smul, smul_apply, smul_eq_mul]
+        ring
+    rw [hgram, mul_zero]
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+end
