@@ -12533,3 +12533,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderDiagonalSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectiveCapDomain
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
+import DifferentialGeometry.Topology.Manifold.FiniteGraphBarrierLevel
