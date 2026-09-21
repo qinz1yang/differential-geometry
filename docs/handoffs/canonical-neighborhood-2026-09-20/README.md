@@ -1842,3 +1842,45 @@ References: the user's September 21 attachment, Sections 2–3; Chow–Lu–Ni, 
 `BooksPapers/MorganTianPoincare.pdf`, Section 10.4, Lemma 10.21. The subsequent
 limiting-angle triangle inequality uses the existing unequal-radius Euclidean
 sector proof, not the invalid finite-angle assertion in the printed Lemma 10.22.
+
+### Limiting angles and rescaled radial distances
+
+`Toponogov.limitingRadialAngleKernel` constructs the existing `AngleKernel`
+from a minimizing radial family with coordinatewise monotone comparison angles.
+It includes repeated-index cases in the triangle inequality and uses the proved
+unequal-radius sector argument for distinct indices. Thus its zero-angle quotient
+carries the existing genuine metric, with no finite-comparison-angle triangle
+inequality assumed. The finite-horn self-angle and triangle declarations retain
+their statements as corollaries of these general metric-space results.
+
+`Toponogov.dist_le_sqrt_limitingRadialAngle` proves the distance upper bound by
+the cone cosine law. `Toponogov.tendsto_rescaled_radial_distance` proves, for each
+pair of rays and positive radii, convergence of distance divided by the shrinking
+scale to the cosine-law distance. The limit concerns fixed radii and fixed rays;
+it does not assert uniform convergence over the whole direction space.
+These APIs live in `Geometry/Comparison/Toponogov/LimitingRadialAngleKernel.lean`
+and `RadialDistance.lean` and are registered in the flat root.
+
+Eight public declarations passed all thirteen declaration linters. All transitive
+axiom closures are subsets of `propext`, `Classical.choice`, and `Quot.sound`.
+The leaves and immediate consumer passed 10,810 build jobs. Evidence:
+`/private/tmp/wt17-direction-kernel-build.log` and
+`/private/tmp/wt17-direction-kernel-audit.log`.
+
+The reduced essential gap is the construction of the angular metric and the
+pairwise distance limit needed for the finite-net cone argument. Compactness of
+the completed direction space still needs its neck-sphere packing producer.
+The finite-net convergence, two-direction scale comparison, smooth cone patch,
+and buffered source estimates remain open. No persistent mathematical blockage
+was encountered in this layer; the remaining work is identified mathematical
+infrastructure rather than a failed implication. No switch to Ultra is indicated
+by this layer.
+
+References: the user's September 21 attachment, Sections 3 and 5;
+Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Section 10.4,
+Lemma 10.25 and Proposition 10.29, printed pages 260–262. The corrected
+limiting-angle proof replaces the invalid finite-angle step in Lemma 10.22.
+
+The full root build passed 20,217 jobs with exactly the 21 retained `sorry`
+warnings and no other diagnostics. Evidence:
+`/private/tmp/wt17-direction-kernel-root-build.log`.

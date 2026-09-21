@@ -3748,6 +3748,8 @@ import DifferentialGeometry.Geometry.Comparison.Toponogov.FarTriangleAngles
 import DifferentialGeometry.Geometry.Comparison.Toponogov.HingeAlgebra
 import DifferentialGeometry.Geometry.Comparison.Toponogov.HingeComparison
 import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngle
+import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngleKernel
+import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialDistance
 import DifferentialGeometry.Geometry.Comparison.Toponogov.AngleKernel
 import DifferentialGeometry.Geometry.Comparison.Toponogov.LowerSupportConvexity
 import DifferentialGeometry.Geometry.Comparison.Toponogov.MetricComparisonAngle
