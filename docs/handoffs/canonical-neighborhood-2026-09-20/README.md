@@ -4,6 +4,23 @@ This phase starts from handoff commit `4d7a0cbc071b3b10f5540a339772a9401a0814b3`
 the previous proof commit `3b12c1abf575960b58f7adca8f73c54c7ea5049b`. Work remains on
 `codex/pc-work-2026-09-17`.
 
+## Current status: bounded curvature at distance proved
+
+As of 2026-09-21, `FiniteHorn.bounded_curvature_at_distance` is proved with its
+original declaration text unchanged. It gives both `BoundedAtDistance` and
+`TerminalDerivativeBounds` for every sufficiently small normalized sequence.
+The proof constructs the local terminal cone chart on the produced backward
+flow, derives the cone contradiction, and uses the proved endpoint derivative
+estimates. Its transitive axioms are exactly `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+The full project passes 20,247 jobs with 20 retained sorry warnings in 11 files.
+The larger `arbitrary_high_curvature_blowup` theorem remains unfinished: its
+exactly two reachable proof holes are `terminal_limit_global_bound` and
+`ancient_extension`. Historical gap descriptions below refer to their dated
+checkpoints. The original kappa-solutions handoff script's fixed counts of 21
+holes and three reachable blockers remain snapshot checks.
+
 ## Proven source estimates
 
 Commit `12a12b7800bec88f9beff085043e7f510a175f47` proves the following results.
@@ -2767,3 +2784,50 @@ diagnostics. Evidence:
 `/private/tmp/wt17-normalized-cone-exclusion-build.log`,
 `/private/tmp/wt17-normalized-cone-exclusion-audit.log`, and
 `/private/tmp/wt17-normalized-cone-exclusion-root-build.log`.
+
+
+## Bounded curvature at distance and terminal derivatives
+
+The continuation after `aafa46520` proves `exists_boundedAtDistance` in
+`NormalizedBoundedCurvature.lean` and replaces the original proof hole in
+`FiniteHornStructure.lean:bounded_curvature_at_distance`.
+
+From failure of bounded curvature at distance, the existing normalized neck
+producer supplies the canonical terminal limit, the intrinsic punctured end,
+compact completion neighborhood, and punctured-cone approximation. The new
+consumer takes the centers indexed by `n + 2` on the end curve. Their scalar
+curvatures tend to infinity, their intrinsic distances to the missing tip equal
+the remaining curve lengths, and the proved annular estimates give a lower
+curvature-distance bound greater than 196 and a finite upper bound. These are
+precisely the inputs of `normalized_end_cone_exclusion`; every input is derived
+from the existing producer. This proves scalar boundedness at every fixed
+terminal distance. The uniform epsilon threshold in `exists_boundedAtDistance`
+depends only on kappa.
+
+The original headline combines that estimate with
+`exists_terminalDerivativeBounds_of_boundedAtDistance`. Bounds are for each
+fixed derivative order at the genuine terminal endpoint. Its declaration text,
+including all hypotheses and both conclusions, is unchanged. No source is
+assumed ancient, exactly nonnegatively curved, or extendible to a common positive
+time, and no constant uniform over derivative orders is introduced.
+
+Both changed leaves compiled in a 14,255-job build. The only leaf warnings were
+the two explicitly retained, unrelated holes in `FiniteHornStructure.lean`.
+The two completed declarations passed all thirteen applicable declaration
+linters and each has exactly the three approved axioms. The full root and all
+affected dependents passed 20,247 jobs with 20 retained sorry warnings and no
+other diagnostics. The source inventory contains 20 actual holes in 11 files.
+A fresh dependency walk finds exactly `terminal_limit_global_bound` and
+`ancient_extension` as the remaining reachable holes in
+`arbitrary_high_curvature_blowup`. The requested bounded-distance milestone is
+complete; the full Poincare development and high-curvature blowup theorem are
+not complete.
+
+Evidence retained outside the repository:
+
+- `/private/tmp/wt17-bounded-curvature-at-distance-build.log`
+- `/private/tmp/wt17-bounded-curvature-at-distance-audit.lean` and `.log`
+- `/private/tmp/wt17-bounded-curvature-at-distance-root-build.log`
+- `/private/tmp/wt17-bounded-curvature-at-distance-debt.lean` and `.log`
+- `/private/tmp/wt17-bounded-curvature-at-distance-sorry-inventory.txt`
+- `/private/tmp/wt17-bounded-curvature-original-declaration.txt`

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedBoundedCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedTerminalDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeConvergence
@@ -1430,6 +1432,11 @@ theorem bounded_curvature_at_distance {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
         BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
-  sorry
+  obtain ⟨epsBound, hepsBound, hbound⟩ := exists_boundedAtDistance.{u} hkappa
+  obtain ⟨epsDeriv, hepsDeriv, hderiv⟩ := exists_terminalDerivativeBounds_of_boundedAtDistance.{u} hkappa
+  refine ⟨min epsBound epsDeriv, lt_min hepsBound hepsDeriv, ?_⟩
+  intro eps heps hle X
+  have hb := hbound eps heps (hle.trans (min_le_left _ _)) sigma hsigma Phi hPhi X
+  exact ⟨hb, hderiv eps heps (hle.trans (min_le_right _ _)) sigma hsigma Phi hPhi X hb⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
