@@ -81,7 +81,7 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 | A2.4b′ | the PL reading, for the tube chart **or** its quarter turn, given the tube's boundary equality (leaf `exists_plCrossSeamReading_of_isCrossRegluedCell`) | open (lanes F/S); **frozen** after repair |
 | A2.4c | boundary branch: assemblies conclude side + buffer | **PROVED** `…exists_descendingSurgery_side_buffer_of_crossSeamTube_reversing`, `…_preserving` (`LoopTheorem/BoundaryCaseFromTube.lean`; frozen statements verbatim; lane F, audited 2026-09-21) |
 | A2.4d | joint non-degenerate fixture: branch + both candidates + tube + reading + both witnesses on one tuple | open (F11), **partial 2026-09-21**: on one tuple — a genuine normal disk of complexity exactly 2 (first non-degenerate inhabitant of `NormalSingularCellData`), two boundary branches, the actual tube with side containment and boundary equality, the explicit cross candidate and its PL reading; the retained cap's boundary is not injective (`crossingProductCell_exists_crossReading`, `LoopTheorem/CrossRegluedSourceProductCut.lean`; lead audit clean). Still owed: the direct candidate with both word witnesses on the same tuple, a regular neighbourhood with buffer (`IsPLBoundarySide` not yet produced: corner half-space charts), the reversing model; until then A2.4 stays UNTESTED as a whole |
-| A2.5 | wiring into the statement | **PROVED modulo the leaves above**: `descentStepOrientableStatement` in `Skeleton/DescentStepOrientable.lean` compiles with exactly 10 `sorry` leaves and none in the assembly (checked 2026-09-21) |
+| A2.5 | wiring into the statement | **PROVED modulo the leaves above**: `descentStepOrientableStatement` in `Skeleton/DescentStepOrientable.lean` compiles with exactly 7 `sorry` leaves and none in the assembly (checked 2026-09-21) |
 
 ### B — §34–35 side
 | ID | Item | Status |
@@ -112,6 +112,15 @@ complexes orientable, `Moise252 → Moise304 → Moise305Tame`.
 
 ### D — external
 | **D1** | smooth Poincaré theorem and its use on the smooth manifold produced above | main repository. As read on 2026-09-21: `smoothPoincareConjecture` is a `Prop` definition (unproved, producers conditional) in a gitignored worktree of the main checkout, `…/Surgery/Poincare.lean:30`; hypotheses `ChartedSpace (EuclideanSpace ℝ (Fin 3))`, `IsManifold (𝓡 3) ∞`, T2, compact, connected, simply connected; `topologicalPoincareConjecture_of_smoothStructureInput` (`:56`) is already stated against our output shape. Interface mismatches are one-liners (`Nonempty (IsManifold …)`, `ULift` of the target) |
+
+**Due-diligence pass on the frozen leaves (2026-09-21, `consult/M-frozen-leaves-due-diligence.md`):**
+an independent read-only audit unfolded every definition of the 15 frozen leaves: 13 confirmed,
+2 suspect, 0 defect; the lead checked both suspects against the source and fixed them —
+the 2b cap leaf had a vacuous binder `W` (its side hypothesis was really `Disjoint V BdM`; now
+stated so), and the A1 crossing leaf did not receive the local injectivity of the glued cell that
+its only proved supplier needs (now passed; the assembly had it). The three hypotheses added on the
+reviewer's FALSE verdicts (`IsClosed BdM`, `HasGroupoid`, `MetricSpace`/`CompactSpace`) were found
+justified, suppliable and essentially minimal.
 
 ## Deliberately NOT on the goal path (may stay open forever)
 Unrestricted `Moise251`; the non-orientable loop theorem and the one-circle closed case in a

@@ -279,7 +279,7 @@ theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
     (hE : IsPLBall 2 E) (hfrontE : frontier E = T)
     (hk : IsPLHomeomorphOn k E Q) (hkT : k '' T = J) (hkcompat : EqOn (⇑D) (⇑D ∘ k) T)
     (hdisjoint : Disjoint Q E)
-    {V W : Set M} (hV : IsOpen V) (hQV : ⇑D '' Q ⊆ V) (hVW : V ⊆ interior (W \ BdM)) :
+    {V : Set M} (hV : IsOpen V) (hQV : ⇑D '' Q ⊆ V) (hVBd : Disjoint V BdM) :
     ∃ (E' : Set (EuclideanSpace ℝ (Fin 2))) (Δ : SingularTwoCell M),
       IsPLBall 2 E' ∧ E ⊆ interior E' ∧ E' ⊆ interior D.domain ∧ Disjoint Q E' ∧
         (E' \ E) ∩ doublePointPreimage (⇑D) D.domain = ∅ ∧
@@ -342,7 +342,8 @@ theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
       (hside.image_sdiff_frontier_subset_interior_sdiff hD.preimage_boundary_eq_frontier)
   obtain ⟨E', Δ, hE', hEE', hE'int, hQE', hE'clean, hΔdom, hΔinj, hΔside, hΔbd, hΔmeet⟩ :=
     hD.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk hc hJ hT hJT hpre hQ hQsub
-      hfrontQ hclean hinj hE hfrontE hk hkT hkcompat hdisjoint isOpen_interior hQV Subset.rfl
+      hfrontQ hclean hinj hE hfrontE hk hkT hkcompat hdisjoint isOpen_interior hQV
+      (Set.disjoint_left.mpr fun _ hz hzBd => (interior_subset hz).2 hzBd)
   exact hD.exists_descendingSurgery_of_adaptedCleanCap hc hJ hT hJT hpre hQ hQsub hfrontQ
     hclean hinj hE hfrontE hk hkT hkcompat hdisjoint hside hbuffer Δ hE' hEE' hE'int hQE'
     hE'clean hΔdom hΔinj hΔside hΔbd hΔmeet e hloop

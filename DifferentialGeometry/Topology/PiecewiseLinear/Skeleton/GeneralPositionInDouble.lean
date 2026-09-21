@@ -725,6 +725,7 @@ theorem exists_normalCrossings_of_gluedCell (D D' : SingularTwoCell M)
     {ψ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
     (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
     (hfiber' : ∀ y, (D'.domain ∩ ⇑D' ⁻¹' {y}).encard ≤ 2)
+    (hloc' : ∀ x ∈ D'.domain, ∃ U ∈ 𝓝[D'.domain] x, InjOn (⇑D') U)
     (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
     (hnormal : ∀ y ∈ doublePointSet (⇑D) D.domain ∩ O,
       ∃ e₀ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₀.source ∧
@@ -909,7 +910,7 @@ theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStateme
               hRV hLspace hΩ hΩR hNb hNbfr hNbA R φ hsub hsmall hfrozen hpnonneg hpzero
               hchartbuf hbdbuf hdom' hglue hglueoff
           obtain ⟨O', hO'open, hO'Z, hcross'⟩ :=
-            exists_normalCrossings_of_gluedCell cell cell' hcellfib hcard' hcellpr hOkcross
+            exists_normalCrossings_of_gluedCell cell cell' hcellfib hcard' hloc' hcellpr hOkcross
               hOkopen hOkZ (hWopen k) (hWV k) (hVopen k) hKcpt.isClosed hUopen hU'open hUO
               hZKU' hχ hχimage hχbd hψ' hpair' ec ℓ hec hℓ hVec hCchart hBdchart Rc Lc Ac
               hRfin hRman hRdom hRV hLspace hDK hD'K hΩ hΩcover hΩR R Bv φ hε hsub hRsfin
