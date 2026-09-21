@@ -12385,3 +12385,12 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Boundary
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Sphere
 import DifferentialGeometry.Topology.SphereSeparation.Innermost
 import DifferentialGeometry.Topology.SphereSeparation.InnermostBall
+import DifferentialGeometry.Analysis.Calculus.Cutoff.BallExhaustion
+import DifferentialGeometry.Analysis.Integration.Lp.CountableCompactness
+import DifferentialGeometry.Analysis.Integration.Measure.CountableAEConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.MetricTargetConvergence
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.ComplexCutoff
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroTrace.LipschitzCutoff
+import DifferentialGeometry.Analysis.Sobolev.MetricTarget.Compactness
+import DifferentialGeometry.Topology.Compactness.CountableSubsequence
+import DifferentialGeometry.Topology.MetricSpace.DistanceConvergence
