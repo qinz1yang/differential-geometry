@@ -9169,6 +9169,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Moise308NestedShell
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 import DifferentialGeometry.Topology.LoopSpace.PathLoopInjectivity
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTubeCarrier
 /-!
 # Differential geometry and geometric analysis
 -/
