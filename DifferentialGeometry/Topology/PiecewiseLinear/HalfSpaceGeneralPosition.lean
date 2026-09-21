@@ -598,4 +598,269 @@ theorem exists_small_homeomorph_generalPosition_in_halfSpace [FiniteDimensional 
       hK hL hdim ℓ hℓ hKℓ hLℓ hKboundary hLboundary hU hKU hLU hε zero_lt_one
   exact ⟨h, G, hh, hclose, hfix, hheight, hfin, hspace, hman, hcross⟩
 
+open Classical in
+theorem exists_small_homeomorph_generalPosition_off_polyhedron_in_halfSpace
+    [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K)
+    (hL : IsCombinatorialManifoldWithBoundary 2 L) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hKhalf : K.space ⊆ {x | 0 ≤ ℓ x})
+    {Q : Set E} (hQ : IsPolyhedron Q) (hKzero : K.space ∩ {x | ℓ x = 0} ⊆ Q)
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) (hQU : Q ⊆ U)
+    {ε η : ℝ} (hε : 0 < ε) (hη : 0 < η) :
+    ∃ (h : E → E) (k : NNReal), LipschitzWith k (fun x => h x - x) ∧
+      (k : ℝ) < η ∧ k < 1 ∧ IsPLHomeomorphOn h univ univ ∧
+      (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧ EqOn h id Q ∧
+      (∀ x, (ℓ (h x) = 0 ↔ ℓ x = 0) ∧ (0 ≤ ℓ (h x) ↔ 0 ≤ ℓ x)) ∧
+      ∀ x ∈ h '' K.space ∩ L.space, x ∉ Q →
+        0 < ℓ x ∧ HasPLCrossingAt (h '' K.space) L.space x := by
+  obtain ⟨R, hR, hRfinite, hBspace⟩ := exists_isSubdivision_restrict_space K
+    ((isPolyhedron_space K).inter hQ) inter_subset_left
+  let _ := hRfinite.to_subtype
+  let B := restrict R (K.space ∩ Q)
+  have hBR : B.faces ⊆ R.faces := restrict_faces_subset R (K.space ∩ Q)
+  let _ : Finite B.faces := (hRfinite.subset hBR).to_subtype
+  let hc := centroid_mem_openSimplex_of_mem_faces R
+  let T := relDerived hBR (IsSubdivision.refl B) hc
+  have hT : IsSubdivision T R := relDerived_isSubdivision hBR (IsSubdivision.refl B) hc
+  let _ : Finite T.faces :=
+    (relDerived_faces_finite hBR (IsSubdivision.refl B) hc).to_subtype
+  have hBT : B.faces ⊆ T.faces := faces_subset_relDerived hBR (IsSubdivision.refl B) hc
+  have hTspace : T.space = K.space := hT.space_eq.trans hR.space_eq
+  have hBspaceT : B.space = T.space ∩ Q := by rwa [hTspace]
+  have hTman : IsCombinatorialManifoldWithBoundary 2 T :=
+    (hK.of_isSubdivision hR).of_isSubdivision hT
+  have hTnonneg : ∀ v ∈ T.vertices, 0 ≤ ℓ v := fun v hv =>
+    hKhalf (hTspace ▸ T.subset_space hv (Finset.mem_singleton_self v))
+  obtain ⟨δ, hδ, hext⟩ :=
+    exists_lipschitz_displacement_extending_vertex_perturbation_fixing_polyhedron_in_halfSpace
+      T B hBT hQ hBspaceT ℓ hℓ hTnonneg hU (by rwa [hTspace]) hQU hε hη
+  have hcard : ∀ t ∈ T.faces, t.card ≤ Module.finrank ℝ E + 1 := by
+    intro t ht
+    have htcard := hTman.card_le T ht
+    omega
+  obtain ⟨φ, hφfix, hφclose, hgood⟩ := exists_small_vertexMap_transverse_off_fixed T L hcard id
+    B.vertices (fun t ht _ => T.indep ht) hδ
+  have hφplane : ∀ v ∈ T.vertices, ℓ v = 0 → ℓ (φ v) = 0 := by
+    intro v hv hvzero
+    have hvK : v ∈ K.space := hTspace ▸ T.subset_space hv (Finset.mem_singleton_self v)
+    have hvBspace : v ∈ B.space := hBspace.symm ▸ ⟨hvK, hKzero ⟨hvK, hvzero⟩⟩
+    obtain ⟨t, ht, hvt⟩ := B.mem_space_iff.mp hvBspace
+    have hvt' := mem_of_mem_convexHull_of_singleton_mem T hv (hBT ht) hvt
+    have hvB : v ∈ B.vertices := B.down_closed ht
+      (Finset.singleton_subset_iff.mpr hvt') (Finset.singleton_nonempty v)
+    rw [hφfix hvB]
+    exact hvzero
+  obtain ⟨a, k, -, hklip, hkη, hk1, hnorm, hzero, -, hagree, hh, hheight, hzeroQ⟩ :=
+    hext φ (fun v _ => hφclose v) hφplane hφfix
+  let h : E → E := fun x => x + a x
+  have hfixQ : EqOn h id Q := by
+    intro x hx
+    change x + a x = x
+    rw [hzeroQ hx, add_zero]
+  have hinj : InjOn (simplicialMap T φ) T.space := by
+    intro x hx y hy hxy
+    apply hh.bijOn.injOn (mem_univ x) (mem_univ y)
+    rw [hagree hx, hagree hy]
+    exact hxy
+  have hind : ∀ t ∈ T.faces, AffineIndependent ℝ ((↑) : ↥(t.image φ : Set E) → E) := by
+    intro t ht
+    exact ((affineIndependent_image_iff t φ).mp (hgood t ht).1).2
+  let M := simplicialImage T φ hind hinj
+  let _ : Finite M.faces := (simplicialImage_faces_finite T φ hind hinj).to_subtype
+  have hMman : IsCombinatorialManifoldWithBoundary 2 M :=
+    hTman.of_isPLHomeomorphOn (isPLHomeomorphOn_simplicialImage T φ hind hinj)
+  have hMspace : M.space = h '' K.space := by
+    rw [simplicialImage_space]
+    have himage : simplicialMap T φ '' T.space = h '' T.space := image_congr hagree.symm
+    rw [himage, hTspace]
+  have hfixedHull : ∀ t ∈ T.faces, convexHull ℝ (id '' ((t : Set E) ∩ B.vertices)) ⊆ Q := by
+    intro t ht
+    let r := t.filter (fun v => v ∈ B.vertices)
+    have hrset : (r : Set E) = (t : Set E) ∩ B.vertices := by
+      simp only [r, Finset.coe_filter]
+      rfl
+    rw [image_id, ← hrset]
+    by_cases hrne : r.Nonempty
+    · have hrT := T.down_closed ht (Finset.filter_subset _ _) hrne
+      have hrB := mem_faces_of_mem_relDerived_of_forall_singleton_mem hBR (IsSubdivision.refl B)
+        hc hrT (fun v hv => (Finset.mem_filter.mp hv).2)
+      exact (B.convexHull_subset_space hrB).trans (hBspace ▸ inter_subset_right)
+    · rw [Finset.not_nonempty_iff_eq_empty.mp hrne, Finset.coe_empty, convexHull_empty]
+      exact empty_subset _
+  refine ⟨h, k, ?_, hkη, hk1, hh, ?_, ?_, hfixQ, hheight, fun x hx hxQ => ?_⟩
+  · simpa only [h, add_sub_cancel_left] using hklip
+  · intro x
+    simpa only [h, dist_eq_norm, add_sub_cancel_left] using hnorm x
+  · intro x hx
+    change x + a x = x
+    rw [hzero hx, add_zero]
+  · have hxpos : 0 < ℓ x := by
+      obtain ⟨y, hyK, rfl⟩ := hx.1
+      have hypos : 0 < ℓ y := lt_of_le_of_ne (hKhalf hyK) (fun hy0 => by
+        have hyQ := hKzero ⟨hyK, hy0.symm⟩
+        exact hxQ ((hfixQ hyQ).symm ▸ hyQ))
+      exact lt_of_le_of_ne ((hheight y).2.mpr hypos.le)
+        (fun hx0 => hypos.ne' ((hheight y).1.mp hx0.symm))
+    refine ⟨hxpos, ?_⟩
+    have hxM : x ∈ M.space := hMspace.symm ▸ hx.1
+    obtain ⟨u, hu, hxu⟩ := exists_face_mem_openSimplex M hxM
+    obtain ⟨t, ht, hxt⟩ := exists_face_mem_openSimplex L hx.2
+    have htrans : vectorSpan ℝ (u : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+      obtain ⟨s, hs, rfl⟩ := hu
+      rcases (hgood s hs).2 t ht with htop | hsub
+      · exact htop
+      · exact False.elim (hxQ (hfixedHull s hs (hsub
+          ⟨openSimplex_subset_convexHull _ hxu, openSimplex_subset_convexHull _ hxt⟩)))
+    have hcross := hasPLCrossingAt_of_transverse_face M L hMman hL hdimE hu ht hxu hxt htrans
+    rwa [hMspace] at hcross
+
+open Classical in
+theorem exists_small_homeomorph_generalPosition_in_halfSpace_with_chart_displacements
+    {E F ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [Finite ι]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K)
+    (hL : IsCombinatorialManifoldWithBoundary 2 L) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hKhalf : K.space ⊆ {x | 0 ≤ ℓ x})
+    {Q : Set E} (hQ : IsPolyhedron Q) (hKzero : K.space ∩ {x | ℓ x = 0} ⊆ Q)
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) (hQU : Q ⊆ U)
+    (P : ι → Set E) (hP : ∀ i, IsPolyhedron (P i)) (hPU : ∀ i, P i ⊆ U)
+    (f : ι → E → F) (hf : ∀ i, IsPiecewiseAffineOn (f i) (P i)) :
+    ∃ S : Set E, IsPolyhedron S ∧ S ⊆ ⋃ i, P i ∧ interior S = ∅ ∧
+      ∀ ε η : ℝ, 0 < ε → 0 < η →
+        ∃ (h : E → E) (k : NNReal), LipschitzWith k (fun x => h x - x) ∧
+          (k : ℝ) < η ∧ k < 1 ∧ IsPLHomeomorphOn h univ univ ∧
+          (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧ EqOn h id (Q ∪ S) ∧
+          (∀ x, (ℓ (h x) = 0 ↔ ℓ x = 0) ∧ (0 ≤ ℓ (h x) ↔ 0 ≤ ℓ x)) ∧
+          (∀ x ∈ h '' K.space ∩ L.space, x ∉ Q ∪ S →
+            0 < ℓ x ∧ HasPLCrossingAt (h '' K.space) L.space x) ∧
+          ∀ i, (∀ x, h x ∈ P i ↔ x ∈ P i) ∧
+            ∃ (b : E → F) (ki : NNReal), IsPiecewiseAffineOn b univ ∧
+              LipschitzWith ki b ∧ (ki : ℝ) < η ∧
+              EqOn b (fun x => f i (h x) - f i x) (P i) ∧ EqOn b (fun _ => 0) (P i)ᶜ := by
+  choose S c hS hSP hSint hext using fun i =>
+    (hf i).exists_polyhedron_lipschitz_displacement (hP i)
+  let T : Set E := ⋃ i, S i
+  have hT : IsPolyhedron T := IsPolyhedron.iUnion hS
+  have hTP : T ⊆ ⋃ i, P i := iUnion_mono hSP
+  have hTinterior : interior T = ∅ :=
+    interior_iUnion_eq_empty_of_finite (fun i => (hS i).isClosed) hSint
+  have hTU : T ⊆ U := iUnion_subset fun i => (hSP i).trans (hPU i)
+  let _ := Fintype.ofFinite ι
+  let C : NNReal := Finset.univ.sup c
+  refine ⟨T, hT, hTP, hTinterior, fun ε η hε hη => ?_⟩
+  let μ : ℝ := min η (η / ((C : ℝ) + 1))
+  have hμ : 0 < μ := lt_min hη (div_pos hη (by positivity))
+  obtain ⟨h, k, hk, hkμ, hk1, hh, hclose, hfix, hfixQ, hheight, hcross⟩ :=
+    exists_small_homeomorph_generalPosition_off_polyhedron_in_halfSpace K L hK hL hdimE
+      ℓ hℓ hKhalf (hQ.union hT) (hKzero.trans subset_union_left) hU hKU
+      (union_subset hQU hTU) hε hμ
+  have hkη : (k : ℝ) < η := hkμ.trans_le (min_le_left _ _)
+  let a : E → E := fun x => h x - x
+  have ha : IsPiecewiseAffineOn a univ := by
+    have hneg := (isPiecewiseAffineOn_id (E := E) isOpen_univ).affine_comp
+      (-AffineMap.id ℝ E)
+    change IsPiecewiseAffineOn (fun x : E => -x) univ at hneg
+    simpa only [a, sub_eq_add_neg] using hh.isPiecewiseAffineOn.add hneg
+  have hformula (x : E) : x + a x = h x := by dsimp only [a]; abel
+  refine ⟨h, k, hk, hkη, hk1, hh, hclose, hfix, hfixQ, hheight, hcross, fun i => ?_⟩
+  have hzero : EqOn a (fun _ => 0) (S i) := by
+    intro x hx
+    change h x - x = 0
+    rw [hfixQ (Or.inr (mem_iUnion.mpr ⟨i, hx⟩))]
+    exact sub_self x
+  obtain ⟨b, hb, hblip, hbmap, hbzero, hmem⟩ := hext i a k ha hk hk1 hzero
+  refine ⟨fun x => by simpa only [hformula] using hmem x, b, c i * k, hb, hblip, ?_, ?_, hbzero⟩
+  · have hci : c i ≤ C := Finset.le_sup (f := c) (Finset.mem_univ i)
+    have hsmall : (k : ℝ) * ((C : ℝ) + 1) < η :=
+      (lt_div_iff₀ (show 0 < (C : ℝ) + 1 by positivity)).mp
+        (hkμ.trans_le (min_le_right _ _))
+    change (c i : ℝ) * (k : ℝ) < η
+    calc (c i : ℝ) * (k : ℝ) ≤ (C : ℝ) * (k : ℝ) :=
+          mul_le_mul_of_nonneg_right (NNReal.coe_le_coe.mpr hci) k.property
+      _ ≤ (k : ℝ) * ((C : ℝ) + 1) := by
+        rw [mul_add, mul_one, mul_comm (k : ℝ) (C : ℝ)]
+        exact le_add_of_nonneg_right k.property
+      _ < η := hsmall
+  · simpa only [hformula] using hbmap
+
+open Classical in
+theorem exists_small_homeomorph_generalPosition_in_halfSpace_with_local_conjugates
+    {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [Finite ι]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K)
+    (hL : IsCombinatorialManifoldWithBoundary 2 L) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hKhalf : K.space ⊆ {x | 0 ≤ ℓ x})
+    {Q : Set E} (hQ : IsPolyhedron Q) (hKzero : K.space ∩ {x | ℓ x = 0} ⊆ Q)
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) (hQU : Q ⊆ U)
+    (P : ι → Set E) (hP : ∀ i, IsPolyhedron (P i)) (hPU : ∀ i, P i ⊆ U)
+    (e : ι → OpenPartialHomeomorph E E)
+    (he : ∀ i, IsPiecewiseAffineOn (e i) (e i).source)
+    (hPe : ∀ i, P i ⊆ (e i).source) :
+    ∃ S : Set E, IsPolyhedron S ∧ S ⊆ ⋃ i, P i ∧ interior S = ∅ ∧
+      ∀ ε η : ℝ, 0 < ε → 0 < η →
+        ∃ (h : E → E) (k : NNReal), LipschitzWith k (fun x => h x - x) ∧
+          (k : ℝ) < η ∧ k < 1 ∧ IsPLHomeomorphOn h univ univ ∧
+          (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧ EqOn h id (Q ∪ S) ∧
+          (∀ x, (ℓ (h x) = 0 ↔ ℓ x = 0) ∧ (0 ≤ ℓ (h x) ↔ 0 ≤ ℓ x)) ∧
+          (∀ x ∈ h '' K.space ∩ L.space, x ∉ Q ∪ S →
+            0 < ℓ x ∧ HasPLCrossingAt (h '' K.space) L.space x) ∧
+          ∀ i, (∀ x, h x ∈ P i ↔ x ∈ P i) ∧
+            ∃ (H : E → E) (ki : NNReal), IsPLHomeomorphOn H univ univ ∧
+              LipschitzWith ki (fun y => H y - y) ∧ (ki : ℝ) < η ∧ ki < 1 ∧
+              EqOn H ((e i) ∘ h ∘ (e i).symm) ((e i) '' P i) := by
+  have heP (i : ι) : IsPiecewiseAffineOn (e i) (P i) :=
+    (he i).mono_of_isPolyhedron (hP i) (hPe i)
+  have hR (i : ι) : IsPolyhedron ((e i) '' P i) :=
+    (hP i).image_of_isPiecewiseAffineOn (heP i) ((e i).injOn.mono (hPe i))
+  have hRtarget (i : ι) : (e i) '' P i ⊆ (e i).target := by
+    rintro y ⟨x, hx, rfl⟩
+    exact (e i).map_source (hPe i hx)
+  have hinv (i : ι) : IsPiecewiseAffineOn (e i).symm ((e i) '' P i) :=
+    (IsPiecewiseAffineOn.symm (e := e i) (he i)).mono_of_isPolyhedron (hR i) (hRtarget i)
+  choose g c hg hglip hgfix hgzero hgrange using fun i =>
+    (hinv i).exists_lipschitz_extension (hR i) isOpen_univ (subset_univ _)
+  obtain ⟨S, hS, hSP, hSint, hperturb⟩ :=
+    exists_small_homeomorph_generalPosition_in_halfSpace_with_chart_displacements
+      K L hK hL hdimE ℓ hℓ hKhalf hQ hKzero hU hKU hQU P hP hPU
+      (fun i => e i) heP
+  let _ := Fintype.ofFinite ι
+  let C : NNReal := Finset.univ.sup c
+  refine ⟨S, hS, hSP, hSint, fun ε η hε hη => ?_⟩
+  let τ : ℝ := min η 1
+  have hτ : 0 < τ := lt_min hη zero_lt_one
+  let μ : ℝ := min τ (τ / ((C : ℝ) + 1))
+  have hμ : 0 < μ := lt_min hτ (div_pos hτ (by positivity))
+  obtain ⟨h, k, hk, hkμ, hk1, hh, hclose, hfix, hfixQ, hheight, hcross, hchart⟩ :=
+    hperturb ε μ hε hμ
+  have hkη : (k : ℝ) < η := hkμ.trans_le ((min_le_left _ _).trans (min_le_left _ _))
+  refine ⟨h, k, hk, hkη, hk1, hh, hclose, hfix, hfixQ, hheight, hcross, fun i => ?_⟩
+  obtain ⟨hmem, b, ki, hb, hbLip, hki, hbmap, _⟩ := hchart i
+  let a : E → E := b ∘ g i
+  have ha : IsPiecewiseAffineOn a univ := by
+    simpa only [inter_univ, preimage_univ] using hb.comp (hg i)
+  have halip : LipschitzWith (ki * c i) a := hbLip.comp (hglip i)
+  have hbound : (ki * c i : NNReal) < τ := by
+    have hci : c i ≤ C := Finset.le_sup (f := c) (Finset.mem_univ i)
+    have hsmall : (ki : ℝ) * ((C : ℝ) + 1) < τ :=
+      (lt_div_iff₀ (show 0 < (C : ℝ) + 1 by positivity)).mp
+        (hki.trans_le (min_le_right _ _))
+    change (ki : ℝ) * (c i : ℝ) < τ
+    calc (ki : ℝ) * (c i : ℝ) ≤ (ki : ℝ) * (C : ℝ) :=
+          mul_le_mul_of_nonneg_left (NNReal.coe_le_coe.mpr hci) ki.property
+      _ ≤ (ki : ℝ) * ((C : ℝ) + 1) := by
+        rw [mul_add, mul_one]
+        exact le_add_of_nonneg_right ki.property
+      _ < τ := hsmall
+  have hprod1 : ki * c i < 1 := hbound.trans_le (min_le_right _ _)
+  refine ⟨hmem, fun y => y + a y, ki * c i,
+    isPLHomeomorphOn_id_add_of_lipschitz ha halip hprod1, ?_,
+    hbound.trans_le (min_le_left _ _), hprod1, ?_⟩
+  · simpa only [add_sub_cancel_left] using halip
+  · rintro y ⟨x, hx, rfl⟩
+    change e i x + b (g i (e i x)) = e i (h ((e i).symm (e i x)))
+    rw [hgfix i ⟨x, hx, rfl⟩, (e i).left_inv (hPe i hx), hbmap hx]
+    rw [← add_sub_assoc, add_sub_cancel_left]
+
 end DifferentialGeometry.Topology.PiecewiseLinear

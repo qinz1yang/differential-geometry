@@ -1,7 +1,13 @@
 # Standing instructions for an external statement review
 
-*You are asked to review the **leaf statements** of one Lean 4 skeleton file. Answer in English or
-Chinese. You cannot compile; nobody asks you to.*
+*You are asked to review the **leaf statements** of one Lean 4 skeleton file. **请用中文回答**，Lean
+identifiers, formulas and repaired statements stay as they are. You cannot compile; nobody asks you to.*
+
+**Length.** Be short: the whole answer should fit in roughly 1500 Chinese characters plus the
+repaired statements. An **OK** leaf gets its table row and nothing else — no restatement, no proof
+plan. Spend the words on the leaves that are not OK: the counterexample (explicit enough to check
+every hypothesis), the clause that fails, the repaired Lean-facing statement. Do the six checks
+below for every leaf, but *write up* only what changes a verdict.
 
 **Where to look.** Repository (private; reachable through the owner's GitHub account)
 **https://github.com/liao9yuan/differential-geometry-dev**, branch **`moise-integration`**. Paths are
@@ -39,6 +45,8 @@ provable by the lane that owns it. That is your job.
 need but does not, because a leaf is accidentally too strong? Are two leaves secretly the same
 theorem? What is the single most likely place for a surprise?
 
-**Output format.** A table `leaf | verdict (OK / FIX / FALSE / VACUOUS / UNDISCHARGEABLE) | one-line
-reason`, then the details only for the leaves that are not OK, each with the repaired Lean-facing
-statement. If a claim of *ours* in the module docstring is wrong, say so first and plainly.
+**Output format.** (1) If a claim of *ours* in the module docstring is wrong, say so first, in one
+or two sentences. (2) A table `leaf | verdict (OK / FIX / FALSE / VACUOUS / UNDISCHARGEABLE) |
+one-line reason`. (3) For each leaf that is not OK: counterexample, failing clause, repaired
+statement. (4) Three closing lines: the missing obligation (if any), one shared non-degenerate
+fixture for the repaired chain, the single most likely surprise. Nothing else.
