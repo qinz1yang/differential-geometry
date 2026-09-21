@@ -68,3 +68,33 @@ compact PL side and its actual boundary; `B` a regular neighbourhood of the boun
 `X = B`, `N = {1}`; a small boundary-adapted tube; the correct quarter-turn convention. It tests
 reading, witnesses, buffer and branch retention on one tuple, with a non-injective target boundary
 arc. The reversing model tests the other word.
+
+## Follow-up review of the three new leaves (snapshot `ddc2f2937788`, 2026-09-21)
+| Leaf | Verdict | Reason |
+|---|---|---|
+| `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` | **FALSE → repaired, frozen** | a bare `ChartedSpace` does not give a PL push-off near the old image; with `[HasGroupoid M (plGroupoid 3)]` the geometry and the `∀ V ∃ E' Δ` order stand |
+| `exists_descendingSurgery_of_adaptedCleanCap` | **OK — frozen** | `Δ.domain = E'` + boundary `EqOn` fix the gluing pointwise; the boundary avoids the double point preimage, so branch retention is locally constant: whole or nothing, `c` deleted; side, buffer, boundary parametrisation inherited with `hΔside` |
+| `nonempty_plSeamTubeChart_comp_crossQuarterTurn` | **OK — frozen** | transport the complex and both chart fields of `PLPieceIn` along the inverse linear map |
+
+**Counterexample (atlas, not geometry).** In `ℝ³`: a large planar disk tubed (far away) to the
+octahedral sphere `|x| + |y| + |z − 1| = 2`; the only double branch is `c = {z = 0, |x| + |y| = 1}`,
+`D(Q)` the planar rhombus, `D(E)` the lower cap, `Q` clean, `V = {|x|+|y| < 1+ε, |z| < ε}`,
+`B = BdM` = outer boundary image, `W = M`. Now change **only the atlas**: two global charts `id`
+and `g(x,y,z) = (x, y, z + (1 + x² + y²) z³)`, `chartAt p = id` on the image `S`, `g` off it. `g`
+fixes `H = {z = 0}` pointwise, so `D.isPLOn`, the branch pieces and the crossing models survive.
+A PL cap would have, near its boundary, a rank-two affine piece that is piecewise affine in both
+charts; comparing the quintic and quadratic terms, only pieces inside `H` qualify, and
+`H ∩ V ⊆ S` — contradiction. What fails is the *PL* cap, not the topological one.
+**Repair (applied):** `[HasGroupoid M (plGroupoid 3)]` on the producer and on the proved 2b wrapper
+`exists_descendingSurgery_of_disjoint_innermost_cleanDisk`; the assembly supplies it for the double
+by `combinatorialChartedSpace_hasGroupoid`. No gluing data is missing from the surgery consumer.
+The two source separations (`(E' \ E) ∩ Σ̃_D = ∅`, `Q ∩ E' = ∅`) are jointly attainable, but not
+from "innermost" alone: the crossing models and the two-point fibres isolate `T`, compactness
+shrinks the outer collar uniformly, `Disjoint Q E` keeps it off `Q`, `D(T) ⊆ V` puts the boundary
+image in `V`.
+**Fixture:** the same model with the standard atlas, outer rim lowered to `z = −3`,
+`C = {z ≥ −3}`, `BdM = B = {z = −3}`, `E'` ↔ the sphere's lower piece `|x|+|y| ≤ 1+a`, cap = the
+rhombus at height `z = a`, `0 < a < ε`.
+**Lesson:** "the old normal disk is PL in its designated charts" does not imply "a compatible
+3-dimensional PL neighbourhood of its image exists". Audit every geometric producer stated over a
+bare `ChartedSpace` for this gap.

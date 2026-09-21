@@ -55,14 +55,22 @@ statement frozen): the boundary neighborhood of a normal system embeds in the do
 with `ι`, and the boundary circle of a normal cell factors continuously through it.
 
 `NormalSingularCellData.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` (lane C, 2b cap,
-new, not yet reviewed; its content is the producer prescribed by the 2026-09-21 review): for
-every open `V` with `D '' Q ⊆ V ⊆ interior (W \ BdM)` there are a larger source disk `E'` and a
+reviewed 2026-09-21 (external), repaired by adding `[HasGroupoid M (plGroupoid 3)]`, statement
+frozen): in a PL manifold, for every open `V` with `D '' Q ⊆ V ⊆ interior (W \ BdM)` there
+are a larger source disk `E'` and a
 PL embedded cap parametrised by a singular two cell on `E'`, lying in `V`, agreeing with `D` on
 `frontier E'` and meeting `D '' D.domain` in that circle only.  No surgery occurs in the
-conclusion; the expensive step behind it is the adapted-neighbourhood trace theorem.
+conclusion; the expensive step behind it is the adapted-neighbourhood trace theorem.  Without
+compatibility of the atlas the statement is false: with the two global charts `id` and
+`g (x, y, z) = (x, y, z + (1 + x² + y²) z³)`, the first used on the image of the cell and the
+second off it, the old cell stays piecewise linear but no piecewise linear cap exists, since a
+rank two affine piece that is affine in both charts lies in the plane `z = 0`.  That the old
+cell is piecewise linear in its charts does not give a compatible three dimensional piecewise
+linear neighbourhood of its image; the groupoid instance does.
 
-`NormalSingularCellData.exists_descendingSurgery_of_adaptedCleanCap` (lane C, 2b surgery, new,
-not yet reviewed): from that cap data, the descending surgery with the three invariants, in the
+`NormalSingularCellData.exists_descendingSurgery_of_adaptedCleanCap` (lane C, 2b surgery,
+reviewed 2026-09-21 (external), statement frozen): from that cap data, the descending surgery
+with the three invariants, in the
 style of the proved nested endpoint `exists_descendingSurgery_of_isNestedDiskReplacementCell`.
 It is cut and paste along `frontier E'` plus whole or nothing branch retention, and it is left
 open because the disjoint analogue of `IsNestedDiskReplacementCell`, of its normality producer
@@ -80,7 +88,8 @@ is read in the normal form of the given PL boundary tube, or in the normal form 
 turn.  The hypothesis `T.chart '' spliceCylinder ∩ BdM = T.chart '' spliceEndDisks` is the tube
 boundary equality the reading's boundary clause needs and the old statement did not receive.
 
-`nonempty_plSeamTubeChart_comp_crossQuarterTurn` (lane S, new, not yet reviewed): the quarter
+`nonempty_plSeamTubeChart_comp_crossQuarterTurn` (lane S, reviewed 2026-09-21 (external),
+statement frozen): the quarter
 turn of a PL seam tube chart is again one.  Everything else about the turned tube is proved in
 `crossSeamTubeDataQuarterTurn`; what is open is only the transport of `PLPieceIn` along the
 linear automorphism `crossQuarterTurn`, which preserves `spliceCylinder`.
@@ -254,6 +263,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fi
   {D : SingularTwoCell M} {BdM B : Set M}
 
 theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
+    [HasGroupoid M (plGroupoid 3)]
     (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
     {J T Q E : Set (EuclideanSpace ℝ (Fin 2))}
@@ -301,6 +311,7 @@ theorem exists_descendingSurgery_of_adaptedCleanCap [T2Space M]
   sorry
 
 theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
+    [HasGroupoid M (plGroupoid 3)]
     (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
     {J T Q E : Set (EuclideanSpace ℝ (Fin 2))}
@@ -614,6 +625,8 @@ theorem descentStepOrientableStatement : DescentStepOrientableStatement := by
   intro E _ _ _ S hor K
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ := combinatorialChartedSpace (double 3 K)
+    (isCombinatorialManifold_double_succ_succ K S.isManifold)
+  let _ := combinatorialChartedSpace_hasGroupoid (double 3 K)
     (isCombinatorialManifold_double_succ_succ K S.isManifold)
   intro ι C Bd B D₀ hD₀ hcomplexity hmapC hbuffer hloop
   obtain ⟨cD, δ, hδ, hδN⟩ := hloop

@@ -77,3 +77,55 @@ perturbation normalises the region) — the unchanged map is admitted.
 **Most likely surprise:** the passage from guarded affine independence to normal crossings in the
 presence of frozen vertices. The exemption is not the mistake; treating exempt configurations as
 harmless without proving they lie outside the active target or inside a protected normal model is.
+
+## Second review, of the repaired skeleton (snapshot `08eca8995a81`, 2026-09-21)
+Our docstring's transport guarantee does **not** hold: a closed buffer plus "ε fixed beforehand" is
+not a crossing-stability certificate, and `θ` is returned *with* `φ`, so it is not a scale fixed
+before the perturbation and preserved by it.
+
+| Leaf | Verdict | Reason |
+|---|---|---|
+| `exists_normalizationPreparation_on_prescribedRegion` | **FALSE** | shrinking a neighbourhood of an arbitrary closed `Z` needs normality; and `ε` carries no stability field |
+| `exists_small_vertexMap_relative_in_adaptedChart` | **FIX** | existence form fine, `hsep` producible; the a-posteriori `θ` gives no predetermined control downstream |
+| `exists_gluedCell_of_vertexMap_in_adaptedChart` | **OK — freeze** | literal gluing, equality on the whole complement, frozen seam |
+| `exists_globalInvariants_of_gluedCell` | **FALSE** | seam-neighbourhood hypotheses not passed; injectivity on both sides does not give local injectivity across the seam |
+| `exists_normalCrossings_of_gluedCell` | **FALSE** | frozen exemptions do not protect the alternating pairing of the two source sheets; `hfrozen` also not passed |
+
+* **Preparation.** `M = N ⊔ ℝ³`, `N` a non-normal Hausdorff 3-manifold (doubled Prüfer half-surface
+  × ℝ), closed `Z, F ⊂ N` not separable by open sets, `O = M \ F`: no `O₀` exists. Repair:
+  `[CompactSpace M]` (the assembly has it) or `IsCompact Z`. That fixes shrinking only.
+* **`hsep` is fine**, single frozen vertices included: `F = (ec ∘ D)(Ac.space)` is compact and
+  disjoint from `closure (ec '' closure W)`; subdivide so every simplex with a frozen vertex maps
+  into `N_δ(F)`, perturb by `< min ε δ`. A frozen vertex near `frontier (closure W)` only needs a
+  finer mesh.
+* **Global invariants — the fold.** `S = [−1,1]²`, `h = 1 − max(|s|,|t|)`, `D = (s,t,h)`,
+  `D' = (|s|,t,h)` on `Rc = S ∩ {s ≤ 0}`, `Ac = {0} × [−1,1]`, `Lc = Rc ∩ ∂S`, `Ω = ∅`,
+  `C = {z ≥ 0}`, `BdM = B = {z = 0}`, `ec = id`, `ℓ = z`, `V = B(0,10)`, `ε = 3`, `η = θ = 1`:
+  every hypothesis holds, `D'` is not locally injective on the seam. The leaf lacked `hNbfr`, `hNbA`.
+  **Scale interface:** fix a control complex of the *whole* source before perturbing.
+  `StarInj T g := ∀ v ∈ T.vertices, InjOn g (starComplex T v).space`. Preparation (given also
+  `hfiber`) yields `∃ T κ ε, 0 < κ ∧ 0 < ε ∧ T.space = D.domain ∧ ∀ g, Close_ε g D ∧ StarInj T g →
+  UniformInjectivityScale D.domain g κ ∧ ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2` (ambient metric of
+  the double, chart error converted beforehand); the relative perturbation then *produces*
+  `StarInj T g_φ` for the literal glued function `g_φ`. Suppliers in this order exist:
+  `exists_pos_eq_of_dist_lt_of_injOn_starComplex`,
+  `exists_fiber_encard_le_two_of_close_of_injOn_starComplex` (three-point separation budget).
+* **Crossings — ABAB → AABB.** `D(s,t) = (c s, t)` on `[0,3] × [−1,1]`, `c` through
+  `(−2,−2), (2,2), (2,−2), (−2,2)`, `BdM = D(∂S)`; sheets `v = u`, `v = −u`. `Rc` = two small
+  source rectangles, `Ac` ⊇ outer rings and both copies of the edge over the common axis. Moving free
+  vertices in an inner strip of width `r` sends the four rays along `A: (1,2), (−1,3)`,
+  `B: (1,−4), (−1,−5)`: cyclic pairing `AABB`, not two transverse planes; change `O(r)`, each sheet
+  still embedded, fibres ≤ 2, `hguard` holds (the forced dependence on the common axis is frozen,
+  hence exempt). With `Z = {0}`, `O₀ ⋐ O`, `W = ∅`, `V ⊇` support: `hsep`, `hactive`, `hfibV` and
+  even `hfrozen` hold. So the transport statement itself is false. **Repair:** off `V` transport by
+  compact support; inside `Z ∩ V` the relative perturbation producer must output a
+  *source-sheet pairing certificate*: open `U ⊆ O`, `U' ⊇ Z`, PL `χ : U → U'`,
+  PL `ψ : S ∩ D⁻¹ U → S ∩ D'⁻¹ U'` with `D' ∘ ψ = χ ∘ D`, `χ (U ∩ BdM) = U' ∩ BdM`, on the **full**
+  source preimage (no new sheet may enter). Produced by the protected-model construction, not
+  assumed.
+
+**Missing obligations:** predetermined whole-source injectivity control; a relative perturbation
+producer that protects the pairing of the two source sheets. **Fixture:** a proper PL immersed disk
+in the 3-ball with a transverse double arc, non-empty frozen outer ring, a small non-identity
+perturbation on a fixed control subdivision, protected and active regions allowed to meet.
+**Most likely surprise:** the ABAB/AABB pairing change near frozen exemptions — not `hsep`.
