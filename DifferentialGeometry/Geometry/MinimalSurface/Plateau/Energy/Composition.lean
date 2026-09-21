@@ -165,3 +165,81 @@ end DifferentialGeometry.Geometry
 end
 
 end
+
+section
+
+noncomputable section
+
+open Manifold Set MeasureTheory
+open DifferentialGeometry.Topology
+open scoped Manifold ContDiff ENNReal NNReal
+
+namespace DifferentialGeometry.Geometry
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {M : Type*} [TopologicalSpace M] [ChartedSpace E M]
+  [IsManifold 𝓘(ℝ, E) ∞ M]
+
+variable [T3Space M]
+
+theorem exists_lipschitzWith_comp_and_ae_norm_fderiv_sq_le_of_hasCompactSupport
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {Φ : M → F}
+    (hΦ : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, F) 1 Φ) (hΦc : HasCompactSupport Φ) :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ (u : ℂ → M) (K : ℝ≥0),
+      (∀ x y, riemannianEDistOf g (u x) (u y) ≤ (K : ℝ≥0∞) * edist x y) →
+      LipschitzWith (C * K) (Φ ∘ u) ∧
+        ∀ᵐ z ∂volume,
+          ‖fderiv ℝ (Φ ∘ u) z‖ ^ 2 ≤ 4 * (C : ℝ) ^ 2 * diskMapEnergyDensity g u z := by
+  obtain ⟨B, hB⟩ := exists_metric_mfderiv_bound_of_hasCompactSupport g hΦ hΦc
+  let C : ℝ≥0 := B + 1
+  have hC : 0 < C := by dsimp [C]; positivity
+  have hbound : ∀ p (v : TangentSpace 𝓘(ℝ, E) p),
+      ‖(mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) Φ p v : F)‖ ≤ C * Real.sqrt (g.inner p v v) := by
+    intro p v
+    exact (hB p v).trans (mul_le_mul_of_nonneg_right (by simp [C]) (Real.sqrt_nonneg _))
+  have hdist := edist_map_le_of_metric_mfderiv_bound g hC hΦ hbound
+  refine ⟨C, hC, fun u K hu => ⟨?_, ?_⟩⟩
+  · intro x y
+    apply (hdist (u x) (u y)).trans
+    calc
+      (C : ℝ≥0∞) * riemannianEDistOf g (u x) (u y) ≤
+          (C : ℝ≥0∞) * ((K : ℝ≥0∞) * edist x y) := by gcongr; exact hu x y
+      _ = (↑(C * K) : ℝ≥0∞) * edist x y := by simp only [ENNReal.coe_mul, mul_assoc]
+  · filter_upwards [ae_mdifferentiableAt_of_metric_lipschitz g hu] with z hz
+    exact norm_fderiv_comp_sq_le_diskMapEnergyDensity g hΦ hbound hz
+
+variable [CompleteSpace F]
+
+theorem exists_integral_norm_fderiv_comp_diskExtension_sq_le_of_hasCompactSupport
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {Φ : M → F}
+    (hΦ : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, F) 1 Φ) (hΦc : HasCompactSupport Φ) :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ (u : closedDisk → M) (K : ℝ≥0),
+      (∀ x y, riemannianEDistOf g (u x) (u y) ≤ (K : ℝ≥0∞) * edist x y) →
+      LipschitzWith (C * K) (Φ ∘ diskExtension u) ∧
+        IntegrableOn (fun z => ‖fderiv ℝ (Φ ∘ diskExtension u) z‖ ^ 2)
+          (Metric.closedBall (0 : ℂ) 1) ∧
+        (∫ z in Metric.closedBall (0 : ℂ) 1, ‖fderiv ℝ (Φ ∘ diskExtension u) z‖ ^ 2) ≤
+          4 * (C : ℝ) ^ 2 *
+            ∫ z in Metric.closedBall (0 : ℂ) 1, diskMapEnergyDensity g (diskExtension u) z := by
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_lipschitzWith_comp_and_ae_norm_fderiv_sq_le_of_hasCompactSupport g hΦ hΦc
+  refine ⟨C, hC, fun u K hu => ?_⟩
+  obtain ⟨hL, hpoint⟩ := hbound (diskExtension u) K (diskExtension_riemannian_lipschitz g hu)
+  have he := integrable_diskMapEnergyDensity g hu
+  have hpoint' := ae_restrict_of_ae (s := Metric.closedBall (0 : ℂ) 1) hpoint
+  have hi : IntegrableOn (fun z => ‖fderiv ℝ (Φ ∘ diskExtension u) z‖ ^ 2)
+      (Metric.closedBall (0 : ℂ) 1) := by
+    apply Integrable.mono' (he.const_mul (4 * (C : ℝ) ^ 2))
+      (((measurable_fderiv ℝ (Φ ∘ diskExtension u)).norm.pow_const 2).aestronglyMeasurable)
+    filter_upwards [hpoint'] with z hz
+    simpa only [Real.norm_of_nonneg (sq_nonneg _)] using hz
+  refine ⟨hL, hi, ?_⟩
+  simpa only [integral_const_mul] using
+    integral_mono_ae hi (he.const_mul (4 * (C : ℝ) ^ 2)) hpoint'
+
+end DifferentialGeometry.Geometry
+
+end
+
+end

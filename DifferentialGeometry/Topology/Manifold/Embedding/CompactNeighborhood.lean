@@ -113,6 +113,22 @@ theorem exists_contMDiff_embedding_on_nhds_of_isCompact {K : Set M} (hK : IsComp
   rw [hd]
   exact T.injective.comp (injective_mfderiv_bumpCoordinateMap f x (hN hx))
 
+theorem exists_contMDiff_compactly_supported_euclidean_embedding_comp
+    {X : Type*} [TopologicalSpace X] [CompactSpace X]
+    (γ : C(X, M)) (hγ : _root_.Topology.IsEmbedding γ) :
+    ∃ (n : ℕ) (Φ : M → EuclideanSpace ℝ (Fin n)),
+      ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ Φ ∧
+      HasCompactSupport Φ ∧ _root_.Topology.IsEmbedding (Φ ∘ γ) := by
+  obtain ⟨N, n, Φ, hKN, hΦ, hΦc, hΦN, _⟩ :=
+    exists_contMDiff_embedding_on_nhds_of_isCompact (I := I) (isCompact_range γ.continuous)
+  refine ⟨n, Φ, hΦ, hΦc, ?_⟩
+  apply ((hΦ.continuous.comp γ.continuous).isClosedEmbedding ?_).isEmbedding
+  intro x y hxy
+  have hx : γ x ∈ N := hKN (mem_range_self x)
+  have hy : γ y ∈ N := hKN (mem_range_self y)
+  have heq : (⟨γ x, hx⟩ : N) = ⟨γ y, hy⟩ := hΦN.injective hxy
+  exact hγ.injective (congrArg Subtype.val heq)
+
 end DifferentialGeometry.Topology
 
 end

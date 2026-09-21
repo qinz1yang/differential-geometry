@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.Embedding.CompactNeighborhood
 import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Closure
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDisk
 import DifferentialGeometry.Topology.LoopSpace.HomeomorphismLift
@@ -82,7 +83,7 @@ namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
-  [T2Space M] [CompactSpace M]
+  [T3Space M]
 
 theorem exists_subseq_tendsto_diskTrace_of_normalized_energy_bound
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
@@ -102,9 +103,10 @@ theorem exists_subseq_tendsto_diskTrace_of_normalized_energy_bound
       τ ((2 / 3 : ℝ) : loopCircle) = ((2 / 3 : ℝ) : loopCircle) ∧
       Tendsto (σ ∘ φ) atTop (𝓝 τ) ∧
       Tendsto (fun n => diskTrace (u (φ n))) atTop (𝓝 (γ.comp τ)) := by
-  obtain ⟨d, Φ, hΦ, hΦemb, _⟩ := exists_compact_smooth_embedding (E := E) (M := M)
-  obtain ⟨C, _, hC⟩ := exists_integral_norm_fderiv_comp_diskExtension_sq_le g
-    (hΦ.of_le (by simp))
+  obtain ⟨d, Φ, hΦ, hΦc, hΦγ⟩ :=
+    exists_contMDiff_compactly_supported_euclidean_embedding_comp (I := 𝓘(ℝ, E)) γ hγ
+  obtain ⟨C, _, hC⟩ := exists_integral_norm_fderiv_comp_diskExtension_sq_le_of_hasCompactSupport
+    g (hΦ.of_le (by simp)) hΦc
   choose K hK using hLip
   let f : ℕ → ℂ → EuclideanSpace ℝ (Fin d) := fun n => Φ ∘ diskExtension (u n)
   let Γ : C(loopCircle, EuclideanSpace ℝ (Fin d)) := ⟨Φ ∘ γ, hΦ.continuous.comp γ.continuous⟩
@@ -126,7 +128,7 @@ theorem exists_subseq_tendsto_diskTrace_of_normalized_energy_bound
     exact congrArg Φ (congrArg (fun v : freeLoop M => v (t : loopCircle)) (htrace n))
   obtain ⟨τ, φ, hφ, hτ, ht0, ht1, ht2, hlim, _⟩ :=
     exists_subseq_tendsto_normalized_boundary_of_energy_bound Γ
-      (hΦemb.isEmbedding.comp hγ) f (fun n => C * K n) hf hbound
+      hΦγ f (fun n => C * K n) hf hbound
       σ hσ h0 h1 h2 hboundary
   refine ⟨τ, φ, hφ, hτ, ht0, ht1, ht2, hlim, ?_⟩
   have hlim' := ((continuous_postcomp γ).tendsto τ).comp hlim

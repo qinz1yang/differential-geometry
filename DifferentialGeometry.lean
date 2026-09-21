@@ -12458,3 +12458,13 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.OpenTarget
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.NoncompactLimit
 import DifferentialGeometry.Analysis.Integration.Measure.OpenCover
+import DifferentialGeometry.Analysis.Integration.Integral.Subsequence
+import DifferentialGeometry.Analysis.Sobolev.Interval.EnergyCompactness
+import DifferentialGeometry.Geometry.Measure.Area.DirectionalEnergy
+import DifferentialGeometry.Geometry.Metric.CurveEnergy.Composition
+import DifferentialGeometry.Geometry.Metric.CurveEnergy.Lipschitz
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Affine
+import DifferentialGeometry.Topology.LoopSpace.CircleParameter
+import DifferentialGeometry.Geometry.Metric.CurveEnergy.Compactness
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.IntrinsicPolar
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.CircleCompactness
