@@ -154,6 +154,54 @@ theorem exists_completion_segment_of_punctured_compact_ball
       c hc hgMem hcLip hc0 hc1
   exact ⟨⟨f, hf⟩, hf0, hf1, hfK, hfDist⟩
 
+theorem exists_radial_segment_of_punctured_compact_ball
+    (g : SmoothRiemannianMetric I M)
+    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
+    {q : UniformSpace.Completion M}
+    {R : ℝ} (hcompact : IsCompact (Metric.closedBall q R))
+    (hcover : Metric.closedBall q R ⊆ insert q (range (fun x : M => (x : UniformSpace.Completion M))))
+    (x : M) (hx : dist (x : UniformSpace.Completion M) q < R / 2) :
+    ∃ gamma : C(ℝ, UniformSpace.Completion M),
+      gamma 0 = q ∧ gamma (dist (x : UniformSpace.Completion M) q) = x ∧
+      ∀ s ∈ Icc 0 (dist (x : UniformSpace.Completion M) q),
+        ∀ t ∈ Icc 0 (dist (x : UniformSpace.Completion M) q),
+          dist (gamma s) (gamma t) = |s - t| := by
+  obtain ⟨f, hf0, hf1, _, hf⟩ :=
+    exists_completion_segment_of_punctured_compact_ball g hmetric hcompact hcover x hx
+  let L := dist (x : UniformSpace.Completion M) q
+  by_cases hz : L = 0
+  · have heq : (x : UniformSpace.Completion M) = q := dist_eq_zero.mp hz
+    refine ⟨ContinuousMap.const _ q, rfl, heq.symm, ?_⟩
+    intro s hs t ht
+    have hs0 : s = 0 := le_antisymm (hz ▸ hs.2) hs.1
+    have ht0 : t = 0 := le_antisymm (hz ▸ ht.2) ht.1
+    simp only [ContinuousMap.const_apply, dist_self, hs0, ht0, sub_self, abs_zero]
+  have hL : 0 < L := lt_of_le_of_ne dist_nonneg (Ne.symm hz)
+  let c : C(ℝ, Icc (0 : ℝ) 1) :=
+    ⟨fun t => projIcc 0 1 zero_le_one (1 - t / L),
+      continuous_projIcc.comp (continuous_const.sub (continuous_id.div_const L))⟩
+  refine ⟨f.comp c, ?_, ?_, ?_⟩
+  · simpa only [ContinuousMap.comp_apply, c, ContinuousMap.coe_mk, zero_div, sub_zero,
+      projIcc_right] using hf1
+  · change f (c L) = x
+    simpa only [c, ContinuousMap.coe_mk, div_self hL.ne', sub_self,
+      projIcc_left] using hf0
+  · intro s hs t ht
+    have hs' : 1 - s / L ∈ Icc (0 : ℝ) 1 := by
+      constructor
+      · exact sub_nonneg.mpr ((div_le_one hL).mpr hs.2)
+      · exact sub_le_self _ (div_nonneg hs.1 hL.le)
+    have ht' : 1 - t / L ∈ Icc (0 : ℝ) 1 := by
+      constructor
+      · exact sub_nonneg.mpr ((div_le_one hL).mpr ht.2)
+      · exact sub_le_self _ (div_nonneg ht.1 hL.le)
+    simp only [ContinuousMap.comp_apply, c, ContinuousMap.coe_mk, hf, Subtype.dist_eq,
+      Real.dist_eq, projIcc_of_mem zero_le_one hs', projIcc_of_mem zero_le_one ht']
+    change L * |(1 - s / L) - (1 - t / L)| = |s - t|
+    rw [show (1 - s / L) - (1 - t / L) = (t - s) / L by ring,
+      abs_div, abs_of_pos hL, mul_div_cancel₀ _ hL.ne', abs_sub_comm]
+
+
 theorem exists_smooth_geodesic_minimizer_of_completion_point_avoidance
     (g : SmoothRiemannianMetric I M)
     (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)

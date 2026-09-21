@@ -67,4 +67,41 @@ theorem tendsto_rescaled_radial_distance
     ring
   rw [heq, Real.sqrt_sq (div_nonneg dist_nonneg hr.le)]
 
+private theorem min_mul_div_le_of_comparisonAngle_le
+    {L a b d D : ℝ} (hL : 0 < L) (ha : 0 < a) (hb : 0 < b)
+    (hd : 0 ≤ d) (hdL : d ≤ L + L) (hD : |a - b| ≤ D) (hDab : D ≤ a + b)
+    (hangle : comparisonAngle L L d ≤ comparisonAngle a b D) :
+    min a b * (d / L) ≤ D := by
+  have hcos := Real.cos_le_cos_of_nonneg_of_le_pi
+    (comparisonAngle_mem_Icc L L d).1 (comparisonAngle_mem_Icc a b D).2 hangle
+  rw [cos_comparisonAngle hL hL (by simpa using hd) hdL,
+    cos_comparisonAngle ha hb hD hDab, comparisonCosine, comparisonCosine,
+    div_le_div_iff₀ (by positivity : 0 < 2 * a * b) (by positivity : 0 < 2 * L * L)] at hcos
+  have hD0 : 0 ≤ D := (abs_nonneg _).trans hD
+  have hm : 0 ≤ min a b := (lt_min ha hb).le
+  have hmin : (min a b) ^ 2 ≤ a * b := by
+    rw [pow_two]
+    exact mul_le_mul (min_le_left _ _) (min_le_right _ _) hm ha.le
+  have hmul := mul_le_mul_of_nonneg_left hmin (sq_nonneg d)
+  have hsq : (min a b * d) ^ 2 ≤ (D * L) ^ 2 := by
+    nlinarith [mul_nonneg (sq_nonneg (a - b)) (sq_nonneg L)]
+  have hle := (sq_le_sq₀ (mul_nonneg hm hd) (mul_nonneg hD0 hL.le)).mp hsq
+  rw [← mul_div_assoc]
+  exact (div_le_iff₀ hL).mpr hle
+
+theorem min_mul_dist_div_le_dist_of_radialComparisonAngle_nonincreasing
+    {r : ℝ} (hr : 0 < r) (hrad : IsRadialFamily z (fun _ : ι => r) gamma)
+    {i j : ι}
+    (hmono : CoordinatewiseNonincreasingOn r r (radialComparisonAngle gamma i j))
+    {s t : ℝ} (hs : s ∈ Ioc 0 r) (ht : t ∈ Ioc 0 r) :
+    min s t * (dist (gamma i r) (gamma j r) / r) ≤ dist (gamma i s) (gamma j t) := by
+  have hbig := radialComparisonAngle_sideInequalities hrad
+    (i := i) (j := j) (show r ∈ Ioc 0 r from ⟨hr, le_rfl⟩) ⟨hr, le_rfl⟩
+  have hsmall := radialComparisonAngle_sideInequalities hrad (i := i) (j := j) hs ht
+  have hangle : radialComparisonAngle gamma i j r r ≤ radialComparisonAngle gamma i j s t :=
+    ((hmono.2 ⟨hr, le_rfl⟩ ht ⟨hr, le_rfl⟩ ht.2).trans
+      (hmono.1 hs ⟨hr, le_rfl⟩ ht hs.2))
+  exact min_mul_div_le_of_comparisonAngle_le hr hs.1 ht.1 dist_nonneg hbig.2
+    hsmall.1 hsmall.2 hangle
+
 end DifferentialGeometry.Toponogov

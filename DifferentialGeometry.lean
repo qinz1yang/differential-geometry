@@ -11531,5 +11531,7 @@ import DifferentialGeometry.Topology.LocallyFinite.Superlevel
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
 import DifferentialGeometry.Topology.DenseEmbedding
 import DifferentialGeometry.Topology.Compactness.ConvergentFamily
+import DifferentialGeometry.Topology.Compactness.ConvergentSeparators
 import DifferentialGeometry.Topology.Compactness.Cocompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckCurvatureDistance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckEndCurvatureDistance

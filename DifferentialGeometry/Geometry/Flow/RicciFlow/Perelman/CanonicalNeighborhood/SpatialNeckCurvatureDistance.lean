@@ -82,4 +82,43 @@ theorem SpatialNeck.central_sphere_dist_lt_endpoint_sum (nk : SpatialNeck g eps 
   exact Metric.dist_lt_dist_add_dist_of_mem_closedBall (hball y hy) (hball z hz) hfar
 
 
+theorem SpatialNeck.exists_distinct_central_sphere_points_same_radius
+    (nk : SpatialNeck g eps x) (q : UniformSpace.Completion M) :
+    ∃ y z : M, y ∈ nk.map '' (univ ×ˢ {(0 : ℝ)}) ∧
+      z ∈ nk.map '' (univ ×ˢ {(0 : ℝ)}) ∧ y ≠ z ∧
+        dist (y : UniformSpace.Completion M) q = dist (z : UniformSpace.Completion M) q := by
+  let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank
+      (by simp [ThreeSpace] : 1 < Module.finrank ℝ ThreeSpace)) (0 : ThreeSpace)
+      (by norm_num : (0 : ℝ) ≤ 1))
+  have hsource (p : Sphere 2) : (p, (0 : ℝ)) ∈ nk.map.source :=
+    nk.domain ⟨mem_univ _, neg_lt_zero.mpr (inv_pos.mpr nk.eps_pos), inv_pos.mpr nk.eps_pos⟩
+  let f : Sphere 2 → ℝ := fun p => dist (nk.map (p, 0) : UniformSpace.Completion M) q
+  have hmap : Continuous (fun p : Sphere 2 => nk.map (p, (0 : ℝ))) :=
+    nk.map.contMDiffOn_toFun.continuousOn.comp_continuous
+      (continuous_id.prodMk continuous_const) hsource
+  have hf : Continuous f := ((UniformSpace.Completion.continuous_coe M).comp hmap).dist continuous_const
+  have hneg : Continuous (fun p : Sphere 2 => -p) := continuous_neg
+  have hex : ∃ p : Sphere 2, f p = f (-p) := by
+    let p : Sphere 2 := Classical.arbitrary _
+    rcases le_total (f p) (f (-p)) with hp | hp
+    · exact intermediate_value_univ₂ (a := p) (b := -p) hf (hf.comp hneg) hp (by simpa using hp)
+    · exact intermediate_value_univ₂ (a := -p) (b := p) hf (hf.comp hneg) (by simpa using hp) hp
+  obtain ⟨p, hp⟩ := hex
+  refine ⟨nk.map (p, 0), nk.map (-p, 0), ⟨(p, 0), ⟨mem_univ _, rfl⟩, rfl⟩,
+    ⟨(-p, 0), ⟨mem_univ _, rfl⟩, rfl⟩, ?_, hp⟩
+  intro heq
+  have hpair := nk.map.toPartialEquiv.injOn (hsource p) (hsource (-p)) heq
+  have hvec : (p : ThreeSpace) = -(p : ThreeSpace) := congrArg (fun z : Cylinder => (z.1 : ThreeSpace)) hpair
+  have hz : (p : ThreeSpace) = 0 := by
+    have hh : (2 : ℝ) • (p : ThreeSpace) = 0 := by
+      rw [two_smul]
+      calc (p : ThreeSpace) + p = -(p : ThreeSpace) + p := congrArg (fun v : ThreeSpace => v + p) hvec
+        _ = 0 := neg_add_cancel _
+    exact (smul_eq_zero.mp hh).resolve_left (by norm_num)
+  have hnorm : ‖(p : ThreeSpace)‖ = 1 := by simpa only [mem_sphere_zero_iff_norm] using p.property
+  rw [hz, norm_zero] at hnorm
+  norm_num at hnorm
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

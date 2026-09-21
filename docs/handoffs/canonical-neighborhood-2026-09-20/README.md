@@ -1884,3 +1884,72 @@ limiting-angle proof replaces the invalid finite-angle step in Lemma 10.22.
 The full root build passed 20,217 jobs with exactly the 21 retained `sorry`
 warnings and no other diagnostics. Evidence:
 `/private/tmp/wt17-direction-kernel-root-build.log`.
+
+
+### Curvature–distance upper bound from the constructed neck end
+
+`NeckEndCurvatureDistance.lean` proves
+`exists_scalar_distance_upper_bound_of_convergent_neck_separators`.
+It constructs two minimizing segments from the missing completion point to
+distinct equal-radius points on one actual central neck sphere. Local radial
+comparison gives `min(s,t) * beta ≤ dist(gamma(s),mu(t))`, with `beta > 0`.
+The compact annular tails with the endpoint added are neighborhoods shrinking
+to that endpoint. The new general topology theorem
+`eventually_exists_frontier_intersection_of_convergent_separators` proves that
+each fixed segment crosses every sufficiently deep tail frontier. The frontier
+lies on the corresponding actual central sphere. Its radius bound
+`7 / sqrt(R(w_n))` then gives
+`R(w_n) * dist(q,w_n)^2 ≤ (7 + 14/beta)^2` eventually.
+No compact direction space, smooth continuation of rays, uniform angular
+convergence, or free two-ray separation hypothesis is used.
+
+`exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence`
+now includes this bound for its own centers `g(t(n+2))`. All engine hypotheses
+are discharged inside its existing restricted-end construction: the intrinsic
+metric, sectional nonnegativity, compact completion ball with only one missing
+point, endpoint avoidance, compact convergent annuli, neighborhood property,
+restricted necks and their frontier containment, and diverging center scalars.
+The intrinsic radial distance is exactly `F.radius - t(n+2)`.
+The constant depends on this constructed end; it is not a uniform bound on the
+original normalized sources. Its downstream use is the upper scale comparison
+needed to identify a curvature-normalized local flow limit with a cone patch.
+The existing lower estimate gives the other half of scale comparison.
+
+The long public proof was split at the terminal-limit/neck-end construction
+boundary into a private lemma on a general Riemannian manifold with its actual
+metric. This avoids Lean's default elaboration limit without a resource override.
+A whitespace-normalized statement comparison confirms that the public theorem
+preserves every previous binder and conclusion and adds only the upper bound.
+
+Six public declarations passed all thirteen declaration linters. Each transitive
+axiom closure consists only of `propext`, `Classical.choice`, and `Quot.sound`.
+The actual normalized-end assembly passed 14,173 build jobs. Evidence:
+`/private/tmp/wt17-normalized-scale-build.log` and
+`/private/tmp/wt17-neck-scale-audit.log`.
+
+The essential gap closed is the upper curvature–distance bound for the actual
+normalized neck sequence, not merely a conditional version of that bound.
+The compact direction/cone limit, local source-ball containment, closed-terminal
+smooth flow patch and smooth cone-chart identification still remain. The
+headline `bounded_curvature_at_distance` remains a proof hole; the total retained
+hole count is still 21. The assembly difficulty was Lean elaboration, not a
+persistent mathematical blockage. This layer gives no reason to switch to Ultra.
+
+References: Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Section 10.4,
+Claim 10.31; the user's September 21 attachments, especially the two-ray argument.
+The newer attachment is
+`/Users/bennettchow/.codex/attachments/4096cdce-6157-44ee-87f0-f427c8029c0b/pasted-text.txt`,
+SHA-256 `3f83e3b2ca05d4952a255c8062def4b869bec17b0077677be8ab6fbcb84f6004`.
+It is mathematical guidance, not compiler evidence. Its proposed direct diagonal
+from original source flows is being checked against
+`canonical_neighborhood_local_propagation`, whose actual `c/(1+|R|)` time window
+can supply a fixed backward interval after the second curvature normalization.
+This avoids requiring a flow on the entire incomplete end. The printed local
+compactness statement in MSM135, `tex/chapters/chapter3.tex`,
+`notes_and_commentary:lbl354`, uses an open time interval containing zero;
+a closed-terminal variant must be proved. MSM144,
+`tex/chapters/chapter14.tex`, `notes_and_commentary:lbl550`, supplies the relevant
+finite-order local Shi estimates. No positive-time source extension is assumed.
+
+The full root build passed 20,219 jobs with exactly 21 retained `sorry` warnings
+and no other diagnostics. Evidence: `/private/tmp/wt17-neck-scale-root-build.log`.
