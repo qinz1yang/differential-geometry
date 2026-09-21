@@ -123,6 +123,18 @@ its only proved supplier needs (now passed; the assembly had it). The three hypo
 reviewer's FALSE verdicts (`IsClosed BdM`, `HasGroupoid`, `MetricSpace`/`CompactSpace`) were found
 justified, suppliable and essentially minimal.
 
+**Due-diligence pass on the §34 terminal leaves (2026-09-21, `consult/Q-section34-terminal-due-diligence.md`):**
+independent read-only audit of the six leaves the reviewer judged OK: 3 confirmed
+(`exists_section34NormalFamily`, `exists_section34ResidualBalls`, `exists_section34CutFrame`),
+3 suspect, 0 defect; the assembly wiring is correct in both directions. The three suspects share
+one cause: **`IsPLCellOn` has no API** — missing are uniqueness of a PL cell's intrinsic boundary,
+boundary = frontier in codimension 0, and "a set is not both a PL 1-cell and a PL 2-cell"; without
+them `∂V_w = ⋃E ∪ ⋃X`, `∂E_e = ⋃I` are inputs nowhere. `section34SourceFace_iff_cutLe` silently
+needs "every triangle carrying a face arc is a face of a tetrahedron" (one free `CutFrame` clause).
+P6's OK is true but hollow: of the four cyclic-seam ingredients only "single crossing" is a field;
+the innermost-disk step sits as an assumption in the composite leaf. Inhabitant advice: `∂Δ⁴ ≅ S³`
+in `ℝ⁴` with `h = f₁ = id` (size L), with a `U = ∅` control first (S).
+
 ## Deliberately NOT on the goal path (may stay open forever)
 Unrestricted `Moise251`; the non-orientable loop theorem and the one-circle closed case in a
 non-orientable manifold; `Moise305` (non-tame); `TopologicalCellComplementConnected`; the
