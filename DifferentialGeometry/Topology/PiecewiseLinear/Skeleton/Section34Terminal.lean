@@ -45,37 +45,62 @@ Carriers are `H (section34LabelSimplex cr l)`, with `H` the `𝒦`-simplex-index
 of `Section34CarrierControl`, which is what makes local finiteness in `h '' U` real.  Since
 review N that system also asks `IsPLCellOn 3 (H t) (frontier (H t))`: a carrier names an
 exterior in `Section34Exterior`, and for a carrier with a hole a component touching an inner
-boundary passes the component test although it is not outside, which made P7 false.
+boundary passes the component test although it is not outside, which made P7 false.  Since
+review S it also asks that each carrier lie in one piecewise linear chart of `M₂`; that clause
+is what the other half of Section 34 needs in order to produce a common chart per triangle, and
+it is free here because a carrier is already a closed piecewise linear ball.
+
+`Section34CutFrame` further asks that every triangle of `𝒦` be a face of a tetrahedron of `𝒦`,
+in the index form `∀ s, ∃ t, Section34Incident s.1 t.1`.  It is derivable from
+`IsCombinatorialManifold 3 𝒦.complex` for a manifold without boundary, and it is free at every
+intended call site, but the tree has no such derivation and `section34SourceFace_iff_cutLe`
+silently entails it, so it is a clause for now.
+
+The `IsPLCellOn` API owed to `PiecewiseLinear.PLCellOn` and used silently here: uniqueness of
+the intrinsic boundary, `IsPLCellOn d S B → IsPLCellOn d S B' → B = B'`; its agreement with the
+ambient frontier in codimension zero, `IsPLCellOn 3 S B → B = frontier S`, for which
+`IsPLHomeomorphInto.image_frontier` is the natural tool but asks for an open domain; and
+distinctness of the dimensions, so that a set is not both a `1`-cell and a `2`-cell.  The
+first two are what `section34TargetRecognition` needs at the vertex balls and the splitting
+disks, whose intrinsic boundaries `tgtVBd`, `tgtEBd` are pinned by no formula; the third is
+what the exclusion of a face disk inside a dual ball appeals to.  The remaining five label
+kinds have their intrinsic boundaries given by explicit formulas, so recognition there is
+combinatorics only.
 
 The leaves, with content and review state.
 
-`exists_section34NormalFamily` (P0--P5): reviewed 2026-09-21 OK, frozen pending the lead's
-due-diligence pass; the realisation ambient, the triangulation and its subdivision, the source
-cut diagram, the carrier system, P1's neighbourhood and map, the target neighbourhood pieces,
-the face balls and everything `Section34NormalPlus` asks.
+`exists_section34NormalFamily` (P0--P5): reviewed 2026-09-21 OK; statement changed only through
+the two new clauses of the shared frame, so **unreviewed since**; the realisation ambient, the
+triangulation and its subdivision, the source cut diagram, the carrier system, P1's
+neighbourhood and map, the target neighbourhood pieces, the face balls and everything
+`Section34NormalPlus` asks.
 
-`exists_section34FaceDisks` (P6): reviewed 2026-09-21 OK, frozen pending the lead's
-due-diligence pass; the statement changed only through the shared frame, whose cut frame now
-carries `IsCombinatorialManifold 3 𝒦.complex`, `IsSubdivision 𝒦'.complex 𝒦.complex` and
-`𝒦'.map = 𝒦.map`, without which a face of `𝒦` need not meet the subdivided graph in at least
-three seams and the cyclic seam argument has no input.  It produces the exterior face disks
-`Δ_σ ⊆ ∂C_σ` with their arcs and marked points.  Its full input excludes a foreign face arc
-`a_{vτ} ⊆ d_σ` with `τ ≠ σ`; that exclusion is the derived lemma
-`section34_faceArc_subset_faceDisk_iff`, owed to this file and not a missing clause of the
-statement.
+`exists_section34FaceDisks` (P6): reviewed 2026-09-21 OK, but the audit of digest Q found that
+verdict **true but hollow**: of the four ingredients of the reviewer's cyclic seam argument
+only the single crossing clause of `Section34Trace` is a field; "at least three seams", "the
+seams cut `∂T_σ` into cyclic annuli" and "a single crossing is transverse and essential" are
+not, and the innermost disk exclusion is present only as the two `→ False` assumptions inside
+`Section34NormalPlus`, that is inside leaf 1.  The difficulty of P6 is relocated, not
+discharged.  It produces the exterior face disks `Δ_σ ⊆ ∂C_σ` with their arcs and marked
+points.  Its full input excludes a foreign face arc `a_{vτ} ⊆ d_σ` with `τ ≠ σ`; that exclusion
+is the derived lemma `section34_faceArc_subset_faceDisk_iff`, owed to this file and not a
+missing clause of the statement.
 
-`exists_section34ResidualBalls` (P7): reviewed 2026-09-21 OK, frozen pending the lead's
-due-diligence pass; the residual tetrahedron balls `R_t` with the three intrinsic boundary
+`exists_section34ResidualBalls` (P7): reviewed 2026-09-21 OK and confirmed by the audit of
+digest Q; the residual tetrahedron balls `R_t` with the three intrinsic boundary
 decompositions, the no-other-marked-point clause of page 245, and `R_t ⊆ H_t`, now with `H_t` a
-closed piecewise linear ball.
+closed piecewise linear ball.  The outer component test works because `frontier (H t)` is
+connected and disjoint from the obstacle.
 
-`section34SourceFace_iff_cutLe` (P8, source side): reviewed 2026-09-21 OK, frozen pending the
-lead's due-diligence pass; on the source cut, inclusion of cells is exactly the reflexive
-transitive closure of the codimension-one incidences.
+`section34SourceFace_iff_cutLe` (P8, source side): reviewed 2026-09-21 OK; on the source cut,
+inclusion of cells is exactly the reflexive transitive closure of the codimension-one
+incidences.  Its `←` half is a mechanical consequence of the frame; its `→` half needs the new
+tetrahedron clause, because the only route from a face arc to a dual ball runs through a patch.
 
-`section34TargetRecognition` (P8, target side): reviewed 2026-09-21 OK, frozen pending the
-lead's due-diligence pass; the target family has intrinsic boundary the union of its proper
-faces and exact pairwise intersections, for the face relation read off the source.
+`section34TargetRecognition` (P8, target side): reviewed 2026-09-21 OK; the target family has
+intrinsic boundary the union of its proper faces and exact pairwise intersections, for the face
+relation read off the source.  It rests on the owed `IsPLCellOn` uniqueness and codimension
+zero facts listed above.
 
 Proved here, not a leaf: the packaging of the eight kinds into the existential of
 `Section34CellDiagram`, including the cell clause by cases, the parametrisations, the charts,
@@ -189,8 +214,8 @@ theorem section34CellDiagram : Section34CellDiagram.{u} := by
   obtain ⟨hDcell, -, -, -, -, hAcell, -, -, hPcell, -, -, -⟩ := id hdisk
   obtain ⟨hRcell, hXcell, hIcell, -, -, -, -, -, -, -, -, -, -, -, -, hresCar⟩ := id hres
   obtain ⟨-, -, -, hsc, hsbd, hsinter, hsdim, hsLF, hscover, -, -, -, -, -, -, -, -, hparent,
-    -, hsupT, -, -, -, -⟩ := hcut
-  obtain ⟨-, hHsub, hHlf, hHdiam, -⟩ := hctrl
+    -, hsupT, -, -, -, -, -⟩ := hcut
+  obtain ⟨-, hHsub, hHlf, hHdiam, -, -⟩ := hctrl
   obtain ⟨-, -, -, -, -, -, -, -, -, -, hcrF, hsupV, hcrfib, hcrH⟩ := hgraph
   have htcell : ∀ l, IsPLCellOn (section34Dim l) (tc l) (tcBd l) := by
     intro l

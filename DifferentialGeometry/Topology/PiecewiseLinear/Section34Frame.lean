@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ChartLocalApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLPastingManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Endpoint
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
@@ -27,12 +28,24 @@ fixing `Ea = EuclideanSpace ℝ (Fin 3)` would force `U` to embed in `ℝ³` and
 Only `ChartedSpace`, `plGroupoid`, `IsPLCellOn`, `IsPolyhedralSphere` carry the manifold
 dimension three.
 
-`IsPLCellOn d S B` says that `S` is a piecewise linear `d`-cell with *intrinsic* boundary `B`,
-that is `S = u '' P` and `B = u '' (r '' stdSimplexBoundary d)`.  Ambient frontiers occur in
+`IsPLCellOn` and its two basic lemmas now live in `PiecewiseLinear.PLCellOn`, together with the
+list of the invariance of domain facts about it that are still owed.  Ambient frontiers occur in
 `Section34Trace`, in `Section34Exterior`, and in the carrier clause
 `IsPLCellOn 3 (H t) (frontier (H t))` of `Section34CarrierControl`: a carrier is used to name an
 exterior, so it must be a closed piecewise linear ball and not a set with a hole, for which the
 component test of `Section34Exterior` is false.
+
+`Section34CarrierControl` also asks that each carrier lie in one piecewise linear chart of `M₂`.
+Without it the common chart of a triangle is not producible: for `M₂ = S³` with all fine
+carriers equal to `S³` the preparation would have to put `S³` inside the source of a chart.
+With it, `exists_chart_iUnion_carrier_subset_source` derives the common chart of a triangle from
+the single inclusion `Section34Incident w.1 s.1 → Q w ⊆ H s.1` of the cut frame producer.
+
+`Section34CutFrame` further asks that every triangle of `𝒦` be a face of a tetrahedron of `𝒦`.
+This is a consequence of `IsCombinatorialManifold 3 𝒦.complex` for a manifold without boundary
+and is free at every intended call site, but the tree has no such derivation, and the source
+face order `src (.faceArc a) ⊆ src (.vertexBall a.1.2)` forces it: in `Section34CutStep` the
+only route from a face arc to a dual ball runs through a patch, hence through a tetrahedron.
 
 | dim | source | target | label |
 | --- | --- | --- | --- |
@@ -66,11 +79,15 @@ lying inside a dual ball.
 `Section34NormalPlus` is the configuration after step P5.  `Section34VertexPreparation` and
 `Section34PiercingConditions` are the two packages of Moise 35.1, pages 248--250, and they
 separate the *pierced* cells `C'_v` from the *enlarged* cells `C''_v`.  The preparation fixes,
-before any map: `C'_v` with `C_v ⊆ C'_v`, the piercing circle `Bd C'_v ∩ Bd C'_w` inside the
+before any map: `C'_v`, the piercing circle `Bd C'_v ∩ Bd C'_w` inside the
 splitting disk `D_e`, the two compatible regular neighbourhoods `T_e ⊆ Int S_e` of that circle,
 the annuli `A_e = Bd C'_v ∩ T_e` and `B_e ⊆ Bd C'_w` with their designated boundary circles,
-the enlarged cells `C''_v ⊇ C'_v ∪ ⋃_{e ∋ v} S_e`, one target piecewise linear chart per vertex
-and per triangle, and only then the tolerances `ε_v`.  Taking `A_e` on `Bd C''_v` instead would
+the enlarged cells `C''_v ⊇ C_v ∪ C'_v ∪ ⋃_{e ∋ v} S_e`, one target piecewise linear chart per
+vertex, the chart `c_σ` and the outer torus `S_{2σ}` of each triangle, and only then the
+tolerances `ε_v`.  The slight alteration of page 248 alters one of the two cells of each edge
+and is only asked to lie in a prescribed neighbourhood of it, so `C_v ⊆ C'_v` is not part of
+it; what the later stages use is `C_v ⊆ C''_v`, and that is what is recorded.  Taking `A_e`
+on `Bd C''_v` instead would
 make condition (3) contradictory: `G_v` is an embedding of `C''_v`, so `G_v (Bd C''_v)` is the
 frontier of `G_v (C''_v)` and misses `Int G_v(T_e)`, while the two pierced boundaries do meet.
 The homological input of Lemma 1 on page 250 is recorded as
@@ -87,7 +104,35 @@ one circle interior to both and are tangent, not crossing, along it.  The packag
 for the local crossing model at every intersection point, through the tree's `HasPLCrossingAt`
 read in a piecewise linear chart of `M₂`.  The target supports `Sp e`, `Tp e` and the circle
 count `cnt e` are fields, so that the circle removal of Lemmas 2 and 3 is a single step with a
-fixed, locally finite support and a strictly decreasing count.
+fixed, locally finite support and a strictly decreasing count.  Local finiteness of the supports
+is asked in the target subspace `h '' U` and not merely inside their own union: pairwise
+disjoint thin boxes accumulating on a segment are locally finite in their union, and pasting a
+move of each is discontinuous at a point of the segment.
+
+The margins of the preparation are two-sided wherever two approximations meet.  Two separate
+bounds `ε_v < d` and `ε_w < d` do not keep `f_v (x)` and `f_w (y)` apart, because each may move
+by almost `d`; the clause is `ε_v + ε_w < dist (h x) (h y)`.  Where only one approximation
+occurs, as in condition (6), whose second set is the fixed `h (K)`, the one-sided bound is the
+right one.  The margins recorded are: the sum bound between `Bd B_e` and `T_e` for condition
+(5); the carrier balls of radius `ε_v` on `C''_v` and of radius `ε_v + ε_w` on `S_e` for
+condition (2); the two sum bounds separating the forbidden part of `Bd C'_v`, respectively of
+`Bd C'_w`, from the other pierced boundary, for condition (3); the source side marking
+`A_{e0} ⊆ Int C'_w`, `A_{e1} ∩ C'_w = ∅` with its sum bound, for condition (4); the collar
+between `B_e` and the complement of `Int S_e`, for condition (5); the one-sided bound against
+the whole graph core, for condition (6); the connected component certificates of condition (7);
+and the sum bound separating the pairwise disjoint tubes `S_e`, which isolates one removal step
+from the data of the other edges.  `section34MarginConditions` proves from them, for every
+family of embeddings `ε`-close to `h` on the `C''_v`, condition (2), the disjointness half of
+condition (5), the disjointness half of condition (6) and the disjointness of the target tubes.
+The remaining clauses of (3)--(7) are containments in interiors of images and need invariance of
+domain, so they stay inside the package leaf.
+
+The outer torus of a triangle is chosen in the preparation, before any map: the chart `c_σ`,
+the solid torus `S_{2σ}`, the spine clause `IsSpine S_{2σ} (c_σ (h (∂σ)))` in the exact form
+`moise308Nested` consumes, and the buffer putting all the carriers of the incident vertices in
+`Int S_{2σ}`.  Because the buffer is stated for the fine carriers `Q_v`, which no later stage
+changes, `section34FaceTorus_subset_outerTorus` transports it to every family confined by the
+carriers, and the joint producer has only to choose the inner torus `S_{1σ}` afterwards.
 
 `carriesFundamentalGroupOnto_of_nestedSolidTorus` is proved, not assumed: it transports the
 unconditional `moise308Nested` from `ℝ³` to a subset of a metrised piecewise linear
@@ -100,28 +145,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u v
-
-section Cell
-
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-
-def IsPLCellOn (d : ℕ) (S B : Set M) : Prop :=
-  ∃ (P : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3))
-    (u : EuclideanSpace ℝ (Fin 3) → M),
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) P ∧ IsPLHomeomorphInto 3 u P ∧
-      S = u '' P ∧ B = u '' (r '' stdSimplexBoundary d)
-
-theorem IsPLCellOn.isCompact {d : ℕ} {S B : Set M} (hS : IsPLCellOn d S B) : IsCompact S := by
-  obtain ⟨P, r, u, hr, hu, hcell, -⟩ := hS
-  rw [hcell]
-  exact ((IsPLBall.isPolyhedron ⟨r, hr⟩).isCompact).image_of_continuousOn hu.continuousOn
-
-theorem IsPLCellOn.nonempty {d : ℕ} {S B : Set M} (hS : IsPLCellOn d S B) : S.Nonempty := by
-  obtain ⟨P, r, u, hr, -, hcell, -⟩ := hS
-  rw [hcell]
-  exact (IsPLBall.nonempty ⟨r, hr⟩).image u
-
-end Cell
 
 section Annulus
 
@@ -488,7 +511,21 @@ def Section34CarrierControl (U : Set M₁) (𝒦 : LocallyFinitePLPieceIn Ea 3 M
     {t | t ∈ 𝒦.complex.faces ∧ (H t ∩ V).Nonempty}.Finite) ∧
   (∀ t ∈ 𝒦.complex.faces, ∀ x ∈ Section34CarrierSupport 𝒦 t, ∀ y ∈ H t, ∀ z ∈ H t,
     dist y z < η x) ∧
-  ∀ t ∈ 𝒦.complex.faces, IsPLCellOn 3 (H t) (frontier (H t))
+  (∀ t ∈ 𝒦.complex.faces, IsPLCellOn 3 (H t) (frontier (H t))) ∧
+  ∀ t ∈ 𝒦.complex.faces, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, H t ⊆ c.source
+
+omit [FiniteDimensional ℝ Ea] in
+theorem exists_chart_iUnion_carrier_subset_source {U : Set M₁}
+    {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U} {h : M₁ → M₂} {η : M₁ → ℝ}
+    {H : Finset Ea → Set M₂} (hH : Section34CarrierControl U 𝒦 h η H)
+    (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
+    (hQtri : ∀ (w : Section34VertexIndex 𝒦 𝒦') (s : Section34SimplexIndex 𝒦 3),
+      Section34Incident w.1 s.1 → Q w ⊆ H s.1) (s : Section34SimplexIndex 𝒦 3) :
+    ∃ c ∈ (plGroupoid 3).maximalAtlas M₂,
+      (⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w) ⊆ c.source := by
+  obtain ⟨-, -, -, -, -, hchart⟩ := hH
+  obtain ⟨c, hc, hcs⟩ := hchart s.1 s.2.1
+  exact ⟨c, hc, iUnion₂_subset fun w hw => (hQtri w s hw).trans hcs⟩
 
 def Section34CutFrame (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
     (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁) : Prop :=
@@ -526,8 +563,10 @@ def Section34CutFrame (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M
   (∀ e : Section34EdgeIndex 𝒦 𝒦', ∃ w w' : Section34VertexIndex 𝒦 𝒦', w ≠ w' ∧
     (e.1 : Set Ea) = (w.1 : Set Ea) ∪ (w'.1 : Set Ea) ∧
       src (.splitDisk e) = src (.vertexBall w) ∩ src (.vertexBall w')) ∧
-  ∀ (t : Section34SimplexIndex 𝒦 4) (s : Section34SimplexIndex 𝒦 3),
-    Section34Incident s.1 t.1 → src (.faceDisk s) ⊆ src (.tetraBall t)
+  (∀ (t : Section34SimplexIndex 𝒦 4) (s : Section34SimplexIndex 𝒦 3),
+    Section34Incident s.1 t.1 → src (.faceDisk s) ⊆ src (.tetraBall t)) ∧
+  ∀ s : Section34SimplexIndex 𝒦 3, ∃ t : Section34SimplexIndex 𝒦 4,
+    Section34Incident s.1 t.1
 
 def section34CutNeighborhood {U : Set M₁} {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
     (src : Section34CutLabelOf 𝒦 𝒦' → Set M₁) : Set M₁ :=
@@ -702,16 +741,28 @@ def Section34VertexPreparation (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPiece
       Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
     (Cp CpBd Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁)
     (Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
-    (ε : Section34VertexIndex 𝒦 𝒦' → ℝ) : Prop :=
-  (∀ e, (ends e).1 ≠ (ends e).2 ∧
-    (e.1 : Set Ea) = ((ends e).1.1 : Set Ea) ∪ ((ends e).2.1 : Set Ea) ∧
-    src (.splitDisk e) = src (.vertexBall (ends e).1) ∩ src (.vertexBall (ends e).2)) ∧
-  (∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) ∧
+    (ε : Section34VertexIndex 𝒦 𝒦' → ℝ)
+    (ct : Section34SimplexIndex 𝒦 3 → OpenPartialHomeomorph M₂ (EuclideanSpace ℝ (Fin 3)))
+    (Sd : Section34SimplexIndex 𝒦 3 → Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
+  (∀ w, 0 < ε w) ∧
   (∀ w, IsPLCellOn 3 (Cc w) (CcBd w)) ∧
-  (∀ w, src (.vertexBall w) ⊆ Cp w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U) ∧
+  (∀ w, src (.vertexBall w) ⊆ Cc w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U) ∧
+  (∀ w, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, h '' Cc w ⊆ c.source) ∧
+  (∀ s : Section34SimplexIndex 𝒦 3, ct s ∈ (plGroupoid 3).maximalAtlas M₂ ∧
+    (⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w) ⊆
+      (ct s).source) ∧
+  (∀ s : Section34SimplexIndex 𝒦 3, IsTopologicalSolidTorus (Sd s) ∧
+    IsSpine (Sd s) (ct s '' (h '' simplexRim 𝒦 s.1))) ∧
+  (∀ s : Section34SimplexIndex 𝒦 3,
+    ct s '' (⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w) ⊆
+      interior (Sd s)) ∧
+  (∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) ∧
   (∀ w, simplexBody 𝒦' w.1 ⊆ interior (Cp w)) ∧
   (∀ w, h '' Cc w ⊆ interior (Q w)) ∧
   (∀ x ∈ ⋃ w, Cc w, ∃ V ∈ 𝓝 x, {w | (Cc w ∩ V).Nonempty}.Finite) ∧
+  (∀ e, (ends e).1 ≠ (ends e).2 ∧
+    (e.1 : Set Ea) = ((ends e).1.1 : Set Ea) ∪ ((ends e).2.1 : Set Ea) ∧
+    src (.splitDisk e) = src (.vertexBall (ends e).1) ∩ src (.vertexBall (ends e).2)) ∧
   (∀ e, IsPolyhedralSphere (n := 3) 1 (CpBd (ends e).1 ∩ CpBd (ends e).2) ∧
     CpBd (ends e).1 ∩ CpBd (ends e).2 ⊆ src (.splitDisk e)) ∧
   (∀ e, IsLocallyFiniteRegularNeighborhoodOf (n := 3) (Sn e)
@@ -721,24 +772,38 @@ def Section34VertexPreparation (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPiece
   (∀ e, Tn e ⊆ interior (Sn e) ∧ IsTopologicalSolidTorus (Sn e) ∧
     IsTopologicalSolidTorus (Tn e) ∧ Disjoint (Sn e) (graphSkeletonSpace 𝒦)) ∧
   (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 → Sn e ⊆ Cc w) ∧
+  (∀ e d, e ≠ d → Disjoint (Sn e) (Sn d)) ∧
   (∀ e, Aa e = CpBd (ends e).1 ∩ Tn e ∧ IsAnnulusOn (Aa e) (Ab₀ e) (Ab₁ e)) ∧
   (∀ e, Bb e ⊆ CpBd (ends e).2 ∧ IsAnnulusOn (Bb e) (Bb₀ e) (Bb₁ e)) ∧
   (∀ e, Tn e ∩ CpBd (ends e).2 ⊆ Bb e \ (Bb₀ e ∪ Bb₁ e)) ∧
   (∀ e, Bb e ⊆ interior (Sn e) ∧ Bb₀ e ∪ Bb₁ e ⊆ Sn e \ Tn e) ∧
+  (∀ e, Ab₀ e ⊆ interior (Cp (ends e).2) ∧ Ab₁ e ∩ Cp (ends e).2 = ∅) ∧
+  (∀ e, (∃ y₀ ∈ Bb e ∩ Cp (ends e).1, ∀ z ∈ Bb e ∩ Cp (ends e).1, z ∉ Tn e →
+      z ∈ connectedComponentIn (Bb e ∩ Cp (ends e).1) y₀) ∧
+    ∃ y₀ ∈ Bb e \ Cp (ends e).1, ∀ z ∈ Bb e \ Cp (ends e).1, z ∉ Tn e →
+      z ∈ connectedComponentIn (Bb e \ Cp (ends e).1) y₀) ∧
   (∀ e, CarriesFundamentalGroupOnto (Ab₀ e) (Tn e) ∧
     CarriesFundamentalGroupOnto (Ab₁ e) (Tn e) ∧
     CarriesFundamentalGroupOnto (Ab₀ e) (Sn e)) ∧
-  (∀ w, 0 < ε w) ∧
   (∀ w, ∀ x ∈ Cc w, Metric.ball (h x) (ε w) ⊆ interior (Q w)) ∧
+  (∀ e, ∀ x ∈ Sn e, Metric.ball (h x) (ε (ends e).1 + ε (ends e).2) ⊆
+    interior (Q (ends e).1) ∩ interior (Q (ends e).2)) ∧
   (∀ w, ∀ x ∈ CcBd w, ∀ y ∈ h '' simplexBody 𝒦' w.1, ε w < dist (h x) y) ∧
   (∀ w, ∀ x ∈ CpBd w, ∀ y ∈ h '' simplexBody 𝒦' w.1, ε w < dist (h x) y) ∧
-  (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 →
-    ∀ x ∈ Bb₀ e ∪ Bb₁ e, ∀ y ∈ Tn e, ε w < dist (h x) (h y)) ∧
+  (∀ e, ∀ x ∈ Bb₀ e ∪ Bb₁ e, ∀ y ∈ Tn e,
+    ε (ends e).1 + ε (ends e).2 < dist (h x) (h y)) ∧
+  (∀ e, ∀ x ∈ CpBd (ends e).1 \ (Aa e \ (Ab₀ e ∪ Ab₁ e)), ∀ y ∈ CpBd (ends e).2,
+    ε (ends e).1 + ε (ends e).2 < dist (h x) (h y)) ∧
+  (∀ e, ∀ x ∈ CpBd (ends e).1, ∀ y ∈ CpBd (ends e).2 \ (Bb e \ (Bb₀ e ∪ Bb₁ e)),
+    ε (ends e).1 + ε (ends e).2 < dist (h x) (h y)) ∧
+  (∀ e, ∀ x ∈ Ab₁ e, ∀ y ∈ Cp (ends e).2,
+    ε (ends e).1 + ε (ends e).2 < dist (h x) (h y)) ∧
+  (∀ e, ∀ x ∈ Bb e, ∀ y ∈ Cc (ends e).1 \ interior (Sn e),
+    ε (ends e).1 + ε (ends e).2 < dist (h x) (h y)) ∧
   (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 →
     ∀ x ∈ Sn e, ∀ y ∈ graphSkeletonSpace 𝒦, ε w < dist (h x) (h y)) ∧
-  (∀ w, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, h '' Cc w ⊆ c.source) ∧
-  ∀ s : Section34SimplexIndex 𝒦 3, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂,
-    (⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w) ⊆ c.source
+  ∀ e d, e ≠ d → ∀ x ∈ Sn e, ∀ y ∈ Sn d,
+    ε (ends e).1 + ε (ends d).1 < dist (h x) (h y)
 
 def Section34PiercingConditions (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
     (h : M₁ → M₂) (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
@@ -753,7 +818,8 @@ def Section34PiercingConditions (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPiec
   (∀ w, G w '' Cc w ⊆ Q w) ∧
   (∀ e, G (ends e).2 '' Sn e ⊆ Q (ends e).1 ∧ G (ends e).1 '' Sn e ⊆ Q (ends e).2) ∧
   (∀ e, Sp e = G (ends e).1 '' Sn e ∧ Tp e = G (ends e).1 '' Tn e) ∧
-  (∀ y ∈ ⋃ e, Sp e, ∃ V ∈ 𝓝 y, {e | (Sp e ∩ V).Nonempty}.Finite) ∧
+  LocallyFinite (fun e => {y : h '' U | (y : M₂) ∈ Sp e}) ∧
+  (∀ e d, e ≠ d → Disjoint (Sp e) (Sp d)) ∧
   (∀ e, G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2 ⊆
     G (ends e).1 '' (Aa e \ (Ab₀ e ∪ Ab₁ e)) ∩
       G (ends e).2 '' (Bb e \ (Bb₀ e ∪ Bb₁ e)) ∩ interior (Tp e)) ∧
@@ -779,6 +845,94 @@ def Section34PiercingConditions (U : Set M₁) (𝒦 𝒦' : LocallyFinitePLPiec
     ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, y ∈ c.source ∧
       HasPLCrossingAt (c '' (G (ends e).1 '' Aa e ∩ c.source))
         (c '' (G (ends e).2 '' Bb e ∩ c.source)) (c y)
+
+section Margins
+
+variable {U : Set M₁} {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U} {h : M₁ → M₂}
+  {src : Section34CutLabelOf 𝒦 𝒦' → Set M₁} {Q : Section34VertexIndex 𝒦 𝒦' → Set M₂}
+  {ends : Section34EdgeIndex 𝒦 𝒦' →
+    Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦'}
+  {Cp CpBd Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁}
+  {Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁}
+  {ε : Section34VertexIndex 𝒦 𝒦' → ℝ}
+  {ct : Section34SimplexIndex 𝒦 3 → OpenPartialHomeomorph M₂ (EuclideanSpace ℝ (Fin 3))}
+  {Sd : Section34SimplexIndex 𝒦 3 → Set (EuclideanSpace ℝ (Fin 3))}
+  {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
+
+omit [FiniteDimensional ℝ Ea] in
+theorem section34FaceTorus_subset_outerTorus
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+      Bb Bb₀ Bb₁ ε ct Sd)
+    (D : Section34VertexIndex 𝒦 𝒦' → Set M₂) (hD : ∀ w, D w ⊆ Q w)
+    (s : Section34SimplexIndex 𝒦 3) :
+    section34FaceTorus D s ⊆ (ct s).source ∧
+      ct s '' section34FaceTorus D s ⊆ interior (Sd s) := by
+  obtain ⟨-, -, -, -, hsrc, -, hbuf, -⟩ := hprep
+  have hsub : section34FaceTorus D s ⊆
+      ⋃ (w : Section34VertexIndex 𝒦 𝒦') (_ : Section34Incident w.1 s.1), Q w := by
+    simp only [section34FaceTorus]
+    refine iUnion₂_subset fun a ha => ?_
+    subst ha
+    exact fun y hy => mem_iUnion₂.mpr ⟨a.1.2, a.2, hD _ hy⟩
+  exact ⟨hsub.trans (hsrc s).2, (image_mono hsub).trans (hbuf s)⟩
+
+omit [FiniteDimensional ℝ Ea] in
+theorem section34MarginConditions
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Sn Tn Aa Ab₀ Ab₁
+      Bb Bb₀ Bb₁ ε ct Sd)
+    (hGdist : ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w) :
+    (∀ w, G w '' Cc w ⊆ Q w) ∧
+      (∀ e, G (ends e).2 '' Sn e ⊆ Q (ends e).1 ∧ G (ends e).1 '' Sn e ⊆ Q (ends e).2) ∧
+      (∀ e, Disjoint (G (ends e).2 '' (Bb₀ e ∪ Bb₁ e)) (G (ends e).1 '' Tn e)) ∧
+      (∀ e, Disjoint (G (ends e).1 '' Sn e) (h '' graphSkeletonSpace 𝒦)) ∧
+      ∀ e d, e ≠ d → Disjoint (G (ends e).1 '' Sn e) (G (ends d).1 '' Sn d) := by
+  obtain ⟨hεpos, -, -, -, -, -, -, -, -, -, -, -, -, -, htn, hsncc, -, -, -, -, hbbd, -, -,
+    -, hball, hsnball, -, -, hbt, -, -, -, -, hgraph, htube⟩ := hprep
+  have h1 : ∀ w, G w '' Cc w ⊆ Q w := by
+    rintro w _ ⟨x, hx, rfl⟩
+    exact interior_subset (hball w x hx (Metric.mem_ball.mpr (hGdist w x hx)))
+  refine ⟨h1, fun e => ?_, fun e => ?_, fun e => ?_, fun e d hne => ?_⟩
+  · have hmem : ∀ w, (w = (ends e).1 ∨ w = (ends e).2) → ∀ x ∈ Sn e,
+        G w x ∈ Metric.ball (h x) (ε (ends e).1 + ε (ends e).2) := by
+      intro w hw x hx
+      have hlt := hGdist w x (hsncc e w hw hx)
+      have hp1 := hεpos (ends e).1
+      have hp2 := hεpos (ends e).2
+      refine Metric.mem_ball.mpr ?_
+      rcases hw with rfl | rfl <;> linarith
+    constructor
+    · rintro _ ⟨x, hx, rfl⟩
+      exact interior_subset (hsnball e x hx (hmem _ (Or.inr rfl) x hx)).1
+    · rintro _ ⟨x, hx, rfl⟩
+      exact interior_subset (hsnball e x hx (hmem _ (Or.inl rfl) x hx)).2
+  · refine Set.disjoint_left.mpr ?_
+    rintro _ ⟨x, hx, rfl⟩ ⟨y, hy, hxy⟩
+    have hxc : x ∈ Cc (ends e).2 := hsncc e _ (Or.inr rfl) ((hbbd e).2 hx).1
+    have hyc : y ∈ Cc (ends e).1 := hsncc e _ (Or.inl rfl) (interior_subset ((htn e).1 hy))
+    have d1 : dist (h x) (G (ends e).2 x) < ε (ends e).2 := by
+      rw [dist_comm]; exact hGdist (ends e).2 x hxc
+    have d2 : dist (G (ends e).2 x) (h y) < ε (ends e).1 := by
+      rw [← hxy]; exact hGdist (ends e).1 y hyc
+    have dt := dist_triangle (h x) (G (ends e).2 x) (h y)
+    linarith [hbt e x hx y hy]
+  · refine Set.disjoint_left.mpr ?_
+    rintro _ ⟨x, hx, rfl⟩ ⟨y, hy, hxy⟩
+    have hxc : x ∈ Cc (ends e).1 := hsncc e _ (Or.inl rfl) hx
+    have d1 : dist (h x) (h y) < ε (ends e).1 := by
+      rw [hxy, dist_comm]; exact hGdist (ends e).1 x hxc
+    linarith [hgraph e (ends e).1 (Or.inl rfl) x hx y hy]
+  · refine Set.disjoint_left.mpr ?_
+    rintro _ ⟨x, hx, rfl⟩ ⟨y, hy, hxy⟩
+    have hxc : x ∈ Cc (ends e).1 := hsncc e _ (Or.inl rfl) hx
+    have hyc : y ∈ Cc (ends d).1 := hsncc d _ (Or.inl rfl) hy
+    have d1 : dist (h x) (G (ends e).1 x) < ε (ends e).1 := by
+      rw [dist_comm]; exact hGdist (ends e).1 x hxc
+    have d2 : dist (G (ends e).1 x) (h y) < ε (ends d).1 := by
+      rw [← hxy]; exact hGdist (ends d).1 y hyc
+    have dt := dist_triangle (h x) (G (ends e).1 x) (h y)
+    linarith [htube e d hne x hx y hy]
+
+end Margins
 
 end Frames
 

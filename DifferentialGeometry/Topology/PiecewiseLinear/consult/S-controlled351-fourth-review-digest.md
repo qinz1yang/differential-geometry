@@ -78,3 +78,25 @@ standard cut, `h = g ∘ ψ`, the book's pierced cells, pairwise disjoint small 
 pair of transverse intersection circles on one edge. **Most likely surprise:** mistaking "finite
 descent per label" for "each map is modified finitely often" without passing fixed compact
 envelopes into the induction.
+
+## Worker's due-diligence results (2026-09-21, before the fourth repair)
+* **Margins — reviewer verified, with a partial disagreement.** `ε_v < d`, `ε_w < d` give only
+  `ε_v + ε_w < 2d` (`ε_v = ε_w = 0.9 d` lets `G_w(∂B_e)` meet `G_v(T_e)`): sum bounds are needed
+  wherever *two* approximations meet. Not everywhere: for (6) the second set is the fixed `h(K)` and
+  for the marker clauses the second point is `h(core)`, so one-sided bounds are correct there and
+  were kept.
+* **Box model — verified as a refutation of the pasting inference**, not of `hpack`.
+* **`K_v = H (car v)` — verified and now proved in the assembly** (compactness from the closed-ball
+  carrier clause via `IsPLCellOn.isCompact`; `Q w ⊆ H (car w)`; `H (car w) ⊆ h '' U`).
+* **`C_v ⊆ C'_v` — the book does not assert it** (p. 248; confirmed independently by
+  `consult/T-section35-1-construction-digest.md`). The worker thinks it is nevertheless true under
+  the additive-bump reading; conservative option taken: replaced by `C_v ⊆ C''_v`; no clause
+  depended on the old inclusion.
+* Honest limit found: the margins prove condition (2), the disjointness halves of (5), (6) and the
+  disjointness of the supports for **every** `ε`-close family (`section34MarginConditions`, proved);
+  the *interior-containment* halves of (3)–(7) need "an interior point of a compact PL 3-cell maps
+  to an interior point of its image" — the same missing `IsPLCellOn` invariance-of-domain package
+  that P6 and P8 need. They stay inside the package leaf.
+* Deviation: `hSpLF` (local finiteness of the supports in the subspace `h '' U`) is a field of the
+  package, not an input of the simultaneous leaf — `Sp` is fixed through all later stages, and the
+  assembly could not prove it without a new star-finiteness clause on `𝒦'`.
