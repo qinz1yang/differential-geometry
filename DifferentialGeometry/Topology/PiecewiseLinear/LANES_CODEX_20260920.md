@@ -563,3 +563,34 @@ Phase 3 的链：`25.2 → 30.4 → 30.5(tame) → [31 → 32 → 33.1 → 34.1 
 - **Codex 车道 H：** 先交可收的 4 个文件；然后只做**陈述**：带边界源的 cut-out、冻结 collar 的相对半空间定理、整并归纳、
   全局组装——四条陈述过审后再开证。
 - **第 2 周末检查点：** M1 是否闭合；F11 是否通过；H 的四条陈述是否定稿；E3 终端装配是否证完。据此重估 M2/M4。
+
+### 车道 S 裁决之三（`BoundaryAdaptation.lean` 返工版）：差一条假设
+
+`IsPLHalfSpacePairAt`、`IsPLBoundarySide`、`isPLBoundarySide_double` 方向正确（`W := D '' D.domain` 已被
+"开 cell 的像 ⊆ interior W"排除）。但 `IsPLBoundaryTubeProducer` 在返工时**丢了缓冲假设**：结论要端盘满足
+`B ∈ 𝓝[BdM] z`，假设里却不再有 `∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z`。取 `B` 为边界曲线本身（一维），结论为假
+——这正是 D 答复点名的反例。请把这条假设加回。另：结论末尾的 `piece.piece.complex.space = spliceCylinder ∧
+piece.piece.map = T.chart` 是 `PLSeamTubeChart` 的字段，对任何 `piece` 都成立，删掉。改完 lead 审计后提交（连同
+`LoopSpace/PathLoopInjectivity.lean`）。
+
+### 车道 F 裁决之三（F7/F8，只读审读 + lead 抽查）
+
+- **可收：** `CellGluing.lean`（+581，确为纯追加；新 import `External.Schoenflies.MatchedArc` 无环、闭包代价≈0）、
+  `CutAndPaste.lean`（+79，纯追加；四条 `explicitVarsOfIff` 确为既有）、四条空洞四弧定理的删除（全树无消费者）。
+  `BoundaryCaseFromSource.lean` 是车道 F 第一份**数学上正确**的交付：单射性只在源弧上，端点类型对，四个词与表一致。
+  lead 拿到空闲 lease 后独立审计再提交。
+- **必须改（约 5 行，阻塞）：** `witness_of_pushed_two_arcs` 与四条 match 定理的结论从 `Nonempty (…)` 改成
+  `∃ W, W.param = e`。现在它们不暴露 `param`，而 `BoundaryCaseReduction.lean:227–230` 的覆盖条款写在
+  `Wraw.param` 上；唯一给 `param = e` 的 `exists_param_of_twoArcMatch` 仍要求 **`X` 里**的单射——对 cross 词就是刚删掉的
+  那个不可能。证明里本来就是 `param := e`，`ofHomotopicWord` 逐字保留 `param`。
+- **方向约定要核对：** 记录的 preserving 边界 `φ⁻¹στ⁻¹υ` 是 as-walked `τσ⁻¹φυ⁻¹` 的**反向**的循环旋转；内部自洽，但接
+  F8 的真实走向前必须对上（反向 ⇒ 用 `neg.trans e`）。
+- **其它：** `BoundaryCaseOfCut.lean` 缺模块 docstring；`exists_param_of_twoArcMatch` 与 `exists_of_twoArcMatch` 是重复证明，
+  后者应由前者推出；`LintF8New.log` 是空的（把声明名传给了 `#lint … in`，"0 declarations"），有效证据是
+  `LintF8Cell.log`；`F8Nonvacuity` 探针退化（`R = S`，`t₁ = 0`，`t₂ = 1`，三段切分没被用到）；没有任何探针实例化过四条
+  match 定理本身。
+- **端到端仍未闭合（F9，下一块）：** 一个 producer：输入 `hcut`，同时调用 `exists_boundary_four_arc_word_of_cut hcut`
+  （同一个 cut 的四条单射源弧）与 `exists_cross_reglued_source_segments_of_cut hcut`，后者需加强为：(a) 每段
+  `Fᵢ (h (ρ t)) ∈ frontier D.domain` 且值域含于对应源弧；(b) `t₁`、`t₂` 处的接点等式；(c) `T` 也给出 `Path` 值参数化；
+  (d) `e : loopCircle ≃ₜ frontier G.domain` 与 `hparam`。**direct 候选目前没有任何导出**，同一个 producer 必须一并给出
+  `Gd` 的两弧数据，否则 `Wdirect` 仍是自由假设。然后才是 F10（结论补"侧 + 缓冲"）与 F11（联合夹具）。
