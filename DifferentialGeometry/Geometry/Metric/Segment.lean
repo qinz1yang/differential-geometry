@@ -1,3 +1,5 @@
+import Mathlib.Topology.MetricSpace.Completion
+import Mathlib.Topology.Order.DenselyOrdered
 import Mathlib.Topology.MetricSpace.Isometry
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Instances.Real.Lemmas
@@ -33,3 +35,52 @@ theorem isometry_Icc_of_lipschitzOnWith_of_dist_eq
   linarith
 
 end DifferentialGeometry.Geometry
+
+open Filter
+open scoped Topology
+
+namespace Isometry
+
+variable {X : Type*} [MetricSpace X] [CompleteSpace X]
+
+theorem exists_endpoint_Ico {a b : ℝ} (hab : a < b) {γ : ℝ → X}
+    (hγ : Isometry (fun s : Ico a b => γ s)) :
+    ∃! E : X, Tendsto γ (𝓝[<] b) (𝓝 E) ∧
+      ∀ s ∈ Ico a b, dist (γ s) E = b - s := by
+  have hlip : LipschitzOnWith 1 γ (Ico a b) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro s hs t ht
+    rw [NNReal.coe_one, one_mul]
+    exact (hγ.dist_eq ⟨s, hs⟩ ⟨t, ht⟩).le
+  have hc : Cauchy (𝓝[<] b) := cauchy_nhds.mono nhdsWithin_le_nhds
+  obtain ⟨E, hE⟩ := cauchy_map_iff_exists_tendsto.mp
+    (hc.map_of_le hlip.uniformContinuousOn (le_principal_iff.mpr (Ico_mem_nhdsLT hab)))
+  refine ⟨E, ⟨hE, ?_⟩, fun E' hE' => tendsto_nhds_unique hE'.1 hE⟩
+  intro s hs
+  have hdist : Tendsto (fun t => dist (γ s) (γ t)) (𝓝[<] b) (𝓝 (dist (γ s) E)) :=
+    tendsto_const_nhds.dist hE
+  have hreal : Tendsto (fun t : ℝ => dist s t) (𝓝[<] b) (𝓝 (dist s b)) :=
+    tendsto_const_nhds.dist nhdsWithin_le_nhds
+  have heq : (fun t => dist (γ s) (γ t)) =ᶠ[𝓝[<] b] (fun t : ℝ => dist s t) := by
+    filter_upwards [Ico_mem_nhdsLT hab] with t ht
+    exact hγ.dist_eq ⟨s, hs⟩ ⟨t, ht⟩
+  have hlim := tendsto_nhds_unique hdist (hreal.congr' heq.symm)
+  simpa only [Real.dist_eq, abs_of_neg (sub_neg.mpr hs.2), neg_sub] using hlim
+
+end Isometry
+
+namespace UniformSpace.Completion
+
+variable {W : Type*} [MetricSpace W]
+
+theorem ne_coe_of_tendsto_atTop {ι : Type*} {l : Filter ι} [l.NeBot]
+    {γ : ι → W} {E : Completion W}
+    (hE : Tendsto (fun s => (γ s : Completion W)) l (𝓝 E))
+    {f : W → ℝ} (hdiv : Tendsto (f ∘ γ) l atTop)
+    (x : W) (hf : ContinuousAt f x) : E ≠ (x : Completion W) := by
+  intro hEq
+  rw [hEq] at hE
+  have hγ : Tendsto γ l (𝓝 x) := coe_isometry.isEmbedding.tendsto_nhds_iff.mpr hE
+  exact not_tendsto_atTop_of_tendsto_nhds (hf.tendsto.comp hγ) hdiv
+
+end UniformSpace.Completion
