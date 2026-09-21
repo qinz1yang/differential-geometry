@@ -1,0 +1,352 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedPointSelection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedCurvatureWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GrowingScaleNoncollapse
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.BallImage
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalCurvatureInjectivity
+
+noncomputable section
+open Filter Set
+open scoped Topology Manifold ContDiff ENNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.Integral.Measure
+universe u
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedFlowData.t2TangentBundle PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+def NormalizedSequence.terminalCurvatureRescaledSequence
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)) : PointedRiemannianSeq I3 where
+  obj i := { (X.term (f i)).atTime 0 with
+    basepoint := x i
+    metric := scaleMetric ((X.term (f i)).S.scalar 0 (x i)) (hQ i)
+      ((X.term (f i)).S.base.metric 0) }
+
+private theorem rescaled_sequence_complete
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)) :
+    SeqMetricComplete (X.terminalCurvatureRescaledSequence f x hQ) := by
+  constructor
+  intro i
+  have hzero : (0 : ℝ) ∈ (X.interval (f i)).carrier := by
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos (f i)], le_rfl⟩
+  have hcomplete : RiemannianMetricComplete ((X.term (f i)).S.base.metric 0) :=
+    ⟨X.complete (f i) 0 hzero⟩
+  have hscaled : RiemannianMetricComplete (scaleMetric ((X.term (f i)).S.scalar 0 (x i))
+      (hQ i) ((X.term (f i)).S.base.metric 0)) :=
+    hcomplete.of_lower (hQ i) (fun y v => by simp only [scaleMetric_inner, le_refl])
+  exact hscaled.complete
+
+private theorem rescaled_sequence_ball_subset
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)) (r : ℕ → ℝ)
+    (hr : ∀ i, 0 < r i)
+    (hQr : Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i) * r i ^ 2) atTop atTop)
+    {R : ℝ} (hR : 0 ≤ R) :
+    ∀ᶠ i in atTop, ∀ y : (X.term (f i)).M,
+      riemannianEDistOf ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric
+        (x i) y ≤ ENNReal.ofReal R →
+      metricDistance ((X.term (f i)).S.base.metric 0) (x i) y ≤ r i := by
+  filter_upwards [hQr.eventually_ge_atTop (R ^ 2)] with i hi y hy
+  have hd : Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) *
+      metricDistance ((X.term (f i)).S.base.metric 0) (x i) y ≤ R := by
+    have h := ENNReal.toReal_le_of_le_ofReal hR hy
+    change (riemannianEDistOf (scaleMetric ((X.term (f i)).S.scalar 0 (x i)) (hQ i)
+      ((X.term (f i)).S.base.metric 0)) (x i) y).toReal ≤ R at h
+    rw [edistOf_scale, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (Real.sqrt_nonneg _)] at h
+    exact h
+  have hs : 0 < Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) := Real.sqrt_pos.mpr (hQ i)
+  have hsq := Real.sq_sqrt (hQ i).le
+  have hlarge : R ≤ Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) * r i := by
+    apply (sq_le_sq₀ hR (mul_nonneg hs.le (hr i).le)).mp
+    rwa [mul_pow, hsq]
+  exact (mul_le_mul_iff_right₀ hs).mp (hd.trans hlarge)
+
+private theorem rescaled_sequence_local_jets
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (hf : StrictMono f) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)) (r : ℕ → ℝ)
+    (hr : ∀ i, 0 < r i)
+    (hlarge : Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop)
+    (hQr : Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i) * r i ^ 2) atTop atTop)
+    (hbound : ∀ i y, metricDistance ((X.term (f i)).S.base.metric 0) (x i) y ≤ r i →
+      (X.term (f i)).S.scalar 0 y ≤ 2 * (X.term (f i)).S.scalar 0 (x i))
+    (B : ℕ → ℝ) (hB : ∀ m, 0 ≤ B m)
+    (hjets : ∀ᶠ i in atTop, ∀ Q : ℝ, 1 ≤ Q → ∀ p : (X.term i).M,
+      (X.term i).S.scalar 0 p ≤ Q → ∀ m : ℕ,
+        curvDerivNorm m ((X.term i).S.base.metric 0) p ≤ B m * Q * Real.sqrt Q ^ m) :
+    ∀ R : ℝ, 0 < R → ∀ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop,
+      HasLocalCurvDerivBound ((X.terminalCurvatureRescaledSequence f x hQ).obj i)
+        (x i) R m C := by
+  intro R hR m
+  refine ⟨2 * B m * Real.sqrt 2 ^ m, mul_nonneg (mul_nonneg (by norm_num) (hB m))
+    (by positivity), ?_⟩
+  filter_upwards [rescaled_sequence_ball_subset X f x hQ r hr hQr hR.le,
+    hf.tendsto_atTop.eventually hjets, hlarge.eventually_ge_atTop 1] with i hi hji hQi
+  intro y hy
+  change (X.term (f i)).M at y
+  have hscal := hbound i y (hi y hy)
+  let Q := (X.term (f i)).S.scalar 0 (x i)
+  have hj := hji (2 * Q) (by dsimp only [Q]; linarith) y hscal m
+  change curvDerivNorm m (scaleMetric Q (hQ i) ((X.term (f i)).S.base.metric 0)) y ≤ _
+  rw [curvDerivNorm_scaleMetric]
+  apply (div_le_iff₀ (mul_pos (hQ i) (pow_pos (Real.sqrt_pos.mpr (hQ i)) m))).mpr
+  calc
+    _ ≤ B m * (2 * Q) * Real.sqrt (2 * Q) ^ m := hj
+    _ = (2 * B m * Real.sqrt 2 ^ m) * (Q * Real.sqrt Q ^ m) := by
+      rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2), mul_pow]
+      ring
+
+private theorem rescaled_sequence_noncollapsed
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)) (i : ℕ) :
+    MetricNoncollapsed ((X.terminalCurvatureRescaledSequence f x hQ).obj i) kappa
+      (Ioc 0 (Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) *
+        (Real.sqrt (X.scale (f i)) * sigma))) := by
+  intro p r hrscale hr hcurv
+  change (X.term (f i)).M at p
+  have hzero : (0 : ℝ) ∈ (X.interval (f i)).carrier := by
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos (f i)], le_rfl⟩
+  let P := parabolicSolution (X.term (f i)).S 0 ((X.term (f i)).S.scalar 0 (x i)) (hQ i) hzero
+  have hpzero : (0 : ℝ) ∈ (parabolicInterval (X.interval (f i)) 0
+      ((X.term (f i)).S.scalar 0 (x i)) hzero).carrier := by
+    simpa only [parabolicInterval, mem_ofPred_eq, parabolicTime_zero] using hzero
+  let B : FlowMetricBall P ⟨0, hpzero⟩ := ⟨p, r, hr⟩
+  have hmetric : P.base.metric 0 =
+      ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric := by
+    change scaleMetric ((X.term (f i)).S.scalar 0 (x i)) (hQ i)
+      ((X.term (f i)).S.base.metric (parabolicTime 0 _ 0)) = _
+    rw [parabolicTime_zero]
+    rfl
+  have hcontrol : B.IsSpatiallyRmControlled := by
+    intro z hz
+    change z ∈ riemannianBallOf (P.base.metric 0) p r at hz
+    change r ^ 4 * Tensor0SBundle.normSq0S (P.base.metric 0) z 4
+      (metricRm04At (P.base.metric 0) z) ≤ 1
+    rw [hmetric] at hz ⊢
+    exact hcurv z hz
+  have hnc := parabolic_spatial_noncollapse (X.term (f i)).S 0
+    ((X.term (f i)).S.scalar 0 (x i)) (hQ i) hzero kappa
+    (Real.sqrt (X.scale (f i)) * sigma) (X.noncollapse (f i))
+  have hvol := (hnc.2 _ B hrscale.2 hcontrol).2
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  rw [ENNReal.ofReal_mul (hnc.2 _ B hrscale.2 hcontrol).1.le, ENNReal.ofReal_pow hr.le]
+  change ENNReal.ofReal kappa * ENNReal.ofReal r ^ 3 ≤ _
+  rw [hdim] at hvol
+  change ENNReal.ofReal kappa * ENNReal.ofReal r ^ 3 ≤
+    riemannianVolumeMeasure I3 (X.term (f i)).M (P.base.metric 0)
+      (riemannianBallOf (P.base.metric 0) p r) at hvol
+  rw [hmetric] at hvol
+  exact hvol
+
+
+private theorem rescaled_sequence_local_injectivity
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (hkappa : 0 < kappa) (hsigma : 0 < sigma)
+    (f : ℕ → ℕ) (hf : StrictMono f) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i))
+    (hlarge : Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop)
+    (hjets : ∀ R : ℝ, 0 < R → ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop,
+      HasLocalCurvDerivBound ((X.terminalCurvatureRescaledSequence f x hQ).obj i)
+        (x i) R 0 C) :
+    ∀ R : ℝ, 0 < R → ∃ rho : ℝ, 0 < rho ∧ ∀ᶠ i in atTop,
+      ∀ y ∈ riemannianClosedBallOf ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric
+        (x i) R, HasInjRadiusAt ((X.terminalCurvatureRescaledSequence f x hQ).obj i) y rho := by
+  intro R hR
+  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa
+  obtain ⟨C, hC, hbound⟩ := hjets (R + 1) (by linarith)
+  let r : ℝ := (C ^ 2 + 1)⁻¹
+  have hr : 0 < r := by dsimp only [r]; positivity
+  have hr1 : r ≤ 1 := (inv_le_one₀ (by positivity : 0 < C ^ 2 + 1)).mpr (by nlinarith)
+  have hrc : r * C ^ 2 ≤ 1 := by
+    calc
+      _ ≤ r * (C ^ 2 + 1) := by nlinarith
+      _ = 1 := inv_mul_cancel₀ (by positivity)
+  have hscaled : r ^ 4 * C ^ 2 ≤ 1 := by
+    calc
+      _ = r ^ 3 * (r * C ^ 2) := by ring
+      _ ≤ 1 ^ 3 * 1 := mul_le_mul (pow_le_pow_left₀ hr.le hr1 3) hrc
+        (by positivity) (by norm_num)
+      _ = 1 := by norm_num
+  have hscale := ((Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma).comp
+    hf.tendsto_atTop
+  refine ⟨iota * r, mul_pos hiota hr, ?_⟩
+  filter_upwards [hbound, hscale.eventually_ge_atTop 1, hlarge.eventually_ge_atTop 1]
+    with i hi hsi hQi
+  intro y hy
+  let Y := (X.terminalCurvatureRescaledSequence f x hQ).obj i
+  have hcurv : ∀ z ∈ riemannianBallOf Y.metric y r,
+      r ^ 4 * Tensor0SBundle.normSq0S Y.metric z 4 (metricRm04At Y.metric z) ≤ 1 := by
+    intro z hz
+    have hz' : z ∈ riemannianClosedBallOf Y.metric (x i) (R + 1) := by
+      calc
+        _ ≤ riemannianEDistOf Y.metric (x i) y + riemannianEDistOf Y.metric y z :=
+          riemannianEDistOf_triangle _ _ _ _
+        _ ≤ ENNReal.ofReal R + ENNReal.ofReal 1 :=
+          add_le_add hy (hz.le.trans (ENNReal.ofReal_le_ofReal hr1))
+        _ = ENNReal.ofReal (R + 1) := (ENNReal.ofReal_add hR.le zero_le_one).symm
+    have hj := hi z hz'
+    have hsq : Tensor0SBundle.normSq0S Y.metric z 4 (metricRm04At Y.metric z) ≤ C ^ 2 := by
+      apply le_sq_of_sqrt_le (Tensor0SBundle.normSq0S_nonneg _ _ _ _)
+      change Real.sqrt (Tensor0SBundle.normSq0S Y.metric z 4 (metricRm04 Y.metric z)) ≤ C at hj
+      rwa [metricRm04_apply] at hj
+    exact (mul_le_mul_of_nonneg_left hsq (pow_nonneg hr.le 4)).trans hscaled
+  have hrscale : r ≤ Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) *
+      (Real.sqrt (X.scale (f i)) * sigma) := by
+    have hq : 1 ≤ Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) := by
+      simpa only [Real.sqrt_one] using Real.sqrt_le_sqrt hQi
+    exact hr1.trans (one_le_mul_of_one_le_of_one_le hq hsi)
+  have hvol := rescaled_sequence_noncollapsed X f x hQ i y r ⟨hr, hrscale⟩ hr hcurv
+  have hvol' : ENNReal.ofReal (kappa * r ^ Module.finrank ℝ ThreeSpace) ≤
+      riemannianVolumeMeasure I3 Y.M Y.metric (riemannianBallOf Y.metric y r) := by
+    simpa only [show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace]] using hvol
+  have hcomplete : RiemannianMetricComplete Y.metric :=
+    ⟨(rescaled_sequence_complete X f x hQ).complete i⟩
+  exact hasInjRadiusAt_of_expMap_injOn Y y (mul_pos hiota hr)
+    (hinj Y.M Y.metric hcomplete y r hr hcurv hvol')
+
+private theorem rescaled_sequence_pinching
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (f : ℕ → ℕ) (x : ∀ i, (X.term (f i)).M)
+    (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)) :
+    ∀ i (y : ((X.terminalCurvatureRescaledSequence f x hQ).obj i).M),
+      curvatureOperatorLowerBoundAt ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric y
+        (metricAlgebraicCurvatureTensorAt ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric y)
+        (rescalePinchingFunction ((X.term (f i)).S.scalar 0 (x i) * X.scale (f i)) Phi
+          (metricScalarAt ((X.terminalCurvatureRescaledSequence f x hQ).obj i).metric y)) := by
+  intro i y
+  change (X.term (f i)).M at y
+  have hzero : (0 : ℝ) ∈ (X.interval (f i)).carrier := by
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos (f i)], le_rfl⟩
+  let Q := (X.term (f i)).S.scalar 0 (x i)
+  let g := (X.term (f i)).S.base.metric 0
+  change curvatureOperatorLowerBoundAt (scaleMetric Q (hQ i) g) y
+    (metricAlgebraicCurvatureTensorAt (scaleMetric Q (hQ i) g) y)
+    (rescalePinchingFunction (Q * X.scale (f i)) Phi
+      (metricScalarAt (scaleMetric Q (hQ i) g) y))
+  rw [metricAlgebraicCurvatureTensorAt_scaleMetric, curvatureOperatorLowerBoundAt_scaleMetric,
+    metricScalarAt_scaleMetric]
+  have heq : Q * rescalePinchingFunction (Q * X.scale (f i)) Phi
+      (Q⁻¹ * metricScalarAt g y) = rescalePinchingFunction (X.scale (f i)) Phi
+      (metricScalarAt g y) := by
+    simp only [rescalePinchingFunction, mul_inv]
+    have harg : Q * X.scale (f i) * (Q⁻¹ * metricScalarAt g y) =
+        X.scale (f i) * metricScalarAt g y := by
+      calc
+        _ = (Q * Q⁻¹) * (X.scale (f i) * metricScalarAt g y) := by ring
+        _ = _ := by rw [mul_inv_cancel₀ (hQ i).ne', one_mul]
+    rw [harg, ← mul_assoc, ← mul_assoc, mul_inv_cancel₀ (hQ i).ne', one_mul]
+  rw [heq]
+  exact X.pinching (f i) 0 hzero y
+
+
+theorem exists_terminalCurvatureRescaledSequence_metric_limit_of_not_boundedAtDistance
+    {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ sigma : ℝ, 0 < sigma → ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ¬ BoundedAtDistance X →
+          ∃ D : ℝ, 0 < D ∧ ∃ f : ℕ → ℕ, StrictMono f ∧
+            ∃ (x : ∀ i, (X.term (f i)).M) (r : ℕ → ℝ)
+              (hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i)),
+              (∀ i, 0 < r i) ∧
+              Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i)) atTop atTop ∧
+              Tendsto (fun i => (X.term (f i)).S.scalar 0 (x i) * r i ^ 2) atTop atTop ∧
+              (∀ i y, metricDistance ((X.term (f i)).S.base.metric 0) (x i) y ≤ r i →
+                metricDistance ((X.term (f i)).S.base.metric 0) (X.term (f i)).basepoint y < D ∧
+                (X.term (f i)).S.scalar 0 y ≤ 2 * (X.term (f i)).S.scalar 0 (x i)) ∧
+              ∃ P : MetricCompactLimit (X.terminalCurvatureRescaledSequence f x hQ),
+                (∀ k, P.convergence.metrics.domain k =
+                  CanonicalMetricCompactness.canonicalSourceData P.maps k) ∧
+                ConnectedSpace P.limit.M ∧
+                (∀ n, IsCompact (closure (P.maps.source n))) ∧
+                (∀ n, IsConnected (P.maps.source n)) ∧
+                (∀ n, closure (P.maps.source n) ⊆ P.maps.source (n + 1)) ∧
+                metricScalarAt P.limit.metric P.limit.basepoint = 1 ∧
+                (∀ y : P.limit.M, metricScalarAt P.limit.metric y ≤ 2) ∧
+                (∀ (y : P.limit.M) (v w : TangentSpace I3 y),
+                  0 ≤ metricRm04StandardAt P.limit.metric y v w w v) ∧
+                MetricNoncollapsed P.limit kappa univ := by
+  obtain ⟨epsStar, hepsStar, B, hB, hjet⟩ :=
+    exists_curvDerivNorm_bound_at_terminal_scalar_scale.{u} hkappa
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X hfail
+  obtain ⟨D, hD, f, hf, x, r, hr, hlarge, hQr, hcontrol⟩ :=
+    X.exists_terminal_scalar_point_selection hfail
+  let hQ : ∀ i, 0 < (X.term (f i)).S.scalar 0 (x i) := fun i => (hr i).2.2.2
+  let Y := X.terminalCurvatureRescaledSequence f x hQ
+  have hjets := rescaled_sequence_local_jets X f hf x hQ r (fun i => (hr i).1)
+    hlarge hQr (fun i y hy => (hcontrol i y hy).2) B hB
+    (hjet eps heps hle sigma hsigma Phi hPhi X)
+  obtain ⟨P, hcanonical, href, hconnected, hcompact, hsourceconn, hnested⟩ :=
+    exists_canonical_metric_compact_limit_with_source_geometry_of_local_curvature_injectivity
+      Y (rescaled_sequence_complete X f x hQ) (fun i => X.connected (f i)) hjets
+      (rescaled_sequence_local_injectivity X hkappa hsigma f hf x hQ hlarge
+        (fun R hR => hjets R hR 0))
+  refine ⟨D + 1, by linarith, f, hf, x, r, hQ, (fun i => (hr i).1),
+    hlarge, hQr, hcontrol, P, hcanonical, hconnected, hcompact, hsourceconn, hnested, ?_, ?_, ?_, ?_⟩
+  · apply KappaSolutions.pointedScalar_base_eq_of_metricCG_canonical_domains
+      P.convergence.metrics hcanonical
+    intro i
+    change metricScalarAt (scaleMetric ((X.term (f (P.subseq i))).S.scalar 0 (x (P.subseq i)))
+      (hQ (P.subseq i)) ((X.term (f (P.subseq i))).S.base.metric 0)) (x (P.subseq i)) = 1
+    rw [metricScalarAt_scaleMetric]
+    exact inv_mul_cancel₀ (hQ (P.subseq i)).ne'
+  · intro y
+    let : ConnectedSpace P.limit.M := hconnected
+    obtain ⟨R, hR, hmaps⟩ := P.maps.exists_eventually_image_compact_subset_ball
+      P.convergence.metrics href P.limit_complete (K := {y}) isCompact_singleton
+    have hball := rescaled_sequence_ball_subset X f x hQ r (fun i => (hr i).1) hQr hR.le
+    apply le_of_tendsto (KappaSolutions.pointedScalar_tendsto_of_metricCG_canonical_domains
+      P.convergence.metrics hcanonical y)
+    filter_upwards [hmaps, P.strictMono.tendsto_atTop.eventually hball] with i hi hbi
+    have hy := hi.2 (mem_image_of_mem (P.maps.map i) (mem_singleton y))
+    let z : (X.term (f (P.subseq i))).M := P.maps.map i y
+    have hscal := (hcontrol (P.subseq i) z (hbi z hy)).2
+    change metricScalarAt (scaleMetric ((X.term (f (P.subseq i))).S.scalar 0 (x (P.subseq i)))
+      (hQ (P.subseq i)) ((X.term (f (P.subseq i))).S.base.metric 0)) z ≤ 2
+    rw [metricScalarAt_scaleMetric]
+    calc
+      _ ≤ ((X.term (f (P.subseq i))).S.scalar 0 (x (P.subseq i)))⁻¹ *
+          (2 * (X.term (f (P.subseq i))).S.scalar 0 (x (P.subseq i))) :=
+        mul_le_mul_of_nonneg_left hscal (inv_nonneg.mpr (hQ (P.subseq i)).le)
+      _ = 2 * (((X.term (f (P.subseq i))).S.scalar 0 (x (P.subseq i)))⁻¹ *
+          (X.term (f (P.subseq i))).S.scalar 0 (x (P.subseq i))) := by ring
+      _ = 2 := by rw [inv_mul_cancel₀ (hQ (P.subseq i)).ne', mul_one]
+  · apply sectional_nonnegative_of_pointed_admissible_pinching
+      P.convergence.metrics hcanonical hPhi
+      (fun i => (X.term (f i)).S.scalar 0 (x i) * X.scale (f i))
+      (fun i => mul_pos (hQ i) (X.scale_pos (f i)))
+      ((hlarge.atTop_mul_atTop₀ (X.scale_tendsto.comp hf.tendsto_atTop)).comp
+        P.strictMono.tendsto_atTop)
+    exact rescaled_sequence_pinching X f x hQ
+  · let radii := fun i => Real.sqrt ((X.term (f i)).S.scalar 0 (x i)) *
+      (Real.sqrt (X.scale (f i)) * sigma)
+    have hexpand : Tendsto radii atTop atTop :=
+      (Real.tendsto_sqrt_atTop.comp hlarge).atTop_mul_atTop₀
+        (((Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma).comp
+          hf.tendsto_atTop)
+    have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+    have hn := tensor_noncollapsed_of_growing_scales P.convergence.metrics hcanonical
+      P.limit_complete kappa radii (hexpand.comp P.strictMono.tendsto_atTop) (by
+        intro i y s hs hscale hcurv
+        have h := rescaled_sequence_noncollapsed X f x hQ i y s ⟨hs, hscale⟩ hs hcurv
+        simpa only [hdim, ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow hs.le] using h)
+    intro y s _ hs hcurv
+    simpa only [hdim, ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow hs.le] using hn y s hs hcurv
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
