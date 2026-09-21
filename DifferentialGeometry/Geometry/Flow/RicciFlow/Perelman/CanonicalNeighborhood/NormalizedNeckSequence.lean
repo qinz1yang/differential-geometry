@@ -219,6 +219,18 @@ private theorem scalar_distance_lower_bound_of_mem_neck_ball
   have hfactor : (1 : ℝ) / 2 ≤ 1 - 4323 * eps := by linarith only [hsmall]
   nlinarith only [mul_le_mul_of_nonneg_right hfactor (sq_nonneg eps⁻¹)]
 
+private theorem inv_sq_div_eight_gt_of_small {alpha : ℝ}
+    (ha : 0 < alpha) (hsmall : alpha < 1 / 2000000) :
+    196 < ((2 * alpha)⁻¹) ^ 2 / 8 := by
+  have hlarge : 40 < (2 * alpha)⁻¹ := by
+    rw [← one_div]
+    apply (lt_div_iff₀ (mul_pos (by norm_num) ha)).mpr
+    linarith only [hsmall]
+  have hsq := (sq_lt_sq₀ (by norm_num : 0 ≤ (40 : ℝ))
+    (by positivity : 0 ≤ (2 * alpha)⁻¹)).mpr hlarge
+  norm_num only [show (40 : ℝ) ^ 2 = 1600 by norm_num] at hsq
+  linarith only [hsq]
+
 private theorem exists_restricted_completion_endpoint
     {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold I3 ∞ M]
@@ -241,7 +253,10 @@ private theorem exists_restricted_completion_endpoint
     (hwindow : ∀ᶠ n in atTop, (nk n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ (W : Set M))
     (B : Set M) (hB : IsCompact B)
     (hBcover : ∀ x : W, (x : M) ∉ ⋃ n, regions n → (x : M) ∈ B)
-    {c : ℝ} (hquant : ∀ n, ∀ x ∈ regions n,
+    (hfrontRegions : ∀ N, frontier (⋃ n, regions (n + N)) ⊆
+      (nk N).map '' (univ ×ˢ {(0 : ℝ)}))
+    (hcenters : ∀ n, (γ (t n) : M) ∈ regions n)
+    {c : ℝ} (hc : 196 < c) (hquant : ∀ n, ∀ x ∈ regions n,
       c ≤ metricScalarAt g x * dist q (x : UniformSpace.Completion M) ^ 2) :
     ∃ hW : PathConnectedSpace W,
     let _ : PathConnectedSpace W := hW
@@ -268,6 +283,8 @@ private theorem exists_restricted_completion_endpoint
         (comap (fun x : W => (x : UniformSpace.Completion W)) (𝓝 qW)) atTop ∧
       (∀ n, ∀ x ∈ A n, c ≤ metricScalarAt (g.restrictOpen W) x *
         dist qW (x : UniformSpace.Completion W) ^ 2) ∧
+      (∀ (β : ℝ → UniformSpace.Completion W) (u v w : ℝ), u < v → v < w →
+        (∀ s ∈ Icc u w, ∀ t ∈ Icc u w, dist (β s) (β t) = |s - t|) → β v ≠ qW) ∧
       ∃ delta : ℝ, 0 < delta ∧ IsCompact (Metric.closedBall qW delta) ∧
         Metric.closedBall qW delta ⊆ insert qW (range (fun x : W => (x : UniformSpace.Completion W))) := by
   let hW := pathConnectedSpace_of_cylinder_homeomorph W D
@@ -399,6 +416,31 @@ private theorem exists_restricted_completion_endpoint
     obtain ⟨n, hn⟩ := mem_iUnion.mp hx
     exact mem_insert_of_mem _ (mem_iUnion.mpr ⟨n, ⟨x, hn, rfl⟩⟩)
   have hKnhds : K ∈ 𝓝 qW := mem_of_superset (hV.mem_nhds hqV) hVK
+  have hcoeOpen : Topology.IsOpenEmbedding (fun x : W => (x : UniformSpace.Completion W)) := by
+    let _ : LocallyCompactSpace W := ChartedSpace.locallyCompactSpace ThreeSpace W
+    exact (UniformSpace.Completion.isDenseEmbedding_coe).isOpenEmbedding
+  have hshort : ∀ᶠ N in atTop, ∀ x ∈ frontier (⋃ n, A (n + N)),
+      ∀ y ∈ frontier (⋃ n, A (n + N)),
+        dist (x : UniformSpace.Completion W) (y : UniformSpace.Completion W) <
+          dist (x : UniformSpace.Completion W) qW + dist qW (y : UniformSpace.Completion W) := by
+    filter_upwards [hwindow] with N hN
+    let neck := (nk N).restrictOpen (U := W) (x := γ (t N)) hN
+    have hfrontW (x : W) (hx : x ∈ frontier (⋃ n, A (n + N))) :
+        x ∈ neck.map '' (univ ×ˢ {(0 : ℝ)}) := by
+      have hxM : (x : M) ∈ frontier (⋃ n, regions (n + N)) := by
+        change x ∈ (Subtype.val : W → M) ⁻¹' frontier (⋃ n, regions (n + N))
+        rw [W.isOpenEmbedding'.isOpenMap.preimage_frontier_eq_frontier_preimage
+          continuous_subtype_val, preimage_iUnion]
+        exact hx
+      obtain ⟨z, hz, hzx⟩ := hfrontRegions N hxM
+      refine ⟨z, hz, Subtype.ext ?_⟩
+      exact (SpatialNeck.restrictOpen_map_coe (U := W) (x := γ (t N)) (nk N) hN
+        (hzx.symm ▸ x.property)).trans hzx
+    intro x hx y hy
+    exact neck.central_sphere_dist_lt_endpoint_sum hmetricW qW
+      (hc.trans_le (hquantW N (γ (t N)) (hcenters N))) (hfrontW x hx) (hfrontW y hy)
+  have havoid := Metric.ne_of_minimizing_of_convergent_separators hcoeOpen hmissingW hA
+    hregion hKnhds hshort
   have hscalarW : Tendsto (fun x : W => metricScalarAt (g.restrictOpen W) x)
       (comap (fun x : W => (x : UniformSpace.Completion W)) (𝓝 qW)) atTop := by
     have hlower : Tendsto (fun n => (1 - 4323 * eps) *
@@ -439,9 +481,8 @@ private theorem exists_restricted_completion_endpoint
     · obtain ⟨n, hn⟩ := mem_iUnion.mp hz
       obtain ⟨x, _, hx⟩ := hn
       exact mem_insert_of_mem _ ⟨x, hx⟩
-  refine ⟨qW, hqW, hdistW, hmissingW, hmap, ?_, hregion, hcompact, hKnhds, hscalarW, hquantW, hball⟩
-  let _ : LocallyCompactSpace W := ChartedSpace.locallyCompactSpace ThreeSpace W
-  exact (UniformSpace.Completion.isDenseEmbedding_coe).isOpenEmbedding
+  exact ⟨qW, hqW, hdistW, hmissingW, hmap, hcoeOpen, hregion, hcompact, hKnhds,
+    hscalarW, hquantW, havoid, hball⟩
 
 
 theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_sequence
@@ -662,6 +703,10 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                               ((2 * alpha)⁻¹) ^ 2 / 8 ≤
                                                 metricScalarAt (L.metric.restrictOpen W) x *
                                                   dist qW (x : UniformSpace.Completion W) ^ 2) ∧
+                                            (∀ (β : ℝ → UniformSpace.Completion W) (u v w : ℝ),
+                                              u < v → v < w →
+                                              (∀ s ∈ Icc u w, ∀ t ∈ Icc u w,
+                                                dist (β s) (β t) = |s - t|) → β v ≠ qW) ∧
                                             ∃ delta : ℝ, 0 < delta ∧
                                               IsCompact (Metric.closedBall qW delta) ∧
                                               Metric.closedBall qW delta ⊆ insert qW
@@ -949,6 +994,11 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     cases k with
     | zero => exact hk
     | succ n => exact False.elim (hx (mem_iUnion.mpr ⟨n, hk⟩))
+  have hfrontRegions := (hlocalShift 2).frontier_iUnion_nat_add_subset
+    (fun n => (hfrann (n + 2)).le) (fun n => hseam (n + 1))
+  have hcenters (n : ℕ) : (gW (u n) : L.M) ∈ ann (n + 2) '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+    refine ⟨((nk (n + 2)).center, 0), ⟨mem_univ _, le_rfl, zero_le_one⟩, ?_⟩
+    exact (hleft (n + 2) _).trans (nk (n + 2)).center_eq
   have hcompletion := exists_restricted_completion_endpoint L.metric (fun _ _ => rfl)
     W D (t 2).property.2 gW hgW q (hq.comp htailT) hmissing
     (by linarith only [hsmall] : 2 * alpha < 1 / 4323) u huT hscalarU
@@ -956,6 +1006,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     (fun n => nk (n + 2)) (fun n => hsubann (n + 2))
     ((tendsto_add_atTop_nat 2).eventually hwindowCapture)
     (ann 1 '' (univ ×ˢ Icc (0 : ℝ) 1)) (hcann 1) hBcover
+    hfrontRegions hcenters (inv_sq_div_eight_gt_of_small ha hsmall)
     (fun n x hx => hquantAnn (n + 2) x hx)
   exact ⟨f, hf, F, r, hr, hrT, L, hL, maps, C, hcanonical, htargets, hmetrics,
     hcompact, hbase, hsec, phi, γ, s, g, hphi, hg, hgbase, hγ, hconv, hno, hblow,

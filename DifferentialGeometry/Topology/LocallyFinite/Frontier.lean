@@ -74,4 +74,23 @@ theorem eventually_subset_interior_of_isCompact_frontier
   filter_upwards [hconn, hdisj, hmeet] with i hc hd hm
   exact DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier hc hd hm
 
+theorem frontier_iUnion_nat_add_subset
+    {X : Type*} [TopologicalSpace X] {A S : ℕ → Set X} (hA : LocallyFinite A)
+    (hfront : ∀ n, frontier (A n) ⊆ S n ∪ S (n + 1))
+    (hseam : ∀ n, S (n + 1) ⊆ interior (A n ∪ A (n + 1))) (N : ℕ) :
+    frontier (⋃ n, A (n + N)) ⊆ S N := by
+  have htail := hA.comp_injective (g := fun n : ℕ => n + N) (fun _ _ hij => Nat.add_right_cancel hij)
+  have hglued (n : ℕ) : S (n + N + 1) ⊆ interior (⋃ k, A (k + N)) := by
+    apply (hseam (n + N)).trans (interior_mono _)
+    exact union_subset (subset_iUnion (fun k => A (k + N)) n)
+      (by simpa only [Nat.succ_add, Nat.add_succ] using subset_iUnion (fun k => A (k + N)) (n + 1))
+  intro x hx
+  obtain ⟨n, hn⟩ := mem_iUnion.mp (htail.frontier_iUnion_subset hx)
+  rcases hfront (n + N) hn with hn | hn
+  · cases n with
+    | zero => simpa only [Nat.zero_add] using hn
+    | succ n =>
+      exact False.elim (hx.2 (hglued n (by simpa only [Nat.succ_add, Nat.add_succ] using hn)))
+  · exact False.elim (hx.2 (hglued n hn))
+
 end LocallyFinite

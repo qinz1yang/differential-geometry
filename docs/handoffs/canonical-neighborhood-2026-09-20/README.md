@@ -1620,3 +1620,55 @@ Morgan–Tian Chapter 10, with the already proved limiting-angle triangle
 inequality replacing the printed finite-comparison-angle step.
 The bounded-distance headline, finite-horn construction, and cone producer
 remain unfinished.
+
+### The missing endpoint is excluded from minimizing-segment interiors
+
+The normalized end producer now proves that its actual intrinsic-completion
+endpoint is not an interior point of any unit-speed minimizing metric segment.
+Its input hypotheses are unchanged. The new conclusion is tied to the same
+restricted metric, completion, and endpoint as the existing compact-neighborhood
+conclusion.
+
+This closes the small-separator implication in the user's September 21 attachment.
+For every sufficiently late annular tail, local finiteness and the interior seams
+put its frontier in the first central neck sphere. Adjoining the endpoint gives a
+compact neighborhood; these neighborhoods shrink to the endpoint. The canonical
+completion inclusion transports the frontier exactly. Neck geometry gives radius
+`7 / sqrt(R)` for a central sphere, and the already produced bound
+`196 < R * dist(endpoint, center)^2` makes a route across the sphere strictly
+shorter than the route through the endpoint. First-exit points on the two sides
+of a hypothetical minimizing segment give the contradiction. No global smooth
+cylinder parametrization or ancient-source hypothesis is used.
+
+The reusable metric lemmas are in `Topology/MetricSpace/GeodesicSeparator.lean`.
+The associated topology lemmas are in `Topology/Compactness/ConvergentFamily.lean`,
+`Topology/Embedding/Frontier.lean`, and `Topology/LocallyFinite/Frontier.lean`.
+The actual neck specialization is
+`SpatialNeck.central_sphere_dist_lt_endpoint_sum` in
+`SpatialNeckCurvatureDistance.lean`.
+
+Ten public declarations passed all thirteen declaration linters. Every transitive
+axiom closure is a subset of `propext`, `Classical.choice`, and `Quot.sound`.
+The normalized leaf passed 14,147 jobs without diagnostics. The full root passed
+20,208 jobs with exactly the same 21 retained sorry warnings and no other
+diagnostics. Evidence: `/private/tmp/wt17-neck-separator-leaf-build.log`,
+`/private/tmp/wt17-tail-separation-leaf-build.log`,
+`/private/tmp/wt17-completion-separator-leaf-build.log`,
+`/private/tmp/wt17-normalized-separator-leaf-build.log`,
+`/private/tmp/wt17-separator-audit.log`, and
+`/private/tmp/wt17-separator-root-build.log`.
+
+The remaining essential gaps are local existence and smooth realization of
+minimizing connectors, localized squared-distance comparison at the endpoint,
+the directions/cone producer and scale comparison, and the uniform buffered
+source estimate followed by terminal Shi estimates. The bounded-distance headline
+is still open. The only failed elaboration in this layer was a default-heartbeat
+limit in the large producer, resolved by extracting its numerical subproof and
+reducing repeated elaboration. This was Lean implementation difficulty, not a
+persistent mathematical blockage. No switch to Ultra is indicated by this layer.
+
+Mathematical references: the supplied attachment, Section 1; Kleiner–Lott,
+`BooksPapers/KleinerLottPerelman.pdf`, Section 52, Step 2 and Lemma 52.14;
+Morgan–Tian, `BooksPapers/MorganTianPoincare.pdf`, Appendix A, Lemmas A.4 and A.7.
+The next comparison step uses Chow–Lu–Ni, GSM77,
+`tex/chapters/chapter1.tex`, labels `Eagles tour` and `doh!`.

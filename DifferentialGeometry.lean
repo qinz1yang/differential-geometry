@@ -10443,6 +10443,7 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarNorm
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ScalarComposition
 import DifferentialGeometry.Topology.MetricSpace.DenseExtension
+import DifferentialGeometry.Topology.MetricSpace.GeodesicSeparator
 import DifferentialGeometry.Topology.MetricSpace.Lipschitz
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Product
 import DifferentialGeometry.Topology.ContinuousMap.CompactRange

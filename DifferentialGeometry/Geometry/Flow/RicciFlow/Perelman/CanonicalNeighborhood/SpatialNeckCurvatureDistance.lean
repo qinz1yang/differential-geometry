@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
+import DifferentialGeometry.Topology.MetricSpace.GeodesicSeparator
 import Mathlib.Topology.MetricSpace.Completion
 
 set_option autoImplicit false
@@ -50,5 +52,34 @@ theorem SpatialNeck.scalar_distance_lower_bound (nk : SpatialNeck g eps x)
     _ ≤ metricScalarAt g y * dist q (y : UniformSpace.Completion M) ^ 2 :=
       mul_le_mul hlow (pow_le_pow_left₀ (div_nonneg dist_nonneg (by norm_num)) hdist 2)
         (sq_nonneg _) hnonneg
+
+theorem SpatialNeck.central_sphere_dist_lt_endpoint_sum (nk : SpatialNeck g eps x)
+    (hmetric : ∀ y z : M, edist y z = riemannianEDistOf g y z)
+    (q : UniformSpace.Completion M)
+    (hquant : 196 < metricScalarAt g x * dist q (x : UniformSpace.Completion M) ^ 2)
+    {y z : M} (hy : y ∈ nk.map '' (univ ×ˢ {(0 : ℝ)}))
+    (hz : z ∈ nk.map '' (univ ×ˢ {(0 : ℝ)})) :
+    dist (y : UniformSpace.Completion M) (z : UniformSpace.Completion M) <
+      dist (y : UniformSpace.Completion M) q + dist q (z : UniformSpace.Completion M) := by
+  have hQ := Real.sqrt_pos.mpr nk.Q_pos
+  have hroot : 14 < Real.sqrt (metricScalarAt g x) * dist q (x : UniformSpace.Completion M) := by
+    apply (sq_lt_sq₀ (by norm_num) (mul_nonneg hQ.le dist_nonneg)).mp
+    rw [mul_pow, Real.sq_sqrt nk.Q_pos.le]
+    norm_num only [show (14 : ℝ) ^ 2 = 196 by norm_num]
+    exact hquant
+  have hfar : 2 * (7 / Real.sqrt (metricScalarAt g x)) < dist (x : UniformSpace.Completion M) q := by
+    rw [dist_comm, ← mul_div_assoc]
+    apply (div_lt_iff₀ hQ).mpr
+    linarith only [hroot]
+  have hball (w : M) (hw : w ∈ nk.map '' (univ ×ˢ {(0 : ℝ)})) :
+      (w : UniformSpace.Completion M) ∈ Metric.closedBall (x : UniformSpace.Completion M)
+        (7 / Real.sqrt (metricScalarAt g x)) := by
+    have hb := nk.central_sphere_subset_closedBall hw
+    change riemannianEDistOf g x w ≤ ENNReal.ofReal (7 / Real.sqrt (metricScalarAt g x)) at hb
+    rw [← hmetric, edist_dist] at hb
+    rw [Metric.mem_closedBall, UniformSpace.Completion.dist_eq, dist_comm]
+    exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hb
+  exact Metric.dist_lt_dist_add_dist_of_mem_closedBall (hball y hy) (hball z hz) hfar
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
