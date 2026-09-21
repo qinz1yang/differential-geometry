@@ -12425,3 +12425,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedPositiveCanonicalLimit
 import DifferentialGeometry.Topology.ProjectiveSpace.AffineThree
 import DifferentialGeometry.Topology.ProjectiveSpace.AffineThreeBall
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Poincare.Lipschitz
+import DifferentialGeometry.Topology.EMetricSpace.FiniteDistanceLipschitz
+import DifferentialGeometry.Geometry.Measure.Area.DiskExtensionSupport
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ScalarProbe
+import DifferentialGeometry.Topology.EMetricSpace.CompactImage
+import DifferentialGeometry.Geometry.Metric.Distance.CompactImage
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.DistanceMoments
