@@ -1580,3 +1580,43 @@ diagnostics. Evidence:
 `/private/tmp/wt17-normalized-curvature-distance-leaf-build.log`,
 `/private/tmp/wt17-curvature-distance-audit.log`, and
 `/private/tmp/wt17-curvature-distance-root-build.log`.
+
+
+## Smooth collars of the annular sections
+
+The continuation after `906e4a46b` constructs a genuine smooth two-sided
+collar around every section of the produced half-cylinder homeomorphism,
+including sections at integer seams. The exact section map appears in the
+`SmoothTwoSidedCollar` type. The proof derives smoothness of the recursively
+composed sphere reparametrizations and their inverses, identifies each section
+inside an actual smooth annulus, and applies the product-chart graph collar
+theorem. It does not assert joint smoothness of the half-cylinder map across
+seams. The existing `GlobalNeckTube` definition is unchanged.
+
+The general collar API now exposes smoothness and the embedding property of
+its prescribed central map without additional manifold, compactness, or
+separation assumptions. These are consequences of the collar's actual
+product diffeomorphism and zero-section identity.
+
+All three changed public declarations passed thirteen declaration linters,
+and their axiom closures contain only `propext`, `Classical.choice`, and
+`Quot.sound`. The collar leaves passed 2,506 jobs; the normalized producer and
+affected neck leaves passed 14,144 jobs without diagnostics. The full root
+passed 20,207 jobs with exactly 21 retained sorry warnings and no other
+diagnostics. Evidence: `/private/tmp/wt17-smooth-collar-api-leaf-build.log`,
+`/private/tmp/wt17-smooth-annular-collars-leaf-build.log`,
+`/private/tmp/wt17-annular-collar-audit.log`, and
+`/private/tmp/wt17-annular-collar-root-build.log`.
+
+The user supplied additional mathematical guidance at
+`/Users/bennettchow/.codex/attachments/51893d98-12c6-47d4-84f7-1ba1961de82e/pasted-text.txt`.
+Its recommended next step is the metric small-separator argument excluding
+the completion endpoint from interiors of minimizing segments. This avoids
+making a global smooth parametrization a prerequisite to endpoint comparison.
+The localized supporting-function comparison is referenced to GSM77,
+`tex/chapters/chapter1.tex`, labels `Eagles tour` and `doh!`; these statements
+and proofs were read. The subsequent directions and cone route uses
+Morgan–Tian Chapter 10, with the already proved limiting-angle triangle
+inequality replacing the printed finite-comparison-angle step.
+The bounded-distance headline, finite-horn construction, and cone producer
+remain unfinished.

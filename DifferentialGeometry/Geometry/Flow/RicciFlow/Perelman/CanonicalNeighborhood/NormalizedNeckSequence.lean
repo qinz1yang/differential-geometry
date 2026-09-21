@@ -8,6 +8,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Topology.Compactness.ConvergentFamily
 import DifferentialGeometry.Topology.Compactness.Cocompact
 import DifferentialGeometry.Topology.DenseEmbedding
+import DifferentialGeometry.Topology.Manifold.ProductChartCollar
 import DifferentialGeometry.Topology.Homeomorph.CylinderChain
 import DifferentialGeometry.Topology.Homeomorph.Interior
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
@@ -34,7 +35,8 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.sigmaCompact
 
 private theorem exists_homeomorph_annular_end
-    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [T2Space M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold I3 ∞ M] [T2Space M]
     (ann : ℕ → PartialDiffeomorph IC I3 Cylinder M ∞)
     (eta : ℕ → Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2) (F : ℕ → Cylinder → M)
     (hsource : ∀ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (ann n).source)
@@ -56,6 +58,8 @@ private theorem exists_homeomorph_annular_end
         (∀ (n : ℕ) (p : Sphere 2) (s : Icc (0 : ℝ) 1),
           (E (p, ⟨n + (s : ℝ), add_nonneg (Nat.cast_nonneg n) s.property.1⟩) : M) =
             ann (n + 1) (theta n p, s)) ∧
+        (∀ s : Ici (0 : ℝ), Nonempty (DifferentialGeometry.Topology.SmoothTwoSidedCollar
+          I2 I3 (fun p : Sphere 2 => (E (p, s) : M)))) ∧
         ∃ D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ
             interior (⋃ n, ann (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
           ∀ (p : Sphere 2) (s : Ioi (0 : ℝ)), (D (p, s) : M) =
@@ -114,9 +118,52 @@ private theorem exists_homeomorph_annular_end
       exact ⟨p, (hEzero p).trans hp⟩
     · rintro ⟨p, hp⟩
       exact ⟨(p, 0), ⟨mem_univ _, rfl⟩, (hEzero p).symm.trans hp⟩
+  have hthetaSmooth (n : ℕ) : ContMDiff I2 I2 ∞ (theta n) := by
+    induction n with
+    | zero => rw [htheta0]; exact contMDiff_id
+    | succ n ih =>
+      rw [htheta]
+      exact (eta (n + 1)).contMDiff.comp ih
+  have hthetaInverse (n : ℕ) : ContMDiff I2 I2 ∞ (theta n).symm := by
+    induction n with
+    | zero => rw [htheta0]; exact contMDiff_id
+    | succ n ih =>
+      rw [htheta]
+      exact ih.comp (eta (n + 1)).symm.contMDiff
+  let thetaD (n : ℕ) : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2 :=
+    { toEquiv := (theta n).toEquiv
+      contMDiff_toFun := hthetaSmooth n
+      contMDiff_invFun := hthetaInverse n }
+  have hsections (s : Ici (0 : ℝ)) :
+      Nonempty (DifferentialGeometry.Topology.SmoothTwoSidedCollar
+        I2 I3 (fun p : Sphere 2 => (E (p, s) : M))) := by
+    let n := Nat.floor (s : ℝ)
+    let t : Icc (0 : ℝ) 1 := ⟨(s : ℝ) - n,
+      sub_nonneg.mpr (Nat.floor_le s.property),
+      by linarith only [Nat.lt_floor_add_one (s : ℝ)]⟩
+    have hst : (⟨n + (t : ℝ), add_nonneg (Nat.cast_nonneg n) t.property.1⟩ :
+        Ici (0 : ℝ)) = s := by
+      apply Subtype.ext
+      change (n : ℝ) + ((s : ℝ) - n) = s
+      ring
+    have heq : (fun p : Sphere 2 => (E (p, s) : M)) =
+        fun p => ann (n + 1) (theta n p, (t : ℝ)) := by
+      funext p
+      rw [← hst]
+      exact (hE n p t).trans (he n (theta n p) t)
+    let O : TopologicalSpace.Opens Cylinder := ⟨(ann (n + 1)).source, (ann (n + 1)).open_source⟩
+    let Φ := DifferentialGeometry.PartialDiffeomorph.toOpensDiffeo
+      (ann (n + 1)) (U := O) (subset_refl _)
+    obtain ⟨c, _, _, _⟩ :=
+      DifferentialGeometry.Topology.exists_smoothTwoSidedCollar_of_reparametrized_product_chart_graph
+        O _ Φ (fun _ => (t : ℝ)) contMDiff_const
+        (fun p => hsource (n + 1) ⟨mem_univ _, t.property⟩)
+        (fun p : Sphere 2 => (E (p, s) : M)) (thetaD n)
+        (fun p => congrFun heq p) (r := 1) zero_lt_one
+    exact ⟨c⟩
   let D := E.restrictProdIoi hfrontE
   exact ⟨E, theta, htheta0, htheta,
-    fun n p s => (hE n p s).trans (he n (theta n p) s),
+    (fun n p s => (hE n p s).trans (he n (theta n p) s)), hsections,
     D, fun p s => E.restrictProdIoi_apply_coe hfrontE p s⟩
 
 private theorem pathConnectedSpace_of_cylinder_homeomorph
@@ -548,6 +595,9 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
                                       (E (p, ⟨n + (s : ℝ),
                                         add_nonneg (Nat.cast_nonneg n) s.property.1⟩) : L.M) =
                                           Ψ (n + 1) (theta n p, s)) ∧
+                                    (∀ s : Ici (0 : ℝ), Nonempty
+                                      (DifferentialGeometry.Topology.SmoothTwoSidedCollar I2 I3
+                                        (fun p : Sphere 2 => (E (p, s) : L.M)))) ∧
                                     ∃ D : Sphere 2 × Ioi (0 : ℝ) ≃ₜ
                                       interior (⋃ n, Ψ (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1)),
                                       (∀ (p : Sphere 2) (s : Ioi (0 : ℝ)),
@@ -830,7 +880,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
   have hwindowCapture := hlocal.eventually_subset_interior_of_isCompact_frontier
     hfrontCompact hwindowConn hwindowMeet
   rw [Nat.cofinite_eq_atTop] at hwindowCapture
-  obtain ⟨E, theta, htheta0, htheta, hE, D, hD⟩ :=
+  obtain ⟨E, theta, htheta0, htheta, hE, hsections, D, hD⟩ :=
     exists_homeomorph_annular_end ann eta (fun n => (nk n).map)
       hsource hleft hright hcann hlocalAnn hsep hinter hfrontTail
   let W : TopologicalSpace.Opens L.M :=
@@ -915,7 +965,7 @@ theorem exists_terminal_pointed_limit_with_missing_endpoint_and_disjoint_neck_se
     hlocal, eta, ann, hannuli, hsep, hinterior, hinter, hseam, hlocalAnn, hclosedAnn,
     hconnUnion, hnotCompact 0, hfrontAnn, hclosedTail, hconnTail, hnotCompact 1, hfrontTail,
     haxisTail, hcollapse, hquantAnn, hwindowCapture, E, theta, htheta0, htheta,
-    hE, D, hD,
+    hE, hsections, D, hD,
     gW, fun _ => rfl, hgW, hnkW, hcompletion⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
