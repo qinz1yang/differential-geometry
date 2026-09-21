@@ -466,3 +466,40 @@ cell（D 答复给了两个模型），`IsPLBoundaryTubeProducer M` 就为假，
   `finrank = 3`）、`LoopTheorem/DiskPushOff.lean`（同边界的推离去不掉 `Γ`）。2b **无法**靠换支避免。
 - 三个夹具（2a 折杯、2b 两盒外接、Case 1 在 `ℝP² × I`）在摘要第 4 节，复杂度都恰为 1。
 - 我在 prompt 里的两处错：实心 Klein 瓶容不下整张 Case 1 盘（`π₁ = ℤ`，而 `g² = 1`）；2b 里"邻域够小"推不出三圆迹。
+
+### 车道 H 裁决（H0 + B4–B6，2026-09-20 夜）：17 个文件里 4 个可作基础设施，其余要改或重来
+
+lead 先读出 B6 的问题，随后一个只读审读 worker 逐条读完全部 17 个文件；其中两条最重的结论 lead 已对源码复核。
+机器检查全过不是问题所在——约 25 个公开声明里，**6 个按现状可用，2 个彻底空洞，9 个在目标归纳里无法解除**。
+
+- **可收（整理后重新交一批，lead 用自己的 lease 审计后提交）：** `RelativeGeneralPositionSubcomplex.lean`
+  （真的 B3，保留了上游的基数护栏）、`…BufferedInduction.lean`（`doublePointSet_subset_iUnion_of_buffered_steps`
+  **就是**修正版不变量 (9)，对整个并 `⋃ j : Fin n, W j`——正确、可解除，却没被用上）、`…Relative.lean`
+  （删掉 :22 那条限制式别名）、`…Assembly.lean`（`exists_boundary_loop_of_buffered_homotopy`，但 `H`、`hmap`、`hsurj`
+  仍是自由输入）。
+- **B6/H7（`…Cover.lean:38`、`…BufferedFibreCrossing.lean`）：** 用的是**部分并**。`hstep` 要 `Σ(D (i+1)) ⊆ C i ∪ W i`，
+  新定理要 `Σ(D 0) ⊆ C 0`；真实归纳里 `C 0 = ∅`、`D 0` 任意，未处理卡里的二重点一直在。而且 `hstep (n−1)` 已经
+  给出结论的三个合取项——归纳是装饰性的。改成建立在 `…BufferedInduction` 的整并版本上。
+- **`…BufferedAssembly.lean`、`…BufferedMap.lean`：** `hGpre + hApre + hEqOn` 迫使新旧映射在 `O` 的**全部**原像上相等，而
+  `closure W ⊆ O`——恰好把要正规化的区域冻住了。摘要 (4) 只要求在 `O_* ⊇ C` 上相等。`hAcross`（新 cell 在
+  `closure W` 上的正规性）是整个 B5 的产出，却被当作假设；本批**没有任何文件产出** `HasPLNormalDoubleCrossingAt`。
+- **`…RelativeHalfSpace.lean:144`、`…RelativeHalfSpaceProducer.lean:28`：空洞**（lead 已复核）。`hzero` 让 `B` 的顶点全落在
+  `ker ℓ`（二维），`hfixedAI` 却要求其中任意 ≤ `finrank F + 1 = 4` 个点仿射无关——`B` 有 4 个顶点即矛盾。上游
+  `:1529` 的护栏 `(s ∩ B).card ≤ finrank (ker ℓ) + 1` 被丢了。并且 `hzero + hpositive` 迫使 `B` 恰为 `ℓ = 0` 的零集，
+  根本冻不住内部 collar（collar 顶点 `ℓ (f v) > 0`）——B5 的核心需求被排除了。`hfixedPair` 还被原样作为 `if_pos`
+  分支返回（结论当假设）；`hprotectedPair` 在二重曲线端点落在 `H` 上时为假。
+- **三个 `CutOut*` producer：** `T : PLPieceIn E 2 X (f ⁻¹' V)` 使 `f ⁻¹' V` 紧，`hV : IsOpen V` 又使它开（lead 已
+  复核签名）；而真实的源是**带边界的盘**，不是 `ChartedSpace (EuclideanSpace ℝ (Fin 2))`。"whole source"只是标签：
+  `hwhole` 迫使 `S = f ⁻¹' V`，条件 (10)（"过该区域的全部页"）没有得到。`…CutOutFrontier` 的
+  `Disjoint H (f ⁻¹' V)` 在 `H = ∂S` 时对盘不可能成立。先要一个容许边界的源类型，这些才可能被实例化。
+- **`…RelativePerturbation`、`…RelativeProducer`：** 给出的是对**固定靶复形 `L`** 的横截性，而二重点链
+  （`:1607`/`:3183`）消费的是**不交源面对**的条件；`hprotected` 对 `B` 的**所有**细分量化，取单点即要求
+  `f(B.space)` 避开 `L` 的所有 ≤ 2 维面。
+- **H0 的桥接 `…RelativeHalfSpaceExtension.lean`：** 三个**公开名字**与 `codex/moise-smoothing` 上的声明同名同陈述
+  （旧文件 :19、:99、:269）；以后两边一合就硬冲突。正确做法是把旧分支那两个文件的尾部作为 append-only 批次
+  收进来（H0 的原意），不是用旧名字重写一遍。
+- **探针：** `K = B = ⊥`、`Q = ∅`、`W = ∅`、`H = ∅`、`n = 0`、`n = 1` 全是退化实例，不算非空洞检验。
+- **真实剩余义务（顶层组装的自由输入）：** `hAcross`；扰动后的 cell/映射本身及 `hEqOn/hGpre/hApre/hEqOff/hHiff`；
+  `…BufferedMap:89` 的环境 PL 移动 `h` 及其七条性质；`hprotectedAI/hprotectedPair`；来自适配边界卡的
+  `hnonneg/hzeroiff`；`Sbd/hDQ`；`…Assembly:35–42` 的同伦 `H` 与 `hmap/hsurj`。也就是说 B5、B6 的映射部分、B7
+  在陈述层面**尚未开始**，只有 B1 与 B3 到位。
