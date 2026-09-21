@@ -433,3 +433,36 @@ cell（D 答复给了两个模型），`IsPLBoundaryTubeProducer M` 就为假，
 - 对已提交的 `LoopTheorem/CrossSeamTube.lean:928` 加 `[T2Space M]`：违反了本车道"不改已提交文件"，而且该文件在
   几乎所有 Lemma 2 模块的闭包里。这个 def 没有 Lean 消费者，并将被修正后的 producer 取代——**请还原这处改动**，
   在新文件的模块 docstring 里注明旧 def 已被取代；等 Lemma C 落地时再随清理一并删除。
+
+### 重放任务 R：**已完成**（lead，2026-09-20 夜，lease `claude-agent-b`，owner 亲自授予）
+
+合并进来的 34 个模块（26 新 + 6 改 + 2 下游）按依赖顺序逐个聚焦编译：全部
+`Verified … with no diagnostics; shared outputs unchanged`（`.lake/scratch/ReplayM304H.log`）。随后一个探针同时 import
+这 34 个模块（即重名检查），对其中 **285 个声明**逐一查公理闭包（均 ⊆ `propext`、`Classical.choice`、`Quot.sound`）并跑
+13 项环境 linter：零诊断（`.lake/scratch/AuditReplayM304H.log`）。两次合并因此从"已合并未重放"升为"已重放"。
+这些陈述仍**未经 lead 逐条阅读**；消费前按空洞纪律读假设。
+
+### 车道 C 更新：Prompt E 的答复已回（`consult/E-answer-digest.md`）
+
+- **2a 确认**（无推离，弯折可接受）；worker 已在跑，要点已转给它。
+- **Case 1 走可定向路线（方案 A，保留一般定义、另加具名的可定向变体）。** 先决条件大多已在树里：
+  `IsOrientable.of_le`、`IsOrientable.of_space_subset`、`IsOrientable.derivedNeighborhood`、
+  `IsOrientable.barycentricSubdivision`、`IsOrientable.double`（`Orientation.lean:5185`）、
+  `isOrientable_coveringComplex_orientationCocycle`（`CoveringOrientation.lean:871`）。新砖块：
+  - **C-or1 标记 link 的符号排除**：`J` 上连续的 `s : J → {±1}`，`s (τ a) = −s a`；三条相容性——有向横截 link 的搬运
+    `ε_⊥ = ε_M · ε_Γ`（取公共细分使映射单纯，用相邻四面体的相干定向给有向边的 link 定向）、带标记的重叠不变性
+    （要搬运每页的内/外标记，来自真实的源 collar，不只是页的 `Bool`）、过支顶点（顶点 link 是带两极与四条经线弧的
+    PL 2-球面，页交替）。不需要管子、同调或乘积结构。
+  - **C-or2 可定向变体**：下降陈述、带缓冲的 Lemma 2、塔归纳的 **motive**（必须改——只在最后一步加可定向性不够）、
+    cover producer、初始 normal system、`Moise252` 的最终组装。一步 surgery 只用 `Or S`；归纳的递归调用要 `Or T`。
+    可定向性必须**从原始底空间向上**传（向下读是假的：`S² × I → ℝP² × I`）。一般位置不用限制。
+    这样之后无限制的 `Moise251`、`Moise264` **并未**被证明，别误标。
+- **2b 的契约**（producer 只交几何帽子数据，不交 surgery）：对每个小开集 `U ⊃ f(Q)`、`U ⊂ Int_M C`，给出 `E₂'`、
+  `T' = ∂E₂'`、PL 盘 `P' ⊂ U`，满足 `E₂ ⊂ Int E₂'`、`E₂' ⊂ Int P`、`Q ∩ E₂' = ∅`、`(E₂' \ E₂) ∩ Σ̃_f = ∅`、
+  `f|T' : T' ≅ ∂P'`、`P' ∩ f(P) = ∂P'`。**"取足够小的正则邻域"不够**（顾问给了褶皱反例）：邻域必须是存在量化、对
+  标记对适配的，结论里写明 `∂_M N ∩ f(P) = c₊ ⊔ c₀ ⊔ c₋` 与 `P ∩ f⁻¹ N = Q_N ⊔ A_N`。一旦有了干净帽子的交式，
+  横截性**不是**额外要求。复用点：`IsCombinatorialManifoldWithBoundary.exists_isPLBall_derivedNeighborhood_disk`
+  （`SurfaceSplitDiskNeighborhood.lean:213`）。不可用：`BicollarEmbedding`、spanning-disk 定理（要闭曲面与
+  `finrank = 3`）、`LoopTheorem/DiskPushOff.lean`（同边界的推离去不掉 `Γ`）。2b **无法**靠换支避免。
+- 三个夹具（2a 折杯、2b 两盒外接、Case 1 在 `ℝP² × I`）在摘要第 4 节，复杂度都恰为 1。
+- 我在 prompt 里的两处错：实心 Klein 瓶容不下整张 Case 1 盘（`π₁ = ℤ`，而 `g² = 1`）；2b 里"邻域够小"推不出三圆迹。
