@@ -129,6 +129,48 @@ theorem contMDiffAt_and_geodesicEquationAt_of_metric_segment
         (mfderiv 𝓘(ℝ, ℝ) I f t 1))) ^ 2 := (Real.sq_sqrt (metric_inner_self_nonneg g _ _)).symm
     _ = 1 := (congrArg (fun x : ℝ => x ^ 2) hsqrt).trans (one_pow 2)
 
+section Intrinsic
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+variable [RiemannianBundle (fun x : M => TangentSpace I x)]
+  [IsRiemannianManifold I M] [CompleteSpace M]
+  [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+
+theorem eqOn_intrinsicGeodesic_of_metric_segment
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
+    (f : ℝ → M) {R : ℝ} (hR : 0 < R)
+    (hdist : ∀ s ∈ Icc (-R) R, ∀ v ∈ Icc (-R) R, dist (f s) (f v) = |s - v|) :
+    EqOn f (intrinsicGeodesic g hEnorm (f 0) (mfderiv 𝓘(ℝ, ℝ) I f 0 1)) (Ioo (-R) R) := by
+  have hmetric (x y : M) : edist x y = riemannianEDistOf g x y := by
+    rw [riemannianEDistOf_eq_riemannianEDist g hEnorm]
+    exact IsRiemannianManifold.out x y
+  have hreg (t : ℝ) (ht : t ∈ Ioo (-R) R) :
+      ContMDiffAt 𝓘(ℝ, ℝ) I ∞ f t ∧ Geodesic.HasGeodesicEquationAt g f t := by
+    let δ := min (R - t) (R + t) / 2
+    have hmin : 0 < min (R - t) (R + t) := lt_min (sub_pos.mpr ht.2) (by linarith [ht.1])
+    have hδ : 0 < δ := half_pos hmin
+    have hδright : δ < R - t := (half_lt_self hmin).trans_le (min_le_left _ _)
+    have hδleft : δ < R + t := (half_lt_self hmin).trans_le (min_le_right _ _)
+    have hparam (s : ℝ) (hs : s ∈ Icc (-δ) δ) : t + s ∈ Icc (-R) R :=
+      ⟨by linarith [hs.1], by linarith [hs.2]⟩
+    have hh := contMDiffAt_and_geodesicEquationAt_of_metric_segment g hmetric f t hδ (by
+      intro s hs v hv
+      rw [hdist _ (hparam s hs) _ (hparam v hv)]
+      congr 1
+      ring)
+    exact ⟨hh.1, hh.2.1⟩
+  let v : TangentSpace I (f 0) := mfderiv 𝓘(ℝ, ℝ) I f 0 1
+  apply geo_eqOn_of_initial g isOpen_Ioo (convex_Ioo (-R) R).isPreconnected
+    ⟨by linarith, hR⟩ (fun t ht => (hreg t ht).2)
+    ((intrinsicGeodesic_isGeodesic g hEnorm (f 0) v).isGeodesicOn _)
+    (fun t ht => (hreg t ht).1.continuousAt.continuousWithinAt)
+    (intrinsicGeodesic_contMDiff g hEnorm (f 0) v).continuous.continuousOn
+    (intrinsicGeodesic_zero g hEnorm (f 0) v).symm
+  exact (intrinsicGeodesic_mfderiv_zero g hEnorm (f 0) v).symm
+
+end Intrinsic
+
 end Metric
 
 end DifferentialGeometry.Geometry.Riemannian

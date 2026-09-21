@@ -108,4 +108,13 @@ theorem abs_radius_sub_le_coneDistance {Y : Type*} [PseudoMetricSpace Y]
   have hn := Metric.coneDistance_nonneg x y
   nlinarith only [hs, hc, hn, sq_abs (x.1 - y.1), abs_nonneg (x.1 - y.1)]
 
+theorem coneDistance_radial_mul {Y : Type*} [PseudoMetricSpace Y]
+    (c : ℝ) (x y : ℝ × Y) :
+    coneDistance (c * x.1, x.2) (c * y.1, y.2) = |c| * coneDistance x y := by
+  unfold coneDistance
+  rw [show (c * x.1) ^ 2 + (c * y.1) ^ 2 -
+      2 * (c * x.1) * (c * y.1) * Real.cos (min Real.pi (dist x.2 y.2)) =
+      c ^ 2 * (x.1 ^ 2 + y.1 ^ 2 - 2 * x.1 * y.1 * Real.cos (min Real.pi (dist x.2 y.2))) by ring,
+    Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq_eq_abs]
+
 end Metric

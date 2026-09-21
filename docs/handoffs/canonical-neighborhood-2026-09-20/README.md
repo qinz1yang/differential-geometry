@@ -2425,3 +2425,44 @@ none of those conclusions is inferred merely from a smooth regular radius.
 
 The full root build passed 20,239 jobs with exactly 21 retained proof-hole
 warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-gradient-root-build.log`.
+
+## Smooth radial motion and metric scaling
+
+`Geometry/Metric/ConeDilation.lean` now constructs a common open neighborhood
+on which the actual radial translation is jointly smooth and stays inside the
+cone identification's target. It uses the proved radial gradient identity,
+uniqueness of geodesics, and the existing jointly smooth intrinsic exponential
+map. The original manifold need not be complete: the proof uses the existing
+local complete-metric extension, restricts the identification to the ball where
+pairwise distances agree, and returns smoothness in the original topology.
+
+`exists_smooth_dilation_of_coneDistance` produces an open neighborhood of
+`(1, p)` where the actual dilation map is jointly smooth, has positive dilation
+factor, stays in the cone domain, and pulls the metric back to `c² g`. No
+smoothness of the link is assumed. The general metric differential theorem
+`inner_mfderiv_eq_mul_of_eventually_riemannian_distance_eq` derives this tensor
+identity from local distance scaling by differentiating along actual smooth
+curves and polarizing. It allows different source and target manifolds and only
+requires differentiability at the point. The finite metric-segment identification
+was added in its existing geodesic topic home, and the elementary radial scaling
+identity remains in `ConeDistance.lean`.
+
+The essential gap closed is joint radial regularity and tangential metric
+scaling, conditional on the open cone-distance identification. Five new public
+declarations passed all thirteen declaration linters and have only the three
+approved foundational axioms. Leaf build evidence is
+`/private/tmp/wt17-cone-dilation-build.log` (4,265 jobs); exact types, linters, and
+axioms are in `/private/tmp/wt17-cone-dilation-audit.log`.
+
+An actual `ConeChart` still requires a regular radius level and radial product
+coordinates, including the radial and mixed metric terms. The radius is already
+smooth with nonzero differential and unit gradient, so the existing regular-level
+coordinate theorem supplies the needed input; its current model is a finite
+function space, and the application uses Euclidean space. This is a coordinate
+API issue, not a missing regular-level theorem. The actual source diagonal must
+still supply the open cone-distance identification through buffered distance
+comparison and ball coverage. Neither this checkpoint nor the compact cone
+approximation alone constructs a local cone-flow patch or closes the headline.
+
+The full root build passed 20,240 jobs with exactly 21 retained proof-hole
+warnings and no other diagnostics. Evidence: `/private/tmp/wt17-cone-dilation-root-build.log`.

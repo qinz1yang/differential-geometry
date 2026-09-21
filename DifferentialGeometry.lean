@@ -11548,6 +11548,7 @@ import DifferentialGeometry.Geometry.Comparison.Toponogov.AngleKernelCompactness
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialNets
 import DifferentialGeometry.Geometry.Comparison.Toponogov.CompletionRadialNets
 import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Geometry.Metric.ConeDilation
 import DifferentialGeometry.Geometry.Metric.ConeRadius
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialConeApproximation
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeApproximation
