@@ -12616,3 +12616,4 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Quad
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Curvature
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Curvature
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.InverseCurves
