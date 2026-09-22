@@ -9,6 +9,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierSupportLoca
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellLocallyFiniteCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsLocallyFinitePLPieceInOfIsOpen
+import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionSubordinateToCover
 
 /-!
 # Sorry-first skeleton of P0, the controlled source triangulation and its carriers
@@ -160,6 +162,23 @@ piecewise linear in `M₂` by construction and not by transport along `h`.  No c
 degenerate: `IsPLCellOn 3 (H t) (frontier (H t))` forces a nonempty `3`-cell whose ambient
 frontier is its intrinsic boundary, and `h '' S_t ⊆ interior (H t)` with a nonempty `S_t` forces a
 nonempty interior.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit): `exists_locallyFinitePLPieceIn_of_isOpen` (the proved piece tower with all
+vertices on the moment curve in `ℝ⁷`, local finiteness proved in `ℝ⁷`; brick
+`LocallyFinitePieceTower.toLocallyFinitePLPieceIn`) and
+`exists_isSubdivision_section34CarrierSupport_subset` (the `relDerived` subdivision iterated to
+region-dependent depths from local Lebesgue numbers; the real module states it without the unused
+`[SecondCountableTopology M₁]` and `[HasGroupoid M₁ (plGroupoid 3)]`, a proved generalisation of
+which the frozen leaf is the special case). With these the file has no `sorry` left:
+`section34Control` is a real proof of `Section34ControlStatement`, and the module is ready to be
+promoted out of `Skeleton/`.
+
+Promoted out of `Skeleton/` on 2026-09-22: every former leaf is proved in an imported real module
+(`PLCellLocallyFiniteCover`, `Section34CarrierSupportLocallyFinite` from the owner's lane;
+`IsCombinatorialManifoldOfLocallyFinitePLPieceIn` from lane F;
+`ExistsLocallyFinitePLPieceInOfIsOpen` and `SubdivisionSubordinateToCover` from an Opus 5.5
+worker), so `section34Control` below is an unconditional proof of `Section34ControlStatement`.
 -/
 
 open Set Topology
@@ -172,20 +191,6 @@ section Leaves
 
 variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
   {M₁ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] {U : Set M₁}
-
-theorem exists_locallyFinitePLPieceIn_of_isOpen [Nonempty M₁] [T2Space M₁]
-    [SecondCountableTopology M₁] [HasGroupoid M₁ (plGroupoid 3)] (hU : IsOpen U) :
-    ∃ N : ℕ, Nonempty (LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin N)) 3 M₁ U) := by
-  sorry
-
-theorem exists_isSubdivision_section34CarrierSupport_subset [T2Space M₁]
-    [SecondCountableTopology M₁] [HasGroupoid M₁ (plGroupoid 3)] {ι : Type*} (hU : IsOpen U)
-    (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) (h𝒦 : IsCombinatorialManifold 3 𝒦.complex)
-    (O : ι → Set M₁) (hO : ∀ i, IsOpen (O i)) (hcover : U ⊆ ⋃ i, O i) :
-    ∃ 𝒦₁ : LocallyFinitePLPieceIn Ea 3 M₁ U, IsSubdivision 𝒦₁.complex 𝒦.complex ∧
-      𝒦₁.map = 𝒦.map ∧ IsCombinatorialManifold 3 𝒦₁.complex ∧
-      ∀ t ∈ 𝒦₁.complex.faces, ∃ i, Section34CarrierSupport 𝒦₁ t ⊆ O i := by
-  sorry
 
 end Leaves
 
@@ -253,7 +258,7 @@ theorem exists_section34ControlNeighborhood {M₁ M₂ : Type*} [TopologicalSpac
   exact ⟨N, fun y hy => hN y hy⟩
 
 theorem exists_section34CarrierControl_of_cellCover {Ea : Type} [NormedAddCommGroup Ea]
-    [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea] {M₁ M₂ : Type u} [TopologicalSpace M₁]
+    [NormedSpace ℝ Ea] {M₁ M₂ : Type u} [TopologicalSpace M₁]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] [MetricSpace M₂]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] {U : Set M₁} {h : M₁ → M₂}
     (hh : Topology.IsEmbedding (U.domRestrict h)) {η : M₁ → ℝ}

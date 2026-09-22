@@ -9,6 +9,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEssentialDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceFilling
 import DifferentialGeometry.Topology.PiecewiseLinear.ToroidalShellHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.NestedTori
+import DifferentialGeometry.Topology.PiecewiseLinear.TorusOfOrientableEulerCharZero
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsCombinatorialTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.NontrivialKernelInSolidTorus
 
 /-!
 # Polyhedral interpolation in toroidal shells
@@ -77,34 +80,19 @@ This file is not imported by the root aggregate or any other skeleton.
 Proved and imported on 2026-09-22 (Gemini batch, lead-accepted with zero-diagnostic checks and an
 axiom audit; statements byte-identical with the frozen leaves): `subset_interior_of_nested_tori`,
 `not_nullhomotopic_inclusion_of_nested_tori`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statements byte-identical with the frozen leaves): the three recognition
+leaves — a closed orientable surface of Euler characteristic zero is a torus
+(`TorusOfOrientableEulerCharZero`), a PL torus has a combinatorial triangulation
+(`ExistsCombinatorialTriangulation`), and the inclusion of a PL torus into a solid torus has a
+non-trivial kernel on fundamental groups (`NontrivialKernelInSolidTorus`). With `NestedTori`,
+`moise306_of_moise252` is now proved from `Moise252`; only the two compression leaves remain.
 -/
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-theorem IsCombinatorialManifold.nonempty_homeomorph_torus_of_isOrientable_of_eulerChar_eq_zero
-    (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite L.faces]
-    (hL : IsCombinatorialManifold 2 L) (hLc : IsConnected L.space)
-    (hLo : IsOrientable 2 L) (hχ : eulerChar L = 0) :
-    Nonempty (L.space ≃ₜ (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
-      Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1)) := by
-  sorry
-
-theorem IsPLTorus.exists_combinatorial_triangulation
-    {T : Set (EuclideanSpace ℝ (Fin 3))} (hT : IsPLTorus T) :
-    ∃ (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (hLfin : L.faces.Finite),
-      letI := hLfin.to_subtype
-      IsCombinatorialManifold 2 L ∧ IsConnected L.space ∧ L.space = T := by
-  sorry
-
-theorem IsPLTorus.exists_nontrivial_fundamentalGroup_kernel_in_solidTorus
-    {T S : Set (EuclideanSpace ℝ (Fin 3))} (hT : IsPLTorus T)
-    (hS : IsTopologicalSolidTorus S) (hTS : T ⊆ interior S) :
-    ∃ (x : T) (g : FundamentalGroup T x), g ≠ 1 ∧
-      FundamentalGroup.map (⟨Set.inclusion hTS, continuous_inclusion hTS⟩ :
-        C(T, interior S)) x g = 1 := by
-  sorry
 
 theorem exists_isPLBall_superset_of_exterior_compression
     (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite R.faces]

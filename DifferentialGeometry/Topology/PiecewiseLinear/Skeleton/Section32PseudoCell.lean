@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.IsTopologicalSphereImageSplitRim
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuallyEq
+import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceSubsetOfEdgeCollars
 
 /-!
 # Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
@@ -182,6 +183,12 @@ The tower, annular-chain and edge-collar predicates, `initialSurface`, `annularC
 `handlePiece`, `CrossesPseudoCell`, `SplitsDualCellsAlong`, and the proved
 `IsTube.mem_interior_dualCell` and `Moise322.exists_splitsDualCellsAlong` live in
 `PseudoCell.lean`. Their producers remain open.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical): `handlePiece_subset_of_edgeCollars` — the
+pinned clause of `SplitsDualCellsAlong` makes each side closed and open in `N' \ ⋃ E`, and
+`IsPreconnected.constant` on the component does the rest; `IsTube` still has no inhabitant, so the
+theorem is proved but untested on an instance.
 -/
 
 open Set Topology
@@ -325,16 +332,6 @@ theorem isHandleDecomposition_of_edgeCollars (ht : IsTube K N C D Dbd h N')
       handlePiece K N' Ec h u ∩ handlePiece K N' Ec h v = Ec {u, v}) ∧
     ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset E3) ∉ K.faces →
       handlePiece K N' Ec h u ∩ handlePiece K N' Ec h v = ∅ := by
-  sorry
-
-open Classical in
-theorem handlePiece_subset_of_edgeCollars (ht : IsTube K N C D Dbd h N')
-    {V : E3 → Set E3} {W : Finset E3 → Set E3} (hW : IsEdgeCollarFamily K C D Dbd h V W)
-    {Ec Eint Ebd : Finset E3 → Set E3}
-    (hE : ∀ e ∈ K.faces, e.card = 2 → ∃ u v : E3, u ∈ K.vertices ∧ v ∈ K.vertices ∧ u ≠ v ∧
-      e = {u, v} ∧ SplitsDualCellsAlong K N C Dbd h (W e) (Ec e) (Eint e) (Ebd e) u v) :
-    ∀ v ∈ K.vertices, handlePiece K N' Ec h v ⊆
-      h '' C v ∪ ⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2 ∧ v ∈ e}, W e := by
   sorry
 
 theorem exists_generalPosition_ball_pseudoCell {Ec Eint Ebd : Set E3} {P : E3}

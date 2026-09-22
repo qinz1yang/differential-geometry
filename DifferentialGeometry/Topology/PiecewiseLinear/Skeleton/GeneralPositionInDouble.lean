@@ -10,6 +10,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffere
 import DifferentialGeometry.Topology.PiecewiseLinear.DoubleHalfSpaceChart
 import DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOverlap
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
+import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellGlobalInvariants
 
 /-!
 # Sorry-first skeleton of general position in the double
@@ -282,6 +283,9 @@ subdivision one up to the explicit `{M : Type*}` binder that the skeleton takes 
 Also proved and imported (Gemini batch G091, lead-accepted 2026-09-22):
 `exists_gluedCell_of_vertexMap_in_adaptedChart`, as a proved generalisation without the `[T2Space
 M]` instance argument, of which the frozen leaf is a special case.
+
+Also proved and imported (Gemini batch G098, lead-accepted 2026-09-22, statement byte-identical):
+`exists_globalInvariants_of_gluedCell`.
 -/
 
 open Set Topology
@@ -290,18 +294,9 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
 
-def UniformInjectivityScale {α : Type*} [PseudoMetricSpace α] {β : Type*} (S : Set α)
-    (f : α → β) (η : ℝ) : Prop :=
-  ∀ x ∈ S, ∀ y ∈ S, dist x y < η → f x = f y → x = y
-
 theorem uniformInjectivityScale_of_injOn {α : Type*} [PseudoMetricSpace α] {β : Type*}
     {S : Set α} {f : α → β} (h : InjOn f S) (η : ℝ) : UniformInjectivityScale S f η :=
   fun _ hx _ hy _ hxy => h hx hy hxy
-
-open Classical in
-def StarInj {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {β : Type*}
-    (T : Geometry.SimplicialComplex ℝ E) (g : E → β) : Prop :=
-  ∀ v ∈ T.vertices, InjOn g (starComplex T v).space
 
 open Classical in
 theorem starInj_of_injOn {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {β : Type*}
@@ -1142,7 +1137,6 @@ theorem exists_wallIncidence_of_fourSimplexBoundary :
   ⟨simplexBoundary (stdVertices 3) (stdVertices_affineIndependent 3),
     wallIncidence_simplexBoundary (stdVertices_affineIndependent 3) (card_stdVertices 3)⟩
 
-
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem eqOn_wallPlane_of_eqOn_transition
     {ec ec' : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))} {Km Kp : Set M}
@@ -1716,52 +1710,6 @@ theorem exists_protectedSubdivision_in_adaptedChart [CompactSpace M]
                     (⇑e₁ '' (e₁.source ∩ BdM)) (e₁ y)) ∧
             HasStableCrossingBlocks (regionGluedMap D ec R φ Rc) D.domain ec ℓ BdM
               (Z ∩ closure (V \ closure W)) (η / 2) := by
-  sorry
-
-theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
-    {BdM B C V : Set M} {ε δ κ : ℝ}
-    {T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C)
-    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z) (hκ : 0 < κ)
-    (hcert : ∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < δ) →
-      StarInj T g → UniformInjectivityScale D.domain g κ ∧
-        ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2)
-    (hclose : ∀ x ∈ D.domain, dist (D' x) (D x) < δ) (hstar : StarInj T (⇑D'))
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hVopen : IsOpen V) (hVec : V ⊆ ec.source)
-    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
-    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
-    (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
-    (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hΩ : IsOpen Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb)
-    (hNbfr : Rc.space \ Ω ⊆ Nb) (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
-    (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
-    (hsub : IsSubdivision Rs Rc)
-    (hsmall : ∀ x ∈ Rc.space, dist (simplicialMap Rs φ x) (ec (D x)) < ε)
-    (hfrozen : EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space)
-    (hpnonneg : ∀ x ∈ Rc.space, 0 ≤ ℓ (simplicialMap Rs φ x))
-    (hpzero : ∀ x ∈ Rc.space, ℓ (simplicialMap Rs φ x) = 0 ↔ x ∈ Lc.space)
-    (hchartbuf : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-      dist z (ec (D x)) < ε → z ∈ ⇑ec '' V)
-    (hbdbuf : ∀ x ∈ Rc.space ∩ frontier D.domain, ∀ z : EuclideanSpace ℝ (Fin 3),
-      dist z (ec (D x)) < ε → ec.symm z ∈ BdM → B ∈ 𝓝[BdM] (ec.symm z))
-    (hdom' : D'.domain = D.domain)
-    (hglue : EqOn (⇑D') (fun x => ec.symm (simplicialMap Rs φ x)) Rc.space)
-    (hglueoff : EqOn (⇑D') (⇑D) Rc.spaceᶜ) :
-    MapsTo (⇑D') D'.domain C ∧ (∀ z ∉ V, (⇑D') ⁻¹' {z} = (⇑D) ⁻¹' {z}) ∧
-      (∀ x ∈ D'.domain, ∃ U ∈ 𝓝[D'.domain] x, InjOn (⇑D') U) ∧
-      (∀ y, (D'.domain ∩ ⇑D' ⁻¹' {y}).encard ≤ 2) ∧
-      D'.domain ∩ ⇑D' ⁻¹' BdM = frontier D'.domain ∧
-      ∃ H : ContinuousMap (unitInterval × frontier D.domain) M,
-        (∀ x : frontier D.domain, H (0, x) = D x) ∧
-        (∀ x : frontier D.domain, H (1, x) = D' x) ∧
-        ∀ (t : unitInterval) (x : frontier D.domain),
-          H (t, x) ∈ BdM ∧ B ∈ 𝓝[BdM] (H (t, x)) := by
   sorry
 
 open Classical in
