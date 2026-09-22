@@ -19,21 +19,35 @@ loop theorem, and adds a half collar using `DiskBoundaryCollar`. The original un
 already proved Euclidean local essential-disk theorem is not replaced by this general chain.
 
 `exists_bicollar_complement_with_boundary_collars`: a finite cut manifold and half collars
-back to the original surface, including component retractions; topology lane, UNREVIEWED.
+back to the original surface, including component retractions; topology lane, reviewed OK, OPEN.
 `exists_nontrivial_boundary_loop_of_bicollar_complement`: a nontrivial kernel loop transfers
-to a collar-end boundary component of the same cut manifold; topology lane, UNREVIEWED.
+to a collar-end boundary component of the same cut manifold; topology lane, reviewed OK, OPEN.
+
+Both statements are frozen after the first review and lead due diligence recorded in
+`consult/AZ-orientable-extended-loop-first-review-digest.md`. No new hypotheses were added.
+The second leaf must derive the intrinsic boundary decomposition of the same complement
+from its own inputs and identify each collar-end component. It does not receive those
+certificates from the first leaf. The surface-product boundary and component-identification
+interfaces remain proof obligations; the auxiliary vector-space frontier is not substituted.
 
 The first leaf contains no loop or disk. The second contains no embedded disk. Its remaining
 geometric argument is the innermost-circle procedure of Moise Section 26.4, including the
 nonseparating case. A component retraction in the first leaf is the inverse collar-end map
 on one connected surface component, extended constantly across the other clopen components.
 It does not assert essentialness of any loop or boundary circle.
+The innermost-circle procedure must also exclude the disappearance of every intersection
+circle: retraction of the resulting nullhomotopy inside the bicollar would contradict the
+original nontrivial kernel element. Finite descent alone does not exclude that outcome.
 
 Common fixture, UNTESTED in Lean: a triangulated three-ball containing a standard unknotted
 polyhedral torus in its interior, with a bicollar of that torus and a meridian as kernel loop.
 The same collar and complementary manifold serve both leaves. No fixture certification or
 proof of either leaf is claimed. Empty surfaces have no basepoint for the kernel premise;
 disconnected surfaces and nonseparating two-sided surfaces are retained in the statements.
+Additional untested fixtures use two disjoint tori, or a fiber sphere with one local tube in
+the orientable manifold `S² × S¹`, realized in a sufficiently large finite-dimensional space.
+The latter has a connected complement; its two collar ends need not lie in different
+components of the cut manifold. The Section 33 application bridge remains open.
 -/
 
 open Set Topology

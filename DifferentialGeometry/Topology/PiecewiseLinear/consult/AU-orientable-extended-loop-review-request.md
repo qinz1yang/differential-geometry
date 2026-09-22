@@ -1,7 +1,10 @@
 # Intrinsic orientable extended loop theorem: first statement review
 
-Status: READY FOR OWNER REVIEW. The two leaves are UNREVIEWED. This does not close the older
-unrestricted `Moise264` or change the Section 33 endpoint's dependency.
+Status: ANSWER RECEIVED AND CHECKED, 2026-09-22. The two statements are reviewed OK and frozen;
+both proofs remain OPEN. The answer and lead due diligence are recorded in
+[AZ](AZ-orientable-extended-loop-first-review-digest.md). The original request below fixes the
+reviewed snapshot. This does not close the older unrestricted `Moise264` or change the
+Section 33 endpoint's dependency.
 
 请按同目录 `REVIEW-TEMPLATE.md` 审查 GitHub
 `liao9yuan/differential-geometry-dev` 的 `moise-integration`，固定镜像提交

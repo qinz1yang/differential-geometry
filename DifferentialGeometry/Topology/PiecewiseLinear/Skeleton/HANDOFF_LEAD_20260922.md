@@ -14,7 +14,8 @@ continuation queue, not another progress count. Do not reread historical handoff
 - Follow root/PL AGENTS, NAMING, STRUCTURE, and Skeleton/README rules 1–8. No declaration
   docstrings or inline Lean comments, no skeleton imports, no private predicate substitutes.
 - Last mathematical checkpoint: local `0473a5fec9c5c7b5deabc3b23171352f2711d4a4`, mirror
-  `7fc0ff29d79cd97a1cc577019996f9e470f68fc2`. Later documentation commits do not change these Lean sources.
+  `7fc0ff29d79cd97a1cc577019996f9e470f68fc2`. Later review-status edits change module documentation,
+  not the checked mathematical declarations.
   Check live HEAD and dirty state before editing; other lanes are concurrent.
 
 ## F: second pass explicitly dispatched by the owner
@@ -48,17 +49,26 @@ and mirror. Do not repeat unchanged audits merely to reconstruct context.
 
 ## Ready owner review prompts
 
-Each prompt fixes a verified mirror snapshot. All newly stated leaves remain UNREVIEWED and
-all proposed joint fixtures remain UNTESTED. They are outside F's current frozen queue.
+Each prompt below fixes a verified mirror snapshot. Their leaf statements remain UNREVIEWED
+and all proposed joint fixtures remain UNTESTED. They are outside F's current frozen queue.
 
 | Prompt | Subject |
 |---|---|
 | [AT](../consult/AT-section30-torus-review-request.md) | 30.6–30.7; prescribed-open-set compression control |
-| [AU](../consult/AU-orientable-extended-loop-review-request.md) | Intrinsic orientable 26.4; one cut manifold and kernel transfer |
 | [AV](../consult/AV-section28-annuli-review-request.md) | 28.6; simultaneous product coordinates are stronger than printed standard position |
 | [AW](../consult/AW-section30-separation-review-request.md) | 30.3; safe boundary of a cut ball, arbitrary disconnected targets |
 | [AX](../consult/AX-section26-three-surfaces-review-request.md) | 26.7; local three-page chart and multiple common boundary components |
 | [AY](../consult/AY-derived-neighborhood-complement-review-request.md) | Derived-neighborhood ray embedding and exact interior-complement range |
+
+AU has been answered and processed in [AZ](../consult/AZ-orientable-extended-loop-first-review-digest.md).
+The two orientable extended-loop statements are reviewed OK and frozen, with no changed
+hypotheses. Both proofs, a joint Lean fixture, and the Section 33 application bridge remain
+OPEN. Before kernel transfer, derive the same cut manifold's intrinsic boundary decomposition
+and identify its collar-end components from the second leaf's own inputs. Existing disk-prism,
+complement-boundary and component APIs are ingredients; the surface-product wrapper and full
+component classification are not yet supplied. Finite innermost-circle descent must exclude
+the zero-intersection exit by retraction to the original surface. Do not assume the two collar
+ends lie in different components of the complement. This review does not add work to F's pass.
 
 When answers arrive, create the next alphabetic consult digest and check every proposed
 counterexample against the original Lean clauses. Do not equate a broken local argument with
