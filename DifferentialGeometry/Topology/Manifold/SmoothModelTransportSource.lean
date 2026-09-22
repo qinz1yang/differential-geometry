@@ -2,6 +2,8 @@ import DifferentialGeometry.Topology.Manifold.EuclideanHalfSpaceProd
 import Mathlib.Geometry.Manifold.Immersion
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 
+section
+
 set_option autoImplicit false
 noncomputable section
 open Set Function
@@ -542,3 +544,48 @@ theorem isSmoothEmbedding_id_of_euclideanHalfSpaceProd :
         (id : EuclideanHalfSpaceProdModel → EuclideanHalfSpaceProdModel))
 
 end DifferentialGeometry.Manifold
+
+end
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Manifold
+
+def euclideanHalfSpaceProdDiffeomorph (M : Type*) [TopologicalSpace M]
+    [ChartedSpace EuclideanHalfSpaceProdModel M] :
+    letI := euclideanHalfSpaceProdChartedSpace M
+    M ≃ₘ⟮𝓡∂ 3, (𝓡 2).prod (𝓡∂ 1)⟯ M := by
+  letI := euclideanHalfSpaceProdChartedSpace M
+  exact
+    { toEquiv := Equiv.refl M
+      contMDiff_toFun :=
+        (contMDiff_chartedSpaceTransHomeomorph_source_iff ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
+          euclideanHalfSpaceProdHomeomorph euclideanHalfSpaceProdCoordinates
+          euclideanHalfSpaceProdHomeomorph_model ((𝓡 2).prod (𝓡∂ 1))).mpr contMDiff_id
+      contMDiff_invFun :=
+        (contMDiff_chartedSpaceTransHomeomorph_iff ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
+          euclideanHalfSpaceProdHomeomorph euclideanHalfSpaceProdCoordinates
+          euclideanHalfSpaceProdHomeomorph_model ((𝓡 2).prod (𝓡∂ 1))).mpr contMDiff_id }
+
+@[simp] theorem euclideanHalfSpaceProdDiffeomorph_apply (M : Type*) [TopologicalSpace M]
+    [ChartedSpace EuclideanHalfSpaceProdModel M] (x : M) :
+    letI := euclideanHalfSpaceProdChartedSpace M
+    euclideanHalfSpaceProdDiffeomorph M x = x := rfl
+
+@[simp] theorem euclideanHalfSpaceProdDiffeomorph_symm_apply (M : Type*) [TopologicalSpace M]
+    [ChartedSpace EuclideanHalfSpaceProdModel M] (x : M) :
+    letI := euclideanHalfSpaceProdChartedSpace M
+    (euclideanHalfSpaceProdDiffeomorph M).symm x = x := rfl
+
+end DifferentialGeometry.Manifold
+
+end
+
+end

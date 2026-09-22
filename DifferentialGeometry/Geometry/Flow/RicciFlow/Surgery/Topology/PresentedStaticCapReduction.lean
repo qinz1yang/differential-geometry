@@ -107,7 +107,7 @@ def ofFrontier {fixed : StaticCapScaffold} {D : ℝ} {m : ℕ} {η : ℝ}
   inclusion_metric := F.inclusion_metric
   cap_eq := F.cap_presentation
   attaching_eq := F.attaching_eq
-  retained_point := fun x => ⟨F.retained_point x, ⟨_, F.retained_presentation x⟩⟩
+  retainedPoint := fun x => ⟨F.retained_point x, ⟨_, F.retained_presentation x⟩⟩
   retained_point_eq := F.retained_point_eq
   retained_eq := F.retained_presentation
 
@@ -121,7 +121,7 @@ def toFrontier {fixed : StaticCapScaffold} {D : ℝ} {m : ℕ} {η : ℝ}
   inclusion_metric := S.inclusion_metric
   attaching_eq := S.attaching_eq
   cap_presentation := S.cap_eq
-  retained_point := fun x => (S.retained_point x).1
+  retained_point := fun x => (S.retainedPoint x).1
   retained_point_eq := S.retained_point_eq
   retained_presentation := S.retained_eq
 

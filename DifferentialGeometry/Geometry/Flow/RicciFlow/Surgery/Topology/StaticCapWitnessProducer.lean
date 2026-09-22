@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalRetainedMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionQuotient
@@ -33,18 +34,6 @@ private def sumHomeomorphCongr {X X' Y Y' : Type*}
   continuous_toFun := Continuous.sumMap e₁.continuous e₂.continuous
   continuous_invFun := Continuous.sumMap e₁.symm.continuous e₂.symm.continuous
 
-private def collarRetainedHomeomorph (δ : ℝ) :
-    neckRetainedCollar δ ≃ₜ Sphere 2 × ↥(Set.Ico (0 : ℝ) δ⁻¹) where
-  toFun := fun x => (x.1.1, ⟨x.1.2, x.2⟩)
-  invFun := fun p => ⟨(p.1, p.2.1), p.2.2⟩
-  left_inv := fun _ => Subtype.ext rfl
-  right_inv := fun _ => rfl
-  continuous_toFun := Continuous.prodMk
-    (continuous_fst.comp continuous_subtype_val)
-    (Continuous.subtype_mk (continuous_snd.comp continuous_subtype_val) _)
-  continuous_invFun := Continuous.subtype_mk
-    (Continuous.prodMk continuous_fst (continuous_subtype_val.comp continuous_snd)) _
-
 private def capOneHomeomorphThreeBall :
     {x : ThreeSpace // ‖x‖ ≤ 1} ≃ₜ ThreeBall where
   toFun := fun x => ⟨x.1, by rw [Metric.mem_closedBall, dist_eq_norm, sub_zero]; exact x.2⟩
@@ -66,7 +55,7 @@ private def staticCapGluingEquiv (δ : ℝ) :
     {x : ThreeSpace // ‖x‖ ≤ 1} ⊕ (Sphere 2 × ↥(Set.Ico (0 : ℝ) δ⁻¹)) ≃ₜ
       neckRetainedCollar δ ⊕ ThreeBall :=
   (Homeomorph.sumComm _ _).trans
-    (sumHomeomorphCongr (collarRetainedHomeomorph δ).symm capOneHomeomorphThreeBall)
+    (sumHomeomorphCongr (neckRetainedCollarHomeomorph δ).symm capOneHomeomorphThreeBall)
 
 @[simp] private theorem staticCapGluingEquiv_inl (δ : ℝ)
     (b : {x : ThreeSpace // ‖x‖ ≤ 1}) :
@@ -74,7 +63,7 @@ private def staticCapGluingEquiv (δ : ℝ) :
 
 @[simp] private theorem staticCapGluingEquiv_inr (δ : ℝ)
     (r : Sphere 2 × ↥(Set.Ico (0 : ℝ) δ⁻¹)) :
-    staticCapGluingEquiv δ (Sum.inr r) = Sum.inl ((collarRetainedHomeomorph δ).symm r) := rfl
+    staticCapGluingEquiv δ (Sum.inr r) = Sum.inl ((neckRetainedCollarHomeomorph δ).symm r) := rfl
 
 private theorem capOneHomeomorphThreeBall_radialCapBoundary (z : Sphere 2) :
     capOneHomeomorphThreeBall (radialCapBoundary (L := 1) one_pos z) =
@@ -82,9 +71,9 @@ private theorem capOneHomeomorphThreeBall_radialCapBoundary (z : Sphere 2) :
   apply Subtype.ext
   simp [capOneHomeomorphThreeBall, radialCapBoundary, sphereToThreeBall, one_smul]
 
-private theorem collarRetainedHomeomorph_symm_retainedBoundary (δ : ℝ) (hδ : 0 < δ)
+private theorem neckRetainedCollarHomeomorph_symm_retainedBoundary (δ : ℝ) (hδ : 0 < δ)
     (z : Sphere 2) :
-    (collarRetainedHomeomorph δ).symm
+    (neckRetainedCollarHomeomorph δ).symm
       (retainedBoundary (B := δ⁻¹) (inv_pos.mpr hδ) z) =
       (⟨(z, 0), le_rfl, inv_pos.mpr hδ⟩ : neckRetainedCollar δ) := by
   apply Subtype.ext
@@ -114,12 +103,12 @@ private theorem eqvGen_adjunction_iff_staticCapGluing (δ : ℝ) (hδ : 0 < δ) 
   have hinl : ∀ b : {x : ThreeSpace // ‖x‖ ≤ 1},
       e (Sum.inl b) = Sum.inr (capOneHomeomorphThreeBall b) := fun b => rfl
   have hinr : ∀ r : Sphere 2 × ↥(Set.Ico (0 : ℝ) δ⁻¹),
-      e (Sum.inr r) = Sum.inl ((collarRetainedHomeomorph δ).symm r) := fun r => rfl
+      e (Sum.inr r) = Sum.inl ((neckRetainedCollarHomeomorph δ).symm r) := fun r => rfl
   have hball : ∀ z : Sphere 2, capOneHomeomorphThreeBall (i z) = sphereToThreeBall z :=
     fun z => capOneHomeomorphThreeBall_radialCapBoundary z
-  have hret : ∀ z : Sphere 2, (collarRetainedHomeomorph δ).symm (φ z) =
+  have hret : ∀ z : Sphere 2, (neckRetainedCollarHomeomorph δ).symm (φ z) =
       (⟨(z, 0), le_rfl, hz⟩ : neckRetainedCollar δ) :=
-    fun z => collarRetainedHomeomorph_symm_retainedBoundary δ hδ z
+    fun z => neckRetainedCollarHomeomorph_symm_retainedBoundary δ hδ z
   have hrefl : ∀ z : Sphere 2, (Homeomorph.refl (Sphere 2)) z = z := fun _ => rfl
   have step_fwd : ∀ u v, adjunctionRel i φ u v → Relation.EqvGen sc (e u) (e v) := by
     rintro u v ⟨z, h | h⟩
@@ -145,15 +134,15 @@ private theorem eqvGen_adjunction_iff_staticCapGluing (δ : ℝ) (hδ : 0 < δ) 
       · rw [hinl] at h2
         exact absurd h2.symm (by simp)
       · rw [hinr] at h2
-        have hr : (collarRetainedHomeomorph δ).symm r =
+        have hr : (neckRetainedCollarHomeomorph δ).symm r =
             (⟨(z, 0), le_rfl, hz'⟩ : neckRetainedCollar δ) := Sum.inl.inj h2
         have hrz : r = φ z := by
           have h1' : r =
-              collarRetainedHomeomorph δ (⟨(z, 0), le_rfl, hz'⟩ : neckRetainedCollar δ) := by
+              neckRetainedCollarHomeomorph δ (⟨(z, 0), le_rfl, hz'⟩ : neckRetainedCollar δ) := by
             rw [← hr, Homeomorph.apply_symm_apply]
           have h2' : φ z =
-              collarRetainedHomeomorph δ (⟨(z, 0), le_rfl, hz'⟩ : neckRetainedCollar δ) := by
-            rw [← Homeomorph.apply_symm_apply (collarRetainedHomeomorph δ) (φ z), hret z]
+              neckRetainedCollarHomeomorph δ (⟨(z, 0), le_rfl, hz'⟩ : neckRetainedCollar δ) := by
+            rw [← Homeomorph.apply_symm_apply (neckRetainedCollarHomeomorph δ) (φ z), hret z]
           rw [h1', h2']
         rw [hbz, hrz]
         exact Relation.EqvGen.rel _ _ ⟨z, Or.inl ⟨rfl, rfl⟩⟩
@@ -364,5 +353,61 @@ theorem not_nonempty_presentedStaticCap_of_attaching_not_diffeomorph {H : Observ
       (γ : Sphere 2 → Sphere 2) ≠ (H.event i).transition.trace.capping.attaching b.1) :
     IsEmpty (PresentedStaticCap H i fixed D m η b) :=
   ⟨fun S => (PresentedStaticCap.exists_attaching_diffeomorph S).elim fun γ hγ => h γ hγ⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+open DifferentialGeometry.Topology.Handle
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp⟩
+private local instance quotientChartedSpace {B : ℝ} {hB : 0 < B} :
+    ChartedSpace ThreeSpace (StandardCap.InsertionQuotient hB) :=
+  radialCapAttachmentChartedSpace StandardCap.transitionEnd_pos hB
+private local instance quotientIsManifold {B : ℝ} {hB : 0 < B} :
+    IsManifold ThreeModel ∞ (StandardCap.InsertionQuotient hB) :=
+  radialCapAttachment_isManifold StandardCap.transitionEnd_pos hB
+
+@[instance_reducible] def staticCapInsertionQuotientChartedSpace {δ : ℝ} (hδ : 0 < δ) :
+    ChartedSpace ThreeSpace (StaticCapQuotient δ (Homeomorph.refl (Sphere 2))) :=
+  chartedSpaceOfHomeomorph (staticCapQuotientHomeomorphInsertionQuotient δ hδ)
+
+theorem staticCapInsertionQuotient_isManifold {δ : ℝ} (hδ : 0 < δ) :
+    letI := staticCapInsertionQuotientChartedSpace hδ
+    IsManifold ThreeModel ∞ (StaticCapQuotient δ (Homeomorph.refl (Sphere 2))) :=
+  isManifoldOfHomeomorph ThreeModel (staticCapQuotientHomeomorphInsertionQuotient δ hδ)
+
+def staticCapQuotientDiffeomorphInsertionQuotient {δ : ℝ} (hδ : 0 < δ) :
+    letI := staticCapInsertionQuotientChartedSpace hδ
+    StaticCapQuotient δ (Homeomorph.refl (Sphere 2)) ≃ₘ⟮ThreeModel, ThreeModel⟯
+      StandardCap.InsertionQuotient (inv_pos.mpr hδ) := by
+  letI := staticCapInsertionQuotientChartedSpace hδ
+  exact
+    { toEquiv := (staticCapQuotientHomeomorphInsertionQuotient δ hδ).toEquiv
+      contMDiff_toFun := contMDiff_homeomorph_of_chartedSpaceOfHomeomorph
+        (staticCapQuotientHomeomorphInsertionQuotient δ hδ) ThreeModel ∞
+      contMDiff_invFun := contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph
+        (staticCapQuotientHomeomorphInsertionQuotient δ hδ) ThreeModel ∞ }
+
+theorem staticCapQuotientDiffeomorphInsertionQuotient_retained {δ : ℝ} (hδ : 0 < δ)
+    (x : neckRetainedCollar δ) :
+    letI := staticCapInsertionQuotientChartedSpace hδ
+    staticCapQuotientDiffeomorphInsertionQuotient hδ (Quotient.mk _ (Sum.inl x)) =
+      adjunctionLower (i := radialCapBoundary StandardCap.transitionEnd_pos)
+        (retainedBoundary (inv_pos.mpr hδ)) (neckRetainedCollarHomeomorph δ x) := by
+  rfl
+
+theorem staticCapQuotientDiffeomorphInsertionQuotient_cap {δ : ℝ} (hδ : 0 < δ)
+    (x : ThreeBall) :
+    letI := staticCapInsertionQuotientChartedSpace hδ
+    staticCapQuotientDiffeomorphInsertionQuotient hδ (Quotient.mk _ (Sum.inr x)) =
+      adjunctionCell (radialCapBoundary StandardCap.transitionEnd_pos)
+        (retainedBoundary (inv_pos.mpr hδ))
+        ⟨StandardCap.transitionEnd • x.val, by
+          have hx : ‖x.val‖ ≤ 1 := by
+            simpa only [ThreeBall, Metric.mem_closedBall, dist_zero_right] using x.property
+          rw [norm_smul, Real.norm_eq_abs, abs_of_pos StandardCap.transitionEnd_pos]
+          nlinarith [StandardCap.transitionEnd_pos]⟩ := by
+  rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

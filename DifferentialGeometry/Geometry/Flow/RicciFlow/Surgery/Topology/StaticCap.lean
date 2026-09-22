@@ -180,7 +180,7 @@ private theorem standardCapWarp_eq_warpingFunction (r : ℝ) :
   simp only [standardCapWarp, DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction,
     standardCapAngle_eq]
 
-private theorem standardCapMetric_eq_metric :
+theorem standardCapMetric_eq_metric :
     standardCapMetric = DifferentialGeometry.PDE.RicciFlow.StandardCap.metric := by
   have hstd : ∀ (x v w : ThreeSpace),
       (DifferentialGeometry.PDE.RicciFlow.StandardCap.metric).inner x v w =
@@ -204,7 +204,7 @@ theorem standardCap_edist_zero (x : ThreeSpace) :
   exact DifferentialGeometry.PDE.RicciFlow.StandardCap.edist_zero x
 
 def standardCapWindow (D : ℝ) : TopologicalSpace.Opens ThreeSpace :=
-  ⟨Metric.ball 0 (D + 1), Metric.isOpen_ball⟩
+  ⟨{x | ‖x‖ < D + 1}, isOpen_lt continuous_norm continuous_const⟩
 
 def staticCapGluingRel (δ : ℝ) (ζ : Sphere 2 ≃ₜ Sphere 2)
     (x y : neckRetainedCollar δ ⊕ ThreeBall) : Prop :=

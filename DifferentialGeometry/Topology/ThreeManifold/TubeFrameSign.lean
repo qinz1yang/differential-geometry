@@ -96,4 +96,175 @@ theorem continuous_productVector (z : S2) (v : TangentSpace (𝓡 2) z) (r : ℝ
   have hc := he.comp hpair
   exact hc.congr (fun t => rfl)
 
+private theorem normalFirstModelBasis_zero (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (t : Interval) :
+    normalFirstModelBasis z b t 0 =
+      (0, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc t).symm 1) := by
+  erw [normalFirstModelBasis, Basis.map_apply, Basis.reindex_apply]
+  change LinearEquiv.prodComm ℝ (TangentSpace (𝓡∂ 1) t) (TangentSpace (𝓡 2) z)
+    (((intervalBasis t).prod b) (Sum.inl 0)) = _
+  simp [Basis.prod_apply, intervalBasis]
+  rfl
+
+private theorem normalFirstModelBasis_succ (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (t : Interval) (i : Fin 2) :
+    normalFirstModelBasis z b t i.succ = (b i, 0) := by
+  erw [normalFirstModelBasis, Basis.map_apply, Basis.reindex_apply]
+  have hidx : (finSumFinEquiv (m := 1) (n := 2)).symm i.succ = Sum.inr i := by
+    fin_cases i <;> rfl
+  rw [hidx]
+  simp [Basis.prod_apply]
+  rfl
+
+private theorem continuous_normalFirstModelBasis (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (i : Fin 3) :
+    Continuous (fun t : Interval =>
+      (⟨(z, t), normalFirstModelBasis z b t i⟩ : TangentBundle CI Tube)) := by
+  cases i using Fin.cases with
+  | zero =>
+    apply (continuous_productVector z 0 1).congr
+    intro t
+    exact congrArg (fun v : TangentSpace CI (z, t) =>
+      (⟨(z, t), v⟩ : TangentBundle CI Tube)) (normalFirstModelBasis_zero z b t).symm
+  | succ i =>
+    apply (continuous_productVector z (b i) 0).congr
+    intro t
+    apply congrArg (fun v : TangentSpace CI (z, t) =>
+      (⟨(z, t), v⟩ : TangentBundle CI Tube))
+    change (b i, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc t).symm 0) = _
+    rw [map_zero]
+    exact (normalFirstModelBasis_succ z b t i).symm
+
+theorem continuous_tubeFrame (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (i : Fin 3) :
+    Continuous (fun t : Interval =>
+      (⟨T.tube a (z, t), T.tubeFrame a z b t i⟩ : TangentBundle (𝓡 3) M.Carrier)) := by
+  have h := ((T.smooth a).contMDiff.continuous_tangentMap (by simp)).comp
+    (continuous_normalFirstModelBasis z b i)
+  exact h.congr (fun _ => rfl)
+
+
+theorem tubeFrame_orientation_eq_iff (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (t t' : Interval) :
+    (T.tubeFrame a z b t).orientation = M.orientation.orientation (T.tube a (z, t)) ↔
+      (T.tubeFrame a z b t').orientation = M.orientation.orientation (T.tube a (z, t')) := by
+  let : PreconnectedSpace Interval := isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
+  exact DifferentialGeometry.VectorBundle.frame_orientation_eq_iff
+    (tangentBundleCore (𝓡 3) M.Carrier) (by simp)
+    (fun t : Interval => T.tube a (z, t))
+    ((T.tube a).continuous.comp (continuous_const.prodMk continuous_id))
+    M.orientation.orientation
+    (DifferentialGeometry.Topology.Manifold.isCompatibleOrientation_of_manifoldOrientation M.orientation)
+    (T.tubeFrame a z b) (T.continuous_tubeFrame a z b) t t'
+
+
+def boundaryFrame (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (side : Bool) :
+    Basis (Fin 3) ℝ (TangentSpace (𝓡 3) (T.boundarySphere (a, side) z)) :=
+  if side then
+    (T.tubeFrame a z b (boundaryLevel side)).unitsSMul (Function.update 1 (0 : Fin 3) (-1))
+  else T.tubeFrame a z b (boundaryLevel side)
+
+theorem boundaryFrame_normal (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (side : Bool) :
+    T.boundaryFrame a z b side 0 =
+      mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel side)
+        (0, (if side then -1 else 1 : ℝ) •
+          (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (boundaryLevel side)).symm 1) := by
+  cases side with
+  | false =>
+    change mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel false)
+      (normalFirstModelBasis z b (boundaryLevel false) 0) = _
+    rw [normalFirstModelBasis_zero]
+    simp only [Bool.false_eq_true, if_false, one_smul]
+    rfl
+  | true =>
+    erw [boundaryFrame, if_pos rfl, Basis.unitsSMul_apply, Function.update_self, Units.neg_smul,
+      one_smul, tubeFrame_apply, normalFirstModelBasis_zero]
+    simp only [if_true, neg_smul, one_smul]
+    change -(mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel true)
+      (0, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (boundaryLevel true)).symm 1)) = _
+    erw [show ((0 : TangentSpace (𝓡 2) z),
+        -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (boundaryLevel true)).symm 1) =
+      -((0 : TangentSpace (𝓡 2) z),
+        (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (boundaryLevel true)).symm 1) from by simp]
+    exact (map_neg (mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel true))
+      (0, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (boundaryLevel true)).symm 1)).symm
+
+theorem boundaryFrame_orientation_opposite (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) :
+    (T.boundaryFrame a z b false).orientation = M.orientation.orientation (T.boundarySphere (a, false) z) ↔
+      (T.boundaryFrame a z b true).orientation ≠ M.orientation.orientation (T.boundarySphere (a, true) z) := by
+  have htransport := T.tubeFrame_orientation_eq_iff a z b (boundaryLevel false) (boundaryLevel true)
+  have hneg : (T.boundaryFrame a z b true).orientation =
+      -(T.tubeFrame a z b (boundaryLevel true)).orientation :=
+    Basis.orientation_neg_single _ 0
+  change (T.tubeFrame a z b (boundaryLevel false)).orientation =
+    M.orientation.orientation (T.tube a (z, boundaryLevel false)) ↔ _
+  rw [hneg]
+  constructor
+  · intro hfalse htrue
+    have h := htransport.mp hfalse
+    have htrue' : -(T.tubeFrame a z b (boundaryLevel true)).orientation =
+        M.orientation.orientation (T.tube a (z, boundaryLevel true)) := htrue
+    have hbad : -(M.orientation.orientation (T.tube a (z, boundaryLevel true))) =
+        M.orientation.orientation (T.tube a (z, boundaryLevel true)) :=
+      (congrArg Neg.neg h).symm.trans htrue'
+    exact Module.Ray.ne_neg_self _ hbad.symm
+  · intro htrue
+    apply htransport.mpr
+    let : FiniteDimensional ℝ (TangentSpace (𝓡 3) (T.tube a (z, boundaryLevel true))) :=
+      inferInstanceAs (FiniteDimensional ℝ E3)
+    rcases Orientation.eq_or_eq_neg
+      (T.tubeFrame a z b (boundaryLevel true)).orientation
+      (M.orientation.orientation (T.tube a (z, boundaryLevel true)))
+      (by change Fintype.card (Fin 3) = Module.finrank ℝ E3; simp) with h | h
+    · exact h
+    · apply False.elim
+      apply htrue
+      change -(T.tubeFrame a z b (boundaryLevel true)).orientation =
+        M.orientation.orientation (T.tube a (z, boundaryLevel true))
+      rw [h, neg_neg]
+
+
+
+theorem boundaryFrame_zero (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (side : Bool) :
+    T.boundaryFrame a z b side 0 = T.outwardVector (a, side) z := by
+  rw [T.boundaryFrame_normal]
+  have ht : (boundaryLevel side).val < 2 := by cases side <;> norm_num [boundaryLevel]
+  rw [DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc_symm_apply_of_lt _ ht]
+  cases side <;> simp only [outwardVector, Bool.false_eq_true, if_false, if_true, one_smul, neg_smul]
+  · exact congrArg (mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel false))
+      (Prod.ext rfl (one_smul ℝ (EuclideanSpace.single 0 (1 : ℝ))))
+  · exact congrArg (mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel true))
+      (Prod.ext rfl (neg_one_smul ℝ (EuclideanSpace.single 0 (1 : ℝ))))
+
+
+theorem boundaryFrame_succ (a : T.Index) (z : S2)
+    (b : Basis (Fin 2) ℝ (TangentSpace (𝓡 2) z)) (side : Bool) (i : Fin 2) :
+    T.boundaryFrame a z b side i.succ =
+      mfderiv (𝓡 2) (𝓡 3) (T.boundarySphere (a, side)) z (b i) := by
+  have hchain : mfderiv (𝓡 2) (𝓡 3) (T.boundarySphere (a, side)) z (b i) =
+      mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel side) (b i, 0) := by
+    change mfderiv (𝓡 2) (𝓡 3)
+      ((T.tube a) ∘ fun y : S2 => (y, boundaryLevel side)) z (b i) = _
+    erw [mfderiv_comp_apply z ((T.smooth a).contMDiff.mdifferentiableAt (by simp))
+      ((contMDiff_id.prodMk contMDiff_const :
+        ContMDiff (𝓡 2) CI ∞ (fun y : S2 => (y, boundaryLevel side))).mdifferentiableAt (by simp)),
+      mfderiv_prod_left]
+    rfl
+  rw [hchain]
+  cases side with
+  | false =>
+    change mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel false)
+      (normalFirstModelBasis z b (boundaryLevel false) i.succ) = _
+    rw [normalFirstModelBasis_succ]
+    rfl
+  | true =>
+    erw [boundaryFrame, if_pos rfl, Basis.unitsSMul_apply,
+      Function.update_of_ne (Fin.succ_ne_zero i), Pi.one_apply, one_smul,
+      tubeFrame_apply, normalFirstModelBasis_succ]
+    rfl
+
 end DifferentialGeometry.Topology.SphericalTubeSystem

@@ -377,15 +377,15 @@ theorem localCollapse_level_zero_eq_childCoreInclusion
       (G.static b.1).inclusion ((G.static b.1).witness.retained zz) := by
     rw [K.localCollapse_eq b p, hcollapse]
   have hpres : (H.event i).transition.trace.presentation
-      ((H.event i).transition.trace.capping.coreInclusion ((G.static b.1).retained_point zz).1)
+      ((H.event i).transition.trace.capping.coreInclusion ((G.static b.1).retainedPoint zz).1)
       = Sum.inl ((K.localCollapse b p).1) := by
     rw [hlc]
     exact (G.static b.1).retained_eq zz
-  have hpt : ((G.static b.1).retained_point zz).1.1 = (K.collar b x0).1 := by
+  have hpt : ((G.static b.1).retainedPoint zz).1.1 = (K.collar b x0).1 := by
     rw [(G.static b.1).retained_point_eq zz p.1.2, K.collar_eq b x0]
   have hy1 : y'.1.1 = (K.collar b x0).1 :=
     congrArg (fun z : (G.Parent c).Carrier => (z.1 : (H.stage i.castSucc).Carrier)) hy'
-  have hcore : ((G.static b.1).retained_point zz).1 = y'.1 :=
+  have hcore : ((G.static b.1).retainedPoint zz).1 = y'.1 :=
     Subtype.ext (hpt.trans hy1.symm)
   have hpres' : (H.event i).transition.trace.presentation
       ((H.event i).transition.trace.capping.coreInclusion y'.1)

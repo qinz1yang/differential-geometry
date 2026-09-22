@@ -139,33 +139,43 @@ abbrev RetainedBoundaryIndex := {b : E.transition.trace.tubes.Boundary // E.Reta
 
 end MetricCutCapEvent
 
+namespace MetricCutCapEvent
+
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
+
 structure PresentedStaticCap (fixed : StaticCapScaffold) (D : ℝ) (m : ℕ) (η : ℝ)
-    (b : (H.event i).RetainedBoundaryIndex) where
+    (b : E.RetainedBoundaryIndex) where
   delta : ℝ
   order : ℕ
-  neck : NormalizedNeck (H.event i).terminal.metric delta order
+  neck : NormalizedNeck E.terminal.metric delta order
   witness : StaticCapWitness neck fixed D m η
-  inclusion : C(witness.Output, (H.stage i.succ).Carrier)
+  inclusion : C(witness.Output, Q.Carrier)
   inclusion_smooth : IsSmoothEmbedding ThreeModel ThreeModel ∞ inclusion
   inclusion_metric : ∀ x V W, witness.metric.inner x V W =
-    (H.event i).outputMetric.inner (inclusion x)
+    E.outputMetric.inner (inclusion x)
       (mfderiv ThreeModel ThreeModel inclusion x V)
       (mfderiv ThreeModel ThreeModel inclusion x W)
   cap_eq : ∀ x : ThreeBall,
-    (H.event i).transition.trace.presentation
-      ((H.event i).transition.trace.capping.cap b.1 x) = Sum.inl (inclusion (witness.cap x))
+    E.transition.trace.presentation
+      (E.transition.trace.capping.cap b.1 x) = Sum.inl (inclusion (witness.cap x))
   attaching_eq : (witness.attaching : Sphere 2 → Sphere 2) =
-    (H.event i).transition.trace.capping.attaching b.1
-  retained_point : (x : neckRetainedCollar delta) →
-    {p : (H.event i).transition.trace.tubes.core //
-      p ∈ (H.event i).transition.trace.retainedCore}
+    E.transition.trace.capping.attaching b.1
+  retainedPoint : (x : neckRetainedCollar delta) →
+    {p : E.transition.trace.tubes.core //
+      p ∈ E.transition.trace.retainedCore}
   retained_point_eq : ∀ x : neckRetainedCollar delta,
     ∀ hx : x.1 ∈ neckBuffer delta,
-      (retained_point x).1.1 = (neck.chart ⟨x.1, hx⟩).1
+      (retainedPoint x).1.1 = (neck.chart ⟨x.1, hx⟩).1
   retained_eq : ∀ x,
-    (H.event i).transition.trace.presentation
-      ((H.event i).transition.trace.capping.coreInclusion (retained_point x).1) =
+    E.transition.trace.presentation
+      (E.transition.trace.capping.coreInclusion (retainedPoint x).1) =
         Sum.inl (inclusion (witness.retained x))
+
+end MetricCutCapEvent
+
+abbrev PresentedStaticCap (fixed : StaticCapScaffold) (D : ℝ) (m : ℕ) (η : ℝ)
+    (b : (H.event i).RetainedBoundaryIndex) :=
+  MetricCutCapEvent.PresentedStaticCap (H.event i) fixed D m η b
 
 structure CutoffParameters where
   delta : ℝ → ℝ

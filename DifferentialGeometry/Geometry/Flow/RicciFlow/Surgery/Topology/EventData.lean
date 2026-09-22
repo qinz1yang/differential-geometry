@@ -35,6 +35,9 @@ def standardCapA0 : ℝ := Real.pi / Real.sqrt 2 - 1 / 2
 
 def standardCapL : ℝ := standardCapA0 + 1
 
+theorem standardCapL_eq_transitionEnd :
+    standardCapL = DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd := rfl
+
 
 def standardCapAngle (r : ℝ) : ℝ :=
   (Real.sqrt 2)⁻¹ * ∫ u in (0 : ℝ)..r, standardCapEta (u - standardCapA0)
@@ -113,31 +116,47 @@ theorem standardCapMetric_inner (x v w : ThreeSpace) :
 def standardCapConformalCoordinate (r : Ioi (0 : ℝ)) : ℝ :=
   ∫ u in standardCapL..r.1, Real.sqrt 2 / standardCapWarp u
 
+theorem standardCapConformalCoordinate_eq_conformalCoordinate (r : Ioi (0 : ℝ)) :
+    standardCapConformalCoordinate r =
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate r.1 := by
+  simp only [standardCapConformalCoordinate,
+    DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate, standardCapL,
+    standardCapA0, DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd,
+    DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionStart, div_eq_mul_inv]
+  simp only [standardCapWarp_eq_warpingFunction]
+  rw [intervalIntegral.integral_const_mul]
+
 theorem standardCapConformalCoordinate_bijective :
     Function.Bijective standardCapConformalCoordinate := by
-  have hfun : ∀ r : Ioi (0 : ℝ), standardCapConformalCoordinate r =
-      DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate r.1 := by
-    intro r
-    simp only [standardCapConformalCoordinate,
-      DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate, standardCapL,
-      standardCapA0, DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd,
-      DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionStart, div_eq_mul_inv]
-    simp only [standardCapWarp_eq_warpingFunction]
-    rw [intervalIntegral.integral_const_mul]
   constructor
   · intro a b hab
     apply Subtype.ext
-    rw [hfun a, hfun b] at hab
+    rw [standardCapConformalCoordinate_eq_conformalCoordinate a,
+      standardCapConformalCoordinate_eq_conformalCoordinate b] at hab
     exact DifferentialGeometry.PDE.RicciFlow.StandardCap.strictMonoOn_conformalCoordinate.injOn
       a.2 b.2 hab
   · intro y
     refine ⟨⟨DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalRadius y,
       DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalRadius_pos y⟩, ?_⟩
-    rw [hfun, DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate_conformalRadius]
+    rw [standardCapConformalCoordinate_eq_conformalCoordinate,
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate_conformalRadius]
 
 
 def standardCapRadiusOfZ (z : ℝ) : ℝ :=
   (Function.invFun standardCapConformalCoordinate z).1
+
+theorem standardCapRadiusOfZ_eq_conformalRadius (z : ℝ) :
+    standardCapRadiusOfZ z = DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalRadius z := by
+  let r : Ioi (0 : ℝ) :=
+    ⟨DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalRadius z,
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalRadius_pos z⟩
+  have hr : standardCapConformalCoordinate r = z := by
+    rw [standardCapConformalCoordinate_eq_conformalCoordinate]
+    exact DifferentialGeometry.PDE.RicciFlow.StandardCap.conformalCoordinate_conformalRadius z
+  have he : Function.invFun standardCapConformalCoordinate z = r := by
+    apply standardCapConformalCoordinate_bijective.injective
+    rw [Function.rightInverse_invFun standardCapConformalCoordinate_bijective.surjective, hr]
+  exact congrArg Subtype.val he
 
 structure OrientedThreeStage where
   Carrier : Type u

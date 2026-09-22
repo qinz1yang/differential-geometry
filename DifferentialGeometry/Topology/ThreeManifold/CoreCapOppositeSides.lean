@@ -139,8 +139,9 @@ def SphericalTubeSystem.outwardNormalFirstIsStandardSphereOrientation
       change Fintype.card (Fin 3) = Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))
       simp)).det
       (Fin.cons (T.outwardVector b z) (Fin.cons (d v) (Fin.cons (d w) ![])))) ↔
-      (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
+      (if b.2 then (1 : ℝ) else -1) *
+        (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
+          (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
 
 theorem image_inter_disjoint_of_core_cap_intersection_witness :
     (id : ℝ → ℝ) '' {z : ℝ | z ≠ 0} ∩ Set.range (fun _ : ℝ => (0 : ℝ)) = ∅ :=

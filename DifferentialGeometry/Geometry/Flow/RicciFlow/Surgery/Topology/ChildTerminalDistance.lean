@@ -31,7 +31,7 @@ private theorem rfs_whole_parent_map_staticNeckPoint_of_nonneg (b : G.ChildBound
   apply Subtype.ext
   rw [K.localCollapse_eq b z, (G.static b.1).witness.collapse_retained z hz]
   let w : neckRetainedCollar (G.static b.1).delta := ⟨z.1.1, hz, z.2.2⟩
-  have hpoint : ((G.static b.1).retained_point w).1 = x.1 := by
+  have hpoint : ((G.static b.1).retainedPoint w).1 = x.1 := by
     apply Subtype.ext
     rw [(G.static b.1).retained_point_eq w z.1.2]
     exact congrArg Subtype.val hx.symm

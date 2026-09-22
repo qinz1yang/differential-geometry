@@ -5,6 +5,8 @@ import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapSmoothManifold
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapSeparation
 
+section
+
 set_option autoImplicit false
 
 noncomputable section
@@ -173,3 +175,47 @@ theorem nonempty_orientedThreeStage : Nonempty OrientedThreeStage.{0} :=
   ⟨OrientedThreeStage.ofSmoothOrientation (Sphere 3) sphereThreeSmoothOrientation⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+end
+
+section
+
+open Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private theorem manifoldOrientation_cast_orientation
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold ThreeModel ∞ M] {n m : ℕ} (h : n = m)
+    (O : DifferentialGeometry.ManifoldOrientation ThreeModel M n) (x : M) :
+    (cast (congrArg (fun k => DifferentialGeometry.ManifoldOrientation ThreeModel M k) h)
+      O).orientation x =
+      Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr h) (O.orientation x) := by
+  subst m
+  simp
+
+@[simp]
+theorem TangentOrientationSection.ofSmoothOrientation_apply
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold ThreeModel ∞ M]
+    (o : DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel M) (x : M) :
+    (TangentOrientationSection.ofSmoothOrientation o).orientation x =
+      Orientation.reindex ℝ (TangentSpace ThreeModel x)
+        (finCongr finrank_threeSpace_eq_three) (o.val x) := by
+  unfold TangentOrientationSection.ofSmoothOrientation
+  rw [TangentOrientationSection.ofManifoldOrientation_apply, manifoldOrientation_cast_orientation]
+  exact congrArg
+    (Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three))
+    (congrFun (Classical.choose_spec
+      (DifferentialGeometry.Topology.Manifold.exists_manifoldOrientation_eq_of_smoothOrientation
+        ThreeModel o)) x)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+end

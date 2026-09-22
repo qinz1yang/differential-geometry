@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BallDiffeomorph
 
+section
+
 set_option autoImplicit false
 noncomputable section
 open Bundle Manifold Set Topology
@@ -224,8 +226,9 @@ def boundaryFrameReversing (X : SmoothCutCapTransition P Q D N) : Prop :=
       simp)).det
       (Fin.cons ((SphericalTubeSystem.ofSmoothCutCapTransition X).outwardVector b
           (X.attaching b z)) (Fin.cons (d v) (Fin.cons (d w) ![])))) ↔
-      (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
+      (if b.2 then (1 : ℝ) else -1) *
+        (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
+          (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
 
 noncomputable def toSphericalCapping (X : SmoothCutCapTransition P Q D N)
     (hboundary : X.boundaryFrameReversing) :
@@ -261,3 +264,69 @@ noncomputable def toSmoothCutCapCompletion (X : SmoothCutCapTransition P Q D N)
 end SmoothCutCapTransition
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+open Set Function Manifold Bundle
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
+
+variable {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
+
+theorem SmoothCutCapTransition.outwardVector_eq (b : X.trace.tubes.Boundary)
+    (z : Sphere 2) :
+    (SphericalTubeSystem.ofSmoothCutCapTransition X).outwardVector b z =
+      mfderiv ((𝓡 2).prod (𝓡∂ 1)) (𝓡 3) (X.trace.tubes.tube b.1)
+        (z, TubeSystem.boundaryLevel b.2)
+        (0, (if b.2 then (-1 : ℝ) else 1) • EuclideanSpace.single 0 (1 : ℝ)) := by
+  rcases b with ⟨i, side⟩
+  cases side <;> simp only [DifferentialGeometry.Topology.SphericalTubeSystem.outwardVector,
+    Bool.false_eq_true, if_false, if_true, one_smul, neg_smul]
+  all_goals rfl
+
+theorem SmoothCutCapTransition.boundaryFrameReversing_iff_tubeFrame :
+    X.boundaryFrameReversing ↔
+      ∀ (b : X.trace.tubes.Boundary) (z : Sphere 2) (v w : TangentSpace (𝓡 2) z),
+        let β := X.trace.tubes.boundarySphere b ∘ X.attaching b
+        0 < ((P.orientation.orientation (β z)).someBasis (by
+          change Fintype.card (Fin 3) = Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))
+          simp)).det
+          ![mfderiv ((𝓡 2).prod (𝓡∂ 1)) (𝓡 3) (X.trace.tubes.tube b.1)
+              (X.attaching b z, TubeSystem.boundaryLevel b.2)
+              (0, (if b.2 then (-1 : ℝ) else 1) • EuclideanSpace.single 0 (1 : ℝ)),
+            mfderiv (𝓡 2) (𝓡 3) β z v, mfderiv (𝓡 2) (𝓡 3) β z w] ↔
+          (if b.2 then (1 : ℝ) else -1) * (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
+            ![z.val, mfderiv (𝓡 2) (𝓡 3) (Subtype.val : Sphere 2 → EuclideanSpace ℝ (Fin 3)) z v,
+              mfderiv (𝓡 2) (𝓡 3) (Subtype.val : Sphere 2 → EuclideanSpace ℝ (Fin 3)) z w] < 0 := by
+  have heq (b : X.trace.tubes.Boundary) :
+      (SphericalTubeSystem.ofSmoothCutCapTransition X).boundarySphere b =
+        X.trace.tubes.boundarySphere b := rfl
+  constructor
+  · intro h b z v w
+    have hh := h b z v w
+    dsimp only at hh ⊢
+    erw [X.outwardVector_eq, heq] at hh
+    exact hh
+  · intro h b z v w
+    have hh := h b z v w
+    dsimp only at hh ⊢
+    erw [X.outwardVector_eq, heq]
+    exact hh
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+end

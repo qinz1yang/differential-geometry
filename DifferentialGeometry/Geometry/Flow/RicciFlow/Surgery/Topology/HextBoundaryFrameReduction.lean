@@ -44,9 +44,11 @@ def SmoothCutCapTransition.attachingFrameReversing (X : SmoothCutCapTransition P
     let e := mfderiv (𝓡 2) (𝓡 3)
       (Subtype.val : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 →
         EuclideanSpace ℝ (Fin 3)) (X.attaching b z)
-    (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons (X.attaching b z).1 (Fin.cons (e (A v)) (Fin.cons (e (A w)) ![]))) < 0 ↔
+    (if b.2 then (1 : ℝ) else -1) *
       (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
+        (Fin.cons (X.attaching b z).1 (Fin.cons (e (A v)) (Fin.cons (e (A w)) ![]))) < 0 ↔
+      (if b.2 then (1 : ℝ) else -1) *
+        (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
         (Fin.cons z.1 (Fin.cons
           ((mfderiv (𝓡 2) (𝓡 3)
             (Subtype.val : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 →

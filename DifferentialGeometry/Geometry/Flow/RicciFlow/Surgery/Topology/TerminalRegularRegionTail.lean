@@ -33,8 +33,9 @@ def boundaryFrameReversingData (P : OrientedThreeStage.{u})
       simp)).det
       (Fin.cons (T.outwardVector b (attaching b z))
           (Fin.cons (d v) (Fin.cons (d w) ![])))) ↔
-      (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
+      (if b.2 then (1 : ℝ) else -1) *
+        (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
+          (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
 
 namespace OrientedThreeStage
 
