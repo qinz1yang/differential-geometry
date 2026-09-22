@@ -50,7 +50,7 @@ end DifferentialGeometry.Analysis
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory Set
+open Filter _root_.MeasureTheory Set
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.PDE.RicciFlow.Entropy
 open DifferentialGeometry.Geometry.Connection

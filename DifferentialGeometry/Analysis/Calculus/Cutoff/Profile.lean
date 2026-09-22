@@ -1,4 +1,6 @@
 import Mathlib.Topology.Algebra.Support
+import DifferentialGeometry.Topology.MetricSpace.Lipschitz
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
@@ -322,6 +324,19 @@ theorem derivBound_nonneg : 0 ≤ derivBound :=
 theorem abs_deriv_le_derivBound (s : ℝ) :
     |deriv value s| ≤ derivBound :=
   (Classical.choose_spec exists_deriv_bounds).2.1 s
+
+open scoped NNReal in
+theorem lipschitzWith : LipschitzWith ⟨derivBound, derivBound_nonneg⟩ value := by
+  apply lipschitzWith_of_nnnorm_deriv_le (contDiff.differentiable (by simp))
+  intro s
+  change ‖deriv value s‖ ≤ derivBound
+  simpa only [Real.norm_eq_abs] using abs_deriv_le_derivBound s
+
+open scoped ENNReal NNReal in
+theorem lipschitzWith_edist {X : Type*} [PseudoEMetricSpace X] (a : ℝ≥0) (o : X) :
+    LipschitzWith (⟨derivBound, derivBound_nonneg⟩ * a)
+      (fun x => evalue ((a : ℝ≥0∞) * edist o x)) :=
+  lipschitzWith.comp (lipschitzWith_truncateToReal_edist a 2 (by norm_num) o)
 
 theorem abs_deriv2_le_derivBound (s : ℝ) :
     |deriv (deriv value) s| ≤ derivBound :=

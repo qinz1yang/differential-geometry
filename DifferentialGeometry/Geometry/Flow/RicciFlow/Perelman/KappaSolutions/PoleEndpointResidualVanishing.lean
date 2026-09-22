@@ -15,8 +15,8 @@ noncomputable section
 
 namespace DifferentialGeometry.Geometry.Riemannian
 
-open Set Function Manifold
-open scoped Manifold ContDiff _root_.Topology
+open Set Function _root_.Manifold
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
@@ -148,7 +148,7 @@ namespace DifferentialGeometry.Geometry.Operator
 open MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Riemannian
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -182,7 +182,7 @@ end DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory Set
+open Filter _root_.MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
@@ -190,7 +190,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

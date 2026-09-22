@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientScalarMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalMinimizer
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
@@ -117,6 +118,32 @@ private local instance smooth : IsManifold I ∞ F.M := F.smooth
 private local instance t2 : T2Space F.M := F.t2
 private local instance sigma : SigmaCompactSpace F.M := F.sigmaCompact
 
+theorem abs_sqrt_redLength_sub_le_rescaled_distance
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p x y : F.M) {tau : ℝ} (htau : 0 < tau) :
+    |Real.sqrt (redLength F.S 0 p x tau) - Real.sqrt (redLength F.S 0 p y tau)| ≤
+      Real.sqrt 3 / 2 * (riemannianEDistOf
+        (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) x y).toReal := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : T2Space (TangentBundle I F.M) := F.t2TangentBundle
+  let _ : NeZero (Module.finrank ℝ E) := by
+    obtain ⟨t, _ht, z, hz⟩ := hF.notFlat
+    exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
+      (F.S.base.metric t) z (by norm_num : 0 < 4) _ hz⟩
+  have hroot (a b : F.M) := sqrt_redLength_sub_le_distance_of_continuous_and_minimizers
+    F hF p a b htau (continuous_redLength_of_ancient F hF p htau)
+    (fun z => exists_lRegularized_minimizer_of_ancient F hF p z htau)
+  have hxy := hroot x y
+  have hyx := hroot y x
+  rw [riemannianEDistOf_comm] at hyx
+  rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _), Real.sqrt_inv]
+  have heq : Real.sqrt 3 / 2 * ((Real.sqrt tau)⁻¹ *
+      (riemannianEDistOf (F.S.base.metric (-tau)) x y).toReal) =
+      Real.sqrt 3 / (2 * Real.sqrt tau) *
+        (riemannianEDistOf (F.S.base.metric (-tau)) x y).toReal := by ring
+  rw [heq]
+  exact abs_le.mpr ⟨by linarith, by linarith⟩
+
 theorem redLength_le_of_rescaled_distance_le
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
@@ -159,5 +186,75 @@ theorem redLength_le_of_rescaled_distance_le
   have hsq := (sq_le_sq₀ (Real.sqrt_nonneg (redLength F.S 0 p x tau))
     (by positivity : 0 ≤ Real.sqrt A + Real.sqrt 3 / 2 * D)).2 hbound
   rwa [Real.sq_sqrt hnonneg] at hsq
+
+theorem scalar_le_on_past_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D s : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) (hs : s ≤ -tau) :
+    tau * F.S.scalar s x ≤ 3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2 := by
+  have hterminal := (le_div_iff₀ htau).mp
+    (scalar_le_three_mul_redLength_div_of_ancient F hF p x htau)
+  have hlength := redLength_le_of_rescaled_distance_le F hF p q x htau hD hbase hdist
+  have hmon := ancientKappa_scalar_monotoneOn F hF x
+    (hs.trans (neg_nonpos.mpr htau.le)) (neg_nonpos.mpr htau.le) hs
+  nlinarith
+
+theorem rmNorm_le_on_past_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D s : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) (hs : s ≤ -tau) :
+    let g := scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric s)
+    Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4 (metricRm04At (I := I) g x)) ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 *
+        (3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let g := scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric s)
+  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4 (metricRm04At (I := I) g x)) ≤ _
+  have hop : metricAlgebraicCurvatureTensorAt (I := I) g x ∈
+      algebraicCurvatureOperatorNonnegativeCone (I := I) (M := F.M) := by
+    dsimp only [g]
+    rw [metricAlgebraicCurvatureTensorAt_scaleMetric]
+    apply algebraicCurvatureOperatorNonnegativeCone.smul_mem ?_ (inv_pos.mpr htau).le
+    apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
+      (I := I) (F.S.base.metric s) x).mpr
+    intro n c v w
+    simpa only [SolutionFamily.rm04, metricRm04StandardAt_apply, metricRm04_apply] using
+      hF.nonnegativeCurvatureOperator s (hs.trans (neg_nonpos.mpr htau.le)) x n c v w
+  have hscalar : metricScalarAt (I := I) g x ≤
+      3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2 := by
+    dsimp only [g]
+    rw [metricScalarAt_scaleMetric, inv_inv]
+    exact scalar_le_on_past_of_rescaled_distance_le F hF p q x htau hD hbase hdist hs
+  exact (sqrt_metricRm_normSq_le_finrank_sq_mul_scalar g x hop).trans
+    (mul_le_mul_of_nonneg_left hscalar (sq_nonneg _))
+
+theorem scalar_le_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) :
+    tau * F.S.scalar (-tau) x ≤ 3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2 := by
+  exact scalar_le_on_past_of_rescaled_distance_le F hF p q x htau hD hbase hdist le_rfl
+
+theorem rmNorm_le_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) :
+    let g := scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))
+    Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4 (metricRm04At (I := I) g x)) ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 *
+        (3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2) := by
+  exact rmNorm_le_on_past_of_rescaled_distance_le F hF p q x htau hD hbase hdist le_rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

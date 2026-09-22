@@ -1,5 +1,6 @@
+import DifferentialGeometry.Topology.Manifold.ContMDiff.Interior
 import DifferentialGeometry.Topology.Morse.InteriorRestriction
-import DifferentialGeometry.Topology.Manifold.MFDeriv.ModelTransport
+import DifferentialGeometry.Topology.Morse.CriticalPoint
 import DifferentialGeometry.Topology.Morse.HessianNaturality
 import Mathlib.LinearAlgebra.QuadraticForm.Signature
 
@@ -14,22 +15,6 @@ variable {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
   (e : E ≃L[ℝ] F)
-
-
-theorem isCriticalPointAt_transContinuousLinearEquiv_iff {f : M → ℝ}
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {x : M} (hx : I.IsInteriorPoint x) :
-    IsCriticalPointAt (I.transContinuousLinearEquiv e) f x ↔ IsCriticalPointAt I f x := by
-  change (show F →L[ℝ] ℝ from mfderiv (I.transContinuousLinearEquiv e) 𝓘(ℝ, ℝ) f x) = 0 ↔
-    (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) f x) = 0
-  erw [DifferentialGeometry.Manifold.mfderiv_transContinuousLinearEquiv I e hf hx]
-  constructor
-  · intro h
-    apply ContinuousLinearMap.ext
-    intro v
-    obtain ⟨w,rfl⟩ := e.symm.surjective v
-    exact DFunLike.congr_fun h w
-  · intro h
-    rw [h, ContinuousLinearMap.zero_comp]
 
 
 theorem chartHessianAt_transContinuousLinearEquiv {f : M → ℝ}
@@ -81,7 +66,7 @@ theorem isNondegenerateCriticalPointAt_transContinuousLinearEquiv_iff {f : M →
     IsNondegenerateCriticalPointAt (I.transContinuousLinearEquiv e) f x ↔
       IsNondegenerateCriticalPointAt I f x := by
   unfold IsNondegenerateCriticalPointAt
-  rw [isCriticalPointAt_transContinuousLinearEquiv_iff I e hf hx]
+  rw [isCriticalPointAt_transContinuousLinearEquiv_iff I e f x]
   by_cases hc : IsCriticalPointAt I f x
   · simp only [hc, true_and]
     rw [chartHessianAt_transContinuousLinearEquiv I e hf hx hc, QuadraticMap.associated_comp]

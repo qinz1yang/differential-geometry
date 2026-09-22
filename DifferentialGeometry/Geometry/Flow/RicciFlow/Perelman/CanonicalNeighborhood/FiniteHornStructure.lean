@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedBoundedCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedTerminalDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndGeometryDepth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
@@ -14,14 +17,14 @@ import Mathlib.Topology.MetricSpace.Completion
 
 set_option autoImplicit false
 noncomputable section
-open scoped Topology
+open scoped Topology _root_.Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 universe u
 
@@ -120,7 +123,7 @@ theorem finite_horn_direction_compactness {g : SmoothRiemannianMetric I3 W}
       ∃ a b : EndRay H.endpoint, 0 < angles.angle a b := by
   have htb : TotallyBounded (Set.univ : Set angles.quotient) :=
     totallyBounded_quotient_of_scaleDirectionNet H angles hnet
-  exact ⟨htb, compactSpace_completion_of_totallyBounded htb,
+  exact ⟨htb, Metric.compactSpace_completion_of_totallyBounded htb,
     exists_pos_angle_of_separatedEndRays H angles (separatedEndRays_of_scaleSeparated H angles hsep)⟩
 
 
@@ -962,7 +965,7 @@ theorem finite_horn_barriers_of_hornRadialExitPositionAtEndChart
 
 section
 
-open Filter Manifold Set DifferentialGeometry.Toponogov
+open Filter _root_.Manifold Set DifferentialGeometry.Toponogov
 
 omit [SigmaCompactSpace W] in
 theorem eventually_endChart_tip_side_subset_subend {g : SmoothRiemannianMetric I3 W}
@@ -1361,19 +1364,6 @@ structure ConeFlowLimit (X : FlowSequence.{u}) where
         (rescaledMetric (X.term (subseq i)).S 0 (scale i) (scale_pos i))
         (map i) K (Set.Icc (-delta) 0) m eps)
 
-structure FiniteControlledRadius {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) where
-  radius : ℝ
-  radius_pos : 0 < radius
-  inner_bound : ∀ r : ℝ, 0 < r → r < radius → ∃ C : ℝ, ∀ i y,
-    metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r →
-      (X.term i).S.scalar 0 y ≤ C
-  points : ∀ i, (X.term i).M
-  distance_limit : Filter.Tendsto (fun i => metricDistance
-    ((X.term i).S.base.metric 0) (X.term i).basepoint (points i)) Filter.atTop (nhds radius)
-  curvature_limit : Filter.Tendsto (fun i => (X.term i).S.scalar 0 (points i))
-    Filter.atTop Filter.atTop
-
 theorem cone_terminal_exclusion {delta : ℝ} (hd : 0 < delta)
     (P : PointedFlowData.{u, 0, 0} I3 (RealTimeInterval.closed (-delta) 0 (by linarith)))
     (U : Set P.M) (_hU : IsOpen U) (cone : ConeChart (P.S.base.metric 0) U)
@@ -1738,6 +1728,11 @@ theorem bounded_curvature_at_distance {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
         BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
-  sorry
+  obtain ⟨epsBound, hepsBound, hbound⟩ := exists_boundedAtDistance.{u} hkappa
+  obtain ⟨epsDeriv, hepsDeriv, hderiv⟩ := exists_terminalDerivativeBounds_of_boundedAtDistance.{u} hkappa
+  refine ⟨min epsBound epsDeriv, lt_min hepsBound hepsDeriv, ?_⟩
+  intro eps heps hle X
+  have hb := hbound eps heps (hle.trans (min_le_left _ _)) sigma hsigma Phi hPhi X
+  exact ⟨hb, hderiv eps heps (hle.trans (min_le_right _ _)) sigma hsigma Phi hPhi X hb⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

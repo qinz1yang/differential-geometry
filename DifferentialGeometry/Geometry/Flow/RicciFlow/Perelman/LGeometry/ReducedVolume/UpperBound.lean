@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.ModelChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeBounds
 
+set_option autoImplicit false
 
 noncomputable section
 
@@ -10,7 +11,7 @@ open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

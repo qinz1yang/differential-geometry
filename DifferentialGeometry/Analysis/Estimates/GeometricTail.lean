@@ -8,18 +8,6 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open scoped BigOperators
 
-theorem sepTail_le_half_pow (s l : ℕ) :
-    sepTail s l ≤ (1 / 2 : ℝ) ^ s := by
-  calc
-    sepTail s l = (1 / 2 : ℝ) ^ (s + 1) *
-        ∑ i ∈ Finset.range l, (1 / 2 : ℝ) ^ i := by
-      rw [Finset.mul_sum]
-      exact Finset.sum_congr rfl fun i _ => by
-        rw [show s + i + 1 = s + 1 + i by omega, pow_add]
-    _ ≤ (1 / 2 : ℝ) ^ (s + 1) * 2 :=
-      mul_le_mul_of_nonneg_left (sum_geometric_two_le l) (by positivity)
-    _ = (1 / 2 : ℝ) ^ s := by rw [pow_succ]; ring
-
 theorem exists_half_pow_le_three_quarter_pow (β : ℝ) (hβ : 0 < β) :
     ∃ N : ℕ, ∀ s : ℕ, N ≤ s →
       β * (1 / 2 : ℝ) ^ s ≤ (3 / 4 : ℝ) ^ s / 16 := by

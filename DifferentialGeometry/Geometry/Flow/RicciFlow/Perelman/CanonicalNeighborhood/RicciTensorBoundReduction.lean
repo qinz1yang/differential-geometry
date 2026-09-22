@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u uE uH
 
@@ -230,7 +230,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Geometry.Curvature
 open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 universe u uE uH
 

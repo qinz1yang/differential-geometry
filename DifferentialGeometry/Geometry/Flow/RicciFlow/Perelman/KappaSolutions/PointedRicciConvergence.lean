@@ -70,6 +70,7 @@ local instance pointedRicciTargetSigma (k : ℕ) :
 
 variable {Phi}
 
+omit [CompleteSpace E] in
 private theorem canonicalRicci_restrict (k : ℕ)
     (x : MetricSourceDomain (I := I) Phi k) (v : TangentSpace I x) :
     ricciTensor (I := I) (L.metric.restrictOpen (I := I) (metricSourceOpenSubset Phi k)) x v v =

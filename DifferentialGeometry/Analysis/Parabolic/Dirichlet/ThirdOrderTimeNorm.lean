@@ -37,20 +37,11 @@ private theorem chartInverse_eq_ae_of_cutoff
       chartPullback I_hs α (fun z => η z * f z)) :
     (fun z => v ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) =ᵐ[volume.restrict Ω₁]
       f := by
-  have heq := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+  have heq := ae_chartInverse_eq_of_chartPullback q α hΩ.measurableSet hΩc
     (hΩs.trans (image_mono interior_subset)) hv
   have heq' := heq.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
   filter_upwards [heq', ae_restrict_mem hΩ₁.measurableSet] with z hz hzm
-  rw [hz]
-  have hzt : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
-    obtain ⟨y, hy, he⟩ := hΩs (subset_closure (hsub hzm))
-    rw [← he, ContinuousLinearEquiv.symm_apply_apply]
-    exact interior_subset hy
-  have hx : (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z) ∈
-      (chartAt (EuclideanHalfSpace n) α).source := by
-    simpa only [extChartAt_source] using (extChartAt I_hs α).map_target hzt
-  rw [chartPullback_apply_of_mem α _ hx, (extChartAt I_hs α).right_inv hzt,
-    ContinuousLinearEquiv.apply_symm_apply, hηone z hzm, one_mul]
+  simpa only [hηone z hzm, one_mul] using hz
 
 theorem ae_memWkp_succ_and_memLp_wkpNorm_of_cutoff_gradient
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z} {m : ℕ}

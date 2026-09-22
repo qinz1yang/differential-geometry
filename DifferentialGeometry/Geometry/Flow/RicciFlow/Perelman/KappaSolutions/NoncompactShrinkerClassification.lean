@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 local notation "S" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 local notation "Cylinder" => S × ℝ

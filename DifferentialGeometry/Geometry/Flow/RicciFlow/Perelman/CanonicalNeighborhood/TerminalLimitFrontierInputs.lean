@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.Geometry.Operator
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 

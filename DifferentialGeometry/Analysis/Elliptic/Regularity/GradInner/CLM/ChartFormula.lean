@@ -57,7 +57,6 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 theorem gradInner_eq_chart_formula
     (g : SmoothRiemannianMetric I M) (α : M)
     {ρα u : M → ℝ}
-    (hρα : ContMDiff I 𝓘(ℝ, ℝ) ∞ ρα) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     g.inner ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (gradFun (I := I) g ρα
@@ -83,8 +82,8 @@ theorem gradInner_eq_chart_formula
       rw [hx_def]; exact (extChartAt I α).right_inv h_target
     rw [h_φx]
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) α h_target
-  have h_step1 := gradInner_eq_invGramMatrix_partials_smooth
-    (I := I) g α hρα hu hx_base hx_int
+  have h_step1 := inner_gradFun_eq_chartInvGram_sum
+    (I := I) g α ρα u hx_base hx_int
   have hφx_eq : extChartAt I α x = (toEuclidean (E := E)).symm y := by
     rw [hx_def]; exact (extChartAt I α).right_inv h_target
   have h_invGram : ∀ i j : Fin (Module.finrank ℝ E),
@@ -120,7 +119,7 @@ theorem chartPushedRaw_gradInnerSmooth_pointwise
         invGramOnEuclid (I := I) g α i j y *
           partialDerivOnEuclid (I := I) (M := M) α i ρα y *
           partialDerivOnEuclid (I := I) (M := M) α j v.toFun y :=
-  gradInner_eq_chart_formula (I := I) (M := M) g α ρα.contMDiff v.smooth hy
+  gradInner_eq_chart_formula (I := I) (M := M) g α hy
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 lemma partialDerivOnEuclid_contDiffOn (α : M) (i : Fin (Module.finrank ℝ E))

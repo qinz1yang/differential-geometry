@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {H : Type} [TopologicalSpace H]
   {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}

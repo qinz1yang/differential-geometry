@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Elliptic.EndomorphismKernel
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Reaction
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Spacetime
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
@@ -84,7 +85,7 @@ theorem kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
-    {t : ℝ} (hA : ∀ x, (A t x).toLinearMap.IsSymmetric)
+    {t : ℝ}
     (hApos : ∀ x, (A t x).IsPositive)
     (Z : ∀ x, TangentSpace I x) (B : ∀ x, V x →L[ℝ] V x)
     (htime : ∀ x v, A t x v = 0 →
@@ -96,30 +97,15 @@ theorem kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
           HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V cov cov (fun y => A t y) x (Z x) + B x) :
     IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A t x).ker) := by
-  intro w U hU hw x hx Y
-  have hwzero : ∀ y ∈ U, A t y (w y) = 0 :=
-    fun y hy => LinearMap.mem_ker.mp (hw y hy)
-  have hmain := kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
-    g cov hcov A hA (hApos x) (Z x) w (B x) (hB x _ (hwzero x hx))
-    hU hx hwzero (htime x _ (hwzero x hx)) (hevolution x)
-  by_cases hdim : Module.finrank ℝ E = 0
-  · have hY : Y = 0 :=
-      (finrank_zero_iff_forall_zero.mp (show
-        Module.finrank ℝ (TangentSpace I x) = 0 by exact hdim)) Y
-    rw [hY, map_zero]
-    exact Submodule.zero_mem _
-  let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
-  let e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
-    fun i => smoothOrthoFrame (I := I) g x i x
-  let P : Submodule ℝ (TangentSpace I x) :=
-    (A t x).ker.comap (cov (fun y => w y) x).toLinearMap
-  have he : ⊤ ≤ Submodule.span ℝ (Set.range e) :=
-    (smoothOrtho_isLocal (I := I) g x).generating
-      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
-  have hrange : Set.range e ⊆ P := by
-    rintro Z ⟨i, rfl⟩
-    exact hmain.1 i
-  exact (Submodule.span_le.mpr hrange) (he Submodule.mem_top)
+  apply DifferentialGeometry.Analysis.Elliptic.kernel_isCovariantlyInvariant_of_laplacian_add_drift_nonpos_on_kernel
+    g cov hcov (A t) hApos Z
+  intro x v hv
+  have heval := congrArg (fun Q : V x →L[ℝ] V x => inner ℝ (Q v) v) (hevolution x)
+  simp only [add_apply, inner_add_left] at heval
+  rw [htime x v hv] at heval
+  have hn := hB x v hv
+  simp only [add_apply, inner_add_left]
+  linarith
 
 theorem local_kernel_section_covariantDerivative_mem_and_reaction_inner_eq_zero
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)

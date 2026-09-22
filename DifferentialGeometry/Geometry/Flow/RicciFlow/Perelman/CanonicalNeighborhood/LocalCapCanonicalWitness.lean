@@ -5,13 +5,13 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 set_option autoImplicit false
 noncomputable section
 open Set
-open scoped Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.Integral.Measure MeasureTheory
+open DifferentialGeometry.Integral.Measure _root_.MeasureTheory
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u

@@ -765,7 +765,7 @@ private theorem parameterDerivative_forcing_residual_eq_iff_inclusion :
     let J := (ContinuousLinearMap.piLpMap 2 (fun _ : ι => Z)).compLpL 2 (timeMeasure T)
     circleResidualHigh g hT a b ha hb Ch hCh FH = R ↔
       circleResidualLow g hT a b ha hb Cl hCl (J FH) = J R := by
-  exact circleResidualInclusionAt g hT a b ha hb Ch Cl hCh hCl FH R
+  with_reducible exact circleResidualInclusionAt g hT a b ha hb Ch Cl hCh hCl FH R
 
 end ResidualInclusion
 
@@ -835,12 +835,12 @@ variable (heq : ∀ᵐ t ∂timeMeasure T,
 private abbrev normalizedResidualHeatValue :=
   normalizedResidualHeatBackward g hT a b ha hb Cl hCl G R (by
     filter_upwards [heq] with t ht
-    with_reducible_and_instances exact ht)
+    with_reducible exact ht)
 
 include heq in
 private theorem normalized_residual_eq_of_heat :
     circleResidualLow g hT a b ha hb Cl hCl G = R := by
-  exact normalizedResidualHeatValue g hT a b ha hb Cl hCl G R heq
+  with_reducible exact normalizedResidualHeatValue g hT a b ha hb Cl hCl G R heq
 
 end ResidualHeat
 

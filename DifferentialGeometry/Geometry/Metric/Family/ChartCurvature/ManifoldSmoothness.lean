@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.JointSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
+import DifferentialGeometry.Analysis.Calculus.Inverse.MatrixSmoothness
 
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -36,6 +38,8 @@ theorem chartGramFamilyJointSmoothOn
 
 variable [I.Boundaryless]
 
+omit [I.Boundaryless] in
+open scoped Matrix.Norms.Elementwise in
 theorem chartInvGramMatrix_jointContMDiffOn
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -44,39 +48,25 @@ theorem chartInvGramMatrix_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartInvGramMatrix (I := I) (g_fam p.2) α p.1 i j)
       ((chartAt H α).source ×ˢ D.regular) := by
-  have hGram := chartGramFamilyJointSmoothOn (I := I) g_fam hG α
-  have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => (p.2, extChartAt I α p.1))
+  let A := fun (p : M × ℝ) (k l : Fin (Module.finrank ℝ E)) =>
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.2) α p.1 k l
+  have hA : ContMDiffOn (I.prod 𝓘(ℝ))
+      𝓘(ℝ, (Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ)) ∞ A
       ((chartAt H α).source ×ˢ D.regular) := by
-    refine ContMDiffOn.prodMk contMDiffOn_snd ?_
-    exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst
-      (fun p hp => hp.1)
+    apply contMDiffOn_pi_space.mpr
+    intro k
+    apply contMDiffOn_pi_space.mpr
+    intro l
+    exact (chartGramMatrix_joint_contMDiffOn g_fam D.regular
+      (hG.metricCLMSection_contMDiffOn Subset.rfl) α k l).comp
+      (contMDiffOn_snd.prodMk contMDiffOn_fst) (fun p hp => ⟨hp.2, hp.1⟩)
   intro p hp
-  obtain ⟨hx, ht⟩ := hp
-  have hxsrc : p.1 ∈ (extChartAt I α).source := by
-    rw [extChartAt_source (I := I)]
-    exact hx
-  have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α
-      ((extChartAt I α).map_source hxsrc)
-  have hentry := chartInvGramOnE_joint_contDiffAt (I := I) (fun t => g_fam t) α hGram i j ht hy
-  have hentryM : ContMDiffAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ) ∞
-      (fun r : ℝ × E => chartInvGramOnE (I := I) (g_fam r.1) α i j r.2)
-      (p.2, extChartAt I α p.1) :=
-    hentry.contMDiffAt
-  have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ × E) ∞
-      (fun q : M × ℝ => (q.2, extChartAt I α q.1))
-      ((chartAt H α).source ×ˢ D.regular) p := by
-    have hm := hmove p ⟨hx, ht⟩
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
-    exact hm
-  refine (hentryM.comp_contMDiffWithinAt p hmoveAt).congr ?_ ?_
-  · intro q hq
-    have hqx : q.1 ∈ (extChartAt I α).source := by
-      rw [extChartAt_source (I := I)]
-      exact hq.1
-    rw [Function.comp_apply, chartInvGramOnE_def, (extChartAt I α).left_inv hqx]
-  · rw [Function.comp_apply, chartInvGramOnE_def, (extChartAt I α).left_inv hxsrc]
+  have hdet : Matrix.det (A p) ≠ 0 := ne_of_gt
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (g_fam p.2) α hp.1)
+  have hinv := DifferentialGeometry.Analysis.contDiffAt_inv_of_entries
+    (fun B : (Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ) => B)
+    (fun k l => (contDiff_pi.mp (contDiff_pi.mp contDiff_id k) l)) hdet i j
+  exact hinv.contMDiffAt.comp_contMDiffWithinAt p (hA p hp)
 
 theorem chartChristoffel_comp_extChartAt_jointContMDiffOn
     {D : RealTimeInterval}

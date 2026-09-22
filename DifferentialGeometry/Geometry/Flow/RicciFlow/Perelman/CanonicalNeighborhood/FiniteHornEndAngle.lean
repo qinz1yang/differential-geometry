@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Toponogov.AngleKernel
-import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngle
+import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngleKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 
 set_option autoImplicit false
@@ -77,23 +76,11 @@ theorem tendsto_endRayAngle (H : FiniteHorn g) {d : ℝ} (hd : 0 < d)
 
 theorem endRayAngle_self (H : FiniteHorn g) {d : ℝ} (hd : 0 < d) (a : EndRay H.endpoint) :
     endRayAngle H.endpoint d a a = 0 := by
-  have hpos : 0 < endRayLength H.endpoint d a := by
-    simpa only [endRayLength] using lt_min a.length_pos hd
-  have hset : positiveRectangleValues (endRayLength H.endpoint d a) (endRayLength H.endpoint d a)
-      (radialComparisonAngle (endRayFamily H.endpoint) a a) = {0} := by
-    ext z
-    constructor
-    · rintro ⟨s, hs, t, ht, rfl⟩
-      refine radialComparisonAngle_eq_zero_of_dist_eq_abs a a hs.1 ht.1 ?_
-      exact a.minimizing s ⟨hs.1, hs.2.trans (min_le_left _ _)⟩ t
-        ⟨ht.1, ht.2.trans (min_le_left _ _)⟩
-    · intro hz
-      rw [mem_singleton_iff] at hz
-      subst hz
-      exact ⟨endRayLength H.endpoint d a, ⟨hpos, le_rfl⟩, endRayLength H.endpoint d a,
-        ⟨hpos, le_rfl⟩, (radialComparisonAngle_eq_zero_of_dist_eq_abs a a hpos hpos
-          (by simp)).symm⟩
-  rw [endRayAngle, limitingRadialAngle, hset, csSup_singleton]
+  apply limitingRadialAngle_self (by simpa only [endRayLength] using lt_min a.length_pos hd)
+  intro s hs t ht
+  simp only [endRayFamily, UniformSpace.Completion.dist_eq]
+  exact a.minimizing s ⟨hs.1, hs.2.trans (min_le_left _ _)⟩ t
+    ⟨ht.1, ht.2.trans (min_le_left _ _)⟩
 
 theorem endRayAngle_comm (H : FiniteHorn g) (d : ℝ) (a b : EndRay H.endpoint) :
     endRayAngle H.endpoint d a b = endRayAngle H.endpoint d b a :=
@@ -106,20 +93,13 @@ theorem endRayAngle_triangle (H : FiniteHorn g) {d : ℝ} (hd : 0 < d)
     (a b c : EndRay H.endpoint) :
     endRayAngle H.endpoint d a c ≤ endRayAngle H.endpoint d a b +
       endRayAngle H.endpoint d b c := by
-  rcases eq_or_ne a b with hab | hab
-  · subst hab
-    rw [endRayAngle_self H hd, zero_add]
-  rcases eq_or_ne b c with hbc | hbc
-  · subst hbc
-    rw [endRayAngle_self H hd, add_zero]
-  rcases eq_or_ne a c with hac | hac
-  · subst hac
-    rw [endRayAngle_self H hd]
-    exact add_nonneg (endRayAngle_mem_Icc H hd a b).1 (endRayAngle_mem_Icc H hd b a).1
-  · exact limitingRadialAngle_triangle H.endpoint (endRayLength H.endpoint d)
-      (endRayFamily H.endpoint) (fun a => by
-        simpa only [endRayLength] using lt_min a.length_pos hd)
-      (endRayFamily_isRadialFamily H.endpoint d) (fun i j _ => hmono i j) hab hbc hac
+  apply limitingRadialAngle_triangle_of_minimizing H.endpoint
+    (fun a => by simpa only [endRayLength] using lt_min a.length_pos hd)
+    (endRayFamily_isRadialFamily H.endpoint d) ?_ (fun i j _ => hmono i j)
+  intro a s hs t ht
+  simp only [endRayFamily, UniformSpace.Completion.dist_eq]
+  exact a.minimizing s ⟨hs.1, hs.2.trans (min_le_left _ _)⟩ t
+    ⟨ht.1, ht.2.trans (min_le_left _ _)⟩
 
 theorem endRayAngle_limit (H : FiniteHorn g) {d : ℝ} (hd : 0 < d)
     (hmono : ∀ a b : EndRay H.endpoint,

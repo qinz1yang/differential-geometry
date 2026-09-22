@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 variable {Y : Type*} [MetricSpace Y]
 
 theorem openConeDistance_sq {z w : ℝ × Y} (hz : 0 ≤ z.1) (hw : 0 ≤ w.1) :
-    openConeDistance z w ^ 2 =
+    Metric.coneDistance z w ^ 2 =
       z.1 ^ 2 + w.1 ^ 2 - 2 * z.1 * w.1 * Real.cos (min Real.pi (dist z.2 w.2)) := by
   apply Real.sq_sqrt
   have hcos := Real.cos_le_one (min Real.pi (dist z.2 w.2))
@@ -24,7 +24,7 @@ theorem openConeDistance_sq {z w : ℝ × Y} (hz : 0 ≤ z.1) (hw : 0 ≤ w.1) :
 theorem radial_sq_eq_of_openConeDistance {z : ℝ × Y} {a b : ℝ}
     (hz : 0 ≤ z.1) (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : a ≠ b) (q : Y) :
     z.1 ^ 2 =
-      (b * openConeDistance z (a, q) ^ 2 - a * openConeDistance z (b, q) ^ 2) / (b - a) + a * b := by
+      (b * Metric.coneDistance z (a, q) ^ 2 - a * Metric.coneDistance z (b, q) ^ 2) / (b - a) + a * b := by
   rw [openConeDistance_sq hz ha, openConeDistance_sq hz hb]
   have hne : b - a ≠ 0 := sub_ne_zero.mpr hab.symm
   field_simp [hne]
@@ -32,12 +32,12 @@ theorem radial_sq_eq_of_openConeDistance {z : ℝ × Y} {a b : ℝ}
 
 theorem sub_radial_le_openConeDistance {z w : ℝ × Y}
     (hz : 0 ≤ z.1) (hw : 0 ≤ w.1) :
-    w.1 - z.1 ≤ openConeDistance z w := by
+    w.1 - z.1 ≤ Metric.coneDistance z w := by
   have hs := openConeDistance_sq hz hw
-  have hd : 0 ≤ openConeDistance z w := Real.sqrt_nonneg _
+  have hd : 0 ≤ Metric.coneDistance z w := Real.sqrt_nonneg _
   have hcos := Real.cos_le_one (min Real.pi (dist z.2 w.2))
   have hmul := mul_le_mul_of_nonneg_left hcos (show 0 ≤ 2 * z.1 * w.1 by positivity)
-  nlinarith [sq_nonneg (openConeDistance z w - (w.1 - z.1))]
+  nlinarith [sq_nonneg (Metric.coneDistance z w - (w.1 - z.1))]
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -57,8 +57,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 variable {Y : Type*} [MetricSpace Y]
 
 theorem continuous_openConeDistance :
-    Continuous (fun p : (ℝ × Y) × (ℝ × Y) => openConeDistance p.1 p.2) := by
-  unfold openConeDistance
+    Continuous (fun p : (ℝ × Y) × (ℝ × Y) => Metric.coneDistance p.1 p.2) := by
+  unfold Metric.coneDistance
   fun_prop
 
 
@@ -79,7 +79,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 variable {Y : Type*} [MetricSpace Y]
 
 theorem openConeDistance_eq_zero_iff {z w : ℝ × Y} (hz : 0 < z.1) (hw : 0 < w.1) :
-    openConeDistance z w = 0 ↔ z = w := by
+    Metric.coneDistance z w = 0 ↔ z = w := by
   constructor
   · intro h
     have hs := openConeDistance_sq hz.le hw.le
@@ -105,7 +105,7 @@ theorem openConeDistance_eq_zero_iff {z w : ℝ × Y} (hz : 0 < z.1) (hw : 0 < w
       exact lt_irrefl 0 hh
     exact Prod.ext hr hang
   · rintro rfl
-    unfold openConeDistance
+    unfold Metric.coneDistance
     simp only [dist_self, min_eq_right Real.pi_pos.le, Real.cos_zero, mul_one]
     rw [show z.1 ^ 2 + z.1 ^ 2 - 2 * z.1 * z.1 = 0 by ring, Real.sqrt_zero]
 
@@ -132,16 +132,16 @@ theorem isEmbedding_of_scaled_cone_distance
     (hD : ∀ x ∈ D, x.1 ∈ Icc a b)
     (F : D → T)
     (hmetric : ∀ x y : D, dist (F x) (F y) =
-      lambda * openConeDistance (x : ℝ × Y) (y : ℝ × Y)) :
+      lambda * Metric.coneDistance (x : ℝ × Y) (y : ℝ × Y)) :
     Topology.IsEmbedding F := by
-  have hself (x : D) : openConeDistance (x : ℝ × Y) (x : ℝ × Y) = 0 :=
+  have hself (x : D) : Metric.coneDistance (x : ℝ × Y) (x : ℝ × Y) = 0 :=
     (openConeDistance_eq_zero_iff (ha.trans_le (hD x x.property).1)
       (ha.trans_le (hD x x.property).1)).mpr rfl
   have hcont : Continuous F := by
     apply continuous_iff_continuousAt.mpr
     intro x
     apply tendsto_iff_dist_tendsto_zero.mpr
-    have hc : Continuous (fun y : D => lambda * openConeDistance (y : ℝ × Y) (x : ℝ × Y)) :=
+    have hc : Continuous (fun y : D => lambda * Metric.coneDistance (y : ℝ × Y) (x : ℝ × Y)) :=
       continuous_const.mul (continuous_openConeDistance.comp
         (continuous_subtype_val.prodMk continuous_const))
     simpa only [hmetric, hself, mul_zero] using hc.tendsto x
@@ -149,7 +149,7 @@ theorem isEmbedding_of_scaled_cone_distance
     intro x y hxy
     have h := hmetric x y
     rw [hxy, dist_self] at h
-    have hz : openConeDistance (x : ℝ × Y) (y : ℝ × Y) = 0 :=
+    have hz : Metric.coneDistance (x : ℝ × Y) (y : ℝ × Y) = 0 :=
       (mul_eq_zero.mp h.symm).resolve_left hlambda.ne'
     exact Subtype.ext ((openConeDistance_eq_zero_iff (ha.trans_le (hD x x.property).1)
       (ha.trans_le (hD y y.property).1)).mp hz)
@@ -163,7 +163,7 @@ theorem isEmbedding_of_scaled_cone_distance
     congrArg Subtype.val (e.apply_symm_apply z)
   have hinv : Continuous inv := by
     apply Topology.continuous_of_compact_separating_kernel
-      (fun z : B × B => lambda * openConeDistance (P z.1) (P z.2))
+      (fun z : B × B => lambda * Metric.coneDistance (P z.1) (P z.2))
       (continuous_const.mul (continuous_openConeDistance.comp
         ((hP.comp continuous_fst).prodMk (hP.comp continuous_snd))))
       ?_ inv ?_
@@ -175,7 +175,7 @@ theorem isEmbedding_of_scaled_cone_distance
       exact Prod.ext (Subtype.ext (congrArg Prod.fst heq))
         (congrArg (fun z : ℝ × Y => z.2) heq)
     · intro x y
-      change lambda * openConeDistance ((e.symm x : D) : ℝ × Y)
+      change lambda * Metric.coneDistance ((e.symm x : D) : ℝ × Y)
         ((e.symm y : D) : ℝ × Y) = dist (x : T) (y : T)
       rw [← hmetric, hback, hback]
   have hinve : Continuous (e.symm : range F → D) := by
@@ -208,14 +208,14 @@ theorem exists_marked_cone_embedding_of_compact_pair_limits
     (hD : ∀ x ∈ D, x.1 ∈ Icc a b)
     (u : ℕ → D → T)
     (hpair : ∀ x y : D, Tendsto (fun i => dist (u i x) (u i y)) atTop
-      (𝓝 (lambda * openConeDistance (x : ℝ × Y) (y : ℝ × Y))))
+      (𝓝 (lambda * Metric.coneDistance (x : ℝ × Y) (y : ℝ × Y))))
     (o : D) (q : T) (hbase : Tendsto (fun i => dist (u i o) q) atTop (𝓝 0)) :
     ∃ F : D → T, MapClusterPt F atTop u ∧ Topology.IsEmbedding F ∧ F o = q ∧
       ∀ x y : D, dist (F x) (F y) =
-        lambda * openConeDistance (x : ℝ × Y) (y : ℝ × Y) := by
+        lambda * Metric.coneDistance (x : ℝ × Y) (y : ℝ × Y) := by
   obtain ⟨F, hF, hmetric⟩ := Topology.exists_mapClusterPt_of_continuous_pairwise_limits u
     (fun p : T × T => dist p.1 p.2) (continuous_fst.dist continuous_snd)
-    (fun x y : D => lambda * openConeDistance (x : ℝ × Y) (y : ℝ × Y)) hpair
+    (fun x y : D => lambda * Metric.coneDistance (x : ℝ × Y) (y : ℝ × Y)) hpair
   refine ⟨F, hF, isEmbedding_of_scaled_cone_distance ha hlambda D hD F hmetric, ?_, hmetric⟩
   have hobs : Continuous (fun G : D → T => dist (G o) q) :=
     (continuous_apply o).dist continuous_const
@@ -239,9 +239,9 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 variable {Y : Type*} [MetricSpace Y]
 
 theorem openConeDistance_radial_smul (c : ℝ) (z w : ℝ × Y) :
-    openConeDistance (c * z.1, z.2) (c * w.1, w.2) =
-      |c| * openConeDistance z w := by
-  unfold openConeDistance
+    Metric.coneDistance (c * z.1, z.2) (c * w.1, w.2) =
+      |c| * Metric.coneDistance z w := by
+  unfold Metric.coneDistance
   rw [show (c * z.1) ^ 2 + (c * w.1) ^ 2 -
         2 * (c * z.1) * (c * w.1) * Real.cos (min Real.pi (dist z.2 w.2)) =
       c ^ 2 * (z.1 ^ 2 + w.1 ^ 2 -

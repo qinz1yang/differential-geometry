@@ -237,6 +237,7 @@ theorem exists_roundThreeCylinder_solitonModelCovering_of_nonnegative_of_rank_on
       ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
     change mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) I cover x =
       (mfderiv J I id (cover x)).comp (mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) J cover x) at hchain
+    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hchain
     rw [hchain]
     exact hm
   · intro x
@@ -336,6 +337,7 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_rank_three_of_nonnegativ
       ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
     change mfderiv (𝓡 3) I cover x =
       (mfderiv J I id (cover x)).comp (mfderiv (𝓡 3) J cover x) at hchain
+    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hchain
     rw [hchain]
     exact hm
   · intro x

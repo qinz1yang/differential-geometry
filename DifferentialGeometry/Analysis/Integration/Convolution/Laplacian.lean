@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
-import Mathlib.Analysis.Calculus.ContDiff.Convolution
+import DifferentialGeometry.Analysis.Integration.Convolution.Derivatives
 
 noncomputable section
 open Set MeasureTheory InnerProductSpace DifferentialGeometry.Analysis
@@ -12,17 +12,6 @@ variable {E A B F : Type*}
   [NormedAddCommGroup B] [NormedSpace ℝ B]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   {μ : Measure E} [SFinite μ] [μ.IsAddLeftInvariant]
-
-omit [FiniteDimensional ℝ E] in
-private theorem fderiv_convolution_apply
-    (L : A →L[ℝ] B →L[ℝ] F) {k : E → A} {f : E → B}
-    (hk : LocallyIntegrable k μ) (hc : HasCompactSupport f)
-    (hf : ContDiff ℝ 1 f) (z v : E) :
-    fderiv ℝ (k ⋆[L, μ] f) z v =
-      (k ⋆[L, μ] (fun q => fderiv ℝ f q v)) z := by
-  rw [(hc.hasFDerivAt_convolution_right L hk hf z).fderiv]
-  exact convolution_precompR_apply L hk (hc.fderiv ℝ)
-    (hf.continuous_fderiv (by norm_num)) z v
 
 omit [MeasurableSpace E] [BorelSpace E] [FiniteDimensional ℝ E] in
 private theorem second_partial {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -45,14 +34,14 @@ theorem MeasureTheory.laplacian_convolution_right
   have he (v : E) : (fun q => fderiv ℝ (k ⋆[L, μ] f) q v) =
       k ⋆[L, μ] (fun q => fderiv ℝ f q v) := by
     funext q
-    exact fderiv_convolution_apply L hk hc (hf.of_le (by norm_num)) q v
+    exact fderiv_convolution_right_apply L hk hc (hf.of_le (by norm_num)) q v
   have hi (v : E) : Integrable (fun w : E => L (k w)
       (fderiv ℝ (fun q => fderiv ℝ f q v) (z - w) v)) μ :=
     ((hc.fderiv_apply ℝ v).fderiv_apply ℝ v).convolutionExists_right L hk
       (((hpartial v).continuous_fderiv (by norm_num)).clm_apply continuous_const) z
   simp only [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, iteratedFDeriv_two_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, second_partial hconv, he,
-    fderiv_convolution_apply L hk (hc.fderiv_apply ℝ _) (hpartial _), convolution_def,
+    fderiv_convolution_right_apply L hk (hc.fderiv_apply ℝ _) (hpartial _), convolution_def,
     second_partial hf]
   rw [← integral_finsetSum Finset.univ (fun i _ => hi ((stdOrthonormalBasis ℝ E) i))]
   apply integral_congr_ae

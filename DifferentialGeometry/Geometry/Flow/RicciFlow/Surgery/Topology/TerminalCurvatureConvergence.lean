@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricCompactComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricCurvatureDifference
+import DifferentialGeometry.Geometry.Curvature.MetricDifference
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Convergence
 import DifferentialGeometry.Geometry.Curvature.OperatorNaturality
 

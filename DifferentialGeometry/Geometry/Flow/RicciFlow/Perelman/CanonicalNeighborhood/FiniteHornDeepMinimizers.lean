@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CollarNoReturn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornIntrinsicRays
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornCollarRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornSectionOrder
@@ -180,7 +181,7 @@ theorem exists_finiteHorn_deep_minimizer_depth :
       linarith [dist_nonneg (x := gamma s) (y := y)]
     exact ⟨subset_closure ⟨gamma s, hball _ hradup, rfl⟩, hradlow⟩
   obtain ⟨gamma, hstart, hend, hsmooth, _hmem, _hlength, hsub⟩ :=
-    exists_smooth_minimizer_with_subinterval_lengths g hK heta hfinite htrap
+    Geometry.exists_smooth_minimizer_with_subinterval_lengths g hK heta hfinite htrap
   let L : ℝ≥0 := ⟨dist x y, dist_nonneg⟩
   have hLip : LipschitzOnWith L gamma (Icc (0 : ℝ) 1) := by
     apply lipschitzOnWith_of_subinterval_lengths (L := L) g H
@@ -194,7 +195,7 @@ theorem exists_finiteHorn_deep_minimizer_depth :
   have hmetric : ∀ s ∈ Icc (0 : ℝ) 1, ∀ t ∈ Icc (0 : ℝ) 1,
       dist (gamma s) (gamma t) = |s - t| * dist x y := by
     have hfull : dist (gamma 0) (gamma 1) = L := by rw [hstart, hend]; rfl
-    have heq := dist_eq_mul_of_lipschitz_interval
+    have heq := Metric.dist_eq_mul_of_lipschitz_interval
       (fun s : Icc (0 : ℝ) 1 => gamma s) hfLip hfull
     intro s hs t ht
     have h := heq ⟨s, hs⟩ ⟨t, ht⟩
@@ -325,7 +326,7 @@ theorem finiteHorn_deep_minimizers_of_endRay_dist_lt_sum
       linarith [dist_nonneg (x := gamma s) (y := y)]
     exact ⟨subset_closure ⟨gamma s, hball _ hradup, rfl⟩, hradlow⟩
   obtain ⟨gamma, hstart, hend, hsmooth, _hmem, _hlength, hsub⟩ :=
-    exists_smooth_minimizer_with_subinterval_lengths g hK heta hfinite htrap
+    Geometry.exists_smooth_minimizer_with_subinterval_lengths g hK heta hfinite htrap
   let L : ℝ≥0 := ⟨dist x y, dist_nonneg⟩
   have hLip : LipschitzOnWith L gamma (Icc (0 : ℝ) 1) := by
     apply lipschitzOnWith_of_subinterval_lengths (L := L) g H
@@ -339,7 +340,7 @@ theorem finiteHorn_deep_minimizers_of_endRay_dist_lt_sum
   have hmetric : ∀ s ∈ Icc (0 : ℝ) 1, ∀ t ∈ Icc (0 : ℝ) 1,
       dist (gamma s) (gamma t) = |s - t| * dist x y := by
     have hfull : dist (gamma 0) (gamma 1) = L := by rw [hstart, hend]; rfl
-    have heq := dist_eq_mul_of_lipschitz_interval
+    have heq := Metric.dist_eq_mul_of_lipschitz_interval
       (fun s : Icc (0 : ℝ) 1 => gamma s) hfLip hfull
     intro s hs t ht
     have h := heq ⟨s, hs⟩ ⟨t, ht⟩

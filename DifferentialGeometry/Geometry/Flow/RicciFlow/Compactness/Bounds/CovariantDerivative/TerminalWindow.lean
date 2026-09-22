@@ -17,7 +17,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff ENNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -155,7 +155,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u
 

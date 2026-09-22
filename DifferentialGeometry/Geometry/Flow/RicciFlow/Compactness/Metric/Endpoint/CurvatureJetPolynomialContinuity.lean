@@ -8,10 +8,10 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Filter DifferentialGeometry.Tensor0SBundle
+open Bundle _root_.Manifold Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

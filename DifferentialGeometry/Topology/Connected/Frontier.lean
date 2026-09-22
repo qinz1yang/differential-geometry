@@ -15,6 +15,18 @@ theorem subset_interior_of_isPreconnected_of_disjoint_frontier
   exact (Set.disjoint_left.mp hdisj hx.2)
     ⟨closure_mono interior_subset hx.1, hxi⟩
 
+theorem eq_of_closure_interior_eq_of_disjoint_interior_frontier
+    {X : Type*} [TopologicalSpace X] {A B : Set X}
+    (hA : closure (interior A) = A) (hB : closure (interior B) = B)
+    (hcA : IsPreconnected (interior A)) (hcB : IsPreconnected (interior B))
+    (hdAB : Disjoint (interior A) (frontier B))
+    (hdBA : Disjoint (interior B) (frontier A))
+    (hmeet : (interior A ∩ interior B).Nonempty) : A = B := by
+  have hAB := subset_interior_of_isPreconnected_of_disjoint_frontier hcA hdAB hmeet
+  have hBA := subset_interior_of_isPreconnected_of_disjoint_frontier hcB hdBA
+    (inter_comm (interior A) (interior B) ▸ hmeet)
+  rw [← hA, ← hB, subset_antisymm hAB hBA]
+
 theorem eq_of_frontier_eq_of_closure_interior_eq
     {X : Type*} [TopologicalSpace X] {A B : Set X}
     (hA : closure (interior A) = A) (hB : closure (interior B) = B)

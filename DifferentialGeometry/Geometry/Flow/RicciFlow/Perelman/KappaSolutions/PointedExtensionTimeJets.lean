@@ -12,12 +12,12 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 
 private local instance pointedJetTopology

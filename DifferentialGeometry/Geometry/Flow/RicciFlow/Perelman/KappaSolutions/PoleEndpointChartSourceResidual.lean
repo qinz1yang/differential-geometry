@@ -10,7 +10,7 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory Set
+open Filter _root_.MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
@@ -18,7 +18,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -114,8 +114,8 @@ theorem integral_poleEndpoint_redDensity_limit_chart_residual_eq_zero_of_ancient
         chartGradientBilin (co.gInf (1 - z.1)) x ((extChartAt I x).symm z.2)
           (fderiv ℝ (fun y => f (z.1, y)) z.2)
           (fderiv ℝ (fun y => ψ (z.1, y)) z.2))
-      ∂(volume.restrict (Ioc a' c')).prod
-        ((modelHaar (E := E)).restrict ((toEuclidean (E := E)) ⁻¹' Ω))) = 0 := by
+      ∂(Measure.prod (Measure.restrict volume (Ioc a' c'))
+        (Measure.restrict (modelHaar (E := E)) ((toEuclidean (E := E)) ⁻¹' Ω)))) = 0 := by
   intro f u
   let e := toEuclidean (E := E)
   let W : Set E := e ⁻¹' Ω
@@ -181,13 +181,14 @@ theorem integral_poleEndpoint_redDensity_limit_chart_residual_eq_zero_of_ancient
     funext fun t => htest t y
   have htestSpace (t : ℝ) : (fun y => φ (t, e y)) = fun y => ψ (t, y) :=
     funext fun y => htest t y
-  have hi : Integrable (fun z : ℝ × E =>
+  have hi : MeasureTheory.Integrable (fun z : ℝ × E =>
       chartDensity (co.gInf (1 - z.1)) x ((extChartAt I x).symm z.2) * u z *
         (deriv (fun t => ψ (t, z.2)) z.1 +
           chartGradientBilin (co.gInf (1 - z.1)) x ((extChartAt I x).symm z.2)
             (fderiv ℝ (fun y => f (z.1, y)) z.2)
             (fderiv ℝ (fun y => ψ (z.1, y)) z.2)))
-      ((volume.restrict (Ioc a' c')).prod ((modelHaar (E := E)).restrict W)) := by
+      (Measure.prod (Measure.restrict volume (Ioc a' c'))
+        (Measure.restrict (modelHaar (E := E)) W)) := by
     simpa only [φ, T, e, Function.comp_def, ContinuousLinearEquiv.symm_apply_apply, W] using
       integrable_chartGaussianResidual_of_locallyLipschitzOn Dτ
         (fun t => co.gInf (1 - t)) hg x hinterval hΩ hΩc hΩtV hfV huV hφ

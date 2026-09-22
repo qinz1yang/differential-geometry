@@ -87,8 +87,9 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
     intro y hy
     have hh := (le_max_left (40000 : ℝ) (2 * max H 0)).trans (hfar y hy)
     linarith
-  have hKi := K.eventually_image_of_windowed_models_of_cap hS W hdelta hreg L hcomplete hphi F hcmp
-    hscalar cap hcap hqa hqsmall heps hfar10000
+  have hKi := K.eventually_image_of_windowed_models_of_cap_with_strict_depth
+    hS W hdelta hreg L hcomplete hphi F hcmp
+    hscalar cap hcap (alpha := alpha / 4) hqa hqsmall heps hfar10000
   have hni := neck.eventually_transport_of_windowed_models hS W hdelta hreg L hcomplete hphi F hcmp
     hqa hqsmall heps
   have hdepth := eventually_image_depth_of_windowed_models hS W hdelta hreg L hcomplete hphi F hcmp

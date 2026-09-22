@@ -9,7 +9,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 universe u
 

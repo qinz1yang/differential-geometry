@@ -5,9 +5,9 @@ import DifferentialGeometry.Geometry.Boundary.SublevelMetric
 
 namespace DifferentialGeometry.Topology.Morse
 
-open Manifold Set MeasureTheory
+open _root_.Manifold Set MeasureTheory
 open Integral.Measure Integral.DivergenceTheorem.WithBoundary
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 noncomputable section
 

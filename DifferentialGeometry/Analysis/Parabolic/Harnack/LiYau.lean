@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import DifferentialGeometry.Geometry.Operator.TimeLaplacian
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
-import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
+import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Inequality
 import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Analysis.Calculus.Extrema
@@ -1173,68 +1173,21 @@ theorem partialDeriv_joint_contDiffAt
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem normGradSqFun_eq_chartInvGram_sum
     (g : SmoothRiemannianMetric I M) (α : M)
-    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    {f : M → ℝ}
     (x : M) (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     normGradSqFun (I := I) g f x =
       ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x k i *
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-  classical
   have hxsrc : x ∈ (chartAt H α).source := by
-    simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using hx
-  have hx_int : (extChartAt I α) x ∈ interior (extChartAt I α).target := by
+    simpa only [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using hx
+  have hxint : extChartAt I α x ∈ interior (extChartAt I α).target := by
     rw [(isOpen_extChartAt_target (I := I) α).interior_eq]
     exact (extChartAt I α).map_source
-      (by rw [extChartAt_source_eq_chartAt_source (I := I) α]; exact hxsrc)
-  have hg : gradChartLocal (I := I) g α f x = gradFun (I := I) g f x :=
-    gradChartLocal_eq_gradFun (I := I) g α (hf.mdifferentiableAt (x := x) (by simp)) hx hx_int
-  have hinner : g.inner x (gradChartLocal (I := I) g α f x) (gradChartLocal (I := I) g α f x) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α f k x *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-    nth_rewrite 2 [show gradChartLocal (I := I) g α f x =
-        ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x • chartBasisVecFiber (I := I) α k x by
-        rfl]
-    have hlin : (g.inner x (gradChartLocal (I := I) g α f x))
-        (∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x • chartBasisVecFiber (I := I) α k x) =
-        ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x *
-            (g.inner x (gradChartLocal (I := I) g α f x)) (chartBasisVecFiber (I := I) α k x) := by
-      rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro k _
-      rw [map_smul, smul_eq_mul]
-    rw [hlin]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k]
-  have hcoeff : ∀ k : Fin (Module.finrank ℝ E),
-      gradChartCoeff (I := I) g α f k x =
-        ∑ i : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g α x k i *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) :=
-    fun k => rfl
-  calc
-    normGradSqFun (I := I) g f x
-        = g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) := by
-            rw [normGradSqFun]
-    _ = g.inner x (gradChartLocal (I := I) g α f x) (gradChartLocal (I := I) g α f x) := by
-            rw [hg]
-    _ = ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := hinner
-    _ = ∑ k : Fin (Module.finrank ℝ E),
-          ∑ i : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) g α x k i *
-              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-            refine Finset.sum_congr rfl ?_
-            intro k _
-            rw [hcoeff k]
-            rw [Finset.sum_mul]
+      (by simpa only [extChartAt_source_eq_chartAt_source (I := I)] using hxsrc)
+  exact DifferentialGeometry.Geometry.Operator.normGradSqFun_eq_chartInvGram_sum
+    g α hx hxint
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem timeDeriv_joint_contDiffAt
@@ -1346,7 +1299,7 @@ theorem liYauQuantity_contMDiff
         simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using
           (extChartAt I α).map_target hy
       have hformula := normGradSqFun_eq_chartInvGram_sum (I := I) g α
-        (hf := hlogslice t (D.regular_subset ht))
+        (f := fun z => Real.log (u t z))
         ((extChartAt I α).symm y) hx
       rw [show (fun z : M => Real.log (u t z)) = f t by
         funext z
@@ -1560,8 +1513,7 @@ theorem normGradSqFun_contMDiffOn
     (g : SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ)
     (hf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => f p.1 p.2) (D.regular ×ˢ univ))
-    (hslice : ∀ t : ℝ, t ∈ D.regular → ContMDiff I 𝓘(ℝ, ℝ) ∞ (f t)) :
+      (fun p : ℝ × M => f p.1 p.2) (D.regular ×ˢ univ)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => normGradSqFun (I := I) g (f p.1) p.2)
       (D.regular ×ˢ univ) := by
@@ -1617,7 +1569,7 @@ theorem normGradSqFun_contMDiffOn
           simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using
             (extChartAt I α).map_target hz.2
         have hformula := normGradSqFun_eq_chartInvGram_sum (I := I) g α
-          (hf := hslice z.1 hz.1)
+          (f := f z.1)
           ((extChartAt I α).symm z.2) hx
         change normGradSqFun (I := I) g (f z.1) ((extChartAt I α).symm z.2) =
           (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
@@ -1692,7 +1644,6 @@ theorem normGradSqFun_contMDiffWithinAt
     (f : ℝ → M → ℝ)
     (hf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => f p.1 p.2) (S ×ˢ univ))
-    (hslice : ∀ t : ℝ, t ∈ S → ContMDiff I 𝓘(ℝ, ℝ) ∞ (f t))
     {t₀ : ℝ} (ht₀ : t₀ ∈ S) (x₀ : M) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => normGradSqFun (I := I) g (f p.1) p.2)
@@ -1776,7 +1727,7 @@ theorem normGradSqFun_contMDiffWithinAt
         simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using
           (extChartAt I α).map_target hz.2
       have hformula := normGradSqFun_eq_chartInvGram_sum (I := I) g α
-        (hf := hslice z.1 hz.1)
+        (f := f z.1)
         ((extChartAt I α).symm z.2) hx
       change normGradSqFun (I := I) g (f z.1) ((extChartAt I α).symm z.2) =
         (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
@@ -1796,7 +1747,7 @@ theorem normGradSqFun_contMDiffWithinAt
               ((extChartAt I α) x₀))
       simpa only [α, chartInvGramOnE_def,
         (extChartAt I α).left_inv (mem_extChartAt_source (I := I) α)] using
-        normGradSqFun_eq_chartInvGram_sum (I := I) g α (hf := hslice t₀ ht₀) x₀ (by
+        normGradSqFun_eq_chartInvGram_sum (I := I) g α (f := f t₀) x₀ (by
           rw [trivializationAt_baseSet_eq_chartAt_source (I := I) α]
           exact mem_chart_source H α))
   have hNpull_univ : ContDiffWithinAt ℝ ∞
@@ -2133,8 +2084,6 @@ theorem timeMulLogDeriv_continuousOn
           (fun p : ℝ × M => normGradSqFun (I := I) g (f p.1) p.2)
           (D.regular ×ˢ univ) :=
         normGradSqFun_contMDiffOn (I := I) (M := M) (D := D) g f hfRegularity
-          (fun τ hτ => Moser.contMDiff_log_of_pos_slice
-            (hslice τ (D.regular_subset hτ)) (hpos τ (D.regular_subset hτ)))
       have hly_def : ∀ (τ : ℝ) (y : M), liYauQuantity g f τ y =
           normGradSqFun (I := I) g (f τ) y - deriv (fun s : ℝ => f s y) τ := by
         intro τ y
@@ -2182,13 +2131,11 @@ theorem liYauQuantity_mul_time_continuousOn
       rw [show (Real.log ∘ fun q : ℝ × M => u q.1 q.2) =
         (fun q : ℝ × M => Real.log (u q.1 q.2)) by rfl] at hcomp
       simpa only [f] using hcomp
-    have hlogslice : ∀ τ : ℝ, τ ∈ D.carrier → ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y => f τ y) :=
-      fun τ hτ => Moser.contMDiff_log_of_pos_slice (hslice τ hτ) (hpos τ hτ)
     have hN : ContinuousOn (fun p : ℝ × M =>
         normGradSqFun (I := I) g (f p.1) p.2) (D.carrier ×ˢ univ) := by
       intro p hp
       exact (normGradSqFun_contMDiffWithinAt (I := I) (M := M) D.carrier g f
-        hlogClosed hlogslice hp.1 p.2).continuousWithinAt
+        hlogClosed hp.1 p.2).continuousWithinAt
     have hNslab : ContinuousOn (fun p : ℝ × M =>
         normGradSqFun (I := I) g (f p.1) p.2) (Icc 0 t ×ˢ univ) :=
       hN.mono (by intro p hp; exact ⟨hslabCarrier hp.1, hp.2⟩)

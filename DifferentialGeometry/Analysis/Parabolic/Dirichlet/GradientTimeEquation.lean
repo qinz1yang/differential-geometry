@@ -36,7 +36,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : MeasurableSpace EuStd :=
   WithLp.measurableSpace 2 ((i : Fin (Module.finrank ℝ EuN)) → ℝ)
 
-private theorem cutoff_gradient_dual_deriv
+theorem deriv_ae_eq_of_cutoff_gradient_tensor_identity
     {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω Ω₀ : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
     (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
@@ -214,7 +214,7 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_dual_deriv
   refine ⟨hQ, hB, ?_⟩
   intro k
   obtain ⟨ℓ, hℓ⟩ := hdual k
-  have hd := cutoff_gradient_dual_deriv α hΩ hΩc hΩs hΩ₀
+  have hd := deriv_ae_eq_of_cutoff_gradient_tensor_identity α hΩ hΩc hΩs hΩ₀
     (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
     (hΩ₀Ω.trans (subset_closure.trans hΩs)) (subset_closure.trans hΩ₀Ω)
     hη hηc hηs ht₀.le ht₁.le ht₀₁ u (v k) (w k) ℓ (Q k) (B k) k (hv k) (hw k) hℓ (htensor k)

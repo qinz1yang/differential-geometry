@@ -169,11 +169,7 @@ theorem exists_cutoff_energy
     exact (ENNReal.add_le_add_iff_left hhalf_top).1 hhalves
   · have hu_diff : ∀ᵐ x ∂μ, MDifferentiableAt I 𝓘(ℝ, ℝ) u x :=
       DifferentialGeometry.Analysis.Sobolev.Chart.ae_mdiff_of_lip
-        (I := I) g (B := 1) (riemTent_lip g a hr) (fun x => by
-          rw [← NNReal.coe_le_coe]
-          simpa only [u, coe_nnnorm, NNReal.coe_one, Real.norm_eq_abs,
-            abs_of_nonneg (riemTent_mem_Icc g a hr x).1]
-              using (riemTent_mem_Icc g a hr x).2)
+        (I := I) g (riemTent_lip g a hr)
     have hφ_diff : ∀ᵐ x ∂μ, MDifferentiableAt I 𝓘(ℝ, ℝ) φ x :=
       Filter.Eventually.of_forall fun x => hφ.mdifferentiableAt (by norm_num)
     have he_diff : ∀ᵐ x ∂μ,

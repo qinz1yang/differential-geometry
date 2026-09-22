@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RescaledPointedSequence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedOppositeRayLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Line
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CanonicalPointedMetricControl
 
 set_option autoImplicit false

@@ -56,6 +56,14 @@ theorem ContMDiffOn.locallyLipschitzOn {f : E → M} {s : Set E}
     (hf : ContMDiffOn 𝓘(ℝ, E) I 1 f s) (hs : Convex ℝ s) :
     LocallyLipschitzOn s f := fun x hx => (hf x hx).exists_lipschitzOnWith hs
 
+
+theorem DifferentialGeometry.Geometry.Riemannian.locallyLipschitzOn_extChartAt_symm (a : M) :
+    LocallyLipschitzOn (extChartAt I a).target (extChartAt I a).symm := by
+  intro x hx
+  obtain ⟨K, V, hV, hK⟩ :=
+    (contMDiffWithinAt_extChartAt_symm_range (n := 1) a hx).exists_lipschitzOnWith I.convex_range
+  exact ⟨K, V, nhdsWithin_mono x (extChartAt_target_subset_range a) hV, hK⟩
+
 end
 
 section

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DistanceCurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornBoundedCurvatureFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructureHonest
@@ -21,80 +22,6 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
-
-namespace NormalizedSequence
-
-variable {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-
-def reindex (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ)
-    (hk : StrictMono k) : NormalizedSequence.{u} eps kappa sigma Phi where
-  interval i := X.interval (k i)
-  term i := X.term (k i)
-  depth i := X.depth (k i)
-  scale i := X.scale (k i)
-  depth_pos i := X.depth_pos (k i)
-  depth_buffer i := X.depth_buffer (k i)
-  scale_pos i := X.scale_pos (k i)
-  depth_tendsto := X.depth_tendsto.comp hk.tendsto_atTop
-  scale_tendsto := X.scale_tendsto.comp hk.tendsto_atTop
-  carrier_eq i := X.carrier_eq (k i)
-  regular_eq i := X.regular_eq (k i)
-  connected i := X.connected (k i)
-  orientation i := X.orientation (k i)
-  complete i t ht := X.complete (k i) t ht
-  source_bound i := X.source_bound (k i)
-  base_one i := X.base_one (k i)
-  noncollapse i := X.noncollapse (k i)
-  pinching i := X.pinching (k i)
-  higher_good i t ht x h := X.higher_good (k i) t ht x h
-
-@[simp] theorem reindex_term (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ)
-    (hk : StrictMono k) (i : ℕ) : (X.reindex k hk).term i = X.term (k i) := rfl
-
-@[simp] theorem reindex_interval (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ)
-    (hk : StrictMono k) (i : ℕ) : (X.reindex k hk).interval i = X.interval (k i) := rfl
-
-@[simp] theorem reindex_depth (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ)
-    (hk : StrictMono k) (i : ℕ) : (X.reindex k hk).depth i = X.depth (k i) := rfl
-
-@[simp] theorem reindex_scale (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ)
-    (hk : StrictMono k) (i : ℕ) : (X.reindex k hk).scale i = X.scale (k i) := rfl
-
-theorem reindex_id (X : NormalizedSequence.{u} eps kappa sigma Phi) :
-    X.reindex id strictMono_id = X := rfl
-
-end NormalizedSequence
-
-theorem curvatureBoundedWithin_reindex {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) (k : ℕ → ℕ) (hk : StrictMono k) {r : ℝ}
-    (h : CurvatureBoundedWithin X r) : CurvatureBoundedWithin (X.reindex k hk) r := by
-  obtain ⟨C, hC⟩ := h
-  exact ⟨C, fun i y hy => hC (k i) y hy⟩
-
-theorem exists_reindex_not_boundedAtDistance_of_subsequenceCurvatureEscape
-    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} {X : NormalizedSequence.{u} eps kappa sigma Phi}
-    (h : SubsequenceCurvatureEscape X) :
-    ∃ k : ℕ → ℕ, ∃ hk : StrictMono k, ¬ BoundedAtDistance (X.reindex k hk) := by
-  obtain ⟨radius, I, hradius, hI, _hinner, pts, hdist, hscal⟩ := h
-  refine ⟨I, hI, fun hbdd => ?_⟩
-  obtain ⟨C, hC⟩ := hbdd (radius + 1) (by linarith)
-  have hd : ∀ᶠ i in Filter.atTop,
-      metricDistance ((X.term (I i)).S.base.metric 0) (X.term (I i)).basepoint (pts i) <
-        radius + 1 :=
-    hdist.eventually (eventually_lt_nhds (by linarith))
-  have hs : ∀ᶠ i in Filter.atTop, C < (X.term (I i)).S.scalar 0 (pts i) :=
-    hscal.eventually_gt_atTop C
-  obtain ⟨i, hdi, hsi⟩ := (hd.and hs).exists
-  exact absurd (hC i (pts i) hdi.le) (not_le.mpr hsi)
-
-theorem exists_reindex_nonempty_finiteControlledRadius_of_subsequenceCurvatureEscape
-    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} {X : NormalizedSequence.{u} eps kappa sigma Phi}
-    (h : SubsequenceCurvatureEscape X) :
-    ∃ k : ℕ → ℕ, ∃ hk : StrictMono k, Nonempty (FiniteControlledRadius (X.reindex k hk)) := by
-  obtain ⟨radius, I, hradius, hI, hinner, pts, hdist, hscal⟩ := h
-  refine ⟨I, hI, ⟨⟨radius, hradius, ?_, pts, hdist, hscal⟩⟩⟩
-  intro r hr hrlt
-  exact curvatureBoundedWithin_reindex X I hI (hinner r hr hrlt)
 
 def ConeLimitEscapeShell.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
   ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →

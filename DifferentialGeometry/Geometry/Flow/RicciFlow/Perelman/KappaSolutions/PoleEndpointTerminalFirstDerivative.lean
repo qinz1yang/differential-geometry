@@ -9,14 +9,14 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.Manifold Set
 open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Analysis.Schauder
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal BigOperators NNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal BigOperators NNReal
 
 universe u uE uH
 

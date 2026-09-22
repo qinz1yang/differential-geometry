@@ -52,6 +52,8 @@ theorem exists_metric_mfderiv_bound_on_compact
       _ ≤ s * C := mul_le_mul_of_nonneg_left hwp hs.le
       _ = C * Real.sqrt (g.inner x v v) := mul_comm _ _
 
+alias exists_metric_mfderiv_bound_on_isCompact := exists_metric_mfderiv_bound_on_compact
+
 omit [CompactSpace M] in
 theorem exists_metric_mfderiv_bound_of_hasCompactSupport
     (g : SmoothRiemannianMetric I M) {f : M → F}

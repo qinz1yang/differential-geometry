@@ -42,9 +42,8 @@ theorem ancientKappaThree_reducedVolume_lower
     apply tendsto_atTop_mono (fun i => ?_) (tendsto_natCast_atTop_atTop (R := ℝ))
     dsimp only [tau]
     linarith
-  have hdim2 : 2 ≤ Module.finrank ℝ E := by omega
   obtain ⟨q, L, phi, hphi, _hcenters, Phi, C, hcanonical, hcomplete, hgeometry⟩ :=
-    exists_samePole_normalized_asymptotic_shrinker F hF hdim2 p tau htau hescape
+    exists_samePole_normalized_asymptotic_shrinker F hF p tau htau hescape
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace H L.M := L.charted
   let _ : IsManifold I ∞ L.M := L.smooth

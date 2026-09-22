@@ -1,15 +1,20 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Jet
+import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Parameter
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.UniformParameter
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.DifferentiatedBasisIdentityOffCenter
 
 set_option autoImplicit false
 noncomputable section
 open Bundle Filter Set
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff Topology BigOperators
 namespace DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Connection (chartLeviCivitaGoodSet
+  chartLeviCivitaGoodSet_eq_extChartAt_source ricciTensor_chartBasisVec_alpha_eq)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -81,6 +86,10 @@ theorem mapCInfConvergence_chartJetOperator
   have hV : IsOpen V := isOpen_ne.preimage hdet
   have hAc : ContDiffOn ℝ ∞ A V := fun J hJ => (hA J hJ).contDiffWithinAt
   let Mat := Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ
+  let : NormedAddCommGroup (MatJet E (Module.finrank ℝ E)) :=
+    inferInstanceAs (NormedAddCommGroup (Mat × (E →L[ℝ] Mat) × (E →L[ℝ] E →L[ℝ] Mat)))
+  let : NormedSpace ℝ (MatJet E (Module.finrank ℝ E)) :=
+    inferInstanceAs (NormedSpace ℝ (Mat × (E →L[ℝ] Mat) × (E →L[ℝ] E →L[ℝ] Mat)))
   have : FiniteDimensional ℝ Mat := inferInstance
   have : FiniteDimensional ℝ (E →L[ℝ] Mat) := ContinuousLinearMap.finiteDimensional
   have : FiniteDimensional ℝ (E →L[ℝ] E →L[ℝ] Mat) := ContinuousLinearMap.finiteDimensional
@@ -113,6 +122,21 @@ theorem mapCInfConvergence_chartChristoffel_of_gram
       i j k
   exact hh.congr hW (fun n y hy => heq (g n) y hy) (fun y hy => heq ginf y hy)
 
+private theorem chartRicciTensor_eq_jet_of_mem
+    (g : SmoothRiemannianMetric I M) (p : M) {W : Set E}
+    (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target) {y : E} (hy : y ∈ W)
+    (i j : Fin (Module.finrank ℝ E)) :
+    chartRicciTensor (I := I) g p i j y =
+      jetRicci (chartModelBasis E) (jet2 (chartGramPi (I := I) g p) y) i j := by
+  have hc := chartGramPi_smooth g p hWt
+  have hd := hc.fderiv_of_isOpen hW (m := ∞) (by simp)
+  have hnear : ∀ᶠ z in 𝓝 y, z ∈ W := hW.mem_nhds hy
+  apply chartRicci_eq_jet g p ((interior_maximal hWt hW) hy)
+    ((hc.contDiffAt (hW.mem_nhds hy)).differentiableAt (by simp))
+    (hnear.mono fun z hz =>
+      (hc.contDiffAt (hW.mem_nhds hz)).differentiableAt (by simp))
+    ((hd.contDiffAt (hW.mem_nhds hy)).differentiableAt (by simp)) i j
+
 theorem mapCInfConvergence_chartRicci_of_gram
     (g : ℕ → SmoothRiemannianMetric I M) (ginf : SmoothRiemannianMetric I M)
     (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
@@ -126,15 +150,8 @@ theorem mapCInfConvergence_chartRicci_of_gram
     (fun _ hJ => contDiffAt_jetRicci (chartModelBasis E) hJ i j)
   have heq (h : SmoothRiemannianMetric I M) (y : E) (hy : y ∈ W) :
       chartRicciTensor (I := I) h p i j y =
-        jetRicci (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) y) i j := by
-    have hc := chartGramPi_smooth h p hWt
-    have hd := hc.fderiv_of_isOpen hW (m := ∞) (by simp)
-    have hnear : ∀ᶠ z in 𝓝 y, z ∈ W := hW.mem_nhds hy
-    apply chartRicci_eq_jet h p ((interior_maximal hWt hW) hy)
-      ((hc.contDiffAt (hW.mem_nhds hy)).differentiableAt (by simp))
-      (hnear.mono fun z hz =>
-        (hc.contDiffAt (hW.mem_nhds hz)).differentiableAt (by simp))
-      ((hd.contDiffAt (hW.mem_nhds hy)).differentiableAt (by simp)) i j
+        jetRicci (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) y) i j :=
+    chartRicciTensor_eq_jet_of_mem h p hW hWt hy i j
   exact hh.congr hW (fun n y hy => heq (g n) y hy) (fun y hy => heq ginf y hy)
 
 
@@ -151,5 +168,193 @@ theorem mapCInfConvergence_chartInvGram_of_gram
     (fun _ hJ => contDiffAt_jetInvGram hJ i j)
   exact hh.congr hW (fun n y _ => (jet2_chartGram_invGram (g n) p y i j).symm)
     (fun y _ => (jet2_chartGram_invGram g₀ p y i j).symm)
+
+theorem uniform_spatial_jets_chartJetOperator_of_gram
+    {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
+    (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)
+    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ W →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (g n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon)
+    (hcont : ∀ i j : Fin (Module.finrank ℝ E), ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ z.1) p i j) z.2)
+      (S ×ˢ W))
+    (A : MatJet E (Module.finrank ℝ E) → ℝ)
+    (hA : ∀ J : MatJet E (Module.finrank ℝ E), (Matrix.of J.1).det ≠ 0 →
+      ContDiffAt ℝ ∞ A J)
+    {K : Set E} (hK : IsCompact K) (hKW : K ⊆ W) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (fun z => A (jet2 (chartGramPi (I := I) (g n t) p) z)) y -
+        iteratedFDeriv ℝ r (fun z => A (jet2 (chartGramPi (I := I) (g₀ t) p) z)) y‖ ≤ epsilon := by
+  have hmodel (τ : ℕ → P) (hτ : ∀ n, τ n ∈ S) (t : P) (ht : t ∈ S)
+      (htend : Tendsto τ atTop (𝓝 t)) (i j : Fin (Module.finrank ℝ E)) :
+      MapCInfConvergenceOnCompacts W
+        (fun n => chartGramOnE (I := I) (g₀ (τ n)) p i j)
+        (chartGramOnE (I := I) (g₀ t) p i j) :=
+    mapCInfConvergenceOnCompacts_of_continuous_spatial_jets hW
+      (fun q _ => (chartGramOnE_contDiffOn (I := I) (g₀ q) p i j).mono hWt)
+      (hcont i j) τ hτ ht htend
+  have hsmooth (h : SmoothRiemannianMetric I M) :
+      ContDiffOn ℝ ∞ (fun z => A (jet2 (chartGramPi (I := I) h p) z)) W := by
+    intro y hy
+    exact (hA _ (chartGram_jet2_det_ne h p (hWt hy))).comp_contDiffWithinAt y
+      (chartGram_jet2_smooth h p hW hWt y hy)
+  apply uniform_spatial_jets_of_sequential_convergence hW hS
+    (fun n t y => A (jet2 (chartGramPi (I := I) (g n t) p) y))
+    (fun t y => A (jet2 (chartGramPi (I := I) (g₀ t) p) y))
+    (fun n t _ => hsmooth (g n t)) (fun t _ => hsmooth (g₀ t)) _ _ hK hKW r
+  · intro θ hθ τ hτ t ht htend
+    apply mapCInfConvergence_chartJetOperator (fun n => g (θ n) (τ n)) (g₀ t) p hW hWt _ A hA
+    intro i j
+    exact mapCInfConvergenceOnCompacts_of_uniform_spatial_jets hW
+      (fun n t => chartGramOnE (I := I) (g n t) p i j)
+      (fun t => chartGramOnE (I := I) (g₀ t) p i j)
+      (fun n t _ => (chartGramOnE_contDiffOn (I := I) (g n t) p i j).mono hWt)
+      (fun t _ => (chartGramOnE_contDiffOn (I := I) (g₀ t) p i j).mono hWt)
+      (hgram i j) θ hθ τ hτ ht (hmodel τ hτ t ht htend i j)
+  · intro τ hτ t ht htend
+    exact mapCInfConvergence_chartJetOperator (fun n => g₀ (τ n)) (g₀ t) p hW hWt
+      (hmodel τ hτ t ht htend) A hA
+
+theorem uniform_spatial_jets_chartInvGram_of_gram
+    {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
+    (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)
+    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ W →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (g n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon)
+    (hcont : ∀ i j : Fin (Module.finrank ℝ E), ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ z.1) p i j) z.2)
+      (S ×ˢ W))
+    (i j : Fin (Module.finrank ℝ E))
+    {K : Set E} (hK : IsCompact K) (hKW : K ⊆ W) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (chartInvGramOnE (I := I) (g n t) p i j) y -
+        iteratedFDeriv ℝ r (chartInvGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon := by
+  have h := uniform_spatial_jets_chartJetOperator_of_gram hS g g₀ p hW hWt hgram hcont
+    (fun J => (Matrix.of J.1)⁻¹ i j) (fun _ hJ => contDiffAt_jetInvGram hJ i j) hK hKW r
+  simpa only [jet2_chartGram_invGram] using h
+
+theorem uniform_spatial_jets_chartChristoffel_of_gram
+    {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
+    (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)
+    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ W →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (g n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon)
+    (hcont : ∀ i j : Fin (Module.finrank ℝ E), ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ z.1) p i j) z.2)
+      (S ×ˢ W))
+    (i j k : Fin (Module.finrank ℝ E))
+    {K : Set E} (hK : IsCompact K) (hKW : K ⊆ W) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (chartChristoffel (I := I) (g n t) p i j k) y -
+        iteratedFDeriv ℝ r (chartChristoffel (I := I) (g₀ t) p i j k) y‖ ≤ epsilon := by
+  have heq (h : SmoothRiemannianMetric I M) (y : E) (hy : y ∈ W) :
+      iteratedFDeriv ℝ r (chartChristoffel (I := I) h p i j k) y =
+        iteratedFDeriv ℝ r (fun z =>
+          jetChristoffel (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) z) i j k) y := by
+    have hnear : chartChristoffel (I := I) h p i j k =ᶠ[𝓝 y]
+        (fun z => jetChristoffel (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) z) i j k) := by
+      filter_upwards [hW.mem_nhds hy] with z hz
+      have hcd := chartGramPi_smooth h p hWt
+      exact chartChristoffel_eq_jet h p
+        ((hcd.contDiffAt (hW.mem_nhds hz)).differentiableAt (by simp)) i j k
+    exact (hnear.iteratedFDeriv ℝ r).eq_of_nhds
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ := uniform_spatial_jets_chartJetOperator_of_gram hS g g₀ p hW hWt hgram hcont
+    (fun J => jetChristoffel (chartModelBasis E) J i j k)
+    (fun _ hJ => contDiffAt_jetChristoffel (chartModelBasis E) hJ i j k) hK hKW r epsilon hepsilon
+  refine ⟨N, fun n hn t ht y hy => ?_⟩
+  rw [heq (g n t) y (hKW hy), heq (g₀ t) y (hKW hy)]
+  exact hN n hn t ht y hy
+
+theorem uniform_spatial_jets_chartRicci_of_gram
+    {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
+    (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)
+    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ W →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (g n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon)
+    (hcont : ∀ i j : Fin (Module.finrank ℝ E), ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ z.1) p i j) z.2)
+      (S ×ˢ W))
+    (i j : Fin (Module.finrank ℝ E))
+    {K : Set E} (hK : IsCompact K) (hKW : K ⊆ W) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (chartRicciTensor (I := I) (g n t) p i j) y -
+        iteratedFDeriv ℝ r (chartRicciTensor (I := I) (g₀ t) p i j) y‖ ≤ epsilon := by
+  have heq (h : SmoothRiemannianMetric I M) (y : E) (hy : y ∈ W) :
+      iteratedFDeriv ℝ r (chartRicciTensor (I := I) h p i j) y =
+        iteratedFDeriv ℝ r (fun z =>
+          jetRicci (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) z) i j) y := by
+    have hnear : chartRicciTensor (I := I) h p i j =ᶠ[𝓝 y]
+        (fun z => jetRicci (chartModelBasis E) (jet2 (chartGramPi (I := I) h p) z) i j) := by
+      filter_upwards [hW.mem_nhds hy] with z hz
+      exact chartRicciTensor_eq_jet_of_mem h p hW hWt hz i j
+    exact (hnear.iteratedFDeriv ℝ r).eq_of_nhds
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ := uniform_spatial_jets_chartJetOperator_of_gram hS g g₀ p hW hWt hgram hcont
+    (fun J => jetRicci (chartModelBasis E) J i j)
+    (fun _ hJ => contDiffAt_jetRicci (chartModelBasis E) hJ i j) hK hKW r epsilon hepsilon
+  refine ⟨N, fun n hn t ht y hy => ?_⟩
+  rw [heq (g n t) y (hKW hy), heq (g₀ t) y (hKW hy)]
+  exact hN n hn t ht y hy
+
+theorem uniform_spatial_jets_metricScalar_of_gram
+    [I.Boundaryless] [T2Space M]
+    {P : Type*} [TopologicalSpace P] {S : Set P} (hS : IsSeqCompact S)
+    (g : ℕ → P → SmoothRiemannianMetric I M) (g₀ : P → SmoothRiemannianMetric I M)
+    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ W →
+      ∀ r : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (g n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ t) p i j) y‖ ≤ epsilon)
+    (hcont : ∀ i j : Fin (Module.finrank ℝ E), ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (chartGramOnE (I := I) (g₀ z.1) p i j) z.2)
+      (S ×ˢ W))
+    {K : Set E} (hK : IsCompact K) (hKW : K ⊆ W) (r : ℕ) :
+    ∀ epsilon : ℝ, 0 < epsilon → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ S, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (fun z => metricScalarAt (g n t) ((extChartAt I p).symm z)) y -
+        iteratedFDeriv ℝ r (fun z => metricScalarAt (g₀ t) ((extChartAt I p).symm z)) y‖ ≤ epsilon := by
+  let A : MatJet E (Module.finrank ℝ E) → ℝ := fun J =>
+    ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+      (Matrix.of J.1)⁻¹ i j * jetRicci (chartModelBasis E) J i j
+  have hA (J : MatJet E (Module.finrank ℝ E)) (hJ : (Matrix.of J.1).det ≠ 0) :
+      ContDiffAt ℝ ∞ A J := by
+    exact ContDiffAt.sum (fun i _ => ContDiffAt.sum (fun j _ =>
+      (contDiffAt_jetInvGram hJ i j).mul (contDiffAt_jetRicci (chartModelBasis E) hJ i j)))
+  have hscalar (h : SmoothRiemannianMetric I M) {y : E} (hy : y ∈ W) :
+      metricScalarAt h ((extChartAt I p).symm y) = A (jet2 (chartGramPi (I := I) h p) y) := by
+    have hx : (extChartAt I p).symm y ∈ chartLeviCivitaGoodSet (I := I) p := by
+      rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) p]
+      exact (extChartAt I p).map_target (hWt hy)
+    have hxy := (extChartAt I p).right_inv (hWt hy)
+    rw [DifferentialGeometry.PDE.RicciFlow.metricScalar_chartTrace_eq h p hx]
+    dsimp only [A]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [ricciTensor_chartBasisVec_alpha_eq (I := I) h p i j hx, hxy,
+      jet2_chartGram_invGram, chartRicciTensor_eq_jet_of_mem h p hW hWt hy i j]
+  have heq (h : SmoothRiemannianMetric I M) (y : E) (hy : y ∈ W) :
+      iteratedFDeriv ℝ r (fun z => metricScalarAt h ((extChartAt I p).symm z)) y =
+        iteratedFDeriv ℝ r (fun z => A (jet2 (chartGramPi (I := I) h p) z)) y := by
+    have hnear : (fun z => metricScalarAt h ((extChartAt I p).symm z)) =ᶠ[𝓝 y]
+        (fun z => A (jet2 (chartGramPi (I := I) h p) z)) := by
+      filter_upwards [hW.mem_nhds hy] with z hz
+      exact hscalar h hz
+    exact (hnear.iteratedFDeriv ℝ r).eq_of_nhds
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ := uniform_spatial_jets_chartJetOperator_of_gram hS g g₀ p hW hWt hgram hcont
+    A hA hK hKW r epsilon hepsilon
+  refine ⟨N, fun n hn t ht y hy => ?_⟩
+  rw [heq (g n t) y (hKW hy), heq (g₀ t) y (hKW hy)]
+  exact hN n hn t ht y hy
 
 end DifferentialGeometry.CheegerGromovCompactness

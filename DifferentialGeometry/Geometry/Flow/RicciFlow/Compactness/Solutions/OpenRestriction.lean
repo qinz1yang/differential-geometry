@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
-import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
+import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Pole
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.HalfLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTailEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedInverseDistanceControl
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistanceControl
 
 noncomputable section
 

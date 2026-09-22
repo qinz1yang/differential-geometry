@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
+import Mathlib.Geometry.Manifold.Riemannian.PathELength
+import Mathlib.Topology.Connected.PathConnected
 
 set_option autoImplicit false
 
@@ -63,5 +65,27 @@ theorem riemannianBallOf_scaleMetric
     riemannianEDistOf (I := I) g x y < ENNReal.ofReal r
   rw [edistOf_scale, ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
   exact ENNReal.mul_lt_mul_iff_right ha0 hatop
+
+open Set Bundle Manifold in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem isPathConnected_riemannianBallOf
+    (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ} (hr : 0 < r) :
+    IsPathConnected (riemannianBallOf g p r) := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  refine ⟨p, ?_, ?_⟩
+  · change riemannianEDist I p p < ENNReal.ofReal r
+    rw [riemannianEDist_self]
+    exact ENNReal.ofReal_pos.mpr hr
+  intro q hq
+  change riemannianEDist I p q < ENNReal.ofReal r at hq
+  obtain ⟨γ, hzero, hone, hγ, hlength⟩ := exists_lt_of_riemannianEDist_lt hq
+  let η : Path p q := ⟨⟨fun t => γ t, hγ.continuousOn.domRestrict⟩, hzero, hone⟩
+  refine ⟨η, fun t => ?_⟩
+  change riemannianEDist I p (γ t) < ENNReal.ofReal r
+  have hprefix := riemannianEDist_le_pathELength
+    (hγ.mono (Icc_subset_Icc le_rfl t.property.2)) hzero rfl t.property.1
+  exact (hprefix.trans (pathELength_mono (I := I) le_rfl t.property.2)).trans_lt hlength
+
 
 end DifferentialGeometry

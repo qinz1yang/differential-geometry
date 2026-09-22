@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Tensor.Multilinear
@@ -23,6 +23,7 @@ private local instance ordinaryConvergenceC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem closedWindow_metric_time_jet_components_contDiffOn {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b t : ℝ} (hac : a < c) (hcb : c < b)

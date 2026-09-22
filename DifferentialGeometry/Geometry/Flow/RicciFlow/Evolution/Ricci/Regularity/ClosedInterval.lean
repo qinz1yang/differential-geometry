@@ -8,7 +8,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -16,6 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciSharp_family_contMDiffOn_closed
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)

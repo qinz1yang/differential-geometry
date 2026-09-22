@@ -578,7 +578,7 @@ theorem fixedSourceLimitMetric_ricci_nonneg
   exact ricciTensor_nonneg_of_metricDerivNorm_tendsto
     (I := I) gSeq gInf xU vU hconv hRicSeq
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 theorem ricciBoundedBelow_zero_of_open_restrictions
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]

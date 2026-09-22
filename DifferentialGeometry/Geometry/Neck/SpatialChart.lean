@@ -153,3 +153,55 @@ theorem SpatialNeck.scalar_ratio_of_common_point {p₀ p₁ : M}
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+private instance spatialNeckChartSphereDimension :
+    Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x : M}
+
+theorem SpatialNeck.cylindricalChart_region (nk : SpatialNeck g eps x)
+    (A : Set nk.cylindricalChart.domain) :
+    nk.cylindricalChart.region A = nk.map '' (Subtype.val '' A) := by
+  ext y
+  constructor
+  · rintro ⟨z, ⟨w, hw, rfl⟩, rfl⟩
+    exact ⟨w, ⟨w, hw, rfl⟩, rfl⟩
+  · rintro ⟨z, ⟨w, hw, rfl⟩, rfl⟩
+    exact ⟨nk.cylindricalChart.chart w, ⟨w, hw, rfl⟩, rfl⟩
+
+variable [T2Space M]
+
+theorem SpatialNeck.abs_scalar_ratio_sub_one_le (nk : SpatialNeck g eps x)
+    {y : Cylinder} (hy : y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) :
+    |metricScalarAt g (nk.map y) / metricScalarAt g x - 1| ≤ 4323 * eps := by
+  apply nk.cylindricalChart.scalar_comparison_of_metricCloseOn g eps
+    (by linarith [nk.eps_small]) nk.cylindricalChart_metricCloseOn
+  rw [nk.cylindricalChart_region]
+  exact ⟨y, ⟨⟨y, hy⟩, mem_univ _, rfl⟩, rfl⟩
+
+theorem SpatialNeck.scalar_bounds_on_image_window (nk : SpatialNeck g eps x)
+    {y : M} (hy : y ∈ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) :
+    (1 - 4323 * eps) * metricScalarAt g x ≤ metricScalarAt g y ∧
+      metricScalarAt g y ≤ (1 + 4323 * eps) * metricScalarAt g x := by
+  obtain ⟨z, hz, rfl⟩ := hy
+  obtain ⟨hl, hu⟩ := abs_le.mp (nk.abs_scalar_ratio_sub_one_le hz)
+  constructor
+  · apply (le_div_iff₀ nk.Q_pos).mp
+    linarith
+  · apply (div_le_iff₀ nk.Q_pos).mp
+    linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end

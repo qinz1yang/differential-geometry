@@ -7,10 +7,10 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Set
+open Bundle _root_.Manifold Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 private local instance cylinderErrorC1 (epsilon : ℝ) :
     IsManifold SpatialNeckCylinderModel 1 (spatialNeckBuffer epsilon) :=

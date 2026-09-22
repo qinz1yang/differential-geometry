@@ -6,14 +6,14 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Filter Set
+open Bundle _root_.Manifold Filter Set
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 section Ancient
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]

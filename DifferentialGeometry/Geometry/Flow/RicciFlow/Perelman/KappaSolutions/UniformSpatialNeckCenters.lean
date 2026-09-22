@@ -190,7 +190,7 @@ theorem exists_uniform_compact_or_spatial_neck_of_oriented_ancient_kappa
       exists_eventually_scalar_bounds_and_bounded_radius_of_compact_positive_limit
         (L := L.atTime (I := I3) 0) F C0 hC0
         (fun i => (hX (phi i)).connected.toPreconnectedSpace)
-        (fun p => ancientKappa_scalar_pos L (by simp [ThreeSpace]) hL le_rfl p)
+        (fun p => ancientKappa_scalar_pos L hL le_rfl p)
     have hlarge : ∀ᶠ i in atTop, max r (max B c⁻¹) ≤ (phi i : ℝ) + 1 :=
       hthreshold.eventually (eventually_ge_atTop _)
     obtain ⟨i, hi, hlargei⟩ := (hmodels.and hlarge).exists

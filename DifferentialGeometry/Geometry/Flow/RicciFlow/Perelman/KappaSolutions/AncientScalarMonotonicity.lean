@@ -3,6 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Tens
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceCorollaries
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalMetricLowerBound
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciUpper
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
+
+section
 
 noncomputable section
 
@@ -118,3 +121,69 @@ theorem metric_inner_le_exp_scalar_bound {kappa : ℝ}
       mul_le_mul_of_nonneg_left hraw (Real.exp_pos _).le
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.IsAncientKappaSolution
+
+end
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Set Filter
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open CanonicalNeighborhood
+open scoped _root_.Manifold ContDiff _root_.Topology
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
+
+private local instance ancientScalarTopology : TopologicalSpace F.M := F.topology
+private local instance ancientScalarCharted : ChartedSpace H F.M := F.charted
+private local instance ancientScalarSmooth : IsManifold I ∞ F.M := F.smooth
+private local instance ancientScalarC1 : IsManifold I 1 F.M :=
+  IsManifold.of_le (n := ∞) (by decide)
+private local instance ancientScalarT2 : T2Space F.M := F.t2
+private local instance ancientScalarTangentT2 : T2Space (TangentBundle I F.M) := F.t2TangentBundle
+private local instance ancientScalarSigma : SigmaCompactSpace F.M := F.sigmaCompact
+
+theorem ancientKappa_scalar_monotoneOn
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (x : F.M) :
+    MonotoneOn (fun t : ℝ => F.S.scalar t x) (Set.Iic 0) := by
+  exact CanonicalNeighborhood.IsAncientKappaSolution.scalar_monotoneOn hF x
+
+theorem exists_eventually_scalar_pos_of_ancient
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) :
+    ∃ x : F.M, ∀ᶠ T in 𝓝[≤] (0 : ℝ), 0 < F.S.scalar T x := by
+  obtain ⟨t, ht, x, hx⟩ := hF.notFlat
+  have hnonneg : 0 ≤ F.rmNormSq (I := I) t x := by
+    exact DifferentialGeometry.Tensor0SBundle.normSq0S_nonneg
+      (I := I) (F.S.base.metric t) x 4 (F.S.base.rm04 t x)
+  have hpos : 0 < F.S.scalar t x :=
+    pos_of_mul_pos_right ((Real.sqrt_pos.mpr (lt_of_le_of_ne hnonneg hx.symm)).trans_le
+      (ancientKappa_rmNormLeScalar_finrank F hF t ht x)) (sq_nonneg _)
+  have ht0 : t ≤ 0 := by simpa only [hF.carrier_eq, mem_Iic] using ht
+  have hzero : 0 < F.S.scalar 0 x := hpos.trans_le
+    (ancientKappa_scalar_monotoneOn F hF x ht0 (mem_Iic.mpr le_rfl) ht0)
+  have hc : ContinuousOn (fun T : ℝ => F.S.scalar T x) (Iic 0) := by
+    have hmap : Continuous (fun T : ℝ => (T, x)) := continuous_id.prodMk continuous_const
+    have hm : MapsTo (fun T : ℝ => (T, x)) (Iic 0) (D.carrier ×ˢ univ) := by
+      intro T hT
+      exact ⟨by simpa only [hF.carrier_eq, mem_Iic] using hT, mem_univ x⟩
+    have hh := F.isSolution.scalarCont.comp hmap.continuousOn hm
+    exact hh
+  exact ⟨x, (hc 0 (mem_Iic.mpr le_rfl)).eventually (Ioi_mem_nhds hzero)⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+end

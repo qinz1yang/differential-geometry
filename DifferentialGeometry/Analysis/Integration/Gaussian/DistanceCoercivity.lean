@@ -7,6 +7,68 @@ noncomputable section
 open Filter Set MeasureTheory intervalIntegral
 open scoped Topology
 
+namespace DifferentialGeometry.Analysis
+
+theorem sq_div_le_of_upper_dini_sqrt_sum_bound
+    {d : ℝ → ℝ} {L₁ L₂ tau a b : ℝ} (htau : 0 < tau)
+    (hL₁ : 0 ≤ L₁) (hL₂ : 0 ≤ L₂)
+    (hcont : ContinuousOn d (Icc 0 tau))
+    (hac : ∀ c ∈ Ioc (0 : ℝ) tau, AbsolutelyContinuousOnInterval d c tau)
+    (hzero : d 0 = 0) (hnonneg : 0 ≤ d tau)
+    (hdini : ∀ t ∈ Ioo (0 : ℝ) tau, ∀ ε > 0, ∀ᶠ s in 𝓝[>] t,
+      slope d t s ≤
+        a * t ^ (-(1 / 2) : ℝ) +
+          (b * (Real.sqrt L₁ + Real.sqrt L₂)) *
+            tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) + ε) :
+    (d tau) ^ 2 / tau ≤ 8 * a ^ 2 + 64 * b ^ 2 * (L₁ + L₂) := by
+  have hhalf : IntervalIntegrable (fun t : ℝ => t ^ (-(1 / 2) : ℝ)) volume 0 tau :=
+    intervalIntegrable_rpow' (by norm_num)
+  have hquarter : IntervalIntegrable (fun t : ℝ => t ^ (-(3 / 4) : ℝ)) volume 0 tau :=
+    intervalIntegrable_rpow' (by norm_num)
+  have hG := (hhalf.const_mul a).add
+    (hquarter.const_mul ((b *
+      (Real.sqrt L₁ + Real.sqrt L₂)) * tau ^ ((1 / 4) : ℝ)))
+  have hint := hcont.sub_le_integral_of_dini_le htau.le hac hG hdini
+  have hh : (∫ t in (0 : ℝ)..tau, t ^ (-(1 / 2) : ℝ)) = 2 * Real.sqrt tau := by
+    rw [integral_rpow (Or.inl (by norm_num : (-1 : ℝ) < -(1 / 2)))]
+    norm_num
+    rw [Real.sqrt_eq_rpow]
+    ring
+  have hq : (∫ t in (0 : ℝ)..tau, t ^ (-(3 / 4) : ℝ)) =
+      4 * tau ^ ((1 / 4) : ℝ) := by
+    rw [integral_rpow (Or.inl (by norm_num : (-1 : ℝ) < -(3 / 4)))]
+    norm_num
+    ring
+  rw [hzero, sub_zero, integral_add (hhalf.const_mul a)
+      (hquarter.const_mul _), intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_const_mul, hh, hq] at hint
+  have hpow : tau ^ ((1 / 4) : ℝ) * tau ^ ((1 / 4) : ℝ) = Real.sqrt tau := by
+    rw [← Real.rpow_add htau]
+    norm_num
+    exact (Real.sqrt_eq_rpow tau).symm
+  have hprod : (b * (Real.sqrt L₁ + Real.sqrt L₂)) *
+        tau ^ ((1 / 4) : ℝ) * (4 * tau ^ ((1 / 4) : ℝ)) =
+      4 * (b * (Real.sqrt L₁ + Real.sqrt L₂)) *
+        Real.sqrt tau := by
+    rw [← hpow]
+    ring
+  rw [hprod] at hint
+  have hbound : d tau / Real.sqrt tau ≤ 2 * a + 4 * b * (Real.sqrt L₁ + Real.sqrt L₂) := by
+    apply (div_le_iff₀ (Real.sqrt_pos.mpr htau)).mpr
+    nlinarith only [hint]
+  have hsq₁ := Real.sq_sqrt hL₁
+  have hsq₂ := Real.sq_sqrt hL₂
+  have hsum : (Real.sqrt L₁ + Real.sqrt L₂) ^ 2 ≤ 2 * (L₁ + L₂) := by
+    nlinarith only [hsq₁, hsq₂, sq_nonneg (Real.sqrt L₁ - Real.sqrt L₂)]
+  have hupper := pow_le_pow_left₀
+    (div_nonneg hnonneg (Real.sqrt_nonneg tau)) hbound 2
+  rw [div_pow, Real.sq_sqrt htau.le] at hupper
+  have hscaled := mul_le_mul_of_nonneg_left hsum (mul_nonneg (by norm_num : (0 : ℝ) ≤ 32) (sq_nonneg b))
+  nlinarith only [hupper, hscaled,
+    sq_nonneg (2 * a - 4 * b * (Real.sqrt L₁ + Real.sqrt L₂))]
+
+end DifferentialGeometry.Analysis
+
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 private theorem square_le_sum_of_sqrt_bound {d L₁ L₂ : ℝ}

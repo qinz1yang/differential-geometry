@@ -39,14 +39,15 @@ theorem integral_mul_smoothMul_dirichletNirenbergTest_eq_integral_chart
     {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
     (φ : C^∞⟮I_hs, M; ℝ⟯)
     (k : Fin (Module.finrank ℝ EuN)) (h : ℝ)
-    (hηs : Metric.cthickening |h| (tsupport η) ⊆ Ω) (u v : H1ComplDirichlet q) :
+    (hηs : Metric.cthickening |h| (tsupport η) ⊆ Ω)
+    (u : M → ℝ) (hu : Measurable u) (v : H1ComplDirichlet q) :
     let e := toEuclidean (E := EuN)
     let x := fun z => (extChartAt I_hs α).symm (e.symm z)
-    (∫ y, H1ComplDirichletToLp q u y *
+    (∫ y, u y *
       H1ComplDirichletToLp q (smoothMulH1ComplDirichlet q φ
         (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hηs v)) y
         ∂(riemannianVolumeMeasure (I := I_hs) (M := M) q)) =
-      ∫ z, chartDensity (I := I_hs) q α (x z) * H1ComplDirichletToLp q u (x z) * φ (x z) *
+      ∫ z, chartDensity (I := I_hs) q α (x z) * u (x z) * φ (x z) *
         nirenbergTestFunction k h η (fun z => H1ComplDirichletToLp q v (x z)) z := by
   intro e x
   let R := chartRestrictionLp q α hΩ.measurableSet hΩc
@@ -71,16 +72,16 @@ theorem integral_mul_smoothMul_dirichletNirenbergTest_eq_integral_chart
       (chartPullback_ae_eq_of_ae_eq q α htest.symm)
   rw [H1ComplDirichletToLp_smoothMulH1ComplDirichlet]
   calc
-    _ = ∫ y, (H1ComplDirichletToLp q u y * φ y) * chartPullback I_hs α f y
+    _ = ∫ y, (u y * φ y) * chartPullback I_hs α f y
         ∂(riemannianVolumeMeasure (I := I_hs) (M := M) q) := by
       apply integral_congr_ae
       filter_upwards [hvalue, smoothMulLp_apply_coeFn q φ (H1ComplDirichletToLp q
         (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hηs v))] with y hy hm
       rw [hm, hy]
       ring
-    _ = ∫ z, chartDensity (I := I_hs) q α (x z) * (H1ComplDirichletToLp q u (x z) * φ (x z)) * f z :=
+    _ = ∫ z, chartDensity (I := I_hs) q α (x z) * (u (x z) * φ (x z)) * f z :=
       integral_mul_chartPullback_eq_integral_euclidean q α
-        ((Lp.stronglyMeasurable (H1ComplDirichletToLp q u)).measurable.mul φ.contMDiff.continuous.measurable) hf hfs
+        (hu.mul φ.contMDiff.continuous.measurable) hf hfs
     _ = _ := by
       apply integral_congr_ae
       filter_upwards [htest] with z hz
@@ -93,18 +94,19 @@ theorem integral_mul_dirichletNirenbergTest_eq_integral_chart
     (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
     {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ EuN)) (h : ℝ)
-    (hηs : Metric.cthickening |h| (tsupport η) ⊆ Ω) (u v : H1ComplDirichlet q) :
+    (hηs : Metric.cthickening |h| (tsupport η) ⊆ Ω)
+    (u : M → ℝ) (hu : Measurable u) (v : H1ComplDirichlet q) :
     let e := toEuclidean (E := EuN)
     let x := fun z => (extChartAt I_hs α).symm (e.symm z)
-    (∫ y, H1ComplDirichletToLp q u y *
+    (∫ y, u y *
       H1ComplDirichletToLp q (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hηs v) y
         ∂(riemannianVolumeMeasure (I := I_hs) (M := M) q)) =
-      ∫ z, chartDensity (I := I_hs) q α (x z) * H1ComplDirichletToLp q u (x z) *
+      ∫ z, chartDensity (I := I_hs) q α (x z) * u (x z) *
         nirenbergTestFunction k h η (fun z => H1ComplDirichletToLp q v (x z)) z := by
   simpa only [smoothMulH1ComplDirichlet_one, ContinuousLinearMap.id_apply,
     ContMDiffMap.coe_one, Pi.one_apply, mul_one] using
     integral_mul_smoothMul_dirichletNirenbergTest_eq_integral_chart q α hΩ hΩc hΩs
-      hη hηc 1 k h hηs u v
+      hη hηc 1 k h hηs u hu v
 
 theorem integral_mul_smoothMul_dirichletNirenbergTest_eq_of_mul_chartDensity
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
@@ -132,7 +134,9 @@ theorem integral_mul_smoothMul_dirichletNirenbergTest_eq_of_mul_chartDensity
   let F := nirenbergTestFunction k h η V
   have hFs : tsupport F ⊆ Metric.cthickening |h| (tsupport η) :=
     nirenbergTestFunction_tsupport_subset_cthickening k h η V
-  rw [integral_mul_smoothMul_dirichletNirenbergTest_eq_integral_chart]
+  rw [integral_mul_smoothMul_dirichletNirenbergTest_eq_integral_chart q α hΩ hΩc hΩs
+    hη hηc φ k h hηs (H1ComplDirichletToLp q u)
+      (Lp.stronglyMeasurable _).measurable v]
   calc
     _ = ∫ z, U z * F z := by
       apply integral_congr_ae

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree.SmoothFiniteSource
-import DifferentialGeometry.Analysis.Sobolev.WeakDerivative.FiniteSource
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeFiniteSum
 
 noncomputable section
 
@@ -60,10 +60,10 @@ theorem exists_lp_time_weak_derivative_tree_of_smooth_finite_sum
     rw [← Measure.prod_restrict] at hm
     exact hm
   obtain ⟨R, hR, hRtime⟩ := Sobolev.exists_lp_weak_deriv_of_ae_eq_finite_sum
-    hp (isOpen_Ioo.prod hΩ) (1, 0) f (fun j => Y j 0 e) (fun j => Z j 0 e) A
-    (fun j => hlift _ (hA j).continuousOn) (fun j => hlift _ (hDA j).continuousOn)
-    (fun j => (hA j).mono (prod_mono (Ioo_subset_Icc_self.trans hIcc)
-      (subset_closure.trans hΩO))) htime hf
+    Finset.univ (isOpen_Ioo.prod hΩ) hp (1, 0) f (fun j => Y j 0 e) (fun j => Z j 0 e) A
+    (fun j _ => hlift _ (hA j).continuousOn) (fun j _ => hlift _ (hDA j).continuousOn)
+    (fun j _ => (hA j).mono (prod_mono (Ioo_subset_Icc_self.trans hIcc)
+      (subset_closure.trans hΩO))) (fun j _ => htime j) hf
   let B : ι ⊕ ι → ℝ × E → ℝ := Sum.elim A DA
   let V : ι ⊕ ι → ∀ n : ℕ, (Fin n → Fin d) → Lp ℝ p ν := Sum.elim Z Y
   have hB (j : ι ⊕ ι) : ContDiffOn ℝ (⊤ : ℕ∞) (B j) (I ×ˢ O) := by

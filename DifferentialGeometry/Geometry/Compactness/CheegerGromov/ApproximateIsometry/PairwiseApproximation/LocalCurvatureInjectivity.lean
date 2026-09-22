@@ -55,6 +55,7 @@ theorem exists_subsequence_pairwise_metric_approximation_of_local_curvature_inje
     (fun k => {y : (X.obj (phi k)).M | riemannianEDistOf (I := I) (X.obj (phi k)).metric
       (X.obj (phi k)).basepoint y ≤ ENNReal.ofReal r}) hG hconv
     (hPhi.mono fun k ⟨Φ, hsource, hEq, hbase, hcapture, _⟩ =>
-      ⟨Φ, hsource, hEq, hbase, hcapture⟩)
+      ⟨Φ, hsource, hEq, hbase, fun y hy =>
+        (image_mono subset_closure) (hcapture y hy)⟩)
 
 end DifferentialGeometry.CheegerGromovCompactness

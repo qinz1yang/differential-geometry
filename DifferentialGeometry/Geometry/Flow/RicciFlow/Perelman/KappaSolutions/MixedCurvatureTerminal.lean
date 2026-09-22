@@ -9,14 +9,13 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open CanonicalNeighborhood.FiniteHorn
-open Bundle Manifold Filter DifferentialGeometry.Tensor0SBundle
+open Bundle _root_.Manifold Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
-  [NeZero (Module.finrank ℝ E)]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
@@ -38,7 +37,7 @@ def mixedCurvatureNorm {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (p q : ℕ) (t : ℝ) (x : M) : ℝ :=
   Real.sqrt (normSq0S (I := I) (S.base.metric t) x (4 + p) (mixedCurvatureTensor S p q t x))
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] in
 @[simp] theorem mixedCurvatureTensor_zero {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (p : ℕ) (t : ℝ) (x : M) :
     mixedCurvatureTensor S p 0 t x = nablaKRm04Field S t p x := rfl

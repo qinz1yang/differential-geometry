@@ -1,6 +1,9 @@
+import DifferentialGeometry.Analysis.Calculus.Derivative.AlmostEverywhereLipschitz
 import Mathlib.Analysis.Calculus.ContDiff.Defs
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.CompMul
@@ -205,6 +208,149 @@ theorem fderiv_fderiv_translate (g : E → ℝ) (hg : ContDiff ℝ 2 g) (c y : E
     fderiv ℝ (fderiv ℝ (fun z : E => g (z + c))) y
         = fderiv ℝ (fun z : E => fderiv ℝ g (z + c)) y := by rw [hfun]
     _ = fderiv ℝ (fderiv ℝ g) (y + c) := fderiv_translate (fderiv ℝ g) c y hd
+
+theorem second_order_polynomial_derivatives
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (x : E) (c : F) (p : E →L[ℝ] F) (B : E →L[ℝ] E →L[ℝ] F) (hB : B.flip = B) :
+    let P := fun y => c + p (y - x) + (1 / 2 : ℝ) • B (y - x) (y - x)
+    ContDiff ℝ (⊤ : ℕ∞) P ∧ P x = c ∧
+      ∀ y, fderiv ℝ P y = p + B (y - x) ∧ fderiv ℝ (fderiv ℝ P) y = B := by
+  intro P
+  have hP : ContDiff ℝ (⊤ : ℕ∞) P :=
+    (contDiff_const.add (p.contDiff.comp (contDiff_id.sub contDiff_const))).add
+      (((B.contDiff.comp (contDiff_id.sub contDiff_const)).clm_apply
+        (contDiff_id.sub contDiff_const)).const_smul (1 / 2 : ℝ))
+  have hderiv (y : E) : HasFDerivAt P (p + B (y - x)) y := by
+    have hs := (hasFDerivAt_id (𝕜 := ℝ) y).sub_const x
+    have hlin : HasFDerivAt (fun z => c + p (z - x)) p y := by
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using
+        (p.hasFDerivAt.comp y hs).const_add c
+    have hquad : HasFDerivAt (fun z => (1 / 2 : ℝ) • B (z - x) (z - x)) (B (y - x)) y := by
+      have h := ((B.hasFDerivAt.comp y hs).clm_apply hs).const_smul (1 / 2 : ℝ)
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq, hB, Pi.smul_def,
+        ← two_smul ℝ, smul_smul, one_div_mul_cancel (by norm_num : (2 : ℝ) ≠ 0), one_smul] using h
+    exact hlin.fun_add hquad
+  refine ⟨hP, by simp [P], fun y => ⟨(hderiv y).fderiv, ?_⟩⟩
+  have heq : fderiv ℝ P = fun z => p + B (z - x) := funext fun z => (hderiv z).fderiv
+  rw [heq]
+  have hd := (B.hasFDerivAt.comp y ((hasFDerivAt_id (𝕜 := ℝ) y).sub_const x)).const_add p
+  simpa only [Function.comp_def, ContinuousLinearMap.comp_id, id_eq] using hd.fderiv
+
+theorem second_order_taylor_isLittleO
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {f' : E → E →L[ℝ] F} {f'' : E →L[ℝ] E →L[ℝ] F} {x : E}
+    (hf : ∀ᶠ y in 𝓝 x, HasFDerivAt f (f' y) y) (hD : HasFDerivAt f' f'' x) :
+    (fun y => f y - f x - f' x (y - x) - (1 / 2 : ℝ) • f'' (y - x) (y - x))
+      =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  have hsym : f''.flip = f'' := by
+    ext v w
+    exact (second_derivative_symmetric_of_eventually_of_real hf hD v w).symm
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hf
+  let P : E → F := fun y => f y - f x - f' x (y - x) - (1 / 2 : ℝ) • f'' (y - x) (y - x)
+  let P' : E → E →L[ℝ] F := fun y => f' y - f' x - f'' (y - x)
+  have hP (y : E) (hy : y ∈ Metric.ball x r) : HasFDerivAt P (P' y) y := by
+    have hs := (hasFDerivAt_id (𝕜 := ℝ) y).sub_const x
+    have hlin : HasFDerivAt (fun z => f' x (z - x)) (f' x) y := by
+      simpa only [ContinuousLinearMap.comp_id, Function.comp_def, id_eq] using
+        (f' x).hasFDerivAt.comp y hs
+    have hquad : HasFDerivAt (fun z => (1 / 2 : ℝ) • f'' (z - x) (z - x))
+        (f'' (y - x)) y := by
+      have h := ((f''.hasFDerivAt.comp y hs).clm_apply hs).const_smul (1 / 2 : ℝ)
+      simpa only [ContinuousLinearMap.comp_id, Function.comp_def, id_eq, hsym, Pi.smul_def,
+        ← two_smul ℝ, smul_smul, one_div_mul_cancel (by norm_num : (2 : ℝ) ≠ 0), one_smul] using h
+    exact (((hball hy).sub_const (f x)).sub hlin).sub hquad
+  have hp : P' =o[𝓝[Metric.ball x r] x] (fun y => ‖y - x‖ ^ 1) := by
+    simpa only [P', pow_one] using hD.isLittleO.norm_right.mono nhdsWithin_le_nhds
+  have h := (convex_ball x r).isLittleO_pow_succ (Metric.mem_ball_self hr)
+    (fun y hy => (hP y hy).hasFDerivWithinAt) hp
+  rw [Metric.isOpen_ball.nhdsWithin_eq (Metric.mem_ball_self hr)] at h
+  simpa only [P, sub_self, map_zero, smul_zero, sub_zero] using h
+
+theorem second_order_taylor_isLittleO_of_hasFDerivWithinAt_fderiv
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {L : NNReal} {f : E → F} {s : Set E} {x : E}
+    (hs : s ∈ 𝓝 x) (hf : LipschitzOnWith L f s)
+    {B : E →L[ℝ] E →L[ℝ] F}
+    (hD : HasFDerivWithinAt (fderiv ℝ f) B {y | DifferentiableAt ℝ f y} x) :
+    (fun y => f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) • B (y - x) (y - x))
+      =o[𝓝 x] (fun y => ‖y - x‖ ^ 2) := by
+  borelize E
+  let μ : Measure E := Measure.addHaar
+  apply Asymptotics.IsLittleO.of_bound
+  intro c hc
+  have hbound := hD.isLittleO.bound (half_pos hc)
+  obtain ⟨r, hr, hrb⟩ := Metric.mem_nhdsWithin_iff.mp hbound
+  obtain ⟨R, hR, hRs⟩ := Metric.mem_nhds_iff.mp hs
+  filter_upwards [Metric.ball_mem_nhds x (half_pos (lt_min hr hR))] with y hy
+  by_cases hxy : y = x
+  · subst y
+    simp
+  have hn : 0 < ‖y - x‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxy)
+  have hsmall : 2 * ‖y - x‖ < min r R := by
+    have hh : ‖y - x‖ < min r R / 2 := by simpa only [Metric.mem_ball, dist_eq_norm] using hy
+    linarith
+  have hbs : Metric.ball x (2 * ‖y - x‖) ⊆ s := by
+    intro z hz
+    exact hRs (lt_trans hz (hsmall.trans_le (min_le_right r R)))
+  have hLip := hf.mono hbs
+  have hdiff : ∀ᵐ z ∂μ.restrict (Metric.ball x (2 * ‖y - x‖)), DifferentiableAt ℝ f z := by
+    filter_upwards [hLip.ae_differentiableWithinAt Metric.isOpen_ball.measurableSet,
+      ae_restrict_mem Metric.isOpen_ball.measurableSet] with z hz hzb
+    exact hz.differentiableAt (Metric.isOpen_ball.mem_nhds hzb)
+  have hest : ∀ᵐ z ∂μ.restrict (Metric.ball x (2 * ‖y - x‖)),
+      ‖fderiv ℝ f z - (fderiv ℝ f x - B x) - B z‖ ≤ c * ‖y - x‖ := by
+    filter_upwards [hdiff, ae_restrict_mem Metric.isOpen_ball.measurableSet] with z hzd hzb
+    have hzr : z ∈ Metric.ball x r := lt_trans hzb (hsmall.trans_le (min_le_left r R))
+    have h := hrb ⟨hzr, hzd⟩
+    have heq : fderiv ℝ f z - (fderiv ℝ f x - B x) - B z =
+        fderiv ℝ f z - fderiv ℝ f x - B (z - x) := by rw [map_sub]; abel
+    rw [heq]
+    calc
+      _ ≤ c / 2 * ‖z - x‖ := h
+      _ ≤ c / 2 * (2 * ‖y - x‖) :=
+        mul_le_mul_of_nonneg_left (by simpa only [Metric.mem_ball, dist_eq_norm] using (Metric.mem_ball.mp hzb).le) (by positivity)
+      _ = c * ‖y - x‖ := by ring
+  have hh := norm_sub_quadratic_le_of_ae_norm_fderiv_sub_le Metric.isOpen_ball (convex_ball _ _)
+    hLip (fderiv ℝ f x - B x) B (C := ⟨c * ‖y - x‖, by positivity⟩) hest
+    (Metric.mem_ball_self (by positivity : 0 < 2 * ‖y - x‖))
+    (show y ∈ Metric.ball x (2 * ‖y - x‖) by rw [Metric.mem_ball, dist_eq_norm]; linarith)
+  have heq : f y - f x - (fderiv ℝ f x - B x) (y - x) - B x (y - x) =
+      f y - f x - fderiv ℝ f x (y - x) := by rw [sub_apply]; abel
+  rw [heq] at hh
+  change ‖f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) • B (y - x) (y - x)‖ ≤
+    (c * ‖y - x‖) * ‖y - x‖ at hh
+  change ‖f y - f x - fderiv ℝ f x (y - x) - (1 / 2 : ℝ) • B (y - x) (y - x)‖ ≤
+    c * ‖‖y - x‖ ^ 2‖
+  rw [Real.norm_of_nonneg (sq_nonneg ‖y - x‖)]
+  nlinarith only [hh]
+
+theorem fderiv_fderiv_comp_affine
+    {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {f : F → G} (A : E →L[ℝ] F) (c : F) (y v w : E)
+    (hf : ContDiffAt ℝ 2 f (c + A y)) :
+    fderiv ℝ (fderiv ℝ (fun z => f (c + A z))) y v w =
+      fderiv ℝ (fderiv ℝ f) (c + A y) (A v) (A w) := by
+  have hg (z : E) : HasFDerivAt (fun q => c + A q) A z := A.hasFDerivAt.const_add c
+  have hdf : DifferentiableAt ℝ (fderiv ℝ f) (c + A y) :=
+    (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt one_ne_zero
+  have heq : fderiv ℝ (fun z => f (c + A z)) =ᶠ[𝓝 y]
+      (fun z => (fderiv ℝ f (c + A z)).comp A) := by
+    filter_upwards [(hg y).continuousAt (hf.eventually (by norm_num))] with z hz
+    change ContDiffAt ℝ 2 f (c + A z) at hz
+    exact ((hz.differentiableAt (by norm_num)).hasFDerivAt.comp z (hg z)).fderiv
+  rw [heq.fderiv_eq]
+  have hdcomp : DifferentiableAt ℝ (fun z => fderiv ℝ f (c + A z)) y :=
+    hdf.comp y (hg y).differentiableAt
+  rw [fderiv_clm_comp hdcomp (differentiableAt_const A)]
+  have hd : fderiv ℝ (fun z => fderiv ℝ f (c + A z)) y =
+      (fderiv ℝ (fderiv ℝ f) (c + A y)).comp A :=
+    (hdf.hasFDerivAt.comp y (hg y)).fderiv
+  rw [hd]
+  simp
 
 namespace Calculus
 

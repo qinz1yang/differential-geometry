@@ -6,7 +6,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

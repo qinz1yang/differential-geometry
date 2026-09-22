@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornLocalCompletion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompleteTriangleEquality
+import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteTriangleEquality
 
 set_option autoImplicit false
 noncomputable section

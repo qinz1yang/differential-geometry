@@ -7,7 +7,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -16,6 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)]
   {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem uhlenbeckEndomorphism_contMDiffOn_closed
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
@@ -37,6 +38,7 @@ theorem uhlenbeckEndomorphism_contMDiffOn_closed
     (solutionInverseMetricComponents_symm S basisAt) ordConnected_Icc ⟨le_rfl, hcb.le⟩
     (ricciSharp_family_contMDiffOn_closed S hS hac hcb hslab hregular) hι₀ hframe
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_uhlenbeckFrame_contMDiffOn_closed [Nonempty Idx]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)

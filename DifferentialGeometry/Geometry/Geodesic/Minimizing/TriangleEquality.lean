@@ -1,0 +1,10 @@
+import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteTriangleEquality
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+export DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+  (intrinsicGeodesic_continues_of_distance_add unit_intrinsic_vector_eq_of_short_endpoint
+    exists_intrinsicGeodesic_eq_short_metric_segment
+    exists_intrinsicGeodesic_eq_centered_metric_segment)
+
+end DifferentialGeometry.Geometry.Riemannian

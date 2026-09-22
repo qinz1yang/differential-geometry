@@ -7,7 +7,7 @@ open scoped Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 open Bundle Filter Set
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 
 universe u

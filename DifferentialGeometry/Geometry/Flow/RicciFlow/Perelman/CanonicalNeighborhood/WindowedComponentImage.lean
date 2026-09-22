@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalDomain
+import DifferentialGeometry.Topology.Connected.OpenPartialHomeomorph
 import Mathlib.Topology.Connected.LocallyConnected
 
 set_option autoImplicit false
@@ -28,17 +29,11 @@ theorem WindowedModelWitness.image_canonical_domain_eq_connectedComponent_of_isO
     (hbuffer : 2 * C1 ≤ modelRadius delta)
     (hopenU : IsOpen K.domain.carrier) :
     W.embedding '' K.domain.carrier = connectedComponent x := by
-  have hU := W.canonical_domain_subset_source K hbuffer
-  have hcont := W.embedding.contMDiffOn_toFun.continuousOn.mono hU
-  have hclosed := (K.domain.compact.image_of_continuousOn hcont).isClosed
-  have hconnected := K.domain.connected.image W.embedding hcont
-  have hopen : IsOpen (W.embedding '' K.domain.carrier) :=
-    W.embedding.toOpenPartialHomeomorph.isOpen_image_of_subset_source
-      hopenU hU
-  have hx : x ∈ W.embedding '' K.domain.carrier :=
-    ⟨W.model.basepoint, interior_subset K.center_inside, W.base_map⟩
-  exact subset_antisymm (hconnected.subset_connectedComponent hx)
-    ((show IsClopen (W.embedding '' K.domain.carrier) from ⟨hclosed, hopen⟩).connectedComponent_subset hx)
+  have hh := W.embedding.toOpenPartialHomeomorph.image_eq_connectedComponent_of_isCompact
+    K.domain.compact K.domain.connected.isPreconnected hopenU
+    (W.canonical_domain_subset_source K hbuffer) (interior_subset K.center_inside)
+  change W.embedding '' K.domain.carrier = connectedComponent (W.embedding W.model.basepoint) at hh
+  rwa [W.base_map] at hh
 
 omit [SigmaCompactSpace M] in
 theorem WindowedModelWitness.image_canonical_domain_eq_connectedComponent

@@ -323,6 +323,21 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
 attribute [local instance] normalizationTopology normalizationCharted normalizationSmooth
   normalizationC1 normalizationSigmaCompact normalizationT2 normalizationTangentT2
 
+theorem isAncientKappaSolution_curvatureNormalizedFlow_of_scalar_ne_zero
+    {kappa : ℝ} (hF : IsAncientKappaSolution (I := I) kappa F)
+    (t0 Q : ℝ) (hQ : 0 < Q) (ht0 : t0 ∈ D.carrier)
+    (x0 : F.M) (hscalar : F.S.scalar t0 x0 ≠ 0) :
+    IsAncientKappaSolution (I := I) kappa
+      (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0) := by
+  apply isAncientKappaSolution_curvatureNormalizedFlow_of_rmNormSq_ne_zero
+    F hF t0 Q hQ ht0 x0 (t := t0) le_rfl x0
+  intro hzero
+  have hbound := scalar_abs_le_rm (I := I) (M := F.M) (F.S.base.metric t0) x0
+  change |F.S.scalar t0 x0| ≤ _ * Real.sqrt
+    (normSq0S (F.S.base.metric t0) x0 4 (F.S.base.rm04 t0 x0)) at hbound
+  rw [hzero, Real.sqrt_zero, mul_zero] at hbound
+  exact hscalar (abs_eq_zero.mp (le_antisymm hbound (abs_nonneg _)))
+
 theorem isAncientKappaSolution_curvatureNormalizedFlow
     {kappa : ℝ} (hF : IsAncientKappaSolution (I := I) kappa F)
     (t0 Q : ℝ) (hQ : 0 < Q) (ht0 : t0 ∈ D.carrier)

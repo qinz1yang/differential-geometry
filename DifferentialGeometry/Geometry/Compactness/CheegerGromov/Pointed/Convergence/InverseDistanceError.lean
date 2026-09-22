@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedDistanceLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistance
 
 set_option autoImplicit false
 

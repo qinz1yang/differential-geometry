@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import Mathlib.Topology.MetricSpace.Completion
 
@@ -275,9 +276,6 @@ structure EndAngles {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) where
 attribute [local instance] EndAngles.metric
 
 
-def openConeDistance {Y : Type*} [MetricSpace Y] (x y : ℝ × Y) : ℝ :=
-  Real.sqrt (x.1 ^ 2 + y.1 ^ 2 - 2 * x.1 * y.1 * Real.cos (min Real.pi (dist x.2 y.2)))
-
 structure AnnularConvergence {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
     (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ) where
   relation : ℝ → ℝ → ℕ → Set ((ℝ × UniformSpace.Completion angles.quotient) × W)
@@ -290,11 +288,11 @@ structure AnnularConvergence {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g
     (∀ x w, (x, w) ∈ relation a b i → x.1 ∈ Set.Icc a b ∧
       dist (w : UniformSpace.Completion W) H.endpoint / d i ∈ Set.Icc a b) ∧
     (∀ x : ℝ × UniformSpace.Completion angles.quotient, x.1 ∈ Set.Icc a b →
-      ∃ y w, (y, w) ∈ relation a b i ∧ openConeDistance x y < error a b i) ∧
+      ∃ y w, (y, w) ∈ relation a b i ∧ Metric.coneDistance x y < error a b i) ∧
     (∀ w : W, dist (w : UniformSpace.Completion W) H.endpoint / d i ∈ Set.Icc a b →
       ∃ x z, (x, z) ∈ relation a b i ∧ dist w z / d i < error a b i) ∧
     (∀ x w y z, (x, w) ∈ relation a b i → (y, z) ∈ relation a b i →
-      |openConeDistance x y - dist w z / d i| < error a b i) ∧
+      |Metric.coneDistance x y - dist w z / d i| < error a b i) ∧
     (∀ x w, (x, w) ∈ relation a b i →
       |x.1 - dist (w : UniformSpace.Completion W) H.endpoint / d i| < error a b i) ∧
     (a < 1 → 1 < b →

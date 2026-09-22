@@ -32,7 +32,7 @@ theorem ancientKappaThree_ascr_eq_top {kappa : ℝ}
   have ht0le : t0 ≤ 0 := by
     simpa only [hF.carrier_eq, Set.mem_Iic] using ht0
   obtain ⟨hQ, hdata⟩ :=
-    ancientKappa_exists_curvatureNormalization_ascr F hdim hF t0 ht0le p
+    ancientKappa_exists_curvatureNormalization_ascr F hF t0 ht0le p
   let G := curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq
     t0 (F.S.scalar t0 p) hQ ht0 p
   have hG : IsAncientKappaSolution (I := I) kappa G := hdata.1

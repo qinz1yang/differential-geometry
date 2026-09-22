@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.MetricDistanceTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Analysis.Normed.Module.Connected
 
 set_option autoImplicit false
@@ -81,6 +82,55 @@ private theorem collar_metric_edist_comm (g : SmoothRiemannianMetric I3 M) (x y 
     riemannianEDistOf (I := I3) g x y = riemannianEDistOf (I := I3) g y x := by
   let : Bundle.RiemannianBundle (TangentSpace I3 : M → Type _) := ⟨g.toRiemannianMetric⟩
   exact Manifold.riemannianEDist_comm
+
+theorem collar_axial_segment_edist_le (C : CylinderReference)
+    (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    {U : Set Cylinder} {times : Set ℝ}
+    {order : ℕ} {eps : ℝ} {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
+    (heps : 0 ≤ eps) (hzero : 0 ∈ times) (hsource : U ⊆ F.source)
+    (p : Sphere 2) {a b : ℝ} (hsegment : ∀ u ∈ uIcc a b, (p, u) ∈ U) :
+    riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+      ENNReal.ofReal (Real.sqrt (1 + eps) * |a - b|) := by
+  have key : ∀ {a b : ℝ}, a ≤ b → (∀ u ∈ Icc a b, (p, u) ∈ U) →
+      riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+        ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) := by
+    intro a b hab hU
+    have hconst : ContMDiffOn 𝓘(ℝ, ℝ) I2 1 (fun _ : ℝ => p) (Set.Icc a b) :=
+      contMDiffOn_const
+    have hid : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun u : ℝ => u) (Set.Icc a b) :=
+      contMDiffOn_id
+    have hgamma : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun u : ℝ => ((p, u) : Cylinder))
+        (Set.Icc a b) :=
+      hconst.prodMk hid
+    have hFgamma : ContMDiffOn 𝓘(ℝ, ℝ) I3 1
+        ((F : Cylinder → M) ∘ (fun u : ℝ => ((p, u) : Cylinder))) (Set.Icc a b) :=
+      (F.contMDiffOn_toFun.of_le (by simp)).comp hgamma fun u hu => hsource (hU u hu)
+    have hedge := edistOf_le_metricPathELength (g 0) hab hFgamma
+    have hlen := metricPathELength_map_le (C.metric 0) (g 0) (F : Cylinder → M)
+      (Real.sqrt_nonneg (1 + eps)) hgamma
+      (fun u hu => F.mdifferentiableAt (by simp) (hsource (hU u ⟨hu.1.le, hu.2.le⟩)))
+      (by
+        intro u hu v
+        rw [Real.sq_sqrt (by linarith : 0 ≤ 1 + eps)]
+        have hh := (cmp.equivalence 0 hzero _ (hU u ⟨hu.1.le, hu.2.le⟩) v).2
+        rwa [hmetric, cmp.pullback_eq 0 _ (hU u ⟨hu.1.le, hu.2.le⟩)] at hh)
+    have hmodel := CylinderReference.axial_metricPathELength_le C p a b
+    calc riemannianEDistOf (g 0) (F (p, a)) (F (p, b))
+        ≤ metricPathELength (g 0) ((F : Cylinder → M) ∘
+            (fun u : ℝ => ((p, u) : Cylinder))) a b := hedge
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + eps)) *
+            metricPathELength (C.metric 0) (fun u : ℝ => ((p, u) : Cylinder)) a b := hlen
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + eps)) * ENNReal.ofReal (b - a) :=
+            mul_le_mul' le_rfl hmodel
+      _ = ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) :=
+            (ENNReal.ofReal_mul (Real.sqrt_nonneg _)).symm
+  rcases le_total a b with hab | hba
+  · have hh := key hab (fun u hu => hsegment u (by rwa [uIcc_of_le hab]))
+    simpa only [abs_of_nonpos (sub_nonpos.mpr hab), neg_sub] using hh
+  · have hh := key hba (fun u hu => hsegment u (by rwa [uIcc_of_ge hba]))
+    rw [riemannianEDistOf_comm] at hh
+    simpa only [abs_of_nonneg (sub_nonneg.mpr hba)] using hh
 
 theorem collar_axial_edist_le (C : CylinderReference)
     (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)

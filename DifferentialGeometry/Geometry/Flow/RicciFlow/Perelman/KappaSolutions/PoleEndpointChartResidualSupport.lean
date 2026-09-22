@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.Prod
 
 noncomputable section
 
-open Set Manifold
+open Set _root_.Manifold
 
 namespace DifferentialGeometry.Analysis.Sobolev.Chart
 
@@ -69,7 +69,7 @@ end DifferentialGeometry.Analysis
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory Set
+open Filter _root_.MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
@@ -77,7 +77,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

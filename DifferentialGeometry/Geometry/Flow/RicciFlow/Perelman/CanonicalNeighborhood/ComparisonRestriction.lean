@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
@@ -82,5 +83,6 @@ def MetricComparisonOn.freezeTime
         simp only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
           MetricFiberData.inner, map_zero, Real.sqrt_zero]
       exact hz.le.trans heps
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

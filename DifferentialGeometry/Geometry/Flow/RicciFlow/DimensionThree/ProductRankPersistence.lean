@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Set Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]

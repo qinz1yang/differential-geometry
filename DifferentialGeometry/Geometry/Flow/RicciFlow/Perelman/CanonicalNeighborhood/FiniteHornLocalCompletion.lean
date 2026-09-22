@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornInteriorMinimizers
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornRadialNeighborhood
+import DifferentialGeometry.Geometry.Metric.Distance.LocalCompletion
 
 set_option autoImplicit false
 noncomputable section
@@ -24,40 +25,8 @@ theorem finiteHorn_exists_local_complete_metric
         (∀ z (v : TangentSpace I3 z), g.inner z v v ≤ g'.inner z v v) ∧
         ∀ x ∈ Metric.ball p r, ∀ y ∈ Metric.ball p r,
           riemannianEDistOf g' x y = ENNReal.ofReal (dist x y) := by
-  obtain ⟨d, hd, hcompact⟩ := finiteHorn_isCompact_subradial_closedBall g H
-  refine ⟨d, hd, ?_⟩
-  intro p hp
-  let R : ℝ := dist (p : UniformSpace.Completion W) H.endpoint / 2
-  have hrad : 0 < dist (p : UniformSpace.Completion W) H.endpoint :=
-    dist_pos.mpr (H.endpoint_missing p)
-  have hR : 0 < R := half_pos hrad
-  have hRlt : R < dist (p : UniformSpace.Completion W) H.endpoint := half_lt_self hrad
-  obtain ⟨g', U, hcomplete, hU, hKU, heq, hle⟩ :=
-    exists_riemannianMetricComplete_eqOn_of_isCompact g (hcompact p hp R hRlt)
-  refine ⟨g', R / 4, U, by positivity, hcomplete, hU, ?_, heq, hle, ?_⟩
-  · simpa only [show 4 * (R / 4) = R by ring] using hKU
-  · intro x hx y hy
-    have hxp : dist x p < R / 4 := hx
-    have hyp : dist y p < R / 4 := hy
-    have hxy : dist x y < R / 2 := by
-      have htri := dist_triangle x p y
-      rw [dist_comm p y] at htri
-      linarith
-    have hball : {z : W | riemannianEDistOf g x z ≤ ENNReal.ofReal (R / 2)} ⊆ U := by
-      intro z hz
-      apply hKU
-      change dist z p ≤ R
-      change riemannianEDistOf g x z ≤ ENNReal.ofReal (R / 2) at hz
-      rw [H.edist_eq_ofReal_dist] at hz
-      have hxz : dist x z ≤ R / 2 :=
-        (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hz
-      have htri := dist_triangle z x p
-      rw [dist_comm z x] at htri
-      linarith
-    have hyshort : riemannianEDistOf g x y < ENNReal.ofReal (R / 2) := by
-      rw [H.edist_eq_ofReal_dist]
-      exact (ENNReal.ofReal_lt_ofReal_iff (by positivity)).mpr hxy
-    exact (riemannianEDistOf_eq_of_eqOn_ball g g' hball heq hle hyshort).trans
-      (edist_eq_ofReal_dist g H x y)
+  refine ⟨1, zero_lt_one, fun p _ => ?_⟩
+  exact Geometry.exists_riemannianMetricComplete_eqOn_ball g
+    (fun x y => (edist_dist x y).trans (edist_eq_ofReal_dist g H x y).symm) p
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

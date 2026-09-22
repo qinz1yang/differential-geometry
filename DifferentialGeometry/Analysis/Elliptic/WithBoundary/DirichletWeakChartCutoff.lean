@@ -235,6 +235,41 @@ theorem ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_localWeakPartial
   exact dirichletLocalWeakPartialLp_eq_ae_of_chartPullback_mul_localWeakPartial q α
     hΩ hΩc hΩs hΩ₀ hΩ₀c hΩ₀s hsub (u t) (v t) k j hvt hHt hwt hη hηc
 
+theorem ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_eq_one
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hsub : Ω₀ ⊆ Ω)
+    (v : Z → H1ComplDirichlet q) (F : Z → EuStd → ℝ)
+    (j : Fin (Module.finrank ℝ EuN))
+    (H : Z → EuStd → ℝ)
+    {η : EuStd → ℝ} (hηone : ∀ z ∈ Ω₀, η z = 1)
+    (hv : ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α (fun z => η z * F t z))
+    (hH : ∀ᵐ t ∂μ, LocallyIntegrable (H t) (volume.restrict Ω₀))
+    (hweak : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j (H t) (F t) Ω₀) :
+    ∀ᵐ t ∂μ,
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (v t) : EuStd → ℝ)
+        =ᵐ[volume.restrict Ω₀] H t := by
+  filter_upwards [hv, hweak, hH] with t hvt hwt hHt
+  have hc := ae_chartInverse_eq_of_chartPullback q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset)) hvt
+  have heq : (fun z => H1ComplDirichletToLp q (v t)
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)))
+      =ᵐ[volume.restrict Ω₀] F t := by
+    filter_upwards [hc.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl)),
+      ae_restrict_mem hΩ₀.measurableSet] with z hz hzm
+    simpa only [hηone z hzm, one_mul] using hz
+  have hd := hasWeakPartialDeriv_congr_ae hΩ₀ j heq
+    (DeGiorgi.HasWeakPartialDeriv.restrict hΩ₀ hsub
+      (hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (v t)))
+  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ₀ hd hwt
+    (((Lp.memLp _).mono_measure (Measure.restrict_mono hsub le_rfl)).locallyIntegrable (by norm_num))
+    hHt
+
+
 theorem ae_cutoff_gradient_flux_eq
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}

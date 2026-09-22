@@ -41,7 +41,7 @@ theorem exists_positive_canonicalWitness_of_compact_ancientKappa
             (F.S.base.metric t) y v w hvw)
   obtain ⟨c, hc, hclower⟩ := exists_pos_secLower_of_compact_positive_sectional (F.S.base.metric t) hsec
   exact exists_positive_canonicalWitness_of_compact ht
-    (fun y => ancientKappa_scalar_pos F hdim hF ht y) data hc hclower
+    (fun y => ancientKappa_scalar_pos F hF ht y) data hc hclower
 
 theorem exists_bufferedCanonical_of_compact_ancientKappa_of_positiveComponent
     (F : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval) {kappa : ℝ}
@@ -60,7 +60,7 @@ theorem exists_bufferedCanonical_of_compact_ancientKappa_of_positiveComponent
             (F.S.base.metric t) y v w hvw)
   obtain ⟨c, hc, hclower⟩ := exists_pos_secLower_of_compact_positive_sectional (F.S.base.metric t) hsec
   exact exists_bufferedCanonical_of_compact_positive ht
-    (fun y => ancientKappa_scalar_pos F hdim hF ht y) data hc hclower
+    (fun y => ancientKappa_scalar_pos F hF ht y) data hc hclower
 
 theorem exists_bufferedCanonical_of_compact_ancientKappa_of_projectivePresentation
     (F : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval) {kappa : ℝ}

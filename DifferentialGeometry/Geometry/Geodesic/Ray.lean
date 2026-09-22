@@ -120,6 +120,42 @@ theorem exists_isometric_riemannian_segment
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_unitSpeed_minimizing_geodesic_of_complete
+    (g : SmoothRiemannianMetric I M) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (p q : M) (hpq : p ≠ q) :
+    ∃ γ : ℝ → M, γ 0 = p ∧ γ ((riemannianEDistOf g p q).toReal) = q ∧
+      ContMDiff 𝓘(ℝ, ℝ) I ∞ γ ∧
+      (∀ t, IsGeodesicAt (I := I) g γ t) ∧
+      (∀ t, g.inner (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t 1) (mfderiv 𝓘(ℝ, ℝ) I γ t 1) = 1) ∧
+      ∀ s ∈ Icc 0 ((riemannianEDistOf g p q).toReal),
+        ∀ t ∈ Icc 0 ((riemannianEDistOf g p q).toReal),
+          (riemannianEDistOf g (γ s) (γ t)).toReal = |s - t| := by
+  let : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := (∞ : ℕ∞ω))
+    (by decide : (1 : ℕ∞ω) ≤ (∞ : ℕ∞ω))
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M ↦ TangentSpace I x) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  let : CompleteSpace M := hcomplete.complete
+  let : MetricSpace M := riemMetricSpace (I := I) (M := M)
+  have hEnorm : IsMetricNorm (I := I) (M := M) g :=
+    fun x v ↦ tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have hd (x y : M) : (riemannianEDistOf g x y).toReal = dist x y := by
+    rw [riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm,
+      riemMetric_dist_eq (I := I)]
+  rw [hd]
+  obtain ⟨γ, hisom, hzero, hend, hgeo, hunit⟩ :=
+    exists_unitSpeed_minimizing_riemannian_geodesic g hEnorm p q hpq
+  refine ⟨γ, hzero, hend, fun t => contMDiffAt_of_isGeodesicAt (hgeo t), hgeo, hunit, ?_⟩
+  intro s hs t ht
+  rw [hd]
+  exact hisom.dist_eq ⟨s, hs⟩ ⟨t, ht⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_riemannian_ray [NoncompactSpace M]
     (g : SmoothRiemannianMetric I M) (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) :

@@ -20,7 +20,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -123,7 +123,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff ENNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

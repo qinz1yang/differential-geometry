@@ -9,14 +9,14 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Filter Set
+open Bundle _root_.Manifold Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Geometry.Operator
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 universe u
 

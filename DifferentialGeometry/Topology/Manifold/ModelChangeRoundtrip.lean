@@ -1,19 +1,7 @@
+import DifferentialGeometry.Topology.Manifold.ModelWithCorners
 import Mathlib.Geometry.Manifold.Diffeomorph
 
 open scoped ContDiff
-
-namespace ModelWithCorners
-
-variable {𝕜 E F H : Type*} [NontriviallyNormedField 𝕜]
-  [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-  [NormedAddCommGroup F] [NormedSpace 𝕜 F] [TopologicalSpace H]
-
-@[simp] theorem transContinuousLinearEquiv_symm
-    (I : ModelWithCorners 𝕜 E H) (e : E ≃L[𝕜] F) :
-    (I.transContinuousLinearEquiv e).transContinuousLinearEquiv e.symm = I := by
-  ext x <;> simp [transContinuousLinearEquiv, PartialEquiv.trans_source]
-
-end ModelWithCorners
 
 namespace ContinuousLinearEquiv
 

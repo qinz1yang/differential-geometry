@@ -9,6 +9,7 @@
 !/lakefile.toml
 !/lean-toolchain
 !/README.md
+!/docs/
 !/LICENSE
 !/NOTICE
 !/TAU_CETI_REUSE.md

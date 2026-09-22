@@ -163,7 +163,7 @@ theorem exists_lp_weak_gradient_source_spatial_derivative
     simp_rw [Finset.sum_add_distrib]
     ring
   obtain ⟨DS, hDS, hDSformula, _⟩ :=
-    Sobolev.Euclidean.exists_lp_gradient_source_spatial_derivative_step
+    Sobolev.Euclidean.exists_lp_spatial_weak_partials_of_ae_eq_finite_sum_family
       hΩ S Y DY Q hQ hDQ hQslice hY hSsum
   refine ⟨DS, hDS, ?_⟩
   intro k l

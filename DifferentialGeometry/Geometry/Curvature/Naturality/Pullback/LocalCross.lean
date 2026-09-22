@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
@@ -354,6 +355,38 @@ theorem metricScalarAt_localPull
     simpa using hbasis'_apply (idxEquiv i)
   rw [hbasis'_comp,
     ricciTensor_localPull (I := I) (J := J) g Phi hPhi x]
+
+theorem metricScalarAt_eq_of_partialDiffeomorph_inner
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (Phi : PartialDiffeomorph I J M N ∞) (U : Opens M) (hU : (U : Set M) ⊆ Phi.source)
+    (hinner : ∀ y ∈ U, ∀ v w : TangentSpace I y,
+      g.inner y v w = h.inner (Phi y) (mfderiv I J Phi y v) (mfderiv I J Phi y w))
+    {x : M} (hx : x ∈ U) :
+    metricScalarAt g x = metricScalarAt h (Phi x) := by
+  let xu : U := ⟨x, hx⟩
+  have hval := isLocalDiffeomorph_subtype_val (I := I) U
+  have hPhi : IsLocalDiffeomorph I J ∞ (fun y : U => Phi y) :=
+    isLocalDiffeomorph_restrict_open U (fun y => ⟨Phi, hU y.property, fun _ _ => rfl⟩)
+  have hd (y : U) (v : TangentSpace I y) :
+      mfderiv I J (fun z : U => Phi z) y v = mfderiv I J Phi (y : M) v := by
+    have hmd := (Phi.contMDiffOn_toFun.contMDiffAt
+      (Phi.open_source.mem_nhds (hU y.property))).mdifferentiableAt (by simp)
+    change mfderiv I J ((Phi : M → N) ∘ (Subtype.val : U → M)) y v = _
+    rw [mfderiv_comp y hmd ((contMDiff_subtype_val (I := I) (U := U) (n := ∞)).mdifferentiableAt (by simp)),
+      ContinuousLinearMap.comp_apply, mfderiv_subtype_val_apply]
+  have hg : g.restrictOpen U = localPullMetric g (Subtype.val : U → M) hval := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rw [localPullMetric_inner, SmoothRiemannianMetric.restrictOpen_inner,
+      mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
+  have hh : g.restrictOpen U = localPullMetric h (fun y : U => Phi y) hPhi := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rw [localPullMetric_inner, SmoothRiemannianMetric.restrictOpen_inner, hd, hd]
+    exact hinner y y.property v w
+  have hr : metricScalarAt (g.restrictOpen U) xu = metricScalarAt g x := by
+    rw [hg, metricScalarAt_localPull]
+  rw [← hr, hh, metricScalarAt_localPull]
 
 end Trace
 

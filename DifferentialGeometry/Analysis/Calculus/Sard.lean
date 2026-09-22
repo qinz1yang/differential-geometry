@@ -3,6 +3,8 @@ Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith, Codex
 -/
+import DifferentialGeometry.Analysis.Calculus.Rademacher
+import DifferentialGeometry.Analysis.Integration.Measure.LipschitzChangeOfVariables
 import Mathlib.MeasureTheory.Measure.Haar.Unique
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
@@ -906,3 +908,45 @@ theorem addHaar_image_eq_zero_of_not_surjective_fderivWithin
   exact hpreimage
 
 end MeasureTheory
+
+theorem LocallyLipschitzOn.ae_forall_hasFDerivAt_equiv
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [MeasurableSpace F] [BorelSpace F] {ν : Measure F} [ν.IsAddHaarMeasure]
+    {f : E → F} {Ω : Set E} (hf : LocallyLipschitzOn Ω f) (hΩ : IsOpen Ω)
+    (hdim : Module.finrank ℝ E = Module.finrank ℝ F) :
+    ∀ᵐ y ∂ν, ∀ x ∈ Ω, f x = y → ∃ A : E ≃L[ℝ] F, HasFDerivAt f (A : E →L[ℝ] F) x := by
+  borelize E
+  let μ : Measure E := Measure.addHaar
+  let N : Set E := {x | x ∈ Ω ∧ ¬ DifferentiableAt ℝ f x}
+  have hN : μ N = 0 := by
+    have h := hf.ae_differentiableAt (μ := μ) hΩ
+    have hh := (ae_restrict_iff' hΩ.measurableSet).mp h
+    apply measure_mono_null (t := {x | ¬ (x ∈ Ω → DifferentiableAt ℝ f x)})
+      (fun x hx h => hx.2 (h hx.1))
+    exact ae_iff.mp hh
+  have himN : ν (f '' N) = 0 :=
+    (hf.mono (fun _ hx => hx.1)).addHaar_image_eq_zero hdim hN
+  let C : Set E := {x | x ∈ Ω ∧ DifferentiableAt ℝ f x ∧
+    ¬ Function.Surjective (fderiv ℝ f x)}
+  have himC : ν (f '' C) = 0 :=
+    addHaar_image_eq_zero_of_not_surjective_fderivWithin ν hdim
+      (fun x hx => hx.2.1.hasFDerivAt.hasFDerivWithinAt) (fun _ hx => hx.2.2)
+  have hgood : ∀ᵐ y ∂ν, y ∉ f '' N ∪ f '' C := by
+    apply ae_iff.mpr
+    convert measure_union_null himN himC using 1
+    congr 1
+    ext z
+    simp only [mem_ofPred_eq, not_not]
+  filter_upwards [hgood] with y hy
+  intro x hx hxy
+  have hdx : DifferentiableAt ℝ f x := by
+    by_contra h
+    exact hy (Or.inl ⟨x, ⟨hx, h⟩, hxy⟩)
+  have hsurj : Function.Surjective (fderiv ℝ f x) := by
+    by_contra h
+    exact hy (Or.inr ⟨x, ⟨hx, hdx, h⟩, hxy⟩)
+  have hbij : Function.Bijective (fderiv ℝ f x) :=
+    ⟨(LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).mpr hsurj, hsurj⟩
+  let A : E ≃L[ℝ] F := (LinearEquiv.ofBijective (fderiv ℝ f x).toLinearMap hbij).toContinuousLinearEquiv
+  exact ⟨A, hdx.hasFDerivAt⟩

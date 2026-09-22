@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 universe u uE uH
 
@@ -63,7 +63,7 @@ theorem le_one_of_time_zero_le_one_of_scale_comparison {R : ℝ → ℝ} {eta : 
     linarith
   exact key k t ⟨hkt, ht⟩
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -78,7 +78,7 @@ local instance backwardBoundT2 : T2Space F.M := F.t2
 local instance backwardBoundTangentT2 : T2Space (TangentBundle I F.M) := F.t2TangentBundle
 
 theorem ancientKappa_scalar_bounded_of_time_zero_le_one {kappa : ℝ}
-    (hdim : Module.finrank ℝ E = 3) (hanc : IsAncientKappaSolution (I := I) kappa F)
+    (hanc : IsAncientKappaSolution (I := I) kappa F)
     {eta : ℝ} (heta : 0 < eta) (hb : ScalarDifferentialBounds F eta)
     (hzero : ∀ y : F.M, F.S.scalar 0 y ≤ 1) :
     PointedFlowScalarBounded (I := I) F 1 := by
@@ -86,10 +86,10 @@ theorem ancientKappa_scalar_bounded_of_time_zero_le_one {kappa : ℝ}
   have ht0 : t ≤ 0 := by simpa only [hanc.carrier_eq, Set.mem_Iic] using ht
   refine ⟨ancientKappa_scalar_nonneg (I := I) F hanc ht0 x, ?_⟩
   refine le_one_of_time_zero_le_one_of_scale_comparison (R := fun s => F.S.scalar s x) heta
-    (fun s hs => ancientKappa_scalar_pos (I := I) F hdim hanc hs x)
+    (fun s hs => ancientKappa_scalar_pos (I := I) F hanc hs x)
     (fun s hs s' hs' =>
       (ancientKappa_temporal_scale_comparison (I := I) F hanc heta
-        (fun s hs y => ancientKappa_scalar_pos (I := I) F hdim hanc hs y) hb hs x s' hs').2)
+        (fun s hs y => ancientKappa_scalar_pos (I := I) F hanc hs y) hb hs x s' hs').2)
     (hzero x) t ht0
 
 theorem ancientKappa_scalar_bounded_of_universal_mixed_jet_bound {C0 C1 C2 : ℝ}
@@ -104,7 +104,7 @@ theorem ancientKappa_scalar_bounded_of_universal_mixed_jet_bound {C0 C1 C2 : ℝ
   refine ⟨eta, lt_of_lt_of_le zero_lt_one heta1, ?_⟩
   intro kappa F' hanc hzero
   exact ancientKappa_scalar_bounded_of_time_zero_le_one (F := F')
-    (by simp [ThreeSpace]) hanc (lt_of_lt_of_le zero_lt_one heta1) (hb kappa F' hanc) hzero
+    hanc (lt_of_lt_of_le zero_lt_one heta1) (hb kappa F' hanc) hzero
 
 theorem exists_scalar_function_pos_time_zero_le_one_not_le_one :
     ∃ R : ℝ → ℝ, (∀ t ≤ 0, 0 < R t) ∧ R 0 ≤ 1 ∧ ¬ (∀ t ≤ 0, R t ≤ 1) :=

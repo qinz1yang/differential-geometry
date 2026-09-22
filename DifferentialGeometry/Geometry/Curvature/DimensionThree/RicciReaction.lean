@@ -605,7 +605,7 @@ private theorem trace_reaction_curvature_matrix
 
 section Metric
 
-open Tensor0SBundle
+open _root_.DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}

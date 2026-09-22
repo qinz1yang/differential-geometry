@@ -10,7 +10,7 @@ open Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -70,7 +70,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

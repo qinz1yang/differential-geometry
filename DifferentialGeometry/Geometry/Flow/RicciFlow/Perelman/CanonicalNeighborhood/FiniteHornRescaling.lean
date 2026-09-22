@@ -101,7 +101,7 @@ theorem AnnularConvergence.eventually_rescaled_relation_distortion
     (hupper : ∀ᶠ i in atTop, metricScalarAt g (ray.point (d i)) * d i ^ 2 ≤ B) :
     ∀ᶠ i in atTop, ∀ hQ : 0 < metricScalarAt g (ray.point (d i)),
       ∀ x w y z, (x, w) ∈ C.relation a b i → (y, z) ∈ C.relation a b i →
-      |Real.sqrt (metricScalarAt g (ray.point (d i)) * d i ^ 2) * openConeDistance x y -
+      |Real.sqrt (metricScalarAt g (ray.point (d i)) * d i ^ 2) * Metric.coneDistance x y -
         metricDistance (scaleMetric (metricScalarAt g (ray.point (d i))) hQ g) w z| <
           Real.sqrt B * C.error a b i := by
   filter_upwards [C.annuli a b ha hab, hupper] with i hi hBi
@@ -129,7 +129,7 @@ theorem AnnularConvergence.exists_rescaled_annular_capture_bounds
             (ray.point (d i)) w < η * Real.sqrt c →
           dist (w : UniformSpace.Completion W) H.endpoint / d i ∈ Ioo (1 - η) (1 + η)) ∧
         (∀ x, x.1 ∈ Icc a b → ∃ y w, (y, w) ∈ C.relation a b i ∧
-          openConeDistance x y < C.error a b i ∧
+          Metric.coneDistance x y < C.error a b i ∧
           metricDistance (scaleMetric (metricScalarAt g (ray.point (d i))) hQ g)
             (ray.point (d i)) w ≤ (1 + b) * Real.sqrt B) := by
   obtain ⟨c, hc, hlower⟩ := finite_horn_two_scale_lower_bound H ray d hd hzero

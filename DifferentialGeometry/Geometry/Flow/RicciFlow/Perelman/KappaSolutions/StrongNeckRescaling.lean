@@ -7,9 +7,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Set
+open Bundle _root_.Manifold Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 private local instance strongRescalingSphereDimension :
     Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩

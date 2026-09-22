@@ -334,6 +334,93 @@ theorem dirichletBilinearFormToHs_neg_energyForm_eq_laplacian
     dirichletBilinearFormToHs_neg_energyForm_coeff,
     DirichletHs.dirichletHsInclusion_coeff, dirichletHsLaplacian_coeff]
 
+theorem dirichletHsNegOneRieszEquivH1Compl_inclusion_zero
+    (g : SmoothRiemannianMetric (I_half n) M) (u : DirichletHs g 0) :
+    dirichletHsNegOneRieszEquivH1Compl g
+        (dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) u) =
+      resolventDirichlet g (dirichletHsZeroEquivL2 g u) := by
+  apply (dirichletH1HilbertBasis g).repr.injective
+  ext i
+  rw [dirichletHsNegOneRieszEquivH1Compl_repr]
+  simp only [DirichletHs.rescaleEquivL2_apply, DirichletHs.dirichletHsInclusion_coeff]
+  rw [dirichletSobolevWeight_neg_one_eq_resolvent_eigenvalue,
+    HilbertBasis.repr_apply_apply, real_inner_comm,
+    resolventDirichlet_inner_eq_lpFunctional,
+    dirichletH1HilbertBasis_apply, map_smul,
+    H1ComplDirichletToLp_dirichletLaplacianEigenvector, real_inner_smul_left]
+  congr 1
+  rw [← HilbertBasis.repr_apply_apply]
+  change u.coeff i = dirichletL2Coeff (dirichletHsZeroEquivL2 g u) i
+  rw [DirichletHs.dirichletHsZeroEquivL2_dirichletL2Coeff]
+
+theorem dirichletHsNegOneEquivH1Dual_inclusion_zero_apply
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : DirichletHs g 0) (v : H1ComplDirichlet g) :
+    dirichletHsNegOneEquivH1Dual g
+        (dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) u) v =
+      inner ℝ (dirichletHsZeroEquivL2 g u) (H1ComplDirichletToLp g v) := by
+  rw [dirichletHsNegOneEquivH1Dual_apply, dirichletHsNegOneRieszEquivH1Compl_inclusion_zero,
+    resolventDirichlet_inner_eq_lpFunctional, real_inner_comm]
+
+theorem dirichletEnergyForm_apply_smooth_right
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : H1ComplDirichlet g) (φ : SmoothScalarDirichlet g) :
+    dirichletEnergyForm g u (smoothToH1ComplDirichlet g φ) =
+      -∫ x, H1ComplDirichletToLp g u x *
+        DifferentialGeometry.Geometry.Operator.WithBoundary.ΔGWithBoundary
+          (I := I_half n) g φ.smooth φ.interior_support x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) g := by
+  have hres := resolventDirichlet_inner_eq_lpFunctional g φ.oneSubLapClassicalLp u
+  rw [← smoothToH1ComplDirichlet_eq_resolventDirichlet_oneSubLap φ, real_inner_comm] at hres
+  rw [dirichletEnergyForm_apply, hres, H1ComplDirichletToLp_smoothToH1ComplDirichlet,
+    ← inner_sub_right, L2.inner_def]
+  calc
+    _ = ∫ x, -(H1ComplDirichletToLp g u x *
+        DifferentialGeometry.Geometry.Operator.WithBoundary.ΔGWithBoundary
+          (I := I_half n) g φ.smooth φ.interior_support x)
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) g := by
+      apply integral_congr_ae
+      filter_upwards [Lp.coeFn_sub φ.oneSubLapClassicalLp (smoothToLpDirichlet g φ),
+        φ.oneSubLap_memLp.coeFn_toLp, φ.memLp_two.coeFn_toLp] with x hs hΔ hφ
+      change φ.oneSubLapClassicalLp x = _ at hΔ
+      change smoothToLpDirichlet g φ x = φ.toFun x at hφ
+      rw [Real.inner_apply, hs, Pi.sub_apply, hΔ, hφ]
+      ring
+    _ = _ := integral_neg _
+
+theorem dirichletHsNegOneEquivH1Dual_laplacian_apply_smooth
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : DirichletHs g (-1 + 2)) (φ : SmoothScalarDirichlet g) :
+    dirichletHsNegOneEquivH1Dual g (dirichletHsLaplacian g (-1) u)
+        (smoothToH1ComplDirichlet g φ) =
+      ∫ x, dirichletHsZeroEquivL2 g
+          (dirichletHsInclusion (show (0 : ℝ) ≤ -1 + 2 by norm_num) u) x *
+        DifferentialGeometry.Geometry.Operator.WithBoundary.ΔGWithBoundary
+          (I := I_half n) g φ.smooth φ.interior_support x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) g := by
+  rw [← dirichletBilinearFormToHs_neg_energyForm_eq_laplacian,
+    ContinuousLinearMap.comp_apply, dirichletHsNegOneEquivH1Dual_bilinearFormToHs]
+  change -(dirichletEnergyForm g
+    (dirichletHsOneEquivH1Compl g (dirichletHsInclusion _ u))
+    (smoothToH1ComplDirichlet g φ)) = _
+  rw [dirichletEnergyForm_apply_smooth_right, neg_neg,
+    H1ComplDirichletToLp_dirichletHsOneEquivH1Compl, ← DirichletHs.dirichletHsInclusion_trans_apply]
+
+theorem dirichletHsNegOneEquivH1Dual_inclusion_zero_apply_smooth
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : DirichletHs g 0) (φ : SmoothScalarDirichlet g) :
+    dirichletHsNegOneEquivH1Dual g
+        (dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) u)
+        (smoothToH1ComplDirichlet g φ) =
+      ∫ x, dirichletHsZeroEquivL2 g u x * φ.toFun x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) g := by
+  rw [dirichletHsNegOneEquivH1Dual_inclusion_zero_apply,
+    H1ComplDirichletToLp_smoothToH1ComplDirichlet, L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [φ.memLp_two.coeFn_toLp] with x hx
+  change smoothToLpDirichlet g φ x = φ.toFun x at hx
+  rw [Real.inner_apply, hx, mul_comm]
+
 end Hs
 end Sobolev
 end Analysis

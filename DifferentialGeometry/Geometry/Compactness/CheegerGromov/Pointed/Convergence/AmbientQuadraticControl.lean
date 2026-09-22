@@ -141,3 +141,77 @@ theorem exists_pointed_full_ambient_quadratic_control
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 end
+
+noncomputable section
+namespace DifferentialGeometry.CheegerGromovCompactness
+open Filter Set
+open scoped _root_.Manifold ContDiff _root_.Topology
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+  {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+  {subseq : ℕ → ℕ} {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+
+private theorem tendsto_pullback_inner_self
+    [NeZero (Module.finrank ℝ E)]
+    (C : MetricConvergenceData Φ)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (x : L.M) (v : TangentSpace I x) :
+    Tendsto (fun k => (X.obj (subseq k)).metric.inner (Φ.map k x)
+      (mfderiv I I (Φ.map k) x v) (mfderiv I I (Φ.map k) x v)) atTop
+        (𝓝 (L.metric.inner x v v)) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hv : 0 ≤ L.metric.inner x v v := by
+    by_cases h : v = 0
+    · simp only [h, map_zero, le_refl]
+    · exact (L.metric.pos x v h).le
+  rw [Metric.tendsto_atTop]
+  intro epsilon hepsilon
+  obtain ⟨N, hN⟩ :=
+    PDE.RicciFlow.Perelman.KappaSolutions.exists_pointed_full_ambient_quadratic_control
+      C hreference {x} isCompact_singleton (epsilon / (L.metric.inner x v v + 1))
+        (div_pos hepsilon (by linarith))
+  refine ⟨N, fun n hn => ?_⟩
+  rw [Real.dist_eq]
+  refine ((hN n hn).2 x (mem_singleton x) v).trans_lt ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith : 0 < L.metric.inner x v v + 1)]
+  nlinarith
+
+theorem MetricConvergenceData.tendsto_pullback_inner
+    (C : MetricConvergenceData Φ)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (x : L.M) (v w : TangentSpace I x) :
+    Tendsto (fun k => (X.obj (subseq k)).metric.inner (Φ.map k x)
+      (mfderiv I I (Φ.map k) x v) (mfderiv I I (Φ.map k) x w)) atTop
+        (𝓝 (L.metric.inner x v w)) := by
+  by_cases hn : Module.finrank ℝ E = 0
+  · have hsub := (Module.finrank_zero_iff (R := ℝ) (M := E)).mp hn
+    let _ : Subsingleton (TangentSpace I x) := hsub
+    have hv : v = 0 := Subsingleton.elim _ _
+    have hw : w = 0 := Subsingleton.elim _ _
+    simp only [hv, hw, map_zero]
+    exact tendsto_const_nhds
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hn⟩
+    have h := (((tendsto_pullback_inner_self C hreference x (v + w)).sub
+      (tendsto_pullback_inner_self C hreference x v)).sub
+      (tendsto_pullback_inner_self C hreference x w)).div_const 2
+    have heq (k : ℕ) :
+        ((X.obj (subseq k)).metric.inner (Φ.map k x)
+          (mfderiv I I (Φ.map k) x (v + w)) (mfderiv I I (Φ.map k) x (v + w)) -
+          (X.obj (subseq k)).metric.inner (Φ.map k x)
+            (mfderiv I I (Φ.map k) x v) (mfderiv I I (Φ.map k) x v) -
+          (X.obj (subseq k)).metric.inner (Φ.map k x)
+            (mfderiv I I (Φ.map k) x w) (mfderiv I I (Φ.map k) x w)) / 2 =
+          (X.obj (subseq k)).metric.inner (Φ.map k x)
+            (mfderiv I I (Φ.map k) x v) (mfderiv I I (Φ.map k) x w) := by
+      rw [map_add, metric_add_self]
+      ring
+    have heqlim : (L.metric.inner x (v + w) (v + w) -
+        L.metric.inner x v v - L.metric.inner x w w) / 2 = L.metric.inner x v w := by
+      rw [metric_add_self]
+      ring
+    simpa only [heq, heqlim] using h
+end DifferentialGeometry.CheegerGromovCompactness

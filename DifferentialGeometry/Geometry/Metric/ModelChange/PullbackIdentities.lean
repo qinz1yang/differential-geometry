@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubt
 
 namespace DifferentialGeometry.SmoothRiemannianMetric
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 
@@ -17,18 +17,7 @@ theorem transContinuousLinearEquiv_restrictOpen
     (U : TopologicalSpace.Opens M) :
     (g.transContinuousLinearEquiv e).restrictOpen U =
       (g.restrictOpen U).transContinuousLinearEquiv e := by
-  apply SmoothRiemannianMetric.ext_inner
-  intro x v w
-  have hderiv : mfderiv (I.transContinuousLinearEquiv e) I (id : U → U) x =
-      mfderiv (I.transContinuousLinearEquiv e) I (id : M → M) (x : M) :=
-    (mfderiv_subtypeVal_comp (I := I.transContinuousLinearEquiv e) (J := I)
-      (id : U → U) x).symm.trans
-        (mfderiv_restrict_open (I := I.transContinuousLinearEquiv e) (J := I)
-          (id : M → M) U x)
-  have hleft := transContinuousLinearEquiv_inner g e (x : M) (v : F) (w : F)
-  have hright := transContinuousLinearEquiv_inner (g.restrictOpen U) e x v w
-  rw [hderiv] at hright
-  exact hleft.trans hright.symm
+  exact g.restrictOpen_transContinuousLinearEquiv e U
 
 theorem transContinuousLinearEquiv_pullbackMetric
     {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N] [T2Space N]

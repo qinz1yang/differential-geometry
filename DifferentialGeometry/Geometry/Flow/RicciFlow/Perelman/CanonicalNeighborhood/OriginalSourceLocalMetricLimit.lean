@@ -162,7 +162,12 @@ theorem RealizedFiniteHorn.exists_original_source_local_metric_limit
   obtain ⟨phi, hphi, Q, top, charts, hman, hT2, hsecond, gQ, V, U, q, F, G, hrest⟩ :=
     exists_finite_pointed_metric_comparison_of_local_curvature_injectivity Y hcompleteY hconn
       hr hrR heta hjets hinj'
-  exact ⟨phi, hphi, H.strictMono.comp (hj.comp (hpsi.comp hphi)),
-    Q, top, charts, hman, hT2, hsecond, gQ, V, U, q, F, G, hrest⟩
+  refine ⟨phi, hphi, H.strictMono.comp (hj.comp (hpsi.comp hphi)),
+    Q, top, charts, hman, hT2, hsecond, gQ, V, U, q, F, G,
+    hrest.1, hrest.2.1, hrest.2.2.1, hrest.2.2.2.1, hrest.2.2.2.2.1, ?_⟩
+  filter_upwards [hrest.2.2.2.2.2] with k hk
+  obtain ⟨Phi, hsource, hmap, hbase, hcapture, himage⟩ := hk
+  exact ⟨Phi, hsource, hmap, hbase,
+    fun y hy => (Set.image_mono subset_closure) (hcapture y hy), himage⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

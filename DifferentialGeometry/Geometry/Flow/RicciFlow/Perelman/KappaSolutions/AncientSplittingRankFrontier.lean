@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientCurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSplittingNegativeTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalCurvatureTrichotomy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductEuclidean
@@ -77,6 +79,49 @@ def AncientCurvatureOperatorConstantRankParallelKernel : Prop :=
 def AncientNullPlaneSplittingFrontier : Prop :=
   AncientCurvatureOperatorConstantRankParallelKernel (I := I) F ∧
     NegativeTimeUniversalCoverSplitting (I := I) F
+
+theorem ancientCurvatureOperatorConstantRankParallelKernel_of_terminal_null_plane
+    (hdim : Module.finrank ℝ E = 3)
+    (hconnected : ConnectedSpace F.M)
+    (hcomplete : ∀ t : ℝ, t ≤ 0 → MetricComplete (I := I) (F.atTime t))
+    (hbounded : ∀ a b : ℝ, a < b → b ≤ 0 →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Set.Icc a b, ∀ x : F.M,
+        F.rmNormSq (I := I) t x ≤ C)
+    (hnotFlat : PointedFlowNotFlat (I := I) F)
+    (x₀ : F.M) (v w : TangentSpace I x₀)
+    (hplane : 0 < (F.S.base.metric 0).inner x₀ v v * (F.S.base.metric 0).inner x₀ w w -
+      ((F.S.base.metric 0).inner x₀ v w) ^ 2)
+    (hnull : metricRm04StandardAt (F.S.base.metric 0) x₀ v w w v = 0) :
+    AncientCurvatureOperatorConstantRankParallelKernel F := by
+  let _ : ConnectedSpace F.M := hconnected
+  have hnonflat : ∃ t ≤ (0 : ℝ), ∃ x : F.M, metricRm04At (F.S.base.metric t) x ≠ 0 := by
+    obtain ⟨t, ht, x, hx⟩ := hnotFlat
+    refine ⟨t, ht, x, ?_⟩
+    intro hz
+    apply hx
+    exact (DifferentialGeometry.Tensor0SBundle.normSq0S_eq_zero_iff _ x 4 _).mpr hz
+  have hcomp (t : ℝ) (ht : t ≤ 0) : RiemannianMetricComplete (F.S.base.metric t) :=
+    ⟨hcomplete t ht⟩
+  have hcar : Set.Iic (0 : ℝ) ⊆ ancientTimeInterval.carrier := fun _ ht => ht
+  have hreg : Set.Iio (0 : ℝ) ⊆ ancientTimeInterval.regular := fun _ ht => ht
+  have hcone (t : ℝ) (ht : t ≤ 0) (x : F.M) :
+      metricAlgebraicCurvatureTensorAt (F.S.base.metric t) x ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := F.M) :=
+    curvatureOperator_nonnegative_of_complete_ancient F.S F.isSolution
+      (fun _ hr => hcar (hr.trans ht))
+      (fun _ hr => hreg (hr.trans_le ht))
+      (fun r hr => hcomp r (hr.trans ht)) hdim x
+  refine ⟨1, Or.inr rfl, ?_, ?_⟩
+  · intro t ht x
+    exact curvatureOperatorImageAt_finrank_eq_one_of_complete_ancient_nonflat_null_plane
+      F.S F.isSolution hdim hcar hreg hcomp hbounded hnonflat
+      le_rfl x₀ v w hplane hnull ht x
+  · intro t ht
+    exact curvatureOperatorKernelAt_parallel_at_right_endpoint F.S F.isSolution hdim
+      (a := t - 1) (t := t) (by linarith)
+      (fun _ hr => hcar (hr.2.trans ht))
+      (fun _ hr => hreg (hr.2.trans_le ht))
+      (fun r hr => hcone r (hr.2.trans ht))
 
 open DifferentialGeometry.Geometry.Curvature.DimensionThree in
 omit [I.Boundaryless] in

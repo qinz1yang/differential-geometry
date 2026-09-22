@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure
@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
 
 theorem metric_time_jet_errors_uniform_on_compacts_of_closed_interval {D : RealTimeInterval}
     (S : ℕ → SolutionOn (I := I) (M := M) D) (hS : ∀ n, IsSolutionOn (S n))

@@ -18,8 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)]
-  [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
 
 private local instance closedMetricFieldC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
@@ -67,8 +66,7 @@ private theorem metric_timeJet_eval
     A (fun _ => 1)) hh
   exact he
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-  [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private theorem exists_field_of_chart_components
     (T : (x : M) → Bundle.continuousMultilinearMap ℝ 2 E (TangentSpace I) x)
     (hT : ∀ p : M, ∀ slots : Fin 2 → Fin (Module.finrank ℝ E),

@@ -113,7 +113,7 @@ theorem exists_finiteHorn_compact_complete_metric_depth :
   have hfinite : riemannianEDistOf g x y ≠ ⊤ := by
     rw [H.edist_eq_ofReal_dist]
     exact ENNReal.ofReal_ne_top
-  have hdist := riemannianEDistOf_eq_of_near_minimizer_trapping g g' heta hfinite
+  have hdist := Geometry.riemannianEDistOf_eq_of_near_minimizer_trapping g g' heta hfinite
     (fun z hz => heq z (hKU hz)) hle
     (fun gamma hsmooth hstart hend hnear s hs =>
       (htrap x hx y hy gamma hsmooth hstart hend hnear s hs).2)
@@ -256,7 +256,7 @@ theorem finiteHorn_compact_complete_metric_of_endRay_dist_lt_sum
   have hfinite : riemannianEDistOf g x y ≠ ⊤ := by
     rw [H.edist_eq_ofReal_dist]
     exact ENNReal.ofReal_ne_top
-  have hdist := riemannianEDistOf_eq_of_near_minimizer_trapping g g' heta hfinite
+  have hdist := Geometry.riemannianEDistOf_eq_of_near_minimizer_trapping g g' heta hfinite
     (fun z hz => heq z (hKU hz)) hle
     (fun gamma hsmooth hstart hend hnear s hs =>
       (htrap x hx y hy gamma hsmooth hstart hend hnear s hs).2)

@@ -153,7 +153,7 @@ theorem AnnularConvergence.exists_capture_radius_subset_range
     (1, (angles.classOf ray : UniformSpace.Completion angles.quotient))
   let oB : B := (⟨1, ha1.le, h1b.le⟩, (angles.classOf ray : UniformSpace.Completion angles.quotient))
   have hP : Continuous P := (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
-  let rho : B → ℝ := fun z => lambda * openConeDistance o (P z)
+  let rho : B → ℝ := fun z => lambda * Metric.coneDistance o (P z)
   have hrho : Continuous rho := continuous_const.mul
     (continuous_openConeDistance.comp (continuous_const.prodMk hP))
   obtain ⟨eta, heta, hetaD⟩ := hrho.exists_pos_sublevel_subset_of_unique_zero

@@ -8,7 +8,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open CanonicalNeighborhood.FiniteHorn
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 open DifferentialGeometry.Analysis DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor0SBundle

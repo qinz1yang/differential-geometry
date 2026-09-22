@@ -23,30 +23,16 @@ theorem chartGramOp_continuousOn_carrier {D : RealTimeInterval}
     ContinuousOn (chartGramOp (I := I) G alpha) (D.carrier ×ˢ K) := by
   apply continuousOn_chartGramOp G alpha
   intro i j
-  let P := {q : ℝ × E // q ∈ D.carrier ×ˢ K}
-  let b : P → M := fun q => (extChartAt I alpha).symm q.1.2
-  have hb : Continuous b := by
-    exact (continuousOn_extChartAt_symm alpha).comp_continuous
-      (continuous_snd.comp continuous_subtype_val) (fun q => hK q.2.2)
-  have hbase (q : P) : b q ∈ (trivializationAt E (TangentSpace I) alpha).baseSet := by
-    have hs := (extChartAt I alpha).map_target (hK q.2.2)
-    simpa only [b, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hs
-  let v : Fin 2 → (q : P) → TangentSpace I (b q) := fun k q =>
-    chartBasisVecFiber (I := I) alpha (if k = 0 then i else j) (b q)
-  have hv : ∀ k : Fin 2, Continuous (fun q : P =>
-      TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b q) (v k q)) := by
-    intro k
-    exact (chartBasisVec_contMDiffOn (I := I) alpha (if k = 0 then i else j)).continuousOn.comp_continuous
-      hb hbase
-  have heval := hG.metricTensor_cont.eval_continuous
-    (P := P) (τ := fun q => q.1.1) (b := b)
-    (continuous_fst.comp continuous_subtype_val) (fun q => q.2.1) hb (v := v) hv
-  rw [continuousOn_iff_continuous_domRestrict]
-  convert heval using 1
-  funext q
-  simp only [chartGramOnE, chartGramMatrix]
-  rw [Tensor0SBundle.metricTensorField_apply]
-  simp [v, b]
+  have hb : ContinuousOn (fun p : ℝ × E => (extChartAt I alpha).symm p.2)
+      (D.carrier ×ˢ K) :=
+    (continuousOn_extChartAt_symm alpha).comp continuousOn_snd (fun _ hp => hK hp.2)
+  have hp : ContinuousOn (fun p : ℝ × E => (p.1, (extChartAt I alpha).symm p.2))
+      (D.carrier ×ˢ K) := continuousOn_fst.prodMk hb
+  change ContinuousOn
+    ((fun p : ℝ × M => chartGramMatrix (G.metric p.1) alpha p.2 i j) ∘
+      (fun p : ℝ × E => (p.1, (extChartAt I alpha).symm p.2))) (D.carrier ×ˢ K)
+  exact (hG.chartGramMatrix_continuousOn_carrier alpha i j).comp hp
+    (fun _ h => ⟨h.1, extChartAt_symm_mem_trivializationAt_baseSet alpha (hK h.2)⟩)
 
 theorem chartGramOp_continuousOn_of_carrier {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}

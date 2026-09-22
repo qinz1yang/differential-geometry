@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Boundary.PullbackNormal
 namespace DifferentialGeometry.Topology.Morse
 
 open Integral.DivergenceTheorem.WithBoundary Geometry.Operator Geometry.Boundary
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

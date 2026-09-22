@@ -15,8 +15,8 @@ set_option autoImplicit false
 
 noncomputable section
 
-open Set Function Filter Bundle Manifold
-open scoped Manifold Topology ContDiff BigOperators
+open Set Function Filter Bundle _root_.Manifold
+open scoped _root_.Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
 namespace CheegerGromovCompactness
@@ -169,7 +169,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u
 
@@ -255,7 +255,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u
 

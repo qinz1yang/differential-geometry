@@ -10,13 +10,13 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.DifferentialGeometry.Manifold Set
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -218,7 +218,7 @@ theorem exists_universal_mixed_jet_bound_of_not_round_of_localCurvatureBound (a 
   refine ⟨C, hC, ?_⟩
   intro kappa F hF hnotround t ht x
   set Q : ℝ := F.S.scalar t x with hQdef
-  have hQ : 0 < Q := ancientKappa_scalar_pos F localBoundThreeSpaceFinrank hF ht x
+  have hQ : 0 < Q := ancientKappa_scalar_pos F hF ht x
   have hnormalized : IsAncientKappaSolution (I := I3) universalKappaConstant
       (universalNormalizedFlow F hF ht x) :=
     (hgap kappa (universalNormalizedFlow F hF ht x)
@@ -259,7 +259,7 @@ theorem exists_universal_mixed_jet_bound_of_localCurvatureBound (a b : ℕ) {C�
   refine ⟨max C₀ C₁, lt_max_of_lt_left hC₀, ?_⟩
   intro kappa F hF t ht x
   have hR : 0 ≤ F.S.scalar t x ^ mixedCurvatureWeight a b :=
-    Real.rpow_nonneg (ancientKappa_scalar_pos F localBoundThreeSpaceFinrank hF ht x).le _
+    Real.rpow_nonneg (ancientKappa_scalar_pos F hF ht x).le _
   by_cases hsph : IsShrinkingSphericalSpaceFormFlow (I := I3) F
   · exact (hround kappa F hF hsph t ht x).trans
       (mul_le_mul_of_nonneg_right (le_max_right _ _) hR)

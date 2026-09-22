@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Path.Speed
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
@@ -10,6 +11,23 @@ open Set Bundle Manifold DifferentialGeometry MeasureTheory
 open scoped Topology ContDiff Manifold Bundle ENNReal NNReal
 
 namespace DifferentialGeometry.Geometry
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_le_of_curve_speed_bound
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b C : ℝ}
+    (hab : a ≤ b) (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Icc a b))
+    (hC : ∀ t ∈ Ioo a b, Real.sqrt (g.inner (γ t)
+      (mfderiv 𝓘(ℝ, ℝ) I γ t 1) (mfderiv 𝓘(ℝ, ℝ) I γ t 1)) ≤ C) :
+    riemannianEDistOf g (γ a) (γ b) ≤ ENNReal.ofReal C * ENNReal.ofReal (b - a) := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  apply Manifold.riemannianEDist_le_of_curve_speed_bound hab hγ
+  intro t ht
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+  exact ENNReal.ofReal_le_ofReal (hC t ht)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]

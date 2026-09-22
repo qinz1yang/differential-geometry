@@ -57,7 +57,7 @@ private theorem inner_angular_of_distance_cone_coordinates
     {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
     (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
     (hdist : ∀ y ∈ e.source, ∀ z ∈ e.source,
-      (riemannianEDistOf g y z).toReal = openConeDistance (e y) (e z))
+      (riemannianEDistOf g y z).toReal = Metric.coneDistance (e y) (e z))
     (phi : PartialDiffeomorph (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I (A × ℝ) M ∞)
     {K : Set A} {J : Set ℝ} (hK : IsOpen K) (h0J : (0 : ℝ) ∈ J)
     (hsource : phi.source = K ×ˢ J) (htarget : phi.target ⊆ e.source)
@@ -106,7 +106,7 @@ theorem exists_cone_metric_coordinates_of_local_riemannian_distance_cone
     (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpos : ∀ y ∈ e.source, 0 < (e y).1)
     (hdist : ∀ y ∈ e.source, ∀ z ∈ e.source,
-      (riemannianEDistOf g y z).toReal = openConeDistance (e y) (e z))
+      (riemannianEDistOf g y z).toReal = Metric.coneDistance (e y) (e z))
     {x : M} (hx : x ∈ e.source) :
     ∃ s : Cₛ^∞⟮I; E, TangentSpace I⟯,
       g.inner x (s x) (s x) = 1 ∧
@@ -487,7 +487,7 @@ theorem exists_coneChart_of_local_riemannian_distance_cone
     (g : SmoothRiemannianMetric I3 M) (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpos : ∀ y ∈ e.source, 0 < (e y).1)
     (hdist : ∀ y ∈ e.source, ∀ z ∈ e.source,
-      (riemannianEDistOf g y z).toReal = openConeDistance (e y) (e z))
+      (riemannianEDistOf g y z).toReal = Metric.coneDistance (e y) (e z))
     {x : M} (hx : x ∈ e.source) :
     ∃ V : Set M, IsOpen V ∧ x ∈ V ∧ V ⊆ e.source ∧ Nonempty (ConeChart g V) := by
   obtain ⟨s, hunit, K, J, phi, hK, h0K, hJ, h0J, hsource, hcenter, htarget, hpositive, hmetric⟩ :=

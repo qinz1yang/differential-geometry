@@ -14,16 +14,18 @@ open scoped Bundle Manifold ContDiff RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
   {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
   {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
   [FiberBundle F V] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I ∞ F V]
+
+private local instance terminalModelComplete : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 theorem exists_nonnegative_curvatureOperator_sections_terminal_evolution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)

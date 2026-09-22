@@ -46,11 +46,11 @@ private theorem bilinear_basis_reconstruction
 
 end Bilinear
 
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.Manifold Set
 open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Tensor.Coordinates
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 universe u uE uH
 

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.MFDeriv.ModelTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductEuclidean
 import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Topology.Morse.EuclideanModel
@@ -9,57 +10,7 @@ noncomputable section
 open Set Function
 open scoped Manifold ContDiff
 
-namespace DifferentialGeometry.Manifold
 
-variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
-
-theorem writtenInExtChartAt_id_transContinuousLinearEquiv_apply
-    (e : E ≃L[ℝ] F) (x : N) (y : F) :
-    writtenInExtChartAt (I.transContinuousLinearEquiv e) I x (id : N → N) y =
-      (extChartAt I x) ((extChartAt I x).symm (e.symm y)) := by
-  simp only [writtenInExtChartAt, Function.comp_apply, id_eq,
-    ModelWithCorners.coe_extChartAt_transContinuousLinearEquiv_symm]
-
-theorem writtenInExtChartAt_id_transContinuousLinearEquiv_eqOn
-    (e : E ≃L[ℝ] F) (x : N) :
-    Set.EqOn (writtenInExtChartAt (I.transContinuousLinearEquiv e) I x (id : N → N))
-      (fun y : F => e.symm y) (extChartAt (I.transContinuousLinearEquiv e) x).target := by
-  intro y hy
-  rw [writtenInExtChartAt_id_transContinuousLinearEquiv_apply]
-  have hy' : e.symm y ∈ (extChartAt I x).target := by
-    rwa [ModelWithCorners.extChartAt_transContinuousLinearEquiv_target] at hy
-  exact (extChartAt I x).right_inv hy'
-
-theorem hasFDerivWithinAt_writtenInExtChartAt_id_transContinuousLinearEquiv
-    (e : E ≃L[ℝ] F) (x : N) :
-    HasFDerivWithinAt
-      (writtenInExtChartAt (I.transContinuousLinearEquiv e) I x (id : N → N))
-      e.symm.toContinuousLinearMap (range (I.transContinuousLinearEquiv e))
-      ((extChartAt (I.transContinuousLinearEquiv e) x) x) := by
-  have hbase : HasFDerivWithinAt (fun y : F => e.symm y) e.symm.toContinuousLinearMap
-      (range (I.transContinuousLinearEquiv e))
-      ((extChartAt (I.transContinuousLinearEquiv e) x) x) :=
-    e.symm.hasFDerivWithinAt
-  have hpoint : (writtenInExtChartAt (I.transContinuousLinearEquiv e) I x (id : N → N))
-      ((extChartAt (I.transContinuousLinearEquiv e) x) x) =
-      e.symm ((extChartAt (I.transContinuousLinearEquiv e) x) x) :=
-    writtenInExtChartAt_id_transContinuousLinearEquiv_eqOn (I := I) e x (mem_extChartAt_target x)
-  refine hbase.congr_of_eventuallyEq ?_ hpoint
-  rw [Filter.EventuallyEq,
-    ← nhdsWithin_extChartAt_target_eq (I := I.transContinuousLinearEquiv e) x]
-  exact eventually_nhdsWithin_iff.mpr (Filter.Eventually.of_forall fun _ hy =>
-    writtenInExtChartAt_id_transContinuousLinearEquiv_eqOn (I := I) e x hy)
-
-theorem mfderiv_id_transContinuousLinearEquiv (e : E ≃L[ℝ] F) (x : N) :
-    mfderiv (I.transContinuousLinearEquiv e) I (id : N → N) x = e.symm.toContinuousLinearMap :=
-  HasMFDerivAt.mfderiv (f := (id : N → N))
-    ⟨continuousAt_id,
-      hasFDerivWithinAt_writtenInExtChartAt_id_transContinuousLinearEquiv (I := I) e x⟩
-
-end DifferentialGeometry.Manifold
 
 namespace DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover
 
@@ -85,13 +36,11 @@ theorem liftedMetric_transContinuousLinearEquiv
   have hL : (g.transContinuousLinearEquiv e).inner (proj x) v w =
       g.inner (proj x) (e.symm v) (e.symm w) := by
     have h := SmoothRiemannianMetric.transContinuousLinearEquiv_inner (I := I) g e (proj x) v w
-    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at h
     exact h
   have hR : ((liftedMetric (I := I) g).transContinuousLinearEquiv e).inner x v w =
       g.inner (proj x) (e.symm v) (e.symm w) := by
     have h := SmoothRiemannianMetric.transContinuousLinearEquiv_inner (I := I)
       (liftedMetric (I := I) g) e x v w
-    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at h
     exact h.trans rfl
   rw [show (liftedMetric (I := I.transContinuousLinearEquiv e)
         (g.transContinuousLinearEquiv e)).inner x v w =
@@ -138,8 +87,8 @@ private theorem flatModelMetric_inner_mul (s a c : ℝ) :
   ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space N] [SigmaCompactSpace N]
-  [ConnectedSpace N] in
-theorem TerminalSurfaceProduct.pullbackMetricCross_Phi
+  [ConnectedSpace N] [Nonempty N] in
+theorem TerminalSurfaceProduct.pullbackMetricCross_Phi [Inhabited N]
     {g : SmoothRiemannianMetric I N} (P : TerminalSurfaceProduct (I := I) g) :
     Diffeomorph.pullbackMetricCross (liftedMetric (I := I) g) P.Phi =
       P.h.prod (flatModelMetric ℝ) := by
@@ -232,7 +181,7 @@ theorem TerminalSurfaceProduct.pullbackMetricCross_Phi_transContinuousLinearEqui
     liftedMetric_transContinuousLinearEquiv_symm,
     P.pullbackMetricCross_Phi]
 
-def TerminalSurfaceProduct.transContinuousLinearEquiv_symm
+def TerminalSurfaceProduct.ofTransContinuousLinearEquiv
     {g : SmoothRiemannianMetric I N} (e : E ≃L[ℝ] F)
     (P : TerminalSurfaceProduct (I := I.transContinuousLinearEquiv e)
       (g.transContinuousLinearEquiv e)) :
@@ -270,7 +219,7 @@ theorem nonempty_terminalSurfaceProduct_transContinuousLinearEquiv_iff
     Nonempty (TerminalSurfaceProduct (I := I.transContinuousLinearEquiv e)
         (g.transContinuousLinearEquiv e)) ↔
       Nonempty (TerminalSurfaceProduct (I := I) g) :=
-  ⟨fun ⟨P⟩ => ⟨P.transContinuousLinearEquiv_symm e⟩,
+  ⟨fun ⟨P⟩ => ⟨P.ofTransContinuousLinearEquiv e⟩,
     fun ⟨P⟩ => ⟨P.transContinuousLinearEquiv e⟩⟩
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] in
@@ -282,7 +231,7 @@ theorem nonempty_terminalSurfaceProduct_of_morseModel_hasCurvatureSurfaceProduct
     Nonempty (TerminalSurfaceProduct (I := I) g) :=
   (nonempty_terminalSurfaceProduct_of_hasCurvatureSurfaceProductSplitting
     (I := I.transContinuousLinearEquiv e) (g.transContinuousLinearEquiv e) hS).elim
-    fun P => ⟨P.transContinuousLinearEquiv_symm e⟩
+    fun P => ⟨P.ofTransContinuousLinearEquiv e⟩
 
 theorem nonempty_terminalSurfaceProduct_euclideanSpace_of_morseModelSurfaceProductSplitting
     {I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin 3)) H} [I.Boundaryless]

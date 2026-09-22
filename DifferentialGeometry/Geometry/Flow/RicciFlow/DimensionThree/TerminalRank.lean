@@ -7,7 +7,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]

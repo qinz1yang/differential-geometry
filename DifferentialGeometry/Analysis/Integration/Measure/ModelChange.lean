@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.ModelChange
 
 namespace DifferentialGeometry.Integral.Measure
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

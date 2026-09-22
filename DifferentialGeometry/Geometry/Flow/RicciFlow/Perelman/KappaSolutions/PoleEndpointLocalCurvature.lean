@@ -44,13 +44,8 @@ private theorem ancient_rmNormSq_le_on_backward_ball
       (Real.sqrt A + Real.sqrt 3 / 2 * r) ^ 2 := by
     apply redLength_le_of_rescaled_distance_le U hU p q x zero_lt_one hr hbase
     simpa only [hscale] using hdist
-  obtain ⟨alpha, halpha, _hstart, hend, hgeo, hcost⟩ :=
-    exists_lRegularized_minimizer_of_ancient U hU p x zero_lt_one
   have hscalarOne : U.S.scalar (-1) x ≤ 3 * redLength U.S 0 p x 1 := by
-    have h := scalar_le_three_mul_redLength_of_ancient_action_eq_lCost
-      U hU alpha halpha p zero_lt_one
-      (fun s hs => hgeo s ⟨hs.1, hs.2.le⟩) hcost
-    simpa only [hend, div_one] using h
+    simpa only [div_one] using scalar_le_three_mul_redLength_div_of_ancient U hU p x zero_lt_one
   have htzero : t ≤ 0 := ht.trans (by norm_num)
   have hscalar : U.S.scalar t x ≤
       3 * (Real.sqrt A + Real.sqrt 3 / 2 * r) ^ 2 :=

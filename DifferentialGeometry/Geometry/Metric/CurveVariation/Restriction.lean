@@ -63,6 +63,56 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
         riemannianEDistOf_le_restrictOpen g U x y) γ a b
     simpa only [ENNReal.coe_one, one_mul] using hbound
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_restrictOpen_le_of_lipschitz
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [T2Space U]
+    {s : Set ℝ} (hs : s.OrdConnected) {γ : s → U} {C : ℝ≥0}
+    (hγ : ∀ x y : s, riemannianEDistOf g (γ x) (γ y) ≤ C * edist x y)
+    (a b : s) :
+    riemannianEDistOf (g.restrictOpen U) (γ a) (γ b) ≤ C * edist a b := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace M := .ofRiemannianMetric I M
+  have hLip : LipschitzWith C (fun x : s => (γ x : M)) := hγ
+  have hcont : Continuous γ :=
+    hLip.continuous.subtype_mk _
+  wlog hab : (a : ℝ) ≤ b generalizing a b
+  · simpa only [riemannianEDistOf_comm, edist_comm] using
+      this b a (le_of_not_ge hab)
+  let δ : ℝ → U := fun t => γ ⟨projIcc (a : ℝ) (b : ℝ) hab t,
+    hs.out a.property b.property (projIcc (a : ℝ) (b : ℝ) hab t).property⟩
+  have hδ : Continuous δ := hcont.comp
+    ((continuous_subtype_val.comp continuous_projIcc).subtype_mk _)
+  have hδeq (t : ℝ) (ht : t ∈ Icc (a : ℝ) b) :
+      δ t = γ ⟨t, hs.out a.property b.property ht⟩ := by
+    dsimp [δ]
+    apply congrArg γ
+    apply Subtype.ext
+    exact congrArg (fun z : Icc (a : ℝ) b => (z : ℝ)) (projIcc_of_mem hab ht)
+  have hδa : δ a = γ a := hδeq a ⟨le_rfl, hab⟩
+  have hδb : δ b = γ b := hδeq b ⟨hab, le_rfl⟩
+  have hδLip : LipschitzOnWith C (Subtype.val ∘ δ) (Icc (a : ℝ) b) := by
+    intro x hx y hy
+    change riemannianEDistOf g (δ x) (δ y) ≤ C * edist x y
+    rw [hδeq x hx, hδeq y hy]
+    exact hγ _ _
+  have hvar := hδLip.comp_eVariationOn_le (mapsTo_id (Icc (a : ℝ) b))
+  rw [Function.comp_id, eVariationOn_id_Icc] at hvar
+  have hupper := (riemannianEDistOf_le_riemannianCurveVariation
+    (g.restrictOpen U) δ hab).trans_eq
+    (riemannianCurveVariation_restrictOpen g U δ a b hδ.continuousOn)
+  change riemannianEDistOf (g.restrictOpen U) (δ a) (δ b) ≤
+    eVariationOn (Subtype.val ∘ δ) (Icc (a : ℝ) b) at hupper
+  have he : edist a b = ENNReal.ofReal ((b : ℝ) - a) := by
+    rw [Subtype.edist_eq, edist_dist, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hab)]
+    congr 1
+    ring
+  rw [he, ← hδa, ← hδb]
+  exact hupper.trans hvar
+
+
 end DifferentialGeometry.Geometry
 
 namespace DifferentialGeometry.Geometry

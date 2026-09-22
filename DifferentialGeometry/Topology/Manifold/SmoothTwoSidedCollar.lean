@@ -70,6 +70,19 @@ theorem toFun_zero (s : S) :
     h.toFun (s, ⟨0, neg_lt_zero.mpr h.radius_pos, h.radius_pos⟩) = e s :=
   h.zero_eq s
 
+theorem contMDiff (h : SmoothTwoSidedCollar I J e) : ContMDiff I J ∞ e := by
+  have he : e = fun s => h.toFun (s, ⟨0, neg_lt_zero.mpr h.radius_pos, h.radius_pos⟩) :=
+    funext fun s => (h.toFun_zero s).symm
+  rw [he]
+  exact (contMDiff_subtype_val.comp h.toDiffeomorph.contMDiff).comp
+    (contMDiff_id.prodMk contMDiff_const)
+
+theorem isEmbedding (h : SmoothTwoSidedCollar I J e) : IsEmbedding e := by
+  have he : e = fun s => h.toFun (s, ⟨0, neg_lt_zero.mpr h.radius_pos, h.radius_pos⟩) :=
+    funext fun s => (h.toFun_zero s).symm
+  rw [he]
+  exact h.isOpenEmbedding_toFun.isEmbedding.comp (isEmbedding_prodMkLeft _)
+
 noncomputable def transAmbientModel {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']
     (L : F ≃L[ℝ] F') : SmoothTwoSidedCollar I (J.transContinuousLinearEquiv L) e where
   radius := h.radius

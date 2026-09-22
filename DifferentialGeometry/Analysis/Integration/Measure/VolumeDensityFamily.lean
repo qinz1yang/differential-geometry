@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
@@ -57,6 +58,26 @@ theorem chartDensity_family_contMDiffOn
   exact (Real.contDiffAt_sqrt hne).comp_contMDiffWithinAt
     (f := fun r : ℝ × M => (chartGramMatrix (I := I) (g r.1) α r.2).det)
     (hdet p hp)
+
+theorem chartDensityOnE_family_contDiffOn
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn D g) {J : Set ℝ} (hJ : J ⊆ D.regular) (a : M) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × E => chartDensityOnE (g p.1) a p.2)
+      (J ×ˢ (extChartAt I a).target) := by
+  let G : MetricConnectionFamilyOn (I := I) (M := M) D :=
+    { metric := g
+      connection := fun t => Geometry.Connection.leviCivitaConnectionOfMetric (g t)
+      metricCompatible := fun t => Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible (g t) }
+  have hd := chartDensity_family_contMDiffOn g a
+    (MetricFamilySmoothOn.chartGramMatrix_contDiffOn (G := G) hG hJ a)
+  have hf : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞
+      (Prod.fst : ℝ × E → ℝ) (J ×ˢ (extChartAt I a).target) :=
+    (contMDiff_iff_contDiff.mpr contDiff_fst).contMDiffOn
+  have hs : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞
+      (Prod.snd : ℝ × E → E) (J ×ˢ (extChartAt I a).target) :=
+    (contMDiff_iff_contDiff.mpr contDiff_snd).contMDiffOn
+  have hc := hf.prodMk ((contMDiffOn_extChartAt_symm (I := I) a).comp hs (fun _ hp => hp.2))
+  exact (hd.comp hc (fun _ hp => ⟨hp.1, extChartAt_symm_mem_trivializationAt_baseSet a hp.2⟩)).contDiffOn
 
 variable [T2Space M] [SigmaCompactSpace M]
 

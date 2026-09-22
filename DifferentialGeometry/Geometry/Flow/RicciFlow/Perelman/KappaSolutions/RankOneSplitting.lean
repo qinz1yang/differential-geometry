@@ -13,7 +13,7 @@ open Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 structure CompleteBoundedCurvatureShortTimeExistenceOnAncient (T : ℝ) : Prop where
   shortTime : ∀ s ∈ Iio T, ∀ (N : Type) [TopologicalSpace N]
@@ -227,7 +227,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

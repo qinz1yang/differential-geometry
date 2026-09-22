@@ -383,7 +383,7 @@ theorem RealizedFiniteHorn.exists_marked_original_source_local_cone_embedding
         (∀ x : D, (x : ℝ × UniformSpace.Completion angles.quotient) =
           (1, (angles.classOf ray : UniformSpace.Completion angles.quotient)) → (Psi x : Q) = q) ∧
         (∀ x z : D, (riemannianEDistOf (g.restrictOpen V) (Psi x) (Psi z)).toReal =
-          lambda * openConeDistance (x : ℝ × UniformSpace.Completion angles.quotient)
+          lambda * Metric.coneDistance (x : ℝ × UniformSpace.Completion angles.quotient)
             (z : ℝ × UniformSpace.Completion angles.quotient)) ∧
         ∃ (u : ℕ → D → V)
           (y : D → ℕ → ℝ × UniformSpace.Completion angles.quotient) (w : D → ℕ → H.space),

@@ -2,6 +2,8 @@ import Mathlib.Analysis.Calculus.Rademacher
 import Mathlib.Analysis.Calculus.FDeriv.Measurable
 import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.MeasureTheory.Measure.Hausdorff
+import Mathlib.Topology.Compactness.Lindelof
+import Mathlib.Topology.MetricSpace.Lipschitz
 
 
 
@@ -16,6 +18,39 @@ noncomputable section
 open MeasureTheory Set Filter
 open scoped NNReal Topology ENNReal MeasureTheory
 
+theorem LocallyLipschitzOn.addHaar_image_eq_zero
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [MeasurableSpace E] [BorelSpace E] [MeasurableSpace F] [BorelSpace F]
+    {μ : Measure E} [μ.IsAddHaarMeasure] {ν : Measure F} [ν.IsAddHaarMeasure]
+    {f : E → F} {s : Set E} (hf : LocallyLipschitzOn s f)
+    (hdim : Module.finrank ℝ E = Module.finrank ℝ F) (hs : μ s = 0) : ν (f '' s) = 0 := by
+  let H : Measure E := Measure.hausdorffMeasure (Module.finrank ℝ E)
+  let J : Measure F := Measure.hausdorffMeasure (Module.finrank ℝ F)
+  have hH : H s = 0 := (Measure.absolutelyContinuous_isAddHaarMeasure H μ) hs
+  have hlocal (x : s) : ∃ V : Set E, IsOpen V ∧ x.1 ∈ V ∧ ν (f '' (V ∩ s)) = 0 := by
+    obtain ⟨K, T, hT, hK⟩ := hf x.2
+    obtain ⟨W, hW, hWT⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hT
+    obtain ⟨V, hVW, hV, hxV⟩ := mem_nhds_iff.mp hW
+    have hLip : LipschitzOnWith K f (V ∩ s) :=
+      hK.mono (fun y hy => hWT ⟨hVW hy.1, hy.2⟩)
+    refine ⟨V, hV, hxV, ?_⟩
+    apply Measure.absolutelyContinuous_isAddHaarMeasure ν J
+    have hz : H (V ∩ s) = 0 := measure_mono_null inter_subset_right hH
+    have hle := hLip.hausdorffMeasure_image_le (d := (Module.finrank ℝ E : ℝ)) (by positivity)
+    change Measure.hausdorffMeasure (Module.finrank ℝ E) (f '' (V ∩ s)) ≤
+      (K : ℝ≥0∞) ^ (Module.finrank ℝ E : ℝ) * H (V ∩ s) at hle
+    rw [hz, mul_zero, hdim] at hle
+    exact le_zero_iff.mp hle
+  choose V hV hxV hnull using hlocal
+  obtain ⟨S, hS, hcover⟩ := (HereditarilyLindelofSpace.isLindelof s).elim_countable_subcover
+    V hV (fun x hx => mem_iUnion_of_mem ⟨x, hx⟩ (hxV ⟨x, hx⟩))
+  have hsub : f '' s ⊆ ⋃ x ∈ S, f '' (V x ∩ s) := by
+    rintro y ⟨x, hx, rfl⟩
+    obtain ⟨z, hz, hxV⟩ := mem_iUnion₂.mp (hcover hx)
+    exact mem_iUnion₂.mpr ⟨z, hz, x, ⟨hxV, hx⟩, rfl⟩
+  exact measure_mono_null hsub ((measure_biUnion_null_iff hS).mpr (fun x _ => hnull x))
+
 namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -27,19 +62,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem volume_image_eq_zero_of_lipschitz {f : E → E} {K : ℝ≥0}
     (hf : LipschitzWith K f) {s : Set E} (hs : volume s = 0) :
     volume (f '' s) = 0 := by
-  let H : Measure E := Measure.hausdorffMeasure (Module.finrank ℝ E)
-  have hHv : H ≪ volume := Measure.absolutelyContinuous_isAddHaarMeasure H volume
-  have hvH : volume ≪ H := Measure.absolutelyContinuous_isAddHaarMeasure volume H
-  apply hvH
-  have h := hf.hausdorffMeasure_image_le
-    (d := (Module.finrank ℝ E : ℝ)) (Nat.cast_nonneg _) s
-  have hzero : H s = 0 := hHv hs
-  change H (f '' s) ≤ _ at h
-  rw [hzero, mul_zero] at h
-  exact le_zero_iff.mp h
-
-
-
+  exact hf.locallyLipschitz.locallyLipschitzOn.addHaar_image_eq_zero rfl hs
 
 theorem ae_comp_of_lipschitz_leftInverse_on {f k : E → E} {K : ℝ≥0}
     (hk : LipschitzWith K k) {s : Set E} (hki : ∀ x ∈ s, k (f x) = x)

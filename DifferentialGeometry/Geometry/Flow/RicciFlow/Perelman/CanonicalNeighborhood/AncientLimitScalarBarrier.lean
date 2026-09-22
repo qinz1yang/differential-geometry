@@ -14,8 +14,8 @@ open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 universe u uE uH
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
-variable [FiniteDimensional Real E] [CompleteSpace E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -33,12 +33,12 @@ local instance ancientLimitScalarBarrierTangentT2 : T2Space (TangentBundle I F.M
 
 variable {kappa : Real}
 
-theorem ancientKappa_scalarLowerBarrier_lt (hdim : Module.finrank Real E = 3)
+theorem ancientKappa_scalarLowerBarrier_lt
     (hF : IsAncientKappaSolution kappa F) {c : Real} (hc : 0 < c) {t : Real}
     (ht : t ∈ D.carrier) (htc : -c ≤ t) (x : F.M) :
     scalarLowerBarrier 3 (-3 / (2 * c)) t < F.S.scalar t x := by
   have ht0 : t ≤ 0 := by simpa only [hF.carrier_eq, Set.mem_Iic] using ht
-  have hpos : 0 < F.S.scalar t x := ancientKappa_scalar_pos F hdim hF ht0 x
+  have hpos : 0 < F.S.scalar t x := ancientKappa_scalar_pos F hF ht0 x
   refine lt_of_le_of_lt ?_ hpos
   have hden : 1 - (2 / 3 : Real) * (-3 / (2 * c)) * t = (t + c) / c := by
     field_simp
@@ -48,27 +48,25 @@ theorem ancientKappa_scalarLowerBarrier_lt (hdim : Module.finrank Real E = 3)
     (div_nonpos_of_nonpos_of_nonneg (by norm_num) (by linarith))
     (div_nonneg (by linarith) hc.le)
 
-theorem ancientKappa_scalarBase_lowerBarrier_lt (hdim : Module.finrank Real E = 3)
+theorem ancientKappa_scalarBase_lowerBarrier_lt
     (hF : IsAncientKappaSolution kappa F) {c : Real} (hc : 0 < c) (x : F.M) :
     -3 / (2 * c) < F.S.scalar 0 x := by
   have h0 : (0 : Real) ∈ D.carrier := by
     rw [hF.carrier_eq]
     exact Set.mem_Iic.mpr le_rfl
   simpa only [scalarLowerBarrier_zero] using
-    ancientKappa_scalarLowerBarrier_lt F hdim hF hc h0 (by linarith) x
+    ancientKappa_scalarLowerBarrier_lt F hF hc h0 (by linarith) x
 
-theorem ancientKappa_scalar_strictLowerBound_of_compact (hdim : Module.finrank Real E = 3)
-    (hF : IsAncientKappaSolution kappa F) [CompactSpace F.M] [Nonempty F.M] :
+theorem ancientKappa_scalar_strictLowerBound_of_compact
+    (hF : IsAncientKappaSolution kappa F) [CompactSpace F.M] :
     ∃ eps : Real, 0 < eps ∧ ∀ x : F.M, eps ≤ F.S.scalar 0 x := by
-  have h0 : (0 : Real) ∈ D.carrier := by
-    rw [hF.carrier_eq]
-    exact Set.mem_Iic.mpr le_rfl
+  let _ : Nonempty F.M := ⟨F.basepoint⟩
   have hcont : ContinuousOn (fun x : F.M => F.S.scalar 0 x) (Set.univ : Set F.M) :=
     (DifferentialGeometry.Geometry.Curvature.metricScalar_smooth (I := I) (M := F.M)
       (F.S.base.metric 0)).continuous.continuousOn
   obtain ⟨x0, -, hmin⟩ :=
     (isCompact_univ : IsCompact (Set.univ : Set F.M)).exists_isMinOn Set.univ_nonempty hcont
-  exact ⟨F.S.scalar 0 x0, ancientKappa_scalar_pos F hdim hF le_rfl x0,
+  exact ⟨F.S.scalar 0 x0, ancientKappa_scalar_pos F hF le_rfl x0,
     fun x => hmin (Set.mem_univ x)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
@@ -116,7 +114,6 @@ theorem scalarLowerBarrier_strict_of_maximalPointSlabLimitSelection
       (∀ t' : Real, t' ∈ ancientTimeInterval.carrier → -c ≤ t' → ∀ y : L.M,
         scalarLowerBarrier 3 (-3 / (2 * c)) t' < L.S.scalar t' y) ∧
       -3 / (2 * c) < L.S.scalar 0 L.basepoint := by
-  have hdim : Module.finrank Real ThreeSpace = 3 := by simp [ThreeSpace]
   obtain ⟨L, phi, _, hphi, hanc, hconvT, _, _, _⟩ :=
     h theta htheta x t htpos htmem0 hpos htlower hscalar hmax
   obtain ⟨F0, hF0⟩ := hconvT 0 le_rfl
@@ -124,9 +121,9 @@ theorem scalarLowerBarrier_strict_of_maximalPointSlabLimitSelection
     pointedFlowScalarAtBase_of_metricConvergence_at_zero hT S hS x t htmem0 htpos hpos L phi F0 hF0
   refine ⟨L, phi, hphi, hanc, hbase, ?_, ?_, ?_⟩
   · intro t' ht' y
-    exact ancientKappa_scalar_pos L hdim hanc
+    exact ancientKappa_scalar_pos L hanc
       (by simpa only [ancientTimeInterval_carrier, Set.mem_Iic] using ht') y
-  · exact fun t' ht' => ancientKappa_scalarLowerBarrier_lt L hdim hanc hc ht'
-  · exact ancientKappa_scalarBase_lowerBarrier_lt L hdim hanc hc L.basepoint
+  · exact fun t' ht' => ancientKappa_scalarLowerBarrier_lt L hanc hc ht'
+  · exact ancientKappa_scalarBase_lowerBarrier_lt L hanc hc L.basepoint
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

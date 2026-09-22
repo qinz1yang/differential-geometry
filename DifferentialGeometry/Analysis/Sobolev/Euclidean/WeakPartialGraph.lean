@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Product
 import Mathlib.Analysis.LocallyConvex.WeakSpace
 import DifferentialGeometry.Analysis.InnerProductSpace.WeakCompactness
 import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.MeasureTheory.Measure.OpenPos
 
 noncomputable section
 
@@ -198,5 +199,73 @@ theorem exists_ae_hasWeakPartialDeriv_of_norm_bounded
   apply ae_hasWeakPartialDeriv_of_tendsto_weak (by norm_num) k
     (tendsto_weak_prod_of_tendsto_inner (hU.comp hσ.tendsto_atTop) hlim)
   exact Eventually.of_forall fun n => hweak (σ n)
+
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+variable {d : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
+variable {p : ℝ≥0∞} [Fact (1 ≤ p)]
+
+local notation "X" => Lp ℝ p (volume.restrict Ω)
+
+theorem isClosed_setOf_hasWeakPartialDeriv (i : Fin d) :
+    IsClosed {w : X × X | DeGiorgi.HasWeakPartialDeriv i w.2 w.1 Ω} := by
+  apply isSeqClosed_iff_isClosed.mp
+  intro w v hw hlim
+  exact hasWeakPartialDeriv_of_tendsto_eLpNorm (Fact.out : 1 ≤ p) i
+    (fun n => Lp.memLp (w n).1) (fun n => Lp.memLp (w n).2)
+    (Lp.memLp v.1) (Lp.memLp v.2) hw
+    ((Lp.tendsto_Lp_iff_tendsto_eLpNorm' (fun n => (w n).1) v.1).mp
+      ((continuous_fst.tendsto v).comp hlim))
+    ((Lp.tendsto_Lp_iff_tendsto_eLpNorm' (fun n => (w n).2) v.2).mp
+      ((continuous_snd.tendsto v).comp hlim))
+
+theorem hasWeakPartialDeriv_of_tendsto_Lp
+    (i : Fin d) {A : Type*} {l : Filter A} [NeBot l] {U V : A → X} {u v : X}
+    (hU : Tendsto U l (𝓝 u)) (hV : Tendsto V l (𝓝 v))
+    (hweak : ∀ᶠ a in l, DeGiorgi.HasWeakPartialDeriv i (V a) (U a) Ω) :
+    DeGiorgi.HasWeakPartialDeriv i v u Ω :=
+  (isClosed_setOf_hasWeakPartialDeriv i).mem_of_tendsto (hU.prodMk_nhds hV) hweak
+
+private theorem mapsTo_of_continuousOn_of_ae_mem
+    {A B : Type*} [TopologicalSpace A] [MeasurableSpace A] [TopologicalSpace B]
+    {μ : Measure A} [μ.IsOpenPosMeasure] {s : Set A} {C : Set B} {f : A → B}
+    (hC : IsClosed C) (hf : ContinuousOn f s) (hs : s ⊆ closure (interior s))
+    (hae : ∀ᵐ t ∂μ.restrict s, f t ∈ C) : MapsTo f s C := by
+  have hi : MapsTo f (interior s) C := by
+    have hbad : IsOpen (interior s ∩ f ⁻¹' Cᶜ) := by
+      apply isOpen_iff_mem_nhds.mpr
+      intro x hx
+      exact inter_mem (isOpen_interior.mem_nhds hx.1)
+        ((hf.continuousAt (mem_of_superset (isOpen_interior.mem_nhds hx.1) interior_subset))
+          (hC.isOpen_compl.mem_nhds hx.2))
+    have hnull : μ (interior s ∩ f ⁻¹' Cᶜ) = 0 := by
+      have h := ae_imp_of_ae_restrict hae
+      have hh : ∀ᵐ x ∂μ, x ∉ interior s ∩ f ⁻¹' Cᶜ := by
+        filter_upwards [h] with x hx
+        exact fun hx' => hx'.2 (hx (interior_subset hx'.1))
+      simpa only [ae_iff, not_not, ofPred_mem_eq] using hh
+    have hempty := hbad.eq_empty_of_measure_zero hnull
+    intro x hx
+    by_contra hnot
+    have : x ∈ interior s ∩ f ⁻¹' Cᶜ := ⟨hx, hnot⟩
+    simp only [hempty, mem_empty_iff_false] at this
+  intro x hx
+  have : NeBot (𝓝[interior s] x) := mem_closure_iff_nhdsWithin_neBot.mp (hs hx)
+  exact hC.mem_of_tendsto ((hf x hx).mono interior_subset)
+    (by
+      filter_upwards [self_mem_nhdsWithin (a := x) (s := interior s)] with y hy
+      exact hi hy)
+
+theorem hasWeakPartialDeriv_of_continuousOn_Lp
+    {A : Type*} [TopologicalSpace A] [MeasurableSpace A]
+    {μ : Measure A} [μ.IsOpenPosMeasure] {s : Set A}
+    (hs : s ⊆ closure (interior s)) (i : Fin d) (U V : A → X)
+    (hU : ContinuousOn U s) (hV : ContinuousOn V s)
+    (hweak : ∀ᵐ t ∂μ.restrict s, DeGiorgi.HasWeakPartialDeriv i (V t) (U t) Ω) :
+    ∀ t ∈ s, DeGiorgi.HasWeakPartialDeriv i (V t) (U t) Ω :=
+  mapsTo_of_continuousOn_of_ae_mem (isClosed_setOf_hasWeakPartialDeriv i)
+    (hU.prodMk hV) hs hweak
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

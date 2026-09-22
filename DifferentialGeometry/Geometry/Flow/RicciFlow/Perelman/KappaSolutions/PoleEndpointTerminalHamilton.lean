@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointTerminalFirstDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.ClosedHalfLineSolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabChartBootstrap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedRegularity
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.JointDifferentialOperator
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.HamiltonNormalizationLimit
 
@@ -9,14 +9,14 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.Manifold Set
 open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal BigOperators
 
 universe u uE uH
 
@@ -55,7 +55,7 @@ private theorem tendsto_chartInvGramMatrix_and_scalar_at_zero
     exact Icc_subset_Iic_self
   have hreg : Ioo (a - 1) 0 ⊆ X.D.regular := Ioo_subset_Iio_self.trans hregular
   have hmet :=
-    DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn.solution_metricCLMSection_contMDiffOn_closed
+    DifferentialGeometry.PDE.RicciFlow.solution_metricCLMSection_contMDiffOn_closed
       S hS
     (sub_lt_self a zero_lt_one) ha hslab hreg
   have hxsrc : x ∈ (extChartAt I α).source := by

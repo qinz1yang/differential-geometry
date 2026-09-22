@@ -28,6 +28,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_noncompact_backward_three_shrinker_cover
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (hdim : Module.finrank ℝ E = 3)
@@ -60,7 +61,7 @@ theorem exists_noncompact_backward_three_shrinker_cover
                2 * (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)).inner
                  x v w + a * b) := by
   obtain ⟨q, L, phi, hphi, Phi, C, hdomain, hreference, hcomplete, hgeometry⟩ :=
-    exists_backward_slice_asymptotic_shrinker F hF (by omega) tau htau hescape
+    exists_backward_slice_asymptotic_shrinker F hF tau htau hescape
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace H L.M := L.charted
   let _ : IsManifold I ∞ L.M := L.smooth

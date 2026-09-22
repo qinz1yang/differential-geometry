@@ -23,7 +23,7 @@ private local instance noncompactShrinkerAvrSphereDimension :
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
 

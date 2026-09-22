@@ -14,7 +14,7 @@ open Bundle Filter Set
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E H M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

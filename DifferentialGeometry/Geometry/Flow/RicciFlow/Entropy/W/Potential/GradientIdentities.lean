@@ -19,6 +19,56 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
+private theorem density_grad_at
+    (g : SmoothRiemannianMetric I M) (n : ℕ) (tau : ℝ)
+    {f : M → ℝ} {x : M} (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
+    gradientFun g (perelmanDensity n tau f) x =
+      (-perelmanDensity n tau f x) • gradientFun g f x := by
+  have hphi : HasDerivAt (fun r : ℝ => perelmanDensityPrefactor n tau * Real.exp (-r))
+      (-perelmanDensity n tau f x) (f x) := by
+    have h := (((hasDerivAt_id (f x)).neg).exp).const_mul (perelmanDensityPrefactor n tau)
+    apply h.congr_deriv
+    change perelmanDensityPrefactor n tau * (Real.exp (-f x) * -1) =
+      -(perelmanDensityPrefactor n tau * Real.exp (-f x))
+    ring
+  exact (gradientFun_comp g hphi.differentiableAt hf).trans (by rw [hphi.deriv])
+
+theorem density_grad
+    (g : SmoothRiemannianMetric I M) (n : ℕ) (tau : ℝ) (f : M → ℝ) (x : M) :
+    gradientFun g (perelmanDensity n tau f) x =
+      (-perelmanDensity n tau f x) • gradientFun g f x := by
+  by_cases hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x
+  · exact density_grad_at g n tau hf
+  by_cases hp : perelmanDensityPrefactor n tau = 0
+  · have hu : perelmanDensity n tau f = fun _ => 0 := by
+      ext y
+      simp only [perelmanDensity, hp, zero_mul]
+    rw [hu, gradientFun_const]
+    simp
+  · have hu : ¬ MDifferentiableAt I 𝓘(ℝ, ℝ) (perelmanDensity n tau f) x := by
+      intro hdu
+      have hn : perelmanDensity n tau f x / perelmanDensityPrefactor n tau ≠ 0 :=
+        div_ne_zero (mul_ne_zero hp (Real.exp_ne_zero _)) hp
+      have hback := (((hasDerivAt_id (perelmanDensity n tau f x)).div_const
+        (perelmanDensityPrefactor n tau)).log hn).neg
+      have heq : (fun y => -Real.log (perelmanDensity n tau f y / perelmanDensityPrefactor n tau)) = f := by
+        ext y
+        simp only [perelmanDensity]
+        rw [mul_div_cancel_left₀ _ hp, Real.log_exp, neg_neg]
+      have hd := hback.differentiableAt.mdifferentiableAt.comp x hdu
+      exact hf (heq ▸ hd)
+    rw [gradientFun_eq_zero_of_mfderiv_eq_zero g _ (mfderiv_zero_of_not_mdifferentiableAt hu),
+      gradientFun_eq_zero_of_mfderiv_eq_zero g _ (mfderiv_zero_of_not_mdifferentiableAt hf), smul_zero]
+
+theorem density_grad_sq
+    (g : SmoothRiemannianMetric I M) (n : ℕ) (tau : ℝ) (f : M → ℝ) (x : M) :
+    g.inner x (gradientFun g (perelmanDensity n tau f) x)
+        (gradientFun g (perelmanDensity n tau f) x) =
+      perelmanDensity n tau f x ^ 2 * g.inner x (gradientFun g f x) (gradientFun g f x) := by
+  rw [density_grad g n tau f x]
+  simp only [map_smul, smul_apply, smul_eq_mul]
+  ring
+
 theorem potential_grad
     (g : SmoothRiemannianMetric I M) (n : Nat) {tau : Real}
     {u : M -> Real} (hu : ContMDiff I 𝓘(Real, Real) ∞ u)

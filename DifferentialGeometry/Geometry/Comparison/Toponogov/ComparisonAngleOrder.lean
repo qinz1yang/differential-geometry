@@ -51,4 +51,28 @@ theorem comparisonAngle_le_iff_sq_le_cos {a b c θ : ℝ}
   · exact sq_le_cos_of_comparisonAngle_le ha hb hca hac hθπ
   · exact comparisonAngle_le_of_sq_le_cos ha hb hθ₀ hθπ
 
+theorem comparisonAngle_le_of_side_le_sin_mul_min {a b c theta : ℝ}
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 ≤ c)
+    (htheta : theta ∈ Icc 0 Real.pi)
+    (hside : c ≤ 2 * Real.sin (theta / 2) * min a b) :
+    comparisonAngle a b c ≤ theta := by
+  have hsin : 0 ≤ Real.sin (theta / 2) := Real.sin_nonneg_of_nonneg_of_le_pi
+    (by linarith [htheta.1]) (by linarith [htheta.2, Real.pi_pos])
+  have hmin : 0 ≤ min a b := (lt_min ha hb).le
+  have hsq : c ^ 2 ≤ (2 * Real.sin (theta / 2) * min a b) ^ 2 :=
+    pow_le_pow_left₀ hc hside 2
+  have hmul : (min a b) ^ 2 ≤ a * b := by
+    rw [pow_two]
+    exact mul_le_mul (min_le_left _ _) (min_le_right _ _) hmin ha.le
+  have hs : 4 * Real.sin (theta / 2) ^ 2 * (min a b) ^ 2 ≤
+      4 * Real.sin (theta / 2) ^ 2 * (a * b) :=
+    mul_le_mul_of_nonneg_left hmul (by positivity)
+  apply comparisonAngle_le_of_sq_le_cos ha hb htheta.1 htheta.2
+  have hcos : Real.cos theta = 1 - 2 * Real.sin (theta / 2) ^ 2 := by
+    rw [show theta = 2 * (theta / 2) by ring, Real.cos_two_mul_eq_one_sub]
+    ring_nf
+  rw [hcos]
+  nlinarith [sq_nonneg (a - b)]
+
+
 end DifferentialGeometry.Toponogov

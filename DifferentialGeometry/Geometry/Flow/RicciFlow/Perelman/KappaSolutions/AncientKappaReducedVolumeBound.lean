@@ -8,13 +8,13 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter Set MeasureTheory
+open Bundle Filter Set _root_.MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -113,7 +113,7 @@ theorem ancientKappaThree_universal_noncollapsed_of_reducedVolume
     PointedFlowNoncollapsedAllScales (I := I) F universalKappaConstant := by
   intro t B hRm
   let Q : ℝ := F.S.scalar t B.center
-  have hQ : 0 < Q := ancientKappa_scalar_pos F hdim hF t.2 B.center
+  have hQ : 0 < Q := ancientKappa_scalar_pos F hF t.2 B.center
   let G := curvatureNormalizedFlow F rfl rfl t Q hQ t.2 B.center
   have hG : IsAncientKappaSolution (I := I) kappa G :=
     isAncientKappaSolution_curvatureNormalizedFlow F hF t Q hQ t.2 B.center rfl

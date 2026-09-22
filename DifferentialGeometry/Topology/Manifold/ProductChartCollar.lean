@@ -31,11 +31,11 @@ theorem exists_smoothTwoSidedCollar_of_product_chart_graph [CompactSpace N]
   let IP := I.prod 𝓘(ℝ)
   let g : Diffeomorph IP IP (N × ℝ) (N × ℝ) ∞ :=
     graphBandDiffeomorph a (fun p ↦ a p + 1) ha (ha.add contMDiff_const)
-      (fun p ↦ lt_add_one (a p))
+      (fun p ↦ ne_of_lt (lt_add_one (a p)))
   have hg (p : N × ℝ) : g p = (p.1, a p.1 + p.2) := by
     simpa only [add_sub_cancel_left, one_mul] using
       graphBandDiffeomorph_apply a (fun p ↦ a p + 1) ha (ha.add contMDiff_const)
-        (fun p ↦ lt_add_one (a p)) p
+        (fun p ↦ ne_of_lt (lt_add_one (a p))) p
   have hzero : (univ : Set N) ×ˢ {(0 : ℝ)} ⊆ g ⁻¹' (O : Set (N × ℝ)) := by
     rintro ⟨p, t⟩ ⟨_, ht⟩
     have ht0 : t = 0 := ht

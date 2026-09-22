@@ -23,12 +23,12 @@ theorem exists_local_distance_cone_of_scaled_embedding
     (hpos : ∀ x ∈ D, 0 < x.1) (F : D → M) (hF : Topology.IsEmbedding F)
     (o : D) (honto : range F ∈ 𝓝 (F o)) {lambda : ℝ} (hlambda : 0 < lambda)
     (hdist : ∀ x z : D, (riemannianEDistOf g (F x) (F z)).toReal =
-      lambda * openConeDistance (x : ℝ × Y) (z : ℝ × Y)) :
+      lambda * Metric.coneDistance (x : ℝ × Y) (z : ℝ × Y)) :
     ∃ e : OpenPartialHomeomorph M (ℝ × Y), F o ∈ e.source ∧
       e (F o) = (lambda * (o : ℝ × Y).1, (o : ℝ × Y).2) ∧
       (∀ x ∈ e.source, 0 < (e x).1) ∧
       (∀ x ∈ e.source, ∀ z ∈ e.source,
-        (riemannianEDistOf g x z).toReal = openConeDistance (e x) (e z)) ∧
+        (riemannianEDistOf g x z).toReal = Metric.coneDistance (e x) (e z)) ∧
       ∀ x ∈ e.source, ∃ y : D, F y = x ∧
         e x = (lambda * (y : ℝ × Y).1, (y : ℝ × Y).2) := by
   obtain ⟨e, ho, heo, hetarget, heforward⟩ :=
@@ -119,7 +119,7 @@ theorem RealizedFiniteHorn.exists_marked_original_source_local_distance_cone
       e ⟨q, hq⟩ = (lambda, (angles.classOf ray : UniformSpace.Completion angles.quotient)) ∧
       (∀ x ∈ e.source, 0 < (e x).1) ∧
       ∀ x ∈ e.source, ∀ z ∈ e.source,
-        (riemannianEDistOf (g.restrictOpen V) x z).toReal = openConeDistance (e x) (e z) := by
+        (riemannianEDistOf (g.restrictOpen V) x z).toReal = Metric.coneDistance (e x) (e z) := by
   obtain ⟨D, hD, hoD, hradial, Psi, hemb, hrange, hmarked, hdist, _⟩ :=
     H.exists_marked_original_source_local_cone_embedding X angles ray d N C hd j psi nseq
       hpsi hnseq hQ ha hlambda ha1 h1b hR hscale hcompact hdiagonal

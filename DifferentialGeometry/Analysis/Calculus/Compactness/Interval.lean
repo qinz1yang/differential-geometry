@@ -1,5 +1,6 @@
-import DifferentialGeometry.Analysis.Calculus.Compactness.PointwiseCompact
+import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 import DifferentialGeometry.Analysis.Calculus.Compactness.ClampedSubsequence
+import Mathlib.Topology.MetricSpace.Lipschitz
 
 set_option autoImplicit false
 

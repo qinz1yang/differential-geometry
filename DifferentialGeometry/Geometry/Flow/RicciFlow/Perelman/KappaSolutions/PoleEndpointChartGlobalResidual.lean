@@ -62,7 +62,7 @@ end DifferentialGeometry.Analysis
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory
+open Filter _root_.MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
@@ -70,7 +70,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

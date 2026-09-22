@@ -14,7 +14,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Geometry.Manifold.Riemannian.Basic
-import Mathlib.Geometry.Manifold.Riemannian.PathELength
+import DifferentialGeometry.Geometry.Metric.Path.Speed
 import Mathlib.Topology.UniformSpace.Cauchy
 import Mathlib.Topology.EMetricSpace.Lipschitz
 open DifferentialGeometry.Geometry.Curvature
@@ -532,33 +532,9 @@ theorem curve_edist_le_speed_mul_time
     (hSpeedBound : ∀ τ ∈ Set.Icc s t,
       ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c) :
     riemannianEDist I (γ s) (γ t) ≤ ENNReal.ofReal (c * (t - s)) := by
-  have h_pathLen_le :
-      pathELength I γ s t ≤ ENNReal.ofReal (c * (t - s)) := by
-    rw [Manifold.pathELength_eq_lintegral_mfderiv_Icc]
-    have h_le :
-        ∫⁻ τ in Set.Icc s t,
-            (fun τ => ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ) τ
-          ≤ ∫⁻ _ in Set.Icc s t, ENNReal.ofReal c := by
-      refine MeasureTheory.setLIntegral_mono' measurableSet_Icc (fun τ hτ => ?_)
-      exact hSpeedBound τ hτ
-    have h_const :
-        (∫⁻ _ in Set.Icc s t, ENNReal.ofReal c)
-          = ENNReal.ofReal c * MeasureTheory.volume (Set.Icc s t) :=
-      MeasureTheory.setLIntegral_const (Set.Icc s t) (ENNReal.ofReal c)
-    have h_vol : MeasureTheory.volume (Set.Icc s t) = ENNReal.ofReal (t - s) :=
-      Real.volume_Icc
-    have h_mul :
-        ENNReal.ofReal c * ENNReal.ofReal (t - s)
-          = ENNReal.ofReal (c * (t - s)) :=
-      (ENNReal.ofReal_mul hc_nonneg).symm
-    calc
-      ∫⁻ τ in Set.Icc s t, ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ
-          ≤ ∫⁻ _ in Set.Icc s t, ENNReal.ofReal c := h_le
-      _ = ENNReal.ofReal c * MeasureTheory.volume (Set.Icc s t) := h_const
-      _ = ENNReal.ofReal c * ENNReal.ofReal (t - s) := by rw [h_vol]
-      _ = ENNReal.ofReal (c * (t - s)) := h_mul
-  exact (riemannianEDist_le_pathELength (I := I) (γ := γ) (a := s) (b := t)
-    hγ_smooth rfl rfl hst).trans h_pathLen_le
+  have h := Manifold.riemannianEDist_le_of_curve_speed_bound hst hγ_smooth
+    (fun τ hτ => hSpeedBound τ ⟨hτ.1.le, hτ.2.le⟩)
+  simpa only [← ENNReal.ofReal_mul hc_nonneg] using h
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

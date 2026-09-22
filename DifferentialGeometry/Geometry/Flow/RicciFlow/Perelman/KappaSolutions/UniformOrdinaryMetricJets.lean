@@ -8,7 +8,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
@@ -26,6 +26,7 @@ private local instance uniformOrdinaryC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
 
+omit [BoundarylessManifold I M] in
 theorem uniform_metric_time_jets_on_compact_closedWindow
     {D : ℕ → RealTimeInterval} {D₀ : RealTimeInterval}
     (S : (n : ℕ) → SolutionOn (I := I) (M := M) (D n)) (hS : ∀ n, IsSolutionOn (S n))

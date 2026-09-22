@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 

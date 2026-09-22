@@ -65,7 +65,7 @@ theorem AnnularConvergence.exists_marked_local_cone_embedding_of_local_metric_li
           (∀ x : D, (x : ℝ × UniformSpace.Completion angles.quotient) =
             (1, (angles.classOf ray : UniformSpace.Completion angles.quotient)) → (Psi x : Q) = q) ∧
           (∀ x z : D, (riemannianEDistOf (gQ.restrictOpen V) (Psi x) (Psi z)).toReal =
-            lambda * openConeDistance (x : ℝ × UniformSpace.Completion angles.quotient)
+            lambda * Metric.coneDistance (x : ℝ × UniformSpace.Completion angles.quotient)
               (z : ℝ × UniformSpace.Completion angles.quotient)) ∧
           (∀ x : D, Tendsto (y x) atTop (𝓝 (x : ℝ × UniformSpace.Completion angles.quotient))) ∧
           ∀ x : D, ∀ᶠ i in atTop,
@@ -84,15 +84,15 @@ theorem AnnularConvergence.exists_marked_local_cone_embedding_of_local_metric_li
   let o : ℝ × UniformSpace.Completion angles.quotient :=
     (1, (angles.classOf ray : UniformSpace.Completion angles.quotient))
   let D0 := {x : ℝ × UniformSpace.Completion angles.quotient |
-    x.1 ∈ Icc a b ∧ lambda * openConeDistance o x < A}
+    x.1 ∈ Icc a b ∧ lambda * Metric.coneDistance o x < A}
   let D := {x : ℝ × UniformSpace.Completion angles.quotient |
-    x.1 ∈ Ioo a b ∧ lambda * openConeDistance o x < A}
+    x.1 ∈ Ioo a b ∧ lambda * Metric.coneDistance o x < A}
   have hDopen : IsOpen D := (isOpen_Ioo.preimage continuous_fst).inter
     (isOpen_lt (continuous_const.mul (continuous_openConeDistance.comp
       (continuous_const.prodMk continuous_id))) continuous_const)
   have hoD : o ∈ D := by
     refine ⟨⟨ha1, h1b⟩, ?_⟩
-    have hozero : openConeDistance o o = 0 :=
+    have hozero : Metric.coneDistance o o = 0 :=
       (openConeDistance_eq_zero_iff zero_lt_one zero_lt_one).mpr rfl
     simpa only [hozero, mul_zero] using hA
   let incD : D → D0 := fun x => ⟨x.1, ⟨⟨x.2.1.1.le, x.2.1.2.le⟩, x.2.2⟩⟩
@@ -112,7 +112,7 @@ theorem AnnularConvergence.exists_marked_local_cone_embedding_of_local_metric_li
     rw [dif_pos hmem]
   have hdistK (x z : K) : dist x z = (riemannianEDistOf gQ x z).toReal := hmdist x z
   have hpair (x z : D) : Tendsto (fun i => dist (uK i x) (uK i z)) atTop
-      (𝓝 (lambda * openConeDistance (x : ℝ × UniformSpace.Completion angles.quotient)
+      (𝓝 (lambda * Metric.coneDistance (x : ℝ × UniformSpace.Completion angles.quotient)
         (z : ℝ × UniformSpace.Completion angles.quotient))) := by
     apply (hpair0 (incD x) (incD z)).congr'
     filter_upwards [huK x, huK z] with i hx hz

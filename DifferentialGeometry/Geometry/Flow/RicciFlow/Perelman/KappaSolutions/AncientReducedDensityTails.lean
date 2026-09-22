@@ -16,7 +16,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Analysis.Measure
 open DifferentialGeometry.Integral.Measure
-open scoped ContDiff Manifold ENNReal Topology
+open scoped ContDiff _root_.Manifold ENNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
@@ -111,7 +111,7 @@ open Filter Set MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Measure
 open DifferentialGeometry.Integral.Measure
-open scoped ContDiff Manifold ENNReal Topology
+open scoped ContDiff _root_.Manifold ENNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
@@ -210,7 +210,7 @@ noncomputable section
 open Set MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
-open scoped ContDiff Manifold ENNReal
+open scoped ContDiff _root_.Manifold ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
@@ -295,7 +295,7 @@ open CanonicalNeighborhood
 open DifferentialGeometry.Analysis.Measure
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 universe u uE uH
 

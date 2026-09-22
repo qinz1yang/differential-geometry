@@ -55,7 +55,7 @@ theorem exists_eventually_buffered_of_windowed_models_of_trivial_cylinder_limit
   obtain ⟨_mark, _e, _hmarked, _hmetric, hnecks⟩ := exists_strongNeck_of_shrinkingCylinderCover_trivialModel L cover htrivial hscalar
   obtain ⟨nk, _hnkmap, _hnkcenter⟩ := hnecks eps heps hepssmall
   obtain ⟨C0, hC0, K, _hKregion, _hKradius, data, hKalt, _hKneck⟩ := nk.exists_canonicalWitness_of_scalar_pos
-    (fun y _ => KappaSolutions.ancientKappa_scalar_pos L (by simp [ThreeSpace]) hL le_rfl y)
+    (fun y _ => KappaSolutions.ancientKappa_scalar_pos L hL le_rfl y)
   let C1 := max (sourceCurvatureBound 3 C0)
     (max (4 * C0) (2 * windowedGoodPointConstant (18 * sourceCurvatureBound 3 C0)))
   have hC1 : 1 ≤ max (max 9 2) C1 + 1 := by norm_num

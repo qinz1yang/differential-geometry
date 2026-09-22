@@ -46,12 +46,12 @@ theorem AnnularConvergence.exists_marked_inverse_representatives_of_metric_compa
       riemannianClosedBallOf (target i) (F i (ray.point (d i))) s ⊆ (f i) '' K) :
     ∃ A : ℝ, 0 < A ∧ A ≤ R / 16 ∧ 2 * A ≤ s ∧
       ∀ x : ℝ × UniformSpace.Completion angles.quotient, x.1 ∈ Icc a b →
-        lambda * openConeDistance
+        lambda * Metric.coneDistance
           (1, (angles.classOf ray : UniformSpace.Completion angles.quotient)) x < A →
         ∃ (y : ℕ → ℝ × UniformSpace.Completion angles.quotient) (w : ℕ → W),
           Tendsto y atTop (𝓝 x) ∧
           (∀ᶠ i in atTop, (y i, w i) ∈ C.relation a b i ∧
-            openConeDistance x (y i) < C.error a b i) ∧
+            Metric.coneDistance x (y i) < C.error a b i) ∧
           ∀ᶠ i in atTop,
             metricDistance (scaleMetric (metricScalarAt g (ray.point (d i))) (hQ i) g)
               (ray.point (d i)) (w i) < A ∧
@@ -247,7 +247,7 @@ theorem AnnularConvergence.tendsto_source_distance_of_marked_representatives
       metricDistance (scaleMetric (metricScalarAt g (ray.point (d i))) (hQ i) g)
         (ray.point (d i)) (z i) ≤ r) :
     Tendsto (fun i => metricDistance (target i) (F i (w i)) (F i (z i))) atTop
-      (𝓝 (lambda * openConeDistance x₀ y₀)) := by
+      (𝓝 (lambda * Metric.coneDistance x₀ y₀)) := by
   let scaled := fun i => scaleMetric (metricScalarAt g (ray.point (d i))) (hQ i) g
   apply tendsto_metricDistance_map_of_local_comparison scaled target F (fun i => ray.point (d i))
     hR hr hsmall eps heps hnonneg
@@ -336,12 +336,12 @@ theorem AnnularConvergence.exists_local_marked_inverse_distance_family_in_ball
         |(riemannianEDistOf (target i) (f i p) (f i z)).toReal -
           (riemannianEDistOf gQ p z).toReal| < epsilon) ∧
       let D := {x : ℝ × UniformSpace.Completion angles.quotient |
-        x.1 ∈ Icc a b ∧ lambda * openConeDistance
+        x.1 ∈ Icc a b ∧ lambda * Metric.coneDistance
           (1, (angles.classOf ray : UniformSpace.Completion angles.quotient)) x < A}
       ∃ (y : D → ℕ → ℝ × UniformSpace.Completion angles.quotient) (w : D → ℕ → W),
         (∀ x : D, Tendsto (y x) atTop (𝓝 (x : ℝ × UniformSpace.Completion angles.quotient))) ∧
         (∀ x : D, ∀ᶠ i in atTop, (y x i, w x i) ∈ C.relation a b i ∧
-          openConeDistance x (y x i) < C.error a b i) ∧
+          Metric.coneDistance x (y x i) < C.error a b i) ∧
         (∀ x : D, ∀ᶠ i in atTop,
           metricDistance (scaleMetric (metricScalarAt g (ray.point (d i))) (hQ i) g)
             (ray.point (d i)) (w x i) < A ∧
@@ -349,7 +349,7 @@ theorem AnnularConvergence.exists_local_marked_inverse_distance_family_in_ball
           f i ((f i).symm (F i (w x i))) = F i (w x i)) ∧
         (∀ x z : D, Tendsto (fun i =>
           (riemannianEDistOf gQ ((f i).symm (F i (w x i))) ((f i).symm (F i (w z i)))).toReal)
-          atTop (𝓝 (lambda * openConeDistance (x : ℝ × UniformSpace.Completion angles.quotient)
+          atTop (𝓝 (lambda * Metric.coneDistance (x : ℝ × UniformSpace.Completion angles.quotient)
             (z : ℝ × UniformSpace.Completion angles.quotient)))) ∧
         ∀ x : D, (x : ℝ × UniformSpace.Completion angles.quotient) =
           (1, (angles.classOf ray : UniformSpace.Completion angles.quotient)) →
@@ -378,7 +378,7 @@ theorem AnnularConvergence.exists_local_marked_inverse_distance_family_in_ball
   refine ⟨A, hA, hAR, K, hKcompact, hKV, hqK, ⟨L / 16, by positivity, rfl⟩,
     hrestricted, herror, ?_⟩
   let D := {x : ℝ × UniformSpace.Completion angles.quotient |
-    x.1 ∈ Icc a b ∧ lambda * openConeDistance
+    x.1 ∈ Icc a b ∧ lambda * Metric.coneDistance
       (1, (angles.classOf ray : UniformSpace.Completion angles.quotient)) x < A}
   have hchoose := fun x : D => hselect x x.property.1 x.property.2
   choose y w hy hrel hinv using hchoose
@@ -420,10 +420,10 @@ theorem AnnularConvergence.exists_local_marked_inverse_distance_family_in_ball
         filter_upwards [hinv x] with i hi
         refine ⟨hi.1.le, ?_⟩
         simpa only [metricDistance, riemannianEDistOf_self, ENNReal.toReal_zero] using hA.le)
-    have hzero : openConeDistance (x : ℝ × UniformSpace.Completion angles.quotient) o = 0 := by
+    have hzero : Metric.coneDistance (x : ℝ × UniformSpace.Completion angles.quotient) o = 0 := by
       rw [hxbase]
-      change openConeDistance (1, _) (1, _) = 0
-      norm_num [openConeDistance, min_eq_right Real.pi_pos.le]
+      change Metric.coneDistance (1, _) (1, _) = 0
+      norm_num [Metric.coneDistance, min_eq_right Real.pi_pos.le]
     rw [hzero, mul_zero] at hsourceDist
     exact Topology.tendsto_inverse_pair_distance_of_uniform_distance_error
       (fun p q => (riemannianEDistOf gQ p q).toReal)

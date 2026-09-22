@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.Ancient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TensorNormFinrankNeZero
@@ -67,25 +68,23 @@ theorem lRegularizedLagrangian_mul_le_three_mul_action_of_ancientKappa
   exact lRegularizedLagrangian_mul_le_three_mul_action_of_ancient F.S F.isSolution hcomplete
     (ancientKappa_regularSlabBound_finrank F hF) hR 0 alpha hb hregular hgeo hcont
 
-theorem scalar_le_three_mul_redLength_of_ancient_action_eq_lCost
+theorem scalar_le_three_mul_redLength_div_of_ancient
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
-    (alpha : ℝ → F.M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
-    (x : F.M) {tau : ℝ} (htau : 0 < tau)
-    (hgeo : IsLRegularizedGeodesicOn F.S 0 alpha (Ioo 0 (Real.sqrt tau)))
-    (hcost : lRegularizedAction F.S 0 alpha 0 (Real.sqrt tau) =
-      lCost F.S 0 x (alpha (Real.sqrt tau)) tau) :
-    F.S.scalar (-tau) (alpha (Real.sqrt tau)) ≤
-      3 * redLength F.S 0 x (alpha (Real.sqrt tau)) tau / tau := by
+    (p q : F.M) {tau : ℝ} (htau : 0 < tau) :
+    F.S.scalar (-tau) q ≤ 3 * redLength F.S 0 p q tau / tau := by
+  obtain ⟨alpha, halpha, _hstart, hend, hgeo, hcost⟩ :=
+    exists_lRegularized_minimizer_of_ancient F hF p q htau
+  rw [← hend]
   have hsqrt : 0 < Real.sqrt tau := Real.sqrt_pos.mpr htau
   have henergy := lRegularizedLagrangian_mul_le_three_mul_action_of_ancientKappa F hF alpha
-    halpha hsqrt.le hgeo
+    halpha hsqrt.le (fun s hs => hgeo s ⟨hs.1, hs.2.le⟩)
   have hspeed := metric_inner_self_nonneg (F.S.base.metric (-tau)) (alpha (Real.sqrt tau))
     (lVelocity (I := I) alpha (Real.sqrt tau))
   rw [hcost] at henergy
   dsimp only [lRegularizedLagrangian] at henergy
   rw [Real.sq_sqrt htau.le, zero_sub] at henergy
   have hbound : 2 * Real.sqrt tau * tau * F.S.scalar (-tau) (alpha (Real.sqrt tau)) ≤
-      3 * lCost F.S 0 x (alpha (Real.sqrt tau)) tau := by
+      3 * lCost F.S 0 p (alpha (Real.sqrt tau)) tau := by
     nlinarith [mul_nonneg hsqrt.le hspeed]
   unfold redLength
   apply (le_div_iff₀ htau).mpr

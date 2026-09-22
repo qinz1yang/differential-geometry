@@ -8,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter Set MeasureTheory
+open Filter Set _root_.MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure

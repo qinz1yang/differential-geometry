@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TerminalRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Tensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
 import Mathlib.Analysis.Calculus.FDeriv.Extend
@@ -13,13 +13,15 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open Perelman.CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
+
+private local instance terminalModelComplete : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private local instance terminalEvolutionC1 : IsManifold I 1 M :=
   IsManifold.of_le (n := ∞) (by decide)

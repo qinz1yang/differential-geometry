@@ -186,7 +186,7 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_smooth_parallel_kernel_at_
       S.family.metric cov hcovmetric A hab (hAspace.mono (Set.prod_mono hoo Set.Subset.rfl))
       q hArank hApos (fun _ _ => 0) (by
         intro r hr y
-        simpa only [map_zero, add_zero] using hevol0 r hr y)
+        simpa only [map_zero, add_zero] using (hevol0 r hr y).hasDerivWithinAt (s := Ioc a b))
   refine ⟨K, ?_, ?_, ?_⟩
   · intro x
     rw [hK x, hA b hb x]

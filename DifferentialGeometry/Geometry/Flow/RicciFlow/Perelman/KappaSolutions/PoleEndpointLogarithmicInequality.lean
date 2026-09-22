@@ -5,7 +5,7 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter Set TopologicalSpace MeasureTheory
+open Filter Set TopologicalSpace _root_.MeasureTheory
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

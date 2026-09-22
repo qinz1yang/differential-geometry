@@ -8,10 +8,10 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Set
+open Bundle _root_.Manifold Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 private theorem bufferedJetNorm_add_le (epsilon : ℝ)
     (gCov gNorm : SmoothRiemannianMetric SpatialNeckCylinderModel (spatialNeckBuffer epsilon))

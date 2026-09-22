@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornInteriorMinimizers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornInteriorSpheres
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactMetricSegment
+import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
 import Mathlib.Analysis.SpecificLimits.Basic
 
 set_option autoImplicit false
@@ -23,25 +23,9 @@ theorem lipschitzOnWith_of_subinterval_lengths
     (hsub : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1,
       metricPathELength g gamma a b = ENNReal.ofReal (b - a) * ENNReal.ofReal rho) :
     LipschitzOnWith L gamma (Icc (0 : ℝ) 1) := by
-  have hordered (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1)
-      (b : ℝ) (hb : b ∈ Icc (0 : ℝ) 1) (hab : a ≤ b) :
-      dist (gamma a) (gamma b) ≤ (L : ℝ) * dist a b := by
-    have hC1 : ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc a b) :=
-      (hsmooth.of_le (by decide)).contMDiffOn
-    have hbound := edistOf_le_metricPathELength g hab hC1
-    rw [H.edist_eq_ofReal_dist, hsub a ha b hb,
-      ← ENNReal.ofReal_mul (sub_nonneg.mpr hab)] at hbound
-    have hreal : dist (gamma a) (gamma b) ≤ (b - a) * rho :=
-      (ENNReal.ofReal_le_ofReal_iff (mul_nonneg (sub_nonneg.mpr hab) hrho)).mp hbound
-    calc
-      _ ≤ (b - a) * rho := hreal
-      _ ≤ (b - a) * (L : ℝ) := mul_le_mul_of_nonneg_left hL (sub_nonneg.mpr hab)
-      _ = _ := by rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hab)]; ring
-  apply lipschitzOnWith_iff_dist_le_mul.mpr
-  intro a ha b hb
-  rcases le_total a b with hab | hba
-  · exact hordered a ha b hb hab
-  · simpa only [dist_comm] using hordered b hb a ha hba
+  exact Geometry.lipschitzOnWith_of_subinterval_lengths g
+    (fun x y => (edist_dist x y).trans (edist_eq_ofReal_dist g H x y).symm)
+    (hsmooth.of_le (by decide)).contMDiffOn hrho hL hsub
 
 variable [SigmaCompactSpace W]
 
@@ -116,7 +100,7 @@ private theorem finiteHorn_exists_completion_segment
   have hc1 : Tendsto (fun n => c n 1) atTop (𝓝 H.endpoint) := by
     simpa only [c, hg1] using hyT
   obtain ⟨f, _hf, hf0, hf1, hfK, hfDist⟩ :=
-    exists_metric_segment_of_compact_lipschitz_curves hK
+    Metric.exists_metric_segment_of_compact_lipschitz_curves hK
       (L := L) (p := (x : UniformSpace.Completion W)) (q := H.endpoint) rfl
       c hc hcK hcLip hc0 hc1
   exact ⟨f, hf0, hf1, hfK, hfDist⟩

@@ -10,7 +10,7 @@ universe u uE uF uH
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -106,5 +106,40 @@ theorem MetricConvergenceData.exists_transContinuousLinearEquiv
   rw [canonicalSourceData_derivNormSupOn_transContinuousLinearEquiv Phi e k K p]
   have h := (hN k hk).2
   rwa [hcanonical k] at h
+
+theorem exists_canonicalMetricConvergenceData_transContinuousLinearEquiv
+    {X : PointedRiemannianSeq.{u, uE, uH} I}
+    {P : PointedRiemannianManifold.{u, uE, uH} I} {phi : ℕ → ℕ}
+    {Phi : PointedRiemannianConvergenceMaps X P phi}
+    (C : MetricConvergenceData Phi)
+    (hC : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Phi k)
+    (e : E ≃L[ℝ] F) :
+    ∃ C' : MetricConvergenceData (Phi.transContinuousLinearEquiv e),
+      (∀ k, C'.domain k = CanonicalMetricCompactness.canonicalSourceData
+        (Phi.transContinuousLinearEquiv e) k) ∧
+      (∀ k, (C'.domain k).referenceMetric = (C'.domain k).limitMetric) := by
+  exact MetricConvergenceData.exists_transContinuousLinearEquiv Phi C hC e
+
+theorem exists_canonicalMetricConvergenceData_of_transContinuousLinearEquiv
+    (e : E ≃L[ℝ] F)
+    {Phi : PointedRiemannianConvergenceMaps (X.transContinuousLinearEquiv e)
+      (P.transContinuousLinearEquiv e) phi}
+    (C : MetricConvergenceData Phi)
+    (hC : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Phi k) :
+    ∃ C' : MetricConvergenceData (Phi.ofTransContinuousLinearEquiv e),
+      (∀ k, C'.domain k = CanonicalMetricCompactness.canonicalSourceData
+        (Phi.ofTransContinuousLinearEquiv e) k) ∧
+      (∀ k, (C'.domain k).referenceMetric = (C'.domain k).limitMetric) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  apply exists_metricConvergenceData_canonicalSourceData (Phi.ofTransContinuousLinearEquiv e)
+  intro K hK p epsilon hepsilon
+  obtain ⟨N, hN⟩ := C.converges K hK p epsilon hepsilon
+  refine ⟨N, fun k hk => ?_⟩
+  have h := (hN k hk).2
+  rw [hC k] at h
+  have heq := canonicalSourceData_derivNormSupOn_transContinuousLinearEquiv
+    (Phi.ofTransContinuousLinearEquiv e) e k K p
+  exact heq.symm.trans_lt h
+
 
 end DifferentialGeometry.CheegerGromovCompactness

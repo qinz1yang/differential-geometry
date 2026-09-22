@@ -42,7 +42,7 @@ theorem contMDiffOn_radial_of_local_riemannian_distance_cone
     (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpos : ∀ x ∈ e.source, 0 < (e x).1)
     (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
-      (riemannianEDistOf g x y).toReal = openConeDistance (e x) (e y)) :
+      (riemannianEDistOf g x y).toReal = Metric.coneDistance (e x) (e y)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun x => (e x).1) e.source := by
   intro p hp
   obtain ⟨U, hU, hpU, hsmooth⟩ :=
@@ -74,7 +74,7 @@ theorem inner_gradient_radial_self_of_local_riemannian_distance_cone
     (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpos : ∀ x ∈ e.source, 0 < (e x).1)
     (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
-      (riemannianEDistOf g x y).toReal = openConeDistance (e x) (e y))
+      (riemannianEDistOf g x y).toReal = Metric.coneDistance (e x) (e y))
     {p : M} (hp : p ∈ e.source) :
     g.inner p (Geometry.Operator.gradientFun g (fun y => (e y).1) p)
       (Geometry.Operator.gradientFun g (fun y => (e y).1) p) = 1 := by
@@ -94,7 +94,7 @@ theorem inner_gradient_radial_self_of_local_riemannian_distance_cone
     rw [← heq] at hf
     exact hab.ne hf
   have hbase : (riemannianEDistOf g p p1).toReal = b - (e p).1 := by
-    rw [hdist p hp p1 hp1.2, hep1, openConeDistance]
+    rw [hdist p hp p1 hp1.2, hep1, Metric.coneDistance]
     simp only [dist_self, min_eq_right Real.pi_pos.le, Real.cos_zero, mul_one]
     rw [show (e p).1 ^ 2 + b ^ 2 - 2 * (e p).1 * b = (b - (e p).1) ^ 2 by ring,
       Real.sqrt_sq (sub_pos.mpr hab).le]
@@ -147,9 +147,9 @@ variable {Y : Type*} [MetricSpace Y]
 
 theorem snd_eq_of_openConeDistance_le_radial_sub
     {z w : ℝ × Y} (hz : 0 < z.1) (hw : 0 < w.1)
-    (hd : openConeDistance z w ≤ w.1 - z.1) :
+    (hd : Metric.coneDistance z w ≤ w.1 - z.1) :
     z.2 = w.2 := by
-  have heq : openConeDistance z w = w.1 - z.1 :=
+  have heq : Metric.coneDistance z w = w.1 - z.1 :=
     le_antisymm hd (sub_radial_le_openConeDistance hz.le hw.le)
   have hs := openConeDistance_sq hz.le hw.le
   rw [heq] at hs
@@ -187,7 +187,7 @@ theorem radial_image_of_unit_gradient_curve_of_local_riemannian_distance_cone
     (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpos : ∀ x ∈ e.source, 0 < (e x).1)
     (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
-      (riemannianEDistOf g x y).toReal = openConeDistance (e x) (e y))
+      (riemannianEDistOf g x y).toReal = Metric.coneDistance (e x) (e y))
     {γ : ℝ → M} {J : Set ℝ}
     (hJ : IsOpen J) (hconn : IsPreconnected J)
     (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ J)
@@ -261,7 +261,7 @@ theorem radial_image_of_gradient_curve_of_local_riemannian_distance_cone
     (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpos : ∀ x ∈ e.source, 0 < (e x).1)
     (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
-      (riemannianEDistOf g x y).toReal = openConeDistance (e x) (e y))
+      (riemannianEDistOf g x y).toReal = Metric.coneDistance (e x) (e y))
     {γ : ℝ → M} {J : Set ℝ}
     (hJ : IsOpen J) (hconn : IsPreconnected J)
     (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ J)

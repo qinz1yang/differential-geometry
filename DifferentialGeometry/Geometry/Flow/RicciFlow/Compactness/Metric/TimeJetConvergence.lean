@@ -8,7 +8,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Tensor.Multilinear
@@ -81,6 +81,7 @@ theorem mixed_curvature_components_mapCInf_of_gram_on_closed_interval {D D₀ : 
 
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ordinary_metric_time_jet_components_contDiffOn {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {b t : ℝ} (hcarrier : D.carrier = Iic b) (hregular : D.regular = Iio b) (ht : t ≤ b)
@@ -208,6 +209,7 @@ private theorem ordinary_metric_time_jet_components_mapCInf_of_jets {D D₀ : Re
       (fun n y hy => hcomp (S n) J (τ n) (fun x basis => hformula n q x basis slots) y hy)
       (fun y hy => hcomp S₀ J₀ t₀ (fun x basis => hformula₀ q x basis slots) y hy)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ordinary_metric_time_jet_components_mapCInf_of_gram {D D₀ : RealTimeInterval}
     (S : ℕ → SolutionOn (I := I) (M := M) D) (hS : ∀ n, IsSolutionOn (S n))
     (S₀ : SolutionOn (I := I) (M := M) D₀) (hS₀ : IsSolutionOn S₀)
@@ -243,6 +245,7 @@ theorem ordinary_metric_time_jet_components_mapCInf_of_gram {D D₀ : RealTimeIn
     exact mixed_curvature_components_contDiffOn S₀ hS₀ hcarrier₀ hregular₀ ht₀ 0 r x₀ hWt slots
 
 omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ordinary_metric_time_jet_components_contDiffOn_of_closed_interval {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b t : ℝ} (hac : a < c) (hcb : c < b)
