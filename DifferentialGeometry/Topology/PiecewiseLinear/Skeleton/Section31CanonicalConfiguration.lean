@@ -17,6 +17,7 @@ import Mathlib.Analysis.Normed.Module.Connected
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorusOfCylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
 import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell
+import DifferentialGeometry.Topology.PiecewiseLinear.CarriesGeneratorOrIsPLCellOfDisjointCarrier
 
 /-!
 # Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
@@ -192,6 +193,18 @@ by invariance of domain the interior points of a solid torus are exactly those o
 a compact subset of the interior lies over `|b| ≤ r < 1` and the radial shell `r ≤ |b| ≤ 1` is the
 toroidal shell.  That module keeps a private copy of `isCompact_revolutionOf` named
 `isCompact_revolutionOf_of_isCompact`; hoist the public one when this skeleton is promoted.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf):
+`carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier` (module
+`CarriesGeneratorOrIsPLCellOfDisjointCarrier`), by cases on whether `frontier S \ G` is
+preconnected.  The separating case is Moise 28.9 (`SeparatingPolygonDisk`), whose last case needed
+the parity fact that an orientable surface with one boundary circle has odd Euler characteristic
+(`OrientableSurfaceEulerParity`, with capping preserving orientability); the nonseparating case is
+`NonseparatingPolygonCarrier` (annulus complement, disk decomposition in the prism sphere, and the
+transfer that the two ends of an annulus carry the fundamental group together).
+`exists_isPLCell_frontier_of_polygon_nullhomotopic` can now use the separating case but its
+nonseparating case still needs a linking number, absent from the tree.
 -/
 
 open Set Topology
@@ -462,16 +475,6 @@ theorem exists_polygon_carrier_of_spine {S₁ S₂ T₁ T₂ Z₀ Z₁ : Set (Eu
     (hZ₀S₂ : Disjoint Z₀ S₂) (hZ₀gen : CarriesFundamentalGroupOnto Z₀ S₁) :
     ∃ K : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 1 K ∧ K ⊆ frontier S₂ ∩ interior S₁ ∧
       CarriesFundamentalGroupOnto K S₂ := by
-  sorry
-
-theorem carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier
-    {S K G : Set (EuclideanSpace ℝ (Fin 3))} (hS : IsCombinatorialSolidTorus S)
-    (hK : IsPLSphere 1 K) (hKS : K ⊆ frontier S) (hKgen : CarriesFundamentalGroupOnto K S)
-    (hG : IsPLSphere 1 G) (hGS : G ⊆ frontier S) (hGK : Disjoint G K) :
-    CarriesFundamentalGroupOnto G S ∨
-      ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
-          G = r '' stdSimplexBoundary 2 := by
   sorry
 
 theorem exists_isPLCell_frontier_of_polygon_nullhomotopic

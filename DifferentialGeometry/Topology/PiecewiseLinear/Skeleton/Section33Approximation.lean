@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceEulerChar
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhoodExists
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -159,6 +160,17 @@ Hurewicz factorisation over a field turns `hiso` into `b₁(Bd X) ≤ b₁(N' \ 
 `Fr N × [0,1)` with `Fr N` connected; Euler additivity over the handle pieces and cone capping of
 each piece's `deg v` boundary polygons give `χ(A'_v) ≤ 2 - deg v`, and the handshake identity
 forces equality in every piece.  The route does not use the sorried `HurewiczLowDegrees`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf): `exists_isPolyhedralTubeNeighborhood`
+(Lemma 2, module `PolyhedralTubeNeighborhoodExists`), over the new brick `LocalSurfaceLink`
+(a finite triangulation inside a chart of a topological 2-manifold has PL-circle vertex links, the
+torus recognition template with local charts).  Route: a manifold neighbourhood `X₀` of `K'` in
+`Int N'`, one combinatorial surface with boundary matching the pseudo-cells near the relevant compact
+sets, `exists_small_homeomorph_generalPosition` to put `Fr X₀` across it, and PL invariance.
+Lemma 8 (`section33_disk_meets_graph`) is stuck on an interface gap, escalated to the owner:
+`IsHandleDecompositionOfTube` does not record `Ec e ∩ frontier N' = Ebd e`, which the book's
+32.1/32.2 construction supplies; without it a bridge edge lets the return path be blocked by `Bd N'`.
 -/
 
 open Set Topology
@@ -214,12 +226,6 @@ theorem exists_section33TubeFrame
         (h '' (derivedNeighborhood T L').space) ∧
       (∀ v ∈ L'.vertices, C v = (graphDualCell T L' v).space) ∧
       ∀ v ∈ L'.vertices, ∀ x ∈ C v, ∀ y ∈ C v, dist (h x) (h y) < ε / 4 := by
-  sorry
-
-theorem exists_isPolyhedralTubeNeighborhood
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp) :
-    ∃ XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
-      IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK := by
   sorry
 
 theorem exists_hasSinglePolygonTraces

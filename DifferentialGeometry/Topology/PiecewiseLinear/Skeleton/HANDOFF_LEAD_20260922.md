@@ -288,3 +288,11 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 17:25 — `IsTube` is inhabited: accepted worker a's `SplittingDiskRim` + `TubeOfGraphDualCells`
   (`isTube_graphDualCell`, `IsTube.of_isEmbedding`, `exists_isTube`; ledger row B1.n). The vacuity
   concern about the ten `IsTube` consumers is closed. Owed lead cleanup listed in B1.n.
+* 17:40 — accepted worker c's torus-curve chain: parity brick, Moise 28.9, the nonseparating case
+  and `carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier`; physical `sorry` 74 → 73.
+  28.9 unblocks the §28 product-coordinates leaf (worker d told). Linking numbers remain the one
+  missing tool for `exists_isPLCell_frontier_of_polygon_nullhomotopic`.
+* 17:55 — accepted worker b's brick (B) `LocalSurfaceLink` and §33 Lemma 2
+  (`PolyhedralTubeNeighborhoodExists`); physical `sorry` now 72. OWNER DECISION PENDING: Lemma 8 needs
+  the field `Ec e ∩ frontier N' = Ebd e` in `IsHandleDecompositionOfTube` (book supplies it); adding it
+  widens frozen `Moise323` and re-opens `isHandleDecomposition_of_edgeCollars`. Not changed yet.

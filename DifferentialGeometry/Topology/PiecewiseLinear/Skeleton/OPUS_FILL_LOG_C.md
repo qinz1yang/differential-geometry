@@ -354,3 +354,155 @@
   surface); the preimage polygons separating the ends; and the extraction of one embedded PL
   circle in the open set `frontier S₂ ∩ int S₁` carrying `π₁(S₂)` from a singular loop there
   (28.8, again torus-curve classification). Estimated several thousand lines; not started.
+
+# Batch 4 (torus-curve chain)
+
+## Parity brick: orientable gluing and Euler parity of orientable surfaces — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/OrientableSurfaceEulerParity.lean`
+  (584 lines, SHA-256 `55e0bc52945628860865986e1a7de0041bfe0f24e830805687f41dad5e0c24f4`).
+- Import line to register (81 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.OrientableSurfaceEulerParity`
+- New public names (grepped tree-wide, unused before):
+  `SimplicialBoolCocycle.isCoboundary_of_isCoboundary_ofLe` (a `ℤ/2` cocycle on `M` covered
+  edgewise by `P`, `Q` is a coboundary if it is one on `P` and on `Q` and the common vertices
+  span a subcomplex `I` with preconnected edge graph), `IsOrientable.of_faces_eq_union`,
+  `IsOrientable.of_space_eq_union` (any combinatorial `n`-manifold triangulating `K ∪ L`, `K`, `L`
+  orientable `n`-manifolds with preconnected `K ∩ L`, is orientable; this is form (a): capping a
+  boundary circle keeps orientability), `IsOrientable.of_space_eq_union_union` (three pieces
+  `K ∪ L₀ ∪ L₁`, `L₀ ∩ L₁ = ∅`), `IsCombinatorialManifold.even_eulerChar_of_isOrientable`
+  (closed connected orientable surface in any finite-dimensional space: `χ` even),
+  `IsCombinatorialManifoldWithBoundary.odd_eulerChar_of_isOrientable` (form (b): connected,
+  orientable, boundary one PL circle: `χ` odd),
+  `IsCombinatorialManifoldWithBoundary.eulerChar_le_one_of_isPLSphere_one`,
+  `IsCombinatorialManifoldWithBoundary.eulerChar_nonpos_of_boundary_eq_union` (two disjoint
+  boundary circles: `χ ≤ 0`), `IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_of_eulerChar_eq_one`
+  (connected surface bounded by a PL circle `J` with `χ = 1` is a PL disk with rim `J`); local
+  instance `finite_faceStarComplex_faces_orientableGluing`. Private helpers: cone capping of one
+  or two boundary circles in `E × ℝ` (with orientability transfer), the induction on `2 - χ`.
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\OrientableSurfaceEulerParity.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 ~16:30 local, second compile).
+- Axiom audit: `AuditOpusC8.lean` — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC8.lean with no diagnostics;
+  shared outputs unchanged.` (16:32): closure within `propext`, `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route: orientability is the coboundary property of `orientationCocycle` on the barycentric
+  subdivision (`orientationCocycle_isCoboundary_iff`), restricted to subcomplexes by
+  `orientationCocycle_parity_of_faces_subset`. On a triangulation `A ∪ B` (common subdivision,
+  `exists_simplicialComplex_space_union`), every barycentric edge lies in `bary A` or `bary B`
+  (top of its flag), and a common barycentric vertex is the centroid of a common face
+  (`injOn_faces_of_mem_openSimplex`), so the overlap is `bary (A ∩ B)`, whose edge graph is
+  preconnected (`edgeGraph_preconnected_of_isPreconnected_space`); the two trivialisations differ
+  by a constant there. Parity: if `χ(K) ≠ 2`, `exists_isPLSphere_one_isPreconnected_sdiff` and
+  `exists_connected_annulus_complement` give an orientable `R` with `χ(R) = χ(K)` and two boundary
+  circles; cones above and below `R × {0}` (`exists_closed_of_disk_pair`) give an orientable closed
+  surface with `χ + 2 ≤ 2` (`faceEulerChar_le_two`); strong induction on `2 - χ`. One boundary
+  circle: cap once. Disk recognition: the capped surface has `χ = 2`, is a PL sphere
+  (`isPLSphere_two_of_faceEulerChar_eq_two`), and `IsPLSphere.isPLBall_closure_sdiff`,
+  `closure_sdiff_eq_sdiff_image_stdSimplexBoundary`, `image_stdSimplexBoundary_complement`
+  identify `K × {0}` as the complementary disk with rim `J × {0}`.
+- Hypotheses: only the stated manifold, orientability, connectivity and boundary hypotheses; the
+  realisation space is any finite-dimensional real normed space.
+- Compiles: 2 module checks + 1 audit.
+
+## Moise 28.9: separating PL circle on a PL torus bounds a disk — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/SeparatingPolygonDisk.lean`
+  (74 lines, SHA-256 `0424d009621dcd833ed8dbba6b9e6764aca458a6d944bf23dab7ad02cf8bb3b0`); imports the parity brick.
+- Import line to register (74 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SeparatingPolygonDisk`
+- New public names (grepped tree-wide, unused before):
+  `IsCombinatorialManifold.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff` (closed
+  connected orientable surface in any finite-dimensional space with `0 ≤ χ`: a separating PL
+  circle `J` bounds a PL disk `Δ ⊆ |K|`, `J = r '' ∂Δ²`) and
+  `IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff` (the same on a PL torus
+  `T ⊆ ℝ³`, output in the exact shape of the frozen leaf's second alternative with `T` in place of
+  `frontier S`).
+- NAME NOTE: the proposed `IsCombinatorialSolidTorus.exists_isPLCell_frontier_of_not_isPreconnected_sdiff`
+  would only be `IsPLTorus...` applied to `hS.isPLTorus_frontier` (a one-line alias, forbidden by
+  the worker rules); the solid torus plays no role, so the natural theorem is stated for PL tori
+  and the assembly applies it to `frontier S` directly.
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SeparatingPolygonDisk.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 ~16:34 local, first compile).
+- Axiom audit: `AuditOpusC9.lean` — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC9.lean with no diagnostics;
+  shared outputs unchanged.` (16:35): closure within `propext`, `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route: `exists_manifold_pair_of_separating_circle` gives the two sides `A`, `B` (connected,
+  orientable, boundary `J`, `A ∪ B = |K|`, `A ∩ B = J`); `χ(K) = χ(A) + χ(B)`
+  (`eulerChar_eq_add_of_space_union_of_isPLSphere_one`); both are odd and `≤ 1` (brick), so with
+  `χ(K) ≥ 0` one equals one and is a PL disk with rim `J`
+  (`exists_isPLHomeomorphOn_of_eulerChar_eq_one`). Torus: `IsPLTorus.exists_combinatorial_triangulation`,
+  `isOrientable_euclidean_three`, `χ = 2 - β₁` (`eulerChar_eq_two_sub_bettiOne_of_isOrientable`)
+  and `IsPLTorus.bettiOne_le_two`.
+- Hypotheses of the torus theorem: `IsPLTorus T`, `IsPLSphere 1 G`, `G ⊆ T`,
+  `¬ IsPreconnected (T \ G)`; producers: `IsCombinatorialSolidTorus.isPLTorus_frontier` for `T`.
+- Compiles: 1 module check + 1 audit.
+
+## IsCombinatorialSolidTorus.carriesFundamentalGroupOnto_of_isPreconnected_sdiff — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/NonseparatingPolygonCarrier.lean`
+  (546 lines, SHA-256 `4e67aea8f55ba7fcbff1f994692dc7fe0fc87fd4b65f4b06f01a770aa3a97886`);
+  imports the parity brick and `SeparatingPolygonDisk`.
+- Import line to register (80 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.NonseparatingPolygonCarrier`
+- New public names (grepped tree-wide, unused before; the `.wip` files only):
+  `surjective_fundamentalGroup_map_of_homotopy` (a homotopy `F₀ ≃ F₁` transfers surjectivity of
+  `π₁` from `F₁` to `F₀`, via `Path.Homotopic.map_trans_evalAt`),
+  `carriesFundamentalGroupOnto_image_zero_of_image_one` (the annulus transfer: `f` continuous on
+  `C × [0,1]` into `T`, `C` compact, `f (·,1)` injective: if `f (C × {1})` carries `π₁(T)` then
+  so does `f (C × {0})`), `IsTopologicalSolidTorus.isPathConnected`,
+  `IsTopologicalSolidTorus.not_simplyConnectedSpace`,
+  `IsTopologicalSolidTorus.not_carriesFundamentalGroupOnto_of_subset_isPLBall` (no nonempty
+  subset of a PL ball inside a solid torus carries its `π₁`),
+  `IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral` (a PL circle in `∂Δ² × (0,1)`
+  bounds a PL disk in `∂Δ² × [0,1]`, or a PL embedding of `∂Δ² × [0,1]` into itself fixes the
+  bottom circle and takes the top circle onto it), and the sub-leaf itself with the statement
+  proposed by the previous worker (unchanged). Private: the prism-sphere lemma
+  `IsPLSphere 2 (Δ² × {0,1} ∪ ∂Δ² × [0,1])` (the construction of `TorusOfOrientableEulerCharZero`).
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\NonseparatingPolygonCarrier.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 ~16:49 local, fifth compile).
+- Axiom audit: `AuditOpusC10.lean` (this module and the assembly below) — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC10.lean with no diagnostics;
+  shared outputs unchanged.` (16:52): closure within `propext`, `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route: `T = frontier S` is a PL torus (`isPLTorus_frontier`), triangulated orientably by `L`;
+  `exists_connected_annulus_complement` with `U = T \ K` gives `R` (connected, orientable,
+  `χ(R) = χ(L)`, boundary `G₋ ∪ G₊`, bicollar `ρ : G × [-1,1] → W`, `W ∩ K = ∅`);
+  `χ(R) ≤ 0` (brick) and `χ(L) = 2 - β₁ ≥ 0` give `χ(R) = 0`, so `R` is an annulus
+  `h : ∂Δ² × [0,1] → R` (`exists_isPLHomeomorphOn_annulus_of_eulerChar_eq_zero`); `K ⊆ R` misses
+  `∂R`, so `K' = h⁻¹ K ⊆ ∂Δ² × (0,1)`. Disk case: `h(D)` is a PL ball in `S` containing `K`,
+  contradicting `hKgen` (a solid torus is not simply connected). Annulus case: transfer along
+  `h ∘ ψ` (ends `G₋`, `K`) and then along `(x,t) ↦ ρ(x,-t)` (ends `G`, `G₋`). Dichotomy: the disk
+  decomposition of `K'` in the prism sphere (`exists_disk_decomposition_of_isPLSphere_one_subset_two`);
+  the end disks lie on one side each (`isPreconnected_iff_subset_of_disjoint_closed`); if on the
+  same side, the other disk lies in the lateral annulus; otherwise
+  `exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk` (fix the bottom disk, send the top side onto
+  the top disk) and `IsPLHomeomorphOn.image_image_stdSimplexBoundary` (rim to rim) give `ψ`.
+- Hypotheses of the sub-leaf and producers: `hS : IsCombinatorialSolidTorus S`, `hK`, `hG`
+  (PL circles), `hKS`, `hGS` (in `frontier S`), `hKgen`, `hGK : Disjoint G K`,
+  `hnonsep : IsPreconnected (frontier S \ G)` (the `by_cases` branch of the assembly). All are
+  used (zero-diagnostic compile).
+- Compiles: 5 module checks (errors fixed: universe/notation/`Σ` and `₋` identifiers,
+  motive-dependent rewrites of `FundamentalGroup.map`) + 1 audit.
+
+## carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/CarriesGeneratorOrIsPLCellOfDisjointCarrier.lean`
+  (36 lines, SHA-256 `6da2712beb0f828e7c63d2c13fb5b0d19ed39b516193024d4278a0306362cb2e`);
+  imports `NonseparatingPolygonCarrier` and `SeparatingPolygonDisk`. The name coincides with the
+  untracked `CarriesGeneratorOrIsPLCellOfDisjointCarrier.lean.wip`, which was not touched and can
+  be deleted by the lead.
+- Import line to register (96 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.CarriesGeneratorOrIsPLCellOfDisjointCarrier`
+- New public names: the frozen leaf only; statement byte-identical to
+  `Skeleton/Section31CanonicalConfiguration.lean:467` (checked by string comparison after CRLF
+  normalization; same `open Set Topology`, same namespace, no `variable` context in `Leaves`).
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CarriesGeneratorOrIsPLCellOfDisjointCarrier.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 16:51 local, first compile).
+- Axiom audit: `AuditOpusC10.lean`, as above.
+- Route: `by_cases hsep : IsPreconnected (frontier S \ G)`; nonseparating:
+  `IsCombinatorialSolidTorus.carriesFundamentalGroupOnto_of_isPreconnected_sdiff`; separating:
+  `IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff` on
+  `hS.isPLTorus_frontier` (whose output is literally the second alternative).
+- Compiles: 1 module check + the shared audit.
