@@ -12621,3 +12621,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCor
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.InverseCurves
 import DifferentialGeometry.Geometry.Compactness.SegmentTail
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CurveDistance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.InverseCurves
