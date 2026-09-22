@@ -285,3 +285,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   `.wip`); physical `sorry` 75 → 74. Worker d's analyses: the last extended-loop leaf needs PL
   transversality + planar innermost induction; the §28 product-coordinates leaf needs 28.9 (worker c is
   writing it) plus an annulus chain and PL chart gluing.
+* 17:25 — `IsTube` is inhabited: accepted worker a's `SplittingDiskRim` + `TubeOfGraphDualCells`
+  (`isTube_graphDualCell`, `IsTube.of_isEmbedding`, `exists_isTube`; ledger row B1.n). The vacuity
+  concern about the ten `IsTube` consumers is closed. Owed lead cleanup listed in B1.n.
