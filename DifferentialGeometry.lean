@@ -13291,3 +13291,13 @@ import DifferentialGeometry.Topology.ThreeManifold.PairedBallQuotientSmooth
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmptySmooth
 import DifferentialGeometry.Topology.Manifold.ComponentDiffeomorph
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricJetBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricCutCapJetBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Seam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalClosedSolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorMetricSeam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorChartMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorLocalFlow
+import DifferentialGeometry.Analysis.Calculus.TimeJet.JetPDE
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Seam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Seam

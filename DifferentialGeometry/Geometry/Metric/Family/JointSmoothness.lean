@@ -9,7 +9,7 @@ open Bundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Geometry.Operator (chartGramOnE)
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry.Geometry.Curvature
 
@@ -137,28 +137,28 @@ theorem chartGramOnE_joint_contDiffOn {n : ℕ∞}
 end NormedParameter
 
 omit [FiniteDimensional ℝ E] in
-private theorem metric_coeff_contDiffOn
+private theorem metric_coeff_contDiffOn {n : ℕ∞ω}
     (J : Set ℝ) (g : ℝ → SmoothRiemannianMetric I M)
-    (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+    (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
       (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
         (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
       (J ×ˢ (Set.univ : Set M))) :
     ∀ x (X Y : TangentSpace I x),
-      ContDiffOn ℝ ∞ (fun t : ℝ => (g t).inner x X Y) J := by
+      ContDiffOn ℝ n (fun t : ℝ => (g t).inner x X Y) J := by
   intro x X Y
-  have hcurve : ContMDiffOn 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) ∞
+  have hcurve : ContMDiffOn 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) n
       (fun t : ℝ => (t, x)) J := contMDiffOn_id.prodMk contMDiffOn_const
   have hmetric := hg.comp hcurve (fun t ht => ⟨ht, Set.mem_univ x⟩)
-  have hv : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) ∞
+  have hv : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) n
       (fun _ : ℝ => TotalSpace.mk' E (E := TangentSpace I) x X) J :=
     contMDiffOn_const
-  have hw : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) ∞
+  have hw : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) n
       (fun _ : ℝ => TotalSpace.mk' E (E := TangentSpace I) x Y) J :=
     contMDiffOn_const
   have happ := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
     (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
     (E₃ := Bundle.Trivial M ℝ) (b := fun _ : ℝ => x) hmetric hv hw
-  have hscalar : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
+  have hscalar : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) n
       (fun t : ℝ => (g t).inner x X Y) J := by
     intro t ht
     have hpt := happ t ht
@@ -365,5 +365,27 @@ theorem metricCLMSection_jointContMDiffOn_restrictOpenOfSubset
   intro t _ x v w
   rw [SmoothRiemannianMetric.restrictSubset_inner, mfderiv_opens_incl]
   rfl
+
+theorem metricTensorField_contDiffOn_time {n : ℕ∞ω}
+    (g : ℝ → SmoothRiemannianMetric I M) (A : Set ℝ)
+    (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
+      (fun q : ℝ × M => (⟨q.2, (g q.1).inner q.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ Set.univ)) (x : M) :
+    ContDiffOn ℝ n (fun t => Tensor0SBundle.metricTensorField (g t) x) A := by
+  classical
+  let b := Module.finBasis ℝ (TangentSpace I x)
+  have hc (slots : Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x))) :
+      ContDiffOn ℝ n
+        (fun t => Tensor0SBundle.component0S b (Tensor0SBundle.metricTensorField (g t) x) slots) A :=
+    metric_coeff_contDiffOn A g hg x (b (slots 0)) (b (slots 1))
+  have hsum : ContDiffOn ℝ n
+      (fun t => ∑ slots, Tensor0SBundle.component0S b
+        (Tensor0SBundle.metricTensorField (g t) x) slots •
+          Tensor0SBundle.tensor0SBasis b 2 slots) A :=
+    ContDiffOn.sum fun slots _ => (hc slots).smul_const _
+  simpa only [← Tensor0SBundle.tensor0SBasis_repr, Module.Basis.sum_repr] using hsum
+
 
 end DifferentialGeometry.Geometry.Curvature

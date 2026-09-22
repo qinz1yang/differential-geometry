@@ -183,32 +183,34 @@ theorem TerminalLimitMetric.chartGram_jets_continuousOn_closed
     rw [L.extendedMetric_before hq]
 
 
+theorem TerminalLimitMetric.extendedMetric_hasDerivAt
+    (L : G.TerminalLimitMetric) {t : ℝ} (ht : t ∈ Ioo a s)
+    (x : G.terminalRegularOpen) (v w : TangentSpace ThreeModel x) :
+    HasDerivAt (fun u => (L.extendedMetric u).inner x v w)
+      (-2 * ricciTensor (L.extendedMetric t) x v w) t := by
+  have hd := metricDerivAt G.flow G.equation ⟨t, ht⟩ x.1 v w
+  have hric := metricRicciAt_apply_eq_ricciTensor (G.flow.base.metric t) x.1 v w
+  dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt] at hd
+  erw [hric] at hd
+  have hderiv : HasDerivAt
+      (fun u => ((G.flow.base.metric u).restrictOpen G.terminalRegularOpen).inner x v w)
+      (-2 * ricciTensor ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen) x v w) t := by
+    simpa only [SolutionOn.family_metric, SmoothRiemannianMetric.restrictOpen_inner,
+      DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen,
+      DifferentialGeometry.mfderiv_subtype_val_apply] using hd
+  rw [L.extendedMetric_before ht.2]
+  apply hderiv.congr_of_eventuallyEq
+  filter_upwards [Iio_mem_nhds ht.2] with u hu
+  rw [L.extendedMetric_before hu]
+
 theorem TerminalLimitMetric.chartGram_contDiffOn_closed
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace =>
       chartGramOnE (I := ThreeModel) (L.extendedMetric q.1) p i j q.2)
       (Icc b s ×ˢ (extChartAt ThreeModel p).target) := by
-  have hpde : ∀ t ∈ Ioo b s, ∀ x : G.terminalRegularOpen,
-      ∀ v w : TangentSpace ThreeModel x,
-      HasDerivAt (fun u => (L.extendedMetric u).inner x v w)
-        (-2 * ricciTensor (L.extendedMetric t) x v w) t := by
-    intro t ht x v w
-    have hreg : t ∈ Ioo a s := ⟨hab.trans_lt ht.1, ht.2⟩
-    have hd := metricDerivAt G.flow G.equation ⟨t, hreg⟩ x.1 v w
-    have hric := metricRicciAt_apply_eq_ricciTensor (G.flow.base.metric t) x.1 v w
-    dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt] at hd
-    erw [hric] at hd
-    have hderiv : HasDerivAt
-        (fun u => ((G.flow.base.metric u).restrictOpen G.terminalRegularOpen).inner x v w)
-        (-2 * ricciTensor ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen) x v w) t := by
-      simpa only [SolutionOn.family_metric, SmoothRiemannianMetric.restrictOpen_inner,
-        DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen,
-        DifferentialGeometry.mfderiv_subtype_val_apply] using hd
-    rw [L.extendedMetric_before ht.2]
-    apply hderiv.congr_of_eventuallyEq
-    filter_upwards [Iio_mem_nhds ht.2] with u hu
-    rw [L.extendedMetric_before hu]
+  have hpde := fun t (ht : t ∈ Ioo b s) x v w =>
+    L.extendedMetric_hasDerivAt ⟨hab.trans_lt ht.1, ht.2⟩ x v w
   have hfull := chartGram_contDiffOn_of_spatialJets (I := ThreeModel) L.extendedMetric p hbs
     (isOpen_extChartAt_target p) Subset.rfl
     (fun r i j => L.chartGram_jets_continuousOn_closed hab p r i j) hpde

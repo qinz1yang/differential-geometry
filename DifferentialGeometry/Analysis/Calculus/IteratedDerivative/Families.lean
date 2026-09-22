@@ -287,3 +287,66 @@ theorem eventually_uniform_iteratedFDerivWithin_prod_slice
 
 end DifferentialGeometry.Analysis
 end
+
+noncomputable section
+open Set Filter
+open scoped ContDiff Topology Pointwise
+namespace DifferentialGeometry.Analysis
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+private theorem iteratedFDerivWithin_spatial_Icc
+    {f : ℝ × E → F} {a b : ℝ} {V : Set E} {n : ℕ∞ω}
+    (hab : a < b) (hV : IsOpen V) (hf : ContDiffOn ℝ n f (Icc a b ×ˢ V))
+    {t : ℝ} {x : E} (ht : t ∈ Icc a b) (hx : x ∈ V) (m : ℕ) (hm : m ≤ n) :
+    iteratedFDeriv ℝ m (fun y => f (t, y)) x =
+      (iteratedFDerivWithin ℝ m f (Icc a b ×ˢ V) (t, x)).compContinuousLinearMap
+        (fun _ : Fin m => ContinuousLinearMap.inr ℝ ℝ E) := by
+  let R : Set (ℝ × E) := (fun q : ℝ × E => q + (t, 0)) ⁻¹' (Icc a b ×ˢ V)
+  have hR : R = Icc (a - t) (b - t) ×ˢ V := by
+    ext q
+    simp only [R, mem_preimage, mem_prod, Prod.fst_add, Prod.snd_add, add_zero, mem_Icc]
+    constructor <;> rintro ⟨⟨ha, hb⟩, hv⟩ <;> exact ⟨⟨by linarith, by linarith⟩, hv⟩
+  have huniq : UniqueDiffOn ℝ R := by
+    rw [hR]
+    exact (uniqueDiffOn_Icc (by linarith : a - t < b - t)).prod hV.uniqueDiffOn
+  have hpre : (ContinuousLinearMap.inr ℝ ℝ E) ⁻¹' R = V := by
+    ext y
+    simp only [R, mem_preimage, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+      zero_add, add_zero, mem_prod, ht, true_and]
+  have hshift : ContDiffOn ℝ n (fun q : ℝ × E => f (q + (t, 0))) R :=
+    hf.comp (contDiff_id.add contDiff_const).contDiffOn (fun _ h => h)
+  have hmem : (ContinuousLinearMap.inr ℝ ℝ E) x ∈ R := by
+    change (0 + t, x + 0) ∈ Icc a b ×ˢ V
+    simpa only [zero_add, add_zero, mem_prod] using And.intro ht hx
+  have hcomp := (ContinuousLinearMap.inr ℝ ℝ E).iteratedFDerivWithin_comp_right
+    hshift huniq (by rw [hpre]; exact hV.uniqueDiffOn) hmem hm
+  have htranslate : (t, (0 : E)) +ᵥ R = Icc a b ×ˢ V := by
+    ext q
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      simpa only [R, mem_preimage, vadd_eq_add, add_comm (t, (0 : E))] using hy
+    · intro hq
+      refine ⟨q - (t, 0), ?_, ?_⟩
+      · simpa only [R, mem_preimage, sub_add_cancel] using hq
+      · change (t, 0) + (q - (t, 0)) = q
+        abel
+  rw [hpre, iteratedFDerivWithin_comp_add_right, htranslate] at hcomp
+  rw [← iteratedFDerivWithin_of_isOpen m hV hx]
+  simpa only [Function.comp_def, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+    zero_add, add_zero] using hcomp
+
+theorem continuousOn_iteratedFDeriv_spatial_Icc
+    {f : ℝ × E → F} {a b : ℝ} {V : Set E} {n : ℕ∞ω}
+    (hab : a < b) (hV : IsOpen V) (hf : ContDiffOn ℝ n f (Icc a b ×ˢ V))
+    (m : ℕ) (hm : m ≤ n) :
+    ContinuousOn (fun q : ℝ × E => iteratedFDeriv ℝ m (fun y => f (q.1, y)) q.2)
+      (Icc a b ×ˢ V) := by
+  have hfull := hf.continuousOn_iteratedFDerivWithin hm
+    ((uniqueDiffOn_Icc hab).prod hV.uniqueDiffOn)
+  have hh := (ContinuousMultilinearMap.compContinuousLinearMapL
+    (fun _ : Fin m => ContinuousLinearMap.inr ℝ ℝ E)).continuous.comp_continuousOn hfull
+  exact hh.congr fun q hq => iteratedFDerivWithin_spatial_Icc hab hV hf hq.1 hq.2 m hm
+
+
+end DifferentialGeometry.Analysis

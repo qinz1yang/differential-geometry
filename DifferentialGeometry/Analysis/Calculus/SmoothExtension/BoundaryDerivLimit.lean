@@ -57,4 +57,59 @@ theorem hasDerivWithinAt_Icc_of_hasDerivAt_Ioo
     exact HasFDerivWithinAt.singleton
   · exact (not_le_of_gt hab (ht.1.trans ht.2)).elim
 
+theorem hasDerivAt_ite_of_one_sided_derivatives
+    {fL fR : ℝ → F} {s : ℝ} {L : F}
+    (hval : fL s = fR s)
+    (hL : HasDerivWithinAt fL L (Iic s) s)
+    (hR : HasDerivWithinAt fR L (Ici s) s) :
+    HasDerivAt (fun t => if t ≤ s then fL t else fR t) L s := by
+  have hL' : HasDerivWithinAt (fun t => if t ≤ s then fL t else fR t) L (Iic s) s :=
+    hL.congr (fun t ht => if_pos ht) (if_pos le_rfl)
+  have hR' : HasDerivWithinAt (fun t => if t ≤ s then fL t else fR t) L (Ici s) s := by
+    apply hR.congr
+    · intro t ht
+      rcases eq_or_lt_of_le (mem_Ici.mp ht) with rfl | hst
+      · exact (if_pos le_rfl).trans hval
+      · exact if_neg (not_le.mpr hst)
+    · exact (if_pos le_rfl).trans hval
+  simpa only [Iic_union_Ici, hasDerivWithinAt_univ] using hL'.union hR'
+
+theorem hasDerivAt_ite_of_tendsto_derivatives
+    {fL fR FL FR : ℝ → F} {a s b : ℝ} {L : F} (ha : a < s) (hb : s < b)
+    (hL : ContinuousWithinAt fL (Icc a s) s)
+    (hR : ContinuousWithinAt fR (Icc s b) s)
+    (hderivL : ∀ t ∈ Ioo a s, HasDerivAt fL (FL t) t)
+    (hderivR : ∀ t ∈ Ioo s b, HasDerivAt fR (FR t) t)
+    (hval : fL s = fR s)
+    (hlimL : Tendsto FL (𝓝[<] s) (𝓝 L))
+    (hlimR : Tendsto FR (𝓝[>] s) (𝓝 L)) :
+    HasDerivAt (fun t => if t ≤ s then fL t else fR t) L s := by
+  apply hasDerivAt_ite_of_one_sided_derivatives hval
+  · refine hasDerivWithinAt_Iic_of_tendsto_deriv
+      (fun t ht => (hderivL t ht).differentiableAt.differentiableWithinAt)
+      (hL.mono Ioo_subset_Icc_self) (Ioo_mem_nhdsLT ha) ?_
+    exact hlimL.congr' (Filter.eventuallyEq_of_mem (Ioo_mem_nhdsLT ha)
+      (fun t ht => (hderivL t ht).deriv.symm))
+  · refine hasDerivWithinAt_Ici_of_tendsto_deriv
+      (fun t ht => (hderivR t ht).differentiableAt.differentiableWithinAt)
+      (hR.mono Ioo_subset_Icc_self) (Ioo_mem_nhdsGT hb) ?_
+    exact hlimR.congr' (Filter.eventuallyEq_of_mem (Ioo_mem_nhdsGT hb)
+      (fun t ht => (hderivR t ht).deriv.symm))
+
+theorem hasDerivAt_ite_of_continuous_derivatives
+    {fL fR FL FR : ℝ → F} {a s b : ℝ} (ha : a < s) (hb : s < b)
+    (hL : ContinuousWithinAt fL (Icc a s) s)
+    (hR : ContinuousWithinAt fR (Icc s b) s)
+    (hderivL : ∀ t ∈ Ioo a s, HasDerivAt fL (FL t) t)
+    (hderivR : ∀ t ∈ Ioo s b, HasDerivAt fR (FR t) t)
+    (hval : fL s = fR s)
+    (hFL : ContinuousWithinAt FL (Icc a s) s)
+    (hFR : ContinuousWithinAt FR (Icc s b) s) (hmatch : FL s = FR s) :
+    HasDerivAt (fun t => if t ≤ s then fL t else fR t) (FL s) s := by
+  apply hasDerivAt_ite_of_tendsto_derivatives ha hb hL hR hderivL hderivR hval
+  · rw [← nhdsWithin_Ioo_eq_nhdsLT ha]
+    exact hFL.mono Ioo_subset_Icc_self
+  · rw [hmatch, ← nhdsWithin_Ioo_eq_nhdsGT hb]
+    exact hFR.mono Ioo_subset_Icc_self
+
 end DifferentialGeometry.Analysis.Calculus.SmoothExtension
