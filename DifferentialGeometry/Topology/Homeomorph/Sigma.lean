@@ -231,3 +231,136 @@ def sigmaCongrRight (h : ∀ i, Y i ≃ₜ Z i) : (Σ i, Y i) ≃ₜ (Σ i, Z i)
 
 
 end Homeomorph
+
+namespace Homeomorph
+
+universe u v
+
+variable {V : Type u} (X : V → Type v) [∀ i, TopologicalSpace (X i)]
+
+def sigmaSplit (i : V) :
+    (Σ v, X v) ≃ₜ X i ⊕ (Σ v : {v // v ≠ i}, X v.val) := by
+  classical
+  refine
+    { toFun := fun x =>
+        if h : x.1 = i then Sum.inl (h ▸ x.2)
+        else Sum.inr ⟨⟨x.1, h⟩, x.2⟩
+      invFun := Sum.elim (Sigma.mk i) (fun x => ⟨x.1.val, x.2⟩)
+      left_inv := ?_
+      right_inv := ?_
+      continuous_toFun := ?_
+      continuous_invFun := ?_ }
+  · rintro ⟨v, x⟩
+    by_cases h : v = i
+    · subst v
+      simp
+    · simp [h]
+  · rintro (x | ⟨⟨v, h⟩, x⟩)
+    · simp
+    · simp [h]
+  · apply continuous_sigma
+    intro v
+    by_cases h : v = i
+    · subst v
+      simp only
+      exact continuous_inl
+    · simp only [dif_neg h]
+      exact continuous_inr.comp
+        (@continuous_sigmaMk {v // v ≠ i} (fun v => X v.val)
+          (fun v => inferInstance) ⟨v, h⟩)
+  · exact Continuous.sumElim continuous_sigmaMk
+      (continuous_sigma fun _ => continuous_sigmaMk)
+
+@[simp] theorem sigmaSplit_mk_selected (i : V) (x : X i) :
+    sigmaSplit X i ⟨i, x⟩ = Sum.inl x := by
+  classical
+  simp [sigmaSplit]
+
+@[simp] theorem sigmaSplit_mk_remaining (i : V) (v : {v // v ≠ i}) (x : X v.val) :
+    sigmaSplit X i ⟨v.val, x⟩ = Sum.inr ⟨v, x⟩ := by
+  classical
+  simp [sigmaSplit, v.property]
+
+@[simp] theorem sigmaSplit_symm_inl (i : V) (x : X i) :
+    (sigmaSplit X i).symm (Sum.inl x) = ⟨i, x⟩ := rfl
+
+@[simp] theorem sigmaSplit_symm_inr (i : V) (x : Σ v : {v // v ≠ i}, X v.val) :
+    (sigmaSplit X i).symm (Sum.inr x) = ⟨x.1.val, x.2⟩ := rfl
+
+def sigmaQuotient (i : V) (r : X i → X i → Prop) :
+    Quot (fun x y : Σ v, X v =>
+      ∃ p q, r p q ∧ Sigma.mk i p = x ∧ Sigma.mk i q = y) ≃ₜ
+        Quot r ⊕ (Σ v : {v // v ≠ i}, X v.val) := by
+  let U := Σ v : {v // v ≠ i}, X v.val
+  let ρ := fun x y : Σ v, X v =>
+    ∃ p q, r p q ∧ Sigma.mk i p = x ∧ Sigma.mk i q = y
+  let e := sigmaSplit X i
+  let F : (Σ v, X v) → Quot r ⊕ U := Sum.map (Quot.mk r) id ∘ e
+  have hFquotient : _root_.Topology.IsQuotientMap F := by
+    apply _root_.Topology.IsQuotientMap.comp _ e.isQuotientMap
+    rw [_root_.Topology.isQuotientMap_iff]
+    refine ⟨_root_.Topology.isCoinducing_iff.mpr ?_, ?_⟩
+    · intro S
+      conv_lhs => rw [isOpen_sum_iff]
+      conv_rhs => rw [isOpen_sum_iff]
+      have hq := (isQuotientMap_quot_mk (r := r)).isOpen_preimage
+        (s := Sum.inl ⁻¹' S)
+      exact and_congr hq Iff.rfl
+    · exact Sum.map_surjective.mpr
+        ⟨(isQuotientMap_quot_mk (r := r)).surjective, Function.surjective_id⟩
+  have hrel : ∀ x y, ρ x y → F x = F y := by
+    rintro x y ⟨p, q, hpq, rfl, rfl⟩
+    simp only [F, e, Function.comp_apply, sigmaSplit_mk_selected, Sum.map_inl]
+    exact congrArg Sum.inl (Quot.sound hpq)
+  let G : Quot ρ → Quot r ⊕ U := Quot.lift F hrel
+  have hGinjective : Function.Injective G := by
+    intro q q' h
+    obtain ⟨x, rfl⟩ := Quot.exists_rep q
+    obtain ⟨y, rfl⟩ := Quot.exists_rep q'
+    change F x = F y at h
+    have hfiber : ∀ p q : X i ⊕ U,
+        Sum.map (Quot.mk r) id p = Sum.map (Quot.mk r) id q →
+        Quot.mk ρ (e.symm p) = Quot.mk ρ (e.symm q) := by
+      intro p q hpq
+      cases p with
+      | inl p =>
+        cases q with
+        | inl q =>
+          have hpq' := Sum.inl.inj hpq
+          have hgen := Quot.eqvGen_exact hpq'
+          clear hpq hpq'
+          induction hgen with
+          | rel p q hpq => exact Quot.sound ⟨p, q, hpq, rfl, rfl⟩
+          | refl p => rfl
+          | symm p q _ ih => exact ih.symm
+          | trans p q z _ _ ih ih' => exact ih.trans ih'
+        | inr q =>
+          exact (Sum.inl_ne_inr
+            (by simpa only [Sum.map_inl, Sum.map_inr] using hpq)).elim
+      | inr p =>
+        cases q with
+        | inl q =>
+          exact (Sum.inr_ne_inl
+            (by simpa only [Sum.map_inl, Sum.map_inr] using hpq)).elim
+        | inr q =>
+          exact congrArg (fun z => Quot.mk ρ (e.symm (Sum.inr z))) (Sum.inr.inj hpq)
+    simpa only [e.symm_apply_apply] using hfiber (e x) (e y) h
+  have hGquotient : _root_.Topology.IsQuotientMap G :=
+    (isQuotientMap_quot_mk (r := ρ)).of_comp_isQuotientMap hFquotient
+  exact IsHomeomorph.homeomorph G
+    (isHomeomorph_iff_isQuotientMap_injective.mpr ⟨hGquotient, hGinjective⟩)
+
+@[simp] theorem sigmaQuotient_mk_selected (i : V) (r : X i → X i → Prop) (x : X i) :
+    sigmaQuotient X i r (Quot.mk _ ⟨i, x⟩) = Sum.inl (Quot.mk r x) := by
+  change Sum.map (Quot.mk r) id (sigmaSplit X i ⟨i, x⟩) = _
+  rw [sigmaSplit_mk_selected]
+  rfl
+
+@[simp] theorem sigmaQuotient_mk_remaining (i : V) (r : X i → X i → Prop)
+    (v : {v // v ≠ i}) (x : X v.val) :
+    sigmaQuotient X i r (Quot.mk _ ⟨v.val, x⟩) = Sum.inr ⟨v, x⟩ := by
+  change Sum.map (Quot.mk r) id (sigmaSplit X i ⟨v.val, x⟩) = _
+  rw [sigmaSplit_mk_remaining]
+  rfl
+
+end Homeomorph
