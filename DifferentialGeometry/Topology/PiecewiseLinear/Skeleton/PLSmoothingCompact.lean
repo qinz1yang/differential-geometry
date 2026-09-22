@@ -5,6 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Smoothing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttachmentZero
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeBoundaryGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
@@ -21,7 +22,8 @@ import Mathlib.Geometry.Manifold.Instances.Sphere
 
 The endpoint `PLSmoothingModelCompact 3` (every compact PL three-manifold is homeomorphic to a
 smooth one) is assembled by `plSmoothingModelCompact_three` from two proved zero-handle producers
-and the nine remaining leaves below, along route R-DN of `consult/C1-smoothing-scope.md` §4:
+and three proved relative boundary formulas
+and the six remaining leaves below, along route R-DN of `consult/C1-smoothing-scope.md` §4:
 triangulate (`plManifoldTriangulation`),
 take the proved handle filtration `exists_pl_three_handle_filtration`, and carry the invariant
 `IsSmoothHandleStage (N i).space (Subtype.val ⁻¹' (boundaryComplex 3 (N i)).space)` across the
@@ -42,7 +44,12 @@ the proved four-way case split.  `IsPLCellAttachmentWith … g` pins the map `g`
 (`IsPLCellAttachment.exists_isPLCellAttachmentWith`).
 
 The zero-handle boundary trace and smooth adjunction are proved in the imported real modules.
-The other nine leaves remain open. All eleven were reviewed **OK** on 2026-09-21 (digest AN)
+The one-, two- and three-handle boundary traces are proved in `RelativeBoundaryGluing`.
+Their explicit frozen headers and original variable scope are preserved. The proof uses
+intrinsic boundary links, exact attachment overlaps and the closure of the free boundary.
+It still receives the prescribed new stage's combinatorial-manifold certificate; it does
+not construct that certificate. The six smooth-stage leaves remain open.
+All eleven were reviewed **OK** on 2026-09-21 (digest AN)
 and are frozen with their
 present signatures.  The review's rulings on their proofs: the taming leaves smooth only the
 *image* of the attaching region, never `ψ` itself, so each attachment leaf must first align the
@@ -162,41 +169,6 @@ theorem exists_isManifold_of_plApproximation_of_plSmoothingCompact {n : ℕ} {X 
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-open Classical in
-theorem boundaryComplex_space_of_isPLCellAttachmentWith_one [FiniteDimensional ℝ E]
-    {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
-    (hL : IsCombinatorialManifoldWithBoundary 3 L)
-    (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 3 → ℝ) × ℝ → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
-      (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N'.space g) :
-    (boundaryComplex 3 N').space =
-      ((boundaryComplex 3 L).space \
-          g '' ((stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ))) ∪
-        g '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := by
-  sorry
-
-open Classical in
-theorem boundaryComplex_space_of_isPLCellAttachmentWith_two [FiniteDimensional ℝ E]
-    {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
-    (hL : IsCombinatorialManifoldWithBoundary 3 L)
-    (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 3 → ℝ) × ℝ → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
-      (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) L C N'.space g) :
-    (boundaryComplex 3 N').space =
-      ((boundaryComplex 3 L).space \ g '' (stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)) ∪
-        g '' (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) := by
-  sorry
-
-open Classical in
-theorem boundaryComplex_space_of_isPLCellAttachmentWith_three [FiniteDimensional ℝ E]
-    {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
-    (hL : IsCombinatorialManifoldWithBoundary 3 L)
-    (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 4 → ℝ) → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 4)) (stdSimplexBoundary 3) L C
-      N'.space g) :
-    (boundaryComplex 3 N').space = (boundaryComplex 3 L).space \ g '' stdSimplexBoundary 3 := by
-  sorry
 
 theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]

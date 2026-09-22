@@ -9249,6 +9249,7 @@ import DifferentialGeometry.Topology.Connected.Separation
 import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
 import DifferentialGeometry.Topology.CompactEmbeddingComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRay
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeBoundaryGluing
 /-!
 # Differential geometry and geometric analysis
 -/
