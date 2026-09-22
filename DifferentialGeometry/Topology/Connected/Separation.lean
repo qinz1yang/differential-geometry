@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yuan Liao
 -/
 import Mathlib.Topology.Connected.LocallyConnected
+import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.Topology.Connected.PathConnected
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Order.DenselyOrdered
@@ -57,6 +58,43 @@ theorem Separates.not_mem_connectedComponentIn {C H K : Set X} (h : Separates C 
       ((connectedComponentIn_subset _ _).trans heq.symm.subset)
       ⟨x, mem_connectedComponentIn (heq ▸ Or.inl (hH hx)), hH hx⟩
   exact disjoint_left.mp hd (hsub hyx) (hK hy)
+
+theorem separates_of_not_joinedIn {X : Type*} [TopologicalSpace X]
+    [LocallyPathConnectedSpace X] {C H K : Set X} (hC : IsClosed C)
+    (hHC : H ⊆ Cᶜ) (hKC : K ⊆ Cᶜ)
+    (hnot : ∀ x ∈ H, ∀ y ∈ K, ¬ JoinedIn Cᶜ x y) : Separates C H K := by
+  let U := ⋃ x ∈ H, connectedComponentIn Cᶜ x
+  have hUC : U ⊆ Cᶜ := by
+    intro z hz
+    obtain ⟨x, _, hx⟩ := mem_iUnion₂.mp hz
+    exact connectedComponentIn_subset _ x hx
+  have hU : IsOpen U :=
+    isOpen_iUnion fun _ => isOpen_iUnion fun _ => hC.isOpen_compl.connectedComponentIn
+  have hV : IsOpen (Cᶜ \ U) := by
+    apply isOpen_iff_mem_nhds.mpr
+    intro z hz
+    apply Filter.mem_of_superset
+      (hC.isOpen_compl.connectedComponentIn.mem_nhds (mem_connectedComponentIn hz.1))
+    intro w hw
+    refine ⟨connectedComponentIn_subset _ _ hw, ?_⟩
+    intro hwU
+    obtain ⟨x, hxH, hwx⟩ := mem_iUnion₂.mp hwU
+    have heq := (connectedComponentIn_eq hw).trans (connectedComponentIn_eq hwx).symm
+    exact hz.2 (mem_iUnion₂.mpr
+      ⟨x, hxH, heq ▸ mem_connectedComponentIn hz.1⟩)
+  refine ⟨U, Cᶜ \ U, hU, hV, disjoint_sdiff_right, union_sdiff_cancel hUC, ?_, ?_⟩
+  · intro x hx
+    exact mem_iUnion₂.mpr ⟨x, hx, mem_connectedComponentIn (hHC hx)⟩
+  · intro y hy
+    refine ⟨hKC hy, ?_⟩
+    intro hyU
+    obtain ⟨x, hxH, hyx⟩ := mem_iUnion₂.mp hyU
+    have hp : IsPathConnected (connectedComponentIn Cᶜ x) :=
+      hC.isOpen_compl.connectedComponentIn.isConnected_iff_isPathConnected.mp
+        (isConnected_connectedComponentIn_iff.mpr (hHC hxH))
+    exact hnot x hxH y hy
+      ((hp.joinedIn x (mem_connectedComponentIn (hHC hxH)) y hyx).mono
+        (connectedComponentIn_subset _ _))
 
 theorem separates_empty_left {C K : Set X} (hC : IsClosed C) (hK : K ⊆ Cᶜ) :
     Separates C ∅ K :=

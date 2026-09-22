@@ -9245,6 +9245,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjuncti
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
 import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
+import DifferentialGeometry.Topology.Connected.Separation
 /-!
 # Differential geometry and geometric analysis
 -/
