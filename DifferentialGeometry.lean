@@ -13221,3 +13221,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteVo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRetainedVolume
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalDerivative
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalExtension
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedCongruence
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallFinite
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalCoorientation
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalSign
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.CoorientedExtension
+import DifferentialGeometry.Topology.ThreeManifold.TwoBallCharts
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedTwoBall
