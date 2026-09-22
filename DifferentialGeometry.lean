@@ -13185,3 +13185,5 @@ import DifferentialGeometry.Topology.Homeomorph.Sigma
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallGluing
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmpty
+import DifferentialGeometry.Geometry.Neck.SpatialExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornComponents
