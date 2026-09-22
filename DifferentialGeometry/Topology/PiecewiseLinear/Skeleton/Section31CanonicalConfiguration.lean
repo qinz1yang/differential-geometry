@@ -6,8 +6,11 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.BallHomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSpineRevolutionOfOfMemCellInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
+import DifferentialGeometry.Topology.PiecewiseLinear.RevolutionOfCellInteriorSubsetInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusGeneralPosition
 import DifferentialGeometry.Topology.VanKampen.CellAttachmentFundamentalGroup
 import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Analysis.Normed.Module.Connected
@@ -26,18 +29,19 @@ Review state.  First external review 2026-09-21 (digest AP,
 first below are all OK and **frozen**; their statements are byte-identical to the reviewed
 snapshot, and `exists_generalPosition_solidTorus_triple` keeps its reviewed statement but is
 now proved.  The relative leaf `exists_generalPosition_solidTorus_relative`, added on the
-reviewer's interface fix, is **frozen** after the second review (digest AQ).  All nine current
-leaves remain open proof obligations.  The leaves, with the book gap each covers (Moise
-pp. 220-222, digest AD).
+reviewer's interface fix, is **frozen** after the second review (digest AQ). Seven leaves remain
+open. The spine and interior results below are proved in imported real modules with their
+frozen statements unchanged; `Fits`, `PairGP` and symmetry live in `SolidTorusGeneralPosition`.
+The leaves, with the book gap each covers (Moise pp. 220-222, digest AD).
 
-`isSpine_revolutionOf_of_mem_cellInterior` (medium).  Revolving a planar two-cell of the open
+`isSpine_revolutionOf_of_mem_cellInterior` (proved). Revolving a planar two-cell of the open
 right half-plane about the `y`-axis gives a solid torus in which the circle of any point of the
 cell interior is a spine.  This is AD's `isTopologicalSolidTorus_revolutionOf` strengthened to a
 spine certificate, because a spine is what 31.2 and the 31.4 union argument consume; the solid
 torus is its first component.  It clears the `isSolidTorus` field of `IsRevolvedTorusChain`,
 page 220's unproved "the two-cells give solid tori".
 
-`revolutionOf_cellInterior_subset_interior` (medium, invariance of domain in the plane).  The
+`revolutionOf_cellInterior_subset_interior` (proved, invariance of domain in the plane). The
 revolution of the cell interior lies in the ambient interior of the revolved cell.  It clears
 the `annulusSubset` field, page 220's `A_j ⊆ Int S_j`.
 
@@ -95,9 +99,9 @@ Proposed hand-off to Section 32 (not implemented): first fix the source tower an
 choose one seed torus for every integer, keep the even seeds and choose each odd torus relative
 to its two fixed even neighbours.  Use `A = φ '' A_i` and `U = Int (φ '' S_i)`; every triple is
 a restriction of this one family.  Approach to the boundary, approach to the centre and local
-finiteness still come from the outer control of `φ '' S_i`, not from this leaf.  Owed: hoist
-`Fits`, `PairGP`, `PairGP.symm` and this statement to a real module before Section 32's tower
-leaf consumes them.
+finiteness still come from the outer control of `φ '' S_i`, not from this leaf. `Fits`,
+`PairGP` and `PairGP.symm` now live in `SolidTorusGeneralPosition.lean`; the relative producer
+remains open in this skeleton and must be proved in a real module before the tower consumes it.
 
 `exists_polygon_carrier_of_spine` (deep).  The chain-intersection device of 31.4 (ii)-(iv) and
 the uncited 28.11, in the tree's vocabulary: given a combinatorial solid torus `S₁` containing a
@@ -142,10 +146,9 @@ Vacuity.  `IsRevolvedTorusChain` and `IsCanonicalConfiguration` were untested tr
 two leaves, so `isRevolvedTorusChain_standard` inhabits the first predicate on the fixture
 `isPlanarCellChain_standard` (three rectangles `[j + 3/5, j + 12/5] × [-1, 1]` revolved, points
 `(j + 1, 0, 0)`), and `exists_isCanonicalConfiguration_standard` inhabits the second with
-`h = id` given `Moise307`.  Both are **CONDITIONALLY INHABITED**: the first depends on the two
-reviewed leaves it consumes, the second on every leaf of `moise311` and on `Moise307`; neither
-is an independent sorry-free test, they only show that the predicates have a non-degenerate
-model once the leaves hold.  Likewise `Fits` is inhabited by `hstep`'s output in `moise311` and
+`h = id` given `Moise307`. The first now consumes the two proved results in real modules;
+the second remains **CONDITIONALLY INHABITED**, depending on the open leaves of `moise311`
+and on `Moise307`. Likewise `Fits` is inhabited by `hstep`'s output in `moise311` and
 `PairGP` by the relative leaf's output, both conditionally.  On the fixture every leaf is
 non-degenerate: the cell interiors are open rectangles containing the points,
 `D 0 ∪ D 1 = [3/5, 17/5] × [-1, 1]` is a rectangle, the middle circles are round circles of
@@ -158,7 +161,7 @@ inside, longitudinal polygons and small boundary disks, not `h = id` or empty in
 Consumers.  `Moise312` feeds Section 34 Lemma 2 through `moise308Nested`; Section 32's proofs
 import all four theorems.  To be hoisted into real modules when the leaves are proved:
 `revolutionOf_union`, `revolutionOf_inter`, `revolutionOf_empty`, `mem_revolutionOf_self`,
-`isCompact_revolutionOf`, `Fits`, `PairGP`, `PairGP.symm`,
+`isCompact_revolutionOf`,
 `isEmbedding_domRestrict_mono`, `isTopologicalSolidTorus_image_of_isEmbedding`,
 `isSpine_image_of_isEmbedding`,
 `fundamentalGroup_map_inclusion_bijective_of_isSpine_of_subset_interior`,
@@ -368,39 +371,7 @@ theorem fundamentalGroup_map_inclusion_transfer_pair
 
 end FundamentalGroupTransfer
 
-section RelativeGeneralPosition
-
-def Fits (A U S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
-  IsCombinatorialSolidTorus S ∧ A ⊆ interior S ∧ S ⊆ U
-
-def PairGP (R S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
-  (∀ x ∈ frontier R ∩ frontier S, HasPLCrossingAt (frontier R) (frontier S) x) ∧
-    ∃ (ι : Type) (_ : Finite ι) (G : ι → Set (EuclideanSpace ℝ (Fin 3))),
-      (∀ i, IsPLSphere 1 (G i)) ∧ (Pairwise fun i i' => Disjoint (G i) (G i')) ∧
-        frontier R ∩ frontier S = ⋃ i, G i
-
-theorem PairGP.symm {R S : Set (EuclideanSpace ℝ (Fin 3))} (h : PairGP R S) : PairGP S R := by
-  obtain ⟨hcross, ι, hι, G, hG, hdisj, heq⟩ := h
-  refine ⟨fun x hx => ?_, ι, hι, G, hG, hdisj, ?_⟩
-  · rw [inter_comm] at hx
-    exact (hcross x hx).symm
-  · rw [inter_comm]
-    exact heq
-
-end RelativeGeneralPosition
-
 section Leaves
-
-theorem isSpine_revolutionOf_of_mem_cellInterior {D Dint : Set (EuclideanSpace ℝ (Fin 3))}
-    {p : EuclideanSpace ℝ (Fin 3)} (hD : IsTopologicalCellWithInterior 2 D Dint)
-    (hhalf : ∀ q ∈ D, q 2 = 0 ∧ 0 < q 0) (hp : p ∈ Dint) :
-    IsSpine (revolutionOf D) (revolutionOf {p}) := by
-  sorry
-
-theorem revolutionOf_cellInterior_subset_interior {D Dint : Set (EuclideanSpace ℝ (Fin 3))}
-    (hD : IsTopologicalCellWithInterior 2 D Dint) (hhalf : ∀ q ∈ D, q 2 = 0 ∧ 0 < q 0) :
-    revolutionOf Dint ⊆ interior (revolutionOf D) := by
-  sorry
 
 theorem exists_isTopologicalCellWithInterior_union_consecutive
     {P : Fin 4 → EuclideanSpace ℝ (Fin 3)} {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}

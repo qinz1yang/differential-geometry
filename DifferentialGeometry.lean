@@ -9236,6 +9236,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsP
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.IsTopologicalSphereImageSplitRim
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuallyEq
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSpineRevolutionOfOfMemCellInterior
+import DifferentialGeometry.Topology.PiecewiseLinear.RevolutionOfCellInteriorSubsetInterior
+import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusGeneralPosition
 /-!
 # Differential geometry and geometric analysis
 -/
