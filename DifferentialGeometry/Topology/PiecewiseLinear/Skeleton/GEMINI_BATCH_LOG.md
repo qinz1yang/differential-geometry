@@ -1231,15 +1231,20 @@ No batch proof has been accepted merely by creating this log or queue.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
 - **Next Useful Lemma**: `exists_protectedSubdivision_proof`.
 
-## 2026-09-22: G098 (`exists_globalInvariants_of_gluedCell`) BLOCKED / SKIPPED
+## 2026-09-22: G098 (`exists_globalInvariants_of_gluedCell`) PASSED
 
 - **Target**: `GeneralPositionInDouble:1753` (`exists_globalInvariants_of_gluedCell`)
-- **Status**: BLOCKED / SKIPPED (missing invariant verification across chart patches)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1753`
-- **Blocker Description**:
-  - Requires: Global invariants verification of glued cell.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_globalInvariants_proof`.
+- **Status**: PASSED
+- **Location**: `DifferentialGeometry/Topology/PiecewiseLinear/GluedCellGlobalInvariants.lean`
+- **Checkpoint**: `G098-glued-cell-global-invariants-20260922T2124244440121Z`
+- **Mathematical Construction**:
+  - Proved all 6 conjuncts of global invariants for the glued singular two-cell $D'$:
+    1. `MapsTo (⇑D') D'.domain C` via chart containment, boundary half-space nonnegativity, and outside invariance.
+    2. Exact preimage matching `∀ z ∉ V, (⇑D') ⁻¹' {z} = (⇑D) ⁻¹' {z}`.
+    3. Uniform local injectivity scale $\kappa$ via `Metric.ball` diameter triangle inequality and `hcert`.
+    4. Fiber cardinality $\le 2$ on $D'.\text{domain}$.
+    5. Boundary preimage exact equality $D'.\text{domain} \cap (D')^{-1}(BdM) = \text{frontier } D'.\text{domain}$.
+    6. Boundary homotopy $H \in C(\text{unitInterval} \times \text{frontier } D.\text{domain}, M)$ via open cover gluing of $W_1 = \{p \mid p.2.1 \in \Omega\}$ and $W_2 = \{p \mid p.2.1 \in Rc.\text{space}^c \cup Nb\}$; verified continuity via `ContinuousOn.union_of_isOpen`, boundary tracking in $BdM$, buffer neighborhood containment in $B$, and endpoint conditions $H(0, \cdot) = D$ and $H(1, \cdot) = D'$.
 
 ## 2026-09-22: G099 (`wallProductBlocks_stable_on_fixedSubdivision`) BLOCKED / SKIPPED
 
