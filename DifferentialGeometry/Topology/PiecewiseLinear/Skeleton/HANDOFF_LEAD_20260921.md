@@ -6,7 +6,7 @@ history; the digests in `consult/` are indexed by letter (latest: AP).
 
 ## 1. Where things stand (HEAD `c492e7fff`, mirror `liao9yuan/differential-geometry-dev:moise-integration` in sync)
 
-Ten skeletons, every leaf statement frozen by external review except where noted:
+Ten skeletons, every leaf statement frozen by external review except where noted (§31's relative leaf is the one unreviewed statement):
 
 | Skeleton | Leaves | State |
 |---|---|---|
@@ -18,7 +18,7 @@ Ten skeletons, every leaf statement frozen by external review except where noted
 | `Section34Terminal` | 5 | frozen |
 | `Section33Approximation` (33.1) | 12 | frozen |
 | `Section32PseudoCell` (§32) | 13 | frozen |
-| `Section31CanonicalConfiguration` (§31) | 9 | frozen; **repair in flight** (see §2) |
+| `Section31CanonicalConfiguration` (§31) | 9 | frozen + 1 unreviewed relative leaf (repair landed, `5ec76cf74`) |
 | `PLSmoothingCompact` (C1) | 11 | frozen |
 
 Structural finding of the day (consult AL/AO): `Moise341` (34.1) had no producer and the only tree
@@ -46,7 +46,10 @@ you. Judge by the files and `git status`.
 Then: ledger row under B1.b (new ID B1.b.8), commit by explicit path, sync, and give the owner
 the review prompt (template below).
 
-**(b) `Skeleton/Section31CanonicalConfiguration.lean`** (modified, lease d). Spec:
+**(b) DONE before the handoff took effect** — the §31 repair landed and was accepted (`5ec76cf74`):
+`Fits`, `PairGP`, the relative leaf, L6 proved from it, 9 `sorry`. What remains for you is only the
+review prompt for the relative leaf (mirror `9db13f30`), template in §4. Original spec kept for
+reference:
 `consult/AP-section31-first-review-digest.md` §"§31 → §32 interface": add `Fits`, `PairGP`, the leaf
 `exists_generalPosition_solidTorus_relative` (old tori `F : Fin m → Set E3` as fixed parameters),
 derive `exists_generalPosition_solidTorus_triple` from it (leaf → proved), docstring items (a)–(c).
