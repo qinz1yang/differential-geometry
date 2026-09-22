@@ -1,0 +1,33 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularNormalForm
+import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
+
+/-! Stable graph blocks and normal double crossings. -/
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+open Set
+
+universe u
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+
+theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock (D : SingularTwoCell M)
+    {BdM : Set M} (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
+    (hℓ : ℓ ≠ 0) (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
+    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
+    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η : ℝ}
+    (h : IsStableCrossingBlock (⇑D) D.domain ec ℓ BdM A r tlo SA SB a b La Lb η) {y : M}
+    (hy : y ∈ doublePointSet (⇑D) D.domain)
+    (hyB : y ∈ innerChartBlock ec A r tlo) :
+    ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
+      HasPLNormalDoubleCrossingAt (⇑e ∘ ⇑D) (D.domain ∩ ⇑D ⁻¹' e.source)
+        (⇑e '' (e.source ∩ BdM)) (e y) := by
+  exact ?_
+
+end DifferentialGeometry.Topology.PiecewiseLinear

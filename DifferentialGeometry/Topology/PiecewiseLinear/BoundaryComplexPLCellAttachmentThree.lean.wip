@@ -1,0 +1,119 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.BallStarring
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.CellAttachment
+import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
+
+/-!
+# Boundary trace of a capped PL three-cell attachment
+-/
+
+open Set Topology
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+open Classical in
+theorem boundaryComplex_space_of_isPLCellAttachmentWith_three [FiniteDimensional ℝ E]
+    {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
+    (hL : IsCombinatorialManifoldWithBoundary 3 L)
+    (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 4 → ℝ) → E}
+    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 4)) (stdSimplexBoundary 3) L C
+      N'.space g) :
+    (boundaryComplex 3 N').space = (boundaryComplex 3 L).space \ g '' stdSimplexBoundary 3 := by
+  obtain ⟨hP, hBP, hg, hgB, φ, hφ, hφg, hφbd, e, helow, hecell⟩ := hatt
+  have hN : N'.space = L.space ∪ C := by
+    apply Subset.antisymm
+    · intro x hx
+      obtain ⟨q, hq⟩ := Quot.exists_rep (e.symm ⟨x, hx⟩)
+      have hqe : e (Quot.mk (adjunctionRel Subtype.val φ) q) = ⟨x, hx⟩ := by
+        rw [hq, e.apply_symm_apply]
+      cases q with
+      | inl z =>
+          have hzx : (e (adjunctionCell Subtype.val φ z) : E) = x := by
+            change (e (Quot.mk (adjunctionRel Subtype.val φ) (Sum.inl z)) : E) = x
+            exact congrArg Subtype.val hqe
+          right
+          rw [← hzx, hecell z]
+          exact hg.bijOn.mapsTo z.property
+      | inr z =>
+          have hzx : (e (adjunctionLower φ z) : E) = x := by
+            change (e (Quot.mk (adjunctionRel Subtype.val φ) (Sum.inr z)) : E) = x
+            exact congrArg Subtype.val hqe
+          left
+          rw [← hzx, helow z]
+          exact z.property
+    · rintro x (hx | hx)
+      · have hxN := (e (adjunctionLower φ ⟨x, hx⟩)).property
+        rwa [helow ⟨x, hx⟩] at hxN
+      · obtain ⟨z, hz, hzx⟩ := hg.bijOn.surjOn hx
+        have hzN := (e (adjunctionCell Subtype.val φ ⟨z, hz⟩)).property
+        rw [hecell ⟨z, hz⟩] at hzN
+        rwa [hzx] at hzN
+  have hCL : C ∩ L.space = g '' stdSimplexBoundary 3 := by
+    simpa using hgB.image_eq.symm
+  have hCpoly : IsPolyhedron C := by
+    rw [← hg.image_eq]
+    exact hg.isPiecewiseAffineOn.isPolyhedron_image hP.isPolyhedron
+  obtain ⟨Q, hQfin, hQspace⟩ := hCpoly.exists_simplicialComplex
+  let _ : Finite Q.faces := hQfin.to_subtype
+  have hQball : IsPLBall 3 Q.space := by
+    rw [hQspace]
+    exact ⟨g, hg⟩
+  have hQ : IsCombinatorialManifoldWithBoundary 3 Q := hQball.isCombinatorialManifoldWithBoundary
+  have hQbd : (boundaryComplex 3 Q).space = g '' stdSimplexBoundary 3 := by
+    simpa using (hg.image_stdSimplexBoundary_eq_boundaryComplex (m := 2) Q hQspace).symm
+  have hNL : L.space ⊆ N'.space := by
+    rw [hN]
+    exact subset_union_left
+  have hNQ : Q.space ⊆ N'.space := by
+    rw [hN, hQspace]
+    exact subset_union_right
+  have hLclosed : IsClosed L.space := (isPolyhedron_space L).isClosed
+  have hCclosed : IsClosed C := hCpoly.isClosed
+  have hLnhds : ∀ x ∈ L.space, x ∉ C → L.space ∈ 𝓝[N'.space] x := by
+    intro x hxL hxC
+    have hO : Cᶜ ∈ 𝓝 x := hCclosed.isOpen_compl.mem_nhds hxC
+    filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds hO] with y hyN hyO
+    rw [hN] at hyN
+    rcases hyN with hyL | hyC
+    · exact hyL
+    · exact (hyO hyC).elim
+  have hQnhds : ∀ x ∈ Q.space, x ∉ L.space → Q.space ∈ 𝓝[N'.space] x := by
+    intro x hxQ hxL
+    have hO : L.spaceᶜ ∈ 𝓝 x := hLclosed.isOpen_compl.mem_nhds hxL
+    filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds hO] with y hyN hyO
+    rw [hN] at hyN
+    rcases hyN with hyL | hyC
+    · exact (hyO hyL).elim
+    · exact hQspace.symm ▸ hyC
+  have hboundary_off {x : E} (hxN : x ∈ N'.space) (hx : x ∉ g '' stdSimplexBoundary 3) :
+      x ∈ (boundaryComplex 3 N').space ↔ x ∈ (boundaryComplex 3 L).space := by
+    rw [hN] at hxN
+    rcases hxN with hxL | hxQ
+    · by_cases hxC : x ∈ C
+      · exact (hx (hCL ▸ ⟨hxC, hxL⟩)).elim
+      · exact (mem_boundaryComplex_space_iff_of_space_mem_nhdsWithin N' L hN' hL hNL hxL
+          (hLnhds x hxL hxC)).symm
+    · have hxL : x ∉ L.space := by
+        intro hxL
+        exact hx (hCL ▸ ⟨hQspace ▸ hxQ, hxL⟩)
+      have hxQbd : x ∉ (boundaryComplex 3 Q).space := by
+        intro hxQbd
+        exact hx (hQbd ▸ hxQbd)
+      have hxNbd : x ∉ (boundaryComplex 3 N').space := by
+        intro hxNbd
+        exact hxQbd ((mem_boundaryComplex_space_iff_of_space_mem_nhdsWithin N' Q hN' hQ hNQ
+          (hQspace.symm ▸ hxQ) (hQnhds x (hQspace.symm ▸ hxQ) hxL)).mpr hxNbd)
+      exact ⟨fun h => (hxNbd h).elim, fun h => (hxL (boundaryComplex_space_subset 3 L h)).elim⟩
+  aesop
+
+end DifferentialGeometry.Topology.PiecewiseLinear
+

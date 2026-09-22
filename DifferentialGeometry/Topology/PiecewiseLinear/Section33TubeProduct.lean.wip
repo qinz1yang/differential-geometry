@@ -1,0 +1,28 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
+
+/-! The product complement of a regular neighborhood of a graph. -/
+
+open Set Topology
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
+  {N N' : Set (EuclideanSpace ℝ (Fin 3))}
+  {C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3))}
+  {D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
+  {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
+
+open Classical in
+theorem section33_tube_product (ht : IsTube K N C D Dbd h N') :
+    Nonempty ((frontier N × Set.Ioo (0 : ℝ) 1) ≃ₜ ↥(interior N' \ h '' K.space)) := by
+  letI : DecidableEq (EuclideanSpace ℝ (Fin 3)) := Classical.decEq _
+  obtain ⟨A, -, hN⟩ := ht.spaceEq inferInstance
+  rw [hN]
+  exact hN
+
+end DifferentialGeometry.Topology.PiecewiseLinear

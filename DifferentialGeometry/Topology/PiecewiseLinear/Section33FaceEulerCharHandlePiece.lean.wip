@@ -1,0 +1,42 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
+
+/-!
+# Euler characteristic of a handle piece
+-/
+
+open Set Topology
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+section
+
+variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
+  {N N' : Set (EuclideanSpace ℝ (Fin 3))}
+  {C Cpp : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3))}
+  {D Dbd Ec Eint Ebd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
+  {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
+  {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
+  {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
+
+theorem section33_faceEulerChar_handlePiece
+    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
+    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
+    (h34 : HasSinglePolygonTraces K h Ec XK.space)
+    (h56 : HasConnectedHandlePieces K Ec Cpp XK.space AK)
+    (hiso : ∀ hsub : frontier XK.space ⊆ N' \ h '' K.space, ∀ x : frontier XK.space,
+      Function.Bijective (FundamentalGroup.map
+        (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
+          C(frontier XK.space, ↥(N' \ h '' K.space))) x)) :
+    ∀ v ∈ K.vertices, ∀ [Finite (AK v).faces],
+      SimplicialComplex.faceEulerChar (AK v).toPreAbstractSimplicialComplex =
+        2 - ((edgesAt K v).ncard : ℤ) := by
+  exact ?_
+
+end
+
+end DifferentialGeometry.Topology.PiecewiseLinear

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.TopologicalCellInterior
+import DifferentialGeometry.Topology.PlanarJordan.DiskUnion
 
 /-!
 # Unions of consecutive planar cells
@@ -183,5 +184,43 @@ theorem exists_isTopologicalCellWithInterior_union_consecutive_standard (j : Fin
   exact ⟨_, hcell,
     (isPlanarCellChain_standard.cell j.castSucc).interior_mono hcell subset_union_left,
     (isPlanarCellChain_standard.cell j.succ).interior_mono hcell subset_union_right⟩
+
+theorem exists_isTopologicalCellWithInterior_union_consecutive_of_diskUnion
+    (hdiskUnion : ∀ {A B : Set (EuclideanSpace ℝ (Fin 2))},
+      IsTopologicalCell 2 A → IsTopologicalCell 2 B → IsTopologicalCell 2 (A ∩ B) →
+      IsTopologicalCell 2 (A ∪ B))
+    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)} {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
+    (hc : IsPlanarCellChain P D Dint) (j : Fin 2) :
+    ∃ Eint : Set (EuclideanSpace ℝ (Fin 3)),
+      IsTopologicalCellWithInterior 2 (D j.castSucc ∪ D j.succ) Eint ∧
+        Dint j.castSucc ⊆ Eint ∧ Dint j.succ ⊆ Eint := by
+  have hhalf0 : ∀ p ∈ D j.castSucc, p 2 = 0 := fun p hp => (hc.halfPlane j.castSucc p hp).1
+  have hhalf1 : ∀ p ∈ D j.succ, p 2 = 0 := fun p hp => (hc.halfPlane j.succ p hp).1
+  have hcell0 := isTopologicalCellWithInterior_of_planarProjection hhalf0 (hc.cell j.castSucc)
+  have hcell1 := isTopologicalCellWithInterior_of_planarProjection hhalf1 (hc.cell j.succ)
+  have hA : IsTopologicalCell 2 (planarProjection '' D j.castSucc) := hcell0.isTopologicalCell
+  have hB : IsTopologicalCell 2 (planarProjection '' D j.succ) := hcell1.isTopologicalCell
+  have hhalf_inter : ∀ p ∈ D j.castSucc ∩ D j.succ, p 2 = 0 :=
+    fun p hp => hhalf0 p hp.1
+  have hoverlap := isTopologicalCell_of_planarProjection hhalf_inter (hc.overlap j)
+  rw [planarProjection_image_inter hhalf0 hhalf1] at hoverlap
+  have hunion_proj : IsTopologicalCell 2
+      (planarProjection '' D j.castSucc ∪ planarProjection '' D j.succ) :=
+    hdiskUnion hA hB hoverlap
+  have hcell_union : IsTopologicalCell 2 (D j.castSucc ∪ D j.succ) := by
+    have heq : planarPoint ''
+        (planarProjection '' D j.castSucc ∪ planarProjection '' D j.succ) =
+        D j.castSucc ∪ D j.succ := by
+      rw [image_union, planarPoint_image_planarProjection_image hhalf0,
+        planarPoint_image_planarProjection_image hhalf1]
+    rw [← heq]
+    exact isTopologicalCell_planarPoint_image hunion_proj
+  rcases hcell_union with ⟨φ⟩
+  let Eint := Subtype.val '' (φ.symm '' {q | ‖(q : EuclideanSpace ℝ (Fin 2))‖ < 1})
+  have hEcell : IsTopologicalCellWithInterior 2 (D j.castSucc ∪ D j.succ) Eint :=
+    ⟨φ.symm, rfl⟩
+  refine ⟨Eint, hEcell, ?_, ?_⟩
+  · exact (hc.cell j.castSucc).interior_mono hEcell subset_union_left
+  · exact (hc.cell j.succ).interior_mono hEcell subset_union_right
 
 end DifferentialGeometry.Topology.PiecewiseLinear

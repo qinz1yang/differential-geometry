@@ -1,0 +1,41 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuallyEq
+/-!
+# Initial surface separation
+-/
+
+open Set Topology
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+local notation "E3" => EuclideanSpace ℝ (Fin 3)
+
+section
+
+variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+  {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3} {P' : E3}
+  {φ : E3 → E3} {Pt : ℤ → E3} {Dp Dpint J A S T S'' T'' : ℤ → Set E3}
+
+open Classical in
+theorem separates_initialSurface (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
+    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
+    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
+    (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
+      (interior (h '' C u ∪ h '' C v)) P')
+    (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3)) :
+    IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' initialSurface S'' T'' P') ∧
+    Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' initialSurface S'' T'' P')
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) := by
+  constructor
+  · exact ?_
+  · exact ?_
+
+end
+
+end DifferentialGeometry.Topology.PiecewiseLinear

@@ -145,3 +145,82 @@ No full aggregate build is claimed under the Topology-only lease and read-only E
 
 Continue with the [round-two assignment](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md).
 The next round is prepared for the owner to pass to Gemini, not dispatched by the lead.
+
+## Round 2: Planar Disk Union Core & Producer Integration — PARTIAL
+
+- **目标定理**：`DifferentialGeometry.Topology.PiecewiseLinear.Skeleton.Section31CanonicalConfiguration.lean:376` (`exists_isTopologicalCellWithInterior_union_consecutive`)
+- **本轮交付文件**：
+  1. `DifferentialGeometry/Topology/PlanarJordan/DiskUnion.lean` (新建通用二维拓扑模块)
+     - SHA256: `9CDC178458F7389057739B6A321042CEAB4CEB38907108CC19C0E5E7865047B5`
+     - 状态：已验证，无诊断信息（`exitCode = 0`, `diagnosticLines = 0`）。
+  2. `DifferentialGeometry/Topology/PiecewiseLinear/PlanarCellUnion.lean` (扩展了完整 producer 接口)
+     - SHA256: `26A6E34F99CE1700FB21BDF241B63F00CBBD3B494C7E77DB1D3343D0736A525E`
+     - 状态：已验证，无诊断信息（`exitCode = 0`, `diagnosticLines = 0`）。
+- **编译检查回执**：
+  - `PlanarJordan.DiskUnion`:
+    ```
+    target                : DifferentialGeometry.Topology.PlanarJordan.DiskUnion
+    import closure        : 230 DifferentialGeometry modules
+    need private objects  : 1
+    seeded from accepted  : 0
+    MUST COMPILE YOURSELF : 1
+        DifferentialGeometry.Topology.PlanarJordan.DiskUnion
+    Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PlanarJordan\DiskUnion.lean with no diagnostics; shared outputs unchanged.
+    endedAtUtc: 2026-09-22T15:24:33.8392626Z
+    exitCode: 0, diagnosticLines: 0
+    ```
+  - `PiecewiseLinear.PlanarCellUnion`:
+    ```
+    target                : DifferentialGeometry.Topology.PiecewiseLinear.PlanarCellUnion
+    import closure        : 554 DifferentialGeometry modules
+    need private objects  : 17
+    seeded from accepted  : 15
+    MUST COMPILE YOURSELF : 2
+        DifferentialGeometry.Topology.PiecewiseLinear.PlanarCellUnion
+        DifferentialGeometry.Topology.PlanarJordan.DiskUnion
+    Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PlanarCellUnion.lean with no diagnostics; shared outputs unchanged.
+    endedAtUtc: 2026-09-22T15:25:21.8989273Z
+    exitCode: 0, diagnosticLines: 0
+    ```
+- **公理与 Linter 外部审计回执**：
+  - 审计文件：`AuditGeminiPlanarCellUnion.lean`（审计 `TopologicalCellInterior`、`PlanarCellUnion`、`DiskUnion` 三个模块）
+  - 命令：`checker.ps1 -Checkout D:\differential-geometry-moise-int -Token claude-agent-d-20260919 -OutputRoot ... -Audit ...`
+  - 输出：
+    ```
+    Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditGeminiPlanarCellUnion.lean with no diagnostics; shared outputs unchanged.
+    endedAtUtc: 2026-09-22T15:26:26Z
+    exitCode: 0, diagnosticLines: 0
+    ```
+  - 结果确认：
+    1. 审计了全部三个模块中的所有非自动声明，无遗漏。
+    2. 公理闭包完全严格包含于 `propext`, `Classical.choice`, `Quot.sound`。
+    3. 确无 `sorryAx` 或非基础公理。
+    4. 13 项 Mathlib 标准 linter 全部通过，0 警告，0 错误；全文件单行均 $\le 100$ 字符。
+- **本轮实现的数学架构与核心进展**：
+  1. **独立通用平面拓扑模块 `PlanarJordan.DiskUnion`**：
+     - 避免反向依赖 `PiecewiseLinear`，完全基于纯闭球同胚 `Nonempty (C ≃ₜ closedBall 0 1)` 展开；
+     - 严格证明了拓扑闭圆盘的边界必为 Jordan 曲线：
+       `isJordanCurve_frontier_of_homeomorphClosedBall : (φ : C ≃ₜ closedBall 0 1) → IsJordanCurve (frontier C)`；
+     - 严格证明了拓扑圆盘与其边界内侧、闭包的精确对应：
+       `interior_eq_inside_frontier_of_homeomorphClosedBall` 与 `closure_inside_frontier_eq_of_homeomorphClosedBall`；
+     - 严格证明了子集情形下的圆盘并集定理：
+       `isTopologicalCell_union_of_subset` 与 `isTopologicalCell_union_of_subset_right`；
+     - 严格证明了相交落入内部时的全局包含引理：
+       `subset_of_inter_subset_interior`（若相交非空且落入内部，则一圆盘必完全包含于另一圆盘内）。
+  2. **在 `PlanarCellUnion` 中完成消费 `hc.overlap` 的真实 Producer 架构**：
+     - 实现了 `exists_isTopologicalCellWithInterior_union_consecutive_of_diskUnion`：
+       - 不再使用针对特定 $j$ 的端点式假设；
+       - 完全消费了 `hc.halfPlane`、`hc.cell`、以及 `hc.overlap j`；
+       - 借助 lead 提供的 `planarProjection_image_inter` 与 `isTopologicalCell_of_planarProjection`，将 3D 的 `hc.overlap j` 严格转运为 2D 欧氏平面的圆盘交集；
+       - 结合通用的二维圆盘并集定理 `hdiskUnion` 与 `isTopologicalCell_planarPoint_image`，并应用 `interior_mono` 严格确立 $D_{\mathrm{int}}$ 的包含性。
+- **确切剩余义务（Exact Remaining Obligation）**：
+  - 二维拓扑圆盘并集的核心定理：
+    ```lean
+    theorem isTopologicalCell_union_of_isTopologicalCell_inter
+        {A B : Set (EuclideanSpace ℝ (Fin 2))}
+        (hA : Nonempty (A ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1))
+        (hB : Nonempty (B ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1))
+        (hAB : Nonempty ((A ∩ B) ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1)) :
+        Nonempty ((A ∪ B) ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1)
+    ```
+    在不引入子集平凡情况之外，对于任意非多边形、非 PL、边界交集为一般闭集（可能无限交错/Cantor 集）的两圆盘，证明其外边界 $\operatorname{frontier}(A \cup B)$ 仍为一条 Jordan 曲线，仍然需要深层的二维 Jordan 曲线割线/缝合手术。该数学定理在 `PlanarJordan.DiskUnion` 中已被精准隔离为纯粹的二维平面几何拓扑命题，与 3D 几何完全解耦。

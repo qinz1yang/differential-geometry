@@ -6952,3 +6952,29 @@ compatibility and the attached-union construction remain an explicit frontier.
 Neither a smooth framed attachment nor compact three-manifold smoothing nor
 unrestricted PLSmoothing 3 is declared complete. Smooth terminal two-sphere
 classification and final compact atlas assembly remain separate obligations.
+
+## Boundary-relative tube contract (2026-09-20)
+
+`BoundaryAdaptation.lean` now uses `IsPLBoundarySide`: the producer receives a closed
+side `W`, an interior-image condition for the open source cell, an actual PL
+half-space chart for the pair `(W, BdM)` at every boundary image, and the boundary
+curve buffer `∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z`. Its conclusion explicitly
+produces `U`, `CrossSeamTubeData`, and a nonempty `PLSeamTubeChart`; the end buffer
+is stated as `B ∈ 𝓝[BdM] z`. The former `PLBoundaryTube` structure, projection
+aliases, and model-only nondegeneracy conjunction are absent.
+
+`isPLBoundarySide_double` proves the side contract for the double carrier from
+`MapsTo` and source properness, using the closed glued carrier, its exact frontier,
+and the existing double half-space charts. The normal-cell adapter
+`isPLBoundarySide_double_of_normal` obtains source properness from
+`NormalSingularCellData.preimage_boundary_eq_frontier`.
+
+The generic path-loop injectivity lemma is in
+`Topology/LoopSpace/PathLoopInjectivity.lean` as
+`DifferentialGeometry.Topology.not_injective_path_loop`. The prior change to
+`LoopTheorem/CrossSeamTube.lean` is restored.
+
+Focused checks: `CheckS-LemmaC.log` and `CheckS-PathLoopInjectivity.log`, both exit 0.
+The six audited endpoints in `AuditS-LemmaC.log` use only
+`propext`, `Classical.choice`, and `Quot.sound`; both target modules pass the
+13-linter probes in `LintS-LemmaC.log` and `LintS-PathLoopInjectivity.log`.

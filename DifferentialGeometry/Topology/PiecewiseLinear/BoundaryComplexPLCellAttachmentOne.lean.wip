@@ -1,0 +1,36 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.BallStarring
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.CellAttachment
+import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
+
+/-!
+# Boundary trace of a PL one-handle attachment
+-/
+
+open Set Topology
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+open Classical in
+theorem boundaryComplex_space_of_isPLCellAttachmentWith_one [FiniteDimensional ℝ E]
+    {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
+    (hL : IsCombinatorialManifoldWithBoundary 3 L)
+    (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 3 → ℝ) × ℝ → E}
+    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+      (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N'.space g) :
+    (boundaryComplex 3 N').space =
+      ((boundaryComplex 3 L).space \
+          g '' ((stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ))) ∪
+        g '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := by
+  exact ?_
+
+end DifferentialGeometry.Topology.PiecewiseLinear

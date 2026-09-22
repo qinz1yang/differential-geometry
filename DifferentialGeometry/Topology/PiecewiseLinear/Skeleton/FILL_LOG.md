@@ -1,0 +1,639 @@
+# Skeleton fill log
+
+## 1 IsPLHomeomorphInto.mono_of_isPLCellOn — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsPLHomeomorphIntoMonoOfIsPLCellOn.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphInto.mono_of_isPLCellOn
+- 编译：`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IsPLHomeomorphIntoMonoOfIsPLCellOn.lean with no diagnostics; shared outputs unchanged.`
+  （2026-09-21 21:09:57 -07:00）
+- 公理审计：13 项 linter 均通过；全部模块声明的公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`；`exitCode=0`，`diagnosticLines=0`
+  （2026-09-21 21:13:31 -07:00）。
+- 证明路线：先在欧氏模型紧胞腔上把 PL 单射升级为局部可逆 PL 嵌入，再沿胞腔参数化
+  及其局部逆传递该结构。
+- 用时：约 6 分钟；编译次数：3 次模块检查、2 次审计检查。
+
+## 2 exists_splitDisk_src_eq_inter_vertexBall — FALSE
+- 文件：无
+- import 行：无
+- 新公共名：无
+- 编译：未运行；反驳在冻结的 `Section34CutFrame` 字段层完成。
+- 公理审计：不适用。
+- 反例：取 `𝒦'` 的两个不相邻图顶点 `w ≠ w'`，让两个源三胞腔的交恰为一个
+  以 `faceDisk s` 标记的闭 PL 二胞腔 `F`，并令所有实际边的 `splitDisk` 都取为与
+  `F` 不同的二胞腔。这样的正则 PL 胞腔图满足每个标签的胞腔和边界并公式：在
+  `src (.vertexBall w) ∩ src (.vertexBall w')` 的共同下方面恰放入
+  `faceDisk s` 及其边界标签。`Section34CutFrame` 的第 24 个字段只给出
+  `∀ e, ∃ w w', src (splitDisk e) = src (vertexBall w) ∩ src (vertexBall w')`，没有反向的
+  覆盖或排他性字段；其交集展开字段也允许该 `faceDisk s` 同时包含于两个顶点胞腔。
+  因而 `hmeet` 成立而不存在任何 `e` 的 splitting disk 等于 `F`。这也正是
+  `Section34Frame.lean` 模块说明第 76--78 行所记录的缺口。
+- 用时：约 12 分钟；编译次数：0 次。
+
+## 3 separates_of_locally_eventually_eq — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/SeparatesOfLocallyEventuallyEq.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuallyEq
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.separates_of_locally_eventually_eq
+- 编译：`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SeparatesOfLocallyEventuallyEq.lean with no diagnostics; shared outputs unchanged.`
+  （2026-09-21 21:22:57 -07:00）
+- 公理审计：13 项 linter 均通过；全部模块声明的公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`；`exitCode=0`，`diagnosticLines=0`
+  （2026-09-21 21:25:53 -07:00）。
+- 证明路线：若极限集不分离，取其补中的连接路径；路径像紧且避开中心，局部最终相等
+  由有限覆盖统一为同一阶段，从而给出某个 `M n` 补中的连接路径，矛盾于该阶段分离。
+- 用时：约 15 分钟；编译次数：2 次模块检查、2 次审计检查。
+
+## 4 isTopologicalSphere_image_splitRim — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsTopologicalSphereImageSplitRim.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.IsTopologicalSphereImageSplitRim
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.isTopologicalSphere_image_splitRim
+- 编译：`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IsTopologicalSphereImageSplitRim.lean with no diagnostics; shared outputs unchanged.`
+  （2026-09-21 21:31:06 -07:00）
+- 公理审计：13 项 linter 均通过；全部模块声明的公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`；`exitCode=0`，`diagnosticLines=0`
+  （2026-09-21 21:32:18 -07:00）。
+- 证明路线：由有限闭对偶胞腔之并先得 `N` 闭，从而边界圆周位于嵌入域；将分裂盘的
+  PL 边界圆周经该限制嵌入送到像中，再与标准圆周的参数化复合。
+- 用时：约 11 分钟；编译次数：2 次模块检查、1 次审计检查。
+
+## 5 section33_tube_product — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section33TubeProduct.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：未通过；第二次模块检查在
+  `Section33TubeProduct.lean:26:2` 报 `Type mismatch: hN has type
+  N = (derivedNeighborhood A K).space but is expected to have type Nonempty
+  (↑(frontier (derivedNeighborhood A K).space) × ↑(Ioo 0 1) ≃ₜ
+  ↑(interior N' \\ h '' K.space))`（2026-09-21 21:42:18 -07:00）。
+- 公理审计：不适用。
+- 卡住的目标与错误：`IsTube.spaceEq` 已给出 `N = (derivedNeighborhood A K).space`，但全树
+  没有从有限三维组合流形中的一维子复形导出
+  `frontier (derivedNeighborhood A K).space × Ioo 0 1 ≃ₜ
+  interior (derivedNeighborhood A K).space \\ K.space` 的正规邻域去核乘积定理。
+  `derivedNeighborhoodStrongDeformationRetract` 仅给出收缩，
+  `IsCombinatorialManifoldWithBoundary.exists_collar` 仅给出边界的局部 collar，二者均不能
+  构造全补集的双射。还须把任意嵌入 `h|N` 的源端内部精确送到 `interior (h '' N)`；现有
+  `IsPLHomeomorphOn.image_interior` 不适用，因为 `IsTube.isEmbedding` 只假设拓扑嵌入。
+- 已试路线：通过 `ht.spaceEq` 化为源端导出邻域，检索 DerivedNeighborhood、RegularNeighborhood、
+  Collar 及全部 PL 乘积 API；没有可消费的定理。需要先补一个真正的正规邻域乘积生产者，
+  以及其在紧致嵌入像下的 interior-complement transport。
+- 用时：约 12 分钟；编译次数：2 次模块检查。
+
+## 2 exists_splitDisk_src_eq_inter_vertexBall — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section34SplitDiskIntersection.lean
+  （lead-owned；本车道此前的 FALSE 条目由本更正覆盖。）
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.exists_splitDisk_src_eq_inter_vertexBall
+- 编译：lead 已在提交 `284ccc052` 中完成独立审计和集成。
+- 公理审计：由 lead 的独立验收覆盖。
+- 证明路线：此前的反例不成立。`faceDisk ⊆ vertexBall` 会迫使关联的
+  `faceArc = faceDisk`，这与严格维数下降矛盾；故相交的两个不同 dual ball
+  必由 split disk 给出。
+- 用时：更正记录；本车道不再保留该叶子的独立源码或编译计数。
+
+## 6 boundaryComplex_space_of_isPLCellAttachmentWith_zero — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentZero.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttachmentZero
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.
+  boundaryComplex_space_of_isPLCellAttachmentWith_zero
+- 编译：`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryComplexPLCellAttachmentZero.lean with no diagnostics; shared outputs unchanged.`
+  （2026-09-21 21:58:05 -07:00）
+- 公理审计：13 项 linter 均通过；全部模块声明的公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`；`exitCode=0`，`diagnosticLines=0`
+  （2026-09-21 22:02:25 -07:00）。
+- 证明路线：由零边界附着的逐点锚定先导出 `N'.space = L.space ∪ C` 和二者不交；
+  将 `C` 三角化为 PL 3-ball，再在相对邻域中逐点将 `L` 与该 ball 的组合边界
+  同 `N'` 的组合边界等同，最后用标准单形边界的 PL 参数化识别 `C` 的边界像。
+  当前模块以同定义的私有 `IsPLCellAttachmentWith` 重演骨架接口；lead 将该定义
+  提升至公共模块后须以公共常量重验端点。
+- 用时：约 48 分钟；编译次数：7 次模块检查、1 次公理/linter 审计。
+
+## 7 boundaryComplex_space_of_isPLCellAttachmentWith_three — STUCK
+- 文件：`DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentThree.lean.wip`
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：`Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryComplexPLCellAttachmentThree.log and .json`
+  （2026-09-21 22:24:54 -07:00；末端未解目标为
+  `(boundaryComplex 3 N').space = (boundaryComplex 3 L).space \ g '' stdSimplexBoundary 3`。）
+- 公理审计：未运行；模块未闭合。
+- 卡住的目标与错误：已由 `hN`、`hCL`、局部邻域转移证明接缝外的边界等价。余下需要
+  `Disjoint (g '' stdSimplexBoundary 3) (boundaryComplex 3 N').space`，即完整附着球面在
+  `N'` 中成为内部。现有 `BoundaryGluing` 只覆盖双方全部边界恰为交集的无边界粘合；
+  `BoundaryInvariance` 和 `SubcomplexNhdsWithin` 没有“边界三球沿完整边界球面粘合”的局部
+  邻域/边界消失引理。`NeighborhoodEmbedding.lean` 源码中可导出接缝在旧边界的相对开性，
+  但该声明不在本租约的已编译环境中，且仍不足以产生所需的双侧局部三球。
+- 用时：约 22 分钟；编译次数：6。
+
+## 8 isSmoothHandleStage_adjunction_zero — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsSmoothHandleStageAdjunctionZero.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.isSmoothHandleStage_adjunction_zero
+- 编译：Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IsSmoothHandleStageAdjunctionZero.lean with no diagnostics; shared outputs unchanged.
+  （2026-09-21 22:41:54 -07:00）。
+- 公理审计：13 项 linter 均通过；全部本模块声明的公理闭包均包含于
+  propext、Classical.choice、Quot.sound；xitCode=0，diagnosticLines=0
+  （2026-09-21 22:41:54 -07:00）。
+- 证明路线：空附着关系没有生成元，故商空间显式同胚于标准三单形与原流形的不交并；
+  再经标准单形到闭三球的坐标同胚，使用不交并流形实例、闭三球边界球面公式和
+  不交并边界公式给出精确边界对应。
+- 用时：约 47 分钟；编译次数：8 次模块检查、2 次公理/linter 审计。
+- 记录更正：编译成功行原文为 `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IsSmoothHandleStageAdjunctionZero.lean with no diagnostics; shared outputs unchanged.`
+  公理审计结果为：13 项 linter 均通过，公理闭包仅含 `propext`、`Classical.choice`、`Quot.sound`，
+  `exitCode=0`，`diagnosticLines=0`。
+
+## 9 revolutionOf_cellInterior_subset_interior — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/RevolutionOfCellInteriorSubsetInterior.lean
+- import 行：`import DifferentialGeometry.Topology.PiecewiseLinear.RevolutionOfCellInteriorSubsetInterior`
+- 新公共名：DifferentialGeometry.Topology.PiecewiseLinear.
+  revolutionOf_cellInterior_subset_interior。
+- 编译：`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\RevolutionOfCellInteriorSubsetInterior.lean with no diagnostics; shared outputs unchanged.`
+  （2026-09-21 22:53:45 -07:00）。
+- 公理审计：13 项 linter 均通过；全部模块声明的公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`；`exitCode=0`，`diagnosticLines=0`
+  （2026-09-21 22:55:33 -07:00）。
+- 反例检查：严格半平面条件排除了旋转轴，未找到反例。
+- 证明路线：将闭圆盘参数化经闭球收缩延拓到整个平面；其平面坐标投影在开单位
+  球上单射，域不变性给出开像。径向坐标的逆像是三维开邻域，并逐点落入旋转像。
+- 用时：约 30 分钟；编译次数：4 次模块检查、1 次成功公理/linter 审计。
+
+## 10 exists_isTopologicalCellWithInterior_union_consecutive — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/
+  ExistsIsTopologicalCellWithInteriorUnionConsecutive.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：`Verification failed`（2026-09-21 22:58:58 -07:00）；最小尝试在提取
+  两个闭圆盘参数化和交集闭圆盘参数化后，留下完整目标：
+  `∃ Eint, IsTopologicalCellWithInterior 2 (D j.castSucc ∪ D j.succ) Eint ∧ ...`。
+- 公理审计：未运行；模块未闭合。
+- 反例检查：未找到反例。严格平面条件将三集合都限制在同一二维仿射平面内。
+- 卡住的目标与错误：当前库和已导入的 Schoenflies API 均没有“两个嵌入平面闭盘的
+  交是闭盘，则并是闭盘，且各参数化开盘都落入新开盘”的粘合定理。现有
+  PlanarJordan.ClosedInterior 只从已知 Jordan 前沿构造一个闭盘，不能从三个任意闭盘
+  参数化导出并集前沿为 Jordan 曲线；直接 `aesop` 的精确未解目标已保留在 WIP。
+- 用时：约 15 分钟；编译次数：1。
+## 11 separates_initialSurface — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/SeparatesInitialSurface.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：Verification failed；在 SeparatesInitialSurface.lean:58:10 的精确未解目标为
+  IsClosed (Subtype.val ⁻¹' initialSurface S'' T'' P')（时间：2026-09-21 23:06:24 -07:00）。
+- 公理审计：未运行；模块未闭合。
+- 反例检查：未找到反例。havoid 结合每个配置的 innerSubset 会排除顶点落在
+  各个 T'' 上；h 在 tube 上的嵌入性也排除了 P' = h u 或 P' = h v 的退化。
+- 卡住的目标与错误：IsCanonicalTower、initialSurface 仍只定义在不可导入的
+  Skeleton/Section32PseudoCell.lean 中，真实库没有同名公共词汇；为得到上述实际目标，
+  WIP 暂时复制了逐字的私有接口。更深的缺口是只有每个有限配置的
+  IsCombinatorialSolidTorus、塔的 locallyFinite（针对 φ '' S i）和
+  IsTube.splitSeparates，没有将交错的 T''-并及奇数项的删除操作证明为闭集并传递
+  分离性的公开引理。现有 LocallyFinite.isClosed_iUnion 只能处理已给出的局部有限闭族，
+  不能产生该族或完成交错面替换。
+- 已试路线：检索 initialSurface、IsCanonicalTower、splitSeparates、局部有限闭并、
+  canonical configuration 和所有非 Skeleton 的 Section 32 API；没有可消费的
+  tower-to-separator 生产者。需要先把词汇提升到真实模块，并补 Lemmas 1/3 的
+  canonical tower 初始交错面闭且分离导出。
+- 用时：约 22 分钟；编译次数：1 次模块检查。
+## 12 section33_faceEulerChar_handlePiece — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section33FaceEulerCharHandlePiece.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：Verification failed；首批精确错误为
+  Unknown identifier IsPolyhedralTubeNeighborhood、
+  Unknown identifier HasSinglePolygonTraces、Unknown identifier HasConnectedHandlePieces、
+  Unknown identifier edgesAt（时间：2026-09-21 23:08:20 -07:00）。
+- 公理审计：未运行；模块未闭合。
+- 反例检查：未找到反例。已核对 AI 摘要的计数是 2 − deg v，且导出的组件边界恰是
+  incident trace polygons；没有把 AA 的旧 off-by-one 读法带入本陈述。
+- 卡住的目标与错误：四个输入/结论词汇仍只存在于
+  Skeleton/Section33Approximation.lean，故真实模块不能逐字重述冻结端点。
+  即使局部复制它们，现有公开 API 仅给二维组合流形的 Euler-Betti 公式和单个
+  SurfaceSplit 的 Euler 公式；没有从 tube 的 handle-piece 分解、所有 trace 圆周及
+  frontier-to-complement 的 π1 双射导出逐顶点 capped-surface Euler 等式的生产者。
+  该缺口正是摘要所谓 global Euler identity plus capping bounds，并非单一
+  faceEulerChar 化简。
+- 已试路线：检索 faceEulerChar、边界 Euler、SurfaceSplitEuler、曲面可定向性、
+  π1 映射和 handle decomposition；可见一般 Euler 公式，但没有将本结构的
+  boundaryComplex 等式接到 capping/global 计数的引理。需要先提升四个词汇并补
+  handle-piece capping/global Euler bridge。
+- 用时：约 19 分钟；编译次数：1 次模块检查。
+## 13 isCombinatorialManifold_of_locallyFinitePLPieceIn — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsCombinatorialManifoldOfLocallyFinitePLPieceIn.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：Verification failed；展开组合流形定义后的精确首个目标为
+  IsPLSphere 2 (SimplicialComplex.geometricLink 𝒦.complex {s}).space，
+  其中 s : Ea 且 {s} ∈ 𝒦.complex.faces（时间：2026-09-21 23:10:11 -07:00）。
+- 公理审计：未运行；模块未闭合。
+- 反例检查：未找到反例。U 的开性和 𝒦.bijOn/isEmbedding 排除了边界 link 与额外分支；
+  这正是 AF Part 1 所确认的局部 PL 欧氏模型情形。
+- 卡住的目标与错误：真实库有 LocallyFinitePLPieceIn 及其局部有限 link 有限性，
+  但没有从该结构的 chartwise IsPiecewiseAffineOn、局部嵌入和开像推出顶点
+  geometricLink 为 PL 2-sphere 的定理。现有 isPLSphere_link 只从已经给出的
+  IsCombinatorialManifold 反向推出 link 球面，BallSphereLink 的传输定理也要求
+  先有 PL ball/sphere 或 subdivision；不能闭合这个方向。
+- 已试路线：展开 IsCombinatorialManifold 得到顶点 link 目标，检索所有
+  geometricLink、piecewiseAffine、local PL 和 manifold API；仅找到从组合流形
+  到 link 的单向链。需要先补“局部有限 PL 三角剖分的开 PL 三维流形具有 PL 球 link”
+  的基本生产者。
+- 用时：约 20 分钟；编译次数：1 次模块检查。
+## 14a boundaryComplex_space_of_isPLCellAttachmentWith_one — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentOne.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：Verification failed；精确目标为
+  Bd N' = (Bd L  g '' ((Δ²  ∂Δ²) × {0,1})) ∪ g '' (∂Δ² × [0,1])
+  的 Lean 集合等式（时间：2026-09-21 23:13:23 -07:00）。
+- 公理审计：未运行；模块未闭合。
+- 反例检查：未找到反例。AN 的审阅确认两端圆盘的相对内部消失、端圆周保留、侧环加入。
+- 卡住的目标与错误：真实库没有 IsPLCellAttachmentWith；WIP 只能临时复制私有定义。
+  更实质地，BoundaryGluing 仅处理两边完整边界相等的闭合粘合，而本叶需要在两个
+  attaching disk 的相对内部把 L 和新三胞腔的半空间邻域拼成内部点，同时保留边界圆周。
+  mem_boundaryComplex_space_iff_of_space_mem_nhdsWithin 只适用于某一个子复形已是
+  环境中的邻域，恰在拼接接缝处不可用。
+- 已试路线：复用 zero/three 模块的 quotient-union 及局部边界 transfer，检索
+  BoundaryGluing、BoundaryInvariance、SubcomplexNhdsWithin；没有相对 disk gluing 的
+  双侧局部三球/边界消失引理。
+- 用时：约 18 分钟；编译次数：1 次模块检查。
+
+## 14b boundaryComplex_space_of_isPLCellAttachmentWith_two — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentTwo.lean.wip
+- import 行：无（未闭合）。
+- 新公共名：无。
+- 编译：Verification failed；精确目标为
+  Bd N' = (Bd L  g '' (∂Δ² × (0,1))) ∪ g '' (Δ² × {0,1})
+  的 Lean 集合等式（时间：2026-09-21 23:13:23 -07:00）。
+- 公理审计：未运行；模块未闭合。
+- 反例检查：未找到反例。AN 的审阅确认仅侧环的相对内部消失，两个端圆盘应保留。
+- 卡住的目标与错误：与 14a 同一未提升接口问题；更具体地需要相对 annulus glue
+  的局部 collar 定理，既证明侧环内部在 N' 中成为内部，又证明两个端盘保持为边界。
+  现有完整边界 BoundaryGluing 和单子复形的 nhdsWithin transfer 都不能给出该
+  mixed seam 的双侧/单侧局部模型。
+- 已试路线：对照 k=3 的现有 WIP、k=0 的闭合证明和 AN 的精确 relative-interior
+  读法；没有可消费的 annulus collar / boundary trace API。
+- 用时：约 17 分钟；编译次数：1 次模块检查。
+
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — STUCK
+- 文件：DifferentialGeometry\Topology\PiecewiseLinear\HasPLNormalDoubleCrossingAtOfIsStableCrossingBlock.lean.wip
+- import 行：无；骨架私有词汇尚未导出，真实模块不能形成该接口
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第 2 次聚焦检查于 2026-09-21 23:12 PDT 失败，未运行审计
+- 卡住的目标与错误：真实模块逐字写入端点时，checker 报 Unknown identifier IsStableCrossingBlock 和 Unknown identifier innerChartBlock。二者仅定义在 Skeleton/GeneralPositionInDouble.lean；Skeleton 不能被真实模块导入，且私有同名复制不会与骨架端点同一命题。即使词汇被提取，尚缺将两张带收缩余量的 PL 图像推出 HasPLCrossingAt 的公共 graph-crossing 引理；现有 SingularGeneralPosition 只从横截单形复形产生该结论。反例检查：旧 AABB 重配对曲线不满足各源片在 inner block 的邻域字段和投影 PL 同胚字段，未构成此冻结陈述的反例。
+- 用时：约 18 分钟；编译次数：2
+
+## 16 isSpine_revolutionOf_of_mem_cellInterior — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsSpineRevolutionOfOfMemCellInterior.lean.wip
+- import 行：无；本轮未闭合
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第 12 次聚焦检查于 2026-09-21 23:42 PDT 失败，未运行审计
+- 卡住的目标与错误：显式旋转映射 `D × S¹ → revolutionOf D` 的连续性、双射性和
+  `revolutionOf {p}` 的圆周值域刻画均已通过。最后拼接闭圆盘参数化时，checker 的唯一
+  证明错误为第 270 行 `hu : u ∈ {q | ‖↑q‖ < 1}` 未被
+  `simpa only [mem_ball, dist_zero_right]` 展开为 `‖↑u‖ < 1`；另有第 255 行
+  `letI : CompactSpace D := φ.compactSpace` 的 `haveILetI` linter 警告。预期修复是将
+  `hu` 先 `change ‖(u : EuclideanSpace ℝ (Fin 2))‖ < 1 at hu`，并把该局部实例改为
+  `let _ : CompactSpace D := φ.compactSpace` 后复检。源中其余最后等式已写成从纤维像到
+  单点旋转圆周的双向值域证明。
+- 用时：约 58 分钟；编译次数：12
+## 5 section33_tube_product — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section33TubeProduct.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为接口检索仍缺失结论所需的唯一生产者
+- 卡住的目标与错误：第二轮重新核对 `IsTube.derivedModel`、`DerivedNeighborhood.lean`、
+  `DerivedNeighborhoodRetraction.lean`、`RegularNeighborhood.lean` 及新加入的
+  `OpenEmbeddingFrontier.lean`。新模块可把紧致嵌入像的内部精确传输，因而解决了旧记录的
+  像端辅助问题；但源端仍没有
+  `frontier (derivedNeighborhood A K).space × Ioo 0 1 ≃ₜ
+  interior (derivedNeighborhood A K).space \ K.space`。现有
+  `derivedNeighborhoodStrongDeformationRetract` 只给收缩和基本群等价，不能给该补集的
+  同胚。`regularNeighborhood` 也只定义邻域并给包含/邻域性质。故冻结结论尚缺正规邻域
+  去核乘积生产者，不能从现有 API 合法拼出。
+- 用时：约 19 分钟；编译次数：0（第二轮）
+## 7 boundaryComplex_space_of_isPLCellAttachmentWith_three — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentThree.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为精确骨架接口仍非公共常量
+- 卡住的目标与错误：第二轮确认真实库仍没有 `IsPLCellAttachmentWith`；该名称只在
+  `Skeleton/PLSmoothingCompact.lean`，现有 WIP 的私有复制不能形成冻结端点。即使暂以复制
+  继续，旧检查已将证明化为“完整附着球面在 `N'` 的组合边界中消失”。重新检索
+  `BoundaryGluing`、`BoundaryComplement`、`ManifoldSubcomplexBoundary` 与
+  `SubcomplexNhdsWithin` 后，仍只有整个边界粘合或接缝外邻域转移，没有把一枚 PL 三球
+  沿完整 2-球附着后该接缝成为内部的局部双侧引理。故需先公开 attachment 结构并生产
+  完整球面接缝的相对边界消失定理。
+- 用时：约 14 分钟；编译次数：0（第二轮）
+## 10 exists_isTopologicalCellWithInterior_union_consecutive — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/ExistsIsTopologicalCellWithInteriorUnionConsecutive.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因所需 planar-gluing 生产者仍不存在
+- 卡住的目标与错误：第二轮核对 `CanonicalConfiguration`、所有非 Skeleton 的
+  `IsTopologicalCellWithInterior`、PlanarJordan/ClosedInterior 及 `Moise314` 的消费者。没有
+  可重用的定理把两个嵌入平面闭圆盘、其闭圆盘交集，提升为它们并的闭圆盘参数化，并同时将
+  两个既有开盘像包含在新内点集合。`Moise314` 正是该叶子的消费者，不能倒用；现有
+  Jordan API 从已知 Jordan 前沿生产盘，不能从三份盘参数化识别并的前沿。声明未发现反例，
+  但缺少这条平面圆盘粘合桥接。
+- 用时：约 16 分钟；编译次数：0（第二轮）
+## 11 separates_initialSurface — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/SeparatesInitialSurface.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为端点参数结构仍未导出
+- 卡住的目标与错误：第二轮确认 `IsCanonicalTower` 与 `initialSurface` 仍只定义于
+  `Skeleton/Section32PseudoCell.lean`。WIP 的私有复制不能交付冻结端点。进一步核对
+  `IsTube.splitSeparates` 与 tower 字段：它只给单个 splitting disk 对两个顶点的分离；要得到
+  交错 `T''` 并、删除奇数 torus 内部和极限点 `{P'}` 后的闭性与分离，仍缺“局部最终恒等
+  的分离子极限”及完整的 closed-union transport。`havoid` 已修复顶点落在表面的反例，
+  但不生产这些闭性/分离结论。
+- 用时：约 13 分钟；编译次数：0（第二轮）
+## 12 section33_faceEulerChar_handlePiece — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section33FaceEulerCharHandlePiece.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为冻结参数结构仍未导出
+- 卡住的目标与错误：第二轮确认 `IsPolyhedralTubeNeighborhood`、`HasSinglePolygonTraces`、`HasConnectedHandlePieces` 和 `edgesAt` 仍仅在 `Skeleton/Section33Approximation.lean`，外部模块无法逐字形成端点。`SurfaceInvariants`、`SurfaceCappingBetti` 和 `SurfaceSphereRecognition` 提供闭曲面的 Euler/球面识别，但没有从 `IsHandleDecompositionOfTube` 的 `Cpp`、各 trace 多边形和 `AK v` 导出 capping 后的全局 Euler 恒等式或分量归属。因此尚缺将 handle-piece 数据接到该 Euler 链的生产者。
+- 用时：约 15 分钟；编译次数：0（第二轮）
+## 13 isCombinatorialManifold_of_locallyFinitePLPieceIn — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsCombinatorialManifoldOfLocallyFinitePLPieceIn.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为现有公开 API 尚不能关闭首个顶点 link 目标
+- 卡住的目标与错误：反驳检查未找到反例；digest AF Part 1 的局部 PL 欧氏模型论证与冻结陈述一致。`LocallyFinitePLPieceIn.geometricLink_faces_finite` 已由真实局部有限性给出 link 的有限面集，但第一个目标仍是 `IsPLSphere 2 (SimplicialComplex.geometricLink 𝒦.complex {s}).space`。现有 `LocallyFinitePLPieceIn.isPLSphere_geometricLink` 以 `IsCombinatorialManifold` 为前提，不能倒用；全树没有把开放 PL 图卡中的嵌入三角剖分提升为顶点 link PL 球面的定理。缺少的生产者是“局部双向逐片仿射 3-流形图卡 + 局部有限复形 ⇒ 每个 vertex geometricLink 为 PL 2-sphere”。
+- 用时：约 18 分钟；编译次数：0（第二轮）
+## 14a boundaryComplex_space_of_isPLCellAttachmentWith_one — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentOne.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为冻结假设接口未导出
+- 卡住的目标与错误：反驳检查未找到满足附件参数化和 adjunction 同胚字段的反例。`IsPLCellAttachmentWith` 及其从 `IsPLCellAttachment` 选择 `g` 的 producer 仍只在 Skeleton；外部模块不能逐字引用冻结 `hatt`。即使使用 WIP 中的私有逐字段副本，现有公开 API 也只给空 attaching region 的不交并边界式；缺少任意 PL 3-ball 沿两张闭盘粘合后，已粘圆盘的相对内部从 `boundaryComplex` 消失、侧面补入的相对边界公式。
+- 用时：约 14 分钟；编译次数：0（第二轮）
+
+## 14b boundaryComplex_space_of_isPLCellAttachmentWith_two — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentTwo.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为冻结假设接口未导出
+- 卡住的目标与错误：反驳检查未找到反例。冻结 `IsPLCellAttachmentWith` 仍为 Skeleton 私有词汇，故真实模块无法逐字声明端点。私有副本下还缺相应的 annulus collar 边界追踪：须证明 `stdSimplexBoundary 2 × Ioo 0 1` 的像从旧边界删除，而 `stdSimplex 2 × {0,1}` 的像进入新边界；`BoundaryInvariance`、`DerivedNeighborhoodCellBoundary` 和现有 gluing API 未提供任意 adjunction 的这条相对公式。
+- 用时：约 14 分钟；编译次数：0（第二轮）
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/HasPLNormalDoubleCrossingAtOfIsStableCrossingBlock.lean.wip
+- import 行：无（第二轮未闭合）
+- 新公共名：无
+- 编译成功行原文 + 时间；公理审计结果：无；第二轮未启动 Lean，因为两个冻结核心定义仍未导出
+- 卡住的目标与错误：反驳检查未找到满足完整源片邻域、严格 margin 和 PL 图投影字段的反例；review V 所述的退化 AABB 重配对已被这些字段排除。`IsStableCrossingBlock` 与 `innerChartBlock` 仍只在 `Skeleton/GeneralPositionInDouble.lean`，外部模块不能逐字组成端点。公开库有 `HasPLNormalDoubleCrossingAt` 的局部性、前后复合和 source 传输 API，却没有“稳定双 graph block ⇒ normal double crossing”的桥接定理；这一桥必须从 block 的两张源片、graph equations 与 margin 构造局部图卡见证，不能以现有 normality 结论倒推。
+- 用时：约 16 分钟；编译次数：0（第二轮）
+## 16 isSpine_revolutionOf_of_mem_cellInterior — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsSpineRevolutionOfOfMemCellInterior.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.IsSpineRevolutionOfOfMemCellInterior
+- 新公共名：isSpine_revolutionOf_of_mem_cellInterior
+- 编译成功行原文 + 时间；公理审计结果：Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IsSpineRevolutionOfOfMemCellInterior.lean with no diagnostics; shared outputs unchanged.（2026-09-21 23:53 PDT）；最终审计 exitCode 0、diagnosticLines 0、sharedArtifactsModified false（2026-09-22 00:01 PDT），本模块所有声明的公理闭包只含 propext、Classical.choice、Quot.sound，13 个环境 linter 全部通过。
+- 证明路线：显式旋转给出 `D × S¹ ≃ₜ revolutionOf D`；以闭盘参数化与之取积，再由内点参数的纤维像正好为 `revolutionOf {p}`。
+- 用时：第二轮约 27 分钟；聚焦编译次数 1（累计 13 次）
+
+## 总表
+
+| 状态 | 队列条数 |
+| --- | ---: |
+| CLOSED | 8 |
+| FALSE | 0 |
+| STUCK | 8 |
+
+按 `FILL_QUEUE.md` 的 16 个编号条目计数；第 14 条的两个端点为同一队列条目，首轮的第 2 条反例记录已由 lead 修复并以 CLOSED 计入。
+
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/HasPLNormalDoubleCrossingAtOfIsStableCrossingBlock.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 787521FDD86EE0304271E1352C7E378163DD71567522BFC416D89FD65F8BBD37
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean，阻塞在首个几何构造前。
+- 反例：未找到满足 `IsStableCrossingBlock` 全部字段的反例；两张完整源片的相对邻域和
+  `IsPLHomeomorphOn` 投影排除了 AABB 重配对。
+- 卡住的目标与错误：由 `u = a (v,t)`、`v = b (u,t)`、`La * Lb ≤ 1 - η`、两张源片的
+  投影局部满射和共同 `t` 参数，构造一个局部逐片仿射环境自同胚，将两张像同时送到两张
+  横截坐标平面（边界支还须保留 `t = 0` 半空间）。`isPLHomeomorphOn_id_add_of_lipschitz`
+  只处理某个欧氏范数下 Lipschitz 常数小于一的整体位移；本接口只给乘积小于一，以及对
+  `t` 不受控的分片仿射依赖，不能直接套用。全树没有该加权/逐纤维图像正规化引理，且
+  `HasPLNormalDoubleCrossingAt`、`HasPLCrossingAt` 的传输定理均以后者为输入，不能倒推。
+  需要生产者：共同参数的两张 PL 图像在乘积收缩条件下的局部双平面正规化，含 `tlo = 0`
+  的半空间相对版本。
+- 用时：约 24 分钟；编译次数：0
+
+## 13 isCombinatorialManifold_of_locallyFinitePLPieceIn — CLOSED
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/IsCombinatorialManifoldOfLocallyFinitePLPieceIn.lean
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
+- 新公共名：LocallyFinitePLPieceIn.starComplex_faces_finite；
+  LocallyFinitePLPieceIn.closedStar_mem_nhdsWithin；
+  isCombinatorialManifold_of_locallyFinitePLPieceIn
+- source hash：SHA256 F3AA957F521185BE7E0B0E742B48B46576F0FC02B46727441D186560F97F1E1B
+- 编译成功行原文 + 时间；公理审计结果：Verified
+  D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\
+  IsCombinatorialManifoldOfLocallyFinitePLPieceIn.lean with no diagnostics; shared outputs
+  unchanged.（2026-09-22 03:32 PDT）。Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\
+  AuditIsCombinatorialManifoldOfLocallyFinitePLPieceIn.lean with no diagnostics; shared outputs
+  unchanged.（2026-09-22 03:32 PDT）。端点与两个新增辅助引理的公理闭包只含 propext、
+  Classical.choice、Quot.sound；13 个环境 linter 全部通过。
+- 反例：未找到满足局部有限、双向逐片仿射图卡、嵌入和开放像的反例。
+- 证明路线：局部有限的 coface 集控制顶点星的面；其余不含该顶点的闭单形族局部有限，
+  所以其并闭，从而闭星在复形载体内是邻域。嵌入将此邻域送到像的相对邻域，`hU` 将它
+  提升为环境邻域。随后把有限星限制为有限 PL piece，细分使顶点闭星落入一个图卡，
+  用有限图卡 link 定理，再经细分与星的 geometric link 同一性送回原复形。
+- 用时：约 70 分钟；聚焦编译次数：5；公理/linter 审计次数：2（首轮仅发现并修复了
+  `HasGroupoid` 的 unusedArguments 与辅助引理中多余的 FiniteDimensional 参数）。
+## 7 boundaryComplex_space_of_isPLCellAttachmentWith_three — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentThree.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 B393E77BDB10F50281E145CE35C16AB5BEB3DB04E97CC9E347F7D089F4896D50
+- 编译成功行原文 + 时间；公理审计结果：无。第 1 次检查于 2026-09-22 PDT 失败：
+  `error: unsolved goals`，目标为
+  `(boundaryComplex 3 N').space = (boundaryComplex 3 L).space \ g '' stdSimplexBoundary 3`；
+  同时 `aesop: failed to prove the goal after exhaustive search.`
+- 反例：未找到满足 `IsPLCellAttachmentWith` 的反例；`hgB` 将完整附着球面精确送到
+  `C ∩ L.space`，而 adjunction 同胚排除了额外的粘合点。
+- 卡住的目标与错误：已从 adjunction 同胚推出 `N'.space = L.space ∪ C`，从 `hgB` 推出
+  `C ∩ L.space = g '' stdSimplexBoundary 3`，并证明接缝以外的 boundaryComplex 判定可由
+  `mem_boundaryComplex_space_iff_of_space_mem_nhdsWithin` 转移。剩余正是证明完整接缝
+  `g '' stdSimplexBoundary 3` 在 `N'.space` 中成为内点，因此不属于
+  `(boundaryComplex 3 N').space`。`BoundaryGluing` 只处理两个复形的整个边界相同，不能
+  处理 `L` 的一个边界分支；现有局部边界转移也只适用于接缝外。需要生产者：PL 三球沿
+  `IsClosedEmbedding` 的完整边界球附着到三维组合流形的一个边界分支时，接缝的相对
+  boundaryComplex 消失，以及其余边界的不变性。
+- 用时：约 31 分钟；编译次数：1
+## 14a boundaryComplex_space_of_isPLCellAttachmentWith_one — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentOne.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 91DE8C6B424D4073651A8DDFA5A36DC18A9A22F6CE1647C7C7BC56FC95F7E354
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean，因第 7 条已定位到同一缺失的
+  相对边界粘合生产者，且本 WIP 的首个未解决目标就是其一手实例。
+- 反例：未找到满足 `IsPLCellAttachmentWith` 的反例；端盘区域由 `hgB` 精确识别为
+  `C ∩ L.space`，侧环的内部不与旧阶段相交。
+- 卡住的目标与错误：需要证明两张端盘的相对内部从旧 `boundaryComplex` 消失，侧环
+  `g '' (stdSimplexBoundary 2 ×ˢ Icc 0 1)` 全部进入新 `boundaryComplex`，并在其余点转移
+  旧边界。公开 `CellAttachment` 现在可逐字形成冻结假设，但只给 adjunction 坐标等式；
+  `BoundaryGluing` 只覆盖全边界粘合，不能给两闭盘附着的相对边界公式。需要第 7 条记录的
+  相对 PL 附着边界生产者的 disk-pair 特例。
+- 用时：约 12 分钟；编译次数：0
+
+## 14b boundaryComplex_space_of_isPLCellAttachmentWith_two — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/BoundaryComplexPLCellAttachmentTwo.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 57B80F0D2A2BF6CD7A29A608B8C8E01185C8973E1CAA8E20A8E55960F275680C
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean，因第 7 条已定位到同一缺失的
+  相对边界粘合生产者，且本 WIP 的首个未解决目标就是其一手实例。
+- 反例：未找到满足 `IsPLCellAttachmentWith` 的反例；附着侧环的相对内部应变为内点，两个
+  未附着端盘保持在新边界。
+- 卡住的目标与错误：需要证明
+  `g '' (stdSimplexBoundary 2 ×ˢ Ioo 0 1)` 从旧边界删除、
+  `g '' (stdSimplex ℝ (Fin 3) ×ˢ ({0,1} : Set ℝ))` 加入新边界，并保留接缝外的旧边界。
+  这正是任意附着区域为环带时的 relative boundary-complex gluing；公开 API 未提供它，
+  且不能由整个边界的 `BoundaryGluing` 推出。需要第 7 条记录的相对 PL 附着边界生产者的
+  annulus 特例。
+- 用时：约 12 分钟；编译次数：0
+## 11 separates_initialSurface — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/SeparatesInitialSurface.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 DCC97D4C8DAAC9488CF2608FA6F70F1319AFF2E7302094A96D063B4377C837C3
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean，公开 `PseudoCell` 与
+  `separates_of_locally_eventually_eq` 已可直接引用，但首个缺口是几何构造而非命名或实例。
+- 反例：未找到满足全部 `IsCanonicalTower` 字段和 `havoid` 的反例；已核对 `havoid` 经每个
+  `config.innerSubset` 排除两个顶点落在任何 `S'' i` 或其边界上。
+- 卡住的目标与错误：`separates_of_locally_eventually_eq` 需要一个自然数索引的闭分离子列，
+  每项分离两个顶点，并在 `P'` 外局部最终等于 `initialSurface`。`IsCanonicalTower` 只给
+  三重 canonical configurations、远离二步的外 torus 不交、两个尾部的 closure 方程和
+  外 torus 的局部有限性；没有公开引理把每个三重配置的 annuli/solid tori 拼成上述闭分离子，
+  也没有从这些字段导出对 `T''` 与删去偶数 `interior S''` 的局部最终稳定。`IsTube.splitSeparates`
+  只给原 splitting disk 的分离，不能把它运送到交错 `initialSurface`。需要生产者：
+  canonical tower 的 Lemma 1/Lemma 3 型有限截断 separator 及其在 `P'` 外的局部稳定性。
+- 用时：约 28 分钟；编译次数：0
+## 10 exists_isTopologicalCellWithInterior_union_consecutive — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/ExistsIsTopologicalCellWithInteriorUnionConsecutive.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 7C592B41E36B6C2A0F6C67167B4EF7222F939E49D85C330173794EC953913294
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean，`CanonicalConfiguration` 已直接
+  提供所有冻结词汇，首个缺口是新的平面粘合定理。
+- 反例：未找到满足 `IsPlanarCellChain` 全部字段的反例；两盘交集由 `hc.overlap j` 为二维
+  topological cell，且两个指定 intrinsic interior 包含各自连接段。
+- 卡住的目标与错误：从两份 `IsTopologicalCellWithInterior 2` 参数化和
+  `IsTopologicalCell 2 (D j.castSucc ∩ D j.succ)`，构造
+  `IsTopologicalCellWithInterior 2 (D j.castSucc ∪ D j.succ) Eint`，并证明两个旧
+  intrinsic interior 均包含于 `Eint`。全树没有 `IsTopologicalCellWithInterior` 的 union/
+  planar gluing 定理；已有 Jordan/Schoenflies API 从已知前沿产生盘，不能从三份盘参数化
+  推导并的盘参数化和内点包含。需要生产者：平面嵌入闭二胞腔沿闭二胞腔交集的并胞腔定理。
+- 用时：约 18 分钟；编译次数：0
+## 12 section33_faceEulerChar_handlePiece — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section33FaceEulerCharHandlePiece.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 7EBD6D8450016F8D9AE96A8B80DB8A192A8C3C001139F95503538F62B81C54A4
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean，公开
+  `PolyhedralTubeNeighborhood` 已提供所有四个输入谓词，首个缺口是 global capping/Euler
+  construction。
+- 反例：未找到满足 `HasConnectedHandlePieces`、single-polygon trace 和 `hiso` 的反例；
+  `AK v` 的边界确实由 incident trace polygons 的并精确给定。
+- 卡住的目标与错误：`h56` 给出 `AK v` 是连通的二维组合流形带边界，且边界等于 incident
+  polygon traces；`h34` 给每一条 trace 一个盘；现有 `SurfaceCapping`/`CapComplex` 可在
+  已给出切开/封帽复形后计算 Euler characteristic。然而没有从 `h2`,`h34`,`h56`,`hiso`
+  构造这些盘的同时封帽、证明所得闭曲面为球面，或把所有 `AK v` 的 capped pieces 接到
+  一个全局 Euler 恒等式。`hiso` 是基本群同构，却没有可直接消费的“boundary inclusion
+  isomorphism implies capped piece sphere”引理。需要生产者：incident traces 的相容封帽与
+  global handle-piece Euler/capping bridge，结论为每个 `AK v` 的 Euler 数 `2 - deg(v)`。
+- 用时：约 24 分钟；编译次数：0
+
+## 5 section33_tube_product — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/Section33TubeProduct.lean.wip
+- import 行：无（本轮未闭合）
+- 新公共名：无
+- source hash：SHA256 552DDAD27B722B2C58A4588B5E1A63F6880BA4CF8FDB735DB93A28D9C901C85B
+- 编译成功行原文 + 时间；公理审计结果：无；本轮未启动 Lean（2026-09-22 03:37:26 -07:00），因为首个缺口是尚未形式化的源端正规邻域乘积定理，而非可由现有声明消解的 elaboration 错误。
+- 反例：未找到满足 `IsTube` 全部字段的反例。`isNeighborhood` 将图核置于 `N` 的内部；`isEmbedding` 与 `imageEq` 足以使既有 `OpenEmbeddingFrontier` 接口处理像端的内部传输。问题在于源端生产者缺失。
+- 卡住的目标与错误：由 `IsTube.derivedModel`、`unionEq` 可将源端化为有限三维组合带边流形 `A` 中一维子复形 `K` 的导出邻域，但全树没有定理
+  `frontier (derivedNeighborhood A K).space × Set.Ioo (0 : ℝ) 1 ≃ₜ
+  interior (derivedNeighborhood A K).space \\ K.space`。
+  `derivedNeighborhoodStrongDeformationRetract` 只给到 `K.space` 的强变形收缩及基本群等价；它既不控制补集，也不能构造所需三维乘积同胚。`NeighborhoodCylinder` 只覆盖连通 PL 圆周的特殊情形，不能应用于冻结的任意一维 `K`。需要先补“有限三维组合带边流形中的有限一维子复形，其导出邻域去核为边界乘开区间”的生产者；随后再经 `h` 和 `OpenEmbeddingFrontier` 搬运。
+- 用时：约 14 分钟；编译次数：0
+
+## 本轮总表
+
+| 状态 | 叶子数 |
+| --- | ---: |
+| CLOSED | 1 |
+| FALSE | 0 |
+| STUCK | 8 |
+
+按本轮 9 个冻结叶子计，14a 与 14b 分别计数。
+
+## 10 exists_isTopologicalCellWithInterior_union_consecutive — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/ExistsIsTopologicalCellWithInteriorUnionConsecutive.lean.wip
+- import 行：无（冻结端点尚未闭合）
+- 新公共名：IsTopologicalCellWithInterior.interior_eq
+- source hash：TopologicalCellInterior.lean SHA256 CF4529B964071B01615A406FFF0DB00A9471644EFC9432274A31E56A1F717C34
+- 编译成功行原文 + 时间；公理审计结果：2026-09-22 04:14:50 -07:00；Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TopologicalCellInterior.lean with no diagnostics; shared outputs unchanged.；审计 AuditTopologicalCellInterior.lean 同样为 Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTopologicalCellInterior.lean with no diagnostics; shared outputs unchanged.，模块全部声明只含 propext、Classical.choice、Quot.sound，13 个标准 linter 均为零。
+- 反例：未找到满足 IsPlanarCellChain 全部字段的反例。hc.cell、hc.overlap 分别给两枚闭二胞腔及其闭二胞腔交集；hc.halfPlane 将它们约束在同一嵌入平面。
+- 卡住的目标与错误：已证明二维欧氏环境中 IsTopologicalCellWithInterior 的指定内部等于环境 interior。要完成冻结端点仍须从两枚平面嵌入闭二胞腔及其闭二胞腔交集构造并集的闭二胞腔参数化，并证明其边界为 Jordan 曲线（或等价地构造相对闭盘粘合）。现有 PlanarJordan/Schoenflies API 只能从给定 Jordan 前沿或给定 crosscut 构造闭盘；DiskUnion/BallGluingTwo 只覆盖 PL 且沿一维边界弧粘合，不能消费此处任意 topological 2-cell 交集。
+- 用时：约 70 分钟；编译次数：5 次外部探针、1 次模块检查、1 次审计。
+
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/HasPLNormalDoubleCrossingAtOfIsStableCrossingBlock.lean.wip
+- import 行：无（冻结端点尚未闭合）
+- 新公共名：无
+- source hash：SHA256 787521FDD86EE0304271E1352C7E378163DD71567522BFC416D89FD65F8BBD37
+- 编译成功行原文 + 时间；公理审计结果：`Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\F15Scratch24.lean with no diagnostics; shared outputs unchanged.`（2026-09-22 05:45:11 -07:00）。该回执只验证外部私有辅助构造，冻结端点未闭合，故未运行端点公理审计或 linter。
+- 反例：未找到满足 `IsStableCrossingBlock` 全部字段的反例。两张完整源片的相对邻域、投影的 `IsPLHomeomorphOn`、共同 `t` 参数及严格 margin 排除了 AABB 重配对；`StableCrossingBlock.lean` 现已公开七个定义和五个辅助引理。
+- 卡住的目标与错误：已验证共同参数的全局图像正规化：先将第一张图像剪切为第一坐标平面，再以收缩映射沿第二坐标剪切，所得 PL 环境自同胚保持 `t`，并把两张完整 graph image 分别送到两张横截坐标平面。冻结端点尚须把此全局图像等式限制到两张源片的多面体相对邻域，组装两个 `IsPLHomeomorphOn` 见证、由稳定 block 的完整 preimage 等式给出二点纤维的最终覆盖，并在 `tlo = 0` 支中把 `t = 0` 半空间送入 `HasPLBoundaryCrossingAt`；最后再以 `exists_crossing_chart_mem_atlas` 更换图卡。尚无声明错误或数学反例；本条已累计运行 `F15Scratch2` 至 `F15Scratch24` 共 23 次外部 Lean 探针，超过每叶 12 次编译上限，按队列规则停止，不能继续检查该组装。
+- 用时：约 54 分钟；编译次数：23 次外部探针，0 次本轮命名模块检查。
+
+## 本轮收尾总表
+
+| 状态 | 队列条数 |
+| --- | ---: |
+| CLOSED | 8 |
+| FALSE | 0 |
+| STUCK | 8 |
+
+按 `FILL_QUEUE.md` 的 16 个编号条目计数；第 15 条仍为既有 STUCK，未重复计数。本轮优先处理的第 10、15 条均已记录；其余建议条目没有新的构造路线，依队列要求停止。
+
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — STUCK
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/StableCrossingNormalizer.lean（已闭合支持模块）；冻结端点没有新 .lean，既有 HasPLNormalDoubleCrossingAtOfIsStableCrossingBlock.lean.wip 未修改。
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingNormalizer
+- 新公共名：exists_pl_homeomorph_two_graphs_to_coordinate_planes_of_lipschitz
+- source hash：StableCrossingNormalizer.lean SHA256 D8A07126B81EAA68E88FB3D42B8E58807C150FFAE237E1FC5CCAEECB470B08D1
+- 编译成功行原文 + 时间；公理审计结果：2026-09-22 06:47:35 -07:00；Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\StableCrossingNormalizer.lean with no diagnostics; shared outputs unchanged.；全声明审计 AuditStableCrossingNormalizer.lean 为 Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditStableCrossingNormalizer.lean with no diagnostics; shared outputs unchanged.，全部声明公理闭包只含 propext、Classical.choice、Quot.sound，13 个标准 linter 均为零。
+- 证明路线：支持模块先以 (u,v,t) ↦ (u - a(v,t),v,t) 将第一完整 graph image 送到第一坐标平面；再用 La * Lb < 1 的纤维收缩构造第二个保持共同 	 参数的 PL 自同胚。两张完整 graph image 分别精确送到两张坐标平面。
+- 卡住的目标与错误：冻结端点要求最后调用 xists_crossing_chart_mem_atlas。该定理有未满足的隐式实例 [HasGroupoid M (plGroupoid 3)]；冻结陈述只给 [TopologicalSpace M]、[ChartedSpace ... M] 和局部 hec : ec ∈ (plGroupoid 3).maximalAtlas M。外部探针 F15AtlasProbe.lean:19:8 的原文为 rror(lean.synthInstanceFailed): failed to synthesize instance of type class HasGroupoid M (plGroupoid 3)。hec 只能控制与 c 重叠的转移，不能构造全图册的 HasGroupoid。这不是冻结结论的反例：可在自然主题中新加局部输运版，令目标图卡为 chartAt ... y，并以 (plGroupoid 3).subset_maximalAtlas (chart_mem_atlas _ y) 供给 HasPLNormalDoubleCrossingAt.of_mem_maximalAtlas；但这将绕开指定的现有封装定理并新增公共 API，按本轮遇到 API 缺口即停止的规则留给 lead 决定。
+- 用时：约 35 分钟；编译次数：4 次 Lean 调用（命名模块检查、两次全声明审计、一次外部接口探针；另有一次 checker 参数错误，未启动 Lean）。
+
+## 本轮总表（第 15 条有界重试）
+
+| 状态 | 冻结叶子数 |
+| --- | ---: |
+| CLOSED | 0 |
+| FALSE | 0 |
+| STUCK | 1 |
+
+支持模块 CLOSED 1；队列累计总表仍为 CLOSED 8 / FALSE 0 / STUCK 8。
+
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — STUCK (corrected receipt)
+- 文件：DifferentialGeometry/Topology/PiecewiseLinear/StableCrossingNormalizer.lean (closed supporting module); the frozen endpoint has no new .lean file, and the existing HasPLNormalDoubleCrossingAtOfIsStableCrossingBlock.lean.wip was not modified.
+- import 行：import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingNormalizer
+- 新公共名：exists_pl_homeomorph_two_graphs_to_coordinate_planes_of_lipschitz
+- source hash：StableCrossingNormalizer.lean SHA256 D8A07126B81EAA68E88FB3D42B8E58807C150FFAE237E1FC5CCAEECB470B08D1
+- 编译成功行原文 + 时间；公理审计结果：2026-09-22 06:48:09 -07:00；Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\StableCrossingNormalizer.lean with no diagnostics; shared outputs unchanged.；全声明审计 AuditStableCrossingNormalizer.lean 为 Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditStableCrossingNormalizer.lean with no diagnostics; shared outputs unchanged.，全部声明公理闭包只含 propext、Classical.choice、Quot.sound，13 个标准 linter 均为零。
+- 证明路线：支持模块先以 (u,v,t) mapsto (u - a(v,t),v,t) 将第一完整 graph image 送到第一坐标平面；再用 La * Lb < 1 的纤维收缩构造第二个保持共同 t 参数的 PL 自同胚。两张完整 graph image 分别精确送到两张坐标平面。
+- 卡住的目标与错误：冻结端点要求最后调用 exists_crossing_chart_mem_atlas。该定理有未满足的隐式实例 [HasGroupoid M (plGroupoid 3)]；冻结陈述只给 [TopologicalSpace M]、[ChartedSpace ... M] 和局部 hec : ec ∈ (plGroupoid 3).maximalAtlas M。外部探针 F15AtlasProbe.lean:19:8 的原文为 error(lean.synthInstanceFailed): failed to synthesize instance of type class HasGroupoid M (plGroupoid 3)。hec 只能控制与 ec 重叠的转移，不能构造全图册的 HasGroupoid。这不是冻结结论的反例：可在自然主题中新加局部输运版，令目标图卡为 chartAt ... y，并以 (plGroupoid 3).subset_maximalAtlas (chart_mem_atlas _ y) 供给 HasPLNormalDoubleCrossingAt.of_mem_maximalAtlas；但这将绕开指定的现有封装定理并新增公共 API，按本轮遇到 API 缺口即停止的规则留给 lead 决定。
+- 用时：约 35 分钟；编译次数：4 次 Lean 调用（命名模块检查、两次全声明审计、一次外部接口探针；另有一次 checker 参数错误，未启动 Lean）。
+
+上一节的反引号被 PowerShell 字符串转义损坏；本 corrected receipt 是本轮权威记录。
+
+## 本轮总表（第 15 条有界重试）
+
+| 状态 | 冻结叶子数 |
+| --- | ---: |
+| CLOSED | 0 |
+| FALSE | 0 |
+| STUCK | 1 |
+
+支持模块 CLOSED 1；队列累计总表仍为 CLOSED 8 / FALSE 0 / STUCK 8。
