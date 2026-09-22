@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RecenteredScalarBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardSlabConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RemotePointTriangle
@@ -113,16 +115,6 @@ theorem first_backward_slab {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (KappaSolutions.ancientKappa_modelCurvatureBoundNearBase
       (I := I3) (by simp [ThreeSpace]) hkappa) hsigma hPhi
 
-theorem recentered_source_bound {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ A D : ℝ, 0 ≤ D → ∃ C : ℝ,
-        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ᶠ i in Filter.atTop,
-          ∀ s ∈ Set.Icc (-(X.depth i / 2)) 0, ∀ z y : (X.term i).M,
-            (X.term i).S.scalar s z ≤ A →
-            metricDistance ((X.term i).S.base.metric s) z y ≤ D →
-              (X.term i).S.scalar s y ≤ C := by
-  sorry
 
 theorem uniform_moving_slice_propagation {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
@@ -183,13 +175,5 @@ theorem ancient_extension_of_frontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
   exact ⟨epsStar, hpos, fun eps heps hle X L delta hd B =>
     ancientExtension_of_halfLine B (hI eps heps hle X L delta hd B)⟩
 
-theorem ancient_extension {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X)
-        (delta : ℝ) (hd : 0 < delta)
-        (B : BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))),
-          Nonempty (AncientExtension B) := by
-  sorry
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -1497,7 +1497,13 @@ theorem finite_horn_construction {kappa sigma : ℝ} {Phi : ℝ → ℝ}
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
               H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
-  sorry
+  obtain ⟨epsStar, hepsStar, hbound⟩ := exists_boundedAtDistance.{u} hkappa
+  refine ⟨1 / 20, 1, by norm_num, by norm_num, one_pos, ?_⟩
+  intro alpha halpha halphaMax collar hcollar
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle X hradius
+  exact (finiteControlledRadius_false_of_boundedAtDistance X
+    (hbound eps heps hle sigma hsigma Phi hPhi X) hradius).elim
 
 theorem finite_horn_smooth_cone_patch {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (X : NormalizedSequence.{u} eps kappa sigma Phi) (hkappa : 0 < kappa)
