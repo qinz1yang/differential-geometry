@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.IsTopologicalSphereImageSplitRim
+import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuallyEq
 
 /-!
 # Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
@@ -11,13 +13,17 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 The assemblies `moise322`, `moise321`, `moise323`, `moise324` below prove the four named
 propositions of `PseudoCell.lean` for real from the leaves of this file and from the named
 propositions `Moise307`, `Moise314` of the earlier sections and `Moise303`, `Moise286`,
-`Moise267`, stated here because the tree has no form of Theorems 30.3, 28.6 and 26.7 (digest
+`Moise267`, now stated in `MoiseChain.lean` and still unproved (digest
 `AD` §5); `Moise267` carries the book's implicit premise that the common boundary of the three
 surfaces is non-empty, since its printed proof starts from an edge of `Bd M_i`.  Every `sorry`
 is a leaf and none sits inside an assembly.  Theorem 30.1 is the proved
 `separates_or_separates_of_union` and Theorem 30.2 the proved `exists_separates_of_finite_iUnion`;
 both are consumed inside leaves.  Book pages 223-229, in the notation of `PseudoCell.lean`;
 `P'` is the image of the edge midpoint, `I` the ambient interior of `C'₁ ∪ C'₂`.
+
+Eleven frozen leaves remain open.  `separates_of_locally_eventually_eq` and
+`isTopologicalSphere_image_splitRim` are proved in the imported real modules, with their frozen
+statements unchanged.  The former reuses the general separating-limit theorem on `closure {p}`.
 
 The route of 32.1 and 32.2 (one producer, digest `AD` §6, §7.13).  Arcs from the two vertices to
 the free faces are drawn first (`exists_compact_connected_to_freeFace`); the bi-infinite tower of
@@ -172,10 +178,10 @@ Lemmas 6 and 8, (4) in Lemmas 3, 4, 8; 32.2(5)(6) in Lemmas 6 and 8; 32.3(7)(9)(
 8, 12, 13 and the endgame; 32.3(8) in Lemma 1, the whole `ε`-budget; 32.4 in Lemma 8 and the
 endgame.
 
-To be hoisted: `IsPLAnnulusWithEnds`, `Moise303`, `Moise286`, `Moise267` (to `MoiseChain`),
-`IsCanonicalTower`, `initialSurface`, `IsAnnularChain`, `annularChain`, `SplitsDualCellsAlong`,
-`IsEdgeCollarFamily`, `handlePiece`, `CrossesPseudoCell`, and the proved
-`IsTube.mem_interior_dualCell` (to `PseudoCell.lean`) and `Moise322.exists_splitsDualCellsAlong`.
+The tower, annular-chain and edge-collar predicates, `initialSurface`, `annularChain`,
+`handlePiece`, `CrossesPseudoCell`, `SplitsDualCellsAlong`, and the proved
+`IsTube.mem_interior_dualCell` and `Moise322.exists_splitsDualCellsAlong` live in
+`PseudoCell.lean`. Their producers remain open.
 -/
 
 open Set Topology
@@ -183,179 +189,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
-
-section Vocabulary
-
-def IsPLAnnulusWithEnds (X J₀ J₁ : Set E3) : Prop :=
-  ∃ (J : Set E3) (ρ : E3 × ℝ → E3), IsPLSphere 1 J ∧
-    IsPLHomeomorphOn ρ (J ×ˢ Icc (0 : ℝ) 1) X ∧
-    J₀ = ρ '' (J ×ˢ {(0 : ℝ)}) ∧ J₁ = ρ '' (J ×ˢ {(1 : ℝ)})
-
-def Moise303 : Prop :=
-  ∀ (M H K C Δ D₁ D₂ Ω : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3),
-    IsOpen M → IsConnected M → H ⊆ M → K ⊆ M → Disjoint H K →
-    IsClosed (((↑) : M → E3) ⁻¹' H) → IsClosed (((↑) : M → E3) ⁻¹' K) →
-    C ⊆ M → IsClosed (((↑) : M → E3) ⁻¹' C) →
-    Separates (((↑) : M → E3) ⁻¹' C) (((↑) : M → E3) ⁻¹' H) (((↑) : M → E3) ⁻¹' K) →
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ C →
-    IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ →
-    IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂ →
-    D₁ ∩ D₂ = Δ → D₁ ∪ D₂ ⊆ C → D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ →
-    Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2 → Δ ⊆ D₂ \ r₂ '' stdSimplexBoundary 2 →
-    IsOpen Ω → Δ ⊆ Ω → Ω ⊆ M → Disjoint Ω (H ∪ K) →
-    ∃ (C' A₁ Δ₁ J₁ : Set E3) (r' : (Fin 3 → ℝ) → E3),
-      IsClosed (((↑) : M → E3) ⁻¹' C') ∧ C' ⊆ M ∧
-      Separates (((↑) : M → E3) ⁻¹' C') (((↑) : M → E3) ⁻¹' H) (((↑) : M → E3) ⁻¹' K) ∧
-      C' \ Ω = C \ Ω ∧ D₂ ⊆ C' ∧
-      IsPLAnnulusWithEnds A₁ (r '' stdSimplexBoundary 2) J₁ ∧ A₁ ⊆ D₁ ∩ Ω ∧
-      A₁ ∩ Δ = r '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ₁ ∧ J₁ = r' '' stdSimplexBoundary 2 ∧
-      Δ₁ ⊆ Ω ∧ Δ₁ ∩ C = J₁ ∧
-      C' = (C \ (A₁ \ (r '' stdSimplexBoundary 2 ∪ J₁))) ∪ Δ₁
-
-open Classical in
-def Moise286 : Prop :=
-  ∀ (S : Set E3), IsCombinatorialSolidTorus S → ∀ (n : ℕ) (G : Fin n → Set E3), 1 < n →
-    (∀ i, IsPLSphere 1 (G i)) → (∀ i, G i ⊆ frontier S) →
-    Pairwise (fun i j => Disjoint (G i) (G j)) →
-    (∀ i, ¬ ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
-        G i = r '' stdSimplexBoundary 2) →
-    ∀ x ∈ frontier S \ (⋃ i, G i), ∃ i j : Fin n, i ≠ j ∧
-      IsPLAnnulusWithEnds (closure (connectedComponentIn (frontier S \ ⋃ i, G i) x)) (G i) (G j)
-
-open Classical in
-def Moise267 : Prop :=
-  ∀ M : Fin 3 → Geometry.SimplicialComplex ℝ E3, (∀ i, (M i).faces.Finite) →
-    (∀ i, IsCombinatorialManifoldWithBoundary 2 (M i)) → (∀ i, IsConnected (M i).space) →
-    (∀ i j, (boundaryComplex 2 (M i)).space = (boundaryComplex 2 (M j)).space) →
-    (boundaryComplex 2 (M 0)).space.Nonempty →
-    (∀ i j, i ≠ j → Disjoint ((M i).space \ (boundaryComplex 2 (M i)).space)
-      ((M j).space \ (boundaryComplex 2 (M j)).space)) →
-    ∀ x ∉ (⋃ i, (M i).space),
-      ¬ Bornology.IsBounded (connectedComponentIn (⋃ i, (M i).space)ᶜ x) →
-      ∃ i j k : Fin 3, i ≠ j ∧ i ≠ k ∧ j ≠ k ∧
-        frontier (connectedComponentIn (⋃ i, (M i).space)ᶜ x) = (M i).space ∪ (M j).space ∧
-        ∀ y ∈ (M k).space \ (boundaryComplex 2 (M k)).space,
-          Bornology.IsBounded (connectedComponentIn ((M i).space ∪ (M j).space)ᶜ y)
-
-structure IsCanonicalTower (φ : E3 → E3) (Pt : ℤ → E3)
-    (Dp Dpint J A S T S'' T'' : ℤ → Set E3) (Dimg Dbdimg W I : Set E3) (P' : E3) : Prop where
-  config : ∀ i : ℤ, IsCanonicalConfiguration (fun j : Fin 4 => Pt (i + ((j : ℕ) : ℤ)))
-    (fun j : Fin 3 => Dp (i + ((j : ℕ) : ℤ))) (fun j : Fin 3 => Dpint (i + ((j : ℕ) : ℤ)))
-    (fun j : Fin 4 => J (i + ((j : ℕ) : ℤ))) (fun j : Fin 3 => A (i + ((j : ℕ) : ℤ)))
-    (fun j : Fin 3 => S (i + ((j : ℕ) : ℤ))) (fun j : Fin 3 => T (i + ((j : ℕ) : ℤ)))
-    (⋃ j : Fin 3, S (i + ((j : ℕ) : ℤ))) φ (fun j : Fin 3 => S'' (i + ((j : ℕ) : ℤ)))
-    (fun j : Fin 3 => T'' (i + ((j : ℕ) : ℤ)))
-  apart : ∀ i k : ℤ, 2 ≤ |i - k| → Disjoint (φ '' S i) (φ '' S k)
-  annuliEq : φ '' (⋃ i, A i) = Dimg \ (Dbdimg ∪ {P'})
-  subsetW : ∀ i, φ '' S i ⊆ W
-  subsetInterior : ∀ i, φ '' S i ⊆ I
-  centerMemInterior : P' ∈ I
-  closureLower : ∀ m : ℤ,
-    closure (⋃ i, ⋃ (_ : i ≤ m), φ '' S i) = (⋃ i, ⋃ (_ : i ≤ m), φ '' S i) ∪ {P'}
-  closureUpper : ∀ m : ℤ,
-    closure (⋃ i, ⋃ (_ : m ≤ i), φ '' S i) = (⋃ i, ⋃ (_ : m ≤ i), φ '' S i) ∪ Dbdimg
-  locallyFinite : ∀ x ∈ I, x ≠ P' → ∃ U ∈ 𝓝 x, {i | (φ '' S i ∩ U).Nonempty}.Finite
-
-def initialSurface (S'' T'' : ℤ → Set E3) (P' : E3) : Set E3 :=
-  (⋃ i, T'' (2 * i)) ∪ ((⋃ i, T'' (2 * i + 1)) \ ⋃ i, interior (S'' (2 * i))) ∪ {P'}
-
-structure IsAnnularChain (H B Jlo Jhi S' S'' T'' : ℤ → Set E3) (P' : E3) : Prop where
-  half : ∀ i, IsPLAnnulusWithEnds (H i) (Jhi (i - 1)) (Jlo i)
-  halfSubset : ∀ i, H i ⊆ T'' (2 * i)
-  halfSubsetTorus : ∀ i, H i ⊆ S' (2 * i)
-  bridge : ∀ i, IsPLAnnulusWithEnds (B i) (Jlo i) (Jhi i)
-  bridgeSubset : ∀ i, B i ⊆ S' (2 * i) ∪ S' (2 * i + 1) ∪ S' (2 * i + 2)
-  loSubset : ∀ i, Jlo i ⊆ T'' (2 * i)
-  hiSubset : ∀ i, Jhi i ⊆ T'' (2 * i + 2)
-  loGenerator : ∀ i, ∀ hsub : Jlo i ⊆ S'' (2 * i), ∀ x : Jlo i,
-    Function.Surjective (FundamentalGroup.map
-      (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(Jlo i, S'' (2 * i))) x)
-  hiGenerator : ∀ i, ∀ hsub : Jhi i ⊆ S'' (2 * i + 2), ∀ x : Jhi i,
-    Function.Surjective (FundamentalGroup.map
-      (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(Jhi i, S'' (2 * i + 2))) x)
-  halfInterBridge : ∀ i, H i ∩ B i = Jlo i
-  bridgeInterHalf : ∀ i, B i ∩ H (i + 1) = Jhi i
-  halfDisjoint : ∀ i k, i ≠ k → Disjoint (H i) (H k)
-  bridgeDisjoint : ∀ i k, i ≠ k → Disjoint (B i) (B k)
-  halfBridgeDisjoint : ∀ i k, k ≠ i → k ≠ i - 1 → Disjoint (H i) (B k)
-  centerNotMem : ∀ i, P' ∉ H i ∪ B i
-
-def annularChain (H B : ℤ → Set E3) (P' : E3) : Set E3 :=
-  (⋃ i, H i ∪ B i) ∪ {P'}
-
-open Classical in
-def SplitsDualCellsAlong (K : Geometry.SimplicialComplex ℝ E3) (N : Set E3) (C : E3 → Set E3)
-    (Dbd : Finset E3 → Set E3) (h : E3 → E3) (W Ec Eint Ebd : Set E3) (u v : E3) : Prop :=
-  IsPseudoCell Ec Eint Ebd (h (({u, v} : Finset E3).centroid ℝ id)) ∧
-  Ebd = h '' Dbd {u, v} ∧ Ec ⊆ W ∧
-  Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' Eint)
-    (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-    (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) ∧
-  Ec ∩ h '' K.space = {h (({u, v} : Finset E3).centroid ℝ id)} ∧
-  ∃ U₁ U₂ : Set E3, h u ∈ U₁ ∧ h v ∈ U₂ ∧ IsConnected U₁ ∧ IsConnected U₂ ∧ Disjoint U₁ U₂ ∧
-    U₁ ∪ U₂ = (h '' C u ∪ h '' C v) \ Ec ∧
-    (∀ V : Set E3, IsPreconnected V → V ⊆ (h '' C u ∪ h '' C v) \ Ec → V ⊆ U₁ ∨ V ⊆ U₂) ∧
-    Ec ⊆ frontier U₁ ∧ Ec ⊆ frontier U₂ ∧
-    h '' (frontier (C u) ∩ frontier N) ⊆ frontier U₁ ∧
-    h '' (frontier (C v) ∩ frontier N) ⊆ frontier U₂
-
-def IsEdgeCollarFamily (K : Geometry.SimplicialComplex ℝ E3) (C : E3 → Set E3)
-    (D Dbd : Finset E3 → Set E3) (h : E3 → E3) (V : E3 → Set E3) (W : Finset E3 → Set E3) :
-    Prop :=
-  ∀ e ∈ K.faces, e.card = 2 →
-    IsClosed (W e) ∧ h '' (D e \ Dbd e) \ {h (e.centroid ℝ id)} ⊆ interior (W e) ∧
-    W e ∩ h '' K.space = {h (e.centroid ℝ id)} ∧
-    (∀ u ∈ e, ∀ v ∈ e, u ≠ v → W e ⊆ h '' C u ∪ h '' C v ∧
-      W e ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd e) ∧
-    (∀ v ∈ e, IsConnected (h '' C v \ W e) ∧ W e ⊆ V v) ∧
-    ∀ f ∈ K.faces, f.card = 2 → e ≠ f → Disjoint (W e) (W f)
-
-def handlePiece (K : Geometry.SimplicialComplex ℝ E3) (N' : Set E3) (Ec : Finset E3 → Set E3)
-    (h : E3 → E3) (v : E3) : Set E3 :=
-  closure (connectedComponentIn
-    (N' \ ⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) (h v))
-
-def CrossesPseudoCell (F Ec Eint : Set E3) (P : E3) : Prop :=
-  ∃ (n : ℕ) (G : Fin n → Set E3), (∀ i, IsPLSphere 1 (G i)) ∧
-    Pairwise (fun i j => Disjoint (G i) (G j)) ∧ F ∩ Ec = ⋃ i, G i ∧
-    (⋃ i, G i) ⊆ Eint \ {P} ∧ ∀ x ∈ F ∩ Ec, HasPLCrossingAt F Ec x
-
-end Vocabulary
-
-section TubeFacts
-
-variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
-  {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {v : E3}
-
-theorem IsTube.mem_interior_dualCell (ht : IsTube K N C D Dbd h N') (hv : v ∈ K.vertices) :
-    v ∈ interior (C v) := by
-  have hfin : K.vertices.Finite :=
-    Set.Finite.preimage Finset.singleton_injective.injOn ht.facesFinite
-  have hclosed : IsClosed (⋃ w ∈ K.vertices \ {v}, C w) :=
-    (hfin.subset sdiff_subset).isClosed_biUnion fun w hw =>
-      (ht.dualBall w hw.1).isPolyhedron.isClosed
-  have hN : N ∈ 𝓝 v :=
-    mem_nhdsSet_iff_forall.mp ht.isNeighborhood v
-      (Geometry.SimplicialComplex.vertices_subset_space hv)
-  have hU : interior N \ ⋃ w ∈ K.vertices \ {v}, C w ∈ 𝓝 v := by
-    refine (isOpen_interior.sdiff hclosed).mem_nhds ⟨mem_interior_iff_mem_nhds.mpr hN, ?_⟩
-    intro hmem
-    obtain ⟨w, hw, hvw⟩ := mem_iUnion₂.mp hmem
-    have hvw' : v ∈ C w ∩ K.vertices := ⟨hvw, hv⟩
-    rw [ht.dualVertex hw.1] at hvw'
-    exact hw.2 (mem_singleton_iff.mpr (mem_singleton_iff.mp hvw').symm)
-  refine mem_interior_iff_mem_nhds.mpr (Filter.mem_of_superset hU ?_)
-  rintro x ⟨hxN, hxU⟩
-  have hxN' : x ∈ N := interior_subset hxN
-  rw [ht.unionEq] at hxN'
-  obtain ⟨w, hw, hxw⟩ := mem_iUnion₂.mp hxN'
-  by_cases hwv : w = v
-  · exact hwv ▸ hxw
-  · exact absurd (mem_iUnion₂.mpr ⟨w, ⟨hw, fun hw' => hwv (mem_singleton_iff.mp hw')⟩, hxw⟩) hxU
-
-end TubeFacts
 
 section Leaves
 
@@ -417,14 +250,6 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
         ∃ U ∈ 𝓝 x, ∃ n₀ : ℕ, ∀ n ≥ n₀, M n ∩ U = annularChain H B P' ∩ U := by
   sorry
 
-theorem separates_of_locally_eventually_eq {X : Type*} [TopologicalSpace X]
-    [LocallyPathConnectedSpace X] {M : ℕ → Set X} {L H K : Set X} {p : X}
-    (hM : ∀ n, IsClosed (M n)) (hsep : ∀ n, Separates (M n) H K) (hp : ∀ n, p ∈ M n)
-    (hH : IsPreconnected H) (hK : IsPreconnected K) (hL : IsClosed L) (hpL : p ∈ L)
-    (hloc : ∀ x, x ≠ p → ∃ U ∈ 𝓝 x, ∃ n₀ : ℕ, ∀ n ≥ n₀, M n ∩ U = L ∩ U) :
-    Separates L H K := by
-  sorry
-
 open Classical in
 theorem isOpenTopologicalCell_annularChain (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
     (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
@@ -451,10 +276,6 @@ theorem exists_compact_connected_to_freeFace (ht : IsTube K N C D Dbd h N')
       Disjoint Bv (h '' D e) ∧
       (Bv ∩ h '' ((frontier (C v) ∩ frontier N) \
         ⋃ f ∈ {f : Finset E3 | f ∈ K.faces ∧ f.card = 2 ∧ v ∈ f}, Dbd f)).Nonempty := by
-  sorry
-
-theorem isTopologicalSphere_image_splitRim (ht : IsTube K N C D Dbd h N') {e : Finset E3}
-    (he : e ∈ K.faces) (hc : e.card = 2) : IsTopologicalSphere 1 (h '' Dbd e) := by
   sorry
 
 open Classical in
@@ -654,22 +475,6 @@ theorem moise321 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
     moise322 h307 h303 h286 h267 h314 K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub
       hWfr hWK
   exact ⟨Ec, Eint, Ebd, hpc, hbd, hsub, hsep, hK⟩
-
-open Classical in
-theorem Moise322.exists_splitsDualCellsAlong (h322 : Moise322)
-    {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
-    {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3}
-    (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
-    (he : ({u, v} : Finset E3) ∈ K.faces) (hW : IsClosed W)
-    (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset E3).centroid ℝ id)} ⊆
-      interior W)
-    (hWsub : W ⊆ h '' C u ∪ h '' C v)
-    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
-    (hWK : W ∩ h '' K.space = {h (({u, v} : Finset E3).centroid ℝ id)}) :
-    ∃ Ec Eint Ebd : Set E3, SplitsDualCellsAlong K N C Dbd h W Ec Eint Ebd u v := by
-  obtain ⟨Ec, Eint, Ebd, U₁, U₂, hpc, hbd, hsub, hsep, hK, hU⟩ :=
-    h322 K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub hWfr hWK
-  exact ⟨Ec, Eint, Ebd, hpc, hbd, hsub, hsep, hK, U₁, U₂, hU⟩
 
 open Classical in
 theorem moise323 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : Moise267)
