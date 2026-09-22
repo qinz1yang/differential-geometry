@@ -10,6 +10,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceInteriorFrontierOpen
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceInteriorFrontierContact
 import DifferentialGeometry.Topology.PiecewiseLinear.TriodFrontierWitnesses
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsTriodChartAtCommonBoundary
 
 /-!
 # Three polyhedral surfaces with a common boundary
@@ -61,6 +62,15 @@ Proved and imported on 2026-09-22 (Gemini batch, lead-accepted with zero-diagnos
 axiom audit; statements byte-identical with the frozen leaves):
 `isOpen_preimage_frontier_component_surface_interior`, `exists_surface_interior_frontier_contact`,
 `exists_frontier_pair_witnesses_of_triod_chart`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_triod_chart_at_common_boundary` (a boundary point that is a vertex of none of the three
+surfaces; the existing `exists_isPLHomeomorphOn_straighten_rays`). With this the file has no
+`sorry` left: the assembly `moise267` is a real proof, and the module is ready to be promoted out
+of `Skeleton/`. Note the `DecidableEq` mismatch on `EuclideanSpace ℝ (Fin 3)`: `boundaryComplex`
+in these statements uses the `WithLp` instance, not the classical one, so generic `open Classical`
+lemmas must swap the instance.
 -/
 
 open Set Topology
@@ -68,26 +78,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
-
-open Classical in
-theorem exists_triod_chart_at_common_boundary
-    (M : Fin 3 → Geometry.SimplicialComplex ℝ E3)
-    (hfin : ∀ i, (M i).faces.Finite)
-    (hM : ∀ i, IsCombinatorialManifoldWithBoundary 2 (M i))
-    (hboundary : ∀ i j, (boundaryComplex 2 (M i)).space =
-      (boundaryComplex 2 (M j)).space)
-    (hne : (boundaryComplex 2 (M 0)).space.Nonempty)
-    (hdisjoint : ∀ i j, i ≠ j →
-      Disjoint ((M i).space \ (boundaryComplex 2 (M i)).space)
-        ((M j).space \ (boundaryComplex 2 (M j)).space)) :
-    ∃ (p : E3) (e : OpenPartialHomeomorph E3 E3),
-      p ∈ (boundaryComplex 2 (M 0)).space ∧ p ∈ e.source ∧ e p = 0 ∧
-        IsPLHomeomorphOn e e.source e.target ∧
-        ∀ i, ∀ z ∈ e.source, z ∈ (M i).space ↔
-          e z ∈ (![{w : E3 | w 1 = 0 ∧ 0 ≤ w 0},
-            {w : E3 | w 1 = 0 ∧ w 0 ≤ 0},
-            {w : E3 | w 0 = 0 ∧ 0 ≤ w 1}] : Fin 3 → Set E3) i := by
-  sorry
 
 private theorem isBounded_component_of_not_mem_unbounded_component
     (K : Geometry.SimplicialComplex ℝ E3) [Finite K.faces]

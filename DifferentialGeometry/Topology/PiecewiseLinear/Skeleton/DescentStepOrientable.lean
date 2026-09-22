@@ -11,6 +11,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNes
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossQuarterTurn
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealization
 
 /-!
 # Sorry-first skeleton of the orientable descent step
@@ -109,6 +110,10 @@ producer.  Both leaves share one inheritance lemma.
 Proved and imported on 2026-09-22 (Gemini batch, lead-accepted with zero-diagnostic checks and an
 axiom audit; statements byte-identical with the frozen leaves):
 `nonempty_plSeamTubeChart_comp_crossQuarterTurn`.
+
+Proved and imported on 2026-09-22 (Gemini batch G084, lead-accepted with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf):
+`NormalSystem.exists_boundaryNeighborhood_realization`.
 -/
 
 open Set Topology
@@ -136,27 +141,6 @@ theorem isPLBoundaryTubeProducer_double
     letI := combinatorialChartedSpace (double 3 K)
       (isCombinatorialManifold_double_succ_succ K hK)
     IsPLBoundaryTubeProducer (double 3 K).space := by
-  sorry
-
-open Classical in
-theorem NormalSystem.exists_boundaryNeighborhood_realization
-    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (S : NormalSystem E) :
-    letI : Finite S.manifoldComplex.faces := S.manifoldComplex_faces_finite.to_subtype
-    letI := combinatorialChartedSpace (double 3 S.manifoldComplex)
-      (isCombinatorialManifold_double_succ_succ S.manifoldComplex S.isManifold)
-    let ι := simplicialMap S.manifoldComplex
-      (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 S.manifoldComplex) id)
-    let B := ((↑) : (double 3 S.manifoldComplex).space → E × E × ℝ) ⁻¹'
-      (ι '' S.boundaryNeighborhood.space)
-    ∀ {D : SingularTwoCell (double 3 S.manifoldComplex).space},
-      Set.range D.boundary ⊆ B →
-      ∃ (ρ : S.boundaryNeighborhoodSpace → (double 3 S.manifoldComplex).space)
-        (f : frontier D.domain → S.boundaryNeighborhoodSpace),
-        IsEmbedding ρ ∧ B ⊆ Set.range ρ ∧ Continuous f ∧
-          (∀ y : S.boundaryNeighborhoodSpace,
-            ((ρ y : (double 3 S.manifoldComplex).space) : E × E × ℝ) = ι (y : E)) ∧
-          ∀ z : frontier D.domain, ρ (f z) = D z := by
   sorry
 
 namespace NormalSingularCellData

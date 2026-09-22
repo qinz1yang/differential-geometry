@@ -230,3 +230,31 @@ Bash is for mirroring only. Explicit-path commits; no force-push or history rewr
 Preserve dirty S/H handoff and CrossRegluedSource files, all other lanes' untracked modules,
 F's WIPs, and live FILL_LOG. The original PDF remains
 `D:\differential-geometry-moise-plan\.lake\scratch\moise_gtm47.pdf`.
+
+## Afternoon session, 2026-09-22 (the original lead resumed; owner offline ~5 h)
+
+* Accepted the Gemini batch's five self-checked modules (G002–G006, G013) and wired six leaves:
+  `Section26ThreeSurfaces` 4 → 1, `Section30Torus` 7 → 5, `DescentStepOrientable` 7 → 6 (the
+  skeleton's 20 local `crossQuarterTurn` declarations were an exact vocabulary move into
+  `LoopTheorem/CrossQuarterTurn.lean` and were deleted). Commit `51ca8cfde`.
+* F15 (`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock`): F's FALSE record verified
+  (non-Hausdorff double, no `T2Space` binder); `[T2Space M]` added to the leaf and its caller;
+  commit `ca345c4c8`. F may resume entry 15 on the repaired statement.
+* Opus 5.5 fill workers (model `opus` now resolves to Claude Opus 5.5) on the leaves Gemini
+  marked BLOCKED, one new module per leaf, logs `Skeleton/OPUS_FILL_LOG_{B,C,D,E}.md`:
+  b — Section30Torus G014/G015/G016; c — G007 (cylindrical-diagram bridge), G025 (annulus
+  parametrisation, needs an n-point circle cut), G012 (triod chart); e — P0's G010/G011 and
+  §32's G008; d — §32's G030/G031/G032/G033 (lease d used only because Gemini is idle and the
+  owner is offline; when Gemini resumes, its queue must exclude every G-id above).
+* Acceptance of each worker delivery: zero-diagnostic check on the freed lease, axiom audit
+  (`mkaudit.py`), statement byte-identity against the skeleton leaf, name uniqueness, aggregate
+  import, skeleton wiring, ledger, explicit-path commit, mirror sync. Then re-dispatch.
+* 14:20 — Gemini turned out to be running a second pass and committing directly on the branch
+  (module + its log only; never skeletons/aggregate/ledger). Its G084/G089/G091/G092 were
+  accepted and wired (A1 14 → 11, descent 6 → 5). My worker d was stopped (lease d is Gemini's).
+  Opus worker c closed all three of its Gemini-BLOCKED leaves in 53 min (two Gemini blockers
+  were false, one was a missing helper): §31 bridge, §28 annulus parametrisation, §26 triod chart
+  — `Section26ThreeSurfaces` now has **no `sorry`** (`moise267` is a real proof; promote it out of
+  `Skeleton/`). Lead acceptance compiles run on lease a while F is idle (owner offline).
+  Pitfalls met: an `import` line inserted after a docstring line beginning with "import"; an
+  import name over 100 characters (module renamed `CombinatorialSolidTorusOfCylindricalDiagram`).

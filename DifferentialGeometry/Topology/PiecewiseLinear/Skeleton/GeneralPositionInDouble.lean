@@ -7,6 +7,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
 import DifferentialGeometry.Topology.PiecewiseLinear.DoublePointFibreAgreement
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPositionInDoubleAssembly
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffered
+import DifferentialGeometry.Topology.PiecewiseLinear.DoubleHalfSpaceChart
+import DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOverlap
+import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
 
 /-!
 # Sorry-first skeleton of general position in the double
@@ -269,6 +272,16 @@ whose walls contain the crossing points of `γ`, a frozen outer collar and a non
 perturbation of the free vertices satisfy every hypothesis of every new leaf, with a non-empty
 double point set, a non-empty block family, free interior germs along the interior of the
 crossing arc and free boundary germs where that arc meets `BdM`.
+
+Proved and imported on 2026-09-22 (Gemini batch G089/G092, lead-accepted with zero-diagnostic
+checks and an axiom audit; statements byte-identical with the frozen leaves, the transition-
+subdivision one up to the explicit `{M : Type*}` binder that the skeleton takes from its
+`variable` line): `exists_adaptedHalfSpaceChart_in_double`,
+`exists_transitionSubdivisionOnOverlap`.
+
+Also proved and imported (Gemini batch G091, lead-accepted 2026-09-22):
+`exists_gluedCell_of_vertexMap_in_adaptedChart`, as a proved generalisation without the `[T2Space
+M]` instance argument, of which the frozen leaf is a special case.
 -/
 
 open Set Topology
@@ -276,25 +289,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
-
-open Classical in
-theorem exists_adaptedHalfSpaceChart_in_double {E : Type} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E)
-    [Finite K.faces] (hK : IsCombinatorialManifoldWithBoundary 3 K) :
-    letI := combinatorialChartedSpace (double 3 K)
-      (isCombinatorialManifold_double_succ_succ K hK)
-    let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
-    let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
-    let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-      (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
-    ∀ (y : (double 3 K).space) (U : Set (double 3 K).space), U ∈ 𝓝 y →
-      ∃ (ec : OpenPartialHomeomorph (double 3 K).space (EuclideanSpace ℝ (Fin 3)))
-        (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ),
-        ec ∈ (plGroupoid 3).maximalAtlas (double 3 K).space ∧ ℓ ≠ 0 ∧
-          y ∈ ec.source ∧ ec.source ⊆ U ∧
-          (∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x)) ∧
-          (∀ x ∈ ec.source, x ∈ Bd ↔ ℓ (ec x) = 0) := by
-  sorry
 
 def UniformInjectivityScale {α : Type*} [PseudoMetricSpace α] {β : Type*} (S : Set α)
     (f : α → β) (η : ℝ) : Prop :=
@@ -420,27 +414,6 @@ theorem SingularTwoCell.exists_cutOutPiece_of_closure_subset [T2Space M] (D : Si
         IsOpen Ω ∧ D.domain ∩ ⇑D ⁻¹' closure V₀ ⊆ Ω ∧ D.domain ∩ Ω ⊆ Rc.space ∧
         IsOpen Nb ∧ Rc.space \ Ω ⊆ Nb ∧ Rc.space ∩ Nb ⊆ Ac.space ∧
         Disjoint Ac.space (⇑D ⁻¹' closure V₀) := by
-  sorry
-
-theorem exists_gluedCell_of_vertexMap_in_adaptedChart [T2Space M] (D : SingularTwoCell M)
-    {V : Set M} (hVopen : IsOpen V)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (hec : ec ∈ (plGroupoid 3).maximalAtlas M) (hVec : V ⊆ ec.source)
-    (Rc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
-    (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
-    (hAR : Ac.faces ⊆ Rc.faces) (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hΩ : IsOpen Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb)
-    (hNbfr : Rc.space \ Ω ⊆ Nb) (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
-    (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
-    (hsub : IsSubdivision Rs Rc) (hRsfin : Rs.faces.Finite)
-    (hfrozen : EqOn (simplicialMap Rs φ) (fun x => ec (D x)) Ac.space)
-    (hpl : IsPiecewiseAffineOn (simplicialMap Rs φ) Rc.space)
-    (hmaps : MapsTo (simplicialMap Rs φ) Rc.space (⇑ec '' V)) :
-    ∃ D' : SingularTwoCell M, D'.domain = D.domain ∧
-      EqOn (⇑D') (fun x => ec.symm (simplicialMap Rs φ x)) Rc.space ∧
-      EqOn (⇑D') (⇑D) Rc.spaceᶜ := by
   sorry
 
 def FreeSourceGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
@@ -1454,18 +1427,6 @@ theorem exists_sheets_of_hasWallProductBlocks {f : EuclideanSpace ℝ (Fin 2) �
   obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblk hy.1
     (chartBlock_mono_of_half (ec i) A (le_of_lt hr0) ht hi)
   exact ⟨SA, SB, hdisj, hA, hB⟩
-
-theorem exists_transitionSubdivisionOnOverlap
-    (ec ec' : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (hec : ec ∈ (plGroupoid 3).maximalAtlas M) (hec' : ec' ∈ (plGroupoid 3).maximalAtlas M)
-    (N : Set M) (hN : IsCompact N) (hNec : N ⊆ ec.source) (hNec' : N ⊆ ec'.source) :
-    ∃ Q : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
-      Q.faces.Finite ∧ ⇑ec '' N ⊆ interior Q.space ∧
-        Q.space ⊆ ⇑ec '' (ec.source ∩ ec'.source) ∧
-        ∀ s ∈ Q.faces, ∃ A : EuclideanSpace ℝ (Fin 3) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
-          EqOn (fun z => ec' (ec.symm z)) A
-            (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))) := by
-  sorry
 
 theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock [T2Space M] (D : SingularTwoCell M)
     {BdM : Set M} (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))

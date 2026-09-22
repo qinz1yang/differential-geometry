@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsAnnulusParametrizationOfProductCircleCut
 
 /-!
 # A producer skeleton for annuli between essential polygons on a solid torus
@@ -63,6 +64,11 @@ The `n = 2` case and arbitrary label order are retained.
 
 The assembly is proved from the two leaves. Its transitive axiom closure still contains
 `sorryAx`; the named input remains open until both reviewed producers are proved in real modules.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_annulus_parametrization_of_product_circle_cut`, with the new helper
+`IsPLSphere.exists_arc_between_adjacent_marks`.
 -/
 
 open Set Topology
@@ -82,19 +88,6 @@ theorem exists_product_coordinates_for_disjoint_essential_polygons
     ∃ (J Q : Set E3) (f : E3 × E3 → E3) (q : Fin n → E3),
       IsPLSphere 1 J ∧ IsPLSphere 1 Q ∧ IsPLHomeomorphOn f (J ×ˢ Q) (frontier S) ∧
       (∀ i, q i ∈ Q) ∧ Function.Injective q ∧ ∀ i, G i = f '' (J ×ˢ {q i}) := by
-  sorry
-
-theorem exists_annulus_parametrization_of_product_circle_cut
-    {J Q X : Set E3} (hJ : IsPLSphere 1 J) (hQ : IsPLSphere 1 Q)
-    {f : E3 × E3 → E3} (hf : IsPLHomeomorphOn f (J ×ˢ Q) X)
-    {n : ℕ} (hn : 1 < n) (q : Fin n → E3) (hq : ∀ i, q i ∈ Q)
-    (hinj : Function.Injective q) {x : E3}
-    (hx : x ∈ X \ (⋃ i, f '' (J ×ˢ {q i}))) :
-    ∃ i j : Fin n, i ≠ j ∧ ∃ ρ : E3 × ℝ → E3,
-      IsPLHomeomorphOn ρ (J ×ˢ Icc (0 : ℝ) 1)
-        (closure (connectedComponentIn (X \ ⋃ k, f '' (J ×ˢ {q k})) x)) ∧
-      f '' (J ×ˢ {q i}) = ρ '' (J ×ˢ {(0 : ℝ)}) ∧
-      f '' (J ×ˢ {q j}) = ρ '' (J ×ˢ {(1 : ℝ)}) := by
   sorry
 
 theorem moise286 : Moise286 := by

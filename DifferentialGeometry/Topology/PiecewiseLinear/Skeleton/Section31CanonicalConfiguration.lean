@@ -14,6 +14,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusGeneralPosition
 import DifferentialGeometry.Topology.VanKampen.CellAttachmentFundamentalGroup
 import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Analysis.Normed.Module.Connected
+import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorusOfCylindricalDiagram
 
 /-!
 # Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
@@ -167,6 +168,13 @@ import all four theorems.  To be hoisted into real modules when the leaves are p
 `fundamentalGroup_map_inclusion_bijective_of_isSpine_of_subset_interior`,
 `fundamentalGroup_map_inclusion_transfer`, `fundamentalGroup_map_inclusion_transfer_pair`,
 `polygon_dichotomy_of_carrier`, `isRevolvedTorusChain_of_isPlanarCellChain`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf):
+`isCombinatorialSolidTorus_of_hasCylindricalDiagram` (module
+`CombinatorialSolidTorusOfCylindricalDiagram`), through the general
+`IsCylindricalDiagram.isCombinatorialSolidTorus` (three slabs; orientability from
+`isOrientable_of_space_subset_convexHull`).
 -/
 
 open Set Topology
@@ -390,10 +398,6 @@ theorem exists_innerSolidTorus_toroidalShell_of_annulusImage
     ∃ S₁ : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalSolidTorus S₁ ∧
       h '' A j ⊆ interior S₁ ∧ S₁ ⊆ interior (h '' S j) ∧
       IsToroidalShell (closure (h '' S j \ S₁)) (frontier S₁) (frontier (h '' S j)) := by
-  sorry
-
-theorem isCombinatorialSolidTorus_of_hasCylindricalDiagram {S : Set (EuclideanSpace ℝ (Fin 3))}
-    (hS : HasCylindricalDiagram S) : IsCombinatorialSolidTorus S := by
   sorry
 
 theorem exists_generalPosition_solidTorus_relative {A U S₀ : Set (EuclideanSpace ℝ (Fin 3))}
