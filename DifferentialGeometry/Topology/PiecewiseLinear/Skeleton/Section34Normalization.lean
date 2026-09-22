@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.Homology.Integral
+import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 
@@ -13,7 +15,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
 
 The assembly `section34NormalFamily` proves the endpoint `Section34NormalFamilyStatement` for
-real from seven of the eight leaves of this file; every `sorry` is a leaf and none sits inside
+real from five of the six leaves of this file; every `sorry` is a leaf and none sits inside
 an assembly.  The endpoint is stated so that it matches, binder for binder, the frozen leaf
 `exists_section34NormalFamily` of the terminal skeleton, whose hypotheses are
 `[Nonempty M₁] [T2Space M₁] [SecondCountableTopology M₁] [SecondCountableTopology M₂]`,
@@ -138,14 +140,14 @@ carriers `H` are locally finite in `h '' U` by `Section34CarrierControl`.
 
 The leaves.
 
-`IsPLHomeomorphInto.mono_of_isPLCellOn` (short, OK, frozen): a piecewise linear embedding of a
-set restricts to a piecewise linear embedding of a piecewise linear cell inside it; a cell is a
-restrictable local polyhedron in both directions.  Used twice, for conjuncts eight and nine,
-through `IsPLCellOn.image`.
+`IsPLHomeomorphInto.mono_of_isPLCellOn` is proved in
+`IsPLHomeomorphIntoMonoOfIsPLCellOn.lean`, with the frozen statement unchanged.  A piecewise
+linear embedding restricts to a contained piecewise linear cell.  It is used twice, for
+conjuncts eight and nine, through `IsPLCellOn.image`.
 
-`exists_splitDisk_src_eq_inter_vertexBall` (short, OK, frozen): two distinct dual balls of the
-source cut diagram that meet, meet in a splitting disk of the diagram.  Derivable as explained
-above; it is what conjunct eleven of `Section34NormalPlus` needs.
+`exists_splitDisk_src_eq_inter_vertexBall` is proved in `Section34SplitDiskIntersection.lean`:
+two distinct dual balls that meet, meet in a splitting disk.  The explicit statement is
+unchanged; the unused finite-dimensional instance is omitted.  It supplies conjunct eleven.
 
 `exists_section34FaceBalls` (P3, Lemmas 3--5, deep, repaired): the initial family `C_σ`, one
 closed piecewise linear `3`-ball per `2`-simplex, with Lemma 5 in manifold form as
@@ -454,20 +456,6 @@ theorem nonempty_section34FaceTorus
     omega
   obtain ⟨x, hx⟩ := nonempty_simplexRim (𝒦 := 𝒦) hcard
   exact ⟨h x, interior_subset (hrim s ⟨x, hx, rfl⟩)⟩
-
-theorem IsPLHomeomorphInto.mono_of_isPLCellOn {d : ℕ} {Z S B : Set M₁} {G : M₁ → M₂}
-    (hG : IsPLHomeomorphInto 3 G Z) (hS : IsPLCellOn d S B) (hSZ : S ⊆ Z) :
-    IsPLHomeomorphInto 3 G S := by
-  sorry
-
-theorem exists_splitDisk_src_eq_inter_vertexBall
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd) {w w' : Section34VertexIndex 𝒦 𝒦'}
-    (hww : w ≠ w')
-    (hmeet : (src (Section34Label.vertexBall w) ∩
-      src (Section34Label.vertexBall w')).Nonempty) :
-    ∃ e : Section34EdgeIndex 𝒦 𝒦', src (Section34Label.splitDisk e) =
-      src (Section34Label.vertexBall w) ∩ src (Section34Label.vertexBall w') := by
-  sorry
 
 theorem exists_section34FaceBalls (h305 : Moise305Tame) (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))

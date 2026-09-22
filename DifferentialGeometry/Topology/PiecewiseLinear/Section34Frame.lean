@@ -73,9 +73,9 @@ by the terminal assembly; `Section34CutLe` is the reflexive transitive closure o
 codimension-one incidences `Section34CutStep` read off the boundary formulas
 `∂C_v = ⋃_{e ∋ v} D_e ∪ ⋃_{t ∋ v} X_{tv}`, `∂Q_t = ⋃_{σ < t} d_σ ∪ ⋃_{v ∈ t} X_{tv}`,
 `∂D_e = ⋃_{t > e} I_{te}`, `∂d_σ = ⋃_{v ∈ σ} a_{vσ}`, `∂X_{tv}`, `∂I_{te}`,
-`∂a_{vσ} = ⋃ p_{σe}`.  That the two agree on the source cut is an obligation on the producer of
-the cut, not a consequence of the cut frame: nothing in the cut frame forbids a face disk from
-lying inside a dual ball.
+`∂a_{vσ} = ⋃ p_{σe}`.  Agreement of these relations remains a separate producer obligation.
+The incidence and dimension clauses do rule out a face disk inside a dual ball;
+`Section34SplitDiskIntersection` derives the splitting-disk intersection of two dual balls.
 
 `Section34NormalPlus` is the configuration after step P5.  Its last conjunct is the
 impossibility of Operation 2 with the bigon pinned to the data of page 242: an arc `B` of the

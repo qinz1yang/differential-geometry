@@ -9232,6 +9232,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierSupportLocallyFinite
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellLocallyFiniteCover
+import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 /-!
 # Differential geometry and geometric analysis
 -/
