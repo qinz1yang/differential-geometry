@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeTranslation
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 
@@ -237,6 +238,21 @@ theorem exists_closedSlab_of_metric (P : OrientedThreeStage.{u}) (g : P.Metric) 
   exact ⟨b, hab,
     OrientedThreeStage.ClosedSlab.ofClosedOpen P had Q.solution Q.isSolution hjoint hab hbd,
     hinit⟩
+
+theorem exists_closedSlab_duration_uniform_start_time
+    (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ a : ℝ,
+      ∃ S : P.ClosedSlab a (a + δ), S.flow.base.metric a = g := by
+  obtain ⟨δ, hδ, S, hS⟩ := exists_closedSlab_of_metric P g 0
+  refine ⟨δ, hδ, fun a => ?_⟩
+  have h : ∃ S' : P.ClosedSlab (0 + a) (δ + a),
+      S'.flow.base.metric a = g := by
+    refine ⟨S.timeTranslate a, ?_⟩
+    rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric, sub_self]
+    exact hS
+  rw [zero_add, add_comm δ a] at h
+  exact h
+
 
 theorem exists_incomingSlab_of_metric (P : OrientedThreeStage.{u}) (g : P.Metric) (a : ℝ) :
     ∃ s : ℝ, a < s ∧ Nonempty (P.IncomingSlab a s) := by

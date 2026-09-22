@@ -42,7 +42,8 @@ noncomputable def metricCovariantDerivativeComparisonConstant (q₂ p : ℕ) : R
     p q₂
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem metric_covariant_derivative_comparison_constant_nonneg (q₂ p : ℕ) : 0 ≤ metricCovariantDerivativeComparisonConstant (E := E) q₂ p := by
+theorem metric_covariant_derivative_comparison_constant_nonneg (q₂ p : ℕ) :
+    0 ≤ metricCovariantDerivativeComparisonConstant (E := E) q₂ p := by
   apply iterated_recurrence_constant_nonneg
   intro c
   exact inverse_contraction_recurrence_constant_nonneg (by positivity : (0 : Real) ≤ 4 ^ (2 + p)) c
@@ -125,7 +126,8 @@ theorem iterated_covariant_derivative_norm_comparison_bound
       (fun s A => hcomp z (hwsub hz) hz.1 s A)
       (1 + eps) (by linarith) (by linarith)
       (hequiv z hz.2) p j hjp heps0 (hgK z hz.2 j (by omega) hjp)
-  have hcompF3 := iterated_covariant_derivative_comparison_bound hwopen g gRef frame hframe hframeS hchrG hchrH
+  have hcompF3 := iterated_covariant_derivative_comparison_bound
+    hwopen g gRef frame hframe hframeS hchrG hchrH
     hgsm (frameComp0S (I := I) T frame) hTsm
     (ginvCompField (I := I) e₀ g basisE) hinv C0 L eps hL0 heps0 heps1 hGinv p hgKcomp
   have hON' : ∀ i j : Fin (Module.finrank Real E),
@@ -145,8 +147,10 @@ theorem iterated_covariant_derivative_norm_comparison_bound
       hwopen g gRef T frame hframe hxw hinvON eps
       (metricCovariantDerivativeComparisonConstant (E := E) q₂ p) s
     simpa only [metricCovariantDerivativeComparisonConstant, C0, L] using hcompF3 x hxw s hs0 hsp
-  exact covariant_derivative_norm_comparison_of_intrinsic_metric_equivalence g gRef T p (x := x) (C := 1 + eps)
-    (by linarith) (hequiv x hx) eps (metricCovariantDerivativeComparisonConstant (E := E) q₂ p) heps0
+  exact covariant_derivative_norm_comparison_of_intrinsic_metric_equivalence
+    g gRef T p (x := x) (C := 1 + eps)
+    (by linarith) (hequiv x hx) eps
+    (metricCovariantDerivativeComparisonConstant (E := E) q₂ p) heps0
     (metric_covariant_derivative_comparison_constant_nonneg (E := E) q₂ p) hF3 r hr0 hrp
 
 omit [I.Boundaryless] in
@@ -409,13 +413,15 @@ theorem metric_deriv_norm_reference_change_le
           intro k hk
           exact hbase k (Nat.le_trans (Nat.le_of_lt (Finset.mem_range.mp hk)) hqp)
         _ = (q : ℝ) * (2 * δ) := by simp
-    have hC : 0 ≤ metricCovariantDerivativeComparisonConstant (E := E) 2 p := metric_covariant_derivative_comparison_constant_nonneg (E := E) 2 p
+    have hC : 0 ≤ metricCovariantDerivativeComparisonConstant (E := E) 2 p :=
+      metric_covariant_derivative_comparison_constant_nonneg (E := E) 2 p
     have hinside : metricDerivNorm (I := I) q A gInf gBase x +
           metricCovariantDerivativeComparisonConstant (E := E) 2 p *
             (∑ k ∈ Finset.range q, metricDerivNorm (I := I) k A gInf gBase x) ≤
         (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ)) * δ := by
       calc
-        _ ≤ 2 * δ + metricCovariantDerivativeComparisonConstant (E := E) 2 p * ((q : ℝ) * (2 * δ)) :=
+        _ ≤ 2 * δ + metricCovariantDerivativeComparisonConstant (E := E) 2 p *
+            ((q : ℝ) * (2 * δ)) :=
           add_le_add (hbase q hqp) (mul_le_mul_of_nonneg_left hsum hC)
         _ = _ := by ring
     calc
@@ -429,7 +435,8 @@ theorem metric_deriv_norm_reference_change_le
           ((2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ)) * δ) :=
         mul_le_mul_of_nonneg_left hinside (Real.sqrt_nonneg _)
       _ = (Real.sqrt ((2 : ℝ) ^ (2 + q)) *
-          (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ))) * δ := by ring
+          (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p *
+            (q : ℝ))) * δ := by ring
       _ ≤ metricReferenceChangeFactor (E := E) p * δ :=
         mul_le_mul_of_nonneg_right (metric_reference_change_term_le_factor (E := E) p q hqp) hδ0
       _ ≤ ε := hδbudget
@@ -457,7 +464,8 @@ theorem exists_iterated_covariant_derivative_norm_comparison_bound
             eps * Cc * ∑ k ∈ Finset.range r,
               Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (q₂ + k)
                 (iterCov (I := I) gRef q₂ T k x))) := by
-  refine ⟨metricCovariantDerivativeComparisonConstant (E := E) q₂ p, metric_covariant_derivative_comparison_constant_nonneg (E := E) q₂ p, ?_⟩
+  refine ⟨metricCovariantDerivativeComparisonConstant (E := E) q₂ p,
+    metric_covariant_derivative_comparison_constant_nonneg (E := E) q₂ p, ?_⟩
   exact iterated_covariant_derivative_norm_comparison_bound hu g gRef T p eps heps0 heps1 hequiv hgK
 
 omit [I.Boundaryless] in
@@ -488,7 +496,8 @@ theorem exists_uniform_iterated_covariant_derivative_norm_comparison_bound (q₂
                 eps * Cc * ∑ k ∈ Finset.range r,
                   Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (q₂ + k)
                     (iterCov (I := I) gRef q₂ T k x))) := by
-  refine ⟨metricCovariantDerivativeComparisonConstant (E := E) q₂ p, metric_covariant_derivative_comparison_constant_nonneg (E := E) q₂ p, ?_⟩
+  refine ⟨metricCovariantDerivativeComparisonConstant (E := E) q₂ p,
+    metric_covariant_derivative_comparison_constant_nonneg (E := E) q₂ p, ?_⟩
   intro M' instTop instChart instT2 instMan instSigma instMan1 instMan2 instManSucc
     u hu g gRef T eps heps0 heps1 hequiv hgK
   exact iterated_covariant_derivative_norm_comparison_bound hu g gRef T p eps heps0 heps1 hequiv hgK
@@ -515,17 +524,17 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
 
-theorem exists_iterated_covariant_derivative_norm_comparison
-    {q₂ : ℕ} {u : Set M} (hu : IsOpen u)
-    (g gRef : SmoothRiemannianMetric I M) (p : ℕ)
-    {C B : ℝ} (hC : 1 ≤ C) (hB : 0 ≤ B)
-    (hequiv : ∀ x ∈ u, ∀ v : TangentSpace I x,
-      C⁻¹ * gRef.inner x v v ≤ g.inner x v v ∧
-        g.inner x v v ≤ C * gRef.inner x v v)
-    (hgK : ∀ x ∈ u, ∀ j : ℕ, 1 ≤ j → j ≤ p →
-      Real.sqrt (normSq0S g x (2 + j)
-        (iterCov gRef 2 (metricTensorField g) j x)) ≤ B) :
-    ∃ Cc : ℝ, 0 ≤ Cc ∧ ∀ T : Tensor0SField (I := I) (M := M) ∞ q₂,
+theorem exists_uniform_iterated_covariant_derivative_norm_comparison
+    (q₂ p : ℕ) {C B : ℝ} (hC : 1 ≤ C) (hB : 0 ≤ B) :
+    ∃ Cc : ℝ, 0 ≤ Cc ∧ ∀ (u : Set M), IsOpen u →
+      ∀ (g gRef : SmoothRiemannianMetric I M),
+      (∀ x ∈ u, ∀ v : TangentSpace I x,
+        C⁻¹ * gRef.inner x v v ≤ g.inner x v v ∧
+          g.inner x v v ≤ C * gRef.inner x v v) →
+      (∀ x ∈ u, ∀ j : ℕ, 1 ≤ j → j ≤ p →
+        Real.sqrt (normSq0S g x (2 + j)
+          (iterCov gRef 2 (metricTensorField g) j x)) ≤ B) →
+      ∀ T : Tensor0SField (I := I) (M := M) ∞ q₂,
       ∀ x ∈ u, ∀ r : ℕ, 0 < r → r ≤ p →
         Real.sqrt (normSq0S g x (q₂ + r) (iterCov g q₂ T r x)) ≤
           Real.sqrt (C ^ (q₂ + r)) *
@@ -542,7 +551,7 @@ theorem exists_iterated_covariant_derivative_norm_comparison
   have hCc : 0 ≤ Cc := iterated_recurrence_constant_nonneg
     (fun c => inverse_contraction_recurrence_constant_nonneg hL0 c) p q₂
   refine ⟨Cc, hCc, ?_⟩
-  intro T x hx r hr0 hrp
+  intro u hu g gRef hequiv hgK T x hx r hr0 hrp
   let e₀ := trivializationAt E (TangentSpace I : M → Type _) x
   obtain ⟨basisE, u', η, hu', hxu', hsub, hη0, hsmall, hnear, hON, hcomp, _⟩ :=
     exists_goodFrame_compBound (I := I) g x
@@ -625,6 +634,28 @@ theorem exists_iterated_covariant_derivative_norm_comparison
   simpa only [one_mul] using
     covariant_derivative_norm_comparison_of_intrinsic_metric_equivalence g gRef T p
       (x := x) hC (hequiv x hx) 1 Cc zero_le_one hCc hF3 r hr0 hrp
+
+theorem exists_iterated_covariant_derivative_norm_comparison
+    {q₂ : ℕ} {u : Set M} (hu : IsOpen u)
+    (g gRef : SmoothRiemannianMetric I M) (p : ℕ)
+    {C B : ℝ} (hC : 1 ≤ C) (hB : 0 ≤ B)
+    (hequiv : ∀ x ∈ u, ∀ v : TangentSpace I x,
+      C⁻¹ * gRef.inner x v v ≤ g.inner x v v ∧
+        g.inner x v v ≤ C * gRef.inner x v v)
+    (hgK : ∀ x ∈ u, ∀ j : ℕ, 1 ≤ j → j ≤ p →
+      Real.sqrt (normSq0S g x (2 + j)
+        (iterCov gRef 2 (metricTensorField g) j x)) ≤ B) :
+    ∃ Cc : ℝ, 0 ≤ Cc ∧ ∀ T : Tensor0SField (I := I) (M := M) ∞ q₂,
+      ∀ x ∈ u, ∀ r : ℕ, 0 < r → r ≤ p →
+        Real.sqrt (normSq0S g x (q₂ + r) (iterCov g q₂ T r x)) ≤
+          Real.sqrt (C ^ (q₂ + r)) *
+            (Real.sqrt (normSq0S gRef x (q₂ + r) (iterCov gRef q₂ T r x)) +
+              Cc * ∑ k ∈ Finset.range r,
+                Real.sqrt (normSq0S gRef x (q₂ + k) (iterCov gRef q₂ T k x))) := by
+  obtain ⟨Cc, hCc, hbound⟩ :=
+    exists_uniform_iterated_covariant_derivative_norm_comparison (I := I) (M := M)
+      q₂ p hC hB
+  exact ⟨Cc, hCc, hbound u hu g gRef hequiv hgK⟩
 
 end DifferentialGeometry.CheegerGromovCompactness
 

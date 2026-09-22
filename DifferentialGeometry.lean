@@ -32,6 +32,7 @@ import DifferentialGeometry.Analysis.Calculus.CutoffIntegral
 import DifferentialGeometry.Analysis.Calculus.CutoffPerturbation
 import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
 import DifferentialGeometry.Analysis.Calculus.Derivative.AlmostEverywhereLipschitz
+import DifferentialGeometry.Analysis.Calculus.Derivative.ClippedReciprocal
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.BoundaryNormalDerivative
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianCoordinates
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign
@@ -5375,6 +5376,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactArmLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusInjectivity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSourceBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVaryingChartConvergence
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactDomainTransport
 import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
@@ -13006,3 +13012,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeTranslation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MaximalSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricCutCapCurvature
