@@ -57,9 +57,14 @@ The route of 32.4.  The missing notion "`Bd C³` in general position relative to
 The leaves, all owned by lane c, with the printed assertions, the digest `AD` §7 discrepancies
 each one covers, and their state after the first external review (digest `AK`, of snapshot
 `942bf787`): OK freezes the statement byte for byte, and whoever proves it first tries to refute
-it; REPAIRED means restated after that review and not yet re-reviewed.  Eight leaves are OK and
-five are REPAIRED.  The review's three counter-models, each checked against the Lean hypotheses
-before the restatement: three disjoint, mutually non-enclosing triangulated cube surfaces met
+it; REPAIRED means restated after that review and passed by the second review (digest AM) in
+the repaired form, so all thirteen leaves and the corrected `Moise267` are frozen.  The second
+review adds: no connectedness of the common boundary may be required of `Moise267` (it would
+exclude the two-circle model of Type 2), and the descent's schedule must complete all four
+surgery stages on every compact set away from `P'` — pointwise convergence does not give the
+promised local eventual equality.  The review's three counter-models, each checked against
+the Lean hypotheses before the restatement: three disjoint, mutually non-enclosing
+triangulated cube surfaces met
 every former hypothesis of `Moise267` with all common boundaries empty, while the frontier of the
 unbounded component is all three surfaces; a compactly supported ambient PL homeomorphism fixing
 `D'` and moving the tower only puts a point of an even `T''` onto `h u` while keeping every field
