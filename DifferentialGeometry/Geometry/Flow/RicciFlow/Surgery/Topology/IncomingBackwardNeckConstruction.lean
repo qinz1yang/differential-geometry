@@ -28,16 +28,6 @@ private theorem stage_index_eq_of_backward_window
     H.time_strictMono.monotone (by change j.val + 1 ≤ i.val; omega)
   linarith
 
-private theorem cylinderTensorCovDeriv_eq_tensor02CovDeriv {δ : ℝ}
-    (g : SmoothRiemannianMetric NeckCylinderModel (neckBuffer δ))
-    (A : Tensor0SField (I := NeckCylinderModel) (M := neckBuffer δ) ∞ 2) (r : ℕ) :
-    cylinderTensorCovDeriv g A r = tensor02CovDeriv A g r := by
-  induction r with
-  | zero => rfl
-  | succ r ih =>
-      rw [cylinderTensorCovDeriv, ih]
-      rfl
-
 private abbrev cylinderJet (δ : ℝ) (q : ℕ) (v : ℝ) :
     Tensor0SField (I := NeckCylinderModel) (M := neckBuffer δ) ∞ 2 :=
   shrinkingCylinderTimeJet δ q v

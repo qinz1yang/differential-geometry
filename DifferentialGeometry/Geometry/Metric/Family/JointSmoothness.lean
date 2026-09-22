@@ -23,6 +23,57 @@ variable {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
   {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
   {P : Type*} [TopologicalSpace P] [ChartedSpace HP P]
 
+theorem metricCLMSection_jointContMDiffOn_of_local_coefficients {n : ℕ∞ω}
+    (g : P → SmoothRiemannianMetric I M) (J : Set P)
+    (hg : ∀ p : M, ∀ t ∈ J,
+      ∃ U : Set M, IsOpen U ∧ p ∈ U ∧
+        U ⊆ (trivializationAt E (TangentSpace I) p).baseSet ∧
+      ∃ V : Set P, IsOpen V ∧ t ∈ V ∧
+      ∃ A : P × M → E → E → ℝ,
+        (∀ v w, ContMDiffOn (IP.prod I) 𝓘(ℝ) n
+          (fun q => A q v w) (V ×ˢ U)) ∧
+        ∀ s ∈ V ∩ J, ∀ y ∈ U, ∀ v w,
+          A (s, y) v w = (g s).inner y
+            ((trivializationAt E (TangentSpace I) p).symmL ℝ y v)
+            ((trivializationAt E (TangentSpace I) p).symmL ℝ y w)) :
+    ContMDiffOn (IP.prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
+      (fun q : P × M => (⟨q.2, (g q.1).inner q.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (J ×ˢ (Set.univ : Set M)) := by
+  intro q hq
+  obtain ⟨U, hU, hxU, hUb, V, hV, htV, A, hA, heq⟩ := hg q.2 q.1 hq.1
+  rw [contMDiffWithinAt_hom_bundle]
+  refine ⟨contMDiffWithinAt_snd, ?_⟩
+  apply contMDiffWithinAt_clm_of_pointwise
+  intro v
+  apply contMDiffWithinAt_clm_of_pointwise
+  intro w
+  have hs : ContMDiffWithinAt (IP.prod I) 𝓘(ℝ) n
+      (fun z : P × M => A z v w) (J ×ˢ Set.univ) q :=
+    (hA v w q ⟨htV, hxU⟩).mono_of_mem_nhdsWithin
+      (mem_nhdsWithin_of_mem_nhds ((hV.prod hU).mem_nhds ⟨htV, hxU⟩))
+  have hin (s : P) (y : M) (hy : y ∈ U) (hs : s ∈ V ∩ J) :
+      ContinuousLinearMap.inCoordinates E (TangentSpace I)
+        (E →L[ℝ] ℝ) (fun y : M => TangentSpace I y →L[ℝ] ℝ)
+        q.2 y q.2 y ((g s).inner y) v w = A (s, y) v w := by
+    have hyR : y ∈ (trivializationAt ℝ (Bundle.Trivial M ℝ) q.2).baseSet := Set.mem_univ y
+    rw [inCoordinates_apply_eq₂ (𝕜 := ℝ)
+      (F₁ := E) (F₂ := E) (F₃ := ℝ)
+      (E₁ := TangentSpace I) (E₂ := TangentSpace I) (E₃ := Bundle.Trivial M ℝ)
+      (x₀ := q.2) (x := y) (ϕ := (g s).inner y) (v := v) (w := w)
+      (hUb hy) (hUb hy) hyR]
+    rw [(trivializationAt ℝ (Bundle.Trivial M ℝ) q.2).coe_linearMapAt_of_mem hyR]
+    simp only [Bundle.Trivial.fiberBundle_trivializationAt', Bundle.Trivial.trivialization_apply]
+    rw [← Trivialization.symmL_apply (R := ℝ) _ (hUb hy) v,
+      ← Trivialization.symmL_apply (R := ℝ) _ (hUb hy) w]
+    exact (heq s hs y hy v w).symm
+  apply hs.congr_of_eventuallyEq
+  · filter_upwards [self_mem_nhdsWithin,
+      mem_nhdsWithin_of_mem_nhds ((hV.prod hU).mem_nhds ⟨htV, hxU⟩)] with z hz hzu
+    exact hin z.1 z.2 hzu.2 ⟨hzu.1, hz.1⟩
+  · exact hin q.1 q.2 hxU ⟨htV, hq.1⟩
+
 theorem chartGramMatrix_joint_contMDiffOn {n : ℕ∞}
     (g : P → SmoothRiemannianMetric I M) (J : Set P)
     (hg : ContMDiffOn (IP.prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
@@ -290,5 +341,29 @@ theorem chartGramMatrix_joint_contMDiffOn_of_pullback
       (A ×ˢ (trivializationAt F (TangentSpace J) x₀).baseSet) := by
   exact chartGramMatrix_joint_contMDiffOn_of_parametric_pullback g A hg h (fun _ => Y)
     (hY.comp contMDiff_snd) hinner x₀ i j
+
+theorem metricCLMSection_jointContMDiffOn_restrictOpenOfSubset
+    {U V : TopologicalSpace.Opens M} [T2Space V] (hVU : V ≤ U)
+    (g : ℝ → SmoothRiemannianMetric I U) (A : Set ℝ)
+    (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × U => (⟨q.2, (g q.1).inner q.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set U))) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × V => (⟨q.2, ((g q.1).restrictOpenOfSubset hVU).inner q.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set V)) := by
+  let _ : IsManifold I 1 V := IsManifold.of_le (n := ∞) (by decide)
+  apply metricCLMSection_jointContMDiffOn_of_chartGram_on
+    (fun t => (g t).restrictOpenOfSubset hVU) A
+  intro p i j
+  refine chartGramMatrix_joint_contMDiffOn_of_pullback g A hg
+    (fun t => (g t).restrictOpenOfSubset hVU)
+    (TopologicalSpace.Opens.inclusion hVU) (contMDiff_inclusion hVU) ?_ p i j
+  intro t _ x v w
+  rw [SmoothRiemannianMetric.restrictSubset_inner, mfderiv_opens_incl]
+  rfl
 
 end DifferentialGeometry.Geometry.Curvature

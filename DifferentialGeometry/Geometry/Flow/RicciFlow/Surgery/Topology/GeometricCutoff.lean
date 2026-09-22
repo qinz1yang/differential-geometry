@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Metric
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
 
 noncomputable section
 
@@ -21,6 +22,16 @@ def cylinderTensorCovDeriv {δ : ℝ}
   | 0 => A
   | a + 1 => by
     simpa only [Nat.add_assoc] using metricCovDerivStep g a (cylinderTensorCovDeriv g A a)
+
+theorem cylinderTensorCovDeriv_eq_tensor02CovDeriv {δ : ℝ}
+    (g : SmoothRiemannianMetric NeckCylinderModel (neckBuffer δ))
+    (A : Tensor0SField (I := NeckCylinderModel) (M := neckBuffer δ) ∞ 2) (r : ℕ) :
+    cylinderTensorCovDeriv g A r = tensor02CovDeriv A g r := by
+  induction r with
+  | zero => rfl
+  | succ r ih =>
+      rw [cylinderTensorCovDeriv, ih]
+      rfl
 
 def InFixedHamiltonIveyRegion {X : Type*} [TopologicalSpace X]
     [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X]
