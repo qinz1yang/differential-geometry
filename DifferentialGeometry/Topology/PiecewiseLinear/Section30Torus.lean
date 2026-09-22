@@ -12,6 +12,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.NestedTori
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusOfOrientableEulerCharZero
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsCombinatorialTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.NontrivialKernelInSolidTorus
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsIsPLBallSupersetOfExteriorCompression
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsBallPairOfInteriorEssentialDisk
 
 /-!
 # Polyhedral interpolation in toroidal shells
@@ -88,48 +90,25 @@ leaves — a closed orientable surface of Euler characteristic zero is a torus
 (`ExistsCombinatorialTriangulation`), and the inclusion of a PL torus into a solid torus has a
 non-trivial kernel on fundamental groups (`NontrivialKernelInSolidTorus`). With `NestedTori`,
 `moise306_of_moise252` is now proved from `Moise252`; only the two compression leaves remain.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statements byte-identical with the frozen leaves): the two compression leaves
+(compressing the torus along the disk gives a PL sphere, filled by the unconditional PL
+Schoenflies; the first Betti number of the torus is at most two). With them the file has no
+`sorry` left: `moise306_of_moise252` and `moise307_of_moise252` are real proofs, and the module is
+ready to be promoted out of `Skeleton/`.
+
+Promoted out of `Skeleton/` on 2026-09-22: every former leaf is proved in an imported real module
+(`NestedTori` from the Gemini batch; `TorusOfOrientableEulerCharZero`,
+`ExistsCombinatorialTriangulation`, `NontrivialKernelInSolidTorus`,
+`ExistsIsPLBallSupersetOfExteriorCompression`, `ExistsBallPairOfInteriorEssentialDisk` from Opus
+5.5 workers), so `moise306_of_moise252` and `moise307_of_moise252` below are real proofs
+conditional only on `Moise252`.
 -/
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-theorem exists_isPLBall_superset_of_exterior_compression
-    (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite R.faces]
-    (hR : IsCombinatorialManifoldWithBoundary 3 R) (hT : IsPLTorus (frontier R.space))
-    {U D : Set (EuclideanSpace ℝ (Fin 3))} (hU : IsOpen U) (hRU : R.space ⊆ U)
-    {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDU : D ⊆ U)
-    (hmeet : D ∩ frontier R.space = r '' stdSimplexBoundary 2)
-    (hess : ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ frontier R.space,
-      ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
-        C(r '' stdSimplexBoundary 2, frontier R.space)).Nullhomotopic)
-    (hext : D \ r '' stdSimplexBoundary 2 ⊆ R.spaceᶜ) :
-    ∃ B : Set (EuclideanSpace ℝ (Fin 3)),
-      IsPLBall 3 B ∧ R.space ⊆ interior B ∧ B ⊆ U := by
-  sorry
-
-theorem exists_ball_pair_of_interior_essential_disk
-    (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite R.faces]
-    (hR : IsCombinatorialManifoldWithBoundary 3 R) (hT : IsPLTorus (frontier R.space))
-    {D : Set (EuclideanSpace ℝ (Fin 3))}
-    {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDR : D ⊆ R.space)
-    (hmeet : D ∩ frontier R.space = r '' stdSimplexBoundary 2)
-    (hess : ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ frontier R.space,
-      ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
-        C(r '' stdSimplexBoundary 2, frontier R.space)).Nullhomotopic) :
-    ∃ (A B : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-      (hAfin : A.faces.Finite) (hBfin : B.faces.Finite),
-      letI := hAfin.to_subtype
-      letI := hBfin.to_subtype
-      IsPLBall 3 A.space ∧ IsPLBall 3 B.space ∧ A.space ∪ B.space = R.space ∧
-      ∃ D₀ D₁ : Set (EuclideanSpace ℝ (Fin 3)),
-        IsPLBall 2 D₀ ∧ IsPLBall 2 D₁ ∧ Disjoint D₀ D₁ ∧
-        D₀ ⊆ frontier A.space ∧ D₁ ⊆ frontier A.space ∧
-        D₀ ⊆ frontier B.space ∧ D₁ ⊆ frontier B.space ∧
-        A.space ∩ B.space = D₀ ∪ D₁ := by
-  sorry
 
 theorem moise306_of_moise252 (h252 : Moise252) : Moise306 := by
   intro Y T₀ T₁ hY

@@ -15,6 +15,7 @@ import DifferentialGeometry.Topology.VanKampen.CellAttachmentFundamentalGroup
 import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Analysis.Normed.Module.Connected
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorusOfCylindricalDiagram
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
 
 /-!
 # Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
@@ -175,6 +176,12 @@ check and an axiom audit; statement byte-identical with the frozen leaf):
 `CombinatorialSolidTorusOfCylindricalDiagram`), through the general
 `IsCylindricalDiagram.isCombinatorialSolidTorus` (three slabs; orientability from
 `isOrientable_of_space_subset_convexHull`).
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statements byte-identical with the frozen leaves):
+`exists_generalPosition_solidTorus_relative`, from the ambient transversality of two finite
+complexes in `GeneralPosition.lean` and the new fact that a combinatorial solid torus has a PL
+torus as frontier.
 -/
 
 open Set Topology
@@ -398,12 +405,6 @@ theorem exists_innerSolidTorus_toroidalShell_of_annulusImage
     ∃ S₁ : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalSolidTorus S₁ ∧
       h '' A j ⊆ interior S₁ ∧ S₁ ⊆ interior (h '' S j) ∧
       IsToroidalShell (closure (h '' S j \ S₁)) (frontier S₁) (frontier (h '' S j)) := by
-  sorry
-
-theorem exists_generalPosition_solidTorus_relative {A U S₀ : Set (EuclideanSpace ℝ (Fin 3))}
-    {m : ℕ} (hA : IsCompact A) (hU : IsOpen U) (h₀ : Fits A U S₀)
-    (F : Fin m → Set (EuclideanSpace ℝ (Fin 3))) (hF : ∀ i, IsCombinatorialSolidTorus (F i)) :
-    ∃ S, Fits A U S ∧ ∀ i, PairGP S (F i) := by
   sorry
 
 theorem exists_generalPosition_solidTorus_triple

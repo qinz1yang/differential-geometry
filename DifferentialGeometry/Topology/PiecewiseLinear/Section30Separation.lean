@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.Connected.Separation
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitAnnulus
+import DifferentialGeometry.Topology.PiecewiseLinear.ExistsAnnularSplitBall
 
 /-!
 # Separation preserved by splitting an annular neighborhood of a disk
@@ -47,6 +48,18 @@ one above and one below. The target H consists of the two points (0,0,3/4) and (
 and K is the point (3,0,0), so H is disconnected. A thin open neighborhood of the middle
 square avoids both targets. This gives the local three-page model with nonempty separated
 targets. No joint Lean certificate for the fixture or the open leaf is supplied here.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statements byte-identical with the frozen leaves):
+`exists_annular_split_ball`, from the joint neighbourhood of `SurfaceSplitLocalTrace` with a small
+disk and two prism structures; five of its frozen hypotheses are unused by the proof and are
+consumed by `let _ := …` as the source rules prescribe, the statement being kept byte-identical.
+With it the file has no `sorry` left: `moise303` is a real proof of `Moise303`, and the module is
+ready to be promoted out of `Skeleton/`.
+
+Promoted out of `Skeleton/` on 2026-09-22: its one former leaf is proved in the imported real
+module `ExistsAnnularSplitBall` (Opus 5.5 worker), so `moise303` below is an unconditional proof
+of `Moise303`.
 -/
 
 open Set Topology
@@ -56,30 +69,6 @@ namespace DifferentialGeometry.Topology
 namespace PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
-
-theorem exists_annular_split_ball
-    (M C Δ D₁ D₂ Ω : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3)
-    (hM : IsOpen M) (hCM : C ⊆ M) (hC : IsClosed (((↑) : M → E3) ⁻¹' C))
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔC : Δ ⊆ C)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
-    (hmeet : D₁ ∩ D₂ = Δ) (hDC : D₁ ∪ D₂ ⊆ C)
-    (hnear : D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ)
-    (hΔ₁ : Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2)
-    (hΔ₂ : Δ ⊆ D₂ \ r₂ '' stdSimplexBoundary 2)
-    (hΩ : IsOpen Ω) (hΔΩ : Δ ⊆ Ω) (hΩM : Ω ⊆ M) :
-    ∃ (A₁ Δ₁ J₁ Q O J S : Set E3) (r' : (Fin 3 → ℝ) → E3) (ψ : E3 × ℝ → E3),
-      IsPLAnnulusWithEnds A₁ (r '' stdSimplexBoundary 2) J₁ ∧
-      A₁ ⊆ D₁ ∩ Ω ∧ A₁ ∩ Δ = r '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ₁ ∧
-      J₁ = r' '' stdSimplexBoundary 2 ∧ Δ₁ ⊆ Ω ∧ Δ₁ ∩ C = J₁ ∧
-      IsPLBall 3 Q ∧ Q ⊆ Ω ∧ A₁ ⊆ Q ∧ Δ₁ ⊆ Q ∧
-      IsOpen O ∧ C ∩ O = A₁ \ (r '' stdSimplexBoundary 2 ∪ J₁) ∧
-      IsPLSphere 1 J ∧ IsPLHomeomorphOn ψ (J ×ˢ Icc (0 : ℝ) 1) S ∧
-      frontier Q \ ((C \ (A₁ \ (r '' stdSimplexBoundary 2 ∪ J₁))) ∪ Δ₁) =
-        ψ '' (J ×ˢ Ioo (0 : ℝ) 1) ∧
-      Disjoint (ψ '' (J ×ˢ Ioo (0 : ℝ) 1)) C := by
-  sorry
 
 theorem moise303 : Moise303 := by
   intro M H K C Δ D₁ D₂ Ω r r₁ r₂ hM _ _ _ _ _ _ hCM hC hsep
