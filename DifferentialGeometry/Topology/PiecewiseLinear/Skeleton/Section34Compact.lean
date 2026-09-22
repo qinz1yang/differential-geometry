@@ -50,15 +50,16 @@ residual balls are pinned by the book's `d_σ = Cl(σ − N)`, `C(σ³) = Cl(σ�
 condition of page 239 is a clause of the frame: for a boundary vertex the link is a disk and a
 chord separates it, so it is not a consequence of the manifold certificate as it is for spheres.
 
-Fixture (to be checked first, before any leaf is proved): `C` a tetrahedron, `K = K'` the
-tetrahedron itself, `N` a regular neighbourhood of its six edges, `h = g ∘ ψ` with `g` a small
-non-zero piecewise linear shear and `ψ` non-piecewise-linear supported in the interior, `ε`
-below the shear.  All four vertices and six edges are on the boundary; `∂C_v` is the union of
-three splitting disks, one patch and one outer face, `∂D_e` of one edge arc and one outer arc,
-`∂O_v` of three face arcs and three outer arcs, `∂o_e` of two marked points.  Without the two
-outer kinds the boundaryless formulas leave `∂C_v` minus a hexagon and `∂D_e` minus an arc
-undecomposed; that is the interface error of option (a).  The link of each vertex is a triangle,
-which satisfies the link condition.
+Local outer-cut check: `C` a tetrahedron, `K = K'` the tetrahedron itself, and `N` a regular
+neighbourhood of its six edges.  All four vertices and six edges are on the boundary; `∂C_v`
+is the union of three splitting disks, one patch and one outer face, `∂D_e` of one edge arc and
+one outer arc, `∂O_v` of three face arcs and three outer arcs, `∂o_e` of two marked points.
+Without the two outer kinds the boundaryless formulas leave `∂C_v` minus a hexagon and `∂D_e`
+minus an arc undecomposed; that is the interface error of option (a).  The link of each vertex
+is a triangle, which satisfies the link condition.  This checks the outer-cut combinatorics
+only, not the carrier or approximation hypotheses.  A full fixture for a small tolerance
+requires a sufficiently fine triangulation `K` and compatible `K'`, chosen after `h` and `ε`;
+that joint fixture remains UNTESTED.
 
 The leaves, all **unreviewed**, with content, size and book source.
 
@@ -66,8 +67,10 @@ The leaves, all **unreviewed**, with content, size and book source.
 239--240): from `h331` and the entry data, `K, K'`, the full cut, carriers, `N ⊆ V` and `f₁`.  This
 joint choice is **not** a projection of `Moise331`: the finite cut and 33.1's derived
 neighbourhood are linked by a compatible subdivision; the carriers and the tolerance are chosen
-first, then `f₁`, then the inner torus `S₁`, and `moise308Nested` is applied in the assembly to
-the certificate `(S₁, N''_σ, S₂, h '' ∂σ)`.  [ASSERTED] in the book: Lemma 1(2)--(4) "for `f₁`
+first, then `f₁`, then the inner torus `S₁`.  The proved exporter
+`Section34CompactGraphFrame.carriesFundamentalGroupOnto` applies the tree's nested-torus
+generator theorem to `(S₁, N''_σ, S₂, h '' ∂σ)`; the assembly passes this conclusion explicitly
+to `compactTraceHomology`.  [ASSERTED] in the book: Lemma 1(2)--(4) "for `f₁`
 sufficiently close", Lemma 2's (a)--(f) and that `∂σ` is a spine, the existence of the link
 condition subdivision, the sufficient condition for 5(7) of page 241 (recorded here as the
 exterior clause for the thin obstacle `⋃_{v ∈ t} V_v ∪ ⋃_{σ ⊂ t} h '' σ`).
@@ -90,7 +93,8 @@ forms 5(3), 5(4) and the two finiteness counts by a small piecewise linear pertu
 the envelopes.  [AMBIG] "general position in one of its usual senses" is read as both forms.
 
 `compactTraceHomology` (Lemma 4; deep; page 241): the whole trace `∂C_σ ∩ ∂N''_σ` of a ball in
-its envelope carries `H₁(N''_σ)` onto, via the auxiliary ball `A` and the generator clause.
+its envelope carries `H₁(N''_σ)` onto, via the auxiliary ball `A` and the explicit, proved
+fundamental-group generator clause.  The passage from that generator to trace homology is open.
 [SLIP] the book cites Lemma 1(4) for what is Lemma 2.
 
 `exists_compactCompression` (Operation 1 and Lemma 6; deep; page 242) and
@@ -144,13 +148,13 @@ Inhabitants.  `carriesIntegralFirstHomologyOnto_self` inhabits the generator pre
 with the plane `z = 0` and the two axes (`isPLOn_id_of_isOpen` gives the chart).  The frames
 `Section34CompactCutFrame`, `Section34CompactCarrierControl`, `Section34CompactGraphFrame`,
 `Section34CompactFaceEnvelopes`, `Section34CompactFaceBallInvariants`, `Section34CompactTrace`,
-`Section34CompactFaceDiskFamily`, `Section34CompactResidualPlus`: UNTESTED, missing brick the
-tetrahedron fixture above (a regular neighbourhood of the six edges with its dual cells, and
-`f₁ = g`); none of them is satisfiable by empty or constant families, because each carries a
-cell clause, an open neighbourhood of a nonempty image or a positive count, and the cut frame
-pins the union to `C ∪ N`.  `Section34CompactExterior` on its own holds for an empty obstacle
-(the component of `univ` is unbounded); it gets its content from the cell clauses of the
-bundles it sits in and is never a hypothesis by itself.
+`Section34CompactFaceDiskFamily`, `Section34CompactResidualPlus`: UNTESTED.  The local
+tetrahedron check above does not supply a joint carrier-controlled fixture: this still needs a
+sufficiently fine triangulation, a compatible subdivision and a regular neighbourhood with
+verified dual cells.  Nondegeneracy at the intended entry starts from `IsPLBall 3 C`; no
+unconditional inhabitant of these frames is claimed.  `Section34CompactExterior` on its own
+holds for an empty obstacle (the component of `univ` is unbounded); it gets its content from
+the cell clauses of the bundles it sits in and is never a hypothesis by itself.
 
 Vacuity.  The generator clauses quantify over `H₁` of a nonempty torus and fail for an empty
 trace; the counts read the family at one label only (`section34CompactFaceBallRank_congr`); the
@@ -554,6 +558,21 @@ def Section34CompactGraphFrame (V : Set (EuclideanSpace ℝ (Fin 3)))
     h '' src (.vertexBall w) ∪ section34CompactVertexBallImage src f₁ w ⊆ interior (H t)) ∧
   Section34CompactExterior K K' h (section34CompactVertexBallImage src f₁)
     (fun s => h '' convexHull ℝ (s.1 : Set (EuclideanSpace ℝ (Fin 3))))
+
+theorem Section34CompactGraphFrame.carriesFundamentalGroupOnto
+    {V : Set (EuclideanSpace ℝ (Fin 3))}
+    {h f₁ : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)} {ε : ℝ}
+    {src : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3))}
+    {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
+    (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
+    (s : Section34CompactSimplexIndex K 3) :
+    CarriesFundamentalGroupOnto (h '' section34CompactSimplexRim s.1)
+      (section34CompactFaceTorus (section34CompactVertexBallImage src f₁) s) := by
+  obtain ⟨-, -, -, -, -, -, -, hrim, hnest, -, -⟩ := hgraph
+  obtain ⟨S₁, S₂, hS₁, hS₂, hT, h₁T, hT₂, hshell, hspine⟩ := hnest s
+  have hsub := (hrim s).trans interior_subset
+  exact carriesFundamentalGroupOnto_of_nestedSolidTorus hsub (Homeomorph.refl _)
+    (fun _ => Iff.rfl) hS₁ hS₂ hT h₁T hT₂ hshell hspine hsub
 
 end Vocabulary
 
@@ -964,7 +983,10 @@ theorem compactTraceHomology (hcut : Section34CompactCutFrame C K K' src srcBd)
     (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
     (henv : Section34CompactFaceEnvelopes K K' h H (section34CompactVertexBallImage src f₁)
       env)
-    (s : Section34CompactSimplexIndex K 3) {B BBd : Set (EuclideanSpace ℝ (Fin 3))}
+    (s : Section34CompactSimplexIndex K 3)
+    (hgen : CarriesFundamentalGroupOnto (h '' section34CompactSimplexRim s.1)
+      (section34CompactFaceTorus (section34CompactVertexBallImage src f₁) s))
+    {B BBd : Set (EuclideanSpace ℝ (Fin 3))}
     (hB : IsPLCellOn 3 B BBd) (hrim : h '' section34CompactSimplexRim s.1 ⊆ interior B)
     (hBenv : B ⊆ env s)
     (hgp : ∀ y ∈ BBd ∩ frontier (⋃ w, section34CompactVertexBallImage src f₁ w),
@@ -1237,6 +1259,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
   intro C V hC hV hCV h hh ε hε
   obtain ⟨K, K', src, srcBd, H, f₁, hcut, hcar, hgraph⟩ :=
     exists_compactCutAndGraph h331 hC hV hCV hh hε
+  have hgen := hgraph.carriesFundamentalGroupOnto
   obtain ⟨env, henv⟩ := exists_compactFaceEnvelopes h305 hCV hh hcut hcar hgraph
   obtain ⟨fbl₀, fblBd₀, hfam₀⟩ := exists_compactFaceShellBalls h305 hV hCV hh hcut hgraph henv
   obtain ⟨fbl₁, fblBd₁, hfam₁, hgp₁, hgp₂, hfin₁, hfin₂⟩ :=
@@ -1257,7 +1280,8 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
     · exact eq_empty_of_subset_empty
         ((inter_subset_inter_left _ (hfam₁ s).2.2).trans (henvAvoid s w hw).subset)
     · exact (inter_subset_inter (hfam₁ s).2.2 (hfam₁ s').2.2).trans (henvOverlap s s' hss)
-    · exact compactTraceHomology hcut hgraph henv s (hfam₁ s).1 (hrim s) (hfam₁ s).2.2 (hgp₁ s)
+    · exact compactTraceHomology hcut hgraph henv s (hgen s) (hfam₁ s).1 (hrim s)
+        (hfam₁ s).2.2 (hgp₁ s)
     · exact (hfam₁ s).2.2.trans (henvCar s t hst)
     · exact section34CompactExterior_mono (fun s => (hfam₁ s).2.2.trans subset_closure) henvExt
   obtain ⟨fbl, fblBd, hinv, hnc, hnb⟩ :=
