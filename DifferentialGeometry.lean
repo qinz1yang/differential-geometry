@@ -9230,6 +9230,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSou
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierSupportLocallyFinite
 /-!
 # Differential geometry and geometric analysis
 -/

@@ -5,13 +5,15 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierSupportLocallyFinite
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 
 /-!
 # Sorry-first skeleton of P0, the controlled source triangulation and its carriers
 
 The assembly `section34Control` proves the endpoint `Section34ControlStatement` for real from the
-five leaves of this file; every `sorry` is a leaf and none sits inside an assembly.
+four leaves of this file and one proved module; every `sorry` is a leaf and none sits inside
+an assembly.
 
 P0 is the **producer** of the two hypotheses that the controlled form of Moise 35.1 takes as
 given: a locally finite triangulation `𝒦` of the open set `U` with
@@ -89,7 +91,9 @@ combinatorial `3`-manifold.  Stated for every such realisation, which is the ful
 (a1), so the composition needs no equation pinning the object to its producer.  It is the
 classical fact that a triangulated `3`-manifold is combinatorial; openness of `U` is essential.
 
-`locallyFinite_section34CarrierSupport` (a3): mechanical.  Each `Section34CarrierSupport 𝒦 t` lies
+`locallyFinite_section34CarrierSupport` (a3): **proved**, imported from
+`Section34CarrierSupportLocallyFinite` (2026-09-21, statement byte-identical with the frozen
+leaf).  Each `Section34CarrierSupport 𝒦 t` lies
 in `U`, and the family, indexed by the *faces*, is locally finite at every point of `U`.  The face
 restriction is not cosmetic: for a `t` that is not a face but contains a vertex `w` of `𝒦` the
 support still contains the closed star of `w`, and there are infinitely many such `t`.
@@ -180,12 +184,6 @@ theorem exists_locallyFinitePLPieceIn_of_isOpen [Nonempty M₁] [T2Space M₁]
 theorem isCombinatorialManifold_of_locallyFinitePLPieceIn [T2Space M₁]
     [HasGroupoid M₁ (plGroupoid 3)] (hU : IsOpen U) (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) :
     IsCombinatorialManifold 3 𝒦.complex := by
-  sorry
-
-theorem locallyFinite_section34CarrierSupport (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) :
-    (∀ t : Finset Ea, Section34CarrierSupport 𝒦 t ⊆ U) ∧
-      ∀ x ∈ U, ∃ V ∈ 𝓝 x, {t : Finset Ea | t ∈ 𝒦.complex.faces ∧
-        (Section34CarrierSupport 𝒦 t ∩ V).Nonempty}.Finite := by
   sorry
 
 theorem exists_isSubdivision_section34CarrierSupport_subset [T2Space M₁]

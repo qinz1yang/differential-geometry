@@ -12,7 +12,9 @@ The assemblies `moise322`, `moise321`, `moise323`, `moise324` below prove the fo
 propositions of `PseudoCell.lean` for real from the leaves of this file and from the named
 propositions `Moise307`, `Moise314` of the earlier sections and `Moise303`, `Moise286`,
 `Moise267`, stated here because the tree has no form of Theorems 30.3, 28.6 and 26.7 (digest
-`AD` §5); every `sorry` is a leaf and none sits inside an assembly.  Theorem 30.1 is the proved
+`AD` §5); `Moise267` carries the book's implicit premise that the common boundary of the three
+surfaces is non-empty, since its printed proof starts from an edge of `Bd M_i`.  Every `sorry`
+is a leaf and none sits inside an assembly.  Theorem 30.1 is the proved
 `separates_or_separates_of_union` and Theorem 30.2 the proved `exists_separates_of_finite_iUnion`;
 both are consumed inside leaves.  Book pages 223-229, in the notation of `PseudoCell.lean`;
 `P'` is the image of the edge midpoint, `I` the ambient interior of `C'₁ ∪ C'₂`.
@@ -52,63 +54,110 @@ The route of 32.4.  The missing notion "`Bd C³` in general position relative to
 `exists_generalPosition_ball_pseudoCell`; the irreducible disk and the innermost removals are
 `exists_reducedDisk_of_crossesPseudoCell`.
 
-The leaves, all owned by lane c and all unreviewed, with the printed assertions and the digest
-`AD` §7 discrepancies each one covers.
+The leaves, all owned by lane c, with the printed assertions, the digest `AD` §7 discrepancies
+each one covers, and their state after the first external review (digest `AK`, of snapshot
+`942bf787`): OK freezes the statement byte for byte, and whoever proves it first tries to refute
+it; REPAIRED means restated after that review and not yet re-reviewed.  Eight leaves are OK and
+five are REPAIRED.  The review's three counter-models, each checked against the Lean hypotheses
+before the restatement: three disjoint, mutually non-enclosing triangulated cube surfaces met
+every former hypothesis of `Moise267` with all common boundaries empty, while the frontier of the
+unbounded component is all three surfaces; a compactly supported ambient PL homeomorphism fixing
+`D'` and moving the tower only puts a point of an even `T''` onto `h u` while keeping every field
+of `IsCanonicalTower`, and then `h u ∈ initialSurface` contradicts `separates_initialSurface`,
+because separated points lie off the separator; without tube data the chain leaf admitted
+`I = univ` and `h '' Dbd {u, v} = {P'}`, so both tails of the tower converge to `P'` and
+`annularChain` is a pinched sphere, not a two-manifold at `P'`.
 
-`exists_canonicalTower` (deep): §7.6 the round-disk reduction, §7.7 the joint bi-infinite choice
-including the closure equations, §7.2-7.3 the sequential construction of the `S''_i` from 30.7
-(`Moise311` per triple does not compose across overlapping triples, so `Moise307` is taken),
-§7.1 the revolved cells being solid tori (fields of `IsRevolvedTorusChain`), and the avoidance
-of a closed set disjoint from `D'`, which is §7.13.
+`exists_canonicalTower` (deep, OK): §7.6 the round-disk reduction, §7.7 the joint bi-infinite
+choice including the closure equations, §7.2-7.3 the sequential construction of the `S''_i` from
+30.7 (`Moise311` per triple does not compose across overlapping triples, so `Moise307` is
+taken), §7.1 the revolved cells being solid tori (fields of `IsRevolvedTorusChain`), and the
+avoidance of a closed set disjoint from `D'`, which is §7.13; the tori are chosen inside
+`W ∩ Zᶜ`, and the proof must complete adjacent general position and the bridge from the
+cylindrical diagram to the annular chain.
 
-`separates_initialSurface` (medium): Lemma 1 with §7.8's local finiteness, Lemma 3 with the
-printed slip `{P}` for `{P'}`, the transport of `IsTube.splitSeparates` through `h` (§7.18).
+`separates_initialSurface` (medium, REPAIRED): Lemma 1 with §7.8's local finiteness, Lemma 3
+with the printed slip `{P}` for `{P'}`, the transport of `IsTube.splitSeparates` through `h`
+(§7.18).  It now receives `havoid`, the tower's avoidance of `{h u, h v}`, which `moise322`
+reads off the tower's avoidance of `Bu ∪ Bv`; without it an even torus may pass through `h u`.
 
-`exists_descentSequence` (deep): Step 1 with 30.3 and §7.9, Steps 2-4 with the classification
-`k ∈ {0, 2}` from 28.6, 30.1, 26.7 and 31.4 and §7.10, §7.8's "`L` is a two-manifold with
-boundary", §7.11's cutting of each even torus into two annuli, the deletion of one of them, and
-the closedness of the limit set.
+`exists_descentSequence` (deep, REPAIRED): Step 1 with 30.3 and §7.9, Steps 2-4 with the
+classification `k ∈ {0, 2}` from 28.6, 30.1, 26.7 and 31.4 and §7.10, §7.8's "`L` is a
+two-manifold with boundary", §7.11's cutting of each even torus into two annuli, the deletion of
+one of them, and the closedness of the limit set.  It now receives `havoid` as well, and
+`Moise267` has the non-empty common boundary premise, which its Type 2 use supplies with the
+two seam circles of the annulus `C'` and the two halves `B₁, B₂` of `T''_{2i}`.  Its proof must
+show the surgery supports locally finite away from `Bd D'` and `P'`, so that the limit set is
+closed and the local stabilisation holds.  `IsAnnularChain` needs no essentiality field: a seam
+circle bounding a disk on an even torus has trivial image in the fundamental group of that solid
+torus, contradicting `loGenerator` and `hiGenerator`.
 
-`separates_of_locally_eventually_eq` (short): the limit argument of §7.9-7.10.
+`separates_of_locally_eventually_eq` (short, OK): the limit argument of §7.9-7.10; compactness
+along the contradiction path gives a finite cover and a uniform stabilisation time, so no
+monotonicity of the `M n` is assumed.
 
-`isOpenTopologicalCell_annularChain` (deep): §7.12, wholly unproved in the book, and the
-three-cell pairs of page 227.
+`isOpenTopologicalCell_annularChain` (deep, REPAIRED): §7.12, wholly unproved in the book, and
+the three-cell pairs of page 227.  It now receives the tube data of `exists_canonicalTower`,
+which makes `h '' Dbd {u, v}` a genuine circle carrying the upper end of the chain, and the
+separation of the chain itself, the book's route to the closure equality; `moise322` obtains that
+separation from `separates_of_locally_eventually_eq` on the descent's closedness output before
+calling this leaf, and neither depends on `IsPseudoCell`, so there is no circularity.
 
-`exists_compact_connected_to_freeFace` (medium): page 227's "evidently `v'_i` can be joined".
+`exists_compact_connected_to_freeFace` (medium, OK): page 227's "evidently `v'_i` can be
+joined"; a vertex interior point, the cell model and a non-empty free face suffice.
 
-`isTopologicalSphere_image_splitRim` (short): the image rim is a topological circle.
+`isTopologicalSphere_image_splitRim` (short, OK): the image rim is a topological circle.
 
-`exists_twoComponents_of_pseudoCell` (medium): §7.14 through `IsTube.freeFaceConnected`, the
-"all or none" step and the exclusion of a third component, §7.18.
+`exists_twoComponents_of_pseudoCell` (medium, OK): §7.14 through `IsTube.freeFaceConnected`,
+the "all or none" step and the exclusion of a third component, §7.18.
 
-`exists_edgeCollarFamily` (medium): §7.15-7.16, the finite collar family.
+`exists_edgeCollarFamily` (medium, OK): §7.15-7.16, the finite collar family, chosen jointly and
+tapering at the centres.
 
-`isHandleDecomposition_of_edgeCollars` (deep): §7.15, clauses (7), (9), (10).
+`isHandleDecomposition_of_edgeCollars` (deep, OK): §7.15, clauses (7), (9), (10).
 
-`handlePiece_subset_of_edgeCollars` (medium): §7.15, clause (8).
+`handlePiece_subset_of_edgeCollars` (medium, OK): §7.15, clause (8); a finite closed local
+envelope controls the closure and `W e ⊆ V v` gives the metric clause.
 
-`exists_generalPosition_ball_pseudoCell` (deep): §7.17, general position against a set that is
-not a polyhedron at `P'`, finiteness of `Bd C³ ∩ E`.
+`exists_generalPosition_ball_pseudoCell` (deep, REPAIRED): §7.17, general position against a
+set that is not a polyhedron at `P'`, finiteness of `Bd C³ ∩ E`.  It now also concludes
+`Dc ⊆ Metric.ball P δ`, the co-domain control that the finitely many later pushes need.
 
-`exists_reducedDisk_of_crossesPseudoCell` (medium): §7.17, the irreducible disk without a
-well-founded measure, the separating polygon by 30.2, the innermost removals.
+`exists_reducedDisk_of_crossesPseudoCell` (medium, REPAIRED): §7.17, the irreducible disk
+without a well-founded measure, the separating polygon by 30.2, the innermost removals.  The
+replacement disk of page 229 lies in `Dc` and not necessarily in `Bl`, so the leaf now takes a
+common open set `Ω` containing `Bl` and `Dc` and concludes `Δ ⊆ Ω`; `moise324` takes
+`Ω = Metric.ball P δ`.  `CrossesPseudoCell` is the notion of 32.4 and is unchanged: no
+piecewise linear condition at the centre.
 
-Vacuity.  `IsTube` has no inhabitant in the tree, and every leaf with a tube hypothesis is
-vacuous until it has one: the tower, the initial surface, the descent, the arcs, the rim, the
-two components, the collar family and both handle leaves.  Not tube-dependent: the limit lemma,
-the chain topology (which needs only the tower), and both leaves of 32.4, which hold for the
-tame `isPseudoCell_planarSquare`: the boundary of a small cube around the origin meets the
-square in one polygon, crossing it everywhere, and every hypothesis of `moise324`'s chain is
-then supplied.  Inhabiting `IsTube` is not cheap: it needs a finite complex of `ℝ³` with a
-verified `IsCombinatorialManifoldWithBoundary 3` certificate, `IsPLBall 3` of its graph dual
-cells, which the tree derives only from the boundaryless case, and producers of
-`splitSeparates` and `freeFaceConnected`, which do not exist.  The new predicates
-`IsCanonicalTower`, `IsAnnularChain`, `IsPLAnnulusWithEnds`, `IsEdgeCollarFamily` and
-`CrossesPseudoCell` are pinned producer outputs and are untested; `SplitsDualCellsAlong` is
-inhabited by `Moise322.exists_splitsDualCellsAlong`, conditionally.  Every hypothesis of every
-leaf is supplied by a named producer: the tower's avoidance set by the arc leaf, the cell pairs
+The three named inputs `Moise303`, `Moise286`, `Moise267` remain registered OPEN dependencies;
+the endpoint is not closed by them.  `Moise303` is the Euclidean local form of 30.3, with `Ω`
+controlling the small regular neighbourhood and the deleted part the intrinsic interior of the
+annulus, and `Moise286`'s `1 < n` is right.
+
+Untested.  `IsTube` has no inhabitant in the tree, and every leaf with a tube hypothesis is
+UNTESTED until it has one, which is not vacuity: the tower, the initial surface, the descent,
+the chain topology, the arcs, the rim, the two components, the collar family and both handle
+leaves.  Not tube-dependent: the limit lemma and both leaves of 32.4, which hold for the tame
+`isPseudoCell_planarSquare`: the boundary of a small cube around the origin meets the square in
+one polygon, crossing it everywhere, and every hypothesis of `moise324`'s chain is then
+supplied.  Inhabiting `IsTube` is not cheap: it needs a finite complex of `ℝ³` with a verified
+`IsCombinatorialManifoldWithBoundary 3` certificate, `IsPLBall 3` of its graph dual cells, which
+the tree derives only from the boundaryless case, and producers of `splitSeparates` and
+`freeFaceConnected`, which do not exist.  No vertex-interior field is needed: the proved
+`IsTube.mem_interior_dualCell` below gives `v ∈ Int N ∖ ⋃_{w ≠ v} C_w ⊆ C_v` from
+`isNeighborhood`, `unionEq`, `dualVertex` and the closedness of the finitely many dual cells,
+and invariance of domain (`InvarianceOfDomain.lean`) transports it to
+`h v ∈ interior (h '' C v)`, so the two vertex preimages in every `Separates` clause are
+non-empty.  The new predicates `IsCanonicalTower`, `IsAnnularChain`, `IsPLAnnulusWithEnds`,
+`IsEdgeCollarFamily` and `CrossesPseudoCell` are pinned producer outputs and are untested;
+`SplitsDualCellsAlong` is inhabited by `Moise322.exists_splitsDualCellsAlong`, conditionally.
+Every hypothesis of every leaf is supplied by a named producer: the tower's avoidance set by the
+arc leaf, the vertex avoidance of the initial surface and the descent by the tower's avoidance
+of `Bu ∪ Bv`, the chain separation of the chain topology leaf by the limit lemma, the cell pairs
 by the chain leaf, the arcs' disjointness from `E` by the tower's avoidance clause, the collars
-by the collar leaf, the per-edge pseudo-cells by `moise322`.  The `W`-hypotheses of `Moise321`
+by the collar leaf, the per-edge pseudo-cells by `moise322`, and the common open set of the
+reduced disk leaf by the ball of the general position leaf.  The `W`-hypotheses of `Moise321`
 are satisfiable because `Int D_e` lies in the ambient interior of `C_u ∪ C_v` (finitely many
 dual cells, `splitDisjoint`) and `h` preserves interiors by invariance of domain; this is a
 fact about `IsTube`, needed by the collar leaf and not carried as a field.
@@ -121,7 +170,7 @@ endgame.
 To be hoisted: `IsPLAnnulusWithEnds`, `Moise303`, `Moise286`, `Moise267` (to `MoiseChain`),
 `IsCanonicalTower`, `initialSurface`, `IsAnnularChain`, `annularChain`, `SplitsDualCellsAlong`,
 `IsEdgeCollarFamily`, `handlePiece`, `CrossesPseudoCell`, and the proved
-`Moise322.exists_splitsDualCellsAlong`.
+`IsTube.mem_interior_dualCell` (to `PseudoCell.lean`) and `Moise322.exists_splitsDualCellsAlong`.
 -/
 
 open Set Topology
@@ -175,6 +224,7 @@ def Moise267 : Prop :=
   ∀ M : Fin 3 → Geometry.SimplicialComplex ℝ E3, (∀ i, (M i).faces.Finite) →
     (∀ i, IsCombinatorialManifoldWithBoundary 2 (M i)) → (∀ i, IsConnected (M i).space) →
     (∀ i j, (boundaryComplex 2 (M i)).space = (boundaryComplex 2 (M j)).space) →
+    (boundaryComplex 2 (M 0)).space.Nonempty →
     (∀ i j, i ≠ j → Disjoint ((M i).space \ (boundaryComplex 2 (M i)).space)
       ((M j).space \ (boundaryComplex 2 (M j)).space)) →
     ∀ x ∉ (⋃ i, (M i).space),
@@ -269,6 +319,39 @@ def CrossesPseudoCell (F Ec Eint : Set E3) (P : E3) : Prop :=
 
 end Vocabulary
 
+section TubeFacts
+
+variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+  {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {v : E3}
+
+theorem IsTube.mem_interior_dualCell (ht : IsTube K N C D Dbd h N') (hv : v ∈ K.vertices) :
+    v ∈ interior (C v) := by
+  have hfin : K.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn ht.facesFinite
+  have hclosed : IsClosed (⋃ w ∈ K.vertices \ {v}, C w) :=
+    (hfin.subset sdiff_subset).isClosed_biUnion fun w hw =>
+      (ht.dualBall w hw.1).isPolyhedron.isClosed
+  have hN : N ∈ 𝓝 v :=
+    mem_nhdsSet_iff_forall.mp ht.isNeighborhood v
+      (Geometry.SimplicialComplex.vertices_subset_space hv)
+  have hU : interior N \ ⋃ w ∈ K.vertices \ {v}, C w ∈ 𝓝 v := by
+    refine (isOpen_interior.sdiff hclosed).mem_nhds ⟨mem_interior_iff_mem_nhds.mpr hN, ?_⟩
+    intro hmem
+    obtain ⟨w, hw, hvw⟩ := mem_iUnion₂.mp hmem
+    have hvw' : v ∈ C w ∩ K.vertices := ⟨hvw, hv⟩
+    rw [ht.dualVertex hw.1] at hvw'
+    exact hw.2 (mem_singleton_iff.mpr (mem_singleton_iff.mp hvw').symm)
+  refine mem_interior_iff_mem_nhds.mpr (Filter.mem_of_superset hU ?_)
+  rintro x ⟨hxN, hxU⟩
+  have hxN' : x ∈ N := interior_subset hxN
+  rw [ht.unionEq] at hxN'
+  obtain ⟨w, hw, hxw⟩ := mem_iUnion₂.mp hxN'
+  by_cases hwv : w = v
+  · exact hwv ▸ hxw
+  · exact absurd (mem_iUnion₂.mpr ⟨w, ⟨hw, fun hw' => hwv (mem_singleton_iff.mp hw')⟩, hxw⟩) hxU
+
+end TubeFacts
+
 section Leaves
 
 variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
@@ -294,7 +377,8 @@ theorem separates_initialSurface (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.ve
     (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
     (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
-      (interior (h '' C u ∪ h '' C v)) P') :
+      (interior (h '' C u ∪ h '' C v)) P')
+    (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3)) :
     IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' initialSurface S'' T'' P') ∧
     Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
@@ -307,6 +391,7 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
     (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
+    (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
     (hcl : IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹'
       initialSurface S'' T'' P'))
     (hsep : Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹'
@@ -336,10 +421,15 @@ theorem separates_of_locally_eventually_eq {X : Type*} [TopologicalSpace X]
   sorry
 
 open Classical in
-theorem isOpenTopologicalCell_annularChain
+theorem isOpenTopologicalCell_annularChain (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
+    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
+    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
-    (hch : IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P') :
+    (hch : IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P')
+    (hsep : Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' annularChain H B P')
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v})) :
     IsOpenTopologicalCell 2 (annularChain H B P') ∧
     IsLocallyPolyhedral (annularChain H B P' \ {P'}) ∧
     closure (annularChain H B P') = annularChain H B P' ∪ h '' Dbd {u, v} ∧
@@ -424,17 +514,18 @@ theorem handlePiece_subset_of_edgeCollars (ht : IsTube K N C D Dbd h N')
 theorem exists_generalPosition_ball_pseudoCell {Ec Eint Ebd : Set E3} {P : E3}
     (hE : IsPseudoCell Ec Eint Ebd P) {δ : ℝ} (hδ : 0 < δ) :
     ∃ Bl Dc Dcint : Set E3, IsPLBall 3 Bl ∧ Bl ⊆ Metric.ball P δ ∧ P ∈ interior Bl ∧
-      IsTopologicalCellWithInterior 2 Dc Dcint ∧ Dc ⊆ Eint ∧ P ∈ Dcint ∧ Bl ∩ Ec ⊆ Dc ∧
-      CrossesPseudoCell (frontier Bl) Ec Eint P := by
+      IsTopologicalCellWithInterior 2 Dc Dcint ∧ Dc ⊆ Eint ∧ Dc ⊆ Metric.ball P δ ∧
+      P ∈ Dcint ∧ Bl ∩ Ec ⊆ Dc ∧ CrossesPseudoCell (frontier Bl) Ec Eint P := by
   sorry
 
-theorem exists_reducedDisk_of_crossesPseudoCell {Ec Eint Ebd Bl Dc Dcint : Set E3} {P : E3}
+theorem exists_reducedDisk_of_crossesPseudoCell {Ec Eint Ebd Bl Dc Dcint Ω : Set E3} {P : E3}
     (hE : IsPseudoCell Ec Eint Ebd P) (hBl : IsPLBall 3 Bl) (hP : P ∈ interior Bl)
     (hDc : IsTopologicalCellWithInterior 2 Dc Dcint) (hDcE : Dc ⊆ Eint) (hPDc : P ∈ Dcint)
-    (hBE : Bl ∩ Ec ⊆ Dc) (hgp : CrossesPseudoCell (frontier Bl) Ec Eint P) :
+    (hBE : Bl ∩ Ec ⊆ Dc) (hgp : CrossesPseudoCell (frontier Bl) Ec Eint P) (hΩ : IsOpen Ω)
+    (hBlΩ : Bl ⊆ Ω) (hDcΩ : Dc ⊆ Ω) :
     ∃ (Δ Δbd : Set E3) (r : (Fin 3 → ℝ) → E3),
       IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δbd = r '' stdSimplexBoundary 2 ∧
-      Δ ⊆ Bl ∧ Δbd = Δ ∩ Ec ∧
+      Δ ⊆ Ω ∧ Δbd = Δ ∩ Ec ∧
       ∃ DJ DJint : Set E3, IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec ∧
         DJ \ DJint = Δbd ∧ P ∈ DJint := by
   sorry
@@ -457,10 +548,38 @@ theorem moise322 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
   obtain ⟨φ, Pt, Dp, Dpint, J, A, S, T, S'', T'', htw, hZ⟩ :=
     exists_canonicalTower ht hu hv huv he hP' hW hWint hWsub hWfr hWK h307
       (hBuc.isClosed.union hBvc.isClosed) (Disjoint.union_left hBuD hBvD)
-  obtain ⟨hcl₁, hsep₁⟩ := separates_initialSurface ht hu hv huv he hP' htw
+  have havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3) := fun i =>
+    (hZ i).mono_right (insert_subset_iff.mpr
+      ⟨mem_union_left _ hBuu, singleton_subset_iff.mpr (mem_union_right _ hBvv)⟩)
+  obtain ⟨hcl₁, hsep₁⟩ := separates_initialSurface ht hu hv huv he hP' htw havoid
   obtain ⟨H, B, Jlo, Jhi, M, hch, -, hMcl, hMsep, hMP, hLcl, hloc⟩ :=
-    exists_descentSequence ht hu hv huv he hP' htw hcl₁ hsep₁ h303 h286 h267 h314
-  obtain ⟨hcell, hlp, hclos, hpairs⟩ := isOpenTopologicalCell_annularChain htw hch
+    exists_descentSequence ht hu hv huv he hP' htw havoid hcl₁ hsep₁ h303 h286 h267 h314
+  have hP'U : P' ∈ annularChain H B P' := by
+    change P' ∈ (⋃ i, H i ∪ B i) ∪ {P'}
+    exact mem_union_right _ (mem_singleton _)
+  have hsing : ∀ y : E3,
+      IsPreconnected (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {y}) := by
+    intro y
+    refine Set.Subsingleton.isPreconnected ?_
+    intro a ha b hb
+    exact Subtype.ext ((mem_singleton_iff.mp (mem_preimage.mp ha)).trans
+      (mem_singleton_iff.mp (mem_preimage.mp hb)).symm)
+  have hsepU : Separates
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' annularChain H B P')
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
+      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) := by
+    have : LocallyPathConnectedSpace (interior (h '' C u ∪ h '' C v)) :=
+      isOpen_interior.locallyPathConnectedSpace
+    refine separates_of_locally_eventually_eq (p := ⟨P', htw.centerMemInterior⟩) hMcl hMsep
+      (fun n => hMP n) (hsing (h u)) (hsing (h v)) hLcl hP'U ?_
+    rintro ⟨x, hxI⟩ hxp
+    have hxP : x ≠ P' := fun hx => hxp (Subtype.ext hx)
+    obtain ⟨U, hU, n₀, hn⟩ := hloc x hxI hxP
+    refine ⟨((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' U,
+      continuous_subtype_val.continuousAt.preimage_mem_nhds hU, n₀, fun n hn' => ?_⟩
+    simp only [← preimage_inter, hn n hn']
+  obtain ⟨hcell, hlp, hclos, hpairs⟩ :=
+    isOpenTopologicalCell_annularChain ht hu hv huv he hP' htw hch hsepU
   have hsph : IsTopologicalSphere 1 (h '' Dbd {u, v}) :=
     isTopologicalSphere_image_splitRim ht he hcard
   have hmid : ({u, v} : Finset E3).centroid ℝ id ∈ D {u, v} ∩ K.space := by
@@ -473,9 +592,6 @@ theorem moise322 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
       rw [hWK]
       exact mem_singleton _
     exact hmem.1
-  have hP'U : P' ∈ annularChain H B P' := by
-    change P' ∈ (⋃ i, H i ∪ B i) ∪ {P'}
-    exact mem_union_right _ (mem_singleton _)
   have hDbdD : h '' Dbd {u, v} ⊆ h '' D {u, v} := by
     refine image_mono ?_
     rw [← ht.splitProper _ he hcard]
@@ -508,27 +624,6 @@ theorem moise322 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
   have hE : IsPseudoCell (annularChain H B P' ∪ h '' Dbd {u, v}) (annularChain H B P')
       (h '' Dbd {u, v}) P' :=
     ⟨rfl, hcell, hsph, disjoint_interior_frontier.mono hUI hDbdfr, hclos, hP'U, hlp⟩
-  have hsing : ∀ y : E3,
-      IsPreconnected (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {y}) := by
-    intro y
-    refine Set.Subsingleton.isPreconnected ?_
-    intro a ha b hb
-    exact Subtype.ext ((mem_singleton_iff.mp (mem_preimage.mp ha)).trans
-      (mem_singleton_iff.mp (mem_preimage.mp hb)).symm)
-  have hsepU : Separates
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' annularChain H B P')
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) := by
-    have : LocallyPathConnectedSpace (interior (h '' C u ∪ h '' C v)) :=
-      isOpen_interior.locallyPathConnectedSpace
-    refine separates_of_locally_eventually_eq (p := ⟨P', htw.centerMemInterior⟩) hMcl hMsep
-      (fun n => hMP n) (hsing (h u)) (hsing (h v)) hLcl hP'U ?_
-    rintro ⟨x, hxI⟩ hxp
-    have hxP : x ≠ P' := fun hx => hxp (Subtype.ext hx)
-    obtain ⟨U, hU, n₀, hn⟩ := hloc x hxI hxP
-    refine ⟨((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' U,
-      continuous_subtype_val.continuousAt.preimage_mem_nhds hU, n₀, fun n hn' => ?_⟩
-    simp only [← preimage_inter, hn n hn']
   have hdisjE : ∀ Bx : Set E3, Bx ⊆ Bu ∪ Bv → Disjoint Bx (h '' D {u, v}) →
       Disjoint Bx (annularChain H B P' ∪ h '' Dbd {u, v}) := by
     intro Bx hBx hBxD
@@ -628,11 +723,12 @@ theorem moise323 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
 
 theorem moise324 : Moise324 := by
   intro Ec Eint Ebd P hE δ hδ
-  obtain ⟨Bl, Dc, Dcint, hBl, hBδ, hPB, hDc, hDcE, hPDc, hBE, hgp⟩ :=
+  obtain ⟨Bl, Dc, Dcint, hBl, hBδ, hPB, hDc, hDcE, hDcδ, hPDc, hBE, hgp⟩ :=
     exists_generalPosition_ball_pseudoCell hE hδ
-  obtain ⟨Δ, Δbd, r, hr, hΔbd, hΔB, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩ :=
+  obtain ⟨Δ, Δbd, r, hr, hΔbd, hΔδ, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩ :=
     exists_reducedDisk_of_crossesPseudoCell hE hBl hPB hDc hDcE hPDc hBE hgp
-  exact ⟨Δ, Δbd, r, hr, hΔbd, hΔB.trans hBδ, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩
+      Metric.isOpen_ball hBδ hDcδ
+  exact ⟨Δ, Δbd, r, hr, hΔbd, hΔδ, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩
 
 end Assemblies
 
