@@ -12615,3 +12615,4 @@ import DifferentialGeometry.Geometry.Metric.DirectLimit.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Curvature
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Curvature
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
