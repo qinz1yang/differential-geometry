@@ -13,27 +13,45 @@ continuation queue, not another progress count. Do not reread historical handoff
 - `E:\differential-geometry-dev`, including shared outputs, is read-only.
 - Follow root/PL AGENTS, NAMING, STRUCTURE, and Skeleton/README rules 1–8. No declaration
   docstrings or inline Lean comments, no skeleton imports, no private predicate substitutes.
-- Last mathematical checkpoint: local `0473a5fec9c5c7b5deabc3b23171352f2711d4a4`, mirror
-  `7fc0ff29d79cd97a1cc577019996f9e470f68fc2`. Later review-status edits change module documentation,
-  not the checked mathematical declarations.
+- Previous review checkpoint: local `a51700465d4563258792c67dba8bfbffea1c710b`, mirror
+  `4304e90364dd4117a7ac61c48356c5f07df920ce`. The current acceptance registers the independently
+  verified global two-graph normalizer described in A1.5c of the ledger.
   Check live HEAD and dirty state before editing; other lanes are concurrent.
 
-## F: third pass explicitly dispatched by the owner
+## F: local chart transport authorized and dispatched
 
 The app task title is exactly **F**, id `01a0a0d6-99b1-7b50-bd70-afdc79cd389b`, host local.
-The first pass completed, reporting one CLOSED target (13) and eight STUCK targets.
-The second pass ended with both selected endpoints 10 and 15 still STUCK. It reported a
-checked `TopologicalCellInterior` module and a checked private `F15Scratch24` construction
-of the global PL two-graph normal form. These reports have not yet been independently
-accepted; the cumulative 8 CLOSED / 8 STUCK table is not the lead's acceptance count.
-The owner immediately authorized a third pass. F was directly messaged to resume 15 from
-that concrete construction, first producing a real general normalization module and then
-assembling the full local endpoint, including source-sheet neighborhoods, exact preimage
-coverage, the boundary half-space and atlas chart. All new Lean calls count toward a limit
-of twelve for 15 this pass. Entry 10 is secondary only with a new concrete route; 11/12's
-old searches are excluded. The task follows [FILL_QUEUE.md](FILL_QUEUE.md), lease a and
-public vocabulary, and must stop after this pass. Do not audit its active implementation
-in parallel or count auxiliary output as completion of the frozen endpoint.
+F's third pass ended with entry 15 still STUCK and a closed global PL two-graph normalizer.
+Read the final corrected receipt in FILL_LOG; the preceding receipt has escaped control
+characters. `StableCrossingNormalizer` is now independently accepted, registered in the
+aggregate and recorded under A1.5c. Its only lead source edit narrows the first import to
+`GeneralPosition`; declarations and proofs are byte-identical to F's delivery. Named-module
+compilation, all-declaration foundational-axiom audit and all 13 linters have zero diagnostics.
+Entry 10's `TopologicalCellInterior` candidate is still not independently accepted.
+The cumulative 8 CLOSED / 8 STUCK worker table is not the lead's acceptance count.
+
+At the owner's request the lead checked the missing HasGroupoid issue and authorized a
+fourth pass. Both the old wrapper and F's proposed `subset_maximalAtlas` shortcut require
+the global instance. However, `hec` itself gives the PL transition to `chartAt y` directly
+from `mem_maximalAtlas_iff` or `compatible_of_mem_maximalAtlas_left`; the frozen endpoint
+does not need another assumption. F has been directly tasked to extract the canonical
+chart-transport proof with a single piecewise affine transition hypothesis, retain the old
+`of_mem_maximalAtlas` signature as a corollary, and remove the unnecessary HasGroupoid binder
+from `exists_crossing_chart_mem_atlas`. The old wrapper type must be checked as a corollary.
+No frozen skeleton signature or maximalAtlas definition may change. F may edit the canonical
+`NormalCrossingTransport` module and its own endpoint/WIP, with AGENTS source-style cleanup;
+other public signatures/scopes and other lanes' consumers must be preserved.
+
+The former twelve-call cap was a lead-imposed scheduling rule. After the owner questioned
+it, the lead withdrew it and sent the correction directly to active task F. No arbitrary
+call-count cap remains: continue productive proof work and elaboration repairs until the
+scoped delivery or a substantiated blocker requiring unavailable input or an interface
+decision. The actual lease's concurrency, module and expiry controls remain binding.
+F should then finish the source-sheet neighborhoods, complete fibers, boundary half-space
+and unchanged entry 15 endpoint. Other entries are outside this pass. Follow
+[FILL_QUEUE.md](FILL_QUEUE.md), lease a and public vocabulary; stop after this scoped pass.
+Do not audit its active implementation in parallel or count auxiliary output as completion
+of the frozen endpoint.
 The relative boundary targets 7/14a/14b are now accepted; entry 5 stays outside this F pass
 while its two new geometric leaves await review.
 
@@ -125,8 +143,9 @@ and `checker.ps1`. The live a–e leases were owner-extended to
 `claude-agent-<letter>-20260919`, output roots `.../claude-moise-agent-<letter>`.
 The owner-authorized F round uses a; local workers d/e have stopped and lead c has no active
 build after acceptance. Read current process state before reusing a lane. Other leads' tasks
-are outside this report. Latest confirmed active F turn: `01a0c945-199d-7520-95ef-30c50b850baa`;
-snapshot cursor `71623190-821a-49bd-937d-91b8dff6d378:7`. Do not automatically start another pass.
+are outside this report. Latest confirmed active F turn: `01a0c967-c1ae-7601-b1a9-0d063142c6ea`;
+snapshot cursor `71623190-821a-49bd-937d-91b8dff6d378:9`. The call-cap correction was sent
+after this active snapshot. Do not automatically start another pass.
 
 The checker may reject expected skeleton warnings at the wrapper level. For a skeleton,
 inspect the JSON's Lean exitCode 0, stable source hash, and exact sorry-only log, rather than

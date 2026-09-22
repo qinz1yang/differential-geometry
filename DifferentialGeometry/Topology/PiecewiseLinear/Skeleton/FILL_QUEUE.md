@@ -15,27 +15,42 @@ Never import a skeleton. Preserve exact names, binders, instances and lexical sc
 Check possible counterexamples against every actual Lean hypothesis first; failure of one
 local argument is not a counterexample to the whole leaf.
 
-The owner authorized a third pass after F completed its second pass. The lead directly
-messaged task F to resume entry 15 from its checked `F15Scratch24` construction: promote the
-general PL two-graph normalization to a real module, restrict it to the two source-sheet
-neighborhoods, prove the full two-point fiber coverage, preserve the `t = 0` half-space in
-the boundary case, and then change to the atlas chart. Do not restart the completed global
-construction or count that auxiliary result as closure of the frozen endpoint.
+After F's third pass and the owner's request for an interface decision, the lead has
+authorized and directly dispatched a fourth pass on entry 15. The global two-graph
+normalizer is independently accepted in `StableCrossingNormalizer`; use its public theorem
+and `StableCrossingBlock`, without modifying the normalizer or restarting that construction.
 
-This pass permits at most twelve new Lean calls for entry 15, including every external
-probe, named-module check and audit. Reserve calls for delivery checks. At a genuine new
-blocker, report the exact residual goal; a checked real auxiliary theorem is a partial
-delivery, not a CLOSED endpoint. Entry 10 is secondary only if a new constructive route is
-already available. Preserve its existing `TopologicalCellInterior` candidate. Do not repeat
-11/12's old searches. Entries 7/14a/14b are accepted through `RelativeBoundaryGluing`;
-entry 5 remains outside this pass while its two geometric leaves await review. Stop after
-this pass and wait for further authorization.
+First extend the canonical `NormalCrossingTransport` API. Extract the current chart-transport
+proof into a general theorem requiring only
+`IsPiecewiseAffineOn (e.symm.trans e') (e.symm.trans e').source`, alongside its existing
+crossing, source continuity and source-membership hypotheses. Keep `of_mem_maximalAtlas`
+with its old signature as a corollary. Generalize `exists_crossing_chart_mem_atlas` by
+removing the unnecessary global `HasGroupoid` binder and retaining all other inputs and
+the exact conclusion. For `e' := chartAt _ y`, obtain the transition directly from
+`mem_maximalAtlas_iff.mp hec` and `chart_mem_atlas`, or
+`StructureGroupoid.compatible_of_mem_maximalAtlas_left`. The proposed `subset_maximalAtlas`
+shortcut still needs `HasGroupoid` and is not the authorized proof route. Check the full old
+wrapper type as a corollary in an external probe. Do not change any frozen skeleton type.
+
+Then restrict the global normalizer to the actual source-sheet polyhedral relative
+neighborhoods, prove both PL homeomorphism witnesses and complete fiber coverage, preserve
+the `t = 0` half-space in the boundary case, and consume the generalized atlas wrapper.
+The global auxiliary result does not close the frozen endpoint.
+
+The former twelve-call limit was imposed by the lead, not by the owner, AGENTS.md or the
+compiler lease. The lead has withdrawn it and directly notified F. There is no call-count
+limit: continue constructive proof work and ordinary elaboration repairs until delivery
+or a substantiated blocker requiring unavailable input or a frozen-interface decision.
+Do not repeat unproductive searches. Lease concurrency, expiry and module restrictions
+remain binding. Do not start entries 5/10/11/12 in this pass; preserve the existing
+`TopologicalCellInterior` candidate. Entries 7/14a/14b are accepted through
+`RelativeBoundaryGluing`. Stop after this scoped pass and wait for further authorization.
 
 ## Remaining entries, in suggested order
 
 | Entry | Leaf / skeleton | Public input | Remaining obligation |
 |---|---|---|---|
-| 15 | `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` / `GeneralPositionInDouble` | `StableCrossingBlock` | Full two-plane PL normal form from graph sheets, the shared coordinate, margin and neighborhood control. Intersection dimension alone is insufficient. Seven definitions and five helpers are public. |
+| 15 | `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` / `GeneralPositionInDouble` | `StableCrossingBlock`, `StableCrossingNormalizer` | The global two-graph PL normalization is accepted. Still supply both local source-sheet normal forms, complete fibers, the boundary half-space and the locally compatible chart transport. |
 | 10 | `exists_isTopologicalCellWithInterior_union_consecutive` / `Section31CanonicalConfiguration` | `CanonicalConfiguration` | Planar two-disk union when the intersection is a two-cell, including both intrinsic interiors. The proved revolution spine/interior results do not supply this planar gluing step. |
 | 11 | `separates_initialSurface` / `Section32PseudoCell` | `PseudoCell`, `SeparatesOfLocallyEventuallyEq` | Closedness and separation of the alternating surface using `havoid`, outer local finiteness and `IsTube.splitSeparates`. The general separating-limit lemma is proved; the geometric separator sequence and local stabilization remain to construct. Tower vocabulary and `IsTube.mem_interior_dualCell` are public. |
 | 12 | `section33_faceEulerChar_handlePiece` / `Section33Approximation` | `PolyhedralTubeNeighborhood` | Global Euler/capping argument yielding `2 - deg v`, with exactly the incident trace polygons as boundary. All four needed definitions are public. |
@@ -47,8 +62,11 @@ in `DifferentialGeometry.Topology.Handle.SmoothStage` for future smoothing leave
 
 ## Delivery
 
-- Create real proof modules or continue your own WIP files. Do not edit skeletons, the flat
-  aggregate, `FREE_INPUTS.md`, other lanes' files, or Git state.
+- Create real proof modules or continue your own WIP files. The lead additionally authorizes
+  the canonical `NormalCrossingTransport.lean` edit described above; remove its declaration
+  docstrings under AGENTS.md and preserve all other public signatures/scopes. Report direct
+  consumers without editing other lanes' files. Do not edit `StableCrossingNormalizer`,
+  skeletons, the flat aggregate, `FREE_INPUTS.md`, other lanes' files, or Git state.
 - Append exact public names, imports, source hashes, compiler receipts, axiom/linter results
   and remaining goals to `FILL_LOG.md`. Real modules require zero errors, warnings and avoidable
   info diagnostics; exclude only docBlame/docBlameThm from the standard linter set.
