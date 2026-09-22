@@ -13,9 +13,9 @@ continuation queue, not another progress count. Do not reread historical handoff
 - `E:\differential-geometry-dev`, including shared outputs, is read-only.
 - Follow root/PL AGENTS, NAMING, STRUCTURE, and Skeleton/README rules 1–8. No declaration
   docstrings or inline Lean comments, no skeleton imports, no private predicate substitutes.
-- Last mathematical checkpoint: local `4785054f0eef10717c565994a888768ce8d95259`, mirror
-  `df6cbdc7481ef9b3a57cb72df280dff9718fd918`. Later documentation commits do not change these
-  Lean sources. Check live HEAD and dirty state before editing; other lanes are concurrent.
+- Last mathematical checkpoint: local `0473a5fec9c5c7b5deabc3b23171352f2711d4a4`, mirror
+  `7fc0ff29d79cd97a1cc577019996f9e470f68fc2`. Later documentation commits do not change these Lean sources.
+  Check live HEAD and dirty state before editing; other lanes are concurrent.
 
 ## F: second pass explicitly dispatched by the owner
 
@@ -24,7 +24,8 @@ The first pass completed, reporting one CLOSED target (13) and eight STUCK targe
 The owner then asked the lead to start F's next round immediately. F was directly messaged
 to work on 10, then 15, with 11/12 only on a new constructive route. The task follows
 [FILL_QUEUE.md](FILL_QUEUE.md), lease a, and public vocabulary; it must stop after this pass.
-Entries 5/7/14a/14b are reserved for this lead's local producer workers.
+The relative boundary targets 7/14a/14b are now accepted; entry 5 stays outside this F pass
+while its two new geometric leaves await review.
 
 Entry 13 is independently accepted. The real proof used only local PL chart certificates,
 so its redundant HasGroupoid binder and dummy let were removed. This is an explicit stronger
@@ -32,10 +33,13 @@ public signature, not a byte-identical copy; the complete old frozen type is sep
 checked as a corollary. The remaining two leaf blocks and assembly are unchanged, and the
 real module and aggregate imports are registered. Evidence is recorded in the sole ledger.
 
-Local worker d is developing the general derived-neighborhood complement supplier for 5.
-Local worker e has a real link cancellation proof and is assembling the three relative
-attachment boundary targets. Do not treat either draft as accepted before the lead's gate.
-The read-only reviewer finished checking the redundant groupoid assumption and made no edits.
+Local workers d/e are finished and their lanes idle. The relative gluing module is
+independently accepted, registered, and consumed by the smoothing skeleton with exact
+frozen headers and unchanged remaining code. It still receives the original hN certificate.
+Entry 5 has real compact image transport and a continuous explicit ray, followed by a
+two-leaf UNREVIEWED skeleton whose source/target assemblies were independently checked.
+The ray embedding, exact range, and joint fixture remain OPEN/UNTESTED. No skeleton imports
+were added. The read-only reviewer found no relative-boundary blocker and has stopped.
 
 The normal gate remains: joint counterexample first if FALSE, exact frozen types/scopes or
 explicit proved generalization, independent zero-diagnostic check, transitive axioms and
@@ -54,6 +58,7 @@ all proposed joint fixtures remain UNTESTED. They are outside F's current frozen
 | [AV](../consult/AV-section28-annuli-review-request.md) | 28.6; simultaneous product coordinates are stronger than printed standard position |
 | [AW](../consult/AW-section30-separation-review-request.md) | 30.3; safe boundary of a cut ball, arbitrary disconnected targets |
 | [AX](../consult/AX-section26-three-surfaces-review-request.md) | 26.7; local three-page chart and multiple common boundary components |
+| [AY](../consult/AY-derived-neighborhood-complement-review-request.md) | Derived-neighborhood ray embedding and exact interior-complement range |
 
 When answers arrive, create the next alphabetic consult digest and check every proposed
 counterexample against the original Lean clauses. Do not equate a broken local argument with
@@ -70,6 +75,10 @@ Lead output root: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c`.
 `fill-interface-evidence-20260922/final-producer-receipts.json` checks the current hashes of
 the five producer skeletons and two real modules against their independent receipts.
 The same directory retains endpoint/axiom audit receipts and earlier frozen-source comparisons.
+`locally-finite-manifold-final-receipts.json` covers entry 13;
+`derived-complement-real-receipts.json` covers its two proved foundations;
+`relative-and-derived-final-receipts.json` covers the three boundary targets and the new
+conditional producer. Corresponding frozen-comparison files record the exact scope checks.
 `AcceptLeadPathSeparation20260922.log` and the other acceptance logs are under `.lake/scratch`.
 Temporary audit source probes are removed after use; generator scripts and receipts remain.
 
@@ -78,8 +87,10 @@ Compile only through PowerShell with the private preparer and checker:
 and `checker.ps1`. The live a–e leases were owner-extended to
 `2026-09-24T04:17:07.7791223Z`; re-read them before compiling, never edit them. Tokens are
 `claude-agent-<letter>-20260919`, output roots `.../claude-moise-agent-<letter>`.
-The owner-authorized F round uses a; local producer workers use d/e; lead acceptance uses c.
-Read current process state before reusing a lane. Other leads' tasks are outside this report.
+The owner-authorized F round uses a; local workers d/e have stopped and lead c has no active
+build after acceptance. Read current process state before reusing a lane. Other leads' tasks
+are outside this report. Latest confirmed F turn: `01a0c8c0-732b-77e3-9596-c363aa1ef4f6`;
+snapshot cursor `71623190-821a-49bd-937d-91b8dff6d378:5`. Do not automatically start another pass.
 
 The checker may reject expected skeleton warnings at the wrapper level. For a skeleton,
 inspect the JSON's Lean exitCode 0, stable source hash, and exact sorry-only log, rather than

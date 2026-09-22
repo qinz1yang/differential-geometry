@@ -20,8 +20,9 @@ task F to start with entry 10 (a general planar two-cell union producer), then e
 (the full PL crossing normal form). If both meet new concrete blockers, choose entry 11
 or 12 only with a new constructive route. Do not repeat the previous broad searches.
 Entries 7/14a/14b are now accepted through `RelativeBoundaryGluing`. Entry 5 has a new
-two-leaf decomposition awaiting external review and remains outside this F pass. Continue while an approach makes concrete
-progress; record exact goals at genuine blockers. Stop after this pass.
+two-leaf decomposition awaiting external review and remains outside this F pass. Continue
+while an approach makes concrete progress; record exact goals at genuine blockers.
+Stop after this pass.
 
 ## Remaining entries, in suggested order
 
