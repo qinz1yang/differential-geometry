@@ -16,11 +16,18 @@ import Mathlib.Analysis.Normed.Module.Connected
 # Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
 
 The assemblies `moise311`, `moise312`, `moise313` and `moise314` prove the named propositions
-`Moise311`-`Moise314` of `CanonicalConfiguration.lean` for real from the nine leaves of this
-file and from `Moise307` taken as a hypothesis; every `sorry` is a leaf and none sits inside
-an assembly.  `moise313` and the two transport lemmas need no leaf at all.
+`Moise311`-`Moise314` of `CanonicalConfiguration.lean` for real from the leaves of this file
+and from `Moise307` taken as a hypothesis; every `sorry` is a leaf and none sits inside an
+assembly.  `moise313` and the two transport lemmas need no leaf at all, and since the first
+review `exists_generalPosition_solidTorus_triple` is derived from the relative leaf.
 
-The leaves, all **unreviewed**, with the book gap each covers (Moise pp. 220-222, digest AD).
+Review state.  First external review 2026-09-21 (digest AP,
+`consult/AP-section31-first-review-digest.md`, snapshot `c1d5ba63`): the nine leaves listed
+first below are all OK and **frozen**; their statements are byte-identical to the reviewed
+snapshot, and `exists_generalPosition_solidTorus_triple` keeps its reviewed statement but is
+now proved.  The tenth leaf `exists_generalPosition_solidTorus_relative`, added on the
+reviewer's interface fix, is **unreviewed**.  The leaves, with the book gap each covers (Moise
+pp. 220-222, digest AD).
 
 `isSpine_revolutionOf_of_mem_cellInterior` (medium).  Revolving a planar two-cell of the open
 right half-plane about the `y`-axis gives a solid torus in which the circle of any point of the
@@ -47,17 +54,48 @@ largest single gap of Section 31.
 `isCombinatorialSolidTorus_of_hasCylindricalDiagram` (medium).  The cyclic chain of PL
 three-cells from a cylindrical diagram, by slicing the cylinder into at least three slabs
 (`CylinderCut.lean` has the two-slab machinery), together with the solid-torus component, which
-needs orientability of a compact PL three-manifold in `ℝ³`
-(`IsCombinatorialManifold.isOrientable_euclidean_three` is the nearest tree fact).  This is the
-bridge from `Moise307`'s conclusion to the `S'' j` field, the easy direction of the trichotomy of
-AD 6 Q2; Theorem 28.1 is the converse and is not used.
+must exclude a reversed gluing of the two end disks and so needs orientability in `ℝ³`.
+Checked 2026-09-21: `IsCombinatorialManifold.isOrientable_euclidean_three` takes a finite
+`IsCombinatorialManifold 2 L` with `IsConnected L.space` in `EuclideanSpace ℝ (Fin 3)`, a
+connected closed surface, so it applies to the boundary surface and not to the three-manifold
+with boundary; the verified with-boundary input is `Orientation.lean`'s
+`isOrientable_of_space_subset_convexHull` (a finite `IsCombinatorialManifoldWithBoundary n K`
+whose space lies in the convex hull of `n + 1` points).  This is the bridge from `Moise307`'s
+conclusion to the `S'' j` field, the easy direction of the trichotomy of AD 6 Q2; Theorem 28.1
+is the converse and is not used.
 
-`exists_generalPosition_solidTorus_triple` (deep).  The joint choice hidden in "repeated": three
-polyhedral solid tori with the nesting `h '' A j ⊆ Int S'' j ⊆ S'' j ⊆ Int (h '' S j)` are
-replaced by three with the same nesting whose consecutive boundary tori cross along finitely
-many disjoint polygons.  Its input is exactly what `Moise307` and the bridge deliver per index,
-and the output is the whole general-position clause, so no later consumer sees an arbitrary
-map.
+`exists_generalPosition_solidTorus_triple` (reviewed OK, now **proved** from the relative
+leaf).  The joint choice hidden in "repeated": three polyhedral solid tori with the nesting
+`h '' A j ⊆ Int S'' j ⊆ S'' j ⊆ Int (h '' S j)` are replaced by three with the same nesting
+whose consecutive boundary tori cross along finitely many disjoint polygons.  Its input is
+exactly `hstep`'s output per index (`Fits (h '' A j) (Int (h '' S j)) (S' j)` unfolded), and
+the output is the whole general-position clause, so no later consumer sees an arbitrary map.
+The review found that this per-triple statement does not compose across overlapping triples
+(Section 32 needs one sequence `S''_i` with every consecutive pair in general position, and
+`moise311` re-chooses the whole triple), so the choice is made one torus at a time by the
+relative leaf: `S'' 0 := S' 0`, `S'' 1` chosen relative to `![S'' 0]`, `S'' 2` relative to
+`![S'' 0, S'' 1]`; the consecutive clauses are `PairGP.symm` of the leaf's output, and the
+compactness `IsCompact (h '' A j)` the leaf asks for comes from `isCompact_revolutionOf` on the
+revolved segment, transported through the continuous `h`.
+
+`exists_generalPosition_solidTorus_relative` (deep, **unreviewed**, digest AP's interface fix).
+Relative general position, the statement Section 32 must consume: for a compact `A`, an open
+`U`, a combinatorial solid torus `S₀` with `Fits A U S₀` (`A ⊆ Int S₀` and `S₀ ⊆ U`) and any
+finite family `F` of combinatorial solid tori, a parameter that is never re-chosen, there is a
+combinatorial solid torus `S` with `Fits A U S` and `PairGP S (F i)` for every `i`: the two
+boundary tori satisfy `HasPLCrossingAt` at every common point and meet in a finite union of
+pairwise disjoint polygons, the `crossing` and `polygons` idioms of `IsCanonicalConfiguration`
+for one pair.  No clause beyond `Fits` is needed: `U` is instantiated by the open set
+`Int (h '' S j)`, so `S ⊆ U` already is the strict outer containment, `A ⊆ Int S` is the
+annulus clause, and compactness of `A` is what keeps `A` inside a small perturbation of `S₀`.
+`PairGP R S` holds with the empty family when the two boundaries are disjoint, exactly as
+`IsCanonicalConfiguration.polygons` does; general position includes the empty intersection.
+Hand-off to Section 32: enumerate the integer indices in their natural order with
+`A = h '' A_i`, `U = Int (h '' S_i)` and `F` the already chosen neighbours, which makes all
+overlapping triples compatible; approach to the boundary, approach to the centre and local
+finiteness still come from the outer control of the `S_i`, not from this leaf.  Owed: hoist
+`Fits`, `PairGP`, `PairGP.symm` and this statement to a real module before Section 32's tower
+leaf consumes them.
 
 `exists_polygon_carrier_of_spine` (deep).  The chain-intersection device of 31.4 (ii)-(iv) and
 the uncited 28.11, in the tree's vocabulary: given a combinatorial solid torus `S₁` containing a
@@ -65,7 +103,11 @@ spine `Z₁` of a larger solid torus, and a set `Z₀ ⊆ Int S₁` disjoint fro
 solid torus `S₂` carrying a generator of `π(S₁)`, some polygon of `Bd S₂ ∩ Int S₁` carries a
 generator of `π(S₂)`.  The tree has no chain-level `H₁`, so 28.11 is folded into this leaf
 rather than stated separately; the single-polygon form is justified because disjoint essential
-polygons on a torus are parallel.
+polygons on a torus are parallel.  Implementation note from the first review: 28.11 gives an
+integer 1-cycle, not a polygon; the cycle must first be resolved into pairwise disjoint polygonal
+curves inside the prescribed open set (on `Bd S₂`, inside `Int S₁`), and only then does 28.8
+extract the generator-carrying polygon.  This normalisation is implementation work of the leaf,
+the reviewer's most likely surprise.
 
 `carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier` (deep).  28.6 + 28.9 + 28.10
 on the boundary torus of a combinatorial solid torus: a polygon disjoint from a polygon carrying
@@ -98,15 +140,23 @@ Vacuity.  `IsRevolvedTorusChain` and `IsCanonicalConfiguration` were untested tr
 two leaves, so `isRevolvedTorusChain_standard` inhabits the first predicate on the fixture
 `isPlanarCellChain_standard` (three rectangles `[j + 3/5, j + 12/5] × [-1, 1]` revolved, points
 `(j + 1, 0, 0)`), and `exists_isCanonicalConfiguration_standard` inhabits the second with
-`h = id` given `Moise307`.  On the fixture every leaf is non-degenerate: the cell interiors are
-open rectangles containing the points, `D 0 ∪ D 1 = [3/5, 17/5] × [-1, 1]` is a rectangle, the
-middle circles are round circles of radii `2` and `3`, and the nesting sets are compact inside
-open sets.  Every generator-carrying set in the leaves is required non-empty, because
-`CarriesFundamentalGroupOnto ∅ S` holds vacuously.
+`h = id` given `Moise307`.  Both are **CONDITIONALLY INHABITED**: the first depends on the two
+reviewed leaves it consumes, the second on every leaf of `moise311` and on `Moise307`; neither
+is an independent sorry-free test, they only show that the predicates have a non-degenerate
+model once the leaves hold.  Likewise `Fits` is inhabited by `hstep`'s output in `moise311` and
+`PairGP` by the relative leaf's output, both conditionally.  On the fixture every leaf is
+non-degenerate: the cell interiors are open rectangles containing the points,
+`D 0 ∪ D 1 = [3/5, 17/5] × [-1, 1]` is a rectangle, the middle circles are round circles of
+radii `2` and `3`, and the nesting sets are compact inside open sets.  Every generator-carrying
+set in the leaves is required non-empty, because `CarriesFundamentalGroupOnto ∅ S` holds
+vacuously.  For the relative leaf the review's fixture is the standard chain under
+`h (x, y, z) = (x, y + |z| / 10, z)` with fine polygonal annular cylinders at different heights
+inside, longitudinal polygons and small boundary disks, not `h = id` or empty intersections.
 
 Consumers.  `Moise312` feeds Section 34 Lemma 2 through `moise308Nested`; Section 32's proofs
 import all four theorems.  To be hoisted into real modules when the leaves are proved:
 `revolutionOf_union`, `revolutionOf_inter`, `revolutionOf_empty`, `mem_revolutionOf_self`,
+`isCompact_revolutionOf`, `Fits`, `PairGP`, `PairGP.symm`,
 `isEmbedding_domRestrict_mono`, `isTopologicalSolidTorus_image_of_isEmbedding`,
 `isSpine_image_of_isEmbedding`,
 `fundamentalGroup_map_inclusion_bijective_of_isSpine_of_subset_interior`,
@@ -155,6 +205,39 @@ theorem revolutionOf_empty : revolutionOf ∅ = ∅ := by
 theorem mem_revolutionOf_self {X : Set (EuclideanSpace ℝ (Fin 3))} {q : EuclideanSpace ℝ (Fin 3)}
     (hq : q ∈ X) (h2 : q 2 = 0) (h0 : 0 ≤ q 0) : q ∈ revolutionOf X :=
   ⟨q, hq, h2, h0, rfl, by rw [h2]; ring⟩
+
+theorem isCompact_revolutionOf {X : Set (EuclideanSpace ℝ (Fin 3))} (hX : IsCompact X) :
+    IsCompact (revolutionOf X) := by
+  obtain ⟨R, hR⟩ := hX.isBounded.subset_closedBall 0
+  have hC : IsCompact ({z : EuclideanSpace ℝ (Fin 3) × EuclideanSpace ℝ (Fin 3) | z.1 ∈ X} ∩
+      ({z | z.1 2 = 0} ∩ ({z | 0 ≤ z.1 0} ∩
+        ({z | z.1 1 = z.2 1} ∩ {z | z.1 0 ^ 2 = z.2 0 ^ 2 + z.2 2 ^ 2})))) := by
+    refine (hX.prod (isCompact_closedBall (0 : EuclideanSpace ℝ (Fin 3)) R)).of_isClosed_subset
+      ((hX.isClosed.preimage continuous_fst).inter
+        ((isClosed_eq (by fun_prop) continuous_const).inter
+          ((isClosed_le continuous_const (by fun_prop)).inter
+            ((isClosed_eq (by fun_prop) (by fun_prop)).inter
+              (isClosed_eq (by fun_prop) (by fun_prop)))))) ?_
+    rintro ⟨q, p⟩ ⟨hqX, hq2, -, hq1, hqsq⟩
+    have hq2' : q 2 = 0 := hq2
+    have hq1' : q 1 = p 1 := hq1
+    have hqsq' : q 0 ^ 2 = p 0 ^ 2 + p 2 ^ 2 := hqsq
+    have hqR : ‖q‖ ≤ R := mem_closedBall_zero_iff.mp (hR hqX)
+    refine ⟨hqX, mem_closedBall_zero_iff.mpr (le_trans ?_ hqR)⟩
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp ?_
+    change ‖p‖ ^ 2 ≤ ‖q‖ ^ 2
+    have h1 := EuclideanSpace.real_norm_sq_eq p
+    have h2 := EuclideanSpace.real_norm_sq_eq q
+    rw [Fin.sum_univ_three] at h1 h2
+    rw [hq2', hq1', hqsq', zero_pow two_ne_zero, add_zero] at h2
+    linarith
+  convert hC.image continuous_snd using 1
+  ext p
+  constructor
+  · rintro ⟨q, hq, h2, h0, h1, hsq⟩
+    exact ⟨(q, p), ⟨hq, h2, h0, h1, hsq⟩, rfl⟩
+  · rintro ⟨⟨q, p'⟩, ⟨hq, h2, h0, h1, hsq⟩, rfl⟩
+    exact ⟨q, hq, h2, h0, h1, hsq⟩
 
 end Revolution
 
@@ -283,6 +366,27 @@ theorem fundamentalGroup_map_inclusion_transfer_pair
 
 end FundamentalGroupTransfer
 
+section RelativeGeneralPosition
+
+def Fits (A U S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
+  IsCombinatorialSolidTorus S ∧ A ⊆ interior S ∧ S ⊆ U
+
+def PairGP (R S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
+  (∀ x ∈ frontier R ∩ frontier S, HasPLCrossingAt (frontier R) (frontier S) x) ∧
+    ∃ (ι : Type) (_ : Finite ι) (G : ι → Set (EuclideanSpace ℝ (Fin 3))),
+      (∀ i, IsPLSphere 1 (G i)) ∧ (Pairwise fun i i' => Disjoint (G i) (G i')) ∧
+        frontier R ∩ frontier S = ⋃ i, G i
+
+theorem PairGP.symm {R S : Set (EuclideanSpace ℝ (Fin 3))} (h : PairGP R S) : PairGP S R := by
+  obtain ⟨hcross, ι, hι, G, hG, hdisj, heq⟩ := h
+  refine ⟨fun x hx => ?_, ι, hι, G, hG, hdisj, ?_⟩
+  · rw [inter_comm] at hx
+    exact (hcross x hx).symm
+  · rw [inter_comm]
+    exact heq
+
+end RelativeGeneralPosition
+
 section Leaves
 
 theorem isSpine_revolutionOf_of_mem_cellInterior {D Dint : Set (EuclideanSpace ℝ (Fin 3))}
@@ -319,6 +423,12 @@ theorem isCombinatorialSolidTorus_of_hasCylindricalDiagram {S : Set (EuclideanSp
     (hS : HasCylindricalDiagram S) : IsCombinatorialSolidTorus S := by
   sorry
 
+theorem exists_generalPosition_solidTorus_relative {A U S₀ : Set (EuclideanSpace ℝ (Fin 3))}
+    {m : ℕ} (hA : IsCompact A) (hU : IsOpen U) (h₀ : Fits A U S₀)
+    (F : Fin m → Set (EuclideanSpace ℝ (Fin 3))) (hF : ∀ i, IsCombinatorialSolidTorus (F i)) :
+    ∃ S, Fits A U S ∧ ∀ i, PairGP S (F i) := by
+  sorry
+
 theorem exists_generalPosition_solidTorus_triple
     {P : Fin 4 → EuclideanSpace ℝ (Fin 3)} {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
     {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))} {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
@@ -335,7 +445,36 @@ theorem exists_generalPosition_solidTorus_triple
       ∀ j : Fin 2, ∃ (ι : Type) (_ : Finite ι) (G : ι → Set (EuclideanSpace ℝ (Fin 3))),
         (∀ i, IsPLSphere 1 (G i)) ∧ (Pairwise fun i i' => Disjoint (G i) (G i')) ∧
           frontier (S'' j.castSucc) ∩ frontier (S'' j.succ) = ⋃ i, G i := by
-  sorry
+  have hSN : ∀ j, S j ⊆ N := fun j => by
+    rw [hN]
+    exact subset_iUnion S j
+  have hA : ∀ j, IsCompact (h '' A j) := fun j => by
+    have hseg : IsCompact (A j) := by
+      rw [hc.annulusEq j, segment_eq_image ℝ]
+      exact isCompact_revolutionOf (isCompact_Icc.image (by fun_prop))
+    refine hseg.image_of_continuousOn ?_
+    exact (continuousOn_iff_continuous_domRestrict.mpr hh.continuous).mono
+      ((hc.annulusSubset j).trans (interior_subset.trans (hSN j)))
+  obtain ⟨S₁, hS₁, hGP₁⟩ := exists_generalPosition_solidTorus_relative (hA 1) isOpen_interior
+    (hS' 1) ![S' 0] (fun i => by fin_cases i; exact (hS' 0).1)
+  obtain ⟨S₂, hS₂, hGP₂⟩ := exists_generalPosition_solidTorus_relative (hA 2) isOpen_interior
+    (hS' 2) ![S' 0, S₁] (fun i => by
+      fin_cases i
+      · exact (hS' 0).1
+      · exact hS₁.1)
+  have h01 : PairGP (S' 0) S₁ := (hGP₁ 0).symm
+  have h12 : PairGP S₁ S₂ := (hGP₂ 1).symm
+  refine ⟨![S' 0, S₁, S₂], fun j => ?_, fun j => ?_, fun j => ?_⟩
+  · fin_cases j
+    · exact hS' 0
+    · exact hS₁
+    · exact hS₂
+  · fin_cases j
+    · exact h01.1
+    · exact h12.1
+  · fin_cases j
+    · exact h01.2
+    · exact h12.2
 
 theorem exists_polygon_carrier_of_spine {S₁ S₂ T₁ T₂ Z₀ Z₁ : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₁ : IsCombinatorialSolidTorus S₁) (hS₂ : IsCombinatorialSolidTorus S₂)
