@@ -4,6 +4,12 @@ This is an execution queue. Acceptance and proof debt belong only to `../FREE_IN
 `FILL_LOG.md` supplies worker evidence for independent verification. Original entry numbers
 are retained. Do not repeat entries 1, 2, 3, 4, 6, 7, 8, 9, 13, 14, or 16.
 
+Entry 10 is reserved for the owner's parallel Gemini CLI lane, with separate output files
+and lease d. Its self-contained assignment is
+[HANDOFF_GEMINI_PLANAR_UNION_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_20260922.md).
+F remains on entry 15 and lease a. Reservation is not proof acceptance or evidence that
+Gemini has started; the lead has prepared the assignment for the owner to give to that CLI.
+
 Work in `D:\differential-geometry-moise-int`, branch `codex/moise-integration`.
 `E:\differential-geometry-dev` and its outputs are read-only. Compile only in PowerShell with
 lease a, token `claude-agent-a-20260919`, private output root

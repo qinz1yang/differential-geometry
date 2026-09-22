@@ -61,8 +61,9 @@ public signature, not a byte-identical copy; the complete old frozen type is sep
 checked as a corollary. The remaining two leaf blocks and assembly are unchanged, and the
 real module and aggregate imports are registered. Evidence is recorded in the sole ledger.
 
-Local workers d/e are finished and their lanes idle. The relative gluing module is
-independently accepted, registered, and consumed by the smoothing skeleton with exact
+The former local workers d/e are finished. Lane d is now reserved for the owner's Gemini
+assignment below; e remains available subject to a fresh process/lease check. The relative
+gluing module is independently accepted, registered, and consumed by the smoothing skeleton with exact
 frozen headers and unchanged remaining code. It still receives the original hN certificate.
 Entry 5 has real compact image transport and a continuous explicit ray, followed by a
 two-leaf UNREVIEWED skeleton whose source/target assemblies were independently checked.
@@ -73,6 +74,28 @@ The normal gate remains: joint counterexample first if FALSE, exact frozen types
 explicit proved generalization, independent zero-diagnostic check, transitive axioms and
 standard linters, root and skeleton imports, assembly check, ledger, explicit-path commit
 and mirror. Do not repeat unchanged audits merely to reconstruct context.
+
+## Gemini: independent planar union assignment
+
+The owner requested parallel formalization in a local Gemini CLI with repository and Lean
+access but no previous context. Entry 10 is reserved for it in
+[HANDOFF_GEMINI_PLANAR_UNION_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_20260922.md).
+The packet includes the exact frozen signature and definitions, source hashes, the prior
+topological-interior candidate, the genuine two-dimensional disk-overlap gap, source API
+map, ownership, PowerShell compiler commands, receipts and audit requirements.
+
+Gemini owns new `PlanarJordan/DiskUnion.lean` if needed, `PiecewiseLinear/PlanarCellUnion.lean`,
+and an append-only `Skeleton/GEMINI_PLANAR_UNION_LOG.md`; it must preserve existing sources
+and F's WIPs. F stays on entry 15. Gemini uses existing lease d and its matching private
+output root, without editing the JSON; old d workers were stopped and no d compiler was
+active when reserved. The CanonicalConfiguration private prerequisites were prepared with
+all 14 available and none missing; this preparation did not run Lean. An external audit
+template is in `claude-moise-agent-d/gemini-planar-union/audit-template.txt`.
+
+No Gemini executable was found on PATH or in the checked standard CLI locations. No Gemini
+session was started by the lead. The handoff is ready for the owner to paste into its CLI.
+The assignment adds no proved leaf and does not accept `TopologicalCellInterior`; the ledger
+is unchanged. The lead must independently verify both the dependency and endpoint on return.
 
 ## Ready owner review prompts
 
@@ -141,8 +164,9 @@ Compile only through PowerShell with the private preparer and checker:
 and `checker.ps1`. The live a–e leases were owner-extended to
 `2026-09-24T04:17:07.7791223Z`; re-read them before compiling, never edit them. Tokens are
 `claude-agent-<letter>-20260919`, output roots `.../claude-moise-agent-<letter>`.
-The owner-authorized F round uses a; local workers d/e have stopped and lead c has no active
-build after acceptance. Read current process state before reusing a lane. Other leads' tasks
+The owner-authorized F round uses a; d is reserved for Gemini, the old e worker has stopped,
+and lead c has no active build after acceptance. Read current process state before reusing
+a lane. Other leads' tasks
 are outside this report. Latest confirmed active F turn: `01a0c967-c1ae-7601-b1a9-0d063142c6ea`;
 snapshot cursor `71623190-821a-49bd-937d-91b8dff6d378:9`. The call-cap correction was sent
 after this active snapshot. Do not automatically start another pass.
