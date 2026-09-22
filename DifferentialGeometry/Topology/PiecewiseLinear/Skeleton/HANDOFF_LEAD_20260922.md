@@ -280,3 +280,8 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   Lemma 2. Worker c's analysis: the two §31 torus-curve leaves share the parity fact "orientable surface
   with one boundary circle has odd χ" (capping-orientability); a new lease-c worker is on that chain.
   Lane F's three open entries (10, 11, 15) are with a new lease-e worker. Lease a stays for acceptance.
+* 17:05 — accepted worker d's `exists_bicollar_complement_with_boundary_collars`
+  (`BicollarComplementCollars`) and registered its toolkit `BicollarBands` (renamed from the worker's
+  `.wip`); physical `sorry` 75 → 74. Worker d's analyses: the last extended-loop leaf needs PL
+  transversality + planar innermost induction; the §28 product-coordinates leaf needs 28.9 (worker c is
+  writing it) plus an annulus chain and PL chart gluing.

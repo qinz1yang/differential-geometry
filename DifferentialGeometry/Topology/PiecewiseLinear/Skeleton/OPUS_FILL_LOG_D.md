@@ -129,3 +129,71 @@ Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output ro
   `IsCombinatorialManifoldWithBoundary.exists_bicollar` exists; the missing parts were the
   rescaling, the manifold property of the complement and the component bookkeeping.
 - Compiles: 2 module checks (≈14 s each) + 1 audit (≈47 s).
+
+## exists_nontrivial_boundary_loop_of_bicollar_complement — STUCK (statement believed TRUE)
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/ExtendedLoopKernelTransfer.lean.wip`
+  (462 lines, SHA-256 `044377cac8539c06d4298903cc9a0f03fc41e10dfd22ab0f124c9dfe12c8a3c4`). It does
+  NOT contain the leaf; it holds the verified toolkit below. Before the rename, this exact content
+  passed as module `DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopKernelTransfer`:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ExtendedLoopKernelTransfer.lean with no diagnostics; shared outputs unchanged.`
+  (≈16:32), and `AuditOpusD3.lean` passed (16:34; foundational axioms only, thirteen linters).
+  Renaming it back to `.lean` gives a registrable module (imports `BicollarComplementCollars`).
+- Toolkit (new names, grepped unused; hypotheses are exactly the leaf's own `hK hL hR hρ hW
+  hRspace`, so the digest's "derived boundary interface" obligation is DONE for the GIVEN collar,
+  not a rescaled one):
+  `isCombinatorialManifoldWithBoundary_of_space_eq_prod_Icc`, `boundaryComplex_space_of_space_eq_prod_Icc`
+  (any triangulation of `L × [a,b]` has boundary `L × {a,b}`; via `boundaryComplex_space_prism`
+  on closed-star disks), `IsPLHomeomorphOn.mem_nhdsWithin_of_mem_prod_Ioo` (PL invariance of
+  domain: `W ∈ 𝓝[|K|] ρ z` for `z ∈ L × (-1,1)`, via
+  `image_mem_nhdsWithin_of_notMem_boundaryComplex`),
+  `IsPLHomeomorphOn.inter_closure_sdiff_eq_image_prod_pair` (`W ∩ cl (K - W) = ρ (L × {±1})`),
+  `boundaryComplex_space_of_closure_sdiff_bicollar` (`Bd R = Bd K ∪ ρ (L × {±1})`),
+  `exists_connectedComponentComplex_boundaryComplex_eq_image_of_bicollar` (each `ρ (Lα × {e})` is a
+  whole component of `Bd R`), `IsPLHomeomorphOn.exists_isOpen_inter_eq_image_prod_Ioo` (the bands
+  `ρ (L × (-s, s))` are open in `|K|`), `IsPLHomeomorphOn.exists_continuousOn_push_to_ends` (a map
+  `Φ : |K| → |K|`, identity off `W`, `ρ (y,t) ↦ ρ (y, clamp (t/s))`; sends `ρ (L × {±s})` to the
+  ends, `|K| - ρ (L × (-s,s))` into `R`, the band into `W`, fixes `L`),
+  `IsPLHomeomorphOn.exists_continuousOn_retraction_image_connectedComponentIn` (`W → ρ (Lα × {e})`).
+- Remaining obligation (the innermost-circle core of 26.4), in the contrapositive form that the
+  toolkit makes uniform: assume every free loop of every end component that is nullhomotopic in
+  `R` is nullhomotopic in the end component; show the original loop is nullhomotopic in `L`.
+  (a) PL singular disk: `exists_isPiecewiseAffineOn_fill_of_nullhomotopic` (`LoopTheorem/MoiseChainPL`)
+  with `L` as a subcomplex of a subdivision of `K`, plus the `g`/free-loop conversion
+  (`conjugacyClassMeets_bot_iff_nullhomotopic`, `pathToCircle_nullhomotopic_iff`).
+  (b) Transversality: for `φ = (ρ⁻¹ ∘ f).2` (PL on `P ∩ f⁻¹ W`, a polyhedron by
+  `isPolyhedron_inter_preimage_of_isPolyhedron`), a level `±s` avoiding vertex values has
+  `f⁻¹ ρ (L × {±s})` = a finite disjoint family of PL circles in `int P`. NOT in the tree: needs the
+  local arc structure at edge points (two cofaces of an interior edge), then
+  `exists_finite_isPLSphere_or_isPLBall_decomposition` and exclusion of arc components.
+  (c) Planar innermost argument: nested Jordan disks (`isPLBall_closure_inside_of_isPLSphere_one`),
+  induction on nesting depth, connectedness of "disk minus disjoint subdisks" (NOT in the tree
+  outside the active `PlanarJordan/` lane), pasting extensions over child disks into the end
+  components, `Φ` for the sides, the retraction for the W-side case, and the root case (all
+  circles inessential ⇒ nullhomotopy in `W` ⇒ in `L`, the digest's zero-intersection exclusion).
+  Estimate for (a)–(c) plus assembly: 1300–1600 lines. Gemini G054's claim ("missing loop
+  lifting") is not the real gap; the gap is (b) + (c).
+- Compiles for this leaf: 3 module checks of the toolkit (≈14–24 s) + 2 audits (≈48 s).
+
+## exists_product_coordinates_for_disjoint_essential_polygons — STUCK (statement believed TRUE)
+
+- File: none (no `.wip`; no Lean written for this leaf). Compiles: 0.
+- Route checked against the tree: `IsCombinatorialSolidTorus.isPLTorus_frontier` (lease c) makes
+  `∂S` a PL torus; `IsPLTorus.exists_combinatorial_triangulation`, `isOrientable_euclidean_three`,
+  `IsPLTorus.bettiOne_le_two` give an orientable triangulation with `χ ≥ 0` (`χ = 0` still needs
+  `β₁ ≠ 0`, e.g. via the essential circle). NEW since my first grep: the untracked, in-flux files
+  `SeparatingPolygonDisk.lean` / `OrientableSurfaceEulerParity.lean` (created 16:31–16:33 by another
+  lane, not accepted, not imported by me) prove Moise 28.9
+  (`IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff`, whose conclusion is
+  literally the negation of `hess i`), so every `G i` is nonseparating. Then
+  `IsCombinatorialManifold.exists_connected_annulus_complement` (bicollar of `G 0` inside
+  `T - ⋃_{i≠0} G i`) and `exists_isPLHomeomorphOn_annulus_of_eulerChar_eq_zero` make the complement
+  an annulus containing the other circles.
+- Missing (not in the tree): (i) in an annulus, each further `G i` separates it into two annuli
+  (Euler/parity count with `odd_eulerChar_of_isOrientable`, capping, `hess` excludes the disk
+  piece), iterated into a cyclic chain of annuli ordered along the core; (ii) gluing the
+  annulus product charts along the chain into ONE PL chart `J × Q → ∂S` with `Q` a PL circle in
+  `E3`: matching end parametrizations and killing the monodromy PL-ly (the existing torus
+  recognition `exists_homeomorph_prod_circle_of_eq_ends` is only topological). Estimate ≥ 1500
+  lines. Gemini G024's claim is right about the missing simultaneous straightening, wrong about
+  "classification of surfaces" (the Euler-parity route above avoids it).

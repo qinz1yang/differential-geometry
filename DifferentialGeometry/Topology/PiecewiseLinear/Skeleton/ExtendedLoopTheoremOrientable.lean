@@ -8,6 +8,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DiskBoundaryCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import DifferentialGeometry.Topology.PiecewiseLinear.BicollarComplementCollars
 
 /-!
 # The orientable extended loop theorem from the boundary loop theorem
@@ -48,6 +49,17 @@ Additional untested fixtures use two disjoint tori, or a fiber sphere with one l
 the orientable manifold `S² × S¹`, realized in a sufficiently large finite-dimensional space.
 The latter has a connected complement; its two collar ends need not lie in different
 components of the cut manifold. The Section 33 application bridge remains open.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_bicollar_complement_with_boundary_collars` (module `BicollarComplementCollars`), from the
+existing componentwise `IsCombinatorialManifoldWithBoundary.exists_bicollar`, rescaled so that the
+open band is relatively open in `K`, with the cut manifold from
+`IsCombinatorialManifoldWithBoundary.complement`.  The verified toolkit for the remaining leaf
+(product-triangulation boundaries, band openness, the push-to-ends map and the end retraction, all
+for the given collar) is the real module `BicollarBands`; the leaf itself still needs the
+transversality of a PL singular disk against the collar levels and the planar innermost-circle
+induction.
 -/
 
 open Set Topology
@@ -55,38 +67,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-open Classical in
-theorem exists_bicollar_complement_with_boundary_collars
-    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
-    (hLK : L.space ⊆ K.space \ (boundaryComplex 3 K).space)
-    (htwo : IsTwoSided (((↑) : K.space → E) ⁻¹' L.space)) :
-    ∃ (W : Set E) (ρ : E × ℝ → E) (R : Geometry.SimplicialComplex ℝ E),
-      ∃ _ : Finite R.faces,
-        IsPLHomeomorphOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) W ∧
-        (∀ y ∈ L.space, ρ (y, 0) = y) ∧
-        W ⊆ K.space \ (boundaryComplex 3 K).space ∧
-        W ∈ 𝓝ˢ[K.space] L.space ∧
-        IsCombinatorialManifoldWithBoundary 3 R ∧
-        R.space = closure (K.space \ W) ∧
-        R.space ⊆ K.space ∧
-        Disjoint R.space L.space ∧
-        (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 R).space ∧
-        (R.space ∩ W = ρ '' (L.space ×ˢ ({-1, 1} : Set ℝ))) ∧
-        ∀ c : ConnectedComponents (boundaryComplex 3 R).space,
-          let B := (connectedComponentComplex (boundaryComplex 3 R) c).space
-          B ⊆ W →
-          ∃ σ : E × ℝ → E,
-            IsPLHomeomorphOn σ (B ×ˢ Icc (0 : ℝ) 1)
-              (σ '' (B ×ˢ Icc (0 : ℝ) 1)) ∧
-            (∀ y ∈ B, σ (y, 0) = y) ∧
-            σ '' (B ×ˢ Icc (0 : ℝ) 1) ⊆ W ∧
-            (σ '' (B ×ˢ Icc (0 : ℝ) 1)) ∩ R.space = B ∧
-            (∀ z ∈ B ×ˢ Icc (0 : ℝ) 1, σ z ∈ L.space ↔ z.2 = 1) ∧
-            ∃ (f : C(B, L.space)) (p : C(L.space, B)),
-              (∀ y : B, (f y : E) = σ (y, 1)) ∧ Function.LeftInverse p f := by
-  sorry
 
 open Classical in
 theorem exists_nontrivial_boundary_loop_of_bicollar_complement
