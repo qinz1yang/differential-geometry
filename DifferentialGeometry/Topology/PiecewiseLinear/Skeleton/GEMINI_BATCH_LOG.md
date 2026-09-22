@@ -1130,15 +1130,35 @@ No batch proof has been accepted merely by creating this log or queue.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
 - **Next Useful Lemma**: `exists_gluedCell_proof`.
 
-## 2026-09-22: G092 (`exists_transitionSubdivisionOnOverlap`) BLOCKED / SKIPPED
+## 2026-09-22: G092 (`exists_transitionSubdivisionOnOverlap`) PASSED
 
 - **Target**: `GeneralPositionInDouble:1451` (`exists_transitionSubdivisionOnOverlap`)
-- **Status**: BLOCKED / SKIPPED (missing transition subdivision on chart overlap in double)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1451`
-- **Blocker Description**:
-  - Requires: Transition subdivision on overlap of charts in double.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_transitionSubdivisionOnOverlap_proof`.
+- **Status**: PASSED
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1458`
+- **Module**: `DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOverlap`
+- **Source File**: `DifferentialGeometry/Topology/PiecewiseLinear/TransitionSubdivisionOnOverlap.lean`
+- **SHA256**: `DC5B46BC44295590340E2DA40ED0A8606A16E997F6DE510800E6919061C40F0F`
+- **Checkpoint Directory**: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\gemini-batch\checkpoints\G092-transition-subdivision-overlap-20260922T2056248321617Z`
+- **Verification Details**:
+  - Zero errors, zero warnings.
+  - All 13 linters passed.
+  - Verified by `checker.ps1` and `GEMINI_BATCH_CHECKPOINT.ps1`.
+- **Proof Strategy**:
+  - Let $W = ec.\text{source} \cap ec'.\text{source}$. The image $ec '' N$ is compact in the open set $ec '' W$.
+  - By `exists_isPolyhedron_neighborhood`, there exists a polyhedron $P$ with $ec '' N \subseteq \operatorname{interior} P \subseteq P \subseteq ec '' W$.
+  - By `hPpoly.exists_simplicialComplex`, there exists a finite simplicial complex $K$ with $K.\text{space} = P$.
+  - The transition map $ec.\text{symm}.\text{trans } ec'$ belongs to `plGroupoid 3` by `StructureGroupoid.compatible_of_mem_maximalAtlas`, so it is piecewise affine on its source $ec '' W$.
+  - Hence $z \mapsto ec'(ec.\text{symm } z)$ is piecewise affine on $ec '' W$, and by `IsPiecewiseAffineOn.mono_of_isPolyhedron`, piecewise affine on $K.\text{space}$.
+  - By `IsPiecewiseAffineOn.exists_isSubdivision_affineOn_faces`, there exists a finite subdivision $Q$ of $K$ such that on each face $s \in Q.\text{faces}$, $z \mapsto ec'(ec.\text{symm } z)$ is affine.
+  - Since $Q.\text{space} = K.\text{space} = P$, we have $ec '' N \subseteq \operatorname{interior} Q.\text{space}$ and $Q.\text{space} \subseteq ec '' W$.
+- **Imports**:
+  - `DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.Groupoid`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.PiecewiseAffineSimplicial`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph`
+- **Public Declarations**:
+  - `exists_transitionSubdivisionOnOverlap`
+- **Axioms**: `propext`, `Classical.choice`, `Quot.sound`
 
 ## 2026-09-22: G093 (`exists_commonWallComplex`) BLOCKED / SKIPPED
 
