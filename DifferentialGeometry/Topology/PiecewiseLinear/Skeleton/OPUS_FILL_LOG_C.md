@@ -286,3 +286,71 @@
   to `Y`.
 - Compiles: 3 module checks (≈20 s each; one heartbeat timeout in a continuity unification, fixed
   by making `Ψ = val ∘ φ.symm` opaque) + 1 audit.
+
+## carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier — STUCK
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/CarriesGeneratorOrIsPLCellOfDisjointCarrier.lean.wip`
+  (not a module; no import line, no registered names). Proposed sub-leaf names (grepped, unused):
+  `IsCombinatorialSolidTorus.exists_isPLCell_frontier_of_not_isPreconnected_sdiff` (separating
+  case = Moise 28.9 on the boundary torus) and
+  `IsCombinatorialSolidTorus.carriesFundamentalGroupOnto_of_isPreconnected_sdiff` (nonseparating
+  case). The leaf is a two-line `by_cases` on `IsPreconnected (frontier S \ G)` from them.
+- Check: external probe `claude-moise-agent-c/ProbeTorusCurveReduction.lean` (both reductions of
+  this leaf and the next, frozen statements verbatim): exactly three `declaration uses 'sorry'`
+  warnings (the three sub-leaves), nothing else. No audit (not closed).
+- Statement: TRUE (no counterexample: an essential `G` disjoint from the essential `K` is parallel
+  to it; an inessential one bounds a disk). The case split is not the obstacle.
+- Stuck goal 1 (separating case, 28.9): a PL circle `G` with `¬ IsPreconnected (frontier S \ G)`
+  bounds a PL disk in `frontier S`. Everything but one case is available: triangulation `L`
+  (`IsPLTorus.exists_combinatorial_triangulation`, `isOrientable_euclidean_three`),
+  `χ(L) ∈ {0, 2}` (`IsPLTorus.bettiOne_le_two`, `eulerChar_eq_two_sub_bettiOne_of_isOrientable`,
+  `even_eulerChar_of_finrank_eq_three`), sides `A, B` (`exists_manifold_pair_of_separating_circle`,
+  `χ(A) + χ(B) = χ(L)`), cone caps in `E × ℝ` (`exists_cone_disk_of_isPLSphere_one`,
+  `exists_closed_of_disk`) giving `χ ≤ 1` per side, and "`χ = 1` side is a PL disk"
+  (`isPLSphere_two_of_faceEulerChar_eq_two`, `IsPLSphere.isPLBall_closure_sdiff`). The case
+  `χ(A) = χ(B) = 0` needs the parity fact "an orientable surface with one boundary circle has odd
+  `χ`". The tree has parity only for closed surfaces in three-space; capped sides live in `E × ℝ`,
+  and there is no lemma that capping preserves orientability (`IsOrientable.double` is the only
+  gluing result). With a capping-orientability lemma the case closes by a short argument (an
+  orientable closed surface with `χ ≠ 2` has a nonseparating circle,
+  `exists_isPLSphere_one_isPreconnected_sdiff`; its annulus complement capped twice has
+  `χ + 2 ≤ 2`).
+- Stuck goal 2 (nonseparating case; no parity needed, routine but long, est. 800–1200 lines):
+  annulus complement of `G` avoiding `K` (`exists_connected_annulus_complement`) is an annulus
+  (`exists_isPLHomeomorphOn_annulus_of_eulerChar_eq_zero`); in the prism sphere, the disk
+  decomposition of `K` (`exists_disk_decomposition_of_isPLSphere_one_subset_two`) either puts both
+  end disks on one side (then `K` bounds a PL disk, is null in `S`, contradicting `hKgen` since
+  `π₁(S) ≅ ℤ`) or separates them (then `exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk` makes
+  `K` and an end circle the ends of a PL annulus); missing only the transfer "the two ends of an
+  annulus in `S` carry `π₁(S)` together" (square homotopy in `C × I`, `Path.Homotopic.prod`).
+  Cutting along `K` instead of `G` avoids goal 1 but needs "a generator-carrying boundary circle
+  does not separate the torus", whose last case is the same parity fact (or `H₁(·; ℤ/2)`).
+- Compiles: 1 external probe (≈40 s).
+
+## exists_isPLCell_frontier_of_polygon_nullhomotopic — STUCK
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/IsPLCellFrontierOfPolygonNullhomotopic.lean.wip`
+  (imports the previous WIP module). Proposed sub-leaf (grepped, unused):
+  `IsCombinatorialSolidTorus.false_of_isPreconnected_sdiff_of_nullhomotopic`. The leaf is a
+  `by_cases` from it and the 28.9 sub-leaf above (checked in the same probe).
+- Statement: TRUE (reviewer's argument verified: a nonseparating `G` null in `S` is a meridian,
+  linking a generator of `Z` once, impossible for a loop missing `Δ`).
+- Stuck goal: the separating case is goal 1 above; the nonseparating case needs a linking or
+  intersection-number invariant of loops in `ℝ³ \ G` (none in the tree: grep for linking,
+  intersection number, Alexander duality finds nothing) and the identification of `G` as a
+  meridian (the open product-coordinate leaf of `Skeleton/Section28Annuli.lean`).
+- Compiles: shared with the probe above.
+
+## exists_polygon_carrier_of_spine — STUCK
+
+- File: none (no Lean attempt beyond the analysis; no `.wip`).
+- Statement: TRUE (checked the degenerate positions: `S₁ ⊆ int S₂` is excluded by `hZ₀S₂`,
+  `S₂ ⊆ int S₁` makes the whole boundary torus available; no general position is needed because
+  the homotopy is put in general position inside `int S₁`).
+- Stuck goal: the whole of 28.11 plus extraction. Needed and absent: a PL singular annulus
+  `S¹ × I → int S₁` from a spine loop of `Z₁` to a loop of `Z₀`, in general position with respect
+  to the surface `frontier S₂` (the tree's singular general position, `SingularGeneralPosition`,
+  `SingularLevelPolygons`, is for height functions and disks, not for a map transverse to a
+  surface); the preimage polygons separating the ends; and the extraction of one embedded PL
+  circle in the open set `frontier S₂ ∩ int S₁` carrying `π₁(S₂)` from a singular loop there
+  (28.8, again torus-curve classification). Estimated several thousand lines; not started.

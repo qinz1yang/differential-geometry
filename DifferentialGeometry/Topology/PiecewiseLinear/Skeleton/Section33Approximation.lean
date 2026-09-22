@@ -5,6 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayEmbedding
+import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceEulerChar
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -150,6 +151,14 @@ neighbourhood is the set where a core vertex carries a maximal barycentric weigh
 the subcomplex barycentric projection gives the source product `Bd N × (0,1) ≃ Int N \ |K|`, and
 `h` transports it.  The core lies in the ambient interior because a positive core weight at a
 boundary point would put a simplex of `K` into the boundary complex.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf):
+`section33_faceEulerChar_handlePiece` (Lemma 12, module `HandlePieceEulerChar`).  A degree-one
+Hurewicz factorisation over a field turns `hiso` into `b₁(Bd X) ≤ b₁(N' \ K')`; `N' \ K'` is
+`Fr N × [0,1)` with `Fr N` connected; Euler additivity over the handle pieces and cone capping of
+each piece's `deg v` boundary polygons give `χ(A'_v) ≤ 2 - deg v`, and the handshake identity
+forces equality in every piece.  The route does not use the sorried `HurewiczLowDegrees`.
 -/
 
 open Set Topology
@@ -292,20 +301,6 @@ theorem section33_fundamentalGroup_map_bijective (h264 : Moise264)
       Function.Bijective (FundamentalGroup.map
         (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
           C(frontier XK.space, ↥(N' \ h '' K.space))) x) := by
-  sorry
-
-theorem section33_faceEulerChar_handlePiece
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space)
-    (h56 : HasConnectedHandlePieces K Ec Cpp XK.space AK)
-    (hiso : ∀ hsub : frontier XK.space ⊆ N' \ h '' K.space, ∀ x : frontier XK.space,
-      Function.Bijective (FundamentalGroup.map
-        (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
-          C(frontier XK.space, ↥(N' \ h '' K.space))) x)) :
-    ∀ v ∈ K.vertices, ∀ [Finite (AK v).faces],
-      SimplicialComplex.faceEulerChar (AK v).toPreAbstractSimplicialComplex =
-        2 - ((edgesAt K v).ncard : ℤ) := by
   sorry
 
 theorem exists_section33BoundaryMatch

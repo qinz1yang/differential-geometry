@@ -274,3 +274,9 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   (`FreeFaceArc`, `TwoComponentsOfPseudoCell`, `EdgeCollarFamily`,
   `HandleDecompositionOfEdgeCollars`) and worker c's `exists_innerSolidTorus_toroidalShell_of_annulusImage`
   (`InnerSolidTorusToroidalShell`). Physical `sorry` 82 → 76.
+* 16:40 — accepted worker b's Lemma 12 (`HandlePieceEulerChar`, F's entry 12); physical `sorry` 76 → 75.
+  Worker b's analysis: Lemmas 2, 8, 9 of §33 share one missing brick (local combinatorial 2-manifold
+  structure on compact pieces of the locally polyhedral cells); a new lease-b worker is on that brick and
+  Lemma 2. Worker c's analysis: the two §31 torus-curve leaves share the parity fact "orientable surface
+  with one boundary circle has odd χ" (capping-orientability); a new lease-c worker is on that chain.
+  Lane F's three open entries (10, 11, 15) are with a new lease-e worker. Lease a stays for acceptance.

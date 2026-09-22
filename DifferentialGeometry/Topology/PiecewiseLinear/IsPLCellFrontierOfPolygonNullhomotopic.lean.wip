@@ -1,0 +1,60 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.CarriesGeneratorOrIsPLCellOfDisjointCarrier
+
+/-!
+# Meridian exclusion on the boundary torus (WIP, lease c)
+
+Unfinished. The leaf `exists_isPLCell_frontier_of_polygon_nullhomotopic` is reduced (checked in
+one external probe file together with the statements of the imported WIP module) to the
+separating case, which is the 28.9 statement
+`IsCombinatorialSolidTorus.exists_isPLCell_frontier_of_not_isPreconnected_sdiff` of the imported
+WIP module, and to the nonseparating case below.
+
+`false_of_isPreconnected_sdiff_of_nullhomotopic`: a PL circle `G` that does not separate the
+boundary torus of `S`, is null-homotopic in `S` and bounds a PL disk `Δ ⊆ ℝ³` cannot miss a
+nonempty set `Z ⊆ interior S` carrying `π₁(S)`. Mathematically `G` is then a meridian (an
+essential boundary curve in the kernel of `π₁(T) → π₁(S)`), so a loop of `Z` generating
+`π₁(S)` has linking number `±1` with `G`, while a loop missing the spanning disk `Δ` has linking
+number `0`. MISSING in the tree: any linking or intersection-number invariant of loops in
+`ℝ³ \ G` (for instance the map `ℝ³ \ G → S¹` built from a bicollar of `Δ`), and the torus curve
+classification identifying `G` with a meridian (the product-coordinate leaf of
+`Skeleton/Section28Annuli.lean` would supply it).
+-/
+
+open Set Topology
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+theorem IsCombinatorialSolidTorus.false_of_isPreconnected_sdiff_of_nullhomotopic
+    {S G Δ Z : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
+    (hS : IsCombinatorialSolidTorus S) (hGS : G ⊆ frontier S)
+    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hGΔ : G = r '' stdSimplexBoundary 2)
+    (hΔZ : Disjoint Δ Z) (hZ : Z.Nonempty) (hZS : Z ⊆ interior S)
+    (hZgen : CarriesFundamentalGroupOnto Z S)
+    (htriv : ∀ (hsub : G ⊆ S) (x : G) (g : FundamentalGroup G x),
+      FundamentalGroup.map (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S)) x g = 1)
+    (hnonsep : IsPreconnected (frontier S \ G)) : False := by
+  sorry
+
+theorem exists_isPLCell_frontier_of_polygon_nullhomotopic
+    {S G Δ Z : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
+    (hS : IsCombinatorialSolidTorus S) (hGS : G ⊆ frontier S)
+    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hGΔ : G = r '' stdSimplexBoundary 2)
+    (hΔZ : Disjoint Δ Z) (hZ : Z.Nonempty) (hZS : Z ⊆ interior S)
+    (hZgen : CarriesFundamentalGroupOnto Z S)
+    (htriv : ∀ (hsub : G ⊆ S) (x : G) (g : FundamentalGroup G x),
+      FundamentalGroup.map (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S)) x g = 1) :
+    ∃ (Δ' : Set (EuclideanSpace ℝ (Fin 3))) (r' : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
+      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ' ∧ Δ' ⊆ frontier S ∧
+        G = r' '' stdSimplexBoundary 2 := by
+  by_cases hsep : IsPreconnected (frontier S \ G)
+  · exact (hS.false_of_isPreconnected_sdiff_of_nullhomotopic hGS hr hGΔ hΔZ hZ hZS hZgen htriv
+      hsep).elim
+  · have hG : IsPLSphere 1 G := hGΔ ▸ hr.isPLSphere_image_stdSimplexBoundary
+    exact hS.exists_isPLCell_frontier_of_not_isPreconnected_sdiff hG hGS hsep
+
+end DifferentialGeometry.Topology.PiecewiseLinear

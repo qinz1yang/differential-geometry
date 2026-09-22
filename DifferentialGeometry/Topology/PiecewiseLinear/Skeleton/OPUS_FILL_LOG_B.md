@@ -181,7 +181,7 @@ tube product, Lemma 12, Lemma 8, Lemma 2, Lemma 9.
 ## section33_faceEulerChar_handlePiece — CLOSED
 
 - File: `DifferentialGeometry/Topology/PiecewiseLinear/HandlePieceEulerChar.lean`
-  (1072 lines).
+  (1069 lines, SHA-256 `bf31e7cfc4cc4ccba25abebbf22c0bfbc33a1361516649b10fd7cddc10ad481b`).
 - Import line to register:
   `import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceEulerChar`
   (it imports `DerivedNeighborhoodRayEmbedding` of the previous section and the batch-1 module
@@ -233,3 +233,53 @@ tube product, Lemma 12, Lemma 8, Lemma 2, Lemma 9.
 - Gemini G044 / FILL_LOG item 7 blocker ("no capping / global Euler bridge; `hiso` has no
   consumable Hurewicz lemma") was true of the tree and is now filled by (1) and (5).
 - Compiles: 12 module checks (≈11–17 s each) + 1 audit (≈50 s).
+
+## section33_disk_meets_graph (Lemma 8) — STUCK (not attempted in Lean; analysis only)
+
+- File: none (no `.wip`; no Lean attempt was started).
+- Verdict on truth: no counterexample. Under the frozen hypotheses `v₁ ∈ e₁` is forced
+  (`∂Δ ⊆ Cpp v₁ ∩ Ec e₁` is non-empty, and `Cpp v₁ ∩ Ec e = ∅` for `v₁ ∉ e` by `handleEdge`,
+  `handleNonEdge`, `pseudoCellDisjoint`), `hend` then gives a second edge at `v₁` and at the
+  other end `u`, and the book's argument (p. 233) goes through.
+- Missing bricks (each absent from the tree, grepped): (a) the combinatorial structure of compact
+  pieces of the locally polyhedral open cell `Eint e \ {P'}` (a triangulation of a compact
+  polyhedron in a topological 2-manifold is a combinatorial 2-manifold near that set; the tree
+  has this only for the torus, `isCombinatorialManifold_two_of_homeomorph_sphere_prod`), needed to
+  make `Δ ∪ (DJ − Int DJ₁) ∪ Δ₁` a PL 2-sphere; (b) planar Jordan in the cell chart of `Eint`
+  to put the `Moise324` disk `DJ₁` inside `Int DJ` — note that `Moise324` as frozen gives no
+  smallness of `DJ₁`, only of `Δ₁`; smallness follows from continuity of the chart
+  `Eint ≅ open disk` at `P'`, not from the statement; (c) broken-line approximation of the arc
+  `P'₁ v'₁ P'₂ ⊆ K'` avoiding `Δ` with a transverse crossing of `DJ` at a polyhedral point;
+  (d) crossing parity against a PL sphere (available: `IsPLSphere.exists_isPLBall_complement_components`)
+  and the return path through `Bd N'` (connected per component of `K`, from the Lemma 12 tools).
+- Estimate: 2000+ lines; beyond the per-leaf budget. Compiles: 0.
+
+## exists_isPolyhedralTubeNeighborhood (Lemma 2) — STUCK (not attempted in Lean; analysis only)
+
+- File: none.
+- Route: (A) a finite combinatorial 3-manifold `X₀` with `K' ⊆ Int X₀`, `X₀ ⊆ Int N' − ⋃ Ebd`
+  (fine subdivision of a simplex + derived neighbourhood; routine); (B) for each edge a finite
+  combinatorial 2-manifold with boundary `L_e ⊆ Eint e \ {P'_e}` whose relative interior contains
+  `Ec e ∩ (ε-neighbourhood of Bd X₀)` — the same missing brick (a) as Lemma 8; (C)
+  `exists_small_homeomorph_generalPosition_relative` (GeneralPosition.lean) moves `Bd X₀`
+  transverse to `⋃ L_e` by a small PL homeomorphism supported away from `K'` and `⋃ Ebd`, and
+  `HasPLCrossingAt.congr` passes from `|L_e|` to `Eint e` at relative-interior points; (D)
+  triangulate the image and transport the manifold certificate. Only (B) lacks tree support.
+- Compiles: 0.
+
+## section33_not_isLoopTheoremDisk (Lemma 9) — not attempted
+
+- Needs Lemma 8's machinery, brick (B) for general position of `Δ` against the pseudo-cells,
+  and the component-count descent. Compiles: 0.
+
+## Batch 2 summary
+
+- CLOSED 2 (tube product, Lemma 12), STUCK 2 (Lemma 8, Lemma 2), not attempted 1 (Lemma 9).
+- Side result: the two UNREVIEWED leaves of `Skeleton/DerivedNeighborhoodComplement`
+  (FREE_INPUTS B1.m) are proved (general form, see the tube product section).
+- Reusable bricks now in the tree: degree-one Hurewicz factorization over a field
+  (`exists_linearMap_fieldHurewiczOne`, `finrank_fieldHomology_one_le_of_fundamentalGroup_map_bijective`
+  — also the key step of Lemma 10's `b₁` bookkeeping), capping bound for surfaces with boundary
+  (`IsCombinatorialManifoldWithBoundary.eulerChar_add_card_le_two`), topological Euler
+  additivity over finite families of polyhedra, and the half-open product
+  `N − K ≅ Fr N × [0,1)` for derived neighbourhoods.
