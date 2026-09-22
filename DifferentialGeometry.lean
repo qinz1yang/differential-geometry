@@ -13301,3 +13301,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorLoc
 import DifferentialGeometry.Analysis.Calculus.TimeJet.JetPDE
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Seam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Seam
+import DifferentialGeometry.Topology.Manifold.DisjointUnion
+import DifferentialGeometry.Topology.Manifold.DisjointUnionComponent
+import DifferentialGeometry.Topology.Manifold.SigmaComponent
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardUnion
+import DifferentialGeometry.Topology.ThreeManifold.CapComponentDiffeomorph
+import DifferentialGeometry.Topology.ThreeManifold.CutCapConnectedSumSmooth
+import DifferentialGeometry.Topology.ThreeManifold.CutCapPoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.CappedPoincareStandard
+import DifferentialGeometry.Topology.Manifold.SigmaOrientation

@@ -68,4 +68,25 @@ theorem topologicalPoincareConjecture_of_smoothStructureInput
   let smooth : IsManifold (𝓡 3) ∞ M := hman.some
   exact ⟨(hsmooth M).some.toHomeomorph⟩
 
+
+theorem exists_diffeomorph_standardThreeSphere_of_controlledExtinction
+    {M : ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
+    (W : PoincareControlledExtinction M g)
+    [SimplyConnectedSpace M.Carrier] :
+    Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ standardThreeSphereLift.{u}.Carrier) :=
+  exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
+    (PoincareControlledExtinction.isPoincareStandard_of_controlledExtinction W)
+
+theorem smoothPoincareConjecture_of_controlledExtinction
+    (hext : ∀ (M : ConnectedClosedOrientedManifold.{u} 3) [SimplyConnectedSpace M.Carrier]
+      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
+      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g)) :
+    smoothPoincareConjecture.{u} := by
+  intro M _ _ _ _ _ _ _
+  obtain ⟨g⟩ := Geometry.nonempty_smoothRiemannianMetric (I := 𝓡 3) (M := M)
+  obtain ⟨o⟩ := Topology.Manifold.exists_manifoldOrientation_of_simply_connected
+    (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
+  exact exists_diffeomorph_standardThreeSphere_of_controlledExtinction
+    (W := (hext { Carrier := M, orientation := o } g).some)
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery

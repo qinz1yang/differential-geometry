@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.MarkedBallTubeProducer
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
-import DifferentialGeometry.Topology.ThreeManifold.CutCapSphericalGraphSumRealizationReduction
+import DifferentialGeometry.Topology.ThreeManifold.PartialGraphRealization
+import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
 
 set_option autoImplicit false
 
