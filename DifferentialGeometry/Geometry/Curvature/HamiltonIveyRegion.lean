@@ -120,3 +120,30 @@ theorem mem_fixedHamiltonIveyRegion_of_tendsto
   · exact hbound
 
 end DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+theorem neg_le_max_of_mem_fixedHamiltonIveyRegion
+    {a₀ a R ν B : ℝ} (ha₀ : 0 < a₀) (ha : a₀ ≤ a)
+    (h : (R, ν) ∈ fixedHamiltonIveyRegion a) (hR : R ≤ B) :
+    -ν ≤ max B (Real.exp 4 / a₀) := by
+  by_cases hsmall : -ν ≤ Real.exp 4 / a₀
+  · exact hsmall.trans (le_max_right _ _)
+  have hlarge : Real.exp 4 / a₀ < -ν := lt_of_not_ge hsmall
+  have hX : 0 < -ν := (div_pos (Real.exp_pos 4) ha₀).trans hlarge
+  have hbar : fixedHamiltonIveyBarrier a (-ν) ≤ R := by
+    rcases h with h | h
+    · exact (not_lt_of_ge h (neg_pos.mp hX)).elim
+    · exact h
+  have hexp : Real.exp 4 ≤ a * (-ν) := by
+    have hmul := (div_lt_iff₀ ha₀).mp hlarge
+    have hm := mul_le_mul_of_nonneg_right ha hX.le
+    nlinarith
+  have hlog : 4 ≤ Real.log (a * (-ν)) :=
+    (Real.le_log_iff_exp_le (mul_pos (ha₀.trans_le ha) hX)).mpr hexp
+  have hlin : -ν ≤ fixedHamiltonIveyBarrier a (-ν) := by
+    dsimp only [fixedHamiltonIveyBarrier]
+    nlinarith
+  exact (hlin.trans (hbar.trans hR)).trans (le_max_left _ _)
+
+end DifferentialGeometry.Geometry.Curvature

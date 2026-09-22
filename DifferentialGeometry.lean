@@ -13228,3 +13228,7 @@ import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalSign
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.CoorientedExtension
 import DifferentialGeometry.Topology.ThreeManifold.TwoBallCharts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedTwoBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyCurvatureBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingCurvatureLifespan
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryCurvatureTimeBound
+import DifferentialGeometry.Topology.Manifold.Sigma
