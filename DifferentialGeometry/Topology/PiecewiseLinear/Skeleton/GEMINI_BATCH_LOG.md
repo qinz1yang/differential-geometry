@@ -1120,15 +1120,36 @@ No batch proof has been accepted merely by creating this log or queue.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
 - **Next Useful Lemma**: `exists_cutOutPiece_proof`.
 
-## 2026-09-22: G091 (`exists_gluedCell_of_vertexMap_in_adaptedChart`) BLOCKED / SKIPPED
+## 2026-09-22: G091 (`exists_gluedCell_of_vertexMap_in_adaptedChart`) PASSED
 
 - **Target**: `GeneralPositionInDouble:425` (`exists_gluedCell_of_vertexMap_in_adaptedChart`)
-- **Status**: BLOCKED / SKIPPED (missing glued cell construction from vertex map)
+- **Status**: PASSED
 - **Skeleton Location**: `GeneralPositionInDouble.lean:425`
-- **Blocker Description**:
-  - Requires: Glued cell construction from vertex map in adapted chart.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_gluedCell_proof`.
+- **Module**: `DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart`
+- **Source File**: `DifferentialGeometry/Topology/PiecewiseLinear/GluedCellInAdaptedChart.lean`
+- **SHA256**: `5B78D099FCF8292FE83DE35FB890496281EE899E5DFB4736D29098F55605315A`
+- **Checkpoint Directory**: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\gemini-batch\checkpoints\G091-glued-cell-adapted-chart-20260922T2105097691619Z`
+- **Verification Details**:
+  - Zero errors, zero warnings.
+  - All 13 linters passed.
+  - Verified by `checker.ps1` and `GEMINI_BATCH_CHECKPOINT.ps1`.
+- **Proof Strategy**:
+  - Define $g(x) = \text{if } x \in Rc.\text{space} \text{ then } ec.\text{symm}(h(x)) \text{ else } D(x)$, where $h = \text{simplicialMap } Rs\ \varphi$.
+  - The domain $D.\text{domain}$ is covered by two sets open in $D.\text{domain}$: $U_1 = \Omega \cap D.\text{domain}$ and $U_2 = (Rc.\text{space}^c \cup Nb) \cap D.\text{domain}$.
+  - On $U_2$, $g = D$: outside $Rc.\text{space}$ by definition, and on $Rc.\text{space} \cap Nb \subseteq Ac.\text{space}$ by $h = ec \circ D$ (`hfrozen`) and $ec.\text{left\_inv}$. Since $D$ is PL on $D.\text{domain}$, $g$ is PL on $U_2 \in \mathcal{N}_{D.\text{domain}}(x)$.
+  - On $U_1 = \Omega \cap D.\text{domain} \subseteq Rc.\text{space}$, $g = ec.\text{symm} \circ h$. The transition $ec \circ g = h$ is piecewise affine on $U_1$ via `hpl`, and $g$ is continuous on $U_1$. By `StructureGroupoid.liftPropWithinAt_indep_chart_target` applied with $ec \in (\text{plGroupoid } 3).\text{maximalAtlas } M$, $g$ is PL on $U_1 \in \mathcal{N}_{D.\text{domain}}(x)$.
+  - By `liftPropWithinAt_inter'`, $g$ is PL at every point $x \in D.\text{domain}$, yielding $D' : \text{SingularTwoCell } M$ with $D'.\text{domain} = D.\text{domain}$, agreeing with $ec.\text{symm} \circ h$ on $Rc.\text{space}$ and with $D$ on $Rc.\text{space}^c$.
+- **Imports**:
+  - `DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.Groupoid`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLPastingManifold`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph`
+  - `Mathlib.Geometry.Manifold.LocalInvariantProperties`
+- **Public Declarations**:
+  - `exists_gluedCell_of_vertexMap_in_adaptedChart`
+- **Axioms**: `propext`, `Classical.choice`, `Quot.sound`
 
 ## 2026-09-22: G092 (`exists_transitionSubdivisionOnOverlap`) PASSED
 
