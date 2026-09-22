@@ -1044,43 +1044,69 @@ No batch proof has been accepted merely by creating this log or queue.
 
 ## 2026-09-22: G085 (`exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`) BLOCKED / SKIPPED
 
-- **Target**: `DescentStepOrientable:269` (`exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`)
-- **Status**: BLOCKED / SKIPPED (missing innermost clean disk cap surgery)
-- **Skeleton Location**: `DescentStepOrientable.lean:269`
+- **Target**: `DescentStepOrientable:151` (`exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`)
+- **Status**: BLOCKED / SKIPPED (missing innermost clean disk cap surgery and transverse push-off in regular neighborhood)
+- **Skeleton Location**: `DescentStepOrientable.lean:151`
 - **Blocker Description**:
-  - Requires: Adapted clean cap from disjoint innermost clean disk.
-- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
-- **Next Useful Lemma**: `exists_adaptedCleanCap_proof`.
+  - Requires: Given normal singular cell data $hD$, a non-boundary branch $c$ with branch preimage $J \cup T$ (disjoint 1-spheres), innermost clean disk $Q$ with $\partial Q = J$, and disk $E$ with $\partial E = T$ and PL homeomorphism $k : E \to Q$, constructing an enlarged ball $E' \supset E$ and an adapted singular 2-cell $\Delta : E' \to M$ such that $\Delta$ is injective on $E'$, $\Delta(E') \subseteq V$, $\Delta = D$ on $\partial E'$, and $\Delta(E') \cap D(D.\text{domain}) = D(\partial E')$.
+  - The mathematical proof requires Dehn lemma / Loop theorem surgery apparatus in 3-manifolds:
+    1. Replacing the disk $E$ along the second component $T$ of the branch preimage with an embedded "clean cap" $\Delta(E')$ that meets $D(D.\text{domain})$ only along its boundary.
+    2. Constructing a parallel push-off of $Q$ inside a small regular neighborhood $V$ of $D(Q)$ in $M$.
+    3. Ensuring that the cap is locally injective and globally disjoint from all other sheets of $D$ outside $\partial E'$ (avoiding self-intersections and mutual intersections).
+    4. Constructing the domain $E'$ as a PL 2-ball slightly larger than $E$ in $\mathbb{R}^2$ such that the collar $E' \setminus E$ contains no double points of $D$.
+    5. Gluing the PL map $\Delta$ using chart-level transverse push-offs in the normal bundle / local product neighborhood of $D(Q)$.
+  - The regular neighborhood push-off and clean collar apparatus for singular 2-cells are not available in the library.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean` and `LoopTheorem/LemmaTwoOrientable.lean`.
+- **Next Useful Lemma**: `exists_cleanCap_pushOff_in_regularNeighborhood` (transverse push-off of an embedded disk in a 3-manifold regular neighborhood).
 
 ## 2026-09-22: G086 (`exists_descendingSurgery_of_adaptedCleanCap`) BLOCKED / SKIPPED
 
-- **Target**: `DescentStepOrientable:290` (`exists_descendingSurgery_of_adaptedCleanCap`)
-- **Status**: BLOCKED / SKIPPED (missing descending surgery apparatus on adapted clean cap)
-- **Skeleton Location**: `DescentStepOrientable.lean:290`
+- **Target**: `DescentStepOrientable:172` (`exists_descendingSurgery_of_adaptedCleanCap`)
+- **Status**: BLOCKED / SKIPPED (missing singular complexity reduction under clean cap surgery)
+- **Skeleton Location**: `DescentStepOrientable.lean:172`
 - **Blocker Description**:
-  - Requires: Descending surgery on adapted clean cap reducing singular complexity.
-- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
-- **Next Useful Lemma**: `exists_descendingSurgery_proof`.
+  - Requires: Given the adapted clean cap $\Delta$ on $E'$ from G085, constructing a descending surgery $Sg : hD.\text{DescendingSurgery}$ such that $Sg.\text{cell}$ maps to $C$, has boundary buffer in $B$, and preserves the boundary loop class $[\gamma] \notin N$.
+  - The mathematical proof replaces the singular cell $D$ with a new cell $Sg.\text{cell}$ obtained by cutting out the interior of $E'$ and replacing it with the clean cap $\Delta$.
+  - Formalization requires:
+    1. Proving that the singular complexity strictly decreases: the branch $c$ (which contributed two components $J$ and $T$ to the double curve) is eliminated or resolved without creating new branch points of higher or equal complexity.
+    2. Boundary loop preservation: since the surgery takes place entirely in the interior of $D.\text{domain}$ (disjoint from $\partial D.\text{domain}$), the restriction of $Sg.\text{cell}$ to the boundary is identical to $D|_{\partial D.\text{domain}}$, so the loop $\gamma$ is unchanged in the fundamental group.
+    3. Verifying that the singular set stratification and normal data for $Sg.\text{cell}$ are well-defined (`NormalSingularCellData` properties for the surgered cell).
+  - The complexity comparison and stratified singular set surgery apparatus are not formalized.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean` and `LoopTheorem/ComplexityInduction.lean`.
+- **Next Useful Lemma**: `SingularComplexity.lt_of_cleanCap_surgery` (strict decrease of Moise singular complexity under innermost clean cap surgery).
 
 ## 2026-09-22: G087 (`exists_plCrossSeamReading_of_isCrossRegluedCell`) BLOCKED / SKIPPED
 
-- **Target**: `DescentStepOrientable:353` (`exists_plCrossSeamReading_of_isCrossRegluedCell`)
-- **Status**: BLOCKED / SKIPPED (missing PL cross seam reading for cross reglued cells)
-- **Skeleton Location**: `DescentStepOrientable.lean:353`
+- **Target**: `DescentStepOrientable:235` (`exists_plCrossSeamReading_of_isCrossRegluedCell`)
+- **Status**: BLOCKED / SKIPPED (missing cross-seam reading existence dichotomy on cross-reglued cells)
+- **Skeleton Location**: `DescentStepOrientable.lean:235`
 - **Blocker Description**:
-  - Requires: PL cross seam reading of cross reglued cell.
-- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
-- **Next Useful Lemma**: `exists_plCrossSeamReading_proof`.
+  - Requires: Given cross seam tube data $T$ and a cross reglued cell $G$, showing that either $T.\text{chart}$ or $T.\text{chart} \circ \text{crossQuarterTurn}$ admits a `PLCrossSeamReading` on $G$.
+  - At a cross-reglued cell $G$, the two sheets meeting along the seam are reglued with a twist. The reading specifies how the boundary of $G$ passes through the splice cylinder.
+  - Depending on the orientation/cyclic order of the four points on the boundary of the splice square, the reading is either orientation-preserving or requires a quarter-turn rotation `crossQuarterTurn` to align the coordinate axes with the standard model `bentSource`.
+  - Formalization requires:
+    1. Continuous parameterization of the preimage $G^{-1}(\text{spliceCylinder})$ in $G.\text{domain}$.
+    2. Verifying that the coordinate projection to `bentSource` is a PL homeomorphism satisfying the boundary correspondence conditions `boundary_iff_end`.
+    3. The parity/dichotomy argument proving that if the reading does not match in the standard orientation, applying `crossQuarterTurn` (swapping coordinates via $(u, v, t) \mapsto (-v, u, t)$) restores the matching.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean` and `LoopTheorem/CrossQuarterTurn.lean`.
+- **Next Useful Lemma**: `PLCrossSeamReading.exists_of_spliceSquare_crossing_parity`.
 
 ## 2026-09-22: G088 (`exists_isSourceTrackedBranchTube`) BLOCKED / SKIPPED
 
 - **Target**: `ClosedBranchCaseOne:169` (`exists_isSourceTrackedBranchTube`)
-- **Status**: BLOCKED / SKIPPED (missing source tracked branch tube construction)
+- **Status**: BLOCKED / SKIPPED (missing source-tracked branch tube construction around closed double curve branch)
 - **Skeleton Location**: `ClosedBranchCaseOne.lean:169`
 - **Blocker Description**:
-  - Requires: Source tracked branch tube in closed branch case one.
-- **Attempted Route**: Evaluated `ClosedBranchCaseOne.lean`.
-- **Next Useful Lemma**: `exists_isSourceTrackedBranchTube_proof`.
+  - Requires: For a closed branch $c$ of a singular 2-cell $D$ in a combinatorial 3-manifold $L$ with marked branch collar, constructing a simplicial complex $Pc$, derived neighborhood $N$, product coordinate map $\varphi$, return map $u$, and marking rays $r$ satisfying the 9-field `IsSourceTrackedBranchTube` package.
+  - A closed branch is a circle $S^1$ in the double curve where two sheets of $D$ intersect along an immersion. The tube is a solid torus neighborhood $N \cong D^2 \times S^1$ in the ambient 3-manifold $L$, fibered over $S^1$ by cross-sectional disks $Pc \cong D^2$.
+  - The map $\varphi : (D^2) \times S^1 \to L$ provides the product coordinates, and $u : D^2 \to D^2$ is the monodromy / first-return map of the fibration around the loop.
+  - Formalization requires:
+    1. Regular neighborhood of a 1-cycle in a combinatorial 3-manifold.
+    2. Trivializing or classifying the normal bundle of an embedded circle in an orientable 3-manifold (framed knot neighborhood).
+    3. Simplicial triangulation of the solid torus compatible with the ambient triangulation $L$ and the sheet preimages.
+    4. Constructing the 4 marking rays $r : \text{Fin } 4 \to \mathbb{R}^2$ that track the 4 sheets/branches entering the double line.
+- **Attempted Route**: Evaluated `ClosedBranchCaseOne.lean` and `LoopTheorem/BoundaryCaseFromTube.lean`.
+- **Next Useful Lemma**: `exists_tubularNeighborhood_of_simplicialCircle_in_3manifold`.
 
 ## 2026-09-22: G089 (`exists_adaptedHalfSpaceChart_in_double`) PASSED
 
@@ -1112,13 +1138,18 @@ No batch proof has been accepted merely by creating this log or queue.
 
 ## 2026-09-22: G090 (`SingularTwoCell.exists_cutOutPiece_of_closure_subset`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:412` (`SingularTwoCell.exists_cutOutPiece_of_closure_subset`)
-- **Status**: BLOCKED / SKIPPED (missing cut out piece construction for singular 2-cell)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:412`
+- **Target**: `GeneralPositionInDouble:410` (`SingularTwoCell.exists_cutOutPiece_of_closure_subset`)
+- **Status**: BLOCKED / SKIPPED (missing relative regular neighborhood / cut-out piece in 2D PL disk with boundary)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:410`
 - **Blocker Description**:
-  - Requires: Constructing a cut out piece for a singular 2-cell.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_cutOutPiece_proof`.
+  - Requires: For a singular 2-cell $D$ and open sets $V_0, V$ with $\text{closure } V_0 \subseteq V$, constructing simplicial complexes $Rc, Lc, Ac$ in $\mathbb{R}^2$ and open sets $\Omega, Nb$ such that $Rc$ is a combinatorial 2-manifold with boundary, $Rc \subseteq D.\text{domain} \cap D^{-1}(V)$, $Lc = Rc \cap \text{frontier } D.\text{domain}$, and $Ac$ is a collar covering $Rc \setminus \Omega$ disjoint from $D^{-1}(\text{closure } V_0)$.
+  - Mathematical analysis:
+    1. While `LoopTheorem/GeneralPositionInDoubleCutOutWithBoundary.lean` provides `exists_prescribed_cutOut_piece_with_boundary_source`, that lemma requires the entire starting piece $S$ to satisfy $S \subseteq D^{-1}(V)$.
+    2. Here, $D.\text{domain}$ is not contained in $D^{-1}(V)$; only the compact subset $D^{-1}(\text{closure } V_0)$ is known to be in $D^{-1}(V)$.
+    3. Thus one must first construct an intermediate polygonal / simplicial subcomplex $P \subseteq D.\text{domain}$ such that $D^{-1}(\text{closure } V_0) \subseteq \text{interior } P \subseteq P \subseteq D^{-1}(V)$, and then apply relative cut-out / collar theorems to $P$.
+    4. Constructing such a subcomplex $P$ that also cleanly meets $\text{frontier } D.\text{domain}$ along a 1D subcomplex requires relative polyhedral neighborhood theory in manifolds with boundary.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean` and `LoopTheorem/GeneralPositionInDoubleCutOutWithBoundary.lean`.
+- **Next Useful Lemma**: `exists_polyhedralSubcomplex_neighborhood_rel_boundary` (relative polyhedral neighborhood of a compact set meeting the boundary).
 
 ## 2026-09-22: G091 (`exists_gluedCell_of_vertexMap_in_adaptedChart`) PASSED
 
@@ -1183,53 +1214,72 @@ No batch proof has been accepted merely by creating this log or queue.
 
 ## 2026-09-22: G093 (`exists_commonWallComplex`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1497` (`exists_commonWallComplex`)
-- **Status**: BLOCKED / SKIPPED (missing common wall complex construction)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1497`
+- **Target**: `GeneralPositionInDouble:1469` (`exists_commonWallComplex`)
+- **Status**: BLOCKED / SKIPPED (missing simultaneous common polyhedral subdivision for finite atlas)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1469`
 - **Blocker Description**:
-  - Requires: Common wall complex construction for wall system in double.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_commonWallComplex_proof`.
+  - Requires: For a 3-manifold with boundary $K$, constructing a common wall complex $Q$, embedding $\rho : M \to E_a$, and cell systems $Cf, Bf$ forming a common wall system `IsCommonWallSystem` for the double $M = \text{double } 3 K$.
+  - Mathematical analysis:
+    1. Each chart $ec_i$ of the finite atlas on $M$ has coordinate hyperplanes (walls) $\ell_i = 0$ and boundary hyperplanes. On chart overlaps, these hyperplanes intersect at arbitrary angles.
+    2. To form an `IsCommonWallSystem`, one must find a single ambient simplicial complex $Q$ into which $M$ embeds via $\rho$, such that the images of all chart walls and cell boundaries are unions of faces of $Q$.
+    3. This requires the general theorem that any finite collection of polyhedra / flat hyperplanes in $\mathbb{R}^N$ admits a simultaneous compatible simplicial subdivision.
+    4. The polyhedral intersection and simultaneous subdivision infrastructure for finite collections of polyhedra is not yet formalized in Mathlib or this library.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean` and `PiecewiseAffineSimplicial.lean`.
+- **Next Useful Lemma**: `exists_common_simplicial_subdivision_finite_polyhedra`.
 
 ## 2026-09-22: G094 (`wallProductBlock_transport`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1527` (`wallProductBlock_transport`)
-- **Status**: BLOCKED / SKIPPED (missing wall product block coordinate transformation)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1527`
+- **Target**: `GeneralPositionInDouble:1492` (`wallProductBlock_transport`)
+- **Status**: BLOCKED / SKIPPED (missing affine shear coordinate transport and Lipschitz preservation for crossing blocks)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1492`
 - **Blocker Description**:
-  - Requires: Transporting a wall product block between charts.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `wallProductBlock_transport_proof`.
+  - Requires: Transporting a `WallProductBlock` from chart $ec_i$ to chart $ec_j$ across a transition map in the maximal atlas of $M$.
+  - Mathematical roadmap and formalization blockers:
+    1. On 3-cells, transitions in `plGroupoid 3` are affine. On walls between cells, transitions match by `eqOn_wallPlane_of_eqOn_transition` forming an affine shear $(u, v, t) \mapsto (u + \alpha t, v + \beta t, c t)$ with $c > 0$, preserving the wall plane $t = 0$ and the transverse direction.
+    2. Formalization requires inverting `chartAffine` on 3-simplices to deduce the explicit shear form.
+    3. Mathlib lacks affine shear classification and preservation of Lipschitz constants under shears ($C$-Lipschitz sheets remain $C'$-Lipschitz under small shears).
+    4. Verifying all 20 fields of `IsStableCrossingBlock` and the 3-case disjunction of `WallProductBlock` under coordinate change represents a massive multi-file development.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean` and `LoopTheorem/GeneralPositionInDoubleCutOutWithBoundary.lean`.
+- **Next Useful Lemma**: `IsStableCrossingBlock.transport_of_affineShear`.
 
 ## 2026-09-22: G095 (`hasStableCrossingBlocks_of_wallProductBlocks`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1546` (`hasStableCrossingBlocks_of_wallProductBlocks`)
-- **Status**: BLOCKED / SKIPPED (missing crossing block stability from wall product structure)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1546`
+- **Target**: `GeneralPositionInDouble:1511` (`hasStableCrossingBlocks_of_wallProductBlocks`)
+- **Status**: BLOCKED / SKIPPED (missing crossing block stability from wall product structure; directly blocked by G094)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1511`
 - **Blocker Description**:
-  - Requires: Stable crossing blocks from wall product blocks.
+  - Requires: Showing that a family of `WallProductBlock`s covering the crossing set yields `HasStableCrossingBlocks`.
+  - Mathematical analysis:
+    1. Directly depends on `wallProductBlock_transport` (G094): each wall product block is given in some chart $ec_i$, but `HasStableCrossingBlocks` requires all crossing blocks to be expressed in a single designated chart $ec_{i_0}$ or to cover the double curve globally.
+    2. Requires transporting all blocks to chart $ec_{i_0}$ via G094 and extracting a finite subcover of the compact double curve.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `hasStableCrossingBlocks_of_wallProductBlocks_proof`.
+- **Next Useful Lemma**: `wallProductBlock_transport` (G094).
 
 ## 2026-09-22: G096 (`exists_normalizationPreparation_on_prescribedRegion`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1660` (`exists_normalizationPreparation_on_prescribedRegion`)
-- **Status**: BLOCKED / SKIPPED (missing normalization preparation for singular cell)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1660`
+- **Target**: `GeneralPositionInDouble:1632` (`exists_normalizationPreparation_on_prescribedRegion`)
+- **Status**: BLOCKED / SKIPPED (missing star-injective simplicial subdivision controlling fiber multiplicity)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1632`
 - **Blocker Description**:
-  - Requires: Normalization preparation on prescribed region for singular cell.
+  - Requires: Preparing a singular 2-cell $D$ on a prescribed region $V$ by subdividing the domain into small simplices such that the image of each simplex is contained in a single chart of the wall system and has diameter bounded by $\varepsilon$.
+  - Mathematical analysis:
+    1. Requires Lebesgue number lemma and uniform continuity for simplicial maps on compact 2-manifolds, combined with star-injective simplicial subdivision.
+    2. To ensure that each simplex has diameter $<\varepsilon$ and that fibers have cardinality $\le 2$, one must take a sufficiently fine barycentric subdivision of the domain and perturb vertices to avoid non-generic coincidences.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_normalizationPreparation_proof`.
+- **Next Useful Lemma**: `exists_fine_simplicial_subdivision_diameter_le`.
 
 ## 2026-09-22: G097 (`exists_protectedSubdivision_in_adaptedChart`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1685` (`exists_protectedSubdivision_in_adaptedChart`)
-- **Status**: BLOCKED / SKIPPED (missing protected subdivision construction)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1685`
+- **Target**: `GeneralPositionInDouble:1657` (`exists_protectedSubdivision_in_adaptedChart`)
+- **Status**: BLOCKED / SKIPPED (missing protected subdivision isolating double curve and boundary)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1657`
 - **Blocker Description**:
-  - Requires: Protected subdivision construction in adapted chart.
+  - Requires: Constructing a protected subdivision of the domain of $D$ in an adapted chart, isolating the double curve and boundary into protected subcomplexes.
+  - Mathematical analysis:
+    1. A protected subdivision replaces each vertex and edge of the singular set with a regular neighborhood (buffer zone) where the map is in standard form, such that perturbations outside the buffer do not affect the crossings inside.
+    2. Requires the 2D regular neighborhood / derived neighborhood collar theorem for 1-subcomplexes in a simplicial 2-complex.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_protectedSubdivision_proof`.
+- **Next Useful Lemma**: `exists_derivedNeighborhood_subcomplex_isolation`.
 
 ## 2026-09-22: G098 (`exists_globalInvariants_of_gluedCell`) PASSED
 
@@ -1248,30 +1298,43 @@ No batch proof has been accepted merely by creating this log or queue.
 
 ## 2026-09-22: G099 (`wallProductBlocks_stable_on_fixedSubdivision`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1845` (`wallProductBlocks_stable_on_fixedSubdivision`)
-- **Status**: BLOCKED / SKIPPED (missing wall product block subdivision invariance)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1845`
+- **Target**: `GeneralPositionInDouble:1771` (`wallProductBlocks_stable_on_fixedSubdivision`)
+- **Status**: BLOCKED / SKIPPED (missing C^0-stability of crossing blocks under perturbation of moving sheets)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1771`
 - **Blocker Description**:
-  - Requires: Stability of wall product blocks under subdivision.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `wallProductBlocks_stable_proof`.
+  - Requires: Showing that `IsStableCrossingBlock` is preserved under small $C^0$/PL perturbations of the map on a fixed subdivision when sheets move.
+  - Mathematical analysis:
+    1. The codebase only provides rigid-invariance lemmas (`isStableCrossingBlock_of_eqOn_sheets`, `isStableCrossingBlock_of_preimage_singleton_eq`, `isStableCrossingBlock_of_eqOn_compl`) where $g = f$ on sheets.
+    2. When sheets move by $\le \delta$, their intersection line moves by $O(\delta)$, and one must construct new sheet homeomorphisms $\psi_1, \psi_2$ and adjust the product box to re-establish the 20 conditions of `IsStableCrossingBlock`.
+    3. No perturbation lemma for moving sheets exists in the library.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean` and `LoopTheorem/GeneralPositionInDoubleCutOutWithBoundary.lean`.
+- **Next Useful Lemma**: `isStableCrossingBlock_of_small_perturbation`.
 
 ## 2026-09-22: G100 (`exists_wallGenericVertexMap`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1897` (`exists_wallGenericVertexMap`)
-- **Status**: BLOCKED / SKIPPED (missing generic vertex map perturbation avoiding walls)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1897`
+- **Target**: `GeneralPositionInDouble:1823` (`exists_wallGenericVertexMap`)
+- **Status**: BLOCKED / SKIPPED (missing relative PL transversality for simplicial maps into 3-manifolds with polyhedral stratifications)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1823`
 - **Blocker Description**:
-  - Requires: Constructing a generic vertex map avoiding walls.
+  - Requires: Constructing a generic vertex map perturbing $D$ to be in general position with respect to the ambient wall system (avoiding the 1-skeleton of walls, transverse to wall planes).
+  - Mathematical analysis:
+    1. Vertices of the 2-complex must be mapped into 3-cells (avoiding 2-faces, edges, vertices of the wall complex).
+    2. Edges must cross 2-faces transversely (avoiding edges and vertices).
+    3. 2-simplices must avoid wall vertices.
+    4. Formalization requires Sard-type / general position perturbation lemmas for finite-dimensional affine spaces over $\mathbb{R}$.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_wallGenericVertexMap_proof`.
+- **Next Useful Lemma**: `exists_simplicial_vertex_perturbation_transverse_to_polyhedra`.
 
 ## 2026-09-22: G101 (`wallProductBlocks_of_wallGenericity`) BLOCKED / SKIPPED
 
-- **Target**: `GeneralPositionInDouble:1946` (`wallProductBlocks_of_wallGenericity`)
-- **Status**: BLOCKED / SKIPPED (missing constructing wall product blocks from generic vertex maps)
-- **Skeleton Location**: `GeneralPositionInDouble.lean:1946`
+- **Target**: `GeneralPositionInDouble:1872` (`wallProductBlocks_of_wallGenericity`)
+- **Status**: BLOCKED / SKIPPED (missing wall product block synthesis from generic transverse simplex-wall crossings)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1872`
 - **Blocker Description**:
-  - Requires: Constructing wall product blocks from generic vertex maps.
+  - Requires: Constructing `WallProductBlock`s around generic transverse crossings of piecewise affine maps.
+  - Mathematical analysis:
+    1. For each transverse intersection of a 2-simplex with a wall, one must construct the local product coordinate box $[-r, r] \times [-r, r] \times [-\eta, \eta]$.
+    2. Local PL coordinate straightening into graph form with small Lipschitz constants.
+    3. Establishing the 3-case disjunction and all conditions of `WallProductBlock`.
 - **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `wallProductBlocks_of_wallGenericity_proof`.
+- **Next Useful Lemma**: `wallProductBlock_of_transverse_simplex_wall_intersection`.
