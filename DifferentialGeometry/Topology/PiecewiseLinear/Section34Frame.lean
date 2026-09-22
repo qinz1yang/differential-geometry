@@ -77,7 +77,13 @@ codimension-one incidences `Section34CutStep` read off the boundary formulas
 the cut, not a consequence of the cut frame: nothing in the cut frame forbids a face disk from
 lying inside a dual ball.
 
-`Section34NormalPlus` is the configuration after step P5.  `Section34VertexPreparation` and
+`Section34NormalPlus` is the configuration after step P5.  Its last conjunct is the
+impossibility of Operation 2 with the bigon pinned to the data of page 242: an arc `B` of the
+trace with ends `Bb` on the splitting circle `tgtEBd e` and no other point on a splitting disk,
+an arc `B' ⊆ tgtEBd e` with the same ends, `B ∩ B' = Bb`, and a disk
+`Dj ⊆ tgtVBd w ∩ frontier (⋃ w, tgtV w)` with intrinsic boundary `Jd = B ∪ B'` whose interior
+meets no `fblBd s'`; the earlier premise `Jd ⊆ B ∪ tgtEBd e` admitted `Dj = tgtE e`,
+`Jd = tgtEBd e`, which is no bigon.  `Section34VertexPreparation` and
 `Section34PiercingConditions` are the two packages of Moise 35.1, pages 248--250, and they
 separate the *pierced* cells `C'_v` from the *enlarged* cells `C''_v`.  The preparation fixes,
 before any map: `C'_v`, the piercing circle `Bd C'_v ∩ Bd C'_w` inside the
@@ -826,10 +832,11 @@ def Section34NormalPlus (U : Set M₁) (h : M₁ → M₂) (η : M₁ → ℝ)
     (∀ e : Section34EdgeIndex 𝒦 𝒦', Disjoint Dj (tgtE e)) →
     (∀ s' : Section34SimplexIndex 𝒦 3, s' ≠ s → Disjoint (Dj \ Jd) (fbl s')) → False) ∧
   ∀ (s : Section34SimplexIndex 𝒦 3) (w : Section34VertexIndex 𝒦 𝒦')
-    (e : Section34EdgeIndex 𝒦 𝒦') (B Bb Dj Jd : Set M₂),
+    (e : Section34EdgeIndex 𝒦 𝒦') (B B' Bb Dj Jd : Set M₂),
     IsPLCellOn 1 B Bb → B ⊆ fblBd s → B ⊆ tgtVBd w → Bb ⊆ tgtEBd e →
-    B ∩ (⋃ e' : Section34EdgeIndex 𝒦 𝒦', tgtE e') = Bb → IsPLCellOn 2 Dj Jd →
-    Dj ⊆ tgtVBd w → Jd ⊆ B ∪ tgtEBd e →
+    B ∩ (⋃ e' : Section34EdgeIndex 𝒦 𝒦', tgtE e') = Bb →
+    IsPLCellOn 1 B' Bb → B' ⊆ tgtEBd e → B ∩ B' = Bb →
+    IsPLCellOn 2 Dj Jd → Dj ⊆ tgtVBd w ∩ frontier (⋃ w, tgtV w) → Jd = B ∪ B' →
     (∀ s' : Section34SimplexIndex 𝒦 3, Disjoint (Dj \ Jd) (fblBd s')) → False
 
 def Section34FaceDiskFamily {U : Set M₁} (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
