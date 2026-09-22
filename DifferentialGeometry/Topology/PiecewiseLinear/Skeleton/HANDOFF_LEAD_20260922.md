@@ -104,11 +104,26 @@ both standard adjacent pairs. Both modules are registered in the flat aggregate.
 frozen Section 31 and CanonicalConfiguration hashes are unchanged; no skeleton sorry was
 removed. Acceptance and the exact evidence location are under B1.g.1 in FREE_INPUTS.
 
-The next assignment is
-[HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md):
-prove the genuine arbitrary planar disk-union core and then the unchanged entry 10.
-The lead did not start or message a Gemini process; the owner must pass this continuation
-to its local CLI. Do not claim that a second round has started from a prepared prompt.
+The owner subsequently authorized a continuous, aggressive batch over all currently frozen
+open leaves, with lead acceptance deferred until batch delivery. Use
+[GEMINI_BATCH.md](GEMINI_BATCH.md), its full task table, source/header manifest and checkpoint
+script. The verified census has 108 physical leaves: 101 proof candidates, four review
+holds, F's one reserved leaf, and two composite/assembly entries that should not get separate
+deep searches. One of those composites also lacks a current explicit refreeze. This is an
+execution inventory, not another proof ledger or an increase in accepted results.
+
+Gemini may keep the current planar attempt, continue through the other candidates, make
+staged exact vocabulary moves, and add ordinary reusable helpers within the documented file
+ownership. It no longer stops for lead acceptance after each target. In-batch dependencies
+may consume self-checked work, with exact receipts and source snapshots; final acceptance
+is independent and proceeds by dependency order. The checkpoint helper was syntax/guard
+checked and its audit gate compared with the already verified audit template; preparing
+the batch did not run Lean or audit the active Gemini/F implementations.
+
+F was directly notified and retains entry 15/NormalCrossingTransport on lease a. Gemini
+uses d and must preserve F/S/H dirty files. The lead did not start or message a Gemini
+process; the owner passes GEMINI_BATCH.md to its existing CLI. A prepared queue does not
+establish that the broader batch has started. No automation or lease was changed.
 
 ## Ready owner review prompts
 

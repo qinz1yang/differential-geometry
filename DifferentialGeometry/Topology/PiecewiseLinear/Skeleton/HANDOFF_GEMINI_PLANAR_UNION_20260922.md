@@ -1,5 +1,9 @@
 # Gemini handoff: unions of overlapping planar topological disks
 
+The owner has now authorized the broader continuous [Gemini batch](GEMINI_BATCH.md).
+Its scope and continuation rules supersede the single-target restrictions below; keep
+this file as mathematical context for the planar target.
+
 The first delivery has returned. Before resuming, read the
 [round-two update](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md); it supersedes the old
 candidate status and records the lead's API cleanup. The original frozen target below is

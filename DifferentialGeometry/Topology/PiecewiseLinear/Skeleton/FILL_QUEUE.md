@@ -4,13 +4,14 @@ This is an execution queue. Acceptance and proof debt belong only to `../FREE_IN
 `FILL_LOG.md` supplies worker evidence for independent verification. Original entry numbers
 are retained. Do not repeat entries 1, 2, 3, 4, 6, 7, 8, 9, 13, 14, or 16.
 
-Entry 10 is reserved for the owner's parallel Gemini CLI lane, with separate output files
-and lease d. Its self-contained assignment is
-[HANDOFF_GEMINI_PLANAR_UNION_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_20260922.md).
-F remains on entry 15 and lease a. The owner returned Gemini's first PARTIAL delivery;
-the lead accepted only its corrected supporting mathematics, as recorded under B1.g.1 in
-FREE_INPUTS. The frozen entry remains OPEN. The next scoped assignment is
-[HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md).
+The owner has authorized a continuous Gemini batch over the other currently frozen leaves,
+with lead acceptance deferred until batch delivery. Its operating instructions and full
+101-candidate queue are [GEMINI_BATCH.md](GEMINI_BATCH.md) and
+[GEMINI_BATCH_TASKS.md](GEMINI_BATCH_TASKS.md), on lease d. Entries 5/10/11/12 belong to that
+batch, with their source and dependency cautions. F remains exclusively on entry 15 and
+lease a; the lead directly notified F of the expanded reservation. Gemini's first planar
+supporting layer is accepted only as recorded under B1.g.1 in FREE_INPUTS; its frozen
+endpoint remains OPEN. Batch authorization does not change the acceptance count.
 
 Work in `D:\differential-geometry-moise-int`, branch `codex/moise-integration`.
 `E:\differential-geometry-dev` and its outputs are read-only. Compile only in PowerShell with

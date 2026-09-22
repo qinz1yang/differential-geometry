@@ -1,5 +1,10 @@
 # Gemini continuation: prove the planar disk union
 
+The later [GEMINI_BATCH.md](GEMINI_BATCH.md) authorizes continuous work across 101 frozen
+proof candidates. Follow its scope and continuation rules rather than the stop-after-this-
+round restriction below. This file remains the mathematical context for the current
+planar-union attempt; do not reset that work.
+
 The owner returned the first Gemini report. It supplies useful auxiliary mathematics but
 does not prove entry 10. Continue the already authorized assignment; another plan approval
 is unnecessary. Read this update before resuming the original
