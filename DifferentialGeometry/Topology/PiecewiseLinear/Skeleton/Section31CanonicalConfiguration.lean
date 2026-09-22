@@ -25,8 +25,9 @@ Review state.  First external review 2026-09-21 (digest AP,
 `consult/AP-section31-first-review-digest.md`, snapshot `c1d5ba63`): the nine leaves listed
 first below are all OK and **frozen**; their statements are byte-identical to the reviewed
 snapshot, and `exists_generalPosition_solidTorus_triple` keeps its reviewed statement but is
-now proved.  The tenth leaf `exists_generalPosition_solidTorus_relative`, added on the
-reviewer's interface fix, is **unreviewed**.  The leaves, with the book gap each covers (Moise
+now proved.  The relative leaf `exists_generalPosition_solidTorus_relative`, added on the
+reviewer's interface fix, is **frozen** after the second review (digest AQ).  All nine current
+leaves remain open proof obligations.  The leaves, with the book gap each covers (Moise
 pp. 220-222, digest AD).
 
 `isSpine_revolutionOf_of_mem_cellInterior` (medium).  Revolving a planar two-cell of the open
@@ -78,7 +79,7 @@ relative leaf: `S'' 0 := S' 0`, `S'' 1` chosen relative to `![S'' 0]`, `S'' 2` r
 compactness `IsCompact (h '' A j)` the leaf asks for comes from `isCompact_revolutionOf` on the
 revolved segment, transported through the continuous `h`.
 
-`exists_generalPosition_solidTorus_relative` (deep, **unreviewed**, digest AP's interface fix).
+`exists_generalPosition_solidTorus_relative` (deep, **frozen**, digests AP and AQ).
 Relative general position, the statement Section 32 must consume: for a compact `A`, an open
 `U`, a combinatorial solid torus `S₀` with `Fits A U S₀` (`A ⊆ Int S₀` and `S₀ ⊆ U`) and any
 finite family `F` of combinatorial solid tori, a parameter that is never re-chosen, there is a
@@ -90,10 +91,11 @@ for one pair.  No clause beyond `Fits` is needed: `U` is instantiated by the ope
 annulus clause, and compactness of `A` is what keeps `A` inside a small perturbation of `S₀`.
 `PairGP R S` holds with the empty family when the two boundaries are disjoint, exactly as
 `IsCanonicalConfiguration.polygons` does; general position includes the empty intersection.
-Hand-off to Section 32: enumerate the integer indices in their natural order with
-`A = h '' A_i`, `U = Int (h '' S_i)` and `F` the already chosen neighbours, which makes all
-overlapping triples compatible; approach to the boundary, approach to the centre and local
-finiteness still come from the outer control of the `S_i`, not from this leaf.  Owed: hoist
+Proposed hand-off to Section 32 (not implemented): first fix the source tower and its `φ`,
+choose one seed torus for every integer, keep the even seeds and choose each odd torus relative
+to its two fixed even neighbours.  Use `A = φ '' A_i` and `U = Int (φ '' S_i)`; every triple is
+a restriction of this one family.  Approach to the boundary, approach to the centre and local
+finiteness still come from the outer control of `φ '' S_i`, not from this leaf.  Owed: hoist
 `Fits`, `PairGP`, `PairGP.symm` and this statement to a real module before Section 32's tower
 leaf consumes them.
 
