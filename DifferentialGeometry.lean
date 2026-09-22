@@ -13214,3 +13214,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatial
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.LocalMaps
 import DifferentialGeometry.Topology.Manifold.BallComplementTransition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVolume
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.HalfBandSeparation
+import DifferentialGeometry.Geometry.Neck.RetainedVolume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.VolumeMargin
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteVolumeDebit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRetainedVolume
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalDerivative
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalExtension
