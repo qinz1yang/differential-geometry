@@ -1009,15 +1009,38 @@ No batch proof has been accepted merely by creating this log or queue.
 - **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
 - **Next Useful Lemma**: `isPLBoundaryTubeProducer_double_proof`.
 
-## 2026-09-22: G084 (`NormalSystem.exists_boundaryNeighborhood_realization`) BLOCKED / SKIPPED
+## 2026-09-22: G084 (`NormalSystem.exists_boundaryNeighborhood_realization`) PASSED
 
 - **Target**: `DescentStepOrientable:244` (`NormalSystem.exists_boundaryNeighborhood_realization`)
-- **Status**: BLOCKED / SKIPPED (missing normal system boundary neighborhood realization)
+- **Status**: PASSED
 - **Skeleton Location**: `DescentStepOrientable.lean:244`
-- **Blocker Description**:
-  - Requires: Boundary neighborhood realization of a normal system.
-- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
-- **Next Useful Lemma**: `NormalSystem.exists_boundaryNeighborhood_realization_proof`.
+- **Module**: `DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealization`
+- **Source File**: `DifferentialGeometry/Topology/PiecewiseLinear/BoundaryNeighborhoodRealization.lean`
+- **SHA256**: `FC6A5392CE7947F2D6DC626CB8DE6DFC885574F88CFEE4A4988E4288F36FD06F`
+- **Checkpoint Directory**: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\gemini-batch\checkpoints\G084-boundary-neighborhood-realization-20260922T2050506669699Z`
+- **Verification Details**:
+  - Zero errors, zero warnings.
+  - All 13 linters passed.
+  - Verified by `checker.ps1` and `GEMINI_BATCH_CHECKPOINT.ps1`.
+- **Proof Strategy**:
+  - The map `ρ y := ⟨ι (y : E), ...⟩` from `S.boundaryNeighborhoodSpace` to `(double 3 S.manifoldComplex).space` is well-defined because `S.boundaryNeighborhood.space ⊆ S.manifoldComplex.space` and `ι` maps `S.manifoldComplex.space` to `(double 3 S.manifoldComplex).space`.
+  - `ρ` is continuous by `hι.2.1.continuousOn.comp_continuous continuous_subtype_val` and `Continuous.codRestrict`.
+  - `ρ` is injective by `hι.1.injOn`.
+  - `S.boundaryNeighborhoodSpace` is compact (`(isPolyhedron_space S.boundaryNeighborhood).isCompact`) and `(double 3 S.manifoldComplex).space` is Hausdorff (`T2Space`), so `ρ` is a closed embedding and hence an embedding (`IsEmbedding ρ`).
+  - `B ⊆ Set.range ρ` holds by definition of `B = Subtype.val ⁻¹' (ι '' S.boundaryNeighborhood.space)`.
+  - For $z \in \mathrm{frontier}(D.\mathrm{domain})$, $D.\mathrm{boundary}(z) \in B \subseteq \mathrm{range}(\rho)$ selects $f(z)$ via `Classical.choose`.
+  - `f` is continuous by `hρ.isInducing.continuous_iff.mpr` since $\rho \circ f = D.\mathrm{boundary}$ is continuous.
+- **Imports**:
+  - `DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.Gluing`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.PiecewiseAffine`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.Polyhedra`
+- **Public Declarations**:
+  - `NormalSystem.exists_boundaryNeighborhood_realization`
+- **Axioms**: `propext`, `Classical.choice`, `Quot.sound`
 
 ## 2026-09-22: G085 (`exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`) BLOCKED / SKIPPED
 
