@@ -8,6 +8,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEssentialDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceFilling
 import DifferentialGeometry.Topology.PiecewiseLinear.ToroidalShellHomology
+import DifferentialGeometry.Topology.PiecewiseLinear.NestedTori
 
 /-!
 # Polyhedral interpolation in toroidal shells
@@ -72,6 +73,10 @@ The essential-disk theorem derives the needed orientable three-dimensional compr
 `Moise252`, so the unrestricted `Moise264` is not an additional input to these assemblies.
 The cylindrical-diagram-to-cyclic-cell bridge needed by Section 31 remains in its own skeleton.
 This file is not imported by the root aggregate or any other skeleton.
+
+Proved and imported on 2026-09-22 (Gemini batch, lead-accepted with zero-diagnostic checks and an
+axiom audit; statements byte-identical with the frozen leaves): `subset_interior_of_nested_tori`,
+`not_nullhomotopic_inclusion_of_nested_tori`.
 -/
 
 open Set Topology
@@ -93,33 +98,12 @@ theorem IsPLTorus.exists_combinatorial_triangulation
       IsCombinatorialManifold 2 L ∧ IsConnected L.space ∧ L.space = T := by
   sorry
 
-theorem subset_interior_of_nested_tori
-    {S₁ S₂ T : Set (EuclideanSpace ℝ (Fin 3))}
-    (hS₁ : IsTopologicalSolidTorus S₁) (hS₂ : IsTopologicalSolidTorus S₂)
-    (h₁₂ : S₁ ⊆ interior S₂)
-    (hshell : IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂))
-    (hT : T ⊆ interior (closure (S₂ \ S₁))) (hsep : Separates T (frontier S₁) (frontier S₂))
-    (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite R.faces]
-    (hfront : frontier R.space = T) (hreg : closure (interior R.space) = R.space)
-    (hint : IsConnected (interior R.space)) (hext : IsConnected R.spaceᶜ) :
-    S₁ ⊆ interior R.space ∧ R.space ⊆ interior S₂ := by
-  sorry
-
 theorem IsPLTorus.exists_nontrivial_fundamentalGroup_kernel_in_solidTorus
     {T S : Set (EuclideanSpace ℝ (Fin 3))} (hT : IsPLTorus T)
     (hS : IsTopologicalSolidTorus S) (hTS : T ⊆ interior S) :
     ∃ (x : T) (g : FundamentalGroup T x), g ≠ 1 ∧
       FundamentalGroup.map (⟨Set.inclusion hTS, continuous_inclusion hTS⟩ :
         C(T, interior S)) x g = 1 := by
-  sorry
-
-theorem not_nullhomotopic_inclusion_of_nested_tori
-    {S₁ S₂ : Set (EuclideanSpace ℝ (Fin 3))}
-    (hS₁ : IsTopologicalSolidTorus S₁) (hS₂ : IsTopologicalSolidTorus S₂)
-    (h₁₂ : S₁ ⊆ interior S₂)
-    (hshell : IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂)) :
-    ¬ (⟨Set.inclusion (h₁₂.trans interior_subset), continuous_inclusion _⟩ :
-      C(S₁, S₂)).Nullhomotopic := by
   sorry
 
 theorem exists_isPLBall_superset_of_exterior_compression

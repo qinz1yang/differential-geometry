@@ -9253,6 +9253,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLo
 import DifferentialGeometry.Topology.CompactEmbeddingComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRay
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeBoundaryGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceInteriorFrontierOpen
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceInteriorFrontierContact
+import DifferentialGeometry.Topology.PiecewiseLinear.TriodFrontierWitnesses
+import DifferentialGeometry.Topology.PiecewiseLinear.NestedTori
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossQuarterTurn
 /-!
 # Differential geometry and geometric analysis
 -/

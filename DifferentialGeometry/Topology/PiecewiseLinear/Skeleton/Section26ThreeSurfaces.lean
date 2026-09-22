@@ -7,6 +7,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundedSurfaceComponent
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInteriorConnected
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceInteriorFrontierOpen
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceInteriorFrontierContact
+import DifferentialGeometry.Topology.PiecewiseLinear.TriodFrontierWitnesses
 
 /-!
 # Three polyhedral surfaces with a common boundary
@@ -53,6 +56,11 @@ push a copy of one annulus inward, fixing its two boundary circles. The three an
 disjoint interiors and the same two boundary circles. This tests both the local three-page
 chart and the global bounded-side conclusion. An empty common boundary is excluded by the
 named input itself.
+
+Proved and imported on 2026-09-22 (Gemini batch, lead-accepted with zero-diagnostic checks and an
+axiom audit; statements byte-identical with the frozen leaves):
+`isOpen_preimage_frontier_component_surface_interior`, `exists_surface_interior_frontier_contact`,
+`exists_frontier_pair_witnesses_of_triod_chart`.
 -/
 
 open Set Topology
@@ -79,53 +87,6 @@ theorem exists_triod_chart_at_common_boundary
           e z ∈ (![{w : E3 | w 1 = 0 ∧ 0 ≤ w 0},
             {w : E3 | w 1 = 0 ∧ w 0 ≤ 0},
             {w : E3 | w 0 = 0 ∧ 0 ≤ w 1}] : Fin 3 → Set E3) i := by
-  sorry
-
-open Classical in
-theorem exists_surface_interior_frontier_contact
-    (M : Fin 3 → Geometry.SimplicialComplex ℝ E3)
-    (hfin : ∀ i, (M i).faces.Finite)
-    (hM : ∀ i, IsCombinatorialManifoldWithBoundary 2 (M i))
-    (hconn : ∀ i, IsConnected (M i).space)
-    (hboundary : ∀ i j, (boundaryComplex 2 (M i)).space =
-      (boundaryComplex 2 (M j)).space)
-    (hne : (boundaryComplex 2 (M 0)).space.Nonempty)
-    (hdisjoint : ∀ i j, i ≠ j →
-      Disjoint ((M i).space \ (boundaryComplex 2 (M i)).space)
-        ((M j).space \ (boundaryComplex 2 (M j)).space))
-    {x : E3} (hx : x ∉ ⋃ i, (M i).space) :
-    ∃ i, ∃ z ∈ (M i).space \ (boundaryComplex 2 (M i)).space,
-      z ∈ frontier (connectedComponentIn (⋃ i, (M i).space)ᶜ x) := by
-  sorry
-
-open Classical in
-theorem isOpen_preimage_frontier_component_surface_interior
-    (K : Geometry.SimplicialComplex ℝ E3) [Finite K.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 2 K) {T : Set E3}
-    (hT : IsClosed T) (hinter : K.space ∩ T ⊆ (boundaryComplex 2 K).space) (x : E3) :
-    IsOpen (((↑) : ↥(K.space \ (boundaryComplex 2 K).space) → E3) ⁻¹'
-      frontier (connectedComponentIn (K.space ∪ T)ᶜ x)) := by
-  sorry
-
-theorem exists_frontier_pair_witnesses_of_triod_chart
-    (S : Fin 3 → Set E3) (B : Set E3)
-    (hinter : ∀ i j, i ≠ j → S i ∩ S j = B)
-    (hpair : ∀ i j, i ≠ j → ∃ K : Geometry.SimplicialComplex ℝ E3,
-      K.faces.Finite ∧ IsCombinatorialManifold 2 K ∧ IsConnected K.space ∧
-        K.space = S i ∪ S j)
-    (e : OpenPartialHomeomorph E3 E3) {p x : E3}
-    (hp : p ∈ B) (hpsource : p ∈ e.source) (hep : e p = 0)
-    (he : IsPLHomeomorphOn e e.source e.target)
-    (htrace : ∀ i, ∀ z ∈ e.source, z ∈ S i ↔
-      e z ∈ (![{w : E3 | w 1 = 0 ∧ 0 ≤ w 0},
-        {w : E3 | w 1 = 0 ∧ w 0 ≤ 0},
-        {w : E3 | w 0 = 0 ∧ 0 ≤ w 1}] : Fin 3 → Set E3) i)
-    (hx : x ∉ ⋃ i, S i)
-    (hpfront : p ∈ frontier (connectedComponentIn (⋃ i, S i)ᶜ x)) :
-    ∃ i j k : Fin 3, i ≠ j ∧ i ≠ k ∧ j ≠ k ∧
-      (∃ u ∈ S i \ B, u ∈ frontier (connectedComponentIn (⋃ l, S l)ᶜ x)) ∧
-      (∃ v ∈ S j \ B, v ∈ frontier (connectedComponentIn (⋃ l, S l)ᶜ x)) ∧
-      ∃ w ∈ S k \ B, w ∉ connectedComponentIn (S i ∪ S j)ᶜ x := by
   sorry
 
 private theorem isBounded_component_of_not_mem_unbounded_component
