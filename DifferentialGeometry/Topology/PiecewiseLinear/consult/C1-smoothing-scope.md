@@ -159,7 +159,7 @@ model in `Type 0`, so the universe-0 restriction of `Morse/*` and `Double/` is h
 Vacuity notes applied: L3/L4 are stated on the actual cell image `g '' …` produced by
 `IsPLCellAttachment`, never on an arbitrary family of subsets that could be taken empty; the
 intrinsic boundary of a handle cell is `g '' stdSimplexBoundary d`, never the ambient `frontier`;
-L1's hypothesis (a smooth embedding into `∂N`) is what L3/L4 supply, so nothing unsuppliable is
+**Correction after the first skeleton review (2026-09-21, digest AN):** L3/L4 smooth only the *image* of the attaching region, not `ψ`; parameter matching is the attachment leaves' duty, and L7's cone extension settles topological matching only, not the smooth collar cap. L1's hypothesis (a smooth embedding into `∂N`) is what L3/L4 supply up to that reparametrisation, so nothing unsuppliable is
 introduced; L6 speaks of an actual surface, not a `Prop` interface.
 
 ## 5. Estimate

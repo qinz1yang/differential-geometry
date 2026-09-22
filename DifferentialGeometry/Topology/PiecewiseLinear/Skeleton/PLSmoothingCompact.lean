@@ -38,7 +38,20 @@ the proved four-way case split.  `IsPLCellAttachmentWith … g` pins the map `g`
 `IsPLCellAttachment` with the producer's full conclusion
 (`IsPLCellAttachment.exists_isPLCellAttachmentWith`).
 
-Leaves (all unreviewed).  The PL model quadruple `(P, B, R, Fr)` per handle index is: `k = 0`:
+Leaves.  All eleven were reviewed **OK** on 2026-09-21 (digest AN) and are frozen with their
+present signatures.  The review's rulings on their proofs: the taming leaves smooth only the
+*image* of the attaching region, never `ψ` itself, so each attachment leaf must first align the
+parametrisations of the smooth disks or annulus, add free collars and extend to the ball; the
+disk and annulus leaves may build the boundary isotopy from the identity and extend it through
+a collar (they do not claim that every boundary self-homeomorphism extends); the cap leaf
+consumes the sphere recognition, and the cone extension only absorbs the parameter difference
+after a smooth collar cap; `range ψ` in the recognition leaf is a closed and open sphere
+component of the boundary by invariance of domain, so the abstract smooth surface may be taken
+inside the leaf and identified by the uniqueness of smooth structures in dimension two — that
+leaf remains the one deep independent producer, which no Alexander extension or
+three-dimensional Poincaré argument may replace.
+
+The PL model quadruple `(P, B, R, Fr)` per handle index is: `k = 0`:
 `(Δ³, ∅, ∅, ∂Δ³)`; `k = 1`: `(Δ² × [0,1], Δ² × {0,1}, (Δ² \ ∂Δ²) × {0,1}, ∂Δ² × [0,1])`; `k = 2`:
 `(Δ² × [0,1], ∂Δ² × [0,1], ∂Δ² × (0,1), Δ² × {0,1})`; `k = 3`: `(Δ³, ∂Δ³, ∂Δ³, ∅)`, where `R` is
 the manifold interior of the attaching region `B` and `Fr` the free part of `∂P`.
