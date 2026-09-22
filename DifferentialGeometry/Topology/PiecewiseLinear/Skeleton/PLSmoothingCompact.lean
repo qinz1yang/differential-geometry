@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Smoothing
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttachmentZero
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleFiltration
@@ -18,8 +20,9 @@ import Mathlib.Geometry.Manifold.Instances.Sphere
 # Sorry-first skeleton of C1: the compact PL smoothing model in dimension three
 
 The endpoint `PLSmoothingModelCompact 3` (every compact PL three-manifold is homeomorphic to a
-smooth one) is proved for real by `plSmoothingModelCompact_three` from the eleven leaves below,
-along route R-DN of `consult/C1-smoothing-scope.md` §4: triangulate (`plManifoldTriangulation`),
+smooth one) is assembled by `plSmoothingModelCompact_three` from two proved zero-handle producers
+and the nine remaining leaves below, along route R-DN of `consult/C1-smoothing-scope.md` §4:
+triangulate (`plManifoldTriangulation`),
 take the proved handle filtration `exists_pl_three_handle_filtration`, and carry the invariant
 `IsSmoothHandleStage (N i).space (Subtype.val ⁻¹' (boundaryComplex 3 (N i)).space)` across the
 filtration by induction (`exists_boundarylessManifold_of_isCombinatorialManifold_three`, which
@@ -38,7 +41,9 @@ the proved four-way case split.  `IsPLCellAttachmentWith … g` pins the map `g`
 `IsPLCellAttachment` with the producer's full conclusion
 (`IsPLCellAttachment.exists_isPLCellAttachmentWith`).
 
-Leaves.  All eleven were reviewed **OK** on 2026-09-21 (digest AN) and are frozen with their
+The zero-handle boundary trace and smooth adjunction are proved in the imported real modules.
+The other nine leaves remain open. All eleven were reviewed **OK** on 2026-09-21 (digest AN)
+and are frozen with their
 present signatures.  The review's rulings on their proofs: the taming leaves smooth only the
 *image* of the attaching region, never `ψ` itself, so each attachment leaf must first align the
 parametrisations of the smooth disks or annulus, add free collars and extend to the ball; the
@@ -107,10 +112,9 @@ statement must never enter this chain; no orientability or connectedness hypothe
 To be hoisted by the lead: `PLSmoothingCompact`, `PLSmoothingModelCompact`,
 `plSmoothingCompact_of_plSmoothingModelCompact`,
 `exists_isManifold_of_plApproximation_of_plSmoothingCompact` (to `Smoothing.lean`);
-`IsPLCellAttachmentWith`, `IsPLCellAttachment.exists_isPLCellAttachmentWith` (to
-`CellAttachment.lean`); `IsSmoothHandleStage`, `isSmoothHandleStage_of_isEmpty`,
-`IsSmoothHandleStage.transport`, `isSmoothHandleStage_of_attachment` (to a real module shared by
-the leaf files).
+`isSmoothHandleStage_of_attachment` (to a real module shared by the leaf files).
+The pinned attachment predicate and selector now live in `CellAttachment.lean`; the smooth
+stage predicate, empty stage and transport live in `Topology/Handle/SmoothStage.lean`.
 -/
 
 open Set Topology Manifold
@@ -156,56 +160,8 @@ theorem exists_isManifold_of_plApproximation_of_plSmoothingCompact {n : ℕ} {X 
   obtain ⟨C, hC⟩ := exists_chartedSpace_hasGroupoid_plGroupoid_of_plApproximation (X := X) hA
   exact hB C hC
 
-def IsSmoothHandleStage (Y : Type*) [TopologicalSpace Y] (Bd : Set Y) : Prop :=
-  ∃ (M : Type) (_ : TopologicalSpace M) (_ : ChartedSpace (EuclideanHalfSpace 3) M),
-    IsManifold (𝓡∂ 3) ∞ M ∧ T2Space M ∧ CompactSpace M ∧
-      ∃ h : Y ≃ₜ M, h '' Bd = (𝓡∂ 3).boundary M
-
-theorem isSmoothHandleStage_of_isEmpty (Y : Type*) [TopologicalSpace Y] [IsEmpty Y] (Bd : Set Y) :
-    IsSmoothHandleStage Y Bd := by
-  let _ : ChartedSpace (EuclideanHalfSpace 3) Empty := ChartedSpace.empty _ Empty
-  refine ⟨Empty, inferInstance, inferInstance, IsManifold.empty _, inferInstance,
-    inferInstance, Homeomorph.empty, ?_⟩
-  exact Set.ext fun x => isEmptyElim x
-
-theorem IsSmoothHandleStage.transport {Y Z : Type*} [TopologicalSpace Y] [TopologicalSpace Z]
-    {Bd : Set Y} (hY : IsSmoothHandleStage Y Bd) (e : Y ≃ₜ Z) :
-    IsSmoothHandleStage Z (e '' Bd) := by
-  obtain ⟨M, iT, iC, hM, hT2, hc, f, hf⟩ := hY
-  refine ⟨M, iT, iC, hM, hT2, hc, e.symm.trans f, ?_⟩
-  rw [Set.image_image]
-  simp only [Homeomorph.trans_apply, Homeomorph.symm_apply_apply]
-  exact hf
-
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-open Classical in
-def IsPLCellAttachmentWith (n : ℕ) (P B : Set F) (L : Geometry.SimplicialComplex ℝ E)
-    (C N : Set E) (g : F → E) : Prop :=
-  IsPLBall n P ∧ B ⊆ P ∧ IsPLHomeomorphOn g P C ∧ IsPLHomeomorphOn g B (C ∩ L.space) ∧
-    let A : Set P := {z | z.val ∈ B}
-    ∃ φ : A → L.space, IsClosedEmbedding φ ∧
-      (∀ z, (φ z : E) = g z.val.val) ∧
-      (∀ z, (φ z : E) ∈ (boundaryComplex n L).space) ∧
-      ∃ e : AdjunctionSpace (Subtype.val : A → P) φ ≃ₜ N,
-        (∀ x, (e (adjunctionLower φ x) : E) = x) ∧
-        ∀ z, (e (adjunctionCell Subtype.val φ z) : E) = g z.val
-
-theorem IsPLCellAttachment.exists_isPLCellAttachmentWith {n : ℕ} {P B : Set F}
-    {L : Geometry.SimplicialComplex ℝ E} {C N : Set E}
-    (h : IsPLCellAttachment n P B L C N) : ∃ g : F → E, IsPLCellAttachmentWith n P B L C N g := by
-  obtain ⟨hP, hBP, g, hg, hgB, hrest⟩ := h
-  exact ⟨g, hP, hBP, hg, hgB, hrest⟩
-
-open Classical in
-theorem boundaryComplex_space_of_isPLCellAttachmentWith_zero [FiniteDimensional ℝ E]
-    {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
-    (hL : IsCombinatorialManifoldWithBoundary 3 L)
-    (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 4 → ℝ) → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 4)) ∅ L C N'.space g) :
-    (boundaryComplex 3 N').space = (boundaryComplex 3 L).space ∪ g '' stdSimplexBoundary 3 := by
-  sorry
 
 open Classical in
 theorem boundaryComplex_space_of_isPLCellAttachmentWith_one [FiniteDimensional ℝ E]
@@ -240,15 +196,6 @@ theorem boundaryComplex_space_of_isPLCellAttachmentWith_three [FiniteDimensional
     (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 4)) (stdSimplexBoundary 3) L C
       N'.space g) :
     (boundaryComplex 3 N').space = (boundaryComplex 3 L).space \ g '' stdSimplexBoundary 3 := by
-  sorry
-
-theorem isSmoothHandleStage_adjunction_zero
-    {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ (∅ : Set (Fin 4 → ℝ))} → M) :
-    IsSmoothHandleStage (AdjunctionSpace (Subtype.val : _ → stdSimplex ℝ (Fin 4)) ψ)
-      (adjunctionLower ψ '' (𝓡∂ 3).boundary M ∪
-        adjunctionCell Subtype.val ψ '' {z | z.val ∈ stdSimplexBoundary 3}) := by
   sorry
 
 theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding

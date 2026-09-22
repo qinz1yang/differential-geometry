@@ -62,4 +62,22 @@ def IsPLThreeHandleAttachment (k : Fin 4) (L : Geometry.SimplicialComplex ℝ E)
       (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) L C N
   | _ => IsPLCellAttachment 3 (stdSimplex ℝ (Fin 4)) (stdSimplexBoundary 3) L C N
 
+open Classical in
+def IsPLCellAttachmentWith (n : ℕ) (P B : Set F) (L : Geometry.SimplicialComplex ℝ E)
+    (C N : Set E) (g : F → E) : Prop :=
+  IsPLBall n P ∧ B ⊆ P ∧ IsPLHomeomorphOn g P C ∧ IsPLHomeomorphOn g B (C ∩ L.space) ∧
+    let A : Set P := {z | z.val ∈ B}
+    ∃ φ : A → L.space, IsClosedEmbedding φ ∧
+      (∀ z, (φ z : E) = g z.val.val) ∧
+      (∀ z, (φ z : E) ∈ (boundaryComplex n L).space) ∧
+      ∃ e : AdjunctionSpace (Subtype.val : A → P) φ ≃ₜ N,
+        (∀ x, (e (adjunctionLower φ x) : E) = x) ∧
+        ∀ z, (e (adjunctionCell Subtype.val φ z) : E) = g z.val
+
+theorem IsPLCellAttachment.exists_isPLCellAttachmentWith {n : ℕ} {P B : Set F}
+    {L : Geometry.SimplicialComplex ℝ E} {C N : Set E}
+    (h : IsPLCellAttachment n P B L C N) : ∃ g : F → E, IsPLCellAttachmentWith n P B L C N g := by
+  obtain ⟨hP, hBP, g, hg, hgB, hrest⟩ := h
+  exact ⟨g, hP, hBP, hg, hgB, hrest⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

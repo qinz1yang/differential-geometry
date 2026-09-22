@@ -9239,6 +9239,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuall
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSpineRevolutionOfOfMemCellInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.RevolutionOfCellInteriorSubsetInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusGeneralPosition
+import DifferentialGeometry.Topology.Handle.SmoothStage
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttachmentZero
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
 /-!
 # Differential geometry and geometric analysis
 -/
