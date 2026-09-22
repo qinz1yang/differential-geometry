@@ -71,6 +71,11 @@ surfaces; the existing `exists_isPLHomeomorphOn_straighten_rays`). With this the
 of `Skeleton/`. Note the `DecidableEq` mismatch on `EuclideanSpace ℝ (Fin 3)`: `boundaryComplex`
 in these statements uses the `WithLp` instance, not the classical one, so generic `open Classical`
 lemmas must swap the instance.
+
+Promoted out of `Skeleton/` on 2026-09-22: every former leaf is proved in an imported real module
+(`SurfaceInteriorFrontierOpen`, `SurfaceInteriorFrontierContact`, `TriodFrontierWitnesses` from the
+Gemini batch; `ExistsTriodChartAtCommonBoundary` from an Opus 5.5 worker), so `moise267` below is
+an unconditional proof of `Moise267`, and the skeleton vocabulary of this file is now real.
 -/
 
 open Set Topology

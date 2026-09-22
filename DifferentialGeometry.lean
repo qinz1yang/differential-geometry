@@ -9265,6 +9265,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorusOfCy
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsAnnulusParametrizationOfProductCircleCut
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsTriodChartAtCommonBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
+import DifferentialGeometry.Topology.PiecewiseLinear.Section26ThreeSurfaces
 /-!
 # Differential geometry and geometric analysis
 -/
