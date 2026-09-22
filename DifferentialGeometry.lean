@@ -13194,3 +13194,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCut
 import DifferentialGeometry.Geometry.Neck.SpatialReflection
 import DifferentialGeometry.Geometry.Neck.CompactSide
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricVolume
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Coordinates
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.RadialGerm
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Germ
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Compression
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Extension
+import DifferentialGeometry.Topology.Manifold.SphereTangentialExtension
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.ParametrizedExtension
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Matching
