@@ -1059,15 +1059,33 @@ No batch proof has been accepted merely by creating this log or queue.
 - **Attempted Route**: Evaluated `ClosedBranchCaseOne.lean`.
 - **Next Useful Lemma**: `exists_isSourceTrackedBranchTube_proof`.
 
-## 2026-09-22: G089 (`exists_adaptedHalfSpaceChart_in_double`) BLOCKED / SKIPPED
+## 2026-09-22: G089 (`exists_adaptedHalfSpaceChart_in_double`) PASSED
 
 - **Target**: `GeneralPositionInDouble:281` (`exists_adaptedHalfSpaceChart_in_double`)
-- **Status**: BLOCKED / SKIPPED (missing adapted half space chart around boundary in double)
+- **Status**: PASSED
 - **Skeleton Location**: `GeneralPositionInDouble.lean:281`
-- **Blocker Description**:
-  - Requires: Constructing an adapted half space chart in the double of a combinatorial 3-manifold with boundary.
-- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
-- **Next Useful Lemma**: `exists_adaptedHalfSpaceChart_proof`.
+- **Module**: `DifferentialGeometry.Topology.PiecewiseLinear.DoubleHalfSpaceChart`
+- **Source File**: `DifferentialGeometry/Topology/PiecewiseLinear/DoubleHalfSpaceChart.lean`
+- **Checkpoint Directory**: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\gemini-batch\checkpoints\G089-double-half-space-chart-20260922T2039241139290Z`
+- **Verification Details**:
+  - Zero errors, zero warnings.
+  - All 13 linters passed.
+  - Verified by `checker.ps1` and `GEMINI_BATCH_CHECKPOINT.ps1`.
+- **Proof Strategy**:
+  - Decomposes the ambient double manifold into three regions: boundary $Bd = \mathrm{frontier}(C)$, interior $\mathrm{interior}(C)$, and exterior $C^c$.
+  - For $y \in Bd$, invokes `exists_halfSpace_chart_glued₂_space_in_double` along with `frontier_preimage_glued₂_space_in_double` and restricts the resulting half-space chart to $V \subseteq U$.
+  - For $y \in \mathrm{interior}(C)$ and $y \in C^c$, translates the chart from `combinatorialChartedSpace` by an affine translation $v \in \mathrm{plGroupoid}(3)$ such that $\ell(ec(y)) > 0$ (resp. $< 0$) for the coordinate projection $\ell(z) = z_0$, and restricts to the open preimage where $\ell$ has constant sign within $U$.
+- **Imports**:
+  - `DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition`
+  - `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHalfSpace`
+  - `Mathlib.Analysis.InnerProductSpace.PiL2`
+  - `Mathlib.Topology.Algebra.Module.FiniteDimension`
+  - `Mathlib.Topology.OpenPartialHomeomorph.Composition`
+  - `Mathlib.Topology.OpenPartialHomeomorph.Constructions`
+- **Public Declarations**:
+  - `exists_adaptedHalfSpaceChart_in_double`
+- **Axioms**: `propext`, `Classical.choice`, `Quot.sound`
 
 ## 2026-09-22: G090 (`SingularTwoCell.exists_cutOutPiece_of_closure_subset`) BLOCKED / SKIPPED
 
