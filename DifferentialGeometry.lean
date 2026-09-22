@@ -13172,3 +13172,9 @@ import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.SmoothTranspor
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.RetainedChart
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.ConnectedSum
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallPairPlacement
+
+import DifferentialGeometry.Topology.Homeomorph.QuotientDescent
+
+import DifferentialGeometry.Topology.ContinuousMap.ClosedEmbeddingExtension
+
+import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.CollarAbsorption
