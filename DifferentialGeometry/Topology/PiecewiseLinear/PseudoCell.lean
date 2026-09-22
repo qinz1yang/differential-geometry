@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration
+import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyPolyhedral
 
 /-!
@@ -24,22 +25,51 @@ model below.  Nothing else is weakened: `Eint` and `Ebd` carry no piecewise line
 `Ec` is not assumed to be a two-cell, and no local connectedness at `Ebd` is assumed.
 
 `IsTube K N C D Dbd h N'` is the first paragraph of page 223: `K` is a finite one-dimensional
-complex, so its faces have at most two vertices and at least one has two, `N` is a
-neighbourhood of `|K|` cut by the splitting disks `D e`, with intrinsic
-boundaries `Dbd e`, into the dual cells `C v`, one vertex each, `C u ∩ C v` being the splitting
-disk of the edge `uv` and empty otherwise; `h` is a merely topological embedding of `N` and
-`N' = h '' N` is the tube.  The splitting disks and dual cells of `N'` are the sets `h '' D e`
-and `h '' C v` and are not carried as further parameters.  Deviations: the book's "orthogonal to
-the edge at its midpoint" is dropped, since only `D e ∩ |K| = {midpoint}` is ever used, and
-"regular neighbourhood" is rendered by the properties of the cut that Sections 32 and 33
-consume, not by a derived neighbourhood of a named triangulation.
+complex, so its faces have at most two vertices and at least one has two, `N` is a regular
+neighbourhood of `|K|` cut by the splitting disks `D e`, with intrinsic boundaries `Dbd e`, into
+the dual cells `C v`, one vertex each, `C u ∩ C v` being the splitting disk of the edge `uv` and
+empty otherwise; `h` is a merely topological embedding of `N` and `N' = h '' N` is the tube.
+The splitting disks and dual cells of `N'` are the sets `h '' D e` and `h '' C v` and are not
+carried as further parameters.  The book's "orthogonal to the edge at its midpoint" is dropped,
+since only `D e ∩ |K| = {midpoint}` is ever used in Sections 32 and 33.
+
+"Regular neighbourhood" is not dropped.  `derivedModel` names a finite complex `A` of `ℝ³` which
+is a combinatorial three-manifold with boundary and contains `K` as a subcomplex, and pins
+`C v = (graphDualCell A K v).space` and `D e = (splittingDisk A e _).space`; with `unionEq` this
+makes `N` the derived neighbourhood of `K` in `A`, which is `IsTube.spaceEq`, stated for an
+arbitrary decidability witness because `derivedNeighborhood` carries one and the dual-cell
+lemmas of `DualCells.lean` spell an edge with the classical one, as does
+`classical_insert_singleton_eq_pair`, which transports between the two.  Recording only
+the properties of the cut is not enough: the one-skeleton of a planar equilateral triangle with
+a triangular prism as `N` and the three Voronoi sector prisms as `C v` satisfies every one of
+them, while the three prisms share a vertical segment and `N` is a three-cell rather than a
+solid torus, so the product structure `Int N' - K' ≅ Bd N × (0,1)` that page 235 reads off a
+regular neighbourhood is lost.  Through `derivedModel` the former fields `dualVertex`,
+`interEdge`, `interNonEdge` and `splitMidpoint` become theorems, and so does `splitDisjoint`,
+disjointness of the splitting disks of distinct edges, which is exactly what the prism family
+fails.  The ambient complex is taken with boundary because a non-empty finite complex of `ℝ³`
+that was a combinatorial three-manifold without boundary would have compact boundaryless space
+in `ℝ³`; hence `IsCombinatorialManifold.isPLBall_graphDualCell` does not apply here and
+`dualBall` and `splitCell` stay fields, together with `isNeighborhood` and `unionEq` and the
+three clauses Sections 32 and 33 use beyond the cut, none of which has a combinatorial proof in
+this tree: `splitProper`, `D e ∩ Bd N = Dbd e`, without which the hypothesis on `W` in
+`Moise321` is unsatisfiable and the proposition vacuous; `splitSeparates`, Lemma 3 of page 225,
+that the relative interior `D e - Dbd e` separates the two vertices inside `Int (C u ∪ C v)`;
+and `freeFaceConnected`, page 227's connectedness of the interior of `Bd C v ∩ Bd N`, spelled
+as that set with the circles `Dbd e` of the edges at `v` removed.
 
 `IsHandleDecompositionOfTube` is the output of 32.3 read as a definition, as the section title
 and the digest of Section 33 read it: pseudo-cells `Ec e` with centres the images of the edge
 midpoints and boundaries the images of the `Dbd e`, meeting the image graph only in the centre,
-and the handle pieces `Cpp v` with one vertex each, covering `N'`, and meeting exactly along
-the `Ec e` of the edges.  Page 228 also constructs the `Cpp v` as closures of the components of
-`N' - ⋃ Ec e`; that is the construction, not the notion, and it is not a field here.
+pairwise disjoint for distinct edges, and the handle pieces `Cpp v` with one vertex each,
+covering `N'`, and meeting exactly along the `Ec e` of the edges.  Page 228 defines `C''_v` as
+the closure of the component of `N' - ⋃_e E_e` containing `h v`, and `componentClosure` carries
+that definition: it is the notion and not a mere construction, since Section 33 reads `Fr C''_v`
+off it, and without it a single interior point may be moved from one `Cpp u` to a neighbouring
+`Cpp v` leaving the cover, overlap and one-vertex clauses intact while `Cpp u` is no longer
+closed.  The printed clauses (7), (9) and (10) stay the independent fields `oneVertex`,
+`coversTube`, `handleEdge` and `handleNonEdge`: `componentClosure` constrains neither the union
+of the closures nor which vertices share a component of `N' - ⋃_e E_e`.
 
 The numbered propositions.  `Moise321` is Theorem 1 of page 224 with its clauses (1)-(4);
 clause (3), "`Int E` separates `v'₁` from `v'₂` in `Int (C'₁ ∪ C'₂)`", is stated as `Separates`
@@ -67,8 +97,12 @@ theorem disk"; that is a Section 33 notion and is not defined here.
 The inhabitant `isPseudoCell_planarSquare` is the closed unit square of the `xy`-plane of `ℝ³`
 with its relative interior, its rim, and the origin as centre: a genuinely two-dimensional,
 non-degenerate pseudo-cell whose regular part is not compact, so the deviation above is
-exercised rather than avoided.  `IsTube` and `IsHandleDecompositionOfTube` carry no inhabitant
-theorem yet.
+exercised rather than avoided.  `IsTube` and `IsHandleDecompositionOfTube` remain untested.  An
+inhabitant of `IsTube` needs a named finite complex of `ℝ³` with a verified
+`IsCombinatorialManifoldWithBoundary 3` certificate carrying a one-dimensional subcomplex with
+an edge, and then `IsPLBall 3` for its graph dual cells, which the tree derives only from
+`IsCombinatorialManifold 3`, and the separation of page 225 and the connectedness of page 227,
+for which it has no producer.
 -/
 
 open Set Topology
@@ -272,6 +306,12 @@ end PseudoCellInhabitant
 
 section Tubes
 
+theorem classical_insert_singleton_eq_pair {α : Type*} [DecidableEq α] (u v : α) :
+    @insert α (Finset α) (@Finset.instInsert α fun a b => Classical.propDecidable (a = b)) u {v}
+      = ({u, v} : Finset α) := by
+  ext a
+  simp
+
 open Classical in
 structure IsTube (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
     (N : Set (EuclideanSpace ℝ (Fin 3)))
@@ -283,17 +323,25 @@ structure IsTube (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)
   oneDimensional : ∀ s ∈ K.faces, s.card ≤ 2
   hasEdge : ∃ e ∈ K.faces, e.card = 2
   isNeighborhood : N ∈ nhdsSet K.space
+  derivedModel : ∃ A : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+    A.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 A ∧ K.faces ⊆ A.faces ∧
+      (∀ v ∈ K.vertices, C v = (graphDualCell A K v).space) ∧
+      ∀ e ∈ K.faces, e.card = 2 → ∀ he : e ∈ A.faces, D e = (splittingDisk A e he).space
   dualBall : ∀ v ∈ K.vertices, IsPLBall 3 (C v)
-  dualVertex : ∀ v ∈ K.vertices, C v ∩ K.vertices = {v}
   splitCell : ∀ e ∈ K.faces, e.card = 2 →
     ∃ r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
       IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (D e) ∧ Dbd e = r '' stdSimplexBoundary 2
-  splitMidpoint : ∀ e ∈ K.faces, e.card = 2 → D e ∩ K.space = {e.centroid ℝ id}
   unionEq : N = ⋃ v ∈ K.vertices, C v
-  interEdge : ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset _) ∈ K.faces →
-    C u ∩ C v = D {u, v}
-  interNonEdge : ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset _) ∉ K.faces →
-    C u ∩ C v = ∅
+  splitProper : ∀ e ∈ K.faces, e.card = 2 → D e ∩ frontier N = Dbd e
+  splitSeparates : ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v →
+    ({u, v} : Finset _) ∈ K.faces →
+    DifferentialGeometry.Topology.Separates
+      (((↑) : interior (C u ∪ C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' (D {u, v} \ Dbd {u, v}))
+      (((↑) : interior (C u ∪ C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {u})
+      (((↑) : interior (C u ∪ C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {v})
+  freeFaceConnected : ∀ v ∈ K.vertices,
+    IsConnected ((frontier (C v) ∩ frontier N) \
+      (⋃ e ∈ {e : Finset (EuclideanSpace ℝ (Fin 3)) | e ∈ K.faces ∧ e.card = 2 ∧ v ∈ e}, Dbd e))
   isEmbedding : Topology.IsEmbedding (N.domRestrict h)
   imageEq : N' = h '' N
 
@@ -313,12 +361,85 @@ structure IsHandleDecompositionOfTube
   rimEq : ∀ e ∈ K.faces, e.card = 2 → Ebd e = h '' Dbd e
   meetsGraph : ∀ e ∈ K.faces, e.card = 2 →
     Ec e ∩ h '' K.space = {h (e.centroid ℝ id)}
+  pseudoCellDisjoint : ∀ e ∈ K.faces, e.card = 2 → ∀ f ∈ K.faces, f.card = 2 → e ≠ f →
+    Disjoint (Ec e) (Ec f)
   oneVertex : ∀ v ∈ K.vertices, Cpp v ∩ h '' K.vertices = {h v}
   coversTube : N' = ⋃ v ∈ K.vertices, Cpp v
+  componentClosure : ∀ v ∈ K.vertices, Cpp v = closure (connectedComponentIn
+    (N' \ (⋃ e ∈ {e : Finset (EuclideanSpace ℝ (Fin 3)) | e ∈ K.faces ∧ e.card = 2}, Ec e))
+    (h v))
   handleEdge : ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset _) ∈ K.faces →
     Cpp u ∩ Cpp v = Ec {u, v}
   handleNonEdge : ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v →
     ({u, v} : Finset _) ∉ K.faces → Cpp u ∩ Cpp v = ∅
+
+variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
+  {N N' : Set (EuclideanSpace ℝ (Fin 3))}
+  {C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3))}
+  {D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
+  {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
+
+theorem IsTube.dualVertex (ht : IsTube K N C D Dbd h N') {v : EuclideanSpace ℝ (Fin 3)}
+    (hv : v ∈ K.vertices) : C v ∩ K.vertices = {v} := by
+  obtain ⟨A, -, -, hKA, hC, -⟩ := ht.derivedModel
+  rw [hC v hv]
+  ext w
+  simp only [mem_inter_iff, mem_singleton_iff]
+  constructor
+  · rintro ⟨hwC, hwV⟩
+    exact (mem_graphDualCell_space_iff_of_singleton_mem A K hKA hv hwV).mp hwC
+  · rintro rfl
+    exact ⟨mem_graphDualCell_space_of_singleton_mem A K hKA hv, hv⟩
+
+theorem IsTube.interEdge (ht : IsTube K N C D Dbd h N') {u v : EuclideanSpace ℝ (Fin 3)}
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset (EuclideanSpace ℝ (Fin 3))) ∈ K.faces) : C u ∩ C v = D {u, v} := by
+  obtain ⟨A, -, -, hKA, hC, hD⟩ := ht.derivedModel
+  have hcl := classical_insert_singleton_eq_pair u v
+  have hecl := hcl.symm ▸ he
+  calc C u ∩ C v = (graphDualCell A K u).space ∩ (graphDualCell A K v).space := by
+        rw [hC u hu, hC v hv]
+    _ = (splittingDisk A _ (hKA hecl)).space :=
+        graphDualCell_space_inter A K hKA ht.oneDimensional huv hecl
+    _ = D _ := (hD _ hecl (by rw [hcl]; exact Finset.card_pair huv) (hKA hecl)).symm
+    _ = D {u, v} := congrArg D hcl
+
+theorem IsTube.interNonEdge (ht : IsTube K N C D Dbd h N') {u v : EuclideanSpace ℝ (Fin 3)}
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset (EuclideanSpace ℝ (Fin 3))) ∉ K.faces) : C u ∩ C v = ∅ := by
+  obtain ⟨A, -, -, hKA, hC, -⟩ := ht.derivedModel
+  have hcl := classical_insert_singleton_eq_pair u v
+  rw [hC u hu, hC v hv]
+  exact graphDualCell_space_inter_eq_empty A K hKA ht.oneDimensional hu hv huv
+    fun hmem => he (hcl ▸ hmem)
+
+theorem IsTube.splitMidpoint (ht : IsTube K N C D Dbd h N')
+    {e : Finset (EuclideanSpace ℝ (Fin 3))} (he : e ∈ K.faces) (hcard : e.card = 2) :
+    D e ∩ K.space = {e.centroid ℝ id} := by
+  obtain ⟨A, -, -, hKA, -, hD⟩ := ht.derivedModel
+  rw [hD e he hcard (hKA he)]
+  exact splittingDisk_space_inter A K hKA he fun t htK => by
+    rw [hcard]; exact ht.oneDimensional t htK
+
+theorem IsTube.splitDisjoint (ht : IsTube K N C D Dbd h N')
+    {e f : Finset (EuclideanSpace ℝ (Fin 3))} (he : e ∈ K.faces) (hecard : e.card = 2)
+    (hf : f ∈ K.faces) (hfcard : f.card = 2) (hef : e ≠ f) : Disjoint (D e) (D f) := by
+  obtain ⟨A, -, -, hKA, -, hD⟩ := ht.derivedModel
+  rw [hD e he hecard (hKA he), hD f hf hfcard (hKA hf)]
+  exact disjoint_splittingDisk_space A (hKA he) (hKA hf) hef (by rw [hecard, hfcard])
+
+theorem IsTube.spaceEq (ht : IsTube K N C D Dbd h N')
+    (inst : DecidableEq (EuclideanSpace ℝ (Fin 3))) :
+    ∃ A : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      K.faces ⊆ A.faces ∧ N = (@derivedNeighborhood _ _ _ inst A K).space := by
+  obtain ⟨A, -, -, hKA, hC, -⟩ := ht.derivedModel
+  refine ⟨A, hKA, ?_⟩
+  have hinst : inst = fun a b => Classical.propDecidable (a = b) := by
+    funext a b
+    exact Subsingleton.elim _ _
+  subst hinst
+  rw [ht.unionEq, ← iUnion_graphDualCell_space A K hKA]
+  exact iUnion₂_congr hC
 
 end Tubes
 

@@ -15,8 +15,9 @@ The apparatus of Moise, *Geometric topology in dimensions 2 and 3*, Section 31, 
 220-221, together with Theorems 31.1-31.4 as named propositions.
 
 A *planar cell chain* is the left half of the printed definition: four points `P j` of the
-right-hand half of the `xy`-plane, three two-cells `D j` whose cell interiors `Dint j` contain
-the segments `P j P (j+1)`, with `D j ∩ D (j+1)` a two-cell and `D 0 ∩ D 2` empty.  Rotating
+right-hand half of the `xy`-plane, pairwise distinct along the chain, three two-cells `D j`
+whose cell interiors `Dint j` contain the segments `P j P (j+1)`, with `D j ∩ D (j+1)` a
+two-cell and `D 0 ∩ D 2` empty.  Rotating
 about the `y`-axis, recorded by `revolutionOf`, turns the points into circles `J j`, the
 segments into annuli `A j` and the two-cells into solid tori `S j` with `T j = Bd S j` and
 `A j ⊆ Int S j`: this is `IsRevolvedTorusChain`.  A *canonical configuration* adds
@@ -33,7 +34,12 @@ Deviations from the printed definition, all recorded here rather than in the cod
 * The book says the configuration lies in the right-hand half of the `xy`-plane.  The half-plane
   clause here is the strict `0 < p 0`: the rotation axis must be avoided, or `S j` would not be
   a solid torus.  This makes the predicate no weaker than intended and is what the printed
-  figure shows.
+  figure shows.  The `P j` need not lie on the `x`-axis: that is a feature of the printed figure
+  and no clause of 31.1-31.4 uses it.
+* `consecutiveNe` is not printed and is necessary.  With the three rectangles
+  `D j = [j + 3/5, j + 12/5] × [-1, 1] × {0}` and `P = ((2,0,0), (2,0,0), (3,0,0), (4,0,0))`
+  every other clause holds, while the revolved `A 0` degenerates from an annulus to the circle
+  `J 0 = J 1`, so the chain of annuli of page 220 would be lost.
 * "Polyhedral solid torus" on page 221 is the cyclic chain of polyhedral three-cells, so
   `IsCombinatorialSolidTorus` is used for `S'' j`; `Moise307`, the producer named in the proof
   of 31.1, concludes `HasCylindricalDiagram` instead, so 31.1 still owes the bridge from a
@@ -309,6 +315,7 @@ structure IsPlanarCellChain (P : Fin 4 → EuclideanSpace ℝ (Fin 3))
   cell : ∀ j, IsTopologicalCellWithInterior 2 (D j) (Dint j)
   interiorSubset : ∀ j, Dint j ⊆ D j
   segmentSubset : ∀ j : Fin 3, segment ℝ (P j.castSucc) (P j.succ) ⊆ Dint j
+  consecutiveNe : ∀ j : Fin 3, P j.castSucc ≠ P j.succ
   overlap : ∀ j : Fin 2, IsTopologicalCell 2 (D j.castSucc ∩ D j.succ)
   apart : D 0 ∩ D 2 = ∅
 
@@ -433,6 +440,11 @@ noncomputable def standardChainCell (j : Fin 3) : Set (EuclideanSpace ℝ (Fin 3
 noncomputable def standardChainCellInterior (j : Fin 3) : Set (EuclideanSpace ℝ (Fin 3)) :=
   planarPoint '' interior (standardChainRect j)
 
+theorem standardChainPoint_apply_zero (j : Fin 4) :
+    standardChainPoint j 0 = ((j : ℕ) : ℝ) + 1 := by
+  rw [standardChainPoint, planarPoint_apply_zero]
+  simp
+
 theorem interior_nonempty_standardChainRect (j : Fin 3) :
     (interior (standardChainRect j)).Nonempty := by
   have hj : (0 : ℝ) ≤ ((j : ℕ) : ℝ) := Nat.cast_nonneg _
@@ -445,7 +457,7 @@ theorem isPlanarCellChain_standard :
   have hcl : ∀ j : Fin 3, IsClosed (standardChainRect j) := fun _ => isClosed_rectTwo _ _ _ _
   have hb : ∀ j : Fin 3, Bornology.IsBounded (standardChainRect j) := fun _ =>
     isBounded_rectTwo _ _ _ _
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rintro j p ⟨x, hx, rfl⟩
     refine ⟨planarPoint_apply_two x, ?_⟩
     have hx0 : ((j : ℕ) : ℝ) + 3 / 5 ≤ x 0 := hx.1.1
@@ -474,6 +486,14 @@ theorem isPlanarCellChain_standard :
       (hconv j).interior hu hv hs ht hst, ?_⟩
     simp only [standardChainPoint]
     rw [planarPoint_smul_add_smul]
+  · intro j heq
+    have hval : standardChainPoint j.castSucc 0 = standardChainPoint j.succ 0 := by rw [heq]
+    rw [standardChainPoint_apply_zero, standardChainPoint_apply_zero] at hval
+    have hcast : ((j.castSucc : ℕ) : ℝ) = ((j : ℕ) : ℝ) := by rw [Fin.val_castSucc]
+    have hsucc : ((j.succ : ℕ) : ℝ) = ((j : ℕ) : ℝ) + 1 := by
+      rw [Fin.val_succ, Nat.cast_add, Nat.cast_one]
+    rw [hcast, hsucc] at hval
+    linarith
   · intro j
     have hj : (0 : ℝ) ≤ ((j : ℕ) : ℝ) := Nat.cast_nonneg _
     have hcast : ((j.castSucc : ℕ) : ℝ) = ((j : ℕ) : ℝ) := by rw [Fin.val_castSucc]
