@@ -47,8 +47,9 @@ more**, the outer faces `O_v` of the boundary vertices and the outer arcs `o_e` 
 edges, pinned by `O_v = closure (∂C_v \ (C ∪ ⋃ D_e))` and `o_e = closure (∂D_e \ C)`, so that the
 general boundary formula of the cut frame decomposes all of `∂C_v` and `∂D_e`.  Face disks and
 residual balls are pinned by the book's `d_σ = Cl(σ − N)`, `C(σ³) = Cl(σ³ − N)`.  The link
-condition of page 239 is a clause of the frame: for a boundary vertex the link is a disk and a
-chord separates it, so it is not a consequence of the manifold certificate as it is for spheres.
+condition removes only the open edge and retains both endpoints.  In a sphere or disk link,
+one can bypass it along the other two edges of an incident triangle; no extra subdivision is
+needed for this condition.  It remains a frame clause until that consequence is formalised.
 
 Local outer-cut check: `C` a tetrahedron, `K = K'` the tetrahedron itself, and `N` a regular
 neighbourhood of its six edges.  All four vertices and six edges are on the boundary; `∂C_v`
@@ -61,7 +62,9 @@ only, not the carrier or approximation hypotheses.  A full fixture for a small t
 requires a sufficiently fine triangulation `K` and compatible `K'`, chosen after `h` and `ε`;
 that joint fixture remains UNTESTED.
 
-The leaves, all **unreviewed**, with content, size and book source.
+The first review is recorded in `consult/AS-section34-compact-first-review-digest.md`.
+Ten leaves were accepted; the envelope and compression interfaces below add the supplied
+open-domain and carrier certificates.  All twelve proof obligations remain open.
 
 `exists_compactCutAndGraph` (Lemma 1, Lemma 2's configuration, the subdivision; deep; pages
 239--240): from `h331` and the entry data, `K, K'`, the full cut, carriers, `N ⊆ V` and `f₁`.  This
@@ -71,8 +74,8 @@ first, then `f₁`, then the inner torus `S₁`.  The proved exporter
 `Section34CompactGraphFrame.carriesFundamentalGroupOnto` applies the tree's nested-torus
 generator theorem to `(S₁, N''_σ, S₂, h '' ∂σ)`; the assembly passes this conclusion explicitly
 to `compactTraceHomology`.  [ASSERTED] in the book: Lemma 1(2)--(4) "for `f₁`
-sufficiently close", Lemma 2's (a)--(f) and that `∂σ` is a spine, the existence of the link
-condition subdivision, the sufficient condition for 5(7) of page 241 (recorded here as the
+sufficiently close", Lemma 2's (a)--(f) and that `∂σ` is a spine, and the sufficient condition
+for 5(7) of page 241 (recorded here as the
 exterior clause for the thin obstacle `⋃_{v ∈ t} V_v ∪ ⋃_{σ ⊂ t} h '' σ`).
 
 `exists_compactFaceEnvelopes` (the smallness of Lemmas 3--5; medium): open neighbourhoods
@@ -80,7 +83,8 @@ exterior clause for the thin obstacle `⋃_{v ∈ t} V_v ∪ ⋃_{σ ⊂ t} h ''
 the carriers, with the auxiliary ball `A` of Lemma 4 (a polyhedral cell around `h '' τ` for a
 source disk `τ` with `τ ∩ K² = ∂σ`, by `h305`) such that `env σ ∩ A ⊆ Int N''_σ`, and 5(7) for
 the thickened obstacle, derived from the thin one by choosing the envelopes after finitely many
-escape paths.
+escape paths.  The explicit `IsOpen V` input supplies room for transporting the auxiliary
+ball's two collars; mere containment `C ⊆ V` does not supply that room.
 
 `exists_compactFaceShellBalls` (Lemma 3, first half; medium; page 240): from `h305`, piecewise
 linear 3-balls `C_σ ⊆ env σ` with `h '' σ ⊆ Int C_σ`; the nested cells around `σ` with a
@@ -101,7 +105,9 @@ fundamental-group generator clause.  The passage from that generator to trace ho
 `exists_compactBigonSlide` (Operation 2 and Lemma 7; deep; page 242): one step at one label,
 preserving the invariants, the other labels unchanged, `c⁺ + 1 ≤ c ∧ p⁺ ≤ p` respectively
 `c⁺ = c ∧ p⁺ + 2 = p`; the bigon is pinned as in clause 17 of `Section34NormalPlus`.  In `ℝ³`
-the compressed sphere bounds a ball by the piecewise linear Schoenflies theorem.  [ASSERTED]:
+the compressed sphere bounds a ball by the piecewise linear Schoenflies theorem.  The supplied
+carrier certificate makes each incident carrier a PL ball, so its connected unbounded exterior
+keeps that filling inside the carrier.  [ASSERTED]:
 that one of the two spheres of Operation 1 still surrounds `h '' ∂σ`, the existence of the drag
 of Operation 2 (Figure 34.1), clauses (1), (3), (4), (6), (8) of Lemma 6, the whole of Lemma 7.
 
@@ -930,7 +936,7 @@ theorem exists_compactCutAndGraph (h331 : Moise331) (hC : IsPLBall 3 C) (hV : Is
         Section34CompactGraphFrame V h ε K K' src H f₁ := by
   sorry
 
-theorem exists_compactFaceEnvelopes (h305 : Moise305Tame) (hCV : C ⊆ V)
+theorem exists_compactFaceEnvelopes (h305 : Moise305Tame) (hV : IsOpen V) (hCV : C ⊆ V)
     (hh : Topology.IsEmbedding (V.domRestrict h))
     (hcut : Section34CompactCutFrame C K K' src srcBd)
     (hcar : Section34CompactCarrierControl K h ε H)
@@ -997,6 +1003,7 @@ theorem compactTraceHomology (hcut : Section34CompactCutFrame C K K' src srcBd)
   sorry
 
 theorem exists_compactCompression (hcut : Section34CompactCutFrame C K K' src srcBd)
+    (hcar : Section34CompactCarrierControl K h ε H)
     (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
     {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
     (hinv : Section34CompactFaceBallInvariants K K' h H
@@ -1260,7 +1267,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
   obtain ⟨K, K', src, srcBd, H, f₁, hcut, hcar, hgraph⟩ :=
     exists_compactCutAndGraph h331 hC hV hCV hh hε
   have hgen := hgraph.carriesFundamentalGroupOnto
-  obtain ⟨env, henv⟩ := exists_compactFaceEnvelopes h305 hCV hh hcut hcar hgraph
+  obtain ⟨env, henv⟩ := exists_compactFaceEnvelopes h305 hV hCV hh hcut hcar hgraph
   obtain ⟨fbl₀, fblBd₀, hfam₀⟩ := exists_compactFaceShellBalls h305 hV hCV hh hcut hgraph henv
   obtain ⟨fbl₁, fblBd₁, hfam₁, hgp₁, hgp₂, hfin₁, hfin₂⟩ :=
     exists_compactFaceBallsGeneralPosition hcut hgraph henv hfam₀
@@ -1289,7 +1296,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
       (tgtE := section34CompactSplitDiskImage src f₁) hKfin hinv₁
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
-          exists_compactCompression hcut hgraph hg s hop
+          exists_compactCompression hcut hcar hgraph hg s hop
         exact ⟨g', gBd', hinv', hoff, section34CompactFaceBallRank_lt_of_compression hc hp⟩)
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
