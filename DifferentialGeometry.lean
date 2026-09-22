@@ -12617,3 +12617,4 @@ import DifferentialGeometry.Geometry.Metric.DirectLimit.Curvature
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Curvature
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.InverseCurves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryClosedSlabRestart
