@@ -11,7 +11,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 /-!
 # Three polyhedral surfaces with a common boundary
 
-The assembly proves the existing `Moise267` from four UNREVIEWED leaves. The source is Moise
+The assembly proves the existing `Moise267` from four reviewed OK, frozen leaves whose proofs
+remain OPEN. The source is Moise
 26.7, printed page 195, with the three-arc argument of 2.7, printed pages 20--21. The common
 boundary is nonempty and may have several connected components. No connectedness of that
 boundary is assumed.
@@ -24,7 +25,7 @@ from each pair prevents two distinct local sectors from belonging to the same gl
 Its conclusion consists of two frontier contact points and one point on the other side of
 their pair. It does not assert a global frontier formula or a bounded complementary region.
 
-Open leaves, owned by the three-surface lane, all UNREVIEWED:
+Open leaves, owned by the three-surface lane, all reviewed OK and frozen:
 
 * `exists_triod_chart_at_common_boundary`: a regular common boundary point and a PL chart
   displaying the three surface germs as the three coordinate pages.
@@ -40,6 +41,12 @@ separation for each closed pair are supplied by proved real modules. The assembl
 the two contact points over their connected interiors, excludes the third interior from the
 closure of the exterior, and uses the unbounded hypothesis only to select the opposite
 bounded side. Thus none of the leaves restates `Moise267`.
+
+The first review and lead due diligence are recorded in
+`consult/BA-section26-three-surfaces-first-review-digest.md`. No hypotheses were added.
+The first interior contact is propagated before the selected chart point is used. The fourth
+leaf must use the full two-component theorem with both frontiers equal to the closed pair;
+three local sectors alone do not rule out reconnection outside the chart.
 
 The joint fixture is UNTESTED in Lean. Take the two complementary annuli of a PL torus and
 push a copy of one annulus inward, fixing its two boundary circles. The three annuli have

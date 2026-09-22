@@ -18,13 +18,22 @@ continuation queue, not another progress count. Do not reread historical handoff
   not the checked mathematical declarations.
   Check live HEAD and dirty state before editing; other lanes are concurrent.
 
-## F: second pass explicitly dispatched by the owner
+## F: third pass explicitly dispatched by the owner
 
 The app task title is exactly **F**, id `01a0a0d6-99b1-7b50-bd70-afdc79cd389b`, host local.
 The first pass completed, reporting one CLOSED target (13) and eight STUCK targets.
-The owner then asked the lead to start F's next round immediately. F was directly messaged
-to work on 10, then 15, with 11/12 only on a new constructive route. The task follows
-[FILL_QUEUE.md](FILL_QUEUE.md), lease a, and public vocabulary; it must stop after this pass.
+The second pass ended with both selected endpoints 10 and 15 still STUCK. It reported a
+checked `TopologicalCellInterior` module and a checked private `F15Scratch24` construction
+of the global PL two-graph normal form. These reports have not yet been independently
+accepted; the cumulative 8 CLOSED / 8 STUCK table is not the lead's acceptance count.
+The owner immediately authorized a third pass. F was directly messaged to resume 15 from
+that concrete construction, first producing a real general normalization module and then
+assembling the full local endpoint, including source-sheet neighborhoods, exact preimage
+coverage, the boundary half-space and atlas chart. All new Lean calls count toward a limit
+of twelve for 15 this pass. Entry 10 is secondary only with a new concrete route; 11/12's
+old searches are excluded. The task follows [FILL_QUEUE.md](FILL_QUEUE.md), lease a and
+public vocabulary, and must stop after this pass. Do not audit its active implementation
+in parallel or count auxiliary output as completion of the frozen endpoint.
 The relative boundary targets 7/14a/14b are now accepted; entry 5 stays outside this F pass
 while its two new geometric leaves await review.
 
@@ -54,11 +63,28 @@ and all proposed joint fixtures remain UNTESTED. They are outside F's current fr
 
 | Prompt | Subject |
 |---|---|
-| [AT](../consult/AT-section30-torus-review-request.md) | 30.6–30.7; prescribed-open-set compression control |
-| [AV](../consult/AV-section28-annuli-review-request.md) | 28.6; simultaneous product coordinates are stronger than printed standard position |
-| [AW](../consult/AW-section30-separation-review-request.md) | 30.3; safe boundary of a cut ball, arbitrary disconnected targets |
-| [AX](../consult/AX-section26-three-surfaces-review-request.md) | 26.7; local three-page chart and multiple common boundary components |
 | [AY](../consult/AY-derived-neighborhood-complement-review-request.md) | Derived-neighborhood ray embedding and exact interior-complement range |
+
+The next four answers have been processed and the statements frozen without adding
+hypotheses. Their proof obligations and joint Lean fixtures remain OPEN/UNTESTED:
+
+- AX → [BA](../consult/BA-section26-three-surfaces-first-review-digest.md): use both full
+  frontiers of the closed pair to identify local/global sides; `hpfront` is already supplied
+  by contact propagation. The two-boundary-component paper fixture is consistent.
+- AV → [BB](../consult/BB-section28-annuli-first-review-digest.md): boundary PL recognition,
+  no-disk/essentialness and relative simultaneous straightening remain separate internal
+  tasks. Avoid the backwards use of 28.7. The eight CST blocks and two labels are compatible.
+- AT → [BC](../consult/BC-section30-torus-first-review-digest.md): keep the same neighborhood
+  inside U through the ball recognition; the exterior local fixture is separate from the
+  impossible nested exterior branch. Surface links and ambient interiors still need proofs.
+- AW → [BD](../consult/BD-section30-separation-first-review-digest.md): restrict the hnear
+  equality to V, use one compatible construction and the correct cut ball, and preserve the
+  exact safe-boundary annulus. The complete cube fixture is consistent.
+
+All four code bodies and lexical scopes are unchanged; only module documentation changed.
+Final comparisons and narrow-check receipts are in `four-producer-frozen-review.json` under
+the lead evidence directory. The three local read-only reviewers are finished. These newly
+reviewed producers are not added to F's active pass.
 
 AU has been answered and processed in [AZ](../consult/AZ-orientable-extended-loop-first-review-digest.md).
 The two orientable extended-loop statements are reviewed OK and frozen, with no changed
@@ -99,8 +125,8 @@ and `checker.ps1`. The live a–e leases were owner-extended to
 `claude-agent-<letter>-20260919`, output roots `.../claude-moise-agent-<letter>`.
 The owner-authorized F round uses a; local workers d/e have stopped and lead c has no active
 build after acceptance. Read current process state before reusing a lane. Other leads' tasks
-are outside this report. Latest confirmed F turn: `01a0c8c0-732b-77e3-9596-c363aa1ef4f6`;
-snapshot cursor `71623190-821a-49bd-937d-91b8dff6d378:5`. Do not automatically start another pass.
+are outside this report. Latest confirmed active F turn: `01a0c945-199d-7520-95ef-30c50b850baa`;
+snapshot cursor `71623190-821a-49bd-937d-91b8dff6d378:7`. Do not automatically start another pass.
 
 The checker may reject expected skeleton warnings at the wrapper level. For a skeleton,
 inspect the JSON's Lean exitCode 0, stable source hash, and exact sorry-only log, rather than

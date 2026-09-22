@@ -17,7 +17,8 @@ the first set; a path joining either set to the other is then ruled out by actua
 
 `exists_annular_split_ball`: a sufficiently small local splitting produces the old annulus,
 the new disk, and one of the three-balls cut out by the fixed second disk; separation lane,
-UNREVIEWED. It also supplies relative openness of the deleted annulus and a PL parametrization
+Reviewed OK and frozen; proof OPEN. It also supplies relative openness of the deleted annulus and
+a PL parametrization
 of the safe boundary of that cut ball as an open annulus. It takes no separated target sets
 and no separation hypothesis, and it asserts no preservation of separation.
 
@@ -31,6 +32,14 @@ The principal geometric obligation is a joint PL regular-neighborhood constructi
 both disks, the prescribed open set, and the whole relatively closed set near their common
 disk. In particular, merely constructing the annulus and new disk does not give the required
 boundary trace of the cut ball. All output objects belong to the same construction.
+
+The first review and lead due diligence are recorded in
+`consult/BD-section30-separation-first-review-digest.md`. The statement and assembly are
+unchanged. The neighborhood hypothesis identifies the relatively closed set with the two
+disks only after restriction to a sufficiently small open neighborhood. Compatible finite
+subdivision, the chosen cut ball and its exact safe boundary still need a joint producer.
+The open-annulus parameters must be affine on a common triangulation, not radial bilinear
+scaling formulas.
 
 Fixture, UNTESTED in Lean: take the boundary of the closed cube [-1,1]^3 together with its
 horizontal middle square as C. Each disk is that middle square with a short lateral collar,

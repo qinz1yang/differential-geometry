@@ -1,7 +1,9 @@
 # Section 30.6--30.7: first producer statement review
 
-Status: READY FOR OWNER REVIEW. No external verdict has been received. All seven leaves are
-UNREVIEWED; the conditional assemblies are not completed proofs of the named inputs.
+Status: ANSWER RECEIVED AND CHECKED, 2026-09-22. All seven statements are reviewed OK and
+frozen; their proofs and both joint Lean fixtures remain OPEN/UNTESTED. The answer and lead
+due diligence are recorded in [BC](BC-section30-torus-first-review-digest.md). The original
+request and fixed snapshot follow; the conditional assemblies do not close the named inputs.
 
 请按同目录 `REVIEW-TEMPLATE.md` 审查 GitHub
 `liao9yuan/differential-geometry-dev` 的 `moise-integration`，固定镜像提交

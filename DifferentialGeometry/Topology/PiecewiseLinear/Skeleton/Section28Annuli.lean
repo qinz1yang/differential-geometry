@@ -23,9 +23,11 @@ the use of the frozen no-PL-disk hypothesis, rather than assume a surface classi
 
 Leaves, both owned by the PL surface lane:
 * `exists_product_coordinates_for_disjoint_essential_polygons`: simultaneous boundary
-  coordinates and distinct labeled fibers for the whole finite family; UNREVIEWED.
+  coordinates and distinct labeled fibers for the whole finite family; reviewed OK, frozen, proof
+  OPEN.
 * `exists_annulus_parametrization_of_product_circle_cut`: recognize a component of the product
-  model cut along finitely many fibers, with the precise two endpoint images; UNREVIEWED.
+  model cut along finitely many fibers, with the precise two endpoint images; reviewed OK, frozen,
+  proof OPEN.
 
 The second leaf has no solid-torus or essential-polygon hypotheses. Its remaining work is to
 find the two neighboring marked points on the second PL circle, identify the product component,
@@ -44,11 +46,20 @@ provide collars, surface complements and component control, but not simultaneous
 coordinates or the finite-cut endpoint parameterization. `TorusMeridian` provides an embedded
 example, not a producer for every combinatorial solid torus.
 
+The first review and lead due diligence are recorded in
+`consult/BB-section28-annuli-first-review-digest.md`. Both statements and the assembly are
+unchanged. The first leaf still owes boundary PL recognition, the no-disk-to-essential bridge,
+and compatible relative straightening of the whole family. The proof of 28.9 may be used
+independently of 28.6; the converse use of 28.7 would be circular.
+
 Joint fixture: UNTESTED. A proposed nondegenerate instance is the square solid torus
 `1 <= max (abs x) (abs y) <= 3`, `abs z <= 1`, with the two rectangular meridians in `y = 0`
 on the positive and negative x sides. The shared PL product chart, combinatorial-solid-torus
 witness and no-disk witnesses have not been formalized. In particular, this description is not
-a joint satisfiability certificate. The `n = 2` case and endpoint labels require review.
+a joint satisfiability certificate. The reviewed paper fixture uses eight triangulated trapezoidal
+blocks and two circle labels;
+its radial seams preserve those labels, but continuous radial multiplication is not a PL map.
+The `n = 2` case and arbitrary label order are retained.
 
 The assembly is proved from the two leaves. Its transitive axiom closure still contains
 `sorryAx`; the named input remains open until both reviewed producers are proved in real modules.

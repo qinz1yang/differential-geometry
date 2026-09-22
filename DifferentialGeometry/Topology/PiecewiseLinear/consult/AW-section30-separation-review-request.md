@@ -1,6 +1,9 @@
 # Section 30.3: first annular separator surgery review
 
-Status: READY FOR OWNER REVIEW. The geometric leaf is UNREVIEWED; its fixture is UNTESTED.
+Status: ANSWER RECEIVED AND CHECKED, 2026-09-22. The geometric statement is reviewed OK and
+frozen; its proof remains OPEN and the joint Lean fixture remains UNTESTED. The answer and
+lead due diligence are recorded in [BD](BD-section30-separation-first-review-digest.md).
+The original request and fixed snapshot follow.
 
 请按同目录 `REVIEW-TEMPLATE.md` 审查 GitHub
 `liao9yuan/differential-geometry-dev` 的 `moise-integration`，固定镜像提交

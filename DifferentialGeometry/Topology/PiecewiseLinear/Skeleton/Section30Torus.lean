@@ -28,7 +28,7 @@ ball and contradicts the shell inclusion.  The interior branch produces two PL b
 in two boundary disks; the existing
 `exists_cylindricalDiagram_of_ball_pair` then constructs the cylindrical diagram.
 
-Open leaves, all owned by the torus lane and unreviewed:
+Open leaves, all owned by the torus lane, reviewed OK and frozen with proofs OPEN:
 
 * `IsCombinatorialManifold.nonempty_homeomorph_torus_of_isOrientable_of_eulerChar_eq_zero`:
   a finite connected orientable closed surface of Euler characteristic zero is a torus.
@@ -52,6 +52,13 @@ though the exterior branch of 30.7 is impossible.  The region is the same finite
 `SurfaceFilling`, and the disk is the same existential witness returned by the proved
 essential-disk theorem; neither is replaced by a free universal object.  No injectivity is
 required on a closed path.
+
+The first review and lead due diligence are recorded in
+`consult/BC-section30-torus-first-review-digest.md`. The seven statements and all assemblies
+are unchanged. Finite surface link recognition, the ambient-interior identification for a
+topological solid torus, and the relative disk-neighborhood construction remain obligations.
+Exterior compression must identify the same regular neighborhood chosen inside the prescribed
+open set as a ball; containment of its boundary sphere alone does not control the filled ball.
 
 Fixtures remain UNTESTED.  The tree's `exists_embedded_torus_compression` provides a genuine
 polyhedral torus with a meridian and a capped sphere, but this file supplies no joint Lean

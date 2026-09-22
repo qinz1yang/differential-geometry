@@ -1,6 +1,9 @@
 # Section 28.6: first annulus producer statement review
 
-Status: READY FOR OWNER REVIEW. Both leaves are UNREVIEWED; the common fixture is UNTESTED.
+Status: ANSWER RECEIVED AND CHECKED, 2026-09-22. Both statements are reviewed OK and frozen;
+both proofs remain OPEN and the joint Lean fixture remains UNTESTED. The answer and lead
+due diligence are recorded in [BB](BB-section28-annuli-first-review-digest.md). The original
+request and fixed snapshot follow.
 
 请按同目录 `REVIEW-TEMPLATE.md` 审查 GitHub
 `liao9yuan/differential-geometry-dev` 的 `moise-integration`，固定镜像提交

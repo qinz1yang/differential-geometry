@@ -1,7 +1,10 @@
 # Section 26.7: first three-surface producer review
 
-Status: READY FOR OWNER REVIEW. All four leaves are UNREVIEWED; the two-boundary-component
-fixture is UNTESTED. The existing corrected `Moise267` statement has not been changed.
+Status: ANSWER RECEIVED AND CHECKED, 2026-09-22. All four statements are reviewed OK and
+frozen; their proofs remain OPEN and the two-boundary-component Lean fixture is UNTESTED.
+The answer and lead due diligence are recorded in
+[BA](BA-section26-three-surfaces-first-review-digest.md). The original request follows;
+the existing corrected `Moise267` statement has not been changed.
 
 请按同目录 `REVIEW-TEMPLATE.md` 审查 GitHub
 `liao9yuan/differential-geometry-dev` 的 `moise-integration`，固定镜像提交
