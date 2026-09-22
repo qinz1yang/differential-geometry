@@ -8,12 +8,13 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierSupportLocallyFinite
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellLocallyFiniteCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
+import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
 
 /-!
 # Sorry-first skeleton of P0, the controlled source triangulation and its carriers
 
 The assembly `section34Control` proves the endpoint `Section34ControlStatement` for real from the
-three leaves of this file and two proved modules; every `sorry` is a leaf and none sits
+two leaves of this file and three proved modules; every `sorry` is a leaf and none sits
 inside an assembly.
 
 P0 is the **producer** of the two hypotheses that the controlled form of Moise 35.1 takes as
@@ -86,7 +87,11 @@ alone does not prove (a1).  Its `[Nonempty M₁]` is necessary and not a conveni
 `E = EuclideanSpace ℝ (Fin N)` is nonempty for every `N`, `N = 0` included, so for `M₁ = ∅` no
 such structure exists while every other hypothesis of the leaf still holds.
 
-`isCombinatorialManifold_of_locallyFinitePLPieceIn` (a2): the complex of *any* locally finite
+`isCombinatorialManifold_of_locallyFinitePLPieceIn` (a2): **proved**, imported from
+`IsCombinatorialManifoldOfLocallyFinitePLPieceIn`. The real producer omits the redundant
+`HasGroupoid` instance: the realization already carries both directions of the PL chart
+certificates. The frozen statement is checked as a corollary, not claimed byte-identical
+to the stronger public signature. The complex of *any* locally finite
 piecewise linear realisation of an *open* subset of a piecewise linear `3`-manifold is a
 combinatorial `3`-manifold.  Stated for every such realisation, which is the full conclusion of
 (a1), so the composition needs no equation pinning the object to its producer.  It is the
@@ -171,11 +176,6 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
 theorem exists_locallyFinitePLPieceIn_of_isOpen [Nonempty M₁] [T2Space M₁]
     [SecondCountableTopology M₁] [HasGroupoid M₁ (plGroupoid 3)] (hU : IsOpen U) :
     ∃ N : ℕ, Nonempty (LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin N)) 3 M₁ U) := by
-  sorry
-
-theorem isCombinatorialManifold_of_locallyFinitePLPieceIn [T2Space M₁]
-    [HasGroupoid M₁ (plGroupoid 3)] (hU : IsOpen U) (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) :
-    IsCombinatorialManifold 3 𝒦.complex := by
   sorry
 
 theorem exists_isSubdivision_section34CarrierSupport_subset [T2Space M₁]

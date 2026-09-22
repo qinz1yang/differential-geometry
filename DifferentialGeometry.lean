@@ -9246,6 +9246,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
 import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
 import DifferentialGeometry.Topology.Connected.Separation
+import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
 /-!
 # Differential geometry and geometric analysis
 -/

@@ -17,26 +17,30 @@ continuation queue, not another progress count. Do not reread historical handoff
   `df6cbdc7481ef9b3a57cb72df280dff9718fd918`. Later documentation commits do not change these
   Lean sources. Check live HEAD and dirty state before editing; other lanes are concurrent.
 
-## F: let the current single pass finish
+## F: second pass explicitly dispatched by the owner
 
 The app task title is exactly **F**, id `01a0a0d6-99b1-7b50-bd70-afdc79cd389b`, host local.
-It was directly messaged after all required vocabulary moves and skeleton integrations,
-and again after the new producer skeletons were committed. The last compact snapshot showed
-the current turn active; use one `wait_threads` snapshot for fresh status before touching
-F-owned files. Snapshot cursor: `71623190-821a-49bd-937d-91b8dff6d378:3`.
+The first pass completed, reporting one CLOSED target (13) and eight STUCK targets.
+The owner then asked the lead to start F's next round immediately. F was directly messaged
+to work on 10, then 15, with 11/12 only on a new constructive route. The task follows
+[FILL_QUEUE.md](FILL_QUEUE.md), lease a, and public vocabulary; it must stop after this pass.
+Entries 5/7/14a/14b are reserved for this lead's local producer workers.
 
-F follows [FILL_QUEUE.md](FILL_QUEUE.md), one pass then stop. It uses lease a and the public
-vocabulary. Do not automatically start another pass. Its new modules, `.wip` files and
-`FILL_LOG.md` are worker evidence until independently accepted. The file
-`IsCombinatorialManifoldOfLocallyFinitePLPieceIn.lean` appeared during this pass; it is not yet
-accepted or registered. Do not count it as closed from its existence or the worker's report.
+Entry 13 is independently accepted. The real proof used only local PL chart certificates,
+so its redundant HasGroupoid binder and dummy let were removed. This is an explicit stronger
+public signature, not a byte-identical copy; the complete old frozen type is separately
+checked as a corollary. The remaining two leaf blocks and assembly are unchanged, and the
+real module and aggregate imports are registered. Evidence is recorded in the sole ledger.
 
-This lead continued producer skeletons while F ran, without simultaneously auditing F's new
-deliveries. After the round, resume the normal gate: counterexample first if FALSE, exact frozen
-type/scopes, independent zero-diagnostic module check, transitive axioms and standard linters,
-root and skeleton imports, assembly check, ledger, explicit-path commit, mirror synchronization.
-Existing accepted proof/vocabulary receipts are recorded in the ledger; do not repeat unchanged
-audits merely to reconstruct context.
+Local worker d is developing the general derived-neighborhood complement supplier for 5.
+Local worker e has a real link cancellation proof and is assembling the three relative
+attachment boundary targets. Do not treat either draft as accepted before the lead's gate.
+The read-only reviewer finished checking the redundant groupoid assumption and made no edits.
+
+The normal gate remains: joint counterexample first if FALSE, exact frozen types/scopes or
+explicit proved generalization, independent zero-diagnostic check, transitive axioms and
+standard linters, root and skeleton imports, assembly check, ledger, explicit-path commit
+and mirror. Do not repeat unchanged audits merely to reconstruct context.
 
 ## Ready owner review prompts
 
@@ -74,8 +78,8 @@ Compile only through PowerShell with the private preparer and checker:
 and `checker.ps1`. The live a–e leases were owner-extended to
 `2026-09-24T04:17:07.7791223Z`; re-read them before compiling, never edit them. Tokens are
 `claude-agent-<letter>-20260919`, output roots `.../claude-moise-agent-<letter>`.
-Among this lead's workers, only F is still running; local workers b/d/e finished and stopped,
-and c has no active build. Other leads' tasks are outside this status report.
+The owner-authorized F round uses a; local producer workers use d/e; lead acceptance uses c.
+Read current process state before reusing a lane. Other leads' tasks are outside this report.
 
 The checker may reject expected skeleton warnings at the wrapper level. For a skeleton,
 inspect the JSON's Lean exitCode 0, stable source hash, and exact sorry-only log, rather than

@@ -2,7 +2,7 @@
 
 This is an execution queue. Acceptance and proof debt belong only to `../FREE_INPUTS.md`;
 `FILL_LOG.md` supplies worker evidence for independent verification. Original entry numbers
-are retained. Do not repeat entries 1, 2, 3, 4, 6, 8, 9, or 16.
+are retained. Do not repeat entries 1, 2, 3, 4, 6, 8, 9, 13, or 16.
 
 Work in `D:\differential-geometry-moise-int`, branch `codex/moise-integration`.
 `E:\differential-geometry-dev` and its outputs are read-only. Compile only in PowerShell with
@@ -15,9 +15,13 @@ Never import a skeleton. Preserve exact names, binders, instances and lexical sc
 Check possible counterexamples against every actual Lean hypothesis first; failure of one
 local argument is not a counterexample to the whole leaf.
 
-Run one pass through the remaining entries. Continue an approach while it makes concrete
-progress; at a genuine blocker, record the exact missing theorem or goal and move on.
-Do not repeat old broad searches without a new route. Stop after this pass.
+The owner authorized another pass after the previous one ended. The lead directly messaged
+task F to start with entry 10 (a general planar two-cell union producer), then entry 15
+(the full PL crossing normal form). If both meet new concrete blockers, choose entry 11
+or 12 only with a new constructive route. Do not repeat the previous broad searches.
+Entries 5, 7, 14a and 14b are reserved for the lead's producer workers; do not edit their
+files or work on these targets in this pass. Continue while an approach makes concrete
+progress; record exact goals at genuine blockers. Stop after this pass.
 
 ## Remaining entries, in suggested order
 
@@ -29,7 +33,6 @@ Do not repeat old broad searches without a new route. Stop after this pass.
 | 11 | `separates_initialSurface` / `Section32PseudoCell` | `PseudoCell`, `SeparatesOfLocallyEventuallyEq` | Closedness and separation of the alternating surface using `havoid`, outer local finiteness and `IsTube.splitSeparates`. The general separating-limit lemma is proved; the geometric separator sequence and local stabilization remain to construct. Tower vocabulary and `IsTube.mem_interior_dualCell` are public. |
 | 10 | `exists_isTopologicalCellWithInterior_union_consecutive` / `Section31CanonicalConfiguration` | `CanonicalConfiguration` | Planar two-disk union when the intersection is a two-cell, including both intrinsic interiors. The proved revolution spine/interior results do not supply this planar gluing step. |
 | 12 | `section33_faceEulerChar_handlePiece` / `Section33Approximation` | `PolyhedralTubeNeighborhood` | Global Euler/capping argument yielding `2 - deg v`, with exactly the incident trace polygons as boundary. All four needed definitions are public. |
-| 13 | `isCombinatorialManifold_of_locallyFinitePLPieceIn` / `Section34Control` | Read the frozen skeleton's existing real imports | Derive PL sphere links from locally finite bidirectional PL Euclidean charts. A link theorem already assuming the target manifold certificate is circular. |
 | 5 | `section33_tube_product` / `Section33Approximation` | `PseudoCell`, `OpenEmbeddingFrontier` | Source derived-neighborhood-minus-core product, then transport. Interior-image transport already exists; a retraction or fundamental-group equivalence is insufficient. |
 
 Module names above are under `DifferentialGeometry.Topology.PiecewiseLinear`, except
