@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBoundary
 
+section
 set_option autoImplicit false
 noncomputable section
 open Set
@@ -276,3 +277,38 @@ theorem LocalCap.isCompact_carrier {eps t : ℝ} {x : M} {U : Set M}
 end NeckChain
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [PreconnectedSpace M]
+  {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+  {eps t : ℝ} {p : M} {U : Set M}
+
+omit [T2Space M] in
+theorem LocalCap.tube_depth_of_ball_subset_core_interior
+    (cap : LocalCap S eps p t U) (g : SmoothRiemannianMetric I3 M) {r : ℝ}
+    (hball : riemannianBallOf g p r ⊆ interior cap.core.carrier) :
+    ∀ y ∈ cap.tube, r ≤ metricDistance g p y := by
+  intro y hy
+  apply metricDistance_ge_of_not_mem_riemannianBallOf g
+  intro hnear
+  have hboth : y ∈ cap.core.carrier ∩ cap.tube := ⟨interior_subset (hball hnear), hy⟩
+  have hfront : y ∈ frontier cap.core.carrier := cap.overlap_eq ▸ hboth
+  exact disjoint_interior_frontier.le_bot ⟨hball hnear, hfront⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+end

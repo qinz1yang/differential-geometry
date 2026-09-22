@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointBufferedCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RecenteredScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardSlabConstruction
@@ -74,36 +75,6 @@ theorem local_propagation {kappa : ℝ} (hkappa : 0 < kappa) :
                     C * (L + (Phi (4 * X.scale i * L) + Phi 0) / X.scale i) := by
   exact canonical_neighborhood_local_propagation hkappa
 
-
-theorem good_point_buffered_canonical {kappa alpha theta : ℝ}
-    (hkappa : 0 < kappa) (ha : 0 < alpha) (haSmall : alpha < 1 / 44)
-    (htheta : 0 < theta) (hthetaPi : theta ≤ Real.pi) :
-    ∃ Lmin Lmax : ℝ, 0 < Lmin ∧ Lmin < Lmax ∧ ∀ H : ℝ, 0 < H →
-      ∃ epsStar C : ℝ, 0 < epsStar ∧ 1 ≤ C ∧
-        ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-          [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-          (o : TangentOrientationSection M) (x : M) (t : ℝ),
-          OrientedWitness S o epsStar kappa x t →
-          Nonempty (BufferedCanonical S alpha C H x t) ∧
-          ∀ a b : MinimizingArm (S.base.metric t) x, ∀ s v : ℝ,
-            s ∈ Set.Ioc 0 a.length → v ∈ Set.Ioc 0 b.length →
-            Real.sqrt (S.scalar t x) * s ∈ Set.Icc Lmin Lmax →
-            Real.sqrt (S.scalar t x) * v ∈ Set.Icc Lmin Lmax →
-            theta ≤ Real.arccos ((s ^ 2 + v ^ 2 -
-              metricDistance (S.base.metric t) (a.point s) (b.point v) ^ 2) / (2 * s * v)) →
-            ∃ (neck : StrongNeck S (2 * alpha) x t)
-              (path : TransversePath (a.point a.length) (b.point b.length)
-                (neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)))),
-              (path.intersection = 1 ∨ path.intersection = -1) ∧
-              (∀ w ∈ Set.Icc s a.length,
-                a.point w ∉ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ))) ∧
-              (∀ w ∈ Set.Icc v b.length,
-                b.point w ∉ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ))) ∧
-              (∀ y ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10) 10),
-                ∀ z ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10) 10),
-                  metricDistance (S.base.metric t) y z ≤ C / Real.sqrt (S.scalar t x)) := by
-  sorry
 
 theorem first_backward_slab {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :

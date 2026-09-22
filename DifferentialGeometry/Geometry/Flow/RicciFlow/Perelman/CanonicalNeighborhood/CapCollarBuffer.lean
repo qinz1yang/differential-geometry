@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BufferedCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckDiameter
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -105,6 +106,45 @@ theorem exists_common_buffer_constant_of_cap_collar
         hscalar.2.trans (mul_le_mul_of_nonneg_right hCinc K.Q_pos.le), hfar, hdiam'⟩ }
   obtain ⟨depth, halt⟩ := hKfinalCap
   exact ⟨B, rfl, rfl, rfl, cap, depth, halt, HEq.rfl⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+  {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+  {eps A C alpha H : ℝ} {p v : M} {t : ℝ}
+
+theorem CanonicalWitness.exists_bufferedCanonical_of_cap_collar
+    (K : CanonicalWitness S eps A C p t) (heps : eps < alpha)
+    (cap : LocalCap S eps p t K.domain.carrier)
+    (hcap : ∃ depth, K.alternative = CanonicalAlternative.cap cap depth)
+    (neck : StrongNeck S alpha v t) (hv : v ∈ cap.tube)
+    (hfar : ∀ y ∈ neck.map '' (univ ×ˢ ({0} : Set ℝ)),
+      H / Real.sqrt (S.scalar t p) ≤ metricDistance (S.base.metric t) p y) :
+    ∃ C' : ℝ, 1 ≤ C' ∧ ∃ B : BufferedCanonical S alpha C' H p t,
+      B.tolerance = eps ∧ B.witness.domain.carrier = K.domain.carrier ∧ B.witness.radius = K.radius ∧
+      ∃ cap' depth, B.witness.alternative = CanonicalAlternative.cap cap' depth ∧ HEq cap' cap := by
+  obtain ⟨C', hC', hbuffer⟩ := exists_common_buffer_constant_of_cap_collar.{u}
+    A C K.one_le_comparison_constant
+  obtain ⟨B, hBeps, hBdomain, hBradius, hBcap⟩ :=
+    hbuffer M D S eps alpha H p v t K heps cap hcap neck hv hfar
+  exact ⟨C', hC', B, hBeps, hBdomain, hBradius, hBcap⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

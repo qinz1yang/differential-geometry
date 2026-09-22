@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedRoundCanonical
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.UniformNonroundWindowedBuffer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedMixedCurvature
@@ -494,6 +496,7 @@ theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
   rw [htime] at hwit2
   exact hwit2
 
+open KappaSolutions in
 theorem buffered_canonical_pullback :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ ∀ kappa : ℝ, 0 < kappa →
@@ -504,7 +507,27 @@ theorem buffered_canonical_pullback :
             IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
             Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             OrientedWitness S o delta kappa x t → Nonempty (CanonicalWitness S eps C1 C2 x t) := by
-  sorry
+  classical
+  refine ⟨1 / 44, by norm_num, ?_⟩
+  intro eps heps heps44
+  have hsmall : eps < 1 / 11 := lt_of_le_of_lt heps44 (by norm_num)
+  obtain ⟨Cn, dn, hCn, hdn, hdn1, hnonround⟩ :=
+    exists_universal_nonround_windowed_bufferedCanonical.{u} heps hsmall 1
+  obtain ⟨Cr1, Cr2, hCr1, hCr2, hround⟩ :=
+    exists_windowedModelWitness_canonicalWitness_of_round_model.{u}
+  obtain ⟨dr, hdr, hroundTransfer⟩ := hround eps heps (by linarith)
+  refine ⟨max Cn Cr1, max Cn Cr2, hCn.trans (le_max_left _ _),
+    hCn.trans (le_max_left _ _), fun kappa _hkappa =>
+      ⟨min dn dr, lt_min hdn hdr, (min_le_left _ _).trans_lt hdn1, ?_⟩⟩
+  intro M _ _ _ _ _ D S hS o x t hreg hw
+  obtain ⟨W, orient, _hpreserved⟩ := hw
+  by_cases hr : IsShrinkingSphericalSpaceFormFlow W.model
+  · obtain ⟨K⟩ := hroundTransfer W (min_le_right _ _) hS hreg hr
+    exact ⟨K.enlarge_constants (le_max_right _ _) (le_max_right _ _)⟩
+  · obtain ⟨B⟩ := hnonround kappa M D S hS (min dn dr) x t W
+      (min_le_left _ _) hreg hr orient
+    exact ⟨(B.canonicalWitness_mono B.tolerance_lt.le hsmall).enlarge_constants
+      (le_max_left _ _) (le_max_left _ _)⟩
 
 theorem smooth_canonical_neighborhood :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →

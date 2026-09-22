@@ -207,3 +207,41 @@ theorem nonempty_canonicalAlternative_positive_of_diffeomorph_sphereThree
     (positiveComponentOfDiffeomorphSphereThree e) hQ hc h
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {Z M : Type*} [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
+  [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+
+def ProjectivePresentation.map (pr : ProjectivePresentation Z) (e : Z ≃ₘ⟮I3, I3⟯ M) :
+    ProjectivePresentation M where
+  quotient := e ∘ pr.quotient
+  smooth := e.contMDiff.comp pr.smooth
+  onto := e.surjective.comp pr.onto
+  fibers := fun a b => e.injective.eq_iff.trans (pr.fibers a b)
+  local_diffeo := by
+    intro a
+    rw [mfderiv_comp a (e.contMDiff.mdifferentiable (by simp) _)
+      (pr.smooth.mdifferentiable (by simp) a)]
+    exact (e.mfderivToContinuousLinearEquiv (by simp) (pr.quotient a)).bijective.comp (pr.local_diffeo a)
+
+@[simp] theorem ProjectivePresentation.map_quotient (pr : ProjectivePresentation Z)
+    (e : Z ≃ₘ⟮I3, I3⟯ M) (a : Sphere 3) :
+    (pr.map e).quotient a = e (pr.quotient a) := rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+end
