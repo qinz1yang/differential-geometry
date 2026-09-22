@@ -184,8 +184,15 @@ assembly path**: the pairwise overlap complexes are superseded by the one common
 `exists_commonWallComplex`, of which this leaf is the local input.  The statement is retained
 unchanged because a proof of the common system will consume it.
 
-`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` (lane H, reviewed 2026-09-21, frozen): a
-margin-stable block is a PL normal double crossing at each double point of its *inner* block.
+`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` (lane H, reviewed 2026-09-21; refrozen
+2026-09-22 with `[T2Space M]`): a margin-stable block is a PL normal double crossing at each
+double point of its *inner* block.  Lane F refuted the earlier statement, which had no
+Hausdorff hypothesis: in the non-Hausdorff double of `ℝ³` glued along the open lower half
+space, a second origin lies outside every chart around the first, and a cone in the source
+whose image converges to the first origin while its centre maps to the second defeats the
+fibre-cover clause of every crossing chart.  The consumer works in `(double 3 K).space`, a
+subtype of a normed space, so the instance is available there; it was added to the leaf and
+to `exists_normalCrossing_of_hasWallProductBlocks`, and the assembly is unchanged.
 
 `exists_protectedSubdivision_in_adaptedChart` (lane H, reviewed 2026-09-21, frozen): the seed.
 It fixes `R`, `τ₀` and the compact `Kt` before any vertex map and asserts, for every admissible
@@ -1460,7 +1467,7 @@ theorem exists_transitionSubdivisionOnOverlap
             (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 3)))) := by
   sorry
 
-theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock (D : SingularTwoCell M)
+theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock [T2Space M] (D : SingularTwoCell M)
     {BdM : Set M} (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
     (hℓ : ℓ ≠ 0) (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
@@ -1474,7 +1481,7 @@ theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock (D : SingularTwoCel
         (⇑e '' (e.source ∩ BdM)) (e y) := by
   sorry
 
-theorem exists_normalCrossing_of_hasWallProductBlocks (D : SingularTwoCell M)
+theorem exists_normalCrossing_of_hasWallProductBlocks [T2Space M] (D : SingularTwoCell M)
     {BdM C Z : Set M} {ι : Type}
     {ec : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
     {ℓ : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)} {Eb : ι → Set M}
