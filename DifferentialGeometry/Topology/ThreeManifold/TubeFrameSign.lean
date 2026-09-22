@@ -70,3 +70,30 @@ theorem continuous_intervalVector (r : ℝ) :
     (continuous_id.prodMk continuous_const))
 
 end DifferentialGeometry.Topology.SphericalTubeSystem
+
+
+namespace DifferentialGeometry.Topology.SphericalTubeSystem
+universe u
+local notation "E3" => EuclideanSpace ℝ (Fin 3)
+local notation "S2" => Metric.sphere (0 : E3) 1
+local notation "Interval" => Set.Icc (-2 : ℝ) 2
+local notation "Tube" => S2 × Interval
+local notation "CI" => ModelWithCorners.prod (𝓡 2) (𝓡∂ 1)
+local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
+variable {M : ClosedOrientedManifold.{u} 3} (T : SphericalTubeSystem M)
+
+theorem continuous_productVector (z : S2) (v : TangentSpace (𝓡 2) z) (r : ℝ) :
+    Continuous (fun t : Interval =>
+      (⟨(z, t), (v, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc t).symm r)⟩ :
+        TangentBundle CI Tube)) := by
+  let hpair : Continuous (fun t : Interval =>
+      ((⟨z, v⟩ : TangentBundle (𝓡 2) S2),
+        (⟨t, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc t).symm r⟩ :
+          TangentBundle (𝓡∂ 1) Interval))) :=
+    continuous_const.prodMk (continuous_intervalVector r)
+  have he := (contMDiff_equivTangentBundleProd_symm
+    (I := 𝓡 2) (I' := 𝓡∂ 1) (M := S2) (M' := Interval) (n := (0 : WithTop ℕ∞))).continuous
+  have hc := he.comp hpair
+  exact hc.congr (fun t => rfl)
+
+end DifferentialGeometry.Topology.SphericalTubeSystem
