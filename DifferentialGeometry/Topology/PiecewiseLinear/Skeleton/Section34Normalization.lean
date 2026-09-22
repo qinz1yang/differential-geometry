@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.Homology.Integral
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
+import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 
 /-!
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
@@ -19,7 +20,7 @@ an assembly.  The endpoint is stated so that it matches, binder for binder, the 
 `[HasGroupoid M₁ (plGroupoid 3)]`, `[HasGroupoid M₂ (plGroupoid 3)]`, `IsOpen U`,
 `Topology.IsEmbedding (U.domRestrict h)`, `ContinuousOn η U` and `∀ x ∈ U, 0 < η x`.  Skeletons
 cannot import each other, so the match is textual: the terminal skeleton discharges its leaf by
-`intro`ducing that binder list and applying this endpoint to `h341`, to the two named
+`intro`ducing that binder list and applying this endpoint to `h305`, to the two named
 propositions of the real module `Section34Statements` and to `hU hh hηc hηpos`, the four
 explicit hypotheses being in the same order in both statements.
 
@@ -149,10 +150,18 @@ above; it is what conjunct eleven of `Section34NormalPlus` needs.
 `exists_section34FaceBalls` (P3, Lemmas 3--5, deep, repaired): the initial family `C_σ`, one
 closed piecewise linear `3`-ball per `2`-simplex, with Lemma 5 in manifold form as
 `Section34FaceBallInvariants`; it now receives `IsOpen U` and the embedding `hh`, without which
-the compact image boundaries it needs do not exist.  Chart-local: `Section34CarrierControl`
-puts each carrier `H t` inside one piecewise linear chart of `M₂`, and `Moise341` read in that
-chart supplies the approximation and the general position, which is the only use of `h341` in
-this file.  It covers the page 240 [ASSERTED] items of Lemma 3, the arbitrarily small
+the compact image boundaries it needs do not exist.  Its supplier is the tame Theorem 30.5,
+`Moise305Tame` (proved on the loop-theorem side from `Moise304`), exactly as the book's Lemma 3
+(page 240) has it; an earlier version consumed `Moise341`, which is wrong twice over — Lemma 3
+does not use 34.1, and 34.1's own producer is the compact instance of this very machinery, so
+the dependency was circular (design consult AL, digest AO).  The proof takes, in the source's
+regular neighbourhood model, nested balls `σ ⊆ Int B₁ ⊆ B₁ ⊆ Int B₂ ⋐ U` with a collar beyond
+`frontier B₂`, so that the same product model gives the spherical shell; transports them by `h`
+into the chart of `Section34CarrierControl`, where the outer boundary is topologically
+bicollared; applies `Moise305Tame` and pulls the PL ball back through the chart; the two
+general position clauses come from a small PL perturbation inside the core and boundary
+margins, and the whole-trace `H₁` surjection from Lemma 4's auxiliary-disk argument, not from
+general position.  It covers the page 240 [ASSERTED] items of Lemma 3, the arbitrarily small
 shell-separated cell neighbourhoods of `σ` and their transfer along `h`, the two general
 position clauses, and the page 241 [ASSERTED] sufficient condition for Lemma 5(7).
 
@@ -460,7 +469,7 @@ theorem exists_splitDisk_src_eq_inter_vertexBall
       src (Section34Label.vertexBall w) ∩ src (Section34Label.vertexBall w') := by
   sorry
 
-theorem exists_section34FaceBalls (h341 : Moise341) (hU : IsOpen U)
+theorem exists_section34FaceBalls (h305 : Moise305Tame) (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
     (hctrl : Section34CarrierControl U 𝒦 h η H)
@@ -603,7 +612,7 @@ def Section34NormalFamilyStatement : Prop :=
       (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
       Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd fbl fblBd
 
-theorem section34NormalFamily (h341 : Moise341) (hP0 : Section34ControlStatement.{u})
+theorem section34NormalFamily (h305 : Moise305Tame) (hP0 : Section34ControlStatement.{u})
     (h351 : ControlledGraphNeighborhoodStatement.{u}) : Section34NormalFamilyStatement.{u} := by
   intro M₁ M₂ _ _ _ _ U h η _ _ _ _ _ _ hU hh hηc hηpos
   obtain ⟨N, 𝒦, H, hcm, hctrl⟩ := hP0 hU hh η hηc hηpos
@@ -619,7 +628,7 @@ theorem section34NormalFamily (h341 : Moise341) (hP0 : Section34ControlStatement
     -, -, -, -, hsupT,
     -, -, hends, -, -⟩ := id hcut
   obtain ⟨hsup, -, -, -, -, -⟩ := id hctrl
-  obtain ⟨fbl₀, fblBd₀, hinv₀⟩ := exists_section34FaceBalls h341 hU hh hcut hctrl hgraph
+  obtain ⟨fbl₀, fblBd₀, hinv₀⟩ := exists_section34FaceBalls h305 hU hh hcut hctrl hgraph
   obtain ⟨fbl, fblBd, hinv, hnc, hnb⟩ :=
     exists_section34TerminalFaceBalls hcut hgraph hctrl hinv₀
       (fun _ _ s hg hop => by
