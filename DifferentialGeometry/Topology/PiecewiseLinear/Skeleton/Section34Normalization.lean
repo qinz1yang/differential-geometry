@@ -103,10 +103,12 @@ to be hoisted next to `CarriesFundamentalGroupOnto`.  It is false for an empty t
 solid torus being `ℤ`, whereas the previous field `CarriesFundamentalGroupOnto`, quantified
 over the basepoints of the trace, was vacuous there and, once general position is a field, made
 every trace component essential, leaving nothing for Operation 1 to do and forcing P3 to do the
-work of P4a.  Reviewer question: for pairwise disjoint simple closed curves on the torus
-`∂T_σ`, which are parallel, the `H₁` form is equivalent to "some trace circle carries a generator
-of `π₁ T_σ`": the subgroup they generate in `H₁ T_σ = ℤ` is `⟨p⟩` and surjectivity forces
-`p = ±1` for each of them.
+work of P4a.  The second review accepted that, for the pairwise disjoint simple closed curves
+of a trace on the torus `∂T_σ`, the `H₁` form is equivalent to "some trace circle carries a
+generator of `π₁ T_σ`", with the reason confined to the *essential* components: those are
+parallel, so the subgroup they generate in `H₁ T_σ = ℤ` is `⟨p⟩` and surjectivity forces
+`p = ±1`; contractible components may still be present, and it is exactly those that
+Operation 1 removes.
 
 The measure.  `section34TraceCount` is the number of connected components of the trace, the
 book's `c_σ`, `section34CrossingCount` the number of points of `fblBd s ∩ ⋃ e, tgtEBd e`, the
@@ -161,7 +163,13 @@ label.  Each takes `hU hh`, the invariants and an available operation at `s`, in
 and seventeen of `Section34NormalPlus`, and returns a family that agrees with the old one at
 every other label, still satisfies the invariants and has the two counts at `s` as stated
 above.  They cover the page 242 [ASSERTED] items: that one of the two spheres produced by
-Operation 1 still bounds a `3`-cell around `h '' Bd σ`, that Operation 2 exists at all, and the
+Operation 1 still bounds a `3`-cell around `h '' Bd σ` — this is where the compression step also
+receives `hctrl`, added at the second review: outside `ℝ³` an outer compression need not leave a
+sphere bounding a ball (in `S² × ℝ`, compressing `(S² ∖ Int D) × [−1,1]` along `D × {0}` gives two
+spheres, each a non-zero class of `H₂`, neither bounding a ball), so the proof chooses a
+tetrahedron `t ⊇ s`, places the old ball and the compression disk inside `interior (H t)`, and
+uses the single-chart PL ball carrier of `Section34CarrierControl` to fill the compressed sphere
+by the local Schoenflies theorem — that Operation 2 exists at all, and the
 unargued clauses (1), (3), (4), (6), (8) of Lemma 6 and the whole of Lemma 7, the preservation
 of 5(6) and of 5(7) under Operation 2 being the two that `A-section34-lemma-list` §5 names as
 the first places a formalisation stalls.  `A2-answer-digest`'s cleanliness point is honoured:
@@ -465,6 +473,7 @@ theorem exists_section34FaceBalls (h341 : Moise341) (hU : IsOpen U)
 theorem exists_section34Compression (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hctrl : Section34CarrierControl U 𝒦 h η H)
     (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
     {fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂}
     (hinv : Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
@@ -615,7 +624,7 @@ theorem section34NormalFamily (h341 : Moise341) (hP0 : Section34ControlStatement
     exists_section34TerminalFaceBalls hcut hgraph hctrl hinv₀
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
-          exists_section34Compression hU hh hcut hgraph hg s hop
+          exists_section34Compression hU hh hcut hctrl hgraph hg s hop
         exact ⟨g', gBd', hinv', hoff, section34FaceBallRank_lt_of_compression hc hp⟩)
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
