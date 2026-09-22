@@ -12996,3 +12996,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCapWi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapReparametrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteStaticCapInclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FinitePresentedStaticCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricEquivalence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRegularCurvatureDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricJetBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricPrelimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricTimeLipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricCauchy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeTranslation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MaximalSlab
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryContinuation
