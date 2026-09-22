@@ -5378,11 +5378,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSourceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTensorPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckMixedJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVaryingChartConvergence
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactDomainTransport
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Parameter
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
 import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactPathAvoidance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactSlabVolume
@@ -13092,3 +13096,11 @@ import DifferentialGeometry.Geometry.Measure.RoundCylinderVolume
 import DifferentialGeometry.Geometry.Neck.HalfBandVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarBound
+
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventSurvivorMap
+
+import DifferentialGeometry.Geometry.Metric.Comparison.IsometricBalls
+
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventProtectedBalls
+
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWitnessVolume
