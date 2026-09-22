@@ -3,6 +3,8 @@ Copyright (c) 2026 Bennett Chow. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bennett Chow, OpenAI
 -/
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
+import Mathlib.Geometry.Manifold.Algebra.Structures
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Geometry.Manifold.Instances.Real
 
@@ -137,3 +139,106 @@ def reparametrize (d : Diffeomorph I' I S' S ∞) :
 end SmoothTwoSidedCollar
 
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology.SmoothTwoSidedCollar
+
+variable
+    {E H F G S M : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [TopologicalSpace G]
+    {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+    [TopologicalSpace S] [ChartedSpace H S] [Nonempty S]
+    [TopologicalSpace M] [ChartedSpace G M]
+    {e : S → M} (d : SmoothTwoSidedCollar I J e)
+
+private def intervalInclusion :
+    _root_.PartialDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
+      (S × symmetricOpenInterval d.radius) (S × ℝ) ∞ :=
+  PartialDiffeomorph.prod (Diffeomorph.refl I S ∞).toPartialDiffeomorph
+    (PartialDiffeomorph.subtypeVal (symmetricOpenInterval d.radius)
+      ⟨⟨0, neg_lt_zero.mpr d.radius_pos, d.radius_pos⟩⟩)
+
+def toPartialDiffeomorph :
+    _root_.PartialDiffeomorph (I.prod 𝓘(ℝ, ℝ)) J (S × ℝ) M ∞ :=
+  ((d.intervalInclusion.symm.trans d.toDiffeomorph.toPartialDiffeomorph).trans
+    (PartialDiffeomorph.subtypeVal d.neighborhood
+      ⟨d.toDiffeomorph (Classical.choice inferInstance,
+        ⟨0, neg_lt_zero.mpr d.radius_pos, d.radius_pos⟩)⟩))
+
+@[simp] theorem toPartialDiffeomorph_apply (p : S × symmetricOpenInterval d.radius) :
+    d.toPartialDiffeomorph (p.1, p.2.val) = d.toFun p := by
+  change ((d.toDiffeomorph (d.intervalInclusion.symm (d.intervalInclusion p))) : M) = _
+  exact congrArg (fun q : S × symmetricOpenInterval d.radius => (d.toDiffeomorph q : M))
+    (d.intervalInclusion.toPartialEquiv.left_inv (show p ∈ d.intervalInclusion.source from ⟨trivial, trivial⟩))
+
+theorem toPartialDiffeomorph_symm_apply (p : d.neighborhood) :
+    d.toPartialDiffeomorph.symm p.val =
+      ((d.toDiffeomorph.symm p).1, (d.toDiffeomorph.symm p).2.val) := by
+  let hN : Nonempty d.neighborhood := ⟨d.toDiffeomorph (Classical.choice inferInstance,
+    ⟨0, neg_lt_zero.mpr d.radius_pos, d.radius_pos⟩)⟩
+  let j := PartialDiffeomorph.subtypeVal (I := J) d.neighborhood hN
+  change d.intervalInclusion (d.toDiffeomorph.symm (j.symm (j p))) = _
+  exact congrArg (fun q : d.neighborhood => d.intervalInclusion (d.toDiffeomorph.symm q))
+    (j.toPartialEquiv.left_inv (show p ∈ j.source from trivial))
+
+@[simp] theorem toPartialDiffeomorph_source :
+    d.toPartialDiffeomorph.source = univ ×ˢ Ioo (-d.radius) d.radius := by
+  ext q
+  change q ∈ (((d.intervalInclusion.symm.toOpenPartialHomeomorph.trans
+    d.toDiffeomorph.toPartialDiffeomorph.toOpenPartialHomeomorph).trans
+    (PartialDiffeomorph.subtypeVal (I := J) d.neighborhood _).toOpenPartialHomeomorph).source) ↔ _
+  rw [OpenPartialHomeomorph.trans_source, OpenPartialHomeomorph.trans_source]
+  change ((q ∈ d.intervalInclusion.target ∧ True) ∧ True) ↔ _
+  simp only [intervalInclusion, PartialDiffeomorph.prod, PartialDiffeomorph.subtypeVal,
+    Diffeomorph.toPartialDiffeomorph, symmetricOpenInterval, and_true, mem_prod, mem_univ, mem_Ioo, true_and]
+  erw [OpenPartialHomeomorph.prod_target]
+  simp only [mem_prod]
+  erw [TopologicalSpace.Opens.openPartialHomeomorphSubtypeCoe_target]
+  change (True ∧ (-d.radius < q.2 ∧ q.2 < d.radius)) ↔ _
+  exact ⟨And.right, fun h => ⟨trivial, h⟩⟩
+
+@[simp] theorem toPartialDiffeomorph_target : d.toPartialDiffeomorph.target = d.neighborhood := by
+  ext x
+  simp [toPartialDiffeomorph, intervalInclusion, PartialDiffeomorph.prod,
+    PartialDiffeomorph.subtypeVal, Diffeomorph.toPartialDiffeomorph,
+    _root_.PartialDiffeomorph.trans]
+
+omit [Nonempty S]
+
+private def reverseInterval :
+    Diffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (symmetricOpenInterval d.radius) (symmetricOpenInterval d.radius) ∞ where
+  toFun t := ⟨-t.val, by constructor <;> linarith [t.property.1, t.property.2]⟩
+  invFun t := ⟨-t.val, by constructor <;> linarith [t.property.1, t.property.2]⟩
+  left_inv t := Subtype.ext (neg_neg t.val)
+  right_inv t := Subtype.ext (neg_neg t.val)
+  contMDiff_toFun := (ContMDiff.subtypeVal_comp_iff (symmetricOpenInterval d.radius) _).mp
+    contMDiff_subtype_val.neg
+  contMDiff_invFun := (ContMDiff.subtypeVal_comp_iff (symmetricOpenInterval d.radius) _).mp
+    contMDiff_subtype_val.neg
+
+def reverse : SmoothTwoSidedCollar I J e where
+  radius := d.radius
+  radius_pos := d.radius_pos
+  neighborhood := d.neighborhood
+  toDiffeomorph := ((Diffeomorph.refl I S ∞).prodCongr d.reverseInterval).trans d.toDiffeomorph
+  zero_eq s := by
+    change d.toFun (s, ⟨-(0 : ℝ), _⟩) = e s
+    exact (congrArg (fun t : symmetricOpenInterval d.radius => d.toFun (s, t))
+      (Subtype.ext (neg_zero : -(0 : ℝ) = 0))).trans (d.toFun_zero s)
+
+@[simp] theorem reverse_radius : d.reverse.radius = d.radius := rfl
+
+@[simp] theorem reverse_neighborhood : d.reverse.neighborhood = d.neighborhood := rfl
+
+@[simp] theorem reverse_toFun (p : S × symmetricOpenInterval d.radius) :
+    d.reverse.toFun p = d.toFun (p.1, ⟨-p.2.val, by
+      constructor <;> linarith [p.2.property.1, p.2.property.2]⟩) := rfl
+
+theorem reverse_symm_toDiffeomorph (p : d.neighborhood) :
+    d.reverse.toDiffeomorph.symm p =
+      ((d.toDiffeomorph.symm p).1, ⟨-(d.toDiffeomorph.symm p).2.val, by
+        change -(d.radius) < -(d.toDiffeomorph.symm p).2.val ∧ -(d.toDiffeomorph.symm p).2.val < d.radius
+        constructor <;> linarith [(d.toDiffeomorph.symm p).2.property.1,
+          (d.toDiffeomorph.symm p).2.property.2]⟩) := rfl
+
+end DifferentialGeometry.Topology.SmoothTwoSidedCollar
