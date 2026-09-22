@@ -247,3 +247,42 @@
   complexes (`exists_small_homeomorph_transverse_affineImage`) and the transverse-surface
   intersection theory; the missing input was that combinatorial solid tori have PL-torus frontiers.
 - Compiles: 2 module checks (≈25 s each) + 1 audit.
+
+# Batch 3
+
+## exists_innerSolidTorus_toroidalShell_of_annulusImage — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/InnerSolidTorusToroidalShell.lean`
+  (352 lines, SHA-256 `cb4faceb7fb6671b48c4a5bc3f78c811a820a55461b9e5887a7149d371a6e352`).
+- Import line to register (81 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell`
+- New public names (grepped tree-wide, unused before):
+  `IsTopologicalSolidTorus.exists_toroidalShell_of_isCompact_subset_interior` (for any
+  topological solid torus `Y ⊆ ℝ³` and compact `K ⊆ interior Y`: a topological solid torus `S₁`
+  with `K ⊆ interior S₁`, `S₁ ⊆ interior Y` and
+  `IsToroidalShell (closure (Y \ S₁)) (frontier S₁) (frontier Y)`), and the leaf itself (statement
+  byte-identical to `Skeleton/Section31CanonicalConfiguration.lean`, checked by string comparison
+  after CRLF normalization). Private helpers: `isCompact_revolutionOf_of_isCompact` (a renamed
+  copy of the skeleton's public `isCompact_revolutionOf`, which cannot be imported; renamed so the
+  skeleton can import this module without a clash — the lead may hoist one public copy later) and
+  `smul_mem_closedBall_zero_one`.
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\InnerSolidTorusToroidalShell.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 ~15:39 local).
+- Axiom audit: `AuditOpusC7.lean` — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC7.lean with no diagnostics;
+  shared outputs unchanged.` (15:40): closure within `propext`, `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route (not the reviewer's revolution route; no planar cell geometry is needed): `Y = h '' S j`
+  is a topological solid torus through the embedding `h|S j`; by
+  `mem_interior_of_homeomorph_closedBall_prod_sphere` / `notMem_interior_of_homeomorph_closedBall_prod_sphere`
+  (invariance of domain) the interior points of a solid torus `φ : Y ≃ D² × S¹` are exactly those
+  with `|b| < 1`, and the frontier those with `|b| = 1`
+  (`mem_frontier_iff_norm_eq_one_of_homeomorph_closedBall_prod_sphere`). So
+  `K = h '' A j` (compact: revolved segment) lies over `|b| ≤ m < r < 1`;
+  `S₁ = φ⁻¹(D(0,r) × S¹)` (the range of a continuous injection of a compact space, hence a
+  homeomorphic copy), and `((u, θ), s) ↦ φ⁻¹((r + s(1 - r)) u, θ)` is the toroidal shell: its
+  range is `{r ≤ |b|}`, which is `closure (Y \ S₁)` (the level `s = 0` is a limit of `s ↓ 0`), and
+  its ends are `frontier S₁` and `frontier Y` by the frontier characterisation applied to `S₁` and
+  to `Y`.
+- Compiles: 3 module checks (≈20 s each; one heartbeat timeout in a continuity unification, fixed
+  by making `Ψ = val ∘ φ.symm` opaque) + 1 audit.

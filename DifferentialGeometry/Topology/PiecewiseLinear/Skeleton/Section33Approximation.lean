@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayEmbedding
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -141,6 +142,14 @@ for the extension, not as an independent obligation:
 `section33_fundamentalGroup_map_bijective` (Lemma 10, deep),
 `section33_faceEulerChar_handlePiece` (Lemma 12, short), `exists_section33BoundaryMatch`
 (Lemma 13, deep), `exists_section33Extension` (page 238, deep).
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf): `section33_tube_product`
+(module `DerivedNeighborhoodRayEmbedding`).  In the first derived subdivision the derived
+neighbourhood is the set where a core vertex carries a maximal barycentric weight; the ray towards
+the subcomplex barycentric projection gives the source product `Bd N × (0,1) ≃ Int N \ |K|`, and
+`h` transports it.  The core lies in the ambient interior because a positive core weight at a
+boundary point would put a simplex of `K` into the boundary complex.
 -/
 
 open Set Topology
@@ -268,10 +277,6 @@ theorem section33_not_isLoopTheoremDisk
         (Δ ∩ h '' K.space).Nonempty) :
     ∀ Δ : Set (EuclideanSpace ℝ (Fin 3)),
       ¬ IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ := by
-  sorry
-
-theorem section33_tube_product (ht : IsTube K N C D Dbd h N') :
-    Nonempty ((frontier N × Set.Ioo (0 : ℝ) 1) ≃ₜ ↥(interior N' \ h '' K.space)) := by
   sorry
 
 theorem section33_fundamentalGroup_map_bijective (h264 : Moise264)

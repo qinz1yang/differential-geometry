@@ -55,3 +55,36 @@ digests AK/AM/AD. None of them has been checked in Lean.
   applied to the subspace `h''C w`.
 - Not refuted: a circle-type counterexample needs a non-unicoherent `h''C w`, and the tube's
   cells are balls.
+
+# Batch 2 (lease d)
+
+Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`.
+
+## isEmbedding_derivedNeighborhoodRay — CLOSED
+## range_derivedNeighborhoodRay — CLOSED
+
+- File (both leaves): `DifferentialGeometry/Topology/PiecewiseLinear/DerivedNeighborhoodRayInterior.lean`
+  (43 lines, SHA-256 `bc4a8618fc18df4661d416c784adcb930aa1477ba6296f42bbe2e331ca8e1e50`).
+- Import line to register:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayInterior`
+  (the module imports only `DerivedNeighborhoodRayEmbedding`).
+- New public names: the two leaves only (grepped tree-wide; the only other occurrences are the
+  skeleton's `sorry` copies). Statements byte-identical to
+  `Skeleton/DerivedNeighborhoodComplement.lean:66-79` (checked by script, text up to `:=`), with
+  the same `local notation "E3"` and the same `private noncomputable local instance
+  euclideanDecidableEq`; the instance in the `range` statement is definitionally the classical
+  one of `range_derivedNeighborhoodRay_of_subset_interior`, `exact`-term accepted.
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedNeighborhoodRayInterior.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 15:41 local, -07:00).
+- Axiom audit: `AuditOpusD1.lean` (lease d output root, `-Audit`) — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditOpusD1.lean with no diagnostics;
+  shared outputs unchanged.` (15:42): closure within `propext`, `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route: each leaf is `…_of_subset_interior A K hKA` (lease b,
+  `DerivedNeighborhoodRayEmbedding.lean`) applied to
+  `derivedNeighborhood_space_subset_interior (n := 2) finrank_euclideanSpace_fin hA hKA hKint`.
+  Every frozen hypothesis is used (`hA` only for `N ⊆ interior |A|`); no gap.
+- Lead option: the skeleton could instead call the two lease-b theorems directly; the leaves
+  are kept because their statements are frozen.
+- Compiles: 1 module check (≈11 s) + 1 audit (≈46 s).

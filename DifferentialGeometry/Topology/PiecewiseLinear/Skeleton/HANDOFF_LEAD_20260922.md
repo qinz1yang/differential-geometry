@@ -258,3 +258,19 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   `Skeleton/`). Lead acceptance compiles run on lease a while F is idle (owner offline).
   Pitfalls met: an `import` line inserted after a docstring line beginning with "import"; an
   import name over 100 characters (module renamed `CombinatorialSolidTorusOfCylindricalDiagram`).
+* 15:30 — running tally of the afternoon (HEAD `e7cdc09c4`): 28 leaves accepted and wired
+  (Gemini 11, Opus 5.5 workers 16, lane F 1 earlier); physical `sorry` 108 → 82; four skeletons
+  became sorry-free and were promoted to real modules — `Section26ThreeSurfaces` (`Moise267`
+  unconditional), `Section34Control` (P0 endpoint unconditional), `Section30Separation`
+  (`Moise303` unconditional), `Section30Torus` (`Moise306`, `Moise307` from `Moise252`).
+  Every Gemini BLOCKED verdict the Opus workers touched so far (16 of 16) turned out to be a
+  false or one-lemma blocker. Still running: b (§33 leaves), c (§31 torus-polygon leaves + the
+  30.7 input), e (§32 collar/handle leaves); Gemini's second pass on d.
+* 16:10 — owner asked to accept lane F's work: F has delivered nothing since its 12:33 FALSE
+  record for entry 15 (its `.wip` files date from 03:xx); every remaining F entry is STUCK, and
+  5/12 are covered by Opus workers. Accepted instead: worker b's `section33_tube_product`
+  (`DerivedNeighborhoodRayEmbedding`), worker d's two DerivedNeighborhoodComplement leaves
+  (`DerivedNeighborhoodRayInterior`; that skeleton is retired), worker e's four §32 leaves
+  (`FreeFaceArc`, `TwoComponentsOfPseudoCell`, `EdgeCollarFamily`,
+  `HandleDecompositionOfEdgeCollars`) and worker c's `exists_innerSolidTorus_toroidalShell_of_annulusImage`
+  (`InnerSolidTorusToroidalShell`). Physical `sorry` 82 → 76.

@@ -7,6 +7,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.IsTopologicalSphereImageSplitRim
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatesOfLocallyEventuallyEq
 import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceSubsetOfEdgeCollars
+import DifferentialGeometry.Topology.PiecewiseLinear.FreeFaceArc
+import DifferentialGeometry.Topology.PiecewiseLinear.HandleDecompositionOfEdgeCollars
+import DifferentialGeometry.Topology.PiecewiseLinear.TwoComponentsOfPseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.EdgeCollarFamily
 
 /-!
 # Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
@@ -189,6 +193,17 @@ check and an axiom audit; statement byte-identical): `handlePiece_subset_of_edge
 pinned clause of `SplitsDualCellsAlong` makes each side closed and open in `N' \ ⋃ E`, and
 `IsPreconnected.constant` on the component does the rest; `IsTube` still has no inhabitant, so the
 theorem is proved but untested on an instance.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statements byte-identical with the frozen leaves):
+`exists_compact_connected_to_freeFace` (module `FreeFaceArc`, the image of a model segment from
+the vertex to a free-face point), `exists_twoComponents_of_pseudoCell` (module
+`TwoComponentsOfPseudoCell`: separation extends to frontier points through small model
+neighbourhoods and each rim circle lies in the closure of the free face), `exists_edgeCollarFamily`
+(module `EdgeCollarFamily`, radial collars in the model simplex tapering at the midpoint) and
+`isHandleDecomposition_of_edgeCollars` (module `HandleDecompositionOfEdgeCollars`; the connectivity
+step is Theorem 30.2 inside the ball `C w`).  `FreeFaceArc` also carries the shared tube-topology
+layer the other three modules import.  `IsTube` still has no inhabitant.
 -/
 
 open Set Topology
@@ -275,63 +290,6 @@ theorem isOpenTopologicalCell_annularChain (ht : IsTube K N C D Dbd h N') (hu : 
       DQ ⊆ annularChain H B P' \ {P'} ∧ Q₁ ∪ Q₂ ∈ 𝓝 x ∧
       Q₁ ∪ Q₂ ⊆ interior (h '' C u ∪ h '' C v) ∧
       (Q₁ ∪ Q₂) ∩ (annularChain H B P' ∪ h '' Dbd {u, v}) = DQ := by
-  sorry
-
-theorem exists_compact_connected_to_freeFace (ht : IsTube K N C D Dbd h N')
-    (hv : v ∈ K.vertices) {e : Finset E3} (he : e ∈ K.faces) (hc : e.card = 2) (hve : v ∈ e) :
-    ∃ Bv : Set E3, IsCompact Bv ∧ IsConnected Bv ∧ h v ∈ Bv ∧ Bv ⊆ h '' C v ∧
-      Disjoint Bv (h '' D e) ∧
-      (Bv ∩ h '' ((frontier (C v) ∩ frontier N) \
-        ⋃ f ∈ {f : Finset E3 | f ∈ K.faces ∧ f.card = 2 ∧ v ∈ f}, Dbd f)).Nonempty := by
-  sorry
-
-open Classical in
-theorem exists_twoComponents_of_pseudoCell (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
-    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
-    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
-    (hWsub : W ⊆ h '' C u ∪ h '' C v)
-    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
-    {Ec Eint Ebd : Set E3} (hE : IsPseudoCell Ec Eint Ebd P') (hEbd : Ebd = h '' Dbd {u, v})
-    (hEW : Ec ⊆ W)
-    (hsep : Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' Eint)
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (hcell : ∀ x ∈ Eint \ {P'}, ∃ Q₁ Q₂ DQ : Set E3,
-      IsPLBall 3 Q₁ ∧ IsPLBall 3 Q₂ ∧ Q₁ ∩ Q₂ = DQ ∧ IsPLBall 2 DQ ∧ DQ ⊆ Eint \ {P'} ∧
-      Q₁ ∪ Q₂ ∈ 𝓝 x ∧ Q₁ ∪ Q₂ ⊆ interior (h '' C u ∪ h '' C v) ∧ (Q₁ ∪ Q₂) ∩ Ec = DQ)
-    {Bu Bv : Set E3}
-    (hBu : IsCompact Bu ∧ IsConnected Bu ∧ h u ∈ Bu ∧ Bu ⊆ h '' C u ∧ Disjoint Bu Ec ∧
-      (Bu ∩ h '' ((frontier (C u) ∩ frontier N) \
-        ⋃ f ∈ {f : Finset E3 | f ∈ K.faces ∧ f.card = 2 ∧ u ∈ f}, Dbd f)).Nonempty)
-    (hBv : IsCompact Bv ∧ IsConnected Bv ∧ h v ∈ Bv ∧ Bv ⊆ h '' C v ∧ Disjoint Bv Ec ∧
-      (Bv ∩ h '' ((frontier (C v) ∩ frontier N) \
-        ⋃ f ∈ {f : Finset E3 | f ∈ K.faces ∧ f.card = 2 ∧ v ∈ f}, Dbd f)).Nonempty) :
-    ∃ U₁ U₂ : Set E3, h u ∈ U₁ ∧ h v ∈ U₂ ∧ IsConnected U₁ ∧ IsConnected U₂ ∧
-      Disjoint U₁ U₂ ∧ U₁ ∪ U₂ = (h '' C u ∪ h '' C v) \ Ec ∧
-      (∀ V : Set E3, IsPreconnected V → V ⊆ (h '' C u ∪ h '' C v) \ Ec →
-        V ⊆ U₁ ∨ V ⊆ U₂) ∧
-      Ec ⊆ frontier U₁ ∧ Ec ⊆ frontier U₂ ∧
-      h '' (frontier (C u) ∩ frontier N) ⊆ frontier U₁ ∧
-      h '' (frontier (C v) ∩ frontier N) ⊆ frontier U₂ := by
-  sorry
-
-theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E3)
-    (hV : ∀ v ∈ K.vertices, V v ∈ nhdsSet (h '' C v)) :
-    ∃ W : Finset E3 → Set E3, IsEdgeCollarFamily K C D Dbd h V W := by
-  sorry
-
-open Classical in
-theorem isHandleDecomposition_of_edgeCollars (ht : IsTube K N C D Dbd h N')
-    {V : E3 → Set E3} {W : Finset E3 → Set E3} (hW : IsEdgeCollarFamily K C D Dbd h V W)
-    {Ec Eint Ebd : Finset E3 → Set E3}
-    (hE : ∀ e ∈ K.faces, e.card = 2 → ∃ u v : E3, u ∈ K.vertices ∧ v ∈ K.vertices ∧ u ≠ v ∧
-      e = {u, v} ∧ SplitsDualCellsAlong K N C Dbd h (W e) (Ec e) (Eint e) (Ebd e) u v) :
-    (∀ v ∈ K.vertices, handlePiece K N' Ec h v ∩ h '' K.vertices = {h v}) ∧
-    N' = ⋃ v ∈ K.vertices, handlePiece K N' Ec h v ∧
-    (∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset E3) ∈ K.faces →
-      handlePiece K N' Ec h u ∩ handlePiece K N' Ec h v = Ec {u, v}) ∧
-    ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset E3) ∉ K.faces →
-      handlePiece K N' Ec h u ∩ handlePiece K N' Ec h v = ∅ := by
   sorry
 
 theorem exists_generalPosition_ball_pseudoCell {Ec Eint Ebd : Set E3} {P : E3}

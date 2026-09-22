@@ -637,3 +637,26 @@
 | STUCK | 1 |
 
 支持模块 CLOSED 1；队列累计总表仍为 CLOSED 8 / FALSE 0 / STUCK 8。
+
+## 15 hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — FALSE
+
+- 文件：无新 Lean 模块；冻结陈述位于 `DifferentialGeometry/Topology/PiecewiseLinear/Skeleton/GeneralPositionInDouble.lean:1463`。既有 `.lean.wip` 未修改。
+- import 行：不适用。
+- 新公共名：无。冻结陈述 SHA256 `AF3D17C8D284A0028E3967173AFFB1299F09A81AA365269DA772789120A9EB38`（2026-09-22）。
+- 编译成功行原文 + 时间；公理审计结果：本轮没有编译端点；反例是对冻结陈述的语义否定，故端点公理审计和 linter 不适用。此前已验证的 `NormalCrossingTransport` 与 `StableCrossingNormalizer` 支持模块不受影响。
+- 反例的环境：令 `H = {z : ℝ³ | z₂ < 0}`，令 `M` 为两份 `ℝ³` 沿 `H` 按恒等映射粘合的非 Hausdorff 商。记两份开嵌入为 `i₀,i₁`；在 `H` 上 `i₀ z = i₁ z`，而两个零点 `o₀=i₀ 0`、`o₁=i₁ 0` 不相等，且不可由不交邻域分开。两份逆图卡给出 `ChartedSpace (EuclideanSpace ℝ (Fin 3)) M`；重叠转移恒等，故 `ec=i₀⁻¹` 属于 `(plGroupoid 3).maximalAtlas M`。这个实例无需 `T2Space M`，而冻结陈述确实没有该实例。
+- 取 `ℓ(u,v,t)=t`、`A(u,v,t)=(u,v,t)`、`BdM=i₀({t=0})`、`r=1`、`tlo=0`、`a=b=0`、`La=Lb=0`、`η=1`。于是 `ℓ≠0`，且在 `ec.source` 内 `x∈BdM ↔ ℓ(ec x)=0`。`chartBlock ec A 1 0 = i₀([-1,1]²×[0,1])` 在 `M` 中闭且紧；它的闭包仍是自身，包含于 `ec.source`。特别是 `o₁` 没有落入该闭包：它在第二份图卡中的小邻域只有负高度的公共点和第二份正高度点，与盒子不交。
+- 源域取矩形 `S=[-5,5]×[0,3]`，是一个 PL 2-ball。未修改的映射为 `(x,s)↦i₀(g(x),s)`，其中 `g(x)=(0,x+3)`（`x≤-1`）、`g(x)=(-2(x+1),2)`（`-1≤x≤0`）、`g(x)=(-2,2-2x)`（`0≤x≤1`）、`g(x)=(x-3,0)`（`x≥1`）。它在接点一致。只在 `(0,2)` 附近一个小方块内作如下 PL 修改：在内层小多边形边界取常值 `c=(-2,2,-1)`，用有限三角剖分在外边界原值与 `c` 之间线性插值；在内层由边界向中心 `w=(0,2)` 作锥，边界值为 `i₁(c)`、中心值为 `D(w)=o₁`。锥上除中心外的值为 `i₁(λc)=i₀(λc)`（`λ>0`），在公共负半空间中。外层修改区域可选得全部满足 `u<-3/2` 或 `v>3/2`，所以始终避开 `chartBlock`；锥也避开盒子，因为高度为负。所得 `D` 在第一图卡的其余源点及第二图卡的中心附近逐片仿射，故 `D.isPLOn`，并构成 `SingularTwoCell M`。域外值任取。
+- 所有稳定块字段同时成立：`SA=[-4,-2]×[0,1]`、`SB=[2,4]×[0,1]`，且 `S∩D⁻¹(chartBlock ec A 1 0)=SA∪SB`，两片不交。在 `SA` 上图像恰为 `(0,x+3,s)`，在 `SB` 上恰为 `(x-3,0,s)`；因此两个 graph 方程为零函数，`blockSheetProjA`、`blockSheetProjB` 分别是 `(x,s)↦(x+3,s)`、`(x,s)↦(x-3,s)`，均为矩形之间的仿射 PL 同胚。`SA/SB` 与相应投影矩形在各自内盒原像点处是相对邻域；投影矩形 `[-1,1]×[0,1]` 在 `blockHalfPlane 0={t≥0}` 中覆盖所需相对邻域。对 `SA∪SB` 中每一点，`x∈frontier S ↔ s=0 ↔ ℓ(ec(Dx))=0`。取 `tlo=0` 支，`A` 的高度坐标就是 `ℓ`；`0<r,0<η,0≤La,Lb,La·Lb≤1-η`、两条 Lipschitz 条件及两个零函数的逐片仿射条件也成立。
+- 令 `y=o₀`。`D⁻¹{y}∩S` 恰有 `p=(-3,0)`、`q=(3,0)` 两点，故 `hy : y∈doublePointSet D S`；`y∈innerChartBlock ec A 1 0`。取锥上一列 `w_n→w` 且锥参数 `λ_n↓0`、`λ_n>0`，则 `D(w_n)=i₀(λ_n c)→y`，但 `D(w)=o₁≠y`，并且这些点不在稳定盒原像里。
+- 结论失败的确切 Lean 条款：任意在 `y` 处的 atlas 图卡 `e` 的开源域不能同时包含 `o₁`，否则其源域（同胚于欧氏开集）包含不可分的两点。可是 `D(w_n)→y`，所以最终 `w_n∈P_e:=S∩D⁻¹(e.source)` 且 `(e∘D)(w_n)→e y`。`y∈e''(e.source∩BdM)`，故 `HasPLNormalDoubleCrossingAt` 只能走 `HasPLBoundaryDoubleCrossingAt` 支；该定义的见证 `a,b,A',B'` 满足 `a∈A'`、`b∈B'`、两者映到 `e y`、`A',B'⊆P_e`、各自的 `IsPLHomeomorphOn`，并有 `∀ᶠ z in 𝓝(e y), P_e∩(e∘D)⁻¹'{z}⊆A'∪B'`。图卡单射及上面的精确纤维给出 `{a,b}={p,q}`。`IsPLHomeomorphOn.homeomorph` 保证每片的逆映射在 `e y` 连续；取源中包含 `p,q` 而闭包避开 `w` 的小邻域，其两片逆像在 `e y` 附近都必须落入该邻域。纤维覆盖则把足够大的 `w_n` 放进 `A'∪B'`，与 `w_n→w` 矛盾。普通 `HasPLDoubleCrossingAt` 支也有同样的逆连续与覆盖条款。
+- 根因及接口决定：`IsStableCrossingBlock` 的紧致盒是闭半盒，并非 `y` 的环境邻域；负高度一侧的另一份图卡允许额外源分支的像趋向 `y`，而其极限源点不映到 `y`。增加 `[T2Space M]` 可排除此反例，但是否以及如何修改冻结端点属于 lead 决定；本车道不更改骨架，也不继续证明假的原陈述。直接依赖者是同骨架的 `exists_normalCrossing_of_hasWallProductBlocks`。
+- 用时、编译次数：本轮语义核对约 20 分钟；Lean 编译 0 次。此 FALSE 记录取代此前第 15 条 STUCK 记录作为当前判断，不改变其他队列条目。
+
+## 本轮总表（F15 反例，待 lead 独立验收）
+
+| 状态 | 本轮 F15 | 队列累计当前判断 |
+| --- | ---: | ---: |
+| CLOSED | 0 | 8 |
+| FALSE | 1 | 1 |
+| STUCK | 0 | 7 |

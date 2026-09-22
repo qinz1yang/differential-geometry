@@ -90,3 +90,11 @@ producer skeletons remain outside this F pass, including those now reviewed in A
 Definitions and conditional assemblies do not prove their producers. Exact vocabulary moves
 need no new external review; substantive statement changes must return to the lead before
 proving. F's cumulative CLOSED/STUCK report does not replace the lead's acceptance ledger.
+
+## Lead update 2026-09-22 16:10
+
+Entry 5 (`section33_tube_product`) is CLOSED by an Opus 5.5 worker and accepted under B1.e; entry 12
+is in progress on lease b. Entry 15's FALSE record (non-Hausdorff double of ℝ³) was verified and
+repaired by adding `[T2Space M]` to `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` and its
+caller (commit `ca345c4c8`); F may resume on the repaired statement, which is now the frozen leaf.
+Entries 10 and 11 remain open. Lease a is used by the lead for acceptance compiles while F is idle.

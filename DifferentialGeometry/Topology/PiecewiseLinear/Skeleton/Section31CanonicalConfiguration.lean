@@ -16,6 +16,7 @@ import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Analysis.Normed.Module.Connected
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorusOfCylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
+import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell
 
 /-!
 # Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
@@ -182,6 +183,15 @@ and an axiom audit; statements byte-identical with the frozen leaves):
 `exists_generalPosition_solidTorus_relative`, from the ambient transversality of two finite
 complexes in `GeneralPosition.lean` and the new fact that a combinatorial solid torus has a PL
 torus as frontier.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_innerSolidTorus_toroidalShell_of_annulusImage` (module `InnerSolidTorusToroidalShell`),
+through the general `IsTopologicalSolidTorus.exists_toroidalShell_of_isCompact_subset_interior`:
+by invariance of domain the interior points of a solid torus are exactly those over `|b| < 1`, so
+a compact subset of the interior lies over `|b| ≤ r < 1` and the radial shell `r ≤ |b| ≤ 1` is the
+toroidal shell.  That module keeps a private copy of `isCompact_revolutionOf` named
+`isCompact_revolutionOf_of_isCompact`; hoist the public one when this skeleton is promoted.
 -/
 
 open Set Topology
@@ -394,17 +404,6 @@ theorem exists_isTopologicalCellWithInterior_union_consecutive
     ∃ Eint : Set (EuclideanSpace ℝ (Fin 3)),
       IsTopologicalCellWithInterior 2 (D j.castSucc ∪ D j.succ) Eint ∧
         Dint j.castSucc ⊆ Eint ∧ Dint j.succ ⊆ Eint := by
-  sorry
-
-theorem exists_innerSolidTorus_toroidalShell_of_annulusImage
-    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)} {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))} {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {N : Set (EuclideanSpace ℝ (Fin 3))} {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-    (hc : IsRevolvedTorusChain P D Dint J A S T) (hN : N = ⋃ j, S j)
-    (hh : IsEmbedding (N.domRestrict h)) (j : Fin 3) :
-    ∃ S₁ : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalSolidTorus S₁ ∧
-      h '' A j ⊆ interior S₁ ∧ S₁ ⊆ interior (h '' S j) ∧
-      IsToroidalShell (closure (h '' S j \ S₁)) (frontier S₁) (frontier (h '' S j)) := by
   sorry
 
 theorem exists_generalPosition_solidTorus_triple
