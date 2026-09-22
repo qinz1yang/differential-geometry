@@ -32,4 +32,22 @@ theorem subsingleton_of_finiteConnectedSum_factors
       (fun i => h (L.get i) (x i) (List.get_mem L i))
   exact @Equiv.subsingleton _ _ e.toEquiv hcoprod
 
+theorem subsingleton_fundamentalGroup_factor_of_subsingleton_finiteConnectedSum
+    (L : List (ConnectedClosedOrientedManifold.{u} 3))
+    (F : ConnectedClosedOrientedManifold.{u} 3) (hF : F ∈ L)
+    (x : (i : Fin L.length) → (L.get i).Carrier)
+    (y : (finiteConnectedSum L).Carrier)
+    (h : Subsingleton (FundamentalGroup (finiteConnectedSum L).Carrier y))
+    (q : F.Carrier) : Subsingleton (FundamentalGroup F.Carrier q) := by
+  obtain ⟨i, rfl⟩ := List.get_of_mem hF
+  obtain ⟨e⟩ := fundamentalGroup_finiteConnectedSum_freeProduct L x y
+  have hcoprod : Subsingleton (Monoid.CoprodI fun i : Fin L.length =>
+      FundamentalGroup (L.get i).Carrier (x i)) :=
+    @Equiv.subsingleton _ _ e.symm h
+  have hx : Subsingleton (FundamentalGroup (L.get i).Carrier (x i)) :=
+    (DifferentialGeometry.Algebra.Group.coprodI_subsingleton_iff _).mp hcoprod i
+  exact subsingleton_fundamentalGroup_of_joined
+    (Joined.somePath (PathConnectedSpace.joined (x i) q)) hx
+
+
 end DifferentialGeometry.Topology

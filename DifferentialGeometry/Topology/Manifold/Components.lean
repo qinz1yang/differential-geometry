@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.ClosedOriented
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import Mathlib.Topology.Connected.LocallyConnected
+import Mathlib.Topology.Homeomorph.Lemmas
 
 noncomputable section
 
@@ -184,5 +185,30 @@ def componentDiffeomorph [PreconnectedSpace M.Carrier] (C : ConnectedComponents 
     refine (ContMDiff.subtypeVal_comp_iff (componentOpen M C) _).mp ?_
     exact contMDiff_id
   contMDiff_invFun := contMDiff_subtype_val
+
+end DifferentialGeometry.Topology.ClosedOrientedManifold
+
+namespace DifferentialGeometry.Topology.ClosedOrientedManifold
+
+universe u
+variable {n : ℕ} (M : ClosedOrientedManifold.{u} n)
+
+def componentUnionHomeomorph : (Σ K, (M.component K).Carrier) ≃ₜ M.Carrier := by
+  let f : (Σ K, (M.component K).Carrier) → M.Carrier := fun p => p.snd.val
+  have hf : Continuous f := continuous_sigma fun _ => continuous_subtype_val
+  have hi : Function.Injective f := by
+    rintro ⟨K, x⟩ ⟨L, y⟩ h
+    have hK : K = L := x.property.symm.trans ((congrArg ConnectedComponents.mk h).trans y.property)
+    subst L
+    have hxy : x = y := Subtype.ext h
+    subst y
+    rfl
+  have hs : Function.Surjective f := fun x => ⟨⟨ConnectedComponents.mk x, ⟨x, rfl⟩⟩, rfl⟩
+  let := M.finite_components
+  let := Fintype.ofFinite (ConnectedComponents M.Carrier)
+  exact IsHomeomorph.homeomorph f (isHomeomorph_iff_continuous_bijective.mpr ⟨hf, hi, hs⟩)
+
+theorem componentUnionHomeomorph_apply (K : ConnectedComponents M.Carrier)
+    (x : (M.component K).Carrier) : M.componentUnionHomeomorph ⟨K, x⟩ = x.val := rfl
 
 end DifferentialGeometry.Topology.ClosedOrientedManifold

@@ -13256,3 +13256,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCoreComp
 import DifferentialGeometry.Topology.Connected.Sum
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryComponentCount
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryEventVolumeBound
+import DifferentialGeometry.Topology.FundamentalGroup.ConnectedComponent
+import DifferentialGeometry.Topology.FundamentalGroup.Sigma
+import DifferentialGeometry.Topology.ThreeManifold.CapComponentQuotient
+import DifferentialGeometry.Topology.ThreeManifold.CutCapConnectedSumTopology
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleSimplyConnected
