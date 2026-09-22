@@ -346,8 +346,8 @@ structure ProtectedIncomingWitness (D : OneStepIncoming.{u})
   buffer_subset_core : buffer ⊆ interior X
   bufferRadius : ℝ
   bufferRadius_gt : 2 * radius < bufferRadius
-  ball_compact : IsCompact (riemannianBallOf D.terminal.metric x bufferRadius)
-  ball_subset_buffer : riemannianBallOf D.terminal.metric x bufferRadius ⊆ buffer
+  ball_compact : IsCompact (riemannianClosedBallOf D.terminal.metric x bufferRadius)
+  ball_subset_buffer : riemannianClosedBallOf D.terminal.metric x bufferRadius ⊆ buffer
   scale_pos : 0 < metricScalarAt D.terminal.metric x
   scalar_comparable : ∀ y ∈ region,
     metricScalarAt D.terminal.metric x / 2 ≤ metricScalarAt D.terminal.metric y ∧
