@@ -125,6 +125,21 @@ uses d and must preserve F/S/H dirty files. The lead did not start or message a 
 process; the owner passes GEMINI_BATCH.md to its existing CLI. A prepared queue does not
 establish that the broader batch has started. No automation or lease was changed.
 
+## Deferred planar-union advice and round-two report
+
+The owner requested only decomposition and recording of two new attachments, without
+interrupting processes. [Consult BE](../consult/BE-planar-disk-union-relative-boundary-design-digest.md)
+records the proposed route against mirror `3b6b29fb`: closed-subset order extension, cyclic
+order compatibility, relative nested-disk boundary matching, crossed pasting, and region
+recognition followed by the frozen endpoint assembly. These are deferred work packages,
+not new frozen leaves or a dispatch; source due diligence and proofs remain outstanding.
+
+The separate [Gemini round-two intake](GEMINI_PLANAR_UNION_ROUND2_INTAKE_20260922.md) preserves
+the worker's source hashes and self-check claims. Its reported adapter still receives the
+missing general disk-union theorem as `hdiskUnion`, so entry 10 / G001 remains OPEN.
+This recording did not audit the active delivery, change the batch/ledger/leases, or contact
+or interrupt F or Gemini. Keep the existing batch running under its current instructions.
+
 ## Ready owner review prompts
 
 Each prompt below fixes a verified mirror snapshot. Their leaf statements remain UNREVIEWED
