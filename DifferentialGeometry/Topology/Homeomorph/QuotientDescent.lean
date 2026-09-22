@@ -106,3 +106,23 @@ def indexedRelationStep (r : I → X → X → Prop) (i : I) (H : Quot (r i) ≃
     indexedRelationStep r i H (Quot.mk _ x) = Quot.mk _ (H (Quot.mk (r i) x)) := rfl
 
 end Homeomorph.Quot
+
+namespace Homeomorph.Quot
+
+variable {X : Type*} [TopologicalSpace X]
+
+def emptyRelation (r : X → X → Prop) (hr : ∀ x y, ¬ r x y) : Quot r ≃ₜ X where
+  toFun := Quot.lift id (fun x y h => (hr x y h).elim)
+  invFun := Quot.mk r
+  left_inv q := Quot.inductionOn q fun _ => rfl
+  right_inv _ := rfl
+  continuous_toFun := continuous_quot_lift _ continuous_id
+  continuous_invFun := continuous_quot_mk
+
+@[simp] theorem emptyRelation_mk (r : X → X → Prop) (hr : ∀ x y, ¬ r x y) (x : X) :
+    emptyRelation r hr (Quot.mk r x) = x := rfl
+
+@[simp] theorem emptyRelation_symm_apply (r : X → X → Prop) (hr : ∀ x y, ¬ r x y) (x : X) :
+    (emptyRelation r hr).symm x = Quot.mk r x := rfl
+
+end Homeomorph.Quot

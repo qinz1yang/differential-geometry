@@ -13178,3 +13178,10 @@ import DifferentialGeometry.Topology.Homeomorph.QuotientDescent
 import DifferentialGeometry.Topology.ContinuousMap.ClosedEmbeddingExtension
 
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.CollarAbsorption
+import DifferentialGeometry.Topology.Attachment.AdjunctionHomeomorph
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FactorBallImage
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedQuotient
+import DifferentialGeometry.Topology.Homeomorph.Sigma
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallGluing
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmpty
