@@ -13073,3 +13073,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteProte
 import DifferentialGeometry.Analysis.Calculus.AffineTimeReparametrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckTimeWindow
 import DifferentialGeometry.Analysis.ODE.QuadraticCrossing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarCrossingTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingScalarThreshold
