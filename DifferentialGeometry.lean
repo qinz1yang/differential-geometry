@@ -13261,3 +13261,13 @@ import DifferentialGeometry.Topology.FundamentalGroup.Sigma
 import DifferentialGeometry.Topology.ThreeManifold.CapComponentQuotient
 import DifferentialGeometry.Topology.ThreeManifold.CutCapConnectedSumTopology
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleSimplyConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornScalarLevel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FullNeckHornCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.CommonScaleHornNecks
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NeckFamilySeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NeckFamilyRetainedCore
+import DifferentialGeometry.Geometry.Neck.BufferedRotation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NormalizedNeckDatum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MarkedStaticPreparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckRotationCutCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
