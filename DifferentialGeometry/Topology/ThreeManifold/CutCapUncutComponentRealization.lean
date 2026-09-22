@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
+import DifferentialGeometry.Topology.Manifold.ComponentDiffeomorph
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 
@@ -17,43 +18,12 @@ namespace OrientedDiffeomorph
 
 variable {n : ℕ} {M N : ClosedOrientedManifold.{u} n}
 
-private theorem componentMap_cancel (e : OrientedDiffeomorph M N)
-    (C : ConnectedComponents M.Carrier) :
-    e.1.symm.continuous.connectedComponentsMap (e.1.continuous.connectedComponentsMap C) = C := by
-  obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe C
-  rw [Continuous.connectedComponentsMap_mk e.1.continuous x,
-    Continuous.connectedComponentsMap_mk e.1.symm.continuous (e.1 x),
-    Diffeomorph.symm_apply_apply]
-
-private theorem componentMap_mem (e : OrientedDiffeomorph M N) (C : ConnectedComponents M.Carrier)
-    (x : M.componentOpen C) :
-    ConnectedComponents.mk (e.1 x.1) = e.1.continuous.connectedComponentsMap C :=
-  congrArg e.1.continuous.connectedComponentsMap x.2
-
-private theorem componentMap_inv_mem (e : OrientedDiffeomorph M N)
-    (C : ConnectedComponents M.Carrier)
-    (y : N.componentOpen (e.1.continuous.connectedComponentsMap C)) :
-    ConnectedComponents.mk (e.1.symm y.1) = C :=
-  (congrArg e.1.symm.continuous.connectedComponentsMap y.2).trans (componentMap_cancel e C)
-
 noncomputable def componentDiffeomorph (e : OrientedDiffeomorph M N)
     (C : ConnectedComponents M.Carrier) :
     M.componentOpen C ≃ₘ⟮𝓘(ℝ, EuclideanSpace ℝ (Fin n)),
         𝓘(ℝ, EuclideanSpace ℝ (Fin n))⟯
-      N.componentOpen (e.1.continuous.connectedComponentsMap C) where
-  toEquiv :=
-    { toFun := fun x => ⟨e.1 x.1, componentMap_mem e C x⟩
-      invFun := fun y => ⟨e.1.symm y.1, componentMap_inv_mem e C y⟩
-      left_inv := fun x => Subtype.ext (e.1.symm_apply_apply x.1)
-      right_inv := fun y => Subtype.ext (e.1.apply_symm_apply y.1) }
-  contMDiff_toFun := by
-    intro x
-    exact codRestr_contMDiffAt (V := N.componentOpen (e.1.continuous.connectedComponentsMap C))
-      (componentMap_mem e C) ((e.1.contMDiff.comp contMDiff_subtype_val).contMDiffAt)
-  contMDiff_invFun := by
-    intro y
-    exact codRestr_contMDiffAt (V := M.componentOpen C)
-      (componentMap_inv_mem e C) ((e.1.symm.contMDiff.comp contMDiff_subtype_val).contMDiffAt)
+      N.componentOpen (e.1.continuous.connectedComponentsMap C) :=
+  ClosedOrientedManifold.diffeomorphComponent e.val C
 
 @[simp]
 theorem componentDiffeomorph_apply (e : OrientedDiffeomorph M N)

@@ -6,10 +6,18 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependen
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedCongruence
 import Mathlib.SetTheory.Cardinal.Finite
 import Mathlib.Topology.LocallyConstant.Basic
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallQuotientSmooth
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallLoopSmooth
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallLoopRadial
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallDistinctSmooth
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallDistinctRadial
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmptySmooth
+import DifferentialGeometry.Topology.Manifold.Diffeomorph.Sigma
 
 set_option autoImplicit false
 noncomputable section
 open Set Metric
+open scoped Manifold ContDiff
 
 section
 
@@ -168,7 +176,7 @@ private theorem remaining_card_lt {E : Type w} [Finite E] (s : E) :
   rw [Nat.card_eq_fintype_card, Nat.card_eq_fintype_card]
   exact Fintype.card_subtype_lt (x := s) (by simp)
 
-private theorem exists_finite_quotient_with_factor_lists {A : Type t}
+private theorem exists_finite_smooth_quotient_with_factor_lists {A : Type t}
     (original : A → ConnectedClosedOrientedManifold.{u} 3) :
     ∀ n, ∀ {V : Type v} {E : Type w}, [Finite V] → [Finite E] → Nat.card E = n →
       ∀ (N : V → ConnectedClosedOrientedManifold.{u} 3) (endpoint : E → Bool → V)
@@ -177,6 +185,9 @@ private theorem exists_finite_quotient_with_factor_lists {A : Type t}
       (hdisj : Pairwise fun p q =>
         Disjoint (flagMap N endpoint chart p '' closedBall (0 : E3) 2)
           (flagMap N endpoint chart q '' closedBall (0 : E3) 2))
+      (C : ∀ v, SmoothBoundaryAtlas (𝓡 3) 3
+        {x : (N v).Carrier | (⟨v, x⟩ : Σ v, (N v).Carrier) ∉
+          ⋃ p, flagMap N endpoint chart p '' ball (0 : E3) 1})
       (assign : A → V) (L : V → List A) (k : V → ℕ),
       (∀ v a, a ∈ L v ↔ assign a = v) → (∀ v, (L v).Nodup) → (∀ v, L v ≠ []) →
       (∀ v, Nonempty (ClosedOrientedManifold.OrientedDiffeomorph (N v).toClosedOrientedManifold
@@ -190,20 +201,37 @@ private theorem exists_finite_quotient_with_factor_lists {A : Type t}
           (finiteConnectedSum ((L' w).map original ++
             List.replicate (k' w) (sphereTwoTimesCircleLift.ulift.{0,
                 u}))).toClosedOrientedManifold)) ∧
-        Nonempty (Quot (fun x y => ∃ e,
-          seamRel N endpoint chart hdisj e boundaryAttachment x y) ≃ₜ (Σ w, (M w).Carrier)) := by
+        let _ : ∀ v, ChartedSpace (EuclideanHalfSpace 3)
+          (PuncturedFactor N endpoint chart v) := fun v => (C v).toChartedSpace
+        ∃ Qcharts : ChartedSpace E3
+          (Quot (fun x y => ∃ e, seamRel N endpoint chart hdisj e boundaryAttachment x y)),
+          let _ := Qcharts
+          IsManifold (𝓡 3) ∞
+            (Quot (fun x y => ∃ e, seamRel N endpoint chart hdisj e boundaryAttachment x y)) ∧
+          IsLocalDiffeomorph (𝓡∂ 3) (𝓡 3) ∞
+            (allCoreInclusion N endpoint chart hdisj (fun _ => boundaryAttachment)) ∧
+          (∀ e, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) (𝓡 3) ∞
+            (allSeamChart N endpoint chart hdisj (fun _ => boundaryAttachment) e)) ∧
+          Nonempty (Diffeomorph (𝓡 3) (𝓡 3)
+            (Quot (fun x y => ∃ e, seamRel N endpoint chart hdisj e boundaryAttachment x y))
+            (Σ w, (M w).Carrier) ∞) := by
   classical
   intro n
   induction n using Nat.strong_induction_on with
   | h n ih =>
-    intro V E hV hE hcard N endpoint chart hdisj assign L k hmem hnodup hnonempty hpres
+    intro V E hV hE hcard N endpoint chart hdisj C assign L k hmem hnodup hnonempty hpres
     let := hV
     let := hE
+    let _ : ∀ v, ChartedSpace (EuclideanHalfSpace 3)
+      (PuncturedFactor N endpoint chart v) := fun v => (C v).toChartedSpace
     cases isEmpty_or_nonempty E with
     | inl he =>
       let := he
+      obtain ⟨Qcharts, hm, hc, hs, D, hD⟩ :=
+        exists_smooth_quotient_atlas_of_isEmpty N endpoint chart hdisj
+          (fun _ => boundaryAttachment) C
       exact ⟨V, hV, N, assign, L, k, hmem, hnodup, hnonempty, hpres,
-        ⟨quotientHomeomorphOfIsEmpty N endpoint chart hdisj (fun _ => boundaryAttachment)⟩⟩
+        Qcharts, hm, hc, hs, ⟨D⟩⟩
     | inr he =>
       let := he
       let s : E := Classical.choice he
@@ -244,10 +272,36 @@ private theorem exists_finite_quotient_with_factor_lists {A : Type t}
               original (L (endpoint s false)) (sphereTwoTimesCircleLift.ulift.{0, u})
               (N (endpoint s false)) (k (endpoint s false)) (hpres _)
             exact ⟨G.trans K⟩
-        obtain ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'', ⟨K⟩⟩ :=
+        choose C' _ using fun v => exists_smoothBoundaryAtlas_puncturedFactor N' ep' ch' hd v
+        let _ : ∀ v, ChartedSpace (EuclideanHalfSpace 3)
+          (PuncturedFactor N' ep' ch' v) := fun v => (C' v).toChartedSpace
+        obtain ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'',
+          Qcharts', hm', hc', hs', ⟨K⟩⟩ :=
           ih _ hlt (V := Option {v // v ≠ endpoint s false}) (E := {e // e ≠ s}) rfl
-            N' ep' ch' hd assign' L' k' hmem' hn' hne' hp'
-        exact ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'', ⟨J.trans K⟩⟩
+            N' ep' ch' hd C' assign' L' k' hmem' hn' hne' hp'
+        let _ := Qcharts'
+        let _ := hm'
+        obtain ⟨A, hmH, hcH, hsH, G, hG⟩ :=
+          exists_loop_smooth_atlas_of_factor_representatives N endpoint chart s hloop hdisj
+            S F b hb C C' H hfirst hu
+        let _ := A
+        have hGc : (fun q => G q) = H := funext hG
+        have hcoreH : IsLocalDiffeomorph (𝓡∂ 3) (𝓡∂ 3) ∞
+            (H ∘ seamCoreInclusion N endpoint chart hdisj s boundaryAttachment) := by
+          have hh := DifferentialGeometry.isLocalDiffeomorph_comp G.isLocalDiffeomorph hcH
+          simpa only [hGc] using hh
+        have hseamH : IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) (𝓡∂ 3) ∞
+            (H ∘ seamChart N endpoint chart hdisj s boundaryAttachment) := by
+          have hh := DifferentialGeometry.isLocalDiffeomorph_comp G.isLocalDiffeomorph hsH
+          simpa only [hGc] using hh
+        have hrad := loop_homeomorph_radialPoint N endpoint chart s hloop hdisj
+          S F b hb H hfirst hu hd
+        obtain ⟨Qcharts, hm, hc, hs, D, _⟩ :=
+          exists_smooth_quotient_step_atlas N endpoint chart hdisj (fun _ => boundaryAttachment) s
+            N' ep' ch' hd H J hJ (𝓡 3) hcoreH hseamH hrad hc' hs'
+        let _ := Qcharts
+        exact ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'',
+          Qcharts, hm, hc, hs, ⟨D.trans K⟩⟩
       · have hends : endpoint s false ≠ endpoint s true := Ne.symm hloop
         obtain ⟨b, hbL, hbR, hd, H, hfirst, hsecond, hu, hH, J, hJ⟩ :=
           exists_quotient_homeomorph_merge N endpoint chart s hdisj
@@ -282,10 +336,85 @@ private theorem exists_finite_quotient_with_factor_lists {A : Type t}
                   (sphereTwoTimesCircleLift.ulift.{0, u})
               (N (endpoint s false)) (N (endpoint s true)) (k (endpoint s false))
               (k (endpoint s true)) (chart s false) (chart s true) (hpres _) (hpres _)
-        obtain ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'', ⟨K⟩⟩ :=
+        choose C' _ using fun v => exists_smoothBoundaryAtlas_puncturedFactor N' ep' ch' hd v
+        let _ : ∀ v, ChartedSpace (EuclideanHalfSpace 3)
+          (PuncturedFactor N' ep' ch' v) := fun v => (C' v).toChartedSpace
+        obtain ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'',
+          Qcharts', hm', hc', hs', ⟨K⟩⟩ :=
           ih _ hlt (V := Option {v // v ≠ endpoint s false ∧ v ≠ endpoint s true})
-            (E := {e // e ≠ s}) rfl N' ep' ch' hd assign' L' k' hmem' hn' hne' hp'
-        exact ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'', ⟨J.trans K⟩⟩
+            (E := {e // e ≠ s}) rfl N' ep' ch' hd C' assign' L' k' hmem' hn' hne' hp'
+        let _ := Qcharts'
+        let _ := hm'
+        have hbd := pairwise_disjoint_survivorChart_of_mergeFlag N endpoint chart s
+          boundaryAttachment hends b hd
+        obtain ⟨A, hmH, hcH, hsH, G, hG⟩ :=
+          exists_smooth_distinct_merge_of_factor_representatives N endpoint chart hdisj s
+            boundaryAttachment hends b C C' H hfirst hsecond hu hbd hbL hbR
+        let _ := A
+        have hGc : (fun q => G q) = H := funext hG
+        have hcoreH : IsLocalDiffeomorph (𝓡∂ 3) (𝓡∂ 3) ∞
+            (H ∘ seamCoreInclusion N endpoint chart hdisj s boundaryAttachment) := by
+          have hh := DifferentialGeometry.isLocalDiffeomorph_comp G.isLocalDiffeomorph hcH
+          simpa only [hGc] using hh
+        have hseamH : IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) (𝓡∂ 3) ∞
+            (H ∘ seamChart N endpoint chart hdisj s boundaryAttachment) := by
+          have hh := DifferentialGeometry.isLocalDiffeomorph_comp G.isLocalDiffeomorph hsH
+          simpa only [hGc] using hh
+        have hrad := merge_homeomorph_radialPoint N endpoint chart hdisj s boundaryAttachment
+          hends b H hfirst hsecond hu hbL hbR hd
+        obtain ⟨Qcharts, hm, hc, hs, D, _⟩ :=
+          exists_smooth_quotient_step_atlas N endpoint chart hdisj (fun _ => boundaryAttachment) s
+            N' ep' ch' hd H J hJ (𝓡 3) hcoreH hseamH hrad hc' hs'
+        let _ := Qcharts
+        exact ⟨W, hW, M, assign'', L'', k'', hmem'', hn'', hne'', hp'',
+          Qcharts, hm, hc, hs, ⟨D.trans K⟩⟩
+
+
+theorem exists_finite_connectedSum_diffeomorph
+    {V : Type v} {E : Type w} [Finite V] [Finite E]
+    (N : V → ConnectedClosedOrientedManifold.{u} 3)
+    (endpoint : E → Bool → V)
+    (chart : (e : E) → (b : Bool) →
+      OrientedBallChart (N (endpoint e b)).toClosedOrientedManifold)
+    (hdisj : Pairwise fun p q =>
+      Disjoint (flagMap N endpoint chart p '' closedBall (0 : E3) 2)
+        (flagMap N endpoint chart q '' closedBall (0 : E3) 2))
+    (C : ∀ v, SmoothBoundaryAtlas (𝓡 3) 3
+      {x : (N v).Carrier | (⟨v, x⟩ : Σ v, (N v).Carrier) ∉
+        ⋃ p, flagMap N endpoint chart p '' ball (0 : E3) 1}) :
+    ∃ (W : Type v) (_ : Finite W) (assign : V → W) (L : W → List V) (k : W → ℕ),
+      (∀ w v, v ∈ L w ↔ assign v = w) ∧ (∀ w, (L w).Nodup) ∧ (∀ w, L w ≠ []) ∧
+      let _ : ∀ v, ChartedSpace (EuclideanHalfSpace 3)
+        (PuncturedFactor N endpoint chart v) := fun v => (C v).toChartedSpace
+      ∃ Qcharts : ChartedSpace E3
+        (Quot (fun x y => ∃ e, seamRel N endpoint chart hdisj e boundaryAttachment x y)),
+        let _ := Qcharts
+        IsManifold (𝓡 3) ∞
+          (Quot (fun x y => ∃ e, seamRel N endpoint chart hdisj e boundaryAttachment x y)) ∧
+        IsLocalDiffeomorph (𝓡∂ 3) (𝓡 3) ∞
+          (allCoreInclusion N endpoint chart hdisj (fun _ => boundaryAttachment)) ∧
+        (∀ e, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) (𝓡 3) ∞
+          (allSeamChart N endpoint chart hdisj (fun _ => boundaryAttachment) e)) ∧
+        Nonempty (Diffeomorph (𝓡 3) (𝓡 3)
+          (Quot (fun x y => ∃ e, seamRel N endpoint chart hdisj e boundaryAttachment x y))
+          (Σ w, (finiteConnectedSum ((L w).map N ++
+            List.replicate (k w) (sphereTwoTimesCircleLift.ulift.{0, u}))).Carrier) ∞) := by
+  classical
+  have hpres (v : V) : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (N v).toClosedOrientedManifold
+      (finiteConnectedSum (([v] : List V).map N ++
+        List.replicate 0 (sphereTwoTimesCircleLift.ulift.{0, u}))).toClosedOrientedManifold) :=
+    ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
+  obtain ⟨W, hW, M, assign, L, k, hm, hn, hne, hp, Qcharts, hman, hcore, hseam, ⟨H⟩⟩ :=
+    exists_finite_smooth_quotient_with_factor_lists N (Nat.card E) rfl N endpoint chart hdisj C id
+      (fun v => [v]) (fun _ => 0) (fun _ _ => List.mem_singleton) (fun _ => List.nodup_singleton _)
+      (fun _ => List.cons_ne_nil _ _) hpres
+  let _ : ∀ v, ChartedSpace (EuclideanHalfSpace 3)
+    (PuncturedFactor N endpoint chart v) := fun v => (C v).toChartedSpace
+  let _ := Qcharts
+  let F := fun w => Classical.choice (hp w)
+  exact ⟨W, hW, assign, L, k, hm, hn, hne, Qcharts, hman, hcore, hseam,
+    ⟨H.trans (sigmaCongrRightDiffeomorph fun w => (F w).val)⟩⟩
 
 theorem exists_finite_connectedSum_quotient
     {V : Type v} {E : Type w} [Finite V] [Finite E]
@@ -302,18 +431,10 @@ theorem exists_finite_connectedSum_quotient
         (Σ w, (finiteConnectedSum ((L w).map N ++
           List.replicate (k w) (sphereTwoTimesCircleLift.ulift.{0, u}))).Carrier)) := by
   classical
-  have hpres (v : V) : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (N v).toClosedOrientedManifold
-      (finiteConnectedSum (([v] : List V).map N ++
-        List.replicate 0 (sphereTwoTimesCircleLift.ulift.{0, u}))).toClosedOrientedManifold) :=
-    ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
-  obtain ⟨W, hW, M, assign, L, k, hm, hn, hne, hp, ⟨H⟩⟩ :=
-    exists_finite_quotient_with_factor_lists N (Nat.card E) rfl N endpoint chart hdisj id
-      (fun v => [v]) (fun _ => 0) (fun _ _ => List.mem_singleton) (fun _ => List.nodup_singleton _)
-      (fun _ => List.cons_ne_nil _ _) hpres
-  let F := fun w => Classical.choice (hp w)
-  exact ⟨W, hW, assign, L, k, hm, hn, hne,
-    ⟨H.trans (Homeomorph.sigmaCongrRight fun w => (F w).val.toHomeomorph)⟩⟩
+  choose C _ using fun v => exists_smoothBoundaryAtlas_puncturedFactor N endpoint chart hdisj v
+  obtain ⟨W, hW, assign, L, k, hm, hn, hne, Qcharts, _, _, _, ⟨D⟩⟩ :=
+    exists_finite_connectedSum_diffeomorph N endpoint chart hdisj C
+  exact ⟨W, hW, assign, L, k, hm, hn, hne, ⟨D.toHomeomorph⟩⟩
 
 theorem exists_connectedSum_quotient_of_preconnected
     {V : Type v} {E : Type w} [Finite V] [Finite E] [Nonempty V]
