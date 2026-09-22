@@ -3,7 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
-import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -64,9 +64,10 @@ modifies nothing; Lemma 7 lowers the first Betti number of `Bd X` by splitting a
 disk pushed off every pseudo-cell, so the traces are untouched and Lemmas 3-5 are re-read off
 the new frontier.  Lemma 9's leaf consumes Lemmas 2, 3, 4 and 7 only; Lemma 10's consumes all.
 
-Definitions.  `IsLoopTheoremDisk Kimg N' BdX Δ` is the LTD of page 232: a piecewise linear
-two-cell in `Int N' − K'` meeting `Bd X` exactly in its boundary, which is not contractible in
-`Bd X`; the tree had no such notion, so it is defined here (to be hoisted).
+Definitions.  The neighborhood and trace vocabulary lives in
+`PolyhedralTubeNeighborhood.lean`.  `IsLoopTheoremDisk Kimg N' BdX Δ` is the LTD of page 232:
+a piecewise linear two-cell in `Int N' − K'` meeting `Bd X` exactly in its boundary, which is
+not contractible in `Bd X`; the tree had no such notion, so it is defined here (to be hoisted).
 `IsPolyhedralTubeNeighborhood` is Lemma 2 with the two consequences of `X ⊆ Int N'` that later
 leaves read, `Bd E ∩ X = ∅` and the crossing `HasPLCrossingAt (Int E) (Bd X)` at every trace
 point; AA question 3 is answered as it proposes: the trace lies in `Int E − {P'}`, the locally
@@ -148,10 +149,6 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 section Vocabulary
 
-def edgesAt (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (v : EuclideanSpace ℝ (Fin 3)) : Set (Finset (EuclideanSpace ℝ (Fin 3))) :=
-  {e | e ∈ K.faces ∧ e.card = 2 ∧ v ∈ e}
-
 def IsLoopTheoremDisk (Kimg N' BdX Δ : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
   ∃ r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
     IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ interior N' \ Kimg ∧
@@ -159,43 +156,6 @@ def IsLoopTheoremDisk (Kimg N' BdX Δ : Set (EuclideanSpace ℝ (Fin 3))) : Prop
     ∃ hb : r '' stdSimplexBoundary 2 ⊆ BdX,
       ¬ (⟨Set.inclusion hb, continuous_inclusion hb⟩ :
         C(r '' stdSimplexBoundary 2, BdX)).Nullhomotopic
-
-structure IsPolyhedralTubeNeighborhood
-    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
-    (N' : Set (EuclideanSpace ℝ (Fin 3)))
-    (Ec Eint Ebd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
-    (XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) : Prop where
-  facesFinite : XK.faces.Finite
-  isManifold : IsCombinatorialManifoldWithBoundary 3 XK
-  isNeighborhood : XK.space ∈ nhdsSet (h '' K.space)
-  subsetInterior : XK.space ⊆ interior N'
-  rimDisjoint : ∀ e ∈ K.faces, e.card = 2 → Disjoint (Ebd e) XK.space
-  crossing : ∀ e ∈ K.faces, e.card = 2 → ∀ x ∈ Ec e ∩ frontier XK.space,
-    HasPLCrossingAt (Eint e) (frontier XK.space) x
-
-def HasSinglePolygonTraces (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
-    (Ec : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
-    (X : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
-  ∀ e ∈ K.faces, e.card = 2 →
-    IsPLSphere 1 (Ec e ∩ frontier X) ∧
-    ∃ DJint : Set (EuclideanSpace ℝ (Fin 3)),
-      IsTopologicalCellWithInterior 2 (Ec e ∩ X) DJint ∧
-      (Ec e ∩ X) \ DJint = Ec e ∩ frontier X ∧ h (e.centroid ℝ id) ∈ DJint
-
-open Classical in
-def HasConnectedHandlePieces (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (Ec : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
-    (Cpp : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
-    (X : Set (EuclideanSpace ℝ (Fin 3)))
-    (AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) :
-    Prop :=
-  IsConnected X ∧ IsConnected (frontier X) ∧
-  ∀ v ∈ K.vertices,
-    (AK v).faces.Finite ∧ (AK v).space = Cpp v ∩ frontier X ∧
-    IsCombinatorialManifoldWithBoundary 2 (AK v) ∧ IsConnected (AK v).space ∧
-    (boundaryComplex 2 (AK v)).space = ⋃ e ∈ edgesAt K v, Ec e ∩ frontier X
 
 def HasNoHandleLoopTheoremDisk (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
     (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))

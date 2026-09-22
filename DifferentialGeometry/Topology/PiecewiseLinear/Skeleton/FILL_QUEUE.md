@@ -1,33 +1,54 @@
-# Fill queue — frozen skeleton leaves for the overnight proving lane (2026-09-21)
+# Fill queue — frozen skeleton leaves for F (2026-09-22)
 
-Every leaf below is a `sorry` in a skeleton file whose *statement* has been frozen by external
-review. A lane proves a leaf by creating ONE new real module that restates the theorem
-byte-identically (same name, binders, instance arguments) and proves it; the lead wires the
-skeleton to the module afterwards. Skeleton files are never edited by a lane.
+This is an execution queue. Acceptance and proof debt belong only to `../FREE_INPUTS.md`;
+`FILL_LOG.md` supplies worker evidence for independent verification. Original entry numbers
+are retained. Do not repeat entries 1, 2, 3, 4, 6, 8, 9, or 16.
 
-Order = the lead's estimate of tractability (short first). Skip a leaf whose statement you can
-refute — record the counterexample in your log; that is a success, not a failure.
+Work in `D:\differential-geometry-moise-int`, branch `codex/moise-integration`.
+`E:\differential-geometry-dev` and its outputs are read-only. Compile only in PowerShell with
+lease a, token `claude-agent-a-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a`. Read the live lease; only the owner
+may edit it. Prepare the private root immediately before each named-module check.
 
-| # | Leaf | Skeleton file | Size | Hints |
-|---|---|---|---|---|
-| 1 | `IsPLHomeomorphInto.mono_of_isPLCellOn` | `Section34Normalization.lean` | S | restrict a PL embedding to a PL cell inside its domain; the tree has `mono_of_isPolyhedron` for model-space domains; `PLCellOn*.lean` API; suggested home `PLCellOnBoundary`-style module |
-| 2 | `exists_splitDisk_src_eq_inter_vertexBall` | `Section34Normalization.lean` | S | derivable from `Section34CutFrame` alone: patch/face-arc labels force the vertex-ball label unique (`IsPLCellOn.dim_eq`, `PLCellOnBoundary.lean:180`); digest AH §"Docstring corrections" |
-| 3 | `separates_of_locally_eventually_eq` | `Section32PseudoCell.lean` | S | general topology: a limit of separators that is locally eventually constant separates; compactness along the contradiction path (digest AM) |
-| 4 | `isTopologicalSphere_image_splitRim` | `Section32PseudoCell.lean` | S | the intrinsic boundary of `splitCell` under the embedding `h` is a circle |
-| 5 | `section33_tube_product` | `Section33Approximation.lean` | S | `Bd N × (0,1) ≅ Int N' − K'` from `IsTube.derivedModel` and the source de-cored product transported by `h` (digest AI) |
-| 6 | `boundaryComplex_space_of_isPLCellAttachmentWith_zero` | `PLSmoothingCompact.lean` | S | attached ball disjoint from the old stage; `BoundaryInvariance.lean`, `DerivedNeighborhoodCellBoundary.lean` |
-| 7 | `boundaryComplex_space_of_isPLCellAttachmentWith_three` | `PLSmoothingCompact.lean` | S | the attaching sphere is one old boundary component, which disappears |
-| 8 | `isSmoothHandleStage_adjunction_zero` | `PLSmoothingCompact.lean` | S | empty attaching region = disjoint union with the standard smooth 3-ball; `Handle/Manifold.lean`, `Cell/Coordinates.lean` |
-| 9 | `revolutionOf_cellInterior_subset_interior` | `Section31CanonicalConfiguration.lean` | M | planar invariance of domain; the open half-plane keeps the axis away |
-| 10 | `exists_isTopologicalCellWithInterior_union_consecutive` | `Section31CanonicalConfiguration.lean` | S–M | `D_j ∪ D_{j+1}` is a 2-cell containing both interiors; the overlap is a 2-cell (`IsPlanarCellChain.overlap`) |
-| 11 | `separates_initialSurface` | `Section32PseudoCell.lean` | M | Lemmas 1 + 3 of §32 with `havoid`; transport `IsTube.splitSeparates` (digest AK/AM) |
-| 12 | `section33_faceEulerChar_handlePiece` | `Section33Approximation.lean` | S–M | `χ(A'_v) = 2 − deg v`; grep `faceEulerChar`, `isPLSphere_two_of_faceEulerChar_eq_two` |
-| 13 | `isCombinatorialManifold_of_locallyFinitePLPieceIn` | `Section34Control.lean` | M | vertex links are PL 2-spheres from the local PL Euclidean model (digest AF Part 1) |
-| 14 | `boundaryComplex_space_of_isPLCellAttachmentWith_one` / `_two` | `PLSmoothingCompact.lean` | M | relative interiors of the attaching disks / annulus removed, the free part added (digest AN) |
-| 15 | `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` | `GeneralPositionInDouble.lean` | M | a margin-stable block is a PL normal double crossing at each inner double point |
-| 16 | `isSpine_revolutionOf_of_mem_cellInterior` | `Section31CanonicalConfiguration.lean` | M | revolved planar 2-cell = solid torus with the interior point's circle as spine (clears `IsRevolvedTorusChain`'s conditional inhabitant) |
+Use the public definitions below. Private copies do not prove the frozen endpoint.
+Never import a skeleton. Preserve exact names, binders, instances and lexical scopes.
+Check possible counterexamples against every actual Lean hypothesis first; failure of one
+local argument is not a counterexample to the whole leaf.
 
-Not in the queue (deep, or under repair): everything in `ControlledGraphNeighborhood.lean`,
-`Section34Terminal.lean`, `DescentStepOrientable.lean`, `ClosedBranchCaseOne.lean`; the remaining
-A1 leaves; `exists_generalPosition_solidTorus_*` (being restated); the compact §34 skeleton
-(being written); all leaves marked deep in the skeleton docstrings.
+Run one pass through the remaining entries. Continue an approach while it makes concrete
+progress; at a genuine blocker, record the exact missing theorem or goal and move on.
+Do not repeat old broad searches without a new route. Stop after this pass.
+
+## Remaining entries, in suggested order
+
+| Entry | Leaf / skeleton | Public input | Remaining obligation |
+|---|---|---|---|
+| 15 | `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` / `GeneralPositionInDouble` | `StableCrossingBlock` | Full two-plane PL normal form from graph sheets, the shared coordinate, margin and neighborhood control. Intersection dimension alone is insufficient. Seven definitions and five helpers are public. |
+| 7 | `boundaryComplex_space_of_isPLCellAttachmentWith_three` / `PLSmoothingCompact` | `CellAttachment` | The full attaching sphere becomes interior; retain the existing boundary transfer away from the seam. The pinned attachment predicate and selector are public. |
+| 14a / 14b | `boundaryComplex_space_of_isPLCellAttachmentWith_one` / `_two`, `PLSmoothingCompact` | `CellAttachment` | Relative PL gluing along two disks / an annulus, with the exact removed and added boundary subsets. |
+| 11 | `separates_initialSurface` / `Section32PseudoCell` | `PseudoCell`, `SeparatesOfLocallyEventuallyEq` | Closedness and separation of the alternating surface using `havoid`, outer local finiteness and `IsTube.splitSeparates`. The general separating-limit lemma is proved; the geometric separator sequence and local stabilization remain to construct. Tower vocabulary and `IsTube.mem_interior_dualCell` are public. |
+| 10 | `exists_isTopologicalCellWithInterior_union_consecutive` / `Section31CanonicalConfiguration` | `CanonicalConfiguration` | Planar two-disk union when the intersection is a two-cell, including both intrinsic interiors. The proved revolution spine/interior results do not supply this planar gluing step. |
+| 12 | `section33_faceEulerChar_handlePiece` / `Section33Approximation` | `PolyhedralTubeNeighborhood` | Global Euler/capping argument yielding `2 - deg v`, with exactly the incident trace polygons as boundary. All four needed definitions are public. |
+| 13 | `isCombinatorialManifold_of_locallyFinitePLPieceIn` / `Section34Control` | Read the frozen skeleton's existing real imports | Derive PL sphere links from locally finite bidirectional PL Euclidean charts. A link theorem already assuming the target manifold certificate is circular. |
+| 5 | `section33_tube_product` / `Section33Approximation` | `PseudoCell`, `OpenEmbeddingFrontier` | Source derived-neighborhood-minus-core product, then transport. Interior-image transport already exists; a retraction or fundamental-group equivalence is insufficient. |
+
+Module names above are under `DifferentialGeometry.Topology.PiecewiseLinear`, except
+`DifferentialGeometry.Topology.OpenEmbeddingFrontier`. Smooth-stage vocabulary is also public
+in `DifferentialGeometry.Topology.Handle.SmoothStage` for future smoothing leaves.
+
+## Delivery
+
+- Create real proof modules or continue your own WIP files. Do not edit skeletons, the flat
+  aggregate, `FREE_INPUTS.md`, other lanes' files, or Git state.
+- Append exact public names, imports, source hashes, compiler receipts, axiom/linter results
+  and remaining goals to `FILL_LOG.md`. Real modules require zero errors, warnings and avoidable
+  info diagnostics; exclude only docBlame/docBlameThm from the standard linter set.
+- No new sorry/axiom, resource overrides, linter suppression, declaration docstrings or inline
+  comments. Required headers and concise mathematical module docstrings are allowed.
+- FALSE needs a joint witness satisfying every field, including pinned maps, exact overlaps
+  and dimensions; name the actual Lean clauses so the lead can verify it independently.
+
+The compact §34 leaves, relative torus general-position producer and new §30 / restricted
+extended-loop drafts are outside this round. Definitions and conditional assemblies do not
+prove their producers. Exact vocabulary moves need no new external review; substantive
+statement changes must return to the lead before proving.

@@ -9242,6 +9242,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusGeneralPosition
 import DifferentialGeometry.Topology.Handle.SmoothStage
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttachmentZero
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
 /-!
 # Differential geometry and geometric analysis
 -/
