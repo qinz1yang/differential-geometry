@@ -11,7 +11,13 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 The assembly `moise331` proves the endpoint `Moise331` of `MoiseChain.lean` for real from the
 twelve leaves of this file and the named propositions `Moise323`, `Moise324` (Section 32) and
 `Moise264` (the extended loop theorem, cited on page 234 for the injectivity in Lemma 10); every
-`sorry` is a leaf and none sits inside an assembly.  Source: Moise, *Geometric topology in
+`sorry` is a leaf and none sits inside an assembly.  The dependency chain is therefore
+`Moise323 → Moise324 → Moise264 → Moise331`, and the first review (digest AI) kept `Moise264`
+explicit on purpose: the ledger plans only a *restricted* producer of the extended loop theorem
+through the orientable loop route, so the parameter must not be deleted to hide that dependency
+inside Lemma 10; at integration it may be narrowed to the `ℝ³` local version Lemma 10 needs,
+and the proof of that leaf must then enclose the compact support of a null-homotopy in a
+finite piecewise linear three-manifold inside `Int N' − K'`.  Source: Moise, *Geometric topology in
 dimensions 2 and 3*, printed pages 230-238, read through `consult/AA-section33-construction-digest`.
 
 The endpoint.  `Moise331` gives a finite connected one-dimensional complex `L` of `ℝ³` with no
@@ -78,9 +84,11 @@ not the book's inclusion, since `Bd X` crosses each `E` into `C''_u` and `C''_v`
 Lemma 8.  Its printed clause (3), "`Δ` intersects no other set `C''_{v₂}`", contradicts clause
 (1): `Bd Δ = Δ ∩ E₁` is non-empty and `E₁ = C''_{v₁} ∩ C''_{v₂}` lies in the other end's piece.
 The proof of Lemma 9 supplies, and the proof of Lemma 8 uses, that `Δ` misses every pseudo-cell
-other than `E₁`; `section33_disk_meets_graph` states that reading.  The printed "`E₁` lying in
-`C''_{v₁}`" is implied and not assumed: `C''_{v₁} ∩ E_e = ∅` unless `v₁ ∈ e`.  The leaf is the
-one consumer of the no-end-point hypothesis.
+other than `E₁`; `section33_disk_meets_graph` states that reading, which the first review
+confirmed (the printed clause would be repaired most literally as "`Int Δ` meets no other
+`C''_v`", and under the overlap clauses and `hbd` the two readings agree).  The printed "`E₁`
+lying in `C''_{v₁}`" is implied and not assumed: `C''_{v₁} ∩ E_e = ∅` unless `v₁ ∈ e`.  The
+leaf is the one consumer of the no-end-point hypothesis.
 
 The remaining leaves.  `section33_not_isLoopTheoremDisk` (Lemma 9) takes Lemma 8 as a universal
 hypothesis, as the tree's descent skeletons do.  `section33_tube_product` is the page 235
@@ -120,7 +128,10 @@ built here: all four are UNTESTED, and the missing brick is the one recorded in 
 an inhabitant of `IsTube` (a verified `IsCombinatorialManifoldWithBoundary 3` certificate of a
 finite complex of `ℝ³` with the graph as a subcomplex).
 
-Leaves, in assembly order, and their review state (none reviewed yet):
+Leaves, in assembly order.  All twelve were reviewed **OK** on 2026-09-21 (digest AI) and are
+frozen; the `hgD` output of the boundary match is derivable from `IsTube.interEdge`,
+`splitProper` and the injectivity of `g` (`A_u ∩ A_v = Dbd e`), and is kept only as information
+for the extension, not as an independent obligation:
 `exists_section33TubeFrame` (frame, pages 230-231, deep), `exists_isPolyhedralTubeNeighborhood`
 (Lemma 2, deep), `exists_hasSinglePolygonTraces` (Lemmas 3-4, deep),
 `exists_hasConnectedHandlePieces` (Lemmas 5-6, deep), `exists_hasNoHandleLoopTheoremDisk`
