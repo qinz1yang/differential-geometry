@@ -23,15 +23,15 @@ Ten skeletons, every leaf statement frozen by external review except where noted
 
 Structural finding of the day (consult AL/AO): `Moise341` (34.1) had no producer and the only tree
 route was circular through 35.2. Adopted: a separate compact-ball skeleton `Section34Compact`
-(**in flight**, see §2) with entry `Moise341OnNeighborhood` + the proved inward push; P2–P5's face
+(landed, ledger B1.b.8) with entry `Moise341OnNeighborhood` + the proved inward push; P2–P5's face
 balls now come from the tame 30.5, as in the book.
 
-## 2. Two worker deliveries in flight (they write into the tree; accept from the files)
+## 2. The two worker deliveries — both landed and accepted before the handoff took effect
 
 Both were dispatched by the outgoing session as background agents; their reports will not reach
 you. Judge by the files and `git status`.
 
-**(a) `Skeleton/Section34Compact.lean`** (new, lease b). Spec: `consult/AO-moise341-design-answer-digest.md`
+**(a) DONE before the handoff took effect** — the compact §34 skeleton landed and was accepted (ledger B1.b.8): 12 `sorry`, both endpoints proved, outer faces/arcs present, descent and extension proved. What remains for you is the review prompt (given to the owner by the outgoing session; if unsent, template in §4 with the worker's three questions: closure-pinned source cells vs free cells with incidences; link condition as a clause vs derived after one barycentric subdivision; target outer cells pinned vs free with tilings). Original spec kept for reference: `consult/AO-moise341-design-answer-digest.md`
 §1 (leaf table) and the dispatch rules in `Skeleton/README.md`. Accept iff:
 1. `prepare` + `checker` on a free lease (b, c, d or e): every `warning|error` line in the log is
    `declaration uses 'sorry'` at a leaf; no `sorry` inside `moise341OnNeighborhood`-type assemblies
@@ -59,7 +59,7 @@ single-torus producer as a leaf (then 10, explained); the eight untouched leaves
 endpoint assemblies still compile. Then ledger B1.g update, commit, sync, review prompt for the
 relative leaf only.
 
-If a delivery never lands (no file change after ~2 h), re-dispatch with the same spec.
+Nothing is in flight. The overnight lane (§3) is the only active worker; it has already written `IsPLHomeomorphIntoMonoOfIsPLCellOn.lean` (queue #1) — accept it from `FILL_LOG.md` in the morning.
 
 ## 3. The owner's overnight proving lane (lease a)
 
