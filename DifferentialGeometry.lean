@@ -13083,3 +13083,7 @@ import DifferentialGeometry.Geometry.Neck.FiniteSelection
 import DifferentialGeometry.Topology.Connected.ComplementSides
 import DifferentialGeometry.Geometry.Neck.SpatialReturn
 import DifferentialGeometry.Geometry.Neck.SpatialIsotopy
+import DifferentialGeometry.Geometry.Measure.LocalIsometry
+import DifferentialGeometry.Geometry.Neck.VolumeComparison
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.HalfBandComponents
+import DifferentialGeometry.Topology.Manifold.SphereGraphExtension
