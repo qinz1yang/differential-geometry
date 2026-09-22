@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckMarkSideBridge
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.RetainedCoreMaps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCoreTruncation
 import DifferentialGeometry.Geometry.Neck.ScalarRetainedCore
 
@@ -442,6 +444,112 @@ theorem exists_scalar_bound_hornCutMap_retained
     obtain ⟨z, hz, heq⟩ := interior_subset (hsub ⟨⟨x.val, hx⟩, hret, rfl⟩)
     have hzx : z = x := Subtype.ext heq
     exact hzx ▸ hbound z hz
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
+
+end
+
+section
+
+set_option autoImplicit false
+
+open Set
+open DifferentialGeometry.Geometry.Neck DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Topology.ThreeManifold.Surgery
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
+
+universe u
+
+variable {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ)
+
+theorem exists_scalar_bound_of_neck_slices
+    (t : ∀ c, P.hornIndex c → ℝ) (ht : ∀ c e, 0 < t c e) :
+    ∃ K : ℝ, 0 < K ∧ ∀ (δ : P.HornCutIndex → ℝ) (order : P.HornCutIndex → ℕ)
+      (N : ∀ j, NormalizedNeck D.terminal.metric (δ j) (order j)),
+      (∀ (j : P.HornCutIndex) (y : Sphere 2),
+        (N j).chart ⟨(y, 0), by
+          have := inv_pos.mpr (N j).delta_pos
+          constructor <;> linarith⟩ = P.horn j.1.val j.2 (y, t j.1.val j.2)) →
+      (∀ j, (N j).scale ≤ K) ∧
+      let f := fun j (q : bufferedCylinder (δ j)) => ((N j).chart q).val
+      ∀ x : cutCore f,
+        x ∈ retainedCore f
+          (scalarSublevelComponents D.slab.terminalRegularOpen D.terminal.metric f
+            (P.coreRadius ^ 2)⁻¹) →
+        ∃ p : D.slab.terminalRegularOpen,
+          p.val = x.val ∧ p ∈ P.truncatedRegion t ∧ metricScalarAt D.terminal.metric p ≤ K := by
+  obtain ⟨K₀, hK₀⟩ := ((P.truncatedRegion_isCompact t).image
+    (metricScalar_smooth D.terminal.metric).continuous).bddAbove
+  let K := max K₀ 1
+  have hbound : ∀ p ∈ P.truncatedRegion t, metricScalarAt D.terminal.metric p ≤ K := by
+    intro p hp
+    exact (hK₀ ⟨p, hp, rfl⟩).trans (le_max_left _ _)
+  refine ⟨K, zero_lt_one.trans_le (le_max_right _ _), ?_⟩
+  intro δ order N hmatch
+  constructor
+  · intro j
+    rw [(N j).scale_scalar, ← (N j).marked, hmatch j (N j).sphereMark]
+    exact hbound _ (mem_iUnion₂.mpr ⟨j.1.val, j.1.property,
+      Or.inr (mem_iUnion.mpr ⟨j.2, ((N j).sphereMark, t j.1.val j.2),
+        ⟨mem_univ _, (ht _ _).le, le_rfl⟩, rfl⟩)⟩)
+  · intro f x hx
+    let T := (Subtype.val : D.slab.terminalRegularOpen → D.stage.Carrier) '' P.truncatedRegion t
+    have hfront : frontier T ⊆ ⋃ j, removedSlab (f j) := by
+      intro z hz
+      obtain ⟨c, hc, e, y, heq⟩ := by
+        simpa only [mem_iUnion, mem_range] using
+          P.ambient_truncatedRegion_frontier_subset_slices t ht hz
+      let j : P.HornCutIndex := ⟨⟨c, hc⟩, e⟩
+      apply mem_iUnion.mpr
+      refine ⟨j, ⟨⟨(y, 0), ?_⟩, ?_, ?_⟩⟩
+      · have := inv_pos.mpr (N j).delta_pos
+        change -(δ j)⁻¹ - 1 < 0 ∧ 0 < (δ j)⁻¹ + 1
+        constructor <;> linarith
+      · change (-1 : ℝ) < 0 ∧ (0 : ℝ) < 1
+        norm_num
+      · exact (congrArg Subtype.val (hmatch j y)).trans heq
+    have hsub := scalarSublevelComponents_retained_subset_of_frontier_removed
+      D.slab.terminalRegularOpen D.terminal.metric f (P.coreRadius ^ 2)⁻¹ T
+      (fun p hp => ⟨p, P.low_subset_truncatedRegion t hp, rfl⟩) hfront
+    obtain ⟨p, hp, hpx⟩ := interior_subset (hsub ⟨x, hx, rfl⟩)
+    exact ⟨p, hpx, hp, hbound p hp⟩
+
+theorem exists_scalar_bound_of_normalizedDatum_slices
+    (t : ∀ c, P.hornIndex c → ℝ) (ht : ∀ c e, 0 < t c e) :
+    ∃ K : ℝ, 0 < K ∧ ∀ (δ : P.HornCutIndex → ℝ) (order : P.HornCutIndex → ℕ)
+      (x₀ : P.HornCutIndex → D.slab.terminalRegularOpen)
+      (d : ∀ j, normalizedDatum D.terminal.metric (x₀ j) (δ j) (order j)),
+      (∀ (j : P.HornCutIndex) (y : Sphere 2),
+        (d j).map ⟨(y, 0), by
+          have := inv_pos.mpr (d j).precision_pos
+          constructor <;> linarith⟩ = P.horn j.1.val j.2 (y, t j.1.val j.2)) →
+      (∀ j, metricScalarAt D.terminal.metric (x₀ j) ≤ K) ∧
+      let f := fun j => neckAmbientMap D.slab.terminalRegularOpen (d j)
+      let R := scalarSublevelComponents D.slab.terminalRegularOpen D.terminal.metric f
+        (P.coreRadius ^ 2)⁻¹
+      ∃ hRet : MapsTo (Subtype.val : cutCore f → D.stage.Carrier) (retainedCore f R)
+          D.slab.terminalRegularOpen,
+        ∀ p : retainedCore f R,
+          metricScalarAt D.terminal.metric
+            (retainedCoreDomainMap f R D.slab.terminalRegularOpen hRet p) ≤ K := by
+  obtain ⟨K, hK, hbound⟩ := P.exists_scalar_bound_of_neck_slices t ht
+  refine ⟨K, hK, ?_⟩
+  intro δ order x₀ d hmatch
+  obtain ⟨hscale, hret⟩ := hbound δ order (fun j => (d j).toNormalizedNeck) hmatch
+  refine ⟨hscale, ?_⟩
+  intro f R
+  have hRet : MapsTo (Subtype.val : cutCore f → D.stage.Carrier) (retainedCore f R)
+      D.slab.terminalRegularOpen := by
+    intro x hx
+    obtain ⟨p, hp, _, _⟩ := hret x hx
+    exact hp ▸ p.property
+  refine ⟨hRet, ?_⟩
+  intro x
+  obtain ⟨p, hp, _, hscalar⟩ := hret x.val x.property
+  have hpx : p = retainedCoreDomainMap f R D.slab.terminalRegularOpen hRet x :=
+    Subtype.ext hp
+  exact hpx ▸ hscalar
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
 

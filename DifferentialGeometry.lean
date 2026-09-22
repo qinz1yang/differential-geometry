@@ -13208,3 +13208,9 @@ import DifferentialGeometry.Topology.Manifold.BallBoundaryCoordinates
 import DifferentialGeometry.Topology.Manifold.PuncturedBoundaryAtlas
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallPuncturedAtlas
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Maps
+import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.SmoothCollarAbsorption
+import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.DirectSmooth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
+import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.LocalMaps
+import DifferentialGeometry.Topology.Manifold.BallComplementTransition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVolume

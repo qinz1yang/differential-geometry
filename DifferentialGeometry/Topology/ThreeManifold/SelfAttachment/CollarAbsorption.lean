@@ -4,6 +4,8 @@ import DifferentialGeometry.Topology.Homeomorph.QuotientDescent
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.Homeomorph.Lemmas
+import DifferentialGeometry.Topology.Manifold.OpenEmbedding
+import Mathlib.Analysis.Calculus.Deriv.Inverse
 
 set_option autoImplicit false
 noncomputable section
@@ -14,7 +16,7 @@ section
 
 namespace DifferentialGeometry.Topology.SelfAttachment
 
-private def collarStretch (r : ℝ) : ℝ :=
+def collarStretch (r : ℝ) : ℝ :=
   r - (1 / 2 : ℝ) + (1 / 2 : ℝ) * Real.smoothTransition (4 * (r - 3 / 2))
 
 private theorem collarStretch_of_le {r : ℝ} (h : r ≤ 3 / 2) : collarStretch r = r - 1 / 2 := by
@@ -31,7 +33,7 @@ private theorem collarStretch_strictMono : StrictMono collarStretch := by
   dsimp [collarStretch]
   linarith
 
-private theorem collarStretch_contDiff : ContDiff ℝ ∞ collarStretch := by
+theorem collarStretch_contDiff : ContDiff ℝ ∞ collarStretch := by
   unfold collarStretch
   exact (contDiff_id.sub contDiff_const).add
     (contDiff_const.mul (Real.smoothTransition.contDiff.comp
@@ -1101,3 +1103,138 @@ def directBandComplementHomeomorph
 end DifferentialGeometry.Topology.SelfAttachment
 
 end
+
+namespace DifferentialGeometry.Topology.SelfAttachment
+
+open Filter
+open scoped _root_.Manifold ContDiff _root_.Topology
+
+theorem collarStretch_hasDerivAt (r : ℝ) :
+    HasDerivAt collarStretch
+      (1 + 2 * deriv Real.smoothTransition (4 * (r - 3 / 2))) r := by
+  have hst : HasDerivAt Real.smoothTransition
+      (deriv Real.smoothTransition (4 * (r - 3 / 2))) (4 * (r - 3 / 2)) :=
+    (Real.smoothTransition.contDiff.differentiable (by simp : (∞ : ℕ∞ω) ≠ 0) _).hasDerivAt
+  have h := ((hasDerivAt_id r).sub_const (1 / 2)).add
+    ((hst.comp r (((hasDerivAt_id r).sub_const (3 / 2)).const_mul 4)).const_mul (1 / 2))
+  convert h using 1 <;> first | rfl | ring
+
+theorem collarStretch_deriv (r : ℝ) :
+    deriv collarStretch r = 1 + 2 * deriv Real.smoothTransition (4 * (r - 3 / 2)) :=
+  (collarStretch_hasDerivAt r).deriv
+
+theorem collarStretch_deriv_pos (r : ℝ) : 0 < deriv collarStretch r := by
+  rw [collarStretch_deriv]
+  have h : 0 ≤ deriv Real.smoothTransition (4 * (r - 3 / 2)) :=
+    Real.smoothTransition.monotone.deriv_nonneg
+  linarith
+
+theorem collarStretch_isLocalDiffeomorph :
+    IsLocalDiffeomorph 𝓘(ℝ) 𝓘(ℝ) ∞ collarStretch := by
+  apply Manifold.isLocalDiffeomorph_of_injective_mfderiv collarStretch
+    collarStretch_contDiff.contMDiff _ rfl
+  intro r
+  let A := ContinuousLinearEquiv.unitsEquivAut ℝ (Units.mk0 (deriv collarStretch r)
+    (collarStretch_deriv_pos r).ne')
+  have hA : HasFDerivAt collarStretch (A : ℝ →L[ℝ] ℝ) r :=
+    (collarStretch_contDiff.differentiable (by simp) r).hasDerivAt.hasFDerivAt_equiv
+      (collarStretch_deriv_pos r).ne'
+  rw [mfderiv_eq_fderiv, hA.fderiv]
+  exact A.injective
+
+def collarStretchDiffeomorph : ℝ ≃ₘ[ℝ] ℝ := by
+  have htop : Tendsto collarStretch atTop atTop := by
+    apply tendsto_id.congr'
+    filter_upwards [eventually_ge_atTop (7 / 4 : ℝ)] with r hr
+    exact (collarStretch_of_ge hr).symm
+  have hbot : Tendsto collarStretch atBot atBot := by
+    refine tendsto_atBot.mpr fun b => ?_
+    filter_upwards [eventually_le_atBot (min (3 / 2 : ℝ) b)] with r hr
+    rw [collarStretch_of_le (hr.trans (min_le_left _ _))]
+    linarith [hr.trans (min_le_right (3 / 2 : ℝ) b)]
+  exact collarStretch_isLocalDiffeomorph.diffeomorphOfBijective
+    ⟨collarStretch_strictMono.injective, collarStretch_continuous.surjective htop hbot⟩
+
+@[simp] theorem collarStretchDiffeomorph_apply (r : ℝ) : collarStretchDiffeomorph r = collarStretch r := rfl
+
+theorem collarStretch_radial_contDiffOn
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] :
+    ContDiffOn ℝ ∞ (fun x : E => (collarStretch ‖x‖ / ‖x‖) • x) {0}ᶜ := by
+  intro x hx
+  have hn : ContDiffAt ℝ ∞ (fun y : E => ‖y‖) x :=
+    contDiffAt_norm ℝ (Set.mem_compl_singleton_iff.mp hx)
+  exact (((collarStretch_contDiff.contDiffAt.comp x hn).div hn
+    (norm_ne_zero_iff.mpr (Set.mem_compl_singleton_iff.mp hx))).smul contDiffAt_id).contDiffWithinAt
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M]
+  (c d : BallChart 3 I M)
+  (hdisj : Disjoint (c.chart '' Metric.closedBall 0 2) (d.chart '' Metric.closedBall 0 2))
+  (a : Sphere (n := 3) ≃ₜ Sphere (n := 3))
+
+theorem stretchedLowerCollar_of_radius_le_three_halves
+    (p : Sphere (n := 3) × Icc (1 : ℝ) 2) (hp : (p.2 : ℝ) ≤ 3 / 2) :
+    stretchedLowerCollar c d hdisj a p = bandInclusion c d hdisj a
+      (p.1, ⟨3 / 2 - p.2, by constructor <;> linarith [p.2.property.1]⟩) := by
+  have hs : collarStretch p.2 ≤ 1 := by rw [collarStretch_of_le hp]; linarith
+  rw [stretchedLowerCollar_of_le c d hdisj a p hs]
+  apply congrArg (bandInclusion c d hdisj a)
+  refine Prod.ext (by rfl) ?_
+  apply Subtype.ext
+  change 1 - collarStretch (p.2 : ℝ) = 3 / 2 - (p.2 : ℝ)
+  rw [collarStretch_of_le hp]
+  ring
+
+theorem stretchedUpperCollar_of_radius_le_three_halves
+    (p : Sphere (n := 3) × Icc (1 : ℝ) 2) (hp : (p.2 : ℝ) ≤ 3 / 2) :
+    stretchedUpperCollar c d hdisj a p = bandInclusion c d hdisj a
+      (a.symm p.1, ⟨(p.2 : ℝ) - 1 / 2, by constructor <;> linarith [p.2.property.1]⟩) := by
+  have hs : collarStretch p.2 ≤ 1 := by rw [collarStretch_of_le hp]; linarith
+  rw [stretchedUpperCollar_of_le c d hdisj a p hs]
+  apply congrArg (bandInclusion c d hdisj a)
+  refine Prod.ext (by rfl) ?_
+  apply Subtype.ext
+  exact collarStretch_of_le hp
+
+end DifferentialGeometry.Topology.SelfAttachment
+
+namespace DifferentialGeometry.Topology.SelfAttachment
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
+  (c d : BallChart 3 I M)
+  (hdisj : Disjoint (c.chart '' Metric.closedBall 0 2) (d.chart '' Metric.closedBall 0 2))
+  (a : Sphere (n := 3) ≃ₜ Sphere (n := 3))
+
+omit [T2Space M] in
+theorem coreToBand_of_not_mem_ball_image_seven_fourths (x : c.DoublePunctured d)
+    (hc : x.val ∉ c.chart '' Metric.ball 0 (7 / 4))
+    (hd : x.val ∉ d.chart '' Metric.ball 0 (7 / 4)) :
+    coreToBand c d hdisj a x = coreInclusion c d hdisj a x := by
+  by_cases hfirst : x ∈ range (c.firstClosedRadial d hdisj)
+  · obtain ⟨p, rfl⟩ := hfirst
+    have hp : 7 / 4 ≤ (p.2 : ℝ) := by
+      by_contra h
+      apply hc
+      refine ⟨(p.2 : ℝ) • p.1.val, ?_, rfl⟩
+      rw [Metric.mem_ball, dist_zero_right,
+        BallChart.norm_radial p.1 (by linarith [p.2.property.1])]
+      exact not_le.mp h
+    rw [coreToBand_first, stretchedLowerCollar_of_ge c d hdisj a p hp]
+    rfl
+  · by_cases hsecond : x ∈ range (c.secondClosedRadial d hdisj)
+    · obtain ⟨p, rfl⟩ := hsecond
+      have hp : 7 / 4 ≤ (p.2 : ℝ) := by
+        by_contra h
+        apply hd
+        refine ⟨(p.2 : ℝ) • p.1.val, ?_, rfl⟩
+        rw [Metric.mem_ball, dist_zero_right,
+          BallChart.norm_radial p.1 (by linarith [p.2.property.1])]
+        exact not_le.mp h
+      rw [coreToBand_second, stretchedUpperCollar_of_ge c d hdisj a p hp]
+      rfl
+    · exact coreToBand_of_not_mem_range c d hdisj a x hfirst hsecond
+
+end DifferentialGeometry.Topology.SelfAttachment
