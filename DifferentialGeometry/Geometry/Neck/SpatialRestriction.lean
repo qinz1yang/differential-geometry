@@ -80,4 +80,18 @@ theorem SpatialNeck.exists_restrict_target
     change (x ∈ (univ : Set U) ∧ (x : M) ∈ nk.map.target) ↔ (x : M) ∈ nk.map.target
     simp only [mem_univ, true_and]
 
+theorem SpatialNeck.controlled_range_subset_connectedComponent
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {g : SmoothRiemannianMetric I3 M} {p : M} {eps : ℝ} (nk : SpatialNeck g eps p) :
+    nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ connectedComponent p := by
+  let : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+      (0 : ThreeSpace) (by norm_num : (0 : ℝ) ≤ 1))
+  have hpre : IsPreconnected (nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) :=
+    (isPreconnected_univ.prod isPreconnected_Ioo).image nk.map
+      (nk.map.contMDiffOn_toFun.continuousOn.mono nk.domain)
+  apply hpre.subset_connectedComponent
+  exact ⟨(nk.center,0), ⟨mem_univ _, neg_lt_zero.mpr (inv_pos.mpr nk.eps_pos),
+    inv_pos.mpr nk.eps_pos⟩, nk.center_eq⟩
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

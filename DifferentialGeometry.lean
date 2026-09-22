@@ -13232,3 +13232,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingCurvatureLifespan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryCurvatureTimeBound
 import DifferentialGeometry.Topology.Manifold.Sigma
+import DifferentialGeometry.Geometry.Metric.Family.CoefficientExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardNeckMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardNeckConstruction
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Cover
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallSeam
+import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Interior
+import DifferentialGeometry.Topology.Manifold.Diffeomorph.Sigma
+import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Tangent
+import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Orientation
+import DifferentialGeometry.Topology.SphereSeparation.ProductEnds
+import DifferentialGeometry.Topology.SphereSeparation.OpenEmbeddingSides
+import DifferentialGeometry.Geometry.Neck.OpenImageCompactSide
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckCoordinates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckEssentiality

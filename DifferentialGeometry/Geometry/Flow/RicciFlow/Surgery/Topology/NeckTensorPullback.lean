@@ -93,3 +93,58 @@ theorem exists_normalizedNeck_tensor_pullback_bound
     (Finset.sum_congr rfl fun j _ => hnat j))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.NormalizedNeck
+
+universe u
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold ThreeModel ∞ M] [T2Space M] [SigmaCompactSpace M]
+  {g : SmoothRiemannianMetric ThreeModel M}
+
+def tensorPullback
+    {δ : ℝ} {k : ℕ}
+    (N : NormalizedNeck g δ k)
+    (A : Tensor0SField (I := ThreeModel) (M := M) ∞ 2) :
+    Tensor0SField (I := NeckCylinderModel) (M := neckBuffer δ) ∞ 2 :=
+  let V := N.cylindricalChart.target
+  let Φ : neckBuffer δ ≃ₘ⟮NeckCylinderModel, ThreeModel⟯ V := N.cylindricalChart.chart
+  pullbackTensor02FieldCross Φ (restrictOpen0S 2 (V := V) A)
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem tensorPullback_apply
+    {δ : ℝ} {k : ℕ}
+    (N : NormalizedNeck g δ k)
+    (A : Tensor0SField (I := ThreeModel) (M := M) ∞ 2)
+    (z : neckBuffer δ) (w : Fin 2 → TangentSpace NeckCylinderModel z) :
+    N.tensorPullback A z w =
+      A (N.chart z) (fun j => mfderiv NeckCylinderModel ThreeModel N.chart z (w j)) := by
+  let V := N.cylindricalChart.target
+  let Φ : neckBuffer δ ≃ₘ⟮NeckCylinderModel, ThreeModel⟯ V := N.cylindricalChart.chart
+  have hmap : (fun y : neckBuffer δ => (Φ y).1) = N.chart :=
+    funext N.cylindricalChart_chart_apply
+  have hd : mfderiv NeckCylinderModel ThreeModel Φ z =
+      mfderiv NeckCylinderModel ThreeModel N.chart z := by
+    rw [← DifferentialGeometry.mfderiv_subtypeVal_comp, hmap]
+  have hp := pullbackTensor02FieldCross_apply Φ (restrictOpen0S 2 (V := V) A) z w
+  have he : A (Φ z).1 (fun j => mfderiv NeckCylinderModel ThreeModel Φ z (w j)) =
+      A (N.chart z) (fun j => mfderiv NeckCylinderModel ThreeModel N.chart z (w j)) := by
+    have hslots := congrArg (fun d : (EuclideanSpace ℝ (Fin 2) × ℝ) →L[ℝ] ThreeSpace =>
+      A (Φ z).1 (fun j => d (w j))) hd
+    exact hslots.trans (congrArg (fun y : M =>
+      A y (fun j => mfderiv NeckCylinderModel ThreeModel N.chart z (w j)))
+        (N.cylindricalChart_chart_apply z))
+  exact hp.trans he
+
+
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem tensorPullback_sub {δ : ℝ} {k : ℕ} (N : NormalizedNeck g δ k)
+    (A B : Tensor0SField (I := ThreeModel) (M := M) ∞ 2) :
+    N.tensorPullback (A - B) = N.tensorPullback A - N.tensorPullback B := by
+  ext z w
+  change N.tensorPullback (A - B) z w = N.tensorPullback A z w - N.tensorPullback B z w
+  rw [N.tensorPullback_apply, N.tensorPullback_apply, N.tensorPullback_apply]
+  rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.NormalizedNeck
