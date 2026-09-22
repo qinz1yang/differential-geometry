@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.SphereSeparation.BicollarHomotopy
+import DifferentialGeometry.Topology.Connected.ComplementSides
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Algebra.Group.Basic
 
@@ -7,30 +8,6 @@ noncomputable section
 open Set Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-
-private theorem component_meets_neighborhood_of_closed_set
-    {M : Type*} [TopologicalSpace M] [ConnectedSpace M] [LocallyConnectedSpace M]
-    {S O : Set M} (hS : IsClosed S) (hSne : S.Nonempty) (hO : IsOpen O) (hSO : S ⊆ O)
-    (x : M) (hx : x ∈ Sᶜ) :
-    ∃ y, y ∈ connectedComponentIn Sᶜ x ∧ y ∈ O := by
-  classical
-  by_contra h
-  have havoid : connectedComponentIn Sᶜ x ⊆ Oᶜ := by
-    intro y hy hyo
-    exact h ⟨y, hy, hyo⟩
-  have hclosure : closure (connectedComponentIn Sᶜ x) ⊆ Sᶜ := by
-    intro y hy hys
-    exact closure_minimal havoid hO.isClosed_compl hy (hSO hys)
-  have hclosed : IsClosed (connectedComponentIn Sᶜ x) :=
-    closure_subset_iff_isClosed.mp
-      (isPreconnected_connectedComponentIn.closure.subset_connectedComponentIn
-        (subset_closure (mem_connectedComponentIn hx)) hclosure)
-  have huniv : connectedComponentIn Sᶜ x = univ :=
-    (IsClopen.eq_univ ⟨hclosed, hS.isOpen_compl.connectedComponentIn⟩
-      ⟨x, mem_connectedComponentIn hx⟩)
-  obtain ⟨s, hs⟩ := hSne
-  have hsmem : s ∈ connectedComponentIn Sᶜ x := by rw [huniv]; exact mem_univ s
-  exact connectedComponentIn_subset Sᶜ x hsmem hs
 
 private theorem bicollar_noncentral_mem_compl
     {A M : Type*} (φ : A × ℝ → M) (hφ : Function.Injective φ)
@@ -101,7 +78,8 @@ private theorem bicollar_complement_components_of_separating_function
   have hunion : B ∪ E = Sᶜ := by
     apply Subset.antisymm (union_subset hBsub hEsub)
     intro x hx
-    obtain ⟨y, hyC, hyO⟩ := component_meets_neighborhood_of_closed_set
+    obtain ⟨y, hyC, hyO⟩ :=
+      DifferentialGeometry.Topology.exists_mem_connectedComponentIn_inter_of_open_neighborhood
       hSclosed hSnonempty hφ.isOpen_range
       (by rintro _ ⟨a, rfl⟩; exact ⟨(a, 0), rfl⟩) x hx
     obtain ⟨⟨a, z⟩, rfl⟩ := hyO

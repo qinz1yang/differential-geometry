@@ -13075,3 +13075,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalN
 import DifferentialGeometry.Analysis.ODE.QuadraticCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarCrossingTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingScalarThreshold
+import DifferentialGeometry.Topology.MetricSpace.SeparatedCover
+import DifferentialGeometry.Topology.Combinatorics.IntersectionChain
+import DifferentialGeometry.Geometry.Neck.SpatialOscillation
+import DifferentialGeometry.Geometry.Neck.SpatialCollar
+import DifferentialGeometry.Geometry.Neck.FiniteSelection
+import DifferentialGeometry.Topology.Connected.ComplementSides
+import DifferentialGeometry.Geometry.Neck.SpatialReturn
+import DifferentialGeometry.Geometry.Neck.SpatialIsotopy

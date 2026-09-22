@@ -37,6 +37,46 @@ private theorem exists_radius_slack {B r rho a : ℝ} (hB : 0 ≤ B)
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 set_option backward.isDefEq.respectTransparency false in
+theorem edist_comp_le_lintegral_of_metric_mfderiv_bound
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (g : SmoothRiemannianMetric I M) {f : M → F} {γ : ℝ → M} {a b L : ℝ}
+    (hab : a ≤ b) (hL : 0 ≤ L)
+    (hγ : ContMDiffOn 𝓘(ℝ) I 1 γ (Icc a b))
+    (hf : ∀ t ∈ Icc a b, ContMDiffAt I 𝓘(ℝ, F) 1 f (γ t))
+    (hbound : ∀ t ∈ Ioo a b, ∀ v : TangentSpace I (γ t),
+      ‖(mfderiv I 𝓘(ℝ, F) f (γ t) v : F)‖ ≤ L * Real.sqrt (g.inner (γ t) v v)) :
+    edist (f (γ a)) (f (γ b)) ≤ ENNReal.ofReal L *
+      ∫⁻ t in Ioo a b, ENNReal.ofReal (Real.sqrt (g.inner (γ t)
+        (mfderiv 𝓘(ℝ) I γ t (1 : ℝ)) (mfderiv 𝓘(ℝ) I γ t (1 : ℝ)))) := by
+  have hcomp : ContMDiffOn 𝓘(ℝ) 𝓘(ℝ, F) 1 (f ∘ γ) (Icc a b) := by
+    intro t ht
+    exact (hf t ht).comp_contMDiffWithinAt t (hγ t ht)
+  have hη : ContDiffOn ℝ 1 (f ∘ γ) (Icc a b) := contMDiffOn_iff_contDiffOn.mp hcomp
+  have hh := enorm_sub_le_lintegral_deriv_of_contDiffOn_Icc hη hab
+  rw [← edist_eq_enorm_sub, edist_comm] at hh
+  apply hh.trans
+  rw [← restrict_Ioo_eq_restrict_Icc]
+  rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  apply lintegral_mono_ae
+  filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
+  have hγt := (hγ t ⟨ht.1.le, ht.2.le⟩).contMDiffAt (Icc_mem_nhds ht.1 ht.2)
+  have hD := mfderiv_comp t ((hf t ⟨ht.1.le, ht.2.le⟩).mdifferentiableAt one_ne_zero)
+    (hγt.mdifferentiableAt one_ne_zero)
+  have hder : deriv (f ∘ γ) t =
+      (mfderiv I 𝓘(ℝ, F) f (γ t)) (mfderiv 𝓘(ℝ) I γ t (1 : ℝ)) := by
+    rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv, hD]
+    rfl
+  rw [hder]
+  have hb := ENNReal.ofReal_le_ofReal
+    (hbound t ht (mfderiv 𝓘(ℝ) I γ t (1 : ℝ)))
+  simpa only [ofReal_norm, ENNReal.ofReal_mul hL] using hb
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+set_option backward.isDefEq.respectTransparency false in
 private theorem edist_comp_le_metric_path_length_of_contMDiffOn
     (g : SmoothRiemannianMetric I M) {f : M → F} {C : ℝ≥0} {U : Set M}
     (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, F) 1 f U)
@@ -47,27 +87,12 @@ private theorem edist_comp_le_metric_path_length_of_contMDiffOn
     edist (f (γ 0)) (f (γ 1)) ≤ (C : ℝ≥0∞) *
       ∫⁻ t in Icc (0 : ℝ) 1, ENNReal.ofReal (Real.sqrt (g.inner (γ t)
         (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))) := by
-  have hη : ContDiffOn ℝ 1 (f ∘ γ) (Icc 0 1) :=
-    contMDiffOn_iff_contDiffOn.mp (hf.comp hγ hγU)
-  have hh := enorm_sub_le_lintegral_deriv_of_contDiffOn_Icc hη zero_le_one
-  rw [← edist_eq_enorm_sub, edist_comm] at hh
-  apply hh.trans
-  rw [← restrict_Ioo_eq_restrict_Icc, ← lintegral_const_mul' _ _ ENNReal.coe_ne_top]
-  apply lintegral_mono_ae
-  filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
-  have htIcc : t ∈ Icc (0 : ℝ) 1 := ⟨ht.1.le, ht.2.le⟩
-  have hγt := (hγ t htIcc).contMDiffAt (Icc_mem_nhds ht.1 ht.2)
-  have hft := (hf (γ t) (hγU htIcc)).contMDiffAt (hU.mem_nhds (hγU htIcc))
-  have hD := mfderiv_comp t (hft.mdifferentiableAt one_ne_zero)
-    (hγt.mdifferentiableAt one_ne_zero)
-  have hder : deriv (f ∘ γ) t =
-      (mfderiv I 𝓘(ℝ, F) f (γ t)) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) := by
-    rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv, hD]
-    rfl
-  rw [hder]
-  have hb := ENNReal.ofReal_le_ofReal
-    (hbound (γ t) (hγU htIcc) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
-  simpa only [ENNReal.ofReal_mul C.coe_nonneg, ENNReal.ofReal_coe_nnreal, ofReal_norm] using hb
+  have h := edist_comp_le_lintegral_of_metric_mfderiv_bound g (by norm_num : (0 : ℝ) ≤ 1)
+    C.coe_nonneg hγ
+    (fun t ht => (hf (γ t) (hγU ht)).contMDiffAt (hU.mem_nhds (hγU ht)))
+    (fun t ht => hbound (γ t) (hγU ⟨ht.1.le, ht.2.le⟩))
+  rw [restrict_Ioo_eq_restrict_Icc, ENNReal.ofReal_coe_nnreal] at h
+  exact h
 
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

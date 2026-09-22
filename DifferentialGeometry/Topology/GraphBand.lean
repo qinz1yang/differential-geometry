@@ -1,4 +1,5 @@
 import Mathlib.Topology.Homeomorph.Lemmas
+import DifferentialGeometry.Topology.Order.DisjointGraphs
 import Mathlib.Topology.Algebra.Ring.Real
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Order.IntermediateValue
@@ -127,5 +128,72 @@ theorem isPreconnected_graphBand [PreconnectedSpace N] (a b : N → ℝ)
     IsPreconnected {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} := by
   rw [← closure_openGraphBand a b ha hb hab]
   exact (isPreconnected_openGraphBand a b ha hb hab).closure
+
+theorem exists_graph_band_of_affine_height
+    {X A : Type*} [TopologicalSpace X]
+    (ψ : A → X × ℝ) {s c : ℝ} (hs : s ≠ 0)
+    {a b : X → ℝ} (ha : Continuous a) (hb : Continuous b) (hab : ∀ x, a x < b x)
+    (hrange : range (fun x => ((ψ x).1, s * (ψ x).2 + c)) =
+      {y : X × ℝ | a y.1 ≤ y.2 ∧ y.2 ≤ b y.1}) :
+    ∃ l r : X → ℝ, Continuous l ∧ Continuous r ∧ (∀ x, l x < r x) ∧
+      range ψ = {y : X × ℝ | l y.1 ≤ y.2 ∧ y.2 ≤ r y.1} := by
+  have hpre : range ψ = {y : X × ℝ | a y.1 ≤ s * y.2 + c ∧ s * y.2 + c ≤ b y.1} := by
+    ext y
+    constructor
+    · rintro ⟨x, rfl⟩
+      have hh : ((ψ x).1, s * (ψ x).2 + c) ∈ range
+          (fun x => ((ψ x).1, s * (ψ x).2 + c)) := mem_range_self x
+      rw [hrange] at hh
+      exact hh
+    · intro hy
+      obtain ⟨x, hx⟩ := (show (y.1, s * y.2 + c) ∈ range (fun x => ((ψ x).1, s * (ψ x).2 + c)) from
+        hrange.symm ▸ hy)
+      have hfirst := congrArg (fun z : X × ℝ => z.1) hx
+      refine ⟨x, Prod.ext hfirst ?_⟩
+      exact mul_left_cancel₀ hs (add_right_cancel (congrArg Prod.snd hx))
+  rcases lt_or_gt_of_ne hs with hs | hs
+  · refine ⟨fun x => (b x - c) / s, fun x => (a x - c) / s,
+      (hb.sub continuous_const).div_const s, (ha.sub continuous_const).div_const s, ?_, ?_⟩
+    · intro x
+      exact (div_lt_div_right_of_neg hs).mpr (sub_lt_sub_right (hab x) c)
+    · rw [hpre]
+      ext y
+      simp only [mem_ofPred_eq, div_le_iff_of_neg hs, le_div_iff_of_neg hs]
+      constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+  · refine ⟨fun x => (a x - c) / s, fun x => (b x - c) / s,
+      (ha.sub continuous_const).div_const s, (hb.sub continuous_const).div_const s, ?_, ?_⟩
+    · intro x
+      exact (div_lt_div_iff_of_pos_right hs).mpr (sub_lt_sub_right (hab x) c)
+    · rw [hpre]
+      ext y
+      simp only [mem_ofPred_eq, div_le_iff₀ hs, le_div_iff₀ hs]
+      constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+
+theorem exists_uniform_gap_between_disjoint_graph_bands
+    {X : Type*} [TopologicalSpace X] [CompactSpace X] [PreconnectedSpace X]
+    {a b c d : X → ℝ} (ha : Continuous a) (hb : Continuous b)
+    (hc : Continuous c) (hd : Continuous d)
+    (hab : ∀ x, a x ≤ b x) (hcd : ∀ x, c x ≤ d x)
+    (hdisj : Disjoint {p : X × ℝ | a p.1 ≤ p.2 ∧ p.2 ≤ b p.1}
+      {p : X × ℝ | c p.1 ≤ p.2 ∧ p.2 ≤ d p.1}) :
+    ∃ δ : ℝ, 0 < δ ∧ ∃ m : C(X, ℝ),
+      (∀ x, b x + δ ≤ m x ∧ m x + δ ≤ c x) ∨
+      (∀ x, d x + δ ≤ m x ∧ m x + δ ≤ a x) := by
+  have hgap {u v : X → ℝ} (hu : Continuous u) (hv : Continuous v) (h : ∀ x, u x < v x) :
+      ∃ δ : ℝ, 0 < δ ∧ ∃ m : C(X, ℝ), ∀ x, u x + δ ≤ m x ∧ m x + δ ≤ v x := by
+    have hpositive (x : X) (_hx : x ∈ univ) : (0 : ℝ) < v x - u x := sub_pos.mpr (h x)
+    obtain ⟨r, hr, hbound⟩ := isCompact_univ.exists_forall_le'
+      (hv.sub hu).continuousOn hpositive
+    refine ⟨r / 2, half_pos hr, ⟨fun x => (u x + v x) / 2,
+      (hu.add hv).div_const 2⟩, ?_⟩
+    intro x
+    have hh := hbound x (mem_univ x)
+    change r ≤ v x - u x at hh
+    constructor <;> dsimp only [ContinuousMap.coe_mk] <;> linarith
+  rcases (disjoint_graph_bands_iff_of_preconnected hb hc hab hcd).mp hdisj with h | h
+  · obtain ⟨δ, hδ, m, hm⟩ := hgap hb hc h
+    exact ⟨δ, hδ, m, Or.inl hm⟩
+  · obtain ⟨δ, hδ, m, hm⟩ := hgap hd ha h
+    exact ⟨δ, hδ, m, Or.inr hm⟩
 
 end DifferentialGeometry.Topology

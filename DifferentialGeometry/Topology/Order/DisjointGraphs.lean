@@ -61,4 +61,41 @@ theorem exists_graph_band_disjoint_of_pairwise_disjoint
   rintro _ ⟨x, rfl⟩ hx
   exact (not_lt_of_ge (hmin j hj ⟨x, hx.1⟩ x)) hx.2
 
+theorem disjoint_graph_bands_iff_of_preconnected
+    {X L : Type*} [TopologicalSpace X] [PreconnectedSpace X]
+    [LinearOrder L] [TopologicalSpace L] [OrderClosedTopology L]
+    {a b c d : X → L} (hb : Continuous b) (hc : Continuous c)
+    (hab : ∀ x, a x ≤ b x) (hcd : ∀ x, c x ≤ d x) :
+    Disjoint {p : X × L | a p.1 ≤ p.2 ∧ p.2 ≤ b p.1}
+        {p : X × L | c p.1 ≤ p.2 ∧ p.2 ≤ d p.1} ↔
+      (∀ x, b x < c x) ∨ (∀ x, d x < a x) := by
+  constructor
+  · intro hdisj
+    have hgap (x : X) : b x < c x ∨ d x < a x := by
+      by_contra! h
+      have hp : a x ≤ max (a x) (c x) ∧ max (a x) (c x) ≤ b x :=
+        ⟨le_max_left _ _, max_le (hab x) h.1⟩
+      have hq : c x ≤ max (a x) (c x) ∧ max (a x) (c x) ≤ d x :=
+        ⟨le_max_right _ _, max_le h.2 (hcd x)⟩
+      exact Set.disjoint_left.mp hdisj
+        (show (x, max (a x) (c x)) ∈ {p : X × L | a p.1 ≤ p.2 ∧ p.2 ≤ b p.1} from hp) hq
+    have hne (x : X) : b x ≠ c x := by
+      rcases hgap x with h | h
+      · exact h.ne
+      · exact ((hcd x).trans_lt (h.trans_le (hab x))).ne'
+    by_cases h : ∀ x, b x < c x
+    · exact Or.inl h
+    · obtain ⟨y, hy⟩ := not_forall.mp h
+      right
+      intro x
+      rcases hgap x with hx | hx
+      · obtain ⟨z, hz⟩ := intermediate_value_univ₂ hb hc hx.le (le_of_not_gt hy)
+        exact False.elim (hne z hz)
+      · exact hx
+  · rintro (h | h) <;> apply Set.disjoint_left.mpr
+    · intro p hp hq
+      exact (not_lt_of_ge (hq.1.trans hp.2)) (h p.1)
+    · intro p hp hq
+      exact (not_lt_of_ge (hp.1.trans hq.2)) (h p.1)
+
 end DifferentialGeometry.Topology
