@@ -6,14 +6,15 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierSupportLocallyFinite
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellLocallyFiniteCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 
 /-!
 # Sorry-first skeleton of P0, the controlled source triangulation and its carriers
 
 The assembly `section34Control` proves the endpoint `Section34ControlStatement` for real from the
-four leaves of this file and one proved module; every `sorry` is a leaf and none sits inside
-an assembly.
+three leaves of this file and two proved modules; every `sorry` is a leaf and none sits
+inside an assembly.
 
 P0 is the **producer** of the two hypotheses that the controlled form of Moise 35.1 takes as
 given: a locally finite triangulation `𝒦` of the open set `U` with
@@ -108,8 +109,10 @@ prescribed open cover is the standard effect of iterated subdivision on each com
 version 1 clause making that support a closed piecewise linear cell is gone: no clause of
 `Section34CarrierControl` looks at the shape of a support.
 
-`exists_isPLCellOn_locallyFinite_cover_of_isOpen` (c): an open set `Y` of a piecewise linear
-`3`-manifold, with a neighbourhood `N y` prescribed at every `y ∈ Y`, carries a locally finite
+`exists_isPLCellOn_locallyFinite_cover_of_isOpen` (c): **proved**, imported from
+`PLCellLocallyFiniteCover` (2026-09-21, statement byte-identical with the frozen leaf).  It
+is: an open set `Y` of a piecewise linear `3`-manifold, with a neighbourhood `N y` prescribed
+at every `y ∈ Y`, carries a locally finite
 family of closed piecewise linear `3`-cells `C i ⊆ Y`, each inside one `N y` and inside one
 piecewise linear chart, whose open cores `G i ⊆ interior (C i)` still cover `Y`.  Elementary and
 general: a compact exhaustion `K n ⊆ interior (K (n + 1))` of the locally compact, σ-compact `Y`,
@@ -161,17 +164,6 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 universe u
 
 section Leaves
-
-theorem exists_isPLCellOn_locallyFinite_cover_of_isOpen {X : Type*} [TopologicalSpace X]
-    [T2Space X] [SecondCountableTopology X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
-    [HasGroupoid X (plGroupoid 3)] {Y : Set X} (hY : IsOpen Y) (N : X → Set X)
-    (hN : ∀ y ∈ Y, N y ∈ 𝓝 y) :
-    ∃ (ι : Type) (C G : ι → Set X), (∀ i, IsPLCellOn 3 (C i) (frontier (C i))) ∧
-      (∀ i, IsOpen (G i)) ∧ (∀ i, G i ⊆ interior (C i)) ∧ (∀ i, C i ⊆ Y) ∧
-      (∀ i, ∃ y ∈ Y, C i ⊆ N y) ∧
-      (∀ i, ∃ c ∈ (plGroupoid 3).maximalAtlas X, C i ⊆ c.source) ∧ (Y ⊆ ⋃ i, G i) ∧
-      ∀ y ∈ Y, ∃ V ∈ 𝓝 y, {i | (C i ∩ V).Nonempty}.Finite := by
-  sorry
 
 variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
   {M₁ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] {U : Set M₁}
