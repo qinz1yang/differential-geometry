@@ -27,7 +27,7 @@ characters. `StableCrossingNormalizer` is now independently accepted, registered
 aggregate and recorded under A1.5c. Its only lead source edit narrows the first import to
 `GeneralPosition`; declarations and proofs are byte-identical to F's delivery. Named-module
 compilation, all-declaration foundational-axiom audit and all 13 linters have zero diagnostics.
-Entry 10's `TopologicalCellInterior` candidate is still not independently accepted.
+Entry 10's supporting modules have since been accepted under B1.g.1; its endpoint is OPEN.
 The cumulative 8 CLOSED / 8 STUCK worker table is not the lead's acceptance count.
 
 At the owner's request the lead checked the missing HasGroupoid issue and authorized a
@@ -84,18 +84,31 @@ The packet includes the exact frozen signature and definitions, source hashes, t
 topological-interior candidate, the genuine two-dimensional disk-overlap gap, source API
 map, ownership, PowerShell compiler commands, receipts and audit requirements.
 
-Gemini owns new `PlanarJordan/DiskUnion.lean` if needed, `PiecewiseLinear/PlanarCellUnion.lean`,
-and an append-only `Skeleton/GEMINI_PLANAR_UNION_LOG.md`; it must preserve existing sources
-and F's WIPs. F stays on entry 15. Gemini uses existing lease d and its matching private
-output root, without editing the JSON; old d workers were stopped and no d compiler was
+Gemini may add `PlanarJordan/DiskUnion.lean`, extend `PiecewiseLinear/PlanarCellUnion.lean`
+with the real producer, and append to `Skeleton/GEMINI_PLANAR_UNION_LOG.md`; it must preserve
+the accepted supporting APIs, other existing sources and F's WIPs. F stays on entry 15.
+Gemini uses existing lease d and its matching private output root, without editing the
+JSON; old d workers were stopped and no d compiler was
 active when reserved. The CanonicalConfiguration private prerequisites were prepared with
 all 14 available and none missing; this preparation did not run Lean. An external audit
 template is in `claude-moise-agent-d/gemini-planar-union/audit-template.txt`.
 
-No Gemini executable was found on PATH or in the checked standard CLI locations. No Gemini
-session was started by the lead. The handoff is ready for the owner to paste into its CLI.
-The assignment adds no proved leaf and does not accept `TopologicalCellInterior`; the ledger
-is unchanged. The lead must independently verify both the dependency and endpoint on return.
+The owner returned the first Gemini delivery. Its original two module hashes independently
+compiled on c with zero diagnostics. The lead removed the endpoint-shaped conditional
+adapter, reused the canonical closed-ball interior theorem, proved intrinsic-interior
+monotonicity in arbitrary ambient topological spaces, and added projection/intersection
+transport. The standard rectangular result now consumes the general monotonicity theorem.
+Both final modules passed zero-diagnostic c checks and all-declaration foundational-axiom
+and thirteen-linter audits. An external probe also checked transport of `hc.overlap` and
+both standard adjacent pairs. Both modules are registered in the flat aggregate. The
+frozen Section 31 and CanonicalConfiguration hashes are unchanged; no skeleton sorry was
+removed. Acceptance and the exact evidence location are under B1.g.1 in FREE_INPUTS.
+
+The next assignment is
+[HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md):
+prove the genuine arbitrary planar disk-union core and then the unchanged entry 10.
+The lead did not start or message a Gemini process; the owner must pass this continuation
+to its local CLI. Do not claim that a second round has started from a prepared prompt.
 
 ## Ready owner review prompts
 

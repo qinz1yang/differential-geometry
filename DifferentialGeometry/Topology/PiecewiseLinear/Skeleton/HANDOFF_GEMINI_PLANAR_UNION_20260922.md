@@ -1,5 +1,10 @@
 # Gemini handoff: unions of overlapping planar topological disks
 
+The first delivery has returned. Before resuming, read the
+[round-two update](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md); it supersedes the old
+candidate status and records the lead's API cleanup. The original frozen target below is
+unchanged.
+
 This is a self-contained assignment for a new Gemini CLI session with no previous context.
 The owner requested an independent proof lane parallel to task F. The lead reserved entry
 10 for this lane. F owns entry 15, stable crossing normal forms and chart transport; neither

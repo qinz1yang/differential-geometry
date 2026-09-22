@@ -7,8 +7,10 @@ are retained. Do not repeat entries 1, 2, 3, 4, 6, 7, 8, 9, 13, 14, or 16.
 Entry 10 is reserved for the owner's parallel Gemini CLI lane, with separate output files
 and lease d. Its self-contained assignment is
 [HANDOFF_GEMINI_PLANAR_UNION_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_20260922.md).
-F remains on entry 15 and lease a. Reservation is not proof acceptance or evidence that
-Gemini has started; the lead has prepared the assignment for the owner to give to that CLI.
+F remains on entry 15 and lease a. The owner returned Gemini's first PARTIAL delivery;
+the lead accepted only its corrected supporting mathematics, as recorded under B1.g.1 in
+FREE_INPUTS. The frozen entry remains OPEN. The next scoped assignment is
+[HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md](HANDOFF_GEMINI_PLANAR_UNION_ROUND2_20260922.md).
 
 Work in `D:\differential-geometry-moise-int`, branch `codex/moise-integration`.
 `E:\differential-geometry-dev` and its outputs are read-only. Compile only in PowerShell with
@@ -49,8 +51,9 @@ limit: continue constructive proof work and ordinary elaboration repairs until d
 or a substantiated blocker requiring unavailable input or a frozen-interface decision.
 Do not repeat unproductive searches. Lease concurrency, expiry and module restrictions
 remain binding. Do not start entries 5/10/11/12 in this pass; preserve the existing
-`TopologicalCellInterior` candidate. Entries 7/14a/14b are accepted through
-`RelativeBoundaryGluing`. Stop after this scoped pass and wait for further authorization.
+`TopologicalCellInterior` and `PlanarCellUnion` support modules. Entries 7/14a/14b are
+accepted through `RelativeBoundaryGluing`. Stop after this scoped pass and wait for further
+authorization.
 
 ## Remaining entries, in suggested order
 
