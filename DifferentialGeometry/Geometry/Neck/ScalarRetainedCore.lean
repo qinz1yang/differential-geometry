@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.ScalarCutCore
 import DifferentialGeometry.Topology.RelativeOpenInterior
+import DifferentialGeometry.Topology.Connected.CoverBySides
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
 
 set_option autoImplicit false
@@ -41,7 +42,8 @@ theorem scalarSublevelComponents_protected [Finite ι]
       ∃ x : U, metricScalarAt g x ≤ K ∧
         ∃ hx : x.val ∈ cutCore f, ConnectedComponents.mk (⟨x.val, hx⟩ : cutCore f) = c) := by
   intro f R
-  let : LocallyPathConnectedSpace M := DifferentialGeometry.Topology.Manifold.locallyPathConnectedSpace_of_modelWithCorners I
+  let : LocallyPathConnectedSpace M :=
+    DifferentialGeometry.Topology.Manifold.locallyPathConnectedSpace_of_modelWithCorners I
   have hopen := (isClopen_retained_discardedCore (fun i => (d i).precision_pos) f
     (fun i => isOpenEmbedding_neckAmbientMap U (d i)) hdisj R).1.isOpen
   constructor
@@ -87,5 +89,28 @@ theorem scalarSublevelComponents_protected_of_common_radius [Finite ι]
   rw [heq] at hi
   refine hi.trans_le (mul_le_mul_of_nonneg_right ?_ (inv_nonneg.mpr (sq_nonneg h)))
   linarith [hδ i]
+
+omit [Fact (Module.finrank ℝ E = 3)] [I.Boundaryless] [T2Space M] in
+theorem scalarSublevelComponents_retained_subset_of_frontier_removed
+    (U : Opens M) (g : SmoothRiemannianMetric I U)
+    (f : ∀ i, bufferedCylinder (δ i) → M) (a : ℝ) (K : Set M)
+    (hlow : ∀ x : U, metricScalarAt g x ≤ a → x.val ∈ K)
+    (hfront : frontier K ⊆ ⋃ i, removedSlab (f i)) :
+    (Subtype.val : cutCore f → M) '' retainedCore f (scalarSublevelComponents U g f a) ⊆
+      interior K := by
+  rintro x ⟨p, hp, rfl⟩
+  obtain ⟨q, hq, hqc, hcomp⟩ := hp
+  let C : Set M := (Subtype.val : cutCore f → M) '' connectedComponent p
+  have hC : IsPreconnected C :=
+    isPreconnected_connectedComponent.image Subtype.val continuous_subtype_val.continuousOn
+  have hqcomp : (⟨q.val, hqc⟩ : cutCore f) ∈ connectedComponent p :=
+    ConnectedComponents.coe_eq_coe'.mp hcomp
+  have hmeet : (C ∩ K).Nonempty := ⟨q.val, ⟨⟨q.val, hqc⟩, hqcomp, rfl⟩, hlow q hq⟩
+  have hdisj : Disjoint C (frontier K) := by
+    apply Set.disjoint_left.mpr
+    rintro y ⟨r, hr, rfl⟩ hy
+    exact r.property (hfront hy)
+  exact DifferentialGeometry.Topology.isPreconnected_subset_interior_of_meets_of_disjoint_frontier
+    hC hmeet hdisj ⟨p, mem_connectedComponent, rfl⟩
 
 end DifferentialGeometry.Topology.ThreeManifold.Surgery

@@ -13187,3 +13187,10 @@ import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmpty
 import DifferentialGeometry.Geometry.Neck.SpatialExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornComponents
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabJointSmoothness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StrongNeckTimeJetIdentity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCoreTruncation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCutRetention
+import DifferentialGeometry.Geometry.Neck.SpatialReflection
+import DifferentialGeometry.Geometry.Neck.CompactSide
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricVolume

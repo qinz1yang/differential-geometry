@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabJointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowTimeJets
@@ -130,14 +131,12 @@ theorem TerminalLimitMetric.chartGram_jets_tendsto_terminal
 
 
 theorem TerminalLimitMetric.chartGram_jets_continuousOn_closed
-    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a < b)
+    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b)
     (p : G.terminalRegularOpen) (r : ℕ)
     (i j : Fin (Module.finrank ℝ ThreeSpace)) :
     ContinuousOn (fun q : ℝ × ThreeSpace => iteratedFDeriv ℝ r
       (chartGramOnE (I := ThreeModel) (L.extendedMetric q.1) p i j) q.2)
       (Icc b s ×ˢ (extChartAt ThreeModel p).target) := by
-  let S := solutionOnRestrictOpen G.flow G.terminalRegularOpen
-  have hS := metricFamilySmoothOn_restrictOpen G.flow G.equation G.terminalRegularOpen
   rintro ⟨t, y⟩ ⟨ht, hy⟩
   by_cases hts : t = s
   · subst t
@@ -163,25 +162,29 @@ theorem TerminalLimitMetric.chartGram_jets_continuousOn_closed
       simpa only [ContinuousWithinAt, nhdsWithin_prod_eq, nhdsWithin_univ,
         nhdsWithin_eq_nhds.mpr (hW.mem_nhds hyW)] using hlocal
     exact hfull.mono (fun q hq => ⟨hq.1.2, mem_univ _⟩)
-  · have htreg : t ∈ Ioo a s := ⟨hab.trans_le ht.1, lt_of_le_of_ne ht.2 hts⟩
-    have hyint : y ∈ interior (extChartAt ThreeModel p).target :=
-      (isOpen_extChartAt_target (I := ThreeModel) p).interior_eq.symm ▸ hy
-    have hsmooth : ContDiffAt ℝ ∞
-        (fun q : ℝ × ThreeSpace => chartGramOnE (I := ThreeModel)
-          ((G.flow.base.metric q.1).restrictOpen G.terminalRegularOpen) p i j q.2) (t, y) :=
-      (MetricFamilySmoothOn.chartGramOnE_contDiffOn (I := ThreeModel)
-        (g_fam := S.family.metric) hS (J := Ioo a s) (fun _ h => h) p i j).contDiffAt
-          ((isOpen_Ioo.prod isOpen_interior).mem_nhds ⟨htreg, hyint⟩)
-    have hjet := DifferentialGeometry.Analysis.spaceJet_contAt hsmooth r
-      (by exact_mod_cast le_top)
-    apply (hjet.congr ?_).continuousWithinAt
-    filter_upwards [continuous_fst.continuousAt.preimage_mem_nhds
-      (Iio_mem_nhds htreg.2)] with q hq
+  · have htreg : t ∈ Ico a s := ⟨hab.trans ht.1, lt_of_le_of_ne ht.2 hts⟩
+    have hsmooth := chartGramOnE_joint_contDiffOn
+      (fun t => (G.flow.base.metric t).restrictOpen G.terminalRegularOpen) (Ico a s)
+      (G.smoothUpTo.restrictOpen_jointContMDiffOn G.terminalRegularOpen) p i j
+    have hjet := DifferentialGeometry.Analysis.spatial_iteratedFDeriv_contDiffOn
+      (G := fun t y => chartGramOnE (I := ThreeModel)
+        ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen) p i j y)
+      (isOpen_extChartAt_target p) hsmooth r
+    have hlocal := hjet.continuousOn (t, y) ⟨htreg, hy⟩
+    have hregion : (Ico a s ×ˢ (extChartAt ThreeModel p).target) ∈
+        𝓝[Icc b s ×ˢ (extChartAt ThreeModel p).target] (t, y) := by
+      filter_upwards [self_mem_nhdsWithin,
+        nhdsWithin_le_nhds (continuous_fst.continuousAt.preimage_mem_nhds
+          (Iio_mem_nhds htreg.2))] with q hq htq
+      exact ⟨⟨hab.trans hq.1.1, htq⟩, hq.2⟩
+    apply (hlocal.mono_of_mem_nhdsWithin hregion).congr_of_eventuallyEq_of_mem _ ⟨ht, hy⟩
+    filter_upwards [nhdsWithin_le_nhds (continuous_fst.continuousAt.preimage_mem_nhds
+      (Iio_mem_nhds htreg.2))] with q hq
     rw [L.extendedMetric_before hq]
 
 
 theorem TerminalLimitMetric.chartGram_contDiffOn_closed
-    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a < b) (hbs : b < s)
+    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace =>
       chartGramOnE (I := ThreeModel) (L.extendedMetric q.1) p i j q.2)
@@ -191,7 +194,7 @@ theorem TerminalLimitMetric.chartGram_contDiffOn_closed
       HasDerivAt (fun u => (L.extendedMetric u).inner x v w)
         (-2 * ricciTensor (L.extendedMetric t) x v w) t := by
     intro t ht x v w
-    have hreg : t ∈ Ioo a s := ⟨hab.trans ht.1, ht.2⟩
+    have hreg : t ∈ Ioo a s := ⟨hab.trans_lt ht.1, ht.2⟩
     have hd := metricDerivAt G.flow G.equation ⟨t, hreg⟩ x.1 v w
     have hric := metricRicciAt_apply_eq_ricciTensor (G.flow.base.metric t) x.1 v w
     dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt] at hd
@@ -212,7 +215,7 @@ theorem TerminalLimitMetric.chartGram_contDiffOn_closed
   exact contDiffOn_pi.mp (contDiffOn_pi.mp hfull i) j
 
 theorem TerminalLimitMetric.extendedMetric_jointContMDiffOn
-    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a < b) (hbs : b < s) :
+    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
       (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
       (fun q : ℝ × G.terminalRegularOpen =>
@@ -248,7 +251,7 @@ theorem TerminalLimitMetric.extendedMetric_jointContMDiffOn
 
 
 theorem TerminalLimitMetric.chartGram_timeJets_contDiffOn_closed
-    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a < b) (hbs : b < s)
+    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) (m : ℕ) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace => iteratedDerivWithin m
       (fun t => chartGramOnE (I := ThreeModel) (L.extendedMetric t) p i j q.2)
@@ -258,7 +261,7 @@ theorem TerminalLimitMetric.chartGram_timeJets_contDiffOn_closed
     (L.chartGram_contDiffOn_closed hab hbs p i j) m
 
 theorem TerminalLimitMetric.hasDerivWithinAt_chartGram_timeJet
-    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a < b) (hbs : b < s)
+    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) (m : ℕ)
     {t : ℝ} (ht : t ∈ Icc b s) {y : ThreeSpace}
     (hy : y ∈ (extChartAt ThreeModel p).target) :
@@ -272,7 +275,7 @@ theorem TerminalLimitMetric.hasDerivWithinAt_chartGram_timeJet
     (L.chartGram_contDiffOn_closed hab hbs p i j) m ht hy
 
 theorem TerminalLimitMetric.chartGram_mixedJets_contDiffOn_closed
-    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a < b) (hbs : b < s)
+    (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) (r m : ℕ) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace => iteratedFDeriv ℝ r
       (fun y => iteratedDerivWithin m
@@ -284,7 +287,7 @@ theorem TerminalLimitMetric.chartGram_mixedJets_contDiffOn_closed
     (isOpen_extChartAt_target p) (L.chartGram_timeJets_contDiffOn_closed hab hbs p i j m) r
 
 theorem TerminalLimitMetric.metricTensor_contDiffOn_time
-    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a < c) (hcb : c < s) (x : G.terminalRegularOpen) :
+    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s) (x : G.terminalRegularOpen) :
     ContDiffOn ℝ ∞ (fun t => metricTensorField (L.extendedMetric t) x) (Icc c s) := by
   classical
   let V := (extChartAt ThreeModel x).target
@@ -314,7 +317,7 @@ theorem TerminalLimitMetric.metricTensor_contDiffOn_time
   simpa only [← tensor0SBasis_repr, Module.Basis.sum_repr] using hsum
 
 private theorem metric_timeJet_eval
-    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a < c) (hcb : c < s)
+    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s)
     (q : ℕ) {t : ℝ} (ht : t ∈ Icc c s) (x : G.terminalRegularOpen)
     (v : Fin 2 → TangentSpace ThreeModel x) :
     iteratedDerivWithin q (fun s => (L.extendedMetric s).inner x (v 0) (v 1)) (Icc c s) t =
@@ -356,7 +359,7 @@ private theorem exists_field_of_chart_components
     (fun k => chartBasisVecFiber (I := ThreeModel) p (slots k) x)
 
 private theorem exists_metric_timeJet_field
-    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a < c) (hcb : c < s)
+    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s)
     (q : ℕ) {t : ℝ} (ht : t ∈ Icc c s) :
     ∃ B : Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) (n := ∞) 2,
       ∀ x, B x = iteratedDerivWithin q
@@ -399,7 +402,7 @@ private theorem exists_metric_timeJet_field
 
 
 theorem TerminalLimitMetric.exists_time_derivative_fields
-    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a < c) (hcb : c < s) :
+    (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s) :
     ∃ B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) (n := ∞) 2,
       (∀ t, B 0 t = metricTensorField (L.extendedMetric t)) ∧
       ∀ q t, t ∈ Icc c s → ∀ x,
