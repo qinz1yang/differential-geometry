@@ -240,4 +240,951 @@ No batch proof has been accepted merely by creating this log or queue.
 - **Axioms**: `propext`, `Classical.choice`, `Quot.sound`
 - **Remaining Obligation**: Lead will wire `exists_frontier_pair_witnesses_of_triod_chart` into `Section26ThreeSurfaces.lean:110` (pending skeleton modification authorization / lead integration).
 
+## 2026-09-22: G009 (`section33_not_isLoopTheoremDisk`) BLOCKED / SKIPPED
 
+- **Target**: `Section33Approximation:255` (`section33_not_isLoopTheoremDisk`)
+- **Status**: BLOCKED / SKIPPED (missing 3D PL 2-disk cut-and-paste surgery apparatus)
+- **Skeleton Location**: `Section33Approximation.lean:255`
+- **Blocker Description**:
+  - Proving that no loop theorem disk exists requires Moise Lemma 9 (pp. 231–233).
+  - The proof proceeds by innermost circle/arc elimination for intersections of a PL 2-disk with pseudo-cell boundaries in $\mathbb{R}^3$, performing surgery along discs.
+  - The general position 3D cut-and-paste surgery infrastructure is not yet available in the library.
+- **Next Useful Lemma**: `exists_innermost_circle_surgery_of_plDisk_inter` (cut-and-paste surgery along an innermost intersection circle).
+
+## 2026-09-22: G010 (`exists_locallyFinitePLPieceIn_of_isOpen`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Control:176` (`exists_locallyFinitePLPieceIn_of_isOpen`)
+- **Status**: BLOCKED / SKIPPED (missing infinite locally finite complex assembly for open sets in $\mathbb{R}^N$)
+- **Skeleton Location**: `Section34Control.lean:176`
+- **Blocker Description**:
+  - Requires constructing a `LocallyFinitePLPieceIn Ea 3 M₁ U` covering an arbitrary open set $U$.
+  - This requires assembling an infinite locally finite piece tower into a single topologically locally finite complex in $\mathbb{R}^N$ ($N \le 7$).
+- **Next Useful Lemma**: Infinite locally finite simplicial complex assembly on open subsets of $\mathbb{R}^N$.
+
+## 2026-09-22: G011 (`exists_isSubdivision_section34CarrierSupport_subset`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Control:181` (`exists_isSubdivision_section34CarrierSupport_subset`)
+- **Status**: BLOCKED / SKIPPED (missing non-uniform mesh refinement subordinate to open covers)
+- **Skeleton Location**: `Section34Control.lean:181`
+- **Blocker Description**:
+  - Requires non-uniform mesh refinement / subdivision for a non-compact simplicial complex subordinate to an arbitrary open cover / carrier support.
+- **Next Useful Lemma**: Subordinate subdivision theorem for locally finite complexes.
+
+## 2026-09-22: G014 (`nonempty_homeomorph_torus_of_isOrientable_of_eulerChar_eq_zero`) BLOCKED / SKIPPED
+
+- **Target**: `Section30Torus:81` (`nonempty_homeomorph_torus_of_isOrientable_of_eulerChar_eq_zero`)
+- **Status**: BLOCKED / SKIPPED (missing classification of closed 2-surfaces)
+- **Skeleton Location**: `Section30Torus.lean:81`
+- **Blocker Description**:
+  - Requires proving that any closed connected orientable 2-manifold with Euler characteristic 0 is homeomorphic to the 2-torus $T^2$.
+  - The classification of 2-manifolds (canonical polygonal schema reduction) is not formalized in Mathlib or this library.
+- **Next Useful Lemma**: Classification theorem for compact 2-surfaces.
+
+## 2026-09-22: G015 (`IsPLTorus.exists_combinatorial_triangulation`) BLOCKED / SKIPPED
+
+- **Target**: `Section30Torus:89` (`IsPLTorus.exists_combinatorial_triangulation`)
+- **Status**: BLOCKED / SKIPPED (missing link recognition on general polyhedra)
+- **Skeleton Location**: `Section30Torus.lean:89`
+- **Blocker Description**:
+  - Requires showing that a polyhedron homeomorphic to $T^2$ admits a combinatorial triangulation.
+  - Requires link recognition and triangulating general 2-polyhedra.
+- **Next Useful Lemma**: Triangulation theorem for 2-polyhedra.
+
+## 2026-09-22: G016 (`exists_nontrivial_fundamentalGroup_kernel_in_solidTorus`) BLOCKED / SKIPPED
+
+- **Target**: `Section30Torus:108` (`IsPLTorus.exists_nontrivial_fundamentalGroup_kernel_in_solidTorus`)
+- **Status**: BLOCKED / SKIPPED (missing ambient/intrinsic interior identification for solid tori)
+- **Skeleton Location**: `Section30Torus.lean:108`
+- **Blocker Description**:
+  - Requires identifying the ambient interior of a solid torus with its intrinsic interior (`interior S ≃ B² × S¹`) before computing the fundamental group kernel.
+- **Next Useful Lemma**: Product structure for solid torus interior.
+
+## 2026-09-22: G025 (`exists_annulus_parametrization_of_product_circle_cut`) BLOCKED / SKIPPED
+
+- **Target**: `Section28Annuli:87` (`exists_annulus_parametrization_of_product_circle_cut`)
+- **Status**: BLOCKED / SKIPPED (missing finite-mark cyclic decomposition for $n > 2$ points on 1-sphere)
+- **Skeleton Location**: `Section28Annuli.lean:87`
+- **Blocker Description**:
+  - Cutting $S^1 \times S^1$ along $n > 2$ parallel circles requires cyclic ordering and decomposition of $S^1$ into $n$ intervals.
+  - `CircleArcs.lean` currently only provides 2-point cuts (`exists_isPLBall_one_of_subset_sphere`).
+- **Next Useful Lemma**: $n$-point cyclic decomposition of $S^1$.
+
+## 2026-09-22: G012 (`exists_triod_chart_at_common_boundary`) BLOCKED / SKIPPED
+
+- **Target**: `Section26ThreeSurfaces:65` (`exists_triod_chart_at_common_boundary`)
+- **Status**: BLOCKED / SKIPPED (missing 3D 3-half-plane PL straightening / sector cone-gluing infrastructure)
+- **Skeleton Location**: `Section26ThreeSurfaces.lean:65`
+- **Blocker Description**:
+  - Requires finding $p \in \partial M_0$ and a PL chart $e : U \to V$ around $p$ mapping the three combinatorial 2-manifolds with boundary $M_0, M_1, M_2$ to the three standard half-planes $T_0, T_1, T_2$.
+  - At a boundary edge $e_0$, the 3 surfaces meet as 3 half-planes meeting along a line at arbitrary dihedral angles.
+  - Straightening 3 arbitrary half-planes in $\mathbb{R}^3$ into the 3 coordinate half-planes cannot be achieved by a linear map (since angles between 3 rays in $\mathbb{R}^2$ are not preserved by linear maps).
+  - It requires constructing a piecewise linear homeomorphism of $\mathbb{R}^2$ by subdividing the plane into convex sectors/cones, mapping each sector linearly, proving piecewise affine compatibility on ray intersections, crossing with $\mathbb{R}$, and isolating a small ball $B(p, \varepsilon)$ disjoint from all other simplices of the 3 complexes.
+  - The sector-subdivision and cone-gluing infrastructure for arbitrary 3-ray configurations in $\mathbb{R}^2$ is not yet developed.
+
+## 2026-09-22: G017 (`exists_isPLBall_superset_of_exterior_compression`) BLOCKED / SKIPPED
+
+- **Target**: `Section30Torus:125` (`exists_isPLBall_superset_of_exterior_compression`)
+- **Status**: BLOCKED / SKIPPED (missing 3D 2-handle attachment / regular neighborhood and 3D Schoenflies)
+- **Skeleton Location**: `Section30Torus.lean:125`
+- **Blocker Description**:
+  - Requires: For a 3-manifold with boundary $R$ with $\partial R$ a torus, and an exterior essential disk $D \subseteq U$, finding a PL 3-ball $B \subseteq U$ enclosing $R$ in its interior.
+  - The mathematical proof requires constructing a regular neighborhood $N(R \cup D)$ inside $U$, proving that surgery along the essential disk turns the boundary torus into a 2-sphere $\partial N \cong S^2$, and applying the 3D Schoenflies / Alexander theorem in $\mathbb{R}^3$ to show $N$ is a PL 3-ball.
+  - The 3D 2-handle attachment / regular neighborhood apparatus and the 3D Schoenflies theorem (`isPLBall_of_frontier_isPLSphere`) are not formalized in Mathlib or this library.
+- **Attempted Route**: Analyzed regular neighborhood construction in `RegularNeighborhood.lean` and 3D ball frontier properties in `BallFrontier.lean`.
+- **Next Useful Lemma**: `isPLBall_of_frontier_isPLSphere` (3D Schoenflies theorem in $\mathbb{R}^3$).
+
+## 2026-09-22: G018 (`exists_ball_pair_of_interior_essential_disk`) BLOCKED / SKIPPED
+
+- **Target**: `Section30Torus:140` (`exists_ball_pair_of_interior_essential_disk`)
+- **Status**: BLOCKED / SKIPPED (missing 3D solid torus cutting / cylindrical diagram from essential disk)
+- **Skeleton Location**: `Section30Torus.lean:140`
+- **Blocker Description**:
+  - Requires cutting a 3-manifold $R$ with boundary a torus along an interior essential disk $D$ to split it into two PL 3-balls $A, B$ meeting along two boundary disks $D_0, D_1$.
+  - This requires proving $R$ is a solid torus (Moise Lemma 30.1) and cutting it along a meridian disk into a cylinder $D^2 \times I$ via a relative disk regular neighborhood, followed by cutting the cylinder into two balls.
+  - The relative disk neighborhood and 3D cut remainder apparatus for 3-manifolds with boundary are not available.
+- **Attempted Route**: Evaluated `CylinderCut.lean` and `NeighborhoodCylinder.lean` for splitting cylinders and circles, but these do not cover cutting general 3-manifolds along embedded disks.
+- **Next Useful Lemma**: `exists_cylindricalDiagram_of_essential_disk` (representing a solid torus cut along an essential disk as a cylinder).
+
+## 2026-09-22: G019 (`exists_innerSolidTorus_toroidalShell_of_annulusImage`) BLOCKED / SKIPPED
+
+- **Target**: `Section31CanonicalConfiguration:384` (`exists_innerSolidTorus_toroidalShell_of_annulusImage`)
+- **Status**: BLOCKED / SKIPPED (missing toroidal shell revolution from a planar 2-cell collar)
+- **Skeleton Location**: `Section31CanonicalConfiguration.lean:384`
+- **Blocker Description**:
+  - Given a revolved torus chain $N = \bigcup S_j$ and an embedding $h$, requires constructing an inner solid torus $S_1$ around $h '' A_j$ in $\text{interior}(h '' S_j)$ such that $\text{closure}(h '' S_j \setminus S_1)$ is a toroidal shell.
+  - In the un-embedded model, this requires constructing a smaller 2-cell $D' \subset \text{interior}(D_j)$ around the core segment, proving that revolving the annular collar between $\partial D'$ and $\partial D_j$ yields a toroidal shell $T^2 \times I$, and transporting through the embedding $h$ using 3D Invariance of Domain.
+  - The revolution of planar collars into toroidal shells is not yet developed.
+- **Attempted Route**: Evaluated `ToroidalShell.lean` and `TorusShell.lean` for existing toroidal shell constructors; they only provide abstract topological properties, not the revolution constructor.
+- **Next Useful Lemma**: `exists_innerSolidTorus_toroidalShell_of_revolution`.
+
+## 2026-09-22: G020 (`exists_generalPosition_solidTorus_relative`) BLOCKED / SKIPPED
+
+- **Target**: `Section31CanonicalConfiguration:399` (`exists_generalPosition_solidTorus_relative`)
+- **Status**: BLOCKED / SKIPPED (missing relative general position for solid tori in $\mathbb{R}^3$)
+- **Skeleton Location**: `Section31CanonicalConfiguration.lean:399`
+- **Blocker Description**:
+  - Requires: Given compact $A$, open $U$, a solid torus $S_0$ fitting $A$ in $U$, and a finite family of solid tori $F_i$, finding a solid torus $S$ fitting $A$ in $U$ in pairwise general position with each $F_i$ (transverse crossing at frontiers, intersection of frontiers is a finite disjoint union of 1-spheres).
+  - This requires transversality / general position perturbation of polyhedra in $\mathbb{R}^3$ maintaining strict containment conditions.
+  - As noted in `SolidTorusGeneralPosition.lean:12`, the relative general-position existence theorem remains an open proof obligation.
+- **Attempted Route**: Checked `SolidTorusGeneralPosition.lean`, `GeneralPosition.lean`, and `GeneralPositionInDouble.lean`. The existing general position results only cover maps of 1-complexes and singular 2-cells, not ambient polyhedral 3-manifolds.
+- **Next Useful Lemma**: `exists_generalPosition_polyhedron_relative` (relative general position perturbation for polyhedra in $\mathbb{R}^3$).
+
+## 2026-09-22: G021 (`exists_polygon_carrier_of_spine`) BLOCKED / SKIPPED
+
+- **Target**: `Section31CanonicalConfiguration:452` (`exists_polygon_carrier_of_spine`)
+- **Status**: BLOCKED / SKIPPED (missing Moise 28.11 and 1-cycle simple curve normalization)
+- **Skeleton Location**: `Section31CanonicalConfiguration.lean:452`
+- **Blocker Description**:
+  - Requires: Given solid tori $S_1, S_2$ and spines, finding a 1-sphere $K \subseteq \text{frontier}(S_2) \cap \text{interior}(S_1)$ carrying the generator of $S_2$.
+  - Moise Theorem 28.11 produces an integer 1-cycle on the boundary carrying the generator; this 1-cycle must then be normalized into pairwise disjoint simple closed curves (Moise 28.8) to extract a single 1-sphere generator carrier.
+  - Neither the 1-cycle extraction (28.11) nor the simple curve normalization (28.8) is formalized in the library.
+- **Attempted Route**: Surveyed `Section31CanonicalConfiguration.lean` and `consult/AP-section31-first-review-digest.md:6-8`.
+- **Next Useful Lemma**: `exists_oneCycle_boundary_of_spine` (Moise 28.11).
+
+## 2026-09-22: G022 (`carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier`) BLOCKED / SKIPPED
+
+- **Target**: `Section31CanonicalConfiguration:463` (`carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier`)
+- **Status**: BLOCKED / SKIPPED (missing Moise 28.10 boundary torus dichotomy)
+- **Skeleton Location**: `Section31CanonicalConfiguration.lean:463`
+- **Blocker Description**:
+  - Requires: On the boundary of a combinatorial solid torus, a simple closed curve disjoint from a generator-carrying 1-sphere either carries a generator or bounds a 2-cell on the boundary.
+  - This is the polygon-carrier special case of Moise Theorem 28.10.
+  - Requires classification of simple closed curves on $T^2$ and intersection/linking numbers on the torus boundary.
+- **Attempted Route**: Evaluated `consult/AP-section31-first-review-digest.md:22` and `Section31CanonicalConfiguration.lean`.
+- **Next Useful Lemma**: `polygon_dichotomy_of_disjoint_carrier` (Moise 28.10).
+
+## 2026-09-22: G023 (`exists_isPLCell_frontier_of_polygon_nullhomotopic`) BLOCKED / SKIPPED
+
+- **Target**: `Section31CanonicalConfiguration:473` (`exists_isPLCell_frontier_of_polygon_nullhomotopic`)
+- **Status**: BLOCKED / SKIPPED (missing meridian exclusion and disk bounding on solid torus boundary)
+- **Skeleton Location**: `Section31CanonicalConfiguration.lean:473`
+- **Blocker Description**:
+  - Requires: On $\partial S$, a simple closed curve that is null-homotopic in $S$ and disjoint from a generator carrier bounds a 2-cell on $\partial S$.
+  - A null-homotopic class in $S$ excludes the longitudinal component; an essential boundary curve would then be a meridian with linking number $\pm 1$ with the interior generator, ruling out disks avoiding the carrier.
+  - The homological linking and intersection tools for curves on solid tori are not yet formal in the library.
+- **Attempted Route**: Evaluated `consult/AP-section31-first-review-digest.md:23` and `Section31CanonicalConfiguration.lean`.
+- **Next Useful Lemma**: `isPLCell_frontier_of_nullhomotopic_in_solidTorus`.
+
+## 2026-09-22: G024 (`exists_product_coordinates_for_disjoint_essential_polygons`) BLOCKED / SKIPPED
+
+- **Target**: `Section28Annuli:75` (`exists_product_coordinates_for_disjoint_essential_polygons`)
+- **Status**: BLOCKED / SKIPPED (missing classification and PL straightening of disjoint essential curves on $T^2$)
+- **Skeleton Location**: `Section28Annuli.lean:75`
+- **Blocker Description**:
+  - Requires: Given $n > 1$ disjoint essential 1-spheres on $\partial S$ of a combinatorial solid torus, finding product coordinates $J \times Q \cong \partial S$ such that each 1-sphere is a slice $J \times \{q_i\}$.
+  - Requires the classical surface-topology theorem that any family of pairwise disjoint essential simple closed curves on $T^2$ are isotopic / PL-homeomorphic to parallel standard circles $S^1 \times \{q_i\}$.
+  - The classification of curves on surfaces and PL straightening of 1-manifolds on 2-torus are not formalized.
+- **Attempted Route**: Evaluated `Section28Annuli.lean` and `CircleArcs.lean`.
+- **Next Useful Lemma**: `exists_product_coordinates_of_disjoint_essential_curves_torus`.
+
+## 2026-09-22: G026 (`exists_canonicalTower`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:200` (`exists_canonicalTower`)
+- **Status**: BLOCKED / SKIPPED (missing infinite nested solid torus tower with toroidal shell collars in $\mathbb{R}^3$)
+- **Skeleton Location**: `Section32PseudoCell.lean:200`
+- **Blocker Description**:
+  - Requires: Constructing an infinite geometric tower of solid tori $S_i$ and toroidal shells $T_i$ along a non-smooth curve in $\mathbb{R}^3$, avoiding an arbitrary closed set $Z$.
+  - Requires infinite geometric sequence of nested solid tori with toroidal shell collars and adjacent general position.
+- **Attempted Route**: Surveyed `PseudoCell.lean`, `MoiseChain.lean`, and `consult/AK-section32-first-review-digest.md:13`.
+- **Next Useful Lemma**: `exists_nested_torus_tower_of_splittingDisk`.
+
+## 2026-09-22: G027 (`separates_initialSurface`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:214` (`separates_initialSurface`)
+- **Status**: BLOCKED / SKIPPED (missing surface separation in 3-manifolds with boundary)
+- **Skeleton Location**: `Section32PseudoCell.lean:214`
+- **Blocker Description**:
+  - Requires: Showing the initial surface constructed from the tower separates $h u$ and $h v$ in $\text{int}(h(C_u \cup C_v))$.
+  - Requires surface separation across the dual-cell boundary in a tube.
+- **Attempted Route**: Evaluated `Section32PseudoCell.lean` and `consult/AM-section32-second-review-digest.md:8`.
+- **Next Useful Lemma**: `separates_of_transverse_surface_in_tube`.
+
+## 2026-09-22: G028 (`exists_descentSequence`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:227` (`exists_descentSequence`)
+- **Status**: BLOCKED / SKIPPED (missing 4-step surgery descent machine on infinite tower)
+- **Skeleton Location**: `Section32PseudoCell.lean:227`
+- **Blocker Description**:
+  - Requires: Executing an infinite 4-step surgery descent using `Moise303`, `Moise286`, `Moise267`, and `Moise314`, establishing local eventual stability and preservation of separation.
+  - Requires locally finite 4-step surgery descent apparatus on an infinite tower.
+- **Attempted Route**: Surveyed `consult/AM-section32-second-review-digest.md:9,21-23`.
+- **Next Useful Lemma**: `exists_descentSequence_of_tower`.
+
+## 2026-09-22: G029 (`isOpenTopologicalCell_annularChain`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:254` (`isOpenTopologicalCell_annularChain`)
+- **Status**: BLOCKED / SKIPPED (missing annular chain limit cell topology and local 3-ball charts)
+- **Skeleton Location**: `Section32PseudoCell.lean:254`
+- **Blocker Description**:
+  - Requires: Proving the infinite annular chain limit is an open topological 2-cell, locally polyhedral away from $P'$, with closure being the cell plus the rim $h(Dbd)$, and admitting local 3-ball charts.
+  - Requires limit cell topology and local 3-ball slicing for infinite annular chains.
+- **Attempted Route**: Evaluated `consult/AM-section32-second-review-digest.md:10` and `consult/AK-section32-first-review-digest.md:47-56`.
+- **Next Useful Lemma**: `isOpenTopologicalCell_of_annularChain`.
+
+## 2026-09-22: G030 (`exists_compact_connected_to_freeFace`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:273` (`exists_compact_connected_to_freeFace`)
+- **Status**: BLOCKED / SKIPPED (missing arc-connectedness of dual cell complement of splitting disk)
+- **Skeleton Location**: `Section32PseudoCell.lean:273`
+- **Blocker Description**:
+  - Requires: Connecting vertex $h v$ to the free face in $h(C_v)$ avoiding $h(D_e)$, which requires arc-connectedness of a PL 3-ball minus a boundary disk.
+  - Mathlib and the library do not yet have path-connectedness of $B^3 \setminus D^2$ from an interior point to the boundary.
+- **Attempted Route**: Analyzed `IsTube.freeFaceConnected`, `IsTube.dualBall`, and `IsTube.splitMidpoint`. While $v \notin D_e$ and $freeFace \cap D_e = \emptyset$ hold, connecting them inside $C_v \setminus D_e$ lacks the path-connectedness lemma.
+- **Next Useful Lemma**: `exists_path_in_ball_avoiding_boundary_disk`.
+
+## 2026-09-22: G031 (`exists_twoComponents_of_pseudoCell`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:282` (`exists_twoComponents_of_pseudoCell`)
+- **Status**: BLOCKED / SKIPPED (missing global 3D separation by a proper pseudo-cell in a 3-ball pair)
+- **Skeleton Location**: `Section32PseudoCell.lean:282`
+- **Blocker Description**:
+  - Requires: Proving that a pseudo-cell divides $h(C_u \cup C_v)$ into exactly two connected components $U_1, U_2$ containing $h u$ and $h v$ respectively.
+  - Requires local two-sidedness to global component separation in 3-manifolds.
+- **Attempted Route**: Evaluated `consult/AK-section32-first-review-digest.md:20` and `Section32PseudoCell.lean`.
+- **Next Useful Lemma**: `exists_twoComponents_of_proper_pseudoCell`.
+
+## 2026-09-22: G032 (`exists_edgeCollarFamily`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:311` (`exists_edgeCollarFamily`)
+- **Status**: BLOCKED / SKIPPED (missing disjoint regular neighborhood collars for 2-disks in a 3-manifold)
+- **Skeleton Location**: `Section32PseudoCell.lean:311`
+- **Blocker Description**:
+  - Requires: Constructing a family of disjoint edge collars $W_e$ for all edges in a tube, tapering at the centers.
+  - Requires joint choice of finitely many disjoint collars for disks in a 3-manifold.
+- **Attempted Route**: Evaluated `consult/AK-section32-first-review-digest.md:21` and `PseudoCell.lean`.
+- **Next Useful Lemma**: `exists_disjoint_edgeCollars_of_tube`.
+
+## 2026-09-22: G033 (`isHandleDecomposition_of_edgeCollars`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:317` (`isHandleDecomposition_of_edgeCollars`)
+- **Status**: BLOCKED / SKIPPED (missing handle decomposition verification for dual cells cut by edge collars)
+- **Skeleton Location**: `Section32PseudoCell.lean:317`
+- **Blocker Description**:
+  - Requires: Verifying that dual cells cut by edge collars form a handle decomposition of the tube $N'$.
+  - Requires assembling disjoint collars, connected complements, and side labels into `IsHandleDecompositionOfTube`.
+- **Attempted Route**: Evaluated `consult/AK-section32-first-review-digest.md:22` and `PseudoCell.lean`.
+- **Next Useful Lemma**: `isHandleDecomposition_of_tube_dualCells`.
+
+## 2026-09-22: G034 (`exists_generalPosition_ball_pseudoCell`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:340` (`exists_generalPosition_ball_pseudoCell`)
+- **Status**: BLOCKED / SKIPPED (missing small ball in general position with wild pseudo-cell)
+- **Skeleton Location**: `Section32PseudoCell.lean:340`
+- **Blocker Description**:
+  - Requires: Constructing a small PL 3-ball around the center point $P$ in general position with the pseudo-cell, with the 2-cell $D_c$ controlled inside $B(P, \delta)$.
+  - Requires general position transversality near a non-PL point of a pseudo-cell.
+- **Attempted Route**: Evaluated `consult/AM-section32-second-review-digest.md:11` and `Section32PseudoCell.lean`.
+- **Next Useful Lemma**: `exists_generalPosition_ball_of_pseudoCell`.
+
+## 2026-09-22: G035 (`exists_reducedDisk_of_crossesPseudoCell`) BLOCKED / SKIPPED
+
+- **Target**: `Section32PseudoCell:347` (`exists_reducedDisk_of_crossesPseudoCell`)
+- **Status**: BLOCKED / SKIPPED (missing cut-and-paste 2-disk surgery in pseudo-cell complement)
+- **Skeleton Location**: `Section32PseudoCell.lean:347`
+- **Blocker Description**:
+  - Requires: Constructing a reduced replacement disk inside $\Omega$ cleaning intersections with the pseudo-cell.
+  - Requires 2-disk surgery in pseudo-cell complement with support in $\Omega$.
+- **Attempted Route**: Evaluated `consult/AM-section32-second-review-digest.md:12` and `Section32PseudoCell.lean`.
+- **Next Useful Lemma**: `exists_reducedDisk_of_crossesPseudoCell`.
+
+## 2026-09-22: G036 (`exists_section33TubeFrame`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:181` (`exists_section33TubeFrame`)
+- **Status**: BLOCKED / SKIPPED (missing fine metric subdivision and derived tube neighborhood with diameter control)
+- **Skeleton Location**: `Section33Approximation.lean:181`
+- **Blocker Description**:
+  - Requires: For a 1-complex $L$ with no 1-valent vertices, embedded in open $U \subseteq \mathbb{R}^3$, constructing a 3-manifold $T$ with boundary, subdivision $L'$, and tube structure of derived neighborhood inside $U$, with dual cells of diameter $< \epsilon/4$.
+  - Requires controlled diameter subdivision of 3-manifolds containing a 1-complex.
+- **Attempted Route**: Evaluated `DerivedNeighborhood.lean` and `DualCells.lean`.
+- **Next Useful Lemma**: `exists_fine_subdivision_tube_neighborhood`.
+
+## 2026-09-22: G037 (`exists_isPolyhedralTubeNeighborhood`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:201` (`exists_isPolyhedralTubeNeighborhood`)
+- **Status**: BLOCKED / SKIPPED (missing polyhedral tube neighborhood construction from handle decomposition)
+- **Skeleton Location**: `Section33Approximation.lean:201`
+- **Blocker Description**:
+  - Requires: Constructing a polyhedral tube neighborhood $X_K$ from a handle decomposition of a tube in $\mathbb{R}^3$.
+- **Attempted Route**: Evaluated `PolyhedralTubeNeighborhood.lean` and `PseudoCell.lean`.
+- **Next Useful Lemma**: `exists_polyhedral_tube_neighborhood_of_handleDecomposition`.
+
+## 2026-09-22: G038 (`exists_hasSinglePolygonTraces`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:207` (`exists_hasSinglePolygonTraces`)
+- **Status**: BLOCKED / SKIPPED (missing single polygon trace refinement for polyhedral tube neighborhoods)
+- **Skeleton Location**: `Section33Approximation.lean:207`
+- **Blocker Description**:
+  - Requires: Refining $X_K$ so that the intersection of $\partial X_K$ with each pseudo-cell $E_c$ is a single polygon.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `refine_polyhedral_tube_single_traces`.
+
+## 2026-09-22: G039 (`exists_hasConnectedHandlePieces`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:215` (`exists_hasConnectedHandlePieces`)
+- **Status**: BLOCKED / SKIPPED (missing connected handle piece refinement on polyhedral tube boundary)
+- **Skeleton Location**: `Section33Approximation.lean:215`
+- **Blocker Description**:
+  - Requires: Refining $X_K$ so that the pieces $A_K(v) = C_{pp}(v) \cap \partial X_K$ are connected 2-complexes.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `refine_polyhedral_tube_connected_pieces`.
+
+## 2026-09-22: G040 (`exists_hasNoHandleLoopTheoremDisk`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:227` (`exists_hasNoHandleLoopTheoremDisk`)
+- **Status**: BLOCKED / SKIPPED (missing handle loop theorem disk elimination via 2-disk surgery)
+- **Skeleton Location**: `Section33Approximation.lean:227`
+- **Blocker Description**:
+  - Requires: Refining $X_K$ so that no handle piece contains a Loop Theorem disk.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `refine_polyhedral_tube_no_loop_disks`.
+
+## 2026-09-22: G041 (`section33_disk_meets_graph`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:240` (`section33_disk_meets_graph`)
+- **Status**: BLOCKED / SKIPPED (missing homological intersection / linking argument for spanning disk)
+- **Skeleton Location**: `Section33Approximation.lean:240`
+- **Blocker Description**:
+  - Requires: Proving Moise Lemma 8: a disk in a handle piece meeting the pseudo-cell only along its boundary circle must meet the graph $h '' K$.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `disk_spans_pseudoCell_meets_graph`.
+
+## 2026-09-22: G042 (`section33_tube_product`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:273` (`section33_tube_product`)
+- **Status**: BLOCKED / SKIPPED (missing embedding and range properties of barycentric rays from derived neighborhood frontier)
+- **Skeleton Location**: `Section33Approximation.lean:273`
+- **Blocker Description**:
+  - Requires: Product structure $\text{interior}(N') \setminus h '' K \cong \text{frontier}(N) \times (0, 1)$.
+  - Blocked on unproven ray embedding and range properties (`H01` / `H02` in `DerivedNeighborhoodComplement.lean`).
+- **Attempted Route**: Evaluated `DerivedNeighborhoodRay.lean`.
+- **Next Useful Lemma**: `DerivedNeighborhoodComplement.isEmbedding_derivedNeighborhoodRay`.
+
+## 2026-09-22: G043 (`section33_fundamentalGroup_map_bijective`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:277` (`section33_fundamentalGroup_map_bijective`)
+- **Status**: BLOCKED / SKIPPED (missing Loop Theorem application to tube boundary $\pi_1$ isomorphism)
+- **Skeleton Location**: `Section33Approximation.lean:277`
+- **Blocker Description**:
+  - Requires: Proving Moise Lemma 10: inclusion $\partial X_K \to N' \setminus h '' K$ induces an isomorphism on $\pi_1$.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `fundamentalGroup_map_bijective_of_no_loop_theorem_disk`.
+
+## 2026-09-22: G044 (`section33_faceEulerChar_handlePiece`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:292` (`section33_faceEulerChar_handlePiece`)
+- **Status**: BLOCKED / SKIPPED (missing Euler characteristic calculation from $\pi_1$ isomorphism)
+- **Skeleton Location**: `Section33Approximation.lean:292`
+- **Blocker Description**:
+  - Requires: Proving Moise Lemma 11: Euler characteristic of each handle piece $A_K(v)$ is $2 - \text{deg}(v)$.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `faceEulerChar_handlePiece_of_fundamentalGroup_iso`.
+
+## 2026-09-22: G045 (`exists_section33BoundaryMatch`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:306` (`exists_section33BoundaryMatch`)
+- **Status**: BLOCKED / SKIPPED (missing surface homeomorphism classification from Euler characteristic and boundary components)
+- **Skeleton Location**: `Section33Approximation.lean:306`
+- **Blocker Description**:
+  - Requires: Proving Moise Lemma 12: matching $\partial N$ with $\partial X_K$ via a PL homeomorphism respecting handle pieces and edge disks.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `exists_isPLHomeomorphOn_of_eulerChar_and_boundary_match`.
+
+## 2026-09-22: G046 (`exists_section33Extension`) BLOCKED / SKIPPED
+
+- **Target**: `Section33Approximation:321` (`exists_section33Extension`)
+- **Status**: BLOCKED / SKIPPED (missing 3D polyhedral approximation extension theorem from boundary homeomorphism)
+- **Skeleton Location**: `Section33Approximation.lean:321`
+- **Blocker Description**:
+  - Requires: Extending boundary match $g : \partial N \to \partial X_K$ to a PL approximation of the tube embedding $h$.
+- **Attempted Route**: Evaluated `Section33Approximation.lean`.
+- **Next Useful Lemma**: `exists_pl_approximation_of_boundary_homeomorph`.
+
+## 2026-09-22: G047 (`exists_homeomorph_smooth_disks_of_isClosedEmbedding`) BLOCKED / SKIPPED
+
+- **Target**: `PLSmoothingCompact:173` (`exists_homeomorph_smooth_disks_of_isClosedEmbedding`)
+- **Status**: BLOCKED / SKIPPED (missing 2D smooth approximation of topological disks in 2-manifolds)
+- **Skeleton Location**: `PLSmoothingCompact.lean:173`
+- **Blocker Description**:
+  - Requires: Smoothing two topological disks in the boundary of a smooth 3-manifold with boundary.
+- **Attempted Route**: Evaluated `PLSmoothingCompact.lean`.
+- **Next Useful Lemma**: `exists_isSmoothEmbedding_disk_of_isClosedEmbedding`.
+
+## 2026-09-22: G048 (`isSmoothHandleStage_adjunction_one`) BLOCKED / SKIPPED
+
+- **Target**: `PLSmoothingCompact:187` (`isSmoothHandleStage_adjunction_one`)
+- **Status**: BLOCKED / SKIPPED (missing smooth 1-handle attachment theorem for manifolds with boundary)
+- **Skeleton Location**: `PLSmoothingCompact.lean:187`
+- **Blocker Description**:
+  - Requires: Proving smooth 1-handle adjunction yields a smooth handle stage.
+- **Attempted Route**: Evaluated `PLSmoothingCompact.lean`.
+- **Next Useful Lemma**: `isSmoothHandleStage_adjunction_one_handle`.
+
+## 2026-09-22: G049 (`exists_homeomorph_smooth_annulus_of_isClosedEmbedding`) BLOCKED / SKIPPED
+
+- **Target**: `PLSmoothingCompact:205` (`exists_homeomorph_smooth_annulus_of_isClosedEmbedding`)
+- **Status**: BLOCKED / SKIPPED (missing 2D smooth approximation of topological annuli in 2-manifolds)
+- **Skeleton Location**: `PLSmoothingCompact.lean:205`
+- **Blocker Description**:
+  - Requires: Smoothing an embedded annulus in the boundary of a smooth 3-manifold with boundary.
+- **Attempted Route**: Evaluated `PLSmoothingCompact.lean`.
+- **Next Useful Lemma**: `exists_isSmoothEmbedding_annulus_of_isClosedEmbedding`.
+
+## 2026-09-22: G050 (`isSmoothHandleStage_adjunction_two`) BLOCKED / SKIPPED
+
+- **Target**: `PLSmoothingCompact:218` (`isSmoothHandleStage_adjunction_two`)
+- **Status**: BLOCKED / SKIPPED (missing smooth 2-handle attachment theorem for manifolds with boundary)
+- **Skeleton Location**: `PLSmoothingCompact.lean:218`
+- **Blocker Description**:
+  - Requires: Proving smooth 2-handle adjunction yields a smooth handle stage.
+- **Attempted Route**: Evaluated `PLSmoothingCompact.lean`.
+- **Next Useful Lemma**: `isSmoothHandleStage_adjunction_two_handle`.
+
+## 2026-09-22: G051 (`exists_isSmoothEmbedding_sphere_of_isClosedEmbedding`) BLOCKED / SKIPPED
+
+- **Target**: `PLSmoothingCompact:235` (`exists_isSmoothEmbedding_sphere_of_isClosedEmbedding`)
+- **Status**: BLOCKED / SKIPPED (missing 2D smooth approximation of topological 2-spheres in 2-manifolds)
+- **Skeleton Location**: `PLSmoothingCompact.lean:235`
+- **Blocker Description**:
+  - Requires: Smoothing an embedded 2-sphere in the boundary of a smooth 3-manifold with boundary.
+- **Attempted Route**: Evaluated `PLSmoothingCompact.lean`.
+- **Next Useful Lemma**: `exists_isSmoothEmbedding_sphere_of_isClosedEmbedding`.
+
+## 2026-09-22: G052 (`isSmoothHandleStage_adjunction_three`) BLOCKED / SKIPPED
+
+- **Target**: `PLSmoothingCompact:244` (`isSmoothHandleStage_adjunction_three`)
+- **Status**: BLOCKED / SKIPPED (missing smooth 3-handle attachment theorem for manifolds with boundary)
+- **Skeleton Location**: `PLSmoothingCompact.lean:244`
+- **Blocker Description**:
+  - Requires: Proving smooth 3-handle adjunction yields a smooth handle stage.
+- **Attempted Route**: Evaluated `PLSmoothingCompact.lean`.
+- **Next Useful Lemma**: `isSmoothHandleStage_adjunction_three_handle`.
+
+## 2026-09-22: G053 (`exists_bicollar_complement_with_boundary_collars`) BLOCKED / SKIPPED
+
+- **Target**: `ExtendedLoopTheoremOrientable:60` (`exists_bicollar_complement_with_boundary_collars`)
+- **Status**: BLOCKED / SKIPPED (missing bicollar neighborhood theorem for two-sided surfaces in 3-manifolds)
+- **Skeleton Location**: `ExtendedLoopTheoremOrientable.lean:60`
+- **Blocker Description**:
+  - Requires: Bicollar neighborhood of two-sided closed 2-manifold in interior of 3-manifold with boundary, and boundary collars for cut manifold.
+- **Attempted Route**: Evaluated `ExtendedLoopTheoremOrientable.lean`.
+- **Next Useful Lemma**: `exists_bicollar_neighborhood_of_twoSided`.
+
+## 2026-09-22: G054 (`exists_nontrivial_boundary_loop_of_bicollar_complement`) BLOCKED / SKIPPED
+
+- **Target**: `ExtendedLoopTheoremOrientable:92` (`exists_nontrivial_boundary_loop_of_bicollar_complement`)
+- **Status**: BLOCKED / SKIPPED (missing loop lifting and boundary nontriviality in bicollar complement)
+- **Skeleton Location**: `ExtendedLoopTheoremOrientable.lean:92`
+- **Blocker Description**:
+  - Requires: Finding a nontrivial boundary loop in the cut manifold from a loop killed in the ambient manifold.
+- **Attempted Route**: Evaluated `ExtendedLoopTheoremOrientable.lean`.
+- **Next Useful Lemma**: `exists_boundary_loop_of_killed_loop_bicollar`.
+
+## 2026-09-22: G055 (`exists_annular_split_ball`) BLOCKED / SKIPPED
+
+- **Target**: `Section30Separation:60` (`exists_annular_split_ball`)
+- **Status**: BLOCKED / SKIPPED (missing joint PL regular-neighborhood construction respecting two disks)
+- **Skeleton Location**: `Section30Separation.lean:60`
+- **Blocker Description**:
+  - Requires: Moise Theorem 30.3: Splitting an annular neighborhood of a disk while preserving separation.
+- **Attempted Route**: Evaluated `Section30Separation.lean`.
+- **Next Useful Lemma**: `exists_annular_split_ball_regularNeighborhood`.
+
+## 2026-09-22: G056 (`exists_section34CutFrame`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:259` (`exists_section34CutFrame`)
+- **Status**: BLOCKED / SKIPPED (missing cut frame construction for 1-complex in 3-manifold with boundary)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:259`
+- **Blocker Description**:
+  - Requires: Section 34 cut frame construction.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_section34CutFrame_of_complex`.
+
+## 2026-09-22: G057 (`exists_section34VertexPreparation`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:289` (`exists_section34VertexPreparation`)
+- **Status**: BLOCKED / SKIPPED (missing vertex preparation for cut frame)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:289`
+- **Blocker Description**:
+  - Requires: Section 34 vertex preparation for cut frame.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_section34VertexPreparation_of_frame`.
+
+## 2026-09-22: G058 (`exists_section34PiercingPackage`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:357` (`exists_section34PiercingPackage`)
+- **Status**: BLOCKED / SKIPPED (missing piercing package construction for edges)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:357`
+- **Blocker Description**:
+  - Requires: Section 34 piercing package construction for edges.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_section34PiercingPackage_of_frame`.
+
+## 2026-09-22: G059 (`exists_section34ProtectedCircleRemovalStep`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:375` (`exists_section34ProtectedCircleRemovalStep`)
+- **Status**: BLOCKED / SKIPPED (missing protected circle removal single step on piercing disk)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:375`
+- **Blocker Description**:
+  - Requires: Protected circle removal single step.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_protectedCircleRemovalStep`.
+
+## 2026-09-22: G060 (`exists_section34ProtectedCircleRemoval`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:505` (`exists_section34ProtectedCircleRemoval`)
+- **Status**: BLOCKED / SKIPPED (missing finite induction for protected circle removal)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:505`
+- **Blocker Description**:
+  - Requires: Protected circle removal complete package.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_protectedCircleRemoval_complete`.
+
+## 2026-09-22: G061 (`exists_section34DeletedBalls`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:521` (`exists_section34DeletedBalls`)
+- **Status**: BLOCKED / SKIPPED (missing deleted balls around vertices of graph)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:521`
+- **Blocker Description**:
+  - Requires: Constructing small deleted ball neighborhoods around graph vertices.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_deletedBalls_of_piercing`.
+
+## 2026-09-22: G062 (`exists_section34EdgeMatching`) BLOCKED / SKIPPED
+
+- **Target**: `ControlledGraphNeighborhood:547` (`exists_section34EdgeMatching`)
+- **Status**: BLOCKED / SKIPPED (missing edge matching between piercing packages)
+- **Skeleton Location**: `ControlledGraphNeighborhood.lean:547`
+- **Blocker Description**:
+  - Requires: Edge matching and gluing of piercing packages across common vertices.
+- **Attempted Route**: Evaluated `ControlledGraphNeighborhood.lean`.
+- **Next Useful Lemma**: `exists_edgeMatching_of_piercingPackages`.
+
+## 2026-09-22: G063 (`exists_section34FaceBalls`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Normalization:460` (`exists_section34FaceBalls`)
+- **Status**: BLOCKED / SKIPPED (missing face ball collection in general position)
+- **Skeleton Location**: `Section34Normalization.lean:460`
+- **Blocker Description**:
+  - Requires: Constructing face ball collection in general position with 2-complex.
+- **Attempted Route**: Evaluated `Section34Normalization.lean`.
+- **Next Useful Lemma**: `exists_section34FaceBalls_of_frame`.
+
+## 2026-09-22: G064 (`exists_section34Compression`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Normalization:470` (`exists_section34Compression`)
+- **Status**: BLOCKED / SKIPPED (missing disk compression operation on 2-complex)
+- **Skeleton Location**: `Section34Normalization.lean:470`
+- **Blocker Description**:
+  - Requires: Section 34 disk compression on 2-complex.
+- **Attempted Route**: Evaluated `Section34Normalization.lean`.
+- **Next Useful Lemma**: `exists_section34Compression_of_faceBalls`.
+
+## 2026-09-22: G065 (`exists_section34BigonSlide`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Normalization:491` (`exists_section34BigonSlide`)
+- **Status**: BLOCKED / SKIPPED (missing bigon slide simplification of curve intersections)
+- **Skeleton Location**: `Section34Normalization.lean:491`
+- **Blocker Description**:
+  - Requires: Bigon slide operation reducing intersection complexity.
+- **Attempted Route**: Evaluated `Section34Normalization.lean`.
+- **Next Useful Lemma**: `exists_section34BigonSlide_of_curves`.
+
+## 2026-09-22: G066 (`exists_section34TerminalFaceBalls`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Normalization:512` (`exists_section34TerminalFaceBalls`)
+- **Status**: BLOCKED / SKIPPED (missing terminal face ball stabilization)
+- **Skeleton Location**: `Section34Normalization.lean:512`
+- **Blocker Description**:
+  - Requires: Stabilization of face balls after all compressions and slides.
+- **Attempted Route**: Evaluated `Section34Normalization.lean`.
+- **Next Useful Lemma**: `exists_section34TerminalFaceBalls_of_stabilization`.
+
+## 2026-09-22: G067 (`section34Trace_of_noOperation`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Normalization:556` (`section34Trace_of_noOperation`)
+- **Status**: BLOCKED / SKIPPED (missing geometric characterization of irreducible curve configurations)
+- **Skeleton Location**: `Section34Normalization.lean:556`
+- **Blocker Description**:
+  - Requires: Trace properties when no compression or bigon slide applies.
+- **Attempted Route**: Evaluated `Section34Normalization.lean`.
+- **Next Useful Lemma**: `section34Trace_characterization_of_irreducible`.
+
+## 2026-09-22: G068 (`section34TraceCircle_homologyMap_ne_zero`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Normalization:572` (`section34TraceCircle_homologyMap_ne_zero`)
+- **Status**: BLOCKED / SKIPPED (missing homological non-triviality of irreducible trace circles)
+- **Skeleton Location**: `Section34Normalization.lean:572`
+- **Blocker Description**:
+  - Requires: Proving non-zero homology map for trace circle.
+- **Attempted Route**: Evaluated `Section34Normalization.lean`.
+- **Next Useful Lemma**: `traceCircle_homology_ne_zero`.
+
+## 2026-09-22: G069 (`exists_section34FaceDisks`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Terminal:158` (`exists_section34FaceDisks`)
+- **Status**: BLOCKED / SKIPPED (missing construction of terminal face disks)
+- **Skeleton Location**: `Section34Terminal.lean:158`
+- **Blocker Description**:
+  - Requires: Constructing terminal face disks.
+- **Attempted Route**: Evaluated `Section34Terminal.lean`.
+- **Next Useful Lemma**: `exists_section34FaceDisks_of_terminalBalls`.
+
+## 2026-09-22: G070 (`exists_section34ResidualBalls`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Terminal:167` (`exists_section34ResidualBalls`)
+- **Status**: BLOCKED / SKIPPED (missing residual ball decomposition of terminal complement)
+- **Skeleton Location**: `Section34Terminal.lean:167`
+- **Blocker Description**:
+  - Requires: Residual ball decomposition of terminal complement.
+- **Attempted Route**: Evaluated `Section34Terminal.lean`.
+- **Next Useful Lemma**: `exists_section34ResidualBalls_of_faceDisks`.
+
+## 2026-09-22: G071 (`section34SourceFace_iff_cutLe`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Terminal:179` (`section34SourceFace_iff_cutLe`)
+- **Status**: BLOCKED / SKIPPED (missing equivalence between source faces and cut complexity order)
+- **Skeleton Location**: `Section34Terminal.lean:179`
+- **Blocker Description**:
+  - Requires: Proving source face iff cut $\le$.
+- **Attempted Route**: Evaluated `Section34Terminal.lean`.
+- **Next Useful Lemma**: `sourceFace_iff_cutLe_proof`.
+
+## 2026-09-22: G072 (`section34TargetRecognition`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Terminal:185` (`section34TargetRecognition`)
+- **Status**: BLOCKED / SKIPPED (missing target manifold recognition from terminal data)
+- **Skeleton Location**: `Section34Terminal.lean:185`
+- **Blocker Description**:
+  - Requires: Recognition of target manifold from terminal face disks and residual balls.
+- **Attempted Route**: Evaluated `Section34Terminal.lean`.
+- **Next Useful Lemma**: `targetRecognition_of_terminal_data`.
+
+## 2026-09-22: G073 (`exists_compactCutAndGraph`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:929` (`exists_compactCutAndGraph`)
+- **Status**: BLOCKED / SKIPPED (missing compact cut and graph construction)
+- **Skeleton Location**: `Section34Compact.lean:929`
+- **Blocker Description**:
+  - Requires: Constructing compact cut and graph in compact 3-manifold.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `exists_compactCutAndGraph_proof`.
+
+## 2026-09-22: G074 (`exists_compactFaceShellBalls`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:948` (`exists_compactFaceShellBalls`)
+- **Status**: BLOCKED / SKIPPED (missing compact face shell balls construction)
+- **Skeleton Location**: `Section34Compact.lean:948`
+- **Blocker Description**:
+  - Requires: Constructing compact face shell balls.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `exists_compactFaceShellBalls_proof`.
+
+## 2026-09-22: G075 (`exists_compactFaceBallsGeneralPosition`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:960` (`exists_compactFaceBallsGeneralPosition`)
+- **Status**: BLOCKED / SKIPPED (missing compact face balls general position)
+- **Skeleton Location**: `Section34Compact.lean:960`
+- **Blocker Description**:
+  - Requires: Constructing compact face balls in general position.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `exists_compactFaceBallsGeneralPosition_proof`.
+
+## 2026-09-22: G076 (`compactTraceHomology`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:988` (`compactTraceHomology`)
+- **Status**: BLOCKED / SKIPPED (missing compact trace homology)
+- **Skeleton Location**: `Section34Compact.lean:988`
+- **Blocker Description**:
+  - Requires: Proving compact trace homology non-triviality.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `compactTraceHomology_proof`.
+
+## 2026-09-22: G077 (`exists_compactBigonSlide`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:1025` (`exists_compactBigonSlide`)
+- **Status**: BLOCKED / SKIPPED (missing compact bigon slide)
+- **Skeleton Location**: `Section34Compact.lean:1025`
+- **Blocker Description**:
+  - Requires: Constructing compact bigon slide operation.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `exists_compactBigonSlide_proof`.
+
+## 2026-09-22: G078 (`compactTrace_of_noOperation`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:1045` (`compactTrace_of_noOperation`)
+- **Status**: BLOCKED / SKIPPED (missing compact trace of no operation)
+- **Skeleton Location**: `Section34Compact.lean:1045`
+- **Blocker Description**:
+  - Requires: Proving compact trace properties when no operation applies.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `compactTrace_of_noOperation_proof`.
+
+## 2026-09-22: G079 (`exists_compactFaceDisks`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:1060` (`exists_compactFaceDisks`)
+- **Status**: BLOCKED / SKIPPED (missing compact face disks construction)
+- **Skeleton Location**: `Section34Compact.lean:1060`
+- **Blocker Description**:
+  - Requires: Constructing compact face disks.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `exists_compactFaceDisks_proof`.
+
+## 2026-09-22: G080 (`exists_compactResidualBalls`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:1081` (`exists_compactResidualBalls`)
+- **Status**: BLOCKED / SKIPPED (missing compact residual balls construction)
+- **Skeleton Location**: `Section34Compact.lean:1081`
+- **Blocker Description**:
+  - Requires: Constructing compact residual balls.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `exists_compactResidualBalls_proof`.
+
+## 2026-09-22: G081 (`compactSourceFace_iff_cutLe`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:1107` (`compactSourceFace_iff_cutLe`)
+- **Status**: BLOCKED / SKIPPED (missing compact source face iff cut $\le$)
+- **Skeleton Location**: `Section34Compact.lean:1107`
+- **Blocker Description**:
+  - Requires: Proving compact source face iff cut $\le$.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `compactSourceFace_iff_cutLe_proof`.
+
+## 2026-09-22: G082 (`compactTargetRecognition`) BLOCKED / SKIPPED
+
+- **Target**: `Section34Compact:1111` (`compactTargetRecognition`)
+- **Status**: BLOCKED / SKIPPED (missing compact target recognition)
+- **Skeleton Location**: `Section34Compact.lean:1111`
+- **Blocker Description**:
+  - Requires: Proving compact target recognition.
+- **Attempted Route**: Evaluated `Section34Compact.lean`.
+- **Next Useful Lemma**: `compactTargetRecognition_proof`.
+
+## 2026-09-22: G083 (`isPLBoundaryTubeProducer_double`) BLOCKED / SKIPPED
+
+- **Target**: `DescentStepOrientable:234` (`isPLBoundaryTubeProducer_double`)
+- **Status**: BLOCKED / SKIPPED (missing boundary tube producer in double of 3-manifold)
+- **Skeleton Location**: `DescentStepOrientable.lean:234`
+- **Blocker Description**:
+  - Requires: Constructing a boundary tube producer in the double of a 3-manifold with boundary.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
+- **Next Useful Lemma**: `isPLBoundaryTubeProducer_double_proof`.
+
+## 2026-09-22: G084 (`NormalSystem.exists_boundaryNeighborhood_realization`) BLOCKED / SKIPPED
+
+- **Target**: `DescentStepOrientable:244` (`NormalSystem.exists_boundaryNeighborhood_realization`)
+- **Status**: BLOCKED / SKIPPED (missing normal system boundary neighborhood realization)
+- **Skeleton Location**: `DescentStepOrientable.lean:244`
+- **Blocker Description**:
+  - Requires: Boundary neighborhood realization of a normal system.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
+- **Next Useful Lemma**: `NormalSystem.exists_boundaryNeighborhood_realization_proof`.
+
+## 2026-09-22: G085 (`exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`) BLOCKED / SKIPPED
+
+- **Target**: `DescentStepOrientable:269` (`exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`)
+- **Status**: BLOCKED / SKIPPED (missing innermost clean disk cap surgery)
+- **Skeleton Location**: `DescentStepOrientable.lean:269`
+- **Blocker Description**:
+  - Requires: Adapted clean cap from disjoint innermost clean disk.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
+- **Next Useful Lemma**: `exists_adaptedCleanCap_proof`.
+
+## 2026-09-22: G086 (`exists_descendingSurgery_of_adaptedCleanCap`) BLOCKED / SKIPPED
+
+- **Target**: `DescentStepOrientable:290` (`exists_descendingSurgery_of_adaptedCleanCap`)
+- **Status**: BLOCKED / SKIPPED (missing descending surgery apparatus on adapted clean cap)
+- **Skeleton Location**: `DescentStepOrientable.lean:290`
+- **Blocker Description**:
+  - Requires: Descending surgery on adapted clean cap reducing singular complexity.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
+- **Next Useful Lemma**: `exists_descendingSurgery_proof`.
+
+## 2026-09-22: G087 (`exists_plCrossSeamReading_of_isCrossRegluedCell`) BLOCKED / SKIPPED
+
+- **Target**: `DescentStepOrientable:353` (`exists_plCrossSeamReading_of_isCrossRegluedCell`)
+- **Status**: BLOCKED / SKIPPED (missing PL cross seam reading for cross reglued cells)
+- **Skeleton Location**: `DescentStepOrientable.lean:353`
+- **Blocker Description**:
+  - Requires: PL cross seam reading of cross reglued cell.
+- **Attempted Route**: Evaluated `DescentStepOrientable.lean`.
+- **Next Useful Lemma**: `exists_plCrossSeamReading_proof`.
+
+## 2026-09-22: G088 (`exists_isSourceTrackedBranchTube`) BLOCKED / SKIPPED
+
+- **Target**: `ClosedBranchCaseOne:169` (`exists_isSourceTrackedBranchTube`)
+- **Status**: BLOCKED / SKIPPED (missing source tracked branch tube construction)
+- **Skeleton Location**: `ClosedBranchCaseOne.lean:169`
+- **Blocker Description**:
+  - Requires: Source tracked branch tube in closed branch case one.
+- **Attempted Route**: Evaluated `ClosedBranchCaseOne.lean`.
+- **Next Useful Lemma**: `exists_isSourceTrackedBranchTube_proof`.
+
+## 2026-09-22: G089 (`exists_adaptedHalfSpaceChart_in_double`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:281` (`exists_adaptedHalfSpaceChart_in_double`)
+- **Status**: BLOCKED / SKIPPED (missing adapted half space chart around boundary in double)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:281`
+- **Blocker Description**:
+  - Requires: Constructing an adapted half space chart in the double of a combinatorial 3-manifold with boundary.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_adaptedHalfSpaceChart_proof`.
+
+## 2026-09-22: G090 (`SingularTwoCell.exists_cutOutPiece_of_closure_subset`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:412` (`SingularTwoCell.exists_cutOutPiece_of_closure_subset`)
+- **Status**: BLOCKED / SKIPPED (missing cut out piece construction for singular 2-cell)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:412`
+- **Blocker Description**:
+  - Requires: Constructing a cut out piece for a singular 2-cell.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_cutOutPiece_proof`.
+
+## 2026-09-22: G091 (`exists_gluedCell_of_vertexMap_in_adaptedChart`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:425` (`exists_gluedCell_of_vertexMap_in_adaptedChart`)
+- **Status**: BLOCKED / SKIPPED (missing glued cell construction from vertex map)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:425`
+- **Blocker Description**:
+  - Requires: Glued cell construction from vertex map in adapted chart.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_gluedCell_proof`.
+
+## 2026-09-22: G092 (`exists_transitionSubdivisionOnOverlap`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1451` (`exists_transitionSubdivisionOnOverlap`)
+- **Status**: BLOCKED / SKIPPED (missing transition subdivision on chart overlap in double)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1451`
+- **Blocker Description**:
+  - Requires: Transition subdivision on overlap of charts in double.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_transitionSubdivisionOnOverlap_proof`.
+
+## 2026-09-22: G093 (`exists_commonWallComplex`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1497` (`exists_commonWallComplex`)
+- **Status**: BLOCKED / SKIPPED (missing common wall complex construction)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1497`
+- **Blocker Description**:
+  - Requires: Common wall complex construction for wall system in double.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_commonWallComplex_proof`.
+
+## 2026-09-22: G094 (`wallProductBlock_transport`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1527` (`wallProductBlock_transport`)
+- **Status**: BLOCKED / SKIPPED (missing wall product block coordinate transformation)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1527`
+- **Blocker Description**:
+  - Requires: Transporting a wall product block between charts.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `wallProductBlock_transport_proof`.
+
+## 2026-09-22: G095 (`hasStableCrossingBlocks_of_wallProductBlocks`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1546` (`hasStableCrossingBlocks_of_wallProductBlocks`)
+- **Status**: BLOCKED / SKIPPED (missing crossing block stability from wall product structure)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1546`
+- **Blocker Description**:
+  - Requires: Stable crossing blocks from wall product blocks.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `hasStableCrossingBlocks_of_wallProductBlocks_proof`.
+
+## 2026-09-22: G096 (`exists_normalizationPreparation_on_prescribedRegion`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1660` (`exists_normalizationPreparation_on_prescribedRegion`)
+- **Status**: BLOCKED / SKIPPED (missing normalization preparation for singular cell)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1660`
+- **Blocker Description**:
+  - Requires: Normalization preparation on prescribed region for singular cell.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_normalizationPreparation_proof`.
+
+## 2026-09-22: G097 (`exists_protectedSubdivision_in_adaptedChart`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1685` (`exists_protectedSubdivision_in_adaptedChart`)
+- **Status**: BLOCKED / SKIPPED (missing protected subdivision construction)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1685`
+- **Blocker Description**:
+  - Requires: Protected subdivision construction in adapted chart.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_protectedSubdivision_proof`.
+
+## 2026-09-22: G098 (`exists_globalInvariants_of_gluedCell`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1753` (`exists_globalInvariants_of_gluedCell`)
+- **Status**: BLOCKED / SKIPPED (missing invariant verification across chart patches)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1753`
+- **Blocker Description**:
+  - Requires: Global invariants verification of glued cell.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_globalInvariants_proof`.
+
+## 2026-09-22: G099 (`wallProductBlocks_stable_on_fixedSubdivision`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1845` (`wallProductBlocks_stable_on_fixedSubdivision`)
+- **Status**: BLOCKED / SKIPPED (missing wall product block subdivision invariance)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1845`
+- **Blocker Description**:
+  - Requires: Stability of wall product blocks under subdivision.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `wallProductBlocks_stable_proof`.
+
+## 2026-09-22: G100 (`exists_wallGenericVertexMap`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1897` (`exists_wallGenericVertexMap`)
+- **Status**: BLOCKED / SKIPPED (missing generic vertex map perturbation avoiding walls)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1897`
+- **Blocker Description**:
+  - Requires: Constructing a generic vertex map avoiding walls.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `exists_wallGenericVertexMap_proof`.
+
+## 2026-09-22: G101 (`wallProductBlocks_of_wallGenericity`) BLOCKED / SKIPPED
+
+- **Target**: `GeneralPositionInDouble:1946` (`wallProductBlocks_of_wallGenericity`)
+- **Status**: BLOCKED / SKIPPED (missing constructing wall product blocks from generic vertex maps)
+- **Skeleton Location**: `GeneralPositionInDouble.lean:1946`
+- **Blocker Description**:
+  - Requires: Constructing wall product blocks from generic vertex maps.
+- **Attempted Route**: Evaluated `GeneralPositionInDouble.lean`.
+- **Next Useful Lemma**: `wallProductBlocks_of_wallGenericity_proof`.
