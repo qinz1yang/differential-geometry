@@ -135,6 +135,99 @@ private local instance pullbackCompleteSpace {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
+theorem TerminalLimitMetric.eventually_moving_scalar_normalized_pullback_difference
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ}
+    (hτ : Tendsto τ atTop (𝓝[<] s))
+    {K : Set G.terminalRegularOpen} (hK : IsCompact K)
+    {Q Q' : ℕ → ℝ} (hQ : ∀ n, 0 < Q n) (hQ' : ∀ n, 0 < Q' n)
+    {qmin qmax : ℝ} (hqmin : 0 < qmin)
+    (hrange : ∀ᶠ n in atTop, qmin ≤ Q n ∧ Q n ≤ qmax)
+    (hscale : Tendsto (fun n => Q' n - Q n) atTop (𝓝 0))
+    {E H X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    [TopologicalSpace X] [ChartedSpace H X] [IsManifold I ∞ X] [T2Space X]
+    (V : ℕ → TopologicalSpace.Opens G.terminalRegularOpen)
+    (Φ : ∀ n, X ≃ₘ⟮I, ThreeModel⟯ V n)
+    (T : Set X) (hT : IsCompact T) (U : ℕ → Set X) (hU : ∀ n, IsOpen (U n))
+    (hTU : ∀ n, T ⊆ U n)
+    (himage : ∀ᶠ n in atTop, ∀ x ∈ T,
+      (Φ n x).1 ∈ K)
+    (gRef : SmoothRiemannianMetric I X) (p : ℕ) :
+    let gSource := fun n => Diffeomorph.pullbackMetricCross
+      (((G.flow.base.metric (τ n)).restrictOpen G.terminalRegularOpen).restrictOpen (V n))
+      (Φ n)
+    (∀ᶠ n in atTop, ∀ x ∈ U n, ∀ j ≤ p,
+      metricDerivNorm j (scaleMetric (Q n) (hQ n) (gSource n))
+        gRef gRef x ≤ 1 / 4) →
+    ∀ ε : ℝ, 0 < ε → ∀ᶠ n in atTop,
+      metricDerivNormSupOn T p
+        (scaleMetric (Q n) (hQ n) (gSource n))
+        (scaleMetric (Q' n) (hQ' n)
+          (Diffeomorph.pullbackMetricCross (L.metric.restrictOpen (V n)) (Φ n))) gRef < ε := by
+  intro gSource hclose ε hε
+  obtain ⟨C, B, hC, hB, hcontrol⟩ :=
+    exists_uniform_reference_bounds_of_scaled_metric_jets (I := I) (M := X)
+      (qmax := qmax) p hqmin
+  have hequiv : ∀ᶠ n in atTop, ∀ x ∈ U n, ∀ v : TangentSpace I x,
+      C⁻¹ * (gSource n).inner x v v ≤ gRef.inner x v v ∧
+        gRef.inner x v v ≤ C * (gSource n).inner x v v := by
+    filter_upwards [hrange, hclose] with n hn hc
+    exact (hcontrol (U n) (hU n) (gSource n) gRef (Q n) (hQ n) hn.1 hn.2 hc).1
+  have hjets : ∀ᶠ n in atTop, ∀ x ∈ U n, ∀ j : ℕ, 1 ≤ j → j ≤ p →
+      Real.sqrt (normSq0S gRef x (2 + j)
+        (iterCov (gSource n) 2 (metricTensorField gRef) j x)) ≤ B := by
+    filter_upwards [hrange, hclose] with n hn hc
+    exact (hcontrol (U n) (hU n) (gSource n) gRef (Q n) (hQ n) hn.1 hn.2 hc).2
+  have hterminal := L.eventually_metricDerivNormSupOn_varying_pullbacks hK hτ V Φ T U hU hTU
+    himage gRef p hC hB hQ (hrange.mono fun _ hn => hn.2) hequiv hjets
+  let Z := (2 + Real.sqrt (Module.finrank ℝ E : ℝ)) / qmin
+  have hZ : 0 ≤ Z := by dsimp [Z]; positivity
+  have hweight : Tendsto (fun n => |Q n - Q' n| * Z) atTop (𝓝 0) := by
+    simpa only [abs_sub_comm (Q' _) (Q _), abs_zero, zero_mul] using hscale.abs.mul_const Z
+  have hsmall : ∀ᶠ n in atTop, |Q n - Q' n| * Z < ε / 4 :=
+    hweight.eventually_lt_const (by positivity)
+  filter_upwards [hterminal (ε / 4) (by positivity), hterminal 1 (by norm_num),
+    hclose, hrange, hsmall] with n ht htone hc hr hs
+  let gTerm := Diffeomorph.pullbackMetricCross (L.metric.restrictOpen (V n)) (Φ n)
+  have hcov : ∀ j ≤ p, ∀ x ∈ T, metricCovDerivNorm j gTerm gRef x ≤ Z := by
+    intro j hj x hx
+    have hb := covNorm_le_add j (scaleMetric (Q n) (hQ n) (gSource n)) gRef gRef x
+    have hself : metricCovDerivNorm j gRef gRef x ≤ Real.sqrt (Module.finrank ℝ E : ℝ) := by
+      cases j with
+      | zero => rw [metricCovDerivNorm_self_zero]
+      | succ j => rw [covNorm_self_succ]; positivity
+    have hscaled : metricCovDerivNorm j (scaleMetric (Q n) (hQ n) (gSource n)) gRef x ≤
+        1 + Real.sqrt (Module.finrank ℝ E : ℝ) := by
+      have hpoint := hc x (hTU n hx) j hj
+      linarith
+    have hdiff : metricDerivNorm j (scaleMetric (Q n) (hQ n) gTerm)
+        (scaleMetric (Q n) (hQ n) (gSource n)) gRef x < 1 := by
+      rw [metricDerivNorm_symm]
+      exact (derivNorm_le_sup hT hj _ _ _ hx).trans_lt htone
+    have hbound := covNorm_le_add j (scaleMetric (Q n) (hQ n) gTerm)
+      (scaleMetric (Q n) (hQ n) (gSource n)) gRef x
+    rw [metricCovDerivNorm_scaleMetric_left] at hbound
+    have hterm : Q n * metricCovDerivNorm j gTerm gRef x ≤
+        2 + Real.sqrt (Module.finrank ℝ E : ℝ) := by linarith
+    have hn : 0 ≤ metricCovDerivNorm j gTerm gRef x := Real.sqrt_nonneg _
+    apply (le_div_iff₀ hqmin).mpr
+    have hlow := mul_le_mul_of_nonneg_right hr.1 hn
+    nlinarith
+  apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall T p _ _ gRef (ε / 2)
+    (half_pos hε).le ?_) (by linarith)
+  intro j hj x hx
+  have hchange : metricDerivNorm j (scaleMetric (Q n) (hQ n) gTerm)
+      (scaleMetric (Q' n) (hQ' n) gTerm) gRef x < ε / 4 := by
+    rw [metricDerivNorm_scaleMetric_same_metric]
+    exact (mul_le_mul_of_nonneg_left (hcov j hj x hx) (abs_nonneg _)).trans_lt hs
+  have hlim : metricDerivNorm j (scaleMetric (Q n) (hQ n) (gSource n))
+      (scaleMetric (Q n) (hQ n) gTerm) gRef x < ε / 4 :=
+    (derivNorm_le_sup hT hj _ _ _ hx).trans_lt ht
+  have htri := metricDerivNorm_triangle j
+    (scaleMetric (Q n) (hQ n) (gSource n)) (scaleMetric (Q n) (hQ n) gTerm)
+    (scaleMetric (Q' n) (hQ' n) gTerm) gRef x
+  linarith
+
 theorem TerminalLimitMetric.eventually_scalar_normalized_pullback_difference
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ}
     (hτ : Tendsto τ atTop (𝓝[<] s))
@@ -162,86 +255,68 @@ theorem TerminalLimitMetric.eventually_scalar_normalized_pullback_difference
         (scaleMetric (Q n) (hQ n) (gSource n))
         (scaleMetric (Qlim) hQlim
           (Diffeomorph.pullbackMetricCross (L.metric.restrictOpen (V n)) (Φ n))) gRef < ε := by
-  intro gSource hclose ε hε
   have hrange : ∀ᶠ n in atTop, Qlim / 2 ≤ Q n ∧ Q n ≤ Qlim + 1 := by
     filter_upwards [hscale.eventually (Ioo_mem_nhds
       (show Qlim / 2 < Qlim by linarith) (lt_add_one Qlim))] with n hn
     exact ⟨hn.1.le, hn.2.le⟩
-  obtain ⟨C, B, hC, hB, hcontrol⟩ :=
-    exists_uniform_reference_bounds_of_scaled_metric_jets (I := I) (M := X)
-      (qmax := Qlim + 1) p (half_pos hQlim)
-  have hequiv : ∀ᶠ n in atTop, ∀ x ∈ U n, ∀ v : TangentSpace I x,
-      C⁻¹ * (gSource n).inner x v v ≤ gRef.inner x v v ∧
-        gRef.inner x v v ≤ C * (gSource n).inner x v v := by
-    filter_upwards [hrange, hclose] with n hn hc
-    exact (hcontrol (U n) (hU n) (gSource n) gRef (Q n) (hQ n) hn.1 hn.2 hc).1
-  have hjets : ∀ᶠ n in atTop, ∀ x ∈ U n, ∀ j : ℕ, 1 ≤ j → j ≤ p →
-      Real.sqrt (normSq0S gRef x (2 + j)
-        (iterCov (gSource n) 2 (metricTensorField gRef) j x)) ≤ B := by
-    filter_upwards [hrange, hclose] with n hn hc
-    exact (hcontrol (U n) (hU n) (gSource n) gRef (Q n) (hQ n) hn.1 hn.2 hc).2
-  have hterminal := L.eventually_metricDerivNormSupOn_varying_pullbacks hK hτ V Φ T U hU hTU
-    himage gRef p hC hB (Q := fun _ => Qlim) (fun _ => hQlim)
-    (Qmax := Qlim) (Eventually.of_forall fun _ => le_rfl) hequiv hjets
-    (ε / 4) (by positivity)
-  let Z := (1 + Real.sqrt (Module.finrank ℝ E : ℝ)) / (Qlim / 2)
-  have hZ : 0 ≤ Z := by dsimp [Z]; positivity
-  have hweight : Tendsto (fun n => |Q n - Qlim| * Z) atTop (𝓝 0) := by
-    simpa only [sub_self, abs_zero, zero_mul] using
-      (hscale.sub_const Qlim).abs.mul_const Z
-  have hsmall : ∀ᶠ n in atTop, |Q n - Qlim| * Z < ε / 4 :=
-    hweight.eventually_lt_const (by positivity)
-  filter_upwards [hterminal, hclose, hrange, hsmall] with n ht hc hr hs
-  let gTerm := Diffeomorph.pullbackMetricCross (L.metric.restrictOpen (V n)) (Φ n)
-  have hcov : ∀ j ≤ p, ∀ x ∈ T, metricCovDerivNorm j (gSource n) gRef x ≤ Z := by
-    intro j hj x hx
-    have hb := covNorm_le_add j (scaleMetric (Q n) (hQ n) (gSource n)) gRef gRef x
-    rw [metricCovDerivNorm_scaleMetric_left] at hb
-    have hself : metricCovDerivNorm j gRef gRef x ≤ Real.sqrt (Module.finrank ℝ E : ℝ) := by
-      cases j with
-      | zero => rw [metricCovDerivNorm_self_zero]
-      | succ j => rw [covNorm_self_succ]; positivity
-    have hscaled : Q n * metricCovDerivNorm j (gSource n) gRef x ≤
-        1 + Real.sqrt (Module.finrank ℝ E : ℝ) := by
-      have hpoint := hc x (hTU n hx) j hj
-      linarith
-    have hn : 0 ≤ metricCovDerivNorm j (gSource n) gRef x := Real.sqrt_nonneg _
-    apply (le_div_iff₀ (half_pos hQlim)).mpr
-    have hlow := mul_le_mul_of_nonneg_right hr.1 hn
-    nlinarith
-  apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall T p _ _ gRef (ε / 2)
-    (half_pos hε).le ?_) (by linarith)
-  intro j hj x hx
-  have hchange : metricDerivNorm j (scaleMetric (Q n) (hQ n) (gSource n))
-      (scaleMetric Qlim hQlim (gSource n)) gRef x < ε / 4 := by
-    rw [metricDerivNorm_scaleMetric_same_metric]
-    exact (mul_le_mul_of_nonneg_left (hcov j hj x hx) (abs_nonneg _)).trans_lt hs
-  have hlim : metricDerivNorm j (scaleMetric Qlim hQlim (gSource n))
-      (scaleMetric Qlim hQlim gTerm) gRef x < ε / 4 :=
-    (derivNorm_le_sup hT hj _ _ _ hx).trans_lt ht
-  have htri := metricDerivNorm_triangle j
-    (scaleMetric (Q n) (hQ n) (gSource n)) (scaleMetric Qlim hQlim (gSource n))
-    (scaleMetric Qlim hQlim gTerm) gRef x
-  linarith
+  have hdifference : Tendsto (fun n => Qlim - Q n) atTop (𝓝 0) := by
+    simpa only [sub_self] using (tendsto_const_nhds (x := Qlim)).sub hscale
+  exact L.eventually_moving_scalar_normalized_pullback_difference hτ hK hQ
+    (fun _ => hQlim) (half_pos hQlim) hrange hdifference V Φ T hT U hU hTU himage gRef p
 
 private local instance neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen NeckCylinderModel
       (neckBuffer δ).isOpen)
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
+private theorem scalar_difference_tendsto_zero
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
-    (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
+    {K : Set G.terminalRegularOpen} (hK : IsCompact K)
+    (x : ℕ → G.terminalRegularOpen) (hx : ∀ᶠ n in atTop, x n ∈ K) :
+    Tendsto (fun n => metricScalarAt L.metric (x n) - G.flow.scalar (τ n) (x n).val)
+      atTop (𝓝 0) := by
+  apply Metric.tendsto_nhds.mpr
+  intro eta heta
+  filter_upwards [hx, hτ.eventually (L.eventually_scalar_close_on_compact hK heta)] with n hn hc
+  rw [Real.dist_eq, sub_zero, abs_sub_comm]
+  exact hc (x n) hn
+
+private theorem center_mem_compact
+    {τ : ℕ → ℝ} (x : ℕ → G.terminalRegularOpen)
+    {eps δ : ℝ} (hδ : 0 < δ)
+    (neck : ∀ n, Perelman.CanonicalNeighborhood.FiniteHorn.StrongNeck G.flow eps (x n).val (τ n))
+    {K : Set G.terminalRegularOpen}
+    (hcapture : ∀ᶠ n in atTop, ∀ z ∈ neckClosedTest δ,
+      (neck n).map z.1 ∈ Subtype.val '' K) :
+    ∀ᶠ n in atTop, x n ∈ K := by
+  filter_upwards [hcapture] with n hn
+  let z : neckBuffer δ := ⟨((neck n).center, 0), by
+    have := inv_pos.mpr hδ
+    constructor <;> linarith⟩
+  have hz : z ∈ neckClosedTest δ := by
+    change -δ⁻¹ ≤ (0 : ℝ) ∧ (0 : ℝ) ≤ δ⁻¹
+    constructor <;> linarith [inv_pos.mpr hδ]
+  obtain ⟨y, hy, heq⟩ := hn z hz
+  have he : y = x n := Subtype.ext (heq.trans (neck n).center_eq)
+  exact he ▸ hy
+
+
+theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_strongNecks
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    (x : ℕ → G.terminalRegularOpen) (hx : ∀ n, 0 < metricScalarAt L.metric (x n))
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
     (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (k : ℕ) (hk : k ≤ ⌈eps⁻¹⌉₊)
-    (neck : ∀ n, Perelman.CanonicalNeighborhood.FiniteHorn.StrongNeck G.flow eps x.1 (τ n))
+    (neck : ∀ n, Perelman.CanonicalNeighborhood.FiniteHorn.StrongNeck G.flow eps (x n).1 (τ n))
     (hregular : ∀ n, ∀ z : neckBuffer δ,
       (neck n).map z.1 ∈ G.terminalRegularRegion)
     {K : Set G.terminalRegularOpen} (hK : IsCompact K)
     (hcapture : ∀ᶠ n in atTop, ∀ z ∈ neckClosedTest δ,
-      (neck n).map z.1 ∈ Subtype.val '' K) :
+      (neck n).map z.1 ∈ Subtype.val '' K)
+    {qmin qmax : ℝ} (hqmin : 0 < qmin)
+    (hrange : ∀ᶠ n in atTop,
+      qmin ≤ G.flow.scalar (τ n) (x n).val ∧ G.flow.scalar (τ n) (x n).val ≤ qmax) :
     ∀ᶠ n in atTop, ∃ N : NormalizedNeck L.metric δ k,
-      N.center = x ∧ N.sphereMark = (neck n).center ∧
+      N.center = x n ∧ N.sphereMark = (neck n).center ∧
         ∀ z, (N.chart z).1 = (neck n).map z.1 := by
   classical
   have hcharts := fun n => (neck n).exists_terminal_neckBuffer_pullback_bound
@@ -251,10 +326,12 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
   let gSource := fun n => Diffeomorph.pullbackMetricCross
     (((G.flow.base.metric (τ n)).restrictOpen G.terminalRegularOpen).restrictOpen (V n))
     (Φ n)
-  let Q := fun n => G.flow.scalar (τ n) x.1
+  let Q := fun n => G.flow.scalar (τ n) (x n).1
   have hQ : ∀ n, 0 < Q n := fun n => (neck n).Q_pos
-  let Qlim := metricScalarAt L.metric x
-  have hscale : Tendsto Q atTop (𝓝 Qlim) := (L.tendsto_metricScalarAt x).comp hτ
+  let Qterm := fun n => metricScalarAt L.metric (x n)
+  have hxK : ∀ᶠ n in atTop, x n ∈ K := center_mem_compact x hδ neck hcapture
+  have hscale : Tendsto (fun n => Qterm n - Q n) atTop (𝓝 0) :=
+    scalar_difference_tendsto_zero L hτ hK x hxK
   have himage : ∀ᶠ n in atTop, ∀ z ∈ neckClosedTest δ, (Φ n z).1 ∈ K := by
     filter_upwards [hcapture] with n hn
     intro z hz
@@ -265,12 +342,13 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
   have hclose : ∀ᶠ n in atTop, ∀ z ∈ (univ : Set (neckBuffer δ)), ∀ j ≤ k,
       metricDerivNorm j (scaleMetric (Q n) (hQ n) (gSource n)) gC gC z ≤ 1 / 4 :=
     Eventually.of_forall fun n z _ j hj => (hsource n j (hj.trans hk) z).trans heps
-  have hnorm := L.eventually_scalar_normalized_pullback_difference hτ hK hQ hx hscale
+  have hnorm := L.eventually_moving_scalar_normalized_pullback_difference
+    hτ hK hQ hx hqmin hrange hscale
     V Φ (neckClosedTest δ) (isCompact_neckClosedTest δ) (fun _ => univ)
     (fun _ => isOpen_univ) (fun _ => subset_univ _) himage gC k hclose
     ((δ - eps) / 2) (by linarith)
   filter_upwards [hnorm] with n hn
-  let gN := scaleMetric Qlim hx
+  let gN := scaleMetric (Qterm n) (hx n)
     (Diffeomorph.pullbackMetricCross (L.metric.restrictOpen (V n)) (Φ n))
   have hterminal : metricDerivNormSupOn (neckClosedTest δ) k gN gC gC < δ := by
     apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall (neckClosedTest δ) k
@@ -298,35 +376,60 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
     · simp [ThreeSpace]
   have hmarked : chart ⟨((neck n).center, 0), by
       have := inv_pos.mpr hδ
-      constructor <;> linarith⟩ = x := by
+      constructor <;> linarith⟩ = x n := by
     apply Subtype.ext
     exact (hmap n _).trans (neck n).center_eq
   let N : NormalizedNeck L.metric δ k :=
     { delta_pos := hδ
       delta_lt_one := hδ1
       sphereMark := (neck n).center
-      center := x
+      center := x n
       chart := chart
       chart_smooth := hchart
       marked := hmarked
-      scale := Qlim
-      scale_pos := hx
+      scale := Qterm n
+      scale_pos := hx n
       scale_scalar := rfl
       normalizedMetric := gN
       normalized_inner := by
         intro z A B
         rw [scaleMetric_inner, Diffeomorph.pullbackMetricCross_inner,
           SmoothRiemannianMetric.restrictOpen_inner]
-        change Qlim * L.metric.inner (Φ n z).1
+        change Qterm n * L.metric.inner (Φ n z).1
           (mfderiv NeckCylinderModel ThreeModel (Φ n) z A)
           (mfderiv NeckCylinderModel ThreeModel (Φ n) z B) = _
-        change _ = Qlim * L.metric.inner (Φ n z).1
+        change _ = Qterm n * L.metric.inner (Φ n z).1
           (mfderiv NeckCylinderModel ThreeModel (fun q => (Φ n q).1) z A)
           (mfderiv NeckCylinderModel ThreeModel (fun q => (Φ n q).1) z B)
         rw [DifferentialGeometry.mfderiv_subtypeVal_comp]
         rfl
       closeness := hterminal }
   exact ⟨N, rfl, rfl, hmap n⟩
+
+theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
+    {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
+    (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (k : ℕ) (hk : k ≤ ⌈eps⁻¹⌉₊)
+    (neck : ∀ n, Perelman.CanonicalNeighborhood.FiniteHorn.StrongNeck G.flow eps x.1 (τ n))
+    (hregular : ∀ n, ∀ z : neckBuffer δ,
+      (neck n).map z.1 ∈ G.terminalRegularRegion)
+    {K : Set G.terminalRegularOpen} (hK : IsCompact K)
+    (hcapture : ∀ᶠ n in atTop, ∀ z ∈ neckClosedTest δ,
+      (neck n).map z.1 ∈ Subtype.val '' K) :
+    ∀ᶠ n in atTop, ∃ N : NormalizedNeck L.metric δ k,
+      N.center = x ∧ N.sphereMark = (neck n).center ∧
+        ∀ z, (N.chart z).1 = (neck n).map z.1 := by
+  have hrange : ∀ᶠ n in atTop,
+      metricScalarAt L.metric x / 2 ≤ G.flow.scalar (τ n) x.val ∧
+        G.flow.scalar (τ n) x.val ≤ metricScalarAt L.metric x + 1 := by
+    have hscale := (L.tendsto_metricScalarAt x).comp hτ
+    filter_upwards [hscale.eventually (Ioo_mem_nhds
+      (half_lt_self hx) (lt_add_one (metricScalarAt L.metric x)))] with n hn
+    exact ⟨hn.1.le, hn.2.le⟩
+  exact L.eventually_normalizedNeck_of_moving_strongNecks hτ
+    (fun _ => x) (fun _ => hx) hδ hδ1 hepsδ hfit k hk neck hregular hK hcapture
+    (half_pos hx) hrange
 
 theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks_of_scalar_control
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
