@@ -12,7 +12,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonModelUpdate
 # The Section 34 bigon slide
 
 Moise's Operation 2 removes the two crossings bounding a clean bigon. The two incident vertex
-balls admit a common boundary chart around the entire bigon. Its trace and splitting-circle
+balls have a common boundary chart around the entire bigon. Its trace and splitting-circle
 arcs extend to proper planar crosscuts with exactly two transverse intersections. A disk map
 fixing the boundary replaces the trace by a disjoint crosscut, and a thin supported extension
 realizes that map in the ambient three-manifold. The support avoids the other face balls,
