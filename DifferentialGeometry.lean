@@ -13573,3 +13573,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseCoo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornParameterRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BaseHornMetricEvent
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.OutwardGraphBand
+import DifferentialGeometry.Geometry.Neck.SpatialFrontierRecentering
