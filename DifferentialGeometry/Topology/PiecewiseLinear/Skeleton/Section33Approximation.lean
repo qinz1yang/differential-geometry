@@ -162,15 +162,16 @@ each piece's `deg v` boundary polygons give `χ(A'_v) ≤ 2 - deg v`, and the ha
 forces equality in every piece.  The route does not use the sorried `HurewiczLowDegrees`.
 
 Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
-and an axiom audit; statement byte-identical with the frozen leaf): `exists_isPolyhedralTubeNeighborhood`
-(Lemma 2, module `PolyhedralTubeNeighborhoodExists`), over the new brick `LocalSurfaceLink`
-(a finite triangulation inside a chart of a topological 2-manifold has PL-circle vertex links, the
-torus recognition template with local charts).  Route: a manifold neighbourhood `X₀` of `K'` in
-`Int N'`, one combinatorial surface with boundary matching the pseudo-cells near the relevant compact
-sets, `exists_small_homeomorph_generalPosition` to put `Fr X₀` across it, and PL invariance.
-Lemma 8 (`section33_disk_meets_graph`) is stuck on an interface gap, escalated to the owner:
-`IsHandleDecompositionOfTube` does not record `Ec e ∩ frontier N' = Ebd e`, which the book's
-32.1/32.2 construction supplies; without it a bridge edge lets the return path be blocked by `Bd N'`.
+and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_isPolyhedralTubeNeighborhood` (Lemma 2, module `PolyhedralTubeNeighborhoodExists`), over
+the new brick `LocalSurfaceLink` (a finite triangulation inside a chart of a topological
+2-manifold has PL-circle vertex links, the torus recognition template with local charts).
+Route: a manifold neighbourhood `X₀` of `K'` in `Int N'`, one combinatorial surface with boundary
+matching the pseudo-cells near the relevant compact sets, `exists_small_homeomorph_generalPosition`
+to put `Fr X₀` across it, and PL invariance.  Lemma 8 (`section33_disk_meets_graph`) is stuck on
+an interface gap, escalated to the owner: `IsHandleDecompositionOfTube` does not record
+`Ec e ∩ frontier N' = Ebd e`, which the book's 32.1/32.2 construction supplies; without it a bridge
+edge lets the return path be blocked by `Bd N'`.
 -/
 
 open Set Topology
