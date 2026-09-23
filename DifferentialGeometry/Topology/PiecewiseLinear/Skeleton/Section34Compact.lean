@@ -21,6 +21,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFaceO
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -263,6 +264,16 @@ Proved and imported (Codex lane on lease a, item 16 of `Skeleton/FILL_QUEUE.md`,
 `Section34CompactCompression*` modules: the compact twin of the compression, reusing the
 through-tube and pocket bricks of the manifold case in the Euclidean ambient).  The three leaves
 left in this file are the cut-and-graph frame, the trace and the residual balls.
+
+Proved and imported (Opus 5.5 worker on lease e, Batch 9 of `Skeleton/OPUS_FILL_LOG_E.md`,
+lead-accepted on 2026-09-24 with zero-diagnostic checks and an axiom/linter audit; statement
+byte-identical; the hypothesis `htrace` is unused by the proof): `exists_compactResidualBalls`
+(module `Section34CompactResidualBalls` over twenty-seven bricks: the two claw balls of a
+tetrahedron meeting in the four hole splitting disks, the face-disk runs and the cap split of the
+claw sphere, the two-ball pocket giving the residual ball, the patches and edge arcs by cap splits
+on the vertex spheres, the tilings for interior vertices and edges, and the outer cells from the
+cyclic order of boundary triangles).  The two leaves left in this file are the cut-and-graph
+frame and the trace.
 -/
 
 open Set Topology
@@ -303,32 +314,6 @@ theorem compactTrace_of_noOperation (hcut : Section34CompactCutFrame C K K' src 
       (section34CompactSplitDiskImage srcBd f₁) fblBd s) :
     Section34CompactTrace K K' (section34CompactVertexBallImage src f₁)
       (section34CompactSplitDiskImage srcBd f₁) fblBd := by
-  sorry
-
-theorem exists_compactResidualBalls (hcut : Section34CompactCutFrame C K K' src srcBd)
-    (hcar : Section34CompactCarrierControl K h ε H)
-    (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
-    {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hinv : Section34CompactFaceBallInvariants K K' h H
-      (section34CompactVertexBallImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fbl fblBd)
-    (htrace : Section34CompactTrace K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactSplitDiskImage srcBd f₁) fblBd)
-    {tgtD tgtDBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtA tgtABd : Section34CompactArcIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtP : Section34CompactMarkIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    (hdisk : Section34CompactFaceDiskFamily K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactSplitDiskImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fblBd tgtD tgtDBd tgtA tgtABd tgtP) :
-    ∃ (tgtR tgtRBd : Section34CompactSimplexIndex K 4 → Set (EuclideanSpace ℝ (Fin 3)))
-      (tgtX tgtXBd : Section34CompactPatchIndex K K' → Set (EuclideanSpace ℝ (Fin 3)))
-      (tgtI tgtIBd : Section34CompactEdgeArcIndex K K' → Set (EuclideanSpace ℝ (Fin 3)))
-      (tgtO tgtOBd : Section34CompactOuterVertexIndex K K' → Set (EuclideanSpace ℝ (Fin 3)))
-      (tgtQ tgtQBd : Section34CompactOuterEdgeIndex K K' → Set (EuclideanSpace ℝ (Fin 3))),
-      Section34CompactResidualPlus K K' H (section34CompactVertexBallImage src f₁)
-        (section34CompactVertexBallImage srcBd f₁) (section34CompactSplitDiskImage src f₁)
-        (section34CompactSplitDiskImage srcBd f₁) tgtD tgtA tgtP tgtR tgtRBd tgtX tgtXBd
-        tgtI tgtIBd tgtO tgtOBd tgtQ tgtQBd := by
   sorry
 
 end Leaves

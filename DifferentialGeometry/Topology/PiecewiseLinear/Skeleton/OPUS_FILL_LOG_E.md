@@ -1245,3 +1245,231 @@ them there.
   (`⟨w, -, -, -, he⟩`) silently loses the later names; keep the witness named. `nofun` proves the
   constructor disequalities of `Section34BoundedLabel` cheaply.
 - Correction to the heading above: the compact leaf uses 3 of the 4 batch modules (all but `Section34TargetRecognitionOfTiling`).
+
+# Batch 9 (compact P7 residual balls)
+
+## Checkpoint 2026-09-23T18:19Z
+
+Status: in progress, no leaf file yet. No STUCK or INTERFACE finding so far; the frozen
+statement of `exists_compactResidualBalls` is believed true.
+
+Route (Moise pp. 244–245, adapted to the subdivided graph):
+- Per tetrahedron `t = {a,b,c,d}`: two claw balls, the chains of target vertex balls
+  `B₁` along `c⁺ … a … b … d⁻` and `B₂` along `a⁺ … d … c … b⁻`, are PL 3-balls
+  (`Section34CompactClawBall`); they meet in the four hole splitting disks `H_a, …, H_d`.
+- The four face disks `D_s` meet `B_k` in runs `ρ_k(s)` (chains of face arcs); on `∂B₁` the four
+  runs and one arc of each hole circle form a circle, and `SphereCircleCapSplit` cuts `∂B₁` into
+  disks `X`, `Y` with the holes as caps.
+- `TwoBallPocket`: glue the `D_s` to `X` along the runs (`PLDiskFamilyGluing`), split `∂B₂`
+  by the resulting circle (Jordan), Schoenflies, and the theta argument
+  `union_eq_and_disjoint_or_of_theta` (for `B₂`, and in the other case again for `B₁`) give a
+  PL ball `R_t` with `∂R_t = A ∪ ⋃ D ∪ Ω` (`A` = `X` or `Y`, `Ω` a disk of `∂B₂`) and no
+  interior point of `B₁ ∪ B₂`. This replaces Moise's choice of `Y₀` through the unbounded
+  component, so it also covers a complex with a single tetrahedron.
+- Patches `X_{tw} := R_t ∩ V_w` and edge arcs `I_{te} := R_t ∩ E_e`: `SphereCircleCapSplit` on
+  each `∂V_w`, identified with `R_t ∩ V_w` by `BallLocalSide`. Non-incident balls and disks
+  come from `Section34CompactExterior` (in `hinv`) and connectivity; clause 10 comes from
+  disjoint interiors.
+- Tilings 21/22 for interior `w`, `e`: the covered part of `∂V_w`, `∂E_e` is open. Each
+  interior triangle has two tetrahedra (`exists_tetra_pair_of_not_boundary_triangle`).
+- Outer cells 4/5 (`tgtO`, `tgtQ` given by the closure formulas): `Q` is an arc between the
+  exactly two boundary marks, a count read off the source outer arc. `O` is a disk: its boundary
+  circle has the incidence pattern of the source outer-face boundary circle; then Jordan on
+  `∂V_w`, and the uncovered set is one side.
+
+Verified modules (`DifferentialGeometry/Topology/PiecewiseLinear/`, lines), each after
+`prepare-private-root.py`:
+- `PLArcChainUnion.lean` 167, `PLDiskCapRemoval.lean` 318, `PLDiskArcGluing.lean` 241,
+  `SphereCircleCapSplit.lean` 356, `SubdivisionEdgePath.lean` 263,
+  `Section34CompactTetraSkeleton.lean` 136, `Section34CompactClawBall.lean` 650,
+  `BallLocalSide.lean` 176, `PLDiskFamilyGluing.lean` 108.
+- Receipt line for each module `M` in this list:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\M.lean with no diagnostics; shared outputs unchanged.`
+- In progress: `TwoBallPocket.lean`. The arc involution and the pocket step elaborate; the
+  two-ball theorem is being written.
+
+Remaining steps, with rough line estimates (about 5.8k lines in total):
+1. `TwoBallPocket` main theorem: ~350.
+2. Tetrahedron incidence: holes, `B₁ ∩ B₂ = ⋃ H`, half-open runs as arcs, the circle on `∂B₁`,
+   the split, and the instantiation of step 1: ~1500.
+3. Patches and edge arcs (clauses 2, 3, 6, 11, 13, 15, 16): ~1200.
+4. Clauses 7, 9, 10, 12, 17, 18 (18 from the carrier balls of `hcar`): ~600.
+5. Tilings 21/22: ~700.
+6. Outer cells 4/5, including the incidence transfer from the source: ~1200.
+7. Leaf restatement, assembly and audit: ~300.
+
+Possible statement notes: `htrace` may end up unused, as the trace hypotheses were in batches
+6 and 8. That would be reported, not silently dropped.
+
+## Delegable: none (2026-09-23T19:25Z)
+
+Steps 3 to 6 all read the residual balls `R_t` of the per-tetrahedron theorem
+`Section34CompactCutFrame.exists_residualBall` (`Section34CompactResidualBall.lean`, verified)
+together with the per-vertex patches of step 3, which are not built yet. The outer cells 4/5 and
+the tilings 21/22 are statements about those patches, so their hypotheses are not yet fixed by a
+verified module. The purely topological pieces left (a ball whose frontier lies in the carrier
+ball `H t` lies in it; arcs tiling a circle) are each under about 60 lines, cheaper to write than
+to specify. Since the checkpoint, `TwoBallPocket`, `CircleArcSplit`, `Section34CompactTetraClaws`,
+`Section34CompactTetraHoles`, `Section34CompactFaceRuns`, `Section34CompactTetraCircle`,
+`Section34CompactTetraBall` and `Section34CompactResidualBall` are verified (steps 1 and 2 done).
+
+## Checkpoint 2026-09-23T20:45Z
+
+Verified since the first checkpoint (lines; each with the checker receipt
+`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\M.lean with no diagnostics; shared outputs unchanged.`):
+`TwoBallPocket` 761, `CircleArcSplit` 201, `CircleArcCycle` 292, `Section34CompactTetraClaws` 339,
+`Section34CompactTetraHoles` 230, `Section34CompactFaceRuns` 175, `Section34CompactTetraCircle` 236,
+`Section34CompactTetraBall` 660, `Section34CompactResidualBall` 355,
+`Section34CompactResidualForeign` 423, `Section34CompactResidualPatch` 707,
+`Section34CompactPatchEnumeration` 518, `Section34CompactResidualPatchCells` 172,
+`Section34CompactResidualPairs` 290, `Section34CompactResidualTiling` 629,
+`Section34CompactResidualOuterArc` 410.
+
+Clause status for `exists_compactResidualBalls` (numbering of `Section34CompactResidualPlus`):
+- Proved at the level of one residual ball or of the family (not yet assembled into the leaf):
+  1 (`IsPLBall.isPLCellOn_frontier`), 2 and 16 (`exists_residualPatch_boundary`), 3 and 15
+  (`exists_residualEdgeArc`), 7 (`residual_inter_vertexBallImage_eq_empty`, from the exterior
+  condition of `hinv`), 8, 9 (`residual_inter_faceDisk_eq_empty`), 10
+  (`residual_inter_residual_subset`), 12 (`residual_inter_splitDiskImage_eq_empty`), 13
+  (`residual_inter_splitDiskImage_subset`), 14, 17 (from 9), 18 (`IsPLBall.subset_of_isCompact_frontier_subset`
+  with `hgraph`/`hinv` clause 10), 21 and 22 for interior vertices and edges
+  (`vertexBallImage_frontier_subset_iUnion_residual`, `splitDiskImage_boundary_subset_iUnion_residual`),
+  5 with 24 (`exists_residual_outerArc`; exactly two boundary triangles per outer edge via
+  `isCombinatorialManifold_boundaryComplex`). Clauses 6, 11, 19, 20 are the defining formulas; 21/22
+  for outer vertices and edges follow from 19/20.
+- Remaining: clause 4 (outer vertex cell `O_w` a disk bounded by the outer face arcs and outer
+  edge arcs). Route: the boundary triangles and boundary edges at a boundary vertex are listed
+  cyclically from the link circle in the boundary complex (`exists_cyclic_face_order`), the arcs
+  close up into a circle (`isPLSphere_one_iUnion_union_iUnion_of_cycle`), Jordan on `∂V_w`, and the
+  covered part is one side by the same clopen argument as the tilings. Estimate 700 lines. Then
+  the leaf restatement and assembly (about 500 lines) and the audit.
+- `htrace` is not used by any brick so far.
+
+## CLOSED 2026-09-23T21:40Z
+
+`exists_compactResidualBalls` is proved, without `sorry`, in
+`Section34CompactResidualBalls.lean`. Statement identity: the `section Leaves` variable block and
+the theorem text from `theorem exists_compactResidualBalls` through `:= by` are byte-identical
+substrings of `Skeleton/Section34Compact.lean` (python check against the current skeleton,
+2026-09-23T21:40Z); same namespace `DifferentialGeometry.Topology.PiecewiseLinear` and
+`open Set Topology`. No new `structure` or `Prop`-valued `def`; the one new `def`
+(`section34CompactClawBall`) is set-valued.
+
+Files in dependency order (`DifferentialGeometry/Topology/PiecewiseLinear/`; lines; SHA-256).
+Total 10442 lines, 124 declarations:
+- `PLArcChainUnion.lean` 167 `8ce985bd43d415bfa2da315cc4cbf9d4b7119e512670c4b4430eb0881f872f72`
+- `PLDiskCapRemoval.lean` 318 `002e755d1697a1e294e29dc5461717ee8196a48bb5e3e23d85d58ae3c51d69d9`
+- `PLDiskArcGluing.lean` 241 `c25180798e085e029c7b322ad86447a1a4a1eb55776bffda69d65886c7dc0897`
+- `SphereCircleCapSplit.lean` 356 `ce9f029786f83a9ed19194a8092312d2b09225584a2dfad89f2f9d5a11e9e6d5`
+- `SubdivisionEdgePath.lean` 263 `a0d29757ccc0e44982d1d399be7a6b368d49013922ecdec05a634e4b54294d37`
+- `Section34CompactTetraSkeleton.lean` 136 `0806932916d7bc9ee22d3246f1870f1dcbcd1b24fa700db3953c64152dc5dc38`
+- `Section34CompactClawBall.lean` 650 `c3a092583603900202651bd9ef996be57cbc33e11e5d8035aef7b5a5f8343163`
+- `BallLocalSide.lean` 176 `b02e2ddffa18bd619efd9f59c5c94c5b9ff545b5f850c485f2894b7eeec25106`
+- `PLDiskFamilyGluing.lean` 108 `8044c29ac9aa5309ca6486e864294f7c61cac571046de0edb23dfa8985aba0bc`
+- `TwoBallPocket.lean` 761 `a6e3b13ad4312782db80b31ef5729fcc616419e558f5b103c714815fe54ea783`
+- `CircleArcSplit.lean` 201 `a6c1b7d02c4c8833e959928a504c8c04ffdd09505d23927580ab387be5de0bec`
+- `Section34CompactTetraClaws.lean` 339 `203f6975debd37635347e5504f6a75de96164a70214cae131d8efb79c8637d4e`
+- `Section34CompactTetraHoles.lean` 230 `bc0c1cca1e594c95eb971ff51fe38d9a5e94252929ac8665fa364a42f1d5ebe5`
+- `Section34CompactFaceRuns.lean` 175 `ea7ef97a2d2bf681498a535666c8bc2f3e1874ad1d6548a9b66c3d2b3a2f31a0`
+- `Section34CompactTetraCircle.lean` 236 `e19eed0a9de54e7cc554dcf09540e5a8b00deca2e1448e9d636c82b7c8b506ea`
+- `Section34CompactTetraBall.lean` 660 `1fc1fcb46cfa851b76dc32827846e60e89d3183e8a2cbeab62d15a37bbf7b1a5`
+- `Section34CompactResidualBall.lean` 355 `80cc90ed3d5764fb0625a827123493c8f52296f2e62755b2846fc9f5b71a441e`
+- `CircleArcCycle.lean` 292 `1c4551968bc758f60a9e7c352f91724398be9b3bbedca38c78bbd571354af1c1`
+- `Section34CompactResidualForeign.lean` 423 `1aec2c1e3623708fc678ef7e1260d7e0130f2e94cec2811ff6b8e292ba1ea926`
+- `Section34CompactResidualPatch.lean` 707 `4a48539030e12070bf8e1f1e93cd44e68fdae4f2cfe055b5ad3e470f74999b73`
+- `Section34CompactPatchEnumeration.lean` 518 `bf28569384fdf2f29fc5eb786e81d610c8503aadc87011bb4763d1a8f688ff88`
+- `Section34CompactResidualPatchCells.lean` 172 `06747776911d4792e2bbd56df8a6a36ee38b81420602a54744949c3451e9107c`
+- `Section34CompactResidualPairs.lean` 290 `a3d7d40aba78952e7067d857b1d7c48e1a9c370bb68d887a5e88c785bbaeb85d`
+- `Section34CompactResidualTiling.lean` 634 `52ad5d0275270357924c5cba0a58c4632f3652a92d07d99df7032292ef786928`
+- `Section34CompactResidualOuterArc.lean` 410 `d2259655524e97d35101058a32a633b29cf171b7488f89befb008c244f510578`
+- `Section34CompactOuterEnumeration.lean` 586 `59a78cd8ffe150bbb144a637b266b0e1402cafc9a5c8b08e3edb1f2ba2b2f52b`
+- `Section34CompactResidualOuterDisk.lean` 691 `d689ba3d1387da0b71fa6b8a5d0b3067770a2b06464942e8124f5e97b119092c`
+- `Section34CompactResidualBalls.lean` 347 `e1fdbc2619fe63a76129cd57f2a544e89fabe06e28e0209c1b9f8fa74e11a83d`
+
+Checker: final pass over all 28 modules in the order above after the last edits (module docstrings
+of `Section34CompactTetraClaws`, which named a nonexistent `existsUnique_…` lemma,
+`Section34CompactResidualTiling` and `Section34CompactResidualOuterDisk`), 21:13–21:27Z,
+`prepare-private-root.py` before each run, host guard below 4 throughout. For every module `M`:
+`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\M.lean with no diagnostics; shared outputs unchanged.`
+The 28 receipts in the output root record exit 0, 0 diagnostics and the SHA-256 values above.
+
+Audit:
+- `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch9ResidualBalls.lean` imports
+  the 28 modules, checks that all 124 declarations above are present (plus exactly 23 private
+  `local notation` syntax declarations), axioms ⊆ {propext, Classical.choice, Quot.sound} for
+  every declaration, and the thirteen environment linters:
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch9ResidualBalls.lean with no diagnostics; shared outputs unchanged.`
+- `AuditBatch9ResidualBallsPrint.lean` (`#print axioms` of all 124; output saved as
+  `AuditBatch9ResidualBallsPrint.log`): all 124, including `exists_compactResidualBalls`, depend
+  on exactly `[propext, Classical.choice, Quot.sound]`.
+- New public names: the 124 listed in the audit file; grep over `DifferentialGeometry/` finds
+  each declared once, except `exists_compactResidualBalls`, which is also the skeleton leaf it
+  replaces.
+
+Aggregate import lines (not added to `DifferentialGeometry.lean`):
+`import DifferentialGeometry.Topology.PiecewiseLinear.PLArcChainUnion`
+`import DifferentialGeometry.Topology.PiecewiseLinear.PLDiskCapRemoval`
+`import DifferentialGeometry.Topology.PiecewiseLinear.PLDiskArcGluing`
+`import DifferentialGeometry.Topology.PiecewiseLinear.SphereCircleCapSplit`
+`import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionEdgePath`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraSkeleton`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactClawBall`
+`import DifferentialGeometry.Topology.PiecewiseLinear.BallLocalSide`
+`import DifferentialGeometry.Topology.PiecewiseLinear.PLDiskFamilyGluing`
+`import DifferentialGeometry.Topology.PiecewiseLinear.TwoBallPocket`
+`import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcSplit`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraClaws`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraHoles`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceRuns`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraCircle`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraBall`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBall`
+`import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcCycle`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualForeign`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualPatch`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchEnumeration`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualPatchCells`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualPairs`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualTiling`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualOuterArc`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactOuterEnumeration`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualOuterDisk`
+`import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls`
+
+Hypotheses of `exists_compactResidualBalls` and their producers (call site
+`moise341OnNeighborhood` in `Skeleton/Section34Compact.lean`):
+- `hcut`, `hcar`, `hgraph`: `exists_compactCutAndGraph` (skeleton leaf, lease b). Used: finiteness
+  and the combinatorial 3-manifold condition from `hcut`; `hcar` only for the carrier balls
+  `H t` being 3-cells (clause 18); `hgraph` for `f₁` PL on the cut neighbourhood, the core
+  condition and the vertex balls lying inside `H t` (clause 18).
+- `hinv`: `exists_compactTerminalFaceBalls` (skeleton leaf). Used: the face balls (`tgtD s ⊆
+  fbl s`), `fbl s ⊆ H t` (clause 18) and the exterior condition (clause 7).
+- `htrace`: `compactTrace_of_noOperation` (skeleton leaf). NOT USED; kept as `let _ := htrace`,
+  as in the earlier accepted leaves.
+- `hdisk`: `exists_compactFaceDisks` (`Section34CompactFaceDisks.lean`, proved in Batch 6, from
+  `hcut hgraph hinv htrace`).
+
+Route as in the checkpoints. The last step, clause 4: the boundary triangles and boundary edges at
+a boundary vertex `w` are listed cyclically from the link circle in the boundary complex
+(`exists_boundaryLink_cycle`, `exists_outerEnum`), their face arcs and outer edge arcs form a
+circle on `∂V_w` (`isPLSphere_outerCircle`), Jordan splits `∂V_w` into two disks, and the clopen
+argument puts the covered part on exactly one side (`exists_residual_outerDisk`).
+
+Decisions for the lead:
+1. `htrace` is unused; it could be dropped from the frozen statement and from the call site.
+2. The leaf name also exists in the skeleton (sorry version); the wiring replaces it.
+3. Generic lemmas that could move to lower modules later:
+   `subset_or_disjoint_of_isPreconnected_of_locally_subset`, `closure_sdiff_eq_of_arc_pair`,
+   `closure_sdiff_eq_of_disk_pair`, `mem_frontier_union_of_notMem`,
+   `union_closure_sdiff_eq_of_subset`, `isPLSphere_one_iUnion_union_iUnion_of_cycle`.
+4. Scratchpad incident: the lead's scratchpad is shared. My audit generator overwrote the lead's
+   `scratchpad\mkaudit.py` (21:27Z), and an earlier helper of mine overwrote worker c's
+   `scratchpad\longlines.py`. Both are restored byte-for-byte from the session transcripts.
+   `mkaudit.py` has SHA-256 `8bd9c4aa0b39a0966c41b6a43bf3f4750f5eacd09383df731734decd5f0025b2`, the
+   same as its 13:30Z `cat` output and as its creation plus edit. My generator is now
+   `e9_mkaudit.py`. No file in the checkout was affected.
+
+Lessons: the Bash tool collapses `\` to `\` inside quoted heredocs, so a Python `'\n'` became
+a raw newline. Write backslash-heavy text with `chr(92)` or a file tool. Each `local notation`
+adds one private declaration per module, which exact declaration counts in audits must allow for.
+Use lane-prefixed names for scratchpad files.
