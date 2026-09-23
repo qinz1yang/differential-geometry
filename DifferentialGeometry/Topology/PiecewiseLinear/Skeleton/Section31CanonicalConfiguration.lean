@@ -18,6 +18,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorusOfCy
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
 import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell
 import DifferentialGeometry.Topology.PiecewiseLinear.CarriesGeneratorOrIsPLCellOfDisjointCarrier
+import DifferentialGeometry.Topology.PiecewiseLinear.ConsecutiveCellUnion
 
 /-!
 # Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
@@ -205,6 +206,14 @@ the parity fact that an orientable surface with one boundary circle has odd Eule
 transfer that the two ends of an annulus carry the fundamental group together).
 `exists_isPLCell_frontier_of_polygon_nullhomotopic` can now use the separating case but its
 nonseparating case still needs a linking number, absent from the tree.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_isTopologicalCellWithInterior_union_consecutive` (lane F's entry 10, module
+`ConsecutiveCellUnion` over `JordanRelativeMatching` and `IntervalOrderExtension`): the general
+planar theorem that two closed disks meeting in a disk have a disk as union, by a relative
+homeomorphism of nested Jordan curves fixing their common points, glued crosswise into a Jordan
+curve bounding the union, then Schoenflies; fed into `PlanarCellUnion`'s consumer.
 -/
 
 open Set Topology
@@ -410,14 +419,6 @@ theorem fundamentalGroup_map_inclusion_transfer_pair
 end FundamentalGroupTransfer
 
 section Leaves
-
-theorem exists_isTopologicalCellWithInterior_union_consecutive
-    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)} {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hc : IsPlanarCellChain P D Dint) (j : Fin 2) :
-    ∃ Eint : Set (EuclideanSpace ℝ (Fin 3)),
-      IsTopologicalCellWithInterior 2 (D j.castSucc ∪ D j.succ) Eint ∧
-        Dint j.castSucc ⊆ Eint ∧ Dint j.succ ⊆ Eint := by
-  sorry
 
 theorem exists_generalPosition_solidTorus_triple
     {P : Fin 4 → EuclideanSpace ℝ (Fin 3)} {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}

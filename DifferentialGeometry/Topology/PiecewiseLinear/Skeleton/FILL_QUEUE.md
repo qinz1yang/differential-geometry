@@ -98,3 +98,8 @@ is in progress on lease b. Entry 15's FALSE record (non-Hausdorff double of ‚Ñù¬
 repaired by adding `[T2Space M]` to `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` and its
 caller (commit `ca345c4c8`); F may resume on the repaired statement, which is now the frozen leaf.
 Entries 10 and 11 remain open. Lease a is used by the lead for acceptance compiles while F is idle.
+
+## Lead update 2026-09-22 17:50
+
+Entries 10, 11 and 15 are CLOSED by the Opus 5.5 worker on lease e and accepted (B1.g, B1.f, A1.5c).
+Every entry of this queue is now accepted; lane F has no remaining assignment here.

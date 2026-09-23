@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceEulerChar
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhoodExists
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeFrame
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -172,6 +173,16 @@ to put `Fr X₀` across it, and PL invariance.  Lemma 8 (`section33_disk_meets_g
 an interface gap, escalated to the owner: `IsHandleDecompositionOfTube` does not record
 `Ec e ∩ frontier N' = Ebd e`, which the book's 32.1/32.2 construction supplies; without it a bridge
 edge lets the return path be blocked by `Bd N'`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf): `exists_section33TubeFrame`
+(module `Section33TubeFrame`), over `FineSimplexTriangulation` (a triangulated simplex around
+`|L|` with a subdivision of `L` as a subcomplex and all graph dual cells below a given diameter),
+`SubdivisionEndPoints` (subdivisions keep "no end points" and "has an edge") and the accepted
+`IsTube` producer `TubeOfGraphDualCells`.  Route: a closed thickening of `|L|` inside `U` on which
+`h` is uniformly continuous, a fine triangulation with the dual cells inside it, the tube with the
+identity, then `IsTube.of_isEmbedding` with `hh` restricted to `N ⊆ U`; `T` itself need not lie in
+`U`.  The `DecidableEq` instance of the frozen statement is bridged by `Subsingleton.elim`.
 -/
 
 open Set Topology
@@ -207,27 +218,6 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-
-open Classical in
-theorem exists_section33TubeFrame
-    (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite L.faces]
-    (hdim : ∀ s ∈ L.faces, s.card ≤ 2) (hedge : ∃ e ∈ L.faces, e.card = 2)
-    (hend : ∀ v : L.vertices, ((SimplicialComplex.edgeGraph L).neighborSet v).ncard ≠ 1)
-    {U : Set (EuclideanSpace ℝ (Fin 3))} (hU : IsOpen U) (hLU : L.space ⊆ U)
-    (hh : Topology.IsEmbedding (U.domRestrict h)) {ε : ℝ} (hε : 0 < ε) :
-    ∃ (T L' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-      (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
-      (D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))),
-      T.faces.Finite ∧ IsSubdivision L' L ∧ L'.faces ⊆ T.faces ∧
-      IsCombinatorialManifoldWithBoundary 3 T ∧
-      IsCombinatorialManifoldWithBoundary 3 (derivedNeighborhood T L') ∧
-      (derivedNeighborhood T L').space ⊆ U ∧
-      (∀ v : L'.vertices, ((SimplicialComplex.edgeGraph L').neighborSet v).ncard ≠ 1) ∧
-      IsTube L' (derivedNeighborhood T L').space C D Dbd h
-        (h '' (derivedNeighborhood T L').space) ∧
-      (∀ v ∈ L'.vertices, C v = (graphDualCell T L' v).space) ∧
-      ∀ v ∈ L'.vertices, ∀ x ∈ C v, ∀ y ∈ C v, dist (h x) (h y) < ε / 4 := by
-  sorry
 
 theorem exists_hasSinglePolygonTraces
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)

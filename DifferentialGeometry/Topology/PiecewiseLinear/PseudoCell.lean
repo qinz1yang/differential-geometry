@@ -97,12 +97,13 @@ theorem disk"; that is a Section 33 notion and is not defined here.
 The inhabitant `isPseudoCell_planarSquare` is the closed unit square of the `xy`-plane of `ℝ³`
 with its relative interior, its rim, and the origin as centre: a genuinely two-dimensional,
 non-degenerate pseudo-cell whose regular part is not compact, so the deviation above is
-exercised rather than avoided.  `IsTube` and `IsHandleDecompositionOfTube` remain untested.  An
-inhabitant of `IsTube` needs a named finite complex of `ℝ³` with a verified
-`IsCombinatorialManifoldWithBoundary 3` certificate carrying a one-dimensional subcomplex with
-an edge, and then `IsPLBall 3` for its graph dual cells, which the tree derives only from
-`IsCombinatorialManifold 3`, and the separation of page 225 and the connectedness of page 227,
-for which it has no producer.
+exercised rather than avoided.  `IsTube` is inhabited and produced in `TubeOfGraphDualCells`
+(`isTube_graphDualCell` on the dual-cell model of a graph with interior vertices in a finite
+combinatorial 3-manifold with boundary, `IsTube.of_isEmbedding`, `exists_isTube`);
+`IsHandleDecompositionOfTube` remains untested.  Its field `rimFrontier` (added 2026-09-22 by
+owner decision) records that a pseudo-cell meets `frontier N'` exactly in its rim; the collar
+clause `W ∩ frontier (C'_u ∪ C'_v) = h '' Dbd` of 32.1/32.2 supplies it, and Section 33's Lemma 8
+needs it when an edge of `K` is a bridge.
 -/
 
 open Set Topology

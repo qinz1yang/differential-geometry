@@ -296,3 +296,10 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   (`PolyhedralTubeNeighborhoodExists`); physical `sorry` now 72. OWNER DECISION PENDING: Lemma 8 needs
   the field `Ec e ∩ frontier N' = Ebd e` in `IsHandleDecompositionOfTube` (book supplies it); adding it
   widens frozen `Moise323` and re-opens `isHandleDecomposition_of_edgeCollars`. Not changed yet.
+* 17:30 — accepted worker a's `exists_section33TubeFrame` (`Section33TubeFrame`, `FineSimplexTriangulation`,
+  `SubdivisionEndPoints`): Section 33 now has its real `IsTube` producer; physical `sorry` 71.
+  Owner chose option A for Lemma 8 (field `rimFrontier` in `IsHandleDecompositionOfTube`); the two edits
+  were blocked by the auto-mode classifier, patch at the scratchpad `optionA/optionA.patch` awaiting the owner.
+* 17:50 — lane F's queue is empty: worker e closed entries 10, 11 and 15 (`ConsecutiveCellUnion`,
+  `InitialSurfaceSeparates`, `StableCrossingDoubleCrossing`). Option A: the owner-side `git apply` of the
+  scratchpad patch has not landed yet (only the docstring and an import are in). Physical `sorry` 68.

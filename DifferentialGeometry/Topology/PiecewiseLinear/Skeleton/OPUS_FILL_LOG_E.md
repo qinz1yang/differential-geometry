@@ -304,3 +304,173 @@ file edited (except this log); no git write.
 - No frozen statement or predicate changed; no hypothesis added. `IsTube` still has no inhabitant
   in the tree, so all four are proved but untested on an instance (as the skeleton notes).
 - Total: 8 module compiles, 3 audits, about 50 minutes wall clock.
+
+# Batch 3 (lane F take-over)
+
+Lease e, token `claude-agent-e-20260919`, output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e`. No existing file edited except this log;
+no git write; no skeleton imported.
+
+## exists_isTopologicalCellWithInterior_union_consecutive — CLOSED
+
+- Files (all new, under `DifferentialGeometry/Topology/PiecewiseLinear/`), in dependency order:
+  - `IntervalOrderExtension.lean` (256 lines), SHA-256
+    `FE6F97AFBEBA29A87DF725C583C6F098A2EB4CBBFB814F6946DC5D532D84F2CB`;
+  - `JordanRelativeMatching.lean` (451 lines), SHA-256
+    `65C190C81FAFDEE68D9843A5EB9D742EFC287050D93A39256B9FB3E9556A3477`;
+  - `ConsecutiveCellUnion.lean` (253 lines), SHA-256
+    `DD659C1474DFC0A59486A8631C9C835C792078A7F7533E0F8B397DC5B583E1DF`.
+- Import lines to register (this order):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.IntervalOrderExtension`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.JordanRelativeMatching`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.ConsecutiveCellUnion`
+- Frozen block: `theorem exists_isTopologicalCellWithInterior_union_consecutive … := by`
+  byte-identical to `Skeleton/Section31CanonicalConfiguration.lean` (checked by `diff`); namespace
+  `DifferentialGeometry.Topology.PiecewiseLinear`, `section Leaves`, only `open Set Topology` in
+  scope (the planar part's extra `open`s are confined to its own section).
+- New public names (all grepped tree-wide, no clash). `DifferentialGeometry.Topology`:
+  `exists_strictMonoOn_Icc_extension`, `strictMonoOn_or_strictAntiOn_of_between`.
+  `DifferentialGeometry.Topology.PlanarJordan`: `exists_isArcBetween_sdiff_subset_inside`,
+  `isCutPair_of_isLoop`, `false_of_isCutPair_of_inside_subset`,
+  `not_lt_lt_of_isLoop_of_inside_subset`, `invFunOn_isLoop`, `invFunOn_isLoop_apply`,
+  `continuousOn_image_of_continuousOn_comp`, `isLoop_comp_one_sub`, `image_comp_one_sub`,
+  `exists_isLoop_image_eq_zero`, `continuousOn_injOn_image_of_isLoop_of_strictMonoOn`,
+  `exists_matching_of_isLoop_of_strictMono`, `exists_matching_of_inside_subset`,
+  `nonempty_homeomorph_closure_inside`, `isTopologicalCell_union_of_isTopologicalCell_inter`
+  (the general planar producer Gemini's round 2 left open, exact proposed signature).
+  `DifferentialGeometry.Topology.PiecewiseLinear`: the frozen leaf.
+- Checker (final sources):
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IntervalOrderExtension.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22T23:22:27Z);
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\JordanRelativeMatching.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22T23:38:34Z);
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConsecutiveCellUnion.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22T23:38:48Z).
+- Audit: `AuditBatch3A.lean` (all declarations of the three modules, allowed axioms `propext`,
+  `Classical.choice`, `Quot.sound`, thirteen linters without docBlame/docBlameThm):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch3A.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22T23:39:38Z).
+- Route. General planar theorem first: for closed disks `A, B` with `A ∩ B` a closed disk, `A ∪ B`
+  is a closed disk. (1) Relative matching: Jordan curves `S, J` with `inside S ⊆ inside J` admit a
+  homeomorphism `S → J` fixing `S ∩ J` pointwise. Base both curves at a common point; four common
+  points interleaved on `J` but not on `S` would give disjoint crosscuts of `J` (one through
+  `inside S`, one through the side it cuts off, both from the existing crosscut API plus a new
+  crosscut-existence lemma via PL straightening) with interleaved ends — impossible by
+  `crosscut_regions`/`arc_diff_subset_crosscut_side`; so the parameter correspondence preserves
+  betweenness, is monotone after possibly reversing the loop, and extends (linear interpolation on
+  the gaps, closedness of both parameter sets, order-iso ⇒ continuous) to a homeomorphism of
+  `[0,1]`. (2) Crossed pasting: with `f : Bd C → Bd A`, `g : Bd C → Bd B` from (1), `g` on
+  `Bd C ∩ Bd A`, `f` elsewhere is a continuous injection of `Bd C` onto
+  `(A ∪ B) \ (Int A ∪ Int B) = Fr (Int A ∪ Int B)`; recognition of the open set as the inside of
+  that Jordan curve and Schoenflies (`exists_image_closed_region_eqOn_compl`) give the disk. No
+  finiteness of boundary intersections, no PL hypothesis, containment and equal disks covered.
+  The frozen leaf is then the existing conditional consumer
+  `exists_isTopologicalCellWithInterior_union_consecutive_of_diskUnion` (PlanarCellUnion) fed with
+  this producer.
+- Hypotheses used: `hc.halfPlane` (first coordinate plane), `hc.cell` (both cells and interiors),
+  `hc.overlap j` (the intersection disk); `interior_mono` gives both `Dint` inclusions.
+  `segmentSubset`, `consecutiveNe`, `interiorSubset`, `apart` are not needed.
+- Compiles: 7 module checks, 3 audits (the last module/audit pair repeated after renaming one
+  lemma and making the leaf's `:= by` byte-identical).
+
+## separates_initialSurface — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/InitialSurfaceSeparates.lean` (313 lines),
+  SHA-256 `ADA5E93563EC0583998897A61E5A67F81E0E0B95EE25ED89D5DEEF46E86C86F9`.
+- Import line to register:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.InitialSurfaceSeparates`
+  (imports `PseudoCell` and the batch-2 `HandleDecompositionOfEdgeCollars`, hence `FreeFaceArc`).
+- Frozen block: `open Classical in` + `theorem separates_initialSurface … := by` and the section's
+  `variable` lines (including the unused `H B Jlo Jhi`, which Lean does not include) are
+  byte-identical to `Skeleton/Section32PseudoCell.lean` (checked by `diff`); `local notation "E3"`
+  and `open Set Topology` as in the skeleton.
+- New public names (grepped, no clash): `DifferentialGeometry.Topology.Separates.image_homeomorph`;
+  in `DifferentialGeometry.Topology.PiecewiseLinear`: `separates_image_interior_of_isEmbedding`,
+  `isClosed_preimage_val_of_forall_mem_closure`, `mem_of_mem_closure_of_inter_subset_isClosed`,
+  and the frozen leaf.
+- Checker:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\InitialSurfaceSeparates.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22T23:48:33Z).
+- Audit `AuditBatch3B.lean` (all declarations of the module, standard three axioms, thirteen
+  linters): `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch3B.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22T23:49:52Z).
+- Route. No limit argument is needed. Let `Σ = (⋃ i, S'' i) ∪ {P'}`. (1) Closedness in
+  `I = Int (h C u ∪ h C v)` of the initial surface and of `Σ`: off `P'` the tower is locally finite
+  (`locallyFinite`), and `T'' i ⊆ S'' i ⊆ φ '' S i`, so near each point both sets are finite unions
+  of closed sets (odd tori minus the open union of even interiors is closed); `P'` lies in both.
+  (2) `splitSeparates` is transported to `I` through `h`, which maps `Int (C u ∪ C v)`
+  homeomorphically onto `I` (invariance of domain, `interior_image_eq_image_interior_of_isCompact`),
+  giving that `h '' (D - Dbd)` separates `h u` from `h v` in `I`. (3) The general
+  `Separates.of_frontier_subset_replacement` with `N := Σ`: both separators lie in `Σ`
+  (`annuliEq` + `annulusImageSubset`: the open disk image is the tower annuli plus `P'`), the
+  frontier of `Σ` in `I` lies on the initial surface (a frontier point off `P'` is on some `T'' j`
+  and in no `Int S'' i`, split by parity), and `h u, h v ∉ Σ` (`havoid`, and `P' = h(midpoint)`
+  with `vertex_ne_centroid_of_card_eq_two` and injectivity of `h`).
+- Hypotheses used: `ht` (`splitSeparates`, `isEmbedding`, `dualBall`, `splitProper`,
+  `isNeighborhood`, dual-cell/splitting-disk identities), `hu`, `hv`, `huv`, `he`, `hP'`, `havoid`,
+  and from `htw` the fields `config` (`innerSubset`, `isPolyhedralSolidTorus`, `boundaryEq`,
+  `annulusImageSubset` at index 0 of each triple), `annuliEq`, `locallyFinite`. Not needed:
+  `apart`, `subsetW`, `subsetInterior`, `centerMemInterior`, `closureLower`, `closureUpper`, `W`.
+  `IsTube`/`IsCanonicalTower` still have no inhabitant (untested, as the skeleton records).
+- Compiles: 3 module checks, 1 audit.
+
+## hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock — CLOSED (redundant `hℓ` reported)
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/StableCrossingDoubleCrossing.lean`
+  (479 lines), SHA-256 `018C28E59B530075E2845BBE483094FA231C60E5C9AD05467EE0B5481743BF8D`.
+- Import line to register:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingDoubleCrossing`
+  (imports `StableCrossingBlock`, `StableCrossingNormalizer`, `NormalCrossingTransport`,
+  `LocallyPolyhedral`; none modified).
+- Frozen block: `theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock [T2Space M] … := by`
+  byte-identical to `Skeleton/GeneralPositionInDouble.lean` (repaired statement of ca345c4c8,
+  checked by `diff`), in `section Ambient` with both `variable` lines of the skeleton, `universe u`,
+  `open Set Topology`.
+- New public names (grepped; one clash found and renamed): `isPLHomeomorphOn_univ_of_affineEquiv`,
+  `isPLHomeomorphOn_image_of_eqOn_comp`, `eventually_inter_preimage_singleton_subset_of_isCompact`,
+  `eventually_mem_image_iff_of_graph`, `exists_normalForm_of_two_graphs`,
+  `hasPLNormalDoubleCrossingAt_chart_of_isStableCrossingBlock` (the general chart version, without
+  `hec` and `hℓ`), and the frozen leaf.
+- Checker:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\StableCrossingDoubleCrossing.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-23T00:10:01Z).
+- Audit `AuditBatch3C.lean` (all declarations, standard three axioms, thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch3C.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-23T00:10:46Z).
+- Route (the fourth-pass plan of FILL_QUEUE). Preimages `xa ∈ SA`, `xb ∈ SB` of `y` from
+  `sheets_nonempty_of_isStableCrossingBlock`; polyhedral relative neighbourhoods `A' ⊆ SA`,
+  `B' ⊆ SB` of them in `D.domain` (`IsLocallyPolyhedral.exists_isPolyhedron_subset_mem_nhdsWithin`).
+  On `A'`, `ec ∘ D = G_a ∘ projA` with `G_a (v,t) = A⁻¹ (a (v,t), v, t)` PL on `univ`, so it is a PL
+  homeomorphism onto its image (`isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn` on the
+  polyhedron). Near `ec y` the image of `A'` is exactly `{z | A z on graph a, projection in the
+  block half-plane}` (the projection image of `A'` is a relative neighbourhood, through the
+  continuous PL inverse of `projA`), same for `B'`. The accepted normalizer `H` (keeps `t`, graphs
+  to `u = 0`, `v = 0`) composed with `A`, a translation and `A.linear⁻¹` is the PL chart `k` with
+  planes `ker(u∘L)`, `ker(v∘L)` (finranks from `Module.Dual.finrank_ker_add_one_of_ne_zero`).
+  Cases: `tlo = -r` (box disjoint from `BdM`) and `tlo = 0, t(y) > 0` give `HasPLDoubleCrossingAt`
+  with `α = β = 0`; `tlo = 0, ℓ (ec y) = 0` gives `HasPLBoundaryDoubleCrossingAt` with
+  `M := {z | 0 ≤ t(k z)}`, the `t = 0` half-space, via `(A z).2.2 = ℓ z`. Fibre coverage uses
+  `T2Space M`: the domain minus the relative interiors of `A' ∪ B'` is compact, its image is closed
+  and misses `y`. The chart is replaced by `exists_crossing_chart_mem_atlas` (no `HasGroupoid`).
+- Hypotheses used: `[T2Space M]` (fibre coverage), `hec` (atlas transport), `hBdchart` (boundary
+  case split), `h` (all twenty block fields except the compactness/closure fields of the outer
+  box), `hy`, `hyB`. **Not used: `hℓ : ℓ ≠ 0`** (with `ℓ = 0` the block is already
+  inconsistent: `tlo = -r` puts the inner block inside `ec.source ⊆ BdM`, `tlo = 0` forces the
+  third coordinate of the affine equivalence `A` to vanish). Because the frozen signature keeps it,
+  the leaf binds it with `let _ := hℓ` (the AGENTS pattern for a binder that cannot be removed);
+  without that the unused-variable linter warns. Lead decision: drop `hℓ` from the frozen
+  statement and its caller, or accept the binding.
+- Compiles: 3 module checks, 2 audits, 3 small external probes (linter behaviour of unused
+  hypotheses, `clear`).
+
+## Batch 3 summary
+
+- Three CLOSED, 0 STUCK, 0 FALSE. Five new modules, register in this order:
+  `IntervalOrderExtension`, `JordanRelativeMatching`, `ConsecutiveCellUnion`,
+  `InitialSurfaceSeparates`, `StableCrossingDoubleCrossing` (all under
+  `DifferentialGeometry.Topology.PiecewiseLinear`). No existing file edited except this log; no
+  statement changed; the three `.lean.wip` files of lane F are untouched.
+- Re-check after the lead's `PseudoCell.lean` change (`rimFrontier`, 2026-09-23): prepare refreshed
+  the stale cone; `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\InitialSurfaceSeparates.lean with no diagnostics; shared outputs unchanged.`
+  (00:13:02Z, source unchanged, SHA-256 `ADA5E935…`) and `AuditBatch3B.lean` again `Verified … no
+  diagnostics` (00:14:00Z). The other four modules do not import `PseudoCell` (0 stale objects).

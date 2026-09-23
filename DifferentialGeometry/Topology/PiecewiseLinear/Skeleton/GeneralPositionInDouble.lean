@@ -11,6 +11,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DoubleHalfSpaceChart
 import DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOverlap
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellGlobalInvariants
+import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingDoubleCrossing
 
 /-!
 # Sorry-first skeleton of general position in the double
@@ -286,6 +287,15 @@ M]` instance argument, of which the frozen leaf is a special case.
 
 Also proved and imported (Gemini batch G098, lead-accepted 2026-09-22, statement byte-identical):
 `exists_globalInvariants_of_gluedCell`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the repaired frozen leaf):
+`hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` (lane F's entry 15, module
+`StableCrossingDoubleCrossing`), following the fourth-pass plan: polyhedral neighbourhoods on
+each source sheet, both PL homeomorphism witnesses, the `t = 0` half-space in the boundary case,
+the accepted normalizer and `exists_crossing_chart_mem_atlas`; `[T2Space M]` covers the whole
+fibre over the double point.  `hℓ : ℓ ≠ 0` is redundant (the block hypotheses already exclude
+`ℓ = 0`) and is kept in the frozen statement through a `let` binding.
 -/
 
 open Set Topology
@@ -1421,20 +1431,6 @@ theorem exists_sheets_of_hasWallProductBlocks {f : EuclideanSpace ℝ (Fin 2) �
   obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblk hy.1
     (chartBlock_mono_of_half (ec i) A (le_of_lt hr0) ht hi)
   exact ⟨SA, SB, hdisj, hA, hB⟩
-
-theorem hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock [T2Space M] (D : SingularTwoCell M)
-    {BdM : Set M} (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
-    (hℓ : ℓ ≠ 0) (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
-    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
-    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η : ℝ}
-    (h : IsStableCrossingBlock (⇑D) D.domain ec ℓ BdM A r tlo SA SB a b La Lb η) {y : M}
-    (hy : y ∈ doublePointSet (⇑D) D.domain)
-    (hyB : y ∈ innerChartBlock ec A r tlo) :
-    ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-      HasPLNormalDoubleCrossingAt (⇑e ∘ ⇑D) (D.domain ∩ ⇑D ⁻¹' e.source)
-        (⇑e '' (e.source ∩ BdM)) (e y) := by
-  sorry
 
 theorem exists_normalCrossing_of_hasWallProductBlocks [T2Space M] (D : SingularTwoCell M)
     {BdM C Z : Set M} {ι : Type}

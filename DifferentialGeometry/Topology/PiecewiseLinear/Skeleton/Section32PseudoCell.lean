@@ -11,6 +11,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.FreeFaceArc
 import DifferentialGeometry.Topology.PiecewiseLinear.HandleDecompositionOfEdgeCollars
 import DifferentialGeometry.Topology.PiecewiseLinear.TwoComponentsOfPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.EdgeCollarFamily
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhoodExists
+import DifferentialGeometry.Topology.PiecewiseLinear.InitialSurfaceSeparates
 
 /-!
 # Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
@@ -204,6 +206,12 @@ neighbourhoods and each rim circle lies in the closure of the free face), `exist
 `isHandleDecomposition_of_edgeCollars` (module `HandleDecompositionOfEdgeCollars`; the connectivity
 step is Theorem 30.2 inside the ball `C w`).  `FreeFaceArc` also carries the shared tube-topology
 layer the other three modules import.  `IsTube` still has no inhabitant.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf): `separates_initialSurface`
+(lane F's entry 11, module `InitialSurfaceSeparates`): the split-disk separation is moved into
+the interior through `h` and the separator is swapped inside the closed set `⋃ S''ᵢ ∪ {P'}` by
+`Separates.of_frontier_subset_replacement`; no limit argument is needed.
 -/
 
 open Set Topology
@@ -230,19 +238,6 @@ theorem exists_canonicalTower (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.verti
     ∃ (φ : E3 → E3) (Pt : ℤ → E3) (Dp Dpint J A S T S'' T'' : ℤ → Set E3),
       IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
         (interior (h '' C u ∪ h '' C v)) P' ∧ ∀ i, Disjoint (φ '' S i) Z := by
-  sorry
-
-open Classical in
-theorem separates_initialSurface (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
-    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
-    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
-    (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
-      (interior (h '' C u ∪ h '' C v)) P')
-    (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3)) :
-    IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' initialSurface S'' T'' P') ∧
-    Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' initialSurface S'' T'' P')
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) := by
   sorry
 
 open Classical in
