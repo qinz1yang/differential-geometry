@@ -327,3 +327,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 19:35 — accepted worker d's `exists_section34DeletedBalls` (`Section34DeletedBalls`, `Section34CapDeletion`)
   and reduced `exists_section34ProtectedCircleRemoval` to its step leaf (`Section34CircleRemovalDescent`);
   physical `sorry` 61. Worker d now on `PLSmoothingCompact`.
+* 20:25 — accepted worker d's `isSmoothHandleStage_adjunction_three` (`IsSmoothHandleStageAdjunctionThree`,
+  `SmoothCapAttachment`, `SmoothBoundarySphereCollar`); physical `sorry` 60. Worker d now on corner charts
+  and the two- and one-handle adjunctions. Second review request for Section34Compact written (BF).

@@ -586,3 +586,151 @@ Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output ro
   - the spine clause for `ct s '' h '' rim`;
   - the transport `Φ` of the face torus by `ct s`.
 - Estimate: several thousand lines. Steps 2 and (f) are each a project-scale brick.
+
+# Batch 6 (PL smoothing, compact case)
+
+Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`. Target: the six frozen leaves of
+`Skeleton/PLSmoothingCompact.lean`. Read first:
+- the skeleton docstring and the assembly `isSmoothHandleStage_step`;
+- the template `IsSmoothHandleStageAdjunctionZero.lean` (a disjoint union, no gluing);
+- `Handle/SmoothStage.lean`, `Handle/Gluing.lean` (only pull-back along a homeomorphism);
+- `Manifold/OpenCoverAtlas.lean` (a boundaryless atlas from open patches);
+- `Double/*` (the smooth double along the whole boundary);
+- `Manifold/Boundary/DefiningCollar.lean` (defining function with a smooth closed collar);
+- `Manifold/Attachment/Radial*` (the model cap `Cap ∪ S² × [0, B) ≅` open ball);
+- `Collar/Attachment.lean` (an outer collar is absorbed);
+- `Homeomorph/CircleIsotopy.lean`, `Attachment/CellExtension.lean`, `Homeomorph/JordanDiskMove.lean`
+  and `Manifold/SurfaceChartSmoothing.lean`.
+
+The tree has no general smooth gluing of two manifolds along open subsets or boundary components
+for the half-space model. Every attachment leaf needs one (a capping chart, or corners rounded
+along the attaching region); `Handle/Gluing.adjunctionChartedSpace` only pulls a structure back
+along a homeomorphism the caller already has.
+
+## exists_homeomorph_smooth_disks_of_isClosedEmbedding — STUCK (not started in Lean)
+
+- Remaining goal: the entire conclusion.
+- Sub-obligations:
+  1. Tameness in a surface: each of the two embedded closed disks `ψ (Δ² × {j})` in the closed
+     surface `∂M` lies inside a coordinate disk, i.e. an open set of `∂M` homeomorphic to the
+     plane. This needs Schoenflies for a circle in a surface. Only planar Schoenflies is in the
+     tree (`External/Schoenflies`, `Homeomorph/JordanDiskMove.exists_image_closed_region_eqOn_compl`).
+  2. A compactly supported ambient homeomorphism of `∂M`, isotopic to the identity, moving
+     both disks at once onto round disks of two disjoint smooth charts `f j : ℝ² → ∂M`. The
+     planar moves exist; the surface chart smoothing is
+     `exists_isotopy_smoothing_surface_chart`; the simultaneous, disjoint version is not
+     written.
+  3. Extension of that isotopy through a boundary collar to `θ : M ≃ₜ M` with
+     `θ '' ∂M = ∂M` (the collar is `exists_boundary_collar_homeomorph`; the extension
+     `θ (c (b, s)) = c (J_{1 - s/δ} b, s)` is not written).
+  4. `f j` as a smooth embedding into `M` (`𝓡 2 → 𝓡∂ 3`) with range in `∂M`. This needs
+     composition with the boundary inclusion of `BoundaryManifold`, whose charts are in
+     `Manifold/Boundary/SmoothMap.lean`.
+
+## isSmoothHandleStage_adjunction_one — STUCK (not started in Lean)
+
+- Remaining goal: the entire conclusion.
+- Finding (orientation alignment). The hypotheses fix only `range ψ = ⋃ j, f j '' closedBall`.
+  A homeomorphism of `Δ² × [0,1]` that restricts to prescribed homeomorphisms
+  `φ_j = f_j⁻¹ ∘ ψ(·, j)` on the two ends exists only when `φ₀` and `φ₁` have the same
+  orientation character: the boundary sphere map restricts on the two ends with opposite
+  induced orientations. So the proof must first replace `f 1` by `f 1 ∘ reflection` when the
+  characters differ; the leaf stays true because the reflected chart has the same image.
+  - The tree has the dichotomy for circle homeomorphisms (`HasIncreasingCircleLift`) and the
+    cylinder extension `exists_homeomorph_cylinder_of_same_orientation`.
+  - Missing: transferring a disk homeomorphism's character to its boundary circle, plus the
+    radial extension over `Δ² × [0,1]` (via the sphere `∂(Δ² × [0,1])` and
+    `closedCellHomeomorphExtension`).
+- Main missing brick: a smooth compact 3-manifold homeomorphic to `M ∪_{f₀ ⊔ f₁} D² × [0,1]`.
+  This needs smooth gluing along the two boundary disks with corners rounded (see the note
+  above). There are corner-rounding bricks (`CornerRounding`, `CollaredCornerSmoothing`,
+  `FramedCornerSmoothing`), but no gluing.
+- The boundary formula of the stage then follows from boundary points being read off in charts.
+
+## exists_homeomorph_smooth_annulus_of_isClosedEmbedding — STUCK (not started in Lean)
+
+- Remaining goal: the entire conclusion.
+- The same missing inputs as the disk leaf, for a closed annulus in `∂M`:
+  - an annular coordinate neighbourhood in the surface (both boundary circles tame);
+  - an ambient move onto `S¹ × [0,1]` inside a smooth open annulus `S¹ × ℝ → ∂M`
+    (`Homeomorph/JordanAnnulus.exists_homeomorph_jordan_annulus` is planar);
+  - the collar extension to `θ`.
+
+## isSmoothHandleStage_adjunction_two — STUCK (not started in Lean)
+
+- Remaining goal: the entire conclusion.
+- No orientation obstruction here. The free part `Δ² × {0,1}` of `∂(Δ² × [0,1])` consists of
+  two disks, so any annulus homeomorphism (ends possibly swapped, circle possibly reflected)
+  extends radially over the two end disks, and then over the ball.
+- Main missing brick: the same smooth gluing, along the annulus `f (S¹ × [0,1])`, with rounded
+  corners.
+
+## exists_isSmoothEmbedding_sphere_of_isClosedEmbedding — STUCK (not started in Lean)
+
+- Remaining goal: the entire conclusion. This is the leaf the skeleton calls the one deep
+  independent producer.
+- Sub-obligations:
+  1. `range ψ` is open and closed in `∂M` (invariance of domain in the 2-manifold
+     `BoundaryManifold`; `InvarianceOfDomainManifold.lean` has the real-model statements).
+  2. It is therefore a closed smooth surface homeomorphic to `S²`.
+  3. Uniqueness of the smooth structure on `S²`: such a surface is diffeomorphic to the round
+     sphere. The route through Morse theory needs a Morse function with exactly two critical
+     points, via cancellation on a simply connected surface, and then Reeb's theorem. The
+     partial inputs named in the skeleton (`CompactCriticalValues`, `CubicCancellation`,
+     `SaddleMinimumStrip`) do not assemble into it.
+- Estimate: the largest leaf of the file.
+
+## isSmoothHandleStage_adjunction_three — CLOSED
+
+- Files (all new; imports ≤ 100 characters):
+  - `DifferentialGeometry/Topology/PiecewiseLinear/SmoothBoundarySphereCollar.lean`: 242 lines,
+    SHA-256 `abd589e9a6b4a3d231be4aeb01aecddc6a059b7867a5ff6c3646af85f392e758`.
+  - `DifferentialGeometry/Topology/PiecewiseLinear/SmoothCapAttachment.lean`: 636 lines, SHA-256
+    `475a6e1289c9d8b9a2ed35d6244e9499d686f15a8c15e3d2e34052c97a5f1475`.
+  - `DifferentialGeometry/Topology/PiecewiseLinear/IsSmoothHandleStageAdjunctionThree.lean`: 126
+    lines, SHA-256 `1f1e2dbf1a8c0ec4b0498e1b443c1748e6a4b98f4737f6ca102ddadb3257da30`.
+- The leaf is restated byte-identically. It uses the skeleton's opens, namespace, `universe u` and
+  the `variable {E F …}` line, which the statement does not mention. A script compared the
+  statement against the skeleton text: identical.
+- Wiring: import `IsSmoothHandleStageAdjunctionThree` and delete the skeleton leaf. The call at
+  skeleton line 505 is unchanged. No frozen hypothesis was dropped, and none is unused.
+- New public names (all grepped first):
+  - `exists_radialCollar_of_isSmoothEmbedding_sphere`;
+  - `halfSpaceShiftFun`, `halfSpaceShiftFun_val`, `halfSpaceShift`, `halfSpaceShift_val`,
+    `halfSpaceShift_contMDiffOn`, `halfSpaceShift_symm_contMDiff`: a chart of `ℝ³` into the
+    interior of `EuclideanHalfSpace 3`;
+  - `exists_isManifold_of_isOpenEmbedding_of_ballChart`;
+  - `exists_capChart_of_radialCollar`;
+  - `isSmoothHandleStage_adjunction_of_radialCollar`;
+  - `exists_closedCell_homeomorph_of_range_eq`.
+- Route:
+  1. Radial collar. As a map into `BoundaryManifold`, `d` is a smooth injective immersion between
+     surfaces (mfderiv chain rule through `boundaryInclusion`). By
+     `exists_diffeomorph_onto_range_of_injective_immersion` it is a diffeomorphism onto an open
+     subset of `∂M`. Pushing that set along the defining-function collar
+     (`exists_definingFunction_sublevel_collar`) gives an open `V ⊇ range d`, with smooth
+     `θ : V → {1 ≤ ‖v‖ < 1 + a}` and inverse `Θ`, where `Θ` restricted to the unit sphere is `d`.
+  2. Generic gluing (`exists_isManifold_of_isOpenEmbedding_of_ballChart`). Take an open part `U`
+     of a smooth `M` embedded openly in `X`, plus one chart of `X` onto a ball, with smooth
+     transitions in both directions. The atlas made of `M`'s charts lifted by
+     `lift_openEmbedding` and the ball chart shifted into the open half space gives an
+     `IsManifold (𝓡∂ 3) ∞` structure. The boundary is exactly the image of `U ∩ ∂M`, by
+     `isBoundaryPoint_iff_any_chart_real`.
+  3. Cap chart. `κ` is the quotient lift of `Ext` on the cell and `θ` on `M`. Its inverse is
+     piecewise (the cell inside the unit ball, `Θ` outside), and `ContinuousOn.if` matches the
+     two pieces on the unit sphere.
+  4. Cone step. `Ext` is the radial extension (`closedCellHomeomorphExtension`) of the sphere
+     homeomorphism `d⁻¹ ∘ ψ`, so the parametrisation of `ψ` never needs to be smooth.
+- The proof is split into five lemmas to keep each declaration within the default heartbeats.
+  No `set_option` is used.
+- Checker: all three modules `Verified ... with no diagnostics; shared outputs unchanged.` Audit
+  `AuditOpusD8.lean` (all three modules): `Verified ... with no diagnostics; shared outputs
+  unchanged.` Axioms are within `propext`, `Classical.choice` and `Quot.sound`; all thirteen
+  linters pass.
+- Compiles: 3 checks for the collar module (2 failed), 7 for the gluing module (1 heartbeat
+  failure before the split; 4 other failures and 1 run with a `sorry` placeholder), 3 for the
+  leaf module (2 failed), and 1 audit.
+- Reuse: the gluing lemma and the half-space shift chart are also inputs for the one-handle and
+  two-handle leaves. Those still need corner charts (angle rescaling in collar coordinates) and,
+  for `k = 1`, the orientation alignment recorded above.

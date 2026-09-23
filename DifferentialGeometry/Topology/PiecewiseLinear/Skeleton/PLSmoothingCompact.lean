@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Smoothing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttachmentZero
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeBoundaryGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionThree
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleFiltration
@@ -122,6 +123,19 @@ To be hoisted by the lead: `PLSmoothingCompact`, `PLSmoothingModelCompact`,
 `isSmoothHandleStage_of_attachment` (to a real module shared by the leaf files).
 The pinned attachment predicate and selector now live in `CellAttachment.lean`; the smooth
 stage predicate, empty stage and transport live in `Topology/Handle/SmoothStage.lean`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf, every hypothesis used):
+`isSmoothHandleStage_adjunction_three` (module `IsSmoothHandleStageAdjunctionThree` over
+`SmoothBoundarySphereCollar` — the embedded sphere is a diffeomorphism onto an open part of the
+boundary and, pushed along the boundary collar, a neighbourhood maps smoothly onto a shell — and
+`SmoothCapAttachment`, the general gluing of an open part of a smooth manifold with one ball
+chart with smooth transitions, identifying the boundary).  Worker analysis of the rest: the two
+taming leaves need Schoenflies for a disk or annulus inside a surface plus a simultaneous
+ambient move extended through the collar; the one- and two-handle leaves need the smooth
+attachment with rounded corners (corner charts by angle rescaling in collar coordinates), and
+the one-handle leaf must first reflect one end when the orientation characters differ; the
+smooth sphere leaf needs uniqueness of the smooth structure on `S²`.
 -/
 
 open Set Topology Manifold
@@ -239,17 +253,6 @@ theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,
       IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ d ∧ range d = range ψ := by
-  sorry
-
-theorem isSmoothHandleStage_adjunction_three
-    {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
-    (hψ : IsClosedEmbedding ψ) (d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M)
-    (hd : IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ d) (hdbd : range d ⊆ (𝓡∂ 3).boundary M)
-    (hrange : range d = range ψ) :
-    IsSmoothHandleStage (AdjunctionSpace (Subtype.val : _ → stdSimplex ℝ (Fin 4)) ψ)
-      (adjunctionLower ψ '' ((𝓡∂ 3).boundary M \ range ψ)) := by
   sorry
 
 theorem isSmoothHandleStage_of_attachment
