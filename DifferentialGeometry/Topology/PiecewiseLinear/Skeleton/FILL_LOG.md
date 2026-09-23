@@ -2856,3 +2856,104 @@ Checker output:
 ```text
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ReferenceSphereMaps.lean with no diagnostics; shared outputs unchanged.
 ```
+
+## Codex item 7 — local-degree module final revision (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.InjectiveOrientationCharacter. Checker exit: 0.
+SHA-256: C635CE483C783565514AE83123DAF73488D2647A5DEADFCA84481572809F4DF5 (supersedes the earlier hash).
+Sub-leaf list: `isLocallyConstant_euclideanLocalDegree_sub_of_injOn` is now exported for a chart overlap that need not be connected; `euclideanLocalDegree_sub_eq_of_injOn` is its connected-open corollary. A redundant corollary for an arbitrary connected subset was omitted after a deterministic elaboration timeout; the exported local-constancy theorem supports direct restriction to such a subset. No heartbeat override was used.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\InjectiveOrientationCharacter.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex item 7 — reference-map and local-degree axiom audit (2026-09-23)
+
+External `#print axioms` audit of `IsPLSphere.isClosed_holed_disk_family`, `IsPLSphere.exists_isPLHomeomorphOn_disk_family`, `exists_section34Vertex_incident_edge`, `exists_isPLHomeomorphInto_boundary_disk_family`, `exists_section34_reference_sphere_maps`, and `isLocallyConstant_euclideanLocalDegree_sub_of_injOn`: each has exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Audit checker exits 1 only because printed axioms and two long-line warnings in the external audit file are diagnostics; every named Lean module above separately passed with no diagnostics.
+
+## Codex item 7 — orientation-character frontier after corrected BN route (2026-09-23)
+
+The corrected bridge's first two geometric stages are checked: marker interior and connected source/target carriers (the earlier accepted modules and `Section34ConnectedCarriers`); one original triangle and one maximal-atlas chart for both ends of every edge (`LocallyFiniteManifoldCofaces`, `Section34EdgeCommonChart`); finite incident disk families and planar complementary charts (`Section34IncidentEdgeFinite`, `Section34VertexHoledCharts`); simultaneous reference sphere maps carrying each source split disk onto the shared target disk as a SET (`HoledSphereClosed`, `MarkedSphereFamilyMap`, `Section34VertexIncidentEdge`, `PLCellBoundaryMarkedMap`, `Section34ReferenceSphereMaps`). No pointwise agreement was assumed. The local-degree constancy brick is checked in `InjectiveOrientationCharacter`.
+
+First OPEN producer: the `ZMod 2` relative orientation transfer around an edge. The frozen leaf supplies `hU : IsOpen U` and `hh : IsEmbedding (U.domRestrict h)`, not differentiability or PL regularity of `h`. In source and target charts, one needs `IsUnit (euclideanLocalDegree (fun z => f z - f x) x ...)` for the continuous injective chart expression `f = ct s ∘ h ∘ (sourceChart).symm`, plus naturality of the induced disk-boundary orientation under the two opposite boundary normals. The current `LocalDegree/InjectiveDeterminantSign` and our new `InjectiveOrientationCharacter` prove constancy only; `LocalDegree/EuclideanLinearization.euclideanLocalDegree_isUnit_of_hasFDerivAt` assumes an invertible derivative, unavailable for `h`. `Homology/Local/Chart.chartLocalHomologyIso` and `LocalDegree/Relative.euclideanLocalDegree_relativeHomology` suggest a topological proof of the unit statement but do not directly supply it. Consequently no `sourceSign`, `targetSign`, vertex `σ`, edgewise parity equation, or cycle-zero theorem is claimed. This is an API producer gap, not a counterexample to the frozen leaf and not a request to add a hypothesis.
+
+Next required proof in order: construct the topological chart-orientation unit/transfer theorem from relative local homology for an arbitrary embedding, then show the source and target edge transfers coincide through `A_w` with both boundary-normal reversals; only then use `GraphCoboundary`, choose/flip each shared edge map, establish positive circle corrections and pointwise matching, and proceed to clause (f). Do not use whole-cell closeness or the full `Section34GraphFrame` for (f). Items 10–12 were not started.
+
+## Codex C1 surface trace check (2026-09-23T16:31:11.8426744Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.IntervalInterpolation. Checker exit: 1.
+SHA-256: A68E926FAA50A797592D24EF741182319E633D74DFCA010B9C2651AD23A4F046
+Sub-leaf list: PL interval extension; interpolation of three interior marks; normalization of arc marks to 1/4, 1/2, 3/4
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IntervalInterpolation.lean:71:19: error(lean.invalidField): Invalid field `comp`: The environment does not contain `And.comp`, so it is not possible to project the field `comp` from an expression
+  hγ
+of type
+  BijOn γ (Icc 0 1) T ∧ IsPiecewiseAffineOn γ (Icc 0 1) ∧ IsPiecewiseAffineOn (Function.invFunOn γ (Icc 0 1)) T
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\IntervalInterpolation.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\IntervalInterpolation.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T16:33:25.6146755Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.IntervalInterpolation. Checker exit: 0.
+SHA-256: 3A6E65994DFB8EBEEDCC180B047E31B28A2A2E759159132100E01BF7EBEF5598
+Sub-leaf list: PL interval extension; interpolation of three interior marks; normalization of arc marks to 1/4, 1/2, 3/4
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IntervalInterpolation.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T16:35:29.8342880Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarCoordinates. Checker exit: 1.
+SHA-256: A0BE378D32CADF1D824C4EADA66768136693E61359704AC58D2C51CF2E7ECB8E
+Sub-leaf list: open neighborhood with all source preimages inside collar; unique continuous collar coordinates off branch; preservation of side on a connected trace
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarCoordinates.lean:34:72: error: invalid `▸` notation, expected result type of cast is
+  x ∈ D.toFun ⁻¹' hD.singularSet.branchCarrier c
+however, the equality
+  Eq.symm hxy
+of type
+  y = D.toFun x
+does not contain the expected result type on either the left or the right hand side
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarCoordinates.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarCoordinates.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T16:38:22.1493364Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarCoordinates. Checker exit: 0.
+SHA-256: B375F4F9708070114F97C410A267FF56287FD890FDFEB29A20A417279709CC1F
+Sub-leaf list: open neighborhood with all source preimages inside collar; unique continuous collar coordinates off branch; preservation of side on a connected trace
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarCoordinates.lean with no diagnostics; shared outputs unchanged.
+```
+

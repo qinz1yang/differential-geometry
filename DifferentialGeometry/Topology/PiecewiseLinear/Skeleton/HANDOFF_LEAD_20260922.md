@@ -473,3 +473,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   cap reparametrisation and the ray clause).
 * 19:30 (09-23) — accepted the collaborator's PR #9 (18 modules, cherry-picked): both source face orders proved;
   compact probe deleted. Compact has 5 leaves, Terminal 2. Physical `sorry` 25.
+* 20:00 (09-23) — registered Codex lane 1's 11 BR-route modules (carriers, common charts, reference maps, degree
+  constancy); the edge matching waits on the unit local degree of a topological embedding and the normal transfer.
