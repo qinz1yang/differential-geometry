@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative
 import DifferentialGeometry.Geometry.Metric.CompactExistence
-import DifferentialGeometry.Geometry.Metric.Scaling
+import DifferentialGeometry.Geometry.Metric.Conformal.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 section
 
@@ -86,6 +87,46 @@ theorem flatMetric_parameterTangent_unit (z : AddCircle (1 : ℝ)) :
 
 
 
+
+
+def metricOfCoefficient (a : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯)
+    (ha : ∀ z, 0 < a z) : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)) :=
+  conformalMetric flatMetric ⟨fun z => Real.log (a z) / 2, by
+    have hlog : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun z => Real.log (a z)) := by
+      intro z
+      exact (Real.contDiffAt_log.2 (ha z).ne').comp_contMDiffAt a.contMDiff.contMDiffAt
+    exact hlog.div_const 2⟩
+
+@[simp] theorem metricOfCoefficient_inner
+    (a : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯) (ha : ∀ z, 0 < a z)
+    (z : AddCircle (1 : ℝ)) (v w : TangentSpace 𝓘(ℝ, ℝ) z) :
+    (metricOfCoefficient a ha).inner z v w = a z * flatMetric.inner z v w := by
+  change Real.exp (2 * (Real.log (a z) / 2)) * _ = _
+  rw [show 2 * (Real.log (a z) / 2) = Real.log (a z) by ring, Real.exp_log (ha z)]
+  rfl
+
+@[simp] theorem metricCoefficient_metricOfCoefficient
+    (a : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯) (ha : ∀ z, 0 < a z) :
+    metricCoefficient (metricOfCoefficient a ha) = a := by
+  ext z
+  rw [metricCoefficient_apply, metricOfCoefficient_inner, flatMetric_parameterTangent_unit,
+    mul_one]
+
+theorem metricCoefficient_injective : Function.Injective metricCoefficient := by
+  intro g h heq
+  apply SmoothRiemannianMetric.ext_inner
+  intro z v w
+  obtain ⟨a, rfl⟩ := exists_smul_parameterTangent z v
+  obtain ⟨b, rfl⟩ := exists_smul_parameterTangent z w
+  have hz := congrArg (fun f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯ => f z) heq
+  simp only [map_smul, smul_apply, smul_eq_mul]
+  rw [← metricCoefficient_apply, ← metricCoefficient_apply, hz]
+
+@[simp] theorem metricOfCoefficient_metricCoefficient
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    metricOfCoefficient (metricCoefficient g) (metricCoefficient_pos g) = g := by
+  apply metricCoefficient_injective
+  exact metricCoefficient_metricOfCoefficient _ _
 
 theorem eq_flatMetric_of_parameterTangent_unit
     (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))

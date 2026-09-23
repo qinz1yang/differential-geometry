@@ -134,6 +134,21 @@ theorem laplacianDriftCoefficient_apply
       -(show ℝ from mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (metricCoefficient g) z
         (parameterTangent z)) / (2 * metricCoefficient g z ^ 2) := rfl
 
+
+@[simp] theorem laplacianPrincipalCoefficient_metricOfCoefficient
+    (a : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯) (ha : ∀ z, 0 < a z)
+    (z : AddCircle (1 : ℝ)) :
+    laplacianPrincipalCoefficient (metricOfCoefficient a ha) z = (a z)⁻¹ := by
+  rw [laplacianPrincipalCoefficient_apply, metricCoefficient_metricOfCoefficient]
+
+@[simp] theorem laplacianDriftCoefficient_metricOfCoefficient
+    (a : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯) (ha : ∀ z, 0 < a z)
+    (z : AddCircle (1 : ℝ)) :
+    laplacianDriftCoefficient (metricOfCoefficient a ha) z =
+      -(show ℝ from mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) a z (parameterTangent z)) /
+        (2 * a z ^ 2) := by
+  rw [laplacianDriftCoefficient_apply, metricCoefficient_metricOfCoefficient]
+
 theorem laplacian_eq_principal_add_drift
     (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
     {f : AddCircle (1 : ℝ) → ℝ} {z : AddCircle (1 : ℝ)}
