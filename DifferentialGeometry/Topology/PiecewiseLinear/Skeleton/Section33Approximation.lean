@@ -8,6 +8,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayEmbed
 import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceEulerChar
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhoodExists
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeFrame
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheoremDiskVocabulary
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeSinglePolygonTraces
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeHandlePieces
+import DifferentialGeometry.Topology.PiecewiseLinear.DiskMeetsGraph
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -183,6 +187,18 @@ and an axiom audit; statement byte-identical with the frozen leaf): `exists_sect
 `h` is uniformly continuous, a fine triangulation with the dual cells inside it, the tube with the
 identity, then `IsTube.of_isEmbedding` with `hh` restricted to `N ⊆ U`; `T` itself need not lie in
 `U`.  The `DecidableEq` instance of the frozen statement is bridged by `Subsingleton.elim`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and axiom audits; statements byte-identical with the frozen leaves): `exists_hasSinglePolygonTraces`
+(Lemmas 3-4, module `PolyhedralTubeSinglePolygonTraces` over four tube-trace modules),
+`exists_hasConnectedHandlePieces` (Lemmas 5-6, `PolyhedralTubeHandlePieces` over three modules)
+and `section33_disk_meets_graph` (Lemma 8, `DiskMeetsGraph` over four modules, using `Moise324`,
+the `rimFrontier` field, `hend` and `hmiss`; no extra hypothesis): in a chart of the pseudo-cell
+the given disk is the closed inside of `∂Δ`, a small disk of `E₁` is replaced by `Moise324`, the
+result is a polyhedral 2-sphere, and the two local sides of `E₁` near the centre are joined
+outside it, which a closed connected surface forbids.  The predicates `IsLoopTheoremDisk` and
+`HasNoHandleLoopTheoremDisk` were hoisted verbatim into `LoopTheoremDiskVocabulary` so that Lemmas
+7 and 9 can be proved in real modules.
 -/
 
 open Set Topology
@@ -190,22 +206,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 section Vocabulary
-
-def IsLoopTheoremDisk (Kimg N' BdX Δ : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
-  ∃ r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ interior N' \ Kimg ∧
-    Δ ∩ BdX = r '' stdSimplexBoundary 2 ∧
-    ∃ hb : r '' stdSimplexBoundary 2 ⊆ BdX,
-      ¬ (⟨Set.inclusion hb, continuous_inclusion hb⟩ :
-        C(r '' stdSimplexBoundary 2, BdX)).Nullhomotopic
-
-def HasNoHandleLoopTheoremDisk (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
-    (N' : Set (EuclideanSpace ℝ (Fin 3)))
-    (Cpp : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
-    (X : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
-  ∀ v ∈ K.vertices, ∀ Δ : Set (EuclideanSpace ℝ (Fin 3)),
-    IsLoopTheoremDisk (h '' K.space) N' (frontier X) Δ → ¬ Δ ⊆ Cpp v
 
 end Vocabulary
 
@@ -219,26 +219,6 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
 
-theorem exists_hasSinglePolygonTraces
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK) :
-    ∃ XK' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
-      IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK' ∧
-      HasSinglePolygonTraces K h Ec XK'.space := by
-  sorry
-
-theorem exists_hasConnectedHandlePieces
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (hconn : IsConnected K.space)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space) :
-    ∃ (XK' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-      (AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
-      IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK' ∧
-      HasSinglePolygonTraces K h Ec XK'.space ∧
-      HasConnectedHandlePieces K Ec Cpp XK'.space AK := by
-  sorry
-
 theorem exists_hasNoHandleLoopTheoremDisk
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
@@ -250,21 +230,6 @@ theorem exists_hasNoHandleLoopTheoremDisk
       HasSinglePolygonTraces K h Ec XK'.space ∧
       HasConnectedHandlePieces K Ec Cpp XK'.space AK' ∧
       HasNoHandleLoopTheoremDisk K h N' Cpp XK'.space := by
-  sorry
-
-theorem section33_disk_meets_graph (h324 : Moise324)
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (hend : ∀ v : K.vertices, ((SimplicialComplex.edgeGraph K).neighborSet v).ncard ≠ 1)
-    {v₁ : EuclideanSpace ℝ (Fin 3)} (hv₁ : v₁ ∈ K.vertices)
-    {e₁ : Finset (EuclideanSpace ℝ (Fin 3))} (he₁ : e₁ ∈ K.faces) (hcard : e₁.card = 2)
-    {Δ : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔ : Δ ⊆ Cpp v₁ ∩ interior N')
-    (hbd : Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2)
-    (hcenter : ∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
-      IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e₁ ∧
-        DJ \ DJint = r '' stdSimplexBoundary 2 ∧ h (e₁.centroid ℝ id) ∈ DJint)
-    (hmiss : ∀ e ∈ K.faces, e.card = 2 → e ≠ e₁ → Disjoint Δ (Ec e)) :
-    (Δ ∩ h '' K.space).Nonempty := by
   sorry
 
 theorem section33_not_isLoopTheoremDisk

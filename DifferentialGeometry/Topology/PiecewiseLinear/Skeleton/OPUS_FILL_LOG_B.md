@@ -432,3 +432,265 @@ the first check; the lead's Lemma 12 commit landed during the batch, statements 
   combinatorial surface with boundary agreeing with finitely many disjoint open 2-cells, locally
   polyhedral off a point, near prescribed compact sets).  STUCK 1: Lemma 8 (hypothesis gap above).
 - Register, in this order: `LocalSurfaceLink`, `PolyhedralTubeNeighborhoodExists`.
+
+# Batch 4 (Lemmas 3-7)
+
+Worker: Opus 5.5 fill worker on lease b, 2026-09-22 (checkout HEAD f04911c47 at the start, with
+the `rimFrontier` field; later lead commits up to 888521413 did not touch the statements used).
+
+## exists_hasSinglePolygonTraces (Lemmas 3-4) — CLOSED
+
+- Files (register in this order; each imports the previous ones it needs):
+  1. `PolyhedralTubeTraces.lean` (689 lines, SHA-256
+     `978fe9926a054080a5a8eda3745bd993cfff686f55d3da586e6e85db358b5cd6`);
+  2. `NestedJordanCurves.lean` (338 lines,
+     `2fee85307638cfc261811c3c86252f336b05fb124b423a2d728e95eca61b290e`);
+  3. `PolyhedralTubeOuterTrace.lean` (423 lines,
+     `60a3be272615de49a5386de567368cec97e1e9296febb27db0319f42b58eb9e2`);
+  4. `DerivedNeighborhoodSurgery.lean` (473 lines,
+     `be08a57b4bd1586c7b7587c15b8bc5e3b6981545d883f7bb7d0bc12ea91d2358`);
+  5. `PolyhedralTubeSinglePolygonTraces.lean` (446 lines,
+     `6f83103d868d7d186a1461342129d21afb9a5e339ee0f4b52822aaed96a09c26`), the leaf, statement and
+     `section Leaves` variable block byte-identical to the skeleton.
+  All under `DifferentialGeometry/Topology/PiecewiseLinear/`.
+- Import lines: `import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeTraces`,
+  `...NestedJordanCurves`, `...PolyhedralTubeOuterTrace`, `...DerivedNeighborhoodSurgery`,
+  `...PolyhedralTubeSinglePolygonTraces` (same prefix).
+- New public names (all grepped tree-wide, unused before): `HasPLCrossingAt.exists_coordinateChart`,
+  `false_of_ballChart_of_halfPlane`, `false_of_frontier_halfPlane`, `side_of_frontier_plane`,
+  `HasPLCrossingAt.exists_sideChart`, `IsPolyhedralTubeNeighborhood.trace_subset`,
+  `IsPolyhedralTubeNeighborhood.exists_sideChart`,
+  `IsPolyhedralTubeNeighborhood.exists_traceCircles`;
+  `subset_inside_or_subset_outside`, `closure_inside_eq_union`, `compl_closure_inside`,
+  `closure_inside_subset_inside_of_subset_inside`, `disjoint_closure_inside_of_not_subset_inside`,
+  `isPreconnected_compl_union_iUnion_closure_inside`, `closure_inside_subset_ball`,
+  `exists_innermost_jordanCurve_of_sides`; `IsOpenTopologicalCell.exists_planarChart`,
+  `isJordanCurve_image_of_isPLSphere_one`, `IsPolyhedralTubeNeighborhood.exists_outerTrace`;
+  `exists_face_meets_of_mem_derivedNeighborhood_space`, `subset_of_isPreconnected_of_eq_inter`,
+  `derivedNeighborhood_space_inter_subset_of_eq_inter`, `restrict_space_eq_of_eq_inter`,
+  `exists_isSubdivision_restrict_space_diam_lt`, `derivedNeighborhood_space_subset_cthickening`,
+  `IsCombinatorialManifoldWithBoundary.complement_derivedNeighborhood`,
+  `IsCombinatorialManifoldWithBoundary.exists_remove_of_eq_inter`,
+  `IsCombinatorialManifoldWithBoundary.exists_add_of_eq_inter`,
+  `IsCombinatorialManifoldWithBoundary.exists_add_remove_of_eq_inter`;
+  `frontier_sdiff_eq_of_sdiff_eq`,
+  `IsHandleDecompositionOfTube.interior_pseudoCell_subset_interior`,
+  `IsPolyhedralTubeNeighborhood.exists_singlePolygonTrace_edge`, `exists_hasSinglePolygonTraces`.
+  Note for dedupe: `exists_face_meets_of_mem_derivedNeighborhood_space` overlaps
+  `exists_convexHull_subset_face_of_mem_derivedNeighborhood` in another lane's untracked
+  `CutOutPieceOfClosureSubset.lean` (not importable; different name, no clash).
+- Success lines (2026-09-22, each module checked alone after a fresh prepare; `...` stands for
+  `D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear`):
+  `Verified ...\PolyhedralTubeTraces.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\NestedJordanCurves.lean with no diagnostics; shared outputs unchanged.` (13 s)
+  `Verified ...\PolyhedralTubeOuterTrace.lean with no diagnostics; shared outputs unchanged.`
+  (16 s)
+  `Verified ...\DerivedNeighborhoodSurgery.lean with no diagnostics; shared outputs unchanged.`
+  (14 s)
+  `Verified ...\PolyhedralTubeSinglePolygonTraces.lean with no diagnostics; shared outputs
+  unchanged.` (35 s)
+- Axiom audit of all five modules (`claude-moise-agent-b/AuditBatch41.lean`, `-Audit`, 55 s):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch41.lean with no diagnostics; shared outputs unchanged.`
+  — every declaration within `propext`, `Classical.choice`, `Quot.sound`; thirteen linters pass.
+- Hypotheses: only `hd` and `h2` of the leaf; fields used: `tube`, `pseudoCell`, `rimFrontier`
+  (for `Int E_e ⊆ Int N'` and closedness of the rims), `meetsGraph`, `pseudoCellDisjoint`.
+  No producer is added; `hd` is consumed.
+- Route (not the book's innermost-disk/annulus induction, which needs PL annulus prisms):
+  (A) traces are finitely many disjoint PL circles and at each trace point `X` is one closed side
+  of `Fr X` in a PL chart where `E_e` is a transverse plane (side charts);
+  (B) in a planar chart of `E_e`, a curve `J` with `P'` inside and minimal inside is found by
+  Theorem 30.2 applied to the maximal closed Jordan disks: near `J`, `E_e ∩ X` is the closed disk
+  `F = Din ∪ J` (Schoenflies);
+  (C) with `R = Din - Int X`, `R' = (E ∩ X) - F` (compact, relatively clopen in `G - Int X`,
+  `G ∩ X` for a polyhedral `G ⊆ E - {P'}`), add a derived neighbourhood of `R` in the closed
+  complement of `X` inside a large manifold ball and remove one of `R'` from `X`, via
+  `IsCombinatorialManifoldWithBoundary.complement` and `.derivedNeighborhood`, with fine mesh so
+  that everything happens inside an open `U` missing `J`, `P'`, the rims, `K'`, the other
+  pseudo-cells and `Fr N'`;
+  (D) induction over the finite set of edges; traces on other pseudo-cells are unchanged.
+- Compiles: 15 module checks (first-run failures were API names: `domRestrict`,
+  `sdiff_sdiff`, the `IsCombinatorialManifoldWithBoundary.derivedNeighborhood` namespace clash,
+  universe-0 `subset_closure_interior_space`) + 1 audit.
+
+## exists_hasConnectedHandlePieces (Lemmas 5-6) — CLOSED
+
+- Files (register in this order, after the five Lemma 3-4 modules):
+  1. `TubeFrontierConnected.lean` (179 lines, SHA-256
+     `d3077e535853e489935a7b1c2c16b376d243600b1556d690dc15979baf80b5d9`);
+  2. `PolyhedralTubeConnected.lean` (334 lines,
+     `e778056983e2d540ce80608a6e7894ce5f0b7703b90c948474a5fe7c816310b6`);
+  3. `HandlePieceChart.lean` (424 lines,
+     `3cf7aad036e2071241f322bdf1579058c2d82cc0e5cac9b66713aacb3077ede8`);
+  4. `PolyhedralTubeHandlePieces.lean` (571 lines,
+     `279fab8393cee1632868bdb39a4e2d53484e9ef66ff8bfb0961d3fbbb7507ad3`), the leaf, statement and
+     `section Leaves` variable block byte-identical to the skeleton.
+- Import lines: `import DifferentialGeometry.Topology.PiecewiseLinear.TubeFrontierConnected`,
+  `...PolyhedralTubeConnected`, `...HandlePieceChart`, `...PolyhedralTubeHandlePieces`.
+- New public names (grepped, unused before): `isConnected_compl_interior_of_isConnected_frontier`,
+  `IsTube.isConnected_frontier`, `IsTube.frontier_eq_image_frontier`,
+  `IsHandleDecompositionOfTube.isConnected_compl_interior`;
+  `IsOpenTopologicalCell.isPreconnected_sdiff`, `IsPolyhedralTubeNeighborhood.exists_isConnected`;
+  `IsHandleDecompositionOfTube.subset_interior_handlePiece`,
+  `IsHandleDecompositionOfTube.subset_handlePiece_of_isPreconnected`,
+  `IsHandleDecompositionOfTube.pseudoCell_subset_handlePiece`,
+  `IsHandleDecompositionOfTube.handlePiece_inter_eq_pseudoCell`,
+  `IsHandleDecompositionOfTube.handlePiece_inter_pseudoCell_eq_empty`,
+  `IsPolyhedralTubeNeighborhood.isPLBall_geometricLink_handlePiece`;
+  `geometricLink_restrict_eq_of_forall_convexHull_subset`,
+  `IsPolyhedralTubeNeighborhood.exists_handlePieceSurface`, `exists_hasConnectedHandlePieces`.
+- Success lines (2026-09-22, each after a fresh prepare; `...` as above):
+  `Verified ...\TubeFrontierConnected.lean with no diagnostics; shared outputs unchanged.` (13 s)
+  `Verified ...\PolyhedralTubeConnected.lean with no diagnostics; shared outputs unchanged.`
+  (15 s)
+  `Verified ...\HandlePieceChart.lean with no diagnostics; shared outputs unchanged.` (15 s)
+  `Verified ...\PolyhedralTubeHandlePieces.lean with no diagnostics; shared outputs unchanged.`
+  (16 s)
+- Axiom audit of the four modules (`claude-moise-agent-b/AuditBatch42.lean`, `-Audit`, 57 s):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch42.lean with no diagnostics; shared outputs unchanged.`
+  — standard axioms only; thirteen linters pass (a first audit caught an unused `[T2Space X]`,
+  removed, then all four modules re-checked).
+- Hypotheses: `hd`, `hconn`, `h2`, `h34` of the leaf.  Fields used: `tube` (`freeFaceConnected`,
+  `splitProper`, `splitCell`, `dualBall`, `unionEq`, `isEmbedding`, `hasEdge`), `pseudoCell`,
+  `rimFrontier`, `meetsGraph`, `pseudoCellDisjoint`, `oneVertex`, `coversTube`,
+  `componentClosure`, `handleEdge`, `handleNonEdge`.  `hd` is consumed, not constructed.
+- Route.  (i) `Fr N` is connected: it is the union of the closures of the free faces, adjacent
+  ones meeting in the rims `Dbd e`, along the connected edge graph; so `Fr N' = h(Fr N)` and
+  `ℝ³ - Int N'` are connected (this is the book's tacit "`Bd N'` lies in the unbounded component").
+  (ii) Lemma 5: by 30.2 (`exists_separating_component`) a component `B` of `Bd X` separates `K'`
+  from `ℝ³ - Int N'`; `X'` is the solid bounded by `B`
+  (`IsCombinatorialManifold.exists_isCombinatorialManifoldWithBoundary_boundaryComplex`);
+  `E ∩ X' = E ∩ X` and `E ∩ Bd X' = E ∩ Bd X` since `E - (E ∩ X)` is connected (planar
+  Schoenflies + Theorem 30.2 in the chart of `Int E`), so the single-polygon clause is unchanged.
+  (iii) Lemma 6: a PL chart argument shows that at a trace point `C''_v ∩ Bd X` is a half-plane
+  (the two half-balls of the side chart lie in the two handle pieces of the edge), giving arc
+  links; off the traces the links are those of `Bd X`; the boundary is identified by the same
+  links after subdividing.  Connectedness is the book's argument with `F = A'_v ∪ ⋃ (E ∩ X)`
+  (no need for the component `X_v`): `F` separates `v'` from `ℝ³ - Int N'`, and a splitting of
+  `A'_v` would give, by Janiszewski (`exists_separates_of_finite_iUnion`), a separating part
+  missed by the arm of the graph, the cell `Cl E` and `ℝ³ - Int N'`.
+- Compiles: 13 module checks + 2 audits.
+
+## exists_hasNoHandleLoopTheoremDisk (Lemma 7) — BLOCKED (vocabulary; analysis only)
+
+- File: none.  The conclusion `HasNoHandleLoopTheoremDisk K h N' Cpp XK'.space` and its
+  `IsLoopTheoremDisk` are defined only in `Skeleton/Section33Approximation.lean` (section
+  `Vocabulary`, lines 194-209); a real module cannot import the skeleton, and redefining the two
+  names in a real module would clash with the skeleton's copies.  Lead decision: hoist the two
+  definitions (verbatim) into a real module, e.g. `PolyhedralTubeNeighborhood.lean` beside
+  `HasSinglePolygonTraces`/`HasConnectedHandlePieces`.  Lemma 9 is blocked by the same two names.
+- Verdict on truth: no counterexample found; the book's route (p. 232) is sound once the step
+  below is supplied.
+- Route (for whoever takes it after the hoist): choose `XK` among those satisfying Lemmas 2-6
+  with `bettiOne (frontier XK.space)` minimal (`Nat.find`).  Given an LTD `Δ ⊆ C''_v`,
+  compress `Bd X` along `Δ` inside `U = Int N' - (K' ∪ ⋃ Ec e)`
+  (`IsCombinatorialManifold.exists_compression_neighborhood_of_spanning_disk`,
+  `IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_spanning_disk`), take the
+  solid bounded by the separating component (as in Lemma 5,
+  `exists_isCombinatorialManifoldWithBoundary_boundaryComplex`), keep the traces (Lemma 5's
+  "`E - (E ∩ X)` connected" argument, `PolyhedralTubeConnected`), and re-choose the handle pieces
+  (`exists_hasConnectedHandlePieces`, this batch); `b₁` drops, contradiction.
+- Missing step (the real work): an LTD `Δ ⊆ C''_v` may meet the pseudo-cells `E_e` (only
+  `Δ ⊆ Int N' - K'` and `Δ ∩ Bd X = Bd Δ` are required), so before compressing `Δ` must be pushed
+  off `⋃ Ec e` keeping `Bd Δ ⊆ Bd X` and essentiality: a PL bicollar of `E_e - {P'_e}` in `C''_v`
+  compatible with `Bd X` near the trace polygons (local flatness of the locally polyhedral
+  `E_e - {P'_e}`, brick B + `exists_isPLHomeomorphOn_linearize_codimension_one`) and a
+  cut-and-paste along `Δ ∩ E_e` (innermost curves in `Δ`, `NestedJordanCurves`).  Estimate
+  1000-2000 lines for the push-off, 800-1200 for the minimisation/compression assembly.  A global
+  shortcut ("take `Bd X` incompressible") fails: annulus surgeries can raise `b₁`.
+- Compiles: 0.  Moving to Lemma 8 per the lead's plan.
+
+## section33_disk_meets_graph (Lemma 8) — CLOSED
+
+- Files (register in this order, after the Batch 3-4 modules they import:
+  `PolyhedralTubeNeighborhoodExists`, `PolyhedralTubeOuterTrace`, `NestedJordanCurves`,
+  `TubeFrontierConnected`, `HandlePieceChart`):
+  1. `PseudoCellLocalSides.lean` (76 lines,
+     `c4f967bc0238dff5fba5ad800d1da740acb9837827389389945eea0b7c0c39d6`);
+  2. `PseudoCellSubdisk.lean` (423 lines,
+     `2c30e77e32fb1f0eaa19b417238921e173f9a5d9d52f5d82fbf3e4537789cf27`);
+  3. `CellGluingSphere.lean` (643 lines,
+     `4c6798b25a8d6ae6ca48fa8185040e55f12de30e67f956103cc0916bb207e936`);
+  4. `SurfaceSideChaining.lean` (179 lines,
+     `24dcb687b49effd11254e199e262515dc34f308402ea8d6fa399d1673dd963e2`);
+  5. `DiskMeetsGraph.lean` (1282 lines,
+     `57f9cc620c6d3fa6b706b81c6876ca1d7c31b7368fa43713e9007e8ba3d9f716`), the leaf; statement and
+     `section Leaves` variable block byte-identical to the skeleton (checked by script).
+- Import lines: `import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCellLocalSides`,
+  `...PseudoCellSubdisk`, `...CellGluingSphere`, `...SurfaceSideChaining`, `...DiskMeetsGraph`.
+- New public names (grepped tree-wide, unused before):
+  `IsPseudoCell.exists_connected_neighborhood_pair_sdiff`;
+  `IsTopologicalCellWithInterior.not_isPreconnected_sdiff`, `IsPseudoCell.subset_and_image_eq_inside`;
+  `homeomorphClosedBall_mem_iff`, `exists_homeomorph_closedBall_eq_on_sphere`,
+  `IsTopologicalCellWithInterior.isTopologicalSphere_union`,
+  `IsTopologicalCellWithInterior.sdiff_union_of_subcell`,
+  `IsPLHomeomorphOn.isTopologicalCellWithInterior`, `IsTopologicalSphere.isCombinatorialManifold`,
+  `IsTopologicalSphere.isConnected`;
+  `IsCombinatorialManifold.false_of_sdiff_subset_connectedComponentIn`,
+  `IsPreconnected.subset_closure_of_forall_sides`, `isPreconnected_ball_sdiff_closedBall`,
+  `exists_mem_closure_connectedComponentIn_ball_sdiff_closedBall`;
+  `IsTopologicalCellWithInterior.subset`, `IsTopologicalCellWithInterior.isCompact`,
+  `IsPseudoCell.isPreconnected`, `IsTube.rim_subset_frontier_inter_frontier`,
+  `IsTube.isConnected_frontier_inter_frontier`, `exists_edge_ne_of_ncard_neighborSet_ne_one`,
+  `IsHandleDecompositionOfTube.exists_arm`, `IsPseudoCell.exists_replacementDisk`,
+  `IsPseudoCell.isPolyhedron_sdiff_of_subdisk`, `exists_isCombinatorialManifold_sdiff_union`,
+  `false_of_sides_joined`, `section33_disk_meets_graph`.
+- Success lines (2026-09-22, final pass, each after a fresh prepare; `...` =
+  `D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear`):
+  `Verified ...\PseudoCellLocalSides.lean with no diagnostics; shared outputs unchanged.` (21 s)
+  `Verified ...\PseudoCellSubdisk.lean with no diagnostics; shared outputs unchanged.` (40 s)
+  `Verified ...\CellGluingSphere.lean with no diagnostics; shared outputs unchanged.` (40 s)
+  `Verified ...\SurfaceSideChaining.lean with no diagnostics; shared outputs unchanged.` (16 s)
+  `Verified ...\DiskMeetsGraph.lean with no diagnostics; shared outputs unchanged.` (20 s)
+- Axiom audit of the five modules (`claude-moise-agent-b/AuditBatch43.lean`, `-Audit`, 79 s):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch43.lean with no diagnostics; shared outputs unchanged.`
+  — `propext`, `Classical.choice`, `Quot.sound` only; thirteen linters pass.
+- Hypotheses: all binders of the leaf are used.  `h324` supplies the replacement disk; `hd`
+  through `tube`, `pseudoCell`, `rimEq`, `rimFrontier` (so `Int E₁ ⊆ Int N'`, the sphere misses
+  `Bd N'` and the rim `Bd E₁` lies in `h (Fr C_{v₁} ∩ Fr N) ⊆ Bd N'`), `meetsGraph`,
+  `pseudoCellDisjoint`, `coversTube`, `componentClosure`, `handleEdge`, `handleNonEdge`; `hend`
+  gives a second edge `e₂` at `v₁`; `hmiss` is used only for `e₂`.  `hd` is consumed, not
+  constructed.  With `Moise324` and the owner's `rimFrontier` the leaf is unconditional.
+- Route.  Suppose `Δ ∩ K' = ∅`.  (i) In a planar chart of `Int E₁` the given disk `DJ` is the
+  closed inside of `Bd Δ`: the chart image of `Int DJ ∩ Int E₁` is open (invariance of domain)
+  and closed in `ball - Ψ(Bd Δ)`; if it contained the outer part, `Int DJ` would contain the rim
+  and either the inner part would be open-closed in `Int DJ`, or `Int DJ` minus the rim would be
+  connected, impossible for a circle in an open disk (`PseudoCellSubdisk`).  (ii) An arm of `K'`
+  from a point `a` near `P'₁` through `v'₁` to `P'₂` misses `Δ`; `Moise324` at a radius below the
+  arm, `E₂` and a chart square gives `Δ'`, `D'`, and `S = Δ ∪ (DJ - Int D') ∪ Δ'` is a topological
+  two-sphere (radial extension of the circle reparametrisation, two hemispheres) and a polyhedron
+  (`DJ - Int D'` = closure of a component of `Q - (Bd Δ ∪ Bd Δ')` for a polyhedral neighbourhood
+  `Q`, plus the curves), so every triangulation is a closed combinatorial surface (brick B on a
+  punctured sphere via `stereographic'`).  (iii) The shell component `Q` of the arm point is
+  adherent to `x₁ ∈ E₁` where `S = E₁`; the local sides of `E₁` at `x₁` lie in `V_{v₁}` and `V_u`;
+  the first reaches `Γ`, `E₂` and `h (Fr C_{v₁} ∩ Fr N)`; the `V_u` sides chain along `Int E₁`
+  outside the square to the rim (`IsPreconnected.subset_closure_of_forall_sides`), missing `S`
+  because `V_u ∩ Δ = ∅` and `Δ'` is inside the square's radius.  Both sides at `x₁` in one
+  component contradicts `exists_connectedComponentIn_pair_compl`.  The proof was split into the
+  lemmas above after a first single-declaration version hit the heartbeat limit.
+- Compiles: 21 module checks (16 while developing, 5 in the final pass) + 1 audit.
+
+## section33_not_isLoopTheoremDisk (Lemma 9) — BLOCKED (same vocabulary as Lemma 7)
+
+- Its hypothesis `h7 : HasNoHandleLoopTheoremDisk ...` and conclusion `¬ IsLoopTheoremDisk ...`
+  use the two skeleton-only definitions (see the Lemma 7 entry); no byte-identical real module is
+  possible until they are hoisted.  `h8` (the universal form of Lemma 8) is now a theorem:
+  `fun v₁ hv₁ e₁ he₁ hc Δ r hr hΔ hbd hcenter hmiss => section33_disk_meets_graph h324 hd hend ...`.
+- Route after the hoist (book p. 234): put an LTD in general position with the pseudo-cells,
+  remove innermost polygons `J ⊆ E ∩ Δ` (by `h8` the disk `E_J` misses the centre, so a splitting
+  removes `J`), then arcs by pushing across `B ∪ B₁`, until the LTD lies in one `C''_v`,
+  contradicting `h7`.  Missing brick: general position of a PL disk against the pseudo-cells
+  (locally polyhedral only off the centre) and cut-and-paste preserving non-contractibility of the
+  boundary in `Bd X`.  Estimate 1500-2500 lines.  Compiles: 0.
+
+## Batch 4 summary
+
+- CLOSED 3: Lemmas 3-4 (`exists_hasSinglePolygonTraces`), Lemmas 5-6
+  (`exists_hasConnectedHandlePieces`), Lemma 8 (`section33_disk_meets_graph`, unconditional given
+  `Moise324` and `rimFrontier`).  BLOCKED 2: Lemma 7 and Lemma 9, both on the skeleton-only
+  `IsLoopTheoremDisk`/`HasNoHandleLoopTheoremDisk` (lead decision: hoist them verbatim into a real
+  module), each with a remaining mathematical brick recorded above.
+- Register, in this order (14 new modules): `PolyhedralTubeTraces`, `NestedJordanCurves`,
+  `PolyhedralTubeOuterTrace`, `DerivedNeighborhoodSurgery`, `PolyhedralTubeSinglePolygonTraces`,
+  `TubeFrontierConnected`, `PolyhedralTubeConnected`, `HandlePieceChart`,
+  `PolyhedralTubeHandlePieces`, `PseudoCellLocalSides`, `PseudoCellSubdisk`, `CellGluingSphere`,
+  `SurfaceSideChaining`, `DiskMeetsGraph`.
