@@ -402,3 +402,13 @@ producer as real modules, then the leaf itself as a real module restating
 `exists_isSourceTrackedBranchTube` byte-identically and calling the accepted reduction. If a
 clause of the marked-cell data cannot be produced from the leaf's hypotheses, stop on it and report
 the exact clause (lead/owner decision); do not touch `LoopTheorem/ClosedBranchCaseOneTransport.lean`.
+
+## Codex items 10–12 — route consults while BN is out (lead-written 2026-09-23 14:30)
+
+Each is a consult request written for Codex: read the checkout, answer the questions, write the
+answer file named in the request (new file; no git writes; probes optional, sorry only at named
+sub-leaves). Do them in this order, on your own lease, after finishing anything in flight:
+10. `consult/BO-cgn-first-four-leaves-route-consult.md` — the first four CGN leaves.
+11. `consult/BP-section32-tower-descent-route-consult.md` — the §32 canonical tower and descent.
+12. `consult/BQ-section34-trace-leaves-route-consult.md` — the two trace leaves.
+Do not prove the §32 probe sub-leaves (a collaborator has them) nor the source-face frontiers.
