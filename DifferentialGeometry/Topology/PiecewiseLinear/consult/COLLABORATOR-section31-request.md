@@ -7,8 +7,9 @@ lane in flight; new files only, so the merge is trivial.
 
 Lean 4 / Mathlib v4.33.1 formalisation of Moise's route to the three-dimensional Poincaré
 conjecture (Moise, *Geometric Topology in Dimensions 2 and 3*, GTM 47). Repository
-`https://github.com/liao9yuan/differential-geometry-dev`, branch **`moise-integration`**;
-branch from its current head into your own branch (say `collab/section31`). Paths below are
+`https://github.com/qinz1yang/differential-geometry-dev`, branch **`codex/moise-integration`**
+(pushed after every lead commit and at least hourly); branch from its current head into your own
+branch (say `collab/section31`) and open a pull request against it when done. Paths below are
 relative to `DifferentialGeometry/Topology/PiecewiseLinear/`.
 
 The open obligations of each chain are stated as `theorem leaf … := by sorry` in a *skeleton*
