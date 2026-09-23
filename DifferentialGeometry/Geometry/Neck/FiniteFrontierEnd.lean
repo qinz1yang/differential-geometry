@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.Combinatorics.BranchUpdates
 import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Frontier
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.LabelledCylinders
+import DifferentialGeometry.Topology.Connected.InteriorUnion
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
 import DifferentialGeometry.Topology.Compactness.ComplementCore
 import DifferentialGeometry.Topology.ProperMap.HalfCylinder
@@ -309,6 +310,7 @@ private theorem NeckFrontierState.exists_step_at_of_neck_central
       ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (IsPreconnected S.region → IsPreconnected T.region) ∧
+      (IsPreconnected (interior S.region) → IsConnected (interior T.region)) ∧
       (OrdinaryNeckMoveAtCentral g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
   classical
   obtain ⟨p, nk, f, η, hf, hfsmall, hfzero, hmap, hout, hpoint⟩ :=
@@ -451,7 +453,15 @@ private theorem NeckFrontierState.exists_step_at_of_neck_central
         ((S.frontier.symm ▸ mem_iUnion₂.mpr ⟨i, hi, hactive ▸ ⟨nk.center, (hzero _).symm⟩⟩))
       exact hS.union (A (nk.center, 0)) hxW
         ⟨(nk.center, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩ hBc
-    refine ⟨T, subset_union_left, hconnected,
+    have hconnectedInterior (hS : IsPreconnected (interior S.region)) :
+        IsConnected (interior T.region) := by
+      let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+        (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+          (0 : ThreeSpace) zero_le_one)
+      exact DifferentialGeometry.Topology.isConnected_interior_union_of_collar
+        A.toOpenPartialHomeomorph zero_lt_one hA S.regular.symm.subset hS
+        (hface.subset.trans hfill)
+    refine ⟨T, subset_union_left, hconnected, hconnectedInterior,
       Or.inl ⟨rfl, hi, p, nk, P, slabReparametrize_source A η.symm hA, ?_, hP0,
         hP1, hsp_ne, ?_, hfill, ?_, ?_, hpoint, ?_⟩⟩
     · change S.region ∪ B = S.region ∪ P '' (univ ×ˢ Icc (0 : ℝ) 1)
@@ -512,7 +522,29 @@ private theorem NeckFrontierState.exists_step_at_of_neck_central
         ((S.frontier.symm ▸ mem_iUnion₂.mpr ⟨i, hi, hactive ▸ ⟨nk.center, (hzero _).symm⟩⟩))
       exact hS.union (A (nk.center, 0)) hxW
         ⟨(nk.center, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩ hAc
-    refine ⟨T, subset_union_left, hconnected, Or.inr ⟨?_, rfl⟩⟩
+    have hfill : A '' (univ ×ˢ ({0} : Set ℝ)) ⊆ interior T.region := by
+      rintro x ⟨⟨q, t⟩, ⟨_, ht⟩, rfl⟩
+      have ht0 : t = 0 := ht
+      subst t
+      have hxi : A (q, 0) ∈ range (S.sphere i).map :=
+        hactive ▸ ⟨q, (hzero q).symm⟩
+      have hxT : A (q, 0) ∈ T.region :=
+        Or.inr ⟨(q, 0), ⟨mem_univ _, le_rfl, zero_le_one⟩, rfl⟩
+      by_contra hnot
+      have hxfront : A (q, 0) ∈ _root_.frontier T.region := ⟨subset_closure hxT, hnot⟩
+      rw [T.frontier] at hxfront
+      obtain ⟨k, hk, hxk⟩ := mem_iUnion₂.mp hxfront
+      have hkold : k ∈ S.alive := Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hk)
+      have hki : k ≠ i := Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hk)
+      exact disjoint_left.mp (S.disjoint hi hkold hki.symm) hxi hxk
+    have hconnectedInterior (hS : IsPreconnected (interior S.region)) :
+        IsConnected (interior T.region) := by
+      let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+        (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+          (0 : ThreeSpace) zero_le_one)
+      exact DifferentialGeometry.Topology.isConnected_interior_union_of_collar
+        A.toOpenPartialHomeomorph zero_lt_one hA S.regular.symm.subset hS hfill
+    refine ⟨T, subset_union_left, hconnected, hconnectedInterior, Or.inr ⟨?_, rfl⟩⟩
     change alive ⊂ S.alive
     apply Finset.ssubset_iff_subset_ne.mpr
     refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), ?_⟩
@@ -529,7 +561,7 @@ private theorem NeckFrontierState.exists_step_at_of_neck
       ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
-  obtain ⟨T, hsub, _, hm | hr⟩ :=
+  obtain ⟨T, hsub, _, _, hm | hr⟩ :=
     NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep hneck
   · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
       hinter, hfill, hcontrolled, hband, hpoint, _⟩
@@ -545,15 +577,16 @@ private theorem NeckFrontierState.exists_step_at_connected
       ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (IsPreconnected S.region → IsPreconnected T.region) ∧
+      (IsPreconnected (interior S.region) → IsConnected (interior T.region)) ∧
       (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
-  obtain ⟨T, hsub, hconn, hm | hr⟩ :=
+  obtain ⟨T, hsub, hconn, hconnInterior, hm | hr⟩ :=
     NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep hneck
   · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
       hinter, hfill, hcontrolled, hband, hpoint, _⟩
-    exact ⟨T, hsub, hconn,
+    exact ⟨T, hsub, hconn, hconnInterior,
       Or.inl ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
         hinter, hfill, hcontrolled, hband, hpoint⟩⟩
-  · exact ⟨T, hsub, hconn, Or.inr hr⟩
+  · exact ⟨T, hsub, hconn, hconnInterior, Or.inr hr⟩
 
 private theorem NeckFrontierState.exists_step_at
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
@@ -568,7 +601,7 @@ private theorem NeckFrontierState.exists_step_at
     refine mem_iUnion₂.mpr ⟨i, hi, ?_⟩
     rw [(S.sphere i).range_map]
     exact mem_range_self _
-  obtain ⟨T, hsub, _, hmove⟩ :=
+  obtain ⟨T, hsub, _, _, hmove⟩ :=
     NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep (allNeck _ hx)
   rcases hmove with hm | hr
   · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
