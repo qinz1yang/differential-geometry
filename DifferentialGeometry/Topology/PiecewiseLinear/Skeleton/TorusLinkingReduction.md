@@ -147,3 +147,16 @@ The initial draft was written without launching Lean. A permitted private checke
 assigned, must check that the only diagnostics are the four authorized leaf `sorry` warnings,
 and compare the copied endpoint's full header against the current frozen source. No root import,
 ledger entry, public module promotion, or theorem completion is implied by a successful probe.
+
+## Final private compilation
+
+The parent task checked this exact source after its final edits. Lean exit code: 0;
+source stable: true; authorized child-leaf sorry warnings: 4; other diagnostics: 0.
+SHA256: 6fd27bddc2e472ba7b8765b06ae49e9b4b2fa292e996e4d93da6a7c0d5b16d3c.
+
+The receipt and raw log are at
+C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\DifferentialGeometry\Topology\PiecewiseLinear\Skeleton\TorusLinkingReduction.json
+and the adjacent .log file. The checker wrapper rejects all diagnostics, including authorized
+skeleton warnings; the raw Lean result and exact warning set above were checked independently.
+The consolidated axiom audit and the scope of partial reductions are recorded in
+[RECON_FOUR_TARGETS_20260922.md](RECON_FOUR_TARGETS_20260922.md).

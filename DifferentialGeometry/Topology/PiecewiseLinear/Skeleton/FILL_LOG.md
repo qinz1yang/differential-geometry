@@ -660,3 +660,93 @@
 | CLOSED | 0 | 8 |
 | FALSE | 1 | 1 |
 | STUCK | 0 | 7 |
+
+## Codex queue Q3 — checked first layer (2026-09-22 evening)
+
+Worker evidence only; independent lead acceptance, aggregate registration and commits remain
+with the lead. Work used the owner-authorized `codex-moise-recon` private lane. No frozen
+statement, existing proof module, aggregate, lease, acceptance ledger or Git state was edited.
+
+### Existing Q1 and Q2
+
+The live queue marks Q1 withdrawn. Current `ChartImagePLCell` and `PLSphereLocallyPlanar`
+are already registered. Q2 is also already implemented as `DiskMeetsGraph`, imported by
+`Section33Approximation` and registered by the lead. A private audit of
+`IsPLCellOn.isPLBall_image_chart`, `IsPLSphere.exists_isOpen_inter_homeomorph_of_two`
+and `section33_disk_meets_graph` found only `propext`, `Classical.choice`, `Quot.sound`.
+The last theorem retains its explicit `Moise324` input.
+Receipt: `queue-existing-20260922.json/.log` under the private root below; Lean exit 0,
+source stable, nine expected axiom-print lines, no shared artifact changes.
+These are existing results, not new Codex closures.
+
+### New checked modules
+
+All names below are in `DifferentialGeometry.Topology.PiecewiseLinear`.
+
+1. `import DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallUnion`
+   - `isCombinatorialSolidTorus_union_of_inter_eq_disjoint_disks`
+   - `isCombinatorialSolidTorus_iUnion_of_cycle`
+   - SHA256: `398402A484516B31431D12564C51A8435FB827D053E7415F4B56B36606A481E2`.
+   - Two PL 3-balls in E3 whose exact intersection is two disjoint PL 2-disks form a
+     CST. A cyclic family of length at least three reduces to this case: consecutive
+     intersections are PL disks, nonneighbors are disjoint, distinct triple intersections
+     are empty. The proof derives the boundary placement and the global combinatorial
+     manifold condition from local ball neighborhoods; neither is an extra endpoint input.
+   - The E3 cylindrical-diagram bridge supplies orientability. This does not claim the
+     analogous abstract or higher-dimensional twisted cycle is a solid torus.
+   - Eight declarations audited (two public, six private).
+   - Module receipt ended `2026-09-23T05:32:19.0552225Z`.
+     Audit: `queue-cycle-audit-20260922.json/.log`, ended `2026-09-23T05:33:44.5111436Z`.
+
+2. `import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCollarExtension`
+   - `exists_isPLHomeomorphOn_annulus_of_isPLCirclePositive`
+   - `exists_isPLHomeomorphOn_of_circle_collars`
+   - `IsPLHomeomorphOn.exists_extension_of_positive_boundary_corrections`
+   - SHA256: `4EBBFDD71FB5CC36E7782EF8237557EF3C8140CBCFF307EF017FB44DDB74CC2D`.
+   - Positive circle corrections extend over specified pairwise disjoint PL product
+     collars, simultaneously, fixing a polyhedral remainder meeting only the fixed ends.
+     The reference-map corollary preserves the reference on the remainder.
+   - Positivity concerns the correction relative to the reference. A globally reversing
+     reference is allowed; this is not a demand that every absolute boundary map be positive.
+   - Three declarations audited.
+   - Module receipt ended `2026-09-23T05:26:58.1246516Z`.
+     Audit: `queue-collar-audit-20260922.json/.log`, ended `2026-09-23T05:31:48.3329593Z`.
+
+3. `import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskFamilyMove`
+   - `IsPLBall.isConnected_compl` (planar PL 2-disks)
+   - `isPreconnected_sdiff_iUnion_of_disjoint_isPLBall_two`
+   - `exists_isPLHomeomorphOn_map_disk_family_eqOn_compl`
+   - `exists_isPLHomeomorphOn_holed_disk_eqOn_outer_boundary`
+   - SHA256: `AFB0C5B87B30416D6C65CC9CF459E84C1254F23F5283B747C136D154948D7802`.
+   - Finite labelled planar disk families are matched by an ambient PL homeomorphism
+     supported in any connected open set containing them. Every insertion correction
+     fixes all previously matched target disks pointwise. Empty families are included.
+   - The holed-disk theorem prescribes the outer boundary map, matches all labelled inner
+     disks and their frontiers, and supplies the actual PL map of
+     `D \ ⋃ i, interior (A i)` onto `D' \ ⋃ i, interior (B i)`.
+     Inner boundary maps at this stage are those induced by the produced reference.
+   - Five declarations audited (four public, one private).
+   - Module receipt ended `2026-09-23T05:35:58.7403799Z`.
+     Audit: `queue-disk-family-audit-20260922.json/.log`, ended `2026-09-23T05:37:37.1534242Z`.
+
+For each of these three modules the checker success line had the form
+`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\<Module>.lean with no diagnostics; shared outputs unchanged.`
+All module and audit receipts have `exitCode = 0`, `diagnosticLines = 0`,
+`sourceStable = true`, `sharedArtifactsModified = false`.
+All sixteen non-auto declarations have only the approved foundational axiom closure;
+all thirteen standard environment linters pass (excluding only docBlame/docBlameThm).
+No sorry, axiom, inline comments, declaration docstrings, resource overrides or linter suppression.
+
+Private root: `C:\Users\liao9\AppData\Local\Temp\codex-moise-recon`.
+Named-module receipts are under its corresponding `DifferentialGeometry/Topology/PiecewiseLinear/`
+directory. Before each named check, the current import closure was prepared with
+`claude-moise-shared/prepare-private-root.py`; checks used PowerShell
+`claude-moise-shared/checker.ps1 -Checkout D:/differential-geometry-moise-int
+-Token codex-moise-recon-20260922 -OutputRoot C:/Users/liao9/AppData/Local/Temp/codex-moise-recon
+-Module DifferentialGeometry.Topology.PiecewiseLinear.<Module>`.
+
+Q3(ii) is delivered as a checked reusable brick. Full Q3(i) still needs actual compatible
+one-sided collar production and the final prescribed-inner-boundary assembly; its first
+collar producer is in progress. These results do not close CGN edge matching or supply the
+orientation-character bridge around arbitrary graph cycles. Root imports are intentionally
+left to the lead under the queue's new-files-only rule.

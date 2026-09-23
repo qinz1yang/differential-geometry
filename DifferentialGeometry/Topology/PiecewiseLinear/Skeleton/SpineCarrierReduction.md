@@ -111,7 +111,26 @@ This is a paper model only: **the joint Lean inhabitant is UNTESTED**.
 The preserved endpoint header was compared as a raw string with the current frozen source and was
 identical. Five sorry occurrences are confined to the five listed mathematical subleaves; the
 homology computation and all carrier/chain/integer/basepoint assemblies have explicit proof bodies.
-The parent session coordinates the permitted private compiler lane. Compilation evidence is to be
-recorded after that check; source-written assembly alone is not an elaboration or axiom certificate.
+The parent session ran the private focused checker. The third check elaborated successfully with
+the five expected sorry warnings and one line-length warning. That line has now been wrapped; a
+final formatting recheck is pending. The checker log is
+`C:/Users/liao9/AppData/Local/Temp/codex-moise-recon/DifferentialGeometry/Topology/PiecewiseLinear/Skeleton/SpineCarrierReduction.log`.
+The current source SHA-256 is
+`76CDE558E20B9053C8CAC508C4C3AFAE377E7B8A98FA1C2D8A9460E147FBE8CC`.
+This is an elaborated reduction conditional on the five explicit leaves, not a closed theorem or
+a sorry-free axiom certificate.
 No whole-library build, integration, ledger change, acceptance, commit, push, or worker dispatch is
 part of this reconnaissance request.
+
+## Final private compilation
+
+The parent task checked this exact source after its final edits. Lean exit code: 0;
+source stable: true; authorized child-leaf sorry warnings: 5; other diagnostics: 0.
+SHA256: 76cde558e20b9053c8cac508c4c3afae377e7b8a98fa1c2d8a9460e147fbe8cc.
+
+The receipt and raw log are at
+C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\DifferentialGeometry\Topology\PiecewiseLinear\Skeleton\SpineCarrierReduction.json
+and the adjacent .log file. The checker wrapper rejects all diagnostics, including authorized
+skeleton warnings; the raw Lean result and exact warning set above were checked independently.
+The consolidated axiom audit and the scope of partial reductions are recorded in
+[RECON_FOUR_TARGETS_20260922.md](RECON_FOUR_TARGETS_20260922.md).

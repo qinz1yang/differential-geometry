@@ -356,3 +356,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 00:05 (09-23) — accepted worker c's `isPLBoundaryTubeProducer_double` (15 modules); physical `sorry` 46.
   C1's `exists_isSourceTrackedBranchTube`: `realisation` conflicts with the reviewed route (review request BI).
   Worker c now on the ten Section34Compact leaves that do not depend on the P4 review.
+* 00:40 (09-23) — accepted Codex's Q3 first layer (`CyclicBallUnion`, `BoundaryCollarExtension`,
+  `PlanarDiskFamilyMove`, helper `BallComplementFamily`); Codex logs to `FILL_LOG.md` and keeps editing its
+  reconnaissance probes. No leaf closed.

@@ -3,15 +3,18 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 
 /-!
-# Relative boundary matching for controlled graph neighborhoods
+# Relative boundary matching and protected moves
 
 The unreviewed leaves jointly choose compatible boundary maps, locate the original face rims
 inside the fixed target family, and recognize the nested target tori. Cell extension and the
 frozen edge-matching endpoint are proved from these lower-dimensional and geometric leaves.
+Supported-homeomorphism transport is proved separately. The geometric cancellation-region
+producer and the frozen one-step removal endpoint are not supplied by these transport lemmas.
 -/
 
 open Set Topology
@@ -255,4 +258,98 @@ theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M�
   · rw [himages]
     exact exists_nested_torus_of_deleted_family hU hh hframe hN hQsep hQlf htor hprep hpack
       Dv DvBd Dd DdBd hDvdef hDv hDd hDmeet hDdBd hDadj hDddisj hDvQ hDnbhd
+namespace ProtectedMove
+
+section Topological
+
+variable {X Y : Type*} [TopologicalSpace Y]
+
+theorem mapsTo_of_eqOn_compl (φ : Y ≃ₜ Y) {V : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) : Set.MapsTo φ V V := by
+  intro y hy
+  by_contra hφy
+  have h : φ (φ y) = φ y := hfix hφy
+  have heq : φ y = y := φ.injective h
+  exact hφy (heq.symm ▸ hy)
+
+theorem mapsTo_of_support_subset (φ : Y ≃ₜ Y) {V Q : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) (hVQ : V ⊆ Q) : Set.MapsTo φ Q Q := by
+  intro y hy
+  by_cases hyV : y ∈ V
+  · exact hVQ (mapsTo_of_eqOn_compl φ hfix hyV)
+  · rw [hfix hyV]
+    exact hy
+
+theorem image_comp_subset_of_support_subset (φ : Y ≃ₜ Y) {V Q : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) (hVQ : V ⊆ Q) {f : X → Y} {A : Set X}
+    (hA : f '' A ⊆ Q) : (φ ∘ f) '' A ⊆ Q := by
+  rintro _ ⟨x, hx, rfl⟩
+  exact mapsTo_of_support_subset φ hfix hVQ (hA ⟨x, hx, rfl⟩)
+
+theorem eqOn_comp_of_disjoint_image (φ : Y ≃ₜ Y) {V : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) {f : X → Y} {A : Set X}
+    (hAV : Disjoint (f '' A) V) : Set.EqOn (φ ∘ f) f A := by
+  intro x hx
+  exact hfix (fun hfx => Set.disjoint_left.mp hAV ⟨x, hx, rfl⟩ hfx)
+
+theorem eqOn_comp_of_disjoint_source (φ : Y ≃ₜ Y) {V : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) {f : X → Y} {A N C : Set X}
+    (hf : Set.InjOn f C) (hAC : A ⊆ C) (hNC : N ⊆ C)
+    (hAN : Disjoint A N) (hVN : V ⊆ f '' N) : Set.EqOn (φ ∘ f) f A := by
+  apply eqOn_comp_of_disjoint_image φ hfix
+  refine Set.disjoint_left.mpr ?_
+  rintro _ ⟨x, hx, rfl⟩ hfx
+  obtain ⟨y, hy, hxy⟩ := hVN hfx
+  have heq : y = x := hf (hNC hy) (hAC hx) hxy
+  exact Set.disjoint_left.mp hAN hx (heq ▸ hy)
+
+theorem image_inter_eq_of_disjoint_support (φ : Y ≃ₜ Y) {V A F : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) (hVF : Disjoint V F) :
+    (φ '' A) ∩ F = A ∩ F := by
+  ext y
+  constructor
+  · rintro ⟨⟨x, hx, hxy⟩, hyF⟩
+    have hyV : y ∉ V := fun hy => Set.disjoint_left.mp hVF hy hyF
+    have hyfix : φ y = y := hfix hyV
+    have hxeq : x = y := φ.injective (hxy.trans hyfix.symm)
+    exact ⟨hxeq ▸ hx, hyF⟩
+  · rintro ⟨hyA, hyF⟩
+    have hyV : y ∉ V := fun hy => Set.disjoint_left.mp hVF hy hyF
+    exact ⟨⟨y, hyA, hfix hyV⟩, hyF⟩
+
+theorem disjoint_image_of_disjoint_support (φ : Y ≃ₜ Y) {V A F : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) (hVF : Disjoint V F) (hAF : Disjoint A F) :
+    Disjoint (φ '' A) F := by
+  rw [Set.disjoint_iff_inter_eq_empty,
+    image_inter_eq_of_disjoint_support φ hfix hVF]
+  exact Set.disjoint_iff_inter_eq_empty.mp hAF
+
+theorem image_inter_disjoint_of_overlap_and_support (φ : Y ≃ₜ Y) {V A B F : Set Y}
+    (hfix : Set.EqOn φ id Vᶜ) (hVF : Disjoint V F)
+    (hABF : Disjoint (A ∩ B) F) : Disjoint ((φ '' A) ∩ B) F := by
+  refine Set.disjoint_left.mpr ?_
+  rintro y ⟨hyA, hyB⟩ hyF
+  have hyAF : y ∈ A ∩ F := by
+    rw [← image_inter_eq_of_disjoint_support φ hfix hVF]
+    exact ⟨hyA, hyF⟩
+  exact Set.disjoint_left.mp hABF ⟨hyAF.1, hyB⟩ hyF
+
+end Topological
+
+section Connected
+
+variable {Y : Type*} [TopologicalSpace Y]
+
+theorem disjoint_of_preconnected_of_anchor_outside {V F : Set Y} (hV : IsPreconnected V)
+    (hVF : Disjoint V (frontier F)) {a : Y} (haV : a ∈ V) (haF : a ∉ F) :
+    Disjoint V F := by
+  refine Set.disjoint_left.mpr ?_
+  intro y hyV hyF
+  have hsub : V ⊆ F := IsPreconnected.subset_of_disjoint_frontier hV ⟨y, hyV, hyF⟩ hVF
+  exact haF (hsub haV)
+
+end Connected
+
+end ProtectedMove
+
 end DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphNeighborhood
