@@ -697,3 +697,53 @@ quadrants and the pocket/side/shell modules are ambient-free: use them directly.
 modules with receipts as you go, then the leaf. If a compact clause cannot be produced from the
 leaf's hypotheses, stop on it and report the exact clause (lead/owner decision); never weaken the
 statement. Estimate 3000–4000 lines.
+
+## Codex item 17 — the manifold P7 residual balls, twin of the compact P7 (lead-written 2026-09-24 11:20; Codex lane on lease a)
+
+Lease for this lane: lease a (token `claude-agent-a-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a`, valid until 2026-09-26 04:17 UTC). Same rules
+as items 7, 8, 13–16: new files only, no git writes, no edit of any frozen statement, host guard
+before every compile (at most four `lean.exe` on the host, this lease one), log to
+`Skeleton/FILL_LOG.md` (append-only, a `# Codex item 17` section with per-module receipts and
+SHA-256s), lines ≤ 100 codepoints, no declaration docstrings or comments, no underscore in a
+`def`/`abbrev`/`structure` name, grep every new name and every statement shape before proving;
+`prepare-private-root.py` then `checker.ps1` per module; an audit probe outside the tree at the end.
+Untracked files belong to other lanes (lease d: item 14; `codex-trace`: item 15; lease b: item 13):
+do not import, edit or shadow them.
+
+START CONDITION: the compact P7 (lease e, `exists_compactResidualBalls`, 29 modules
+`Section34CompactTetra*`, `Section34CompactResidual*`, `Section34CompactClawBall`,
+`Section34CompactPatchEnumeration`, `Section34CompactOuterEnumeration`, `TwoBallPocket`,
+`CircleArcSplit`, `CircleArcCycle`, `SphereCircleCapSplit`, `BallLocalSide`, `PLArcChainUnion`,
+`PLDiskCapRemoval`, `PLDiskArcGluing`, `PLDiskFamilyGluing`, `SubdivisionEdgePath`) is being accepted
+now; wait until `git log` shows the commit "Prove the compact Section 34 residual balls" (or the
+lead's word) so those modules are tracked, then import them freely.
+
+Target: `exists_section34ResidualBalls` (`Skeleton/Section34Terminal.lean` line 192): from
+`hdata : Section34NormalPlus …` (the normal family after P0–P6: cut frame, graph frame, face-ball
+invariants, trace, exterior; grep `def Section34NormalPlus` in `Section34Frame.lean`) and
+`hdisk : Section34FaceDiskFamily …`, produce `Section34ResidualPlus …` (grep `def Section34ResidualPlus`
+in `Section34Frame.lean`: the residual balls with their patches, edge arcs, marked points and outer
+cells, the 24 incidence clauses, and the two tiling clauses `frontier (tgtV w) ⊆ ⋃ tgtE ∪ ⋃ tgtX`,
+`tgtEBd e ⊆ ⋃ tgtI` added on 2026-09-23). Restate it byte-identically with its `variable` block.
+
+Route: the compact proof, transported. Read `Skeleton/OPUS_FILL_LOG_E.md`, `# Batch 9 (compact P7
+residual balls)` in full (route, the clause status table, the per-clause producers): per
+tetrahedron two claw balls `B₁`, `B₂` (chains of target vertex balls) meeting in the four hole
+splitting disks; the face disks cut `∂B₁` by `SphereCircleCapSplit`; `TwoBallPocket` glues the disks
+to one side and gives the residual ball `R_t` with `∂R_t = A ∪ ⋃ D ∪ Ω`; patches `R_t ∩ V_w` and edge
+arcs `R_t ∩ E_e` by cap splits on `∂V_w` identified through `BallLocalSide`; non-incident balls and
+disks from the exterior clause; tilings 21/22 for interior vertices and edges from the covered part
+of `∂V_w`, `∂E_e` being open; outer cells 4/5 from the cyclic order of boundary triangles at a
+boundary vertex, the arcs closing into a circle, Jordan on `∂V_w`. Everything ambient-free
+(`TwoBallPocket`, the `PLDisk*`, `CircleArc*`, `SphereCircleCapSplit`, `BallLocalSide`) is reused as is;
+what changes is the finite-complex bookkeeping (`Section34CompactTetra*`, `Section34CompactResidual*`,
+which read `K`, `K'` in `ℝ³`): redo it for the locally finite `𝒦`, `𝒦'` of `Section34NormalPlus`
+inside the charts and carriers that `hdata` provides (the target cells live in `M₂`; a `tetraBall`
+there has only carrier support, so the third tetrahedron is excluded by local two-sidedness in
+dimension three, not by `Q_t ⊆ conv t` — review BM §4, as in `Section34SourceFaceOrder` for the
+source face order). Precedent for a compact→manifold transport: the non-compact P8 and the source
+face order (`Section34SourceFaceOrder` over `Section34CompactSourceFaceOrder`). Deliver real modules
+per tetrahedron stage with receipts, then the leaf. If a clause needs a fact `hdata`/`hdisk` do not
+supply, stop on it and report the exact clause (lead/owner decision); add no named input. Estimate
+4000–6000 lines.
