@@ -10157,6 +10157,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShorten
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Reaction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Lp
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Sobolev
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.LocalExistence
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.TangentVariation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Bounds
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Euclidean
