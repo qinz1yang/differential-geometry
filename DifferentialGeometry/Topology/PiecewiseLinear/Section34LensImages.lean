@@ -5,7 +5,7 @@ open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-private theorem locallyFinite_image_of_embedding {X Y ι : Type*}
+theorem locallyFinite_image_of_embedding {X Y ι : Type*}
     [TopologicalSpace X] [TopologicalSpace Y] {U : Set X} {h : X → Y}
     (hh : IsEmbedding (U.domRestrict h)) {A : ι → Set X} (hAU : ∀ i, A i ⊆ U)
     (hlf : LocallyFinite fun i => {x : U | (x : X) ∈ A i}) :

@@ -40,4 +40,21 @@ theorem exists_separation_scales_of_locallyFinite {X ι : Type*} [MetricSpace X]
     have hj := min_le_right (cap j / 2) (r j / 3)
     linarith [hr i]
 
+theorem exists_separation_scales_of_locallyFinite_on {X ι : Type*} [MetricSpace X]
+    {Ω : Set X} {A : ι → Set X} (hA : ∀ i, IsCompact (A i))
+    (hAΩ : ∀ i, A i ⊆ Ω)
+    (hlf : LocallyFinite fun i => (Subtype.val : Ω → X) ⁻¹' A i)
+    {cap : ι → ℝ} (hcap : ∀ i, 0 < cap i) :
+    ∃ ε : ι → ℝ, (∀ i, 0 < ε i) ∧ (∀ i, ε i < cap i) ∧
+      ∀ i j, Disjoint (A i) (A j) → ∀ x ∈ A i, ∀ y ∈ A j,
+        ε i + ε j < dist x y := by
+  have hcompact : ∀ i, IsCompact ((Subtype.val : Ω → X) ⁻¹' A i) := by
+    intro i
+    exact Topology.IsEmbedding.subtypeVal.isInducing.isCompact_preimage' (hA i)
+      (by simpa only [Subtype.range_coe] using hAΩ i)
+  obtain ⟨ε, hε, hεcap, hsep⟩ := exists_separation_scales_of_locallyFinite hcompact hlf hcap
+  refine ⟨ε, hε, hεcap, ?_⟩
+  intro i j hij x hx y hy
+  exact hsep i j (hij.preimage Subtype.val) ⟨x, hAΩ i hx⟩ hx ⟨y, hAΩ j hy⟩ hy
+
 end DifferentialGeometry.Topology.PiecewiseLinear
