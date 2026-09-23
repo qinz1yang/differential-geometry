@@ -46,6 +46,18 @@ theorem isClosed_preimage_graphSkeletonSpace (𝒦 : LocallyFinitePLPieceIn Ea 3
   rw [heq]
   exact hFloc.isClosed_iUnion hFclosed
 
+theorem isClosed_graphSkeletonSpace_in_domain (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) :
+    IsClosed {x : U | (x : M₁) ∈ graphSkeletonSpace 𝒦} := by
+  obtain ⟨C, hC, hpre⟩ := 𝒦.isEmbedding.isInducing.isClosed_iff.mp
+    (isClosed_preimage_graphSkeletonSpace 𝒦)
+  have heq : (Subtype.val : U → M₁) ⁻¹' C = {x : U | (x : M₁) ∈ graphSkeletonSpace 𝒦} := by
+    ext x
+    obtain ⟨y, hy, hmap⟩ := 𝒦.bijOn.surjOn x.2
+    have he := Set.ext_iff.mp hpre ⟨y, hy⟩
+    change (𝒦.map y ∈ C ↔ 𝒦.map y ∈ graphSkeletonSpace 𝒦) at he
+    rwa [hmap] at he
+  exact heq ▸ hC.preimage continuous_subtype_val
+
 theorem exists_section34_graph_cores
     {Cp : Section34VertexIndex 𝒦 𝒦' → Set M₁}
     (hcompact : ∀ w, IsCompact (Cp w)) (hCpU : ∀ w, Cp w ⊆ U)

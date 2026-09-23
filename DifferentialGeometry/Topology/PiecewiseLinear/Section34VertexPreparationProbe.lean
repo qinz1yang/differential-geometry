@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeEnds
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedVertexCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingCircleNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ChartLocalEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCores
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LensImages
@@ -97,6 +98,14 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
   have hCpU : ∀ w, Cp w ⊆ U := fun w => (hsub w).2.1.trans (hsub w).2.2
   obtain ⟨Kcore, hcore, hcoreCover⟩ :=
     exists_section34_graph_cores_of_isPLCellOn hcp hCpU hvertex hcover
+  have hcoreI (w) : IsCompact (Kcore w) ∧ Kcore w ⊆ interior (Cp w) := by
+    refine ⟨(hcore w).1, ?_⟩
+    rw [← (hcp w).sdiff_boundary_eq_interior]
+    exact (hcore w).2.2
+  obtain ⟨tubeO, htubeOpen, hcircleO, htubeCc, htubeU, htubeLF, htubeDisj,
+    htubeGraph, htubeCore, htubeForeign⟩ := exists_section34_piercing_circle_neighborhoods
+      hU ends Cp CpBd Cc Kcore hcp hCpU hCpCc hcover hCpLF hcoreI hnonadj
+      diskO hdiskO.1 hdiskO.2.2.2.1 hdiskO.2.2.2.2 hlensO
   have exists_marked_nested_piercing_annuli :
       ∃ (Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁),
       (∀ e, IsLocallyFiniteRegularNeighborhoodOf (n := 3) (Sn e)
@@ -104,9 +113,8 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
           IsLocallyFiniteRegularNeighborhoodOf (n := 3) (Tn e)
             (CpBd (ends e).1 ∩ CpBd (ends e).2) U) ∧
       (∀ e, Tn e ⊆ interior (Sn e) ∧ IsTopologicalSolidTorus (Sn e) ∧
-          IsTopologicalSolidTorus (Tn e) ∧ Disjoint (Sn e) (graphSkeletonSpace 𝒦)) ∧
-      (∀ e, ∀ w, w = (ends e).1 ∨ w = (ends e).2 → Sn e ⊆ Cc w) ∧
-      (∀ e d, e ≠ d → Disjoint (Sn e) (Sn d)) ∧
+          IsTopologicalSolidTorus (Tn e)) ∧
+      (∀ e, Sn e ⊆ tubeO e) ∧
       (∀ e, Aa e = CpBd (ends e).1 ∩ Tn e ∧ IsAnnulusOn (Aa e) (Ab₀ e) (Ab₁ e)) ∧
       (∀ e, Bb e ⊆ CpBd (ends e).2 ∧ IsAnnulusOn (Bb e) (Bb₀ e) (Bb₁ e)) ∧
       (∀ e, Tn e ∩ CpBd (ends e).2 ⊆ Bb e \ (Bb₀ e ∪ Bb₁ e)) ∧
@@ -117,14 +125,29 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
       (∀ e, (∃ y₀ ∈ Bb e ∩ Cp (ends e).1, ∀ z ∈ Bb e ∩ Cp (ends e).1, z ∉ Tn e →
             z ∈ connectedComponentIn (Bb e ∩ Cp (ends e).1) y₀) ∧
           ∃ y₀ ∈ Bb e \ Cp (ends e).1, ∀ z ∈ Bb e \ Cp (ends e).1, z ∉ Tn e →
-            z ∈ connectedComponentIn (Bb e \ Cp (ends e).1) y₀) ∧
-      (LocallyFinite fun e => {x : U | (x : M₁) ∈ Sn e}) ∧
-      (∀ e w, Disjoint (Sn e) (Kcore w)) ∧
-      ∀ e w, w ≠ (ends e).1 → w ≠ (ends e).2 → Disjoint (Sn e) (CpBd w) := by
+            z ∈ connectedComponentIn (Bb e \ Cp (ends e).1) y₀) := by
     sorry
   obtain ⟨Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁,
-    hreg, htorus, hincident, htubes, haa, hbb, htb, hbs, hbc, hcirclebc, hab, hcomp,
-    hSnLF, hSnK, hSnBd⟩ := exists_marked_nested_piercing_annuli
+    hreg, htorus', hSnO, haa, hbb, htb, hbs, hbc, hcirclebc, hab, hcomp⟩ :=
+    exists_marked_nested_piercing_annuli
+  have htorus (e) : Tn e ⊆ interior (Sn e) ∧ IsTopologicalSolidTorus (Sn e) ∧
+      IsTopologicalSolidTorus (Tn e) ∧ Disjoint (Sn e) (graphSkeletonSpace 𝒦) :=
+    ⟨(htorus' e).1, (htorus' e).2.1, (htorus' e).2.2,
+      (htubeGraph e).mono_left (hSnO e)⟩
+  have hincident (e) (w) (hw : w = (ends e).1 ∨ w = (ends e).2) : Sn e ⊆ Cc w := by
+    intro x hx
+    have hC := (htubeCc e (hSnO e hx)).2
+    rcases hw with rfl | rfl
+    · exact interior_subset hC.1
+    · exact interior_subset hC.2
+  have htubes (e d) (hed : e ≠ d) : Disjoint (Sn e) (Sn d) :=
+    (htubeDisj hed).mono (hSnO e) (hSnO d)
+  have hSnLF : LocallyFinite fun e => {x : U | (x : M₁) ∈ Sn e} :=
+    htubeLF.subset (fun e _ hx => hSnO e hx)
+  have hSnK (e w) : Disjoint (Sn e) (Kcore w) := (htubeCore e w).mono_left (hSnO e)
+  have hSnBd (e w) (hw₀ : w ≠ (ends e).1) (hw₁ : w ≠ (ends e).2) :
+      Disjoint (Sn e) (CpBd w) :=
+    (htubeForeign e w hw₀ hw₁).mono (hSnO e) (hcp w).boundary_subset
   have hgen (e) : CarriesFundamentalGroupOnto (Ab₀ e) (Tn e) ∧
       CarriesFundamentalGroupOnto (Ab₁ e) (Tn e) ∧
       CarriesFundamentalGroupOnto (Ab₀ e) (Sn e) := by

@@ -31,6 +31,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallRoof
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedEdgeCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedVertexCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingCircleNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingMarkerRoutes
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeparationMargins
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskNeighborhoods
@@ -80,6 +81,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_section34_splitDisk_vertex_neighborhood
 #print axioms exists_section34_compact_edge_graph_region
 #print axioms isClosed_preimage_graphSkeletonSpace
+#print axioms isClosed_graphSkeletonSpace_in_domain
 #print axioms exists_section34_graph_cores
 #print axioms exists_section34_graph_cores_of_isPLCellOn
 #print axioms exists_section34_graph_covering_edge_cells
@@ -126,6 +128,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_section34_pierced_edge_cells
 #print axioms exists_section34_pierced_vertex_cells
 #print axioms exists_section34_unmarked_vertex_cells
+#print axioms exists_section34_piercing_circle_neighborhoods
 #print axioms exists_disjoint_piercing_marker_routes
 #print axioms exists_section34_separation_margins
 #print axioms section34_splitDisks_pairwise_disjoint
