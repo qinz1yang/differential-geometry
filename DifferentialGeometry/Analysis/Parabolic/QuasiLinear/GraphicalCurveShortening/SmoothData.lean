@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.Exponent
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ScalarSmulJet
 
 noncomputable section
-open Set MeasureTheory
+open Set MeasureTheory Filter
 open scoped Manifold ContDiff
 namespace DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Spectral
@@ -64,13 +64,54 @@ private theorem mfderiv_coordinate_apply
   exact congrArg (fun A => A v) h
 
 
+private theorem integral_eq_of_timeH1_ae_derivative
+    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+    {T : ℝ} (hT : 0 < T) (u : timeH1 X T) (L : X →L[ℝ] Y) (v : X)
+    (q : ℝ → Y)
+    (hq : ∀ᵐ t ∂timeMeasure T,
+      HasDerivAt (fun s => L (v + u.toFun s)) (q t) t) :
+    ∀ t ∈ Icc 0 T, IntervalIntegrable q volume 0 t ∧
+      L (v + u.toFun t) = L (v + u.toFun 0) + ∫ s in 0..t, q s := by
+  have hmem : ∀ᵐ t ∂timeMeasure T, t ∈ Ioo 0 T := by
+    unfold timeMeasure
+    rw [← restrict_Ioo_eq_restrict_Icc]
+    exact ae_restrict_mem measurableSet_Ioo
+  have hrep : q =ᵐ[timeMeasure T] fun s => L (u.deriv s) := by
+    filter_upwards [hq, u.ae_hasDerivWithinAt_toFun, hmem] with t hqt hut ht
+    exact hqt.unique (L.hasFDerivAt.comp_hasDerivAt t
+      ((hut.hasDerivAt (Icc_mem_nhds ht.1 ht.2)).const_add v))
+  intro t ht
+  have hd := u.intervalIntegrable_deriv (show 0 ∈ Icc 0 T from ⟨le_rfl, hT.le⟩) ht
+  have hsub : uIoc 0 t ⊆ Icc 0 T := by
+    rw [uIoc_of_le ht.1]
+    exact Ioc_subset_Icc_self.trans (Icc_subset_Icc le_rfl ht.2)
+  have hae : q =ᵐ[volume.restrict (uIoc 0 t)] fun s => L (u.deriv s) :=
+    hrep.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
+  have hi : IntervalIntegrable (fun s => L (u.deriv s)) volume 0 t :=
+    ⟨L.integrable_comp hd.1, L.integrable_comp hd.2⟩
+  refine ⟨hi.congr_ae hae.symm, ?_⟩
+  rw [intervalIntegral.integral_congr_ae (ae_imp_of_ae_restrict hae),
+    L.intervalIntegral_comp_comm hd]
+  have hu := u.toFun_sub_toFun (show 0 ∈ Icc 0 T from ⟨le_rfl, hT.le⟩) ht
+  rw [← hu, map_sub, map_add, map_add]
+  abel
+
+
 private theorem exists_graphical_curve_shortening_coordinates
     {ι : Type*} [Fintype ι]
     (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
     ∃ T : ℝ, 0 < T ∧ ∃ f : ℝ → ℝ → ι → ℝ,
       (∀ x, f 0 x = (F₀ (x : AddCircle (1 : ℝ))).ofLp) ∧
       (∀ t, Function.Periodic (f t) 1) ∧
-      (∀ x, ContinuousOn (fun t => f t x) (Icc 0 T)) ∧
+      ContinuousOn (Function.uncurry f) (Icc 0 T ×ˢ univ) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        IntervalIntegrable (fun s =>
+          graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f s) x)) •
+            deriv (deriv (f s)) x) volume 0 t ∧
+        f t x = f 0 x + ∫ s in 0..t,
+          graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f s) x)) •
+            deriv (deriv (f s)) x) ∧
       ∀ᵐ t ∂timeMeasure T, ContDiff ℝ 2 (f t) ∧ ∀ x,
         HasDerivAt (fun s => f s x)
           (graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f t) x)) •
@@ -109,7 +150,7 @@ private theorem exists_graphical_curve_shortening_coordinates
     exists_graphical_curve_shortening_sobolev_solution_of_metric_coefficient g f₀ hg
   let f := fun t (x : ℝ) => scalarH1PiToContinuous g (C (K f₀ + u.toFun t))
     (x : AddCircle (1 : ℝ))
-  refine ⟨T, hT, f, ?_, hperiod, ?_, hpde⟩
+  refine ⟨T, hT, f, ?_, hperiod, ?_, ?_, hpde⟩
   · intro x
     have hi : f 0 x = scalarH1PiToContinuous g (C (K f₀)) (x : AddCircle (1 : ℝ)) := hinit x
     rw [hi]
@@ -121,10 +162,15 @@ private theorem exists_graphical_curve_shortening_coordinates
     rw [tensorHsInclusion_ccTensorToHs, tensorHsInclusion_ccTensorToHs,
       scalarH1ToContinuous_apply_ccTensorToHs, scalar0_scalarCc]
     rfl
+  · have hstate := ((scalarH1PiToContinuous g).comp C).continuous.comp_continuousOn
+      ((continuousOn_const (c := K f₀)).add u.continuousOn_toFun)
+    exact (hstate.comp continuousOn_fst (fun _ h => h.1)).eval
+      ((AddCircle.continuous_mk' (1 : ℝ)).comp continuous_snd).continuousOn
   · intro x
     let L := (ContinuousMap.evalCLM ℝ (x : AddCircle (1 : ℝ))).comp
       ((scalarH1PiToContinuous g).comp C)
-    exact L.continuous.comp_continuousOn (continuousOn_const.add u.continuousOn_toFun)
+    exact integral_eq_of_timeH1_ae_derivative hT u L (K f₀) _
+      (hpde.mono fun t ht => ht.2 x)
 
 private theorem deriv_toLp
     {ι : Type*} [Finite ι] (f : ℝ → ι → ℝ) :
@@ -163,6 +209,58 @@ private theorem hasDerivAt_graphical_curve_shortening_toLp
   convert h using 1 <;> rfl
 
 
+theorem exists_graphical_curve_shortening_integral_of_smooth
+    {ι : Type*} [Fintype ι]
+    (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
+    ∃ T : ℝ, 0 < T ∧ ∃ F : ℝ → ℝ → EuclideanSpace ℝ ι,
+      (∀ x, F 0 x = F₀ (x : AddCircle (1 : ℝ))) ∧
+      (∀ t, Function.Periodic (F t) 1) ∧
+      ContinuousOn (Function.uncurry F) (Icc 0 T ×ˢ univ) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        IntervalIntegrable (fun s =>
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) volume 0 t ∧
+        F t x = F₀ (x : AddCircle (1 : ℝ)) + ∫ s in 0..t,
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) ∧
+      ∀ᵐ t ∂timeMeasure T, ContDiff ℝ 2 (F t) ∧ ∀ x,
+        HasDerivAt (fun s => F s x)
+          (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) t := by
+  obtain ⟨T, hT, f, hinit, hperiod, hcont, hint, hpde⟩ :=
+    exists_graphical_curve_shortening_coordinates F₀
+  let F : ℝ → ℝ → EuclideanSpace ℝ ι := fun t x => WithLp.toLp 2 (f t x)
+  refine ⟨T, hT, F, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x
+    change WithLp.toLp 2 (f 0 x) = F₀ (x : AddCircle (1 : ℝ))
+    rw [hinit]
+  · intro t x
+    change WithLp.toLp 2 (f t (x + 1)) = WithLp.toLp 2 (f t x)
+    rw [hperiod t x]
+  · exact (PiLp.continuous_toLp 2 (fun _ : ι => ℝ)).comp_continuousOn hcont
+  · intro x t ht
+    let L := (PiLp.continuousLinearEquiv 2 ℝ (fun _ : ι => ℝ)).symm.toContinuousLinearMap
+    let q := fun s => graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f s) x)) •
+      deriv (deriv (f s)) x
+    have hrhs : (fun s => graphDiffusionCoefficient (deriv (F s) x) •
+        deriv (deriv (F s)) x) = fun s => L (q s) := by
+      funext s
+      have hfirst : deriv (F s) = fun y => WithLp.toLp 2 (deriv (f s) y) :=
+        deriv_toLp (f s)
+      have hsecond : deriv (deriv (F s)) =
+          fun y => WithLp.toLp 2 (deriv (deriv (f s)) y) := by
+        rw [hfirst]
+        exact deriv_toLp (deriv (f s))
+      rw [hsecond, hfirst]
+      rfl
+    obtain ⟨hi, heq⟩ := hint x t ht
+    rw [hrhs]
+    refine ⟨⟨L.integrable_comp hi.1, L.integrable_comp hi.2⟩, ?_⟩
+    rw [L.intervalIntegral_comp_comm hi]
+    change L (f t x) = F₀ (x : AddCircle (1 : ℝ)) + L (∫ s in 0..t, q s)
+    rw [heq, map_add, hinit]
+    rfl
+  · filter_upwards [hpde] with t ht
+    exact hasDerivAt_graphical_curve_shortening_toLp f ht.1 ht.2
+
+
 theorem exists_graphical_curve_shortening_ae_of_smooth
     {ι : Type*} [Fintype ι]
     (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
@@ -173,19 +271,11 @@ theorem exists_graphical_curve_shortening_ae_of_smooth
       ∀ᵐ t ∂timeMeasure T, ContDiff ℝ 2 (F t) ∧ ∀ x,
         HasDerivAt (fun s => F s x)
           (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) t := by
-  obtain ⟨T, hT, f, hinit, hperiod, hcont, hpde⟩ :=
-    exists_graphical_curve_shortening_coordinates F₀
-  let F : ℝ → ℝ → EuclideanSpace ℝ ι := fun t x => WithLp.toLp 2 (f t x)
-  refine ⟨T, hT, F, ?_, ?_, ?_, ?_⟩
-  · intro x
-    change WithLp.toLp 2 (f 0 x) = F₀ (x : AddCircle (1 : ℝ))
-    rw [hinit]
-  · intro t x
-    change WithLp.toLp 2 (f t (x + 1)) = WithLp.toLp 2 (f t x)
-    rw [hperiod t x]
-  · intro x
-    exact (PiLp.continuous_toLp 2 (fun _ : ι => ℝ)).comp_continuousOn (hcont x)
-  · filter_upwards [hpde] with t ht
-    exact hasDerivAt_graphical_curve_shortening_toLp f ht.1 ht.2
+  obtain ⟨T, hT, F, hinit, hperiod, hcont, _, hpde⟩ :=
+    exists_graphical_curve_shortening_integral_of_smooth F₀
+  refine ⟨T, hT, F, hinit, hperiod, ?_, hpde⟩
+  intro x
+  exact hcont.comp (continuous_id.prodMk continuous_const).continuousOn
+    (fun _ ht => ⟨ht, mem_univ _⟩)
 
 end DifferentialGeometry.Analysis.Parabolic
