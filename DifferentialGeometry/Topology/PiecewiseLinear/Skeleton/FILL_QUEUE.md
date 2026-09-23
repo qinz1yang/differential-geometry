@@ -747,3 +747,32 @@ face order (`Section34SourceFaceOrder` over `Section34CompactSourceFaceOrder`). 
 per tetrahedron stage with receipts, then the leaf. If a clause needs a fact `hdata`/`hdisk` do not
 supply, stop on it and report the exact clause (lead/owner decision); add no named input. Estimate
 4000–6000 lines.
+
+## Codex item 18 — reconcile the collaborator's Package E (PR #15) with item 14 (lead-written 2026-09-24 16:40; Codex lane on lease e)
+
+Lease: lease e (token `claude-agent-e-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e`, valid until 2026-09-26 04:17 UTC). Same rules as
+items 7–17 (no git writes; host guard before every compile; log to `Skeleton/FILL_LOG.md`, section
+`# Codex item 18`). The 77 modules of PR #15 (the CGN cut frame `exists_section34CutFrame`, restated
+byte-identically in `ControlledGraphCutFrame.lean`) are present as UNTRACKED files, listed in
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\PR15_FILES.txt` (dependency order in
+`PR15_ORDER.txt` next to it); the PR's `GraphDualCellRestriction.lean` is already renamed
+`GraphDualCellRestrictionE.lean` with the two imports repointed. This lane OWNS those 77 files and may
+edit them; it must not edit any tracked file or any other untracked file (other lanes' work).
+
+Task: resolve the six declaration collisions with item 14's tracked modules:
+`closure_sdiff_derivedNeighborhood_inter_subcomplex` (tracked `DerivedNeighborhoodResidualRestriction`),
+`graphDualCell_space_eq_inter` and `graphDualCell_space_inter_subcomplex` (tracked `GraphDualCellRestriction`),
+`splittingDisk_space_inter_subcomplex` (tracked `GraphDualCellRestriction`),
+`IsCombinatorialManifoldWithBoundary.isPLBall_graphDualCell_two` (tracked `GraphDualCellSurface`),
+`restrict_convexHull_eq_simplexComplex` (tracked `SimplexSubcomplex`). If the PR statement agrees with the
+tracked one (up to binder names and implicitness, every use type-checking), delete the PR copy and import
+the tracked module; otherwise rename the PR declaration (unique tree-wide, snake_case for theorems, no
+underscore in a def/abbrev/structure name) and update its uses in the 77 files. Then grep the remaining
+public names of the 77 files against the tree once more (item 14 registered 56 modules today). Re-verify
+every changed module and everything downstream of it in `PR15_ORDER.txt` (checker, zero diagnostics), and
+run the audit probe `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditPR15.lean` with `-Audit`
+(regenerate it if a module was renamed). The leaf statement must stay byte-identical to
+`Skeleton/ControlledGraphNeighborhood.lean`. Report: per collision reused/renamed (old → new, files
+touched), the receipt line of every re-verified module and of the audit. Wiring and registration are the
+lead's.
