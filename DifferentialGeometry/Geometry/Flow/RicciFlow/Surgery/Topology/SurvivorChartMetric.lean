@@ -5,6 +5,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.Construction.Immersion
 import DifferentialGeometry.Topology.Manifold.PartialChartEmbedding
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 
 set_option autoImplicit false
 noncomputable section
@@ -141,5 +142,52 @@ theorem immersionInducedMetric_eq_of_regularCrossing_chart [IsManifold I ∞ X] 
   intro x v w
   simp only [immersionInducedMetric_inner]
   exact (E.regularCrossing_chart_metric_inner φ ψ hφ hdim hcross x v w).symm
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+set_option autoImplicit false
+noncomputable section
+
+open Set Manifold
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u v
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
+
+theorem RegularCrossing.mem_terminalRegularRegion
+    {p : P.Carrier} {q : Q.Carrier} (h : E.RegularCrossing p q) :
+    p ∈ E.incoming.terminalRegularRegion := by
+  obtain ⟨z, _, hp, _⟩ := h
+  have heq : (E.oldTerminal z).val = p := (E.oldTerminal_eq z).trans hp
+  exact heq ▸ (E.oldTerminal z).property
+
+variable {V XH : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+  [FiniteDimensional ℝ V] [TopologicalSpace XH] {I : ModelWithCorners ℝ V XH} [I.Boundaryless]
+  {X : Type v} [TopologicalSpace X] [ChartedSpace XH X]
+
+theorem exists_terminal_chart_of_regularCrossing
+    (f : X → P.Carrier) (ψ : X → Q.Carrier)
+    (hf : IsSmoothEmbedding I ThreeModel ∞ f)
+    (hdim : Module.finrank ℝ V = Module.finrank ℝ ThreeSpace)
+    (hcross : ∀ x, E.RegularCrossing (f x) (ψ x)) :
+    ∃ φ : X → E.incoming.terminalRegularOpen,
+      (∀ x, (φ x).val = f x) ∧ IsSmoothEmbedding I ThreeModel ∞ φ ∧
+      IsSmoothEmbedding I ThreeModel ∞ ψ ∧
+      ∀ (x : X) (v w : TangentSpace I x),
+        E.outputMetric.inner (ψ x) (mfderiv I ThreeModel ψ x v)
+          (mfderiv I ThreeModel ψ x w) =
+        E.terminal.metric.inner (φ x) (mfderiv I ThreeModel φ x v)
+          (mfderiv I ThreeModel φ x w) := by
+  let φ : X → E.incoming.terminalRegularOpen := fun x =>
+    ⟨f x, (hcross x).mem_terminalRegularRegion E⟩
+  have hφ : IsSmoothEmbedding I ThreeModel ∞ φ :=
+    DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen I ThreeModel
+      E.incoming.terminalRegularOpen φ hf
+  exact ⟨φ, fun _ => rfl, hφ,
+    E.isSmoothEmbedding_of_regularCrossing_chart φ ψ hφ hdim hcross,
+    E.regularCrossing_chart_metric_inner φ ψ hφ hdim hcross⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent

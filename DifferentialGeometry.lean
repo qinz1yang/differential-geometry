@@ -13381,3 +13381,7 @@ import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.DoubleCylinder
 import DifferentialGeometry.Geometry.Neck.CompactClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCanonicalCoverage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CutComponent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceLocalChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.FiniteGluing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFlow
