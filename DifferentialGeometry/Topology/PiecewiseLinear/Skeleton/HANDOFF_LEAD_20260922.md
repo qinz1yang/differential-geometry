@@ -522,3 +522,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 07:20 (09-24) — OWNER DECISIONS: Codex item 14 (compact leaf 1) started on lease d; the removal of the now-dischargeable
   named inputs `h304 : Moise304` / `h305 : Moise305Tame` from their nine consumers (including the two frozen §34 skeleton
   statements) is DEFERRED to the end of the project or later; do not raise it again until then.
+* 08:00 (09-24) — accepted worker a's P4 compression, both cases (20 modules): Normalization has 1 leaf (trace).
+  Physical `sorry` 16. Lease a free (owner to decide: the compact P4 twin `exists_compactCompression` is the natural next).

@@ -1400,3 +1400,192 @@ configuration mapped onto the model rectangle (five faces, boundary maps glued e
 Alexander trick per face, `exists_isPLHomeomorphOn_union`); none of this is in the tree.  Checked
 while designing: `C ∩ Int Dj = ∅` and `Tr ∩ B' = Bb` (a crossing inside `B'` would enter `Int Dj`),
 other face balls miss `Dj` entirely, so the support can be chosen off them.
+
+# Batch 10 (P4 compression, case (b))
+
+Started 2026-09-23T13:30Z on lease a (token valid until 2026-09-24T04:17Z).
+
+## Route review before building (findings for the lead)
+
+Notation in the chart `c` of `H t₀` (`t₀ ⊇ s` the tetrahedron of `exists_chart_section34FaceBall`):
+`P = c '' fbl s`, `Σ = ∂P`, `D = c '' Dj`, `J = ∂D = D ∩ P`, `Θ` the face torus, `V` the vertex
+ball of `w`, `N` the union of the vertex balls, `rim = c '' h '' simplexRim s`.  `Σ \ J = E₁ ⊔ E₂`,
+`X₁` the bounded pocket (`∂X₁ = D ∪ E₁`), `K = P ∪ X₁` (the book's fill ball, `∂K = D ∪ E₂`).
+
+1. **Gap in the BK route: the through-tube must avoid the rim, and the rim is wild.**  The
+   digest's arc runs "inside `Int N`, off the rim".  In the configurations where the tube is
+   needed the arc must cross `P ∩ Int N ⊆ T_s ∩ P`, which contains the rim `h '' ∂s`; `h` is only a
+   topological embedding, so "a 1-dimensional compact set does not separate an open set of `ℝ³`"
+   is a theorem about wild circles (Alexander duality / dimension theory) that the tree does not
+   have.  Rerouting the digest's own escape path (marker → rim → graph edges) makes it worse: the
+   markers of the vertices on `∂s` lie ON the rim.  Fix (both cases rim-free by construction):
+   * (T1) a vertex ball `V_u`, `u` not incident to `s`, meets the inner ball `X₀`: then `V_u ⊆ Int X₀`
+     (`V_u` misses `P` and the thin slab), `u` lies on an edge `[d,x]` of `t₀` with `d ∉ s`, and the
+     face `{a,b,d}` of `t₀` has a second coface `{a,b,d,x'}`, `x' ≠ c`
+     (`exists_insert_mem_faces_ne`); the walk `h(u) → h(d) → h(x')` runs on `h` of edges disjoint from
+     `conv s`, hence off the rim, inside `Int N`, and ends at a marker of a vertex not incident to `t₀`,
+     which the trap lemma puts outside `K`, hence outside the fill ball.
+   * (T2) `Int X₀ ∩ Θ ≠ ∅` and no such `V_u`: take any path in the torus `Θ` from a point of
+     `Int X₀` to a point outside the fill ball (the latter exists: otherwise `Θ ⊆ Ŵ`, and the vertex
+     ball of the first subdivision vertex on an edge `[a,x]`, `x ∉ s`, shares a splitting disk with
+     `T_s` lying on `Θ`, so it meets `Ŵ`, hence `X₀`: case T1) and push it into `Int T_s` along the
+     collar `IsCombinatorialManifoldWithBoundary.exists_collar` of the combinatorial solid torus
+     `c '' T_s` (`isCombinatorialSolidTorus_image_section34FaceTorus`); a thin collar misses the
+     compact rim and `Θ`.  No colouring of `Θ \ trace` is needed.
+2. **Case analysis (exhaustive).**  Fill (`G = Ŵ`) when `Int X₀ ∩ Θ = ∅` and no non-incident vertex
+   ball meets `X₀`; then `X₀ ⊆ ext N` or `X₀ ⊆ Int T_s`, and `S_in ∩ Θ = ∅` (a trace point on `E₁`
+   would put `Θ` into `Int X₀` by the crossing), so the new trace is again the old one minus `J`.
+   Tube (`G = Ŵ \ Int (X₀ ∪ tube)`) in T1 and T2.
+3. **Pocket identification (brick 3) is only needed in the fill case**, and there it follows from
+   the exterior clause of the second tetrahedron `t'` at the marker of the fourth vertex `d` of
+   `t₀` (`d ∉ t'`, `h(d) ∈ Int H t'` by carrier control): if `X₁ ⊄ Int H t'` then `∂H t' ⊆ Int X₁`,
+   the component of `h(d)` in `H t' \ obstacle` lies in `Int X₁`, so `V_d ⊆ Int X₁`; this contradicts
+   `X₀ ⊆ ext N` and `X₀ ⊆ Int T_s` alike.  In the tube case `G ⊆ P ∪ slab ⊆ Int H t` for every
+   `t ∋ s` and no identification is needed.
+4. **Field 10 needs a rerouting map, not only thinness.**  The half of the slab outside `N` is not
+   in the old obstacle; a marker component may pass next to `D` on that side (always in the
+   configuration where the pocket is on the `V` side).  With the slab built as a lift into one side
+   of a centred prism (`exists_centeredPrism_of_isPLOn`, `exists_capMap_of_centeredPrism`) at height
+   `ℓ`, a second lift at `2ℓ` is still free and `prism (b x, t) ↦ prism (b x, ℓ x + t / 2)` retracts
+   the region `0 < t ≤ 2ℓ` onto `ℓ < t ≤ 2ℓ`, fixing markers and `∂H t`; the image of the old
+   component is connected, avoids the new obstacle and still reaches `∂H t`.
+5. **Field 7**: the new trace is the old one minus `J`; `J` separates `Θ` (it bounds `D ⊆ Θ`), so the
+   nonseparating carrying circle of `IsPLTorus.carriesFirstHomologyOnto_or_subsingleton_of_iUnion` is
+   another trace circle, which is kept.
+6. **Count remark**: in case (b) `c ≥ 3` (essential trace circles come in pairs, plus `J`).
+
+Scale estimate for the whole of case (b): chart slab (two wedge lifts, spheres `S_in`, `S_out`,
+Schoenflies balls, sides) ~1500 lines; tube (fine triangulation, edge path through `S_in`/`S_out`
+vertices, `isPLBall_derivedNeighborhood_arcComplexIn`, `IsPLCellOn.sdiff_interior_of_frontier_inter`)
+~1200 lines; escapes and pocket identification ~600; fields and assembly ~1200.
+
+## Checkpoint 17:20Z — eleven modules verified, fill case proved, tube case in progress
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutsideTools.lean` | 244 | `7fc2f40c7a35746d5c834e061e3a7fe8f4c3e7b409c0f954ca258a59b2b53349` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34WedgeLift.lean` | 906 | `9891d1ad1b20125a57903168c208f054f174613699d627c791306f47569f40af` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CrossingQuadrant.lean` | 691 | `0d54a388f51a5c705d700b4e047ef3b3769f8a9405622cbe1e69e33e1725e25a` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionPocket.lean` | 499 | `c0fb871fe027041b316ec38336e7beaef30fcf5cf32864d72e84927b10ebdf71` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionSide.lean` | 711 | `119e4aa0898ef53c9c7abf4ad901c1a50e3219515ada96e9b6977d93a940d816` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionShell.lean` | 440 | `db582f6563cd3fec0b6df9d90bece6d6830bd90594e16442724641670c31186b` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutsideUpdate.lean` | 217 | `68eff664783a83f7e9789555d6e4da75cff18d88f9118c366f40c495acf7cd34` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionChartBall.lean` | 224 | `2e6fa45af85130287ee1148fdcec2192e3098249813831b866c1f6e6a45d0f3a` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionReroute.lean` | 262 | `ac53aae32c71b57f3d24713cb69ee680bd942a67c07d981011d8d237ab16a895` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionTraceCarry.lean` | 121 | `db5774f4e7b89b69e19741ad3be9cd93a5f9b2c66f005dc837b992c9efea9489` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutside.lean` | 1181 | `981f89ec8551c66deb756dd3fddb61a6db9a301a717a7f5f8bd847fddb9beb36` |
+
+Each module: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\<file> with no diagnostics; shared outputs unchanged.`
+Audit: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditBatch10.lean with no diagnostics; shared outputs unchanged.` (all eleven modules; axioms only `propext`, `Classical.choice`, `Quot.sound`; thirteen linters clean). Public names grepped tree-wide: no clash.
+
+State: `exists_section34Compression_of_disjoint_of_cleanPocket` (Outside) proves the leaf's conclusion in case (b) under a clean-pocket hypothesis `hclean` (every cell `Y` with `frontier Y ⊆ Dj ∪ fblBd s` missing `interior (fbl s)` has no torus point inside and misses the non-incident vertex balls).  Finding: as stated, `hclean` quantifies over all such `Y`; if `M₂` is compact (for instance `S³`) the closure of the complement of the face ball plus its pocket is such a cell and meets the face torus, so `hclean` can fail although the pocket is clean.  The final assembly therefore restricts `Y` to cells inside an incident carrier (the pocket is one) and splits on the pocket inside the chart; in progress below.
+
+## exists_section34Compression (P4) — CLOSED (frozen leaf restated byte-identically; cases (a) and (b))
+
+Finished 2026-09-23T19:12Z.  Supersedes the 17:20Z checkpoint (Shell and Outside changed since).
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutsideTools.lean` | 244 | `7fc2f40c7a35746d5c834e061e3a7fe8f4c3e7b409c0f954ca258a59b2b53349` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34WedgeLift.lean` | 906 | `9891d1ad1b20125a57903168c208f054f174613699d627c791306f47569f40af` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CrossingQuadrant.lean` | 691 | `0d54a388f51a5c705d700b4e047ef3b3769f8a9405622cbe1e69e33e1725e25a` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionPocket.lean` | 499 | `c0fb871fe027041b316ec38336e7beaef30fcf5cf32864d72e84927b10ebdf71` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionSide.lean` | 711 | `119e4aa0898ef53c9c7abf4ad901c1a50e3219515ada96e9b6977d93a940d816` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionShell.lean` | 441 | `f0fb90f25bbf0164c7a6708527cca02b8a995dc31731ad4377a0b5d303fbf838` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutsideUpdate.lean` | 217 | `68eff664783a83f7e9789555d6e4da75cff18d88f9118c366f40c495acf7cd34` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionChartBall.lean` | 224 | `2e6fa45af85130287ee1148fdcec2192e3098249813831b866c1f6e6a45d0f3a` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionReroute.lean` | 262 | `ac53aae32c71b57f3d24713cb69ee680bd942a67c07d981011d8d237ab16a895` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionTraceCarry.lean` | 121 | `db5774f4e7b89b69e19741ad3be9cd93a5f9b2c66f005dc837b992c9efea9489` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutside.lean` | 1190 | `cef8570fa68ac6efbc86a25cb2b144c74e65dfa33500611d08f91b206c36c5fb` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TubePrism.lean` | 607 | `9140c5042ca812791e02c3cb34d354fc6e38c6bbbb3034c4187b746b87b36b18` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TubeCrossing.lean` | 402 | `213df169f73697497eb35ba8d704eec99bdcf8c09a86eb88803fbb1513e1818d` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TubeChain.lean` | 147 | `7c4e480bb2a4255497ab40340712b45957c20292d207b3b055c4b1376dfc1134` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TubeGeneralPosition.lean` | 281 | `d6ac20a116fb22d7301589330adb8ff45a17e04d9c26a4f2e9299b6b7498e3ff` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TubeGeneralPath.lean` | 462 | `2e51d217a0095a44b176f64cbc13ad44ff31ae9c009393061a53ca893d866452` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TubeArc.lean` | 215 | `67a3e8208aa17e9f0f2e22b3c1076238c80b40a5d6e5e91dec9c8005ec1f4f2d` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34ThroughTube.lean` | 428 | `20273db6e64a99954615c71f59a204e4f9b928e27aead88fa7069fb4c6275aee` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionOutsideTube.lean` | 1246 | `b7cedbc32f3e1855978097921cae526f37cff5d0d9b3b190e931e6a22f56ab93` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionLeaf.lean` | 151 | `7c2abda822cda46af56e86ea2bb093c2f5d42cd9ed02e3e11db9c442a541031a` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutsideTools
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34WedgeLift
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingQuadrant
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionPocket
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionSide
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionShell
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutsideUpdate
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionChartBall
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionReroute
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionTraceCarry
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutside
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TubePrism
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeCrossing
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeChain
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeGeneralPosition
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeGeneralPath
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeArc
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34ThroughTube
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutsideTube
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
+
+Checker, each of the twenty files, compiled in dependency order after its last edit:
+`Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\<file> with no diagnostics; shared outputs unchanged.`
+(last lines: `...\Section34CompressionShell.lean`, `...\Section34CompressionOutside.lean`,
+`...\Section34ThroughTube.lean`, `...\Section34CompressionOutsideTube.lean`,
+`...\Section34CompressionLeaf.lean with no diagnostics; shared outputs unchanged.`)
+Audit: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditBatch10b.lean with no diagnostics; shared outputs unchanged.`
+(all twenty modules; every declaration's axioms among `propext`, `Classical.choice`, `Quot.sound`;
+thirteen linters clean).  Rules checked by script: no line over 100 codepoints, no `--` comment,
+no declaration docstring, no `sorry`/`admit`/`native_decide`/`set_option`/`nolint`/`axiom`, no
+skeleton import.  Public names grepped tree-wide: the only hit is the intended one,
+`exists_section34Compression` in `Skeleton/Section34Normalization.lean`.
+
+Statement: `exists_section34Compression` in `Section34CompressionLeaf.lean`; its statement text and
+its `variable` block are byte-identical to the frozen leaf (compared by script).  `hU` is not used
+by the proof and is kept by `let _ := hU`.  Dependencies outside Batch 10: the Batch 9 modules
+(`Section34CompressionInside`, `Section34CompressionCases` and their imports), which the checker
+still compiled from my private root, so they must be accepted together.
+
+Proof: `hop` unpacks to `w Dj Jd`; `w` is incident; in the chart of an incident carrier
+`subset_interior_or_disjoint_sdiff_of_isPLCellOn` splits.  (a) `Dj ⊆ fbl s`:
+`exists_section34Compression_of_subset` (Batch 9).  (b) `exists_section34Compression_of_disjoint`
+(Leaf) takes the chart `c` of `H t₀` from `exists_chart_section34FaceBall_tetra` and splits on
+`hclean`: every cell `Y ⊆ Int H t₀` with `∂Y ⊆ Dj ∪ fblBd s` missing `Int fbl s` has no point of the
+face torus frontier in its interior and misses the non-incident vertex balls.
+* clean: `exists_section34Compression_of_disjoint_of_cleanPocket` (Outside, now with the chart data
+  as hypotheses): fill the pocket (as in the checkpoint).
+* not clean: `exists_section34Compression_of_disjoint_of_uncleanPocket` (OutsideTube).  The witness
+  `Q` sits in the pocket `X ∪ Tin` of the shell (its chart image lies in `W`, misses `Int P`, and
+  cannot meet `Int Tout`, since then `Tout ⊆ c Q` and a point of `Lout \ P` on `∂W` would lie on
+  `∂(c Q) ⊆ D ∪ ∂P`); so `Int X` has a point outside `c T_s` (a point of `Tin` outside `T_s` is
+  pushed into `X` by the inner push).  `(c T_s)ᶜ` is connected
+  (`isConnected_compl_of_isCombinatorialSolidTorus`: the frontier is a polyhedral torus
+  (`IsPLTorus.exists_combinatorial_triangulation`), two-sided, bicollared), so a path in it leaves
+  `W`; `exists_isPLBall_sdiff_interior_tube` drills a tube `N` missing `c T_s`, and
+  `G = W \ Int (X ∪ N)` is the new ball: `G ⊆ P ∪ Tin ∪ Tout` (`Lin ⊆ Tin`), `∂G = ∂W ∪ ∂X` off
+  `N`, trace `= (Bin ∪ Bout) ∩ Θ = ` old trace minus `Jd`, splitting circles meet `∂G` only in `∂P`
+  (a splitting circle point on `P` lies in `T_s`, which `N` misses), rim in `Int P \ N ⊆ Int G`,
+  and the two slabs are pushed off by `exists_reroute_push_push`.  Then
+  `exists_section34Compression_of_chartBall` as in the fill case.
+
+The through-tube lemma (review BK's open obligation) is proved in general form:
+`exists_isPLBall_sdiff_interior_tube` (ThroughTube): `X ⊆ Int W` PL `3`-balls of `ℝ³`, `K` closed,
+`U ⊇ W` open, a path in `Kᶜ` from `Int X` to a point outside `W`, and finitely many segments;
+there is a compact `N ⊆ U` missing `K` and the segments with `W \ Int (X ∪ N)` a PL `3`-ball.
+Proof: generic polygonal path (vertices off the affine spans of at most three points of the
+triangulation vertices and earlier vertices, and off the planes of the boundary triangles);
+last exit from `X` and first exit from `Int W` are flat points (half balls, from the
+triangulations of `∂X`, `∂W`); a chain of mitered triangular prisms (H-polytopes) along the arc,
+glued face to face (`isPLBall_union_of_inter_isPLBall_two`); the last prism crosses `∂W` in a
+triangle whose relative boundary is `∂W ∩ ∂(X ∪ N)`, and the cap deletion theorem
+`IsPLCellOn.sdiff_interior_of_frontier_inter` finishes.  Codex's probe of this lemma is no
+longer needed.
+
+Route differences from digest BK (for the lead): the tube runs in the complement of the face
+torus, not inside `Int N`, so the rim (wild in general) is never approached and no graph walk is
+needed; the unclean case needs no pocket identification in other carriers.  The clean-pocket
+hypothesis must be restricted to cells inside the chosen carrier: quantified over all cells it
+can fail in a compact `M₂` (the closure of the complement of face ball plus pocket is such a
+cell).  Shell gained four exports (`IsPLBall 3 Tout`, `frontier Tout = D ∪ Aout ∪ Lout`,
+`Tout ∩ P = Aout`, `Lin ⊆ Tin`); Outside's theorem now takes the chart of
+`exists_chart_section34FaceBall_tetra` as hypotheses.

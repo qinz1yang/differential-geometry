@@ -14,6 +14,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
 
 /-!
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
@@ -302,6 +303,17 @@ ball from `hctrl`, the drag in that chart by `exists_bigonDrag` with the transpo
 set, the homology certificate and the support, the supported disk moves and the concrete
 crossing-trace producers, and the ten invariants of the normal family).  The two leaves left in
 this file are the compression and the trace.
+
+Proved and imported (Opus 5.5 worker on lease a, Batches 9–10 of `Skeleton/OPUS_FILL_LOG_A.md`,
+lead-accepted on 2026-09-24 with zero-diagnostic checks and an axiom/linter audit; statement
+byte-identical): `exists_section34Compression` (module `Section34CompressionLeaf`, both cases of the
+compression: case (a), the disk inside the face ball, by `exists_section34Compression_of_subset`;
+case (b) by the chart of `exists_chart_section34FaceBall_tetra` and a split on the pocket cells
+inside the carrier: a clean pocket is filled (`Section34CompressionOutside`), an unclean one is
+drilled by a through-tube in the complement of the face torus, connected because its frontier is a
+bicollared polyhedral torus (`Section34ThroughTube`, `Section34CompressionOutsideTube`), so the wild
+rim is never approached and review BK's through-tube obligation is closed).  The one leaf left in
+this file is the trace.
 -/
 
 open Set Topology
@@ -356,27 +368,6 @@ theorem nonempty_section34FaceTorus
     omega
   obtain ⟨x, hx⟩ := nonempty_simplexRim (𝒦 := 𝒦) hcard
   exact ⟨h x, interior_subset (hrim s ⟨x, hx, rfl⟩)⟩
-
-theorem exists_section34Compression (hU : IsOpen U)
-    (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hctrl : Section34CarrierControl U 𝒦 h η H)
-    (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
-    {fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂}
-    (hinv : Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fbl fblBd)
-    (s : Section34SimplexIndex 𝒦 3)
-    (hop : Section34Compression 𝒦 𝒦' (section34VertexBallImage srcBd f₁)
-      (section34SplitDiskImage src f₁) fbl fblBd s) :
-    ∃ fbl' fblBd' : Section34SimplexIndex 𝒦 3 → Set M₂,
-      Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-        (section34SplitDiskImage srcBd f₁) fbl' fblBd' ∧
-      (∀ s', s' ≠ s → fbl' s' = fbl s' ∧ fblBd' s' = fblBd s') ∧
-      section34TraceCount (section34VertexBallImage src f₁) fblBd' s + 1 ≤
-        section34TraceCount (section34VertexBallImage src f₁) fblBd s ∧
-      section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd' s ≤
-        section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd s := by
-  sorry
 
 theorem section34Trace_of_noOperation (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
