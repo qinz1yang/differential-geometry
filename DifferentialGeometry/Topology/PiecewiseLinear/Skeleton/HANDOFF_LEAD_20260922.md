@@ -345,3 +345,5 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 22:50 — Codex (own lease) delivered four reconnaissance probes in `Skeleton/` (canonical tower, spine
   carrier, torus linking, controlled-graph edge matching), committed as evidence, UNREVIEWED and not counted;
   lead rechecks clean (only their sub-leaf sorries). Their sub-leaf lists are in the ledger rows B1.f/B1.g/B1.c.
+* 23:10 — accepted worker d's smooth one- and two-handle adjunctions (15 modules, corner charts);
+  physical `sorry` 48. Worker d continues on the two taming leaves.

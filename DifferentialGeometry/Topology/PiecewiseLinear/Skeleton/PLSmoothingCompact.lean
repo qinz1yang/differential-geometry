@@ -8,6 +8,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplexPLCellAttach
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeBoundaryGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionZero
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionThree
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionOne
+import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionTwo
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleFiltration
@@ -136,6 +138,16 @@ ambient move extended through the collar; the one- and two-handle leaves need th
 attachment with rounded corners (corner charts by angle rescaling in collar coordinates), and
 the one-handle leaf must first reflect one end when the orientation characters differ; the
 smooth sphere leaf needs uniqueness of the smooth structure on `S²`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statements byte-identical with the frozen leaves, every hypothesis used):
+`isSmoothHandleStage_adjunction_two` and `isSmoothHandleStage_adjunction_one` (modules
+`IsSmoothHandleStageAdjunctionTwo`, `IsSmoothHandleStageAdjunctionOne` over thirteen bricks): the
+smooth attachment with rounded corners is `SmoothHandleModelAttachment` (corner charts by the angle
+rescaling `(e^{-iπ/4} z)^{2/3}`, gluing a chart family over an open part of a smooth manifold);
+the two-handle uses the cylinder-side extension and an annulus collar; the one-handle extends from
+the two end-disk maps, reflecting the top disk by `planarReflection` when the rim orientations of
+the two ends differ, so that the frozen statement holds unchanged.
 -/
 
 open Set Topology Manifold
@@ -198,24 +210,6 @@ theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding
         θ '' range ψ = ⋃ j, f j '' Metric.closedBall 0 1 := by
   sorry
 
-theorem isSmoothHandleStage_adjunction_one
-    {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
-    (hψ : IsClosedEmbedding ψ) (f : Fin 2 → EuclideanSpace ℝ (Fin 2) → M)
-    (hf : ∀ j, IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ (f j))
-    (hfbd : ∀ j, range (f j) ⊆ (𝓡∂ 3).boundary M)
-    (hdisj : Disjoint (range (f 0)) (range (f 1)))
-    (hrange : range ψ = ⋃ j, f j '' Metric.closedBall 0 1) :
-    IsSmoothHandleStage
-      (AdjunctionSpace (Subtype.val : _ → stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) ψ)
-      (adjunctionLower ψ '' ((𝓡∂ 3).boundary M \
-          ψ '' {z | z.val.val ∈ (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ
-            ({0, 1} : Set ℝ)}) ∪
-        adjunctionCell Subtype.val ψ '' {z | z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1}) := by
-  sorry
-
 theorem exists_homeomorph_smooth_annulus_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
@@ -227,23 +221,6 @@ theorem exists_homeomorph_smooth_annulus_of_isClosedEmbedding
         IsSmoothEmbedding ((𝓡 1).prod 𝓘(ℝ, ℝ)) (𝓡∂ 3) ∞ f ∧
         range f ⊆ (𝓡∂ 3).boundary M ∧
         θ '' range ψ = f '' (univ ×ˢ Icc (0 : ℝ) 1) := by
-  sorry
-
-theorem isSmoothHandleStage_adjunction_two
-    {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} → M)
-    (hψ : IsClosedEmbedding ψ) (f : Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × ℝ → M)
-    (hf : IsSmoothEmbedding ((𝓡 1).prod 𝓘(ℝ, ℝ)) (𝓡∂ 3) ∞ f)
-    (hfbd : range f ⊆ (𝓡∂ 3).boundary M)
-    (hrange : range ψ = f '' (univ ×ˢ Icc (0 : ℝ) 1)) :
-    IsSmoothHandleStage
-      (AdjunctionSpace (Subtype.val : _ → stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) ψ)
-      (adjunctionLower ψ '' ((𝓡∂ 3).boundary M \
-          ψ '' {z | z.val.val ∈ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1}) ∪
-        adjunctionCell Subtype.val ψ ''
-          {z | z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}) := by
   sorry
 
 theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding

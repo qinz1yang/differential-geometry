@@ -734,3 +734,109 @@ along a homeomorphism the caller already has.
 - Reuse: the gluing lemma and the half-space shift chart are also inputs for the one-handle and
   two-handle leaves. Those still need corner charts (angle rescaling in collar coordinates) and,
   for `k = 1`, the orientation alignment recorded above.
+
+# Batch 7 (corner charts, one- and two-handles)
+
+## Corner charts and the smooth attachment with rounded corners — VERIFIED, AUDITED
+
+- New modules (all new files; no existing file edited):
+  - `ConcaveCornerMap.lean` (311 lines): the corner map `K z = (e^{-iπ/4} z)^{2/3}`, which sends
+    the closed three-quarter plane `re ≥ 0 ∨ im ≥ 0` onto the half plane `re ≥ 0`. It has the
+    inverse `e^{iπ/4} w^{3/2}`. Both maps are continuous, and smooth away from `0`. The boundary
+    rays go to the imaginary axis.
+  - `ConcaveCornerChart.lean` (273 lines): the corner chart `(a, b, u) ↦ (re K, (2 + im K) u)` in
+    cylindrical coordinates. It has an explicit inverse, is smooth with a smooth inverse off the
+    rim, and its first coordinate vanishes exactly on the two boundary rays.
+  - `SmoothChartFamilyGluing.lean` (164 lines): `exists_isManifold_of_isOpenEmbedding_of_charts`.
+    It glues an open part of `M` with a family of charts and keeps boundary status on the part.
+  - `SmoothHandleModelAttachment.lean` (540 lines): the reusable attachment theorem
+    `isSmoothHandleStage_adjunction_of_modelCharts`. The handle sits in a normed space `Z` as
+    `range Ext`, and a smooth collar `(V, θ, Θ)` meets it in `Ext '' range i`. A family of model
+    charts `(D j, Tg j, ζ j, ζinv j)` must be smooth off a singular set `Rim ⊆ range Ext` on which
+    no two charts overlap. The conclusion is a stage with boundary
+    `lower '' (∂M \ range ψ) ∪ cell '' Fr`, where `Fr` is read off the first coordinate.
+    Also: `adjunctionLower_boundary_sdiff_union_eq`, which converts to the leaf boundary form.
+  - `HandleModelCharts.lean` (352 lines): slab charts `(w, s) ↦ (σ s + c, w)` and corner charts
+    `cornerModelVec L`. The latter use an arbitrary affine change `L` from `(‖w‖, s)` to corner
+    coordinates, so the same lemmas give both rims of both handles, rescaled as needed.
+  - `TwoHandleModelAttachment.lean` (527 lines): the two-handle model. The handle is the closed
+    unit ball of `ℝ² × ℝ` with the product norm, `‖w‖ ≤ 1, |s| ≤ 1`, so that
+    `sphereRadialHomeomorph` cones over its boundary. The collar is
+    `1 ≤ ‖w‖ < 1 + a, |s| < 3/2`, with `a ≤ 1/2`. There are five charts (interior, two faces, two
+    rims), and the result is `isSmoothHandleStage_adjunction_of_twoHandleCollar`.
+- All six modules: `Verified ... with no diagnostics; shared outputs unchanged.` Audit
+  `AuditOpusD9.lean` (all six modules): `Verified ... with no diagnostics`. Axioms are within
+  `propext`, `Classical.choice` and `Quot.sound`; all thirteen linters pass.
+- Route and design notes:
+  - Only the handle needs model charts: points of `M \ range ψ` keep the charts of `M`.
+  - A transition between two different charts never meets the rim, so the non-smoothness of the
+    corner chart at the rim only enters through identity transitions.
+  - Plan for the one-handle model: use the same corner lemma with
+    `L (r, s) = ((-1 - s)/2, (1 - r)/2)`. With this rescaling the two corner charts cover the
+    whole free side, so three charts should suffice.
+
+## isSmoothHandleStage_adjunction_two — CLOSED
+
+- Leaf module `IsSmoothHandleStageAdjunctionTwo.lean`. The statement is byte-identical to the
+  skeleton, checked by a script diff of the theorem header, with the same
+  `open`/namespace/`universe u`/variable context. No frozen hypothesis was dropped, and none is
+  unused.
+- New modules:
+  - `SmoothAnnulusCollar.lean` (`exists_twoHandleCollar_of_isSmoothEmbedding`): the cylindrical
+    collar `V ≅ {1 ≤ ‖w‖ < 1 + a, |s| < 3/2}` of `f (S¹ × (-1/4, 5/4))`, with `a ≤ 1/2`, and
+    `Θ (u, s) = f (u, (s + 1)/2)` on the side. The route is the same as the sphere collar: an
+    injective immersion into `∂M`, then the defining-function collar.
+  - `CylinderSideExtension.lean` (`exists_homeomorph_extension_of_cylinderSide`): every
+    homeomorphism of the side `‖w‖ = 1, |s| ≤ 1` extends to a norm-preserving homeomorphism of
+    `ℝ² × ℝ` (sup norm). Steps:
+    - The rim circles are preserved. For the interior this is invariance of domain in the planar
+      annulus `1 ≤ ‖x‖ ≤ 3`.
+    - The rim signs come from connectedness of `S¹`.
+    - The rim circle maps become homeomorphisms, and their radial extensions fill the caps.
+    - The result is a compact-to-T2 bijection of the unit sphere, extended by
+      `sphereRadialHomeomorph`.
+  - `TwoHandleAlignment.lean` (`exists_twoHandle_alignment`): builds `Ext` from
+    `prismBallHomeomorph` (heights rescaled to `[-1, 1]`) followed by the extension of the side
+    map `f⁻¹ ∘ ψ`. `Ext` is a closed embedding onto the cylinder with side ↔ `∂Δ² × I` and
+    `|s| = 1` ↔ ends, and `Ext z = ((g z).1, 2 (g z).2 - 1)` with `f ∘ g = ψ`.
+- The leaf applies `isSmoothHandleStage_adjunction_of_twoHandleCollar` and then rewrites the
+  boundary with `adjunctionLower_boundary_sdiff_union_eq`, since the points of `ψ '' (∂Δ² × {0,1})`
+  are `cell` points of the end faces.
+- Checker: all four modules `Verified ... with no diagnostics; shared outputs unchanged.` Audit
+  `AuditOpusD10.lean` covers the ten Batch 7 modules and passes (`Verified ... with no
+  diagnostics`). An earlier audit run flagged an unused `[T2Space M]` in
+  `exists_twoHandle_alignment`; it was removed and the module rechecked.
+
+## isSmoothHandleStage_adjunction_one — CLOSED
+
+- Leaf module `IsSmoothHandleStageAdjunctionOne.lean`. The statement is byte-identical to the
+  skeleton, checked by a script diff, with the same context. No frozen hypothesis was dropped, and
+  none is unused.
+- New modules:
+  - `OneHandleModelAttachment.lean` (`isSmoothHandleStage_adjunction_of_oneHandleCollar`): the
+    one-handle model is the cylinder `‖w‖ ≤ 1, |s| ≤ 1`, attached along its ends, with collar
+    `‖w‖ < 3/2, -1 - a < s ≤ -1 or 1 ≤ s < 1 + a`. It uses three charts: the interior slab, and
+    two corner charts in the rescaled coordinates `L (r, s) = ((∓1 - s)/2 or (s - 1)/2, (1 - r)/2)`,
+    which between them cover the whole free side.
+  - `SmoothDiskPairCollar.lean` (`exists_oneHandleCollar_of_isSmoothEmbedding`): the product
+    collar of two disjoint smooth boundary disks, with `Θ (w, -1) = F 0 w` and
+    `Θ (w, 1) = F 1 w`.
+  - `CylinderEndExtension.lean` (`exists_homeomorph_extension_of_ends`):
+    - A disk homeomorphism preserves the rim; this is invariance of domain.
+    - `hasIncreasingCircleLift_reflect_iff`: composing with the planar reflection flips the
+      orientation character.
+    - Two end-disk homeomorphisms whose rim maps have the same orientation extend to a
+      norm-preserving homeomorphism of `ℝ² × ℝ`. The side comes from
+      `exists_homeomorph_cylinder_of_same_orientation`, and the whole is assembled on the unit
+      sphere with `sphereRadialHomeomorph`.
+  - `OneHandleAlignment.lean`:
+    - `exists_oneHandle_end_assignment`: each end is connected, so it goes onto exactly one of the
+      two disks, and the two ends go onto different disks.
+    - `exists_endDisk_homeomorph` and `exists_oneHandle_alignment`: if the orientations differ,
+      the top disk is reparametrised by `planarReflection`, with `L = id ∨ L = planarReflection`.
+      The frozen leaf is unchanged because `f j ∘ L` has the same image and is still a smooth
+      embedding (`IsSmoothEmbedding.comp_diffeomorph` with `planarReflectionDiffeomorph`).
+- Checker: all five modules `Verified ... with no diagnostics; shared outputs unchanged.` Audit
+  `AuditOpusD11.lean` covers all fifteen Batch 7 modules and passes (`Verified ... with no
+  diagnostics`). Axioms are within `propext`, `Classical.choice` and `Quot.sound`; all thirteen
+  linters pass.
