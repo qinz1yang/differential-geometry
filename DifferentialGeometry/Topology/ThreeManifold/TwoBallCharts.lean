@@ -95,7 +95,7 @@ private theorem hemisphere_complement (p : S3) :
   rw [image_comp, image_comp, image_comp, doubleSpace_image_closedBall, doubleSpace_image_ball]
   exact h
 
-theorem exists_sphere_diffeomorph_of_complementary_ball_charts
+theorem exists_sphere_diffeomorph_of_complementary_ball_charts_eqOn_neighborhood
     {M : Type*} [TopologicalSpace M] [ChartedSpace E3 M] [T2Space M]
     (A B : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 M ∞)
     (hA : closedBall (0 : E3) 1 ⊆ A.source)
@@ -108,7 +108,9 @@ theorem exists_sphere_diffeomorph_of_complementary_ball_charts
         (∀ z ∈ closedBall (0 : E3) 1, e (a z) = A z) ∧
         ∃ D : E3 ≃ₘ[ℝ] E3,
           D '' closedBall (0 : E3) 1 = closedBall (0 : E3) 1 ∧
-          ∀ z ∈ closedBall (0 : E3) 1, e (b z) = B (D z) := by
+          (∀ z ∈ closedBall (0 : E3) 1, e (b z) = B (D z)) ∧
+          ∃ U : Set M, IsOpen U ∧ A '' closedBall (0 : E3) 1 ⊆ U ∧
+            U ⊆ (A.symm.trans a).source ∧ EqOn e.symm (A.symm.trans a) U := by
   let p : S3 := ⟨EuclideanSpace.single 0 1, by simp⟩
   let b := standardHemisphereChart p
   let a := oppositeHemisphereChart p
@@ -131,13 +133,48 @@ theorem exists_sphere_diffeomorph_of_complementary_ball_charts
     intro z hz
     change A (a.symm (a z)) = A z
     rw [hainv z]
-  obtain ⟨e, heP, _, D, hD, heB, _, _, _, _, _⟩ :=
+  obtain ⟨e, heP, _, D, hD, heB, O, hO, hKO, hOP, heO⟩ :=
     exists_diffeomorph_of_ball_complement_and_ball b P B
       (hb ▸ subset_univ _) hKP hB hPU hcover
-  refine ⟨e, a, b, ha, hb, hcomp, ?_, D, hD, heB⟩
-  intro z hz
-  have he := heP (hcomp ▸ mem_image_of_mem a hz)
-  change e (a z) = A (a.symm (a z)) at he
-  rwa [hainv z] at he
+  have heA (z : E3) (hz : z ∈ closedBall (0 : E3) 1) : e (a z) = A z := by
+    have he := heP (hcomp ▸ mem_image_of_mem a hz)
+    change e (a z) = A (a.symm (a z)) at he
+    rwa [hainv z] at he
+  refine ⟨e,a,b,ha,hb,hcomp,heA,D,hD,heB,e '' O,e.toHomeomorph.isOpenMap _ hO,?_,?_,?_⟩
+  · rintro _ ⟨z,hz,rfl⟩
+    exact ⟨a z,hKO (hcomp ▸ mem_image_of_mem a hz),heA z hz⟩
+  · rintro _ ⟨x,hx,rfl⟩
+    have hxP := hOP hx
+    have he : e x = A (a.symm x) := heO hx
+    refine ⟨?_,ha ▸ mem_univ _⟩
+    rw [he]
+    exact A.map_source hxP.2
+  · rintro _ ⟨x,hx,rfl⟩
+    rw [e.symm_apply_apply]
+    change x = a (A.symm (e x))
+    have he : e x = A (a.symm x) := heO hx
+    have hAs : a.symm x ∈ A.source := (hOP hx).2
+    have hAi : A.symm (A (a.symm x)) = a.symm x := A.left_inv hAs
+    rw [he,hAi]
+    exact (a.right_inv (hOP hx).1).symm
+
+
+theorem exists_sphere_diffeomorph_of_complementary_ball_charts
+    {M : Type*} [TopologicalSpace M] [ChartedSpace E3 M] [T2Space M]
+    (A B : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 M ∞)
+    (hA : closedBall (0 : E3) 1 ⊆ A.source)
+    (hB : closedBall (0 : E3) 1 ⊆ B.source)
+    (hcover : B '' ball (0 : E3) 1 = (A '' closedBall (0 : E3) 1)ᶜ) :
+    ∃ e : S3 ≃ₘ⟮𝓡 3, 𝓡 3⟯ M,
+      ∃ a b : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 S3 ∞,
+        a.source = univ ∧ b.source = univ ∧
+        a '' closedBall (0 : E3) 1 = (b '' ball (0 : E3) 1)ᶜ ∧
+        (∀ z ∈ closedBall (0 : E3) 1, e (a z) = A z) ∧
+        ∃ D : E3 ≃ₘ[ℝ] E3,
+          D '' closedBall (0 : E3) 1 = closedBall (0 : E3) 1 ∧
+          ∀ z ∈ closedBall (0 : E3) 1, e (b z) = B (D z) := by
+  obtain ⟨e,a,b,ha,hb,hab,heA,D,hD,heB,_⟩ :=
+    exists_sphere_diffeomorph_of_complementary_ball_charts_eqOn_neighborhood A B hA hB hcover
+  exact ⟨e,a,b,ha,hb,hab,heA,D,hD,heB⟩
 
 end DifferentialGeometry.Topology.Manifold
