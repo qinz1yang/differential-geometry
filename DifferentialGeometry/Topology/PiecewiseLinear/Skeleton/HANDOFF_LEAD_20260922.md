@@ -451,3 +451,8 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 14:50 (09-23) — review BN returned (digest BR): edge-matching leaf unchanged, no hypothesis added; bridge
   re-planned (connected carriers `A_w`, vertex signs `σ`, flip `φ e` per edge); owed lead cleanup: weaken
   `Section34FaceTorusCycle` to `hf₁` only. Codex lane 1 resumes item 7 on the BR route before consults 10–12.
+* 15:20 (09-23) — STALE SHARED OBJECT defect: `ChartGlue.lean` did not compile from source since 09-15 (statement
+  binder changed after its object was built; a later `PLPieceIn.restrict` broke name resolution); repaired
+  (collaborator PR #8 + two line wraps) and recompiled on the lead lease. 179 modules have source newer than
+  their shared object (`stale_candidates.txt` in the session scratchpad; regenerate by commit time vs object
+  mtime). A from-scratch build is required before any whole-tree claim; owner to schedule.

@@ -157,7 +157,8 @@ theorem PLPieceIn.exists_glue_chart_with_regularNeighborhood [FiniteDimensional 
     ((chartPiece e he hC hCe).subdivide Kc₁ hKc₁ hfinc₁) hiso hA₃K₃
     (restrict_faces_subset Kc₁ _) hcompat hoverlap B hBK₃ (hA₃.space_eq.symm ▸ hBA₂)
   exact ⟨T', B', φ, φ', hB', hiso', hmap, hneigh.trans
-    (image_mono (regularNeighborhoodIn_space_subset_of_isSubdivision (hK₃.trans (hK₂.trans hK₁)) B.space))⟩
+    (image_mono (regularNeighborhoodIn_space_subset_of_isSubdivision
+      (hK₃.trans (hK₂.trans hK₁)) B.space))⟩
 
 open Classical in
 theorem PLPieceIn.exists_glue_chart_preserving_subcomplex [FiniteDimensional ℝ E] [T2Space X]
@@ -191,7 +192,8 @@ theorem PLPieceIn.exists_glue_chart [FiniteDimensional ℝ E] [T2Space X]
     rw [Set.disjoint_left]
     intro x hx _
     obtain ⟨s, ⟨_, t, _, _, y, _, hy⟩, _⟩ :=
-      (regularNeighborhoodIn T.complex (⊥ : Geometry.SimplicialComplex ℝ E).space).mem_space_iff.mp hx
+      (regularNeighborhoodIn T.complex
+        (⊥ : Geometry.SimplicialComplex ℝ E).space).mem_space_iff.mp hx
     simp only [space_bot, Set.mem_empty_iff_false] at hy
   obtain ⟨T', -⟩ := T.exists_glue_chart_preserving_subcomplex e he hC hCe ⊥
     (fun _ hs => hs.elim) hdis

@@ -165,6 +165,19 @@ earlier ruling came from a citation census of §§33–35 only. They are now und
 
 ## Current count and verification boundary (2026-09-22)
 
+**Verification-boundary defect found 2026-09-23 (stale shared objects).** A collaborator's fresh
+`lake build` failed on `ChartGlue.lean`: its object in the shared read-only build dated from
+2026-09-15 09:57, a commit at 10:02 changed the theorem's instance binder (`[T2Space X]` →
+`[DecidableEq E]`), and a later upstream `PLPieceIn.restrict` made the bare `restrict` inside
+`theorem PLPieceIn.…` resolve wrongly; the checker's `.ilean` range test does not detect such
+changes, so every downstream check (1077 modules transitively) imported a stale object for eight
+days. Repaired (collaborator PR #8 cherry-picked, two over-long lines wrapped, recompiled from
+source on the lead lease; the fresh receipt now supersedes the shared object automatically). A
+commit-time audit lists 179 further modules whose source postdates their shared object (149 under
+`PiecewiseLinear`); they are unverified until a from-scratch build runs. **No "the tree builds"
+claim is made**; the from-scratch build (the collaborator's machine, or an overnight `lake build`
+in the integration checkout with its own `.lake`) is the only acceptance of that claim.
+
 Top-level OPEN items remain **A1, A2, B1, C1** (+ D1 external). The earlier coarse B/C count
 predated their expanded skeletons and is superseded by the source census below. Counts are
 written proof obligations, not a completeness certificate for all missing upstream mathematics.
