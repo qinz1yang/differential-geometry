@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundarySphere
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralManifoldTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPrismShift
@@ -7,14 +7,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteOpenEnlargemen
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-private theorem isPolyhedralBall_of_isPLCellOn {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
-    {C B : Set M} (hC : IsPLCellOn 3 C B) : IsPolyhedralBall (n := 3) 3 C := by
-  obtain ⟨P, r, u, hr, hu, rfl, -⟩ := hC
-  have hP : IsPLBall 3 P := ⟨r, hr⟩
-  obtain ⟨T, -, hTP⟩ := hu.exists_pLPiece_of_isPolyhedron hP.isPolyhedron
-  exact ⟨⟨3, T⟩, hTP.symm ▸ hP⟩
 
 private theorem subset_interior_symm_image_of_bicollar_shift {X : Type*} [TopologicalSpace X]
     {C W : Set X} {ρ : X × ℝ → X} {β : ℝ → ℝ} (f : X ≃ₜ X)
@@ -47,7 +39,7 @@ theorem IsPLCellOn.exists_enlargement {M : Type*} [TopologicalSpace M]
     {C B O : Set M} (hC : IsPLCellOn 3 C B) (hO : IsOpen O) (hCO : C ⊆ O) :
     ∃ D : Set M, IsPLCellOn 3 D (frontier D) ∧ C ⊆ interior D ∧ D ⊆ O := by
   let : MetricSpace M := TopologicalSpace.metrizableSpaceMetric M
-  have hball := isPolyhedralBall_of_isPLCellOn hC
+  have hball := hC.isPolyhedralBall
   have hregular := hball.closure_interior
   have hclosed := hC.isCompact.isClosed
   have hS : IsPolyhedralSphere (n := 3) 2 (frontier C) :=

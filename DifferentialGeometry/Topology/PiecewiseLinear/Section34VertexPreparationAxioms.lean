@@ -1,9 +1,12 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.CenteredPrismBallPair
 import DifferentialGeometry.Topology.PiecewiseLinear.IsAnnulusOnCompact
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteOpenEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSeparationScales
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellEnlargement
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundarySphere
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStabilityScales
+import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceBallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularGenerators
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CellEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ChartLocalEnlargements
@@ -18,6 +21,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallFrontie
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallHeightMove
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallModel
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallRoof
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedEdgeCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeparationMargins
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparationProbe
@@ -29,6 +34,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPrismShift
 open DifferentialGeometry.Topology
 open DifferentialGeometry.Topology.PiecewiseLinear
 
+#print axioms exists_centered_prism_piece_of_boundary_disk_pair
 #print axioms IsAnnulusOn.isCompact
 #print axioms IsAnnulusOn.isCompact_first
 #print axioms IsAnnulusOn.isCompact_second
@@ -39,7 +45,12 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_locallyFinite_isPLCellOn_enlargements
 #print axioms IsPLHomeomorphInto.exists_pLPiece_of_isPolyhedron
 #print axioms IsPLCellOn.isPolyhedralSphere_boundary
+#print axioms IsPLCellOn.isPolyhedralBall
+#print axioms IsPolyhedralBall.exists_isPLCellOn
+#print axioms IsPolyhedralBall.isPLCellOn
 #print axioms exists_core_stability_scales_lt
+#print axioms PLPieceIn.frontier_image_of_isPLBall
+#print axioms PLPieceIn.image_interior_of_isPLBall
 #print axioms IsLocallyFiniteRegularNeighborhoodOf.carriesFundamentalGroupOnto
 #print axioms IsAnnulusOn.boundaries_carry_of_core
 #print axioms PLPieceIn.isPLOn_conjugate
@@ -86,6 +97,9 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_pierced_square_ball_pair
 #print axioms isPLBall_square_closedBall
 #print axioms exists_piercing_square_roof
+#print axioms exists_pierced_cell_pair_in_prism
+#print axioms exists_pierced_cell_pair_covering_compact
+#print axioms exists_section34_pierced_edge_cells
 #print axioms exists_section34_separation_margins
 #print axioms section34_splitDisks_pairwise_disjoint
 #print axioms exists_section34_splitDisk_neighborhoods
