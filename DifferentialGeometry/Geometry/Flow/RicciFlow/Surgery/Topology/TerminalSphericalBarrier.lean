@@ -192,6 +192,82 @@ theorem TerminalLimitMetric.eventually_cap_spherical_barrier
 
 
 set_option backward.isDefEq.respectTransparency false in
+theorem exists_uniform_spherical_barrier_at_level
+    {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
+    ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+      (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+      ∀ (L : G.TerminalLimitMetric) (A : ℝ) (x y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+        metricScalarAt L.metric x = 4 * C2 * A →
+        y.val ∈ connectedComponent x.val → metricScalarAt L.metric y ≤ A →
+        ∃ (K : CompactDomain G.terminalRegularOpen) (v : G.terminalRegularOpen)
+          (nk : SpatialNeck L.metric δ v),
+          x ∈ interior K.carrier ∧
+          (∀ z ∈ K.carrier, 2 * A < metricScalarAt L.metric z ∧ metricScalarAt L.metric z ≤ 8 * C2 ^ 2 * A) ∧
+          (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+            2 * A < metricScalarAt L.metric (nk.map z) ∧ metricScalarAt L.metric (nk.map z) ≤ 8 * C2 ^ 2 * A) ∧
+          nk.cylindricalChart.metricCloseOn L.metric δ
+            {z : nk.cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+          (∀ q z, z ∈ Icc (-101 : ℝ) 101 → (q, z) ∈ nk.cylindricalChart.domain) ∧
+          ((K.carrier = nk.map '' (univ ×ˢ Icc (-3 : ℝ) 3) ∧
+            frontier K.carrier = range (fun q : Sphere 2 => nk.map (q, -3)) ∪
+              range (fun q : Sphere 2 => nk.map (q, 3)) ∧
+            Disjoint (range (fun q : Sphere 2 => nk.map (q, -3)))
+              (range (fun q : Sphere 2 => nk.map (q, 3))) ∧
+            (∀ b ∈ ({-3, 3} : Set ℝ), IsSmoothEmbedding I2 I3 ∞ (fun q : Sphere 2 => nk.map (q, b))) ∧
+            ∃ (cneg : SmoothTwoSidedCollar I2 I3 (fun q : Sphere 2 => nk.map (q, -3)))
+              (cpos : SmoothTwoSidedCollar I2 I3 (fun q : Sphere 2 => nk.map (q, 3))),
+              cneg.radius < 1 ∧ cpos.radius < 1 ∧
+              (∀ q, cneg.toFun q = nk.map (q.1, -3 - (q.2 : ℝ)) ∧
+                (cneg.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0)) ∧
+              (∀ q, cpos.toFun q = nk.map (q.1, 3 + (q.2 : ℝ)) ∧
+                (cpos.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0))) ∨
+          (frontier K.carrier = range (fun q : Sphere 2 => nk.map (q, 1 / 2)) ∧
+            IsSmoothEmbedding I2 I3 ∞ (fun q : Sphere 2 => nk.map (q, 1 / 2)) ∧
+            ∃ c : SmoothTwoSidedCollar I2 I3 (fun q : Sphere 2 => nk.map (q, 1 / 2)),
+              c.radius < 1 / 4 ∧ ∀ q,
+                c.toFun q = nk.map (q.1, 1 / 2 + (q.2 : ℝ)) ∧
+                  (c.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0))) := by
+  let eps := δ / 4
+  have heps : 0 < eps := by dsimp [eps]; positivity
+  have hepsδ : eps < δ := by dsimp [eps]; linarith
+  have hfit : δ⁻¹ + 1 ≤ eps⁻¹ := by
+    have hδ1 : δ < 1 := hδsmall.trans (by norm_num)
+    have hepsquarter : eps ≤ δ / 4 := le_rfl
+    have hdiv : δ⁻¹ + 1 ≤ (δ / 4)⁻¹ := by
+      rw [inv_div]
+      apply (le_div_iff₀ hδ).mpr
+      field_simp
+      linarith
+    exact hdiv.trans (inv_anti₀ heps hepsquarter)
+  obtain ⟨C2, hC2, hsequence⟩ := exists_uniform_canonical_neck_or_cap_sequence.{u} heps
+    (hepsδ.trans (hδsmall.trans (by norm_num)))
+  refine ⟨C2, hC2, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hseq⟩ := hsequence P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L A x y hA hqA hscale hy hyA
+  have hC2pos : 0 < C2 := zero_lt_one.trans_le hC2
+  have hx : 0 < metricScalarAt L.metric x := by rw [hscale]; positivity
+  have hscalar : C2 * metricScalarAt L.metric y < metricScalarAt L.metric x := by
+    rw [hscale]
+    have hm := mul_le_mul_of_nonneg_left hyA hC2pos.le
+    nlinarith
+  obtain ⟨τ, _, _, hτ, W, hW, hcases⟩ := hseq L x y (hscale ▸ hqA) hy hscalar
+  rcases hcases with ⟨neck, hneck⟩ | ⟨cap, depth, hcap⟩
+  · obtain ⟨n, nk, K, _, hK, hxK, hfront, hdisj, hemb, hband, hfull, hmetric, hdom, hcollar⟩ :=
+      L.exists_neck_spherical_barrier_of_incoming_strongNecks hτ x hδ
+        (hδsmall.trans (by norm_num)) hepsδ hfit (fun n => (neck n).strong) A C2 hA hC2 hscale
+    exact ⟨K, x, nk, hxK, hband, hfull, hmetric, hdom, Or.inl ⟨hK, hfront, hdisj, hemb, hcollar⟩⟩
+  · obtain ⟨n, v, nk, K, hK, hxK, hKU, hband, hfull, hfront, hemb, hmetric, hdom, hcollar⟩ :=
+      (L.eventually_cap_spherical_barrier hτ x hx hδ hδsmall hepsδ hfit W hW cap depth hcap).exists
+    have hlow : metricScalarAt L.metric x / (2 * C2) = 2 * A := by rw [hscale]; field_simp; ring
+    have hhigh : 2 * C2 * metricScalarAt L.metric x = 8 * C2 ^ 2 * A := by rw [hscale]; ring
+    refine ⟨K, v, nk, hxK, ?_, ?_, hmetric, hdom, Or.inr ⟨hfront, hemb, hcollar⟩⟩
+    · intro z hz
+      simpa only [hlow, hhigh] using And.intro (hband z hz).1 (hband z hz).2.le
+    · intro z hz
+      simpa only [hlow, hhigh] using And.intro (hfull z hz).1 (hfull z hz).2.le
+
 theorem TerminalLimitMetric.exists_spherical_barrier_at_level
     (L : G.TerminalLimitMetric) {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
     ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -226,43 +302,8 @@ theorem TerminalLimitMetric.exists_spherical_barrier_at_level
               c.radius < 1 / 4 ∧ ∀ q,
                 c.toFun q = nk.map (q.1, 1 / 2 + (q.2 : ℝ)) ∧
                   (c.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0))) := by
-  obtain ⟨epsCan, hepsCan, hsequence⟩ := L.exists_canonical_neck_or_cap_sequence
-  let eps := min epsCan (δ / 4)
-  have heps : 0 < eps := lt_min hepsCan (by positivity)
-  have hepsCan' : eps ≤ epsCan := min_le_left _ _
-  have hepsδ : eps < δ := (min_le_right _ _).trans_lt (by linarith)
-  have hfit : δ⁻¹ + 1 ≤ eps⁻¹ := by
-    have hδ1 : δ < 1 := hδsmall.trans (by norm_num)
-    have hepsquarter : eps ≤ δ / 4 := min_le_right _ _
-    have hdiv : δ⁻¹ + 1 ≤ (δ / 4)⁻¹ := by
-      rw [inv_div]
-      apply (le_div_iff₀ hδ).mpr
-      field_simp
-      linarith
-    exact hdiv.trans (inv_anti₀ heps hepsquarter)
-  obtain ⟨C1, C2, q, _, hC2, hq, hseq⟩ := hsequence eps heps hepsCan'
-  refine ⟨C2, q, hC2, hq, ?_⟩
-  intro A x y hA hqA hscale hy hyA
-  have hC2pos : 0 < C2 := zero_lt_one.trans_le hC2
-  have hx : 0 < metricScalarAt L.metric x := by rw [hscale]; positivity
-  have hscalar : C2 * metricScalarAt L.metric y < metricScalarAt L.metric x := by
-    rw [hscale]
-    have hm := mul_le_mul_of_nonneg_left hyA hC2pos.le
-    nlinarith
-  obtain ⟨τ, _, _, hτ, W, hW, hcases⟩ := hseq x y (hscale ▸ hqA) hy hscalar
-  rcases hcases with ⟨neck, hneck⟩ | ⟨cap, depth, hcap⟩
-  · obtain ⟨n, nk, K, _, hK, hxK, hfront, hdisj, hemb, hband, hfull, hmetric, hdom, hcollar⟩ :=
-      L.exists_neck_spherical_barrier_of_incoming_strongNecks hτ x hδ
-        (hδsmall.trans (by norm_num)) hepsδ hfit (fun n => (neck n).strong) A C2 hA hC2 hscale
-    exact ⟨K, x, nk, hxK, hband, hfull, hmetric, hdom, Or.inl ⟨hK, hfront, hdisj, hemb, hcollar⟩⟩
-  · obtain ⟨n, v, nk, K, hK, hxK, hKU, hband, hfull, hfront, hemb, hmetric, hdom, hcollar⟩ :=
-      (L.eventually_cap_spherical_barrier hτ x hx hδ hδsmall hepsδ hfit W hW cap depth hcap).exists
-    have hlow : metricScalarAt L.metric x / (2 * C2) = 2 * A := by rw [hscale]; field_simp; ring
-    have hhigh : 2 * C2 * metricScalarAt L.metric x = 8 * C2 ^ 2 * A := by rw [hscale]; ring
-    refine ⟨K, v, nk, hxK, ?_, ?_, hmetric, hdom, Or.inr ⟨hfront, hemb, hcollar⟩⟩
-    · intro z hz
-      simpa only [hlow, hhigh] using And.intro (hband z hz).1 (hband z hz).2.le
-    · intro z hz
-      simpa only [hlow, hhigh] using And.intro (hfull z hz).1 (hfull z hz).2.le
+  obtain ⟨C2, hC2, hmain⟩ := exists_uniform_spherical_barrier_at_level.{u} hδ hδsmall
+  obtain ⟨q, hq, hbarrier⟩ := hmain P a s G
+  exact ⟨C2, q, hC2, hq, hbarrier L⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

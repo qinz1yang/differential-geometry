@@ -29,15 +29,15 @@ theorem TerminalLimitMetric.eventually_canonical_neck_or_cap
   intro W
   exact W.alternative_eq_neck_or_cap_of_mul_scalar_lt hy ht
 
-theorem TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
-    (L : G.TerminalLimitMetric) :
-    ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
-      ∃ C1 C2 q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < q ∧
-        ∀ x y : G.terminalRegularOpen, q < metricScalarAt L.metric x →
+theorem exists_uniform_canonical_neck_or_cap_sequence
+    {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+      (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+        ∀ (L : G.TerminalLimitMetric) (x y : G.terminalRegularOpen), q < metricScalarAt L.metric x →
           y.val ∈ connectedComponent x.val →
-          C2 * metricScalarAt L.metric y < metricScalarAt L.metric x →
+          C * metricScalarAt L.metric y < metricScalarAt L.metric x →
           ∃ τ : ℕ → ℝ, StrictMono τ ∧ (∀ n, τ n ∈ Ioo a s) ∧ Tendsto τ atTop (𝓝[<] s) ∧
-            ∃ W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n),
+            ∃ W : ∀ n, CanonicalWitness G.flow eps C C x.val (τ n),
               (∀ n, (W n).capTubeHasNeckChart eps) ∧
               ((∃ neck : ∀ n, LocalNeck G.flow eps x.val (τ n) (W n).domain.carrier,
                 ∀ n, (W n).alternative = CanonicalAlternative.neck (neck n)) ∨
@@ -47,15 +47,16 @@ theorem TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
                      metricDistance (G.flow.base.metric (τ n)) x.val z,
                    ∀ n, (W n).alternative = CanonicalAlternative.cap (cap n) (depth n)) := by
   classical
-  obtain ⟨epsCan, hepsCan, hmain⟩ := G.exists_all_point_canonical_neighborhoods_with_cap_neck_charts
-  refine ⟨epsCan, hepsCan, ?_⟩
-  intro eps heps hsmall
-  obtain ⟨C1, C2, q, hC1, hC2, hq, hcanonical⟩ := hmain eps heps hsmall
-  refine ⟨C1, C2, q, hC1, hC2, hq, ?_⟩
-  intro x y hx hy hscalar
+  obtain ⟨C, hC, hmain⟩ :=
+    exists_uniform_canonical_constants_with_cap_neck_charts.{u} heps hsmall
+  refine ⟨C, hC, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hcanonical⟩ := hmain P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L x y hx hy hscalar
   have hhigh : ∀ᶠ t in 𝓝[<] s, q < G.flow.scalar t x.val :=
     (L.tendsto_metricScalarAt x).eventually (Ioi_mem_nhds hx)
-  have hbranch := L.eventually_canonical_neck_or_cap x y hy (eps := eps) (C1 := C1) hscalar
+  have hbranch := L.eventually_canonical_neck_or_cap x y hy (eps := eps) (C1 := C) hscalar
   obtain ⟨d, hd, hlate⟩ := (mem_nhdsLT_iff_exists_mem_Ico_Ioo_subset G.lt).mp
     (hhigh.and hbranch)
   obtain ⟨τ, hτmono, hτmem, hτlim⟩ := exists_seq_strictMono_tendsto' hd.2
@@ -80,6 +81,30 @@ theorem TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
     choose cap depth hcap using hφcap
     exact ⟨fun n => τ (φ n), hτmono.comp hφ, fun n => hτdomain (φ n), hτ.comp hφ.tendsto_atTop,
       fun n => W (φ n), fun n => hW (φ n), Or.inr ⟨cap, depth, hcap⟩⟩
+
+theorem TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
+    (L : G.TerminalLimitMetric) :
+    ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
+      ∃ C1 C2 q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < q ∧
+        ∀ x y : G.terminalRegularOpen, q < metricScalarAt L.metric x →
+          y.val ∈ connectedComponent x.val →
+          C2 * metricScalarAt L.metric y < metricScalarAt L.metric x →
+          ∃ τ : ℕ → ℝ, StrictMono τ ∧ (∀ n, τ n ∈ Ioo a s) ∧ Tendsto τ atTop (𝓝[<] s) ∧
+            ∃ W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n),
+              (∀ n, (W n).capTubeHasNeckChart eps) ∧
+              ((∃ neck : ∀ n, LocalNeck G.flow eps x.val (τ n) (W n).domain.carrier,
+                ∀ n, (W n).alternative = CanonicalAlternative.neck (neck n)) ∨
+               ∃ cap : ∀ n, LocalCap G.flow eps x.val (τ n) (W n).domain.carrier,
+                 ∃ depth : ∀ n, ∀ z ∈ (cap n).tube,
+                   10000 / Real.sqrt (G.flow.scalar (τ n) x.val) ≤
+                     metricDistance (G.flow.base.metric (τ n)) x.val z,
+                   ∀ n, (W n).alternative = CanonicalAlternative.cap (cap n) (depth n)) := by
+  refine ⟨1 / 44, by norm_num, ?_⟩
+  intro eps heps hsmall
+  obtain ⟨C, hC, hmain⟩ := exists_uniform_canonical_neck_or_cap_sequence.{u} heps
+    (hsmall.trans_lt (by norm_num))
+  obtain ⟨q, hq, hsequence⟩ := hmain P a s G
+  exact ⟨C, C, q, hC, hC, hq, hsequence L⟩
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
