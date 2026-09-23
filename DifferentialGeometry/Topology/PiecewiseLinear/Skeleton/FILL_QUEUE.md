@@ -179,3 +179,48 @@ from `GeneralPosition` and delete the two copies in `CurveCrossingGeneralPositio
 `HasPLCurveCrossingOnAt` next to `HasPLCrossingAt`; move the `PlanarJordan`-namespace lemmas of
 `IntervalOrderExtension`, `JordanRelativeMatching`, `ConsecutiveCellUnion` under `PlanarJordan/`;
 relocate the sphere-minus-disks lemma of `TubeOfGraphDualCells`; refresh stale docstrings.
+
+## Codex overnight queue (lead-written 2026-09-23 00:55; supersedes the evening queue's item status)
+
+Rules unchanged: new files only, no git writes, no edits of frozen statements, log every result in
+`FILL_LOG.md` with the checker success line, SHA-256 and the sub-leaf list; the lead accepts,
+registers and commits in the morning. Your lease `codex-moise-recon` stays yours.
+
+Do NOT touch anything an Opus worker owns tonight. Their final logs land in
+`Skeleton/OPUS_FILL_LOG_{A..E}.md`; until a worker's final report is there, its files are in
+flight: a = §34 P4 bricks (two torus lemmas, the bigon drag map `BigonDrag`, the local
+neighbourhood lemma `CompressionDiskNeighborhood`); b = §33 Lemma 9's relative general-position
+move (fixed part only crossing) and Lemma 9 itself; c = the ten `Section34Compact` leaves other
+than compression and bigon; d = the two smoothing taming leaves (surface Schoenflies,
+`SurfaceDiskLocalExtension`, `PlanarBoundaryCollars`, `PlanarOuterCollar`, `PlanarHoledCollars`);
+e = A1's `exists_wallGenericVertexMap` (`WallGenericVertexMap`, the `C¹`-range avoidance lemma),
+then `wallProductBlocks_stable_on_fixedSubdivision`, `exists_protectedSubdivision_in_adaptedChart`.
+When a worker's final report says STUCK on an item with an exact remaining goal, that goal becomes
+a Codex candidate the next morning, not tonight.
+
+Frozen pending the owner's reviews (do not prove, do not restate): §34 P4 case (b) and its compact
+twin `exists_compactCompression` (request BH); C1's `exists_isSourceTrackedBranchTube` and A2's
+`not_branchPreimage_eq_of_isOrientable` (request BI). If the owner pastes a review result into the
+tree tonight, Codex may write a due-diligence note (checking each claimed counterexample clause
+against the Lean hypotheses) as `consult/BH-…-codex-check.md` / `consult/BI-…-codex-check.md`;
+the decision itself waits for the lead.
+
+Tonight, in order:
+1. Q3(i) continued: the planar model is delivered (`HoledDiskBoundaryExtension`, registered with
+   `PlanarBoundaryCollars`, `PlanarOuterCollar`, `PlanarHoledCollars`). Next: transport the planar
+   holed-disk extension into arbitrary PL 2-sphere charts (a k-holed PL sphere in ℝ³, prescribed
+   boundary maps), then state — do not assume — the orientation-character bridge around graph
+   cycles that the CGN edge matching needs, as a probe with the exact sub-leaves.
+2. `CanonicalTowerReduction.lean`: make the probe compile (the lead's recheck of the 22:00 snapshot
+   had three errors: two `omega` goals at lines 196/199 and a `simp` type mismatch at line 147),
+   then log it; then prove whichever of its two sub-leaves is provable from the tree.
+3. Q4 sub-leaves classified SMALL_NEW_LEMMA in your own notes: `integralFirstHomology_interior_injective`,
+   `exists_maximal_firstHomology_image_of_disjoint_polygons`, `hurewiczOne_injective_of_isTopologicalSolidTorus`
+   (spine carrier), `injective_firstHomologyInclusion_interior_solidTorus` (torus linking),
+   `face_rim_subset_interior_deleted_family` (edge matching), each as a real module.
+4. Q6 fixtures: an `IsHandleDecompositionOfTube` inhabitant on `exists_isTube`
+   (`TubeOfGraphDualCells`), a `Section34VertexPreparation` inhabitant, an `IsCanonicalTower`
+   inhabitant.
+5. Q5 only if the lease-d worker's final report shows the taming leaves STUCK.
+Q1 and Q2 of the evening queue are done (Q2 = §33 Lemma 8 closed by worker b); Q7 cleanup waits
+for a quiet tree.

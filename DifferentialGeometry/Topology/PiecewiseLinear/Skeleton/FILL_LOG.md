@@ -694,7 +694,7 @@ All names below are in `DifferentialGeometry.Topology.PiecewiseLinear`.
      manifold condition from local ball neighborhoods; neither is an extra endpoint input.
    - The E3 cylindrical-diagram bridge supplies orientability. This does not claim the
      analogous abstract or higher-dimensional twisted cycle is a solid torus.
-   - Eight declarations audited (two public, six private).
+   - Eight source theorems (two public, six private); imported declarations audited.
    - Module receipt ended `2026-09-23T05:32:19.0552225Z`.
      Audit: `queue-cycle-audit-20260922.json/.log`, ended `2026-09-23T05:33:44.5111436Z`.
 
@@ -725,7 +725,7 @@ All names below are in `DifferentialGeometry.Topology.PiecewiseLinear`.
      disks and their frontiers, and supplies the actual PL map of
      `D \ ⋃ i, interior (A i)` onto `D' \ ⋃ i, interior (B i)`.
      Inner boundary maps at this stage are those induced by the produced reference.
-   - Five declarations audited (four public, one private).
+   - Five source theorems (four public, one private); imported declarations audited.
    - Module receipt ended `2026-09-23T05:35:58.7403799Z`.
      Audit: `queue-disk-family-audit-20260922.json/.log`, ended `2026-09-23T05:37:37.1534242Z`.
 
@@ -733,7 +733,7 @@ For each of these three modules the checker success line had the form
 `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\<Module>.lean with no diagnostics; shared outputs unchanged.`
 All module and audit receipts have `exitCode = 0`, `diagnosticLines = 0`,
 `sourceStable = true`, `sharedArtifactsModified = false`.
-All sixteen non-auto declarations have only the approved foundational axiom closure;
+All sixteen source theorem declarations have only the approved foundational axiom closure;
 all thirteen standard environment linters pass (excluding only docBlame/docBlameThm).
 No sorry, axiom, inline comments, declaration docstrings, resource overrides or linter suppression.
 
@@ -750,3 +750,105 @@ one-sided collar production and the final prescribed-inner-boundary assembly; it
 collar producer is in progress. These results do not close CGN edge matching or supply the
 orientation-character bridge around arbitrary graph cycles. Root imports are intentionally
 left to the lead under the queue's new-files-only rule.
+
+## Codex queue Q3 — final checked delivery (2026-09-22 evening)
+
+This section supersedes the first-layer Q3(i) pending status and the old
+`PlanarDiskFamilyMove` source hash. No frozen CGN endpoint is claimed closed.
+
+### Delivered endpoints and orientation condition
+
+- Q3(ii): `isCombinatorialSolidTorus_iUnion_of_cycle` and the two-ball/two-disk theorem
+  in `CyclicBallUnion` are checked real E3 producers.
+- Q3(i), planar model: `HoledDiskBoundaryExtension` now extends all prescribed boundary
+  maps under the explicit relative orientation condition. Its
+  `exists_isPLHomeomorphOn_holed_disk_with_boundary_extension` first produces a labelled
+  reference map from the prescribed outer map, independently of the inner prescribed maps.
+  It then quantifies arbitrary inner PL circle maps and requires their corrections against
+  that reference to satisfy the existing `IsPLCirclePositive` increasing-lift predicate.
+  The output maps the actual closed holed regions and agrees with every prescribed circle map.
+  The reference may reverse orientation. No extension witness is assumed.
+- The main reusable relative theorem is
+  `IsPLHomeomorphOn.exists_holed_disk_extension_of_positive_boundary_corrections`.
+  `exists_boundary_collars_holed_disk` in `PlanarHoledCollars` produces all one-sided
+  collars and the actual polyhedral closed remainder.
+  `exists_isPLHomeomorphOn_holed_disk_of_positive_boundary_maps` consumes them.
+
+The finite producer uses `Option.none` for the outer boundary. It chooses disjoint neighborhoods
+of the outer complement and all closed inner disks, constructs an inward outer collar and
+outward collars for the holes, and sets the remaining region to the actual complement closure.
+Each local closed remainder contains that global remainder, proving the seam-only contact.
+Thus neither the collar system nor its overlap equations were promoted to endpoint assumptions.
+The empty hole family is included.
+
+Still separate: identifying compatibility directly from an ambient degree/orientation character
+without the reference map, transporting the planar model into arbitrary sphere charts, and
+the CGN graph-cycle compatibility supplied by the original embedding. The E3 cyclic-ball
+result alone does not prove these facts. The original CGN matching/removal leaves are untouched.
+
+### Final import list
+
+All eight imports are ready for the lead's registration; this worker did not edit the aggregate.
+
+```lean
+import DifferentialGeometry.Topology.PiecewiseLinear.BallComplementFamily
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCollarExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarBoundaryCollars
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskFamilyMove
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarOuterCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarHoledCollars
+import DifferentialGeometry.Topology.PiecewiseLinear.HoledDiskBoundaryExtension
+```
+
+Additional public names:
+
+- `IsPolyhedron.sdiff_iUnion_interior_of_isPLBall`: finite full-dimensional ball interiors
+  may be removed from a polyhedron. Both new consumers share this proof in
+  `BallComplementFamily`; the private duplicate was removed from `PlanarDiskFamilyMove`.
+- `IsPLHomeomorphOn.exists_disk_boundary_collar`: a small inward collar in a prescribed
+  relative neighborhood, with pointwise boundary fixing, exact seam and a remaining PL disk.
+- `IsPLBall.exists_outer_boundary_collar`: a small collar on the outside of an inner planar
+  disk, with the exact complement, polyhedral remainder, seam, neighborhood and annulus frontier.
+
+### Final source identity and verification
+
+| Module | SHA256 | Zero-diagnostic module check ended (UTC) |
+|---|---|---|
+| CyclicBallUnion | `398402A484516B31431D12564C51A8435FB827D053E7415F4B56B36606A481E2` | 2026-09-23 05:32:19 |
+| BoundaryCollarExtension | `4EBBFDD71FB5CC36E7782EF8237557EF3C8140CBCFF307EF017FB44DDB74CC2D` | 2026-09-23 05:26:58 |
+| PlanarDiskFamilyMove | `F8E2905CAD14CD18DAC79BB2F6ABAD4786231589DEC096C8E71604756F8127DE` | 2026-09-23 05:47:14 |
+| BallComplementFamily | `9F7EA14D0C06244461DFC7677FA22C2501C624F0837B79549C0B8505CD122565` | 2026-09-23 05:46:31 |
+| PlanarBoundaryCollars | `353C4456B4681DE621C318BBB6B0B35AC7C2D42EBEC0AAA3A3E23CA9EC23B436` | 2026-09-23 05:41:32 |
+| PlanarOuterCollar | `F56D7F7C39AD77D40FF42E757103BB1125CBE25C710D1CB610DCC8B45282BFE5` | 2026-09-23 05:48:43 |
+| PlanarHoledCollars | `AF67495708399D19652B4B2D758BC3D2A21047041A1E881FEC8051200A9C81A6` | 2026-09-23 05:49:12 |
+| HoledDiskBoundaryExtension | `071C89CACAE7FF82A753A8FF24E81916B6ACDDF288A309F3FED8BC4035905AA3` | 2026-09-23 05:50:04 |
+
+All eight module receipts have Lean exit 0, zero diagnostics, stable source hashes and unchanged
+shared outputs. The final source manifest was compared against every current file and receipt.
+
+The final six-module boundary-suite audit passed at `2026-09-23T05:55:47.2042307Z` with
+zero diagnostics, only `propext`/`Classical.choice`/`Quot.sound` in every axiom closure, and
+all thirteen environment linters passing. It enumerated seventeen declarations: thirteen
+source theorems/private lemmas plus four local-notation declarations. The count was read from
+Lean's environment, not inferred from source theorem lines. Together with the unchanged
+cycle and collar-extension audits above, all eight modules are covered. The final source
+contains 24 mathematical declarations: 16 public theorems and 8 private helpers.
+
+Evidence under the private root from the preceding entry:
+
+- `queue-q3-source-manifest-20260922.json`
+- `queue-boundary-suite-audit-20260922.json/.log`
+- `queue-boundary-declarations.txt`
+- `queue-boundary-suite-audit-source-20260922.txt` (exact replayable audit text; scratch Lean file removed)
+- The unchanged `queue-cycle-audit-20260922` and `queue-collar-audit-20260922` receipts.
+
+Source review found no sorry, axiom, unsafe proof escape, resource override, linter suppression,
+declaration docstring, inline comment or long Lean line. Only required headers/module docstrings
+remain. Owned-path `git diff --check` passed. No Git write, mirror write, existing proof-module
+edit, frozen-signature edit, aggregate edit or acceptance-ledger edit was performed.
+
+Queue accounting: Q1/Q2 were already completed by other lanes and only reverified here.
+Q3 has these checked reusable deliveries. Q4 remains as the earlier reconnaissance files:
+the descent-sequence and protected-circle-removal assemblies are still explicitly partial.
+Q5/Q6 were not started in this batch. The lead still owns integration and independent acceptance.

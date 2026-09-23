@@ -359,3 +359,26 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 00:40 (09-23) — accepted Codex's Q3 first layer (`CyclicBallUnion`, `BoundaryCollarExtension`,
   `PlanarDiskFamilyMove`, helper `BallComplementFamily`); Codex logs to `FILL_LOG.md` and keeps editing its
   reconnaissance probes. No leaf closed.
+
+## Night handoff 2026-09-23 00:55 (lead stops after the current worker round)
+
+State: HEAD `66cec2bd8` (mirror in sync), 46 physical `sorry` in the frozen skeletons: §31 2, §32 5,
+§33 4, §34 Normalization 4, CGN 5, §34 Compact 12, Terminal 5, Smoothing 3, A1 3, A2 2, C1 1.
+Promoted today: Section26ThreeSurfaces, Section34Control, Section30Separation, Section30Torus,
+ExtendedLoopTheoremOrientable, Section28Annuli (`Moise286` unconditional); DerivedNeighborhoodComplement
+retired. Named producers: `Moise267`, `Moise303`, `Moise286` unconditional; `Moise306/307/264Orientable`
+and, through A1 + A2 + C1, `Moise252 → Moise304 → Moise305Tame`.
+
+Pending owner reviews: BH (§34 P4 case (b), field 4) and BI (C1 branch tube, `realisation` vs
+`derived`). Lead decisions on both wait for the lead; Codex may only write due-diligence notes.
+
+Codex runs overnight on the queue section above (own lease `codex-moise-recon`, logs to
+`FILL_LOG.md`). Its uncommitted probe `Skeleton/CanonicalTowerReduction.lean` had errors at the
+lead's last recheck.
+
+Morning procedure for the lead: read the five `OPUS_FILL_LOG_*.md` final sections and `FILL_LOG.md`;
+for each CLOSED item run the acceptance pipeline (statement byte-identity against the skeleton,
+name scan, lead zero-diagnostic check + all-declaration axiom/13-linter audit on a free lease, wire
+the skeleton, register the aggregate, ledger row, commit by explicit path, mirror sync); the
+scratchpad scripts are session-local, so rebuild `stmtcheck`/`mkaudit`/`skelcheck` from the
+memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leases.
