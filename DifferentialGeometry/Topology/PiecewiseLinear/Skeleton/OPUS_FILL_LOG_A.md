@@ -304,3 +304,118 @@ Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube3.lean` (
   edges on the boundary of a triangle form one polygon, and that `T_σ` is the resulting cyclic
   union of balls meeting in the incident splitting disks), and an `H₁` computation of such a
   union with a degree/lifting argument for a circle crossing each meridian once.
+
+# Batch 4 (Section 34 P3-P4 bricks)
+
+Files (new, untracked, sorry-free; no existing file touched):
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/ChartTameNestedCells.lean` | 154 | `3efdc18480fc28238d0d4986779114e6832029a20f3fb145bf95338c51a5bbc4` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/CurveCrossingGeneralPosition.lean` | 341 | `6094f69fad8d702dbc31adc5f62abd43661d3870d4879eee7e2156c9e5deddb8` |
+
+Import lines (independent of each other; the second imports the accepted
+`Section34FaceBallVocabulary`, the home of `HasPLCurveCrossingOnAt`):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
+    import DifferentialGeometry.Topology.PiecewiseLinear.CurveCrossingGeneralPosition
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartTameNestedCells.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T00:36Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CurveCrossingGeneralPosition.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T00:51Z; `Section34FaceBallVocabulary` recompiled into the private root first, same verdict)
+
+Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube5.lean` (both modules;
+`AuditTube4.lean`, the first module alone, also passed):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube5.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T00:52:10Z)
+
+## Brick 1: Theorem 30.5 in a chart (`ChartTameNestedCells`) — CLOSED
+
+- Public names: `isPLHomeomorphInto_symm_of_mem_maximalAtlas`,
+  `Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas`.
+- Statement (minimal, chosen by me; the leaf does not force one): for `c` in the maximal
+  atlas of `M` and `C₁ C₂ ⊆ M` with `C₂ ⊆ c.source`, `C₁ ⊆ interior C₂`, if `c '' C₁`, `c '' C₂`
+  are topological `3`-cells, `closure (c '' C₂ \ c '' C₁)` is a spherical shell between their
+  frontiers and `frontier (c '' C₂)` is bicollared, then `∃ C B, IsPLCellOn 3 C B ∧
+  C₁ ⊆ interior C ∧ C ⊆ interior C₂`.  Exactly the hypotheses of `Moise305Tame` read in the
+  chart; nothing added.  No `HasGroupoid` instance: the P3 context has none for `M₂`.
+- Route: `c.symm` restricted to a polyhedron of `c.target` is `IsPLHomeomorphInto` using only
+  maximal-atlas compatibility (`compatible_of_mem_maximalAtlas_left/right`): PL-ness is the
+  transition `c.symm ≫ₕ chartAt`; the left inverse `c` is PL on the image because the inverse
+  transition is PL and injective on `D ∩ Q` for a polytope neighbourhood `Q`
+  (`isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn`).  The ball `D` of `Moise305Tame` is then
+  pulled back: `C = c.symm '' D`, `B = c.symm '' (r '' stdSimplexBoundary 3)`.
+
+## Brick 2: curve crossing by general position (`CurveCrossingGeneralPosition`) — CLOSED
+
+- Grep of producers first: `HasPLCrossingAt` has the producers
+  `exists_small_homeomorph_generalPosition(_relative, _off_subcomplex, …)` and the pointwise
+  `hasPLCrossingAt_of_transverse_faces` (reused here); `HasPLCurveCrossingOnAt` had none.
+- Public names: `HasPLCurveCrossingOnAt.congr` (locality, for the chart transfer of fields 5/6),
+  `exists_isPLHomeomorphOn_linearize_coface_pair_fixing`,
+  `finrank_vectorSpan_add_one_of_mem_faces`, `hasPLCurveCrossingOnAt_of_transverse_faces`,
+  `exists_small_homeomorph_transverse_relative`, `exists_small_homeomorph_curveCrossing_relative`.
+- Level: the chart model, `E` finite-dimensional with `finrank = 3` (covers
+  `EuclideanSpace ℝ (Fin 3)`); "inside a chart" = in the chart target.
+- Pointwise lemma hypotheses, each necessary: `K` of dimension `≤ 2` (a `3`-simplex would make
+  `K ∩ L` a plane), `L` a combinatorial surface with boundary, `C.faces ⊆ L.faces`, `C` of
+  dimension `≤ 1`, edges of `C` not in `boundaryComplex 2 L` (at a boundary edge `K ∩ L` is a
+  ray, not a line), faces of `K` transverse to faces of `L`.  Route: transversality forces the
+  carriers of `x` to be an open triangle `σ` of `K` and an open edge `τ` of `C`, complementary;
+  the two triangles of `L` on `τ` are straightened by
+  `exists_isPLHomeomorphOn_straighten_two_halfSpaces_sub_mem` with `S = span τ`,
+  `T = span σ`; then `L ↦ S ⊔ ℝu`, `K ∩ L ↦ T ⊓ (S ⊔ ℝu) = ℝu`, `C ↦ S`.
+- Producer: `exists_small_homeomorph_curveCrossing_relative K B L C …`: a PL homeomorphism of
+  `E`, `ε`-small, `EqOn h id Uᶜ` (support in the prescribed open `U ⊇ K.space`), `EqOn h id
+  B.space` (the prescribed fixed subcomplex, assumed already transverse to `L`, as in the tree's
+  relative lemma), with `HasPLCrossingAt (h '' K.space) L.space` at every common point and
+  `HasPLCurveCrossingOnAt L.space (h '' K.space ∩ L.space) C.space` at every point of
+  `h '' K.space ∩ C.space`.  Non-relative use: `B := ⊥`.
+- Duplication, for the lead: `…_linearize_coface_pair_fixing` repeats the proof of
+  `exists_isPLHomeomorphOn_linearize_coface_pair_sub_mem` because that statement does not export
+  that the map fixes the edge line (`EqOn F id S` is dropped there); and
+  `exists_small_homeomorph_transverse_relative` repeats the body of
+  `exists_small_homeomorph_generalPosition_relative` because that statement hides the transverse
+  image complex.  At merge, exporting both facts from `GeneralPosition` would let these two go.
+
+## exists_section34FaceBalls (P3) — STUCK (bricks 1-2 in place; four inputs missing)
+
+- Remaining goal: the frozen statement.  With the bricks, what is still missing:
+  1. Source nested balls and transfer (Lemma 3): for each `s`, topological `3`-cells
+     `C₁ ⊆ interior C₂`, `C₂ ⊆ c.source` for a carrier chart `c` (`hctrl`, last clause), with
+     `h '' simplexBody 𝒦 s.1 ⊆ interior C₁` and `C₂` inside a prescribed open `W_s`, whose chart
+     images satisfy `IsSphericalShell` and `IsBicollared` (then brick 1 gives the PL cell).  Needs
+     a shell-separated pair of regular neighbourhoods of `σ` in `U` with an outer collar, and
+     `h (interior B) = interior (h B)` (invariance of domain for the embedding `hh`).
+  2. Choice of `W_s` giving fields 3, 4 and `Section34Exterior`: inside `interior (H t.1)` for
+     the finitely many incident `t`, off the compact `tgtV w` of non-incident `w` (graph-frame
+     clause 8), pairwise meeting only inside `interior (⋃ w, tgtV w)`, and the component clause
+     of `Section34Exterior`.
+  3. General position (fields 5, 6, 8, 9): a finite complex `L` in the chart triangulating a
+     compact piece of `c '' (frontier (⋃ w, tgtV w) ∩ c.source)` around the ball, as a
+     combinatorial surface, with a `1`-subcomplex `C` for the splitting circles `tgtEBd e`
+     through interior edges, and a triangulation `K` of the chart image of `fblBd s`; then brick
+     2 plus `HasPLCrossingAt.congr` / `HasPLCurveCrossingOnAt.congr`.  The frontier of the
+     `f₁`-image of the cut neighbourhood being a PL surface is not stated in the tree.
+  4. Field 7 (Lemma 4): `CarriesFirstHomologyOnto (fblBd s ∩ frontier T_s) T_s`.  The graph
+     frame gives `CarriesFundamentalGroupOnto (h '' simplexRim 𝒦 s.1) T_s`, which
+     `hurewiczOne_surjective` (integral, `Homology/HurewiczOne.lean`) would turn into `H₁`
+     surjectivity of the rim once naturality of `hurewiczOne` is stated (it is not); missing is
+     Lemma 4's passage from the rim to the trace, a homology in `T_s` between the rim and a
+     cycle of the trace (the auxiliary-disk argument).
+
+## exists_section34Compression (P4) — STUCK (not attempted beyond the survey)
+
+- Remaining goal: the frozen statement.  Missing: (1) the surgery in one chart: `w` is incident
+  to `s` (from field 3 and `Jd ⊆ fbl s ∩ tgtV w`, which needs `tgtVBd w ⊆ tgtV w` from the cut
+  frame boundary formula), hence to every tetrahedron `t` incident to `s`, so the first clause of
+  `Section34Exterior` puts `fbl s ∪ Dj` in `interior (H t.1) ⊆ c.source`; `Jd` cuts the PL
+  sphere `fblBd s` into two disks (Jordan-Schoenflies on a PL `2`-sphere), each glued to a
+  push-off of `Dj` gives a PL sphere bounding a ball in the chart (PL Schoenflies in `ℝ³`;
+  `SphereSchoenflies` / `PLSchoenflies` exist, fit not checked); keep the one containing
+  `h '' simplexRim 𝒦 s.1`; (2) general position of the push-off, by brick 2 relative to the
+  untouched part of the sphere; (3) the ten fields afterwards, field 7 needing `Jd`
+  null-homologous in `T_s` (it bounds `Dj` there); (4) `c⁺ + 1 ≤ c` and `p⁺ ≤ p`, needing the
+  trace to be a finite union of disjoint circles (a consequence of field 5 not stated in the
+  tree) and `Dj` disjoint from every `tgtE e`.

@@ -313,3 +313,5 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 18:00 — accepted worker d's last extended-loop leaf (`BicollarBoundaryLoop` over `PLLevelCircles`,
   `JordanDiskPasting`); `ExtendedLoopTheoremOrientable` promoted to a real module (`moise264_orientable`
   conditional only on `Moise252`). Physical `sorry` 66. Worker d now on the §28 product-coordinates leaf.
+* 18:15 — accepted worker a's P3 bricks `ChartTameNestedCells` and `CurveCrossingGeneralPosition`
+  (no leaf closed); the four remaining P3 inputs are assigned to it in order 4, 3, 1, 2, then P3.
