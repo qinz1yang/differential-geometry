@@ -10,6 +10,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjuncti
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionThree
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionOne
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionTwo
+import DifferentialGeometry.Topology.PiecewiseLinear.SmoothBoundaryDisksTaming
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleFiltration
@@ -148,6 +149,16 @@ rescaling `(e^{-iπ/4} z)^{2/3}`, gluing a chart family over an open part of a s
 the two-handle uses the cylinder-side extension and an annulus collar; the one-handle extends from
 the two end-disk maps, reflecting the top disk by `planarReflection` when the rim orientations of
 the two ends differ, so that the frozen statement holds unchanged.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf, no hypothesis dropped):
+`exists_homeomorph_smooth_disks_of_isClosedEmbedding` (module `SmoothBoundaryDisksTaming` over
+`BoundaryIsotopyExtension`, `SurfaceDiskLocalExtension`, `RadialBandPush`, `SurfaceDiskShrink`,
+`SurfaceDiskMove`, `SmoothBoundaryPlane`): the two end disks are separated, each is shrunk and
+moved by a compactly supported isotopy of the boundary surface onto the unit disk of a small
+smooth plane, the two supports are disjoint, and the boundary isotopy extends through the collar.
+The annulus taming leaf is STUCK on a missing theorem: an essential topological circle in a
+smooth surface is isotopic to a smooth one (the tree smooths only at a point); route logged.
 -/
 
 open Set Topology Manifold
@@ -195,20 +206,6 @@ theorem exists_isManifold_of_plApproximation_of_plSmoothingCompact {n : ℕ} {X 
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding
-    {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
-    (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
-    ∃ θ : M ≃ₜ M, θ '' (𝓡∂ 3).boundary M = (𝓡∂ 3).boundary M ∧
-      ∃ f : Fin 2 → EuclideanSpace ℝ (Fin 2) → M,
-        (∀ j, IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ (f j)) ∧
-        (∀ j, range (f j) ⊆ (𝓡∂ 3).boundary M) ∧
-        Disjoint (range (f 0)) (range (f 1)) ∧
-        θ '' range ψ = ⋃ j, f j '' Metric.closedBall 0 1 := by
-  sorry
 
 theorem exists_homeomorph_smooth_annulus_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]

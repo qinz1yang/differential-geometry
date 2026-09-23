@@ -388,3 +388,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 01:50 (09-23) — review BH returned (digest BK): P4 stays frozen; case (b) is proved by the thin-shell /
   through-tube route, needing a controlled through-tube lemma and the two-tetrahedra escape lemma (Codex item 0b
   overnight, worker a next). No interface change anywhere.
+* 01:40 (09-23) — accepted worker d's disk taming leaf (`SmoothBoundaryDisksTaming` + six bricks);
+  physical `sorry` 45. Worker d's final report is in; its annulus leaf is STUCK (route logged). Lead stops.

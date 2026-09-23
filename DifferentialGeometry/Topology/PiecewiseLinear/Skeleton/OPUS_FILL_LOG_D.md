@@ -840,3 +840,93 @@ along a homeomorphism the caller already has.
   `AuditOpusD11.lean` covers all fifteen Batch 7 modules and passes (`Verified ... with no
   diagnostics`). Axioms are within `propext`, `Classical.choice` and `Quot.sound`; all thirteen
   linters pass.
+
+# Batch 8 (taming leaves)
+
+- Route for the disk leaf:
+  1. Schoenflies in a chart gives each boundary point of an embedded disk `e : D² → ∂M` a local
+     extension of `e`, which agrees with `e` on `D²`.
+  2. Radial pushes in the parameter disk, conjugated through these local extensions, give an
+     isotopy of `∂M` that shrinks the disk into its own interior `e (open ball)`. That interior
+     is a topological chart.
+  3. A planar disk move and Alexander's trick in that chart carry the shrunken disk onto a small
+     smooth disk.
+  4. The collar extends the isotopy to `θ : M ≃ₜ M`.
+- `BoundaryIsotopyExtension.lean` (`exists_homeomorph_of_boundary_isotopy`): VERIFIED. An
+  isotopy of `∂M` from the identity extends through the collar to `θ : M ≃ₜ M` with
+  `θ '' ∂M = ∂M` and `θ = G 1` on `∂M`.
+- `SurfaceDiskLocalExtension.lean`: VERIFIED.
+  - `exists_homeomorph_extending_closedBall_embedding`: planar Schoenflies for a disk. A
+    continuous injection of the closed unit disk into the plane extends to a plane homeomorphism.
+  - `exists_localExtension_of_closedBall_embedding`: for an embedded disk `e` in a charted
+    surface and a boundary point `u`, there is a chart `κ` near `u` with target in a given open
+    `W ⊇ range e`. The chart `κ` agrees with `e` on the disk, and it catches every disk point
+    whose image lies in its target.
+- `RadialBandPush.lean`: VERIFIED. `radialBandPush a b P Q` is a ray-preserving push, piecewise
+  linear in the radius, that moves radius `P u` to radius `Q u` and is the identity off the band
+  `a < ‖x‖ < b`. The module proves the inverse, norm, direction and region lemmas, and
+  `exists_radialBandPush_family`, which gives jointly continuous families of homeomorphisms.
+- `SurfaceDiskShrink.lean`: VERIFIED. `exists_isotopy_shrink_closedBall_embedding` gives, for an
+  embedded disk `e` in a charted surface `S` and an open `W ⊇ range e`, an isotopy of `S` with
+  compact support in `W` that carries `range e` onto `e '' {‖v‖ ≤ s}` with `s < 1`.
+  - The disk circle is covered by local extensions, using a Lebesgue number and a finite ball
+    cover.
+  - A list induction then composes the radial pushes, each conjugated through one chart; the
+    radius function is `1 - c · max` of the bumps.
+- `SurfaceDiskMove.lean`: VERIFIED.
+  - `exists_openPartialHomeomorph_ball_of_closedBall_embedding`: an embedded disk is an open
+    chart on the open unit disk, by invariance of domain.
+  - `exists_isotopy_closedBall_embedding_onto`: for an embedded disk `e` and an open `W`, there
+    is a nonempty open `O ⊆ W` with the following property. Every embedded disk inside `O` is
+    `G 1 '' range e` for an isotopy `G` of `S` from the identity, with compact support in `W`.
+  - Proof: the shrink, then the Jordan disk move in the interior chart, then Alexander's trick,
+    then conjugation.
+- `SmoothBoundaryPlane.lean`: VERIFIED. `exists_isSmoothEmbedding_plane_boundary_subset`: every
+  open neighbourhood of a boundary point of `M` contains the whole range of a smooth embedding
+  `E² → M` into `∂M`.
+  - The embedding is `chart.symm ∘ ι ∘ τ`. Here `τ` is `univUnitBall` followed by an affine map,
+    used as a domain chart in the maximal atlas, and `ι` is the boundary hyperplane
+    `normalFirstEquiv 2 (·, 0)`.
+  - The immersion is proved by `IsImmersionAtOfComplement.mk_of_charts`, and the result is
+    composed with the chart as a `PartialDiffeomorph`.
+- `SmoothBoundaryDisksTaming.lean`: VERIFIED. The leaf `exists_homeomorph_smooth_disks_of_isClosedEmbedding` is proved, and its statement is byte-identical to the skeleton. No frozen hypothesis is dropped.
+  1. The two ends of the handle are parametrised through `prismBallHomeomorph` as embedded disks
+     in `∂M`.
+  2. The two disks are separated by disjoint open sets `W₀` and `W₁`, and each disk is moved by
+     `exists_isotopy_closedBall_embedding_onto` onto the unit disk of a smooth plane from
+     `exists_isSmoothEmbedding_plane_boundary_subset`.
+  3. The two isotopies have disjoint supports and compose. `exists_homeomorph_of_boundary_isotopy`
+     then extends the composite to `θ`.
+- Audit `AuditOpusD12.lean` covers the seven disk-route modules and passes (`Verified ... with no diagnostics`):
+  - `BoundaryIsotopyExtension`, `SurfaceDiskLocalExtension`, `RadialBandPush`,
+    `SurfaceDiskShrink`, `SurfaceDiskMove`, `SmoothBoundaryPlane`, `SmoothBoundaryDisksTaming`.
+  - Axioms are within `propext`, `Classical.choice` and `Quot.sound`, and all thirteen linters pass.
+- `exists_homeomorph_smooth_annulus_of_isClosedEmbedding`: STUCK. Not started in Lean, and no
+  module was written.
+  - Exact remaining goal: the frozen annulus leaf, with its skeleton statement unchanged.
+  - Already available for it: the collar extension `exists_homeomorph_of_boundary_isotopy`, which
+    accepts any isotopy of `∂M`, and the disk route above.
+  - Missing input: a smooth annulus isotopic to the given one. Precisely: for a continuous
+    injective `e : S¹ × [0,1] → ∂M` and an open `W ⊇ range e`, find an isotopy `G` of `∂M` with
+    compact support in `W`, and a smooth embedding `f : S¹ × ℝ → M` into `∂M`, with
+    `G 1 '' range e = f '' (univ ×ˢ Icc 0 1)`.
+  - The core of this is curve smoothing: an essential topological circle in an open annulus of a
+    smooth surface must be isotopic to a smooth one. No tree module provides it. The only
+    smoothing tool, `exists_isotopy_smoothing_surface_chart`, works at a single point, and there
+    is no producer of `IsSmoothEmbedding ((𝓡 1).prod 𝓘(ℝ, ℝ))`. A tiny smooth annulus cannot
+    replace it, because the target must be isotopic to `range ψ`, whose core may be essential in
+    `∂M`.
+  - Suggested route:
+    1. An annulus version of `SurfaceDiskShrink` and `SurfaceDiskMove`, to get an open annulus
+       chart. Near the inner circle, use local extensions after the inversion
+       `x ↦ x / (2‖x‖²)` of `{1/2 ≤ ‖x‖ ≤ 1}`, and push in two bands of `RadialBandPush`.
+    2. Smooth the core arc by arc in smooth charts of `∂M`:
+       - make each arc piece straight near its ends with a graph isotopy (`LocalizedGraph`);
+       - make the middle polygonal, relative to the straight ends
+         (`PlanarJordan/ArcStraightening.exists_homeomorph_polygonal_arc_of_polygonal_ends`);
+       - round the corners with vertical graph shifts;
+       - use Alexander's trick and conjugation, as in `SurfaceDiskMove`.
+    3. Take a smooth bicollar of the smooth core.
+    4. Match the annuli in the chart with `Homeomorph/JordanAnnulus` and `CircleIsotopy`,
+       controlling the twist as in Batch 7.
+  - Estimated size: several thousand lines. The sphere leaf was not attempted, per the brief.
