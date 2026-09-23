@@ -13471,3 +13471,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Es
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorConfinement
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Localization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMinimizerLocalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteEventHistory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventTimeNonaccumulation
