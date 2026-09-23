@@ -280,6 +280,13 @@ union is locally a PL 2-sphere, locally planar and locally polyhedral, carrying 
 splitting circles; general position via `CurveCrossingGeneralPosition` gives fields 5, 6, 8, the
 auxiliary ball and the trace retraction give field 7, finiteness of the trace field 9, and
 `section34Exterior_of_subset` field 10.  The frames needed no amendment.
+
+Interface repair 2026-09-23 (owner decision after the lease-a worker's finding, log Batch 9):
+`exists_section34BigonSlide` now receives `hctrl : Section34CarrierControl U 𝒦 h η H`, exactly as
+`exists_section34Compression` did at its second review.  Without it nothing puts `Dj` or `fbl s`
+into one maximal-atlas chart (the invariants give charts only at trace and crossing points), so
+the drag and the cell clause of the new ball cannot be stated; the assembly has `hctrl` in scope
+and passes it.  No conclusion changed.
 -/
 
 open Set Topology
@@ -359,6 +366,7 @@ theorem exists_section34Compression (hU : IsOpen U)
 theorem exists_section34BigonSlide (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hctrl : Section34CarrierControl U 𝒦 h η H)
     (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
     {fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂}
     (hinv : Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
@@ -449,7 +457,7 @@ theorem section34NormalFamily (h305 : Moise305Tame) (hP0 : Section34ControlState
         exact ⟨g', gBd', hinv', hoff, section34FaceBallRank_lt_of_compression hc hp⟩)
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
-          exists_section34BigonSlide hU hh hcut hgraph hg s hop
+          exists_section34BigonSlide hU hh hcut hctrl hgraph hg s hop
         exact ⟨g', gBd', hinv', hoff, section34FaceBallRank_lt_of_bigonSlide hc hp⟩)
   obtain ⟨hfblcell, -, hfblV, hfblfbl, -, -, -, -, -, hext⟩ := id hinv
   have htrace := section34Trace_of_noOperation hU hh hcut hgraph hinv hnc hnb

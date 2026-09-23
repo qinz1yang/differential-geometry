@@ -198,6 +198,10 @@ disk) serves the residual-ball and face-disk leaves.  Worker analysis of the six
 `compactSourceFace_iff_cutLe` needs `N` to cross `∂C` at boundary faces, which no frame clause
 states (a missing derivation, not a counterexample); the others need 28.8, Schoenflies on a PL
 2-sphere, the cyclic order of incident edges and the ten-by-ten description of the cut order.
+
+Interface repair 2026-09-23 (owner decision, the compact twin of the P4b repair):
+`exists_compactBigonSlide` now receives `hcar : Section34CompactCarrierControl K h ε H`, as
+`exists_compactCompression` already does; the assembly passes it.  No conclusion changed.
 -/
 
 open Set Topology
@@ -246,6 +250,7 @@ theorem exists_compactCompression (hcut : Section34CompactCutFrame C K K' src sr
   sorry
 
 theorem exists_compactBigonSlide (hcut : Section34CompactCutFrame C K K' src srcBd)
+    (hcar : Section34CompactCarrierControl K h ε H)
     (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
     {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
     (hinv : Section34CompactFaceBallInvariants K K' h H
@@ -523,7 +528,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
         exact ⟨g', gBd', hinv', hoff, section34CompactFaceBallRank_lt_of_compression hc hp⟩)
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
-          exists_compactBigonSlide hcut hgraph hg s hop
+          exists_compactBigonSlide hcut hcar hgraph hg s hop
         exact ⟨g', gBd', hinv', hoff, section34CompactFaceBallRank_lt_of_bigonSlide hc hp⟩)
   have htrace := compactTrace_of_noOperation hcut hgraph hinv hnc hnb
   obtain ⟨tgtD, tgtDBd, tgtA, tgtABd, tgtP, hdisk⟩ :=

@@ -420,3 +420,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 08:05 (09-23) — accepted worker a's six P4 modules (case (a) of the compression proved as
   `exists_section34Compression_of_subset`; trace circles; face torus cycle); the leaf stays open on case (b).
   Bigon leaf needs `hctrl` (interface question for the owner). Lease a re-dispatched on case (b).
+* 08:30 (09-23) — owner adopted the bigon interface repair: `hctrl` on `exists_section34BigonSlide`, `hcar` on
+  `exists_compactBigonSlide`; assemblies pass them; both skeletons rechecked on the lead lease `claude-integration`
+  (re-granted by the owner until 09-26; `codex-return` is expired). Worker leases a–e expire 09-24 04:17 UTC.
