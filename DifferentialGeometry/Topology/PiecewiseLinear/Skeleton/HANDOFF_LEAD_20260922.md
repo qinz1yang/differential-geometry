@@ -440,3 +440,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 
 * 12:45 (09-23) — a forked session wrote a false crash record here and a duplicate queue item; removed and
   renumbered by the lead. The lead never crashed; its workers ran on.
+* 12:10 (09-23) — accepted worker d's 14 branch-tube modules: C1 reduced to the surface trace on the derived
+  cells (`exists_isSourceTrackedBranchTube_of_markedCells` + `exists_derivedCellChain`); lease d held for Codex.

@@ -930,3 +930,114 @@ along a homeomorphism the caller already has.
     4. Match the annuli in the chart with `Homeomorph/JordanAnnulus` and `CircleIsotopy`,
        controlling the twist as in Batch 7.
   - Estimated size: several thousand lines. The sphere leaf was not attempted, per the brief.
+
+# Batch 9 (branch tube, endpoint interface)
+
+## `exists_isSourceTrackedBranchTube`: STUCK (reduced to the surface trace on the derived cells)
+
+- Interface: no change needed. Fix (a) (the geometric identity only at `t = 0, 1`) is exactly
+  what the proof uses; the mid-ray identity is never needed.
+- Route (every step below the last bullet of "remaining" is verified):
+  1. `N = derivedNeighborhood R (restrict R Γ)` is the union of the cyclic chain of derived
+     cells `B k = coneSet ŝₖ Sₖ` (cones over the upper-link `2`-spheres) of the faces of `Γ`.
+  2. Marked cell: a cone over a `2`-sphere carrying four cyclically separated arcs between two
+     poles and two caps crossing the arcs at parameters `1/4`, `3/4` is PL homeomorphic to
+     `spliceSquare × [0,1]`, arcs to the model meridians parameter by parameter, caps to the end
+     faces, spoke strips `segment 0 (leaf i) × [0,1]` to the cones over the arcs
+     (four-arc sphere theorem + a new cap normalisation of the model sphere + cone extension).
+  3. The normalised cells are stacked (transition maps of the square preserve each spoke and fix
+     the leaves); the cut is the middle level of the first cell, whose arcs pass through the
+     source rays at parameter `1/2`; the last half-cell is read through `Prod.swap`, so the end
+     map acts on the leaves by `fourSpokeFlipPerm = (0 1)(2 3)`.
+  4. Realisation: `e` from the core loop; `a i` is the lift of the branch loop through the two
+     sheeted `branchProjection` covering; a closed lift would be a continuous section, excluded by
+     `not_exists_rightInverse_branchProjection_of_isPLSphere_one`, so `a i 1 = τ (a i 0)`, which
+     matches the flip; `s i` interpolates linearly between two values of the same sign.
+- Modules (all new, all `Verified D:\differential-geometry-moise-int\DifferentialGeometry\
+  Topology\PiecewiseLinear\LoopTheorem\<Module>.lean with no diagnostics; shared outputs
+  unchanged.`), lines and SHA-256:
+  - `ClosedBranchTubeModel` 649 `977b035b66f3804a00fa8ca7f7d29275e62032794a5cc12528264451a7cfcac4`
+    (model sphere `tubeCellSphere`, meridians `tubeCellArc k`, cone base, cones over arcs/poles,
+    `tubeCellArc_sep`).
+  - `ClosedBranchTubeSectors` 326 `b40d255bf741b79fbde41cee78c320e810a85175525df4b8a5364159c77647eb`
+    (`exists_param_of_sdiff_eq_inter_isOpen`, `exists_isPLHomeomorphOn_crosscut_move`, leaf
+    coordinates, `tubeSector`).
+  - `ClosedBranchTubeEdges` 324 `0fc421a00a1c93ff42aa8c03147c14781f82bf17d7b4289fdd11cea31476622d`
+    (`tubeEdge`, `iUnion_tubeEdge`, sector separation).
+  - `ClosedBranchTubeSectorDisks` 433 `39df8ebfe83d10014b3ee725097401986945fee79085f8879bb580234eff1171`
+    (`exists_tubeSector_param`, `exists_tubeSectorUpper_param`,
+    `subset_tubeSectorUpper_of_isPreconnected`).
+  - `ClosedBranchTubeCrosscuts` 390 `c3b8edae133acf5f2da106e0497778c197c2b3347a9bfa74d5078b500a18b3d4`
+    (`exists_tubeCrosscuts`: a circle through the four leaves splits into four sector crosscuts).
+  - `ClosedBranchTubeCapFix` 459 `ad141c212645626b7eee9abc2da4c59aa63304feb36bc9af782840fbb269fe53`
+    (`exists_tubeCellSphere_capFix`, `eq_of_isPLHomeomorphOn_of_separated`).
+  - `ClosedBranchTubeMarkedCell` 183 `7eee8a5dcf8aa7c4739824481407e5c1b235f9fb13cbd8ed3ffdcea7767322aa`
+    (`exists_isPLHomeomorphOn_tubeCellSphere_of_marked`,
+    `exists_isPLHomeomorphOn_spliceCylinder_of_marked`).
+  - `ClosedBranchTubeChain` 387 `f8253806d2e6c987825163a6a999672ffd33dec341f1448d47640a7cbcc7a077`
+    (`exists_spliceSquare_transition`, `exists_spliceCylinder_stack`,
+    `exists_spliceCylinder_chain`, `exists_isCylindricalDiagram_spliceSquare_of_chain`).
+  - `ClosedBranchTubeSquareLoop` 188 `04ad42342f4309ccb0e484c5cd2654106910ed2e9ce7c664e37cb23a0bf452d2`
+    (`exists_spliceSquare_cyclic`, `boundaryComplex_space_of_space_eq_spliceSquare`).
+  - `ClosedBranchTubeRealisation` 352 `bd16469359d8b7822572f42fd556f43eb00b75e1c3e46cc847c374b5587e966a`
+    (`exists_loopCircle_homeomorph_of_loop`, `isSourceTrackedBranchTube_of_cylinder`).
+  - `ClosedBranchTubeCells` 437 `47b9a2b491e2534705d4c8cdc6e2613ceaf874c5525e7b84be08f7d91342e027`
+    (`exists_cylinder_of_markedCells`, `coneSet_inter_of_isRadiallyInjective`).
+  - `ClosedBranchTubeAssembly` 101 `de7d513f5693918a2b0465d20954a91c1eba0906de5ac899e801c7f322930b7b`
+    (`exists_isSourceTrackedBranchTube_of_markedCells`).
+  - `ClosedBranchTubeFaceChain` 80 `9547d04089befa41bb4abbac1e1095181543ff608d192a6df88be5249395d599`
+    (`exists_faceChain_of_isCombinatorialManifold_one`).
+  - `ClosedBranchTubeDerivedCells` 354 `d17dd8cab69f82f92fa3debad559b0469d30ab58ea813058ffcc2e3ca47106d6`
+    (`exists_derivedCellChain`).
+- Audit `AuditOpusD14.lean` (all fourteen modules, `-Audit`, SHA-256
+  `d7f99e6ab22f3353f03e7be95f884fb055f3d3426c4cfafe6ebc162904adcb1d`): `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditOpusD14.lean with no diagnostics;
+  shared outputs unchanged.` Axioms within `propext`, `Classical.choice`, `Quot.sound`; the
+  thirteen environment linters pass.
+- The reduction. `exists_isSourceTrackedBranchTube_of_markedCells` concludes the leaf's
+  `∃ Pc _ φ u, IsSourceTrackedBranchTube hD c ι L J ρ (derivedNeighborhood R Lc) Pc φ u
+  fourSpokeModelLeaf` (with `r = fourSpokeModelLeaf`, `N = derivedNeighborhood R Lc`) from:
+  a finite subdivision `R` of `L`; `m ≥ 2` cells `coneSet (cc k) (K k).space` whose union is
+  `N.space`; for each cell the marked-cell data (arcs `T k i`, params `γ k i` with poles
+  `y₀ k`, `y₁ k`, pairwise intersections the poles, the separation `hsep`, caps `D₀ k`, `D₁ k`
+  with params whose boundaries meet `T k i` exactly in `γ k i (1/4)`, `γ k i (3/4)`); consecutive
+  consistency `D₁ k = D₀ (k+1)`, `T k i ∩ D₁ k = T (k+1) i ∩ D₀ (k+1)`,
+  `γ k i (3/4) = γ (k+1) i (1/4)`; the closing versions with `fourSpokeFlipPerm`; cell
+  adjacency/disjointness; the poles coning off to `ι '' branchCarrier`; and the rays
+  `γ 0 i (1/2) = ι (D (ρ (α i, v i)))`, `cc 0 = ι (D (α 0))`, `α 2 = α 0`, `α 1 = α 3 = τ (α 0)`,
+  signs `+,+,-,-`, `α i ∈ J`, `v i ∈ [-1,1]`.
+- Generic part already produced. `exists_derivedCellChain` (for `R` a combinatorial
+  `3`-manifold, `Γc ⊆ R` a connected combinatorial `1`-manifold and a start face `s₀`) gives
+  `m`, the faces `s k`, `cc k = centroid (s k)`, `K k = upperLink (bary R) {cc k}` and ALL
+  hypotheses of the reduction except the surface ones: finiteness, cone bases, `2`-spheres,
+  caps with params inside both spheres, disjoint caps of one cell, `hcap`, `hcapc`, `hadj`,
+  `hadjc`, `hfar`, the cover of `derivedNeighborhood R Γc`, poles `y₀ k ∈ D₀ k`,
+  `y₁ k ∈ D₁ k`, `Γc.space ∩ (K k).space = {y₀ k, y₁ k}` and the core cover.
+- Exact remaining obligation (the only missing input). In the leaf's context take
+  `Γ = ι '' branchCarrier c`, `F = ι '' (D '' D.domain)`, `α ∈ J`, `y₀ = ι (D α)`, a finite
+  subdivision `R` of `L` in which `Γ`, `F`, `{y₀}` (and whatever auxiliary polyhedra are
+  needed) are subcomplexes, `Γc = restrict R Γ`, `s₀ = {y₀}`, and the data of
+  `exists_derivedCellChain`. Produce `T : ℕ → Fin 4 → Set E`, `γ : ℕ → Fin 4 → ℝ → E`,
+  `v : Fin 4 → ℝ` with: `IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)`, `γ k i 0 = y₀ k`,
+  `γ k i 1 = y₁ k`, `T k i ⊆ (K k).space`, `T k i ∩ T k j = {y₀ k, y₁ k}` (`i ≠ j`), `hsep`,
+  `q₀ k '' ∂ ∩ T k i = {γ k i (1/4)}`, `q₁ k '' ∂ ∩ T k i = {γ k i (3/4)}`, the consecutive
+  and closing (`fourSpokeFlipPerm`) arm and point identities, and at the first cell
+  `γ 0 i (1/2) = ι (D (ρ (α i, v i)))` with `α 0 = α 2 = α`, `α 1 = α 3 = τ α`, signs
+  `+,+,-,-`. Mathematically `T k i` is the trace on `Sₖ` of the quarter of `F` on sheet/side
+  `i` (sheet = source preimage, side = collar side), reparametrised at the cap crossings and
+  the ray; `hsep` is the transversality of the two sheets; the closing flip is the sheet
+  exchange of the connected double cover `J → Γ` with the collar side preserved.
+- Suggested route for the remainder: PL straightening charts
+  (`exists_straighteningChart_of_notMem_boundary`) at the points of `Γ`, finitely many by
+  compactness; add the quarter polyhedra `ψ (half-plane ∩ box)` and the four ray segments to the
+  subdivision, mesh below a Lebesgue number, so each cell lies in one chart; then `T k i` is the
+  upper link of the boundary vertex `ŝₖ` in the PL `2`-ball complex of a quarter
+  (`isPLBall_upperLink_of_mem_boundaryComplex`, `image_stdSimplexBoundary_eq_boundaryComplex`),
+  `hsep` is the sign of one chart coordinate, the cap crossings are links of boundary edges
+  (single points), and the labels come from the source (a connected quarter minus `Γ` lies in
+  one of the four collar pieces). Estimated 2000–3000 lines.
+- Import lines for the aggregate (not added to `DifferentialGeometry.lean`):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTube<Name>` for
+  `<Name>` in `Model`, `Sectors`, `Edges`, `SectorDisks`, `Crosscuts`, `CapFix`, `MarkedCell`,
+  `Chain`, `SquareLoop`, `Realisation`, `Cells`, `Assembly`, `FaceChain`, `DerivedCells`.
+- Statement identity: the leaf is not restated (no leaf module was written; no `sorry` anywhere).
