@@ -3,9 +3,6 @@ import DifferentialGeometry.Topology.Homology.SimplexBoundarySphereGenerator
 
 noncomputable section
 
-open CategoryTheory AlgebraicTopology ContinuousMap Module
-open scoped Simplicial Topology
-
 namespace DifferentialGeometry.Topology
 
 universe u

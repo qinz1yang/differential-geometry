@@ -13370,6 +13370,7 @@ import DifferentialGeometry.Topology.CompactSetConnectedNeighborhood
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalConnectedCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreMetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMetricEventMetricAlignment
 import DifferentialGeometry.Geometry.Neck.SpatialCommonCenterGraph
 import DifferentialGeometry.Geometry.Neck.SpatialFixedRecentering
 import DifferentialGeometry.Topology.Homeomorph.ProductBand
