@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexChartScales
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingAuxiliaryScales
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingConditionsOfCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingCircles
@@ -45,28 +47,13 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
       Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
           Sp Tp cnt Pg G' ∧
         ∀ w, ∀ x ∈ Cc w, dist (G' w x) (h x) < ε w := by
-  have exists_auxiliary_scales_preserving_piercing_sides :
-      ∃ δ : Section34VertexIndex 𝒦 𝒦' → ℝ,
-        (∀ w, 0 < δ w) ∧ (∀ w, δ w < ε w) ∧
-        ∀ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
-          (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) →
-          (∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < δ w) →
-          (∀ e, G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2 ⊆
-            interior (G (ends e).1 '' Tn e)) ∧
-          (∀ e, G (ends e).1 '' Ab₀ e ⊆ interior (G (ends e).2 '' Cp (ends e).2)) ∧
-          (∀ e, G (ends e).2 '' Bb e ⊆ interior (G (ends e).1 '' Sn e)) ∧
-          (∀ e, ∃ y₀ ∈ G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cp (ends e).1,
-            ∀ z ∈ G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cp (ends e).1,
-              z ∉ G (ends e).1 '' Tn e →
-              z ∈ connectedComponentIn
-                (G (ends e).2 '' Bb e ∩ G (ends e).1 '' Cp (ends e).1) y₀) ∧
-          (∀ e, ∃ y₀ ∈ G (ends e).2 '' Bb e \ G (ends e).1 '' Cp (ends e).1,
-            ∀ z ∈ G (ends e).2 '' Bb e \ G (ends e).1 '' Cp (ends e).1,
-              z ∉ G (ends e).1 '' Tn e →
-              z ∈ connectedComponentIn
-                (G (ends e).2 '' Bb e \ G (ends e).1 '' Cp (ends e).1) y₀) := by
-    sorry
-  obtain ⟨δ, hδ, hδε, hsides⟩ := exists_auxiliary_scales_preserving_piercing_sides
+  obtain ⟨δs, hδs, hδsε, hsides⟩ := exists_auxiliary_scales_preserving_piercing_sides hh hprep
+  obtain ⟨c, δc, hc, hδc, -, hcharts⟩ :=
+    exists_section34_vertex_chart_stability_scales hh hprep
+  let δ (w : Section34VertexIndex 𝒦 𝒦') := min (δs w) (δc w)
+  have hδ (w : Section34VertexIndex 𝒦 𝒦') : 0 < δ w := lt_min (hδs w) (hδc w)
+  have hδε (w : Section34VertexIndex 𝒦 𝒦') : δ w < ε w :=
+    (min_le_left _ _).trans_lt (hδsε w)
   obtain ⟨-, hcc, hsubs, hchart, -⟩ := id hprep
   obtain ⟨G₀, hG₀, hG₀dist⟩ := h341.exists_chart_local_cell_approximations hh Cc CcBd hcc
     (fun w => (hsubs w).2.2) hchart (fun w => δ w / 3)
@@ -79,8 +66,7 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
       ∃ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
         (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) ∧
         (∀ w, ∀ x ∈ Cc w, dist (G w x) (G₀ w x) < δ w / 3) ∧
-        ∀ e, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂,
-          A G e ∩ B G e ⊆ c.source ∧
+        ∀ e, let c := c (ends e).1
           IsPolyhedron (c '' (A G e ∩ c.source) ∩ c '' (B G e ∩ c.source)) ∧
           (∀ x ∈ c '' (A G e ∩ c.source) ∩ c '' (B G e ∩ c.source),
             HasPLCrossingAt (c '' (A G e ∩ c.source)) (c '' (B G e ∩ c.source)) x) ∧
@@ -100,8 +86,13 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
   have hGdist : ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w :=
     fun w x hx => (hGδ w x hx).trans (hδε w)
   obtain ⟨htraceInside, hAb₀Inside, hBbInside, hcomponentInside, hcomponentOutside⟩ :=
-    hsides G hG hGδ
-  obtain ⟨-, -, -, -, hcp, -⟩ := id hprep
+    hsides G hG (fun w x hx => (hGδ w x hx).trans_le (min_le_left _ _))
+  have hGchart := hcharts G (fun w x hx =>
+    (hGδ w x hx).trans_le (min_le_right _ _))
+  obtain ⟨-, -, -, -, hcp, -, -, -, -, -, -, -, -, -, haa, -⟩ := id hprep
+  have hAaCc (e : Section34EdgeIndex 𝒦 𝒦') : Aa e ⊆ Cc (ends e).1 := by
+    rw [(haa e).1]
+    exact inter_subset_left.trans ((hcp _).boundary_subset.trans (hsubs _).2.1)
   have hGp : ∀ w, IsPLHomeomorphInto 3 (G w) (Cp w) := fun w =>
     (hG w).mono_of_isPLCellOn (hcp w) (hsubs w).2.1
   have hne := section34_piercing_trace_nonempty hprep hGp hGdist hAb₀Inside
@@ -111,8 +102,11 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
         (∀ i < cnt, ∀ j < cnt, i ≠ j → Disjoint (Pg i) (Pg j)) ∧
         ∀ y ∈ A G e ∩ B G e, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, y ∈ c.source ∧
           HasPLCrossingAt (c '' (A G e ∩ c.source)) (c '' (B G e ∩ c.source)) (c y) := by
-    obtain ⟨c, hc, hsource, hpoly, hcross, hline⟩ := htraceCharts e
-    exact exists_positive_finite_piercing_circle_family c hc hsource hpoly hcross hline (hne e)
+    obtain ⟨hpoly, hcross, hline⟩ := htraceCharts e
+    have hsource : A G e ∩ B G e ⊆ (c (ends e).1).source :=
+      inter_subset_left.trans ((image_mono (hAaCc e)).trans (hGchart _))
+    exact exists_positive_finite_piercing_circle_family (c (ends e).1) (hc _) hsource
+      hpoly hcross hline (hne e)
   choose cnt Pg hcnt hcover hcircles hdisj hcross using hfamily
   let Sp (e : Section34EdgeIndex 𝒦 𝒦') := G (ends e).1 '' Sn e
   let Tp (e : Section34EdgeIndex 𝒦 𝒦') := G (ends e).1 '' Tn e
