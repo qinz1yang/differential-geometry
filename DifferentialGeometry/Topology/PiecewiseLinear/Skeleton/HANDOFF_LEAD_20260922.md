@@ -507,3 +507,11 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   Lease b free (held for Codex per the owner's rule unless the owner reassigns it).
 * 02:50 (09-24) — accepted the collaborator's PR #11 (49 modules, cherry-picked): both bigon slides proved;
   Normalization has 2 leaves (compression, trace), Compact 4. Physical `sorry` 19.
+* 05:10 (09-24) — collaborator draft PRs #12 (F preparation, 7 modules + probe with 3 gaps), #13 (G removal step, 5 modules
+  + probe with 1 gap) and #14 (F piercing package, 4 modules + probe with 2 gaps) reviewed: statements byte-identical,
+  name scan clean apart from three skeleton helpers copied into `Section34VertexApproximation` /
+  `Section34ProtectedCircleSupport` (to be promoted at acceptance), PR #13's five modules passed lead checks and audit.
+  OWNER DECISION: not accepted now; the collaborator continues on the same branches and the lead accepts each package
+  when its leaf closes (every NEW_THEORY item of BO is still open: pierced cells with isolated lenses, marked nested
+  annuli, the scale sums, piercing sides/components, crossing charts, the relative PL cancellation). Local cherry-picks
+  dropped; the `pr12`/`pr13`/`pr14` refs and the scratchpad scripts `wire_pr121314.py`, `accept-PR1{2,3,4}.ps1` remain.
