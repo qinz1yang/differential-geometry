@@ -17,6 +17,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceHomolo
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecognition
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFaceOrder
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -226,6 +227,15 @@ exact pairwise meets read off the source order `hface`; no ten-by-ten table of t
 needed.  The non-compact twin is proved conditionally (`section34TargetRecognition_of_tiling` in
 `Section34TargetRecognitionOfTiling`) on two tiling clauses that `Section34ResidualPlus` lacks
 while this file's bundle has them as clauses 21 and 22; that interface decision is the owner's.
+
+Proved and imported (external collaborator, PR #9, lead-accepted on 2026-09-23 with zero-diagnostic
+checks and an axiom audit; statement byte-identical): `compactSourceFace_iff_cutLe` (module
+`Section34CompactSourceFaceOrder` over the facets, boundary thinness, arc end points, tetra, outer
+and boundary incidence modules and the generic `PLCellBoundaryThinness`, `PLCellSphereCover`,
+`PLCellOnEndpoints`, `PLCellOnIntrinsicInterior`, `GraphSimplexCofaces`): the route of digest BM,
+the four frontiers of the reconnaissance probe proved under their names and the probe's two
+assemblies; no frame clause was added.  The probe `Skeleton/CompactSourceFaceOrderReduction.lean`
+is deleted as superseded.
 -/
 
 open Set Topology
@@ -333,10 +343,6 @@ theorem exists_compactResidualBalls (hcut : Section34CompactCutFrame C K K' src 
         (section34CompactVertexBallImage srcBd f₁) (section34CompactSplitDiskImage src f₁)
         (section34CompactSplitDiskImage srcBd f₁) tgtD tgtA tgtP tgtR tgtRBd tgtX tgtXBd
         tgtI tgtIBd tgtO tgtOBd tgtQ tgtQBd := by
-  sorry
-
-theorem compactSourceFace_iff_cutLe (hcut : Section34CompactCutFrame C K K' src srcBd) :
-    ∀ l m : Section34CompactLabelOf K K', src m ⊆ src l ↔ Section34CompactCutLe m l := by
   sorry
 
 end Leaves

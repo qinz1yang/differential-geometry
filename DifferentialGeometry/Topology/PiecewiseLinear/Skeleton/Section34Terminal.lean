@@ -6,6 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetRecognitionOfTiling
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceFaceOrder
 
 /-!
 # Sorry-first skeleton of the terminal half of Section 34
@@ -138,6 +139,14 @@ With them `section34TargetRecognition` (P8) is proved: the conditional theorem
 `section34TargetRecognition_of_tiling` (module `Section34TargetRecognitionOfTiling`, Opus 5.5 fill
 worker, lead-accepted with zero-diagnostic checks and an audit) is the frozen statement with the
 two tilings inserted after `hres`, and the assembly calls it; the leaf is deleted.
+
+Proved and imported (external collaborator, PR #9, lead-accepted on 2026-09-23 with zero-diagnostic
+checks and an axiom audit; statement byte-identical): `section34SourceFace_iff_cutLe` (module
+`Section34SourceFaceOrder` over `Section34SourceCutOrder`, `Section34SourceFacets`,
+`Section34SourceIncidence`, `Section34SourceArcEndpoints` and the generic cell modules), the
+locally finite twin of the compact face order, with the third tetraBall excluded by the incidence
+rigidity of the cut frame rather than by `Q_t ⊆ conv t`.  The Terminal file has two leaves left:
+the P0–P5 composite and the residual balls.
 -/
 
 open Set Topology
@@ -190,12 +199,6 @@ theorem exists_section34ResidualBalls
       (tgtI tgtIBd : Section34EdgeArcIndex 𝒦 𝒦' → Set M₂),
       Section34ResidualPlus 𝒦 𝒦' H tgtV tgtE tgtEBd tgtD tgtA tgtP tgtR tgtRBd tgtX tgtXBd
         tgtI tgtIBd := by
-  sorry
-
-theorem section34SourceFace_iff_cutLe
-    (hdata : Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd
-      fbl fblBd) :
-    ∀ l m : Section34CutLabelOf 𝒦 𝒦', src m ⊆ src l ↔ Section34CutLe m l := by
   sorry
 
 end Diagram

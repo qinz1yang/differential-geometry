@@ -471,3 +471,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   the smooth structure on `S²` (owner decision). Physical `sorry` 27. Lease c held for Codex.
 * 18:20 (09-23) — registered Codex lane 2's 16 surface-trace modules (C1 still open on the inter-cell labelling,
   cap reparametrisation and the ray clause).
+* 19:30 (09-23) — accepted the collaborator's PR #9 (18 modules, cherry-picked): both source face orders proved;
+  compact probe deleted. Compact has 5 leaves, Terminal 2. Physical `sorry` 25.
