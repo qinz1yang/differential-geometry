@@ -898,7 +898,12 @@ def Section34ResidualPlus {U : Set M₁} (𝒦 𝒦' : LocallyFinitePLPieceIn Ea
       (_ : i.1.1 = x.1.1 ∧ x.1.2.1 ⊆ i.1.2.1), tgtI i) ∧
   (∀ (i : Section34EdgeArcIndex 𝒦 𝒦') (p : Section34MarkIndex 𝒦 𝒦'),
     p.1.2 = i.1.2 → tgtP p ⊆ tgtI i → tgtP p ⊆ tgtIBd i) ∧
-  ∀ t : Section34SimplexIndex 𝒦 4, tgtR t ⊆ H t.1
+  (∀ t : Section34SimplexIndex 𝒦 4, tgtR t ⊆ H t.1) ∧
+  (∀ w : Section34VertexIndex 𝒦 𝒦', frontier (tgtV w) ⊆
+    (⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : w.1 ⊆ e.1), tgtE e) ∪
+      ⋃ (x : Section34PatchIndex 𝒦 𝒦') (_ : x.1.2 = w), tgtX x) ∧
+  ∀ e : Section34EdgeIndex 𝒦 𝒦', tgtEBd e ⊆
+    ⋃ (i : Section34EdgeArcIndex 𝒦 𝒦') (_ : i.1.2 = e), tgtI i
 
 def Section34OuterTorus {U : Set M₁} (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U) (h : M₁ → M₂)
     (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)

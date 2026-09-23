@@ -5,6 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDisks
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetRecognitionOfTiling
 
 /-!
 # Sorry-first skeleton of the terminal half of Section 34
@@ -127,6 +128,16 @@ ball cannot contain two connected pieces of `V` and `T` running from `E₀` to `
 of digest Q that P6 is "true but hollow" is withdrawn.  `Section34TargetCells` gives the
 non-compact target-cell facts (the open splitting disk lies in the interior of its two end balls,
 read in a chart) for P7 and P8.
+
+Interface repair 2026-09-23 (owner decision): `Section34ResidualPlus` gained the two tilings that
+its compact twin already had as clauses 21 and 22, stated with the ambient frontier since the bundle
+has no `tgtVBd` parameter — `frontier (tgtV w) ⊆ ⋃ (e ∋ w) tgtE e ∪ ⋃ (x at w) tgtX x` and
+`tgtEBd e ⊆ ⋃ (i on e) tgtI i`; the producer `exists_section34ResidualBalls` (P7, open) now owes
+them, and the assembly turns the first into `tgtVBd w ⊆ …` by `IsPLCellOn.boundary_eq_frontier`.
+With them `section34TargetRecognition` (P8) is proved: the conditional theorem
+`section34TargetRecognition_of_tiling` (module `Section34TargetRecognitionOfTiling`, Opus 5.5 fill
+worker, lead-accepted with zero-diagnostic checks and an audit) is the frozen statement with the
+two tilings inserted after `hres`, and the assembly calls it; the leaf is deleted.
 -/
 
 open Set Topology
@@ -187,22 +198,6 @@ theorem section34SourceFace_iff_cutLe
     ∀ l m : Section34CutLabelOf 𝒦 𝒦', src m ⊆ src l ↔ Section34CutLe m l := by
   sorry
 
-theorem section34TargetRecognition
-    (hdata : Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd
-      fbl fblBd)
-    (hdisk : Section34FaceDiskFamily 𝒦 𝒦' tgtV tgtE tgtEBd fblBd tgtD tgtDBd tgtA tgtABd
-      tgtP)
-    (hres : Section34ResidualPlus 𝒦 𝒦' H tgtV tgtE tgtEBd tgtD tgtA tgtP tgtR tgtRBd tgtX
-      tgtXBd tgtI tgtIBd)
-    (hface : ∀ l m : Section34CutLabelOf 𝒦 𝒦', src m ⊆ src l ↔ Section34CutLe m l)
-    (tc tcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₂)
-    (htc : tc = section34Cell tgtV tgtR tgtE tgtD tgtX tgtA tgtI tgtP)
-    (htcBd : tcBd = section34Cell tgtVBd tgtRBd tgtEBd tgtDBd tgtXBd tgtABd tgtIBd
-      fun _ => ∅) :
-    (∀ l, tcBd l = ⋃ m ∈ section34Face src l \ {l}, tc m) ∧
-      ∀ l m, tc l ∩ tc m = ⋃ k ∈ section34Face src l ∩ section34Face src m, tc k := by
-  sorry
-
 end Diagram
 
 theorem section34CellDiagram : Section34CellDiagram.{u} := by
@@ -230,12 +225,20 @@ theorem section34CellDiagram : Section34CellDiagram.{u} := by
       section34Cell tgtV tgtR tgtE tgtD tgtX tgtA tgtI tgtP with htcdef
     set tcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₂ :=
       section34Cell tgtVBd tgtRBd tgtEBd tgtDBd tgtXBd tgtABd tgtIBd (fun _ => ∅) with htcbddef
+    obtain ⟨-, -, -, -, -, -, -, hVcell₀, -, -, -, -, -, -, -, -, -⟩ := id hdata
+    obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hVfr, hEtile⟩ := id hres
+    have hVtile : ∀ w : Section34VertexIndex 𝒦 𝒦', tgtVBd w ⊆
+        (⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : w.1 ⊆ e.1), tgtE e) ∪
+          ⋃ (x : Section34PatchIndex 𝒦 𝒦') (_ : x.1.2 = w), tgtX x := fun w => by
+      rw [(hVcell₀ w).boundary_eq_frontier]
+      exact hVfr w
     obtain ⟨htbd, htinter⟩ :=
-      section34TargetRecognition hdata hdisk hres hface tc tcBd htcdef htcbddef
+      section34TargetRecognition_of_tiling hdata hdisk hres hVtile hEtile hface tc tcBd
+        htcdef htcbddef
     obtain ⟨hcut, hctrl, hgraph, -, -, htgtVdef, -, hVcell, hEcell, -, -, htetraCar, -, -, -,
       -, -⟩ := id hdata
     obtain ⟨hDcell, -, -, -, -, hAcell, -, -, hPcell, -, -, -⟩ := id hdisk
-    obtain ⟨hRcell, hXcell, hIcell, -, -, -, -, -, -, -, -, -, -, -, -, hresCar⟩ := id hres
+    obtain ⟨hRcell, hXcell, hIcell, -, -, -, -, -, -, -, -, -, -, -, -, hresCar, -, -⟩ := id hres
     obtain ⟨-, -, -, hsc, hsbd, hsinter, hsdim, hsLF, hscover, -, -, -, -, -, -, -, -, hparent,
       -, hsupT, -, -, -, -, -⟩ := hcut
     obtain ⟨-, hHsub, hHlf, hHdiam, -, -⟩ := hctrl
