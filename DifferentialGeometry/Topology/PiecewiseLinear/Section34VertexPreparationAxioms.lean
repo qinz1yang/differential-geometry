@@ -2,7 +2,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CenteredPrismBallPair
 import DifferentialGeometry.Topology.PiecewiseLinear.IsAnnulusOnCompact
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteOpenEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSeparationScales
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldPointTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellEnlargement
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellMarkerMove
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundarySphere
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStabilityScales
@@ -41,8 +43,10 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_locallyFinite_open_supersets
 #print axioms exists_separation_scales_of_locallyFinite
 #print axioms exists_separation_scales_of_locallyFinite_on
+#print axioms exists_isPL_homeomorph_map_point_eqOn_compl
 #print axioms IsPLCellOn.exists_enlargement
 #print axioms exists_locallyFinite_isPLCellOn_enlargements
+#print axioms IsPLCellOn.exists_excluding_point_preserving_union
 #print axioms IsPLHomeomorphInto.exists_pLPiece_of_isPolyhedron
 #print axioms IsPLCellOn.isPolyhedralSphere_boundary
 #print axioms IsPLCellOn.isPolyhedralBall
