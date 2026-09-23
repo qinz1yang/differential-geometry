@@ -417,3 +417,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 07:30 (09-23) — lease e re-dispatched to the compact P6 leaf `exists_compactFaceDisks` (worker c's brick list:
   PL Schoenflies on `∂C_σ`, innermost trace circle, cyclic incidence on `∂σ`, sub-arc 1-cell); told to avoid
   worker a's in-flight trace-circles producer (`CrossingTraceCircles`) and Codex's item 1b.
+* 08:05 (09-23) — accepted worker a's six P4 modules (case (a) of the compression proved as
+  `exists_section34Compression_of_subset`; trace circles; face torus cycle); the leaf stays open on case (b).
+  Bigon leaf needs `hctrl` (interface question for the owner). Lease a re-dispatched on case (b).

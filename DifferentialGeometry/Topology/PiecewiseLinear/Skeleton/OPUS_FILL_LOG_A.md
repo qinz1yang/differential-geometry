@@ -1256,3 +1256,147 @@ torus inside one PL chart with the trace components PL circles (the T_s gap of (
 P6 bridge leaf); (ii) `P' ∩ Θ` carries `H₁ T_s` (the rim `h '' simplexRim ⊆ interior P'` plus
 `CarriesFirstHomologyOnto.of_mayerVietoris` on the ball `P'`, step (iii) of the Batch 7 note);
 (iii) `P' ∩ Θ` has frontier in `Θ` inside the new trace (from `P' ∩ O = P ∩ O` and field 5).
+
+# Batch 9 (P4: compression, both cases; bigon normal form)
+
+## P4 case (a): `exists_section34Compression_of_subset` — CLOSED (case (a) of the frozen leaf, full conclusion)
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/CrossingTraceCircles.lean` | 276 | `83567ab7b1dcf6a18e765bc3f12b638e2e4d0e0aba9df62e490dc81e711c0586` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceTorusCycle.lean` | 359 | `ea07139eb1489964505472007fc57be4c4e81abe6bc420f5d80b66c325652855` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceBallUpdate.lean` | 270 | `e726bf411ab2095514da6f0fa8ba84f7514072cc96a311da22fd3c93dbfff8f5` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionTools.lean` | 357 | `9ebb9c0bb26f3d2b229a6d53e961912fb423c2465fdd65e9baeff0d90938beb6` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionInside.lean` | 522 | `5343dfc8a0b655aec899890ead7971914f76f690649bb73ad9e09d9338ae3d07` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.CrossingTraceCircles
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusCycle
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallUpdate
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionTools
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionInside
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossingTraceCircles.lean with no diagnostics; shared outputs unchanged.`
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceTorusCycle.lean with no diagnostics; shared outputs unchanged.`
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceBallUpdate.lean with no diagnostics; shared outputs unchanged.`
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompressionTools.lean with no diagnostics; shared outputs unchanged.`
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompressionInside.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube23.lean with no diagnostics; shared outputs unchanged.` (all five modules: axioms only `propext`, `Classical.choice`, `Quot.sound`; thirteen linters clean, so no unused hypothesis)
+
+Public names (grepped tree-wide, no clash): `HasPLCrossingAt.exists_lineChart`,
+`exists_iUnion_isPLSphere_one_of_forall_lineChart`;
+`mem_biUnion_convexHull_erase_of_map_mem_graphSkeletonSpace`,
+`map_mem_graphSkeletonSpace_of_mem_biUnion_convexHull_erase`,
+`isCombinatorialSolidTorus_image_section34FaceTorus`, `isPLTorus_image_frontier_section34FaceTorus`;
+`image_connectedComponentIn_subset_diff`, `ncard_image_connectedComponentIn_add_one_le`,
+`HasPLCrossingAt.image_chart_of_mem_maximalAtlas`, `eventually_mem_image_inter_source_iff`,
+`Section34Exterior.mono`, `section34FaceBallInvariants_update_of_subset`,
+`finite_setOf_vertexBallImage_inter_nonempty`; `IsPLBall.exists_compression_trace`,
+`IsPLTorus.carriesFirstHomologyOnto_image_inter_of_isClopen`,
+`finite_setOf_section34Incident_graphIndex`, `exists_chart_section34FaceBall`,
+`section34FaceBall_fields_of_inter_eq`; `exists_section34Compression_of_subset`.
+
+Statement: the frozen leaf's variable block and conclusion verbatim; hypotheses `hh hcut hctrl
+hgraph hinv s` as in the leaf (the graph frame with general `W ψ`), the data of `hop` unpacked
+(`w Dj Jd`, `IsPLCellOn 2 Dj Jd`, `Dj ⊆ tgtVBd w`, `Dj ∩ fblBd s = Jd`, `Dj` misses every
+`tgtE e`) and the case hypothesis `Dj ⊆ fbl s`.  Not used, hence absent: `hU` and the clause
+`Dj \ Jd` misses the other face balls (case (a) only shrinks `fbl s`).
+
+The three P4 gaps of Batch 8 are closed: (i) `isCombinatorialSolidTorus_image_section34FaceTorus`:
+the vertices of `𝒦'` incident to `s` are the vertices of the subdivision `L = restrict 𝒦' ∂s` of
+the rim circle, adjacency of vertex balls = edges of `L` (cut clauses 22-23 and
+`exists_splitDisk_src_eq_inter_vertexBall`), the edge graph of the combinatorial circle `L` is a
+cycle (`exists_cycleGraphIsoOfConnectedDegreeTwo`), so in any chart containing `T_s` its image is a
+combinatorial solid torus (`isCombinatorialSolidTorus_iUnion_of_cycle`) and `c '' ∂T_s` a PL torus
+(also the missing input of the P6 bridge leaf `section34TraceCircle_homologyMap_ne_zero`);
+(ii) the trace in the chart is a finite disjoint union of PL circles
+(`exists_iUnion_isPLSphere_one_of_forall_lineChart`, the argument of
+`IsPolyhedralTubeNeighborhood.exists_traceCircles` with line charts; the line chart from field 5
+since `∂P` is a sphere and `Θ = ∂(c '' T_s)` is the frontier of a regular closed set);
+(iii) `P' ∩ Θ` carries by `CarriesFirstHomologyOnto.inter_frontier_of_chart` with `S = F` the new
+ball and the rim in `F ∩ Int T_s`.  Field 7 then by
+`IsPLTorus.carriesFirstHomologyOnto_image_inter_of_isClopen`.  The chart change for field 5 at the
+points of `Jd` is `HasPLCrossingAt.image_chart_of_mem_maximalAtlas` (transition in `plGroupoid`).
+Near `fbl s` the frontier of all vertex balls is `∂T_s` because only finitely many vertex balls
+meet `H t` (`finite_setOf_vertexBallImage_inter_nonempty`, carrier local finiteness + finite fibres
+of `cr`).  Heartbeats: a direct term for `fbl s ⊆ interior (H t)` through
+`section34TetraObstacle` timed out at `whnf`; `unfold section34TetraObstacle` first fixes it.
+
+## P4 case split and escape cores (`Section34CompressionCases`) — CLOSED (bricks)
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34CompressionCases.lean` | 167 | `f566d851d30cad79138c44cb7f3a2e572ffea7533cb4a5ff85fcb702123938f8` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionCases
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompressionCases.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube24.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T12:50Z; all six Batch 9 modules; axioms only `propext`, `Classical.choice`, `Quot.sound`; thirteen linters clean)
+
+Public names (grepped, no clash): `subset_interior_or_disjoint_sdiff_of_isPLCellOn` (the case split:
+`Dj \ Jd ⊆ Int F` or disjoint from `F`, for a disk meeting `∂F` only in `Jd`, in one chart),
+`exists_tetra_section34Incident_not_incident` (review obligation 2, combinatorial core: a vertex
+not incident to `s` misses one of the two tetrahedra on `s`, via the second coface
+`exists_insert_mem_faces_ne` and `[t₁] ∩ [t₂] = [s]`), `Section34Exterior.notMem_of_frontier_subset`
+(the trap: a non-incident vertex-body point of `H t` lies in no `K` missing `∂H t` with
+`frontier K ⊆ obstacle t`).
+
+## exists_section34Compression (P4) — STUCK on case (b) only
+
+Assembly of the frozen leaf once case (b) exists: `exists_chart_section34FaceBall` gives the chart
+`c` with `fbl s, T_s ⊆ c.source`; `w` is incident (`Jd ⊆ fbl s ∩ tgtV w`, field 3), so
+`Dj ⊆ T_s ⊆ c.source`; `subset_interior_or_disjoint_sdiff_of_isPLCellOn` splits: case (a)
+`Dj ⊆ fbl s` is `exists_section34Compression_of_subset` (closed); `hU` is then used by nothing, so
+the leaf would need `hU` only if case (b) uses it.  Exact remaining goal (leaf binders, the data of
+`hop` unpacked):
+
+    theorem exists_section34Compression_of_disjoint (hU) (hh) (hcut) (hctrl) (hgraph)
+        {fbl fblBd} (hinv) (s) {w Dj Jd} (hDcell : IsPLCellOn 2 Dj Jd)
+        (hDw : Dj ⊆ section34VertexBallImage srcBd f₁ w) (hDJ : Dj ∩ fblBd s = Jd)
+        (hDE : ∀ e, Disjoint Dj (section34SplitDiskImage src f₁ e))
+        (hDo : ∀ s', s' ≠ s → Disjoint (Dj \ Jd) (fbl s'))
+        (hout : Disjoint (Dj \ Jd) (fbl s)) : <the leaf's conclusion>
+
+Missing bricks (review BK route), with what I established while designing them:
+1. Thin 2-handle / shell: in the chart, `W = P ∪ (thin slab over D)` with two PL boundary spheres,
+   `∂W ∩ Θ = (∂P ∩ Θ) \ J`.  Needs a PL product neighbourhood of `D` relative to the crossing of
+   `∂P` with `Θ` along `J` (a regular-neighbourhood normal form of the pair (`Θ`, `∂P`) near `D`);
+   `IsSimplyEmbedded` + `exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron` flatten `Θ` near a
+   disk `D⁺ ⊋ D` but do not align `∂P` with the product near `J`.  Nothing in the tree does this.
+2. Through-tube: a proper arc `α ⊆ W` from the inner to the outer sphere inside `Int N`, off the
+   rim, and `W \ N(α)` a PL ball.  Note: `W \ N(α)` is a ball for every such arc, knotted or not
+   (inner ball ∪ α collapses to a boundary point), but proving it needs a regular-neighbourhood /
+   collapsing theorem for `S² × I` that the tree lacks (`ArcDerivedNeighborhood` handles arcs in
+   combinatorial manifolds, not this shell complement).
+3. Escape (the pocket `X₁`, `∂X₁ = D ∪ E₁ ⊆` obstacle of every tetrahedron on `s`): the trap lemma
+   and the two-tetrahedra lemma above are proved; missing is `X₁ ⊆ H t'` with
+   `X₁ ∩ ∂H t' = ∅` for the tetrahedron `t'` produced by the two-tetrahedra lemma — `X₁` is built in
+   the chart of one carrier, and for the other tetrahedron `H t'` may be a different carrier (in
+   `M₂ ≅ S³` the sphere `D ∪ E₁` bounds balls on both sides), so the pocket has to be identified
+   inside `H t'` separately.
+4. Field 10 after adding the slab: a non-incident point outside the pocket whose old path to `∂H t`
+   crossed the slab region must be rerouted along the outer face of the slab (free of the old
+   obstacle near `D`); fields 3, 4 hold because `D` misses every other vertex ball and every other
+   face ball (`Jd ⊆ Σ` misses `Int N ⊇ fbl s ∩ fbl s'`), so a thin slab does too; field 7 is easy
+   (`Jd` bounds `Dj ⊆ T_s`).
+
+## exists_section34BigonSlide (P4b) — STUCK; statement issue found
+
+Finding (for the lead): unlike `exists_section34Compression`, the frozen bigon leaf receives no
+`hctrl` (and the context has no `HasGroupoid M₂`).  The invariants supply maximal-atlas charts only
+at trace points (field 5) and crossing points (field 6); no hypothesis puts `Dj`, a neighbourhood of
+it, or `fbl s` into one maximal-atlas chart, and `IsPLHomeomorphInto` is local and measured in atlas
+charts, which without `HasGroupoid` need not be PL-compatible.  The drag `Φ` and the cell clause
+`IsPLCellOn 3 (Φ '' fbl s) (Φ '' fblBd s)` need such a chart.  I did not construct a counterexample.
+Proposed fix, same as the compression leaf's second-review repair: add
+`(hctrl : Section34CarrierControl U 𝒦 h η H)` to the bigon leaf; the assembly
+`section34NormalFamily` has `hctrl` in scope at the call.  With it, `exists_chart_section34FaceBall`
+gives the chart containing `fbl s`, `T_s ⊇ Dj ∪ tgtE e`.
+Remaining after that fix: the normal form producer (hypotheses of `exists_bigonDrag`) = a disk
+`D⁺ ⊆ ∂(c '' (tgtV w ∪ tgtV u))` with `Dj` in its interior (complement of a small disk in the
+complement disk), ambient straightening of `D⁺` to a face (`IsPLSphere.isSimplyEmbedded`,
+`exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron`), and a planar normal form in that face:
+a PL disk `Q` around the bigon meeting the circle and the trace in the θ-with-four-tails
+configuration mapped onto the model rectangle (five faces, boundary maps glued edge by edge,
+Alexander trick per face, `exists_isPLHomeomorphOn_union`); none of this is in the tree.  Checked
+while designing: `C ∩ Int Dj = ∅` and `Tr ∩ B' = Bb` (a crossing inside `B'` would enter `Int Dj`),
+other face balls miss `Dj` entirely, so the support can be chosen off them.
