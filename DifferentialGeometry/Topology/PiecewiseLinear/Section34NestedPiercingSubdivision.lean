@@ -184,6 +184,54 @@ theorem restrict_faces_finite_of_finite_new_faces
       (hsB (s.centroid_mem_convexHull (K.nonempty_of_mem_faces hsK)))
   · exact Or.inr ⟨hsR, hsK⟩
 
+theorem LocallyFinitePLPieceIn.isLocallyFiniteRegularNeighborhoodOf_locallyFinite_subdivision
+    {m : ℕ} {X : Type*} [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X} (hU : IsOpen U)
+    (T : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin m)) 3 X U)
+    (A : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m)))
+    (hA : T.complex.faces = ⋃ i, (A i).faces)
+    (hfin : ∀ i, (A i).faces.Finite) (hmono : Monotone fun i => (A i).faces)
+    (hman : ∀ i, IsCombinatorialManifoldWithBoundary 3 (A i))
+    (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m)))
+    (hR : IsSubdivision R T.complex)
+    (hlf : LocallyFinite fun s : R.faces =>
+      (Subtype.val : R.space → _) ⁻¹'
+        convexHull ℝ ((s : Finset (EuclideanSpace ℝ (Fin m))) : Set _))
+    (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m))) [Finite G.faces]
+    (hG : G.faces ⊆ R.faces) (hcard : ∀ s ∈ G.faces, s.card ≤ 2) :
+    IsLocallyFiniteRegularNeighborhoodOf (n := 3)
+      (T.map '' (@derivedNeighborhood _ _ _ (Classical.decEq _) R G).space)
+      (T.map '' G.space) U := by
+  let T' := T.subdivide R hR hlf
+  let B (i : ℕ) := restrict R (A i).space
+  have hsub (i : ℕ) : (A i).faces ⊆ T.complex.faces := by
+    rw [hA]
+    exact subset_iUnion (fun j => (A j).faces) i
+  have hcover : T'.complex.faces = ⋃ i, (B i).faces := by
+    apply Subset.antisymm
+    · intro s hs
+      obtain ⟨t, ht, hst⟩ := hR.exists_face_subset hs
+      obtain ⟨i, hi⟩ := mem_iUnion.mp (hA ▸ ht)
+      exact mem_iUnion.mpr ⟨i, hs, hst.trans ((A i).convexHull_subset_space hi)⟩
+    · exact iUnion_subset fun i => restrict_faces_subset R (A i).space
+  have hBfin (i : ℕ) : (B i).faces.Finite := by
+    have : Finite (A i).faces := (hfin i).to_subtype
+    apply (T'.finite_faces_inter_of_isCompact (isPolyhedron_space (A i)).isCompact
+      ((space_mono_of_faces_subset (hsub i)).trans hR.space_eq.symm.subset)).subset
+    rintro s ⟨hs, hsc⟩
+    have hx : s.centroid ℝ id ∈ convexHull ℝ (s : Set _) :=
+      s.centroid_mem_convexHull (R.nonempty_of_mem_faces hs)
+    exact ⟨hs, s.centroid ℝ id, hx, hsc hx⟩
+  have hBmono : Monotone fun i => (B i).faces := by
+    intro i j hij s hs
+    exact ⟨hs.1, hs.2.trans (space_mono_of_faces_subset (hmono hij))⟩
+  have hBman (i : ℕ) : IsCombinatorialManifoldWithBoundary 3 (B i) := by
+    have : Finite (A i).faces := (hfin i).to_subtype
+    have : Finite (B i).faces := (hBfin i).to_subtype
+    exact (hman i).of_isSubdivision (hR.restrict (A i) (hsub i))
+  exact T'.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood hU B hcover hBfin
+    hBmono hBman G hG hcard
+
 theorem LocallyFinitePLPieceIn.isLocallyFiniteRegularNeighborhoodOf_subdivision
     {m : ℕ} {X : Type*} [TopologicalSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X} (hU : IsOpen U)
@@ -199,30 +247,8 @@ theorem LocallyFinitePLPieceIn.isLocallyFiniteRegularNeighborhoodOf_subdivision
     IsLocallyFiniteRegularNeighborhoodOf (n := 3)
       (T.map '' (@derivedNeighborhood _ _ _ (Classical.decEq _) R G).space)
       (T.map '' G.space) U := by
-  let T' := T.subdivide R hR
-    (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hnew)
-  let B (i : ℕ) := restrict R (A i).space
-  have hsub (i : ℕ) : (A i).faces ⊆ T.complex.faces := by
-    rw [hA]
-    exact subset_iUnion (fun j => (A j).faces) i
-  have hcover : T'.complex.faces = ⋃ i, (B i).faces := by
-    apply Subset.antisymm
-    · intro s hs
-      obtain ⟨t, ht, hst⟩ := hR.exists_face_subset hs
-      obtain ⟨i, hi⟩ := mem_iUnion.mp (hA ▸ ht)
-      exact mem_iUnion.mpr ⟨i, hs, hst.trans ((A i).convexHull_subset_space hi)⟩
-    · exact iUnion_subset fun i => restrict_faces_subset R (A i).space
-  have hBfin (i : ℕ) : (B i).faces.Finite :=
-    restrict_faces_finite_of_finite_new_faces (hsub i) (hfin i) hnew
-  have hBmono : Monotone fun i => (B i).faces := by
-    intro i j hij s hs
-    exact ⟨hs.1, hs.2.trans (space_mono_of_faces_subset (hmono hij))⟩
-  have hBman (i : ℕ) : IsCombinatorialManifoldWithBoundary 3 (B i) := by
-    have : Finite (A i).faces := (hfin i).to_subtype
-    have : Finite (B i).faces := (hBfin i).to_subtype
-    exact (hman i).of_isSubdivision (hR.restrict (A i) (hsub i))
-  exact T'.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood hU B hcover hBfin
-    hBmono hBman G hG hcard
+  exact T.isLocallyFiniteRegularNeighborhoodOf_locallyFinite_subdivision hU A hA hfin hmono
+    hman R hR (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hnew) G hG hcard
 
 theorem LocallyFinitePLPieceIn.isPLSphere_preimage_of_isPolyhedralSphere
     {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
