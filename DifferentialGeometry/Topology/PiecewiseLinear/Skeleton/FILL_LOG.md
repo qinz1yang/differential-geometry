@@ -1379,3 +1379,221 @@ ControlledRevolvedTower.exists_canonicalTower is a checked conditional
 consumer of Moise307, while exists_controlled_revolved_tower itself is an
 open frozen leaf. Neither certifies a standalone fixture. No checker success
 line or SHA-256 exists for these two uncreated fixtures.
+
+
+## Codex item 7 — CGN edge matching, checked partial layer (2026-09-23 14:40 UTC)
+
+Worker: Codex, owner-authorized lease codex-moise-recon, token codex-moise-recon-20260922, private output root C:\Users\liao9\AppData\Local\Temp\codex-moise-recon. The host guard was checked before every compile; the count was below four each time. Only new Lean files were written. No frozen source, Opus-owned source, root aggregate, lease, or Git state was edited.
+
+Sub-leaf accounting, in queue order:
+
+1. exists_vertex_signs_of_cycle_zero is CLOSED in GraphCoboundary. Its edgeBoundary counts both endpoints over ZMod 2; a loop contributes zero, while parallel edges remain separate edge labels. The proof works for arbitrary vertex and edge types via finite-support chains, derives the annihilator condition from every finite mod-two cycle, and uses linear duality to produce the vertex signs.
+2. The planar-chart input layer is checked. Section34SplitDisksDisjoint proves distinct source splitting disks disjoint from the cut-frame vertex-incidence clause. PLCellPullback transports intrinsic disk coordinates into a vertex-cell model. PLCellBoundaryHoledChart gives a planar chart of the complementary sphere disk with the other marked disks in its planar interior and intrinsic rims on planar frontiers. Section34BoundaryDiskFamilies verifies the exact source and target incident-disk premises from the frozen clauses. A single theorem choosing a marked incident edge at every vertex is still OPEN: the generic chart theorem takes a chosen disk, and the nonempty incident-edge choice has not been exported from the cut frame.
+3. The simultaneous edge-disk choice is CLOSED. PLCellPairMap maps two genuine PL cells and their intrinsic boundaries; Section34SharedDiskMaps chooses one map φ e for each edge, used at both endpoints, with exact disk and rim images. The stronger item-2 reference sphere maps agreeing pointwise on all incident disks remain OPEN. HoledSphereExtension yields a reference holed-sphere map from one outer rim map and sends the other labelled rims to their target sets, but pointwise agreement with the selected φ e on those other rims needs positive corrections. This is the orientation-character work of items 3–5, not supplied by independent reference choices.
+4. Item 3 remains OPEN. The proposed whole-cell closeness route cannot be read from the frozen leaf: exists_section34PiercingPackage separately returns ∀ w x ∈ Cc w, dist (G w x) (h x) < ε w, but Section34PiercingConditions has no such field, and frozen exists_section34EdgeMatching receives only hpack after protected removal. The call site has hcore₂ and hDmark from prior work but does not pass either to this leaf. This does not prove the leaf false. An alternative anchor is now checked: LocallyFiniteClosedCover plus Section34VertexMarkerInterior derive h '' simplexBody 𝒦' w.1 ⊆ interior (Dv w) from the frozen neighborhood, separation and local-finiteness clauses. PLCellInteriorImage and Section34VertexInteriorOverlap then prove (h '' interior (src (.vertexBall w)) ∩ interior (Dv w)).Nonempty at every vertex. The remaining producer must relate these anchored local degrees across each shared splitting disk and every mod-two edge cycle, using the actual h paths and target disk placements. No orientation-cycle equality or edge sign has been claimed.
+5. Positive corrections, joint boundary matching, nested torus, and the frozen endpoint remain OPEN; queue order was respected.
+
+Named-module checker success lines (each receipt: Lean exit 0, diagnosticLines = 0, stable source hash, shared outputs unchanged):
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Combinatorics\GraphCoboundary.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SplitDisksDisjoint.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellPullback.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellBoundaryHoledChart.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34BoundaryDiskFamilies.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellPairMap.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SharedDiskMaps.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Compactness\LocallyFiniteClosedCover.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexMarkerInterior.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellInteriorImage.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexInteriorOverlap.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+
+- GraphCoboundary.lean: 111AA1B8247ADCBC6D90F4CCD0C7146937E693D0901E3B462966E366DA8F32F3
+- Section34SplitDisksDisjoint.lean: 1F032CD2B4BB073F8022F8BA7BE691ACA803C3A3AD37A923348EB96682C3FD98
+- PLCellPullback.lean: 4076669D7D5A37E73B6CBE6B42CDF560F5068BA6591FBB9F0E448CEBD9D3C0EF
+- PLCellBoundaryHoledChart.lean: 10FC5D3923377A0C138428D4EDEF9122FE554950E9C02495326FE80B372DBFBD
+- Section34BoundaryDiskFamilies.lean: F68F282F9D244873E2F33C57A38CCEED1D860DE885C23D791EF001BDDFC5E537
+- PLCellPairMap.lean: E63E1DBCB51FCBC03A95FB4D915FE260357F026A1395A647764497457C1CC0F5
+- Section34SharedDiskMaps.lean: A5BBE221D58713445B71D57A5C9CF9A47120132DA3AD511DF7C48883D4AD9ED2
+- LocallyFiniteClosedCover.lean: 6B0B29D9B99F199CC13D87CD5EB56E31A21802978F2C7B8D02FFB5EE06A24198
+- Section34VertexMarkerInterior.lean: 7D5E2FFE55C3EE027DA76503D441DC55B1DB9CFA29F1E9F82D68E170CEAC6A71
+- PLCellInteriorImage.lean: 048C376FA85C08EBE7766E92CECBCC39EDBBDA4F5388AF257273D034FB665FBE
+- Section34VertexInteriorOverlap.lean: 7F23553F1A9111A0FA89CAD02030B39B266763355B62822EF1552B98D5AAFB22
+
+External #print axioms audits of the new public endpoints all exited 0 and found only propext, Classical.choice, and Quot.sound, with no sorryAx. The wrapper reports the intentional information lines as diagnostics. PLCellBoundaryHoledChart imports the Opus-b HoledSphereExtension at source SHA-256 EA8F04D298CD020434EC22EEDD4EC777FDFDEBD0644B13D015D3FC690D7914D7; the worker's CLOSED receipt has the same bytes. It was only read and imported. The lead still owns acceptance, aggregate registration and commit.
+
+## Codex C1 surface trace - local subcomplex trace check (
+2026-09-23T14:42:53.9105134Z
+)
+
+Module: DerivedCellSurfaceTrace.lean. Checker exit: 
+1
+.
+SHA-256: 
+088A2AE5BF06617BDB08ADD22C3E6E22161F8AEFF21EDFACC711F12A710D9394
+Sub-leaf list: derived cell base intersection with a subcomplex; PL ball trace for a boundary face of a manifold with boundary. The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellSurfaceTrace.lean:35:10: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneSet (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision L) {Finset.centroid ℝ s id}).space
+in the target expression
+  x ∈ coneSet (Finset.centroid ℝ s id) (derivedNeighborhoodCellBase L s).space
+
+E : Type u_1
+inst✝¹ : NormedAddCommGroup E
+inst✝ : NormedSpace ℝ E
+K L : Geometry.SimplicialComplex ℝ E
+hLK : L.faces ⊆ K.faces
+s : Finset E
+hs : s ∈ L.faces
+hsub : (derivedNeighborhoodCellBase L s).space ⊆ (derivedNeighborhoodCellBase K s).space
+hcone :
+  coneSet (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision K) {Finset.centroid ℝ s id}).space ∩ L.space =
+    coneSet (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision L) {Finset.centroid ℝ s id}).space
+hrad : IsConeBase (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision K) {Finset.centroid ℝ s id})
+x : E
+hxS : x ∈ (derivedNeighborhoodCellBase K s).space
+hxL : x ∈ L.space
+⊢ x ∈ coneSet (Finset.centroid ℝ s id) (derivedNeighborhoodCellBase L s).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellSurfaceTrace.lean:40:18: error: Type mismatch
+  hz
+has type
+  z ∈ (derivedNeighborhoodCellBase L s).space
+but is expected to have type
+  Finset.centroid ℝ s id + t • (Finset.centroid ℝ s id + t • (z - Finset.centroid ℝ s id) - Finset.centroid ℝ s id) ∈
+    (derivedNeighborhoodCellBase L s).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellSurfaceTrace.lean:45:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneSet (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision L) {Finset.centroid ℝ s id}).space
+in the target expression
+  x ∈ coneSet (Finset.centroid ℝ s id) (derivedNeighborhoodCellBase L s).space
+
+case h₂
+E : Type u_1
+inst✝¹ : NormedAddCommGroup E
+inst✝ : NormedSpace ℝ E
+K L : Geometry.SimplicialComplex ℝ E
+hLK : L.faces ⊆ K.faces
+s : Finset E
+hs : s ∈ L.faces
+hsub : (derivedNeighborhoodCellBase L s).space ⊆ (derivedNeighborhoodCellBase K s).space
+hcone :
+  coneSet (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision K) {Finset.centroid ℝ s id}).space ∩ L.space =
+    coneSet (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision L) {Finset.centroid ℝ s id}).space
+hrad : IsConeBase (Finset.centroid ℝ s id) (upperLink (barycentricSubdivision K) {Finset.centroid ℝ s id})
+x : E
+hx : x ∈ (derivedNeighborhoodCellBase L s).space
+hxC : x ∈ coneSet (Finset.centroid ℝ s id) (derivedNeighborhoodCellBase L s).space
+⊢ x ∈ L.space
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedCellSurfaceTrace.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\DerivedCellSurfaceTrace.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:44:46.7826708Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellSurfaceTrace. Checker exit: 0.
+SHA-256: 0118F3309E14599577478E6ADDAB28534FE4F29C66AF56006340621EDD963087
+Sub-leaf list: Derived cell base intersection with a subcomplex; PL ball trace for a boundary face of a manifold with boundary.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellSurfaceTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:48:42.3431292Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.UpperLinkSubcomplex. Checker exit: 1.
+SHA-256: 43F0875972C5D46FEC9C879F34DEFA2C8410BA5254240B3F095A4EC0FDED9C68
+Sub-leaf list: The upper link of any face intersects a subcomplex exactly in the upper link calculated in that subcomplex.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.lean:23:4: error(lean.unknownIdentifier): Unknown identifier `barycentricSubdivision_faces_subset`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.lean:40:12: error(lean.unknownIdentifier): Unknown identifier `mem_faces_of_mem_openSimplex_of_mem_space`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.lean:42:10: error: No goals to be solved
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.lean:48:6: error: Tactic `apply` failed: could not unify the type of `space_mono_of_faces_subset ?m.333 ?m.335`
+  ?m.334 ∈ (upperLink L e).space
+with the goal
+  x ∈ (upperLink K e).space
+
+case h₂.left
+E : Type u_1
+inst✝¹ : NormedAddCommGroup E
+inst✝ : NormedSpace ℝ E
+K L : Geometry.SimplicialComplex ℝ E
+hLK : L.faces ⊆ K.faces
+e : Finset E
+hLbK : (barycentricSubdivision L).faces ⊆ (barycentricSubdivision K).faces
+x : E
+hx : x ∈ (upperLink L e).space
+⊢ x ∈ (upperLink K e).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.lean:48:84: error: Application type mismatch: The argument
+  hx
+has type
+  x ∈ (upperLink L e).space
+but is expected to have type
+  ?m.334 ∈ (upperLink K e).space
+in the application
+  space_mono_of_faces_subset ?m.333 hx
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\UpperLinkSubcomplex.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...x.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:50:00.6753927Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.UpperLinkSubcomplex. Checker exit: 0.
+SHA-256: D6AD532D83C30D2D1D5832636C8690B49397037AAD9F5B528EE798360317CDC3
+Sub-leaf list: The upper link of any face intersects a subcomplex exactly in the upper link calculated in that subcomplex.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:51:08.5883781Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.UpperLinkBoundary. Checker exit: 0.
+SHA-256: 7ED3E4FA57FE40F813589E37D3DABE05855665C1EA1CECD085EE71223F8C321B
+Sub-leaf list: Geometric link after barycentric subdivision; boundary commutes with barycentric subdivision; intrinsic boundary of a vertex upper link; intrinsic boundary of a derived cell base.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\UpperLinkBoundary.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:53:35.8532985Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceArc. Checker exit: 0.
+SHA-256: 7DC4DABDCA66BF912D5F5A729522F9CBAA871F854CF6C804958C76F268815224
+Sub-leaf list: A surface with boundary cuts out a PL arc on a derived cell base; its parametrization has the prescribed two boundary-trace points as endpoints.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceArc.lean with no diagnostics; shared outputs unchanged.
+```
+

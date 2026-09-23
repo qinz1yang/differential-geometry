@@ -446,3 +446,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   of `G w` to `h` that the package returns and the assembly holds; review request BN written, owner to send.
 * 13:10 (09-23) — accepted worker b's §33 Lemma 13 and the page-238 extension (14 modules); §33 has one leaf
   left (Lemma 10, b still on it). Physical `sorry` 32.
+* 13:50 (09-23) — registered Codex's 11 edge-matching modules (GraphCoboundary, LocallyFiniteClosedCover, nine
+  PiecewiseLinear bricks); the leaf waits on review BN. Accepted worker b's §33 Lemma 13 + extension (14 modules).
