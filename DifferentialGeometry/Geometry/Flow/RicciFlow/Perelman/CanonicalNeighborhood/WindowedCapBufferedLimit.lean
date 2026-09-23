@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarBuffer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedImageDepth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCapCanonicalLimit
@@ -145,6 +146,98 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 
 variable {M : ℕ → Type u} [∀ i, TopologicalSpace (M i)] [∀ i, ChartedSpace ThreeSpace (M i)]
   [∀ i, IsManifold I3 ∞ (M i)] [∀ i, T2Space (M i)] [∀ i, SigmaCompactSpace (M i)]
+
+private theorem cap_tube_map_eq_of_heq
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} {eps eps' : ℝ}
+    {x : M} {t : ℝ} {U V : Set M} (heps : eps = eps') (hUV : U = V)
+    {a : LocalCap S eps x t U} {b : LocalCap S eps' x t V} (h : HEq a b) :
+    a.tube_map = b.tube_map := by
+  cases heps
+  cases hUV
+  rw [eq_of_heq h]
+
+theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_cap_with_neck_chart
+    {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
+    (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
+    {x : ∀ i, M i} {t : ℕ → ℝ}
+    (W : ∀ i, WindowedModelWitness (delta i) kappa (S i) (x i) (t i))
+    (hdelta : Tendsto delta atTop (𝓝 0))
+    (hreg : ∀ i, Ioo (t i - (delta i * (S i).scalar (t i) (x i))⁻¹) (t i) ⊆ (D i).regular)
+    (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    [PreconnectedSpace L.M] (hcomplete : MetricComplete (L.atTime 0))
+    {phi : ℕ → ℕ} (hphi : Tendsto phi atTop atTop)
+    (F : PointedRiemannianConvergenceMaps ⟨fun i => (W i).model.atTime 0⟩
+      (L.atTime 0) phi)
+    (hcmp : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A → ∀ order : ℕ,
+      ∀ eta : ℝ, 0 < eta → ∀ᶠ i in atTop,
+        Nonempty (MetricComparisonOn L.S.base.metric (W (phi i)).model.S.base.metric
+          (F.map i) K (Icc (-A) 0) order eta))
+    {eps alpha C1 C2 H : ℝ} (K : CanonicalWitness L.S eps C1 C2 L.basepoint 0)
+    (hscalar : L.S.scalar 0 L.basepoint = 1)
+    (cap : LocalCap L.S eps L.basepoint 0 K.domain.carrier)
+    (hcap : ∃ depth, K.alternative = CanonicalAlternative.cap cap depth)
+    {v : L.M} (neck : StrongNeck L.S eps v 0) (hmap : ∀ z, cap.tube_map z = neck.map z)
+    (ha : 0 < alpha) (hasmall : alpha < 1 / 11)
+    (heps : eps < neckModelTolerance (alpha / 4))
+    (hfar : ∀ y ∈ cap.tube, max 40000 (2 * max H 0) ≤ metricDistance (L.S.base.metric 0) L.basepoint y) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ᶠ i in atTop,
+      ∃ Ki : CanonicalWitness (S (phi i)) (2 * (alpha / 4)) (max C1 2)
+          (max (sourceCurvatureBound 3 C2)
+            (max (4 * C2) (2 * windowedGoodPointConstant (18 * sourceCurvatureBound 3 C2))))
+          (x (phi i)) (t (phi i)),
+        Ki.domain.carrier =
+          (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' K.domain.carrier ∧
+        ∃ capi depthi, Ki.alternative = CanonicalAlternative.cap capi depthi ∧
+          capi.tube = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.tube ∧
+          capi.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.core.carrier ∧
+          capi.tube_map = cap.tube_map.trans
+            (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
+          ∃ ni : StrongNeck (S (phi i)) alpha
+              ((W (phi i)).embedding (F.map i v)) (t (phi i)),
+            ni.map = neck.map.trans
+              (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
+            ∃ B : BufferedCanonical (S (phi i)) alpha C H (x (phi i)) (t (phi i)),
+              B.tolerance = 2 * (alpha / 4) ∧ B.witness.domain.carrier = Ki.domain.carrier ∧
+              B.witness.radius = Ki.radius ∧
+              (∃ capB depthB, B.witness.alternative = CanonicalAlternative.cap capB depthB ∧ HEq capB capi) ∧
+              B.witness.capTubeHasNeckChart alpha := by
+  have hv : v ∈ cap.tube := by
+    rw [← cap.tube_eq]
+    exact ⟨(neck.center, 0), ⟨mem_univ _, by norm_num⟩,
+      (hmap (neck.center, 0)).trans neck.center_eq⟩
+  obtain ⟨C, hC, hevent⟩ := K.exists_eventually_buffered_image_of_windowed_models_of_cap_collar
+    hS W hdelta hreg L hcomplete hphi F hcmp hscalar cap hcap neck
+    (by
+      rw [← cap.tube_eq]
+      rintro y ⟨z, hz, rfl⟩
+      refine ⟨z, ⟨hz.1, ?_⟩, hmap z⟩
+      have hz0 : z.2 = 0 := hz.2
+      rw [hz0]
+      norm_num)
+    hv ha hasmall heps hfar
+  refine ⟨C, hC, hevent.mono ?_⟩
+  intro i hi
+  obtain ⟨Ki, hKi, capi, depthi, hKiAlt, htubei, hcorei, hmapi, ni, hni, B,
+    hBeps, hBU, hBr, capB, depthB, hBAlt, hcapB⟩ := hi
+  have hvalues : ∀ z, capi.tube_map z = ni.map z := by
+    intro z
+    rw [hmapi, hni]
+    change (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
+      (W (phi i)).embedding) (cap.tube_map z) =
+        (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
+          (W (phi i)).embedding) (neck.map z)
+    rw [hmap z]
+  have hcapvalues : ∀ z, capB.tube_map z = ni.map z := by
+    rw [cap_tube_map_eq_of_heq hBeps hBU hcapB]
+    exact hvalues
+  refine ⟨Ki, hKi, capi, depthi, hKiAlt, htubei, hcorei, hmapi, ni, hni,
+    B, hBeps, hBU, hBr, ⟨capB, depthB, hBAlt, hcapB⟩, ?_⟩
+  intro cap' depth' hcap'
+  rw [hBAlt] at hcap'
+  cases hcap'
+  exact ⟨_, ni, hcapvalues⟩
+
 
 theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_cap
     {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}

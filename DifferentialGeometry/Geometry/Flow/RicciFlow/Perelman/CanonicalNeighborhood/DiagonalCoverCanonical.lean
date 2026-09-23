@@ -28,7 +28,15 @@ private theorem cap_tube_eq_of_heq
   cases hUV
   rw [eq_of_heq h]
 
-theorem exists_canonicalWitness_of_diagonal_cylinder_cover
+private theorem cap_tube_map_eq_of_heq
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} {eps : ℝ} {p : M} {t : ℝ}
+    {U V : Set M} (hUV : U = V) {a : LocalCap S eps p t U} {b : LocalCap S eps p t V}
+    (h : HEq a b) : a.tube_map = b.tube_map := by
+  cases hUV
+  rw [eq_of_heq h]
+
+theorem exists_canonicalWitness_with_neck_tube_of_diagonal_cylinder_cover
     (P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     (cover : ShrinkingCylinderCover P) (hdiagonal : cover.DiagonalModel)
     (hscalar : PointedFlowScalarAtBase P 1) {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11)
@@ -36,7 +44,8 @@ theorem exists_canonicalWitness_of_diagonal_cylinder_cover
     ∃ A C : ℝ, ∃ K : CanonicalWitness P.S eps A C P.basepoint 0,
       ∃ cap : LocalCap P.S eps P.basepoint 0 K.domain.carrier,
         (∃ depth, K.alternative = CanonicalAlternative.cap cap depth) ∧
-        ∃ (v : P.M) (neck : StrongNeck P.S eps v 0), v ∈ cap.tube ∧
+        ∃ (v : P.M) (neck : StrongNeck P.S eps v 0),
+          (∀ z : Cylinder, cap.tube_map z = neck.map z) ∧ v ∈ cap.tube ∧
           neck.map '' (univ ×ˢ ({0} : Set ℝ)) ⊆ cap.tube ∧
           ∀ y ∈ cap.tube, H < metricDistance (P.S.base.metric 0) P.basepoint y := by
   obtain ⟨d, _hprojection, hmetric⟩ := cover.exists_diagonal_shrinking_model P hdiagonal hscalar
@@ -67,14 +76,37 @@ theorem exists_canonicalWitness_of_diagonal_cylinder_cover
       ∀ y ∈ capK.tube, H < metricDistance (P.S.base.metric 0) (d (cylinderDiagonalQuotientMap p)) y := by
     rw [cap_tube_eq_of_heq hKU hcapK]
     exact ⟨hv, hcentral, fun y hy => (le_max_right _ _).trans_lt (hfar y hy)⟩
+  have hmaps : ∀ z : Cylinder, capK.tube_map z = neck.map z := by
+    intro z
+    rw [cap_tube_map_eq_of_heq hKU hcapK]
+    have hneck := (hchain j).2.1 z
+    change neck.map z = _ at hneck
+    rw [hmap, hneck, add_comm L z.2]
   have hresult : ∃ A C : ℝ, ∃ K : CanonicalWitness P.S eps A C (d (cylinderDiagonalQuotientMap p)) 0,
       ∃ cap : LocalCap P.S eps (d (cylinderDiagonalQuotientMap p)) 0 K.domain.carrier,
         (∃ depth, K.alternative = CanonicalAlternative.cap cap depth) ∧
-        ∃ (v : P.M) (neck : StrongNeck P.S eps v 0), v ∈ cap.tube ∧
+        ∃ (v : P.M) (neck : StrongNeck P.S eps v 0),
+          (∀ z : Cylinder, cap.tube_map z = neck.map z) ∧ v ∈ cap.tube ∧
           neck.map '' (univ ×ˢ ({0} : Set ℝ)) ⊆ cap.tube ∧
           ∀ y ∈ cap.tube, H < metricDistance (P.S.base.metric 0) (d (cylinderDiagonalQuotientMap p)) y :=
-    ⟨r, C, K, capK, ⟨depthK, hKalt⟩, v, neck, hdata⟩
+    ⟨r, C, K, capK, ⟨depthK, hKalt⟩, v, neck, hmaps, hdata⟩
   rwa [hpbase] at hresult
+
+theorem exists_canonicalWitness_of_diagonal_cylinder_cover
+    (P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    (cover : ShrinkingCylinderCover P) (hdiagonal : cover.DiagonalModel)
+    (hscalar : PointedFlowScalarAtBase P 1) {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11)
+    (H : ℝ) :
+    ∃ A C : ℝ, ∃ K : CanonicalWitness P.S eps A C P.basepoint 0,
+      ∃ cap : LocalCap P.S eps P.basepoint 0 K.domain.carrier,
+        (∃ depth, K.alternative = CanonicalAlternative.cap cap depth) ∧
+        ∃ (v : P.M) (neck : StrongNeck P.S eps v 0), v ∈ cap.tube ∧
+          neck.map '' (univ ×ˢ ({0} : Set ℝ)) ⊆ cap.tube ∧
+          ∀ y ∈ cap.tube, H < metricDistance (P.S.base.metric 0) P.basepoint y := by
+  obtain ⟨A, C, K, cap, halt, v, neck, _, hv, hcentral, hfar⟩ :=
+    exists_canonicalWitness_with_neck_tube_of_diagonal_cylinder_cover
+      P cover hdiagonal hscalar heps hsmall H
+  exact ⟨A, C, K, cap, halt, v, neck, hv, hcentral, hfar⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

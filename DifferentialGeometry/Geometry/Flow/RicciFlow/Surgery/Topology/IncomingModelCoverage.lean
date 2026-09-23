@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedBufferedCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentModelTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalPullbackReduction
@@ -126,24 +127,40 @@ theorem exists_uniform_high_curvature_models :
   refine ⟨Q, hQ, fun x t ht hx => ?_⟩
   exact (hm x t ht hx).mono_kappa hμ (hμle _)
 
+theorem exists_all_point_canonical_neighborhoods_with_cap_neck_charts :
+    ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
+      ∃ C1 C2 Q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < Q ∧
+        ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
+          ∃ K : CanonicalWitness G.flow eps C1 C2 x t, K.capTubeHasNeckChart eps := by
+  refine ⟨1 / 44, by norm_num, ?_⟩
+  intro eps heps hsmall
+  have hsmall' : eps < 1 / 11 := hsmall.trans_lt (by norm_num)
+  obtain ⟨C, delta, hC, hd, hd1, htransfer⟩ :=
+    exists_uniform_windowed_bufferedCanonical_with_cap_neck_charts heps hsmall' 1
+  obtain ⟨kappa, hkappa, hm⟩ := G.exists_uniform_high_curvature_models
+  obtain ⟨Q, hQ, hmodel⟩ := hm delta hd hd1
+  refine ⟨C, C, Q, hC, hC, hQ, ?_⟩
+  intro x t ht hR
+  have hw := hmodel x t ht hR
+  have hreg : Ioo (t - (delta * G.flow.scalar t x)⁻¹) t ⊆
+      (RealTimeInterval.closedOpen a s G.lt).regular := by
+    obtain ⟨W, _⟩ := hw
+    simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
+      interior_mono W.window_mem
+  obtain ⟨B, hB⟩ := htransfer kappa P.Carrier _ G.flow G.equation delta
+    P.orientation x t le_rfl hreg hw
+  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall',
+    hB.mono_eps B.tolerance_lt.le hsmall'⟩
+
 theorem exists_all_point_canonical_neighborhoods :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 Q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < Q ∧
         ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
           Nonempty (CanonicalWitness G.flow eps C1 C2 x t) := by
-  obtain ⟨epsCan, hepsCan, hpb⟩ := buffered_canonical_pullback
+  obtain ⟨epsCan, hepsCan, hmain⟩ := G.exists_all_point_canonical_neighborhoods_with_cap_neck_charts
   refine ⟨epsCan, hepsCan, ?_⟩
   intro eps heps hsmall
-  obtain ⟨C1, C2, hC1, hC2, htransfer⟩ := hpb eps heps hsmall
-  obtain ⟨kappa, hkappa, hm⟩ := G.exists_uniform_high_curvature_models
-  obtain ⟨delta, hd, hd1, hdelta⟩ := htransfer kappa hkappa
-  obtain ⟨Q, hQ, hmodel⟩ := hm delta hd hd1
-  refine ⟨C1, C2, Q, hC1, hC2, hQ, ?_⟩
-  intro x t ht hR
-  have hw := hmodel x t ht hR
-  apply hdelta P.Carrier _ G.flow G.equation P.orientation x t ?_ hw
-  obtain ⟨W, _⟩ := hw
-  simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
-    interior_mono W.window_mem
+  obtain ⟨C1, C2, Q, hC1, hC2, hQ, hK⟩ := hmain eps heps hsmall
+  exact ⟨C1, C2, Q, hC1, hC2, hQ, fun x t ht hR => ⟨(hK x t ht hR).choose⟩⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionBufferedCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedRoundComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelWitness
@@ -196,7 +197,19 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
   PointedFlowData.t2TangentBundle
 
-theorem exists_windowed_bufferedCanonical_of_round_model
+private theorem capTubeHasNeckChart_of_heq
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+    {eps eps' C1 C2 alpha : ℝ} {x : M} {t : ℝ}
+    {K : CanonicalWitness S eps C1 C2 x t} {K' : CanonicalWitness S eps' C1 C2 x t}
+    (heps : eps = eps') (hK : HEq K K') (h : K'.capTubeHasNeckChart alpha) :
+    K.capTubeHasNeckChart alpha := by
+  cases heps
+  rw [eq_of_heq hK]
+  exact h
+
+theorem exists_windowed_bufferedCanonical_with_cap_neck_charts_of_round_model
     {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 11) (H : ℝ) :
     ∃ C delta0 : ℝ, 1 ≤ C ∧ 0 < delta0 ∧
       ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
@@ -205,7 +218,8 @@ theorem exists_windowed_bufferedCanonical_of_round_model
         {delta kappa : ℝ} {x : M} {t : ℝ} (W : WindowedModelWitness delta kappa S x t),
         delta ≤ delta0 → IsSolutionOn S →
         Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
-        IsShrinkingSphericalSpaceFormFlow W.model → Nonempty (BufferedCanonical S alpha C H x t) := by
+        IsShrinkingSphericalSpaceFormFlow W.model →
+          ∃ B : BufferedCanonical S alpha C H x t, B.witness.capTubeHasNeckChart alpha := by
   let A := 2 * (Real.pi / Real.sqrt (1 / 6)) + 1
   have hA : 1 ≤ A := by
     have hnonneg : 0 ≤ Real.pi / Real.sqrt (1 / 6) := by positivity
@@ -228,23 +242,48 @@ theorem exists_windowed_bufferedCanonical_of_round_model
     K0 with alternative := CanonicalAlternative.round hwhole (hK0univ.symm ▸ R)
             volume := by intro hv; cases hv }
   obtain ⟨K'⟩ := hdelta W hd hS hregular K ⟨hwhole, hK0univ.symm ▸ R, rfl⟩
-  apply K'.exists_bufferedCanonical (half_lt_self ha)
-  intro cap hc
-  obtain ⟨hdepth, _⟩ := hc
-  let j : Fin cap.chain.count := ⟨0, cap.chain.count_pos⟩
-  let p := (cap.chain.necks j).center
-  have hv : cap.tube_map (p, 0) ∈ cap.tube := by
-    rw [← cap.tube_eq]
-    exact ⟨(p, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩
-  have hcontra := localCap_tube_depth_lt_two_mul_comparisonConstant K' cap hdepth hv
-  have hsqrt : (1 / 10 : ℝ) < Real.sqrt (1 / 6) := by
-    nlinarith [Real.sqrt_nonneg (1 / 6 : ℝ), Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 1 / 6)]
-  have hratio : Real.pi / Real.sqrt (1 / 6) < 40 := by
-    apply (div_lt_iff₀ (by positivity : 0 < Real.sqrt (1 / 6))).mpr
-    nlinarith [Real.pi_lt_four]
-  dsimp only [A] at hcontra
-  exfalso
-  linarith
+  have hfalse (cap : LocalCap S (alpha / 2) x t K'.domain.carrier)
+      (hdepth : ∀ y ∈ cap.tube,
+        10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x y) : False := by
+    let j : Fin cap.chain.count := ⟨0, cap.chain.count_pos⟩
+    let p := (cap.chain.necks j).center
+    have hv : cap.tube_map (p, 0) ∈ cap.tube := by
+      rw [← cap.tube_eq]
+      exact ⟨(p, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩
+    have hcontra := localCap_tube_depth_lt_two_mul_comparisonConstant K' cap hdepth hv
+    have hsqrt : (1 / 10 : ℝ) < Real.sqrt (1 / 6) := by
+      nlinarith [Real.sqrt_nonneg (1 / 6 : ℝ), Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 1 / 6)]
+    have hratio : Real.pi / Real.sqrt (1 / 6) < 40 := by
+      apply (div_lt_iff₀ (by positivity : 0 < Real.sqrt (1 / 6))).mpr
+      nlinarith [Real.pi_lt_four]
+    dsimp only [A] at hcontra
+    linarith
+  have hcharts : K'.capTubeHasNeckChart alpha := by
+    intro cap depth _
+    exact (hfalse cap depth).elim
+  obtain ⟨B, htol, hwit⟩ := K'.exists_bufferedCanonical_with_witness
+    (H := H) (half_lt_self ha) (fun cap ⟨depth, _⟩ => (hfalse cap depth).elim)
+  refine ⟨B, ?_⟩
+  have henlarged := hcharts.enlarge_constants
+    (show 2 * A ≤ max (2 * A) C + 1 by linarith [le_max_left (2 * A) C])
+    (show C ≤ max (2 * A) C + 1 by linarith [le_max_right (2 * A) C])
+  exact capTubeHasNeckChart_of_heq htol hwit henlarged
+
+
+theorem exists_windowed_bufferedCanonical_of_round_model
+    {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 11) (H : ℝ) :
+    ∃ C delta0 : ℝ, 1 ≤ C ∧ 0 < delta0 ∧
+      ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+        {delta kappa : ℝ} {x : M} {t : ℝ} (W : WindowedModelWitness delta kappa S x t),
+        delta ≤ delta0 → IsSolutionOn S →
+        Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
+        IsShrinkingSphericalSpaceFormFlow W.model → Nonempty (BufferedCanonical S alpha C H x t) := by
+  obtain ⟨C, delta, hC, hd, hmain⟩ :=
+    exists_windowed_bufferedCanonical_with_cap_neck_charts_of_round_model.{u} ha hsmall H
+  exact ⟨C, delta, hC, hd, fun W hdelta hS hreg hround =>
+    ⟨(hmain W hdelta hS hreg hround).choose⟩⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

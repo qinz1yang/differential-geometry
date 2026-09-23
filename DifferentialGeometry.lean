@@ -13420,3 +13420,5 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.TimeDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.MetricDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckSurvival
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapCapture

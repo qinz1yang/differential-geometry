@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedNonroundBufferedLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalKappaGap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalToleranceMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaFixedCompactness
@@ -27,21 +28,23 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
 
-theorem exists_universal_nonround_windowed_buffer_constant
+theorem exists_universal_nonround_windowed_buffer_constant_with_cap_neck_charts
     {alpha : ℝ} (ha : 0 < alpha) (hasmall : alpha < 1 / 11) (H : ℝ) :
     ∃ C delta0 : ℝ, 1 ≤ C ∧ 0 < delta0 ∧ delta0 < 1 ∧
       ∀ (kappa : ℝ) (D : RealTimeInterval) (P : PointedFlowData.{u, 0, 0} I3 D)
         (delta t : ℝ) (W : WindowedModelWitness delta kappa P.S P.basepoint t),
         delta ≤ delta0 → Ioo (t - (delta * P.S.scalar t P.basepoint)⁻¹) t ⊆ D.regular →
         (¬ IsShrinkingSphericalSpaceFormFlow W.model) → TangentOrientationSection W.model.M →
-        Nonempty (BufferedCanonical P.S alpha C H P.basepoint t) := by
+        ∃ B : BufferedCanonical P.S alpha C H P.basepoint t,
+          B.witness.capTubeHasNeckChart alpha := by
   classical
   by_contra hnone
   have hbad (n : ℕ) : ∃ (kappa : ℝ) (D : RealTimeInterval) (P : PointedFlowData.{u, 0, 0} I3 D)
       (delta t : ℝ) (W : WindowedModelWitness delta kappa P.S P.basepoint t),
       delta ≤ 1 / ((n : ℝ) + 2) ∧ Ioo (t - (delta * P.S.scalar t P.basepoint)⁻¹) t ⊆ D.regular ∧
       (¬ IsShrinkingSphericalSpaceFormFlow W.model) ∧ Nonempty (TangentOrientationSection W.model.M) ∧
-      ¬ Nonempty (BufferedCanonical P.S alpha ((n : ℝ) + 1) H P.basepoint t) := by
+      ¬ ∃ B : BufferedCanonical P.S alpha ((n : ℝ) + 1) H P.basepoint t,
+        B.witness.capTubeHasNeckChart alpha := by
     by_contra hn
     push Not at hn
     apply hnone
@@ -70,14 +73,49 @@ theorem exists_universal_nonround_windowed_buffer_constant
         Nonempty (MetricComparisonOn L.S.base.metric (W0 (phi i)).model.S.base.metric
           (F.map i) K (Icc (-A) 0) order eta) :=
     fun K hK A hA order eta heta => hcmp (-A) 0 (by linarith) le_rfl K hK order eta heta
-  obtain ⟨C, _hC, hbuffer⟩ := exists_eventually_buffered_of_nonround_oriented_windowed_models
+  obtain ⟨C, _hC, hbuffer⟩ := exists_eventually_buffered_with_cap_neck_charts_of_nonround_oriented_windowed_models
     (fun i => (P i).isSolution) W0 hzero hregular L hphi.tendsto_atTop F hcmp' hL hLbase hnotround
     (fun i => Classical.choice (horient i)) ha hasmall H
   have hlarge : ∀ᶠ i in atTop, C < (phi i : ℝ) + 1 :=
     ((tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop).comp hphi.tendsto_atTop).eventually_gt_atTop C
   obtain ⟨i, hi, hCi⟩ := (hbuffer.and hlarge).exists
-  obtain ⟨B⟩ := hi
-  exact hfail (phi i) ⟨B.enlarge_constants hCi⟩
+  obtain ⟨B, hB⟩ := hi
+  apply hfail (phi i)
+  refine ⟨B.enlarge_constants hCi, ?_⟩
+  change (B.witness.enlarge_constants hCi.le hCi.le).capTubeHasNeckChart alpha
+  exact hB.enlarge_constants hCi.le hCi.le
+
+theorem exists_universal_nonround_windowed_buffer_constant
+    {alpha : ℝ} (ha : 0 < alpha) (hasmall : alpha < 1 / 11) (H : ℝ) :
+    ∃ C delta0 : ℝ, 1 ≤ C ∧ 0 < delta0 ∧ delta0 < 1 ∧
+      ∀ (kappa : ℝ) (D : RealTimeInterval) (P : PointedFlowData.{u, 0, 0} I3 D)
+        (delta t : ℝ) (W : WindowedModelWitness delta kappa P.S P.basepoint t),
+        delta ≤ delta0 → Ioo (t - (delta * P.S.scalar t P.basepoint)⁻¹) t ⊆ D.regular →
+        (¬ IsShrinkingSphericalSpaceFormFlow W.model) → TangentOrientationSection W.model.M →
+        Nonempty (BufferedCanonical P.S alpha C H P.basepoint t) := by
+  obtain ⟨C, delta0, hC, hd, hd1, hmain⟩ :=
+    exists_universal_nonround_windowed_buffer_constant_with_cap_neck_charts.{u} ha hasmall H
+  refine ⟨C, delta0, hC, hd, hd1, ?_⟩
+  intro kappa D P delta t W hdelta hreg hnc orient
+  obtain ⟨B, _⟩ := hmain kappa D P delta t W hdelta hreg hnc orient
+  exact ⟨B⟩
+
+theorem exists_universal_nonround_windowed_bufferedCanonical_with_cap_neck_charts
+    {alpha : ℝ} (ha : 0 < alpha) (hasmall : alpha < 1 / 11) (H : ℝ) :
+    ∃ C delta0 : ℝ, 1 ≤ C ∧ 0 < delta0 ∧ delta0 < 1 ∧
+      ∀ (kappa : ℝ) (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+        IsSolutionOn S → ∀ (delta : ℝ) (x : M) (t : ℝ)
+          (W : WindowedModelWitness delta kappa S x t),
+          delta ≤ delta0 → Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
+          (¬ IsShrinkingSphericalSpaceFormFlow W.model) → TangentOrientationSection W.model.M →
+          ∃ B : BufferedCanonical S alpha C H x t, B.witness.capTubeHasNeckChart alpha := by
+  obtain ⟨C, delta0, hC, hd, hd1, hmain⟩ := exists_universal_nonround_windowed_buffer_constant_with_cap_neck_charts.{u} ha hasmall H
+  refine ⟨C, delta0, hC, hd, hd1, ?_⟩
+  intro kappa M _ _ _ _ _ D S hS delta x t W hdelta hreg hnc orient
+  let P : PointedFlowData.{u, 0, 0} I3 D := { M := M, basepoint := x, S := S, isSolution := hS }
+  exact hmain kappa D P delta t W hdelta hreg hnc orient
 
 theorem exists_universal_nonround_windowed_bufferedCanonical
     {alpha : ℝ} (ha : 0 < alpha) (hasmall : alpha < 1 / 11) (H : ℝ) :
@@ -90,11 +128,12 @@ theorem exists_universal_nonround_windowed_bufferedCanonical
           delta ≤ delta0 → Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
           (¬ IsShrinkingSphericalSpaceFormFlow W.model) → TangentOrientationSection W.model.M →
           Nonempty (BufferedCanonical S alpha C H x t) := by
-  obtain ⟨C, delta0, hC, hd, hd1, hmain⟩ := exists_universal_nonround_windowed_buffer_constant.{u} ha hasmall H
+  obtain ⟨C, delta0, hC, hd, hd1, hmain⟩ :=
+    exists_universal_nonround_windowed_bufferedCanonical_with_cap_neck_charts.{u} ha hasmall H
   refine ⟨C, delta0, hC, hd, hd1, ?_⟩
   intro kappa M _ _ _ _ _ D S hS delta x t W hdelta hreg hnc orient
-  let P : PointedFlowData.{u, 0, 0} I3 D := { M := M, basepoint := x, S := S, isSolution := hS }
-  exact hmain kappa D P delta t W hdelta hreg hnc orient
+  obtain ⟨B, _⟩ := hmain kappa M D S hS delta x t W hdelta hreg hnc orient
+  exact ⟨B⟩
 
 theorem exists_universal_nonround_windowed_canonicalWitness
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :

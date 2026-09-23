@@ -58,7 +58,7 @@ structure BufferedCanonical (S : SolutionOn (I := I3) (M := M) D)
         ∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
           metricDistance (S.base.metric t) y z ≤ C / Real.sqrt (S.scalar t x))
 
-theorem CanonicalWitness.exists_bufferedCanonical
+theorem CanonicalWitness.exists_bufferedCanonical_with_witness
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {tolerance C1 C2 alpha H : ℝ}
     (W : CanonicalWitness S tolerance C1 C2 x t) (htol : tolerance < alpha)
@@ -76,7 +76,11 @@ theorem CanonicalWitness.exists_bufferedCanonical
           ∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
             metricDistance (S.base.metric t) y z ≤
               (max C1 C2 + 1) / Real.sqrt (S.scalar t x))) :
-    Nonempty (BufferedCanonical S alpha (max C1 C2 + 1) H x t) := by
+    ∃ B : BufferedCanonical S alpha (max C1 C2 + 1) H x t,
+      B.tolerance = tolerance ∧ HEq B.witness
+        (W.enlarge_constants
+          (show C1 ≤ max C1 C2 + 1 by linarith [le_max_left C1 C2])
+          (show C2 ≤ max C1 C2 + 1 by linarith [le_max_right C1 C2])) := by
   obtain ⟨hC, hC1, hC2, hscalar, hrm, hvolume⟩ := W.strict_curvature_volume_reserves
   let W' : CanonicalWitness S tolerance (max C1 C2 + 1) (max C1 C2 + 1) x t :=
     W.enlarge_constants hC1.le hC2.le
@@ -97,7 +101,7 @@ theorem CanonicalWitness.exists_bufferedCanonical
             rm_reserve := hrm
             volume_reserve := fun hv => hvolume (by
               simpa only [W', CanonicalWitness.enlarge_constants_requiresVolume] using hv)
-            cap_collar := fun cap hc => ?_ }⟩
+            cap_collar := fun cap hc => ?_ }, rfl, HEq.rfl⟩
   obtain ⟨hdepth, halteq⟩ := hc
   simp only [W', CanonicalWitness.enlarge_constants] at halteq
   have halteq' : W.alternative = CanonicalAlternative.cap cap hdepth := by
@@ -120,6 +124,29 @@ theorem CanonicalWitness.exists_bufferedCanonical
         simp only [CanonicalAlternative.mono_constant] at halteq
         exact absurd halteq (by simp)
   exact hcap cap ⟨hdepth, halteq'⟩
+
+
+theorem CanonicalWitness.exists_bufferedCanonical
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+    {x : M} {t : ℝ} {tolerance C1 C2 alpha H : ℝ}
+    (W : CanonicalWitness S tolerance C1 C2 x t) (htol : tolerance < alpha)
+    (hcap : ∀ cap : LocalCap S tolerance x t W.domain.carrier,
+      (∃ hdepth : ∀ y ∈ cap.tube,
+          10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x y,
+        W.alternative = CanonicalAlternative.cap cap hdepth) →
+      ∃ (v : M) (neck : StrongNeck S alpha v t),
+        v ∈ cap.tube ∧
+        (max C1 C2 + 1)⁻¹ * S.scalar t x ≤ S.scalar t v ∧
+        S.scalar t v ≤ (max C1 C2 + 1) * S.scalar t x ∧
+        (∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
+          H / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x z) ∧
+        (∀ y ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
+          ∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
+            metricDistance (S.base.metric t) y z ≤
+              (max C1 C2 + 1) / Real.sqrt (S.scalar t x))) :
+    Nonempty (BufferedCanonical S alpha (max C1 C2 + 1) H x t) := by
+  obtain ⟨B, _, _⟩ := W.exists_bufferedCanonical_with_witness htol hcap
+  exact ⟨B⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -175,6 +202,48 @@ theorem CanonicalWitness.exists_bufferedCanonical_of_neck
       rw [halt] at heq
       cases heq }
   exact ⟨B, rfl, rfl, rfl, nk, halt, HEq.rfl⟩
+
+theorem CanonicalWitness.exists_bufferedCanonical_of_positive
+    (K : CanonicalWitness S eps A C p t) (heps : eps < alpha)
+    (hpositive : ∃ whole data sec,
+      K.alternative = CanonicalAlternative.positive whole data sec) :
+    ∃ B : BufferedCanonical S alpha (max A C + 1) H p t,
+      B.tolerance = eps ∧ B.witness.domain = K.domain ∧ B.witness.radius = K.radius ∧
+      ∃ whole data sec,
+        B.witness.alternative = CanonicalAlternative.positive whole data sec := by
+  obtain ⟨_hC, hA, hC', hscalar, hrm, hvolume⟩ := K.strict_curvature_volume_reserves
+  let K' := K.enlarge_constants hA.le hC'.le
+  obtain ⟨whole, data, sec, hpositive⟩ := hpositive
+  have hpositive' : ∃ whole data sec,
+      K'.alternative = CanonicalAlternative.positive whole data sec := by
+    dsimp only [K', CanonicalWitness.enlarge_constants]
+    rw [hpositive]
+    exact ⟨whole, data, _, rfl⟩
+  obtain ⟨whole', data', sec', halt⟩ := hpositive'
+  obtain ⟨a, b, margin, ha, _har, hm, hab, hinner, houter⟩ := K'.exists_radial_reserve
+  let B : BufferedCanonical S alpha (max A C + 1) H p t := {
+    tolerance := eps
+    tolerance_pos := K.eps_pos
+    tolerance_lt := heps
+    witness := K'
+    a := a
+    b := b
+    margin := margin
+    a_pos := ha
+    margin_pos := hm
+    radial_margin := hab.le
+    inner_ball := hinner
+    outer_ball := houter
+    scalar_reserve := hscalar
+    rm_reserve := hrm
+    volume_reserve := fun hv => hvolume (by
+      simpa only [K', CanonicalWitness.enlarge_constants_requiresVolume] using hv)
+    cap_collar := by
+      intro cap hc
+      obtain ⟨depth, heq⟩ := hc
+      rw [halt] at heq
+      cases heq }
+  exact ⟨B, rfl, rfl, rfl, whole', data', sec', halt⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
