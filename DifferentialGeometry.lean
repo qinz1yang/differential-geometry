@@ -6850,6 +6850,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabil
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityJetControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityRepair
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialCompactTerminalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalNeckFrontierProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.GlobalStepObstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalSurgeryNoncollapsing
