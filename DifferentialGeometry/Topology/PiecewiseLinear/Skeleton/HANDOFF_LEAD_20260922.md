@@ -385,3 +385,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 01:20 (09-23) — review BI returned (digest BJ): adopt fix (a) for `IsSourceTrackedBranchTube.realisation`
   (endpoint-only identity); apply in the morning on a fresh lease, verify the two-call consumer change,
   recheck the C1 and A2 skeletons. Codex overnight item 0 prepares the probe. BH still pending.
+* 01:50 (09-23) — review BH returned (digest BK): P4 stays frozen; case (b) is proved by the thin-shell /
+  through-tube route, needing a controlled through-tube lemma and the two-tetrahedra escape lemma (Codex item 0b
+  overnight, worker a next). No interface change anywhere.
