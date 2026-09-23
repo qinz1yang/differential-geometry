@@ -16,6 +16,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGeneralPosi
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecognition
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -214,6 +215,17 @@ be null in `H₁`, the cyclic incidence of the edges at a vertex of `σ` makes e
 one arc between consecutive marked points, and the sub-arc of a PL circle is a 1-cell.
 `Section34CompactTargetCells` also gives that the open splitting-disk image lies in the interior
 of the union of its two vertex balls, the position fact the target-recognition note asked for.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit): `compactTargetRecognition` (step P8, module `Section34CompactTargetRecognition`
+over `CellFaceRecognition` and `SphereCellComplement`); the unused `hinv` and `fbl` were dropped
+(strictly stronger; the assembly passes nine arguments): the residual bundle's tilings and the
+face-disk family give, with the uniqueness of intrinsic boundaries and position facts on `∂V_w`
+and `∂E_e`, that the target family has intrinsic boundary the union of its proper faces and
+exact pairwise meets read off the source order `hface`; no ten-by-ten table of the cut order was
+needed.  The non-compact twin is proved conditionally (`section34TargetRecognition_of_tiling` in
+`Section34TargetRecognitionOfTiling`) on two tiling clauses that `Section34ResidualPlus` lacks
+while this file's bundle has them as clauses 21 and 22; that interface decision is the owner's.
 -/
 
 open Set Topology
@@ -325,38 +337,6 @@ theorem exists_compactResidualBalls (hcut : Section34CompactCutFrame C K K' src 
 
 theorem compactSourceFace_iff_cutLe (hcut : Section34CompactCutFrame C K K' src srcBd) :
     ∀ l m : Section34CompactLabelOf K K', src m ⊆ src l ↔ Section34CompactCutLe m l := by
-  sorry
-
-theorem compactTargetRecognition (hcut : Section34CompactCutFrame C K K' src srcBd)
-    (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
-    {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hinv : Section34CompactFaceBallInvariants K K' h H
-      (section34CompactVertexBallImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fbl fblBd)
-    {tgtD tgtDBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtA tgtABd : Section34CompactArcIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtP : Section34CompactMarkIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    (hdisk : Section34CompactFaceDiskFamily K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactSplitDiskImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fblBd tgtD tgtDBd tgtA tgtABd tgtP)
-    {tgtR tgtRBd : Section34CompactSimplexIndex K 4 → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtX tgtXBd : Section34CompactPatchIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtI tgtIBd : Section34CompactEdgeArcIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtO tgtOBd : Section34CompactOuterVertexIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    {tgtQ tgtQBd : Section34CompactOuterEdgeIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    (hres : Section34CompactResidualPlus K K' H (section34CompactVertexBallImage src f₁)
-      (section34CompactVertexBallImage srcBd f₁) (section34CompactSplitDiskImage src f₁)
-      (section34CompactSplitDiskImage srcBd f₁) tgtD tgtA tgtP tgtR tgtRBd tgtX tgtXBd
-      tgtI tgtIBd tgtO tgtOBd tgtQ tgtQBd)
-    (hface : ∀ l m : Section34CompactLabelOf K K', src m ⊆ src l ↔ Section34CompactCutLe m l)
-    (tc tcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3)))
-    (htc : tc = section34BoundedCell (section34CompactVertexBallImage src f₁) tgtR
-      (section34CompactSplitDiskImage src f₁) tgtD tgtX tgtA tgtI tgtP tgtO tgtQ)
-    (htcBd : tcBd = section34BoundedCell (section34CompactVertexBallImage srcBd f₁) tgtRBd
-      (section34CompactSplitDiskImage srcBd f₁) tgtDBd tgtXBd tgtABd tgtIBd (fun _ => ∅)
-      tgtOBd tgtQBd) :
-    (∀ l, tcBd l = ⋃ m ∈ section34Face src l \ {l}, tc m) ∧
-      ∀ l m, tc l ∩ tc m = ⋃ k ∈ section34Face src l ∩ section34Face src m, tc k := by
   sorry
 
 end Leaves
@@ -535,7 +515,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
       (section34CompactSplitDiskImage srcBd f₁) tgtDBd tgtXBd tgtABd tgtIBd (fun _ => ∅)
       tgtOBd tgtQBd with htcbddef
   obtain ⟨htbd, htinter⟩ :=
-    compactTargetRecognition hcut hgraph hinv hdisk hres hface tc tcBd htcdef htcbddef
+    compactTargetRecognition hcut hgraph hdisk hres hface tc tcBd htcdef htcbddef
   obtain ⟨hDcell, -, -, -, -, hAcell, -, -, hPcell, -, -, -⟩ := id hdisk
   obtain ⟨hRcell, hXcell, hIcell, hOcell, hQcell, -, -, -, -, -, -, -, -, -, -, -, -, hresCar,
     -, -, -, -, -, -⟩ := id hres

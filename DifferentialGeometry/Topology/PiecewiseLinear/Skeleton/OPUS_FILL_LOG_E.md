@@ -1134,3 +1134,114 @@ them there.
   fails on `OpenPartialHomeomorph` coercions; restate it once with a type ascription and rewrite
   with that. Generalized field notation does not find namespaced `IsPreconnected.*` lemmas; call
   them by name.
+
+# Batch 8 (P8 target recognition, compact then non-compact)
+
+## `compactTargetRecognition` (P8, pages 245–246, `Skeleton/Section34Compact.lean:330`) — CLOSED (4 new modules; `hinv`, `fbl` dropped)
+
+- Route. `boundary_eq_and_inter_eq_of_step` (generic): if every `CutStep m l` puts `tc m` into
+  `tcBd l`, every `tcBd l` is covered by the `tc m` one step below, `tcBd ⊆ tc`, and distinct
+  labels have disjoint relative interiors (`tc k ∩ tc k' ⊆ tcBd k ∪ tcBd k'`), then both conjuncts
+  hold for any face assignment `F` equal to `ReflTransGen step` (here `section34Face src`, by
+  `hface`); every point lies in the relative interior of exactly one face (induction on dimension).
+  The step and cover facts are the tilings and closure formulas of `hres`, `hdisk`, plus
+  `D_s ∩ E_e ⊆ ∂E_e` (`∂D_s ⊆ Fr ⋃V` and `E_e \ ∂E_e ⊆ Int ⋃V`, the accepted
+  `splitDiskImage_sdiff_subset_interior`). The 10 × 10 relative-interior case analysis uses
+  `V ∩ V' ⊆ ⋃E`, `R ∩ R' ⊆ ⋃D`, the meet formulas, and two position facts: a PL 2-cell `Z` in the
+  PL sphere `∂V_w` meets `closure (∂V_w \ Z)` exactly in `∂Z` (from
+  `IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary`), and the 1-dimensional analogue in
+  the circle `∂E_e` (new, via `IsCombinatorialManifold.inter_closure_sdiff_eq_image_stdSimplexBoundary`).
+  With `inter_subset_of_inter_closure_sdiff_subset` they give `X ∩ O ⊆ ∂X ∩ ∂O`, `E ∩ O ⊆ ∂E`,
+  `I ∩ Q ⊆ ∂I ∩ ∂Q`, which settle the outer kinds (a face arc of an interior face never enters the
+  relative interior of `O_w`: it lies in a patch, and patches meet `O_w` only in `∂O_w`). No 10 × 10
+  table of `CutLe` was needed: `hface` is consumed as is. The per-declaration heartbeat budget
+  forced splitting into step / cover / meet (balls, disks, patches) / meet (rest) / assembly.
+- `hinv` (and its family `fbl`) is not used, since the face balls never enter the recognition:
+  dropped by the `unusedArguments` gate; strictly stronger. The assembly call becomes
+  `compactTargetRecognition hcut hgraph hdisk hres hface tc tcBd htcdef htcbddef` (skeleton l. 538).
+- Files (`DifferentialGeometry/Topology/PiecewiseLinear/`), lines, SHA-256:
+  - `CellFaceRecognition.lean` 88 `96ab746291fc9d0472ecd3de576be7b009b37cf373044f59bc2082ed8e74cff5`
+  - `SphereCellComplement.lean` 55 `06160cb1ecc5cabc9fcc9ec827139c852d318f9c246b5e6c9e04d671800f9151`
+  - `Section34CompactTargetRecognition.lean` 1129
+    `b43492909c5291c20786a44f800915c684801ac124298a539913399b7f03bd4a`
+- Checker, each after `prepare-private-root.py` (receipts exitCode 0, diagnosticLines 0, sha as above):
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CellFaceRecognition.lean with no diagnostics; shared outputs unchanged.`
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SphereCellComplement.lean with no diagnostics; shared outputs unchanged.`
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTargetRecognition.lean with no diagnostics; shared outputs unchanged.`
+- Statement identity (script): the text `theorem compactTargetRecognition` … `:= by` equals the
+  skeleton's after deleting the `hinv` binder and `fbl` from `{fbl fblBd}`; the `section Leaves`
+  variable block and the namespace are byte-identical (the module opens only `Set`; `Topology` is
+  unused).
+- Hypotheses → producers: `hcut`, `hgraph` (`exists_compactCutAndGraph`, open), `hdisk`
+  (`exists_compactFaceDisks`, proved batch 6), `hres` (`exists_compactResidualBalls`, open P7),
+  `hface` (`compactSourceFace_iff_cutLe`, open). The core
+  `Section34CompactResidualPlus.boundedCell_recognition` takes generic families; its source facts
+  come from accepted bricks (`isPLCellOn_vertexBallImage`, `isPLCellOn_splitDiskImage`,
+  `exists_mem_splitDiskImage_of_ne`, `subset_of_mem_splitDiskImage`, `disjoint_splitDiskImage`,
+  `splitDiskImage_sdiff_subset_interior`, `splitDiskImage_eq_inter`, cut-frame clause 29).
+  No `structure`, no `Prop`-valued `def`.
+
+## `section34TargetRecognition` (P8, `Skeleton/Section34Terminal.lean:185`) — INTERFACE (conditional theorem proved)
+
+- Missing clauses (in none of `hdata`, `hdisk`, `hres`): the two boundary coverings
+  `∀ w, tgtVBd w ⊆ (⋃ (e) (_ : w.1 ⊆ e.1), tgtE e) ∪ ⋃ (x) (_ : x.1.2 = w), tgtX x` and
+  `∀ e, tgtEBd e ⊆ ⋃ (i) (_ : i.1.2 = e), tgtI i`. They are the non-compact halves of the tilings
+  that `Section34CompactResidualPlus` already carries (its clauses 21–22); natural producer P7
+  `exists_section34ResidualBalls`, as in the compact twin. `Section34ResidualPlus` has no `tgtVBd`
+  parameter, so the first clause is best stated with `frontier (tgtV w)` (equal to `tgtVBd w` in
+  codimension zero) or by adding the parameter. Why needed: the target formula covers `∂V_w` by
+  `E` and `X` only, and `X_{tw}`, `I_{te}` are pinned only as meets `R_t ∩ V_w`, `R_t ∩ E_e`;
+  transporting the source formula along `f₁` gives `f₁` of the source patches, not the target
+  patches. Deriving the coverings needs two tetrahedra per triangle and circular edge links from
+  `IsCombinatorialManifold 3 𝒦.complex`, plus local two-sidedness (1-dimensional on `∂E_e`,
+  2-dimensional on `∂V_w`: two disks of a 2-sphere sharing a boundary arc with disjoint interiors
+  cover a neighbourhood of the open arc), none of which is in the tree. No counterexample; believed
+  true.
+- Proved: `section34TargetRecognition_of_tiling` is the frozen leaf with exactly these two `⊆`
+  hypotheses inserted after `hres` (script: identical to the skeleton statement after deleting
+  them; `section Diagram` block identical up to `omit [FiniteDimensional ℝ Ea] in`). The reverse
+  inclusions are derived: `E ⊆ ∂V` (NormalPlus clause 10 with cut `hends`), `I ⊆ ∂E` (ResidualPlus
+  clause 11), `X ⊆ ∂V` (`X = R ∩ V` is a 2-cell, `IsPLCellOn.interior_eq_empty_of_lt`, and
+  `R ⊆ closure (interior R)`); `D ∩ E ⊆ ∂E` is read in the chart of `H t`, `t ⊇ s ⊇ e`, exterior
+  clause 1. Once the clauses exist, the leaf is
+  `section34TargetRecognition_of_tiling hdata hdisk hres clause₁ clause₂ hface tc tcBd htc htcBd`.
+- File `Section34TargetRecognitionOfTiling.lean` 923
+  `265d00f1f6a04e8f8d95a3470a0e818adcdf0dde533cecb6ab5c0685895a8e95`:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TargetRecognitionOfTiling.lean with no diagnostics; shared outputs unchanged.`
+
+## Batch 8 audit and manifest
+
+- Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch8TargetRecognition.lean`
+  (4 modules, axioms ⊆ {propext, Classical.choice, Quot.sound}, thirteen environment linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch8TargetRecognition.lean with no diagnostics; shared outputs unchanged.`
+  `AuditBatch8TargetRecognitionPrint.lean` (`#print axioms` of all 38 public theorems): 37 depend on
+  `[propext, Classical.choice, Quot.sound]`, `eq_or_dim_lt_of_reflTransGen` on none.
+- Aggregate import lines:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.CellFaceRecognition`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SphereCellComplement`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecognition`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetRecognitionOfTiling`
+- New public names (grep-unique; the leaf name collides only with the skeleton leaf it replaces):
+  `eq_or_dim_lt_of_reflTransGen`, `subset_of_reflTransGen_of_step`,
+  `exists_reflTransGen_mem_sdiff_boundary`, `boundary_eq_and_inter_eq_of_step`,
+  `inter_subset_of_inter_closure_sdiff_subset`,
+  `IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary_one`,
+  `IsPLCellOn.inter_closure_sdiff_of_isPLSphere_two`, `IsPLCellOn.inter_closure_sdiff_of_isPLSphere_one`,
+  `IsPLCellOn.subset_closure_sdiff_boundary`, `IsPLCellOn.interior_eq_empty_of_lt`,
+  `Section34CutStep.dim_lt`; in `Section34CompactFaceDiskFamily` and `Section34FaceDiskFamily`:
+  `exists_faceArc_of_mem`, `exists_markedPoint_of_mem`; in `Section34CompactResidualPlus` and
+  `Section34ResidualPlus`: `exists_patch_of_mem`, `exists_edgeArc_of_mem`,
+  `incident_of_mem_tetraBall_faceDisk`, `exists_patch_faceArc_subset`; compact only:
+  `patch_inter_outerFace_subset`, `splitDisk_inter_outerFace_subset`,
+  `edgeArc_inter_outerArc_subset`, `boundedCell_step_subset`, `boundedCell_boundary_subset`,
+  `boundedCell_inter_subset_ball_disk_patch`, `boundedCell_inter_subset`,
+  `boundedCell_recognition`; non-compact only: `cell_step_subset_of_tiling`,
+  `cell_boundary_subset_of_tiling`, `cell_inter_subset_ball_disk_patch_of_tiling`,
+  `cell_inter_subset_of_tiling`, `cell_recognition_of_tiling`,
+  `section34TargetRecognition_of_tiling`; plus the leaf `compactTargetRecognition`.
+- Lessons: `maxHeartbeats` is per declaration — a 900-line single proof (10 × 10 cases, 60 `have`s)
+  timed out although every part elaborated; split by rows and hand earlier rows on as a
+  conjunction. In `rcases`, `-` on a witness that a later component depends on
+  (`⟨w, -, -, -, he⟩`) silently loses the later names; keep the witness named. `nofun` proves the
+  constructor disequalities of `Section34BoundedLabel` cheaply.
+- Correction to the heading above: the compact leaf uses 3 of the 4 batch modules (all but `Section34TargetRecognitionOfTiling`).

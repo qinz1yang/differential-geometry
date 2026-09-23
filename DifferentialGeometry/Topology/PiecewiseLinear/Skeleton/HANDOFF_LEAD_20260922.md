@@ -458,3 +458,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   mtime). A from-scratch build is required before any whole-tree claim; owner to schedule.
 * 15:30 (09-23) — accepted worker b's Lemma 10 (8 modules, strictly stronger form); `Section33Approximation`
   promoted to a real module (§33 closed). Physical `sorry` 31. Lease b free, held for Codex.
+* 16:00 (09-23) — accepted worker e's compact P8 (4 modules; `hinv`/`fbl` dropped); non-compact P8 conditional on
+  two tiling clauses missing from `Section34ResidualPlus` (owner decision). Physical `sorry` 30.
