@@ -8579,6 +8579,7 @@ import DifferentialGeometry.Topology.Homology.HurewiczBijectionFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczHopfHalf
+import DifferentialGeometry.Topology.Homology.HopfDegree
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeAssembly
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeBasepoint
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeCriterion
@@ -10339,6 +10340,7 @@ import DifferentialGeometry.Topology.Homology.TetrahedronConeHomotopy
 import DifferentialGeometry.Topology.Homology.ThreeCycleRealization
 import DifferentialGeometry.Topology.Homology.TriangleLocalDegree
 import DifferentialGeometry.Topology.Homology.TwoCycleRealization
+import DifferentialGeometry.Topology.Homology.TwoCycleSphereRepresentation
 import DifferentialGeometry.Topology.Homotopy.BallHomotopyExtension
 import DifferentialGeometry.Topology.Homotopy.BallPrism
 import DifferentialGeometry.Topology.Homotopy.CubeSphereLocalHomeomorph
