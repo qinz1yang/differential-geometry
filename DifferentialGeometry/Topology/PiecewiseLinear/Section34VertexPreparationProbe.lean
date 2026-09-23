@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeEnds
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ChartLocalEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCores
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LensImages
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LensIsolation
@@ -52,15 +53,18 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
         Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε := by
   obtain ⟨ends, hends⟩ := exists_section34_edge_ends hframe
   obtain ⟨diskO, hdiskO⟩ := exists_section34_splitDisk_neighborhoods hU hh hframe
+  obtain ⟨Cc, hcc, hsrcCc, hCcU, hQ, hchart, hLFU⟩ :=
+    exists_section34_chart_local_enlargements hU
+      (continuousOn_iff_continuous_domRestrict.mpr hh.continuous) hframe hQint hCchart
+  let CcBd := fun w => frontier (Cc w)
+  have hLF : ∀ x ∈ ⋃ w, Cc w, ∃ V ∈ 𝓝 x, {w | (Cc w ∩ V).Nonempty}.Finite := by
+    intro x hx
+    obtain ⟨w, hw⟩ := mem_iUnion.mp hx
+    exact hLFU x (hCcU w hw)
   have exists_locally_finite_pierced_cells_with_isolated_lenses :
-      ∃ (Cp CpBd Cc CcBd : Section34VertexIndex 𝒦 𝒦' → Set M₁),
-      (∀ w, IsPLCellOn 3 (Cc w) (CcBd w)) ∧
-      (∀ w, src (.vertexBall w) ⊆ Cc w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U) ∧
-      (∀ w, ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, h '' Cc w ⊆ c.source) ∧
+      ∃ (Cp CpBd : Section34VertexIndex 𝒦 𝒦' → Set M₁),
       (∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) ∧
       (∀ w, simplexBody 𝒦' w.1 ⊆ interior (Cp w)) ∧
-      (∀ w, h '' Cc w ⊆ interior (Q w)) ∧
-      (∀ x ∈ ⋃ w, Cc w, ∃ V ∈ 𝓝 x, {w | (Cc w ∩ V).Nonempty}.Finite) ∧
       (∀ e, IsPolyhedralSphere (n := 3) 1 (CpBd (ends e).1 ∩ CpBd (ends e).2) ∧
           CpBd (ends e).1 ∩ CpBd (ends e).2 ⊆ src (.splitDisk e)) ∧
       (∀ w w', w ≠ w' → (¬ ∃ e : Section34EdgeIndex 𝒦 𝒦',
@@ -72,9 +76,10 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
       (∀ e, Cp (ends e).1 ∩ Cp (ends e).2 ⊆ diskO e) ∧
       ∀ w w', w ≠ w' → Disjoint (Cp w') (simplexBody 𝒦' w.1) := by
     sorry
-  obtain ⟨Cp, CpBd, Cc, CcBd, hcc, hsub, hchart, hcp, hvertex, hQ, hLF, hcircle,
-    hnonadj, hCpCc, hcover, hCpLF, hlensO, hvdisj⟩ :=
+  obtain ⟨Cp, CpBd, hcp, hvertex, hcircle, hnonadj, hCpCc, hcover, hCpLF, hlensO, hvdisj⟩ :=
     exists_locally_finite_pierced_cells_with_isolated_lenses
+  have hsub : ∀ w, src (.vertexBall w) ⊆ Cc w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U :=
+    fun w => ⟨(hsrcCc w).trans interior_subset, (hCpCc w).trans interior_subset, hCcU w⟩
   have hlens (e d) (hed : e ≠ d) : Disjoint (Cp (ends e).1 ∩ Cp (ends e).2)
       (Cp (ends d).1 ∩ Cp (ends d).2) :=
     (hdiskO.2.2.2.2 hed).mono (hlensO e) (hlensO d)

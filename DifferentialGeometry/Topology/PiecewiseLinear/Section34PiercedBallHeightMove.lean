@@ -45,6 +45,10 @@ private theorem piercingHeight_zero {s a : ℝ} (ha : 0 ≤ a) (hs : |s| ≤ a /
   unfold piercingHeight
   rw [hL, hU, zero_add, min_eq_left hhi, max_eq_right (by linarith)]
 
+theorem piercingHeightMove_strictMono {E : Type*} (g : E → ℝ) (a : ℝ) (x : E) :
+    StrictMono (fun t => (piercingHeightMove g a (x, t)).2) :=
+  piercingHeight_strictMono (g x) a
+
 theorem piercingHeightMove_injective {E : Type*} (g : E → ℝ) (a : ℝ) :
     Function.Injective (piercingHeightMove g a) := by
   intro x y hxy
