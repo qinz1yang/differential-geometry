@@ -464,3 +464,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   conditional theorem; Terminal has 3 leaves. Physical `sorry` 29.
 * 17:20 (09-23) — retired the dead bridge leaf `section34TraceCircle_homologyMap_ne_zero` (owner decision);
   Normalization has 3 leaves. Physical `sorry` 28.
+* 17:10 (09-23) — Codex answered consults BO/BP/BQ (route reductions for CGN 1–4, §32 tower/descent, trace leaves);
+  recorded in the ledger; the named sub-leaves are the next worker/Codex targets. `section34TraceCircle_homologyMap_ne_zero`
+  has no consumer (grep) — retire on the owner's word.

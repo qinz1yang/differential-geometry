@@ -1597,3 +1597,1103 @@ Checker output:
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceArc.lean with no diagnostics; shared outputs unchanged.
 ```
 
+
+## Codex C1 surface trace check (2026-09-23T14:56:03.1672013Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ConeSphereBoundary. Checker exit: 1.
+SHA-256: 35CE6E1506A03A1FBEBE424D44FB9A32FD8A5C3DF4EC3B7FC846022715F73469
+Sub-leaf list: The intrinsic boundary of a cone over a PL sphere is exactly its given base sphere.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.lean:35:9: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  Finite ↑(coneComplex hp).faces
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\ConeSphereBoundary.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:57:53.7610069Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ConeSphereBoundary. Checker exit: 1.
+SHA-256: 4C44494E19EDE77EE4CC45EF88637CF004C949C64E5BFC7501AB19ECD6CFC616
+Sub-leaf list: The intrinsic boundary of a cone over a PL sphere is exactly its given base sphere.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.lean:23:73: error(lean.invalidField): Invalid field `to_subtype`: The environment does not contain `Function.to_subtype`, so it is not possible to project the field `to_subtype` from an expression
+  coneComplex_faces_finite hp
+of type
+  K.faces.Finite → (coneComplex hp).faces.Finite
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\ConeSphereBoundary.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T14:58:54.3579919Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ConeSphereBoundary. Checker exit: 1.
+SHA-256: 81D2ED3D7BF496A61F26DA90A706D7CD8D2DE268C541C42E99E8B44909928EDB
+Sub-leaf list: The intrinsic boundary of a cone over a PL sphere is exactly its given base sphere.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.lean:23:100: warning: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\ConeSphereBoundary.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:01:01.1105799Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ConeSphereBoundary. Checker exit: 0.
+SHA-256: 69AA4646B6F00FD44FA9CE81A5637969B936A2F76CF4D11E94999373C5FB8569
+Sub-leaf list: The intrinsic boundary of a cone over a PL sphere is exactly its given base sphere.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:02:08.2233085Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceCap. Checker exit: 0.
+SHA-256: AA4B0018FD4B920DEFB658D68B2983DBE20D5165D77DD42D99E5EB6D32DE97CF
+Sub-leaf list: Every cap boundary between comparable boundary faces of a surface meets its derived surface arc in exactly one point.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceCap.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:04:25.3587664Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarFibers. Checker exit: 1.
+SHA-256: E94F700214CC9F8A067A7766E87A47F0677C990E76A119A9CF92B0F1BA14ECBE
+Sub-leaf list: Injectivity of each collar fiber; branch membership exactly at collar coordinate zero; intersections of distinct fibers over the same branch point; PL realization of each fiber.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean:44:39: error: Application type mismatch: The argument
+  ht
+has type
+  t ∈ Icc (-1) 1
+but is expected to have type
+  ?m.188.2 ∈ Icc (-1) 1
+in the application
+  ⟨?m.191, ht⟩
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean:72:13: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ρ (a, 0)
+in the target expression
+  (fun t => D.toFun (ρ (a, t))) 0 = y
+
+case mp
+M : Type u
+inst✝¹ : TopologicalSpace M
+inst✝ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+a b : EuclideanSpace ℝ (Fin 2)
+ha : a ∈ J
+hb : b ∈ J
+hab : a ≠ b
+hDab : D.toFun a = D.toFun b
+hρ0 : ∀ x ∈ J, ρ (x, 0) = x
+y : M
+t : ℝ
+ht : t ∈ Icc (-1) 1
+hty : (fun t => D.toFun (ρ (a, t))) 0 = y
+s : ℝ
+hs : s ∈ Icc (-1) 1
+hsy : (fun t => D.toFun (ρ (b, t))) s = y
+ht0 : t = 0
+⊢ y ∈ {D.toFun a}
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean:98:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Icc (-1) 1 ∩ fun a => (J ×ˢ Icc (-1) 1) (A a)
+in the target expression
+  IsPiecewiseAffineOn (ρ ∘ ⇑A) (Icc (-1) 1 ∩ ⇑A ⁻¹' J ×ˢ Icc (-1) 1)
+
+M : Type u
+inst✝⁴ : TopologicalSpace M
+inst✝³ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+E : Type u_1
+inst✝² : NormedAddCommGroup E
+inst✝¹ : NormedSpace ℝ E
+inst✝ : FiniteDimensional ℝ E
+hD : NormalSingularCellData D BdM B
+ι : M → E
+hι : Function.Injective ι
+hPL : IsPiecewiseAffineOn (ι ∘ D.toFun) D.domain
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+a : EuclideanSpace ℝ (Fin 2)
+ha : a ∈ J
+hCint : C ⊆ interior D.domain
+hρpl : IsPLHomeomorphOn ρ (J ×ˢ Icc (-1) 1) C
+A : ℝ →ᵃ[ℝ] EuclideanSpace ℝ (Fin 2) × ℝ := (AffineMap.const ℝ ℝ a).prod (AffineMap.id ℝ ℝ)
+hA : IsPiecewiseAffineOn (⇑A) (Icc (-1) 1)
+hAmaps : MapsTo (⇑A) (Icc (-1) 1) (J ×ˢ Icc (-1) 1)
+h : IsPiecewiseAffineOn (ρ ∘ ⇑A) (Icc (-1) 1 ∩ ⇑A ⁻¹' J ×ˢ Icc (-1) 1)
+⊢ IsPiecewiseAffineOn (fun t => ρ (a, t)) (Icc (-1) 1)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean:103:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Icc (-1) 1 ∩ fun a_1 => D.domain ((fun t => ρ (a, t)) a_1)
+in the target expression
+  IsPiecewiseAffineOn ((ι ∘ D.toFun) ∘ fun t => ρ (a, t)) (Icc (-1) 1 ∩ (fun t => ρ (a, t)) ⁻¹' D.domain)
+
+M : Type u
+inst✝⁴ : TopologicalSpace M
+inst✝³ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+E : Type u_1
+inst✝² : NormedAddCommGroup E
+inst✝¹ : NormedSpace ℝ E
+inst✝ : FiniteDimensional ℝ E
+hD : NormalSingularCellData D BdM B
+ι : M → E
+hι : Function.Injective ι
+hPL : IsPiecewiseAffineOn (ι ∘ D.toFun) D.domain
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+a : EuclideanSpace ℝ (Fin 2)
+ha : a ∈ J
+hCint : C ⊆ interior D.domain
+hρpl : IsPLHomeomorphOn ρ (J ×ˢ Icc (-1) 1) C
+A : ℝ →ᵃ[ℝ] EuclideanSpace ℝ (Fin 2) × ℝ := (AffineMap.const ℝ ℝ a).prod (AffineMap.id ℝ ℝ)
+hA : IsPiecewiseAffineOn (⇑A) (Icc (-1) 1)
+hAmaps : MapsTo (⇑A) (Icc (-1) 1) (J ×ˢ Icc (-1) 1)
+hρA : IsPiecewiseAffineOn (fun t => ρ (a, t)) (Icc (-1) 1)
+hmaps : MapsTo (fun t => ρ (a, t)) (Icc (-1) 1) D.domain
+h : IsPiecewiseAffineOn ((ι ∘ D.toFun) ∘ fun t => ρ (a, t)) (Icc (-1) 1 ∩ (fun t => ρ (a, t)) ⁻¹' D.domain)
+⊢ IsPiecewiseAffineOn (fun t => ι (D.toFun (ρ (a, t)))) (Icc (-1) 1)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean:105:46: error(lean.unknownIdentifier): Unknown identifier `hρ`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean:88:61: error: unsolved goals
+M : Type u
+inst✝⁴ : TopologicalSpace M
+inst✝³ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+E : Type u_1
+inst✝² : NormedAddCommGroup E
+inst✝¹ : NormedSpace ℝ E
+inst✝ : FiniteDimensional ℝ E
+hD : NormalSingularCellData D BdM B
+ι : M → E
+hι : Function.Injective ι
+hPL : IsPiecewiseAffineOn (ι ∘ D.toFun) D.domain
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+a : EuclideanSpace ℝ (Fin 2)
+ha : a ∈ J
+hCint : C ⊆ interior D.domain
+hρpl : IsPLHomeomorphOn ρ (J ×ˢ Icc (-1) 1) C
+A : ℝ →ᵃ[ℝ] EuclideanSpace ℝ (Fin 2) × ℝ := (AffineMap.const ℝ ℝ a).prod (AffineMap.id ℝ ℝ)
+hA : IsPiecewiseAffineOn (⇑A) (Icc (-1) 1)
+hAmaps : MapsTo (⇑A) (Icc (-1) 1) (J ×ˢ Icc (-1) 1)
+hρA : IsPiecewiseAffineOn (fun t => ρ (a, t)) (Icc (-1) 1)
+hmaps : MapsTo (fun t => ρ (a, t)) (Icc (-1) 1) D.domain
+hf : IsPiecewiseAffineOn (fun t => ι (D.toFun (ρ (a, t)))) (Icc (-1) 1)
+⊢ IsPLHomeomorphOn (fun t => ι (D.toFun (ρ (a, t)))) (Icc (-1) 1) ((fun t => ι (D.toFun (ρ (a, t)))) '' Icc (-1) 1)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarFibers.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:06:13.2164481Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarFibers. Checker exit: 0.
+SHA-256: 1C7B0D33CAE77D5BF7DB3921C58B1C2B75949736F60D88E5EE617E192DAE3028
+Sub-leaf list: Injectivity of each collar fiber; branch membership exactly at collar coordinate zero; intersections of distinct fibers over the same branch point; PL realization of each fiber.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:08:44.9324990Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSourceSubdivision. Checker exit: 1.
+SHA-256: 1F15691F3835024616717BDE99AD2FD8D1661BBA6D12AF3A25585A7830F86A56
+Sub-leaf list: From the original branch and source-collar hypotheses, choose a finite ambient subdivision containing the branch circle, surface image, specified source basepoint, and all four signed collar arms as subcomplexes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceSubdivision.lean:94:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (restrict R (P (Sum.inl false))).space
+in the target expression
+  IsPLSphere 1 (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝¹ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+a : Bool → EuclideanSpace ℝ (Fin 2)
+ha : ∀ (b : Bool), a b ∈ J
+F : Bool → ℝ → E := fun b t => ↑(D.toFun (ρ (a b, t)))
+I : Bool → Set ℝ := fun σ => if σ = true then Icc 0 1 else Icc (-1) 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+hF : ∀ (b : Bool), IsPLHomeomorphOn (F b) (Icc (-1) 1) (F b '' Icc (-1) 1)
+hI : ∀ (σ : Bool), IsPolyhedron (I σ)
+hIsub : ∀ (σ : Bool), I σ ⊆ Icc (-1) 1
+hFpoly : ∀ (b σ : Bool), IsPolyhedron (F b '' I σ)
+hΓ : IsPLSphere 1 (Subtype.val '' hD.singularSet.branchCarrier c)
+P : Bool ⊕ Bool × Bool → Set E :=
+  Sum.elim
+    (fun b => if b = true then Subtype.val '' D.toFun '' D.domain else Subtype.val '' hD.singularSet.branchCarrier c)
+    fun b => F b.1 '' I b.2
+hPpoly : ∀ (i : Bool ⊕ Bool × Bool), IsPolyhedron (P i)
+hPLspace : ∀ (i : Bool ⊕ Bool × Bool), P i ⊆ L.space
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hyR₀ : {↑(D.toFun (a false))} ∈ R₀.faces
+x✝ : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+R : Geometry.SimplicialComplex ℝ E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hPR : ∀ (j : Bool ⊕ Bool × Bool), P j = ⋃ s ∈ {s | s ∈ R.faces ∧ (convexHull ℝ) ↑s ⊆ P j}, (convexHull ℝ) ↑s
+hPspace : ∀ (i : Bool ⊕ Bool × Bool), (restrict R (P i)).space = P i
+hΓspace : (restrict R (P (Sum.inl false))).space = P (Sum.inl false)
+⊢ IsPLSphere 1 (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSourceSubdivision.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceSubdivision.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:10:23.3273181Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSourceSubdivision. Checker exit: 0.
+SHA-256: E3E27E87A25E180E8458391D0BAB01978324D1DB3FC937883BCE14EDC7508034
+Sub-leaf list: From the original branch and source-collar hypotheses, choose a finite ambient subdivision containing the branch circle, surface image, specified source basepoint, and all four signed collar arms as subcomplexes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceSubdivision.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:14:22.6034437Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneRectangle. Checker exit: 1.
+SHA-256: FE4F87F0082A588423F0CFCB0B912501DBF169216746F2F024A22ECCAABF4FCF
+Sub-leaf list: Four model half-plane disks; their exact intrinsic boundaries; containment in a closed chart ball; local half-plane and axis boundary readings.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean:40:5: error(lean.unknownIdentifier): Unknown identifier `affineIndependent_coe_pair`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean:46:49: error(lean.unknownIdentifier): Unknown identifier `affineIndependent_coe_pair`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean:47:49: error(lean.unknownIdentifier): Unknown identifier `affineIndependent_coe_pair`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean:52:75: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (boundaryComplex 1 A).space
+in the target expression
+  segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ (boundaryComplex 1 A).space ×ˢ Icc (z - r) (z + r) =
+    segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ {0, r • fourSpokeModelLeaf i} ×ˢ Icc (z - r) (z + r)
+
+i : Fin 4
+r z : ℝ
+hr : 0 < r
+K : Geometry.SimplicialComplex ℝ ((ℝ × ℝ) × ℝ)
+inst✝ : Finite ↑K.faces
+hK : K.space = crossHalfPlaneRectangle r z i
+hne : 0 ≠ r • fourSpokeModelLeaf i
+A : Geometry.SimplicialComplex ℝ (ℝ × ℝ) := simplexComplex {0, r • fourSpokeModelLeaf i} ⋯
+x✝ : Finite ↑A.faces := Finite.to_subtype (simplexComplex_faces_finite {0, r • fourSpokeModelLeaf i} sorry)
+hAspace : A.space = segment ℝ 0 (r • fourSpokeModelLeaf i)
+hA : IsPLBall 1 A.space
+hAb : (boundaryComplex 1 A).space = {0, r • fourSpokeModelLeaf i}
+hprod : K.space = A.space ×ˢ Icc (z - r) (z + r)
+⊢ segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ (boundaryComplex 1 A).space ×ˢ Icc (z - r) (z + r) =
+    segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ {0, r • fourSpokeModelLeaf i} ×ˢ Icc (z - r) (z + r)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneRectangle.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:16:10.4687192Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneRectangle. Checker exit: 1.
+SHA-256: 5C2891B3C5B7DD649DDB9AE8DE4EB72237AC556C06EA254EF047C22A63638486
+Sub-leaf list: Four model half-plane disks; their exact intrinsic boundaries; containment in a closed chart ball; local half-plane and axis boundary readings.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean:53:75: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (boundaryComplex 1 A).space
+in the target expression
+  segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ (boundaryComplex 1 A).space ×ˢ Icc (z - r) (z + r) =
+    segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ {0, r • fourSpokeModelLeaf i} ×ˢ Icc (z - r) (z + r)
+
+i : Fin 4
+r z : ℝ
+hr : 0 < r
+K : Geometry.SimplicialComplex ℝ ((ℝ × ℝ) × ℝ)
+inst✝ : Finite ↑K.faces
+hK : K.space = crossHalfPlaneRectangle r z i
+hne : 0 ≠ r • fourSpokeModelLeaf i
+A : Geometry.SimplicialComplex ℝ (ℝ × ℝ) := simplexComplex {0, r • fourSpokeModelLeaf i} ⋯
+x✝ : Finite ↑A.faces :=
+  Finite.to_subtype (simplexComplex_faces_finite {0, r • fourSpokeModelLeaf i} (affineIndependent_coe_pair hne))
+hAspace : A.space = segment ℝ 0 (r • fourSpokeModelLeaf i)
+hA : IsPLBall 1 A.space
+hAb : (boundaryComplex 1 A).space = {0, r • fourSpokeModelLeaf i}
+hprod : K.space = A.space ×ˢ Icc (z - r) (z + r)
+⊢ segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ (boundaryComplex 1 A).space ×ˢ Icc (z - r) (z + r) =
+    segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ {0, r • fourSpokeModelLeaf i} ×ˢ Icc (z - r) (z + r)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneRectangle.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:17:44.3880915Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneRectangle. Checker exit: 1.
+SHA-256: 3DCA1021FD19BEED15C8ADA25070A2B2E84B6D82D2C96E5A876A6ACEA5E36DE5
+Sub-leaf list: Four model half-plane disks; exact intrinsic boundaries; chart-ball containment; local half-plane and axis boundary readings; containment in the crossing planes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean:54:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (boundaryComplex 2 K).space
+in the target expression
+  (boundaryComplex 2 K).space =
+    segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ {0, r • fourSpokeModelLeaf i} ×ˢ Icc (z - r) (z + r)
+
+i : Fin 4
+r z : ℝ
+hr : 0 < r
+K : Geometry.SimplicialComplex ℝ ((ℝ × ℝ) × ℝ)
+inst✝ : Finite ↑K.faces
+hK : K.space = crossHalfPlaneRectangle r z i
+x✝¹ : DecidableEq (ℝ × ℝ) := Classical.decEq (ℝ × ℝ)
+hne : 0 ≠ r • fourSpokeModelLeaf i
+A : Geometry.SimplicialComplex ℝ (ℝ × ℝ) := simplexComplex {0, r • fourSpokeModelLeaf i} ⋯
+x✝ : Finite ↑A.faces :=
+  Finite.to_subtype (simplexComplex_faces_finite {0, r • fourSpokeModelLeaf i} (affineIndependent_coe_pair hne))
+hAspace : A.space = segment ℝ 0 (r • fourSpokeModelLeaf i)
+hA : IsPLBall 1 A.space
+hAb : (boundaryComplex 1 A).space = {0, r • fourSpokeModelLeaf i}
+hprod : K.space = A.space ×ˢ Icc (z - r) (z + r)
+⊢ (boundaryComplex 2 K).space =
+    segment ℝ 0 (r • fourSpokeModelLeaf i) ×ˢ {z - r, z + r} ∪ {0, r • fourSpokeModelLeaf i} ×ˢ Icc (z - r) (z + r)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneRectangle.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:20:05.6816096Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneRectangle. Checker exit: 0.
+SHA-256: 461D11EA6DD3583D00B51D165BE8F7E0FB3E4B61F5A570348D8226DBC65FA011
+Sub-leaf list: Four model half-plane disks; exact intrinsic boundaries; chart-ball containment; local half-plane and axis boundary readings; containment in the crossing planes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex route consult BO (2026-09-23)
+
+Answer: consult/BO-cgn-first-four-leaves-codex-answer.md
+SHA-256: 8CD2B2FE4A3544684DCCF369AB85424607F7B6E45035A3F9872F98E04C64896F
+Source review only: no Lean/probe invocation, hence no checker line or new axiom audit.
+Contains the six-check review, a map of the 25 cut-frame and 22 piercing clauses,
+and named SMALL / MEDIUM / NEW_THEORY sub-leaves for all four requested leaves.
+No frozen source or Git state was edited. BP and BQ follow separately.
+
+## Codex C1 surface trace check (2026-09-23T15:22:06.8355084Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneCharts. Checker exit: 1.
+SHA-256: D8641C08B3DF7EB9824025C264E88C92A58C6A74A90F6526371B24C60DA0C58F
+Sub-leaf list: Produce four actual PL disks from a PL straightening chart; read each disk as its coordinate half plane and its local intrinsic boundary as the branch axis.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneCharts.lean:55:26: error(lean.unknownIdentifier): Unknown identifier `hB`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneCharts.lean:75:35: error(lean.unknownIdentifier): Unknown identifier `hB`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneCharts.lean:75:11: error: Tactic `rcases` failed: `x✝ : ?m.698` is not an inductive datatype
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneCharts.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneCharts.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:23:56.9425782Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneCharts. Checker exit: 0.
+SHA-256: 874456FB6789F93002D6959282E674CC0B5643A1D7830E51FA24CCE0FBF156FA
+Sub-leaf list: Produce four actual PL disks from a PL straightening chart; read each disk as its coordinate half plane and its local intrinsic boundary as the branch axis.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:25:51.5964255Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceCharts. Checker exit: 1.
+SHA-256: 31BE07C68508EC38F0F080FD4C14CAF5CCE16578A51DC68BBAD046A246BE1275
+Sub-leaf list: For every point of the actual closed branch, construct four local PL surface disks with branch-axis boundaries and coordinate half-plane readings, directly from the normal singular-cell hypotheses.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.lean:47:4: error: failed to synthesize
+  IsClosed (doublePointSet D.toFun D.domain \ T.branchCarrier c)
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.lean:61:8: error: Type mismatch
+  image_mono (NormalSingularSetTriangulation.branchCarrier_subset_doublePointSet T c)
+has type
+  ?m.519 '' T.branchCarrier c ⊆ ?m.519 '' doublePointSet D.toFun D.domain
+but is expected to have type
+  ψ p ∈ Subtype.val '' T.branchCarrier c → ψ p ∈ Subtype.val '' doublePointSet D.toFun D.domain
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSurfaceCharts.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.log and .json
+ 
+```
+
+
+## Codex item 7 — connected carriers (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34ConnectedCarriers. Checker exit: 0.
+SHA-256: 6DA1E6301427DDD47CE770F4608066F993C2A9D9598F828D7A5441DAF08324D6
+
+Sub-leaf list: `section34_image_vertexBall_subset_Q` (source vertex ball lies in Q via Cc); `section34_vertex_carrier_connected` (source image and deleted ball overlap in their interiors, their union is connected and lies in Q). Common-triangle, orientation-character, matching, torus and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ConnectedCarriers.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex route consult BP (2026-09-23)
+
+Answer: consult/BP-section32-tower-descent-codex-answer.md
+SHA-256: 71EA9AFBFC329B27FDF0678623FD468D7D7CDDC897B60D8BCF04786B72250389
+Source review only: no Lean/probe invocation, hence no checker line or new axiom audit.
+Contains the centered cylinder map, joint radial tower route, explicit Moise307/Moise252
+boundary, relative finite-window descent obligations and named sub-leaf reductions.
+The three neighboring Section 32 leaves are downstream or on the separate 32.4 branch;
+no collaborator-owned probe sub-leaf or frozen source was edited. No Git writes.
+
+## Codex C1 surface trace check (2026-09-23T15:27:55.2925451Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceCharts. Checker exit: 1.
+SHA-256: 17C0A0D2525E5A3B397C1BC7BB0A65D1F6D7C30FB1CB14AC44766EB74A44B884
+Sub-leaf list: For every point of the actual closed branch, construct four local PL surface disks with branch-axis boundaries and coordinate half-plane readings, directly from the normal singular-cell hypotheses.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.lean:48:10: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  AlexandrovDiscrete ↑L.space
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSurfaceCharts.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:29:46.5746960Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceCharts. Checker exit: 0.
+SHA-256: EDD11F46A3FA44346E78842170EE03F0DB7F690236C6324EB561F6790CBA803E
+Sub-leaf list: For every point of the actual closed branch, construct four local PL surface disks with branch-axis boundaries and coordinate half-plane readings, directly from the normal singular-cell hypotheses.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:30:33.8046735Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCover. Checker exit: 0.
+SHA-256: CDAEF39F6F803BC506F9366726DC2794C99643B75497937E8E3A428524381A30
+Sub-leaf list: Choose a subdivision compatible with finitely many prescribed polyhedra so that every derived cell along the given polyhedron lies in one member of its open cover.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellCover.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — local cofaces and common edge chart (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteManifoldCofaces. Checker exit: 0.
+SHA-256: 737545070FC6D62D0A38687C304605A21E6C16EE213DCA59DFF6FD8308216764
+Sub-leaf list: `LocallyFinitePLPieceIn.exists_tetrahedron_superset`; every face of a locally finite combinatorial 3-manifold extends to a 4-vertex simplex, using the finite geometric link at one vertex.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldCofaces.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeCommonChart. Checker exit: 0.
+SHA-256: EC82B8AAE49BC32CBE3985813EDF8A1A0E95C5729ECB705EAA4796F0776BDFF0
+Sub-leaf list: `exists_section34Edge_triangle`; `exists_section34Edge_common_chart`. Every graph edge lies on an original triangle, and both endpoint carriers Q lie in the same maximal-atlas chart. The orientation-character, matching, torus and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34EdgeCommonChart.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T15:35:39.3012504Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneSeparation. Checker exit: 1.
+SHA-256: 46CCB707CF0724BE14AD482D151F47617D676FE02E88A99160BD81E573B10C42
+Sub-leaf list: Distinct coordinate half planes meet exactly on the branch axis; a connected set avoiding an opposite pair cannot meet both remaining half planes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:26:8: error: No goals to be solved
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:26:8: error: No goals to be solved
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:26:8: error: No goals to be solved
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:26:8: error: No goals to be solved
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:27:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  p.1
+in the target expression
+  p ∈ {p | p.1 = 0}
+
+case mp
+i j : Fin 4
+hij : i ≠ j
+p : (ℝ × ℝ) × ℝ
+a : ℝ
+ha : 0 ≤ a
+hpa : p.1 = a • fourSpokeModelLeaf i
+b : ℝ
+hb : 0 ≤ b
+hpb : p.1 = b • fourSpokeModelLeaf j
+h : a • fourSpokeModelLeaf i = b • fourSpokeModelLeaf j
+h1 : (a • fourSpokeModelLeaf i).1 = (b • fourSpokeModelLeaf j).1
+h2 : (a • fourSpokeModelLeaf i).2 = (b • fourSpokeModelLeaf j).2
+ha0 : a = 0
+⊢ p ∈ {p | p.1 = 0}
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:43:78: error: linarith failed to find a contradiction
+case «1».fst.h1
+p : (ℝ × ℝ) × ℝ
+hzero :
+  (match 1 + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).1 *
+        p.1.1 +
+      (match 1 + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).2 *
+        p.1.2 =
+    0
+a : ℝ := (fourSpokeModelLeaf ((fun i => i) ⟨1, ⋯⟩)).1 * p.1.1 + (fourSpokeModelLeaf ((fun i => i) ⟨1, ⋯⟩)).2 * p.1.2
+a✝ : p.1.1 < 0
+⊢ False
+failed
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:43:78: error: linarith failed to find a contradiction
+case «2».snd.h1
+p : (ℝ × ℝ) × ℝ
+hzero :
+  (match ⟨2, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).1 *
+        p.1.1 +
+      (match ⟨2, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).2 *
+        p.1.2 =
+    0
+a : ℝ := (fourSpokeModelLeaf ((fun i => i) ⟨2, ⋯⟩)).1 * p.1.1 + (fourSpokeModelLeaf ((fun i => i) ⟨2, ⋯⟩)).2 * p.1.2
+a✝ : p.1.2 < 0
+⊢ False
+failed
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:43:78: error: linarith failed to find a contradiction
+case «3».fst.h1
+p : (ℝ × ℝ) × ℝ
+hzero :
+  (match ⟨3, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).1 *
+        p.1.1 +
+      (match ⟨3, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).2 *
+        p.1.2 =
+    0
+a : ℝ := (fourSpokeModelLeaf ((fun i => i) ⟨3, ⋯⟩)).1 * p.1.1 + (fourSpokeModelLeaf ((fun i => i) ⟨3, ⋯⟩)).2 * p.1.2
+a✝ : p.1.1 < 0
+⊢ False
+failed
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneSeparation.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.log and .json
+ 
+```
+
+
+## Codex route consults BO / BP / BQ - final source-review receipts (2026-09-23)
+
+Completed in order BO, BP, BQ. All three new answers include the six review checks,
+proof-route/dischargeability analysis, and named SMALL / MEDIUM / NEW_THEORY reductions.
+Final answer hashes (these supersede the earlier BO/BP hashes above):
+
+3554BA1F988EC636A2274B9F2D94ED59955F0995F019EABBDBDDA2885019F88D  BO-cgn-first-four-leaves-codex-answer.md
+037F435D89C2EC8FEFE7531671002E2F9F31462C99DBBD0051B9CA60F5E5022E  BP-section32-tower-descent-codex-answer.md
+38493166138F08CBC7F1438BD6A25220D72460393A21B7587079CCDB6AB71F0B  BQ-section34-trace-leaves-codex-answer.md
+
+BO final source cross-check adds the existing IsPLHomeomorphInto.mono_of_isPLCellOn
+supplier for piercing clause 11. BP identifies the still-conditional Moise307 supply.
+BQ corrects the meridian/null-homology and same-direction-bigon shortcuts, identifies
+the missing admissible-operation localization, and finds no consumer of the named
+section34TraceCircle_homologyMap_ne_zero bridge. Its chart-based route lacks hctrl;
+the frozen-interface alternative requires an intrinsic marked torus model.
+
+Verification: source review only, no Lean/probe invocation, no checker success line,
+no new axiom audit. All referenced reduction modules were checked to exist. Answer
+text has no trailing whitespace or replacement characters. Seven frozen/probe source
+hashes were compared to the start-of-review snapshot and all were unchanged.
+The whole-worktree git diff --check reports trailing whitespace in other workers'
+existing raw checker transcripts in this shared FILL_LOG; those entries were not edited.
+No frozen statement, source-face frontier, collaborator-owned Section 32 proof, root
+aggregate, lease, or Git state was written.
+
+## Codex C1 surface trace check (2026-09-23T15:39:56.1867643Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneSeparation. Checker exit: 1.
+SHA-256: 4918EB466F6928D7F16385FB7AC364A60E264BE5DB60032828763D09A90AF1ED
+Sub-leaf list: Distinct coordinate half planes meet exactly on the branch axis; a connected set avoiding an opposite pair cannot meet both remaining half planes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:46:93: error: linarith failed to find a contradiction
+case «1».fst.h1
+p : (ℝ × ℝ) × ℝ
+hzero :
+  (match 1 + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).1 *
+        p.1.1 +
+      (match 1 + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).2 *
+        p.1.2 =
+    0
+a : ℝ := (fourSpokeModelLeaf ((fun i => i) ⟨1, ⋯⟩)).1 * p.1.1 + (fourSpokeModelLeaf ((fun i => i) ⟨1, ⋯⟩)).2 * p.1.2
+a✝ : p.1.1 < 0
+⊢ False
+failed
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:46:93: error: linarith failed to find a contradiction
+case «2».snd.h1
+p : (ℝ × ℝ) × ℝ
+hzero :
+  (match ⟨2, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).1 *
+        p.1.1 +
+      (match ⟨2, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).2 *
+        p.1.2 =
+    0
+a : ℝ := (fourSpokeModelLeaf ((fun i => i) ⟨2, ⋯⟩)).1 * p.1.1 + (fourSpokeModelLeaf ((fun i => i) ⟨2, ⋯⟩)).2 * p.1.2
+a✝ : p.1.2 < 0
+⊢ False
+failed
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:46:93: error: linarith failed to find a contradiction
+case «3».fst.h1
+p : (ℝ × ℝ) × ℝ
+hzero :
+  (match ⟨3, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).1 *
+        p.1.1 +
+      (match ⟨3, ⋯⟩ + 1 with
+          | 0 => (1, 0)
+          | 1 => (0, 1)
+          | 2 => (-1, 0)
+          | 3 => (0, -1)).2 *
+        p.1.2 =
+    0
+a : ℝ := (fourSpokeModelLeaf ((fun i => i) ⟨3, ⋯⟩)).1 * p.1.1 + (fourSpokeModelLeaf ((fun i => i) ⟨3, ⋯⟩)).2 * p.1.2
+a✝ : p.1.1 < 0
+⊢ False
+failed
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneSeparation.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.log and .json
+ 
+```
+
+
+Delivery verification for BO/BP/BQ: installed answer bytes match the reviewed drafts;
+all three answer-only whitespace checks returned no diagnostics. The earlier no-index
+check interpreted exit 1 (files differ) as a failure; the corrected check allows that
+expected status and rejects any diagnostic output. No content correction was needed.
+The answer headers identify the start-of-review HEAD c45b6faf19e693ae1134ba6f2656e71fbd0859d5.
+The final observed HEAD is bea6bc7d9af3ef3e06f2527acfde64589935ac8f, advanced concurrently;
+this consult task performed no Git writes. All seven frozen/probe source identities
+below were rechecked unchanged at delivery:
+
+23CCC72F8D8296F0FF54EB3B122E1F786A02721A29D5F8BA3C28A0937D92568F  Skeleton/ControlledGraphNeighborhood.lean
+2E49D2E7942E77B0E74E9B417238707BE5CBF54C72339E0881292FF4B734228D  Section34Frame.lean
+47D9496B0154F0A38AAFEF484B65E14710E3FAB745AA08C54D6D0D61B9F7C53A  Skeleton/Section32PseudoCell.lean
+F402C9CDB20349317716D909D765AB0D78A77F335502A1DA3FF1A123786A6190  Skeleton/CanonicalTowerReduction.lean
+D168ACF457E0724A5F5AD9933E1F1268DC85E46D4E98D1C578D663C7B11BA75F  Skeleton/Section34Compact.lean
+26C2168463810C7D34BEB06F8C12283A9E32ABC01F0B9C0848B528ED2F65F309  Skeleton/Section34Normalization.lean
+45FCD951D1A4EBA0C27604BD13DC4B5FAD18966E8EE01C3F2F1D1EE108C633BD  Section34CompactVocabulary.lean
+
+## Codex item 7 — finite marked disks and planar charts (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentEdgeFinite. Checker exit: 0.
+SHA-256: F3C459B71AEF41D1B649A84B1BEB841E5657170DE98E54F8D6F355BC7CE658C3
+Sub-leaf list: `section34_incident_edges_finite`; the disk labels at one graph vertex form a finite type, by injection into the locally finite complex's cofaces.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34IncidentEdgeFinite.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexHoledCharts. Checker exit: 0.
+SHA-256: 7165540114EB92772F3161CCD69A3D18C71B0EEE815A1C0F9DEBEC3FE6FDF63D
+Sub-leaf list: `exists_section34_source_vertex_holed_chart`; `exists_section34_target_vertex_holed_chart`. Given a marked incident edge, each vertex sphere has a planar complementary disk chart; other incident disks lie in its planar interior and their intrinsic boundary circles map to planar frontiers. Simultaneous reference maps, orientation character, matching, torus and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexHoledCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T15:42:33.2868691Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneSeparation. Checker exit: 1.
+SHA-256: 239BEB380C9D3C026724A34ADAFDCB51B390C33E7CB07221A16044B358C0B9F9
+Sub-leaf list: Distinct coordinate half planes meet exactly on the branch axis; a connected set avoiding an opposite pair cannot meet both remaining half planes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:50:100: warning: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean:78:4: error: `fun_prop` was unable to prove `Continuous fun p =>
+  match i with
+  | 0 => p.1.2
+  | 1 => -p.1.1
+  | 2 => -p.1.2
+  | 3 => p.1.1`
+
+Issues:
+  No theorems found for `_private.DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneSeparation.0.DifferentialGeometry.Topology.PiecewiseLinear.transverseCoordinate.match_1` in order to prove `Continuous fun p2p3p4p5 =>
+  match i with
+  | 0 => p2p3p4p5.1 ()
+  | 1 => p2p3p4p5.2.1 ()
+  | 2 => p2p3p4p5.2.2.1 ()
+  | 3 => p2p3p4p5.2.2.2 ()`
+  No theorems found for `_private.DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneSeparation.0.DifferentialGeometry.Topology.PiecewiseLinear.transverseCoordinate.match_1` in order to prove `Continuous fun p =>
+  match i with
+  | 0 => p.1.2
+  | 1 => -p.1.1
+  | 2 => -p.1.2
+  | 3 => p.1.1`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\CrossHalfPlaneSeparation.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:43:30.8917939Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CrossHalfPlaneSeparation. Checker exit: 0.
+SHA-256: F13C907FF13BEFD0E12094DC1ED85060754EA49597286F473D2E0C9FB841FDD9
+Sub-leaf list: Distinct coordinate half planes meet exactly on the branch axis; a connected set avoiding an opposite pair cannot meet both remaining half planes.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — local-degree constancy brick (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.InjectiveOrientationCharacter. Checker exit: 0.
+SHA-256: 3C975917B7159663AE92F0B82311C142A32002DDDB123F5CAF2F305C9F02F165
+Sub-leaf list: `euclideanLocalDegree_sub_eq_of_injOn`; the integer local degree of a continuous injective map is constant on a preconnected open Euclidean domain. Conversion to a chart-transfer parity and the source/target edge equality remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\InjectiveOrientationCharacter.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T15:45:43.6517155Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCover. Checker exit: 0.
+SHA-256: AC8D1C3CE4D8E447AB8BBF24E283D027BA85363E125537979378AADE8E223EBD
+Sub-leaf list: A compatible subdivision whose branch-face closed stars and derived cells both lie in the same chosen chart neighborhood.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellCover.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:47:23.0513740Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceSubdivision. Checker exit: 0.
+SHA-256: 5D452729E3EC918107146FB0E28049B1CEF417EFEE4D3082D1F815F7745BB3B9
+Sub-leaf list: Refine any finite starting subdivision by finitely many actual quarter disks so that each branch-face closed star and derived cell lies in a single straightening chart, preserving the starting subcomplex data.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceSubdivision.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:48:14.6256645Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCrossingArcs. Checker exit: 1.
+SHA-256: CFF2A8F514245DBE761B917D8E150AA9915B41AE1C8F3DA8D90845E59B3D7312
+Sub-leaf list: On each chart-contained derived cell, produce four PL arcs with the prescribed two poles, exact pairwise intersections, and the full cyclic separation hsep clause.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCrossingArcs.lean:107:21: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedCrossingArcs.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\DerivedCrossingArcs.log and .json
+ 
+```
+
+
+## Codex item 7 — axiom audit (2026-09-23)
+
+External audit: `C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\item7-axioms.lean`, outside project. The checker exits 1 because `#print axioms` emits informational diagnostics and three audit-file long-line warnings; the eight audited declarations listed below all have exactly `[propext, Classical.choice, Quot.sound]`, with no `sorryAx`: `section34_vertex_carrier_connected`, `LocallyFinitePLPieceIn.exists_tetrahedron_superset`, `exists_section34Edge_triangle`, `exists_section34Edge_common_chart`, `section34_incident_edges_finite`, `exists_section34_source_vertex_holed_chart`, `exists_section34_target_vertex_holed_chart`, `euclideanLocalDegree_sub_eq_of_injOn`. This is transitive axiom evidence for checked partial layers, not closure of the frozen leaf.
+
+## Codex C1 surface trace check (2026-09-23T15:49:02.1901698Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCrossingArcs. Checker exit: 0.
+SHA-256: D763F0500D2DBB4FE130A035D3B0FB5FC3E153722C91A930E594C2D16ABFE7E2
+Sub-leaf list: On each chart-contained derived cell, produce four PL arcs with the prescribed two poles, exact pairwise intersections, and the full cyclic separation hsep clause.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCrossingArcs.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:50:51.2048941Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceCap. Checker exit: 0.
+SHA-256: BB0B3B42BD927812D03B8154C8EA24BED41B381760F34DAB66EFCEA355110D88
+Sub-leaf list: The cap boundary meets each derived surface arc in exactly one point, and the full cap trace is the segment from the canonical pole to that point.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceCap.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:54:28.2729729Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceArcs. Checker exit: 1.
+SHA-256: 69F5B43848ED83AC21862361F8FA5F656F203262E64A71E8CD18B3E6066D8DC2
+Sub-leaf list: From the original normal singular-cell hypotheses, refine any starting subdivision and produce the four PL surface arcs with poles, exact intersections, hsep, and quarter-boundary membership of every comparable branch face.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceArcs.lean:62:37: error: Application type mismatch: The argument
+  s
+has type
+  Geometry.SimplicialComplex ℝ E
+but is expected to have type
+  Finset E
+in the application
+  hcells s
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSurfaceArcs.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceArcs.log and .json
+ 
+```
+
+
+## Codex C1 surface trace check (2026-09-23T15:55:41.1475965Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceArcs. Checker exit: 0.
+SHA-256: 1CDB58EABB60A3E247617DAF406343B73AB6FE490347520E17FDD51202059EE8
+Sub-leaf list: From the original normal singular-cell hypotheses, refine any starting subdivision and produce the four PL surface arcs with poles, exact intersections, hsep, and quarter-boundary membership of every comparable branch face.
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceArcs.lean with no diagnostics; shared outputs unchanged.
+```
+
