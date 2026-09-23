@@ -10516,6 +10516,7 @@ import DifferentialGeometry.Topology.Homology.TriangleConeHomotopy
 import DifferentialGeometry.Topology.Homology.SphereConeNormalization
 import DifferentialGeometry.Topology.Homology.TriangleSphereFacePairing
 import DifferentialGeometry.Topology.Homology.SphereNullity
+import DifferentialGeometry.Topology.Homology.SimplexHomologicalFilling
 import DifferentialGeometry.Topology.Homology.HurewiczTwo
 import DifferentialGeometry.Geometry.Metric.Convergence.EventualPullback
 import DifferentialGeometry.Topology.Homology.ConeThreeSphereHomotopy
