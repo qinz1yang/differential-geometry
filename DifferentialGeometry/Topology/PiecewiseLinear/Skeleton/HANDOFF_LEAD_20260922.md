@@ -505,3 +505,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   byte-identical; name scan clean; acceptance checks on the lead lease in progress.
 * 02:30 (09-24) — accepted worker b's canonical tower (4 modules): §32 has 1 leaf (descent). Physical `sorry` 21.
   Lease b free (held for Codex per the owner's rule unless the owner reassigns it).
+* 02:50 (09-24) — accepted the collaborator's PR #11 (49 modules, cherry-picked): both bigon slides proved;
+  Normalization has 2 leaves (compression, trace), Compact 4. Physical `sorry` 19.

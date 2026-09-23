@@ -13,6 +13,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide
 
 /-!
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
@@ -293,6 +294,14 @@ Retired 2026-09-23 (owner decision after consult BQ): the bridge leaf
 `section34Trace_of_noOperation`, the real non-compact P6 (`Section34FaceDisks`) uses the winding
 lemma of `BallWindingObstruction` instead, and the compact chain has its own trace field — so it is
 deleted rather than proved; its content may return later as a corollary if a consumer appears.
+
+Proved and imported (external collaborator, PR #11, lead-accepted on 2026-09-23 with zero-diagnostic
+checks and an axiom/linter audit; statement byte-identical): `exists_section34BigonSlide` (module
+`Section34BigonSlide` over the `Section34Bigon*` modules: the controlled bigon chart around the face
+ball from `hctrl`, the drag in that chart by `exists_bigonDrag` with the transport of the crossing
+set, the homology certificate and the support, the supported disk moves and the concrete
+crossing-trace producers, and the ten invariants of the normal family).  The two leaves left in
+this file are the compression and the trace.
 -/
 
 open Set Topology
@@ -366,28 +375,6 @@ theorem exists_section34Compression (hU : IsOpen U)
       section34TraceCount (section34VertexBallImage src f₁) fblBd' s + 1 ≤
         section34TraceCount (section34VertexBallImage src f₁) fblBd s ∧
       section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd' s ≤
-        section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd s := by
-  sorry
-
-theorem exists_section34BigonSlide (hU : IsOpen U)
-    (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hctrl : Section34CarrierControl U 𝒦 h η H)
-    (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
-    {fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂}
-    (hinv : Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fbl fblBd)
-    (s : Section34SimplexIndex 𝒦 3)
-    (hop : Section34BigonSlide 𝒦 𝒦' (section34VertexBallImage src f₁)
-      (section34VertexBallImage srcBd f₁) (section34SplitDiskImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fblBd s) :
-    ∃ fbl' fblBd' : Section34SimplexIndex 𝒦 3 → Set M₂,
-      Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-        (section34SplitDiskImage srcBd f₁) fbl' fblBd' ∧
-      (∀ s', s' ≠ s → fbl' s' = fbl s' ∧ fblBd' s' = fblBd s') ∧
-      section34TraceCount (section34VertexBallImage src f₁) fblBd' s =
-        section34TraceCount (section34VertexBallImage src f₁) fblBd s ∧
-      section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd' s + 2 =
         section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd s := by
   sorry
 
