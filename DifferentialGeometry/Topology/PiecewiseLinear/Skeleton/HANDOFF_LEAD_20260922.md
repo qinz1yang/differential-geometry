@@ -408,3 +408,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `exists_isSourceTrackedBranchTube` under the endpoint-only field; e = A2
   `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` (chart-by-chart or triangulated-neighbourhood
   route). Codex queue: unchanged (items 1–5 remain), Codex idle until the owner resumes it.
+* 05:20 (09-23) — review request BL ready (`consult/BL-…-request.md`: the compact source-face cut order; is a
+  frame clause missing, or is the PL-surface derivation enough); the owner sends it on waking.
