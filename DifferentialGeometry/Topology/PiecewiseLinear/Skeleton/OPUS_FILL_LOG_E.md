@@ -786,3 +786,143 @@ them there.
   `exists_mem_openCell_notMem_affineSubspaces`).  These sector-overlap double points are
   robust (the leaf has no local injectivity hypothesis), so they cannot be perturbed away.
   Estimated size: several thousand lines.
+
+# Batch 5 (A1 vertex map)
+
+## `exists_wallGenericVertexMap` — CLOSED (7 new modules)
+
+- Files in dependency (register) order, all `import DifferentialGeometry.Topology.PiecewiseLinear.<Name>`:
+  `ArrangementGeneralPositionDimension` (173 lines, `9a065025…`), `RuledSurfaceOfPlanePencils`
+  (290, `0dd8a7a4…`), `GenericPlacementSteps` (443, `bbe7e378…`), `GenericPlacementClauses`
+  (687, `0a2d49a3…`), `GenericVertexMapLinesPlanes` (410, `b6319c63…`),
+  `AdmissibleVertexMapVocabulary` (110, `5eeb53f8…`), `WallGenericVertexMap` (951, `4bfcf955…`).
+- Leaf statement byte-identical (string comparison, including `open Classical in`).  Each module
+  checker-verified, the last:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\WallGenericVertexMap.lean with no diagnostics; shared outputs unchanged.`
+  Audit `AuditBatch5A.lean` over the seven modules (standard three axioms, thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch5A.lean with no diagnostics; shared outputs unchanged.`
+- **Hoisted (lead decision, as before)**: `AdmissibleVertexMapVocabulary` is a verbatim copy of the
+  skeleton's `AdmissibleVertexMap`, `AdmissibleVertexMap.mono` and
+  `exists_admissibleVertexMap_of_adaptedChart` (the inhabitant).  Delete them from the skeleton and
+  import the module.
+- The funded per-vertex lemma (lead's request): `exists_mem_openCell_notMem_affineSubspaces_notMem_ranges`
+  in `ArrangementGeneralPositionDimension`, next to `exists_mem_openCell_notMem_affineSubspaces`:
+  a point of the open cell, `ε`-close, off finitely many affine subspaces not containing the layer
+  and off finitely many ranges of `C¹` maps from a space of dimension less than the layer's
+  (`Real.Convex.dimH_eq_finrank_vectorSpan`, `ContDiff.dimH_range_le`, `dimH_iUnion`).  The
+  induction itself uses the underlying `exists_mem_inter_notMem_of_dimH_inter_lt` (any set `B` with
+  `dimH (B ∩ L) < finrank L.direction`), which lets bad sets of different kinds be united.
+- Route.  (1) Generic core `exists_small_vertexMap_generic_lines_planes_in_halfSpace` (abstract
+  vertex type, frozen set, boundary set, finitely many lines `S j` and planes `P j`): free boundary
+  vertices placed first inside `ker ℓ` (bad sets: affine subspaces not containing `ker ℓ`; for the
+  guard a plane of three placed vertices equal to `ker ℓ` would put four guarded vertices on the
+  boundary), then the other free vertices inside `0 < ℓ` (bad sets of `dimH < 3`).  Clauses: guard;
+  vertices off planes; positive combinations of two triangles sharing ≤ 1 vertex / triangle and
+  disjoint edge / two disjoint boundary edges never agree on a line; triangle ∩ disjoint
+  non-boundary edge off planes; double line of disjoint triangles not in a plane (internally also:
+  vertices off lines, lines not in triangle planes).  Every case with the new vertex in one face
+  only is affine (`mem_affineSpan_insert_image_erase_of_sum_smul`); the vertex shared by two
+  triangles gives the ruled surface `(t, s) ↦ z(t) + s • (n₁ × n₂)` (`RuledSurfaceOfPlanePencils`,
+  cross products), the only non-affine bad set.  (2) Leaf: lines through `A_c q₀, A_c q₁` for two
+  vertices of each cell `c` (`A_c` from `chartAffine`), planes `affineSpan (A_c '' w)`; the
+  perturbation is below the distance from `ec ∘ D (Rc.space)` (compact) to the complement of
+  `ec '' (interior (Eb i₀) ∩ source)`, so `g = ec.symm ∘ p` on `Rc.space` with values in `Eb i₀`;
+  `hlinear` gives `simplicialMap R (ec ∘ D) = ec ∘ D` and no boundary triangle; classification
+  `faces_cases_of_simplicialMap_eq_of_guard` (no injectivity scale, so TT sharing a vertex is
+  allowed); at an interior crossing on a wall the double line is transverse to the wall plane and
+  the curves `xᵢ + t • eᵢ` inside the triangles give double points on both sides of `ν`.
+- Unused hypotheses of the frozen leaf (kept by `let` bindings): `hLR`, `hAR`.
+- Lesson: a 600-line single proof hit the per-declaration heartbeat limit (no `maxHeartbeats`
+  allowed); split into `notMem_wallSystemSkeleton_of_generic`, `notMem_wallSystemCell_of_generic_edge`,
+  `exists_wallSystemCells_of_generic_crossing` and the leaf.  `Π` is a reserved token (not a valid
+  identifier character in `hΠ`).
+
+## `exists_protectedSubdivision_in_adaptedChart` — CLOSED, all four clauses (7 new modules)
+
+- Files in dependency (register) order, all `import DifferentialGeometry.Topology.PiecewiseLinear.<Name>`:
+  `PlaneBoxGraphPerturbation` (199 lines, `5675c646…`), `StableCrossingBlockPerturbation`
+  (860, `4004a78f…`), `ProtectedSubdivisionTools` (260, `cc43ae4a…`),
+  `ProtectedSubdivisionClauses` (308, `56eac239…`), `ProtectedSubdivisionStarInj` (165,
+  `702847e5…`), `ProtectedSubdivisionBlocks` (438, `6ca3381b…`),
+  `ProtectedSubdivisionInAdaptedChart` (514, `86029022…`).
+- Leaf statement byte-identical (string comparison, including `open Classical in`); no clause
+  dropped.  Last module:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ProtectedSubdivisionInAdaptedChart.lean with no diagnostics; shared outputs unchanged.`
+  Audit `AuditBatch5B.lean` over the seven modules (three standard axioms, thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch5B.lean with no diagnostics; shared outputs unchanged.`
+- (c) `hprot` and (d) `hpersist` are provable from the hypotheses; nothing weakened.  Route.
+  (1) Perturbation of one block (`IsStableCrossingBlock.exists_perturbation`): a block centred at a
+  double point stays a block with the same coordinates on a smaller cube and margin `η / 2` for
+  every `g` with `ec ∘ g = ec ∘ f + δ` on the sheets, `δ` piecewise affine and `λ`-Lipschitz on
+  the plane, `λ` small: on a square `B₀` inside both sheet images, `σ = (sheet projection)⁻¹` and
+  the graph function are Lipschitz (PL on a polyhedron: `exists_lipschitz_extension`); the new
+  sheet is the graph of `(a + e₁, id + e₂)` with `e = A.linear ∘ δ ∘ σ`; `id + e₂ ∘ clamp` is a
+  PL homeomorphism of the plane (`isPLHomeomorphOn_id_add_of_lipschitz`), the new graph function
+  is `(a + e₁) ∘ clamp ∘ ψ⁻¹` with `v`-Lipschitz constant `La + 2 (La + Lt + 1) μ`
+  (`PlaneBoxGraphPerturbation`); for half blocks `ψ` keeps the lower half plane because `δ` does
+  not move the frontier off `ℓ = 0`.  (2) Regional form: recentring (`exists_kink_recentre` with a
+  translation) puts each sheet in `Ω` or off `closure (Rc \ Ac) ⊆ Ω`; on `Ω` the glued map is
+  `ec ∘ D + Σ_v b_v • (φ v - ec (D v))` (Lipschitz vertex functions from `GeneralPosition`), off
+  it the glued map is `D`.  (3) Finitely many recentred blocks cover the compact
+  `DP(D) ∩ Z ∩ closure (V \ closure W)`; the injectivity scale of `hcert` (via clause (b)) and a
+  positive minimum on pairs at distance `≥ κ` put every double point of the glued map over that
+  set into one of them.  (4) `hprot`: a double point with a preimage in a face touching `Ac` is
+  off `closure W` (separation clause), so over `closure (V \ closure W)`, so in a block of the
+  glued map, which is a `SingularTwoCell` (`isPLOn_regionGluedMap`), and
+  `hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock` applies.  (a): `R` from
+  `exists_isSubdivision_affineOn_faces`, then a Lebesgue-number subdivision (closed stars inside
+  injectivity neighbourhoods and small balls; mesh below half the chart distance between `D (Ac)`
+  and `closure W`); `K` is the chart preimage of a closed thickening of `ec (D (Rc))`.  (b):
+  `starInj_of_forall_injOn_nhds` (Lebesgue number for close pairs, positive minimum of
+  `dist (D x) (D x')` on pairs in one star at distance `≥ β`).
+- Unused hypotheses of the frozen leaf (kept by `let` bindings): `hfiber`, `hnormal`, `hOopen`,
+  `hZO`, `hRman`, `hLR`.
+- Lessons: `ContinuousOn.dist` does not exist (use `continuous_dist.comp_continuousOn (f.prodMk g)`);
+  `IsPiecewiseAffineWithinAt.comp` needs `(f := …)`, otherwise higher-order unification picks a
+  wrong `f`; `DecidableEq (EuclideanSpace ℝ (Fin 2))` resolves to the `WithLp` instance even under
+  `open Classical`, so star statements are kept generic (`closedStar`; no `starComplex` at `ℝ²`);
+  the block perturbation hit the per-declaration heartbeat limit until split into four lemmas.
+
+## `wallProductBlocks_stable_on_fixedSubdivision` — CLOSED (3 new modules; statement as frozen)
+
+- Files in dependency (register) order, all `import DifferentialGeometry.Topology.PiecewiseLinear.<Name>`,
+  after the seven leaf-6 modules: `WallProductBlockTypedTransport` (594 lines, `d6e7be97…`),
+  `WallProductBlockPerturbation` (611, `06f7ff8a…`), `WallProductBlocksStableOnFixedSubdivision`
+  (511, `63fb1aa2…`).
+- Leaf statement byte-identical with skeleton lines 1317–1366 (string comparison, including
+  `open Classical in`).  Last module:
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\WallProductBlocksStableOnFixedSubdivision.lean with no diagnostics; shared outputs unchanged.`
+  Audit `AuditBatch5C.lean` over the three modules (three standard axioms, thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch5C.lean with no diagnostics; shared outputs unchanged.`
+- Route.  (1) Typed transport (`WallProductBlock.exists_wallProductBlock_at`): at a double point
+  `y` of an old inner block of chart `j`, with `y ∈ Eb i`, a wall product block of chart `i`
+  centred at `y` inside any open `N ∋ y`; type read off the position of `y` (open cell: type (i);
+  on the wall of a type (ii) block: kinked coordinates keep `t = 0` exactly on the wall; on
+  `BdM`: half block with height `ℓ i`); open cells meet every neighbourhood of a point of the
+  closed cell (`exists_mem_wallSystemCellInt_of_mem_nhds`, `ρ` a closed embedding of compact `M`).
+  (2) Per double point `y` of `D` in `closure N'` (`closure N' ⊆` old neighbourhood):
+  if `y ∈ Kt`, transport into chart `i₀` inside `interior (Eb i₀)` and perturb regionally
+  inside the coordinate ball of the transported block
+  (`IsStableCrossingBlock.exists_regional_perturbation_subset`, same coordinates since the block
+  is centred); a centred sub-block inside that ball keeps the side and the type
+  (`WallProductBlock.of_subset_ball`; the type (iii) cell lies in `C` because its open cell meets
+  the block on the closed side of `ℓ`).  If `y ∉ Kt`, transport within chart `j` inside
+  `Ktᶜ` and inside the old block (`IsStableCrossingBlock.exists_isOpen_mem_chartBlock`, the `BdM`
+  case forcing a half block); since `D (Rc) ⊆ Kt` and the glued map sends `Rc` into `Kt`, the
+  glued map equals `D` at every source point either map sends into the block
+  (`IsStableCrossingBlock.congr_of_eq`), margin `η → η / 2`.  (3) The ℓ-clauses in chart `i₀`
+  (`AdmissibleVertexMap.normal_simplicialMap_clauses`) need no mesh: affineness of `ecf i₀ ∘ D`
+  on the faces of `R`, `hproper`, signs of `ℓf i₀ ∘ φ`.  (4) Finite subcover of
+  `DP(D) ∩ closure N'`, Φ-argument with `Q := closure N'` and the injectivity scale of `hcert`,
+  `τ` below the minimum of `τ₀`, the closeness scales, the Lipschitz scales over the vertex
+  displacement constant and the chart-inverse modulus; the new neighbourhood is `N'`.
+- No correspondence with the old block family is promised or used (the conclusion quantifies the
+  new family afresh); a type (ii) new block exists only at points on an old type (ii) wall, and
+  keeps that wall.
+- Unused hypotheses of the frozen leaf (kept by `let` bindings): `hfiber`, `hVopen`, `hWV`,
+  `hRfin`, `hΩcover`, `hε`, `hactive`; the premises `IsPiecewiseAffineOn` and the separation
+  clause of the conclusion's `∀` are not used either.
+- Lessons: the checkout's prepare script needs the full module name
+  (`DifferentialGeometry.Topology.PiecewiseLinear.<Name>`), with a short name it reports an empty
+  import closure; `rw [hA'eq] at …` after `AffineEquiv.ext` is safer than `subst` when both sides
+  are obtained variables.

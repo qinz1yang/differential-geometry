@@ -13,6 +13,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeSinglePolygon
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeHandlePieces
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskMeetsGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.NoHandleLoopTheoremDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.NotLoopTheoremDisk
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -213,6 +214,17 @@ separating component and `b₁` drops.  Lemma 9 has the proved brick
 exact remaining goal, a loop-theorem disk disjoint from the pseudo-cells; the obstruction is
 general position at the disk boundary where a pseudo-cell folds along its trace, to be unblocked
 by a relative general-position move needing only crossing of the fixed part.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf, all five hypotheses used):
+`section33_not_isLoopTheoremDisk` (Lemma 9, module `NotLoopTheoremDisk` over sixteen modules): the
+disk is replaced by a generic level of its own prism, which meets the pseudo-cells in finitely many
+disjoint PL circles missing `Bd X` and PL arcs with ends on `Bd X`; induction on the number of
+pieces removes an innermost circle by Lemma 8 (swap in a PL disk, push off) or an outermost arc by
+a crosscut (inversion when `Δ` lies outside `X`, the theta-curve argument choosing the side); the
+resulting disk misses every pseudo-cell, which Lemma 7 forbids.  The relative general-position
+routes were not needed: every relative mover requires face-wise transversality of the fixed faces,
+impossible where the disk boundary meets the trace.
 -/
 
 open Set Topology
@@ -232,24 +244,6 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-
-theorem section33_not_isLoopTheoremDisk
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space)
-    (h7 : HasNoHandleLoopTheoremDisk K h N' Cpp XK.space)
-    (h8 : ∀ v₁ ∈ K.vertices, ∀ e₁ ∈ K.faces, e₁.card = 2 →
-      ∀ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
-        Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2 →
-        (∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
-          IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e₁ ∧
-            DJ \ DJint = r '' stdSimplexBoundary 2 ∧ h (e₁.centroid ℝ id) ∈ DJint) →
-        (∀ e ∈ K.faces, e.card = 2 → e ≠ e₁ → Disjoint Δ (Ec e)) →
-        (Δ ∩ h '' K.space).Nonempty) :
-    ∀ Δ : Set (EuclideanSpace ℝ (Fin 3)),
-      ¬ IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ := by
-  sorry
 
 theorem section33_fundamentalGroup_map_bijective (h264 : Moise264)
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)

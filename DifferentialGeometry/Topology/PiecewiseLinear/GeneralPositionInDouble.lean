@@ -20,6 +20,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.FreeGermVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlocksOfWallProductBlocks
 import DifferentialGeometry.Topology.PiecewiseLinear.CommonWallComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.WallProductBlocksOfWallGenericity
+import DifferentialGeometry.Topology.PiecewiseLinear.AdmissibleVertexMapVocabulary
+import DifferentialGeometry.Topology.PiecewiseLinear.WallGenericVertexMap
+import DifferentialGeometry.Topology.PiecewiseLinear.ProtectedSubdivisionInAdaptedChart
+import DifferentialGeometry.Topology.PiecewiseLinear.WallProductBlocksStableOnFixedSubdivision
 
 /-!
 # Sorry-first skeleton of general position in the double
@@ -322,6 +326,22 @@ above it are uncontrolled, and the sheet `SA = {t < r/2} ∪ {t > r/2, v ≥ 0}`
 `exists_wallGenericVertexMap` (a per-vertex avoidance of finitely many affine subspaces and `C¹`
 ranges of `ℝ²`), `wallProductBlocks_stable_on_fixedSubdivision`,
 `exists_protectedSubdivision_in_adaptedChart`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and axiom audits; statements byte-identical with the frozen leaves, unused hypotheses kept by `let`
+bindings): `exists_wallGenericVertexMap` (`WallGenericVertexMap` over six modules: a per-vertex
+avoidance of finitely many affine subspaces and `C¹` ranges of `ℝ²` by Hausdorff dimension, then
+the genericity clauses), `exists_protectedSubdivision_in_adaptedChart`
+(`ProtectedSubdivisionInAdaptedChart` over six modules; clauses (c) and (d) are provable from the
+stated hypotheses) and `wallProductBlocks_stable_on_fixedSubdivision`
+(`WallProductBlocksStableOnFixedSubdivision` over `WallProductBlockTypedTransport` and
+`WallProductBlockPerturbation`: every double point near `Z` gets a correctly typed new block, in
+chart `i₀` when it lies in `Kt` and in its old chart otherwise; the glued map's uniform closeness
+and injectivity scale keep its double points inside finitely many such blocks).  The
+`AdmissibleVertexMap`
+vocabulary was hoisted verbatim into `AdmissibleVertexMapVocabulary`.  With every leaf proved this
+file has no `sorry` and was promoted from `Skeleton/` to a real module on 2026-09-23:
+`generalPositionInDoubleBufferedStatement` is a real theorem.
 -/
 
 open Set Topology
@@ -1102,81 +1122,6 @@ theorem exists_normalCrossing_of_hasWallProductBlocks [T2Space M] (D : SingularT
   exact hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock D (ec (j i)) (ℓ (j i))
     (hec (j i)) (hℓ (j i)) (hBdchart (j i)) (hblk i).1 hy.1 hi
 
-def AdmissibleVertexMap (D : SingularTwoCell M)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)
-    (Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)) (τ : ℝ) : Prop :=
-  (Bv : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices ∧
-    (∀ v ∈ R.vertices, v ∈ Bv ↔ v ∈ Lc.space) ∧
-    (∀ v ∈ R.vertices, dist (φ v) (ec (D v)) < τ) ∧
-    (∀ v ∈ R.vertices, v ∈ Ac.space → φ v = ec (D v)) ∧
-    (∀ v ∈ R.vertices, v ∈ Bv → ℓ (φ v) = 0) ∧
-    ∀ v ∈ R.vertices, v ∉ Bv → 0 < ℓ (φ v)
-
-theorem AdmissibleVertexMap.mono {D : SingularTwoCell M}
-    {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
-    {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ}
-    {Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
-    {Bv : Finset (EuclideanSpace ℝ (Fin 2))}
-    {φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)} {τ τ' : ℝ}
-    (h : AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ) (hle : τ ≤ τ') :
-    AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ' :=
-  ⟨h.1, h.2.1, fun v hv => lt_of_lt_of_le (h.2.2.1 v hv) hle, h.2.2.2⟩
-
-open Classical in
-theorem exists_admissibleVertexMap_of_adaptedChart (D : SingularTwoCell M) {BdM C V : Set M}
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hVec : V ⊆ ec.source)
-    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
-    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
-    (Rc Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (hRsfin : R.faces.Finite) (hsub : IsSubdivision R Rc)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain) {τ : ℝ} (hτ : 0 < τ) :
-    ∃ Bv : Finset (EuclideanSpace ℝ (Fin 2)),
-      AdmissibleVertexMap D ec ℓ Lc Ac R Bv (fun v => ec (D v)) τ := by
-  classical
-  have hvfin : R.vertices.Finite :=
-    Set.Finite.preimage Finset.singleton_injective.injOn hRsfin
-  have hvR : ∀ v ∈ R.vertices, v ∈ Rc.space := by
-    intro v hv
-    rw [← hsub.space_eq]
-    exact Geometry.SimplicialComplex.vertices_subset_space hv
-  have hsrc : ∀ v ∈ R.vertices, D v ∈ ec.source := fun v hv => hVec (hRV (hvR v hv))
-  have hmemBv : ∀ v, v ∈ hvfin.toFinset.filter (fun w => w ∈ Lc.space) ↔
-      v ∈ R.vertices ∧ v ∈ Lc.space := by
-    intro v
-    simp [Finset.mem_filter, hvfin.mem_toFinset]
-  refine ⟨hvfin.toFinset.filter fun w => w ∈ Lc.space, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · intro v hv
-    exact ((hmemBv v).1 (Finset.mem_coe.mp hv)).1
-  · exact fun v hv => ⟨fun h => ((hmemBv v).1 h).2, fun h => (hmemBv v).2 ⟨hv, h⟩⟩
-  · intro v _
-    simpa using hτ
-  · exact fun _ _ _ => rfl
-  · intro v hv hvB
-    have hvL : v ∈ Lc.space := ((hmemBv v).1 hvB).2
-    rw [hLspace] at hvL
-    have hmem : v ∈ D.domain ∩ ⇑D ⁻¹' BdM := by
-      rw [hproper]
-      exact hvL.2
-    exact (hBdchart (D v) (hsrc v hv)).1 hmem.2
-  · intro v hv hvB
-    have hvRc : v ∈ Rc.space := hvR v hv
-    have hvL : v ∉ Lc.space := fun h => hvB ((hmemBv v).2 ⟨hv, h⟩)
-    have hne : ℓ (ec (D v)) ≠ 0 := by
-      intro h
-      have hBd : D v ∈ BdM := (hBdchart (D v) (hsrc v hv)).2 h
-      have hfr : v ∈ frontier D.domain := by
-        rw [← hproper]
-        exact ⟨hRdom hvRc, hBd⟩
-      exact hvL (by rw [hLspace]; exact ⟨hvRc, hfr⟩)
-    exact lt_of_le_of_ne ((hCchart (D v) (hsrc v hv)).1 (hmapC (hRdom hvRc))) (Ne.symm hne)
-
 end Ambient
 
 section MetricAmbient
@@ -1199,75 +1144,6 @@ theorem eq_regionGluedMap_of_eqOn {D D' : SingularTwoCell M}
     exact hglue hx
   · simp only [regionGluedMap, if_neg hx]
     exact hglueoff hx
-
-open Classical in
-theorem exists_protectedSubdivision_in_adaptedChart [CompactSpace M]
-    (D : SingularTwoCell M) {BdM C Z O W V : Set M} {η κ δ ε : ℝ}
-    (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
-    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C)
-    (hnormal : ∀ y ∈ doublePointSet (⇑D) D.domain ∩ O,
-      ∃ e₀ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₀.source ∧
-        HasPLNormalDoubleCrossingAt (e₀ ∘ ⇑D) (D.domain ∩ ⇑D ⁻¹' e₀.source)
-          (e₀ '' (e₀.source ∩ BdM)) (e₀ y))
-    (hZclosed : IsClosed Z) (hOopen : IsOpen O) (hZO : Z ⊆ O)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
-    (hℓ : ℓ ≠ 0) (hVopen : IsOpen V) (hVec : closure V ⊆ ec.source)
-    (hCchart : ∀ x ∈ ec.source, x ∈ C ↔ 0 ≤ ℓ (ec x))
-    (hBdchart : ∀ x ∈ ec.source, x ∈ BdM ↔ ℓ (ec x) = 0)
-    (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
-    (hRfin : Rc.faces.Finite) (hRman : IsCombinatorialManifoldWithBoundary 2 Rc)
-    (hLR : Lc.faces ⊆ Rc.faces) (hAR : Ac.faces ⊆ Rc.faces)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hΩ : IsOpen Ω) (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb)
-    (hNbfr : Rc.space \ Ω ⊆ Nb) (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
-    (hWV : closure W ⊆ V) (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W))
-    (hstable : HasStableCrossingBlocks (⇑D) D.domain ec ℓ BdM
-      (Z ∩ closure (V \ closure W)) η)
-    (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (hTfin : T.faces.Finite)
-    (hTspace : T.space = D.domain) (hTstar : StarInj T (⇑D))
-    (hκ : 0 < κ) (hδ : 0 < δ) (hε : 0 < ε)
-    (hcert : ∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < δ) →
-      StarInj T g → UniformInjectivityScale D.domain g κ ∧
-        ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2)
-    (hconv : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-      dist z (ec (D x)) < ε → z ∈ ⇑ec '' V ∧ dist (ec.symm z) (D x) < δ) :
-    ∃ (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (τ : ℝ) (K : Set M),
-      0 < τ ∧ IsSubdivision R Rc ∧ R.faces.Finite ∧
-        (∀ s ∈ R.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
-          EqOn (fun x => ec (D x)) A
-            (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 2))))) ∧
-        IsCompact K ∧ K ⊆ V ∧ ⇑D '' Rc.space ⊆ interior K ∧
-        ∀ (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-          (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)),
-          AdmissibleVertexMap D ec ℓ Lc Ac R Bv φ τ →
-          IsPiecewiseAffineOn (simplicialMap R φ) Rc.space ∧
-            (∀ x ∈ Rc.space, dist (simplicialMap R φ x) (ec (D x)) < ε) ∧
-            EqOn (simplicialMap R φ) (fun x => ec (D x)) Ac.space ∧
-            (∀ x ∈ Rc.space, 0 ≤ ℓ (simplicialMap R φ x)) ∧
-            (∀ x ∈ Rc.space, ℓ (simplicialMap R φ x) = 0 ↔ x ∈ Lc.space) ∧
-            (∀ σ ∈ R.faces, (∃ v ∈ σ, v ∈ Ac.space) →
-              Disjoint
-                (simplicialMap R φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
-                (⇑ec '' closure W)) ∧
-            MapsTo (simplicialMap R φ) Rc.space (⇑ec '' V) ∧
-            regionGluedMap D ec R φ Rc '' Rc.space ⊆ K ∧
-            StarInj T (regionGluedMap D ec R φ Rc) ∧
-            (∀ y ∈ doublePointSet (regionGluedMap D ec R φ Rc) D.domain ∩ Z ∩ K,
-              (∃ σ ∈ R.faces, (∃ v ∈ σ, v ∈ Ac.space) ∧
-                  (D.domain ∩ regionGluedMap D ec R φ Rc ⁻¹' {y} ∩
-                    convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2)))).Nonempty) →
-                ∃ e₁ ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e₁.source ∧
-                  HasPLNormalDoubleCrossingAt (⇑e₁ ∘ regionGluedMap D ec R φ Rc)
-                    (D.domain ∩ regionGluedMap D ec R φ Rc ⁻¹' e₁.source)
-                    (⇑e₁ '' (e₁.source ∩ BdM)) (e₁ y)) ∧
-            HasStableCrossingBlocks (regionGluedMap D ec R φ Rc) D.domain ec ℓ BdM
-              (Z ∩ closure (V \ closure W)) (η / 2) := by
-  sorry
 
 open Classical in
 theorem freeSourceGerm_of_mem_closure (D : SingularTwoCell M) {W V : Set M} {ε : ℝ}
@@ -1313,107 +1189,6 @@ theorem freeSourceGerm_of_mem_closure (D : SingularTwoCell M) {W V : Set M} {ε 
     have hecy : ec y = simplicialMap Rs φ x := by
       rw [← hgx, ← hw, ec.left_inv (hVec hwV)]
     exact Set.disjoint_left.mp (hsep σ hσ ⟨v, hv, hvA⟩) ⟨x, hxσ, rfl⟩ ⟨y, hy, hecy⟩
-
-open Classical in
-theorem wallProductBlocks_stable_on_fixedSubdivision [CompactSpace M] (D : SingularTwoCell M)
-    {BdM C Z W V Kt : Set M} {ι : Type}
-    (ecf : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓf : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M)
-    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)}
-    {η κ δ ε τ₀ : ℝ} (i₀ : ι)
-    (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
-    (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
-    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C) (hZclosed : IsClosed Z)
-    (hVopen : IsOpen V) (hVec : closure V ⊆ (ecf i₀).source) (hWV : closure W ⊆ V)
-    (hVE : closure V ⊆ interior (Eb i₀))
-    (Rc Lc Ac R T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    {Ω Nb : Set (EuclideanSpace ℝ (Fin 2))}
-    (hRfin : Rc.faces.Finite) (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hΩ : IsOpen Ω) (hΩcover : D.domain ∩ ⇑D ⁻¹' closure W ⊆ Ω)
-    (hΩR : D.domain ∩ Ω ⊆ Rc.space) (hNb : IsOpen Nb) (hNbfr : Rc.space \ Ω ⊆ Nb)
-    (hNbA : Rc.space ∩ Nb ⊆ Ac.space)
-    (hsub : IsSubdivision R Rc) (hRsfin : R.faces.Finite)
-    (hκ : 0 < κ) (hδ : 0 < δ) (hε : 0 < ε) (hτ₀ : 0 < τ₀)
-    (hlinear : ∀ s ∈ R.faces,
-      ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
-        EqOn (fun x => ecf i₀ (D x)) A (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 2)))))
-    (hcert : ∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < δ) →
-      StarInj T g → UniformInjectivityScale D.domain g κ ∧
-        ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2)
-    (hconv : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-      dist z (ecf i₀ (D x)) < ε → z ∈ ⇑(ecf i₀) '' V ∧ dist ((ecf i₀).symm z) (D x) < δ)
-    (hactive : ∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-      dist z (ecf i₀ (D x)) < ε → (ecf i₀).symm z ∈ closure W → x ∈ Rc.space \ Ac.space)
-    (hKcpt : IsCompact Kt) (hKV : Kt ⊆ V) (hDKt : ⇑D '' Rc.space ⊆ interior Kt)
-    (hwp : HasWallProductBlocks (⇑D) D.domain ecf ℓf Eb BdM C Q ρ Z η) :
-    ∃ τ : ℝ, 0 < τ ∧ τ ≤ τ₀ ∧
-      ∀ (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-        (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)),
-        AdmissibleVertexMap D (ecf i₀) (ℓf i₀) Lc Ac R Bv φ τ →
-        IsPiecewiseAffineOn (simplicialMap R φ) Rc.space →
-        (∀ x ∈ Rc.space, dist (simplicialMap R φ x) (ecf i₀ (D x)) < ε) →
-        EqOn (simplicialMap R φ) (fun x => ecf i₀ (D x)) Ac.space →
-        (∀ σ ∈ R.faces, (∃ v ∈ σ, v ∈ Ac.space) →
-          Disjoint (simplicialMap R φ '' convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
-            (⇑(ecf i₀) '' closure W)) →
-        MapsTo (simplicialMap R φ) Rc.space (⇑(ecf i₀) '' V) →
-        regionGluedMap D (ecf i₀) R φ Rc '' Rc.space ⊆ Kt →
-        StarInj T (regionGluedMap D (ecf i₀) R φ Rc) →
-        HasWallProductBlocks (regionGluedMap D (ecf i₀) R φ Rc) D.domain ecf ℓf Eb BdM C
-          Q ρ Z (η / 2) := by
-  sorry
-
-open Classical in
-theorem exists_wallGenericVertexMap (D : SingularTwoCell M) {BdM C V : Set M} {ι : Type}
-    (ecf : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓf : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M)
-    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)} (i₀ : ι)
-    (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C) (hVec : V ⊆ (ecf i₀).source)
-    (hVE : closure V ⊆ interior (Eb i₀))
-    (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (hLR : Lc.faces ⊆ Rc.faces) (hAR : Ac.faces ⊆ Rc.faces)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (hsub : IsSubdivision R Rc) (hRsfin : R.faces.Finite)
-    (hlinear : ∀ s ∈ R.faces,
-      ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3),
-        EqOn (fun x => ecf i₀ (D x)) A (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin 2)))))
-    {τ : ℝ} (hτ : 0 < τ) :
-    ∃ (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-      (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3)),
-      AdmissibleVertexMap D (ecf i₀) (ℓf i₀) Lc Ac R Bv φ τ ∧
-        (∀ s : Finset (EuclideanSpace ℝ (Fin 2)),
-          (s : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices → s.card ≤ 4 →
-            (s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker (ℓf i₀)) + 1 →
-            AffineIndependent ℝ
-              (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
-            AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2)))) ∧
-        (∀ y ∈ doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain,
-          FreeSourceGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain y →
-            y ∉ wallSystemSkeleton Q ρ) ∧
-        (∀ y ∈ doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain,
-          IsFreeDoubleGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain BdM y →
-            ∀ σ ∈ R.faces, σ.card ≤ 2 →
-              y ∈ regionGluedMap D (ecf i₀) R φ Rc ''
-                  (Rc.space ∩ convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2)))) →
-                ∀ w ∈ wallSystemWalls Q, y ∉ wallSystemCell ρ w) ∧
-        ∀ y ∈ doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain,
-          IsFreeInteriorDoubleGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain BdM y →
-            ∀ w ∈ wallSystemWalls Q, y ∈ wallSystemCell ρ w →
-              ∃ cm ∈ wallSystemCells Q, ∃ cp ∈ wallSystemCells Q, cm ≠ cp ∧
-                y ∈ wallSystemCell ρ cm ∧ y ∈ wallSystemCell ρ cp ∧
-                ∀ U ∈ 𝓝 y,
-                  (doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain ∩ U ∩
-                    wallSystemCellInt ρ cm).Nonempty ∧
-                  (doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain ∩ U ∩
-                    wallSystemCellInt ρ cp).Nonempty := by
-  sorry
 
 end MetricAmbient
 

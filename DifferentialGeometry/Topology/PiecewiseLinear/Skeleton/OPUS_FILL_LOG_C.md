@@ -821,3 +821,150 @@
   `AuditOpusC14.lean` over the fifteen modules (axioms within propext, Classical.choice,
   Quot.sound; the thirteen environment linters): "Verified ... with no diagnostics".
 - Item 3 (`not_branchPreimage_eq_of_isOrientable`) still waits on item 1 (LEAD DECISION above).
+
+# Batch 7 (compact Section 34)
+
+Read first: digests AS and BG, the docstring of `Skeleton/Section34Compact.lean`. All ten leaves
+are proved (or not) against the frozen text, in new files importing only real modules.
+
+## exists_compactCutAndGraph — STUCK (deep; no counterpart in the tree)
+
+- No file. The leaf is the whole of Lemma 1, Lemma 2's configuration and the compatible
+  subdivision (pages 239--240) for a ball with boundary. Its non-compact counterpart, the cut
+  producer `ControlledGraphNeighborhood`, is itself still a skeleton (5 + 3 leaf `sorry`s), so
+  nothing can be adapted; `Section34Control` (P0) supplies only a triangulation and carriers.
+- Missing pieces, each a separate producer of real size:
+  (a) a triangulated outer collar of `C` inside `V` carrying a subdivision of `K`, so that the
+      vertex balls of boundary vertices can leave `C` (`⋃ src = C ∪ N`, `N ⊄ C`);
+  (b) PL cell certificates and the exact boundary and meet formulas for the ten cut kinds of a
+      derived neighbourhood of the subdivided 1-skeleton cut by the simplices of `K`: face disks
+      `closure (conv s \ N)`, tetra balls, patches, face and edge arcs, marked points, outer faces
+      and outer arcs (`SplittingDiskRim`/`TubeOfGraphDualCells` cover only graph dual cells and
+      splitting disks of a graph with all vertices interior to the complex);
+  (c) the link condition as a consequence of the combinatorial manifold certificate (AS: OPEN);
+  (d) the joint choice with 33.1: `Moise331` returns its own complex `T` and derived
+      neighbourhood, with no compatibility with `K`, so `f₁` has to be restricted to a
+      sub-neighbourhood `N` compatible with `K'`, and `f₁ '' N ∈ 𝓝ˢ (h '' Γ)` then needs a
+      degree-type argument for `f₁` close to `h`;
+  (e) for every face, the nested tori `S₁ ⊆ interior T_s ⊆ T_s ⊆ interior S₂` with toroidal
+      shell and `IsSpine S₁ (h '' rim)`, and `IsCombinatorialSolidTorus T_s` (cyclic gluing of
+      the vertex ball images, `CyclicBallUnion`);
+  (f) the thin exterior clause 5(7), [ASSERTED] in the book.
+- Exact remaining goal: the frozen statement at `Skeleton/Section34Compact.lean` line 933.
+
+## exists_compactFaceEnvelopes — DONE
+
+- File `Section34CompactFaceEnvelopes.lean` (imports `Section34CompactVocabulary`, a verbatim hoist
+  of the skeleton's vocabulary lines 184--922, plus `TopologicalCellNestedShell` and
+  `Topology.InvarianceOfDomainManifold`). Statement and variable block byte-identical.
+- `env s` = thickening of `h '' conv s` by `δ`, minus the non-incident vertex balls, inside the
+  incident carriers' interiors, minus `A s \ interior T_s`. `A s` is the capping ball
+  `Moise305Tame.exists_isPLBall_capping`: the homeomorphism `x ↦ x + η min 1 (dist (u x) rim) • n`
+  (`n` a unit normal of the face) lifts `conv s` off itself except along the rim; the image of a
+  thin closed thickening is a topological cell, and 30.5 gives the PL ball. `δ` is the minimum of
+  the pair radii (two distinct faces meet in the graph skeleton, inside the vertex balls) and the
+  exterior radii (a path to a far point misses a thickening of the thin obstacle, and the ray
+  beyond it misses the thick one).
+
+## exists_compactFaceShellBalls — DONE (hypothesis `hgraph` dropped, linter-forced)
+
+- Same file. `h` of a closed thickening of `conv s` inside `V ∩ h⁻¹ (env s)` is a topological cell
+  with `h '' conv s` in its interior (invariance of domain); 30.5 gives the ball, boundary its
+  frontier. `hgraph` is never used; with it the linter reports "Variable name `hgraph` is not
+  explicitly referenced" (checked), so it is dropped. Otherwise byte-identical.
+
+## exists_compactFaceBallsGeneralPosition — DONE
+
+- File `Section34CompactGeneralPosition.lean`; statement and variable block byte-identical, all
+  four hypotheses used. The face torus is a combinatorial solid torus (graph frame), so its
+  frontier is a PL torus (`IsCombinatorialSolidTorus.isPLTorus_frontier`) and any triangulation
+  is a closed combinatorial surface; no local planarity of the vertex-ball union is needed. The
+  incident splitting circles lie on it (the splitting disk is the meet of its two end balls, no
+  third vertex ball meets it by clause 26, two-ball frontier lemma), are disjoint, and form a
+  subcomplex after subdivision. The given face ball need not contain a compact `h '' σ` (the leaf
+  has no continuity of `h`), so the transverse ball is taken around a PL ball containing the face
+  ball in its interior (`IsPLBall.exists_isPLBall_subset_interior_of_isOpen`).
+
+## compactTraceHomology — DONE (hypotheses `hcut` and `hgp` dropped, linter-forced)
+
+- File `Section34CompactTraceHomology.lean`. The generator clause gives `H₁` carrying for the rim
+  (`T_s` path-connected as a solid torus); `IsPLCellOn.carriesFirstHomologyOnto_inter_interior`
+  with Lemma 4's auxiliary ball `A` (from the envelopes; `B ∩ A ⊆ env s ∩ A ⊆ Int T_s`) gives
+  `∂B ∩ Int T_s`; `CarriesFirstHomologyOnto.inter_frontier_of_chart` (identity chart) gives the
+  whole trace `∂B ∩ ∂T_s`, integral and surjective, as warned. Its complexes triangulate the
+  polyhedron `∂B ∩ T_s` with `∂B ∩ ∂T_s` as a subcomplex; no transversality is needed, so `hgp`
+  is unused, and nothing of the cut frame is used. With them the linter reports both as "not
+  explicitly referenced" (checked). The assembly call must drop the two arguments.
+
+## compactTrace_of_noOperation — STUCK (deep; Lemmas 9--11, 28.8)
+
+- No file. Its non-compact counterpart `section34Trace_of_noOperation` is itself a skeleton leaf.
+- Missing, each a separate producer: (a) the trace `∂C_σ ∩ ∂N''` is a finite disjoint union of
+  PL circles: turn the pointwise `HasPLCrossingAt` of the invariants into a closed combinatorial
+  1-manifold (the tree has this only for complexes with transverse faces,
+  `exists_isPLSphere_cover_inter_of_transverse_faces`); (b) a trace circle zero in `H₁ (N''_σ)`
+  bounds an innermost disk on `∂N''_σ` off the other circles, which is an Operation 1 disk
+  (PL Schoenflies on a PL torus/sphere; 28.8 is not stated in the tree); (c) with no bigon, a
+  circle essential in the solid torus meets every incident splitting circle exactly once
+  (intersection numbers with meridian disks); (d) `0 < r σ` from the nonempty trace, which the
+  generator clause gives.
+- Exact remaining goal: the frozen statement at `Skeleton/Section34Compact.lean` line 1049.
+
+## exists_compactFaceDisks — STUCK (sub-leaf proved: vertex-ball meets)
+
+- Proved brick, file `Section34CompactSplitDiskIntersection.lean`:
+  `Section34CompactCutFrame.exists_splitDisk_eq_inter_vertexBall` (two distinct meeting vertex
+  balls meet exactly in a splitting disk). New case against the non-compact version: an outer face
+  is below no two vertex balls (`not_outerFace_subset_inter_vertexBall`): a boundary point of it
+  lies in a proper face, and every proper kind is excluded (splitting kinds would put the outer
+  face inside a splitting disk of the same dimension).
+- Missing: (a) PL Schoenflies for a PL circle on the PL sphere `∂C_σ` and an innermost trace
+  circle whose disk misses `⋃ V''_w` (the other side would make the class zero in `H₁`); (b) the
+  cyclic structure of the incident vertices and edges on `∂σ` (each incident vertex has exactly
+  two incident edges) and the fact that the relative interior of a splitting disk image lies in
+  the interior of the union of its two end balls, which make each `D''_σ ∩ V''_w` one arc between
+  two consecutive marked points; (c) the sub-arc of a PL circle between two points is a 1-cell.
+- Exact remaining goal: the frozen statement at `Skeleton/Section34Compact.lean` line 1064.
+
+## exists_compactResidualBalls — STUCK (deep; P7)
+
+- No file; non-compact counterpart `exists_section34ResidualBalls` is a skeleton leaf. Needs the
+  unbounded-component rule for the patches, the empty-sector certificate for the edge arcs, and
+  the outer faces and outer arcs of the target with their tilings; none exists in the tree.
+- Exact remaining goal: the frozen statement at `Skeleton/Section34Compact.lean` line 1085.
+
+## compactSourceFace_iff_cutLe — STUCK (not "short")
+
+- The containment steps of `Section34CompactCutStep` follow from the frame formulas except two:
+  `faceArc a ≤ outerFace o` needs `src (.faceArc a) ⊆ closure (srcBd (.vertexBall o.1) \ (C ∪ ⋃
+  D_e))`, and `markedPoint p ≤ outerArc q` needs the marked point in `closure (srcBd (.splitDisk
+  q.1) \ C)`: both say that `N` crosses `∂C` at the face arcs and marked points of boundary faces,
+  which no clause states; only a PL argument on the boundary circle of the outer face (its
+  boundary formula) could force it. The converse needs, e.g. for `markedPoint p ⊆ outerArc q`,
+  that `σ = p.1.1` is a boundary face from one point of it in `∂C`, again a local position fact.
+  Pure containment cases (all pairs of equal dimension, the vertex-ball cases) are covered by
+  the brick above and clause 10.
+- Exact remaining goal: the frozen statement at `Skeleton/Section34Compact.lean` line 1111.
+
+## compactTargetRecognition — STUCK
+
+- Needs the explicit description of `Section34CompactCutLe` for all 10 × 10 kinds (induction on
+  `ReflTransGen`), the brick above for the vertex-ball images, and target position facts not in
+  the residual bundle: the relative interior of a splitting disk image lies in the interior of the
+  union of its end balls (for `D''_σ ∩ E''_e = P''`), and a face arc of an interior face is not in
+  the target outer face (for `D''_σ ∩ O''_w`).
+- Exact remaining goal: the frozen statement at `Skeleton/Section34Compact.lean` line 1115.
+
+## Batch 7 summary
+
+- DONE 4 of 10: `exists_compactFaceEnvelopes`, `exists_compactFaceShellBalls` (drops `hgraph`),
+  `exists_compactFaceBallsGeneralPosition`, `compactTraceHomology` (drops `hcut`, `hgp`); all
+  drops linter-forced; the assembly calls must drop those arguments. STUCK 6: leaf 1 and 6--10.
+- Files (LF, no docstrings/comments, ≤ 100 codepoints): `Section34CompactVocabulary` (774 lines,
+  verbatim hoist of skeleton lines 184--922, names duplicate the skeleton's by design),
+  `Section34CompactFaceEnvelopes` (608), `Section34CompactGeneralPosition` (428),
+  `Section34CompactTraceHomology` (98), `Section34CompactSplitDiskIntersection` (248, brick).
+- `Section34CompactGeneralPosition` imports `LoopTheoremDiskPrism`, absent from the shared build;
+  compiled privately (no diagnostics).
+- Audit `AuditOpusC15.lean` (five modules): verified, no diagnostics (axioms ⊆ {propext,
+  Classical.choice, Quot.sound}, thirteen linters clean).

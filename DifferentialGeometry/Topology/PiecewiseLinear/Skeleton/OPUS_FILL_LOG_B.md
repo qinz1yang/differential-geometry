@@ -768,3 +768,117 @@ the `rimFrontier` field; later lead commits up to 888521413 did not touch the st
   options recorded.
 - Register, in order (6 new modules): `ChartPush`, `PseudoCellFlatChart`, `TubeSurfaceTransfer`,
   `HandlePiecePushOff`, `NoHandleLoopTheoremDisk`, `LoopTheoremDiskMeetsPseudoCells`.
+
+# Batch 6 (Lemma 9)
+
+## Route decision for the general position step (logged before building)
+
+- (b) as specified is not provable with the tree's relative general position: every relative
+  mover (`exists_small_homeomorph_generalPosition_relative`, `..._transverse_relative`,
+  `..._curveCrossing_relative`) needs the fixed faces face-wise transverse to the faces of `L`,
+  and at a point of `Bd Δ ∩ J` the boundary edge of `Δ` and the trace `J` are both segments in
+  `Bd X`, so `vectorSpan ⊔ vectorSpan` has rank 2 < 3 whatever triangulations are chosen.  The
+  exemption-free variant (`..._off_polyhedron_in_halfSpace`) needs a flat `Bd X`.  Chart moves
+  (side charts) certify transversality only in chart coordinates, and the junction with an ambient
+  move is again a face-wise condition.  A "crossing only" hypothesis would need a new general
+  position theory, not a variant of the existing proof.
+- (a) needs an `X`-compatible bicollar of a compact annulus of `E - {P'}` (collar lines through
+  `J` inside `Bd X`), i.e. collars of a face of a manifold with corners; the tree has bicollars
+  of closed two-sided surfaces only.
+- (c), adopted: use the disk's own prism.  `IsCombinatorialManifold.exists_centered_prism_
+  neighborhood_of_spanning_disk` (tree) applied to the component `S` of `Bd X` containing `Bd Δ`
+  gives `f : σ × [-1,1] → N` with `f(x,0) = r x` and wall `S ∩ N = f(∂σ × [-1,1])`.  Every level
+  `Δ_s = f(σ × {s})` is again a loop theorem disk (the wall lies in `Bd X`, the boundary curves
+  are homotopic along the wall), and for `s` off the finitely many vertex heights of a
+  triangulation of `f⁻¹(⋃ E ∩ N)` the level `Δ_s ∩ ⋃ E` is a compact PL 1-manifold whose
+  boundary is `Bd Δ_s ∩ ⋃ E`.  No bicollar of `E` and no side chart is needed; the wall edges are
+  handled in prism coordinates, where the wall is a union of flat faces.
+
+## Brick GP (general position of a loop theorem disk) — CLOSED
+
+- `IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_levelSet` (module
+  `LoopTheoremDiskLevelSet`): every loop theorem disk can be replaced by one, `Δ'`, with
+  `Δ' ∩ ⋃ E = ⋃₀ Cs`, `Cs` finite and pairwise disjoint, each member a PL circle missing `Bd X`
+  or a PL arc `q(σ¹)` with `q(∂σ¹) = S ∩ Bd X`.  Route (c): a generic level of the disk's own
+  prism.  Local disks of `f⁻¹ E` in prism coordinates come from flat charts off the wall
+  (invariance of domain puts the point in `Int N`) and from half-square side disks on the wall
+  (the prism lies on one side of `Bd X`); a finite cover, one triangulation with the disks as
+  subcomplexes, and a level off the vertex heights give a graph with degrees 1 on the wall and 2
+  off it.
+- Modules, in order (lines, sha256 prefix): `LevelSetOneManifold` (245, 2bc1c15e),
+  `LevelSetComponents` (157, 0d29a746), `LoopTheoremDiskPrism` (239, e26634e8),
+  `PseudoCellLocalDisks` (463, 3e735184), `LoopTheoremDiskLevelSet` (523, 3f3039e2); each
+  verified with no diagnostics.
+- Next: the descent (circles, then arcs) consuming exactly this output.
+
+## Brick circle step (removing a circle of intersection) — CLOSED
+
+- `IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep` (module
+  `LoopTheoremDiskCircleStep`): a loop theorem disk meeting `⋃ E` in circles and arcs as in the
+  GP brick, with at least one circle, is replaced by one meeting `⋃ E` in a proper subfamily.
+  Innermost circle in `Δ` (planar model) + `h8` give a circle whose disk in `E` misses the
+  centre; the minimal such circle in the chart bounds a PL disk `D ⊆ E` with `D ∩ Δ = c`
+  (`PseudoCellCircleDisk`, via `PseudoCellChartDisks` and the new general
+  `PolyhedralDiskRecognition`: a polyhedral topological 2-cell with PL boundary circle is a PL
+  disk, proved by capping with a cone in `E × ℝ`); swap by `exists_isPLHomeomorphOn_replace_ball`,
+  side from an outer collar of `c`, push off by `LoopTheoremDiskPushOff`.
+- Modules (all verified, no diagnostics): `PolyhedralDiskRecognition`, `LoopTheoremDiskPushOff`,
+  `PseudoCellChartDisks`, `PseudoCellCircleDisk`, `LoopTheoremDiskCircleStep`.
+- Next: the arc step (outermost arc in the chart, via inversion when `Δ` lies outside `X`), then
+  the induction and the leaf.
+
+## Brick arc step (removing an arc of intersection) — CLOSED
+
+- `IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_arcStep` (module
+  `LoopTheoremDiskArcStep`): a loop theorem disk meeting `⋃ E` only in arcs `q(σ¹)` with ends on
+  `Bd X`, at least one, is replaced by one meeting `⋃ E` in a proper subfamily.
+- `Δ - Bd X` is connected, so it lies on one side of `Bd X`.  Chart of `Int E_e - P'`: `Ψ` with
+  hole `{a}` if `Δ` is inside `X`, `invert a ∘ Ψ` with hole `insert a (invert a '' (B(0,1))ᶜ)`
+  if outside (`Schoenflies.inversion_sides`).  Outermost crosscut (`PlanarOutermostCrosscut`)
+  gives `B`, a sub-arc `B₁` of the trace and a PL disk `D ⊆ E_e`, `∂D = B ∪ B₁`,
+  `D ∩ Bd X = B₁`, `D ∩ Δ = B` (`PseudoCellArcDisk`, `PseudoCellArcDiskSides`).
+- Theta curve (`LoopTheoremDiskTheta`, `nullhomotopic_of_crosscut_halves`): `B` splits the
+  planar model of `Δ` into `U`, `V`; if both `α₁ ∪ B₁` and `α₂ ∪ B₁` were null-homotopic in
+  `Bd X`, extensions over `U` and `V` glue and `∂Δ` would be null-homotopic.  Replace `V` by `D`
+  (`exists_isPLHomeomorphOn_union` + boundary-simplex extension), then push `D` off `A` inside
+  the handle piece containing `U` near `B` (`LoopTheoremDiskArcSide`,
+  `exists_handlePiece_near`; `LoopTheoremDiskPushOff`).
+- Modules (all verified, no diagnostics): `PlanarOutermostCrosscut`, `PseudoCellArcDisk`,
+  `PseudoCellArcDiskSides`, `LoopTheoremDiskTheta`, `LoopTheoremDiskArcSide`,
+  `LoopTheoremDiskArcStep`.  Deduplication after the uniqueness grep: the local
+  `stdSimplexBoundary_one_eq` was replaced by the tree's `stdSimplexBoundary_one_eq_pair`
+  (`GeneralPosition`), the local `mem_inside_or_mem_outside` by
+  `Schoenflies.inside_union_outside`; both modules re-verified.
+
+## section33_not_isLoopTheoremDisk (Lemma 9) — CLOSED
+
+- Module `NotLoopTheoremDisk`.  Statement and `section Leaves` variable block byte-identical to
+  `Skeleton/Section33Approximation.lean` (checked by script); no hypothesis dropped (`hd`, `h2`,
+  `h34`, `h7`, `h8` all used; `h7` only at the end).
+- Proof: GP brick gives `Δ₁` and the family `Cs`; strong induction on `Cs.ncard`
+  (`IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_disjoint_of_decomposition`: circle
+  step while a circle remains, else arc step) gives a loop theorem disk missing `⋃ E`, which
+  contradicts `HasNoHandleLoopTheoremDisk.inter_pseudoCells_nonempty` (Lemma 7).
+- Verification: all 17 modules `Verified ... with no diagnostics; shared outputs unchanged`
+  (last re-checks after the dedup: `LoopTheoremDiskArcSide`, `PseudoCellArcDiskSides`,
+  `LoopTheoremDiskArcStep`, `NotLoopTheoremDisk`).  Audit `AuditBatch61.lean` (all 17 modules:
+  axioms within `propext`, `Classical.choice`, `Quot.sound`; the 13 linters): `Verified ... with
+  no diagnostics`.  No `sorry`/`admit`/`native_decide`/`axiom`/`nolint`/`set_option`, no
+  declaration docstrings or `--` comments, no line over 100 characters, public names unique
+  tree-wide, no `Skeleton/` import; all external imports are tracked and clean.
+
+## Batch 6 summary
+
+- CLOSED: Lemma 9 (`section33_not_isLoopTheoremDisk`), statement byte-identical.  Route (c)
+  (the disk's own prism) replaced (b)/(a) for general position; reasons in the route decision
+  above.  New general bricks usable elsewhere: `PolyhedralDiskRecognition` (polyhedral
+  topological 2-cell with PL boundary circle is a PL disk), `PlanarOutermostCrosscut`,
+  `LoopTheoremDiskTheta`, `LevelSetOneManifold`/`LevelSetComponents` (generic levels of a
+  triangulated prism are PL 1-manifolds, split into circles and arcs).
+- Register, in order (17 new modules, after `LoopTheoremDiskMeetsPseudoCells`):
+  `LevelSetOneManifold`, `LevelSetComponents`, `LoopTheoremDiskPrism`, `PseudoCellLocalDisks`,
+  `LoopTheoremDiskLevelSet`, `PolyhedralDiskRecognition`, `LoopTheoremDiskPushOff`,
+  `PseudoCellChartDisks`, `PseudoCellCircleDisk`, `LoopTheoremDiskCircleStep`,
+  `PlanarOutermostCrosscut`, `PseudoCellArcDisk`, `PseudoCellArcDiskSides`,
+  `LoopTheoremDiskTheta`, `LoopTheoremDiskArcSide`, `LoopTheoremDiskArcStep`,
+  `NotLoopTheoremDisk` (4660 lines).

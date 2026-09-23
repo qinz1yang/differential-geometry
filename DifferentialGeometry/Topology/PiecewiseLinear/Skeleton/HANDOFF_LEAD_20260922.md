@@ -390,3 +390,9 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   overnight, worker a next). No interface change anywhere.
 * 01:40 (09-23) — accepted worker d's disk taming leaf (`SmoothBoundaryDisksTaming` + six bricks);
   physical `sorry` 45. Worker d's final report is in; its annulus leaf is STUCK (route logged). Lead stops.
+* 04:30 (09-23) — accepted worker e's last three A1 leaves (17 modules); `GeneralPositionInDouble` promoted
+  to a real module. Physical `sorry` 38.
+* 04:40 (09-23) — accepted worker c's four Section34Compact leaves and the vocabulary hoist; physical
+  `sorry` 38. `compactSourceFace_iff_cutLe` may need a new frame clause (review candidate).
+* 04:45 (09-23) — accepted worker b's §33 Lemma 9 (17 modules) and worker a's four P4 bricks; physical
+  `sorry` 37.

@@ -1097,3 +1097,162 @@ Exact remaining goals, in order of difficulty:
   `ConeIsotopy`, `IsPLPseudoIsotopicToId`) and extend over a product neighbourhood of the face
   with a taper.  The missing piece is the relative normal form (trace arcs of `fbl s` and the
   splitting circle inside the straightened face).
+
+# Batch 8 (P4 bricks)
+
+## P4 item 1: neighbourhood of the compression disk (`CompressionDiskNeighborhood`) — CLOSED
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/CompressionDiskNeighborhood.lean` | 303 | `2fb1ee456a3709c6076628ddd711e91b967e982e7365a25d3f838d7c89f1254f` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.CompressionDiskNeighborhood
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CompressionDiskNeighborhood.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube18.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T05:39:50Z)
+
+Public names (grepped, no clash): `mem_closure_sdiff_image_stdSimplexBoundary`,
+`exists_isOpen_inter_inter_subset_of_hasPLCrossingAt`, `exists_isOpen_inter_inter_subset_of_isPLSphere`.
+
+- `exists_isOpen_inter_inter_subset_of_hasPLCrossingAt` (in `ℝ³`): `P` a PL `3`-ball, `D ⊆ S ∩ P`
+  a PL disk with `D ∩ frontier P = ∂D`, `D` a neighbourhood in `S` of each point off `∂D`, and at
+  each point of `∂D` the field-5 crossing `HasPLCrossingAt (frontier P) S x` plus small planar
+  disks in `S`; then some open `U ⊇ D` has `U ∩ S ∩ P ⊆ D`.  Proof: at `x ∈ ∂D` the side chart
+  `HasPLCrossingAt.exists_sideChart` (applied to the symmetric crossing, `X = P`) makes `S ∩ P` the
+  half-disk `z₃ = 0, z₂ ≥ 0`; `D` fills its open half by connectedness (`D` is relatively open there
+  and closed, and `x` is a limit of `D \ ∂D`, `mem_closure_sdiff_image_stdSimplexBoundary`), hence
+  the closed half.  No half-plane case is needed: `exists_sideChart` rules it out itself.
+- `exists_isOpen_inter_inter_subset_of_isPLSphere`: the same conclusion when `S` agrees on an open
+  `O ⊇ D` with a PL `2`-sphere containing `D` (in P4: `tgtVBd w` near `Dj`, since `Dj` misses the
+  other vertex balls); both local hypotheses are then derived (complement disk and local
+  planarity).  Remaining for the P4 consumer: the open `O` with `O ∩ frontier (⋃ tgtV) =
+  O ∩ tgtVBd w` near `Dj` (local finiteness of the vertex balls), in the chart.
+
+## P4 item (2): the bigon drag in a normal-form chart (`BigonDrag`) — CLOSED as a chart lemma; `exists_section34BigonSlide` STUCK on the normal form
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/BigonDrag.lean` | 223 | `1eb762002ce7c6ccb061c572d195015621f9232f1b061cf3d880aa86fc13c74b` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.BigonDrag
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BigonDrag.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube19.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T05:48:29Z)
+
+Public names (grepped, no clash): `slideMap_fst_le_of_tent`, `slideMapAt` (def),
+`continuous_slideAmount`, `continuous_slideMapAt`, `slideAmount_eq_zero_of_notMem`,
+`slideMapAt_eq_self_of_notMem`, `slideMapAt_zero`, `slideMapAt_one`, `slideMapAt_snd`,
+`mapsTo_slideMapAt_of_subset`, `exists_bigonDrag`.
+
+- The normal form (hypotheses of `exists_bigonDrag`, any T2 space `X`): an
+  `e : OpenPartialHomeomorph X (ℝ × ℝ × ℝ)` with `slideSupport ⊆ e.target` such that on
+  `e.source`, in coordinates `(v, u, z)`: the surface `Sf` is `z = 0`, the side `Y` (union of the
+  two vertex balls) is `z ≥ 0`, the splitting circle(s) `C` is `v = 0, z = 0`, and the trace `Tr`
+  is the tent `z = 0, v = (1/2 - |u|)/2`.  The bigon is `z = 0, 0 ≤ v ≤ (1/2 - |u|)/2`, the
+  crossings are `(0, ±1/2, 0)`.
+- Conclusion: `Φ = e.conjugateMap slideMap` (the model slide of `ModelSlide`, conjugated) is a
+  bijection, the identity off the compact `e.symm '' slideSupport`, keeps `Sf` and `Y`, and
+  `Φ '' Tr ∩ C = (Tr ∩ C) \ e.source` (the tent goes to `v ≤ -1/4`, `slideMap_fst_le_of_tent`);
+  a continuous `H : X × [0,1] → X` (the partial slides `slideMapAt t`) joins the identity to `Φ`,
+  keeping `Sf`, `Y` and the complement of the support fixed.  When `X` is a normed space and `e`,
+  `e.symm` are piecewise affine, `Φ` is piecewise affine on `univ` by the existing
+  `isPiecewiseAffineOn_conjugateMap` (`ChartConjugate`).
+- `exists_section34BigonSlide` remains STUCK: the exact remaining goal is the normal form, i.e.
+  from `hinv` and `hop` an `e` as above (composite of the chart of `H t` with a PL chart of `ℝ³`)
+  with `Sf = frontier (⋃ w, tgtV w)`, `Y = section34FaceTorus tgtV s` (both near `Dj`),
+  `C = ⋃ e', tgtEBd e'`, `Tr = fblBd s ∩ Sf`, source missing every other `fbl s'` and every other
+  crossing point, and `e.symm (0, ±1/2, 0) = Bb`.  Its content: a PL collar of the frontier of
+  `tgtV w ∪ tgtV u` near `Dj ∪` a strip beyond `B'`, plus a planar normal form (inside one face,
+  after `IsPLSphere.isSimplyEmbedded` and `exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron`)
+  of the arc of `tgtEBd e`, the trace arcs and the bigon, using the field-6 crossing charts at `Bb`.
+  Given the normal form the rest of the leaf is covered: fields 3, 4, 10 (support near `Dj`, which
+  every other face ball misses), 5 (`HasPLCrossingAt.of_isPLHomeomorphOn_mem_nhds`), 6 (identity
+  near the other crossings), 7 (`CarriesFirstHomologyOnto.of_homotopic` with `H`), 8, 9, the equal
+  trace count and `p⁺ + 2 = p`.
+
+## P4 item (1a): disjoint nonseparating circles on a torus (`TorusCircleHomology`) — CLOSED
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/TorusCircleHomology.lean` | 393 | `c0bd2676246511d7ea52728163e89c7222380a12872f033b462ce1c3a32c82a9` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.TorusCircleHomology
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TorusCircleHomology.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube20.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T06:12:21Z)
+
+Public names (grepped, no clash): `range_integralSingularHomologyMap_inclusion_eq_of_homotopic`,
+`range_integralSingularHomologyMap_eq_of_continuousOn`,
+`range_integralSingularHomologyMap_inclusion_eq_bot`,
+`subsingleton_integralSingularHomology_image_of_convex`,
+`IsPLTorus.range_integralSingularHomologyMap_eq_bot_of_not_isPreconnected`,
+`IsPLTorus.range_integralSingularHomologyMap_eq_of_disjoint`,
+`IsPLTorus.carriesFirstHomologyOnto_image_of_disjoint`.
+
+- Form ("homologous up to sign" as equal images): `Θ ⊆ ℝ³` a PL torus, `φ : ℝ³ → Y` continuous
+  and injective on `Θ`, `Y` Hausdorff in any universe, `φ '' Θ ⊆ S`.  For disjoint PL circles
+  `K, G ⊆ Θ` with `Θ \ K`, `Θ \ G` preconnected, the ranges of `H₁ (φ '' K) → H₁ S` and
+  `H₁ (φ '' G) → H₁ S` are equal; a separating circle has range `⊥` (28.9 disk, contractible
+  image); carrying `H₁ S` onto passes from `φ '' K` to `φ '' G`.  `φ` is there for the universe
+  gap (`M₂ : Type u`, charts to `ℝ³`): apply it with `φ` a chart inverse on a chart containing
+  `Θ`.
+- Route: `exists_connected_annulus_complement` around `G` (collar missing `K`),
+  `χ = 0` gives the annulus parametrization, `exists_disk_or_annulus_of_subset_prism_lateral` for
+  `K`; the disk case contradicts `IsPreconnected (Θ \ K)` via
+  `inter_closure_sdiff_eq_image_stdSimplexBoundary`; the annulus case and the half collar of `G`
+  are fed to `range_integralSingularHomologyMap_eq_of_continuousOn` (end maps homotopic, ends
+  homeomorphic by `homeoOfEquivCompactToT2`).
+- Consumer gap (for Lead): to apply this to field 7 one needs `frontier (section34FaceTorus tgtV s)`
+  to be a PL torus inside one chart (the image of a PL torus of `ℝ³` under a chart inverse).  No
+  current lemma produces that from `hinv` (same gap as the P6 bridge leaf
+  `section34TraceCircle_homologyMap_ne_zero`).
+
+## P4 item (1b): carrying unions of circles and subsurfaces of a torus (`TorusSubsurfaceCarrier`) — CLOSED
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/TorusSubsurfaceCarrier.lean` | 811 | `3a33374fe009d4053c3f7505f6973afb6f3c5155537523591aeff3fe0de8dc30` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.TorusSubsurfaceCarrier
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TorusSubsurfaceCarrier.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube22.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T06:42:32Z)
+
+Public names (grepped, no clash): `range_integralSingularHomologyMap_le_of_continuousOn`,
+`integralSingularChainsIn_union_le`, `range_integralSingularHomologyMap_inclusion_mono`,
+`exists_homologous_cycle_of_range_le`, `CarriesFirstHomologyOnto.of_union_of_range_le`,
+`CarriesFirstHomologyOnto.of_union_of_subsingleton`,
+`CarriesFirstHomologyOnto.of_union_iUnion_of_range_le`, `CarriesFirstHomologyOnto.subsingleton`,
+`carriesFirstHomologyOnto_of_subsingleton`, `CarriesFirstHomologyOnto.subsingleton_of_iUnion`,
+`IsPLTorus.carriesFirstHomologyOnto_or_subsingleton_of_iUnion`,
+`IsPLTorus.carriesFirstHomologyOnto_or_subsingleton_of_disjoint`,
+`IsPLTorus.carriesFirstHomologyOnto_iUnion_of_disjoint`.
+
+Same setting as (1a) (`Θ` a PL torus, `φ` continuous and injective on `Θ`, `φ '' Θ ⊆ S`, `Y`
+Hausdorff in any universe).
+- Planar-subsurface lemma (`..._or_subsingleton_of_disjoint`): `K ⊆ Θ` a nonseparating PL
+  circle, `C : ι → Set E3` finitely many pairwise disjoint PL circles in `Θ \ K`, `W ⊆ Θ` closed,
+  disjoint from `K`, with `W ∩ closure (Θ \ W) ⊆ ⋃ i, C i`, and `φ '' W` carrying `H₁ S`: then
+  some `φ '' C i` carries, or `H₁ S` is trivial (the disjunct is needed: `ι` empty forces
+  `W = ∅`).  `..._iUnion_of_disjoint` packages it as "`φ '' ⋃ i, C i` carries".  Route: annulus
+  complement `R ⊇ W` of a collar of `K`; the vertical retraction of `R` (Lemma `..._le_of_...`)
+  makes the end circle `K₋` carry; an annulus-case `C i` has the range of `K₋`; if all `C i` are
+  disk-case, the disks are nested or disjoint in the prism sphere
+  (`isPLSphere_stdSimplex_prism_boundary`, sphere `inter_closure_sdiff`, complement of a disk
+  connected), `W` lies in the union of the maximal ones (clopen argument on the connected
+  complement of disjoint disks, `IsPLSphere.isConnected_sdiff_iUnion_of_isPLBall_two`), and
+  finitely many disjoint disks carry only a trivial `H₁` (chain splitting,
+  `integralSingularChainsIn_union_le`).
+- Step A of field 7 (`..._or_subsingleton_of_iUnion`): if `φ '' ⋃ i, C i` carries `H₁ S`
+  (disjoint PL circles in `Θ`), some `C i` is nonseparating in `Θ` and `φ '' C i` carries, or
+  `H₁ S` is trivial (separating circles have range `⊥`, nonseparating ones one common range; a
+  piece whose range lies in another's is removed by `of_union_iUnion_of_range_le`).
+
+Field 7 of P4 case (a) after these bricks (old trace `Z = Z₀ ⊔ Jd ⊔ Z₁` carries `H₁ T_s`):
+Step A gives a nonseparating carrying component `K`; if `K ⊆ Z₁`, `mono`; otherwise
+`K ⊆ Z₀ ∪ Jd` misses `P'` and `..._iUnion_of_disjoint` with `W = P' ∩ Θ` gives that the new trace
+carries.  Remaining inputs, all outside these modules: (i) the chart: `Θ = c '' frontier T_s` a PL
+torus inside one PL chart with the trace components PL circles (the T_s gap of (1a), same as the
+P6 bridge leaf); (ii) `P' ∩ Θ` carries `H₁ T_s` (the rim `h '' simplexRim ⊆ interior P'` plus
+`CarriesFirstHomologyOnto.of_mayerVietoris` on the ball `P'`, step (iii) of the Batch 7 note);
+(iii) `P' ∩ Θ` has frontier in `Θ` inside the new trace (from `P' ∩ O = P ∩ O` and field 5).
