@@ -427,6 +427,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   three homology bricks, tube prism coordinates, annular-chain local polyhedrality, the handle-decomposition
   fixture with four bricks) and 4 probes (compact source-face reduction, three §32 reductions).
 * 10:30 (09-23) — accepted worker e's compact P6 `exists_compactFaceDisks` (7 modules; `hnc`/`hnb` dropped);
-  physical `sorry` 42.
+  physical `sorry` 35 (the three §32 probes are not counted).
 * 10:40 (09-23) — lease e re-dispatched to the non-compact P6 twin `exists_section34FaceDisks` (port of the compact
   proof; told to report an INTERFACE subsection if `Section34NormalPlus` lacks a cyclic-seam ingredient).
