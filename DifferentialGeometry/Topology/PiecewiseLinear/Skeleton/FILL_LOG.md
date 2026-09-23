@@ -11044,3 +11044,279 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 
 ```
 
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T22:28:38.7420960Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRadialBoundary. Checker exit: 1.
+Sub-leaf list: Actual graph-cell frontier has two distinct points on one ray from the vertex, witnessed by mixed flag centroids; no IsConeBase at that vertex can have this frontier as base. Repaired scalar inference and explicit centroid formulas.
+SHA-256: 778B1EE7D03AF7B024E1EE86F6E4A4B5A4E9C560E1B8CF71B7E4ED4E4C68E0CF
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:6:0: error: object file 'E:\differential-geometry-dev\.lake\build\lib\lean\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRestriction.olean' of module DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRestriction does not exist
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\GraphDualCellRadialBoundary.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T22:30:21.8403540Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRadialBoundary. Checker exit: 1.
+Sub-leaf list: Mixed-flag boundary witnesses and non-radiality of the actual graph dual cell. Removed a now-stale upstream object dependency by using direct singleton-face membership; no upstream file edited.
+SHA-256: 35288087E538B013D551EEBA64BE2EF5C1BA21D5157B9184482E5AE07607E41B
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:31:2: error: unsolved goals
+case neg
+E : Type u_1
+inst✝¹ : NormedAddCommGroup E
+inst✝ : NormedSpace ℝ E
+K : Geometry.SimplicialComplex ℝ E
+s : Finset E
+hs : s ∈ K.faces
+z : E
+hne : s.Nonempty
+hmem : Finset.centroid ℝ s id ∈ (convexHull ℝ) ↑s
+hz : z ∉ s
+⊢ 0 = if z ∈ s then (↑s.card)⁻¹ else 0
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\GraphDualCellRadialBoundary.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T22:32:33.2327932Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRadialBoundary. Checker exit: 0.
+Sub-leaf list: Mixed-face frontier centroids; explicit collinear distinct boundary points; actual graph dual-cell frontier is not an IsConeBase at the source vertex. Fixed the final conditional simplification.
+SHA-256: EDE62A932BE95B376B31EFC886C9B9B0FFA04A91BB5FF6C64DC985E6513DB83E
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Claw stage verified (2026-09-23)
+
+The following six modules passed the private checker and the external axiom/linter audit.
+All transitive axioms allowed: propext, Classical.choice, Quot.sound. Thirteen linters passed.
+No extra input has been added to the frozen P7 statement. The new local chart hypotheses are
+for helper lemmas; the intended producer is the existing carrier/exterior clauses of hdata.
+
+- `Section34TetraSkeleton.lean` (184 lines)
+  SHA-256: `aa33acc6d2adfa48c003495d1c8d7f9166bce02d8ade1ff17cb22354b6e9765f`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraSkeleton.lean with no diagnostics; shared outputs unchanged.`
+- `Section34TetraPaths.lean` (187 lines)
+  SHA-256: `c1d929381818d7676818026404513e28b7433c7708c651d7e158916720f3551b`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraPaths.lean with no diagnostics; shared outputs unchanged.`
+- `Section34TetraClaws.lean` (221 lines)
+  SHA-256: `b559e8c0322a71797c8de3b7bfb5906a89efcd6cbb33c822705e474d602b7df2`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraClaws.lean with no diagnostics; shared outputs unchanged.`
+- `PLCellChartGluing.lean` (76 lines)
+  SHA-256: `643448ea6c7469a1b0078497509fa386bb2cb71cb1256b8db0ea7d5512061fa4`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartGluing.lean with no diagnostics; shared outputs unchanged.`
+- `Section34ClawIncidence.lean` (151 lines)
+  SHA-256: `e7dd8a90294e0734f9a298327b6fb01ef0ceec48098d3e8c8a3877830bcd8d8c`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawIncidence.lean with no diagnostics; shared outputs unchanged.`
+- `Section34ClawBall.lean` (367 lines)
+  SHA-256: `f021683f0a1d957f4e3fc1274bb1939e42d741f8f094ea3d05a0174bfd7ac868`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawBall.lean with no diagnostics; shared outputs unchanged.`
+
+Audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17Claws.lean with no diagnostics; shared outputs unchanged.`
+Preserved audit receipt: `claude-moise-agent-a/AuditCodexItem17Claws.json`.
+Audit probe SHA-256: `a75ecb43d8636a69da8d060c14191daf30aa2308a533e071f2e17315bc7d311b`.
+Remaining: the four hole disks, face runs/cap split, per-tetrahedron residual ball,
+foreign-cell exclusion, patch/edge cells, pairwise intersections, tilings, and frozen leaf.
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T22:35:53.7613875Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14RadialBoundary.lean. Checker exit: 0.
+Sub-leaf list: All new graph-cell radial-boundary declarations: foundational axioms and thirteen linters. Also axiom-audit the sphere/disk-pair, prescribed-boundary, cone, general ball-boundary and centered-ball extension interfaces.
+SHA-256: 11E22205BD3F72D98BCB73B524DEDBA14C5EBD0AA34CE76423A14369FFD90222
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14RadialBoundary.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14RadialBoundary.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 13
+
+## Canonical surface state and local windows (2026-09-23T22:36:34.7264494Z)
+
+Compiled and jointly audited all 42 staged modules. New modules derive nontrivial solid-torus fundamental groups, transfer null seams to both original tori, construct a labelled orientable state from the actual initial surface, and describe a supported adjacent-pair update. No extra named input and no frozen statement changes. The final descent leaf is still open; global update preservation and finite-window recursion are being implemented.
+
+All current source hashes and receipts were rechecked. Previously recorded, unlisted module hashes are unchanged.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusFundamentalGroup
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SolidTorusFundamentalGroup.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: FE6FF57368B6DB6D9E310780C56D320D92D150F168F606EB57729A75B2A2D765
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerNullSeamDisks
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalTowerNullSeamDisks.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 637598598804BA3C5A29A5842D4B129430268305D4117084F9376F69F0742764
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceState
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceState.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 28B04E1349D960D095DFBBFBA2B6F87BD5E351427F4EC60E256C66CB2E3319C2
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceWindow
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceWindow.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 8B07E3EB13CA72247C37DF957BDDF41890EDF42018CE31B583EF372BDA9F1D4B
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13CanonicalState.receipt.json
+Audit SHA-256: B2E9329B3ECA903BB06CFE706D7D8AA7C1F4E4F611A77CDBBF0EA274370E3536
+Audit: all nonautomatic declarations in 42 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: global state preservation and strict finite-window descent, Type 1/2/3 reduction, compatible halves, relative exhaustion, limit surface, all IsAnnularChain fields, frozen exists_descentSequence.
+
+# Codex item 14
+
+## Corrected vertex-cell route: STOP at the actual marked-cone premise
+
+The owner corrected the pieces to the graph dual vertex cells and requested the sphere-annulus,
+prescribed boundary extension and cone extension bricks. The on-disk interfaces were inspected:
+1. SphericalDiskPair.exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk supplies a sphere map fixing
+   the first disk map and carrying the second disk onto its target. Combined with the standard
+   prism boundary this provides the annulus model (retain the boundary circles by taking the
+   closed complement of the relative interiors). SurfaceSplitAnnulus already uses this model.
+2. IsPLHomeomorphOn.exists_holed_surface_extension_of_prescribed_boundary_maps in
+   SphereHoledBoundaryExtension.lean:88 supplies exact prescribed boundary maps, with its explicit
+   IsPLCirclePositive compatibility hypothesis. Unrelated arbitrary boundary parametrizations
+   cannot be used without that hypothesis; a coherent global choice still has to supply it.
+3. exists_isPLHomeomorphOn_coneComplex in ConeExtension.lean:70 supplies radial extension from
+   ACTUAL IsConeBase inputs. exists_isPLHomeomorphOn_of_boundaryComplex (BoundaryExtension.lean:13)
+   supplies an unmarked ball extension. BallStarring.lean:66 can put a chosen interior point at
+   the cone apex of an abstract ball parametrization, without identifying prescribed source arcs.
+   External/ClassificationOfSurfaces/Moise/ConeExtension.lean concerns coning planar triangles.
+
+The generic bricks exist. The proposed application of brick 3 assumes that the actual C_v can
+be coned LINEARLY from the original vertex v over its boundary. This premise is false for the
+current graphDualCell, and a new real module now proves the precise obstruction.
+
+Actual definition (DualCells.lean:386):
+graphDualCell M L v = restrict (derivedNeighborhood M L)
+  (closedStar (barycentricSubdivision M) v).
+The cone identity in DerivedCellCone applies instead to derivedNeighborhoodCell M {v}; it does
+not identify the graph cell containing the incident edge arms with that smaller cell.
+
+Verified witness: for an edge e of L, a containing face t of M with card(t) > 2, and v in e,
+put c = centroid(e), d = centroid(t), y = (c+d)/2, x = (v+c+d)/3. Under L subset M and the actual
+one-dimensional face bound on L, both x and y belong to frontier (graphDualCell M L v). They are
+distinct and x = v + (2/3) * (y-v). Thus the frontier is not radially injective about v.
+This applies in particular to the actual rim edge/triangle flags, with
+L = restrict K (section34CompactGraphSkeleton K), using the already-produced collar triangulation.
+It requires no additional named input and does not rely on a degenerate or empty fixture.
+
+New module: GraphDualCellRadialBoundary.lean.
+Sub-leaf list:
+- centroid_mem_frontier_graphDualCell_of_mixed_face: mixed core/noncore face centroids lie on
+  the actual graph-cell frontier.
+- not_isRadiallyInjective_frontier_graphDualCell_of_edge_lt_face: the two explicit flag centroids
+  give distinct frontier points on the same ray from v.
+- not_exists_isConeBase_frontier_graphDualCell_of_edge_lt_face: no simplicial cone base at v
+  has this actual frontier as its space.
+
+STOP: the missing usable brick is a MARKED per-cell parametrization preserving the specified two
+rim half-edges, not the generic boundary extension. For coherently chosen centered cap maps kP,kQ,
+the exact outstanding marking, in standard-triangle coordinates, is:
+```lean
+∃ ψ : (Fin 3 → ℝ) × ℝ → E3,
+  IsPLHomeomorphOn ψ (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Cv ∧
+  (∀ z ∈ stdSimplex ℝ (Fin 3), ψ (z, -1) = kP z ∧ ψ (z, 1) = kQ z) ∧
+  ψ '' ({stdCenter 1} ×ˢ Icc (-1 : ℝ) 1) = Cv ∩ section34CompactSimplexRim s.1
+```
+An abstract PL cone parametrization could still be chosen to preserve those particular arcs,
+but the current cone/ball extension conclusions do not provide that marking, and it was not
+constructed here. The new theorem rules out the asserted literal radial coning of the frontier;
+it does not refute the original zero-marked buffer existence statement.
+No new named input or placeholder was introduced. The buffer, its outer collar/enlargement,
+transport, inner shrink and single Moise331OnTube assembly remain open; the frozen leaf is untouched.
+
+Verification: private module check is zero-diagnostic. Final external audit checks all new
+non-auto declarations with the foundational axiom whitelist and all thirteen standard linters.
+It also axiom-checks the five cited sphere/disk-pair, prescribed-boundary, cone, ball-boundary and
+centered-ball provider endpoints. All checks pass. New source lines are at most 100 codepoints,
+with no forbidden constructs or trailing whitespace; the 489-module dependency closure has no
+Skeleton imports. No Git writes, aggregate edits or foreign-lane edits.
+A transient stale GraphDualCellRestriction object was avoided by proving singleton-face membership
+directly in the new module; no upstream source was modified.
+
+Module SHA-256: EDE62A932BE95B376B31EFC886C9B9B0FFA04A91BB5FF6C64DC985E6513DB83E
+Module receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.json
+Audit SHA-256: 11E22205BD3F72D98BCB73B524DEDBA14C5EBD0AA34CE76423A14369FFD90222
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14RadialBoundary.receipt.json
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean with no diagnostics; shared outputs unchanged.
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14RadialBoundary.lean with no diagnostics; shared outputs unchanged.
+```
+
+Read-only provider source SHA-256s:
+SphericalDiskPair: FC85C4CC95FD7B8A2212062AF726D504A9C778DB19193CB02CCA49A0A707A3B0
+SphereHoledBoundaryExtension: 59EF30F80DE9B86880212474B44D9A53482449B1BBBD3138CBA3D9654A51A49B
+ConeExtension: 9298319B229C5405EFD7681427E24C2C938D7F1C6E7288C6B7050437F282C10C
+BoundaryExtension: 2842735C490E2A20D11E07FA2E9B2593B34ADEED5C06EE94F0AC6299387832C1
+BallStarring: 33A35529FB35E43E47628F808002A2CCB57A88B54CCF0A63755B80B944E4044A
+DualCells: 8E01BAC7DBDF32777AC369CAB39F37C288C9008CC82853FF172ECF8F916417DA
+DerivedCellCone: ED45886F7F1AE9AC1D490A0CBC744AE48F2A1E667678D7F321D4C5B4E849A273
+
+
+
+# Codex item 15
+
+## Return disks avoid all foreign mouths (2026-09-23)
+
+- Module: Section34CompactPuncturedSphere.lean
+- SHA-256: C69E1C79D84DB2834F28EDB2A68E859B52B6D7DA57AD8ED51381039FFDF77F7C
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPuncturedSphere.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: All mouths other than the marked one lie in one connected subset of the vertex sphere minus a returning polygon. Includes non-incident face-ball/splitting-disk avoidance and each actual seam lying on the union frontier.
+
+- Module: DiskCrosscutPair.lean
+- SHA-256: FBB81714F89B7AE7F59FF0C292896C392721DED7F47DDAF283EFE81CA8E02D25
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\DiskCrosscutPair.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A proper PL arc cuts a disk into two PL disks, with parameterized boundary arcs, exact original endpoints, union/intersection equalities, and exact boundary traces, in an arbitrary finite-dimensional ambient space.
+
+- Module: Section34CompactReturnDisks.lean
+- SHA-256: A0AD967510AA1D4E5D2E763D6CFB5DC7753A647F89FB156A6702D1D29BF4B3E4
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactReturnDisks.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A supplied genuine returning trace arc yields a disk on the actual vertex sphere intersected with frontier N, meeting the marked closed splitting disk exactly along its parameterized boundary arc and avoiding every other closed splitting disk. No same-direction-crossing inference is made.
+
+- Tree-external audit: C:\Users\liao9\AppData\Local\Temp\codex-trace\ReturnDisksAudit.lean
+- Audit receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\ReturnDisksAudit.receipt.json
+- Audit SHA-256: 459CEE3DE16F502BFF14F2377CA2453FB31BFCFC86D4BED53A8EF68002D9E27D
+- All 85 selected declarations from the twenty-seven modules pass all thirteen linters;
+  axioms are contained in propext / Classical.choice / Quot.sound.
+- The return disk is not yet a full BigonSlide witness: its interior must still be made
+  disjoint from every face boundary by a finite innermost selection. This work continues.
+- No hard stop. Both headlines remain open. Current checkout HEAD observed 583c046f1454713834fadd7d1b1f0fb0f3e61ec2;
+  no write Git command was issued. Import closure also explicitly excludes CircleArcSplit,
+  TwoBallPocket, compact FaceRuns and ResidualBall(s), in addition to Skeleton/P6/foreign untracked files.

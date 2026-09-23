@@ -579,3 +579,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 15:50 (09-24) — PR #15 reconciliation dispatched to an Opus worker on lease e: the 77 PR files are materialised
   as untracked files (clash file renamed `GraphDualCellRestrictionE`), the worker owns them, resolves the six
   declaration collisions against item 14's tracked modules (reuse or rename), reverifies and audits; wiring stays manual.
+* 16:50 (09-24) - accepted Codex lane 1's edge matching (70 modules; the single audit timed out at the default
+  heartbeat limit and was split into two probes of 35 modules, both clean). CGN has 4 leaves. Physical `sorry` 13.
