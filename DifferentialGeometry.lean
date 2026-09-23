@@ -13514,3 +13514,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalRankO
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryCapCurvature
+import DifferentialGeometry.Geometry.Metric.PointPickingSequence
+import DifferentialGeometry.Geometry.Curvature.ScalarPointPicking
+import DifferentialGeometry.Geometry.Neck.ScalarDistanceBarrier
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.AttachedSlab
+import DifferentialGeometry.Topology.Order.FiniteExceptionalSteps
+import DifferentialGeometry.Geometry.Neck.ScalarRegionGrowth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalRegionBounds
