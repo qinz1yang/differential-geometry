@@ -330,7 +330,7 @@ files are not yours; c: smoothing; d: C1 branch tube; e: compact face disks). If
 out to need a producer that the frozen CGN inputs cannot supply, stop on it and report the exact
 clause; that is a lead/owner decision.
 
-## Codex item 8 — Section 33 Lemma 10 (lead-written 2026-09-23 14:45; the lane handed to Codex for usage balance)
+## Codex item 9 — Section 33 Lemma 10 (written by a forked session 2026-09-23 14:45; renumbered by the lead; NOT active while worker b is on Lemma 10 — start it only if b's final report leaves Lemma 10 STUCK, or on the owner's word)
 
 The lease-b worker closed Lemma 13 (`Section33BoundaryMatch`) and the page-238 extension
 (`Section33Extension`) and was interrupted before Lemma 10; by the owner's rule the freed lane's

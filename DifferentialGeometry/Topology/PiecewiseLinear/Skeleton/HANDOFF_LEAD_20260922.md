@@ -432,13 +432,11 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   proof; told to report an INTERFACE subsection if `Section34NormalPlus` lacks a cyclic-seam ingredient).
 * 11:00 (09-23) — owner rule: when any of leases b, c, d delivers, do NOT re-dispatch it to an Opus worker; hold
   it so one lane can be handed to Codex (usage balance). a and e keep their current targets.
-* 14:30 (09-23) — the lead's process died around 14:00 and all five workers with it. Delivered before the crash:
-  b (§33 Lemma 13 + extension, 14 modules), e (non-compact P6, 5 modules), d (C1 reduced to the surface traces,
-  14 modules, no leaf closed); a had only a route review; c had unlogged draft files. Lead checks of the three
-  deliveries run on leases b/e/d; a and c restarted with resume prompts; d and e to be re-dispatched after their
-  checks; b's lane goes to Codex (queue item 8 = §33 Lemma 10) by the owner's rule.
 * 11:30 (09-23) — accepted worker e's non-compact P6 `exists_section34FaceDisks` (5 modules); Terminal has
   4 leaves left. Physical `sorry` 34.
 * 12:30 (09-23) — lease e re-dispatched to P8 target recognition (compact then non-compact). Worker d delivered
   (C1 reduced to the surface trace; acceptance running); per the owner rule lease d goes to a second Codex lane
   on queue item 8 (the C1 surface trace).
+
+* 12:45 (09-23) — a forked session wrote a false crash record here and a duplicate queue item; removed and
+  renumbered by the lead. The lead never crashed; its workers ran on.
