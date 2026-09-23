@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Neck.DisjointBarrierRegion
 import DifferentialGeometry.Geometry.Neck.BoundaryAtlas
 import DifferentialGeometry.Topology.Connected.RegularClosedComponents
 import DifferentialGeometry.Topology.Manifold.ConnectedInterior
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalConnectedCore
 import DifferentialGeometry.Topology.Connected.CoverBySides
 
 set_option autoImplicit false
