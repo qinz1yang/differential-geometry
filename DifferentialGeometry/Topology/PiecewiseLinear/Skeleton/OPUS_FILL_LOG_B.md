@@ -882,3 +882,152 @@ the `rimFrontier` field; later lead commits up to 888521413 did not touch the st
   `PlanarOutermostCrosscut`, `PseudoCellArcDisk`, `PseudoCellArcDiskSides`,
   `LoopTheoremDiskTheta`, `LoopTheoremDiskArcSide`, `LoopTheoremDiskArcStep`,
   `NotLoopTheoremDisk` (4660 lines).
+
+# Batch 7 (Section 33 endgame: Lemmas 13, extension, 10)
+
+Worker: Opus 5.5 fill worker on lease b, 2026-09-23 (checkout HEAD 35a89dbb5 while writing this
+entry; statements read from `Skeleton/Section33Approximation.lean`, section `Leaves`).
+
+## exists_section33BoundaryMatch (Lemma 13) — CLOSED
+
+- Files (all under `DifferentialGeometry/Topology/PiecewiseLinear/`; register in this order):
+  1. `HoledSphereExtension.lean` (388 lines,
+     `ea8f04d298cd020434ec22eedd4ec777fdfdebd0644b13d015d3fc690d7914d7`);
+  2. `HoledSphereStrip.lean` (554,
+     `df20b9de0074b43b26c4a008d72bfe681dd59b4de787544ae2b828ce586485d1`);
+  3. `SurfaceCapSphere.lean` (229,
+     `f1fb65aaf47b615fe1b88f4aafaf82f9e5ff2e0d630f20b66b8f85ee154f6978`);
+  4. `SquareConcat.lean` (146,
+     `3c65987b591671bb8fd6ea4e2153171a2774c12f5664ce26c9b0727ff19db0ee`);
+  5. `TubeFreeFaceStrips.lean` (397,
+     `ac4224d423d94fb3c4fb621509fbe67d7f2291ffd0146de772a4cefdd4244a3a`);
+  6. `BoundaryMatchMobius.lean` (442,
+     `97ea624295ba5f40284596875bdb57b0dfca02ecbee0d3dc6a51a317fc150305`);
+  7. `Section33BoundaryMatch.lean` (611,
+     `6e67de4f0107da69cf129050aa19227508059ad68d83b669ba9a940b82a19587`), the leaf.
+- Import lines: `import DifferentialGeometry.Topology.PiecewiseLinear.HoledSphereExtension`,
+  `...HoledSphereStrip`, `...SurfaceCapSphere`, `...SquareConcat`, `...TubeFreeFaceStrips`,
+  `...BoundaryMatchMobius`, `...Section33BoundaryMatch` (same prefix; no `Skeleton/` import).
+- Statement identity: the theorem text from `theorem exists_section33BoundaryMatch` to `:= by`
+  and the `section Leaves` variable block are byte-identical with the skeleton (checked by script).
+  All six hypotheses are used (`hconn` for the edge graph and for the orientability of `Bd N`).
+- Success lines (2026-09-23, each after a fresh prepare; `...` =
+  `D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear`):
+  `Verified ...\HoledSphereExtension.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\HoledSphereStrip.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SurfaceCapSphere.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SquareConcat.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\TubeFreeFaceStrips.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\BoundaryMatchMobius.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33BoundaryMatch.lean with no diagnostics; shared outputs unchanged.`
+- Audit (`claude-moise-agent-b/AuditBatch71.lean`, `-Audit`, all seven modules, axioms within
+  `propext`, `Classical.choice`, `Quot.sound`, the thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch71.lean with no diagnostics; shared outputs unchanged.`
+- Route.  Model: `A_v = Fr C_v ∩ Fr N` is the PL two-sphere `Fr C_v` minus the open splitting disks
+  of the edges at `v` (`IsTube.freeFace_eq_sdiff`).  Target: `A'_v` capped at its `deg v` trace
+  circles in `ℝ³ × (edges → ℝ)` is a closed surface of Euler characteristic 2, hence a PL
+  two-sphere (`exists_isPLSphere_cap`, from the batch-2 capping).  Holed spheres with the same
+  index set: `exists_isPLHomeomorphOn_holed` transfers `exists_isPLHomeomorphOn_holed_disk_with_
+  boundary_extension` through planar charts (sphere minus one disk).  Vertices are added along the
+  connected edge graph (processed set kept path-connected); the new vertex's prescribed rim maps
+  must be orientation compatible with the reference: otherwise a chain of strips of free faces along
+  a path (planar strip model `[-1/2,1/2] × [-2,-1]` carried by the holed-disk classification,
+  `exists_freeFace_chain`) closes to a cylindrical diagram in `Bd N`, which orientability of `Bd N`
+  forces to be untwisted, and whose image in `Bd X` is twisted by the reflection
+  (`false_of_reversed_rim`, via `IsCylindricalDiagram.endMap_endpoints_of_isOrientable`, the book's
+  Möbius band of page 238).  Both orientabilities come from `isOrientable_euclidean_three`.
+- New public names (grepped tree-wide, unique): `IsPLCirclePositive.of_eqOn`,
+  `IsPLCirclePositive.conj`, `IsPLSphere.exists_holed_chart`, `image_sdiff_iUnion_sdiff_eq`,
+  `IsPLSphere.exists_isPLHomeomorphOn_holed`; `isHPolytope_rectTwo`, `isPLBall_rectTwo`,
+  `mem_frontier_rectTwo_of_apply_one_eq`, `exists_planar_strip`, `IsPLSphere.exists_holed_strip`;
+  `IsCombinatorialManifoldWithBoundary.exists_isPLSphere_cap`; `isPLHomeomorphOn_squareLowerHalf`,
+  `isPLHomeomorphOn_squareUpperHalf`, `exists_isPLHomeomorphOn_square_concat`;
+  `IsTube.rim_subset_splitDisk`, `IsTube.disjoint_rim_rim`, `IsTube.freeFace_eq_sdiff`,
+  `IsTube.frontier_eq_iUnion_freeFace`, `IsTube.exists_rim_of_mem_freeFace_inter`,
+  `IsTube.rim_subset_freeFace`, `IsTube.disjoint_rim_freeFace`, `IsTube.exists_freeFace_strip`,
+  `IsTube.exists_freeFace_chain`; `mem_or_mem_of_card_eq_two`,
+  `IsHandleDecompositionOfTube.exists_trace_of_mem_inter`,
+  `IsHandleDecompositionOfTube.pseudoCell_subset_piece`,
+  `IsHandleDecompositionOfTube.isPLHomeomorphOn_iUnion_freeFace`,
+  `IsTube.exists_isOrientable_frontier`,
+  `exists_isOrientable_frontier_of_isCombinatorialManifoldWithBoundary`, `image_prod_singleton_eq`,
+  `image_one_sub_eq`, `IsHandleDecompositionOfTube.false_of_reversed_rim`;
+  `isPLHomeomorphOn_fst_inl`, `IsHandleDecompositionOfTube.exists_piece_map`,
+  `IsHandleDecompositionOfTube.exists_boundaryMatch_step`, `exists_section33BoundaryMatch`.
+- Compiles: about 25 module checks + 1 audit.
+
+## exists_section33Extension (page-238 endgame) — CLOSED
+
+- Files (new, `DifferentialGeometry/Topology/PiecewiseLinear/`; lines, SHA-256):
+  `PseudoCellDiskReplacement.lean` 75
+  `6f041b1e6928198859409d9007b1aa0e34f5afcd365073f634b352264c016d09`;
+  `Section33ExtensionRegions.lean` 185
+  `102e3dcfaeab3adb9faa6d9bac3e7e14cd6bdcb07a6ffecc1c378910b53b7d4f`;
+  `Section33ExtensionSides.lean` 176
+  `2dce38ae1bc01b03cf82a3e90fc7a28493a03f4efc212fde23cd8e5e23bc5312`;
+  `Section33ExtensionBalls.lean` 399
+  `fb17e176dafc4faaf22d5dd1fc0ac19d8d3056fc2082749ef73e4364492a8861`;
+  `Section33ExtensionLabels.lean` 589
+  `afb534b2799e192585937defccb5b15ca5d7b6006c6a5eaa53b001d66d4a932a`;
+  `Section33ExtensionSphereMaps.lean` 324
+  `e2f13b2eddc5fca270b932ccdbcb29d99a694fb9e4a89747e0fa53880cbf4974`;
+  `Section33Extension.lean` 350
+  `d2d97ccd317174601c2ccee5ed9dbefab6aee10dcc55cb7fb8892c19207b08ac`.
+- Aggregate import lines (not added; the aggregate is the lead's):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCellDiskReplacement`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33ExtensionRegions`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33ExtensionSides`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33ExtensionBalls`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33ExtensionLabels`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33ExtensionSphereMaps`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33Extension`
+- Statement identity: `exists_section33Extension` in `Section33Extension.lean`, inside
+  `section Leaves` with the skeleton's `variable` block, is byte-identical to the frozen leaf of
+  `Skeleton/Section33Approximation.lean` (statement text and variable block compared by script:
+  both identical).  All hypotheses are used (`h324` for the disks `F_e`, `h56` for the connected
+  boundary and the polyhedral pieces `C''_v ∩ Bd X`, `hsmall` for the diameters).
+- Success lines (2026-09-23, each after a fresh prepare; `...` as above):
+  `Verified ...\PseudoCellDiskReplacement.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33ExtensionRegions.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33ExtensionSides.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33ExtensionBalls.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33ExtensionLabels.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33ExtensionSphereMaps.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33Extension.lean with no diagnostics; shared outputs unchanged.`
+- Audit (`claude-moise-agent-b/AuditBatch72.lean`, `-Audit`, all seven modules, axioms within
+  `propext`, `Classical.choice`, `Quot.sound`, the thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch72.lean with no diagnostics; shared outputs unchanged.`
+- Route.  One radius `δ₀` (`exists_small_radius`): balls `B(P'_e, 2δ₀) ⊆ Int X`, centres `3δ₀`
+  apart, `B(P'_e, δ₀)` off the other pseudo-cells and the vertices, `3δ₀` inside the diameter
+  slack of every `C''_v`.  `F_e = (E_e ∩ X − Int D₁) ∪ Δ₁` from `Moise324` via
+  `IsPseudoCell.exists_replacementDisk`, recognised as a PL disk with rim `J_e` and agreeing with
+  `E_e ∩ X` off `B(P'_e, δ₀)` (`exists_plDisk_agreeing_off_ball`).  `g` plus disk extensions
+  `D_e → F_e` give `ψ : Fr C_v → S'_v` (`exists_sphere_maps`); 3D PL Schoenflies gives `B'_v`
+  with `Fr B'_v = S'_v`; Alexander extension `C_v → B'_v`.  Jordan-Brouwer for `Bd X`: `Int X`,
+  `ℝ³ − X` connected (`isConnected_interior_space_and_compl`), so `B'_v ⊆ X`, interiors miss
+  `Bd X` and all `F_e`, are pairwise disjoint, balls meet only in `F_e`, and cover `X` (local
+  sides of `S'_a` at interior points of `F_e`).  `h v ∈ Int B'_v`: good/bad labelling (ball
+  interior vs handle piece) on the connected `Int X − ⋃ B̄(P'_e, δ₀)`, constant across `E_e`
+  there by the pseudo-cell local sides, good near `A'_v` off the pseudo-cells by the local sides
+  of `Bd X`.  Diameter: `diam B'_v = diam S'_v` and `S'_v` lies within `δ₀` of `C''_v`.
+- New public names (grepped tree-wide, unique): `IsPseudoCell.exists_plDisk_agreeing_off_ball`;
+  `isConnected_interior_space_and_compl`, `closure_subset_of_frontier_subset_of_isConnected_compl`,
+  `IsCompact.exists_mem_frontier_dist_le_dist`, `IsCompact.exists_mem_frontier_pair_dist_le`;
+  `IsPLSphere.exists_connected_neighborhood_pair_sdiff_of_two`,
+  `exists_connected_neighborhood_pair_sdiff_frontier_space`,
+  `isConnected_sdiff_closedBall_of_ball_subset`, `isConnected_sdiff_biUnion_closedBall`;
+  `Finset.eq_of_card_eq_two_of_mem_of_mem`,
+  `IsHandleDecompositionOfTube.ball_subset_and_disjoint_interior`,
+  `IsHandleDecompositionOfTube.disjoint_interior_balls`,
+  `IsHandleDecompositionOfTube.exists_edge_of_mem_ball_inter_ball`,
+  `IsHandleDecompositionOfTube.mem_interior_iUnion_balls_of_mem_disk`,
+  `IsHandleDecompositionOfTube.iUnion_balls_eq`; `eq_empty_of_isPreconnected_of_closure_cover`,
+  `IsHandleDecompositionOfTube.mem_handlePiece_of_mem_interior_ball`,
+  `IsHandleDecompositionOfTube.mem_interior_ball_of_vertex`;
+  `IsHandleDecompositionOfTube.vertex_image_notMem_pseudoCell`,
+  `IsHandleDecompositionOfTube.exists_freeFace_image_notMem_pseudoCell`,
+  `IsHandleDecompositionOfTube.exists_sphere_maps`, `IsTube.exists_isPLHomeomorphOn_glue`;
+  `IsHandleDecompositionOfTube.exists_small_radius`, `IsHandleDecompositionOfTube.exists_plDisks`,
+  `exists_section33Extension`.  (All in namespace `DifferentialGeometry.Topology.PiecewiseLinear`;
+  `Finset.eq_of_card_eq_two_of_mem_of_mem` and `IsCompact.*` are namespaced there too.)
+- Compiles: 14 module checks + 1 audit.

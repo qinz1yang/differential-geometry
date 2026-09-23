@@ -444,3 +444,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   cells (`exists_isSourceTrackedBranchTube_of_markedCells` + `exists_derivedCellChain`); lease d held for Codex.
 * 13:30 (09-23) — Codex item 7 partial (11 modules; acceptance pending); the edge-matching leaf lacks the closeness
   of `G w` to `h` that the package returns and the assembly holds; review request BN written, owner to send.
+* 13:10 (09-23) — accepted worker b's §33 Lemma 13 and the page-238 extension (14 modules); §33 has one leaf
+  left (Lemma 10, b still on it). Physical `sorry` 32.

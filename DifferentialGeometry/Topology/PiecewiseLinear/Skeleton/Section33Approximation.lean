@@ -14,6 +14,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeHandlePieces
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskMeetsGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.NoHandleLoopTheoremDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.NotLoopTheoremDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33BoundaryMatch
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33Extension
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -225,6 +227,18 @@ a crosscut (inversion when `Δ` lies outside `X`, the theta-curve argument choos
 resulting disk misses every pseudo-cell, which Lemma 7 forbids.  The relative general-position
 routes were not needed: every relative mover requires face-wise transversality of the fixed faces,
 impossible where the disk boundary meets the trace.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit; statements byte-identical, all hypotheses used): `exists_section33BoundaryMatch`
+(Lemma 13, module `Section33BoundaryMatch` over `HoledSphereExtension`, `HoledSphereStrip`,
+`SurfaceCapSphere`, `SquareConcat`, `TubeFreeFaceStrips`, `BoundaryMatchMobius`: both `A_v` and
+`A'_v` are spheres with `deg v` holes, matched hole by hole with prescribed boundary maps, the
+orientation consistency around the edge graph from `hconn` and the orientability of `Bd N`) and
+`exists_section33Extension` (the page-238 endgame, module `Section33Extension` over
+`PseudoCellDiskReplacement`, `Section33ExtensionRegions`, `Section33ExtensionSides`,
+`Section33ExtensionBalls`, `Section33ExtensionLabels`, `Section33ExtensionSphereMaps`: the disks
+`F_e` from `Moise324`, extension over the splitting disks, then over each `C_v` by a cone, with the
+`ε`-estimate from `hsmall`).  The only leaf left in this file is Lemma 10.
 -/
 
 open Set Topology
@@ -258,37 +272,6 @@ theorem section33_fundamentalGroup_map_bijective (h264 : Moise264)
       Function.Bijective (FundamentalGroup.map
         (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
           C(frontier XK.space, ↥(N' \ h '' K.space))) x) := by
-  sorry
-
-theorem exists_section33BoundaryMatch
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (hconn : IsConnected K.space)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space)
-    (h56 : HasConnectedHandlePieces K Ec Cpp XK.space AK)
-    (hχ : ∀ v ∈ K.vertices, ∀ [Finite (AK v).faces],
-      SimplicialComplex.faceEulerChar (AK v).toPreAbstractSimplicialComplex =
-        2 - ((edgesAt K v).ncard : ℤ)) :
-    ∃ g : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphOn g (frontier N) (frontier XK.space) ∧
-      (∀ v ∈ K.vertices, g '' (frontier (C v) ∩ frontier N) = Cpp v ∩ frontier XK.space) ∧
-      ∀ e ∈ K.faces, e.card = 2 → g '' Dbd e = Ec e ∩ frontier XK.space := by
-  sorry
-
-theorem exists_section33Extension (h324 : Moise324)
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space)
-    (h56 : HasConnectedHandlePieces K Ec Cpp XK.space AK)
-    {g : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (frontier N) (frontier XK.space))
-    (hgA : ∀ v ∈ K.vertices, g '' (frontier (C v) ∩ frontier N) = Cpp v ∩ frontier XK.space)
-    (hgD : ∀ e ∈ K.faces, e.card = 2 → g '' Dbd e = Ec e ∩ frontier XK.space) {ε : ℝ}
-    (hsmall : ∀ v ∈ K.vertices, ∀ x ∈ Cpp v, ∀ y ∈ Cpp v, dist x y < ε / 4) :
-    ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ nhdsSet (h '' K.space) ∧
-      EqOn f g (frontier N) ∧ (∀ v ∈ K.vertices, h v ∈ f '' C v) ∧
-      ∀ v ∈ K.vertices, ∀ x ∈ C v, ∀ y ∈ C v, dist (f x) (f y) < ε / 4 := by
   sorry
 
 end Leaves
