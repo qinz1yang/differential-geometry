@@ -13346,3 +13346,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarLower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledRestart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricRestart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarSublevel
+import DifferentialGeometry.Topology.CompactSetConnectedNeighborhood
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalConnectedCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreMetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMetricEvent
