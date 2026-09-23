@@ -1,0 +1,63 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareStandardGeometricFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectivePresentation
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
+import DifferentialGeometry.Geometry.Curvature.ProjectiveSpace
+
+open private diffeomorphOfPartialDiffeomorphUniv from
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareStandardGeometricFrontier
+open private isConstantPositiveSectionalCurvature_of_metric from
+  DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
+
+noncomputable section
+
+open scoped Manifold ContDiff
+open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Topology
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private local instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 4)) = 3 + 1) := ⟨by simp⟩
+
+theorem isPositiveSpaceFormModel_of_positiveComponent
+    (M : ConnectedClosedOrientedManifold.{u} 3)
+    (R : PositiveComponent (M := M.Carrier) Set.univ) :
+    IsPositiveSpaceFormModel M := by
+  cases R with
+  | sphere F hs ht => exact isPositiveSpaceFormModel_of_positiveComponent_sphere M hs ht
+  | projective Z presentation F hs ht =>
+    obtain ⟨e, he⟩ := presentation.exists_realProjectiveThree_diffeomorph
+    let d := e.trans (diffeomorphOfPartialDiffeomorphUniv F hs ht)
+    exact ⟨Diffeomorph.pullbackMetric roundProjectiveMetric d.symm,
+      isConstantPositiveSectionalCurvature_of_pullbackMetric roundProjectiveMetric
+        (isConstantPositiveSectionalCurvature_of_metric _
+          constantPositiveSectionalCurvatureMetric_roundProjectiveMetric) d.symm⟩
+
+theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRoundComponent
+    {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
+    (h : ∀ C : ConnectedComponents E.discarded.Carrier,
+      Nonempty (PositiveComponent
+        (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) Set.univ) ∨
+      ∃ (D' : RealTimeInterval)
+        (S : SolutionOn (I := ThreeModel)
+          (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) D')
+        (ε : ℝ) (x : (E.discarded.toClosedOrientedManifold.component C).Carrier) (t : ℝ),
+        Nonempty (RoundComponent S ε x t Set.univ)) : E.poincareStandardDiscarded := by
+  apply MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
+    sphericalSpaceFormCovering_holds E
+  intro C
+  refine ⟨[E.discarded.toClosedOrientedManifold.component C], ?_,
+    ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
+  intro F hF
+  rw [List.mem_singleton] at hF
+  subst F
+  apply Or.inl
+  rcases h C with hpositive | hround
+  · obtain ⟨R⟩ := hpositive
+    exact isPositiveSpaceFormModel_of_positiveComponent _ R
+  · obtain ⟨D', S, ε, x, t, ⟨R⟩⟩ := hround
+    exact isPositiveSpaceFormModel_of_roundComponent _ R
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

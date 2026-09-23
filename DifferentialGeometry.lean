@@ -6867,6 +6867,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Noncollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseLocalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareStandardControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareStandardGeometricFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PositiveComponentSpaceForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReflectionShiftCoOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
@@ -7677,6 +7678,7 @@ import DifferentialGeometry.Geometry.Metric.Product.ScalarCurvature
 import DifferentialGeometry.Geometry.Metric.ProductIsometry
 import DifferentialGeometry.Geometry.Metric.ProductSlice
 import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
+import DifferentialGeometry.Geometry.Curvature.ProjectiveSpace
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
