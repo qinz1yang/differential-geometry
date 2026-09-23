@@ -127,19 +127,19 @@ theorem exists_uniform_high_curvature_models :
   refine ⟨Q, hQ, fun x t ht hx => ?_⟩
   exact (hm x t ht hx).mono_kappa hμ (hμle _)
 
-theorem exists_all_point_canonical_neighborhoods_with_cap_neck_charts :
-    ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
-      ∃ C1 C2 Q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < Q ∧
+theorem exists_uniform_canonical_constants_with_cap_neck_charts
+    {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+      (G : P.IncomingSlab a s), ∃ Q : ℝ, 0 < Q ∧
         ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
-          ∃ K : CanonicalWitness G.flow eps C1 C2 x t, K.capTubeHasNeckChart eps := by
-  refine ⟨1 / 44, by norm_num, ?_⟩
-  intro eps heps hsmall
-  have hsmall' : eps < 1 / 11 := hsmall.trans_lt (by norm_num)
+          ∃ K : CanonicalWitness G.flow eps C C x t, K.capTubeHasNeckChart eps := by
   obtain ⟨C, delta, hC, hd, hd1, htransfer⟩ :=
-    exists_uniform_windowed_bufferedCanonical_with_cap_neck_charts heps hsmall' 1
-  obtain ⟨kappa, hkappa, hm⟩ := G.exists_uniform_high_curvature_models
+    exists_uniform_windowed_bufferedCanonical_with_cap_neck_charts.{u} heps hsmall 1
+  refine ⟨C, hC, ?_⟩
+  intro P a s G
+  obtain ⟨kappa, _, hm⟩ := G.exists_uniform_high_curvature_models
   obtain ⟨Q, hQ, hmodel⟩ := hm delta hd hd1
-  refine ⟨C, C, Q, hC, hC, hQ, ?_⟩
+  refine ⟨Q, hQ, ?_⟩
   intro x t ht hR
   have hw := hmodel x t ht hR
   have hreg : Ioo (t - (delta * G.flow.scalar t x)⁻¹) t ⊆
@@ -149,8 +149,22 @@ theorem exists_all_point_canonical_neighborhoods_with_cap_neck_charts :
       interior_mono W.window_mem
   obtain ⟨B, hB⟩ := htransfer kappa P.Carrier _ G.flow G.equation delta
     P.orientation x t le_rfl hreg hw
-  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall',
-    hB.mono_eps B.tolerance_lt.le hsmall'⟩
+  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+    hB.mono_eps B.tolerance_lt.le hsmall⟩
+
+
+theorem exists_all_point_canonical_neighborhoods_with_cap_neck_charts :
+    ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
+      ∃ C1 C2 Q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < Q ∧
+        ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
+          ∃ K : CanonicalWitness G.flow eps C1 C2 x t, K.capTubeHasNeckChart eps := by
+  refine ⟨1 / 44, by norm_num, ?_⟩
+  intro eps heps hsmall
+  obtain ⟨C, hC, hcanonical⟩ :=
+    exists_uniform_canonical_constants_with_cap_neck_charts.{u} heps
+      (hsmall.trans_lt (by norm_num))
+  obtain ⟨Q, hQ, hK⟩ := hcanonical P a s G
+  exact ⟨C, C, Q, hC, hC, hQ, hK⟩
 
 theorem exists_all_point_canonical_neighborhoods :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
