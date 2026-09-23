@@ -1,8 +1,49 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Geometry.Manifold.Diffeomorph
+import Mathlib.Topology.OpenPartialHomeomorph.IsImage
+
+/-! Chart Supported Extension. -/
 
 noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
+
+namespace OpenPartialHomeomorph
+
+def extendById {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (e : OpenPartialHomeomorph X Y) (f : Y → Y) (x : X) : X := by
+  classical
+  exact if x ∈ e.source then e.symm (f (e x)) else x
+
+theorem extendById_eq_of_notMem_image {X Y : Type*}
+    [TopologicalSpace X] [TopologicalSpace Y]
+    (e : OpenPartialHomeomorph X Y) (f : Y → Y) {K : Set Y}
+    (hf : ∀ z, z ∉ K → f z = z) {x : X} (hx : x ∉ e.symm '' K) :
+    e.extendById f x = x := by
+  by_cases hxs : x ∈ e.source
+  · rw [show e.extendById f x = e.symm (f (e x)) from if_pos hxs]
+    have hek : e x ∉ K := fun h ↦ hx ⟨e x, h, e.left_inv hxs⟩
+    rw [hf _ hek, e.left_inv hxs]
+  · exact if_neg hxs
+
+theorem extendById_mem_iff {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (e : OpenPartialHomeomorph X Y) (f : Y → Y)
+    (hmap : MapsTo f e.target e.target) {A B : Set X} {C D : Set Y}
+    (hA : e.IsImage A C) (hB : e.IsImage B D)
+    (houtside : ∀ x ∉ e.source, x ∈ A ↔ x ∈ B)
+    (hf : ∀ y ∈ e.target, f y ∈ D ↔ y ∈ C) (x : X) :
+    e.extendById f x ∈ B ↔ x ∈ A := by
+  by_cases hx : x ∈ e.source
+  · rw [show e.extendById f x = e.symm (f (e x)) from if_pos hx]
+    exact (hB.symm (hmap (e.map_source hx))).trans ((hf _ (e.map_source hx)).trans (hA hx))
+  · rw [show e.extendById f x = x from if_neg hx]
+    exact (houtside x hx).symm
+
+end OpenPartialHomeomorph
 
 namespace DifferentialGeometry.Topology.Manifold
 
@@ -13,9 +54,8 @@ variable {E F P H M : Type*}
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ F H}
 
-def extendChartById (e : OpenPartialHomeomorph M E) (f : E → E) (x : M) : M := by
-  classical
-  exact if x ∈ e.source then e.symm (f (e x)) else x
+def extendChartById (e : OpenPartialHomeomorph M E) (f : E → E) (x : M) : M :=
+  e.extendById f x
 
 private theorem extendChartById_of_mem (e : OpenPartialHomeomorph M E) (f : E → E)
     {x : M} (hx : x ∈ e.source) : extendChartById e f x = e.symm (f (e x)) :=

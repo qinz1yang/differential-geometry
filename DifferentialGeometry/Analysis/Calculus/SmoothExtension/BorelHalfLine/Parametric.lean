@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
@@ -7,6 +12,8 @@ import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.TangentCone.Prod
 import Mathlib.Analysis.Normed.Operator.Prod
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+
+/-! Borel Half Line: parametric. -/
 
 noncomputable section
 open Set Filter Topology
@@ -75,6 +82,15 @@ private theorem param_jet_contDiffOn
   have hmaps : Set.MapsTo (fun z : E => (z, (0:ℝ))) U (U ×ˢ Set.Ici 0) :=
     fun z hz => ⟨hz, Set.self_mem_Ici⟩
   exact (param_iteratedDerivWithin_contDiffOn g U hg n).comp hsec hmaps
+
+theorem contDiffOn_iteratedDerivWithin_fst_Ici
+    {f : ℝ × E → F} {U : Set E}
+    (hf : ContDiffOn ℝ ∞ f (Ici 0 ×ˢ U)) (n : ℕ) :
+    ContDiffOn ℝ ∞
+      (fun p : ℝ × E => iteratedDerivWithin n (fun t => f (t, p.2)) (Ici 0) p.1)
+      (Ici 0 ×ˢ U) :=
+  (param_iteratedDerivWithin_contDiffOn (Function.curry f) U hf n).comp
+    (contDiff_snd.prodMk contDiff_fst).contDiffOn (fun _ hp => ⟨hp.2, hp.1⟩)
 
 end Bridge
 
@@ -521,6 +537,13 @@ private theorem paramSeries_contDiff [CompleteSpace F] :
     (fun n => paramTerm_contDiff a ha hsupp n)
     (fun k _ => paramDomBound_summable a ha hsupp k)
     (fun k n p _ => paramDomBound_bound a ha hsupp k n p)
+
+include ha hsupp in
+theorem exists_contDiff_iteratedDeriv_fst_eq [CompleteSpace F] :
+    ∃ Φ : ℝ × E → F, ContDiff ℝ ∞ Φ ∧
+      ∀ (n : ℕ) (z : E), iteratedDeriv n (fun t => Φ (t, z)) 0 = a n z :=
+  ⟨fun p => ∑' n, paramTerm a ha hsupp n p,
+    paramSeries_contDiff a ha hsupp, paramSeries_slice_iteratedDeriv_zero a ha hsupp⟩
 
 end Engine
 
@@ -1343,3 +1366,5 @@ end Setup
 
 end Analysis
 end DifferentialGeometry
+
+end

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Geometry.Manifold.Immersion
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
+
+/-! Local Diffeomorph. -/
 
 open scoped ContDiff Topology
 
@@ -85,6 +92,14 @@ private theorem isImmersionAtOfComplement_isLocalDiffeomorphAt_comp
         f ((φ.extend I).symm y) := Φ.left_inv hyΦ
     rw [hΦeq hyΦ, hcancel]
     exact congrArg L (hf.writtenInCharts (htarget hy))
+
+theorem IsImmersionAtOfComplement.isLocalDiffeomorphAt_comp
+    {P : Type*} [TopologicalSpace P] [ChartedSpace G P] {g : N → P}
+    [IsManifold J n P] (hf : IsImmersionAtOfComplement F I J n f x)
+    (hg : IsLocalDiffeomorphAt J J n g (f x)) :
+    IsImmersionAtOfComplement F I J n (g ∘ f) x :=
+  isImmersionAtOfComplement_isLocalDiffeomorphAt_comp
+    (ContinuousLinearEquiv.refl 𝕜 E') (Diffeomorph.refl J G n) (fun _ => rfl) hf hg
 
 theorem IsImmersionAt.isLocalDiffeomorphAt_comp
     {P : Type*} [TopologicalSpace P] [ChartedSpace G P] {g : N → P}
