@@ -474,3 +474,107 @@ fundamental-group surjectivity certificates); (6) the leaf. Expect several thous
 real modules stage by stage with receipts as you go. If a stage needs a fact that the tower, the
 initial surface and the four named inputs do not supply, stop on it and report the exact obligation
 (lead/owner decision); add no named input on your own.
+
+## Codex item 14 — compact leaf 1, the remaining cut-frame and graph-frame clauses (lead-written 2026-09-24 03:20; new Codex lane)
+
+Lease for this lane: `codex-compact-cut` (token `codex-compact-cut-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\codex-compact-cut`; the owner creates it by copying
+`claude-agent-b.json` with the lane, token and output root renamed; valid until 2026-09-26 04:17 UTC).
+Same rules as items 7, 8 and 13: new files only, no git writes, no edit of any frozen statement,
+host guard before every compile (at most four `lean.exe` on the host, this lease one; a ten-minute
+admission wait is contention, rerun), log to `Skeleton/FILL_LOG.md` (append-only, a
+`# Codex item 14` section with per-module receipts and SHA-256s), lines ≤ 100 codepoints, no
+declaration docstrings or comments, no underscore in a `def`/`abbrev`/`structure` name, grep every new
+name and every statement shape before proving; check each module with `prepare-private-root.py`
+then `checker.ps1`, and finish with an audit probe outside the tree (axioms within `propext`,
+`Classical.choice`, `Quot.sound`; the thirteen linters).
+
+Target: the compact cut-and-graph leaf `exists_compactCutAndGraph` (`Skeleton/Section34Compact.lean`
+line 275; hypotheses `h331 : Moise331OnTube`, `hC : IsPLBall 3 C`, `hV : IsOpen V`, `hCV : C ⊆ V`,
+`hh : IsEmbedding (V.domRestrict h)`, and `ε > 0`; conclusion: a subdivision `K'`, a cut, a PL
+approximation `f₁` with `Section34CompactCutFrame C K K' src srcBd` (`Section34CompactVocabulary.lean`
+line 291, 29 clauses) and `Section34CompactGraphFrame V h ε K K' src H f₁` (line 384, 11 clauses)).
+Restate it byte-identically with its `variable` block when you close it. `Moise331OnTube`
+(`Section33TubeApproximation.lean` line 42; produced by `moise331OnTube h323 h324 h264`, line 331)
+is the only named input: apply it ONCE, after every neighbourhood constraint below has been chosen.
+
+Already real (lease-b Batch 8, `Skeleton/OPUS_FILL_LOG_B.md` from line 1132; read `## Design`,
+`## CLOSED bricks` and `## STUCK` in full): `Section34CompactLinkCondition` (cut clause 6),
+`Section34CompactGraphApproximation` (`IsPLBall.exists_collarTriangulation`, the graph
+approximation, the 1-skeleton connected without end points), `Section34CompactResidualCells` (face
+disk = derived cell of `s`, residual ball = derived cells of `t` and its facets),
+`Section34CompactCarriers` (coordinate-box carrier control), `Section34CompactCellSeparation`
+(clauses 20–23), `Section33TubeApproximation`. Per the worker, cut clauses 1–6, 12–25, 27, 29 and
+graph clauses 1–8, 10 follow from these (the assembly is not written).
+
+What remains, and the route (from `consult/BT-compact-cut-graph-clauses-nine-eleven-answer.md`,
+read it in full; the lead verified by grep that every declaration it cites exists):
+
+1. Cut clauses 7, 8–11, 26, 28 (SMALL/MEDIUM bookkeeping, no new geometry): prove the common
+   flag-cell decomposition first with the flag APIs of `DerivedNeighborhoodCells` and
+   `DerivedNeighborhoodRestriction` (`C_w ∩ [σ]`, `D_e ∩ [t]` as meets of derived cells; the arcs
+   and marked points; the outer kinds from the collar triangulation, `ManifoldComplement` and the
+   relative boundary restrictions, where `closure (|M| − C)` is a combinatorial manifold whose
+   boundary-vertex cells are half-balls). Facet descriptions give 8, common subfaces 9, distinct
+   labels and strictly smaller face dimension 10, the residual descriptions plus the vertex-cell
+   union give `⋃ src = C ∪ N` (11). Clause 26 (a vertex ball meets only the splitting disks at its
+   vertex): `graphDualCell_space_inter_of_mem` (`SplittingDiskRim.lean`) plus the flag description
+   of triple intersections. Clause 28 (face disk ⊆ residual ball): the two
+   `closure_convexHull_sdiff_iUnion_graphDualCell_of_card_eq_*` descriptions in
+   `Section34CompactResidualCells`. Do not manufacture the cut's own `hcut` through
+   `compactSourceFace_iff_cutLe`. Proposed names: `compactDualCutFlagIncidence` (MEDIUM),
+   `compactDualCutCover`, `compactVertexSplitIncidence`, `compactFaceDisk_subset_residualBall`.
+2. Graph clause 11 (`Section34CompactExterior`, Vocabulary line 361: every non-incident vertex
+   image lies in an UNBOUNDED component of the complement of the obstacle
+   `section34CompactTetraObstacle` = the incident vertex balls ∪ the face disks of `t`; not the
+   complement of `h '' [t]` alone). Route: the existing
+   `isConnected_compl_of_homeomorphClosedBall_of_isBicollared` (`Topology/ClosedBallImage.lean`
+   line 124; `NoncompactSpace E`, `1 < Module.rank ℝ E`; the rank step as in
+   `bicollared_cell_complement_connected` of `TameNestedCells.lean`), the collar-image transport
+   `ThreeManifold.TwoSidedCollar.isBicollared_image` (`Topology/BicollarNeighborhood.lean` line 92),
+   `frontier_image_eq_image_frontier` (`Topology/OpenEmbeddingFrontier.lean`), the PL bicollar of a
+   sphere in the collar triangulation `IsCombinatorialManifoldWithBoundary.exists_bicollar_of_isConnected`
+   (`Bicollar.lean`; ambient = the larger collar triangulation `M`, not the tetrahedron), and
+   `IsTopologicalCell.image_of_continuousOn_injOn` (`Section34CompactFaceEnvelopes.lean`).
+   Sub-leaves: `isBicollared_frontier_image_of_isEmbedding` (SMALL: shrink the source collar into
+   `V` by compactness, promote `hh` to an open embedding by invariance of domain
+   `isOpen_range_of_isOpen_subtype`, compose), `isConnected_compl_image_of_bicollaredCell` (SMALL),
+   `exists_compactTetraExteriorBuffer` (MEDIUM: a PL 3-ball `B_t ⊆ interior M.space` with
+   `[t] ∪ ⋃_{v ∈ t} (graphDualCell M L v).space ⊆ interior B_t` and `B_t ∩ (K.vertices \ t) = ∅`,
+   proved from the actual dual-cell flag/collar geometry), `compactExterior_of_ballBuffers` (SMALL:
+   choose every `W v` inside `interior (h '' B_t)` for all incident `t`, apply the tube form of 33.1,
+   then `O_t ⊆ h '' B_t`, complement connected and unbounded, `(h '' B_t)ᶜ ⊆ connectedComponentIn`).
+   `TopologicalCellComplementConnected` (`MoiseChain.lean` line 251) stays off the goal path.
+3. Graph clause 9 (nested solid tori `S₁ ⊆ interior T_s`, `T_s ⊆ interior S₂`, a toroidal shell,
+   `IsSpine S₁ (h '' section34CompactSimplexRim s.1)`; `IsSpine` at `MoiseChain.lean` line 254 is a
+   product `D² × S¹ ≃ₜ S₁` with the core on the spine): THE EXPENSIVE STEP. The tree's torus
+   recognitions (`IsPLSphere.exists_solid_torus_neighborhood` in `CircleSolidTorus`,
+   `exists_parametrized_solid_torus_complex_subset_open` in `SolidTorusOpenNeighborhood`,
+   `isTopologicalSolidTorus_derivedNeighborhood_circle` in `SolidTorusProduct`,
+   `IsTopologicalSolidTorus.exists_toroidalShell_of_isCompact_subset_interior` in
+   `InnerSolidTorusToroidalShell`) forget the marked core; `h '' rim` is not PL in the target, so
+   build the marked product in the SOURCE and transport it through `h`. Sub-leaves:
+   `exists_compactRimCoreBuffer` (MEDIUM; the BT answer states the signature: for `M ⊇ K` with
+   `K.space ⊆ interior M.space` and a triangle `s`, a `P ⊆ interior M.space` containing the dual-cell
+   cyclic union `⋃_{v ∈ s} (graphDualCell M L v).space` in its interior, with `Φ : D² × S¹ ≃ₜ P` sending
+   `{0} × S¹` onto `section34CompactSimplexRim s.1`; build it from the dual-cell cone/edge models
+   and a compatible outer collar, never from unrestricted regular-neighbourhood uniqueness),
+   `isCombinatorialSolidTorus_compactFaceTorus_of_cycle` (SMALL: extract the finite cyclic-incidence
+   argument of `Section34FaceTorusCycle` and apply `isCombinatorialSolidTorus_iUnion_of_cycle` of
+   `CyclicBallUnion` to the PL vertex balls; do not instantiate the boundaryless frame or require the
+   complete graph frame while constructing it), `exists_innerToroidalShell_of_zeroMarkedProduct`
+   (SMALL: shrink the disk coordinate inside the SAME marked product, reusing the radial proof of
+   `InnerSolidTorusToroidalShell`, not its existential conclusion). Choose `P_s` before `f₁`,
+   intersect the `W v` of incident faces with `interior (h '' P_s)`, set `S₂ = h '' P_s`; clause 8
+   puts the marked core inside `interior T_s`.
+4. Assembly: build the collar triangulation and the flag incidence package (1); the rim core
+   buffers (3) and the tetra exterior buffers (2) and all finite `W v` constraints together with
+   the carrier/separation margins; apply `h331` once; recognise each target cyclic union and shrink
+   inside the marked outer product (clause 9); transport the buffered-ball bicollars and apply the
+   complement theorem (clause 11); verify the remaining clauses; restate and close the leaf.
+
+Order of delivery: (1) first as its own batch, then (2), then (3), then the assembly; real modules
+with receipts as you go. A non-vacuity check for `exists_compactRimCoreBuffer` (a fixture with two
+tetrahedra sharing a face, as the BT answer describes) is welcome but not required. If a clause of
+either frame cannot be produced from the leaf's hypotheses and the bricks, stop on it and report the
+exact clause (lead/owner decision); add no named input on your own. Estimate 4000–6000 lines.
