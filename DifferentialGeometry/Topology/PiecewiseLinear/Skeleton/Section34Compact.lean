@@ -64,7 +64,11 @@ that joint fixture remains UNTESTED.
 
 The first review is recorded in `consult/AS-section34-compact-first-review-digest.md`.
 Ten leaves were accepted; the envelope and compression interfaces below add the supplied
-open-domain and carrier certificates.  All twelve proof obligations remain open.
+open-domain and carrier certificates.  The second review (2026-09-22, digest
+`consult/BG-section34-compact-second-review-digest.md`) accepted both interfaces and the
+generator export, so all twelve leaf statements are FROZEN; all twelve proof obligations
+remain open, and the integral `H₁` surjection onto the whole trace (image `kℤ` with
+`|k| > 1` is the warned-against gap) is internal to `compactTraceHomology`.
 
 `exists_compactCutAndGraph` (Lemma 1, Lemma 2's configuration, the subdivision; deep; pages
 239--240): from `h331` and the entry data, `K, K'`, the full cut, carriers, `N ⊆ V` and `f₁`.  This

@@ -330,3 +330,5 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 20:25 — accepted worker d's `isSmoothHandleStage_adjunction_three` (`IsSmoothHandleStageAdjunctionThree`,
   `SmoothCapAttachment`, `SmoothBoundarySphereCollar`); physical `sorry` 60. Worker d now on corner charts
   and the two- and one-handle adjunctions. Second review request for Section34Compact written (BF).
+* 20:40 — Section34Compact second review returned all-OK (digest BG); the three factual claims were
+  verified against the skeleton; all twelve leaves are frozen. Dispatch them to the next free lease.
