@@ -10,7 +10,7 @@ against the Lean source by the lead; **[P]** the reviewer's or worker's paper co
 
 | Object | Review | Lead disposition |
 |---|---|---|
-| `exists_isSourceTrackedBranchTube` | FIX (weaken the interface), not FALSE | Adopt fix (a) below; apply in the morning session with a fresh lease. |
+| `exists_isSourceTrackedBranchTube` | FIX (weaken the interface), not FALSE | Fix (a) applied 2026-09-23 (lead edit on lease d: zero diagnostics, axiom audit; the C1 and A2 skeletons recheck with no error). |
 | `cyclic` | OK | Unchanged. |
 
 ## What the review established
@@ -42,7 +42,7 @@ endpoints. New field text (replacing the fifth conjunct of `realisation` in
         φ (r i, (t : ℝ)) = ι (⇑D (ρ (a i t, s i t)))) ∧
 ```
 
-**[V-pending] Consumers.** The reviewer states that the transport proof only needs its two uses
+**[V] Consumers** (verified 2026-09-23 while applying the edit: the module and both skeletons recheck clean). The reviewer states that the transport proof only needs its two uses
 changed to `hreal i 0 (Or.inl rfl)` and `hreal j 1 (Or.inr rfl)`, that `SourceRayTransport`, the
 square-fixing and page-swap proofs are untouched, and that `ClosedBranchCaseOne`'s orientability
 assembly, `ClosedBranchCaseOneTubeCarrier`, `ClosedBranchOrientability` and A2's

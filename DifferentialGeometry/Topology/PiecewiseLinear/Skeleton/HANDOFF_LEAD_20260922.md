@@ -398,3 +398,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `sorry` 37.
 * 04:50 (09-23) — registered Codex's five overnight modules (split-disk centre, solid-torus `H₁` and Hurewicz
   injections, face rim, holed-sphere extension) and its notes; `CanonicalTowerReduction` probe committed.
+* 04:55 (09-23) — applied fix (a) of review BI to `ClosedBranchCaseOneTransport` (endpoint-only `realisation`);
+  module verified and audited on lease d, C1 and A2 skeletons recheck clean. Physical `sorry` 37.

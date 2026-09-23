@@ -253,7 +253,8 @@ structure IsSourceTrackedBranchTube {M : Type u} [TopologicalSpace M]
     (∀ i t, a i t ∈ J) ∧ (∀ i t, s i t ∈ Icc (-1 : ℝ) 1) ∧ (∀ i t, s i t ≠ 0) ∧
       (∀ (i : Fin 4) (t : unitInterval), ⇑D (a i t) =
         (hD.singularSet.branchPieceIn c).map ↑(e ((t : ℝ) : loopCircle))) ∧
-      (∀ (i : Fin 4) (t : unitInterval), φ (r i, (t : ℝ)) = ι (⇑D (ρ (a i t, s i t)))) ∧
+      (∀ (i : Fin 4) (t : unitInterval), t = 0 ∨ t = 1 →
+        φ (r i, (t : ℝ)) = ι (⇑D (ρ (a i t, s i t)))) ∧
       (∀ i j : Fin 4, a i 0 = a j 0 → (0 < s i 0 ↔ 0 < s j 0) → i = j) ∧
       a 0 0 = a 2 0 ∧ a 1 0 = a 3 0 ∧ a 0 0 ≠ a 1 0
 
@@ -348,8 +349,8 @@ theorem exists_sourceRayTransport_of_isSourceTrackedBranchTube {M : Type u} [Top
       have hs : (0 < s i 0) = (0 < s j 0) := congrArg Prod.snd hij
       exact hlab i j hw (by rw [hs])
     · intro i j hij
-      have hfi : φ (r i, (0 : ℝ)) = ι (⇑D (ρ (a i 0, s i 0))) := hreal i 0
-      have hfj : φ (r j, (1 : ℝ)) = ι (⇑D (ρ (a j 1, s j 1))) := hreal j 1
+      have hfi : φ (r i, (0 : ℝ)) = ι (⇑D (ρ (a i 0, s i 0))) := hreal i 0 (Or.inl rfl)
+      have hfj : φ (r j, (1 : ℝ)) = ι (⇑D (ρ (a j 1, s j 1))) := hreal j 1 (Or.inr rfl)
       have hφ : φ (r i, (0 : ℝ)) = φ (r j, (1 : ℝ)) := by
         rw [h.seam (r i) (hrmem i), hij]
       have hDeq : ⇑D (ρ (a i 0, s i 0)) = ⇑D (ρ (a j 1, s j 1)) :=
