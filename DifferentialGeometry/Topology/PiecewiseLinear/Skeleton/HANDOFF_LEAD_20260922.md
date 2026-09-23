@@ -382,3 +382,6 @@ name scan, lead zero-diagnostic check + all-declaration axiom/13-linter audit on
 the skeleton, register the aggregate, ledger row, commit by explicit path, mirror sync); the
 scratchpad scripts are session-local, so rebuild `stmtcheck`/`mkaudit`/`skelcheck` from the
 memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leases.
+* 01:20 (09-23) — review BI returned (digest BJ): adopt fix (a) for `IsSourceTrackedBranchTube.realisation`
+  (endpoint-only identity); apply in the morning on a fresh lease, verify the two-call consumer change,
+  recheck the C1 and A2 skeletons. Codex overnight item 0 prepares the probe. BH still pending.

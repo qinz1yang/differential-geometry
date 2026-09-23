@@ -205,6 +205,8 @@ tree tonight, Codex may write a due-diligence note (checking each claimed counte
 against the Lean hypotheses) as `consult/BH-…-codex-check.md` / `consult/BI-…-codex-check.md`;
 the decision itself waits for the lead.
 
+Tonight, item 0 (added 01:20 after review BI returned, digest BJ): reconnaissance for fix (a) of the C1 branch tube — in a NEW probe file copy `IsSourceTrackedBranchTube` from `LoopTheorem/ClosedBranchCaseOneTransport.lean` with the fifth conjunct of `realisation` restricted to `t = 0 ∨ t = 1` (exact text in `consult/BJ-…digest.md`), port the transport theorems that consume `realisation` against the copy (the reviewer expects only two calls to change, `hreal i 0 (Or.inl rfl)` and `hreal j 1 (Or.inr rfl)`), and log which consumers compile unchanged; do not edit the real module.
+
 Tonight, in order:
 1. Q3(i) continued: the planar model is delivered (`HoledDiskBoundaryExtension`, registered with
    `PlanarBoundaryCollars`, `PlanarOuterCollar`, `PlanarHoledCollars`). Next: transport the planar
