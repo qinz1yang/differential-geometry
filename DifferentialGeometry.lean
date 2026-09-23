@@ -13582,3 +13582,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.CapAnnulus
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.CapCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapTubeBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CrossedCapFrontier
