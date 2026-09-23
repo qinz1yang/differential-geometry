@@ -655,8 +655,10 @@ needs a fact the frames and `hnc`/`hnb` do not supply, stop on it and report the
 
 Lease for this lane: lease a (token `claude-agent-a-20260919`, private output root
 `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a`, valid until 2026-09-26 04:17 UTC). The Opus
-worker that held it was stopped by the owner before writing anything for this target (its Batch 11
-section in `Skeleton/OPUS_FILL_LOG_A.md` does not exist; nothing to resume). Same rules as items 7,
+worker that held it was stopped by the owner after its design phase: read its route note
+(`Skeleton/OPUS_FILL_LOG_A.md`, `# Batch 11`: three differences from the manifold case) and take over its
+uncompiled draft `Section34CompactCompressionBall.lean` (537 lines, untracked; the lead assigns it to you:
+verify it as your first module or rewrite it under the same name). Same rules as items 7,
 8, 13, 14 and 15: new files only, no git writes, no edit of any frozen statement, host guard before
 every compile (at most four `lean.exe` on the host, this lease one), log to `Skeleton/FILL_LOG.md`
 (append-only, a `# Codex item 16` section with per-module receipts and SHA-256s), lines ≤ 100
