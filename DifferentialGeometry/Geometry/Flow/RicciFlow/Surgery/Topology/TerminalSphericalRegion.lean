@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBarrierComponents
 import DifferentialGeometry.Geometry.Neck.DisjointBarrierRegion
+import DifferentialGeometry.Geometry.Neck.BoundaryAtlas
 import DifferentialGeometry.Topology.Connected.CoverBySides
 
 set_option autoImplicit false
@@ -143,5 +144,69 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region
     · intro z t ht
       have hh := hinside z (σ * t) (hscaled t ht)
       rcases hσ with rfl | rfl <;> simpa [K] using hh
+
+theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_boundary_atlas
+    (L : G.TerminalLimitMetric) :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
+        ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+          metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
+          ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
+            (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
+            (b : Finset ι) (K : Set G.terminalRegularOpen),
+            b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
+            {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+              ⊆ interior K ∧ K ⊆ connectedComponent y ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * A) ∧
+            (b : Set ι).PairwiseDisjoint
+              (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
+            frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+            (∀ x ∈ frontier K, 2 * A < metricScalarAt L.metric x) ∧
+            (∃ charts : ChartedSpace (EuclideanHalfSpace 3) K,
+              let _ := charts
+              IsManifold (𝓡∂ 3) ∞ K ∧
+                IsSmoothEmbedding (𝓡∂ 3) I3 ∞ (Subtype.val : K → G.terminalRegularOpen) ∧
+                Subtype.val '' ((𝓡∂ 3).boundary K) = frontier K ∧
+                Subtype.val '' ((𝓡∂ 3).interior K) = interior K) ∧
+            ∀ i ∈ b, |level i| ≤ 3 ∧
+              IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+                2 * A < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * A) ∧
+              (neck i).cylindricalChart.metricCloseOn L.metric δ
+                {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
+  obtain ⟨η, hη, hregion⟩ := L.exists_disjoint_spherical_region
+  refine ⟨η, hη, ?_⟩
+  intro δ hδ hδη
+  obtain ⟨C2, q, hC2, hq, hregion⟩ := hregion δ hδ hδη
+  refine ⟨C2, q, hC2, hq, ?_⟩
+  intro A y hA hqA hyA hnoncompact
+  obtain ⟨ι, v, neck, level, b, K, hb, hK, hregular, hlow, hcomponent, hscalar,
+    hdisjoint, hfrontier, hfrontier_scalar, hnecks⟩ := hregion A y hA hqA hyA hnoncompact
+  refine ⟨ι, v, neck, level, b, K, hb, hK, hregular, hlow, hcomponent, hscalar,
+    hdisjoint, hfrontier, hfrontier_scalar, ?_, hnecks⟩
+  have hlevel (i : {i // i ∈ b}) : |level i.val| < δ⁻¹ := by
+    have hlen : (3 : ℝ) < δ⁻¹ :=
+      (lt_inv_comm₀ (by norm_num) (neck i.val).eps_pos).mpr
+        (by linarith [(neck i.val).eps_small])
+    exact ((hnecks i.val i.property).1).trans_lt hlen
+  apply exists_isManifold_of_finite_spatial_neck_levels L.metric
+    (fun i : {i // i ∈ b} => v i.val) (fun i => neck i.val)
+    (fun i => level i.val) hlevel (fun _ => Diffeomorph.refl I2 (Sphere 2) ∞)
+  · intro i j hij
+    simpa only [Diffeomorph.coe_refl, id_eq] using
+      hdisjoint i.property j.property (fun heq => hij (Subtype.ext heq))
+  · exact hregular
+  · intro x hx
+    obtain ⟨i, hi, q, hq⟩ := mem_iUnion₂.mp (hfrontier ▸ hx)
+    exact mem_iUnion.mpr ⟨⟨i, hi⟩, q, hq⟩
+
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
