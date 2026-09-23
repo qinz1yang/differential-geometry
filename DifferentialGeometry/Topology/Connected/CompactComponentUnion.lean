@@ -1,3 +1,4 @@
+import Mathlib.Topology.Separation.Hausdorff
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Compactness.Compact
 
@@ -93,5 +94,19 @@ theorem exists_finite_compact_component_union
     exact hVprops D hD
   · dsimp only [L]
     exact ⟨hLcompact, hPL, hreg, hfront⟩
+
+theorem eq_univ_of_isOpen_of_isCompact_connectedComponent
+    {X : Type*} [TopologicalSpace X] [T2Space X] [PreconnectedSpace X]
+    {U : Set X} [LocallyConnectedSpace U] (hU : IsOpen U) (x : U)
+    (hcompact : IsCompact (connectedComponent x)) : U = univ := by
+  have hclopen : IsClopen ((Subtype.val : U → X) '' connectedComponent x) :=
+    ⟨(hcompact.image continuous_subtype_val).isClosed,
+      hU.isOpenMap_subtype_val _ isOpen_connectedComponent⟩
+  have heq := hclopen.eq_univ ⟨x.val, x, mem_connectedComponent, rfl⟩
+  apply eq_univ_of_forall
+  intro y
+  obtain ⟨z, _, hzy⟩ := Set.eq_univ_iff_forall.mp heq y
+  exact hzy ▸ z.property
+
 
 end DifferentialGeometry.Topology

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.CompactComponentUnion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.TerminalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
@@ -111,6 +112,18 @@ theorem IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint {a s : �
   obtain ⟨t, ht, y, hyt⟩ := h (K₀ + 1) (by linarith) a₀ ha₀
   exact absurd (hbound₀ y t ⟨ht.1.le, ht.2⟩)
     (not_le.mpr (lt_trans (lt_add_one K₀) hyt))
+
+theorem IncomingSlab.not_isCompact_connectedComponent_of_singularEndpoint
+    {a s : ℝ} (G : P.IncomingSlab a s) [PreconnectedSpace P.Carrier]
+    (hsingular : G.SingularEndpoint) (x : G.terminalRegularOpen) :
+    ¬ IsCompact (connectedComponent x) := by
+  let _ : LocallyConnectedSpace G.terminalRegularOpen :=
+    ChartedSpace.locallyConnectedSpace ThreeSpace G.terminalRegularOpen
+  intro hcompact
+  have htop := DifferentialGeometry.Topology.eq_univ_of_isOpen_of_isCompact_connectedComponent
+    (U := (G.terminalRegularOpen : Set P.Carrier)) G.terminalRegularOpen.isOpen x hcompact
+  exact G.terminalRegularRegion_ne_univ_of_singularEndpoint hsingular htop
+
 
 end OrientedThreeStage
 
