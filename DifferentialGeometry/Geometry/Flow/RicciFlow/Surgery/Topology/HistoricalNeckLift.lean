@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.NormalizedLift
+import DifferentialGeometry.Geometry.Neck.NormalizedFootprint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFootprint
 import DifferentialGeometry.Topology.Manifold.ImmersionRange
@@ -71,5 +72,20 @@ theorem NormalizedNeck.exists_historical_footprint_neck
   refine ⟨hδ, N', hsmall, rfl, rfl, ?_, ?_, rfl⟩
   · exact N₀.map_lift_center f hf Φ hΦ hcomp
   · exact N₀.map_lift_chart f hf Φ hΦ hcomp
+
+theorem NormalizedNeck.connectedSpace_historical_footprint
+    {δ₀ eps : ℝ} {k : ℕ} (N : NormalizedNeck (H.event i).terminal.metric δ₀ k)
+    (hprecision : δ₀ ≤ eps) (a : ℝ) (ha : 0 < a) (hfit : 4 * a < eps⁻¹)
+    (htrace : ∀ x ∈ N.chart '' {z : neckBuffer δ₀ | -(3*a) ≤ z.val.2 ∧ z.val.2 ≤ 3*a},
+      Nonempty (BackwardPointTrace H first i.castSucc hle x.val)) :
+    ConnectedSpace (H.backwardSurvivorFootprintInterior first i hle
+      (N.chart '' {z : neckBuffer δ₀ | -(3*a) ≤ z.val.2 ∧ z.val.2 ≤ 3*a})) := by
+  let K := N.chart '' {z : neckBuffer δ₀ | -(3*a) ≤ z.val.2 ∧ z.val.2 ≤ 3*a}
+  have hinv : eps⁻¹ ≤ δ₀⁻¹ := inv_anti₀ N.delta_pos hprecision
+  have hc : IsConnected (interior K) :=
+    N.isConnected_interior_image_closedSlab (by positivity : 0 < 3*a) (by linarith)
+  have hpre := H.isConnected_preimage_backwardSurvivorTerminalFaceMap first i hle
+    (interior K) hc (fun x hx => htrace x (interior_subset hx))
+  exact isConnected_iff_connectedSpace.mp hpre
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

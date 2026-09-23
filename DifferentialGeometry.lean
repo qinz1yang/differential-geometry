@@ -13473,3 +13473,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Loca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMinimizerLocalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteEventHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventTimeNonaccumulation
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalMetricExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalTerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalMetricExtraction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalTerminalCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckSequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalFlowCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalParabolicCompactness

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
 import DifferentialGeometry.Geometry.Neck.SpatialChart
+import DifferentialGeometry.Topology.Manifold.ImmersionRange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
 
@@ -208,5 +209,67 @@ theorem NormalizedNeck.exists_buffered_long_neck_region
       ((ENNReal.ofReal_lt_ofReal_iff (div_pos (by positivity) (Real.sqrt_pos.mpr N.scale_pos))).mpr hr)
   refine ⟨U,K,hUexact,hKexact,hU,hUconn,hK,hKconn,hUK,?_,hchartU,hinner,hUouter,hcball,hball,houter,hscalar⟩
   exact ⟨(nk.center,0),⟨mem_univ _,by constructor <;> linarith⟩,nk.center_eq⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold ThreeModel ∞ M] [T2Space M]
+  {g : SmoothRiemannianMetric ThreeModel M} {δ : ℝ} {k : ℕ}
+
+private theorem interior_neckClosedSlab (δ R : ℝ) :
+    interior {z : neckBuffer δ | -R ≤ z.val.2 ∧ z.val.2 ≤ R} =
+      {z : neckBuffer δ | -R < z.val.2 ∧ z.val.2 < R} := by
+  have hh := (neckBuffer δ).isOpen.isOpenEmbedding_subtypeVal.isOpenMap.preimage_interior_eq_interior_preimage (continuous_subtype_val : Continuous
+      (Subtype.val : neckBuffer δ → NeckCylinder)) (univ ×ˢ Icc (-R) R)
+  rw [interior_prod_eq, interior_univ, interior_Icc] at hh
+  have hleft : (Subtype.val : neckBuffer δ → NeckCylinder) ⁻¹' (univ ×ˢ Icc (-R) R) =
+      {z : neckBuffer δ | -R ≤ z.val.2 ∧ z.val.2 ≤ R} := by
+    ext z
+    simp only [mem_preimage, mem_prod, mem_univ, true_and, mem_Icc, mem_ofPred_eq]
+  have hright : (Subtype.val : neckBuffer δ → NeckCylinder) ⁻¹' (univ ×ˢ Ioo (-R) R) =
+      {z : neckBuffer δ | -R < z.val.2 ∧ z.val.2 < R} := by
+    ext z
+    simp only [mem_preimage, mem_prod, mem_univ, true_and, mem_Ioo, mem_ofPred_eq]
+  exact hleft ▸ hright ▸ hh.symm
+
+omit [T2Space M] in
+theorem NormalizedNeck.interior_image_closedSlab (N : NormalizedNeck g δ k) (R : ℝ) :
+    interior (N.chart '' {z : neckBuffer δ | -R ≤ z.val.2 ∧ z.val.2 ≤ R}) =
+      N.chart '' {z : neckBuffer δ | -R < z.val.2 ∧ z.val.2 < R} := by
+  have hopen : IsOpen (range N.chart) :=
+    Manifold.isOpen_range_of_isSmoothEmbedding (by simp [ThreeSpace, Module.finrank_prod])
+      N.chart_smooth
+  have he : _root_.Topology.IsOpenEmbedding N.chart := ⟨N.chart_smooth.isEmbedding, hopen⟩
+  have hh := he.isOpenMap.preimage_interior_eq_interior_preimage N.chart.continuous
+    (N.chart '' {z : neckBuffer δ | -R ≤ z.val.2 ∧ z.val.2 ≤ R})
+  rw [Set.preimage_image_eq _ N.chart_smooth.isEmbedding.injective,
+    interior_neckClosedSlab δ R] at hh
+  rw [← hh, image_preimage_eq_of_subset]
+  exact (interior_subset.trans (image_subset_range _ _))
+
+omit [T2Space M] in
+theorem NormalizedNeck.isConnected_interior_image_closedSlab
+    (N : NormalizedNeck g δ k) {R : ℝ} (hR : 0 < R) (hfit : R < δ⁻¹ + 1) :
+    IsConnected (interior (N.chart '' {z : neckBuffer δ | -R ≤ z.val.2 ∧ z.val.2 ≤ R})) := by
+  let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+      (0 : ThreeSpace) (by norm_num : (0 : ℝ) ≤ 1))
+  have hslab : IsConnected (univ ×ˢ Ioo (-R) R : Set NeckCylinder) :=
+    isConnected_univ.prod (isConnected_Ioo (by linarith))
+  have hsub : (univ ×ˢ Ioo (-R) R : Set NeckCylinder) ⊆
+      range (Subtype.val : neckBuffer δ → NeckCylinder) := by
+    intro z hz
+    refine ⟨⟨z, ?_⟩, rfl⟩
+    constructor <;> linarith [hz.2.1, hz.2.2]
+  have hc := hslab.preimage_of_isOpenMap Subtype.val_injective
+    (neckBuffer δ).isOpen.isOpenMap_subtype_val hsub
+  rw [N.interior_image_closedSlab R]
+  have hset : (Subtype.val : neckBuffer δ → NeckCylinder) ⁻¹' (univ ×ˢ Ioo (-R) R) =
+      {z : neckBuffer δ | -R < z.val.2 ∧ z.val.2 < R} := by
+    ext z
+    simp only [mem_preimage, mem_prod, mem_univ, true_and, mem_Ioo, mem_ofPred_eq]
+  exact hset ▸ hc.image N.chart N.chart.continuous.continuousOn
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
