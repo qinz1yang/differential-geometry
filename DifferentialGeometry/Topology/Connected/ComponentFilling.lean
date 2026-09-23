@@ -679,4 +679,34 @@ theorem exists_compact_connected_union_closed_exterior_components
 
 end
 
+theorem isCompact_closed_exterior_component_of_connected_intersections
+    {ι : Type*} (K : Set X) (hK : IsCompact K) (E : ι → Set X)
+    (hcover : (interior W)ᶜ ⊆ K ∪ ⋃ i, E i)
+    (hcomponent : ∀ i y, y ∈ E i → connectedComponentIn (interior W)ᶜ y = E i)
+    (hconnected : ∀ i, IsPreconnected (E i ∩ W))
+    {x p q : X}
+    (hp : (connectedComponentIn (interior W)ᶜ x ∩ connectedComponentIn W p).Nonempty)
+    (hq : (connectedComponentIn (interior W)ᶜ x ∩ connectedComponentIn W q).Nonempty)
+    (hne : connectedComponentIn W p ≠ connectedComponentIn W q) :
+    IsCompact (connectedComponentIn (interior W)ᶜ x) := by
+  apply hK.of_isClosed_subset (isOpen_interior.isClosed_compl.connectedComponentIn x)
+  intro y hy
+  have hycover : y ∈ K ∪ ⋃ i, E i := hcover (connectedComponentIn_subset _ _ hy)
+  rcases hycover with hyK | hyE
+  · exact hyK
+  · obtain ⟨i, hyi⟩ := mem_iUnion.mp hyE
+    have hC : connectedComponentIn (interior W)ᶜ x = E i :=
+      (connectedComponentIn_eq hy).trans (hcomponent i y hyi)
+    obtain ⟨a, ha, hap⟩ := hp
+    obtain ⟨b, hb, hbq⟩ := hq
+    have haE : a ∈ E i ∩ W := ⟨hC ▸ ha, connectedComponentIn_subset W p hap⟩
+    have hbE : b ∈ E i ∩ W := ⟨hC ▸ hb, connectedComponentIn_subset W q hbq⟩
+    have hba : b ∈ connectedComponentIn W a :=
+      (hconnected i).subset_connectedComponentIn haE inter_subset_right hbE
+    have hbp : b ∈ connectedComponentIn W p := by
+      rw [connectedComponentIn_eq hap]
+      exact hba
+    exact (hne ((connectedComponentIn_eq hbp).trans (connectedComponentIn_eq hbq).symm)).elim
+
+
 end DifferentialGeometry.Topology

@@ -13400,6 +13400,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialUnitBandReturn
 import DifferentialGeometry.Topology.Manifold.RoundCylinderBoundaryOrientation
 import DifferentialGeometry.Geometry.Neck.SpatialFreshBand
 import DifferentialGeometry.Geometry.Neck.CompactExteriorReturn
+import DifferentialGeometry.Geometry.Neck.CompactComplementaryComponents
 import DifferentialGeometry.Topology.Manifold.SphereCylinderReturnDegree
 import DifferentialGeometry.Topology.CylinderBoundarySide
 import DifferentialGeometry.Topology.GraphBandComplement
@@ -13444,6 +13445,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalN
 import DifferentialGeometry.Topology.LocallyFinite.CompactEscape
 import DifferentialGeometry.Topology.Manifold.ProductChartProper
 import DifferentialGeometry.Topology.ProperMap.HalfCylinder
+import DifferentialGeometry.Topology.ProperMap.HalfCylinderComponent
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.InfiniteSlabs
 import DifferentialGeometry.Topology.Manifold.InfiniteSlabProduct
 import DifferentialGeometry.Geometry.Neck.SpatialBandEscape
