@@ -103,3 +103,79 @@ Entries 10 and 11 remain open. Lease a is used by the lead for acceptance compil
 
 Entries 10, 11 and 15 are CLOSED by the Opus 5.5 worker on lease e and accepted (B1.g, B1.f, A1.5c).
 Every entry of this queue is now accepted; lane F has no remaining assignment here.
+
+## Codex queue 2026-09-22 evening (lead-written; scouting and bounded bricks)
+
+Lease: lane F's lease a is currently used by an Opus worker on the §34 P3 assembly. Before Codex
+resumes, the owner either issues a separate lease (`claude-agent-f-…`, own private output root)
+or tells the lead to move the Opus worker. Same rules as above (new files only, no git writes,
+statements of frozen leaves untouched, log to `FILL_LOG.md`). The Opus workers are on: a = §34
+P3 assembly, b = §33 Lemmas 3–7 then 8–9, c = the branch tube (`ClosedBranchCaseOne`,
+`isPLBoundaryTubeProducer_double`), d = smooth handle attachments with corners, e = A1's nine
+wall-product leaves. Do not start any of those leaves; the items below are what they need or what
+nobody has started. Read the cited log sections first; they contain the exact remaining goals.
+
+### Q1 — two general lemmas P3 needs now (small, high value)
+Read `Skeleton/OPUS_FILL_LOG_A.md`, `# Batch 5 (P3 inputs)`, P3 entry, obligation 1.
+1. The image of a PL 3-cell `IsPLCellOn 3 C (frontier C)` inside `c.source` under a chart `c` of the
+   maximal `plGroupoid 3` atlas is a PL 3-ball in `EuclideanSpace ℝ (Fin 3)` (grep `IsPLCellOn`,
+   `isPLHomeomorphInto_symm_of_mem_maximalAtlas` in `ChartTameNestedCells`, `PLCellOn`).
+2. A PL 2-sphere in ℝ³ is locally homeomorphic to open subsets of ℝ² at every point (grep
+   `IsPLSphere`, `LocalSurfaceLink`, `SurfaceSphereRecognition`, `isPLBall_union_of_inter_isPLBall_two`).
+Deliver as `ChartImagePLCell.lean` and `PLSphereLocallyPlanar.lean` (these names are what the Opus
+worker will grep for before proving them itself).
+
+### Q2 — §33 Lemma 8 bricks (b)–(d), then a probe reduction
+Read `Skeleton/OPUS_FILL_LOG_B.md`, the Lemma 8 entries (bricks (a)–(e)); (a) is now the accepted
+`LocalSurfaceLink`, (e) uses accepted §33 tools. Prove, as real modules: (b) planar Jordan inside the
+cell chart of `Eint` (the `Moise324` disk placed inside `Int DJ`; smallness from continuity of the
+chart at `P'`); (c) broken-line approximation of an arc avoiding a closed set with a transverse
+crossing of a PL disk at a polyhedral point; (d) crossing parity at a flat point of a PL sphere
+(`IsPLSphere.exists_isPLBall_complement_components`). Then write a probe file (not a module) reducing
+`section33_disk_meets_graph` to named sub-leaves so that only those carry `sorry`; report it in the
+log with the checker line and the sorry count.
+
+### Q3 — CGN edge-matching bricks
+Read `Skeleton/OPUS_FILL_LOG_D.md`, `# Batch 5`, leaf 7. (i) A PL homeomorphism between two k-holed
+PL spheres in ℝ³ (or the planar model, a disk minus k disjoint open PL disks) extending prescribed PL
+homeomorphisms of the k + 1 boundary circles, when the boundary maps are orientation-consistent;
+(ii) a cyclic chain of PL 3-balls glued along disjoint PL disks is a combinatorial solid torus
+(grep `CombinatorialSolidTorusOfCylindricalDiagram`, `IsCylindricalDiagram`). Log where the
+orientation-consistency hypothesis is needed; do not attempt the leaf itself.
+
+### Q4 — scouting reductions (probe files, sorry only at named sub-leaves)
+For each, read the skeleton docstring and the cited analysis, write the sub-leaf statements in a
+probe file that compiles with exactly those sorries, and log the checker line, the sorry count and
+which sub-leaves you believe are provable from the tree today:
+- `exists_polygon_carrier_of_spine` (28.11; `Skeleton/OPUS_FILL_LOG_C.md`, `# Batch 3`): a PL
+  singular annulus in general position with respect to `frontier S`, preimage polygons separating
+  the ends, extraction of an embedded circle carrying `π₁(S)` (28.8).
+- `exists_isPLCell_frontier_of_polygon_nullhomotopic` (same log): design a minimal linking-number
+  API (a PL circle and a disjoint PL 2-sphere or Seifert disk in ℝ³; the two lemmas that leaf
+  needs) and state it; prove only what is elementary.
+- `exists_canonicalTower` and `exists_descentSequence` (`Skeleton/Section32PseudoCell.lean`
+  docstring): per-step producers (one canonical configuration from 30.7 inside `W ∩ Zᶜ`; one surgery
+  stage on a compact set) whose iteration gives the leaf.
+- `exists_section34EdgeMatching` (CGN leaf 7) and `exists_section34ProtectedCircleRemovalStep`
+  (CGN leaf 4): list the sub-obligations of the page 249–250 surgery and which of the 22 piercing
+  clauses each step touches.
+
+### Q5 — smoothing taming bricks
+Read `Skeleton/OPUS_FILL_LOG_D.md`, `# Batch 6`. Schoenflies for a disk and for an annulus inside a
+PL surface (transport of the planar version through surface charts), and a simultaneous ambient
+move of finitely many such disks extended into `M` through the boundary collar.
+
+### Q6 — fixtures (non-vacuity), new files only
+An `IsHandleDecompositionOfTube` inhabitant built on `exists_isTube` (`TubeOfGraphDualCells`); an
+`IsCanonicalTower` inhabitant; a `Section34VertexPreparation` inhabitant; the joint
+`Section34Compact` fixture of digest BG (subdivided tetrahedral ball, bivalent vertices, small convex
+PL carriers, `h = g ∘ ψ`). Each as a theorem `exists_…` in a real module, audited.
+
+### Q7 — cleanup (only when the lead confirms the leases are quiet; edits existing modules)
+Dedupe `IsCombinatorialManifoldWithBoundary.isPLBall_graphDualCell` into `DualCellDecomposition`
+(closed versions as corollaries); make `isPLSphere_prism_frontier` public and delete
+`isPLSphere_stdSimplex_prism_boundary`; export the fixed edge line and the transverse image complex
+from `GeneralPosition` and delete the two copies in `CurveCrossingGeneralPosition`; move
+`HasPLCurveCrossingOnAt` next to `HasPLCrossingAt`; move the `PlanarJordan`-namespace lemmas of
+`IntervalOrderExtension`, `JordanRelativeMatching`, `ConsecutiveCellUnion` under `PlanarJordan/`;
+relocate the sphere-minus-disks lemma of `TubeOfGraphDualCells`; refresh stale docstrings.
