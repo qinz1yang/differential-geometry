@@ -7175,6 +7175,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCollarFilling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegionComponentFilling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCapImmersion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
@@ -13466,6 +13467,7 @@ import DifferentialGeometry.Geometry.Neck.BallVolume
 import DifferentialGeometry.Topology.Manifold.FiniteGraphBand
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.CollarReturn
 import DifferentialGeometry.Geometry.Neck.SpatialFiniteFrontier
+import DifferentialGeometry.Geometry.Neck.SpatialReturnComponent
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.MetricLocality
 import DifferentialGeometry.Geometry.Metric.Distance.MetricLocality
 import DifferentialGeometry.Geometry.Measure.BallMetricLocality
