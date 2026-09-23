@@ -335,3 +335,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 21:10 — registered worker a's thirteen P3-input modules (no leaf closed); P3 assembly continues on
   lease a; Codex queue (FILL_QUEUE.md, Q1-Q7) written for the owner's lane, Q1 = the two general lemmas
   P3 still needs.
+* 21:40 — accepted worker e's A1 batch: five leaves proved (22 modules, 7121 lines), three vocabulary
+  sections hoisted, `wallProductBlock_transport` refuted (lead-verified) and deleted; physical `sorry` 54.
+  Worker e continues on `exists_wallGenericVertexMap` (C¹-range avoidance lemma) and the last two A1 leaves.

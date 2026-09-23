@@ -12,6 +12,14 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOver
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellGlobalInvariants
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingDoubleCrossing
+import DifferentialGeometry.Topology.PiecewiseLinear.CutOutPieceOfClosureSubset
+import DifferentialGeometry.Topology.PiecewiseLinear.NormalizationPreparation
+import DifferentialGeometry.Topology.PiecewiseLinear.WallSystemBlocks
+import DifferentialGeometry.Topology.PiecewiseLinear.WallSystemCellTopology
+import DifferentialGeometry.Topology.PiecewiseLinear.FreeGermVocabulary
+import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlocksOfWallProductBlocks
+import DifferentialGeometry.Topology.PiecewiseLinear.CommonWallComplex
+import DifferentialGeometry.Topology.PiecewiseLinear.WallProductBlocksOfWallGenericity
 
 /-!
 # Sorry-first skeleton of general position in the double
@@ -296,6 +304,24 @@ each source sheet, both PL homeomorphism witnesses, the `t = 0` half-space in th
 the accepted normalizer and `exists_crossing_chart_mem_atlas`; `[T2Space M]` covers the whole
 fibre over the double point.  `hℓ : ℓ ≠ 0` is redundant (the block hypotheses already exclude
 `ℓ = 0`) and is kept in the frozen statement through a `let` binding.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and axiom audits; statements byte-identical with the frozen leaves):
+`SingularTwoCell.exists_cutOutPiece_of_closure_subset` (`CutOutPieceOfClosureSubset`),
+`exists_normalizationPreparation_on_prescribedRegion` (`NormalizationPreparation`),
+`hasStableCrossingBlocks_of_wallProductBlocks` (`StableCrossingBlocksOfWallProductBlocks` over
+the block-transfer modules), `exists_commonWallComplex` (`CommonWallComplex`) and
+`wallProductBlocks_of_wallGenericity` (`WallProductBlocksOfWallGenericity` over twelve modules,
+margin 1).  Unused frozen hypotheses are consumed by `let` bindings.  The vocabulary sections
+(`WallSystemBlocks`, `WallSystemCellTopology`, `FreeGermVocabulary`) were hoisted verbatim into
+real modules and deleted here.  `wallProductBlock_transport` was REFUTED (lead-verified): `blockBox`
+is closed, so a point `y` on the top face of the inner block satisfies `hy` while sheet points just
+above it are uncontrolled, and the sheet `SA = {t < r/2} ∪ {t > r/2, v ≥ 0}` admits no new block at
+`y`; the leaf was consumed by no assembly and is deleted; the repaired form with
+`hyd : y ∈ doublePointSet f S` is `WallProductBlock.exists_isStableCrossingBlock_at`.  Remaining:
+`exists_wallGenericVertexMap` (a per-vertex avoidance of finitely many affine subspaces and `C¹`
+ranges of `ℝ²`), `wallProductBlocks_stable_on_fixedSubdivision`,
+`exists_protectedSubdivision_in_adaptedChart`.
 -/
 
 open Set Topology
@@ -408,41 +434,6 @@ theorem exists_finiteAdaptedCover_of_compactSpace [T2Space M] [CompactSpace M] (
     simp only [dif_pos hj]
     exact hVycl _
 
-theorem SingularTwoCell.exists_cutOutPiece_of_closure_subset [T2Space M] (D : SingularTwoCell M)
-    {V₀ V : Set M} (hV : IsOpen V) (hV₀ : closure V₀ ⊆ V) :
-    ∃ (Rc Lc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-      (Ω Nb : Set (EuclideanSpace ℝ (Fin 2))),
-      Rc.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 2 Rc ∧
-        Lc.faces ⊆ Rc.faces ∧ Ac.faces ⊆ Rc.faces ∧
-        Rc.space ⊆ D.domain ∧ Rc.space ⊆ ⇑D ⁻¹' V ∧
-        Lc.space = Rc.space ∩ frontier D.domain ∧
-        IsOpen Ω ∧ D.domain ∩ ⇑D ⁻¹' closure V₀ ⊆ Ω ∧ D.domain ∩ Ω ⊆ Rc.space ∧
-        IsOpen Nb ∧ Rc.space \ Ω ⊆ Nb ∧ Rc.space ∩ Nb ⊆ Ac.space ∧
-        Disjoint Ac.space (⇑D ⁻¹' closure V₀) := by
-  sorry
-
-def FreeSourceGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (y : M) : Prop :=
-  ∀ x ∈ S ∩ g ⁻¹' {y}, R.space ∈ 𝓝[S] x ∧ ∀ σ ∈ R.faces,
-    x ∈ convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))) → ∀ v ∈ σ, v ∉ Ac.space
-
-def IsFreeDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (BdM : Set M)
-    (y : M) : Prop :=
-  y ∉ BdM ∧ FreeSourceGerm R Ac g S y
-
-def IsFreeBoundaryDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (BdM : Set M)
-    (y : M) : Prop :=
-  y ∈ BdM ∧ FreeSourceGerm R Ac g S y
-
-def IsFreeInteriorDoubleGerm (R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (g : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2))) (BdM : Set M)
-    (y : M) : Prop :=
-  IsFreeDoubleGerm R Ac g S BdM y ∧
-    ∀ x ∈ S ∩ g ⁻¹' {y}, ∃ σ ∈ R.faces, σ.card = 3 ∧
-      x ∈ interior (convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))
-
 omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem mem_space_of_freeSourceGerm
     {R Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
@@ -489,17 +480,6 @@ theorem isFreeInteriorDoubleGerm_of_frozenSpace_eq_empty
       x ∈ interior (convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2))))) :
     IsFreeInteriorDoubleGerm R Ac g S BdM y :=
   ⟨isFreeDoubleGerm_of_frozenSpace_eq_empty hAc hy hnhds, hint⟩
-
-def HasStableCrossingBlocks (f : EuclideanSpace ℝ (Fin 2) → M)
-    (S : Set (EuclideanSpace ℝ (Fin 2)))
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (BdM Q : Set M) (η : ℝ) : Prop :=
-  0 < η ∧ ∃ (m : ℕ) (A : Fin m → (EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ))
-      (r tlo : Fin m → ℝ) (SA SB : Fin m → Set (EuclideanSpace ℝ (Fin 2)))
-      (a b : Fin m → ℝ × ℝ → ℝ) (La Lb : Fin m → ℝ),
-      doublePointSet f S ∩ Q ⊆ ⋃ i, innerChartBlock ec (A i) (r i) (tlo i) ∧
-        ∀ i, IsStableCrossingBlock f S ec ℓ BdM (A i) (r i) (tlo i) (SA i) (SB i) (a i) (b i)
-          (La i) (Lb i) η
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem HasStableCrossingBlocks.mono {f : EuclideanSpace ℝ (Fin 2) → M}
@@ -767,293 +747,6 @@ theorem isStableCrossingBlock_of_eqOn_compl {f g : EuclideanSpace ℝ (Fin 2) �
       exact ⟨hxpre.1, by simp only [mem_preimage, hgeq hx]; exact hxpre.2⟩
   exact isStableCrossingBlock_of_eqOn_sheets h hgeq hpre'
 
-def wallSystemCells (Q : Geometry.SimplicialComplex ℝ Ea) : Set (Finset Ea) :=
-  {s | s ∈ Q.faces ∧ s.card = 4}
-
-def wallSystemWalls (Q : Geometry.SimplicialComplex ℝ Ea) : Set (Finset Ea) :=
-  {s | s ∈ Q.faces ∧ s.card = 3}
-
-def wallSystemCell (ρ : M → Ea) (s : Finset Ea) : Set M :=
-  ρ ⁻¹' convexHull ℝ (s : Set Ea)
-
-def wallSystemCellInt (ρ : M → Ea) (s : Finset Ea) : Set M :=
-  ρ ⁻¹' openSimplex s
-
-def wallSystemSkeleton (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) : Set M :=
-  ⋃ s ∈ {s : Finset Ea | s ∈ Q.faces ∧ s.card ≤ 2}, wallSystemCell ρ s
-
-def wallSystemStar (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) (s : Finset Ea) :
-    Set M :=
-  ρ ⁻¹' (⋃ t ∈ {t : Finset Ea | t ∈ Q.faces ∧ ¬s ⊆ t}, convexHull ℝ (t : Set Ea))ᶜ
-
-structure IsCommonWallSystem (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea)
-    (Cf Bf : Set (Finset Ea)) (BdM C : Set M) {ι : Type}
-    (ec : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M) : Prop where
-  finiteFaces : Q.faces.Finite
-  dimLe : ∀ s ∈ Q.faces, s.card ≤ 4
-  memCell : ∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c
-  continuous : Continuous ρ
-  injective : Function.Injective ρ
-  rangeEq : Set.range ρ = Q.space
-  facesC : Cf ⊆ wallSystemCells Q
-  facesBd : Bf ⊆ wallSystemWalls Q
-  eqC : C = ⋃ c ∈ Cf, wallSystemCell ρ c
-  eqBd : BdM = ⋃ w ∈ Bf, wallSystemCell ρ w
-  wallSides : ∀ w ∈ wallSystemWalls Q, ∃ cm ∈ wallSystemCells Q,
-    ∃ cp ∈ wallSystemCells Q, cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
-      ∀ c ∈ wallSystemCells Q, w ⊆ c → c = cm ∨ c = cp
-  boundarySides : ∀ w ∈ Bf, ∃ c ∈ Cf, w ⊆ c ∧ ∀ c' ∈ Cf, w ⊆ c' → c' = c
-  starLayer : ∀ i, ∀ c ∈ wallSystemCells Q, (wallSystemCell ρ c ∩ Eb i).Nonempty →
-    wallSystemCell ρ c ⊆ Eb' i
-  layerSubset : ∀ i, Eb i ⊆ Eb' i
-  layerCompact : ∀ i, IsCompact (Eb' i)
-  layerSource : ∀ i, Eb' i ⊆ (ec i).source
-  chartAtlas : ∀ i, ec i ∈ (plGroupoid 3).maximalAtlas M
-  normalNe : ∀ i, ℓ i ≠ 0
-  chartC : ∀ i, ∀ x ∈ (ec i).source, x ∈ C ↔ 0 ≤ ℓ i (ec i x)
-  chartBd : ∀ i, ∀ x ∈ (ec i).source, x ∈ BdM ↔ ℓ i (ec i x) = 0
-  chartAffine : ∀ i, ∀ s ∈ Q.faces, wallSystemCell ρ s ⊆ Eb' i →
-    ∃ A : Ea →ᵃ[ℝ] EuclideanSpace ℝ (Fin 3), ∀ x ∈ wallSystemCell ρ s, ec i x = A (ρ x)
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCellInt_subset_wallSystemCell (ρ : M → Ea) (s : Finset Ea) :
-    wallSystemCellInt ρ s ⊆ wallSystemCell ρ s :=
-  fun _ hx => openSimplex_subset_convexHull s hx
-
-omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem isClosed_wallSystemCell {ρ : M → Ea} (hcont : Continuous ρ) (s : Finset Ea) :
-    IsClosed (wallSystemCell ρ s) :=
-  (s.finite_toSet.isClosed_convexHull ℝ).preimage hcont
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCell_subset_wallSystemSkeleton {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {s : Finset Ea} (hs : s ∈ Q.faces) (hcard : s.card ≤ 2) :
-    wallSystemCell ρ s ⊆ wallSystemSkeleton Q ρ :=
-  fun _ hx => mem_iUnion₂.2 ⟨s, ⟨hs, hcard⟩, hx⟩
-
-omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem isClosed_wallSystemSkeleton {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    (hfin : Q.faces.Finite) (hcont : Continuous ρ) : IsClosed (wallSystemSkeleton Q ρ) :=
-  Set.Finite.isClosed_biUnion (hfin.subset fun _ ht => ht.1)
-    fun t _ => isClosed_wallSystemCell hcont t
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem disjoint_wallSystemCellInt_wallSystemSkeleton {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {c : Finset Ea} (hc : c ∈ wallSystemCells Q) :
-    Disjoint (wallSystemCellInt ρ c) (wallSystemSkeleton Q ρ) := by
-  refine Set.disjoint_left.2 fun x hx hskel => ?_
-  obtain ⟨t, ht, hxt⟩ := mem_iUnion₂.1 hskel
-  have hsub : c ⊆ t :=
-    face_subset_of_mem_openSimplex_of_mem_convexHull Q hc.1 ht.1 hx hxt
-  have hle := Finset.card_le_card hsub
-  have hc4 : c.card = 4 := hc.2
-  have ht2 : t.card ≤ 2 := ht.2
-  omega
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCellInt_nonempty {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    (hrange : Set.range ρ = Q.space) {c : Finset Ea} (hc : c ∈ wallSystemCells Q) :
-    (wallSystemCellInt ρ c).Nonempty := by
-  have hne : c.Nonempty := Finset.card_pos.mp (by rw [hc.2]; norm_num)
-  have hmem : c.centroid ℝ id ∈ Q.space :=
-    Q.convexHull_subset_space hc.1 (openSimplex_subset_convexHull c
-      (centroid_mem_openSimplex hne))
-  rw [← hrange] at hmem
-  obtain ⟨x, hx⟩ := hmem
-  exact ⟨x, by simpa only [wallSystemCellInt, mem_preimage, hx] using
-    centroid_mem_openSimplex hne⟩
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemSkeleton_ne_univ {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    (hrange : Set.range ρ = Q.space) {c : Finset Ea} (hc : c ∈ wallSystemCells Q) :
-    wallSystemSkeleton Q ρ ≠ univ := by
-  intro huniv
-  obtain ⟨x, hx⟩ := wallSystemCellInt_nonempty (ρ := ρ) hrange hc
-  have hx' : x ∈ wallSystemSkeleton Q ρ := by rw [huniv]; exact mem_univ x
-  exact Set.disjoint_left.1 (disjoint_wallSystemCellInt_wallSystemSkeleton hc) hx hx'
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem iUnion_wallSystemCell_eq_univ {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    (hrange : Set.range ρ = Q.space)
-    (hmem : ∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) :
-    (⋃ c ∈ wallSystemCells Q, wallSystemCell ρ c) = univ := by
-  refine eq_univ_of_forall fun x => ?_
-  have hx : ρ x ∈ Q.space := by rw [← hrange]; exact mem_range_self x
-  obtain ⟨s, hs, hxs⟩ := Q.mem_space_iff.mp hx
-  obtain ⟨c, hc, hsc⟩ := hmem s hs
-  exact mem_iUnion₂.2 ⟨c, hc, convexHull_mono (Finset.coe_subset.2 hsc) hxs⟩
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem disjoint_wallSystemCellInt_wallSystemCell {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {c c' : Finset Ea} (hc : c ∈ wallSystemCells Q)
-    (hc' : c' ∈ wallSystemCells Q) (hne : c ≠ c') :
-    Disjoint (wallSystemCellInt ρ c) (wallSystemCell ρ c') := by
-  refine Set.disjoint_left.2 fun x hx hx' => ?_
-  refine hne (Finset.eq_of_subset_of_card_le
-    (face_subset_of_mem_openSimplex_of_mem_convexHull Q hc.1 hc'.1 hx hx') ?_)
-  have hc4 : c.card = 4 := hc.2
-  have hc4' : c'.card = 4 := hc'.2
-  omega
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCell_sdiff_subset_iUnion_wall {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {c : Finset Ea} (hc : c ∈ wallSystemCells Q) :
-    wallSystemCell ρ c \ wallSystemCellInt ρ c ⊆
-      ⋃ w ∈ wallSystemWalls Q, wallSystemCell ρ w := by
-  rintro x ⟨hx, hxi⟩
-  obtain ⟨t, htc, htne, hxt⟩ := exists_openSimplex_of_mem_convexHull hx
-  have hc4 : c.card = 4 := hc.2
-  have hle : t.card ≤ c.card := Finset.card_le_card htc
-  have hcard : t.card ≤ 3 := by
-    by_contra hlt
-    have heq : t = c := Finset.eq_of_subset_of_card_le htc (by omega)
-    exact hxi (by rw [wallSystemCellInt, mem_preimage, ← heq]; exact hxt)
-  obtain ⟨w, htw, hwc, hwcard⟩ := Finset.exists_subsuperset_card_eq htc hcard (by omega)
-  refine mem_iUnion₂.2 ⟨w, ⟨Q.down_closed hc.1 hwc (Finset.card_pos.mp (by omega)),
-    hwcard⟩, ?_⟩
-  exact convexHull_mono (Finset.coe_subset.2 htw) (openSimplex_subset_convexHull t hxt)
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCell_sdiff_subset_wallSystemSkeleton {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {w : Finset Ea} (hw : w ∈ wallSystemWalls Q) :
-    wallSystemCell ρ w \ wallSystemCellInt ρ w ⊆ wallSystemSkeleton Q ρ := by
-  rintro x ⟨hx, hxi⟩
-  obtain ⟨t, htw, htne, hxt⟩ := exists_openSimplex_of_mem_convexHull hx
-  have hw3 : w.card = 3 := hw.2
-  have hle : t.card ≤ w.card := Finset.card_le_card htw
-  have hcard : t.card ≤ 2 := by
-    by_contra hlt
-    have heq : t = w := Finset.eq_of_subset_of_card_le htw (by omega)
-    exact hxi (by rw [wallSystemCellInt, mem_preimage, ← heq]; exact hxt)
-  exact mem_iUnion₂.2 ⟨t, ⟨Q.down_closed hw.1 htw htne, hcard⟩,
-    openSimplex_subset_convexHull t hxt⟩
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCell_inter_subset_wallSystemSkeleton {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {w w' : Finset Ea} (hw : w ∈ wallSystemWalls Q)
-    (hw' : w' ∈ wallSystemWalls Q) (hne : w ≠ w') :
-    wallSystemCell ρ w ∩ wallSystemCell ρ w' ⊆ wallSystemSkeleton Q ρ := by
-  classical
-  rintro x ⟨hx, hx'⟩
-  have hw3 : w.card = 3 := hw.2
-  have hw3' : w'.card = 3 := hw'.2
-  have hmem : ρ x ∈ convexHull ℝ ((w ∩ w' : Finset Ea) : Set Ea) := by
-    rw [Finset.coe_inter]
-    exact Q.inter_subset_convexHull hw.1 hw'.1 ⟨hx, hx'⟩
-  have hnonempty : (w ∩ w').Nonempty := by
-    by_contra hemp
-    rw [Finset.not_nonempty_iff_eq_empty] at hemp
-    rw [hemp] at hmem
-    simp at hmem
-  have hle : (w ∩ w').card ≤ w.card := Finset.card_le_card Finset.inter_subset_left
-  have hcard : (w ∩ w').card ≤ 2 := by
-    by_contra hlt
-    have hww : w ∩ w' = w :=
-      Finset.eq_of_subset_of_card_le Finset.inter_subset_left (by omega)
-    have hsub : w ⊆ w' := hww ▸ Finset.inter_subset_right
-    exact hne (Finset.eq_of_subset_of_card_le hsub (by omega))
-  exact mem_iUnion₂.2 ⟨w ∩ w',
-    ⟨Q.down_closed hw.1 Finset.inter_subset_left hnonempty, hcard⟩, hmem⟩
-
-omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem isOpen_wallSystemStar {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    (hfin : Q.faces.Finite) (hcont : Continuous ρ) (s : Finset Ea) :
-    IsOpen (wallSystemStar Q ρ s) := by
-  refine IsOpen.preimage hcont (isOpen_compl_iff.mpr ?_)
-  exact Set.Finite.isClosed_biUnion (hfin.subset fun _ ht => ht.1)
-    fun t _ => t.finite_toSet.isClosed_convexHull ℝ
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCellInt_subset_wallSystemStar {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {s : Finset Ea} (hs : s ∈ Q.faces) :
-    wallSystemCellInt ρ s ⊆ wallSystemStar Q ρ s := by
-  intro x hx hbad
-  obtain ⟨t, ht, hxt⟩ := mem_iUnion₂.1 hbad
-  exact ht.2 (face_subset_of_mem_openSimplex_of_mem_convexHull Q hs ht.1 hx hxt)
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem exists_face_of_mem_wallSystemStar {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} (hrange : Set.range ρ = Q.space) {s : Finset Ea} {x : M}
-    (hx : x ∈ wallSystemStar Q ρ s) :
-    ∃ t ∈ Q.faces, s ⊆ t ∧ x ∈ wallSystemCellInt ρ t := by
-  have hxQ : ρ x ∈ Q.space := by rw [← hrange]; exact mem_range_self x
-  obtain ⟨t, ht, hxt⟩ := exists_face_mem_openSimplex Q hxQ
-  refine ⟨t, ht, ?_, hxt⟩
-  by_contra hst
-  exact hx (mem_iUnion₂.2 ⟨t, ⟨ht, hst⟩, openSimplex_subset_convexHull t hxt⟩)
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCellInt_eq_wallSystemStar {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} (hrange : Set.range ρ = Q.space) (hdim : ∀ t ∈ Q.faces, t.card ≤ 4)
-    {c : Finset Ea} (hc : c ∈ wallSystemCells Q) :
-    wallSystemCellInt ρ c = wallSystemStar Q ρ c := by
-  refine Subset.antisymm (wallSystemCellInt_subset_wallSystemStar hc.1) fun x hx => ?_
-  obtain ⟨t, ht, hct, hxt⟩ := exists_face_of_mem_wallSystemStar hrange hx
-  have hc4 : c.card = 4 := hc.2
-  have hdt := hdim t ht
-  rw [Finset.eq_of_subset_of_card_le hct (by omega)]
-  exact hxt
-
-omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem isOpen_wallSystemCellInt {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    (hfin : Q.faces.Finite) (hcont : Continuous ρ) (hrange : Set.range ρ = Q.space)
-    (hdim : ∀ t ∈ Q.faces, t.card ≤ 4) {c : Finset Ea} (hc : c ∈ wallSystemCells Q) :
-    IsOpen (wallSystemCellInt ρ c) := by
-  rw [wallSystemCellInt_eq_wallSystemStar hrange hdim hc]
-  exact isOpen_wallSystemStar hfin hcont c
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemStar_inter_wall_subset {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} (hrange : Set.range ρ = Q.space) {w w' : Finset Ea}
-    (hw : w ∈ wallSystemWalls Q) (hw' : w' ∈ wallSystemWalls Q) :
-    wallSystemStar Q ρ w ∩ wallSystemCell ρ w' ⊆ wallSystemCell ρ w := by
-  rintro x ⟨hxs, hx'⟩
-  obtain ⟨t, ht, hwt, hxt⟩ := exists_face_of_mem_wallSystemStar hrange hxs
-  have htw' : t ⊆ w' :=
-    face_subset_of_mem_openSimplex_of_mem_convexHull Q ht hw'.1 hxt hx'
-  have hw3 : w.card = 3 := hw.2
-  have hw3' : w'.card = 3 := hw'.2
-  rw [Finset.eq_of_subset_of_card_le (hwt.trans htw') (by omega)]
-  exact hx'
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemStar_subset_union_wallSystemCell {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} (hrange : Set.range ρ = Q.space)
-    (hmem : ∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) {w cm cp : Finset Ea}
-    (hsides : ∀ c ∈ wallSystemCells Q, w ⊆ c → c = cm ∨ c = cp) :
-    wallSystemStar Q ρ w ⊆ wallSystemCell ρ cm ∪ wallSystemCell ρ cp := by
-  intro x hx
-  obtain ⟨t, ht, hwt, hxt⟩ := exists_face_of_mem_wallSystemStar hrange hx
-  obtain ⟨c, hc, htc⟩ := hmem t ht
-  have hxc : x ∈ wallSystemCell ρ c :=
-    convexHull_mono (Finset.coe_subset.2 htc) (openSimplex_subset_convexHull t hxt)
-  rcases hsides c hc (hwt.trans htc) with rfl | rfl
-  · exact Or.inl hxc
-  · exact Or.inr hxc
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem wallSystemCell_subset_layer {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    {ι : Type} {Eb Eb' : ι → Set M} (i : ι)
-    (hstar : ∀ c ∈ wallSystemCells Q, (wallSystemCell ρ c ∩ Eb i).Nonempty →
-      wallSystemCell ρ c ⊆ Eb' i)
-    (hmem : ∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) {s : Finset Ea}
-    (hs : s ∈ Q.faces) (hne : (wallSystemCell ρ s ∩ Eb i).Nonempty) :
-    wallSystemCell ρ s ⊆ Eb' i := by
-  obtain ⟨c, hc, hsc⟩ := hmem s hs
-  have hsub : wallSystemCell ρ s ⊆ wallSystemCell ρ c :=
-    fun _ hx => convexHull_mono (Finset.coe_subset.2 hsc) hx
-  obtain ⟨z, hzs, hzE⟩ := hne
-  exact hsub.trans (hstar c hc ⟨z, hsub hzs, hzE⟩)
-
-omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
-theorem subset_iUnion_wallSystemCell_of_eq_boundary {Q : Geometry.SimplicialComplex ℝ Ea}
-    {ρ : M → Ea} {Bf : Set (Finset Ea)} {BdM : Set M} (hfaces : Bf ⊆ wallSystemWalls Q)
-    (heq : BdM = ⋃ w ∈ Bf, wallSystemCell ρ w) :
-    BdM ⊆ ⋃ w ∈ wallSystemWalls Q, wallSystemCell ρ w := by
-  rw [heq]
-  exact iUnion₂_subset fun w hw x hx => mem_iUnion₂.2 ⟨w, hfaces hw, hx⟩
-
 theorem wallIncidence_simplexBoundary {T : Finset Ea}
     (hT : AffineIndependent ℝ ((↑) : T → Ea)) (hcard : T.card = 5) :
     (simplexBoundary T hT).faces.Finite ∧
@@ -1160,33 +853,6 @@ theorem eqOn_wallPlane_of_eqOn_transition
   refine fun z hz => AffineMap.eqOn_affineSpan (fun u hu => ?_) (hspan hz)
   obtain ⟨x, hx, rfl⟩ := hu
   rw [← h₁ ⟨x, hx.1, rfl⟩, ← h₂ ⟨x, hx.2, rfl⟩]
-
-def WallProductBlock (f : EuclideanSpace ℝ (Fin 2) → M) (S : Set (EuclideanSpace ℝ (Fin 2)))
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (BdM C : Set M)
-    (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea)
-    (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ)
-    (SA SB : Set (EuclideanSpace ℝ (Fin 2))) (a b : ℝ × ℝ → ℝ) (La Lb η : ℝ) : Prop :=
-  IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η ∧
-    Disjoint (chartBlock ec A r tlo) (wallSystemSkeleton Q ρ) ∧
-    ((∃ c ∈ wallSystemCells Q, tlo = -r ∧
-        chartBlock ec A r tlo ⊆ wallSystemCellInt ρ c) ∨
-      (∃ w ∈ wallSystemWalls Q, ∃ cm ∈ wallSystemCells Q, ∃ cp ∈ wallSystemCells Q,
-        tlo = -r ∧ cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
-          chartBlock ec A r tlo ⊆ wallSystemCell ρ cm ∪ wallSystemCell ρ cp ∧
-          (chartBlock ec A r tlo ∩ wallSystemCellInt ρ cm).Nonempty ∧
-          (chartBlock ec A r tlo ∩ wallSystemCellInt ρ cp).Nonempty ∧
-          (∀ w' ∈ wallSystemWalls Q,
-            chartBlock ec A r tlo ∩ wallSystemCell ρ w' ⊆ wallSystemCell ρ w) ∧
-          (∀ x ∈ chartBlock ec A r tlo, x ∈ wallSystemCell ρ w ↔ (A (ec x)).2.2 = 0) ∧
-          (∀ x ∈ chartBlock ec A r tlo ∩ wallSystemCell ρ cm, (A (ec x)).2.2 ≤ 0) ∧
-          ∀ x ∈ chartBlock ec A r tlo ∩ wallSystemCell ρ cp, 0 ≤ (A (ec x)).2.2) ∨
-      (∃ c ∈ wallSystemCells Q, ∃ w ∈ wallSystemWalls Q, tlo = 0 ∧ w ⊆ c ∧
-        (∀ z, (A z).2.2 = ℓ z) ∧ chartBlock ec A r tlo ∩ C ⊆ wallSystemCell ρ c ∧
-          (chartBlock ec A r tlo ∩ wallSystemCellInt ρ c).Nonempty ∧
-          chartBlock ec A r tlo ∩ BdM ⊆ wallSystemCell ρ w ∧
-          ∀ w' ∈ wallSystemWalls Q,
-            chartBlock ec A r tlo ∩ wallSystemCell ρ w' ⊆ wallSystemCell ρ w))
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem WallProductBlock.toIsStableCrossingBlock {f : EuclideanSpace ℝ (Fin 2) → M}
@@ -1304,21 +970,6 @@ theorem wallProductBlock_of_flatSheets_physicalBoundary {f : EuclideanSpace ℝ 
   ⟨isStableCrossingBlock_of_flatSheets_boundary hr hcpt hsrc hheight hfront hpre hdisj
       hA hB hplA hplB hnA hnB,
     hskel, Or.inr (Or.inr ⟨c, hc, w, hw, rfl, hwc, hheight, hcovC, hcne, hcovB, hone⟩)⟩
-
-def HasWallProductBlocks (f : EuclideanSpace ℝ (Fin 2) → M)
-    (S : Set (EuclideanSpace ℝ (Fin 2))) {ι : Type}
-    (ec : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓ : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb : ι → Set M) (BdM C : Set M)
-    (Q : Geometry.SimplicialComplex ℝ Ea) (ρ : M → Ea) (Z : Set M) (η : ℝ) : Prop :=
-  0 < η ∧ ∃ (N : Set M) (m : ℕ) (j : Fin m → ι)
-      (A : Fin m → (EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ)) (r tlo : Fin m → ℝ)
-      (SA SB : Fin m → Set (EuclideanSpace ℝ (Fin 2))) (a b : Fin m → ℝ × ℝ → ℝ)
-      (La Lb : Fin m → ℝ),
-      IsOpen N ∧ Z ⊆ N ∧
-        doublePointSet f S ∩ N ⊆ ⋃ i, innerChartBlock (ec (j i)) (A i) (r i) (tlo i) ∧
-        (∀ i, chartBlock (ec (j i)) (A i) (r i) (tlo i) ⊆ Eb (j i)) ∧
-        ∀ i, WallProductBlock f S (ec (j i)) (ℓ (j i)) BdM C Q ρ
-          (A i) (r i) (tlo i) (SA i) (SB i) (a i) (b i) (La i) (Lb i) η
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem hasWallProductBlocks_empty {f : EuclideanSpace ℝ (Fin 2) → M}
@@ -1451,63 +1102,6 @@ theorem exists_normalCrossing_of_hasWallProductBlocks [T2Space M] (D : SingularT
   exact hasPLNormalDoubleCrossingAt_of_isStableCrossingBlock D (ec (j i)) (ℓ (j i))
     (hec (j i)) (hℓ (j i)) (hBdchart (j i)) (hblk i).1 hy.1 hi
 
-open Classical in
-theorem exists_commonWallComplex {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 3 K) (n : ℕ) :
-    letI := combinatorialChartedSpace (double 3 K)
-      (isCombinatorialManifold_double_succ_succ K hK)
-    let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
-    let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
-    let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-      (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
-    ∀ (V : Fin n → Set (double 3 K).space)
-      (ec : Fin n → OpenPartialHomeomorph (double 3 K).space (EuclideanSpace ℝ (Fin 3)))
-      (ℓ : Fin n → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)),
-      (∀ i, ec i ∈ (plGroupoid 3).maximalAtlas (double 3 K).space) → (∀ i, ℓ i ≠ 0) →
-        (∀ i, ∀ x ∈ (ec i).source, x ∈ C ↔ 0 ≤ ℓ i (ec i x)) →
-        (∀ i, ∀ x ∈ (ec i).source, x ∈ Bd ↔ ℓ i (ec i x) = 0) →
-        (∀ i, closure (V i) ⊆ (ec i).source) →
-        ∃ (Q : Geometry.SimplicialComplex ℝ (E × E × ℝ))
-          (Cf Bf : Set (Finset (E × E × ℝ))) (Eb Eb' : Fin n → Set (double 3 K).space),
-          IsSubdivision Q (double 3 K) ∧ (∀ i, closure (V i) ⊆ interior (Eb i)) ∧
-            IsCommonWallSystem Q ((↑) : (double 3 K).space → E × E × ℝ) Cf Bf Bd C
-              ec ℓ Eb Eb' := by
-  sorry
-
-theorem wallProductBlock_transport [T2Space M] {f : EuclideanSpace ℝ (Fin 2) → M}
-    {S : Set (EuclideanSpace ℝ (Fin 2))} {ι : Type}
-    {ec : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
-    {ℓ : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)} {Eb Eb' : ι → Set M} {BdM C N : Set M}
-    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)}
-    {A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ} {r tlo : ℝ}
-    {SA SB : Set (EuclideanSpace ℝ (Fin 2))} {a b : ℝ × ℝ → ℝ} {La Lb η : ℝ} {y : M}
-    (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ec ℓ Eb Eb') (i i' : ι)
-    (h : WallProductBlock f S (ec i) (ℓ i) BdM C Q ρ A r tlo SA SB a b La Lb η)
-    (hmapC : MapsTo f S C) (hblkE : chartBlock (ec i) A r tlo ⊆ Eb i)
-    (hy : y ∈ innerChartBlock (ec i) A r tlo) (hy' : y ∈ Eb i')
-    (hN : IsOpen N) (hyN : y ∈ N) :
-    ∃ (A' : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r' tlo' : ℝ)
-      (SA' SB' : Set (EuclideanSpace ℝ (Fin 2))) (a' b' : ℝ × ℝ → ℝ),
-      WallProductBlock f S (ec i') (ℓ i') BdM C Q ρ A' r' tlo' SA' SB' a' b' La Lb η ∧
-        A' (ec i' y) = 0 ∧ y ∈ innerChartBlock (ec i') A' r' tlo' ∧
-        chartBlock (ec i') A' r' tlo' ⊆ N ∩ chartBlock (ec i) A r tlo := by
-  sorry
-
-theorem hasStableCrossingBlocks_of_wallProductBlocks [T2Space M]
-    {f : EuclideanSpace ℝ (Fin 2) → M} {S : Set (EuclideanSpace ℝ (Fin 2))} {ι : Type}
-    {ec : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
-    {ℓ : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)} {Eb Eb' : ι → Set M}
-    {BdM C Z Z' : Set M} {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea}
-    {Cf Bf : Set (Finset Ea)} {η κ : ℝ}
-    (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ec ℓ Eb Eb')
-    (h : HasWallProductBlocks f S ec ℓ Eb BdM C Q ρ Z η)
-    (hScpt : IsCompact S) (hcont : ContinuousOn f S) (hmapC : MapsTo f S C)
-    (hκ : 0 < κ) (hinj : UniformInjectivityScale S f κ)
-    (i₀ : ι) (hZ'cpt : IsCompact Z') (hZ'Z : Z' ⊆ Z) (hZ'E : Z' ⊆ interior (Eb i₀)) :
-    HasStableCrossingBlocks f S (ec i₀) (ℓ i₀) BdM Z' η := by
-  sorry
-
 def AdmissibleVertexMap (D : SingularTwoCell M)
     (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)
@@ -1591,15 +1185,6 @@ variable {M : Type u} [MetricSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3))
 
 variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
 
-open Classical in
-noncomputable def regionGluedMap (D : SingularTwoCell M)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (Rs : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
-    (Rc : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) :
-    EuclideanSpace ℝ (Fin 2) → M :=
-  fun x => if x ∈ Rc.space then ec.symm (simplicialMap Rs φ x) else D x
-
 theorem eq_regionGluedMap_of_eqOn {D D' : SingularTwoCell M}
     {ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
     {Rs Rc : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
@@ -1614,30 +1199,6 @@ theorem eq_regionGluedMap_of_eqOn {D D' : SingularTwoCell M}
     exact hglue hx
   · simp only [regionGluedMap, if_neg hx]
     exact hglueoff hx
-
-theorem exists_normalizationPreparation_on_prescribedRegion [CompactSpace M]
-    (D : SingularTwoCell M) {BdM B W V : Set M}
-    (hloc : ∀ x ∈ D.domain, ∃ U ∈ 𝓝[D.domain] x, InjOn (⇑D) U)
-    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
-    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
-    (hVopen : IsOpen V) (hWV : closure W ⊆ V)
-    (ec : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))) (hVec : V ⊆ ec.source)
-    (Rc Ac : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (hRfin : Rc.faces.Finite) (hAR : Ac.faces ⊆ Rc.faces)
-    (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hAfree : Disjoint Ac.space (⇑D ⁻¹' closure W)) :
-    ∃ (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) (κ δ ε : ℝ),
-      0 < κ ∧ 0 < δ ∧ 0 < ε ∧ T.faces.Finite ∧ T.space = D.domain ∧ StarInj T (⇑D) ∧
-        (∀ g : EuclideanSpace ℝ (Fin 2) → M, (∀ x ∈ D.domain, dist (g x) (D x) < δ) →
-          StarInj T g → UniformInjectivityScale D.domain g κ ∧
-            ∀ y, (D.domain ∩ g ⁻¹' {y}).encard ≤ 2) ∧
-        (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-          dist z (ec (D x)) < ε → z ∈ ⇑ec '' V ∧ dist (ec.symm z) (D x) < δ) ∧
-        (∀ x ∈ Rc.space, ∀ z : EuclideanSpace ℝ (Fin 3),
-          dist z (ec (D x)) < ε → ec.symm z ∈ closure W → x ∈ Rc.space \ Ac.space) ∧
-        ∀ x ∈ Rc.space ∩ frontier D.domain, ∀ z : EuclideanSpace ℝ (Fin 3),
-          dist z (ec (D x)) < ε → ec.symm z ∈ BdM → B ∈ 𝓝[BdM] (ec.symm z) := by
-  sorry
 
 open Classical in
 theorem exists_protectedSubdivision_in_adaptedChart [CompactSpace M]
@@ -1852,67 +1413,6 @@ theorem exists_wallGenericVertexMap (D : SingularTwoCell M) {BdM C V : Set M} {�
                     wallSystemCellInt ρ cm).Nonempty ∧
                   (doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain ∩ U ∩
                     wallSystemCellInt ρ cp).Nonempty := by
-  sorry
-
-open Classical in
-theorem wallProductBlocks_of_wallGenericity (D : SingularTwoCell M) {BdM C W V Kt : Set M}
-    {ι : Type} (ecf : ι → OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
-    (ℓf : ι → (EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ)) (Eb Eb' : ι → Set M)
-    {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {Cf Bf : Set (Finset Ea)}
-    {ε κ : ℝ} (i₀ : ι)
-    (hsys : IsCommonWallSystem Q ρ Cf Bf BdM C ecf ℓf Eb Eb')
-    (hfiber : ∀ y, (D.domain ∩ ⇑D ⁻¹' {y}).encard ≤ 2)
-    (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)
-    (hmapC : MapsTo (⇑D) D.domain C) (hκ : 0 < κ)
-    (hVopen : IsOpen V) (hVec : closure V ⊆ (ecf i₀).source) (hWV : closure W ⊆ V)
-    (hWE : closure W ⊆ interior (Eb i₀))
-    (Rc Lc Ac R : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
-    (Bv : Finset (EuclideanSpace ℝ (Fin 2)))
-    (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
-    (hRfin : Rc.faces.Finite) (hRdom : Rc.space ⊆ D.domain) (hRV : Rc.space ⊆ ⇑D ⁻¹' V)
-    (hLspace : Lc.space = Rc.space ∩ frontier D.domain)
-    (hsub : IsSubdivision R Rc) (hRsfin : R.faces.Finite) (hε : 0 < ε)
-    (hBvL : ∀ v ∈ R.vertices, v ∈ Bv ↔ v ∈ Lc.space)
-    (hsmall : ∀ x ∈ Rc.space, dist (simplicialMap R φ x) (ecf i₀ (D x)) < ε)
-    (hpnonneg : ∀ x ∈ Rc.space, 0 ≤ ℓf i₀ (simplicialMap R φ x))
-    (hpzero : ∀ x ∈ Rc.space, ℓf i₀ (simplicialMap R φ x) = 0 ↔ x ∈ Lc.space)
-    (hfrozen : EqOn (simplicialMap R φ) (fun x => ecf i₀ (D x)) Ac.space)
-    (hmaps : MapsTo (simplicialMap R φ) Rc.space (⇑(ecf i₀) '' V))
-    (hD'K : regionGluedMap D (ecf i₀) R φ Rc '' Rc.space ⊆ Kt) (hKV : Kt ⊆ V)
-    (hinj' : UniformInjectivityScale D.domain (regionGluedMap D (ecf i₀) R φ Rc) κ)
-    (hgcont : ContinuousOn (regionGluedMap D (ecf i₀) R φ Rc) D.domain)
-    (hgfiber : ∀ y,
-      (D.domain ∩ regionGluedMap D (ecf i₀) R φ Rc ⁻¹' {y}).encard ≤ 2)
-    (hguard : ∀ s : Finset (EuclideanSpace ℝ (Fin 2)),
-      (s : Set (EuclideanSpace ℝ (Fin 2))) ⊆ R.vertices → s.card ≤ 4 →
-        (s ∩ Bv).card ≤ Module.finrank ℝ (LinearMap.ker (ℓf i₀)) + 1 →
-        AffineIndependent ℝ
-          (fun v : (s.filter fun x => x ∈ Ac.space) => φ (v : EuclideanSpace ℝ (Fin 2))) →
-        AffineIndependent ℝ (fun v : s => φ (v : EuclideanSpace ℝ (Fin 2))))
-    (hfree : ∀ y ∈ closure W,
-      FreeSourceGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain y)
-    (hgenskel : ∀ y ∈ doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain,
-      FreeSourceGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain y →
-        y ∉ wallSystemSkeleton Q ρ)
-    (hgenfold : ∀ y ∈ doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain,
-      IsFreeDoubleGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain BdM y →
-        ∀ σ ∈ R.faces, σ.card ≤ 2 →
-          y ∈ regionGluedMap D (ecf i₀) R φ Rc ''
-              (Rc.space ∩ convexHull ℝ (σ : Set (EuclideanSpace ℝ (Fin 2)))) →
-            ∀ w ∈ wallSystemWalls Q, y ∉ wallSystemCell ρ w)
-    (hgencross : ∀ y ∈ doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain,
-      IsFreeInteriorDoubleGerm R Ac (regionGluedMap D (ecf i₀) R φ Rc) D.domain BdM y →
-        ∀ w ∈ wallSystemWalls Q, y ∈ wallSystemCell ρ w →
-          ∃ cm ∈ wallSystemCells Q, ∃ cp ∈ wallSystemCells Q, cm ≠ cp ∧
-            y ∈ wallSystemCell ρ cm ∧ y ∈ wallSystemCell ρ cp ∧
-            ∀ U ∈ 𝓝 y,
-              (doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain ∩ U ∩
-                wallSystemCellInt ρ cm).Nonempty ∧
-              (doublePointSet (regionGluedMap D (ecf i₀) R φ Rc) D.domain ∩ U ∩
-                wallSystemCellInt ρ cp).Nonempty) :
-    ∃ η' : ℝ, 0 < η' ∧
-      HasWallProductBlocks (regionGluedMap D (ecf i₀) R φ Rc) D.domain ecf ℓf Eb BdM C
-        Q ρ (closure W) η' := by
   sorry
 
 end MetricAmbient
