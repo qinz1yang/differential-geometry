@@ -1,7 +1,8 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentEdges
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeEnds
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDisksDisjoint
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -177,5 +178,55 @@ theorem section34_vertex_cells_triple_inter_eq_empty
   apply h₁₂
   rcases he with ⟨he₀, he₁⟩ | ⟨he₀, he₁⟩ <;>
     rcases hf with ⟨hf₀, hf₁⟩ | ⟨hf₀, hf₁⟩ <;> simp_all
+
+theorem section34_graph_subset_vertex_interiors_union_splitDisks [T2Space M]
+    (hU : IsOpen U) (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3)
+      (section34CutNeighborhood src) (graphSkeletonSpace 𝒦) U) :
+    graphSkeletonSpace 𝒦 ⊆ (⋃ w, interior (src (.vertexBall w))) ∪ ⋃ e, src (.splitDisk e) := by
+  obtain ⟨-, -, -, hcell, -, -, -, hLF, -⟩ := id hcut
+  obtain ⟨ends, hends⟩ := exists_section34_edge_ends hcut
+  let F : Section34VertexIndex 𝒦 𝒦' → Set U := fun w => Subtype.val ⁻¹' src (.vertexBall w)
+  have hF : LocallyFinite F := by
+    have hl : LocallyFinite (fun l : Section34CutLabelOf 𝒦 𝒦' =>
+        (Subtype.val : U → M) ⁻¹' src l) := by
+      intro x
+      obtain ⟨V, hV, hfin⟩ := hLF x x.2
+      refine ⟨Subtype.val ⁻¹' V, continuous_subtype_val.continuousAt hV, hfin.subset ?_⟩
+      rintro l ⟨y, hyl, hyV⟩
+      exact ⟨y, hyl, hyV⟩
+    exact hl.comp_injective (fun _ _ heq => Section34Label.vertexBall.inj heq)
+  have hFc (w) : IsClosed (F w) :=
+    (hcell (.vertexBall w)).isCompact.isClosed.preimage continuous_subtype_val
+  have hgraphI : graphSkeletonSpace 𝒦 ⊆ interior (section34CutNeighborhood src) :=
+    subset_interior_iff_mem_nhdsSet.mpr hN.mem_nhdsSet
+  intro x hx
+  by_cases hxD : x ∈ ⋃ e, src (.splitDisk e)
+  · exact Or.inr hxD
+  · obtain ⟨w, hxw⟩ := mem_iUnion.mp (interior_subset (hgraphI hx))
+    have huniq (v) (hxv : x ∈ src (.vertexBall v)) : v = w := by
+      by_contra hvw
+      obtain ⟨e, -, heq⟩ := section34_vertex_cells_intersection_of_ne hcut ends
+        (fun e => (hends e).2) hvw ⟨x, hxv, hxw⟩
+      exact hxD (mem_iUnion.mpr ⟨e, heq.subset ⟨hxv, hxw⟩⟩)
+    let J := {v : Section34VertexIndex 𝒦 𝒦' // v ≠ w}
+    let B : Set U := ⋃ v : J, F v.1
+    have hB : IsClosed B := (hF.comp_injective Subtype.val_injective).isClosed_iUnion
+      (fun v => hFc v.1)
+    let V : Set M := Subtype.val '' Bᶜ
+    have hV : IsOpen V := hU.isOpenMap_subtype_val _ hB.isOpen_compl
+    have hxV : x ∈ V := by
+      refine ⟨⟨x, hN.subset (interior_subset (hgraphI hx))⟩, ?_, rfl⟩
+      intro hxB
+      obtain ⟨v, hxv⟩ := mem_iUnion.mp hxB
+      exact v.2 (huniq v.1 hxv)
+    have hVC : V ∩ interior (section34CutNeighborhood src) ⊆ src (.vertexBall w) := by
+      rintro y ⟨⟨z, hz, rfl⟩, hyN⟩
+      obtain ⟨v, hv⟩ := mem_iUnion.mp (interior_subset hyN)
+      by_cases hvw : v = w
+      · exact hvw ▸ hv
+      · exact (hz (mem_iUnion.mpr ⟨⟨v, hvw⟩, hv⟩)).elim
+    exact Or.inl (mem_iUnion.mpr ⟨w,
+      interior_maximal hVC (hV.inter isOpen_interior) ⟨hxV, hgraphI hx⟩⟩)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
