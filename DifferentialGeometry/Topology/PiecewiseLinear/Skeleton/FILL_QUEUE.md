@@ -776,3 +776,62 @@ run the audit probe `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\Audi
 `Skeleton/ControlledGraphNeighborhood.lean`. Report: per collision reused/renamed (old → new, files
 touched), the receipt line of every re-verified module and of the audit. Wiring and registration are the
 lead's.
+
+## Codex item 19 — accept the collaborator's Section 31 (PR #19) and promote the Section 31 skeleton (lead-written 2026-09-24 18:30; Codex lane on `codex-moise-recon`)
+
+Lease: `codex-moise-recon` (token in its JSON under `.lake/round-compiler-leases/`, private output root as
+recorded there; extend `validUntilUtc` with the owner if needed). This item carries an OWNER-GRANTED
+EXCEPTION to the no-git-writes rule: the lane performs the acceptance end to end, including commits and
+pushes, under these limits — commit by explicit path only (never `git add -A`, never the whole
+`DifferentialGeometry.lean` blindly: add exactly the files named below), never force-push, never
+touch another lane's untracked files, one commit per step below, push to `origin codex/moise-integration`
+after the last step. Log to `Skeleton/FILL_LOG.md`, section `# Codex item 19`.
+
+PR #19 (`qinz1yang/differential-geometry-dev`, branch of the collaborator, 7 commits, 40 new files) proves
+both Section 31 leaves: `exists_polygon_carrier_of_spine` (`PolygonCarrierOfSpine.lean`) and
+`exists_isPLCell_frontier_of_polygon_nullhomotopic` (`PolygonNullhomotopicBoundaryDisk.lean`), 60 public
+declarations, permitted axioms, strict compilation silent on the collaborator's machine. Known deviation:
+with the owner's approval the collaborator renamed one unused binder `hG` to `_hG`; if that binder is in a
+frozen leaf statement, the byte-identity check may differ in exactly that binder name and nothing else.
+
+Steps (each verified before the next):
+1. `git fetch origin pull/19/head:pr19`; `git diff --name-status codex/moise-integration...pr19` must show
+   40 added `.lean` files and nothing else. Collision: the working tree already has an untracked
+   `SurfaceDiskNeighborhood.lean` from another lane (different content). Cherry-pick the seven commits
+   (`git cherry-pick codex/moise-integration..pr19`); when the cherry-pick stops on that file, keep the
+   other lane's untracked file untouched by writing the PR's version to `SurfaceDiskNeighborhoodS31.lean`
+   instead (`git show pr19:<path> > …S31.lean`), resolve, continue; then repoint every PR file that
+   imports `…SurfaceDiskNeighborhood` to `…SurfaceDiskNeighborhoodS31`, and commit that repoint. If the
+   cherry-pick refuses because the untracked file would be overwritten, move that untracked file aside
+   temporarily, cherry-pick, restore it, then do the rename — never lose the other lane's file.
+2. Statement check: for each of the two leaves, the theorem text in the PR module (from `theorem` through
+   `:=`) must equal the text in `Skeleton/Section31CanonicalConfiguration.lean` (lines 470 and 481) byte
+   for byte, except possibly `hG` -> `_hG`; report the diff verbatim if any other difference appears and
+   STOP.
+3. Scan the 40 files: no `sorry`/`admit`/`axiom`/`nolint`/`set_option`, no declaration docstrings, no
+   `import …Skeleton…`; every new public name unique tree-wide (grep `DifferentialGeometry/`); collisions
+   other than the two leaf names (which exist in the skeleton) must be renamed in the PR files before
+   step 4 (record old -> new).
+4. Lead-standard verification: for every one of the 40 modules in dependency order,
+   `prepare-private-root.py` then `checker.ps1` with the lane's lease, each ending
+   `Verified … with no diagnostics; shared outputs unchanged.`; then an audit probe outside the tree over
+   the 40 modules (the `mkaudit` pattern: `Lean.Util.CollectAxioms`, `Batteries.Tactic.Lint`, every
+   declaration's transitive axioms within `propext`/`Classical.choice`/`Quot.sound`, the thirteen
+   environment linters); split the audit into two probes of 20 if it hits the heartbeat limit.
+5. Wiring: in `Skeleton/Section31CanonicalConfiguration.lean` delete the two `sorry` leaves and add
+   `import …PolygonCarrierOfSpine` and `import …PolygonNullhomotopicBoundaryDisk` after its last import;
+   rewrite the module docstring's title line from "Sorry-first skeleton …" to a plain title and add a
+   short promotion note (proved by whom, when, accepted how); the file must then contain no `sorry`.
+   Recheck it with the checker (zero diagnostics). Then promote: `git mv` it to
+   `DifferentialGeometry/Topology/PiecewiseLinear/Section31CanonicalConfiguration.lean` and recheck the
+   promoted module. Register in `DifferentialGeometry.lean`: the 40 modules in dependency order and the
+   promoted module, inserted after the line `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls`
+   block (append after the last consecutive `import DifferentialGeometry.` line that follows it).
+6. Records: in `FREE_INPUTS.md` append to the row that describes `Skeleton/Section31CanonicalConfiguration.lean`
+   "**Section 31 PROVED 2026-09-24** (collaborator PR #19, 40 modules; Codex item 19 acceptance; skeleton
+   promoted to `Section31CanonicalConfiguration`)", delete the count-table line
+   `| Section31CanonicalConfiguration | 2 |`, and lower the "physical sorry occurrences" total by 2 with the
+   note "(N -> N-2 at <time> on 2026-09-24: Section 31, collaborator PR #19)"; append one line to
+   `Skeleton/HANDOFF_LEAD_20260922.md`. Commit these with the files of step 5 in one commit; push.
+7. Report (<= 40 lines): commits made (hashes, files), the statement-check result, the receipts and audit
+   lines, the ledger total before/after.
