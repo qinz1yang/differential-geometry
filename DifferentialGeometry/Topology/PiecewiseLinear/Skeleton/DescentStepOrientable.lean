@@ -14,6 +14,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossQuarterTur
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealization
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDisjointDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellReading
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryTubeProducerDouble
 
 /-!
 # Sorry-first skeleton of the orientable descent step
@@ -140,6 +141,18 @@ each of its own arcs, and the adjacent pairings give the reading in `T.chart` or
 leaf is the `ClosedBranchCaseOne` theorem modulo its single tube leaf; the boundary tube producer
 and the adapted clean cap need a PL tube around a branch arc (resp. a PL product neighbourhood in
 an abstract PL manifold), which the tree lacks; a branch-tube lane is dispatched.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf, no hypothesis dropped):
+`isPLBoundaryTubeProducer_double` (module `LoopTheorem/BoundaryTubeProducerDouble` over fourteen
+bricks): the tube is built chart by chart along the boundary branch arc (the arc-straightening
+modules), and the end chart merges the boundary crossing chart with the half-space chart at a
+boundary double point through the homogeneous normal form
+`exists_homogeneous_normalForm_crossHalfSpace` (four spokes on a two-disk sphere, a four-point
+circle map, the four-page theorem, boundary and cone extension).
+`not_branchPreimage_eq_of_isOrientable` waits on `ClosedBranchCaseOne`'s
+`exists_isSourceTrackedBranchTube`, whose `realisation` clause conflicts with the reviewed
+derived-neighbourhood route (worker analysis, sent to review).
 -/
 
 open Set Topology
@@ -158,15 +171,6 @@ theorem not_branchPreimage_eq_of_isOrientable
       ¬hD.singularSet.IsBoundaryBranch c →
       ∀ {J : Set (EuclideanSpace ℝ (Fin 2))}, IsPLSphere 1 J →
         hD.branchPreimage c = J → False := by
-  sorry
-
-theorem isPLBoundaryTubeProducer_double
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 3 K) :
-    letI := combinatorialChartedSpace (double 3 K)
-      (isCombinatorialManifold_double_succ_succ K hK)
-    IsPLBoundaryTubeProducer (double 3 K).space := by
   sorry
 
 namespace NormalSingularCellData

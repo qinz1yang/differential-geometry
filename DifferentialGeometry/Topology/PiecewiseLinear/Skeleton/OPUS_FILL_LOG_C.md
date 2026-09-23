@@ -714,3 +714,110 @@
   not lie in one chart, its boundary circle is interior to `M` and crossed by the `T` sheet, and
   the only triangulated neighbourhood (`SingularTwoCell.exists_compact_piece_neighborhood`) lives
   in `EuclideanSpace ℝ (Fin T.ambientDim)`, not of dimension three. Gemini G085 confirmed.
+
+# Batch 6 (branch tube)
+
+## exists_isSourceTrackedBranchTube — STUCK (statement obstruction on the reviewed route)
+
+- No file. Frozen statement: `Skeleton/ClosedBranchCaseOne.lean:169` (input: a closed branch `c`
+  with one-circle preimage `J`, the marked collar `hD.IsMarkedBranchCollar c J Q C τ ρ sheet`
+  with an arbitrary given PL collar `ρ`; output: `IsSourceTrackedBranchTube`).
+- Obstruction found (checked by hand computation, not by Lean): the clause `realisation` asks,
+  for every `t`, `φ (r i, t) = ι (D (ρ (a i t, s i t)))` together with
+  `D (a i t) = branch map (e t)` for a homeomorphism `e`. Hence `a i` is injective on `[0, 1)`
+  and the curve `t ↦ φ (r i, t)`, which lies in `∂N ∩ D '' D.domain` (the lateral boundary of a
+  cylindrical diagram of the solid torus `N` is `∂N`, by invariance of domain), must be a strict
+  graph over `J` in the given collar coordinates `(w, s) = ρ⁻¹`. On the reviewed route
+  (`N = derivedNeighborhood R (restrict R Γ)` for a subdivision `R` in which the branch `Γ` and the
+  image `Z` are subcomplexes, as in `exists_circle_subcomplex_branchCarrier`) this fails wherever
+  `D ∘ ρ` is affine on a triangle `Δ = [p, q, r]` of `R` with `[p, q] ⊆ Γ`: `∂N ∩ Δ` is the path
+  through the second-derived points `mid(p, m_pr)`, `ctr(p, m_pr, b)`, `mid(p, b)`,
+  `ctr(p, m_pq, b)`, `mid(m_pq, b)`, `ctr(m_pq, q, b)`, `mid(q, b)`, `ctr(q, m_qr, b)`,
+  `mid(q, m_qr)`, whose coordinates along `[p, q]` (with `r` at `x_r`) have consecutive
+  increments `(1 - 2 x_r) / 18` at the second step and `(2 x_r - 1) / 18` at the seventh; they
+  cannot both be positive, so `w` is not strictly monotone there for any apex position. Taking `L`
+  fine relative to an affine patch of `D ∘ ρ` (any subdivision of `L` is then fine too) makes this
+  unavoidable for every `R`. Non-subcomplex choices of `R`, `Lc` are not excluded by this argument,
+  so the statement is not refuted, but the reviewed route cannot prove it.
+- Consumer check: `exists_sourceRayTransport_of_isSourceTrackedBranchTube` uses `hreal` only at
+  `t = 0` and `t = 1` (plus `hbase` for all `t`). Even an endpoint version still asks the four
+  base points `φ (r i, 0)` to sit on the `ρ`-transverse arcs over one branch point `e 0`, which a
+  derived-neighbourhood meridian disk (a cone over its interface circle) does not give either.
+- LEAD DECISION needed: restate `realisation` in terms of the half sheet (preimage point, side)
+  on which each ray lies at `t = 0` and `t = 1`, without exact collar coordinates, or drop
+  `derived` and build the tube adapted to `ρ`. Items 3 (`not_branchPreimage_eq_of_isOrientable`)
+  and the ClosedBranchCaseOne assembly wait on this.
+
+## isPLBoundaryTubeProducer_double — IN PROGRESS (route and verified bricks)
+
+- Route (chart by chart, no triangulation of the tube): along the branch arc, consecutive
+  straightening charts are joined by the conical extension of their transition at the junction
+  point; the conical extension is a PL homeomorphism of the whole model, preserves the cross and
+  its axis, and is defined as far along the arc as needed, so finitely many charts (Lebesgue
+  number) give one global straightening map. The last junction distorts the far end plane; the
+  conical extension there is cylindrical (commutes with translation along the axis), so the
+  boundary is a PL graph over the cross-section and a vertical clamp removes it.
+- Verified bricks (each module: checker "Verified ... with no diagnostics; shared outputs
+  unchanged"; no sorry/axiom/set_option; statements new):
+  `ConicalGermExtension` (292 lines): `conicalGermExtension`,
+  `IsPLHomeomorphOn.exists_isPLHomeomorphOn_univ_homogeneous`, `forall_mem_iff_of_homogeneous`.
+  `ArcStraighteningJunction` (298): `crossPlanes`, `coreSegment`,
+  `IsPLHomeomorphOn.restrict_of_image_eq_inter`, `exists_isOpen_injOn_of_isCompact`,
+  `exists_junction`.
+  `ArcStraighteningStep` (504): `isPLHomeomorphOn_union_of_eqOn`, `axisFlip`,
+  `exists_arcStraightening_step` (one interior chart).
+  `ArcStraighteningEnds` (417): `exists_arcStraightening_base`, `clampShift`,
+  `verticalClamp`, `isPLHomeomorphOn_verticalClamp`, `add_axis_of_homogeneous`.
+  `ArcStraighteningFinal` (478): `exists_arcStraightening_final` (end chart, flat top).
+  `ArcStraightening` (168): `exists_arcStraightening` — the global straightening map along an
+  arc in any finite dimensional ambient space, from interior charts and two end charts.
+- Remaining for the leaf: (a) interior straightening charts for a normal cell in the ambient
+  coordinates of the double (crossing chart + two-sidedness + normal form); (b) adapted end
+  charts at the two boundary points of the branch, where the crossing chart and the side chart
+  `IsPLHalfSpacePairAt` must be merged (the four-spoke disk step); (c) assembly into
+  `CrossSeamTubeData`, `PLSeamTubeChart`, side, boundary and buffer clauses.
+- Update (same item): the whole producer is now proved modulo adapted end charts only.
+  `LoopTheorem/BoundaryBranchTubeCharts` (259 lines): `exists_straighteningChart_of_notMem_boundary`
+  (interior charts from the two-sided crossing chart, ambient coordinates of any finite
+  combinatorial 3-manifold). `LoopTheorem/BoundaryBranchArc` (232):
+  `NormalSingularSetTriangulation.exists_arc_of_isBoundaryBranch` (the arc with exactly its two
+  ends on `BdM`). `LoopTheorem/BoundaryBranchTube` (471): `exists_plSeamTube_of_straightening`,
+  `nonempty_plSeamTubeChart_of_isPLHomeomorphOn` and
+  `isPLBoundaryTubeProducer_of_exists_endChart` (all verified, no diagnostics). Its single
+  hypothesis: at every boundary double point `y` of a normal cell on a PL boundary side there is a
+  PL homeomorphism `ψ` from an open `V ∋ 0` of the model onto `L.space ∩ Ω` with `ψ 0 = y` reading
+  the cell as `crossPlanes ∩ {0 ≤ t}`, the double set as `{p.1 = 0, 0 ≤ t}`, `W` as `{0 ≤ t}` and
+  `BdM` as `{t = 0}` (merging the boundary crossing chart with the side chart; four-spoke disk).
+
+## isPLBoundaryTubeProducer_double — DONE
+
+- Leaf: `LoopTheorem/BoundaryTubeProducerDouble.lean` (33 lines). Frozen statement byte-identical
+  (text compared by script with `Skeleton/DescentStepOrientable.lean:163`); no frozen hypothesis
+  dropped. Proof: `isPLBoundaryTubeProducer_of_exists_endChart` fed with
+  `exists_endChart_of_mem_boundary`, both at `L := double 3 K`.
+- The single remaining hypothesis of the entry above (adapted end charts) is now proved:
+  `CircleFourPoints` (326 lines): `exists_isPLHomeomorphOn_circle_four_points` (a circle with a
+  cut pair and two middle points maps onto any circle with four marked points, some relabelling),
+  subarcs, reversal, concatenation; reuses `isPLHomeomorphOn_mul_add_Icc` of
+  `LateralAnnulusLevels`.
+  `FourSpokeSphere` (312): `exists_isPLHomeomorphOn_fourSpokeSphere` (sphere = two disks along an
+  equator, four upper spokes; four-page theorem in planar coordinates on the upper disk, boundary
+  extension on the lower disk).
+  `CrossQuarterLink` (434): `crossQuarter`, `crossQuarterTriangle`, `exists_quarterLink_complex`
+  (triangulation adapted to `t = 0` with the four image quarters as subcomplexes; each quarter
+  link is an arc from the image of the half axis to the image of the leaf ray, pinned by an angle
+  function).
+  `CrossHalfSpaceNormalForm` (557): `exists_homogeneous_normalForm_crossHalfSpace` (the merge in
+  the model: for a homogeneous PL homeomorphism `G` carrying the half cross into `{t ≥ 0}` and
+  meeting `t = 0` in the flat cross, a homogeneous PL `Θ` with `Θ⁻¹ (G '' half cross)` = half
+  cross, same for the half axis, preserving `t ≥ 0` and `t = 0`; link homeomorphism, cone
+  extension, conical extension).
+  `LoopTheorem/BoundaryBranchEndChart` (520): `eventually_mem_frontier_iff_of_halfPlane_sheet`
+  (invariance of domain: on a boundary crossing sheet the frontier of the source is the edge of
+  the half plane), `exists_boundaryCrossing_straighteningChart`, `exists_endChart_of_mem_boundary`.
+- Correction to the progress entry above: `LoopTheorem/BoundaryBranchArc` has 230 lines.
+- Verification: all fifteen Batch 6 modules (the nine listed above plus these six) compiled in
+  dependency order, each "Verified ... with no diagnostics; shared outputs unchanged"; audit
+  `AuditOpusC14.lean` over the fifteen modules (axioms within propext, Classical.choice,
+  Quot.sound; the thirteen environment linters): "Verified ... with no diagnostics".
+- Item 3 (`not_branchPreimage_eq_of_isOrientable`) still waits on item 1 (LEAD DECISION above).

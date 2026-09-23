@@ -1,0 +1,168 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcStraighteningFinal
+
+/-!
+# Straightening a surface along an arc of its double set
+
+`exists_arcStraightening` is the global straightening map along an arc.  Let `γ` parametrise an
+arc of the double set `D` of a surface `Z` inside a subset `S` of a finite dimensional normed
+space, with both ends on a boundary `Bd` and a side `W`.  Suppose that near every interior point
+of the arc some chart reads `Z` as the pair of planes `crossPlanes`, `D` as their axis, and lies
+in `W` off `Bd`, and that at the two ends end charts read the same data together with `W` as a
+half space bounded by `Bd`.  Then one piecewise linear homeomorphism `Φ` from an open
+neighbourhood of a core segment `coreSegment τ` onto a relatively open subset of `S` carries the
+core segment onto the arc and reads `Z` as the part of `crossPlanes` over the segment, `D` as
+the segment, `W` as the slab `0 ≤ p.2 ≤ τ` and `Bd` as its two end planes.
+
+The proof starts at the first end chart (`exists_arcStraightening_base`), extends by one
+interior chart at a time along a Lebesgue number of the cover of the middle of the arc
+(`exists_arcStraightening_step`), and closes with the second end chart
+(`exists_arcStraightening_final`).
+-/
+
+open Set Topology Metric Filter
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+variable {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [FiniteDimensional ℝ A]
+
+theorem exists_arcStraightening {S Z D W Bd : Set A} {γ : ℝ → A}
+    (hγc : ContinuousOn γ (Icc 0 1)) (hγi : InjOn γ (Icc 0 1))
+    (hγS : ∀ r ∈ Icc (0 : ℝ) 1, γ r ∈ S) (hγD : ∀ r ∈ Icc (0 : ℝ) 1, γ r ∈ D)
+    (hγ1 : γ 1 ∈ Bd)
+    {ψ₀ : (ℝ × ℝ) × ℝ → A} {V₀ : Set ((ℝ × ℝ) × ℝ)} {Ω₀ : Set A} (hV₀ : IsOpen V₀)
+    (hΩ₀ : IsOpen Ω₀) (hψ₀ : IsPLHomeomorphOn ψ₀ V₀ (S ∩ Ω₀))
+    (h0V₀ : (0 : (ℝ × ℝ) × ℝ) ∈ V₀) (hψ₀0 : ψ₀ 0 = γ 0)
+    (hψ₀Z : ∀ p ∈ V₀, ψ₀ p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2)
+    (hψ₀D : ∀ p ∈ V₀, ψ₀ p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2)
+    (hψ₀W : ∀ p ∈ V₀, ψ₀ p ∈ W ↔ 0 ≤ p.2) (hψ₀Bd : ∀ p ∈ V₀, ψ₀ p ∈ Bd ↔ p.2 = 0)
+    {ψ₁ : (ℝ × ℝ) × ℝ → A} {V₁ : Set ((ℝ × ℝ) × ℝ)} {Ω₁ : Set A} (hV₁ : IsOpen V₁)
+    (hΩ₁ : IsOpen Ω₁) (hψ₁ : IsPLHomeomorphOn ψ₁ V₁ (S ∩ Ω₁)) (hγ1Ω₁ : γ 1 ∈ Ω₁)
+    (hψ₁Z : ∀ p ∈ V₁, ψ₁ p ∈ Z ↔ p ∈ crossPlanes ∧ p.2 ≤ 0)
+    (hψ₁D : ∀ p ∈ V₁, ψ₁ p ∈ D ↔ p.1 = 0 ∧ p.2 ≤ 0)
+    (hψ₁W : ∀ p ∈ V₁, ψ₁ p ∈ W ↔ p.2 ≤ 0) (hψ₁Bd : ∀ p ∈ V₁, ψ₁ p ∈ Bd ↔ p.2 = 0)
+    (hint : ∀ r ∈ Ioo (0 : ℝ) 1, ∃ (ψ : (ℝ × ℝ) × ℝ → A) (V : Set ((ℝ × ℝ) × ℝ))
+      (Ω : Set A), IsOpen V ∧ IsOpen Ω ∧ IsPLHomeomorphOn ψ V (S ∩ Ω) ∧ γ r ∈ Ω ∧
+        (∀ p ∈ V, ψ p ∈ Z ↔ p ∈ crossPlanes) ∧ (∀ p ∈ V, ψ p ∈ D ↔ p.1 = 0) ∧
+        (∀ p ∈ V, ψ p ∈ W) ∧ ∀ p ∈ V, ψ p ∉ Bd) :
+    ∃ (Φ : (ℝ × ℝ) × ℝ → A) (N : Set ((ℝ × ℝ) × ℝ)) (Ω : Set A) (τ : ℝ),
+      IsOpen N ∧ IsOpen Ω ∧ IsPLHomeomorphOn Φ N (S ∩ Ω) ∧ 0 < τ ∧ coreSegment τ ⊆ N ∧
+      Φ '' coreSegment τ = γ '' Icc 0 1 ∧
+      (∀ p ∈ N, Φ p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2 ∧ p.2 ≤ τ) ∧
+      (∀ p ∈ N, Φ p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2 ∧ p.2 ≤ τ) ∧
+      (∀ p ∈ N, Φ p ∈ W ↔ 0 ≤ p.2 ∧ p.2 ≤ τ) ∧
+      (∀ p ∈ N, Φ p ∈ Bd ↔ p.2 = 0 ∨ p.2 = τ) := by
+  classical
+  obtain ⟨s₀, τ₀, hs₀, hs₀1, hτ₀, hcore₀, hcoreimg₀, htip₀⟩ :=
+    exists_arcStraightening_base hγc hγi hγS hγD hΩ₀ hψ₀ h0V₀ hψ₀0 hψ₀D
+  have hmem1 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+  obtain ⟨u₁, hu₁, hu₁eq⟩ := continuousOn_iff'.mp hγc Ω₁ hΩ₁
+  have h1u₁ : (1 : ℝ) ∈ u₁ := by
+    have h : (1 : ℝ) ∈ γ ⁻¹' Ω₁ ∩ Icc 0 1 := ⟨hγ1Ω₁, hmem1⟩
+    rw [hu₁eq] at h
+    exact h.1
+  obtain ⟨δ₁, hδ₁, hδ₁u⟩ := Metric.isOpen_iff.mp hu₁ 1 h1u₁
+  set sb := max s₀ (1 - δ₁ / 2) with hsbdef
+  have hsb1 : sb < 1 := max_lt hs₀1 (by linarith)
+  have hs₀sb : s₀ ≤ sb := le_max_left _ _
+  have hcov₁ : γ '' Icc sb 1 ⊆ S ∩ Ω₁ := by
+    rintro _ ⟨r, hr, rfl⟩
+    have hr01 : r ∈ Icc (0 : ℝ) 1 := ⟨hs₀.le.trans (hs₀sb.trans hr.1), hr.2⟩
+    refine ⟨hγS r hr01, ?_⟩
+    have hsbr : 1 - δ₁ / 2 ≤ r := (le_max_right _ _).trans hr.1
+    have hru : r ∈ u₁ := hδ₁u (by
+      rw [mem_ball, Real.dist_eq, abs_sub_comm, abs_of_nonneg (by linarith [hr.2])]
+      linarith)
+    have h : r ∈ u₁ ∩ Icc 0 1 := ⟨hru, hr01⟩
+    rw [← hu₁eq] at h
+    exact h.1
+  have hint' : ∀ r : Icc s₀ sb, ∃ (ψ : (ℝ × ℝ) × ℝ → A) (V : Set ((ℝ × ℝ) × ℝ)) (Ω : Set A),
+      IsOpen V ∧ IsOpen Ω ∧ IsPLHomeomorphOn ψ V (S ∩ Ω) ∧ γ r ∈ Ω ∧
+        (∀ p ∈ V, ψ p ∈ Z ↔ p ∈ crossPlanes) ∧ (∀ p ∈ V, ψ p ∈ D ↔ p.1 = 0) ∧
+        (∀ p ∈ V, ψ p ∈ W) ∧ ∀ p ∈ V, ψ p ∉ Bd := fun r =>
+    hint r ⟨hs₀.trans_le r.2.1, r.2.2.trans_lt hsb1⟩
+  choose ψf Vf Ωf hVf hΩf hψf hγf hZf hDf hWf hBdf using hint'
+  have hU : ∀ r : Icc s₀ sb, ∃ U : Set ℝ, IsOpen U ∧ γ ⁻¹' Ωf r ∩ Icc 0 1 = U ∩ Icc 0 1 :=
+    fun r => continuousOn_iff'.mp hγc (Ωf r) (hΩf r)
+  choose U hUo hUeq using hU
+  obtain ⟨δ, hδ, hleb⟩ := lebesgue_number_lemma_of_metric (isCompact_Icc (a := s₀) (b := sb))
+    hUo (fun x hx => by
+      refine mem_iUnion.mpr ⟨⟨x, hx⟩, ?_⟩
+      have hx01 : x ∈ Icc (0 : ℝ) 1 := ⟨hs₀.le.trans hx.1, hx.2.trans hsb1.le⟩
+      have h : x ∈ γ ⁻¹' Ωf ⟨x, hx⟩ ∩ Icc 0 1 := ⟨hγf ⟨x, hx⟩, hx01⟩
+      rw [hUeq] at h
+      exact h.1)
+  have hchain : ∀ n : ℕ, ∃ (Φ : (ℝ × ℝ) × ℝ → A) (N : Set ((ℝ × ℝ) × ℝ)) (Ω : Set A)
+      (τ : ℝ), IsOpen N ∧ IsOpen Ω ∧ IsPLHomeomorphOn Φ N (S ∩ Ω) ∧ 0 < τ ∧
+        coreSegment τ ⊆ N ∧ Φ '' coreSegment τ = γ '' Icc 0 (min (s₀ + n * (δ / 2)) sb) ∧
+        Φ ((0, 0), τ) = γ (min (s₀ + n * (δ / 2)) sb) ∧
+        (∀ p ∈ N, Φ p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2) ∧
+        (∀ p ∈ N, Φ p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2) ∧
+        (∀ p ∈ N, Φ p ∈ W ↔ 0 ≤ p.2) ∧ ∀ p ∈ N, Φ p ∈ Bd ↔ p.2 = 0 := by
+    intro n
+    induction n with
+    | zero =>
+      have h0 : min (s₀ + ((0 : ℕ) : ℝ) * (δ / 2)) sb = s₀ := by
+        rw [Nat.cast_zero, zero_mul, add_zero, min_eq_left hs₀sb]
+      rw [h0]
+      exact ⟨ψ₀, V₀, Ω₀, τ₀, hV₀, hΩ₀, hψ₀, hτ₀, hcore₀, hcoreimg₀, htip₀, hψ₀Z, hψ₀D,
+        hψ₀W, hψ₀Bd⟩
+    | succ n ih =>
+      obtain ⟨Φ, N, Ω, τ, hN, hΩ, hΦ, hτ, hcore, hcoreimg, htip, hZ, hD, hW, hBd⟩ := ih
+      set a := s₀ + (n : ℝ) * (δ / 2) with hadef
+      have ha' : s₀ + ((n + 1 : ℕ) : ℝ) * (δ / 2) = a + δ / 2 := by
+        rw [hadef]
+        push_cast
+        ring
+      rw [ha']
+      set s := min a sb with hsdef
+      set s' := min (a + δ / 2) sb with hs'def
+      have hs₀a : s₀ ≤ a := by
+        rw [hadef]
+        have : (0 : ℝ) ≤ n * (δ / 2) := by positivity
+        linarith
+      have hss' : s ≤ s' := min_le_min_right _ (by linarith)
+      rcases hss'.lt_or_eq with hlt | heq
+      · have hsmem : s ∈ Icc s₀ sb := ⟨le_min hs₀a hs₀sb, min_le_right _ _⟩
+        obtain ⟨r, hr⟩ := hleb s hsmem
+        have hdiff : s' - s ≤ δ / 2 := by
+          rcases le_total a sb with h | h
+          · rw [hsdef, min_eq_left h]
+            linarith [min_le_left (a + δ / 2) sb]
+          · rw [hsdef, min_eq_right h]
+            linarith [min_le_right (a + δ / 2) sb]
+        have hs'1 : s' ≤ 1 := (min_le_right _ _).trans hsb1.le
+        have hs0 : 0 ≤ s := hs₀.le.trans hsmem.1
+        have hcov : γ '' Icc s s' ⊆ S ∩ Ωf r := by
+          rintro _ ⟨r', hr', rfl⟩
+          have hr'01 : r' ∈ Icc (0 : ℝ) 1 := ⟨hs0.trans hr'.1, hr'.2.trans hs'1⟩
+          refine ⟨hγS r' hr'01, ?_⟩
+          have hr'U : r' ∈ U r := hr (by
+            rw [mem_ball, Real.dist_eq, abs_of_nonneg (by linarith [hr'.1])]
+            linarith [hr'.2])
+          have h : r' ∈ U r ∩ Icc 0 1 := ⟨hr'U, hr'01⟩
+          rw [← hUeq] at h
+          exact h.1
+        obtain ⟨Φ', N', Ω', τ', hN', hΩ', hΦ', hττ', hcore', hcoreimg', htip', hZ', hD', hW',
+          hBd', -⟩ := exists_arcStraightening_step hγc hγi hγD hN hΩ hΦ hτ hs0 hcore hcoreimg
+            htip hZ hD hW hBd (hVf r) (hΩf r) (hψf r) (hZf r) (hDf r) (hWf r) (hBdf r) hlt hs'1
+            hcov
+        exact ⟨Φ', N', Ω', τ', hN', hΩ', hΦ', hτ.trans hττ', hcore', hcoreimg', htip', hZ',
+          hD', hW', hBd'⟩
+      · rw [← heq]
+        exact ⟨Φ, N, Ω, τ, hN, hΩ, hΦ, hτ, hcore, hcoreimg, htip, hZ, hD, hW, hBd⟩
+  obtain ⟨n, hn⟩ := exists_nat_ge ((sb - s₀) / (δ / 2))
+  obtain ⟨Φ, N, Ω, τ, hN, hΩ, hΦ, hτ, hcore, hcoreimg, htip, hZ, hD, hW, hBd⟩ := hchain n
+  have hmin : min (s₀ + n * (δ / 2)) sb = sb := by
+    apply min_eq_right
+    rw [div_le_iff₀ (by positivity)] at hn
+    linarith
+  rw [hmin] at hcoreimg htip
+  exact exists_arcStraightening_final hγc hγi hγD hγ1 hN hΩ hΦ hτ (hs₀.le.trans hs₀sb) hsb1
+    hcore hcoreimg htip hZ hD hW hBd hV₁ hΩ₁ hψ₁ hψ₁Z hψ₁D hψ₁W hψ₁Bd hcov₁
+
+end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1,0 +1,504 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcStraighteningJunction
+
+/-!
+# One step of the straightening of a double curve
+
+Let `γ` parametrise an arc of the double set `D` of a surface `Z` in a subset `S` of a normed
+space, and let `Φ` be a straightening parametrisation of a neighbourhood of the initial piece
+`γ '' Icc 0 s`: a piecewise linear homeomorphism from an open neighbourhood `N` of the core
+segment `coreSegment τ` onto a relatively open subset of `S` that reads `Z` as the upper half
+of `crossPlanes`, `D` as the upper half of the axis, a side `W` as the upper half space and a
+boundary `Bd` as the plane `p.2 = 0`, and that carries the core segment onto the initial piece
+with its tip onto `γ s`.
+
+`exists_arcStraightening_step` extends `Φ` along any piece `γ '' Icc s s'` covered by one
+interior straightening chart `ψ`.  The two parametrisations are joined by the conical extension
+of their transition at the tip (`exists_junction`), oriented by the injectivity of `γ`; the new
+map is `Φ` below the tip and `ψ` composed with the conical extension above it, and a compact
+argument (`exists_isOpen_injOn_of_isCompact`) shrinks the domain to one on which it is
+injective.  `isPLHomeomorphOn_union_of_eqOn` glues two piecewise linear homeomorphisms onto
+relatively open sets along an injective common extension.
+-/
+
+open Set Topology Metric Filter
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+section Glue
+
+variable {E A : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup A] [NormedSpace ℝ A] [FiniteDimensional ℝ A]
+
+theorem isPLHomeomorphOn_union_of_eqOn {F Φ₁ Φ₂ : E → A} {N₁ N₂ A₁ A₂ : Set E}
+    {S Ω₁ Ω₂ : Set A} (hΦ₁ : IsPLHomeomorphOn Φ₁ N₁ (S ∩ Ω₁))
+    (hΦ₂ : IsPLHomeomorphOn Φ₂ N₂ (S ∩ Ω₂)) (hΩ₁ : IsOpen Ω₁) (hΩ₂ : IsOpen Ω₂)
+    (hA₁ : IsOpen A₁) (hA₂ : IsOpen A₂) (hA₁N : A₁ ⊆ N₁) (hA₂N : A₂ ⊆ N₂)
+    (hF₁ : EqOn F Φ₁ A₁) (hF₂ : EqOn F Φ₂ A₂) (hinj : InjOn F (A₁ ∪ A₂)) :
+    ∃ Ω : Set A, IsOpen Ω ∧ IsPLHomeomorphOn F (A₁ ∪ A₂) (S ∩ Ω) := by
+  obtain ⟨O₁, hO₁, himg₁⟩ := hΦ₁.exists_image_eq_inter hA₁
+  obtain ⟨O₂, hO₂, himg₂⟩ := hΦ₂.exists_image_eq_inter hA₂
+  rw [inter_eq_right.mpr hA₁N] at himg₁
+  rw [inter_eq_right.mpr hA₂N] at himg₂
+  have hΦ₁A := hΦ₁.restrict_of_image_eq_inter hA₁ hA₁N hO₁ (by rw [himg₁, inter_assoc])
+  have hΦ₂A := hΦ₂.restrict_of_image_eq_inter hA₂ hA₂N hO₂ (by rw [himg₂, inter_assoc])
+  rw [inter_assoc] at hΦ₁A hΦ₂A
+  have hFimg₁ : F '' A₁ = S ∩ (Ω₁ ∩ O₁) := by rw [hF₁.image_eq, himg₁]
+  have hFimg₂ : F '' A₂ = S ∩ (Ω₂ ∩ O₂) := by rw [hF₂.image_eq, himg₂]
+  refine ⟨(Ω₁ ∩ O₁) ∪ (Ω₂ ∩ O₂), (hΩ₁.inter hO₁).union (hΩ₂.inter hO₂), ?_, ?_, ?_⟩
+  · have himg : F '' (A₁ ∪ A₂) = S ∩ ((Ω₁ ∩ O₁) ∪ (Ω₂ ∩ O₂)) := by
+      rw [image_union, hFimg₁, hFimg₂, inter_union_distrib_left]
+    exact himg ▸ hinj.bijOn_image
+  · refine isPiecewiseAffineOn_of_locally fun x hx => ?_
+    rcases hx with hx | hx
+    · refine ⟨A₁, hA₁, hx, ?_⟩
+      rw [inter_eq_right.mpr subset_union_left]
+      exact hΦ₁A.isPiecewiseAffineOn.congr hF₁
+    · refine ⟨A₂, hA₂, hx, ?_⟩
+      rw [inter_eq_right.mpr subset_union_right]
+      exact hΦ₂A.isPiecewiseAffineOn.congr hF₂
+  · have hinv : ∀ {Φ : E → A} {B : Set E} {O : Set A}, IsPLHomeomorphOn Φ B (S ∩ O) →
+        B ⊆ A₁ ∪ A₂ → EqOn F Φ B →
+        EqOn (Function.invFunOn F (A₁ ∪ A₂)) (Function.invFunOn Φ B) (S ∩ O) := by
+      intro Φ B O hΦB hB hFB y hy
+      have h1 := hΦB.bijOn.surjOn.mapsTo_invFunOn hy
+      have h2 := hΦB.bijOn.invOn_invFunOn.2 hy
+      calc Function.invFunOn F (A₁ ∪ A₂) y
+          = Function.invFunOn F (A₁ ∪ A₂) (F (Function.invFunOn Φ B y)) := by
+            rw [hFB h1, h2]
+        _ = Function.invFunOn Φ B y := hinj.leftInvOn_invFunOn (hB h1)
+    refine isPiecewiseAffineOn_of_locally fun y hy => ?_
+    have hy' : y ∈ F '' (A₁ ∪ A₂) := by
+      rw [image_union, hFimg₁, hFimg₂, ← inter_union_distrib_left]
+      exact hy
+    rw [image_union] at hy'
+    rcases hy' with hy' | hy'
+    · refine ⟨Ω₁ ∩ O₁, hΩ₁.inter hO₁, (hFimg₁ ▸ hy').2, ?_⟩
+      have hset : S ∩ ((Ω₁ ∩ O₁) ∪ (Ω₂ ∩ O₂)) ∩ (Ω₁ ∩ O₁) = S ∩ (Ω₁ ∩ O₁) := by
+        ext z
+        simp only [mem_inter_iff, mem_union]
+        tauto
+      rw [hset]
+      exact hΦ₁A.isPiecewiseAffineOn_invFunOn.congr
+        (hinv hΦ₁A subset_union_left hF₁)
+    · refine ⟨Ω₂ ∩ O₂, hΩ₂.inter hO₂, (hFimg₂ ▸ hy').2, ?_⟩
+      have hset : S ∩ ((Ω₁ ∩ O₁) ∪ (Ω₂ ∩ O₂)) ∩ (Ω₂ ∩ O₂) = S ∩ (Ω₂ ∩ O₂) := by
+        ext z
+        simp only [mem_inter_iff, mem_union]
+        tauto
+      rw [hset]
+      exact hΦ₂A.isPiecewiseAffineOn_invFunOn.congr
+        (hinv hΦ₂A subset_union_right hF₂)
+
+end Glue
+
+theorem isCompact_coreSegment (τ : ℝ) : IsCompact (coreSegment τ) := by
+  have h : coreSegment τ = (fun t : ℝ => (((0 : ℝ), (0 : ℝ)), t)) '' Icc 0 τ := by
+    ext p
+    constructor
+    · rintro ⟨h1, h2, h3⟩
+      exact ⟨p.2, ⟨h2, h3⟩, Prod.ext (Prod.mk_zero_zero.trans h1.symm) rfl⟩
+    · rintro ⟨t, ⟨h2, h3⟩, rfl⟩
+      exact ⟨rfl, h2, h3⟩
+  rw [h]
+  exact isCompact_Icc.image (continuous_const.prodMk continuous_id)
+
+section Step
+
+variable {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [FiniteDimensional ℝ A]
+
+theorem exists_arcStraightening_step_of_lt {S Z D W Bd : Set A} {γ : ℝ → A}
+    (hγc : ContinuousOn γ (Icc 0 1)) (hγi : InjOn γ (Icc 0 1))
+    (hγD : ∀ r ∈ Icc (0 : ℝ) 1, γ r ∈ D)
+    {Φ : (ℝ × ℝ) × ℝ → A} {N : Set ((ℝ × ℝ) × ℝ)} {Ω : Set A} {τ s : ℝ}
+    (hN : IsOpen N) (hΩ : IsOpen Ω) (hΦ : IsPLHomeomorphOn Φ N (S ∩ Ω))
+    (hτ : 0 < τ) (hs0 : 0 ≤ s) (hcore : coreSegment τ ⊆ N)
+    (hΦcore : Φ '' coreSegment τ = γ '' Icc 0 s) (hΦtip : Φ ((0, 0), τ) = γ s)
+    (hZ : ∀ p ∈ N, Φ p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2)
+    (hD : ∀ p ∈ N, Φ p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2)
+    (hW : ∀ p ∈ N, Φ p ∈ W ↔ 0 ≤ p.2) (hBd : ∀ p ∈ N, Φ p ∈ Bd ↔ p.2 = 0)
+    {ψ : (ℝ × ℝ) × ℝ → A} {V : Set ((ℝ × ℝ) × ℝ)} {Ω' : Set A}
+    (hV : IsOpen V) (hΩ' : IsOpen Ω') (hψ : IsPLHomeomorphOn ψ V (S ∩ Ω'))
+    (hψZ : ∀ p ∈ V, ψ p ∈ Z ↔ p ∈ crossPlanes) (hψD : ∀ p ∈ V, ψ p ∈ D ↔ p.1 = 0)
+    (hψW : ∀ p ∈ V, ψ p ∈ W) (hψBd : ∀ p ∈ V, ψ p ∉ Bd)
+    {s' : ℝ} (hss' : s < s') (hs'1 : s' ≤ 1) (hcov : γ '' Icc s s' ⊆ S ∩ Ω')
+    (horient : (Function.invFunOn ψ V (γ s)).2 < (Function.invFunOn ψ V (γ s')).2) :
+    ∃ (Φ' : (ℝ × ℝ) × ℝ → A) (N' : Set ((ℝ × ℝ) × ℝ)) (Ω'' : Set A) (τ' : ℝ),
+      IsOpen N' ∧ IsOpen Ω'' ∧ IsPLHomeomorphOn Φ' N' (S ∩ Ω'') ∧ τ < τ' ∧
+      coreSegment τ' ⊆ N' ∧ Φ' '' coreSegment τ' = γ '' Icc 0 s' ∧ Φ' ((0, 0), τ') = γ s' ∧
+      (∀ p ∈ N', Φ' p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2) ∧
+      (∀ p ∈ N', Φ' p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2) ∧
+      (∀ p ∈ N', Φ' p ∈ W ↔ 0 ≤ p.2) ∧ (∀ p ∈ N', Φ' p ∈ Bd ↔ p.2 = 0) ∧
+      ∀ p ∈ N', p.2 < τ → Φ' p = Φ p := by
+  classical
+  obtain ⟨w, hwdef⟩ : ∃ w : ℝ → (ℝ × ℝ) × ℝ, w = fun r => Function.invFunOn ψ V (γ r) :=
+    ⟨_, rfl⟩
+  have hγSΩ : ∀ r ∈ Icc s s', γ r ∈ S ∩ Ω' := fun r hr => hcov ⟨r, hr, rfl⟩
+  have hIcc : ∀ r ∈ Icc s s', r ∈ Icc (0 : ℝ) 1 := fun r hr => ⟨hs0.trans hr.1, hr.2.trans hs'1⟩
+  have hwV : ∀ r ∈ Icc s s', w r ∈ V := fun r hr => by
+    rw [hwdef]
+    exact hψ.bijOn.surjOn.mapsTo_invFunOn (hγSΩ r hr)
+  have hψw : ∀ r ∈ Icc s s', ψ (w r) = γ r := fun r hr => by
+    rw [hwdef]
+    exact hψ.bijOn.invOn_invFunOn.2 (hγSΩ r hr)
+  have hwaxis : ∀ r ∈ Icc s s', (w r).1 = 0 := fun r hr =>
+    (hψD (w r) (hwV r hr)).mp (by rw [hψw r hr]; exact hγD r (hIcc r hr))
+  have hweq : ∀ r ∈ Icc s s', w r = ((0, 0), (w r).2) := fun r hr =>
+    Prod.ext ((hwaxis r hr).trans Prod.mk_zero_zero.symm) rfl
+  have hνc : ContinuousOn (fun r => (w r).2) (Icc s s') := by
+    have h1 : ContinuousOn (Function.invFunOn ψ V) (S ∩ Ω') :=
+      hψ.isPiecewiseAffineOn_invFunOn.continuousOn
+    have h2 : ContinuousOn γ (Icc s s') := hγc.mono fun r hr => hIcc r hr
+    rw [hwdef]
+    exact continuous_snd.comp_continuousOn (h1.comp h2 fun r hr => hγSΩ r hr)
+  have hνi : InjOn (fun r => (w r).2) (Icc s s') := by
+    intro r₁ hr₁ r₂ hr₂ h
+    apply hγi (hIcc r₁ hr₁) (hIcc r₂ hr₂)
+    rw [← hψw r₁ hr₁, ← hψw r₂ hr₂, hweq r₁ hr₁, hweq r₂ hr₂]
+    exact congrArg (fun t => ψ ((0, 0), t)) h
+  have hsmem : s ∈ Icc s s' := ⟨le_rfl, hss'.le⟩
+  have hs'mem : s' ∈ Icc s s' := ⟨hss'.le, le_rfl⟩
+  have hlt : (w s).2 < (w s').2 := by rw [hwdef]; exact horient
+  have hνmono : StrictMonoOn (fun r => (w r).2) (Icc s s') :=
+    hνc.strictMonoOn_of_injOn_Icc hss'.le hlt.le hνi
+  set v' := (w s').2 - (w s).2 with hv'def
+  have hv' : 0 < v' := sub_pos.mpr hlt
+  have hcoreψ : ∀ v ∈ Icc (0 : ℝ) v', ∃ r ∈ Icc s s',
+      (w r).2 = (w s).2 + v ∧ w s + ((0, 0), v) = w r := by
+    intro v hv
+    have hmem : (w s).2 + v ∈ Icc (w s).2 (w s').2 :=
+      ⟨by linarith [hv.1], by linarith [hv.2]⟩
+    obtain ⟨r, hr, hνr⟩ := intermediate_value_Icc hss'.le hνc hmem
+    simp only at hνr
+    refine ⟨r, hr, hνr, ?_⟩
+    rw [hweq r hr, hweq s hsmem, hνr]
+    ext <;> simp
+  have hq₀N : ((0, 0), τ) ∈ N := hcore ⟨rfl, hτ.le, le_rfl⟩
+  have hw₀eq : Function.invFunOn ψ V (Φ ((0, 0), τ)) = w s := by rw [hΦtip, hwdef]
+  have hori : ∀ v : ℝ, 0 < v → v ≤ v' → ∀ u : ℝ, 0 < u → u ≤ τ →
+      Φ ((0, 0), τ - u) ≠ ψ (Function.invFunOn ψ V (Φ ((0, 0), τ)) + ((0, 0), v)) := by
+    intro v hv hvv u hu huτ heq
+    obtain ⟨r, hr, hνr, hwr⟩ := hcoreψ v ⟨hv.le, hvv⟩
+    rw [hw₀eq, hwr, hψw r hr] at heq
+    have hmem : Φ ((0, 0), τ - u) ∈ γ '' Icc 0 s := by
+      rw [← hΦcore]
+      exact ⟨_, ⟨rfl, by linarith, by linarith⟩, rfl⟩
+    obtain ⟨r₁, hr₁, hγr₁⟩ := hmem
+    have hrr : r₁ = r := hγi ⟨hr₁.1, hr₁.2.trans (hss'.le.trans hs'1)⟩ (hIcc r hr)
+      (hγr₁.trans heq)
+    have hrs : r ≠ s := by
+      intro hrs
+      rw [hrs] at hνr
+      linarith
+    exact hrs (le_antisymm (hrr ▸ hr₁.2) hr.1)
+  obtain ⟨G, ρ, μ, hρ, hμ, hG, hballN, hGloc, hGX, hGL, hGq₀, -, hGcore⟩ :=
+    exists_junction hN hV hΩ hΩ' hΦ hψ
+      (fun p hp hp2 => by rw [hZ p hp]; exact and_iff_left hp2.le)
+      (fun p hp hp2 => by rw [hD p hp]; exact and_iff_left hp2.le)
+      (c := (w s).2 + 1) (fun p hp _ => hψZ p hp) (fun p hp _ => hψD p hp)
+      hτ hq₀N (by rw [hΦtip]; exact (hγSΩ s hsmem).2) (by rw [hw₀eq]; linarith)
+      hv' hτ hori
+  rw [hw₀eq] at hGq₀
+  have hGc : Continuous G := continuousOn_univ.mp hG.isPiecewiseAffineOn.continuousOn
+  have hGsurj : Function.Surjective G := fun y => by
+    obtain ⟨x, -, hx⟩ := hG.bijOn.surjOn (mem_univ y)
+    exact ⟨x, hx⟩
+  have hN₂ : IsOpen (G ⁻¹' V) := hV.preimage hGc
+  have hGimg : G '' (G ⁻¹' V) = V := image_preimage_eq V hGsurj
+  have hGN₂ : IsPLHomeomorphOn G (G ⁻¹' V) V := by
+    have h := hG.restrict_isOpen hN₂ (subset_univ _) (by rw [hGimg]; exact hV)
+    rwa [hGimg] at h
+  have hΞ : IsPLHomeomorphOn (ψ ∘ G) (G ⁻¹' V) (S ∩ Ω') := hGN₂.trans hψ
+  have hGcore' : ∀ u : ℝ, 0 ≤ u → u ≤ μ * v' → ∃ r ∈ Icc s s',
+      G ((0, 0), τ + u) = w r ∧ (w r).2 = (w s).2 + u / μ := by
+    intro u hu huv
+    have hmem : u / μ ∈ Icc (0 : ℝ) v' :=
+      ⟨div_nonneg hu hμ.le, by rw [div_le_iff₀ hμ]; linarith⟩
+    obtain ⟨r, hr, hνr, hwr⟩ := hcoreψ (u / μ) hmem
+    exact ⟨r, hr, by rw [hGcore u hu, hGq₀, hwr], hνr⟩
+  set τ' := τ + μ * v' with hτ'def
+  have hττ' : τ < τ' := by rw [hτ'def]; linarith [mul_pos hμ hv']
+  set Φ' : (ℝ × ℝ) × ℝ → A := fun p => if p.2 ≤ τ then Φ p else ψ (G p) with hΦ'def
+  set N₁ : Set ((ℝ × ℝ) × ℝ) := (N ∩ {p | p.2 < τ}) ∪ ball ((0, 0), τ) ρ with hN₁def
+  set N₃ : Set ((ℝ × ℝ) × ℝ) := G ⁻¹' V ∩ {p | τ < p.2} with hN₃def
+  have hN₁o : IsOpen N₁ :=
+    (hN.inter (isOpen_lt continuous_snd continuous_const)).union isOpen_ball
+  have hN₃o : IsOpen N₃ := hN₂.inter (isOpen_lt continuous_const continuous_snd)
+  have hN₁N : N₁ ⊆ N := union_subset inter_subset_left fun p hp => (hballN hp).1
+  have hN₃N₂ : N₃ ⊆ G ⁻¹' V := inter_subset_left
+  have hEq₁ : EqOn Φ' Φ N₁ := by
+    rintro p (hp | hp)
+    · exact if_pos (le_of_lt hp.2)
+    · by_cases h : p.2 ≤ τ
+      · exact if_pos h
+      · change (if p.2 ≤ τ then Φ p else ψ (G p)) = Φ p
+        rw [if_neg h]
+        exact (hGloc p hp).2
+  have hEq₃ : EqOn Φ' (ψ ∘ G) N₃ := fun p hp => if_neg (not_le.mpr hp.2)
+  have hpt : ∀ p : (ℝ × ℝ) × ℝ, p.1 = 0 → p = ((0, 0), τ + (p.2 - τ)) := fun p hp =>
+    Prod.ext (hp.trans Prod.mk_zero_zero.symm) (by ring)
+  have hKlow : ∀ p ∈ coreSegment τ', p.2 ≤ τ → p ∈ N₁ := by
+    rintro p ⟨hp1, hp2, -⟩ h
+    rcases lt_or_eq_of_le h with h | h
+    · exact Or.inl ⟨hcore ⟨hp1, hp2, h.le⟩, h⟩
+    · refine Or.inr ?_
+      rw [show p = ((0, 0), τ) from Prod.ext (hp1.trans Prod.mk_zero_zero.symm) h]
+      exact mem_ball_self hρ
+  have hKhigh : ∀ p ∈ coreSegment τ', τ < p.2 →
+      p ∈ N₃ ∧ ∃ r ∈ Icc s s', s < r ∧ Φ' p = γ r := by
+    rintro p ⟨hp1, hp2, hp3⟩ h
+    obtain ⟨r, hr, hGr, hνr⟩ :=
+      hGcore' (p.2 - τ) (by linarith) (by rw [hτ'def] at hp3; linarith)
+    have hGp : G p = w r := by rw [hpt p hp1, hGr]
+    have hrs : s < r := by
+      rcases hr.1.eq_or_lt with hrs | hrs
+      · exfalso
+        rw [← hrs] at hνr
+        have h0 : (p.2 - τ) / μ = 0 := by linarith
+        rw [div_eq_zero_iff] at h0
+        rcases h0 with h' | h'
+        · linarith
+        · exact hμ.ne' h'
+      · exact hrs
+    refine ⟨⟨?_, h⟩, r, hr, hrs, ?_⟩
+    · change G p ∈ V
+      rw [hGp]
+      exact hwV r hr
+    · change (if p.2 ≤ τ then Φ p else ψ (G p)) = γ r
+      rw [if_neg (not_le.mpr h), hGp, hψw r hr]
+  have hKN : coreSegment τ' ⊆ N₁ ∪ N₃ := by
+    intro p hp
+    by_cases h : p.2 ≤ τ
+    · exact Or.inl (hKlow p hp h)
+    · exact Or.inr (hKhigh p hp (not_le.mp h)).1
+  have hΦcont : ContinuousOn Φ N := hΦ.isPiecewiseAffineOn.continuousOn
+  have hΞcont : ContinuousOn (ψ ∘ G) (G ⁻¹' V) := hΞ.isPiecewiseAffineOn.continuousOn
+  have hΦ'cont : ContinuousOn Φ' (N₁ ∪ N₃) := by
+    refine continuousOn_of_forall_continuousAt fun p hp => ?_
+    rcases hp with hp | hp
+    · exact (hΦcont.continuousAt (hN.mem_nhds (hN₁N hp))).congr
+        (Filter.eventuallyEq_of_mem (hN₁o.mem_nhds hp) fun q hq => (hEq₁ hq).symm)
+    · exact (hΞcont.continuousAt (hN₂.mem_nhds (hN₃N₂ hp))).congr
+        (Filter.eventuallyEq_of_mem (hN₃o.mem_nhds hp) fun q hq => (hEq₃ hq).symm)
+  have hinj₁ : InjOn Φ' N₁ := (hΦ.bijOn.injOn.mono hN₁N).congr hEq₁.symm
+  have hinj₃ : InjOn Φ' N₃ := (hΞ.bijOn.injOn.mono hN₃N₂).congr hEq₃.symm
+  have hlowimg : ∀ p ∈ coreSegment τ', p.2 ≤ τ → Φ' p ∈ γ '' Icc 0 s := by
+    intro p hp h
+    rw [← hΦcore]
+    exact ⟨p, ⟨hp.1, hp.2.1, h⟩, (if_pos h).symm⟩
+  have hinjK : InjOn Φ' (coreSegment τ') := by
+    intro p hp q hq hpq
+    by_cases hp2 : p.2 ≤ τ <;> by_cases hq2 : q.2 ≤ τ
+    · exact hinj₁ (hKlow p hp hp2) (hKlow q hq hq2) hpq
+    · exfalso
+      obtain ⟨-, rq, hrq, hsrq, hrqeq⟩ := hKhigh q hq (not_le.mp hq2)
+      obtain ⟨r₁, hr₁, hγr₁⟩ := hlowimg p hp hp2
+      have := hγi ⟨hr₁.1, hr₁.2.trans (hss'.le.trans hs'1)⟩ (hIcc rq hrq)
+        (hγr₁.trans (hpq.trans hrqeq))
+      linarith [hr₁.2]
+    · exfalso
+      obtain ⟨-, rp, hrp, hsrp, hrpeq⟩ := hKhigh p hp (not_le.mp hp2)
+      obtain ⟨r₁, hr₁, hγr₁⟩ := hlowimg q hq hq2
+      have := hγi ⟨hr₁.1, hr₁.2.trans (hss'.le.trans hs'1)⟩ (hIcc rp hrp)
+        (hγr₁.trans (hpq.symm.trans hrpeq))
+      linarith [hr₁.2]
+    · exact hinj₃ (hKhigh p hp (not_le.mp hp2)).1 (hKhigh q hq (not_le.mp hq2)).1 hpq
+  obtain ⟨N'', hN''o, hKN'', hN''sub, hinjN''⟩ :=
+    exists_isOpen_injOn_of_isCompact (hN₁o.union hN₃o) hΦ'cont (isCompact_coreSegment τ')
+      hKN hinjK (fun p hp => by
+        rcases hKN hp with h | h
+        · exact ⟨N₁, hN₁o.mem_nhds h, hinj₁⟩
+        · exact ⟨N₃, hN₃o.mem_nhds h, hinj₃⟩)
+  have hsplit : N'' = (N'' ∩ N₁) ∪ (N'' ∩ N₃) := by
+    rw [← inter_union_distrib_left, inter_eq_left.mpr hN''sub]
+  obtain ⟨Ω'', hΩ''o, hΦ'PL⟩ := isPLHomeomorphOn_union_of_eqOn hΦ hΞ hΩ hΩ'
+    (hN''o.inter hN₁o) (hN''o.inter hN₃o) (inter_subset_right.trans hN₁N)
+    (inter_subset_right.trans hN₃N₂) (hEq₁.mono inter_subset_right)
+    (hEq₃.mono inter_subset_right) (by rw [← hsplit]; exact hinjN'')
+  rw [← hsplit] at hΦ'PL
+  have hcase : ∀ p ∈ N'', (p.2 ≤ τ ∧ p ∈ N ∧ Φ' p = Φ p) ∨
+      (τ < p.2 ∧ G p ∈ V ∧ Φ' p = ψ (G p)) := by
+    intro p hp
+    by_cases h : p.2 ≤ τ
+    · refine Or.inl ⟨h, ?_, if_pos h⟩
+      rcases hN''sub hp with h1 | h1
+      · exact hN₁N h1
+      · exact absurd h1.2 (not_lt.mpr h)
+    · refine Or.inr ⟨not_le.mp h, ?_, if_neg h⟩
+      rcases hN''sub hp with h1 | h1
+      · rcases h1 with h1 | h1
+        · exact absurd h1.2 (not_lt.mpr (not_le.mp h).le)
+        · exact (hGloc p h1).1
+      · exact h1.1
+  have htip : Φ' ((0, 0), τ') = γ s' := by
+    have hmem : ((0, 0), τ') ∈ coreSegment τ' := ⟨rfl, by linarith, le_rfl⟩
+    obtain ⟨-, r, hr, -, hreq⟩ := hKhigh _ hmem hττ'
+    obtain ⟨r', hr', hGr', hνr'⟩ := hGcore' (μ * v') (by positivity) le_rfl
+    have hwr' : (w r').2 = (w s').2 := by
+      rw [hνr', mul_div_cancel_left₀ v' hμ.ne', hv'def]
+      ring
+    have hr's : r' = s' := hνi hr' hs'mem hwr'
+    rw [← hr's, ← hψw r' hr', ← hGr']
+    change (if τ' ≤ τ then Φ _ else ψ (G _)) = _
+    rw [if_neg (not_le.mpr hττ'), hτ'def]
+  refine ⟨Φ', N'', Ω'', τ', hN''o, hΩ''o, hΦ'PL, hττ', hKN'', ?_, htip, ?_, ?_, ?_, ?_, ?_⟩
+  · apply Subset.antisymm
+    · rintro _ ⟨p, hp, rfl⟩
+      by_cases h : p.2 ≤ τ
+      · exact image_mono (Icc_subset_Icc le_rfl hss'.le) (hlowimg p hp h)
+      · obtain ⟨-, r, hr, -, heq⟩ := hKhigh p hp (not_le.mp h)
+        exact ⟨r, ⟨hs0.trans hr.1, hr.2⟩, heq.symm⟩
+    · rintro _ ⟨r, hr, rfl⟩
+      by_cases hrs : r ≤ s
+      · have hmem : γ r ∈ Φ '' coreSegment τ := by
+          rw [hΦcore]
+          exact ⟨r, ⟨hr.1, hrs⟩, rfl⟩
+        obtain ⟨p, hp, hpeq⟩ := hmem
+        exact ⟨p, ⟨hp.1, hp.2.1, hp.2.2.trans hττ'.le⟩, by rw [← hpeq]; exact if_pos hp.2.2⟩
+      · rw [not_le] at hrs
+        have hrmem : r ∈ Icc s s' := ⟨hrs.le, hr.2⟩
+        have hv : 0 < (w r).2 - (w s).2 := sub_pos.mpr (hνmono hsmem hrmem hrs)
+        have hvle : (w r).2 - (w s).2 ≤ v' := by
+          have h1 := hνmono.monotoneOn hrmem hs'mem hr.2
+          rw [hv'def]
+          linarith
+        obtain ⟨r', hr', hGr', hνr'⟩ :=
+          hGcore' (μ * ((w r).2 - (w s).2)) (by positivity)
+            (mul_le_mul_of_nonneg_left hvle hμ.le)
+        have hr'r : r' = r := by
+          apply hνi hr' hrmem
+          simp only
+          rw [hνr', mul_div_cancel_left₀ _ hμ.ne']
+          ring
+        have hmem : ((0, 0), τ + μ * ((w r).2 - (w s).2)) ∈ coreSegment τ' :=
+          ⟨rfl, by nlinarith, by rw [hτ'def]; nlinarith⟩
+        refine ⟨_, hmem, ?_⟩
+        change (if τ + μ * ((w r).2 - (w s).2) ≤ τ then Φ _ else ψ (G _)) = γ r
+        rw [if_neg (by nlinarith), hGr', hr'r, hψw r hrmem]
+  · intro p hp
+    rcases hcase p hp with ⟨h, hpN, heq⟩ | ⟨h, hGV, heq⟩
+    · rw [heq]
+      exact hZ p hpN
+    · rw [heq, hψZ _ hGV, ← hGX p]
+      exact (and_iff_left (by linarith)).symm
+  · intro p hp
+    rcases hcase p hp with ⟨h, hpN, heq⟩ | ⟨h, hGV, heq⟩
+    · rw [heq]
+      exact hD p hpN
+    · rw [heq, hψD _ hGV, ← hGL p]
+      exact (and_iff_left (by linarith)).symm
+  · intro p hp
+    rcases hcase p hp with ⟨h, hpN, heq⟩ | ⟨h, hGV, heq⟩
+    · rw [heq]
+      exact hW p hpN
+    · rw [heq]
+      exact iff_of_true (hψW _ hGV) (by linarith)
+  · intro p hp
+    rcases hcase p hp with ⟨h, hpN, heq⟩ | ⟨h, hGV, heq⟩
+    · rw [heq]
+      exact hBd p hpN
+    · rw [heq]
+      exact iff_of_false (hψBd _ hGV) (by linarith)
+  · intro p _ h
+    exact if_pos h.le
+
+end Step
+
+def axisFlip (p : (ℝ × ℝ) × ℝ) : (ℝ × ℝ) × ℝ := (p.1, -p.2)
+
+theorem axisFlip_axisFlip (p : (ℝ × ℝ) × ℝ) : axisFlip (axisFlip p) = p := by
+  simp [axisFlip]
+
+theorem isPLHomeomorphOn_axisFlip {V : Set ((ℝ × ℝ) × ℝ)} (hV : IsOpen V) :
+    IsPLHomeomorphOn axisFlip (axisFlip ⁻¹' V) V := by
+  have hcont : Continuous axisFlip := continuous_fst.prodMk continuous_snd.neg
+  have hA : ∀ u : Set ((ℝ × ℝ) × ℝ), IsOpen u → IsPiecewiseAffineOn axisFlip u := fun u hu =>
+    (isPiecewiseAffineOn_of_affine ((LinearMap.fst ℝ (ℝ × ℝ) ℝ).prod
+      (-(LinearMap.snd ℝ (ℝ × ℝ) ℝ))).toAffineMap hu).congr fun p _ => by simp [axisFlip]
+  have hbij : BijOn axisFlip (axisFlip ⁻¹' V) V :=
+    ⟨fun p hp => hp, fun p _ q _ h => by rw [← axisFlip_axisFlip p, h, axisFlip_axisFlip],
+      fun q hq => ⟨axisFlip q, by rw [mem_preimage, axisFlip_axisFlip]; exact hq,
+        axisFlip_axisFlip q⟩⟩
+  refine ⟨hbij, hA _ (hV.preimage hcont), (hA V hV).congr fun q hq => ?_⟩
+  apply hbij.injOn (hbij.surjOn.mapsTo_invFunOn hq)
+    (by rw [mem_preimage, axisFlip_axisFlip]; exact hq)
+  rw [hbij.invOn_invFunOn.2 hq, axisFlip_axisFlip]
+
+section StepFlip
+
+variable {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [FiniteDimensional ℝ A]
+
+theorem exists_arcStraightening_step {S Z D W Bd : Set A} {γ : ℝ → A}
+    (hγc : ContinuousOn γ (Icc 0 1)) (hγi : InjOn γ (Icc 0 1))
+    (hγD : ∀ r ∈ Icc (0 : ℝ) 1, γ r ∈ D)
+    {Φ : (ℝ × ℝ) × ℝ → A} {N : Set ((ℝ × ℝ) × ℝ)} {Ω : Set A} {τ s : ℝ}
+    (hN : IsOpen N) (hΩ : IsOpen Ω) (hΦ : IsPLHomeomorphOn Φ N (S ∩ Ω))
+    (hτ : 0 < τ) (hs0 : 0 ≤ s) (hcore : coreSegment τ ⊆ N)
+    (hΦcore : Φ '' coreSegment τ = γ '' Icc 0 s) (hΦtip : Φ ((0, 0), τ) = γ s)
+    (hZ : ∀ p ∈ N, Φ p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2)
+    (hD : ∀ p ∈ N, Φ p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2)
+    (hW : ∀ p ∈ N, Φ p ∈ W ↔ 0 ≤ p.2) (hBd : ∀ p ∈ N, Φ p ∈ Bd ↔ p.2 = 0)
+    {ψ : (ℝ × ℝ) × ℝ → A} {V : Set ((ℝ × ℝ) × ℝ)} {Ω' : Set A}
+    (hV : IsOpen V) (hΩ' : IsOpen Ω') (hψ : IsPLHomeomorphOn ψ V (S ∩ Ω'))
+    (hψZ : ∀ p ∈ V, ψ p ∈ Z ↔ p ∈ crossPlanes) (hψD : ∀ p ∈ V, ψ p ∈ D ↔ p.1 = 0)
+    (hψW : ∀ p ∈ V, ψ p ∈ W) (hψBd : ∀ p ∈ V, ψ p ∉ Bd)
+    {s' : ℝ} (hss' : s < s') (hs'1 : s' ≤ 1) (hcov : γ '' Icc s s' ⊆ S ∩ Ω') :
+    ∃ (Φ' : (ℝ × ℝ) × ℝ → A) (N' : Set ((ℝ × ℝ) × ℝ)) (Ω'' : Set A) (τ' : ℝ),
+      IsOpen N' ∧ IsOpen Ω'' ∧ IsPLHomeomorphOn Φ' N' (S ∩ Ω'') ∧ τ < τ' ∧
+      coreSegment τ' ⊆ N' ∧ Φ' '' coreSegment τ' = γ '' Icc 0 s' ∧ Φ' ((0, 0), τ') = γ s' ∧
+      (∀ p ∈ N', Φ' p ∈ Z ↔ p ∈ crossPlanes ∧ 0 ≤ p.2) ∧
+      (∀ p ∈ N', Φ' p ∈ D ↔ p.1 = 0 ∧ 0 ≤ p.2) ∧
+      (∀ p ∈ N', Φ' p ∈ W ↔ 0 ≤ p.2) ∧ (∀ p ∈ N', Φ' p ∈ Bd ↔ p.2 = 0) ∧
+      ∀ p ∈ N', p.2 < τ → Φ' p = Φ p := by
+  classical
+  have hsmem : s ∈ Icc s s' := ⟨le_rfl, hss'.le⟩
+  have hs'mem : s' ∈ Icc s s' := ⟨hss'.le, le_rfl⟩
+  have hγmem : ∀ r ∈ Icc s s', γ r ∈ S ∩ Ω' := fun r hr => hcov ⟨r, hr, rfl⟩
+  have hIcc : ∀ r ∈ Icc s s', r ∈ Icc (0 : ℝ) 1 := fun r hr => ⟨hs0.trans hr.1, hr.2.trans hs'1⟩
+  have haxis : ∀ r ∈ Icc s s',
+      Function.invFunOn ψ V (γ r) = ((0, 0), (Function.invFunOn ψ V (γ r)).2) := by
+    intro r hr
+    have h1 := hψ.bijOn.surjOn.mapsTo_invFunOn (hγmem r hr)
+    have h2 := hψ.bijOn.invOn_invFunOn.2 (hγmem r hr)
+    have h3 : (Function.invFunOn ψ V (γ r)).1 = 0 :=
+      (hψD _ h1).mp (by rw [h2]; exact hγD r (hIcc r hr))
+    exact Prod.ext (h3.trans Prod.mk_zero_zero.symm) rfl
+  have hne : (Function.invFunOn ψ V (γ s)).2 ≠ (Function.invFunOn ψ V (γ s')).2 := by
+    intro h
+    have heq : Function.invFunOn ψ V (γ s) = Function.invFunOn ψ V (γ s') := by
+      rw [haxis s hsmem, haxis s' hs'mem, h]
+    have h1 := hψ.bijOn.invOn_invFunOn.2 (hγmem s hsmem)
+    have h2 := hψ.bijOn.invOn_invFunOn.2 (hγmem s' hs'mem)
+    have hγ : γ s = γ s' := by rw [← h1, ← h2, heq]
+    exact hss'.ne (hγi (hIcc s hsmem) (hIcc s' hs'mem) hγ)
+  rcases lt_or_gt_of_ne hne with hlt | hgt
+  · exact exists_arcStraightening_step_of_lt hγc hγi hγD hN hΩ hΦ hτ hs0 hcore hΦcore hΦtip
+      hZ hD hW hBd hV hΩ' hψ hψZ hψD hψW hψBd hss' hs'1 hcov hlt
+  · have hcont : Continuous axisFlip := continuous_fst.prodMk continuous_snd.neg
+    have hψf : IsPLHomeomorphOn (ψ ∘ axisFlip) (axisFlip ⁻¹' V) (S ∩ Ω') :=
+      (isPLHomeomorphOn_axisFlip hV).trans hψ
+    have hinvf : ∀ z ∈ S ∩ Ω', Function.invFunOn (ψ ∘ axisFlip) (axisFlip ⁻¹' V) z =
+        axisFlip (Function.invFunOn ψ V z) := by
+      intro z hz
+      have ha := hψ.bijOn.surjOn.mapsTo_invFunOn hz
+      have hψa := hψ.bijOn.invOn_invFunOn.2 hz
+      have hfa : axisFlip (Function.invFunOn ψ V z) ∈ axisFlip ⁻¹' V := by
+        rw [mem_preimage, axisFlip_axisFlip]
+        exact ha
+      apply hψf.bijOn.injOn (hψf.bijOn.surjOn.mapsTo_invFunOn hz) hfa
+      rw [hψf.bijOn.invOn_invFunOn.2 hz, Function.comp_apply, axisFlip_axisFlip, hψa]
+    refine exists_arcStraightening_step_of_lt hγc hγi hγD hN hΩ hΦ hτ hs0 hcore hΦcore hΦtip
+      hZ hD hW hBd (hV.preimage hcont) hΩ' hψf (fun p hp => hψZ (axisFlip p) hp)
+      (fun p hp => hψD (axisFlip p) hp) (fun p hp => hψW (axisFlip p) hp)
+      (fun p hp => hψBd (axisFlip p) hp) hss' hs'1 hcov ?_
+    rw [hinvf _ (hγmem s hsmem), hinvf _ (hγmem s' hs'mem)]
+    simp only [axisFlip]
+    linarith
+
+end StepFlip
+
+end DifferentialGeometry.Topology.PiecewiseLinear

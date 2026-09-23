@@ -353,3 +353,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 23:45 — registered worker a's `ProperDiskCompression` (no leaf closed). P4's disk-outside case carries a
   field-4 risk (worker a, Batch 7 log): external review request BH written; worker a builds the torus lemmas,
   the bigon drag map and the local neighbourhood lemma meanwhile.
+* 00:05 (09-23) — accepted worker c's `isPLBoundaryTubeProducer_double` (15 modules); physical `sorry` 46.
+  C1's `exists_isSourceTrackedBranchTube`: `realisation` conflicts with the reviewed route (review request BI).
+  Worker c now on the ten Section34Compact leaves that do not depend on the P4 review.
