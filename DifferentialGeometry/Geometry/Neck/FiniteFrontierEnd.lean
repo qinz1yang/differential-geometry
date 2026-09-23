@@ -239,6 +239,21 @@ private def OrdinaryNeckMoveAt (S T : NeckFrontierState g eps ι) (i : ι) : Pro
     nk.map '' (univ ×ˢ Icc (1 : ℝ) 2) ⊆ P '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
     p ∈ range (S.sphere i).map
 
+private def OrdinaryNeckMoveAtCentral (S T : NeckFrontierState g eps ι) (i : ι) : Prop :=
+  T.alive = S.alive ∧ i ∈ S.alive ∧ ∃ (p : M) (nk : SpatialNeck g eps p)
+    (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+    univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+    T.region = S.region ∪ P '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
+    (∀ q, P (q, 0) = RecordedNeckSphere.map g eps (S.sphere i) q) ∧
+    (∀ q, P (q, 1) = RecordedNeckSphere.map g eps (T.sphere i) q) ∧
+    (∀ j, j ≠ i → T.sphere j = S.sphere j) ∧
+    P '' (univ ×ˢ Icc (0 : ℝ) 1) ∩ S.region = range (S.sphere i).map ∧
+    range (S.sphere i).map ⊆ interior T.region ∧
+    P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ∧
+    nk.map '' (univ ×ˢ Icc (1 : ℝ) 2) ⊆ P '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
+    p ∈ range (S.sphere i).map ∧
+    P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4)
+
 private def OrdinaryNeckMove (S T : NeckFrontierState g eps ι) : Prop :=
   T.alive = S.alive ∧ ∃ i ∈ S.alive, ∃ (p : M) (nk : SpatialNeck g eps p)
     (P : PartialDiffeomorph IC I3 Cylinder M ∞),
@@ -286,7 +301,7 @@ private theorem NeckFrontierState.adapt_frontier
     · obtain ⟨j, hxj⟩ := mem_iUnion.mp hxr
       exact mem_iUnion₂.mpr ⟨j.val, j.property.1, (S.sphere j.val).range_map.symm ▸ hxj⟩
 
-private theorem NeckFrontierState.exists_step_at_of_neck
+private theorem NeckFrontierState.exists_step_at_of_neck_central
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
     (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
@@ -294,7 +309,7 @@ private theorem NeckFrontierState.exists_step_at_of_neck
       ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (IsPreconnected S.region → IsPreconnected T.region) ∧
-      (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
+      (OrdinaryNeckMoveAtCentral g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
   classical
   obtain ⟨p, nk, f, η, hf, hfsmall, hfzero, hmap, hout, hpoint⟩ :=
     NeckFrontierState.exists_outward_graph_of_neck g eps ι S i hi heps hneck
@@ -436,8 +451,9 @@ private theorem NeckFrontierState.exists_step_at_of_neck
         ((S.frontier.symm ▸ mem_iUnion₂.mpr ⟨i, hi, hactive ▸ ⟨nk.center, (hzero _).symm⟩⟩))
       exact hS.union (A (nk.center, 0)) hxW
         ⟨(nk.center, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩ hBc
-    refine ⟨T, subset_union_left, hconnected, Or.inl ⟨rfl, hi, p, nk, P,
-      slabReparametrize_source A η.symm hA, ?_, hP0, hP1, hsp_ne, ?_, hfill, ?_, ?_, hpoint⟩⟩
+    refine ⟨T, subset_union_left, hconnected,
+      Or.inl ⟨rfl, hi, p, nk, P, slabReparametrize_source A η.symm hA, ?_, hP0,
+        hP1, hsp_ne, ?_, hfill, ?_, ?_, hpoint, ?_⟩⟩
     · change S.region ∪ B = S.region ∪ P '' (univ ×ˢ Icc (0 : ℝ) 1)
       rw [hPimg]
     · rw [hPimg]
@@ -454,6 +470,13 @@ private theorem NeckFrontierState.exists_step_at_of_neck
           (abs_lt.mp (hfsmall q)).2]
     · rw [hPimg]
       exact fun x hx => (hfresh hx).1
+    · rw [hPimg]
+      rintro x ⟨⟨q, t⟩, ht, htx⟩
+      refine ⟨(q, f q + (3 - f q) * t), ?_, (hformula q t).symm.trans htx⟩
+      constructor
+      · exact mem_univ _
+      · constructor <;> nlinarith [ht.2.1, ht.2.2, (abs_lt.mp (hfsmall q)).1,
+          (abs_lt.mp (hfsmall q)).2]
   · obtain ⟨j, κ, A, hA, hzero, hone, hcompact, hinter, hregular, hfront⟩ := hr
     let alive := (S.alive.erase i).erase j.val
     let T : NeckFrontierState g eps ι := by
@@ -498,6 +521,22 @@ private theorem NeckFrontierState.exists_step_at_of_neck
     have hmem' := Finset.mem_of_mem_erase hmem
     exact (Finset.mem_erase.mp hmem').1 rfl
 
+private theorem NeckFrontierState.exists_step_at_of_neck
+    (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (hneck : Nonempty (SpatialNeck g eps
+      ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
+    ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
+      (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
+  obtain ⟨T, hsub, _, hm | hr⟩ :=
+    NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep hneck
+  · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
+      hinter, hfill, hcontrolled, hband, hpoint, _⟩
+    exact ⟨T, hsub, Or.inl ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1,
+      hother, hinter, hfill, hcontrolled, hband, hpoint⟩⟩
+  · exact ⟨T, hsub, Or.inr hr⟩
+
 private theorem NeckFrontierState.exists_step_at
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
@@ -512,8 +551,13 @@ private theorem NeckFrontierState.exists_step_at
     rw [(S.sphere i).range_map]
     exact mem_range_self _
   obtain ⟨T, hsub, _, hmove⟩ :=
-    NeckFrontierState.exists_step_at_of_neck g eps ι S i hi heps hepsstep (allNeck _ hx)
-  exact ⟨T, hsub, hmove⟩
+    NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep (allNeck _ hx)
+  rcases hmove with hm | hr
+  · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
+      hinter, hfill, hcontrolled, hband, hpoint, _⟩
+    exact ⟨T, hsub, Or.inl ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1,
+      hother, hinter, hfill, hcontrolled, hband, hpoint⟩⟩
+  · exact ⟨T, hsub, Or.inr hr⟩
 
 private theorem NeckFrontierState.exists_step
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
