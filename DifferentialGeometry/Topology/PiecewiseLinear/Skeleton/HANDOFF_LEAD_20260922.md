@@ -479,3 +479,17 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   §32 probes deleted; §32 has 2 leaves (tower, descent). Physical `sorry` 22.
 * 21:20 (09-23) — accepted worker b's six leaf-1 bricks; INTERFACE proposal `Moise331OnTube` (owner decision); leaf 1
   also needs `TopologicalCellComplementConnected` for graph-frame clause 11 (currently off-path). Lease b → §32 tower.
+* 22:40 (09-23) — MISROUTED BATCH (owner's report, log C line 1328): the lane-c worker misrouted its dependency-integration
+  request to a stopped Codex task, which copied 135 paths from `origin/codex/pc-sorry-free@54ad4d8ec` (not an ancestor of
+  dev; 104 new files, 31 tracked files overwritten; no Lean, Git or shared-artifact writes) into the shared checkout at
+  10:20 host clock. Lead decision: the 31 tracked files restored from the task's verified `before/` backups (content = HEAD;
+  every lead acceptance check today predates the copy); the overwritten versions kept in
+  `C:/Users/liao9/AppData/Local/Temp/codex-smooth-integration/after/`; the 104 new files stay untracked and unimported;
+  the lease `codex-smooth-integration` (334 modules, expiry 09-24 04:17 UTC) left to the owner. The 31 modules' transitive
+  cone is 6078 modules, 399 in the PL tree including every active skeleton, so a lane check between 10:20 and the restore
+  is suspect; acceptance rechecks cover it. Integrating the smoothing dependency cone needs a lead-planned route (separate
+  worktree under that lease, or cherry-picks from dev) and the owner's choice of source revision.
+* 22:50 (09-23) — BT answered (external, verified by grep): clause 11 = bicollar route + MEDIUM tetra exterior buffer (the
+  obstacle contains the incident vertex balls); clause 9 = MEDIUM zero-marked rim core buffer with arms, then a shrink in
+  the same product; `TopologicalCellComplementConnected` stays off-path. Recorded in B1.b.8; leaf 1 continuation is the
+  next lease-b target after the §32 tower.
