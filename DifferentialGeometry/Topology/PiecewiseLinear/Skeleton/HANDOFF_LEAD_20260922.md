@@ -576,3 +576,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   The local cherry-pick was dropped (tree = origin). The collaborator must rename his duplicates (or prove them
   from item 14's versions) and re-push; then the lead re-runs the acceptance (`chain_pr15.sh`, `accept-PR15`).
   Edge-matching acceptance (`accept-EM`, 70 modules) started 15:27 on the lead lease; wiring is manual.
+* 15:50 (09-24) — PR #15 reconciliation dispatched to an Opus worker on lease e: the 77 PR files are materialised
+  as untracked files (clash file renamed `GraphDualCellRestrictionE`), the worker owns them, resolves the six
+  declaration collisions against item 14's tracked modules (reuse or rename), reverifies and audits; wiring stays manual.
