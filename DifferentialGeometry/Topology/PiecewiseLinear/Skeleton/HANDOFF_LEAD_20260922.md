@@ -342,3 +342,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   predicates into `LoopTheoremDiskVocabulary`; physical `sorry` 51. Worker b continues on Lemmas 7 and 9.
 * 22:30 — accepted worker a's §34 P3 (`Section34FaceBalls` + five bricks); Codex Q1 withdrawn; physical
   `sorry` 61. Worker a continues on P4 and the bigon slide.
+* 22:50 — Codex (own lease) delivered four reconnaissance probes in `Skeleton/` (canonical tower, spine
+  carrier, torus linking, controlled-graph edge matching), committed as evidence, UNREVIEWED and not counted;
+  lead rechecks clean (only their sub-leaf sorries). Their sub-leaf lists are in the ledger rows B1.f/B1.g/B1.c.
