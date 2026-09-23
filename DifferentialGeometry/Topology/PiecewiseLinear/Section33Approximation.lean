@@ -16,6 +16,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.NoHandleLoopTheoremDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.NotLoopTheoremDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33BoundaryMatch
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33Extension
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33FundamentalGroupBijective
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -239,6 +240,20 @@ orientation consistency around the edge graph from `hconn` and the orientability
 `Section33ExtensionBalls`, `Section33ExtensionLabels`, `Section33ExtensionSphereMaps`: the disks
 `F_e` from `Moise324`, extension over the splitting disks, then over each `C_v` by a cone, with the
 `ε`-estimate from `hsmall`).  The only leaf left in this file is Lemma 10.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit): Lemma 10 in the strictly stronger form
+`section33_fundamentalGroup_map_bijective_of_isTube` (module `Section33FundamentalGroupBijective`
+over `Section33TubeRayChart`, `Section33CollarPush`, `Section33LoopTheoremInjective`,
+`SquareCrossingChain`, `SquareHomotopyToSurface`, `SurfaceLoopDecomposition`, `SurfaceSideLoops`),
+which needs only `Moise264`, the tube, Lemma 2, the connectedness of `Bd X` and the absence of loop
+theorem disks: the frozen leaf's `h34`, `h7` and `hprod` were unused, so the leaf is not restated
+(a byte-identical restatement would carry three unused-variable warnings) and the assembly calls
+the stronger theorem; the collar of `Bd N'` in `N'` (AA question 5) comes from `IsTube` through
+`IsTube.bijective_fundamentalGroup_map_interior_sdiff`, so the page-235 product
+`section33_tube_product` has no consumer in the assembly any more and stays as a real theorem.
+With every leaf proved this file has no `sorry` and was promoted from `Skeleton/` to a real
+module on 2026-09-23: `moise331 : Moise323 → Moise324 → Moise264 → Moise331` is a real theorem.
 -/
 
 open Set Topology
@@ -258,21 +273,6 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-
-theorem section33_fundamentalGroup_map_bijective (h264 : Moise264)
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space)
-    (h56 : HasConnectedHandlePieces K Ec Cpp XK.space AK)
-    (h7 : HasNoHandleLoopTheoremDisk K h N' Cpp XK.space)
-    (hnoLTD : ∀ Δ : Set (EuclideanSpace ℝ (Fin 3)),
-      ¬ IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ)
-    (hprod : Nonempty ((frontier N × Set.Ioo (0 : ℝ) 1) ≃ₜ ↥(interior N' \ h '' K.space))) :
-    ∀ hsub : frontier XK.space ⊆ N' \ h '' K.space, ∀ x : frontier XK.space,
-      Function.Bijective (FundamentalGroup.map
-        (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
-          C(frontier XK.space, ↥(N' \ h '' K.space))) x) := by
-  sorry
 
 end Leaves
 
@@ -358,8 +358,7 @@ theorem moise331 (h323 : Moise323) (h324 : Moise324) (h264 : Moise264) : Moise33
     fun _ hv₁ _ he₁ hcard _ _ hr hΔ hbd hcenter hmiss =>
       section33_disk_meets_graph h324 hd hend' hv₁ he₁ hcard hr hΔ hbd hcenter hmiss
   have h9 := section33_not_isLoopTheoremDisk hd h2 h34 h7 h8
-  have hprod := section33_tube_product ht
-  have h10 := section33_fundamentalGroup_map_bijective h264 hd h2 h34 h56 h7 h9 hprod
+  have h10 := section33_fundamentalGroup_map_bijective_of_isTube h264 ht h2 h56.2.1 h9
   have h12 := section33_faceEulerChar_handlePiece hd h2 h34 h56 h10
   obtain ⟨g, hg, hgA, hgD⟩ := exists_section33BoundaryMatch hd hconn' h2 h34 h56 h12
   obtain ⟨f, hf, hfN, -, hfv, hfsmall⟩ :=

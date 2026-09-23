@@ -456,3 +456,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   (collaborator PR #8 + two line wraps) and recompiled on the lead lease. 179 modules have source newer than
   their shared object (`stale_candidates.txt` in the session scratchpad; regenerate by commit time vs object
   mtime). A from-scratch build is required before any whole-tree claim; owner to schedule.
+* 15:30 (09-23) — accepted worker b's Lemma 10 (8 modules, strictly stronger form); `Section33Approximation`
+  promoted to a real module (§33 closed). Physical `sorry` 31. Lease b free, held for Codex.

@@ -1031,3 +1031,100 @@ entry; statements read from `Skeleton/Section33Approximation.lean`, section `Lea
   `exists_section33Extension`.  (All in namespace `DifferentialGeometry.Topology.PiecewiseLinear`;
   `Finset.eq_of_card_eq_two_of_mem_of_mem` and `IsCompact.*` are namespaced there too.)
 - Compiles: 14 module checks + 1 audit.
+
+## section33_fundamentalGroup_map_bijective (Lemma 10) — CLOSED in a strengthened form (lead decision)
+
+- Files (new, `DifferentialGeometry/Topology/PiecewiseLinear/`; lines, SHA-256):
+  `Section33TubeRayChart.lean` 217
+  `37039b40fc104b50cc726c352a529aa4be9e3c1e535e995c80660cc6081bb0a5`;
+  `Section33CollarPush.lean` 137
+  `db0b460e18cd6afada145959811e294441d0a8f5b1cc3d5a58d31963831c1ef4`;
+  `Section33LoopTheoremInjective.lean` 58
+  `8811a1c91ec322a4113c4757fbc222f430395d625569979e706d80e08763ecf2`;
+  `SquareCrossingChain.lean` 468
+  `824ee3819a07458ce5925479a3f3f8ee41ae4c5197074c4c253743f0698c9bf6`;
+  `SquareHomotopyToSurface.lean` 264
+  `5b2679c2adfb1f758ec3e7a5dd443f6a70633d7de108f5d9339cf05626145c9e`;
+  `SurfaceLoopDecomposition.lean` 225
+  `8b274cf177f4f36c5974a52ae6ed43d79ab817e207e619123eb4592a62fc957f`;
+  `SurfaceSideLoops.lean` 119
+  `fddbc59e31cd0962ec670f733f9c5acaa53c5a954dfb964ff38286b596839e7f`;
+  `Section33FundamentalGroupBijective.lean` 274
+  `5428f1cf52ffe063156161171fca84a0ab9d2454f04d0d77ae06c5d6c0e1b11f`.
+- Aggregate import lines (not added; the aggregate is the lead's):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeRayChart`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33CollarPush`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33LoopTheoremInjective`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SquareCrossingChain`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SquareHomotopyToSurface`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceLoopDecomposition`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSideLoops`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33FundamentalGroupBijective`
+- Statement.  `section33_fundamentalGroup_map_bijective_of_isTube (h264 : Moise264)
+  (ht : IsTube K N C D Dbd h N') (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
+  (hXc : IsConnected (frontier XK.space)) (hnoLTD : ...)` with the frozen conclusion verbatim
+  (`∀ hsub, ∀ x, Function.Bijective (FundamentalGroup.map ⟨Set.inclusion hsub, _⟩ x)`), same
+  `hnoLTD` text.  NOT byte-identical: the frozen leaf's `h34`, `h7`, `hprod` are not needed, and
+  `hd`, `h56` enter only through `hd.tube` and `h56.2.1`.  Probe
+  `claude-moise-agent-b/ProbeLeaf10.lean` (frozen `variable` block and frozen statement copied by
+  script, proof `exact section33_fundamentalGroup_map_bijective_of_isTube h264 hd.tube h2 h56.2.1
+  hnoLTD`) elaborates with no error and exactly three diagnostics: ``Variable name `h34` is not
+  explicitly referenced`` (25:5), same for `h7` (27:5) and `hprod` (30:5).  So the frozen leaf holds,
+  but no zero-warning byte-identical restatement exists.  Lead decision: drop `h34`, `h7`, `hprod`
+  from the leaf (a strengthening) or call the new theorem in the assembly:
+  `have h10 := section33_fundamentalGroup_map_bijective_of_isTube h264 hd.tube h2 h56.2.1 h9`
+  (the assembly's `have hprod := section33_tube_product ht` then has no consumer).
+- Hypotheses and producers: `h264` is the open `Moise264` input (as in the frozen leaf); `ht` from
+  `hd.tube` (`exists_section33HandleFrame`); `h2` from `exists_isPolyhedralTubeNeighborhood`;
+  `hXc` from `h56.2.1` (`exists_hasConnectedHandlePieces`); `hnoLTD` from
+  `section33_not_isLoopTheoremDisk` (Lemma 9).  All five are used; the module compiles clean.
+- Success lines (2026-09-23; `...` =
+  `D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear`):
+  `Verified ...\Section33TubeRayChart.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33CollarPush.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33LoopTheoremInjective.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SquareCrossingChain.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SquareHomotopyToSurface.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SurfaceLoopDecomposition.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SurfaceSideLoops.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section33FundamentalGroupBijective.lean with no diagnostics; shared outputs unchanged.`
+- Audit (`claude-moise-agent-b/AuditBatch73.lean`, SHA-256
+  `a8443977bf84a1fd8373ed3769685bed0b0474656dc234de3915dde59deb1e34`, `-Audit`, all eight modules,
+  axioms within `propext`, `Classical.choice`, `Quot.sound`, the thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch73.lean with no diagnostics; shared outputs unchanged.`
+- Route.  (1) Ray chart of the tube (`IsTube.exists_rayChart`): compact `Y`, `Φ : Y × [0,1] → N'`
+  from the derived-neighbourhood rays transported by `h`, `Φ(b,1) ∈ K'`, `Φ(b,0) ∈ Bd N'`,
+  injective on `Y × [0,1)`, with continuous inverse coordinates `(β, τ)` on `N' - K'`.
+  (2) Collar: `max(τ, s/2)` makes `Int N' - K' → N' - K'` a homotopy equivalence
+  (`IsTube.bijective_fundamentalGroup_map_interior_sdiff`; this answers AA question 5 without
+  `hprod`).  (3) Injectivity `π₁(Bd X) → π₁(Int N' - K')`: `Moise264` with the boundary complex of
+  `X` (`injective_fundamentalGroup_map_of_moise264`, now stated for a set `S = |L|`), `hnoLTD`
+  supplying nullhomotopy of every disk boundary.  (4) Surjectivity: lowest ray level `e₀` meeting
+  `X` (its level set misses `Int X`, touches `Bd X` at `P₀`), highest level `e₂` meeting the
+  closure of the complement (its level set lies in `X`, touches `Bd X` at `P₂`); loops at `P₀` in
+  `X` are pushed along rays to level `e₀`, loops at `P₂` in `cl(X^c)` to `e₂`; the square lemma
+  (`exists_surface_path_homotopic_of_square`, via grid ε-chains in `SquareCrossingChain` and short
+  convex-ball homotopies) turns the pushed square into a loop of `Bd X`; conjugation by paths of
+  `Bd X` (`exists_path_homotopic_map_of_loops`, `Bd X` path connected) gives arbitrary endpoints;
+  a general path is cut at its returns to `Bd X` by real induction on the supremum of good
+  parameters (`exists_surface_path_homotopic_of_sides`).  (5) Composition of the three maps.
+- New public names (grepped tree-wide, unique; namespace `DifferentialGeometry.Topology.
+  PiecewiseLinear`): `exists_continuousOn_rayCoordinates`, `IsTube.exists_rayChart`,
+  `IsTube.bijective_fundamentalGroup_map_interior_sdiff`,
+  `injective_fundamentalGroup_map_of_moise264`, `exists_dist_lt_chain_of_isPreconnected`,
+  `finite_connectedComponents_of_iUnion`, `exists_nat_lt_div_le_le_succ_div`,
+  `exists_chain_left_right_of_no_crossing`, `exists_pos_forall_exists_path_dist_lt`,
+  `path_homotopic_of_forall_mem_convex`, `exists_surface_path_homotopic_of_square`,
+  `exists_surface_path_homotopic_of_sides`, `exists_path_homotopic_map_of_loops`,
+  `exists_surface_loop_homotopic_of_level`, `section33_fundamentalGroup_map_bijective_of_isTube`.
+- Compiles: about 30 module checks + 1 audit + 1 probe.
+
+## Batch 7 summary
+
+- Lemma 13 (`exists_section33BoundaryMatch`) and the page-238 endgame (`exists_section33Extension`)
+  CLOSED byte-identically; Lemma 10 CLOSED as `section33_fundamentalGroup_map_bijective_of_isTube`
+  (frozen leaf minus the unused `h34`, `h7`, `hprod`; lead decision above).
+- Final audit over all 22 Batch 7 modules (`claude-moise-agent-b/AuditBatch7.lean`, SHA-256
+  `fa0b3c469e54388ef733340873f3e22e37a10054034c2b3e2756bd5f86870651`, axioms within `propext`,
+  `Classical.choice`, `Quot.sound`, the thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch7.lean with no diagnostics; shared outputs unchanged.`
