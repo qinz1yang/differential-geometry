@@ -412,3 +412,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   frame clause missing, or is the PL-surface derivation enough); the owner sends it on waking.
 * 05:55 (09-23) — review BL returned (digest BM): both source-face leaves OK as stated, no frame change; the
   route is regular-cell-complex thinness; reusable lemmas owed (Codex day-queue item 1b). Nothing frozen changed.
+* 07:20 (09-23) — accepted worker e's A2 clean cap (`AdaptedCleanCap` + five bricks); A2 has one leaf left,
+  which is C1's theorem. Physical `sorry` 36.

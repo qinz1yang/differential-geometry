@@ -926,3 +926,69 @@ them there.
   (`DifferentialGeometry.Topology.PiecewiseLinear.<Name>`), with a short name it reports an empty
   import closure; `rw [hA'eq] at …` after `AffineEquiv.ext` is safer than `subst` when both sides
   are obtained variables.
+
+# Batch 5 (A2 clean cap)
+
+## `NormalSingularCellData.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` — CLOSED (6 new modules)
+
+- Route (2) of the brief, but without any finrank-3 lemma: the centered prism is taken in a
+  triangulated compact polyhedral neighbourhood inside `V`, in the ambient `EuclideanSpace ℝ (Fin
+  T.ambientDim)` of its `PLPiece`, with the general-ambient producer
+  `IsCombinatorialManifoldWithBoundary.exists_isSubdivision_disk_pair_with_centered_prism`
+  (derived neighbourhood of a disk = three ball split by a bigger disk into a prism). Chart
+  compatibility (`HasGroupoid M (plGroupoid 3)`) enters only through
+  `PLPieceIn.isPiecewiseAffineOn_invFunOn_comp` (pull back of the bent disk) and
+  `PLPieceIn.isPLOn_comp` (the cap is PL in the charts of `M`).
+- Geometry. Bent disk = `D '' Q ∪ D '' (outer collar of T)`, parametrised by
+  `E₂ = E ∪ ρ '' (T ×ˢ Icc (-s₀) 0)` through `D ∘ k` on `E`, `D` on the collar (embedded: clean
+  disk + no double points on the collar off `T`). `E' = E ∪ ρ '' (T ×ˢ Icc (-s₀/2) 0)`. The cap is
+  `x ↦ prism (b x, σ * ℓ x)`, height `ℓ = h₀` except on the outer half of the collar, where it
+  falls linearly to `0` at `frontier E'`. Side `σ`: the other two sheets through `D '' J` (outer
+  collar of `J`, inner collar of `T`) are connected, avoid the bent disk and meet the reflex region
+  `{v < 0} ∪ {w > 0}` of the marked crossing chart at one point of `J`
+  (`exists_isMarkedCrossingChartAt`, fed by a new two-circle `IsTwoSidedBranchCollar`); that region
+  is preconnected and misses the bent disk, so both sheets lie on one side of the prism, and the
+  cap goes to the other. Everything else of `D '' D.domain` near the cap lies on the central level
+  of the prism or in a compact set missing the bent disk (tube lemma picks `h₀`).
+- Files (`DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/`), lines, SHA-256:
+  - `AdaptedCapCollar.lean` 466 `a2ce1fbd9245b6a464b3722770fdc10efdbe01ba9ef0f6d68ae6a26cc8a922d3`
+  - `AdaptedCapSide.lean` 309 `30c25b6a2e07e902d1a2c8ac0ee0ca3c8d7f3d622d6a95d9d1ba5c65a5b019ff`
+  - `AdaptedCapPrism.lean` 189 `76faea0096df25794e0c6a88ca2bd487818328f72ccb0d5928e3a31ac8eaced8`
+  - `AdaptedCapMap.lean` 180 `6d3e08666db6437d25b175e3ae8292954a5bc388153dc17bd4dcb9036c3c3147`
+  - `AdaptedCapSource.lean` 128 `b943535a79af5dc62a85ed224d719e71821d317ef93662d164ca112212010b8e`
+  - `AdaptedCleanCap.lean` 666 `e7c9e3e06627de785e4d5136bdcfd12e48ba0dc2639e9f1f724e663d9ae63a90`
+- Checker, each of the six (in this order, each after `prepare-private-root.py`):
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\<File>.lean with no diagnostics; shared outputs unchanged.`
+  Receipts in `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\...\LoopTheorem\<File>.json`
+  (exitCode 0, diagnosticLines 0, sourceSha256 = the hashes above).
+- Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch5A2Cap.lean` (all six
+  modules, axioms ⊆ {propext, Classical.choice, Quot.sound}, thirteen environment linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch5A2Cap.lean with no diagnostics; shared outputs unchanged.`
+  `AuditBatch5A2CapPrint.lean` (`#print axioms` of the eight public theorems): each
+  `depends on axioms: [propext, Classical.choice, Quot.sound]`.
+- Aggregate import lines (the last imports the other five):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapCollar`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapSide`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapPrism`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapMap`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapSource`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCleanCap`
+- Statement identity: the theorem text from `theorem` to `:= by` compared by script with
+  `Skeleton/DescentStepOrientable.lean:181` — identical; same `namespace NormalSingularCellData`,
+  same `variable` block, `universe u` only (the skeleton's `v w` are not used by this leaf).
+  `hVBd` is not used (the cap lies in `V`); it is consumed by `let _ := hVBd` as in the
+  lead-accepted `exists_descendingSurgery_of_adaptedCleanCap`, so a strictly stronger statement
+  without it holds. `hJ`, `hT`, `hJT`, `hclean`, `hkT` are used genuinely.
+- New public names (all checked absent tree-wide before use):
+  `exists_twoSidedCollar_of_frontier_eq`,
+  `NormalSingularCellData.exists_isTwoSidedBranchCollar_of_branchPreimage_eq_union`,
+  `NormalSingularCellData.exists_isPreconnected_sideGerm_of_isTwoSidedBranchCollar`,
+  `exists_centeredPrism_of_isPLOn`, `exists_capMap_of_centeredPrism`,
+  `exists_pos_forall_prod_Icc_mem_of_isCompact`, `isPLBall_union_image_outerCollar`, plus the
+  frozen leaf name. No new `structure` or `Prop`-valued `def`; the consumed predicates
+  `IsTwoSidedBranchCollar` / `IsBranchDeckInvolution` are inhabited by the new two-circle producer
+  and by `exists_isBranchDeckInvolution_of_branchPreimage_eq`.
+- Lessons: instance mismatch `Classical.propDecidable` vs a synthesized `decidableMemProd` /
+  `EuclideanSpace` `DecidableEq` makes `Set.piecewise` witnesses and `boundaryComplex` arguments
+  fail or time out; take the piecewise witness from the lemma (`⟨_, h.piecewise …, if_pos …⟩`)
+  and put `let _ : DecidableEq E := Classical.decEq _` before naming `boundaryComplex`.

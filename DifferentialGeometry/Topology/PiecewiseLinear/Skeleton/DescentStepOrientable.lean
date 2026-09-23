@@ -15,6 +15,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealiza
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDisjointDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellReading
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryTubeProducerDouble
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCleanCap
 
 /-!
 # Sorry-first skeleton of the orientable descent step
@@ -153,6 +154,20 @@ circle map, the four-page theorem, boundary and cone extension).
 `not_branchPreimage_eq_of_isOrientable` waits on `ClosedBranchCaseOne`'s
 `exists_isSourceTrackedBranchTube`, whose `realisation` clause conflicts with the reviewed
 derived-neighbourhood route (worker analysis, sent to review).
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf, `hVBd` kept by a `let` binding):
+`NormalSingularCellData.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` (module
+`LoopTheorem/AdaptedCleanCap.lean` over five bricks).  The route avoids every finrank-3 collar or
+prism lemma: a two-sided branch collar for the two-circle preimage `J ∪ T`
+(`exists_isTwoSidedBranchCollar_of_branchPreimage_eq_union`), the side germ of the collar, a
+centred prism inside a triangulated neighbourhood of the clean disk
+(`IsCombinatorialManifoldWithBoundary.exists_isSubdivision_disk_pair_with_centered_prism`, any
+ambient dimension), the cap map along that prism, and the source disk `E'` as `E` plus an outer
+collar; the PL atlas enters through `PLPieceIn.isPiecewiseAffineOn_invFunOn_comp` and
+`PLPieceIn.isPLOn_comp`, and the crossing of the two sheets through
+`exists_isMarkedCrossingChartAt`.
+The only leaf left in this file is `not_branchPreimage_eq_of_isOrientable`, which is C1's theorem.
 -/
 
 open Set Topology
@@ -177,27 +192,6 @@ namespace NormalSingularCellData
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
-
-theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
-    [HasGroupoid M (plGroupoid 3)]
-    (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
-    {J T Q E : Set (EuclideanSpace ℝ (Fin 2))}
-    {k : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
-    (hJ : IsPLSphere 1 J) (hT : IsPLSphere 1 T) (hJT : Disjoint J T)
-    (hpre : hD.branchPreimage c = J ∪ T)
-    (hQ : IsPLBall 2 Q) (hQsub : Q ⊆ interior D.domain) (hfrontQ : frontier Q = J)
-    (hclean : doublePointPreimage (⇑D) D.domain ∩ Q = J) (hinj : InjOn (⇑D) Q)
-    (hE : IsPLBall 2 E) (hfrontE : frontier E = T)
-    (hk : IsPLHomeomorphOn k E Q) (hkT : k '' T = J) (hkcompat : EqOn (⇑D) (⇑D ∘ k) T)
-    (hdisjoint : Disjoint Q E)
-    {V : Set M} (hV : IsOpen V) (hQV : ⇑D '' Q ⊆ V) (hVBd : Disjoint V BdM) :
-    ∃ (E' : Set (EuclideanSpace ℝ (Fin 2))) (Δ : SingularTwoCell M),
-      IsPLBall 2 E' ∧ E ⊆ interior E' ∧ E' ⊆ interior D.domain ∧ Disjoint Q E' ∧
-        (E' \ E) ∩ doublePointPreimage (⇑D) D.domain = ∅ ∧
-          Δ.domain = E' ∧ InjOn (⇑Δ) E' ∧ ⇑Δ '' E' ⊆ V ∧ EqOn (⇑Δ) (⇑D) (frontier E') ∧
-            ⇑Δ '' E' ∩ ⇑D '' D.domain = ⇑D '' frontier E' := by
-  sorry
 
 theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
     [HasGroupoid M (plGroupoid 3)]
