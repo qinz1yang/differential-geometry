@@ -430,3 +430,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   physical `sorry` 35 (the three §32 probes are not counted).
 * 10:40 (09-23) — lease e re-dispatched to the non-compact P6 twin `exists_section34FaceDisks` (port of the compact
   proof; told to report an INTERFACE subsection if `Section34NormalPlus` lacks a cyclic-seam ingredient).
+* 11:00 (09-23) — owner rule: when any of leases b, c, d delivers, do NOT re-dispatch it to an Opus worker; hold
+  it so one lane can be handed to Codex (usage balance). a and e keep their current targets.
