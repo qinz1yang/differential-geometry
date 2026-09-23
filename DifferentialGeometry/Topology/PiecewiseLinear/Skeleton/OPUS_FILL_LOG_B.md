@@ -694,3 +694,77 @@ the `rimFrontier` field; later lead commits up to 888521413 did not touch the st
   `TubeFrontierConnected`, `PolyhedralTubeConnected`, `HandlePieceChart`,
   `PolyhedralTubeHandlePieces`, `PseudoCellLocalSides`, `PseudoCellSubdisk`, `CellGluingSphere`,
   `SurfaceSideChaining`, `DiskMeetsGraph`.
+
+# Batch 5 (Lemmas 7 and 9)
+
+## exists_hasNoHandleLoopTheoremDisk (Lemma 7) — CLOSED
+
+- Statement and `section Leaves` variable block byte-identical with the frozen leaf (checked by
+  script); no hypothesis dropped.  Module `NoHandleLoopTheoremDisk` (239 lines, 61e24294), over
+  four new bricks: `ChartPush` (330, b9f1d717), `PseudoCellFlatChart` (389, 205a2ec8),
+  `TubeSurfaceTransfer` (257, 9cb60f27), `HandlePiecePushOff` (377, 97cfe27d).
+- Route.  `Nat.find` on `b₁(Bd X)` over the tube neighbourhoods with single polygon traces and
+  connected handle pieces.  Given an LTD `Δ ⊆ C''_v`:
+  (i) push-off (`HandlePiecePushOff`): at every point of `Δ ∩ E_e` a chart where `E_e` is a
+  coordinate plane (side chart of `X` on the trace, `IsPseudoCell.exists_flatChart` off `Bd X`);
+  `C''_v` is a closed half-ball there (`exists_side_of_chart`: the two open half-balls are
+  connected in `N' - ⋃ E`, one in each end's component); a cut-off vertical push
+  (`exists_isPLHomeomorphOn_push_of_chart`) preserves `X`; finitely many compose
+  (`exists_isPLHomeomorphOn_push_of_forall`); the pushed disk is again an LTD (the push is a
+  homeomorphism of `ℝ³` fixing `X`, hence `Bd X`; nullhomotopies transported by composition);
+  (ii) compression (`exists_bettiOne_lt_of_isLoopTheoremDisk`): triangulate `Bd X`, compress
+  along `Δ` inside `Int N' - (K' ∪ ⋃ E)` with `exists_compression_neighborhood_of_spanning_disk`
+  and `exists_separating_component_bettiOne_lt_of_spanning_disk`; the component agrees with
+  `Bd X` off the compression ball, hence near the pseudo-cells (local connectedness of `Bd X`);
+  `exists_of_separating_surface` (Lemma 5's construction for a given separating surface) gives
+  the new `X'` with single traces; Lemma 6 gives its handle pieces; `b₁` dropped, contradiction.
+  `IsConnected K.space` comes from `IsTube.isConnected_space_of_isConnected` and `IsConnected X`.
+- Verification: `NoHandleLoopTheoremDisk` and each brick "Verified ... with no diagnostics";
+  audit `AuditBatch51.lean` (5 modules, axioms ⊆ {propext, Classical.choice, Quot.sound}, the 13
+  linters) "Verified ... with no diagnostics".  Compiles: about 28 module checks + 1 audit.
+- Register after `DiskMeetsGraph`, in order: `ChartPush`, `PseudoCellFlatChart`,
+  `TubeSurfaceTransfer`, `HandlePiecePushOff`, `NoHandleLoopTheoremDisk`.
+
+## section33_not_isLoopTheoremDisk (Lemma 9) — STUCK (general position at the boundary)
+
+- Proved brick, module `LoopTheoremDiskMeetsPseudoCells` (84 lines, 1baa46f4): a nonempty
+  preconnected `Z ⊆ Int N'` missing `⋃ E_e` lies in one `C''_v`
+  (`IsHandleDecompositionOfTube.exists_subset_handlePiece`), so under `h7` every LTD meets a
+  pseudo-cell (`HasNoHandleLoopTheoremDisk.inter_pseudoCells_nonempty`).  Register after
+  `NoHandleLoopTheoremDisk`.  Audit `AuditBatch52.lean`.
+- Exact remaining goal (with `hd h2 h34 h7 h8` in context):
+  `∀ Δ, IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ → ∃ Δ',
+   IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ' ∧ Disjoint Δ' (⋃ e ∈ {e | e ∈
+   K.faces ∧ e.card = 2}, Ec e)`; the brick then closes the leaf.
+- Route checked for the descent once `Δ` is in general position (`Δ ∩ ⋃ E` finitely many
+  components, each a PL circle in `Int Δ` or an arc meeting `Bd Δ` in its ends, crossing at every
+  point).  Polygons: an innermost one in `Δ` bounds `Δ₀ ⊆ C''_{v₁}` (brick above); `h8` then says
+  its disk in `E₁` misses `P'`; an innermost polygon `J` of `Δ ∩ E₁` inside that disk bounds
+  `D_J` with `D_J ∩ Δ = J`; `(Δ - Int Δ_J) ∪ D_J` touches `E₁` from one side only, and the push of
+  `HandlePiecePushOff` (with `C := C''_v` of that side, support in a small neighbourhood of `D_J`)
+  removes `J` without new intersections.  Arcs: an outermost arc `B` cuts `D_B` from `E ∩ X` or
+  from the annulus `E - Int X`; the two halves `Δᵢ ∪ D_B`, pushed the same way, are disks with
+  boundaries `αᵢ ∪ B₁`; if both were nullhomotopic in `Bd X` so would `α₁ ∪ α₂` be (glue the two
+  disk extensions over a theta-curve model, `JordanDiskPasting`).  End: the brick above.
+- Obstruction (why STUCK): putting an LTD in general position without moving `Bd Δ` off `Bd X`.
+  The tree's relative move (`exists_small_homeomorph_generalPosition_relative`,
+  `..._off_polyhedron_with_lipschitz_displacement`) needs the fixed faces of `Bd Δ` face-wise
+  transverse to a triangulation of `E`; `E` may fold along the trace `J = E ∩ Bd X` (only
+  `HasPLCrossingAt` holds there), so no triangulation makes a crossing of `Bd Δ` with `J`
+  face-wise transverse.  The half-space version (`HalfSpaceGeneralPosition`) needs a flat `Bd X`.
+  Side-chart moves fix each point of `Bd Δ ∩ J` in chart coordinates only, and the interior move
+  in `ℝ³` then cannot be made relative to them.  Easy sub-case: if `Bd Δ ∩ ⋃ J = ∅`, fix a collar
+  of `Bd Δ` missing `⋃ E` and move the rest by less than its distance to `Bd X`; then only
+  polygons occur.  Unblock by either (a) an X-compatible bicollar of a compact part of each
+  `E_e - {P'}` (one generic collar level then does all of general position at once, the shift
+  preserving `X`), or (b) a relative general position move whose fixed part is only required to
+  cross (`HasPLCrossingAt`) rather than be face-wise transverse.  Estimate with (a) or (b)
+  available: 2500-3500 further lines; without: add 1500-2500 for (a).  Compiles: 2 + 1 audit.
+
+## Batch 5 summary
+
+- CLOSED 1: Lemma 7 (`exists_hasNoHandleLoopTheoremDisk`), statement byte-identical, no
+  hypothesis dropped.  STUCK 1: Lemma 9, reduced to the goal above; obstruction and unblocking
+  options recorded.
+- Register, in order (6 new modules): `ChartPush`, `PseudoCellFlatChart`, `TubeSurfaceTransfer`,
+  `HandlePiecePushOff`, `NoHandleLoopTheoremDisk`, `LoopTheoremDiskMeetsPseudoCells`.

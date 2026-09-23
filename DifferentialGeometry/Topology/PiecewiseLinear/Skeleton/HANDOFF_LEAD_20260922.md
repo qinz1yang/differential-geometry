@@ -347,3 +347,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   lead rechecks clean (only their sub-leaf sorries). Their sub-leaf lists are in the ledger rows B1.f/B1.g/B1.c.
 * 23:10 — accepted worker d's smooth one- and two-handle adjunctions (15 modules, corner charts);
   physical `sorry` 48. Worker d continues on the two taming leaves.
+* 23:25 — accepted worker b's §33 Lemma 7 (`NoHandleLoopTheoremDisk` + four bricks) and the Lemma 9 brick;
+  physical `sorry` 47. Lemma 9 unblock assigned to b: relative general position needing only crossing of the
+  fixed part, fallback a two-sided pseudo-cell collar.

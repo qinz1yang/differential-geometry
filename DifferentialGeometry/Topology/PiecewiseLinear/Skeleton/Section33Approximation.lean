@@ -12,6 +12,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheoremDiskVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeSinglePolygonTraces
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeHandlePieces
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskMeetsGraph
+import DifferentialGeometry.Topology.PiecewiseLinear.NoHandleLoopTheoremDisk
 
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
@@ -199,6 +200,19 @@ result is a polyhedral 2-sphere, and the two local sides of `E₁` near the cent
 outside it, which a closed connected surface forbids.  The predicates `IsLoopTheoremDisk` and
 `HasNoHandleLoopTheoremDisk` were hoisted verbatim into `LoopTheoremDiskVocabulary` so that Lemmas
 7 and 9 can be proved in real modules.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and axiom audits; statement byte-identical with the frozen leaf, no hypothesis dropped):
+`exists_hasNoHandleLoopTheoremDisk` (Lemma 7, module `NoHandleLoopTheoremDisk` over `ChartPush`,
+`PseudoCellFlatChart`, `TubeSurfaceTransfer`, `HandlePiecePushOff`): minimise `b₁(Bd X)` over tube
+neighbourhoods with single polygon traces and connected handle pieces; a loop-theorem disk inside
+a handle piece is pushed off the pseudo-cells (a cut-off vertical push in a chart where the
+pseudo-cell is a coordinate plane), `Bd X` is compressed along it, `X'` is rebuilt from the
+separating component and `b₁` drops.  Lemma 9 has the proved brick
+`HasNoHandleLoopTheoremDisk.inter_pseudoCells_nonempty` (`LoopTheoremDiskMeetsPseudoCells`) and one
+exact remaining goal, a loop-theorem disk disjoint from the pseudo-cells; the obstruction is
+general position at the disk boundary where a pseudo-cell folds along its trace, to be unblocked
+by a relative general-position move needing only crossing of the fixed part.
 -/
 
 open Set Topology
@@ -218,19 +232,6 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-
-theorem exists_hasNoHandleLoopTheoremDisk
-    (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
-    (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
-    (h34 : HasSinglePolygonTraces K h Ec XK.space)
-    (h56 : HasConnectedHandlePieces K Ec Cpp XK.space AK) :
-    ∃ (XK' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-      (AK' : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
-      IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK' ∧
-      HasSinglePolygonTraces K h Ec XK'.space ∧
-      HasConnectedHandlePieces K Ec Cpp XK'.space AK' ∧
-      HasNoHandleLoopTheoremDisk K h N' Cpp XK'.space := by
-  sorry
 
 theorem section33_not_isLoopTheoremDisk
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
