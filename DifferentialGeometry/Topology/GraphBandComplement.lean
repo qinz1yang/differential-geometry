@@ -14,13 +14,15 @@ namespace DifferentialGeometry.Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [PreconnectedSpace X] [TopologicalSpace Y]
 
-theorem graphBand_image_inter_closed_of_frontier_eq
+theorem graphBand_image_inter_closed_of_frontier_eq_union
     (T : OpenPartialHomeomorph (X × ℝ) Y)
     (a b : X → ℝ) (ha : Continuous a) (hb : Continuous b) (hab : ∀ q, a q < b q)
     (hsource : {z : X × ℝ | a z.1 ≤ z.2 ∧ z.2 ≤ b z.1} ⊆ T.source)
-    {W : Set Y} (hW : IsClosed W)
+    {W S : Set Y} (hW : IsClosed W)
     (hfront : frontier W =
-      range (fun q => T (q, a q)) ∪ range (fun q => T (q, b q)))
+      (range (fun q => T (q, a q)) ∪ range (fun q => T (q, b q))) ∪ S)
+    (hdisjoint : Disjoint S
+      (T '' {z : X × ℝ | a z.1 ≤ z.2 ∧ z.2 ≤ b z.1}))
     (hout : (T '' {z : X × ℝ | a z.1 < z.2 ∧ z.2 < b z.1} \ W).Nonempty) :
     (T '' {z : X × ℝ | a z.1 < z.2 ∧ z.2 < b z.1} ⊆ Wᶜ) ∧
       (T '' {z : X × ℝ | a z.1 ≤ z.2 ∧ z.2 ≤ b z.1}) ∩ W =
@@ -32,13 +34,14 @@ theorem graphBand_image_inter_closed_of_frontier_eq
     (isPreconnected_openGraphBand a b ha hb hab).image T (T.continuousOn.mono hopen_source)
   have havoid : Disjoint A (frontier Wᶜ) := by
     rw [frontier_compl, hfront, disjoint_left]
-    rintro y ⟨z, hz, rfl⟩ (⟨q, hq⟩ | ⟨q, hq⟩)
+    rintro y ⟨z, hz, rfl⟩ ((⟨q, hq⟩ | ⟨q, hq⟩) | hyS)
     · have he := T.injOn (hsource ⟨le_rfl, (hab q).le⟩) (hopen_source hz) hq
       obtain rfl : q = z.1 := congrArg Prod.fst he
       exact (ne_of_lt hz.1) (congrArg Prod.snd he)
     · have he := T.injOn (hsource ⟨(hab q).le, le_rfl⟩) (hopen_source hz) hq
       obtain rfl : q = z.1 := congrArg Prod.fst he
       exact (ne_of_lt hz.2) (congrArg Prod.snd he).symm
+    · exact disjoint_left.mp hdisjoint hyS ⟨z, ⟨hz.1.le, hz.2.le⟩, rfl⟩
   obtain ⟨y, hy, hyW⟩ := hout
   have hsub : A ⊆ Wᶜ :=
     (subset_interior_of_isPreconnected_of_disjoint_frontier hconn havoid
@@ -52,10 +55,28 @@ theorem graphBand_image_inter_closed_of_frontier_eq
       · exact Or.inr ⟨z.1, congrArg T (Prod.ext rfl hzb.symm)⟩
       · exact (hsub ⟨z, ⟨hza, hzb⟩, rfl⟩ hyW).elim
   · intro y hy
-    refine ⟨?_, hW.frontier_subset (hfront.symm ▸ hy)⟩
+    refine ⟨?_, hW.frontier_subset (hfront.symm ▸ Or.inl hy)⟩
     rcases hy with ⟨q, rfl⟩ | ⟨q, rfl⟩
     · exact ⟨(q, a q), ⟨le_rfl, (hab q).le⟩, rfl⟩
     · exact ⟨(q, b q), ⟨(hab q).le, le_rfl⟩, rfl⟩
+
+
+theorem graphBand_image_inter_closed_of_frontier_eq
+    (T : OpenPartialHomeomorph (X × ℝ) Y)
+    (a b : X → ℝ) (ha : Continuous a) (hb : Continuous b) (hab : ∀ q, a q < b q)
+    (hsource : {z : X × ℝ | a z.1 ≤ z.2 ∧ z.2 ≤ b z.1} ⊆ T.source)
+    {W : Set Y} (hW : IsClosed W)
+    (hfront : frontier W =
+      range (fun q => T (q, a q)) ∪ range (fun q => T (q, b q)))
+    (hout : (T '' {z : X × ℝ | a z.1 < z.2 ∧ z.2 < b z.1} \ W).Nonempty) :
+    (T '' {z : X × ℝ | a z.1 < z.2 ∧ z.2 < b z.1} ⊆ Wᶜ) ∧
+      (T '' {z : X × ℝ | a z.1 ≤ z.2 ∧ z.2 ≤ b z.1}) ∩ W =
+        range (fun q => T (q, a q)) ∪ range (fun q => T (q, b q)) := by
+  apply graphBand_image_inter_closed_of_frontier_eq_union T a b ha hb hab hsource hW
+    (S := ∅)
+  · simpa only [union_empty] using hfront
+  · simp only [Set.empty_disjoint]
+  · exact hout
 
 end DifferentialGeometry.Topology
 

@@ -21,8 +21,6 @@ universe u v
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-  {P : Type v} [TopologicalSpace P] [ChartedSpace ThreeSpace P]
-  [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
 
 private local instance volumeTransportMeasurable : MeasurableSpace M := borel M
 private local instance volumeTransportBorel : BorelSpace M := ⟨rfl⟩
@@ -49,44 +47,55 @@ theorem MetricComparisonOn.inner_image_bounds
   rw [hp] at he
   exact he
 
-omit [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M] [IsManifold I3 ∞ P]
-  [T2Space P] [SigmaCompactSpace P] in
+section CrossModel
+
+variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
+  [FiniteDimensional ℝ E'] [CompleteSpace E']
+  {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'} [J.Boundaryless]
+  {P : Type v} [TopologicalSpace P] [ChartedSpace H' P]
+  [IsManifold J ∞ P] [T2Space P] [SigmaCompactSpace P]
+
+omit [J.Boundaryless] [FiniteDimensional ℝ E'] [CompleteSpace E']
+  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+  [IsManifold J ∞ P] [T2Space P] [SigmaCompactSpace P] in
 private theorem exists_opensDiffeo_of_subset_source
-    (F : PartialDiffeomorph I3 I3 P M ∞) {U : Set P} (hU : IsOpen U)
+    (F : PartialDiffeomorph J I3 P M ∞) {U : Set P} (hU : IsOpen U)
     (hsrc : U ⊆ F.source) :
-    ∃ (V : Opens P) (W : Opens M) (Phi : Diffeomorph I3 I3 V W ∞),
+    ∃ (V : Opens P) (W : Opens M) (Phi : Diffeomorph J I3 V W ∞),
       (V : Set P) = U ∧ (W : Set M) = (F : P → M) '' U ∧
       (∀ p : V, ((Phi p : W) : M) = (F : P → M) (p : P)) ∧
-      (∀ (p : V) (v : TangentSpace I3 p),
-        mfderiv I3 I3 (Phi : V → W) p v = mfderiv I3 I3 (F : P → M) (p : P) v) :=
+      (∀ (p : V) (v : TangentSpace J p),
+        mfderiv J I3 (Phi : V → W) p v = mfderiv J I3 (F : P → M) (p : P) v) :=
   ⟨⟨U, hU⟩, ⟨(F : P → M) '' U, image_opens_isOpen F (U := ⟨U, hU⟩) hsrc⟩,
     PartialDiffeomorph.toOpensDiffeo F (U := ⟨U, hU⟩) hsrc, rfl, rfl, fun _ => rfl,
     fun p v => PartialDiffeomorph.mfderiv_toOpensDiffeo F hsrc p v⟩
 
 
+omit [CompleteSpace E'] in
 theorem riemannianVolumeMeasure_image_sandwich
-    (k : SmoothRiemannianMetric I3 P) (g : SmoothRiemannianMetric I3 M)
-    (F : PartialDiffeomorph I3 I3 P M ∞) {U : Set P} (hU : IsOpen U)
+    (k : SmoothRiemannianMetric J P) (g : SmoothRiemannianMetric I3 M)
+    (F : PartialDiffeomorph J I3 P M ∞) {U : Set P} (hU : IsOpen U)
     (hsrc : U ⊆ F.source) {K : Set P} (hK : IsCompact K) (hKU : K ⊆ U)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hlower : ∀ y ∈ U, ∀ v : TangentSpace I3 y,
+    (hlower : ∀ y ∈ U, ∀ v : TangentSpace J y,
       k.inner y v v ≤ a * g.inner ((F : P → M) y)
-        (mfderiv I3 I3 (F : P → M) y v) (mfderiv I3 I3 (F : P → M) y v))
-    (hupper : ∀ y ∈ U, ∀ v : TangentSpace I3 y,
+        (mfderiv J I3 (F : P → M) y v) (mfderiv J I3 (F : P → M) y v))
+    (hupper : ∀ y ∈ U, ∀ v : TangentSpace J y,
       g.inner ((F : P → M) y)
-          (mfderiv I3 I3 (F : P → M) y v) (mfderiv I3 I3 (F : P → M) y v) ≤
+          (mfderiv J I3 (F : P → M) y v) (mfderiv J I3 (F : P → M) y v) ≤
         b * k.inner y v v) :
-    riemannianVolumeMeasure I3 P k K ≤
-        ENNReal.ofReal (Real.sqrt (a ^ 3)) *
+    riemannianVolumeMeasure J P k K ≤
+        ENNReal.ofReal (Real.sqrt (a ^ Module.finrank ℝ E')) *
           riemannianVolumeMeasure I3 M g ((F : P → M) '' K) ∧
       riemannianVolumeMeasure I3 M g ((F : P → M) '' K) ≤
-        ENNReal.ofReal (Real.sqrt (b ^ 3)) * riemannianVolumeMeasure I3 P k K := by
+        ENNReal.ofReal (Real.sqrt (b ^ Module.finrank ℝ E')) * riemannianVolumeMeasure J P k K := by
   classical
+  let : SecondCountableTopology H' := J.secondCountableTopology
   have : SecondCountableTopology P :=
-    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace P
+    ChartedSpace.secondCountable_of_sigmaCompact H' P
   have : SecondCountableTopology M :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace M
-  have : LocallyCompactSpace P := Manifold.locallyCompact_of_finiteDimensional I3
+  have : LocallyCompactSpace P := Manifold.locallyCompact_of_finiteDimensional J
   have : LocallyCompactSpace M := Manifold.locallyCompact_of_finiteDimensional I3
   obtain ⟨V, W, Phi, hVU, hWU, hPhi, hdPhi⟩ :=
     exists_opensDiffeo_of_subset_source F hU hsrc
@@ -98,11 +107,11 @@ theorem riemannianVolumeMeasure_image_sandwich
     intro p
     rw [← hVU]
     exact p.2
-  have hGinner : ∀ (p : V) (v : TangentSpace I3 p),
+  have hGinner : ∀ (p : V) (v : TangentSpace J p),
       (Diffeomorph.pullbackMetricCross (g.restrictOpen W) Phi).inner p v v =
         g.inner ((F : P → M) (p : P))
-          (mfderiv I3 I3 (F : P → M) (p : P) v)
-          (mfderiv I3 I3 (F : P → M) (p : P) v) := by
+          (mfderiv J I3 (F : P → M) (p : P) v)
+          (mfderiv J I3 (F : P → M) (p : P) v) := by
     intro p v
     rw [Diffeomorph.pullbackMetricCross_inner,
       SmoothRiemannianMetric.restrictOpen_inner, hdPhi p v, hPhi p]
@@ -146,10 +155,10 @@ theorem riemannianVolumeMeasure_image_sandwich
       exact Set.mem_image_of_mem _ hpK
   have hBmeas : MeasurableSet ((Subtype.val : V → P) ⁻¹' K) :=
     (hK.isClosed.preimage continuous_subtype_val).measurableSet
-  have h1 : riemannianVolumeMeasure I3 V (k.restrictOpen V)
-      ((Subtype.val : V → P) ⁻¹' K) = riemannianVolumeMeasure I3 P k K := by
+  have h1 : riemannianVolumeMeasure J V (k.restrictOpen V)
+      ((Subtype.val : V → P) ⁻¹' K) = riemannianVolumeMeasure J P k K := by
     rw [riemannianVolumeMeasure_restrictOpen_apply, hvalB]
-  have h2 : riemannianVolumeMeasure I3 V
+  have h2 : riemannianVolumeMeasure J V
         (Diffeomorph.pullbackMetricCross (g.restrictOpen W) Phi)
         ((Subtype.val : V → P) ⁻¹' K)
       = riemannianVolumeMeasure I3 M g ((F : P → M) '' K) := by
@@ -160,9 +169,8 @@ theorem riemannianVolumeMeasure_image_sandwich
       ((Subtype.val : W → M) ⁻¹' ((F : P → M) '' K))
     rw [hpre] at hmp
     rw [hmp, riemannianVolumeMeasure_restrictOpen_apply, hvalA]
-  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
   constructor
-  · have hcomp : ∀ p ∈ (Subtype.val : V → P) ⁻¹' K, ∀ v : TangentSpace I3 p,
+  · have hcomp : ∀ p ∈ (Subtype.val : V → P) ⁻¹' K, ∀ v : TangentSpace J p,
         (k.restrictOpen V).inner p v v ≤
           a * (Diffeomorph.pullbackMetricCross (g.restrictOpen W) Phi).inner p v v := by
       intro p _ v
@@ -171,9 +179,9 @@ theorem riemannianVolumeMeasure_image_sandwich
     have hres := riemannianVolumeMeasure_le_on
       (Diffeomorph.pullbackMetricCross (g.restrictOpen W) Phi)
       (k.restrictOpen V) hBmeas ha hcomp
-    rw [hdim, h1, h2] at hres
+    rw [h1, h2] at hres
     exact hres
-  · have hcomp : ∀ p ∈ (Subtype.val : V → P) ⁻¹' K, ∀ v : TangentSpace I3 p,
+  · have hcomp : ∀ p ∈ (Subtype.val : V → P) ⁻¹' K, ∀ v : TangentSpace J p,
         (Diffeomorph.pullbackMetricCross (g.restrictOpen W) Phi).inner p v v ≤
           b * (k.restrictOpen V).inner p v v := by
       intro p _ v
@@ -181,23 +189,23 @@ theorem riemannianVolumeMeasure_image_sandwich
       exact hupper (p : P) (hmemV p) v
     have hres := riemannianVolumeMeasure_le_on (k.restrictOpen V)
       (Diffeomorph.pullbackMetricCross (g.restrictOpen W) Phi) hBmeas hb hcomp
-    rw [hdim, h1, h2] at hres
+    rw [h1, h2] at hres
     exact hres
 
 private theorem comparison_volume_bounds
-    {h : ℝ → SmoothRiemannianMetric I3 P} {g : ℝ → SmoothRiemannianMetric I3 M}
-    (F : PartialDiffeomorph I3 I3 P M ∞)
+    {h : ℝ → SmoothRiemannianMetric J P} {g : ℝ → SmoothRiemannianMetric I3 M}
+    (F : PartialDiffeomorph J I3 P M ∞)
     {U : Set P} {times : Set ℝ} {order : ℕ} {eps : ℝ}
     (C : MetricComparisonOn h g (F : P → M) U times order eps)
     {s : ℝ} (hs : s ∈ times) (heps : 0 ≤ eps) (heps1 : eps < 1)
     {V : Set P} (hV : IsOpen V) (hVU : V ⊆ U) (hVsrc : V ⊆ F.source)
     {K : Set P} (hK : IsCompact K) (hKV : K ⊆ V) :
-    riemannianVolumeMeasure I3 P (h s) K ≤
-        ENNReal.ofReal (Real.sqrt (((1 - eps)⁻¹) ^ 3)) *
+    riemannianVolumeMeasure J P (h s) K ≤
+        ENNReal.ofReal (Real.sqrt (((1 - eps)⁻¹) ^ Module.finrank ℝ E')) *
           riemannianVolumeMeasure I3 M (g s) ((F : P → M) '' K) ∧
       riemannianVolumeMeasure I3 M (g s) ((F : P → M) '' K) ≤
-        ENNReal.ofReal (Real.sqrt ((1 + eps) ^ 3)) *
-          riemannianVolumeMeasure I3 P (h s) K := by
+        ENNReal.ofReal (Real.sqrt ((1 + eps) ^ Module.finrank ℝ E')) *
+          riemannianVolumeMeasure J P (h s) K := by
   have h1e : (0 : ℝ) < 1 - eps := by linarith
   refine riemannianVolumeMeasure_image_sandwich (h s) (g s) F hV hVsrc hK hKV
     (inv_pos.mpr h1e) (by linarith) ?_ ?_
@@ -209,27 +217,27 @@ private theorem comparison_volume_bounds
 
 
 theorem MetricComparisonOn.volume_image_ge
-    {h : ℝ → SmoothRiemannianMetric I3 P} {g : ℝ → SmoothRiemannianMetric I3 M}
-    (F : PartialDiffeomorph I3 I3 P M ∞)
+    {h : ℝ → SmoothRiemannianMetric J P} {g : ℝ → SmoothRiemannianMetric I3 M}
+    (F : PartialDiffeomorph J I3 P M ∞)
     {U : Set P} {times : Set ℝ} {order : ℕ} {eps : ℝ}
     (C : MetricComparisonOn h g (F : P → M) U times order eps)
     {s : ℝ} (hs : s ∈ times) (heps : 0 ≤ eps) (heps1 : eps < 1)
     {V : Set P} (hV : IsOpen V) (hVU : V ⊆ U) (hVsrc : V ⊆ F.source)
     {K : Set P} (hK : IsCompact K) (hKV : K ⊆ V) :
-    ENNReal.ofReal (Real.sqrt ((1 - eps) ^ 3)) *
-        riemannianVolumeMeasure I3 P (h s) K ≤
+    ENNReal.ofReal (Real.sqrt ((1 - eps) ^ Module.finrank ℝ E')) *
+        riemannianVolumeMeasure J P (h s) K ≤
       riemannianVolumeMeasure I3 M (g s) ((F : P → M) '' K) := by
   have h1e : (0 : ℝ) < 1 - eps := by linarith
   have hb := (comparison_volume_bounds F C hs heps heps1 hV hVU hVsrc hK hKV).1
-  have hinv : ENNReal.ofReal (Real.sqrt ((1 - eps) ^ 3)) *
-      ENNReal.ofReal (Real.sqrt (((1 - eps)⁻¹) ^ 3)) = 1 := by
+  have hinv : ENNReal.ofReal (Real.sqrt ((1 - eps) ^ Module.finrank ℝ E')) *
+      ENNReal.ofReal (Real.sqrt (((1 - eps)⁻¹) ^ Module.finrank ℝ E')) = 1 := by
     rw [← ENNReal.ofReal_mul (Real.sqrt_nonneg _),
-      ← Real.sqrt_mul (pow_nonneg h1e.le 3), ← mul_pow,
+      ← Real.sqrt_mul (pow_nonneg h1e.le (Module.finrank ℝ E')), ← mul_pow,
       mul_inv_cancel₀ (ne_of_gt h1e), one_pow, Real.sqrt_one, ENNReal.ofReal_one]
-  calc ENNReal.ofReal (Real.sqrt ((1 - eps) ^ 3)) *
-        riemannianVolumeMeasure I3 P (h s) K
-      ≤ ENNReal.ofReal (Real.sqrt ((1 - eps) ^ 3)) *
-          (ENNReal.ofReal (Real.sqrt (((1 - eps)⁻¹) ^ 3)) *
+  calc ENNReal.ofReal (Real.sqrt ((1 - eps) ^ Module.finrank ℝ E')) *
+        riemannianVolumeMeasure J P (h s) K
+      ≤ ENNReal.ofReal (Real.sqrt ((1 - eps) ^ Module.finrank ℝ E')) *
+          (ENNReal.ofReal (Real.sqrt (((1 - eps)⁻¹) ^ Module.finrank ℝ E')) *
             riemannianVolumeMeasure I3 M (g s) ((F : P → M) '' K)) :=
         mul_le_mul' le_rfl hb
     _ = riemannianVolumeMeasure I3 M (g s) ((F : P → M) '' K) := by
@@ -237,18 +245,23 @@ theorem MetricComparisonOn.volume_image_ge
 
 
 theorem MetricComparisonOn.volume_image_le
-    {h : ℝ → SmoothRiemannianMetric I3 P} {g : ℝ → SmoothRiemannianMetric I3 M}
-    (F : PartialDiffeomorph I3 I3 P M ∞)
+    {h : ℝ → SmoothRiemannianMetric J P} {g : ℝ → SmoothRiemannianMetric I3 M}
+    (F : PartialDiffeomorph J I3 P M ∞)
     {U : Set P} {times : Set ℝ} {order : ℕ} {eps : ℝ}
     (C : MetricComparisonOn h g (F : P → M) U times order eps)
     {s : ℝ} (hs : s ∈ times) (heps : 0 ≤ eps) (heps1 : eps < 1)
     {V : Set P} (hV : IsOpen V) (hVU : V ⊆ U) (hVsrc : V ⊆ F.source)
     {K : Set P} (hK : IsCompact K) (hKV : K ⊆ V) :
     riemannianVolumeMeasure I3 M (g s) ((F : P → M) '' K) ≤
-      ENNReal.ofReal (Real.sqrt ((1 + eps) ^ 3)) *
-        riemannianVolumeMeasure I3 P (h s) K :=
+      ENNReal.ofReal (Real.sqrt ((1 + eps) ^ Module.finrank ℝ E')) *
+        riemannianVolumeMeasure J P (h s) K :=
   (comparison_volume_bounds F C hs heps heps1 hV hVU hVsrc hK hKV).2
 
+
+end CrossModel
+
+variable {P : Type v} [TopologicalSpace P] [ChartedSpace ThreeSpace P]
+  [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
 
 theorem volume_reserve_constant_pos {R Cm eps : ℝ} (hR : 0 < R) (hCm : 0 < Cm)
     (heps1 : eps < 1) :
@@ -276,8 +289,9 @@ theorem volume_reserve_image_of_scaled_comparison
   have hsQ : (0 : ℝ) < Q * Real.sqrt Q := mul_pos hQ (Real.sqrt_pos.mpr hQ)
   have hge : ENNReal.ofReal (Real.sqrt ((1 - eps) ^ 3)) *
       riemannianVolumeMeasure I3 P k K ≤
-      riemannianVolumeMeasure I3 M (scaleMetric Q hQ gt) ((F : P → M) '' K) :=
-    MetricComparisonOn.volume_image_ge F C hs heps heps1 hV hVU hVsrc hK hKV
+      riemannianVolumeMeasure I3 M (scaleMetric Q hQ gt) ((F : P → M) '' K) := by
+    simpa [ThreeSpace] using
+      MetricComparisonOn.volume_image_ge F C hs heps heps1 hV hVU hVsrc hK hKV
   have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
   have hscale := volume_scale_apply Q hQ gt ((F : P → M) '' K)
   rw [hdim] at hscale

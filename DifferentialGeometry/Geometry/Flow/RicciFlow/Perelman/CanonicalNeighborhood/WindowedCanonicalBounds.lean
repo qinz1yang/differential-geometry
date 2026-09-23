@@ -101,7 +101,7 @@ theorem WindowedModelWitness.volume_lower_bound_on_canonical_domain
   have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
   have hscale := volume_scale_apply (I := I3) (S.scalar t x) W.scalar_pos
     (S.base.metric t) (W.embedding '' K.domain.carrier)
-  rw [hdim] at hscale
+  rw [hdim] at hscale hge
   have hpow : ENNReal.ofReal (Real.sqrt (S.scalar t x)) ^ 3 =
       ENNReal.ofReal (S.scalar t x * Real.sqrt (S.scalar t x)) := by
     rw [← ENNReal.ofReal_pow (Real.sqrt_nonneg _)]

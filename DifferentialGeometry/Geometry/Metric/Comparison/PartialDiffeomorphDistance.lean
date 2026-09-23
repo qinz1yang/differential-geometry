@@ -14,23 +14,25 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {M N : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
+  {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
+  {M N : Type*} [TopologicalSpace M] [ChartedSpace H' M] [IsManifold J ∞ M]
   [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
 theorem metricPathELength_comp_le
-    (h : SmoothRiemannianMetric I N) (g : SmoothRiemannianMetric I M)
-    (F : PartialDiffeomorph I I N M (∞ : WithTop ℕ∞))
+    (h : SmoothRiemannianMetric I N) (g : SmoothRiemannianMetric J M)
+    (F : PartialDiffeomorph I J N M (∞ : WithTop ℕ∞))
     {gamma : ℝ → N} {a b L : ℝ} (hL : 0 ≤ L)
     (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) I 1 gamma (Icc a b))
     (hsource : ∀ s ∈ Icc a b, gamma s ∈ F.source)
     (hupper : ∀ s ∈ Ioo a b, ∀ v : TangentSpace I (gamma s),
-      g.inner (F (gamma s)) (mfderiv I I (F : N → M) (gamma s) v)
-        (mfderiv I I (F : N → M) (gamma s) v) ≤
+      g.inner (F (gamma s)) (mfderiv I J (F : N → M) (gamma s) v)
+        (mfderiv I J (F : N → M) (gamma s) v) ≤
       L ^ 2 * h.inner (gamma s) v v) :
-    metricPathELength (I := I) g ((F : N → M) ∘ gamma) a b ≤
+    metricPathELength (I := J) g ((F : N → M) ∘ gamma) a b ≤
       ENNReal.ofReal L * metricPathELength (I := I) h gamma a b := by
   rw [metricPathELength_eq, metricPathELength_eq, ← lintegral_const_mul' _ _
     ENNReal.ofReal_ne_top]
@@ -43,8 +45,8 @@ theorem metricPathELength_comp_le
   rw [← ENNReal.ofReal_mul hL]
   apply ENNReal.ofReal_le_ofReal
   change Real.sqrt (g.inner (F (gamma s))
-      (mfderiv 𝓘(ℝ, ℝ) I ((F : N → M) ∘ gamma) s 1)
-      (mfderiv 𝓘(ℝ, ℝ) I ((F : N → M) ∘ gamma) s 1)) ≤ _
+      (mfderiv 𝓘(ℝ, ℝ) J ((F : N → M) ∘ gamma) s 1)
+      (mfderiv 𝓘(ℝ, ℝ) J ((F : N → M) ∘ gamma) s 1)) ≤ _
   rw [mfderiv_comp_apply s hFd hgd]
   calc
     _ ≤ Real.sqrt (L ^ 2 * h.inner (gamma s)
@@ -53,16 +55,16 @@ theorem metricPathELength_comp_le
     _ = _ := by rw [Real.sqrt_mul (sq_nonneg L), Real.sqrt_sq hL]
 
 theorem edistOf_map_le_of_metric_upper_on_ball
-    (h : SmoothRiemannianMetric I N) (g : SmoothRiemannianMetric I M)
-    (F : PartialDiffeomorph I I N M (∞ : WithTop ℕ∞)) (p y : N)
+    (h : SmoothRiemannianMetric I N) (g : SmoothRiemannianMetric J M)
+    (F : PartialDiffeomorph I J N M (∞ : WithTop ℕ∞)) (p y : N)
     {R L : ℝ} (hR : 0 < R) (hL : 0 < L)
     (hsource : riemannianClosedBallOf (I := I) h p R ⊆ F.source)
     (hupper : ∀ z ∈ riemannianClosedBallOf (I := I) h p R,
       ∀ v : TangentSpace I z,
-      g.inner (F z) (mfderiv I I (F : N → M) z v)
-        (mfderiv I I (F : N → M) z v) ≤ L ^ 2 * h.inner z v v)
+      g.inner (F z) (mfderiv I J (F : N → M) z v)
+        (mfderiv I J (F : N → M) z v) ≤ L ^ 2 * h.inner z v v)
     (hy : riemannianEDistOf (I := I) h p y < ENNReal.ofReal R) :
-    riemannianEDistOf (I := I) g (F p) (F y) ≤
+    riemannianEDistOf (I := J) g (F p) (F y) ≤
       ENNReal.ofReal L * riemannianEDistOf (I := I) h p y := by
   let d : ℝ := (riemannianEDistOf (I := I) h p y).toReal
   have hfin : riemannianEDistOf (I := I) h p y ≠ ⊤ :=
@@ -97,7 +99,7 @@ theorem edistOf_map_le_of_metric_upper_on_ball
     rw [hzero] at hprefix
     exact ((hprefix.trans (metricPathELength_mono h gamma le_rfl hs.2)).trans
       hlength.le).trans (ENNReal.ofReal_le_ofReal hdeta.le)
-  have hmap : ContMDiffOn 𝓘(ℝ, ℝ) I 1 ((F : N → M) ∘ gamma) (Icc 0 1) :=
+  have hmap : ContMDiffOn 𝓘(ℝ, ℝ) J 1 ((F : N → M) ∘ gamma) (Icc 0 1) :=
     (F.contMDiffOn_toFun.of_le (by simp)).comp hgamma
       (fun s hs => hsource (hstay s hs))
   have hdist := edistOf_le_metricPathELength g (by norm_num : (0 : ℝ) ≤ 1) hmap
@@ -132,17 +134,17 @@ private theorem edistOf_comm
   exact Manifold.riemannianEDist_comm
 
 theorem edistOf_map_le_of_metric_upper_on_buffered_ball
-    (h : SmoothRiemannianMetric I N) (g : SmoothRiemannianMetric I M)
-    (F : PartialDiffeomorph I I N M (∞ : WithTop ℕ∞)) (p x y : N)
+    (h : SmoothRiemannianMetric I N) (g : SmoothRiemannianMetric J M)
+    (F : PartialDiffeomorph I J N M (∞ : WithTop ℕ∞)) (p x y : N)
     {R r L : ℝ} (hr : 0 ≤ r) (hbuffer : 3 * r < R) (hL : 0 < L)
     (hsource : riemannianClosedBallOf (I := I) h p R ⊆ F.source)
     (hupper : ∀ z ∈ riemannianClosedBallOf (I := I) h p R,
       ∀ v : TangentSpace I z,
-      g.inner (F z) (mfderiv I I (F : N → M) z v)
-        (mfderiv I I (F : N → M) z v) ≤ L ^ 2 * h.inner z v v)
+      g.inner (F z) (mfderiv I J (F : N → M) z v)
+        (mfderiv I J (F : N → M) z v) ≤ L ^ 2 * h.inner z v v)
     (hx : x ∈ riemannianClosedBallOf (I := I) h p r)
     (hy : y ∈ riemannianClosedBallOf (I := I) h p r) :
-    riemannianEDistOf (I := I) g (F x) (F y) ≤
+    riemannianEDistOf (I := J) g (F x) (F y) ≤
       ENNReal.ofReal L * riemannianEDistOf (I := I) h x y := by
   have hmargin : 0 < R - r := by linarith
   have hball : riemannianClosedBallOf (I := I) h x (R - r) ⊆
