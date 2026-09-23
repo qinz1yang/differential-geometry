@@ -4,12 +4,13 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceBallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallModel
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapSource
+import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceCrossingFrontiers
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Space M]
+theorem exists_crossing_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
     {C₀ C₁ O : Set M} (T : PLPieceIn ((ℝ × ℝ) × ℝ) 3 M (C₀ ∪ C₁))
     (hT : T.complex.space = Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 1)
@@ -27,6 +28,10 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
       (∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
         IsPLHomeomorphInto 3 φ₀ C₀ ∧ IsPLHomeomorphInto 3 φ₁ C₁ ∧
         φ₀ '' C₀ = A ∧ φ₁ '' C₁ = B ∧ EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier A ∩ interior B)) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier A \ B)) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier B ∩ interior A)) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier B \ A)) ∧
       ∀ p₀ ∈ T.map '' (K ×ˢ {(0 : ℝ)}), ∀ p₁ ∈ T.map '' (K ×ˢ {(0 : ℝ)}), p₀ ≠ p₁ →
         ∃ (L₀ L₁ : Set M) (q₀ q₁ : M), IsCompact L₀ ∧ IsCompact L₁ ∧
           IsConnected L₀ ∧ IsConnected L₁ ∧ Disjoint L₀ L₁ ∧
@@ -39,13 +44,18 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
     hP.isPolyhedron.isCompact hcont hO (fun x hx => hDO (hTm.subset ⟨(x, 0), ⟨hx, rfl⟩, rfl⟩))
   obtain ⟨A, B, f₀, f₁, hA, hB, hhalf₀, hhalf₁, hself₀, hself₁, hfix₀, hfix₁,
     hnonempty, hcircle, hmid, hlens,
-    hAB, hcover, hAeq, hBeq, hroutes⟩ := exists_pierced_square_ball_pair hK hKP ha ha1
+    hAB, hcover, hAeq, hBeq, hinA, houtA, hinB, houtB, hroutes⟩ :=
+    exists_crossing_pierced_square_ball_pair hK hKP ha ha1
   have hAT : A ⊆ T.complex.space :=
     subset_union_left.trans (hAB.trans hT.symm.subset)
   have hBT : B ⊆ T.complex.space :=
     subset_union_right.trans (hAB.trans hT.symm.subset)
   have hdim : Module.finrank ℝ ((ℝ × ℝ) × ℝ) = 3 := by
     simp only [Module.finrank_prod, Module.finrank_self, Nat.reduceAdd]
+  have hcrossA := T.crossing_sides_of_isPLBall hdim hA hB hAT hBT hinA houtA
+  have hcrossB := T.crossing_sides_of_isPLBall hdim hB hA hBT hAT
+    (by simpa only [inter_comm] using hinB) (by simpa only [inter_comm] using houtB)
+  rw [inter_comm (frontier (T.map '' B))] at hcrossB
   have hAf := T.frontier_image_of_isPLBall hdim hA hAT
   have hBf := T.frontier_image_of_isPLBall hdim hB hBT
   have hAi := T.image_interior_of_isPLBall hdim hA hAT
@@ -77,7 +87,7 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
     exact prod_mono Subset.rfl (Icc_subset_Icc (by norm_num) le_rfl)
   refine ⟨T.map '' A, T.map '' B, (T.isPolyhedralBall_image hA hAT).isPLCellOn,
     (T.isPolyhedralBall_image hB hBT).isPLCellOn, ?_, hfront.symm ▸ hsphere,
-    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, hcrossA.1, hcrossA.2, hcrossB.1, hcrossB.2, ?_⟩
   · obtain ⟨x, hxA, hxB⟩ := hnonempty
     exact ⟨T.map x, hAi.subset ⟨x, hxA, rfl⟩, hBi.subset ⟨x, hxB, rfl⟩⟩
   · exact hfront.subset.trans ((image_mono hmid).trans hTm.subset)
@@ -152,7 +162,36 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
     · rintro ⟨x, hx, he⟩
       exact hq₁A ((T.bijOn.injOn (hAT hx) (hLT₁ hq₁) he) ▸ hx)
 
-theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace M] [T2Space M]
+theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
+    {C₀ C₁ O : Set M} (T : PLPieceIn ((ℝ × ℝ) × ℝ) 3 M (C₀ ∪ C₁))
+    (hT : T.complex.space = Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 1)
+    (hT₀ : T.map '' (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 0) = C₀)
+    (hT₁ : T.map '' (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (0 : ℝ) 1) = C₁)
+    (hTm : T.map '' (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ {(0 : ℝ)}) = C₀ ∩ C₁)
+    (hO : IsOpen O) (hDO : C₀ ∩ C₁ ⊆ O) {K : Set (ℝ × ℝ)} (hK : IsCompact K)
+    (hKP : K ⊆ interior (Metric.closedBall (0 : ℝ × ℝ) 1)) :
+    ∃ A B : Set M, IsPLCellOn 3 A (frontier A) ∧ IsPLCellOn 3 B (frontier B) ∧
+      (interior A ∩ interior B).Nonempty ∧
+      IsPolyhedralSphere (n := 3) 1 (frontier A ∩ frontier B) ∧
+      frontier A ∩ frontier B ⊆ C₀ ∩ C₁ ∧ A ∩ B ⊆ O ∧ A ∪ B ⊆ C₀ ∪ C₁ ∧
+      T.map '' (K ×ˢ Ioo (-1 : ℝ) 1) ⊆ interior A ∪ interior B ∧
+      A \ O = C₀ \ O ∧ B \ O = C₁ \ O ∧
+      (∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
+        IsPLHomeomorphInto 3 φ₀ C₀ ∧ IsPLHomeomorphInto 3 φ₁ C₁ ∧
+        φ₀ '' C₀ = A ∧ φ₁ '' C₁ = B ∧ EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ) ∧
+      ∀ p₀ ∈ T.map '' (K ×ˢ {(0 : ℝ)}), ∀ p₁ ∈ T.map '' (K ×ˢ {(0 : ℝ)}), p₀ ≠ p₁ →
+        ∃ (L₀ L₁ : Set M) (q₀ q₁ : M), IsCompact L₀ ∧ IsCompact L₁ ∧
+          IsConnected L₀ ∧ IsConnected L₁ ∧ Disjoint L₀ L₁ ∧
+          p₀ ∈ L₀ ∧ q₀ ∈ L₀ ∧ p₁ ∈ L₁ ∧ q₁ ∈ L₁ ∧
+          L₀ ⊆ interior A ∩ O ∧ L₁ ⊆ interior B ∩ O ∧ q₀ ∉ B ∧ q₁ ∉ A := by
+  obtain ⟨A, B, hA, hB, hint, hcircle, hsub, hlens, hu, hcover, hAdiff, hBdiff,
+    hmaps, -, -, -, -, hroutes⟩ :=
+    exists_crossing_pierced_cell_pair_in_prism T hT hT₀ hT₁ hTm hO hDO hK hKP
+  exact ⟨A, B, hA, hB, hint, hcircle, hsub, hlens, hu, hcover, hAdiff, hBdiff, hmaps, hroutes⟩
+
+theorem exists_crossing_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace M]
+    [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
     {C₀ C₁ O G : Set M}
     (h₀ : IsPolyhedralBall (n := 3) 3 C₀) (h₁ : IsPolyhedralBall (n := 3) 3 C₁)
@@ -168,6 +207,10 @@ theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace 
       (∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
         IsPLHomeomorphInto 3 φ₀ C₀ ∧ IsPLHomeomorphInto 3 φ₁ C₁ ∧
         φ₀ '' C₀ = A ∧ φ₁ '' C₁ = B ∧ EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier A ∩ interior B)) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier A \ B)) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier B ∩ interior A)) ∧
+      (frontier A ∩ frontier B ⊆ closure (frontier B \ A)) ∧
       ∀ p₀ ∈ G ∩ (C₀ ∩ C₁), ∀ p₁ ∈ G ∩ (C₀ ∩ C₁), p₀ ≠ p₁ →
         ∃ (L₀ L₁ : Set M) (q₀ q₁ : M), IsCompact L₀ ∧ IsCompact L₁ ∧
           IsConnected L₀ ∧ IsConnected L₁ ∧ Disjoint L₀ L₁ ∧
@@ -199,9 +242,11 @@ theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace 
   have hKP : K ⊆ interior P := by
     rintro x ⟨z, hz, rfl⟩
     exact (hLI z hz).1
-  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq, hmaps, hroutes⟩ :=
-    exists_pierced_cell_pair_in_prism T hT hT₀ hT₁ hTm hO hDO hK hKP
-  refine ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, ?_, hAeq, hBeq, hmaps, ?_⟩
+  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq,
+    hmaps, hinA, houtA, hinB, houtB, hroutes⟩ :=
+    exists_crossing_pierced_cell_pair_in_prism T hT hT₀ hT₁ hTm hO hDO hK hKP
+  refine ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, ?_, hAeq, hBeq, hmaps,
+    hinA, houtA, hinB, houtB, ?_⟩
   · intro y hy
     obtain ⟨x, hx, rfl⟩ := T.bijOn.surjOn (interior_subset (hGC hy))
     have hxL : x ∈ L := ⟨hx, hy⟩
@@ -214,5 +259,31 @@ theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace 
         exact ⟨hx.1, by have ht : x.2 = 0 := hx.2; rw [ht]; norm_num⟩
       exact ⟨x, ⟨⟨x, ⟨hxT, hp.1⟩, rfl⟩, hx.2⟩, rfl⟩
     exact fun p₀ hp₀ p₁ hp₁ hne => hroutes p₀ (hmidK hp₀) p₁ (hmidK hp₁) hne
+
+theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace M] [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
+    {C₀ C₁ O G : Set M}
+    (h₀ : IsPolyhedralBall (n := 3) 3 C₀) (h₁ : IsPolyhedralBall (n := 3) 3 C₁)
+    (hD : IsPolyhedralBall (n := 3) 2 (C₀ ∩ C₁))
+    (hD₀ : C₀ ∩ C₁ ⊆ frontier C₀) (hD₁ : C₀ ∩ C₁ ⊆ frontier C₁)
+    (hO : IsOpen O) (hDO : C₀ ∩ C₁ ⊆ O) (hG : IsCompact G)
+    (hGC : G ⊆ interior (C₀ ∪ C₁)) :
+    ∃ A B : Set M, IsPLCellOn 3 A (frontier A) ∧ IsPLCellOn 3 B (frontier B) ∧
+      (interior A ∩ interior B).Nonempty ∧
+      IsPolyhedralSphere (n := 3) 1 (frontier A ∩ frontier B) ∧
+      frontier A ∩ frontier B ⊆ C₀ ∩ C₁ ∧ A ∩ B ⊆ O ∧ A ∪ B ⊆ C₀ ∪ C₁ ∧
+      G ⊆ interior A ∪ interior B ∧ A \ O = C₀ \ O ∧ B \ O = C₁ \ O ∧
+      (∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
+        IsPLHomeomorphInto 3 φ₀ C₀ ∧ IsPLHomeomorphInto 3 φ₁ C₁ ∧
+        φ₀ '' C₀ = A ∧ φ₁ '' C₁ = B ∧ EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ) ∧
+      ∀ p₀ ∈ G ∩ (C₀ ∩ C₁), ∀ p₁ ∈ G ∩ (C₀ ∩ C₁), p₀ ≠ p₁ →
+        ∃ (L₀ L₁ : Set M) (q₀ q₁ : M), IsCompact L₀ ∧ IsCompact L₁ ∧
+          IsConnected L₀ ∧ IsConnected L₁ ∧ Disjoint L₀ L₁ ∧
+          p₀ ∈ L₀ ∧ q₀ ∈ L₀ ∧ p₁ ∈ L₁ ∧ q₁ ∈ L₁ ∧
+          L₀ ⊆ interior A ∩ O ∧ L₁ ⊆ interior B ∩ O ∧ q₀ ∉ B ∧ q₁ ∉ A := by
+  obtain ⟨A, B, hA, hB, hint, hcircle, hsub, hlens, hu, hcover, hAdiff, hBdiff,
+    hmaps, -, -, -, -, hroutes⟩ :=
+    exists_crossing_pierced_cell_pair_covering_compact h₀ h₁ hD hD₀ hD₁ hO hDO hG hGC
+  exact ⟨A, B, hA, hB, hint, hcircle, hsub, hlens, hu, hcover, hAdiff, hBdiff, hmaps, hroutes⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

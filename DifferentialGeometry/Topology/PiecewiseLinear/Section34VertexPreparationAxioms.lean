@@ -16,6 +16,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStabilityScales
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceBallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceConjugateEmbedding
+import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceCrossingFrontiers
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularGenerators
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CellEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ChartLocalEnlargements
@@ -47,6 +48,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexCellIntersec
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexEdgePasting
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparationProbe
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexScales
+import DifferentialGeometry.Topology.PiecewiseLinear.SignedHeightCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLCellExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPieceConjugate
 import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPrismShift
@@ -89,6 +91,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms PLPieceIn.frontier_image_of_isPLBall
 #print axioms PLPieceIn.image_interior_of_isPLBall
 #print axioms PLPieceIn.exists_equiv_conjugate
+#print axioms PLPieceIn.crossing_sides_of_isPLBall
 #print axioms IsLocallyFiniteRegularNeighborhoodOf.carriesFundamentalGroupOnto
 #print axioms IsAnnulusOn.boundaries_carry_of_core
 #print axioms PLPieceIn.isPLOn_conjugate
@@ -146,10 +149,14 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms isPLHomeomorphOn_piercingHeightMove
 #print axioms isPLHomeomorphOn_piercingHeightMove_self
 #print axioms exists_pierced_prism_ball_pair
+#print axioms exists_crossing_pierced_square_ball_pair
 #print axioms exists_pierced_square_ball_pair
 #print axioms isPLBall_square_closedBall
+#print axioms exists_piercing_square_roof_with_sign_closures
 #print axioms exists_piercing_square_roof
+#print axioms exists_crossing_pierced_cell_pair_in_prism
 #print axioms exists_pierced_cell_pair_in_prism
+#print axioms exists_crossing_pierced_cell_pair_covering_compact
 #print axioms exists_pierced_cell_pair_covering_compact
 #print axioms exists_section34_pierced_edge_cells
 #print axioms exists_section34_pierced_vertex_cells
@@ -181,6 +188,9 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_section34_vertex_scales_with_sum_margins
 #print axioms section34CellThickening_mono
 #print axioms Section34VertexPreparation.mono
+#print axioms graph_mem_frontier_lower_height_region
+#print axioms graph_mem_frontier_upper_height_region
+#print axioms signed_height_regions_cross_along_zero_set
 #print axioms exists_supported_isPL_homeomorph_extension
 #print axioms PLPieceIn.exists_supported_conjugate
 #print axioms PLPieceIn.exists_supported_prism_shift

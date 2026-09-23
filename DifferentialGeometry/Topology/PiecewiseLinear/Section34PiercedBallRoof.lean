@@ -24,13 +24,17 @@ theorem isPLBall_square_closedBall {r : ℝ} (hr : 0 < r) :
   simpa only [Module.finrank_prod, Module.finrank_self, Nat.reduceAdd] using
     (square_closedBall_isHPolytope r).isPLBall hinter
 
-theorem exists_piercing_square_roof {K : Set (ℝ × ℝ)} (hK : IsCompact K)
+theorem exists_piercing_square_roof_with_sign_closures {K : Set (ℝ × ℝ)} (hK : IsCompact K)
     (hKP : K ⊆ interior (Metric.closedBall (0 : ℝ × ℝ) 1)) {a : ℝ} (ha : 0 < a) :
     ∃ g : (ℝ × ℝ) → ℝ, IsPiecewiseAffineOn g univ ∧
       (∀ x ∈ Metric.closedBall (0 : ℝ × ℝ) 1, |g x| ≤ a / 2) ∧
       (∀ x ∈ frontier (Metric.closedBall (0 : ℝ × ℝ) 1), g x < 0) ∧
       (∀ x ∈ K, 0 < g x) ∧
-      IsPLSphere 1 {x | x ∈ Metric.closedBall (0 : ℝ × ℝ) 1 ∧ g x = 0} := by
+      IsPLSphere 1 {x | x ∈ Metric.closedBall (0 : ℝ × ℝ) 1 ∧ g x = 0} ∧
+      ({x | x ∈ Metric.closedBall (0 : ℝ × ℝ) 1 ∧ g x = 0} ⊆
+        closure (interior (Metric.closedBall (0 : ℝ × ℝ) 1) ∩ {x | 0 < g x})) ∧
+      {x | x ∈ Metric.closedBall (0 : ℝ × ℝ) 1 ∧ g x = 0} ⊆
+        closure (interior (Metric.closedBall (0 : ℝ × ℝ) 1) ∩ {x | g x < 0}) := by
   have hKnorm (x) (hx : x ∈ K) : ‖x‖ < 1 := by
     have hm := hKP hx
     rwa [interior_closedBall _ one_ne_zero, mem_ball_zero_iff] at hm
@@ -71,7 +75,7 @@ theorem exists_piercing_square_roof {K : Set (ℝ × ℝ)} (hK : IsCompact K)
       linarith
     · intro hx
       exact ⟨hx ▸ hr1.le, by dsimp [g]; rw [hx, sub_self, mul_zero]⟩
-  refine ⟨g, hg, ?_, ?_, ?_, ?_⟩
+  refine ⟨g, hg, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro x hx
     have hn := mem_closedBall_zero_iff.mp hx
     have hnonneg := norm_nonneg x
@@ -89,5 +93,49 @@ theorem exists_piercing_square_roof {K : Set (ℝ × ℝ)} (hK : IsCompact K)
     exact (square_closedBall_isHPolytope r).isPLSphere_frontier
       (by simp only [Module.finrank_prod, Module.finrank_self, Nat.reduceAdd])
       (by rw [interior_closedBall _ hr.ne']; exact ⟨0, Metric.mem_ball_self hr⟩)
+  · rw [hzero]
+    have he : interior (Metric.closedBall (0 : ℝ × ℝ) 1) ∩ {x | 0 < g x} =
+        Metric.ball (0 : ℝ × ℝ) r := by
+      ext x
+      rw [interior_closedBall _ one_ne_zero]
+      simp only [mem_inter_iff, mem_ball_zero_iff, mem_ofPred_eq]
+      change (‖x‖ < 1 ∧ 0 < c * (r - ‖x‖)) ↔ ‖x‖ < r
+      rw [mul_pos_iff_of_pos_left hc, sub_pos]
+      exact ⟨And.right, fun hx => ⟨hx.trans hr1, hx⟩⟩
+    rw [he, closure_ball _ hr.ne']
+    exact Metric.sphere_subset_closedBall
+  · rw [hzero]
+    have he : interior (Metric.closedBall (0 : ℝ × ℝ) 1) ∩ {x | g x < 0} =
+        Metric.ball (0 : ℝ × ℝ) 1 ∩ (Metric.closedBall (0 : ℝ × ℝ) r)ᶜ := by
+      ext x
+      rw [interior_closedBall _ one_ne_zero]
+      simp only [mem_inter_iff, mem_ball_zero_iff, mem_compl_iff, mem_closedBall_zero_iff,
+        mem_ofPred_eq, not_le]
+      change (‖x‖ < 1 ∧ c * (r - ‖x‖) < 0) ↔ (‖x‖ < 1 ∧ r < ‖x‖)
+      constructor
+      · rintro ⟨hx, hgx⟩
+        exact ⟨hx, by nlinarith⟩
+      · rintro ⟨hx, hgx⟩
+        exact ⟨hx, mul_neg_of_pos_of_neg hc (sub_neg.mpr hgx)⟩
+    rw [he]
+    intro x hx
+    have hxnorm : ‖x‖ = r := mem_sphere_zero_iff_norm.mp hx
+    apply Metric.isOpen_ball.inter_closure
+    refine ⟨mem_ball_zero_iff.mpr (hxnorm ▸ hr1), ?_⟩
+    have hxfront : x ∈ frontier (Metric.closedBall (0 : ℝ × ℝ) r) := by
+      rwa [frontier_closedBall _ hr.ne']
+    rw [frontier_eq_closure_inter_closure] at hxfront
+    exact hxfront.2
+
+theorem exists_piercing_square_roof {K : Set (ℝ × ℝ)} (hK : IsCompact K)
+    (hKP : K ⊆ interior (Metric.closedBall (0 : ℝ × ℝ) 1)) {a : ℝ} (ha : 0 < a) :
+    ∃ g : (ℝ × ℝ) → ℝ, IsPiecewiseAffineOn g univ ∧
+      (∀ x ∈ Metric.closedBall (0 : ℝ × ℝ) 1, |g x| ≤ a / 2) ∧
+      (∀ x ∈ frontier (Metric.closedBall (0 : ℝ × ℝ) 1), g x < 0) ∧
+      (∀ x ∈ K, 0 < g x) ∧
+      IsPLSphere 1 {x | x ∈ Metric.closedBall (0 : ℝ × ℝ) 1 ∧ g x = 0} := by
+  obtain ⟨g, hg, hga, hgf, hgK, hzero, -⟩ :=
+    exists_piercing_square_roof_with_sign_closures hK hKP ha
+  exact ⟨g, hg, hga, hgf, hgK, hzero⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
