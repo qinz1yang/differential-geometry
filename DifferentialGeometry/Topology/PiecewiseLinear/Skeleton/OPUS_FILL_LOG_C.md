@@ -543,3 +543,174 @@
   they are named with `let _ := …` (the AGENTS.md pattern) so that the frozen statement compiles
   without an unused-variable diagnostic. A strictly stronger restatement without them is possible.
 - Compiles: 2 module checks + 1 audit.
+
+## exists_plCrossSeamReading_of_isCrossRegluedCell — CLOSED
+
+- Files (all new, `DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/`):
+  - `CrossSeamTubePages.lean` (1144 lines, SHA-256
+    `15bc4ffcbe1611139e14f9dcb5159d8c6753d3418df03ec2e3d3f0eea0f20818`)
+  - `CrossSeamTubeTransverse.lean` (566 lines, SHA-256
+    `5b47037f064fdef4b4f8af565784077d10768f5e0d13c85411b4f401de746748`)
+  - `CrossSeamTubeReading.lean` (231 lines, SHA-256
+    `f163f6d13e639e36b6c0fdbc10fcb4cff64d70283d64940e9f606ff118d4df65`)
+  - `CrossRegluedCellReading.lean` (850 lines, SHA-256
+    `fdd9c68d361e5156aaa8ce8f2bf80fff76727aac1535dfdd26b8f456e5f23638`), contains the leaf.
+- Import lines to register, in dependency order (83, 88, 85, 88 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTubePages`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTubeTransverse`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTubeReading`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellReading`
+- New public names (77, each grepped tree-wide with `grep -rlw`, none used before; the four
+  defs have no underscore): `CrossSeamTubePages`: `crossRayOf`, `crossDirOf`, `crossSheetOf`,
+  `crossOpenSheetOf`, `crossSeamPage` (defs) and `crossRayOf_sdiff_eq`,
+  `crossRayOf_subset_crossingArc`, `crossRayOf_subset_spliceSquare`, `zero_mem_crossRayOf`,
+  `crossOpenSheetOf_subset_crossSheetOf`, `crossSheetOf_subset_spliceCylinder`,
+  `crossOpenSheetOf_subset_spliceCylinder`, `crossSheetOf_subset_crossingFigure`,
+  `crossSheetOf_eq_union`, `disjoint_crossOpenSheetOf_spliceCore`,
+  `spliceCore_subset_crossSheetOf`, `convex_crossOpenSheetOf`,
+  `smul_crossDirOf_mem_crossOpenSheetOf`, `mem_closure_crossOpenSheetOf`,
+  `exists_mem_crossOpenSheetOf`, `crossRayOf_inter_subset`, `crossSheetOf_inter_subset`,
+  `isHPolytope_crossSheetOf`, `isHPolytope_spliceCore`, `crossQuarterTurn_smul_crossDirOf`,
+  `crossOpenSheetOf_eq_image`, `image_crossQuarterTurn_crossOpenSheetOf`,
+  `image_crossQuarterTurn_crossSheetOf`, `continuousOn_invFunOn_of_isCompact_of_forall_eq`,
+  `exists_mem_nhds_inter_image_subset_image_inter`, `exists_mem_nhds_forall_mem_of_isCompact`,
+  `crossSeamPage_subset`, `crossSeamPage_subset_preimage`, `exists_mem_crossSeamPage_apply_eq`,
+  `notMem_crossSeamPage_of_forall_mem`, `exists_forall_mem_or_forall_mem_of_crossOpenSheetOf`,
+  `exists_eq_invFunOn_of_mem_of_crossSeam`, `crossSeamPage_class`, `crossOpenSheetOf_eq_sdiff`,
+  `zero_mem_closure_crossRayOf_sdiff`, `IsPLBall.exists_isOpen_isPreconnected_inter_interior`,
+  `mem_of_apply_mem_image_of_injOn`, `eq_invFunOn_or_eq_invFunOn_of_crossSeam`,
+  `forall_mem_of_subset_crossSeamPage`, `crossSeamPage_eq_union`, `injOn_crossSeamPage`,
+  `image_crossSeamPage`, `bijOn_crossSeamPage`, `inter_preimage_invFunOn_eq`,
+  `isPolyhedron_crossSeamPage`, `isPLHomeomorphOn_crossSeamPage`,
+  `continuousOn_invFunOn_crossSeamPage`, `mem_frontier_iff_of_mem_crossSeamPage`,
+  `exists_mem_crossSeamPage_of_mem`, `crossSeamPage_wall`; `CrossSeamTubeTransverse`:
+  `crossOpenSheetOf_subset_sdiff`, `pos_of_isPreconnected_of_ne_zero`,
+  `neg_of_isPreconnected_of_ne_zero`, `norm_crossDirOf`, `crossWedge_ne_zero`,
+  `not_crossWedge_of_succ`, `exists_forall_mem_of_crossSeamPage_ownership`,
+  `exists_two_sides_of_crossSeamSheet`, `exists_opposite_crossSeamPage`;
+  `CrossSeamTubeReading`: `isOpen_image_crossSeamBox`, `disjoint_crossSeamPage_of_class`,
+  `nonempty_plCrossSeamReading_of_crossSeamPage`; `CrossRegluedCellReading`:
+  `false_of_three_mem_fiber`, `false_of_isOpen_inter_subset`,
+  `isPreconnected_inter_preimage_crossOpenSheetOf`, `nonempty_inter_preimage_crossOpenSheetOf`,
+  `disjoint_inter_preimage_crossOpenSheetOf`, `crossSeamPage_subset_of_three_closed`,
+  `exists_isOpen_forall_mem_crossSeamPage`, `crossSeamPage_comp_crossQuarterTurn`,
+  `nonempty_plCrossSeamReading_comp_crossQuarterTurn` and the leaf (statement byte-identical to
+  `Skeleton/DescentStepOrientable.lean:235`, top level in the same namespace with
+  `open Set Topology`; string comparison of the text from `theorem` to `:= by`).
+- Checker (2026-09-22, local time, host guard 0 lean processes), in dependency order, after the
+  last edit (three `/-! ### … -/` section headers removed from `CrossSeamTubePages.lean`):
+  18:44 `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\CrossSeamTubePages.lean with no diagnostics; shared outputs unchanged.`
+  18:44 `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\CrossSeamTubeTransverse.lean with no diagnostics; shared outputs unchanged.`
+  18:45 `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\CrossSeamTubeReading.lean with no diagnostics; shared outputs unchanged.`
+  18:45 `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\CrossRegluedCellReading.lean with no diagnostics; shared outputs unchanged.`
+- Axiom audit: `AuditOpusC12.lean` over all four modules — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC12.lean with no diagnostics;
+  shared outputs unchanged.` (18:46, rerun after the last edit): closures within `propext`,
+  `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route. The four half sheets are indexed cyclically by `Fin 4` (`e₁, e₂, -e₁, -e₂`, so the
+  quarter turn is `i ↦ i + 1`). For a map `f` of a compact `Dom` over the tube, the page
+  `crossSeamPage chart f Dom i` is the closure of the part over the open `i`-th sheet.
+  (1) `crossSeamPage_class`: if `f` is injective over the open sheets and covers them, and the
+  preimage of the core is two disjoint closed arcs `J₁`, `J₂` each carried bijectively onto the
+  core, every page contains exactly one of them and misses the other (local dichotomy along the
+  core: the preimage of a small box of an open sheet is the continuous image of a convex set,
+  hence follows one of the two core preimages; then connectedness of `[0, 1]`). Pages are
+  polyhedra (`IsPolyhedron.closure_sdiff` of two PL preimages), `invFunOn chart ∘ f` is a PL
+  homeomorphism of each page onto its sheet, the boundary clause holds (core end points are
+  limits of page points on `BdM`), and the wall clause holds (`chart` of the open box is open by
+  invariance of domain; interiors of PL disks are locally preconnected).
+  (2) `exists_opposite_crossSeamPage`: the two-sided crossing at `chart (0, 0, 1/2)`
+  (`hasPLTwoSidedDoubleCrossingAt_of_notMem_boundary`, normal form
+  `exists_linearEquiv_normalForm`) forces each arc onto two opposite sheets: each arc has pages
+  on both sides of its plane (points `h⁻¹ L⁻¹ (0, ±ε, 0)`), and two adjacent pages of one arc
+  would give a segment through the open quadrant on which the other functional changes sign
+  without vanishing (`not_crossWedge_of_succ`, intermediate value theorem).
+  (3) For the leaf: `D`'s pages over `A` lie one in `U₁` and one in `U₂`, those over `C` one in
+  `U₂` and one in `U₃` (each open page is preconnected and misses `A ∪ C`; near the interior
+  point of `A` over the middle of the core both sides of `A` occur, else an open set would lie in
+  `U₁ ∩ U₂ = A`). The cross reglue `G` has preimage arcs `P' ∩ h⁻¹(P ∩ Q)` and `P' ∩ Q'`; its
+  pages sit in `P' ∩ h⁻¹P`, `P' ∩ h⁻¹Q`, `Q'`, matching `U₁`, `U₂`, `U₃` through `f₁ ∘ h`,
+  `f₂ ∘ h`, `f₃`, so each arc of `G` gets one page of `A` and one of `C`, i.e. two adjacent
+  sheets. Pairs `{e₁, -e₂}`, `{-e₁, e₂}` give the reading in `T.chart`
+  (`nonempty_plCrossSeamReading_of_crossSeamPage` via
+  `exists_plCrossSeamReading_of_four_source_pages`), the other adjacent pairing gives it in
+  `T.chart ∘ crossQuarterTurn` (`crossSeamPage_comp_crossQuarterTurn`). Properness of `G` near
+  the tube is derived from `G '' frontier G.domain = D '' frontier D.domain` and
+  `doublePointSet G = doublePointSet D`.
+- Hypotheses: every hypothesis of the frozen statement is used; no LEAD DECISION.
+- Compiles: 25 module checks (all four modules, including two full re-verifications) + 2 audits.
+
+## not_branchPreimage_eq_of_isOrientable — STUCK
+
+- No file. The frozen statement is, up to the name `F` of the ambient space, the statement of
+  `NormalSingularCellData.not_branchPreimage_eq_of_isOrientable` of
+  `Skeleton/ClosedBranchCaseOne.lean:187` (checked by reading both), whose proof there is complete
+  from proved producers (`exists_isMarkedBranchCollar`,
+  `isOrientable_derivedNeighborhood_of_isSubdivision`,
+  `exists_sourceRayTransport_of_isSourceTrackedBranchTube`, `SourceRayTransport.isSheetExchange`,
+  `IsCylindricalDiagram.not_closedBranchCase1`, ...) and one open leaf. Skeleton modules may not
+  be imported, so the leaf closes exactly when that open leaf is proved in a real module.
+- Exact remaining goal (`Skeleton/ClosedBranchCaseOne.lean:169`, verbatim):
+  `exists_isSourceTrackedBranchTube (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+  (hL : IsCombinatorialManifold 3 L) : letI := combinatorialChartedSpace L hL; ∀ D BdM B hD c,
+  ¬hD.singularSet.IsBoundaryBranch c → ∀ J Q C τ ρ sheet, IsPLSphere 1 J →
+  hD.IsMarkedBranchCollar c J Q C τ ρ sheet → ∃ Pc (_ : Finite Pc.faces) N (_ : Finite N.faces)
+  φ u r, IsSourceTrackedBranchTube hD c Subtype.val L J ρ N Pc φ u r`: a cylindrical diagram
+  of a derived neighbourhood `derivedNeighborhood R Lc` (`R` a finite subdivision of `L`) over a
+  `2`-ball cross section, with PL end map permuting four cyclically ordered marked points and the
+  four crossing rays realised by continuous source arcs in `J` on fixed collar sides.
+- Verified missing (grep): `IsSourceTrackedBranchTube` is constructed nowhere; the only
+  `IsCylindricalDiagram` producers (`exists_isCylindricalDiagram_eqOn_eqOn`,
+  `exists_isCylindricalDiagram_of_annulus_bicollar`) start from given product or annulus data,
+  not from a branch circle. Gemini G088 confirmed: not a one-lemma gap.
+- Tube-free alternative checked and not available: the local sign
+  `ε(a) = orientation of (carrier direction, collar normal of the sheet through a, collar normal
+  of the sheet through τ a)` would be locally constant along the connected `J` and change sign
+  under the deck involution `τ`, but it needs an orientation sign of the marked charts
+  `sheet a : OpenPartialHomeomorph L.space (ℝ × ℝ × ℝ)` relative to the combinatorial
+  `CoherentOrientation` of `L`; `Orientation.lean` is purely combinatorial and
+  `IsMarkedCrossingChartAt` carries no PL clause, so this bridge (local constancy of the sign of
+  an injective PL map, chart versus simplex orientation) is itself a new theory.
+
+## isPLBoundaryTubeProducer_double — STUCK
+
+- No file. Exact remaining goal: the frozen statement itself, i.e. `IsPLBoundaryTubeProducer`
+  at the double: for every normal singular cell `D`, boundary branch `c`, side `W` with
+  `IsPLBoundarySide D W BdM` and buffer `B`, a tube `U` with `T : CrossSeamTubeData hD c U`,
+  `Nonempty (PLSeamTubeChart M T.chart)`, `T.chart '' spliceCylinder ⊆ W`,
+  `T.chart '' spliceCylinder ∩ BdM = T.chart '' spliceEndDisks` and the end disks in the
+  `B`-buffer. This is the relative regular neighbourhood of the branch arc, the long-standing
+  `IsCrossSeamTubeProducer` gap (cited as the missing input in `BranchCollarPrism`,
+  `BranchSeparation`, `LuneCell`, ...; `HANDOFF_CODEX_L.md` §81.4: "a chart along the whole
+  branch").
+- Verified missing: the tree has only the gluing step `exists_chart_branch_chain` /
+  `exists_openPartialHomeomorph_branch_chain` (`BranchChainChart.lean`), which assumes the global
+  straightening map `Φ` (injective, PL homeomorphic on each chart piece, sheets on coordinate
+  planes) is already given; nothing constructs `Φ` along the arc from the pointwise crossing
+  charts, and there is no derived-neighbourhood-is-a-ball-with-cross-trace theorem for an arc.
+  `IsPLBoundarySide` gives half-space pair charts only at points of `D '' frontier D.domain`.
+  Gemini G083 confirmed.
+
+## NormalSingularCellData.exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk — STUCK
+
+- No file. Exact remaining goal: the frozen conclusion `∃ E' Δ, IsPLBall 2 E' ∧ E ⊆ interior E'
+  ∧ E' ⊆ interior D.domain ∧ Disjoint Q E' ∧ (E' \ E) ∩ doublePointPreimage D D.domain = ∅ ∧
+  Δ.domain = E' ∧ InjOn Δ E' ∧ Δ '' E' ⊆ V ∧ EqOn Δ D (frontier E') ∧
+  Δ '' E' ∩ D '' D.domain = D '' frontier E'`. Its geometric input is a PL product
+  neighbourhood of the embedded clean disk `D '' Q` inside `V`, adapted to the second sheet along
+  `D '' J = D '' T`: a PL embedding `Π : Q × [-1, 1] → V` with `Π (·, 0) = D` on `Q`, meeting
+  `D '' D.domain` only in `D '' Q` and in the image of a collar of `T` outside `E`, which lies on
+  the wall `Π '' (J × [0, 1])`; then `Δ` is `Π '' (Q × {δ}) ∪ Π '' (J × [0, δ])` pulled back to
+  `E'` = `E` plus a thin collar.
+- Verified missing: the prism, collar and push-off lemmas of the tree
+  (`IsPLBall.exists_collar_of_properly_embedded_disk`,
+  `IsPLBall.exists_pushOff_of_properly_embedded_disk`,
+  `IsCombinatorialManifold.exists_collar_of_spanning_disk`,
+  `IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood`,
+  `IsPLBall.exists_prism_of_disjoint_frontier_disks`) all live in an ambient normed space of
+  `finrank 3`, for a properly embedded disk in a combinatorial ball or a disk spanning a closed
+  surface there; here `M` is an abstract `HasGroupoid M (plGroupoid 3)` manifold, `D '' Q` need
+  not lie in one chart, its boundary circle is interior to `M` and crossed by the `T` sheet, and
+  the only triangulated neighbourhood (`SingularTwoCell.exists_compact_piece_neighborhood`) lives
+  in `EuclideanSpace ℝ (Fin T.ambientDim)`, not of dimension three. Gemini G085 confirmed.

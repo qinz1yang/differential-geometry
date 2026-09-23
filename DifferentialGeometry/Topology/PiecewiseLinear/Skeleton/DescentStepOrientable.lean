@@ -13,6 +13,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrienta
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossQuarterTurn
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealization
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDisjointDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellReading
 
 /-!
 # Sorry-first skeleton of the orientable descent step
@@ -125,6 +126,20 @@ of `E'`, the crossing charts come from fibre equality, and branch injection from
 whole-or-nothing lemma for the region kept by a closed `K` whose frontier carries no double point.
 Eleven frozen hypotheses are unused and are consumed by `let` bindings; a strictly stronger
 restatement without them is possible.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf, all hypotheses used):
+`exists_plCrossSeamReading_of_isCrossRegluedCell` (module `LoopTheorem/CrossRegluedCellReading`,
+over `CrossSeamTubePages`, `CrossSeamTubeTransverse`, `CrossSeamTubeReading`): a map over the tube
+splits into four pages, one per half sheet, each a polyhedron attached to one preimage arc of the
+core and PL-homeomorphic onto its half sheet; the two-sided crossing at the core's midpoint forces
+each arc onto two opposite half sheets (a coordinate cannot change sign across the quadrant
+between adjacent pages without vanishing), so the cross reglue attaches one page of each arc to
+each of its own arcs, and the adjacent pairings give the reading in `T.chart` or in
+`T.chart ∘ crossQuarterTurn`.  Worker analysis of the three remaining leaves: the orientability
+leaf is the `ClosedBranchCaseOne` theorem modulo its single tube leaf; the boundary tube producer
+and the adapted clean cap need a PL tube around a branch arc (resp. a PL product neighbourhood in
+an abstract PL manifold), which the tree lacks; a branch-tube lane is dispatched.
 -/
 
 open Set Topology
@@ -215,17 +230,6 @@ theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
     hE'clean hΔdom hΔinj hΔside hΔbd hΔmeet e hloop
 
 end NormalSingularCellData
-
-theorem exists_plCrossSeamReading_of_isCrossRegluedCell
-    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
-    {D : SingularTwoCell M} {BdM B U : Set M} {hD : NormalSingularCellData D BdM B}
-    {c : hD.singularSet.Branch} (T : CrossSeamTubeData hD c U)
-    (hchart : PLSeamTubeChart M T.chart)
-    (htubeBdM : T.chart '' spliceCylinder ∩ BdM = T.chart '' spliceEndDisks)
-    {G : SingularTwoCell M} (hG : hD.IsCrossRegluedCell c G) :
-    Nonempty (PLCrossSeamReading T.chart G) ∨
-      Nonempty (PLCrossSeamReading (T.chart ∘ crossQuarterTurn) G) := by
-  sorry
 
 def crossSeamTubeDataQuarterTurn {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {D : SingularTwoCell M} {BdM B U : Set M}

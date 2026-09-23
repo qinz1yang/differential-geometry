@@ -321,3 +321,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 18:45 — accepted worker d's §28 product-coordinates leaf (`EssentialPolygonProductCoordinates` over
   `PrismLateralCircleSides`, `LateralAnnulusLevels`); `Section28Annuli` promoted: `moise286 : Moise286` is
   unconditional. Physical `sorry` 64. Worker d now on `ControlledGraphNeighborhood`.
+* 19:00 — accepted worker c's `exists_plCrossSeamReading_of_isCrossRegluedCell` (four `LoopTheorem/CrossSeam*`
+  modules, 2791 lines); physical `sorry` 63. Three DescentStepOrientable leaves share the branch-tube gap
+  (`exists_isSourceTrackedBranchTube` of ClosedBranchCaseOne, `isPLBoundaryTubeProducer_double`); worker c is on it.
