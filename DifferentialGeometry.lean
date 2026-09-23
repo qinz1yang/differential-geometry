@@ -13546,6 +13546,5 @@ import DifferentialGeometry.Geometry.Metric.CurveEnergy.Minimizing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.MetricLocalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMetricMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NoncompactCanonicalAlternative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryCrossSeamAttainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapCapture
 import DifferentialGeometry.Geometry.Neck.FrontierBandCapture
