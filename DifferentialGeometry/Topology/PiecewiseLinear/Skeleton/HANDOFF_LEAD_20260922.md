@@ -442,3 +442,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   renumbered by the lead. The lead never crashed; its workers ran on.
 * 12:10 (09-23) — accepted worker d's 14 branch-tube modules: C1 reduced to the surface trace on the derived
   cells (`exists_isSourceTrackedBranchTube_of_markedCells` + `exists_derivedCellChain`); lease d held for Codex.
+* 13:30 (09-23) — Codex item 7 partial (11 modules; acceptance pending); the edge-matching leaf lacks the closeness
+  of `G w` to `h` that the package returns and the assembly holds; review request BN written, owner to send.
