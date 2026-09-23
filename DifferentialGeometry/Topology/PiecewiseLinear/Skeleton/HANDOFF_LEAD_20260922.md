@@ -541,3 +541,7 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   extra prerequisites, compiles the 144-module cone under the `codex-smooth-integration` lease and verifies his PRs.
 * 10:30 (09-24) — accepted Codex item 16 (compact P4 compression, 5 modules): Compact has 3 leaves. Physical `sorry` 15.
   Lease a free.
+* 10:50 (09-24) — owner: the collaborator holds FOUR lanes, E, F, G and C (plus §31). His §31 session drifted into
+  the bigon leaves and produced PR #16, a duplicate of the accepted PR #11: close #16, restart §31 in a fresh
+  conversation with `consult/COLLABORATOR-section31-request.md`. Nothing is unassigned now except the two Terminal
+  leaves that wait on the trace and on compact P7.
