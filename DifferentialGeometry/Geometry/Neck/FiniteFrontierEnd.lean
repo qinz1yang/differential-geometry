@@ -537,6 +537,24 @@ private theorem NeckFrontierState.exists_step_at_of_neck
       hother, hinter, hfill, hcontrolled, hband, hpoint⟩⟩
   · exact ⟨T, hsub, Or.inr hr⟩
 
+private theorem NeckFrontierState.exists_step_at_connected
+    (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (hneck : Nonempty (SpatialNeck g eps
+      ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
+    ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
+      (IsPreconnected S.region → IsPreconnected T.region) ∧
+      (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
+  obtain ⟨T, hsub, hconn, hm | hr⟩ :=
+    NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep hneck
+  · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
+      hinter, hfill, hcontrolled, hband, hpoint, _⟩
+    exact ⟨T, hsub, hconn,
+      Or.inl ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
+        hinter, hfill, hcontrolled, hband, hpoint⟩⟩
+  · exact ⟨T, hsub, hconn, Or.inr hr⟩
+
 private theorem NeckFrontierState.exists_step_at
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
