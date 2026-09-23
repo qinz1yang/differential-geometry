@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
-theorem exists_proper_neck_product_of_fresh_slabs
+theorem exists_proper_neck_product_of_fresh_slabs_eq_on_first_slab
     {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     [T2Space M] [CompactlyCoherentSpace M]
     (g : SmoothRiemannianMetric I3 M) {eps : ℝ} (heps : eps ≤ 1 / 156000)
@@ -39,7 +39,7 @@ theorem exists_proper_neck_product_of_fresh_slabs
         ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
        IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ z)) ∧
       Θ '' (univ ×ˢ Ici (0 : ℝ)) = ⋃ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
-      (∀ z, Θ (z, 0) = P 0 (z, 0)) ∧
+      (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ (z, t) = P 0 (z, t)) ∧
       (∀ n : ℕ, Θ '' (univ ×ˢ Icc (n : ℝ) ((n : ℝ) + 1)) =
         P n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
       ∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
@@ -96,10 +96,79 @@ theorem exists_proper_neck_product_of_fresh_slabs
       heps p neck hcompact havoidband hK] with n hn
     exact (hn.mono_right (hcontrolled n)).symm
   obtain ⟨Θ, hsmooth, hinj, hproper, hembed, hrange, hbase, hstrip⟩ :=
-    DifferentialGeometry.Topology.Manifold.exists_proper_smooth_product_of_slabs P η
-      hsource hseam hadjacent hseparated hescape
+    DifferentialGeometry.Topology.Manifold.exists_proper_smooth_product_of_slabs_eq_on_first_slab
+      P η hsource hseam hadjacent hseparated hescape
   exact ⟨Θ, hsmooth, hinj, hproper, hembed, hrange, hbase, hstrip,
     fun B => DifferentialGeometry.Topology.uniform_scalar_divergence_of_isProperMap
       (metricScalarAt g) hcompact _ hproper B⟩
+
+
+theorem exists_proper_neck_product_of_fresh_slabs
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] [CompactlyCoherentSpace M]
+    (g : SmoothRiemannianMetric I3 M) {eps : ℝ} (heps : eps ≤ 1 / 156000)
+    (p : ℕ → M) (neck : ∀ n, SpatialNeck g eps (p n))
+    (hcompact : ∀ B : ℝ, IsCompact {x : M | metricScalarAt g x ≤ B})
+    (P : ℕ → PartialDiffeomorph IC I3 Cylinder M ∞)
+    (η : ℕ → Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2)
+    (hsource : ∀ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (P n).source)
+    (hseam : ∀ n z, P (n + 1) (z, 0) = P n (η n z, 1))
+    (hadjacent : ∀ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+      P (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1) = P n '' (univ ×ˢ ({1} : Set ℝ)))
+    (hseparated : ∀ m n : ℕ, m + 1 < n →
+      Disjoint (P m '' (univ ×ˢ Icc (0 : ℝ) 1)) (P n '' (univ ×ˢ Icc (0 : ℝ) 1)))
+    (hcontrolled : ∀ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+      (neck n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹))
+    (hband : ∀ n, (neck n).map '' (univ ×ˢ Icc (1 : ℝ) 2) ⊆
+      P n '' (univ ×ˢ Icc (0 : ℝ) 1))
+ :
+    ∃ Θ : Cylinder → M,
+      ContMDiffOn IC I3 ∞ Θ (univ ×ˢ Ici (0 : ℝ)) ∧
+      InjOn Θ (univ ×ˢ Ici (0 : ℝ)) ∧
+      IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ (z.1, z.2.val)) ∧
+      (let U : TopologicalSpace.Opens Cylinder :=
+        ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+       IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ z)) ∧
+      Θ '' (univ ×ˢ Ici (0 : ℝ)) = ⋃ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
+      (∀ z, Θ (z, 0) = P 0 (z, 0)) ∧
+      (∀ n : ℕ, Θ '' (univ ×ˢ Icc (n : ℝ) ((n : ℝ) + 1)) =
+        P n '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
+      ∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+        T ≤ t → B < metricScalarAt g (Θ (z, t.val)) := by
+  obtain ⟨Theta, hsmooth, hinj, hproper, hembed, hrange, hfirst, hstrip, hscalar⟩ :=
+    exists_proper_neck_product_of_fresh_slabs_eq_on_first_slab g heps p neck hcompact
+      P η hsource hseam hadjacent hseparated hcontrolled hband
+  exact ⟨Theta, hsmooth, hinj, hproper, hembed, hrange,
+    fun z => hfirst z 0 ⟨le_rfl, zero_le_one⟩, hstrip, hscalar⟩
+
+
+theorem scalar_le_on_first_slab_of_neck_product
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {p : M}
+    (nk : SpatialNeck g eps p)
+    (P : PartialDiffeomorph IC I3 Cylinder M ∞) (Theta : Cylinder → M)
+    (hfirst : ∀ z t, t ∈ Icc (0 : ℝ) 1 → Theta (z, t) = P (z, t))
+    (hcontrolled : P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) :
+    ∀ z t, t ∈ Icc (0 : ℝ) 1 →
+      metricScalarAt g (Theta (z, t)) ≤ (1 + 4323 * eps) * metricScalarAt g p := by
+  intro z t ht
+  rw [hfirst z t ht]
+  exact (nk.scalar_bounds_on_image_window (hcontrolled ⟨(z, t), ⟨mem_univ _, ht⟩, rfl⟩)).2
+
+
+theorem scalar_le_on_first_slab_of_original_base_bound
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {p : M}
+    (nk : SpatialNeck g eps p) (P : PartialDiffeomorph IC I3 Cylinder M ∞)
+    (Theta : Cylinder → M) (S : Set M) (hp : p ∈ S) (B : ℝ)
+    (hB : ∀ x ∈ S, metricScalarAt g x ≤ B)
+    (hfirst : ∀ z t, t ∈ Icc (0 : ℝ) 1 → Theta (z, t) = P (z, t))
+    (hcontrolled : P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+      nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) :
+    ∀ z t, t ∈ Icc (0 : ℝ) 1 →
+      metricScalarAt g (Theta (z, t)) ≤ (1 + 4323 * eps) * B := by
+  intro z t ht
+  exact (scalar_le_on_first_slab_of_neck_product nk P Theta hfirst hcontrolled z t ht).trans
+    (mul_le_mul_of_nonneg_left (hB p hp) (by have := nk.eps_pos; positivity))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -16,7 +16,7 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [CompactlyCoherentSpace M]
 
-theorem exists_proper_smooth_product_of_slabs
+theorem exists_proper_smooth_product_of_slabs_eq_on_first_slab
     (P : ℕ → PartialDiffeomorph IC I (S2 × ℝ) M ∞)
     (η : ℕ → S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2)
     (hsource : ∀ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (P n).source)
@@ -35,7 +35,7 @@ theorem exists_proper_smooth_product_of_slabs
         ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
        IsSmoothEmbedding IC I ∞ (fun z : U => Θ z)) ∧
       Θ '' (univ ×ˢ Ici (0 : ℝ)) = ⋃ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
-      (∀ z, Θ (z, 0) = P 0 (z, 0)) ∧
+      (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ (z, t) = P 0 (z, t)) ∧
       ∀ n : ℕ, Θ '' (univ ×ˢ Icc (n : ℝ) ((n : ℝ) + 1)) =
         P n '' (univ ×ˢ Icc (0 : ℝ) 1) := by
   obtain ⟨Q, hQ0, hQs, hQi, hQu, hQseam⟩ :=
@@ -81,10 +81,9 @@ theorem exists_proper_smooth_product_of_slabs
         exact ⟨(z, t.val), ⟨mem_univ _, t.property⟩, htx⟩
     rw [heq, hrange]
     simp only [hQi]
-  · intro z
-    have h := hbase z
-    rw [hQ0] at h
-    exact h
+  · intro z t ht
+    have h := hstrip 0 z t ht
+    simpa only [halfCylinderProductMap, Nat.cast_zero, zero_add, hQ0, Θ] using h
   · intro n
     rw [← hQi n]
     ext x
@@ -100,5 +99,34 @@ theorem exists_proper_smooth_product_of_slabs
     · rintro ⟨⟨z, t⟩, ht, htx⟩
       exact ⟨(z, (n : ℝ) + t), ⟨mem_univ _, by linarith [ht.2.1], by linarith [ht.2.2]⟩,
         (hstrip n z t ht.2).trans htx⟩
+
+
+theorem exists_proper_smooth_product_of_slabs
+    (P : ℕ → PartialDiffeomorph IC I (S2 × ℝ) M ∞)
+    (η : ℕ → S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2)
+    (hsource : ∀ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (P n).source)
+    (hseam : ∀ n z, P (n + 1) (z, 0) = P n (η n z, 1))
+    (hadjacent : ∀ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+      P (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1) = P n '' (univ ×ˢ ({1} : Set ℝ)))
+    (hseparated : ∀ m n : ℕ, m + 1 < n →
+      Disjoint (P m '' (univ ×ˢ Icc (0 : ℝ) 1)) (P n '' (univ ×ˢ Icc (0 : ℝ) 1)))
+    (hescape : ∀ K : Set M, IsCompact K → ∀ᶠ n in atTop,
+      Disjoint (P n '' (univ ×ˢ Icc (0 : ℝ) 1)) K) :
+    ∃ Θ : S2 × ℝ → M,
+      ContMDiffOn IC I ∞ Θ (univ ×ˢ Ici (0 : ℝ)) ∧
+      InjOn Θ (univ ×ˢ Ici (0 : ℝ)) ∧
+      IsProperMap (fun z : S2 × ℝ≥0 => Θ (z.1, z.2.val)) ∧
+      (let U : TopologicalSpace.Opens (S2 × ℝ) :=
+        ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+       IsSmoothEmbedding IC I ∞ (fun z : U => Θ z)) ∧
+      Θ '' (univ ×ˢ Ici (0 : ℝ)) = ⋃ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
+      (∀ z, Θ (z, 0) = P 0 (z, 0)) ∧
+      ∀ n : ℕ, Θ '' (univ ×ˢ Icc (n : ℝ) ((n : ℝ) + 1)) =
+        P n '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+  obtain ⟨Theta, hsmooth, hinj, hproper, hembed, hrange, hfirst, hstrip⟩ :=
+    exists_proper_smooth_product_of_slabs_eq_on_first_slab P η
+      hsource hseam hadjacent hseparated hescape
+  exact ⟨Theta, hsmooth, hinj, hproper, hembed, hrange,
+    fun z => hfirst z 0 ⟨le_rfl, zero_le_one⟩, hstrip⟩
 
 end DifferentialGeometry.Topology.Manifold
