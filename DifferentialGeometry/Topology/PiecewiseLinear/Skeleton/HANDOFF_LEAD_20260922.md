@@ -562,3 +562,9 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `exists_section34CutFrame` restated) fetched as `pr15`; one file name clashes with item 14's
   `GraphDualCellRestriction.lean` (different content): rename the PR's copy at acceptance. Item 17 (manifold P7)
   ready for launch on lease a.
+* 14:10 (09-24) — Codex lane 1 handed off the CGN EDGE MATCHING (item 7): `exists_section34EdgeMatching` restated
+  byte-identically in `Section34EdgeMatchingLeaf.lean`, no sorry; 70 untracked modules (list: session scratchpad
+  `emorder.txt`; the lane's `Skeleton/CGN_EDGE_MATCHING_HANDOFF.md` has hashes and the two pending linter fixes).
+  Lead acceptance `accept-EM` queued after PR #15's; wiring (delete the CGN leaf, import the leaf module, register
+  the modules, ledger B1.c) is NOT automatic. Also queued/left: PR #18 (single-face replacement, two modules, isolated
+  branch) and PR #19 (§31 leaf 2, 26 modules) — owner: leave for now.
