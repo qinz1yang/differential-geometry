@@ -7,6 +7,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStability
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CircleRemovalDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34DeletedBalls
 
 /-!
 # Sorry-first skeleton of the controlled form of Moise 35.1
@@ -228,6 +230,18 @@ the intersection disks and `D_v ⊆ Q v`.  Proved in `Section34Frame`:
 `mem_interior_image_of_notMem_image_boundary`, `finite_splitDisk_of_section34CutFrame` and
 `locallyFinite_support_of_section34CutFrame`.  Proved in `PiecewiseLinear.PLCellOnStability`:
 `exists_dist_lt_image_interior_stable_of_isPLCellOn`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf): `exists_section34DeletedBalls`
+(module `Section34DeletedBalls` over `Section34CapDeletion`): the shared circle splits the frontier
+sphere of the deleted ball into two disks, the one inside the other ball splits that ball in two
+(`SurfaceSplitBallPair`), exactly one half lies in the deleted ball, piercing clause 21 makes the
+deletions independent and the incoming edges are finite.  Unused frozen hypotheses and instance
+binders are consumed by `let` bindings.  `exists_section34ProtectedCircleRemoval` is no longer a
+leaf: it is assembled from the step leaf through
+`exists_section34ProtectedCircleRemoval_of_step` (module `Section34CircleRemovalDescent`, the
+descent on the total crossing count), so it is now conditional on
+`exists_section34ProtectedCircleRemovalStep` only.
 -/
 
 open Set Topology
@@ -516,33 +530,9 @@ theorem exists_section34ProtectedCircleRemoval
         (∀ e, cnt' e = 1) ∧
         (∀ w, EqOn (G' w) (G w) {x ∈ Cc w | ∀ e, G w x ∉ interior (Sp e)}) ∧
         ∀ w, EqOn (G' w) (G w) (simplexBody 𝒦' w.1) := by
-  sorry
-
-theorem exists_section34DeletedBalls [T2Space M₁] [SecondCountableTopology M₁]
-    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
-      (graphSkeletonSpace 𝒦) U)
-    (hQlf : ∀ y ∈ ⋃ w, Q w, ∃ V ∈ 𝓝 y, {w | (Q w ∩ V).Nonempty}.Finite)
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
-    (hone : ∀ e, cnt e = 1)
-    (hcore : ∀ w, h '' Kcore w ⊆ interior (G w '' Cp w)) :
-    ∃ (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-      (Dd DdBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂),
-      (∀ w, Dv w = G w '' Cp w \
-        ⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : (ends e).2 = w),
-          interior (G (ends e).1 '' Cp (ends e).1)) ∧
-        (∀ w, IsPLCellOn 3 (Dv w) (DvBd w)) ∧
-        (∀ e, IsPLCellOn 2 (Dd e) (DdBd e)) ∧
-        (∀ e, Dv (ends e).1 ∩ Dv (ends e).2 = Dd e) ∧
-        (∀ e, Dd e ⊆ DvBd (ends e).1 ∩ DvBd (ends e).2) ∧
-        (∀ w, h '' simplexBody 𝒦' w.1 ⊆ interior (Dv w)) ∧
-        (⋃ w, Dv w) ∈ nhdsSet (h '' graphSkeletonSpace 𝒦) := by
-  sorry
+  exact exists_section34ProtectedCircleRemoval_of_step
+    (fun _ _ _ hp e₀ hlt => exists_section34ProtectedCircleRemovalStep hprep hp e₀ hlt)
+    hprep hpack K hK
 
 theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M₁]
     [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]

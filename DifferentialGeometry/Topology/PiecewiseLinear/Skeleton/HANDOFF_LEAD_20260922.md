@@ -324,3 +324,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 19:00 — accepted worker c's `exists_plCrossSeamReading_of_isCrossRegluedCell` (four `LoopTheorem/CrossSeam*`
   modules, 2791 lines); physical `sorry` 63. Three DescentStepOrientable leaves share the branch-tube gap
   (`exists_isSourceTrackedBranchTube` of ClosedBranchCaseOne, `isPLBoundaryTubeProducer_double`); worker c is on it.
+* 19:35 — accepted worker d's `exists_section34DeletedBalls` (`Section34DeletedBalls`, `Section34CapDeletion`)
+  and reduced `exists_section34ProtectedCircleRemoval` to its step leaf (`Section34CircleRemovalDescent`);
+  physical `sorry` 61. Worker d now on `PLSmoothingCompact`.

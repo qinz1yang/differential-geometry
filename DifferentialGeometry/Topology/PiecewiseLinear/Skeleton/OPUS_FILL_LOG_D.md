@@ -383,3 +383,206 @@ Planned bricks: (1) the two sides of an essential circle in the prism lateral an
   new work is keeping the levels fixed (slab squeeze).
 - Compiles for Batch 4: `PrismLateralCircleSides` 2, `LateralAnnulusLevels` 4,
   `EssentialPolygonProductCoordinates` 3 (≈14–70 s each), 1 audit (≈57 s).
+
+# Batch 5 (controlled graph neighbourhood)
+
+Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`. Target: the seven frozen leaves of
+`Skeleton/ControlledGraphNeighborhood.lean`. Read first: the skeleton docstring, `Section34Frame`
+(`Section34CutFrame`, `Section34OuterTorus`, `Section34VertexPreparation`,
+`Section34PiercingConditions`), `Section34Statements`, `Section34Control`,
+`Section34FaceBallVocabulary`, `ChartTameNestedCells`, `CurveCrossingGeneralPosition`,
+`PLCellOnStability`, the `DualCellPiercing*` modules, `TrivalentDualCellSolidTorusNeighborhoods`,
+`LocallyFiniteSplittingDisks`, `SubdivisionSubordinateToCover`, `SurfaceSplitBallPair`,
+`BallCyclePair`, `InnerSolidTorusToroidalShell`.
+
+## exists_section34CutFrame — STUCK (not started in Lean; whole statement open)
+
+- Remaining goal: the entire conclusion. Sub-obligations and what the tree has:
+  (1) the fine subdivision `𝒦'` with `𝒦'.map = 𝒦.map`, combinatorial, fine for `ψ` and the
+  carriers `H`: available (`exists_isSubdivision_section34CarrierSupport_subset`).
+  (2) the eight-label cut: vertex balls and splitting disks exist only as graph dual cells and
+  splitting disks of finite complexes (`isPLBall_graphDualCell`, `LocallyFiniteSplittingDisks`);
+  NOT in the tree: the complementary cells (`tetraBall t = cl(|t| \ N)`, face disks, patches,
+  face arcs, edge arcs, marked points), their `IsPLCellOn` certificates in `M₁` (the complex
+  lives in `Ea`, so each cell needs a PL transport of a 3-dimensional polyhedron of `Ea` into
+  `ℝ³`), the exact boundary and intersection formulas, face nesting and local finiteness.
+  (3) `IsLocallyFiniteRegularNeighborhoodOf N Γ U`: needs the increasing exhaustion by finite
+  subcomplexes with combinatorial derived neighbourhoods; only the one-piece version
+  `PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` exists.
+  (4) carriers: `Q w` = a small closed thickening of `h '' C_w` meets every carrier clause by
+  compactness and local finiteness (not written).
+  (5) outer torus: chart from `exists_chart_iUnion_carrier_subset_source`; `Sd s` must be
+  `ct s '' h '' N_s` for a solid torus `N_s ⊆ U` with the rim as core, obtained by moving the
+  closed star of `s` (a PL 3-ball) into `ℝ³` and using `IsPLSphere.exists_solid_torus_neighborhood`;
+  the buffer then needs `C_w ⊆ int N_s` for every rim vertex `w` (fineness of `𝒦'`); the
+  no-disk clause follows from the buffer and the spine clause (a spine generates `π₁` of the
+  solid torus), not written.
+- Estimate: the largest leaf; (2) and (3) alone are several thousand lines.
+
+## exists_section34VertexPreparation — STUCK (not started in Lean)
+
+- Remaining goal: the 44 clauses of `Section34VertexPreparation`. The geometric core exists
+  only for finite complexes of a vector space: `exists_piercings_with_pairwise_disjoint_nested_common_neighborhoods`
+  (piercing circles, nested common annular neighbourhoods = `Tn ⊆ Sn`),
+  `exists_graphDualCell_piercing_with_nested_boundary_bicollars` (annuli `A_e`, `B_e`, `B_e⁰`),
+  `exists_perturbation_radius_of_pairwise_disjoint_nested_common_neighborhoods`. Missing: their
+  transport through `𝒦'.map` into `M₁` for the locally finite family, the enlarged cells
+  `C''_v` inside the given chart preimage, the source-side component certificates, the choice
+  of the two-sided tolerances `ε` with all metric margins and the whole-overlap certificate (by
+  compactness and local finiteness, after localising each lens near its own disk), and the
+  stability field from `exists_dist_lt_image_interior_stable_of_isPLCellOn`.
+
+## exists_section34PiercingPackage — STUCK (not started in Lean)
+
+- Remaining goal: the whole conclusion. Missing: auxiliary scales `δ_w ≤ ε_w` for the tube and
+  side containments, `Moise341` approximation via the proved
+  `Moise341.exists_section34VertexApproximation` pattern, then a relative general-position move
+  of the image annuli inside each tube making every intersection point an `HasPLCrossingAt`
+  crossing in a chart (the finite-complex brick is `exists_small_homeomorph_transverse_relative`
+  / `hasPLCrossingAt_of_transverse_faces`; not transported to charts of `M₂`), the decomposition
+  of the crossing set into `cnt e` disjoint polyhedral circles `Pg e i`, the component
+  certificates of (7) for the image, and the derived fields via `section34MarginConditions`,
+  `section34OverlapConditions`, `section34MarkerConditions`.
+
+## exists_section34ProtectedCircleRemovalStep — STUCK (not started in Lean)
+
+- Remaining goal: the whole conclusion. Missing: the Moise page 249-250 surgery inside the
+  tube `Int S'_{e₀}` (an innermost intersection circle on the image annulus, a disk swap
+  supported in the tube realised by a PL self-map of `C''_w`), and the preservation of all 21
+  fields of `Section34PiercingConditions`, of which only the marker and boundary equalities are
+  proved (`section34Step_eqOn_marker_and_boundary`).
+- Interface note: the step gives `EqOn` off the support but not that the modified points stay
+  in the support (`G' w '' {x | G w x ∈ interior (Sp e₀)} ⊆ interior (Sp e₀)`). The reduction of
+  the next leaf below does not need it.
+
+## exists_section34ProtectedCircleRemoval — REDUCED to the removal step (proved from leaf 4)
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/Section34CircleRemovalDescent.lean`
+  (524 lines, SHA-256 `3dd046c4177d216ad1c5c008095d7ef767d5fa104ddf164d0c6de9ad90883866`),
+  import `Section34Frame` only. Import line:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CircleRemovalDescent`
+- Main theorem `exists_section34ProtectedCircleRemoval_of_step`: exactly the conclusion of the
+  frozen leaf, with the frozen hypotheses `hprep hpack K hK` and one more, `hstep`, which is the
+  conclusion of `exists_section34ProtectedCircleRemovalStep` for the same preparation,
+  universally quantified over `G cnt Pg`. Wiring for the skeleton (not compiled here: the
+  skeleton olean cannot be built in the private root because of its `sorry` warnings):
+  `exists_section34ProtectedCircleRemoval_of_step (fun _ _ _ hp e₀ hlt =>
+    exists_section34ProtectedCircleRemovalStep hprep hp e₀ hlt) hprep hpack K hK`.
+- New public names (grepped first): `IsPLHomeomorphInto.congr_of_eqOn`,
+  `Section34RemovalGood`, `Section34RemovalLe` (two abbreviations for the Zorn order),
+  `section34RemovalLe_trans`, `section34PiercingConditions_congr_of_eqOn` (the piercing
+  conditions only see the vertex maps on `Cc w`), `exists_section34PiercingConditions_count_le_one_of_step`
+  (the skeleton's induction, re-proved from `hstep` under a new name because a module cannot
+  import the skeleton), `exists_section34RemovalGood_upperBound`,
+  `exists_section34RemovalGood_insert`, `exists_section34ProtectedCircleRemoval_of_step`.
+- Route: Zorn (`exists_maximal_of_chains_bounded`) on partial results `(S, G', cnt', Pg')`
+  satisfying the piercing conditions with `cnt' = 1` on the finished set `S`, `cnt' = cnt` off
+  it and both `EqOn` clauses, ordered by `S ⊆ S'` and equality of `G' w` whenever no edge of
+  `S' \ S` has its tube meeting `K w`. `K w` compact in `h '' U` and the local finiteness of
+  the tubes make that set of edges finite, so along a chain each `G' w` stabilises; each of
+  the 22 piercing conditions involves at most four vertex maps and one edge, and is read off one
+  member of the chain. A maximal element with an unfinished edge is extended by iterating the
+  step at that edge; vertices whose envelope misses the tube keep their map (image in
+  `Q w ⊆ K w`), the others are patched off `Cc w` so that the order holds with equality. No
+  countability of the edges is used, and the step's missing support-image property is not needed.
+- Checker: `Verified ...\Section34CircleRemovalDescent.lean with no diagnostics; shared outputs
+  unchanged.` (18:51 local). Audit `AuditOpusD6.lean`: `Verified ... with no diagnostics; shared
+  outputs unchanged.` (axioms within `propext`, `Classical.choice`, `Quot.sound`; thirteen
+  linters pass).
+- Compiles: 3 module checks, 1 audit, 3 failed wiring attempts (audit and scratch module cannot
+  see the skeleton olean; the scratch file was deleted).
+
+## exists_section34DeletedBalls — CLOSED
+
+- Files (both new; imports ≤ 100 characters):
+  - `DifferentialGeometry/Topology/PiecewiseLinear/Section34CapDeletion.lean`: 527 lines,
+    SHA-256 `7957c3d09e06d0a619cb526e2865197a8a86ad1236c657c3b0015bf5adcfc0f6`. Imports
+    `BallInterior`, `LabelledCellAssembly`, `PieceMap`, `PLCellOnBoundary`, `SphereDisk` and
+    `SurfaceSplitBallPair`.
+  - `DifferentialGeometry/Topology/PiecewiseLinear/Section34DeletedBalls.lean`: 168 lines,
+    SHA-256 `730fe0a38896791be6fcf1dd8dcc3b16fd7fa9471c908c4175fee1cef9c81cac`. Imports
+    `Section34CapDeletion` and `Section34Frame`.
+- The leaf is restated byte-identically. The skeleton lines 239–258 (`section Leaves` and the
+  variable block) and 521–544 (the statement) are copied verbatim, under `open Set Topology`,
+  the same namespace and `universe u`.
+- Wiring: import `Section34DeletedBalls` and delete the skeleton leaf. The call at skeleton line
+  647 is unchanged.
+- No frozen hypothesis was dropped. The following are unused and consumed by `let _`:
+  - the hypotheses `hU`, `hh`, `hN` and `hQlf`;
+  - the instances `[T2Space M₁]`, `[SecondCountableTopology M₁]`, `[SecondCountableTopology M₂]`
+    and `[HasGroupoid M₁ (plGroupoid 3)]`;
+  - the section instance `[FiniteDimensional ℝ Ea]`.
+- New public names (all grepped first):
+  - `IsPLCellOn.subset_closure_interior`;
+  - `IsPLHomeomorphInto.isPLSphere_invFunOn_image`, which pulls a polyhedral sphere back
+    through a PL embedding of a model polyhedron;
+  - `IsPLCellOn.sdiff_interior_of_frontier_inter`, the single cap;
+  - `IsPLCellOn.sdiff_biUnion_interior`, the finite iteration;
+  - `isPLCellOn_sdiff_iUnion_interior_of_caps`, the whole family over abstract index types.
+- Route:
+  - Single cap. Take cells `X`, `Y` with `Bd X ∩ Bd Y = C` a polyhedral circle, a point of
+    `Bd Y` in `Int X`, and `Bd Y ⊄ X`.
+    - Pull `C` back to a PL circle on the model sphere `Bd P_Y`, and split that sphere into two
+      disks (`exists_disk_decomposition_of_isPLSphere_one_subset_two`).
+    - Each open disk is connected and misses `Bd X`, so it lies in `Int X` or misses `X`. The
+      two witness points choose the inner disk, and `Bd Y ∩ X` is that disk. This is already the
+      2-cell with rim `C`.
+    - Transport the disk into the model of `X` through `invFunOn uX PX ∘ uY` and split the ball
+      (`IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace`).
+    - The interiors of the two halves are connected and miss `Bd Y`. Exactly one half lies in
+      `Y`: if both did, `Int X ⊆ Int Y` against the inner witness; if neither did, `X` would miss
+      `Int Y` near the inner witness. `X \ Int Y` is the other half.
+  - Iteration. The overlaps `B_{e.1} ∩ B_w` of the incoming edges are pairwise disjoint (piercing
+    clause 21), so each earlier deletion leaves the next circle, both witnesses and the
+    frontier trace unchanged. Finset induction on the incoming edges, which are finite by
+    `finite_splitDisk_of_section34CutFrame`.
+  - Leaf data: `Dd e = Bd B_{e.1} ∩ B_{e.2}`, `DdBd e = Pg e 0`, `DvBd w = frontier (Dv w)`.
+    - `Bd ∩ Bd = Pg e 0` comes from piercing clauses 7, 17 and 18 with `hone`, and from
+      preparation clauses 15 and 16.
+    - The witnesses come from clause 8 and a point of each boundary circle of the annulus
+      `A_e`.
+    - Markers come from `hcore`, `body ⊆ Kcore` and clause 22.
+    - The neighbourhood: every `B_w` is covered by the deleted balls (clause 21), and `hcore`
+      with `Γ ⊆ ⋃ Kcore` puts `h '' Γ` inside `⋃ Int B_w`.
+- Checker: both modules `Verified ... with no diagnostics; shared outputs unchanged.` Audit
+  `AuditOpusD7.lean` (both modules): `Verified ... with no diagnostics; shared outputs
+  unchanged.` Axioms are within `propext`, `Classical.choice` and `Quot.sound`; all thirteen
+  linters pass.
+- Compiles: 4 module checks (2 failures: one `image_id'` argument and a `mem_toFinset`
+  elaboration) and 1 audit.
+
+## exists_section34EdgeMatching — STUCK (not started in Lean; whole statement open)
+
+- Remaining goal: the entire conclusion (`G'` with clauses (a)–(f) below).
+- Needed for (a)–(d), the PL homeomorphisms `G' w : C_w = src (.vertexBall w) → Dv w` that agree
+  on the splitting disks:
+  1. Disk maps `φ_e : src (.splitDisk e) → Dd e` sending rim to rim. Cheap: both are PL
+     2-cells (cut frame and `hDd`), so compose the parametrisations.
+  2. Sphere maps `Bd C_w → Bd Dv w` extending the `φ_e` of the incident edges. The complement of
+     the disks is a `k`-holed sphere on both sides (`hDdBd`, `hDddisj`, and the cut frame's
+     boundary formulas). NOT in the tree: a PL homeomorphism of `k`-holed spheres with
+     prescribed boundary maps. That extension exists only when the prescribed maps are
+     orientation-compatible, and the tree has no PL orientation of disks and spheres.
+  3. Ball extension: `exists_isPLHomeomorphOn_extension_marked` (Alexander trick in the model),
+     transported through the `IsPLCellOn` charts of `C_w` in `M₁` and of `Dv w` in `M₂`.
+  4. The matching clauses then follow from the cut frame's formula `C_w ∩ C_w' = splitDisk`
+     together with `hDmeet` and `hDadj`.
+- Mathematical obstruction to step 2. Around a cycle of the graph the orientation choices must
+  close up, so the chain of the `C_w` along a cycle and the chain of the `Dv w` must have the same
+  orientation character. This does not come from the local data: when `U` is non-orientable a
+  cycle can have a solid Klein bottle neighbourhood. It has to come from `h` (a topological
+  embedding), or from the `ε`-closeness of the `G w` to `h` (a map close to the identity on a ball
+  has local degree `1`). The `LocalDegree/` and `Homology/Local/` modules are the likely inputs,
+  but no bridge to PL disk orientations exists. This is the main missing foundation.
+- Needed for (e) and (f), the face tori. (e) looks cheap: `hDnbhd`, `hDvQ` and `hQsep` with the
+  local finiteness `hQlf`, plus the arc-index bookkeeping of `section34FaceTorus`. (f) needs:
+  - a cyclic chain of PL balls in the chart `ct s`, consecutive ones meeting in one disk and the
+    rest disjoint, to be an `IsCombinatorialSolidTorus` (`BallCyclePair` gives the ball-pair
+    cover; `isCombinatorialSolidTorus_of_hasCylindricalDiagram` would need a cylindrical
+    diagram);
+  - an inner solid torus `S₁` with the toroidal shell
+    (`IsTopologicalSolidTorus.exists_toroidalShell_of_isCompact_subset_interior`);
+  - the spine clause for `ct s '' h '' rim`;
+  - the transport `Φ` of the face torus by `ct s`.
+- Estimate: several thousand lines. Steps 2 and (f) are each a project-scale brick.
