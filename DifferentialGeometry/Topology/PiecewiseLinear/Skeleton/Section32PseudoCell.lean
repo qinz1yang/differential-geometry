@@ -16,6 +16,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.InitialSurfaceSeparates
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPositionBallPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.ReducedDiskPseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerExists
 
 /-!
 # Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
@@ -235,6 +236,17 @@ modules: an outermost PL disk with its intrinsic rim, supported disk surgery alo
 pseudo-cell patches, a central sphere disk and an innermost non-central trace disk, finite circle
 surgery).  The three reconnaissance probes `Skeleton/Section32*Probe.lean` are deleted as
 superseded.  The two leaves left in this file are the canonical tower and the descent.
+
+Proved and imported (Opus 5.5 worker on lease b, Batch 9 of `Skeleton/OPUS_FILL_LOG_B.md`,
+lead-accepted on 2026-09-24 with zero-diagnostic checks and an axiom/linter audit; statement
+byte-identical): `exists_canonicalTower` (module `CanonicalTowerExists` over
+`CenteredDiskSimplexMap`, `RevolvedTorusTower` and `SplitDiskCylinderCoordinates`: the model tower
+of revolved squares in the unit cylinder with exact tail closures and local finiteness, cylinder
+coordinates on the two dual cells of the edge from `h` and the centred prism, the fitting and
+general-position lemmas adapted from the reconnaissance probe
+`Skeleton/CanonicalTowerReduction.lean`, whose descent stages remain a route record for the last
+leaf).  `Moise307` enters once per integer index through the named input `h307`.  The one leaf
+left in this file is the descent.
 -/
 
 open Set Topology
@@ -248,20 +260,6 @@ section Leaves
 variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
   {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3} {P' : E3}
   {φ : E3 → E3} {Pt : ℤ → E3} {Dp Dpint J A S T S'' T'' H B Jlo Jhi : ℤ → Set E3}
-
-open Classical in
-theorem exists_canonicalTower (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
-    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
-    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id)) (hW : IsClosed W)
-    (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {P'} ⊆ interior W)
-    (hWsub : W ⊆ h '' C u ∪ h '' C v)
-    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
-    (hWK : W ∩ h '' K.space = {P'}) (h307 : Moise307) {Z : Set E3} (hZ : IsClosed Z)
-    (hZD : Disjoint Z (h '' D {u, v})) :
-    ∃ (φ : E3 → E3) (Pt : ℤ → E3) (Dp Dpint J A S T S'' T'' : ℤ → Set E3),
-      IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
-        (interior (h '' C u ∪ h '' C v)) P' ∧ ∀ i, Disjoint (φ '' S i) Z := by
-  sorry
 
 open Classical in
 theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)

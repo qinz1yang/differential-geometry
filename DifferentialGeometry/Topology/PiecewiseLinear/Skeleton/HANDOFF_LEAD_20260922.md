@@ -503,3 +503,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   needs an exclusive window and one recompilation of the cone in a shared-checkout private root (plan §5).
 * 23:55 (09-23) — collaborator PR #11 (both bigon slides, 49 modules) cherry-picked (`2dcb704e8`); statements
   byte-identical; name scan clean; acceptance checks on the lead lease in progress.
+* 02:30 (09-24) — accepted worker b's canonical tower (4 modules): §32 has 1 leaf (descent). Physical `sorry` 21.
+  Lease b free (held for Codex per the owner's rule unless the owner reassigns it).

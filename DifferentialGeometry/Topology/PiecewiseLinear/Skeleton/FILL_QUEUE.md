@@ -412,3 +412,65 @@ sub-leaves). Do them in this order, on your own lease, after finishing anything 
 11. `consult/BP-section32-tower-descent-route-consult.md` — the §32 canonical tower and descent.
 12. `consult/BQ-section34-trace-leaves-route-consult.md` — the two trace leaves.
 Do not prove the §32 probe sub-leaves (a collaborator has them) nor the source-face frontiers.
+
+## Codex item 13 — the Section 32 descent (lead-written 2026-09-24 02:40; Codex lane on lease b)
+
+Lease for this lane: token `claude-agent-b-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b`, valid until 2026-09-26 04:17 UTC. Same rules
+as items 7 and 8: new files only, no git writes, no edit of any frozen statement, host guard before
+every compile (at most four `lean.exe` on the host, this lease one; a ten-minute admission wait is
+contention, rerun), log to `Skeleton/FILL_LOG.md` (append-only, a `# Codex item 13` section with
+per-module receipts and SHA-256s), lines ≤ 100 codepoints, no declaration docstrings or comments,
+no underscore in a `def`/`abbrev`/`structure` name, grep every new name and every statement shape
+before proving. Check each module with `prepare-private-root.py` then `checker.ps1` as in item 7,
+and finish with an audit probe outside the tree (the `mkaudit` pattern: axioms within `propext`,
+`Classical.choice`, `Quot.sound`; the thirteen linters).
+
+Target: the last leaf of Section 32, `exists_descentSequence` (`Skeleton/Section32PseudoCell.lean`,
+`section Leaves`; restate it byte-identically together with the `variable` block it uses). Inputs:
+the tube `ht`, the edge `{u, v}` with midpoint `P'`, the canonical tower
+`htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' …` (now produced by `exists_canonicalTower`,
+module `CanonicalTowerExists`, accepted 2026-09-24), the avoidance `havoid`, the closed separating
+initial surface (`hcl`, `hsep`; producer `InitialSurfaceSeparates`, real), and the four named inputs
+`h303 h286 h267 h314`. Output: a bi-infinite annular chain
+`IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P'`, a sequence `M n` of closed separators of
+`h u` from `h v` in the pair interior, all containing `P'`, with `M 0 = initialSurface S'' T'' P'`,
+closedness of the chain's preimage, and local eventual equality `M n ∩ U = annularChain H B P' ∩ U`
+at every point other than `P'`.
+
+Read first: `consult/BP-section32-tower-descent-codex-answer.md` §2 (the route answer): the five
+stage producers (remove inessential seams by `Moise303` disk splits; classify and delete Type 1 with
+`Moise314`; delete returning Type 2 annuli with `Moise286` / `Moise267`; delete redundant Type 3
+bridges; select even-torus halves coherently), phased natural-number measures per finite window, the
+relative finite-window normalisation (the genuine missing theorem, assembled from the five
+producers), the dependent recursion over a compact exhaustion of `I \ {P'}` giving `M n`, and the
+limit through `locally_eventually_eq_iUnion_of_finite_support` and
+`isClosed_of_locally_eventually_eq_off_point`. The probe `Skeleton/CanonicalTowerReduction.lean`,
+section `DescentStages` (after `end Tower`), has the stage vocabulary (`IsInnermostSplitStep`,
+`IsTypeOneDeletion`, `IsTypeTwoDeletion`, `IsTypeThreeDeletion`, `IsProtectedReplacement`,
+`IsSeparatorIn`) and real stage lemmas (`exists_disk_split_preserving_seams`,
+`separates_after_delete_type_one`, `exists_annular_component_of_essential_seams`,
+`exists_type_two_bounded_side`, `delete_preserves_protected_seams`, `finite_bridge_count_decreases`,
+`exists_terminal_of_strict_finite_rank`, `exists_compatible_sequence`, the two limit lemmas): copy
+what you use into real modules (never import a `Skeleton/` file), re-check it, and keep names
+unique (the probe's live in namespace `…CanonicalTowerReduction`; yours take the plain
+`DifferentialGeometry.Topology.PiecewiseLinear` namespace, so grep first). Vocabulary:
+`IsCanonicalTower` (`PseudoCell.lean`, `structure IsCanonicalTower`), `IsAnnularChain`,
+`annularChain`, `initialSurface` (grep `PseudoCell.lean` and the `AnnularChain*` modules),
+`Separates`, `SeparatesOfLocallyEventuallyEq`, `IsTube.mem_interior_dualCell`; the pair interior's
+two-ball / prism model for simple connectivity before Phragmén–Brouwer
+(`TubeCenteredPrismCoordinates`, `SplitDiskCylinderCoordinates`). Nonempty vertex preimages come
+from `IsTube.mem_interior_dualCell` and embedding transport, not from an assumption.
+
+Order of work: (1) the finite geometric state (odd surface pieces, fixed even tori, the window
+triangulation, seam components with labels, protected completed seams, vertex separation) and its
+measures; (2) the five stage producers as real theorems on that state, each strictly decreasing its
+phase measure and preserving the earlier phases; (3) the relative finite-window normalisation by
+well-founded recursion on the lexicographic measure (prove the decrease at every transition;
+`Set.ncard` of an infinite set is not a measure); (4) the dependent recursion over the compact
+exhaustion producing `M n`; (5) the limit chain and every `IsAnnularChain` field (exact end labels
+and meets, the three disjointness assertions, containment in the outer carriers, both
+fundamental-group surjectivity certificates); (6) the leaf. Expect several thousand lines; deliver
+real modules stage by stage with receipts as you go. If a stage needs a fact that the tower, the
+initial surface and the four named inputs do not supply, stop on it and report the exact obligation
+(lead/owner decision); add no named input on your own.

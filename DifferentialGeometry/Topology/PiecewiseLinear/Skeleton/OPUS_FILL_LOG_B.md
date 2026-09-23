@@ -1266,3 +1266,85 @@ the leaf is not closed (INTERFACE below); six bricks CLOSED.
   invariance of domain; `TopologicalCellComplementConnected` of `MoiseChain` is an unproved named
   proposition).
 - Compiles: 10 module checks and 1 audit.
+
+# Batch 9 (Section 32 canonical tower)
+
+Worker: Opus 5.5 fill worker on lease b, 2026-09-23.  Target: `exists_canonicalTower` of
+`Skeleton/Section32PseudoCell.lean` (Moise §32, p. 224).  Result: CLOSED, restated byte-identically
+in a real module; no skeleton imported; no existing file edited except this log.
+
+## exists_canonicalTower — CLOSED
+
+- Statement identity: the text from `open Classical in` / `theorem exists_canonicalTower` to
+  `:= by` (788 characters) and the `section Leaves` variable block are byte-identical to the
+  skeleton (checked by script); same namespace `DifferentialGeometry.Topology.PiecewiseLinear`,
+  same `open Set Topology`, same `local notation "E3"`.  To wire it: import `CanonicalTowerExists`
+  into `Section32PseudoCell.lean` and delete the skeleton's `exists_canonicalTower`.
+- Hypotheses used: `ht hu hv huv he hP' hWint hWfr h307 hZ hZD`.  Not needed for the tower and
+  bound by `let _ :=` (AGENTS `unusedArguments` pattern): `hW`, `hWsub`, `hWK`.  `hWfr` is used
+  only to put `h '' Dbd {u, v}` in the frontier of `h '' C u ∪ h '' C v` (local finiteness).
+- `Moise307`: needed, once per integer index, for the fitted polyhedral tori
+  (`isPolyhedralSolidTorus`); it is a hypothesis of the frozen leaf, so no interface change.  It is
+  NOT available unconditionally in the tree: the only producers are
+  `moise307_of_moise252 (h252 : Moise252)` and `moise307_of_moise306_of_moise252`
+  (`Section30Torus.lean`), and `Moise252` has only conditional producers (loop theorem lemma two).
+- Route (BP answer §1, all sub-leaves proved, no new `sorry`):
+  1. `exists_continuous_injective_image_closedBall_eq_stdSimplex`: gauge rescaling between the
+     round unit disk and the coordinate triangle, conjugated by translations so that the centre goes
+     to the barycentre (`exists_homeomorph_image_eq_of_mem_interior`, Mathlib's proof plus the point
+     equation), then the chart `w ↦ (1 - w₀ - w₁, w₀, w₁)`.
+  2. `IsTube.exists_unitSolidCylinder_coordinates`: `φ = h ∘ ρ ∘ (x ↦ (κ(x₀,x₂), x₁))` with `ρ` from
+     `IsTube.exists_centered_prism_coordinates`; continuous and injective on `unitSolidCylinder`,
+     image `h '' C u ∪ h '' C v`, middle disk ↦ `h '' D {u,v}`, rim ↦ `h '' Dbd {u,v}`, `0 ↦ P'`.
+  3. `exists_isRevolvedTorusChain_tower` (model, in ℝ³): radii `rᵢ = 2ⁱ/(1+2ⁱ)`, squares
+     `[rᵢ-wᵢ, rᵢ₊₁+wᵢ] × [-wᵢ, wᵢ]`, `wᵢ ≤ min(εᵢ/4, gaps/3)` with `εᵢ` a thickening of the compact
+     revolved segment inside the given open set (all angles at once); every triple is an
+     `IsRevolvedTorusChain` (solid tori via `isSpine_revolutionOf_of_mem_cellInterior`), squares at
+     index distance ≥ 2 disjoint, segments fill the punctured open disk exactly, exact lower tail
+     closure `∪ {0}`, exact upper tail closure `∪ unitMeridianCircle`, local finiteness off the
+     centre and rim.
+  4. Transport through `φ` (closed embedding of the compact cylinder; invariance of domain for
+     `interior`), open set `interior cylinder ∩ φ⁻¹(interior W ∩ Zᶜ)`.
+  5. Fitting and general position: `exists_fits_image_annulus_of_isRevolvedTorusChain` (inner shell,
+     `Moise307`, cylindrical diagram bridge) and `exists_fits_family_pairGP_succ` (even seeds kept,
+     odd ones relative GP), both adapted from the Codex probe `CanonicalTowerReduction`; one family
+     restricted to all triples.
+- New files (under `DifferentialGeometry/Topology/PiecewiseLinear/`), lines, SHA-256:
+  - `CenteredDiskSimplexMap.lean`, 149,
+    `9fb53b3098ac32d7f16d81e8c490f21d08cf6c6ccb80fa5e1ce0cc5757c6c7a3`
+  - `RevolvedTorusTower.lean`, 741,
+    `b2e3e87c83052afc3852fc612d6061b4bbac5a27084d0a66b2c9cf7f76e3cc04`
+  - `SplitDiskCylinderCoordinates.lean`, 192,
+    `358ebd7e737a8dba41781b4ba670e565c92a26bdd2d6a1f5a55e1e8452ec4aa6`
+  - `CanonicalTowerExists.lean`, 277,
+    `c90b927c2be807585cc8a8881947bcf67db0174c005f484b2e64c9d16085cc98`
+- New public names (all grepped tree-wide, unique except the frozen leaf itself):
+  `exists_homeomorph_image_eq_of_mem_interior`,
+  `exists_continuous_injective_image_closedBall_eq_stdSimplex`, `unitSolidCylinder`,
+  `unitMeridianDisk`, `unitMeridianCircle` (Set-valued defs, no structure or Prop-valued def),
+  `isCompact_unitSolidCylinder`, `unitMeridianDisk_subset_unitSolidCylinder`,
+  `unitMeridianCircle_subset_unitMeridianDisk`, `zero_mem_interior_unitSolidCylinder`,
+  `unitMeridianDisk_sdiff_subset_interior`, `exists_isRevolvedTorusChain_tower`,
+  `IsTube.exists_unitSolidCylinder_coordinates`,
+  `exists_fits_image_annulus_of_isRevolvedTorusChain`, `exists_fits_family_pairGP_succ`,
+  `exists_canonicalTower`.
+- Import lines, in this order (aggregate not touched):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.CenteredDiskSimplexMap`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.RevolvedTorusTower`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SplitDiskCylinderCoordinates`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerExists`
+- Success lines (each after a fresh prepare; `...` =
+  `D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear`):
+  `Verified ...\CenteredDiskSimplexMap.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\RevolvedTorusTower.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\SplitDiskCylinderCoordinates.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\CanonicalTowerExists.lean with no diagnostics; shared outputs unchanged.`
+- Audit `claude-moise-agent-b/AuditBatch9.lean` (SHA-256
+  `5ac78ba0f94bd8270cf9761276db511e25eea5353620381d8073533104ee0ab4`; every declaration of the four
+  modules, transitive axioms within `propext`, `Classical.choice`, `Quot.sound`, the thirteen
+  linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch9.lean with no diagnostics; shared outputs unchanged.`
+- Untested on an instance only in the sense that no joint Lean fixture was built; `IsTube` is
+  inhabited (`exists_isTube`), and every hypothesis of the new public theorems is satisfiable (the
+  model tower takes any open set containing the punctured disk, e.g. `univ`).
+- Compiles: 8 module checks and 1 audit.
