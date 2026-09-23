@@ -268,46 +268,10 @@ theorem exists_unique_absolute_generator_of_tangent_orientation_locality
           apply hz
           change z + chartAt E p x = chartAt E p x at heq
           exact add_right_cancel (heq.trans (zero_add _).symm))
-  let tangentChartOrientation (p x : M) (hx : x ∈ (chartAt E p).source)
-      (o : Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin (Module.finrank ℝ E))) :
-      Orientation ℝ E (Fin (Module.finrank ℝ E)) :=
-    Orientation.map _
-      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
-        (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv o
   obtain ⟨μ, ⟨hmaps, hreal⟩, _⟩ :=
     exists_locally_realized_family_of_tangent_orientation_locality o ω c hlocal
-  have hgen (x : M) : Function.Bijective (fun k : ℤ => k • μ x) := by
-    let e := (normalizedChartLocalIso (Module.finrank ℝ E) x x
-      (mem_chart_source E x)).toLinearEquiv
-    let d := if tangentChartOrientation x x (mem_chart_source E x) (o x) = ω then c else -c
-    have hd : Function.Bijective (fun k : ℤ => k • d) := by
-      dsimp only [d]
-      split_ifs
-      · exact hc
-      · refine ⟨?_, ?_⟩
-        · intro k l h
-          apply neg_injective
-          apply hc.1
-          simpa only [neg_zsmul, zsmul_neg] using h
-        · intro b
-          obtain ⟨k, hk⟩ := hc.2 b
-          exact ⟨-k, by simpa only [neg_zsmul, zsmul_neg, neg_neg] using hk⟩
-    have hmap (k : ℤ) : e (k • μ x) = k • d := by
-      rw [map_zsmul]
-      change k • (normalizedChartLocalIso (Module.finrank ℝ E) x x
-        (mem_chart_source E x)).hom.hom (μ x) = k • d
-      have hcoord : (normalizedChartLocalIso (Module.finrank ℝ E) x x
-          (mem_chart_source E x)).hom.hom (μ x) = d := hmaps x x (mem_chart_source E x)
-      rw [hcoord]
-    refine ⟨?_, ?_⟩
-    · intro k l h
-      apply hd.1
-      change k • d = l • d
-      change k • μ x = l • μ x at h
-      rw [← hmap k, ← hmap l, h]
-    · intro b
-      obtain ⟨k, hk⟩ := hd.2 (e b)
-      exact ⟨k, e.injective ((hmap k).trans hk)⟩
+  have hgen (x : M) := integralLocalHomology_generator_of_orientation_coordinates
+    x x (mem_chart_source E x) (o x) ω c hc (μ x) (hmaps x x (mem_chart_source E x))
   obtain ⟨a, ha, hu, hga, hpa⟩ := exists_unique_absolute_generator_of_locally_realized_family
     (E := E) (Module.finrank ℝ E) le_rfl μ hgen hreal
   refine ⟨a, ?_, ?_, hga, hpa⟩
