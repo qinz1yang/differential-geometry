@@ -13,6 +13,10 @@ theorem exists_pierced_square_ball_pair {K : Set (ℝ × ℝ)} (hK : IsCompact K
       IsPLBall 3 A ∧ IsPLBall 3 B ∧
       IsPLHomeomorphOn f₀ (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 0) A ∧
       IsPLHomeomorphOn f₁ (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (0 : ℝ) 1) B ∧
+      IsPLHomeomorphOn f₀ (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 1)
+        (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 1) ∧
+      IsPLHomeomorphOn f₁ (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 1)
+        (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 1) ∧
       EqOn f₀ id (univ ×ˢ Ioo (-a) a)ᶜ ∧ EqOn f₁ id (univ ×ˢ Ioo (-a) a)ᶜ ∧
       (interior A ∩ interior B).Nonempty ∧ IsPLSphere 1 (frontier A ∩ frontier B) ∧
       frontier A ∩ frontier B ⊆ Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ {(0 : ℝ)} ∧
@@ -61,7 +65,9 @@ theorem exists_pierced_square_ball_pair {K : Set (ℝ × ℝ)} (hK : IsCompact K
     · exact Or.inl hxl
     · exact Or.inr (le_of_not_gt fun hxu => hx ⟨mem_univ _, lt_of_not_ge hxl, hxu⟩)
   refine ⟨A, B, piercingHeightMove g a, piercingHeightMove (fun x => -g x) a,
-    hA, hB, ?_, ?_, hfix _, hfix _, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    hA, hB, ?_, ?_, isPLHomeomorphOn_piercingHeightMove_self hg ha1 hP.isPolyhedron,
+    isPLHomeomorphOn_piercingHeightMove_self hneg ha1 hP.isPolyhedron,
+    hfix _, hfix _, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · have hp := isPLHomeomorphOn_piercingHeightMove hg a hP.isPolyhedron (-1) 0
     rwa [piercingHeightMove_image_lower ha ha1 hga, ← hAe] at hp
   · have hp := isPLHomeomorphOn_piercingHeightMove hneg a hP.isPolyhedron 0 1

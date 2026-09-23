@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactEmbeddingApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
+import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteLocalModel
 
 open Set Function Topology
 
@@ -10,6 +12,15 @@ private theorem mapsTo_of_equiv_eqOn_compl {X : Type*} (f : X ≃ X)
   by_contra hnot
   have heq : f x = x := f.injective (hfix hnot)
   exact hnot (heq.symm ▸ hx)
+
+private theorem image_eq_of_equiv_eqOn_compl {X : Type*} (f : X ≃ X)
+    {S : Set X} (hfix : EqOn f id Sᶜ) : f '' S = S := by
+  refine Subset.antisymm (mapsTo_of_equiv_eqOn_compl f hfix).image_subset ?_
+  intro y hy
+  obtain ⟨x, rfl⟩ := f.surjective y
+  refine ⟨x, ?_, rfl⟩
+  by_contra hx
+  exact hx (by simpa only [hfix hx, id_eq] using hy)
 
 private theorem exists_equiv_of_finite_disjoint_support {ι X : Type*}
     (s : Finset ι) (Ω : ι → Set X) (φ : ι → X ≃ X) (hdis : Pairwise (Disjoint on Ω))
@@ -57,7 +68,8 @@ theorem exists_isPL_embedding_of_finite_disjoint_support {ι M : Type*}
     (hKΩ : ∀ i ∈ s, K i ⊆ Ω i) (hdis : Pairwise (Disjoint on Ω))
     (hPL : ∀ i ∈ s, IsPLOn n n (φ i) C) (hfix : ∀ i ∈ s, EqOn (φ i) id (K i)ᶜ) :
     ∃ Φ : M ≃ M, IsPLHomeomorphInto n Φ C ∧
-      (∀ i ∈ s, EqOn Φ (φ i) (Ω i)) ∧ EqOn Φ id (⋃ i ∈ s, K i)ᶜ := by
+      (∀ i ∈ s, EqOn Φ (φ i) (Ω i)) ∧
+      (∀ i ∈ s, Φ '' C ∩ Ω i = φ i '' C ∩ Ω i) ∧ EqOn Φ id (⋃ i ∈ s, K i)ᶜ := by
   obtain ⟨Φ, hΦeq, hΦfix⟩ := exists_equiv_of_finite_disjoint_support s Ω φ hdis
     (fun i hi x hx => hfix i hi fun hxK => hx (hKΩ i hi hxK))
   have hΦK : EqOn Φ id (⋃ i ∈ s, K i)ᶜ := by
@@ -83,6 +95,37 @@ theorem exists_isPL_embedding_of_finite_disjoint_support {ι M : Type*}
         (hid x hx) _ hx
       filter_upwards [mem_nhdsWithin_of_mem_nhds (hclosed.isOpen_compl.mem_nhds hxK)] with y hy
       exact hΦK hy
-  exact ⟨Φ, hPLΦ.isPLHomeomorphInto hC Φ.injective.injOn, hΦeq, hΦK⟩
+  refine ⟨Φ, hPLΦ.isPLHomeomorphInto hC Φ.injective.injOn, hΦeq, ?_, hΦK⟩
+  intro i hi
+  have hφΩ : φ i '' Ω i = Ω i := image_eq_of_equiv_eqOn_compl (φ i)
+    (fun x hx => hfix i hi fun hxK => hx (hKΩ i hi hxK))
+  have hΦΩ : Φ '' Ω i = Ω i := (image_congr (hΦeq i hi)).trans hφΩ
+  calc
+    Φ '' C ∩ Ω i = Φ '' (C ∩ Ω i) := by rw [image_inter Φ.injective, hΦΩ]
+    _ = φ i '' (C ∩ Ω i) := image_congr ((hΦeq i hi).mono inter_subset_right)
+    _ = φ i '' C ∩ Ω i := by rw [image_inter (φ i).injective, hφΩ]
+
+theorem IsPLCellOn.exists_image_of_finite_disjoint_support {ι M : Type*}
+    [TopologicalSpace M] [T2Space M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [HasGroupoid M (plGroupoid 3)] {d : ℕ} {C B : Set M} (hC : IsPLCellOn d C B)
+    (s : Finset ι) (Ω K : ι → Set M) (φ : ι → M ≃ M)
+    (hΩ : ∀ i ∈ s, IsOpen (Ω i)) (hK : ∀ i ∈ s, IsClosed (K i))
+    (hKΩ : ∀ i ∈ s, K i ⊆ Ω i) (hdis : Pairwise (Disjoint on Ω))
+    (hPL : ∀ i ∈ s, IsPLOn 3 3 (φ i) C) (hfix : ∀ i ∈ s, EqOn (φ i) id (K i)ᶜ) :
+    ∃ Φ : M ≃ M, IsPLCellOn d (Φ '' C) (Φ '' B) ∧
+      (∀ i ∈ s, EqOn Φ (φ i) (Ω i)) ∧
+      (∀ i ∈ s, Φ '' C ∩ Ω i = φ i '' C ∩ Ω i) ∧
+      EqOn Φ id (⋃ i ∈ s, K i)ᶜ ∧ Φ '' C \ (⋃ i ∈ s, K i) = C \ (⋃ i ∈ s, K i) := by
+  obtain ⟨T, -⟩ := hC.isPolyhedralBall
+  obtain ⟨Φ, hΦ, heq, himage, hΦfix⟩ := exists_isPL_embedding_of_finite_disjoint_support
+    hC.isCompact T.isPLOn_id
+    s Ω K φ hΩ hK hKΩ hdis hPL hfix
+  refine ⟨Φ, hC.image hΦ, heq, himage, hΦfix, ?_⟩
+  apply Subset.antisymm
+  · rintro y ⟨⟨x, hx, hxy⟩, hy⟩
+    have he : x = y := Φ.injective (hxy.trans (hΦfix hy).symm)
+    exact ⟨he ▸ hx, hy⟩
+  · rintro x ⟨hx, hn⟩
+    exact ⟨⟨x, hx, hΦfix hn⟩, hn⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -30,7 +30,7 @@ private theorem exists_marked_pierced_cell_pair_of_mem_intersection {M : Type*} 
     rcases hx with rfl | hx
     · exact hp₀I
     · exact (mem_singleton_iff.mp hx).symm ▸ hp₁I
-  obtain ⟨A, B, hA, hB, hn, hs, hm, hl, hab, hcover, hAd, hBd, hroutes⟩ :=
+  obtain ⟨A, B, hA, hB, hn, hs, hm, hl, hab, hcover, hAd, hBd, -, hroutes⟩ :=
     exists_pierced_cell_pair_covering_compact h₀ h₁ hD hD₀ hD₁ hO hDO hH hHC
   have hp₀H : p₀ ∈ H := Or.inr (Or.inl rfl)
   have hp₁H : p₁ ∈ H := Or.inr (Or.inr rfl)
@@ -127,7 +127,7 @@ private theorem exists_pierced_cell_pair_assigning_disk_markers {M : Type*} [Top
           hq hp₁ hqI hp₁I hqp
       exact ⟨A, B, hA, hB, hn, hs, hm, hl, hu, hc, hdA, hdB,
         fun h => False.elim (hp₀ h), fun _ => ⟨hi₁, hn₁⟩⟩
-    · obtain ⟨A, B, hA, hB, hn, hs, hm, hl, hu, hc, hdA, hdB, -⟩ :=
+    · obtain ⟨A, B, hA, hB, hn, hs, hm, hl, hu, hc, hdA, hdB, -, -⟩ :=
         exists_pierced_cell_pair_covering_compact h₀ h₁ hD hD₀ hD₁ hO hDO hG hGC
       exact ⟨A, B, hA, hB, hn, hs, hm, hl, hu, hc, hdA, hdB,
         fun h => False.elim (hp₀ h), fun h => False.elim (hp₁ h)⟩

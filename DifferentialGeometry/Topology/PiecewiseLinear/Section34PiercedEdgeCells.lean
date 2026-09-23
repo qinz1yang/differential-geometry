@@ -26,7 +26,12 @@ theorem exists_section34_pierced_edge_cells
       A ∪ B ⊆ src (.vertexBall (ends e).1) ∪ src (.vertexBall (ends e).2) ∧
       G ⊆ interior A ∪ interior B ∧
       A \ O = src (.vertexBall (ends e).1) \ O ∧
-      B \ O = src (.vertexBall (ends e).2) \ O := by
+      B \ O = src (.vertexBall (ends e).2) \ O ∧
+      ∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
+        IsPLHomeomorphInto 3 φ₀ (src (.vertexBall (ends e).1)) ∧
+        IsPLHomeomorphInto 3 φ₁ (src (.vertexBall (ends e).2)) ∧
+        φ₀ '' src (.vertexBall (ends e).1) = A ∧ φ₁ '' src (.vertexBall (ends e).2) = B ∧
+        EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ := by
   have h₀ : IsPLCellOn 3 (src (.vertexBall (ends e).1)) (srcBd (.vertexBall (ends e).1)) :=
     hframe.2.2.2.1 (.vertexBall (ends e).1)
   have h₁ : IsPLCellOn 3 (src (.vertexBall (ends e).2)) (srcBd (.vertexBall (ends e).2)) :=
@@ -37,11 +42,11 @@ theorem exists_section34_pierced_edge_cells
   have hD₁ := section34_splitDisk_subset_vertex_boundary hframe hends (ends e).2 e (Or.inr rfl)
   rw [h₀.boundary_eq_frontier] at hD₀
   rw [h₁.boundary_eq_frontier] at hD₁
-  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq, -⟩ :=
+  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq, hmaps, -⟩ :=
     exists_pierced_cell_pair_covering_compact h₀.isPolyhedralBall h₁.isPolyhedralBall
       (hends e ▸ hD.isPolyhedralBall) ((hends e).symm.subset.trans hD₀)
       ((hends e).symm.subset.trans hD₁) hO ((hends e).symm.subset.trans hDO) hG hGC
   exact ⟨A, B, hA, hB, hnonempty, hcircle, hmid.trans (hends e).symm.subset,
-    hlens, hAB, hcover, hAeq, hBeq⟩
+    hlens, hAB, hcover, hAeq, hBeq, hmaps⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

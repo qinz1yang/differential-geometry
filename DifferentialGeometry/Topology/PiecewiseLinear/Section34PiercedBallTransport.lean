@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CenteredPrismBallPair
+import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceConjugateEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceBallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallModel
@@ -23,6 +24,9 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
       frontier A ∩ frontier B ⊆ C₀ ∩ C₁ ∧ A ∩ B ⊆ O ∧ A ∪ B ⊆ C₀ ∪ C₁ ∧
       T.map '' (K ×ˢ Ioo (-1 : ℝ) 1) ⊆ interior A ∪ interior B ∧
       A \ O = C₀ \ O ∧ B \ O = C₁ \ O ∧
+      (∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
+        IsPLHomeomorphInto 3 φ₀ C₀ ∧ IsPLHomeomorphInto 3 φ₁ C₁ ∧
+        φ₀ '' C₀ = A ∧ φ₁ '' C₁ = B ∧ EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ) ∧
       ∀ p₀ ∈ T.map '' (K ×ˢ {(0 : ℝ)}), ∀ p₁ ∈ T.map '' (K ×ˢ {(0 : ℝ)}), p₀ ≠ p₁ →
         ∃ (L₀ L₁ : Set M) (q₀ q₁ : M), IsCompact L₀ ∧ IsCompact L₁ ∧
           IsConnected L₀ ∧ IsConnected L₁ ∧ Disjoint L₀ L₁ ∧
@@ -33,7 +37,8 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
   have hcont : ContinuousOn T.map (P ×ˢ Icc (-1 : ℝ) 1) := hT ▸ T.continuousOn
   obtain ⟨a, ha, ha1, hslab⟩ := exists_pos_forall_prod_Icc_mem_of_isCompact
     hP.isPolyhedron.isCompact hcont hO (fun x hx => hDO (hTm.subset ⟨(x, 0), ⟨hx, rfl⟩, rfl⟩))
-  obtain ⟨A, B, -, -, hA, hB, -, -, -, -, hnonempty, hcircle, hmid, hlens,
+  obtain ⟨A, B, f₀, f₁, hA, hB, hhalf₀, hhalf₁, hself₀, hself₁, hfix₀, hfix₁,
+    hnonempty, hcircle, hmid, hlens,
     hAB, hcover, hAeq, hBeq, hroutes⟩ := exists_pierced_square_ball_pair hK hKP ha ha1
   have hAT : A ⊆ T.complex.space :=
     subset_union_left.trans (hAB.trans hT.symm.subset)
@@ -72,7 +77,7 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
     exact prod_mono Subset.rfl (Icc_subset_Icc (by norm_num) le_rfl)
   refine ⟨T.map '' A, T.map '' B, (T.isPolyhedralBall_image hA hAT).isPLCellOn,
     (T.isPolyhedralBall_image hB hBT).isPLCellOn, ?_, hfront.symm ▸ hsphere,
-    ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · obtain ⟨x, hxA, hxB⟩ := hnonempty
     exact ⟨T.map x, hAi.subset ⟨x, hxA, rfl⟩, hBi.subset ⟨x, hxB, rfl⟩⟩
   · exact hfront.subset.trans ((image_mono hmid).trans hTm.subset)
@@ -87,6 +92,38 @@ theorem exists_pierced_cell_pair_in_prism {M : Type*} [TopologicalSpace M] [T2Sp
       (congrArg (fun S => S \ O) hT₀)
   · exact (Subset.antisymm (houtside hBT hBeq) (houtside hupp hBeq.symm)).trans
       (congrArg (fun S => S \ O) hT₁)
+  · let L := P ×ˢ Icc (-a) a
+    have hLT : L ⊆ T.complex.space := by
+      rw [hT]
+      exact prod_mono Subset.rfl (Icc_subset_Icc (by linarith) ha1)
+    have hLf : ∀ f : ((ℝ × ℝ) × ℝ) → (ℝ × ℝ) × ℝ,
+        EqOn f id (univ ×ˢ Ioo (-a) a)ᶜ → EqOn f id (T.complex.space \ L) := by
+      intro f hf x hx
+      apply hf
+      intro hxo
+      exact hx.2 ⟨(hT.subset hx.1).1, hxo.2.1.le, hxo.2.2.le⟩
+    obtain ⟨φ₀, he₀, hf₀, hpl₀⟩ := T.exists_equiv_conjugate (hT.symm ▸ hself₀) (hLf f₀ hfix₀)
+    obtain ⟨φ₁, he₁, hf₁, hpl₁⟩ := T.exists_equiv_conjugate (hT.symm ▸ hself₁) (hLf f₁ hfix₁)
+    have hpoly₀ := hP.isPolyhedron.prod (isPLBall_Icc (by norm_num : (-1 : ℝ) < 0)).isPolyhedron
+    have hpoly₁ := hP.isPolyhedron.prod (isPLBall_Icc (by norm_num : (0 : ℝ) < 1)).isPolyhedron
+    refine ⟨T.map '' L, φ₀, φ₁,
+      (hP.isPolyhedron.isCompact.prod isCompact_Icc).image_of_continuousOn
+        (T.continuousOn.mono hLT), ?_, hT₀ ▸ hpl₀ _ hpoly₀ hlow,
+      hT₁ ▸ hpl₁ _ hpoly₁ hupp, ?_, ?_, hf₀, hf₁⟩
+    · rintro y ⟨x, hx, rfl⟩
+      exact hslab x.1 hx.1 x.2 hx.2
+    · calc
+        φ₀ '' C₀ = (φ₀ ∘ T.map) '' (P ×ˢ Icc (-1 : ℝ) 0) := by
+          exact (congrArg (fun S => φ₀ '' S) hT₀.symm).trans (image_comp φ₀ T.map _).symm
+        _ = (T.map ∘ f₀) '' (P ×ˢ Icc (-1 : ℝ) 0) :=
+          image_congr fun x hx => he₀ x (hlow hx)
+        _ = T.map '' A := by rw [image_comp, hhalf₀.bijOn.image_eq]
+    · calc
+        φ₁ '' C₁ = (φ₁ ∘ T.map) '' (P ×ˢ Icc (0 : ℝ) 1) := by
+          exact (congrArg (fun S => φ₁ '' S) hT₁.symm).trans (image_comp φ₁ T.map _).symm
+        _ = (T.map ∘ f₁) '' (P ×ˢ Icc (0 : ℝ) 1) :=
+          image_congr fun x hx => he₁ x (hupp hx)
+        _ = T.map '' B := by rw [image_comp, hhalf₁.bijOn.image_eq]
   · rintro p₀ ⟨x₀, hx₀, rfl⟩ p₁ ⟨x₁, hx₁, rfl⟩ hne
     obtain ⟨L₀, L₁, q₀, q₁, hL₀, hL₁, hc₀, hc₁, hd, hp₀, hq₀, hp₁, hq₁,
       hsub₀, hsub₁, hq₀B, hq₁A⟩ := hroutes x₀ hx₀ x₁ hx₁
@@ -128,6 +165,9 @@ theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace 
       IsPolyhedralSphere (n := 3) 1 (frontier A ∩ frontier B) ∧
       frontier A ∩ frontier B ⊆ C₀ ∩ C₁ ∧ A ∩ B ⊆ O ∧ A ∪ B ⊆ C₀ ∪ C₁ ∧
       G ⊆ interior A ∪ interior B ∧ A \ O = C₀ \ O ∧ B \ O = C₁ \ O ∧
+      (∃ (D : Set M) (φ₀ φ₁ : M ≃ M), IsCompact D ∧ D ⊆ O ∧
+        IsPLHomeomorphInto 3 φ₀ C₀ ∧ IsPLHomeomorphInto 3 φ₁ C₁ ∧
+        φ₀ '' C₀ = A ∧ φ₁ '' C₁ = B ∧ EqOn φ₀ id Dᶜ ∧ EqOn φ₁ id Dᶜ) ∧
       ∀ p₀ ∈ G ∩ (C₀ ∩ C₁), ∀ p₁ ∈ G ∩ (C₀ ∩ C₁), p₀ ≠ p₁ →
         ∃ (L₀ L₁ : Set M) (q₀ q₁ : M), IsCompact L₀ ∧ IsCompact L₁ ∧
           IsConnected L₀ ∧ IsConnected L₁ ∧ Disjoint L₀ L₁ ∧
@@ -159,9 +199,9 @@ theorem exists_pierced_cell_pair_covering_compact {M : Type*} [TopologicalSpace 
   have hKP : K ⊆ interior P := by
     rintro x ⟨z, hz, rfl⟩
     exact (hLI z hz).1
-  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq, hroutes⟩ :=
+  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq, hmaps, hroutes⟩ :=
     exists_pierced_cell_pair_in_prism T hT hT₀ hT₁ hTm hO hDO hK hKP
-  refine ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, ?_, hAeq, hBeq, ?_⟩
+  refine ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, ?_, hAeq, hBeq, hmaps, ?_⟩
   · intro y hy
     obtain ⟨x, hx, rfl⟩ := T.bijOn.surjOn (interior_subset (hGC hy))
     have hxL : x ∈ L := ⟨hx, hy⟩

@@ -42,6 +42,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 
 #print axioms exists_centered_prism_piece_of_boundary_disk_pair
 #print axioms exists_isPL_embedding_of_finite_disjoint_support
+#print axioms IsPLCellOn.exists_image_of_finite_disjoint_support
 #print axioms IsAnnulusOn.isCompact
 #print axioms IsAnnulusOn.isCompact_first
 #print axioms IsAnnulusOn.isCompact_second
