@@ -13480,3 +13480,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalFlowCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalParabolicCompactness
+import DifferentialGeometry.Analysis.Parabolic.Energy.DirichletQuotient
+import DifferentialGeometry.Analysis.Parabolic.Energy.Continuity
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Energy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.HeatEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Backward.SurfaceHeat
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionTwo.TerminalRound
