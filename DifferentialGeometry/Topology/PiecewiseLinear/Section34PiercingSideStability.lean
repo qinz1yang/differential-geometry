@@ -135,7 +135,9 @@ theorem exists_section34_inner_end_stability_scales
   exact ⟨h x, mem_image_of_mem h hx,
     (hGdist (ends e).1 x hxCc).trans (hδd _ e (Or.inl rfl))⟩
 
-theorem exists_section34_trace_interior_stability_scales
+private theorem exists_trace_interior_stability_scales_at_endpoint
+    (v : Section34EdgeIndex 𝒦 𝒦' → Section34VertexIndex 𝒦 𝒦')
+    (hv : ∀ e, v e = (ends e).1 ∨ v e = (ends e).2)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
       Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
@@ -145,7 +147,7 @@ theorem exists_section34_trace_interior_stability_scales
         (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) →
         (∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < δ w) →
         ∀ e, G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2 ⊆
-          interior (G (ends e).1 '' Tn e) := by
+          interior (G (v e) '' Tn e) := by
   classical
   obtain ⟨hε, hcc, hsubs, -, hcp, -, -, -, hends, -, -, htn, hsn, -, -, -, -, -, hbc,
     hcross, -⟩ := id hprep
@@ -161,15 +163,16 @@ theorem exists_section34_trace_interior_stability_scales
   have hBdCompact : ∀ w, IsCompact (h '' CpBd w) := fun w =>
     (isCompact_cell_boundary (hcp w)).image_of_continuousOn (hcontU.mono (hBdU w))
   have hedge (e : Section34EdgeIndex 𝒦 𝒦') :
-      ∃ d > 0, ∀ Ga Gb : M₁ → M₂, IsPLHomeomorphInto 3 Ga (Cc (ends e).1) →
+      ∃ d > 0, ∀ F Ga Gb : M₁ → M₂, IsPLHomeomorphInto 3 F (Cc (v e)) →
+        (∀ x ∈ Cc (v e), dist (F x) (h x) < d) →
         (∀ x ∈ Cc (ends e).1, dist (Ga x) (h x) < d) →
         (∀ x ∈ Cc (ends e).2, dist (Gb x) (h x) < d) →
-        Ga '' CpBd (ends e).1 ∩ Gb '' CpBd (ends e).2 ⊆ interior (Ga '' Tn e) := by
-    have hTC : Tn e ⊆ Cc (ends e).1 :=
-      ((htn e).1.trans interior_subset).trans (hsn e _ (Or.inl rfl))
+        Ga '' CpBd (ends e).1 ∩ Gb '' CpBd (ends e).2 ⊆ interior (F '' Tn e) := by
+    have hTC : Tn e ⊆ Cc (v e) :=
+      ((htn e).1.trans interior_subset).trans (hsn e _ (hv e))
     obtain ⟨r, hr, hrstable⟩ :=
       exists_cthickening_subset_image_interior_stable_of_subset_isPLCellOn
-        (hcc (ends e).1) (hcontU.mono (hsubs _).2.2) (hinjU.mono (hsubs _).2.2)
+        (hcc (v e)) (hcontU.mono (hsubs _).2.2) (hinjU.mono (hsubs _).2.2)
         hTC (hbc e).1.isCompact ((hbc e).2.trans inter_subset_right)
     have hbase : (h '' CpBd (ends e).1) ∩ (h '' CpBd (ends e).2) ⊆
         Metric.thickening r (h '' Bc e) := by
@@ -180,7 +183,7 @@ theorem exists_section34_trace_interior_stability_scales
     obtain ⟨s, hs, hsinter⟩ := exists_pos_cthickening_inter_cthickening_subset
       (hBdCompact (ends e).1) (hBdCompact (ends e).2).isClosed
       Metric.isOpen_thickening hbase
-    refine ⟨min r s, lt_min hr hs, fun Ga Gb hGa hGaClose hGbClose => ?_⟩
+    refine ⟨min r s, lt_min hr hs, fun F Ga Gb hF hFClose hGaClose hGbClose => ?_⟩
     have himage (w : Section34VertexIndex 𝒦 𝒦') (F : M₁ → M₂)
         (hF : ∀ x ∈ Cc w, dist (F x) (h x) < min r s) :
         F '' CpBd w ⊆ Metric.cthickening s (h '' CpBd w) := by
@@ -189,17 +192,46 @@ theorem exists_section34_trace_interior_stability_scales
       apply Metric.mem_thickening_iff.mpr
       exact ⟨h x, mem_image_of_mem h hx, (hF x (hBdCc w hx)).trans_le (min_le_right r s)⟩
     intro y hy
-    apply hrstable Ga hGa (fun z hz => ?_)
+    apply hrstable F hF (fun z hz => ?_)
       (Metric.thickening_subset_cthickening r _ (hsinter
         ⟨himage _ Ga hGaClose hy.1, himage _ Gb hGbClose hy.2⟩))
     rw [dist_comm]
-    exact (hGaClose z hz).trans_le (min_le_left r s)
+    exact (hFClose z hz).trans_le (min_le_left r s)
   choose d hd hstable using hedge
   obtain ⟨δ, hδ, hδε, hδd⟩ :=
     exists_vertex_scales_below_edge_bounds (fun e => (hends e).2.1) ε hε d hd
   refine ⟨δ, hδ, hδε, fun G hG hGdist e => ?_⟩
-  exact hstable e (G (ends e).1) (G (ends e).2) (hG (ends e).1)
+  exact hstable e (G (v e)) (G (ends e).1) (G (ends e).2) (hG (v e))
+    (fun x hx => (hGdist _ x hx).trans (hδd _ e (hv e)))
     (fun x hx => (hGdist _ x hx).trans (hδd _ e (Or.inl rfl)))
     (fun x hx => (hGdist _ x hx).trans (hδd _ e (Or.inr rfl)))
+
+theorem exists_section34_trace_interior_stability_scales
+    (hh : Topology.IsEmbedding (U.domRestrict h))
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
+    ∃ δ : Section34VertexIndex 𝒦 𝒦' → ℝ,
+      (∀ w, 0 < δ w) ∧ (∀ w, δ w < ε w) ∧
+      ∀ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
+        (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) →
+        (∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < δ w) →
+        ∀ e, G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2 ⊆
+          interior (G (ends e).1 '' Tn e) := by
+  exact exists_trace_interior_stability_scales_at_endpoint (fun e => (ends e).1)
+    (fun _ => Or.inl rfl) hh hprep
+
+theorem exists_section34_second_trace_interior_stability_scales
+    (hh : Topology.IsEmbedding (U.domRestrict h))
+    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
+    ∃ δ : Section34VertexIndex 𝒦 𝒦' → ℝ,
+      (∀ w, 0 < δ w) ∧ (∀ w, δ w < ε w) ∧
+      ∀ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
+        (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) →
+        (∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < δ w) →
+        ∀ e, G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2 ⊆
+          interior (G (ends e).2 '' Tn e) := by
+  exact exists_trace_interior_stability_scales_at_endpoint (fun e => (ends e).2)
+    (fun _ => Or.inr rfl) hh hprep
 
 end DifferentialGeometry.Topology.PiecewiseLinear
