@@ -506,3 +506,40 @@
   `IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff` on
   `hS.isPLTorus_frontier` (whose output is literally the second alternative).
 - Compiles: 1 module check + the shared audit.
+
+# Batch 5 (orientable descent step)
+
+## NormalSingularCellData.exists_descendingSurgery_of_adaptedCleanCap — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/LoopTheorem/ClosedBranchDisjointDescent.lean`
+  (504 lines, SHA-256 `6be118256390d025a89e97e286cc3fc8c6bc419af85ace3f84d09d3aed4f5395`).
+- Import line to register (92 characters):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDisjointDescent`
+- New public names (grepped tree-wide, unused before):
+  `NormalSingularCellData.branchCarrier_subset_or_disjoint_doublePointSet_sdiff_interior` (whole
+  or nothing for the region `D.domain \ interior K` kept by a closed `K` whose frontier carries
+  no double point) and the leaf itself (statement byte-identical to
+  `Skeleton/DescentStepOrientable.lean:172`, same `universe u v w`, namespace
+  `NormalSingularCellData`, same `variable` block, `open Set Topology`; string comparison).
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchDisjointDescent.lean with no diagnostics; shared outputs unchanged.`
+  (2026-09-22 17:11 local, second compile; host guard 1 lean process).
+- Axiom audit: `AuditOpusC11.lean` — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC11.lean with no diagnostics;
+  shared outputs unchanged.` (17:12): closure within `propext`, `Classical.choice`,
+  `Quot.sound`; the thirteen environment linters pass.
+- Route (disjoint analogue of `exists_isNestedDiskReplacementCell` + nested descent): `G = Δ` on
+  `E'`, `G = D` off `E'` (`IsPLOn.piecewise_of_isClosed`, seam `frontier E'` where `Δ = D`).
+  A point of `interior E'` never shares its image with a point of `D.domain` (`hΔmeet` +
+  injectivity of `Δ`), so `doublePointSet G = doublePointSet D (D.domain \ interior E')`;
+  `frontier E' ⊆ E' \ E` has no double points (`hE'clean`), so the fibres of double points of `G`
+  lie off `E'`; fibre equality near them gives the crossing charts
+  (`HasPLNormalDoubleCrossingAt.of_eventually_eq_fiber`), relative openness comes from
+  `doublePointSet_mem_nhdsWithin_of_pullback` with `r = id` and `S = D '' frontier E'`, and the
+  triangulation from `restrict_to_clopen_doublePointSet`. `c` disappears (`T ⊆ interior E'`,
+  `D` injective on `Q ⊇ J`); branch injection by the new whole or nothing lemma and
+  `DescendingSurgery.ofBranchInjection`. Side, buffer, boundary loop inherited.
+- LEAD DECISION: the frozen statement carries eleven hypotheses the surgery does not use
+  (`hc`, `hJ`, `hT`, `hJT`, `hQsub`, `hclean`, `hk`, `hkT`, `hkcompat`, `hdisjoint`, `hQE'`);
+  they are named with `let _ := …` (the AGENTS.md pattern) so that the frozen statement compiles
+  without an unused-variable diagnostic. A strictly stronger restatement without them is possible.
+- Compiles: 2 module checks + 1 audit.

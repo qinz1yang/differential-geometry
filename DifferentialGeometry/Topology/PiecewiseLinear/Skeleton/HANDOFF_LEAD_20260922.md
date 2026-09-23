@@ -315,3 +315,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   conditional only on `Moise252`). Physical `sorry` 66. Worker d now on the §28 product-coordinates leaf.
 * 18:15 — accepted worker a's P3 bricks `ChartTameNestedCells` and `CurveCrossingGeneralPosition`
   (no leaf closed); the four remaining P3 inputs are assigned to it in order 4, 3, 1, 2, then P3.
+* 18:35 — accepted worker c's `exists_descendingSurgery_of_adaptedCleanCap`
+  (`LoopTheorem/ClosedBranchDisjointDescent`); physical `sorry` 65. Worker c is deep in the
+  cross-seam reading leaf (three compiling support modules, ~1900 lines).

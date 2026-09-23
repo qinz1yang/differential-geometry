@@ -12,6 +12,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduc
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossQuarterTurn
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealization
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDisjointDescent
 
 /-!
 # Sorry-first skeleton of the orientable descent step
@@ -114,6 +115,16 @@ axiom audit; statements byte-identical with the frozen leaves):
 Proved and imported on 2026-09-22 (Gemini batch G084, lead-accepted with zero-diagnostic checks
 and an axiom audit; statement byte-identical with the frozen leaf):
 `NormalSystem.exists_boundaryNeighborhood_realization`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a zero-diagnostic
+check and an axiom audit; statement byte-identical with the frozen leaf up to an `open Classical
+in` prefix): `exists_descendingSurgery_of_adaptedCleanCap` (module
+`LoopTheorem/ClosedBranchDisjointDescent`), the disjoint analogue of the nested descent: the
+surgery `G` is `φ` on `E'` and `D` off it, double points of `G` are those of `D` off the interior
+of `E'`, the crossing charts come from fibre equality, and branch injection from a new
+whole-or-nothing lemma for the region kept by a closed `K` whose frontier carries no double point.
+Eleven frozen hypotheses are unused and are consumed by `let` bindings; a strictly stronger
+restatement without them is possible.
 -/
 
 open Set Topology
@@ -167,33 +178,6 @@ theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
         (E' \ E) ∩ doublePointPreimage (⇑D) D.domain = ∅ ∧
           Δ.domain = E' ∧ InjOn (⇑Δ) E' ∧ ⇑Δ '' E' ⊆ V ∧ EqOn (⇑Δ) (⇑D) (frontier E') ∧
             ⇑Δ '' E' ∩ ⇑D '' D.domain = ⇑D '' frontier E' := by
-  sorry
-
-theorem exists_descendingSurgery_of_adaptedCleanCap [T2Space M]
-    (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
-    {J T Q E E' : Set (EuclideanSpace ℝ (Fin 2))}
-    {k : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
-    (hJ : IsPLSphere 1 J) (hT : IsPLSphere 1 T) (hJT : Disjoint J T)
-    (hpre : hD.branchPreimage c = J ∪ T)
-    (hQ : IsPLBall 2 Q) (hQsub : Q ⊆ interior D.domain) (hfrontQ : frontier Q = J)
-    (hclean : doublePointPreimage (⇑D) D.domain ∩ Q = J) (hinj : InjOn (⇑D) Q)
-    (hE : IsPLBall 2 E) (hfrontE : frontier E = T)
-    (hk : IsPLHomeomorphOn k E Q) (hkT : k '' T = J) (hkcompat : EqOn (⇑D) (⇑D ∘ k) T)
-    (hdisjoint : Disjoint Q E)
-    {C : Set M} (hside : IsPLBoundarySide D C BdM)
-    (hbuffer : ∀ z ∈ Set.range D.boundary, B ∈ 𝓝[BdM] z)
-    (Δ : SingularTwoCell M)
-    (hE' : IsPLBall 2 E') (hEE' : E ⊆ interior E') (hE'int : E' ⊆ interior D.domain)
-    (hQE' : Disjoint Q E') (hE'clean : (E' \ E) ∩ doublePointPreimage (⇑D) D.domain = ∅)
-    (hΔdom : Δ.domain = E') (hΔinj : InjOn (⇑Δ) E')
-    (hΔside : ⇑Δ '' E' ⊆ interior (C \ BdM)) (hΔbd : EqOn (⇑Δ) (⇑D) (frontier E'))
-    (hΔmeet : ⇑Δ '' E' ∩ ⇑D '' D.domain = ⇑D '' frontier E')
-    {Θ : Type v} [TopologicalSpace Θ] {Y : Type w} {ρ : M → Y} {γ : Θ → Y}
-    (e : Θ ≃ₜ frontier D.domain) (hloop : ∀ θ, ρ (⇑D (e θ)) = γ θ) :
-    ∃ Sg : hD.DescendingSurgery, MapsTo (⇑Sg.cell) Sg.cell.domain C ∧
-      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[BdM] z) ∧
-        ∃ e' : Θ ≃ₜ frontier Sg.cell.domain, ∀ θ, ρ (⇑Sg.cell (e' θ)) = γ θ := by
   sorry
 
 theorem exists_descendingSurgery_of_disjoint_innermost_cleanDisk [T2Space M]
