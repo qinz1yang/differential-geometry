@@ -320,4 +320,65 @@ theorem nonempty_geometricCutoffRecord_of_geometryFrontier
 
 end GeometricCutoffGeometryFrontier
 
+namespace GeometricCutoffRecord
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {p : CutoffParameters}
+
+def ofEmptyIndex [hindex : IsEmpty (H.event i).transition.trace.tubes.Index]
+    (hsingular : (H.event i).incoming.SingularEndpoint)
+    (hprotected : ∀ x : (H.event i).incoming.terminalRegularOpen,
+      metricScalarAt (H.event i).terminal.metric x ≤ ((p.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
+      x.val ∈ interior (Subtype.val '' (H.event i).transition.trace.retainedCore))
+    (hmeets : ∀ c : ConnectedComponents (H.event i).transition.trace.tubes.core,
+      (∃ x : (H.event i).transition.trace.tubes.core,
+        ConnectedComponents.mk x = c ∧ x ∈ (H.event i).transition.trace.retainedCore) →
+      ∃ x : (H.event i).incoming.terminalRegularOpen,
+        ∃ hx : x.val ∈ (H.event i).transition.trace.tubes.core,
+          ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧
+            metricScalarAt (H.event i).terminal.metric x ≤
+              ((p.protectedRadius (H.time i.succ)) ^ 2)⁻¹)
+    (hcurvature : ∀ a : ℝ, 0 < a →
+      (∀ x : (H.event i).incoming.terminalRegularOpen,
+        InFixedHamiltonIveyRegion (H.event i).terminal.metric a x) →
+      ∀ x : (H.stage i.succ).Carrier, InFixedHamiltonIveyRegion (H.event i).outputMetric a x)
+    (hscalar : ∀ L : ℝ, L ≤ 0 →
+      (∀ x : (H.event i).incoming.terminalRegularOpen,
+        L ≤ metricScalarAt (H.event i).terminal.metric x) →
+      ∀ x : (H.stage i.succ).Carrier, L ≤ metricScalarAt (H.event i).outputMetric x) :
+    GeometricCutoffRecord H i p where
+  singular := hsingular
+  nominalRadius := fun h => (h.elim hindex.false).elim
+  nominal_pos := fun h => (h.elim hindex.false).elim
+  nominal_small := fun h => (h.elim hindex.false).elim
+  nominal_time := fun h => (h.elim hindex.false).elim
+  delta := fun α => isEmptyElim α
+  delta_pos := fun α => isEmptyElim α
+  delta_le := fun α => isEmptyElim α
+  order := fun α => isEmptyElim α
+  order_lower := fun α => isEmptyElim α
+  neck := fun α => isEmptyElim α
+  scale_eq := fun α => isEmptyElim α
+  buffer_disjoint := fun α => isEmptyElim α
+  tube_eq := fun α => isEmptyElim α
+  tube_in_buffer := fun α => isEmptyElim α
+  backward := fun α => isEmptyElim α
+  retained_terminal := retained_terminal_of_old_eq_retained (H.event i)
+    (H.event i).old_eq_retained_of_isEmpty_index
+  protected_interior := hprotected
+  retained_meets_protected := hmeets
+  one_retained_side := fun α => isEmptyElim α
+  no_cuts_discard := fun _ => geometricCutoff_no_cuts_discard H i
+  static := fun b => isEmptyElim b.val.1
+  recenter_scale := fun b => isEmptyElim b.val.1
+  recenter_mark := fun b => isEmptyElim b.val.1
+  recenter_delta := fun b => isEmptyElim b.val.1
+  recenter_scale_comparison := fun b => isEmptyElim b.val.1
+  recenter_chart := fun b => isEmptyElim b.val.1
+  recenter_in_buffer := fun b => isEmptyElim b.val.1
+  old_eq_retained := (H.event i).old_eq_retained_of_isEmpty_index
+  curvature_preserving := hcurvature
+  scalar_preserving := hscalar
+
+end GeometricCutoffRecord
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
