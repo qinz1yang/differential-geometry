@@ -1,20 +1,26 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SmallRegularNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodSolidTorus
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusOnPolyhedralCylinder
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-theorem IsPLDerivedNeighborhoodExhaustion.exists_solidTorus_regularNeighborhood_subset_open
-    {X : Type*} [TopologicalSpace X] [T2Space X]
+theorem IsPLDerivedNeighborhoodExhaustion.exists_solidTorus_regularNeighborhood_with_annular_traces
+    {X ι : Type*} [Finite ι] [TopologicalSpace X] [T2Space X]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
     {N K U C O D : Set X} (h : IsPLDerivedNeighborhoodExhaustion (n := 3) N K U)
     (hU : IsOpen U) (hC : IsPolyhedralSphere (n := 3) 1 C)
     (hD : IsPolyhedralBall (n := 3) 3 D) (hDU : D ⊆ U) (hCD : C ⊆ interior D)
-    (hO : IsOpen O) (hCO : C ⊆ O) :
+    (hO : IsOpen O) (hCO : C ⊆ O) (F : ι → Set X)
+    (hF : ∀ i, IsPolyhedralSphere (n := 3) 2 (F i)) (hFU : ∀ i, F i ⊆ U)
+    (hCF : ∀ i, C ⊆ F i) :
     ∃ S : Set X, IsLocallyFiniteRegularNeighborhoodOf (n := 3) S C U ∧
-      IsTopologicalSolidTorus S ∧ S ⊆ O ∩ interior D := by
+      IsTopologicalSolidTorus S ∧ S ⊆ O ∩ interior D ∧
+      ∀ i, ∃ F₀ F₁ : Set X, IsAnnulusOn (S ∩ F i) F₀ F₁ := by
   classical
+  let _ := Fintype.ofFinite ι
   obtain ⟨m, T, A, -, hcover, hfin, -, -, hman, -, hmono, -⟩ := h
   let _ : DecidableEq (EuclideanSpace ℝ (Fin m)) := Classical.decEq _
   have hCU : C ⊆ U := hCD.trans (interior_subset.trans hDU)
@@ -25,8 +31,27 @@ theorem IsPLDerivedNeighborhoodExhaustion.exists_solidTorus_regularNeighborhood_
   have hP : IsPLBall 3 P :=
     T.isPLBall_preimage_of_isPolyhedralBall A hcover hfin hmono hD hDU
   have hQP : Q ⊆ P := inter_subset_inter_right _ (preimage_mono (hCD.trans interior_subset))
-  obtain ⟨R, hR, hnew, hRP, hRQ⟩ := T.exists_isSubdivision_restrict_pair_finite_change
-    A hcover hfin hmono hP.isPolyhedron inter_subset_left hQ.isPolyhedron inter_subset_left
+  let F' := fun i => T.complex.space ∩ T.map ⁻¹' F i
+  have hF' (i) : IsPLSphere 2 (F' i) :=
+    T.isPLSphere_preimage_of_isPolyhedralSphere A hcover hfin hmono (hF i) (hFU i)
+  let V : Option (Option ι) → Set (EuclideanSpace ℝ (Fin m)) := fun j =>
+    match j with
+    | none => P
+    | some none => Q
+    | some (some i) => F' i
+  have hVP (j) : IsPolyhedron (V j) := by
+    rcases j with _ | (_ | i)
+    · exact hP.isPolyhedron
+    · exact hQ.isPolyhedron
+    · exact (hF' i).isPolyhedron
+  have hVT (j) : V j ⊆ T.complex.space := by
+    rcases j with _ | (_ | i) <;> exact inter_subset_left
+  obtain ⟨R, hR, hnew, hRV⟩ := T.exists_isSubdivision_restrict_family_finite_change
+    A hcover hfin hmono Finset.univ V (fun j _ => hVP j) (fun j _ => hVT j)
+  have hRP : (restrict R P).space = P := hRV none (Finset.mem_univ _)
+  have hRQ : (restrict R Q).space = Q := hRV (some none) (Finset.mem_univ _)
+  have hRF (i) : (restrict R (F' i)).space = F' i :=
+    hRV (some (some i)) (Finset.mem_univ _)
   let T₁ := T.subdivide R hR
     (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hnew)
   have hcardT : ∀ s ∈ T.complex.faces, s.card ≤ 3 + 1 := by
@@ -117,8 +142,87 @@ theorem IsPLDerivedNeighborhoodExhaustion.exists_solidTorus_regularNeighborhood_
   have hrange : range f = T.map '' (derivedNeighborhood S G).space := by
     exact (Set.image_eq_range T.map (derivedNeighborhood S G).space).symm
   obtain ⟨φ⟩ := hsolid
-  refine ⟨T.map '' (derivedNeighborhood S G).space, himage ▸ hreg, ?_, hsmall⟩
-  exact ⟨((hf.toHomeomorph.trans (Homeomorph.setCongr hrange)).symm).trans φ⟩
+  refine ⟨T.map '' (derivedNeighborhood S G).space, himage ▸ hreg,
+    ⟨((hf.toHomeomorph.trans (Homeomorph.setCongr hrange)).symm).trans φ⟩, hsmall, ?_⟩
+  intro i
+  let H := restrict S (F' i)
+  have hHspace : H.space = F' i := by
+    have he := (hS.restrict (restrict R (F' i)) (restrict_faces_subset R (F' i))).space_eq
+    rwa [hRF i] at he
+  have hHS : F' i ⊆ S.space := inter_subset_left.trans hST.space_eq.symm.subset
+  have hHfin : H.faces.Finite := by
+    apply (T₂.finite_faces_inter_of_isCompact (hF' i).isPolyhedron.isCompact hHS).subset
+    rintro t ⟨ht, htc⟩
+    have hx : t.centroid ℝ id ∈ convexHull ℝ (t : Set _) :=
+      t.centroid_mem_convexHull (S.nonempty_of_mem_faces ht)
+    exact ⟨ht, t.centroid ℝ id, hx, htc hx⟩
+  have : Finite H.faces := hHfin.to_subtype
+  have hHsphere : IsPLSphere 2 H.space := hHspace.symm ▸ hF' i
+  have hGH : G.faces ⊆ H.faces := by
+    intro t ht
+    exact ⟨ht.1, fun x hx => ⟨(ht.2 hx).1, hCF i (ht.2 hx).2⟩⟩
+  obtain ⟨ψ, hψ⟩ := exists_isPLHomeomorphOn_annulus_derivedNeighborhood_circle H G
+    hHsphere.isCombinatorialManifold.isCombinatorialManifoldWithBoundary hGH
+    hG.isCombinatorialManifold hG.isConnected (isOrientable_of_isPLSphere hHsphere)
+  have htrace : (derivedNeighborhood S G).space ∩ F' i =
+      (derivedNeighborhood H G).space := by
+    have he := derivedNeighborhood_space_inter_subcomplex S H G
+      (restrict_faces_subset S (F' i))
+    rwa [hHspace] at he
+  have htraceT : (derivedNeighborhood H G).space ⊆ T.complex.space := by
+    rw [← htrace]
+    exact inter_subset_left.trans hNT
+  let g : (derivedNeighborhood H G).space → X := fun x => T.map x
+  have hg : IsEmbedding g := T.isEmbedding.comp (IsEmbedding.inclusion htraceT)
+  have hgimage : T.map '' (derivedNeighborhood H G).space =
+      (T.map '' (derivedNeighborhood S G).space) ∩ F i := by
+    rw [← htrace]
+    apply Subset.antisymm
+    · rintro x ⟨z, ⟨hzN, hzF⟩, rfl⟩
+      exact ⟨mem_image_of_mem T.map hzN, hzF.2⟩
+    · rintro x ⟨⟨z, hzN, rfl⟩, hzF⟩
+      exact ⟨z, ⟨hzN, hNT hzN, hzF⟩, rfl⟩
+  have hgrange : range g = (T.map '' (derivedNeighborhood S G).space) ∩ F i :=
+    (Set.image_eq_range T.map (derivedNeighborhood H G).space).symm.trans hgimage
+  exact exists_isAnnulusOn_of_homeomorph_stdSimplexBoundary_prod
+    ⟨hψ.homeomorph.trans (hg.toHomeomorph.trans (Homeomorph.setCongr hgrange))⟩
+
+theorem IsPLDerivedNeighborhoodExhaustion.exists_solidTorus_regularNeighborhood_subset_open
+    {X : Type*} [TopologicalSpace X] [T2Space X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
+    {N K U C O D : Set X} (h : IsPLDerivedNeighborhoodExhaustion (n := 3) N K U)
+    (hU : IsOpen U) (hC : IsPolyhedralSphere (n := 3) 1 C)
+    (hD : IsPolyhedralBall (n := 3) 3 D) (hDU : D ⊆ U) (hCD : C ⊆ interior D)
+    (hO : IsOpen O) (hCO : C ⊆ O) :
+    ∃ S : Set X, IsLocallyFiniteRegularNeighborhoodOf (n := 3) S C U ∧
+      IsTopologicalSolidTorus S ∧ S ⊆ O ∩ interior D := by
+  obtain ⟨S, hS, htS, hSO, -⟩ := h.exists_solidTorus_regularNeighborhood_with_annular_traces
+    hU hC hD hDU hCD hO hCO (fun i : Empty => i.elim)
+    (fun i => i.elim) (fun i => i.elim) (fun i => i.elim)
+  exact ⟨S, hS, htS, hSO⟩
+
+theorem IsPLDerivedNeighborhoodExhaustion.exists_nested_regularNeighborhoods_with_annular_traces
+    {X ι : Type*} [Finite ι] [TopologicalSpace X] [T2Space X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
+    {N K U C O D : Set X} (h : IsPLDerivedNeighborhoodExhaustion (n := 3) N K U)
+    (hU : IsOpen U) (hC : IsPolyhedralSphere (n := 3) 1 C)
+    (hD : IsPolyhedralBall (n := 3) 3 D) (hDU : D ⊆ U) (hCD : C ⊆ interior D)
+    (hO : IsOpen O) (hCO : C ⊆ O) (F : ι → Set X)
+    (hF : ∀ i, IsPolyhedralSphere (n := 3) 2 (F i)) (hFU : ∀ i, F i ⊆ U)
+    (hCF : ∀ i, C ⊆ F i) :
+    ∃ S T : Set X, IsLocallyFiniteRegularNeighborhoodOf (n := 3) S C U ∧
+      IsLocallyFiniteRegularNeighborhoodOf (n := 3) T C U ∧
+      IsTopologicalSolidTorus S ∧ IsTopologicalSolidTorus T ∧
+      T ⊆ interior S ∧ S ⊆ O ∩ interior D ∧
+      (∀ i, ∃ F₀ F₁ : Set X, IsAnnulusOn (S ∩ F i) F₀ F₁) ∧
+      ∀ i, ∃ F₀ F₁ : Set X, IsAnnulusOn (T ∩ F i) F₀ F₁ := by
+  obtain ⟨S, hS, htS, hSO, hSF⟩ :=
+    h.exists_solidTorus_regularNeighborhood_with_annular_traces
+      hU hC hD hDU hCD hO hCO F hF hFU hCF
+  have hCS : C ⊆ interior S := subset_interior_iff_mem_nhdsSet.mpr hS.mem_nhdsSet
+  obtain ⟨T, hT, htT, hTS, hTF⟩ := h.exists_solidTorus_regularNeighborhood_with_annular_traces
+    hU hC hD hDU hCD isOpen_interior hCS F hF hFU hCF
+  exact ⟨S, T, hS, hT, htS, htT, hTS.trans inter_subset_left, hSO, hSF, hTF⟩
 
 theorem IsPLDerivedNeighborhoodExhaustion.exists_nested_solidTorus_regularNeighborhoods
     {X : Type*} [TopologicalSpace X] [T2Space X]
@@ -131,11 +235,10 @@ theorem IsPLDerivedNeighborhoodExhaustion.exists_nested_solidTorus_regularNeighb
       IsLocallyFiniteRegularNeighborhoodOf (n := 3) T C U ∧
       IsTopologicalSolidTorus S ∧ IsTopologicalSolidTorus T ∧
       T ⊆ interior S ∧ S ⊆ O ∩ interior D := by
-  obtain ⟨S, hS, htS, hSO⟩ :=
-    h.exists_solidTorus_regularNeighborhood_subset_open hU hC hD hDU hCD hO hCO
-  have hCS : C ⊆ interior S := subset_interior_iff_mem_nhdsSet.mpr hS.mem_nhdsSet
-  obtain ⟨T, hT, htT, hTS⟩ := h.exists_solidTorus_regularNeighborhood_subset_open
-    hU hC hD hDU hCD isOpen_interior hCS
-  exact ⟨S, T, hS, hT, htS, htT, hTS.trans inter_subset_left, hSO⟩
+  obtain ⟨S, T, hS, hT, htS, htT, hTS, hSO, -⟩ :=
+    h.exists_nested_regularNeighborhoods_with_annular_traces
+      hU hC hD hDU hCD hO hCO (fun i : Empty => i.elim)
+      (fun i => i.elim) (fun i => i.elim) (fun i => i.elim)
+  exact ⟨S, T, hS, hT, htS, htT, hTS, hSO⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

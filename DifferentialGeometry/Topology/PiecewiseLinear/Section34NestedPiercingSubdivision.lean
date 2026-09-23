@@ -184,6 +184,60 @@ theorem restrict_faces_finite_of_finite_new_faces
       (hsB (s.centroid_mem_convexHull (K.nonempty_of_mem_faces hsK)))
   · exact Or.inr ⟨hsR, hsK⟩
 
+theorem LocallyFinitePLPieceIn.exists_isSubdivision_restrict_family_finite_change
+    {E X ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X}
+    (T : LocallyFinitePLPieceIn E 3 X U)
+    (A : ℕ → Geometry.SimplicialComplex ℝ E)
+    (hA : T.complex.faces = ⋃ i, (A i).faces)
+    (hfin : ∀ i, (A i).faces.Finite) (hmono : Monotone fun i => (A i).faces)
+    (s : Finset ι) (P : ι → Set E) (hP : ∀ i ∈ s, IsPolyhedron (P i))
+    (hPT : ∀ i ∈ s, P i ⊆ T.complex.space) :
+    ∃ R : Geometry.SimplicialComplex ℝ E,
+      IsSubdivision R T.complex ∧ (R.faces \ T.complex.faces).Finite ∧
+        ∀ i ∈ s, (restrict R (P i)).space = P i := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+    refine ⟨T.complex, IsSubdivision.refl _, ?_, by simp⟩
+    simp
+  | @insert a s ha ih =>
+    obtain ⟨R, hR, hRnew, hRP⟩ := ih
+      (fun i hi => hP i (Finset.mem_insert_of_mem hi))
+      (fun i hi => hPT i (Finset.mem_insert_of_mem hi))
+    let T' := T.subdivide R hR
+      (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hRnew)
+    let B := fun i => restrict R (A i).space
+    have hsub (i) : (A i).faces ⊆ T.complex.faces := by
+      rw [hA]
+      exact subset_iUnion (fun j => (A j).faces) i
+    have hB : T'.complex.faces = ⋃ i, (B i).faces := by
+      apply Subset.antisymm
+      · intro t ht
+        obtain ⟨u, hu, htu⟩ := hR.exists_face_subset ht
+        obtain ⟨i, hi⟩ := mem_iUnion.mp (hA ▸ hu)
+        exact mem_iUnion.mpr ⟨i, ht, htu.trans ((A i).convexHull_subset_space hi)⟩
+      · exact iUnion_subset fun i => restrict_faces_subset R (A i).space
+    have hBfin (i) : (B i).faces.Finite :=
+      restrict_faces_finite_of_finite_new_faces (hsub i) (hfin i) hRnew
+    have hBmono : Monotone fun i => (B i).faces := by
+      intro i j hij t ht
+      exact ⟨ht.1, ht.2.trans (space_mono_of_faces_subset (hmono hij))⟩
+    obtain ⟨S, hS, hSnew, hSa⟩ := T'.exists_isSubdivision_restrict_space_finite_change
+      B hB hBfin hBmono (hP a (Finset.mem_insert_self a s))
+      ((hPT a (Finset.mem_insert_self a s)).trans hR.space_eq.symm.subset)
+    refine ⟨S, hS.trans hR, ?_, ?_⟩
+    · apply (hSnew.union hRnew).subset
+      rintro t ⟨ht, htT⟩
+      by_cases htR : t ∈ R.faces
+      · exact Or.inr ⟨htR, htT⟩
+      · exact Or.inl ⟨ht, htR⟩
+    · intro i hi
+      rcases Finset.mem_insert.mp hi with rfl | hi
+      · exact hSa
+      · have he := (hS.restrict (restrict R (P i)) (restrict_faces_subset R (P i))).space_eq
+        rwa [hRP i hi] at he
+
 theorem LocallyFinitePLPieceIn.exists_isSubdivision_restrict_pair_finite_change
     {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X}
@@ -196,37 +250,11 @@ theorem LocallyFinitePLPieceIn.exists_isSubdivision_restrict_pair_finite_change
     ∃ R : Geometry.SimplicialComplex ℝ E,
       IsSubdivision R T.complex ∧ (R.faces \ T.complex.faces).Finite ∧
         (restrict R P).space = P ∧ (restrict R Q).space = Q := by
-  obtain ⟨R, hR, hRnew, hRP⟩ :=
-    T.exists_isSubdivision_restrict_space_finite_change A hA hfin hmono hP hPT
-  let T' := T.subdivide R hR
-    (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hRnew)
-  let B := fun i => restrict R (A i).space
-  have hsub (i) : (A i).faces ⊆ T.complex.faces := by
-    rw [hA]
-    exact subset_iUnion (fun j => (A j).faces) i
-  have hB : T'.complex.faces = ⋃ i, (B i).faces := by
-    apply Subset.antisymm
-    · intro s hs
-      obtain ⟨t, ht, hst⟩ := hR.exists_face_subset hs
-      obtain ⟨i, hi⟩ := mem_iUnion.mp (hA ▸ ht)
-      exact mem_iUnion.mpr ⟨i, hs, hst.trans ((A i).convexHull_subset_space hi)⟩
-    · exact iUnion_subset fun i => restrict_faces_subset R (A i).space
-  have hBfin (i) : (B i).faces.Finite :=
-    restrict_faces_finite_of_finite_new_faces (hsub i) (hfin i) hRnew
-  have hBmono : Monotone fun i => (B i).faces := by
-    intro i j hij s hs
-    exact ⟨hs.1, hs.2.trans (space_mono_of_faces_subset (hmono hij))⟩
-  obtain ⟨S, hS, hSnew, hSQ⟩ := T'.exists_isSubdivision_restrict_space_finite_change
-    B hB hBfin hBmono hQ (hQT.trans hR.space_eq.symm.subset)
-  have hSP : (restrict S P).space = P := by
-    have he := (hS.restrict (restrict R P) (restrict_faces_subset R P)).space_eq
-    rwa [hRP] at he
-  refine ⟨S, hS.trans hR, ?_, hSP, hSQ⟩
-  apply (hSnew.union hRnew).subset
-  rintro s ⟨hs, hsT⟩
-  by_cases hsR : s ∈ R.faces
-  · exact Or.inr ⟨hsR, hsT⟩
-  · exact Or.inl ⟨hs, hsR⟩
+  classical
+  obtain ⟨R, hR, hnew, hRP⟩ := T.exists_isSubdivision_restrict_family_finite_change
+    A hA hfin hmono Finset.univ (fun b : Bool => if b then Q else P)
+    (by intro b _; cases b <;> assumption) (by intro b _; cases b <;> assumption)
+  exact ⟨R, hR, hnew, hRP false (Finset.mem_univ _), hRP true (Finset.mem_univ _)⟩
 
 theorem LocallyFinitePLPieceIn.isLocallyFiniteRegularNeighborhoodOf_locallyFinite_subdivision
     {m : ℕ} {X : Type*} [TopologicalSpace X]
