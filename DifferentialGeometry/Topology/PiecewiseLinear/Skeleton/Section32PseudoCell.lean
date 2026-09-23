@@ -13,6 +13,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.TwoComponentsOfPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.EdgeCollarFamily
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhoodExists
 import DifferentialGeometry.Topology.PiecewiseLinear.InitialSurfaceSeparates
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainPseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPositionBallPseudoCell
+import DifferentialGeometry.Topology.PiecewiseLinear.ReducedDiskPseudoCell
 
 /-!
 # Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
@@ -218,6 +221,20 @@ Interface change by owner decision (2026-09-22, option A for Section 33's Lemma 
 frozen `Moise323` conclusion is wider.  The assembly `moise323` supplies it from the collar clause
 `W ∩ frontier (C'_u ∪ C'_v) = h '' Dbd` of `IsEdgeCollarFamily`, `Ec ⊆ W` of
 `SplitsDualCellsAlong`, and `IsTube.disjoint_image_rim_interior`; no leaf statement changed.
+
+Proved and imported (external collaborator, PR #10, lead-accepted on 2026-09-23 with zero-diagnostic
+checks and an axiom audit; statements byte-identical): `isOpenTopologicalCell_annularChain`
+(module `AnnularChainPseudoCell` over the `AnnularChain*` modules: the two-ended open-cell
+compactification, local polyhedrality off the centre, the closure adding exactly the intrinsic rim
+of the splitting disk, the local pair of PL 3-balls meeting in a PL disk, and the control of
+accumulation of canonical annular chains), `exists_generalPosition_ball_pseudoCell` (module
+`GeneralPositionBallPseudoCell`: a small PL ball around the centre whose frontier has a finite
+transverse polygon trace, and a clean trace disk on the ball frontier) and
+`exists_reducedDisk_of_crossesPseudoCell` (module `ReducedDiskPseudoCell` over the `PseudoCell*`
+modules: an outermost PL disk with its intrinsic rim, supported disk surgery along regular
+pseudo-cell patches, a central sphere disk and an innermost non-central trace disk, finite circle
+surgery).  The three reconnaissance probes `Skeleton/Section32*Probe.lean` are deleted as
+superseded.  The two leaves left in this file are the canonical tower and the descent.
 -/
 
 open Set Topology
@@ -271,45 +288,6 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
       IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' annularChain H B P') ∧
       ∀ x ∈ interior (h '' C u ∪ h '' C v), x ≠ P' →
         ∃ U ∈ 𝓝 x, ∃ n₀ : ℕ, ∀ n ≥ n₀, M n ∩ U = annularChain H B P' ∩ U := by
-  sorry
-
-open Classical in
-theorem isOpenTopologicalCell_annularChain (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
-    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
-    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
-    (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
-      (interior (h '' C u ∪ h '' C v)) P')
-    (hch : IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P')
-    (hsep : Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' annularChain H B P')
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v})) :
-    IsOpenTopologicalCell 2 (annularChain H B P') ∧
-    IsLocallyPolyhedral (annularChain H B P' \ {P'}) ∧
-    closure (annularChain H B P') = annularChain H B P' ∪ h '' Dbd {u, v} ∧
-    ∀ x ∈ annularChain H B P' \ {P'}, ∃ Q₁ Q₂ DQ : Set E3,
-      IsPLBall 3 Q₁ ∧ IsPLBall 3 Q₂ ∧ Q₁ ∩ Q₂ = DQ ∧ IsPLBall 2 DQ ∧
-      DQ ⊆ annularChain H B P' \ {P'} ∧ Q₁ ∪ Q₂ ∈ 𝓝 x ∧
-      Q₁ ∪ Q₂ ⊆ interior (h '' C u ∪ h '' C v) ∧
-      (Q₁ ∪ Q₂) ∩ (annularChain H B P' ∪ h '' Dbd {u, v}) = DQ := by
-  sorry
-
-theorem exists_generalPosition_ball_pseudoCell {Ec Eint Ebd : Set E3} {P : E3}
-    (hE : IsPseudoCell Ec Eint Ebd P) {δ : ℝ} (hδ : 0 < δ) :
-    ∃ Bl Dc Dcint : Set E3, IsPLBall 3 Bl ∧ Bl ⊆ Metric.ball P δ ∧ P ∈ interior Bl ∧
-      IsTopologicalCellWithInterior 2 Dc Dcint ∧ Dc ⊆ Eint ∧ Dc ⊆ Metric.ball P δ ∧
-      P ∈ Dcint ∧ Bl ∩ Ec ⊆ Dc ∧ CrossesPseudoCell (frontier Bl) Ec Eint P := by
-  sorry
-
-theorem exists_reducedDisk_of_crossesPseudoCell {Ec Eint Ebd Bl Dc Dcint Ω : Set E3} {P : E3}
-    (hE : IsPseudoCell Ec Eint Ebd P) (hBl : IsPLBall 3 Bl) (hP : P ∈ interior Bl)
-    (hDc : IsTopologicalCellWithInterior 2 Dc Dcint) (hDcE : Dc ⊆ Eint) (hPDc : P ∈ Dcint)
-    (hBE : Bl ∩ Ec ⊆ Dc) (hgp : CrossesPseudoCell (frontier Bl) Ec Eint P) (hΩ : IsOpen Ω)
-    (hBlΩ : Bl ⊆ Ω) (hDcΩ : Dc ⊆ Ω) :
-    ∃ (Δ Δbd : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δbd = r '' stdSimplexBoundary 2 ∧
-      Δ ⊆ Ω ∧ Δbd = Δ ∩ Ec ∧
-      ∃ DJ DJint : Set E3, IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec ∧
-        DJ \ DJint = Δbd ∧ P ∈ DJint := by
   sorry
 
 end Leaves
