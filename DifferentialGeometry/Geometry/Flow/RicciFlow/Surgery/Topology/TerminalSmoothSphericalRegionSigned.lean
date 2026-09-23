@@ -1,12 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapTransitionInstance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegionConnectedSigned
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
+import DifferentialGeometry.Topology.Manifold.ProductChartCollar
+import DifferentialGeometry.Topology.Manifold.SignedGraphCollar
+import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollarAmbient
 import DifferentialGeometry.Topology.Handle.Manifold
+import DifferentialGeometry.Topology.Embedding.Frontier
 
 noncomputable section
 open Set Manifold
+open DifferentialGeometry.Topology (SmoothTwoSidedCollar symmetricOpenInterval)
 open DifferentialGeometry.Topology.Handle (chartedSpaceOfHomeomorph isManifoldOfHomeomorph
   contMDiff_homeomorph_of_chartedSpaceOfHomeomorph
   contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph)
@@ -86,7 +91,9 @@ private theorem exists_ambient_spherical_region {P : OrientedThreeStage.{u}}
     simp only [mem_iUnion, mem_image, mem_range]
     constructor
     · rintro ⟨i, x, ⟨y, rfl⟩, hz⟩
-      exact ⟨label i, y, by simpa only [spheres, ContinuousMap.coe_mk, label.symm_apply_apply] using hz⟩
+      have hzy : spheres (label i) y = z := by
+        simpa only [spheres, ContinuousMap.coe_mk, label.symm_apply_apply] using hz
+      exact ⟨label i, y, hzy⟩
     · rintro ⟨j, y, hy⟩
       exact ⟨label.symm j, sphere (label.symm j) y, ⟨y, rfl⟩, hy⟩
   · intro i y
@@ -101,7 +108,7 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHor
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.exists_smoothSphericalRegion_terminal_component
+theorem TerminalLimitMetric.exists_smoothSphericalRegion_terminal_component_with_signed_collar
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -125,8 +132,21 @@ theorem TerminalLimitMetric.exists_smoothSphericalRegion_terminal_component
                   metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * A) ∧
               (neck i).cylindricalChart.metricCloseOn L.metric δ
                 {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
-              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) := by
-  obtain ⟨η, hη, hregion⟩ := L.exists_connected_spherical_region
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ C ↔ t ≤ 0) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior C ↔ t < 0) ∧
+                ∃ c : SmoothTwoSidedCollar I2 ThreeModel
+                    (fun z : Sphere 2 => ((neck i).map (z, level i)).val),
+                  c.radius < r ∧
+                  ∀ q : Sphere 2 × symmetricOpenInterval c.radius,
+                    c.toFun q = ((neck i).map (q.1, level i + σ * (q.2 : ℝ))).val ∧
+                    (c.toFun q ∈ S.region ↔ (q.2 : ℝ) ≤ 0) ∧
+                    (c.toFun q ∈ interior S.region ↔ (q.2 : ℝ) < 0) := by
+  obtain ⟨η, hη, hregion⟩ := L.exists_connected_spherical_region_with_signed_collar
   refine ⟨η, hη, ?_⟩
   intro δ hδ hδη
   obtain ⟨C2, q, hC2, hq, hregion⟩ := hregion δ hδ hδη
@@ -177,59 +197,34 @@ theorem TerminalLimitMetric.exists_smoothSphericalRegion_terminal_component
     have hopen : IsOpen (Subtype.val '' interior C : Set P.Carrier) :=
       G.terminalRegularOpen.isOpenEmbedding'.isOpenMap _ isOpen_interior
     exact interior_maximal (image_mono interior_subset) hopen (mem_image_of_mem Subtype.val hy)
-  exact ⟨ι, v, neck, level, b, C, S, label, hb, hinteriorconnected, hy, hyambient,
-    hcomponent, hSregion, hscalar, hfrontier, hfrontierscalar, hSsphere, hnecks⟩
+  refine ⟨ι, v, neck, level, b, C, S, label, hb, hinteriorconnected, hy, hyambient,
+    hcomponent, hSregion, hscalar, hfrontier, hfrontierscalar, hSsphere, ?_⟩
+  intro i hi
+  obtain ⟨hl, hsmooth, hscalar, hclose, hdomain, r, σ, hr, hr1, hσ,
+    hsource, hside, hinside⟩ := hnecks i hi
+  have hslice (z : Sphere 2) : (z, level i) ∈ (neck i).map.source := by
+    simpa only [mul_zero, add_zero] using hsource z 0 ⟨neg_lt_zero.mpr hr, hr⟩
+  obtain ⟨c₀, hcr, _, hcoord⟩ :=
+    DifferentialGeometry.Topology.exists_smoothTwoSidedCollar_of_signed_partialDiffeomorph_graph
+      (neck i).map (fun _ => level i) contMDiff_const hslice σ hσ hr
+  let c := c₀.mapAmbient (Subtype.val : G.terminalRegularOpen → P.Carrier)
+    (DifferentialGeometry.isLocalDiffeomorph_subtype_val G.terminalRegularOpen)
+    Subtype.val_injective
+  refine ⟨hl, hsmooth, hscalar, hclose, hdomain, r, σ, hr, hr1, hσ,
+    hsource, hside, hinside, c, hcr, ?_⟩
+  intro q
+  have ht : (q.2 : ℝ) ∈ Ioo (-r) r := by
+    have hq : -c₀.radius < (q.2 : ℝ) ∧ (q.2 : ℝ) < c₀.radius := q.2.property
+    constructor <;> linarith
+  have hmap : c.toFun q = ((neck i).map (q.1, level i + σ * (q.2 : ℝ))).val :=
+    congrArg Subtype.val (hcoord q)
+  refine ⟨hmap, ?_, ?_⟩
+  · rw [hmap, hSregion, Subtype.val_injective.mem_set_image]
+    exact hside q.1 q.2 ht
+  · rw [hmap, hSregion, DifferentialGeometry.Topology.Embedding.interior_image_of_isOpenEmbedding
+      G.terminalRegularOpen.isOpenEmbedding', Subtype.val_injective.mem_set_image]
+    exact hinside q.1 q.2 ht
 
 end OrientedThreeStage.IncomingSlab
 
-end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-
-namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-universe u
-
-theorem exists_smoothSphericalRegion_of_isOpen_isCompact_isConnected
-    {P : OrientedThreeStage.{u}} {R : Set P.Carrier}
-    (hRopen : IsOpen R) (hRcompact : IsCompact R) (hRconn : IsConnected R) :
-    ∃ S : SmoothSphericalRegion P,
-      S.region = R ∧ IsEmpty S.Boundary ∧ S.interiorImage = R := by
-  let _ : ChartedSpace (EuclideanHalfSpace 3) R := subsetChartedSpace R hRopen
-  let _ : IsManifold (𝓡∂ 3) ∞ R := subsetIsManifold R hRopen
-  have hRinduced : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
-      (Subtype.val : R → P.Carrier) := subset_inclusion_isSmoothEmbedding R hRopen
-  have hRboundary : (𝓡∂ 3).boundary R = ∅ := subset_boundary_eq_empty R hRopen
-  have hRinterior : (𝓡∂ 3).interior R = (univ : Set R) := by
-    have h := ModelWithCorners.interior_union_boundary_eq_univ (I := 𝓡∂ 3) (M := R)
-    simpa only [hRboundary, union_empty] using h
-  have hRimage : (Subtype.val : R → P.Carrier) '' (𝓡∂ 3).interior R = R := by
-    rw [hRinterior, image_univ, Subtype.range_coe]
-  let S : SmoothSphericalRegion P :=
-    { region := R
-      compact := hRcompact
-      connected := hRconn
-      induced := hRinduced
-      interior_connected := hRimage.symm ▸ hRconn
-      Boundary := Empty
-      sphere := fun b => isEmptyElim b
-      sphere_smooth := fun b => isEmptyElim b
-      sphere_disjoint := fun b => isEmptyElim b
-      boundary_eq := by simp only [hRboundary, iUnion_of_empty] }
-  exact ⟨S, rfl, inferInstance, hRimage⟩
-
-namespace OrientedThreeStage.IncomingSlab
-
-variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
-
-theorem exists_smoothSphericalRegion_of_isCompact_connectedComponent
-    (y : G.terminalRegularOpen) (hcompact : IsCompact (connectedComponent y)) :
-    ∃ S : SmoothSphericalRegion P,
-      S.region = Subtype.val '' connectedComponent y ∧ IsEmpty S.Boundary ∧
-      S.interiorImage = Subtype.val '' connectedComponent y := by
-  let _ : LocallyConnectedSpace G.terminalRegularOpen :=
-    ChartedSpace.locallyConnectedSpace ThreeSpace G.terminalRegularOpen
-  exact exists_smoothSphericalRegion_of_isOpen_isCompact_isConnected
-    (G.terminalRegularOpen.isOpenEmbedding'.isOpenMap _ isOpen_connectedComponent)
-    (hcompact.image continuous_subtype_val)
-    (isConnected_connectedComponent.image Subtype.val continuous_subtype_val.continuousOn)
-
-end OrientedThreeStage.IncomingSlab
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

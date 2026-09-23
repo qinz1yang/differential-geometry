@@ -6851,7 +6851,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabil
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityRepair
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalNeckFrontierProducer
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalNeckFrontierNatural
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.GlobalStepObstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalSurgeryNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStepSatisfiability
@@ -9302,6 +9302,8 @@ import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundary
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundarySource
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionInterior
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
+import DifferentialGeometry.Topology.Manifold.SignedGraphCollar
+import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollarAmbient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBufferedChartTransfer
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingLocalDiffeomorph
@@ -10226,6 +10228,7 @@ import DifferentialGeometry.Topology.ClosedBall.RadialShell
 import DifferentialGeometry.Topology.ClosedCover
 import DifferentialGeometry.Topology.Connected.ComponentIn
 import DifferentialGeometry.Topology.Connected.RegularClosedComponents
+import DifferentialGeometry.Topology.Connected.ComponentCollar
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRestriction
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureDerivativeBounds
@@ -12562,6 +12565,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialOverlap
 import DifferentialGeometry.Geometry.Neck.SpatialRecentering
 import DifferentialGeometry.Geometry.Neck.SpatialRestriction
 import DifferentialGeometry.Geometry.Neck.SpatialCollarRadius
+import DifferentialGeometry.Geometry.Neck.SpatialComponentCollar
 import DifferentialGeometry.Geometry.Neck.SpatialRestrictionSections
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndGeometryDepth
 import DifferentialGeometry.Topology.EMetricSpace.Convergence
@@ -13512,6 +13516,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBarrierComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegionConnectedSigned
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegionSigned
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalAllLowBridge
 import DifferentialGeometry.Topology.Combinatorics.FiberEnumeration
 import DifferentialGeometry.Topology.Combinatorics.BranchUpdates
