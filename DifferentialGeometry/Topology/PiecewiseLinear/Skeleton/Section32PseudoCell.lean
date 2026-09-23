@@ -212,6 +212,12 @@ and an axiom audit; statement byte-identical with the frozen leaf): `separates_i
 (lane F's entry 11, module `InitialSurfaceSeparates`): the split-disk separation is moved into
 the interior through `h` and the separator is swapped inside the closed set `⋃ S''ᵢ ∪ {P'}` by
 `Separates.of_frontier_subset_replacement`; no limit argument is needed.
+
+Interface change by owner decision (2026-09-22, option A for Section 33's Lemma 8):
+`IsHandleDecompositionOfTube` gained the field `rimFrontier : Ec e ∩ frontier N' = Ebd e`, so the
+frozen `Moise323` conclusion is wider.  The assembly `moise323` supplies it from the collar clause
+`W ∩ frontier (C'_u ∪ C'_v) = h '' Dbd` of `IsEdgeCollarFamily`, `Ec ⊆ W` of
+`SplitsDualCellsAlong`, and `IsTube.disjoint_image_rim_interior`; no leaf statement changed.
 -/
 
 open Set Topology
@@ -457,13 +463,46 @@ theorem moise323 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
   obtain ⟨hone, hcover, hedge, hnonedge⟩ := isHandleDecomposition_of_edgeCollars ht hW hE
   have hsub := handlePiece_subset_of_edgeCollars ht hW hE
   refine ⟨Ec, Eint, Ebd, handlePiece K N' Ec h,
-    ⟨ht, ?_, ?_, ?_, ?_, hone, hcover, fun _ _ => rfl, hedge, hnonedge⟩, ?_⟩
+    ⟨ht, ?_, ?_, ?_, ?_, ?_, hone, hcover, fun _ _ => rfl, hedge, hnonedge⟩, ?_⟩
   · intro e he hc
     obtain ⟨u, v, -, -, -, rfl, hS⟩ := hE e he hc
     exact hS.1
   · intro e he hc
     obtain ⟨u, v, -, -, -, rfl, hS⟩ := hE e he hc
     exact hS.2.1
+  · intro e he hc
+    obtain ⟨u, v, hu, hv, huv, rfl, hS⟩ := hE e he hc
+    obtain ⟨-, -, -, hWpair, -, -⟩ := hW _ he hc
+    obtain ⟨hWsub, hWfr⟩ := hWpair u (Finset.mem_insert_self u {v}) v
+      (Finset.mem_insert_of_mem (Finset.mem_singleton_self v)) huv
+    have hY : h '' C u ∪ h '' C v ⊆ N' := by
+      rw [ht.imageEq, ← image_union]
+      exact image_mono (union_subset (ht.dualCell_subset hu) (ht.dualCell_subset hv))
+    refine Subset.antisymm ?_ ?_
+    · intro x hx
+      have hxW : x ∈ W {u, v} := hS.2.2.1 hx.1
+      have hxY : x ∈ h '' C u ∪ h '' C v := hWsub hxW
+      have hxc : x ∈ closure (h '' C u ∪ h '' C v)ᶜ :=
+        closure_mono (compl_subset_compl.mpr hY)
+          (frontier_eq_closure_inter_closure.subset hx.2).2
+      have hxfr : x ∈ frontier (h '' C u ∪ h '' C v) := by
+        rw [frontier_eq_closure_inter_closure]
+        exact ⟨subset_closure hxY, hxc⟩
+      rw [hS.2.1, ← hWfr]
+      exact ⟨hxW, hxfr⟩
+    · intro x hx
+      have hxE : x ∈ Ec {u, v} := by
+        rw [hS.1.carrierEq]
+        exact Or.inr hx
+      have hxN' : x ∈ N' := hY (hWsub (hS.2.2.1 hxE))
+      have hN'cl : IsClosed N' := by
+        rw [ht.imageEq]
+        exact (ht.isCompact.image_of_continuousOn ht.continuousOn).isClosed
+      refine ⟨hxE, ?_⟩
+      rw [frontier, hN'cl.closure_eq]
+      refine ⟨hxN', fun hint => ?_⟩
+      rw [hS.2.1] at hx
+      exact disjoint_left.mp (ht.disjoint_image_rim_interior he hc) hx hint
   · intro e he hc
     obtain ⟨u, v, -, -, -, rfl, hS⟩ := hE e he hc
     exact hS.2.2.2.2.1

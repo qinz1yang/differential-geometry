@@ -360,6 +360,7 @@ structure IsHandleDecompositionOfTube
   pseudoCell : ∀ e ∈ K.faces, e.card = 2 →
     IsPseudoCell (Ec e) (Eint e) (Ebd e) (h (e.centroid ℝ id))
   rimEq : ∀ e ∈ K.faces, e.card = 2 → Ebd e = h '' Dbd e
+  rimFrontier : ∀ e ∈ K.faces, e.card = 2 → Ec e ∩ frontier N' = Ebd e
   meetsGraph : ∀ e ∈ K.faces, e.card = 2 →
     Ec e ∩ h '' K.space = {h (e.centroid ℝ id)}
   pseudoCellDisjoint : ∀ e ∈ K.faces, e.card = 2 → ∀ f ∈ K.faces, f.card = 2 → e ≠ f →

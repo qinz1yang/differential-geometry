@@ -303,3 +303,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 17:50 — lane F's queue is empty: worker e closed entries 10, 11 and 15 (`ConsecutiveCellUnion`,
   `InitialSurfaceSeparates`, `StableCrossingDoubleCrossing`). Option A: the owner-side `git apply` of the
   scratchpad patch has not landed yet (only the docstring and an import are in). Physical `sorry` 68.
+* 17:35 — option A applied by the lead under the owner's explicit permission for the two paths:
+  `rimFrontier` field in `IsHandleDecompositionOfTube` (`PseudoCell.lean`) and its proof in the §32
+  assembly; `PseudoCell` zero diagnostics + audit, §32/§33 skeletons rechecked. Lemma 8 unblocked for b.
