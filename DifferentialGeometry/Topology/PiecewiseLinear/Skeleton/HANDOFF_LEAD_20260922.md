@@ -414,3 +414,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   route is regular-cell-complex thinness; reusable lemmas owed (Codex day-queue item 1b). Nothing frozen changed.
 * 07:20 (09-23) — accepted worker e's A2 clean cap (`AdaptedCleanCap` + five bricks); A2 has one leaf left,
   which is C1's theorem. Physical `sorry` 36.
+* 07:30 (09-23) — lease e re-dispatched to the compact P6 leaf `exists_compactFaceDisks` (worker c's brick list:
+  PL Schoenflies on `∂C_σ`, innermost trace circle, cyclic incidence on `∂σ`, sub-arc 1-cell); told to avoid
+  worker a's in-flight trace-circles producer (`CrossingTraceCircles`) and Codex's item 1b.
