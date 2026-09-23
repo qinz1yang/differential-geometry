@@ -539,3 +539,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   now the collaborator, in a cloud Codex without host access; plan §7 records the split: he works source-only on
   `codex/moise-smooth-integration` via PRs, the host side (next lead session or a local Codex lane) adds the seven
   extra prerequisites, compiles the 144-module cone under the `codex-smooth-integration` lease and verifies his PRs.
+* 10:30 (09-24) — accepted Codex item 16 (compact P4 compression, 5 modules): Compact has 3 leaves. Physical `sorry` 15.
+  Lease a free.

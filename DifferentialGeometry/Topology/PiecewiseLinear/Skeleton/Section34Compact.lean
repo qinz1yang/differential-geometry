@@ -20,6 +20,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecog
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFaceOrder
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -255,6 +256,13 @@ checks and an axiom/linter audit; statement byte-identical): `exists_compactBigo
 `Section34CompactBigonSlide` over the `Section34CompactBigon*` modules, the compact twin of the
 normalisation bigon slide with the carrier clause `hcar`).  The four leaves left in this file are
 the cut-and-graph frame, the compression, the trace and the residual balls.
+
+Proved and imported (Codex lane on lease a, item 16 of `Skeleton/FILL_QUEUE.md`, lead-accepted on
+2026-09-24 with zero-diagnostic checks and an axiom/linter audit; statement byte-identical):
+`exists_compactCompression` (module `Section34CompactCompressionLeaf` over the
+`Section34CompactCompression*` modules: the compact twin of the compression, reusing the
+through-tube and pocket bricks of the manifold case in the Euclidean ambient).  The three leaves
+left in this file are the cut-and-graph frame, the trace and the residual balls.
 -/
 
 open Set Topology
@@ -280,26 +288,6 @@ theorem exists_compactCutAndGraph (h331 : Moise331OnTube) (hC : IsPLBall 3 C) (h
       (f₁ : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)),
       Section34CompactCutFrame C K K' src srcBd ∧ Section34CompactCarrierControl K h ε H ∧
         Section34CompactGraphFrame V h ε K K' src H f₁ := by
-  sorry
-
-theorem exists_compactCompression (hcut : Section34CompactCutFrame C K K' src srcBd)
-    (hcar : Section34CompactCarrierControl K h ε H)
-    (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
-    {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hinv : Section34CompactFaceBallInvariants K K' h H
-      (section34CompactVertexBallImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fbl fblBd)
-    (s : Section34CompactSimplexIndex K 3)
-    (hop : Section34CompactCompression K K' (section34CompactVertexBallImage srcBd f₁)
-      (section34CompactSplitDiskImage src f₁) fbl fblBd s) :
-    ∃ fbl' fblBd' : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)),
-      Section34CompactFaceBallInvariants K K' h H (section34CompactVertexBallImage src f₁)
-        (section34CompactSplitDiskImage srcBd f₁) fbl' fblBd' ∧
-      (∀ s', s' ≠ s → fbl' s' = fbl s' ∧ fblBd' s' = fblBd s') ∧
-      section34CompactTraceCount (section34CompactVertexBallImage src f₁) fblBd' s + 1 ≤
-        section34CompactTraceCount (section34CompactVertexBallImage src f₁) fblBd s ∧
-      section34CompactCrossingCount (section34CompactSplitDiskImage srcBd f₁) fblBd' s ≤
-        section34CompactCrossingCount (section34CompactSplitDiskImage srcBd f₁) fblBd s := by
   sorry
 
 theorem compactTrace_of_noOperation (hcut : Section34CompactCutFrame C K K' src srcBd)
