@@ -13537,3 +13537,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ParabolicTe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PointSelectedHistoricalFlow
 import DifferentialGeometry.Geometry.Neck.SpatialProperEnd
 import DifferentialGeometry.Topology.Compactness.ComplementCore
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.CoreAtlas
+import DifferentialGeometry.Geometry.Neck.SmoothSavedEnd
+import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Inclusion
+import DifferentialGeometry.Topology.Manifold.FiniteCollarBoundaryAtlas
+import DifferentialGeometry.Geometry.Neck.BoundaryAtlas
