@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSca
 
 noncomputable section
 open Set Manifold
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open scoped Manifold ContDiff Topology
@@ -13,20 +14,27 @@ universe u
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
 private theorem exists_initialTerminalRegion_of_component_regions
-    (D : OneStepIncoming.{u}) {ε r : ℝ}
+    (D : OneStepIncoming.{u}) {ε r δ : ℝ}
     (hε : 0 < ε) (hε1 : ε < 1)
     (hr : 0 < r) (hradius : r = D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)
     (hnoncompact : ∀ y : D.slab.terminalRegularOpen,
       metricScalarAt D.terminal.metric y ≤ (r ^ 2)⁻¹ →
       ¬ IsCompact (connectedComponent y) →
       ∃ B : ℝ, (r ^ 2)⁻¹ < B ∧ ∃ S : SmoothSphericalRegion D.stage,
-        Nonempty (TerminalNeckFrontier D S ε) ∧
+        ∃ (F : TerminalNeckFrontier D S ε)
+          (v : S.Boundary → D.slab.terminalRegularOpen)
+          (neck : ∀ b, SpatialNeck D.terminal.metric δ (v b)),
+          (∀ b, F.chart b = (neck b).cylindricalChart ∧ |F.level b| ≤ 3) ∧
         S.region ⊆ Subtype.val '' connectedComponent y ∧
         (∀ x : D.slab.terminalRegularOpen, x ∈ connectedComponent y →
           metricScalarAt D.terminal.metric x ≤ (r ^ 2)⁻¹ → x.val ∈ interior S.region) ∧
         ∀ x : D.slab.terminalRegularOpen, x.val ∈ S.region →
           metricScalarAt D.terminal.metric x ≤ B) :
-    ∃ Λ : ℝ, 1 ≤ Λ ∧ Nonempty (InitialTerminalRegion D ε Λ) := by
+    ∃ Λ : ℝ, 1 ≤ Λ ∧ ∃ (R : InitialTerminalRegion D ε Λ)
+      (v : ∀ c : {c // c ∈ R.component}, (R.core c).Boundary → D.slab.terminalRegularOpen)
+      (neck : ∀ c b, SpatialNeck D.terminal.metric δ (v c b)),
+      ∀ c b, (R.neckFrontier c).chart b = (neck c b).cylindricalChart ∧
+        |(R.neckFrontier c).level b| ≤ 3 := by
   classical
   let component : Set (ConnectedComponents D.slab.terminalRegularOpen) :=
     {c | ∃ x : D.slab.terminalRegularOpen,
@@ -45,7 +53,10 @@ private theorem exists_initialTerminalRegion_of_component_regions
           ConnectedComponents.mk (⟨x.1, ht x.2⟩ : D.slab.terminalRegularOpen) = c.1) ∧
         (∀ x : D.slab.terminalRegularOpen, ConnectedComponents.mk x = c.1 →
           metricScalarAt D.terminal.metric x ≤ (r ^ 2)⁻¹ → x.val ∈ interior S.region) ∧
-        Nonempty (TerminalNeckFrontier D S ε) ∧
+        ∃ (F : TerminalNeckFrontier D S ε)
+          (v : S.Boundary → D.slab.terminalRegularOpen)
+          (neck : ∀ b, SpatialNeck D.terminal.metric δ (v b)),
+          (∀ b, F.chart b = (neck b).cylindricalChart ∧ |F.level b| ≤ 3) ∧
         ∀ (b : S.Boundary) (z : Sphere 2),
           metricScalarAt D.terminal.metric ⟨(S.sphere b z).1, ht (S.sphere b z).2⟩ ≤
             B * (r ^ 2)⁻¹ := by
@@ -72,7 +83,8 @@ private theorem exists_initialTerminalRegion_of_component_regions
           collar_chart := fun b => isEmptyElim b
           collar_region := fun b => isEmptyElim b }
         exact ⟨ε / 2, by linarith, fun b => isEmptyElim b⟩
-      refine ⟨S, ht, 1, le_rfl, ?_, ?_, ⟨hneck⟩, fun b => isEmptyElim b⟩
+      refine ⟨S, ht, 1, le_rfl, ?_, ?_, hneck, (fun b => isEmptyElim b),
+        (fun b => isEmptyElim b), (fun b => isEmptyElim b), (fun b => isEmptyElim b)⟩
       · intro x
         have hximage : x.1 ∈ Subtype.val '' connectedComponent (rep c) := hregion ▸ x.2
         obtain ⟨y, hy, hxy⟩ := hximage
@@ -84,13 +96,14 @@ private theorem exists_initialTerminalRegion_of_component_regions
         apply SmoothSphericalRegion.interiorImage_subset_interior S
         rw [hinterior]
         exact ⟨x, ConnectedComponents.coe_eq_coe'.mp (hx.trans (hrep_component c).symm), rfl⟩
-    · obtain ⟨B, hB, S, hneck, hregion, hlow, hscalar⟩ :=
+    · obtain ⟨B, hB, S, F, v, neck, hpreserved, hregion, hlow, hscalar⟩ :=
         hnoncompact (rep c) (hrep_low c) hc
       have ht : S.region ⊆ D.slab.terminalRegularRegion := by
         rintro x hx
         obtain ⟨y, hy, rfl⟩ := hregion hx
         exact y.property
-      refine ⟨S, ht, max 1 (B * r ^ 2), le_max_left _ _, ?_, ?_, hneck, ?_⟩
+      refine ⟨S, ht, max 1 (B * r ^ 2), le_max_left _ _, ?_, ?_, F, v, neck,
+        hpreserved, ?_⟩
       · intro x
         obtain ⟨y, hy, hxy⟩ := hregion x.2
         have hxy' : (⟨x.1, ht x.2⟩ : D.slab.terminalRegularOpen) = y :=
@@ -105,9 +118,10 @@ private theorem exists_initialTerminalRegion_of_component_regions
           B = (B * r ^ 2) * (r ^ 2)⁻¹ := by field_simp
           _ ≤ max 1 (B * r ^ 2) * (r ^ 2)⁻¹ :=
             mul_le_mul_of_nonneg_right (le_max_right _ _) (inv_nonneg.mpr (sq_nonneg r))
-  choose core hcore_terminal bound hbound_ge_one hcore_component hlow_mem_interior hneck hbound using hcore
+  choose core hcore_terminal bound hbound_ge_one hcore_component hlow_mem_interior
+    neckFrontier point neck hpreserved hbound using hcore
   obtain ⟨Λ, hΛ, hΛbound⟩ := exists_one_le_forall_le_of_finite bound hbound_ge_one
-  refine ⟨Λ, hΛ, ⟨{
+  refine ⟨Λ, hΛ, {
     epsilon_pos := hε
     epsilon_lt_one := hε1
     Lambda_ge_one := hΛ
@@ -121,22 +135,34 @@ private theorem exists_initialTerminalRegion_of_component_regions
     core_terminal := hcore_terminal
     core_component := hcore_component
     low_mem_interior := hlow_mem_interior
-    neckFrontier := fun c => (hneck c).some
-    boundary_scalar := ?_ }⟩⟩
+    neckFrontier := neckFrontier
+    boundary_scalar := ?_ }, point, neck, hpreserved⟩
   intro c b z
   exact (hbound c b z).trans
     (mul_le_mul_of_nonneg_right (hΛbound c) (inv_nonneg.mpr (sq_nonneg r)))
 
-theorem exists_initialTerminalRegion (D : OneStepIncoming.{u}) {ε : ℝ}
+theorem exists_initialTerminalRegion_with_spatial_necks (D : OneStepIncoming.{u}) {ε : ℝ}
     (hε : 0 < ε) (hε1 : ε < 1) :
-    ∃ Λ : ℝ, 1 ≤ Λ ∧ Nonempty (InitialTerminalRegion D ε Λ) := by
+    ∃ δ Λ : ℝ, 0 < δ ∧ δ < ε ∧ 1 ≤ Λ ∧ ∃ (R : InitialTerminalRegion D ε Λ)
+      (v : ∀ c : {c // c ∈ R.component}, (R.core c).Boundary → D.slab.terminalRegularOpen)
+      (neck : ∀ c b, SpatialNeck D.terminal.metric δ (v c b)),
+      ∀ c b, (R.neckFrontier c).chart b = (neck c b).cylindricalChart ∧
+        |(R.neckFrontier c).level b| ≤ 3 := by
   have ht : 0 ≤ D.endTime := D.startTime_nonneg.trans D.startTime_lt_endTime.le
   let r := D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime
   have hr : 0 < r :=
     mul_pos (D.parameters.delta_pos _ ht) (D.parameters.neckRadius_pos _ ht)
-  apply exists_initialTerminalRegion_of_component_regions D hε hε1 hr rfl
-  intro y hy hnoncompact
-  exact exists_smoothSphericalRegion_covering_scalar_sublevel_noncompact D hε
-    (inv_pos.mpr (pow_pos hr 2)) y hy hnoncompact
+  obtain ⟨δ, hδ, hδε, hregion⟩ :=
+    exists_smoothSphericalRegion_covering_scalar_sublevel_with_spatial_necks D hε
+  obtain ⟨Λ, hΛ, R, v, neck, hpreserved⟩ :=
+    exists_initialTerminalRegion_of_component_regions D hε hε1 hr rfl
+      (hregion ((r ^ 2)⁻¹) (inv_pos.mpr (pow_pos hr 2)))
+  exact ⟨δ, Λ, hδ, hδε, hΛ, R, v, neck, hpreserved⟩
+
+theorem exists_initialTerminalRegion (D : OneStepIncoming.{u}) {ε : ℝ}
+    (hε : 0 < ε) (hε1 : ε < 1) :
+    ∃ Λ : ℝ, 1 ≤ Λ ∧ Nonempty (InitialTerminalRegion D ε Λ) := by
+  obtain ⟨_, Λ, _, _, hΛ, R, _⟩ := exists_initialTerminalRegion_with_spatial_necks D hε hε1
+  exact ⟨Λ, hΛ, ⟨R⟩⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Contract
