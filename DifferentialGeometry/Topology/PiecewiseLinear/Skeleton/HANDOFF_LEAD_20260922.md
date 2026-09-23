@@ -493,3 +493,13 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   obstacle contains the incident vertex balls); clause 9 = MEDIUM zero-marked rim core buffer with arms, then a shrink in
   the same product; `TopologicalCellComplementConnected` stays off-path. Recorded in B1.b.8; leaf 1 continuation is the
   next lease-b target after the §32 tower.
+* 23:55 (09-23) — SMOOTH DEPENDENCY BATCH, owner's option 1 (isolated worktree): plan in
+  `Skeleton/SMOOTH_DEPENDENCY_INTEGRATION_PLAN.md`. Worktree `D:\differential-geometry-smooth-int`, branch
+  `codex/moise-smooth-integration` from `2dcb704e8`, commits `69f2be6e4` + `4b898b95f` hold all 118 batch modules
+  (UNVERIFIED), pushed to origin. Lease `codex-smooth-integration` re-pointed at the worktree, expiry 09-26 04:17 UTC;
+  worker leases a–e renewed to 09-26 04:17 UTC (owner's word). The batch's 104 new files moved out of the shared
+  checkout into `codex-smooth-integrationemoved-from-shared\`; the shared tree is clean of the batch. Lane c runs
+  the 144-module cone verification and the single-face replacement in the worktree; entry into the shared tree
+  needs an exclusive window and one recompilation of the cone in a shared-checkout private root (plan §5).
+* 23:55 (09-23) — collaborator PR #11 (both bigon slides, 49 modules) cherry-picked (`2dcb704e8`); statements
+  byte-identical; name scan clean; acceptance checks on the lead lease in progress.
