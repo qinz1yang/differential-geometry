@@ -581,3 +581,7 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   declaration collisions against item 14's tracked modules (reuse or rename), reverifies and audits; wiring stays manual.
 * 16:50 (09-24) - accepted Codex lane 1's edge matching (70 modules; the single audit timed out at the default
   heartbeat limit and was split into two probes of 35 modules, both clean). CGN has 4 leaves. Physical `sorry` 13.
+* 17:40 (09-24) - BU answered (external): repaired route (C) for the zero-marked rim core buffer, eight sub-leaves with
+  signatures in the answer's section 3 (two NEW_THEORY: relative arc straightening L2, centre-preserving untwisting L4);
+  routes (A), (B) and the radial cone refuted with fixtures. Recorded in B1.b.8; Codex item 14 continues on (C).
+  Consult BV (sub-leaf 5 of the compact trace, written with the item-15 lane) is out.
