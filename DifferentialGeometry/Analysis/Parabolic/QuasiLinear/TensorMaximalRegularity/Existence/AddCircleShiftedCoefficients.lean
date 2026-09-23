@@ -10,6 +10,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 import DifferentialGeometry.Topology.Compactness.TimeInterval
 import Mathlib.Tactic.DefEqTransformations
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpOperators
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.AddCircleIteratedDerivativeContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleDerivativeForcingLift
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.LpInclusion
@@ -919,3 +920,117 @@ private theorem exists_continuousOn_bounded_intermediate_representative
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 end
+
+
+noncomputable section
+open MeasureTheory Set Filter
+open scoped Manifold NNReal
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+private local instance scalarTensorHsNormedSpace
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (a : ℝ) :
+    NormedSpace ℝ (TensorHs g 0 0 a) := inferInstance
+variable {ι : Type*} [Fintype ι]
+private local instance vectorTensorHsNormedSpace
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (a : ℝ) :
+    NormedSpace ℝ (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) := inferInstance
+
+theorem exists_shifted_circle_solution_of_coefficient_bounds
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
+    (hn : 1 ≤ n)
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2)))
+    (alpha : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1)) →
+      TensorHs g 0 0 (n : ℝ))
+    (reaction : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1)) →
+      PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ)))
+    {R τ : ℝ} (hR : 0 < R) (hτ : 0 < τ) (K L M A₀ B₀ : ℝ≥0)
+    (halip : ∀ t ∈ Icc (0 : ℝ) τ, ∀ z, ‖z‖ ≤ R → ∀ w, ‖w‖ ≤ R →
+      ‖alpha t z - alpha t w‖ ≤ (L : ℝ) * ‖z - w‖)
+    (haclose : ∀ t ∈ Icc (0 : ℝ) τ, ∀ z, ‖z‖ ≤ R →
+      ‖alpha t z - ccTensorToHs g 0 (n : ℝ)
+        (scalarCc g (AddCircle.laplacianPrincipalCoefficient g))‖ ≤ (K : ℝ) * R)
+    (hreaction : ∀ t ∈ Icc (0 : ℝ) τ, ∀ z, ‖z‖ ≤ R → ∀ w, ‖w‖ ≤ R →
+      ‖reaction t z - reaction t w‖ ≤ (M : ℝ) * ‖z - w‖)
+    (halpha_zero : ∀ t ∈ Icc (0 : ℝ) τ, ‖alpha t 0‖ ≤ A₀)
+    (hreaction_zero : ∀ t ∈ Icc (0 : ℝ) τ, ‖reaction t 0‖ ≤ B₀)
+    (halpha_cont : Continuous (fun p : Icc (0 : ℝ) τ ×
+      Metric.closedBall (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1))) R => alpha p.1 p.2))
+    (hreaction_cont : Continuous (fun p : Icc (0 : ℝ) τ ×
+      Metric.closedBall (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1))) R => reaction p.1 p.2)) :
+    let m₀ : TensorHs g 0 0 (n : ℝ) →L[ℝ] TensorHs g 0 0 (n : ℝ) →L[ℝ]
+        TensorHs g 0 0 (n : ℝ) := scalarHsMul g n (by simpa using hn)
+    let m : TensorHs g 0 0 (n : ℝ) →L[ℝ]
+        PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ)) →L[ℝ]
+          PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ)) :=
+      (ContinuousLinearMap.piLpMapL (ι := ι) 2).comp
+        (ContinuousLinearMap.pi (fun _ : ι => m₀))
+    let q := ccTensorToHs g 0 (n : ℝ) (scalarCc g (AddCircle.laplacianPrincipalCoefficient g))
+    let d := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      appHs g 0 0 n (scalarCc g (AddCircle.laplacianDriftCoefficient g)))
+    let D := AddCircle.parameterDerivativeHsPi (ι := ι) g n
+    let Q := AddCircle.parameterSecondDerivativeHsPi (ι := ι) g n
+    let J : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2)) →L[ℝ]
+        PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1)) :=
+      ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (show (n : ℝ) + 1 ≤ (n : ℝ) + 2 by linarith))
+    (‖m‖ * K * ‖Q‖) * R ≤ 1 / 16 →
+    (‖m‖ * L * ‖Q‖) * R ≤ 1 / 16 →
+    ∃ (T : ℝ) (hT : 0 < T), T ≤ τ ∧
+      ∃ (u : timeH1 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ))) T)
+        (gforce : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ))) T),
+        let field := maximalRegularityDuhamelVectorField (I := 𝓘(ℝ, ℝ))
+          (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s := 0) (a := (n : ℝ)) hT 0 gforce
+        u = maximalRegularityDuhamelVectorMap (I := 𝓘(ℝ, ℝ))
+            (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s := 0) (a := (n : ℝ)) hT 0 gforce ∧
+          (∀ᵐ t ∂(timeMeasure T), field t ∈ {v | ‖J v‖ ≤ R}) ∧
+          u.toFunL2 = (ContinuousLinearMap.piLpMap
+            (E := fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2))
+            (F := fun _ : ι => TensorHs g 0 0 (n : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+            (g := g) (r := 0) (s := 0) (show (n : ℝ) ≤ (n : ℝ) + 2 by linarith))).compLpL
+            2 (timeMeasure T) field ∧
+          timeH1.trace0 _ T u = 0 ∧
+          timeH1.timeDeriv _ T u =
+            (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+              tensorScaleLaplacian (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ))
+                (g := g) (r := 0) (s := 0) (n : ℝ))).compLpL 2 (timeMeasure T) field + gforce ∧
+          ‖gforce‖ ≤ R / 4 ∧
+          (∀ᵐ t ∂(timeMeasure T), gforce t =
+            m (alpha t (J (field t)) - q) (Q (field t)) +
+              m (alpha t (J (field t))) (Q f₀) + reaction t (J (field t)) -
+              d (D (J (field t)))) ∧
+          (∀ᵐ t ∂(timeMeasure T),
+            ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorScaleLaplacian
+              (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s := 0) (n : ℝ))
+                (field t) + gforce t =
+              ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+                m₀ (alpha t (J (field t)))) (Q (f₀ + field t)) +
+                  reaction t (J (field t))) := by
+  intro m₀ m q d D Q J hsmallA hsmallC
+  have hAlg : Module.finrank ℝ ℝ / 2 + 1 ≤ n := by simpa using hn
+  have hsol :=
+    circle_shifted_solution_of_coefficient_bounds (ι := ι) g n hAlg f₀ alpha reaction
+      hR hτ K L M A₀ B₀ halip haclose hreaction halpha_zero hreaction_zero
+      halpha_cont hreaction_cont hsmallA hsmallC
+  obtain ⟨T, hT, hTτ, u, F, hu, hstate, hforce, hcons, htrace, hpde, hnorm, hpoint⟩ := hsol
+  refine ⟨T, hT, hTτ, u, F, hu, hstate, hcons, htrace, hpde, hnorm, ?_, hpoint⟩
+  let field := maximalRegularityDuhamelVectorField (I := 𝓘(ℝ, ℝ))
+    (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s := 0) (a := (n : ℝ)) hT 0 F
+  have hz : (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2))) ∈
+      {v | ‖J v‖ ≤ R} := by
+    simpa only [Set.mem_ofPred_eq, map_zero, norm_zero] using hR.le
+  have hlift := aeSetLift_coe_ae hz field hstate
+  filter_upwards [hforce, hlift] with t ht hval
+  change (aeSetLift hz field t).val = field t at hval
+  change F t = m (alpha t (J (aeSetLift hz field t).val) - q)
+      (Q (aeSetLift hz field t).val) + m (alpha t (J (aeSetLift hz field t).val)) (Q f₀) +
+      reaction t (J (aeSetLift hz field t).val) - d (D (J (aeSetLift hz field t).val)) at ht
+  rw [hval] at ht
+  exact ht
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
