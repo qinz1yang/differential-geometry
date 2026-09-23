@@ -1000,3 +1000,100 @@ Public names (grepped, no clash except the intended leaf name):
   `A ⊇ B` by `restrict`; field 7 = step 1 (`Bad s = C' \ interior T_s`) + step 2; field 9 since
   the trace is `c.symm '' B.space`, a finite union of connected hulls; field 10 by
   `section34Exterior_of_subset`.
+
+# Batch 7 (P4, bigon)
+
+## P4 brick: compression of a ball along an inner proper disk (`ProperDiskCompression`) — CLOSED
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/ProperDiskCompression.lean` | 273 | `c18ac3d964546c880e886104759bf8e8b5c8ed1df6f6a122a2f8f2a713568716` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.ProperDiskCompression
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ProperDiskCompression.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube17.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T05:22:48Z)
+
+Public names (grepped, no clash): `exists_pos_forall_le_of_isCompact`,
+`IsPLBall.exists_subset_disjoint_of_subset_frontier`, `IsPLBall.exists_compression_of_proper_disk`.
+
+- `IsPLBall.exists_subset_disjoint_of_subset_frontier` (in `ℝ³`): a PL `3`-ball `Q`, a PL disk
+  `D ⊆ frontier Q`, compact `K ⊆ interior Q`, open `U ⊇ D` give a PL ball `Q' ⊆ Q` with
+  `K ⊆ interior Q'`, `Disjoint Q' D` and `Q ⊆ Q' ∪ C` for a compact `C ⊆ U`.  Route: the pair
+  `(frontier Q, D)` goes to (tetrahedron boundary, face) by
+  `exists_isPLHomeomorphOn_sphere_disk_to_simplex`, extends over the balls by
+  `exists_isPLHomeomorphOn_extension_of_stdSimplexBoundary`; `Q'` is the pull-back of the
+  H-polytope `{coord_a ≥ ε}` of the tetrahedron (`IsHPolytope.isPLBall`), `ε` below the minima of
+  `coord_a` on `H '' K` and `H '' (Q \ U)`.
+- `IsPLBall.exists_compression_of_proper_disk` (case (a) of Operation 1): `D ⊆ P` with
+  `D ∩ frontier P = ∂D`, `K` compact preconnected in `interior P \ D`, `U ⊇ D` open give
+  `P' ⊆ P` a PL ball with `K ⊆ interior P'`, `Disjoint P' D`, and an open `O` with
+  `P' ∩ O = P ∩ O` and `frontier P' \ O ⊆ U` (split by
+  `IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace`, keep the side of `K`, shrink).
+- Use in P4 case (a) (`Dj \ Jd ⊆ interior (fbl s)`): chart `c` of `H t`, `t` a tetrahedron on
+  `s` (`w` is incident to `s` by field 3, so `fbl s ∪ Dj ⊆ interior (H t)` by `Section34Exterior`);
+  `P = c '' fbl s`, `D = c '' Dj`, `K = c '' h '' simplexRim` (preconnected; it misses `D` since
+  the rim is in `interior T_s` and `Dj` in the frontier of the vertex-ball union), and `U` with
+  `U ∩ Σ ∩ P ⊆ D` (`Σ` the chart surface).  Then the new trace is the clopen part `trace ∩ O` of
+  the old one, missing `Jd`: fields 1–6, 8–10 and both counts follow (`P' ⊆ P` gives 3, 4, 10;
+  agreement on `O` gives 5, 6 by `.congr`; the old component through `Jd` has no successor, so
+  `c⁺ + 1 ≤ c`; crossings are a subset).
+
+## exists_section34Compression (P4) — STUCK (brick above closed; three obligations remain)
+
+Exact remaining goals, in order of difficulty:
+1. Local lemma for `U` (case (a)): an open `U ⊇ c '' Dj` with `U ∩ Σ ∩ c '' fbl s ⊆ c '' Dj`.
+   At `x ∈ Dj \ Jd`: `Σ = tgtVBd w` near `x` and `Dj ∩ closure (tgtVBd w \ Dj) = Jd`
+   (`IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary`), so `Dj` is a neighbourhood of
+   `x` in `Σ`.  At `x ∈ Jd`: the half of `Σ` beyond `Jd` lies outside `fbl s`; this needs field 5's
+   crossing model at `x` with `α = β = 0` (a PL sphere is not locally a half-plane).
+2. Field 7 after compression (case (a)): with `Z = fblBd s ∩ frontier T_s = Z₀ ⊔ Jd ⊔ Z₁` (sides
+   `E₀`, `E₁` of `Jd` on the sphere, rim on the `E₁` side), old `Z` carries `H₁ T_s`, show `Z₁`
+   carries.  Not a consequence of the rim alone (a ball containing the rim can meet `∂T_s` in a
+   punctured torus with inessential boundary).  Proof route: (i) `Z` is a finite disjoint union of
+   PL circles; (ii) disjoint essential circles on `∂T_s` are homologous up to sign in `T_s`
+   (the tree has 28.9, `SeparatingPolygonDisk`, and only the carrying transfer
+   `IsCombinatorialSolidTorus.carriesFundamentalGroupOnto_of_isPreconnected_sdiff`); (iii) the
+   rim makes `P₁ ∩ ∂T_s` carry (`CarriesFirstHomologyOnto.of_mayerVietoris` on the ball `P₁` plus
+   a retraction); (iv) a planar subsurface of the torus that carries has a carrying boundary
+   circle, and if `P₁ ∩ ∂T_s` contains a punctured torus then `Z₀ ∪ Jd` is null, contradicting (ii).
+3. Case (b) (`Dj \ Jd` outside `fbl s`): the only rim-side ball is `fbl s ∪ X ∪ (collar beyond
+   Dj)`, `X` the pocket bounded by `E₁ ∪ Dj`.  Needs an enlargement brick (collar of a boundary disk
+   on the exterior side; `exists_collar_of_boundary_disk_subset` in a shell) and the invariants of
+   the grown ball; field 7 as in 2.  Field 3 and `Section34Exterior` look provable by one
+   enclosure argument: a vertex ball not incident to `s` inside `X` forces, along the chain of
+   vertex balls of an edge leaving the chart tetrahedron `t₁`, a point of
+   `h '' simplexBody 𝒦' w''` (`w''` not incident to `t₁`) enclosed by `∂X ⊆ obstacle t₁` inside
+   `H t₁`, contradicting `Section34Exterior`; the same argument gives `X ⊆ H t₂` for the other
+   tetrahedron on `s`.  It needs a vertex of each link outside the tetrahedron (from
+   `IsCombinatorialManifold 3`).  **Field 4 is at risk**: when `X`
+   lies outside the vertex-ball union (the pocket under a dome of `fbl s` resting on `∂V_w`),
+   another face ball `fbl s'` may enter `X` through `E₁ ∩ interior V_{w₂}` (`w₂` a common vertex)
+   and leave `V_{w₂}` inside `X`; `hinv` does not exclude this, and then `(fbl s ∪ X) ∩ fbl s'`
+   leaves `interior (⋃ w, tgtV w)`.  Not a certified counterexample (another ball could exist), but
+   the book's Operation 1 (Lemma 6 checks 5(5) only on boundaries) fails there.  Suggest a review of
+   the case-(b) branch before further work on it.
+4. Counts: routine from the brick (clopen part of the trace, one component lost).
+
+## exists_section34BigonSlide (P4b) — STUCK (soft half in place; the drag itself is missing)
+
+- Checked: the other face balls miss `Dj` entirely (`Dj \ Jd` misses every `fblBd s'` by
+  hypothesis; `B'` misses `fblBd s'` since a crossing of `s'`'s trace with the splitting circle
+  inside `B'` would enter `Dj` (field 6), and `Bb ⊆ fbl s ∩ Σ` cannot lie in `fbl s'` (field 4));
+  `w` and the other end `u` of `e` are incident to `s` (field 3), so a drag `Φ` supported near
+  `Dj` plus a strip beyond `B'` inside `V_w ∪ V_u` keeps fields 3, 4, 10 (`Φ` preserves
+  `⋃ tgtV`, the obstacles and `H t`), fields 5, 6 (`HasPLCrossingAt.of_isPLHomeomorphOn_mem_nhds`,
+  `HasPLCurveCrossingOnAt.congr`), field 7 (`Φ ≃ id` on `T_s`: `CarriesFirstHomologyOnto.of_homotopic`),
+  the trace count (homeomorphism of traces) and `p⁺ + 2 = p` (`x ≠ y` removed, no new crossings).
+- Remaining goal: the chart-level drag.  In `ℝ³`: `Y = c '' (tgtV w ∪ tgtV u)` a PL ball
+  (`isPLBall_union_of_inter_isPLBall_two`), the bigon `D ⊆ frontier Y` with `∂D = B ∪ B'`,
+  `B' ⊆` the splitting circle, the sphere `S = c '' fblBd s` crossing `frontier Y` with
+  `S ∩ D = B`; produce a PL homeomorphism `Φ` of `ℝ³`, the identity off a compact subset of a
+  given `U ⊇ D`, with `Φ '' Y = Y`, `Φ` PL-isotopic to the identity through maps preserving `Y`,
+  and `Φ '' S ∩ frontier Y ∩ circle = (S ∩ frontier Y ∩ circle) \ Bb`.  Plan: straighten `Y`
+  ambiently (`IsPLSphere.isSimplyEmbedded`), a disk neighbourhood of `D ∪` strip in `frontier Y`
+  to a face (`exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron`), the bigon in that face
+  (planar Schoenflies), write the model drag, isotope it to the identity (Alexander trick,
+  `ConeIsotopy`, `IsPLPseudoIsotopicToId`) and extend over a product neighbourhood of the face
+  with a taper.  The missing piece is the relative normal form (trace arcs of `fbl s` and the
+  splitting circle inside the straightened face).
