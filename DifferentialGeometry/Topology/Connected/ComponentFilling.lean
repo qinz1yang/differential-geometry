@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.ClosedAttachments
 import Mathlib.Topology.Connected.Clopen
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
 import Mathlib.Topology.OpenPartialHomeomorph.IsImage
@@ -28,14 +29,48 @@ theorem connectedComponentIn_closed_exterior_subset_interior_union
   · rw [connectedComponentIn_eq_empty hx]
     exact empty_subset _
 
-theorem frontier_union_connectedComponentIn_closed_exterior
-    [LocallyConnectedSpace ↥((interior W)ᶜ)] (x : X) :
-    frontier (W ∪ connectedComponentIn (interior W)ᶜ x) =
-      frontier W \ connectedComponentIn (interior W)ᶜ x := by
-  let C := connectedComponentIn (interior W)ᶜ x
-  have hC : IsClosed C := isOpen_interior.isClosed_compl.connectedComponentIn x
-  have hfill : C ⊆ interior (W ∪ C) :=
-    connectedComponentIn_closed_exterior_subset_interior_union x
+theorem isClosed_iUnion_connectedComponentIn
+    {S : Set X} {ι : Type*} [DiscreteTopology (ConnectedComponents S)]
+    (hS : IsClosed S) (point : ι → X) :
+    IsClosed (⋃ i, connectedComponentIn S (point i)) := by
+  let J : Set (ConnectedComponents S) :=
+    {c | ∃ i, ∃ h : point i ∈ S, ConnectedComponents.mk ⟨point i, h⟩ = c}
+  have hJ : IsClosed J := isClosed_discrete _
+  have hpre : IsClosed (ConnectedComponents.mk ⁻¹' J) :=
+    hJ.preimage ConnectedComponents.continuous_coe
+  have heq : Subtype.val '' (ConnectedComponents.mk ⁻¹' J) =
+      ⋃ i, connectedComponentIn S (point i) := by
+    ext y
+    constructor
+    · rintro ⟨z, ⟨i, hi, hiz⟩, rfl⟩
+      apply mem_iUnion.mpr
+      refine ⟨i, ?_⟩
+      rw [connectedComponentIn_eq_image hi]
+      exact ⟨z, ConnectedComponents.coe_eq_coe'.mp hiz.symm, rfl⟩
+    · intro hy
+      obtain ⟨i, hyi⟩ := mem_iUnion.mp hy
+      have hi : point i ∈ S := connectedComponentIn_nonempty_iff.mp ⟨y, hyi⟩
+      rw [connectedComponentIn_eq_image hi] at hyi
+      obtain ⟨z, hz, rfl⟩ := hyi
+      refine ⟨z, ?_, rfl⟩
+      exact ⟨i, hi, (ConnectedComponents.coe_eq_coe'.mpr hz).symm⟩
+  rw [← heq]
+  exact hS.isClosedMap_subtype_val _ hpre
+
+
+theorem frontier_union_iUnion_closed_exterior_components
+    {ι : Type*} [LocallyConnectedSpace ↥((interior W)ᶜ)] (point : ι → X) :
+    frontier (W ∪ ⋃ i, connectedComponentIn (interior W)ᶜ (point i)) =
+      frontier W \ ⋃ i, connectedComponentIn (interior W)ᶜ (point i) := by
+  let C := ⋃ i, connectedComponentIn (interior W)ᶜ (point i)
+  have hC : IsClosed C := isClosed_iUnion_connectedComponentIn isOpen_interior.isClosed_compl point
+  have hfill : C ⊆ interior (W ∪ C) := by
+    intro y hy
+    obtain ⟨i, hyi⟩ := mem_iUnion.mp hy
+    have hsub : W ∪ connectedComponentIn (interior W)ᶜ (point i) ⊆ W ∪ C :=
+      union_subset_union_right _ (subset_iUnion_of_subset i subset_rfl)
+    exact interior_mono hsub
+      (connectedComponentIn_closed_exterior_subset_interior_union (point i) hyi)
   apply subset_antisymm
   · intro y hy
     have hyC : y ∉ C := fun h => hy.2 (hfill h)
@@ -51,43 +86,75 @@ theorem frontier_union_connectedComponentIn_closed_exterior
       exact (interior_subset hz.1).resolve_right hz.2
     exact hyW.2 (interior_maximal hsub (isOpen_interior.inter hC.isOpen_compl) ⟨hyint, hyC⟩)
 
+
+theorem closure_interior_union_iUnion_closed_exterior_components
+    {ι : Type*} [LocallyConnectedSpace ↥((interior W)ᶜ)] (hW : closure (interior W) = W)
+    (point : ι → X) :
+    closure (interior (W ∪ ⋃ i, connectedComponentIn (interior W)ᶜ (point i))) =
+      W ∪ ⋃ i, connectedComponentIn (interior W)ᶜ (point i) := by
+  let C := ⋃ i, connectedComponentIn (interior W)ᶜ (point i)
+  have hC : IsClosed C := isClosed_iUnion_connectedComponentIn isOpen_interior.isClosed_compl point
+  have hWclosed : IsClosed W := hW ▸ isClosed_closure
+  apply subset_antisymm (closure_minimal interior_subset (hWclosed.union hC))
+  rintro y (hyW | hyC)
+  · exact closure_mono (interior_mono subset_union_left) (hW.symm ▸ hyW)
+  · obtain ⟨i, hyi⟩ := mem_iUnion.mp hyC
+    have hsub : W ∪ connectedComponentIn (interior W)ᶜ (point i) ⊆ W ∪ C :=
+      union_subset_union_right _ (subset_iUnion_of_subset i subset_rfl)
+    exact subset_closure (interior_mono hsub
+      (connectedComponentIn_closed_exterior_subset_interior_union (point i) hyi))
+
+theorem frontier_union_iUnion_closed_exterior_components_eq_iUnion
+    {ι : Type*} [LocallyConnectedSpace ↥((interior W)ᶜ)] {κ : Type*} (F : κ → Set X)
+    (hF : ∀ i, IsPreconnected (F i)) (hfront : frontier W = ⋃ i, F i)
+    (point : ι → X) :
+    frontier (W ∪ ⋃ i, connectedComponentIn (interior W)ᶜ (point i)) =
+      ⋃ j ∈ {j | Disjoint (F j) (⋃ i, connectedComponentIn (interior W)ᶜ (point i))},
+        F j := by
+  rw [frontier_union_iUnion_closed_exterior_components]
+  have hsub (j : κ) : F j ⊆ (interior W)ᶜ := by
+    intro y hy
+    exact (hfront.symm ▸ mem_iUnion.mpr ⟨j, hy⟩ : y ∈ frontier W).2
+  have hwhole (j : κ) (i : ι) : (F j ∩ connectedComponentIn (interior W)ᶜ (point i)).Nonempty →
+      F j ⊆ connectedComponentIn (interior W)ᶜ (point i) := by
+    rintro ⟨y, hyF, hyC⟩
+    rw [connectedComponentIn_eq hyC]
+    exact (hF j).subset_connectedComponentIn hyF (hsub j)
+  ext y
+  constructor
+  · rintro ⟨hy, hyC⟩
+    obtain ⟨j, hyF⟩ := mem_iUnion.mp (hfront ▸ hy)
+    refine mem_iUnion₂.mpr ⟨j, disjoint_left.mpr ?_, hyF⟩
+    intro z hzF hzC
+    obtain ⟨i, hzi⟩ := mem_iUnion.mp hzC
+    exact hyC (mem_iUnion.mpr ⟨i, hwhole j i ⟨z, hzF, hzi⟩ hyF⟩)
+  · intro hy
+    obtain ⟨j, hj, hyF⟩ := mem_iUnion₂.mp hy
+    exact ⟨hfront.symm ▸ mem_iUnion.mpr ⟨j, hyF⟩,
+      fun hyC => disjoint_left.mp hj hyF hyC⟩
+
+
+theorem frontier_union_connectedComponentIn_closed_exterior
+    [LocallyConnectedSpace ↥((interior W)ᶜ)] (x : X) :
+    frontier (W ∪ connectedComponentIn (interior W)ᶜ x) =
+      frontier W \ connectedComponentIn (interior W)ᶜ x := by
+  simpa only [iUnion_const] using
+    frontier_union_iUnion_closed_exterior_components (fun _ : Unit => x)
+
 theorem closure_interior_union_connectedComponentIn_closed_exterior
     [LocallyConnectedSpace ↥((interior W)ᶜ)] (hW : closure (interior W) = W) (x : X) :
     closure (interior (W ∪ connectedComponentIn (interior W)ᶜ x)) =
       W ∪ connectedComponentIn (interior W)ᶜ x := by
-  let C := connectedComponentIn (interior W)ᶜ x
-  have hWclosed : IsClosed W := hW ▸ isClosed_closure
-  have hCclosed : IsClosed C := isOpen_interior.isClosed_compl.connectedComponentIn x
-  apply subset_antisymm (closure_minimal interior_subset (hWclosed.union hCclosed))
-  rintro y (hyW | hyC)
-  · exact closure_mono (interior_mono subset_union_left) (hW.symm ▸ hyW)
-  · exact subset_closure (connectedComponentIn_closed_exterior_subset_interior_union x hyC)
+  simpa only [iUnion_const] using
+    closure_interior_union_iUnion_closed_exterior_components hW (fun _ : Unit => x)
 
 theorem frontier_union_connectedComponentIn_closed_exterior_eq_iUnion
     [LocallyConnectedSpace ↥((interior W)ᶜ)] {ι : Type*} (F : ι → Set X)
     (hF : ∀ i, IsPreconnected (F i)) (hfront : frontier W = ⋃ i, F i) (x : X) :
     frontier (W ∪ connectedComponentIn (interior W)ᶜ x) =
       ⋃ i ∈ {i | Disjoint (F i) (connectedComponentIn (interior W)ᶜ x)}, F i := by
-  rw [frontier_union_connectedComponentIn_closed_exterior]
-  have hsub (i : ι) : F i ⊆ (interior W)ᶜ := by
-    intro y hy
-    exact (hfront.symm ▸ mem_iUnion.mpr ⟨i, hy⟩ : y ∈ frontier W).2
-  have hwhole (i : ι) : (F i ∩ connectedComponentIn (interior W)ᶜ x).Nonempty →
-      F i ⊆ connectedComponentIn (interior W)ᶜ x := by
-    rintro ⟨y, hyF, hyC⟩
-    rw [connectedComponentIn_eq hyC]
-    exact (hF i).subset_connectedComponentIn hyF (hsub i)
-  ext y
-  constructor
-  · rintro ⟨hy, hyC⟩
-    obtain ⟨i, hyF⟩ := mem_iUnion.mp (hfront ▸ hy)
-    refine mem_iUnion₂.mpr ⟨i, disjoint_left.mpr ?_, hyF⟩
-    intro z hzF hzC
-    exact hyC (hwhole i ⟨z, hzF, hzC⟩ hyF)
-  · intro hy
-    obtain ⟨i, hi, hyF⟩ := mem_iUnion₂.mp hy
-    exact ⟨hfront.symm ▸ mem_iUnion.mpr ⟨i, hyF⟩,
-      fun hyC => disjoint_left.mp hi hyF hyC⟩
+  simpa only [iUnion_const] using
+    frontier_union_iUnion_closed_exterior_components_eq_iUnion F hF hfront (fun _ : Unit => x)
 
 theorem connectedComponentIn_union_eq_of_connected_component_inter_nonempty
     {C : Set X} (hC : IsPreconnected C) {p q : X}
@@ -385,5 +452,231 @@ theorem connectedComponentIn_closed_exterior_eq_of_disjoint_frontier_union
   by_contra hyint
   exact disjoint_left.mp hfront hy ⟨subset_closure (Or.inr hy), hyint⟩
 
+
+
+section
+
+variable {S : Set X}
+
+theorem nonempty_frontier_inter_connectedComponentIn_of_isClosed
+    [PreconnectedSpace X] [DiscreteTopology (ConnectedComponents S)]
+    (hS : IsClosed S) (hne : S ≠ univ) {x : X} (hx : x ∈ S) :
+    (frontier S ∩ connectedComponentIn S x).Nonempty := by
+  let C := connectedComponentIn S x
+  have hC : IsClosed C := hS.connectedComponentIn x
+  have hopen : IsOpen (connectedComponent (⟨x, hx⟩ : S)) := by
+    simpa only [connectedComponents_preimage_singleton] using
+      (isOpen_discrete ({ConnectedComponents.mk (⟨x, hx⟩ : S)} :
+        Set (ConnectedComponents S))).preimage ConnectedComponents.continuous_coe
+  obtain ⟨U, hU, hUC⟩ := hopen.image_val
+  have hUCS : U ∩ S = C := hUC.symm.trans (connectedComponentIn_eq_image hx).symm
+  by_contra hmeet
+  have hsub : C ⊆ interior S := by
+    intro y hy
+    by_contra hyint
+    exact hmeet ⟨y, ⟨subset_closure (connectedComponentIn_subset S x hy), hyint⟩, hy⟩
+  have heq : C = U ∩ interior S := by
+    apply subset_antisymm
+    · exact subset_inter (hUCS.symm.subset.trans inter_subset_left) hsub
+    · exact (inter_subset_inter_right U interior_subset).trans hUCS.subset
+  have hCopen : IsOpen C := heq ▸ hU.inter isOpen_interior
+  have huniv : C = univ := (show IsClopen C from ⟨hC, hCopen⟩).eq_univ
+    ⟨x, mem_connectedComponentIn hx⟩
+  exact hne (eq_univ_iff_forall.mpr (fun y =>
+    connectedComponentIn_subset S x (show y ∈ C from huniv.symm ▸ mem_univ y)))
+
+theorem finite_connectedComponents_of_isClosed_of_isCompact_frontier
+    [PreconnectedSpace X] [DiscreteTopology (ConnectedComponents S)]
+    (hS : IsClosed S) (hfront : IsCompact (frontier S)) :
+    Finite (ConnectedComponents S) := by
+  by_cases heq : S = univ
+  · subst S
+    let _ : PreconnectedSpace (univ : Set X) :=
+      isPreconnected_iff_preconnectedSpace.mp isPreconnected_univ
+    infer_instance
+  let K : Set S := Subtype.val ⁻¹' frontier S
+  have hK : IsCompact K :=
+    _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hfront
+      (fun x hx => ⟨⟨x, hS.frontier_subset hx⟩, rfl⟩)
+  have hfinite : (ConnectedComponents.mk '' K).Finite :=
+    (hK.image ConnectedComponents.continuous_coe).finite_of_discrete
+  have hcover : ConnectedComponents.mk '' K = univ := by
+    apply eq_univ_of_forall
+    intro c
+    obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe c
+    obtain ⟨y, hyfront, hyC⟩ :=
+      nonempty_frontier_inter_connectedComponentIn_of_isClosed hS heq x.property
+    have hyS : y ∈ S := hS.frontier_subset hyfront
+    refine ⟨⟨y, hyS⟩, hyfront, ConnectedComponents.coe_eq_coe'.mpr ?_⟩
+    rw [connectedComponentIn_eq_image x.property] at hyC
+    obtain ⟨z, hz, hzy⟩ := hyC
+    have hzy' : z = (⟨y, hyS⟩ : S) := Subtype.ext hzy
+    exact hzy' ▸ hz
+  exact Set.finite_univ_iff.mp (hcover ▸ hfinite)
+
+theorem finite_connectedComponents_closed_exterior_of_isCompact_frontier
+    [PreconnectedSpace X] [DiscreteTopology (ConnectedComponents ↥((interior W)ᶜ))]
+    (hfront : IsCompact (frontier W)) :
+    Finite (ConnectedComponents ↥((interior W)ᶜ)) := by
+  apply finite_connectedComponents_of_isClosed_of_isCompact_frontier
+    isOpen_interior.isClosed_compl
+  rw [frontier_compl]
+  exact hfront.of_isClosed_subset isClosed_frontier frontier_interior_subset
+
+end
+
+section
+
+variable {ι : Type*} [PreconnectedSpace X] [Finite ι]
+
+theorem exists_compact_connected_union_of_finite_closed_cover
+    [Nonempty X] (hW : IsCompact W) (hWclosed : IsClosed W)
+    (C : ι → Set X) (hCclosed : ∀ i, IsClosed (C i))
+    (hoverlap : ∀ i j, i ≠ j → C i ∩ C j ⊆ W)
+    (hcover : W ∪ ⋃ i, C i = univ)
+    (hcompact : ∀ i, ¬ IsCompact (C i) →
+      ∃ y ∈ W, W ∩ C i ⊆ connectedComponentIn W y) :
+    ∃ s : Finset ι,
+      (∀ i, i ∈ s ↔ IsCompact (C i)) ∧
+      IsCompact (W ∪ ⋃ i ∈ s, C i) ∧ IsConnected (W ∪ ⋃ i ∈ s, C i) := by
+  classical
+  let _ : Fintype ι := Fintype.ofFinite ι
+  let s : Finset ι := Finset.univ.filter fun i => IsCompact (C i)
+  let K := W ∪ ⋃ i ∈ s, C i
+  have hs (i : ι) : i ∈ s ↔ IsCompact (C i) := by simp [s]
+  have hK : IsCompact K := hW.union (s.finite_toSet.isCompact_biUnion
+    (fun i hi => (hs i).mp hi))
+  have hKclosed : IsClosed K := hWclosed.union (s.finite_toSet.isClosed_biUnion
+    (fun i _ => hCclosed i))
+  have hcontact (i : {i // i ∉ s}) : K ∩ C i.val = W ∩ C i.val := by
+    ext y
+    constructor
+    · rintro ⟨hyK, hyC⟩
+      rcases hyK with hyW | hyS
+      · exact ⟨hyW, hyC⟩
+      · obtain ⟨j, hj, hyj⟩ := mem_iUnion₂.mp hyS
+        have hji : j ≠ i.val := fun he => i.property (he ▸ hj)
+        exact ⟨hoverlap j i.val hji ⟨hyj, hyC⟩, hyC⟩
+    · rintro ⟨hyW, hyC⟩
+      exact ⟨Or.inl hyW, hyC⟩
+  have htotal : K ∪ ⋃ i : {i // i ∉ s}, C i.val = univ := by
+    apply eq_univ_of_forall
+    intro y
+    have hy : y ∈ W ∪ ⋃ i, C i := hcover.symm ▸ mem_univ y
+    rcases hy with hyW | hyC
+    · exact Or.inl (Or.inl hyW)
+    · obtain ⟨i, hyi⟩ := mem_iUnion.mp hyC
+      by_cases hi : i ∈ s
+      · exact Or.inl (Or.inr (mem_iUnion₂.mpr ⟨i, hi, hyi⟩))
+      · exact Or.inr (mem_iUnion.mpr ⟨⟨i, hi⟩, hyi⟩)
+  have hpre : IsPreconnected K := by
+    apply isPreconnected_of_finite_closed_attachments_with_preconnected_hulls
+      (fun i : {i // i ∉ s} => C i.val) hKclosed (fun i => hCclosed i.val)
+    · intro i j hij
+      have hij' : i.val ≠ j.val := fun h => hij (Subtype.ext h)
+      exact (hoverlap i.val j.val hij').trans subset_union_left
+    · intro i
+      obtain ⟨y, _, hsub⟩ := hcompact i.val (fun h => i.property ((hs i.val).mpr h))
+      refine ⟨connectedComponentIn W y, isPreconnected_connectedComponentIn, ?_,
+        (connectedComponentIn_subset W y).trans subset_union_left⟩
+      rw [hcontact]
+      exact hsub
+    · rw [htotal]
+      exact isPreconnected_univ
+  have hKne : K.Nonempty := by
+    obtain ⟨x⟩ := (inferInstance : Nonempty X)
+    have hx : x ∈ W ∪ ⋃ i, C i := hcover.symm ▸ mem_univ x
+    rcases hx with hxW | hxC
+    · exact ⟨x, Or.inl hxW⟩
+    · obtain ⟨i, hxi⟩ := mem_iUnion.mp hxC
+      by_cases hi : IsCompact (C i)
+      · exact ⟨x, Or.inr (mem_iUnion₂.mpr ⟨i, (hs i).mpr hi, hxi⟩)⟩
+      · obtain ⟨y, hyW, _⟩ := hcompact i hi
+        exact ⟨y, Or.inl hyW⟩
+  exact ⟨s, hs, hK, ⟨hKne, hpre⟩⟩
+
+
+theorem exists_compact_connected_union_closed_exterior_components
+    [LocallyConnectedSpace ↥((interior W)ᶜ)] (hW : IsCompact W) (hne : W.Nonempty)
+    (hregular : closure (interior W) = W)
+    (hcompact : ∀ x : X, x ∈ (interior W)ᶜ → ∀ p q : X,
+      (connectedComponentIn (interior W)ᶜ x ∩ connectedComponentIn W p).Nonempty →
+      (connectedComponentIn (interior W)ᶜ x ∩ connectedComponentIn W q).Nonempty →
+      connectedComponentIn W p ≠ connectedComponentIn W q →
+        IsCompact (connectedComponentIn (interior W)ᶜ x)) :
+    ∃ (point : ConnectedComponents ↥((interior W)ᶜ) → ↥((interior W)ᶜ))
+      (s : Finset (ConnectedComponents ↥((interior W)ᶜ))),
+      (∀ i, ConnectedComponents.mk (point i) = i) ∧
+      (∀ i, i ∈ s ↔ IsCompact (connectedComponentIn (interior W)ᶜ (point i))) ∧
+      IsCompact (W ∪ ⋃ i ∈ s, connectedComponentIn (interior W)ᶜ (point i)) ∧
+      IsConnected (W ∪ ⋃ i ∈ s, connectedComponentIn (interior W)ᶜ (point i)) ∧
+      closure (interior (W ∪ ⋃ i ∈ s, connectedComponentIn (interior W)ᶜ (point i))) =
+        W ∪ ⋃ i ∈ s, connectedComponentIn (interior W)ᶜ (point i) ∧
+      frontier (W ∪ ⋃ i ∈ s, connectedComponentIn (interior W)ᶜ (point i)) =
+        frontier W \ ⋃ i ∈ s, connectedComponentIn (interior W)ᶜ (point i) := by
+  classical
+  let E := (interior W)ᶜ
+  have hWclosed : IsClosed W := hregular ▸ isClosed_closure
+  let _ : Finite (ConnectedComponents E) :=
+    finite_connectedComponents_closed_exterior_of_isCompact_frontier
+      (hW.of_isClosed_subset isClosed_frontier hWclosed.frontier_subset)
+  choose rep hrep using (ConnectedComponents.surjective_coe :
+    Function.Surjective (ConnectedComponents.mk : E → ConnectedComponents E))
+  let C : ConnectedComponents E → Set X := fun i => connectedComponentIn E (rep i).val
+  have hCclosed (i : ConnectedComponents E) : IsClosed (C i) :=
+    isOpen_interior.isClosed_compl.connectedComponentIn _
+  have hdisjoint : Pairwise (fun i j => Disjoint (C i) (C j)) := by
+    intro i j hij
+    apply disjoint_left.mpr
+    intro y hyi hyj
+    have heq : C i = C j := (connectedComponentIn_eq hyi).trans (connectedComponentIn_eq hyj).symm
+    have hrj : (rep i).val ∈ C j := heq ▸ mem_connectedComponentIn (rep i).property
+    change (rep i).val ∈ connectedComponentIn E (rep j).val at hrj
+    rw [connectedComponentIn_eq_image (rep j).property] at hrj
+    obtain ⟨z, hz, hzr⟩ := hrj
+    have hzr' : z = rep i := Subtype.ext hzr
+    have hm : ConnectedComponents.mk (rep i) = ConnectedComponents.mk (rep j) :=
+      ConnectedComponents.coe_eq_coe'.mpr (hzr' ▸ hz)
+    exact hij ((hrep i).symm.trans (hm.trans (hrep j)))
+  have hcover : W ∪ ⋃ i, C i = univ := by
+    apply eq_univ_of_forall
+    intro y
+    by_cases hyW : y ∈ W
+    · exact Or.inl hyW
+    · have hyE : y ∈ E := fun hy => hyW (interior_subset hy)
+      let z : E := ⟨y, hyE⟩
+      let i := ConnectedComponents.mk z
+      have hz : z ∈ connectedComponent (rep i) :=
+        ConnectedComponents.coe_eq_coe'.mp (hrep i).symm
+      exact Or.inr (mem_iUnion.mpr ⟨i, by
+        change y ∈ connectedComponentIn E (rep i).val
+        rw [connectedComponentIn_eq_image (rep i).property]
+        exact ⟨z, hz, rfl⟩⟩)
+  have hsingle (i : ConnectedComponents E) (hi : ¬ IsCompact (C i)) :
+      ∃ y ∈ W, W ∩ C i ⊆ connectedComponentIn W y := by
+    by_cases hcontact : (W ∩ C i).Nonempty
+    · obtain ⟨y, hyW, hyC⟩ := hcontact
+      refine ⟨y, hyW, ?_⟩
+      rintro z ⟨hzW, hzC⟩
+      by_cases heq : connectedComponentIn W z = connectedComponentIn W y
+      · exact heq ▸ mem_connectedComponentIn hzW
+      · exact (hi (hcompact (rep i).val (rep i).property z y
+          ⟨z, hzC, mem_connectedComponentIn hzW⟩
+          ⟨y, hyC, mem_connectedComponentIn hyW⟩ heq)).elim
+    · obtain ⟨y, hyW⟩ := hne
+      exact ⟨y, hyW, fun z hz => (hcontact ⟨z, hz⟩).elim⟩
+  let _ : Nonempty X := ⟨hne.choose⟩
+  obtain ⟨s, hs, hKcompact, hKconn⟩ :=
+    exists_compact_connected_union_of_finite_closed_cover hW hWclosed C hCclosed
+      (fun i j hij => by rw [(hdisjoint hij).inter_eq]; exact empty_subset _) hcover hsingle
+  refine ⟨rep, s, hrep, hs, hKcompact, hKconn, ?_, ?_⟩
+  · simpa only [iUnion_subtype] using
+      closure_interior_union_iUnion_closed_exterior_components hregular
+        (fun i : {i // i ∈ s} => (rep i.val).val)
+  · simpa only [iUnion_subtype] using
+      frontier_union_iUnion_closed_exterior_components
+        (fun i : {i // i ∈ s} => (rep i.val).val)
+
+end
 
 end DifferentialGeometry.Topology

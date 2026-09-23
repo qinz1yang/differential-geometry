@@ -7,12 +7,12 @@ namespace DifferentialGeometry.Topology
 
 open Set
 
-theorem isPreconnected_of_locallyFinite_closed_attachments
+theorem isPreconnected_of_locallyFinite_closed_attachments_with_preconnected_hulls
     {M ι : Type*} [TopologicalSpace M]
     {K : Set M} (E : ι → Set M) (hK : IsClosed K)
     (hlocal : LocallyFinite E) (hclosed : ∀ i, IsClosed (E i))
     (hoverlap : ∀ i j, i ≠ j → E i ∩ E j ⊆ K)
-    (hattach : ∀ i, IsPreconnected (K ∩ E i))
+    (hattach : ∀ i, ∃ L, IsPreconnected L ∧ K ∩ E i ⊆ L ∧ L ⊆ K)
     (hunion : IsPreconnected (K ∪ ⋃ i, E i)) : IsPreconnected K := by
   classical
   refine isPreconnected_iff_subset_of_disjoint_closed.mpr ?_
@@ -24,16 +24,17 @@ theorem isPreconnected_of_locallyFinite_closed_attachments
   let chosen : Set ι := {i | (K ∩ E i ∩ A).Nonempty}
   have hchosen : ∀ i ∈ chosen, K ∩ E i ⊆ A := by
     intro i hi
-    have hcov : K ∩ E i ⊆ A ∪ B := fun x hx => hcover hx.1
-    have hd : (K ∩ E i) ∩ (A ∩ B) = ∅ := by
+    obtain ⟨L, hL, hcontact, hLK⟩ := hattach i
+    have hcov : L ⊆ A ∪ B := fun _ hx => hcover (hLK hx)
+    have hd : L ∩ (A ∩ B) = ∅ := by
       apply eq_empty_iff_forall_notMem.mpr
       intro x hx
-      exact hnot hx.1.1 hx.2.1 hx.2.2
-    rcases isPreconnected_iff_subset_of_disjoint_closed.mp (hattach i)
+      exact hnot (hLK hx.1) hx.2.1 hx.2.2
+    rcases isPreconnected_iff_subset_of_disjoint_closed.mp hL
       A B hA hB hcov hd with h | h
-    · exact h
+    · exact hcontact.trans h
     · obtain ⟨x, hx, hxA⟩ := hi
-      exact False.elim (hnot hx.1 hxA (h hx))
+      exact False.elim (hnot hx.1 hxA (h (hcontact hx)))
   have hunchosen : ∀ i ∉ chosen, K ∩ E i ⊆ B := by
     intro i hi x hx
     rcases hcover hx.1 with hxA | hxB
@@ -87,6 +88,26 @@ theorem isPreconnected_of_locallyFinite_closed_attachments
     · exact hxB.2
     · obtain ⟨i, hxi⟩ := mem_iUnion.mp hxE
       exact hunchosen i.val i.property ⟨hxK, hxi⟩
+
+theorem isPreconnected_of_finite_closed_attachments_with_preconnected_hulls
+    {M ι : Type*} [TopologicalSpace M] [Finite ι]
+    {K : Set M} (E : ι → Set M) (hK : IsClosed K)
+    (hclosed : ∀ i, IsClosed (E i))
+    (hoverlap : ∀ i j, i ≠ j → E i ∩ E j ⊆ K)
+    (hattach : ∀ i, ∃ L, IsPreconnected L ∧ K ∩ E i ⊆ L ∧ L ⊆ K)
+    (hunion : IsPreconnected (K ∪ ⋃ i, E i)) : IsPreconnected K :=
+  isPreconnected_of_locallyFinite_closed_attachments_with_preconnected_hulls E hK
+    (locallyFinite_of_finite E) hclosed hoverlap hattach hunion
+
+theorem isPreconnected_of_locallyFinite_closed_attachments
+    {M ι : Type*} [TopologicalSpace M]
+    {K : Set M} (E : ι → Set M) (hK : IsClosed K)
+    (hlocal : LocallyFinite E) (hclosed : ∀ i, IsClosed (E i))
+    (hoverlap : ∀ i j, i ≠ j → E i ∩ E j ⊆ K)
+    (hattach : ∀ i, IsPreconnected (K ∩ E i))
+    (hunion : IsPreconnected (K ∪ ⋃ i, E i)) : IsPreconnected K :=
+  isPreconnected_of_locallyFinite_closed_attachments_with_preconnected_hulls E hK hlocal
+    hclosed hoverlap (fun i => ⟨K ∩ E i, hattach i, Subset.rfl, inter_subset_left⟩) hunion
 
 theorem isPreconnected_of_finite_closed_attachments
     {M ι : Type*} [TopologicalSpace M] [Finite ι]
