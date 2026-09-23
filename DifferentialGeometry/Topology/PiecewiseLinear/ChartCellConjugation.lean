@@ -7,7 +7,8 @@ import DifferentialGeometry.Topology.Homeomorph.Conjugate
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
 
-/-!+# Transporting PL cells by a compactly supported chart conjugation
+/-!
+# Transporting PL cells by a compactly supported chart conjugation
 
 A global PL homeomorphism of the model space which fixes the complement of a compact subset
 of a maximal-atlas chart target induces a homeomorphism of the manifold. It carries each PL
