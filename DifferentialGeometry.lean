@@ -6873,6 +6873,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLeng
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.RoundDegreeInputRefutation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.StepInputFrontierAudit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCutoffScale
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareLocalReconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareStandardReconstruction

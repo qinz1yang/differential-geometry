@@ -218,6 +218,55 @@ def CutoffParameters.withNeckRadius (q : CutoffParameters) (ρ : ℝ → ℝ)
   recenterConstant := q.recenterConstant
   recenterConstant_ge_four := q.recenterConstant_ge_four
 
+private theorem exists_pos_le_inv_sq_gt {d r C : ℝ} (hd : 0 < d) (hr : 0 < r)
+    (hC : 0 < C) (q : ℝ) :
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ r ∧ q < C * ((d * ρ) ^ 2)⁻¹ := by
+  let b := max q 0 + 1
+  have hb : 0 < b := by dsimp [b]; positivity
+  have hqb : q < b := by dsimp [b]; linarith [le_max_left q 0]
+  have hsq : 0 < Real.sqrt (C / b) := Real.sqrt_pos.2 (div_pos hC hb)
+  let ρ := min r (Real.sqrt (C / b) / (2 * d))
+  have hρ : 0 < ρ := lt_min hr (div_pos hsq (by positivity))
+  refine ⟨ρ, hρ, min_le_left _ _, ?_⟩
+  have hρle : ρ ≤ Real.sqrt (C / b) / (2 * d) := min_le_right _ _
+  have hdρ : 0 < d * ρ := mul_pos hd hρ
+  have hprod : d * ρ ≤ Real.sqrt (C / b) / 2 := by
+    have := (le_div_iff₀ (show 0 < 2 * d by positivity)).mp hρle
+    linarith
+  have hsqrt : Real.sqrt (C / b) ^ 2 = C / b := Real.sq_sqrt (div_pos hC hb).le
+  have hprod2 : (d * ρ) ^ 2 < C / b := by nlinarith
+  have hbprod : b * (d * ρ) ^ 2 < C := by
+    have := (lt_div_iff₀ hb).mp hprod2
+    nlinarith
+  have hqprod : q * (d * ρ) ^ 2 < C :=
+    (mul_lt_mul_of_pos_right hqb (sq_pos_of_pos hdρ)).trans hbprod
+  exact (lt_div_iff₀ (sq_pos_of_pos hdρ)).mpr hqprod
+
+theorem CutoffParameters.exists_neckRadius_le_cutoff_scale_gt (p : CutoffParameters)
+    {s C : ℝ} (hs : 0 ≤ s) (hC : 0 < C) (q : ℝ) :
+    ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
+      (∀ t, 0 ≤ t → ρ t ≤ p.neckRadius t) ∧
+      (Antitone p.neckRadius → Antitone ρ) ∧
+      (AntitoneOn p.neckRadius (Ici 0) → AntitoneOn ρ (Ici 0)) ∧
+      q < C * ((p.delta s * (p.withNeckRadius ρ hρ).neckRadius s) ^ 2)⁻¹ := by
+  obtain ⟨r, hr, _, hscale⟩ := exists_pos_le_inv_sq_gt
+    (p.delta_pos _ hs) (p.neckRadius_pos _ hs) hC q
+  let ρ := fun t => min (p.neckRadius t) r
+  have hρ : ∀ t, 0 ≤ t → 0 < ρ t :=
+    fun t ht => lt_min (p.neckRadius_pos t ht) hr
+  refine ⟨ρ, hρ, fun t _ => min_le_left _ _,
+    fun h => h.min antitone_const, fun h => h.min antitoneOn_const, ?_⟩
+  change q < C * ((p.delta s * ρ s) ^ 2)⁻¹
+  have hle : ρ s ≤ r := min_le_right _ _
+  have hdp : 0 < p.delta s := p.delta_pos _ hs
+  have hsq : (p.delta s * ρ s) ^ 2 ≤
+      (p.delta s * r) ^ 2 := by
+    have hmul := mul_le_mul_of_nonneg_left hle hdp.le
+    have hpos := mul_pos hdp (hρ s hs)
+    nlinarith
+  exact hscale.trans_le (mul_le_mul_of_nonneg_left
+    (inv_anti₀ (sq_pos_of_pos (mul_pos hdp (hρ s hs))) hsq) hC.le)
+
 theorem HasRecenterConstants.withNeckRadius {q : CutoffParameters}
     (h : HasRecenterConstants.{u} q) {ρ : ℝ → ℝ} (hρ : ∀ t, 0 ≤ t → 0 < ρ t) :
     HasRecenterConstants.{u} (q.withNeckRadius ρ hρ) := by
