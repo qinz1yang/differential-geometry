@@ -570,3 +570,9 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   branch) and PR #19 (§31 leaf 2, 26 modules) — owner: leave for now.
 * 12:30 (09-24) - accepted Codex item 14's 56 leaf-1 bricks (cut frame complete, clause 11 done, clause 9 recognition);
   the leaf stays open on the zero-marked rim core buffer (route note in B1.b.8). Physical `sorry` 14.
+* 15:30 (09-24) — Codex item 14's 56 bricks registered (`d29e2898c`). PR #15 (Package E) NOT accepted: beyond the
+  `GraphDualCellRestriction` file clash, its declarations collide with Codex item 14's newly registered modules:
+  `closure_sdiff_derivedNeighborhood_inter_subcomplex` (DerivedNeighborhoodResidualRestriction), `graphDualCell_space_eq_inter` (GraphDualCellRestriction), `graphDualCell_space_inter_subcomplex` (GraphDualCellRestriction), `splittingDisk_space_inter_subcomplex` (GraphDualCellRestriction), `IsCombinatorialManifoldWithBoundary.isPLBall_graphDualCell_two` (GraphDualCellSurface), `restrict_convexHull_eq_simplexComplex` (SimplexSubcomplex).
+  The local cherry-pick was dropped (tree = origin). The collaborator must rename his duplicates (or prove them
+  from item 14's versions) and re-push; then the lead re-runs the acceptance (`chain_pr15.sh`, `accept-PR15`).
+  Edge-matching acceptance (`accept-EM`, 70 modules) started 15:27 on the lead lease; wiring is manual.
