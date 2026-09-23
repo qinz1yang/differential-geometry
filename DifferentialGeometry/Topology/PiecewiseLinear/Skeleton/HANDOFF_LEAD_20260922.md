@@ -400,3 +400,11 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   injections, face rim, holed-sphere extension) and its notes; `CanonicalTowerReduction` probe committed.
 * 04:55 (09-23) — applied fix (a) of review BI to `ClosedBranchCaseOneTransport` (endpoint-only `realisation`);
   module verified and audited on lease d, C1 and A2 skeletons recheck clean. Physical `sorry` 37.
+* 05:05 (09-23) — HEAD `b7c6200f6` pushed to `origin` (qinz1yang, fast-forward from `7c8bde8b1`) and mirror
+  synced; the owner asks for an hourly push to `origin` from now on (session cron set). Five leases
+  re-dispatched: a = P4 `exists_section34Compression` both cases (BK thin-shell/through-tube route) then
+  the bigon normal form; b = §33 Lemma 13, the extension, Lemma 10; c = smoothing annulus taming, then the
+  sphere recognition (real bricks (i)–(ii) plus a probe if (iii) is out of reach); d = C1
+  `exists_isSourceTrackedBranchTube` under the endpoint-only field; e = A2
+  `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk` (chart-by-chart or triangulated-neighbourhood
+  route). Codex queue: unchanged (items 1–5 remain), Codex idle until the owner resumes it.
