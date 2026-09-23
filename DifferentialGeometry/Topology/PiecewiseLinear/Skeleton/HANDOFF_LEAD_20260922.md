@@ -306,3 +306,7 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 17:35 — option A applied by the lead under the owner's explicit permission for the two paths:
   `rimFrontier` field in `IsHandleDecompositionOfTube` (`PseudoCell.lean`) and its proof in the §32
   assembly; `PseudoCell` zero diagnostics + audit, §32/§33 skeletons rechecked. Lemma 8 unblocked for b.
+* 17:45 — accepted worker a's §34 P5 (`Section34TerminalFaceBalls`, Zorn; three unused frozen
+  hypotheses dropped, assembly call adapted) and the vocabulary hoist `Section34FaceBallVocabulary`;
+  physical `sorry` 67. Worker a now on the P3 bricks (chart `Moise305Tame`, PL general-position
+  producer) then P3 and P4.

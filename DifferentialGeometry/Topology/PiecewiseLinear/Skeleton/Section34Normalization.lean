@@ -10,6 +10,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
 
 /-!
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
@@ -253,6 +255,18 @@ complex of the open set `U`, never for a nonempty finite complex of `ℝ³`.  Tw
 invariant are **not** exposed by `Section34NormalPlus`: Lemma 5(1), that `fbl s` is a
 neighbourhood of `h '' simplexRim 𝒦 s.1`, and Lemma 5(6), the generator clause; what P6 needs
 from them is the bridge leaf.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit): `exists_section34TerminalFaceBalls` (P5, module `Section34TerminalFaceBalls`),
+in a strictly stronger form: the frozen hypotheses `hcut`, `hgraph`, `hctrl` were unused and are
+dropped (the `unusedArguments` gate rejects them in a real module); everything else is verbatim
+and the assembly call below passes only `hinv`.  The proof is Zorn's lemma on families satisfying
+the invariants, ordered by "at each label, equal or strictly smaller rank": a chain's labelwise
+minima give an upper bound (every clause reads finitely many labels,
+`finite_setOf_section34Incident`), and a maximal family admits no rank-lowering compression or
+slide.  Neither a fair enumeration nor a locally finite limit is needed.  The sections
+`CurveCrossing`, `FirstHomology` and `Vocabulary` were hoisted verbatim into the real module
+`Section34FaceBallVocabulary` and deleted here; only `universe u` stays.
 -/
 
 open Set Topology
@@ -260,155 +274,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
-
-section CurveCrossing
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-def HasPLCurveCrossingOnAt (S A B : Set E) (x : E) : Prop :=
-  ∃ (U V : Set E) (φ : E → E) (T P Q : Submodule ℝ E),
-    IsOpen U ∧ IsOpen V ∧ x ∈ U ∧ IsPLHomeomorphOn φ U V ∧ φ x = 0 ∧
-      Module.finrank ℝ T = 2 ∧ Module.finrank ℝ P = 1 ∧ Module.finrank ℝ Q = 1 ∧
-      P ≤ T ∧ Q ≤ T ∧ P ⊓ Q = ⊥ ∧ ∀ᶠ y in 𝓝 x,
-        (y ∈ S ↔ φ y ∈ T) ∧ (y ∈ A ↔ φ y ∈ P) ∧ (y ∈ B ↔ φ y ∈ Q)
-
-end CurveCrossing
-
-section FirstHomology
-
-variable {Y : Type u} [TopologicalSpace Y]
-
-def CarriesFirstHomologyOnto (J T : Set Y) : Prop :=
-  J ⊆ T ∧ ∀ hJT : J ⊆ T,
-    Function.Surjective
-      (integralSingularHomologyMap 1 (⟨inclusion hJT, continuous_inclusion hJT⟩ : C(J, T)))
-
-theorem carriesFirstHomologyOnto_self (T : Set Y) : CarriesFirstHomologyOnto T T := by
-  refine ⟨Subset.rfl, fun hJT => ?_⟩
-  have hid : (⟨inclusion hJT, continuous_inclusion hJT⟩ : C(T, T)) = ContinuousMap.id T :=
-    ContinuousMap.ext fun _ => rfl
-  rw [hid, integralSingularHomologyMap_id]
-  exact fun x => ⟨x, rfl⟩
-
-end FirstHomology
-
-section Vocabulary
-
-variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
-  {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
-  [MetricSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] {U : Set M₁}
-
-def section34VertexBallImage {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    (c : Section34CutLabelOf 𝒦 𝒦' → Set M₁) (g : M₁ → M₂)
-    (w : Section34VertexIndex 𝒦 𝒦') : Set M₂ :=
-  g '' c (Section34Label.vertexBall w)
-
-def section34SplitDiskImage {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    (c : Section34CutLabelOf 𝒦 𝒦' → Set M₁) (g : M₁ → M₂)
-    (e : Section34EdgeIndex 𝒦 𝒦') : Set M₂ :=
-  g '' c (Section34Label.splitDisk e)
-
-def section34TraceComponents {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    (tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3) :
-    Set (Set M₂) :=
-  (fun y => connectedComponentIn (fblBd s ∩ frontier (⋃ w, tgtV w)) y) ''
-    (fblBd s ∩ frontier (⋃ w, tgtV w))
-
-noncomputable def section34TraceCount {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    (tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3) : ℕ :=
-  (section34TraceComponents tgtV fblBd s).ncard
-
-noncomputable def section34CrossingCount {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    (tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-    (fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3) : ℕ :=
-  (fblBd s ∩ ⋃ e : Section34EdgeIndex 𝒦 𝒦', tgtEBd e).ncard
-
-noncomputable def section34FaceBallRank {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    (tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-    (fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3) : ℕ :=
-  section34TraceCount tgtV fblBd s + section34CrossingCount tgtEBd fblBd s
-
-omit [FiniteDimensional ℝ Ea] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] in
-theorem section34FaceBallRank_congr {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    {tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂}
-    {tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂}
-    {fblBd fblBd' : Section34SimplexIndex 𝒦 3 → Set M₂} {s : Section34SimplexIndex 𝒦 3}
-    (hs : fblBd s = fblBd' s) :
-    section34FaceBallRank tgtV tgtEBd fblBd s = section34FaceBallRank tgtV tgtEBd fblBd' s := by
-  simp only [section34FaceBallRank, section34TraceCount, section34CrossingCount,
-    section34TraceComponents, hs]
-
-omit [FiniteDimensional ℝ Ea] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] in
-theorem section34FaceBallRank_lt_of_compression {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    {tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂}
-    {tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂}
-    {fblBd fblBd' : Section34SimplexIndex 𝒦 3 → Set M₂} {s : Section34SimplexIndex 𝒦 3}
-    (hc : section34TraceCount tgtV fblBd' s + 1 ≤ section34TraceCount tgtV fblBd s)
-    (hp : section34CrossingCount tgtEBd fblBd' s ≤ section34CrossingCount tgtEBd fblBd s) :
-    section34FaceBallRank tgtV tgtEBd fblBd' s < section34FaceBallRank tgtV tgtEBd fblBd s := by
-  simp only [section34FaceBallRank]
-  omega
-
-omit [FiniteDimensional ℝ Ea] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] in
-theorem section34FaceBallRank_lt_of_bigonSlide {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U}
-    {tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂}
-    {tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂}
-    {fblBd fblBd' : Section34SimplexIndex 𝒦 3 → Set M₂} {s : Section34SimplexIndex 𝒦 3}
-    (hc : section34TraceCount tgtV fblBd' s = section34TraceCount tgtV fblBd s)
-    (hp : section34CrossingCount tgtEBd fblBd' s + 2 = section34CrossingCount tgtEBd fblBd s) :
-    section34FaceBallRank tgtV tgtEBd fblBd' s < section34FaceBallRank tgtV tgtEBd fblBd s := by
-  simp only [section34FaceBallRank]
-  omega
-
-def Section34FaceBallInvariants (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U) (h : M₁ → M₂)
-    (H : Finset Ea → Set M₂) (tgtV : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-    (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) : Prop :=
-  (∀ s, IsPLCellOn 3 (fbl s) (fblBd s)) ∧
-  (∀ s : Section34SimplexIndex 𝒦 3, h '' simplexRim 𝒦 s.1 ⊆ interior (fbl s)) ∧
-  (∀ (s : Section34SimplexIndex 𝒦 3) (w : Section34VertexIndex 𝒦 𝒦'),
-    ¬ Section34Incident w.1 s.1 → fbl s ∩ tgtV w = ∅) ∧
-  (∀ s s', s ≠ s' → fbl s ∩ fbl s' ⊆ interior (⋃ w, tgtV w)) ∧
-  (∀ s, ∀ y ∈ fblBd s ∩ frontier (⋃ w, tgtV w),
-    ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, y ∈ c.source ∧
-      HasPLCrossingAt (c '' (fblBd s ∩ c.source))
-        (c '' (frontier (⋃ w, tgtV w) ∩ c.source)) (c y)) ∧
-  (∀ (s : Section34SimplexIndex 𝒦 3) (e : Section34EdgeIndex 𝒦 𝒦'),
-    ∀ y ∈ fblBd s ∩ tgtEBd e,
-    ∃ c ∈ (plGroupoid 3).maximalAtlas M₂, y ∈ c.source ∧
-      HasPLCurveCrossingOnAt (c '' (frontier (⋃ w, tgtV w) ∩ c.source))
-        (c '' (fblBd s ∩ frontier (⋃ w, tgtV w) ∩ c.source))
-        (c '' (tgtEBd e ∩ c.source)) (c y)) ∧
-  (∀ s, CarriesFirstHomologyOnto (fblBd s ∩ frontier (section34FaceTorus tgtV s))
-    (section34FaceTorus tgtV s)) ∧
-  (∀ s, (fblBd s ∩ ⋃ e : Section34EdgeIndex 𝒦 𝒦', tgtEBd e).Finite) ∧
-  (∀ s, (section34TraceComponents tgtV fblBd s).Finite) ∧
-  Section34Exterior 𝒦 𝒦' h H tgtV fbl
-
-def Section34Compression (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
-    (tgtVBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (tgtE : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-    (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3) : Prop :=
-  ∃ (w : Section34VertexIndex 𝒦 𝒦') (Dj Jd : Set M₂),
-    IsPLCellOn 2 Dj Jd ∧ Dj ⊆ tgtVBd w ∧ Jd ⊆ fblBd s ∧ Dj ∩ fblBd s = Jd ∧
-      (∀ e : Section34EdgeIndex 𝒦 𝒦', Disjoint Dj (tgtE e)) ∧
-      ∀ s' : Section34SimplexIndex 𝒦 3, s' ≠ s → Disjoint (Dj \ Jd) (fbl s')
-
-def Section34BigonSlide (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
-    (tgtV tgtVBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-    (fblBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3) : Prop :=
-  ∃ (w : Section34VertexIndex 𝒦 𝒦') (e : Section34EdgeIndex 𝒦 𝒦') (B B' Bb Dj Jd : Set M₂),
-    IsPLCellOn 1 B Bb ∧ B ⊆ fblBd s ∧ B ⊆ tgtVBd w ∧ Bb ⊆ tgtEBd e ∧
-      B ∩ (⋃ e' : Section34EdgeIndex 𝒦 𝒦', tgtE e') = Bb ∧
-      IsPLCellOn 1 B' Bb ∧ B' ⊆ tgtEBd e ∧ B ∩ B' = Bb ∧
-      IsPLCellOn 2 Dj Jd ∧ Dj ⊆ tgtVBd w ∩ frontier (⋃ w, tgtV w) ∧ Jd = B ∪ B' ∧
-      ∀ s' : Section34SimplexIndex 𝒦 3, Disjoint (Dj \ Jd) (fblBd s')
-
-end Vocabulary
 
 section Leaves
 
@@ -509,50 +374,6 @@ theorem exists_section34BigonSlide (hU : IsOpen U)
         section34CrossingCount (section34SplitDiskImage srcBd f₁) fblBd s := by
   sorry
 
-theorem exists_section34TerminalFaceBalls
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
-    (hctrl : Section34CarrierControl U 𝒦 h η H)
-    {fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂}
-    (hinv : Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fbl fblBd)
-    (hcomp : ∀ (g gBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3),
-      Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-        (section34SplitDiskImage srcBd f₁) g gBd →
-      Section34Compression 𝒦 𝒦' (section34VertexBallImage srcBd f₁)
-        (section34SplitDiskImage src f₁) g gBd s →
-      ∃ g' gBd' : Section34SimplexIndex 𝒦 3 → Set M₂,
-        Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-          (section34SplitDiskImage srcBd f₁) g' gBd' ∧
-        (∀ s', s' ≠ s → g' s' = g s' ∧ gBd' s' = gBd s') ∧
-        section34FaceBallRank (section34VertexBallImage src f₁)
-            (section34SplitDiskImage srcBd f₁) gBd' s <
-          section34FaceBallRank (section34VertexBallImage src f₁)
-            (section34SplitDiskImage srcBd f₁) gBd s)
-    (hslide : ∀ (g gBd : Section34SimplexIndex 𝒦 3 → Set M₂) (s : Section34SimplexIndex 𝒦 3),
-      Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-        (section34SplitDiskImage srcBd f₁) g gBd →
-      Section34BigonSlide 𝒦 𝒦' (section34VertexBallImage src f₁)
-        (section34VertexBallImage srcBd f₁) (section34SplitDiskImage src f₁)
-        (section34SplitDiskImage srcBd f₁) gBd s →
-      ∃ g' gBd' : Section34SimplexIndex 𝒦 3 → Set M₂,
-        Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-          (section34SplitDiskImage srcBd f₁) g' gBd' ∧
-        (∀ s', s' ≠ s → g' s' = g s' ∧ gBd' s' = gBd s') ∧
-        section34FaceBallRank (section34VertexBallImage src f₁)
-            (section34SplitDiskImage srcBd f₁) gBd' s <
-          section34FaceBallRank (section34VertexBallImage src f₁)
-            (section34SplitDiskImage srcBd f₁) gBd s) :
-    ∃ fbl' fblBd' : Section34SimplexIndex 𝒦 3 → Set M₂,
-      Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-        (section34SplitDiskImage srcBd f₁) fbl' fblBd' ∧
-      (∀ s, ¬ Section34Compression 𝒦 𝒦' (section34VertexBallImage srcBd f₁)
-        (section34SplitDiskImage src f₁) fbl' fblBd' s) ∧
-      ∀ s, ¬ Section34BigonSlide 𝒦 𝒦' (section34VertexBallImage src f₁)
-        (section34VertexBallImage srcBd f₁) (section34SplitDiskImage src f₁)
-        (section34SplitDiskImage srcBd f₁) fblBd' s := by
-  sorry
-
 theorem section34Trace_of_noOperation (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
@@ -618,7 +439,7 @@ theorem section34NormalFamily (h305 : Moise305Tame) (hP0 : Section34ControlState
   obtain ⟨hsup, -, -, -, -, -⟩ := id hctrl
   obtain ⟨fbl₀, fblBd₀, hinv₀⟩ := exists_section34FaceBalls h305 hU hh hcut hctrl hgraph
   obtain ⟨fbl, fblBd, hinv, hnc, hnb⟩ :=
-    exists_section34TerminalFaceBalls hcut hgraph hctrl hinv₀
+    exists_section34TerminalFaceBalls hinv₀
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
           exists_section34Compression hU hh hcut hctrl hgraph hg s hop

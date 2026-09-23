@@ -200,3 +200,107 @@ object, so `PseudoCell` was compiled into the private root (no diagnostics) befo
   the identity (makes a subdivision of `L` a subcomplex of a subdivided simplex),
   `exists_isSubdivision_graphDualCell_diam_lt`, `isPLBall_convexHull_of_affineIndependent`,
   `interior_convexHull_eq_openSimplex`.
+
+# Batch 3 (Section 34 normalization)
+
+Files (new, untracked, sorry-free; no existing file touched):
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceBallVocabulary.lean` | 183 | `6eea7823e2491999c2e7c3d947a4fbeb52ffb53493fcca9e829cb6d292a3adcf` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34TerminalFaceBalls.lean` | 261 | `4e9b6dbf4f052678e3396660e9cc4c6f25ea7b110dce0f069a5d1be85235d3f1` |
+
+Import lines (the second imports the first):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceBallVocabulary.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T00:17:07Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TerminalFaceBalls.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T00:20:00Z)
+
+Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube3.lean` (both modules):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube3.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T00:21:03Z)
+
+## Section34FaceBallVocabulary (hoisted vocabulary, not a leaf)
+
+- The skeleton's `universe u` and sections `CurveCrossing`, `FirstHomology`, `Vocabulary`
+  (skeleton lines 262-411 at HEAD 584f0c2e4) copied verbatim into a real module with a short
+  module docstring, because real modules cannot import the skeleton.  Names duplicated with the
+  skeleton until it imports this module and deletes those sections: `HasPLCurveCrossingOnAt`,
+  `CarriesFirstHomologyOnto`, `carriesFirstHomologyOnto_self`, `section34VertexBallImage`,
+  `section34SplitDiskImage`, `section34TraceComponents`, `section34TraceCount`,
+  `section34CrossingCount`, `section34FaceBallRank`, `section34FaceBallRank_congr`,
+  `section34FaceBallRank_lt_of_compression`, `section34FaceBallRank_lt_of_bigonSlide`,
+  `Section34FaceBallInvariants`, `Section34Compression`, `Section34BigonSlide`.
+
+## exists_section34TerminalFaceBalls — CLOSED (statement minus three unused hypotheses)
+
+- File: `Section34TerminalFaceBalls.lean`.  New public names: `finite_setOf_section34Incident`,
+  `exists_section34FaceBallInvariants_forall_not_rank_lt`, `exists_section34TerminalFaceBalls`.
+- Deviation from the frozen text, decided by the linter gate: `hcut`, `hgraph` and `hctrl` are
+  not used by any proof (the limit needs neither local finiteness of carriers nor countability),
+  so `unusedArguments` would reject the frozen signature; they are deleted, everything else is
+  verbatim (same implicit families, same `hinv hcomp hslide` and conclusion).  The assembly
+  `section34NormalFamily` must call `exists_section34TerminalFaceBalls hinv₀ (…) (…)`, i.e. drop
+  `hcut hgraph hctrl` from its call; nothing else changes.
+- Route: Zorn (`exists_maximal_of_chains_bounded`) on the families satisfying the invariants,
+  ordered by "at every label equal or of strictly smaller `section34FaceBallRank`".  Chains:
+  the rank at each label attains a minimum (`WellFounded.has_min` on `ℕ`), members with the
+  minimal rank agree at that label, the family of these values is an upper bound; it satisfies
+  `Section34FaceBallInvariants` because each clause reads one or two labels, except the last
+  clause of `Section34Exterior`, which reads the faces incident to a tetrahedron, finitely many
+  by `finite_setOf_section34Incident` (vertices of an incident face are vertices of the
+  tetrahedron); a chain member agrees with the bound on any finite label set (induction on the
+  `Finset`).  A maximal family admits no single-label rank-lowering step
+  (`exists_section34FaceBallInvariants_forall_not_rank_lt`, general `tgtV`/`tgtEBd`), so
+  `hcomp`/`hslide` give the two impossibility clauses.  The docstring's worry (fair enumeration,
+  locally finite limit, carriers) is not needed; no countability of the labels is used.
+- Hypotheses used: `hinv`, `hcomp`, `hslide` only.
+
+## exists_section34FaceBalls — STUCK (not attempted beyond the survey; deep)
+
+- Remaining goal: the frozen statement itself (P3, Lemmas 3-5).  Missing tree inputs, checked by
+  grep today: a producer of nested shell-separated PL balls around `h '' σ` inside a chart of
+  `Section34CarrierControl` (the application of `Moise305Tame` in a chart and the pull-back of
+  the ball); a general-position perturbation of a PL 2-sphere against the PL surface
+  `frontier (⋃ w, tgtV w)` producing `HasPLCrossingAt` at every trace point and
+  `HasPLCurveCrossingOnAt` at every point on a splitting circle (the tree has only
+  consumers of `HasPLCrossingAt`: `CrossingFiber`, `CrossingNeighborhood`, `HeightChange`);
+  Lemma 4's auxiliary-disk argument for the `H₁` generator clause; the component clause of
+  `Section34Exterior`.
+
+## exists_section34Compression — STUCK (deep)
+
+- Remaining goal: the frozen statement (P4a, Operation 1 and Lemma 6).  Needs: cutting a
+  PL 3-ball along a clean compression disk into two balls inside one chart of `H t`
+  (local PL Schoenflies is available as `IsPLSphere` / `SphereSchoenflies`, but no producer of
+  the two spheres from a compression disk), preservation of the ten invariant fields, and the
+  exact count `c⁺ + 1 ≤ c` (needs the trace to be a 1-manifold whose components are circles,
+  derivable from field 5 but not stated anywhere).
+
+## exists_section34BigonSlide — STUCK (deep)
+
+- Remaining goal: the frozen statement (P4b, Operation 2 and Lemma 7).  Needs an ambient PL
+  homeomorphism supported in a small neighbourhood of `Dj` fixing the face torus, the other
+  face balls and the markers, and the exact count `p⁺ + 2 = p`; no producer of such an isotopy
+  across a bigon disk exists in the tree.
+
+## section34Trace_of_noOperation — STUCK (deep, external input)
+
+- Remaining goal: the frozen statement (Lemmas 9-11).  Lemma 11 needs Moise 28.8, which the
+  tree does not state (grep `28.8`/`Moise288`: nothing outside the skeleton text).
+
+## section34TraceCircle_homologyMap_ne_zero — STUCK (deep, but the statement checks out)
+
+- Remaining goal: the frozen statement.  Checked on paper: with `k ≥ 3` incident splitting
+  circles, a circle on the torus surface meeting each in exactly one point cannot bound a disk
+  of the surface (the open disk would lie in one annulus and reach at most two circles) and
+  cannot only touch a circle (passing a third circle forces a second meeting), so it crosses
+  every meridian disk once and is nonzero in `H₁ T_σ`; the statement is true.  Missing in the
+  tree: the cyclic chain structure of the vertex balls on `∂σ` (that the `𝒦'`-vertices and
+  edges on the boundary of a triangle form one polygon, and that `T_σ` is the resulting cyclic
+  union of balls meeting in the incident splitting disks), and an `H₁` computation of such a
+  union with a degree/lifting argument for a circle crossing each meridian once.
