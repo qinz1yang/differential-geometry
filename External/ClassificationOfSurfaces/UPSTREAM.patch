@@ -1,0 +1,1667 @@
+--- upstream/ClassificationOfSurfaces/Moise/PlaneComplex.lean
++++ DifferentialGeometry/External/ClassificationOfSurfaces/Moise/PlaneComplex.lean
+@@ -4,0 +5 @@
++Modified for this project; see ../MODIFICATIONS.md for the local changes.
+@@ -12 +12,0 @@
+-import ClassificationOfSurfaces.Moise.GeometricTriangulation
+@@ -56,12 +56,2 @@
+-    AffineIndependent ℝ ((↑) : S → Plane) := by
+-  classical
+-  choose g hg using fun a : S => hS a.1 a.2
+-  have hinj : Function.Injective g := by
+-    intro a b hab
+-    apply Subtype.ext
+-    rw [← hg a, ← hg b, hab]
+-  have heq : ((↑) : S → Plane) = f ∘ g := by
+-    funext a
+-    exact (hg a).symm
+-  rw [heq]
+-  exact hf.comp_embedding ⟨g, hinj⟩
++    AffineIndependent ℝ ((↑) : S → Plane) :=
++  hf.range.mono (fun a ha => hS a ha)
+@@ -271 +261 @@
+-/-- If a nondegenerate segment contains two distinct points on the horizontal axis, then both
++/-- If a segment contains two distinct points on the horizontal axis, then both
+@@ -274 +264 @@
+-    (_ : a ≠ b) (hxy : x ≠ y) (hx : x ∈ segment ℝ a b)
++    (hxy : x ≠ y) (hx : x ∈ segment ℝ a b)
+@@ -573,12 +563,4 @@
+-        let e : S ≃ S.image M.position := Equiv.ofBijective
+-          (fun v => ⟨M.position v, Finset.mem_image.mpr ⟨v, v.2, rfl⟩⟩)
+-          ⟨fun a b hab => Subtype.ext (M.position_injective (congrArg Subtype.val hab)), by
+-            rintro ⟨p, hp⟩
+-            obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hp
+-            exact ⟨⟨v, hv⟩, rfl⟩⟩
+-        have heq : ((↑) : (S.image M.position) → Plane) ∘ e =
+-            (fun v : S => M.position v) := by rfl
+-        have hmono : AffineIndependent ℝ (((↑) : (S.image M.position) → Plane) ∘ e) := by
+-          rw [heq]
+-          exact M.affineIndependent_triangle S hS
+-        exact (affineIndependent_equiv e).mp hmono
++        apply affineIndependent_finset_coe (M.affineIndependent_triangle S hS)
++        intro x hx
++        obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
++        exact ⟨⟨v, hv⟩, rfl⟩
+@@ -587,12 +569,4 @@
+-        let e : T ≃ T.image M.position := Equiv.ofBijective
+-          (fun v => ⟨M.position v, Finset.mem_image.mpr ⟨v, v.2, rfl⟩⟩)
+-          ⟨fun a b hab => Subtype.ext (M.position_injective (congrArg Subtype.val hab)), by
+-            rintro ⟨p, hp⟩
+-            obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hp
+-            exact ⟨⟨v, hv⟩, rfl⟩⟩
+-        have heq : ((↑) : (T.image M.position) → Plane) ∘ e =
+-            (fun v : T => M.position v) := by rfl
+-        have hmono : AffineIndependent ℝ (((↑) : (T.image M.position) → Plane) ∘ e) := by
+-          rw [heq]
+-          exact M.affineIndependent_triangle T hT
+-        exact (affineIndependent_equiv e).mp hmono
++        apply affineIndependent_finset_coe (M.affineIndependent_triangle T hT)
++        intro x hx
++        obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
++        exact ⟨⟨v, hv⟩, rfl⟩
+@@ -696,9 +670,17 @@
+-  rw [PlaneComplex.support, PlaneComplex.support]
+-  simp only [mapAffineEquiv_simplexes, mapAffineEquiv_cellCarrier]
+-  ext x
+-  simp only [Set.mem_iUnion, Set.mem_image]
+-  constructor
+-  · rintro ⟨s, hs, y, hy, rfl⟩
+-    exact ⟨y, ⟨s, hs, hy⟩, rfl⟩
+-  · rintro ⟨y, ⟨s, hs, hy⟩, rfl⟩
+-    exact ⟨s, hs, y, hy, rfl⟩
++  change (⋃ s ∈ K.simplexes,
++      convexHull ℝ ((e ∘ K.position) '' (s : Set K.Vertex))) = e '' K.support
++  have hcarrier (s : Finset K.Vertex) :
++      convexHull ℝ ((e ∘ K.position) '' (s : Set K.Vertex)) = e '' K.cellCarrier s :=
++    K.mapAffineEquiv_cellCarrier e s
++  apply Set.Subset.antisymm
++  · intro x hx
++    obtain ⟨s, hs, hxs⟩ := Set.mem_iUnion₂.mp hx
++    rw [hcarrier] at hxs
++    obtain ⟨y, hy, rfl⟩ := hxs
++    exact ⟨y, K.cellCarrier_subset_support hs hy, rfl⟩
++  · rintro x ⟨y, hy, rfl⟩
++    change y ∈ ⋃ s ∈ K.simplexes, K.cellCarrier s at hy
++    obtain ⟨s, hs, hys⟩ := Set.mem_iUnion₂.mp hy
++    refine Set.mem_iUnion₂.mpr ⟨s, hs, ?_⟩
++    rw [hcarrier]
++    exact Set.mem_image_of_mem e hys
+@@ -1046,2 +1028,4 @@
+-  · intro s hs
+-    change s ∈ K'.simplexes at hs
++  · change ∀ s ∈ K'.simplexes, ∃ t ∈ K.simplexes,
++      convexHull ℝ ((e ∘ K'.position) '' (s : Set K'.Vertex)) ⊆
++        convexHull ℝ ((e ∘ K.position) '' (t : Set K.Vertex))
++    intro s hs
+@@ -1048,0 +1033,4 @@
++    have hsource : convexHull ℝ ((e ∘ K'.position) '' (s : Set K'.Vertex)) =
++        e '' K'.cellCarrier s := K'.mapAffineEquiv_cellCarrier e s
++    have htarget : convexHull ℝ ((e ∘ K.position) '' (t : Set K.Vertex)) =
++        e '' K.cellCarrier t := K.mapAffineEquiv_cellCarrier e t
+@@ -1050 +1038 @@
+-    rw [K'.mapAffineEquiv_cellCarrier, K.mapAffineEquiv_cellCarrier]
++    rw [hsource, htarget]
+@@ -1171,0 +1160,3 @@
++  change ∀ s ∈ K'.simplexes,
++    IsAffineOn (fun x => target (f (source.symm x)))
++      (convexHull ℝ ((source ∘ K'.position) '' (s : Set K'.Vertex)))
+@@ -1173 +1163,0 @@
+-  change s ∈ K'.simplexes at hs
+@@ -1177 +1167,3 @@
+-  rw [K'.mapAffineEquiv_cellCarrier] at hx
++  have hcarrier : convexHull ℝ ((source ∘ K'.position) '' (s : Set K'.Vertex)) =
++      source '' K'.cellCarrier s := K'.mapAffineEquiv_cellCarrier source s
++  rw [hcarrier] at hx
+@@ -1186,170 +1177,0 @@
+-namespace PlaneComplex
+-
+-variable (K : PlaneComplex)
+-
+-theorem mem_simplexes_of_mem_cells {t : Finset K.Vertex} (ht : t ∈ K.cells) :
+-    t ∈ K.simplexes :=
+-  (Finset.mem_filter.mp ht).1
+-
+-theorem card_of_mem_cells {t : Finset K.Vertex} (ht : t ∈ K.cells) : t.card = 3 :=
+-  (Finset.mem_filter.mp ht).2
+-
+-/-- Barycentric evaluation: the point of the plane with the given barycentric weights. -/
+-noncomputable def baryEval (x : K.Vertex → ℝ) : Plane :=
+-  ∑ v, x v • K.position v
+-
+-theorem continuous_baryEval :
+-    Continuous fun x : K.Vertex → ℝ => K.baryEval x := by
+-  unfold baryEval
+-  exact continuous_finsetSum _ fun v _ => (continuous_apply v).smul continuous_const
+-
+-theorem baryEval_eq_sum_of_support {x : K.Vertex → ℝ} {t : Finset K.Vertex}
+-    (hsupp : ∀ v ∉ t, x v = 0) :
+-    K.baryEval x = ∑ v ∈ t, x v • K.position v :=
+-  (Finset.sum_subset (Finset.subset_univ t)
+-    (fun v _ hv => by rw [hsupp v hv, zero_smul])).symm
+-
+-theorem sum_eq_sum_of_support {x : K.Vertex → ℝ} {t : Finset K.Vertex}
+-    (hsupp : ∀ v ∉ t, x v = 0) :
+-    ∑ v, x v = ∑ v ∈ t, x v :=
+-  (Finset.sum_subset (Finset.subset_univ t) (fun v _ hv => hsupp v hv)).symm
+-
+-/-- Barycentric evaluation of weights supported on a face lands in that face's carrier. -/
+-theorem baryEval_mem_cellCarrier {x : K.Vertex → ℝ} {t : Finset K.Vertex}
+-    (hsupp : ∀ v ∉ t, x v = 0) (h0 : ∀ v, 0 ≤ x v) (h1 : ∑ v, x v = 1) :
+-    K.baryEval x ∈ K.cellCarrier t := by
+-  have hsum_t : ∑ v ∈ t, x v = 1 := by
+-    rw [← K.sum_eq_sum_of_support hsupp]
+-    exact h1
+-  rw [K.baryEval_eq_sum_of_support hsupp, cellCarrier,
+-    ← Finset.centerMass_eq_of_sum_1 _ _ hsum_t]
+-  exact Finset.centerMass_mem_convexHull t (fun v _ => h0 v) (by rw [hsum_t]; norm_num)
+-    (fun v hv => Set.mem_image_of_mem _ hv)
+-
+-/-- Every point of a face carrier has barycentric weights supported on that face. -/
+-theorem exists_weights_of_mem_cellCarrier {p : Plane} {t : Finset K.Vertex}
+-    (hp : p ∈ K.cellCarrier t) :
+-    ∃ x : K.Vertex → ℝ, (∀ v ∉ t, x v = 0) ∧ (∀ v, 0 ≤ x v) ∧ (∑ v, x v = 1) ∧
+-      K.baryEval x = p := by
+-  classical
+-  rw [cellCarrier, ← Finset.coe_image, Finset.convexHull_eq] at hp
+-  obtain ⟨w, hw0, hw1, hwp⟩ := hp
+-  have himg : ∀ g : Plane → ℝ, ∑ q ∈ t.image K.position, g q = ∑ v ∈ t, g (K.position v) :=
+-    fun g => Finset.sum_image fun v _ v' _ h => K.position_injective h
+-  refine ⟨fun v => if v ∈ t then w (K.position v) else 0, fun v hv => by simp [hv], ?_, ?_, ?_⟩
+-  · intro v
+-    by_cases hv : v ∈ t
+-    · simpa [hv] using hw0 _ (Finset.mem_image_of_mem _ hv)
+-    · simp [hv]
+-  · rw [Finset.sum_ite_mem, Finset.univ_inter, ← himg]
+-    exact hw1
+-  · have hsupp : ∀ v ∉ t, (fun v => if v ∈ t then w (K.position v) else 0) v = 0 :=
+-      fun v hv => by simp [hv]
+-    rw [K.baryEval_eq_sum_of_support hsupp]
+-    have hite : ∑ v ∈ t, (if v ∈ t then w (K.position v) else 0) • K.position v =
+-        ∑ v ∈ t, w (K.position v) • K.position v :=
+-      Finset.sum_congr rfl fun v hv => by rw [if_pos hv]
+-    have himg2 : ∑ q ∈ t.image K.position, w q • q =
+-        ∑ v ∈ t, w (K.position v) • K.position v :=
+-      Finset.sum_image fun v _ v' _ h => K.position_injective h
+-    rw [Finset.centerMass_eq_of_sum_1 _ id hw1] at hwp
+-    simp only [id_eq] at hwp
+-    rw [hite, ← himg2]
+-    exact hwp
+-
+-/-- Barycentric weights on an affinely independent face are unique. -/
+-theorem baryEval_injOn_face {t : Finset K.Vertex} (ht : t ∈ K.simplexes)
+-    {x y : K.Vertex → ℝ}
+-    (hx : ∀ v ∉ t, x v = 0) (hy : ∀ v ∉ t, y v = 0)
+-    (hx1 : ∑ v, x v = 1) (hy1 : ∑ v, y v = 1)
+-    (heq : K.baryEval x = K.baryEval y) : x = y := by
+-  classical
+-  have hAI := K.affineIndependent t ht
+-  have hx1' : ∑ v : ↥t, x v.1 = 1 := by
+-    rw [Finset.sum_coe_sort t (fun v => x v), ← K.sum_eq_sum_of_support hx]
+-    exact hx1
+-  have hy1' : ∑ v : ↥t, y v.1 = 1 := by
+-    rw [Finset.sum_coe_sort t (fun v => y v), ← K.sum_eq_sum_of_support hy]
+-    exact hy1
+-  have hxcomb : Finset.univ.affineCombination ℝ (fun v : ↥t => K.position v)
+-      (fun v : ↥t => x v.1) = K.baryEval x := by
+-    rw [Finset.univ.affineCombination_eq_linear_combination _ _ hx1',
+-      K.baryEval_eq_sum_of_support hx, ← Finset.sum_coe_sort t (fun v => x v • K.position v)]
+-  have hycomb : Finset.univ.affineCombination ℝ (fun v : ↥t => K.position v)
+-      (fun v : ↥t => y v.1) = K.baryEval y := by
+-    rw [Finset.univ.affineCombination_eq_linear_combination _ _ hy1',
+-      K.baryEval_eq_sum_of_support hy, ← Finset.sum_coe_sort t (fun v => y v • K.position v)]
+-  have hind := hAI.indicator_eq_of_affineCombination_eq Finset.univ Finset.univ _ _ hx1' hy1'
+-    (by rw [hxcomb, hycomb, heq])
+-  funext v
+-  by_cases hv : v ∈ t
+-  · have := congrFun hind ⟨v, hv⟩
+-    simpa using this
+-  · rw [hx v hv, hy v hv]
+-
+-end PlaneComplex
+-
+-/-- The canonical barycentric homeomorphism from the abstract realization of a pure plane
+-complex to its geometric support. -/
+-noncomputable def PlaneComplex.realizationHomeomorph (K : PlaneComplex) (hpure : K.IsPure2) :
+-    GeometricRealization K.Vertex K.cells ≃ₜ K.support := by
+-  classical
+-  have hmem : ∀ x : GeometricRealization K.Vertex K.cells, K.baryEval x.1 ∈ K.support := by
+-    rintro ⟨x, ⟨h0, h1⟩, t, ht, hsupp⟩
+-    exact Set.mem_biUnion (K.mem_simplexes_of_mem_cells ht)
+-      (K.baryEval_mem_cellCarrier hsupp h0 h1)
+-  let φ : GeometricRealization K.Vertex K.cells → K.support :=
+-    fun x => ⟨K.baryEval x.1, hmem x⟩
+-  have hcont : Continuous φ :=
+-    Continuous.subtype_mk (K.continuous_baryEval.comp continuous_subtype_val) _
+-  have hinj : Function.Injective φ := by
+-    rintro ⟨x, ⟨hx0, hx1⟩, t, ht, hxsupp⟩ ⟨y, ⟨hy0, hy1⟩, u, hu, hysupp⟩ heqφ
+-    have heval : K.baryEval x = K.baryEval y := congrArg Subtype.val heqφ
+-    have hpx := K.baryEval_mem_cellCarrier hxsupp hx0 hx1
+-    have hpy := K.baryEval_mem_cellCarrier hysupp hy0 hy1
+-    have hpint : K.baryEval x ∈ K.cellCarrier (t ∩ u) := by
+-      have hfi := K.face_inter t (K.mem_simplexes_of_mem_cells ht) u
+-        (K.mem_simplexes_of_mem_cells hu)
+-      have : K.baryEval x ∈
+-          convexHull ℝ (K.position '' t) ∩ convexHull ℝ (K.position '' u) :=
+-        ⟨hpx, by rw [heval]; exact hpy⟩
+-      rw [hfi] at this
+-      exact this
+-    obtain ⟨z, hzsupp, hz0, hz1, hzeval⟩ := K.exists_weights_of_mem_cellCarrier hpint
+-    have hzt : ∀ v ∉ t, z v = 0 := fun v hv =>
+-      hzsupp v fun hmem => hv (Finset.mem_of_mem_inter_left hmem)
+-    have hzu : ∀ v ∉ u, z v = 0 := fun v hv =>
+-      hzsupp v fun hmem => hv (Finset.mem_of_mem_inter_right hmem)
+-    have hxz : x = z := K.baryEval_injOn_face (K.mem_simplexes_of_mem_cells ht)
+-      hxsupp hzt hx1 hz1 (by rw [hzeval])
+-    have hyz : y = z := K.baryEval_injOn_face (K.mem_simplexes_of_mem_cells hu)
+-      hysupp hzu hy1 hz1 (by rw [hzeval, ← heval])
+-    exact Subtype.ext (hxz.trans hyz.symm)
+-  have hsurj : Function.Surjective φ := by
+-    rintro ⟨p, hp⟩
+-    rw [PlaneComplex.support, Set.mem_iUnion₂] at hp
+-    obtain ⟨σ, hσ, hpσ⟩ := hp
+-    obtain ⟨t, ht, hσt, htcard⟩ := hpure σ hσ
+-    have hpt : p ∈ K.cellCarrier t := by
+-      rw [PlaneComplex.cellCarrier] at hpσ ⊢
+-      exact convexHull_mono (Set.image_mono (Finset.coe_subset.mpr hσt)) hpσ
+-    have htcells : t ∈ K.cells := Finset.mem_filter.mpr ⟨ht, htcard⟩
+-    obtain ⟨x, hxsupp, hx0, hx1, hxeval⟩ := K.exists_weights_of_mem_cellCarrier hpt
+-    exact ⟨⟨x, ⟨hx0, hx1⟩, t, htcells, hxsupp⟩, Subtype.ext hxeval⟩
+-  exact Continuous.homeoOfEquivCompactToT2
+-    (f := Equiv.ofBijective φ ⟨hinj, hsurj⟩) hcont
+-
+-@[simp] theorem PlaneComplex.realizationHomeomorph_apply (K : PlaneComplex)
+-    (hpure : K.IsPure2) (x : GeometricRealization K.Vertex K.cells) :
+-    ((K.realizationHomeomorph hpure) x).1 = K.baryEval x.1 := rfl
+-
+-/-- **Realization bridge** (elementary): a purely two-dimensional plane complex induces a
+-geometric triangulation of its support, by barycentric coordinates in the face containing each
+-point.  Injectivity is the uniqueness of barycentric coordinates on each affinely independent
+-face, glued across faces by the face-to-face intersection condition. -/
+-theorem PlaneComplex.toGeometricTriangulation (K : PlaneComplex) (hpure : K.IsPure2) :
+-    Nonempty (GeometricTriangulation K.support) := by
+-  exact ⟨{ Vertex := K.Vertex
+-           faces := K.cells
+-           faces_card := fun t ht => K.card_of_mem_cells ht
+-           homeo := K.realizationHomeomorph hpure }⟩
+--- upstream/ClassificationOfSurfaces/Moise/LineSubdivision.lean
++++ DifferentialGeometry/External/ClassificationOfSurfaces/Moise/LineSubdivision.lean
+@@ -4,0 +5 @@
++Modified for this project; see ../MODIFICATIONS.md for the local changes.
+@@ -6 +7 @@
+-import ClassificationOfSurfaces.Moise.PlaneComplex
++import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.PlaneComplex
+@@ -274 +275 @@
+-    (position : V → Plane) (_ : Function.Injective position) (s t : Finset V)
++    (position : V → Plane) (s t : Finset V)
+@@ -445,0 +447,116 @@
++private theorem reference_split_origin_outer_inter {a b : ℝ} (ha0 : 0 < a) (ha1 : a < 1)
++    (hb0 : 0 < b) (hb1 : b < 1) :
++    convexHull ℝ (referenceSplitPosition a b '' (({0, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) ∩
++      convexHull ℝ (referenceSplitPosition a b '' (({1, 2, 3} : Finset (Fin 5)) : Set (Fin 5))) =
++      convexHull ℝ (referenceSplitPosition a b '' ((({0, 3, 4} : Finset (Fin 5)) ∩
++        ({1, 2, 3} : Finset (Fin 5)) : Finset (Fin 5)) : Set (Fin 5))) := by
++  apply convexHull_image_inter_of_affine_separation (referenceSplitPosition a b)
++    ({0, 3, 4} : Finset (Fin 5)) ({1, 2, 3} : Finset (Fin 5)) (-referenceVertexAffine a b)
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_zero, AffineMap.coe_neg,
++        Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero, zero_sub, neg_neg,
++        Matrix.cons_val, sub_self, neg_zero, Std.le_refl, zero_add, neg_sub, sub_nonneg] <;>
++      (try field_simp) <;> nlinarith
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_one,
++        Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
++        referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, tsub_le_iff_right,
++        zero_add, Matrix.cons_val, mul_one, sub_self, neg_zero, Std.le_refl] <;>
++      (try field_simp) <;> nlinarith
++  · intro x hx
++    fin_cases x <;>
++      simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, Fin.reduceEq,
++        Finset.mem_singleton, or_self, or_false, referenceSplitPosition, Matrix.cons_val_zero,
++        AffineMap.coe_neg, Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero,
++        zero_sub, neg_neg, one_ne_zero, not_false_eq_true, Finset.inter_insert_of_notMem,
++        or_true, Finset.inter_singleton_of_mem, iff_false, Fin.mk_one, Fin.reduceFinMk,
++        Matrix.cons_val, sub_self, neg_zero, zero_add, neg_sub] at hx ⊢ <;>
++      (try field_simp) <;> nlinarith
++  · intro x hx
++    fin_cases x <;>
++      simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, zero_ne_one, Fin.reduceEq,
++        Finset.mem_singleton, or_self, Fin.mk_one, or_false, referenceSplitPosition,
++        Matrix.cons_val_one, Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
++        referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, one_ne_zero,
++        not_false_eq_true, Finset.inter_insert_of_notMem, or_true,
++        Finset.inter_singleton_of_mem, iff_false, Fin.reduceFinMk, Matrix.cons_val, mul_one,
++        zero_add, sub_self, neg_zero] at hx ⊢ <;>
++      (try field_simp) <;> nlinarith
++
++private theorem reference_split_origin_edge_inter {a b : ℝ} (ha0 : 0 < a)
++    (hb0 : 0 < b) (hb1 : b < 1) :
++    convexHull ℝ (referenceSplitPosition a b '' (({0, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) ∩
++      convexHull ℝ (referenceSplitPosition a b '' (({2, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) =
++      convexHull ℝ (referenceSplitPosition a b '' ((({0, 3, 4} : Finset (Fin 5)) ∩
++        ({2, 3, 4} : Finset (Fin 5)) : Finset (Fin 5)) : Set (Fin 5))) := by
++  apply convexHull_image_inter_of_affine_separation (referenceSplitPosition a b)
++    ({0, 3, 4} : Finset (Fin 5)) ({2, 3, 4} : Finset (Fin 5)) (-referenceOuterAffine a b)
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne']
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val, AffineMap.coe_neg,
++        Pi.neg_apply, referenceOuterAffine_planePoint, mul_zero, mul_one, zero_add, neg_sub,
++        tsub_le_iff_right, ne_eq, ha0.ne', not_false_eq_true, inv_mul_cancel₀, add_zero,
++        sub_self, neg_zero, Std.le_refl, hb0.ne'];
++      (try field_simp); nlinarith
++  · intro x hx
++    fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
++      ha0.ne', hb0.ne'] at hx ⊢
++  · intro x hx
++    fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
++      ha0.ne', hb0.ne'] at hx ⊢; field_simp; nlinarith
++
++private theorem reference_split_outer_edge_inter {a b : ℝ} (ha0 : 0 < a)
++    (ha1 : a < 1) (hb1 : b < 1) :
++    convexHull ℝ (referenceSplitPosition a b '' (({1, 2, 3} : Finset (Fin 5)) : Set (Fin 5))) ∩
++      convexHull ℝ (referenceSplitPosition a b '' (({2, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) =
++      convexHull ℝ (referenceSplitPosition a b '' ((({1, 2, 3} : Finset (Fin 5)) ∩
++        ({2, 3, 4} : Finset (Fin 5)) : Finset (Fin 5)) : Set (Fin 5))) := by
++  apply convexHull_image_inter_of_affine_separation (referenceSplitPosition a b)
++    ({1, 2, 3} : Finset (Fin 5)) ({2, 3, 4} : Finset (Fin 5)) (referenceDiagonalAffine a)
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
++  · intro x hx
++    fin_cases x <;>
++      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
++      nlinarith
++  · intro x hx
++    fin_cases x <;>
++      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
++      nlinarith
++
++private theorem reference_split_triangles_inter {a b : ℝ} (ha0 : 0 < a) (ha1 : a < 1)
++    (hb0 : 0 < b) (hb1 : b < 1) (s : Finset (Fin 5)) (hs : s ∈ referenceSplitTriangles)
++    (t : Finset (Fin 5)) (ht : t ∈ referenceSplitTriangles) :
++    convexHull ℝ (referenceSplitPosition a b '' (s : Set (Fin 5))) ∩
++      convexHull ℝ (referenceSplitPosition a b '' (t : Set (Fin 5))) =
++      convexHull ℝ (referenceSplitPosition a b '' ((s ∩ t : Finset (Fin 5)) : Set (Fin 5))) := by
++  simp only [referenceSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
++  rcases hs with rfl | rfl | rfl <;> rcases ht with rfl | rfl | rfl
++  · simp
++  · exact reference_split_origin_outer_inter ha0 ha1 hb0 hb1
++  · exact reference_split_origin_edge_inter ha0 hb0 hb1
++  · simpa only [Set.inter_comm, Finset.inter_comm] using
++      reference_split_origin_outer_inter ha0 ha1 hb0 hb1
++  · simp
++  · exact reference_split_outer_edge_inter ha0 ha1 hb1
++  · simpa only [Set.inter_comm, Finset.inter_comm] using
++      reference_split_origin_edge_inter ha0 hb0 hb1
++  · simpa only [Set.inter_comm, Finset.inter_comm] using
++      reference_split_outer_edge_inter ha0 ha1 hb1
++  · simp
++
+@@ -465,155 +582 @@
+-  triangle_inter := by
+-    intro s hs t ht
+-    simp only [referenceSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
+-    rcases hs with rfl | rfl | rfl <;> rcases ht with rfl | rfl | rfl
+-    · simp
+-    · apply convexHull_image_inter_of_affine_separation _
+-        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceVertexAffine a b)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_zero, AffineMap.coe_neg,
+-            Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero, zero_sub, neg_neg,
+-            Matrix.cons_val, sub_self, neg_zero, Std.le_refl, zero_add, neg_sub, sub_nonneg] <;>
+-          (try field_simp) <;> nlinarith
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_one,
+-            Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+-            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, tsub_le_iff_right,
+-            zero_add, Matrix.cons_val, mul_one, sub_self, neg_zero, Std.le_refl] <;>
+-          (try field_simp) <;> nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, Fin.reduceEq,
+-            Finset.mem_singleton, or_self, or_false, referenceSplitPosition, Matrix.cons_val_zero,
+-            AffineMap.coe_neg, Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero,
+-            zero_sub, neg_neg, one_ne_zero, not_false_eq_true, Finset.inter_insert_of_notMem,
+-            or_true, Finset.inter_singleton_of_mem, iff_false, Fin.mk_one, Fin.reduceFinMk,
+-            Matrix.cons_val, sub_self, neg_zero, zero_add, neg_sub] at hx ⊢ <;>
+-          (try field_simp) <;> nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, zero_ne_one, Fin.reduceEq,
+-            Finset.mem_singleton, or_self, Fin.mk_one, or_false, referenceSplitPosition,
+-            Matrix.cons_val_one, Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+-            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, one_ne_zero,
+-            not_false_eq_true, Finset.inter_insert_of_notMem, or_true,
+-            Finset.inter_singleton_of_mem, iff_false, Fin.reduceFinMk, Matrix.cons_val, mul_one,
+-            zero_add, sub_self, neg_zero] at hx ⊢ <;>
+-          (try field_simp) <;> nlinarith
+-    · apply convexHull_image_inter_of_affine_separation _
+-        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceOuterAffine a b)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne']
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val, AffineMap.coe_neg,
+-            Pi.neg_apply, referenceOuterAffine_planePoint, mul_zero, mul_one, zero_add, neg_sub,
+-            tsub_le_iff_right, ne_eq, ha0.ne', not_false_eq_true, inv_mul_cancel₀, add_zero,
+-            sub_self, neg_zero, Std.le_refl, hb0.ne'];
+-          (try field_simp); nlinarith
+-      · intro x hx
+-        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+-          ha0.ne', hb0.ne'] at hx ⊢
+-      · intro x hx
+-        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+-          ha0.ne', hb0.ne'] at hx ⊢; field_simp; nlinarith
+-    · rw [Set.inter_comm]
+-      apply convexHull_image_inter_of_affine_separation _
+-        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceVertexAffine a b)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_zero, AffineMap.coe_neg,
+-            Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero, zero_sub, neg_neg,
+-            Matrix.cons_val, sub_self, neg_zero, Std.le_refl, zero_add, neg_sub, sub_nonneg] <;>
+-          (try field_simp) <;> nlinarith
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_one,
+-            Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+-            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, tsub_le_iff_right,
+-            zero_add, Matrix.cons_val, mul_one, sub_self, neg_zero, Std.le_refl] <;>
+-          (try field_simp) <;> nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, Fin.reduceEq,
+-            Finset.mem_singleton, or_self, or_false, referenceSplitPosition, Matrix.cons_val_zero,
+-            AffineMap.coe_neg, Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero,
+-            zero_sub, neg_neg, one_ne_zero, not_false_eq_true, Finset.inter_insert_of_notMem,
+-            or_true, Finset.inter_singleton_of_mem, iff_false, Fin.mk_one, Fin.reduceFinMk,
+-            Matrix.cons_val, sub_self, neg_zero, zero_add, neg_sub] at hx ⊢ <;>
+-          (try field_simp) <;> nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, zero_ne_one, Fin.reduceEq,
+-            Finset.mem_singleton, or_self, Fin.mk_one, or_false, referenceSplitPosition,
+-            Matrix.cons_val_one, Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+-            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, one_ne_zero,
+-            not_false_eq_true, Finset.inter_insert_of_notMem, or_true,
+-            Finset.inter_singleton_of_mem, iff_false, Fin.reduceFinMk, Matrix.cons_val, mul_one,
+-            zero_add, sub_self, neg_zero] at hx ⊢ <;>
+-          (try field_simp) <;> nlinarith
+-    · simp
+-    · apply convexHull_image_inter_of_affine_separation _
+-        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (referenceDiagonalAffine a)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-    · rw [Set.inter_comm]
+-      apply convexHull_image_inter_of_affine_separation _
+-        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceOuterAffine a b)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne']
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne'];
+-          field_simp; nlinarith
+-      · intro x hx
+-        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+-          ha0.ne', hb0.ne'] at hx ⊢
+-      · intro x hx
+-        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+-          ha0.ne', hb0.ne'] at hx ⊢; field_simp; nlinarith
+-    · rw [Set.inter_comm]
+-      apply convexHull_image_inter_of_affine_separation _
+-        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (referenceDiagonalAffine a)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-    · simp
++  triangle_inter := reference_split_triangles_inter ha0 ha1 hb0 hb1
+@@ -847,0 +811,37 @@
++private theorem reference_edge_split_inter {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1) :
++    convexHull ℝ (referenceEdgeSplitPosition c '' (({0, 2, 3} : Finset (Fin 4)) : Set (Fin 4))) ∩
++      convexHull ℝ (referenceEdgeSplitPosition c '' (({1, 2, 3} : Finset (Fin 4)) : Set (Fin 4))) =
++      convexHull ℝ (referenceEdgeSplitPosition c '' ((({0, 2, 3} : Finset (Fin 4)) ∩
++        ({1, 2, 3} : Finset (Fin 4)) : Finset (Fin 4)) : Set (Fin 4))) := by
++  apply convexHull_image_inter_of_affine_separation (referenceEdgeSplitPosition c)
++    ({0, 2, 3} : Finset (Fin 4)) ({1, 2, 3} : Finset (Fin 4)) (-referenceDiagonalAffine c)
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
++  · intro x hx
++    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
++    rcases hx with rfl | rfl | rfl <;>
++      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
++  · intro x hx
++    fin_cases x <;>
++      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
++      nlinarith
++  · intro x hx
++    fin_cases x <;>
++      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
++      nlinarith
++
++private theorem reference_edge_split_triangles_inter {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
++    (s : Finset (Fin 4)) (hs : s ∈ referenceEdgeSplitTriangles)
++    (t : Finset (Fin 4)) (ht : t ∈ referenceEdgeSplitTriangles) :
++    convexHull ℝ (referenceEdgeSplitPosition c '' (s : Set (Fin 4))) ∩
++      convexHull ℝ (referenceEdgeSplitPosition c '' (t : Set (Fin 4))) =
++      convexHull ℝ (referenceEdgeSplitPosition c '' ((s ∩ t : Finset (Fin 4)) : Set (Fin 4))) := by
++  simp only [referenceEdgeSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
++  rcases hs with rfl | rfl <;> rcases ht with rfl | rfl
++  · simp
++  · exact reference_edge_split_inter hc0 hc1
++  · simpa only [Set.inter_comm, Finset.inter_comm] using reference_edge_split_inter hc0 hc1
++  · simp
++
+@@ -865,43 +865 @@
+-  triangle_inter := by
+-    intro s hs t ht
+-    simp only [referenceEdgeSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
+-    rcases hs with rfl | rfl <;> rcases ht with rfl | rfl
+-    · simp
+-    · apply convexHull_image_inter_of_affine_separation _
+-        (referenceEdgeSplitPosition_injective hc0 hc1) _ _ (-referenceDiagonalAffine c)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-    · rw [Set.inter_comm]
+-      apply convexHull_image_inter_of_affine_separation _
+-        (referenceEdgeSplitPosition_injective hc0 hc1) _ _ (-referenceDiagonalAffine c)
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+-        rcases hx with rfl | rfl | rfl <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-      · intro x hx
+-        fin_cases x <;>
+-          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+-          nlinarith
+-    · simp
++  triangle_inter := reference_edge_split_triangles_inter hc0 hc1
+@@ -1404,2 +1362,3 @@
+-  rw [show M.strictLocalMesh f t h0 h1 h2 =
+-      (R.mapAffineEquiv e).reindex ((↑) : M.RefinedVertex f → Plane)
++  have hsupport : (M.strictLocalMesh f t h0 h1 h2).toPlaneComplex.support =
++      (R.mapAffineEquiv e).toPlaneComplex.support :=
++    (R.mapAffineEquiv e).reindex_support ((↑) : M.RefinedVertex f → Plane)
+@@ -1415,3 +1374,9 @@
+-            _ = (R.mapAffineEquiv e).position i := rfl) by rfl]
+-  rw [TriangleMesh.reindex_support, TriangleMesh.mapAffineEquiv_support,
+-    referenceSplitMesh_support]
++            _ = (R.mapAffineEquiv e).position i := rfl)
++  have hreference : R.toPlaneComplex.support =
++      convexHull ℝ (Set.range standardTrianglePosition) :=
++    referenceSplitMesh_support a b
++      (affineCutPoint.parameter_pos f _ _ h0 h1)
++      (affineCutPoint.parameter_lt_one f _ _ h0 h1)
++      (affineCutPoint.parameter_pos f _ _ h0 h2)
++      (affineCutPoint.parameter_lt_one f _ _ h0 h2)
++  rw [hsupport, TriangleMesh.mapAffineEquiv_support, hreference]
+@@ -1444,5 +1409,6 @@
+-  rw [show M.strictNegativeLocalMesh f t h0 h1 h2 =
+-      (M.strictLocalMesh (-f) t (by simpa) (by simpa) (by simpa)).reindex
+-        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+-        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl) by rfl]
+-  rw [TriangleMesh.reindex_support]
++  have hsupport : (M.strictNegativeLocalMesh f t h0 h1 h2).toPlaneComplex.support =
++      (M.strictLocalMesh (-f) t (by simpa) (by simpa) (by simpa)).toPlaneComplex.support :=
++    (M.strictLocalMesh (-f) t (by simpa) (by simpa) (by simpa)).reindex_support
++      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
++        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl)
++  rw [hsupport]
+@@ -1526,2 +1492,3 @@
+-  rw [show M.strictMeshFor f v hv h0 h1 h2 =
+-      (R.mapAffineEquiv e).reindex ((↑) : M.RefinedVertex f → Plane)
++  have hsupport : (M.strictMeshFor f v hv h0 h1 h2).toPlaneComplex.support =
++      (R.mapAffineEquiv e).toPlaneComplex.support :=
++    (R.mapAffineEquiv e).reindex_support ((↑) : M.RefinedVertex f → Plane)
+@@ -1536,3 +1503,9 @@
+-            _ = (R.mapAffineEquiv e).position i := rfl) by rfl]
+-  rw [TriangleMesh.reindex_support, TriangleMesh.mapAffineEquiv_support,
+-    referenceSplitMesh_support]
++            _ = (R.mapAffineEquiv e).position i := rfl)
++  have hreference : R.toPlaneComplex.support =
++      convexHull ℝ (Set.range standardTrianglePosition) :=
++    referenceSplitMesh_support a b
++      (affineCutPoint.parameter_pos f _ _ h0 h1)
++      (affineCutPoint.parameter_lt_one f _ _ h0 h1)
++      (affineCutPoint.parameter_pos f _ _ h0 h2)
++      (affineCutPoint.parameter_lt_one f _ _ h0 h2)
++  rw [hsupport, TriangleMesh.mapAffineEquiv_support, hreference]
+@@ -1559,5 +1532,6 @@
+-  rw [show M.strictNegativeMeshFor f v hv h0 h1 h2 =
+-      (M.strictMeshFor (-f) v hv (by simpa) (by simpa) (by simpa)).reindex
+-        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+-        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl) by rfl]
+-  rw [TriangleMesh.reindex_support]
++  have hsupport : (M.strictNegativeMeshFor f v hv h0 h1 h2).toPlaneComplex.support =
++      (M.strictMeshFor (-f) v hv (by simpa) (by simpa) (by simpa)).toPlaneComplex.support :=
++    (M.strictMeshFor (-f) v hv (by simpa) (by simpa) (by simpa)).reindex_support
++      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
++        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl)
++  rw [hsupport]
+@@ -1663,2 +1637,3 @@
+-  rw [show M.edgeMeshFor f v hv h0 h1 =
+-      (R.mapAffineEquiv e).reindex ((↑) : M.RefinedVertex f → Plane)
++  have hsupport : (M.edgeMeshFor f v hv h0 h1).toPlaneComplex.support =
++      (R.mapAffineEquiv e).toPlaneComplex.support :=
++    (R.mapAffineEquiv e).reindex_support ((↑) : M.RefinedVertex f → Plane)
+@@ -1672,3 +1647,7 @@
+-            _ = (R.mapAffineEquiv e).position i := rfl) by rfl]
+-  rw [TriangleMesh.reindex_support, TriangleMesh.mapAffineEquiv_support,
+-    referenceEdgeSplitMesh_support]
++            _ = (R.mapAffineEquiv e).position i := rfl)
++  have hreference : R.toPlaneComplex.support =
++      convexHull ℝ (Set.range standardTrianglePosition) :=
++    referenceEdgeSplitMesh_support c
++      (affineCutPoint.parameter_pos f _ _ h0 h1)
++      (affineCutPoint.parameter_lt_one f _ _ h0 h1)
++  rw [hsupport, TriangleMesh.mapAffineEquiv_support, hreference]
+@@ -1693,5 +1672,6 @@
+-  rw [show M.edgeNegativeMeshFor f v hv h0 h1 =
+-      (M.edgeMeshFor (-f) v hv (by simpa) (by simpa)).reindex
+-        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+-        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl) by rfl]
+-  rw [TriangleMesh.reindex_support]
++  have hsupport : (M.edgeNegativeMeshFor f v hv h0 h1).toPlaneComplex.support =
++      (M.edgeMeshFor (-f) v hv (by simpa) (by simpa)).toPlaneComplex.support :=
++    (M.edgeMeshFor (-f) v hv (by simpa) (by simpa)).reindex_support
++      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
++        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl)
++  rw [hsupport]
+@@ -1776,5 +1756,6 @@
+-  rw [show M.unchangedMeshFor f v hv =
+-      (TriangleMesh.single (M.position ∘ v) hv).reindex
+-        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+-          (M.oldVerticesEmbedding f v hv) (fun _ => rfl) by rfl]
+-  rw [TriangleMesh.reindex_support, TriangleMesh.single_support]
++  have hsupport : (M.unchangedMeshFor f v hv).toPlaneComplex.support =
++      (TriangleMesh.single (M.position ∘ v) hv).toPlaneComplex.support :=
++    (TriangleMesh.single (M.position ∘ v) hv).reindex_support
++      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
++          (M.oldVerticesEmbedding f v hv) (fun _ => rfl)
++  rw [hsupport, TriangleMesh.single_support]
+@@ -2039,4 +2020,5 @@
+-  ext s
+-  simp [strictMeshFor, strictPatternTriangles, referenceSplitMesh,
+-    referenceSplitTriangles, TriangleMesh.reindex, TriangleMesh.mapAffineEquiv,
+-    strictVerticesEmbedding]
++  change referenceSplitTriangles.image (fun t => t.map (M.strictVerticesEmbedding f v hv h0 h1 h2)) =
++    strictPatternTriangles (M.strictVertices f v h0 h1 h2)
++  simp only [referenceSplitTriangles, Finset.image_insert, Finset.image_singleton,
++    Finset.map_insert, Finset.map_singleton]
++  rfl
+@@ -2049,3 +2031,5 @@
+-  simp [edgeMeshFor, edgePatternTriangles, referenceEdgeSplitMesh,
+-    referenceEdgeSplitTriangles, TriangleMesh.reindex, TriangleMesh.mapAffineEquiv,
+-    edgeVerticesEmbedding]
++  change referenceEdgeSplitTriangles.image (fun t => t.map (M.edgeVerticesEmbedding f v hv h0 h1)) =
++    edgePatternTriangles (M.edgeVertices f v h0 h1)
++  simp only [referenceEdgeSplitTriangles, Finset.image_insert, Finset.image_singleton,
++    Finset.map_insert, Finset.map_singleton]
++  rfl
+@@ -2525,0 +2510,58 @@
++private theorem local_mesh_triangles_induction (t : M.Triangle)
++    (Q : Finset (Finset (M.RefinedVertex f)) → Prop)
++    (hpositive : ∀ o : M.PositiveStrictOrdering f t,
++      Q (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).triangles)
++    (hnegative : ∀ o : M.NegativeStrictOrdering f t,
++      Q (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).triangles)
++    (hpositiveEdge : ∀ o : M.PositiveEdgeOrdering f t,
++      Q (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).triangles)
++    (hnegativeEdge : ∀ o : M.NegativeEdgeOrdering f t,
++      Q (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).triangles)
++    (hunchanged : ¬ Nonempty (M.PositiveStrictOrdering f t) →
++      ¬ Nonempty (M.NegativeStrictOrdering f t) →
++      ¬ Nonempty (M.PositiveEdgeOrdering f t) →
++      ¬ Nonempty (M.NegativeEdgeOrdering f t) →
++      Q (M.unchangedMeshFor f (M.orderedVertex t) (M.orderedVertex_affineIndependent t)).triangles) :
++    Q (M.localMeshTriangles f t) := by
++  classical
++  let positive : M.PositiveStrictOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
++    fun o => (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).triangles
++  let negative : M.NegativeStrictOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
++    fun o => (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).triangles
++  let positiveEdge : M.PositiveEdgeOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
++    fun o => (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).triangles
++  let negativeEdge : M.NegativeEdgeOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
++    fun o => (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).triangles
++  let unchanged : Finset (Finset (M.RefinedVertex f)) :=
++    (M.unchangedMeshFor f (M.orderedVertex t) (M.orderedVertex_affineIndependent t)).triangles
++  change Q (if hp : Nonempty (M.PositiveStrictOrdering f t) then positive (Classical.choice hp)
++    else if hn : Nonempty (M.NegativeStrictOrdering f t) then negative (Classical.choice hn)
++    else if hep : Nonempty (M.PositiveEdgeOrdering f t) then positiveEdge (Classical.choice hep)
++    else if hen : Nonempty (M.NegativeEdgeOrdering f t) then negativeEdge (Classical.choice hen)
++    else unchanged)
++  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
++  · rw [dif_pos hp]
++    exact hpositive (Classical.choice hp)
++  · rw [dif_neg hp]
++    by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
++    · rw [dif_pos hn]
++      exact hnegative (Classical.choice hn)
++    · rw [dif_neg hn]
++      by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
++      · rw [dif_pos hep]
++        exact hpositiveEdge (Classical.choice hep)
++      · rw [dif_neg hep]
++        by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
++        · rw [dif_pos hen]
++          exact hnegativeEdge (Classical.choice hen)
++        · rw [dif_neg hen]
++          exact hunchanged hp hn hep hen
++
+@@ -2529,7 +2571,18 @@
+-  unfold localMeshTriangles at hs
+-  split_ifs at hs with hp hn hep hen
+-  · exact (M.strictMeshFor f _ _ _ _ _).card_triangle s hs
+-  · exact (M.strictNegativeMeshFor f _ _ _ _ _).card_triangle s hs
+-  · exact (M.edgeMeshFor f _ _ _ _).card_triangle s hs
+-  · exact (M.edgeNegativeMeshFor f _ _ _ _).card_triangle s hs
+-  · exact (M.unchangedMeshFor f _ _).card_triangle s hs
++  revert hs
++  refine M.local_mesh_triangles_induction f t
++    (fun triangles => s ∈ triangles → s.card = 3) ?_ ?_ ?_ ?_ ?_
++  · intro o hs
++    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).card_triangle s hs
++  · intro o hs
++    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).card_triangle s hs
++  · intro o hs
++    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).card_triangle s hs
++  · intro o hs
++    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).card_triangle s hs
++  · intro _ _ _ _ hs
++    exact (M.unchangedMeshFor f (M.orderedVertex t)
++      (M.orderedVertex_affineIndependent t)).card_triangle s hs
+@@ -2541,7 +2594,18 @@
+-  unfold localMeshTriangles at hs
+-  split_ifs at hs with hp hn hep hen
+-  · exact (M.strictMeshFor f _ _ _ _ _).affineIndependent_triangle s hs
+-  · exact (M.strictNegativeMeshFor f _ _ _ _ _).affineIndependent_triangle s hs
+-  · exact (M.edgeMeshFor f _ _ _ _).affineIndependent_triangle s hs
+-  · exact (M.edgeNegativeMeshFor f _ _ _ _).affineIndependent_triangle s hs
+-  · exact (M.unchangedMeshFor f _ _).affineIndependent_triangle s hs
++  revert hs
++  refine M.local_mesh_triangles_induction f t
++    (fun triangles => s ∈ triangles → AffineIndependent ℝ fun v : s => (v.1 : Plane)) ?_ ?_ ?_ ?_ ?_
++  · intro o hs
++    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).affineIndependent_triangle s hs
++  · intro o hs
++    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).affineIndependent_triangle s hs
++  · intro o hs
++    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).affineIndependent_triangle s hs
++  · intro o hs
++    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).affineIndependent_triangle s hs
++  · intro _ _ _ _ hs
++    exact (M.unchangedMeshFor f (M.orderedVertex t)
++      (M.orderedVertex_affineIndependent t)).affineIndependent_triangle s hs
+@@ -2552,3 +2616,3 @@
+-  unfold localMeshTriangles
+-  split_ifs with hp hn hep hen
+-  · let o := Classical.choice hp
++  refine M.local_mesh_triangles_induction f t (M.RefinedTrianglesMonochromatic f)
++    ?_ ?_ ?_ ?_ ?_
++  · intro o
+@@ -2557,3 +2621,3 @@
+-    · simpa [o, strictVertices, Function.comp_apply] using o.positive.le
+-    · simpa [o, strictVertices, Function.comp_apply] using o.negative_one.le
+-    · simpa [o, strictVertices, Function.comp_apply] using o.negative_two.le
++    · simpa [strictVertices, Function.comp_apply] using o.positive.le
++    · simpa [strictVertices, Function.comp_apply] using o.negative_one.le
++    · simpa [strictVertices, Function.comp_apply] using o.negative_two.le
+@@ -2564 +2628 @@
+-  · let o := Classical.choice hn
++  · intro o
+@@ -2567 +2631 @@
+-  · let o := Classical.choice hep
++  · intro o
+@@ -2570,2 +2634,2 @@
+-    · simpa [o, edgeVertices, Function.comp_apply] using o.positive.le
+-    · simpa [o, edgeVertices, Function.comp_apply] using o.negative.le
++    · simpa [edgeVertices, Function.comp_apply] using o.positive.le
++    · simpa [edgeVertices, Function.comp_apply] using o.negative.le
+@@ -2576 +2640 @@
+-  · let o := Classical.choice hen
++  · intro o
+@@ -2578 +2642,2 @@
+-  · have hpair := pairwise_nonnegative_of_no_orderings M f t hp hn hep hen
++  · intro hp hn hep hen
++    have hpair := pairwise_nonnegative_of_no_orderings M f t hp hn hep hen
+@@ -2608,3 +2673,5 @@
+-  unfold localMeshTriangles at hs
+-  split_ifs at hs with hp hn hep hen
+-  · let o := Classical.choice hp
++  revert hs
++  refine M.local_mesh_triangles_induction f t
++    (fun triangles => s ∈ triangles →
++      (∃ v ∈ t.1, (x : Plane) = M.position v) ∨ f (x : Plane) = 0) ?_ ?_ ?_ ?_ ?_
++  · intro o hs
+@@ -2623 +2690 @@
+-  · let o := Classical.choice hn
++  · intro o hs
+@@ -2649 +2716 @@
+-  · let o := Classical.choice hep
++  · intro o hs
+@@ -2659 +2726 @@
+-  · let o := Classical.choice hen
++  · intro o hs
+@@ -2675 +2742,2 @@
+-  · unfold unchangedMeshFor at hs
++  · intro _ _ _ _ hs
++    unfold unchangedMeshFor at hs
+@@ -2688,4 +2756,5 @@
+-  unfold localMeshTriangles
+-  split_ifs with hp hn hep hen
+-  · let o := Classical.choice hp
+-    dsimp only [Function.comp_apply]
++  refine M.local_mesh_triangles_induction f t
++    (fun triangles => (⋃ s ∈ triangles,
++      convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (s : Set (M.RefinedVertex f)))) =
++      convexHull ℝ (M.position '' (t.1 : Set M.Vertex))) ?_ ?_ ?_ ?_ ?_
++  · intro o
+@@ -2695,6 +2764,5 @@
+-    rw [(M.strictMeshFor f (M.orderedVertex t ∘ o.perm) _
+-      o.positive o.negative_one o.negative_two).toPlaneComplex_support] at h
+-    rw [M.range_orderedVertex_perm t o.perm] at h
+-    exact h
+-  · let o := Classical.choice hn
+-    dsimp only [Function.comp_apply]
++    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm)
++      o.positive o.negative_one o.negative_two).toPlaneComplex_support.symm.trans
++        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
++  · intro o
+@@ -2704,6 +2772,5 @@
+-    rw [(M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm) _
+-      o.negative o.positive_one o.positive_two).toPlaneComplex_support] at h
+-    rw [M.range_orderedVertex_perm t o.perm] at h
+-    exact h
+-  · let o := Classical.choice hep
+-    dsimp only [Function.comp_apply]
++    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm)
++      o.negative o.positive_one o.positive_two).toPlaneComplex_support.symm.trans
++        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
++  · intro o
+@@ -2712,6 +2779,5 @@
+-    rw [(M.edgeMeshFor f (M.orderedVertex t ∘ o.perm) _
+-      o.positive o.negative).toPlaneComplex_support] at h
+-    rw [M.range_orderedVertex_perm t o.perm] at h
+-    exact h
+-  · let o := Classical.choice hen
+-    dsimp only [Function.comp_apply]
++    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm)
++      o.positive o.negative).toPlaneComplex_support.symm.trans
++        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
++  · intro o
+@@ -2720,6 +2786,5 @@
+-    rw [(M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm) _
+-      o.negative o.positive).toPlaneComplex_support] at h
+-    rw [M.range_orderedVertex_perm t o.perm] at h
+-    exact h
+-  · simp only [unchangedMeshFor, TriangleMesh.reindex, TriangleMesh.single,
+-      oldVerticesEmbedding]
++    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm)
++      o.negative o.positive).toPlaneComplex_support.symm.trans
++        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
++  · intro _ _ _ _
+@@ -2740,7 +2805,22 @@
+-  unfold localMeshTriangles at hs hu
+-  split_ifs at hs hu with hp hn hep hen
+-  · exact (M.strictMeshFor f _ _ _ _ _).triangle_inter s hs u hu
+-  · exact (M.strictNegativeMeshFor f _ _ _ _ _).triangle_inter s hs u hu
+-  · exact (M.edgeMeshFor f _ _ _ _).triangle_inter s hs u hu
+-  · exact (M.edgeNegativeMeshFor f _ _ _ _).triangle_inter s hs u hu
+-  · exact (M.unchangedMeshFor f _ _).triangle_inter s hs u hu
++  revert hs hu
++  refine M.local_mesh_triangles_induction f t
++    (fun triangles => s ∈ triangles → u ∈ triangles →
++      convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (s : Set (M.RefinedVertex f))) ∩
++          convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (u : Set (M.RefinedVertex f))) =
++        convexHull ℝ (((↑) : M.RefinedVertex f → Plane) ''
++          ((s ∩ u : Finset (M.RefinedVertex f)) : Set (M.RefinedVertex f)))) ?_ ?_ ?_ ?_ ?_
++  · intro o hs hu
++    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).triangle_inter s hs u hu
++  · intro o hs hu
++    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).triangle_inter s hs u hu
++  · intro o hs hu
++    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).triangle_inter s hs u hu
++  · intro o hs hu
++    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
++      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).triangle_inter s hs u hu
++  · intro _ _ _ _ hs hu
++    exact (M.unchangedMeshFor f (M.orderedVertex t)
++      (M.orderedVertex_affineIndependent t)).triangle_inter s hs u hu
+--- upstream/ClassificationOfSurfaces/Moise/FreeTriangle.lean
++++ DifferentialGeometry/External/ClassificationOfSurfaces/Moise/FreeTriangle.lean
+@@ -4,0 +5 @@
++Modified for this project; see ../MODIFICATIONS.md for the local changes.
+@@ -6 +7 @@
+-import ClassificationOfSurfaces.Moise.ElementaryMove
++import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
+--- a/ClassificationOfSurfaces/Moise/PolygonalPolyhedron.lean
++++ b/DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonTriangulation.lean
+@@ -4,0 +5,3 @@
++Modified from PolygonalPolyhedron.lean at e3c7230fe78d7b056a415d9ecae6f77887046b32:
++use local PrePolygon/inside/outside and a private canonical Mathlib adapter;
++remove the duplicate upstream polygonal Jordan dependency. See MODIFICATIONS.md.
+@@ -6,22 +9,88 @@
+-import ClassificationOfSurfaces.Moise.LineSubdivision
+-import ClassificationOfSurfaces.Moise.PolygonalJordan
+-
+-/-!
+-# Polygonal Jordan regions as finite plane complexes
+-
+-This file formalizes Moise Chapter 2, Theorem 2.  The finitely many affine lines containing the
+-edges of a polygon cut an enclosing triangle into a finite triangle mesh.  The triangles on the
+-bounded side of polygonal Jordan form the required finite complex.
+--/
+-
+-namespace LeanEval
+-namespace Topology
+-namespace ClassificationOfSurfaces
+-namespace Moise
+-
+-namespace PolygonalCircle
+-
+-variable (J : PolygonalCircle)
+-
+-/-- The linear functional whose zero set is parallel to the vector from `p` to `q`. -/
+-noncomputable def edgeNormalLinear (p q : Plane) : Plane →ₗ[ℝ] ℝ where
++import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
++import DifferentialGeometry.External.Schoenflies.PrePolygonSep
++import Mathlib.Analysis.Convex.SimplicialComplex.Basic
++import Mathlib.Analysis.Normed.Affine.AddTorsorBases
++
++open LeanEval.Topology.ClassificationOfSurfaces.Moise
++  (Plane PlaneComplex TriangleMesh planePoint planePoint_apply_zero planePoint_apply_one
++    affineIndependent_plane_triple_of_det_ne_zero mem_convexHull_range_fin3_of_weights)
++
++private def planeComplexToAbstract (K : PlaneComplex) :
++    PreAbstractSimplicialComplex K.Vertex where
++  faces := K.simplexes
++  isRelLowerSet_faces := by
++    intro s hs
++    refine ⟨K.nonempty_of_mem s hs, ?_⟩
++    intro t hts ht
++    exact K.down_closed s hs t hts ht
++
++private noncomputable def planeComplexToSimplicialComplex (K : PlaneComplex) :
++    Geometry.SimplicialComplex ℝ Plane := by
++  classical
++  refine
++    { (planeComplexToAbstract K).map K.position with
++      indep := ?_
++      inter_subset_convexHull := ?_ }
++  · rintro s ⟨t, ht, rfl⟩
++    apply LeanEval.Topology.ClassificationOfSurfaces.Moise.affineIndependent_finset_coe
++      (K.affineIndependent t ht)
++    intro x hx
++    obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
++    exact ⟨⟨v, hv⟩, rfl⟩
++  · rintro s t ⟨S, hS, rfl⟩ ⟨T, hT, rfl⟩
++    have hfaces : convexHull ℝ (K.position '' (S : Set K.Vertex)) ∩
++        convexHull ℝ (K.position '' (T : Set K.Vertex)) =
++          convexHull ℝ (K.position '' ((S ∩ T : Finset K.Vertex) : Set K.Vertex)) :=
++      K.face_inter S hS T hT
++    simpa only [Finset.coe_image, Finset.coe_inter,
++      Set.image_inter K.position_injective] using hfaces.le
++
++private theorem planeComplexToSimplicialComplex_faces_finite (K : PlaneComplex) :
++    (planeComplexToSimplicialComplex K).faces.Finite := by
++  classical
++  change ((fun s : Finset K.Vertex => s.image K.position) ''
++    (K.simplexes : Set (Finset K.Vertex))).Finite
++  exact K.simplexes.finite_toSet.image _
++
++private theorem planeComplexToSimplicialComplex_space (K : PlaneComplex) :
++    (planeComplexToSimplicialComplex K).space = K.support := by
++  classical
++  have hcarrier (t : Finset K.Vertex) :
++      convexHull ℝ (t.image K.position : Set Plane) = K.cellCarrier t := by
++    rw [PlaneComplex.cellCarrier, Finset.coe_image]
++  change (⋃ s ∈ ((fun t : Finset K.Vertex => t.image K.position) ''
++      (K.simplexes : Set (Finset K.Vertex))), convexHull ℝ (s : Set Plane)) =
++    ⋃ t ∈ K.simplexes, K.cellCarrier t
++  ext x
++  constructor
++  · intro hx
++    obtain ⟨s, hs, hx⟩ := Set.mem_iUnion₂.mp hx
++    obtain ⟨t, ht, rfl⟩ := hs
++    exact Set.mem_iUnion₂.mpr ⟨t, ht, hcarrier t ▸ hx⟩
++  · intro hx
++    obtain ⟨t, ht, hx⟩ := Set.mem_iUnion₂.mp hx
++    exact Set.mem_iUnion₂.mpr ⟨t.image K.position, ⟨t, ht, rfl⟩,
++      (hcarrier t).symm ▸ hx⟩
++
++private theorem planeComplexToSimplicialComplex_pure (K : PlaneComplex)
++    (hpure : K.IsPure2) :
++    ∀ s ∈ (planeComplexToSimplicialComplex K).faces,
++      ∃ t ∈ (planeComplexToSimplicialComplex K).faces, s ⊆ t ∧ t.card = 3 := by
++  classical
++  rintro s ⟨S, hS, rfl⟩
++  obtain ⟨T, hT, hST, hcard⟩ := hpure S hS
++  refine ⟨T.image K.position, ⟨T, hT, rfl⟩, Finset.image_subset_image hST, ?_⟩
++  rw [Finset.card_image_of_injective _ K.position_injective, hcard]
++
++namespace Schoenflies.PrePolygon
++
++variable {m : ℕ} (P : PrePolygon m)
++
++private theorem isCompact_closure_inside : IsCompact (closure (Schoenflies.inside P.carrier)) :=
++  P.isSeparating_carrier.isBounded_inside.isCompact_closure
++
++private theorem closure_inside_eq_union :
++    closure (Schoenflies.inside P.carrier) = Schoenflies.inside P.carrier ∪ P.carrier :=
++  (IsRegionOf.inside P.carrier).closure_eq P.isSeparating_carrier
++
++private noncomputable def edgeNormalLinear (p q : Plane) : Plane →ₗ[ℝ] ℝ where
+@@ -38,5 +107,4 @@
+-/-- An affine equation for the line containing polygon edge `i`. -/
+-noncomputable def edgeLine (i : ZMod J.n) : Plane →ᵃ[ℝ] ℝ :=
+-  AffineMap.mk' (fun x => edgeNormalLinear (J.vertex i) (J.vertex (i + 1))
+-      (x - J.vertex i))
+-    (edgeNormalLinear (J.vertex i) (J.vertex (i + 1))) (J.vertex i) (by
++private noncomputable def edgeLine (i : ZMod (m + 3)) : Plane →ᵃ[ℝ] ℝ :=
++  AffineMap.mk' (fun x => edgeNormalLinear (P.vertex i) (P.vertex (i + 1))
++      (x - P.vertex i))
++    (edgeNormalLinear (P.vertex i) (P.vertex (i + 1))) (P.vertex i) (by
+@@ -46,2 +114,2 @@
+-@[simp] theorem edgeLine_initial (i : ZMod J.n) :
+-    J.edgeLine i (J.vertex i) = 0 := by
++@[simp] private theorem edgeLine_initial (i : ZMod (m + 3)) :
++    P.edgeLine i (P.vertex i) = 0 := by
+@@ -50,2 +118,2 @@
+-@[simp] theorem edgeLine_terminal (i : ZMod J.n) :
+-    J.edgeLine i (J.vertex (i + 1)) = 0 := by
++@[simp] private theorem edgeLine_terminal (i : ZMod (m + 3)) :
++    P.edgeLine i (P.vertex (i + 1)) = 0 := by
+@@ -55,3 +123,3 @@
+-theorem edgeLine_eq_zero_of_mem_edgeSegment (i : ZMod J.n) {x : Plane}
+-    (hx : x ∈ J.edgeSegment i) : J.edgeLine i x = 0 := by
+-  rw [edgeSegment, segment_eq_image] at hx
++private theorem edgeLine_eq_zero_of_mem_edge (i : ZMod (m + 3)) {x : Plane}
++    (hx : x ∈ P.edge i) : P.edgeLine i x = 0 := by
++  rw [edge, segment_eq_image] at hx
+@@ -62,3 +130,3 @@
+-theorem edgeLine_surjective (i : ZMod J.n) : Function.Surjective (J.edgeLine i) := by
+-  let dx : ℝ := (J.vertex (i + 1) - J.vertex i) 0
+-  let dy : ℝ := (J.vertex (i + 1) - J.vertex i) 1
++private theorem edgeLine_surjective (i : ZMod (m + 3)) : Function.Surjective (P.edgeLine i) := by
++  let dx : ℝ := (P.vertex (i + 1) - P.vertex i) 0
++  let dy : ℝ := (P.vertex (i + 1) - P.vertex i) 1
+@@ -68 +136 @@
+-    apply J.adjacent_ne i
++    apply P.vertex_ne_succ i
+@@ -78,5 +146,5 @@
+-  refine ⟨J.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx, ?_⟩
+-  change (J.vertex (i + 1) - J.vertex i) 0 *
+-      (J.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - J.vertex i) 1 -
+-      (J.vertex (i + 1) - J.vertex i) 1 *
+-      (J.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - J.vertex i) 0 = y
++  refine ⟨P.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx, ?_⟩
++  change (P.vertex (i + 1) - P.vertex i) 0 *
++      (P.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - P.vertex i) 1 -
++      (P.vertex (i + 1) - P.vertex i) 1 *
++      (P.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - P.vertex i) 0 = y
+@@ -90,3 +158,3 @@
+-theorem interior_edgeLine_nonneg (i : ZMod J.n) :
+-    interior {x | 0 ≤ J.edgeLine i x} = {x | 0 < J.edgeLine i x} := by
+-  let f := J.edgeLine i
++private theorem interior_edgeLine_nonneg (i : ZMod (m + 3)) :
++    interior {x | 0 ≤ P.edgeLine i x} = {x | 0 < P.edgeLine i x} := by
++  let f := P.edgeLine i
+@@ -95 +163 @@
+-    (J.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
++    (P.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
+@@ -98,3 +166,3 @@
+-theorem interior_edgeLine_nonpos (i : ZMod J.n) :
+-    interior {x | J.edgeLine i x ≤ 0} = {x | J.edgeLine i x < 0} := by
+-  let f := J.edgeLine i
++private theorem interior_edgeLine_nonpos (i : ZMod (m + 3)) :
++    interior {x | P.edgeLine i x ≤ 0} = {x | P.edgeLine i x < 0} := by
++  let f := P.edgeLine i
+@@ -103 +171 @@
+-    (J.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
++    (P.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
+@@ -106,5 +174,4 @@
+-/-- The finite list of supporting lines used in Moise's arrangement proof. -/
+-noncomputable def edgeLines : List (Plane →ᵃ[ℝ] ℝ) :=
+-  (Finset.univ : Finset (ZMod J.n)).toList.map J.edgeLine
+-
+-theorem edgeLine_mem_edgeLines (i : ZMod J.n) : J.edgeLine i ∈ J.edgeLines := by
++private noncomputable def edgeLines : List (Plane →ᵃ[ℝ] ℝ) :=
++  (Finset.univ : Finset (ZMod (m + 3))).toList.map P.edgeLine
++
++private theorem edgeLine_mem_edgeLines (i : ZMod (m + 3)) : P.edgeLine i ∈ P.edgeLines := by
+@@ -113,5 +180,4 @@
+-/-- A positive radius of a closed ball containing the closed polygonal region. -/
+-noncomputable def enclosingRadius : ℝ :=
+-  max (J.isCompact_closedRegion.isBounded.subset_closedBall (0 : Plane)).choose 1
+-
+-theorem enclosingRadius_pos : 0 < J.enclosingRadius := by
++private noncomputable def enclosingRadius : ℝ :=
++  max (P.isCompact_closure_inside.isBounded.subset_closedBall (0 : Plane)).choose 1
++
++private theorem enclosingRadius_pos : 0 < P.enclosingRadius := by
+@@ -121,2 +187,2 @@
+-theorem closedRegion_subset_enclosingBall :
+-    J.closedRegion ⊆ Metric.closedBall (0 : Plane) J.enclosingRadius := by
++private theorem closedRegion_subset_enclosingBall :
++    (closure (Schoenflies.inside P.carrier)) ⊆ Metric.closedBall (0 : Plane) P.enclosingRadius := by
+@@ -124 +190 @@
+-  have h := (J.isCompact_closedRegion.isBounded.subset_closedBall (0 : Plane)).choose_spec hx
++  have h := (P.isCompact_closure_inside.isBounded.subset_closedBall (0 : Plane)).choose_spec hx
+@@ -128,2 +194 @@
+-/-- Vertices of a large triangle containing the ball of radius `R`. -/
+-def enclosingTriangleVertices (R : ℝ) : Fin 3 → Plane :=
++private def enclosingTriangleVertices (R : ℝ) : Fin 3 → Plane :=
+@@ -132 +197 @@
+-theorem enclosingTriangleVertices_affineIndependent {R : ℝ} (hR : 0 < R) :
++private theorem enclosingTriangleVertices_affineIndependent {R : ℝ} (hR : 0 < R) :
+@@ -138 +203 @@
+-theorem closedBall_subset_enclosingTriangle {R : ℝ} (hR : 0 < R) :
++private theorem closedBall_subset_enclosingTriangle {R : ℝ} (hR : 0 < R) :
+@@ -172,7 +237,6 @@
+-/-- The one-triangle seed mesh in which the supporting-line arrangement is constructed. -/
+-noncomputable def enclosingMesh : TriangleMesh :=
+-  TriangleMesh.single (enclosingTriangleVertices J.enclosingRadius)
+-    (enclosingTriangleVertices_affineIndependent J.enclosingRadius_pos)
+-
+-theorem closedRegion_subset_enclosingMesh_support :
+-    J.closedRegion ⊆ J.enclosingMesh.toPlaneComplex.support := by
++private noncomputable def enclosingMesh : TriangleMesh :=
++  TriangleMesh.single (enclosingTriangleVertices P.enclosingRadius)
++    (enclosingTriangleVertices_affineIndependent P.enclosingRadius_pos)
++
++private theorem closedRegion_subset_enclosingMesh_support :
++    (closure (Schoenflies.inside P.carrier)) ⊆ P.enclosingMesh.toPlaneComplex.support := by
+@@ -180,26 +244,24 @@
+-  exact J.closedRegion_subset_enclosingBall.trans
+-    (closedBall_subset_enclosingTriangle J.enclosingRadius_pos)
+-
+-/-- The finite mesh obtained by cutting the enclosing triangle along every polygon edge line. -/
+-noncomputable def arrangementMesh : TriangleMesh :=
+-  J.enclosingMesh.refineByLines J.edgeLines
+-
+-theorem arrangementMesh_support :
+-    J.arrangementMesh.toPlaneComplex.support = J.enclosingMesh.toPlaneComplex.support :=
+-  J.enclosingMesh.refineByLines_support J.edgeLines
+-
+-theorem arrangementMesh_isMonochromatic (i : ZMod J.n) :
+-    J.arrangementMesh.IsMonochromatic (J.edgeLine i) :=
+-  J.enclosingMesh.refineByLines_isMonochromatic_of_mem J.edgeLines (J.edgeLine_mem_edgeLines i)
+-
+-theorem closedRegion_subset_arrangementMesh_support :
+-    J.closedRegion ⊆ J.arrangementMesh.toPlaneComplex.support := by
+-  rw [J.arrangementMesh_support]
+-  exact J.closedRegion_subset_enclosingMesh_support
+-
+-/-- Carrier of one maximal triangle in the supporting-line arrangement. -/
+-def arrangementTriangleCarrier (t : Finset J.arrangementMesh.Vertex) : Set Plane :=
+-  convexHull ℝ (J.arrangementMesh.position '' (t : Set _))
+-
+-theorem convex_arrangementTriangleCarrier (t : Finset J.arrangementMesh.Vertex) :
+-    Convex ℝ (J.arrangementTriangleCarrier t) :=
++  exact P.closedRegion_subset_enclosingBall.trans
++    (closedBall_subset_enclosingTriangle P.enclosingRadius_pos)
++
++private noncomputable def arrangementMesh : TriangleMesh :=
++  P.enclosingMesh.refineByLines P.edgeLines
++
++private theorem arrangementMesh_support :
++    P.arrangementMesh.toPlaneComplex.support = P.enclosingMesh.toPlaneComplex.support :=
++  P.enclosingMesh.refineByLines_support P.edgeLines
++
++private theorem arrangementMesh_isMonochromatic (i : ZMod (m + 3)) :
++    P.arrangementMesh.IsMonochromatic (P.edgeLine i) :=
++  P.enclosingMesh.refineByLines_isMonochromatic_of_mem P.edgeLines (P.edgeLine_mem_edgeLines i)
++
++private theorem closedRegion_subset_arrangementMesh_support :
++    (closure (Schoenflies.inside P.carrier)) ⊆ P.arrangementMesh.toPlaneComplex.support := by
++  rw [P.arrangementMesh_support]
++  exact P.closedRegion_subset_enclosingMesh_support
++
++private def arrangementTriangleCarrier (t : Finset P.arrangementMesh.Vertex) : Set Plane :=
++  convexHull ℝ (P.arrangementMesh.position '' (t : Set _))
++
++private theorem convex_arrangementTriangleCarrier (t : Finset P.arrangementMesh.Vertex) :
++    Convex ℝ (P.arrangementTriangleCarrier t) :=
+@@ -208,8 +270,8 @@
+-theorem isClosed_arrangementTriangleCarrier (t : Finset J.arrangementMesh.Vertex) :
+-    IsClosed (J.arrangementTriangleCarrier t) :=
+-  (t.finite_toSet.image J.arrangementMesh.position).isClosed_convexHull ℝ
+-
+-theorem arrangementTriangleCarrier_interior_nonempty
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
+-    (interior (J.arrangementTriangleCarrier t)).Nonempty := by
+-  apply (J.convex_arrangementTriangleCarrier t).interior_nonempty_iff_affineSpan_eq_top.mpr
++private theorem isClosed_arrangementTriangleCarrier (t : Finset P.arrangementMesh.Vertex) :
++    IsClosed (P.arrangementTriangleCarrier t) :=
++  (t.finite_toSet.image P.arrangementMesh.position).isClosed_convexHull ℝ
++
++private theorem arrangementTriangleCarrier_interior_nonempty
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
++    (interior (P.arrangementTriangleCarrier t)).Nonempty := by
++  apply (P.convex_arrangementTriangleCarrier t).interior_nonempty_iff_affineSpan_eq_top.mpr
+@@ -217,2 +279,2 @@
+-  have hrange : Set.range (fun v : t => J.arrangementMesh.position v) =
+-      J.arrangementMesh.position '' (t : Set _) := by
++  have hrange : Set.range (fun v : t => P.arrangementMesh.position v) =
++      P.arrangementMesh.position '' (t : Set _) := by
+@@ -222 +284 @@
+-  have hAI := J.arrangementMesh.affineIndependent_triangle t ht
++  have hAI := P.arrangementMesh.affineIndependent_triangle t ht
+@@ -224,6 +286,6 @@
+-  rw [Fintype.card_coe, J.arrangementMesh.card_triangle t ht]
+-  simp [Plane]
+-
+-theorem closure_interior_arrangementTriangleCarrier
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
+-    closure (interior (J.arrangementTriangleCarrier t)) = J.arrangementTriangleCarrier t := by
++  rw [Fintype.card_coe, P.arrangementMesh.card_triangle t ht]
++  simp
++
++private theorem closure_interior_arrangementTriangleCarrier
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
++    closure (interior (P.arrangementTriangleCarrier t)) = P.arrangementTriangleCarrier t := by
+@@ -231,9 +293,8 @@
+-    closure (interior (J.arrangementTriangleCarrier t)) =
+-        closure (J.arrangementTriangleCarrier t) :=
+-      (J.convex_arrangementTriangleCarrier t).closure_interior_eq_closure_of_nonempty_interior
+-        (J.arrangementTriangleCarrier_interior_nonempty ht)
+-    _ = J.arrangementTriangleCarrier t := (J.isClosed_arrangementTriangleCarrier t).closure_eq
+-
+-/-- Every open triangle chamber of the supporting-line arrangement misses the polygon. -/
+-theorem arrangementTriangle_interior_disjoint_carrier
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
++    closure (interior (P.arrangementTriangleCarrier t)) =
++        closure (P.arrangementTriangleCarrier t) :=
++      (P.convex_arrangementTriangleCarrier t).closure_interior_eq_closure_of_nonempty_interior
++        (P.arrangementTriangleCarrier_interior_nonempty ht)
++    _ = P.arrangementTriangleCarrier t := (P.isClosed_arrangementTriangleCarrier t).closure_eq
++
++private theorem arrangementTriangle_interior_disjoint_carrier
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
+@@ -241,2 +302,2 @@
+-      (interior (J.arrangementTriangleCarrier t))
+-      J.carrier := by
++      (interior (P.arrangementTriangleCarrier t))
++      P.carrier := by
+@@ -246,4 +307,4 @@
+-  have hxzero : J.edgeLine i x = 0 := J.edgeLine_eq_zero_of_mem_edgeSegment i hxi
+-  rcases J.arrangementMesh_isMonochromatic i t ht with hpos | hneg
+-  · have hsubset : J.arrangementTriangleCarrier t ⊆
+-        {y | 0 ≤ J.edgeLine i y} := by
++  have hxzero : P.edgeLine i x = 0 := P.edgeLine_eq_zero_of_mem_edge i hxi
++  rcases P.arrangementMesh_isMonochromatic i t ht with hpos | hneg
++  · have hsubset : P.arrangementTriangleCarrier t ⊆
++        {y | 0 ≤ P.edgeLine i y} := by
+@@ -254 +315 @@
+-      · exact (convex_Ici (0 : ℝ)).affine_preimage (J.edgeLine i)
++      · exact (convex_Ici (0 : ℝ)).affine_preimage (P.edgeLine i)
+@@ -256,2 +317,2 @@
+-    rw [J.interior_edgeLine_nonneg i] at hxstrict
+-    change 0 < J.edgeLine i x at hxstrict
++    rw [P.interior_edgeLine_nonneg i] at hxstrict
++    change 0 < P.edgeLine i x at hxstrict
+@@ -259,2 +320,2 @@
+-  · have hsubset : J.arrangementTriangleCarrier t ⊆
+-        {y | J.edgeLine i y ≤ 0} := by
++  · have hsubset : P.arrangementTriangleCarrier t ⊆
++        {y | P.edgeLine i y ≤ 0} := by
+@@ -265 +326 @@
+-      · exact (convex_Iic (0 : ℝ)).affine_preimage (J.edgeLine i)
++      · exact (convex_Iic (0 : ℝ)).affine_preimage (P.edgeLine i)
+@@ -267,2 +328,2 @@
+-    rw [J.interior_edgeLine_nonpos i] at hxstrict
+-    change J.edgeLine i x < 0 at hxstrict
++    rw [P.interior_edgeLine_nonpos i] at hxstrict
++    change P.edgeLine i x < 0 at hxstrict
+@@ -271,5 +332,5 @@
+-theorem arrangementTriangle_interior_side
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
+-    interior (J.arrangementTriangleCarrier t) ⊆ J.interiorRegion ∨
+-      interior (J.arrangementTriangleCarrier t) ⊆ J.exteriorRegion := by
+-  let s := interior (J.arrangementTriangleCarrier t)
++private theorem arrangementTriangle_interior_side
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
++    interior (P.arrangementTriangleCarrier t) ⊆ (Schoenflies.inside P.carrier) ∨
++      interior (P.arrangementTriangleCarrier t) ⊆ (Schoenflies.outside P.carrier) := by
++  let s := interior (P.arrangementTriangleCarrier t)
+@@ -277,2 +338,2 @@
+-    (J.convex_arrangementTriangleCarrier t).interior.isPreconnected
+-  have hscarrier : s ⊆ J.carrierᶜ := by
++    (P.convex_arrangementTriangleCarrier t).interior.isPreconnected
++  have hscarrier : s ⊆ P.carrierᶜ := by
+@@ -280,3 +341,3 @@
+-    exact Set.disjoint_left.mp (J.arrangementTriangle_interior_disjoint_carrier ht) hx
+-  have hsunion : s ⊆ J.interiorRegion ∪ J.exteriorRegion := by
+-    rw [J.interior_union_exterior]
++    exact Set.disjoint_left.mp (P.arrangementTriangle_interior_disjoint_carrier ht) hx
++  have hsunion : s ⊆ (Schoenflies.inside P.carrier) ∪ (Schoenflies.outside P.carrier) := by
++    rw [Schoenflies.inside_union_outside P.carrier]
+@@ -284 +345 @@
+-  obtain ⟨x, hx⟩ := J.arrangementTriangleCarrier_interior_nonempty ht
++  obtain ⟨x, hx⟩ := P.arrangementTriangleCarrier_interior_nonempty ht
+@@ -287,11 +348,11 @@
+-  · exact Or.inl <| hsconn.subset_left_of_subset_union J.isOpen_interiorRegion
+-      J.isOpen_exteriorRegion J.disjoint_interior_exterior hsunion ⟨x, hx, hxin⟩
+-  · exact Or.inr <| hsconn.subset_right_of_subset_union J.isOpen_interiorRegion
+-      J.isOpen_exteriorRegion J.disjoint_interior_exterior hsunion ⟨x, hx, hxout⟩
+-
+-/-- The arrangement chambers lying on the bounded side of the polygon. -/
+-def IsInteriorArrangementTriangle (t : Finset J.arrangementMesh.Vertex) : Prop :=
+-  interior (J.arrangementTriangleCarrier t) ⊆ J.interiorRegion
+-
+-/-- The finite mesh formed by all bounded-side arrangement chambers. -/
+-noncomputable def closedRegionMesh : TriangleMesh :=
++  · exact Or.inl <| hsconn.subset_left_of_subset_union P.isSeparating_carrier.isOpen_inside
++      P.isSeparating_carrier.isOpen_outside
++      (Schoenflies.disjoint_inside_outside (C := P.carrier)) hsunion ⟨x, hx, hxin⟩
++  · exact Or.inr <| hsconn.subset_right_of_subset_union P.isSeparating_carrier.isOpen_inside
++      P.isSeparating_carrier.isOpen_outside
++      (Schoenflies.disjoint_inside_outside (C := P.carrier)) hsunion ⟨x, hx, hxout⟩
++
++private def isInteriorArrangementTriangle (t : Finset P.arrangementMesh.Vertex) : Prop :=
++  interior (P.arrangementTriangleCarrier t) ⊆ (Schoenflies.inside P.carrier)
++
++private noncomputable def closedRegionMesh : TriangleMesh :=
+@@ -300,5 +361,5 @@
+-    exact J.arrangementMesh.restrictTriangles J.IsInteriorArrangementTriangle
+-
+-theorem closedRegionMesh_triangle_mem {t : Finset J.closedRegionMesh.Vertex} :
+-    t ∈ J.closedRegionMesh.triangles ↔
+-      t ∈ J.arrangementMesh.triangles ∧ J.IsInteriorArrangementTriangle t := by
++    exact P.arrangementMesh.restrictTriangles P.isInteriorArrangementTriangle
++
++private theorem closedRegionMesh_triangle_mem {t : Finset P.closedRegionMesh.Vertex} :
++    t ∈ P.closedRegionMesh.triangles ↔
++      t ∈ P.arrangementMesh.triangles ∧ P.isInteriorArrangementTriangle t := by
+@@ -306,7 +367,7 @@
+-  exact J.arrangementMesh.mem_restrictTriangles_triangles J.IsInteriorArrangementTriangle
+-
+-theorem arrangementTriangleCarrier_subset_closedRegion
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles)
+-    (hinside : J.IsInteriorArrangementTriangle t) :
+-    J.arrangementTriangleCarrier t ⊆ J.closedRegion := by
+-  rw [← J.closure_interior_arrangementTriangleCarrier ht, closedRegion]
++  exact P.arrangementMesh.mem_restrictTriangles_triangles P.isInteriorArrangementTriangle
++
++private theorem arrangementTriangleCarrier_subset_closedRegion
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles)
++    (hinside : P.isInteriorArrangementTriangle t) :
++    P.arrangementTriangleCarrier t ⊆ (closure (Schoenflies.inside P.carrier)) := by
++  rw [← P.closure_interior_arrangementTriangleCarrier ht]
+@@ -315,2 +376,2 @@
+-theorem closedRegionMesh_support_subset :
+-    J.closedRegionMesh.toPlaneComplex.support ⊆ J.closedRegion := by
++private theorem closedRegionMesh_support_subset :
++    P.closedRegionMesh.toPlaneComplex.support ⊆ (closure (Schoenflies.inside P.carrier)) := by
+@@ -321,5 +382,5 @@
+-  obtain ⟨htarr, htinside⟩ := J.closedRegionMesh_triangle_mem.mp ht
+-  exact J.arrangementTriangleCarrier_subset_closedRegion htarr htinside hxt
+-
+-theorem interiorRegion_subset_closedRegionMesh_support :
+-    J.interiorRegion ⊆ J.closedRegionMesh.toPlaneComplex.support := by
++  obtain ⟨htarr, htinside⟩ := P.closedRegionMesh_triangle_mem.mp ht
++  exact P.arrangementTriangleCarrier_subset_closedRegion htarr htinside hxt
++
++private theorem interiorRegion_subset_closedRegionMesh_support :
++    (Schoenflies.inside P.carrier) ⊆ P.closedRegionMesh.toPlaneComplex.support := by
+@@ -327,2 +388,2 @@
+-  have hxclosed : x ∈ J.closedRegion := by
+-    rw [J.closedRegion_eq_union]
++  have hxclosed : x ∈ (closure (Schoenflies.inside P.carrier)) := by
++    rw [P.closure_inside_eq_union]
+@@ -330 +391 @@
+-  have hxsupport := J.closedRegion_subset_arrangementMesh_support hxclosed
++  have hxsupport := P.closedRegion_subset_arrangementMesh_support hxclosed
+@@ -334,2 +395,2 @@
+-  have hxclosure : x ∈ closure (interior (J.arrangementTriangleCarrier t)) := by
+-    rw [J.closure_interior_arrangementTriangleCarrier ht]
++  have hxclosure : x ∈ closure (interior (P.arrangementTriangleCarrier t)) := by
++    rw [P.closure_interior_arrangementTriangleCarrier ht]
+@@ -338,2 +399,2 @@
+-      x ∈ closure (J.interiorRegion ∩ interior (J.arrangementTriangleCarrier t)) :=
+-    J.isOpen_interiorRegion.inter_closure ⟨hxinside, hxclosure⟩
++      x ∈ closure ((Schoenflies.inside P.carrier) ∩ interior (P.arrangementTriangleCarrier t)) :=
++    P.isSeparating_carrier.isOpen_inside.inter_closure ⟨hxinside, hxclosure⟩
+@@ -341 +402 @@
+-      (J.interiorRegion ∩ interior (J.arrangementTriangleCarrier t)).Nonempty :=
++      ((Schoenflies.inside P.carrier) ∩ interior (P.arrangementTriangleCarrier t)).Nonempty :=
+@@ -344 +405 @@
+-      (interior (J.arrangementTriangleCarrier t) ∩ J.interiorRegion).Nonempty := by
++      (interior (P.arrangementTriangleCarrier t) ∩ (Schoenflies.inside P.carrier)).Nonempty := by
+@@ -347,2 +408,2 @@
+-  have htinside : J.IsInteriorArrangementTriangle t := by
+-    rcases J.arrangementTriangle_interior_side ht with hin | hout
++  have htinside : P.isInteriorArrangementTriangle t := by
++    rcases P.arrangementTriangle_interior_side ht with hin | hout
+@@ -351 +412,2 @@
+-      exact False.elim <| Set.disjoint_left.mp J.disjoint_interior_exterior hyinside (hout hyt)
++      exact False.elim <| Set.disjoint_left.mp
++        (Schoenflies.disjoint_inside_outside (C := P.carrier)) hyinside (hout hyt)
+@@ -354,6 +416,5 @@
+-  exact ⟨t, J.closedRegionMesh_triangle_mem.mpr ⟨ht, htinside⟩, hxt⟩
+-
+-theorem closedRegionMesh_support :
+-    J.closedRegionMesh.toPlaneComplex.support = J.closedRegion := by
+-  apply Set.Subset.antisymm J.closedRegionMesh_support_subset
+-  rw [closedRegion]
++  exact ⟨t, P.closedRegionMesh_triangle_mem.mpr ⟨ht, htinside⟩, hxt⟩
++
++private theorem closedRegionMesh_support :
++    P.closedRegionMesh.toPlaneComplex.support = (closure (Schoenflies.inside P.carrier)) := by
++  apply Set.Subset.antisymm P.closedRegionMesh_support_subset
+@@ -361,4 +422,5 @@
+-    J.interiorRegion_subset_closedRegionMesh_support
+-    J.closedRegionMesh.toPlaneComplex.isCompact_support.isClosed
+-
+-theorem disjoint_carrier_exteriorRegion : Disjoint J.carrier J.exteriorRegion := by
++    P.interiorRegion_subset_closedRegionMesh_support
++    P.closedRegionMesh.toPlaneComplex.isCompact_support.isClosed
++
++private theorem disjoint_carrier_exteriorRegion :
++    Disjoint P.carrier (Schoenflies.outside P.carrier) := by
+@@ -367,2 +429,2 @@
+-  have hxcompl : x ∈ J.carrierᶜ := by
+-    rw [← J.interior_union_exterior]
++  have hxcompl : x ∈ P.carrierᶜ := by
++    rw [← Schoenflies.inside_union_outside P.carrier]
+@@ -372,6 +434,8 @@
+-theorem disjoint_closedRegion_exteriorRegion : Disjoint J.closedRegion J.exteriorRegion := by
+-  rw [J.closedRegion_eq_union]
+-  exact J.disjoint_interior_exterior.sup_left J.disjoint_carrier_exteriorRegion
+-
+-/-- The topological boundary of the closed polygonal disk is the original polygon. -/
+-theorem frontier_closedRegion : frontier J.closedRegion = J.carrier := by
++private theorem disjoint_closedRegion_exteriorRegion :
++    Disjoint (closure (Schoenflies.inside P.carrier)) (Schoenflies.outside P.carrier) := by
++  rw [P.closure_inside_eq_union]
++  exact (Schoenflies.disjoint_inside_outside (C := P.carrier)).sup_left
++    P.disjoint_carrier_exteriorRegion
++
++private theorem frontier_closedRegion :
++    frontier (closure (Schoenflies.inside P.carrier)) = P.carrier := by
+@@ -380 +444 @@
+-    have hxclosed : x ∈ J.closedRegion := by
++    have hxclosed : x ∈ (closure (Schoenflies.inside P.carrier)) := by
+@@ -382,2 +446,2 @@
+-      simpa [J.isCompact_closedRegion.isClosed.closure_eq] using hx'
+-    rw [J.closedRegion_eq_union] at hxclosed
++      simpa [P.isCompact_closure_inside.isClosed.closure_eq] using hx'
++    rw [P.closure_inside_eq_union] at hxclosed
+@@ -385,3 +449,3 @@
+-    · have hxint : x ∈ interior J.closedRegion :=
+-        interior_maximal (by rw [J.closedRegion_eq_union]; exact Set.subset_union_left)
+-          J.isOpen_interiorRegion hxinside
++    · have hxint : x ∈ interior (closure (Schoenflies.inside P.carrier)) :=
++        interior_maximal (by rw [P.closure_inside_eq_union]; exact Set.subset_union_left)
++          P.isSeparating_carrier.isOpen_inside hxinside
+@@ -391,2 +455,2 @@
+-    have hxclosed : x ∈ J.closedRegion := by
+-      rw [J.closedRegion_eq_union]
++    have hxclosed : x ∈ (closure (Schoenflies.inside P.carrier)) := by
++      rw [P.closure_inside_eq_union]
+@@ -394 +458 @@
+-    rw [J.isCompact_closedRegion.isClosed.frontier_eq]
++    rw [P.isCompact_closure_inside.isClosed.frontier_eq]
+@@ -397,2 +461,2 @@
+-    have hxclosureExterior : x ∈ closure J.exteriorRegion :=
+-      frontier_subset_closure (J.frontier_exteriorRegion.symm ▸ hxcarrier)
++    have hxclosureExterior : x ∈ closure (Schoenflies.outside P.carrier) :=
++      frontier_subset_closure (P.isSeparating_carrier.frontier_outside.symm ▸ hxcarrier)
+@@ -400 +464,2 @@
+-        x ∈ closure (interior J.closedRegion ∩ J.exteriorRegion) :=
++        x ∈ closure (interior (closure (Schoenflies.inside P.carrier)) ∩
++          Schoenflies.outside P.carrier) :=
+@@ -403 +468 @@
+-    exact Set.disjoint_left.mp J.disjoint_closedRegion_exteriorRegion
++    exact Set.disjoint_left.mp P.disjoint_closedRegion_exteriorRegion
+@@ -406 +471,2 @@
+-theorem interior_closedRegion : interior J.closedRegion = J.interiorRegion := by
++private theorem interior_closedRegion :
++    interior (closure (Schoenflies.inside P.carrier)) = Schoenflies.inside P.carrier := by
+@@ -409,2 +475,2 @@
+-    have hpClosed : p ∈ J.closedRegion := interior_subset hp
+-    rw [J.closedRegion_eq_union] at hpClosed
++    have hpClosed : p ∈ (closure (Schoenflies.inside P.carrier)) := interior_subset hp
++    rw [P.closure_inside_eq_union] at hpClosed
+@@ -413,2 +479,2 @@
+-    · have hpFrontier : p ∈ frontier J.closedRegion := by
+-        rw [J.frontier_closedRegion]
++    · have hpFrontier : p ∈ frontier (closure (Schoenflies.inside P.carrier)) := by
++        rw [P.frontier_closedRegion]
+@@ -417,13 +483,25 @@
+-  · exact interior_maximal (by rw [J.closedRegion_eq_union]; exact Set.subset_union_left)
+-      J.isOpen_interiorRegion
+-
+-theorem isConnected_closedRegion : IsConnected J.closedRegion := by
+-  rw [closedRegion]
+-  exact J.isConnected_interiorRegion.closure
+-
+-end PolygonalCircle
+-
+-end Moise
+-end ClassificationOfSurfaces
+-end Topology
+-end LeanEval
++  · exact interior_maximal (by rw [P.closure_inside_eq_union]; exact Set.subset_union_left)
++      P.isSeparating_carrier.isOpen_inside
++
++private theorem isConnected_closedRegion :
++    IsConnected (closure (Schoenflies.inside P.carrier)) :=
++  P.isSeparating_carrier.isConnected_inside.closure
++
++theorem exists_triangle_mesh_inside :
++    ∃ M : TriangleMesh,
++      M.toPlaneComplex.support = closure (Schoenflies.inside P.carrier) ∧
++        frontier M.toPlaneComplex.support = P.carrier := by
++  refine ⟨P.closedRegionMesh, P.closedRegionMesh_support, ?_⟩
++  rw [P.closedRegionMesh_support]
++  exact P.frontier_closedRegion
++
++theorem exists_simplicial_complex_inside :
++    ∃ K : Geometry.SimplicialComplex ℝ Plane,
++      K.faces.Finite ∧ K.space = closure (Schoenflies.inside P.carrier) ∧
++        ∀ s ∈ K.faces, ∃ t ∈ K.faces, s ⊆ t ∧ t.card = 3 := by
++  refine ⟨planeComplexToSimplicialComplex P.closedRegionMesh.toPlaneComplex,
++    planeComplexToSimplicialComplex_faces_finite _, ?_,
++    planeComplexToSimplicialComplex_pure _ P.closedRegionMesh.toPlaneComplex_isPure2⟩
++  exact (planeComplexToSimplicialComplex_space _).trans P.closedRegionMesh_support
++
++end Schoenflies.PrePolygon

@@ -1,0 +1,1054 @@
+{
+  "sourceRevision": "54ad4d8ec0408e71da2247daed5ecee2a574f7ec",
+  "reviewHead": "712480db4447d42ca5e9cdd38ab575353b24feb9",
+  "checkout": "D:\\differential-geometry-moise-int",
+  "prepared": "C:\\Users\\liao9\\AppData\\Local\\Temp\\codex-smooth-integration\\prepared",
+  "changes": [
+    {
+      "path": "DifferentialGeometry/Topology/PlanarJordan/SmoothSchoenflies.lean",
+      "beforeSha": null,
+      "afterSha": "53693baab329d14872be6ca32177f468906cb1b74ca0906c5674b60390600939",
+      "sourcePath": "DifferentialGeometry/Topology/PlanarJordan/SmoothSchoenflies.lean",
+      "sourceSha": "0cfea8bad7358a86971f392a0d92a261c286c5f107772f52c31759847b741f8b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonDisk.lean",
+      "beforeSha": null,
+      "afterSha": "844e37fcf7e14cf4d912af8fb7040acdc02d41b4a4814dd1b677c681cd5480b7",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonDisk.lean",
+      "sourceSha": "9aedf9c1f76296401d085fb47ea376ac1f07ed2251be47e84916edff713717ba",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonRounding.lean",
+      "beforeSha": null,
+      "afterSha": "4ed94241f260264de8693bd573ddeb9fa6e7c109c092d3a17d5f35f0ff18b5d5",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonRounding.lean",
+      "sourceSha": "09c0b4b91c939862af9e5d9477672b0eaaa056bbed5f6d03f452f376bc7ba527",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/VertexReplacement.lean",
+      "beforeSha": null,
+      "afterSha": "a7d7e9faf35c57bbe1a4939b38d513f65f036f247860bd2a5ca7fcad909b5d72",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/VertexReplacement.lean",
+      "sourceSha": "e37492ec063a31739ba743a43f7f23f9fea10bba805289e52cf24ed1a003a0f5",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/CornerRounding.lean",
+      "beforeSha": null,
+      "afterSha": "19955c5cdbb33f1971c1de716abf5c04ee4b97226b3935b7cb5d8b268e954a62",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/CornerRounding.lean",
+      "sourceSha": "236355fdba93364cfbf4f67d597ecbf2d867ebe956608ec63738684fd06775cb",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/CompactIsotopyComposition.lean",
+      "beforeSha": null,
+      "afterSha": "8256588e1b9883028bda0df88370d78031e9e74a0b25ec20b8f841b6ad5148d7",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/CompactIsotopyComposition.lean",
+      "sourceSha": "e889de051af25ccd2ce3bc59932c01cb2bfd78ea351afeb43306ddc7b02f1f9b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/LevelTransport.lean",
+      "beforeSha": null,
+      "afterSha": "84ea961248f01e56d7b10dab5bc8df5ddf42f77986fbd961b3844799ede459cb",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/LevelTransport.lean",
+      "sourceSha": "2c992e38db2ad25e18317bbd3b2331b53f2952a8bafbdb39352fc99dccc2c08e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/TimeDependentFlow.lean",
+      "beforeSha": "7678c77c564cda20a44a61de4163c6f7c79088bd2c323043172f1a38d59e3366",
+      "afterSha": "723dcb9970613ef904aab06251b3429166a4632aa9b847c854515718fac3d07a",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/TimeDependentFlow.lean",
+      "sourceSha": "4eec7b539a3d93df35ec2e46b4f2a39c2887bffc6994aaa249e9e7f91ad25ce8",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/ODE/Flow/IntegralCurveTransport.lean",
+      "beforeSha": "4551367f1c7a46b7c32f29aa69a425bca444f6c5867f82ce5d2b6ccb6d35a12d",
+      "afterSha": "20c3643bf629e2d33f729a85551d021750102b9b8f15645b6cffc2a3c9252a84",
+      "sourcePath": "DifferentialGeometry/Analysis/ODE/Flow/IntegralCurveTransport.lean",
+      "sourceSha": "48f1cd35e7a826eaa67dd98d866b61c2799e245fc00def74d98cbb4ed10f4bfd",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/ProportionalTransport.lean",
+      "beforeSha": null,
+      "afterSha": "2f4b3c5450b0b9be5633ea429461c464062142ad97579012d487925a105a9251",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/ProportionalTransport.lean",
+      "sourceSha": "fb1c7685fedf19d78b2f042bbefc2af7178680010d0fed0be058277d0960f52e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Cutoff/Compact.lean",
+      "beforeSha": "dd9c94fef9ce54b6d0d62c6b536625a6cf3a9b3caf18b0e82ed69060c65024d3",
+      "afterSha": "d8dcdf1a700a0ff22f1325564b6a3d409abd023be1824d1c8b8297d7d4ccd6ea",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/Cutoff/Compact.lean",
+      "sourceSha": "56b9f8f5b082edd910e0d089143d42bff3ea23d08aca2bcde14c525f89711fa5",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Cutoff/Basic.lean",
+      "beforeSha": "04a4876d7d9d7f9491ebb0a9f4d966d5096a2c7d11cc4352c73050ad358752e3",
+      "afterSha": "d6a5a9a42b864a36a1dd354f5eaec6afa7388ce170e33dc8cdfdf92a3436f1c0",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/Cutoff/Basic.lean",
+      "sourceSha": "1dd628cea46c6975c13465366f4934087a381cf512979b7c0ed0bf67e7bac695",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/ODE/TimeDependentFlow/LevelTransport.lean",
+      "beforeSha": "616057ca897033f30bf068d44da7414b7cf30fb08195b4c6f09e263e4dd9c44e",
+      "afterSha": "8e15ded7edeafe941ac733b20bacb624faace9f689269fc0d24455205c33f9fc",
+      "sourcePath": "DifferentialGeometry/Analysis/ODE/TimeDependentFlow/LevelTransport.lean",
+      "sourceSha": "e6f2c37931dafb0ef0cd92eac5f256dcf62c2eaf0bb988691272ea9a841daa33",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/ODE/Flow/LinearODE/Sign.lean",
+      "beforeSha": null,
+      "afterSha": "07f7b4d276785eb3525e1cb7311927827a799cf6b23aac730c42b802cb72fbab",
+      "sourcePath": "DifferentialGeometry/Analysis/ODE/Flow/LinearODE/Sign.lean",
+      "sourceSha": "72e28910b1e52cc8371ed41bd0950d4b8a01fd6d3b2857905d95fa0c2b0d404b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/DisjointSupport.lean",
+      "beforeSha": null,
+      "afterSha": "bca9c94f6523682cf1a3ea5428333cdd0afc2c50c91017d03b32c2b8e287bf6e",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/DisjointSupport.lean",
+      "sourceSha": "2ca44b63739cc46cc3d234c5902ef0dd38abd54b7f12d568c0264e2980ee7129",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothMax.lean",
+      "beforeSha": "db2eac638124874b3316ee816a990c4cdf3ff9eb9356daf2a1aa1a2e3a5cb97a",
+      "afterSha": "0059282bee91a8e211894553a7ecaec9989404c8b047513f291db495587e7524",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothMax.lean",
+      "sourceSha": "1f5021d03afff5c78891096c44db085998a4c46f58b3e6958f531c04baac21e1",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothTransition.lean",
+      "beforeSha": "5fdcea4b3a433d16bc2b70d643f952e4c6c5efe4d5a95ec8088e336559002fb8",
+      "afterSha": "4dda22b6625d64aa76b9e863ca74d8bc2a546053504ac43c24aba0545f5f58cf",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothTransition.lean",
+      "sourceSha": "0a535edae6d577ce4c36c777bf164471b93b1087b727a1e74136e5decbf33f86",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/LocalizedGraph.lean",
+      "beforeSha": "2be685324972596dc57a8a9137e247505b6b6abbbd90ed928f4b544b0309dfa2",
+      "afterSha": "adf799beb2992a0ac33edc53ff042b21e6a23c113d7f5a70008b12752ee8637a",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/LocalizedGraph.lean",
+      "sourceSha": "6b0331b1146fc2c75e5d5bd1f452db1f8e6220ad4452ed50b389819febe2f608",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/Fiberwise.lean",
+      "beforeSha": "ac62908b15873ff30474dfec6067f9ff93ac8d86421acd59325c360530f055f8",
+      "afterSha": "aba9795ecc704de008febd0e931833255ee34801b6e27d0180329d4029004338",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/Fiberwise.lean",
+      "sourceSha": "705a0a47fd4af8d970ec28d67480fad67335dcd73d1dfb9e1e73d6e6ba0ba68d",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/FiberwiseHomeomorph.lean",
+      "beforeSha": "dff46f4933ff7773f887129ab08e76a19946164ea21b736b30bb597538ac4907",
+      "afterSha": "bcdf1452388d488e017f50886b0460744f2906b99e895cfacc050669705a2edb",
+      "sourcePath": "DifferentialGeometry/Topology/FiberwiseHomeomorph.lean",
+      "sourceSha": "6354a10b86a21f662f923f14541ae870356f78972695ccaac9995134bfdebe10",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/CornerReanchoring.lean",
+      "beforeSha": null,
+      "afterSha": "131ffe20ea93e1b5070508b7394c8e1194dc1d2b55c421174345713f2b776fea",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/CornerReanchoring.lean",
+      "sourceSha": "1b2dc3d4cf04099acd0eaf32c452575c939dc2211c7683345ecc6c4c76c9e0d6",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/CornerNormalization.lean",
+      "beforeSha": null,
+      "afterSha": "018ad88404adee68d0868ddd54b812c5fd6e6cc0516ed2109bf7f93c1c6160b1",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/CornerNormalization.lean",
+      "sourceSha": "6771a2bf24725a816f58060209d66b3067345af098be331cff668cbf2a6d1d05",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/VertexRoundingProfile.lean",
+      "beforeSha": null,
+      "afterSha": "c02db661cc976036d8b3ffafeeff26cad0874e7cb6a17b1679625e3858caa767",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/VertexRoundingProfile.lean",
+      "sourceSha": "f9ca7fd2927e3d7e723fd5e853b5036c491798666f2d5e7e2938c2f020a4e714",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/PolygonalRounding.lean",
+      "beforeSha": null,
+      "afterSha": "c36067a2000d49fdaa929213b12276d690c8641b77b5d85507646ce95bf6167c",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/PolygonalRounding.lean",
+      "sourceSha": "b48c9531f080035a436dd61e90e4488b55ce2811caca09c7e93f369f4931dfab",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothCorner.lean",
+      "beforeSha": null,
+      "afterSha": "48b56d063ab34b56c6cd995c13872126f8c2497cd72c060fd5ed1acfd68d4549",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothCorner.lean",
+      "sourceSha": "8b4ff947a30b91191f8d8e62c6cc1642f6f8044701e9142e3fb12160d798bac7",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/CurveSubdivision.lean",
+      "beforeSha": null,
+      "afterSha": "12c0528f877586bb1f7fec930a6c2790e659f0bbb96adbfb93d57e7e4c0832d2",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/CurveSubdivision.lean",
+      "sourceSha": "4a1f913c3917220fccab36196f07a504368169975f159fff8ae496c3b293f0d3",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonVertexCharts.lean",
+      "beforeSha": null,
+      "afterSha": "ac9356e0f8f38c2d808313139baa7f55e98041693640c9a8b0c5509420b87d5b",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonVertexCharts.lean",
+      "sourceSha": "3de477058ddae82fc603ca73ea2ea465d5f21411c79ebed10681dec4a2e17519",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/PlanarJordan/LocalSides.lean",
+      "beforeSha": "940a4b4d788b76f4ac4ac7e431dec5408aa9004b48422ade510eba4da990d2d7",
+      "afterSha": "fac688b0b1f57c7d52ea1170bea39d3ab6b584d65eb966fbc715f5a42f3b0eb6",
+      "sourcePath": "DifferentialGeometry/Topology/PlanarJordan/LocalSides.lean",
+      "sourceSha": "eee5ee4cf8c496751f2923b2f40be062861558260edf1e0b6c93965e8fe0adb5",
+      "kind": "lean"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/TriangleMeshCrosscut.lean",
+      "beforeSha": null,
+      "afterSha": "ffc240ceaa7282ab0fd64171d8204a222ec64e1eab4b4ac67d7336530521403b",
+      "sourcePath": "DifferentialGeometry/External/ClassificationOfSurfaces/TriangleMeshCrosscut.lean",
+      "sourceSha": "a5b3178cd0bec5c550dc49a3a7b1c6c58a06a41992e6a934414e790630793752",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Convex/SegmentGerm.lean",
+      "beforeSha": null,
+      "afterSha": "e1348e54657ff1a730dd6e71ee0b74d724ad225e6046a113dab337fd7d117ad5",
+      "sourcePath": "DifferentialGeometry/Analysis/Convex/SegmentGerm.lean",
+      "sourceSha": "6193528970696af4faa3e05fe67d96a874d926c5093adca9cbf0e8e65e5b502b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonCorners.lean",
+      "beforeSha": null,
+      "afterSha": "f85f67da9bc8ee424776663e4f96b29a6232740b8f4e0c94f4c1df7f30e4427a",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonCorners.lean",
+      "sourceSha": "1b7b49a302e3d0a9c2a750cf864308a0ad8e7629952878def5b500ef9ef94e10",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Compactness/FiniteReplacement.lean",
+      "beforeSha": null,
+      "afterSha": "81e6ff8c9113c27f13d81fbbe25671c81cb435f0f62718c11efadd54bcb52685",
+      "sourcePath": "DifferentialGeometry/Topology/Compactness/FiniteReplacement.lean",
+      "sourceSha": "b0f5cf39aaf5660e2c03c03d6c32284b4252aa1e2cb299eb63831500a096ff2b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/RegularRegion.lean",
+      "beforeSha": null,
+      "afterSha": "7a5152fe9c78358a3c167dce04aed87236d142903ebd6ae21c139ac5adaf9126",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/RegularRegion.lean",
+      "sourceSha": "06c34597e8a2becd1b225658ba4f00595fa7eb9630a95ca59144b90814a13c40",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "4e016fdeca26f81ec2ee56490d6b1370ab5261c5ca6eb5682bc8bef1561f0b4d",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonIsotopy.lean",
+      "sourceSha": "909b279a59dac7c71692cac32693f094935387d8221045beaeae059c3766f955",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonGraphCharts.lean",
+      "beforeSha": null,
+      "afterSha": "d8a577424c513cd06c223aeeb40e362223248007de317f02226a1e80c70eb0ae",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonGraphCharts.lean",
+      "sourceSha": "be4a1f56609a6d66393f33cf096c39b89e6c96248cab9c7581bf7c797e2fb3c3",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Convex/TriangleComplement.lean",
+      "beforeSha": null,
+      "afterSha": "a5d92244d5a614009675bb90f42755b4f269553544d74a6729b54d837fa3b63a",
+      "sourcePath": "DifferentialGeometry/Analysis/Convex/TriangleComplement.lean",
+      "sourceSha": "d0596c3e090e6a954ad320a7f0a9e7e45d253bec26a3d5d7f09b69ed33d87dc2",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Convex/AffineBasis.lean",
+      "beforeSha": null,
+      "afterSha": "711d4ab7d8dcaf505d6a0a2d8ac21a1bfb8871b9312fe3fd42f89cebca8d2a8a",
+      "sourcePath": "DifferentialGeometry/Analysis/Convex/AffineBasis.lean",
+      "sourceSha": "4934c35caf91af3cdf4d5ea1dfb10f16657c777bc84e6692d6231c88f762792c",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Convex/SegmentSigns.lean",
+      "beforeSha": null,
+      "afterSha": "789b0c59e9771c071e7a489515b6e5de8270cd8c66515004efa5d25989e4c664",
+      "sourcePath": "DifferentialGeometry/Analysis/Convex/SegmentSigns.lean",
+      "sourceSha": "81fe504353ed09ad4e220d92ada56c9f4b3b5adca6ca6fc2296558e3eb1da80c",
+      "kind": "lean"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/PrePolygonDeletion.lean",
+      "beforeSha": null,
+      "afterSha": "0b52f138d0195ff1dab7a757eae4979a3467957321d0573533950d29732195de",
+      "sourcePath": "DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonDeletion.lean",
+      "sourceSha": "5a655aaba60d6af5bd1de7aabdd2731670001fff4fa0a8bb77166cb504d89ec2",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/TriangleRounding.lean",
+      "beforeSha": null,
+      "afterSha": "84416a6659cf8c78030df9458e35b4f7353ffa0982d25b5b7741cb908658a066",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/TriangleRounding.lean",
+      "sourceSha": "24ab17de0e88062fdce826a445269b3428ff5e98c422bd93773a2585cc92d39b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/Convex.lean",
+      "beforeSha": null,
+      "afterSha": "94da4d41b42ed36e29d257f61b6f8681ac1e91dc575eb68391414e9306633c01",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/Convex.lean",
+      "sourceSha": "666d5a95b1ea65672d04f1823ad725375b22b41d38e49b0ffbeafa9d5c6548d8",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/Radial.lean",
+      "beforeSha": "33e1cb952736a0dc17d18893c3567316c3332ed2b74db04b5382da52644ce6f1",
+      "afterSha": "85b1b5f51e97576190fec1dad06b4c3edb68f69f04841a1a9d011f2598a8aca3",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/Radial.lean",
+      "sourceSha": "d309876819b9c94c3319514d21c8c704eff36ea9b9d66c013437f2f85ad2d59f",
+      "kind": "lean"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/TriangleMeshGeometricFree.lean",
+      "beforeSha": null,
+      "afterSha": "693a9d0961a7246d7ffd3c86a50a8d305a4b731ce25191bc345c6b8cb0fa1656",
+      "sourcePath": "DifferentialGeometry/External/ClassificationOfSurfaces/TriangleMeshGeometricFree.lean",
+      "sourceSha": "5add0faade44a34ec2812e1a18cba8a04429caa18247c66ed69a465947e76377",
+      "kind": "lean"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/PrePolygonTriangulation.lean",
+      "beforeSha": null,
+      "afterSha": "17f68b191dea414fdceddc681edc63d1fdb39225f55e56c6c069167453e69ba8",
+      "sourcePath": "DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonTriangulation.lean",
+      "sourceSha": "d4d7556c8e5bff2bcade9eb081ef97719fbc51ba1c7dc084dac05bde57bac44e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/CanonicalRounding.lean",
+      "beforeSha": null,
+      "afterSha": "4deec8fd0e83b988e412c9be8aedc9ee7d54f24f1652a5d2087525367472dcf8",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/CanonicalRounding.lean",
+      "sourceSha": "78c7e0391bf83630c406291c660dc7fa028c2ff942443215011a6d4aae0b60e3",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/RoundingIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "98cbcf29491c16d656d2cd320d81b7cc8df4214ce629368e6d904047449cc834",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/RoundingIsotopy.lean",
+      "sourceSha": "14243a0ab2b8a3d0acd77cbc1c73aab292536b3d96167be63c030eec0406f4d6",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/CurveRounding.lean",
+      "beforeSha": null,
+      "afterSha": "3a0adcb49e832707b7968a3cd2fc73d2992c738c2f0e2f0072fdab589206e394",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/CurveRounding.lean",
+      "sourceSha": "93c66e292d10d6b3b2d184ad7eeb074fd9ab7e5e05b4876d5564bff749003f0d",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/InscribedPolygon.lean",
+      "beforeSha": null,
+      "afterSha": "a6caf382b990796c109d8f38385800802e56ce38df79aed42952dcc100cfe00b",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/InscribedPolygon.lean",
+      "sourceSha": "ccf25876f1fcff03a5a8f0a8e90a7c79f8d9a0e8997dff215ab4600da18db3a5",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/PeriodicCurve.lean",
+      "beforeSha": null,
+      "afterSha": "1ada3a29019b3ca241964746f310fb705b72568dfbdca0d4619eba6a16f0fd5d",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/PeriodicCurve.lean",
+      "sourceSha": "88616bee3aa7939fd089c5552ca05f2428fe11ff5bc7be47a3ae9615b422cb06",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/PeriodicCurveIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "f31387e6a9c89d2e5d2584061b48939f98982198fb721380a35d916a8d3a84e6",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/PeriodicCurveIsotopy.lean",
+      "sourceSha": "65b27b157252998a9700ba9d6190390d18156e461ea7d2d91896e9850d391b2a",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/AddCircle/SmoothEmbedding.lean",
+      "beforeSha": null,
+      "afterSha": "a2b567e6c9dcfab914b3eca46b446c7fa45616b4285fbffdb4f63282714a7b79",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/AddCircle/SmoothEmbedding.lean",
+      "sourceSha": "9af0908fecb0883bb4045b72aa140ed5d8e390f0d9857cac5fb7858f4ba586b3",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/ImmersionCriterion.lean",
+      "beforeSha": null,
+      "afterSha": "07a61f2a9197ac5defacf6ee475e99051bc71f008a97027df574964b10db9140",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/ImmersionCriterion.lean",
+      "sourceSha": "14f69456240df769ff0be6ad9f162cc32373b45c3b61e5dbe8776f868d22312e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Inverse/LocalInverse.lean",
+      "beforeSha": "5a365a695e909d6d72138ec89d2368ffdf030496be03727e65995e27f0fc20a7",
+      "afterSha": "d7397d4431962f626ab28222ae8ccc378c787eb752ebc39d5259c58419b2c989",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/Inverse/LocalInverse.lean",
+      "sourceSha": "08f6d8a9a64990aa50022fa4bcb414ebdd83231c58ac9ec7eb415d4ecd1122bd",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/ImmersionDifferential.lean",
+      "beforeSha": "9ebb4124ed78143cb05b00583076929d313154bd007d29958eaef8c5489c6097",
+      "afterSha": "f02ce648cfe392d38596a49c8fd8d598639cba62c703d48940fd32ea988c37b3",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/ImmersionDifferential.lean",
+      "sourceSha": "ce197b63f80089fd3650d2337f9d1489f653001c03ca70cb602a176cb6e19834",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/AddCircle/Descent.lean",
+      "beforeSha": null,
+      "afterSha": "878b1369f698bf2b889c2bcac897ee6a897177d50d3f26fdd33145cdd42ee0d8",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/AddCircle/Descent.lean",
+      "sourceSha": "2b340bda24ac9ad023789b04d297b3c665b5a65ecaf10c416a8590f48eb52d18",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/AddCircle/ParameterDerivative.lean",
+      "beforeSha": null,
+      "afterSha": "34c7fa0af1d5cc22cb1a269a378ecf2c1f49b0a42fbff453bbdca4a3314b0be5",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/AddCircle/ParameterDerivative.lean",
+      "sourceSha": "e5abf6207b395a5ec7e4f1d45b4a735f9071e7274d71be02c2ce98b87ec617b6",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/AddCircle.lean",
+      "beforeSha": null,
+      "afterSha": "71b3541a69c28f9702b8d4501e22400b8696599a8ea8842e0ffb9988b37543a0",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/AddCircle.lean",
+      "sourceSha": "5e60f06328c233d564329577f2c4c8ecff04551ed41f28f8d7e1b12cb29eb4dd",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/SmoothModelTransport.lean",
+      "beforeSha": "52fd20ac88c7288b8fb58b359fe32ce1d973c38e1e32c7eb62f062fe3e5aaaea",
+      "afterSha": "7e0a5549047eb03161ede473f266b741798cae3fc709b0cf9a82e6101b26c599",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/SmoothModelTransport.lean",
+      "sourceSha": "a5e5bb928a98c80e6fc1de180e0661cc72e9691de003edf4e89658a0371340ea",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/ChartedSpaceHomeomorph.lean",
+      "beforeSha": null,
+      "afterSha": "017851f73b8329c18568a9ac2ded138d1913fa5ec16a099d27a6a96f369cdd0d",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/ChartedSpaceHomeomorph.lean",
+      "sourceSha": "4f57ec41085650c1b31eae2a40d074e2067304eba48fd3bcff5c83068b31cf19",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/AmbientIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "e512f5a6a8640ddc7bfe25f5c6b6025ac5964a10eb5ffc25a72251b9c9094a9d",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/AmbientIsotopy.lean",
+      "sourceSha": "31030234f2d3b9f5629fb42f3ff73f4bc2cc60a8b30d722d00fc97f4e59a2258",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/ParametricVelocity.lean",
+      "beforeSha": null,
+      "afterSha": "c0ea18edf1f4be3954ce5063f245ba0033d58fd025938c58d06d3af4eef1effb",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/ParametricVelocity.lean",
+      "sourceSha": "0edf44b09d3e2ec94f8e660c9e72f7561f25de1c642b16ac253bbb27f98bf13c",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/SmoothParametricGraph.lean",
+      "beforeSha": null,
+      "afterSha": "5aa721d727328e0f18d74a1d82ba9c806f5d624ea33896f059eae729c6868b5b",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/SmoothParametricGraph.lean",
+      "sourceSha": "d4a8d3d53bfaf98f1b923e98cd6e0948db691e37f90de0179087ffe39d6fa94f",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/FiniteDimension.lean",
+      "beforeSha": null,
+      "afterSha": "23da44205e0b52ed448fbc8790e3de3250a09cff2d6ddfb0326eaf6ea261beb6",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/FiniteDimension.lean",
+      "sourceSha": "a205519b4d948c69c94edec524a751b60162344d573e74fbd39d60560b7c250e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Diffeomorph.lean",
+      "beforeSha": "c244fcee9722137802c234438f1aeb8be3b2cc8914f80592b202a990daeffc9d",
+      "afterSha": "2ddaac07f7fd87285ed474c0ab3178404d8d9120127d316c82f7338284225c82",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/Diffeomorph.lean",
+      "sourceSha": "40264c078d02e265597476ecafb246c5bf8a166ed71e4866daa9c6016c5300f6",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/ParametricGraph.lean",
+      "beforeSha": null,
+      "afterSha": "27bce4d9cadffe01904c575b092eec4d186484fd623f3c8fb4059f480d155417",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/ParametricGraph.lean",
+      "sourceSha": "dc8a5e40be1d13720e9b56042a88508407533f90a7b3219a76410a8fd9876a1b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Retraction.lean",
+      "beforeSha": null,
+      "afterSha": "27de5ca9171e422c84a8bca244078ceacbf36e770e1da87f25ad126140604445",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/Retraction.lean",
+      "sourceSha": "21b2828362670ba5b9025c14b916039bb168f50f20de1526bd352fe6dbb15f6f",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/SliceChart.lean",
+      "beforeSha": null,
+      "afterSha": "0076d11adae4a9484bb0f030233f7210d8b20bb51e08330951d6b3ee56cfd90d",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/SliceChart.lean",
+      "sourceSha": "7222831a2438f495fa570f401a8284953f44d004a3ff67724d46092a998fcb0a",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Extension.lean",
+      "beforeSha": null,
+      "afterSha": "d46ef4eb327f03bd27760937f4b0833fbbac2a3d53dec8967f0af311a4de7dee",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/Extension.lean",
+      "sourceSha": "a665d53d1d0ce0878f812677dd12964716c231b57ffd17cd861e040751961dcd",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/HalfSpace.lean",
+      "beforeSha": null,
+      "afterSha": "479f6fa67c1eae7ead4e6502504b57aabe0009f9c5429238997ab8963f0d3459",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/HalfSpace.lean",
+      "sourceSha": "d5a627bfc8d79f0f1e45aed18ad770f7438ef89a1472a5f7e015cc3ed57ef5b2",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/BorelHalfLine/Parametric.lean",
+      "beforeSha": "734376184bc5b9e6af12212c30ccd8966dc8ee45d1b4e09a0a742ec6e28ccd44",
+      "afterSha": "f91b3f30ee0de5ff396bd933e652a4df7c097261d3c4fa08c05f6bf90b0018f0",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/BorelHalfLine/Parametric.lean",
+      "sourceSha": "a42a5967e3942ef20ad4c8d3f60845beec6c869aee806d9daba05391a98e77ec",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/JetGluing/ProductMatching.lean",
+      "beforeSha": "e99a7068cf5064c60ead766405ebc28189535bab81acdd423bceb191e17c35f7",
+      "afterSha": "67777d9d18149fc67d862d29fa41c62b2213bcb03596c3dc741efc20cfa6d298",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/JetGluing/ProductMatching.lean",
+      "sourceSha": "a41bc31ed700f104f9537fd35f81ebdc0262b8db032fcc54f0fad7d4fce90b08",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/IteratedDerivative/DirectionalJets.lean",
+      "beforeSha": "a4b30b96561f2d31546526d766522c9266bbbdfe4098bbda276efbc92ea9903d",
+      "afterSha": "2fe8a7a5041d0ac9e0252aac76ef8213780f8f54793ef282df66c3ad78fd28a7",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/IteratedDerivative/DirectionalJets.lean",
+      "sourceSha": "0730a585c40608c47c4a9e2ba0b57394b6ab10049b610b6ef8f7d6df6210b570",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/Closed.lean",
+      "beforeSha": null,
+      "afterSha": "186be18a7c7d4e24dfa687fa04a65809e74193b13252e6207a50b795984eaa19",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/Closed.lean",
+      "sourceSha": "8f1b3667618fb32078d2c9b688ad2554c815c5a4ce8b331fefaa41dbe868407c",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/LocalDiffeomorph.lean",
+      "beforeSha": "63a5346294c4ff9a6c200e6e4ed64f68cc2de58ddfc0a909cd277e19772325b1",
+      "afterSha": "0ae377a78630ac4f9ca582d40917305e298975da0a46aaddf3bafcf527c00806",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/LocalDiffeomorph.lean",
+      "sourceSha": "1cccfc6c582fe3c421c1c5180979cf06d728de905561ffed053ea8df851ffa38",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/MapConvergence/Derivative.lean",
+      "beforeSha": "189758156aa856475b657a54585abe9481994bf6f879a57ad711b05931b73906",
+      "afterSha": "b128236b5069a90224c313ce8fed5f3fd4a6a5d0d01bc38487df0592ec3c8c08",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/MapConvergence/Derivative.lean",
+      "sourceSha": "1bb53f1137fb80ce44af4cfa0f9ed5b0ed4fcfea49fbf73d0ddff098d5f9a076",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/IntervalExtension.lean",
+      "beforeSha": null,
+      "afterSha": "b2614fbc3b6edd81199536fba05add5d4b9e1aceb57cc4db1317c4c5cd97075e",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/IntervalExtension.lean",
+      "sourceSha": "64a8a4862b9d684adec6337c146e15d97556fc98995cea530905fef1da700bd7",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/ConvexOpen.lean",
+      "beforeSha": null,
+      "afterSha": "c5f17545e4ed9180d4771d40398255598dc73088ec7b6a1bc55f85ac8886fb02",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/ConvexOpen.lean",
+      "sourceSha": "30232608f3696cad5e8c5429a48630202a0c11391571a476596a5322973898d6",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/IntervalExtension.lean",
+      "beforeSha": null,
+      "afterSha": "8fff18fafde6cc481263176c041a1cafac8f622de2f009fbbcb110095dbb716d",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/IntervalExtension.lean",
+      "sourceSha": "1dbeb5ecc3f131573ebf3baa4dfe71d3e604f79d1a505bbfe35257c81bb9c56f",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/Quadrant.lean",
+      "beforeSha": null,
+      "afterSha": "40e11b7a06417c3182d0e77573cae7ecd371d33e48053ba9da5b603ef5541184",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/Quadrant.lean",
+      "sourceSha": "4323d1b16ff8a501955ca55cb0930928bce03190fd42a42b3cde94423ad415ae",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/JetGluing/Parametric.lean",
+      "beforeSha": "4c9df0faee9e84c89cc14dda8ca0379c7f71ad42e83c2d572bf0b8eeff22c604",
+      "afterSha": "20806456be36a3d342056b2d4e1c778f49ca1b197cd81b33d9eb3c6bbfb38df6",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/SmoothExtension/JetGluing/Parametric.lean",
+      "sourceSha": "877a3de010cb651691dde3b5293ba39a7329a2db6d05dde65b9539e196890bb4",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Stability.lean",
+      "beforeSha": null,
+      "afterSha": "e989cdee88f9cf617ddefd976897ad8132c56d097a559a707ef1906b74730459",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/Stability.lean",
+      "sourceSha": "2ff17684ca576a315c329757c4c3bc222b1ecf00966a32b4727270d4a385fcea",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/LipschitzFamily.lean",
+      "beforeSha": null,
+      "afterSha": "c725ab31a175c02e5bf9acaaf87f896c677f86328216fbdc00b34fedddaa834a",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/LipschitzFamily.lean",
+      "sourceSha": "36b8addaafd063debaa26ce9413db7ae6d3659df0a081ace07a2a323d6160748",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/VertexRoundingFrontier.lean",
+      "beforeSha": null,
+      "afterSha": "f01e4b661decc8a3b8bdd8e7e1170470c18e03d09535622273ef28916778363c",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/VertexRoundingFrontier.lean",
+      "sourceSha": "e95c6749a2819dc76dc26b104bef667b1c7b8b59ecb3be6b1fa583855f1404c3",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Planar/PolygonVertexArcs.lean",
+      "beforeSha": null,
+      "afterSha": "a03ebeac923563fe420091585da7d408e5e3efea6a4b603ffb87caeaab27a104",
+      "sourcePath": "DifferentialGeometry/Topology/Planar/PolygonVertexArcs.lean",
+      "sourceSha": "51b8435ac1f79db69b504da1617d7ad7c56985697ae85f8c16bed25f90362204",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/PlanarJordan/InnermostDisk.lean",
+      "beforeSha": null,
+      "afterSha": "ff583786755ab5da93803d4a2b189e1b2ea51b20ff4ee256309c9d487607f892",
+      "sourcePath": "DifferentialGeometry/Topology/PlanarJordan/InnermostDisk.lean",
+      "sourceSha": "2def64adfcf7d58dd76227e63b34383038e6249eaf4f45762995933c08568c35",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/PlanarJordan/AmbientExtension.lean",
+      "beforeSha": "14c9c8e096cfc838705d809648c454da7070a6bf94fc1e0de81b1b6ddf0fb648",
+      "afterSha": "554fdd4e28259abd927089936714cdf03c15c41f1df51315ea147bded2a7a797",
+      "sourcePath": "DifferentialGeometry/Topology/PlanarJordan/AmbientExtension.lean",
+      "sourceSha": "53698b95497e0edafa69d5ac067ca4da090712f580de4276252322f6134a6896",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/PlanarJordan/Innermost.lean",
+      "beforeSha": "766ef23f320b0ec94656d1770b5b0877a2ea8f3f71d922b7d7573d270b32a7ad",
+      "afterSha": "0b6a92c72ba96c516c7ce19ddc7aff5a4713c26a81bb67a9db09f6a572980d82",
+      "sourcePath": "DifferentialGeometry/Topology/PlanarJordan/Innermost.lean",
+      "sourceSha": "dea842cac0196070732fc2a28adb233b89fe8e1183dd1bfbc5b219278c92538f",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/PlanarJordan/BoundaryGermExtension.lean",
+      "beforeSha": null,
+      "afterSha": "6adc9bb9ac976fded26940acb85c1c8a06337bfb4ad580534489f84ab5743a4c",
+      "sourcePath": "DifferentialGeometry/Topology/PlanarJordan/BoundaryGermExtension.lean",
+      "sourceSha": "235d92f8e91e87aaa1cf58a5e59564e3fa1b88b9e0cb4d5a316c0d9f8a85fd80",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Circle/GermExtension.lean",
+      "beforeSha": null,
+      "afterSha": "c973c8ee117a4d80a8e92868a8935992a86cb78ca5cfccf5fb217e2fb7fd1938",
+      "sourcePath": "DifferentialGeometry/Topology/Circle/GermExtension.lean",
+      "sourceSha": "c9c39d063e509095acf74f1a05681caa798ef52c994ea1af0b0f0267d1b3d665",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Circle/Extension.lean",
+      "beforeSha": null,
+      "afterSha": "df096d6eb25bc308cc1c702a8645dbc05e6cc7e1f8c34eb0678bc15669b055e8",
+      "sourcePath": "DifferentialGeometry/Topology/Circle/Extension.lean",
+      "sourceSha": "689fded582a9c461773bfaa5c830c2a7f5faf21010545cb60a9b04bc48def413",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/AddCircle/Circle.lean",
+      "beforeSha": null,
+      "afterSha": "274c0ae389ba439e831e2d02bc2553366d4689339c899df9040aa59bc80ae160",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/AddCircle/Circle.lean",
+      "sourceSha": "0d7df300ba4ace66674b9eb385fb72a0bd992d90789827d53e02aa56aaab02b4",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/AddCircle/DiffeomorphLift.lean",
+      "beforeSha": null,
+      "afterSha": "a43622c7540e9704c5e6d03cb7f071fdb47e45001b88aa54d6e4d57d7fa617f1",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/AddCircle/DiffeomorphLift.lean",
+      "sourceSha": "0c81f51ac4fe4b10331620a7594ace88ef981ecf042232e543e9184fe8925616",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/LoopSpace/PeriodicDescent.lean",
+      "beforeSha": "db217595e852d65569dfd92db936725210139b35a56bba1685d4a0b3b897b839",
+      "afterSha": "91607f4b2d35726a508abcb9a8fe3c8130da284dfa2984f37a923c68a9628724",
+      "sourcePath": "DifferentialGeometry/Topology/LoopSpace/PeriodicDescent.lean",
+      "sourceSha": "c18a8fc7b913d3bdd147e04fcc2db06c0f41c70659130f0bb5b3a3244db3216b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/LoopSpace/Lipschitz.lean",
+      "beforeSha": "b4a5ff00a159d89724ca25245e71417e40f8faec9f5f9774ea479875d9a76fa0",
+      "afterSha": "1ef124146caf8842775c55c7949feaa119f108377432926078ce2b737cf09d58",
+      "sourcePath": "DifferentialGeometry/Topology/LoopSpace/Lipschitz.lean",
+      "sourceSha": "b99cf3b01dff504e639896f09611708877a2a53fad537d7c90812b17f9388650",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Sphere.lean",
+      "beforeSha": "93c50417ee86fce5f8f1af0b53abf63a828fff641e2f8e599563793ba4f54255",
+      "afterSha": "db17741fb2551696a26290e08abe8acd407df306020a4ec76f0f2aa247afb4da",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/Sphere.lean",
+      "sourceSha": "f0939f58e56deb84098560b9348b85ba89f952a71d7ca57e226dbd82ec331c86",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/LocalDiffeomorphImmersion.lean",
+      "beforeSha": null,
+      "afterSha": "3fa9392445b654fa44214ddade66579451d574e4a3862bb06dded3e599b991d3",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/LocalDiffeomorphImmersion.lean",
+      "sourceSha": "30b066b7e0e22c04a4564f3f173d65317d53af22774ea43b608c5477eb269c29",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/SmoothEmbeddingComposition.lean",
+      "beforeSha": null,
+      "afterSha": "83880a6315d5fcca18765ac878ccd4318a354fc0cd8cec5e807c8056b359e6c9",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/SmoothEmbeddingComposition.lean",
+      "sourceSha": "c590ab8c8f5297217486cbe5238ab6fe1826783d8fbd52b652a2576c5df93842",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/SmoothEmbeddingCompositionInterior.lean",
+      "beforeSha": null,
+      "afterSha": "2aa9b9f73f1ee1fb358bce02b58789c607816195e3d8d2113423c63238b41873",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/SmoothEmbeddingCompositionInterior.lean",
+      "sourceSha": "11fe81c8bf8f53a14749479762a56997468933238588b4ed11ac034406a7aa32",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Homeomorph/Ball.lean",
+      "beforeSha": null,
+      "afterSha": "cc17d133587d6ba5e25d7deb9153dca694f5f830c064ba8ed9b4c9cf9d16ef39",
+      "sourcePath": "DifferentialGeometry/Topology/Homeomorph/Ball.lean",
+      "sourceSha": "34916e35a362457bdd3ad71f6b5815e9fa236a39b7eeb0e33c03b2c6f4f27e70",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/SphereGerm.lean",
+      "beforeSha": null,
+      "afterSha": "a7d10c2219c899039bb491e2c9da039ad094d4fa4cbfd6bca3dc7f2784e76d2b",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/SphereGerm.lean",
+      "sourceSha": "876a013ec3001b9fd7e2b826fce84cdcd36f49eb5cd5e31da99b4f6127f435c1",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SphereDerivative.lean",
+      "beforeSha": null,
+      "afterSha": "df5cbb80607b0759f4d39cd2a3784eb8899c7f986b383a1261a3dae738967ebf",
+      "sourcePath": "DifferentialGeometry/Analysis/InnerProductSpace/SphereDerivative.lean",
+      "sourceSha": "0e979d1218852f6760fbfe91bde5251420081f15b5167afe2c914e44e484c69f",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/BallBoundary.lean",
+      "beforeSha": null,
+      "afterSha": "5da977b6bc89e1abfffadccfb02c4f18e15e2a6e9da33ff67bdf7cdace114d52",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/BallBoundary.lean",
+      "sourceSha": "745092daedb5cf484eae9456c9e6795e45901d945322ae8c95b7e82ec5745459",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/RelativeCollarIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "d9281ed35a16c0fd1d79a8700582c13759c34c8d7ebcfee7379fe5f5e2b9f403",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/RelativeCollarIsotopy.lean",
+      "sourceSha": "f0a318f1907905ad81a80f51fe4f63cddab6e6aec33c31ac7312d77ac54f31f9",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Derivative/Coordinates/JacobianSign.lean",
+      "beforeSha": "19d7b48cbe0d68676048d551e230077a3ccd8e508e495c8a44254f3aeb90ec0f",
+      "afterSha": "43330f9826aa741baf45e4ed8bcb45c944abe33de3369a707da3d01f9750b527",
+      "sourcePath": "DifferentialGeometry/Analysis/Calculus/Derivative/Coordinates/JacobianSign.lean",
+      "sourceSha": "763dd96c4f4629a1fa68d1c6ad043341a117e627be8badb281ad53b075a3d487",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/LocalDiffeomorph/Fiberwise.lean",
+      "beforeSha": null,
+      "afterSha": "514792df210f6de7fa5caff03562e3d5bcc2d11e70a21c65e69bd37950168eed",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/LocalDiffeomorph/Fiberwise.lean",
+      "sourceSha": "e9100beb399ee1332206a753c7fabde8a8b1730ac4a59f19e116bd9ee88e7ba1",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/LocalDiffeomorph/PartialDiffeomorph.lean",
+      "beforeSha": null,
+      "afterSha": "35bda71d5b006619059a9adbee7cb1f558394e366116fb1c2027a596cf9e8724",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/LocalDiffeomorph/PartialDiffeomorph.lean",
+      "sourceSha": "e2410e846bc5f1201b311d31e1b88067008dd50a76f222c50c535b2c07b5cd16",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/CompactLocalIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "b5d2562d258f3bc76bea6686ffa91c672997f1e68fc1b4b9846d801da2f16a43",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/CompactLocalIsotopy.lean",
+      "sourceSha": "14dbf3d68325f5af439ef2fd1e5e2e4545db9c56e469c2baab581e53f3370844",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Diffeomorph/LocalFlowExtension.lean",
+      "beforeSha": null,
+      "afterSha": "7151722330335344b588cb219ab4c5e63f853d6444cd31b8adb277efef89eff0",
+      "sourcePath": "DifferentialGeometry/Topology/Diffeomorph/LocalFlowExtension.lean",
+      "sourceSha": "8e880f045b4ca462155085c0f1deb084fa7beb178baa756f1416e86c7935f423",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/PartialChartSupportedExtension.lean",
+      "beforeSha": "bcfcb1ea3ffc29e0dfe75a030c0b8214776bdfad95beb2ca8729ebdf122ae44d",
+      "afterSha": "acd051d53c9e5fe3284761cc8e4c4edf5fbedd5a865703f4e6f453cb05bef7bc",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/PartialChartSupportedExtension.lean",
+      "sourceSha": "c363390db5a8f1801c7d4d29a62d7573d1e45cea5b3c08887ed858d43ecbe75e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/PartialDiffeomorph/SupportedExtension.lean",
+      "beforeSha": null,
+      "afterSha": "6f65bcba952826cdc14af40120eedc311360724fc156aa63d74abddbaf717ec1",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/PartialDiffeomorph/SupportedExtension.lean",
+      "sourceSha": "1c5a8dd6fb7aea2fbb33c101221f2da15722b8fd113e6f786f1bc9e03e3241b5",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/ChartSupportedExtension.lean",
+      "beforeSha": "129f9253e165614f24e2b84cbc355386d8382dae444f793b880e8f2982e3d99d",
+      "afterSha": "36a0b043c4359b43858ccbfcaf485b1c5c947f51c40650343dbcd5f11a307779",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/ChartSupportedExtension.lean",
+      "sourceSha": "5701532324f9c5a1d56a166f6dbcbeab43e91e6d1f20161ce014ed95d293cc7d",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/PartialDiffeomorphTrans.lean",
+      "beforeSha": null,
+      "afterSha": "8e0e9d772157a0ae909393243b48ab4650472b62c2eff9ca69c1d5386fd1d281",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/PartialDiffeomorphTrans.lean",
+      "sourceSha": "7d07ab7785fb30f32f7eb54f5c96a75558b8a6331fc4cc7630a5ce035cedf06e",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Tensor/LinearAlgebra/HyperplaneInterpolation.lean",
+      "beforeSha": null,
+      "afterSha": "17ccc02414c078947dafa0e62427b8743828415a9d0a3ad9e466b9d0e487f9c9",
+      "sourcePath": "DifferentialGeometry/Tensor/LinearAlgebra/HyperplaneInterpolation.lean",
+      "sourceSha": "bcb008486d71336745c28ffeb762e55c45c4840d53f40d5295e052de3079e662",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Homeomorph/LevelIsotopy.lean",
+      "beforeSha": null,
+      "afterSha": "a842e5ecd42f7d12659debeb191af5fa12e595448201c4cf19b4b9ad3710b423",
+      "sourcePath": "DifferentialGeometry/Topology/Homeomorph/LevelIsotopy.lean",
+      "sourceSha": "c641248e53b58f2eba67ac41dafd5488d9c08f20c4fb79c4f282a4d48a3dca94",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Factor.lean",
+      "beforeSha": null,
+      "afterSha": "a11f3da7d017bbb19aedd251c033e67b7567bac35fce1785636c5e264716afe7",
+      "sourcePath": "DifferentialGeometry/Topology/Embedding/Factor.lean",
+      "sourceSha": "220d5eb7d21a51c9202947ee99d040b4b556cbe26f256ec7424aa21919dc7d6c",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/ImmersionRange.lean",
+      "beforeSha": null,
+      "afterSha": "22530b9692840d7bcc34a9c3fb67f36b6b1673bf0bd4deeb0e15eab3893e6b8d",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/ImmersionRange.lean",
+      "sourceSha": "2ce413ce9917514c2fc1ec8f9e53f37e7982f0d79e72a96d8e147a61469434f7",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/Interval/Immersion.lean",
+      "beforeSha": null,
+      "afterSha": "bf70cf835b4a721449b10ddf196596639af46c5aa503edbf6583b1614b522bfe",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/Interval/Immersion.lean",
+      "sourceSha": "a0eb9c575ac6ed540a451ab6b0a068a5adbca5f3e4f290a0e213f19da5cf7b9b",
+      "kind": "lean"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/SmoothEmbeddingCompositionBoundary.lean",
+      "beforeSha": null,
+      "afterSha": "52f68ae283cd37801fc318907b0684e1358fde08cf1eec27a81b4e146f1d8176",
+      "sourcePath": "DifferentialGeometry/Topology/Manifold/SmoothEmbeddingCompositionBoundary.lean",
+      "sourceSha": "e7a9dc1071d6a4051986ca24e78d7c12103072771d4471d464eadc9b53760de5",
+      "kind": "lean"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/CROSSCUT_ADAPTATION.patch",
+      "beforeSha": null,
+      "afterSha": "26a2f2fe5ac5943872ddc363084098910ba2832e9a4e925b2f6ebbdb4bccc9c0",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/CROSSCUT_PROVENANCE.json",
+      "beforeSha": null,
+      "afterSha": "d1560bff82ce905276ca2390bfc5ed878e05d9dad978c6b6025f0cb26f68242f",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/CROSSCUT_UPSTREAM_SELECTED.lean.txt",
+      "beforeSha": null,
+      "afterSha": "1d47ca0fb78b37335531b8009f0471c92eef7ebd40c26a80debd9e00c0c578ba",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/DELETION_PROVENANCE.json",
+      "beforeSha": null,
+      "afterSha": "0d947cf2c359d35d9523616ed73545d5703e809e6b93da90e1ab2edc13fa9cf9",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/DELETION_RECOGNITION.patch",
+      "beforeSha": null,
+      "afterSha": "658619dbb1ae5aa7522980cec0dbcb7a8c6e44f25219b384f2e70c13bd810364",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/GEOMETRIC_FREE_EXISTENCE.json",
+      "beforeSha": null,
+      "afterSha": "df434dbc59dfe69f43faec0b5287ed58374315de42cb0aa3682a34af1a1c28e8",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/GEOMETRIC_FREE_SELECTION.json",
+      "beforeSha": null,
+      "afterSha": "622a8ff97680344e44a70c21ad4808f4e5b60fce3cf49677f35acd047b090aa9",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/INTEGRATION_54AD4D8.json",
+      "beforeSha": null,
+      "afterSha": "012ab38636a04ff802e5cbbf2f9b47e6b665453ddcb2ff58202ddfe9ee796de0",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/INTEGRATION_54AD4D8_COLLISIONS.json",
+      "beforeSha": null,
+      "afterSha": "5564dabdfa50fa34d96124776763c3c1c42800ab9f385c831ec23e66dd8d752f",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/MODIFICATIONS.md",
+      "beforeSha": null,
+      "afterSha": "cecce6a81ead36dd504dbd9413d6d4ac277c3faae649897431af52f3ffebcf09",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/ONE_EDGE_SELECTION.json",
+      "beforeSha": null,
+      "afterSha": "59ce2c1a4ee3d9f3c88b919d4e2af4df46fd3d70c1427bd611f0a43665d181df",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/PROVENANCE.json",
+      "beforeSha": null,
+      "afterSha": "20ac060f62c02b7e5c86904833884298c14f1993385150778bb69fdc1feadd58",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/SOURCE_54AD4D8_MODIFICATIONS.md",
+      "beforeSha": null,
+      "afterSha": "b648ee34517377c61109ed57ac6aa020261c181d886d58100a15731f6a0836c3",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/SOURCE_54AD4D8_PORTING.md",
+      "beforeSha": null,
+      "afterSha": "d874d8b1604de0a925774e59faf245d52c7e1f161cc6cf93e7e34ea88bc36b0e",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/TWO_EDGE_ADDITION.patch",
+      "beforeSha": null,
+      "afterSha": "f1beb54cda49d8b73b765a3defe3da89501c17d7f5485aef1c5cd86a07236bd2",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/UPSTREAM.patch",
+      "beforeSha": null,
+      "afterSha": "f7c18dfddf7f6b406914be6f0b83d18a547354faf0e851c709ab6457cb7c2a99",
+      "kind": "vendor-record"
+    },
+    {
+      "path": "External/ClassificationOfSurfaces/VENDOR.md",
+      "beforeSha": "1276ef972ca405a4333992c898a2ab97789ff800066fc006a53941e91d0c1387",
+      "afterSha": "a2d24c5f9fcb0673db7a764a294e52f187dfa05fb3e584db8cc05bbce58dcec9",
+      "kind": "vendor-record"
+    }
+  ]
+}
