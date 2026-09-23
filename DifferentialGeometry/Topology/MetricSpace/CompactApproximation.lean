@@ -73,4 +73,81 @@ theorem exists_isometry_of_compact_approximation
     f heps hdist p R hcover
   exact ⟨F, hF, hcoverF⟩
 
+variable {A B : Type*} [MetricSpace A] [CompactSpace A]
+  [MetricSpace B] [CompactSpace B]
+
+theorem exists_isometryEquiv_mapClusterPt_of_approx_relations
+    {ι : Type*} {l : Filter ι} [NeBot l]
+    (R : ι → Set (A × B)) (f : ι → A → B) (p : A) (q : B)
+    (leftError distortion rightError : ι → ℝ)
+    (hleftZero : Tendsto leftError l (𝓝 0))
+    (hdistZero : Tendsto distortion l (𝓝 0))
+    (hrightZero : Tendsto rightError l (𝓝 0))
+    (hbase : Tendsto (fun i => f i p) l (𝓝 q))
+    (hrelations : ∀ᶠ i in l,
+      (∀ x : A, ∃ a, (a, f i x) ∈ R i ∧ dist x a ≤ leftError i) ∧
+      (∀ y : B, ∃ a b, (a, b) ∈ R i ∧ dist y b ≤ rightError i) ∧
+      ∀ a b a' b', (a, b) ∈ R i → (a', b') ∈ R i →
+        |dist a a' - dist b b'| ≤ distortion i) :
+    ∃ e : A ≃ᵢ B, MapClusterPt (e : A → B) l f ∧ e p = q := by
+  classical
+  let eps : ι → ℝ := fun i =>
+    max (2 * leftError i + distortion i) (rightError i + (leftError i + distortion i))
+  have heps : Tendsto eps l (𝓝 0) := by
+    simpa only [eps, mul_zero, zero_add, max_self] using
+      ((tendsto_const_nhds.mul hleftZero).add hdistZero).max
+        (hrightZero.add (hleftZero.add hdistZero))
+  have hdist : ∀ᶠ i in l, ∀ x y,
+      |dist (f i x) (f i y) - dist x y| ≤ eps i := by
+    filter_upwards [hrelations] with i hi x y
+    obtain ⟨a, ha, hxa⟩ := hi.1 x
+    obtain ⟨b, hb, hyb⟩ := hi.1 y
+    have hxy := abs_le.mp (hi.2.2 a (f i x) b (f i y) ha hb)
+    have hupper := dist_triangle4 a x y b
+    have hlower := dist_triangle4 x a b y
+    rw [dist_comm a x] at hupper
+    rw [dist_comm b y] at hlower
+    have hxy' : |dist (f i x) (f i y) - dist x y| ≤
+        2 * leftError i + distortion i := by
+      apply abs_le.mpr
+      constructor <;> linarith only [hxy.1, hxy.2, hxa, hyb, hupper, hlower]
+    exact hxy'.trans (le_max_left _ _)
+  let Rdiam : ℝ := diam (univ : Set B) + 1
+  have hcover : ∀ᶠ i in l, ∀ y ∈ ball (f i p) Rdiam,
+      ∃ x, dist y (f i x) ≤ eps i := by
+    filter_upwards [hrelations] with i hi y _
+    obtain ⟨a, b, hab, hyb⟩ := hi.2.1 y
+    obtain ⟨a', ha', haa'⟩ := hi.1 a
+    have hba' := (abs_le.mp (hi.2.2 a b a' (f i a) hab ha')).1
+    have hba : dist b (f i a) ≤ leftError i + distortion i := by
+      linarith only [hba', haa']
+    refine ⟨a, ?_⟩
+    exact (dist_triangle y b (f i a)).trans
+      ((add_le_add hyb hba).trans (le_max_right _ _))
+  obtain ⟨F, hF, hcluster, hcoverF⟩ :=
+    exists_isometry_mapClusterPt_of_compact_approximation f heps hdist p Rdiam hcover
+  obtain ⟨U, hUl, hFU⟩ := mapClusterPt_iff_ultrafilter.mp hcluster
+  have hFp : Tendsto (fun i => f i p) U (𝓝 (F p)) :=
+    (continuous_apply p).tendsto F |>.comp hFU
+  have hqp : Tendsto (fun i => f i p) U (𝓝 q) := hbase.mono_left hUl
+  have hpq : F p = q := tendsto_nhds_unique hFp hqp
+  have hsurj : Function.Surjective F := by
+    intro y
+    have hy : dist y q < Rdiam := by
+      exact (dist_le_diam_of_mem isBounded_of_compactSpace (mem_univ _) (mem_univ _)).trans_lt
+        (lt_add_one _)
+    have hyball : y ∈ ball (F p) Rdiam := by
+      rw [hpq]
+      exact hy
+    exact hcoverF hyball
+  let e : A ≃ᵢ B := {
+    toEquiv := Equiv.ofBijective F ⟨hF.injective, hsurj⟩
+    isometry_toFun := hF
+  }
+  refine ⟨e, ?_, ?_⟩
+  · change MapClusterPt F l f
+    exact hcluster
+  · exact hpq
+
+
 end Metric

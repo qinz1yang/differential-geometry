@@ -13563,3 +13563,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Neck.QuarterBandPacking
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapReset
 import DifferentialGeometry.Geometry.Neck.SpatialBandReturn
+import DifferentialGeometry.Topology.Attachment.TwoEndedCylinder.ClosedCover
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylinder
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylinderCover
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylinderQuotient
