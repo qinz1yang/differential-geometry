@@ -1064,3 +1064,73 @@ them there.
 - Lesson: `isCombinatorialManifold_one_iff` is stated under `open Classical`, so its `{v, w}` uses
   `Classical.propDecidable` while `E3` has `WithLp.instDecidableEq`; bridge with
   `by convert h` (instance subsingleton), not by restating.
+
+# Batch 7 (non-compact P6 face disks)
+
+## `exists_section34FaceDisks` (P6, page 244, `Skeleton/Section34Terminal.lean:158`) — CLOSED (5 new modules; statement byte-identical)
+
+- Route. Per triangle `s`: a tetrahedron `t ⊇ s` (cut-frame last clause) and the chart `c` of `H t`
+  (carrier control); `Section34Exterior` clause 1 puts `fbl s` and the face torus `T_s` in
+  `interior (H t) ⊆ c.source`. In the chart `c ∂C_s` is a PL 2-sphere, the `c J_i` are disjoint PL
+  circles on it (`IsPolyhedralSphere` read through `c.symm` as a PL embedding of `c '' fbl s`);
+  innermost disk `D'` (`IsPLSphere.exists_innermost_disk`), pulled back to a 2-cell `D` in `M₂`.
+  `D \ J_k` is connected and misses `Fr U`, so it lies in `U` or misses it. If in `U`, `D ⊆ T_s`;
+  pick an incident vertex `a`, its two incident edges `e₀, e₁`, `p_i = J_k ∩ ∂E_{e_i}`: `J_k ∩ V_a` is
+  an arc and `J_k ∩ ⋃_{u ≠ a} V_u` is connected, both through `p₀, p₁`, and `V_a` meets the other
+  incident balls only in the disjoint `E_{e₀}, E_{e₁}`. `IsPLBall.not_subset_union_of_joined_twice`
+  (Urysohn map to `ℝ/ℤ`, lift over the ball) forbids `D ⊆ V_a ∪ ⋃_{u ≠ a} V_u`. No `H₁`.
+- Interface finding (for the audit of digest Q, Terminal docstring lines 84–92): NOT an interface
+  gap. Q's candidates are derived: "at least three seams" and the cyclic structure from the cut
+  frame (`𝒦'` restricted to the rim of `s` is a combinatorial circle:
+  `exists_section34EdgeIndex_pair_of_incident`, `exists_section34EdgeIndex_incident_not_subset`);
+  "single crossing ⇒ essential" from the winding lemma; transversality is never needed. The two
+  `→ False` clauses of `Section34NormalPlus` (Operations 1, 2) are NOT used by P6, nor are the
+  clauses `tgtV`-cells, `tgtE ⊆ tgtVBd`, `tgtV ∩ tgtV' ⊆ ⋃ tgtE`, `h '' Q_t ⊆ H t`. The Normalization
+  bridge leaf `section34TraceCircle_homologyMap_ne_zero` is not needed for P6 on this route.
+- Files (`DifferentialGeometry/Topology/PiecewiseLinear/`), lines, SHA-256:
+  - `BallWindingObstruction.lean` 118
+    `b18d1b328172a44cc01715f7697546339919ec596587cb56012f0a2b3becdd36`
+  - `Section34IncidentEdges.lean` 206
+    `3d1b79259bf7e9cc04124e3e177632e43ca6a6d72b552116de0e2a6e79a77f24`
+  - `Section34TargetCells.lean` 274
+    `a658d6d39ccd1efa5eca13bc85ffe30553dc810434219f83eeba923db70d0831`
+  - `Section34TraceArcs.lean` 365
+    `e48a442cc44e2f5153e1107376842292fccca76e4d2dd2ab8d99301c9d3ca0c5`
+  - `Section34FaceDisks.lean` 400
+    `7a6bb9c6d4245cd71d5b650273eaa20128654d5fae4539cf59e4683ebf0c0ef3`
+- Checker, each of the five (in the order above, each after `prepare-private-root.py`):
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\<File>.lean with no diagnostics; shared outputs unchanged.`
+  Receipts `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\<File>.json`
+  (exitCode 0, diagnosticLines 0, sourceSha256 = the hashes above).
+- Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch7FaceDisks.lean` (five
+  modules, axioms ⊆ {propext, Classical.choice, Quot.sound}, thirteen environment linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch7FaceDisks.lean with no diagnostics; shared outputs unchanged.`
+  `AuditBatch7FaceDisksPrint.lean` (`#print axioms` of all 20 public theorems): each
+  `depends on axioms: [propext, Classical.choice, Quot.sound]`.
+- Aggregate import lines:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.BallWindingObstruction`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentEdges`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetCells`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceArcs`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDisks`
+- Statement identity: the text from `theorem exists_section34FaceDisks` to `:= by` and the whole
+  `section Diagram` variable block compared by script with `Skeleton/Section34Terminal.lean`:
+  identical; same namespace, `universe u`, `open Set Topology`. The assembly call
+  `exists_section34FaceDisks hdata` (skeleton line 220) is unchanged.
+- New public names (checked unique tree-wide; the leaf name collides only with the skeleton leaf
+  it replaces): `IsPreconnected.eq_of_forall_eq_intCast`, `IsPLBall.not_subset_union_of_joined_twice`,
+  `eq_or_eq_of_section34VertexIndex_subset`, `exists_section34EdgeIndex_pair_of_incident`,
+  `exists_section34EdgeIndex_incident_not_subset`, `IsPLCellOn.image_chart_symm`,
+  `IsPolyhedralSphere.isPLSphere_image_of_mem_maximalAtlas`,
+  `OpenPartialHomeomorph.mem_interior_of_mem_interior_image`, `mem_section34FaceTorus_iff`,
+  `isClosed_section34FaceTorus`, and in `Section34CutFrame`: `splitDisk_subset_cutNeighborhood`,
+  `isPLCellOn_vertexBallImage`, `isPLCellOn_splitDiskImage`, `splitDiskImage_eq_inter`,
+  `subset_of_mem_splitDiskImage`, `exists_mem_splitDiskImage_of_ne`, `disjoint_splitDiskImage`,
+  `splitDiskImage_sdiff_subset_interior`, `isPLCellOn_inter_vertexBallImage_of_chart`; plus the leaf.
+  No `structure`, no `Prop`-valued `def`. Reused: `finite_setOf_section34Incident_graphIndex`
+  (committed `Section34CompressionTools`), the compact batch's `CircleClosedCover`,
+  `BallUnionMeetingDisk`, `SphereInnermostDisk`, and Mathlib `AddCircle.isCoveringMap_coe`.
+- Lessons: `(c s).symm_image_image_of_subset_source` is the `PartialEquiv` lemma, so `rw` with it
+  fails on `OpenPartialHomeomorph` coercions; restate it once with a type ascription and rewrite
+  with that. Generalized field notation does not find namespaced `IsPreconnected.*` lemmas; call
+  them by name.

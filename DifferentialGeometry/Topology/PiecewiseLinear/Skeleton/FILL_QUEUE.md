@@ -329,3 +329,76 @@ extension / Lemma 10 — its in-flight `HoledSphere*`, `BoundaryMatchMobius`, `S
 files are not yours; c: smoothing; d: C1 branch tube; e: compact face disks). If a sub-leaf turns
 out to need a producer that the frozen CGN inputs cannot supply, stop on it and report the exact
 clause; that is a lead/owner decision.
+
+## Codex item 8 — Section 33 Lemma 10 (lead-written 2026-09-23 14:45; the lane handed to Codex for usage balance)
+
+The lease-b worker closed Lemma 13 (`Section33BoundaryMatch`) and the page-238 extension
+(`Section33Extension`) and was interrupted before Lemma 10; by the owner's rule the freed lane's
+next target goes to Codex instead of an Opus worker. Do item 7 (the edge matching) and this item
+in whichever order the owner tells you; log both in `FILL_LOG.md`.
+
+Target: the frozen leaf `section33_fundamentalGroup_map_bijective` (`Skeleton/Section33Approximation.lean`
+line 248, the last `sorry` of that file once Lemma 13 and the extension are wired): with
+`h264 : Moise264`, the handle decomposition `hd`, Lemmas 2–7 (`h2 h34 h56 h7`), no loop theorem disk
+(`hnoLTD`) and the product structure `hprod : Nonempty ((frontier N × Ioo 0 1) ≃ₜ (interior N' \ h '' K.space))`,
+the inclusion `frontier XK.space → N' \ h '' K.space` induces a bijection of fundamental groups at
+every base point. Restate byte-identically (same name, binders; the skeleton's `section Leaves`
+variable block) in a new real module. Read the skeleton docstring's paragraph on Lemma 10 (the
+collar of `Bd N'` in `N'` answers AA question 5; the compact support of a null-homotopy must be
+enclosed in a finite PL 3-manifold inside `Int N' − K'` before `Moise264` is applied; the injectivity
+uses the extended loop theorem `h264` together with `hnoLTD`: a loop of `Bd X` null-homotopic in
+`N' − K'` bounds an embedded disk in `Int N' − K'` with boundary on `Bd X`, which `hnoLTD` forbids unless
+the loop is trivial in `Bd X`); read the exact statements of `Moise264` (`MoiseChain.lean`) and
+`IsLoopTheoremDisk` (`LoopTheoremDiskVocabulary`) before designing. Surjectivity: from `hprod` and
+Lemmas 2–7 (every loop of `N' − K'` pushes onto `Bd X`). Bricks in the tree: `HandlePieceEulerChar`
+(`exists_linearMap_fieldHurewiczOne`, `finrank_fieldHomology_one_le_of_fundamentalGroup_map_bijective`),
+`HasSinglePolygonTraces`, `HasNoHandleLoopTheoremDisk`, `NotLoopTheoremDisk` (Lemma 9's level-set and
+prism tools), `FundamentalGroup.map`, `CarriesFundamentalGroupOnto`.
+
+Rules unchanged: own lease, new files only, no git writes, host guard before every compile, do not
+touch the Opus targets (a: P4 compression case (b); c: smoothing; d: C1 branch tube surface traces;
+e: compact source-face order and target recognition). Log with the checker line, SHA-256 and the
+sub-leaf list; if a sub-leaf needs a producer that the frozen inputs cannot supply, stop on it and
+report the exact clause.
+
+## Codex item 8 — the C1 surface trace on the derived cells (lead-written 2026-09-23 12:20; second Codex lane on lease d)
+
+Lease for this lane: token `claude-agent-d-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`, valid until 2026-09-24 04:17 UTC (the
+owner extends it with the usual one-liner if needed). Same rules as item 7: new files only, no git
+writes, no edit of any frozen statement, host guard before every compile, log to `FILL_LOG.md`.
+
+Target: the last open leaf of the closed-branch one-circle case, `exists_isSourceTrackedBranchTube`
+(`Skeleton/ClosedBranchCaseOne.lean` line 168; with it `NormalSingularCellData.not_branchPreimage_eq_of_isOrientable`
+and A2's leaf of the same name become real theorems and the loop-theorem side closes). The lease-d
+Opus worker reduced it this morning to ONE input (read `Skeleton/OPUS_FILL_LOG_D.md` from
+`# Batch 9 (branch tube, endpoint interface)`, the subsection "STUCK (reduced to the surface trace
+on the derived cells)"): the real modules `LoopTheorem/ClosedBranchTube{Model,Sectors,Edges,
+SectorDisks,Crosscuts,CapFix,MarkedCell,Chain,SquareLoop,Realisation,Cells,Assembly,FaceChain,
+DerivedCells}.lean` (accepted) prove `exists_isSourceTrackedBranchTube_of_markedCells` (the leaf from
+a finite subdivision `R`, a cyclic chain of derived cells with marked-cell data, and the rays through
+the cut) and `exists_derivedCellChain` (every input of the reduction except the surface trace).
+
+What is left, exactly as the log states it: in the leaf's context take `Γ = ι '' branchCarrier c`,
+`F = ι '' (D '' D.domain)`, `α ∈ J`, `y₀ = ι (D α)`, a finite subdivision `R` of `L` in which `Γ`,
+`F`, `{y₀}` (and any auxiliary polyhedra) are subcomplexes, `Γc = restrict R Γ`, `s₀ = {y₀}`, and
+the data of `exists_derivedCellChain`; produce `T : ℕ → Fin 4 → Set E`, `γ : ℕ → Fin 4 → ℝ → E`,
+`v : Fin 4 → ℝ` with `IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)`, `γ k i 0 = y₀ k`,
+`γ k i 1 = y₁ k`, `T k i ⊆ (K k).space`, `T k i ∩ T k j = {y₀ k, y₁ k}` for `i ≠ j`, the separation
+`hsep`, the cap crossings `q₀ k '' ∂ ∩ T k i = {γ k i (1/4)}`, `q₁ k '' ∂ ∩ T k i = {γ k i (3/4)}`,
+the consecutive and closing (`fourSpokeFlipPerm`) arm and point identities, and at the first cell
+`γ 0 i (1/2) = ι (D (ρ (α i, v i)))` with `α 0 = α 2 = α`, `α 1 = α 3 = τ α`, signs `+,+,−,−`.
+Mathematically `T k i` is the trace on the link sphere `Sₖ` of the quarter of `F` on sheet/side `i`.
+
+Suggested route (the worker's): PL straightening charts at the points of `Γ`
+(`exists_straighteningChart_of_notMem_boundary`), finitely many by compactness; add the quarter
+polyhedra `ψ (half-plane ∩ box)` and the four ray segments to the subdivision, mesh below a
+Lebesgue number so each cell lies in one chart; then `T k i` is the upper link of the boundary
+vertex `ŝₖ` in the PL 2-ball complex of a quarter (`isPLBall_upperLink_of_mem_boundaryComplex`,
+`image_stdSimplexBoundary_eq_boundaryComplex`), `hsep` is the sign of one chart coordinate, the cap
+crossings are links of boundary edges, and the labels come from the source collar (a connected
+quarter minus `Γ` lies in one of the four collar pieces). Estimate 2000–3000 lines. Deliver the
+producer as real modules, then the leaf itself as a real module restating
+`exists_isSourceTrackedBranchTube` byte-identically and calling the accepted reduction. If a
+clause of the marked-cell data cannot be produced from the leaf's hypotheses, stop on it and report
+the exact clause (lead/owner decision); do not touch `LoopTheorem/ClosedBranchCaseOneTransport.lean`.

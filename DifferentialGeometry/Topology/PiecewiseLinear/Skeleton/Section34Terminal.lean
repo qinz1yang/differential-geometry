@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDisks
 
 /-!
 # Sorry-first skeleton of the terminal half of Section 34
@@ -113,6 +114,19 @@ Proved here, not a leaf: the packaging of the eight kinds into the existential o
 the `ULift` of the label type and the carrier `fun l => H (section34LabelSimplex cr (par l))`,
 whose local finiteness comes from the carrier control together with the finite fibres of `cr`
 and of the parent map.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit; statement byte-identical): `exists_section34FaceDisks` (P6, module
+`Section34FaceDisks` over `BallWindingObstruction`, `Section34IncidentEdges`,
+`Section34TargetCells`, `Section34TraceArcs`).  The proof uses neither `→ False` clause of
+`Section34NormalPlus` and no
+`H₁`: the "at least three seams" and the cyclic order come from the cut frame (`𝒦'` restricted to
+the rim of `s` is a combinatorial circle), "single crossing ⇒ essential" is the winding lemma (a PL
+ball cannot contain two connected pieces of `V` and `T` running from `E₀` to `E₁` when
+`V ∩ T ⊆ E₀ ∪ E₁`, by a lift to `ℝ/ℤ`), and transversality is never needed; so the audit remark
+of digest Q that P6 is "true but hollow" is withdrawn.  `Section34TargetCells` gives the
+non-compact target-cell facts (the open splitting disk lies in the interior of its two end balls,
+read in a chart) for P7 and P8.
 -/
 
 open Set Topology
@@ -153,15 +167,6 @@ theorem exists_section34NormalFamily [Nonempty M₁] [T2Space M₁] [SecondCount
       (tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
       (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
       Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd fbl fblBd := by
-  sorry
-
-theorem exists_section34FaceDisks
-    (hdata : Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd
-      fbl fblBd) :
-    ∃ (tgtD tgtDBd : Section34SimplexIndex 𝒦 3 → Set M₂)
-      (tgtA tgtABd : Section34ArcIndex 𝒦 𝒦' → Set M₂)
-      (tgtP : Section34MarkIndex 𝒦 𝒦' → Set M₂),
-      Section34FaceDiskFamily 𝒦 𝒦' tgtV tgtE tgtEBd fblBd tgtD tgtDBd tgtA tgtABd tgtP := by
   sorry
 
 theorem exists_section34ResidualBalls
