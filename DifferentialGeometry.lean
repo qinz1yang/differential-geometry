@@ -13404,3 +13404,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.LocalDistanceCompa
 import DifferentialGeometry.Geometry.Metric.LocalPullDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.LocalPullDistanceComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckShi
+import DifferentialGeometry.Topology.LocallyFinite.CompactEscape
+import DifferentialGeometry.Topology.Manifold.ProductChartProper
+import DifferentialGeometry.Topology.ProperMap.HalfCylinder
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.InfiniteSlabs
+import DifferentialGeometry.Topology.Manifold.InfiniteSlabProduct
+import DifferentialGeometry.Geometry.Neck.SpatialBandEscape
+import DifferentialGeometry.Topology.Compactness.SublevelEscape
+import DifferentialGeometry.Geometry.Neck.SpatialScalarEscape
+import DifferentialGeometry.Geometry.Neck.ProperSlabEnd
