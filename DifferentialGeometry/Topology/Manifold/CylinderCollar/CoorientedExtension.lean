@@ -60,4 +60,57 @@ theorem exists_signed_supported_collar_extension
   rw [zero_add] at hh
   exact ⟨hh.1.2, hh.2⟩
 
+theorem exists_signed_supported_compact_collar_extension
+    (A : PartialDiffeomorph SphereCylinderModel SphereCylinderModel SphereCylinder SphereCylinder ∞)
+    (η : S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2) (hη : sphereDiffeomorphDegree η = 1)
+    {r R l u : ℝ} (hr : 0 < r) (hrR : r < R) (hlR : l < -R) (hRu : R < u)
+    (hsource : univ ×ˢ Icc (-R) R ⊆ A.source)
+    (hzero : ∀ p : S2, A (p,0) = (η p,0))
+    (himage : A '' (univ ×ˢ Icc (-R) R) ⊆ univ ×ˢ Ioo l u) :
+    ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧
+      ∃ F : SphereCylinder ≃ₘ⟮SphereCylinderModel, SphereCylinderModel⟯ SphereCylinder,
+        (∀ q : SphereCylinder, |q.2| ≤ r → F q = A (q.1,σ * q.2)) ∧
+        (∀ p : S2, F (p,0) = (η p,0)) ∧
+        ∃ K : Set SphereCylinder, IsCompact K ∧ K ⊆ univ ×ˢ Ioo l u ∧
+          EqOn F id Kᶜ ∧ EqOn F.symm id Kᶜ := by
+  have hR : 0 < R := hr.trans hrR
+  have hz (p : S2) : (p,(0 : ℝ)) ∈ A.source :=
+    hsource ⟨mem_univ _,by constructor <;> linarith⟩
+  obtain ⟨σ,hσ,ε,hε,G,hG,hGzero,K₀,hK₀,hK₀band,hGfix,hGfixi⟩ :=
+    exists_signed_supported_collar_extension A η hη hz hzero l u (by linarith) (by linarith)
+  have hσsq : σ ^ 2 = 1 := by rcases hσ with h | h <;> rw [h] <;> norm_num
+  let D := DifferentialGeometry.Geometry.Metric.cylinderAxialDiffeomorph (I := 𝓡 2) (M := S2) 0 σ hσsq
+  let B := D.toPartialDiffeomorph.trans A
+  have hDq (q : SphereCylinder) : D q = (q.1,σ * q.2) := by
+    change (q.1,0 + σ * q.2) = _
+    rw [zero_add]
+  have hDband : MapsTo D (univ ×ˢ Icc (-R) R) (univ ×ˢ Icc (-R) R) := by
+    intro q hq
+    rw [hDq]
+    refine ⟨mem_univ _,?_⟩
+    rcases hσ with h | h
+    · simpa only [h,one_mul] using hq.2
+    · rw [h,neg_one_mul]
+      exact ⟨neg_le_neg hq.2.2,by simpa only [neg_neg] using neg_le_neg hq.2.1⟩
+  have hBs : univ ×ˢ Icc (-R) R ⊆ B.source :=
+    fun q hq => ⟨mem_univ _,hsource (hDband hq)⟩
+  have hBi : B '' (univ ×ˢ Icc (-R) R) ⊆ univ ×ˢ Ioo l u := by
+    rintro q ⟨z,hz,rfl⟩
+    exact himage ⟨D z,hDband hz,rfl⟩
+  have hGB (q : SphereCylinder) (hq : |q.2| < ε) : G q = B q := by
+    change G q = A (D q)
+    rw [hDq]
+    exact (hG q hq.le).2
+  obtain ⟨F,hF,K,hK,hKU,hfix,hfixi⟩ :=
+    exists_supported_diffeomorph_eq_on_compact_cylinder_collar_of_germ B hr hrR hε hBs G hGB
+      (univ ×ˢ Ioo l u) (fun q hq => ⟨mem_univ _,hlR.trans_le hq.2.1,hq.2.2.trans_lt hRu⟩)
+      hBi K₀ hK₀ hK₀band hGfix hGfixi
+  have hFexact (q : SphereCylinder) (hq : |q.2| ≤ r) : F q = A (q.1,σ * q.2) := by
+    rw [hF q hq]
+    exact congrArg A (hDq q)
+  refine ⟨σ,hσ,F,hFexact,?_,K,hK,hKU,hfix,hfixi⟩
+  intro p
+  rw [hFexact (p,0) (by simpa using hr.le),mul_zero,hzero]
+
+
 end DifferentialGeometry.Topology.Manifold

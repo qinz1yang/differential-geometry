@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.RecenteringChart
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import Mathlib.Topology.Separation.Hausdorff
 
 set_option autoImplicit false
@@ -147,6 +148,14 @@ def neckAmbientMap (U : Opens M) {g : SmoothRiemannianMetric I U} {x₀ : U} {k 
 theorem isOpenEmbedding_neckAmbientMap (U : Opens M) {g : SmoothRiemannianMetric I U} {x₀ : U} {k : ℕ}
     (d : normalizedDatum g x₀ δ k) : _root_.Topology.IsOpenEmbedding (neckAmbientMap U d) :=
   U.isOpen.isOpenEmbedding_subtypeVal.comp d.isOpenEmbedding_map
+
+theorem isLocalDiffeomorph_neckAmbientMap (U : Opens M) {g : SmoothRiemannianMetric I U}
+    {x₀ : U} {δ : ℝ} {k : ℕ} (d : normalizedDatum g x₀ δ k) :
+    IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) I ∞ (neckAmbientMap U d) := by
+  have hd : IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) I ∞ d.map :=
+    DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv
+      d.map d.smooth d.immersion (by rw [show Module.finrank ℝ E = 3 from Fact.out]; simp)
+  exact DifferentialGeometry.isLocalDiffeomorph_comp (DifferentialGeometry.isLocalDiffeomorph_subtype_val U) hd
 
 theorem range_neckAmbientMap_subset (U : Opens M) {g : SmoothRiemannianMetric I U} {x₀ : U} {k : ℕ}
     (d : normalizedDatum g x₀ δ k) : range (neckAmbientMap U d) ⊆ U := by

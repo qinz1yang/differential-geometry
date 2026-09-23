@@ -219,3 +219,44 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 
 end
+
+section
+noncomputable section
+open DifferentialGeometry.Topology.Manifold
+open scoped Manifold ContDiff
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+def OrientedThreeStage.smoothOrientation (P : OrientedThreeStage.{u}) :
+    SmoothOrientation ThreeModel P.Carrier :=
+  smoothOrientationOfManifoldOrientation ThreeModel
+    (cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel P.Carrier n)
+      finrank_threeSpace_eq_three.symm) P.toClosedOrientedManifold.orientation)
+
+theorem OrientedThreeStage.ofSmoothOrientation_smoothOrientation (P : OrientedThreeStage.{u}) :
+    OrientedThreeStage.ofSmoothOrientation P.Carrier P.smoothOrientation = P := by
+  have ho : TangentOrientationSection.ofSmoothOrientation P.smoothOrientation = P.orientation := by
+    have heq : (TangentOrientationSection.ofSmoothOrientation P.smoothOrientation).orientation =
+        P.orientation.orientation := by
+      funext x
+      rw [TangentOrientationSection.ofSmoothOrientation_apply]
+      change Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three)
+        ((cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel P.Carrier n)
+          finrank_threeSpace_eq_three.symm) P.toClosedOrientedManifold.orientation).orientation x) = _
+      dsimp only [OrientedThreeStage.toClosedOrientedManifold]
+      rw [manifoldOrientation_cast_orientation (h := finrank_threeSpace_eq_three.symm)]
+      exact (Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three)).apply_symm_apply
+        (P.orientation.orientation x)
+    cases ha : TangentOrientationSection.ofSmoothOrientation P.smoothOrientation with
+    | mk oa hlocalA =>
+      cases hb : P.orientation with
+      | mk ob hlocalB =>
+        simp only [ha, hb] at heq
+        cases heq
+        rfl
+  exact congrArg (fun orientation : TangentOrientationSection P.Carrier =>
+    { P with orientation := orientation }) ho
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+end
+
+end
