@@ -585,3 +585,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   signatures in the answer's section 3 (two NEW_THEORY: relative arc straightening L2, centre-preserving untwisting L4);
   routes (A), (B) and the radial cone refuted with fixtures. Recorded in B1.b.8; Codex item 14 continues on (C).
   Consult BV (sub-leaf 5 of the compact trace, written with the item-15 lane) is out.
+* 18:10 (09-24) - BV answered (external): compact trace sub-leaf 5 closable from the existing inputs; two bridge
+  signatures and the side-selected descent (SphereSchoenflies obstacle disk) recorded in B1.b.8; relayed to item 15.
