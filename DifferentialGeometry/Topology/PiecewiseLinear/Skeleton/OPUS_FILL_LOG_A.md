@@ -838,3 +838,165 @@ statement is reduced to making the cells satisfy fields 5-9 without leaving `Wn 
    trace, from `exists_isOpen_homotopic_retraction_of_faces_subset` applied to a subdivision of
    the moved `K` in which `K ∩ L` is a subcomplex (faces inside `c '' T_s` form `A`, faces in
    `L` form `B`), transported by the chart.
+
+# Batch 6 (P3 assembly)
+
+## P3 obligation 2 — CLOSED (no new declaration)
+
+A finite combinatorial triangulation of a PL `2`-sphere `S` in a finite-dimensional space is the
+composite of two accepted lemmas: `hS.isPolyhedron.exists_simplicialComplex` gives `K` with
+`K.faces.Finite` and `K.space = S`, and `IsPLSphere.isCombinatorialManifold (n := 1)` makes it a
+combinatorial `2`-manifold.  To avoid a thin wrapper it is used inline in obligation 3's theorem
+(first four lines of its proof).  For P3 the sphere is the chart image of `fblBd s`; its PL
+sphere property comes from the chart image lemma of obligation 1.
+
+## P3 obligation 3 — CLOSED at chart level (`ChartBallGeneralPosition`); the transfer to `M₂` by `.congr` is part of the assembly
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/ChartBallGeneralPosition.lean` | 169 | `c5e0293ecb837a6fa6fc4c1b2bcb59187c900ac9c4db6e15fbbac4e67ff7a49e` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.ChartBallGeneralPosition
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartBallGeneralPosition.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:52Z)
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube13.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:53:32Z)
+
+Public names (grepped, no clash): `subsingleton_convexHull_inter_convexHull_of_sup_eq_top`,
+`exists_isPLBall_transverse_of_isPLBall`.
+
+- `exists_isPLBall_transverse_of_isPLBall` (in `EuclideanSpace ℝ (Fin 3)`): a PL `3`-ball `P`,
+  compact `A ⊆ interior P`, open `U ⊇ P`, a finite combinatorial surface `L` and a subcomplex `C`
+  of dimension `≤ 1` through interior edges give a PL ball `P'` with `A ⊆ interior P'`,
+  `P' ⊆ U`, `HasPLCrossingAt (frontier P') L.space x` at every common point (field 5),
+  `HasPLCurveCrossingOnAt L.space (frontier P' ∩ L.space) C.space x` at every point of `C`
+  (field 6), `(frontier P' ∩ C.space).Finite` (field 8), and finite `M ⊇ N` with
+  `M.space = frontier P'`, `N.space = frontier P' ∩ L.space` and every open face of `M` outside
+  `N` disjoint from `L.space`.  The trace is thus a finite union of convex sets (field 9: finitely
+  many components), and `(M, N)` is the input of `exists_isOpen_homotopic_retraction_of_faces_subset`
+  for obligation 4 step 2.  Route: brick 2's `exists_small_homeomorph_transverse_relative` with
+  `B = ⊥` and a move smaller than the thickening margins of `P ⊆ U` and `A ⊆ interior P` (the
+  same margin argument as `exists_generalPosition_solidTorus_relative`); crossings by
+  `hasPLCrossingAt_of_transverse_faces` and `hasPLCurveCrossingOnAt_of_transverse_faces`;
+  finiteness because a transverse triangle and edge of `ℝ³` meet in at most one point
+  (`subsingleton_convexHull_inter_convexHull_of_sup_eq_top`, dimension count); `M` from
+  `exists_isSubdivision_subcomplexes` with the polyhedron `frontier P' ∩ L.space`.
+- Decidability note: the statement is over `EuclideanSpace ℝ (Fin 3)`, so `boundaryComplex` in
+  `hCB` uses its `DecidableEq` instance, while brick 2 and input (3) (stated for general `E` under
+  `open Classical`) use the classical one; the two are bridged by `convert` (subsingleton
+  instances), as done inside the proof.
+
+## P3 obligation 4 — CLOSED (both steps of field 7 reduced to lemmas; the complexes `A ⊇ B` of step 2 are built in the assembly from obligation 3's `(M, N)`)
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceTorusHomology.lean` | 394 | `d674d4324bd01e77d70dac738775259500b0dfcb855e986073cefdaba9b5e10c` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusHomology
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceTorusHomology.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T04:01Z)
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube14.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T04:02:19Z)
+
+Public names (grepped, no clash): `CarriesFirstHomologyOnto.inter_frontier_of_chart`,
+`IsPLCellOn.isPathConnected`, `isPathConnected_section34FaceTorus`,
+`carriesFirstHomologyOnto_image_simplexRim`, `exists_section34FaceTorusAuxiliary`.
+
+- Step 1 (`IsPLCellOn.carriesFirstHomologyOnto_inter_interior`, input (4)) with `C = fbl s`:
+  the carrying set `R = h '' simplexRim 𝒦 s.1` carries `H₁ T_s`
+  (`carriesFirstHomologyOnto_image_simplexRim`: graph-frame clause 10 through
+  `CarriesFundamentalGroupOnto.carriesFirstHomologyOnto`, `R` nonempty, `T_s` path connected by
+  `isPathConnected_section34FaceTorus`: each incident vertex-ball image is path connected and
+  contains `h` of its centre, which lies on the rim).  The auxiliary set
+  (`exists_section34FaceTorusAuxiliary`, from `hh hcut hgraph` only): `C' = h '' 𝒦.map '' B'`
+  with `B'` a PL ball around the disk `⋃ v ∈ s, hull (t.erase v)` of an incident tetrahedron `t`
+  (equal to `closure (∂t \ s)`, a disk by `IsPLSphere.isPLBall_closure_sdiff` and
+  `isPLSphere_biUnion_erase`), taken inside the open set missing the points of `s` whose image
+  leaves `interior T_s`; so `C'` is compact with trivial `H₁` (a topological ball), contains
+  `h '' simplexRim 𝒦 s.1`, and `C' \ interior T_s` misses `h '' simplexBody 𝒦 s.1`.  Passing
+  `Bad s := C' \ interior T_s` to `exists_section34FaceBallNeighborhoods` gives
+  `fbl s ∩ C' ⊆ interior T_s`, the last hypothesis of step 1.
+- Step 2 (`CarriesFirstHomologyOnto.inter_frontier_of_chart`): if `S ⊆ c.source` is closed with
+  trivial `H₁`, `T` closed, `S ∩ interior T` carries, and finite `A ⊇ B` in the chart have
+  `A.space = c '' (S ∩ T)` and `B.space = c '' (S ∩ frontier T)`, then `S ∩ frontier T` carries.
+  The derived-neighbourhood retraction of `B` in `A` (input (3)) is transported by `c.symm`.  In
+  the assembly `S = fblBd s` (trivial `H₁` by
+  `IsPLCellOn.subsingleton_integralSingularHomology_one_boundary`), and `A`, `B` are the faces of
+  obligation 3's `M` lying in `c '' T_s`, resp. in `N`, using the local agreement of `L` with the
+  chart image of `frontier T_s` from obligation 1.
+
+## P3 obligation 1 — CLOSED (both general lemmas; Codex Q1 had not landed, grep at 04:05Z found no module or statement of either shape, so the lead can withdraw Q1)
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/ChartImagePLCell.lean` | 83 | `49fde77b60fbf484ec602b71d376aaa82e46ade00e59fb27cc8e3154df5eabae` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/PLSphereLocallyPlanar.lean` | 70 | `998daa2f15c4f14eed9687a68c092fc389b8f5e368cb00bc47b275eb820c6461` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
+    import DifferentialGeometry.Topology.PiecewiseLinear.PLSphereLocallyPlanar
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartImagePLCell.lean with no diagnostics; shared outputs unchanged.`
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLSphereLocallyPlanar.lean with no diagnostics; shared outputs unchanged.`
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube15.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T04:14:55Z, both modules)
+
+Public names (grepped, no clash): `isPLAt_of_mem_maximalAtlas`,
+`IsPLCellOn.exists_isPLHomeomorphOn_image_chart`, `IsPLCellOn.isPLBall_image_chart`,
+`IsPLSphere.exists_isOpen_inter_homeomorph_of_two`.
+
+- `isPLAt_of_mem_maximalAtlas`: a chart `c` of `(plGroupoid n).maximalAtlas M` is `IsPLAt n n c y`
+  on its source; no `HasGroupoid` instance (`liftPropWithinAt_self_target` plus
+  `compatible_of_mem_maximalAtlas_right`).
+- `IsPLCellOn.isPLBall_image_chart`: `IsPLCellOn 3 S B`, `S ⊆ c.source` give
+  `IsPLBall 3 (c '' S) ∧ c '' B = frontier (c '' S)` (general `B`, so it covers Q1's
+  `B = frontier C`); the `d`-dimensional form returns the PL parametrisation `q` with
+  `c '' B = q '' stdSimplexBoundary d`.
+- `IsPLSphere.exists_isOpen_inter_homeomorph_of_two` (any finite-dimensional `E`): every
+  `x ∈ S` has an open `W ∋ x` and an open `U ⊆ ℝ²` with `W ∩ S ≃ₜ U` (sphere chart of Mathlib's
+  stereographic atlas pulled back through `stdSimplexNormedBoundarySphereHomeomorph`).  This is
+  the local-surface hypothesis of input (3).
+- The remaining obligation-1 content (the chart image of `frontier T_s` near `c '' Wn s` is locally
+  one vertex-ball frontier or that of a union of two, with the splitting circles as the curves)
+  is specific to P3 and is done inside the assembly module.
+
+## P3 `exists_section34FaceBalls` — CLOSED (statement and variable block byte-identical to `Skeleton/Section34Normalization.lean`; no hypothesis dropped)
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/BallUnionFrontier.lean` | 315 | `2982c4cf3838b590986ff2838dce3135e3ec3fe592421826891f34a09220276d` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceBalls.lean` | 686 | `d63f8484d29982d889a1c8a68ffa714173674dcee18cd30e9919b774ed7e7e8f` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BallUnionFrontier.lean with no diagnostics; shared outputs unchanged.`
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceBalls.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T04:49:15Z)
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube16.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T04:50:32Z, both modules: only `propext`, `Classical.choice`, `Quot.sound`; thirteen linters clean)
+
+Public names (grepped, no clash except the intended leaf name):
+`BallUnionFrontier`: `IsPreconnected.subset_of_disjoint_frontier`,
+`exists_isOpen_inter_homeomorph_of_inter_eq`, `mem_frontier_iUnion_of_mem_frontier`,
+`finite_image_connectedComponentIn_of_eq_iUnion`, `IsLocallyPolyhedral.of_forall_isOpen_inter_eq`,
+`restrict_space_eq_inter_of_openSimplex`, `exists_simplicialComplex_iUnion_isPLSphere_one`,
+`exists_isOpen_inter_frontier_iUnion_eq_isPLSphere`, `image_stdSimplexBoundary_subset_frontier_iUnion`.
+`Section34FaceBalls`: `eq_or_eq_of_card_eq_one_of_subset_union`,
+`exists_section34FaceBall_of_neighborhood`, `exists_section34FaceBalls`.
+
+- Lead action: `exists_section34FaceBalls` has the leaf's name, so importing the module into the
+  skeleton requires deleting the `sorry` leaf there (as for P5); the skeleton then has 4 leaves.
+- Remaining obligation-1 content, done here: in the chart `c` of `H t` (`t` a tetrahedron on `s`;
+  `T_s` and `Wn s` lie in `H t` by `image_vertexBall_subset_interior_of_incident` and the brick),
+  the incident vertex-ball images are PL 3-balls meeting pairwise in chart images of splitting
+  disks inside both frontiers (`src_vertexBall_inter_subset_srcBd`,
+  `exists_splitDisk_src_eq_inter_vertexBall`) with no triple point (cut clauses 22, 23).  Hence
+  `frontier (c '' T_s)` agrees near each point with the frontier of one ball or of a glued pair
+  (`isPLBall_union_of_inter_isPLBall_two`), i.e. with a PL 2-sphere: locally planar and locally
+  polyhedral.  The splitting circles of the incident edges are pairwise disjoint PL circles on it
+  (each is in the closure of `frontier B_w` minus the disk, by
+  `IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary`), triangulated with at most two
+  vertices per simplex through `IsPLSphere.isCombinatorialManifold`.  `Q := frontier (c '' T_s)`.
+- Transfers: `c '' frontier T_s = frontier (c '' T_s)` (`image_frontier_of_isCompact`), and
+  `frontier (⋃ w, tgtV w) ∩ Wn = frontier T_s ∩ Wn` because non-incident vertex balls miss `Wn`
+  (`frontier_inter_open_inter`); fields 5, 6 by `.congr`; field 8 through `C.space`; the faces of
+  `M` whose open simplex meets `c '' T_s` (resp. the surface) lie in it (convex open simplex,
+  resp. the local agreement of `L` with the surface on the connected hull of an `N`-face), giving
+  `A ⊇ B` by `restrict`; field 7 = step 1 (`Bad s = C' \ interior T_s`) + step 2; field 9 since
+  the trace is `c.symm '' B.space`, a finite union of connected hulls; field 10 by
+  `section34Exterior_of_subset`.

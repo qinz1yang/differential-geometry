@@ -115,7 +115,7 @@ P3 assembly, b = §33 Lemmas 3–7 then 8–9, c = the branch tube (`ClosedBranc
 wall-product leaves. Do not start any of those leaves; the items below are what they need or what
 nobody has started. Read the cited log sections first; they contain the exact remaining goals.
 
-### Q1 — two general lemmas P3 needs now (small, high value)
+### Q1 — WITHDRAWN 2026-09-22 22:30 (done by the lease-a worker as `ChartImagePLCell`, `PLSphereLocallyPlanar`)
 Read `Skeleton/OPUS_FILL_LOG_A.md`, `# Batch 5 (P3 inputs)`, P3 entry, obligation 1.
 1. The image of a PL 3-cell `IsPLCellOn 3 C (frontier C)` inside `c.source` under a chart `c` of the
    maximal `plGroupoid 3` atlas is a PL 3-ball in `EuclideanSpace ℝ (Fin 3)` (grep `IsPLCellOn`,

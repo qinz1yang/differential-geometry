@@ -12,6 +12,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
 
 /-!
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
@@ -267,6 +268,18 @@ minima give an upper bound (every clause reads finitely many labels,
 slide.  Neither a fair enumeration nor a locally finite limit is needed.  The sections
 `CurveCrossing`, `FirstHomology` and `Vocabulary` were hoisted verbatim into the real module
 `Section34FaceBallVocabulary` and deleted here; only `universe u` stays.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and axiom audits; statement byte-identical with the frozen leaf, no hypothesis dropped):
+`exists_section34FaceBalls` (P3, module `Section34FaceBalls` over `ChartBallGeneralPosition`,
+`Section34FaceTorusHomology`, `ChartImagePLCell`, `PLSphereLocallyPlanar`, `BallUnionFrontier`
+and the thirteen P3-input modules).  Route: for each triangle `s` a tetrahedron `t` on `s` and the
+chart of its carrier contain the neighbourhood and the face torus; the incident vertex-ball images
+are PL balls meeting pairwise in splitting disks with no triple points, so the frontier of their
+union is locally a PL 2-sphere, locally planar and locally polyhedral, carrying the disjoint
+splitting circles; general position via `CurveCrossingGeneralPosition` gives fields 5, 6, 8, the
+auxiliary ball and the trace retraction give field 7, finiteness of the trace field 9, and
+`section34Exterior_of_subset` field 10.  The frames needed no amendment.
 -/
 
 open Set Topology
@@ -321,16 +334,6 @@ theorem nonempty_section34FaceTorus
     omega
   obtain ⟨x, hx⟩ := nonempty_simplexRim (𝒦 := 𝒦) hcard
   exact ⟨h x, interior_subset (hrim s ⟨x, hx, rfl⟩)⟩
-
-theorem exists_section34FaceBalls (h305 : Moise305Tame) (hU : IsOpen U)
-    (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hctrl : Section34CarrierControl U 𝒦 h η H)
-    (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁) :
-    ∃ fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂,
-      Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-        (section34SplitDiskImage srcBd f₁) fbl fblBd := by
-  sorry
 
 theorem exists_section34Compression (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
