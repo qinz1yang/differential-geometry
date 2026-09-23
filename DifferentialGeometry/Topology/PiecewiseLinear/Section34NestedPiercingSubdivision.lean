@@ -184,6 +184,50 @@ theorem restrict_faces_finite_of_finite_new_faces
       (hsB (s.centroid_mem_convexHull (K.nonempty_of_mem_faces hsK)))
   · exact Or.inr ⟨hsR, hsK⟩
 
+theorem LocallyFinitePLPieceIn.exists_isSubdivision_restrict_pair_finite_change
+    {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X}
+    (T : LocallyFinitePLPieceIn E 3 X U)
+    (A : ℕ → Geometry.SimplicialComplex ℝ E)
+    (hA : T.complex.faces = ⋃ i, (A i).faces)
+    (hfin : ∀ i, (A i).faces.Finite) (hmono : Monotone fun i => (A i).faces)
+    {P Q : Set E} (hP : IsPolyhedron P) (hPT : P ⊆ T.complex.space)
+    (hQ : IsPolyhedron Q) (hQT : Q ⊆ T.complex.space) :
+    ∃ R : Geometry.SimplicialComplex ℝ E,
+      IsSubdivision R T.complex ∧ (R.faces \ T.complex.faces).Finite ∧
+        (restrict R P).space = P ∧ (restrict R Q).space = Q := by
+  obtain ⟨R, hR, hRnew, hRP⟩ :=
+    T.exists_isSubdivision_restrict_space_finite_change A hA hfin hmono hP hPT
+  let T' := T.subdivide R hR
+    (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hRnew)
+  let B := fun i => restrict R (A i).space
+  have hsub (i) : (A i).faces ⊆ T.complex.faces := by
+    rw [hA]
+    exact subset_iUnion (fun j => (A j).faces) i
+  have hB : T'.complex.faces = ⋃ i, (B i).faces := by
+    apply Subset.antisymm
+    · intro s hs
+      obtain ⟨t, ht, hst⟩ := hR.exists_face_subset hs
+      obtain ⟨i, hi⟩ := mem_iUnion.mp (hA ▸ ht)
+      exact mem_iUnion.mpr ⟨i, hs, hst.trans ((A i).convexHull_subset_space hi)⟩
+    · exact iUnion_subset fun i => restrict_faces_subset R (A i).space
+  have hBfin (i) : (B i).faces.Finite :=
+    restrict_faces_finite_of_finite_new_faces (hsub i) (hfin i) hRnew
+  have hBmono : Monotone fun i => (B i).faces := by
+    intro i j hij s hs
+    exact ⟨hs.1, hs.2.trans (space_mono_of_faces_subset (hmono hij))⟩
+  obtain ⟨S, hS, hSnew, hSQ⟩ := T'.exists_isSubdivision_restrict_space_finite_change
+    B hB hBfin hBmono hQ (hQT.trans hR.space_eq.symm.subset)
+  have hSP : (restrict S P).space = P := by
+    have he := (hS.restrict (restrict R P) (restrict_faces_subset R P)).space_eq
+    rwa [hRP] at he
+  refine ⟨S, hS.trans hR, ?_, hSP, hSQ⟩
+  apply (hSnew.union hRnew).subset
+  rintro s ⟨hs, hsT⟩
+  by_cases hsR : s ∈ R.faces
+  · exact Or.inr ⟨hsR, hsT⟩
+  · exact Or.inl ⟨hs, hsR⟩
+
 theorem LocallyFinitePLPieceIn.isLocallyFiniteRegularNeighborhoodOf_locallyFinite_subdivision
     {m : ℕ} {X : Type*} [TopologicalSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X} (hU : IsOpen U)
@@ -250,6 +294,39 @@ theorem LocallyFinitePLPieceIn.isLocallyFiniteRegularNeighborhoodOf_subdivision
   exact T.isLocallyFiniteRegularNeighborhoodOf_locallyFinite_subdivision hU A hA hfin hmono
     hman R hR (T.locallyFinite_of_isSubdivision_of_finite_new_faces hR hnew) G hG hcard
 
+theorem LocallyFinitePLPieceIn.exists_stage_of_isCompact
+    {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ}
+    [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] {U : Set X}
+    (T : LocallyFinitePLPieceIn E n X U)
+    (A : ℕ → Geometry.SimplicialComplex ℝ E)
+    (hA : T.complex.faces = ⋃ i, (A i).faces) (hmono : Monotone fun i => (A i).faces)
+    {C : Set X} (hCc : IsCompact C) (hCU : C ⊆ U) :
+    ∃ k, T.complex.space ∩ T.map ⁻¹' C ⊆ (A k).space := by
+  classical
+  have hrange : Set.range (fun x : T.complex.space => T.map x) = U :=
+    (Set.image_eq_range T.map T.complex.space).symm.trans T.bijOn.image_eq
+  have hpre : IsCompact ((fun x : T.complex.space => T.map x) ⁻¹' C) := by
+    apply T.isEmbedding.isCompact_iff.mpr
+    rwa [image_preimage_eq_iff.mpr (hrange.symm ▸ hCU)]
+  let Q := T.complex.space ∩ T.map ⁻¹' C
+  let F := {s : Finset E | s ∈ T.complex.faces ∧
+    (convexHull ℝ (s : Set E) ∩ Q).Nonempty}
+  have hF : F.Finite := by
+    have hf := T.locallyFinite.finite_nonempty_inter_compact hpre
+    apply (hf.image fun s : T.complex.faces => (s : Finset E)).subset
+    rintro s ⟨hs, x, hxs, hxQ⟩
+    exact ⟨⟨s, hs⟩, ⟨⟨x, hxQ.1⟩, hxs, hxQ.2⟩, rfl⟩
+  have : Finite F := hF.to_subtype
+  choose j hj using fun s : F => mem_iUnion.mp (hA ▸ s.2.1)
+  obtain ⟨k, hk⟩ := (finite_range j).bddAbove
+  have hQk : Q ⊆ (A k).space := by
+    intro x hx
+    obtain ⟨s, hs, hxs⟩ := T.complex.mem_space_iff.mp hx.1
+    have hsF : s ∈ F := ⟨hs, x, hxs, hx⟩
+    exact (A k).convexHull_subset_space
+      (hmono (hk (mem_range_self ⟨s, hsF⟩)) (hj ⟨s, hsF⟩)) hxs
+  exact ⟨k, hQk⟩
+
 theorem LocallyFinitePLPieceIn.isPLSphere_preimage_of_isPolyhedralSphere
     {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X}
@@ -264,29 +341,8 @@ theorem LocallyFinitePLPieceIn.isPLSphere_preimage_of_isPolyhedralSphere
   have hCc : IsCompact C := by
     rw [← P.piece.bijOn.image_eq]
     exact P.piece.isPolyhedron_space.isCompact.image_of_continuousOn P.piece.continuousOn
-  have hrange : Set.range (fun x : T.complex.space => T.map x) = U :=
-    (Set.image_eq_range T.map T.complex.space).symm.trans T.bijOn.image_eq
-  have hpre : IsCompact ((fun x : T.complex.space => T.map x) ⁻¹' C) := by
-    apply T.isEmbedding.isCompact_iff.mpr
-    rwa [image_preimage_eq_iff.mpr (hrange.symm ▸ hCU)]
+  obtain ⟨k, hQk⟩ := T.exists_stage_of_isCompact A hA hmono hCc hCU
   let Q := T.complex.space ∩ T.map ⁻¹' C
-  have hQc : IsCompact Q := by
-    convert hpre.image continuous_subtype_val using 1
-    ext x
-    simp only [mem_image, mem_preimage, Subtype.exists, exists_and_right,
-      exists_eq_right, mem_inter_iff, Q, exists_prop]
-  let F := {s : Finset E | s ∈ T.complex.faces ∧
-    (convexHull ℝ (s : Set E) ∩ Q).Nonempty}
-  have hF : F.Finite := T.finite_faces_inter_of_isCompact hQc inter_subset_left
-  have : Finite F := hF.to_subtype
-  choose j hj using fun s : F => mem_iUnion.mp (hA ▸ s.2.1)
-  obtain ⟨k, hk⟩ := (finite_range j).bddAbove
-  have hQk : Q ⊆ (A k).space := by
-    intro x hx
-    obtain ⟨s, hs, hxs⟩ := T.complex.mem_space_iff.mp hx.1
-    have hsF : s ∈ F := ⟨hs, x, hxs, hx⟩
-    exact (A k).convexHull_subset_space
-      (hmono (hk (mem_range_self ⟨s, hsF⟩)) (hj ⟨s, hsF⟩)) hxs
   have hsub : (A k).space ⊆ T.complex.space := space_mono_of_faces_subset (by
     rw [hA]
     exact subset_iUnion (fun i => (A i).faces) k)
@@ -300,6 +356,38 @@ theorem LocallyFinitePLPieceIn.isPLSphere_preimage_of_isPolyhedralSphere
   have heq : (A k).space ∩ T.map ⁻¹' C = Q :=
     Subset.antisymm (fun x hx => ⟨hsub hx.1, hx.2⟩) (fun x hx => ⟨hQk hx, hx.2⟩)
   change IsPLSphere d Q
+  rw [← heq]
+  exact hP.of_isPLHomeomorphOn htransition
+
+theorem LocallyFinitePLPieceIn.isPLBall_preimage_of_isPolyhedralBall
+    {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] {U : Set X}
+    (T : LocallyFinitePLPieceIn E 3 X U)
+    (A : ℕ → Geometry.SimplicialComplex ℝ E)
+    (hA : T.complex.faces = ⋃ i, (A i).faces)
+    (hfin : ∀ i, (A i).faces.Finite) (hmono : Monotone fun i => (A i).faces)
+    {d : ℕ} {C : Set X} (hC : IsPolyhedralBall (n := 3) d C) (hCU : C ⊆ U) :
+    IsPLBall d (T.complex.space ∩ T.map ⁻¹' C) := by
+  classical
+  obtain ⟨P, hP⟩ := hC
+  have hCc : IsCompact C := by
+    rw [← P.piece.bijOn.image_eq]
+    exact P.piece.isPolyhedron_space.isCompact.image_of_continuousOn P.piece.continuousOn
+  obtain ⟨k, hQk⟩ := T.exists_stage_of_isCompact A hA hmono hCc hCU
+  let Q := T.complex.space ∩ T.map ⁻¹' C
+  have hsub : (A k).space ⊆ T.complex.space := space_mono_of_faces_subset (by
+    rw [hA]
+    exact subset_iUnion (fun i => (A i).faces) k)
+  have : Finite (A k).faces := (hfin k).to_subtype
+  let S := T.finiteRestriction (A k) hsub
+  have hCS : C ⊆ T.map '' (A k).space := by
+    intro x hx
+    obtain ⟨y, hy, rfl⟩ := T.bijOn.surjOn (hCU hx)
+    exact ⟨y, hQk ⟨hy, hx⟩, rfl⟩
+  have htransition := P.piece.isPLHomeomorphOn_transition_of_subset S hCS
+  have heq : (A k).space ∩ T.map ⁻¹' C = Q :=
+    Subset.antisymm (fun x hx => ⟨hsub hx.1, hx.2⟩) (fun x hx => ⟨hQk hx, hx.2⟩)
+  change IsPLBall d Q
   rw [← heq]
   exact hP.of_isPLHomeomorphOn htransition
 
