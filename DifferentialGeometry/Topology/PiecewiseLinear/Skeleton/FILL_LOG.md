@@ -9998,3 +9998,1049 @@ relative window normalization and exhaustion; limit chain and frozen leaf. Work 
 - Sub-leaves: Construct the actual corrected disk discrepancy by composing the two vertex corrections with the old disk discrepancy and an actual inverse; prove its commuting equation and circle positivity by parity cancellation. Includes PL rim transport through a chart.
 - Remaining: graph-wide correction assembly and joint boundary matching, prescribed-spine torus, frozen leaf.
 
+
+## Section34PositiveReferenceMaps — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34PositiveReferenceMaps
+- SHA-256: 93DB4485251538081765F7D82CCCF3E1D81B98AFA9AFB9DA3273459E4B13C344
+- Sub-leaves: choose real marked reference ball maps; derive global vertex signs from the embedding and the frozen preparation; construct vertex corrections preserving marked disks; construct each actual disk discrepancy after correction and prove its circle positivity in every covering chart. Separation and deleted-ball containment are read from the original piercing package and deletion equation. No orientation or closeness input is added.
+- Remaining: extend the prescribed shared disk maps simultaneously on each holed sphere and then on balls; clause (f) with its prescribed spine; assemble the frozen leaf.
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:08:38.1367296Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLBallImageComplement. Checker exit: 1.
+Sub-leaf list: Step 2 graph clause 11: bicollared PL-ball images have connected complements; any contained obstacle has unbounded exterior components at points outside the image
+SHA-256: 20C85BC5F0D232B20E2A889C733A87DF5E232739D198B2748FC7BE0B914A037D
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\PLBallImageComplement.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLBallImageComplement.lean:48:4: error(lean.unknownIdentifier): Unknown identifier `isCompact_iff_isClosed_bounded.mpr`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\PLBallImageComplement.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...t.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\PLBallImageComplement.log and .json
+
+```
+
+
+
+# Codex item 15
+
+## Vertex disk localization checked (2026-09-23)
+
+- Module: Section34CompactSeparatingTrace.lean
+- SHA-256: B8FFC4D73CCB3229A5BA7EC86296D44581D638FCBD2D1976FEA6D67CD8E23B9D
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingTrace.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A vertex-contained trace circle separates every other incident face torus, by comparison with that face trace's surjective circle and the contractibility of the vertex ball.
+
+- Module: SurfaceDiskSeparation.lean
+- SHA-256: 5BD07F7E7B272A9A38BB239FCEFE5EB97A41EF24D77A23CDC49B7D61605BAEAD
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskSeparation.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A disk in a closed PL surface is disjoint from every essential circle disjoint from its rim.
+
+- Module: Section34CompactDiskLocalization.lean
+- SHA-256: 2316EDFDA63D67BF6B334BD73EE2C86872529B13D6818A6081118B399FD885E8
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDiskLocalization.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A torus disk whose rim lies in one vertex ball and avoids the incident meridians lies in that vertex sphere and avoids all closed splitting disks incident to that face.
+
+- Tree-external audit: C:\Users\liao9\AppData\Local\Temp\codex-trace\DiskLocalizationAudit.lean
+- Audit receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DiskLocalizationAudit.receipt.json
+- Audit SHA-256: DDFD412188EFF1ED96B1EE9CA92B139D52EF051F73B2375F04399F9BEE0B2DAE
+- All 40 selected declarations from the eleven modules pass all thirteen environment linters;
+  transitive axioms are contained in propext / Classical.choice / Quot.sound.
+- No hard stop. Sub-leaf 5 continues: derive seam avoidance from actual crossings, then
+  eliminate foreign mouths and enclosed face traces to produce the full admissible operation.
+- Frozen endpoints unchanged; no Skeleton or prohibited P6 imports; no write Git command.
+
+## CGN positive reference maps — transitive axiom audit (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Audit C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\audit-cgn-orientation-closure.lean
+- Audit SHA-256: 2B3C890902BB8CA83E8195A8CFAFC415D6CF056D42492B0A4494646DB0C1865E
+- Checked 89 declarations with Lean.collectAxioms and the strict propext, Classical.choice, Quot.sound whitelist; no sorryAx. Includes actual global vertex corrections and the positive shared-disk correction producer from the original piercing hypotheses. Zero diagnostics.
+- Remaining: simultaneous extension on each marked sphere and ball, joint matching, prescribed-spine torus, frozen leaf.
+
+
+## MarkedSpherePositiveExtension — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.MarkedSpherePositiveExtension
+- SHA-256: D274B8300350372CB36A2E1262867A4DAF25E77D2088947524BD22CBCBCF7267
+- Sub-leaves: simultaneously extend arbitrary prescribed self-maps of all marked disks of a sphere, provided their actual rim corrections are positive. The outer boundary condition is constructed by PositiveBoundaryExtension fixing the compact union of the inner disks, then SphereHoledBoundaryExtension and full-disk gluing are applied. Empty families are supported.
+- Remaining: transport simultaneous positive extensions to target vertex cells and complete joint matching; prescribed-spine torus; frozen leaf.
+
+
+## MarkedCellPositiveExtension — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.MarkedCellPositiveExtension
+- SHA-256: C7B8562C4A0E46B5899B66D2548C46110294AAEADED6E2F13A30686BEEEDB805
+- Sub-leaves: simultaneous pointwise extension of all positive marked-disk self-maps to a PL self-map of the three-ball and to a manifold three-cell in a maximal-atlas chart. Includes the actual ball extension and chart transport.
+- Remaining: graph-wide joint matching assembly, prescribed-spine torus, frozen leaf.
+
+
+# Codex item 13
+
+Actual canonical orientable normalization and seam generators: 2026-09-23T21:16:17.2811729Z
+exists_initialSurface_orientable_nullTraceCount_eq_zero consumes only the actual tube/edge/tower,
+avoidance, initial closed separator, and h303. At each chosen even torus it supplies a finite
+orientable two-manifold after all null seams are removed, with unchanged outer boundary and
+remaining boundary contained in the original labelled window. The old set-level API is retained.
+traceCircles_generators_of_nullTraceCount_eq_zero uses h314 only on surviving original circles;
+their disk branch is excluded by the proved finite zero count. It never applies h314 to new tori.
+AuditCodex13CanonicalSurfaceNormalization: all 32 modules, foundational axioms only, 13 linters;
+receipt exitCode=0 diagnosticLines=0 sourceStable=true; shared artifacts unchanged.
+- CanonicalTowerNullSeams : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 9C21CF8B09E5AC51BA24EC4FEFF77ED7E8B1A644499E02C38AB0C3B38C9090FA
+- CanonicalTowerWindowSurface : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 E7E145ED5F71B1CF54DD75DBC1DA9E4495EAEDFDEC7B84D7DF2209AD68D3D4B5
+- CanonicalTowerSeamGenerators : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 1CA7F1BF2214520B495F820737B4F44EDDAFE300161FF5BF5C48D281109B3F2E
+Other current module SHA-256 values match the preceding 30-module checkpoint.
+Remaining: per-odd-index labelled finite-window state, Type 1/2/3 deletion, coherent halves,
+relative window/exhaustion recursion, limit chain, frozen exists_descentSequence. Work continues.
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:17:39.7665017Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLBallImageComplement. Checker exit: 0.
+Sub-leaf list: Step 2 graph clause 11: bicollared ball-image complements and unbounded obstacle components
+SHA-256: 1C174DFF1D10BE4228BDD2F6F9C10BF02B0CBC8AD7E1284D999B1B539D677297
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\PLBallImageComplement.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLBallImageComplement.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:17:55.6181614Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.FiniteBallUnion. Checker exit: 1.
+Sub-leaf list: Step 2 tetra exterior buffer: finite union of three-balls glued along the actual disk and arc intersections
+SHA-256: 9D8B59BC1F3990375AA6F31F9B006BCBFBA8C62C12F63F7D62457B52A0E3BC72
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.lean:48:8: error(lean.unknownIdentifier): Unknown constant `EuclideanSpace.isCombinatorialManifoldWithBoundary`
+
+Note: Inferred this name from the expected resulting type of `.isCombinatorialManifoldWithBoundary`:
+  EuclideanSpace ℝ (Fin (2 + 1))
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.lean:48:8: error(lean.unknownIdentifier): Unknown constant `PiLp.isCombinatorialManifoldWithBoundary`
+
+Note: Inferred this name from the expected resulting type of `.isCombinatorialManifoldWithBoundary`:
+  EuclideanSpace ℝ (Fin (2 + 1))
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.lean:48:8: error(lean.unknownIdentifier): Unknown constant `WithLp.isCombinatorialManifoldWithBoundary`
+
+Note: Inferred this name from the expected resulting type of `.isCombinatorialManifoldWithBoundary`:
+  EuclideanSpace ℝ (Fin (2 + 1))
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\FiniteBallUnion.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.log and .json
+
+```
+
+
+## Section34JointCellMatching — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34JointCellMatching
+- SHA-256: B27E7965BFCE33D61A717347BF2B50542E0E264CA1FACAA627AB6DD56446C04B
+- Sub-leaves: actual PL ball maps onto each Dv; pointwise agreement on every shared splitting disk; agreement on every source vertex intersection using the real source adjacency theorem; exact image intersections using the target adjacency clause; exact images of all incident split disks. This proves clauses (a)-(d) of the frozen edge matching from the original hypotheses.
+- Remaining: prescribed-spine nested torus clause (f) and frozen-leaf assembly; clause (e) already has FaceRimInteriorDeletedFamily. A separate transitive axiom audit is required for this new endpoint before claiming checked closure.
+
+
+## CGN joint cell matching — transitive axiom audit (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Audit C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\audit-cgn-orientation-closure.lean
+- Audit SHA-256: 859B07E955589E6E1D01C8AB9E88686CDE31F7BBA608E97C3D045AC295C9CD50
+- Checked 93 declarations with Lean.collectAxioms; strict whitelist propext, Classical.choice, Quot.sound, no sorryAx and zero diagnostics. Includes simultaneous sphere/ball/cell extension and actual Section34JointCellMatching.
+- Closed: clauses (a)-(d) of exists_section34EdgeMatching, with the original preparation, piercing, and deleted-family hypotheses. Clause (e) already has the accepted FaceRimInteriorDeletedFamily producer.
+- Remaining: clause (f), a combinatorial solid torus for the cyclic Dv family plus an inner torus and shell preserving the prescribed spine, then frozen-leaf assembly. No Section34GraphFrame is supplied to Section34FaceTorusCycle.
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:26:50.9594945Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.FiniteBallUnion. Checker exit: 0.
+Sub-leaf list: Step 2 tetra exterior buffer: finite union of three-balls with disk and arc intersections
+SHA-256: F3C9A9DCD89ACFA7B687A965179EA79D0E0CA1E8A5DBC23F0240679D16DD8CFC
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FiniteBallUnion.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:27:15.6459903Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualTetraBuffer. Checker exit: 1.
+Sub-leaf list: Step 2 graph clause 11: actual tetrahedron plus incident graph cells is a PL ball, with a buffer excluding all foreign vertices
+SHA-256: 97CCFBB272E1FD43914F6BD47DCAC546BA59FFCA739F451A265C00100A8BCCC1
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualTetraBuffer.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualTetraBuffer.lean:127:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (convexHull ℝ) ↑↑t ∪ ⋃ v ∈ ↑↑t, (graphDualCell M (restrict K (section34CompactGraphSkeleton K)) v).space
+in the target expression
+  let L := restrict K (section34CompactGraphSkeleton K);
+  IsPLBall 3 ((convexHull ℝ) ↑↑t ∪ ⋃ v ∈ ↑↑t, (graphDualCell M L v).space)
+
+M K : Geometry.SimplicialComplex ℝ E3
+inst✝ : Finite ↑M.faces
+hKM : K.faces ⊆ M.faces
+hM : IsCombinatorialManifoldWithBoundary 3 M
+t : Section34CompactSimplexIndex K 4
+⊢ let L := restrict K (section34CompactGraphSkeleton K);
+  IsPLBall 3 ((convexHull ℝ) ↑↑t ∪ ⋃ v ∈ ↑↑t, (graphDualCell M L v).space)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualTetraBuffer.lean:164:28: error: Function expected at
+  Finite.sdiff (SimplicialComplex.finite_vertices K)
+but this term has type
+  (K.vertices \ ?m.431).Finite
+
+Note: Expected a function because this term is being applied to the argument
+  _
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\Section34CompactDualTetraBuffer.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...r.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\Section34CompactDualTetraBuffer.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:31:21.8617294Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualTetraBuffer. Checker exit: 0.
+Sub-leaf list: Step 2 graph clause 11: actual tetrahedron plus incident graph cells is a PL ball; source exterior buffer lies in the collar interior and excludes all foreign vertices
+SHA-256: FC1AA2AA4C8FA46B512B1AFBFABD1A714C4C591140E59DA46EAE99E309D54DD9
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualTetraBuffer.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualTetraBuffer.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Section34FaceVertexCycle — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceVertexCycle
+- SHA-256: 0655C698E1F65A1F737915549D4385421AD21CF0EE870631580C62369105DFA0
+- Sub-leaves: Pure subdivision and endpoint data produce an injective cyclic enumeration of all incident graph vertices, with exact endpoint adjacency. No graph frame, homology generator premise, or ambient matching map is used.
+- Remaining: the inner torus and radial shell retaining the prescribed IsSpine, then clause (f) and frozen-leaf assembly.
+
+
+## Section34DeletedFamilyTorus — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34DeletedFamilyTorus
+- SHA-256: B337DE144F4964D6DCA1BB8EF55BBF12318CE1A11A0BC8B8C0FE9B248764CCB8
+- Sub-leaves: direct Dv-family recognition using the actual cyclic order, pair intersections in PL disks, nonadjacency disjointness and empty triple intersections; CyclicBallUnion yields a combinatorial solid torus. No Section34GraphFrame or generator clause appears in the statement or proof.
+- Remaining: inner torus and radial shell preserving the prescribed IsSpine, then clause (f) and frozen-leaf assembly.
+
+
+# Codex item 13
+
+Labelled cap partition checkpoint: 2026-09-23T21:35:49.0128822Z
+The actual cap homeomorphism transports two disjoint polyhedral pieces, keeping each piece
+unchanged outside support. The target piece loses exactly the selected trace circle; the other
+piece retains its exact trace. Finite collared trace data descends from the union to each piece.
+The h303 split certificate now retains the exact trace-set equation used by this construction.
+An unused finite-dimensional assumption found by audit was removed; no linter was disabled.
+AuditCodex13CapPartition: all 35 modules; allowed foundational axioms only; all 13 linters passed;
+receipt exitCode=0 diagnosticLines=0 sourceStable=true; shared artifacts unchanged.
+- CollaredTraceSplit : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 2F1D3071E57160675E3A7A197ED5946ED385EEC5882510CE70103DCB1CB057A0
+- CollaredTraceUnion : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 77A6056D2747B0FCE47C2FF63184932C88A459FB8EFC56EACBC2BB7E6295AC46
+- SeparatingSurfaceSplit : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 7541AC479FFF257D18520015E99F572D5B2FA55E274F6984D65EBA88BA15EEC9
+- SurfaceCapComponents : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 491BB3EABACEE8850AA689C4191462D168D50C8B19E3A986FF8862B89B48B085
+- PLHomeomorphPartition : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 39B8174DBF9A45B6AD6EF5A72EC0E7C8F90F5478B1C5BDCD3FF95D9FE002973C
+- CollaredSurfaceCapPartition : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 E0A14319AC952B874261DDEB12518DE2CD2BD69C6F883C0F26023280C4ACD230
+Unlisted hashes are unchanged and were rechecked against their receipts.
+Remaining: full labelled surface-pair transition and finite-window state; Type 1/2/3 deletion;
+coherent halves; relative exhaustion; limit chain and frozen leaf. Work continues.
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:39:58.9187799Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactExteriorNeighborhoods. Checker exit: 1.
+Sub-leaf list: Graph-frame clause 11: ball-buffer exterior consumer; actual source buffers and approximation neighborhoods.
+SHA-256: 0023D56D8EEAA9048E936FF94F96DAD422FE67D56F646F5C43CCDB653C904051
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactExteriorNeighborhoods.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactExteriorNeighborhoods.lean:93:47: error(lean.invalidField): Invalid field `trans`: The environment does not contain `Function.trans`, so it is not possible to project the field `trans` from an expression
+  fun x hx => hAB t (Or.inl hx)
+of type
+  ∀ (x : ?m.326), ?m.332 x ∈ (convexHull ℝ) ↑↑t → ?m.332 x ∈ interior (B t)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\Section34CompactExteriorNeighborhoods.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\Section34CompactExteriorNeighborhoods.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:40:53.6579669Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactExteriorNeighborhoods. Checker exit: 0.
+Sub-leaf list: Graph-frame clause 11: ball-buffer exterior consumer; actual source buffers and approximation neighborhoods.
+SHA-256: 7325119A650D99828AEEA292C0043CE49C38F37DEA30860445283D01977A457C
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactExteriorNeighborhoods.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactExteriorNeighborhoods.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## RadialSolidTorusShell — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.RadialSolidTorusShell
+- SHA-256: 0D08B5C38FAAB63D12E938605A6930B81ADE274508171DF98237251D2263A388
+- Sub-leaves: Prescribed product parametrisation and radius: inner solid torus, exact radial membership, full radial shell with both frontier components, and exact central-fibre spine.
+- Remaining: assemble the exact ct transport, clause (f), and frozen edge-matching leaf.
+
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T21:42:59.7035033Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Exterior.lean. Checker exit: 0.
+Sub-leaf list: All declarations in four clause-11 modules; foundational axiom whitelist and all thirteen standard environment linters.
+SHA-256: 92223022183DEE3CA3A81EF8737DE063B1B59DDAD387232537111340B4262FD5
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Exterior.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Exterior.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 14
+
+## Batch 2: the actual tetrahedron exterior buffers (verified and audited)
+
+Completed graph-frame clause 11 through source-produced approximation neighborhoods; no new named input and no use of Moise331OnTube yet.
+Four real modules: PLBallImageComplement, FiniteBallUnion, Section34CompactDualTetraBuffer, Section34CompactExteriorNeighborhoods.
+The source buffer contains the full tetrahedron and every incident graph vertex cell, lies inside the ambient interior, and avoids every foreign K vertex.
+The produced finite open constraints imply the exact Section34CompactExterior conclusion for any approximation satisfying them.
+
+Sub-leaf list: bicollared ball-image connected complement and unbounded-component inclusion; finite 3-ball gluing; whole tetrahedron obstacle buffer; exterior neighborhood constraints.
+Audit: axioms only propext / Classical.choice / Quot.sound; all thirteen standard environment linters passed.
+Static gates: all source lines at most 100 codepoints; no forbidden source constructs; no Skeleton imports in the transitive dependency closure.
+Manifest: 
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\CodexItem14ExteriorManifest.md
+Remaining obligations: graph-frame clause 9, specifically the actual source rim core buffer including arms with its zero-marking, followed by one approximation and final leaf assembly.
+
+
+## SpineNeighborhood — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.SpineNeighborhood
+- SHA-256: 20A89F71B0779F3AD78384636D3DE3C3E9E6D347ADA985F64749B6EBB86042B4
+- Sub-leaves: Center the exact IsSpine parametrisation, then use compactness of the circle for a uniform small radius. The inner torus lies in the prescribed open neighborhood, preserves the exact spine, and gives the same radial shell.
+- Remaining: final frozen-leaf assembly, exact statement comparison and final transitive axiom audit.
+
+
+
+# Codex item 15
+
+## All splitting-disk avoidance closed (2026-09-23)
+
+- Module: CrossingBallSeam.lean
+- SHA-256: 246E017570EA8180FEF4AAA7E80514A9852CF31CEB3259359EAD75CC61CEB4D6
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CrossingBallSeam.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A curve crossing a glued-ball seam cannot remain in one ball; local frontier equality for a finite ball family.
+
+- Module: Section34CompactVertexTrace.lean
+- SHA-256: B1328C91EEF7F8E76BA67EB5F72D12CE228B593EBBAC52B28A594C86629AC42C
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexTrace.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Every vertex-contained complete trace circle avoids every actual closed splitting disk. The proof uses the full crossing invariant and finite circle decomposition, not P6.
+
+- Module: SubdivisionEdgeEnds.lean
+- SHA-256: 2B8ACBA8AD955FBE9637FA5816332ED08610CC281BEC5307E38AA28B623AB9FE
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\SubdivisionEdgeEnds.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: The unique initial fine edge on a subdivided coarse segment, with radial-injectivity uniqueness.
+
+- Module: Section34CompactEdgeCarriers.lean
+- SHA-256: F42327245A289E781FBA48C92D87E672F0A9D67DD1167394E38C0228EC070B48
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactEdgeCarriers.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Actual compact graph edges have coarse edge carriers, with a unique fine edge at a coarse endpoint and an alternative face across each selected-face edge.
+
+- Module: Section34CompactLinkPropagation.lean
+- SHA-256: 77B523E972B2F61BDB837F6F01B70346B661176EB558AEFA8C240B6EE2FB4F05
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactLinkPropagation.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Equality on each other incident face propagates across all actual incident fine edges; both original vertices and bivalent subdivision vertices are handled.
+
+- Module: Section34CompactMouthAvoidance.lean
+- SHA-256: 2CECF325FC5FCDCA0949F7061F3B571C31746C26041CDB149B1CEE49D6E11207
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactMouthAvoidance.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A vertex-contained trace circle bounds an actual disk in its vertex sphere disjoint from ALL closed splitting disks, including foreign mouths. Constructed from the existing cut, graph and face invariants without any new named input.
+
+- Tree-external audit: C:\Users\liao9\AppData\Local\Temp\codex-trace\MouthAvoidanceAudit.lean
+- Audit receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\MouthAvoidanceAudit.receipt.json
+- Audit SHA-256: E0664318BB498BC404658651BFF15436306D22A94AF2AE3C364AC5DD4275C831
+- All 58 selected declarations from the seventeen checked modules pass the thirteen linters;
+  transitive axioms are contained in propext / Classical.choice / Quot.sound.
+- Sub-leaf 5 remains in progress: preserve this disk under an innermost choice across all face
+  traces to obtain the exact compression predicate, then handle returning arcs and bigons.
+- No hard stop. No frozen-source edit, Skeleton/P6 import, foreign-lane import, or write Git command.
+
+## Section34NestedDeletedTorus — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedDeletedTorus
+- SHA-256: 0B753E2A23D7BC8490CDA4DBF8D710FAA7023EC7EBF0D0DFF039432C89AAFE1A
+- Sub-leaves: Exact clause (f), including direct Dv-family solid-torus recognition, ct-restricted homeomorphism, prescribed rim membership, inner torus in Te, outer Sd buffer, shell and unchanged spine.
+- Remaining: final transitive axiom and environment-linter audit, statement/ownership verification and handoff.
+
+
+## Section34EdgeMatchingLeaf — checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf
+- SHA-256: 31BD44CE1050A6C7BE1094DEB0C4B2B1A4237358A948C67527FF18961B112448
+- Sub-leaves: All six clauses of the frozen exists_section34EdgeMatching are assembled. The theorem statement and complete variable block are byte-for-byte identical to the frozen source; no new hypothesis or field. A final full axiom and environment-linter audit follows.
+- Remaining: final transitive axiom and environment-linter audit, statement/ownership verification and handoff.
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:49:50.7091437Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceTorusCycle. Checker exit: 1.
+Sub-leaf list: Graph-frame clause 9: exact compact face-torus union and source/target cyclic solid-torus recognition, without graph-frame assumptions.
+SHA-256: FAE4029A1AAD6104F2AB94280C6FDAD17FE97FDCC535BA1AD7E045B74D4BFEBB
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.lean:36:6: error: Type mismatch
+  Finset.mem_singleton_self ?m.126
+has type
+  ?m.126 ∈ {?m.126}
+but is expected to have type
+  Finset.centroid ℝ {Finset.centroid ℝ (↑w) id} id ∈ {Finset.centroid ℝ (↑w) id}
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.lean:51:4: error: Type mismatch: After simplification, term
+  hxv
+ has type
+  x ∈ (graphDualCell M (restrict K (section34CompactGraphSkeleton K)) v).space
+but is expected to have type
+  x ∈ (graphDualCell M (restrict K (section34CompactGraphSkeleton K)) (Finset.centroid ℝ (↑(↑a).2) id)).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.lean:122:54: error: No goals to be solved
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\Section34CompactFaceTorusCycle.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T21:50:57.9636257Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceTorusCycle. Checker exit: 0.
+Sub-leaf list: Graph-frame clause 9: exact compact face-torus union and source/target cyclic solid-torus recognition, without graph-frame assumptions.
+SHA-256: 461646F3C2BF8D95D1B4A7653A24CE45387BAC1D297B4045009298BE04816AC1
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T21:54:30.3351124Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Delivery.lean. Checker exit: 0.
+Sub-leaf list: Final audit of all 56 item-14 modules: complete 29-clause cut frame, clause-11 source buffers and constraints, clause-9 cyclic torus recognition. Exact source zero-marked rim buffer remains open.
+SHA-256: 16F20CB68CBED52C90D6ECC4970F27ECB0AE6A9838A579AAA2B7FFF6B01957EB
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Delivery.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Delivery.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 13
+
+Full labelled surface-pair split checkpoint: 2026-09-23T21:54:59.0422505Z
+exists_separating_surface_pair_split constructs one h303 transition and retains both original
+surface labels. Both new pieces are finite orientable manifolds with collared traces; each exact
+boundary and trace is its old one minus the chosen circle. They remain disjoint and fixed outside
+support. The global separator is preserved, the finite null count strictly decreases, and the
+sum of Euler characteristics increases by one. The actual disk and PL cap/homeomorphism branch
+are retained as witnesses. No geometric transition assumption or new named input is used.
+AuditCodex13LabelledSurfaceSplit: all 38 modules, foundational axioms only, all 13 linters passed;
+receipt exitCode=0 diagnosticLines=0 sourceStable=true; shared artifacts unchanged.
+- SurfacePairCapping : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 00E73172A0E947E88D4CB095199E8F1731442222EF129DAB8384CFFA23BCA6C1
+- SurfaceTraceMonotonicity : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 382BA0B819BD34448C55C66B3795CA89FE0AD2AFC0BD20E7B6D4545D59DA3147
+- SeparatingSurfacePairSplit : receipt exitCode=0 diagnosticLines=0 sourceStable=true
+  SHA-256 15EDE536DCA2502CE844F2BF467096A7CAA03360A31AF59B96E07FC7216242D7
+Unlisted hashes match the preceding checkpoint and were checked again.
+Remaining: labelled finite-window normalization; null-on-both-tori transport and component
+classification; Type 1/2/3 deletion; coherent halves; relative exhaustion; limit and frozen leaf.
+
+# Codex item 14
+
+## Batch 3 partial delivery and STOP: graph-frame clause 9 zero-marked source core
+
+The 51-module cut-frame batch and four-module exterior-buffer batch are complete and audited.
+The additional real module Section34CompactFaceTorusCycle is now verified. Its three declarations
+identify the exact compact face-torus union, recognize the image of the three incident graph dual
+cells as a combinatorial solid torus, and supply the compact adapter without assuming a graph frame.
+Its final private checker line is:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.lean with no diagnostics; shared outputs unchanged.
+```
+SHA-256: 461646F3C2BF8D95D1B4A7653A24CE45387BAC1D297B4045009298BE04816AC1
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceTorusCycle.json
+Sub-leaf list: exact raw/typed cyclic union; PL ball and splitting-disk image recognition;
+empty triple intersections after the embedding; actual compact face-torus recognition.
+
+STOP obligation: graph-frame clause 9 is not discharged. In the already-produced source context
+M, K finite, hM/hK combinatorial 3-manifolds with boundary, hKM : K.faces subset M.faces,
+hKint : K.space subset interior M.space, and s : Section34CompactSimplexIndex K 3, set
+L := restrict K (section34CompactGraphSkeleton K) and
+Ns := union over v in s of (graphDualCell M L v).space.
+With E2/E3 the Euclidean planes/3-space, D2 the closed unit disk and S1 the unit circle, the exact
+unproved producer is:
+```lean
+∃ P : Set E3, P ⊆ interior M.space ∧ Ns ⊆ interior P ∧
+  ∃ Φ : (D2 × S1) ≃ₜ P,
+    section34CompactSimplexRim s.1 =
+      Subtype.val '' (Φ '' {q | (q.1 : E2) = 0})
+```
+The zero-marking and the containment of the WHOLE cyclic union, including its outside arms, must
+hold for the same P and product. The newly checked cycle module proves only torus recognition.
+The inspected prism-map-ends APIs preserve the end disks, and centered pair coordinates mark a
+single transverse center; neither output identifies the longitudinal core with the actual two
+rim half-edges in each vertex cell. The derived-neighborhood cylindrical classification also
+forgets this core when gluing/untwisting. A relative marked cell model, compatible across the
+splitting disks and preserved through an outer collar, has not been established here.
+This is an unproved geometric producer, not a demonstrated counterexample or a claim that the
+frozen hypotheses are inconsistent or insufficient. No named input, placeholder, or assumption
+packaging this conclusion was introduced. No frozen leaf was restated, and Moise331OnTube was not
+applied. After this producer, still required: source-product transport through h, finite rim-buffer
+constraints, same-product inner shrinking, and the single approximation/final leaf assembly.
+
+Final audit covers every non-auto declaration in all 56 item-14 modules: only propext,
+Classical.choice, Quot.sound; all thirteen standard environment linters pass. Current source
+hashes match every module receipt. The 1363-module DifferentialGeometry dependency closure has no
+Skeleton imports. Every new Lean source passes the 100-codepoint and forbidden-construct checks.
+The complete module/hash/receipt/checker-line list is:
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\CodexItem14DeliveryManifest.md
+The Batch 2 manifest path is:
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\CodexItem14ExteriorManifest.md
+Global git diff --check reported one trailing space on the earlier self-authored Batch 2
+"Manifest:" log label; no Lean-source whitespace error. Earlier log bytes are preserved under
+the append-only rule. No Git writes, aggregate edits, frozen-source edits or foreign-lane edits.
+
+Final audit SHA-256: 16F20CB68CBED52C90D6ECC4970F27ECB0AE6A9838A579AAA2B7FFF6B01957EB
+Final audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Delivery.receipt.json
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14Delivery.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+
+# Codex item 15
+
+## Lemma 9: actual admissible compression closed (2026-09-23)
+
+- Module: LocalDiskSeparation.lean
+- SHA-256: CF253F583B708247BF2F9F60E1F594688A6A8D4F76F0EA7F6BC0506F05721FAE
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\LocalDiskSeparation.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Disk separation transfers from a PL sphere to any surface agreeing near the disk, with the exact intrinsic rim.
+
+- Module: LocalInnermostDisk.lean
+- SHA-256: A3AEF1A6ABC3FA6D8C12C7DF9E7F870CC01844D8CD00A5447D7BA8706AD875F7
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\LocalInnermostDisk.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A finite disjoint circle family in the ambient surface has an innermost disk inside the supplied disk, preserving every inherited avoidance constraint.
+
+- Module: Section34CompactVertexOperations.lean
+- SHA-256: A5C56CD232DD95CE5A19409FA05B784FFF0678056C9DEECDF6497CA5BB275554
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexOperations.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: exists_compact_compression_of_vertex_trace_circle constructs the full Section34CompactCompression at a possibly different face: exact selected-sphere intersection, avoidance of all closed splitting disks, and avoidance of all other face balls. not_circle_subset_vertexBall_of_no_compression then proves the compact Lemma 9 from the existing hnc.
+
+- Tree-external audit: C:\Users\liao9\AppData\Local\Temp\codex-trace\VertexOperationsAudit.lean
+- Audit receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\VertexOperationsAudit.receipt.json
+- Audit SHA-256: 1620CD7D972A52B2D49C3EC667E8B5562733E5E542F2D30F23D885C59A3A9915
+- All 65 selected declarations from the twenty checked modules pass all thirteen linters;
+  transitive axioms are contained in propext / Classical.choice / Quot.sound.
+- Sub-leaf 5 now has the actual vertex-circle compression branch. The separating-torus-circle
+  alternative still needs returning-arc extraction and the full admissible bigon branch.
+- No hard stop. Continue to Lemma 10; compact headline and manifold headline remain open.
+- Both BQ corrections retained; no P6 arc theorem, frozen-source edit, or write Git command.
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T22:06:18.9173203Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TubeEdgePairOverlap. Checker exit: 1.
+Sub-leaf list: Item-14 resumed cylinder route: exact adjacent pair-cylinder overlap, shared vertex lies in its interior, overlap cannot be a PL end disk. Source zero-axis marking is absent from the accepted interface.
+SHA-256: A2BAF6EEEE16FD759C8CB75994D603BCBC79929CA6F05EC2E21C610E0F752350
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.lean:41:35: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\TubeEdgePairOverlap.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...p.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T22:08:01.5037415Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TubeEdgePairOverlap. Checker exit: 0.
+Sub-leaf list: Resumed item-14 cylinder route: exact adjacent pair-cylinder overlap; shared vertex in its interior; overlap is not a PL disk. Fixed one local set-inclusion type annotation.
+SHA-256: 6AE98B61B2CF4CC865ED53B3ADE4F2A0ABC8003E514EB82450174D54B2837511
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T22:10:10.7392117Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean. Checker exit: 1.
+Sub-leaf list: Three real overlap declarations: foundational axioms and thirteen linters. Also audit axiom closure of the accepted cylinder, centered prism and centered disk providers.
+SHA-256: D70FF472863255C0EB816F86C342A377EEEF694BCEA0E6C66E88CA04493ACCE6
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.receipt.json
+
+Checker output:
+```text
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean:15:0: error: Expected three overlap declarations
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\external-audit.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...t.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\external
+   -audit.log and .json
+
+```
+
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T22:12:52.4645928Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean. Checker exit: 1.
+Sub-leaf list: All module declarations, requiring all three named overlap endpoints; foundational axioms and thirteen linters. Accepted cylinder, centered prism and disk providers also checked for axioms. Corrected the probe declaration-count assertion.
+SHA-256: 2E6DB7B3B0FD6E28D7BD8F84812645DE2CF921156C8743D03FBDB37FC2D0069F
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.receipt.json
+
+Checker output:
+```text
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean:28:100: warning: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\external-audit.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...t.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\external
+   -audit.log and .json
+
+```
+
+
+# Codex item 17
+
+## Tetrahedron graph checkpoint (2026-09-23)
+
+Lease a, token `claude-agent-a-20260919`; checkout `D:\differential-geometry-moise-int`,
+branch `codex/moise-integration`. Start commit verified:
+`4a0f05fe0ddf156a4b2e39f2447536a90473b690` (compact P7 residual balls).
+Read item 17 and Batch 9 in full. No git writes or frozen statement edits.
+
+- `Section34TetraSkeleton.lean`: the graph of a coarse simplex lies along its edges;
+  graph labels transport through the common realization map; local finiteness on a compact
+  segment supplies the finite subdivision path without assuming a finite global complex.
+  SHA-256: `aa33acc6d2adfa48c003495d1c8d7f9166bce02d8ade1ff17cb22354b6e9765f`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraSkeleton.lean with no diagnostics; shared outputs unchanged.`
+  Receipt file: `claude-moise-agent-a/DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraSkeleton.json`.
+  Host Lean count before successful check: 2; this lease one worker.
+  Transitive imports checked: no Skeleton modules, no other lane untracked modules.
+  Final axiom/linter audit pending; this is the first tetrahedron stage, not the P7 leaf.
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T22:14:48.2006663Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean. Checker exit: 0.
+Sub-leaf list: All overlap module declarations: foundational axioms and thirteen linters; three cited accepted providers axiom-audited. Prior audit math/linter checks passed, but one probe identifier line was 101 characters; shortened without changing the audit conditions.
+SHA-256: BCD9D856A84418CDCBFE584D48F172DAB81B741DA13F7F270391D7EB7508964D
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+
+# Codex item 15
+
+## Punctured-link and disjoint-polygon filling checked (2026-09-23)
+
+- Module: TorusDisjointCircleFilling.lean
+- SHA-256: CA5AAAD0216EF64855B7C562C55A17D441E0197BA05254181E4D838C6BBC0332
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\TorusDisjointCircleFilling.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Augment a disjoint carrying circle family with a nullhomotopic boundary circle and apply the checked corrected BQ zero-image theorem to obtain its boundary disk.
+
+- Module: Section34CompactPolygonFilling.lean
+- SHA-256: FB762CC768C88D17C648868062460B759C9AD17CD1CEF0184085A10BE91B149E
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPolygonFilling.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: A vertex polygon disjoint from an incident face trace and its meridians bounds a vertex-sphere disk avoiding that face's closed splitting disks.
+
+- Module: Section34CompactVertexLink.lean
+- SHA-256: EECECC2C62E542F5D906FDE9E526114BC3EEDBC2010A5D4AF2D157EBD0823947
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexLink.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Coarse carrier containment and uniqueness; non-original graph vertices lie in a unique coarse edge; original vertex-link vertices parametrise the actual fine incident edges injectively and surjectively.
+
+- Module: Section34CompactPuncturedLink.lean
+- SHA-256: 0B1551CF5739532172394E5118C08D72AC6E864523A2A4A2D8557A1E589C98AA
+- Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPuncturedLink.json
+- Verified: exit 0, zero diagnostics, stable source, shared artifacts unchanged.
+- Sub-leaf: Equality on faces avoiding a marked incident edge propagates to all other incident fine edges. The original-vertex case uses the connected surface edge graph with a vertex deleted; the subdivision case has exactly two incident edges.
+
+- Tree-external audit: C:\Users\liao9\AppData\Local\Temp\codex-trace\PuncturedLinkAudit.lean
+- Audit receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\PuncturedLinkAudit.receipt.json
+- Audit SHA-256: A3864F569B0D5BD68257150E0D531896BE5E78607C9AA7E0AC68A8A82E70C8A7
+- All 76 selected declarations from the twenty-four modules pass all thirteen linters;
+  axioms are contained in propext / Classical.choice / Quot.sound.
+- Sub-leaf 5 continues with the returning-arc foreign-mouth exclusion, then exact bigon
+  extraction and its innermost all-face trace avoidance. No hard stop has been found.
+- Compact and manifold headlines remain open; no frozen/P6/Skeleton/foreign-lane dependency used.
+
+# Codex item 14
+
+## Resumed cylinder route: STOP on zero-axis and end-disk compatibility
+
+The owner requested edge-by-edge gluing using the newly accepted unit-solid-cylinder coordinates.
+Read and checked the actual declarations and their proof chain:
+- SplitDiskCylinderCoordinates.lean:82-89, IsTube.exists_unitSolidCylinder_coordinates;
+- TubeCenteredPrismCoordinates.lean:110-123, IsTube.exists_centered_prism_coordinates;
+- CenteredDiskSimplexMap.lean:62-65, the centered disk-to-simplex map;
+- CanonicalTowerExists.lean:130 onwards, the actual consumer of the cylinder coordinates.
+
+Exact interface mismatch 1: the accepted cylinder theorem fixes the transverse meridian disk,
+its boundary circle, and the single point phi(0) = h(edge centroid). It does not supply
+```lean
+φ '' {x ∈ unitSolidCylinder | x 0 = 0 ∧ x 2 = 0} =
+  h '' convexHull ℝ ({u, v} : Set E3)
+```
+The centered prism theorem also only marks (stdCenter 1, 0), along with the two half-cylinder
+images. CenteredDiskSimplexMap centers the transverse disk, without prescribing the longitudinal
+curve in either vertex cell. CanonicalTowerExists uses precisely these weaker conclusions.
+
+Exact gluing mismatch 2: write Puv = h '' C u union h '' C v, the actual full cylinder image.
+For triangle vertices u,v,w, the actual intersection is
+Puv intersection Pvw = h '' C v union h '' D {u,w}.
+Moreover h v belongs to the AMBIENT INTERIOR of that intersection. Thus these full cylinder
+images do not meet in a common two-dimensional splitting disk. Reparametrizing end disks by a
+center-fixing disk homeomorphism does not change this three-dimensional intersection.
+Splitting disks in IsTube are indexed by edges and meet the graph at their edge centroids
+(IsTube.splitMidpoint); there is no supplied splitting disk at each original rim vertex.
+
+New real module: TubeEdgePairOverlap.lean.
+Sub-leaf list:
+1. IsTube.inter_image_pairs_eq: exact full pair-cylinder intersection for the triangle.
+2. IsTube.mem_interior_inter_image_pairs: the shared vertex image is an interior point.
+3. IsTube.not_isPLBall_inter_image_pairs_of_lt_three: the overlap cannot be a PL ball of
+   dimension less than three, in particular it is not a PL end disk.
+All are proved directly from IsTube and existing native APIs. No new named input was introduced.
+
+STOP under the owner's explicit gluing-compatibility condition. The source zero-marked rim core
+buffer remains unproved. To use a cyclic end-disk construction, one still needs actual pieces
+whose intersections are the prescribed end disks, with compatible coordinates carrying the
+longitudinal zero sections onto the actual rim subarcs. The existing full two-vertex-cell
+cylinders do not supply this decomposition. No cyclic product, radial outer enlargement, marked
+transport, inner shrinking, Moise331OnTube application or frozen-leaf assembly was claimed.
+This establishes a failure of the proposed identification; the original frozen existence leaf
+remains open.
+
+Final audit: all non-auto declarations of TubeEdgePairOverlap pass the thirteen standard
+linters and have axioms within propext / Classical.choice / Quot.sound. The three cited cylinder,
+centered prism and centered disk provider endpoints also pass the same axiom whitelist.
+Static checks: lines at most 100 codepoints, no trailing whitespace or forbidden constructs;
+488-module DifferentialGeometry dependency closure, no Skeleton imports. No accepted source,
+foreign-lane source, aggregate or Git state was written. Existing log text was preserved.
+
+Module SHA-256: 6AE98B61B2CF4CC865ED53B3ADE4F2A0ABC8003E514EB82450174D54B2837511
+Module receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.json
+Audit SHA-256: BCD9D856A84418CDCBFE584D48F172DAB81B741DA13F7F270391D7EB7508964D
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.receipt.json
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TubeEdgePairOverlap.lean with no diagnostics; shared outputs unchanged.
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14CylinderOverlap.lean with no diagnostics; shared outputs unchanged.
+```
+
+Read-only provider source identities:
+SplitDiskCylinderCoordinates: 358EBD7E737A8DBA41781B4BA670E565C92A26BDD2D6A1F5A55E1E8452EC4AA6
+TubeCenteredPrismCoordinates: E3C383931184ACECF702CEB7E6BCBE8339CF0680ADE8E30CDB7483FF83B7BCD6
+CanonicalTowerExists: C90B927C2BE807585CC8A8881947BCF67DB0174C005F484B2E64C9D16085CC98
+CenteredDiskSimplexMap: 9FB53B3098AC32D7F16D81E8C490F21D08CF6C6CCB80FA5E1CE0CC5757C6C7A3
+
+## Owner-requested immediate handoff — codex-moise-recon (2026-09-23)
+
+The owner requested return now because the receiving lane will repeat the audit. All six frozen clauses had compiled with zero diagnostics in Section34EdgeMatchingLeaf. The final complete indexed audit found no axiom errors; it reported only an unused NormedSpace parameter in CircleDegreeOrientation and the two frozen SecondCountableTopology instances in the leaf.
+
+Both linter fixes are source-written: the tool parameter was removed, and the frozen instances are explicitly retained in the proof body. The exact frozen declaration and variable block are unchanged. The dependency refresh after those fixes was stopped on the owner's instruction before the full sequence and final audit completed. Do not treat the current source manifest as a final fresh receipt for these two changed modules.
+
+Resume the remaining private checks using `C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\cgn-linter-rebuild-order.txt`, then run `audit-cgn-edge-matching-final.lean` under the receiver's own lease. This audit uses Lean's indexed declaration list and verifies its coverage against the full environment. It covers 104 modules / every non-automatic declaration with the three-foundational-axiom whitelist and thirteen environment linters.
+
+No mathematical sub-leaf remains. Remaining delivery gate: finish dependency refresh and rerun the final audit after the two linter fixes. No Git writes, frozen-source edits, or root-aggregate edits were performed. Own active compiler process and its parent rebuild loop were stopped for this immediate handoff.
+Current leaf SHA-256: E5E6FA5F9FD8FD87381DC69D089DCCCF21CFA9C8B1D4800CFA6A02B894DDF9CE
+Current CircleDegreeOrientation SHA-256: 209F4B66B8673D1F766B3C4F7722CCF7E172AFE41F764DE58051F6C66043D132
+
+
+## DifferentialGeometry.Topology.PiecewiseLinear.CircleDegreeOrientation — linter repair checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.CircleDegreeOrientation
+- Current SHA-256: 209F4B66B8673D1F766B3C4F7722CCF7E172AFE41F764DE58051F6C66043D132
+- Change: CircleDegreeOrientation drops its mathematically unused NormedSpace argument. The frozen leaf retains both original SecondCountableTopology instances explicitly in its proof body; its complete declaration and variable block remain unchanged. No linter suppression.
+- Sub-leaves remain: integral circle degree versus positivity, and all six frozen edge-matching clauses, respectively.
+- Refreshed all 18 affected modules in dependency order, with a host guard before each check. Full axiom and environment-linter audit follows.
+
+
+## DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf — linter repair checked (codex-moise-recon, 2026-09-23)
+
+- Checker: C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1 -Checkout D:\differential-geometry-moise-int -Token codex-moise-recon-20260922 -OutputRoot C:\Users\liao9\AppData\Local\Temp\codex-moise-recon -Module DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf
+- Current SHA-256: E5E6FA5F9FD8FD87381DC69D089DCCCF21CFA9C8B1D4800CFA6A02B894DDF9CE
+- Change: CircleDegreeOrientation drops its mathematically unused NormedSpace argument. The frozen leaf retains both original SecondCountableTopology instances explicitly in its proof body; its complete declaration and variable block remain unchanged. No linter suppression.
+- Sub-leaves remain: integral circle degree versus positivity, and all six frozen edge-matching clauses, respectively.
+- Refreshed all 18 affected modules in dependency order, with a host guard before each check. Full axiom and environment-linter audit follows.
+
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T22:27:00.8381333Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRadialBoundary. Checker exit: 1.
+Sub-leaf list: Corrected item-14 cone route: mixed derived-face centroids on actual graph-cell frontier; two distinct collinear frontier points in a vertex-edge-triangle flag; obstruction to coning that frontier linearly from the original vertex.
+SHA-256: 0E6F9104C974EB3E5B4029DD693DBF2EA38B9999AE376E12CD840ED896C5B83B
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:26:15: error: typeclass instance problem is stuck
+  IsStrictOrderedRing ?m.46
+
+Note: Lean will not try to resolve this typeclass instance problem because the first, second, and third type arguments to `IsStrictOrderedRing` contain metavariables. These arguments must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:42:15: error: typeclass instance problem is stuck
+  IsStrictOrderedRing ?m.107
+
+Note: Lean will not try to resolve this typeclass instance problem because the first, second, and third type arguments to `IsStrictOrderedRing` contain metavariables. These arguments must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:94:86: error: Application type mismatch: The argument
+  hd
+has type
+  d ∈ (barycentricSubdivision L).vertices
+of sort `Prop` but is expected to have type
+  Geometry.SimplicialComplex ℝ ?m.232
+of sort `Type ?u.153` in the application
+  @exists_eq_centroid_of_singleton_mem_barycentricSubdivision ?m.232 ?m.233 ?m.234 ?m.235 hd
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:141:66: error: unsolved goals
+E : Type u_1
+inst✝¹ : NormedAddCommGroup E
+inst✝ : NormedSpace ℝ E
+M L : Geometry.SimplicialComplex ℝ E
+hLM : L.faces ⊆ M.faces
+hcard : ∀ a ∈ L.faces, a.card ≤ 2
+e t : Finset E
+he : e ∈ L.faces
+ht : t ∈ M.faces
+het : e ⊆ t
+hec : e.card = 2
+htc : 2 < t.card
+v : E
+hve : v ∈ e
+c : E := Finset.centroid ℝ e id
+d : E := Finset.centroid ℝ t id
+hv : {v} ∈ M.faces
+hetne : e ≠ t
+hvne : {v} ≠ e
+hvtne : {v} ≠ t
+hvc : v ≠ c
+hvd : v ≠ d
+hcd : c ≠ d
+hdL : d ∉ (barycentricSubdivision L).vertices
+hflag : IsFlag M {e, t}
+hsub : ∀ a ∈ {e, t}, {v} ⊆ a
+hpair : {c, d} ∈ (dualCell M {v} hv).faces
+hflag' : IsFlag M {{v}, e, t}
+hsub' : ∀ a ∈ {{v}, e, t}, {v} ⊆ a
+htriple : {v, c, d} ∈ (dualCell M {v} hv).faces
+x : E := Finset.centroid ℝ {v, c, d} id
+y : E := Finset.centroid ℝ {c, d} id
+hx : x ∈ frontier (graphDualCell M L v).space
+hy : y ∈ frontier (graphDualCell M L v).space
+⊢ {v, c, d}.centerMass (Finset.centroidWeights ℝ {v, c, d}) id = 3⁻¹ • v + (3⁻¹ • c + 3⁻¹ • d)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:143:50: error: unsolved goals
+E : Type u_1
+inst✝¹ : NormedAddCommGroup E
+inst✝ : NormedSpace ℝ E
+M L : Geometry.SimplicialComplex ℝ E
+hLM : L.faces ⊆ M.faces
+hcard : ∀ a ∈ L.faces, a.card ≤ 2
+e t : Finset E
+he : e ∈ L.faces
+ht : t ∈ M.faces
+het : e ⊆ t
+hec : e.card = 2
+htc : 2 < t.card
+v : E
+hve : v ∈ e
+c : E := Finset.centroid ℝ e id
+d : E := Finset.centroid ℝ t id
+hv : {v} ∈ M.faces
+hetne : e ≠ t
+hvne : {v} ≠ e
+hvtne : {v} ≠ t
+hvc : v ≠ c
+hvd : v ≠ d
+hcd : c ≠ d
+hdL : d ∉ (barycentricSubdivision L).vertices
+hflag : IsFlag M {e, t}
+hsub : ∀ a ∈ {e, t}, {v} ⊆ a
+hpair : {c, d} ∈ (dualCell M {v} hv).faces
+hflag' : IsFlag M {{v}, e, t}
+hsub' : ∀ a ∈ {{v}, e, t}, {v} ⊆ a
+htriple : {v, c, d} ∈ (dualCell M {v} hv).faces
+x : E := Finset.centroid ℝ {v, c, d} id
+y : E := Finset.centroid ℝ {c, d} id
+hx : x ∈ frontier (graphDualCell M L v).space
+hy : y ∈ frontier (graphDualCell M L v).space
+hxc : x = 3⁻¹ • v + 3⁻¹ • c + 3⁻¹ • d
+⊢ {c, d}.centerMass (Finset.centroidWeights ℝ {c, d}) id = 2⁻¹ • c + 2⁻¹ • d
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:142:13: warning: This simp argument is unused:
+  centroid_eq_sum
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [x, hvc, hvd, hcd, add_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:142:30: warning: This simp argument is unused:
+  hvc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [x, centroid_eq_sum, hvd, hcd, add_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:142:35: warning: This simp argument is unused:
+  hvd
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [x, centroid_eq_sum, hvc, hcd, add_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:142:40: warning: This simp argument is unused:
+  hcd
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [x, centroid_eq_sum, hvc, hvd, add_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:144:13: warning: This simp argument is unused:
+  centroid_eq_sum
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [y, hcd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.lean:144:30: warning: This simp argument is unused:
+  hcd
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [y, centroid_eq_sum]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\GraphDualCellRadialBoundary.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\GraphDualCellRadialBoundary.log and .json
+
+```
+

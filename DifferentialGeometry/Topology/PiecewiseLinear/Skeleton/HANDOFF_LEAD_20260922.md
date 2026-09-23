@@ -568,3 +568,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   Lead acceptance `accept-EM` queued after PR #15's; wiring (delete the CGN leaf, import the leaf module, register
   the modules, ledger B1.c) is NOT automatic. Also queued/left: PR #18 (single-face replacement, two modules, isolated
   branch) and PR #19 (§31 leaf 2, 26 modules) — owner: leave for now.
+* 12:30 (09-24) - accepted Codex item 14's 56 leaf-1 bricks (cut frame complete, clause 11 done, clause 9 recognition);
+  the leaf stays open on the zero-marked rim core buffer (route note in B1.b.8). Physical `sorry` 14.
