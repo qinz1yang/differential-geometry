@@ -10158,6 +10158,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShorten
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Lp
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Sobolev
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.LocalExistence
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.SmoothData
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.TangentVariation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Bounds
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Euclidean
@@ -13509,6 +13510,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBarrierComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalAllLowBridge
 import DifferentialGeometry.Topology.Combinatorics.FiberEnumeration
 import DifferentialGeometry.Topology.Combinatorics.BranchUpdates
 import DifferentialGeometry.Topology.Compactness.FrontierSurvival

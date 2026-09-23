@@ -160,6 +160,57 @@ theorem flatMetric_inner_mfderiv_coe (x a b : ℝ) :
   change a * (b * _) = a * b
   rw [flatMetric_parameterTangent_unit, mul_one]
 
+
+section
+
+variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+
+def graphMetricCoefficient (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) :
+    C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯ :=
+  ⟨fun z => 1 + ‖mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z (parameterTangent z)‖ ^ 2,
+    contMDiff_const.add ((contDiff_norm_sq ℝ).contMDiff.comp
+      (contMDiff_mfderiv_parameterTangent f.contMDiff (m := ∞) (by simp) le_rfl))⟩
+
+@[simp] theorem graphMetricCoefficient_apply
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) (z : AddCircle (1 : ℝ)) :
+    graphMetricCoefficient f z =
+      1 + ‖mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z (parameterTangent z)‖ ^ 2 := rfl
+
+theorem graphMetricCoefficient_pos
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) (z : AddCircle (1 : ℝ)) :
+    0 < graphMetricCoefficient f z := by
+  rw [graphMetricCoefficient_apply]
+  positivity
+
+def graphMetric (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) :
+    SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)) :=
+  metricOfCoefficient (graphMetricCoefficient f) (graphMetricCoefficient_pos f)
+
+@[simp] theorem metricCoefficient_graphMetric
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) :
+    metricCoefficient (graphMetric f) = graphMetricCoefficient f :=
+  metricCoefficient_metricOfCoefficient _ _
+
+theorem graphMetric_inner
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) (z : AddCircle (1 : ℝ))
+    (v w : TangentSpace 𝓘(ℝ, ℝ) z) :
+    (graphMetric f).inner z v w = flatMetric.inner z v w +
+      inner ℝ (show F from mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z v)
+        (show F from mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z w) := by
+  obtain ⟨a, rfl⟩ := exists_smul_parameterTangent z v
+  obtain ⟨b, rfl⟩ := exists_smul_parameterTangent z w
+  rw [graphMetric, metricOfCoefficient_inner, graphMetricCoefficient_apply]
+  let D : TangentSpace 𝓘(ℝ, ℝ) z →L[ℝ] F := mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z
+  change (1 + ‖D (parameterTangent z)‖ ^ 2) *
+    flatMetric.inner z (a • parameterTangent z) (b • parameterTangent z) =
+      flatMetric.inner z (a • parameterTangent z) (b • parameterTangent z) +
+        inner ℝ (D (a • parameterTangent z)) (D (b • parameterTangent z))
+  simp only [map_smul, smul_apply, smul_eq_mul, flatMetric_parameterTangent_unit,
+    inner_smul_left, inner_smul_right, conj_trivial, real_inner_self_eq_norm_sq]
+  ring
+
+end
+
 end AddCircle
 
 end

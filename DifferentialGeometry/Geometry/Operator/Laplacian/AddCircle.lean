@@ -191,4 +191,13 @@ theorem laplacian_flatMetric_coe
   rw [laplacian_flatMetric hf]
   exact (deriv_deriv_comp_coe hf x).symm
 
+
+@[simp] theorem laplacianPrincipalCoefficient_graphMetric
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) (z : AddCircle (1 : ℝ)) :
+    laplacianPrincipalCoefficient (graphMetric f) z =
+      (1 + ‖mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z (parameterTangent z)‖ ^ 2)⁻¹ := by
+  rw [laplacianPrincipalCoefficient_apply, metricCoefficient_graphMetric,
+    graphMetricCoefficient_apply]
+
 end AddCircle
