@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallRoof
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallFrontiers
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingMarkerRoutes
 
 open Set Topology
 
@@ -21,7 +22,13 @@ theorem exists_pierced_square_ball_pair {K : Set (ℝ × ℝ)} (hK : IsCompact K
       A \ (univ ×ˢ Ioo (-a) a) =
         (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (-1 : ℝ) 0) \ (univ ×ˢ Ioo (-a) a) ∧
       B \ (univ ×ˢ Ioo (-a) a) =
-        (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (0 : ℝ) 1) \ (univ ×ˢ Ioo (-a) a) := by
+        (Metric.closedBall (0 : ℝ × ℝ) 1 ×ˢ Icc (0 : ℝ) 1) \ (univ ×ˢ Ioo (-a) a) ∧
+      ∀ p₀ ∈ K ×ˢ {(0 : ℝ)}, ∀ p₁ ∈ K ×ˢ {(0 : ℝ)}, p₀ ≠ p₁ →
+        ∃ (L₀ L₁ : Set ((ℝ × ℝ) × ℝ)) (q₀ q₁ : (ℝ × ℝ) × ℝ),
+          IsCompact L₀ ∧ IsCompact L₁ ∧ IsConnected L₀ ∧ IsConnected L₁ ∧
+          Disjoint L₀ L₁ ∧ p₀ ∈ L₀ ∧ q₀ ∈ L₀ ∧ p₁ ∈ L₁ ∧ q₁ ∈ L₁ ∧
+          L₀ ⊆ interior A ∩ (univ ×ˢ Ioo (-a) a) ∧
+          L₁ ⊆ interior B ∩ (univ ×ˢ Ioo (-a) a) ∧ q₀ ∉ B ∧ q₁ ∉ A := by
   have h0 : (0 : ℝ × ℝ) ∈ interior (Metric.closedBall (0 : ℝ × ℝ) 1) := by
     rw [interior_closedBall _ one_ne_zero]
     exact Metric.mem_ball_self zero_lt_one
@@ -54,7 +61,7 @@ theorem exists_pierced_square_ball_pair {K : Set (ℝ × ℝ)} (hK : IsCompact K
     · exact Or.inl hxl
     · exact Or.inr (le_of_not_gt fun hxu => hx ⟨mem_univ _, lt_of_not_ge hxl, hxu⟩)
   refine ⟨A, B, piercingHeightMove g a, piercingHeightMove (fun x => -g x) a,
-    hA, hB, ?_, ?_, hfix _, hfix _, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    hA, hB, ?_, ?_, hfix _, hfix _, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · have hp := isPLHomeomorphOn_piercingHeightMove hg a hP.isPolyhedron (-1) 0
     rwa [piercingHeightMove_image_lower ha ha1 hga, ← hAe] at hp
   · have hp := isPLHomeomorphOn_piercingHeightMove hneg a hP.isPolyhedron 0 1
@@ -98,5 +105,14 @@ theorem exists_pierced_square_ball_pair {K : Set (ℝ × ℝ)} (hK : IsCompact K
   · rw [hBe, ← piercingHeightMove_image_upper ha ha1
       hnga]
     exact piercingHeightMove_image_diff_slab (fun x => -g x) a _
+  · intro p₀ hp₀ p₁ hp₁ hne
+    have ht₀ : p₀.2 = 0 := hp₀.2
+    have ht₁ : p₁.2 = 0 := hp₁.2
+    have hg₀ := (le_abs_self (g p₀.1)).trans (hga p₀.1 (interior_subset (hKP hp₀.1)))
+    have hg₁ := (le_abs_self (g p₁.1)).trans (hga p₁.1 (interior_subset (hKP hp₁.1)))
+    rw [hAe, hBe]
+    exact exists_disjoint_piercing_marker_routes (continuousOn_univ.mp hg.continuousOn) ha1
+      (hKP hp₀.1) (hKP hp₁.1) (by rw [ht₀]; constructor <;> linarith)
+      (by rw [ht₁]; constructor <;> linarith) ⟨hgK _ hp₀.1, hg₀⟩ ⟨hgK _ hp₁.1, hg₁⟩ hne
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -37,7 +37,7 @@ theorem exists_section34_pierced_edge_cells
   have hD₁ := section34_splitDisk_subset_vertex_boundary hframe hends (ends e).2 e (Or.inr rfl)
   rw [h₀.boundary_eq_frontier] at hD₀
   rw [h₁.boundary_eq_frontier] at hD₁
-  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq⟩ :=
+  obtain ⟨A, B, hA, hB, hnonempty, hcircle, hmid, hlens, hAB, hcover, hAeq, hBeq, -⟩ :=
     exists_pierced_cell_pair_covering_compact h₀.isPolyhedralBall h₁.isPolyhedralBall
       (hends e ▸ hD.isPolyhedralBall) ((hends e).symm.subset.trans hD₀)
       ((hends e).symm.subset.trans hD₁) hO ((hends e).symm.subset.trans hDO) hG hGC
