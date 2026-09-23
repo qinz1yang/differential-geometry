@@ -547,3 +547,18 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   leaves that wait on the trace and on compact P7.
 * 11:40 (09-24) - accepted worker e's compact P7 (28 modules): Compact has 2 leaves (cut-and-graph, trace).
   Physical `sorry` 14. Lease e free; the manifold P7 twin is Codex item 17 on lease a (owner to launch).
+* 13:20 (09-24) — SMOOTH CONE VERIFIED (collaborator, Mac, PR #17): 341/341 modules zero diagnostics with the host
+  checker's flags; audit of 118 batch + 7 extra modules, 1682 declarations, axioms within the three, no sorryAx, 13
+  linters. His source-repairs patch (DirectionalJets name qualification, an unused CompleteSpace instance removed in
+  SmoothEmbeddingComposition, headers, line wraps) is applied on `codex/moise-smooth-integration@f4d228f67`; the
+  host lane c's partial replay (stopped by the owner) is superseded. PR #17 itself is not merged (targets the wrong
+  branch; its package sits in the gitignored top-level consult/): he re-delivers the package under
+  `PiecewiseLinear/consult/` against the isolated branch. Owed at entry into the shared tree: one host replay of the
+  cone (plan §5) — the collaborator's receipts are the verification of record until then. Lane c (S² uniqueness,
+  single-face replacement) continues with the collaborator on the isolated branch.
+* 13:20 (09-24) — Codex item 14 stopped on the zero-marked rim core buffer; its 56 bricks are in lead acceptance
+  (`accept-C14`), to be registered with the leaf left open (ledger B1.b.8 carries the route note: glue the per-edge
+  `IsTube.exists_unitSolidCylinder_coordinates` cylinders). Collaborator PR #15 (Package E, 77 modules,
+  `exists_section34CutFrame` restated) fetched as `pr15`; one file name clashes with item 14's
+  `GraphDualCellRestriction.lean` (different content): rename the PR's copy at acceptance. Item 17 (manifold P7)
+  ready for launch on lease a.
