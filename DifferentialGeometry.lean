@@ -12926,6 +12926,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedParabolicPointSelection
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.CollarUnion
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images
+import DifferentialGeometry.Topology.OpenPartialHomeomorph.CollarComponent
 import DifferentialGeometry.Topology.LocallyFinite.Superlevel
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
 import DifferentialGeometry.Topology.DenseEmbedding
@@ -13398,6 +13399,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialLevelGraph
 import DifferentialGeometry.Geometry.Neck.SpatialUnitBandReturn
 import DifferentialGeometry.Topology.Manifold.RoundCylinderBoundaryOrientation
 import DifferentialGeometry.Geometry.Neck.SpatialFreshBand
+import DifferentialGeometry.Geometry.Neck.CompactExteriorReturn
 import DifferentialGeometry.Topology.Manifold.SphereCylinderReturnDegree
 import DifferentialGeometry.Topology.CylinderBoundarySide
 import DifferentialGeometry.Topology.GraphBandComplement
