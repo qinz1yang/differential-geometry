@@ -52,5 +52,3 @@ theorem connectedComponentIn_interval_side
       ((hinterior z t ht).mpr ht0)
 
 end DifferentialGeometry.Topology
-
-
