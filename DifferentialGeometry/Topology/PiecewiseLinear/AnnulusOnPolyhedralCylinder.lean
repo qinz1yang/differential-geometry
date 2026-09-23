@@ -6,6 +6,28 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
+theorem IsAnnulusOn.symm {X : Type*} [TopologicalSpace X] {A A₀ A₁ : Set X}
+    (h : IsAnnulusOn A A₀ A₁) : IsAnnulusOn A A₁ A₀ := by
+  obtain ⟨φ, h₀, h₁⟩ := h
+  let e := (Homeomorph.refl (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1)).prodCongr
+    unitInterval.symmHomeomorph
+  let ψ := e.trans φ
+  have key (s : ℝ) : Subtype.val '' (φ '' {p | (p.2 : ℝ) = s}) =
+      Subtype.val '' (ψ '' {p | (p.2 : ℝ) = 1 - s}) := by
+    apply congrArg (image Subtype.val)
+    apply Subset.antisymm
+    · rintro y ⟨p, hp, rfl⟩
+      refine ⟨e.symm p, ?_, congrArg φ (e.apply_symm_apply p)⟩
+      change 1 - (p.2 : ℝ) = 1 - s
+      rw [hp]
+    · rintro y ⟨p, hp, rfl⟩
+      refine ⟨e p, ?_, rfl⟩
+      change 1 - (p.2 : ℝ) = s
+      change (p.2 : ℝ) = 1 - s at hp
+      linarith
+  exact ⟨ψ, by simpa only [sub_self] using h₁.trans (key 1),
+    by simpa only [sub_zero] using h₀.trans (key 0)⟩
+
 theorem isAnnulusOn_of_homeomorph_stdSimplexBoundary_prod
     {X : Type*} [TopologicalSpace X] {A : Set X}
     (φ : (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) ≃ₜ A) :
@@ -38,6 +60,24 @@ theorem isAnnulusOn_of_homeomorph_stdSimplexBoundary_prod
     · rintro y ⟨p, hp, rfl⟩
       exact ⟨e p, hp, rfl⟩
   exact ⟨ψ, key 0, key 1⟩
+
+theorem annulus_level_subset_sdiff_ends
+    {X : Type*} [TopologicalSpace X] {A : Set X}
+    (φ : (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) ≃ₜ A) {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    Subtype.val '' (φ '' {p | p.1.2 = t}) ⊆ A \
+      (Subtype.val '' (φ '' {p | p.1.2 = 0}) ∪
+        Subtype.val '' (φ '' {p | p.1.2 = 1})) := by
+  have hdis {r s : ℝ} (hrs : r ≠ s) :
+      Disjoint (Subtype.val '' (φ '' {p | p.1.2 = r}))
+        (Subtype.val '' (φ '' {p | p.1.2 = s})) := by
+    apply disjoint_image_of_injective Subtype.val_injective
+    apply disjoint_image_of_injective φ.injective
+    exact disjoint_left.mpr fun p hp hq => hrs (hp.symm.trans hq)
+  rintro x ⟨y, hy, rfl⟩
+  refine ⟨y.2, ?_⟩
+  rintro (h₀ | h₁)
+  · exact disjoint_left.mp (hdis ht.1.ne') ⟨y, hy, rfl⟩ h₀
+  · exact disjoint_left.mp (hdis ht.2.ne) ⟨y, hy, rfl⟩ h₁
 
 theorem exists_isAnnulusOn_of_homeomorph_stdSimplexBoundary_prod
     {X : Type*} [TopologicalSpace X] {A : Set X}
