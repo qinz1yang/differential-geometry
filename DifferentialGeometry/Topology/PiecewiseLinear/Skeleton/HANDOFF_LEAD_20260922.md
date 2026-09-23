@@ -469,3 +469,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   has no consumer (grep) — retire on the owner's word.
 * 17:50 (09-23) — accepted worker c's annulus taming (19 modules); the sphere leaf is reduced to the uniqueness of
   the smooth structure on `S²` (owner decision). Physical `sorry` 27. Lease c held for Codex.
+* 18:20 (09-23) — registered Codex lane 2's 16 surface-trace modules (C1 still open on the inter-cell labelling,
+  cap reparametrisation and the ray clause).

@@ -1427,10 +1427,10 @@ External #print axioms audits of the new public endpoints all exited 0 and found
 2026-09-23T14:42:53.9105134Z
 )
 
-Module: DerivedCellSurfaceTrace.lean. Checker exit: 
+Module: DerivedCellSurfaceTrace.lean. Checker exit:
 1
 .
-SHA-256: 
+SHA-256:
 088A2AE5BF06617BDB08ADD22C3E6E22161F8AEFF21EDFACC711F12A710D9394
 Sub-leaf list: derived cell base intersection with a subcomplex; PL ball trace for a boundary face of a manifold with boundary. The branch surface producer and frozen endpoint remain OPEN.
 
@@ -1492,9 +1492,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\DerivedCellSurfaceTrace.log and .json
- 
+
 ```
 
 
@@ -1553,9 +1553,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...x.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\UpperLinkSubcomplex.log and .json
- 
+
 ```
 
 
@@ -1617,9 +1617,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.log and .json
- 
+
 ```
 
 
@@ -1642,9 +1642,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.log and .json
- 
+
 ```
 
 
@@ -1666,9 +1666,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...y.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\ConeSphereBoundary.log and .json
- 
+
 ```
 
 
@@ -1843,9 +1843,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarFibers.log and .json
- 
+
 ```
 
 
@@ -1926,9 +1926,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceSubdivision.log and .json
- 
+
 ```
 
 
@@ -1984,9 +1984,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.log and .json
- 
+
 ```
 
 
@@ -2027,9 +2027,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.log and .json
- 
+
 ```
 
 
@@ -2071,9 +2071,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneRectangle.log and .json
- 
+
 ```
 
 
@@ -2117,9 +2117,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneCharts.log and .json
- 
+
 ```
 
 
@@ -2161,9 +2161,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.log and .json
- 
+
 ```
 
 
@@ -2208,9 +2208,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceCharts.log and .json
- 
+
 ```
 
 
@@ -2360,9 +2360,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.log and .json
- 
+
 ```
 
 
@@ -2470,9 +2470,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.log and .json
- 
+
 ```
 
 
@@ -2549,9 +2549,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\CrossHalfPlaneSeparation.log and .json
- 
+
 ```
 
 
@@ -2620,9 +2620,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\DerivedCrossingArcs.log and .json
- 
+
 ```
 
 
@@ -2679,9 +2679,9 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 + ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
-    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen 
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
    tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceArcs.log and .json
- 
+
 ```
 
 
@@ -2697,3 +2697,162 @@ Checker output:
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceArcs.lean with no diagnostics; shared outputs unchanged.
 ```
 
+
+## Codex C1 surface trace audit (2026-09-23T15:59:09.3345657Z)
+
+Audit: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexC1Surface20260923.lean
+Checker exit: 0. SHA-256: FC5D64B32839D0C9D8B3F76CC53F760B5CBA610C300E05E8BC8F8A12DE78E3A7
+Sub-leaf list: transitive axioms of every nonautomatic declaration in the sixteen new modules; all thirteen environment linters excluding docBlame and docBlameThm. Allowed axioms: propext, Classical.choice, Quot.sound. The frozen branch-tube endpoint remains OPEN.
+
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexC1Surface20260923.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 8 - C1 surface trace: local producer verified, source matching OPEN
+
+Stopped at the source-compatible inter-cell labeling obligation. The frozen endpoint
+`exists_isSourceTrackedBranchTube` is OPEN. No leaf restatement was created and no call to
+`exists_isSourceTrackedBranchTube_of_markedCells` is claimed. No frozen statement,
+`LoopTheorem/ClosedBranchCaseOneTransport.lean`, root aggregate, other lane's source, compiler
+lease, or Git state was edited by this lane. All sixteen Lean modules below are new files.
+The only existing project file edited by this lane is this authorized fill log.
+
+The actual producer now available is `exists_subdivision_branchSurface_arcs` in
+`LoopTheorem/ClosedBranchTubeSurfaceArcs.lean`. From the original normal singular-cell and
+closed-branch hypotheses, it refines any finite starting subdivision. On each derived cell,
+for the two poles supplied by `exists_derivedCellChain`, it produces four PL surface arcs with
+those endpoints, exact pairwise intersection equal to the poles, and the full `hsep` clause.
+The arcs have the actual form `T i = (derivedNeighborhoodCellBase R s).space ∩ P i`, where the
+`P i` are real PL 2-balls, made subcomplexes of the same subdivision. Every comparable branch
+face lies in the boundary of each relevant quarter disk; this is why the chart cover controls
+the closed stars, not just the derived cells.
+
+Sub-leaf accounting:
+
+- CLOSED: upper links and derived-cell bases restrict to subcomplexes; intrinsic boundaries
+  commute with barycentric subdivision and vertex upper links; the boundary of a cone over a
+  PL sphere is its base.
+- CLOSED: the four rectangular half-plane disks, their exact intrinsic boundary readings,
+  their transport through a PL straightening chart, and their production at each actual branch
+  point after excluding all other branches.
+- CLOSED: compact finite chart selection and a common subdivision in which all quarter disks
+  are subcomplexes and every branch-face closed star lies in one chart. The starting
+  subdivision is preserved.
+- CLOSED: four PL arc parametrizations with prescribed poles, pairwise intersections, and
+  cyclic separation, via `exists_subdivision_branchSurface_arcs`.
+- CLOSED: `exists_singleton_cap_boundary_inter_surface` gives a unique cap-boundary crossing
+  and identifies the entire surface trace in the cap as the segment from its canonical pole
+  to that crossing. This is an unnormalized geometric statement.
+- CLOSED: source collar fibers are injective, meet the branch exactly at coordinate zero,
+  and distinct fibers over one branch point meet only there. They have PL realizations.
+  `exists_subdivision_branchCarrier_collarArms` includes the chosen source basepoint and all
+  four signed collar half-arms, as well as the branch and the full surface image, in a finite
+  ambient subdivision. Its data can be preserved by the later surface subdivision.
+
+Exact remaining marked-cell clauses:
+
+```lean
+harm : ∀ k < m, ∀ i,
+  T k i ∩ D₁ k = T (k + 1) i ∩ D₀ (k + 1)
+harmc : ∀ i,
+  T m i ∩ D₁ m = T 0 (fourSpokeFlipPerm i) ∩ D₀ 0
+hpt : ∀ k < m, ∀ i,
+  γ k i (3 / 4) = γ (k + 1) i (1 / 4)
+hptc : ∀ i,
+  γ m i (3 / 4) = γ 0 (fourSpokeFlipPerm i) (1 / 4)
+hray : ∀ i,
+  γ 0 i (1 / 2) = ι (D (ρ (α i, v i)))
+```
+
+The missing bridge is a single source-compatible labeling of the independently produced
+local quarter disks. Their local geometric labels do not yet identify the same source sheet
+and collar side on a common cap. In particular, no proof here relates their resulting closing
+permutation to the connected double-cover monodromy and `fourSpokeFlipPerm`. The source-side
+assignment must also establish `α 0 = α 2`, `α 1 = α 3 = τ (α 0)` and the signs `+,+,-,-` for
+the marked midpoints. Neither a generic cyclic permutation nor the existence of unlabelled
+local disks proves these clauses.
+
+Also OPEN: simultaneous reparametrization of the proved single cap crossings to `1/4` and
+`3/4` (the exact `hb₀`, `hb₁` clauses), with the first source ray at `1/2`. The current arc
+producer prescribes only the two endpoints. No normalized crossing or midpoint identity is
+claimed. These are unproved obligations, not a counterexample or a proof that the frozen
+hypotheses are logically insufficient. No conclusion-shaped assumption, new axiom, or `sorry`
+was introduced to bypass them.
+
+Verification: every current source hash below matches a private checker receipt with exit
+code 0, zero diagnostics, and stable source. The private audit checks every nonautomatic
+declaration in all sixteen modules, permits only `propext`, `Classical.choice`, `Quot.sound`,
+and runs all thirteen environment linters except `docBlame` and `docBlameThm`.
+
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexC1Surface20260923.lean with no diagnostics; shared outputs unchanged.
+Audit SHA-256: FC5D64B32839D0C9D8B3F76CC53F760B5CBA610C300E05E8BC8F8A12DE78E3A7
+
+| Module | Lines | SHA-256 |
+|---|---:|---|
+| DerivedCellSurfaceTrace | 62 | 0118F3309E14599577478E6ADDAB28534FE4F29C66AF56006340621EDD963087 |
+| UpperLinkSubcomplex | 55 | D6AD532D83C30D2D1D5832636C8690B49397037AAD9F5B528EE798360317CDC3 |
+| UpperLinkBoundary | 81 | 7ED3E4FA57FE40F813589E37D3DABE05855665C1EA1CECD085EE71223F8C321B |
+| DerivedSurfaceArc | 65 | 7DC4DABDCA66BF912D5F5A729522F9CBAA871F854CF6C804958C76F268815224 |
+| ConeSphereBoundary | 39 | 69AA4646B6F00FD44FA9CE81A5637969B936A2F76CF4D11E94999373C5FB8569 |
+| DerivedSurfaceCap | 97 | BB0B3B42BD927812D03B8154C8EA24BED41B381760F34DAB66EFCEA355110D88 |
+| CrossHalfPlaneRectangle | 141 | 461D11EA6DD3583D00B51D165BE8F7E0FB3E4B61F5A570348D8226DBC65FA011 |
+| CrossHalfPlaneCharts | 85 | 874456FB6789F93002D6959282E674CC0B5643A1D7830E51FA24CCE0FBF156FA |
+| CrossHalfPlaneSeparation | 94 | F13C907FF13BEFD0E12094DC1ED85060754EA49597286F473D2E0C9FB841FDD9 |
+| DerivedCellCover | 81 | AC8D1C3CE4D8E447AB8BBF24E283D027BA85363E125537979378AADE8E223EBD |
+| DerivedCrossingArcs | 131 | D763F0500D2DBB4FE130A035D3B0FB5FC3E153722C91A930E594C2D16ABFE7E2 |
+| LoopTheorem.BranchCollarFibers | 110 | 1C7B0D33CAE77D5BF7DB3921C58B1C2B75949736F60D88E5EE617E192DAE3028 |
+| LoopTheorem.ClosedBranchTubeSourceSubdivision | 106 | E3E27E87A25E180E8458391D0BAB01978324D1DB3FC937883BCE14EDC7508034 |
+| LoopTheorem.ClosedBranchTubeSurfaceCharts | 75 | EDD11F46A3FA44346E78842170EE03F0DB7F690236C6324EB561F6790CBA803E |
+| LoopTheorem.ClosedBranchTubeSurfaceSubdivision | 87 | 5D452729E3EC918107146FB0E28049B1CEF417EFEE4D3082D1F815F7745BB3B9 |
+| LoopTheorem.ClosedBranchTubeSurfaceArcs | 109 | 1CDB58EABB60A3E247617DAF406343B73AB6FE490347520E17FDD51202059EE8 |
+
+The sixteen full import names are preserved in the private audit and in
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\CodexC1SurfaceModules20260923.txt.
+They were not registered in DifferentialGeometry.lean because this lane is restricted to new
+source files. Every one was built by the private checker and imported by the audit.
+
+Recorded at 2026-09-23T16:01:26.6860616Z.
+
+
+## Codex item 7 — simultaneous reference maps with disk-set correspondence (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.HoledSphereClosed. Checker exit: 0.
+SHA-256: 6C5E5889D60BA48EFFD9AB0AEC9A8FED90170D9BED19D97FC7D32A698A4EAB81
+Sub-leaf list: `IsPLSphere.isClosed_holed_disk_family`; the finite marked-sphere complement is closed, allowing PL gluing on closed pieces.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\HoledSphereClosed.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.MarkedSphereFamilyMap. Checker exit: 0.
+SHA-256: E740166C2A83C60BEEA435CCCC5628E5C8D01A1A8E33DDBFE3EC19B962377CDD
+Sub-leaf list: `IsPLSphere.exists_isPLHomeomorphOn_disk_family`; a PL map of two marked 2-spheres carries every disk in a finite disjoint family onto its corresponding disk as a set. It first maps the holed surface, then extends and glues the disks.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedSphereFamilyMap.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexIncidentEdge. Checker exit: 0.
+SHA-256: 67415F433FBEE6EC639964B134F34961CDE561A5CE44CB06D2D1951B7DE7FD94
+Sub-leaf list: `exists_section34Vertex_triangle`; `exists_section34Vertex_incident_edge`; every graph vertex is incident to an original triangle and at least one graph edge.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexIncidentEdge.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLCellBoundaryMarkedMap. Checker exit: 0.
+SHA-256: 776770A722370EC25CA2BC26AF21043CDBABB4F32F3FC748BD1E489BC1A92388
+Sub-leaf list: `exists_isPLHomeomorphInto_boundary_disk_family`; transports the finite marked-sphere map through PL 3-cell charts to charted manifolds, preserving all disk-set images.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellBoundaryMarkedMap.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34ReferenceSphereMaps. Checker exit: 0.
+SHA-256: 9D413889B5A32A4CF908C54D63A0B3D1D6B419B0DA5B66A66E5CE1DE71F3297A
+Sub-leaf list: `exists_section34_reference_sphere_maps`; simultaneously chooses one PL boundary-sphere map per vertex with boundary image `DvBd w` and every incident source splitting disk mapped as a SET onto the shared target `Dd e`. Relative orientation signs, positive corrections, pointwise edge agreement, torus and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ReferenceSphereMaps.lean with no diagnostics; shared outputs unchanged.
+```
