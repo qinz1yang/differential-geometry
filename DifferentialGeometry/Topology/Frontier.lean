@@ -70,3 +70,18 @@ theorem isOpen_iUnion_of_recurrent_frontier_updates
   exact ⟨interior (W k), interior_subset.trans (Set.subset_iUnion W k), isOpen_interior, hk⟩
 
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology
+
+open Set
+
+theorem closure_interior_eq_of_frontier_subset_closure_interior
+    {M : Type*} [TopologicalSpace M] {D : Set M} (hD : IsClosed D)
+    (hfront : frontier D ⊆ closure (interior D)) : closure (interior D) = D := by
+  apply Subset.antisymm hD.closure_interior_subset
+  intro x hx
+  by_cases hi : x ∈ interior D
+  · exact subset_closure hi
+  · exact hfront ((mem_frontier_iff_notMem_interior hx).mpr hi)
+
+end DifferentialGeometry.Topology

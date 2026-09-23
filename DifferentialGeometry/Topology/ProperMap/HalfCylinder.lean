@@ -1,6 +1,7 @@
 import Mathlib.Topology.Maps.Proper.CompactlyGenerated
 import Mathlib.Topology.Instances.NNReal.Lemmas
 import Mathlib.Topology.Semicontinuity.Basic
+import Mathlib.Topology.Order.DenselyOrdered
 
 set_option autoImplicit false
 open Set Filter
@@ -43,5 +44,39 @@ theorem isProperMap_of_uniform_scalar_divergence
   by_contra h
   have hbound := hB ⟨f z, hz, rfl⟩
   exact (not_lt_of_ge hbound) (hT z.1 z.2 (not_le.mp h).le)
+
+end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology
+
+variable {N M : Type*} [TopologicalSpace N] [TopologicalSpace M]
+
+theorem closure_image_positive_half_cylinder_of_isProperMap
+    (f : N × ℝ≥0 → M) (hf : IsProperMap f) :
+    closure (f '' (univ ×ˢ Ioi (0 : ℝ≥0))) = range f := by
+  rw [hf.isClosedMap.closure_image_eq_of_continuous hf.continuous,
+    closure_prod_eq, closure_univ, closure_Ioi]
+  have hnonneg : Ici (0 : ℝ≥0) = univ := by
+    apply eq_univ_of_forall
+    intro t
+    exact t.property
+  rw [hnonneg, univ_prod_univ, image_univ]
+
+omit [TopologicalSpace N] [TopologicalSpace M] in
+theorem range_sdiff_image_positive_half_cylinder
+    (f : N × ℝ≥0 → M) (hf : Function.Injective f) :
+    range f \ f '' (univ ×ˢ Ioi (0 : ℝ≥0)) = range (fun x => f (x, 0)) := by
+  ext y
+  constructor
+  · rintro ⟨⟨⟨x, t⟩, rfl⟩, hy⟩
+    have ht : t = 0 := by
+      by_contra h
+      exact hy ⟨(x, t), ⟨mem_univ _, lt_of_le_of_ne zero_le (Ne.symm h)⟩, rfl⟩
+    exact ⟨x, by rw [ht]⟩
+  · rintro ⟨x, rfl⟩
+    refine ⟨mem_range_self (x, 0), ?_⟩
+    rintro ⟨⟨z, t⟩, ht, heq⟩
+    have hz := congrArg Prod.snd (hf heq)
+    exact ht.2.ne' hz
 
 end DifferentialGeometry.Topology

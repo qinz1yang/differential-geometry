@@ -8,6 +8,9 @@ import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Frontier
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.LabelledCylinders
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
+import DifferentialGeometry.Topology.Compactness.ComplementCore
+import DifferentialGeometry.Topology.ProperMap.HalfCylinder
+import DifferentialGeometry.Topology.Manifold.ImmersionRange
 
 set_option autoImplicit false
 noncomputable section
@@ -94,10 +97,11 @@ private theorem NeckFrontierState.alive_nonempty [PreconnectedSpace M] [Noncompa
   obtain ⟨i, hi, _⟩ := mem_iUnion₂.mp hx
   exact ⟨i, hi⟩
 
-private theorem NeckFrontierState.exists_outward_graph
+private theorem NeckFrontierState.exists_outward_graph_of_neck
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
-    (allNeck : ∀ x ∈ _root_.frontier S.region, Nonempty (SpatialNeck g eps x)) :
+    (hneck : Nonempty (SpatialNeck g eps
+      ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ (p : M) (nk : SpatialNeck g eps p) (f : Sphere 2 → ℝ)
       (η : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2),
       ContMDiff I2 𝓘(ℝ) ∞ f ∧ (∀ q, |f q| < 1 / 10) ∧ f nk.center = 0 ∧
@@ -105,12 +109,7 @@ private theorem NeckFrontierState.exists_outward_graph
       (∃ r > 0, ∀ t, 0 < t → t < r → nk.map (nk.center, t) ∉ S.region) ∧
       p ∈ range (S.sphere i).map := by
   let x := (S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)
-  have hx : x ∈ _root_.frontier S.region := by
-    rw [S.frontier]
-    refine mem_iUnion₂.mpr ⟨i, hi, ?_⟩
-    rw [(S.sphere i).range_map]
-    exact mem_range_self _
-  obtain ⟨nk₀⟩ := allNeck x hx
+  obtain ⟨nk₀⟩ := hneck
   have hgraph := (Classical.choose_spec (exists_spatial_neck_level_graph_tolerance.{u})).2
   obtain ⟨κ, f, hf, hfsmall, hfzero, _, heq⟩ :=
     hgraph eps heps M g (S.sphere i).point x (S.sphere i).neck nk₀
@@ -287,16 +286,18 @@ private theorem NeckFrontierState.adapt_frontier
     · obtain ⟨j, hxj⟩ := mem_iUnion.mp hxr
       exact mem_iUnion₂.mpr ⟨j.val, j.property.1, (S.sphere j.val).range_map.symm ▸ hxj⟩
 
-private theorem NeckFrontierState.exists_step_at
+private theorem NeckFrontierState.exists_step_at_of_neck
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
     (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
-    (allNeck : ∀ x ∈ _root_.frontier S.region, Nonempty (SpatialNeck g eps x)) :
+    (hneck : Nonempty (SpatialNeck g eps
+      ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
+      (IsPreconnected S.region → IsPreconnected T.region) ∧
       (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
   classical
   obtain ⟨p, nk, f, η, hf, hfsmall, hfzero, hmap, hout, hpoint⟩ :=
-    NeckFrontierState.exists_outward_graph g eps ι S i hi heps allNeck
+    NeckFrontierState.exists_outward_graph_of_neck g eps ι S i hi heps hneck
   let Other := {j // j ∈ S.alive ∧ j ≠ i}
   let _ : Finite Other := Set.Finite.to_subtype
     (S.alive.finite_toSet.subset (fun _ h => h.1))
@@ -425,7 +426,17 @@ private theorem NeckFrontierState.exists_step_at
       rw [← hface]
       exact filled_lower_face_of_cylinder_attachment A hA S.regular hRclosed hfr hRavoid
         (hinter.trans hactive |>.trans hface.symm)
-    refine ⟨T, subset_union_left, Or.inl ⟨rfl, hi, p, nk, P,
+    have hconnected (hS : IsPreconnected S.region) : IsPreconnected T.region := by
+      let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+        (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+          (0 : ThreeSpace) zero_le_one)
+      have hBc : IsPreconnected B := (isPreconnected_univ.prod isPreconnected_Icc).image A
+        (A.contMDiffOn_toFun.continuousOn.mono hA)
+      have hxW : A (nk.center, 0) ∈ S.region := S.compact.isClosed.frontier_subset
+        ((S.frontier.symm ▸ mem_iUnion₂.mpr ⟨i, hi, hactive ▸ ⟨nk.center, (hzero _).symm⟩⟩))
+      exact hS.union (A (nk.center, 0)) hxW
+        ⟨(nk.center, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩ hBc
+    refine ⟨T, subset_union_left, hconnected, Or.inl ⟨rfl, hi, p, nk, P,
       slabReparametrize_source A η.symm hA, ?_, hP0, hP1, hsp_ne, ?_, hfill, ?_, ?_, hpoint⟩⟩
     · change S.region ∪ B = S.region ∪ P '' (univ ×ˢ Icc (0 : ℝ) 1)
       rw [hPimg]
@@ -467,7 +478,18 @@ private theorem NeckFrontierState.exists_step_at
       · intro k hk l hl hkl
         exact S.disjoint (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hk))
           (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hl)) hkl
-    refine ⟨T, subset_union_left, Or.inr ⟨?_, rfl⟩⟩
+    have hconnected (hS : IsPreconnected S.region) : IsPreconnected T.region := by
+      let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+        (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+          (0 : ThreeSpace) zero_le_one)
+      have hAc : IsPreconnected (A '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
+        (isPreconnected_univ.prod isPreconnected_Icc).image A
+          (A.contMDiffOn_toFun.continuousOn.mono hA)
+      have hxW : A (nk.center, 0) ∈ S.region := S.compact.isClosed.frontier_subset
+        ((S.frontier.symm ▸ mem_iUnion₂.mpr ⟨i, hi, hactive ▸ ⟨nk.center, (hzero _).symm⟩⟩))
+      exact hS.union (A (nk.center, 0)) hxW
+        ⟨(nk.center, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩ hAc
+    refine ⟨T, subset_union_left, hconnected, Or.inr ⟨?_, rfl⟩⟩
     change alive ⊂ S.alive
     apply Finset.ssubset_iff_subset_ne.mpr
     refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), ?_⟩
@@ -475,6 +497,23 @@ private theorem NeckFrontierState.exists_step_at
     have hmem : i ∈ alive := hsame.symm ▸ hi
     have hmem' := Finset.mem_of_mem_erase hmem
     exact (Finset.mem_erase.mp hmem').1 rfl
+
+private theorem NeckFrontierState.exists_step_at
+    (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (allNeck : ∀ x ∈ _root_.frontier S.region, Nonempty (SpatialNeck g eps x)) :
+    ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
+      (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
+  have hx : (S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level) ∈
+      _root_.frontier S.region := by
+    rw [S.frontier]
+    refine mem_iUnion₂.mpr ⟨i, hi, ?_⟩
+    rw [(S.sphere i).range_map]
+    exact mem_range_self _
+  obtain ⟨T, hsub, _, hmove⟩ :=
+    NeckFrontierState.exists_step_at_of_neck g eps ι S i hi heps hepsstep (allNeck _ hx)
+  exact ⟨T, hsub, hmove⟩
 
 private theorem NeckFrontierState.exists_step
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
@@ -635,6 +674,434 @@ private theorem NeckFrontierState.exists_fair_ordinary_tail
     rw [Nat.add_sub_of_le (by omega)]
     exact hn.2
 
+private theorem NeckFrontierState.exists_fair_compressed_process
+    [PreconnectedSpace M] [NoncompactSpace M]
+    (S₀ : NeckFrontierState g eps ι)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ (seq : ℕ → NeckFrontierState g eps ι) (label : ℕ → ι),
+      Monotone (fun n => (seq n).region) ∧ Antitone (fun n => (seq n).alive) ∧
+      S₀.region ⊆ (seq 0).region ∧ (seq 0).sphere = S₀.sphere ∧
+      (seq 0).alive ⊆ S₀.alive ∧
+      (∀ n, label n ∈ (seq n).alive) ∧
+      ∃ N, (∀ n, ∃ (T : NeckFrontierState g eps ι),
+        OrdinaryNeckMoveAt g eps ι (seq n) T (label n) ∧
+        T.region ⊆ (seq (n + 1)).region ∧ T.sphere = (seq (n + 1)).sphere ∧
+        (N ≤ n → T = seq (n + 1))) ∧
+      (seq N).alive.Nonempty ∧
+        (∀ n, N ≤ n → (seq n).alive = (seq N).alive) ∧
+        (∀ n, N ≤ n → OrdinaryNeckMoveAt g eps ι (seq n) (seq (n + 1)) (label n)) ∧
+        ∀ i ∈ (seq N).alive, {n | label n = i}.Infinite := by
+  classical
+  obtain ⟨S, selected, hzero, hmono, hanti, hselected, hsteps, N, hne, hstable, hN, hfair⟩ :=
+    NeckFrontierState.exists_fair_process g eps ι S₀ heps hepsstep allNeck
+  let event := fun n => OrdinaryNeckMoveAt g eps ι (S n) (S (n + 1)) (selected n)
+  have hinfinite : {n | event n}.Infinite := (Ici_infinite N).mono (fun n hn => hN n hn)
+  have hunchanged (n) (hn : ¬event n) : (S (n + 1)).sphere = (S n).sphere :=
+    ((hsteps n).resolve_left hn).2
+  obtain ⟨s, hsm, hs, hcover, _, hgap, hs0, hsucc⟩ :=
+    DifferentialGeometry.Topology.exists_strictMono_event_subsequence hinfinite
+      (fun n => (S n).sphere) hunchanged
+  have hseqmono : Monotone (fun n => (S (s n)).region) := hmono.comp hsm.monotone
+  have hseqanti : Antitone (fun n => (S (s n)).alive) := hanti.comp_monotone hsm.monotone
+  have hsub : S₀.region ⊆ (S (s 0)).region := by
+    simpa only [hzero] using hmono (Nat.zero_le (s 0))
+  have hsame : (S (s 0)).sphere = S₀.sphere := hs0.trans (congrArg NeckFrontierState.sphere hzero)
+  obtain ⟨k, hk⟩ := (hcover N).mp (hN N le_rfl)
+  have hNk : N ≤ s k := hk.ge
+  have hconsecutive (n) (hn : k ≤ n) : s (n + 1) = s n + 1 := by
+    apply Nat.le_antisymm
+    · by_contra hnot
+      have hless : s n + 1 < s (n + 1) := Nat.lt_of_not_ge hnot
+      exact hgap n (s n + 1) (Nat.lt_succ_self _) hless
+        (hN _ ((hNk.trans (hsm.monotone hn)).trans (Nat.le_succ _)))
+    · exact Nat.succ_le_of_lt (hsm (Nat.lt_succ_self n))
+  have hbasealive : (S (s 0)).alive ⊆ S₀.alive := by
+    simpa only [hzero] using hanti (Nat.zero_le (s 0))
+  refine ⟨fun n => S (s n), fun n => selected (s n), hseqmono, hseqanti, hsub, hsame,
+    hbasealive, fun n => hselected (s n), k, ?_, ?_, ?_, ?_, ?_⟩
+  · intro n
+    refine ⟨S (s n + 1), hs n, hmono (Nat.succ_le_of_lt (hsm (Nat.lt_succ_self n))),
+      (hsucc n).symm, ?_⟩
+    intro hn
+    exact congrArg S (hconsecutive n hn).symm
+  · exact NeckFrontierState.alive_nonempty g eps ι (S (s k))
+  · intro n hn
+    exact (hstable (s n) (hNk.trans (hsm.monotone hn))).trans (hstable (s k) hNk).symm
+  · intro n hn
+    simpa only [hconsecutive n hn] using hs n
+  · intro i hi
+    have hiN : i ∈ (S N).alive := hstable (s k) hNk ▸ hi
+    apply Set.infinite_of_forall_exists_gt
+    intro a
+    obtain ⟨m, hm, hgt⟩ := (hfair i hiN).exists_gt (s a)
+    have hmevent : event m := by
+      change OrdinaryNeckMoveAt g eps ι (S m) (S (m + 1)) (selected m)
+      rw [hm.2]
+      exact hm.1
+    obtain ⟨b, hb⟩ := (hcover m).mp hmevent
+    refine ⟨b, ?_, hsm.lt_iff_lt.mp ?_⟩
+    · change selected (s b) = i
+      rw [hb]
+      exact hm.2
+    · exact hb.symm ▸ hgt
+
+private theorem NeckFrontierState.exists_original_end_family
+    [PreconnectedSpace M] [NoncompactSpace M]
+    (S₀ : NeckFrontierState g eps ι)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (hepsrec : eps ≤ 1 / 156000)
+    (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ S : NeckFrontierState g eps ι, S₀.region ⊆ S.region ∧ S.alive ⊆ S₀.alive ∧
+      ∃ Θ : {i // i ∈ S.alive} → Cylinder → M,
+        (∀ i, ContMDiffOn IC I3 ∞ (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          InjOn (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) ∧
+          (let U : TopologicalSpace.Opens Cylinder :=
+            ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+           IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ i z)) ∧
+          Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ S₀.region = range (S₀.sphere i.val).map ∧
+          (∀ z, Θ i (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i.val) z) ∧
+          (∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+            T ≤ t → B < Geometry.Curvature.metricScalarAt g (Θ i (z, t.val))) ∧
+          ∃ (p : M) (nk : SpatialNeck g eps p)
+            (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+            p ∈ range (S₀.sphere i.val).map ∧
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+            (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ i (z, t) = P (z, t)) ∧
+            P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) ∧
+        Pairwise (fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
+          (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) ∧
+        S.region ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
+  classical
+  obtain ⟨seq, label, hmono, hanti, hsub, hs0, hbasealive, hlabelalive, N, hsteps, hne,
+    halive, hmove, hfair⟩ :=
+    NeckFrontierState.exists_fair_compressed_process g eps ι S₀ heps hepsstep allNeck
+  choose next hordinary hnextsub hnexteq hnexttail using hsteps
+  have hchoice (n) := (hordinary n).2.2
+  choose point neck P hsource hrange hlower hupperraw hunchangedraw hinter hfilledraw
+    hcontrolled hband hpoint using hchoice
+  have hupper (n z) : P n (z, 1) =
+      RecordedNeckSphere.map g eps ((seq (n + 1)).sphere (label n)) z := by
+    rw [← hnexteq n]
+    exact hupperraw n z
+  have hunchanged (n i) (hne : i ≠ label n) : (seq (n + 1)).sphere i = (seq n).sphere i := by
+    rw [← hnexteq n]
+    exact hunchangedraw n i hne
+  let sphere := fun n i => RecordedNeckSphere.map g eps ((seq n).sphere i)
+  have hcontained (n) : P n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ (seq (n + 1)).region := by
+    apply Subset.trans _ (hnextsub n)
+    rw [hrange n]
+    exact subset_union_right
+  have hfilled (n) : range (sphere n (label n)) ⊆ interior (seq (n + 1)).region :=
+    (hfilledraw n).trans (interior_mono (hnextsub n))
+  have hsphere (n) : range (sphere n (label n)) ⊆ _root_.frontier (seq n).region := by
+    intro x hx
+    rw [(seq n).frontier]
+    exact mem_iUnion₂.mpr ⟨label n, hlabelalive n, hx⟩
+  have hend (i : {i // i ∈ (seq N).alive}) :=
+    exists_proper_neck_end_of_infinite_updates g hepsrec hcompact label i.val
+      (hfair i.val i.property)
+      sphere (fun n hn => congrArg (RecordedNeckSphere.map g eps)
+        (hunchanged n i.val (Ne.symm hn)))
+      P hsource (fun _ => Diffeomorph.refl I2 (Sphere 2) ∞) hlower hupper
+      (fun n => (seq n).region) hmono hcontained hinter hsphere hfilled
+      point neck hcontrolled hband
+  choose select hselect hlabel hcover Θ hsm hinj hproper hembed hwhole hinitial hfirst hbase hscalar
+    using hend
+  let Ind := {i // i ∈ (seq N).alive}
+  have hialive (i : Ind) (n) : i.val ∈ (seq n).alive := by
+    rcases le_total n N with hn | hn
+    · exact hanti hn i.property
+    · exact (halive n hn).symm ▸ i.property
+  have hinitialbase (i : Ind) : sphere 0 i.val = (S₀.sphere i.val).map := by
+    dsimp only [sphere]
+    rw [hs0]
+  have hlowers (n) : P n '' (univ ×ˢ ({0} : Set ℝ)) ⊆ range (sphere n (label n)) := by
+    rintro x ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+    have : t = 0 := ht
+    subst t
+    exact ⟨z, (hlower n z).symm.trans hx⟩
+  have huppers (n) : P n '' (univ ×ˢ ({1} : Set ℝ)) ⊆ range (sphere (n + 1) (label n)) := by
+    rintro x ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+    have : t = 1 := ht
+    subst t
+    exact ⟨z, (hupper n z).symm.trans hx⟩
+  have hcross (i j : Ind) (hij : i ≠ j) (a b) :
+      Disjoint (P (select i a) '' (univ ×ˢ Icc (0 : ℝ) 1))
+        (P (select j b) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+    apply OpenPartialHomeomorph.disjoint_cylinder_images_of_disjoint_frontier_faces
+      label (fun n i => range (sphere n i)) (fun n => (P n).toOpenPartialHomeomorph)
+      hsource hlowers huppers (fun n i hn => by
+        dsimp only [sphere]
+        rw [hunchanged n i (Ne.symm hn)]) (fun n => (seq n).region) hmono
+      hcontained hinter hsphere hfilled (select i a) (select j b)
+    · rw [hlabel i a, hlabel j b]
+      exact fun h => hij (Subtype.ext h)
+    · rw [hlabel i a, hlabel j b]
+      exact (seq _).disjoint (hialive i _) (hialive j _) (fun h => hij (Subtype.ext h))
+  have hdisjoint : Pairwise (fun i j : Ind => Disjoint
+      (Θ i '' (univ ×ˢ Ici (0 : ℝ))) (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) := by
+    intro i j hij
+    rw [hwhole i, hwhole j]
+    exact disjoint_iUnion_left.mpr
+      (fun a => disjoint_iUnion_right.mpr (fun b => hcross i j hij a b))
+  let _ : Finite Ind := (seq N).alive.finite_toSet.to_subtype
+  let labels (n) : Ind := ⟨label (N + n), halive _ (Nat.le_add_right N n) ▸ hlabelalive _⟩
+  have hopen : IsOpen (⋃ n, (seq (N + n)).region) := by
+    apply DifferentialGeometry.Topology.isOpen_iUnion_of_recurrent_frontier_updates
+      (fun n => (seq (N + n)).region) (fun n (i : Ind) => range (sphere (N + n) i.val)) labels
+    · intro n x hx
+      rw [(seq (N + n)).frontier] at hx
+      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hx
+      exact mem_iUnion.mpr ⟨⟨i, halive _ (Nat.le_add_right N n) ▸ hi⟩, hxi⟩
+    · intro n i hn
+      dsimp only [sphere]
+      rw [show N + (n + 1) = (N + n) + 1 by omega,
+        hunchanged _ i.val (fun h => hn (Subtype.ext h.symm))]
+    · intro n
+      simpa only [Nat.add_assoc] using hfilled (N + n)
+    · intro i a
+      obtain ⟨n, hn, hgt⟩ := (hfair i.val i.property).exists_gt (N + a)
+      refine ⟨n - N, by omega, ?_⟩
+      apply Subtype.ext
+      change label (N + (n - N)) = i.val
+      rw [Nat.add_sub_of_le (by omega)]
+      exact hn
+  have htailrange (n) : (seq (N + n + 1)).region =
+      (seq (N + n)).region ∪ P (N + n) '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+    rw [← hnexttail (N + n) (Nat.le_add_right N n)]
+    exact hrange (N + n)
+  have hcoverall : (⋃ n, (seq (N + n)).region) =
+      (seq N).region ∪ ⋃ i : Ind, Θ i '' (univ ×ˢ Ici (0 : ℝ)) := by
+    apply Subset.antisymm
+    · apply iUnion_subset
+      intro n
+      induction n with
+      | zero => exact subset_union_left
+      | succ n ih =>
+        rw [show N + (n + 1) = N + n + 1 by omega, htailrange n]
+        apply union_subset ih
+        intro x hx
+        right
+        let i : Ind := labels n
+        obtain ⟨k, hk⟩ := (hcover i (N + n)).mp rfl
+        refine mem_iUnion.mpr ⟨i, ?_⟩
+        rw [hwhole i]
+        exact mem_iUnion.mpr ⟨k, hk.symm ▸ hx⟩
+    · apply union_subset
+      · exact subset_iUnion (fun n => (seq (N + n)).region) 0
+      · apply iUnion_subset
+        intro i
+        rw [hwhole i]
+        apply iUnion_subset
+        intro n
+        exact (hcontained (select i n)).trans ((hmono (by omega :
+          select i n + 1 ≤ N + (select i n + 1))).trans
+          (subset_iUnion (fun n => (seq (N + n)).region) (select i n + 1)))
+  have hendclosed (i : Ind) : IsClosed (Θ i '' (univ ×ˢ Ici (0 : ℝ))) := by
+    have heq : Θ i '' (univ ×ˢ Ici (0 : ℝ)) =
+        range (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) := by
+      ext x
+      constructor
+      · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+        exact ⟨(z, ⟨t, ht⟩), hx⟩
+      · rintro ⟨⟨z, t⟩, hx⟩
+        exact ⟨(z, t.val), ⟨mem_univ _, t.property⟩, hx⟩
+    rw [heq]
+    exact (hproper i).isClosed_range
+  have hfull : (seq N).region ∪ ⋃ i : Ind, Θ i '' (univ ×ˢ Ici (0 : ℝ)) = univ := by
+    apply IsClopen.eq_univ
+    · refine ⟨(seq N).compact.isClosed.union (isClosed_iUnion_of_finite hendclosed), ?_⟩
+      rw [← hcoverall]
+      exact hopen
+    · exact (seq N).nonempty.mono subset_union_left
+  have hsubset : S₀.region ⊆ (seq N).region := hsub.trans (hmono (Nat.zero_le N))
+  have halivesub : (seq N).alive ⊆ S₀.alive := (hanti (Nat.zero_le N)).trans hbasealive
+  refine ⟨seq N, hsubset, halivesub, Θ, ?_, hdisjoint, hfull⟩
+  intro i
+  have hface : range (S₀.sphere i.val).map ⊆ S₀.region := fun x hx =>
+    S₀.compact.isClosed.frontier_subset
+      (S₀.frontier.symm ▸ mem_iUnion₂.mpr ⟨i.val, halivesub i.property, hx⟩)
+  have hbase' (z) : Θ i (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i.val) z :=
+    (hbase i z).trans (congrFun (hinitialbase i) z)
+  have hinitial' : Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ S₀.region = range (S₀.sphere i.val).map := by
+    ext x
+    constructor
+    · intro hx
+      have hx' := (hinitial i ▸ (show x ∈ Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ (seq 0).region from
+        ⟨hx.1, hsub hx.2⟩)).1
+      simpa only [hinitialbase i] using hx'
+    · rintro ⟨z, hz⟩
+      exact ⟨⟨(z, 0), ⟨mem_univ _, by norm_num⟩, (hbase' z).trans hz⟩, hface ⟨z, hz⟩⟩
+  refine ⟨hsm i, hinj i, hproper i, hembed i, hinitial', hbase', hscalar i,
+    point (select i 0), neck (select i 0), P (select i 0), ?_,
+    hsource (select i 0), hfirst i, hcontrolled (select i 0)⟩
+  obtain ⟨z, hz⟩ := hpoint (select i 0)
+  exact ⟨z, (hbase' z).symm.trans ((hfirst i z 0 (by norm_num)).trans
+    ((hlower (select i 0) z).trans hz))⟩
+
+private theorem NeckFrontierState.exists_saved_end_family
+    [PreconnectedSpace M] [NoncompactSpace M]
+    (S₀ : NeckFrontierState g eps ι)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (hepsrec : eps ≤ 1 / 156000)
+    (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ S : NeckFrontierState g eps ι, S₀.region ⊆ S.region ∧ S.alive ⊆ S₀.alive ∧
+      S.sphere = S₀.sphere ∧
+      IsConnected S.region ∧
+      ∃ Θ : {i // i ∈ S.alive} → Cylinder → M,
+        (∀ i, ContMDiffOn IC I3 ∞ (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          InjOn (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) ∧
+          (let U : TopologicalSpace.Opens Cylinder :=
+            ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+           IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ i z)) ∧
+          Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ S.region = range (S₀.sphere i.val).map ∧
+          (∀ z, Θ i (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i.val) z) ∧
+          (∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+            T ≤ t → B < Geometry.Curvature.metricScalarAt g (Θ i (z, t.val))) ∧
+          ∃ (p : M) (nk : SpatialNeck g eps p)
+            (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+            p ∈ range (S₀.sphere i.val).map ∧
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+            (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ i (z, t) = P (z, t)) ∧
+            P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) ∧
+        Pairwise (fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
+          (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) ∧
+        S.region ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
+  classical
+  obtain ⟨late, hsub, halive, Θ, hends, hdisjoint, hfull⟩ :=
+    NeckFrontierState.exists_original_end_family g eps ι S₀ heps hepsstep hepsrec hcompact allNeck
+  let Ind := {i // i ∈ late.alive}
+  let _ : Finite Ind := late.alive.finite_toSet.to_subtype
+  let E (i : Ind) := Θ i '' (univ ×ˢ Ici (0 : ℝ))
+  let U (i : Ind) := Θ i '' (univ ×ˢ Ioi (0 : ℝ))
+  let F (i : Ind) (z : Sphere 2 × ℝ≥0) := Θ i (z.1, z.2.val)
+  have hErange (i) : E i = range (F i) := by
+    ext x
+    constructor
+    · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+      exact ⟨(z, ⟨t, ht⟩), hx⟩
+    · rintro ⟨⟨z, t⟩, hx⟩
+      exact ⟨(z, t.val), ⟨mem_univ _, t.property⟩, hx⟩
+  have hUimage (i) : U i = F i '' (univ ×ˢ Ioi (0 : ℝ≥0)) := by
+    ext x
+    constructor
+    · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+      exact ⟨(z, ⟨t, ht.le⟩), ⟨mem_univ _, ht⟩, hx⟩
+    · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+      exact ⟨(z, t.val), ⟨mem_univ _, ht⟩, hx⟩
+  have hbase (i z) : F i (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i.val) z :=
+    (hends i).2.2.2.2.2.1 z
+  have hproper (i) : IsProperMap (F i) := (hends i).2.2.1
+  have hFcontinuous (i) : Continuous (F i) := (hproper i).continuous
+  have hFinj (i) : Function.Injective (F i) := by
+    intro z w h
+    have heq := (hends i).2.1 (show (z.1, z.2.val) ∈ univ ×ˢ Ici (0 : ℝ) from
+      ⟨mem_univ _, z.2.property⟩) (show (w.1, w.2.val) ∈ univ ×ˢ Ici (0 : ℝ) from
+      ⟨mem_univ _, w.2.property⟩) h
+    have hfst : z.1 = w.1 := congrArg (fun q : Sphere 2 × ℝ => q.1) heq
+    have hsnd : z.2.val = w.2.val := congrArg (fun q : Sphere 2 × ℝ => q.2) heq
+    exact Prod.ext hfst (Subtype.ext hsnd)
+  have hclosure (i) : closure (U i) = E i := by
+    rw [hUimage, hErange]
+    exact DifferentialGeometry.Topology.closure_image_positive_half_cylinder_of_isProperMap
+      (F i) (hproper i)
+  have hdiff (i) : E i \ U i = range (S₀.sphere i.val).map := by
+    rw [hErange, hUimage,
+      DifferentialGeometry.Topology.range_sdiff_image_positive_half_cylinder (F i) (hFinj i)]
+    exact congrArg range (funext (hbase i))
+  have hopen (i) : IsOpen (U i) := by
+    let V : TopologicalSpace.Opens Cylinder :=
+      ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+    have hembed : IsSmoothEmbedding IC I3 ∞ (fun z : V => Θ i z) := (hends i).2.2.2.1
+    have hh := _root_.Manifold.isOpen_range_of_isSmoothEmbedding (by
+      simp [ThreeSpace]) hembed
+    convert hh using 1
+    exact (image_eq_range (Θ i) (univ ×ˢ Ioi (0 : ℝ)))
+  have hUsub (i) : U i ⊆ E i := image_mono (prod_mono_right Ioi_subset_Ici_self)
+  let D := (⋃ i, U i)ᶜ
+  have hBcompact (i : Ind) : IsCompact (range (S₀.sphere i.val).map) := by
+    rw [← congrArg range (funext (hbase i))]
+    apply isCompact_range
+    exact (hFcontinuous i).comp (continuous_id.prodMk continuous_const)
+  have hDcompact : IsCompact D :=
+    DifferentialGeometry.Topology.isCompact_compl_iUnion_of_compact_remainders late.region
+      late.compact U E hopen (fun i => by rw [hdiff i]; exact hBcompact i) hfull
+  have hDsub : S₀.region ⊆ D := by
+    intro x hx hxu
+    obtain ⟨i, hxi⟩ := mem_iUnion.mp hxu
+    have hxbase : x ∈ range (S₀.sphere i.val).map := (hends i).2.2.2.2.1 ▸ ⟨hUsub i hxi, hx⟩
+    exact ((hdiff i).symm ▸ hxbase).2 hxi
+  have hDfront : _root_.frontier D = ⋃ i : Ind, range (S₀.sphere i.val).map := by
+    have hf := DifferentialGeometry.Topology.frontier_compl_iUnion_of_finite_disjoint_closures
+      U hopen (by simpa only [hclosure] using hdisjoint)
+    simpa only [D, hclosure, hdiff] using hf
+  have hDregular : closure (interior D) = D := by
+    apply DifferentialGeometry.Topology.closure_interior_eq_of_frontier_subset_closure_interior
+      hDcompact.isClosed
+    rw [hDfront]
+    apply iUnion_subset
+    intro i
+    have hface : range (S₀.sphere i.val).map ⊆ S₀.region := fun x hx =>
+      S₀.compact.isClosed.frontier_subset
+        (S₀.frontier.symm ▸ mem_iUnion₂.mpr ⟨i.val, halive i.property, hx⟩)
+    apply hface.trans
+    rw [← S₀.regular]
+    exact closure_mono (interior_mono hDsub)
+  have hDE (i) : E i ∩ D = range (S₀.sphere i.val).map := by
+    rw [inter_comm]
+    exact (DifferentialGeometry.Topology.compl_iUnion_inter_of_pairwise_disjoint U E hUsub
+      hdisjoint i).trans (hdiff i)
+  have hDfull : D ∪ ⋃ i, E i = univ := by
+    apply eq_univ_of_forall
+    intro x
+    by_cases hx : x ∈ ⋃ i, U i
+    · right
+      obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+      exact mem_iUnion.mpr ⟨i, hUsub i hxi⟩
+    · exact Or.inl hx
+  have hDconnect : IsConnected D := by
+    refine ⟨S₀.nonempty.mono hDsub, ?_⟩
+    apply DifferentialGeometry.Topology.isPreconnected_of_finite_closed_attachments E
+      hDcompact.isClosed (fun i => hclosure i ▸ isClosed_closure)
+    · intro i j hij
+      rw [(hdisjoint hij).inter_eq]
+      exact empty_subset _
+    · intro i
+      rw [inter_comm, hDE i]
+      exact RecordedNeckSphere.isPreconnected_range g eps (S₀.sphere i.val)
+    · rw [hDfull]
+      exact isPreconnected_univ
+  let saved : NeckFrontierState g eps ι :=
+    { region := D
+      compact := hDcompact
+      nonempty := S₀.nonempty.mono hDsub
+      regular := hDregular
+      alive := late.alive
+      sphere := S₀.sphere
+      frontier := by
+        rw [hDfront]
+        ext x
+        constructor
+        · intro hx
+          obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+          exact mem_iUnion₂.mpr ⟨i.val, i.property, hxi⟩
+        · intro hx
+          obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hx
+          exact mem_iUnion.mpr ⟨⟨i, hi⟩, hxi⟩
+      disjoint := fun i hi j hj hij => S₀.disjoint (halive hi) (halive hj) hij }
+  refine ⟨saved, hDsub, halive, rfl, hDconnect, Θ, ?_, hdisjoint, hDfull⟩
+  intro i
+  obtain ⟨hsm, hi, hp, he, _, hb, hd, hfirst⟩ := hends i
+  exact ⟨hsm, hi, hp, he, hDE i, hb, hd, hfirst⟩
+
 private theorem NeckFrontierState.exists_end_family
     [PreconnectedSpace M] [NoncompactSpace M]
     (S₀ : NeckFrontierState g eps ι)
@@ -664,162 +1131,11 @@ private theorem NeckFrontierState.exists_end_family
         Pairwise (fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
           (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) ∧
         S.region ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
-  classical
-  obtain ⟨seq, label, hsub, hmono, halive, hmove, hfair⟩ :=
-    NeckFrontierState.exists_fair_ordinary_tail g eps ι S₀ heps hepsstep allNeck
-  have hchoice (n) := (hmove n).2.2
-  choose point neck P hsource hrange hlower hupper hunchanged hinter hfilled hcontrolled hband
-    hpoint using hchoice
-  let sphere := fun n i => RecordedNeckSphere.map g eps ((seq n).sphere i)
-  have hcontained (n) : P n '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ (seq (n + 1)).region := by
-    rw [hrange n]
-    exact subset_union_right
-  have hsphere (n) : range (sphere n (label n)) ⊆ _root_.frontier (seq n).region := by
-    intro x hx
-    rw [(seq n).frontier]
-    exact mem_iUnion₂.mpr ⟨label n, (hmove n).2.1, hx⟩
-  have hend (i : {i // i ∈ (seq 0).alive}) :=
-    exists_proper_neck_end_of_infinite_updates g hepsrec hcompact label i.val
-      (hfair i.val i.property)
-      sphere (fun n hn => congrArg (RecordedNeckSphere.map g eps)
-        (hunchanged n i.val (Ne.symm hn)))
-      P hsource (fun _ => Diffeomorph.refl I2 (Sphere 2) ∞) hlower hupper
-      (fun n => (seq n).region) hmono hcontained hinter hsphere hfilled
-      point neck hcontrolled hband
-  choose select hselect hlabel hcover Θ hsm hinj hproper hembed hwhole hinitial hfirst hbase hscalar
-    using hend
-  let Ind := {i // i ∈ (seq 0).alive}
-  let _ : Finite Ind := (seq 0).alive.finite_toSet.to_subtype
-  let labels (n) : Ind := ⟨label n, halive n ▸ (hmove n).2.1⟩
-  have hopen : IsOpen (⋃ n, (seq n).region) := by
-    apply DifferentialGeometry.Topology.isOpen_iUnion_of_recurrent_frontier_updates
-      (fun n => (seq n).region) (fun n (i : Ind) => range (sphere n i.val)) labels
-    · intro n x hx
-      rw [(seq n).frontier] at hx
-      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hx
-      exact mem_iUnion.mpr ⟨⟨i, halive n ▸ hi⟩, hxi⟩
-    · intro n i hne
-      have hne' : i.val ≠ label n := fun h => hne (Subtype.ext h.symm)
-      dsimp only [sphere]
-      rw [hunchanged n i.val hne']
-    · exact hfilled
-    · intro i N
-      obtain ⟨n, hn, hgt⟩ := (hfair i.val i.property).exists_gt N
-      exact ⟨n, hgt.le, Subtype.ext hn⟩
-  have hregions : (⋃ n, (seq n).region) =
-      (seq 0).region ∪ ⋃ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1) := by
-    apply Subset.antisymm
-    · apply iUnion_subset
-      intro n
-      induction n with
-      | zero => exact subset_union_left
-      | succ n ih =>
-        rw [hrange n]
-        exact union_subset ih ((subset_iUnion (fun n => P n '' (univ ×ˢ Icc (0 : ℝ) 1)) n).trans
-          subset_union_right)
-    · apply union_subset (subset_iUnion (fun n => (seq n).region) 0)
-      exact iUnion_subset (fun n => (hcontained n).trans
-        (subset_iUnion (fun k => (seq k).region) (n + 1)))
-  have hends : (⋃ n, P n '' (univ ×ˢ Icc (0 : ℝ) 1)) =
-      ⋃ i : Ind, Θ i '' (univ ×ˢ Ici (0 : ℝ)) := by
-    ext x
-    constructor
-    · intro hx
-      obtain ⟨n, hxn⟩ := mem_iUnion.mp hx
-      obtain ⟨k, hk⟩ := (hcover (labels n) n).mp rfl
-      refine mem_iUnion.mpr ⟨labels n, ?_⟩
-      rw [hwhole]
-      exact mem_iUnion.mpr ⟨k, hk.symm ▸ hxn⟩
-    · intro hx
-      obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
-      rw [hwhole] at hxi
-      obtain ⟨n, hxn⟩ := mem_iUnion.mp hxi
-      exact mem_iUnion.mpr ⟨select i n, hxn⟩
-  have hendclosed (i : Ind) : IsClosed (Θ i '' (univ ×ˢ Ici (0 : ℝ))) := by
-    have hrange : Θ i '' (univ ×ˢ Ici (0 : ℝ)) =
-        range (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) := by
-      ext x
-      constructor
-      · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
-        exact ⟨(z, ⟨t, ht⟩), hx⟩
-      · rintro ⟨⟨z, t⟩, hx⟩
-        exact ⟨(z, t.val), ⟨mem_univ _, t.property⟩, hx⟩
-    rw [hrange]
-    exact (hproper i).isClosed_range
-  have hclosed : IsClosed (⋃ n, (seq n).region) := by
-    rw [hregions, hends]
-    exact (seq 0).compact.isClosed.union (isClosed_iUnion_of_finite hendclosed)
-  have hfull : (⋃ n, (seq n).region) = univ :=
-    (show IsClopen (⋃ n, (seq n).region) from ⟨hclosed, hopen⟩).eq_univ
-      ((seq 0).nonempty.mono (subset_iUnion _ 0))
-  have hlowers (n) : P n '' (univ ×ˢ ({0} : Set ℝ)) ⊆ range (sphere n (label n)) := by
-    rintro x ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
-    have : t = 0 := ht
-    subst t
-    exact ⟨z, (hlower n z).symm.trans hx⟩
-  have huppers (n) : P n '' (univ ×ˢ ({1} : Set ℝ)) ⊆ range (sphere (n + 1) (label n)) := by
-    rintro x ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
-    have : t = 1 := ht
-    subst t
-    exact ⟨z, (hupper n z).symm.trans hx⟩
-  have hpair (n) : (range labels).Pairwise
-      (fun i j => Disjoint (range (sphere n i.val)) (range (sphere n j.val))) := by
-    intro i _ j _ hij
-    exact (seq n).disjoint ((halive n).symm ▸ i.property) ((halive n).symm ▸ j.property)
-      (fun h => hij (Subtype.ext h))
-  have hcross (a b) (hne : labels a ≠ labels b) :
-      Disjoint (P a '' (univ ×ˢ Icc (0 : ℝ) 1)) (P b '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
-    apply OpenPartialHomeomorph.disjoint_cylinder_images_of_distinct_labels
-      labels (fun n (i : Ind) => range (sphere n i.val)) (fun n => (P n).toOpenPartialHomeomorph)
-      hsource hlowers huppers ?_ (fun n => (seq n).region) hmono
-      hcontained hinter hsphere hfilled hpair a b hne
-    intro n i hne
-    dsimp only [sphere]
-    rw [hunchanged n i.val (fun h => hne (Subtype.ext h.symm))]
-  have hdisjoint : Pairwise (fun i j : Ind => Disjoint
-      (Θ i '' (univ ×ˢ Ici (0 : ℝ))) (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) := by
-    intro i j hij
-    rw [hwhole i, hwhole j]
-    apply disjoint_iUnion_left.mpr
-    intro a
-    apply disjoint_iUnion_right.mpr
-    intro b
-    apply hcross (select i a) (select j b)
-    intro h
-    have heq := congrArg Subtype.val h
-    change label (select i a) = label (select j b) at heq
-    rw [hlabel i a, hlabel j b] at heq
-    exact hij (Subtype.ext heq)
-  have hconnect : IsConnected (seq 0).region := by
-    refine ⟨(seq 0).nonempty, ?_⟩
-    apply DifferentialGeometry.Topology.isPreconnected_of_finite_closed_attachments
-      (fun i : Ind => Θ i '' (univ ×ˢ Ici (0 : ℝ))) (seq 0).compact.isClosed
-      hendclosed
-    · intro i j hij
-      rw [(hdisjoint hij).inter_eq]
-      exact empty_subset _
-    · intro i
-      have hface : range (sphere 0 i.val) ⊆ (seq 0).region := fun x hx =>
-        (seq 0).compact.isClosed.frontier_subset
-          ((seq 0).frontier.symm ▸ mem_iUnion₂.mpr ⟨i.val, i.property, hx⟩)
-      rw [inter_comm, hinitial i, inter_eq_left.mpr hface]
-      exact RecordedNeckSphere.isPreconnected_range g eps ((seq 0).sphere i.val)
-    · rw [← hends, ← hregions, hfull]
-      exact isPreconnected_univ
-  refine ⟨seq 0, hsub, hconnect, Θ, ?_, hdisjoint, ?_⟩
-  · intro i
-    have hface : range (sphere 0 i.val) ⊆ (seq 0).region := fun x hx =>
-      (seq 0).compact.isClosed.frontier_subset
-        ((seq 0).frontier.symm ▸ mem_iUnion₂.mpr ⟨i.val, i.property, hx⟩)
-    refine ⟨hsm i, hinj i, hproper i, hembed i,
-      (hinitial i).trans (inter_eq_left.mpr hface), hbase i, hscalar i,
-      point (select i 0), neck (select i 0), P (select i 0), ?_,
-      hsource (select i 0), hfirst i, hcontrolled (select i 0)⟩
-    obtain ⟨z, hz⟩ := hpoint (select i 0)
-    refine ⟨z, ?_⟩
-    exact (hbase i z).symm.trans ((hfirst i z 0 (by norm_num)).trans
-      ((hlower (select i 0) z).trans hz))
-  · exact (hregions.trans (congrArg (fun E => (seq 0).region ∪ E) hends)).symm.trans hfull
+  obtain ⟨S, hsub, _, hsphere, hconnected, Θ, hends, hdisjoint, hfull⟩ :=
+    NeckFrontierState.exists_saved_end_family g eps ι S₀ heps hepsstep hepsrec hcompact allNeck
+  refine ⟨S, hsub, hconnected, Θ, ?_, hdisjoint, hfull⟩
+  intro i
+  simpa only [hsphere] using hends i
 
 private theorem NeckFrontierState.exists_proper_end
     [PreconnectedSpace M] [NoncompactSpace M]
@@ -1117,6 +1433,133 @@ theorem exists_spatial_neck_finite_end_decomposition_tolerance :
     refine ⟨hsm, hinj, hp, he, hi.trans (hbase _).symm, hd, p, nk, P, ?_,
       hsource, hfirst, hcontrolled⟩
     exact (hbase _).symm ▸ hpoint
+  · intro i j hij
+    exact hdisjoint (fun h => hij (e.symm.injective h))
+  · rw [T.frontier]
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hx
+      let j : Ind := ⟨i, hi⟩
+      refine mem_iUnion.mpr ⟨e j, ?_⟩
+      change x ∈ range (fun z => Θ (e.symm (e j)) (z, 0))
+      rw [e.symm_apply_apply, hbase j]
+      exact hxi
+    · intro hx
+      obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+      rw [show range (fun z => ends i (z, 0)) = range (T.sphere (e.symm i).val).map from
+        hbase (e.symm i)] at hxi
+      exact mem_iUnion₂.mpr ⟨(e.symm i).val, (e.symm i).property, hxi⟩
+  · rw [hindices]
+    exact hfull
+
+theorem exists_spatial_neck_saved_end_decomposition_tolerance :
+    ∃ eta : ℝ, 0 < eta ∧
+      ∀ eps : ℝ, eps ≤ eta →
+        ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+          [IsManifold I3 ∞ M] [T2Space M] [PreconnectedSpace M] [NoncompactSpace M]
+          (g : SmoothRiemannianMetric I3 M) (W : Set M),
+          IsCompact W → W.Nonempty → closure (interior W) = W →
+          ∀ (ι : Type v) [Finite ι] (point : ι → M) (neck : ∀ i, SpatialNeck g eps (point i))
+          (level : ι → ℝ), (∀ i, |level i| ≤ 4) →
+          Pairwise (fun i j => Disjoint (range (fun q => (neck i).map (q, level i)))
+            (range (fun q => (neck j).map (q, level j)))) →
+          frontier W = ⋃ i, range (fun q => (neck i).map (q, level i)) →
+          (∀ x : M, x ∉ interior W → Nonempty (SpatialNeck g eps x)) →
+          (∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B}) →
+          ∃ (K : Set M) (m : ℕ) (origin : Fin m → ι) (Θ : Fin m → Cylinder → M),
+            W ⊆ K ∧ IsCompact K ∧ IsConnected K ∧ closure (interior K) = K ∧ 0 < m ∧
+            Function.Injective origin ∧ frontier K ⊆ frontier W ∧
+            (∀ i z, Θ i (z, 0) = (neck (origin i)).map (z, level (origin i))) ∧
+            (∀ i, ContMDiffOn IC I3 ∞ (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+              InjOn (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+              IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) ∧
+              (let U : TopologicalSpace.Opens Cylinder :=
+                ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+               IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ i z)) ∧
+              Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ K = range (fun z => Θ i (z, 0)) ∧
+              (∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+                T ≤ t → B < Geometry.Curvature.metricScalarAt g (Θ i (z, t.val))) ∧
+              ∃ (p : M) (nk : SpatialNeck g eps p)
+                (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+                p ∈ range (fun z => Θ i (z, 0)) ∧
+                univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+                (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ i (z, t) = P (z, t)) ∧
+                P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) ∧
+            Pairwise (fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
+              (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) ∧
+            frontier K = ⋃ i, range (fun z => Θ i (z, 0)) ∧
+            K ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
+  classical
+  let eta₁ := Classical.choose (exists_spatial_neck_level_graph_tolerance.{u})
+  let eta₂ := Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v})
+  have heta₁ : 0 < eta₁ :=
+    (Classical.choose_spec (exists_spatial_neck_level_graph_tolerance.{u})).1
+  have heta₂ : 0 < eta₂ :=
+    (Classical.choose_spec (exists_spatial_neck_finite_frontier_step_tolerance.{u, v})).1
+  refine ⟨min eta₁ (min eta₂ (1 / 156000)), lt_min heta₁ (lt_min heta₂ (by norm_num)), ?_⟩
+  intro eps heps M _ _ _ _ _ _ g W hW hne hreg ι _ point neck level hlevel hpair
+    hfront hneck hscalar
+  let _ : Fintype ι := Fintype.ofFinite ι
+  let sphere : ι → RecordedNeckSphere g eps := fun i =>
+    ⟨point i, neck i, level i, hlevel i, Diffeomorph.refl I2 (Sphere 2) ∞⟩
+  let S : NeckFrontierState g eps ι :=
+    { region := W
+      compact := hW
+      nonempty := hne
+      regular := hreg
+      alive := Finset.univ
+      sphere := sphere
+      frontier := by
+        change frontier W = ⋃ i ∈ Finset.univ, range (fun q => (neck i).map (q, level i))
+        simpa only [Finset.mem_univ, iUnion_true] using hfront
+      disjoint := fun i _ j _ hij => hpair hij }
+  obtain ⟨T, hsub, halive, hspheres, hconnect, Θ, hends, hdisjoint, hfull⟩ :=
+    NeckFrontierState.exists_saved_end_family g eps ι S
+      (heps.trans (min_le_left _ _))
+      (heps.trans ((min_le_right _ _).trans (min_le_left _ _)))
+      (heps.trans ((min_le_right _ _).trans (min_le_right _ _))) hscalar hneck
+  let Ind := {i // i ∈ T.alive}
+  let _ : Fintype Ind := T.alive.fintypeCoeSort
+  let e : Ind ≃ Fin (Fintype.card Ind) := Fintype.equivFin Ind
+  let ends (i : Fin (Fintype.card Ind)) := Θ (e.symm i)
+  have hneI : Nonempty Ind := (NeckFrontierState.alive_nonempty g eps ι T).to_subtype
+  let _ : Nonempty Ind := hneI
+  have hbase (i : Ind) : range (fun z => Θ i (z, 0)) = range (T.sphere i.val).map := by
+    rw [hspheres]
+    exact congrArg range (funext (hends i).2.2.2.2.2.1)
+  have hindices : (⋃ i : Fin (Fintype.card Ind), ends i '' (univ ×ˢ Ici (0 : ℝ))) =
+      ⋃ i : Ind, Θ i '' (univ ×ˢ Ici (0 : ℝ)) := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+      exact mem_iUnion.mpr ⟨e.symm i, hxi⟩
+    · intro hx
+      obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+      refine mem_iUnion.mpr ⟨e i, ?_⟩
+      simpa only [ends, Equiv.symm_apply_apply] using hxi
+  let origin (i : Fin (Fintype.card Ind)) := (e.symm i).val
+  have horigin : Function.Injective origin := fun i j h => e.symm.injective (Subtype.ext h)
+  have hfrontsub : frontier T.region ⊆ frontier W := by
+    rw [T.frontier]
+    intro x hx
+    obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hx
+    rw [hspheres] at hxi
+    exact S.frontier.symm ▸ mem_iUnion₂.mpr ⟨i, halive hi, hxi⟩
+  have hbaseorigin (i z) : ends i (z, 0) = (neck (origin i)).map (z, level (origin i)) :=
+    (hends (e.symm i)).2.2.2.2.2.1 z
+  refine ⟨T.region, Fintype.card Ind, origin, ends, hsub, T.compact, hconnect, T.regular,
+    Fintype.card_pos, horigin, hfrontsub, hbaseorigin, ?_, ?_, ?_, ?_⟩
+  · intro i
+    obtain ⟨hsm, hinj, hp, he, hi, hb, hd, p, nk, P, hpoint, hsource, hfirst, hcontrolled⟩ :=
+      hends (e.symm i)
+    refine ⟨hsm, hinj, hp, he, hi.trans (by rw [hspheres] at hbase; exact (hbase _).symm),
+      hd, p, nk, P, ?_,
+      hsource, hfirst, hcontrolled⟩
+    have hbaseS : range (fun z => Θ (e.symm i) (z, 0)) = range (S.sphere (e.symm i).val).map := by
+      simpa only [hspheres] using hbase (e.symm i)
+    exact hbaseS.symm ▸ hpoint
   · intro i j hij
     exact hdisjoint (fun h => hij (e.symm.injective h))
   · rw [T.frontier]
