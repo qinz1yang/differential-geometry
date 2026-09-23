@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryCompatibility
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionHorizon
 
 set_option autoImplicit false
 noncomputable section
@@ -124,6 +125,28 @@ def absorbingTower {g : P.Metric} (H : RetainedCoreHistory P)
   initial_successor n :=
     (heq_of_eq (InitialIdentification.restrict_map (H.absorbingInitial A (n + 1)) _)).trans
       ((H.absorbingInitial_map_heq A (n + 1)).trans (H.absorbingInitial_map_heq A n).symm)
+
+theorem towerExtinct_of_absorbingTower {g : P.Metric} (H : RetainedCoreHistory P)
+    [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
+    (A : InitialIdentification P g H.toHistory) :
+    towerExtinct (H.absorbingTower A).toObservationTower := by
+  apply (ObservationTower.towerExtinct_iff_exists_extinct_level
+    (H.absorbingTower A).toObservationTower).mpr
+  let n : ℕ := Nat.ceil H.horizon + 1
+  have hn : H.horizon ≤ (n : ℝ) := by
+    dsimp [n]
+    exact (Nat.le_ceil H.horizon).trans (by
+      exact_mod_cast Nat.le_succ (Nat.ceil H.horizon))
+  have hnpos : 0 < n := by
+    dsimp [n]
+    exact Nat.succ_pos _
+  refine ⟨n, hnpos, ?_⟩
+  apply (ObservedHistory.isExtinctAtHorizon_iff_of_samePresentation
+    ((H.absorbingTower A).toObservationTower.observe_eq_history n)).mpr
+  change (H.absorbingHistory n).toHistory.IsExtinctAtHorizon
+  rw [H.absorbingHistory_eq_emptyExtension n hn]
+  change IsEmpty (H.stage (Fin.last H.eventCount)).Carrier
+  exact inferInstance
 
 end RetainedCoreHistory
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
