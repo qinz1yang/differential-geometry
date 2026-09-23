@@ -13572,3 +13572,4 @@ import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollarRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornParameterRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BaseHornMetricEvent
+import DifferentialGeometry.Topology.OpenPartialHomeomorph.OutwardGraphBand
