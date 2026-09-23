@@ -599,4 +599,3 @@ theorem exists_backwardSurvivorTerminal_isSolutionOn :
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
-
