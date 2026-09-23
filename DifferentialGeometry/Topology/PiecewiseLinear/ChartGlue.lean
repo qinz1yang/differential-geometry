@@ -73,7 +73,7 @@ theorem PLPieceIn.exists_glue_chart_with_regularNeighborhood [FiniteDimensional 
   have hfinA₁ :=
     (restrict_faces_finite K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).to_subtype
   have hplA : IsPiecewiseAffineOn (e ∘ T.map)
-      (restrict K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).space := by
+      (PiecewiseLinear.restrict K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).space := by
     rw [hA₁space]
     refine (T.isPiecewiseAffineOn_chart e he).mono_of_isPolyhedron hApoly ?_
     rintro x ⟨hx, hxV⟩
@@ -84,7 +84,8 @@ theorem PLPieceIn.exists_glue_chart_with_regularNeighborhood [FiniteDimensional 
   have hA₂space : A₂.space = T.complex.space ∩ T.map ⁻¹' (e.symm '' C) :=
     hA₂.space_eq.trans hA₁space
   have hBA₁ : Disjoint B.space
-      (restrict K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).space := hA₁space.symm ▸ hBQ
+      (PiecewiseLinear.restrict K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).space :=
+    hA₁space.symm ▸ hBQ
   obtain ⟨K₂, hK₂, hfinK₂, hBK₂, hA₂K₂, -⟩ :=
     exists_isSubdivision_extension_of_disjoint hBK₁ (restrict_faces_subset K₁ _) hBA₁ hA₂
   have hfinK₂' := hfinK₂.to_subtype
