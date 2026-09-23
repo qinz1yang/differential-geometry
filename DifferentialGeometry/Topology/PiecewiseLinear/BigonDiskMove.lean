@@ -9,7 +9,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CirclePair
 /-!
 # Removing two transverse crossings by a boundary-fixed disk map
 
-Two proper polygonal crosscuts of a PL disk meeting transversely twice admit a PL
+Two proper polygonal crosscuts of a PL disk meeting transversely twice have a PL
 automorphism of the disk fixing its boundary and moving the first crosscut off the second.
 The bypass theorem constructs a disjoint proper replacement with the same endpoints;
 the relative crosscut extension theorem realizes the replacement by a disk automorphism.
