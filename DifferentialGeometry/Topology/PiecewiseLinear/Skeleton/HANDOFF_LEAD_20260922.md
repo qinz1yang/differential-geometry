@@ -448,3 +448,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   left (Lemma 10, b still on it). Physical `sorry` 32.
 * 13:50 (09-23) — registered Codex's 11 edge-matching modules (GraphCoboundary, LocallyFiniteClosedCover, nine
   PiecewiseLinear bricks); the leaf waits on review BN. Accepted worker b's §33 Lemma 13 + extension (14 modules).
+* 14:50 (09-23) — review BN returned (digest BR): edge-matching leaf unchanged, no hypothesis added; bridge
+  re-planned (connected carriers `A_w`, vertex signs `σ`, flip `φ e` per edge); owed lead cleanup: weaken
+  `Section34FaceTorusCycle` to `hf₁` only. Codex lane 1 resumes item 7 on the BR route before consults 10–12.
