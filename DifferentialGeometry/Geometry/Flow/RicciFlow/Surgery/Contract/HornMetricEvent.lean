@@ -19,6 +19,9 @@ universe u v
 private instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨by simp⟩
 private instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp⟩
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
+private local instance {D : OneStepIncoming.{u}} : SigmaCompactSpace D.slab.terminalRegularOpen :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel D.slab.terminalRegularOpen.isOpen)
 
 private theorem retained_terminal_reindex
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
@@ -133,7 +136,7 @@ private theorem precision_order_compatible_of_le {δ η ε₀ ε : ℝ} {m : ℕ
 private theorem exists_finite_oriented_horn_neck_data_tolerance :
     ∃ eta : ℝ, 0 < eta ∧
       ∀ {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ),
-        ε ≤ eta → ∀ {δ : ℝ} (_ : ε ≤ δ) (_ : δ < 1), δ⁻¹ + 2 < ε⁻¹ →
+        ε ≤ eta → ∀ {δ : ℝ} (_ : ε ≤ δ) (hδ1 : δ < 1), δ⁻¹ + 2 < ε⁻¹ →
         ∀ m : ℕ, m + 6 ≤ ⌊ε⁻¹⌋₊ + 1 →
         ∃ Q₀ : ℝ, 0 < Q₀ ∧ ∀ Q : ℝ, Q₀ < Q → ∀ y : Sphere 2,
           0 < Q ∧
@@ -167,9 +170,27 @@ private theorem exists_finite_oriented_horn_neck_data_tolerance :
                     (retainedCore f (scalarSublevelComponents D.slab.terminalRegularOpen
                       D.terminal.metric f (P'.coreRadius ^ 2)⁻¹))
                     D.slab.terminalRegularOpen ∧
-                  ∀ j side, cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd
+                  (∀ j side, cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd
                     (j, side) ∈ scalarSublevelComponents D.slab.terminalRegularOpen
-                      D.terminal.metric f (P'.coreRadius ^ 2)⁻¹ ↔ side = true := by
+                      D.terminal.metric f (P'.coreRadius ^ 2)⁻¹ ↔ side = true) ∧
+                  ∃ (δOriginal : Fin (Nat.card P'.HornCutIndex) → ℝ)
+                    (kOriginal : Fin (Nat.card P'.HornCutIndex) → ℕ)
+                    (NOriginal : ∀ j, NormalizedNeck D.terminal.metric
+                      (δOriginal j) (kOriginal j))
+                    (hδOriginal : ∀ j, δOriginal j ≤ δ)
+                    (rotation : Fin (Nat.card P'.HornCutIndex) →
+                      ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+                    (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j) spherePoint =
+                      ((NOriginal j).monoDelta (hδOriginal j) hδ1).sphereMark)
+                    (side : Fin (Nat.card P'.HornCutIndex) → Bool)
+                    (horder : ∀ j, m + 6 ≤ kOriginal j),
+                    (∀ j, (NOriginal j).center = x₀ j ∧
+                      (NOriginal j).scale = Q ∧ δOriginal j ≤ ε ∧
+                      ⌊ε⁻¹⌋₊ + 1 ≤ kOriginal j) ∧
+                    (∀ j, LinearMap.det (rotation j).toLinearMap = 1) ∧
+                    ∀ j, HEq (d j)
+                      ((((NOriginal j).monoDelta (hδOriginal j) hδ1).rotatedDatum
+                        (rotation j) (hmark j) (side j)).oriented.lowerOrder (horder j)) := by
   classical
   obtain ⟨eta, heta, hchoose⟩ := exists_common_scale_oriented_horn_necks_tolerance.{u}
   refine ⟨eta, heta, ?_⟩
@@ -182,7 +203,7 @@ private theorem exists_finite_oriented_horn_neck_data_tolerance :
   refine ⟨Q₀, hQ₀, ?_⟩
   intro Q hQ y
   obtain ⟨t, δ₀, k, N, hδ, a, F, K, hK, hfix, hF, hcore, hdata,
-    rot, hrot, side, ν, _, ha, hmap, hf, hd, hside, hRet⟩ := hfamily Q hQ y
+    rot, hrot, side, ν, hdet, ha, hmap, hf, hd, hside, hRet⟩ := hfamily Q hQ y
   let P' := P.reparametrizeHornsOfCompactSupport F hfix K hK hF
   let : Finite P'.component := P'.component_finite.to_subtype
   let (c : P'.component) : Finite (P'.hornIndex c.val) := P'.hornIndex_finite c.val
@@ -229,11 +250,187 @@ private theorem exists_finite_oriented_horn_neck_data_tolerance :
     calc
       (dLow (e j)).map q = (dHigh (e j)).map q := congrFun (hlowMap (e j)) q
       _ = _ := hmap (e j) q
-  · refine ⟨hfFin, hdFin, ?_, hRetFin, ?_⟩
+  · refine ⟨hfFin, hdFin, ?_, hRetFin, ?_, ?_⟩
     · intro j
       exact hlocal (e j)
     · intro j s
       exact hsideFin j s
+    · refine ⟨(fun j => δ₀ (e j).1.val (e j).2),
+        (fun j => k (e j).1.val (e j).2), (fun j => Ns (e j)),
+        (fun j => hδ (e j).1.val (e j).2), (fun j => rot (e j)),
+        (fun j => hrot (e j)), (fun j => side (e j)), (fun j => hm' (e j)),
+        ?_, ?_, ?_⟩
+      · intro j
+        exact ⟨rfl, (hdata (e j).1.val (e j).2).2.2.1,
+          (hdata (e j).1.val (e j).2).2.2.2.1,
+          (hdata (e j).1.val (e j).2).2.2.2.2⟩
+      · intro j
+        exact hdet (e j)
+      · intro j
+        exact HEq.rfl
+
+
+theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_neck :
+    ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
+      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
+      ∃ δ : ℝ, 0 < δ ∧ ∃ hquarter : δ < 1 / 4, ∃ ε₀ : ℝ, 0 < ε₀ ∧
+      ∀ {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ),
+      ε ≤ ε₀ → ∃ Q₀ : ℝ, 0 < Q₀ ∧ ∀ Q : ℝ, Q₀ < Q → ∀ y : Sphere 2,
+          ∃ (F : ∀ c, P.hornIndex c →
+              NeckCylinder ≃ₘ⟮NeckCylinderModel, NeckCylinderModel⟯ NeckCylinder)
+            (K : ∀ c, P.hornIndex c → Set NeckCylinder)
+            (hK : ∀ c e, IsCompact (K c e))
+            (hfix : ∀ c e (q : NeckCylinder),
+              q.2 ≤ (P.hornCollar c e).radius → F c e q = q)
+            (hF : ∀ c e, EqOn (F c e) id (K c e)ᶜ),
+            let P' := P.reparametrizeHornsOfCompactSupport F hfix K hK hF
+            P'.core = P.core ∧
+            ∃ e : Fin (Nat.card P'.HornCutIndex) ≃ P'.HornCutIndex,
+              ∃ (t a : Fin (Nat.card P'.HornCutIndex) → ℝ)
+                (ν : Fin (Nat.card P'.HornCutIndex) → Sphere 2 ≃ Sphere 2)
+                (x₀ : Fin (Nat.card P'.HornCutIndex) → D.slab.terminalRegularOpen)
+                (d : ∀ j : Fin (Nat.card P'.HornCutIndex),
+                  normalizedDatum D.terminal.metric (x₀ j) δ (m + 6)),
+                (∀ j, 0 < t j ∧ x₀ j = P.horn (e j).1.val (e j).2 (y, t j) ∧
+                  metricScalarAt D.terminal.metric (x₀ j) = Q) ∧
+                (∀ j, δ⁻¹ + 1 < a j) ∧
+                (∀ j, (d j).retainedSide = true) ∧
+                (∀ j (q : bufferedCylinder δ),
+                  (d j).map q = P'.horn (e j).1.val (e j).2
+                    (ν j q.val.1, a j - q.val.2)) ∧
+                let f := fun j => neckAmbientMap D.slab.terminalRegularOpen (d j)
+                ∃ (hf : ∀ j, _root_.Topology.IsOpenEmbedding (f j))
+                  (hd : Pairwise fun i j => Disjoint (range (f i)) (range (f j))),
+                  ∃ hlocal : ∀ j, IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ (f j),
+                  ∃ hRet : MapsTo (Subtype.val : cutCore f → D.stage.Carrier)
+                    (retainedCore f (scalarSublevelComponents D.slab.terminalRegularOpen
+                      D.terminal.metric f (P'.coreRadius ^ 2)⁻¹))
+                    D.slab.terminalRegularOpen,
+                  (∀ j side, cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd
+                    (j, side) ∈ scalarSublevelComponents D.slab.terminalRegularOpen
+                      D.terminal.metric f (P'.coreRadius ^ 2)⁻¹ ↔ side = true) ∧
+                  (∃ (δOriginal : Fin (Nat.card P'.HornCutIndex) → ℝ)
+                    (kOriginal : Fin (Nat.card P'.HornCutIndex) → ℕ)
+                    (NOriginal : ∀ j, NormalizedNeck D.terminal.metric
+                      (δOriginal j) (kOriginal j))
+                    (hδOriginal : ∀ j, δOriginal j ≤ δ)
+                    (rotation : Fin (Nat.card P'.HornCutIndex) →
+                      ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+                    (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j) spherePoint =
+                      ((NOriginal j).monoDelta (hδOriginal j) (hquarter.trans (by norm_num))).sphereMark)
+                    (side : Fin (Nat.card P'.HornCutIndex) → Bool)
+                    (horder : ∀ j, m + 6 ≤ kOriginal j),
+                    (∀ j, (NOriginal j).center = x₀ j ∧
+                      (NOriginal j).scale = Q ∧ δOriginal j ≤ ε ∧
+                      ⌊ε⁻¹⌋₊ + 1 ≤ kOriginal j) ∧
+                    (∀ j, LinearMap.det (rotation j).toLinearMap = 1) ∧
+                    ∀ j, HEq (d j)
+                      ((((NOriginal j).monoDelta (hδOriginal j) (hquarter.trans (by norm_num))).rotatedDatum
+                        (rotation j) (hmark j) (side j)).oriented.lowerOrder (horder j))) ∧
+                  let R := scalarSublevelComponents D.slab.terminalRegularOpen
+                    D.terminal.metric f (P'.coreRadius ^ 2)⁻¹
+      let hnontrivial := D.slab.nonempty_cut_or_discardedCore_of_singularEndpoint D.singular f R hRet
+      let Bidx := {b : Fin (Nat.card P'.HornCutIndex) × Bool // cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd b ∈ R}
+      let Qcap := FiniteCapQuotient transitionEnd_pos (fun j => (d j).precision_pos) f (fun i => (hf i).injective) hd
+      letI : SecondCountableTopology D.stage.Carrier := ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace D.stage.Carrier
+      letI : SigmaCompactSpace D.slab.terminalRegularOpen := isSigmaCompact_iff_sigmaCompactSpace.mp
+        (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel D.slab.terminalRegularOpen.isOpen)
+      letI : LocallyPathConnectedSpace D.stage.Carrier :=
+        originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
+      let Ret := finiteCapRetained transitionEnd_pos (fun j => (d j).precision_pos) f hf hd R
+      let Disc := finiteCapDiscarded transitionEnd_pos (fun j => (d j).precision_pos) f hf hd R
+      letI : ChartedSpace ThreeSpace Qcap :=
+        finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos (fun j => (d j).precision_pos) f hf hd
+      letI : IsManifold ThreeModel ∞ Qcap :=
+        finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos (fun j => (d j).precision_pos) f hf hd hlocal
+      letI : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos (fun j => (d j).precision_pos) f hf hd
+      letI : CompactSpace Qcap := finiteCapQuotient_compactSpace transitionEnd_pos (fun j => (d j).precision_pos) f hf hd
+      letI : CompactSpace Ret :=
+        (finiteCapRetained_discarded_compactSpace transitionEnd_pos (fun j => (d j).precision_pos) f hf hd R).1
+      letI : CompactSpace Disc :=
+        (finiteCapRetained_discarded_compactSpace transitionEnd_pos (fun j => (d j).precision_pos) f hf hd R).2
+      ∃ (oQ : SmoothOrientation ThreeModel Qcap) (oRet : SmoothOrientation ThreeModel Ret)
+        (oDisc : SmoothOrientation ThreeModel Disc)
+        (B : (Fin (Nat.card P'.HornCutIndex) × Bool) → ThreeBall ≃ₘ⟮𝓡∂ 3, 𝓡∂ 3⟯ ThreeBall)
+        (aCap : (Fin (Nat.card P'.HornCutIndex) × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+        (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
+      ∃ E : MetricCutCapEvent D.stage
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
+        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
+        HEq E.transition.trace
+          ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
+            (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
+              (fun b => (B b).toHomeomorph) (fun b => (aCap b).toHomeomorph) hboundary) ∧
+        E.transition.trace.tubes = TubeSystem.ofBufferedCharts (fun j => (d j).precision_pos)
+          (fun i => (d i).precision_lt_one) f hf hd ∧
+        E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
+        E.old = E.transition.trace.retainedCore ∧ E.transition.boundaryFrameReversing ∧
+        (∀ a : ℝ, 0 < a →
+          (∀ x : E.incoming.terminalRegularOpen, InFixedHamiltonIveyRegion E.terminal.metric a x) →
+          ∀ x : Ret, InFixedHamiltonIveyRegion E.outputMetric a x) ∧
+        (∀ L₀ : ℝ, L₀ ≤ 0 →
+          (∀ x : E.incoming.terminalRegularOpen, L₀ ≤ metricScalarAt E.terminal.metric x) →
+          ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
+        (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
+          riemannianVolumeMeasure ThreeModel (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
+            E.outputMetric univ + ENNReal.ofReal
+              ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
+          riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
+      ∃ hrec : ∀ _ : Bidx, (c * δ)⁻¹ + 1 ≤ (δ)⁻¹,
+      ∃ dCap : ∀ b : Bidx, normalizedDatum D.terminal.metric
+        ((d b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * δ) (m + 4),
+      ∃ hmap : ∀ b : Bidx, (dCap b).map =
+        (d b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b),
+      ∃ hside : ∀ b : Bidx, (dCap b).retainedSide = true,
+      ∃ w : ∀ b : Bidx, CanonicalStaticInsertionWitness (dCap b) A hA Dcap m accuracy,
+        E.outputMetric = finiteFullPreparedMetric ThreeModel (fun j => (d j).precision_pos) f hf hd hlocal
+          D.slab.terminalRegularOpen D.terminal.metric R hRet c hc x₀ (fun _ => m + 6) d
+          (fun _ => rfl) hrec dCap hmap hside w ∧
+        ∀ b : Bidx, StaticInsertionAdditionalProperties C (w b) := by
+  classical
+  choose c hc C hC A hA hsmall hfactory using exists_uniform_metricCutCapEvent_volume_debit.{u}
+  choose eta heta hchoose using exists_finite_oriented_horn_neck_data_tolerance.{u}
+  apply Exists.intro c
+  apply Exists.intro hc
+  apply Exists.intro C
+  apply And.intro hC
+  apply Exists.intro A
+  apply Exists.intro hA
+  apply And.intro hsmall
+  intro Dcap hDcap m accuracy haccuracy
+  have choice := hfactory Dcap hDcap m accuracy haccuracy
+  let δ : ℝ := Classical.choose choice
+  have hδ := (Classical.choose_spec choice).1
+  have hquarter := (Classical.choose_spec choice).2.1
+  choose ε₀ hε₀ hεeta hεδ hεsmall hwidth horder using exists_precision_order_compatible hδ heta m
+  apply Exists.intro δ
+  apply And.intro hδ
+  apply Exists.intro hquarter
+  apply Exists.intro ε₀
+  apply And.intro hε₀
+  intro D ε Λ P hε
+  have hcompat := precision_order_compatible_of_le P.epsilon_pos hε hεeta hεδ hεsmall hwidth horder
+  have choiceQ := hchoose P hcompat.1 hcompat.2.1 (hquarter.trans (by norm_num))
+    hcompat.2.2.2.1 m hcompat.2.2.2.2
+  let Q₀ : ℝ := Classical.choose choiceQ
+  have hQ₀ := (Classical.choose_spec choiceQ).1
+  apply Exists.intro Q₀
+  apply And.intro hQ₀
+  intro Q hQ y
+  choose hQpos F K hK hfix hF hcore e t a ν x₀ d hcenter ha hside hmap hf hd hlocal hRet hfaces horiginal using
+    (Classical.choose_spec choiceQ).2 Q hQ y
+  let P' := P.reparametrizeHornsOfCompactSupport F hfix K hK hF
+  let f := fun j => neckAmbientMap D.slab.terminalRegularOpen (d j)
+  let R := scalarSublevelComponents D.slab.terminalRegularOpen D.terminal.metric f (P'.coreRadius ^ 2)⁻¹
+  have hone (j) : cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd (j,true) ∈ R ∧
+      cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd (j,false) ∉ R := by
+    exact ⟨(hfaces j true).mpr rfl,fun h => Bool.false_ne_true ((hfaces j false).mp h)⟩
+  have hevent := (Classical.choose_spec choice).2.2 D.slab D.terminal (fun _ => δ) (fun j => (d j).precision_pos)
+    (fun _ => le_rfl) x₀ d f hf hd hlocal (fun _ => rfl) R hRet D.singular hone
+    Q hQpos (fun j => (hcenter j).2.2)
+  exact ⟨F,K,hK,hfix,hF,hcore,e,t,a,ν,x₀,d,hcenter,ha,hside,hmap,hf,hd,hlocal,hRet,hfaces,horiginal,hevent⟩
 
 
 theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit :
@@ -338,47 +535,18 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit :
           (fun _ => rfl) hrec dCap hmap hside w ∧
         ∀ b : Bidx, StaticInsertionAdditionalProperties C (w b) := by
   classical
-  choose c hc C hC A hA hsmall hfactory using exists_uniform_metricCutCapEvent_volume_debit.{u}
-  choose eta heta hchoose using exists_finite_oriented_horn_neck_data_tolerance.{u}
-  apply Exists.intro c
-  apply Exists.intro hc
-  apply Exists.intro C
-  apply And.intro hC
-  apply Exists.intro A
-  apply Exists.intro hA
-  apply And.intro hsmall
+  choose c hc C hC A hA hsmall hfamily using
+    exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_neck.{u}
+  refine ⟨c,hc,C,hC,A,hA,hsmall,?_⟩
   intro Dcap hDcap m accuracy haccuracy
-  have choice := hfactory Dcap hDcap m accuracy haccuracy
-  let δ : ℝ := Classical.choose choice
-  have hδ := (Classical.choose_spec choice).1
-  have hquarter := (Classical.choose_spec choice).2.1
-  choose ε₀ hε₀ hεeta hεδ hεsmall hwidth horder using exists_precision_order_compatible hδ heta m
-  apply Exists.intro δ
-  apply And.intro hδ
-  apply And.intro hquarter
-  apply Exists.intro ε₀
-  apply And.intro hε₀
+  choose δ hδ hquarter ε₀ hε₀ hp using hfamily Dcap hDcap m accuracy haccuracy
+  refine ⟨δ,hδ,hquarter,ε₀,hε₀,?_⟩
   intro D ε Λ P hε
-  have hcompat := precision_order_compatible_of_le P.epsilon_pos hε hεeta hεδ hεsmall hwidth horder
-  have choiceQ := hchoose P hcompat.1 hcompat.2.1 (hquarter.trans (by norm_num))
-    hcompat.2.2.2.1 m hcompat.2.2.2.2
-  let Q₀ : ℝ := Classical.choose choiceQ
-  have hQ₀ := (Classical.choose_spec choiceQ).1
-  apply Exists.intro Q₀
-  apply And.intro hQ₀
-  intro Q hQ y
-  choose hQpos F K hK hfix hF hcore e t a ν x₀ d hcenter ha hside hmap hf hd hlocal hRet hfaces using
-    (Classical.choose_spec choiceQ).2 Q hQ y
-  let P' := P.reparametrizeHornsOfCompactSupport F hfix K hK hF
-  let f := fun j => neckAmbientMap D.slab.terminalRegularOpen (d j)
-  let R := scalarSublevelComponents D.slab.terminalRegularOpen D.terminal.metric f (P'.coreRadius ^ 2)⁻¹
-  have hone (j) : cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd (j,true) ∈ R ∧
-      cuttingSphereComponent (fun j => (d j).precision_pos) f hf hd (j,false) ∉ R := by
-    exact ⟨(hfaces j true).mpr rfl,fun h => Bool.false_ne_true ((hfaces j false).mp h)⟩
-  have hevent := (Classical.choose_spec choice).2.2 D.slab D.terminal (fun _ => δ) (fun j => (d j).precision_pos)
-    (fun _ => le_rfl) x₀ d f hf hd hlocal (fun _ => rfl) R hRet D.singular hone
-    Q hQpos (fun j => (hcenter j).2.2)
+  choose Q₀ hQ₀ hQ using hp P hε
+  refine ⟨Q₀,hQ₀,?_⟩
+  intro Q hQQ y
+  choose F K hK hfix hF hcore e t a ν x₀ d hcenter ha hside hmap hf hd hlocal hRet hfaces horiginal hevent using
+    hQ Q hQQ y
   exact ⟨F,K,hK,hfix,hF,hcore,e,t,a,ν,x₀,d,hcenter,ha,hside,hmap,hf,hd,hlocal,hRet,hfaces,hevent⟩
-
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
