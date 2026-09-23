@@ -15,8 +15,10 @@ theorem IsPLCellOn.exists_excluding_point_preserving_union {M : Type*} [Topologi
     ∃ C : Set M, IsPLCellOn 3 C (frontier C) ∧ p ∉ C ∧ A ∪ C = A ∪ B ∧
       interior A ∪ interior C = interior A ∪ interior B ∧
       frontier A ∩ frontier C = frontier A ∩ frontier B ∧ C \ U = B \ U ∧
-      ((interior A ∩ interior C).Nonempty ↔ (interior A ∩ interior B).Nonempty) := by
-  obtain ⟨K, φ, -, hKU, -, hφi, hfix, hφp⟩ :=
+      ((interior A ∩ interior C).Nonempty ↔ (interior A ∩ interior B).Nonempty) ∧
+      ∃ (K : Set M) (φ : M ≃ₜ M), IsCompact K ∧ K ⊆ U ∧ IsPL 3 3 φ ∧
+        φ '' B = C ∧ EqOn φ id Kᶜ := by
+  obtain ⟨K, φ, hK, hKU, -, hφi, hfix, hφp⟩ :=
     exists_isPL_homeomorph_map_point_eqOn_compl (n := 3) hU hc hp hq
   have hfixU : EqOn φ id Uᶜ := fun x hx => hfix fun hxK => hx (hKU hxK)
   have hfixA : EqOn φ id (interior A)ᶜ :=
@@ -36,7 +38,7 @@ theorem IsPLCellOn.exists_excluding_point_preserving_union {M : Type*} [Topologi
     refine ⟨P, r, φ.symm ∘ u, hr, hcomp, ?_, ?_⟩
     · rw [hBe, image_comp]
     · rw [hBde, image_comp]
-  refine ⟨φ.symm '' B, hcell.boundary_eq_frontier ▸ hcell, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨φ.symm '' B, hcell.boundary_eq_frontier ▸ hcell, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rw [hmem, hφp]
     exact hqB
   · ext x
@@ -75,6 +77,10 @@ theorem IsPLCellOn.exists_excluding_point_preserving_union {M : Type*} [Topologi
     · rintro ⟨x, hxA, hxB⟩
       refine ⟨φ.symm x, (hAi _).mp ?_, ⟨x, hxB, rfl⟩⟩
       simpa only [φ.apply_symm_apply] using hxA
+  · refine ⟨K, φ.symm, hK, hKU, hφi, rfl, ?_⟩
+    intro x hx
+    apply φ.injective
+    simpa only [φ.apply_symm_apply, id_eq] using (hfix hx).symm
 
 private theorem exists_disjoint_connected_open_supersets {X : Type*} [TopologicalSpace X]
     [T2Space X] [LocallyConnectedSpace X] {K₀ K₁ U₀ U₁ : Set X}
@@ -111,12 +117,15 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
       A' ∪ B' = A ∪ B ∧ interior A' ∪ interior B' = interior A ∪ interior B ∧
       frontier A' ∩ frontier B' = frontier A ∩ frontier B ∧
       A' \ O = A \ O ∧ B' \ O = B \ O ∧
-      ((interior A' ∩ interior B').Nonempty ↔ (interior A ∩ interior B).Nonempty) := by
+      ((interior A' ∩ interior B').Nonempty ↔ (interior A ∩ interior B).Nonempty) ∧
+      ∃ (K : Set M) (φ₀ φ₁ : M ≃ₜ M), IsCompact K ∧ K ⊆ O ∧
+        IsPL 3 3 φ₀ ∧ IsPL 3 3 φ₁ ∧ φ₀ '' A = A' ∧ φ₁ '' B = B' ∧
+        EqOn φ₀ id Kᶜ ∧ EqOn φ₁ id Kᶜ := by
   let : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace (EuclideanSpace ℝ (Fin 3)) M
   obtain ⟨U₀, U₁, hU₀, hU₁, hcU₀, hcU₁, hKU₀, hKU₁, hUV₀, hUV₁, hUU⟩ :=
     exists_disjoint_connected_open_supersets hK₀ hK₁ hc₀ hc₁ hdisj
       (isOpen_interior.inter hO) (isOpen_interior.inter hO) hsub₀ hsub₁
-  obtain ⟨B', hB', hp₀B', huB, hiB, hfB, hdB, hnB⟩ :=
+  obtain ⟨B', hB', hp₀B', huB, hiB, hfB, hdB, hnB, L₁, φ₁, hL₁, hL₁U, hφ₁, he₁, hf₁⟩ :=
     hB.exists_excluding_point_preserving_union hU₀ hcU₀
       (hUV₀.trans inter_subset_left) (hKU₀ hp₀) (hKU₀ hq₀) hq₀B
   have hU₁B' : U₁ ⊆ interior B' := by
@@ -124,7 +133,7 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
     intro x hx
     have hxU₀ : x ∉ U₀ := fun hx₀ => Set.disjoint_left.mp hUU hx₀ hx
     exact (hdB.symm.subset ⟨interior_subset (hUV₁ hx).1, hxU₀⟩).1
-  obtain ⟨A', hA', hp₁A', huA, hiA, hfA, hdA, hnA⟩ :=
+  obtain ⟨A', hA', hp₁A', huA, hiA, hfA, hdA, hnA, L₀, φ₀, hL₀, hL₀U, hφ₀, he₀, hf₀⟩ :=
     hA.exists_excluding_point_preserving_union hU₁ hcU₁ hU₁B'
       (hKU₁ hp₁) (hKU₁ hq₁) hq₁A
   have hU₀A' : U₀ ⊆ interior A' := by
@@ -133,7 +142,7 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
     have hxU₁ : x ∉ U₁ := fun hx₁ => Set.disjoint_left.mp hUU hx hx₁
     exact (hdA.symm.subset ⟨interior_subset (hUV₀ hx).1, hxU₁⟩).1
   refine ⟨A', B', hA', hB', hU₀A' (hKU₀ hp₀), hp₀B', hU₁B' (hKU₁ hp₁), hp₁A',
-    ?_, ?_, ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · calc
       A' ∪ B' = B' ∪ A' := union_comm _ _
       _ = B' ∪ A := huA
@@ -165,5 +174,10 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
         (interior A ∩ interior B').Nonempty := by
       simpa only [inter_comm (interior B')] using hnA
     exact hnA'.trans hnB
+  · exact ⟨L₀ ∪ L₁, φ₀, φ₁, hL₀.union hL₁,
+      union_subset (hL₀U.trans (hUV₁.trans inter_subset_right))
+        (hL₁U.trans (hUV₀.trans inter_subset_right)), hφ₀, hφ₁, he₀, he₁,
+      fun _ hx => hf₀ (fun hm => hx (Or.inl hm)),
+      fun _ hx => hf₁ (fun hm => hx (Or.inr hm))⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

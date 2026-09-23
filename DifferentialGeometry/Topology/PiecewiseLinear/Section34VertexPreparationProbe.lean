@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeEnds
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedVertexCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ChartLocalEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCores
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LensImages
@@ -75,7 +76,17 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
       (LocallyFinite fun w => {x : U | (x : M₁) ∈ Cp w}) ∧
       (∀ e, Cp (ends e).1 ∩ Cp (ends e).2 ⊆ diskO e) ∧
       ∀ w w', w ≠ w' → Disjoint (Cp w') (simplexBody 𝒦' w.1) := by
-    sorry
+    have hCcLF : LocallyFinite fun w => {x : U | (x : M₁) ∈ Cc w} := by
+      intro x
+      obtain ⟨V, hV, hfin⟩ := hLFU x x.2
+      refine ⟨Subtype.val ⁻¹' V, continuous_subtype_val.continuousAt hV, hfin.subset ?_⟩
+      rintro w ⟨y, hyC, hyV⟩
+      exact ⟨y, hyC, hyV⟩
+    obtain ⟨Cp, hcp, hcircle, hnonadj, hCpCc, hcover, hCpLF, hlensO, -, hvertex, hvdisj⟩ :=
+      exists_section34_pierced_vertex_cells hU hframe hN ends hends Cc hsrcCc hCcLF
+        diskO hdiskO.1 hdiskO.2.1 hdiskO.2.2.2.2
+    exact ⟨Cp, fun w => frontier (Cp w), hcp, hvertex, hcircle, hnonadj,
+      hCpCc, hcover, hCpLF, hlensO, hvdisj⟩
   obtain ⟨Cp, CpBd, hcp, hvertex, hcircle, hnonadj, hCpCc, hcover, hCpLF, hlensO, hvdisj⟩ :=
     exists_locally_finite_pierced_cells_with_isolated_lenses
   have hsub : ∀ w, src (.vertexBall w) ⊆ Cc w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U :=
