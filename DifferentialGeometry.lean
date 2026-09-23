@@ -10350,6 +10350,7 @@ import DifferentialGeometry.Topology.Homology.ThreeCycleRealization
 import DifferentialGeometry.Topology.Homology.TriangleLocalDegree
 import DifferentialGeometry.Topology.Homology.TwoCycleRealization
 import DifferentialGeometry.Topology.Homology.TwoCycleSphereRepresentation
+import DifferentialGeometry.Topology.Homology.ThreeCycleSphereRepresentation
 import DifferentialGeometry.Topology.Homotopy.BallHomotopyExtension
 import DifferentialGeometry.Topology.Homotopy.BallPrism
 import DifferentialGeometry.Topology.Homotopy.CubeSphereLocalHomeomorph
