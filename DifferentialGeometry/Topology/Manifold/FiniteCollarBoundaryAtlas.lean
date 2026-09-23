@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.ComponentFilling
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.FiniteCollarFrontier
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas
@@ -132,5 +133,50 @@ theorem exists_smoothBoundaryAtlas_of_finite_disjoint_collars
       exact ⟨φ, hq ▸ hxφ, hφ, iff_of_true (hq ▸ hzφ) hxf⟩
   choose φ hmem hiff hz using hcharts
   exact ⟨⟨φ, hmem, hiff⟩, hz⟩
+
+variable {n : ℕ} {N M ι : Type*}
+  [TopologicalSpace N] [ChartedSpace (EuclideanSpace ℝ (Fin n)) N]
+  [IsManifold (𝓡 n) ∞ N] [CompactSpace N] [PreconnectedSpace N]
+  [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin (n + 1))) M]
+  [IsManifold (𝓡 (n + 1)) ∞ M] [T2Space M] [Finite ι]
+
+theorem exists_smoothBoundaryAtlas_union_connectedComponentIn_closed_exterior
+    (e : ι → PartialDiffeomorph ((𝓡 n).prod 𝓘(ℝ)) (𝓡 (n + 1)) (N × ℝ) M ∞)
+    (hzero : ∀ i q, (q, (0 : ℝ)) ∈ (e i).source)
+    (hdisjoint : Pairwise (fun i j => Disjoint
+      (range (fun q : N => e i (q, 0))) (range (fun q : N => e j (q, 0)))))
+    {W : Set M} (hregular : closure (interior W) = W)
+    (hfrontier : frontier W = ⋃ i, range (fun q : N => e i (q, 0))) (x : M) :
+    let C := connectedComponentIn (interior W)ᶜ x
+    C ⊆ interior (W ∪ C) ∧ closure (interior (W ∪ C)) = W ∪ C ∧
+      frontier (W ∪ C) =
+        ⋃ i ∈ {i | Disjoint (range (fun q : N => e i (q, 0))) C},
+          range (fun q : N => e i (q, 0)) ∧
+      ∃ atlas : SmoothBoundaryAtlas (𝓡 (n + 1)) (n + 1) (W ∪ C),
+        ∀ y : ↥(W ∪ C), atlas.ambientChart y y.val 0 = 0 ↔ y.val ∈ frontier (W ∪ C) := by
+  have hWclosed : IsClosed W := hregular ▸ isClosed_closure
+  have hEregular : closure (interior ((interior W)ᶜ)) = (interior W)ᶜ := by
+    rw [interior_compl, hregular, closure_compl]
+  have hEfrontier : frontier ((interior W)ᶜ) = frontier W := by
+    rw [frontier_compl]
+    simp only [frontier, interior_interior, hregular, hWclosed.closure_eq]
+  obtain ⟨atlasE, _⟩ := exists_smoothBoundaryAtlas_of_finite_disjoint_collars e hzero
+    hdisjoint hEregular (hEfrontier.symm ▸ hfrontier.subset)
+  let _ := atlasE.toChartedSpace
+  let _ := atlasE.isManifold
+  let _ : LocallyConnectedSpace ↥((interior W)ᶜ) :=
+    ChartedSpace.locallyConnectedSpace (EuclideanHalfSpace (n + 1)) ↥((interior W)ᶜ)
+  have hfill := connectedComponentIn_closed_exterior_subset_interior_union (W := W) x
+  have hreg := closure_interior_union_connectedComponentIn_closed_exterior hregular x
+  have hconn (i : ι) : IsPreconnected (range (fun q : N => e i (q, 0))) := by
+    apply isPreconnected_range
+    exact (e i).contMDiffOn_toFun.continuousOn.comp_continuous
+      (continuous_id.prodMk continuous_const) (hzero i)
+  have hfront := frontier_union_connectedComponentIn_closed_exterior_eq_iUnion
+    (fun i => range (fun q : N => e i (q, 0))) hconn hfrontier x
+  refine ⟨hfill, hreg, hfront, ?_⟩
+  exact exists_smoothBoundaryAtlas_of_finite_disjoint_collars e hzero hdisjoint hreg
+    (fun y hy => hfrontier.subset
+      ((frontier_union_connectedComponentIn_closed_exterior x).subset hy).1)
 
 end DifferentialGeometry.Topology

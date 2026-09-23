@@ -10234,6 +10234,7 @@ import DifferentialGeometry.Topology.ClosedBall.OpenAnnulus
 import DifferentialGeometry.Topology.ClosedBall.RadialShell
 import DifferentialGeometry.Topology.ClosedCover
 import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.Connected.ComponentFilling
 import DifferentialGeometry.Topology.Connected.RegularClosedComponents
 import DifferentialGeometry.Topology.Connected.ComponentCollar
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRestriction
