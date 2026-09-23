@@ -1128,3 +1128,141 @@ entry; statements read from `Skeleton/Section33Approximation.lean`, section `Lea
   `fa0b3c469e54388ef733340873f3e22e37a10054034c2b3e2756bd5f86870651`, axioms within `propext`,
   `Classical.choice`, `Quot.sound`, the thirteen linters):
   `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch7.lean with no diagnostics; shared outputs unchanged.`
+
+# Batch 8 (compact cut and graph frames, leaf 1)
+
+Worker: Opus 5.5 fill worker on lease b, 2026-09-23 (checkout HEAD 712480db4 while writing this
+entry).  Target: `exists_compactCutAndGraph` of `Skeleton/Section34Compact.lean`.  Not restated:
+the leaf is not closed (INTERFACE below); six bricks CLOSED.
+
+## exists_compactCutAndGraph — INTERFACE (the hypothesis `h331 : Moise331`)
+
+- The graph frame needs `f₁` on the cut neighbourhood `N = ⋃ src (.vertexBall w)`, and the cut
+  frame pins `N` to the simplices of `K` (face disks `closure (conv s \ N)`, residual balls,
+  patches, arcs; clauses 18--23).  `Moise331` returns `f` only on its own
+  `(derivedNeighborhood T L').space`, with `T` arbitrary (no mesh, no compatibility with `K`) and
+  only the global estimate `dist (f x) (h x) < ε`.  So neither `N :=` the 33.1 neighbourhood (its
+  cut by the simplices of `K` is uncontrolled) nor a nice `N` inside it with `f₁ := f` works
+  (`f₁ '' N ∈ 𝓝ˢ (h '' Γ)` fails in general: `f` may translate a thin tube by `0.3 ε` and stretch
+  it to radius `0.6 ε`, so the image of a thinner tube misses `h '' Γ`); a recomposition `f ∘ ψ`
+  needs a displacement-controlled homeomorphism between regular neighbourhoods, which the tree
+  does not have.  Clauses (5)--(8) of the graph frame moreover need `f₁ '' C_w` inside
+  prescribed neighbourhoods of `h '' C_w` (book, page 240: "by (8) of Theorem 32.3 the sets C''_v
+  can be chosen so as to lie in arbitrarily small neighborhoods of the sets C'_v"); an
+  `ε`-estimate cannot give them, since the handle frame forces `ε > 4 diam h(C_w)` while
+  `dist(C_w, conv s)` for a non-incident `s` is of the same order.  The book chooses `N` first
+  (page 239) and applies 33.1 to that `N`.
+- Proposed replacement (lead/owner decision): the leaf, `moise341OnNeighborhood` and
+  `moise341_of_onNeighborhood` take `h331 : Moise331OnTube` instead of `h331 : Moise331`, where
+  `Moise331OnTube := ∀ K N N' C D Dbd h, IsTube K N C D Dbd h N' → IsConnected K.space →
+  (∀ v : K.vertices, ((edgeGraph K).neighborSet v).ncard ≠ 1) → ∀ W, (∀ v ∈ K.vertices,
+  W v ∈ 𝓝ˢ (h '' C v)) → ∃ f, IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ 𝓝ˢ (h '' K.space) ∧
+  ∀ v ∈ K.vertices, f '' C v ⊆ W v` (module `Section33TubeApproximation`).  Its producer
+  `moise331OnTube : Moise323 → Moise324 → Moise264 → Moise331OnTube` is PROVED (the Section 33
+  assembly after the tube frame, `Moise323`'s prescribed neighbourhoods taken inside the `W v`,
+  and the sharpened extension below), and `Moise331OnTube.moise331 : Moise331OnTube → Moise331`
+  is PROVED; the chain `32.3, 32.4, 26.4 → 33.1 on a tube → 34.1` stays one-way and no named
+  input is added.  The assembly would call `moise341_of_onNeighborhood (moise331OnTube h323 h324
+  h264) h305`.  I found no clause of the frozen conclusion that is false.
+
+## Design (the leaf under `Moise331OnTube`)
+
+- `M` = fine triangulation of a PL ball `C⁺ ⊆ V` with `C ⊆ Int C⁺` and `C` the space of a
+  subcomplex; `K := restrict M C`, `K' := K`, `L := restrict K Γ` (`Γ = |K¹|`),
+  `N := ⋃ graphDualCell M L v` (the second derived neighbourhood of `L` in `M`, leaving `C` at the
+  boundary vertices through the collar of `M`).  Vertex balls = graph dual cells; splitting disk
+  of `e` = meet of the two end cells (clause 27 by definition); face disks, residual balls,
+  patches, arcs, marked points, outer faces and arcs by the frame's formulas (clauses 12--19 by
+  definition); `srcBd` = the intrinsic boundaries.  `f₁` from `Moise331OnTube` with
+  `W v := thickening η (h '' C v)`, `η` below the finitely many positive distances
+  `dist (h '' C_u) (h '' conv s)` (`u ∉ s`) and `dist (h w) (h '' C_u)` (`w ≠ u`).  Carriers:
+  boxes around `h '' S_t ∪ ⋃_{w ∈ t} W w` (fine `M` by uniform continuity of `h` on `C⁺`).
+
+## CLOSED bricks (new files under `DifferentialGeometry/Topology/PiecewiseLinear/`)
+
+- `Section33TubeApproximation.lean`, 417 lines,
+  `07aabb84771574e407b48511d953fa826cdd5054e805af44a1edcf96ea4855d5`: `Moise331OnTube`,
+  `exists_section33Extension_image_dualCell_subset` (the page-238 extension with
+  `f '' C v ⊆ C''_v ∪ ⋃_{e ∋ v} ball(P'_e, δ)` for any `δ > 0`), `moise331OnTube`,
+  `Moise331OnTube.moise331`.
+- `Section34CompactLinkCondition.lean`, 141,
+  `bee6fed69fbeffce4c94187c20a99b7d88888ee756a8e41f0d5f36d38290b201`:
+  `IsCombinatorialManifoldWithBoundary.mem_connectedComponentIn_sdiff_openEdge` and
+  `IsCombinatorialManifoldWithBoundary.section34CompactLinkCondition` (clause 6 from
+  `IsCombinatorialManifoldWithBoundary 3 K`, `K` finite).
+- `Section34CompactGraphApproximation.lean`, 261,
+  `77df9fe2314ba588eb7c6e8dd329a4613b2ea6ccc1c757bfa40e351b978c7241`:
+  `IsPLBall.exists_collarTriangulation`,
+  `exists_subset_of_convexHull_subset_section34CompactGraphSkeleton`,
+  `card_le_two_of_mem_restrict_section34CompactGraphSkeleton`,
+  `convexHull_subset_section34CompactGraphSkeleton`,
+  `restrict_section34CompactGraphSkeleton_space`, `isConnected_section34CompactGraphSkeleton`,
+  `IsCombinatorialManifoldWithBoundary.exists_two_neighbors`,
+  `ncard_neighborSet_restrict_section34CompactGraphSkeleton_ne_one`,
+  `exists_compactGraphApproximation` (from `h331 : Moise331OnTube`: `M` as above, then for every
+  `W` with `W v ∈ 𝓝ˢ (h '' C v)` an `f₁`, PL on `N`, with `f₁ '' N ∈ 𝓝ˢ (h '' Γ)` and
+  `f₁ '' C v ⊆ W v`).
+- `Section34CompactResidualCells.lean`, 274,
+  `e544410405b2e35b05e5cfeb45f5aa9ad61bfb49f2d6070f37dd0811f9e9a3eb`:
+  `closure_space_sdiff_derivedNeighborhood_space` (the closure of `|A| − N(L)` is the union of
+  the derived cells of the simplices outside `L`), `closure_convexHull_sdiff_derivedNeighborhood_space`,
+  `vertices_eq_setOf_restrict_section34CompactGraphSkeleton`,
+  `mem_restrict_section34CompactGraphSkeleton_iff`,
+  `closure_convexHull_sdiff_iUnion_graphDualCell_of_card_eq_three` (face disk = derived cell of
+  `s` in its face complex), `closure_convexHull_sdiff_iUnion_graphDualCell_of_card_eq_four`
+  (residual ball = derived cells of `t` and of its four facets),
+  `isPLBall_derivedNeighborhoodCell_restrict_of_card_eq_three`,
+  `isPLBall_residualCell_of_card_eq_four`.
+- `Section34CompactCarriers.lean`, 105,
+  `5bf1023bf1c762c0817d6d5d1bb8d25d5575e7125a214b7a6fb5f85b487deb49`:
+  `dist_le_two_mul_of_forall_mem_Icc`, `exists_isPLCellOn_frontier_subset_interior_of_diam_lt`,
+  `exists_section34CompactCarrierControl` (`Section34CompactCarrierControl` plus `X t ⊆ Int H t`).
+- `Section34CompactCellSeparation.lean`, 111,
+  `b10fb18d8babeb930035a607ab60647f456fda0614efc0333c237037fa897239`:
+  `closedStar_barycentricSubdivision_inter_convexHull_eq_empty`,
+  `graphDualCell_space_inter_convexHull_eq_empty`, `notMem_graphDualCell_space_of_ne` (clauses
+  20--23 and the separations behind graph-frame clauses 5--8).
+- Import lines, in this order (aggregate not touched):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactLinkCondition`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphApproximation`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualCells`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCarriers`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCellSeparation`
+- Success lines (each after a fresh prepare; `...` =
+  `D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear`):
+  `Verified ...\Section33TubeApproximation.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section34CompactLinkCondition.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section34CompactGraphApproximation.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section34CompactResidualCells.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section34CompactCarriers.lean with no diagnostics; shared outputs unchanged.`
+  `Verified ...\Section34CompactCellSeparation.lean with no diagnostics; shared outputs unchanged.`
+- Audit `claude-moise-agent-b/AuditBatch8.lean` (SHA-256
+  `24a4e8b2a401236492f97b1265c4634583c35f6671d96d7aeafc2533d8fd49a9`, `-Audit`, the six modules,
+  axioms within `propext`, `Classical.choice`, `Quot.sound`, the thirteen linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditBatch8.lean with no diagnostics; shared outputs unchanged.`
+- All new public names grepped tree-wide: unique.  `Moise331OnTube` is a named proposition like
+  `Moise331`; its producer is `moise331OnTube`, its hypotheses are inhabited (`exists_isTube`,
+  any `W`), and it implies `Moise331`, so it is not degenerate.
+
+## STUCK (what the leaf still needs under `Moise331OnTube`)
+
+- Cut frame: clause 7 for patches, face arcs, edge arcs, marked points, outer faces and outer
+  arcs (PL cells with their intrinsic boundaries), clause 8 (boundary = union of the proper
+  faces), 9 (pairwise meets), 10 (incomparability), 11 (`⋃ src = C ∪ N`), 26 (a vertex ball
+  meets only the splitting disks at its vertex), 28 (face disk ⊆ residual ball; follows from the
+  two derived-cell descriptions above).  Missing bricks: the flag description of `C_w ∩ conv s`
+  and `D_e ∩ conv t` in the face complexes (the arcs and points as meets of derived cells), and
+  the collar part of `M` near `∂C` for the outer kinds (`closure (|M| − C)` a combinatorial
+  manifold in which the cells of the boundary vertices are half-balls).  Clauses 1--6, 12--25,
+  27 and 29 are covered by the bricks, by definition, or by `codimension_one_cofaces` purity.
+- Graph frame: clauses 1--8 and 10 follow from `exists_compactGraphApproximation`, the
+  separation brick and the carriers brick (assembly not written).  Clause 9 (nested solid tori
+  with `IsSpine S₁ (h '' rim s)` and a toroidal shell around the face torus, which carries the
+  arms of the vertex balls along the edges leaving `s`) needs a PL product structure `D² × S¹`
+  around `∂s ∪ arms` with core `∂s`, i.e. regular-neighbourhood uniqueness or annulus theory for
+  a PL circle; absent from the tree.  Clause 11 (the thin exterior 5(7)) needs `ℝ³ − h(t)`
+  connected for the topological cell `h(t)` (Jordan-Brouwer of `SphereSeparation/` plus
+  invariance of domain; `TopologicalCellComplementConnected` of `MoiseChain` is an unproved named
+  proposition).
+- Compiles: 10 module checks and 1 audit.

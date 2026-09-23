@@ -18,6 +18,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSplitDiskIn
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecognition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFaceOrder
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -236,6 +237,17 @@ and boundary incidence modules and the generic `PLCellBoundaryThinness`, `PLCell
 the four frontiers of the reconnaissance probe proved under their names and the probe's two
 assemblies; no frame clause was added.  The probe `Skeleton/CompactSourceFaceOrderReduction.lean`
 is deleted as superseded.
+
+Interface change 2026-09-23 (owner decision after the lease-b worker's finding, log B Batch 8):
+`exists_compactCutAndGraph`, `moise341OnNeighborhood` and `moise341_of_onNeighborhood` now take
+`h331 : Moise331OnTube` (module `Section33TubeApproximation`) instead of `Moise331`: 33.1 as
+stated gives `f` only on its own derived neighbourhood with one global `ε`, which cannot place the
+images of the vertex cells inside the neighbourhoods the graph frame prescribes, while the book
+(p. 239) chooses the cut's `N` first and applies 33.1 to it.  `Moise331OnTube` is proved from the
+same three named inputs (`moise331OnTube h323 h324 h264`) and implies `Moise331`
+(`Moise331OnTube.moise331`), so the endpoint's dependency set is unchanged; a consumer holding
+`Moise323`, `Moise324` and `Moise264` calls
+`moise341_of_onNeighborhood (moise331OnTube h323 h324 h264) h305`.
 -/
 
 open Set Topology
@@ -253,7 +265,7 @@ variable {C V : Set (EuclideanSpace ℝ (Fin 3))}
   {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
   {env : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
 
-theorem exists_compactCutAndGraph (h331 : Moise331) (hC : IsPLBall 3 C) (hV : IsOpen V)
+theorem exists_compactCutAndGraph (h331 : Moise331OnTube) (hC : IsPLBall 3 C) (hV : IsOpen V)
     (hCV : C ⊆ V) (hh : Topology.IsEmbedding (V.domRestrict h)) (hε : 0 < ε) :
     ∃ (K K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
       (src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3)))
@@ -465,7 +477,7 @@ def Moise341OnNeighborhood : Prop :=
       ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
         IsPLHomeomorphOn f C (f '' C) ∧ ∀ x ∈ C, dist (f x) (h x) < ε
 
-theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
+theorem moise341OnNeighborhood (h331 : Moise331OnTube) (h305 : Moise305Tame) :
     Moise341OnNeighborhood := by
   classical
   intro C V hC hV hCV h hh ε hε
@@ -594,7 +606,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
   exact ⟨F, isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hC.isPolyhedron hpl
     (hF.injOn.mono hCsub).bijOn_image, hdist⟩
 
-theorem moise341_of_onNeighborhood (h331 : Moise331) (h305 : Moise305Tame) : Moise341 := by
+theorem moise341_of_onNeighborhood (h331 : Moise331OnTube) (h305 : Moise305Tame) : Moise341 := by
   intro C hC h hcont hinj ε hε
   obtain ⟨p, hp, hpC, hpdist⟩ := exists_isPLBall_subset_interior_dist_lt hC hcont (half_pos hε)
   have hpball : IsPLBall 3 (p '' C) := hC.of_isPLHomeomorphOn hp

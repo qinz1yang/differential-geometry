@@ -477,3 +477,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   constancy); the edge matching waits on the unit local degree of a topological embedding and the normal transfer.
 * 21:00 (09-23) — accepted the collaborator's PR #10 (34 modules, cherry-picked): three §32 leaves proved; the
   §32 probes deleted; §32 has 2 leaves (tower, descent). Physical `sorry` 22.
+* 21:20 (09-23) — accepted worker b's six leaf-1 bricks; INTERFACE proposal `Moise331OnTube` (owner decision); leaf 1
+  also needs `TopologicalCellComplementConnected` for graph-frame clause 11 (currently off-path). Lease b → §32 tower.
