@@ -38,6 +38,15 @@ def firstJetHs
     (u : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1))) (i : ι) :
     firstJetHs g n u (.inr i) = parameterDerivativeHs g n (u i) := rfl
 
+theorem firstJetHs_injective
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ) :
+    Function.Injective (firstJetHs (ι := ι) g n) := by
+  intro u v huv
+  apply PiLp.ext
+  intro i
+  exact tensorHsInclusion_injective (show (n : ℝ) ≤ (n : ℝ) + 1 by linarith)
+    (congrArg (fun w => w (.inl i)) huv)
+
 theorem firstJetHs_apply_ccTensorToHs
     (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
     (S : ι → SmoothCcTensor g 0 0) :

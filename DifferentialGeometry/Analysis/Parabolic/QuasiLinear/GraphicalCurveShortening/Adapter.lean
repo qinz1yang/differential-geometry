@@ -79,21 +79,31 @@ def graphCurveShorteningN
       (DifferentialGeometry.Analysis.Spectral.scalarH0ContinuousMul g)
       (graphDiffusionCoefficientContinuous g d1) q + reaction t u.1 d1
 
+theorem graphCurveShorteningN_zero_eq
+    {n : ℕ} (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (reaction : ℝ → GraphCircleHs g (Fin n) 2 → GraphCircleHs g (Fin n) 1 → GraphCircleHs g (Fin n) 0)
+    {R : ℝ} (hR : 0 ≤ R) (t : ℝ) :
+    graphCurveShorteningN g reaction (R := R) t
+      ⟨0, by simpa using hR⟩ = reaction t 0 0 := by
+  simp [graphCurveShorteningN]
+
+theorem graphCurveShorteningN_zero_norm_le
+    {n : ℕ} (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (reaction : ℝ → GraphCircleHs g (Fin n) 2 → GraphCircleHs g (Fin n) 1 → GraphCircleHs g (Fin n) 0)
+    {R D : ℝ} (hR : 0 ≤ R) (t : ℝ)
+    (hzero : ‖reaction t 0 0‖ ≤ D) :
+    ‖graphCurveShorteningN g reaction (R := R) t
+      ⟨0, by simpa using hR⟩‖ ≤ D := by
+  rw [graphCurveShorteningN_zero_eq g reaction hR t]
+  exact hzero
+
 theorem graphCurveShorteningN_zero
     {n : ℕ} (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
     (reaction : ℝ → GraphCircleHs g (Fin n) 2 → GraphCircleHs g (Fin n) 1 → GraphCircleHs g (Fin n) 0)
     {R : ℝ} (hR : 0 ≤ R) (t : ℝ) (hreaction : reaction t 0 = 0) :
     ‖graphCurveShorteningN g reaction (R := R) t
       ⟨0, by simpa using hR⟩‖ ≤ 0 := by
-  have hd1 : vectorHsCongr g (ι := Fin n) (by norm_num : ((1 : ℕ) : ℝ) = 1)
-      (AddCircle.parameterDerivativeHsPi g 1
-        (vectorHsCongr g (ι := Fin n) (by norm_num : (2 : ℝ) = ((1 : ℕ) : ℝ) + 1)
-          (0 : GraphCircleHs g (Fin n) 2))) = 0 := by simp [vectorHsCongr]
-  have hq : vectorHsCongr g (ι := Fin n) (by norm_num : ((0 : ℕ) : ℝ) = 0)
-      (AddCircle.parameterSecondDerivativeHsPi g 0
-        (vectorHsCongr g (ι := Fin n) (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2)
-          (0 : GraphCircleHs g (Fin n) 2))) = 0 := by simp [vectorHsCongr]
-  rw [graphCurveShorteningN, hd1, hq, map_zero, zero_add, hreaction]
+  rw [graphCurveShorteningN_zero_eq g reaction hR t, hreaction]
   exact norm_zero.le
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear

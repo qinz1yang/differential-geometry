@@ -10153,6 +10153,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Bootstrap
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.IntervalReaction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Coefficients
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Reaction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Lp
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Sobolev
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.TangentVariation

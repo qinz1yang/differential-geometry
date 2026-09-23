@@ -110,18 +110,24 @@ private theorem shifted_circle_operator_identity
         tensorScaleLaplacian (g := g) (r := 0) (s := 0) (n : ℝ)) v +
       (m (a - q) (Q v) + m a (Q f₀) + b - d (D (J v))) =
       m a (Q (f₀ + v)) + b := by
-  dsimp only
-  rw [AddCircle.piLpMap_tensorScaleLaplacian_eq_principal_add_drift]
-  simp only [add_apply, ContinuousLinearMap.comp_apply]
-  have hq : coordinateMultiplication (ι := ι) (scalarHsMul g n hn)
-      (ccTensorToHs g 0 (n : ℝ) (scalarCc g (AddCircle.laplacianPrincipalCoefficient g))) =
+  intro m q d Q D J
+  have hbase :
       ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
-        appHs g 0 0 n (scalarCc g (AddCircle.laplacianPrincipalCoefficient g))) := by
-    change ContinuousLinearMap.piLpMap 2 (fun _ : ι => _) = _
-    rw [scalarHsMul_apply_ccTensorToHs_left]
-  rw [← hq]
-  simp only [map_add, map_sub, sub_apply]
-  module
+          tensorScaleLaplacian (g := g) (r := 0) (s := 0) (n : ℝ)) v =
+        m q (Q v) + d (D (J v)) := by
+    dsimp only [m, q, d, Q, D, J]
+    rw [AddCircle.piLpMap_tensorScaleLaplacian_eq_principal_add_drift]
+    simp only [add_apply, ContinuousLinearMap.comp_apply]
+    have hq : coordinateMultiplication (ι := ι) (scalarHsMul g n hn)
+        (ccTensorToHs g 0 (n : ℝ) (scalarCc g (AddCircle.laplacianPrincipalCoefficient g))) =
+        ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+          appHs g 0 0 n (scalarCc g (AddCircle.laplacianPrincipalCoefficient g))) := by
+      change ContinuousLinearMap.piLpMap 2 (fun _ : ι => _) = _
+      rw [scalarHsMul_apply_ccTensorToHs_left]
+    rw [hq]
+  rw [hbase]
+  exact shifted_remainder_operator_identity m Q J D d q
+    (fun (_ : Unit) _ => a) (fun (_ : Unit) _ => b) f₀ () v
 
 end DifferentialGeometry.Analysis.Parabolic
 

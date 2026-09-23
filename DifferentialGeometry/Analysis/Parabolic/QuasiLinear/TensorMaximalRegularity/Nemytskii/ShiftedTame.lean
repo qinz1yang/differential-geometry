@@ -21,6 +21,38 @@ def shiftedRemainder
   m (alpha t (J v) - q) (Q v) + m (alpha t (J v)) (Q f) +
     reaction t (J v) - d (D (J v))
 
+theorem shiftedRemainder_zero
+    (m : A →L[𝕜] Y →L[𝕜] Y)
+    (Q : X →L[𝕜] Y) (J : X →L[𝕜] Z) (D : Z →L[𝕜] Y)
+    (d : Y →L[𝕜] Y) (q : A)
+    (alpha : T → Z → A) (reaction : T → Z → Y)
+    (f : X) (t : T) :
+    shiftedRemainder m Q J D d q alpha reaction f t 0 =
+      m (alpha t 0) (Q f) + reaction t 0 := by
+  simp only [shiftedRemainder, map_zero, zero_add, sub_zero]
+
+theorem shifted_remainder_zero_norm_le
+    (m : A →L[𝕜] Y →L[𝕜] Y)
+    (Q : X →L[𝕜] Y) (J : X →L[𝕜] Z) (D : Z →L[𝕜] Y)
+    (d : Y →L[𝕜] Y) (q : A)
+    (alpha : T → Z → A) (reaction : T → Z → Y)
+    (f : X) (t : T) :
+    ‖shiftedRemainder m Q J D d q alpha reaction f t 0‖ ≤
+      ‖m‖ * ‖alpha t 0‖ * ‖Q f‖ + ‖reaction t 0‖ := by
+  rw [shiftedRemainder_zero]
+  exact (norm_add_le _ _).trans (add_le_add (m.le_opNorm₂ _ _) le_rfl)
+
+theorem shifted_remainder_operator_identity
+    (m : A →L[𝕜] Y →L[𝕜] Y)
+    (Q : X →L[𝕜] Y) (J : X →L[𝕜] Z) (D : Z →L[𝕜] Y)
+    (d : Y →L[𝕜] Y) (q : A)
+    (alpha : T → Z → A) (reaction : T → Z → Y)
+    (f : X) (t : T) (v : X) :
+    (m q (Q v) + d (D (J v))) + shiftedRemainder m Q J D d q alpha reaction f t v =
+      m (alpha t (J v)) (Q (f + v)) + reaction t (J v) := by
+  simp only [shiftedRemainder, map_add, map_sub, sub_apply]
+  module
+
 private theorem shifted_remainder_eq_recentered_add
     (m : A →L[𝕜] Y →L[𝕜] Y)
     (Q : X →L[𝕜] Y) (J : X →L[𝕜] Z) (D : Z →L[𝕜] Y)
