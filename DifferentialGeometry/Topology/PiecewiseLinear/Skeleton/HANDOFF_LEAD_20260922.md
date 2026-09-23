@@ -462,3 +462,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   two tiling clauses missing from `Section34ResidualPlus` (owner decision). Physical `sorry` 30.
 * 16:30 (09-23) — owner adopted the two tiling clauses in `Section34ResidualPlus`; non-compact P8 closed by the
   conditional theorem; Terminal has 3 leaves. Physical `sorry` 29.
+* 17:20 (09-23) — retired the dead bridge leaf `section34TraceCircle_homologyMap_ne_zero` (owner decision);
+  Normalization has 3 leaves. Physical `sorry` 28.

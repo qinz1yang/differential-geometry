@@ -287,6 +287,12 @@ Interface repair 2026-09-23 (owner decision after the lease-a worker's finding, 
 into one maximal-atlas chart (the invariants give charts only at trace and crossing points), so
 the drag and the cell clause of the new ball cannot be stated; the assembly has `hctrl` in scope
 and passes it.  No conclusion changed.
+
+Retired 2026-09-23 (owner decision after consult BQ): the bridge leaf
+`section34TraceCircle_homologyMap_ne_zero` had no consumer — the assembly calls only
+`section34Trace_of_noOperation`, the real non-compact P6 (`Section34FaceDisks`) uses the winding
+lemma of `BallWindingObstruction` instead, and the compact chain has its own trace field — so it is
+deleted rather than proved; its content may return later as a corollary if a consumer appears.
 -/
 
 open Set Topology
@@ -399,19 +405,6 @@ theorem section34Trace_of_noOperation (hU : IsOpen U)
       (section34SplitDiskImage srcBd f₁) fblBd s) :
     Section34Trace 𝒦 𝒦' (section34VertexBallImage src f₁)
       (section34SplitDiskImage srcBd f₁) fblBd := by
-  sorry
-
-theorem section34TraceCircle_homologyMap_ne_zero
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
-    (s : Section34SimplexIndex 𝒦 3) {J : Set M₂} (hJ : IsPolyhedralSphere (n := 3) 1 J)
-    (hJT : J ⊆ frontier (section34FaceTorus (section34VertexBallImage src f₁) s))
-    (hJe : ∀ e : Section34EdgeIndex 𝒦 𝒦', Section34Incident e.1 s.1 →
-      ∃ p, J ∩ section34SplitDiskImage srcBd f₁ e = {p})
-    (hsub : J ⊆ section34FaceTorus (section34VertexBallImage src f₁) s) :
-    integralSingularHomologyMap 1
-      (⟨inclusion hsub, continuous_inclusion hsub⟩ :
-        C(J, section34FaceTorus (section34VertexBallImage src f₁) s)) ≠ 0 := by
   sorry
 
 end Leaves
