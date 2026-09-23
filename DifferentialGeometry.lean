@@ -13567,3 +13567,4 @@ import DifferentialGeometry.Topology.Attachment.TwoEndedCylinder.ClosedCover
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylinder
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylinderCover
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylinderQuotient
+import DifferentialGeometry.Geometry.Neck.SpatialBandCoverage
