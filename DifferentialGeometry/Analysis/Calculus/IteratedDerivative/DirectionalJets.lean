@@ -127,8 +127,9 @@ theorem _root_.ContDiffAt.fderiv_iteratedFDeriv_apply
   have hcl : U ⊆ closure (interior U) := by
     rw [hU.interior_eq]
     exact subset_closure
-  have hh := fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ
-    hU.uniqueDiffOn hcl n (by simpa using hft.mono (show U ⊆ t from interior_subset)) v x hxU
+  have hh :=
+    DifferentialGeometry.Analysis.fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ
+      hU.uniqueDiffOn hcl n (by simpa using hft.mono (show U ⊆ t from interior_subset)) v x hxU
   have he : EqOn (iteratedFDerivWithin ℝ n f U) (iteratedFDeriv ℝ n f) U :=
     iteratedFDerivWithin_of_isOpen n hU
   rw [fderivWithin_congr he (he hxU), fderivWithin_of_isOpen hU hxU,

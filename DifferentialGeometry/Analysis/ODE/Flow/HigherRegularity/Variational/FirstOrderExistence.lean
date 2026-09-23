@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative
+
+/-! First Order Existence. -/
 
 
 noncomputable section
@@ -60,7 +67,8 @@ theorem exists_isVariationalFlowProjection_one_of_C2
   have hρ_effectiveN_le_help : (ρ_effectiveN : ℝ) ≤ (ρ_help : ℝ) := by
     rw [hρ_effectiveN_eq]
     exact hρ_effective_le_help
-  have h_effective_sub_smooth : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective)
+  have h_effective_sub_smooth : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ +
+    T_effective)
       ⊆ (ball x₀ (ρ_finalN : ℝ)) ×ˢ Ioo (t₀ - T_final) (t₀ + T_final) := by
     refine Set.prod_mono ?_ ?_
     · intro y hy
@@ -69,7 +77,8 @@ theorem exists_isVariationalFlowProjection_one_of_C2
     · intro s hs
       rcases hs with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  have h_effective_sub_help : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective)
+  have h_effective_sub_help : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ +
+    T_effective)
       ⊆ (ball x₀ (ρ_help : ℝ)) ×ˢ Ioo (t₀ - T_help) (t₀ + T_help) := by
     refine Set.prod_mono ?_ ?_
     · intro y hy

@@ -102,3 +102,42 @@ No documentation-presence or style linter was disabled.
 - External/ClassificationOfSurfaces/PrePolygonTriangulation.lean: before 17f68b191dea414fdceddc681edc63d1fdb39225f55e56c6c069167453e69ba8; after 92aed2d98627852b89ce273052b819b4a6e42c0aee3b1e07f97ab24c35cf2ea8.
 
 - External/ClassificationOfSurfaces/TriangleMeshGeometricFree.lean: before 693a9d0961a7246d7ffd3c86a50a8d305a4b731ce25191bc345c6b8cb0fa1656; after 892b3cb79c377adb40a275bfd903c3f28355f22d7bf8b456e0644ca45f238d9d.
+
+## Mac strict replay from 04ca9612f, 2026-09-23
+
+The published commit retains the pre-replay Lean source although its historical records
+describe later Windows repairs. This Mac replay restores required module documentation
+in the four adapters below and moves both existing attribution blocks of
+`TriangleMeshGeometricFree.lean` verbatim before imports. Non-comment source tokens are
+unchanged. The three owner-approved `letI` to `let` replacements in
+`Moise/GeometricTriangulation.lean` are also reapplied. No linter is disabled.
+These source identities record edits only; accepted compiler receipts are separate.
+
+- `TriangleMeshCrosscut.lean`: SHA-256 `cf4d63e80ec80c8c613708105385bdef7d518d6dd56954138dd90d4e4dd7b003`.
+- `PrePolygonDeletion.lean`: SHA-256 `102551c02a10c50b94cbec14a2619547082a9360957d1d054e4650579b9b41c6`.
+- `PrePolygonTriangulation.lean`: SHA-256 `ae5963c682c25a014a17a308887a954a7ff7eac6a9dd5e1cf286b2b5de3859c3`.
+- `TriangleMeshGeometricFree.lean`: SHA-256 `fd94a84ef8f210d9f266a629c389c36530a4e8abb798c44e3fb04c40da435246`.
+- `Moise/GeometricTriangulation.lean`: SHA-256 `fd30a1edc1459f3955174b58f1d10fe1d1e834cfd5034403f59cc686ce478400`.
+
+## Mac strict copyright-header parsing, 2026-09-23
+
+The provenance text following each Authors line is preserved in a separate adjacent
+comment so that the standard header linter reads only author names in that field.
+Copyright, licensing, attribution and provenance wording are unchanged. No declarations,
+proofs or imports change; no linter is disabled. Affected source files:
+
+- `PrePolygonDeletion.lean`
+- `TriangleMeshCrosscut.lean`
+- `TriangleMeshGeometricFree.lean`
+- `PrePolygonTriangulation.lean`
+
+## Mac strict rebuild continuation, 2026-09-23
+
+Following the owner's continuation instruction after the reported hard stop, applied the
+previously proposed ten mechanical `letI` to `let` style repairs. No theorem statement
+changed; no linter was disabled and no warning receipt was accepted.
+
+- `External/ClassificationOfSurfaces/Moise/ConeExtension.lean`: 1 substitutions at original lines 1014.
+- `External/ClassificationOfSurfaces/Moise/PolygonalJordan.lean`: 1 substitutions at original lines 228.
+- `External/ClassificationOfSurfaces/Moise/PolygonalCrosscut.lean`: 7 substitutions at original lines 418, 1170, 1213, 1248, 1346, 1396, 1690.
+- `External/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean`: 1 substitutions at original lines 787.

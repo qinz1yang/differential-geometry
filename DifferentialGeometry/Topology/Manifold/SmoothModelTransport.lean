@@ -135,9 +135,9 @@ theorem contMDiff_chartedSpaceTransHomeomorph_iff {n : ℕ∞ω} {f : N → M} :
   dsimp only []
   refine ⟨fun h x => ?_, fun h x => ?_⟩
   · exact (contMDiffAt_chartedSpaceTransHomeomorph_iff I J e L hcompat I₀ (f := f) (x := x)).mp
-    (h x)
+      (h x)
   · exact (contMDiffAt_chartedSpaceTransHomeomorph_iff I J e L hcompat I₀ (f := f) (x := x)).mpr
-    (h x)
+      (h x)
 
 include hcompat I₀ in
 theorem mdifferentiableAt_chartedSpaceTransHomeomorph_iff {f : N → M} {x : N} :

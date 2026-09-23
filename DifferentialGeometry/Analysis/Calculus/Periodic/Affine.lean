@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.Instances.AddCircle.Real
 import Mathlib.Topology.ContinuousMap.Compact
 import Mathlib.Analysis.Normed.Group.Quotient
 import Mathlib.Topology.UniformSpace.HeineCantor
+
+/-! Affine. -/
 
 
 

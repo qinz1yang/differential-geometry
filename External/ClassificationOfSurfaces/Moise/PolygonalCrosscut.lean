@@ -415,7 +415,7 @@ theorem insertZero_nonadjacent_disjoint (J : PolygonalCircle) {p : Plane}
     (i j : ZMod (J.n + 1)) (hij : i ≠ j) (hprev : i ≠ j + 1)
     (hnext : j ≠ i + 1) :
     J.insertZeroEdgeSegment p i ∩ J.insertZeroEdgeSegment p j = ∅ := by
-  letI : Fact (1 < J.n) := ⟨by have := J.three_le; omega⟩
+  let : Fact (1 < J.n) := ⟨by have := J.three_le; omega⟩
   let m := i.val
   let l := j.val
   have hm : m < J.n + 1 := i.val_lt
@@ -1167,7 +1167,7 @@ theorem forwardCutVertex_natCast {k m : ℕ} (hm : m < k + 1) :
 theorem edgeBeforeChord_inter_chord {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < J.n)
     (hP : J.vertex 0 = C.P) (hQ : J.vertex (k : ZMod J.n) = C.Q) :
     J.edgeSegment ((k - 1 : ℕ) : ZMod J.n) ∩ segment ℝ C.Q C.P = {C.Q} := by
-  letI : Fact (1 < J.n) := ⟨by omega⟩
+  let : Fact (1 < J.n) := ⟨by omega⟩
   have hkpos : 0 < k := by omega
   have hkmem : C.Q ∈ J.edgeSegment ((k - 1 : ℕ) : ZMod J.n) := by
     rw [← hQ]
@@ -1210,7 +1210,7 @@ theorem edgeBeforeChord_inter_chord {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < J.n)
 theorem chord_inter_firstEdge {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < J.n)
     (hP : J.vertex 0 = C.P) (hQ : J.vertex (k : ZMod J.n) = C.Q) :
     segment ℝ C.Q C.P ∩ J.edgeSegment 0 = {C.P} := by
-  letI : Fact (1 < J.n) := ⟨by omega⟩
+  let : Fact (1 < J.n) := ⟨by omega⟩
   have hQnot : C.Q ∉ J.edgeSegment 0 := by
     rw [← hQ]
     intro hmem
@@ -1245,7 +1245,7 @@ theorem chord_disjoint_middleEdge {k m : ℕ} (hm0 : 0 < m) (hmk : m + 1 < k)
     (hk : k < J.n) (hP : J.vertex 0 = C.P)
     (hQ : J.vertex (k : ZMod J.n) = C.Q) :
     Disjoint (segment ℝ C.Q C.P) (J.edgeSegment (m : ZMod J.n)) := by
-  letI : Fact (1 < J.n) := ⟨by omega⟩
+  let : Fact (1 < J.n) := ⟨by omega⟩
   have hPnot : C.P ∉ J.edgeSegment (m : ZMod J.n) := by
     rw [← hP]
     intro hmem
@@ -1343,7 +1343,7 @@ theorem forwardCut_consecutive_inter {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < J.n
     forwardCutEdgeSegment (J := J) k i ∩
       forwardCutEdgeSegment (J := J) k (i + 1) =
         {forwardCutVertex (J := J) k (i + 1)} := by
-  letI : Fact (1 < k + 1) := ⟨by omega⟩
+  let : Fact (1 < k + 1) := ⟨by omega⟩
   let m := i.val
   have hm : m < k + 1 := i.val_lt
   have hcast : (m : ZMod (k + 1)) = i := ZMod.natCast_zmod_val i
@@ -1393,7 +1393,7 @@ theorem forwardCut_nonadjacent_disjoint {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < 
     (hnext : j ≠ i + 1) :
     forwardCutEdgeSegment (J := J) k i ∩
       forwardCutEdgeSegment (J := J) k j = ∅ := by
-  letI : Fact (1 < J.n) := ⟨by omega⟩
+  let : Fact (1 < J.n) := ⟨by omega⟩
   let m := i.val
   let l := j.val
   have hm : m < k + 1 := i.val_lt
@@ -1687,7 +1687,7 @@ theorem backwardArc_inter_chord {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < J.n)
 theorem forwardArc_inter_backwardArc {k : ℕ} (hk2 : 2 ≤ k) (hk : k + 1 < J.n)
     (hP : J.vertex 0 = C.P) (hQ : J.vertex (k : ZMod J.n) = C.Q) :
     forwardArc (J := J) k ∩ backwardArc (J := J) k = {C.P, C.Q} := by
-  letI : Fact (1 < J.n) := ⟨by omega⟩
+  let : Fact (1 < J.n) := ⟨by omega⟩
   apply Set.Subset.antisymm
   · rintro x ⟨hxF, hxB⟩
     simp only [forwardArc, Set.mem_iUnion] at hxF

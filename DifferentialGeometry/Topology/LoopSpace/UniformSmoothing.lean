@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.Basic
 import DifferentialGeometry.Analysis.Calculus.Periodic.SmoothingFamilies
 import Mathlib.Topology.ContinuousMap.Compact
 import Mathlib.Topology.UniformSpace.HeineCantor
+
+/-! Uniform Smoothing. -/
 
 
 
@@ -48,7 +55,8 @@ theorem smoothPeriodic_uniform_approximation {f : K × loopCircle → F}
   refine ⟨δ, hδ, fun φ hφ k t => ?_⟩
   have hfc : Continuous (fun s : ℝ => f (k, (s : loopCircle))) :=
     hf.comp (continuous_const.prodMk (AddCircle.continuous_mk' (1 : ℝ)))
-  apply lt_of_le_of_lt (DifferentialGeometry.Analysis.dist_smoothPeriodic_le φ hfc ?_) (half_lt_self hε)
+  apply lt_of_le_of_lt (DifferentialGeometry.Analysis.dist_smoothPeriodic_le φ hfc ?_)
+    (half_lt_self hε)
   intro s hs
   exact (hmod k s t (hs.trans hφ)).le
 

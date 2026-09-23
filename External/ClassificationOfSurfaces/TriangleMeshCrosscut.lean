@@ -2,12 +2,16 @@
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors
+-/
+/-
 Adapted mesh-side arguments from PolygonalCrosscut.lean at
  e3c7230fe78d7b056a415d9ecae6f77887046b32 to native crosscuts and inside regions.
 See MODIFICATIONS.md and CROSSCUT_PROVENANCE.json for the source and local changes.
 -/
 import External.ClassificationOfSurfaces.Moise.FreeTriangle
 import DifferentialGeometry.External.Schoenflies.JordanClosed
+
+/-! Triangle Mesh Crosscut. -/
 
 open LeanEval.Topology.ClassificationOfSurfaces.Moise (TriangleMesh)
 

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
 import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
+
+/-! Basic. -/
 
 set_option autoImplicit false
 
@@ -27,7 +34,8 @@ theorem isInvertible_of_norm_id_sub_lt {T : E →L[ℝ] E}
   exact ContinuousLinearMap.invertible_of_id_sub h
 
 omit [CompleteSpace F] in
-theorem exists_partialDiffeomorph_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU : IsOpen U)
+theorem exists_partialDiffeomorph_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU :
+  IsOpen U)
     (hxU : x ∈ U) (hf : ContMDiffOn I J n f U)
     (hinv : (fderiv ℝ (writtenInExtChartAt I J x f) (extChartAt I x x)).IsInvertible) :
     ∃ Φ : PartialDiffeomorph I J M N n, x ∈ Φ.source ∧ Φ.source ⊆ U ∧ EqOn f Φ Φ.source := by

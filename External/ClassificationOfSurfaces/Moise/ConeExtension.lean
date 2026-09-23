@@ -1011,7 +1011,7 @@ theorem repositionMap_affineOn_face (position' : K.Vertex → Plane)
     IsAffineOn (K.repositionMap position' hinj haff hface) (K.cellCarrier s) := by
   classical
   have hsne := K.nonempty_of_mem s hs
-  letI : Nonempty s := ⟨⟨hsne.choose, hsne.choose_spec⟩⟩
+  let : Nonempty s := ⟨⟨hsne.choose, hsne.choose_spec⟩⟩
   let p : s → Plane := fun v => K.position v
   let q : s → Plane := fun v => position' v
   obtain ⟨g, hg⟩ := exists_affineMap_eqOn_affineIndependent p q (K.affineIndependent s hs)

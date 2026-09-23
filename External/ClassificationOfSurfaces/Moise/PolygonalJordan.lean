@@ -225,7 +225,7 @@ private theorem exists_pos_three_mul_lt_of_finite {ι : Type*} [Finite ι]
     (r : ι → ℝ) (hr : ∀ i, 0 < r i) :
     ∃ ε : ℝ, 0 < ε ∧ ∀ i, 3 * ε < r i := by
   classical
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   set values : Finset ℝ := insert 1 (Finset.univ.image r) with hvalues
   have hvalues_ne : values.Nonempty := ⟨1, Finset.mem_insert_self 1 _⟩
   set rmin : ℝ := values.min' hvalues_ne with hrmin

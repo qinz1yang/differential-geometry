@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.Periodic.Smoothing
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import Mathlib.Analysis.Calculus.Deriv.Support
+
+/-! Smoothing Families. -/
 
 
 
@@ -70,7 +77,8 @@ theorem continuous_iteratedDeriv_smoothPeriodic (φ : ContDiffBump (0 : ℝ))
     iteratedDeriv_convolution_left φ.contDiff_normed φ.hasCompactSupport_normed
       (hf.comp (continuous_const.prodMk continuous_id)) n
   simp_rw [heq]
-  apply continuous_convolution_family _ (hasCompactSupport_iteratedDeriv φ.hasCompactSupport_normed n) hf
+  apply continuous_convolution_family _ (hasCompactSupport_iteratedDeriv
+    φ.hasCompactSupport_normed n) hf
   have hk : ContDiff ℝ ∞ (iteratedDeriv n (φ.normed volume)) := by
     rw [iteratedDeriv_eq_iterate]
     exact φ.contDiff_normed.iterate_deriv n

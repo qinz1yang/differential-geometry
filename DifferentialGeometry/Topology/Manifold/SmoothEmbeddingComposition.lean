@@ -247,7 +247,7 @@ theorem StructureGroupoid.trans_mem_maximalAtlas {H : Type*} [TopologicalSpace H
 
 
 theorem completeSpace_of_continuousLinearEquiv_prod {𝕜 : Type*} [RCLike 𝕜] {E F E' : Type*}
-    [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     [NormedAddCommGroup F] [NormedSpace 𝕜 F]
     [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] [CompleteSpace E']
     (e : (E × F) ≃L[𝕜] E') : CompleteSpace F := by

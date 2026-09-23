@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
 import Mathlib.Analysis.Calculus.ContDiff.Operations
@@ -6,6 +11,8 @@ import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Topology.Algebra.Support
 import Mathlib.Tactic.Abel
+
+/-! Perturbation. -/
 
 open scoped ContDiff Manifold NNReal
 
@@ -82,7 +89,8 @@ theorem addLipschitz_symm_apply_eq_self_iff (hf : ContDiff 𝕜 n f)
 
 @[simp] theorem addLipschitz_zero (hC : C < 1) :
     addLipschitz (𝕜 := 𝕜) (E := E) (n := n) contDiff_zero_fun
-      ((LipschitzWith.const (0 : E)).weaken (show 0 ≤ C from zero_le)) hC = Diffeomorph.refl 𝓘(𝕜, E) E n := by
+      ((LipschitzWith.const (0 : E)).weaken (show 0 ≤ C from zero_le)) hC = Diffeomorph.refl
+        𝓘(𝕜, E) E n := by
   apply Diffeomorph.ext
   intro x
   simp

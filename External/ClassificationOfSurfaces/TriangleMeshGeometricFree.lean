@@ -1,3 +1,21 @@
+/-
+Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ClassificationOfSurfaces contributors
+-/
+/-
+Adapted from PolygonalSchoenflies.lean at e3c7230fe78d7b056a415d9ecae6f77887046b32.
+See MODIFICATIONS.md and GEOMETRIC_FREE_EXISTENCE.json for the selected proofs and local changes.
+-/
+/-
+Copyright (c) 2026 Álvaro Begué. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Álvaro Begué
+-/
+/-
+The finite-exclusion density proof is retained privately from FreshDenseSelection.lean.
+See GEOMETRIC_FREE_EXISTENCE.json for the exact native source and provenance.
+-/
 import External.ClassificationOfSurfaces.Moise.FreeTriangle
 import DifferentialGeometry.External.Schoenflies.JordanSeparates
 import Mathlib.Analysis.LocallyConvex.Separation
@@ -6,20 +24,10 @@ import External.ClassificationOfSurfaces.Moise.FreeTriangleMove
 import External.ClassificationOfSurfaces.TriangleMeshCrosscut
 import External.ClassificationOfSurfaces.PrePolygonTriangulation
 
-/-
-Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ClassificationOfSurfaces contributors
-Adapted from PolygonalSchoenflies.lean at e3c7230fe78d7b056a415d9ecae6f77887046b32.
-See MODIFICATIONS.md and GEOMETRIC_FREE_EXISTENCE.json for the selected proofs and local changes.
--/
-/-
-Copyright (c) 2026 Álvaro Begué. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Álvaro Begué
-The finite-exclusion density proof is retained privately from FreshDenseSelection.lean.
-See GEOMETRIC_FREE_EXISTENCE.json for the exact native source and provenance.
--/
+/-! Triangle Mesh Geometric Free. -/
+
+
+
 
 open LeanEval.Topology.ClassificationOfSurfaces.Moise (TriangleMesh)
 

@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderExistence
+
+/-! Successor Existence. -/
 
 
 noncomputable section
@@ -57,7 +64,8 @@ theorem exists_isVariationalFlowProjection_succ_C_step
       rw [h2, ← add_assoc]
     rw [h_eq_wt]
     exact hf_C
-  have h_augmentedVectorField_Cn_plus_1 : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry (augmentedVectorField f))
+  have h_augmentedVectorField_Cn_plus_1 : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry
+    (augmentedVectorField f))
       (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
     augmentedVectorField_uncurry_contDiff (k := ((n : ℕ∞) + 1)) hf_Cn_plus_2_as_succ
   have ht₀_minus_tmin_a : 0 < t₀ - tmin_a := by linarith [ht₀_a_Ioo.1]
@@ -261,9 +269,12 @@ theorem exists_isVariationalFlowProjection_succ_C_step
   have hρ_effectiveN_eq : (ρ_effectiveN : ℝ) = ρ_effective := rfl
   have hρ_effective_le_R_a : ρ_effective ≤ (R_aN : ℝ) := min_le_left _ _
   have hρ_effective_le_help : ρ_effective ≤ (ρ_help : ℝ) := min_le_right _ _
-  have hρ_effectiveN_le_R_a : (ρ_effectiveN : ℝ) ≤ (R_aN : ℝ) := by rw [hρ_effectiveN_eq]; exact hρ_effective_le_R_a
-  have hρ_effectiveN_le_help : (ρ_effectiveN : ℝ) ≤ (ρ_help : ℝ) := by rw [hρ_effectiveN_eq]; exact hρ_effective_le_help
-  have h_effective_sub_smooth : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective) ⊆ U_E := by
+  have hρ_effectiveN_le_R_a : (ρ_effectiveN : ℝ) ≤ (R_aN : ℝ) := by
+    rw [hρ_effectiveN_eq]; exact hρ_effective_le_R_a
+  have hρ_effectiveN_le_help : (ρ_effectiveN : ℝ) ≤ (ρ_help : ℝ) := by
+    rw [hρ_effectiveN_eq]; exact hρ_effective_le_help
+  have h_effective_sub_smooth : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ +
+    T_effective) ⊆ U_E := by
     rw [hU_E_def]
     refine Set.prod_mono ?_ ?_
     · intro y hy
@@ -272,7 +283,8 @@ theorem exists_isVariationalFlowProjection_succ_C_step
     · intro s hs
       rcases hs with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  have h_effective_sub_help : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective)
+  have h_effective_sub_help : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ +
+    T_effective)
       ⊆ (ball x₀ (ρ_help : ℝ)) ×ˢ Ioo (t₀ - T_help) (t₀ + T_help) := by
     refine Set.prod_mono ?_ ?_
     · intro y hy

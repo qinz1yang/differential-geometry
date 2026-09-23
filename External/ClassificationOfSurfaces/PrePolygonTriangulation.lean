@@ -2,6 +2,8 @@
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors
+-/
+/-
 Modified from PolygonalPolyhedron.lean at e3c7230fe78d7b056a415d9ecae6f77887046b32:
 use local PrePolygon/inside/outside and a private canonical Mathlib adapter;
 remove the duplicate upstream polygonal Jordan dependency. See MODIFICATIONS.md.
@@ -10,6 +12,8 @@ import External.ClassificationOfSurfaces.Moise.LineSubdivision
 import DifferentialGeometry.External.Schoenflies.PrePolygonSep
 import Mathlib.Analysis.Convex.SimplicialComplex.Basic
 import Mathlib.Analysis.Normed.Affine.AddTorsorBases
+
+/-! Pre Polygon Triangulation. -/
 
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
   (Plane PlaneComplex TriangleMesh planePoint planePoint_apply_zero planePoint_apply_one

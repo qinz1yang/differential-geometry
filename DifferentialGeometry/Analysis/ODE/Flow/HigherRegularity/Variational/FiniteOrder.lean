@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.FiniteOrder
+
+/-! Finite Order. -/
 
 
 noncomputable section
@@ -548,7 +555,8 @@ theorem exists_isLocalFlow_augmentedVectorField_of_C2
   have h_augmentedVectorField_C1 : ContDiffOn ℝ 1 (uncurry (augmentedVectorField f))
       (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
     augmentedVectorField_uncurry_contDiff (k := (1 : ℕ∞)) hf_succ
-  exact exists_isLocalFlow_of_contDiffOn_univ (augmentedVectorField f) h_augmentedVectorField_C1 t₀ p₀
+  exact exists_isLocalFlow_of_contDiffOn_univ (augmentedVectorField f)
+    h_augmentedVectorField_C1 t₀ p₀
 
 theorem contDiffOn_flow_of_isLocalFlow_C2_of_isVariationalFlowProjection
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -1446,7 +1454,8 @@ theorem exists_contDiffOn_flow_succ_driver
   have hTcap_pos : 0 < Tcap := lt_min (lt_min hT_a_pos hT_p_pos) (lt_min hT_c1_pos hT_c2_pos)
   obtain ⟨T_out, T_mid, T, M, ρ_out, ρ_mid, ρ, r', hT, hT_lt_mid, hT_mid_lt_out, hM, hMT_mid,
     hr', hρ_pos, hρ_lt_mid, hρ_mid_lt_out, hρρ', hρ_out_le_r, hρ_out_le_cap, hT_out_le_cap,
-    hsub_out, hA_bd⟩ := exists_capped_flow_nesting_parameters hΦ hf_C1 ht₀ hr_pos hρcap_pos hTcap_pos
+    hsub_out, hA_bd⟩ := exists_capped_flow_nesting_parameters hΦ hf_C1 ht₀ hr_pos hρcap_pos
+      hTcap_pos
   have hρcap_le_ρa : ρcap ≤ ρ_a := le_trans (min_le_left _ _) (min_le_left _ _)
   have hρcap_le_ρp : ρcap ≤ ρ_p := le_trans (min_le_left _ _) (min_le_right _ _)
   have hρcap_le_ρc1 : ρcap ≤ ρ_c1 := le_trans (min_le_right _ _) (min_le_left _ _)
@@ -1505,7 +1514,8 @@ theorem exists_contDiffOn_flow_succ_driver
   have hΦ_Ck : ContDiffOn ℝ k Φ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)) :=
     hU_Ck.mono hbox_sub
   have hfinal : ContDiffOn ℝ (k + 1) Φ ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)) :=
-    contDiffOn_flow_succ_of_augmented_flow hΦ haΦ haΦ_Ck hf_succ hT hT_lt_mid hT_mid_lt_out hM hMT_mid
+    contDiffOn_flow_succ_of_augmented_flow hΦ haΦ haΦ_Ck hf_succ hT hT_lt_mid hT_mid_lt_out hM
+      hMT_mid
       hT_lt_mid (le_of_lt hT_mid_lt_out) hsub_out hsub' hsubO' hLip hr' hρ_lt_mid hρ_mid_lt_out
       hρρ' hρ_out_le_r hρR hmap hcontain₁ hcontain₂ hA_bd hΦ_Ck
   refine ⟨(ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T), isOpen_ball.prod isOpen_Ioo, ?_, hfinal⟩
