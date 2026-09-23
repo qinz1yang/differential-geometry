@@ -13509,3 +13509,5 @@ import DifferentialGeometry.Geometry.Neck.SelectedProperEnd
 import DifferentialGeometry.Geometry.Neck.FiniteFrontierEnd
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalRankOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalProduct
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryCapCurvature
