@@ -992,3 +992,75 @@ them there.
   `EuclideanSpace` `DecidableEq` makes `Set.piecewise` witnesses and `boundaryComplex` arguments
   fail or time out; take the piecewise witness from the lemma (`⟨_, h.piecewise …, if_pos …⟩`)
   and put `let _ : DecidableEq E := Classical.decEq _` before naming `boundaryComplex`.
+
+# Batch 6 (compact face disks)
+
+## `exists_compactFaceDisks` (P6, page 244) — CLOSED (7 new modules; `hnc`, `hnb` dropped)
+
+- Route. `∂C_σ` is a PL 2-sphere (`IsPLCellOn.boundary_eq_frontier` + `isPLSphere_frontier`); the
+  trace circles are disjoint PL circles on it. Innermost disk `D` (fewest other circles inside,
+  Schoenflies on the sphere `exists_isPLBall_pair_of_isPLSphere_two`); `D \ J_i` is connected and
+  misses `Fr U`, so it lies in `U` or misses `U`; in `U` it would put `D` in the face torus (face
+  ball misses non-incident balls) and kill `J_i` in `H₁` (`IsPLBall.nullhomotopic_inclusion` +
+  `integralSingularHomologyMap_nullhomotopic`), against the trace certificate. Arcs: relative
+  interiors of splitting-disk images lie in `Int U` (two balls meeting in a frontier disk: the
+  complementary disks of the two frontier spheres form a sphere inside the frontier sphere of the
+  union ball, `eq_of_subset_of_isPLSphere`); each incident vertex has exactly two incident edges
+  (`K'` restricted to `∂σ` subdivides a circle, `isCombinatorialManifold_one_iff`); a closed piece
+  of a PL circle that is a neighbourhood of its points off two points is the pair, an arc or `J`,
+  and the cycle cover makes every piece an arc (no piece equals `J`: the `H₁` argument again).
+- `hnc`, `hnb` are not used (the trace certificate carries everything P6 needs); they are dropped,
+  so the delivered statement is strictly stronger. The assembly call becomes
+  `exists_compactFaceDisks hcut hgraph hinv htrace` (skeleton line 530).
+- Files (`DifferentialGeometry/Topology/PiecewiseLinear/`), lines, SHA-256:
+  - `SphereInnermostDisk.lean` 92 `3e1425df02e8b7215edf358569d623926f5a767d8d8426dca262b9880113b33b`
+  - `CircleClosedCover.lean` 305 `358b2e167c9a9af3596aaf8ed045ab360a30f19b59be311c528a21b7beeec0e7`
+  - `BallUnionMeetingDisk.lean` 111 `1d2268371eff338968f2f0a73339fca38841b8f4099950f9ecb1359ab1dcc7c4`
+  - `Section34CompactIncidentEdges.lean` 192
+    `36dde9859f32f6916b51582f9c9e99e6e6e6bd417bb797133ea999b48d741742`
+  - `Section34CompactTargetCells.lean` 183
+    `8e8ba974545f519122f4480f140d38e53ae0c93451fae17ccc627511f185e52c`
+  - `Section34CompactTraceArcs.lean` 224
+    `985a57d9f1ac9f505cbb511b290c17fc5a334a6f8baa25f6598aa6f62f2f77d0`
+  - `Section34CompactFaceDisks.lean` 215
+    `2d584cf181635f3c34c8cd43eb2634ceedb9f4d28e312b1c34176959074b71f0`
+- Checker, each of the seven (in the order above, each after `prepare-private-root.py`):
+  `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\<File>.lean with no diagnostics; shared outputs unchanged.`
+  Receipts `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\<File>.json`
+  (exitCode 0, diagnosticLines 0, sourceSha256 = the hashes above).
+- Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch6FaceDisks.lean` (seven
+  modules, axioms ⊆ {propext, Classical.choice, Quot.sound}, thirteen environment linters):
+  `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditBatch6FaceDisks.lean with no diagnostics; shared outputs unchanged.`
+  `AuditBatch6FaceDisksPrint.lean` (`#print axioms` of all 21 public theorems): each
+  `depends on axioms: [propext, Classical.choice, Quot.sound]`.
+- Aggregate import lines:
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SphereInnermostDisk`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.CircleClosedCover`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionMeetingDisk`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactIncidentEdges`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetCells`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceArcs`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks`
+- Statement identity: the text from `theorem` to `:= by` compared by script with
+  `Skeleton/Section34Compact.lean:283` — identical after deleting the two binders `hnc`, `hnb`;
+  same namespace, `open Set Topology`, and `section Leaves` variable block (byte-identical).
+- New public names (checked unique tree-wide): `IsPLSphere.exists_innermost_disk`,
+  `IsPreconnected.subset_or_disjoint_of_mem_nhdsWithin`, `IsPLSphere.eq_of_mem_nhdsWithin_of_ne`,
+  `IsPLSphere.eq_pair_or_eq_or_exists_arc_of_mem_nhdsWithin`,
+  `IsPLSphere.exists_isPLHomeomorphOn_Icc_of_cycle`, `isPLCellOn_one_of_isPLHomeomorphOn_Icc`,
+  `sdiff_subset_interior_union_of_inter_eq`,
+  `convexHull_inter_section34CompactGraphSkeleton_subset_rim`,
+  `section34CompactSimplexRim_subset_graphSkeleton`, `isPLSphere_one_section34CompactSimplexRim`,
+  `exists_section34CompactEdgeIndex_pair_of_incident`, and in `Section34CompactCutFrame`:
+  `splitDisk_subset_cutNeighborhood`, `isPLCellOn_vertexBallImage`, `isPLCellOn_splitDiskImage`,
+  `splitDiskImage_eq_inter`, `subset_of_mem_splitDiskImage`, `exists_mem_splitDiskImage_of_ne`,
+  `disjoint_splitDiskImage`, `splitDiskImage_sdiff_subset_interior`,
+  `isPLCellOn_inter_vertexBallImage`; plus the leaf. No `structure`, no `Prop`-valued `def`.
+- Not used: worker a's `CrossingTraceCircles` (the trace certificate already supplies the circles);
+  no overlap. `Section34CompactTargetCells` (images of vertex balls / splitting disks as cells,
+  their meets, the open splitting disk in `Int U`) is reusable by the residual-ball and target
+  recognition leaves (the latter's "relative interior of a splitting disk image" gap is
+  `splitDiskImage_sdiff_subset_interior`).
+- Lesson: `isCombinatorialManifold_one_iff` is stated under `open Classical`, so its `{v, w}` uses
+  `Classical.propDecidable` while `E3` has `WithLp.instDecidableEq`; bridge with
+  `by convert h` (instance subsingleton), not by restating.

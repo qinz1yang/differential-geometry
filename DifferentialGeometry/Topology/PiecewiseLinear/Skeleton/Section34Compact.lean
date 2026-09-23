@@ -15,6 +15,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceEnvelop
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSplitDiskIntersection
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -202,6 +203,17 @@ states (a missing derivation, not a counterexample); the others need 28.8, Schoe
 Interface repair 2026-09-23 (owner decision, the compact twin of the P4b repair):
 `exists_compactBigonSlide` now receives `hcar : Section34CompactCarrierControl K h ε H`, as
 `exists_compactCompression` already does; the assembly passes it.  No conclusion changed.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit): `exists_compactFaceDisks` (step P6, module `Section34CompactFaceDisks` over
+`SphereInnermostDisk`, `CircleClosedCover`, `BallUnionMeetingDisk`, `Section34CompactIncidentEdges`,
+`Section34CompactTargetCells`, `Section34CompactTraceArcs`).  The unused `hnc` and `hnb` were
+dropped (strictly stronger; the assembly passes four arguments): an innermost trace circle on the
+PL sphere `∂C_σ` bounds a disk missing the vertex balls because a circle inside one ball would
+be null in `H₁`, the cyclic incidence of the edges at a vertex of `σ` makes each `D''_σ ∩ V''_w`
+one arc between consecutive marked points, and the sub-arc of a PL circle is a 1-cell.
+`Section34CompactTargetCells` also gives that the open splitting-disk image lies in the interior
+of the union of its two vertex balls, the position fact the target-recognition note asked for.
 -/
 
 open Set Topology
@@ -283,27 +295,6 @@ theorem compactTrace_of_noOperation (hcut : Section34CompactCutFrame C K K' src 
       (section34CompactSplitDiskImage srcBd f₁) fblBd s) :
     Section34CompactTrace K K' (section34CompactVertexBallImage src f₁)
       (section34CompactSplitDiskImage srcBd f₁) fblBd := by
-  sorry
-
-theorem exists_compactFaceDisks (hcut : Section34CompactCutFrame C K K' src srcBd)
-    (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
-    {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hinv : Section34CompactFaceBallInvariants K K' h H
-      (section34CompactVertexBallImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fbl fblBd)
-    (htrace : Section34CompactTrace K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactSplitDiskImage srcBd f₁) fblBd)
-    (hnc : ∀ s, ¬ Section34CompactCompression K K' (section34CompactVertexBallImage srcBd f₁)
-      (section34CompactSplitDiskImage src f₁) fbl fblBd s)
-    (hnb : ∀ s, ¬ Section34CompactBigonSlide K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactVertexBallImage srcBd f₁) (section34CompactSplitDiskImage src f₁)
-      (section34CompactSplitDiskImage srcBd f₁) fblBd s) :
-    ∃ (tgtD tgtDBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)))
-      (tgtA tgtABd : Section34CompactArcIndex K K' → Set (EuclideanSpace ℝ (Fin 3)))
-      (tgtP : Section34CompactMarkIndex K K' → Set (EuclideanSpace ℝ (Fin 3))),
-      Section34CompactFaceDiskFamily K K' (section34CompactVertexBallImage src f₁)
-        (section34CompactSplitDiskImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-        fblBd tgtD tgtDBd tgtA tgtABd tgtP := by
   sorry
 
 theorem exists_compactResidualBalls (hcut : Section34CompactCutFrame C K K' src srcBd)
@@ -532,7 +523,7 @@ theorem moise341OnNeighborhood (h331 : Moise331) (h305 : Moise305Tame) :
         exact ⟨g', gBd', hinv', hoff, section34CompactFaceBallRank_lt_of_bigonSlide hc hp⟩)
   have htrace := compactTrace_of_noOperation hcut hgraph hinv hnc hnb
   obtain ⟨tgtD, tgtDBd, tgtA, tgtABd, tgtP, hdisk⟩ :=
-    exists_compactFaceDisks hcut hgraph hinv htrace hnc hnb
+    exists_compactFaceDisks hcut hgraph hinv htrace
   obtain ⟨tgtR, tgtRBd, tgtX, tgtXBd, tgtI, tgtIBd, tgtO, tgtOBd, tgtQ, tgtQBd, hres⟩ :=
     exists_compactResidualBalls hcut hcar hgraph hinv htrace hdisk
   have hface := compactSourceFace_iff_cutLe hcut
