@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapCompactDomains
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarDepth
 import DifferentialGeometry.Topology.Manifold.ProductChartCollar
@@ -39,6 +40,56 @@ theorem LocalCap.mem_truncated_core_on_tube
       exact hh ▸ (show z.2 ≤ c from hz.2.2)
   · intro hsc
     exact Or.inr ⟨(q,s),⟨mem_univ _,hs.1,hsc⟩,rfl⟩
+
+theorem LocalCap.nonempty_capCore_truncated_core
+    (cap : LocalCap S eps x t U) {c : ℝ} (hc : c ∈ Icc (0 : ℝ) 1) :
+    Nonempty (CapCore
+      (cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) c))) := by
+  by_cases hc0 : c = 0
+  · have hsub : cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) c) ⊆ cap.core.carrier := by
+      rintro y ⟨⟨q, a⟩, ⟨_, ha⟩, rfl⟩
+      have ha0 : a = 0 := by rw [hc0] at ha; exact le_antisymm ha.2 ha.1
+      exact (cap.tube_map_mem_core_iff (by rw [ha0]; exact ⟨le_rfl, zero_le_one⟩)).mpr ha0
+    simpa only [union_eq_self_of_subset_right hsub] using ⟨cap.core_model⟩
+  have hcpos : 0 < c := lt_of_le_of_ne hc.1 (Ne.symm hc0)
+  let A : ℝ ≃ₘ[ℝ] ℝ :=
+    (LinearEquiv.smulOfNeZero ℝ ℝ c hc0).toContinuousLinearEquiv.toDiffeomorph
+  let T := ((Diffeomorph.refl I2 (Sphere 2) ∞).prodCongr A).toPartialDiffeomorph.trans cap.tube_map
+  have hT (q : Sphere 2) (a : ℝ) : T (q, a) = cap.tube_map (q, c * a) := rfl
+  have hsource : univ ×ˢ Icc (0 : ℝ) 1 ⊆ T.source := by
+    intro z hz
+    refine ⟨mem_univ _, cap.tube_domain ?_⟩
+    exact ⟨mem_univ _, mul_nonneg hc.1 hz.2.1,
+      (mul_le_mul_of_nonneg_left hz.2.2 hc.1).trans (by simpa using hc.2)⟩
+  have hfront : frontier cap.core.carrier = range (fun q : Sphere 2 => T (q, 0)) := by
+    rw [← cap.inner_boundary]
+    ext y
+    constructor
+    · rintro ⟨⟨q, a⟩, ⟨_, ha⟩, rfl⟩
+      have ha0 : a = 0 := ha
+      exact ⟨q, by simp only [hT, mul_zero, ha0]⟩
+    · rintro ⟨q, rfl⟩
+      exact ⟨(q, 0), ⟨mem_univ _, rfl⟩, by simp only [hT, mul_zero]⟩
+  have hside (q : Sphere 2) (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1)
+      (hm : T (q, a) ∈ cap.core.carrier) : a = 0 := by
+    rw [hT] at hm
+    have hca : c * a ∈ Icc (0 : ℝ) 1 :=
+      ⟨mul_nonneg hc.1 ha.1,
+        (mul_le_mul_of_nonneg_left ha.2 hc.1).trans (by simpa using hc.2)⟩
+    exact (mul_eq_zero.mp ((cap.tube_map_mem_core_iff hca).mp hm)).resolve_left hc0
+  have himage : T '' (univ ×ˢ Icc (0 : ℝ) 1) =
+      cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) c) := by
+    ext y
+    constructor
+    · rintro ⟨⟨q, a⟩, ⟨_, ha⟩, rfl⟩
+      exact ⟨(q, c * a), ⟨mem_univ _, mul_nonneg hc.1 ha.1,
+        by simpa using mul_le_mul_of_nonneg_left ha.2 hc.1⟩, rfl⟩
+    · rintro ⟨⟨q, a⟩, ⟨_, ha⟩, rfl⟩
+      refine ⟨(q, a / c), ⟨mem_univ _, div_nonneg ha.1 hc.1,
+        (div_le_one hcpos).mpr ha.2⟩, ?_⟩
+      rw [hT, mul_div_cancel₀ _ hc0]
+  simpa only [himage] using cap.core_model.nonempty_union_cylinder T hsource hfront hside
+
 
 theorem LocalCap.exists_truncated_compactDomain
     (cap : LocalCap S eps x t U) {c : ℝ} (hc : c ∈ Ioo (0 : ℝ) 1) :

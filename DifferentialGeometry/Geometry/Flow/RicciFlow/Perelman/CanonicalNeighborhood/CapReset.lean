@@ -279,6 +279,55 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
   {eps beta epsc C1 C2 t : ℝ} {p : M} {W : Set M}
 
+theorem CanonicalWitness.exists_singleton_cap_reset_with_capCore
+    (witness : CanonicalWitness S epsc C1 C2 p t)
+    (hchart : witness.capTubeHasNeckChart eps)
+    (cap : LocalCap S epsc p t witness.domain.carrier)
+    (hdepth : ∀ z ∈ cap.tube,
+      10000 / Real.sqrt (S.scalar t p) ≤ metricDistance (S.base.metric t) p z)
+    (htag : witness.alternative = CanonicalAlternative.cap cap hdepth)
+    (oldneck : SpatialNeck (S.base.metric t) beta p) (hbeta : beta ≤ 1 / 8646)
+    (hclosed : IsClosed W)
+    (graph : Sphere 2 → ℝ) (hgraph : Continuous graph)
+    (hsmall : ∀ q, |graph q| < 1 / 10) (hzero : graph oldneck.center = 0)
+    (hfront : frontier W = range (fun q : Sphere 2 => oldneck.map (q, graph q)))
+    (hout : ∃ r > 0, ∀ a, 0 < a → a < r → oldneck.map (oldneck.center, a) ∉ W)
+    (hnested : W ⊆ cap.core.carrier) :
+    ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
+      Nonempty (CapCore V.carrier) ∧
+      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      W ⊆ V.carrier ∧ cap.core.carrier ⊆ V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
+      frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
+      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
+      oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
+  obtain ⟨v, nk, hmap⟩ := hchart cap hdepth htag
+  obtain ⟨V, hV, _, hVU, hVfront⟩ :=
+    cap.exists_truncated_compactDomain (by norm_num : (1 / 2 : ℝ) ∈ Ioo 0 1)
+  have hmodel : Nonempty (CapCore V.carrier) := by
+    rw [hV]
+    exact cap.nonempty_capCore_truncated_core (by norm_num : (1 / 2 : ℝ) ∈ Icc 0 1)
+  refine ⟨V, v, nk.toSpatialNeck, hmodel, hV, ?_, ?_, hVU, ?_, ?_, ?_, ?_⟩
+  · exact hnested.trans (hV ▸ subset_union_left)
+  · exact hV ▸ subset_union_left
+  · rw [hVfront]
+    congr 1
+    funext q
+    exact hmap _
+  · intro z
+    exact (hmap z).symm
+  · intro q a ha ha1
+    change nk.map (q, 1 / 2 + a) ∉ V.carrier
+    rw [← hmap, hV]
+    intro h
+    have hm := (cap.mem_truncated_core_on_tube (by norm_num : (1 / 2 : ℝ) ∈ Ioo 0 1)
+      q (by constructor <;> linarith : 1 / 2 + a ∈ Icc (0 : ℝ) 1)).mp h
+    linarith
+  · intro x hx
+    have hh := oldneck.quarter_band_subset_cap_core_sdiff_of_outward_graph hbeta cap hdepth
+      graph hgraph hsmall hzero hclosed hfront hout hx
+    exact ⟨hV ▸ Or.inl (interior_subset hh.1), hh.2⟩
+
 theorem CanonicalWitness.exists_singleton_cap_reset
     (witness : CanonicalWitness S epsc C1 C2 p t)
     (hchart : witness.capTubeHasNeckChart eps)
@@ -300,29 +349,39 @@ theorem CanonicalWitness.exists_singleton_cap_reset
       (∀ z, neck.map z = cap.tube_map z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
       oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
-  obtain ⟨v, nk, hmap⟩ := hchart cap hdepth htag
-  obtain ⟨V, hV, _, hVU, hVfront⟩ :=
-    cap.exists_truncated_compactDomain (by norm_num : (1 / 2 : ℝ) ∈ Ioo 0 1)
-  refine ⟨V, v, nk.toSpatialNeck, hV, ?_, ?_, hVU, ?_, ?_, ?_, ?_⟩
-  · exact hnested.trans (hV ▸ subset_union_left)
-  · exact hV ▸ subset_union_left
-  · rw [hVfront]
-    congr 1
-    funext q
-    exact hmap _
-  · intro z
-    exact (hmap z).symm
-  · intro q a ha ha1
-    change nk.map (q, 1 / 2 + a) ∉ V.carrier
-    rw [← hmap, hV]
-    intro h
-    have hm := (cap.mem_truncated_core_on_tube (by norm_num : (1 / 2 : ℝ) ∈ Ioo 0 1)
-      q (by constructor <;> linarith : 1 / 2 + a ∈ Icc (0 : ℝ) 1)).mp h
-    linarith
-  · intro x hx
-    have hh := oldneck.quarter_band_subset_cap_core_sdiff_of_outward_graph hbeta cap hdepth
-      graph hgraph hsmall hzero hclosed hfront hout hx
-    exact ⟨hV ▸ Or.inl (interior_subset hh.1), hh.2⟩
+  obtain ⟨V, v, neck, _, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=
+    witness.exists_singleton_cap_reset_with_capCore hchart cap hdepth htag oldneck hbeta hclosed
+      graph hgraph hsmall hzero hfront hout hnested
+  exact ⟨V, v, neck, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩
+
+theorem CanonicalWitness.exists_connected_singleton_cap_reset_with_capCore
+    [PreconnectedSpace M] (witness : CanonicalWitness S epsc C1 C2 p t)
+    (hchart : witness.capTubeHasNeckChart eps)
+    (cap : LocalCap S epsc p t witness.domain.carrier)
+    (hdepth : ∀ z ∈ cap.tube,
+      10000 / Real.sqrt (S.scalar t p) ≤ metricDistance (S.base.metric t) p z)
+    (htag : witness.alternative = CanonicalAlternative.cap cap hdepth)
+    (oldneck : SpatialNeck (S.base.metric t) beta p) (hbeta : beta ≤ 1 / 8646)
+    (hclosed : IsClosed W)
+    (graph : Sphere 2 → ℝ) (hgraph : Continuous graph)
+    (hsmall : ∀ q, |graph q| < 1 / 10) (hzero : graph oldneck.center = 0)
+    (hfront : frontier W = range (fun q : Sphere 2 => oldneck.map (q, graph q)))
+    (hout : ∃ r > 0, ∀ a, 0 < a → a < r → oldneck.map (oldneck.center, a) ∉ W)
+    (hnested : W ⊆ cap.core.carrier) :
+    ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
+      Nonempty (CapCore V.carrier) ∧ IsConnected (interior V.carrier) ∧
+      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      W ⊆ V.carrier ∧ cap.core.carrier ⊆ V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
+      frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
+      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
+      oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
+  obtain ⟨V, v, neck, hmodel, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=
+    witness.exists_singleton_cap_reset_with_capCore hchart cap hdepth htag oldneck hbeta hclosed
+      graph hgraph hsmall hzero hfront hout hnested
+  have hconn := isConnected_interior_of_compact_regular_neck_boundary neck
+    (by norm_num : |(1 / 2 : ℝ)| ≤ 4) V.compact V.regular_closed hfrontV
+  exact ⟨V, v, neck, hmodel, hconn, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩
 
 theorem CanonicalWitness.exists_connected_singleton_cap_reset
     [PreconnectedSpace M] (witness : CanonicalWitness S epsc C1 C2 p t)
@@ -346,10 +405,9 @@ theorem CanonicalWitness.exists_connected_singleton_cap_reset
       (∀ z, neck.map z = cap.tube_map z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
       oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
-  obtain ⟨V, v, neck, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=
-    witness.exists_singleton_cap_reset hchart cap hdepth htag oldneck hbeta hclosed graph hgraph hsmall hzero hfront hout hnested
-  have hconn := isConnected_interior_of_compact_regular_neck_boundary neck
-    (by norm_num : |(1 / 2 : ℝ)| ≤ 4) V.compact V.regular_closed hfrontV
+  obtain ⟨V, v, neck, _, hconn, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=
+    witness.exists_connected_singleton_cap_reset_with_capCore hchart cap hdepth htag oldneck hbeta
+      hclosed graph hgraph hsmall hzero hfront hout hnested
   exact ⟨V, v, neck, hconn, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
