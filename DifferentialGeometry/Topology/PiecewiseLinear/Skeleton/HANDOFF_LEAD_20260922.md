@@ -396,3 +396,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `sorry` 38. `compactSourceFace_iff_cutLe` may need a new frame clause (review candidate).
 * 04:45 (09-23) — accepted worker b's §33 Lemma 9 (17 modules) and worker a's four P4 bricks; physical
   `sorry` 37.
+* 04:50 (09-23) — registered Codex's five overnight modules (split-disk centre, solid-torus `H₁` and Hurewicz
+  injections, face rim, holed-sphere extension) and its notes; `CanonicalTowerReduction` probe committed.

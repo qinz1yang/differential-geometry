@@ -852,3 +852,209 @@ Queue accounting: Q1/Q2 were already completed by other lanes and only reverifie
 Q3 has these checked reusable deliveries. Q4 remains as the earlier reconnaissance files:
 the descent-sequence and protected-circle-removal assemblies are still explicitly partial.
 Q5/Q6 were not started in this batch. The lead still owns integration and independent acceptance.
+
+## Codex overnight Q3(i) — chart transport and graph-cycle probe (2026-09-23)
+
+Status: PARTIAL. The planar prescribed-boundary extension has been transported through arbitrary
+PL charts of closed complementary surface disks in E3. The real module
+SphereHoledBoundaryExtension.lean proves
+IsPLHomeomorphOn.exists_holed_surface_extension_of_planar_charts and
+IsPLHomeomorphOn.exists_holed_surface_extension_of_prescribed_boundary_maps. The latter
+takes actual prescribed E3 boundary maps, proves a PL map of the charted holed regions,
+and agrees with every prescribed boundary map. Its reference disk map and positive
+relative circle corrections are explicit inputs. It does not claim that the frozen CGN
+geometry has produced those inputs or that its edge matching leaf is closed.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SphereHoledBoundaryExtension.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- SphereHoledBoundaryExtension.lean: 59EF30F80DE9B86880212474B44D9A53482449B1BBBD3138CBA3D9654A51A49B
+- Skeleton/OrientationCharacterBridge.md: F3E5317A44BA291B4B4FB7BCDCA7BAB9CADC39F9D37F1E55E8CFD208EADCB00B
+
+The private checker receipt has Lean exit 0, zero diagnostics, stable source, and unchanged
+shared outputs. The two theorem axiom closures contain only propext, Classical.choice and
+Quot.sound. The external audit's raw Lean exit was 0; its scratch source produced only
+long-line warnings on the two diagnostic commands, not on the module source.
+
+Sub-leaves still required for the frozen CGN assembly (exact scopes in
+Skeleton/OrientationCharacterBridge.md):
+1. exists_planar_chart_of_spherical_complement, including intrinsic rim transport;
+2. exists_marked_sphere_reference_maps, jointly across shared disks;
+3. relative_orientation_character_cycle_zero from the original embedding, with no
+   global-orientability assumption;
+4. exists_vertex_signs_of_cycle_zero for the finite incidence graph;
+5. positive_boundary_corrections_of_vertex_signs;
+6. exists_joint_boundary_matching_of_orientation_character, preserving all four
+   boundary-map and overlap equations.
+
+The graph-cycle equality is stated as an output obligation in the probe, not added as a
+hypothesis to a frozen endpoint. No Opus-owned file, frozen statement, aggregate, or Git state
+was changed.
+
+## Codex overnight Q2 — canonical-tower probe recheck and centered disk (2026-09-23)
+
+Status: PARTIAL. The exact existing Skeleton/CanonicalTowerReduction.lean source was checked
+against a fresh private import closure: Lean exit 0, source stable, two expected sorry warnings
+at its geometric child leaves, and no other diagnostic. The lead's three errors from its
+22:00 recheck (two omega and one simp mismatch) did not reproduce. The probe source was not
+changed. The wrapper cannot emit a no-diagnostics success line for a probe containing the
+two explicitly retained sorry warnings; its raw Lean result is the compiler evidence.
+
+A real bounded sub-leaf was extracted as SplitDiskCenter.lean. For any IsTube edge, it
+constructs a PL parametrization of its actual splitting disk that sends the standard
+simplex center to the graph edge centroid and retains the intrinsic rim. This proves the
+marked-disk part of the relative cylinder-coordinate construction, not the whole cylinder.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SplitDiskCenter.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- SplitDiskCenter.lean: 750D3A737447A11D386B6F4C0A52ECAECE2F78593D81FBC0DFCD7E13497BBD14
+- Skeleton/CanonicalTowerReduction.lean (unchanged): F402C9CDB20349317716D909D765AB0D78A77F335502A1DA3FF1A123786A6190
+
+SplitDiskCenter's private receipt has Lean exit 0, zero diagnostics, stable source and
+unchanged shared outputs. Its axiom closure is propext, Classical.choice and Quot.sound.
+
+Exact remaining child leaves of the tower probe:
+1. exists_splitDisk_cylinder_coordinates: the center and intrinsic rim are now handled by
+   SplitDiskCenter; still build compatible maps on both PL 3-ball halves, then transport a
+   round-cylinder model to their union and through the tube embedding.
+2. exists_controlled_revolved_tower: construct the joint bi-infinite radial exhaustion with
+   exact two tail closures, W containment, Z avoidance, and local finiteness. This is the
+   substantial geometric producer and still has sorryAx.
+
+The conditional single-torus supply, even/odd GP choice, triple restriction, and tower
+assembly remain elaborated but cannot be called axiom-free while the two leaves are open.
+No Opus-owned module, frozen declaration, aggregate, or Git state was changed.
+
+## Codex overnight review checks 0b and 0 (BH/BI; 2026-09-23)
+
+Scope: due-diligence notes only, as explicitly requested. The two new notes are
+`consult/BH-compression-codex-check.md` and `consult/BI-branch-tube-codex-check.md`.
+Neither frozen leaf nor its interface was edited or proved. The reviewer's geometric
+fixture remains outside the checkout; the notes distinguish source checks from paper claims.
+
+SHA-256:
+- BH-compression-codex-check.md: F17E7E3C1A099004FCF10577FA9229BDEE32AFE03E43841FC71BE884FF1D665D
+- BI-branch-tube-codex-check.md: FA5A7FF76674C6007CB9ACA7332FDFB029D0B55DB49CFFEA3FCCFAF05BA2E4C0
+
+Checker success line: not applicable to Markdown due-diligence notes. A proposed BI Lean
+interface probe was rejected by automatic approval review before execution because the user's
+BH/BI scope was read as notes only; no such probe file was created. Source search confirms
+that the actual transport theorem uses its full-ray equality only at t=0 and t=1.
+
+Open sub-leaves recorded for BH: controlled thin PL shell; an arc in interior N avoiding rim
+and obstacles; a sufficiently small regular tube whose shell complement is a PL 3-ball;
+field-by-field invariants and exact trace/crossing counts; two-tetrahedra exterior escape.
+Open sub-leaves recorded for BI: actual endpoint-restricted interface edit and cone rebuild
+by the lead; construction of a derived marked tube and endpoint matching; a joint non-vacuity
+fixture. No completion claim is made for either review leaf.
+
+## Codex overnight Q4 — solid-torus interior H1 injection (2026-09-23)
+
+Status: CLOSED as a reusable theorem in the new real module
+`SolidTorusInteriorHomology.lean`. The radial disk-factor homotopy gives a left inverse on
+integral first homology to the inclusion `interior S -> S`, for every
+`IsTopologicalSolidTorus S`. The statement is the actual map, not a packaged hypothesis.
+It supplies both the SpineCarrier and TorusLinking interior-inclusion leaf shapes by
+unfolding their local `firstHomologyInclusion` definitions; those existing skeletons remain
+unchanged and are not claimed fully closed.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SolidTorusInteriorHomology.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- SolidTorusInteriorHomology.lean: 0BEC8C765610756824814D6E14F4064428B4658C652CE672294A0808A1E6F38E
+
+Sub-leaf list: the two interior-inclusion injection shapes above are proved by this one
+canonical theorem. The other Q4 leaves (`exists_maximal_firstHomology_image_of_disjoint_polygons`,
+`hurewiczOne_injective_of_isTopologicalSolidTorus`, and
+`face_rim_subset_interior_deleted_family`) remain for separate work. The private receipt
+has Lean exit 0, zero diagnostics, stable source and unchanged shared outputs.
+
+## Codex overnight Q4 — solid-torus degree-one Hurewicz injection (2026-09-23)
+
+Status: CLOSED in the new real module `SolidTorusHurewiczOne.lean`. It builds the actual
+fundamental-group and H1 equivalences with ℤ, obtains Hurewicz surjectivity from path
+connectedness, and proves a surjective additive endomorphism of ℤ is injective. No
+fundamental-group conclusion was added as a hypothesis.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SolidTorusHurewiczOne.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- SolidTorusHurewiczOne.lean: 5D476B2F5CA7DD0065EF112E5E82A16317233D6BC0B4E532E64419062E058D24
+
+Sub-leaf list: `hurewiczOne_injective_of_isTopologicalSolidTorus` is proved as
+`IsTopologicalSolidTorus.hurewiczOne_injective`. Remaining Q4 items are maximal image
+among disjoint polygons and face-rim localization. Private checker receipt: Lean exit 0,
+zero diagnostics, source stable, shared outputs unchanged.
+
+## Codex overnight Q4 — face-rim localization (2026-09-23)
+
+Status: CLOSED as a stronger, smaller-input theorem in the new real module
+`FaceRimInteriorDeletedFamily.lean`. It proves a general local-finite closed-subfamily
+lemma, shows a face rim lies in the graph skeleton, then restricts the neighborhood of
+the whole Dv family to vertices incident to the chosen face. The actual conclusion is
+`h '' simplexRim 𝒦 s.1 ⊆ interior (section34FaceTorus Dv s)`; it needs only `hQsep`,
+`hQlf`, `htor`, `hDv`, `hDvQ` and `hDnbhd` from the larger skeleton leaf.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FaceRimInteriorDeletedFamily.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- FaceRimInteriorDeletedFamily.lean: 706080191302970488215C1625D702279211DBE2CF5651ED86C9BF76AA5853E9
+
+Sub-leaf list: `face_rim_subset_interior_deleted_family` is proved under fewer natural
+inputs; only the disjoint-polygon maximal-image Q4 leaf remains in this queue. The
+private checker receipt has Lean exit 0, zero diagnostics, stable source and unchanged
+shared outputs. No frozen skeleton statement was edited.
+
+Q4 axiom audit (private root `q4-axioms-audit.json/.log`): raw Lean exit 0,
+stable scratch source, unchanged shared outputs. Each of the three public theorem closures
+contains exactly `propext`, `Classical.choice`, and `Quot.sound`; none contains `sorryAx`.
+The audit wrapper reports nonzero because `#print axioms` emits informational lines, while
+each module's separate delivery checker above has a zero-diagnostic success line.
+
+## Codex overnight remaining gates — Q4 maximal image, Q6 fixtures, Q5 condition
+
+Q4 maximal image remains OPEN. The required proof is not merely finite selection of
+subgroups of ℤ: images 2ℤ and 3ℤ are incomparable. It needs the torus-specific fact that
+disjoint nonseparating PL circles have equal inclusion-image subgroups, and that a
+separating circle has zero image. Opus-a's in-flight `TorusCircleHomology.lean` reports
+exactly those range theorems in `OPUS_FILL_LOG_A.md`, but there is no final worker report
+and this lease has not imported, edited or claimed that file. Once the lead accepts it,
+the remaining child is a finite nonempty selection and range comparison for the actual
+`G : Fin (n+1) -> Set E3` family.
+
+Q6 fixtures remain OPEN; no misleading empty or conditional inhabitant was added.
+For `IsHandleDecompositionOfTube`, `exists_isTube` supplies a genuine edge, two dual
+balls and a splitting disk. A fixture still has to turn each image disk into a marked
+`IsPseudoCell`, prove exact rim/frontier and graph intersection, and identify each
+handle piece as the closure of the corresponding component of the complement of all
+pseudo-cells. For `Section34VertexPreparation`, a fixture must jointly realize the
+nonempty vertex and edge indices, PL balls, nested solid tori, annuli, collars, local
+finiteness and all distance-margin clauses of the actual preparation predicate.
+For `IsCanonicalTower`, the finite standard configuration in the §31 skeleton is
+conditional on `Moise307` and other open inputs; it does not supply the bi-infinite
+compatible tower, its two exact tail closures or local finiteness. These are the exact
+remaining construction sub-leaves, not extra hypotheses to any requested inhabitant.
+
+Q5 gate is now met for reconnaissance: `OPUS_FILL_LOG_D.md` Batch 8 reports the smooth
+disk taming leaf verified and the smooth annulus leaf STUCK with an exact remaining goal.
+That goal is a compactly supported isotopy of an embedded essential annulus core to a
+smooth core inside a prescribed open set, followed by a smooth bicollar. The current
+pointwise surface-chart smoothing result does not supply an isotopy of an entire
+essential circle. No new Q5 theorem was claimed or worker-owned file touched.
+
+Checker success line and SHA-256: none for these still-open construction items; no new
+Lean module or probe was created for them. The completed Q3/Q2/Q4 modules and their
+checker lines, hashes and child lists are recorded above.
+
+Consumer-audit limit for the interior-H1 theorem: the checker deliberately excludes
+private `.olean` imports whose receipts have diagnostics. The two skeleton probes still
+contain `sorry` warnings, so an external scratch consumer importing them could not be
+compiled through that checker. The claimed fit to their leaves is source-level unfolding
+of the two displayed `firstHomologyInclusion` definitions; it is not a checked edit to
+either skeleton. The standalone producer theorem and its axiom closure were checked above.
