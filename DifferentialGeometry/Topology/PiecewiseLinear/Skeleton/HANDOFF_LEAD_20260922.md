@@ -332,3 +332,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   and the two- and one-handle adjunctions. Second review request for Section34Compact written (BF).
 * 20:40 — Section34Compact second review returned all-OK (digest BG); the three factual claims were
   verified against the skeleton; all twelve leaves are frozen. Dispatch them to the next free lease.
+* 21:10 — registered worker a's thirteen P3-input modules (no leaf closed); P3 assembly continues on
+  lease a; Codex queue (FILL_QUEUE.md, Q1-Q7) written for the owner's lane, Q1 = the two general lemmas
+  P3 still needs.

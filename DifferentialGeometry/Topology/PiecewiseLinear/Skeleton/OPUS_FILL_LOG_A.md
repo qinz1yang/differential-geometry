@@ -419,3 +419,422 @@ Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube5.lean` (
   null-homologous in `T_s` (it bounds `Dj` there); (4) `c⁺ + 1 ≤ c` and `p⁺ ≤ p`, needing the
   trace to be a finite union of disjoint circles (a consequence of field 5 not stated in the
   tree) and `Dj` disjoint from every `tgtE e`.
+
+# Batch 5 (P3 inputs)
+
+## Input (4): Hurewicz naturality and Lemma 4's rim-to-trace step — CLOSED (step 2 takes the trace retraction as a hypothesis, produced in (3))
+
+Files (new, untracked, sorry-free; no existing file touched):
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/FirstHomologyCarrying.lean` | 377 | `d0270bb6ba82208a34fe76ce5a46969d57f92355a7e6a229652eb1ec5a66eb78` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/CellTraceFirstHomology.lean` | 330 | `698e1cce8118b524f1e92c9e1bd52cb03a6cf844665642ff941c47aade7ef4ec` |
+
+Import lines (the second imports the first; the first imports the accepted
+`Section34FaceBallVocabulary`):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.FirstHomologyCarrying
+    import DifferentialGeometry.Topology.PiecewiseLinear.CellTraceFirstHomology
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FirstHomologyCarrying.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T01:20Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CellTraceFirstHomology.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T01:24Z)
+
+Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube6.lean` (both modules):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube6.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T01:25:52Z)
+
+Grep before writing: `Homology/` has `hurewiczOne`, `hurewiczOne_surjective` and the field
+version `FieldHurewiczOne` with no naturality; `HandlePieceEulerChar` has only the field-coefficient
+factorisation `exists_linearMap_fieldHurewiczOne`.  No integral degree-one cycle class with a
+naturality lemma existed (degree 0 has `integralZeroChainClass_map`), so one was added.
+
+Public names, `DifferentialGeometry.Topology`: `integralOneCycleClass` (def),
+`integralOneCycleClass_surjective`, `integralOneCycleClass_eq_iff`,
+`mem_ker_sc_one_of_mem_integralSingularCycles`, `integralOneCycleClass_eq_moduleHomologyClass`,
+`integralSingularChainMap_mem_integralSingularCycles`, `integralOneCycleClass_map`,
+`integralPathChain_map`, `integralLoopHomologyClass_map`, `hurewiczOne_map`.
+`DifferentialGeometry.Topology.PiecewiseLinear`:
+`CarriesFundamentalGroupOnto.carriesFirstHomologyOnto`, `CarriesFirstHomologyOnto.mono`,
+`CarriesFirstHomologyOnto.of_homotopic`, `integralSingularChainMap_inclusion_apply`,
+`integralSingularChains_d_eq_zero_of_inclusion`, `integralSingularChains_d_inclusion_eq_zero`,
+`CarriesFirstHomologyOnto.exists_cycle`, `carriesFirstHomologyOnto_of_forall_cycle`,
+`exists_boundary_of_subsingleton_integralSingularHomology`,
+`exists_boundary_sub_mem_integralSingularChainsIn_inter`,
+`CarriesFirstHomologyOnto.of_mayerVietoris`, `IsPLCellOn.exists_homeomorph`,
+`IsPLCellOn.subsingleton_integralSingularHomology_one`,
+`IsPLCellOn.subsingleton_integralSingularHomology_one_boundary`, `dist_radialDeformation_le`,
+`IsPLCellOn.carriesFirstHomologyOnto_inter_interior`,
+`CarriesFirstHomologyOnto.inter_frontier_of_homotopic`.  All grepped tree-wide: no clash.
+
+What each gives P3 (the consumer shapes were chosen by me; the leaf forces none of them):
+
+- Naturality: `hurewiczOne_map f x γ : (hurewiczOne (f x) (map f x γ)).toAdd =
+  integralSingularHomologyMap 1 f (hurewiczOne x γ).toAdd`, through `integralOneCycleClass_map`.
+- The graph frame's generator clause to `H₁`:
+  `CarriesFundamentalGroupOnto.carriesFirstHomologyOnto (h : CarriesFundamentalGroupOnto J T)
+  (hJ : J.Nonempty) (hT : IsPathConnected T) : CarriesFirstHomologyOnto J T`.  Both extra
+  hypotheses are necessary (`H₁` of a path component missed by `J` is not hit).  For P3,
+  `J = h '' simplexRim 𝒦 s.1` and `T = section34FaceTorus tgtV s`; path-connectedness of `T` is
+  still to be derived there (every vertex ball of `T` meets `J`).
+- Lemma 4, step 1 (`IsPLCellOn.carriesFirstHomologyOnto_inter_interior`), in a metric
+  `3`-manifold: `IsPLCellOn 3 C Bd`, `C'` compact with `Subsingleton (H₁ C')`, `R ⊆ C'`,
+  `R ⊆ interior C`, `C ∩ C' ⊆ interior T`, `CarriesFirstHomologyOnto R T` give
+  `CarriesFirstHomologyOnto (Bd ∩ interior T) T`.  Route: Mayer--Vietoris in `C'` for the open
+  cover `interior C \ (C' \ interior T)` and the complement of the inner shell image
+  `{minimumCoordinate ≥ δ}` (chain level: small chains of the cover,
+  `exists_small_boundary_of_boundary`), then the tree's `radialDeformation` of the simplex onto
+  its boundary, which moves a point by at most `6 · minimumCoordinate`
+  (`dist_radialDeformation_le`), inside an `ε`-thickening of `C ∩ C'` contained in
+  `interior T` (uniform continuity of the cell parametrisation).  `C'` is the book's auxiliary
+  ball `C'` around the disk `τ'`; any compact set with trivial `H₁` works, e.g. a PL cell
+  (`IsPLCellOn.subsingleton_integralSingularHomology_one`).
+- Lemma 4, step 2 (`CarriesFirstHomologyOnto.inter_frontier_of_homotopic`): `S` closed with
+  `Subsingleton (H₁ S)` (for `S = Bd`: `IsPLCellOn.subsingleton_integralSingularHomology_one_boundary`,
+  through the tree's `stdSimplexNormedBoundarySphereHomeomorph` into the sphere of
+  `EuclideanSpace ℝ (ULift (Fin 3))`, which keeps the universe of `M₂`), `T` closed,
+  `CarriesFirstHomologyOnto (S ∩ interior T) T`, an open `N ⊇ S ∩ frontier T` and a map
+  `g : C(S ∩ interior T ∩ N, S ∩ frontier T)` homotopic in `T` to the inclusion give
+  `CarriesFirstHomologyOnto (S ∩ frontier T) T`: field 7 of the invariants.  The retraction
+  `(N, g)` is the one input of Lemma 4 not produced here: it is a collar of the trace in
+  `Bd ∩ T`, to come from the triangulation of (3) (a triangulation of `Bd` with subcomplexes
+  `Bd ∩ T` and `Bd ∩ frontier T`, and the tree's `derivedNeighborhoodStrongDeformationRetract`
+  of the trace, which must additionally keep `Bd ∩ T` invariant).
+- Remaining for field 7 in P3 itself: the choice of the auxiliary compact `C'` with
+  `C ∩ C' ⊆ interior T` (the book's disk `τ` spanning `∂σ` in a tetrahedron, thickened), the
+  path-connectedness of `T`, and the retraction above.
+
+## Input (3): triangulation `L ⊇ C` of a surface with a curve system, and the trace retraction — CLOSED (abstract form; its P3 hypotheses are listed below)
+
+Files (new, untracked, sorry-free; no existing file touched):
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/SurfaceCurveTriangulation.lean` | 239 | `18693202d3bef50c139ffa04f8c84a9ea47f13dba2bfbc0cec692b636e3c538a` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/DerivedNeighborhoodOpenRetraction.lean` | 72 | `f7242214a867408bfb1209b3f7d822c08c8af3e091de6875b29599b39bc9c6e8` |
+
+Import lines (independent of each other and of input (4)):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCurveTriangulation
+    import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodOpenRetraction
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceCurveTriangulation.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T01:34Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedNeighborhoodOpenRetraction.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T01:37Z)
+
+Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube7.lean` (both modules):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube7.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T01:38:58Z)
+
+Public names (grepped, no clash): `notMem_boundaryComplex_two_of_two_cofaces`,
+`exists_isCombinatorialManifoldWithBoundary_two_curve_eventually_mem_iff`,
+`exists_isOpen_homotopic_retraction_of_faces_subset`.
+
+- `exists_isCombinatorialManifoldWithBoundary_two_curve_eventually_mem_iff` (finite-dimensional
+  `E`, the lowest layer; the chart target is the case `E = ℝ³`): `S` a topological surface
+  (every point has an open `W` with `W ∩ S` homeomorphic to an open subset of `ℝ²`),
+  `IsLocallyPolyhedral S`, a finite complex `G` with faces of card `≤ 2` and `|G| ⊆ S`, `Q ⊆ S`
+  compact give finite `L`, `C` with `IsCombinatorialManifoldWithBoundary 2 L`,
+  `C.faces ⊆ L.faces`, faces of `C` of card `≤ 2`, edges of `C` not in `boundaryComplex 2 L`,
+  and near every `x ∈ Q`: `y ∈ L.space ↔ y ∈ S` and `y ∈ C.space ↔ y ∈ |G|`.  These are
+  literally the hypotheses `hL hCL hC hCB` of `exists_small_homeomorph_curveCrossing_relative`
+  (brick 2), and the local agreement is what `HasPLCrossingAt.congr` /
+  `HasPLCurveCrossingOnAt.congr` need to read the crossings on the actual sets.  Route: polyhedral
+  neighbourhood of `Q` in `S` (`exists_isPolyhedron_neighborhood_of_isCompact`), triangulate it
+  with `|G|`, common subdivision with `G` (`exists_isSubdivision_restrict_isSubdivision`), fine
+  subdivision (`exists_isSubdivision_diam_lt_restrict_isSubdivision`), `LocalSurfaceLink`
+  (`isPLSphere_one_geometricLink_of_homeomorph`,
+  `exists_isSubdivision_neighborhood_of_forall_geometricLink` on a compact neighbourhood `Q₁`);
+  `C` = faces of `L` inside `|G| ∩ Q₁`, of card `≤ 2` via `IsSubdivision.card_le`; every face of
+  the subdivision at a vertex of `Q₁` lies in `L`, so the hinge lemmas
+  `exists_card_three_superset_of_inter_eq`, `exists_second_triangle_of_inter_eq` give each edge of
+  `C` two triangles of `L`, and `notMem_boundaryComplex_two_of_two_cofaces` excludes it from the
+  boundary.
+- `exists_isOpen_homotopic_retraction_of_faces_subset` (for Lemma 4, step 2): a subcomplex `B` of
+  a finite `A` has an open `N ⊇ |B|` and `g : C(|A| ∩ N, |B|)` homotopic in `|A|` to the
+  inclusion (the tree's `derivedNeighborhoodStrongDeformationRetract` of the derived
+  neighbourhood, a neighbourhood of `|B|` in `|A|` by `derivedNeighborhood_mem_nhdsWithin`).  With
+  `|A| = Bd ∩ T`, `|B| = Bd ∩ frontier T` (chart images) it gives the `(N, g)` of
+  `CarriesFirstHomologyOnto.inter_frontier_of_homotopic` by restriction.
+- Still owed in P3 to use these: (a) that the chart image of `frontier (⋃ w, tgtV w)` is, near
+  the face ball, a locally polyhedral topological surface containing the chart images of the
+  splitting circles `tgtEBd e` as a finite `1`-complex (from `IsLocallyFinitePolyhedralManifoldWithBoundary 3`
+  of the cut neighbourhood in the graph frame, the PL embedding `f₁` and the cut frame's
+  boundary formula for splitting disks; not stated in the tree); (b) a triangulation of the
+  chart image of `fblBd s` with `fblBd s ∩ T` and `fblBd s ∩ frontier T` as subcomplexes
+  (`exists_isSubdivision_restrict_space` twice, once `fblBd s ∩ T` and its frontier trace are
+  known polyhedra).
+
+## Input (1): source-side balls around a disk, shell and outer collar, carried through `h` — CLOSED
+
+Files (new, untracked, sorry-free; no existing file touched):
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/TopologicalCellNestedShell.lean` | 539 | `68b4cb43189c4bbd1ebcef56e98cfe7e0d408b2137450e86ae9572a621af15ff` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/LocalDiskBallNeighborhood.lean` | 105 | `8d7b83e0162c40a023669f33249be3eabb8d9c4294e9152780f9cfc13e6819ef` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/DiskBallNeighborhoodImage.lean` | 313 | `df2d568ff3a4fe866112427dc8b90b0823bc788dfefd06a9917c2023713ad5eb` |
+
+Import lines (the first imports brick 1 `ChartTameNestedCells`; the third imports the other two):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.TopologicalCellNestedShell
+    import DifferentialGeometry.Topology.PiecewiseLinear.LocalDiskBallNeighborhood
+    import DifferentialGeometry.Topology.PiecewiseLinear.DiskBallNeighborhoodImage
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TopologicalCellNestedShell.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:05Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocalDiskBallNeighborhood.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:08Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DiskBallNeighborhoodImage.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:14Z)
+
+Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube8.lean` (all three):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube8.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:14:58Z)
+
+Public names (grepped, no clash): `closedBallParam_image_norm_le`,
+`IsTopologicalCell.exists_nested_isSphericalShell_isBicollared`,
+`Moise305Tame.exists_isPLBall_of_isTopologicalCell`,
+`Moise305Tame.exists_isPLCellOn_of_isTopologicalCell`,
+`isPLSphere_two_geometricLink_of_isSubdivision_of_forall_vertex`,
+`exists_isPLBall_nhdsWithin_of_isPLBall_two`, `LocallyFinitePLPieceIn.card_le_four`,
+`LocallyFinitePLPieceIn.finite_faces_inter_of_isCompact`,
+`LocallyFinitePLPieceIn.exists_isPLBall_nhdsWithin_space_of_isPLBall_two`,
+`Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two`.
+
+The route differs from the book's wording in one respect, chosen by me: the shell and the outer
+collar are built on the target side, inside one topological cell, rather than carried from the
+source.  Then only a topological ball around the image of `σ` is needed from the source, and
+PL structure is not needed on it.
+
+- Shell and collar (`IsTopologicalCell.exists_nested_isSphericalShell_isBicollared`, `ℝ³`): for
+  a topological `3`-cell `Y ≅ B³` and compact `K ⊆ interior Y`, the images `C₁ ⊆ C₂` of two
+  round balls of radii `r₀ < ρ₁ < ρ₂ < 1` (`r₀` bounds the preimage of `K`) are cells with
+  `K ⊆ interior C₁`, `C₁ ⊆ interior C₂`, `C₂ ⊆ interior Y`; the closure of `C₂ \ C₁` is the
+  spherical shell `(u, t) ↦ φ⁻¹((ρ₁ + t(ρ₂ - ρ₁)) u)`; the frontier of `C₂` is bicollared
+  through the tree's `exists_twoSidedCollar_of_closedInterval`, using the radial collar
+  `(x, s) ↦ φ⁻¹((1 + s) φ x)`.  The collar's range is a neighbourhood of the frontier because
+  the image of the open annulus is `interior (image of the outer ball)` minus a closed set,
+  interiors of such images coming from `interior_range_eq_image_preimage_interior` (invariance of
+  domain).  Hence `Moise305Tame.exists_isPLBall_of_isTopologicalCell` (a PL ball between `K` and
+  `Y`), and its chart form `Moise305Tame.exists_isPLCellOn_of_isTopologicalCell` (through brick 1).
+- Source balls (`exists_isPLBall_nhdsWithin_of_isPLBall_two`): in a finite complex of dimension
+  at most three, over an open `O` whose faces have only vertices with `2`-sphere links, every
+  vertex of every subdivision in `O` has a `2`-sphere link (local version of
+  `IsCombinatorialManifold.of_isSubdivision`: `geometricLink_insert`,
+  `isPLSphere_geometricLink_faces_of_isPLSphere`,
+  `isPLSphere_geometricLink_of_isPLSphere_geometricLink`,
+  `isPLSphere_geometricLink_of_forall_card_le`).  So
+  `exists_isSubdivision_neighborhood_of_forall_geometricLink` (`LocalSurfaceLink`, `n = 2`)
+  gives a combinatorial `3`-manifold with boundary around a PL disk `D`, and
+  `exists_isPLBall_derivedNeighborhood_disk` gives a PL `3`-ball neighbourhood of `D` in `O`.
+  For a locally finite `𝒦` (`...exists_isPLBall_nhdsWithin_space_of_isPLBall_two`) the finite
+  complex is `restrict 𝒦 (⋃ closed stars of the vertices of the faces meeting D)`.  `O` is then
+  shrunk off the faces having a vertex outside that set.
+- Lemma 3 (`Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two`): with `U` open,
+  `𝒦` a combinatorial `3`-manifold (`isCombinatorialManifold_of_locallyFinitePLPieceIn` or the
+  cut frame), `h` continuous and injective on `U`, a PL disk `D ⊆ |𝒦|` (for P3:
+  `convexHull s.1`, via `isPLBall_convexHull_of_affineIndependent`), a chart `c` of the maximal
+  atlas and an open `W ⊆ c.source` containing `h(𝒦.map D)`, there is `IsPLCellOn 3 C B` with
+  `h(𝒦.map D) ⊆ interior C` and `C ⊆ W`.  The images of relative neighbourhoods are open by
+  `isOpen_image_of_continuousOn_injOn` (invariance of domain on manifolds).  No `HasGroupoid`,
+  no metric, no `T2Space`.  In P3, `W` is the open set that input (2) must supply.
+
+## Input (2): neighbourhood choice for fields 3, 4 and `Section34Exterior` — IN PROGRESS (two bricks closed; the component clause of `Section34Exterior` is being built)
+
+Files (new, untracked, sorry-free; no existing file touched):
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/LocallyFiniteSeparatingNeighborhoods.lean` | 102 | `b28a9696c26cf4cc1e37a1210bec591daaa3c85ca36fc9b4b85fd97f16a6fcee` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34VertexBallStar.lean` | 281 | `041743fb69ea4a2d86e111592309b77c388abff397dbfce31ac53467b3a0b76c` |
+
+Import lines (the first imports only Mathlib; the second imports the accepted
+`Section34FaceBallVocabulary`, `OpenStar`, `LinkDimension`, `LocallyFiniteSplittingDisks`):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSeparatingNeighborhoods
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexBallStar
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteSeparatingNeighborhoods.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:20Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexBallStar.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:50Z)
+
+Audits (`AuditTube9.lean`, `AuditTube10.lean` in `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a`):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube9.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:22:14Z)
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube10.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T02:52:27Z)
+
+Public names (grepped, no clash): `exists_isOpen_inter_subset_interior_of_locallyFinite`,
+`LocallyFinitePLPieceIn.isClosed_preimage_avoidingUnion`,
+`LocallyFinitePLPieceIn.subset_openStar_of_isPreconnected`, `IsPLCellOn.isConnected`,
+`image_openStar_subset_section34CarrierSupport`, `image_vertexBall_subset_image_openStar`,
+`image_vertexBall_subset_interior_of_incident`, `section34TetraObstacle_subset_interior`.
+
+- Fields 3 and 4 (`exists_isOpen_inter_subset_interior_of_locallyFinite`, any metric space): a
+  locally finite family of closed `A i` whose pairwise intersections lie in `interior Z`, and open
+  `G i ⊇ A i`, give open `W i` with `A i ⊆ W i ⊆ G i` and `W i ∩ W j ⊆ interior Z` for `i ≠ j`
+  (Voronoi cells of the `A i \ interior Z` against the union of the others).  For P3, in the
+  metric space `h '' U`: `A s = h '' simplexBody 𝒦 s.1` (locally finite by the carrier control),
+  `Z = ⋃ w, tgtV w` (pairwise intersections of triangles lie on the graph, inside
+  `interior (f₁ '' N)` by graph-frame clause 4), and `G s` = `c.source` ∩ the interiors of the
+  `H t`, `t ⊇ s` ∩ the complement of the non-incident `tgtV` (graph-frame clause 8) ∩
+  `h '' 𝒦.map '' ⋃ v ∈ s, openStar v`.  Lemma 3 (input (1)) then puts the face ball in `W s`.
+- `Section34Exterior`, clause 1: the vertex-ball part holds with no smallness of the vertex balls
+  (`section34TetraObstacle_subset_interior`, given `fbl s ⊆ interior (H t)` for incident `t`,
+  which the choice of `G s` gives).  Route: `f₁ '' V_w` is connected, lies in `h '' U` and misses
+  `h` of every triangle not incident to `w` (clause 8); pulled back along the embedding
+  `h ∘ 𝒦.map` it lies in the open star of each vertex of the carrier of `w`, because a
+  preconnected set meeting the open star of `a` and missing the triangles not containing `a`
+  stays in it (the link of `a` is a PL `2`-sphere, so every face of the link lies in a triangle
+  of the link: `exists_face_superset_card_eq_of_isPLSphere`); and that open star lies in the
+  carrier support of every face containing `a`.  Clause 2 is graph-frame clause 6.
+- `Section34Exterior`, clause 3 (not yet built): `y ∉ obstacle` follows from field 3 and
+  `interior (tgtV w) ∩ tgtV w' = ∅` for `w ≠ w'` (the cut frame's intersection formula,
+  `IsPLCellOn.image_boundary_interior`).  The component half is true for every frame, by this
+  route, now being formalised: (a) the obstacle lies in `h` of `O_t = ⋃ v ∈ t, openStar v`, so
+  the full subcomplex `K₀` on the vertices outside `t` misses it, and `frontier (H t)` lies in
+  `h '' K₀`; (b) a chain of target vertex balls and splitting disks along the subdivided edge of
+  `y` reaches a vertex of `K₀` avoiding the obstacle; (c) if the component of `y` stayed in
+  `interior (H t)`, the points whose carrier has a vertex of `K₀` in that component form a
+  relatively clopen subset `R` of `|𝒦| \ hull t`, and because `closedStar v \ hull t` is
+  connected for each vertex `v` of `t` (the cone on `|lk v| \ hull (t.erase v)`, connected by
+  `exists_isPLHomeomorphOn_sphere_disk_to_simplex`), `R` or `R ∪ hull t` is clopen in `|𝒦|`, so
+  the connected `H t` would equal its interior.
+
+## Input (2), completed: `Section34Exterior` from four properties of the face balls — CLOSED
+
+Files (new, untracked, sorry-free; no existing file touched), in addition to the two above:
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/TetrahedronStarComplement.lean` | 360 | `bf08e9cf96c6e041289ce79694f02c4998796be6b003a80863ae38ecde42a32d` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/SubdivisionSegmentStep.lean` | 118 | `7d71171000a1f883ebca38e486b1e3abe73b795311341f224f424e805b69c64e` |
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34ExteriorComponent.lean` | 757 | `a44377ef705851ae56c7b60e573303195d01c14ce19cb717f01e1fea6bedd986` |
+
+Import lines (the third imports the other two and `Section34VertexBallStar`):
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.TetrahedronStarComplement
+    import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionSegmentStep
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34ExteriorComponent
+
+Checker lines:
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TetrahedronStarComplement.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:05Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SubdivisionSegmentStep.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:10Z)
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ExteriorComponent.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:27:47Z)
+
+Audit `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube11.lean` (the three modules):
+
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube11.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:28:42Z)
+
+Public names (grepped, no clash): `isConnected_closedStar_sdiff_convexHull`,
+`LocallyFinitePLPieceIn.exists_insert_mem_faces_ne`,
+`LocallyFinitePLPieceIn.isPreconnected_iUnion_closedStar_sdiff_convexHull`,
+`LocallyFinitePLPieceIn.exists_isClopen_of_isClopen_sdiff_convexHull`,
+`LocallyFinitePLPieceIn.isOpen_preimage_of_carrier_class`,
+`LocallyFinitePLPieceIn.exists_pair_mem_faces_lt_of_mem_segment`,
+`exists_mem_frontier_connectedComponentIn_of_joinedIn`, `IsPLCellOn.isConnected_of_sdiff_subset`,
+`src_vertexBall_inter_subset_srcBd`, `interior_image_vertexBall_inter_image_vertexBall`,
+`exists_mem_src_vertexBall_inter_of_subset_edge`, `image_mem_connectedComponentIn_of_mem_segment`,
+`section34Exterior_component`, `section34Exterior_of_subset`.
+
+The P3-facing statement (`Section34ExteriorComponent.lean`):
+
+    theorem section34Exterior_of_subset (hh : IsEmbedding (U.domRestrict h))
+        (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd) (hctrl : Section34CarrierControl U 𝒦 h η H)
+        (hgraph : Section34GraphFrame U W h ψ H 𝒦 𝒦' src cr f₁)
+        {fbl : Section34SimplexIndex 𝒦 3 → Set M₂} (hfblc : ∀ s, IsClosed (fbl s))
+        (hfblH : ∀ s t, Section34Incident s.1 t.1 → fbl s ⊆ interior (H t.1))
+        (hfblV : ∀ s w, ¬ Section34Incident w.1 s.1 → fbl s ∩ section34VertexBallImage src f₁ w = ∅)
+        (hfblS : ∀ s, fbl s ⊆ h '' (𝒦.map '' ⋃ v ∈ s.1, openStar 𝒦.complex v)) :
+        Section34Exterior 𝒦 𝒦' h H (section34VertexBallImage src f₁) fbl
+
+(the displayed binder types of `s t w` are abbreviated here; in the file they are
+`Section34SimplexIndex 𝒦 3`, `Section34SimplexIndex 𝒦 4`, `Section34VertexIndex 𝒦 𝒦'`).  `hfblV`
+is literally field 3 of the invariants; the other three are met by choosing the open sets `W s`
+of the Voronoi brick inside `interior (H t)` and inside `h '' 𝒦.map '' ⋃ v ∈ s, openStar v` (an
+open set of `M₂` by invariance of domain).  So `Section34Exterior` is not a frame defect: all
+three clauses follow from the frozen frames, whatever the size of the vertex balls.
+
+Route of the component clause (formerly the open question): if the component `Z` of `y` in the
+complement of the (closed) obstacle left `interior (H t)`, a path in `Z` exits through the
+frontier (`exists_mem_frontier_connectedComponentIn_of_joinedIn`).  Otherwise: the obstacle lies
+in `h` of the open stars of the vertices of `t`, so the faces of `𝒦` without vertices in `t` map
+into its complement; the vertex balls of `𝒦'` along the subdivided edge `ax` of `y` (`x ∉ t`),
+minus the incident balls, link `y` to `h x` inside the complement (splitting disks of consecutive
+vertices; `exists_pair_mem_faces_lt_of_mem_segment` walks the subdivided edge); the points whose
+carrier has a vertex outside `t` with image in `Z` form a relatively clopen subset of `|𝒦| \ t`
+(`isOpen_preimage_of_carrier_class`), and since each `closedStar v \ t` is connected (the cone on
+the link minus a disk: `IsPLSphere.isConnected_sdiff_of_isPLBall_two`,
+`IsConeBase.isConnected_sdiff_coneComplex`) and these meet pairwise (second coface of a triangle
+from its `0`-sphere link), that set extends to a clopen subset of `|𝒦|` inside its union with `t`
+(`exists_isClopen_of_isClopen_sdiff_convexHull`); it contains the preimage of the connected cell
+`H t` and maps into `interior (H t)`, so the frontier of `H t` would be empty, contradicting
+`IsPLCellOn 3 (H t) (frontier (H t))`.
+
+## P3 brick: neighbourhoods and cells for the face balls (`Section34FaceBallNeighborhoods`) — CLOSED
+
+| file | lines | SHA-256 |
+|---|---|---|
+| `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceBallNeighborhoods.lean` | 310 | `4fea2cc791f99ec55793c3d5eb17fc0603e3b9644dfc26d21c9107cd0fb59787` |
+
+    import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallNeighborhoods
+
+- `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceBallNeighborhoods.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:39Z)
+- `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditTube12.lean with no diagnostics; shared outputs unchanged.` (2026-09-23T03:40:39Z)
+
+Public name (grepped, no clash): `exists_section34FaceBallNeighborhoods`.  From `h305 hU hh hcut
+hctrl hgraph` and any closed `Bad s` missing `h '' simplexBody 𝒦 s.1`, it gives open `Wn s` in a
+maximal-atlas chart `c s` (the chart of a carrier of a tetrahedron containing `s`), with
+`h '' simplexBody 𝒦 s.1 ⊆ Wn s`, `Wn s ⊆ interior (H t.1)` for every incident `t`,
+`Wn s ∩ tgtV w = ∅` for non-incident `w`, `Wn s ∩ Wn s' ⊆ interior (⋃ w, tgtV w)` for `s ≠ s'`,
+`Wn s ⊆ h '' 𝒦.map '' ⋃ v ∈ s.1, openStar v`, `Disjoint (Wn s) (Bad s)`, and a PL cell `C ⊆ Wn s`
+with `h '' simplexBody 𝒦 s.1 ⊆ interior C` (input (1)'s Lemma 3).  Any closed family of cells
+`fbl s ⊆ Wn s` with `h '' simplexRim 𝒦 s.1 ⊆ interior (fbl s)` then satisfies invariant fields 1,
+2, 3, 4 and, through `section34Exterior_of_subset`, field 10 (`Section34Exterior`).  Route:
+Voronoi brick in the metric space `h '' U` (open by invariance of domain); the bodies are locally
+finite there (each lies in its own carrier); `h ∘ 𝒦.map` is an embedding of `|𝒦|` onto
+`h '' U`, so the image of the (relatively open) open stars is open.
+
+## exists_section34FaceBalls (P3) — IN PROGRESS (all four inputs closed; fields 1-4 and 10 constructed; fields 5-9 open)
+
+State: with `exists_section34FaceBallNeighborhoods` and `section34Exterior_of_subset`, the frozen
+statement is reduced to making the cells satisfy fields 5-9 without leaving `Wn s` and keeping
+`h '' simplexRim 𝒦 s.1` inside.  Nothing found false; no frame defect (the earlier worry about
+`Section34Exterior` is resolved above).  Remaining obligations, independent of each other:
+
+1. (surface) For each `s`, with `T_s = section34FaceTorus tgtV s` (only incident vertex balls, all
+   inside `interior (H (ts s))`, hence in the chart `c s`): `S = frontier (c '' T_s)` satisfies the
+   hypotheses of input (3)'s `exists_isCombinatorialManifoldWithBoundary_two_curve_eventually_mem_iff`.
+   Locally polyhedral: `c '' tgtV w` is a PL ball in `ℝ³` (PL cell in a maximal-atlas chart; a
+   lemma to state), so `c '' T_s` and its frontier are polyhedra (`IsPolyhedron.frontier`).
+   Topological surface: a point lies in at most two vertex balls (cut-frame clauses 22-23), so
+   near it `S` is the frontier of one ball or of the union of two adjacent ones, a PL ball by
+   `isPLBall_union_of_inter_isPLBall_two`; owed: a PL `2`-sphere in `ℝ³` is locally homeomorphic
+   to open subsets of `ℝ²` (through `stdSimplexNormedBoundarySphereHomeomorph` and the sphere's
+   charts).  Curves `G`: the chart images of the splitting circles `tgtEBd e` of incident edges,
+   finitely many PL circles in `S` (their points lie in exactly two vertex balls), triangulated.
+   Near `c '' Wn s`, `frontier (⋃ tgtV)` and `frontier T_s` agree (non-incident balls miss `Wn s`).
+2. (sphere triangulation) a finite combinatorial triangulation `K` of `c '' fblBd s` (a PL
+   `2`-sphere in `ℝ³`).
+3. (general position) brick 2 `exists_small_homeomorph_curveCrossing_relative` with `B = ⊥`,
+   `U = c '' Wn s` and `ε` below the distance from `c '' h '' simplexRim` to `c '' fblBd s`; the
+   moved cell stays in `Wn s` (identity off `U`) and keeps the rim inside; transfer by
+   `HasPLCrossingAt.congr` / `HasPLCurveCrossingOnAt.congr` with the local agreement from 1
+   (fields 5, 6).  Field 8: a transverse triangle and edge in `ℝ³` meet in at most one point.
+   Field 9: the transverse intersection is a closed `1`-manifold with finitely many faces
+   (`exists_isPLSphere_cover_inter_of_transverse_faces`).
+4. (field 7) input (4) step 1 with `R = h '' simplexRim 𝒦 s.1` (carries `H₁ T_s` by graph-frame
+   clause 10, `CarriesFundamentalGroupOnto.carriesFirstHomologyOnto`; `T_s` path connected as a
+   union of path-connected vertex-ball images each meeting the connected rim image), and the
+   auxiliary compact `C' = h '' 𝒦.map '' B'` for a PL ball `B'` around the disk
+   `closure (∂t \ s)` of an incident tetrahedron (`IsPLSphere.isPLBall_closure_sdiff`, then
+   `LocallyFinitePLPieceIn.exists_isPLBall_nhdsWithin_space_of_isPLBall_two` inside the open set
+   missing `s \ (h ∘ 𝒦.map)⁻¹ (interior T_s)`); pass `Bad s = C' \ interior T_s` to the
+   neighbourhood brick so that `fbl s ∩ C' ⊆ interior T_s`.  Step 2 needs the retraction of the
+   trace, from `exists_isOpen_homotopic_retraction_of_faces_subset` applied to a subdivision of
+   the moved `K` in which `K ∩ L` is a subcomplex (faces inside `c '' T_s` form `A`, faces in
+   `L` form `B`), transported by the chart.
