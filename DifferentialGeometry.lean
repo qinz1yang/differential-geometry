@@ -13535,3 +13535,4 @@ import DifferentialGeometry.Geometry.Curvature.ComponentPointPicking
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBallFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ParabolicTerminalBallFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PointSelectedHistoricalFlow
+import DifferentialGeometry.Geometry.Neck.SpatialProperEnd
