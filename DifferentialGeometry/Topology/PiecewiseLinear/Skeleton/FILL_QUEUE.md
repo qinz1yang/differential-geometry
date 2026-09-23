@@ -228,3 +228,50 @@ Tonight, in order:
 5. Q5 only if the lease-d worker's final report shows the taming leaves STUCK.
 Q1 and Q2 of the evening queue are done (Q2 = §33 Lemma 8 closed by worker b); Q7 cleanup waits
 for a quiet tree.
+
+## Codex day queue 2026-09-23 (lead-written 05:40; supersedes the overnight queue's item status)
+
+Rules unchanged: own lease `codex-moise-recon`; new files only; no git writes; no edit of any frozen
+statement; log every result in `FILL_LOG.md` with the checker success line, SHA-256 and the sub-leaf
+list; the lead accepts, registers and commits. HOST GUARD: before every compile count the running
+`lean` processes (`Get-Process lean`); if four or more are running, wait a minute and re-check.
+
+Five Opus workers are in flight; do NOT touch their targets or files: a = §34 P4
+`exists_section34Compression` / `exists_section34BigonSlide` (through-tube, escape, normal form);
+b = §33 `exists_section33BoundaryMatch`, `exists_section33Extension`,
+`section33_fundamentalGroup_map_bijective`; c = smoothing `exists_homeomorph_smooth_annulus_…`,
+`exists_isSmoothEmbedding_sphere_…` (Q5 is therefore withdrawn); d = C1
+`exists_isSourceTrackedBranchTube`; e = A2 `exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk`.
+
+Overnight items done: 0, 0b, 2 (probe compiles; `SplitDiskCenter`), 3 except the maximal image,
+1's chart transport (`SphereHoledBoundaryExtension`). Registered this morning; see `FREE_INPUTS.md`
+B1.c, B1.f, B1.g.
+
+In order:
+1. `exists_maximal_firstHomology_image_of_disjoint_polygons` (`Skeleton/SpineCarrierReduction.lean`
+   line 77): `TorusCircleHomology` (accepted; disjoint nonseparating circles on a pushed PL torus
+   have the same `H₁` image, a separating circle has zero image) now supplies the range theorems;
+   what is left is a finite nonempty selection and the range comparison for the actual family
+   `G : Fin (n+1) → Set E3`. Real module.
+2. The spine-carrier probe's other two sub-leaves: the chain cut at a PL frontier (lines 38–50:
+   from a 1-cycle `z` in `A` bounding `b` in `A` modulo `w` supported in `A \ S`, a 1-cycle `v` on
+   `frontier S ∩ A` with `z - v` bounding in `S`) and `exists_disjoint_oriented_polygons_of_cycle`
+   (line 63). `integralFirstHomology_interior_injective` (line 35) is `SolidTorusInteriorHomology`
+   by unfolding; say so in the log, do not re-prove it.
+3. `Skeleton/TorusLinkingReduction.lean` sub-leaves, elementary ones first:
+   `subsingleton_firstHomology_complement_of_isPLBall`, then
+   `exists_integer_linking_equiv_of_isPLSphere` (`H₁` of the complement of a PL circle in `ℝ³` is
+   `ℤ`), then `surjective_firstHomologyInclusion_complement_of_null_meridian`; state precisely what
+   each needs (Mayer–Vietoris on a PL regular neighbourhood; no general Alexander duality).
+4. `exists_splitDisk_cylinder_coordinates` (`Skeleton/CanonicalTowerReduction.lean` line 72), now
+   that `SplitDiskCenter` gives the marked disk: compatible maps on the two PL 3-ball halves, then
+   the round-cylinder model transported to their union and through the tube embedding.
+5. Reconnaissance (probe files, `sorry` only at named sub-leaves) of the three unclaimed §32
+   leaves of `Skeleton/Section32PseudoCell.lean`: `isOpenTopologicalCell_annularChain` (line 277),
+   `exists_generalPosition_ball_pseudoCell` (line 296),
+   `exists_reducedDisk_of_crossesPseudoCell` (line 303); then prove whichever sub-leaves are
+   bounded.
+6. Q6 fixtures as before (an `IsHandleDecompositionOfTube` inhabitant on `exists_isTube`, a
+   `Section34VertexPreparation` inhabitant, an `IsCanonicalTower` inhabitant), each an `exists_…`
+   theorem in a real module, audited.
+Q7 cleanup still waits for a quiet tree.
