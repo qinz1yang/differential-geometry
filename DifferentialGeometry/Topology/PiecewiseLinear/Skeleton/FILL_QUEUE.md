@@ -578,3 +578,75 @@ with receipts as you go. A non-vacuity check for `exists_compactRimCoreBuffer` (
 tetrahedra sharing a face, as the BT answer describes) is welcome but not required. If a clause of
 either frame cannot be produced from the leaf's hypotheses and the bricks, stop on it and report the
 exact clause (lead/owner decision); add no named input on your own. Estimate 4000–6000 lines.
+
+## Codex item 15 — the two Section 34 trace leaves (lead-written 2026-09-24 09:00; new Codex lane)
+
+Lease for this lane: `codex-trace` (token `codex-trace-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\codex-trace`; the owner creates it by copying `claude-agent-b.json`
+with the lane, token and output root renamed; valid until 2026-09-26 04:17 UTC). Same rules as items
+7, 8, 13 and 14: new files only, no git writes, no edit of any frozen statement, host guard before
+every compile (at most four `lean.exe` on the host, this lease one; a ten-minute admission wait is
+contention, rerun), log to `Skeleton/FILL_LOG.md` (append-only, a `# Codex item 15` section with
+per-module receipts and SHA-256s), lines ≤ 100 codepoints, no declaration docstrings or comments,
+no underscore in a `def`/`abbrev`/`structure` name, grep every new name and every statement shape
+before proving; check each module with `prepare-private-root.py` then `checker.ps1`, and finish with
+an audit probe outside the tree (axioms within `propext`, `Classical.choice`, `Quot.sound`; the
+thirteen linters). Files that exist in the tree but are untracked belong to other lanes (lease a:
+`Section34CompactCompression*`; lease e: `Section34CompactTetra*`, `Section34CompactResidualBall`,
+`TwoBallPocket`, `Section34CompactFaceRuns`, `CircleArcSplit`; Codex item 14 on lease d: the compact
+cut-and-graph clauses): do not import, edit or shadow them.
+
+Targets, compact first, then the manifold twin:
+- `compactTrace_of_noOperation` (`Skeleton/Section34Compact.lean` line 305): from the compact cut
+  frame, graph frame and face-ball invariants, and `hnc`/`hnb` (NO face admits a compression, NO
+  face admits a bigon slide — every witness of the two operation predicates is excluded), produce
+  `Section34CompactTrace K K' (vertex-ball images) (split-disk images) fblBd`
+  (`Section34CompactVocabulary.lean` line 608: for each face `s`, a positive finite disjoint family of
+  PL circles whose union is `∂P ∩ ∂N` and `∂P ∩ Θ`, each circle meeting every incident edge trace
+  in exactly one point, with the nonzero-homology certificates on the face torus).
+- `section34Trace_of_noOperation` (`Skeleton/Section34Normalization.lean` line 372): the same with
+  `hU`, `hh`, `Section34CutFrame`, `Section34GraphFrame`, `Section34FaceBallInvariants` and
+  `Section34Trace` (`Section34Frame.lean` line 791) in the manifold `M₂`.
+Restate each byte-identically with its `variable` block when you close it.
+
+Read first, in full: `consult/BQ-section34-trace-leaves-codex-answer.md` (your own route review).
+Its two corrections to the earlier sketch are binding: a circle with zero image in `H₁` of a SOLID
+torus need not bound a disk on its boundary (compare each nonseparating component with the
+surjective one instead, `trace_circle_separates_of_zero_homology_image`), and two crossings in the
+same direction do not give a bigon (primitive degree, then the annulus / cyclic-cover bigon,
+`exists_admissible_bigon_of_excess_meridian_crossings`). The P6 arc modules
+(`Section34TraceArcs`, `Section34CompactTraceArcs`, `Section34CompactTraceHomology`,
+`Section34TraceTransport`, `CrossingTraceArcNeighborhood`) ASSUME the single-crossing conclusion:
+they cannot be used here (circular). The retired bridge `section34TraceCircle_homologyMap_ne_zero`
+has no consumer and stays out.
+
+Sub-leaves (BQ's table; sizes SMALL / MEDIUM / NEW_THEORY):
+1. compact: `exists_finite_trace_circles_of_crossings` (MEDIUM; both frontier equalities, full line
+   charts, finite circle enumeration: `CrossingTraceCircles`, `BallUnionFrontier`,
+   `Section34CompactGeneralPosition`), `exists_surjective_trace_circle` (SMALL after extraction;
+   `TorusSubsurfaceCarrier`, `TorusCircleHomology`, `FirstHomologyCarrying`),
+   `trace_circle_separates_of_zero_homology_image` (SMALL; then `SeparatingPolygonDisk` for its
+   disk), `split_disks_form_marked_meridian_system` (MEDIUM; track the seams through the cyclic
+   ball model: `CyclicBallUnion`, `CylindricalMeridian`, `Section34CompactIncidentEdges`),
+   `exists_admissible_operation_of_separating_trace` (NEW_THEORY; localise the innermost torus disk;
+   a clean compression or a clean bigon with all foreign-mouth and foreign-ball exclusions),
+   `exists_admissible_bigon_of_excess_meridian_crossings` (NEW_THEORY; `CoveringLift`,
+   `LateralAnnulusLevels`), `compact_trace_of_admissible_operation_dichotomies` (SMALL; apply
+   `hnc`/`hnb`, degree-one single crossings, nonzero component homology, positive count).
+2. manifold: `exists_intrinsic_PL_face_torus_with_marked_seams` (NEW_THEORY; the leaf provides no
+   target chart, so build an intrinsic finite model by cyclic gluing: `Section34FaceTorusCycle`,
+   `CyclicBallUnion`, `Section34IncidentEdges`), `exists_polyhedral_trace_circles_from_local_models`
+   (MEDIUM; compact finite atlas, full local crossings, intrinsic PL circle parametrisations),
+   `admissible_trace_operations_of_intrinsic_model` (NEW_THEORY; transport the compact disk/bigon
+   theorem, sphere-link bypass, carrier-frontier escape in place of unboundedness),
+   `section34_trace_of_intrinsic_operation_dichotomies` (SMALL after transport).
+`Section34FaceTorusCycle` currently carries hypotheses beyond `hf₁` that the lead still owes a
+weakening of: if they block you, add a variant with `hf₁` only in a new file and say so; do not edit
+the existing module.
+
+The extreme checks of the BQ answer are part of the job: an empty trace cannot surject onto the
+nontrivial `H₁` of a solid torus; nonzero image `kℤ` is not surjectivity; one point is not a
+crossing; `hnc`/`hnb` forbid every witness, not one chosen surgery. Deliver real modules stage by
+stage with receipts; the compact leaf as its own delivery, the manifold leaf after it. If a clause
+needs a fact the frames and `hnc`/`hnb` do not supply, stop on it and report the exact obligation
+(lead/owner decision); add no named input on your own. Estimate 3000–5000 lines for the pair.
