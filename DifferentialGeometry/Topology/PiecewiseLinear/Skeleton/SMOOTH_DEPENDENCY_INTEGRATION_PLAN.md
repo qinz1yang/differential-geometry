@@ -112,3 +112,18 @@ lead accepts it. Paths below are absolute or relative to the checkout root.
 - The 16 new vendor records under `External/` (untracked, gitignored): keep ignored, or force-track
   like the existing twenty External files.
 - Whether lane c or a dedicated Codex lane runs step 3.
+
+## 7. Owners (owner's clarification 2026-09-24 09:50)
+
+- Lane c is now the English-speaking collaborator, working in a cloud Codex sandbox WITHOUT host
+  access: it cannot run the checker or the cone compile. It works source-only on the isolated branch
+  `codex/moise-smooth-integration` (new files only, PRs against that branch): first its intake review
+  (`consult/smooth-intake-review.md`: the seven additional prerequisites of the chart-level route with
+  their `pc-sorry-free@54ad4d8ec` paths, the 341 hashes), then the single-face replacement (§4), then the
+  sphere subdivision and skeleton induction of the `S²` uniqueness leaf.
+- Step 3 (the 144-module cone compile, the header fixes, the two-entry audit) and the verification of
+  every collaborator PR on that branch run on the Windows host under the `codex-smooth-integration`
+  lease, in the worktree, by the lead or a local Codex lane: cherry-pick the PR into the worktree, then
+  `prepare-private-root-worktree.py` + `checker.ps1 -Checkout D:` + the worktree path per module, then the audit.
+- The seven additional prerequisites are added to the worktree by the host side from the same source
+  revision before the cone compile, and `compile-order.txt` is extended accordingly.

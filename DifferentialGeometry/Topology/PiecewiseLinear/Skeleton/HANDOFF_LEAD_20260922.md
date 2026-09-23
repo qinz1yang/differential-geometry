@@ -535,3 +535,7 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   144-module cone compile (plan §3) is not started — the lead offered to run it in the background under the
   `codex-smooth-integration` lease. Owed lead cleanup unchanged (`Section34FaceTorusCycle` to `hf₁`; `h304`/`h305`
   removal deferred by the owner). Acceptance pipeline scripts live in this session's scratchpad and must be rebuilt.
+* 09:50 (09-24) — owner: lane c (the `S²` smooth-structure leaf, incl. the smooth batch's single-face replacement) is
+  now the collaborator, in a cloud Codex without host access; plan §7 records the split: he works source-only on
+  `codex/moise-smooth-integration` via PRs, the host side (next lead session or a local Codex lane) adds the seven
+  extra prerequisites, compiles the 144-module cone under the `codex-smooth-integration` lease and verifies his PRs.
