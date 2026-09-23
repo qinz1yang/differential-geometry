@@ -197,3 +197,101 @@ Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output ro
   recognition `exists_homeomorph_prod_circle_of_eq_ends` is only topological). Estimate ≥ 1500
   lines. Gemini G024's claim is right about the missing simultaneous straightening, wrong about
   "classification of surfaces" (the Euler-parity route above avoids it).
+
+# Batch 3 (lease d)
+
+Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`.
+
+## exists_nontrivial_boundary_loop_of_bicollar_complement — CLOSED
+
+- Files (three new real modules, no `.wip`, nothing else edited):
+  - (c) `DifferentialGeometry/Topology/PiecewiseLinear/JordanDiskPasting.lean` (464 lines,
+    SHA-256 `72a690483a04d39ae810ebfc9621dfabf424be88c7f8cd44e07e700e6f29a0d6`);
+  - (b) `DifferentialGeometry/Topology/PiecewiseLinear/PLLevelCircles.lean` (747 lines,
+    SHA-256 `dcb0edba64ed05d42f921c167f588c23528e481923a04814821ca4370f0b11d3`);
+  - leaf `DifferentialGeometry/Topology/PiecewiseLinear/BicollarBoundaryLoop.lean` (591 lines,
+    SHA-256 `570e139942aa770dcf4b9ac7781dbac5bb0f27ba32b841a05fc35e7bb4ad4e13`).
+- Import lines to register (the leaf module imports the other two and `BicollarBands`):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.JordanDiskPasting`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.PLLevelCircles`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.BicollarBoundaryLoop`
+  All imports are tracked modules except these three; nothing under `PlanarJordan/` that is
+  untracked is imported (`AmbientExtension`, `CompactRegion`, `Transport` are tracked).
+- New public names (all grepped tree-wide first, previously unused):
+  - `JordanDiskPasting`: `exists_homeomorph_image_closure_inside_eq_closedBall`,
+    `isConnected_setOf_one_lt_norm_lt`, `exists_isOpen_isConnected_sdiff_closure_inside`
+    (arbitrarily thin connected outer collars of a Jordan disk),
+    `exists_continuousOn_mapsTo_closure_inside_of_nullhomotopic`,
+    `IsPLBall.nullhomotopic_of_continuousOn`, `closure_inside_subset_interior_of_subset_interior`,
+    `exists_continuousOn_mapsTo_of_jordan_disk_pasting` (the innermost-circle induction).
+  - `PLLevelCircles`: `exists_ne_zero_linearMap_apply_eq_zero_of_finrank_eq_two`,
+    `exists_eq_smul_of_linearMap_apply_eq_zero_of_finrank_eq_two`, `affineMap_apply_eq_add_linear`,
+    `exists_affineMap_linear_ne_zero_apply_eq_zero_of_finrank_eq_two`,
+    `exists_linearMap_apply_eq_zero_pos_of_apply_ne_zero`,
+    `exists_ball_subset_forall_mem_convexHull_of_mem_openSimplex`,
+    `card_le_three_of_mem_faces_of_finrank_eq_two`,
+    `exists_arc_of_mem_level_of_ball_subset_convexHull`,
+    `exists_coface_pos_of_ball_subset`, `exists_cofaces_cover_of_ball_subset`,
+    `exists_arc_of_two_rays`, `exists_eq_add_smul_of_mem_level_of_nonneg`,
+    `exists_arc_of_mem_level_of_edge`, `exists_arc_of_mem_level_of_affineOn_faces`,
+    `isCombinatorialManifold_one_of_forall_arc`,
+    `IsPiecewiseAffineOn.exists_finite_levels_isPLSphere_decomposition` (transversality: all but
+    finitely many levels of a PL function on a planar polyhedron, if interior, are finite
+    disjoint unions of PL circles).
+  - `BicollarBoundaryLoop`: `exists_continuousOn_mapsTo_closure_inside_of_forall_isNullHomotopic`,
+    `IsPLHomeomorphOn.exists_mem_connectedComponentIn_of_isPreconnected`,
+    `IsPLHomeomorphOn.exists_finite_isPLSphere_levels_of_bicollar`,
+    `IsPLHomeomorphOn.exists_continuousOn_push_to_ends_mapsTo`,
+    `IsPLHomeomorphOn.exists_isOpen_pair_of_bicollar_levels`,
+    `IsPLHomeomorphOn.exists_continuousOn_mapsTo_space_of_bicollar_disk`, and the leaf (statement,
+    `open Set Topology`, namespace and `variable` line byte-identical with
+    `Skeleton/ExtendedLoopTheoremOrientable.lean:71-94`, checked by script).
+- Checker (each exactly `Verified … with no diagnostics; shared outputs unchanged.`):
+  `JordanDiskPasting.lean` 16:56, `PLLevelCircles.lean` 17:14, `BicollarBoundaryLoop.lean` 17:40
+  (local, -07:00; the JSON records `diagnosticLines 0` for the SHAs above).
+- Axiom audit: `AuditOpusD4.lean` (all three modules, `-Audit`) — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditOpusD4.lean with no diagnostics;
+  shared outputs unchanged.` (17:42): every declaration of the three modules has closure within
+  `propext`, `Classical.choice`, `Quot.sound`; the thirteen environment linters pass.
+- Route (Moise 26.4, prove-first). By contradiction, every loop in a component of `Bd R` inside
+  `W` that dies in `R` dies in the component. The kernel element gives a non-nullhomotopic free
+  loop of `L` nullhomotopic in `K`; `exists_isPiecewiseAffineOn_fill_of_nullhomotopic` (with `L`
+  a subcomplex of a subdivision of `K`) gives a PL disk map `f : P → K`, `f (Bd P) ⊆ L`.
+  `φ = (ρ⁻¹ ∘ f).2` is PL on the polyhedron `P ∩ f⁻¹ W`; a level `s ∈ (0, 1)` with `±s` generic
+  gives disjoint PL circles `C±` in `Int P` (interiority from `G₁ ∩ K = ρ (L × (-1, 1))` and
+  `f (Bd P) ⊆ L = ρ (L × {0})`). After the push `Φ` of `BicollarBands`, `U = f⁻¹ ρ (L × (-s, s))`
+  goes into `W`, `V = f⁻¹ (K - ρ (L × [-s, s]))` into `R`, and each circle into an end copy
+  `ρ (Lα × {±1})`, which is a component of `Bd R`. The pasting theorem absorbs innermost disks:
+  on the `W` side by the end retraction, on the `R` side by the contradiction hypothesis and the
+  Jordan-disk extension of a nullhomotopic map. The result `G : P → W` agrees with `f` on `Bd P`
+  (`Φ` fixes `L`), so `(ρ⁻¹ ∘ G).1` extends `f | Bd P` into `L` and the loop dies in `L`.
+  The digest's zero-intersection case is exactly this final projection.
+- Duplication report: the Jordan–Schönflies disk transport in `JordanDiskPasting`
+  (`exists_homeomorph_image_closure_inside_eq_closedBall`) re-proves locally the pattern of the
+  untracked `PlanarJordan/ConsecutiveCellUnion.lean` (`nonempty_homeomorph_closure_inside`), from
+  tracked `PlanarJordan` files only. "PL disk minus disjoint interior subdisks is connected" was
+  not needed: the induction uses connected thin outer collars instead.
+- Compiles for this leaf: `JordanDiskPasting` ≈3 checks, `PLLevelCircles` ≈4 checks,
+  `BicollarBoundaryLoop` 2 checks (≈14 s each), 1 audit (≈53 s).
+
+## exists_product_coordinates_for_disjoint_essential_polygons — NOT STARTED (deferred)
+
+- No file, no compile. Returned after the leaf above so that it can be accepted first; the
+  worker can be resumed on this leaf.
+- Route with the accepted 28.9 modules: `IsCombinatorialSolidTorus.isPLTorus_frontier` and
+  `IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff` make every `G i`
+  nonseparating (its conclusion negates `hess i`);
+  `IsCombinatorialManifold.exists_connected_annulus_complement` and
+  `exists_isPLHomeomorphOn_annulus_of_eulerChar_eq_zero` chart the torus cut along `G 0` by
+  `∂Δ² × [0, 1]`. The other circles pull back into the open lateral annulus and are essential
+  there (a lateral disk maps to a disk in `frontier S`);
+  `IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral` (`NonseparatingPolygonCarrier`)
+  then gives the sub-annulus below each circle, and the flipped
+  application the one above.
+- Still missing in the tree: the induction on `n` ordering the circles by height; matching the end
+  parametrizations of consecutive annuli (orientation-preserving by orientability, then the
+  circle pseudo-isotopies of `CircleAnnulusIsotopy` in a collar); killing the monodromy when the
+  chain closes up at `G 0` (only the interval-fiber version
+  `IsCylindricalDiagram.exists_endMap_id_of_isOrientable_interval` exists); `J := G 0` and `Q` a
+  triangle in `E3` with `n` marked points. Estimate 1500–2500 lines.

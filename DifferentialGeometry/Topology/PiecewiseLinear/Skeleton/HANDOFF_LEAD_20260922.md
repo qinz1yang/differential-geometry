@@ -310,3 +310,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
   hypotheses dropped, assembly call adapted) and the vocabulary hoist `Section34FaceBallVocabulary`;
   physical `sorry` 67. Worker a now on the P3 bricks (chart `Moise305Tame`, PL general-position
   producer) then P3 and P4.
+* 18:00 — accepted worker d's last extended-loop leaf (`BicollarBoundaryLoop` over `PLLevelCircles`,
+  `JordanDiskPasting`); `ExtendedLoopTheoremOrientable` promoted to a real module (`moise264_orientable`
+  conditional only on `Moise252`). Physical `sorry` 66. Worker d now on the §28 product-coordinates leaf.

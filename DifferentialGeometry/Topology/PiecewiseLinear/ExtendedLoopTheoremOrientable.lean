@@ -9,6 +9,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatemen
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarComplementCollars
+import DifferentialGeometry.Topology.PiecewiseLinear.BicollarBoundaryLoop
 
 /-!
 # The orientable extended loop theorem from the boundary loop theorem
@@ -60,6 +61,18 @@ open band is relatively open in `K`, with the cut manifold from
 for the given collar) is the real module `BicollarBands`; the leaf itself still needs the
 transversality of a PL singular disk against the collar levels and the planar innermost-circle
 induction.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_nontrivial_boundary_loop_of_bicollar_complement` (module `BicollarBoundaryLoop`, over the
+bricks `PLLevelCircles` — outside finitely many values an interior level set of a PL function on
+a planar polyhedron is a finite disjoint union of PL circles — and `JordanDiskPasting`, the
+innermost-circle induction with thin connected outer collars).  Route by contradiction: a PL
+disk fill of the kernel loop, two generic collar levels pulled back to disjoint circles, the
+push-to-ends map, the pasting induction (end retraction on the `W` side, the assumed
+injectivity on the `R` side), and projection to `L`.  With both leaves proved this file has no
+`sorry` and was promoted from `Skeleton/` to a real module on 2026-09-22; `moise264_orientable`
+is a real theorem conditional only on `Moise252`.
 -/
 
 open Set Topology
@@ -67,32 +80,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-open Classical in
-theorem exists_nontrivial_boundary_loop_of_bicollar_complement
-    (K L R : Geometry.SimplicialComplex ℝ E)
-    [Finite K.faces] [Finite L.faces] [Finite R.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
-    (hLK : L.space ⊆ K.space \ (boundaryComplex 3 K).space)
-    (hR : IsCombinatorialManifoldWithBoundary 3 R)
-    (W : Set E) (ρ : E × ℝ → E)
-    (hρ : IsPLHomeomorphOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) W)
-    (hρzero : ∀ y ∈ L.space, ρ (y, 0) = y)
-    (hW : W ⊆ K.space \ (boundaryComplex 3 K).space)
-    (hWnhds : W ∈ 𝓝ˢ[K.space] L.space)
-    (hRspace : R.space = closure (K.space \ W))
-    (x : L.space) (g : FundamentalGroup L.space x) (hg : g ≠ 1)
-    (hgin : FundamentalGroup.map
-      (⟨Set.inclusion (hLK.trans sdiff_subset), continuous_inclusion _⟩ :
-        C(L.space, K.space)) x g = 1) :
-    ∃ c : ConnectedComponents (boundaryComplex 3 R).space,
-      (connectedComponentComplex (boundaryComplex 3 R) c).space ⊆ W ∧
-      ∃ hsub : (connectedComponentComplex (boundaryComplex 3 R) c).space ⊆ R.space,
-      ∃ γ : freeLoop (connectedComponentComplex (boundaryComplex 3 R) c).space,
-        IsNullHomotopic ((⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
-          C((connectedComponentComplex (boundaryComplex 3 R) c).space, R.space)).comp γ) ∧
-        ¬ IsNullHomotopic γ := by
-  sorry
 
 theorem moise264_orientable (h252 : Moise252) : Moise264Orientable := by
   classical
