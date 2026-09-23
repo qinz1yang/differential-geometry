@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalConnectedCore
 import Mathlib.Topology.Order.Compact
 
 set_option autoImplicit false
@@ -23,7 +22,7 @@ theorem TerminalLimitMetric.exists_connected_compact_neighborhood_scalar_subleve
         ConnectedComponents.mk x = ConnectedComponents.mk y ∧ metricScalarAt L.metric x ≤ A} ⊆ U ∧
       A < A' ∧ B < A' ∧
       ∀ x ∈ closure U, metricScalarAt L.metric x ≤ A' := by
-  obtain ⟨U, hUopen, hUconn, hUcompact, hUcomponent, hUlow, hUfront⟩ :=
+  obtain ⟨U, hUopen, hUconn, hUcompact, hUcomponent, hUlow, _⟩ :=
     L.exists_connected_compact_neighborhood_scalar_sublevel_component
       A (ConnectedComponents.mk y) ⟨y, rfl, hyA⟩
   obtain ⟨x₀, hx₀, hmax⟩ := hUcompact.exists_isMaxOn
