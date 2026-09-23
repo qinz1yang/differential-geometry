@@ -650,3 +650,48 @@ crossing; `hnc`/`hnb` forbid every witness, not one chosen surgery. Deliver real
 stage with receipts; the compact leaf as its own delivery, the manifold leaf after it. If a clause
 needs a fact the frames and `hnc`/`hnb` do not supply, stop on it and report the exact obligation
 (lead/owner decision); add no named input on your own. Estimate 3000–5000 lines for the pair.
+
+## Codex item 16 — the compact P4 compression twin (lead-written 2026-09-24 09:40; Codex lane on lease a)
+
+Lease for this lane: lease a (token `claude-agent-a-20260919`, private output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a`, valid until 2026-09-26 04:17 UTC). The Opus
+worker that held it was stopped by the owner before writing anything for this target (its Batch 11
+section in `Skeleton/OPUS_FILL_LOG_A.md` does not exist; nothing to resume). Same rules as items 7,
+8, 13, 14 and 15: new files only, no git writes, no edit of any frozen statement, host guard before
+every compile (at most four `lean.exe` on the host, this lease one), log to `Skeleton/FILL_LOG.md`
+(append-only, a `# Codex item 16` section with per-module receipts and SHA-256s), lines ≤ 100
+codepoints, no declaration docstrings or comments, no underscore in a `def`/`abbrev`/`structure`
+name, grep every new name and every statement shape before proving; `prepare-private-root.py` then
+`checker.ps1` per module; an audit probe outside the tree at the end. Untracked files belong to other
+lanes (lease e: `Section34CompactTetra*`, `Section34CompactResidualBall`, `TwoBallPocket`,
+`Section34CompactFaceRuns`, `CircleArcSplit`, `CircleArcCycle`; lease d: item 14; `codex-trace`:
+item 15): do not import, edit or shadow them.
+
+Target: `exists_compactCompression` (`Skeleton/Section34Compact.lean` line 285): restate it
+byte-identically with its `variable` block in a new real module and prove it. It is the compact twin
+of `exists_section34Compression`, proved on 2026-09-24 in `Section34CompressionLeaf.lean` over the
+lease-a Batches 9–10 (`Section34Compression*`, `Section34Tube*`, `Section34ThroughTube`,
+`Section34WedgeLift`, `Section34CrossingQuadrant`, `Section34FaceBallUpdate`,
+`Section34FaceTorusCycle`; read `Skeleton/OPUS_FILL_LOG_A.md` Batches 9 and 10 for the route: case
+(a) inside the face ball; case (b) by the tetrahedron chart of the face ball and a split on the
+pocket cells inside the carrier: fill a clean pocket, else drill a through-tube in the complement of
+the face torus, connected because its frontier is a bicollared polyhedral torus, so the wild rim is
+never approached). Inputs of the compact leaf: `hcut : Section34CompactCutFrame`,
+`hcar : Section34CompactCarrierControl`, `hgraph : Section34CompactGraphFrame`,
+`hinv : Section34CompactFaceBallInvariants`, the face `s`, `hop : Section34CompactCompression …` (no
+`hU`, no `hh`: everything lives in `ℝ³` with the finite complexes `K`, `K'` and the PL approximation
+`f₁`; `Section34CompactVocabulary.lean`). Conclusion: new `fbl'`, `fblBd'` with the invariants,
+unchanged away from `s`, the trace count at `s` dropped by at least one, the crossing count not
+increased.
+
+Pattern: the collaborator's `Section34CompactBigonSlide.lean` over `Section34CompactBigon{Ball,
+Carrier,Chart,Exterior,ModelUpdate,Neighborhood,Support,Trace}` is the compact twin of
+`Section34BigonSlide`; copy how it reused the non-compact ℝ³ bricks as they are and re-derived only
+the chart-dependent parts from the compact vocabulary (`Section34CompactFaceEnvelopes`,
+`Section34CompactFaceDisks`, `Section34CompactTargetRecognition`, `Section34CompactCarriers`,
+`Section34CompactCellSeparation`, `Section34CompactSourceFaceOrder`). The through-tube
+`exists_isPLBall_sdiff_interior_tube` (`Section34ThroughTube`), the wedge lifts, the crossing
+quadrants and the pocket/side/shell modules are ambient-free: use them directly. Deliver real
+modules with receipts as you go, then the leaf. If a compact clause cannot be produced from the
+leaf's hypotheses, stop on it and report the exact clause (lead/owner decision); never weaken the
+statement. Estimate 3000–4000 lines.

@@ -524,3 +524,14 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   statements) is DEFERRED to the end of the project or later; do not raise it again until then.
 * 08:00 (09-24) — accepted worker a's P4 compression, both cases (20 modules): Normalization has 1 leaf (trace).
   Physical `sorry` 16. Lease a free (owner to decide: the compact P4 twin `exists_compactCompression` is the natural next).
+* 09:40 (09-24) — LEAD SESSION ENDING (usage). State: 16 physical `sorry`. Lanes: e = compact P7 (steps 1–2 of 7 done,
+  ~18 modules, no delegable piece); Codex on lease d = item 14 (compact leaf 1); Codex on lease b = item 13 (§32
+  descent; launch unconfirmed); Codex `codex-trace` = item 15 (trace pair; lease to be created by the owner); Codex on
+  lease a = item 16 (compact P4 twin; the Opus worker was stopped before writing anything); Codex lane 1
+  (`codex-moise-recon`) = CGN edge matching (BR route); collaborator = §31 + packages F/G (PRs #12–14 partial,
+  acceptance deferred until complete); Package E unassigned. Smooth batch: isolated worktree
+  `D:\differential-geometry-smooth-int` (`codex/moise-smooth-integration@4b898b95f`); the cloud Codex found seven more
+  prerequisites for the chart-level route (its `smooth-intake-review.md` is to be delivered as a consult file); the
+  144-module cone compile (plan §3) is not started — the lead offered to run it in the background under the
+  `codex-smooth-integration` lease. Owed lead cleanup unchanged (`Section34FaceTorusCycle` to `hf₁`; `h304`/`h305`
+  removal deferred by the owner). Acceptance pipeline scripts live in this session's scratchpad and must be rebuilt.
