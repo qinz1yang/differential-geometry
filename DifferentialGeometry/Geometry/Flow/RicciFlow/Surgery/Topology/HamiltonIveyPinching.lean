@@ -261,7 +261,8 @@ theorem TerminalLimitMetric.inFixedHamiltonIveyRegion_of_tendsto
   apply mem_fixedHamiltonIveyRegion_of_tendsto hA₀ hA (L.tendsto_metricScalarAt x)
     ((L.tendsto_leastCurvatureOperatorEigenvalueAt x).const_mul 2)
   filter_upwards [hregion] with t ht
-  exact (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion (G.flow.base.metric t) (A t) x.1).mp ht
+  exact (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion
+    (G.flow.base.metric t) (A t) x.1).mp ht
 
 theorem TerminalLimitMetric.fixedHamiltonIveyRegion_and_scalar_lower
     (L : G.TerminalLimitMetric) {A : ℝ} (hA : 0 < A)
@@ -286,6 +287,38 @@ theorem TerminalLimitMetric.fixedHamiltonIveyRegion_and_scalar_lower
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
+
+theorem fixedHamiltonIveyRegion_and_scalar_lower_of_preservation
+    (E : MetricCutCapEvent P Q a s)
+    (hcurvature : ∀ b : ℝ, 0 < b →
+      (∀ x, InFixedHamiltonIveyRegion E.terminal.metric b x) →
+      ∀ x, InFixedHamiltonIveyRegion E.outputMetric b x)
+    (hpreserve : ∀ B : ℝ, B ≤ 0 →
+      (∀ x, B ≤ metricScalarAt E.terminal.metric x) →
+      ∀ x, B ≤ metricScalarAt E.outputMetric x)
+    {A : ℝ} (hA : 0 < A)
+    (hincoming : ∀ t ∈ Ico a s, ∀ x : P.Carrier,
+      InFixedHamiltonIveyRegion (E.incoming.flow.base.metric t) (A + t - a) x ∧
+        -3 / (A + t - a) ≤ metricScalarAt (E.incoming.flow.base.metric t) x) :
+    (∀ x : E.incoming.terminalRegularOpen,
+      InFixedHamiltonIveyRegion E.terminal.metric (A + s - a) x ∧
+        -3 / (A + s - a) ≤ metricScalarAt E.terminal.metric x) ∧
+    ∀ x : Q.Carrier,
+      InFixedHamiltonIveyRegion E.outputMetric (A + s - a) x ∧
+        -3 / (A + s - a) ≤ metricScalarAt E.outputMetric x := by
+  have hterminal := E.terminal.fixedHamiltonIveyRegion_and_scalar_lower hA hincoming
+  have hAs : 0 < A + s - a := by linarith [E.incoming.lt]
+  exact ⟨hterminal, fun x =>
+    ⟨hcurvature _ hAs (fun y => (hterminal y).1) x,
+      hpreserve _ (div_nonpos_of_nonpos_of_nonneg (by norm_num) hAs.le)
+        (fun y => (hterminal y).2) x⟩⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
 universe u
@@ -307,17 +340,9 @@ theorem fixedHamiltonIveyRegion_and_scalar_lower_output_of_incoming
       InFixedHamiltonIveyRegion (H.initialMetric i.succ)
         (A + H.time i.succ - H.time i.castSucc) x ∧
       -3 / (A + H.time i.succ - H.time i.castSucc) ≤ metricScalarAt (H.initialMetric i.succ) x := by
-  have hterminal := (H.event i).terminal.fixedHamiltonIveyRegion_and_scalar_lower hA hincoming
-  have hAs : 0 < A + H.time i.succ - H.time i.castSucc := by
-    linarith [(H.event i).incoming.lt]
-  refine ⟨hterminal, ?_⟩
-  intro x
-  constructor
-  · simpa only [H.event_output i] using
-      G.curvature_preserving _ hAs (fun y => (hterminal y).1) x
-  · simpa only [H.event_output i] using
-      G.scalar_preserving _ (div_nonpos_of_nonpos_of_nonneg (by norm_num) hAs.le)
-        (fun y => (hterminal y).2) x
+  simpa only [H.event_output i] using
+    (H.event i).fixedHamiltonIveyRegion_and_scalar_lower_of_preservation
+      G.curvature_preserving G.scalar_preserving hA hincoming
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
@@ -325,13 +350,20 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 universe u
 
-variable (H : ObservedHistory.{u}) {parameters : CutoffParameters}
-  (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
+section
+
+variable (H : ObservedHistory.{u})
+  (hcurvature : ∀ i : Fin H.eventCount, ∀ b : ℝ, 0 < b →
+    (∀ x, InFixedHamiltonIveyRegion (H.event i).terminal.metric b x) →
+    ∀ x, InFixedHamiltonIveyRegion (H.event i).outputMetric b x)
+  (hpreserve : ∀ i : Fin H.eventCount, ∀ B : ℝ, B ≤ 0 →
+    (∀ x, B ≤ metricScalarAt (H.event i).terminal.metric x) →
+    ∀ x, B ≤ metricScalarAt (H.event i).outputMetric x)
   {a₀ : ℝ} (ha₀ : 0 < a₀)
   (hfixed : ∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x)
   (hscalar : ∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x)
 
-include records ha₀ hfixed hscalar
+include hcurvature hpreserve ha₀ hfixed hscalar
 
 private theorem fixedHamiltonIveyRegion_and_scalar_lower_initialMetric :
     ∀ j : Fin (H.eventCount + 1), ∀ x : (H.stage j).Carrier,
@@ -359,21 +391,22 @@ private theorem fixedHamiltonIveyRegion_and_scalar_lower_initialMetric :
       exact (ih x).2
     have hincoming := (H.event i).incoming.fixedHamiltonIveyRegion_and_scalar_lower
       hA hfixed' hscalar'
-    have hout := (records i).fixedHamiltonIveyRegion_and_scalar_lower_output_of_incoming
-      hA hincoming
+    have hout := (H.event i).fixedHamiltonIveyRegion_and_scalar_lower_of_preservation
+      (hcurvature i) (hpreserve i) hA hincoming
     have heq : a₀ + H.time i.castSucc + H.time i.succ - H.time i.castSucc =
         a₀ + H.time i.succ := by ring
     intro x
-    simpa only [heq] using hout.2 x
+    simpa only [H.event_output i, heq] using hout.2 x
 
-theorem fixedHamiltonIveyRegion_and_scalar_lower :
+theorem fixedHamiltonIveyRegion_and_scalar_lower_of_preservation :
     (∀ j : Fin (H.eventCount + 1), ∀ t ∈ H.stageDomain j, ∀ x : (H.stage j).Carrier,
       InFixedHamiltonIveyRegion (H.stageMetric j t) (a₀ + t) x ∧
         -3 / (a₀ + t) ≤ metricScalarAt (H.stageMetric j t) x) ∧
     ∀ i : Fin H.eventCount, ∀ x : (H.event i).incoming.terminalRegularOpen,
       InFixedHamiltonIveyRegion (H.event i).terminal.metric (a₀ + H.time i.succ) x ∧
         -3 / (a₀ + H.time i.succ) ≤ metricScalarAt (H.event i).terminal.metric x := by
-  have hinit := H.fixedHamiltonIveyRegion_and_scalar_lower_initialMetric records ha₀ hfixed hscalar
+  have hinit := H.fixedHamiltonIveyRegion_and_scalar_lower_initialMetric
+    hcurvature hpreserve ha₀ hfixed hscalar
   have hincoming (i : Fin H.eventCount) :
       ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), ∀ x : (H.stage i.castSucc).Carrier,
         InFixedHamiltonIveyRegion ((H.event i).incoming.flow.base.metric t) (a₀ + t) x ∧
@@ -412,7 +445,8 @@ theorem fixedHamiltonIveyRegion_and_scalar_lower :
       · let G := H.finalSlab hlast
         have hA : 0 < a₀ + H.time (Fin.last H.eventCount) :=
           add_pos_of_pos_of_nonneg ha₀ (H.time_nonneg _)
-        have hf : ∀ x, InFixedHamiltonIveyRegion (G.flow.base.metric (H.time (Fin.last H.eventCount)))
+        have hf : ∀ x, InFixedHamiltonIveyRegion
+            (G.flow.base.metric (H.time (Fin.last H.eventCount)))
             (a₀ + H.time (Fin.last H.eventCount)) x := by
           intro x
           change InFixedHamiltonIveyRegion
@@ -454,9 +488,33 @@ theorem fixedHamiltonIveyRegion_and_scalar_lower :
       intro t ht x
       have heq : a₀ + H.time i.castSucc + t - H.time i.castSucc = a₀ + t := by ring
       simpa only [heq] using hincoming i t ht x
-    have hterm := ((records i).fixedHamiltonIveyRegion_and_scalar_lower_output_of_incoming hA hin).1 x
-    have heq : a₀ + H.time i.castSucc + H.time i.succ - H.time i.castSucc = a₀ + H.time i.succ := by ring
+    have hterm := ((H.event i).fixedHamiltonIveyRegion_and_scalar_lower_of_preservation
+      (hcurvature i) (hpreserve i) hA hin).1 x
+    have heq : a₀ + H.time i.castSucc + H.time i.succ - H.time i.castSucc =
+        a₀ + H.time i.succ := by ring
     simpa only [heq] using hterm
+
+
+end
+
+variable (H : ObservedHistory.{u}) {parameters : CutoffParameters}
+  (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
+  {a₀ : ℝ} (ha₀ : 0 < a₀)
+  (hfixed : ∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x)
+  (hscalar : ∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x)
+
+include records ha₀ hfixed hscalar
+
+theorem fixedHamiltonIveyRegion_and_scalar_lower :
+    (∀ j : Fin (H.eventCount + 1), ∀ t ∈ H.stageDomain j, ∀ x : (H.stage j).Carrier,
+      InFixedHamiltonIveyRegion (H.stageMetric j t) (a₀ + t) x ∧
+        -3 / (a₀ + t) ≤ metricScalarAt (H.stageMetric j t) x) ∧
+    ∀ i : Fin H.eventCount, ∀ x : (H.event i).incoming.terminalRegularOpen,
+      InFixedHamiltonIveyRegion (H.event i).terminal.metric (a₀ + H.time i.succ) x ∧
+        -3 / (a₀ + H.time i.succ) ≤ metricScalarAt (H.event i).terminal.metric x :=
+  H.fixedHamiltonIveyRegion_and_scalar_lower_of_preservation
+    (fun i => (records i).curvature_preserving) (fun i => (records i).scalar_preserving)
+    ha₀ hfixed hscalar
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
@@ -481,9 +539,53 @@ private theorem curvatureOperatorLowerBoundAt_of_fixedHamiltonIveyRegion
     change Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 3
     simp)
   apply (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le B hB).mpr
-  have hb := hbound a ha _ _ ((inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion g a x).mp hfixed)
+  have hb := hbound a ha _ _
+    ((inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion g a x).mp hfixed)
   have hp := hPhi.pos (metricScalarAt g x)
   linarith
+
+theorem exists_admissiblePinchingFunction_for_observedHistories_of_preservation
+    {a₀ : ℝ} (ha₀ : 0 < a₀) :
+    ∃ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi ∧
+      ∀ (H : ObservedHistory.{u}),
+        (∀ i : Fin H.eventCount, ∀ b : ℝ, 0 < b →
+          (∀ x, InFixedHamiltonIveyRegion (H.event i).terminal.metric b x) →
+          ∀ x, InFixedHamiltonIveyRegion (H.event i).outputMetric b x) →
+        (∀ i : Fin H.eventCount, ∀ B : ℝ, B ≤ 0 →
+          (∀ x, B ≤ metricScalarAt (H.event i).terminal.metric x) →
+          ∀ x, B ≤ metricScalarAt (H.event i).outputMetric x) →
+        (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+        (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+        (∀ j : Fin (H.eventCount + 1), ∀ t ∈ H.stageDomain j, ∀ x : (H.stage j).Carrier,
+          curvatureOperatorLowerBoundAt (H.stageMetric j t) x
+            (metricAlgebraicCurvatureTensorAt (H.stageMetric j t) x)
+            (Phi (metricScalarAt (H.stageMetric j t) x))) ∧
+        ∀ i : Fin H.eventCount, ∀ x : (H.event i).incoming.terminalRegularOpen,
+          curvatureOperatorLowerBoundAt (H.event i).terminal.metric x
+            (metricAlgebraicCurvatureTensorAt (H.event i).terminal.metric x)
+            (Phi (metricScalarAt (H.event i).terminal.metric x)) := by
+  obtain ⟨Phi, hPhi, hbound⟩ :=
+    exists_admissiblePinchingFunction_neg_le_of_fixedHamiltonIveyRegion ha₀
+  refine ⟨Phi, hPhi, ?_⟩
+  intro H hcurvature hpreserve hfixed hscalar
+  have hfull := H.fixedHamiltonIveyRegion_and_scalar_lower_of_preservation
+    hcurvature hpreserve ha₀ hfixed hscalar
+  constructor
+  · intro j t ht x
+    have hstart : H.time j ≤ t := by
+      cases j using Fin.lastCases with
+      | cast i =>
+        simp only [ObservedHistory.stageDomain, Fin.lastCases_castSucc] at ht
+        exact ht.1
+      | last =>
+        simp only [ObservedHistory.stageDomain, Fin.lastCases_last] at ht
+        exact ht.1
+    have htime : 0 ≤ t := (H.time_nonneg j).trans hstart
+    exact curvatureOperatorLowerBoundAt_of_fixedHamiltonIveyRegion hPhi hbound
+      (H.stageMetric j t) (by linarith) x (hfull.1 j t ht x).1
+  · intro i x
+    exact curvatureOperatorLowerBoundAt_of_fixedHamiltonIveyRegion hPhi hbound
+      (H.event i).terminal.metric (by linarith [H.time_nonneg i.succ]) x (hfull.2 i x).1
 
 theorem exists_admissiblePinchingFunction_for_observedHistories
     {a₀ : ℝ} (ha₀ : 0 < a₀) :
@@ -501,25 +603,9 @@ theorem exists_admissiblePinchingFunction_for_observedHistories
             (metricAlgebraicCurvatureTensorAt (H.event i).terminal.metric x)
             (Phi (metricScalarAt (H.event i).terminal.metric x)) := by
   obtain ⟨Phi, hPhi, hbound⟩ :=
-    exists_admissiblePinchingFunction_neg_le_of_fixedHamiltonIveyRegion ha₀
-  refine ⟨Phi, hPhi, ?_⟩
-  intro H parameters records hfixed hscalar
-  have hfull := H.fixedHamiltonIveyRegion_and_scalar_lower records ha₀ hfixed hscalar
-  constructor
-  · intro j t ht x
-    have hstart : H.time j ≤ t := by
-      cases j using Fin.lastCases with
-      | cast i =>
-        simp only [ObservedHistory.stageDomain, Fin.lastCases_castSucc] at ht
-        exact ht.1
-      | last =>
-        simp only [ObservedHistory.stageDomain, Fin.lastCases_last] at ht
-        exact ht.1
-    have htime : 0 ≤ t := (H.time_nonneg j).trans hstart
-    exact curvatureOperatorLowerBoundAt_of_fixedHamiltonIveyRegion hPhi hbound
-      (H.stageMetric j t) (by linarith) x (hfull.1 j t ht x).1
-  · intro i x
-    exact curvatureOperatorLowerBoundAt_of_fixedHamiltonIveyRegion hPhi hbound
-      (H.event i).terminal.metric (by linarith [H.time_nonneg i.succ]) x (hfull.2 i x).1
+    exists_admissiblePinchingFunction_for_observedHistories_of_preservation ha₀
+  exact ⟨Phi, hPhi, fun H parameters records hfixed hscalar =>
+    hbound H (fun i => (records i).curvature_preserving)
+      (fun i => (records i).scalar_preserving) hfixed hscalar⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

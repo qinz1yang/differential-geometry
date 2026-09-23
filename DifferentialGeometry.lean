@@ -13379,3 +13379,5 @@ import DifferentialGeometry.Geometry.Neck.SpatialFrontierStep
 import DifferentialGeometry.Geometry.Neck.SpatialClosedNeckTube
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.DoubleCylinderClosing
 import DifferentialGeometry.Geometry.Neck.CompactClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCanonicalCoverage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CutComponent
