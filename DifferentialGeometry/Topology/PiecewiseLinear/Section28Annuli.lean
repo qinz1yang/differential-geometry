@@ -5,6 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsAnnulusParametrizationOfProductCircleCut
+import DifferentialGeometry.Topology.PiecewiseLinear.EssentialPolygonProductCoordinates
 
 /-!
 # A producer skeleton for annuli between essential polygons on a solid torus
@@ -69,6 +70,19 @@ Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with a ze
 check and an axiom audit; statement byte-identical with the frozen leaf):
 `exists_annulus_parametrization_of_product_circle_cut`, with the new helper
 `IsPLSphere.exists_arc_between_adjacent_marks`.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
+and an axiom audit; statement byte-identical with the frozen leaf):
+`exists_product_coordinates_for_disjoint_essential_polygons` (module
+`EssentialPolygonProductCoordinates`, over `PrismLateralCircleSides` — a non-bounding PL circle
+in the open lateral annulus of the prism splits it into two annulus charts — and
+`LateralAnnulusLevels`, the annulus chain: finitely many disjoint such circles become levels of
+one boundary-preserving PL self-map).  Route: 28.9 and `hess` make `G 0` nonseparating, its
+annulus complement carries the other circles as levels, the annulus chart plus bicollar is a
+cylindrical diagram whose end map preserves orientation (`MobiusEmbedding`), the pseudo-isotopy is
+squeezed into the top slab to remove the twist, and `exists_isPLHomeomorphOn_of_eq_endMap` gives
+the product chart.  With this leaf proved the file has no `sorry` and was promoted from `Skeleton/`
+to a real module on 2026-09-22: `moise286 : Moise286` is unconditional.
 -/
 
 open Set Topology
@@ -76,19 +90,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
-
-open Classical in
-theorem exists_product_coordinates_for_disjoint_essential_polygons
-    {S : Set E3} (hS : IsCombinatorialSolidTorus S) {n : ℕ} (G : Fin n → Set E3)
-    (hn : 1 < n) (hG : ∀ i, IsPLSphere 1 (G i)) (hGS : ∀ i, G i ⊆ frontier S)
-    (hdisj : Pairwise (fun i j => Disjoint (G i) (G j)))
-    (hess : ∀ i, ¬ ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
-        G i = r '' stdSimplexBoundary 2) :
-    ∃ (J Q : Set E3) (f : E3 × E3 → E3) (q : Fin n → E3),
-      IsPLSphere 1 J ∧ IsPLSphere 1 Q ∧ IsPLHomeomorphOn f (J ×ˢ Q) (frontier S) ∧
-      (∀ i, q i ∈ Q) ∧ Function.Injective q ∧ ∀ i, G i = f '' (J ×ˢ {q i}) := by
-  sorry
 
 theorem moise286 : Moise286 := by
   classical

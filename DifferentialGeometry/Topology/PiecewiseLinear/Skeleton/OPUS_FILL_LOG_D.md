@@ -295,3 +295,91 @@ Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output ro
   chain closes up at `G 0` (only the interval-fiber version
   `IsCylindricalDiagram.exists_endMap_id_of_isOrientable_interval` exists); `J := G 0` and `Q` a
   triangle in `E3` with `n` marked points. Estimate 1500–2500 lines.
+
+# Batch 4 (Section 28 product coordinates)
+
+Worker: Claude (lease d, token `claude-agent-d-20260919`), 2026-09-22, output root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`. Target:
+`exists_product_coordinates_for_disjoint_essential_polygons` (`Skeleton/Section28Annuli.lean`).
+Planned bricks: (1) the two sides of an essential circle in the prism lateral annulus;
+(2) slab gluing and simultaneous straightening of finitely many essential circles to levels;
+(3) the leaf (torus cut along `G 0`, cylindrical diagram, twist removal in a top slab by
+`isPLCirclePositive_of_isOrientable_cylindricalDiagram`, product chart in `E3`).
+
+## Brick 1 `PrismLateralCircleSides` — VERIFIED, AUDITED
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PrismLateralCircleSides.lean` (308 lines), import
+  `NonseparatingPolygonCarrier`. Checker 18:00 local: `Verified ... with no diagnostics; shared
+  outputs unchanged.`
+- `isPLSphere_stdSimplex_prism_boundary` (public re-proof of the private
+  `isPLSphere_prism_frontier` of `NonseparatingPolygonCarrier`, 25 lines; duplication reported),
+  `exists_isPLHomeomorphOn_lateral_side_of_disk_decomposition`,
+  `IsPLSphere.exists_lateral_sides_of_subset_prism_lateral`: an essential PL circle in
+  `∂Δ² × (0, 1)` splits `A = ∂Δ² × [0, 1]` into two PL annulus charts meeting exactly in `K`,
+  one fixing the bottom and one fixing the top pointwise.
+
+## Brick 2 `LateralAnnulusLevels` — VERIFIED, AUDITED
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/LateralAnnulusLevels.lean` (522 lines), import
+  `PrismLateralCircleSides`. Checker 18:14 local: `Verified ... with no diagnostics; shared
+  outputs unchanged.`
+- `isPLHomeomorphOn_mul_add_Icc`, `eqOn_piecewise_of_eqOn_inter`,
+  `exists_Ioo_subset_of_isPreconnected_of_finite`, `IsPLHomeomorphOn.exists_eqOn_eqOn_union`
+  (piecewise gluing without exposing the classical decidability instance of
+  `IsPLHomeomorphOn.piecewise`), `IsPolyhedron.exists_isPLHomeomorphOn_prod_Icc_of_slab`
+  (squeeze a PL homeomorphism of `P × [0, 1]` into a slab),
+  `IsPLSphere.exists_isPLHomeomorphOn_prism_lateral_level`,
+  `exists_isPLHomeomorphOn_prism_lateral_levels_insert`,
+  `exists_isPLHomeomorphOn_prism_lateral_levels` (finitely many disjoint essential circles are
+  distinct levels of one PL homeomorphism of `A` preserving both boundary circles).
+- Pitfall: `IsPLHomeomorphOn.piecewise` fixes `Classical.propDecidable`; a written
+  `(P ×ˢ Icc a b).piecewise f g` elaborates with `decidableMemProd` and does not match. Use the
+  existential wrapper.
+
+## exists_product_coordinates_for_disjoint_essential_polygons — CLOSED
+
+- File: `DifferentialGeometry/Topology/PiecewiseLinear/EssentialPolygonProductCoordinates.lean`
+  (481 lines, SHA-256 `ed5dc0057fc6409662a4e3e0fb407d552d9d5e00341aadbc7aa47a13cb7ef02b`).
+  Brick SHAs: `PrismLateralCircleSides`
+  `7e803541ac5f8f4478f9817038ab8f8336b014574ecafe23c32bb429f049882e`, `LateralAnnulusLevels`
+  `f4177c940080e4c7f2a22d9042d3009a61fe57ec0d1a65f49c95b0b526d1b988`.
+- Import lines to register (the leaf module imports the two bricks):
+  `import DifferentialGeometry.Topology.PiecewiseLinear.PrismLateralCircleSides`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.LateralAnnulusLevels`
+  `import DifferentialGeometry.Topology.PiecewiseLinear.EssentialPolygonProductCoordinates`
+  Other imports are tracked: `CarriesGeneratorOrIsPLCellOfDisjointCarrier`,
+  `CirclePrismComparison`, `CylinderEndMap`, `MobiusEmbedding`, `MoiseChain`.
+- New public names (grepped first, unused): `isPLHomeomorphOn_mul_add_Icc_of_neg`,
+  `exists_isCylindricalDiagram_eqOn_eqOn` (instance-safe wrapper of
+  `isCylindricalDiagram_piecewise`), `IsCylindricalDiagram.exists_prod_chart_of_eq_ends` (an
+  untwisted diagram over `∂Δ²` is a PL product chart `J × Q` in `E3`, levels to fibres),
+  `IsCylindricalDiagram.exists_eq_ends_of_isOrientable` (twist removal in a top slab `[c, 1]`,
+  levels in `[0, c]` untouched), `IsPLHomeomorphOn.exists_prism_levels_of_essential` (annulus
+  chart with finitely many essential circles as levels),
+  `exists_isCylindricalDiagram_of_annulus_bicollar` (annulus chart plus bicollar), and the leaf.
+  Statement, `open Set Topology`, namespace and `local notation "E3"` byte-identical with
+  `Skeleton/Section28Annuli.lean:80-90` (checked by script).
+- Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\EssentialPolygonProductCoordinates.lean with no diagnostics; shared outputs unchanged.`
+  (18:26 local, -07:00).
+- Axiom audit: `AuditOpusD5.lean` (all three Batch 4 modules) — `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditOpusD5.lean with no diagnostics;
+  shared outputs unchanged.` (18:28): closure within `propext`, `Classical.choice`, `Quot.sound`;
+  the thirteen environment linters pass.
+- Route. `Bd S` is a PL torus; its orientable triangulation `L` has `χ ≥ 0`. 28.9
+  (`IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff`) and `hess` make `G 0`
+  nonseparating. `exists_connected_annulus_complement`, with the neighbourhood avoiding the
+  other `G i`, gives a bicollar `W` and a connected complement `R` with two boundary circles;
+  `χ(R) = 0` and `exists_isPLHomeomorphOn_annulus_of_eulerChar_eq_zero` chart `R` by
+  `∂Δ² × [0, 1]`. The other circles lie in the open annulus, bound no disk (a disk in `R` is one
+  in `Bd S`), and brick 2 makes them levels. Annulus chart then bicollar give a cylindrical
+  diagram over `∂Δ²` with `G 0` at level `3/4`. Its end map is circle-positive by
+  `isPLCirclePositive_of_isOrientable_cylindricalDiagram` (no Möbius band in `Bd S`), hence
+  pseudo-isotopic to the identity; the pseudo-isotopy is squeezed into `[3/4, 1]`, which removes
+  the twist without moving the levels. `exists_isPLHomeomorphOn_of_eq_endMap` against the model
+  `(x, t) ↦ (e x, e (stdTriangleLoop t))` gives `f : J × Q → Bd S` with `J = Q` a triangle in
+  `E3`; `q i` is the loop point at the level of `G i`, injective because the `G i` are.
+- The twist removal needed no new interval-fibre extension: the circle-fibre orientation theorem
+  already exists (`MobiusEmbedding.isPLCirclePositive_of_isOrientable_cylindricalDiagram`); the
+  new work is keeping the levels fixed (slab squeeze).
+- Compiles for Batch 4: `PrismLateralCircleSides` 2, `LateralAnnulusLevels` 4,
+  `EssentialPolygonProductCoordinates` 3 (≈14–70 s each), 1 audit (≈57 s).

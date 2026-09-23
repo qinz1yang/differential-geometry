@@ -318,3 +318,6 @@ F's WIPs, and live FILL_LOG. The original PDF remains
 * 18:35 — accepted worker c's `exists_descendingSurgery_of_adaptedCleanCap`
   (`LoopTheorem/ClosedBranchDisjointDescent`); physical `sorry` 65. Worker c is deep in the
   cross-seam reading leaf (three compiling support modules, ~1900 lines).
+* 18:45 — accepted worker d's §28 product-coordinates leaf (`EssentialPolygonProductCoordinates` over
+  `PrismLateralCircleSides`, `LateralAnnulusLevels`); `Section28Annuli` promoted: `moise286 : Moise286` is
+  unconditional. Physical `sorry` 64. Worker d now on `ControlledGraphNeighborhood`.
