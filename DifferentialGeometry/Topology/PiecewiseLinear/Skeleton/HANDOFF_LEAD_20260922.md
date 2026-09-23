@@ -423,3 +423,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 08:30 (09-23) — owner adopted the bigon interface repair: `hctrl` on `exists_section34BigonSlide`, `hcar` on
   `exists_compactBigonSlide`; assemblies pass them; both skeletons rechecked on the lead lease `claude-integration`
   (re-granted by the owner until 09-26; `codex-return` is expired). Worker leases a–e expire 09-24 04:17 UTC.
+* 09:40 (09-23) — registered Codex's day delivery: 12 real modules (maximal polygon image, compact face poset,
+  three homology bricks, tube prism coordinates, annular-chain local polyhedrality, the handle-decomposition
+  fixture with four bricks) and 4 probes (compact source-face reduction, three §32 reductions).

@@ -283,3 +283,49 @@ In order:
    `Section34VertexPreparation` inhabitant, an `IsCanonicalTower` inhabitant), each an `exists_…`
    theorem in a real module, audited.
 Q7 cleanup still waits for a quiet tree.
+
+## Codex item 7 — the CGN edge matching (lead-written 2026-09-23 10:00, owner's choice of a hard target)
+
+Target: the frozen leaf `exists_section34EdgeMatching` (`Skeleton/ControlledGraphNeighborhood.lean`
+line 537; the statement is an interface frozen at review AC; do not restate it). Your own probe
+`Skeleton/ControlledGraphNeighborhoodReduction.lean` (committed as evidence) reduces it to
+`exists_joint_boundary_matching`, `face_rim_subset_interior_deleted_family` (now the real
+`FaceRimInteriorDeletedFamily`) and `exists_nested_torus_of_deleted_family`; your note
+`Skeleton/OrientationCharacterBridge.md` lists the six sub-leaves of the joint boundary matching.
+Read also `Skeleton/OPUS_FILL_LOG_D.md` from `## exists_section34EdgeMatching — STUCK` (the previous
+worker's steps 1–4 and the orientation obstruction around graph cycles) and the accepted bricks
+`CyclicBallUnion`, `BoundaryCollarExtension`, `PlanarDiskFamilyMove`, `HoledDiskBoundaryExtension`,
+`SphereHoledBoundaryExtension`, `SolidTorusHurewiczOne`, `SolidTorusInteriorHomology`,
+`Section34FaceTorusCycle` (new: in a chart the face torus is a combinatorial solid torus with PL
+torus frontier), `PLCellOnBoundary`, `Topology/LocalDegree/*` (local degree of an injective map on a
+connected open set is constant and equals the Jacobian sign at differentiable points:
+`LocalDegree/InjectiveDeterminantSign.lean` if accepted, else `LocalDegree/Determinant.lean`).
+
+Work in this order, each step a real module with the checker line, SHA-256 and sub-leaf list in
+`FILL_LOG.md`; probes only where a step is not yet provable:
+1. Item 4 of the bridge note, the graph coboundary lemma (`exists_vertex_signs_of_cycle_zero`):
+   finite graph algebra over `ZMod 2` with loops and parallel edges; real module.
+2. Item 1 (planar chart of the spherical complement at each vertex, other incident disks to
+   pairwise disjoint planar disks, intrinsic rims to planar frontiers) and item 2 (simultaneous
+   marked reference maps agreeing on shared splitting disks) as real modules.
+3. Item 3, the relative orientation character around cycles: derive from the original embedding
+   `h` and the fixed frames that `Σ_{e∈F} (sourceSign e + targetSign e) = 0` for every mod-two
+   edge cycle. Route to evaluate first: the `G w` are `ε`-close to `h` on the vertex cells
+   (`Section34PiercingConditions` / `Section34VertexPreparation`, read the exact clauses), and a
+   map close to an embedding on a ball has local degree `+1` relative to it, so source and target
+   orientation changes across a shared disk agree edge by edge; if the clauses do not give
+   closeness on the whole cell, state exactly what they give and reduce accordingly. This is an
+   OUTPUT to prove, never a new hypothesis of the frozen leaf.
+4. Items 5–6: positive corrections from the vertex signs, then the joint boundary matching via
+   `SphereHoledBoundaryExtension` and `exists_extension_of_cell_boundary`.
+5. `exists_nested_torus_of_deleted_family` (clause (f) of the leaf): the cyclic chain of the
+   `Dv w` around a face is a combinatorial solid torus (`CyclicBallUnion`,
+   `Section34FaceTorusCycle`), the inner solid torus and toroidal shell
+   (`IsTopologicalSolidTorus.exists_toroidalShell_of_isCompact_subset_interior`), the spine clause
+   and the transport `Φ` by the chart `ct s`.
+Then assemble the leaf. Rules unchanged: own lease, new files only, no git writes, host guard
+before every compile, do not touch the Opus targets (a: P4 compression case (b); b: §33 Lemma 13 /
+extension / Lemma 10 — its in-flight `HoledSphere*`, `BoundaryMatchMobius`, `Section33BoundaryMatch`
+files are not yours; c: smoothing; d: C1 branch tube; e: compact face disks). If a sub-leaf turns
+out to need a producer that the frozen CGN inputs cannot supply, stop on it and report the exact
+clause; that is a lead/owner decision.

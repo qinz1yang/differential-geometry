@@ -1058,3 +1058,324 @@ contain `sorry` warnings, so an external scratch consumer importing them could n
 compiled through that checker. The claimed fit to their leaves is source-level unfolding
 of the two displayed `firstHomologyInclusion` definitions; it is not a checked edit to
 either skeleton. The standalone producer theorem and its axiom closure were checked above.
+
+## Codex day queue item 1 — maximal polygon image (2026-09-23)
+
+Status: CLOSED in new real module `MaximalPolygonHomologyImage.lean`, importing the
+accepted `TorusCircleHomology` and solid-torus frontier PL-torus producer. For a
+nonempty finite family `G : Fin (n+1) → Set E3`, choose any nonseparating circle
+if one exists. Every other nonseparating circle has the same actual inclusion
+image in `H₁(S)` by `IsPLTorus.range_integralSingularHomologyMap_eq_of_disjoint`;
+every separating circle has zero image by the companion theorem. If all
+circles separate, choose index zero. The theorem has the exact skeleton inputs
+and conclusion, with the inclusion map unfolded; the frozen probe was not edited.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MaximalPolygonHomologyImage.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- MaximalPolygonHomologyImage.lean: 08C157F63FFA604374FE8EC8A7935B34A586E0946DBBAB85D5DEB588D9CCA0EC
+
+Sub-leaf list: finite nonempty selection; separating-circle zero range;
+disjoint nonseparating-circle equal ranges; transport of `id '' G i` to the
+actual inclusion `G i → S`. All four are closed, the last three by the cited
+accepted theorem or a proof-independent set equality. A private axiom audit
+reported only `propext`, `Classical.choice`, and `Quot.sound`, no `sorryAx`.
+The audit wrapper returns nonzero only because `#print axioms` emits information;
+the module checker above has zero diagnostics. `TorusCircleHomology` was
+refreshed in this lease's private output with zero diagnostics; shared outputs
+were unchanged.
+
+## Codex day queue item 1b — compact source face order (2026-09-23)
+
+Read `consult/BM-section34-compact-source-face-cut-order-review-digest.md`
+before the probe. The new `Skeleton/CompactSourceFaceOrderReduction.lean` leaves
+exactly four named proof frontiers: (1) a codimension-one facet between every
+proper pair of nested source cells (the pure-dimensional boundary tiling),
+(2) exactly two one-cells at a marked boundary point of a split disk,
+(3) exactly two two-cells at a one-cell of a vertex-ball boundary, and
+(4) classification of each codimension-one containment by the existing
+`Section34CompactCutStep` constructors. From (1) and (4), the probe proves
+containment implies cut order by strong induction on dimension; from (4) and
+the real step-dimension lemma it proves cut order implies containment by
+relation induction. These are directional reductions, not a restatement or
+edit of the frozen `compactSourceFace_iff_cutLe` declaration. No frame clause
+was added. The existing `Section34CompactSplitDiskIntersection` gives the
+intersection control needed inside frontier (4).
+
+Probe checker receipt: raw Lean exit 0, source stable, zero errors, exactly
+four warnings (`declaration uses sorry`, one at each named frontier). The
+zero-diagnostic checker success line is unavailable because this explicitly
+authorized probe contains four `sorry`s; the wrapper accordingly reports
+`Verification failed` solely for those diagnostics. Probe SHA-256:
+- Skeleton/CompactSourceFaceOrderReduction.lean: E93D2EDF12A1F1F056BABC1332E7A91185FD75CA9F646F905D67E9E48EB91BA3
+
+The new real module `Section34CompactFacePoset.lean` closes four elementary
+sub-leaves: each `CutStep` raises dimension by one; intrinsic source boundary
+lies in the source cell; the boundary of a three-cell equals its ambient
+frontier; equal source cells have equal labels (using `IsPLCellOn.dim_eq` and
+the existing frame dimension clause). The probe imports this module.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFacePoset.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- Section34CompactFacePoset.lean: F451F33329CC345DA9020B0E93EF8F078995BADB1873BDCE8C5AFE0DA1C17572
+
+All four real theorem axiom closures contain only `propext`,
+`Classical.choice`, and `Quot.sound`, with no `sorryAx`. The private axiom
+audit wrapper returns nonzero only for the informational `#print axioms`
+lines. The accepted `Section34CompactVocabulary` and
+`Section34CompactSplitDiskIntersection` dependencies were refreshed into this
+lease's private output with zero diagnostics; shared outputs were unchanged.
+
+## Codex day queue item 2 — spine chain cut and polygon resolution (2026-09-23)
+
+The `integralFirstHomology_interior_injective` probe leaf is exactly
+`IsTopologicalSolidTorus.integralSingularHomologyMap_interior_injective` from
+`SolidTorusInteriorHomology` after unfolding its local
+`firstHomologyInclusion`; it was not re-proved.
+
+Status of `exists_frontier_cycle_of_boundary_in_open`: PARTIAL. The new real
+general-topology module `Topology/Homology/RelativeChainCut.lean` proves
+`exists_interface_cycle_of_boundary_difference`: if two closed integral
+1-cycles on the two sides of an open cover differ by the boundary of a
+2-chain, a cycle on the overlap is homologous to the first through a chain
+supported on its side. The proof subdivides the actual bounding chain,
+splits the small chain, and checks both support and boundary identities.
+This is the open-cover chain step, not the exact PL-frontier cut.
+
+Checker success line:
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\RelativeChainCut.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- Topology/Homology/RelativeChainCut.lean: 34F8078BD555656C15458F9518E28B52A9BF3B1E2321354521CF539C005FEFFE
+
+Sub-leaf list for the exact skeleton chain cut: (1) open-cover relative
+boundary cut, CLOSED in the module above; (2) choose the two open sides of a
+PL frontier with the needed compact-support margin in `A`, OPEN; (3) retract
+the resulting overlap cycle to `frontier S ∩ A` and keep its bounding chain
+inside `S`, OPEN. The existing bicollar producer gives local topology but
+no checked chain homotopy with these simultaneous support controls.
+
+Status of `exists_disjoint_oriented_polygons_of_cycle`: OPEN. Its independent
+sub-leaves are (1) a finite PL representative of the supported class within
+the relatively open surface patch, preserving its image in `H₁(S)`;
+(2) oriented edge-cycle resolution at vertices; (3) disjoint PL circle
+extraction inside the same patch, with each circle's integral generator
+cycle and the weighted class equation. Existing polygonal-cycle theorems
+start from an already simplicial cycle or 2-regular graph and do not supply
+the support-preserving singular-to-PL step. No misleading direct producer
+was added. The real open-cover theorem's axiom closure contains only
+`propext`, `Classical.choice`, and `Quot.sound`, no `sorryAx`; the private
+axiom audit wrapper returns nonzero solely for its informational line.
+
+## Codex day queue item 3 — torus linking sub-leaves (2026-09-23)
+
+The three frozen `Skeleton/TorusLinkingReduction.lean` leaves remain OPEN, in
+the requested order. Two reusable, zero-`sorry` preliminaries now compile.
+
+1. `subsingleton_firstHomology_complement_of_isPLBall`: the needed
+   decomposition is a PL regular 3-ball neighbourhood `N ≅ D² × [-1,1]` of
+   the embedded disk `Δ`, followed by Mayer–Vietoris for `ℝ³ \ Δ` between
+   the exterior of `N` and its two disk sides. The exterior has zero `H₁`,
+   each side has zero `H₁`, and the `H₀` incidence map of the two components
+   of the overlap must be injective. The current `IsPLBall 2 Δ` provides a
+   parametrization of `Δ` but not this ambient neighbourhood and its
+   complement deformation maps. OPEN.
+2. `exists_integer_linking_equiv_of_isPLSphere`: choose a PL solid-torus
+   regular neighbourhood `N` of the arbitrary possibly knotted circle `G`.
+   Mayer–Vietoris on `ℝ³ = Int(N) ∪ Ext(N)` needs the actual maps from the
+   boundary torus (`H₁ ≅ ℤ²`) to `N` (`H₁ ≅ ℤ`) and the exterior, plus
+   `H₁(ℝ³)=H₂(ℝ³)=0`. The meridian is a primitive kernel generator, giving
+   the exterior and hence `Gᶜ` an integral `H₁ ≅ ℤ`; a type-level rank
+   calculation alone does not identify this map. OPEN.
+3. `surjective_firstHomologyInclusion_complement_of_null_meridian`: from a
+   nonseparating boundary circle, prove its primitive slope on `∂S`; the
+   given null map to `π₁(S)` makes it the meridian of the *actual* solid
+   torus `S`. The inclusion `Int S → Gᶜ` must then be shown to have linking
+   degree `±1`, using a collar/regular-neighbourhood Mayer–Vietoris diagram
+   and naturality. No unknotted ambient model may be assumed. OPEN.
+
+`Topology/Homology/EuclideanThreePunctureFirstHomology.lean` proves that
+`H₁(ℝ³ \ {p}; ℤ)=0` by radial retraction to `S²` and its checked sphere
+homology. `Topology/Homology/ComplementHomeomorphHomology.lean` proves the
+actual complement homeomorphism induced by an ambient homeomorphism and its
+integral homology equivalence, with a subsingleton transport iff. The latter
+cannot be applied to a PL disk's own parametrization without an ambient
+extension theorem.
+
+Checker success lines:
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\EuclideanThreePunctureFirstHomology.lean with no diagnostics; shared outputs unchanged.
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\ComplementHomeomorphHomology.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- EuclideanThreePunctureFirstHomology.lean: 177D7FA15A3BD88FBAB6198E51334F4FC54E0E88D7B4EFC832BFC72813AF89A9
+- ComplementHomeomorphHomology.lean: 19A87CA38099B1D187B23AE7A243DB0270847723DEF87524C13C2FD2DDD3AD71
+
+Private `#print axioms` checks of all four new declarations report only
+`propext`, `Classical.choice`, `Quot.sound` and no `sorryAx`; the audit
+wrapper reports failure solely because the requested `#print axioms`
+commands emit information. No general Alexander-duality statement is used.
+
+## Codex day queue item 4 — split-disk cylinder coordinates (2026-09-23)
+
+`exists_splitDisk_cylinder_coordinates` remains PARTIAL. The new real module
+`TubeCenteredPrismCoordinates.lean` closes the common-disk and compatible
+three-ball-half portion. It applies `SplitDiskCenter` to select one PL disk
+parametrization carrying `stdCenter 1` to the edge centroid, uses the actual
+`IsTube.interEdge` equality and both `splitDisk_subset_frontier` facts, and
+extends that *same* disk map over both dual PL 3-balls. The resulting prism
+map is a PL homeomorphism onto `C u ∪ C v`; its middle disk and intrinsic rim
+have the exact `D {u,v}` and `Dbd {u,v}` images, its center is the centroid,
+and its two half-prisms map to `C u` and `C v` separately. A fourth theorem
+shows the tube map `h` is an embedding on this pair of balls.
+
+Remaining sub-leaf list: (1) a homeomorphism between the queue's *round*
+`Skeleton/CanonicalTowerReduction.cylinder` and the triangular prism that
+identifies the round middle disk/rim with the simplex middle disk/rim and
+sends the round origin to `stdCenter 1`; the available simplex-to-ball
+homeomorphism has no checked center equation, so its mark must be adjusted;
+(2) compose that model map, the proved prism map, and the tube embedding,
+then verify all five fields of `DiskCoordinates` for the exact images under
+`h`. No new premise is needed from `IsTube`; this is model-coordinate and
+transport work, not a new ball-gluing theorem. The frozen skeleton leaf was
+not changed.
+
+Checker success line:
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TubeCenteredPrismCoordinates.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- TubeCenteredPrismCoordinates.lean: E3C383931184ACECF702CEB7E6BCBE8339CF0680ADE8E30CDB7483FF83B7BCD6
+
+Sub-leaf proof list: generic PL ball-pair prism gluing; centered split-disk
+extension; exact middle disk/rim and half images; restricted tube embedding.
+All four axiom closures contain only `propext`, `Classical.choice`, and
+`Quot.sound`, with no `sorryAx`. The scratch axiom audit emitted one scratch
+line-length warning and four informational `#print axioms` lines; the real
+module checker was zero-diagnostic.
+
+## Codex day queue item 5 — Section 32 reconnaissance (2026-09-23)
+
+The three frozen leaves in `Skeleton/Section32PseudoCell.lean` were not edited.
+Three new probe modules elaborate with raw Lean exit code 0. The private
+checker intentionally does not print a success line for them: it rejects the
+named `sorry` warnings. Receipts report stable source and no shared artifact
+changes. Exact remaining `sorry` counts are 3, 2, and 2 respectively; the
+assembly theorem in each probe has no `sorry`.
+
+`Section32AnnularChainProbe.lean` splits
+`isOpenTopologicalCell_annularChain` into (1) the two-ended open-cell
+compactification, OPEN; (2) local polyhedrality off the center, CLOSED by
+`IsAnnularChain.locallyPolyhedral_off_center`; (3) closure adding exactly the
+intrinsic split-disk rim, OPEN; (4) the local pair of PL 3-balls meeting in a
+PL disk, OPEN. The center-free annulus pieces and their containment in the
+tube-pair interior are also real lemmas. Local finiteness of the canonical
+tower reduces each neighborhood to finitely many half/bridge annuli.
+
+`Section32GeneralPositionProbe.lean` splits
+`exists_generalPosition_ball_pseudoCell` into (1) a small PL ball whose
+frontier has a finite transverse polygon trace and crosses the pseudo-cell,
+OPEN; (2) a topological subdisk of `Eint` absorbing the ball's trace inside
+the same metric ball, OPEN. A positive radius and the given pseudo-cell do
+not themselves provide general-position perturbation.
+
+`Section32ReducedDiskProbe.lean` splits
+`exists_reducedDisk_of_crossesPseudoCell` into (1) outermost PL disk
+selection with its intrinsic simplex rim, ambient neighborhood control and
+the exact intersection `Δbd = Δ ∩ Ec`, OPEN; (2) a topological subdisk of
+`Ec` bounded by that rim and containing the center in its intrinsic
+interior, OPEN. The latter is a Jordan/innermost-disk step, not a PL
+structure assertion at the potentially wild center.
+
+Checker success line for the real module:
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\AnnularChainLocalPolyhedral.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- AnnularChainLocalPolyhedral.lean: 462CBAF389AB47D8E54E94F4C34F4028466DE2E1685048ECED91E547A41D227F
+- Section32AnnularChainProbe.lean: 6BFEB4766F2F2664615262A51FC330DEBD30C9EE14C8C6FA06794ABE791BC6BE
+- Section32GeneralPositionProbe.lean: DD252A8A163CEDBEE984676F6F6C8337FBCFCB76BEC4AE70B3B6439D940BA95B
+- Section32ReducedDiskProbe.lean: C4182F7A4FEAF090BCF60F64335CFAD1E76A9939EAA1B430F4619DC4F61025E1
+
+The real module's five declaration axiom closures contain only `propext`,
+`Classical.choice`, and `Quot.sound`, with no `sorryAx`. Its `#print axioms`
+audit exited 0; the wrapper treated the five intentional information lines
+as diagnostics. Probe receipts each have Lean exit 0 and only the named
+`sorry` warnings (3/2/2); hence there is no zero-diagnostic checker success
+line to claim for a probe.
+
+## Codex day queue item 6 — Q6 fixtures (2026-09-23, in progress)
+
+The IsHandleDecompositionOfTube fixture is CLOSED as a genuine nonempty
+exists_isHandleDecompositionOfTube theorem. Its witness has a real edge,
+uses the identity embedding of an actual derived-neighborhood tube, and takes
+each edge pseudo-cell to be the PL splitting disk, with intrinsic open disk
+and rim. The handle pieces are the actual dual 3-balls. The proof identifies
+each with the closure of the corresponding connected component after every
+splitting disk is removed; thus componentClosure is proved, not bypassed.
+All fields of IsHandleDecompositionOfTube elaborate directly.
+
+Reusable sub-leaf list, all CLOSED: (1) the intrinsic interior of a
+topological cell is an open cell and its complementary rim is a sphere;
+(2) a marked PL disk is a pseudo-cell; (3) all splitting disks in a genuine
+tube are centered pseudo-cells, including an identity-embedding instance;
+(4) each dual 3-ball minus all splitting disks is connected and dense;
+(5) the resulting connected-component closure is exactly that dual ball;
+(6) assembly of the nonempty handle decomposition.
+
+Checker success lines:
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TopologicalCellInteriorOpen.lean with no diagnostics; shared outputs unchanged.
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskPseudoCell.lean with no diagnostics; shared outputs unchanged.
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SplitDiskPseudoCellFamily.lean with no diagnostics; shared outputs unchanged.
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TubeSplitDiskComponents.lean with no diagnostics; shared outputs unchanged.
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\HandleDecompositionTubeFixture.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256:
+- TopologicalCellInteriorOpen.lean: 0D19BB6FD60200FD11F5D2B1C0B153799A627E8FFBF3D50A510B1A34F87ABE11
+- PLDiskPseudoCell.lean: F661C6C755C7E58AC090390DF73EB2A8F78B1502A76BDA072590CAB056D61F80
+- SplitDiskPseudoCellFamily.lean: EB7D642742F75B274B95E3466336828D25B5FBDD7CCE79756DA47C3638E58392
+- TubeSplitDiskComponents.lean: 23EF90595A7AEE528C541EFF1DC67E628E7B753FEC6DEA7C4E45BEA2981BD73E
+- HandleDecompositionTubeFixture.lean: 2EB5E85B356BB8DAF22755BF4E68F2AB7FF8215A548D26C1AF5F34D2A9C15D37
+
+The private axiom audits of the new declarations and of the
+handle-decomposition fixture report only propext, Classical.choice,
+Quot.sound, with no sorryAx. The audit wrapper reports nonzero only
+because the requested #print axioms commands emit information; the real
+module checker lines above are zero-diagnostic.
+
+The other two Q6 fixtures remain OPEN after checking their exact on-disk
+predicates. No empty-index or conditional theorem was presented as an
+inhabitant.
+
+Section34VertexPreparation sub-leaf list: (1) construct an actual
+LocallyFinitePLPieceIn source pair with nonempty Section34VertexIndex and
+Section34EdgeIndex, and a compatible cut label source; OPEN. The current
+Section34CutFrame has no proved nonempty inhabitant. (2) For each edge,
+realize two nested regular-neighborhood solid tori around the piercing
+circle, three annuli with their marked end circles, and the required
+fundamental-group generator maps; OPEN. (3) Choose pierced/enlarged PL
+3-cells and compact graph cores, then a common positive tolerance satisfying
+all one-sided and sum-distance clauses, the stability scale and overlap
+conditions; OPEN. The frozen exists_section34VertexPreparation is a sorry
+producer, so importing it would not audit as a fixture.
+
+IsCanonicalTower sub-leaf list: (1) construct a genuine bi-infinite
+compatible IsRevolvedTorusChain family, not the finite three-cell standard
+configuration; OPEN. (2) Map it through a marked splitting-disk cylinder
+with the exact annulus image and two distinct tail closures, one at the
+center and one at the rim, plus local finiteness away from the center; OPEN.
+(3) Supply nested fitted PL solid tori and adjacent general position for
+every integer window without the unproved global Moise307 input; OPEN.
+ControlledRevolvedTower.exists_canonicalTower is a checked conditional
+consumer of Moise307, while exists_controlled_revolved_tower itself is an
+open frozen leaf. Neither certifies a standalone fixture. No checker success
+line or SHA-256 exists for these two uncreated fixtures.
