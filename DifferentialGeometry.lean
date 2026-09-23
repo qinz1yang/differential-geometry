@@ -13422,3 +13422,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.ParabolicTerminalBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckParabolicShi
