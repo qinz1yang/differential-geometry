@@ -390,40 +390,40 @@ private theorem exists_half_slab_avoiding_sequence
   exact Set.disjoint_left.mp (hdisj i)
     (hanti (Nat.succ_le_of_lt hij) (hcenter (seq j))) hj
 
-private theorem mem_half_slab_of_edist_lt
+private theorem mem_slab_of_edist_lt
     {M : Type*} [EMetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     (g : SmoothRiemannianMetric I3 M)
     (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
-    {eps : ℝ} {p x : M} (nk : SpatialNeck g eps p) {b : ℝ} (hb : 0<b)
+    {eps : ℝ} {p x : M} (nk : SpatialNeck g eps p) {r b : ℝ}
+    (hr : 0 < r) (hreps : r < eps⁻¹) (hb : 0 < b)
     (hscale : Real.sqrt (metricScalarAt g p) ≤ b)
-    (hd : edist p x < ENNReal.ofReal (1/(8*b))) :
-    x ∈ nk.map '' (univ ×ˢ Icc (-1/2 : ℝ) (1/2)) := by
-  have hlen : (1/2 : ℝ) < eps⁻¹ :=
-    (lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr (by linarith [nk.eps_small])
-  have hcap := nk.ball_subset_closed_slab (by norm_num : (0:ℝ)<1/2) hlen
+    (hd : edist p x < ENNReal.ofReal (r / (4 * b))) :
+    x ∈ nk.map '' (univ ×ˢ Icc (-r) r) := by
+  have hcap := nk.ball_subset_closed_slab hr hreps
   have hball : x ∈ riemannianBallOf
-      (scaleMetric (metricScalarAt g p) nk.Q_pos g) p ((1/2:ℝ)/2) := by
+      (scaleMetric (metricScalarAt g p) nk.Q_pos g) p (r / 2) := by
     change riemannianEDistOf _ p x < _
     rw [edistOf_scale, ← hmetric]
     calc
-      _ ≤ ENNReal.ofReal b * ENNReal.ofReal (1/(8*b)) :=
+      _ ≤ ENNReal.ofReal b * ENNReal.ofReal (r / (4 * b)) :=
         mul_le_mul' (ENNReal.ofReal_le_ofReal hscale) hd.le
-      _ = ENNReal.ofReal (1/8:ℝ) := by
+      _ = ENNReal.ofReal (r / 4) := by
         rw [← ENNReal.ofReal_mul hb.le]
         congr 1
         field_simp
-      _ < ENNReal.ofReal ((1/2:ℝ)/2) :=
-        (ENNReal.ofReal_lt_ofReal_iff (by norm_num)).mpr (by norm_num)
-  simpa only [neg_div] using hcap hball
+      _ < ENNReal.ofReal (r / 2) :=
+        (ENNReal.ofReal_lt_ofReal_iff (by positivity)).mpr (by linarith)
+  exact hcap hball
 
 open scoped Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem not_half_slab_avoiding_sequence_in_compact
+private theorem not_slab_avoiding_sequence_in_compact
     {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     [T2Space M] (g : SmoothRiemannianMetric I3 M) {eps : ℝ} {K : Set M} (hK : IsCompact K)
     (p : ℕ → M) (neck : ∀ n, SpatialNeck g eps (p n)) (hp : ∀ n, p n ∈ K)
-    (havoid : ∀ i j : ℕ, i<j → p j ∉ (neck i).map '' (univ ×ˢ Icc (-1/2 : ℝ) (1/2))) : False := by
+    (r : ℝ) (hr : 0 < r) (hreps : r < eps⁻¹)
+    (havoid : ∀ i j : ℕ, i < j → p j ∉ (neck i).map '' (univ ×ˢ Icc (-r) r)) : False := by
   let : IsManifold I3 1 M := IsManifold.of_le (n := ∞) (by decide)
   let : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace ThreeSpace M
   let : T3Space M := inferInstance
@@ -431,25 +431,37 @@ private theorem not_half_slab_avoiding_sequence_in_compact
   let : IsContinuousRiemannianBundle ThreeSpace (fun x : M => TangentSpace I3 x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩⟩
   let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I3 M
-  obtain ⟨B,hB⟩ := hK.bddAbove_image
+  obtain ⟨B, hB⟩ := hK.bddAbove_image
     (Real.continuous_sqrt.comp (metricScalar_smooth g).continuous).continuousOn
   let b : ℝ := max B 1
   have hb : 0 < b := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
-  let r : ℝ≥0 := ⟨1/(8*b), by positivity⟩
-  have hr : 0<r := by change (0:ℝ)<1/(8*b); positivity
-  have hlt (i j : ℕ) (hij : i<j) : (r : ℝ≥0∞) ≤ edist (p i) (p j) := by
+  let delta : ℝ≥0 := ⟨r / (4 * b), by positivity⟩
+  have hdelta : 0 < delta := by change (0 : ℝ) < r / (4 * b); positivity
+  have hlt (i j : ℕ) (hij : i < j) : (delta : ℝ≥0∞) ≤ edist (p i) (p j) := by
     apply le_of_not_gt
     intro hd
-    have hd' : edist (p i) (p j) < ENNReal.ofReal (1/(8*b)) := by
+    have hd' : edist (p i) (p j) < ENNReal.ofReal (r / (4 * b)) := by
       rw [← ENNReal.ofReal_coe_nnreal] at hd
       exact hd
-    exact havoid i j hij (mem_half_slab_of_edist_lt g (fun _ _ => rfl) (neck i) hb
-      ((hB ⟨p i,hp i,rfl⟩).trans (le_max_left _ _)) hd')
-  have hsep (i j : ℕ) (hij : i≠j) : (r : ℝ≥0∞) ≤ edist (p i) (p j) := by
+    exact havoid i j hij (mem_slab_of_edist_lt g (fun _ _ => rfl) (neck i) hr hreps hb
+      ((hB ⟨p i, hp i, rfl⟩).trans (le_max_left _ _)) hd')
+  have hsep (i j : ℕ) (hij : i ≠ j) : (delta : ℝ≥0∞) ≤ edist (p i) (p j) := by
     rcases lt_or_gt_of_ne hij with h | h
     · exact hlt i j h
     · simpa only [edist_comm] using hlt j i h
-  exact not_infinite_uniformly_separated_in_totallyBounded hK.totallyBounded p hp hr hsep
+  exact not_infinite_uniformly_separated_in_totallyBounded hK.totallyBounded p hp hdelta hsep
+
+private theorem not_half_slab_avoiding_sequence_in_compact
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] (g : SmoothRiemannianMetric I3 M) {eps : ℝ} {K : Set M} (hK : IsCompact K)
+    (p : ℕ → M) (neck : ∀ n, SpatialNeck g eps (p n)) (hp : ∀ n, p n ∈ K)
+    (havoid : ∀ i j : ℕ, i < j →
+      p j ∉ (neck i).map '' (univ ×ˢ Icc (-1 / 2 : ℝ) (1 / 2))) : False := by
+  have hlen : (1 / 2 : ℝ) < eps⁻¹ :=
+    (lt_inv_comm₀ (by norm_num) (neck 0).eps_pos).mpr (by linarith [(neck 0).eps_small])
+  apply not_slab_avoiding_sequence_in_compact g hK p neck hp (1 / 2) (by norm_num) hlen
+  simpa only [neg_div] using havoid
+
 
 theorem exists_spatial_neck_compact_side_exclusion_tolerance :
     ∃ eta : ℝ, 0 < eta ∧
@@ -466,5 +478,42 @@ theorem exists_spatial_neck_compact_side_exclusion_tolerance :
     exists_half_slab_avoiding_sequence g (hstep eps heps M g) p nk d hnecks
   exact not_half_slab_avoiding_sequence_in_compact g
     d.isCompact_closure_compactSide p neck hp havoid
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+  [T2Space M] (g : SmoothRiemannianMetric I3 M) {eps : ℝ} {K : Set M}
+  (hK : IsCompact K) (p : ℕ → M) (neck : ∀ n, SpatialNeck g eps (p n))
+  (hp : ∀ n, p n ∈ K)
+
+include hK hp
+
+theorem exists_spatial_neck_slab_return_in_compact (r : ℝ) (hr : 0 < r) (hreps : r < eps⁻¹) :
+    ∃ i j : ℕ, i < j ∧ p j ∈ (neck i).map '' (univ ×ˢ Icc (-r) r) := by
+  by_contra h
+  apply not_slab_avoiding_sequence_in_compact g hK p neck hp r hr hreps
+  intro i j hij hj
+  exact h ⟨i, j, hij, hj⟩
+
+theorem exists_spatial_neck_half_slab_return_in_compact :
+    ∃ i j : ℕ, i < j ∧
+      p j ∈ (neck i).map '' (univ ×ˢ Icc (-1 / 2 : ℝ) (1 / 2)) := by
+  have hlen : (1 / 2 : ℝ) < eps⁻¹ :=
+    (lt_inv_comm₀ (by norm_num) (neck 0).eps_pos).mpr (by linarith [(neck 0).eps_small])
+  simpa only [neg_div] using
+    exists_spatial_neck_slab_return_in_compact g hK p neck hp (1 / 2) (by norm_num) hlen
+
+theorem exists_spatial_neck_first_half_slab_return_in_compact :
+    ∃ i j : ℕ, i < j ∧
+      p j ∈ (neck i).map '' (univ ×ˢ Icc (-1 / 2 : ℝ) (1 / 2)) ∧
+      ∀ k l : ℕ, k < l → l < j →
+        p l ∉ (neck k).map '' (univ ×ˢ Icc (-1 / 2 : ℝ) (1 / 2)) := by
+  classical
+  have hreturn : ∃ j : ℕ, ∃ i : ℕ, i < j ∧
+      p j ∈ (neck i).map '' (univ ×ˢ Icc (-1 / 2 : ℝ) (1 / 2)) := by
+    obtain ⟨i, j, hij, hj⟩ := exists_spatial_neck_half_slab_return_in_compact g hK p neck hp
+    exact ⟨j, i, hij, hj⟩
+  obtain ⟨i, hij, hj⟩ := Nat.find_spec hreturn
+  refine ⟨i, Nat.find hreturn, hij, hj, ?_⟩
+  intro k l hkl hlj hl
+  exact Nat.find_min hreturn hlj ⟨k, hkl, hl⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

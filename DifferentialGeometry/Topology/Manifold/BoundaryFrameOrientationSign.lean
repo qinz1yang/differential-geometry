@@ -89,3 +89,31 @@ theorem normalFirstOrientation_change_negative_normal
     _ = -normalFirstOrientation e b o := normalFirstOrientation_reflect_normal e b o
 
 end DifferentialGeometry.Topology.Manifold
+
+namespace DifferentialGeometry.Topology.Manifold
+
+variable {E F : Type*} [AddCommGroup E] [Module ℝ E]
+  [AddCommGroup F] [Module ℝ F]
+
+theorem orientation_map_normalFirstOrientation_of_negative_normal
+    (eA eC : (ℝ × F) ≃ₗ[ℝ] E) (g : F ≃ₗ[ℝ] F) (b : Basis (Fin 2) ℝ F)
+    (c : ℝ) (hc : c < 0) (w : F)
+    (hn : eA (1, 0) = c • eC (1, 0) + eC (0, w))
+    (ht : ∀ v, eA (0, v) = eC (0, g v)) (o : Orientation ℝ E (Fin 3)) :
+    Orientation.map (Fin 2) g (normalFirstOrientation eA b o) =
+      -normalFirstOrientation eC b o := by
+  let e : (ℝ × F) ≃ₗ[ℝ] E := ((LinearEquiv.refl ℝ ℝ).prodCongr g).trans eC
+  have hneg : normalFirstOrientation eA b o = -normalFirstOrientation e b o := by
+    apply normalFirstOrientation_change_negative_normal e eA b c hc (g.symm w)
+    · simpa only [e, LinearEquiv.trans_apply, LinearEquiv.prodCongr_apply,
+        LinearEquiv.refl_apply, map_zero, g.apply_symm_apply] using hn
+    · intro v
+      exact ht v
+  rw [hneg, Orientation.map_neg]
+  congr 1
+  rw [show normalFirstOrientation e b o =
+      Orientation.map (Fin 2) g.symm (normalFirstOrientation eC b o) from
+    normalFirstOrientation_change_boundary eC g b b o]
+  exact (Orientation.map (Fin 2) g).apply_symm_apply _
+
+end DifferentialGeometry.Topology.Manifold

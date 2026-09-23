@@ -141,3 +141,19 @@ theorem Diffeomorph.preservesOrientation_of_pullbackSmoothOrientation
   rw [hM x, pullbackSmoothOrientation_apply, hN (f x)]
 
 end DifferentialGeometry.Topology.Manifold
+
+namespace DifferentialGeometry.Topology.Manifold
+
+theorem orientation_map_reindex_of_tangentOrientationEquiv
+    {E F : Type*} [AddCommGroup E] [Module ℝ E] [AddCommGroup F] [Module ℝ F]
+    {n : ℕ} (L : E ≃ₗ[ℝ] F) (hE : Module.finrank ℝ E = n) (hF : Module.finrank ℝ F = n)
+    (oE : Orientation ℝ E (Fin (Module.finrank ℝ E)))
+    (oF : Orientation ℝ F (Fin (Module.finrank ℝ F)))
+    (h : tangentOrientationEquiv L oE = oF) :
+    Orientation.map (Fin n) L (Orientation.reindex ℝ E (finCongr hE) oE) =
+      Orientation.reindex ℝ F (finCongr hF) oF := by
+  rw [← h]
+  induction oE using Module.Ray.ind with
+  | h vol hvol => rfl
+
+end DifferentialGeometry.Topology.Manifold
