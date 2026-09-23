@@ -2,8 +2,6 @@ import DifferentialGeometry.Topology.Connected.ComponentIn
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Compactness.Compact
 
-set_option autoImplicit false
-
 open Set
 
 namespace DifferentialGeometry.Topology
