@@ -13545,3 +13545,4 @@ import DifferentialGeometry.Geometry.Neck.BoundaryAtlas
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.Minimizing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.MetricLocalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMetricMinimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NoncompactCanonicalAlternative
