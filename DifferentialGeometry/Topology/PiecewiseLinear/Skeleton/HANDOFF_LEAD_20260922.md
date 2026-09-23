@@ -467,3 +467,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 17:10 (09-23) — Codex answered consults BO/BP/BQ (route reductions for CGN 1–4, §32 tower/descent, trace leaves);
   recorded in the ledger; the named sub-leaves are the next worker/Codex targets. `section34TraceCircle_homologyMap_ne_zero`
   has no consumer (grep) — retire on the owner's word.
+* 17:50 (09-23) — accepted worker c's annulus taming (19 modules); the sphere leaf is reduced to the uniqueness of
+  the smooth structure on `S²` (owner decision). Physical `sorry` 27. Lease c held for Codex.

@@ -11,6 +11,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjuncti
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionOne
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSmoothHandleStageAdjunctionTwo
 import DifferentialGeometry.Topology.PiecewiseLinear.SmoothBoundaryDisksTaming
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundarySphereComponent
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundarySurfaceEmbedding
+import DifferentialGeometry.Topology.PiecewiseLinear.SmoothAnnulusTaming
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleFiltration
@@ -159,6 +162,30 @@ moved by a compactly supported isotopy of the boundary surface onto the unit dis
 smooth plane, the two supports are disjoint, and the boundary isotopy extends through the collar.
 The annulus taming leaf is STUCK on a missing theorem: an essential topological circle in a
 smooth surface is isotopic to a smooth one (the tree smooths only at a point); route logged.
+
+Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-23 with zero-diagnostic checks
+and an axiom audit; statement byte-identical, all hypotheses used):
+`exists_homeomorph_smooth_annulus_of_isClosedEmbedding` (L4, module `SmoothAnnulusTaming` over
+eighteen modules across `LocalDegree/`, `PlanarJordan/`, `Manifold/` and this directory: the
+annulus core is isotoped to a smooth core inside the surface through planar strip, tube and arc
+smoothing in polar band charts, then shrunk and radially squeezed onto a smooth product annulus,
+and the boundary isotopy is extended through the collar by `exists_homeomorph_of_boundary_isotopy`).
+For the last leaf, `exists_isSmoothEmbedding_sphere_of_isClosedEmbedding`, the same worker proved
+the bricks `isClopen_boundaryManifold_preimage_range_of_isClosedEmbedding`,
+`exists_opens_boundaryManifold_homeomorph_sphere` (`BoundarySphereComponent`) and the bridge
+`isSmoothEmbedding_coe_of_diffeomorph_boundary_opens` (`BoundarySurfaceEmbedding`), and a compiled
+probe derives the leaf from the single sub-leaf `nonempty_diffeomorph_sphere_of_homeomorph_sphere`
+(uniqueness of the smooth structure on `S²`); whether that sub-leaf replaces the leaf here is
+the owner's decision.
+
+Leaf replaced 2026-09-23 (owner decision): `exists_isSmoothEmbedding_sphere_of_isClosedEmbedding` is
+now PROVED here from the single new leaf `nonempty_diffeomorph_sphere_of_homeomorph_sphere` (a
+compact smooth surface homeomorphic to `S²` is diffeomorphic to the round sphere), through the
+real bricks `exists_opens_boundaryManifold_homeomorph_sphere` (the range of the closed embedding
+is a clopen subsurface of the boundary homeomorphic to `S²`) and
+`isSmoothEmbedding_coe_of_diffeomorph_boundary_opens`; the new leaf is the whole remaining
+content of the smoothing side and has no producer in the tree yet (no smooth planar Schoenflies,
+no Reeb theorem, no uniformisation); it is unreviewed as a leaf statement.
 -/
 
 open Set Topology Manifold
@@ -207,17 +234,15 @@ theorem exists_isManifold_of_plApproximation_of_plSmoothingCompact {n : ℕ} {X 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-theorem exists_homeomorph_smooth_annulus_of_isClosedEmbedding
-    {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} → M)
-    (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
-    ∃ θ : M ≃ₜ M, θ '' (𝓡∂ 3).boundary M = (𝓡∂ 3).boundary M ∧
-      ∃ f : Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × ℝ → M,
-        IsSmoothEmbedding ((𝓡 1).prod 𝓘(ℝ, ℝ)) (𝓡∂ 3) ∞ f ∧
-        range f ⊆ (𝓡∂ 3).boundary M ∧
-        θ '' range ψ = f '' (univ ×ˢ Icc (0 : ℝ) 1) := by
+section SphereRecognition
+
+open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
+
+theorem nonempty_diffeomorph_sphere_of_homeomorph_sphere
+    {S : Type} [TopologicalSpace S] [T2Space S] [CompactSpace S]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
+    (h : S ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+    Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S) := by
   sorry
 
 theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
@@ -227,7 +252,27 @@ theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,
       IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ d ∧ range d = range ψ := by
-  sorry
+  obtain ⟨W, -, hWc, hWimg, ⟨h⟩⟩ := exists_opens_boundaryManifold_homeomorph_sphere ψ hψ hψbd
+  let _ : ChartedSpace (EuclideanSpace ℝ (Fin 2)) (BoundaryManifold (𝓡∂ 3) M) :=
+    BoundaryManifold.chartedSpace (I := 𝓡∂ 3)
+  let _ : IsManifold (𝓡 2) ∞ (BoundaryManifold (𝓡∂ 3) M) :=
+    BoundaryManifold.isManifold (I := 𝓡∂ 3)
+  obtain ⟨D⟩ := nonempty_diffeomorph_sphere_of_homeomorph_sphere (S := W) h
+  have _ : Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :=
+    (NormedSpace.sphere_nonempty.mpr zero_le_one).to_subtype
+  refine ⟨fun x => ((D x : BoundaryManifold (𝓡∂ 3) M) : M),
+    isSmoothEmbedding_coe_of_diffeomorph_boundary_opens W D, ?_⟩
+  rw [← hWimg]
+  ext p
+  constructor
+  · rintro ⟨x, rfl⟩
+    exact ⟨D x, (D x).2, rfl⟩
+  · rintro ⟨q, hq, rfl⟩
+    refine ⟨D.symm ⟨q, hq⟩, ?_⟩
+    change (((D (D.symm ⟨q, hq⟩)) : BoundaryManifold (𝓡∂ 3) M) : M) = q
+    rw [D.apply_symm_apply]
+
+end SphereRecognition
 
 theorem isSmoothHandleStage_of_attachment
     {P B R Fr : Set F} (hRB : R ⊆ B) (hBR : B \ R ⊆ Fr) (hFrP : Fr ⊆ P) (hBP : B ⊆ P)

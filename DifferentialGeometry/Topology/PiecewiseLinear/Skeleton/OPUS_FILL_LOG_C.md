@@ -968,3 +968,118 @@ are proved (or not) against the frozen text, in new files importing only real mo
   compiled privately (no diagnostics).
 - Audit `AuditOpusC15.lean` (five modules): verified, no diagnostics (axioms ⊆ {propext,
   Classical.choice, Quot.sound}, thirteen linters clean).
+
+# Batch 8 (smoothing: annulus taming, sphere recognition)
+
+## exists_homeomorph_smooth_annulus_of_isClosedEmbedding — CLOSED
+
+- Endpoint: `SmoothAnnulusTaming.lean`, namespace `DifferentialGeometry.Topology.PiecewiseLinear`,
+  with the skeleton's `open Set Topology Manifold`, `open scoped Manifold ContDiff`,
+  `universe u` and `variable {E F …}`. Statement identity: lines 210–220 of
+  `Skeleton/PLSmoothingCompact.lean` (name, binders, conclusion) are byte-identical to the
+  module's statement (checked with `diff`); no hypothesis dropped. The lead must delete the
+  skeleton copy when wiring (same fully qualified name).
+- Route (review ruling followed: only the image is smoothed; the boundary isotopy starts at the
+  identity and extends through the collar): half-annulus parametrization `e` of `range ψ` in
+  `∂M` (`exists_halfAnnulus_param_of_isClosedEmbedding`); shrink isotopy onto
+  `e{a ≤ ‖v‖ ≤ b}` (`exists_isotopy_shrink_halfAnnulus`); chart `Φ` with `Φ (2 • v) = e v`
+  on `1 < ‖x‖ < 2`; core-circle smoothing of `Φ` (`exists_isotopy_smooth_annulus_core`: isotopy
+  `G`, band `|‖x‖ - 3/2| < δ`, chart `c = G 1 ∘ Φ` with `c.symm` in the maximal atlas); radial
+  squeeze in the chart onto `3/2 ≤ ‖x‖ ≤ 3/2 + δκ/2`; `θ` from
+  `exists_homeomorph_of_boundary_isotopy`; `f = c ∘ j` with the band chart `j` of `S¹ × ℝ`
+  (`exists_sphereProd_band_openPartialHomeomorph`), a smooth embedding into `M` by
+  `isSmoothEmbedding_coe_of_boundary_openPartialHomeomorph`.
+- Files (all new, LF, no declaration docstrings or comments, ≤ 100 codepoints), lines, SHA-256:
+  - `Topology/LocalDegree/InjectiveDeterminantSign.lean` 187
+    c04619c6a23ab33862993bada0e6f60859c68e0c7c90d6b2e5b3cec69a811b92
+  - `Topology/PiecewiseLinear/SmoothedRampPath.lean` 327
+    fa4a77ded513421ad0133ceda6e01bbd053e3fe1d5380614c293f0e731043831
+  - `Topology/PlanarJordan/StripExtension.lean` 627
+    69e70a6442334b868cc57c4f41b05873e75601014bcebc5cc9425ecc9f51866d
+  - `Topology/PlanarJordan/PlanarLocalAffine.lean` 116
+    06d885bdadb295210f2ed45dc17340a252ffcc508abe52f4431f7cde28a0c869
+  - `Topology/PlanarJordan/PlanarSmoothCore.lean` 822
+    9f16019475d77f1530a147ba736bf07f1fa51858a46dae2c67f7b91f781da897
+  - `Topology/PlanarJordan/PlanarTubeSmoothing.lean` 604
+    d546edbacfe90a6555e3d66c7e61e3cd6a458a4c3ec66c22aa29b233825a5de1
+  - `Topology/PlanarJordan/PolarStrip.lean` 244
+    50a23493bed20905f09a991ccba9a88f390277045ff46cbd544fd254325a1217
+  - `Topology/PlanarJordan/PlanarArcSmoothing.lean` 261
+    58508aa3ec4e704b97cdb2e74823a6b4da21f8f9bb21088d9c0d3894e98633df
+  - `Topology/Manifold/PolarBandChart.lean` 210
+    e5b05cb4b81181f53ebb0fdda2288a112119591196f5a336412d5cbe1adc0596
+  - `Topology/Manifold/AnnulusCoreSteps.lean` 356
+    d28563072e5a7cafb205ffe23c185ae3136734a4e1a03485aa62c7ab85bf5b2a
+  - `Topology/Manifold/AnnulusCoreSmoothing.lean` 753
+    361a73b0712b1d078383ae2ba4be5b105ebe3a7597910333a0f670f44999e55e
+  - `Topology/PiecewiseLinear/SurfaceAnnulusShrink.lean` 607
+    0720dd5a5d157a7eea19f2ff24115db380c87933610770afc9aa155e08032bd9
+  - `Topology/PiecewiseLinear/RadialAnnulusSqueeze.lean` 196
+    5479a8221140ebf3245c8644272c5af08961bdb6f9c90ebfa5a7c6c19d4ed2af
+  - `Topology/PiecewiseLinear/BoundaryAnnulusEmbedding.lean` 130
+    d83438b6369a44f3e771af9bb6a6fc15768663417e295af90b1743893aee890d
+  - `Topology/PiecewiseLinear/SphereBandChart.lean` 206
+    152e6b54a9671ac9b8c45b2ac71b7a006afcef38f92ed945e59f6939c70debb7
+  - `Topology/PiecewiseLinear/AnnulusTamingSteps.lean` 226
+    a43ab8a3dc861d488bb24045dbd7d762d93cef8ebcbf5a6cfb66944abad59f58
+  - `Topology/PiecewiseLinear/SmoothAnnulusTaming.lean` 165
+    704bcc531a216c4ae34a79e3dca0d722850911629a809dbeba324fb5dcc60b2c
+- Checker, final versions, each exactly `Verified D:\differential-geometry-moise-int\DifferentialGeometry\<path> with no diagnostics; shared outputs unchanged.`
+  for the seventeen paths above (`<path>` with backslashes). The chain StripExtension →
+  PlanarSmoothCore → PlanarTubeSmoothing → PolarStrip → PlanarArcSmoothing → PolarBandChart →
+  AnnulusCoreSteps → AnnulusCoreSmoothing → SmoothAnnulusTaming was re-verified in order on
+  2026-09-23 (~15:30–15:55 UTC) after the two audit fixes below; the other eight are unchanged
+  since their verification.
+- Audit fixes: (1) `interior_closedSquare_zero_one` duplicated
+  `Schoenflies.interior_closedSquare_zero_one` (`External/Schoenflies/ModelCurve.lean`): deleted,
+  the Schoenflies lemma is used. (2) `unusedArguments`: the `IsManifold` instance was removed
+  from `contDiffOn_chart_comp_of_mem_maximalAtlas` and `exists_isotopy_smooth_polar_arc`.
+- Hypotheses of the endpoint: those of the skeleton leaf; all consumed (`T2Space`,
+  `CompactSpace` by the collar extension `exists_homeomorph_of_boundary_isotopy`).
+
+## exists_isSmoothEmbedding_sphere_of_isClosedEmbedding — STUCK (one sub-leaf)
+
+- Statement TRUE (the image is a component of `∂M`, a closed smooth surface homeomorphic to `S²`;
+  smooth structures on `S²` are unique). No counterexample.
+- Proved bricks (new files):
+  - `Topology/PiecewiseLinear/BoundarySphereComponent.lean` 111
+    4fcd6844a987e9e628f85c3df2b7816ce91ce958f26439c99d76cb0d304dfa38 —
+    (i) `isClopen_boundaryManifold_preimage_range_of_isClosedEmbedding` (the image is clopen in
+    the boundary surface; open by invariance of domain through stereographic charts),
+    (ii) `exists_opens_boundaryManifold_homeomorph_sphere` (an open, closed, compact subsurface
+    `W` of `BoundaryManifold (𝓡∂ 3) M` with `↑'' W = range ψ` and `W ≃ₜ S²`), and
+    `nonempty_homeomorph_stdSimplexBoundary_three_sphere`.
+  - `Topology/PiecewiseLinear/BoundarySurfaceEmbedding.lean` 118
+    efd80c97c157b71b195a018de681ff8f212d9ffed2dac5bf8b63ab6eb385c65f —
+    `isSmoothEmbedding_coe_of_boundary_surface_openPartialHomeomorph` and
+    `isSmoothEmbedding_coe_of_diffeomorph_boundary_opens` (a diffeomorphism `N ≃ₘ W` onto an open
+    subsurface of `∂M` is a smooth embedding into `M`).
+  - Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundarySphereComponent.lean with no diagnostics; shared outputs unchanged.`
+    and `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundarySurfaceEmbedding.lean with no diagnostics; shared outputs unchanged.`
+- Probe `claude-moise-agent-c/ProbeSphereRecognition.lean` (checker `-Audit`): the leaf, verbatim
+  (statement `diff`-identical to skeleton lines 223–229), is proved from (ii), the bridge and ONE
+  sub-leaf; output: exactly one diagnostic, `ProbeSphereRecognition.lean:16:8: warning:
+  declaration uses 'sorry'` (sorry count 1, nothing else).
+- Missing sub-leaf (not proved, not reachable in this lease):
+  `nonempty_diffeomorph_sphere_of_homeomorph_sphere {S : Type} [TopologicalSpace S] [T2Space S]
+  [CompactSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
+  (h : S ≃ₜ sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) : Nonempty (sphere … ≃ₘ⟮𝓡 2, 𝓡 2⟯ S)`.
+  Same content as `PHASE2_SMOOTHING_AUDIT.md` §2.6; no producer in the tree (no smooth planar
+  Schoenflies, no Reeb theorem, no uniformization). Routes: Munkres smoothing of `h`
+  (vertex step = `exists_isotopy_smoothing_surface_chart`, edge step = this batch's arc/tube
+  smoothing, face step needs smooth Schoenflies in a chart with collar control plus extension of
+  circle diffeomorphisms), or Morse (`exists_excellent_morse_function`, `χ = 2`, cancellation to
+  two critical points, `Diff⁺(S¹)` connected, Reeb gluing).
+
+## Batch 8 summary
+
+- CLOSED 1 of 2 (annulus); sphere STUCK on one named sub-leaf, with its other inputs proved.
+- Audit `AuditOpusC16.lean` over all nineteen modules: `Verified
+  C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-c\AuditOpusC16.lean with no diagnostics;
+  shared outputs unchanged.` (axiom closure of every declaration within `propext`,
+  `Classical.choice`, `Quot.sound`; thirteen linters clean).
+- Aggregate import lines (not added to `DifferentialGeometry.lean`): one
+  `import DifferentialGeometry.Topology.<path>` per file above (19 lines), e.g.
+  `import DifferentialGeometry.Topology.PiecewiseLinear.SmoothAnnulusTaming`,
+  `import DifferentialGeometry.Topology.PiecewiseLinear.BoundarySphereComponent`,
+  `import DifferentialGeometry.Topology.PiecewiseLinear.BoundarySurfaceEmbedding`.
