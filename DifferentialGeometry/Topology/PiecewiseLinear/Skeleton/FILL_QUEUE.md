@@ -477,9 +477,9 @@ initial surface and the four named inputs do not supply, stop on it and report t
 
 ## Codex item 14 — compact leaf 1, the remaining cut-frame and graph-frame clauses (lead-written 2026-09-24 03:20; new Codex lane)
 
-Lease for this lane: `codex-compact-cut` (token `codex-compact-cut-20260919`, private output root
-`C:\Users\liao9\AppData\Local\Temp\codex-compact-cut`; the owner creates it by copying
-`claude-agent-b.json` with the lane, token and output root renamed; valid until 2026-09-26 04:17 UTC).
+Lease for this lane (owner's decision 2026-09-24 03:40): NOT a new lease; this item starts on lease d
+(token `claude-agent-d-20260919`, private output root `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`,
+valid until 2026-09-26 04:17 UTC) once the second Codex lane finishes item 8 (the C1 surface trace).
 Same rules as items 7, 8 and 13: new files only, no git writes, no edit of any frozen statement,
 host guard before every compile (at most four `lean.exe` on the host, this lease one; a ten-minute
 admission wait is contention, rerun), log to `Skeleton/FILL_LOG.md` (append-only, a
