@@ -13497,3 +13497,6 @@ import DifferentialGeometry.Topology.Connected.CompactComponentUnion
 import DifferentialGeometry.Geometry.Neck.FiniteDisjointBarriers
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.FiniteCollarFrontier
 import DifferentialGeometry.Geometry.Neck.DisjointBarrierRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalBarrierFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBarrierComponents
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion

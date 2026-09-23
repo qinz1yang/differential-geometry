@@ -37,6 +37,65 @@ theorem isPreconnected_subset_lt_of_avoids_region_frontiers
   obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover hzb)
   exact hout i hzC (interior_subset hi)
 
+theorem closure_connectedComponentIn_compl_frontiers_subset_lt
+    (f : X → ℝ) (hf : Continuous f) {a b : ℝ} (hab : a ≤ b)
+    (U : ι → Set X) (hU : ∀ i, IsClosed (U i))
+    (hhigh : ∀ i x, x ∈ U i → a < f x) {y x : X}
+    (hcover : {z | z ∈ connectedComponent y ∧ f z = b} ⊆ ⋃ i, interior (U i))
+    (hx : x ∈ connectedComponent y) (hfx : f x ≤ a) :
+    closure (connectedComponentIn (⋃ i, frontier (U i))ᶜ x) ⊆
+      {z | z ∈ connectedComponent y ∧ f z < b} := by
+  let S := ⋃ i, frontier (U i)
+  let C := connectedComponentIn Sᶜ x
+  have hxS : x ∈ Sᶜ := by
+    intro h
+    obtain ⟨i, hi⟩ := mem_iUnion.mp h
+    exact (not_lt_of_ge hfx) (hhigh i x ((hU i).frontier_subset hi))
+  have hxC : x ∈ C := mem_connectedComponentIn hxS
+  have hC : IsPreconnected C := isPreconnected_connectedComponentIn
+  have hCparent : C ⊆ connectedComponent y := by
+    exact (hC.subset_connectedComponent hxC).trans ((connectedComponent_eq hx).symm.subset)
+  have havoid : Disjoint C S := disjoint_compl_left.mono_left (connectedComponentIn_subset _ _)
+  have hout (i : ι) : C ⊆ (U i)ᶜ := by
+    have hdisj : Disjoint C (frontier (U i)ᶜ) := by
+      rw [frontier_compl]
+      exact havoid.mono_right (subset_iUnion (fun j => frontier (U j)) i)
+    exact (isPreconnected_subset_interior_of_meets_of_disjoint_frontier (R := (U i)ᶜ) hC
+      ⟨x, hxC, fun hi => (not_lt_of_ge hfx) (hhigh i x hi)⟩ hdisj).trans interior_subset
+  have hlt : C ⊆ {z | f z < b} := by
+    intro z hz
+    change f z < b
+    by_contra h
+    obtain ⟨w, hw, hwb⟩ := hC.intermediate_value hxC hz hf.continuousOn
+      ⟨hfx.trans hab, le_of_not_gt h⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover ⟨hCparent hw, hwb⟩)
+    exact hout i hw (interior_subset hi)
+  have hcle : closure C ⊆ {z | f z ≤ b} :=
+    closure_minimal (fun z hz => (show f z < b from hlt hz).le) (isClosed_le hf continuous_const)
+  have hcparent : closure C ⊆ connectedComponent y := closure_minimal hCparent isClosed_connectedComponent
+  intro z hz
+  refine ⟨hcparent hz, ?_⟩
+  have hzle : f z ≤ b := hcle hz
+  apply lt_of_le_of_ne hzle
+  intro hzb
+  obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover ⟨hcparent hz, hzb⟩)
+  have houtz : z ∈ closure (U i)ᶜ := closure_mono (hout i) hz
+  rw [closure_compl] at houtz
+  exact houtz hi
+
+theorem isCompact_closure_connectedComponentIn_compl_frontiers
+    (f : X → ℝ) (hf : Continuous f) {a b : ℝ} (hab : a ≤ b)
+    (U : ι → Set X) (hU : ∀ i, IsClosed (U i))
+    (hhigh : ∀ i x, x ∈ U i → a < f x) {y x : X}
+    (hcover : {z | z ∈ connectedComponent y ∧ f z = b} ⊆ ⋃ i, interior (U i))
+    (hx : x ∈ connectedComponent y) (hfx : f x ≤ a)
+    (hcompact : IsCompact {z | z ∈ connectedComponent y ∧ f z ≤ b}) :
+    IsCompact (closure (connectedComponentIn (⋃ i, frontier (U i))ᶜ x)) :=
+  hcompact.of_isClosed_subset isClosed_closure (fun z hz => by
+    have h := closure_connectedComponentIn_compl_frontiers_subset_lt f hf hab U hU hhigh hcover hx hfx hz
+    exact ⟨h.1, h.2.le⟩)
+
+
 theorem exists_finite_region_barriers
     [T2Space X] (f : X → ℝ) (hf : Continuous f) {a b : ℝ}
     (hlevel : IsCompact {x | f x = b}) (hne : ({x | f x = b} : Set X).Nonempty)

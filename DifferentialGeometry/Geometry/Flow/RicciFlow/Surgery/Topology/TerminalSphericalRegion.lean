@@ -1,0 +1,147 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBarrierComponents
+import DifferentialGeometry.Geometry.Neck.DisjointBarrierRegion
+import DifferentialGeometry.Topology.Connected.CoverBySides
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold
+open DifferentialGeometry.Topology
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+theorem TerminalLimitMetric.exists_disjoint_spherical_region
+    (L : G.TerminalLimitMetric) :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
+        ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+          metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
+          ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
+            (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
+            (b : Finset ι) (K : Set G.terminalRegularOpen),
+            b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
+            {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+              ⊆ interior K ∧ K ⊆ connectedComponent y ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * A) ∧
+            (b : Set ι).PairwiseDisjoint
+              (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
+            frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+            (∀ x ∈ frontier K, 2 * A < metricScalarAt L.metric x) ∧
+            ∀ i ∈ b, |level i| ≤ 3 ∧
+              IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+                2 * A < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * A) ∧
+              (neck i).cylindricalChart.metricCloseOn L.metric δ
+                {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
+  obtain ⟨eta, heta, hregion⟩ :=
+    exists_compact_region_of_finite_spatial_neck_barriers_tolerance.{u, u}
+  refine ⟨min eta (1 / 40000), lt_min heta (by norm_num), ?_⟩
+  intro δ hδ hδeta
+  have hδsmall : δ < 1 / 20000 := by linarith [hδeta.trans (min_le_right _ _)]
+  obtain ⟨C2, q, hC2, hq, hfamily⟩ :=
+    L.exists_finite_recorded_spherical_barriers_with_compact_component_closures hδ hδsmall
+  refine ⟨C2, q, hC2, hq, ?_⟩
+  intro A y hA hqA hyA hnoncompact
+  obtain ⟨S, D, hSne, hcover, hD, v, neck, level, sign, collar, hfront, hunion, hgeometry,
+    hcollar, hallcompact, hlow, hold⟩ := hfamily A y hA hqA hyA hnoncompact
+  let J := {p // p ∈ S} × Fin 2
+  let F : J → Set G.terminalRegularOpen := fun i =>
+    range (fun z : Sphere 2 => (neck i.1).map (z, level i))
+  let Low := {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+  classical
+  let _ := Fintype.ofFinite J
+  have hLowcompact : IsCompact Low :=
+    (L.isCompact_scalar_sublevel A).of_isClosed_subset
+      (isClosed_connectedComponent.inter
+        (isClosed_le (metricScalar_smooth L.metric).continuous continuous_const))
+      (fun x hx => hx.2)
+  have hLowold (x : G.terminalRegularOpen) (hx : x ∈ Low) :
+      IsCompact (closure (connectedComponentIn
+        (⋃ i ∈ (Finset.univ : Finset J), F i)ᶜ x)) := by
+    simpa only [Finset.mem_univ, iUnion_true] using (hold x hx.1 hx.2).1
+  obtain ⟨t, b, C, ht, hbt, htdis, hC, hCprops, hKcompact, hLowK, hKreg,
+    hKsub, hKfront, hKcollar⟩ :=
+    hregion δ (hδeta.trans (min_le_left _ _)) G.terminalRegularOpen L.metric
+      J (fun i => v i.1) (fun i => neck i.1) level Finset.univ
+      (fun i _ => (hcollar i).1) A Low hLowcompact (fun _ hx => hx.2)
+      (fun i _ => (hgeometry i.1).1) hLowold
+  let K := ⋃ V ∈ C, closure V
+  have hKcomp : K ⊆ connectedComponent y := by
+    intro z hz
+    obtain ⟨V, hVC, hzV⟩ := mem_iUnion₂.mp hz
+    obtain ⟨x, hx, rfl⟩ := (hC V).mp hVC
+    have hsubset : connectedComponentIn (⋃ i ∈ t, F i)ᶜ x ⊆ connectedComponent y := by
+      have hxout : x ∉ ⋃ i ∈ t, F i := by
+        intro hxbar
+        obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hxbar
+        exact disjoint_left.mp hlow hx.2 (mem_iUnion.mpr ⟨i, hxi⟩)
+      have hc := isPreconnected_connectedComponentIn.subset_connectedComponent
+        (mem_connectedComponentIn (show x ∈ (⋃ i ∈ t, F i)ᶜ from hxout))
+      rw [← connectedComponent_eq hx.1] at hc
+      exact hc
+    exact closure_minimal hsubset isClosed_connectedComponent hzV
+  have hKband : ∀ z ∈ K, metricScalarAt L.metric z ≤ 8 * C2^2 * A := by
+    intro z hz
+    rcases hKsub hz with hzold | hzchart
+    · obtain ⟨x, hx, hzx⟩ := mem_iUnion₂.mp hzold
+      have hzx' : z ∈ closure (connectedComponentIn (⋃ i : J, F i)ᶜ x) := by
+        simpa only [Finset.mem_univ, iUnion_true] using hzx
+      have hb := (hold x hx.1 hx.2).2 hzx'
+      have hupper : 4 * C2 * A ≤ 8 * C2^2 * A := by nlinarith
+      exact hb.2.le.trans hupper
+    · obtain ⟨i, _, w, hw, rfl⟩ := mem_iUnion₂.mp hzchart
+      exact ((hgeometry i.1).2.1 w
+        ⟨hw.1, by constructor <;> linarith [hw.2.1, hw.2.2]⟩).2
+  have hfrontband : ∀ z ∈ frontier K, 2 * A < metricScalarAt L.metric z := by
+    intro z hz
+    obtain ⟨i, hi, w, rfl⟩ := mem_iUnion₂.mp (hKfront ▸ hz)
+    exact ((hgeometry i.1).2.1 (w, level i)
+      ⟨mem_univ _, by constructor <;>
+        linarith [(abs_le.mp (hcollar i).1).1, (abs_le.mp (hcollar i).1).2]⟩).1
+  have hbne : b.Nonempty := by
+    by_contra hn
+    have hbempty : b = ∅ := Finset.not_nonempty_iff_eq_empty.mp hn
+    have hfrontempty : frontier K = ∅ := by
+      rw [hKfront, hbempty]
+      simp
+    have hsub : connectedComponent y ⊆ interior K :=
+      isPreconnected_subset_interior_of_meets_of_disjoint_frontier isPreconnected_connectedComponent
+        ⟨y, mem_connectedComponent, interior_subset (hLowK ⟨mem_connectedComponent, hyA⟩)⟩
+        (by rw [hfrontempty]; exact disjoint_empty _)
+    exact hnoncompact (hKcompact.of_isClosed_subset isClosed_connectedComponent
+      (hsub.trans interior_subset))
+  refine ⟨J, (fun i => v i.1), (fun i => neck i.1), level, b, K, hbne, hKcompact,
+    hKreg, hLowK, hKcomp,
+    hKband, ?_, hKfront, hfrontband, ?_⟩
+  · intro i hi j hj hij
+    exact htdis (hbt hi) (hbt hj) hij
+  · intro i hi
+    obtain ⟨r, σ, hr, hσ, hsrc, hside, hinside⟩ := hKcollar i hi
+    let r' := min r 1
+    have hr' : 0 < r' := lt_min hr zero_lt_one
+    have hscaled (z : ℝ) (hz : z ∈ Ioo (-r') r') : σ * z ∈ Ioo (-r) r := by
+      rcases hσ with rfl | rfl <;> constructor <;> nlinarith [hz.1, hz.2, min_le_left r 1]
+    refine ⟨(hcollar i).1, (hcollar i).2.2.1, (hgeometry i.1).2.1,
+      (hgeometry i.1).2.2.1, (hgeometry i.1).2.2.2, r', σ, hr', min_le_right _ _, hσ,
+      (fun z t ht => hsrc z (σ * t) (hscaled t ht)), ?_, ?_⟩
+    · intro z t ht
+      have hh := hside z (σ * t) (hscaled t ht)
+      rcases hσ with rfl | rfl <;> simpa [K] using hh
+    · intro z t ht
+      have hh := hinside z (σ * t) (hscaled t ht)
+      rcases hσ with rfl | rfl <;> simpa [K] using hh
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
