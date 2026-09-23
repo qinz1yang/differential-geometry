@@ -515,3 +515,7 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   when its leaf closes (every NEW_THEORY item of BO is still open: pierced cells with isolated lenses, marked nested
   annuli, the scale sums, piercing sides/components, crossing charts, the relative PL cancellation). Local cherry-picks
   dropped; the `pr12`/`pr13`/`pr14` refs and the scratchpad scripts `wire_pr121314.py`, `accept-PR1{2,3,4}.ps1` remain.
+* 06:30 (09-24) — accepted Codex lane 2's C1 tube (32 modules): `Skeleton/ClosedBranchCaseOne` and
+  `Skeleton/DescentStepOrientable` promoted to `LoopTheorem/`; `descentStepOrientableStatement` real; new
+  `LoopTheorem/Moise304Producer.lean` gives `moise304`, `moise305Tame` unconditionally (A side CLOSED). Physical
+  `sorry` 17. Lease d → Codex item 14 (compact leaf 1) per the owner.

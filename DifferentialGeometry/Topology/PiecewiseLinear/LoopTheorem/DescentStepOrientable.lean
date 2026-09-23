@@ -16,9 +16,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDis
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellReading
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryTubeProducerDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCleanCap
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOne
 
 /-!
-# Sorry-first skeleton of the orientable descent step
+# The orientable descent step
 
 The assembly `descentStepOrientableStatement` below is proved for real from the ten leaves of
 this file and from the proved producers of the tree; every `sorry` is a leaf, none is inside an
@@ -168,6 +169,12 @@ collar; the PL atlas enters through `PLPieceIn.isPiecewiseAffineOn_invFunOn_comp
 `PLPieceIn.isPLOn_comp`, and the crossing of the two sheets through
 `exists_isMarkedCrossingChartAt`.
 The only leaf left in this file is `not_branchPreimage_eq_of_isOrientable`, which is C1's theorem.
+
+Promoted to a real module on 2026-09-24: the last leaf `not_branchPreimage_eq_of_isOrientable`
+is the theorem `NormalSingularCellData.not_branchPreimage_eq_of_isOrientable` of
+`LoopTheorem/ClosedBranchCaseOne.lean`, itself promoted the same day.  No `sorry` remains, so
+`descentStepOrientableStatement` is unconditional and the loop-theorem side is closed:
+`LoopTheorem/Moise304Producer.lean` derives `moise304 : Moise304` and `moise305Tame : Moise305Tame`.
 -/
 
 open Set Topology
@@ -186,7 +193,7 @@ theorem not_branchPreimage_eq_of_isOrientable
       ¬hD.singularSet.IsBoundaryBranch c →
       ∀ {J : Set (EuclideanSpace ℝ (Fin 2))}, IsPLSphere 1 J →
         hD.branchPreimage c = J → False := by
-  sorry
+  exact NormalSingularCellData.not_branchPreimage_eq_of_isOrientable L hL hor
 
 namespace NormalSingularCellData
 

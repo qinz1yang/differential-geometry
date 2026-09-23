@@ -2957,3 +2957,4082 @@ Checker output:
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarCoordinates.lean with no diagnostics; shared outputs unchanged.
 ```
 
+
+## Codex C1 surface trace check (2026-09-23T16:40:18.9069545Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ArcCapParameters. Checker exit: 1.
+SHA-256: 59A76A36831BDA32757B0297BB390982A3E8F4F3C00A679E14CD5D4B740A5A91
+Sub-leaf list: order of terminal segment crossings; simultaneous quarter/midpoint/three-quarter normalization; hpt and hptc from matched cap traces and unique cap crossings
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCapParameters.lean:35:58: error: Application type mismatch: The argument
+  hqne
+has type
+  γ s ≠ γ t
+of sort `Prop` but is expected to have type
+  Type ?u.142
+of sort `Type (?u.142 + 1)` in the application
+  @AffineMap.lineMap_injective hqne
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCapParameters.lean:89:16: error(lean.unknownIdentifier): Unknown identifier `stdSimplexBoundary_subset_stdSimplex`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\ArcCapParameters.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\ArcCapParameters.log and .json
+
+```
+
+
+## Codex item 7 — injective relative local homology (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.InjectiveRelativeIso. Checker exit: 0.
+SHA-256: 4E6CDFE01729D44046016C390D65E43572F018D189A47620911D156776D57128
+Sub-leaf list: `exists_relativeHomologyIso_of_isolatingRadius_injOn`; invariance of domain makes the image of an injective Euclidean ball open, and the induced map on relative local homology is the composite of a homeomorphism iso and an open-neighborhood iso. Its hom is exactly `IsolatingRadius.relativeHomologyMap`.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\InjectiveRelativeIso.lean with no diagnostics; shared outputs unchanged.
+```
+The integer coefficient is not yet proved a unit; that is the next sub-leaf of Tool 1.
+
+## Codex C1 surface trace check (2026-09-23T16:43:00.1538416Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ArcCapParameters. Checker exit: 0.
+SHA-256: AD74B41FCD76AFC94760F9AC52CE52D73C6687F42914C034E47C3BEE3B4DD934
+Sub-leaf list: order of terminal segment crossings; simultaneous quarter/midpoint/three-quarter normalization; hpt and hptc from matched cap traces and unique cap crossings
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCapParameters.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T16:45:04.7029710Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink. Checker exit: 1.
+SHA-256: ADB9B0A76A08778E726C3D9197A375B0FC73FAC0290FE6BBD35B478602792919
+Sub-leaf list: derived cell disjointness from a subcomplex omitting its face; interval intrinsic endpoints; unique derived-link exit of a collar half-arm
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.lean:83:6: error: Type mismatch: After simplification, term
+  hcone.notMem_space
+ has type
+  p ∉ (upperLink (barycentricSubdivision K) {p}).space
+but is expected to have type
+  p ∉ (derivedNeighborhoodCellBase K {p}).space
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedIntervalLink.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.log and .json
+
+```
+
+
+## Codex item 7 — unit local degree of an embedding (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.InjectiveUnit. Checker exit: 0.
+SHA-256: BFB40CC4B45EB10882D95119A8376683891F49008B93A80CE1FD66F3BE159E27
+Sub-leaf list: `euclideanLocalDegree_isUnit_of_isolatingRadius_injOn`; `euclideanLocalDegree_eq_one_or_neg_one_of_injOn`. An arbitrary continuous injection on an open Euclidean domain has local degree +1 or -1. The proof uses the accepted `InjectiveRelativeIso` and the integral generator, with no differentiability or PL hypothesis. This CLOSES Tool 1 of the BN bridge. Tool 2 and the relative edge sign remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\InjectiveUnit.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T16:48:19.9688617Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink. Checker exit: 1.
+SHA-256: 680668889924EB8E583E4AC8700AC6DA5AF5D1C8D0612F3119EF42018120D217
+Sub-leaf list: derived cell disjointness from a subcomplex omitting its face; interval intrinsic endpoints; unique derived-link exit of a collar half-arm
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.lean:83:100: warning: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedIntervalLink.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T16:51:13.2610223Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink. Checker exit: 0.
+SHA-256: 769479AA3DBF6E94513CF96192CA3474879FEC713EA50799B6B061E1797446FD
+Sub-leaf list: derived cell disjointness from a subcomplex omitting its face; interval intrinsic endpoints; unique derived-link exit of a collar half-arm
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T16:55:26.4158009Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSourceCharts. Checker exit: 1.
+SHA-256: DBEBC293102B610D9DD3AE398A2810B5AB03FDC6D5F60E3591356F4E08695867
+Sub-leaf list: compact disjoint source sheets from the marked collar; complete nearby source-fiber cover; source sheet and collar-side readings in the marked chart
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSourceCharts.lean:82:6: error: Type mismatch
+  image_mono (LE.le.trans hA₀sub inter_subset_left)
+has type
+  ?m.1026 '' A₀ ⊆ ?m.1026 '' P₀
+but is expected to have type
+  y ∈ D.toFun '' A₀ → y ∈ D.toFun '' P₀
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSourceCharts.lean:90:6: error: Type mismatch
+  image_mono (LE.le.trans hA₁sub inter_subset_left)
+has type
+  ?m.1122 '' A₁ ⊆ ?m.1122 '' P₁
+but is expected to have type
+  y ∈ D.toFun '' A₁ → y ∈ D.toFun '' P₁
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarSourceCharts.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSourceCharts.log and .json
+
+```
+
+
+## Codex item 7 — boundary-normal parity in the half-space model (2026-09-23)
+
+Module: DifferentialGeometry.Topology.Manifold.BoundaryNormalParity. Checker exit: 0.
+SHA-256: F81E17F1A9B05F99759869BB2838A2F687BD81183FEE747F2A1A5347C1348AE0
+Sub-leaf list: `orientationByParity_add`; `normalFirstOrientation_parity`; `normalFirstOrientation_opposite_normal_parity`. The last theorem proves the ZMod 2 normal-reversal transfer for two half-spaces in one linear chart, including both chart-orientation parities. Transport to the actual shared PL disk and source/target edge-sign coboundary remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Manifold\BoundaryNormalParity.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T16:59:32.1315134Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSourceCharts. Checker exit: 0.
+SHA-256: D2BF3D2ABF33F6CE619234BD60036862DCF267653195F30C9F1CF9EF53F5FDF7
+Sub-leaf list: compact disjoint source sheets from the marked collar; complete nearby source-fiber cover; source sheet and collar-side readings in the marked chart
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSourceCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:01:01.5614843Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarLink. Checker exit: 1.
+SHA-256: 6512B6EB11195A4E002367E4844D325A84B4B126A3F0B72B5094F6FA26470F8E
+Sub-leaf list: actual positive and negative source collar parameters on the first derived link; each collar arm meets the branch only at its initial point
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarLink.lean:38:7: error: unexpected token '₊'; expected ',' or binderPred
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarLink.lean:66:0: warning: automatically included section variable(s) unused in theorem `DifferentialGeometry.Topology.PiecewiseLinear.NormalSingularCellData.collar_arm_inter_branchCarrier`:
+  [NormedAddCommGroup E]
+  [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarLink.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarLink.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:05:06.6769990Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarLink. Checker exit: 0.
+SHA-256: 163665282ED6125E0000F7D7F6CADED3DF6E82EBC550BE289E8C8CEE09F27052
+Sub-leaf list: actual positive and negative source collar parameters on the first derived link; each collar arm meets the branch only at its initial point
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarLink.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:07:37.5942076Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarArcLift. Checker exit: 0.
+SHA-256: 33A64302D19A0102638854683873FB22315DFD0A8D5CD4A4F8B9EEBDF0D7388B
+Sub-leaf list: continuous source lift of every local arc into one of two compact source sheets; endpoint lifts on the branch; collar side constant along the arc interior
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarArcLift.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — simultaneous PL ball-pair normal form (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLBallPairNormalForm. Checker exit: 0.
+SHA-256: 12121AA3AC53405DE7269674C94368E3573EF04A29EC519213ABF3F182B66D3D
+Sub-leaf list: `exists_isPLHomeomorphOn_ball_pair_of_disk_inter`. Two PL 3-balls meeting exactly in a common frontier PL 2-disk admit one PL homeomorphism of the union carrying each ball and their common disk to the same canonical ball pair. This retains the relative map constructed inside the existing ball-gluing proof. The half-space orientation reading of that canonical pair and transfer into the CGN edge chart remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLBallPairNormalForm.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:12:27.0333624Z)
+
+Module: DifferentialGeometry.Topology.Covering.CyclicSections. Checker exit: 0.
+SHA-256: ABF7558AE08B6BAEA041AC28F1BA31C8D3AB608BB5938C1B9F34289AA36470EF
+Sub-leaf list: gluing continuous local sections across a finite closed cover; unequal seam values for a cyclic cover with no global section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\CyclicSections.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — general boundary-normal sign transfer (2026-09-23)
+
+Module: DifferentialGeometry.Topology.Manifold.BoundaryNormalSignTransfer. Checker exit: 0.
+SHA-256: 10AFEDA4BB1531C081CDB8600A122CB5F90E1C1901CFD723660B105A44EA0CA9
+Sub-leaf list: `normalFirstOrientation_opposite_normal_of_positive_scale`; `normalFirstOrientation_opposite_normal_of_positive_scale_map`. The boundary sign reverses for opposite normal rays even after positive rescaling and tangential shear, with independent ZMod 2 ambient parities; the identity commutes with a linear chart change. The missing geometric step is to derive the required opposed local normal frames for the actual PL ball pair at an interior point of its common disk and compare this orientation with the local-degree character of `h` and the circle-positivity predicate. No CGN edgewise sign or vertex coboundary is claimed yet.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Manifold\BoundaryNormalSignTransfer.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:13:42.1456751Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeCollarArcs. Checker exit: 0.
+SHA-256: 3B56782D1589FFDE51BEDA728AD665CFE93445FF8E7C76574D30CAD65AB12472
+Sub-leaf list: common subdivision for source charts and surface quarter disks; every derived surface arc remains inside the original surface and one compact source-chart neighborhood
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeCollarArcs.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — centered prism of a shared PL disk (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLBallPairCenteredPrism. Checker exit: 0.
+SHA-256: 5B2B7836FA92494A71638D91BA3B0A7E2ED577020F0F43B05EFE1C9A47953DE1
+Sub-leaf list: `exists_centered_prism_of_ball_pair_inter_disk`. For any two PL 3-balls meeting exactly in a PL 2-disk in both frontiers, one PL product parametrisation of the entire union sends the central disk to that shared disk and the negative and positive interval halves exactly to the two balls. This supplies the geometric opposed-normal model needed by Tool 2. Transport through the CGN common chart, topological local-degree comparison with `h`, and `IsPLCirclePositive` remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLBallPairCenteredPrism.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:18:51.1306344Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchChartPL. Checker exit: 0.
+SHA-256: 3D7D010F7508BF088FD996CA21E1BED7A982CA277011A6B530B9B8FD0B066A3C
+Sub-leaf list: marked source chart produced with an explicit PL coordinate transition from an ambient atlas chart; positive halves aligned with the source collar
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchChartPL.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — shared cell pair in one PL chart (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLCellPairCenteredPrism. Checker exit: 0.
+SHA-256: CA4274BC6B492DCB54FC597E79AA0F89C25D58E70874C1B40C2920C895BB8271
+Sub-leaf list: `exists_centered_prism_of_cell_pair_in_chart`. Two `IsPLCellOn 3` cells meeting exactly in an `IsPLCellOn 2` disk in both boundary spheres, if covered by one maximal-atlas PL chart, have one centered-prism parametrisation in chart coordinates. Its negative and positive halves are exactly the two chart images. This is the geometric normal-reversal model for CGN's `Dv` pair. The edgewise character comparison with `h` and the reference-map circle signs remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellPairCenteredPrism.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex item 7 — target edge centered prism from the frozen fields (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeTargetPrism. Checker exit: 0.
+SHA-256: 465F78788ADC76B4AF1FD1A085A917A70E85615D7B6853E7D762000CDC387BE2
+Sub-leaf list: `exists_section34_edge_target_centered_prism`. For every CGN graph edge, the cut frame, outer torus chart, edge endpoints from the preparation, and the deleted-cell meeting clauses produce one triangle chart with a centered-prism parametrisation. The negative half maps exactly to `Dv` at the first endpoint, the positive half to `Dv` at the second, and the central level to `Dd e`. This supplies the actual target opposed-normal geometry without adding a frozen-leaf hypothesis. Source-side product coordinates, orientation-character comparison through `h`, circle positivity and coboundary remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34EdgeTargetPrism.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:23:29.1301986Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ChartTransitionRealisation. Checker exit: 1.
+SHA-256: 0814C7E9C35D79BFCE07C3F1D233D82D88811ED83904C7552C5A16F94E21927F
+Sub-leaf list: PL restriction to the inverse image of an open set; ambient realization of a PL change of combinatorial chart
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartTransitionRealisation.lean:29:19: error: invalid `▸` notation, expected result type of cast is
+  x ∈ f ⁻¹' O
+however, the equality
+  Eq.symm hxy
+of type
+  y = f x
+does not contain the expected result type on either the left or the right hand side
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartTransitionRealisation.lean:75:6: error: Tactic `assumption` failed
+
+case mpr
+E : Type u_1
+F : Type u_2
+inst✝⁶ : NormedAddCommGroup E
+inst✝⁵ : NormedSpace ℝ E
+inst✝⁴ : FiniteDimensional ℝ E
+inst✝³ : NormedAddCommGroup F
+inst✝² : NormedSpace ℝ F
+inst✝¹ : FiniteDimensional ℝ F
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝¹ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+x✝ : HasGroupoid (↑L.space) (plGroupoid 3)
+e : OpenPartialHomeomorph (↑L.space) (EuclideanSpace ℝ (Fin 3))
+he : e ∈ atlas (EuclideanSpace ℝ (Fin 3)) ↑L.space
+g : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) F
+hg : IsPLHomeomorphOn (↑g) g.source g.target
+hemax : e ∈ StructureGroupoid.maximalAtlas (↑L.space) (plGroupoid 3)
+U : Set (EuclideanSpace ℝ (Fin 3)) := e.target ∩ g.source
+hU : IsOpen U
+Ω : Set E
+hΩ : IsOpen Ω
+hΩeq : Subtype.val ⁻¹' Ω = ↑e.symm '' U
+heU : IsPLHomeomorphOn (fun x => ↑(↑e.symm x)) U (L.space ∩ Ω)
+hginv : IsPLHomeomorphOn (↑g.symm) g.target g.source
+htarget : (e.trans g).target ⊆ g.target
+x : EuclideanSpace ℝ (Fin 3)
+hx : x ∈ U
+⊢ x ∈ e.target
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartTransitionRealisation.lean:87:6: error: Tactic `assumption` failed
+
+case refine_1.mp
+E : Type u_1
+F : Type u_2
+inst✝⁶ : NormedAddCommGroup E
+inst✝⁵ : NormedSpace ℝ E
+inst✝⁴ : FiniteDimensional ℝ E
+inst✝³ : NormedAddCommGroup F
+inst✝² : NormedSpace ℝ F
+inst✝¹ : FiniteDimensional ℝ F
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝¹ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+x✝ : HasGroupoid (↑L.space) (plGroupoid 3)
+e : OpenPartialHomeomorph (↑L.space) (EuclideanSpace ℝ (Fin 3))
+he : e ∈ atlas (EuclideanSpace ℝ (Fin 3)) ↑L.space
+g : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) F
+hg : IsPLHomeomorphOn (↑g) g.source g.target
+hemax : e ∈ StructureGroupoid.maximalAtlas (↑L.space) (plGroupoid 3)
+U : Set (EuclideanSpace ℝ (Fin 3)) := e.target ∩ g.source
+hU : IsOpen U
+Ω : Set E
+hΩ : IsOpen Ω
+hΩeq : Subtype.val ⁻¹' Ω = ↑e.symm '' U
+heU : IsPLHomeomorphOn (fun x => ↑(↑e.symm x)) U (L.space ∩ Ω)
+hginv : IsPLHomeomorphOn (↑g.symm) g.target g.source
+htarget : (e.trans g).target ⊆ g.target
+himage : ↑g.symm '' (e.trans g).target = U
+hgU : IsPLHomeomorphOn (↑g.symm) (e.trans g).target U
+y : EuclideanSpace ℝ (Fin 3)
+hy : y ∈ U
+⊢ y ∈ g.source
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\ChartTransitionRealisation.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\ChartTransitionRealisation.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:28:53.4355395Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ChartTransitionRealisation. Checker exit: 0.
+SHA-256: 60EAAADA28BE637760FFAE2124C1A061367BCA206FEE73FEC054372052065BB9
+Sub-leaf list: PL restriction to the inverse image of an open set; ambient realization of a PL change of combinatorial chart
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartTransitionRealisation.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:30:30.9136483Z)
+
+Module: DifferentialGeometry.Topology.Covering.SheetTrace. Checker exit: 0.
+SHA-256: CFA8E92B6C01C33999DBBA0A4F51718ABD38F2B44C77A7EDE3F0F2FD48BBF107
+Sub-leaf list: agreement of connected cap traces carrying the same source preimage and collar half
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\SheetTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — one local-degree sign on a connected carrier (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.InjectiveCarrierSign. Checker exit: 0.
+SHA-256: 4143EB0141C5F123B227D7A7866D1B818413612AD7A5CD9C00CA9A6908154F40
+Sub-leaf list: `euclideanLocalDegree_sub_eq_of_isPreconnected`; `exists_euclideanLocalDegree_sign_of_isConnected`. A continuous injection on an open Euclidean domain has a single ZMod 2 sign on every connected subset, including closed carriers. This joins Tool 1's unit theorem to character constancy without assuming that a carrier is open. Chart-transfer composition and shared-disk circle signs remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\InjectiveCarrierSign.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:32:45.3440568Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeLabels. Checker exit: 0.
+SHA-256: 24336A41889ACB5A405ACBF50B7CE7810EE4474D361DB61C1033290F16C22B49
+Sub-leaf list: four-spoke sheet and side equivalence; flip exchanges sheets and preserves side; half-plane inequalities read through labels
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FourSpokeLabels.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:34:14.8420492Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSides. Checker exit: 1.
+SHA-256: 41B943E38A38744BE896F1A5C5AF045355E4BF076E072B67EBECC19C9CC48847
+Sub-leaf list: source collar halves; membership characterized by collar parameter sign and marked chart coordinate sign
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSides.lean:55:42: error: unsolved goals
+case left
+M : Type u
+inst✝¹ : TopologicalSpace M
+inst✝ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+positive : Bool
+a : EuclideanSpace ℝ (Fin 2)
+ha : a ∈ J
+⊢ -1 ≤ ?m.58
+
+case right
+M : Type u
+inst✝¹ : TopologicalSpace M
+inst✝ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+positive : Bool
+a : EuclideanSpace ℝ (Fin 2)
+ha : a ∈ J
+⊢ ?m.58 ≤ 1
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarSides.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSides.log and .json
+
+```
+
+
+## Codex item 7 — local generators on arbitrary open domains (2026-09-23)
+
+Module: DifferentialGeometry.Topology.Homology.Local.OpenGenerator. Checker exit: 0.
+SHA-256: B3669D8E8EC670427315B4E88D6662494DCD3DC82BFB2B5F9BF3EA651A750C0D
+Sub-leaf list: `euclideanOpenLocalGenerator`; `euclideanOpenLocalGenerator_inclusion`; `euclideanOpenLocalGenerator_ball`; `euclideanOpenLocalGenerator_smul_injective`; `euclideanOpenLocalGenerator_map_inclusion`. Canonical integral generators of local homology restrict naturally between open Euclidean neighborhoods; integer multiples are distinguished. Used to prove the composition law for topological chart signs. The CGN sign bridge remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\Local\OpenGenerator.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:37:23.8378808Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSides. Checker exit: 0.
+SHA-256: 70FB36D19A19D94224250BB9C471C2887911D3F520AE164681312D7A37A48F33
+Sub-leaf list: source collar halves; membership characterized by collar parameter sign and marked chart coordinate sign
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSides.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:40:17.5954809Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarQuarterReading. Checker exit: 0.
+SHA-256: 82DD66EE579BFD372EB6A302C23A46945B7622F398AD8A1F2E83DCF40375BCC2
+Sub-leaf list: quarter-plane membership equals membership of its source sheet and closed collar half
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarQuarterReading.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+
+## Codex item 7 — topological chart degree composition (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.OpenDomain. Checker exit: 0.
+SHA-256: C784BF9FC6198C87F7C6D0FB9AA85C585ACEED2F951B4B7CD83313860AE04F78
+Sub-leaf list: `euclideanLocalDegree_open_relativeHomology`. The local degree is the coefficient of the map on integral local generators for arbitrary open source and target domains. The CGN boundary-character and circle-positivity comparison remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\OpenDomain.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — topological chart degree composition (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.EmbeddingComposition. Checker exit: 0.
+SHA-256: C2E3939918E49617C6593A3F3F36F505CEB3CBC29D00ACC44B1F431DCD1FD4D2
+Sub-leaf list: `euclideanLocalDegree_sub_comp_of_injOn`. Local degrees of continuous injective maps on open Euclidean domains multiply under composition, with no derivative assumption. The CGN boundary-character and circle-positivity comparison remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\EmbeddingComposition.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:41:32.4876045Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceCharts. Checker exit: 0.
+SHA-256: 2ADA6B2A4E41E233EFCB5A4C47C7E07698644275BEF029F9E265663F0817E355
+Sub-leaf list: actual PL quarter disks; exact source-sheet/collar-side label reading; each local source sheet covers the core
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchSurfaceCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:44:00.1845439Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceSubdivision. Checker exit: 1.
+SHA-256: D12F889908EA97FC0757C104E1FA75EE37ED98E9E783E5EEE3E2632B6B87DFCA
+Sub-leaf list: finite common subdivision preserving source-labelled PL quarter disks and chart containment of derived cells and closed stars
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchSurfaceSubdivision.lean:79:10: error: invalid `▸` notation, expected result type of cast is
+  y ∈ Subtype.val ⁻¹' W ⟨a, haJ⟩
+however, the equality
+  congrArg Subtype.val hay
+of type
+  ↑(D.toFun a) = ↑y
+does not contain the expected result type on either the left or the right hand side
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\MarkedBranchSurfaceSubdivision.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...n.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchSurfaceSubdivision.log and .json
+
+```
+
+
+## Codex item 7 — mod-two embedding orientation character (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.EmbeddingParity. Checker exit: 0.
+SHA-256: 64B82D8E2196FFBB472C1766C47DCE3475E51CC5D8420F6F7611D0E4BE667071
+Sub-leaf list: `embeddingOrientationParity`; `embeddingOrientationParity_eq_zero_iff`; `embeddingOrientationParity_eq_one_iff`; `isLocallyConstant_embeddingOrientationParity`; `embeddingOrientationParity_eq_of_isPreconnected`; `embeddingOrientationParity_comp`. The parity is the sign of the actual local degree, locally constant and constant on preconnected carriers; composition adds parities. It is not a free graph label. Actual shared-disk transfer and the reference-circle comparison remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\EmbeddingParity.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:46:25.6774754Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceSubdivision. Checker exit: 0.
+SHA-256: 7C43FB1B7BE11033BE3C313ED16D151819B27ED942984CE01AC5BA63443A87FF
+Sub-leaf list: finite common subdivision preserving source-labelled PL quarter disks and chart containment of derived cells and closed stars
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchSurfaceSubdivision.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:47:39.6893713Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCapTrace. Checker exit: 1.
+SHA-256: 309288BD68C68FBEB3867C4E11A9B01DD50069FC507CB9C570D0CF293AF1CC4C
+Sub-leaf list: nondegenerate cap segment; cap boundary excludes its center; shared cap meets the branch exactly at its pole
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.lean:39:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (boundaryComplex (1 + 1) (coneComplex hcone)).space
+in the target expression
+  Finset.centroid ℝ {Finset.centroid ℝ s id, Finset.centroid ℝ t id} id ∉ (boundaryComplex (1 + 1) B).space
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+R : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑R.faces
+hR : IsCombinatorialManifold 3 R
+s t : Finset E
+hs : s ∈ R.faces
+ht : t ∈ R.faces
+hne : s ≠ t
+hcomp : s ⊆ t ∨ t ⊆ s
+q : (Fin 3 → ℝ) → E
+hq :
+  IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) ((derivedNeighborhoodCell R s).space ∩ (derivedNeighborhoodCell R t).space)
+e : Finset E := {Finset.centroid ℝ s id, Finset.centroid ℝ t id}
+he : e ∈ (barycentricSubdivision R).faces
+B : Geometry.SimplicialComplex ℝ E := dualCell (barycentricSubdivision R) e he
+x✝¹ : Finite ↑B.faces := Finite.to_subtype (dualCell_faces_finite (barycentricSubdivision R) he)
+x✝ : Finite ↑(upperLink (barycentricSubdivision R) e).faces :=
+  Finite.to_subtype (upperLink_faces_finite (barycentricSubdivision R) e)
+hB : B.space = (derivedNeighborhoodCell R s).space ∩ (derivedNeighborhoodCell R t).space
+hcone : IsConeBase (Finset.centroid ℝ e id) (upperLink (barycentricSubdivision R) e)
+⊢ Finset.centroid ℝ {Finset.centroid ℝ s id, Finset.centroid ℝ t id} id ∉ (boundaryComplex (1 + 1) B).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.lean:72:0: warning: automatically included section variable(s) unused in theorem `DifferentialGeometry.Topology.PiecewiseLinear.derived_cap_core_eq_pole`:
+  [FiniteDimensional ℝ E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [FiniteDimensional ℝ E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedCapTrace.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T17:50:26.2954837Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCapTrace. Checker exit: 1.
+SHA-256: 0B30E61A0B1F2304C41AC1928E4CF08AFF144666388F6FB8686E4A89F71085C3
+Sub-leaf list: nondegenerate cap segment; cap boundary excludes its center; shared cap meets the branch exactly at its pole
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.lean:36:100: warning: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedCapTrace.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.log and .json
+
+```
+
+
+
+## Codex item 7 — chart orientation character (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.EmbeddingParity. Checker exit: 0.
+SHA-256: FDBEB177DCC96207CE4505231B2A2462734F9B10E774EAEA7032CED214F76AF1
+Sub-leaf list: Added `embeddingOrientationParity_congr` and `embeddingOrientationParity_id`: germ invariance and zero parity of the identity. This hash supersedes the earlier entry for this module. Comparison with the actual reference-sphere boundary-circle signs remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\EmbeddingParity.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — chart orientation character (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.ChartParity. Checker exit: 0.
+SHA-256: 54CDF48A18B2B87DDD0ACACA1DE6CDB488E084D6CD8A594E090D4B8456D8DA98
+Sub-leaf list: `chartOrientationParity`; `chartOrientationParity_eq_of_isPreconnected`; `chartOrientationParity_self`; `chartOrientationParity_add`; `chartOrientationParity_symm`. Defines topological chart transfer by the actual local degree and proves the cocycle identity plus constancy on each connected carrier. Comparison with the actual reference-sphere boundary-circle signs remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\ChartParity.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:52:24.5075555Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCapTrace. Checker exit: 0.
+SHA-256: E101ADEB6512A8DB172948B068C5E1CD3A099D5BA46E88D03622EE6B1B83D918
+Sub-leaf list: nondegenerate cap segment; cap boundary excludes its center; shared cap meets the branch exactly at its pole
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — source/target equality of chart transfer on the actual carrier (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierOrientation. Checker exit: 0.
+SHA-256: 7F2F66AEA64F2656FA63EF333D63D0614045F3ADC05730FA6AFAF45DB6967A36
+Sub-leaf list: `exists_section34_vertex_chart`; `section34_vertex_chart_transfer_eq`. Each `Q w` has a maximal-atlas chart from the outer-torus and cut-frame data. Between any two charts covering `Q w`, the actual mod-two local-degree transfer has the same value on `h '' src (.vertexBall w)` and `Dv w`, proved from the connected carrier and the frozen preparation/deletion clauses. No global orientation or degree +1 of G is used. Converting these transfers to the reference-sphere disk/rim orientation signs and then joint matching remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CarrierOrientation.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T17:54:11.7794074Z)
+
+Module: DifferentialGeometry.Topology.Covering.CyclicSheetLabels. Checker exit: 0.
+SHA-256: 824B0EF0212C5214111AE554F94C55B2C9548449E15ED4AC3766BCE2B538CB9C
+Sub-leaf list: successive source-sheet alignment; closing sheet exchange forced by absence of a global section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\CyclicSheetLabels.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:01:58.4077169Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchSourceSections. Checker exit: 1.
+SHA-256: FDF20DB30A27AF4AD8A46E52672EE71976756EDDFC433691688E47FE222ED9E9
+Sub-leaf list: local continuous sections of the actual branch projection; exact two-sheet fibers; source-sheet membership of each section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:38:16: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑(hD.singularSet.branchComplex c).space
+in the application
+  s i b y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:39:39: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑(hD.singularSet.branchComplex c).space
+in the application
+  s i b y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:41:18: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑(hD.singularSet.branchComplex c).space
+in the application
+  s i false y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:41:31: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑(hD.singularSet.branchComplex c).space
+in the application
+  s i true y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:44:24: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑(hD.singularSet.branchComplex c).space
+in the application
+  s i false y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:44:41: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑(hD.singularSet.branchComplex c).space
+in the application
+  s i true y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:88:42: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsA i b y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:88:58: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hssec i b y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:97:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  @ContinuousOn ?m.884 ?m.885 ?m.886 ?m.887 ?m.888 ?m.889
+in the target expression
+  @ContinuousOn (↑(hD.singularSet.branchComplex c).space) (↑(hD.branchPreimage c)) instTopologicalSpaceSubtype
+    instTopologicalSpaceSubtype (s i b) {y | ι ((hD.singularSet.branchPieceIn c).map ↑y) ∈ W i}
+
+case refine_1
+M : Type u
+inst✝³ : TopologicalSpace M
+inst✝² : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+E : Type u_1
+inst✝¹ : TopologicalSpace E
+inst✝ : T2Space E
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+ι : M → E
+hιc : Continuous ι
+hι : Function.Injective ι
+J : Set (EuclideanSpace ℝ (Fin 2))
+hJ : hD.branchPreimage c = J
+a₀ : ↑(hD.branchPreimage c)
+I : Type u_2
+A : I → Bool → Set (EuclideanSpace ℝ (Fin 2))
+W : I → Set E
+hAc : ∀ (i : I) (b : Bool), IsCompact (A i b)
+hAdom : ∀ (i : I) (b : Bool), A i b ⊆ D.domain
+hAi : ∀ (i : I) (b : Bool), InjOn D.toFun (A i b)
+hAA : ∀ (i : I), Disjoint (A i false) (A i true)
+hpre : ∀ (i : I), ∀ x ∈ D.domain, ι (D.toFun x) ∈ W i → x ∈ A i false ∪ A i true
+hcore : ∀ (i : I) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ι y ∈ W i → y ∈ D.toFun '' (A i b ∩ J)
+P : PLPieceIn (EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)) 3 M (hD.singularSet.branchCarrier c) :=
+  hD.singularSet.branchPieceIn c
+f : EuclideanSpace ℝ (Fin 2) → E := ι ∘ D.toFun
+F : ↑P.complex.space → E := fun y => ι (P.map ↑y)
+hFc : Continuous F
+hfi : ∀ (i : I) (b : Bool), InjOn f (A i b)
+hf : ∀ (i : I) (b : Bool), ContinuousOn f (A i b)
+hsurj : ∀ (i : I) (b : Bool) (y : ↑P.complex.space), F y ∈ W i → F y ∈ f '' A i b
+hinvmem :
+  ∀ (i : I) (b : Bool) (y : ↑P.complex.space), F y ∈ W i → Function.invFunOn f (A i b) (F y) ∈ hD.branchPreimage c
+s : I → Bool → ↑P.complex.space → ↑(hD.branchPreimage c) :=
+  fun i b y => if hy : F y ∈ W i then ⟨Function.invFunOn f (A i b) (F y), ⋯⟩ else a₀
+hsval : ∀ (i : I) (b : Bool) (y : ↑P.complex.space), F y ∈ W i → ↑(s i b y) = Function.invFunOn f (A i b) (F y)
+hsA : ∀ (i : I) (b : Bool) (y : ↑P.complex.space), F y ∈ W i → ↑(s i b y) ∈ A i b
+hsD : ∀ (i : I) (b : Bool) (y : ↑P.complex.space), F y ∈ W i → D.toFun ↑(s i b y) = P.map ↑y
+hpD : ∀ (x : ↑(hD.branchPreimage c)), P.map ↑(hD.branchProjection c x) = D.toFun ↑x
+hssec : ∀ (i : I) (b : Bool) (y : ↑P.complex.space), F y ∈ W i → hD.branchProjection c (s i b y) = y
+i : I
+b : Bool
+hinvc : ContinuousOn (Function.invFunOn f (A i b)) (f '' A i b)
+hvalc : ContinuousOn (fun y => ↑(s i b y)) {y | F y ∈ W i}
+⊢ ContinuousOn (s i b) {y | ι ((hD.singularSet.branchPieceIn c).map ↑y) ∈ W i}
+
+Note: The target expression is not type-correct under the `implicit` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+Full error:
+  Application type mismatch: The argument
+    s i b
+  has type
+    ↑P.complex.space → @Elem (EuclideanSpace ℝ (Fin 2)) (hD.branchPreimage c)
+  but is expected to have type
+    ↑(hD.singularSet.branchComplex c).space → @Elem (EuclideanSpace ℝ (Fin 2)) (hD.branchPreimage c)
+  in the application
+    ContinuousOn (s i b)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:100:48: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsA i false y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:101:45: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsA i true y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:105:52: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  F y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:107:61: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsA i false y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:108:32: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsD i false y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:109:59: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsA i true y
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:110:31: error: Application type mismatch: The argument
+  y
+has type
+  EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)
+but is expected to have type
+  ↑P.complex.space
+in the application
+  hsD i true y
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchSourceSections.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:03:27.1634309Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchSourceSections. Checker exit: 1.
+SHA-256: 0A81AA49468C0DB18764317CF3FD2E9C70F36548C0E1FF1A800E8AF3DB218AD0
+Sub-leaf list: local continuous sections of the actual branch projection; exact two-sheet fibers; source-sheet membership of each section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean:108:27: error: invalid `▸` notation, expected result type of cast is
+  ι (D.toFun ↑x) ∈ W i
+however, the equality
+  Eq.symm hFx
+of type
+  F y = f ↑x
+does not contain the expected result type on either the left or the right hand side
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchSourceSections.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:04:58.0189721Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchSourceSections. Checker exit: 0.
+SHA-256: 2F4B1FBAA8E96A9716EA732719AEAE7447C41D2323CB22ABA5CC4FEB247E6354
+Sub-leaf list: local continuous sections of the actual branch projection; exact two-sheet fibers; source-sheet membership of each section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:07:17.6416958Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCellSheetLabels. Checker exit: 1.
+SHA-256: 6C462068A1087B41A7A00ADCC0B4BC7999FB284A1CB5F56B4EFAE58EE419435A
+Sub-leaf list: actual branch-covering source labels on consecutive and closing caps; closing sheet exchange from no continuous section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.lean:83:10: error: invalid `▸` notation, expected result type of cast is
+  q k ∈ Ck k ∩ Ck (k + 1)
+however, the equality
+  Eq.symm (hq k hk)
+of type
+  y k = F (q k)
+does not contain the expected result type on either the left or the right hand side
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.lean:89:4: error: invalid `▸` notation, expected result type of cast is
+  z' ∈ Ck 0 ∩ Ck m
+however, the equality
+  Eq.symm hz'
+of type
+  z = F z'
+does not contain the expected result type on either the left or the right hand side
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCellSheetLabels.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.log and .json
+
+```
+
+
+
+## Codex item 7 — orientation character and circle degree (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.ChartGraphCharacter. Checker exit: 0.
+SHA-256: F20AD7B2D1CB0521A069771559CCACE1939934F8923FF8A81EA43E2B9DD2DBEE
+Sub-leaf list: `chartGraphCharacter`; `exists_vertex_signs_of_connected_chart_carriers`. Edge signs defined from actual chart local degrees (including normal-reversal parity 1) differ by a vertex coboundary for two chart families covering the connected carriers. Loops and parallel edges need no special assumption. The identification with reference sphere maps is not yet proved.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\ChartGraphCharacter.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — orientation character and circle degree (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CircleDegreeOrientation. Checker exit: 0.
+SHA-256: 7BB97EA19B8F8798F86F9080253CE571E63F9539E116D1F3EC88ACFE74962D0C
+Sub-leaf list: `euclideanSphereDegree_sphereReflection`; `euclideanSphereDegree_eq_one_of_hasIncreasingCircleLift`; `euclideanSphereDegree_eq_one_iff_hasIncreasingCircleLift`; `circleSphereHomeomorph`; `isPLCirclePositive_iff_euclideanSphereDegree_eq_one`. Exact comparison of the existing circle positivity predicate with degree +1 of the actual coordinate map. Connecting the disk local degree to these circle degrees remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CircleDegreeOrientation.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T18:08:30.9537872Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCellSheetLabels. Checker exit: 1.
+SHA-256: D9B6B598FD11C262891CEB4911B7E363AEF335889CEF1676A0684E7DEFE4160D
+Sub-leaf list: actual branch-covering source labels on consecutive and closing caps; closing sheet exchange from no continuous section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.lean:116:6: warning: Unused tactic linter: `change (a : EuclideanSpace ℝ (Fin 2)) ∈ A (k + 1) _` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.lean:125:6: warning: Unused tactic linter: `change (a : EuclideanSpace ℝ (Fin 2)) ∈ A 0 _` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCellSheetLabels.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:10:39.4223288Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCellSheetLabels. Checker exit: 0.
+SHA-256: 6212CDA750F4F657943B03D1753BF73EC125084086F8D98794E3765F85E9DDC0
+Sub-leaf list: actual branch-covering source labels on consecutive and closing caps; closing sheet exchange from no continuous section
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:11:41.1510011Z)
+
+Module: DifferentialGeometry.Topology.Covering.SheetTrace. Checker exit: 0.
+SHA-256: 53805857638F6D03DDDB1B1C3E5582C46AC6D89D0FED899907B968AEA50834A3
+Sub-leaf list: connected source-sheet ownership; source fibre label preservation; equality of connected cap traces with the same sheet and side
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\SheetTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:13:42.0083641Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink. Checker exit: 1.
+SHA-256: EA9E39B8BD82F897D4127B5ABB3F1DC6E2144FF474A3DB154C5529AB4BBED778
+Sub-leaf list: unique collar-arm exit; exact segment cut out by a derived cell; avoidance of every other branch cell
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.lean:50:13: error: typeclass instance problem is stuck
+  IsStrictOrderedRing ?m.89
+
+Note: Lean will not try to resolve this typeclass instance problem because the first, second, and third type arguments to `IsStrictOrderedRing` contain metavariables. These arguments must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\DerivedIntervalLink.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.log and .json
+
+```
+
+
+
+## Codex item 7 — interior degree and boundary orientation (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.BoundarySphereDegree. Checker exit: 0.
+SHA-256: D86FE9628889C6D88ED8610BA48964F8BC34FBF47419D341B1B998041EF8282B
+Sub-leaf list: `IsolatingRadius.boundarySphereMap`; `euclideanLocalDegree_eq_boundarySphereDegree`. An isolated zero at the unit-ball center with boundary mapped to the unit sphere has local degree equal to the actual boundary sphere map degree.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\BoundarySphereDegree.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — interior degree and boundary orientation (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CircleLocalDegreeOrientation. Checker exit: 0.
+SHA-256: A910FDACA961913AB57E59E00399DF0821A30E55842E1DD0DEF7FF65D62ED58C
+Sub-leaf list: `isPLCirclePositive_unitSphere_iff_localDegree_eq_one`. In the centered disk model, the actual boundary map satisfies IsPLCirclePositive exactly when the interior local degree is +1. The arbitrary PL cell collar transport remains OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CircleLocalDegreeOrientation.lean with no diagnostics; shared outputs unchanged.
+```
+
+Axiom audit checkpoint (2026-09-23): external `audit-cgn-orientation-closure.lean` silently checked the completed embedding-unit, carrier-sign, local-generator, composition, parity, chart-cocycle, connected chart-graph coboundary, CGN carrier-transfer, target-prism, linear normal-sign and circle-degree headlines. Only `propext`, `Classical.choice`, `Quot.sound` are allowed; no `sorryAx` appeared. Checker exit: 0, no diagnostics. The two immediately preceding boundary-degree modules were created after this checkpoint and await inclusion in the next audit.
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\audit-cgn-orientation-closure.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Codex C1 surface trace check (2026-09-23T18:15:46.3874830Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink. Checker exit: 0.
+SHA-256: 8677597431A97EFA9224796BC0C20094261558D5B24865B98A08EEB50BF98FE1
+Sub-leaf list: unique collar-arm exit; exact segment cut out by a derived cell; avoidance of every other branch cell
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:21:07.0990262Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarRayOwnership. Checker exit: 1.
+SHA-256: 21F7E7568667310B60A2873D09006B396FE18D594387C9CDA1D117EDD900B49B
+Sub-leaf list: the first-cell collar ray has a unique boundary exit on its original source sheet and chosen collar side
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean:61:46: error: Type mismatch: After simplification, term
+  harm
+ has type
+  (restrict R ((fun t => ι (D.toFun (ρ (a, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0)).space =
+    (fun t => ι (D.toFun (ρ (a, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0
+but is expected to have type
+  K.space = F '' if positive = true then Icc 0 1 else Icc (-1) 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean:102:31: error: Application type mismatch: The argument
+  hvA
+has type
+  ρ (a, v) ∈ A
+but is expected to have type
+  ρ (a, v) ∈ A ∩ collarHalf J ρ positive
+in the application
+  And.intro hvA
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean:102:9: error: Insufficient number of fields for `⟨...⟩` constructor: Constructor `Eq.refl` does not have explicit fields, but 2 were provided
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean:103:2: error: No goals to be solved
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarRayOwnership.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...p.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:22:44.8359351Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarRayOwnership. Checker exit: 1.
+SHA-256: 0F2AB98C085B9C83D3E127A982BC4F2F6342C2D33A32FDA270D33281246DF8C8
+Sub-leaf list: the first-cell collar ray has a unique boundary exit on its original source sheet and chosen collar side
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean:61:46: error: Type mismatch: After simplification, term
+  harm
+ has type
+  (restrict R ((fun t => ι (D.toFun (ρ (a, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0)).space =
+    (fun t => ι (D.toFun (ρ (a, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0
+but is expected to have type
+  K.space = F '' if positive = true then Icc 0 1 else Icc (-1) 0
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarRayOwnership.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...p.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.log and .json
+
+```
+
+
+# Codex item 13
+
+## CanonicalTowerSeams — verified initial seam layer
+
+- Source: `CanonicalTowerSeams.lean` (new file; frozen statements unchanged).
+- Actual adjacent intersection components form a finite PL-circle family and cover the trace.
+- The finite window has finitely many labelled seams; null-trace cardinality has an explicit
+  finiteness premise for its zero criterion. `h314` classifies the original adjacent seams.
+- Receipt: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalTowerSeams.json`
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+- Source SHA-256: `36F03DF406C399F5E9C56B3024F1A48A28410198E34D16C6AE692F749BA5DBE0`.
+- Audit: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13Seams.lean` and
+  `AuditCodex13Seams.receipt.json`; exitCode=0, diagnosticLines=0, sourceStable=true.
+  Every nonautomatic declaration from this module has only approved foundational axioms;
+  all thirteen environment linters pass.
+- This is initial finite seam geometry, not a surgery transition or the descent endpoint.
+
+## Codex C1 surface trace check (2026-09-23T18:28:39.0735446Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarRayOwnership. Checker exit: 0.
+SHA-256: F2153A8A16F73822805F24A82812DDC04EC18B6903CAB3E7679D7CEF4BC25CF9
+Sub-leaf list: derived collar ray retains its source sheet; strict collar side; singleton derived link intersection
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:29:37.8834194Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ArcCapParameters. Checker exit: 0.
+SHA-256: C62F0E334AF4AEF8F3C4919FD9FB588F68CEAF7BFEB0EAF0798D4DDBE6B9F061
+Sub-leaf list: PL parametrization at quarter, midpoint and three-quarter; nonempty middle outside disjoint terminal segments
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCapParameters.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:29:58.3914431Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSheetPermutation. Checker exit: 0.
+SHA-256: 140FBD2617E16B3CE2AE668D68CED238F2D4831F9952B60D890509DE7E8498C5
+Sub-leaf list: sheet exchange preserves collar sides and separation
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FourSpokeSheetPermutation.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:30:31.3298153Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCore. Checker exit: 0.
+SHA-256: 425C91BAA473DB79382D1A260FE1E14367880067FB51473AC97D7ABE7B7DFAA1
+Sub-leaf list: core segment; adjacent cell distinctness; singleton core cap intersections
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellCore.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:32:20.7345216Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceBoundaryFaces. Checker exit: 0.
+SHA-256: 571C3C33A40370247B47FCFAC558A50F06805C142813D65C034A0590711B210C
+Sub-leaf list: comparable core faces lie in the quarter disk boundary
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceBoundaryFaces.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## CanonicalTowerFiniteWindow — verified initial window geometry
+
+- New `CanonicalTowerFiniteWindow.lean`: actual odd pieces, exact initial-surface union,
+  exact lower/upper seam traces and their finiteness, compatible finite triangulations, and an
+  open finite-carrier neighborhood of each compact subset away from the marked point.
+- Receipt: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalTowerFiniteWindow.json`
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+- Source SHA-256: `7F921587C74F177C329CFC86279396C81F3049D1E90D0505EEFFDE8D7FBA8C44`.
+- Audit: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13Window.lean` and
+  `AuditCodex13Window.receipt.json`; exitCode=0, diagnosticLines=0, sourceStable=true.
+  All nonautomatic module declarations pass the foundational axiom check and thirteen linters.
+- No protected surgery transition or full evolving surface-state producer is claimed yet.
+
+## Codex C1 surface trace check (2026-09-23T18:32:43.7155732Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceArcsAndCaps. Checker exit: 0.
+SHA-256: 26240ED12A653934495C11D23CB6B7F36C247A30C69ED1CF8DC57928DE689F29
+Sub-leaf list: four separated PL arcs and nondegenerate singleton cap-boundary crossings
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceArcsAndCaps.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:32:58.4716601Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCapMatching. Checker exit: 0.
+SHA-256: 366D79D7C4B120C73099CCFEC0892DF337CA8E665A604860EE54FED55F59EC57
+Sub-leaf list: source-compatible common cap traces agree
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCapMatching.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:33:13.9515669Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarLink. Checker exit: 0.
+SHA-256: 163665282ED6125E0000F7D7F6CADED3DF6E82EBC550BE289E8C8CEE09F27052
+Sub-leaf list: positive and negative collar ray exits; collar arm meets branch core only at its source
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarLink.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:33:47.9152890Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarMarkedRays. Checker exit: 1.
+SHA-256: 8CFFB1A442FE4E992DAB5523E296A763DF28489C7197317F64CFB84359694855
+Sub-leaf list: four source-labelled collar marks outside first-cell caps
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean:86:20: error: Invalid projection: Projections extract constructor fields for one-constructor inductive types. The expression
+  ht
+has type
+  Decidable.rec (fun h => (fun x => Icc (-1) 0) h) (fun h => (fun x => Icc 0 1) h) (instDecidableEqBool positive true) t
+which is not a one-constructor inductive type.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean:86:20: error: Invalid projection: Projections extract constructor fields for one-constructor inductive types. The expression
+  ht
+has type
+  Decidable.rec (fun h => (fun x => Icc (-1) 0) h) (fun h => (fun x => Icc 0 1) h) (instDecidableEqBool positive true) t
+which is not a one-constructor inductive type.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean:86:20: error: Invalid projection: Projections extract constructor fields for one-constructor inductive types. The expression
+  ht
+has type
+  Decidable.rec (fun h => (fun x => Icc (-1) 0) h) (fun h => (fun x => Icc 0 1) h) (instDecidableEqBool positive true) t
+which is not a one-constructor inductive type.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean:86:20: error: Invalid projection: Projections extract constructor fields for one-constructor inductive types. The expression
+  ht
+has type
+  Decidable.rec (fun h => (fun x => Icc (-1) 0) h) (fun h => (fun x => Icc 0 1) h) (instDecidableEqBool positive true) t
+which is not a one-constructor inductive type.
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean:87:53: error: Tactic `constructor` failed: target is not an inductive datatype
+
+case false
+M : Type u
+inst✝⁵ : TopologicalSpace M
+inst✝⁴ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+hD : NormalSingularCellData D BdM B
+ι : M → E
+hι : Function.Injective ι
+hPL : IsPiecewiseAffineOn (ι ∘ D.toFun) D.domain
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+R Γ : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑R.faces
+hΓR : Γ.faces ⊆ R.faces
+hΓ : Γ.space = ι '' hD.singularSet.branchCarrier c
+a : Bool → EuclideanSpace ℝ (Fin 2)
+ha : ∀ (b : Bool), a b ∈ J
+hp : {ι (D.toFun (a false))} ∈ R.faces
+hDa : ∀ (b : Bool), D.toFun (a b) = D.toFun (a false)
+harm :
+  ∀ (b positive : Bool),
+    (restrict R ((fun t => ι (D.toFun (ρ (a b, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ι (D.toFun (ρ (a b, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0
+A : Bool → Set (EuclideanSpace ℝ (Fin 2))
+hAc : ∀ (b : Bool), IsClosed (A b)
+hAA : Disjoint (A false) (A true)
+haA : ∀ (b : Bool), a b ∈ A b
+hpre : ∀ x ∈ D.domain, ι (D.toFun x) ∈ (derivedNeighborhoodCell R {ι (D.toFun (a false))}).space → x ∈ A false ∪ A true
+t₀ t₁ : Finset E
+ht₀ : t₀ ∈ Γ.faces
+ht₁ : t₁ ∈ Γ.faces
+hne₀ : t₀ ≠ {ι (D.toFun (a false))}
+hne₁ : t₁ ≠ {ι (D.toFun (a false))}
+D₀ D₁ : Set E
+hcap₀ : D₀ ⊆ (derivedNeighborhoodCell R t₀).space
+hcap₁ : D₁ ⊆ (derivedNeighborhoodCell R t₁).space
+i : Fin 4
+b : Bool := (fourSpokeLabel i).1
+positive : Bool := (fourSpokeLabel i).2
+hbR : {ι (D.toFun (a b))} ∈ R.faces
+hdis : Disjoint (A b) (A !b)
+hpreb : ∀ x ∈ D.domain, ι (D.toFun x) ∈ (derivedNeighborhoodCell R {ι (D.toFun (a b))}).space → x ∈ A b ∪ A !b
+v : ℝ
+hv : v ∈ Icc (-1) 1
+hsign : if positive = true then 0 < v else v < 0
+hvA : ρ (a b, v) ∈ A b ∩ collarHalf J ρ positive
+hbase :
+  ((derivedNeighborhoodCellBase R {ι (D.toFun (a b))}).space ∩
+      (fun t => ι (D.toFun (ρ (a b, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0) =
+    {ι (D.toFun (ρ (a b, v)))}
+F : ℝ → E := fun t => ι (D.toFun (ρ (a b, t)))
+I : Set ℝ := if positive = true then Icc 0 1 else Icc (-1) 0
+K : Geometry.SimplicialComplex ℝ E := restrict R (F '' I)
+hKsp : K.space = F '' I
+hIsub : I ⊆ Icc (-1) 1
+⊢ 0 ∈ I
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean:87:53: error: Tactic `constructor` failed: target is not an inductive datatype
+
+case true
+M : Type u
+inst✝⁵ : TopologicalSpace M
+inst✝⁴ : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+D : SingularTwoCell M
+BdM B : Set M
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+hD : NormalSingularCellData D BdM B
+ι : M → E
+hι : Function.Injective ι
+hPL : IsPiecewiseAffineOn (ι ∘ D.toFun) D.domain
+c : hD.singularSet.Branch
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+R Γ : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑R.faces
+hΓR : Γ.faces ⊆ R.faces
+hΓ : Γ.space = ι '' hD.singularSet.branchCarrier c
+a : Bool → EuclideanSpace ℝ (Fin 2)
+ha : ∀ (b : Bool), a b ∈ J
+hp : {ι (D.toFun (a false))} ∈ R.faces
+hDa : ∀ (b : Bool), D.toFun (a b) = D.toFun (a false)
+harm :
+  ∀ (b positive : Bool),
+    (restrict R ((fun t => ι (D.toFun (ρ (a b, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ι (D.toFun (ρ (a b, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0
+A : Bool → Set (EuclideanSpace ℝ (Fin 2))
+hAc : ∀ (b : Bool), IsClosed (A b)
+hAA : Disjoint (A false) (A true)
+haA : ∀ (b : Bool), a b ∈ A b
+hpre : ∀ x ∈ D.domain, ι (D.toFun x) ∈ (derivedNeighborhoodCell R {ι (D.toFun (a false))}).space → x ∈ A false ∪ A true
+t₀ t₁ : Finset E
+ht₀ : t₀ ∈ Γ.faces
+ht₁ : t₁ ∈ Γ.faces
+hne₀ : t₀ ≠ {ι (D.toFun (a false))}
+hne₁ : t₁ ≠ {ι (D.toFun (a false))}
+D₀ D₁ : Set E
+hcap₀ : D₀ ⊆ (derivedNeighborhoodCell R t₀).space
+hcap₁ : D₁ ⊆ (derivedNeighborhoodCell R t₁).space
+i : Fin 4
+b : Bool := (fourSpokeLabel i).1
+positive : Bool := (fourSpokeLabel i).2
+hbR : {ι (D.toFun (a b))} ∈ R.faces
+hdis : Disjoint (A b) (A !b)
+hpreb : ∀ x ∈ D.domain, ι (D.toFun x) ∈ (derivedNeighborhoodCell R {ι (D.toFun (a b))}).space → x ∈ A b ∪ A !b
+v : ℝ
+hv : v ∈ Icc (-1) 1
+hsign : if positive = true then 0 < v else v < 0
+hvA : ρ (a b, v) ∈ A b ∩ collarHalf J ρ positive
+hbase :
+  ((derivedNeighborhoodCellBase R {ι (D.toFun (a b))}).space ∩
+      (fun t => ι (D.toFun (ρ (a b, t)))) '' if positive = true then Icc 0 1 else Icc (-1) 0) =
+    {ι (D.toFun (ρ (a b, v)))}
+F : ℝ → E := fun t => ι (D.toFun (ρ (a b, t)))
+I : Set ℝ := if positive = true then Icc 0 1 else Icc (-1) 0
+K : Geometry.SimplicialComplex ℝ E := restrict R (F '' I)
+hKsp : K.space = F '' I
+hIsub : I ⊆ Icc (-1) 1
+⊢ 0 ∈ I
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\BranchCollarMarkedRays.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.log and .json
+
+```
+
+
+
+## Codex item 7 — local normal transfer and disk orientation (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.ChartGraphCharacter. Checker exit: 0.
+SHA-256: BAADFA647CEAD8C1B7F147465BAC192D4B855C1988A34DA1748A468A8F65B307
+Sub-leaf list: Generalized `exists_vertex_signs_of_connected_chart_carriers`: the source and target reference charts only need to exist at their chosen points. Only one base chart must cover the whole carrier. Their point choices can differ. This matches the BR route and supersedes the earlier hash. The reference-sphere collar transport, joint matching, torus clause and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\ChartGraphCharacter.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — local normal transfer and disk orientation (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.CompactSupportOrientation. Checker exit: 0.
+SHA-256: 59644A04C906E60AB669BF658385408B34CDFDC632A0A641FB6BC94DEDCE7E5F
+Sub-leaf list: `euclideanLocalDegree_sub_eq_one_of_eqOn_compl_isCompact`: a continuous injective Euclidean map equal to identity outside a compact set has local degree +1 everywhere. The reference-sphere collar transport, joint matching, torus clause and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\CompactSupportOrientation.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — local normal transfer and disk orientation (2026-09-23)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DiskLocalDegreeOrientation. Checker exit: 0.
+SHA-256: EF10B194E9A2225A6911767DD8BA6BA09CB2C573D5DF51A06132761B4D1AF1EA
+Sub-leaf list: `isPLCirclePositive_iff_localDegree_sub_eq_one`: for a disk embedding preserving its interior and boundary circle, circle positivity is equivalent to local degree +1 at any interior point; no fixed-center hypothesis. The reference-sphere collar transport, joint matching, torus clause and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DiskLocalDegreeOrientation.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — local normal transfer and disk orientation (2026-09-23)
+
+Module: DifferentialGeometry.Topology.LocalDegree.HalfSpace. Checker exit: 0.
+SHA-256: 7DC3103F879D0AA9E75576CC25D1A308D1F3D51B02F6043EBDA48E19F0CDF13F
+Sub-leaf list: `euclideanLocalDegree_eq_of_same_sides_and_trace`; `euclideanLocalDegree_eq_of_preserves_normal_sides`; `euclideanLocalDegree_eq_neg_of_reverses_normal_sides`; `embeddingOrientationParity_eq_of_preserves_normal_sides`; `embeddingOrientationParity_eq_add_one_of_reverses_normal_sides`. This proves Tool 2 in continuous half-space coordinates: identical boundary trace and preservation/reversal of the two normal sides give equal/opposite local degrees; the mod-two normal reversal contributes 1. The proof is a nonvanishing boundary homotopy, with no differentiability. The reference-sphere collar transport, joint matching, torus clause and frozen endpoint remain OPEN.
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\HalfSpace.lean with no diagnostics; shared outputs unchanged.
+```
+
+## SurfaceInnermostDisk — verified geometric disk selection
+
+- New `SurfaceInnermostDisk.lean`: on any finite triangulated closed PL surface, if one
+  member of a finite disjoint circle family bounds a disk, an actual member bounds a disk
+  disjoint from all other circles. A PL-torus corollary is included.
+- The proof minimizes the finite count of circles inside a bounding disk; an interior circle
+  gives a strict subdisk through `exists_disk_complement_of_circle`. No extra named input.
+- Receipt: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceInnermostDisk.json`
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+- Source SHA-256: `D4CAA0567B9DC1B245ECAED3B217E2C3D2DA34B9B9668CF7363ADA4903B3C060`.
+- Audit: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13Innermost.lean` and
+  `AuditCodex13Innermost.receipt.json`; exitCode=0, diagnosticLines=0, sourceStable=true.
+  Both exported results pass foundational axiom closure and all thirteen linters.
+- This selects the disk; the joint relative split and trace-count decrease remain separate.
+
+## Codex C1 surface trace check (2026-09-23T18:37:50.1849722Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarMarkedRays. Checker exit: 0.
+SHA-256: E6B58818CAA88D3D39805974F852AFE55F2EF7E4F1F113D2FBEC112F8117B5FA
+Sub-leaf list: four source-labelled collar marks outside first-cell caps
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:38:46.7589998Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCapNeighbors. Checker exit: 0.
+SHA-256: 8984F070D3205F77FDA38F55C1910F148FEAC496BC77F75EC913260AD7A27654
+Sub-leaf list: distinct comparable neighbor faces and cap pole centroid
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellCapNeighbors.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:39:21.0093856Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSourceCells. Checker exit: 1.
+SHA-256: B6EC78FB0C7EBBA43425404748537E2BCAAF2902BF7B1FD914DE023BC8A6C2C3
+Sub-leaf list: source labels produce harm and harmc; cap normalization produces hpt and hptc; ray normalization produces hray; accepted marked-cell reduction
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceCells.lean:85:4: error: Type mismatch
+  IsPolyhedron.isClosed (IsPLBall.isPolyhedron (IsConeBase.isPLBall_of_isPLSphere (hK k) (hS k)))
+has type
+  IsClosed (coneComplex ⋯).space
+but is expected to have type
+  IsClosed (H k)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceCells.lean:120:31: error: unsolved goals
+E : Type u_1
+inst✝⁶ : NormedAddCommGroup E
+inst✝⁵ : NormedSpace ℝ E
+inst✝⁴ : FiniteDimensional ℝ E
+M : Type u
+inst✝³ : TopologicalSpace M
+inst✝² : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M
+inst✝¹ : T2Space M
+D : SingularTwoCell M
+BdM B : Set M
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+ι : M → E
+hιc : Continuous ι
+hι : Function.Injective ι
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+hJ : IsPLSphere 1 J
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+R Γ : Geometry.SimplicialComplex ℝ E
+hRfin : R.faces.Finite
+hRL : IsSubdivision R L
+m : ℕ
+hm : 2 ≤ m
+cc : ℕ → E
+K : ℕ → Geometry.SimplicialComplex ℝ E
+hKfin : ∀ (k : ℕ), (K k).faces.Finite
+hK : ∀ (k : ℕ), IsConeBase (cc k) (K k)
+hS : ∀ (k : ℕ), IsPLSphere 2 (K k).space
+y₀ y₁ : ℕ → E
+T : ℕ → Fin 4 → Set E
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγzero : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγone : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i j : Fin 4), i ≠ j → T k i ∩ T k j = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+D₀ D₁ : ℕ → Set E
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (K k).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (K k).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, coneSet (cc k) (K k).space ∩ coneSet (cc (k + 1)) (K (k + 1)).space = D₁ k
+hadjc : coneSet (cc m) (K m).space ∩ coneSet (cc 0) (K 0).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ), j + 1 < k → k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (coneSet (cc j) (K j).space) (coneSet (cc k) (K k).space)
+hN : ⋃ k, ⋃ (_ : k ≤ m), coneSet (cc k) (K k).space = (derivedNeighborhood R Γ).space
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (cc k) {y₀ k, y₁ k} = ι '' hD.singularSet.branchCarrier c
+hpoles : ∀ (k : ℕ), ι '' hD.singularSet.branchCarrier c ∩ (K k).space = {y₀ k, y₁ k}
+A : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2))
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A k b) ∧ A k b ⊆ C ∧ InjOn D.toFun (A k b)
+hAA : ∀ (k : ℕ), Disjoint (A k false) (A k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ι (D.toFun x) ∈ coneSet (cc k) (K k).space → x ∈ A k false ∪ A k true
+hAc :
+  ∀ (k : ℕ) (b : Bool),
+    ∀ y ∈ hD.singularSet.branchCarrier c, ι y ∈ coneSet (cc k) (K k).space → y ∈ D.toFun '' (A k b ∩ J)
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ ι ∘ D.toFun '' (A k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+htrace₀ :
+  ∀ (k : ℕ) (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ (k : ℕ) (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+α : Fin 4 → EuclideanSpace ℝ (Fin 2)
+v : Fin 4 → ℝ
+hαJ : ∀ (i : Fin 4), α i ∈ J
+hv : ∀ (i : Fin 4), v i ∈ Icc (-1) 1
+hray : ∀ (i : Fin 4), ι (D.toFun (ρ (α i, v i))) ∈ T 0 i \ (D₀ 0 ∪ D₁ 0)
+hbase : cc 0 = ι (D.toFun (α 0))
+hα2 : α 2 = α 0
+hα1 : α 1 = τ (α 0)
+hα3 : α 3 = α 1
+hv0 : 0 < v 0
+hv1 : 0 < v 1
+hv2 : v 2 < 0
+hv3 : v 3 < 0
+H : ℕ → Set E := fun k => coneSet (cc k) (K k).space
+hHclosed : ∀ (k : ℕ), IsClosed (H k)
+hAdom : ∀ (k : ℕ) (b : Bool), A k b ⊆ D.domain
+hD₀H : ∀ (k : ℕ), D₀ k ⊆ H k
+hD₁H : ∀ (k : ℕ), D₁ k ⊆ H k
+hΓcap :
+  ∀ (k : ℕ), ι '' hD.singularSet.branchCarrier c ∩ D₀ k = {y₀ k} ∧ ι '' hD.singularSet.branchCarrier c ∩ D₁ k = {y₁ k}
+hy₀Γ : ∀ (k : ℕ), y₀ k ∈ ι '' hD.singularSet.branchCarrier c
+hy₁Γ : ∀ (k : ℕ), y₁ k ∈ ι '' hD.singularSet.branchCarrier c
+hcover : ι '' hD.singularSet.branchCarrier c ⊆ ⋃ k, ⋃ (_ : k ≤ m), H k
+hcadj : ∀ k < m, ι '' hD.singularSet.branchCarrier c ∩ (H k ∩ H (k + 1)) = {y₁ k}
+hcseam : ι '' hD.singularSet.branchCarrier c ∩ (H 0 ∩ H m) = {y₀ 0}
+a₀ : ↑(hD.branchPreimage c) := ⟨α 0, ⋯⟩
+b : ℕ → Bool
+hb0 : b 0 = false
+hb : ∀ k < m, ∀ (u : Bool), ∃ a ∈ J, a ∈ A k (u ^^ b k) ∧ a ∈ A (k + 1) (u ^^ b (k + 1)) ∧ ι (D.toFun a) = y₁ k
+hbc : ∀ (u : Bool), ∃ a ∈ J, a ∈ A m (u ^^ b m) ∧ a ∈ A 0 (!u ^^ b 0) ∧ ι (D.toFun a) = y₀ 0
+π : ℕ → Equiv.Perm (Fin 4) := fun k => fourSpokeSheetPerm (b k)
+i : Fin 4
+⊢ (if false = true then fourSpokeFlipPerm else Equiv.refl (Fin 4)) i = i
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceCells.lean:120:82: warning: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [π, hb0, fourSpokeSheetPerm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSourceCells.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceCells.log and .json
+
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:41:35.2763406Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSourceCells. Checker exit: 0.
+SHA-256: AD1651C29092106F6BA05485B9932787711C0789C10AF9DB3AAD0EDCA7B11B1D
+Sub-leaf list: source labels produce harm and harmc; cap normalization produces hpt and hptc; ray normalization produces hray; accepted marked-cell reduction
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceCells.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:42:20.8281808Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceProducer. Checker exit: 1.
+SHA-256: 298A5ABEC97B04F1644F8445F04BC78E60231ED2784C41BEC95152E3F3D7C2CA
+Sub-leaf list: unconditional C1 surface producer from source-collar and sphere hypotheses
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:81:4: error: Type mismatch
+  IsSubdivision.space_eq hsub
+has type
+  (restrict R ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+    (restrict R₀ ((fun u => ↑(D.toFun (ρ (a₀' b, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space
+but is expected to have type
+  (restrict R ((fun u => ↑(D.toFun (ρ (a₀' b, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+    (fun u => ↑(D.toFun (ρ (a₀' b, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:155:61: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s ?k) id}).space
+in the target expression
+  Γ.space ∩ (K k).space = {y₁ k, y₀ k}
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+k : ℕ
+hk : k ≤ m
+⊢ Γ.space ∩ (K k).space = {y₁ k, y₀ k}
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:175:21: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:175:34: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:176:77: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:177:16: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:177:31: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:177:40: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:177:48: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:177:56: error(lean.unknownIdentifier): Unknown identifier `m`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:227:12: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  D₀ 0
+in the target expression
+  ?m.3449 ⊆ (derivedNeighborhoodCell R z₀).space
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+hbottom :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₀ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₀ k
+htop :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₁ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₁ k
+htrace₀ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+hcenter : ↑(D.toFun a₀) ∈ H 0
+a : EuclideanSpace ℝ (Fin 2)
+hDa : D.toFun a = D.toFun a₀
+haA : a ∈ A' 0 false
+haJ : a ∈ J
+a' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a else a
+ha' : ∀ (b : Bool), a' b ∈ J
+hDa' : ∀ (b : Bool), D.toFun (a' b) = D.toFun a₀
+ha'A : ∀ (b : Bool), a' b ∈ A' 0 b
+hs0' : s 0 = {↑(D.toFun (a' false))}
+z₀ : Finset E
+hz₀ : z₀ ∈ Γ.faces
+hne₀ : s 0 ≠ z₀
+hcap0 : H 0 ∩ (derivedNeighborhoodCell R z₀).space = D₀ 0
+z₁ : Finset E
+hz₁ : z₁ ∈ Γ.faces
+hne₁ : s 0 ≠ z₁
+hcap1 : H 0 ∩ (derivedNeighborhoodCell R z₁).space = D₁ 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+⊢ ?m.3449 ⊆ (derivedNeighborhoodCell R z₀).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:227:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  D₁ 0
+in the target expression
+  ?m.3450 ⊆ (derivedNeighborhoodCell R z₁).space
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+hbottom :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₀ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₀ k
+htop :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₁ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₁ k
+htrace₀ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+hcenter : ↑(D.toFun a₀) ∈ H 0
+a : EuclideanSpace ℝ (Fin 2)
+hDa : D.toFun a = D.toFun a₀
+haA : a ∈ A' 0 false
+haJ : a ∈ J
+a' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a else a
+ha' : ∀ (b : Bool), a' b ∈ J
+hDa' : ∀ (b : Bool), D.toFun (a' b) = D.toFun a₀
+ha'A : ∀ (b : Bool), a' b ∈ A' 0 b
+hs0' : s 0 = {↑(D.toFun (a' false))}
+z₀ : Finset E
+hz₀ : z₀ ∈ Γ.faces
+hne₀ : s 0 ≠ z₀
+hcap0 : H 0 ∩ (derivedNeighborhoodCell R z₀).space = D₀ 0
+z₁ : Finset E
+hz₁ : z₁ ∈ Γ.faces
+hne₁ : s 0 ≠ z₁
+hcap1 : H 0 ∩ (derivedNeighborhoodCell R z₁).space = D₁ 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+⊢ ?m.3450 ⊆ (derivedNeighborhoodCell R z₁).space
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:231:15: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  s 0
+in the target expression
+  ↑(D.toFun (ρ (α i, v i))) ∈
+    ((K 0).space ∩ Subtype.val ∘ D.toFun '' (A' 0 (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) \
+      (D₀ 0 ∪ D₁ 0)
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+hbottom :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₀ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₀ k
+htop :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₁ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₁ k
+htrace₀ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+hcenter : ↑(D.toFun a₀) ∈ H 0
+a : EuclideanSpace ℝ (Fin 2)
+hDa : D.toFun a = D.toFun a₀
+haA : a ∈ A' 0 false
+haJ : a ∈ J
+a' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a else a
+ha' : ∀ (b : Bool), a' b ∈ J
+hDa' : ∀ (b : Bool), D.toFun (a' b) = D.toFun a₀
+ha'A : ∀ (b : Bool), a' b ∈ A' 0 b
+hs0' : s 0 = {↑(D.toFun (a' false))}
+z₀ : Finset E
+hz₀ : z₀ ∈ Γ.faces
+hne₀ : s 0 ≠ z₀
+hcap0 : H 0 ∩ (derivedNeighborhoodCell R z₀).space = D₀ 0
+z₁ : Finset E
+hz₁ : z₁ ∈ Γ.faces
+hne₁ : s 0 ≠ z₁
+hcap1 : H 0 ∩ (derivedNeighborhoodCell R z₁).space = D₁ 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+v : Fin 4 → ℝ
+hv : ∀ (i : Fin 4), v i ∈ Icc (-1) 1
+hv0 : 0 < v 0
+hv1 : 0 < v 1
+hv2 : v 2 < 0
+hv3 : v 3 < 0
+hray :
+  ∀ (i : Fin 4),
+    ↑(D.toFun (ρ (a' (fourSpokeLabel i).1, v i))) ∈
+      ((derivedNeighborhoodCellBase R {↑(D.toFun (a' false))}).space ∩
+          Subtype.val ∘ D.toFun '' (A' 0 (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) \
+        (?m.3449 ∪ ?m.3450)
+α : Fin 4 → EuclideanSpace ℝ (Fin 2) := fun i => a' (fourSpokeLabel i).1
+i : Fin 4
+⊢ ↑(D.toFun (ρ (α i, v i))) ∈
+    ((K 0).space ∩ Subtype.val ∘ D.toFun '' (A' 0 (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) \
+      (D₀ 0 ∪ D₁ 0)
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:268:50: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneSet (Finset.centroid ℝ (s ?k) id) (K ?k).space
+in the target expression
+  coneSet (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space ∩
+      coneSet (Finset.centroid ℝ (s (k + 1)) id)
+        (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s (k + 1)) id}).space =
+    D₁ k
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+hbottom :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₀ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₀ k
+htop :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₁ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₁ k
+htrace₀ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+hcenter : ↑(D.toFun a₀) ∈ H 0
+a : EuclideanSpace ℝ (Fin 2)
+hDa : D.toFun a = D.toFun a₀
+haA : a ∈ A' 0 false
+haJ : a ∈ J
+a' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a else a
+ha' : ∀ (b : Bool), a' b ∈ J
+hDa' : ∀ (b : Bool), D.toFun (a' b) = D.toFun a₀
+ha'A : ∀ (b : Bool), a' b ∈ A' 0 b
+hs0' : s 0 = {↑(D.toFun (a' false))}
+z₀ : Finset E
+hz₀ : z₀ ∈ Γ.faces
+hne₀ : s 0 ≠ z₀
+hcap0 : H 0 ∩ (derivedNeighborhoodCell R z₀).space = D₀ 0
+z₁ : Finset E
+hz₁ : z₁ ∈ Γ.faces
+hne₁ : s 0 ≠ z₁
+hcap1 : H 0 ∩ (derivedNeighborhoodCell R z₁).space = D₁ 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+v : Fin 4 → ℝ
+hv : ∀ (i : Fin 4), v i ∈ Icc (-1) 1
+hv0 : 0 < v 0
+hv1 : 0 < v 1
+hv2 : v 2 < 0
+hv3 : v 3 < 0
+hray :
+  ∀ (i : Fin 4),
+    ↑(D.toFun (ρ (a' (fourSpokeLabel i).1, v i))) ∈
+      ((derivedNeighborhoodCellBase R {↑(D.toFun (a' false))}).space ∩
+          Subtype.val ∘ D.toFun '' (A' 0 (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) \
+        (?m.3449 ∪ ?m.3450)
+α : Fin 4 → EuclideanSpace ℝ (Fin 2) := fun i => a' (fourSpokeLabel i).1
+hrayT : ∀ (i : Fin 4), ↑(D.toFun (ρ (α i, v i))) ∈ T 0 i \ (D₀ 0 ∪ D₁ 0)
+ν : ℕ → ℕ := fun k => if k ≤ m then k else 0
+hν : ∀ k ≤ m, ν k = k
+hνle : ∀ (k : ℕ), ν k ≤ m
+hν0 : ν 0 = 0
+hνm : ν m = m
+hN' : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s (ν k)) id) (K (ν k)).space = (derivedNeighborhood R Γ).space
+hcore' :
+  ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s (ν k)) id) {y₀ (ν k), y₁ (ν k)} =
+    Subtype.val '' hD.singularSet.branchCarrier c
+k : ℕ
+hk : k < m
+⊢ coneSet (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space ∩
+      coneSet (Finset.centroid ℝ (s (k + 1)) id)
+        (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s (k + 1)) id}).space =
+    D₁ k
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:270:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneSet (Finset.centroid ℝ (s ?k) id) (K ?k).space
+in the target expression
+  coneSet (Finset.centroid ℝ (s m) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s m) id}).space ∩
+      coneSet (Finset.centroid ℝ (s 0) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s 0) id}).space =
+    D₀ 0
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+hbottom :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₀ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₀ k
+htop :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₁ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₁ k
+htrace₀ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+hcenter : ↑(D.toFun a₀) ∈ H 0
+a : EuclideanSpace ℝ (Fin 2)
+hDa : D.toFun a = D.toFun a₀
+haA : a ∈ A' 0 false
+haJ : a ∈ J
+a' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a else a
+ha' : ∀ (b : Bool), a' b ∈ J
+hDa' : ∀ (b : Bool), D.toFun (a' b) = D.toFun a₀
+ha'A : ∀ (b : Bool), a' b ∈ A' 0 b
+hs0' : s 0 = {↑(D.toFun (a' false))}
+z₀ : Finset E
+hz₀ : z₀ ∈ Γ.faces
+hne₀ : s 0 ≠ z₀
+hcap0 : H 0 ∩ (derivedNeighborhoodCell R z₀).space = D₀ 0
+z₁ : Finset E
+hz₁ : z₁ ∈ Γ.faces
+hne₁ : s 0 ≠ z₁
+hcap1 : H 0 ∩ (derivedNeighborhoodCell R z₁).space = D₁ 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+v : Fin 4 → ℝ
+hv : ∀ (i : Fin 4), v i ∈ Icc (-1) 1
+hv0 : 0 < v 0
+hv1 : 0 < v 1
+hv2 : v 2 < 0
+hv3 : v 3 < 0
+hray :
+  ∀ (i : Fin 4),
+    ↑(D.toFun (ρ (a' (fourSpokeLabel i).1, v i))) ∈
+      ((derivedNeighborhoodCellBase R {↑(D.toFun (a' false))}).space ∩
+          Subtype.val ∘ D.toFun '' (A' 0 (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) \
+        (?m.3449 ∪ ?m.3450)
+α : Fin 4 → EuclideanSpace ℝ (Fin 2) := fun i => a' (fourSpokeLabel i).1
+hrayT : ∀ (i : Fin 4), ↑(D.toFun (ρ (α i, v i))) ∈ T 0 i \ (D₀ 0 ∪ D₁ 0)
+ν : ℕ → ℕ := fun k => if k ≤ m then k else 0
+hν : ∀ k ≤ m, ν k = k
+hνle : ∀ (k : ℕ), ν k ≤ m
+hν0 : ν 0 = 0
+hνm : ν m = m
+hN' : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s (ν k)) id) (K (ν k)).space = (derivedNeighborhood R Γ).space
+hcore' :
+  ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s (ν k)) id) {y₀ (ν k), y₁ (ν k)} =
+    Subtype.val '' hD.singularSet.branchCarrier c
+⊢ coneSet (Finset.centroid ℝ (s m) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s m) id}).space ∩
+      coneSet (Finset.centroid ℝ (s 0) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s 0) id}).space =
+    D₀ 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:272:37: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneSet (Finset.centroid ℝ (s ?k) id) (K ?k).space
+in the target expression
+  Disjoint
+    (coneSet (Finset.centroid ℝ (s j) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s j) id}).space)
+    (coneSet (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space)
+
+E : Type u_1
+inst✝³ : NormedAddCommGroup E
+inst✝² : NormedSpace ℝ E
+inst✝¹ : FiniteDimensional ℝ E
+L : Geometry.SimplicialComplex ℝ E
+inst✝ : Finite ↑L.faces
+hL : IsCombinatorialManifold 3 L
+x✝³ : ChartedSpace (EuclideanSpace ℝ (Fin (2 + 1))) ↑L.space := combinatorialChartedSpace L hL
+D : SingularTwoCell ↑L.space
+BdM B : Set ↑L.space
+hD : NormalSingularCellData D BdM B
+c : hD.singularSet.Branch
+hc : ¬hD.singularSet.IsBoundaryBranch c
+J Q C : Set (EuclideanSpace ℝ (Fin 2))
+τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)
+ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2)
+hJ : IsPLSphere 1 J
+hτ : hD.IsBranchDeckInvolution c J τ
+hρ : hD.IsTwoSidedBranchCollar c J Q C ρ
+hpreJ : hD.branchPreimage c = J
+hτJ : MapsTo τ J J
+hτne : ∀ x ∈ J, τ x ≠ x
+hDτ : ∀ x ∈ J, D.toFun (τ x) = D.toFun x
+hfiber : ∀ x ∈ J, ∀ y ∈ J, D.toFun x = D.toFun y ↔ y = x ∨ y = τ x
+a₀ : EuclideanSpace ℝ (Fin 2)
+ha₀ : a₀ ∈ J
+a₀' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a₀ else a₀
+ha₀' : ∀ (b : Bool), a₀' b ∈ J
+R₀ : Geometry.SimplicialComplex ℝ E
+hR₀L : IsSubdivision R₀ L
+hR₀fin : R₀.faces.Finite
+hpR₀ : {↑(D.toFun (a₀' false))} ∈ R₀.faces
+harms₀ :
+  ∀ (b σ : Bool),
+    (restrict R₀ ((fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+      (fun t => ↑(D.toFun (ρ (a₀' b, t)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+x✝² : Finite ↑R₀.faces := Finite.to_subtype hR₀fin
+t : Finset ↑J
+R : Geometry.SimplicialComplex ℝ E
+ψ : ↥t → (ℝ × ℝ) × ℝ → E
+V : ↥t → Set ((ℝ × ℝ) × ℝ)
+Ω W : ↥t → Set E
+A : ↥t → Bool → Set (EuclideanSpace ℝ (Fin 2))
+P : ↥t → Fin 4 → Set E
+q : ↥t → Fin 4 → (Fin 3 → ℝ) → E
+hRR₀ : IsSubdivision R R₀
+hRfin : R.faces.Finite
+hΓsp :
+  (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).space = Subtype.val '' hD.singularSet.branchCarrier c
+hcharts :
+  ∀ (j : ↥t),
+    IsOpen (V j) ∧
+      IsOpen (Ω j) ∧
+        IsOpen (W j) ∧
+          W j ⊆ Ω j ∧
+            IsPLHomeomorphOn (ψ j) (V j) (L.space ∩ Ω j) ∧
+              (∀ p ∈ V j, ψ j p ∈ Subtype.val '' D.toFun '' D.domain ↔ p ∈ crossPlanes) ∧
+                (∀ p ∈ V j, ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
+                  (∀ (b : Bool), IsCompact (A j b) ∧ A j b ⊆ C ∧ InjOn D.toFun (A j b)) ∧
+                    Disjoint (A j false) (A j true) ∧
+                      (∀ x ∈ D.domain, ↑(D.toFun x) ∈ W j → x ∈ A j false ∪ A j true) ∧
+                        (∀ (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ W j → y ∈ D.toFun '' (A j b ∩ J)) ∧
+                          ∀ (i : Fin 4),
+                            IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+                              P j i ⊆ L.space ∩ Subtype.val '' D.toFun '' D.domain ∧
+                                (restrict R (P j i)).space = P j i ∧
+                                  ∀ x ∈ L.space ∩ W j,
+                                    (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧
+                                      (x ∈ P j i ↔
+                                          x ∈
+                                            Subtype.val ∘ D.toFun ''
+                                              (A j (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) ∧
+                                        (x ∈ q j i '' stdSimplexBoundary 2 ↔
+                                          x ∈ Subtype.val '' hD.singularSet.branchCarrier c)
+hcells :
+  ∀ s ∈ (restrict R (Subtype.val '' hD.singularSet.branchCarrier c)).faces,
+    ∃ j, ⋃ v ∈ s, closedStar R v ⊆ W j ∧ (derivedNeighborhoodCell R s).space ⊆ W j
+x✝¹ : Finite ↑R.faces := Finite.to_subtype hRfin
+hRL : IsSubdivision R L
+hR : IsCombinatorialManifold 3 R
+Γ : Geometry.SimplicialComplex ℝ E := restrict R (Subtype.val '' hD.singularSet.branchCarrier c)
+x✝ : Finite ↑Γ.faces := Finite.to_subtype (restrict_faces_finite R (Subtype.val '' hD.singularSet.branchCarrier c))
+hΓR : Γ.faces ⊆ R.faces
+hΓsphere : IsPLSphere 1 Γ.space
+hpR : {↑(D.toFun a₀)} ∈ R.faces
+ha₀Γ : D.toFun a₀ ∈ hD.singularSet.branchCarrier c
+hpΓ : {↑(D.toFun a₀)} ∈ Γ.faces
+harms :
+  ∀ a ∈ J,
+    D.toFun a = D.toFun a₀ →
+      ∀ (σ : Bool),
+        (restrict R ((fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0)).space =
+          (fun u => ↑(D.toFun (ρ (a, u)))) '' if σ = true then Icc 0 1 else Icc (-1) 0
+m : ℕ
+s : ℕ → Finset E
+D₀ D₁ : ℕ → Set E
+q₀ q₁ : ℕ → (Fin 3 → ℝ) → E
+y₀ y₁ : ℕ → E
+hm : 2 ≤ m
+hs0 : s 0 = {↑(D.toFun a₀)}
+hsΓ : ∀ (k : ℕ), s k ∈ Γ.faces
+hKfin : ∀ (k : ℕ), (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).faces.Finite
+hK :
+  ∀ (k : ℕ), IsConeBase (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id})
+hS : ∀ (k : ℕ), IsPLSphere 2 (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hq₀ : ∀ (k : ℕ), IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)
+hq₁ : ∀ (k : ℕ), IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)
+hD₀S : ∀ (k : ℕ), D₀ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hD₁S : ∀ (k : ℕ), D₁ k ⊆ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space
+hdis : ∀ (k : ℕ), Disjoint (D₀ k) (D₁ k)
+hcap : ∀ k < m, D₁ k = D₀ (k + 1)
+hcapc : D₁ m = D₀ 0
+hadj : ∀ k < m, (derivedNeighborhoodCell R (s k)).space ∩ (derivedNeighborhoodCell R (s (k + 1))).space = D₁ k
+hadjc : (derivedNeighborhoodCell R (s m)).space ∩ (derivedNeighborhoodCell R (s 0)).space = D₀ 0
+hfar :
+  ∀ (j k : ℕ),
+    j + 1 < k →
+      k ≤ m → j ≠ 0 ∨ k ≠ m → Disjoint (derivedNeighborhoodCell R (s j)).space (derivedNeighborhoodCell R (s k)).space
+hN : ⋃ k, ⋃ (_ : k ≤ m), (derivedNeighborhoodCell R (s k)).space = (derivedNeighborhood R Γ).space
+hy₀ : ∀ (k : ℕ), y₀ k ∈ D₀ k
+hy₁ : ∀ (k : ℕ), y₁ k ∈ D₁ k
+hpoles : ∀ (k : ℕ), Γ.space ∩ (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space = {y₀ k, y₁ k}
+hcore : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s k) id) {y₀ k, y₁ k} = Γ.space
+K : ℕ → Geometry.SimplicialComplex ℝ E := fun k => derivedNeighborhoodCellBase R (s k)
+H : ℕ → Set E := fun k => (derivedNeighborhoodCell R (s k)).space
+hH : ∀ (k : ℕ), H k = coneSet (Finset.centroid ℝ (s k) id) (K k).space
+j✝ : ℕ → ↥t
+hstar : ∀ (k : ℕ), ⋃ v ∈ s k, closedStar R v ⊆ W (j✝ k)
+hcell : ∀ (k : ℕ), (derivedNeighborhoodCell R (s k)).space ⊆ W (j✝ k)
+A' : ℕ → Bool → Set (EuclideanSpace ℝ (Fin 2)) := fun k => A (j✝ k)
+T : ℕ → Fin 4 → Set E := fun k i => (K k).space ∩ P (j✝ k) i
+hA : ∀ (k : ℕ) (b : Bool), IsCompact (A' k b) ∧ A' k b ⊆ C ∧ InjOn D.toFun (A' k b)
+hAA : ∀ (k : ℕ), Disjoint (A' k false) (A' k true)
+hpre : ∀ (k : ℕ), ∀ x ∈ D.domain, ↑(D.toFun x) ∈ H k → x ∈ A' k false ∪ A' k true
+hAc : ∀ (k : ℕ) (b : Bool), ∀ y ∈ hD.singularSet.branchCarrier c, ↑y ∈ H k → y ∈ D.toFun '' (A' k b ∩ J)
+hbaseH : ∀ (k : ℕ), (K k).space ⊆ H k
+hread :
+  ∀ (k : ℕ) (i : Fin 4),
+    T k i = (K k).space ∩ Subtype.val ∘ D.toFun '' (A' k (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)
+γ : ℕ → Fin 4 → ℝ → E
+hγ : ∀ (k : ℕ) (i : Fin 4), IsPLHomeomorphOn (γ k i) (Icc 0 1) (T k i)
+hγ0 : ∀ (k : ℕ) (i : Fin 4), γ k i 0 = y₀ k
+hγ1 : ∀ (k : ℕ) (i : Fin 4), γ k i 1 = y₁ k
+hTT : ∀ (k : ℕ) (i l : Fin 4), i ≠ l → T k i ∩ T k l = {y₀ k, y₁ k}
+hsep :
+  ∀ (k : ℕ) (i : Fin 4),
+    ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
+      IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False
+htrace :
+  ∀ (k : ℕ),
+    ∀ z ∈ Γ.faces,
+      s k ≠ z →
+        s k ⊆ z ∨ z ⊆ s k →
+          ∀ (r : (Fin 3 → ℝ) → E),
+            IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (H k ∩ (derivedNeighborhoodCell R z).space) →
+              ∀ (i : Fin 4),
+                ∃ x,
+                  r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
+                    T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
+                        segment ℝ (Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id) x ∧
+                      Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id ≠ x
+hbottom :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₀ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₀ k
+htop :
+  ∀ k ≤ m,
+    ∃ z ∈ Γ.faces,
+      s k ≠ z ∧
+        (s k ⊆ z ∨ z ⊆ s k) ∧
+          H k ∩ (derivedNeighborhoodCell R z).space = D₁ k ∧
+            Finset.centroid ℝ {Finset.centroid ℝ (s k) id, Finset.centroid ℝ z id} id = y₁ k
+htrace₀ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₀ k = segment ℝ (y₀ k) x ∧ y₀ k ≠ x
+htrace₁ :
+  ∀ k ≤ m, ∀ (i : Fin 4), ∃ x, q₁ k '' stdSimplexBoundary 2 ∩ T k i = {x} ∧ T k i ∩ D₁ k = segment ℝ (y₁ k) x ∧ y₁ k ≠ x
+hcenter : ↑(D.toFun a₀) ∈ H 0
+a : EuclideanSpace ℝ (Fin 2)
+hDa : D.toFun a = D.toFun a₀
+haA : a ∈ A' 0 false
+haJ : a ∈ J
+a' : Bool → EuclideanSpace ℝ (Fin 2) := fun b => if b = true then τ a else a
+ha' : ∀ (b : Bool), a' b ∈ J
+hDa' : ∀ (b : Bool), D.toFun (a' b) = D.toFun a₀
+ha'A : ∀ (b : Bool), a' b ∈ A' 0 b
+hs0' : s 0 = {↑(D.toFun (a' false))}
+z₀ : Finset E
+hz₀ : z₀ ∈ Γ.faces
+hne₀ : s 0 ≠ z₀
+hcap0 : H 0 ∩ (derivedNeighborhoodCell R z₀).space = D₀ 0
+z₁ : Finset E
+hz₁ : z₁ ∈ Γ.faces
+hne₁ : s 0 ≠ z₁
+hcap1 : H 0 ∩ (derivedNeighborhoodCell R z₁).space = D₁ 0
+hPL : IsPiecewiseAffineOn (Subtype.val ∘ D.toFun) D.domain
+v : Fin 4 → ℝ
+hv : ∀ (i : Fin 4), v i ∈ Icc (-1) 1
+hv0 : 0 < v 0
+hv1 : 0 < v 1
+hv2 : v 2 < 0
+hv3 : v 3 < 0
+hray :
+  ∀ (i : Fin 4),
+    ↑(D.toFun (ρ (a' (fourSpokeLabel i).1, v i))) ∈
+      ((derivedNeighborhoodCellBase R {↑(D.toFun (a' false))}).space ∩
+          Subtype.val ∘ D.toFun '' (A' 0 (fourSpokeLabel i).1 ∩ collarHalf J ρ (fourSpokeLabel i).2)) \
+        (?m.3449 ∪ ?m.3450)
+α : Fin 4 → EuclideanSpace ℝ (Fin 2) := fun i => a' (fourSpokeLabel i).1
+hrayT : ∀ (i : Fin 4), ↑(D.toFun (ρ (α i, v i))) ∈ T 0 i \ (D₀ 0 ∪ D₁ 0)
+ν : ℕ → ℕ := fun k => if k ≤ m then k else 0
+hν : ∀ k ≤ m, ν k = k
+hνle : ∀ (k : ℕ), ν k ≤ m
+hν0 : ν 0 = 0
+hνm : ν m = m
+hN' : ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s (ν k)) id) (K (ν k)).space = (derivedNeighborhood R Γ).space
+hcore' :
+  ⋃ k, ⋃ (_ : k ≤ m), coneSet (Finset.centroid ℝ (s (ν k)) id) {y₀ (ν k), y₁ (ν k)} =
+    Subtype.val '' hD.singularSet.branchCarrier c
+j k : ℕ
+hjk : j + 1 < k
+hkm : k ≤ m
+hjk' : j ≠ 0 ∨ k ≠ m
+⊢ Disjoint
+    (coneSet (Finset.centroid ℝ (s j) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s j) id}).space)
+    (coneSet (Finset.centroid ℝ (s k) id) (upperLink (barycentricSubdivision R) {Finset.centroid ℝ (s k) id}).space)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSurfaceProducer.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...r.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.log and .json
+
+```
+
+
+## CanonicalTowerInnermostSeam — verified tower disk and support producer
+
+- New `CanonicalTowerInnermostSeam.lean`: the complete seam family on both sides of an even
+  torus is finite and pairwise disjoint. A null seam yields an actual innermost disk and an
+  open neighborhood contained in its outer carrier and the pair interior, avoiding the marked
+  point, the two specified vertices and every other seam of that even torus.
+- `center_notMem_interior_outer` uses the exact lower-tail closure and the apart condition.
+- Receipt (under the authorized private root):
+  `DifferentialGeometry/Topology/PiecewiseLinear/CanonicalTowerInnermostSeam.json`
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+- Source SHA-256:
+  `1EF035537A190FE562F572423FBD6EEC7850A89A4BC36D083561F9C24586DABC`.
+- Final joint audit: `AuditCodex13Final.lean`, `AuditCodex13Final.receipt.json`,
+  `AuditCodex13Final.log` in `C:/Users/liao9/AppData/Local/Temp/claude-moise-agent-b`.
+  All nonautomatic declarations of all four new modules pass the transitive axiom check
+  (only propext / Classical.choice / Quot.sound) and all thirteen environment linters.
+  Audit receipt: `exitCode=0 diagnosticLines=0 sourceStable=true`.
+- Final delivery manifest: `Codex13DeliveryManifest.json` in the same private root.
+- Four source receipts were checked against current SHA-256s after the audit; 600 source lines,
+  no overlong or trailing-whitespace lines, no forbidden declarations/options. The 1125-module
+  import closure contains no Skeleton module. `git diff --check` exits 0. The four frozen
+  source files have no diff against HEAD. No Git write command was run.
+
+## Codex item 13 — exact remaining relative-split obligation; STOP for lead/owner
+
+Status: initial finite-window geometry and innermost-disk selection are proved. The full
+protected evolving surface state, five decreasing transitions and descent leaf are not proved.
+`exists_descentSequence` has not been restated or edited; no new named input was introduced.
+Root aggregate registration is left to the lead under the new-files-only instruction.
+
+First missing construction, before the first Moise303 call:
+
+Let C be the actual current separator, T = T'' (2*i) its fixed even torus, L the adjacent
+modified odd piece, and G, Delta, Omega the innermost seam, its disk in T, and its safe support.
+The new producer supplies Delta, its PL parametrization and a support avoiding the other
+original seam circles and the marked/vertex points. It does not supply the following joint
+collar geometry in C, needed to instantiate the exact existing Moise303 hypotheses:
+
+    r1 : stdSimplex R (Fin 3) -> D1, r2 : stdSimplex R (Fin 3) -> D2, both PL homeomorphisms;
+    D1 intersect D2 = Delta;
+    D1 union D2 subset C;
+    D1 union D2 is a neighborhood of Delta within C;
+    Delta subset D1 minus r1(image stdSimplexBoundary 2);
+    Delta subset D2 minus r2(image stdSimplexBoundary 2);
+    D2 subset T, D1 intersect T = Delta, D1 minus Delta subset L.
+
+The neighborhood and disk pair must come from the same exterior-side collar of G on the
+clipped odd surface, fit inside the chosen support, and respect previously completed regions.
+After the Moise303 output, one must construct the replacement odd piece L', establish its
+finite surface-with-boundary triangulation and carrier containment, preserve the even tori,
+closed vertex separation and the protected region, and prove exact erasure of G from the actual
+seam family with no new seams. Only then does the finite null-seam count strictly decrease and
+Moise314 apply to the unchanged surviving seam circles. No abstract decreasing-step hypothesis
+has been substituted for this construction.
+
+Closest inspected APIs and the unresolved clauses:
+- `exists_common_annular_derivedNeighborhood_of_isOrientable` gives simultaneous unmarked
+  annular neighborhoods of whole surfaces; it supplies neither the specified exterior half
+  of the clipped odd surface nor the two disks above with their neighborhood equation in C.
+- `exists_annular_split_ball` and Moise303 already require the two-disk/neighborhood premises.
+- `exists_surface_split_and_cap_of_spanning_disk_avoiding` constructs a closed result surface
+  and a support avoiding a closed Z disjoint from Delta. Here Delta lies in the fixed even
+  torus, so using that torus as Z is unavailable. Its conclusion does not identify the new
+  caps' intersection with that fixed torus, hence does not certify seam erasure or decrease.
+- `SurfaceInnermostDisk` removes the earlier missing innermost choice, but the common collar,
+  clipped-surface recognition and relative trace-preserving transition above remain unproved.
+
+This is a concrete unproved construction obligation, not a claimed contradiction in the frozen
+inputs. Await the lead/owner's decision on that producer; later Type 1/2/3 deletions, coherent
+halves, relative normalization, exhaustion recursion and IsAnnularChain fields remain open.
+
+## Codex C1 surface trace check (2026-09-23T18:44:24.7608176Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceProducer. Checker exit: 1.
+SHA-256: F945E675DC30BB1536CB0E3ABB7159C9655B3ED8A921B7A6B19656051D135E59
+Sub-leaf list: unconditional C1 surface producer from source-collar and sphere hypotheses
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:44:53: warning: The following tactic starts with 2 goals and ends with 1 goal, 1 of which is not operated on.
+  exact ha₀
+Please focus on the current goal, for instance using `·` (typed as "\.").
+
+Note: This linter can be disabled with `set_option linter.style.multiGoal false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:204:51: warning: The following tactic starts with 2 goals and ends with 1 goal, 1 of which is not operated on.
+  exact haJ
+Please focus on the current goal, for instance using `·` (typed as "\.").
+
+Note: This linter can be disabled with `set_option linter.style.multiGoal false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean:241:72: warning: The following tactic starts with 2 goals and ends with 1 goal, 1 of which is not operated on.
+  exact hk
+Please focus on the current goal, for instance using `·` (typed as "\.").
+
+Note: This linter can be disabled with `set_option linter.style.multiGoal false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\LoopTheorem\ClosedBranchTubeSurfaceProducer.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...r.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.log and .json
+
+```
+
+
+## Codex item 7 — PLCellDiskExtension (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New file only; shared artifacts unchanged.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellDiskExtension.lean with no diagnostics; shared outputs unchanged.`
+
+SHA-256: `F27140D0F4AE2FF3441452E0F335CD4F2B4A517089A6CB58EA052A2A4BDE3414`
+
+Sub-leaves: `exists_isPLHomeomorphOn_extension_of_frontier_disk`; `exists_isPLHomeomorphInto_extension_of_boundary_disk`. A prescribed PL embedding of one boundary disk extends across two arbitrary PL three-cells, with exact image and pointwise agreement on that disk. The proof pulls both cells into their model balls and uses the accepted spherical disk extension. Remaining: paste the two sides, transport the degree-normal identity to reference boundary maps, positive corrections, joint matching, and clause (f).
+
+## Codex C1 surface trace check (2026-09-23T18:46:06.8003247Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceProducer. Checker exit: 0.
+SHA-256: 0DA78A0453C587BAB6673E26411568D12CAB29AE762B294379534EF58B8679FB
+Sub-leaf list: unconditional C1 surface producer from source-collar and sphere hypotheses
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 surface trace check (2026-09-23T18:46:27.3173544Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTube. Checker exit: 0.
+SHA-256: AD86144DD1D9A1BF26621F2B10D8B51C0577400F52675EA60C9C0BF3F352C63A
+Sub-leaf list: byte-identical frozen exists_isSourceTrackedBranchTube through accepted marked-cell reduction
+The branch surface producer and frozen endpoint remain OPEN.
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchCaseOneTube.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex C1 producer audit (2026-09-23T18:48:59.7153046Z)
+
+Audit file: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexC1Producer20260923.lean
+Checker exit: 0. SHA-256: 6ABA46045DB5A3B548FF5CF47923A450C835032C9BC8B1BCAC62E852690D5E79
+Sub-leaf list: all declarations of the following continuation modules; transitive axioms restricted to propext, Classical.choice, Quot.sound; thirteen environment linters excluding docBlame and docBlameThm.
+- DifferentialGeometry.Topology.Covering.CyclicSections
+- DifferentialGeometry.Topology.Covering.SheetTrace
+- DifferentialGeometry.Topology.Covering.CyclicSheetLabels
+- DifferentialGeometry.Topology.PiecewiseLinear.IntervalInterpolation
+- DifferentialGeometry.Topology.PiecewiseLinear.ArcCapParameters
+- DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink
+- DifferentialGeometry.Topology.PiecewiseLinear.ChartTransitionRealisation
+- DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeLabels
+- DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSheetPermutation
+- DifferentialGeometry.Topology.PiecewiseLinear.DerivedCapTrace
+- DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceBoundaryFaces
+- DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceArcsAndCaps
+- DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCore
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarCoordinates
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSourceCharts
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarLink
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarArcLift
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeCollarArcs
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchChartPL
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSides
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarQuarterReading
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceCharts
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceSubdivision
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchSourceSections
+- DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCapNeighbors
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCellSheetLabels
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCapMatching
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarRayOwnership
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarMarkedRays
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSourceCells
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceProducer
+- DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTube
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexC1Producer20260923.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — PLCellPairExtension (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New file only; shared artifacts unchanged.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellPairExtension.lean with no diagnostics; shared outputs unchanged.`
+
+SHA-256: `422B285B04786D4970AB29403924F5E13C7CB1B97E6D0DF481DC3828F6ABE467`
+
+Sub-leaves: `exists_isPLHomeomorphInto_union_of_closed_pieces`; `exists_isPLHomeomorphInto_cell_pair_of_disk_map`; `exists_isPLHomeomorphInto_ball_pair_of_cell_pair`. Compatible PL embeddings of two closed pieces paste with exact intersection images. A prescribed map of the common boundary disk extends over both three-cells simultaneously. Consequently any manifold cell pair meeting in a boundary disk has one PL parametrisation by a Euclidean ball pair whose union is a PL ball, with exact images of both halves and the shared disk. No common ambient PL chart for the source cells is assumed. Remaining: flatten this model near the disk; identify the edge character with actual reference-map circle signs; positive corrections; joint matching; clause (f).
+
+## Codex item 8 — C1 source-tracked branch tube COMPLETE (2026-09-23T18:50:21.5306425Z)
+
+The real leaf `exists_isSourceTrackedBranchTube` is proved in `LoopTheorem/ClosedBranchCaseOneTube.lean`. Its complete frozen declaration, including `open Classical in` and `:= by`, is byte-identical to the declaration in `Skeleton/ClosedBranchCaseOne.lean`: 1094 bytes; SHA-256 `A4ACB117CA3D8E62451074A9280F511A2A96F21CAE4D342E94F0D74F4CC1386B`.
+
+Producer chain: `exists_isSourceTrackedBranchTube_of_sourceCollar` in `ClosedBranchTubeSurfaceProducer.lean` constructs the actual source-labelled quarter disks, common subdivision, derived cells, cap traces and first-cell source marks from the original hypotheses. `exists_isSourceTrackedBranchTube_of_sourceCells` in `ClosedBranchTubeSourceCells.lean` derives the remaining marked-cell clauses and calls the accepted `exists_isSourceTrackedBranchTube_of_markedCells`. No additional hypothesis is imposed on the frozen leaf.
+
+Sub-leaf list — all CLOSED:
+- Source sheet and collar side: PL straightening charts retain their actual compact source sheets; every quarter disk reads exactly as the image of its source sheet intersected with the positive or negative collar half.
+- Common subdivision and surface trace: the subdivision retains the branch carrier, source quarter disks, starting branch vertex and all four collar arms; derived links give the separated PL arcs and singleton nondegenerate cap-boundary crossings.
+- `harm`: consecutive source sheet sections are labelled compatibly; connected cap segments with a common source point have equal source-labelled traces.
+- `harmc`: the cyclic labelling closes by deck exchange. A closing lift would glue to a continuous section, excluded by `not_exists_rightInverse_branchProjection_of_isPLSphere_one`. Collar side is preserved, giving precisely `fourSpokeFlipPerm`.
+- `hpt` and `hptc`: terminal cap segments are reparametrised to times `1/4` and `3/4`; equality of the common cap traces and their singleton boundary crossings identifies the marked points.
+- `hray`: the four preserved source collar arms have derived-link exits in the corresponding source quarter, outside both caps. These are assigned time `1/2`, with source sheets alpha, tau alpha, alpha, tau alpha and signs +,+,-,-.
+- Frozen endpoint: `exists_isSourceTrackedBranchTube`, using the accepted marked-cell reduction through the producer chain.
+
+Validation: all 32 continuation modules have current-source private checker receipts with zero diagnostics. The external audit checks every nonautomatic declaration in all 32 modules, its transitive axiom closure against only `propext`, `Classical.choice`, `Quot.sound`, and all thirteen environment linters except `docBlame` and `docBlameThm`. It passed with zero diagnostics; in particular the real leaf has no `sorryAx`.
+Audit SHA-256: `6ABA46045DB5A3B548FF5CF47923A450C835032C9BC8B1BCAC62E852690D5E79`
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexC1Producer20260923.lean with no diagnostics; shared outputs unchanged.
+```
+
+All compiles used prepare-private-root.py and checker.ps1 on lease d, token `claude-agent-d-20260919`, private root `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d`. The Lean process guard ran before each compile; this lane ran only one Lean process at a time. Every attempt, including failures repaired later, is recorded above.
+
+Handoff checkout: `D:\differential-geometry-moise-int`, branch `codex/moise-integration`, observed HEAD `8dbd01523a2f2d9e908110395cfbbe505dd0d1e3`. No Git writes. Only new Lean files and append-only FILL_LOG updates were made. The frozen skeleton, ClosedBranchCaseOneTransport.lean, accepted modules and root aggregate were not edited. The new modules await lead registration; no repository-wide build or aggregate integration is claimed.
+
+Read-only diff whitespace check passed; all 32 new files have no trailing whitespace or banned proof placeholders/resource overrides. Current-source module hashes and checker lines follow. Each module contributes the sub-leaves described above or their proved geometric, covering, or interval lemmas.
+
+Module: `DifferentialGeometry.Topology.Covering.CyclicSections`
+SHA-256: `ABF7558AE08B6BAEA041AC28F1BA31C8D3AB608BB5938C1B9F34289AA36470EF`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\CyclicSections.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.Covering.SheetTrace`
+SHA-256: `53805857638F6D03DDDB1B1C3E5582C46AC6D89D0FED899907B968AEA50834A3`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\SheetTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.Covering.CyclicSheetLabels`
+SHA-256: `824B0EF0212C5214111AE554F94C55B2C9548449E15ED4AC3766BCE2B538CB9C`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Covering\CyclicSheetLabels.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.IntervalInterpolation`
+SHA-256: `3A6E65994DFB8EBEEDCC180B047E31B28A2A2E759159132100E01BF7EBEF5598`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IntervalInterpolation.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.ArcCapParameters`
+SHA-256: `C62F0E334AF4AEF8F3C4919FD9FB588F68CEAF7BFEB0EAF0798D4DDBE6B9F061`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCapParameters.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink`
+SHA-256: `8677597431A97EFA9224796BC0C20094261558D5B24865B98A08EEB50BF98FE1`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedIntervalLink.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.ChartTransitionRealisation`
+SHA-256: `60EAAADA28BE637760FFAE2124C1A061367BCA206FEE73FEC054372052065BB9`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ChartTransitionRealisation.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeLabels`
+SHA-256: `24336A41889ACB5A405ACBF50B7CE7810EE4474D361DB61C1033290F16C22B49`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FourSpokeLabels.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSheetPermutation`
+SHA-256: `140FBD2617E16B3CE2AE668D68CED238F2D4831F9952B60D890509DE7E8498C5`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FourSpokeSheetPermutation.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.DerivedCapTrace`
+SHA-256: `E101ADEB6512A8DB172948B068C5E1CD3A099D5BA46E88D03622EE6B1B83D918`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCapTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceBoundaryFaces`
+SHA-256: `571C3C33A40370247B47FCFAC558A50F06805C142813D65C034A0590711B210C`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceBoundaryFaces.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceArcsAndCaps`
+SHA-256: `26240ED12A653934495C11D23CB6B7F36C247A30C69ED1CF8DC57928DE689F29`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedSurfaceArcsAndCaps.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCore`
+SHA-256: `425C91BAA473DB79382D1A260FE1E14367880067FB51473AC97D7ABE7B7DFAA1`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellCore.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarCoordinates`
+SHA-256: `B375F4F9708070114F97C410A267FF56287FD890FDFEB29A20A417279709CC1F`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarCoordinates.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSourceCharts`
+SHA-256: `D2BF3D2ABF33F6CE619234BD60036862DCF267653195F30C9F1CF9EF53F5FDF7`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSourceCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarLink`
+SHA-256: `163665282ED6125E0000F7D7F6CADED3DF6E82EBC550BE289E8C8CEE09F27052`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarLink.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarArcLift`
+SHA-256: `33A64302D19A0102638854683873FB22315DFD0A8D5CD4A4F8B9EEBDF0D7388B`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarArcLift.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeCollarArcs`
+SHA-256: `3B56782D1589FFDE51BEDA728AD665CFE93445FF8E7C76574D30CAD65AB12472`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeCollarArcs.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchChartPL`
+SHA-256: `3D7D010F7508BF088FD996CA21E1BED7A982CA277011A6B530B9B8FD0B066A3C`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchChartPL.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarSides`
+SHA-256: `70FB36D19A19D94224250BB9C471C2887911D3F520AE164681312D7A37A48F33`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarSides.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarQuarterReading`
+SHA-256: `82DD66EE579BFD372EB6A302C23A46945B7622F398AD8A1F2E83DCF40375BCC2`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarQuarterReading.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceCharts`
+SHA-256: `2ADA6B2A4E41E233EFCB5A4C47C7E07698644275BEF029F9E265663F0817E355`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchSurfaceCharts.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MarkedBranchSurfaceSubdivision`
+SHA-256: `7C43FB1B7BE11033BE3C313ED16D151819B27ED942984CE01AC5BA63443A87FF`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\MarkedBranchSurfaceSubdivision.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchSourceSections`
+SHA-256: `2F4B1FBAA8E96A9716EA732719AEAE7447C41D2323CB22ABA5CC4FEB247E6354`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchSourceSections.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCapNeighbors`
+SHA-256: `8984F070D3205F77FDA38F55C1910F148FEAC496BC77F75EC913260AD7A27654`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedCellCapNeighbors.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCellSheetLabels`
+SHA-256: `6212CDA750F4F657943B03D1753BF73EC125084086F8D98794E3765F85E9DDC0`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCellSheetLabels.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCapMatching`
+SHA-256: `366D79D7C4B120C73099CCFEC0892DF337CA8E665A604860EE54FED55F59EC57`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCapMatching.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarRayOwnership`
+SHA-256: `F2153A8A16F73822805F24A82812DDC04EC18B6903CAB3E7679D7CEF4BC25CF9`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarRayOwnership.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCollarMarkedRays`
+SHA-256: `E6B58818CAA88D3D39805974F852AFE55F2EF7E4F1F113D2FBEC112F8117B5FA`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\BranchCollarMarkedRays.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSourceCells`
+SHA-256: `AD1651C29092106F6BA05485B9932787711C0789C10AF9DB3AAD0EDCA7B11B1D`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSourceCells.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeSurfaceProducer`
+SHA-256: `0DA78A0453C587BAB6673E26411568D12CAB29AE762B294379534EF58B8679FB`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchTubeSurfaceProducer.lean with no diagnostics; shared outputs unchanged.
+```
+
+Module: `DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTube`
+SHA-256: `AD86144DD1D9A1BF26621F2B10D8B51C0577400F52675EA60C9C0BF3F352C63A`
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LoopTheorem\ClosedBranchCaseOneTube.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — orientation tool axiom audit expanded (2026-09-23)
+
+Checker: `Verified C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\audit-cgn-orientation-closure.lean with no diagnostics; shared outputs unchanged.`
+
+The silent `Lean.collectAxioms` whitelist audit passed for all 26 named headlines through generalized `ChartGraphCharacter`, arbitrary-point `DiskLocalDegreeOrientation`, the preserving/reversing half-space transfer in `LocalDegree/HalfSpace`, `PLCellDiskExtension`, and `PLCellPairExtension`, plus the earlier unit-degree and carrier/chart tools. Every audited closure uses only `propext`, `Classical.choice`, and/or `Quot.sound`; no `sorryAx`. This certifies the listed tools, not completion of joint boundary matching or the frozen leaf.
+
+## Codex item 7 — ChartParityTransport (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New file only.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\ChartParityTransport.lean with no diagnostics; shared outputs unchanged.`
+
+SHA-256: `C1B6092AE03606D6ECAC47AA028CFC6104E7AAECCBD154BFA9843794D033C282`
+
+Sub-leaves: `chartOrientationParity_pullback`; `chartOrientationParity_relative_eq_of_isPreconnected`. Actual local-degree chart signs are natural under pullback by a topological local homeomorphism. For a local homeomorphism of one manifold, its relative sign computed in one chart equals that computed in another whenever both charts cover a connected carrier containing the source point and its image. This supplies the BR chart independence for a reference cell map relative to the embedding h; it imposes no value on the original G. Remaining: construct the reference-map local homeomorphisms and identify their shared-disk circle corrections.
+
+# Codex item 14
+
+Compact cut-and-graph leaf 1. Lane d; new modules only. Step 1 is the flag incidence package. No frozen declarations or existing real modules are edited. All Lean checks are serial in the private output root; later steps and the endpoint remain open until their producer and audit pass.
+
+
+## Codex item 7 — EmbeddingLocalHomeomorph (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New file only.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Manifold\EmbeddingLocalHomeomorph.lean with no diagnostics; shared outputs unchanged.`
+
+SHA-256: `BF74D4DF0A5FF0E8296B4C1FFAF7D4E7F71B305700651989F8987D77706EA507`
+
+Sub-leaf: `DifferentialGeometry.Topology.exists_openPartialHomeomorph_of_continuousOn_injOn`. Invariance of domain constructs an actual open partial homeomorphism from a continuous injection on an open subset of equal-model manifolds, with exact source, exact target image, and equality to the original map. This is the general manifold version of the existing planar constructor, needed for h and reference cell maps on their interiors.
+
+## Item 14 module check (2026-09-23T18:57:41.5649159Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellIncidence. Checker exit: 1.
+Sub-leaf list: cut clause 26: graph vertex/splitting-disk incidence and empty triple intersections
+SHA-256: F38240FBA714273FBA8A332B89A0785ACD6536DADA29B1FE0F145A0EC838B07D
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.lean:72:9: error(lean.unknownIdentifier): Unknown constant `Finset.mem_pair.mp`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.lean:72:39: error: Tactic `rcases` failed: `x✝ : ?m.220` is not an inductive datatype
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.lean:76:49: warning: '' starts on column 49, but all commands should start at the beginning of the line.
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\GraphDualCellIncidence.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...e.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.log and .json
+
+```
+
+
+## Codex item 7 — PLCellPairExtension relative form (checked 2026-09-23)
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellPairExtension.lean with no diagnostics; shared outputs unchanged.`
+
+Current SHA-256 (supersedes earlier hash): `4F9734F570DDEBE4F5FE47820CF02DAD5AC46EAEC717CAB57232DA9FF0197A42`
+
+Added sub-leaf: `exists_isPLHomeomorphInto_cell_pair_extension`. An existing map of the first ball, carrying the shared disk onto the target shared disk, extends over the second ball while preserving the entire first-ball map pointwise. This allows the boundary-normal comparison to retain the actual chosen reference map. No agreement between independent vertex reference maps is assumed.
+
+## Item 14 module check (2026-09-23T19:00:15.2732449Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellIncidence. Checker exit: 0.
+Sub-leaf list: cut clause 26: graph vertex/splitting-disk incidence and empty triple intersections
+SHA-256: 6CA1CB368D0D6222CAA08DD74B6E4F54A6472BB3F12B98F890C68415515998B3
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellIncidence.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+# Codex item 13
+
+## Resumed by owner — continue constructing the relative split
+
+The earlier STOP is superseded by the owner's explicit resume. Absence of an existing API is
+being treated as theorem implementation work, not as evidence that the frozen inputs are weak.
+
+## SurfaceBicollarSides — checked closed-side and exterior-half geometry
+
+- New module: crossing points lie in the closures of both surface sides; a circle bicollar
+  split by two closed sides is a marked half-collar on either side. The ambient-frontier
+  version identifies the exact clipped set W minus interior X.
+- Receipt: `DifferentialGeometry/Topology/PiecewiseLinear/SurfaceBicollarSides.json`
+  under `C:/Users/liao9/AppData/Local/Temp/claude-moise-agent-b`.
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+- SHA-256: `C0D7F0A77CE986A816957D48E08F48C3F8CC6244CFC3B5B747FE74751A31DA8E`.
+- Joint axiom/linter audit will follow after the disk-neighborhood and exterior-collar consumers.
+
+## Item 14 module check (2026-09-23T19:01:20.3760785Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualIncidence. Checker exit: 0.
+Sub-leaf list: cut clauses 26 and 28: compact vertex/split incidence; face residual inclusion
+SHA-256: 1782E2EA9B9BF808C76DAF29B77DF7E0553BE97F70BA6EAF78C0EB0B572EE923
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualIncidence.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualIncidence.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Item 14 module check (2026-09-23T19:01:36.1402418Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRestriction. Checker exit: 0.
+Sub-leaf list: common flag decomposition: restrictions of dual cells, graph dual cells and splitting disks
+SHA-256: 727A2226049CB8247486660A988550CBBDA42E3EFA1FC977A3B0E93C8DA4BECE
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRestriction.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRestriction.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Item 14 module check (2026-09-23T19:01:51.9818350Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DualCellVertexInterface. Checker exit: 0.
+Sub-leaf list: common flag decomposition: a dual-cell base is its interface with the other vertex cells
+SHA-256: 6C2860AEEBDB8B7686BFCFB5218ACF5D2F781912AB903C1BEDF9C6690313F26D
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\DualCellVertexInterface.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DualCellVertexInterface.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — ChartParityTransport current version (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New files only.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\LocalDegree\ChartParityTransport.lean with no diagnostics; shared outputs unchanged.`
+
+Current SHA-256: `29A81D2E2A3DC3EAFD002C2AE19F65F7F2DDC843609981D621F11AA905750B59`
+
+Sub-leaves: chartOrientationParity_pair_eq_of_isPreconnected; exists_relative_chart_sign_of_connected_carrier.
+
+The actual relative degree of two local homeomorphisms on a connected source has one sign in every chart covering their common connected target carrier. Remaining: feed the actual Section 34 reference maps into the sign producer, identify the boundary-normal/circle signs on shared disks, correct orientations, and assemble matching and clause (f).
+
+## Codex item 7 — PLCellRelativeOrientation current version (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New files only.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellRelativeOrientation.lean with no diagnostics; shared outputs unchanged.`
+
+Current SHA-256: `C2526803DC55DF0C458B211EB7EE48898FAC5889A8A8CF45F40D22513751F06D`
+
+Sub-leaves: IsPLCellOn.isConnected_interior; exists_relative_orientation_sign_of_cell.
+
+Two continuous injections of a PL three-cell produce actual open partial homeomorphisms on its interior and one relative sign, constant at every interior point and in every chart covering the connected image carrier. No value of the sign is assumed. Remaining: feed the actual Section 34 reference maps into the sign producer, identify the boundary-normal/circle signs on shared disks, correct orientations, and assemble matching and clause (f).
+
+## Item 14 module check (2026-09-23T19:03:27.2854920Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualCover. Checker exit: 0.
+Sub-leaf list: cut clause 11: primary vertex/residual cover
+SHA-256: 206E6B52367635C4FCDA94057B1860C844BFE62A665132BFFF1BD31E71438568
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualCover.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDualCover.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Item 14 module check (2026-09-23T19:03:41.6417209Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleTraces. Checker exit: 1.
+Sub-leaf list: cut clause 7: triangular face arc and marked-point flag geometry
+SHA-256: 8EA3A556797A8F258EA1E34A77F3BCD3F041FBD2A82DAFE131ECC3EBEC0058E9
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.lean:60:6: error(lean.unknownIdentifier): Unknown constant `Finset.pair_subset.mpr`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.lean:146:15: error(lean.unknownIdentifier): Unknown constant `Finset.not_subset_of_ssubset`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.lean:185:5: error(lean.unknownIdentifier): Unknown constant `Finset.pair_subset.mpr`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.lean:201:10: error: Type mismatch: After simplification, term
+  centroid_mem_openSimplex (Finset.singleton_nonempty (Finset.centroid ℝ s id))
+ has type
+  {Finset.centroid ℝ s id}.centerMass (Finset.centroidWeights ℝ {Finset.centroid ℝ s id}) id ∈
+    openSimplex {Finset.centroid ℝ s id}
+but is expected to have type
+  Finset.centroid ℝ s id ∈ openSimplex {Finset.centroid ℝ s id}
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\Section34CompactTriangleTraces.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...s.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.log and .json
+
+```
+
+
+## Codex item 13 — collar and disk-neighborhood layer audited
+
+- Module: `SurfaceBicollarSides.lean`.
+  Receipt: `DifferentialGeometry/Topology/PiecewiseLinear/SurfaceBicollarSides.json`.
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+  SHA-256: `C0D7F0A77CE986A816957D48E08F48C3F8CC6244CFC3B5B747FE74751A31DA8E`.
+- Module: `SurfaceDiskNeighborhood.lean`.
+  Receipt: `DifferentialGeometry/Topology/PiecewiseLinear/SurfaceDiskNeighborhood.json`.
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+  SHA-256: `D067ADC397638F5689BE9D042C7F6CDA91A364DC2E034AF31139B14E652F9136`.
+- Module: `TorusSurfaceCollars.lean`.
+  Receipt: `DifferentialGeometry/Topology/PiecewiseLinear/TorusSurfaceCollars.json`.
+  `exitCode=0 diagnosticLines=0 sourceStable=true sharedArtifactsModified=false`.
+  SHA-256: `05A873749FCCBF8A97A7F115DFED9489E0697F7F0A427EE67714D0DD756D0F1F`.
+
+All paths above are relative to the authorized private output root.
+Joint audit: `AuditCodex13Collars.lean` / `AuditCodex13Collars.receipt.json`;
+exitCode=0, diagnosticLines=0, sourceStable=true. All three modules' nonautomatic declarations
+have only the allowed foundational axioms and pass all thirteen environment linters.
+The new disk-neighborhood theorem constructs an actual larger PL disk in the same closed
+orientable surface, in any supplied relative neighborhood, with the old disk in its intrinsic
+interior. The torus theorem constructs the actual exterior half-collar from a crossing point.
+
+## Item 14 module check (2026-09-23T19:08:22.4557308Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SplittingDiskBoundaryTrace. Checker exit: 0.
+Sub-leaf list: cut clause 7: intrinsic splitting-disk boundary and actual outer arc
+SHA-256: A5EF478BA4DA543CF683C796B768B280C0FD7A447A51E328ECCB172650082B14
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\SplittingDiskBoundaryTrace.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SplittingDiskBoundaryTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Item 14 module check (2026-09-23T19:08:44.7580237Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellSurface. Checker exit: 0.
+Sub-leaf list: cut clause 7: surface graph dual cells are disks
+SHA-256: 41B825B8D5DBC7EB075D53E5AE3A925A7C0E1B5A38610A29E331B843C2CAF3F4
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurface.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurface.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Item 14 module check (2026-09-23T19:09:01.0304548Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellSubgraph. Checker exit: 0.
+Sub-leaf list: cut clause 7: physical-boundary trace of a graph dual cell
+SHA-256: 7494BED384BC559CDBBD85C37C6683ADEBB90703A90157C0C32107E00FE83D4E
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSubgraph.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSubgraph.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Codex item 7 — Section34ReferenceBallMaps (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New file only.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ReferenceBallMaps.lean with no diagnostics; shared outputs unchanged.`
+
+SHA-256: `4D9F32FA1B5FB49C40EC2A73A7A3B40D713CC765EC426DD3C85A8D157CD7F44F`
+
+Sub-leaf: exists_section34_reference_ball_maps.
+
+Extends the accepted reference sphere maps across every source vertex ball, retaining exact target ball, boundary sphere, and marked disk-set images. Pointwise agreement across shared disks is still not assumed or claimed.
+
+## Codex item 7 — Section34RelativeVertexSigns (checked 2026-09-23)
+
+Lease: codex-moise-recon-20260922. New file only.
+
+Checker: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RelativeVertexSigns.lean with no diagnostics; shared outputs unchanged.`
+
+SHA-256: `552E62D80C97CB4C6C98FDF2DE911D1DBDBB54C0933D019B467D637165FA999E`
+
+Sub-leaf: exists_section34_relative_vertex_signs.
+
+Produces actual local homeomorphism families for h and the reference ball maps on all vertex interiors, plus a ZMod 2 sign per vertex. The relative local-degree sign equals that vertex sign at every interior point in every chart covering Q w, using the frozen connected-carrier and outer-torus data. The shared-disk normal/circle identification, reference orientation correction, joint matching and clause (f) remain open.
+
+## Item 14 module check (2026-09-23T19:11:47.8945345Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleTraces. Checker exit: 0.
+Sub-leaf list: cut clause 7: triangular face arcs and marked-point geometry
+SHA-256: 14C333D69A1E7B674666D8FF122AD7BB0429BEBA65D0972235F2613899086E7C
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleTraces.lean with no diagnostics; shared outputs unchanged.
+```
+

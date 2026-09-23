@@ -12,9 +12,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCas
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneMarkedChart
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTube
 
 /-!
-# Sorry-first skeleton of lane C-or1: the one circle closed case in an orientable manifold
+# The one circle closed case in an orientable manifold (lane C-or1)
 
 The assembly `NormalSingularCellData.not_branchPreimage_eq_of_isOrientable` and its
 specialisation `NormalSystem.not_branchPreimage_eq_of_isOrientableManifold` to the double are
@@ -123,6 +124,13 @@ Departures from `consult/C-or1-design.md`, forced by the proved pieces or by typ
   interface; that file is deliberately not imported.  Its application at every branch vertex,
   with actual four arc parametrisations, the two separation hypotheses and the permutation
   condition, remains part of item 8.
+
+Promoted to a real module on 2026-09-24: the last leaf `exists_isSourceTrackedBranchTube` is
+proved in `LoopTheorem/ClosedBranchCaseOneTube.lean` (Codex lane on lease d, item 8, over the
+thirty-two modules of the source-tracked branch tube: source collar charts, the common
+subdivision with the surface trace on the derived cells, the cyclic sheet labelling closed by
+the deck exchange, the cap reparametrisation and the four preserved collar arms; lead
+zero-diagnostic checks and audit).  No `sorry` remains; the assemblies below are unconditional.
 -/
 
 open Set Topology
@@ -164,24 +172,6 @@ end NormalSingularCellData
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-
-open Classical in
-theorem exists_isSourceTrackedBranchTube (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
-    (hL : IsCombinatorialManifold 3 L) :
-    letI := combinatorialChartedSpace L hL
-    ∀ (D : SingularTwoCell L.space) (BdM B : Set L.space)
-      (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch),
-      ¬hD.singularSet.IsBoundaryBranch c →
-      ∀ (J Q C : Set (EuclideanSpace ℝ (Fin 2)))
-        (τ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
-        (ρ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2))
-        (sheet : EuclideanSpace ℝ (Fin 2) → OpenPartialHomeomorph L.space (ℝ × ℝ × ℝ)),
-        IsPLSphere 1 J → hD.IsMarkedBranchCollar c J Q C τ ρ sheet →
-        ∃ (Pc : Geometry.SimplicialComplex ℝ (ℝ × ℝ)) (_ : Finite Pc.faces)
-          (N : Geometry.SimplicialComplex ℝ E) (_ : Finite N.faces) (φ : (ℝ × ℝ) × ℝ → E)
-          (u : ℝ × ℝ → ℝ × ℝ) (r : Fin 4 → ℝ × ℝ),
-          IsSourceTrackedBranchTube hD c Subtype.val L J ρ N Pc φ u r := by
-  sorry
 
 open Classical in
 theorem NormalSingularCellData.not_branchPreimage_eq_of_isOrientable
