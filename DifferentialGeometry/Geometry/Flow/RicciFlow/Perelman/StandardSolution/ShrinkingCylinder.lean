@@ -221,12 +221,13 @@ private theorem shrinkingCylinderMetric_interpolate {t : ℝ} (ht : t < 1)
   ring
 
 private theorem shrinkingCylinderMetric_jointGram
+    {a b : ℝ} (hbone : b ≤ 1)
     (x₀ : Metric.sphere (0 : E) 1 × ℝ)
     (i j : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin 2) × ℝ))) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
       (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) =>
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (shrinkingCylinderMetric (E := E) p.1) x₀ p.2 i j)
-      (Ico 0 1 ×ˢ
+      (Ico a b ×ˢ
         (trivializationAt (EuclideanSpace ℝ (Fin 2) × ℝ)
           (TangentSpace ((𝓡 2).prod 𝓘(ℝ))) x₀).baseSet) := by
   let g₀ := roundCylinderMetric (E := E) (n := 2)
@@ -237,33 +238,39 @@ private theorem shrinkingCylinderMetric_jointGram
       (Metric.sphere (0 : E) 1 × ℝ)) :
       ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
         (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ p.2 i j)
-        (Ico 0 1 ×ˢ U) :=
+        (Ico a b ×ˢ U) :=
     (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn g x₀ i j).comp contMDiffOn_snd
       (fun _ hp => hp.2)
   have ha : ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
       (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) => 1 - 2 * p.1)
-      (Ico 0 1 ×ˢ U) :=
+      (Ico a b ×ˢ U) :=
     contMDiffOn_const.sub (contMDiffOn_const.mul contMDiffOn_fst)
   have hb : ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
       (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) => 2 * p.1)
-      (Ico 0 1 ×ˢ U) := contMDiffOn_const.mul contMDiffOn_fst
+      (Ico a b ×ˢ U) := contMDiffOn_const.mul contMDiffOn_fst
   apply ((ha.mul (hstatic g₀)).add (hb.mul (hstatic g₁))).congr
   intro p hp
   dsimp only [Pi.mul_apply, Pi.add_apply]
   simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
-  exact shrinkingCylinderMetric_interpolate hp.1.2 p.2 _ _
+  exact shrinkingCylinderMetric_interpolate (hp.1.2.trans_le hbone) p.2 _ _
 
 def shrinkingCylinderSolutionOn :
     SolutionOn (I := (𝓡 2).prod 𝓘(ℝ)) (M := Metric.sphere (0 : E) 1 × ℝ)
       (RealTimeInterval.closedOpen 0 1 (by norm_num)) where
   base := { metric := shrinkingCylinderMetric (E := E) }
 
-theorem shrinkingCylinderSolutionOn_isSolutionOn :
-    IsSolutionOn (shrinkingCylinderSolutionOn (E := E)) := by
-  apply solutionOn_of_joint (by norm_num : (0 : ℝ) < 1)
-    (shrinkingCylinderMetric (E := E)) shrinkingCylinderMetric_jointGram
+theorem shrinkingCylinderMetric_isSolutionOn_interval {a b : ℝ} (hab : a < b) (hbone : b ≤ 1) :
+    IsSolutionOn ({ base.metric := shrinkingCylinderMetric (E := E) } :
+      SolutionOn (I := (𝓡 2).prod 𝓘(ℝ)) (M := Metric.sphere (0 : E) 1 × ℝ)
+        (RealTimeInterval.closedOpen a b hab)) := by
+  apply solutionOn_of_joint hab (shrinkingCylinderMetric (E := E))
+    (shrinkingCylinderMetric_jointGram hbone)
   intro t ht x v w
-  exact (shrinkingCylinderMetric_hasDerivAt ht.2 x v w).hasDerivWithinAt
+  exact (shrinkingCylinderMetric_hasDerivAt (ht.2.trans_le hbone) x v w).hasDerivWithinAt
+
+theorem shrinkingCylinderSolutionOn_isSolutionOn :
+    IsSolutionOn (shrinkingCylinderSolutionOn (E := E)) :=
+  shrinkingCylinderMetric_isSolutionOn_interval (by norm_num) le_rfl
 
 theorem shrinkingCylinderMetric_complete (t : ℝ) :
     RiemannianMetricComplete (shrinkingCylinderMetric (E := E) t) := by
