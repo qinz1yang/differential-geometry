@@ -1,9 +1,12 @@
 import DifferentialGeometry.Topology.Homology.ManifoldCompactHomology
+import DifferentialGeometry.Topology.Homology.LocalOrientation
+import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import Mathlib.Topology.Sets.Compacts
 
 noncomputable section
 
-open Set TopologicalSpace Module
+open Bundle Set TopologicalSpace Module
+open scoped Manifold
 
 universe u
 
@@ -44,5 +47,36 @@ theorem exists_unique_compact_homology_family_of_locally_realized_family
   · intro d hd
     funext K
     exact huniq K (d K) (hd.2 K)
+
+theorem exists_compact_homology_family_of_simplyConnected
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    [SimplyConnectedSpace M] :
+    ∃ c : ∀ K : Compacts M, integralRelativeHomology (Module.finrank ℝ E) (K : Set M)ᶜ,
+      (∀ (K L : Compacts M) (h : K ≤ L),
+        integralRelativeHomologyMap (Module.finrank ℝ E) (ContinuousMap.id M)
+          (show (L : Set M)ᶜ ⊆ (K : Set M)ᶜ from compl_subset_compl.mpr h) (c L) = c K) ∧
+      ∀ p : M, Function.Bijective (fun z : ℤ => z • c {p}) := by
+  let p := Classical.arbitrary M
+  let ω := (Module.finBasis ℝ E).orientation
+  let ωp := Orientation.map (Fin (Module.finrank ℝ E))
+    ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ p
+      (by simpa only [TangentBundle.trivializationAt_baseSet] using
+        mem_chart_source E p)).symm.toLinearEquiv ω
+  obtain ⟨o, _, hlocal⟩ := exists_tangent_orientation_locality_of_simplyConnected p ωp
+  obtain ⟨a, ha⟩ := exists_integralLocalHomology_generator (0 : E)
+  obtain ⟨μ, ⟨hmaps, hreal⟩, _⟩ :=
+    exists_locally_realized_family_of_tangent_orientation_locality o ω a hlocal
+  obtain ⟨c, ⟨hc, hpoints⟩, _⟩ :=
+    exists_unique_compact_homology_family_of_locally_realized_family
+      (E := E) (Module.finrank ℝ E) le_rfl μ hreal
+  refine ⟨c, hc, ?_⟩
+  intro x
+  have hpoint := hpoints {x} x (by simp)
+  rw [integralRelativeHomologyMap_id] at hpoint
+  simp only [LinearMap.id_apply] at hpoint
+  rw [hpoint]
+  exact integralLocalHomology_generator_of_orientation_coordinates
+    x x (mem_chart_source E x) (o x) ω a ha (μ x) (hmaps x x (mem_chart_source E x))
 
 end DifferentialGeometry.Topology

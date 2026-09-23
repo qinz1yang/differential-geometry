@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.ChartBasis
+import DifferentialGeometry.Topology.Homology.CompactHomologyFamily
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.EuclideanOpen
 
 noncomputable section
@@ -165,6 +166,39 @@ theorem exists_unique_integralCompactlySupportedCohomology_cap_bijective_of_char
   obtain ⟨D, hD, huniq⟩ := exists_unique_integralCompactlySupportedCohomology_cap k m cX hcX
   exact ⟨D, ⟨hD, integralCompactlySupportedCohomology_cap_bijective_of_chartedSpace
     k m hkm cX hcX hpX D hD⟩, fun D' hD' => huniq D' hD'.1⟩
+
+end DifferentialGeometry.Topology
+
+end
+
+noncomputable section
+
+open Set TopologicalSpace
+open scoped Manifold
+
+namespace DifferentialGeometry.Topology
+
+theorem exists_integralCompactlySupportedCohomology_cap_bijective_of_simplyConnected
+    {E M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    [SimplyConnectedSpace M]
+    (k m : ℕ) (hkm : k + m = Module.finrank ℝ E) :
+    ∃ c : ∀ K : Compacts M, integralRelativeHomology (k + m) (K : Set M)ᶜ,
+      (∀ (K L : Compacts M) (h : K ≤ L),
+        integralRelativeHomologyMap (k + m) (ContinuousMap.id M)
+          (show (L : Set M)ᶜ ⊆ (K : Set M)ᶜ from compl_subset_compl.mpr h) (c L) = c K) ∧
+      (∀ p : M, Function.Bijective (fun z : ℤ => z • c {p})) ∧
+      ∃! D : integralCompactlySupportedCohomology k M →ₗ[ℤ] integralSingularHomology m M,
+        (∀ (K : Compacts M) (α : integralRelativeCohomology k (K : Set M)ᶜ),
+          D (integralRelativeToCompactlySupportedCohomology k K α) =
+            integralRelativeCohomologyCapToAbsolute (K : Set M)ᶜ k m α (c K)) ∧
+        Function.Bijective D := by
+  have hex := exists_compact_homology_family_of_simplyConnected (E := E) (M := M)
+  rw [← hkm] at hex
+  obtain ⟨c, hc, hp⟩ := hex
+  exact ⟨c, hc, hp,
+    exists_unique_integralCompactlySupportedCohomology_cap_bijective_of_chartedSpace
+      (E := E) k m hkm c hc hp⟩
 
 end DifferentialGeometry.Topology
 
