@@ -410,3 +410,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   route). Codex queue: unchanged (items 1–5 remain), Codex idle until the owner resumes it.
 * 05:20 (09-23) — review request BL ready (`consult/BL-…-request.md`: the compact source-face cut order; is a
   frame clause missing, or is the PL-surface derivation enough); the owner sends it on waking.
+* 05:55 (09-23) — review BL returned (digest BM): both source-face leaves OK as stated, no frame change; the
+  route is regular-cell-complex thinness; reusable lemmas owed (Codex day-queue item 1b). Nothing frozen changed.

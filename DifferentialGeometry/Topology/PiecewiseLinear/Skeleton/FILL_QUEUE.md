@@ -253,6 +253,14 @@ In order:
    have the same `H₁` image, a separating circle has zero image) now supplies the range theorems;
    what is left is a finite nonempty selection and the range comparison for the actual family
    `G : Fin (n+1) → Set E3`. Real module.
+1b. (added 05:55 after review BL, digest `consult/BM-section34-compact-source-face-cut-order-review-digest.md`)
+   Reconnaissance probe for `compactSourceFace_iff_cutLe` (`Skeleton/Section34Compact.lean` line 330): reduce
+   it to the reviewer's reusable lemmas — pure-dimensional tiling of a cell's sphere boundary from clauses
+   7–10 of `Section34CompactCutFrame`, thinness (a vertex of the circle `srcBd D_e` meets exactly two arcs,
+   an edge of the sphere `srcBd V_w` exactly two faces), the codimension-one containment classification for
+   the ten label kinds — using `PLCellOnBoundary` (`IsPLCellOn.dim_eq`, `boundary_eq`, `boundary_eq_frontier`)
+   and `Section34CompactSplitDiskIntersection`; then prove the elementary ones as real modules. Do not add
+   any clause to the frame; do not restate the leaf.
 2. The spine-carrier probe's other two sub-leaves: the chain cut at a PL frontier (lines 38–50:
    from a 1-cycle `z` in `A` bounding `b` in `A` modulo `w` supported in `A \ S`, a 1-cycle `v` on
    `frontier S ∩ A` with `z - v` bounding in `S`) and `exists_disjoint_oriented_polygons_of_cycle`
