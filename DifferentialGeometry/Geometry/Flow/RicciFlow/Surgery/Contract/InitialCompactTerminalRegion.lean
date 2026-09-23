@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarSublevel
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionCompletion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
 
 noncomputable section
 open Set Manifold
@@ -12,7 +13,7 @@ universe u
 
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-theorem exists_initialTerminalRegion_of_compact_low_components
+theorem exists_initialTerminalRegion_with_empty_boundary_of_compact_low_components
     (D : OneStepIncoming.{u}) {ε Λ r : ℝ}
     (hε : 0 < ε) (hε1 : ε < 1) (hΛ : 1 ≤ Λ)
     (hr : 0 < r) (hradius : r = D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)
@@ -20,7 +21,8 @@ theorem exists_initialTerminalRegion_of_compact_low_components
       ∀ x : D.slab.terminalRegularOpen,
       ConnectedComponents.mk x = c → metricScalarAt D.terminal.metric x ≤ (r ^ 2)⁻¹ →
         IsCompact (connectedComponent x)) :
-    Nonempty (InitialTerminalRegion D ε Λ) := by
+    ∃ R : InitialTerminalRegion D ε Λ,
+      ∀ c : {c // c ∈ R.component}, IsEmpty (R.core c).Boundary := by
   classical
   let component : Set (ConnectedComponents D.slab.terminalRegularOpen) :=
     {c | ∃ x : D.slab.terminalRegularOpen,
@@ -115,9 +117,39 @@ theorem exists_initialTerminalRegion_of_compact_low_components
     core_component := hcore_component
     low_mem_interior := hlow_mem_interior
     neckFrontier := hneck
-    boundary_scalar := ?_ }⟩
-  intro c b y
-  let _ : IsEmpty (core c).Boundary := (hcore_spec c).2.1
-  exact isEmptyElim b
+    boundary_scalar := ?_ }, ?_⟩
+  · intro c b y
+    let _ : IsEmpty (core c).Boundary := (hcore_spec c).2.1
+    exact isEmptyElim b
+  · intro c
+    exact (hcore_spec c).2.1
+
+theorem exists_initialTerminalRegion_of_compact_low_components
+    (D : OneStepIncoming.{u}) {ε Λ r : ℝ}
+    (hε : 0 < ε) (hε1 : ε < 1) (hΛ : 1 ≤ Λ)
+    (hr : 0 < r) (hradius : r = D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)
+    (hcompact : ∀ c : ConnectedComponents D.slab.terminalRegularOpen,
+      ∀ x : D.slab.terminalRegularOpen,
+      ConnectedComponents.mk x = c → metricScalarAt D.terminal.metric x ≤ (r ^ 2)⁻¹ →
+        IsCompact (connectedComponent x)) :
+    Nonempty (InitialTerminalRegion D ε Λ) := by
+  obtain ⟨R, _⟩ := exists_initialTerminalRegion_with_empty_boundary_of_compact_low_components
+    D hε hε1 hΛ hr hradius hcompact
+  exact ⟨R⟩
+
+theorem exists_terminalCorePresentation_of_compact_low_components
+    (D : OneStepIncoming.{u}) {ε Λ r : ℝ}
+    (hε : 0 < ε) (hΛ : 1 ≤ Λ)
+    (hr : 0 < r) (hradius : r = D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)
+    (hcompact : ∀ c : ConnectedComponents D.slab.terminalRegularOpen,
+      ∀ x : D.slab.terminalRegularOpen,
+      ConnectedComponents.mk x = c → metricScalarAt D.terminal.metric x ≤ (r ^ 2)⁻¹ →
+        IsCompact (connectedComponent x)) :
+    ∃ P : TerminalCorePresentation D ε Λ, ∀ c, IsEmpty (P.hornIndex c) := by
+  obtain ⟨R, hboundary⟩ := exists_initialTerminalRegion_with_empty_boundary_of_compact_low_components
+    D (ε := min ε (1 / 2)) (lt_min hε (by norm_num))
+      ((min_le_right ε (1 / 2)).trans_lt (by norm_num)) hΛ hr hradius hcompact
+  obtain ⟨P, _, _, _, hhorns⟩ := R.exists_terminalCorePresentation_of_isEmpty_boundary hboundary
+  exact ⟨P.monoEpsilon (min_le_left _ _), hhorns⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Contract
