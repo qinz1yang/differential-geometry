@@ -13521,3 +13521,10 @@ import DifferentialGeometry.Topology.Manifold.CylinderCollar.AttachedSlab
 import DifferentialGeometry.Topology.Order.FiniteExceptionalSteps
 import DifferentialGeometry.Geometry.Neck.ScalarRegionGrowth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalRegionBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorNormalizedPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.MetricPinchingLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalPinchingLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNormalizedLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalScalarLimit
