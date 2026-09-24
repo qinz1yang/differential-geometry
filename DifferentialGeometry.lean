@@ -13728,3 +13728,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullbackCurvat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialFlowComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricInitialComparison
