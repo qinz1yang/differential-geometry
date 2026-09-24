@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Neck.CapSeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
@@ -197,5 +200,97 @@ theorem GeometricCutoffRecord.exists_survivor_chart_of_scalar_upper_bound
     exact (image_image (F : _ → _) φ K).symm
   · intro y v w
     exact (H.event i).survivor_chart_metric_inner F hmetric φ hφ.contMDiff hsource y v w
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+noncomputable section
+open Set Manifold DifferentialGeometry
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open scoped Manifold ContDiff ENNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+theorem exists_cutoff_cap_separation_tolerance
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (epsb : ℝ) (pb : (H.event i).incoming.terminalRegularOpen)
+        (boundary : SpatialNeck (H.event i).terminal.metric epsb pb),
+        epsb ≤ 1 / 1000 → ∀ s ∈ Ioo (-epsb⁻¹) epsb⁻¹,
+        ∀ (K : Set (H.event i).incoming.terminalRegularOpen), IsCompact K →
+          (interior K).Nonempty →
+          frontier K = range (fun z : Sphere 2 => boundary.map (z, s)) →
+          ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+            c * q ≤ metricScalarAt (H.event i).terminal.metric pb →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤ ENNReal.ofReal D) →
+            ∀ j, Disjoint (Subtype.val '' K)
+              ((H.event i).transition.trace.tubes.tube j ''
+                {z : TubeDomain | z.2.val ∈ Icc (-1 : ℝ) 1}) := by
+  obtain ⟨eta, heta, hsep⟩ := exists_neck_cap_separation_tolerance hC hD hc
+  refine ⟨min eta (1 / 12), lt_min heta (by norm_num), ?_⟩
+  intro H i parameters R hδ epsb pb boundary hb s hs K hK hKi hfront q hq hscalar hboundary hdiam j
+  have hsmall : R.delta j < 1 / 11 :=
+    ((hδ j).trans (min_le_right _ _)).trans_lt (by norm_num)
+  have hk : ⌈(R.delta j)⁻¹⌉₊ ≤ R.order j := by
+    have hf := Nat.ceil_le_floor_add_one ((R.delta j)⁻¹)
+    have horder := (le_max_right (parameters.modelOrder + 6)
+      (2 * ⌊(R.delta j)⁻¹⌋₊ + 4)).trans (R.order_lower j)
+    omega
+  obtain ⟨cut, _, hmap⟩ := (R.neck j).exists_spatialNeck le_rfl hsmall hk
+  have hdis := hsep _ (H.event i).terminal.metric (R.delta j) epsb (R.neck j).center pb
+    ((hδ j).trans (min_le_left _ _)) cut boundary hb s hs K hK hKi hfront q hq
+    hscalar hboundary hdiam
+  apply Set.disjoint_left.mpr
+  rintro y ⟨x, hx, rfl⟩ ⟨z, hz, heq⟩
+  have hNx : (R.neck j).chart ⟨(z.1, z.2.val), R.tube_in_buffer j z⟩ = x :=
+    Subtype.ext ((R.tube_eq j z (R.tube_in_buffer j z)).symm.trans heq)
+  apply Set.disjoint_left.mp hdis hx
+  refine ⟨(z.1, z.2.val), ⟨mem_univ _, hz⟩, ?_⟩
+  exact (hmap ⟨(z.1, z.2.val), R.tube_in_buffer j z⟩).trans hNx
+
+theorem exists_cutoff_cap_protection_tolerance
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (H.event i).old = (H.event i).transition.trace.retainedCore →
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (epsb : ℝ) (pb : (H.event i).incoming.terminalRegularOpen)
+        (boundary : SpatialNeck (H.event i).terminal.metric epsb pb),
+        epsb ≤ 1 / 1000 → ∀ s ∈ Ioo (-epsb⁻¹) epsb⁻¹,
+        ∀ (K : Set (H.event i).incoming.terminalRegularOpen), IsCompact K → IsPreconnected K →
+          (interior K).Nonempty →
+          frontier K = range (fun z : Sphere 2 => boundary.map (z, s)) →
+          ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+            c * q ≤ metricScalarAt (H.event i).terminal.metric pb →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤ ENNReal.ofReal D) →
+            ∀ (x : (H.event i).incoming.terminalRegularOpen), x ∈ K →
+              ∀ y : (H.stage i.succ).Carrier, (H.event i).RegularCrossing x.val y →
+              ∀ z ∈ K, z.val ∈ interior (Subtype.val '' (H.event i).old) := by
+  obtain ⟨eta, heta, hsep⟩ := exists_cutoff_cap_separation_tolerance hC hD hc
+  refine ⟨eta, heta, ?_⟩
+  intro H i parameters R hOld hδ epsb pb boundary hb s hs K hK hconn hKi hfront
+    q hq hscalar hboundary hdiam x hx y hcross
+  have hdis := hsep H i parameters R hδ epsb pb boundary hb s hs K hK hKi hfront
+    q hq hscalar hboundary hdiam
+  apply (H.event i).subset_interior_old_of_isPreconnected hOld hconn _ hx hcross
+  intro z hz
+  let T := (H.event i).transition.trace.tubes
+  let bands := ⋃ j, T.tube j '' {w : TubeDomain | w.2.val ∈ Icc (-1 : ℝ) 1}
+  have hopen : IsOpen bandsᶜ := T.isCompact_iUnion_closedBand.isClosed.isOpen_compl
+  have hsub : bandsᶜ ⊆ T.core := by
+    intro w hw
+    change w ∉ ⋃ j, T.removedBand j
+    intro hm
+    obtain ⟨j, a, ha, heq⟩ := mem_iUnion.mp hm
+    exact hw (mem_iUnion.mpr ⟨j, a, ⟨ha.1.le, ha.2.le⟩, heq⟩)
+  apply interior_maximal hsub hopen
+  intro hm
+  obtain ⟨j, hj⟩ := mem_iUnion.mp hm
+  exact Set.disjoint_left.mp (hdis j) (mem_image_of_mem Subtype.val hz) hj
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -979,6 +979,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.TransverseCoordinates
 import DifferentialGeometry.Analysis.ODE.Flow.Planar.TransverseHittingTime
 import DifferentialGeometry.Analysis.ODE.Flow.Planar.TrappedPlanarOrbit
 import DifferentialGeometry.Analysis.ODE.Flow.Uniqueness
+import DifferentialGeometry.Analysis.ODE.ForwardScalar
 import DifferentialGeometry.Analysis.ODE.GradientFlow
 import DifferentialGeometry.Analysis.ODE.Gronwall.Backward
 import DifferentialGeometry.Analysis.ODE.Gronwall.ClosedEdge
@@ -5402,6 +5403,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Cylindrical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapturedCapClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCutScaleProtection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapBallVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SelectedHistoricalNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapComponent
@@ -5412,16 +5415,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingRec
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSpatialNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTensorPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckMixedJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckRecentering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVaryingChartConvergence
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactDomainTransport
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
+import DifferentialGeometry.Geometry.Neck.CapSeparation
 import DifferentialGeometry.Geometry.Neck.ScalarNormalization
 import DifferentialGeometry.Geometry.Neck.SpatialIsometry
+import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
 import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
@@ -9825,6 +9832,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapWithoutCuts
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutComponentRealization
 import DifferentialGeometry.Topology.ThreeManifold.DisjointUnionInitialRealization
 import DifferentialGeometry.Topology.ThreeManifold.MarkedBallTubeProducer
+import DifferentialGeometry.Topology.ThreeManifold.NestedBallRecapping
 import DifferentialGeometry.Topology.ThreeManifold.PartialGraphRealization
 import DifferentialGeometry.Topology.ThreeManifold.PartialRealizationAnalytic
 import DifferentialGeometry.Topology.ThreeManifold.PartialRealizationBlockCount

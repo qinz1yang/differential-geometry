@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
 import DifferentialGeometry.Geometry.Metric.Comparison.BoundaryDetour
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
 import DifferentialGeometry.Geometry.Neck.SphericalBarrier
@@ -559,5 +560,55 @@ theorem TerminalLimitMetric.exists_spherical_barrier_at_level
   obtain ⟨C2, hC2, hmain⟩ := exists_uniform_spherical_barrier_at_level.{u} hδ hδsmall
   obtain ⟨q, hq, hbarrier⟩ := hmain P a s G
   exact ⟨C2, q, hC2, hq, hbarrier L⟩
+
+
+theorem TerminalLimitMetric.nonempty_spatialNeck_of_canonical_along_minimizer
+    (L : G.TerminalLimitMetric) {eps δ α q C1 C2 : ℝ}
+    (hδ : 0 < δ)
+    (hα : α < 1 / 11) (hreserve : 13000 * δ ≤ α)
+    (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hq : 0 < q) (hC2 : 0 < C2)
+    {γ : ℝ → G.terminalRegularOpen} {l t r : ℝ} (hlt : l < t) (htr : t < r)
+    (hmin : ∀ u ∈ Icc l r, ∀ v ∈ Icc l r,
+      riemannianEDistOf L.metric (γ u) (γ v) = ENNReal.ofReal |u - v|)
+    (hcanonical : ∀ u ∈ Ioo a s, q < G.flow.scalar u (γ t).val →
+      ∃ W : CanonicalWitness G.flow eps C1 C2 (γ t).val u, W.capTubeHasNeckChart eps)
+    (hx : q < metricScalarAt L.metric (γ t))
+    (hleft : 2 * C2 * metricScalarAt L.metric (γ l) < metricScalarAt L.metric (γ t))
+    (hright : 2 * C2 * metricScalarAt L.metric (γ t) ≤ metricScalarAt L.metric (γ r)) :
+    Nonempty (SpatialNeck L.metric α (γ t)) := by
+  have hδsmall : δ < 1 / 20000 := by linarith
+  have hxpos : 0 < metricScalarAt L.metric (γ t) := hq.trans hx
+  have hy : (γ l).val ∈ connectedComponent (γ t).val := by
+    have hfinite : riemannianEDistOf L.metric (γ t) (γ l) ≠ ⊤ := by
+      rw [hmin t ⟨hlt.le, htr.le⟩ l ⟨le_rfl, hlt.le.trans htr.le⟩]
+      exact ENNReal.ofReal_ne_top
+    have hmem : γ l ∈ connectedComponent (γ t) := by
+      have hball : γ l ∈ riemannianBallOf L.metric (γ t)
+          ((riemannianEDistOf L.metric (γ t) (γ l)).toReal + 1) := by
+        apply (ENNReal.lt_ofReal_iff_toReal_lt hfinite).mpr
+        exact lt_add_one _
+      exact Geometry.Metric.edistOf_ball_subset_connCompOpen L.metric (γ t) _ hball
+    exact continuous_subtype_val.mapsTo_connectedComponent (γ t) hmem
+  have hscalar : C2 * metricScalarAt L.metric (γ l) < metricScalarAt L.metric (γ t) := by
+    by_cases hnonneg : 0 ≤ metricScalarAt L.metric (γ l)
+    · nlinarith
+    · exact (mul_neg_of_pos_of_neg hC2 (lt_of_not_ge hnonneg)).trans hxpos
+  rcases L.spatial_neck_or_cap_of_canonical_neighborhoods hδ hδsmall hepsδ hfit hq
+      (γ t) (γ l) hcanonical hx hy hscalar with hneck | hcap
+  · obtain ⟨N⟩ := hneck
+    exact ⟨N.mono (by linarith) hα⟩
+  · obtain ⟨v, nk, K, hK, hxK, hball, hupper, hscalarK, hscalarN, hfront, hemb, hcollar⟩ := hcap
+    apply nk.exists_at_minimizing_point_of_frontier_eq_slice hα hreserve hfront hlt htr hmin
+    · intro hlK
+      have hh := (hscalarK (γ l) (interior_subset hlK)).1
+      have hcontra : metricScalarAt L.metric (γ l) <
+          metricScalarAt L.metric (γ t) / (2 * C2) := by
+        apply (lt_div_iff₀ (by positivity : 0 < 2 * C2)).mpr
+        nlinarith
+      exact (not_lt_of_ge hcontra.le) hh
+    · intro hrK
+      exact (not_lt_of_ge hright) (hscalarK (γ r) (interior_subset hrK)).2
+    · exact hxK
+
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
