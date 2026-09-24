@@ -161,4 +161,44 @@ theorem eventually_spatial_neck_window_subset_inner_ball_of_endpoint_blowup
       (ENNReal.ofReal_add ht (by positivity)).symm
     _ < ENNReal.ofReal r := (ENNReal.ofReal_lt_ofReal_iff (ht.trans_lt htr)).mpr hwidthn
 
+section
+
+variable {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x : M}
+  {ι : Type*} {l : Filter ι} [l.NeBot] {y : ι → M} {q : UniformSpace.Completion M}
+
+theorem SpatialNeck.completion_dist_lower_bound_of_scalar_tendsto_atTop
+    (nk : SpatialNeck g eps x)
+    (hmetric : ∀ u v : M, edist u v = riemannianEDistOf g u v)
+    (hy : Tendsto (fun i => (y i : UniformSpace.Completion M)) l (𝓝 q))
+    (hscalar : Tendsto (fun i => metricScalarAt g (y i)) l atTop) :
+    eps⁻¹ * Real.sqrt (1 - eps) / Real.sqrt (metricScalarAt g x) ≤
+      dist (x : UniformSpace.Completion M) q := by
+  have hsep : ∀ᶠ i in l,
+      eps⁻¹ * Real.sqrt (1 - eps) / Real.sqrt (metricScalarAt g x) ≤ dist x (y i) := by
+    filter_upwards [hscalar.eventually_gt_atTop ((1 + 4323 * eps) * metricScalarAt g x)] with i hi
+    have hbound := nk.edist_lower_bound_of_scalar_gt hi
+    rw [← hmetric, edist_dist] at hbound
+    exact (ENNReal.ofReal_le_ofReal_iff dist_nonneg).mp hbound
+  apply ge_of_tendsto ((tendsto_const_nhds (x := (x : UniformSpace.Completion M))).dist hy)
+  simpa only [UniformSpace.Completion.dist_eq] using hsep
+
+theorem SpatialNeck.scalar_mul_completion_dist_sq_lower_bound_of_scalar_tendsto_atTop
+    (nk : SpatialNeck g eps x)
+    (hmetric : ∀ u v : M, edist u v = riemannianEDistOf g u v)
+    (hy : Tendsto (fun i => (y i : UniformSpace.Completion M)) l (𝓝 q))
+    (hscalar : Tendsto (fun i => metricScalarAt g (y i)) l atTop) :
+    (eps⁻¹) ^ 2 * (1 - eps) ≤
+      metricScalarAt g x * dist (x : UniformSpace.Completion M) q ^ 2 := by
+  have heps1 : eps < 1 := nk.eps_small.trans (by norm_num)
+  have hroot := (div_le_iff₀ (Real.sqrt_pos.mpr nk.Q_pos)).mp
+    (nk.completion_dist_lower_bound_of_scalar_tendsto_atTop hmetric hy hscalar)
+  have hsq := pow_le_pow_left₀
+    (mul_nonneg (inv_nonneg.mpr nk.eps_pos.le) (Real.sqrt_nonneg (1 - eps))) hroot 2
+  rw [mul_pow, mul_pow, Real.sq_sqrt (by linarith : 0 ≤ 1 - eps),
+    Real.sq_sqrt nk.Q_pos.le] at hsq
+  simpa only [mul_comm] using hsq
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

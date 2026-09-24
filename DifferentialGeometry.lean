@@ -13861,3 +13861,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Lo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.ParabolicRescaling
+import DifferentialGeometry.Geometry.Neck.FiniteEnd
