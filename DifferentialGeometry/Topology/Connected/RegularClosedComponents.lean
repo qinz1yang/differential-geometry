@@ -129,6 +129,75 @@ private theorem exists_isClopen_component_union_meeting
     obtain ⟨z, hz, rfl⟩ := hxy
     exact ⟨z, ⟨⟨y, hyW⟩, hyL, (ConnectedComponents.coe_eq_coe'.mpr hz).symm⟩, rfl⟩
 
+theorem component_union_meeting_union_of_inter_subset
+    {B : Set X} [DiscreteTopology (ConnectedComponents W)]
+    (hW : IsClosed W)
+    (hB : IsClosed B) (hBconn : IsPreconnected B)
+    (hBW : B ∩ W ⊆ ⋃ a ∈ L, connectedComponentIn W a)
+    (hmeet : (B ∩ ⋃ a ∈ L, connectedComponentIn W a).Nonempty) :
+    (⋃ a ∈ L, connectedComponentIn (W ∪ B) a) =
+      (⋃ a ∈ L, connectedComponentIn W a) ∪ B := by
+  let R := ⋃ a ∈ L, connectedComponentIn W a
+  obtain ⟨Q, hQ, heq⟩ := exists_isClopen_component_union_meeting (W := W) (L := L)
+  change Subtype.val '' Q = R at heq
+  have hRclosed : IsClosed R := by
+    simpa only [heq] using hW.isClosedMap_subtype_val Q hQ.isClosed
+  have hDimage : Subtype.val '' Qᶜ = W \ R := by
+    ext x
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨z.property, ?_⟩
+      intro hR
+      rw [← heq] at hR
+      obtain ⟨v, hv, hvz⟩ := hR
+      exact hz ((Subtype.ext hvz) ▸ hv)
+    · rintro ⟨hxW, hxR⟩
+      exact ⟨⟨x, hxW⟩, fun hxQ => hxR (heq ▸ ⟨⟨x, hxW⟩, hxQ, rfl⟩), rfl⟩
+  have hDclosed : IsClosed (W \ R) :=
+    hDimage ▸ hW.isClosedMap_subtype_val Qᶜ hQ.isOpen.isClosed_compl
+  have hdis : Disjoint (R ∪ B) (W \ R) := by
+    rw [disjoint_left]
+    intro x hx hxD
+    rcases hx with hxR | hxB
+    · exact hxD.2 hxR
+    · exact hxD.2 (hBW ⟨hxB, hxD.1⟩)
+  apply subset_antisymm
+  · intro x hx
+    obtain ⟨a, haL, hxa⟩ := mem_iUnion₂.mp hx
+    by_contra hxnot
+    have hxD : x ∈ W \ R := by
+      have hxV := connectedComponentIn_subset (W ∪ B) a hxa
+      exact ⟨hxV.resolve_right (fun h => hxnot (Or.inr h)), fun h => hxnot (Or.inl h)⟩
+    have haV : a ∈ W ∪ B := connectedComponentIn_nonempty_iff.mp ⟨x, hxa⟩
+    have haC : a ∈ connectedComponentIn (W ∪ B) a := mem_connectedComponentIn haV
+    have haRB : a ∈ R ∪ B := by
+      rcases haV with haW | haB
+      · exact Or.inl (mem_iUnion₂.mpr ⟨a, haL, mem_connectedComponentIn haW⟩)
+      · exact Or.inr haB
+    have hcover : connectedComponentIn (W ∪ B) a ⊆ (R ∪ B) ∪ (W \ R) := by
+      intro z hz
+      rcases connectedComponentIn_subset (W ∪ B) a hz with hzW | hzB
+      · by_cases hzR : z ∈ R
+        · exact Or.inl (Or.inl hzR)
+        · exact Or.inr ⟨hzW, hzR⟩
+      · exact Or.inl (Or.inr hzB)
+    obtain ⟨z, _, hzRB, hzD⟩ :=
+      isPreconnected_closed_iff.mp isPreconnected_connectedComponentIn
+        (R ∪ B) (W \ R) (hRclosed.union hB) hDclosed hcover
+        ⟨a, haC, haRB⟩ ⟨x, hxa, hxD⟩
+    exact disjoint_left.mp hdis hzRB hzD
+  · intro x hx
+    rcases hx with hxR | hxB
+    · obtain ⟨a, haL, hxa⟩ := mem_iUnion₂.mp hxR
+      exact mem_iUnion₂.mpr ⟨a, haL, connectedComponentIn_mono a subset_union_left hxa⟩
+    · obtain ⟨z, hzB, hzR⟩ := hmeet
+      obtain ⟨a, haL, hza⟩ := mem_iUnion₂.mp hzR
+      have hza' : z ∈ connectedComponentIn (W ∪ B) a :=
+        connectedComponentIn_mono a subset_union_left hza
+      refine mem_iUnion₂.mpr ⟨a, haL, ?_⟩
+      rw [connectedComponentIn_eq hza']
+      exact hBconn.subset_connectedComponentIn hzB subset_union_right hxB
+
 theorem component_union_meeting_regular_closed
     [DiscreteTopology (ConnectedComponents W)]
     (hWregular : closure (interior W) = W) (hL : L ⊆ interior W) :
