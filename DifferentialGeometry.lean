@@ -13815,3 +13815,4 @@ import DifferentialGeometry.Geometry.Comparison.Splitting.Busemann
 import DifferentialGeometry.Geometry.Comparison.Splitting.IntrinsicLine
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.NeckProductFactor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowGeometry
+import DifferentialGeometry.Topology.ThreeManifold.SphericalBoundaryProjectiveHoles
