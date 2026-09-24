@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Connected.ComponentIn
 import DifferentialGeometry.Topology.Frontier
+import Mathlib.Topology.Connected.Clopen
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Compactness.Compact
 
@@ -58,6 +59,31 @@ theorem frontier_connectedComponentIn_subset [LocallyConnectedSpace X] (K : Set 
   have hopen : IsOpen (connectedComponentIn (interior K) y) :=
     isOpen_interior.connectedComponentIn
   exact hy.2 ((interior_maximal hsub hopen) (mem_connectedComponentIn hyint))
+
+theorem frontier_inter_closure_connectedComponentIn_nonempty
+    [PreconnectedSpace X] [LocallyConnectedSpace X]
+    {U : Set X} (hU : U ≠ univ) {a : X} (ha : a ∈ U) :
+    (frontier U ∩ closure (connectedComponentIn U a)).Nonempty := by
+  have hCne : (connectedComponentIn U a).Nonempty := ⟨a, mem_connectedComponentIn ha⟩
+  have hCproper : connectedComponentIn U a ≠ univ := by
+    intro h
+    apply hU
+    exact eq_univ_iff_forall.mpr (fun x =>
+      connectedComponentIn_subset U a (h.symm ▸ mem_univ x))
+  obtain ⟨x, hx⟩ := nonempty_frontier_iff.mpr ⟨hCne, hCproper⟩
+  exact ⟨x, frontier_connectedComponentIn_subset U a hx, hx.1⟩
+
+theorem frontier_inter_closure_interior_component_nonempty
+    [PreconnectedSpace X] [LocallyConnectedSpace X]
+    {W : Set X} (hW : W ≠ univ) {a : X} (ha : a ∈ interior W) :
+    (frontier W ∩ closure (connectedComponentIn (interior W) a)).Nonempty := by
+  have hU : interior W ≠ univ := by
+    intro h
+    apply hW
+    exact eq_univ_iff_forall.mpr (fun x => interior_subset (h.symm ▸ mem_univ x))
+  exact (frontier_inter_closure_connectedComponentIn_nonempty hU ha).mono
+    (inter_subset_inter_left _ frontier_interior_subset)
+
 
 theorem frontier_connectedComponentIn_eq_iUnion [LocallyConnectedSpace X]
     (hK : IsClosed K) {ι : Type*} (F : ι → Set X)
