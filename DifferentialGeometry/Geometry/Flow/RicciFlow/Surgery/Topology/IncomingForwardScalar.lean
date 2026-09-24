@@ -137,3 +137,110 @@ theorem exists_uniform_curvature_bound_of_normalized_initial_scalar_bound
   exact hr.trans_eq (by dsimp only [K]; ring)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
+
+theorem exists_curvature_bound_of_initial_scalar_bound
+    {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
+    (K : Set P.Carrier)
+    (hbound : ∀ x ∈ K, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (hinit : ∀ x ∈ K, G.flow.scalar a x ≤ A)
+    (htime : 2 * C * A * (s - a) ≤ 1) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ x ∈ K, ∀ t ∈ Ico a s, G.riemannNorm t x ≤ B := by
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
+  obtain ⟨C3, hC3, hbridge⟩ := exists_rmNormLeOfCurvatureOperatorBounds.{u} ThreeModel
+  refine ⟨2 * C3 * (A + Phi (4 * A) + Phi 0), ?_, ?_⟩
+  · have := hPhi.pos (4 * A)
+    have := hPhi.pos 0
+    positivity
+  · intro x hx t ht
+    have hscalar := G.scalar_le_two_mul_initial_of_time_sub_le hA hqA x
+      (hbound x hx) (hinit x hx) ht
+      ((mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le a) (by positivity)).trans htime)
+    exact sqrt_rmNormSq_le_of_scalar_le hC3 (hbridge P.Carrier G.flow)
+      hPhi hpinch (by simp [ThreeSpace]) ht x hA (by linarith)
+
+theorem subset_terminalRegularRegion_of_initial_scalar_bound
+    {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
+    {U : Set P.Carrier} (hU : IsOpen U)
+    (hbound : ∀ x ∈ U, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (hinit : ∀ x ∈ U, G.flow.scalar a x ≤ A)
+    (htime : 2 * C * A * (s - a) ≤ 1) :
+    U ⊆ G.terminalRegularRegion := by
+  obtain ⟨B, hB, hcurv⟩ :=
+    G.exists_curvature_bound_of_initial_scalar_bound hA hqA U hbound hinit htime
+  intro x hx
+  exact ⟨U, hU, hx, a, ⟨le_rfl, G.lt⟩, B, hB, hcurv⟩
+
+theorem mem_terminalRegularRegion_of_initial_scalar_bound
+    {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
+    {U : Set P.Carrier} (hU : IsOpen U)
+    (hbound : ∀ y ∈ U, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
+    {x : P.Carrier} (hx : x ∈ U) (hinit : G.flow.scalar a x ≤ A)
+    (htime : 4 * C * A * (s - a) ≤ 1) :
+    x ∈ G.terminalRegularRegion := by
+  let V : Set P.Carrier := U ∩ {y | G.flow.scalar a y < 2 * A}
+  have hV : IsOpen V :=
+    hU.inter (isOpen_lt (scalarSmoothOfSolution G.flow a).continuous continuous_const)
+  apply G.subset_terminalRegularRegion_of_initial_scalar_bound
+    (A := 2 * A) (by positivity) (by linarith : q ≤ 2 * A) hV
+    (fun y hy => hbound y hy.1) (fun y hy => hy.2.le)
+    (by nlinarith) ⟨hx, by change G.flow.scalar a x < 2 * A; linarith⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
+
+theorem curvature_bound_of_initial_scalar_bound_of_initial_fixedHamiltonIveyRegion
+    {q A a₀ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A) (ha₀ : 0 < a₀)
+    (K : Set P.Carrier)
+    (hbound : ∀ x ∈ K, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (hinit : ∀ x ∈ K, G.flow.scalar a x ≤ A)
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion (G.flow.base.metric a) a₀ x)
+    (hlower : ∀ x, -3 / a₀ ≤ G.flow.scalar a x)
+    (htime : 2 * C * A * (s - a) ≤ 1) :
+    ∀ t ∈ Ico a s, ∀ x ∈ K, G.riemannNorm t x ≤
+      2 * Real.sqrt 3 * (A + max (2 * A) (Real.exp 4 / a₀)) := by
+  have hpinch := G.fixedHamiltonIveyRegion_and_scalar_lower ha₀ hfixed hlower
+  intro t ht x hx
+  have hscalar := G.scalar_le_two_mul_initial_of_time_sub_le hA hqA x
+    (hbound x hx) (hinit x hx) ht
+    ((mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le a) (by positivity)).trans htime)
+  have hr := sqrt_normSq0S_le_of_fixedHamiltonIveyRegion (G.flow.base.metric t) x ha₀
+    (by linarith [ht.1] : a₀ ≤ a₀ + t - a) (hpinch t ht x).1 hscalar
+  have hA2 : max (2 * A) 0 = 2 * A := max_eq_left (by positivity)
+  have heq : (2 * A) / 2 = A := by ring
+  rw [hA2, heq] at hr
+  exact hr
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

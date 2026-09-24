@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CapAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
 
@@ -177,5 +178,63 @@ theorem finiteFullPreparedMetric_curve_mem_window_of_curvature_bound_action_lt
     (hRm (γ u) hx) (htime u hu) (lVelocity γ u)
   rw [hzero] at hcmp
   exact hcmp
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem finiteFullPreparedMetric_lRegularizedCurve_mem_window_of_action_lt
+    (b : ModelGB) (heps : ε ≤ 1 / 2) {ρ : ℝ} (hρ : 0 < ρ) (hρD : ρ < D) :
+    let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+    let : ChartedSpace ModelGE3 ModelGQ := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+    let : IsManifold (𝓡 3) ∞ ModelGQ := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+    let : T2Space ModelGQ := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+    let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+    let Φ := F ∘ (w b).window
+    let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+    let gQ := scaleMetric Q (d b).scalar_pos gRet
+    let K := Φ '' {x : standardCapWindow D | ‖x.val‖ ≤ ρ}
+    ∀ (Δ : RealTimeInterval) (S : SolutionOn (I := ThreeModel) (M := ModelGRet) Δ),
+      IsSolutionOn S → S.base.metric 0 = gQ →
+      ∀ {σ C : ℝ}, 0 ≤ C → Icc 0 σ ⊆ Δ.carrier → Ioo 0 σ ⊆ Δ.regular →
+      (∀ x ∈ K, ∀ t ∈ Icc 0 σ,
+        Real.sqrt (normSq0S (S.base.metric t) x 4 (S.base.rm04 t x)) ≤ C) →
+      ∀ (poleClock : ℝ) (x : ModelGRet) (Z : TangentSpace ThreeModel x) {v B : ℝ},
+      0 < v → v ∈ lRegularizedDomain S poleClock x Z → 0 ≤ B →
+      let γ := lRegularizedCurve S poleClock x Z
+      (∀ u ∈ Icc 0 v, poleClock - u ^ 2 ∈ Icc 0 σ) →
+      (∀ u ∈ Icc 0 v, -B ≤ S.scalar (poleClock - u ^ 2) (γ u)) →
+      x ∈ Φ '' {x : standardCapWindow D | ‖x.val‖ ≤ ρ / 32} →
+      lRegularizedAction S poleClock γ 0 v <
+        Real.exp (-(18 * C * σ)) * ρ ^ 2 / (32 * v) - 2 * B * v ^ 3 →
+      ∀ u ∈ Icc 0 v, γ u ∈ K := by
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let : ChartedSpace ModelGE3 ModelGQ := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+  let : IsManifold (𝓡 3) ∞ ModelGQ := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space ModelGQ := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  dsimp only
+  intro Δ S hS hzero σ C hC hcarrier hregular hRm poleClock x Z v B hv hvdom hB htime hscalar hstart hact
+  obtain ⟨η, hη, hηid, _, hηrange⟩ := exists_lRegularizedDomain_smoothClamp S poleClock x Z hv hvdom
+  let γ := lRegularizedCurve S poleClock x Z
+  let β : ℝ → ModelGRet := fun u => γ (η u)
+  have hβinf : ContMDiff 𝓘(ℝ, ℝ) ThreeModel ∞ β := by
+    have hpair : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ThreeSpace).prod 𝓘(ℝ, ℝ)) ∞
+        (fun u : ℝ => (show ThreeSpace from Z, η u)) := contMDiff_const.prodMk (contMDiff_iff_contDiff.mpr hη)
+    rw [← contMDiffOn_univ]
+    exact (lRegularizedCurve_smoothOn S hS poleClock x).comp hpair.contMDiffOn
+      (fun u _ => by change η u ∈ lRegularizedDomain S poleClock x Z; exact hηrange u)
+  have hβ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 β := hβinf.of_le (by norm_num)
+  have heq : EqOn β γ (Icc 0 v) := fun u hu => congrArg γ (hηid hu)
+  have hβzero : β 0 = x := (heq ⟨le_rfl, hv.le⟩).trans (lRegularizedCurve_zero S poleClock x Z)
+  have hβact : lRegularizedAction S poleClock β 0 v = lRegularizedAction S poleClock γ 0 v :=
+    lRegularizedAction_congr S poleClock β γ 0 v
+      (fun u hu => heq (by rw [uIoo_of_le hv.le] at hu; exact Ioo_subset_Icc_self hu))
+  have hstay := finiteFullPreparedMetric_curve_mem_window_of_curvature_bound_action_lt
+    I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w b heps hρ hρD
+    Δ S hS hzero hC hcarrier hregular hRm poleClock β hB hβ htime
+    (fun u hu => by rw [heq hu]; exact hscalar u hu)
+    (by rw [hβzero]; exact hstart) (hβact.trans_lt hact)
+  intro u hu
+  simpa only [heq hu] using hstay u hu
+
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
