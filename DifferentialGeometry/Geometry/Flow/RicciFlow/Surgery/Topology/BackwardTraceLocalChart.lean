@@ -21,6 +21,19 @@ def restrictFirst {first next : Fin (H.eventCount + 1)} {hfirst : first ≤ last
   endpoint_eq := A.endpoint_eq
   crossing j hj hl := A.crossing j (hfn.trans hj) hl
 
+def restrictLast {first next : Fin (H.eventCount + 1)} {hfirst : first ≤ last}
+    (A : BackwardPointTrace H first last hfirst endpoint) (hfn : first ≤ next) (hnl : next ≤ last) :
+    BackwardPointTrace H first next hfn (A.point next hfn hnl) where
+  point j hf hj := A.point j hf (hj.trans hnl)
+  endpoint_eq := rfl
+  crossing j hf hj := A.crossing j hf (hj.trans hnl)
+
+@[simp] theorem restrictLast_point {first next : Fin (H.eventCount + 1)} {hfirst : first ≤ last}
+    (A : BackwardPointTrace H first last hfirst endpoint) (hfn : first ≤ next) (hnl : next ≤ last)
+    (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hj : j ≤ next) :
+    (A.restrictLast hfn hnl).point j hf hj = A.point j hf (hj.trans hnl) := rfl
+
+
 def prepend (A : BackwardPointTrace H i.succ last hle endpoint)
     (p : (H.stage i.castSucc).Carrier)
     (hcross : (H.event i).RegularCrossing p (A.point i.succ le_rfl hle)) :
