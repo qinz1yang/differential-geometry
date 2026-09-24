@@ -929,6 +929,54 @@ theorem metricTracePair0SAt_sq_div_rank_le_normSq0S
     simpa [mul_comm, mul_left_comm, mul_assoc] using h
   simpa [div_eq_mul_inv, one_div, mul_comm, mul_left_comm, mul_assoc] using hdiv
 
+open DifferentialGeometry.Geometry.Curvature (vec2) in
+theorem abs_metricTracePair0SAt_le_of_metric_le
+    (g h : SmoothRiemannianMetric I M) (x : M) {C : ℝ}
+    (hmetric : ∀ v : TangentSpace I x, h.inner x v v ≤ C * g.inner x v v)
+    (T : Tensor0SSpace (I := I) 2 x) :
+    |metricTracePair0SAt g T| ≤
+      (Module.finrank ℝ E : ℝ) * C * Real.sqrt (normSq0S h x 2 T) := by
+  classical
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis g x
+  have hinv := metricInverseInBasis_of_orthonormal g basis hON
+  have htrace : metricTracePair0SAt g T =
+      ∑ i, T (vec2 (basis i) (basis i)) := by
+    rw [metricTracePair0SAt_eq_sum_basis g basis _ hinv]
+    simp [identityInvMetric, diagonalInvMetric]
+  rw [htrace]
+  calc
+    |∑ i, T (vec2 (basis i) (basis i))| ≤
+        ∑ i, |T (vec2 (basis i) (basis i))| := Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _i : Fin (Module.finrank ℝ (TangentSpace I x)),
+        Real.sqrt (normSq0S h x 2 T) * C := by
+      apply Finset.sum_le_sum
+      intro i _
+      have ha := abs_apply_le_norm0S h x 2 T (vec2 (basis i) (basis i))
+      have hn : 0 ≤ h.inner x (basis i) (basis i) := by
+        rcases eq_or_ne (basis i) 0 with hi | hi
+        · rw [hi]; simp
+        · exact (h.pos x (basis i) hi).le
+      have hc : h.inner x (basis i) (basis i) ≤ C := by
+        simpa only [hON i i, if_true, mul_one] using hmetric (basis i)
+      simp only [Fin.prod_univ_two, vec2, ite_self, Real.mul_self_sqrt hn] at ha
+      exact ha.trans (mul_le_mul_of_nonneg_left hc (Real.sqrt_nonneg _))
+    _ = _ := by
+      simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      change (Module.finrank ℝ E : ℝ) * (Real.sqrt (normSq0S h x 2 T) * C) = _
+      ring
+
+theorem abs_metricTracePair0SAt_le_of_metric_lower_bound
+    (g h : SmoothRiemannianMetric I M) (x : M) {c : ℝ} (hc : 0 < c)
+    (hmetric : ∀ v : TangentSpace I x, c * h.inner x v v ≤ g.inner x v v)
+    (T : Tensor0SSpace (I := I) 2 x) :
+    |metricTracePair0SAt g T| ≤
+      (Module.finrank ℝ E : ℝ) / c * Real.sqrt (normSq0S h x 2 T) := by
+  have hm (v : TangentSpace I x) : h.inner x v v ≤ c⁻¹ * g.inner x v v := by
+    have hh := mul_le_mul_of_nonneg_left (hmetric v) (inv_pos.mpr hc).le
+    simpa only [inv_mul_cancel_left₀ hc.ne'] using hh
+  simpa only [div_eq_mul_inv] using abs_metricTracePair0SAt_le_of_metric_le g h x hm T
+
+
 theorem metricTraceFirstTwo0SAt_eq_sum_basis
     (g : SmoothRiemannianMetric I M)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]

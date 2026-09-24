@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckScalarTime
 import DifferentialGeometry.Analysis.Calculus.Derivative.Bounds
 import DifferentialGeometry.Analysis.ODE.QuadraticBackwardBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature
@@ -176,5 +177,45 @@ theorem abs_derivWithin_scalar_parabolic_backwardSurvivorFootprint_le
   rw [← hderiv v hv]
   exact abs_derivWithin_scalar_localPullback_le_of_mem_slab H first i hle K G hslabs hlast
     Phi hPhi S hQ hmetric j hf hl hv hj (hbound j hf hl) x hvhigh
+
+theorem scalar_le_max_at_time_of_backwardSurvivorFootprint_strongNeck
+    (H : ObservedHistory.{u}) (first : Fin (H.eventCount + 1))
+    (i : Fin H.eventCount) (hle : first ≤ i.castSucc)
+    (K : Set (H.event i).incoming.terminalRegularOpen)
+    (G : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.backwardSurvivorFootprintInterior first i hle K))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc)
+      (hl : j.succ ≤ i.castSucc), ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+      G t = ((H.backwardSurvivorSlabMetric first i.castSucc hle j hf hl t).restrictOpen
+        (H.backwardSurvivorTerminalFace first i hle)).restrictOpen
+        (H.backwardSurvivorFootprintInterior first i hle K))
+    (hlast : ∀ t ∈ Icc (H.time i.castSucc) (H.time i.succ),
+      G t = (H.backwardSurvivorTerminalFaceMetric first i hle t).restrictOpen
+        (H.backwardSurvivorFootprintInterior first i hle K))
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := ThreeModel)
+      (M := H.backwardSurvivorFootprintInterior first i hle K) D)
+    (hS : IsSolutionOn S) {a b q : ℝ}
+    (hmetric : ∀ r ∈ Icc a b, S.base.metric r = G r)
+    (hstrip : Icc a b ⊆ D.carrier)
+    (x : H.backwardSurvivorFootprintInterior first i hle K)
+    (hneck : ∀ r ∈ Ioo a b, q < S.scalar r x → ∃ eps : ℝ, Nonempty (Perelman.CanonicalNeighborhood.FiniteHorn.StrongNeck S eps x r))
+    (hregular : ∀ r ∈ Ioo a b, q < S.scalar r x → ∀ s ∈ Ioo (-1 : ℝ) 0,
+      parabolicTime r (S.scalar r x) s ∈ D.regular)
+    (j k : Fin H.eventCount) (hjf : first ≤ j.castSucc) (hji : j.castSucc ≤ i.castSucc)
+    (hkf : first ≤ k.castSucc) (hki : k.castSucc ≤ i.castSucc)
+    {t : ℝ} (ht : t ∈ Icc a b)
+    (htj : t ∈ Ico (H.time j.castSucc) (H.time j.succ))
+    (hbk : b ∈ Ico (H.time k.castSucc) (H.time k.succ)) :
+    (H.event j).incoming.flow.scalar t
+      (H.backwardSurvivorMap first i.castSucc hle j.castSucc hjf hji x.val.val) ≤
+      max q ((H.event k).incoming.flow.scalar b
+        (H.backwardSurvivorMap first i.castSucc hle k.castSucc hkf hki x.val.val)) := by
+  have hh := Perelman.CanonicalNeighborhood.FiniteHorn.scalar_le_max_terminal_of_strongNeck_above hS x hstrip hneck hregular ht
+  change metricScalarAt (S.base.metric t) x ≤ max q (metricScalarAt (S.base.metric b) x) at hh
+  rw [hmetric t ht, hmetric b ⟨ht.1.trans ht.2,le_rfl⟩,
+    H.metricScalarAt_backwardSurvivorFootprint first i hle K G hslabs hlast j hjf hji htj x,
+    H.metricScalarAt_backwardSurvivorFootprint first i hle K G hslabs hlast k hkf hki hbk x] at hh
+  exact hh
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

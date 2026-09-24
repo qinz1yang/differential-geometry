@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Derivative.SuperlevelMonotonicity
 import DifferentialGeometry.Analysis.Calculus.Derivative.ClippedReciprocal
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
@@ -100,5 +101,31 @@ theorem TerminalLimitMetric.scalar_le_two_mul_of_time_sub_le
       (mul_le_mul_of_nonneg_left (sub_le_sub_right hu.2.le t) (by positivity)) hQ.le
   exact G.scalar_le_two_mul_of_time_distance_le hq x.val hbound ht
     ⟨ht.1.trans hu.1, hu.2⟩ hqQ hscalar hsmall
+
+theorem monotoneOn_max_scalar_of_deriv_nonneg
+    (G : P.IncomingSlab a s) {q : ℝ} (x : P.Carrier)
+    (hderiv : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      0 ≤ derivWithin (fun v => G.flow.scalar v x) (Iic t) t) :
+    MonotoneOn (fun t => max q (G.flow.scalar t x)) (Ico a s) := by
+  apply DifferentialGeometry.Analysis.monotoneOn_max_of_deriv_nonneg_above ordConnected_Ico
+  · intro t ht
+    exact (G.equation.scalarTime ht Subset.rfl x).continuousWithinAt
+  · intro t ht hq
+    rw [interior_Ico] at ht
+    have hd : DifferentiableAt ℝ (fun v => G.flow.scalar v x) t :=
+      (G.equation.scalarTime (K := Ioo a s) ht Ioo_subset_Ico_self x).differentiableAt
+        (Ioo_mem_nhds ht.1 ht.2)
+    exact ⟨hd, by simpa only [hd.derivWithin (uniqueDiffWithinAt_Iic t)] using hderiv t ht hq⟩
+
+theorem TerminalLimitMetric.max_scalar_le_terminal_of_deriv_nonneg
+    {G : P.IncomingSlab a s} (L : G.TerminalLimitMetric) {q : ℝ} (x : G.terminalRegularOpen)
+    (hderiv : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
+      0 ≤ derivWithin (fun v => G.flow.scalar v x.val) (Iic t) t)
+    {t : ℝ} (ht : t ∈ Ico a s) :
+    max q (G.flow.scalar t x.val) ≤ max q (metricScalarAt L.metric x) := by
+  apply ge_of_tendsto (tendsto_const_nhds.max (L.tendsto_metricScalarAt x))
+  filter_upwards [Ioo_mem_nhdsLT ht.2] with v hv
+  exact G.monotoneOn_max_scalar_of_deriv_nonneg x.val hderiv ht
+    ⟨ht.1.trans hv.1.le, hv.2⟩ hv.1.le
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

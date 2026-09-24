@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckContractReduction
+import DifferentialGeometry.Geometry.Metric.Distance.CompactImage
 
 set_option autoImplicit false
 
@@ -118,3 +119,60 @@ theorem TerminalCorePresentation.not_bddAbove_horn_scalar {ε Λ : ℝ}
   exact absurd (hB ⟨p, rfl⟩) (not_le.mpr hp)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+set_option autoImplicit false
+noncomputable section
+
+open Bundle Set
+open scoped Manifold ContDiff Topology ENNReal NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
+
+universe u
+variable {D : OneStepIncoming.{u}} {eps Lambda : ℝ} (P : TerminalCorePresentation D eps Lambda)
+
+theorem exists_horn_point_outside_compact
+    (c : ConnectedComponents D.slab.terminalRegularOpen) (e : P.hornIndex c)
+    (K : Set D.slab.terminalRegularOpen) (hK : IsCompact K) (y : Sphere 2) (T : ℝ) :
+    ∃ t : ℝ, 0 ≤ t ∧ T < t ∧ P.horn c e (y, t) ∉ K := by
+  have hpre : IsCompact ((fun p : HalfNeckCylinder => P.horn c e p.val) ⁻¹' K) :=
+    (P.horn_proper c e).isCompact_preimage hK
+  obtain ⟨B, hB⟩ := hpre.bddAbove_image continuous_subtype_val.snd.continuousOn
+  let t := max (max B T) 0 + 1
+  have ht : 0 ≤ t := by dsimp only [t]; linarith [le_max_right (max B T) 0]
+  have hBt : B < t := by
+    dsimp only [t]
+    linarith [le_max_left B T, le_max_left (max B T) 0]
+  have hTt : T < t := by
+    dsimp only [t]
+    linarith [le_max_right B T, le_max_left (max B T) 0]
+  refine ⟨t, ht, hTt, ?_⟩
+  intro hmem
+  exact hBt.not_ge (hB ⟨⟨(y, t), ht⟩, hmem, rfl⟩)
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_horn_point_distance_gt_of_isCompact_closedBall
+    (c : ConnectedComponents D.slab.terminalRegularOpen) (e : P.hornIndex c)
+    (y : Sphere 2) {s : ℝ} (hs : 0 ≤ s) (R T : ℝ)
+    (hcompact : IsCompact (riemannianClosedBallOf D.terminal.metric (P.horn c e (y, s)) R)) :
+    ∃ t : ℝ, 0 ≤ t ∧ T < t ∧
+      ENNReal.ofReal R < riemannianEDistOf D.terminal.metric
+        (P.horn c e (y, s)) (P.horn c e (y, t)) ∧
+      riemannianEDistOf D.terminal.metric (P.horn c e (y, s)) (P.horn c e (y, t)) ≠ ⊤ := by
+  obtain ⟨t, ht, hT, hout⟩ := P.exists_horn_point_outside_compact c e _ hcompact y T
+  refine ⟨t, ht, hT, lt_of_not_ge hout, ?_⟩
+  let : RiemannianBundle (fun x : D.slab.terminalRegularOpen => TangentSpace ThreeModel x) :=
+    ⟨D.terminal.metric.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle ThreeSpace
+      (fun x : D.slab.terminalRegularOpen => TangentSpace ThreeModel x) :=
+    ⟨D.terminal.metric.inner, D.terminal.metric.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace D.slab.terminalRegularOpen :=
+    PseudoEMetricSpace.ofRiemannianMetric ThreeModel D.slab.terminalRegularOpen
+  let f : ℝ≥0 → D.slab.terminalRegularOpen := fun u => P.horn c e (y, u)
+  have hf : Continuous f :=
+    (P.horn_proper c e).continuous.comp
+      ((continuous_const.prodMk NNReal.continuous_coe).subtype_mk (fun u => u.property))
+  exact (EMetric.edist_lt_top_of_continuous_of_preconnected hf ⟨s, hs⟩ ⟨t, ht⟩).ne
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation

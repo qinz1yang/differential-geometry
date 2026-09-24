@@ -161,32 +161,31 @@ theorem WindowedModelWitness.hasDerivWithinAt_comparison_jet_unit
   intro r hr
   exact ⟨by linarith [hr.1], hr.2⟩
 
-private theorem StrongNeck.comparison_jet_zero_contDiffOn_of_ancient
-    {S : SolutionOn (I := I3) (M := M) ancientTimeInterval} (hS : IsSolutionOn S)
+private theorem StrongNeck.comparison_jet_zero_contDiffOn
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} (hS : IsSolutionOn S)
     {eps : ℝ} {x : M} {t : ℝ} (nk : StrongNeck S eps x t)
+    {a c : ℝ} (hac : a < c) (hc : c < 0)
+    (hslab : Icc (parabolicTime t (S.scalar t x) a) t ⊆ D.carrier)
+    (hreg : Ioo (parabolicTime t (S.scalar t x) a) t ⊆ D.regular)
     (y : Cylinder) (hy : y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)
     (v : Fin 2 → TangentSpace IC y) :
-    ContDiffOn ℝ ∞ (fun s => nk.comparison.jet 0 s y v) (Icc (-1 : ℝ) 0) := by
+    ContDiffOn ℝ ∞ (fun s => nk.comparison.jet 0 s y v) (Icc c 0) := by
   let Q : ℝ := S.scalar t x
   have hQ : 0 < Q := nk.Q_pos
-  have ht : t ≤ 0 := nk.time_domain
-    ⟨sub_le_self _ (inv_nonneg.mpr hQ.le), le_rfl⟩
-  have hac : parabolicTime t Q (-2) < parabolicTime t Q (-1) := by
+  have htac : parabolicTime t Q a < parabolicTime t Q c := by
     dsimp only [parabolicTime]
-    have hh := div_lt_div_of_pos_right (by norm_num : (-2 : ℝ) < -1) hQ
-    linarith
-  have hct : parabolicTime t Q (-1) < t := by
+    linarith [div_lt_div_of_pos_right hac hQ]
+  have hct : parabolicTime t Q c < t := by
     dsimp only [parabolicTime]
-    have hh := div_neg_of_neg_of_pos (by norm_num : (-1 : ℝ) < 0) hQ
+    have hh := div_neg_of_neg_of_pos hc hQ
     linarith
   let w : Fin 2 → TangentSpace I3 (nk.map y) := fun j => mfderiv IC I3 nk.map y (v j)
   have hsource0 := (tensor0SEvalCLM (I := I3) (x := nk.map y) w).contDiff.comp_contDiffOn
-    (metricTensor_contDiffOn_time S hS hac hct
-      (fun _ hr => hr.2.trans ht) (fun _ hr => hr.2.trans_le ht) (nk.map y))
+    (metricTensor_contDiffOn_time S hS htac hct hslab hreg (nk.map y))
   have htime : ContDiff ℝ ∞ (parabolicTime t Q) :=
     contDiff_const.add (contDiff_id.div_const Q)
-  have hmap : MapsTo (parabolicTime t Q) (Icc (-1 : ℝ) 0)
-      (Icc (parabolicTime t Q (-1)) t) := by
+  have hmap : MapsTo (parabolicTime t Q) (Icc c 0)
+      (Icc (parabolicTime t Q c) t) := by
     intro r hr
     constructor
     · dsimp only [parabolicTime]
@@ -195,21 +194,21 @@ private theorem StrongNeck.comparison_jet_zero_contDiffOn_of_ancient
       exact add_le_of_nonpos_right (div_nonpos_of_nonpos_of_nonneg hr.2 hQ.le)
   have hsource : ContDiffOn ℝ ∞
       (fun r => (S.base.metric (parabolicTime t Q r)).inner (nk.map y) (w 0) (w 1))
-      (Icc (-1 : ℝ) 0) := by
+      (Icc c 0) := by
     have hh := hsource0.comp htime.contDiffOn hmap
     change ContDiffOn ℝ ∞
       (fun r => metricTensorField (S.base.metric (parabolicTime t Q r)) (nk.map y) w)
-      (Icc (-1 : ℝ) 0) at hh
+      (Icc c 0) at hh
     simpa only [metricTensorField_apply] using hh
   have hscaled : ContDiffOn ℝ ∞
       (fun r => (rescaledMetric S t (S.scalar t x) nk.Q_pos r).inner
-        (nk.map y) (w 0) (w 1)) (Icc (-1 : ℝ) 0) := by
+        (nk.map y) (w 0) (w 1)) (Icc c 0) := by
     simpa only [rescaledMetric, scaleMetric_inner, SolutionOn.family,
       Function.comp_def, smul_eq_mul, Q] using hsource.const_smul Q
-  have hpull : ContDiffOn ℝ ∞ (fun r => nk.comparison.pullback r y v) (Icc (-1 : ℝ) 0) :=
+  have hpull : ContDiffOn ℝ ∞ (fun r => nk.comparison.pullback r y v) (Icc c 0) :=
     hscaled.congr (fun r _ => nk.comparison.pullback_eq r y hy v)
   have hcylinder : ContDiffOn ℝ ∞
-      (fun r => (nk.cylinder.metric r).inner y (v 0) (v 1)) (Icc (-1 : ℝ) 0) := by
+      (fun r => (nk.cylinder.metric r).inner y (v 0) (v 1)) (Icc c 0) := by
     have hh : ContDiff ℝ ∞ (fun r : ℝ =>
         2 * (1 - r) * inner ℝ
           (show ThreeSpace from mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) y.1 (v 0).1)
@@ -218,17 +217,90 @@ private theorem StrongNeck.comparison_jet_zero_contDiffOn_of_ancient
     exact hh.contDiffOn.congr (fun r hr => nk.cylinder.inner_eq r hr.2 y (v 0) (v 1))
   exact (hpull.sub hcylinder).congr (fun r _ => nk.comparison.jet_zero r y v)
 
+private theorem StrongNeck.comparison_jet_zero_contDiffWithinAt
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} (hS : IsSolutionOn S)
+    {eps : ℝ} {x : M} {t : ℝ} (nk : StrongNeck S eps x t)
+    (hreg : ∀ s ∈ Ioo (-1 : ℝ) 0, parabolicTime t (S.scalar t x) s ∈ D.regular)
+    {s : ℝ} (hs : s ∈ Ioc (-1 : ℝ) 0)
+    (y : Cylinder) (hy : y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)
+    (v : Fin 2 → TangentSpace IC y) :
+    ContDiffWithinAt ℝ ∞ (fun r => nk.comparison.jet 0 r y v) (Icc (-1 : ℝ) 0) s := by
+  let Q : ℝ := S.scalar t x
+  let c : ℝ := (-1 + s) / 2
+  have hQ : 0 < Q := nk.Q_pos
+  have hac : -1 < c := by dsimp [c]; linarith [hs.1]
+  have hcs : c < s := by dsimp [c]; linarith [hs.1]
+  have hc : c < 0 := lt_of_lt_of_le hcs hs.2
+  have hstart : parabolicTime t (S.scalar t x) (-1) = t - (S.scalar t x)⁻¹ := by
+    simp only [parabolicTime, neg_div, one_div, sub_eq_add_neg]
+  have hslab : Icc (parabolicTime t (S.scalar t x) (-1)) t ⊆ D.carrier := by
+    rw [hstart]
+    exact nk.time_domain
+  have hreg' : Ioo (parabolicTime t (S.scalar t x) (-1)) t ⊆ D.regular := by
+    intro r hr
+    have hleft : -1 < (r - t) * Q := by
+      apply (div_lt_iff₀ hQ).mp
+      have hr1 : t + (-1) / Q < r := hr.1
+      linarith
+    have hright : (r - t) * Q < 0 := mul_neg_of_neg_of_pos (sub_neg.mpr hr.2) hQ
+    have hh := hreg ((r - t) * Q) ⟨hleft, hright⟩
+    have heq : parabolicTime t (S.scalar t x) ((r - t) * Q) = r := by
+      change t + ((r - t) * Q) / Q = r
+      rw [mul_div_cancel_right₀ _ hQ.ne']
+      ring
+    rwa [heq] at hh
+  have hzero := nk.comparison_jet_zero_contDiffOn hS hac hc hslab hreg' y hy v
+  apply (hzero s ⟨hcs.le, hs.2⟩).congr_set
+  filter_upwards [Ioi_mem_nhds hcs] with r hr
+  apply propext
+  change (c ≤ r ∧ r ≤ 0) ↔ (-1 ≤ r ∧ r ≤ 0)
+  have hcr : c < r := hr
+  have har : -1 < r := hac.trans hcr
+  simp only [hcr.le, har.le, true_and]
+
+theorem StrongNeck.comparison_jet_contDiffWithinAt
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} (hS : IsSolutionOn S)
+    {eps : ℝ} {x : M} {t : ℝ} (nk : StrongNeck S eps x t)
+    (hreg : ∀ s ∈ Ioo (-1 : ℝ) 0, parabolicTime t (S.scalar t x) s ∈ D.regular)
+    (q : ℕ) {s : ℝ} (hs : s ∈ Ioc (-1 : ℝ) 0)
+    (y : Cylinder) (hy : y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)
+    (v : Fin 2 → TangentSpace IC y) :
+    ContDiffWithinAt ℝ ∞ (fun r => nk.comparison.jet q r y v) (Icc (-1 : ℝ) 0) s := by
+  exact DifferentialGeometry.Analysis.contDiffWithinAt_derivWithin_tower
+    (f := fun b r => nk.comparison.jet b r y v)
+    (uniqueDiffOn_Icc (by norm_num : (-1 : ℝ) < 0)) ⟨hs.1.le, hs.2⟩
+    (nk.comparison_jet_zero_contDiffWithinAt hS hreg hs y hy v)
+    (fun b r hr => nk.comparison.jet_succ b r hr y hy v) q
+
+theorem StrongNeck.hasDerivWithinAt_comparison_jet
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} (hS : IsSolutionOn S)
+    {eps : ℝ} {x : M} {t : ℝ} (nk : StrongNeck S eps x t)
+    (hreg : ∀ s ∈ Ioo (-1 : ℝ) 0, parabolicTime t (S.scalar t x) s ∈ D.regular)
+    (q : ℕ) {s : ℝ} (hs : s ∈ Ioc (-1 : ℝ) 0)
+    (y : Cylinder) (hy : y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)
+    (v : Fin 2 → TangentSpace IC y) :
+    HasDerivWithinAt (fun r => nk.comparison.jet q r y v)
+      (nk.comparison.jet (q + 1) s y v) (Icc (-1 : ℝ) 0) s := by
+  rw [nk.comparison.jet_succ q s ⟨hs.1.le, hs.2⟩ y hy v]
+  exact ((nk.comparison_jet_contDiffWithinAt hS hreg q hs y hy v).differentiableWithinAt
+    (by simp)).hasDerivWithinAt
+
 theorem StrongNeck.comparison_jet_contDiffOn_of_ancient
     {S : SolutionOn (I := I3) (M := M) ancientTimeInterval} (hS : IsSolutionOn S)
     {eps : ℝ} {x : M} {t : ℝ} (nk : StrongNeck S eps x t)
     (q : ℕ) (y : Cylinder) (hy : y ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)
     (v : Fin 2 → TangentSpace IC y) :
     ContDiffOn ℝ ∞ (fun s => nk.comparison.jet q s y v) (Icc (-1 : ℝ) 0) := by
+  have ht : t ≤ 0 := nk.time_domain
+    ⟨sub_le_self _ (inv_nonneg.mpr nk.Q_pos.le), le_rfl⟩
+  have hzero := nk.comparison_jet_zero_contDiffOn hS
+    (by norm_num : (-2 : ℝ) < -1) (by norm_num : (-1 : ℝ) < 0)
+    (fun _ hr => hr.2.trans ht) (fun _ hr => hr.2.trans_le ht) y hy v
   intro s hs
   exact DifferentialGeometry.Analysis.contDiffWithinAt_derivWithin_tower
     (f := fun b r => nk.comparison.jet b r y v)
     (uniqueDiffOn_Icc (by norm_num : (-1 : ℝ) < 0)) hs
-    (nk.comparison_jet_zero_contDiffOn_of_ancient hS y hy v s hs)
+    (hzero s hs)
     (fun b r hr => nk.comparison.jet_succ b r hr y hy v) q
 
 theorem StrongNeck.hasDerivWithinAt_comparison_jet_of_ancient

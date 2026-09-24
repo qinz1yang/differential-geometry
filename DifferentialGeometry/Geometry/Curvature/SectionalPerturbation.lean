@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Geometry.Curvature.RiemannPerturbation
 import DifferentialGeometry.Geometry.Curvature.SectionalOrthonormalization
+import DifferentialGeometry.Geometry.Curvature.Product
 
 set_option autoImplicit false
 noncomputable section
@@ -255,6 +256,110 @@ theorem metricRm04_lower_bound_of_small_metric_derivatives
         simp only [map_smul, smul_apply, smul_eq_mul]
         ring
     rw [hgram, mul_zero]
+
+end
+
+section
+
+open DifferentialGeometry.Geometry.Connection DifferentialGeometry.CheegerGromovCompactness
+
+theorem metricRm04_lt_mul_gram_of_curvature_null_pair
+    (g G : SmoothRiemannianMetric I M) (x : M) {ε c : ℝ}
+    (hε : ε ≤ 1 / 4) (hc : 720 * ε < c)
+    (hsmall : ∀ m : ℕ, m ≤ 2 → metricDerivNorm m g G G x ≤ ε)
+    (u v : TangentSpace I x) (hu : u ≠ 0) (hv : v ≠ 0)
+    (huv : G.inner x u v = 0)
+    (hnull : riemannOp (LeviCivita G) x u v v = 0) :
+    metricRm04StandardAt g x u v v u <
+      c * (g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2) := by
+  have hε0 : 0 ≤ ε := (Real.sqrt_nonneg _).trans (hsmall 0 (by norm_num))
+  have hc0 : 0 < c := lt_of_le_of_lt (by positivity) hc
+  let A := G.inner x u u
+  let B := G.inner x v v
+  have hA : 0 < A := G.pos x u hu
+  have hB : 0 < B := G.pos x v hv
+  have hAB : 0 < A * B := mul_pos hA hB
+  have hnormA : Real.sqrt A * Real.sqrt A = A := Real.mul_self_sqrt hA.le
+  have hnormB : Real.sqrt B * Real.sqrt B = B := Real.mul_self_sqrt hB.le
+  have hmetric (a b : TangentSpace I x) :
+      |g.inner x a b - G.inner x a b| ≤
+        ε * Real.sqrt (G.inner x a a) * Real.sqrt (G.inner x b b) :=
+    (metricDifference_abs_le g G G x a b).trans
+      (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (hsmall 0 (by norm_num)) (Real.sqrt_nonneg _))
+        (Real.sqrt_nonneg _))
+  have hdiagA := hmetric u u
+  have hdiagB := hmetric v v
+  change |g.inner x u u - A| ≤ ε * Real.sqrt A * Real.sqrt A at hdiagA
+  change |g.inner x v v - B| ≤ ε * Real.sqrt B * Real.sqrt B at hdiagB
+  rw [mul_assoc, hnormA] at hdiagA
+  rw [mul_assoc, hnormB] at hdiagB
+  have hlowA : (1 - ε) * A ≤ g.inner x u u := by nlinarith [(abs_le.mp hdiagA).1]
+  have hlowB : (1 - ε) * B ≤ g.inner x v v := by nlinarith [(abs_le.mp hdiagB).1]
+  have hprod := mul_le_mul hlowA hlowB (mul_nonneg (by linarith) hB.le)
+    (metric_inner_self_nonneg g x u)
+  have hcross := hmetric u v
+  rw [huv, sub_zero] at hcross
+  change |g.inner x u v| ≤ ε * Real.sqrt A * Real.sqrt B at hcross
+  have hcrosssq : (g.inner x u v) ^ 2 ≤ ε ^ 2 * A * B := by
+    have hh := (sq_le_sq₀ (abs_nonneg _) (by positivity)).mpr hcross
+    rw [sq_abs] at hh
+    have he : (ε * Real.sqrt A * Real.sqrt B) ^ 2 = ε ^ 2 * A * B := by
+      rw [mul_pow, mul_pow, Real.sq_sqrt hA.le, Real.sq_sqrt hB.le]
+    rwa [he] at hh
+  have hgram : (1 - 2 * ε) * (A * B) ≤
+      g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2 := by
+    nlinarith
+  have hhalf : A * B / 2 ≤ g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2 := by
+    nlinarith [mul_nonneg (show 0 ≤ 1 / 2 - 2 * ε by linarith) hAB.le]
+  have hzero : metricRm04StandardAt G x u v v u = 0 := by
+    rw [metricRm04StandardAt_eq_inner_riemannOp, hnull, map_zero]
+  have herr := abs_metricRm04_sub_le_of_small_metric_derivatives g G x
+    (show ε ≤ 1 / 2 by linarith) hsmall u v v u
+  rw [hzero, sub_zero, hnull, map_zero, Real.sqrt_zero, add_zero] at herr
+  change |metricRm04StandardAt g x u v v u| ≤
+    ε * (360 * Real.sqrt A * Real.sqrt B * Real.sqrt B) * Real.sqrt A at herr
+  have he : ε * (360 * Real.sqrt A * Real.sqrt B * Real.sqrt B) * Real.sqrt A =
+      360 * ε * (A * B) := by
+    calc
+      _ = 360 * ε * ((Real.sqrt A * Real.sqrt A) * (Real.sqrt B * Real.sqrt B)) := by ring
+      _ = _ := by rw [hnormA, hnormB]
+  rw [he] at herr
+  have hupper := (le_abs_self (metricRm04StandardAt g x u v v u)).trans herr
+  have hstrict : 360 * ε * (A * B) < c * (A * B / 2) := by
+    nlinarith [mul_pos (sub_pos.mpr hc) hAB]
+  exact hupper.trans_lt (hstrict.trans_le (mul_le_mul_of_nonneg_left hhalf hc0.le))
+
+
+theorem metricRm04_lt_mul_gram_product_vertical_of_small_metric_derivatives
+    (h : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric (I.prod 𝓘(ℝ)) (M × ℝ)) (x : M × ℝ)
+    {ε c : ℝ} (hε : ε ≤ 1 / 4) (hc : 720 * ε < c)
+    (hsmall : ∀ m : ℕ, m ≤ 2 → metricDerivNorm m g
+      (h.prod (euclideanMetric (E := ℝ)))
+      (h.prod (euclideanMetric (E := ℝ))) x ≤ ε)
+    (u : TangentSpace I x.1) (hu : u ≠ 0) :
+    metricRm04StandardAt g x (u, 0) (0, 1) (0, 1) (u, 0) <
+      c * (g.inner x (u, 0) (u, 0) * g.inner x (0, 1) (0, 1) -
+        (g.inner x (u, 0) (0, 1)) ^ 2) := by
+  change E at u
+  apply metricRm04_lt_mul_gram_of_curvature_null_pair g
+    (h.prod (euclideanMetric (E := ℝ))) x hε hc hsmall (u, 0) (0, 1)
+  · intro heq
+    exact hu (congrArg Prod.fst heq)
+  · intro heq
+    have h1 := congrArg Prod.snd heq
+    change (1 : ℝ) = 0 at h1
+    norm_num at h1
+  · erw [SmoothRiemannianMetric.prod_inner]
+    change h.inner x.1 u (0 : E) +
+      (euclideanMetric (E := ℝ)).inner x.2 (0 : ℝ) 1 = 0
+    exact (congrArg₂ (· + ·) (map_zero (h.inner x.1 u))
+      (show (euclideanMetric (E := ℝ)).inner x.2 0 1 = 0 from by
+        rw [map_zero ((euclideanMetric (E := ℝ)).inner x.2)]
+        rfl)).trans (zero_add _)
+  · exact riemannOp_productReal_vertical_eq_zero h x (u, 0) (0, 1) 1
+
 
 end
 
