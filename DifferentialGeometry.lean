@@ -5368,6 +5368,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoverClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCanonicalCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedBadPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowMetricFields
@@ -8390,6 +8391,7 @@ import DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
 import DifferentialGeometry.Topology.Diffeomorph.Product
 import DifferentialGeometry.Topology.Diffeomorph.Radial
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.BallSource
 import DifferentialGeometry.Topology.Diffeomorph.Restriction
 import DifferentialGeometry.Topology.Diffeomorph.SphereIsotopy
 import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow

@@ -31,7 +31,10 @@ theorem exists_compact_side_inside_projective_cap_of_sphere_embedding
     ∃ (K : Set M) (B : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 Z ∞),
       closedBall (0 : E3) 1 ⊆ B.source ∧
       F '' (B '' sphere (0 : E3) 1) = range e ∧
-      (K = F '' (B '' closedBall (0 : E3) 1) ∨ K = F '' (B '' ball (0 : E3) 1)ᶜ) ∧
+      ((K = F '' (B '' closedBall (0 : E3) 1) ∧
+        B '' closedBall (0 : E3) 1 ⊆ (C '' closedBall (0 : E3) 1)ᶜ) ∨
+       (K = F '' (B '' ball (0 : E3) 1)ᶜ ∧
+        (B '' ball (0 : E3) 1)ᶜ ⊆ (C '' closedBall (0 : E3) 1)ᶜ)) ∧
       IsCompact K ∧ closure (interior K) = K ∧ frontier K = range e ∧
       K ⊆ interior (F '' (C '' ball (0 : E3) 1)ᶜ) := by
   let K0 := (C '' ball (0 : E3) 1)ᶜ
@@ -96,12 +99,12 @@ theorem exists_compact_side_inside_projective_cap_of_sphere_embedding
     · rw [← hFint]
       exact image_mono hAin
   rcases havoid with havoid | havoid
-  · exact ⟨F '' (B '' closedBall (0 : E3) 1), B, hB, hFsphere, Or.inl rfl,
+  · exact ⟨F '' (B '' closedBall (0 : E3) 1), B, hB, hFsphere, Or.inl ⟨rfl, havoid⟩,
       finish _ hBcompact hBreg hBfront havoid⟩
   · have hcompact : IsCompact (B '' ball (0 : E3) 1)ᶜ :=
       (B.toOpenPartialHomeomorph.isOpen_image_of_subset_source isOpen_ball
         (ball_subset_closedBall.trans hB)).isClosed_compl.isCompact
-    exact ⟨F '' (B '' ball (0 : E3) 1)ᶜ, B, hB, hFsphere, Or.inr rfl,
+    exact ⟨F '' (B '' ball (0 : E3) 1)ᶜ, B, hB, hFsphere, Or.inr ⟨rfl, havoid⟩,
       finish _ hcompact hBoreg hBofront havoid⟩
 
 end DifferentialGeometry.Topology.ThreeManifold
