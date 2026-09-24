@@ -71,7 +71,7 @@ private theorem initial_laplacian_bound
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-private def cutoff_mono_error {G : MetricConnectionFamily (I := I) (M := M) ℝ}
+private def cutoffMonoError {G : MetricConnectionFamily (I := I) (M := M) ℝ}
     {T e e' : ℝ} (cut : ShiFixedCutoff G T e) (hee : e ≤ e') : ShiFixedCutoff G T e' where
   chi := cut.chi
   support := cut.support
@@ -162,7 +162,7 @@ private theorem initial_curvature_derivative_bound_of_unit_curvature_bounded_hor
       hClap hClapT hCconn hCconnT
     have he : shiLocalCutoffError (Module.finrank ℝ E) θ R Clapθ Cconnθ Hbθ k.val ≤ eps k :=
       shiLocalCutoffError_mono _ hR hθT hClapT hCconn hCconnT hHb0 hHbT k.val
-    exact ⟨cutoff_mono_error fc he,hone,hsupp⟩
+    exact ⟨cutoffMonoError fc he,hone,hsupp⟩
   choose fc hone hsupp using hcut
   let Ω := fun k : ℕ => {x : X | riemannianEDistOf (S.base.metric 0) p x ≤
     ENNReal.ofReal (shiLocalRadius R k)}

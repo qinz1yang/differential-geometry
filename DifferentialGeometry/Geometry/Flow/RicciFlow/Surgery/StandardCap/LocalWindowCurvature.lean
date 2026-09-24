@@ -1,37 +1,12 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialLocalCutoff
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowIntrinsicBall
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvatureHorizon
 
 set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold DifferentialGeometry
-open DifferentialGeometry.Geometry.Neck DifferentialGeometry.Geometry.Metric
-open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
-open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Neck DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff Topology ENNReal BigOperators
+open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.StandardCap
-
-private local instance (V : TopologicalSpace.Opens ThreeSpace) : SigmaCompactSpace V :=
-  isSigmaCompact_iff_sigmaCompactSpace.mp
-    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel V.isOpen)
-
-
-private local instance : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp⟩
-
-private theorem initial_curvature_norm_le_of_metric_bound
-    {D : ℝ} {J : RealTimeInterval}
-    (L : SolutionOn (I := ThreeModel) (M := standardCapWindow D) J)
-    (g₀ : SmoothRiemannianMetric ThreeModel (standardCapWindow D))
-    (hzero : L.base.metric 0 = g₀) (j : ℕ) (x : standardCapWindow D) {C : ℝ}
-    (hb : Real.sqrt (normSq0S g₀ x (4 + j) (iterCov g₀ 4 (metricRm04 g₀) j x)) ≤ C) :
-    nablaKRm04NormSqIntrinsic L j 0 x ≤ C ^ 2 := by
-  rw [← curvNormSq_eq,hzero]
-  unfold curvDerivNormSq
-  rw [curvCovDeriv_normSq_eq]
-  exact (Real.sqrt_le_iff).mp hb |>.2
 
 theorem exists_uniform_window_flow_curvature_derivative_bound_of_local_curvature
     (N : ℕ) (ρ T K : ℝ) (hρ : 0 < ρ) (hT : 0 < T) :
@@ -56,30 +31,12 @@ theorem exists_uniform_window_flow_curvature_derivative_bound_of_local_curvature
           nablaKRm04NormSqIntrinsic L 0 t x ≤ K) →
         ∀ j ≤ N, ∀ t ∈ Icc 0 T, ∀ x : standardCapWindow D, ‖x.val‖ ≤ ρ/32 →
           nablaKRm04NormSqIntrinsic L j t x ≤ B := by
-  classical
-  choose A hA hinit using exists_uniform_window_curvature_derivative_bounds
-  obtain ⟨B,hB,hbound⟩ := exists_uniform_initial_curvature_derivative_bound_on_compact_ball
-    (I := ThreeModel) N T (ρ/4) K hT (by positivity) (fun j => (A j)^2)
-    (fun _ _ _ => sq_nonneg _)
-  refine ⟨B,hB,?_⟩
-  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A₀ hA₀ D m ζ w hζ hm hρD
-    J hslab hreg L hL hzero hgram hcurv j hj t ht x hx
-  obtain ⟨p,hp,hcompact,hcapture,hinner⟩ :=
-    CanonicalStaticInsertionWitness.exists_window_intrinsic_ball_control w hζ hρ hρD
-  have hcompactL : IsCompact {y : standardCapWindow D |
-      riemannianEDistOf (L.base.metric 0) p y ≤ ENNReal.ofReal (ρ/4)} := by
-    rwa [hzero]
-  have houter (y : standardCapWindow D)
-      (hy : riemannianEDistOf (L.base.metric 0) p y ≤ ENNReal.ofReal (ρ/4)) :
-      ‖y.val‖ ≤ ρ := by
-    rw [hzero] at hy
-    exact hcapture hy
-  apply hbound (standardCapWindow D) J L hL hslab hreg hgram p hcompactL
-    (fun s hs y hy => hcurv s hs y (houter y hy))
-    (fun k hk hkN y hy => initial_curvature_norm_le_of_metric_bound L w.windowMetric
-      hzero k y (hinit k w hζ (by omega) y ((houter y hy).trans_lt hρD))) j hj t ht x
-  rw [hzero]
-  have hb := hinner x hx
-  simpa only [div_div,show (4:ℝ)*2=8 by norm_num] using hb
+  obtain ⟨B, hB, hbound⟩ :=
+    exists_uniform_window_flow_curvature_derivative_bound_of_local_curvature_bounded_horizon
+      N ρ T K hρ
+  refine ⟨B, hB, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA D m ζ w hζ hm hρD
+    J hslab hreg L
+  exact hbound w hζ hm hρD J T hT le_rfl hslab (fun t ht => hreg ⟨ht.1, ht.2.le⟩) L
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
