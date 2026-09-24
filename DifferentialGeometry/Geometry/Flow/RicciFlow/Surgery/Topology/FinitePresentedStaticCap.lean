@@ -562,6 +562,135 @@ def finitePresentedStaticCapsOfTerminal (hD : 0 < D) :
     hex.choose_spec.1, fun b => (hex.choose_spec.2 b).choose_spec⟩⟩
 
 
+private theorem cap_output_of_trace_heq
+    {P₁ P₂ P₃ P₄ P₃' P₄' : OrientedThreeStage.{u}}
+    {tr : CutCapTopology P₁.Carrier P₂.Carrier P₃.Carrier P₄.Carrier}
+    {tr' : CutCapTopology P₁.Carrier P₂.Carrier P₃'.Carrier P₄'.Carrier}
+    (hZ : P₃' = P₃) (hW : P₄' = P₄) (h : HEq tr' tr)
+    {b' : tr'.tubes.Boundary} {b : tr.tubes.Boundary} (hb : HEq b' b)
+    (z : ThreeBall) (q : P₂.Carrier) :
+    tr'.presentation (tr'.capping.cap b' z) = Sum.inl q ↔
+      tr.presentation (tr.capping.cap b z) = Sum.inl q := by
+  cases hZ
+  cases hW
+  cases eq_of_heq h
+  cases eq_of_heq hb
+  rfl
+
+theorem finite_presented_static_cap_inclusion_cap (hD : 0 < D) :
+    letI : ChartedSpace ThreeSpace Q :=
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+    letI : IsManifold ThreeModel ∞ Q :=
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Ret :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+    letI : CompactSpace Disc :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
+      (oDisc : SmoothOrientation ThreeModel Disc)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
+      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
+      HEq E.transition.trace
+        ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
+      ∀ (c : ℝ) (hc : 4 ≤ c) (x₀ : ι → E.incoming.terminalRegularOpen) (order : ι → ℕ)
+        (d₀ : ∀ i, normalizedDatum E.terminal.metric (x₀ i) (precision i) (order i))
+        (k' : Bidx → ℕ)
+        (d : ∀ b : Bidx, normalizedDatum E.terminal.metric
+          ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b))
+        (w : ∀ b : Bidx,
+          CanonicalStaticInsertionWitness (d b) fixed.collarLength fixed.collar_pos D m ε),
+        ∀ (e : E.RetainedBoundaryIndex ≃ Bidx),
+          (∀ b, HEq b.val (e b).val) →
+          ∀ (b : E.RetainedBoundaryIndex) (S : E.PresentedStaticCap fixed D m ε b)
+            (z : ThreeBall),
+            S.inclusion (S.witness.cap z) =
+              finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos hδ f hf hdisj hs
+                R c hc (e b) ((w (e b)).cap (B (e b).val z)) := by
+  let : ChartedSpace ThreeSpace Q :=
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+  let : IsManifold ThreeModel ∞ Q :=
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Ret :=
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+  let : CompactSpace Disc :=
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+  intro oQ oRet oDisc E B a hboundary hDisc hCap htrace c hc x₀ order d₀ k' d w e he b S z
+  have hp := (cap_output_of_trace_heq
+    hDisc hCap htrace (he b) z
+    (S.inclusion (S.witness.cap z))).mp (S.cap_eq z)
+  apply Sum.inl_injective
+  apply hp.symm.trans
+  change (CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R
+    hnontrivial).presentation
+      ((Capping.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj).cap (e b).val
+        (B (e b).val z)) = _
+  exact finiteStaticCapInclusion_cap_presentation (fixed := fixed) (D := D) (ε := ε) (m := m) hδ f hf hdisj hs
+    E.incoming.terminalRegularOpen E.terminal.metric R c hc x₀ order d₀ d w hδ1 hnontrivial (e b) hD (B (e b).val z)
+
+theorem finite_presented_static_cap_inclusion_cap_terminal (hD : 0 < D) :
+    letI : ChartedSpace ThreeSpace Q :=
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+    letI : IsManifold ThreeModel ∞ Q :=
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Ret :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+    letI : CompactSpace Disc :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
+      (oDisc : SmoothOrientation ThreeModel Disc)
+      (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (L : G.TerminalLimitMetric)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
+      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
+      HEq E.transition.trace
+        ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
+      E.incoming = G → HEq E.terminal L →
+      ∀ (c : ℝ) (hc : 4 ≤ c) (x₀ : ι → G.terminalRegularOpen) (order : ι → ℕ)
+        (d₀ : ∀ i, normalizedDatum L.metric (x₀ i) (precision i) (order i))
+        (k' : Bidx → ℕ)
+        (d : ∀ b : Bidx, normalizedDatum L.metric
+          ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b))
+        (w : ∀ b : Bidx,
+          CanonicalStaticInsertionWitness (d b) fixed.collarLength fixed.collar_pos D m ε),
+        ∀ (e : E.RetainedBoundaryIndex ≃ Bidx),
+          (∀ b, HEq b.val (e b).val) →
+          ∀ (b : E.RetainedBoundaryIndex) (S : E.PresentedStaticCap fixed D m ε b)
+            (z : ThreeBall),
+            S.inclusion (S.witness.cap z) =
+              finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos hδ f hf hdisj hs
+                R c hc (e b) ((w (e b)).cap (B (e b).val z)) := by
+  let : ChartedSpace ThreeSpace Q :=
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+  let : IsManifold ThreeModel ∞ Q :=
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Ret :=
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+  let : CompactSpace Disc :=
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+  intro oQ oRet oDisc G L E B a hboundary hDisc hCap htrace hG hL
+  apply terminal_data_transport E G L hG hL
+  exact finite_presented_static_cap_inclusion_cap (fixed := fixed) (D := D) (m := m) (ε := ε)
+    hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc E B a hboundary hDisc hCap htrace
+
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 end

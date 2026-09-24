@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalRetainedMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWitness
@@ -223,6 +224,18 @@ theorem cap_tip_interior : ∃ x : ThreeBall, ‖x.val‖ < 1 ∧ w.cap x = w.da
 
 theorem capChart_range_cap : range w.capChart = range w.cap :=
   w.capChart_range.trans w.cap_range.symm
+
+theorem exists_window_preimage_cap (w : CanonicalStaticInsertionWitness d A hA D m ε)
+    (hD : transitionEnd < D + 1) (z : ThreeBall) :
+    ∃ u : standardCapWindow D, ‖u.val‖ ≤ transitionEnd ∧ w.window u = w.cap z := by
+  have hz : w.cap z ∈ range w.cap := ⟨z, rfl⟩
+  rw [← w.capChart_range_cap] at hz
+  obtain ⟨x, hx⟩ := hz
+  have hxnorm : ‖x.val‖ ≤ transitionEnd := by
+    simpa only [standardCapClosedCore, Metric.mem_closedBall, dist_zero_right,
+      standardCapL_eq_transitionEnd] using x.property
+  refine ⟨⟨x.val, hxnorm.trans_lt hD⟩, hxnorm, ?_⟩
+  exact (w.windowMap_eq_capChart x.val (hxnorm.trans_lt hD) x.property).trans hx
 
 end CanonicalStaticInsertionWitness
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

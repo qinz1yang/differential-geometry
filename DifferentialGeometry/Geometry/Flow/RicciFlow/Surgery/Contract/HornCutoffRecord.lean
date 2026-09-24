@@ -790,6 +790,68 @@ private theorem range_oldOutput_eq_of_buffered_trace_stage
     hδ hδ1 f hf hdisj hs R P.smoothOrientation hnontrivial
     oQ oRet oDisc B a hboundary E hDisc hCap htrace hOld
 
+private theorem finite_presented_static_cap_inclusion_cap_stage
+    (P : OrientedThreeStage.{u})
+    {ι : Type} [Fintype ι] {precision : ι → ℝ}
+    (hδ : ∀ j, 0 < precision j) (hδ1 : ∀ j, precision j < 1)
+    (f : ∀ j : ι, bufferedCylinder (precision j) → P.Carrier)
+    (hf : ∀ j, _root_.Topology.IsOpenEmbedding (f j))
+    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
+    (hs : ∀ j, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ (f j))
+    (R : Set (ConnectedComponents (cutCore f)))
+    (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
+    {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ} (hD : 0 < D) :
+    letI : LocallyPathConnectedSpace P.Carrier :=
+      originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
+    let Q := FiniteCapQuotient transitionEnd_pos hδ f
+      (fun j => (hf j).injective) hdisj
+    let Ret := finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+    let Disc := finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+    let Bidx := {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
+    letI : ChartedSpace ThreeSpace Q :=
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+    letI : IsManifold ThreeModel ∞ Q :=
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Ret :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+    letI : CompactSpace Disc :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
+      (oDisc : SmoothOrientation ThreeModel Disc)
+      (G : P.IncomingSlab t₀ t₁)
+      (L : G.TerminalLimitMetric)
+      (E : MetricCutCapEvent P
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
+      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
+      HEq E.transition.trace
+        ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
+      E.incoming = G → HEq E.terminal L →
+      ∀ (c : ℝ) (hc : 4 ≤ c) (x₀ : ι → G.terminalRegularOpen) (order : ι → ℕ)
+        (d₀ : ∀ i, normalizedDatum L.metric (x₀ i) (precision i) (order i))
+        (k' : Bidx → ℕ)
+        (d : ∀ b : Bidx, normalizedDatum L.metric
+          ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b))
+        (w : ∀ b : Bidx,
+          CanonicalStaticInsertionWitness (d b) fixed.collarLength fixed.collar_pos D m ε),
+        ∀ (e : E.RetainedBoundaryIndex ≃ Bidx),
+          (∀ b, HEq b.val (e b).val) →
+          ∀ (b : E.RetainedBoundaryIndex) (S : E.PresentedStaticCap fixed D m ε b)
+            (z : ThreeBall),
+            S.inclusion (S.witness.cap z) =
+              finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos hδ f hf hdisj hs
+                R c hc (e b) ((w (e b)).cap (B (e b).val z)) := by
+  revert f
+  rw [← P.ofSmoothOrientation_smoothOrientation]
+  intro f hf hdisj hs R hnontrivial
+  exact finite_presented_static_cap_inclusion_cap_terminal (fixed := fixed) (D := D) (ε := ε) (m := m)
+    hδ hδ1 f hf hdisj hs R P.smoothOrientation hnontrivial hD
+
 private def finitePresentedStaticCapsOfStage
     (P : OrientedThreeStage.{u})
     {ι : Type} [Fintype ι] {precision : ι → ℝ}
@@ -962,11 +1024,17 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_caps :
                     F.static = S ∧ (∀ b, HEq b.val (eB b).val) ∧
                     (∀ b, HEq (S b).neck
                       (dCap (eB b)).oriented.toNormalizedNeck) ∧
-                    ∀ b (z : standardCapWindow p.modelRadius),
+                    (∀ b (z : standardCapWindow p.modelRadius),
                       HEq ((S b).inclusion ((S b).witness.window z))
                         (finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three
                           transitionEnd_pos hδ f hf hd hs R p.recenterConstant
                           p.recenterConstant_ge_four (eB b) ((w (eB b)).window z))) ∧
+                    (transitionEnd < p.modelRadius + 1 → ∀ b (z : ThreeBall),
+                      ∃ u : standardCapWindow p.modelRadius, ‖u.val‖ ≤ transitionEnd ∧
+                        HEq (finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three
+                          transitionEnd_pos hδ f hf hd hs R p.recenterConstant
+                          p.recenterConstant_ge_four (eB b) ((w (eB b)).window u))
+                          ((S b).inclusion ((S b).witness.cap z)))) ∧
             ∀ j, F.neck (e j) = orientedRotatedNeck (NOriginal j) (hδOriginal j)
               hδ1 (rotation j) (hmark j) (side j) (horder j) := by
   classical
@@ -1142,10 +1210,26 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_caps :
     rfl, ?_, rfl, rfl, rfl, rfl, rfl, rfl, hr, hvol, hbound, hreset, geometry, rfl,
     _, δOrig, kOrig, NOrigE, hδOrig, rotation, hmarkE, side, hk, hδ1, eEvent, hEscale, ?_, ?_⟩
   · exact funext fun _ => rfl
-  · exact ⟨x₀, d, hf, hd, hlocal, R, hRet, hrec, dCap,
+  · refine ⟨x₀, d, hf, hd, hlocal, R, hRet, hrec, dCap,
       hcapMap, hcapSide, w, oRet, rfl, hscaleOrig, hratio, heq_of_eq hOutput, heq_of_eq hOldRange,
       S, eBoundary, hStatic, hBoundaryLabel, hSN,
-      fun b z => heq_of_eq (hSwindow b z)⟩
+      (fun b z => heq_of_eq (hSwindow b z)), ?_⟩
+    intro hfit b z
+    have hcapEq := finite_presented_static_cap_inclusion_cap_stage
+      (fixed := p.fixed) (D := p.modelRadius) (m := p.modelOrder) (ε := p.modelAccuracy)
+      D.stage (fun j => (d j).precision_pos) (fun j => (d j).precision_lt_one)
+      f hf hd hlocal R hnontrivial p.modelRadius_pos oQ oRet oDisc D.slab D.terminal E
+      (fun b => (B b).toHomeomorph) aCap hboundary hDisc hCap htrace hG hL
+      p.recenterConstant p.recenterConstant_ge_four x₀ (fun _ => p.modelOrder + 6) d
+      (fun _ => p.modelOrder + 4) dCap w eBoundary hBoundaryLabel b (S b) z
+    exact ((w (eBoundary b)).exists_window_preimage_cap
+      (E := ThreeSpace) (H := ThreeSpace) (M := D.slab.terminalRegularOpen) (I := ThreeModel)
+      (g := D.terminal.metric) (x₀ := (d (eBoundary b).val.1).offsetPoint (cuttingSign_sq (eBoundary b).val.2))
+      (δ := p.recenterConstant * δ) (k := p.modelOrder + 4) (d := dCap (eBoundary b))
+      (A := p.fixed.collarLength) (hA := p.fixed.collar_pos) (D := p.modelRadius)
+      (m := p.modelOrder) (ε := p.modelAccuracy) hfit (B (eBoundary b).val z)).imp fun u hu => ⟨hu.1, heq_of_eq
+      ((congrArg (finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos
+        (fun j => (d j).precision_pos) f hf hd hlocal R c hc (eBoundary b)) hu.2).trans hcapEq.symm)⟩
   · intro j
     exact eq_of_heq ((hgeometry j).trans (hNEhigh j).symm)
 
