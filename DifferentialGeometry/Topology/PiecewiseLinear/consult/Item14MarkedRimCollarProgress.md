@@ -1,16 +1,17 @@
-# Marked rim collar route: verified checkpoint
+# Marked rim collar route: completed compact cut-and-graph proof
 
 L2 `bu_markedPrism_of_bridge` is proved, together with its actual compatible collar
 and cap-free whole-ball marked-prism producer. L3, L4, L5, and L6 are also proved.
-The actual `exists_compactRimCoreBuffer` and finite target rim neighborhoods are proved.
-The frozen `exists_compactCutAndGraph` assembly is the remaining active work.
+The actual `exists_compactRimCoreBuffer`, finite target rim neighborhoods, and frozen
+`exists_compactCutAndGraph` assembly are proved. The statement and variable block match
+the Skeleton target byte-for-byte, and all 29 cut-frame and 11 graph-frame clauses hold.
 No construction hypothesis has been added to any frozen target.
 
-This checkpoint comprises 75 modules and 203 non-auto declarations, including private helpers.
+This checkpoint comprises 79 modules and 214 non-auto declarations, including private helpers.
 Every module compiled under the collaborator strict flags. Independent checks ran all thirteen
 standard environment linters and checked every declaration's transitive axioms:
 only `propext`, `Classical.choice`, and `Quot.sound` occur.
-Source scans and the 1427-local-module import closure exclude forbidden debt,
+Source scans and the 1488-local-module import closure exclude forbidden debt,
 resource overrides, Skeleton imports, and `HurewiczLowDegrees`.
 The requested flat aggregate and `FREE_INPUTS.md` are unchanged.
 The unmodified aggregate build has pre-existing sorry and linter diagnostics outside this
@@ -35,3 +36,5 @@ import closure; no clean aggregate build is claimed. The aggregate build is stil
 - L2 DONE: `bu_markedPrism_of_bridge` gives the whole-ball PL prism, both prescribed cap sets, ordered marked centers, and the exact marked-axis image. The cap-free primary `IsBridgeDisk.exists_prism_axis` uses actual compatible collars, finite disk-deletion sweeps, boundary arc matching, and the whole-ball shell/core extension. Cap adjustment is applied last and preserves every axis point.
 
 - Rim buffer DONE: `exists_compactRimCoreBuffer` derives each single-vertex marked prism from its actual bridge, glues the three prisms, untwists while preserving their centers, and thickens the entire torus. The exact simplex rim is the zero section of the buffered product. `exists_compactRimNeighborhoods` chooses all buffers and finite open target constraints before approximation. The marked-product sandwich then supplies graph clause 9 from the actual target torus.
+
+- Final assembly DONE: `exists_compactCutAndGraph` chooses the small carriers, foreign-face avoidance neighborhoods, exterior buffers, and zero-marked rim buffers before the single delayed `Moise331OnTube` application. The actual cut frame is reused with `K' = K`. Finite foreign-cell avoidance gives graph clauses 5–8; the same marked product gives clause 9; existing exterior neighborhoods give clause 11. Independent review checked every clause and the unchanged hypotheses.
