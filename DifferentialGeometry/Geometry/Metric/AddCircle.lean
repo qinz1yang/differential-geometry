@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.Product
+import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative
 import DifferentialGeometry.Geometry.Metric.CompactExistence
 import DifferentialGeometry.Geometry.Metric.Conformal.Basic
@@ -210,6 +212,51 @@ theorem graphMetric_inner
   ring
 
 end
+
+section
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+private theorem mfderiv_graph_apply
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯)
+    (z : AddCircle (1 : ℝ)) (v : TangentSpace 𝓘(ℝ, ℝ) z) :
+    mfderiv 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, F))
+      (fun y => (y, f y)) z v = (v, mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) f z v) := by
+  erw [mfderiv_prodMk mdifferentiableAt_id (f.contMDiff.mdifferentiableAt (by simp)),
+    mfderiv_id]
+  rfl
+
+private theorem mfderiv_graph_injective
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯)
+    (z : AddCircle (1 : ℝ)) :
+    Function.Injective (mfderiv 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, F))
+      (fun y => (y, f y)) z) := by
+  intro v w hvw
+  rw [mfderiv_graph_apply, mfderiv_graph_apply] at hvw
+  exact congrArg Prod.fst hvw
+
+
+end
+
+section
+
+variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+  [FiniteDimensional ℝ F]
+
+theorem graphMetric_eq_pullbackOfImmersion
+    (f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, F), F⟯) :
+    graphMetric f = (flatMetric.prod (euclideanMetric (E := F))).pullbackOfImmersion
+      (fun z => (z, f z)) (contMDiff_id.prodMk f.contMDiff) (mfderiv_graph_injective f) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro z v w
+  rw [graphMetric_inner, SmoothRiemannianMetric.pullbackOfImmersion_inner,
+    mfderiv_graph_apply, mfderiv_graph_apply]
+  erw [SmoothRiemannianMetric.prod_inner, euclideanMetric_inner]
+  rfl
+
+
+end
+
 
 end AddCircle
 

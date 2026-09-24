@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.LeviCivita.AlongCurve
 import DifferentialGeometry.Geometry.Metric.AddCircle
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.DimensionOne
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
@@ -31,5 +32,22 @@ theorem LeviCivita_parameterTangent_eq_zero (z : AddCircle (1 : ℝ))
   rw [heq, mfderiv_const]
   change ((0 : ℝ) / _) • parameterTangent z = 0
   rw [zero_div, zero_smul]
+
+open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+theorem covDerivAlong_parameterTangent_eq_zero {γ : ℝ → AddCircle (1 : ℝ)} {t : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) γ t) :
+    covDerivAlong flatMetric γ (fun s => parameterTangent (γ s)) t = 0 := by
+  rw [← derivAlongWithin_leviCivita_eq_covDerivAlong flatMetric γ _
+    (J := Set.univ) (by simp) hγ BoundarylessManifold.isInteriorPoint]
+  rw [(LeviCivita flatMetric).derivAlongWithin_section hγ.mdifferentiableWithinAt
+    (contMDiff_parameterTangent.mdifferentiableAt (by decide))]
+  exact LeviCivita_parameterTangent_eq_zero _ _
+
+theorem covDerivAlong_coe_parameterTangent_eq_zero (t : ℝ) :
+    covDerivAlong flatMetric (fun s : ℝ => (s : AddCircle (1 : ℝ)))
+      (fun s => parameterTangent (s : AddCircle (1 : ℝ))) t = 0 :=
+  covDerivAlong_parameterTangent_eq_zero (contMDiff_coe.mdifferentiableAt (by decide))
+
 
 end AddCircle
