@@ -14307,6 +14307,76 @@ Remaining work: Transport the subsurface embedding invariant through actual comp
 - Origin codex/moise-integration and mirror moise-integration were both verified at 7ce7e5052.
   Unrelated tracked edits and other lanes' untracked files were preserved. D/E remain deferred.
 
+# Codex item 13
+
+## finite-window-component-classification-verified (2026-09-24T02:42:13.2123376Z)
+
+Mathematical stage closed: IsCanonicalTower.exists_initial_window_component_classification constructs an actual finite-window null-split history from the initial separator and classifies every component in the requested rows as boundaryless or a labelled essential annulus. The certificate preserves source/target canonical states, all component embedding witnesses, original end labels, generators, protected sets, outside-support equality, and exact equality of untouched rows. All 87 modules pass the cumulative foundational-axiom and thirteen-linter audit.
+
+All 87 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFixedPLEmbedding
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryFixedPLEmbedding.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 079DF263073B9574C8BBA34D5CC308AB59E8E972357B674C013FE4E3B12B9BC0
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TorusSubsurfaceEmbedding
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TorusSubsurfaceEmbedding.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 1BE168A7E6E8064D1C67A3BC0C8C3F01B5F1518C272D5F37C74F2F207F74CFCF
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphComponents
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\PLHomeomorphComponents.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: F064566CAD2EC138EB172B2B813FCBB09ACC4C27ABCBAC52634D478CBA514B5C
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ComponentSubsurfaceEmbedding
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ComponentSubsurfaceEmbedding.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: E1CFF7F78D055165AD96BA1D013868144227BFA20DB5C16004CCC4FFA3464F88
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceSubsurface
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceSubsurface.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: F9463C92419279D0203F5FF00E97D7EA0EE25AA8735B4251AD088C3EB492FDE2
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceAnnularComponents
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceAnnularComponents.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 1B0E71C0CA2686FFACF49FBC39CE2EBBC35A881D406697764039D7796577E95A
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalWindowComponentClassification
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalWindowComponentClassification.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 019536ECB8FF14B39DD5B53C7EFC1785AD00028C5CBA56CA96914901B5A290CA
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13WindowClassification.receipt.json
+Audit SHA-256: 27CADAE138CD48EF7D8FA1FA70A0E8EE3C9981DB0F096F3DC40CED86637306FC
+Audit: all nonautomatic declarations in 87 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Next stage: eliminate every closed component in a finite window by the actual Type 1 producer and strict finite component-count descent, preserving all boundaries, even seams, retained component labels, protected sets, and classification data. Later: construct mixed-end witnesses, Type 2/3/half deletions, guarded recursion, limit chain, and the frozen descent leaf.
+
+# Codex item 13
+
+## Finite-window Type 1 elimination complete (2026-09-24T03:16:43.4467745Z)
+
+Closed the actual initial-surface annular-window stage: a finite real null-split history followed by a finite actual closed-component deletion history. Every requested row now consists solely of annuli with original lower/upper seam labels and essential ends. Type 1 reduction preserves every row boundary and even trace exactly, retains explicit component-label embeddings and subsurface models, fixes the protected set, and decreases the finite component count. This stage does not assert a nonempty mixed bridge in every row.
+
+All 91 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ComponentSubsurfaceRestriction
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ComponentSubsurfaceRestriction.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: EEE9E703E379DBD99AA924D579C01BA71B37071AF308CA126732F8C5FEE359C1
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalClosedComponentDeletion
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalClosedComponentDeletion.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 7358CE738E40B25DE823534EEFA20CB2A59908C5E4A0E7886B5A17B6085C209F
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalClosedWindowReduction
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalClosedWindowReduction.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 0AB4EE2E8D7D13CC85251FE8F62209A368F826A1D1C2D6F6A79D076422A7FBD3
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalAnnularWindow
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalAnnularWindow.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: EA89C2CA16D94D87CE0592FF08726EB5B6DA0DEFA765A504CE41BFF651F5DBA4
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13AnnularWindow.receipt.json
+Audit SHA-256: A73F96202CC1263E529A095F3AA7FA0D980E69BC6F8343E3FB80184FCFE83BAA
+Audit: all nonautomatic declarations in 91 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Type 2 returning-annulus elimination, the initial mixed-end component witness and its preservation, Type 3 redundant-bridge elimination, even-torus halves, guarded compact-window recursion, and the unchanged descent leaf. Shared connected-patch replacement for Type 2/3 is source-written but not yet verified; no new named input.
+
 # Codex item 22
 
 ## Collaborator PR #27: compact cut-and-graph acceptance (2026-09-24)
@@ -14447,3 +14517,47 @@ The receipt path is the lead private root followed by the module path and `.json
 | DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactRimCoreBuffer | 794DD2646C76409947FBA2555A1401A51DEE78179D5CE29775F1314A6030A3C0 |
 | DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactRimNeighborhoods | FCA646BF83A5E6E2DDBB9FCEECD317870F3E74EEECDFCC6E745A2FCFC9F4D12F |
 | DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCutAndGraph | 38AE671FEB3659005770496CE3C0E3A1C2E645C6BC78210F8542D0457599FDC9 |
+
+# Codex item 13
+
+## Owner-requested handoff; Type 1 complete and shared deletion geometry verified (2026-09-24T03:35:29.9682107Z)
+
+Final handoff verification covers all 96 modules. The completed stage is actual finite-window Type 1 elimination from the initial separator. Five further checked modules prove common bicollared replacement, its actual solid-torus-filling application, both labelled complementary torus annuli, actual annular-patch gluing and separator-preserving deletion, and canonical-state reconstruction after arbitrary component removal. These reuse Type 1 geometry and component/trace APIs for Type 2 and Type 3; they do not yet assemble the canonical Type 2 producer or its finite iteration.
+
+All 96 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.Connected.BicollaredReplacement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\Connected\BicollaredReplacement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: A1EE7AFCB1084B62EEB284F2E44EC13CCB9620A4B0F66F53F24DBBE52F666155
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SurfacePatchReplacement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SurfacePatchReplacement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: FF7147608C2A1753F35CB0074C5F55952BC56D7EC9D5D231250E2DA0913D2BF6
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TorusCirclePair
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TorusCirclePair.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 143D2C771CF34955CC9F2DD5351AA11BEB89AAA19B483BB33BF0068ED3301F05
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.AnnulusPatchDeletion
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\AnnulusPatchDeletion.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: A0F61FBDBB70FF02D47A016C5C67351B033EEF6A2DD1FDBE065AEB3ADB8308B8
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceComponentRemoval
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceComponentRemoval.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 1440ED1A483AA0CA5A650FAC3B493854181819BDEF114165B263CAF570E5988E
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13Handoff.receipt.json
+Audit SHA-256: F8A16E656EE1407E0158C8FE2A166DEA4058FE63569BD4C67FD6F655CF5D2C9D
+Audit: all nonautomatic declarations in 96 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Canonical Type 2 single-step producer and finite-window iteration; initial same-component lower/upper essential-seam witness and transport; Type 3 elimination; even-torus half selection; guarded compact-window recursion, local stabilization, all annular-chain fields, and the unchanged exists_descentSequence leaf. No demonstrated input insufficiency and no new named inputs. Further proof work stopped at the owner-requested collaborator handoff.
+
+# Codex item 13
+
+## English collaborator handoff
+
+Handoff: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\Codex13Section32Handoff-20260924.md
+Handoff SHA-256: 5C9826F8E4702226786216BF900F346E967AC744150EB582E94D25EF3CF3FD5D
+Final inventory: 
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\Codex13HandoffManifest.json
+Final all-96-module audit accepted. No lane-b Lean process remained at the final check. Proof development stopped at owner request for collaborator takeover; the lease record is unchanged.
+
