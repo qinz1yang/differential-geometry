@@ -324,3 +324,34 @@ attribute [instance] StaticCapWitness.outputTopology StaticCapWitness.outputChar
   StaticCapWitness.outputSmooth StaticCapWitness.outputHausdorff StaticCapWitness.outputCountable
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace StaticCapScaffold
+
+def ofCollarLength (A : ℝ) (hA : 0 < A) : StaticCapScaffold := by
+  have hL : 0 < standardCapL := by
+    rw [standardCapL_eq_transitionEnd]
+    exact DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd_pos
+  let r := min (min (standardCapL / 2) (standardCapRadiusOfZ (-2 * A) / 2)) (1 / 2)
+  have hr : 0 < r :=
+    lt_min (lt_min (half_pos hL)
+      (half_pos (Function.invFun standardCapConformalCoordinate (-2 * A)).2)) (by norm_num)
+  exact {
+    collarLength := A
+    collar_pos := hA
+    positiveRadius := r / 2
+    deepRadius := r
+    positiveRadius_pos := half_pos hr
+    positive_lt_deep := half_lt_self hr
+    deep_lt_one := (min_le_right _ _).trans_lt (by norm_num)
+    deep_lt_cap := ((min_le_left _ _).trans (min_le_left _ _)).trans_lt
+      (half_lt_self hL)
+    deep_tip_side := ((min_le_left _ _).trans (min_le_right _ _)).trans_lt
+      (half_lt_self (Function.invFun standardCapConformalCoordinate (-2 * A)).2) }
+
+@[simp] theorem ofCollarLength_collarLength (A : ℝ) (hA : 0 < A) :
+    (ofCollarLength A hA).collarLength = A := rfl
+
+end StaticCapScaffold
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

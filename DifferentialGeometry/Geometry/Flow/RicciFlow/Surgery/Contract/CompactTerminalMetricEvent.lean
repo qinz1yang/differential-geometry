@@ -26,34 +26,6 @@ private local instance {D : OneStepIncoming.{u}} : SigmaCompactSpace D.slab.term
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       D.slab.terminalRegularOpen.isOpen)
 
-private theorem component_meets_scalar_sublevel_of_image_eq
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] {ι : Type} {δ : ι → ℝ}
-    (U : TopologicalSpace.Opens M) (g : SmoothRiemannianMetric ThreeModel U)
-    (f : ∀ i, bufferedCylinder (δ i) → M) (K : ℝ)
-    {S : Set M} (R : Set S) (hS : S = cutCore f)
-    (hR : (Subtype.val : S → M) '' R = (Subtype.val : cutCore f → M) ''
-      retainedCore f (scalarSublevelComponents U g f K)) :
-    ∀ c : ConnectedComponents S,
-      (∃ p : S, ConnectedComponents.mk p = c ∧ p ∈ R) →
-      ∃ x : U, ∃ hx : x.val ∈ S,
-        ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧ metricScalarAt g x ≤ K := by
-  let H := Homeomorph.setCongr hS
-  intro component ⟨p, hpcomponent, hp⟩
-  have hmem : p.val ∈ (Subtype.val : cutCore f → M) ''
-      retainedCore f (scalarSublevelComponents U g f K) :=
-    (Set.ext_iff.mp hR p.val).mp ⟨p, hp, rfl⟩
-  obtain ⟨q, hq, hqp⟩ := hmem
-  have hqH : q = H p := Subtype.ext hqp
-  rw [hqH] at hq
-  obtain ⟨x, hxscalar, hxcut, hxcomponent⟩ := hq
-  refine ⟨x, hS.symm ▸ hxcut, ?_, hxscalar⟩
-  have heq := congrArg H.symm.continuous.connectedComponentsMap hxcomponent
-  change ConnectedComponents.mk (H.symm ⟨x.val, hxcut⟩) =
-    ConnectedComponents.mk (H.symm (H p)) at heq
-  rw [H.symm_apply_apply] at heq
-  exact heq.trans hpcomponent
-
 theorem exists_metricCutCapEvent_of_compact_low_components
     (D : OneStepIncoming.{u})
     (hcompact : ∀ x : D.slab.terminalRegularOpen,
@@ -130,9 +102,9 @@ theorem exists_metricCutCapEvent_of_compact_low_components
       rw [htubes]
       exact TubeSystem.ofBufferedCharts_core (fun j => (d j).precision_pos)
         (fun j => (d j).precision_lt_one) f hf hd
-    have hmeets := component_meets_scalar_sublevel_of_image_eq
+    have hmeets := retainedCore_component_meets_scalar_sublevel_of_image_subset
       D.slab.terminalRegularOpen D.terminal.metric f (P'.coreRadius ^ 2)⁻¹
-      E.transition.trace.retainedCore hcores himage
+      E.transition.trace.retainedCore hcores.symm.subset himage.subset
     simpa only [P'.coreRadius_eq] using hmeets
   · obtain ⟨Kvol, hKvol, hvol⟩ := hvol
     let _ := hempty

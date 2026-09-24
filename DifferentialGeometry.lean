@@ -13671,3 +13671,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalCylin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Cylindrical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordEventExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTimeJetConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCutoffRecord
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapRecentering

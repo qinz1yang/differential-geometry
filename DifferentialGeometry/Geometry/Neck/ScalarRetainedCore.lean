@@ -25,6 +25,29 @@ def scalarSublevelComponents
   {c | ∃ x : U, metricScalarAt g x ≤ K ∧
     ∃ hx : x.val ∈ cutCore f, ConnectedComponents.mk (⟨x.val, hx⟩ : cutCore f) = c}
 
+omit [Fact (Module.finrank ℝ E = 3)] [I.Boundaryless] [T2Space M] in
+theorem retainedCore_component_meets_scalar_sublevel_of_image_subset
+    (U : Opens M) (g : SmoothRiemannianMetric I U)
+    (f : ∀ i, bufferedCylinder (δ i) → M) (K : ℝ)
+    {S : Set M} (R : Set S) (hS : cutCore f ⊆ S)
+    (hR : (Subtype.val : S → M) '' R ⊆ (Subtype.val : cutCore f → M) ''
+      retainedCore f (scalarSublevelComponents U g f K)) :
+    ∀ c : ConnectedComponents S,
+      (∃ p : S, ConnectedComponents.mk p = c ∧ p ∈ R) →
+      ∃ x : U, ∃ hx : x.val ∈ S,
+        ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧ metricScalarAt g x ≤ K := by
+  intro c ⟨p, hpc, hp⟩
+  obtain ⟨q, hq, hqp⟩ := hR ⟨p, hp, rfl⟩
+  obtain ⟨x, hxscalar, hxcut, hxcomponent⟩ := hq
+  refine ⟨x, hS hxcut, ?_, hxscalar⟩
+  have heq := congrArg (continuous_inclusion hS).connectedComponentsMap hxcomponent
+  change ConnectedComponents.mk (Set.inclusion hS ⟨x.val, hxcut⟩) =
+    ConnectedComponents.mk (Set.inclusion hS q) at heq
+  have hqp' : Set.inclusion hS q = p := Subtype.ext hqp
+  rw [hqp'] at heq
+  exact heq.trans hpc
+
+
 theorem scalarSublevelComponents_protected [Finite ι]
     (U : Opens M) (g : SmoothRiemannianMetric I U)
     (x₀ : ι → U) (order : ι → ℕ)

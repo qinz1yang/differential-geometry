@@ -70,4 +70,28 @@ theorem CutCapTopology.ofBufferedFiniteCaps_retainedCore
       (finiteCoreInclusion hL hδ f (fun i => (hf i).injective) hdisj
         (bufferedCutCoreHomeomorph hδ hδ1 f hf hdisj x)) hx⟩
 
+
+theorem CutCapTopology.ofBufferedFiniteCaps_retainedBoundary_iff
+    (hnontrivial : Nonempty ι ∨ Nonempty (DifferentialGeometry.Topology.ThreeManifold.Surgery.retainedCore f Rᶜ))
+    (b : ι × Bool) :
+    (∀ y : Sphere 2, (TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj).coreBoundarySphere b y ∈
+      (CutCapTopology.ofBufferedFiniteCaps hL hδ hδ1 f hf hdisj R hnontrivial).retainedCore) ↔
+      cuttingSphereComponent hδ f hf hdisj b ∈ R := by
+  constructor
+  · intro hb
+    have hh := hb spherePoint
+    rw [CutCapTopology.ofBufferedFiniteCaps_retainedCore] at hh
+    change bufferedCutCoreHomeomorph hδ hδ1 f hf hdisj
+      ((TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj).coreBoundarySphere b spherePoint) ∈
+      DifferentialGeometry.Topology.ThreeManifold.Surgery.retainedCore f R at hh
+    erw [bufferedCutCoreHomeomorph_boundary hδ hδ1 f hf hdisj b spherePoint] at hh
+    exact (cuttingSphere_mem_retainedCore_iff hδ f hf hdisj R b spherePoint).mp hh
+  · intro hb y
+    rw [CutCapTopology.ofBufferedFiniteCaps_retainedCore]
+    change bufferedCutCoreHomeomorph hδ hδ1 f hf hdisj
+      ((TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj).coreBoundarySphere b y) ∈
+      DifferentialGeometry.Topology.ThreeManifold.Surgery.retainedCore f R
+    erw [bufferedCutCoreHomeomorph_boundary hδ hδ1 f hf hdisj b y]
+    exact (cuttingSphere_mem_retainedCore_iff hδ f hf hdisj R b y).mpr hb
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

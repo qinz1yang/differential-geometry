@@ -120,21 +120,9 @@ theorem exists_presentedStaticCap_neck_heq_of_finiteMetricEvent (hD : 0 < D) :
   have hretainedBoundary (b : ι × Bool) :
       (∀ y, (T).coreBoundarySphere b y ∈
         (CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R
-          hnontrivial).retainedCore) ↔ cuttingSphereComponent hδ f hf hdisj b ∈ R := by
-    constructor
-    · intro hb
-      have hh := hb spherePoint
-      rw [CutCapTopology.ofBufferedFiniteCaps_retainedCore] at hh
-      change bufferedCutCoreHomeomorph hδ hδ1 f hf hdisj
-        ((T).coreBoundarySphere b spherePoint) ∈ retainedCore f R at hh
-      erw [bufferedCutCoreHomeomorph_boundary hδ hδ1 f hf hdisj b spherePoint] at hh
-      exact (cuttingSphere_mem_retainedCore_iff hδ f hf hdisj R b spherePoint).mp hh
-    · intro hb y
-      rw [CutCapTopology.ofBufferedFiniteCaps_retainedCore]
-      change bufferedCutCoreHomeomorph hδ hδ1 f hf hdisj
-        ((T).coreBoundarySphere b y) ∈ retainedCore f R
-      erw [bufferedCutCoreHomeomorph_boundary hδ hδ1 f hf hdisj b y]
-      exact (cuttingSphere_mem_retainedCore_iff hδ f hf hdisj R b y).mpr hb
+          hnontrivial).retainedCore) ↔ cuttingSphereComponent hδ f hf hdisj b ∈ R :=
+    CutCapTopology.ofBufferedFiniteCaps_retainedBoundary_iff transitionEnd_pos hδ hδ1
+      f hf hdisj R hnontrivial b
   let e := Equiv.subtypeEquivRight hretainedBoundary
   refine ⟨e, (fun _ => HEq.rfl), ?_⟩
   intro b

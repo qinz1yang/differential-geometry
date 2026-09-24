@@ -554,3 +554,98 @@ theorem exists_scalar_bound_of_normalizedDatum_slices
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
 
 end
+
+noncomputable section
+open Set Function Manifold
+open DifferentialGeometry.Geometry.Neck DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Topology.ThreeManifold.Surgery
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
+
+universe u v
+
+variable {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ)
+
+private theorem core_subset_cutCore_of_central_horn_matching
+    {ι : Type v} (δ : ι → ℝ)
+    (e : ι → P.HornCutIndex) (a : ι → ℝ) (ha : ∀ j, 1 ≤ a j)
+    (f : ∀ j, bufferedCylinder (δ j) → D.stage.Carrier)
+    (ν : ι → Sphere 2 → Sphere 2)
+    (hmatch : ∀ j q, q ∈ centralDomain (δ j) →
+      f j q = (P.horn (e j).1.val (e j).2 (ν j q.val.1, a j - q.val.2)).val)
+    (c : ConnectedComponents D.slab.terminalRegularOpen) (hc : c ∈ P.component) :
+    (Subtype.val : D.slab.terminalRegularOpen → D.stage.Carrier) '' P.core c ⊆
+      cutCore f := by
+  rintro y ⟨y, hy, rfl⟩ hcut
+  obtain ⟨j, q, hq, hqy⟩ := mem_iUnion.mp hcut
+  have hpos : 0 < a j - q.val.2 := by
+    change -1 < q.val.2 ∧ q.val.2 < 1 at hq
+    linarith [ha j, hq.2]
+  have hpoint : P.horn (e j).1.val (e j).2 (ν j q.val.1, a j - q.val.2) = y :=
+    Subtype.ext ((hmatch j q hq).symm.trans hqy)
+  have hec : (e j).1.val = c := by
+    have hcomp := P.horn_mem_component (e j).1.val (e j).1.property (e j).2
+      (ν j q.val.1) hpos.le
+    rw [hpoint] at hcomp
+    exact hcomp.symm.trans (P.core_subset_component c hc hy)
+  have hy' : y ∈ P.core (e j).1.val := hec.symm ▸ hy
+  exact P.horn_pos_notMem_core (e j).1.val (e j).2 (ν j q.val.1) hpos
+    (hpoint.symm ▸ hy')
+
+theorem low_mem_interior_cutCore_of_central_horn_matching
+    {ι : Type v} (δ : ι → ℝ)
+    (e : ι → P.HornCutIndex) (a : ι → ℝ) (ha : ∀ j, 1 ≤ a j)
+    (f : ∀ j, bufferedCylinder (δ j) → D.stage.Carrier)
+    (ν : ι → Sphere 2 → Sphere 2)
+    (hmatch : ∀ j q, q ∈ centralDomain (δ j) →
+      f j q = (P.horn (e j).1.val (e j).2 (ν j q.val.1, a j - q.val.2)).val)
+    (x : D.slab.terminalRegularOpen)
+    (hx : metricScalarAt D.terminal.metric x ≤ (P.coreRadius ^ 2)⁻¹) :
+    x.val ∈ interior (cutCore f) := by
+  let c := ConnectedComponents.mk x
+  have hc : c ∈ P.component := (P.component_iff_meets_low c).mpr ⟨x, rfl, hx⟩
+  have hcore := P.core_subset_cutCore_of_central_horn_matching δ e a ha f ν hmatch c hc
+  apply interior_mono hcore
+  exact D.slab.terminalRegularOpen.isOpen.isOpenMap_subtype_val.image_interior_subset
+    (P.core c) ⟨x, P.low_mem_interior_core c hc x rfl hx, rfl⟩
+
+theorem retainedCore_protected_of_central_horn_matching
+    {ι : Type v} (δ : ι → ℝ)
+    (e : ι → P.HornCutIndex) (a : ι → ℝ) (ha : ∀ j, 1 ≤ a j)
+    (f : ∀ j, bufferedCylinder (δ j) → D.stage.Carrier)
+    (ν : ι → Sphere 2 → Sphere 2)
+    (hmatch : ∀ j q, q ∈ centralDomain (δ j) →
+      f j q = (P.horn (e j).1.val (e j).2 (ν j q.val.1, a j - q.val.2)).val)
+    (x : D.slab.terminalRegularOpen)
+    (hx : metricScalarAt D.terminal.metric x ≤ (P.coreRadius ^ 2)⁻¹) :
+    x.val ∈ interior ((Subtype.val : cutCore f → D.stage.Carrier) ''
+      retainedCore f (scalarSublevelComponents D.slab.terminalRegularOpen D.terminal.metric f
+        (P.coreRadius ^ 2)⁻¹)) := by
+  let c := ConnectedComponents.mk x
+  have hc : c ∈ P.component := (P.component_iff_meets_low c).mpr ⟨x, rfl, hx⟩
+  have hxcore := P.low_mem_interior_core c hc x rfl hx
+  have hcore := P.core_subset_cutCore_of_central_horn_matching δ e a ha f ν hmatch c hc
+  let F : P.core c → cutCore f := fun z => ⟨z.val.val, hcore ⟨z.val, z.property, rfl⟩⟩
+  have hF : Continuous F := (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _
+  let p : P.core c := ⟨x, interior_subset hxcore⟩
+  let : PreconnectedSpace (P.core c) :=
+    isPreconnected_iff_preconnectedSpace.mp (P.core_isConnected c hc).isPreconnected
+  have heq (z : P.core c) : ConnectedComponents.mk (F p) = ConnectedComponents.mk (F z) := by
+    apply ConnectedComponents.coe_eq_coe'.mpr
+    exact (isPreconnected_univ.image F hF.continuousOn).subset_connectedComponent
+      ⟨z, mem_univ _, rfl⟩ ⟨p, mem_univ _, rfl⟩
+  have hret : (Subtype.val : D.slab.terminalRegularOpen → D.stage.Carrier) '' P.core c ⊆
+      (Subtype.val : cutCore f → D.stage.Carrier) ''
+        retainedCore f (scalarSublevelComponents D.slab.terminalRegularOpen D.terminal.metric f
+          (P.coreRadius ^ 2)⁻¹) := by
+    rintro y ⟨y, hy, rfl⟩
+    refine ⟨F ⟨y, hy⟩, ?_, rfl⟩
+    exact ⟨x, hx, (F p).property, heq ⟨y, hy⟩⟩
+  apply interior_mono hret
+  exact D.slab.terminalRegularOpen.isOpen.isOpenMap_subtype_val.image_interior_subset
+    (P.core c) ⟨x, hxcore, rfl⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation
+
+end
