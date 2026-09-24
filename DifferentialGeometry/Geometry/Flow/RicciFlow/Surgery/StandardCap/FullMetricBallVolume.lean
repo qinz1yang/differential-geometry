@@ -688,6 +688,94 @@ theorem exists_uniform_finiteFullPreparedMetric_ball_volume_lower_or_retained_ba
   · exact Or.inr hold
 
 
+theorem exists_uniform_finiteFullPreparedMetric_small_ball_volume_lower_or_retained_neighborhood :
+    ∃ ν : ℝ, 0 < ν ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E],
+      ∀ [Fact (Module.finrank ℝ E = 3)] [TopologicalSpace H] (I : ModelWithCorners ℝ E H) [I.Boundaryless],
+      ∀ [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M],
+      ∀ {ι : Type*} [Finite ι] {precision : ι → ℝ},
+      ∀ (hδ : ∀ i, 0 < precision i) (f : ∀ i : ι, bufferedCylinder (precision i) → M),
+      ∀ (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i)),
+      ∀ (hdisj : Pairwise (fun i j => Disjoint (range (f i)) (range (f j)))),
+      ∀ (hs : ∀ i, IsLocalDiffeomorph CurvGIC I ∞ (f i)),
+      ∀ (U : Opens M) (g : SmoothRiemannianMetric I U),
+      ∀ (R : Set (ConnectedComponents (cutCore f))),
+      ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R) U),
+      ∀ (c : ℝ) (hc : 4 ≤ c),
+      ∀ (x₀ : ι → U) (order : ι → ℕ),
+      ∀ (d₀ : ∀ i, normalizedDatum g (x₀ i) (precision i) (order i)),
+      ∀ (hOriginal : ∀ i, f i = neckAmbientMap U (d₀ i)),
+      ∀ {k' : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R} → ℕ},
+      ∀ (hrec : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (c * precision b.val.1)⁻¹ + 1 ≤ (precision b.val.1)⁻¹),
+      ∀ (d : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, normalizedDatum g
+    ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b)),
+      ∀ (hmap : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).map = (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b)),
+      ∀ (hside : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).retainedSide = true),
+      ∀ {A D ε : ℝ} {hA : 0 < A} {m : ℕ},
+      ∀ (w : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, CanonicalStaticInsertionWitness (d b) A hA D m ε),
+      ε ≤ 1 / 2 → transitionEnd + 2 < D →
+      let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+      let Qcap := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+      let : ChartedSpace CurvGE3 Qcap := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+      let : IsManifold (𝓡 3) ∞ Qcap := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+      let : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+      let : SigmaCompactSpace Qcap := finiteCapQuotient_sigmaCompactSpace transitionEnd_pos hδ f hf hdisj
+      let : SigmaCompactSpace (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) := isSigmaCompact_iff_sigmaCompactSpace.mp
+        (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) (finiteCapRetained transitionEnd_pos hδ f hf hdisj R).isOpen)
+      let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+      ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ q : finiteCapRetained transitionEnd_pos hδ f hf hdisj R,
+        (∀ r : ℝ, 0 < r → r ≤ r₀ → ENNReal.ofReal ν * ENNReal.ofReal r ^ 3 ≤
+          riemannianVolumeMeasure (𝓡 3) (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) gRet
+            (riemannianBallOf gRet q r)) ∨
+          riemannianBallOf gRet q (2 * r₀) ⊆
+            interior (range (finiteRetainedCoreInclusion transitionEnd_pos hδ f hf hdisj R)) := by
+  obtain ⟨δ₀, hδ₀, hcover⟩ := exists_uniform_finiteFullPreparedMetric_window_or_retained_ball
+  obtain ⟨ν, hν, hvolume⟩ := exists_uniform_finiteFullPreparedMetric_window_ball_volume_lower_unscaled
+    (transitionEnd + 1)
+  let δ := min (δ₀ / 2) 1
+  have hδpos : 0 < δ := lt_min (half_pos hδ₀) zero_lt_one
+  refine ⟨ν, hν, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ _ ι _ precision hδ f hf hdisj hs U g R hRet
+    c hc x₀ order d₀ hOriginal k' hrec d hmap hside A D ε hA m w heps hD
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let Qcap := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+  let : ChartedSpace CurvGE3 Qcap := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+  let : IsManifold (𝓡 3) ∞ Qcap := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : SigmaCompactSpace Qcap := finiteCapQuotient_sigmaCompactSpace transitionEnd_pos hδ f hf hdisj
+  let : SigmaCompactSpace (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) (finiteCapRetained transitionEnd_pos hδ f hf hdisj R).isOpen)
+  dsimp only
+  let scales : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R} → ℝ :=
+    fun b => Real.sqrt (metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)))
+  obtain ⟨C, hC⟩ := (Set.finite_range scales).bddAbove
+  have hCpos : 0 < max C 1 := zero_lt_one.trans_le (le_max_right C 1)
+  let r₀ := δ / max C 1
+  have hr₀ : 0 < r₀ := div_pos hδpos hCpos
+  have hscale (b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}) :
+      scales b * r₀ ≤ δ := by
+    have hb : scales b ≤ max C 1 := (hC ⟨b, rfl⟩).trans (le_max_left C 1)
+    have hmul : max C 1 * r₀ = δ := by dsimp only [r₀]; field_simp
+    exact (mul_le_mul_of_nonneg_right hb hr₀.le).trans hmul.le
+  have hscale2 (b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}) :
+      scales b * (2 * r₀) ≤ δ₀ := by
+    have h := (hscale b).trans (min_le_left (δ₀ / 2) 1)
+    nlinarith
+  refine ⟨r₀, hr₀, ?_⟩
+  intro q
+  rcases hcover I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+      heps (by linarith) q (2 * r₀) hscale2 with ⟨b, x, hx, hxq⟩ | hbuffer
+  · left
+    intro r hr hrr
+    have hscale1 : scales b * r ≤ 1 :=
+      ((mul_le_mul_of_nonneg_left hrr (Real.sqrt_nonneg _)).trans (hscale b)).trans
+        (min_le_right (δ₀ / 2) 1)
+    rw [← hxq]
+    exact hvolume I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal
+      hrec d hmap hside w b heps x hx r hr hscale1 (by linarith)
+  · exact Or.inr hbuffer
+
+
 theorem exists_uniform_finiteFullPreparedMetric_small_ball_volume_lower_or_retained_ball :
     ∃ ν : ℝ, 0 < ν ∧
       ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E],
@@ -730,8 +818,7 @@ theorem exists_uniform_finiteFullPreparedMetric_small_ball_volume_lower_or_retai
             (riemannianBallOf gRet q r)) ∨
           riemannianBallOf gRet q (2 * r) ⊆
             interior (range (finiteRetainedCoreInclusion transitionEnd_pos hδ f hf hdisj R)) := by
-  obtain ⟨δ, ν, hδpos, hν, hbound⟩ :=
-    exists_uniform_finiteFullPreparedMetric_ball_volume_lower_or_retained_ball
+  obtain ⟨ν, hν, hbound⟩ := exists_uniform_finiteFullPreparedMetric_small_ball_volume_lower_or_retained_neighborhood
   refine ⟨ν, hν, ?_⟩
   intro E H M _ _ _ _ _ I _ _ _ _ _ _ ι _ precision hδ f hf hdisj hs U g R hRet
     c hc x₀ order d₀ hOriginal k' hrec d hmap hside A D ε hA m w heps hD
@@ -744,20 +831,14 @@ theorem exists_uniform_finiteFullPreparedMetric_small_ball_volume_lower_or_retai
   let : SigmaCompactSpace (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) := isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) (finiteCapRetained transitionEnd_pos hδ f hf hdisj R).isOpen)
   dsimp only
-  let a : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R} → ℝ :=
-    fun b => Real.sqrt (metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)))
-  obtain ⟨C, hC⟩ := (Set.finite_range a).bddAbove
-  have hCpos : 0 < max C 1 := zero_lt_one.trans_le (le_max_right C 1)
-  refine ⟨δ / max C 1, div_pos hδpos hCpos, ?_⟩
+  obtain ⟨r₀, hr₀, hballs⟩ := hbound I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal
+    hrec d hmap hside w heps hD
+  refine ⟨r₀, hr₀, ?_⟩
   intro q r hr hrr
-  apply hbound I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
-    heps hD q r hr
-  intro b
-  have hb : a b ≤ max C 1 := (hC ⟨b, rfl⟩).trans (le_max_left C 1)
-  have hmul : max C 1 * r ≤ δ := by
-    have h := (le_div_iff₀ hCpos).mp hrr
-    rwa [mul_comm] at h
-  exact (mul_le_mul_of_nonneg_right hb hr.le).trans hmul
+  rcases hballs q with hvolume | hbuffer
+  · exact Or.inl (hvolume r hr hrr)
+  · exact Or.inr ((riemannianBallOf_mono _ _ (mul_le_mul_of_nonneg_left hrr (by norm_num))).trans hbuffer)
+
 
 end
 

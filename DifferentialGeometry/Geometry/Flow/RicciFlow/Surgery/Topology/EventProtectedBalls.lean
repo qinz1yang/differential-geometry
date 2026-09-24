@@ -346,4 +346,52 @@ theorem exists_terminal_ball_volume_eq_of_output_buffer
   intro r hr hrR
   exact E.riemannianVolumeMeasure_ball_eq_of_regularCrossing_of_output_buffer p q hp hr hrR hprotected
 
+
+
+theorem isCompact_terminal_closedBall_of_regularCrossing_of_output_buffer
+    (p : E.incoming.terminalRegularOpen) (q : Q.Carrier)
+    (hcross : E.RegularCrossing p.val q) {R r : ℝ} (hr : 0 ≤ r) (hrR : r < R)
+    (hprotected : riemannianClosedBallOf E.outputMetric q R ⊆ interior (range E.oldOutput)) :
+    IsCompact (riemannianClosedBallOf E.terminal.metric p r) := by
+  obtain ⟨F, hsource, hp, hpq, hq, hFcross, hmetric⟩ :=
+    hcross.exists_survivor_partialDiffeomorph E
+  have htarget := output_regularCrossing_ball_subset_target E q F hsource hFcross
+    (fun y hy => E.exists_terminal_regularCrossing_of_mem_interior_oldOutput y (hprotected hy))
+  have hcpt : IsCompact (riemannianClosedBallOf E.outputMetric q R) :=
+    (isClosed_le (continuous_riemannianEDist E.outputMetric q) continuous_const).isCompact
+  have hinverse (y : Q.Carrier) (hy : y ∈ F.target) (v w : TangentSpace ThreeModel y) :
+      E.outputMetric.inner y v w = E.terminal.metric.inner (F.symm y)
+        (mfderiv ThreeModel ThreeModel F.symm y v) (mfderiv ThreeModel ThreeModel F.symm y w) :=
+    DifferentialGeometry.PartialDiffeomorph.inner_symm_of_partialDiffeomorph_inner
+      E.terminal.metric E.outputMetric F (fun x hx v w => (hmetric x hx v w).symm) hy v w
+  have hcenter : F.symm q = p := by
+    rw [← hpq]
+    exact F.left_inv' hp
+  have hclosed : (F.symm : Q.Carrier → E.incoming.terminalRegularOpen) ''
+      riemannianClosedBallOf E.outputMetric q r = riemannianClosedBallOf E.terminal.metric p r := by
+    rw [← hcenter]
+    exact DifferentialGeometry.PartialDiffeomorph.image_riemannianClosedBall_eq_of_isometric_on_compact_ball
+      E.outputMetric E.terminal.metric F.symm q hr hrR hcpt htarget
+      (fun y hy v => (hinverse y (htarget hy) v v).symm)
+  rw [← hclosed]
+  have hsmall : IsCompact (riemannianClosedBallOf E.outputMetric q r) :=
+    (isClosed_le (continuous_riemannianEDist E.outputMetric q) continuous_const).isCompact
+  apply hsmall.image_of_continuousOn
+  apply F.symm.contMDiffOn_toFun.continuousOn.mono
+  exact (riemannianClosedBallOf_mono E.outputMetric q hrR.le).trans htarget
+
+theorem exists_terminal_ball_compact_volume_eq_of_output_buffer
+    (q : Q.Carrier) {R : ℝ}
+    (hprotected : riemannianClosedBallOf E.outputMetric q R ⊆ interior (range E.oldOutput)) :
+    ∃ p : E.incoming.terminalRegularOpen, E.RegularCrossing p.val q ∧
+      (∀ r : ℝ, 0 ≤ r → r < R → IsCompact (riemannianClosedBallOf E.terminal.metric p r)) ∧
+      ∀ r : ℝ, 0 < r → r < R →
+        riemannianVolumeMeasure ThreeModel Q.Carrier E.outputMetric
+          (riemannianBallOf E.outputMetric q r) =
+        riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen E.terminal.metric
+          (riemannianBallOf E.terminal.metric p r) := by
+  obtain ⟨p, hp, hvolume⟩ := E.exists_terminal_ball_volume_eq_of_output_buffer q hprotected
+  exact ⟨p, hp, (fun r hr hrR =>
+    E.isCompact_terminal_closedBall_of_regularCrossing_of_output_buffer p q hp hr hrR hprotected), hvolume⟩
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
