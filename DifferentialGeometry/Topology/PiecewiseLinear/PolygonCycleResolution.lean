@@ -136,7 +136,7 @@ private theorem exists_polygon_of_annular_compact_support {S U C K : Set E3}
     rw [hbot] at haW
     exact (haz haW).elim
 
-theorem exists_disjoint_oriented_polygons_of_cycle {S U : Set E3}
+theorem exists_disjoint_oriented_polygons_of_nonzero_cycle {S U : Set E3}
     (hS : IsCombinatorialSolidTorus S) (hU : IsOpen U)
     (hTS : frontier S ∩ U ⊆ S) (c : integralSingularCycles 0 (frontier S ∩ U : Set E3))
     (hcnz : firstHomologyInclusion hTS (integralOneCycleClass c) ≠ 0) :

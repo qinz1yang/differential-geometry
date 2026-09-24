@@ -67,7 +67,7 @@ private theorem carriesFirstHomologyOnto_frontier_inter_of_cutting {S A P Q : Se
   have hPA : P ⊆ A \ S := fun x hx =>
     ⟨hP.1 hx, fun hxS => Set.disjoint_left.mp hPS hx hxS⟩
   obtain ⟨v, hv, hvc, e, he, hev⟩ :=
-    SpineCarrier.exists_frontier_cycle_of_boundary_in_open hS hA q p b
+    SpineCarrier.exists_frontier_cycle_of_homologous_cycles hS hA q p b
     (integralSingularChainsIn_mono 1 hQA hq) hqc
     (integralSingularChainsIn_mono 1 hPA hp) hpc hb hbp
   refine ⟨v, hv, hvc, d + e, Submodule.add_mem _ hd he, ?_⟩
@@ -103,7 +103,7 @@ private theorem exists_polygon_carrier_of_firstHomology {S U : Set E3}
     have hh := congrArg e hz
     simp at hh
   obtain ⟨n, G, hG, hGU, cG, m, hdisj, _horient, hsum⟩ :=
-    SpineCarrier.exists_disjoint_oriented_polygons_of_cycle hS hU hcarry.1 c hcnz
+    SpineCarrier.exists_disjoint_oriented_polygons_of_nonzero_cycle hS hU hcarry.1 c hcnz
   change spineCarrierHomologyInclusion hcarry.1 (integralOneCycleClass c) =
     ∑ j, m j • spineCarrierHomologyInclusion ((hGU j).trans hcarry.1)
       (integralOneCycleClass (cG j)) at hsum

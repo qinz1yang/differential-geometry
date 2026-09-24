@@ -12607,3 +12607,23 @@ Imported commits:
 - Private evidence: Item20_AllReceipts.txt, Item20_VerifiedModules.json,
   Item20_FrozenStatementChecks.json, both PR scan reports, three audit receipts,
   Item20_Wiring.receipt.json and Item20_LedgerChange.json. No foreign source was changed.
+
+# Codex item 19
+
+## Step 3: resume under owner LF-normalization ruling (2026-09-24)
+
+- Owner ruled that frozen byte comparison is performed after LF normalization. Both
+  leaf declarations pass exactly, without needing the optional hG -> _hG exception.
+- Forty sources pass forbidden-token, documentation, line-length and Skeleton-import
+  checks. Sixty public declarations were enumerated. Five additional collisions with
+  old Skeleton reduction probes were renamed only in the PR-owned files:
+  - `exists_frontier_cycle_of_boundary_in_open` -> `exists_frontier_cycle_of_homologous_cycles`.
+  - `surjective_firstHomologyInclusion_complement_of_null_meridian` -> `surjective_firstHomologyInclusion_of_nullhomotopic_meridian`.
+  - `subsingleton_firstHomology_complement_of_isPLBall` -> `subsingleton_firstHomology_complement_of_isPLDisk`.
+  - `exists_integer_linking_equiv_of_isPLSphere` -> `nonempty_firstHomology_complement_addEquiv_int`.
+  - `exists_disjoint_oriented_polygons_of_cycle` -> `exists_disjoint_oriented_polygons_of_nonzero_cycle`.
+- The two frozen headline duplicates remain permitted until promotion. No Skeleton
+  reduction probe was changed or imported. The other lane SurfaceDiskNeighborhood
+  remains byte-identical to its original backup; PR imports still use the S31 module.
+- Details and affected files: private PR19_Renames.json; statement evidence in
+  PR19_StatementCheck_LF.json. Step4 verification follows this source-only checkpoint.

@@ -201,7 +201,7 @@ private theorem surjective_meridian_of_homology_data {S G E : Set E3}
           (firstHomologyInclusion hIP i) := (firstHomologyInclusion_comp _ _ _).symm
     _ = a := by rw [hip]; exact hpq
 
-theorem surjective_firstHomologyInclusion_complement_of_null_meridian
+theorem surjective_firstHomologyInclusion_of_nullhomotopic_meridian
     {S G : Set (EuclideanSpace ℝ (Fin 3))}
     (hS : IsCombinatorialSolidTorus S) (hG : IsPLSphere 1 G)
     (hGS : G ⊆ frontier S) (hIG : interior S ⊆ Gᶜ)

@@ -141,7 +141,7 @@ private theorem nonempty_firstHomology_frontier_equiv_int_prod {S : Set E3}
 
 namespace TorusLinking
 
-theorem exists_integer_linking_equiv_of_isPLSphere
+theorem nonempty_firstHomology_complement_addEquiv_int
     {G : Set (EuclideanSpace ℝ (Fin 3))} (hG : IsPLSphere 1 G) :
     Nonempty (integralSingularHomology 1 (Gᶜ : Set (EuclideanSpace ℝ (Fin 3))) ≃+ ℤ) := by
   obtain ⟨N, hN, hNc, hGN, ⟨e⟩⟩ := exists_circle_neighborhood_product hG

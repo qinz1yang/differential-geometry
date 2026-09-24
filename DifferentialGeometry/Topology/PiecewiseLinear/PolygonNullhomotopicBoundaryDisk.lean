@@ -64,16 +64,16 @@ private theorem not_isPreconnected_of_disjoint_disk_firstHomology_carrier
     rw [diskExclusionInclusion_comp]
     exact hz
   have hIC : Function.Surjective (diskExclusionInclusion hIG) :=
-    TorusLinking.surjective_firstHomologyInclusion_complement_of_null_meridian
+    TorusLinking.surjective_firstHomologyInclusion_of_nullhomotopic_meridian
       hS hG hGS hIG hnonsep htriv
-  obtain ⟨ℓ⟩ := TorusLinking.exists_integer_linking_equiv_of_isPLSphere hG
+  obtain ⟨ℓ⟩ := TorusLinking.nonempty_firstHomology_complement_addEquiv_int hG
   obtain ⟨a, ha⟩ := hIC (ℓ.symm 1)
   obtain ⟨z, hz⟩ := hZI a
   have hzero : diskExclusionInclusion (hZS.trans hIG) z = 0 := by
     change diskExclusionInclusion (hZD.trans hDG) z = 0
     rw [← diskExclusionInclusion_comp hZD hDG]
     have hD : diskExclusionInclusion hZD z = 0 :=
-      (TorusLinking.subsingleton_firstHomology_complement_of_isPLBall hΔ).elim _ _
+      (TorusLinking.subsingleton_firstHomology_complement_of_isPLDisk hΔ).elim _ _
     rw [hD, map_zero]
   have hvalue : diskExclusionInclusion (hZS.trans hIG) z = ℓ.symm 1 := by
     rw [← diskExclusionInclusion_comp hZS hIG, hz, ha]

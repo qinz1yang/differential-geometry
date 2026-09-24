@@ -72,7 +72,7 @@ theorem IsPLBall.subsingleton_integralFirstHomology_complement
 
 namespace TorusLinking
 
-theorem subsingleton_firstHomology_complement_of_isPLBall
+theorem subsingleton_firstHomology_complement_of_isPLDisk
     {Δ : Set (EuclideanSpace ℝ (Fin 3))} (hΔ : IsPLBall 2 Δ) :
     Subsingleton (integralSingularHomology 1 (Δᶜ : Set (EuclideanSpace ℝ (Fin 3)))) := by
   apply subsingleton_integralSingularHomology_of_compact_carriers 0

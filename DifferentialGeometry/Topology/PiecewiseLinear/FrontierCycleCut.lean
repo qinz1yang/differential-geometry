@@ -175,7 +175,7 @@ namespace SpineCarrier
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem exists_frontier_cycle_of_boundary_in_open {S A : Set E3}
+theorem exists_frontier_cycle_of_homologous_cycles {S A : Set E3}
     (hS : IsCombinatorialSolidTorus S) (hA : IsOpen A)
     (z w : (integralSingularChains E3).X 1) (b : (integralSingularChains E3).X 2)
     (hz : z ∈ integralSingularChainsIn 1 (A ∩ interior S))
