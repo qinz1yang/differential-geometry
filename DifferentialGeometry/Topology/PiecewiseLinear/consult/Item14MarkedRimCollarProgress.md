@@ -28,3 +28,5 @@ The unmodified aggregate build is running separately; no aggregate success is cl
 - Standard model: the box axis has a genuine bridge disk and exact endpoint/interior affine charts. `exists_isBridgeDisk_prism_axis` produces a full Euclidean three-ball prism and its marked bridge without hypotheses.
 
 - Actual compatible collar: `IsBridgeDisk.exists_boundary_collar` now derives a jointly PL collar on frontier C × [0,2] from the bridge certificate and the PL ball. It includes the collar-neighborhood property, exact bridge intersection, and endpoint fibers lying in the original arc. Local charts come from actual links; finite germ restrictions avoid false closed-star intersection identities.
+
+- Ribbon geometry: a disk meeting the ambient boundary in a boundary arc is a bridge for the closure of its complementary intrinsic boundary. Positive collar ribbons specialize this producer.
