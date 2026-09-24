@@ -465,3 +465,157 @@ theorem GeometricCutoffRecord.appendEvent_static_heq
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 end
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private theorem CutoffFields.transport_delta_heq
+    {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' : ℝ}
+    {E : MetricCutCapEvent P Q a s} {E' : MetricCutCapEvent P' Q' a' s'}
+    (hP : P' = P) (hQ : Q' = Q) (ha : a' = a) (hs : s' = s) (hE : HEq E' E)
+    {F : {δ : ℝ} → {k : ℕ} → NormalizedNeck E.terminal.metric δ k → ℝ → Type u}
+    {F' : {δ : ℝ} → {k : ℕ} → NormalizedNeck E'.terminal.metric δ k → ℝ → Type u}
+    (hF : ∀ {δ r : ℝ} {k : ℕ}
+      {N : NormalizedNeck E.terminal.metric δ k} {N' : NormalizedNeck E'.terminal.metric δ k},
+      HEq N' N → F N r → F' N' r)
+    {p : CutoffParameters} (R : CutoffFields E F p) :
+    HEq (CutoffFields.transport (F := F) (F' := F') hP hQ ha hs hE hF R).delta R.delta := by
+  cases hP
+  cases hQ
+  cases ha
+  cases hs
+  cases eq_of_heq hE
+  rfl
+
+theorem GeometricCutoffRecord.appendEvent_delta_heq
+    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    {i : Fin H.eventCount} {p : CutoffParameters}
+    (R : GeometricCutoffRecord H.toHistory i p) :
+    HEq (GeometricCutoffRecord.appendEvent hs E hinit R).delta R.delta := by
+  exact CutoffFields.transport_delta_heq _ _ _ _ _ _ _
+
+private theorem CutoffFields.transport_order_heq
+    {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' : ℝ}
+    {E : MetricCutCapEvent P Q a s} {E' : MetricCutCapEvent P' Q' a' s'}
+    (hP : P' = P) (hQ : Q' = Q) (ha : a' = a) (hs : s' = s) (hE : HEq E' E)
+    {F : {δ : ℝ} → {k : ℕ} → NormalizedNeck E.terminal.metric δ k → ℝ → Type u}
+    {F' : {δ : ℝ} → {k : ℕ} → NormalizedNeck E'.terminal.metric δ k → ℝ → Type u}
+    (hF : ∀ {δ r : ℝ} {k : ℕ}
+      {N : NormalizedNeck E.terminal.metric δ k} {N' : NormalizedNeck E'.terminal.metric δ k},
+      HEq N' N → F N r → F' N' r)
+    {p : CutoffParameters} (R : CutoffFields E F p) :
+    HEq (CutoffFields.transport (F := F) (F' := F') hP hQ ha hs hE hF R).order R.order := by
+  cases hP
+  cases hQ
+  cases ha
+  cases hs
+  cases eq_of_heq hE
+  rfl
+
+theorem GeometricCutoffRecord.appendEvent_order_heq
+    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    {i : Fin H.eventCount} {p : CutoffParameters}
+    (R : GeometricCutoffRecord H.toHistory i p) :
+    HEq (GeometricCutoffRecord.appendEvent hs E hinit R).order R.order := by
+  exact CutoffFields.transport_order_heq _ _ _ _ _ _ _
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+
+theorem RetainedCoreHistory.exists_cutoff_records_at_appendEvent
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    {p q : CutoffParameters}
+    (old : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p)
+    (new : GeometricCutoffRecord (H.appendEvent hs E hinit).toHistory
+      (Fin.last H.eventCount) q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    ∃ R : ∀ i : Fin (H.appendEvent hs E hinit).eventCount,
+        GeometricCutoffRecord (H.appendEvent hs E hinit).toHistory i (p.spliceAt q s),
+      (∀ i : Fin H.eventCount, HEq (R i.castSucc).static (old i).static) ∧
+      (∀ i : Fin H.eventCount, HEq (R i.castSucc).neck (old i).neck) ∧
+      HEq (R (Fin.last H.eventCount)).static new.static ∧
+      HEq (R (Fin.last H.eventCount)).neck new.neck ∧
+      (∀ i : Fin H.eventCount, HEq (R i.castSucc).delta (old i).delta) ∧
+      (∀ i : Fin H.eventCount, HEq (R i.castSucc).order (old i).order) ∧
+      HEq (R (Fin.last H.eventCount)).delta new.delta ∧
+      HEq (R (Fin.last H.eventCount)).order new.order := by
+  let K := H.appendEvent hs E hinit
+  have htime : K.toHistory.time (Fin.last H.eventCount).succ = s :=
+    H.appendEvent_time_last hs E hinit
+  let hnew := new.spliceParametersAt hfixed hradius horder haccuracy hrecenter
+  have hnewstatic := new.spliceParametersAt_static_heq hfixed hradius horder haccuracy hrecenter
+  have hnewneck := new.spliceParametersAt_neck_heq hfixed hradius horder haccuracy hrecenter
+  have hnewdelta := heq_of_eq (new.spliceParametersAt_delta hfixed hradius horder haccuracy hrecenter)
+  have hneworder := heq_of_eq (new.spliceParametersAt_order hfixed hradius horder haccuracy hrecenter)
+  have hex : ∃ N : GeometricCutoffRecord K.toHistory (Fin.last H.eventCount) (p.spliceAt q s),
+      HEq N.static new.static ∧ HEq N.neck new.neck ∧ HEq N.delta new.delta ∧ HEq N.order new.order := by
+    have transfer (t u : ℝ) (h : t = u)
+        (N : GeometricCutoffRecord K.toHistory (Fin.last H.eventCount) (p.spliceAt q t))
+        (hstatic : HEq N.static new.static) (hneck : HEq N.neck new.neck)
+        (hdelta : HEq N.delta new.delta) (horder : HEq N.order new.order) :
+        ∃ N' : GeometricCutoffRecord K.toHistory (Fin.last H.eventCount) (p.spliceAt q u),
+          HEq N'.static new.static ∧ HEq N'.neck new.neck ∧ HEq N'.delta new.delta ∧ HEq N'.order new.order := by
+      cases h
+      exact ⟨N, hstatic, hneck, hdelta, horder⟩
+    exact transfer _ _ htime hnew hnewstatic hnewneck hnewdelta hneworder
+  obtain ⟨N, hNstatic, hNneck, hNdelta, hNorder⟩ := hex
+  have hne (i : Fin H.eventCount) : K.toHistory.time i.castSucc.succ ≠ s := by
+    have ht : K.toHistory.time i.castSucc.succ = H.time i.succ :=
+      H.appendEvent_time_castSucc hs E hinit i.succ
+    rw [ht]
+    exact ne_of_lt ((H.time_strictMono.monotone (Fin.le_last i.succ)).trans_lt hs)
+  let Rold (i : Fin H.eventCount) :=
+    ((old i).appendEvent hs E hinit).spliceParametersOfNe (q := q) (hne i)
+  let R : ∀ i : Fin (H.eventCount + 1), GeometricCutoffRecord K.toHistory i (p.spliceAt q s) :=
+    Fin.lastCases N Rold
+  have hRold (i : Fin H.eventCount) : R i.castSucc = Rold i := Fin.lastCases_castSucc i
+  have hRnew : R (Fin.last H.eventCount) = N := Fin.lastCases_last
+  refine ⟨R, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i
+    rw [hRold]
+    exact (((old i).appendEvent hs E hinit).spliceParametersOfNe_static_heq (hne i)).trans
+      ((old i).appendEvent_static_heq hs E hinit)
+  · intro i
+    rw [hRold]
+    exact (((old i).appendEvent hs E hinit).spliceParametersOfNe_neck_heq (hne i)).trans
+      ((old i).appendEvent_neck_heq hs E hinit)
+  · rw [hRnew]
+    exact hNstatic
+  · rw [hRnew]
+    exact hNneck
+  · intro i
+    rw [hRold]
+    exact (heq_of_eq (((old i).appendEvent hs E hinit).spliceParametersOfNe_delta (hne i))).trans
+      ((old i).appendEvent_delta_heq hs E hinit)
+  · intro i
+    rw [hRold]
+    exact (heq_of_eq (((old i).appendEvent hs E hinit).spliceParametersOfNe_order (hne i))).trans
+      ((old i).appendEvent_order_heq hs E hinit)
+  · rw [hRnew]
+    exact hNdelta
+  · rw [hRnew]
+    exact hNorder
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
