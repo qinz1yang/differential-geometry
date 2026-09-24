@@ -5413,6 +5413,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapturedCapClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCutScaleProtection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckIncomingAdapter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingCurvature
