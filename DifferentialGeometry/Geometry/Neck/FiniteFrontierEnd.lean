@@ -769,12 +769,21 @@ private theorem NeckFrontierState.exists_fair_ordinary_tail
     rw [Nat.add_sub_of_le (by omega)]
     exact hn.2
 
-private theorem NeckFrontierState.exists_fair_compressed_process
-    [PreconnectedSpace M] [NoncompactSpace M]
+omit [T2Space M] in
+private theorem NeckFrontierState.exists_fair_compressed_process_of_fair_process
     (S₀ : NeckFrontierState g eps ι)
-    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
-    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
-    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    (process : ℕ → NeckFrontierState g eps ι) (selected : ℕ → ι)
+    (hzero : process 0 = S₀)
+    (hmono : Monotone (fun n => (process n).region))
+    (hanti : Antitone (fun n => (process n).alive))
+    (hselected : ∀ n, selected n ∈ (process n).alive)
+    (hsteps : ∀ n, OrdinaryNeckMoveAt g eps ι (process n) (process (n + 1)) (selected n) ∨
+      ((process (n + 1)).alive ⊂ (process n).alive ∧
+        (process (n + 1)).sphere = (process n).sphere))
+    (N : ℕ) (hne : (process N).alive.Nonempty)
+    (hstable : ∀ n, N ≤ n → (process n).alive = (process N).alive)
+    (hN : ∀ n, N ≤ n → OrdinaryNeckMoveAt g eps ι (process n) (process (n + 1)) (selected n))
+    (hfair : ∀ i ∈ (process N).alive, {n | selected n = i}.Infinite) :
     ∃ (seq : ℕ → NeckFrontierState g eps ι) (label : ℕ → ι),
       Monotone (fun n => (seq n).region) ∧ Antitone (fun n => (seq n).alive) ∧
       S₀.region ⊆ (seq 0).region ∧ (seq 0).sphere = S₀.sphere ∧
@@ -789,8 +798,7 @@ private theorem NeckFrontierState.exists_fair_compressed_process
         (∀ n, N ≤ n → OrdinaryNeckMoveAt g eps ι (seq n) (seq (n + 1)) (label n)) ∧
         ∀ i ∈ (seq N).alive, {n | label n = i}.Infinite := by
   classical
-  obtain ⟨S, selected, hzero, hmono, hanti, hselected, hsteps, N, hne, hstable, hN, hfair⟩ :=
-    NeckFrontierState.exists_fair_process g eps ι S₀ heps hepsstep allNeck
+  let S := process
   let event := fun n => OrdinaryNeckMoveAt g eps ι (S n) (S (n + 1)) (selected n)
   have hinfinite : {n | event n}.Infinite := (Ici_infinite N).mono (fun n hn => hN n hn)
   have hunchanged (n) (hn : ¬event n) : (S (n + 1)).sphere = (S n).sphere :=
@@ -821,7 +829,7 @@ private theorem NeckFrontierState.exists_fair_compressed_process
       (hsucc n).symm, ?_⟩
     intro hn
     exact congrArg S (hconsecutive n hn).symm
-  · exact NeckFrontierState.alive_nonempty g eps ι (S (s k))
+  · exact (hstable (s k) hNk).symm ▸ hne
   · intro n hn
     exact (hstable (s n) (hNk.trans (hsm.monotone hn))).trans (hstable (s k) hNk).symm
   · intro n hn
@@ -830,26 +838,57 @@ private theorem NeckFrontierState.exists_fair_compressed_process
     have hiN : i ∈ (S N).alive := hstable (s k) hNk ▸ hi
     apply Set.infinite_of_forall_exists_gt
     intro a
-    obtain ⟨m, hm, hgt⟩ := (hfair i hiN).exists_gt (s a)
-    have hmevent : event m := by
-      change OrdinaryNeckMoveAt g eps ι (S m) (S (m + 1)) (selected m)
-      rw [hm.2]
-      exact hm.1
+    obtain ⟨m, hm, hgt⟩ := (hfair i hiN).exists_gt (max (s a) N)
+    have hmevent : event m := hN m ((le_max_right _ _).trans hgt.le)
     obtain ⟨b, hb⟩ := (hcover m).mp hmevent
     refine ⟨b, ?_, hsm.lt_iff_lt.mp ?_⟩
     · change selected (s b) = i
       rw [hb]
-      exact hm.2
-    · exact hb.symm ▸ hgt
+      exact hm
+    · exact hb.symm ▸ ((le_max_left _ _).trans_lt hgt)
 
-private theorem NeckFrontierState.exists_original_end_family
+private theorem NeckFrontierState.exists_fair_compressed_process
     [PreconnectedSpace M] [NoncompactSpace M]
     (S₀ : NeckFrontierState g eps ι)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
     (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ (seq : ℕ → NeckFrontierState g eps ι) (label : ℕ → ι),
+      Monotone (fun n => (seq n).region) ∧ Antitone (fun n => (seq n).alive) ∧
+      S₀.region ⊆ (seq 0).region ∧ (seq 0).sphere = S₀.sphere ∧
+      (seq 0).alive ⊆ S₀.alive ∧
+      (∀ n, label n ∈ (seq n).alive) ∧
+      ∃ N, (∀ n, ∃ (T : NeckFrontierState g eps ι),
+        OrdinaryNeckMoveAt g eps ι (seq n) T (label n) ∧
+        T.region ⊆ (seq (n + 1)).region ∧ T.sphere = (seq (n + 1)).sphere ∧
+        (N ≤ n → T = seq (n + 1))) ∧
+      (seq N).alive.Nonempty ∧
+        (∀ n, N ≤ n → (seq n).alive = (seq N).alive) ∧
+        (∀ n, N ≤ n → OrdinaryNeckMoveAt g eps ι (seq n) (seq (n + 1)) (label n)) ∧
+        ∀ i ∈ (seq N).alive, {n | label n = i}.Infinite := by
+  obtain ⟨process, selected, hzero, hmono, hanti, hselected, hsteps, N, hne, hstable, hN, hfair⟩ :=
+    NeckFrontierState.exists_fair_process g eps ι S₀ heps hepsstep allNeck
+  exact NeckFrontierState.exists_fair_compressed_process_of_fair_process g eps ι S₀
+    process selected hzero hmono hanti hselected hsteps N hne hstable hN
+    (fun i hi => (hfair i hi).mono (fun _ hn => hn.2))
+
+private theorem NeckFrontierState.exists_original_end_family_of_fair_process
+    [PreconnectedSpace M]
+    (S₀ : NeckFrontierState g eps ι)
     (hepsrec : eps ≤ 1 / 156000)
     (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
-    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    (process : ℕ → NeckFrontierState g eps ι) (selected : ℕ → ι)
+    (hzero : process 0 = S₀)
+    (hmono : Monotone (fun n => (process n).region))
+    (hanti : Antitone (fun n => (process n).alive))
+    (hselected : ∀ n, selected n ∈ (process n).alive)
+    (hsteps : ∀ n, OrdinaryNeckMoveAt g eps ι (process n) (process (n + 1)) (selected n) ∨
+      ((process (n + 1)).alive ⊂ (process n).alive ∧
+        (process (n + 1)).sphere = (process n).sphere))
+    (N : ℕ) (hne : (process N).alive.Nonempty)
+    (hstable : ∀ n, N ≤ n → (process n).alive = (process N).alive)
+    (hN : ∀ n, N ≤ n → OrdinaryNeckMoveAt g eps ι (process n) (process (n + 1)) (selected n))
+    (hfair : ∀ i ∈ (process N).alive, {n | selected n = i}.Infinite) :
     ∃ S : NeckFrontierState g eps ι, S₀.region ⊆ S.region ∧ S.alive ⊆ S₀.alive ∧
       ∃ Θ : {i // i ∈ S.alive} → Cylinder → M,
         (∀ i, ContMDiffOn IC I3 ∞ (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
@@ -874,7 +913,8 @@ private theorem NeckFrontierState.exists_original_end_family
   classical
   obtain ⟨seq, label, hmono, hanti, hsub, hs0, hbasealive, hlabelalive, N, hsteps, hne,
     halive, hmove, hfair⟩ :=
-    NeckFrontierState.exists_fair_compressed_process g eps ι S₀ heps hepsstep allNeck
+    NeckFrontierState.exists_fair_compressed_process_of_fair_process g eps ι S₀
+      process selected hzero hmono hanti hselected hsteps N hne hstable hN hfair
   choose next hordinary hnextsub hnexteq hnexttail using hsteps
   have hchoice (n) := (hordinary n).2.2
   choose point neck P hsource hrange hlower hupperraw hunchangedraw hinter hfilledraw
@@ -1039,7 +1079,7 @@ private theorem NeckFrontierState.exists_original_end_family
   exact ⟨z, (hbase' z).symm.trans ((hfirst i z 0 (by norm_num)).trans
     ((hlower (select i 0) z).trans hz))⟩
 
-private theorem NeckFrontierState.exists_saved_end_family
+private theorem NeckFrontierState.exists_original_end_family
     [PreconnectedSpace M] [NoncompactSpace M]
     (S₀ : NeckFrontierState g eps ι)
     (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
@@ -1047,6 +1087,50 @@ private theorem NeckFrontierState.exists_saved_end_family
     (hepsrec : eps ≤ 1 / 156000)
     (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
     (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ S : NeckFrontierState g eps ι, S₀.region ⊆ S.region ∧ S.alive ⊆ S₀.alive ∧
+      ∃ Θ : {i // i ∈ S.alive} → Cylinder → M,
+        (∀ i, ContMDiffOn IC I3 ∞ (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          InjOn (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) ∧
+          (let U : TopologicalSpace.Opens Cylinder :=
+            ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+           IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ i z)) ∧
+          Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ S₀.region = range (S₀.sphere i.val).map ∧
+          (∀ z, Θ i (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i.val) z) ∧
+          (∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+            T ≤ t → B < Geometry.Curvature.metricScalarAt g (Θ i (z, t.val))) ∧
+          ∃ (p : M) (nk : SpatialNeck g eps p)
+            (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+            p ∈ range (S₀.sphere i.val).map ∧
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+            (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ i (z, t) = P (z, t)) ∧
+            P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) ∧
+        Pairwise (fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
+          (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) ∧
+        S.region ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
+  obtain ⟨process, selected, hzero, hmono, hanti, hselected, hsteps, N, hne, hstable, hN, hfair⟩ :=
+    NeckFrontierState.exists_fair_process g eps ι S₀ heps hepsstep allNeck
+  exact NeckFrontierState.exists_original_end_family_of_fair_process g eps ι S₀ hepsrec hcompact
+    process selected hzero hmono hanti hselected hsteps N hne hstable hN
+    (fun i hi => (hfair i hi).mono (fun _ hn => hn.2))
+
+private theorem NeckFrontierState.exists_saved_end_family_of_fair_process
+    [PreconnectedSpace M]
+    (S₀ : NeckFrontierState g eps ι)
+    (hepsrec : eps ≤ 1 / 156000)
+    (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
+    (process : ℕ → NeckFrontierState g eps ι) (selected : ℕ → ι)
+    (hzero : process 0 = S₀)
+    (hmono : Monotone (fun n => (process n).region))
+    (hanti : Antitone (fun n => (process n).alive))
+    (hselected : ∀ n, selected n ∈ (process n).alive)
+    (hsteps : ∀ n, OrdinaryNeckMoveAt g eps ι (process n) (process (n + 1)) (selected n) ∨
+      ((process (n + 1)).alive ⊂ (process n).alive ∧
+        (process (n + 1)).sphere = (process n).sphere))
+    (N : ℕ) (hne : (process N).alive.Nonempty)
+    (hstable : ∀ n, N ≤ n → (process n).alive = (process N).alive)
+    (hN : ∀ n, N ≤ n → OrdinaryNeckMoveAt g eps ι (process n) (process (n + 1)) (selected n))
+    (hfair : ∀ i ∈ (process N).alive, {n | selected n = i}.Infinite) :
     ∃ S : NeckFrontierState g eps ι, S₀.region ⊆ S.region ∧ S.alive ⊆ S₀.alive ∧
       S.sphere = S₀.sphere ∧
       IsConnected S.region ∧
@@ -1072,7 +1156,8 @@ private theorem NeckFrontierState.exists_saved_end_family
         S.region ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
   classical
   obtain ⟨late, hsub, halive, Θ, hends, hdisjoint, hfull⟩ :=
-    NeckFrontierState.exists_original_end_family g eps ι S₀ heps hepsstep hepsrec hcompact allNeck
+    NeckFrontierState.exists_original_end_family_of_fair_process g eps ι S₀ hepsrec hcompact
+      process selected hzero hmono hanti hselected hsteps N hne hstable hN hfair
   let Ind := {i // i ∈ late.alive}
   let _ : Finite Ind := late.alive.finite_toSet.to_subtype
   let E (i : Ind) := Θ i '' (univ ×ˢ Ici (0 : ℝ))
@@ -1196,6 +1281,43 @@ private theorem NeckFrontierState.exists_saved_end_family
   intro i
   obtain ⟨hsm, hi, hp, he, _, hb, hd, hfirst⟩ := hends i
   exact ⟨hsm, hi, hp, he, hDE i, hb, hd, hfirst⟩
+
+private theorem NeckFrontierState.exists_saved_end_family
+    [PreconnectedSpace M] [NoncompactSpace M]
+    (S₀ : NeckFrontierState g eps ι)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (hepsrec : eps ≤ 1 / 156000)
+    (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ S : NeckFrontierState g eps ι, S₀.region ⊆ S.region ∧ S.alive ⊆ S₀.alive ∧
+      S.sphere = S₀.sphere ∧
+      IsConnected S.region ∧
+      ∃ Θ : {i // i ∈ S.alive} → Cylinder → M,
+        (∀ i, ContMDiffOn IC I3 ∞ (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          InjOn (Θ i) (univ ×ˢ Ici (0 : ℝ)) ∧
+          IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ i (z.1, z.2.val)) ∧
+          (let U : TopologicalSpace.Opens Cylinder :=
+            ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+           IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ i z)) ∧
+          Θ i '' (univ ×ˢ Ici (0 : ℝ)) ∩ S.region = range (S₀.sphere i.val).map ∧
+          (∀ z, Θ i (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i.val) z) ∧
+          (∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+            T ≤ t → B < Geometry.Curvature.metricScalarAt g (Θ i (z, t.val))) ∧
+          ∃ (p : M) (nk : SpatialNeck g eps p)
+            (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+            p ∈ range (S₀.sphere i.val).map ∧
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+            (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ i (z, t) = P (z, t)) ∧
+            P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)) ∧
+        Pairwise (fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
+          (Θ j '' (univ ×ˢ Ici (0 : ℝ)))) ∧
+        S.region ∪ (⋃ i, Θ i '' (univ ×ˢ Ici (0 : ℝ))) = univ := by
+  obtain ⟨process, selected, hzero, hmono, hanti, hselected, hsteps, N, hne, hstable, hN, hfair⟩ :=
+    NeckFrontierState.exists_fair_process g eps ι S₀ heps hepsstep allNeck
+  exact NeckFrontierState.exists_saved_end_family_of_fair_process g eps ι S₀ hepsrec hcompact
+    process selected hzero hmono hanti hselected hsteps N hne hstable hN
+    (fun i hi => (hfair i hi).mono (fun _ hn => hn.2))
 
 private theorem NeckFrontierState.exists_end_family
     [PreconnectedSpace M] [NoncompactSpace M]
