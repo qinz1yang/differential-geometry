@@ -16,7 +16,7 @@ universe u
 
 section Leaves
 
-variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
+variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
   {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
   [MetricSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂] {U W : Set M₁} {h : M₁ → M₂}
   {η ψ : M₁ → ℝ} {H : Finset Ea → Set M₂}
@@ -34,10 +34,13 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
   {Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂}
   {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
 
-theorem exists_section34PiercingPackage_of_preparation [T2Space M₁]
-    [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    (h341 : Moise341) (hh : Topology.IsEmbedding (U.domRestrict h))
+theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology M₁]
+    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
+    (h341 : Moise341) (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
     (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
+      (graphSkeletonSpace 𝒦) U)
+    (hQsub : ∀ w, Q w ⊆ h '' U)
     (hQlfU : LocallyFinite fun w => {y : h '' U | (y : M₂) ∈ Q w})
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
