@@ -265,4 +265,19 @@ theorem exists_standard_high_inverse_scalar_time_derivative_bound :
   exact (div_le_iff₀ (sq_pos_of_pos hRpos)).mpr (hQ S x t ht hτt ht1 hRt)
 
 
+theorem exists_standard_high_scalar_model
+    {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) {τ : ℝ} (hτ : 0 < τ) :
+    ∃ Q₀ : ℝ, 0 < Q₀ ∧ ∀ (S : PartialStandardSolution)
+      (x : EuclideanSpace ℝ (Fin 3)) (t : ℝ),
+      t ∈ S.domain → τ ≤ t → t < 1 → Q₀ ≤ metricScalarAt (S.metric t) x →
+      Nonempty (WindowedModelWitness ε (standardParabolicNoncollapseCoeff / 1000000)
+        S.toSolutionOn x t) := by
+  obtain ⟨Q₀, hQ₀, hmodel⟩ := exists_standard_high_scalar_model_threshold hε hε1 hτ
+  refine ⟨Q₀, hQ₀, ?_⟩
+  intro S x t ht hτt ht1 hQ
+  obtain ⟨o⟩ := nonempty_standard_tangent_orientation
+  obtain ⟨W, _⟩ := hmodel S o x t ht hτt ht1 hQ
+  exact ⟨W⟩
+
+
 end DifferentialGeometry.PDE.RicciFlow
