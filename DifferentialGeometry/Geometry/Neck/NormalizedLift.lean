@@ -103,6 +103,31 @@ theorem map_lift_chart (N : NormalizedNeck g δ k) (f : V → M)
     (hcomp : f ∘ Φ = N.chart) :
     f ∘ (N.lift f hf Φ hΦ hcomp).chart = N.chart := hcomp
 
+omit [T2Space M] in
+theorem pullback_normalizedMetric
+    (N : NormalizedNeck g δ k) (f : V → M)
+    (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f)
+    (Φ : neckBuffer δ → V) (hΦ : IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ Φ)
+    (hcomp : f ∘ Φ = N.chart) :
+    localPullMetric (scaleMetric N.scale N.scale_pos (localPullMetric g f hf)) Φ hΦ =
+      N.normalizedMetric := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [localPullMetric_inner, scaleMetric_inner, localPullMetric_inner, N.normalized_inner]
+  have hd := mfderiv_comp x ((hf (Φ x)).mdifferentiableAt (by simp))
+    ((hΦ x).mdifferentiableAt (by simp))
+  have hx : f (Φ x) = N.chart x := congrFun hcomp x
+  have hdv : mfderiv ThreeModel ThreeModel f (Φ x) (mfderiv NeckCylinderModel ThreeModel Φ x v) =
+      mfderiv NeckCylinderModel ThreeModel N.chart x v := by
+    rw [← ContinuousLinearMap.comp_apply, ← hd, hcomp]
+    rfl
+  have hdw : mfderiv ThreeModel ThreeModel f (Φ x) (mfderiv NeckCylinderModel ThreeModel Φ x w) =
+      mfderiv NeckCylinderModel ThreeModel N.chart x w := by
+    rw [← ContinuousLinearMap.comp_apply, ← hd, hcomp]
+    rfl
+  congr 1
+  exact congrArg₂ (fun V W => g.inner (f (Φ x)) V W) hdv hdw |>.trans (by rw [hx])
+
 end NormalizedNeck
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
