@@ -5399,6 +5399,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSourceBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.MinimizingMass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.AmbientSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CapAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CapCurvatureAction
