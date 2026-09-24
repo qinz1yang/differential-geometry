@@ -7,22 +7,6 @@ open Set Topology Function
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-private theorem interior_inter_eq_of_inter_eq {X : Type*} [TopologicalSpace X]
-    {A B V : Set X} (hV : IsOpen V) (heq : A ∩ V = B ∩ V) :
-    interior A ∩ V = interior B ∩ V := by
-  simpa only [interior_inter, hV.interior_eq] using congrArg interior heq
-
-private theorem frontier_inter_eq_of_inter_eq {X : Type*} [TopologicalSpace X]
-    {A B V : Set X} (hA : IsClosed A) (hB : IsClosed B) (hV : IsOpen V)
-    (heq : A ∩ V = B ∩ V) : frontier A ∩ V = frontier B ∩ V := by
-  have hi := interior_inter_eq_of_inter_eq hV heq
-  rw [hA.frontier_eq, hB.frontier_eq]
-  ext x
-  have h := Set.ext_iff.mp heq x
-  have h' := Set.ext_iff.mp hi x
-  simp only [mem_inter_iff, mem_sdiff] at *
-  tauto
-
 private theorem exists_vertex_points
     {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -44,7 +28,7 @@ private theorem exists_vertex_points
   apply Subtype.ext
   rw [hv w, hv z, hvz]
 
-theorem exists_section34_pierced_vertex_cells
+theorem exists_section34_crossing_pierced_vertex_cells
     {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
     {M : Type*} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
@@ -77,6 +61,14 @@ theorem exists_section34_pierced_vertex_cells
       (LocallyFinite fun w => {x : U | (x : M) ∈ Cp w}) ∧
       (∀ e, Cp (ends e).1 ∩ Cp (ends e).2 ⊆ O e) ∧
       (∀ e, (interior (Cp (ends e).1) ∩ interior (Cp (ends e).2)).Nonempty) ∧
+      (∀ e, (frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) ⊆
+          closure (frontier (Cp (ends e).1) ∩ interior (Cp (ends e).2))) ∧
+        (frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) ⊆
+          closure (frontier (Cp (ends e).1) \ Cp (ends e).2)) ∧
+        (frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) ⊆
+          closure (frontier (Cp (ends e).2) ∩ interior (Cp (ends e).1))) ∧
+        frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) ⊆
+          closure (frontier (Cp (ends e).2) \ Cp (ends e).1)) ∧
       (∀ w, simplexBody 𝒦' w.1 ⊆ interior (Cp w)) ∧
       ∀ w w', w ≠ w' → Disjoint (Cp w') (simplexBody 𝒦' w.1) := by
   classical
@@ -92,8 +84,9 @@ theorem exists_section34_pierced_vertex_cells
     have hp := (hends e).2.2.subset hx
     exact ⟨hDO e hx, hCc _ hp.1, hCc _ hp.2⟩
   choose V A B hV hDV hVO hforeign hA hB hmeet hcircle hcircleD hlens hpair hgraph
-    hdiffA hdiffB hmark₀ hmark₁ K φ₀ φ₁ hK hKV hφ₀ hφ₁ himage₀ himage₁ hfix₀ hfix₁ using
-    fun e => exists_section34_marked_graph_covering_edge_cells hU hframe hN ends
+    hdiffA hdiffB hmark₀ hmark₁ hinA houtA hinB houtB
+    K φ₀ φ₁ hK hKV hφ₀ hφ₁ himage₀ himage₁ hfix₀ hfix₁ using
+    fun e => exists_section34_crossing_marked_edge_cells hU hframe hN ends
       (fun e => (hends e).2) p hpinj hp hpg (fun e => (hends e).1) e (hO' e) (hDO' e)
   have hVO' (e) : V e ⊆ O e := fun x hx => (hVO e hx).1.1
   have hdisV : Pairwise (Disjoint on V) := fun e d hed =>
@@ -181,24 +174,24 @@ theorem exists_section34_pierced_vertex_cells
     · obtain ⟨e, -, heq⟩ := section34_vertex_cells_intersection_of_ne hframe ends
         (fun e => (hends e).2) hne ⟨p w, hp w, (hout w' hv).mp hx⟩
       exact hv (mem_iUnion.mpr ⟨e, hDV e (heq.subset ⟨hp w, (hout w' hv).mp hx⟩)⟩)
+  have hcircleEq (e) : frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) =
+      frontier (A e) ∩ frontier (B e) := by
+    ext x
+    constructor
+    · intro hx
+      have hv := hlensV e ⟨(hCp _).isCompact.isClosed.frontier_subset hx.1,
+        (hCp _).isCompact.isClosed.frontier_subset hx.2⟩
+      exact ⟨((hlocalF e).1.subset ⟨hx.1, hv⟩).1,
+        ((hlocalF e).2.subset ⟨hx.2, hv⟩).1⟩
+    · intro hx
+      have hv := hDV e (hcircleD e hx)
+      exact ⟨((hlocalF e).1.symm.subset ⟨hx.1, hv⟩).1,
+        ((hlocalF e).2.symm.subset ⟨hx.2, hv⟩).1⟩
   suffices hcover : graphSkeletonSpace 𝒦 ⊆ ⋃ w, interior (Cp w) by
     refine ⟨Cp, hCp, ?_, ?_, hCpCc, hcover, ?_,
-      fun e => (hlensV e).trans (hVO' e), ?_, ?_, ?_⟩
+      fun e => (hlensV e).trans (hVO' e), ?_, ?_, ?_, ?_⟩
     · intro e
-      have heq : frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) =
-          frontier (A e) ∩ frontier (B e) := by
-        ext x
-        constructor
-        · intro hx
-          have hv := hlensV e ⟨(hCp _).isCompact.isClosed.frontier_subset hx.1,
-            (hCp _).isCompact.isClosed.frontier_subset hx.2⟩
-          exact ⟨((hlocalF e).1.subset ⟨hx.1, hv⟩).1,
-            ((hlocalF e).2.subset ⟨hx.2, hv⟩).1⟩
-        · intro hx
-          have hv := hDV e (hcircleD e hx)
-          exact ⟨((hlocalF e).1.symm.subset ⟨hx.1, hv⟩).1,
-            ((hlocalF e).2.symm.subset ⟨hx.2, hv⟩).1⟩
-      rw [heq]
+      rw [hcircleEq e]
       exact ⟨hcircle e, hcircleD e⟩
     · intro w w' hne hn
       apply Set.disjoint_left.mpr
@@ -222,6 +215,16 @@ theorem exists_section34_pierced_vertex_cells
       have hv := hlens e ⟨interior_subset hxA, interior_subset hxB⟩
       exact ⟨x, ((hlocalI e).1.symm.subset ⟨hxA, hv⟩).1,
         ((hlocalI e).2.symm.subset ⟨hxB, hv⟩).1⟩
+    · intro e
+      have hCV := (hcircleD e).trans (hDV e)
+      have hcA := frontier_sides_of_inter_eq (hA e).isCompact.isClosed
+        (hCp _).isCompact.isClosed (hV e) hCV (hlocal e).1.symm (hlocal e).2.symm
+        (hinA e) (houtA e)
+      have hcB := frontier_sides_of_inter_eq (hB e).isCompact.isClosed
+        (hCp _).isCompact.isClosed (hV e) hCV (hlocal e).2.symm (hlocal e).1.symm
+        (hinB e) (houtB e)
+      exact ⟨(hcircleEq e).subset.trans hcA.1, (hcircleEq e).subset.trans hcA.2,
+        (hcircleEq e).subset.trans hcB.1, (hcircleEq e).subset.trans hcB.2⟩
     · intro w x hx
       have hxp : x = p w := mem_singleton_iff.mp ((hpbody w).subset hx)
       subst x
@@ -266,6 +269,46 @@ theorem exists_section34_pierced_vertex_cells
       (isOpen_interior.inter hL.isOpen_compl) ⟨hw, hxL⟩⟩
     rintro y ⟨hy, hyL⟩
     exact ⟨y, interior_subset hy, hfix w hyL⟩
+
+theorem exists_section34_pierced_vertex_cells
+    {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
+    {M : Type*} [TopologicalSpace M] [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
+    {U : Set M} {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M U}
+    {src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M}
+    (hU : IsOpen U) (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
+    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3)
+      (section34CutNeighborhood src) (graphSkeletonSpace 𝒦) U)
+    (ends : Section34EdgeIndex 𝒦 𝒦' →
+      Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
+    (hends : ∀ e, (ends e).1 ≠ (ends e).2 ∧
+      (e.1 : Set Ea) = ((ends e).1.1 : Set Ea) ∪ ((ends e).2.1 : Set Ea) ∧
+      src (.splitDisk e) = src (.vertexBall (ends e).1) ∩ src (.vertexBall (ends e).2))
+    (Cc : Section34VertexIndex 𝒦 𝒦' → Set M)
+    (hCc : ∀ w, src (.vertexBall w) ⊆ interior (Cc w))
+    (hCcLF : LocallyFinite fun w => {x : U | (x : M) ∈ Cc w})
+    (O : Section34EdgeIndex 𝒦 𝒦' → Set M)
+    (hO : ∀ e, IsOpen (O e)) (hDO : ∀ e, src (.splitDisk e) ⊆ O e)
+    (hdisj : Pairwise (Disjoint on O)) :
+    ∃ Cp : Section34VertexIndex 𝒦 𝒦' → Set M,
+      (∀ w, IsPLCellOn 3 (Cp w) (frontier (Cp w))) ∧
+      (∀ e, IsPolyhedralSphere (n := 3) 1
+          (frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2)) ∧
+        frontier (Cp (ends e).1) ∩ frontier (Cp (ends e).2) ⊆ src (.splitDisk e)) ∧
+      (∀ w w', w ≠ w' → (¬ ∃ e : Section34EdgeIndex 𝒦 𝒦',
+          (w = (ends e).1 ∧ w' = (ends e).2) ∨ (w = (ends e).2 ∧ w' = (ends e).1)) →
+        Disjoint (Cp w) (Cp w')) ∧
+      (∀ w, Cp w ⊆ interior (Cc w)) ∧
+      graphSkeletonSpace 𝒦 ⊆ ⋃ w, interior (Cp w) ∧
+      (LocallyFinite fun w => {x : U | (x : M) ∈ Cp w}) ∧
+      (∀ e, Cp (ends e).1 ∩ Cp (ends e).2 ⊆ O e) ∧
+      (∀ e, (interior (Cp (ends e).1) ∩ interior (Cp (ends e).2)).Nonempty) ∧
+      (∀ w, simplexBody 𝒦' w.1 ⊆ interior (Cp w)) ∧
+      ∀ w w', w ≠ w' → Disjoint (Cp w') (simplexBody 𝒦' w.1) := by
+  obtain ⟨Cp, hCp, hc, hn, hC, hg, hLF, hl, hm, -, hp, hforeign⟩ :=
+    exists_section34_crossing_pierced_vertex_cells hU hframe hN ends hends Cc hCc hCcLF
+      O hO hDO hdisj
+  exact ⟨Cp, hCp, hc, hn, hC, hg, hLF, hl, hm, hp, hforeign⟩
 
 theorem exists_section34_unmarked_vertex_cells
     {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]

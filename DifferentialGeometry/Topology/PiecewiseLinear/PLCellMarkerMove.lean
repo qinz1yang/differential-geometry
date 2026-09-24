@@ -103,7 +103,7 @@ private theorem exists_disjoint_connected_open_supersets {X : Type*} [Topologica
   exact hWW.mono ((connectedComponentIn_subset _ _).trans inter_subset_left)
     ((connectedComponentIn_subset _ _).trans inter_subset_left)
 
-theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [TopologicalSpace M]
+theorem exists_marked_cell_pair_preserving_frontier_neighborhood {M : Type*} [TopologicalSpace M]
     [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
     {A B Ad Bd O K₀ K₁ : Set M} (hA : IsPLCellOn 3 A Ad) (hB : IsPLCellOn 3 B Bd)
@@ -118,6 +118,8 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
       frontier A' ∩ frontier B' = frontier A ∩ frontier B ∧
       A' \ O = A \ O ∧ B' \ O = B \ O ∧
       ((interior A' ∩ interior B').Nonempty ↔ (interior A ∩ interior B).Nonempty) ∧
+      (∃ V : Set M, IsOpen V ∧ frontier A ∩ frontier B ⊆ V ∧
+        A' ∩ V = A ∩ V ∧ B' ∩ V = B ∩ V) ∧
       ∃ (K : Set M) (φ₀ φ₁ : M ≃ₜ M), IsCompact K ∧ K ⊆ O ∧
         IsPL 3 3 φ₀ ∧ IsPL 3 3 φ₁ ∧ φ₀ '' A = A' ∧ φ₁ '' B = B' ∧
         EqOn φ₀ id Kᶜ ∧ EqOn φ₁ id Kᶜ := by
@@ -142,7 +144,7 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
     have hxU₁ : x ∉ U₁ := fun hx₁ => Set.disjoint_left.mp hUU hx hx₁
     exact (hdA.symm.subset ⟨interior_subset (hUV₀ hx).1, hxU₁⟩).1
   refine ⟨A', B', hA', hB', hU₀A' (hKU₀ hp₀), hp₀B', hU₁B' (hKU₁ hp₁), hp₁A',
-    ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · calc
       A' ∪ B' = B' ∪ A' := union_comm _ _
       _ = B' ∪ A := huA
@@ -174,10 +176,51 @@ theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [Topolo
         (interior A ∩ interior B').Nonempty := by
       simpa only [inter_comm (interior B')] using hnA
     exact hnA'.trans hnB
+  · have hfixed (φ : M ≃ₜ M) (D V : Set M) (hf : EqOn φ id V) :
+        (φ '' D) ∩ V = D ∩ V := by
+      ext x
+      constructor
+      · rintro ⟨⟨y, hy, he⟩, hxV⟩
+        have hyx : y = x := φ.injective (he.trans (hf hxV).symm)
+        exact ⟨hyx ▸ hy, hxV⟩
+      · rintro ⟨hxD, hxV⟩
+        exact ⟨⟨x, hxD, hf hxV⟩, hxV⟩
+    refine ⟨(L₀ ∪ L₁)ᶜ, (hL₀.union hL₁).isClosed.isOpen_compl, ?_, ?_, ?_⟩
+    · intro x hx hxL
+      rcases hxL with hxL | hxL
+      · exact hx.2.2 (hUV₁ (hL₀U hxL)).1
+      · exact hx.1.2 (hUV₀ (hL₁U hxL)).1
+    · rw [← he₀]
+      exact hfixed φ₀ A _ fun _ hx => hf₀ fun hm => hx (Or.inl hm)
+    · rw [← he₁]
+      exact hfixed φ₁ B _ fun _ hx => hf₁ fun hm => hx (Or.inr hm)
   · exact ⟨L₀ ∪ L₁, φ₀, φ₁, hL₀.union hL₁,
       union_subset (hL₀U.trans (hUV₁.trans inter_subset_right))
         (hL₁U.trans (hUV₀.trans inter_subset_right)), hφ₀, hφ₁, he₀, he₁,
       fun _ hx => hf₀ (fun hm => hx (Or.inl hm)),
       fun _ hx => hf₁ (fun hm => hx (Or.inr hm))⟩
+
+theorem exists_marked_cell_pair_of_disjoint_connected_routes {M : Type*} [TopologicalSpace M]
+    [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
+    {A B Ad Bd O K₀ K₁ : Set M} (hA : IsPLCellOn 3 A Ad) (hB : IsPLCellOn 3 B Bd)
+    (hO : IsOpen O) (hK₀ : IsCompact K₀) (hK₁ : IsCompact K₁)
+    (hc₀ : IsConnected K₀) (hc₁ : IsConnected K₁) (hdisj : Disjoint K₀ K₁)
+    (hsub₀ : K₀ ⊆ interior A ∩ O) (hsub₁ : K₁ ⊆ interior B ∩ O)
+    {p₀ q₀ p₁ q₁ : M} (hp₀ : p₀ ∈ K₀) (hq₀ : q₀ ∈ K₀) (hq₀B : q₀ ∉ B)
+    (hp₁ : p₁ ∈ K₁) (hq₁ : q₁ ∈ K₁) (hq₁A : q₁ ∉ A) :
+    ∃ A' B' : Set M, IsPLCellOn 3 A' (frontier A') ∧ IsPLCellOn 3 B' (frontier B') ∧
+      p₀ ∈ interior A' ∧ p₀ ∉ B' ∧ p₁ ∈ interior B' ∧ p₁ ∉ A' ∧
+      A' ∪ B' = A ∪ B ∧ interior A' ∪ interior B' = interior A ∪ interior B ∧
+      frontier A' ∩ frontier B' = frontier A ∩ frontier B ∧
+      A' \ O = A \ O ∧ B' \ O = B \ O ∧
+      ((interior A' ∩ interior B').Nonempty ↔ (interior A ∩ interior B).Nonempty) ∧
+      ∃ (K : Set M) (φ₀ φ₁ : M ≃ₜ M), IsCompact K ∧ K ⊆ O ∧
+        IsPL 3 3 φ₀ ∧ IsPL 3 3 φ₁ ∧ φ₀ '' A = A' ∧ φ₁ '' B = B' ∧
+        EqOn φ₀ id Kᶜ ∧ EqOn φ₁ id Kᶜ := by
+  obtain ⟨A', B', hA', hB', hp₀A', hp₀B', hp₁B', hp₁A', hu, hi, hf, hdA, hdB, hn, -, hmaps⟩ :=
+    exists_marked_cell_pair_preserving_frontier_neighborhood hA hB hO hK₀ hK₁ hc₀ hc₁ hdisj
+      hsub₀ hsub₁ hp₀ hq₀ hq₀B hp₁ hq₁ hq₁A
+  exact ⟨A', B', hA', hB', hp₀A', hp₀B', hp₁B', hp₁A', hu, hi, hf, hdA, hdB, hn, hmaps⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

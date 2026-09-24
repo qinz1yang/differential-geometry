@@ -6,6 +6,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCircleLe
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCoreBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.DisjointSupportedPLEmbeddings
 import DifferentialGeometry.Topology.PiecewiseLinear.IsAnnulusOnCompact
+import DifferentialGeometry.Topology.PiecewiseLinear.LocalFrontierCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteOpenEnlargements
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSeparationScales
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldPointTransport
@@ -27,6 +28,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCoveringEdgeC
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LensImages
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LensIsolation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34LocalMargins
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedNestedAnnuli
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedPiercedCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedAnnularNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedPiercingRegularNeighborhood
@@ -46,7 +48,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34SmallSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexCellIntersections
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexEdgePasting
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparationProbe
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexScales
 import DifferentialGeometry.Topology.PiecewiseLinear.SignedHeightCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLCellExtension
@@ -57,6 +59,7 @@ open DifferentialGeometry.Topology
 open DifferentialGeometry.Topology.PiecewiseLinear
 
 #print axioms exists_isAnnulusOn_with_frontier_sides
+#print axioms exists_isAnnulusOn_of_crossing_trace
 #print axioms IsAnnulusOn.symm
 #print axioms isAnnulusOn_of_homeomorph_stdSimplexBoundary_prod
 #print axioms annulus_level_subset_sdiff_ends
@@ -74,6 +77,10 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms IsAnnulusOn.isCompact
 #print axioms IsAnnulusOn.isCompact_first
 #print axioms IsAnnulusOn.isCompact_second
+#print axioms interior_inter_eq_of_inter_eq
+#print axioms frontier_inter_eq_of_inter_eq
+#print axioms closure_subset_of_inter_eq
+#print axioms frontier_sides_of_inter_eq
 #print axioms exists_locallyFinite_open_supersets
 #print axioms exists_separation_scales_of_locallyFinite
 #print axioms exists_separation_scales_of_locallyFinite_on
@@ -81,6 +88,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms IsPLCellOn.exists_enlargement
 #print axioms exists_locallyFinite_isPLCellOn_enlargements
 #print axioms IsPLCellOn.exists_excluding_point_preserving_union
+#print axioms exists_marked_cell_pair_preserving_frontier_neighborhood
 #print axioms exists_marked_cell_pair_of_disjoint_connected_routes
 #print axioms IsPLHomeomorphInto.exists_pLPiece_of_isPolyhedron
 #print axioms IsPLCellOn.isPolyhedralSphere_boundary
@@ -108,6 +116,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_section34_graph_cores
 #print axioms exists_section34_graph_cores_of_isPLCellOn
 #print axioms exists_section34_graph_covering_edge_cells
+#print axioms exists_section34_crossing_marked_edge_cells
 #print axioms exists_section34_marked_graph_covering_edge_cells
 #print axioms locallyFinite_image_of_embedding
 #print axioms section34_lens_images
@@ -115,6 +124,9 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_locallyFinite_disjoint_cthickening_intersections
 #print axioms exists_section34_vertex_scales_with_isolated_overlaps
 #print axioms exists_section34_local_margins
+#print axioms IsPLDerivedNeighborhoodExhaustion.exists_marked_nested_piercing_annuli
+#print axioms exists_crossing_pierced_cell_pair_excluding_opposite_markers
+#print axioms exists_crossing_marked_pierced_cell_pair_covering_compact
 #print axioms exists_pierced_cell_pair_excluding_opposite_markers
 #print axioms exists_marked_pierced_cell_pair_covering_compact
 #print axioms IsPLDerivedNeighborhoodExhaustion.exists_nested_piercing_annuli
@@ -159,6 +171,7 @@ open DifferentialGeometry.Topology.PiecewiseLinear
 #print axioms exists_crossing_pierced_cell_pair_covering_compact
 #print axioms exists_pierced_cell_pair_covering_compact
 #print axioms exists_section34_pierced_edge_cells
+#print axioms exists_section34_crossing_pierced_vertex_cells
 #print axioms exists_section34_pierced_vertex_cells
 #print axioms exists_section34_unmarked_vertex_cells
 #print axioms exists_section34_piercing_circle_neighborhoods

@@ -75,4 +75,36 @@ theorem exists_isAnnulusOn_with_frontier_sides
       rw [hq] at hxD
       exact ht.1.not_ge hxD
 
+theorem exists_isAnnulusOn_of_crossing_trace
+    {X : Type*} [TopologicalSpace X] {C D F V : Set X} (hD : IsClosed D)
+    (hC : C.Nonempty) (hCV : C ⊆ interior V) (hfront : F ∩ frontier D = C)
+    (hin : C ⊆ closure (F ∩ interior D)) (hout : C ⊆ closure (F \ D))
+    (φ : (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) ≃ₜ ↥(V ∩ F))
+    {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1)
+    (hlevel : Subtype.val '' (φ '' {p | p.1.2 = t}) = C) :
+    ∃ A₀ A₁ : Set X, IsAnnulusOn (V ∩ F) A₀ A₁ ∧
+      C ⊆ (V ∩ F) \ (A₀ ∪ A₁) ∧ A₀ ⊆ interior D ∧ A₁ ∩ D = ∅ ∧
+      IsConnected ((V ∩ F) ∩ D) ∧ IsConnected ((V ∩ F) \ D) := by
+  obtain ⟨x, hx⟩ := hC
+  have htrace : (V ∩ F) ∩ frontier D = Subtype.val '' (φ '' {p | p.1.2 = t}) := by
+    rw [hlevel, inter_assoc, hfront]
+    exact inter_eq_right.mpr (hCV.trans interior_subset)
+  have hti : ((V ∩ F) ∩ interior D).Nonempty := by
+    obtain ⟨y, hyV, hyF, hyD⟩ :=
+      mem_closure_iff.mp (hin hx) (interior V) isOpen_interior (hCV hx)
+    exact ⟨y, ⟨interior_subset hyV, hyF⟩, hyD⟩
+  have hto : ((V ∩ F) \ D).Nonempty := by
+    obtain ⟨y, hyV, hyF, hyD⟩ :=
+      mem_closure_iff.mp (hout hx) (interior V) isOpen_interior (hCV hx)
+    exact ⟨y, ⟨interior_subset hyV, hyF⟩, hyD⟩
+  obtain ⟨A₀, A₁, hA, hA₀, hA₁, hconn⟩ :=
+    exists_isAnnulusOn_with_frontier_sides hD φ ht htrace hti hto
+  refine ⟨A₀, A₁, hA, ?_, hA₀, hA₁, hconn⟩
+  intro y hy
+  have hyF := hfront.symm.subset hy
+  refine ⟨⟨interior_subset (hCV hy), hyF.1⟩, ?_⟩
+  rintro (hy₀ | hy₁)
+  · exact hyF.2.2 (hA₀ hy₀)
+  · exact notMem_empty y (hA₁.subset ⟨hy₁, hD.frontier_subset hyF.2⟩)
+
 end DifferentialGeometry.Topology.PiecewiseLinear

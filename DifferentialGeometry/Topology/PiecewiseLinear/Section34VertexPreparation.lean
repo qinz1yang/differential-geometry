@@ -10,6 +10,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34LocalMargins
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeparationMargins
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularGenerators
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedNestedAnnuli
 
 open Set Topology
 
@@ -63,33 +64,16 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
     intro x hx
     obtain ⟨w, hw⟩ := mem_iUnion.mp hx
     exact hLFU x (hCcU w hw)
-  have exists_locally_finite_pierced_cells_with_isolated_lenses :
-      ∃ (Cp CpBd : Section34VertexIndex 𝒦 𝒦' → Set M₁),
-      (∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) ∧
-      (∀ w, simplexBody 𝒦' w.1 ⊆ interior (Cp w)) ∧
-      (∀ e, IsPolyhedralSphere (n := 3) 1 (CpBd (ends e).1 ∩ CpBd (ends e).2) ∧
-          CpBd (ends e).1 ∩ CpBd (ends e).2 ⊆ src (.splitDisk e)) ∧
-      (∀ w w', w ≠ w' → (¬ ∃ e : Section34EdgeIndex 𝒦 𝒦',
-            (w = (ends e).1 ∧ w' = (ends e).2) ∨ (w = (ends e).2 ∧ w' = (ends e).1)) →
-          Disjoint (Cp w) (Cp w')) ∧
-      (∀ w, Cp w ⊆ interior (Cc w)) ∧
-      graphSkeletonSpace 𝒦 ⊆ (⋃ w, interior (Cp w)) ∧
-      (LocallyFinite fun w => {x : U | (x : M₁) ∈ Cp w}) ∧
-      (∀ e, Cp (ends e).1 ∩ Cp (ends e).2 ⊆ diskO e) ∧
-      ∀ w w', w ≠ w' → Disjoint (Cp w') (simplexBody 𝒦' w.1) := by
-    have hCcLF : LocallyFinite fun w => {x : U | (x : M₁) ∈ Cc w} := by
-      intro x
-      obtain ⟨V, hV, hfin⟩ := hLFU x x.2
-      refine ⟨Subtype.val ⁻¹' V, continuous_subtype_val.continuousAt hV, hfin.subset ?_⟩
-      rintro w ⟨y, hyC, hyV⟩
-      exact ⟨y, hyC, hyV⟩
-    obtain ⟨Cp, hcp, hcircle, hnonadj, hCpCc, hcover, hCpLF, hlensO, -, hvertex, hvdisj⟩ :=
-      exists_section34_pierced_vertex_cells hU hframe hN ends hends Cc hsrcCc hCcLF
-        diskO hdiskO.1 hdiskO.2.1 hdiskO.2.2.2.2
-    exact ⟨Cp, fun w => frontier (Cp w), hcp, hvertex, hcircle, hnonadj,
-      hCpCc, hcover, hCpLF, hlensO, hvdisj⟩
-  obtain ⟨Cp, CpBd, hcp, hvertex, hcircle, hnonadj, hCpCc, hcover, hCpLF, hlensO, hvdisj⟩ :=
-    exists_locally_finite_pierced_cells_with_isolated_lenses
+  have hCcLF : LocallyFinite fun w => {x : U | (x : M₁) ∈ Cc w} := by
+    intro x
+    obtain ⟨V, hV, hfin⟩ := hLFU x x.2
+    refine ⟨Subtype.val ⁻¹' V, continuous_subtype_val.continuousAt hV, hfin.subset ?_⟩
+    rintro w ⟨y, hyC, hyV⟩
+    exact ⟨y, hyC, hyV⟩
+  obtain ⟨Cp, hcp, hcircle, hnonadj, hCpCc, hcover, hCpLF, hlensO, -, hcross, hvertex, hvdisj⟩ :=
+    exists_section34_crossing_pierced_vertex_cells hU hframe hN ends hends Cc hsrcCc hCcLF
+      diskO hdiskO.1 hdiskO.2.1 hdiskO.2.2.2.2
+  let CpBd := fun w => frontier (Cp w)
   have hsub : ∀ w, src (.vertexBall w) ⊆ Cc w ∧ Cp w ⊆ Cc w ∧ Cc w ⊆ U :=
     fun w => ⟨(hsrcCc w).trans interior_subset, (hCpCc w).trans interior_subset, hCcU w⟩
   have hlens (e d) (hed : e ≠ d) : Disjoint (Cp (ends e).1 ∩ Cp (ends e).2)
@@ -126,7 +110,28 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
             z ∈ connectedComponentIn (Bb e ∩ Cp (ends e).1) y₀) ∧
           ∃ y₀ ∈ Bb e \ Cp (ends e).1, ∀ z ∈ Bb e \ Cp (ends e).1, z ∉ Tn e →
             z ∈ connectedComponentIn (Bb e \ Cp (ends e).1) y₀) := by
-    sorry
+    have hex (e) := hN.1.exists_marked_nested_piercing_annuli hU (hcircle e).1
+      (hcc (ends e).1).isPolyhedralBall (hCcU (ends e).1)
+      ((hcircle e).2.trans (((hends e).2.2.subset.trans inter_subset_left).trans (hsrcCc _)))
+      (htubeOpen e) (hcircleO e)
+      (hcp (ends e).1).isPolyhedralSphere_boundary (hcp (ends e).2).isPolyhedralSphere_boundary
+      ((hcp (ends e).1).boundary_subset.trans (hCpU _))
+      ((hcp (ends e).2).boundary_subset.trans (hCpU _))
+      inter_subset_left inter_subset_right (hcp (ends e).1).isCompact.isClosed
+      (hcp (ends e).2).isCompact.isClosed rfl (inter_comm _ _)
+      (hcross e).1 (hcross e).2.1 (hcross e).2.2.1 (hcross e).2.2.2
+    choose Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁
+      hS hT hTS htS htT hSO hAa hBb htb hbs hbc hcirclebc hab hcompIn hcompOut using hex
+    refine ⟨Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁,
+      fun e => ⟨hS e, hT e⟩, fun e => ⟨hTS e, htS e, htT e⟩, hSO,
+      fun e => ⟨(hAa e).1, (hAa e).2.1⟩, hBb, htb, hbs, hbc, hcirclebc, hab, ?_⟩
+    intro e
+    obtain ⟨y₀, hy₀⟩ := (hcompIn e).nonempty
+    obtain ⟨y₁, hy₁⟩ := (hcompOut e).nonempty
+    exact ⟨⟨y₀, hy₀, fun _ hz _ =>
+      (hcompIn e).isPreconnected.subset_connectedComponentIn hy₀ Subset.rfl hz⟩,
+      ⟨y₁, hy₁, fun _ hz _ =>
+        (hcompOut e).isPreconnected.subset_connectedComponentIn hy₁ Subset.rfl hz⟩⟩
   obtain ⟨Sn, Tn, Aa, Ab₀, Ab₁, Bb, Bb₀, Bb₁, Bc, Bc₀, Bc₁,
     hreg, htorus', hSnO, haa, hbb, htb, hbs, hbc, hcirclebc, hab, hcomp⟩ :=
     exists_marked_nested_piercing_annuli
