@@ -13676,3 +13676,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedSt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalComponentClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.UncutDiscardedClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.LocalCompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SingularEventExtinction

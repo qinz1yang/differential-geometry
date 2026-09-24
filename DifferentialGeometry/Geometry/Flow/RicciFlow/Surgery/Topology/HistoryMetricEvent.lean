@@ -187,3 +187,85 @@ theorem exists_extension_after_metricCutCapEvent_preserving_debit
 end RetainedCoreHistory
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+noncomputable section
+
+open Set
+open DifferentialGeometry.Integral.Measure
+open scoped ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private local instance {P : OrientedThreeStage.{u}} {a s : ℝ}
+    (G : P.IncomingSlab a s) : SigmaCompactSpace G.terminalRegularOpen :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
+      G.terminalRegularOpen.isOpen)
+
+private theorem compact_volume_debit_transport
+    {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' : ℝ}
+    (hP : P = P') (hQ : Q = Q') (ha : a = a') (hs : s = s')
+    (E : RetainedCoreEvent P Q a s) (v : ℝ)
+    (hdebit : ∃ F : Set E.incoming.terminalRegularOpen, IsCompact F ∧
+      riemannianVolumeMeasure ThreeModel Q.Carrier E.outputMetric univ +
+        ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
+      riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen E.terminal.metric F) :
+    ∃ F : Set (RetainedCoreEvent.transport hP hQ ha hs E).incoming.terminalRegularOpen,
+      IsCompact F ∧
+      riemannianVolumeMeasure ThreeModel Q'.Carrier
+          (RetainedCoreEvent.transport hP hQ ha hs E).outputMetric univ +
+        ENNReal.ofReal
+          ((Nat.card (RetainedCoreEvent.transport hP hQ ha hs E).transition.trace.tubes.Index : ℝ) * v) ≤
+      riemannianVolumeMeasure ThreeModel
+        (RetainedCoreEvent.transport hP hQ ha hs E).incoming.terminalRegularOpen
+        (RetainedCoreEvent.transport hP hQ ha hs E).terminal.metric F := by
+  cases hP
+  cases hQ
+  cases ha
+  cases hs
+  exact hdebit
+
+theorem RetainedCoreHistory.appendEvent_compact_volume_debit
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    (v : ℝ)
+    (hdebit : ∀ i : Fin H.eventCount,
+      ∃ F : Set (H.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
+        riemannianVolumeMeasure ThreeModel (H.stage i.succ).Carrier
+          (H.coreEvent i).outputMetric univ +
+            ENNReal.ofReal ((Nat.card (H.coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
+        riemannianVolumeMeasure ThreeModel (H.coreEvent i).incoming.terminalRegularOpen
+          (H.coreEvent i).terminal.metric F)
+    (hE : ∃ F : Set E.incoming.terminalRegularOpen, IsCompact F ∧
+      riemannianVolumeMeasure ThreeModel Q.Carrier E.outputMetric univ +
+        ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
+      riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen E.terminal.metric F) :
+    ∀ i : Fin (H.appendEvent hs E hinit).eventCount,
+      ∃ F : Set ((H.appendEvent hs E hinit).coreEvent i).incoming.terminalRegularOpen,
+        IsCompact F ∧
+        riemannianVolumeMeasure ThreeModel ((H.appendEvent hs E hinit).stage i.succ).Carrier
+          ((H.appendEvent hs E hinit).coreEvent i).outputMetric univ +
+            ENNReal.ofReal
+              ((Nat.card ((H.appendEvent hs E hinit).coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
+        riemannianVolumeMeasure ThreeModel
+          ((H.appendEvent hs E hinit).coreEvent i).incoming.terminalRegularOpen
+          ((H.appendEvent hs E hinit).coreEvent i).terminal.metric F := by
+  change ∀ i : Fin (H.eventCount + 1), _
+  intro i
+  cases i using Fin.lastCases with
+  | cast i =>
+    rw [H.appendEvent_coreEvent_castSucc]
+    exact compact_volume_debit_transport _ _ _ _ _ v (hdebit i)
+  | last =>
+    rw [H.appendEvent_coreEvent_last]
+    exact compact_volume_debit_transport _ _ _ _ _ v hE
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

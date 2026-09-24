@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarLower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInductionStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreMetricEvent
@@ -315,5 +316,57 @@ theorem exists_backwardPointTrace_on_time_window
       (H.time_strictMono.monotone hl).trans hib⟩
 
 end RetainedCoreHistory
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+noncomputable section
+open Set
+open scoped Manifold ContDiff
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+
+private theorem frame_and_discard_transport
+    {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' : ℝ}
+    (hP : P = P') (hQ : Q = Q') (ha : a = a') (hs : s = s')
+    (E : MetricCutCapEvent P Q a s)
+    (hbfr : E.transition.boundaryFrameReversing)
+    (hctrl : E.poincareStandardDiscarded) :
+    (MetricCutCapEvent.transport hP hQ ha hs E).transition.boundaryFrameReversing ∧
+      (MetricCutCapEvent.transport hP hQ ha hs E).poincareStandardDiscarded := by
+  cases hP
+  cases hQ
+  cases ha
+  cases hs
+  exact ⟨hbfr, hctrl⟩
+
+theorem RetainedCoreHistory.appendEvent_boundaryFrameReversing_and_poincareStandardDiscarded
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    (hbfr : ∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing)
+    (hctrl : ∀ i : Fin H.eventCount,
+      (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
+    (hbfrE : E.transition.boundaryFrameReversing)
+    (hctrlE : E.toMetricCutCapEvent.poincareStandardDiscarded) :
+    ∀ i : Fin (H.appendEvent hs E hinit).eventCount,
+      ((H.appendEvent hs E hinit).coreEvent i).transition.boundaryFrameReversing ∧
+      ((H.appendEvent hs E hinit).coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded := by
+  change ∀ i : Fin (H.eventCount + 1), _
+  intro i
+  change (H.extendCoreEventFamily E i).toMetricCutCapEvent.transition.boundaryFrameReversing ∧
+    (H.extendCoreEventFamily E i).toMetricCutCapEvent.poincareStandardDiscarded
+  rw [H.extendCoreEventFamily_toMetricCutCapEvent]
+  cases i using Fin.lastCases with
+  | cast i =>
+    rw [ObservedHistory.extendEventFamily_castSucc]
+    exact frame_and_discard_transport _ _ _ _ _ (hbfr i) (hctrl i)
+  | last =>
+    rw [ObservedHistory.extendEventFamily_last]
+    exact frame_and_discard_transport _ _ _ _ _ hbfrE hctrlE
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
