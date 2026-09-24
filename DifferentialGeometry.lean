@@ -13835,3 +13835,4 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StoppedCapCuttingSide
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCylinderScalarConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSpatialBlowup
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Initial

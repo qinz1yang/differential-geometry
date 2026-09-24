@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Curvature.EmbeddingIsometry
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Initial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingDatum
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
@@ -75,6 +77,16 @@ theorem inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion
     change 0 ≤ _ ∨ fixedHamiltonIveyBarrier a (-_) ≤ metricScalarAt g x
     rw [csInf_two_mul_matrix_rayleigh_eq g x B hB']
     exact h
+
+theorem exists_pos_inFixedHamiltonIveyRegion_and_scalar_lower_bound
+    [CompactSpace X] (g : SmoothRiemannianMetric ThreeModel X) :
+    ∃ a : ℝ, 0 < a ∧ (∀ x : X, InFixedHamiltonIveyRegion g a x) ∧
+      ∀ x : X, -3 / a ≤ metricScalarAt g x := by
+  obtain ⟨a,ha,hbound⟩ := DimensionThree.exists_pos_fixedHamiltonIveyRegion_of_compact
+    g (by simp [ThreeSpace])
+  exact ⟨a,ha,fun x => (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion g a x).mpr
+    (hbound x).1,fun x => (hbound x).2⟩
+
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -609,3 +621,38 @@ theorem exists_admissiblePinchingFunction_for_observedHistories
       (fun i => (records i).scalar_preserving) hfixed hscalar⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.InitialIdentification
+
+universe u
+variable {P : OrientedThreeStage.{u}} {g : P.Metric} {H : ObservedHistory.{u}}
+
+theorem fixedHamiltonIveyRegion_and_scalar_lower_bound
+    (A : InitialIdentification P g H) {a : ℝ}
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion g a x)
+    (hlower : ∀ x, -3 / a ≤ metricScalarAt g x) :
+    (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a x) ∧
+      ∀ x, -3 / a ≤ metricScalarAt (H.initialMetric 0) x := by
+  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  have hcurv (x : P.Carrier) :=
+    curvature_of_injective_local_isometry g (H.initialMetric 0) A.map
+      A.map.isLocalDiffeomorph A.map.injective (fun x v w => (A.metric_eq x v w).symm) x
+  constructor
+  · intro y
+    obtain ⟨x, rfl⟩ := A.map.surjective y
+    apply (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ a _).mpr
+    erw [← (hcurv x).1, ← (hcurv x).2]
+    exact (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ a x).mp (hfixed x)
+  · intro y
+    obtain ⟨x, rfl⟩ := A.map.surjective y
+    erw [← (hcurv x).1]
+    exact hlower x
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.InitialIdentification
