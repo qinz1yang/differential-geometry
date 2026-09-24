@@ -13743,3 +13743,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Spat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornPointedLine
 import DifferentialGeometry.Geometry.Metric.Distance.SeparatingMinimizer
 import DifferentialGeometry.Geometry.Neck.ProductCapExclusion
+import DifferentialGeometry.Geometry.Comparison.Splitting.Busemann
+import DifferentialGeometry.Geometry.Comparison.Splitting.IntrinsicLine

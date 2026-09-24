@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarLower
 
 set_option autoImplicit false
@@ -390,4 +391,126 @@ theorem exists_backwardPointTrace_or_recent_presented_cap
     mul_pos (S j hf hl b).neck.scale_pos hdt, hage, hage.trans (by linarith)⟩
 
 end ObservedHistory
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem BackwardPointTrace.max_scalar_initial_le_terminal_of_deriv_nonneg
+    {H : ObservedHistory.{u}} {i : Fin H.eventCount}
+    {first : Fin (H.eventCount + 1)} {hle : first ≤ i.castSucc}
+    (x : (H.event i).incoming.terminalRegularOpen)
+    (A : BackwardPointTrace H first i.castSucc hle x.val) {q : ℝ}
+    (hderiv : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc,
+      ∀ hl : j.castSucc ≤ i.castSucc,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t (A.point j.castSucc hf hl) →
+      0 ≤ derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (A.point j.castSucc hf hl)) (Iic t) t) :
+    max q (metricScalarAt (H.initialMetric first) (A.point first le_rfl hle)) ≤
+      max q (metricScalarAt (H.event i).terminal.metric x) := by
+  have hbefore := A.max_scalar_le_endpoint_of_deriv_nonneg i.castSucc first hle x.val
+    (fun j hf hl => hderiv j hf (j.castSucc_lt_succ.le.trans hl))
+  have hfinal := (H.event i).terminal.max_scalar_le_terminal_of_deriv_nonneg x
+    (by simpa only [A.endpoint_eq] using hderiv i hle le_rfl)
+    (show H.time i.castSucc ∈ Ico (H.time i.castSucc) (H.time i.succ) from
+      ⟨le_rfl,(H.event i).incoming.lt⟩)
+  change max q (metricScalarAt ((H.event i).incoming.flow.base.metric
+    (H.time i.castSucc)) x.val) ≤ _ at hfinal
+  rw [H.event_initial i] at hfinal
+  exact hbefore.trans hfinal
+
+private theorem ObservedHistory.exists_backwardPointTrace_of_scalar_deriv_nonneg_of_cap_scalar_gt
+    (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+    (first : Fin (H.eventCount + 1)) (hle : first ≤ i.castSucc)
+    (x : (H.event i).incoming.terminalRegularOpen) {q Q : ℝ}
+    (hq : q ≤ Q) (hscalar : metricScalarAt (H.event i).terminal.metric x ≤ Q)
+    (hderiv : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.castSucc ≤ i.castSucc →
+      ∀ y : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t y →
+      0 ≤ derivWithin (fun v => (H.event j).incoming.flow.scalar v y) (Iic t) t)
+    (hOld : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ i.castSucc →
+      (H.event j).old = (H.event j).transition.trace.retainedCore)
+    (hcap : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ i.castSucc →
+      ∀ (b : (H.event j).RetainedBoundaryIndex) (z : ThreeBall)
+        (y : (H.stage j.succ).Carrier),
+        (H.event j).transition.trace.presentation
+          ((H.event j).transition.trace.capping.cap b.val z) = Sum.inl y →
+          Q < metricScalarAt (H.event j).outputMetric y) :
+    Nonempty (BackwardPointTrace H first i.castSucc hle x.val) := by
+  rcases H.exists_backwardPointTrace_or_cap first i.castSucc hle x.val hOld with
+    h | ⟨j,hjf,hji,A,b,z,hborn⟩
+  · exact h
+  · have hbound := A.max_scalar_initial_le_terminal_of_deriv_nonneg x
+      (fun l hf hl => hderiv l (hjf.trans (j.castSucc_lt_succ.le.trans hf)) hl
+        (A.point l.castSucc hf hl))
+    have hlow : metricScalarAt (H.event j).outputMetric (A.point j.succ le_rfl hji) ≤ Q := by
+      rw [H.event_output j]
+      exact (le_max_right _ _).trans (hbound.trans (max_le hq hscalar))
+    exact False.elim ((hcap j hjf hji b z _ hborn).not_ge hlow)
+
+theorem ObservedHistory.exists_backwardPointTrace_scalar_bound_of_scalar_deriv_nonneg_of_cap_scalar_gt
+    (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+    (first : Fin (H.eventCount + 1)) (hle : first ≤ i.castSucc)
+    (x : (H.event i).incoming.terminalRegularOpen) {q Q : ℝ}
+    (hq : q ≤ Q) (hscalar : metricScalarAt (H.event i).terminal.metric x ≤ Q)
+    (hderiv : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.castSucc ≤ i.castSucc →
+      ∀ y : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t y →
+      0 ≤ derivWithin (fun v => (H.event j).incoming.flow.scalar v y) (Iic t) t)
+    (hOld : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ i.castSucc →
+      (H.event j).old = (H.event j).transition.trace.retainedCore)
+    (hcap : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ i.castSucc →
+      ∀ (b : (H.event j).RetainedBoundaryIndex) (z : ThreeBall)
+        (y : (H.stage j.succ).Carrier),
+        (H.event j).transition.trace.presentation
+          ((H.event j).transition.trace.capping.cap b.val z) = Sum.inl y →
+          Q < metricScalarAt (H.event j).outputMetric y) :
+    ∃ A : BackwardPointTrace H first i.castSucc hle x.val,
+      ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.castSucc ≤ i.castSucc),
+        ∀ t ∈ Ico (H.time j.castSucc) (H.time j.succ),
+          (H.event j).incoming.flow.scalar t (A.point j.castSucc hf hl) ≤ Q := by
+  obtain ⟨A⟩ := H.exists_backwardPointTrace_of_scalar_deriv_nonneg_of_cap_scalar_gt
+    i first hle x hq hscalar hderiv hOld hcap
+  refine ⟨A, ?_⟩
+  intro j hf hl t ht
+  have htail := A.max_scalar_le_at_times_of_deriv_nonneg j i hf
+    (Fin.castSucc_le_castSucc_iff.mp hl) le_rfl
+    (fun l hjl hli => hderiv l (hf.trans hjl) hli (A.point l.castSucc (hf.trans hjl) hli))
+    ht (show H.time i.castSucc ∈ Ico (H.time i.castSucc) (H.time i.succ) from
+      ⟨le_rfl,(H.event i).incoming.lt⟩)
+  by_cases he : j = i
+  · subst j
+    have hlast := (H.event i).terminal.max_scalar_le_terminal_of_deriv_nonneg x
+      (hderiv i hf le_rfl x.val) ht
+    simpa only [A.endpoint_eq] using
+      (le_max_right _ _).trans (hlast.trans (max_le hq hscalar))
+  · have hji : j.succ ≤ i.castSucc := by
+      change j.val + 1 ≤ i.val
+      have hv : j.val ≤ i.val := hl
+      have hn : j.val ≠ i.val := fun hv => he (Fin.ext hv)
+      omega
+    have htend : t ≤ H.time i.castSucc :=
+      ht.2.le.trans (H.time_strictMono.monotone hji)
+    have hlast := (H.event i).terminal.max_scalar_le_terminal_of_deriv_nonneg x
+      (hderiv i hle le_rfl x.val)
+      (show H.time i.castSucc ∈ Ico (H.time i.castSucc) (H.time i.succ) from
+        ⟨le_rfl,(H.event i).incoming.lt⟩)
+    have hb := htail htend
+    have hb' : max q ((H.event j).incoming.flow.scalar t (A.point j.castSucc hf hl)) ≤
+        max q ((H.event i).incoming.flow.scalar (H.time i.castSucc) x.val) := by
+      simpa only [A.endpoint_eq] using hb
+    have hlast' : max q ((H.event i).incoming.flow.scalar (H.time i.castSucc) x.val) ≤ Q :=
+      hlast.trans (max_le hq hscalar)
+    exact (le_max_right q _).trans (hb'.trans hlast')
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
