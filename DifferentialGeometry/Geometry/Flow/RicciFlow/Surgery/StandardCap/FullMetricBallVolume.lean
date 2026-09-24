@@ -265,4 +265,121 @@ theorem finiteFullPreparedMetric_captured_tip_ball_volume_ratio_ge [SigmaCompact
     (captured_ball_volume_lower_bound (S.base.metric t) _ q hcapture htip')
 
 
+section
+
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+theorem finiteFullPreparedMetric_normalized_window_ball_volume_ge
+ [SigmaCompactSpace M]
+    (b : CurvGB) (heps : ε ≤ 1 / 2) (p : standardCapWindow D)
+    {ρ : ℝ} (hρ : 0 < ρ) (hmargin : ‖p.val‖ + ρ < D) :
+    let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+    let : ChartedSpace CurvGE3 CurvGQ := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+    let : IsManifold (𝓡 3) ∞ CurvGQ := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+    let : T2Space CurvGQ := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    let : SigmaCompactSpace CurvGQ := finiteCapQuotient_sigmaCompactSpace transitionEnd_pos hδ f hf hdisj
+    let : SigmaCompactSpace CurvGRet := isSigmaCompact_iff_sigmaCompactSpace.mp
+      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) (CurvGRet).isOpen)
+    let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+    let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+    let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+    ENNReal.ofReal (1 / 4 : ℝ) *
+      riemannianVolumeMeasure (𝓡 3) CurvGE3 metric (Metric.closedBall p.val (ρ / 4)) ≤
+      riemannianVolumeMeasure (𝓡 3) CurvGRet (scaleMetric Q (d b).scalar_pos gRet)
+        (riemannianBallOf (scaleMetric Q (d b).scalar_pos gRet) (F ((w b).window p)) ρ) := by
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let : ChartedSpace CurvGE3 CurvGQ := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+  let : IsManifold (𝓡 3) ∞ CurvGQ := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space CurvGQ := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : SigmaCompactSpace CurvGQ := finiteCapQuotient_sigmaCompactSpace transitionEnd_pos hδ f hf hdisj
+  let : SigmaCompactSpace CurvGRet := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) (CurvGRet).isOpen)
+  dsimp only
+  let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+  let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+  let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+  apply (CanonicalStaticInsertionWitness.normalized_window_ball_volume_ge (w b) heps p hρ hmargin).trans
+  apply DifferentialGeometry.Geometry.Measure.riemannianVolumeMeasure_ball_le_of_injective_local_isometry
+    (scaleMetric Q (d b).scalar_pos (w b).data.outMetric)
+    (scaleMetric Q (d b).scalar_pos gRet) F
+    (isLocalDiffeomorph_finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b)
+    (injective_finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b)
+  intro p v z
+  rw [scaleMetric_inner, scaleMetric_inner]
+  exact congrArg (fun a => Q * a)
+    (finiteFullPreparedMetric_witness_inner I hδ f hf hdisj hs U g R hRet c hc
+      x₀ order d₀ hOriginal hrec d hmap hside w b p v z).symm
+
+
+
+theorem exists_uniform_finiteFullPreparedMetric_window_ball_volume_lower (R₀ : ℝ) :
+    ∃ ν : ℝ, 0 < ν ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E],
+      ∀ [Fact (Module.finrank ℝ E = 3)] [TopologicalSpace H] (I : ModelWithCorners ℝ E H) [I.Boundaryless],
+      ∀ [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M],
+      ∀ {ι : Type*} [Finite ι] {precision : ι → ℝ},
+      ∀ (hδ : ∀ i, 0 < precision i) (f : ∀ i : ι, bufferedCylinder (precision i) → M),
+      ∀ (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i)),
+      ∀ (hdisj : Pairwise (fun i j => Disjoint (range (f i)) (range (f j)))),
+      ∀ (hs : ∀ i, IsLocalDiffeomorph CurvGIC I ∞ (f i)),
+      ∀ (U : Opens M) (g : SmoothRiemannianMetric I U),
+      ∀ (R : Set (ConnectedComponents (cutCore f))),
+      ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R) U),
+      ∀ (c : ℝ) (hc : 4 ≤ c),
+      ∀ (x₀ : ι → U) (order : ι → ℕ),
+      ∀ (d₀ : ∀ i, normalizedDatum g (x₀ i) (precision i) (order i)),
+      ∀ (hOriginal : ∀ i, f i = neckAmbientMap U (d₀ i)),
+      ∀ {k' : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R} → ℕ},
+      ∀ (hrec : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (c * precision b.val.1)⁻¹ + 1 ≤ (precision b.val.1)⁻¹),
+      ∀ (d : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, normalizedDatum g
+    ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b)),
+      ∀ (hmap : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).map = (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b)),
+      ∀ (hside : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).retainedSide = true),
+      ∀ {A D ε : ℝ} {hA : 0 < A} {m : ℕ},
+      ∀ (w : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, CanonicalStaticInsertionWitness (d b) A hA D m ε),
+      ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, ε ≤ 1 / 2 →
+      let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+      let : ChartedSpace CurvGE3 (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+      let : IsManifold (𝓡 3) ∞ (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+      let : T2Space (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+      let : SigmaCompactSpace (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapQuotient_sigmaCompactSpace transitionEnd_pos hδ f hf hdisj
+      let : SigmaCompactSpace (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) := isSigmaCompact_iff_sigmaCompactSpace.mp
+        (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) ((finiteCapRetained transitionEnd_pos hδ f hf hdisj R)).isOpen)
+      let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+      let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+      let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+      ∀ p : standardCapWindow D, ‖p.val‖ ≤ R₀ → ∀ r : ℝ, 0 < r → r ≤ 1 → ‖p.val‖ + r < D →
+        ENNReal.ofReal ν * ENNReal.ofReal r ^ 3 ≤
+          riemannianVolumeMeasure (𝓡 3) (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) (scaleMetric Q (d b).scalar_pos gRet)
+            (riemannianBallOf (scaleMetric Q (d b).scalar_pos gRet) (F ((w b).window p)) r) := by
+  obtain ⟨ν, hν, hνbound⟩ := exists_uniform_normalized_window_ball_volume_lower R₀
+  refine ⟨ν, hν, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ _ ι _ precision hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside A D ε hA m w b heps
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let : ChartedSpace CurvGE3 (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+  let : IsManifold (𝓡 3) ∞ (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : SigmaCompactSpace (FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj) := finiteCapQuotient_sigmaCompactSpace transitionEnd_pos hδ f hf hdisj
+  let : SigmaCompactSpace (finiteCapRetained transitionEnd_pos hδ f hf hdisj R) := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen (𝓡 3) ((finiteCapRetained transitionEnd_pos hδ f hf hdisj R)).isOpen)
+  dsimp only
+  intro p hp r hr hr1 hmargin
+  let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+  let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+  let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+  apply (hνbound (w b) heps p hp r hr hr1 hmargin).trans
+  apply DifferentialGeometry.Geometry.Measure.riemannianVolumeMeasure_ball_le_of_injective_local_isometry
+    (scaleMetric Q (d b).scalar_pos (w b).data.outMetric)
+    (scaleMetric Q (d b).scalar_pos gRet) F
+    (isLocalDiffeomorph_finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b)
+    (injective_finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b)
+  intro p v z
+  rw [scaleMetric_inner, scaleMetric_inner]
+  exact congrArg (fun a => Q * a)
+    (finiteFullPreparedMetric_witness_inner I hδ f hf hdisj hs U g R hRet c hc
+      x₀ order d₀ hOriginal hrec d hmap hside w b p v z).symm
+
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
