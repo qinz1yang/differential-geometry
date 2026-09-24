@@ -177,4 +177,50 @@ theorem exists_all_point_canonical_neighborhoods :
   obtain ⟨C1, C2, Q, hC1, hC2, hQ, hK⟩ := hmain eps heps hsmall
   exact ⟨C1, C2, Q, hC1, hC2, hQ, fun x t ht hR => ⟨(hK x t ht hR).choose⟩⟩
 
+section
+
+attribute [local instance] OrientedThreeStage.component_compact
+
+theorem exists_component_canonical_neighborhoods_with_cap_neck_charts
+    {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
+    ∃ C Q : ℝ, 1 ≤ C ∧ 0 < Q ∧
+      ∀ (c : ConnectedComponents P.Carrier) (x : P.componentOpen c) (t : ℝ),
+        t ∈ Ico a s → Q ≤ G.flow.scalar t x.val →
+          ∃ K : CanonicalWitness (G.componentTimeShift c) eps C C x (t - a),
+            K.capTubeHasNeckChart eps := by
+  classical
+  obtain ⟨C, delta, hC, hd, hd1, htransfer⟩ :=
+    exists_uniform_windowed_bufferedCanonical_with_cap_neck_charts.{u} heps hsmall 1
+  choose kappa hkappa hmodels using G.exists_component_high_curvature_models
+  choose Q hQ hmodel using fun c => hmodels c delta hd hd1
+  let _ : LocallyConnectedSpace P.Carrier :=
+    ChartedSpace.locallyConnectedSpace ThreeSpace P.Carrier
+  let _ : Fintype (ConnectedComponents P.Carrier) := Fintype.ofFinite _
+  let Qmax : ℝ := 1 + ∑ c : ConnectedComponents P.Carrier, Q c
+  have hQmax : 0 < Qmax := by
+    have hn : 0 ≤ ∑ c : ConnectedComponents P.Carrier, Q c :=
+      Finset.sum_nonneg (fun c _ => (hQ c).le)
+    dsimp [Qmax]
+    linarith
+  refine ⟨C, Qmax, hC, hQmax, ?_⟩
+  intro c x t ht hscalar
+  let _ : CompactSpace (P.componentOpen c) := P.component_compact c
+  have hQle : Q c ≤ Qmax := by
+    have hsingle := Finset.single_le_sum (fun j _ => (hQ j).le) (Finset.mem_univ c)
+    dsimp [Qmax]
+    linarith
+  have hw := hmodel c x t ht (hQle.trans hscalar)
+  have hreg : Ioo (t - a - (delta * (G.componentTimeShift c).scalar (t - a) x)⁻¹)
+      (t - a) ⊆ (RealTimeInterval.closedOpen 0 (s - a) (sub_pos.mpr G.lt)).regular := by
+    obtain ⟨W, _⟩ := hw
+    simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
+      interior_mono W.window_mem
+  obtain ⟨B, hB⟩ := htransfer (kappa c) (P.componentOpen c) _
+    (G.componentTimeShift c) (G.isSolutionOn_componentTimeShift c) delta
+    (P.componentOrientation c) x (t - a) le_rfl hreg hw
+  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+    hB.mono_eps B.tolerance_lt.le hsmall⟩
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

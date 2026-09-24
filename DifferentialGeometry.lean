@@ -13673,3 +13673,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTimeJetConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCutoffRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapRecentering
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalComponentClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.UncutDiscardedClassification

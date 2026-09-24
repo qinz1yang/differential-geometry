@@ -5,6 +5,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorp
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCappedPresentationRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutComponentRealization
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
 
 noncomputable section
 
@@ -401,6 +402,34 @@ theorem componentConnectedSumDecomposition_iff_cutComponentRealization :
     E.componentConnectedSumDecomposition ↔ E.cutComponentRealization :=
   E.componentConnectedSumDecomposition_iff_noTubeRealization_and_cutComponentRealization.trans
     ⟨fun h => h.2, fun h => ⟨E.noTubeRealization, h⟩⟩
+
+theorem exists_core_presentation_eq_inr_component_of_isEmpty_index [IsEmpty E.tubes.Index]
+    (D : ConnectedComponents E.discarded.Carrier) :
+    ∃ (x : E.tubes.core) (d : E.discarded.Carrier),
+      ConnectedComponents.mk d = D ∧
+        E.presentation (E.capping.coreInclusion x) = Sum.inr d ∧
+        x ∈ E.coreComponentSet (ConnectedComponents.mk x.val) ∧
+        E.cutIndices (ConnectedComponents.mk x.val) = ∅ := by
+  obtain ⟨d, hd⟩ := ConnectedComponents.surjective_coe D
+  obtain ⟨x, hx⟩ := Set.range_eq_univ.mp E.range_coreInclusion_eq_univ_of_isEmpty_index
+    (E.presentation.symm (Sum.inr d))
+  have hxd : E.presentation (E.capping.coreInclusion x) = Sum.inr d := by
+    rw [hx, E.presentation.apply_symm_apply]
+  exact ⟨x, d, hd, hxd, (ClosedOrientedManifold.mem_componentSet M _ _).mpr rfl,
+    E.exists_cutIndices_eq_empty_of_isEmpty_index _⟩
+
+
+theorem isPoincareStandard_discardedComponent_of_cutIndices_eq_empty
+    (C : ConnectedComponents M.Carrier) (hC : E.cutIndices C = ∅)
+    (x : E.tubes.core) (hx : x ∈ E.coreComponentSet C)
+    (d : E.discarded.Carrier)
+    (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d)
+    (hstd : isPoincareStandard (M.component C).Carrier) :
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  obtain ⟨e⟩ := E.uncutCappingRealization C hC x hx
+  obtain ⟨f⟩ := E.cappedDiscardedPresentationRealization x d hd
+  exact isPoincareStandard_of_diffeomorph (e.val.trans f.val).symm hstd
+
 
 end SphericalCutCapTransition
 
