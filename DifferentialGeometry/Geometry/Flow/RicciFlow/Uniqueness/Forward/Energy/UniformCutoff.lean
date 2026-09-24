@@ -19,40 +19,47 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [I.Boundaryless] [SigmaCompactSpace M]
 
-theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
-    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
-    {a b : ℝ}
-    (hjoint₁ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+theorem exists_uniform_forward_uniqueness_cutoff_energy_bound_on_Ioo
+    (nDim : ℕ) {C R₁ R₂ D₁ D₂ : ℝ} (hC : 1 ≤ C) :
+    ∃ K : ℝ, 0 ≤ K ∧
+    ∀ {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+      [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+      {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+      {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+      [T2Space M] [I.Boundaryless] [SigmaCompactSpace M],
+      Module.finrank ℝ E = nDim →
+      ∀ (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
+        {a b : ℝ},
+    (∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g₁ p.1) α p.2 i j)
-        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
-    (hjoint₂ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)) →
+    (∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g₂ p.1) α p.2 i j)
-        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
-    (hpde₁ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)) →
+    (∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s => (g₁ s).inner x v w)
-        ((-2 : ℝ) * ricciTensor (I := I) (g₁ t) x v w) (Ici a) t)
-    (hpde₂ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
+        ((-2 : ℝ) * ricciTensor (I := I) (g₁ t) x v w) (Ici a) t) →
+    (∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s => (g₂ s).inner x v w)
-        ((-2 : ℝ) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
-    {C R₁ R₂ D₁ D₂ : ℝ} (hC : 1 ≤ C)
-    (hEquiv : ∀ t ∈ Ioo a b, ∀ x : M, ∀ v : TangentSpace I x,
+        ((-2 : ℝ) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t) →
+    (∀ t ∈ Ioo a b, ∀ x : M, ∀ v : TangentSpace I x,
       C⁻¹ * (g₁ t).inner x v v ≤ (g₂ t).inner x v v ∧
-        (g₂ t).inner x v v ≤ C * (g₁ t).inner x v v)
-    (hR₁ : ∀ t ∈ Ioo a b, ∀ x : M,
-      normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₁ t) x) ≤ R₁)
-    (hR₂ : ∀ t ∈ Ioo a b, ∀ x : M,
-      normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ R₂)
-    (hD₁ : ∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 5
+        (g₂ t).inner x v v ≤ C * (g₁ t).inner x v v) →
+    (∀ t ∈ Ioo a b, ∀ x : M,
+      normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₁ t) x) ≤ R₁) →
+    (∀ t ∈ Ioo a b, ∀ x : M,
+      normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ R₂) →
+    (∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 5
       (metricNabla0S (I := I) (g₂ t)
         (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
-          (metricCov_smooth (I := I) (g₂ t))) x) ≤ D₁)
-    (hD₂ : ∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 6
+          (metricCov_smooth (I := I) (g₂ t))) x) ≤ D₁) →
+    (∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 6
       (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
         (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
-          (metricCov_smooth (I := I) (g₂ t)))) x) ≤ D₂) :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ (χ : C^∞⟮I, M; ℝ⟯), HasCompactSupport (χ : M → ℝ) →
+          (metricCov_smooth (I := I) (g₂ t)))) x) ≤ D₂) →
+      ∀ (χ : C^∞⟮I, M; ℝ⟯), HasCompactSupport (χ : M → ℝ) →
       ∀ t ∈ Ioo a b,
       let S := forwardUniquenessSfield (I := I) g₁ g₂ t
       let A := metricNabla0S (I := I) (g₁ t) S
@@ -66,7 +73,7 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
         K * (∫ x, χ x ^ 2 * forwardUniqueDensity (I := I) g₁ g₂ t x ∂μ) -
         (∫ x, χ x ^ 2 * normSq0S (I := I) (g₁ t) x 5 (A x) ∂μ) +
         10 * (∫ x, normSq0S (I := I) (g₁ t) x 5 (B x) ∂μ) := by
-  let n : ℝ := Module.finrank ℝ E
+  let n : ℝ := nDim
   let Background : ℝ := C ^ 2 * n
   let BH : ℝ := 2 * n + 2 * Background
   let BR2 : ℝ := C ^ 4 * R₂
@@ -104,7 +111,10 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
     rw [mul_comm, ← div_eq_mul_inv]
     apply (div_le_iff₀ hden).mpr
     linarith
-  refine ⟨max K₀ 0, le_max_right _ _, fun χ hχ t ht => ?_⟩
+  refine ⟨max K₀ 0, le_max_right _ _, ?_⟩
+  intro E _ _ _ _ H _ I M _ _ _ _ _ _ hdim
+  subst nDim
+  intro g₁ g₂ a b hjoint₁ hjoint₂ hpde₁ hpde₂ hEquiv hR₁ hR₂ hD₁ hD₂ χ hχ t ht
   have htime : t ∈ Ioo a b := ht
   have heq (x : M) := hEquiv t htime x
   have hsymm (x : M) := metric_equiv_symm (I := I) (g₁ t) (g₂ t) x hC (heq x)
@@ -213,6 +223,58 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
   have hK := mul_le_mul_of_nonneg_right (le_max_left K₀ 0) henergy0
   norm_num only [one_div, inv_inv] at henergy
   linarith only [henergy, hdiss, hK]
+
+theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
+    {a b : ℝ}
+    (hjoint₁ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g₁ p.1) α p.2 i j)
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hjoint₂ : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g₂ p.1) α p.2 i j)
+        (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    (hpde₁ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s => (g₁ s).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₁ t) x v w) (Ici a) t)
+    (hpde₂ : ∀ t ∈ Ioo a b, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s => (g₂ s).inner x v w)
+        ((-2 : ℝ) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
+    {C R₁ R₂ D₁ D₂ : ℝ} (hC : 1 ≤ C)
+    (hEquiv : ∀ t ∈ Ioo a b, ∀ x : M, ∀ v : TangentSpace I x,
+      C⁻¹ * (g₁ t).inner x v v ≤ (g₂ t).inner x v v ∧
+        (g₂ t).inner x v v ≤ C * (g₁ t).inner x v v)
+    (hR₁ : ∀ t ∈ Ioo a b, ∀ x : M,
+      normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₁ t) x) ≤ R₁)
+    (hR₂ : ∀ t ∈ Ioo a b, ∀ x : M,
+      normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ R₂)
+    (hD₁ : ∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 5
+      (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
+          (metricCov_smooth (I := I) (g₂ t))) x) ≤ D₁)
+    (hD₂ : ∀ t ∈ Ioo a b, ∀ x : M, normSq0S (I := I) (g₂ t) x 6
+      (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t) (metricCov (I := I) (g₂ t))
+          (metricCov_smooth (I := I) (g₂ t)))) x) ≤ D₂) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (χ : C^∞⟮I, M; ℝ⟯), HasCompactSupport (χ : M → ℝ) →
+      ∀ t ∈ Ioo a b,
+      let S := forwardUniquenessSfield (I := I) g₁ g₂ t
+      let A := metricNabla0S (I := I) (g₁ t) S
+      let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
+        ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
+          (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
+        (unitZeroSec (I := I) (M := M) x)
+      let μ := riemannianVolumeMeasure (I := I) (M := M) (g₁ t)
+      deriv (fun s => ∫ x, χ x ^ 2 * forwardUniqueDensity (I := I) g₁ g₂ s x
+        ∂riemannianMeasureFamily g₁ s) t ≤
+        K * (∫ x, χ x ^ 2 * forwardUniqueDensity (I := I) g₁ g₂ t x ∂μ) -
+        (∫ x, χ x ^ 2 * normSq0S (I := I) (g₁ t) x 5 (A x) ∂μ) +
+        10 * (∫ x, normSq0S (I := I) (g₁ t) x 5 (B x) ∂μ) := by
+  obtain ⟨K, hK, hbound⟩ :=
+    exists_uniform_forward_uniqueness_cutoff_energy_bound_on_Ioo (Module.finrank ℝ E)
+      (R₁ := R₁) (R₂ := R₂) (D₁ := D₁) (D₂ := D₂) hC
+  exact ⟨K, hK, hbound rfl g₁ g₂ hjoint₁ hjoint₂ hpde₁ hpde₂ hEquiv hR₁ hR₂ hD₁ hD₂⟩
 
 theorem forward_uniqueness_cutoff_energy_uniform_bound
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
