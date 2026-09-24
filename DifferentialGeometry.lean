@@ -4923,6 +4923,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.BernsteinMaxim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.BernsteinMaximumSelfCoupled
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompactSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompleteGlobal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.ConstantMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
@@ -4943,6 +4944,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialDistanc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialDistanceLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialDistanceSupWeight
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialFirstDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialLocalBoundsHorizon
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialLocalCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LaplacianBoundScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LaplacianInputRegularWindow
@@ -5433,9 +5435,12 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
 import DifferentialGeometry.Geometry.Neck.CapSeparation
+import DifferentialGeometry.Geometry.Neck.CompactCapCover
 import DifferentialGeometry.Geometry.Neck.ScalarNormalization
 import DifferentialGeometry.Geometry.Neck.SpatialIsometry
 import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
+import DifferentialGeometry.Geometry.Neck.StaticQuarterBand
+import DifferentialGeometry.Geometry.Neck.StaticSlabCapture
 import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
@@ -9859,6 +9864,8 @@ import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOriented
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSphericalSpaceFormReduction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosed
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosedAssociative
+import DifferentialGeometry.Topology.ThreeManifold.PuncturedCapCover
+import DifferentialGeometry.Topology.ThreeManifold.PuncturedCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.RelativeBallReplacement
 import DifferentialGeometry.Topology.ThreeManifold.RelativeBallShell
 import DifferentialGeometry.Topology.ThreeManifold.SmoothCutCapGraphSumRealization
