@@ -37,6 +37,38 @@ private theorem closedBand_eq_image_slab (a : T.Index) (e : OpenPartialHomeomorp
     refine ⟨(q, ⟨t, ?_⟩), ht, hmap _ ht⟩
     constructor <;> linarith [ht.1, ht.2]
 
+theorem boundarySphere_mem_iUnion_closedBand (b : T.Boundary) (z : Sphere 2) :
+    T.boundarySphere b z ∈ ⋃ a, T.tube a ''
+      {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1} := by
+  refine mem_iUnion.mpr ⟨b.1, (z, boundaryLevel b.2), ?_, rfl⟩
+  cases b with
+  | mk a side => cases side <;> norm_num [boundaryLevel]
+
+theorem iUnion_closedBand_inter_core :
+    (⋃ a, T.tube a '' {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1}) ∩ T.core =
+      ⋃ b : T.Boundary, range (T.boundarySphere b) := by
+  ext x
+  constructor
+  · rintro ⟨hx, hxcore⟩
+    obtain ⟨a, q, hq, rfl⟩ := mem_iUnion.mp hx
+    have hnot : ¬ ((-1 : ℝ) < q.2.val ∧ q.2.val < 1) := by
+      intro h
+      exact hxcore (mem_iUnion.mpr ⟨a, q, h, rfl⟩)
+    have hends : q.2.val = -1 ∨ q.2.val = 1 := by
+      rcases le_or_gt q.2.val (-1) with h | h
+      · exact Or.inl (le_antisymm h hq.1)
+      · exact Or.inr (le_antisymm hq.2 (not_lt.mp (fun hh => hnot ⟨h,hh⟩)))
+    rcases hends with h | h
+    · refine mem_iUnion.mpr ⟨(a, false), q.1, ?_⟩
+      apply congrArg (T.tube a)
+      exact Prod.ext rfl (Subtype.ext (by simpa [boundaryLevel] using h.symm))
+    · refine mem_iUnion.mpr ⟨(a, true), q.1, ?_⟩
+      apply congrArg (T.tube a)
+      exact Prod.ext rfl (Subtype.ext (by simpa [boundaryLevel] using h.symm))
+  · intro hx
+    obtain ⟨b, z, rfl⟩ := mem_iUnion.mp hx
+    exact ⟨T.boundarySphere_mem_iUnion_closedBand b z, T.boundarySphere_mem_core b z⟩
+
 variable [T2Space M]
 
 theorem closure_interior_closedBand_of_openPartialHomeomorph (a : T.Index) (e : OpenPartialHomeomorph (Sphere 2 × ℝ) M)

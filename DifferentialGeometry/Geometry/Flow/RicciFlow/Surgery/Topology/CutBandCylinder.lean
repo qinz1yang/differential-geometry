@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.Frontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandFrontier
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.CollarAdvance
 import DifferentialGeometry.Topology.Diffeomorph.FiberwiseAffine
@@ -272,5 +273,91 @@ theorem exists_outward_cut_cylinder_of_partialDiffeomorph
   · rw [hupper] at hfront
     exact hfront
 
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+open DifferentialGeometry.Topology
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [T2Space M] (T : TubeSystem M)
+
+theorem cylinder_eq_image_coreComponent_of_return
+    (R : PartialDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) (𝓡 3) (Sphere 2 × ℝ) M ∞)
+    (hR : univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source)
+    (b₀ b₁ : T.Boundary)
+    (hinter : R '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+        (⋃ a, T.tube a '' {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1}) =
+      range (T.boundarySphere b₀) ∪ range (T.boundarySphere b₁))
+    (hfront : frontier ((⋃ a, T.tube a ''
+        {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1}) ∪
+        R '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
+      ⋃ b : {b : T.Boundary // b ≠ b₀ ∧ b ≠ b₁}, range (T.boundarySphere b.val)) :
+    R '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ T.core ∧
+    ∀ (x : T.core), x.val ∈ R '' (univ ×ˢ Icc (0 : ℝ) 1) →
+      R '' (univ ×ˢ Icc (0 : ℝ) 1) = Subtype.val '' connectedComponent x ∧
+      ∀ b : T.Boundary, (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
+        b = b₀ ∨ b = b₁ := by
+  let K := R '' (univ ×ˢ Icc (0 : ℝ) 1)
+  let W := ⋃ a, T.tube a '' {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1}
+  let S := ⋃ b : {b : T.Boundary // b ≠ b₀ ∧ b ≠ b₁}, range (T.boundarySphere b.val)
+  have hKW : K ∩ W = range (T.boundarySphere b₀) ∪ range (T.boundarySphere b₁) := hinter
+  have hKC : K ⊆ T.core := by
+    intro x hx
+    by_cases hxW : x ∈ W
+    · rcases hKW ▸ (show x ∈ K ∩ W from ⟨hx,hxW⟩) with ⟨z,hz⟩ | ⟨z,hz⟩
+      · exact hz ▸ T.boundarySphere_mem_core b₀ z
+      · exact hz ▸ T.boundarySphere_mem_core b₁ z
+    · intro hxnot
+      obtain ⟨a,q,hq,hqx⟩ := mem_iUnion.mp hxnot
+      exact hxW (mem_iUnion.mpr ⟨a,q,⟨hq.1.le,hq.2.le⟩,hqx⟩)
+  have hSclosed : IsClosed S := isClosed_iUnion_of_finite fun b =>
+    (isCompact_range (T.boundarySphere b.val).continuous).isClosed
+  have hKS : Disjoint K S := by
+    apply disjoint_left.mpr
+    intro x hxK hxS
+    obtain ⟨b,z,rfl⟩ := mem_iUnion.mp hxS
+    have hxW := T.boundarySphere_mem_iUnion_closedBand b.val z
+    rcases hKW ▸ (show T.boundarySphere b.val z ∈ K ∩ W from ⟨hxK,hxW⟩) with
+      ⟨w,hw⟩ | ⟨w,hw⟩
+    · exact b.property.1 ((T.boundarySphere_eq_iff b.val b₀ z w).mp hw.symm).1
+    · exact b.property.2 ((T.boundarySphere_eq_iff b.val b₁ z w).mp hw.symm).1
+  have hWcore : W ∩ T.core ⊆ K ∪ S := by
+    intro x hx
+    obtain ⟨b,z,hzx⟩ := mem_iUnion.mp (T.iUnion_closedBand_inter_core ▸ hx)
+    by_cases hb₀ : b = b₀
+    · subst b
+      exact Or.inl ((hKW.symm ▸ (show x ∈ range (T.boundarySphere b₀) ∪
+        range (T.boundarySphere b₁) from Or.inl ⟨z,hzx⟩)).1)
+    · by_cases hb₁ : b = b₁
+      · subst b
+        exact Or.inl ((hKW.symm ▸ (show x ∈ range (T.boundarySphere b₀) ∪
+          range (T.boundarySphere b₁) from Or.inr ⟨z,hzx⟩)).1)
+      · exact Or.inr (mem_iUnion.mpr ⟨⟨b,hb₀,hb₁⟩,z,hzx⟩)
+  have hKcompact : IsCompact K := (isCompact_univ.prod isCompact_Icc).image_of_continuousOn
+    (R.contMDiffOn_toFun.continuousOn.mono hR)
+  let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+      (0 : ThreeSpace) (by norm_num : (0 : ℝ) ≤ 1))
+  have hKpre : IsPreconnected K := (isPreconnected_univ.prod isPreconnected_Icc).image R
+    (R.contMDiffOn_toFun.continuousOn.mono hR)
+  refine ⟨hKC, ?_⟩
+  intro x hx
+  have hcomp : connectedComponent x = (Subtype.val : T.core → M) ⁻¹' K :=
+    connectedComponent_eq_preimage_of_frontier_union_subset hKcompact.isClosed hKpre hKC
+      hSclosed hKS hfront hWcore x hx
+  refine ⟨?_, ?_⟩
+  · rw [hcomp, Subtype.image_preimage_coe, inter_eq_right.mpr hKC]
+  · intro b hb
+    obtain ⟨z,hz⟩ := hb
+    have hzK : T.boundarySphere b z ∈ K := by
+      have hz' : T.coreBoundarySphere b z ∈ (Subtype.val : T.core → M) ⁻¹' K := hcomp ▸ hz
+      exact hz'
+    have hzW := T.boundarySphere_mem_iUnion_closedBand b z
+    rcases hKW ▸ (show T.boundarySphere b z ∈ K ∩ W from ⟨hzK,hzW⟩) with
+      ⟨w,hw⟩ | ⟨w,hw⟩
+    · exact Or.inl ((T.boundarySphere_eq_iff b b₀ z w).mp hw.symm).1
+    · exact Or.inr ((T.boundarySphere_eq_iff b b₁ z w).mp hw.symm).1
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
