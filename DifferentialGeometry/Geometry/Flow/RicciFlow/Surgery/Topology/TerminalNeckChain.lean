@@ -122,4 +122,62 @@ theorem TerminalLimitMetric.exists_neck_chain_along_minimizer
   exact ⟨u, v, hu, huv, hv, hRu, hRv, hband, neck, ⟨rho, hrho, S, hSC, hS, hendsS (by simp), hendsS (by simp), hsep, hcover⟩, n, hn, p,
     congrArg Subtype.val hp0, congrArg Subtype.val hpn, hinj, hmeet, hdisj⟩
 
+
+theorem exists_eventually_neck_chains_along_scalar_escape
+    (P : ℕ → OrientedThreeStage.{u}) (a s : ℕ → ℝ)
+    (G : ∀ i, (P i).IncomingSlab (a i) (s i))
+    (L : ∀ i, (G i).TerminalLimitMetric) (gamma : ∀ i, ℝ → (G i).terminalRegularOpen)
+    (ell Q q : ℕ → ℝ) (hell : ∀ i, 0 < ell i) (hQ : ∀ i, 0 < Q i)
+    (hq : ∀ i, 0 < q i) (hqQ : ∀ i, q i ≤ Q i)
+    {eps δ α C1 C2 : ℝ}
+    (hδ : 0 < δ) (hα : α ≤ 1 / 20000) (hreserve : 13000 * δ ≤ α)
+    (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hC2 : 1 ≤ C2)
+    (hcontinuous : ∀ i, ContinuousOn (gamma i) (Icc 0 (ell i)))
+    (hmin : ∀ i, ∀ t ∈ Icc 0 (ell i), ∀ v ∈ Icc 0 (ell i),
+      riemannianEDistOf (L i).metric (gamma i t) (gamma i v) = ENNReal.ofReal |t - v|)
+    (hcanonical : ∀ i, ∀ t ∈ Ioo 0 (ell i), ∀ time ∈ Ioo (a i) (s i),
+      q i < (G i).flow.scalar time (gamma i t).val →
+      ∃ W : CanonicalWitness (G i).flow eps C1 C2 (gamma i t).val time, W.capTubeHasNeckChart eps)
+    (hbase : ∀ i, metricScalarAt (L i).metric (gamma i 0) ≤ Q i)
+    (hhigh : Filter.Tendsto (fun i => metricScalarAt (L i).metric (gamma i (ell i)) / Q i)
+      Filter.atTop Filter.atTop) (N : ℕ) :
+    let A := fun i => (2 * C2 + 2) * Q i
+    let B := fun i => (2 : ℝ) ^ (N + 1) * A i
+    ∀ᶠ i in Filter.atTop,
+    ∃ u v : ℝ, 0 < u ∧ u < v ∧ v < (ell i) ∧
+      metricScalarAt (L i).metric ((gamma i) u) = (A i) ∧ metricScalarAt (L i).metric ((gamma i) v) = (B i) ∧
+      (∀ t ∈ Icc u v, (A i) ≤ metricScalarAt (L i).metric ((gamma i) t) ∧ metricScalarAt (L i).metric ((gamma i) t) ≤ (B i)) ∧
+      ∃ neck : ∀ x ∈ (gamma i) '' Icc u v, SpatialNeck (L i).metric α x,
+      (∃ (rho : ℝ≥0) (_ : 0 < rho) (S : Set (G i).terminalRegularOpen)
+          (hSC : S ⊆ (gamma i) '' Icc u v),
+        S.Finite ∧ (gamma i) u ∈ S ∧ (gamma i) v ∈ S ∧
+        S.Pairwise (fun p q => (rho : ℝ≥0∞) < riemannianEDistOf (L i).metric p q) ∧
+        ∀ x ∈ (gamma i) '' Icc u v, ∃ p : (G i).terminalRegularOpen, ∃ hp : p ∈ S,
+          x ∈ (neck p (hSC hp)).map '' (univ ×ˢ Icc (-1 : ℝ) 1)) ∧
+      ∃ n : ℕ, N ≤ n ∧ ∃ p : Fin (n + 1) → (gamma i) '' Icc u v,
+        (p 0).val = (gamma i) u ∧ (p (Fin.last n)).val = (gamma i) v ∧ Function.Injective p ∧
+        (∀ i : Fin n,
+          ((neck (p i.castSucc) (p i.castSucc).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1) ∩
+            (neck (p i.succ) (p i.succ).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1)).Nonempty) ∧
+        ∀ i j : Fin (n + 1), i.val + 1 < j.val →
+          Disjoint ((neck (p i) (p i).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1))
+            ((neck (p j) (p j).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  dsimp only
+  let A := fun i => (2 * C2 + 2) * Q i
+  let B := fun i => (2 : ℝ) ^ (N + 1) * A i
+  filter_upwards [hhigh.eventually_ge_atTop (2 * C2 * (2 : ℝ) ^ (N + 1) * (2 * C2 + 2))] with i hi
+  apply (L i).exists_neck_chain_along_minimizer hδ hα hreserve hepsδ hfit (hq i) hC2
+    (hell i) (gamma i) (hcontinuous i) (hmin i) (hcanonical i)
+  · have hh := mul_le_mul_of_nonneg_left (hbase i) (by linarith : 0 ≤ 2 * C2)
+    change 2 * C2 * metricScalarAt (L i).metric (gamma i 0) < (2 * C2 + 2) * Q i
+    nlinarith [hQ i]
+  · nlinarith [hqQ i, hQ i]
+  · have hA : 0 < A i := mul_pos (by linarith) (hQ i)
+    have hpow : (1 : ℝ) < (2 : ℝ) ^ (N + 1) := one_lt_pow₀ (by norm_num) (by omega)
+    exact lt_mul_of_one_lt_left hA hpow
+  · have hmul := (le_div_iff₀ (hQ i)).mp hi
+    nlinarith
+  · have hA : 0 ≤ A i := le_of_lt (mul_pos (by linarith) (hQ i))
+    exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ (by norm_num) (Nat.le_succ N)) hA
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
