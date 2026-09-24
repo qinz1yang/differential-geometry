@@ -80,3 +80,69 @@ theorem range_sdiff_image_positive_half_cylinder
     exact ht.2.ne' hz
 
 end DifferentialGeometry.Topology
+
+
+set_option autoImplicit false
+
+open Set
+open scoped NNReal
+
+namespace DifferentialGeometry.Topology
+
+def halfCylinderHomeomorphProdNNReal (N : Type*) [TopologicalSpace N] :
+    {p : N × ℝ // 0 ≤ p.2} ≃ₜ N × ℝ≥0 where
+  toFun p := (p.1.1, ⟨p.1.2, p.2⟩)
+  invFun p := ⟨(p.1, p.2), p.2.property⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+  continuous_toFun := continuous_subtype_val.fst.prodMk
+    (continuous_subtype_val.snd.subtype_mk _)
+  continuous_invFun := (continuous_fst.prodMk
+    (continuous_subtype_val.comp continuous_snd)).subtype_mk _
+
+variable {N M : Type*}
+
+theorem range_half_cylinder_eq_image (f : N × ℝ → M) :
+    range (fun p : {p : N × ℝ // 0 ≤ p.2} => f p.1) =
+      f '' (univ ×ˢ Ici (0 : ℝ)) := by
+  ext y
+  constructor
+  · rintro ⟨⟨p, hp⟩, rfl⟩
+    exact ⟨p, ⟨mem_univ _, hp⟩, rfl⟩
+  · rintro ⟨p, hp, rfl⟩
+    exact ⟨⟨p, hp.2⟩, rfl⟩
+
+theorem uniform_scalar_divergence_nnreal_iff (R : M → ℝ) (f : N × ℝ → M) (B : ℝ) :
+    (∃ T : ℝ≥0, ∀ (x : N) (t : ℝ≥0), T ≤ t → B < R (f (x, t))) ↔
+      ∃ T : ℝ, ∀ (x : N) (t : ℝ), T ≤ t → B < R (f (x, t)) := by
+  constructor
+  · rintro ⟨T, hT⟩
+    refine ⟨T, ?_⟩
+    intro x t ht
+    exact hT x ⟨t, T.property.trans ht⟩ ht
+  · rintro ⟨T, hT⟩
+    refine ⟨⟨max T 0, le_max_right T 0⟩, ?_⟩
+    intro x t ht
+    exact hT x t ((le_max_left T 0).trans ht)
+
+variable [TopologicalSpace N] [TopologicalSpace M]
+
+theorem isProperMap_half_cylinder_iff (f : N × ℝ → M) :
+    IsProperMap (fun p : {p : N × ℝ // 0 ≤ p.2} => f p.1) ↔
+      IsProperMap (fun p : N × ℝ≥0 => f (p.1, p.2)) := by
+  constructor
+  · intro hf
+    exact hf.comp (halfCylinderHomeomorphProdNNReal N).symm.isProperMap
+  · intro hf
+    exact hf.comp (halfCylinderHomeomorphProdNNReal N).isProperMap
+
+theorem uniform_scalar_divergence_of_isProperMap_half_cylinder
+    (R : M → ℝ) (hcompact : ∀ B : ℝ, IsCompact {x : M | R x ≤ B})
+    (f : N × ℝ → M) (hf : IsProperMap (fun p : {p : N × ℝ // 0 ≤ p.2} => f p.1))
+    (B : ℝ) :
+    ∃ T : ℝ, ∀ (x : N) (t : ℝ), T ≤ t → B < R (f (x, t)) := by
+  exact (uniform_scalar_divergence_nnreal_iff R f B).mp
+    (uniform_scalar_divergence_of_isProperMap R hcompact
+      (fun p : N × ℝ≥0 => f (p.1, p.2)) ((isProperMap_half_cylinder_iff f).mp hf) B)
+
+end DifferentialGeometry.Topology
