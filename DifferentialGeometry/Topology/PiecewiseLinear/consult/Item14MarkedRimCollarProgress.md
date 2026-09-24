@@ -26,3 +26,5 @@ The unmodified aggregate build is running separately; no aggregate success is cl
 - Compact adapters: actual dual cells have shared marked cap centers and bridge disks. Supplied single-vertex marked prisms glue into a marked product, with an outward buffer of the whole torus. These are downstream adapters; they do not supply L2.
 
 - Standard model: the box axis has a genuine bridge disk and exact endpoint/interior affine charts. `exists_isBridgeDisk_prism_axis` produces a full Euclidean three-ball prism and its marked bridge without hypotheses.
+
+- Actual compatible collar: `IsBridgeDisk.exists_boundary_collar` now derives a jointly PL collar on frontier C × [0,2] from the bridge certificate and the PL ball. It includes the collar-neighborhood property, exact bridge intersection, and endpoint fibers lying in the original arc. Local charts come from actual links; finite germ restrictions avoid false closed-star intersection identities.
