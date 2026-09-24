@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodPolygon
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCoreBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusOnPolyhedralCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleHomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.EssentialPolygonProductCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
+
+/-! # Derived Neighborhood Circle Levels -/
 
 open Set Topology
 

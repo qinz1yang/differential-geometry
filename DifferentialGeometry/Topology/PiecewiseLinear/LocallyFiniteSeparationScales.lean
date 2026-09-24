@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.Tactic.Linarith
+
+/-! # Locally Finite Separation Scales -/
 
 open Set
 

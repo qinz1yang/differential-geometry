@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.LocallyFiniteSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexScales
 import Mathlib.Topology.MetricSpace.Thickening
+
+/-! # Section34Lens Isolation -/
 
 open Set Metric
 

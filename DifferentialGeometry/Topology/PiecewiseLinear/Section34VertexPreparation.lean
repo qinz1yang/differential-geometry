@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeEnds
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedVertexCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingCircleNeighborhoods
@@ -11,6 +16,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeparationMargins
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularGenerators
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedNestedAnnuli
+
+/-! # Section34Vertex Preparation -/
 
 open Set Topology
 
@@ -54,6 +61,9 @@ theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopolog
       (ε : Section34VertexIndex 𝒦 𝒦' → ℝ),
       Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
         Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε := by
+  let _ := (inferInstance : SecondCountableTopology M₂)
+  let _ := (inferInstance : HasGroupoid M₂ (plGroupoid 3))
+  let _ := (inferInstance : FiniteDimensional ℝ Ea)
   obtain ⟨ends, hends⟩ := exists_section34_edge_ends hframe
   obtain ⟨diskO, hdiskO⟩ := exists_section34_splitDisk_neighborhoods hU hh hframe
   obtain ⟨Cc, hcc, hsrcCc, hCcU, hQ, hchart, hLFU⟩ :=

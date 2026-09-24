@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import Mathlib.Topology.Closure
+
+/-! # Local Frontier Crossing -/
 
 open Set Topology
 
@@ -9,7 +16,7 @@ theorem interior_inter_eq_of_inter_eq {X : Type*} [TopologicalSpace X]
     interior A ∩ V = interior B ∩ V := by
   simpa only [interior_inter, hV.interior_eq] using congrArg interior heq
 
-theorem frontier_inter_eq_of_inter_eq {X : Type*} [TopologicalSpace X]
+theorem frontier_inter_eq_of_isClosed_of_inter_eq {X : Type*} [TopologicalSpace X]
     {A B V : Set X} (hA : IsClosed A) (hB : IsClosed B) (hV : IsOpen V)
     (heq : A ∩ V = B ∩ V) : frontier A ∩ V = frontier B ∩ V := by
   have hi := interior_inter_eq_of_inter_eq hV heq
@@ -37,7 +44,7 @@ theorem frontier_sides_of_inter_eq {X : Type*} [TopologicalSpace X]
     (hin : C ⊆ closure (frontier A ∩ interior B))
     (hout : C ⊆ closure (frontier A \ B)) :
     (C ⊆ closure (frontier A' ∩ interior B')) ∧ C ⊆ closure (frontier A' \ B') := by
-  have hAf := frontier_inter_eq_of_inter_eq hA hA' hV heA
+  have hAf := frontier_inter_eq_of_isClosed_of_inter_eq hA hA' hV heA
   have hBi := interior_inter_eq_of_inter_eq hV heB
   constructor
   · apply closure_subset_of_inter_eq hV hCV _ hin

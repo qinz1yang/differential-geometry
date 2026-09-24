@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallFrontiers
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.Instances.Real.Lemmas
+
+/-! # Section34Piercing Marker Routes -/
 
 open Set Topology
 

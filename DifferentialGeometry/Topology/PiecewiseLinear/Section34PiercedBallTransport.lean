@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CenteredPrismBallPair
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceConjugateEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceBallInterior
@@ -5,6 +10,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnPolyhedralBall
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallModel
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapSource
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPieceCrossingFrontiers
+
+/-! # Section34Pierced Ball Transport -/
 
 open Set Topology
 

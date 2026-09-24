@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceInclusion
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceTransition
 import DifferentialGeometry.Topology.PiecewiseLinear.StageTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactEmbeddingApproximation
+
+/-! # PLPiece Conjugate Embedding -/
 
 open Set Topology
 

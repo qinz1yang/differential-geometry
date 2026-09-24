@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import Mathlib.Topology.Order.OrderClosed
 import Mathlib.Topology.Order.DenselyOrdered
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Tactic.Linarith
+
+/-! # Section34Pierced Ball Frontiers -/
 
 open Set Topology
 

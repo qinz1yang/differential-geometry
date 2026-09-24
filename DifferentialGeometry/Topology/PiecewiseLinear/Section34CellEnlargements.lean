@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import DifferentialGeometry.Topology.Connected.TwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.StageTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceTransition
 import Mathlib.Topology.Instances.Real.Lemmas
+
+/-! # Section34Cell Enlargements -/
 
 open Set Topology
 

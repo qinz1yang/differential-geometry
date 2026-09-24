@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeGraphRegions
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedEdgeCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedPiercedCells
+
+/-! # Section34Graph Covering Edge Cells -/
 
 open Set Topology
 

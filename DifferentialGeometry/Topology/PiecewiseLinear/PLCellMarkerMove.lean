@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldPointTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactEmbeddingApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import Mathlib.Topology.Connected.LocallyConnected
+
+/-! # PLCell Marker Move -/
 
 open Set Topology
 

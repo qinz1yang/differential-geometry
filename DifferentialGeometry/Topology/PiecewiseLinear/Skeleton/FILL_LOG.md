@@ -12421,3 +12421,164 @@ Publication includes only this lane; expanded audit remains pending at the owner
   SHA-256: `7F59379BE20E43D571F4CFCB915CFDF7BB03A8FB2F68052467873992FFFEC55A`.
 - Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercingPackageAxioms.lean with no diagnostics; shared outputs unchanged.`
   SHA-256: `89B3EB1A79533EA6482598ADE4B59F94682FB46B1ECF93AC1F8425AF44E6BCE4`.
+
+# Codex item 20
+
+## PR 12 acceptance: steps 1-4 verified (2026-09-24)
+
+- Accepted exact reported tip 50e96a425f445be1998e8ae3774dee8c515c85a7: 57 final files.
+  Actual commit count is 23, not the reported 22; the source tip and file scope agree.
+- Shared IsAnnulusOnCompact and PLCellOnBoundarySphere have identical PR source blobs.
+  Their add/add conflicts retained the PR14-verified headered versions, byte-for-byte.
+  Thus this PR contributes 55 additional modules. No foreign untracked source was touched.
+- Preparation leaf statement byte-identical to frozen skeleton. Renamed PR-only
+  frontier_inter_eq_of_inter_eq -> frontier_inter_eq_of_isClosed_of_inter_eq and its uses.
+  Final scan:145 public declarations, only the approved frozen leaf duplicate remains.
+- Added required header/module documentation to55 new files;141 diagnostic axiom prints
+  became silent checks. Frozen leaf proof uses its existing FiniteDimensional, target
+  SecondCountableTopology and target HasGroupoid instances explicitly; statement unchanged.
+- All57 modules verified under lease a, including both shared modules. Full audit checks
+  original/direct declaration selection equality, foundational axioms and thirteen linters.
+- Audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditPR12.lean with no diagnostics; shared outputs unchanged.`
+  Audit SHA-256: `B04F78D41C3162E433474DE3C4B95427671F6F6B35170F483F99DB737FAE431D`.
+
+Imported commits:
+
+- `79e1d1d74 Construct graph cores and locally finite vertex separation scales`
+- `46bd8fcca Isolate the remaining vertex preparation geometry in a frozen probe`
+- `54e59df4e Prove preparation margins, split-disk isolation, and annular generators`
+- `16f7e24ba Construct pierced ball models and ambient regular neighborhood refinements`
+- `161bacc18 Construct locally finite chart-local PL cell enlargements`
+- `c53cd71a4 Transport pierced ball pairs to cut-frame edge cells`
+- `60b7c9a8d Move PL cell markers with compact support while preserving coverage`
+- `4a39fb923 Construct exclusively marked pierced cells along a shared disk`
+- `164580f16 Assign arbitrary source markers in the pierced ball pair`
+- `5385a0245 Paste disjoint relative PL embeddings on compact source cells`
+- `bb2445cd4 Retain supported embeddings in cut-frame pierced cell producers`
+- `b023b9d11 Determine all intersections of cut-frame vertex cells`
+- `3e9ba4ab1 Protect every affected graph point in cut-frame edge modifications`
+- `cc3b6ad54 Assemble locally finite pierced vertex cells covering the whole graph`
+- `9cc2b0ffb Construct marked pierced vertex cells and close the isolated-lens obligation`
+- `2f65f8af4 Isolate piercing circles from graph cores and foreign vertex cells`
+- `279eeeebd Construct arbitrarily small nested full-domain regular neighborhoods of PL circles`
+- `1452ba641 Recognize small nested regular neighborhoods as solid tori inside PL balls`
+- `37f408317 Construct nested regular neighborhoods with simultaneous annulus traces`
+- `bd4373f3a Construct nested piercing annuli with core and end separation`
+- `9d3fc3668 Center the piercing circle in annulus coordinates and prove frontier side criteria`
+- `d4cc8759a Prove both-side crossings for the pierced ball model and its manifold transport`
+- `675a1ceb5 Complete vertex preparation with crossing-preserving markers and nested annular sides`
+
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\AnnulusOnPolyhedralCylinder.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `44878602CE9388806455D20208282BE12A68FDA6C63386BDDC90056DE225CB1E`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CylinderFrontierSides.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `33C5FD0EBB533037840D320E294467AEE394F3558D920E67224818B970E094AB`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\AnnulusFrontierSides.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `5BBA5445549BDF3FD80B40805322153FBCE7AF9DA395C0EBD36FA1AF803AA504`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CenteredPrismBallPair.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `7B9676076D97697B9E763B0A56DCDF8B1E72ED20B69A4793825DD145D4E48469`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedNeighborhoodCoreBoundary.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `2ECA289ED8C5F845F6B9D47EFD506FF85F76134E23D8DFC149ADC84B19694D37`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedNeighborhoodCircleLevels.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `8A3C4CA82813322C4EB15E7A4ED4E39BF94750A7C2CB79BFE5C9108C10747867`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnBoundarySphere.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `CD31F9C4620A18593A24906B8925C172B75D1B8B53248DEB8294FAA3E1197854`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnPolyhedralBall.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `52286FA6FCD7D48D019415488BE2E0C613996B72195F8B2C04394F5CBB7D8BD0`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DisjointSupportedPLEmbeddings.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `58EC3D58A60A62104913307353598996BB7BE722616385EE5E771A918D762A8C`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\IsAnnulusOnCompact.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `F5FCEA4B4CF69A4C59E0B8E992CFEA1FA7660833ED789932D11C303CFFF06775`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocalFrontierCrossing.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `9BD5B2FE18D06D5E1E60738FC725E8B6210BE6ACB6A46970D2269D8462F1A681`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteOpenEnlargements.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `8F32F4B7FA78CC792993E527D1B486BD09201C021546C35AAB075AD39D16A0C4`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteSeparationScales.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `0CAFEBF78008F3CBFC3E3C1DFF376A47E9F56C6D4D55CB3D4CFED771640CBB33`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ManifoldPointTransport.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `F1A9FCF204821B736FF754FD25BB0FD89E1413785E311B0CD9F41A2EDDCBEF05`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CellEnlargements.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `5FD8F865BF26DE7D29A143997C68D81A066DDD888B16628355B9BD74422D14BF`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SupportedPLCellExtension.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `C0DE500A177F9AEF8103AC855A53819726759BE79608FCD94E6FE92B5DC3411F`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SupportedPLPieceConjugate.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `56B1BF91741D36A554AC30C73DF173583A8D258336CD20A35B1252F52E14F50A`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedBallHeightMove.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `CA502B9CD5C4B2EA9183F7DAC71D51169E62442C060054E406D607F0A537BCB2`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SupportedPLPrismShift.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `70686E595DCF543147D990603729DB8BE6672158980D57CB9AE6F728D5CDCC6E`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellEnlargement.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `BBE1F65DC8CE054AB359BA23E8DF00D5F251950DD01F8AB665C0B8EEBD17E1A1`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellMarkerMove.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `EE0D3A7C81D8D06C0D37DFFCF7983457378828B6A4CCC5F3313240743A0FB923`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnStabilityScales.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `93B4B8D9D3513C2D5AFA3744D519AAB057398BAAE1C42FF842E7FE069988B340`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLPieceBallInterior.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `73A9DD97B75E5BD62A7A571F1A7FA413262C5274F23C85C1216A4493400A7FB9`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLPieceConjugateEmbedding.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `F367D2484B4242F458A7EEF47A966BE8289AC78CBC3D458BC8D46B6219FBE364`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLPieceCrossingFrontiers.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4FC18D9CB3FCB119D0E96669CFA4388F32E4C235D213DDB60ED40F4F55143883`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34AnnularGenerators.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `2DE223C1FD5F8097D286EE0460DC3B46491E388DD7160BF0555A1471A4D190E1`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ChartLocalEnlargements.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `21B22E25269461B621F624378EFA9A94D1BC50F903F39F329E49DEF1C7FBCA07`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34EdgeEnds.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `31741773F4DC34B79F49C34D1157441C553EACA1C97E45D57A9E2B89211B811C`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCores.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `02E0A8131F58CB13BDAC3FB1B3F71ED60A12040E98334522209D416C11EC142F`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34EdgeGraphRegions.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4BCF3CEFAE7500F7A579E81B7BB44F029282522C3D0A1B47A1CCD00258C2335C`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedBallRoof.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `A581679A7D919030EC702FE3012D7ADBF5D643E42EDD9F1EA66915331A63F4BD`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedBallFrontiers.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `F45187A6B6A1F28F71CF8531039D2BEE9F300C434B32194DF1784F3547F78E23`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercingMarkerRoutes.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `3B279617303C820D45F2F190E17E8E089F1BD0221B8AA7393B7BCC6AEEF5BC33`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SignedHeightCrossing.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `1F1D572F2A31472EA4B8F3E4F6738B5D2DB8A7A62DE28CFB51B70E1E6676DF4B`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedBallModel.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `F2AAA3AF950EF6F3EEAA831EE8B0D6FABAA6F24A80A976CDD182B9EF1BB746AA`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedBallTransport.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `6C7019B0FECC4BE61DA1F36A39DA5908BEF53DF0EE7E9604E420A34FDA58110F`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedEdgeCells.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `104567E5DCD0F1F6685FCE8A2BD742E9C789B5452AB326FB7460B4F9FD06B5EC`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34MarkedPiercedCells.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4B95DBD5613E6DC23D438AC9E719B7143B3DDCD10BE88BE26E843896D0719E26`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCoveringEdgeCells.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `63DB094B405CD25ECFF02F3AAA85CFED108572ABD017AB9DA127186441948D47`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexScales.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `0FA4AEEEC8081EB6461DA72944A68940C33E195EA3834371BBB75650BB872403`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34LensIsolation.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `649B8EC7A20629CF82B2339E9E408484C57BCFC0AEBF09CFE6C930163249FEE2`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34LensImages.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `495A4BF2A4F9DFB7BB8166A5F952BA0B6C3A453760DAFD92EDC234E5E1491CBF`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34LocalMargins.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `0CE0D9B9B0656C53619E3141E0931D4A8CE6A0E168548D62B4B5DE9A675B8E48`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34NestedPiercingRegularNeighborhood.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `FD6BBD42AD44CE8C05AC1F13BCA436733E1A0528FFCD7458F7B528C1EE3C7A4F`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34NestedPiercingSubdivision.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `A729C22566A14B2F2E82BD5CFD739A25F785556B789D2B2CBB8CEE60454EC3A2`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SmallRegularNeighborhood.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `BF5F45B4D2E3CFA780679F2895EBC6396FBA7511E41B93856990CB4974E901FE`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SmallSolidTorus.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `E63844682BD5260E43BAD23E61BCD79AA2BC870D58AE86B82D4D14940E4C3E3A`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34MarkedNestedAnnuli.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4F78CE0B8C6E21CB1CD990C62D8F58CA01959E5ADFFCD67923346991B5659E79`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34NestedAnnularNeighborhoods.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `F0AC2AD32328453675CD30D1E934EEEE9C87CD31975A8D495D39F09F28BA15DD`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexEdgePasting.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `2DF70B85AEE269A6AC27C366B6B738147BE45C46AD4E91A3E497F59DAB89F267`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexCellIntersections.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `EB1045062B08FE156758B03935B5B9F1ACB435CCCA9F45FE5A42DC8749F7225C`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercedVertexCells.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `36302A2A637B162734652ABDA4291BE4D8A197C5AA8E504B91E44BEE048E8FD1`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PiercingCircleNeighborhoods.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `6EC36D918D07C824B15FFD84AC9F1D6169831074F322854B4EFA7FC86A9A4563`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SeparationMargins.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `97F18FE4AE3D2359D88DD0EBFC43023A5DEEEA2A0A6678E9E9A113AD13C1D352`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SplitDiskNeighborhoods.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `0B4333B913B3DABB5A9ACE0E6A09C182043AEE6741B024E7BF4EFBFD4F1CD920`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexPreparation.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4A221220F84FD08DC2A9E209813AAA40CD100E0C48E71ACD7FE04C99929238BE`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexPreparationAxioms.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `8E59A3B1CAC98B348062D76F3727D2C0C813927FABF9A10BA634657D22B3AB5F`.

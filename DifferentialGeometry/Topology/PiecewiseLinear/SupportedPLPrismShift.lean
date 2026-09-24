@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPieceConjugate
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedBallHeightMove
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCapSource
+
+/-! # Supported PLPrism Shift -/
 
 open Set Topology
 

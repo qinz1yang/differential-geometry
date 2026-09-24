@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCoveringEdgeCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexEdgePasting
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexCellIntersections
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
+
+/-! # Section34Pierced Vertex Cells -/
 
 open Set Topology Function
 
@@ -109,9 +116,9 @@ theorem exists_section34_crossing_pierced_vertex_cells
       interior_inter_eq_of_inter_eq (hV e) (hlocal e).2⟩
   have hlocalF (e) : frontier (Cp (ends e).1) ∩ V e = frontier (A e) ∩ V e ∧
       frontier (Cp (ends e).2) ∩ V e = frontier (B e) ∩ V e :=
-    ⟨frontier_inter_eq_of_inter_eq (hCp _).isCompact.isClosed (hA e).isCompact.isClosed
+    ⟨frontier_inter_eq_of_isClosed_of_inter_eq (hCp _).isCompact.isClosed (hA e).isCompact.isClosed
         (hV e) (hlocal e).1,
-      frontier_inter_eq_of_inter_eq (hCp _).isCompact.isClosed (hB e).isCompact.isClosed
+      frontier_inter_eq_of_isClosed_of_inter_eq (hCp _).isCompact.isClosed (hB e).isCompact.isClosed
         (hV e) (hlocal e).2⟩
   have hforeignCp (e w) (hw₀ : w ≠ (ends e).1) (hw₁ : w ≠ (ends e).2) :
       Disjoint (V e) (Cp w) := by
