@@ -14242,3 +14242,33 @@ Remaining work: Transport the subsurface embedding invariant through actual comp
   SHA-256: `88D68D11D6CD5EC7663C961042D32D80C7A9AA6C99DAC8C209E969B116D3F5F9`.
 - Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonNullhomotopicBoundaryDisk.lean with no diagnostics; shared outputs unchanged.`
   SHA-256: `35FD7DBD63935430BA36557797D1675C20489B754F81ABA028DA85F76482F120`.
+
+# Codex item 19
+
+## Steps 5-6: Section 31 promoted and registered (2026-09-24)
+
+- Removed precisely the two proved leaves, imported their modules, updated the module
+  title and promotion record, and removed all source occurrences of sorry. Remaining
+  theorem statements and scope/variable blocks are unchanged. The existing Moise307
+  hypothesis is retained. The two imported frozen statements pass LF-normalized identity.
+- Original-path receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Skeleton\Section31CanonicalConfiguration.lean with no diagnostics; shared outputs unchanged.`
+- Promoted-path receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section31CanonicalConfiguration.lean with no diagnostics; shared outputs unchanged.`
+  Both source SHA-256 values: `37916BBAB8D95B04AC5A2025192A1D895C42BA49A6E4FF7A176EB54C5E37A14E`.
+- Promotion used git mv only after the original-path check. An initial import placement
+  error in a documentation paragraph was corrected before either successful check.
+- Promoted-module audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\AuditSection31CanonicalConfiguration.lean with no diagnostics; shared outputs unchanged.`
+  Audit SHA-256: `F0A58AE04D7B15135D90F60592D13AADCD8D2340374719FFF3389A9A1633B365`.
+- This probe imports all41 registered modules and audits every non-auto declaration
+  of the promoted module, with foundational axiom closures and thirteen environment
+  linters. Together with AuditPR19 it covers the whole accepted family. Final full-name
+  scan:81 public declarations, no duplicates. No remaining Lean importer uses the old path.
+- Registered40+1 modules in dependency order at the designated aggregate block; appended
+  the exact Section31 PROVED ledger note; removed the Section31 count-table row.
+  Latest physical total 10 -> 8; one handoff line added. Concurrent earlier ledger
+  reductions were retained. Aggregate validation used the41-module import probe, not
+  an unrestricted full-repository build outside the focused compiler lease.
+- All41 current source hashes match zero-diagnostic private receipts. Complete lines in
+  Item19_AllReceipts.txt; structured evidence in Item19_VerifiedModules.json,
+  Item19_FinalNames.json, PR19_StatementCheck_LF.json and Item19_LedgerChange.json.
+- Other-lane SurfaceDiskNeighborhood still has original SHA-256
+  d067adc397638f5689be9d042c7f6cda91a364dc2e034af31139b14e652f9136.

@@ -607,3 +607,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 02:40 UTC (09-24) - accepted Codex item 17 (the manifold P7 `exists_section34ResidualBalls`, 40 modules incl.
   `Topology/BicollarLocalSide`; lead checks + one audit on the lead lease; statement byte-identical).
   `Section34Terminal` keeps one leaf (`exists_section34NormalFamily`). Physical `sorry` 10.
+
+2026-09-24: Codex item 19 accepted PR #19 (40 modules, both frozen statements LF-identical), promoted Section31CanonicalConfiguration after private checks, registered 40+1 modules, and reduced the physical ledger 10 -> 8.

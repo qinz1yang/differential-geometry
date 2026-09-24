@@ -19,23 +19,29 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidT
 import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell
 import DifferentialGeometry.Topology.PiecewiseLinear.CarriesGeneratorOrIsPLCellOfDisjointCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.ConsecutiveCellUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.PolygonCarrierOfSpine
+import DifferentialGeometry.Topology.PiecewiseLinear.PolygonNullhomotopicBoundaryDisk
 
 /-!
-# Sorry-first skeleton of Moise Section 31, Theorems 31.1-31.4
+# Moise Section 31, Theorems 31.1-31.4
 
 The assemblies `moise311`, `moise312`, `moise313` and `moise314` prove the named propositions
-`Moise311`-`Moise314` of `CanonicalConfiguration.lean` for real from the leaves of this file
-and from `Moise307` taken as a hypothesis; every `sorry` is a leaf and none sits inside an
-assembly.  `moise313` and the two transport lemmas need no leaf at all, and since the first
-review `exists_generalPosition_solidTorus_triple` is derived from the relative leaf.
+`Moise311`-`Moise314` of `CanonicalConfiguration.lean` from the proved geometric inputs
+imported here and from `Moise307` taken as a hypothesis. `moise313` and the two transport
+lemmas are proved directly, and `exists_generalPosition_solidTorus_triple` follows from
+the relative general-position theorem.
+
+Bennett Chow proved the final two geometric inputs in collaborator PR #19. Codex item 19
+accepted the 40 supporting modules on 2026-09-24 by private compilation, foundational axiom
+checks and thirteen environment linters, and promoted this module from the reviewed skeleton.
 
 Review state.  First external review 2026-09-21 (digest AP,
 `consult/AP-section31-first-review-digest.md`, snapshot `c1d5ba63`): the nine leaves listed
 first below are all OK and **frozen**; their statements are byte-identical to the reviewed
 snapshot, and `exists_generalPosition_solidTorus_triple` keeps its reviewed statement but is
 now proved.  The relative leaf `exists_generalPosition_solidTorus_relative`, added on the
-reviewer's interface fix, is **frozen** after the second review (digest AQ). Seven leaves remain
-open. The spine and interior results below are proved in imported real modules with their
+reviewer's interface fix, is **frozen** after the second review (digest AQ). The formerly open
+leaves are now proved in imported modules. The spine and interior results retain their
 frozen statements unchanged; `Fits`, `PairGP` and symmetry live in `SolidTorusGeneralPosition`.
 The leaves, with the book gap each covers (Moise pp. 220-222, digest AD).
 
@@ -204,8 +210,8 @@ the parity fact that an orientable surface with one boundary circle has odd Eule
 (`OrientableSurfaceEulerParity`, with capping preserving orientability); the nonseparating case is
 `NonseparatingPolygonCarrier` (annulus complement, disk decomposition in the prism sphere, and the
 transfer that the two ends of an annulus carry the fundamental group together).
-`exists_isPLCell_frontier_of_polygon_nullhomotopic` can now use the separating case but its
-nonseparating case still needs a linking number, absent from the tree.
+The nonseparating case is now supplied by `PolygonNullhomotopicBoundaryDisk`, using the
+first homology of polygon complements.
 
 Proved and imported (Opus 5.5 fill worker, lead-accepted on 2026-09-22 with zero-diagnostic checks
 and an axiom audit; statement byte-identical with the frozen leaf):
@@ -466,30 +472,6 @@ theorem exists_generalPosition_solidTorus_triple
   · fin_cases j
     · exact h01.2
     · exact h12.2
-
-theorem exists_polygon_carrier_of_spine {S₁ S₂ T₁ T₂ Z₀ Z₁ : Set (EuclideanSpace ℝ (Fin 3))}
-    (hS₁ : IsCombinatorialSolidTorus S₁) (hS₂ : IsCombinatorialSolidTorus S₂)
-    (hT₁ : IsTopologicalSolidTorus T₁) (hT₂ : IsTopologicalSolidTorus T₂)
-    (hS₁T₁ : S₁ ⊆ interior T₁) (hS₂T₂ : S₂ ⊆ interior T₂)
-    (hZ₁T₁ : IsSpine T₁ Z₁) (hZ₁T₂ : IsSpine T₂ Z₁) (hZ₁S₁ : Z₁ ⊆ interior S₁)
-    (hZ₁S₂ : Z₁ ⊆ interior S₂) (hZ₀ : Z₀.Nonempty) (hZ₀S₁ : Z₀ ⊆ interior S₁)
-    (hZ₀S₂ : Disjoint Z₀ S₂) (hZ₀gen : CarriesFundamentalGroupOnto Z₀ S₁) :
-    ∃ K : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 1 K ∧ K ⊆ frontier S₂ ∩ interior S₁ ∧
-      CarriesFundamentalGroupOnto K S₂ := by
-  sorry
-
-theorem exists_isPLCell_frontier_of_polygon_nullhomotopic
-    {S G Δ Z : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hS : IsCombinatorialSolidTorus S) (hGS : G ⊆ frontier S)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hGΔ : G = r '' stdSimplexBoundary 2)
-    (hΔZ : Disjoint Δ Z) (hZ : Z.Nonempty) (hZS : Z ⊆ interior S)
-    (hZgen : CarriesFundamentalGroupOnto Z S)
-    (htriv : ∀ (hsub : G ⊆ S) (x : G) (g : FundamentalGroup G x),
-      FundamentalGroup.map (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S)) x g = 1) :
-    ∃ (Δ' : Set (EuclideanSpace ℝ (Fin 3))) (r' : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ' ∧ Δ' ⊆ frontier S ∧
-        G = r' '' stdSimplexBoundary 2 := by
-  sorry
 
 end Leaves
 
