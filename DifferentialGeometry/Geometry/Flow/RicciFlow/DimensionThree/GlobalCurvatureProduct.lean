@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.LocalProduct
 import DifferentialGeometry.Geometry.Connection.GlobalParallelLineFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureLine
 
@@ -118,5 +119,77 @@ theorem exists_global_product_on_interval_of_curvatureOperatorImage_rank_eq_one
                 (h t).prod (euclideanMetric (E := ℝ)) := by
   exact exists_global_product_of_curvatureOperatorImage_rank_eq_one
     S hS isOpen_Ioo hreg hJ hJsub ht₀ hg hR hrank
+
+end DifferentialGeometry.PDE.RicciFlow
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+universe uH uM
+
+variable {H : Type uH} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+  [I.Boundaryless] {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] [SimplyConnectedSpace M]
+
+theorem exists_global_product_on_Icc_of_curvatureOperatorImage_rank_eq_one
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b : ℝ}
+    (hcar : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)
+    {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
+    (hg : RiemannianMetricComplete (S.family.metric t₀))
+    (hR : ∀ t ∈ Ioo a b, ∀ x,
+      metricAlgebraicCurvatureTensorAt (S.family.metric t) x ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hrank : ∀ t ∈ Ioo a b, ∀ x,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+        (metricAlgebraicCurvatureTensorAt (S.family.metric t) x)) = 1) :
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
+      (hcs : ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) N),
+      let _ := hcs
+      ∃ hmanifold : IsManifold
+          𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2) ∞ N,
+        let _ := hmanifold
+        ∃ ht2 : T2Space N,
+          let _ := ht2
+          ∃ hσ : SigmaCompactSpace N,
+            let _ := hσ
+            ∃ (h : ℝ → SmoothRiemannianMetric
+                𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2) N)
+              (Phi : Diffeomorph
+                ((𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+                  𝓘(ℝ, ℝ)) I (N × ℝ) M ∞),
+              ConnectedSpace N ∧ SimplyConnectedSpace N ∧
+              (∀ t ∈ Icc a b, Diffeomorph.pullbackMetricCross (S.family.metric t) Phi =
+                (h t).prod (euclideanMetric (E := ℝ))) := by
+  obtain ⟨N, htop, hcs, hman, ht2, hσ, h, Phi, hconn, hsimply, _, hprod⟩ :=
+    exists_global_product_of_curvatureOperatorImage_rank_eq_one S hS isOpen_Ioo hreg
+      ordConnected_Ioo Subset.rfl ht₀ hg hR hrank
+  let _ := htop
+  let _ := hcs
+  let _ := hman
+  let _ := ht2
+  let _ := hσ
+  have hlocal (t : ℝ) (ht : t ∈ Ioo a b) :
+      localPullMetric (S.family.metric t) Phi Phi.isLocalDiffeomorph =
+        (h t).prod (euclideanMetric (E := ℝ)) := by
+    rw [← Diffeomorph.pullbackMetricCross_eq_localPullMetric]
+    exact hprod t ht
+  obtain ⟨k, _, _, hk⟩ := exists_metric_prod_eq_on_closure_of_localPullMetric
+    S.family.metric h (fun _ => euclideanMetric (E := ℝ)) Phi Phi.isLocalDiffeomorph
+    (0 : ℝ) (show Icc a b ⊆ closure (Ioo a b) by rw [closure_Ioo (ht₀.1.trans ht₀.2).ne])
+    (fun t ht x u v => (hS.smoothMetric.coeff_cont x u v t (hcar ht)).mono
+      (Ioo_subset_Icc_self.trans hcar))
+    (fun _ _ _ _ _ => continuousWithinAt_const) hlocal
+  refine ⟨N, htop, hcs, hman, ht2, hσ, k, Phi, hconn, hsimply, ?_⟩
+  intro t ht
+  rw [Diffeomorph.pullbackMetricCross_eq_localPullMetric]
+  exact hk t ht
 
 end DifferentialGeometry.PDE.RicciFlow
