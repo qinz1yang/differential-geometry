@@ -294,3 +294,81 @@ theorem exists_cutoff_cap_protection_tolerance
   exact Set.disjoint_left.mp (hdis j) (mem_image_of_mem Subtype.val hz) hj
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold DifferentialGeometry
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u v w z
+
+theorem exists_cutoff_cap_survivor_chart_tolerance
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (H.event i).old = (H.event i).transition.trace.retainedCore →
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (epsb : ℝ) (pb : (H.event i).incoming.terminalRegularOpen)
+        (boundary : SpatialNeck (H.event i).terminal.metric epsb pb),
+        epsb ≤ 1 / 1000 → ∀ s ∈ Ioo (-epsb⁻¹) epsb⁻¹,
+        ∀ (K : Set (H.event i).incoming.terminalRegularOpen), IsCompact K → IsPreconnected K →
+          (interior K).Nonempty →
+          frontier K = range (fun b : Sphere 2 => boundary.map (b, s)) →
+          ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+            c * q ≤ metricScalarAt (H.event i).terminal.metric pb →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤
+                ENNReal.ofReal D) →
+            ∀ (x : (H.event i).incoming.terminalRegularOpen), x ∈ K →
+              ∀ y : (H.stage i.succ).Carrier, (H.event i).RegularCrossing x.val y →
+              ∀ {G : Type v} [NormedAddCommGroup G] [NormedSpace ℝ G]
+                {Y : Type w} [TopologicalSpace Y] {I : ModelWithCorners ℝ G Y}
+                {X : Type z} [TopologicalSpace X] [ChartedSpace Y X]
+                (φ : X → (H.event i).incoming.terminalRegularOpen),
+                IsSmoothEmbedding I ThreeModel ∞ φ → range φ ⊆ K →
+                ∃ F : PartialDiffeomorph ThreeModel ThreeModel
+                    (H.event i).incoming.terminalRegularOpen (H.stage i.succ).Carrier ∞,
+                  K ⊆ F.source ∧ F x = y ∧
+                  (∀ a ∈ F.source, (H.event i).RegularCrossing a.val (F a)) ∧
+                  (∀ b : (H.event i).old, (H.event i).oldTerminal b ∈ F.source →
+                    F ((H.event i).oldTerminal b) = (H.event i).oldOutput b) ∧
+                  ∃ ψ : X → (H.stage i.succ).Carrier, ψ = (F : _ → _) ∘ φ ∧
+                    IsSmoothEmbedding I ThreeModel ∞ ψ ∧
+                    (∀ a, (H.event i).RegularCrossing (φ a).val (ψ a)) ∧
+                    (∀ (a : X) (b : (H.event i).old), (H.event i).oldTerminal b = φ a →
+                      ψ a = (H.event i).oldOutput b) ∧
+                    (∀ A : Set X, ψ '' A = (F : _ → _) '' (φ '' A)) ∧
+                    ∀ (a : X) (v w : TangentSpace I a),
+                      (H.event i).outputMetric.inner (ψ a) (mfderiv I ThreeModel ψ a v)
+                        (mfderiv I ThreeModel ψ a w) =
+                        (H.event i).terminal.metric.inner (φ a) (mfderiv I ThreeModel φ a v)
+                          (mfderiv I ThreeModel φ a w) := by
+  obtain ⟨eta, heta, hprotect⟩ := exists_cutoff_cap_protection_tolerance hC hD hc
+  refine ⟨eta, heta, ?_⟩
+  intro H i parameters R hOld hδ epsb pb boundary hb s hs K hK hconn hKi hfront
+    q hq hscalar hboundary hdiam x hx y hcross
+  have hKold := hprotect H i parameters R hOld hδ epsb pb boundary hb s hs K hK hconn
+    hKi hfront q hq hscalar hboundary hdiam x hx y hcross
+  let W : TopologicalSpace.Opens (H.event i).incoming.terminalRegularOpen :=
+    ⟨{a | a.val ∈ interior (Subtype.val '' (H.event i).old)},
+      isOpen_interior.preimage continuous_subtype_val⟩
+  intro G _ _ Y _ I X _ _ φ hφ himage
+  obtain ⟨F, hsource, hcrossF, hold, htransfer⟩ :=
+    (H.event i).exists_survivor_whole_chart_transfer (I := I) (X := X)
+      W ⟨x, hKold x hx⟩ (fun _ ha => ha)
+  have hKF : K ⊆ F.source := by rw [hsource]; exact hKold
+  have hφW : range φ ⊆ W := himage.trans hKold
+  refine ⟨F, hKF, (H.event i).regularCrossing_right_unique
+    (hcrossF x (hKold x hx)) hcross, ?_, ?_, htransfer φ hφ hφW⟩
+  · intro a ha
+    exact hcrossF a (by change a ∈ (W : Set _); rwa [← hsource])
+  · intro b hb
+    exact hold b (by change (H.event i).oldTerminal b ∈ (W : Set _); rwa [← hsource])
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
