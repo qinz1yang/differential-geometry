@@ -1008,3 +1008,8 @@ Codex lead update 09:58 UTC on 2026-09-24: item 21 D source entry is accepted in
 checkout with 732/732 entry modules and 27/27 audits; the sphere skeleton is
 promoted and the frozen ledger is 3. The broader all-PL replay found the inherited incomplete FourSpokeCap;
 the aggregate build remains unverified. PR #30 Section 32 acceptance is next.
+
+Codex lead update 10:57 UTC on 2026-09-24: PR #30 Section 32 descent is accepted and wired.
+The frozen leaf is LF-identical; 48/48 main-checkout modules and 3/3 audits
+(202 declarations) pass. Section32PseudoCell is promoted; physical sorry 2.
+The earlier Moise inputs of its assemblies remain explicit and separate.

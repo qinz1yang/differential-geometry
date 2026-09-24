@@ -1,0 +1,1876 @@
+{
+  "prHead": "217ca3863825330ace46b72095cd9dffd55eea19",
+  "mainParent": "f1de5d6ae30e5244cd61083a4305ef870ecbd452",
+  "verifiedAtUtc": "2026-09-24T10:53:28.932577+00:00",
+  "mainModules": 48,
+  "prLeanModules": 47,
+  "auditCount": 3,
+  "auditedDeclarations": 202,
+  "frozenVariableBlockAndStatementChars": 1772,
+  "moduleReceipts": [
+    {
+      "module": "DifferentialGeometry.Topology.Combinatorics.StableUnion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\Combinatorics\\StableUnion.lean",
+      "sourceSha256": "1CA83D664007A22B4359DFB6881864495654F5BABC0F32103A76A42092456D96",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:37:44.6708713Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.Connected.UnboundedComplement",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\Connected\\UnboundedComplement.lean",
+      "sourceSha256": "04AA1AFCDF60F03170DF3FAC418B960CEEBAFE884C28B489A66F978D3FA9EE40",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:37:47.4607571Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCyclePatchDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\AnnulusCyclePatchDeletion.lean",
+      "sourceSha256": "CC47AB419BCC9C5E0288E3363A3C658977F56CA34BE994684A1CFBC3D6F2B3A1",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:03.0100720Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusBoundary",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\PLAnnulusBoundary.lean",
+      "sourceSha256": "C6B9799D9FFE06160025D010C49BDF3DB8FA841ABFFB0A7DA793D8B2BBAA2F72",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:01.8055682Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.AnnulusDiskComplementConnected",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\AnnulusDiskComplementConnected.lean",
+      "sourceSha256": "550DDB79123F14295D347FBA0AA6C8DCED33193C4CDCF40446C98DAF2135E97E",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:19.7196507Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.AnnulusTripleExterior",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\AnnulusTripleExterior.lean",
+      "sourceSha256": "6C39209CB6512C9BE005CEE6933B4A7537E49D81ED599824551C5D305B510BC7",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:20.1344377Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalAnnularChainAssembly",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalAnnularChainAssembly.lean",
+      "sourceSha256": "3BF4FF4CD36F3E9F13F163F766FF5B67AD22FDB683322CD43E5CE4075E112351",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:38.0689352Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningAnnulusDeletion.lean",
+      "sourceSha256": "89316DD70CD2B2C59584498DC50F5687D1B4160C774CE3DB0B31754F7895B2D3",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:38.4750711Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeAnnulusDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeAnnulusDeletion.lean",
+      "sourceSha256": "973A0A0A5042733E97E2FC66268F3671C5F166A2DCCE0097FF3B182906AA6886",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:56.4275972Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalComponentDeletion.lean",
+      "sourceSha256": "0192887BDD482C1BF52916AD99CBCD1E88128AA08DDDD7733605440E9A5ED6E9",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:38:56.7772587Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeComponentDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeComponentDeletion.lean",
+      "sourceSha256": "ABF9A2395F348116BC481792B8D22E892FA65A484BB04B7FB0A84B2262925490",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:39:15.1538521Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleCappingMarkedComponents",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CircleCappingMarkedComponents.lean",
+      "sourceSha256": "B595CFCF9299C7955B29A7E9968A5813E84ED4C0ECF7F341C7789F5DA54D9D00",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:39:14.4997801Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceCircleMembership",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CollaredTraceCircleMembership.lean",
+      "sourceSha256": "176C7D3B410AA3B632B96A160EFF38E8B41D6F1AB3664ECEF02CD46DF4E17316",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:39:32.0530601Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceEssentialBoundaryTransport",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalSurfaceEssentialBoundaryTransport.lean",
+      "sourceSha256": "DDA506142B50A3EC7C8F06D99029DCE67519CD460D0219782C62C3605503D5B1",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:39:51.0161609Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningComponentDeletion.lean",
+      "sourceSha256": "19ABC4103EF3C61F24087D40E4328685739EE789D03DD3A51CED5DE72CB695DB",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:39:33.2655608Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWindowReduction",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningWindowReduction.lean",
+      "sourceSha256": "65CCE528607D6E9772231ABC5ABB56519D5D801C45B05D6F1A47B671E20FE211",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:39:51.8628365Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentMarkRetention",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalComponentMarkRetention.lean",
+      "sourceSha256": "A33804108F59D106F2BA094269909C07D3F7714BED6D180FAEB6291265798ABC",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:40:10.4283702Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusReversal",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\PLAnnulusReversal.lean",
+      "sourceSha256": "FE8CFACFCCDB2458E0A9FF7239B058DABAE3CDDFD078FD9DFDE1E350EA6596B6",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:40:08.2727003Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWindow",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeWindow.lean",
+      "sourceSha256": "560F057192D6A0A6D75EF54EA36D628D3EA0C02A857BBF21EA48357109EDB94F",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:40:26.1653224Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWindowReduction",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeWindowReduction.lean",
+      "sourceSha256": "63004FEACECDD7E2882B0987EACB21BDC0DCA5F80BA405BF3E3B19230348D25C",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:40:45.3318192Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWitnesses",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeWitnesses.lean",
+      "sourceSha256": "1AE53B98576F483B9E57B970185819A5F191CB2AF384595A1883E18DFD63D312",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:03.2384167Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalization",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeNormalization.lean",
+      "sourceSha256": "DFFD3BFAB0066BEE08FBB8F6CDA5520D3C1382248B34950C320474E62882AFBE",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:20.8477140Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalNullSplitLocality",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalNullSplitLocality.lean",
+      "sourceSha256": "FBE16CC378BE34BFFCB6471DDA48A903AE047E79D4E221A98EF459160691F29A",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:40:28.0245626Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSingleBridgeRows",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalSingleBridgeRows.lean",
+      "sourceSha256": "38DAEA020E7F91E54361ED8EDEE6FA68810A3D0F5A664FBF30C151E8FD89D6E6",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:03.4320222Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalizationLocality",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeNormalizationLocality.lean",
+      "sourceSha256": "3497E718806994D70734732C12670F311E96D492644057A162CC944287DD9B51",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:38.6501319Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalizationSequence",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeNormalizationSequence.lean",
+      "sourceSha256": "F3C903286EDD4664A82A557167FF81794E2AA911D23CEFA0445DF3B181F58FF3",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:57.0515543Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeSequenceStability",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeSequenceStability.lean",
+      "sourceSha256": "C04067C5791F71EE17E153124AF1C5ECDA2C1C1157DFFD9F41279A54F1160B9C",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:42:14.8080281Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalCompletionRows",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalCompletionRows.lean",
+      "sourceSha256": "D7CECF87C0816ABF507F1984999B5A42E956F40AA91E55C050BA3EA627582CAD",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:42:16.9112373Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalStableEvenAnnuli",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalStableEvenAnnuli.lean",
+      "sourceSha256": "7BE03A6C4BD13EAD5EEE79046AA48DC1290E8121557524F3A2417672F4B5BF0C",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:40:45.7770737Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerPatchedSurfaceClosed",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerPatchedSurfaceClosed.lean",
+      "sourceSha256": "D6CCD718824F89E410C072821F6D827D67534F420AA7B6A7C7EB2733AF94F33B",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:21.0729785Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalEvenAnnulusReplacement",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalEvenAnnulusReplacement.lean",
+      "sourceSha256": "95F11EA060089B3A5CD188E7BF8C31E048245801A286F8E7AC4645C3FF1DD186",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:39.6426583Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalFiniteEvenAnnuli",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalFiniteEvenAnnuli.lean",
+      "sourceSha256": "C060C189F4BF07A243107C8823E060F6B62BE8D2A218A3ECC4EE1687CA6DE0ED",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:41:57.7182842Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerStabilization",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerStabilization.lean",
+      "sourceSha256": "381D399A2FBA0E390BB194C6785311C3205A71982E9B8DF9E76F46A45EC15C62",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:42:32.7882108Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDisplayedSeparators",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalDisplayedSeparators.lean",
+      "sourceSha256": "0EF9FC2D5A0B26435B8CEF458D2344B4C03BF064FA7BA0A48A7CA3C51095ED5A",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:42:50.9663903Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSeedDescentSequence",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalSeedDescentSequence.lean",
+      "sourceSha256": "70E6DCE38A45513A34916FC606501A3EF23FF19CF4407180756CDA2883495C71",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:43:09.3827479Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerPolygonCarriers",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerPolygonCarriers.lean",
+      "sourceSha256": "BAAD374FCEC2368804E6EF158A9BBFA74AC6C2E91508BFFF1BDB1287A2DE00B2",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:42:34.5022865Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerEssentialSeams",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerEssentialSeams.lean",
+      "sourceSha256": "20F67C2BDF1176B069CCBEC0F9196FB9BEABC34738117656719A52712F9704E9",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:42:51.9554866Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleMarkedArcs",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CircleMarkedArcs.lean",
+      "sourceSha256": "1714D45F58223A9F465B79ED5C51840DED6B51B1AA8DD359BC06568DE580907A",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:43:09.7414278Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusMixedAnnulus",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\TorusMixedAnnulus.lean",
+      "sourceSha256": "B0D5F913197288608771160D8FC233FFAE0BC3A4EC2B361DF385306B22C8FE50",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:43:28.9687459Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerMixedAnnulus",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerMixedAnnulus.lean",
+      "sourceSha256": "118AA0A21F809B3FAC68B6EADB5B9A6C1AC30DBD7C01A0404FBAF21A8C99FA7F",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:43:47.1550185Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusAnnulusNullCircleComplement",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\TorusAnnulusNullCircleComplement.lean",
+      "sourceSha256": "BD0139220C463FCF8F70FBD4090862A55C5D64F31BA7E3D65D8C2BB2F76BE092",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:43:28.0498270Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerMixedComponent",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerMixedComponent.lean",
+      "sourceSha256": "96615C7F7387001144230BBCADAF7C26AB35DF45FEC4E7FE9FE7B35243ECF008",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:44:05.0543790Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWitnessTransport",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningWitnessTransport.lean",
+      "sourceSha256": "2E294644C5FFA3561F68E9984D5533898003679D33C57A9944A26EC6B7DB4C96",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:43:44.6055169Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningExteriorDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningExteriorDeletion.lean",
+      "sourceSha256": "D95E673BC06164BA0F62E1A878A0C3814A8386DCC3C1E6C4232DAA9D30283F7C",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:44:03.5602604Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningExteriorComponentDeletion",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningExteriorComponentDeletion.lean",
+      "sourceSha256": "A7C6F541FED0788249E61AB00B789DFA0F6543E37E0E8A1AB7F5A04BBF2F04DE",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:44:22.2917884Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalDescentSequence.lean",
+      "sourceSha256": "BAA1CDA54E791D5411E0936883922E9B8992357757DEAB4281F08925CCA1774A",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-2-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:44:39.4928833Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalInitialBridgeWindow",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalInitialBridgeWindow.lean",
+      "sourceSha256": "C842D15B320ED1459016D0EB2FEB812E083CC75B1D8B201F03C009CFBA67DD3A",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:44:23.2650796Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section32PseudoCell",
+      "source": "D:\\differential-geometry-moise-int\\DifferentialGeometry\\Topology\\PiecewiseLinear\\Section32PseudoCell.lean",
+      "sourceSha256": "731E463B230C803A2804B5206CA84089133E6B69C32D24BE8B8E08F8FF305863",
+      "sourceStable": true,
+      "token": "codex-de-main-worker-1-20260924",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "flags": [
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true"
+      ],
+      "sharedArtifactsModified": false,
+      "endedAtUtc": "2026-09-24T10:47:43.0183507Z"
+    }
+  ],
+  "audits": [
+    {
+      "name": "AuditPR30Main1",
+      "declarations": 77,
+      "receipt": {
+        "module": "",
+        "source": "C:\\Users\\liao9\\AppData\\Local\\Temp\\claude-moise-integration-private\\AuditPR30Main1.lean",
+        "sourceSha256": "A52FA2C57DE956DDBA7C3837D133248EFEAD068548B0552606DED5D489882234",
+        "sourceStable": true,
+        "token": "codex-de-main-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T10:45:51.7891811Z"
+      }
+    },
+    {
+      "name": "AuditPR30Main2",
+      "declarations": 82,
+      "receipt": {
+        "module": "",
+        "source": "C:\\Users\\liao9\\AppData\\Local\\Temp\\claude-moise-integration-private\\AuditPR30Main2.lean",
+        "sourceSha256": "A179DBE3CBF73EBAFA607BD0C4D91B83A2C653F6C75D02F767279843D1A3144E",
+        "sourceStable": true,
+        "token": "codex-de-main-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T10:46:28.7712911Z"
+      }
+    },
+    {
+      "name": "AuditPR30Main3",
+      "declarations": 43,
+      "receipt": {
+        "module": "",
+        "source": "C:\\Users\\liao9\\AppData\\Local\\Temp\\claude-moise-integration-private\\AuditPR30Main3.lean",
+        "sourceSha256": "FD155C447408B101C241FAF558BF4C2A9AF7A914BE006297577A2D0935F7BA30",
+        "sourceStable": true,
+        "token": "codex-de-main-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T10:49:08.1905771Z"
+      }
+    }
+  ],
+  "hostAcceptance": {
+    "sourcePRHead": "217ca3863825330ace46b72095cd9dffd55eea19",
+    "checkout": "D:\\differential-geometry-pr30-host",
+    "verifiedAtUtc": "2026-09-24T09:53:05.948909+00:00",
+    "moduleCount": 47,
+    "auditCount": 3,
+    "declarationCount": 202,
+    "moduleReceipts": [
+      {
+        "module": "DifferentialGeometry.Topology.Combinatorics.StableUnion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\Combinatorics\\StableUnion.lean",
+        "sourceSha256": "1CA83D664007A22B4359DFB6881864495654F5BABC0F32103A76A42092456D96",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T06:59:05.2051780Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.Connected.UnboundedComplement",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\Connected\\UnboundedComplement.lean",
+        "sourceSha256": "04AA1AFCDF60F03170DF3FAC418B960CEEBAFE884C28B489A66F978D3FA9EE40",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T06:59:09.2806473Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCyclePatchDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\AnnulusCyclePatchDeletion.lean",
+        "sourceSha256": "CC47AB419BCC9C5E0288E3363A3C658977F56CA34BE994684A1CFBC3D6F2B3A1",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T07:45:13.1315273Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusBoundary",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\PLAnnulusBoundary.lean",
+        "sourceSha256": "C6B9799D9FFE06160025D010C49BDF3DB8FA841ABFFB0A7DA793D8B2BBAA2F72",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T07:44:27.3689119Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.AnnulusDiskComplementConnected",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\AnnulusDiskComplementConnected.lean",
+        "sourceSha256": "550DDB79123F14295D347FBA0AA6C8DCED33193C4CDCF40446C98DAF2135E97E",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:27:11.6678197Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.AnnulusTripleExterior",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\AnnulusTripleExterior.lean",
+        "sourceSha256": "6C39209CB6512C9BE005CEE6933B4A7537E49D81ED599824551C5D305B510BC7",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T07:44:33.4833235Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalAnnularChainAssembly",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalAnnularChainAssembly.lean",
+        "sourceSha256": "3BF4FF4CD36F3E9F13F163F766FF5B67AD22FDB683322CD43E5CE4075E112351",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:04:18.3332542Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningAnnulusDeletion.lean",
+        "sourceSha256": "89316DD70CD2B2C59584498DC50F5687D1B4160C774CE3DB0B31754F7895B2D3",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:31:32.7688152Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeAnnulusDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeAnnulusDeletion.lean",
+        "sourceSha256": "973A0A0A5042733E97E2FC66268F3671C5F166A2DCCE0097FF3B182906AA6886",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:31:59.8408953Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalComponentDeletion.lean",
+        "sourceSha256": "0192887BDD482C1BF52916AD99CBCD1E88128AA08DDDD7733605440E9A5ED6E9",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:08:44.3830904Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeComponentDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeComponentDeletion.lean",
+        "sourceSha256": "ABF9A2395F348116BC481792B8D22E892FA65A484BB04B7FB0A84B2262925490",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:32:26.0055871Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleCappingMarkedComponents",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CircleCappingMarkedComponents.lean",
+        "sourceSha256": "B595CFCF9299C7955B29A7E9968A5813E84ED4C0ECF7F341C7789F5DA54D9D00",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:06:03.3538229Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceCircleMembership",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CollaredTraceCircleMembership.lean",
+        "sourceSha256": "176C7D3B410AA3B632B96A160EFF38E8B41D6F1AB3664ECEF02CD46DF4E17316",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:03:53.1991302Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceEssentialBoundaryTransport",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalSurfaceEssentialBoundaryTransport.lean",
+        "sourceSha256": "DDA506142B50A3EC7C8F06D99029DCE67519CD460D0219782C62C3605503D5B1",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:06:27.7051836Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningComponentDeletion.lean",
+        "sourceSha256": "19ABC4103EF3C61F24087D40E4328685739EE789D03DD3A51CED5DE72CB695DB",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:32:15.5488287Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWindowReduction",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningWindowReduction.lean",
+        "sourceSha256": "65CCE528607D6E9772231ABC5ABB56519D5D801C45B05D6F1A47B671E20FE211",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:32:41.5179848Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentMarkRetention",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalComponentMarkRetention.lean",
+        "sourceSha256": "A33804108F59D106F2BA094269909C07D3F7714BED6D180FAEB6291265798ABC",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:33:08.7809157Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusReversal",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\PLAnnulusReversal.lean",
+        "sourceSha256": "FE8CFACFCCDB2458E0A9FF7239B058DABAE3CDDFD078FD9DFDE1E350EA6596B6",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T07:44:48.1350695Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWindow",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeWindow.lean",
+        "sourceSha256": "560F057192D6A0A6D75EF54EA36D628D3EA0C02A857BBF21EA48357109EDB94F",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:33:17.8900918Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWindowReduction",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeWindowReduction.lean",
+        "sourceSha256": "63004FEACECDD7E2882B0987EACB21BDC0DCA5F80BA405BF3E3B19230348D25C",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:33:45.9612888Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWitnesses",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeWitnesses.lean",
+        "sourceSha256": "1AE53B98576F483B9E57B970185819A5F191CB2AF384595A1883E18DFD63D312",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:34:11.2507445Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalization",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeNormalization.lean",
+        "sourceSha256": "DFFD3BFAB0066BEE08FBB8F6CDA5520D3C1382248B34950C320474E62882AFBE",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:34:38.4666901Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalNullSplitLocality",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalNullSplitLocality.lean",
+        "sourceSha256": "FBE16CC378BE34BFFCB6471DDA48A903AE047E79D4E221A98EF459160691F29A",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:06:12.9610219Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSingleBridgeRows",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalSingleBridgeRows.lean",
+        "sourceSha256": "38DAEA020E7F91E54361ED8EDEE6FA68810A3D0F5A664FBF30C151E8FD89D6E6",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:34:27.9959713Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalizationLocality",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeNormalizationLocality.lean",
+        "sourceSha256": "3497E718806994D70734732C12670F311E96D492644057A162CC944287DD9B51",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:35:05.1240005Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalizationSequence",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeNormalizationSequence.lean",
+        "sourceSha256": "F3C903286EDD4664A82A557167FF81794E2AA911D23CEFA0445DF3B181F58FF3",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:35:31.0891018Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeSequenceStability",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalBridgeSequenceStability.lean",
+        "sourceSha256": "C04067C5791F71EE17E153124AF1C5ECDA2C1C1157DFFD9F41279A54F1160B9C",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:35:56.9059127Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalCompletionRows",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalCompletionRows.lean",
+        "sourceSha256": "D7CECF87C0816ABF507F1984999B5A42E956F40AA91E55C050BA3EA627582CAD",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:36:13.9929629Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalStableEvenAnnuli",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalStableEvenAnnuli.lean",
+        "sourceSha256": "7BE03A6C4BD13EAD5EEE79046AA48DC1290E8121557524F3A2417672F4B5BF0C",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:31:48.7925470Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerPatchedSurfaceClosed",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerPatchedSurfaceClosed.lean",
+        "sourceSha256": "D6CCD718824F89E410C072821F6D827D67534F420AA7B6A7C7EB2733AF94F33B",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:04:20.0217475Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalEvenAnnulusReplacement",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalEvenAnnulusReplacement.lean",
+        "sourceSha256": "95F11EA060089B3A5CD188E7BF8C31E048245801A286F8E7AC4645C3FF1DD186",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:32:51.8307137Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalFiniteEvenAnnuli",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalFiniteEvenAnnuli.lean",
+        "sourceSha256": "C060C189F4BF07A243107C8823E060F6B62BE8D2A218A3ECC4EE1687CA6DE0ED",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:33:35.2338462Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerStabilization",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerStabilization.lean",
+        "sourceSha256": "381D399A2FBA0E390BB194C6785311C3205A71982E9B8DF9E76F46A45EC15C62",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:04:41.1205022Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDisplayedSeparators",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalDisplayedSeparators.lean",
+        "sourceSha256": "0EF9FC2D5A0B26435B8CEF458D2344B4C03BF064FA7BA0A48A7CA3C51095ED5A",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:34:01.7359153Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSeedDescentSequence",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalSeedDescentSequence.lean",
+        "sourceSha256": "70E6DCE38A45513A34916FC606501A3EF23FF19CF4407180756CDA2883495C71",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:36:39.5293002Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerPolygonCarriers",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerPolygonCarriers.lean",
+        "sourceSha256": "BAAD374FCEC2368804E6EF158A9BBFA74AC6C2E91508BFFF1BDB1287A2DE00B2",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:44:14.4764681Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerEssentialSeams",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerEssentialSeams.lean",
+        "sourceSha256": "20F67C2BDF1176B069CCBEC0F9196FB9BEABC34738117656719A52712F9704E9",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:50:02.6712321Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleMarkedArcs",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CircleMarkedArcs.lean",
+        "sourceSha256": "1714D45F58223A9F465B79ED5C51840DED6B51B1AA8DD359BC06568DE580907A",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T07:12:39.3990575Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusMixedAnnulus",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\TorusMixedAnnulus.lean",
+        "sourceSha256": "B0D5F913197288608771160D8FC233FFAE0BC3A4EC2B361DF385306B22C8FE50",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:31:23.1153346Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerMixedAnnulus",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerMixedAnnulus.lean",
+        "sourceSha256": "118AA0A21F809B3FAC68B6EADB5B9A6C1AC30DBD7C01A0404FBAF21A8C99FA7F",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:50:26.4672022Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusAnnulusNullCircleComplement",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\TorusAnnulusNullCircleComplement.lean",
+        "sourceSha256": "BD0139220C463FCF8F70FBD4090862A55C5D64F31BA7E3D65D8C2BB2F76BE092",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:39:37.1184594Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerMixedComponent",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalTowerMixedComponent.lean",
+        "sourceSha256": "96615C7F7387001144230BBCADAF7C26AB35DF45FEC4E7FE9FE7B35243ECF008",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:50:53.2413537Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWitnessTransport",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningWitnessTransport.lean",
+        "sourceSha256": "2E294644C5FFA3561F68E9984D5533898003679D33C57A9944A26EC6B7DB4C96",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:34:53.8305087Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningExteriorDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningExteriorDeletion.lean",
+        "sourceSha256": "D95E673BC06164BA0F62E1A878A0C3814A8386DCC3C1E6C4232DAA9D30283F7C",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:35:21.2140699Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningExteriorComponentDeletion",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalReturningExteriorComponentDeletion.lean",
+        "sourceSha256": "A7C6F541FED0788249E61AB00B789DFA0F6543E37E0E8A1AB7F5A04BBF2F04DE",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:35:47.4851720Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalDescentSequence.lean",
+        "sourceSha256": "BAA1CDA54E791D5411E0936883922E9B8992357757DEAB4281F08925CCA1774A",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-1-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:51:22.2414631Z"
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalInitialBridgeWindow",
+        "source": "D:\\differential-geometry-pr30-host\\DifferentialGeometry\\Topology\\PiecewiseLinear\\CanonicalInitialBridgeWindow.lean",
+        "sourceSha256": "C842D15B320ED1459016D0EB2FEB812E083CC75B1D8B201F03C009CFBA67DD3A",
+        "sourceStable": true,
+        "token": "codex-pr30-worker-2-20260924",
+        "exitCode": 0,
+        "diagnosticLines": 0,
+        "flags": [
+          "-DautoImplicit=false",
+          "-DmaxSynthPendingDepth=3",
+          "-Dweak.linter.mathlibStandardSet=true",
+          "-Dlinter.style.header=true",
+          "-Dlinter.style.longLine=true"
+        ],
+        "sharedArtifactsModified": false,
+        "endedAtUtc": "2026-09-24T08:51:24.0770823Z"
+      }
+    ],
+    "audits": [
+      {
+        "name": "AuditPR30Host1",
+        "declarations": 77,
+        "receipt": {
+          "module": "",
+          "source": "C:\\Users\\liao9\\AppData\\Local\\Temp\\codex-pr30-host\\AuditPR30Host1.lean",
+          "sourceSha256": "4F3416C6A539E493772D29381EAA57A16F4852E3EE067F9482333563C4FD9CBC",
+          "sourceStable": true,
+          "token": "codex-pr30-worker-1-20260924",
+          "exitCode": 0,
+          "diagnosticLines": 0,
+          "flags": [
+            "-DautoImplicit=false",
+            "-DmaxSynthPendingDepth=3",
+            "-Dweak.linter.mathlibStandardSet=true",
+            "-Dlinter.style.header=true",
+            "-Dlinter.style.longLine=true"
+          ],
+          "sharedArtifactsModified": false,
+          "endedAtUtc": "2026-09-24T08:53:47.7756304Z"
+        }
+      },
+      {
+        "name": "AuditPR30Host2",
+        "declarations": 82,
+        "receipt": {
+          "module": "",
+          "source": "C:\\Users\\liao9\\AppData\\Local\\Temp\\codex-pr30-host\\AuditPR30Host2.lean",
+          "sourceSha256": "84CA80345AF8576643058918D4CB07DD893CBA8103E12F01C7D0095937459EA7",
+          "sourceStable": true,
+          "token": "codex-pr30-worker-2-20260924",
+          "exitCode": 0,
+          "diagnosticLines": 0,
+          "flags": [
+            "-DautoImplicit=false",
+            "-DmaxSynthPendingDepth=3",
+            "-Dweak.linter.mathlibStandardSet=true",
+            "-Dlinter.style.header=true",
+            "-Dlinter.style.longLine=true"
+          ],
+          "sharedArtifactsModified": false,
+          "endedAtUtc": "2026-09-24T08:53:38.9400068Z"
+        }
+      },
+      {
+        "name": "AuditPR30Host3",
+        "declarations": 43,
+        "receipt": {
+          "module": "",
+          "source": "C:\\Users\\liao9\\AppData\\Local\\Temp\\codex-pr30-host\\AuditPR30Host3.lean",
+          "sourceSha256": "C0255C73FBE565082E65E2CB78173C56AC55488B74EA39D09A1E7FD353D0D48D",
+          "sourceStable": true,
+          "token": "codex-pr30-worker-2-20260924",
+          "exitCode": 0,
+          "diagnosticLines": 0,
+          "flags": [
+            "-DautoImplicit=false",
+            "-DmaxSynthPendingDepth=3",
+            "-Dweak.linter.mathlibStandardSet=true",
+            "-Dlinter.style.header=true",
+            "-Dlinter.style.longLine=true"
+          ],
+          "sharedArtifactsModified": false,
+          "endedAtUtc": "2026-09-24T08:55:39.2403236Z"
+        }
+      }
+    ],
+    "staleAgainstCurrentMainPrerequisites": []
+  },
+  "section32AxiomClosures": [
+    "DifferentialGeometry.Topology.PiecewiseLinear.exists_descentSequence: propext, Classical.choice, Quot.sound",
+    "DifferentialGeometry.Topology.PiecewiseLinear.moise322: propext, Classical.choice, Quot.sound",
+    "DifferentialGeometry.Topology.PiecewiseLinear.moise321: propext, Classical.choice, Quot.sound",
+    "DifferentialGeometry.Topology.PiecewiseLinear.moise323: propext, Classical.choice, Quot.sound",
+    "DifferentialGeometry.Topology.PiecewiseLinear.moise324: propext, Classical.choice, Quot.sound"
+  ]
+}

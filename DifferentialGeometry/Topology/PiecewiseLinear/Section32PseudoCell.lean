@@ -17,22 +17,24 @@ import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPositionBallPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.ReducedDiskPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerExists
+import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence
 
 /-!
-# Sorry-first skeleton of Section 32: pseudo-cells and handle decompositions of tubes
+# Section 32 pseudo-cells and handle decompositions of tubes
 
 The assemblies `moise322`, `moise321`, `moise323`, `moise324` below prove the four named
 propositions of `PseudoCell.lean` for real from the leaves of this file and from the named
 propositions `Moise307`, `Moise314` of the earlier sections and `Moise303`, `Moise286`,
 `Moise267`, now stated in `MoiseChain.lean` and still unproved (digest
 `AD` §5); `Moise267` carries the book's implicit premise that the common boundary of the three
-surfaces is non-empty, since its printed proof starts from an edge of `Bd M_i`.  Every `sorry`
-is a leaf and none sits inside an assembly.  Theorem 30.1 is the proved
+surfaces is non-empty, since its printed proof starts from an edge of `Bd M_i`.
+All leaves are proved in their imported topic modules; the assemblies remain
+conditional on the named earlier Moise inputs.  Theorem 30.1 is the proved
 `separates_or_separates_of_union` and Theorem 30.2 the proved `exists_separates_of_finite_iUnion`;
 both are consumed inside leaves.  Book pages 223-229, in the notation of `PseudoCell.lean`;
 `P'` is the image of the edge midpoint, `I` the ambient interior of `C'₁ ∪ C'₂`.
 
-Eleven frozen leaves remain open.  `separates_of_locally_eventually_eq` and
+The frozen leaves in this module are proved and imported.  `separates_of_locally_eventually_eq` and
 `isTopologicalSphere_image_splitRim` are proved in the imported real modules, with their frozen
 statements unchanged.  The former reuses the general separating-limit theorem on `closure {p}`.
 
@@ -245,8 +247,8 @@ of revolved squares in the unit cylinder with exact tail closures and local fini
 coordinates on the two dual cells of the edge from `h` and the centred prism, the fitting and
 general-position lemmas adapted from the reconnaissance probe
 `Skeleton/CanonicalTowerReduction.lean`, whose descent stages remain a route record for the last
-leaf).  `Moise307` enters once per integer index through the named input `h307`.  The one leaf
-left in this file is the descent.
+leaf).  `Moise307` enters once per integer index through the named input `h307`.
+The descent leaf is proved in `CanonicalDescentSequence` and imported here.
 -/
 
 open Set Topology
@@ -260,33 +262,6 @@ section Leaves
 variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
   {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3} {P' : E3}
   {φ : E3 → E3} {Pt : ℤ → E3} {Dp Dpint J A S T S'' T'' H B Jlo Jhi : ℤ → Set E3}
-
-open Classical in
-theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices)
-    (hv : v ∈ K.vertices) (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
-    (hP' : P' = h (({u, v} : Finset E3).centroid ℝ id))
-    (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
-      (interior (h '' C u ∪ h '' C v)) P')
-    (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
-    (hcl : IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹'
-      initialSurface S'' T'' P'))
-    (hsep : Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹'
-        initialSurface S'' T'' P')
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-      (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (h303 : Moise303) (h286 : Moise286) (h267 : Moise267) (h314 : Moise314) :
-    ∃ (H B Jlo Jhi : ℤ → Set E3) (M : ℕ → Set E3),
-      IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P' ∧
-      M 0 = initialSurface S'' T'' P' ∧
-      (∀ n, IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' M n)) ∧
-      (∀ n, Separates (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' M n)
-        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
-        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v})) ∧
-      (∀ n, P' ∈ M n) ∧
-      IsClosed (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' annularChain H B P') ∧
-      ∀ x ∈ interior (h '' C u ∪ h '' C v), x ≠ P' →
-        ∃ U ∈ 𝓝 x, ∃ n₀ : ℕ, ∀ n ≥ n₀, M n ∩ U = annularChain H B P' ∩ U := by
-  sorry
 
 end Leaves
 

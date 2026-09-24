@@ -14588,3 +14588,13 @@ The frozen sphere statement is LF-identical (336 characters). Main checkout:
 Broader replay 2,833/2,834; the remaining FourSpokeCap source is inherited
 and outside the three-entry cone. Ledger physical sorry 4 -> 3. See
 consult/smooth-main-host-acceptance.md and its receipt manifest.
+
+# PR #30: Section 32 descent integration
+
+10:57 UTC on 2026-09-24: accepted 47 new source modules and the frozen descent leaf.
+The variable block and statement are LF-identical (1,772 characters). Isolated
+and main-checkout checks: 47/47 and 48/48 strict modules respectively; three
+audits in each checkout cover 202 declarations with thirteen linters and only
+foundational axioms. Promoted the sorry-free Section32PseudoCell, registered
+48 modules, and lowered physical sorry 3 -> 2. Named earlier Moise inputs remain
+explicit in the conditional assemblies. See consult/PR30-main-host-acceptance.md.
