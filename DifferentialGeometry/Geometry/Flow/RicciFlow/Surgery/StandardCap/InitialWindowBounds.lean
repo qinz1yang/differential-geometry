@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
+import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
 import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
@@ -342,5 +343,70 @@ theorem exists_uniform_window_image_scalar_bound :
   have h := hbound w hε hm x hx
   rw [w.window_scalar, abs_div, abs_of_pos d.scalar_pos] at h
   exact (div_le_iff₀ d.scalar_pos).mp h
+
+end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+open Manifold DifferentialGeometry.Geometry.Metric DifferentialGeometry.Topology.Manifold
+namespace DifferentialGeometry.PDE.RicciFlow.StandardCap
+private local instance : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp⟩
+private local instance (V : TopologicalSpace.Opens ThreeSpace) : SigmaCompactSpace V :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel V.isOpen)
+private theorem window_scalar_eq_of_scaled_inner
+    {N : Type*} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
+    [IsManifold ThreeModel ∞ N] [T2Space N]
+    {D : ℝ} (gW : SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    (h : SmoothRiemannianMetric ThreeModel N)
+    (J : standardCapWindow D → N) (hJ : IsSmoothEmbedding ThreeModel ThreeModel ∞ J)
+    {q : ℝ} (hq : 0 < q)
+    (hinner : ∀ x v z, gW.inner x v z =
+      q * h.inner (J x) (mfderiv ThreeModel ThreeModel J x v)
+        (mfderiv ThreeModel ThreeModel J x z))
+    (x : standardCapWindow D) :
+    metricScalarAt gW x = metricScalarAt h (J x) / q := by
+  have hlocal : IsLocalDiffeomorph ThreeModel ThreeModel ∞ J := by
+    obtain ⟨Q, hQng, hQns, hQimm⟩ := hJ.isImmersion
+    apply isLocalDiffeomorph_of_injective_mfderiv J hJ.contMDiff _ rfl
+    intro y
+    exact injective_mfderiv_of_isImmersionAt ThreeModel ThreeModel J y
+      ⟨Q, hQng, hQns, hQimm y⟩
+  have heq : gW = pullbackMetricOfInjectiveLocalDiffeomorph
+      (scaleMetric q hq h) J hlocal hJ.isEmbedding.injective := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v z
+    rw [pullbackMetricOfInjectiveLocalDiffeomorph_inner, scaleMetric_inner]
+    exact hinner y v z
+  rw [heq]
+  exact metricScalarAt_pullbackMetricOfInjectiveLocalDiffeomorph_scale
+    h J hlocal hJ.isEmbedding.injective q hq x
+
+theorem exists_uniform_window_image_scalar_bound_of_scaled_pullback :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {E H M N : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold ThreeModel ∞ N]
+        [T2Space N]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → 2 ≤ m →
+        ∀ (h : SmoothRiemannianMetric ThreeModel N) (J : standardCapWindow D → N),
+        IsSmoothEmbedding ThreeModel ThreeModel ∞ J →
+        ∀ q : ℝ, 0 < q →
+        (∀ x v z, w.windowMetric.inner x v z =
+          q * h.inner (J x) (mfderiv ThreeModel ThreeModel J x v)
+            (mfderiv ThreeModel ThreeModel J x z)) →
+        ∀ x : standardCapWindow D, ‖x.val‖ < D →
+          |metricScalarAt h (J x)| ≤ C * q := by
+  obtain ⟨C, hC, hbound⟩ := exists_uniform_window_scalar_bound
+  refine ⟨C, hC, ?_⟩
+  intro E H M N _ _ _ _ _ I _ _ _ _ _ _ _ _ _ g x₀ δ k d A hA D m ε w hε hm
+    h J hJ q hq hinner x hx
+  have hb := hbound w hε hm x hx
+  rw [window_scalar_eq_of_scaled_inner w.windowMetric h J hJ hq hinner x,
+    abs_div, abs_of_pos hq] at hb
+  exact (div_le_iff₀ hq).mp hb
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

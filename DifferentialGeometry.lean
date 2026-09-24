@@ -13817,3 +13817,4 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowGeometry
 import DifferentialGeometry.Topology.ThreeManifold.SphericalBoundaryProjectiveHoles
 import DifferentialGeometry.Geometry.Neck.PointedNormalizedDetection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapWindowGeometry
