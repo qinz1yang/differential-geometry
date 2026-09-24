@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.ControlledDomains
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalMetricExtension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalCurvatureInjectivity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Local
@@ -322,5 +323,38 @@ theorem exists_pointed_convergence_of_eventually_compact_inner_balls
     rw [← hn.1]
     intro y hy
     exact hy.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (hr n).1).mpr hrn)
+
+
+theorem exists_pointed_convergence_with_uniform_metric_bounds_of_compact_inner_balls
+    (X : PointedRiemannianSeq.{u, uE, uH} I) (hconn : ∀ n, ConnectedSpace (X.obj n).M)
+    {rho : ℝ} (hrho : 0 < rho)
+    (hcompact : ∀ R : ℝ, 0 < R → R < rho →
+      ∀ᶠ n in atTop, IsCompact (riemannianClosedBallOf (X.obj n).metric (X.obj n).basepoint R))
+    (hjets : ∀ R : ℝ, 0 < R → R < rho → ∀ p : ℕ, ∃ C : ℝ, 0 ≤ C ∧
+      ∀ᶠ n in atTop, HasLocalCurvDerivBound (X.obj n) (X.obj n).basepoint R p C)
+    (hvol : ∀ r R : ℝ, 0 < r → r < R → R < rho → ∀ C : ℝ, 0 ≤ C →
+      ∃ a κ : ℝ, 0 < a ∧ 0 < κ ∧ r + a ≤ R ∧ a ^ 4 * C ^ 2 ≤ 1 ∧
+      ∀ᶠ n in atTop, ∀ x ∈ riemannianClosedBallOf (X.obj n).metric (X.obj n).basepoint r,
+        ENNReal.ofReal (κ * a ^ Module.finrank ℝ E) ≤
+          Integral.Measure.riemannianVolumeMeasure I (X.obj n).M (X.obj n).metric
+            (riemannianBallOf (X.obj n).metric x a)) :
+    ∃ (f : ℕ → ℕ), StrictMono f ∧
+      ∃ (r : ℕ → ℝ), (∀ n, 0 < r n ∧ r n < rho) ∧ Tendsto r atTop (𝓝 rho) ∧
+      ∃ (L : PointedRiemannianManifold.{u, uE, uH} I)
+        (F : PointedRiemannianConvergenceMaps X L f) (C : MetricConvergenceData F),
+        (∀ n, C.domain n = CanonicalMetricCompactness.canonicalSourceData F n) ∧
+        (∀ x : L.M, riemannianEDistOf L.metric L.basepoint x < ENNReal.ofReal rho) ∧
+        (∀ R : ℝ, 0 ≤ R → R < rho → IsCompact (riemannianClosedBallOf L.metric L.basepoint R)) ∧
+        (∀ n, riemannianClosedBallOf (X.obj (f n)).metric (X.obj (f n)).basepoint (r n) ⊆ F.target n) ∧
+        ∀ eps : ℝ, 0 < eps → ∀ᶠ n in atTop, ∀ x ∈ F.source n, ∀ v : TangentSpace I x,
+          (1 - eps) * L.metric.inner x v v ≤
+            (X.obj (f n)).metric.inner (F.map n x) (mfderiv I I (F.map n) x v) (mfderiv I I (F.map n) x v) ∧
+          (X.obj (f n)).metric.inner (F.map n x) (mfderiv I I (F.map n) x v) (mfderiv I I (F.map n) x v) ≤
+            (1 + eps) * L.metric.inner x v v := by
+  obtain ⟨f, hf, L, F, C, hcanonical, hradial, hcompactL, _⟩ :=
+    exists_pointed_convergence_of_eventually_compact_inner_balls X hconn hrho hcompact hjets hvol
+  obtain ⟨phi, hphi, r, hr, hrlim, F', hmap, hinverse, hsource, hcapture, hbounds, C', hC'⟩ :=
+    F.exists_restriction_with_uniform_metric_bounds C hcanonical hrho hradial hcompactL
+  exact ⟨f ∘ phi, hf.comp hphi, r, hr, hrlim, L, F', C', hC', hradial, hcompactL, hcapture, hbounds⟩
 
 end DifferentialGeometry.CheegerGromovCompactness
