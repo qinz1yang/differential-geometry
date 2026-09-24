@@ -76,3 +76,64 @@ theorem curvature_bound_of_initial_scalar_bound
   exact hr
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff NNReal Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+
+theorem exists_uniform_curvature_bound_of_normalized_initial_scalar_bound
+    (B P : ℝ) (hB : 0 < B) (hP : 0 < P) :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ {X : OrientedThreeStage.{u}} {a s : ℝ} (G : X.IncomingSlab a s)
+        (Ω : Set X.Carrier) (Q q τ : ℝ) (C : ℝ≥0) (h : ℝ → ℝ),
+        0 < Q → q ≤ B * Q →
+        (∀ x ∈ Ω, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+          |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
+        (∀ x ∈ Ω, G.flow.scalar a x ≤ B * Q) →
+        (∀ t ∈ Ico a s, ∀ x ∈ Ω,
+          InFixedHamiltonIveyRegion (G.flow.base.metric t) (h t) x) →
+        (∀ t ∈ Ico a s, P ≤ h t * Q) →
+        2 * C * B * τ ≤ 1 →
+        ∀ b : ℝ, b < s → b - a ≤ τ / Q →
+          ∀ t ∈ Icc a b, ∀ x ∈ Ω,
+            Real.sqrt (normSq0S (G.flow.base.metric t) x 4
+              (metricRm04 (G.flow.base.metric t) x)) ≤ K * Q := by
+  let K := 2 * Real.sqrt 3 * (B + max (2 * B) (Real.exp 4 / P))
+  have hK : 0 < K := by
+    have hm : 0 < max (2 * B) (Real.exp 4 / P) :=
+      (div_pos (Real.exp_pos _) hP).trans_le (le_max_right _ _)
+    dsimp [K]
+    positivity
+  refine ⟨K, hK, ?_⟩
+  intro X a s G Ω Q q τ C h hQ hq hbound hinit hpinch hparameter hbudget b hbs htime t ht x hx
+  have htc : t ∈ Ico a s := ⟨ht.1, ht.2.trans_lt hbs⟩
+  have htime' : 2 * C * (B * Q) * (t - a) ≤ 1 := by
+    have hta : t - a ≤ τ / Q := (sub_le_sub_right ht.2 a).trans htime
+    have hmul := mul_le_mul_of_nonneg_left hta
+      (show 0 ≤ 2 * (C : ℝ) * (B * Q) by positivity)
+    have he : 2 * (C : ℝ) * (B * Q) * (τ / Q) = 2 * C * B * τ := by
+      field_simp
+    exact (hmul.trans_eq he).trans hbudget
+  have hscalar := G.scalar_le_two_mul_initial_of_time_sub_le (mul_pos hB hQ) hq x
+    (hbound x hx) (hinit x hx) htc htime'
+  have hr := sqrt_normSq0S_le_of_fixedHamiltonIveyRegion (G.flow.base.metric t) x
+    (div_pos hP hQ) ((div_le_iff₀ hQ).mpr (hparameter t htc))
+    (hpinch t htc x hx) hscalar
+  have hm : max (2 * (B * Q)) 0 = 2 * (B * Q) := max_eq_left (by positivity)
+  have he : Real.exp 4 / (P / Q) = (Real.exp 4 / P) * Q := by field_simp
+  rw [hm, he, show 2 * (B * Q) = (2 * B) * Q by ring,
+    ← max_mul_of_nonneg _ _ hQ.le] at hr
+  change Real.sqrt (normSq0S (G.flow.base.metric t) x 4
+    (metricRm04At (G.flow.base.metric t) x)) ≤ K * Q
+  exact hr.trans_eq (by dsimp only [K]; ring)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
