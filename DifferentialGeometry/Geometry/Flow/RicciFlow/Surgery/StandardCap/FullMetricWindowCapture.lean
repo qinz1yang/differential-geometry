@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCover
 import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Curvature.EmbeddingCurvatureJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricModels
@@ -220,5 +221,151 @@ theorem finiteFullPreparedMetric_window_image_subset_normalized_tip_ball
     exact le_of_eq (congrArg (fun z => Q*z)
       (finiteFullPreparedMetric_witness_inner I hδ f hf hdisj hs U g R hRet c hc
         x₀ order d₀ hOriginal hrec d hmap hside w b y v v))
+
+section
+
+theorem exists_uniform_finiteFullPreparedMetric_window_ball_capture (R₀ : ℝ) :
+    ∃ δ : ℝ, 0 < δ ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+[Fact (Module.finrank ℝ E = 3)] [TopologicalSpace H] (I : ModelWithCorners ℝ E H) [I.Boundaryless]
+[TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
+{ι : Type*} [Finite ι] {precision : ι → ℝ}
+(hδ : ∀ i, 0 < precision i) (f : ∀ i : ι, bufferedCylinder (precision i) → M)
+(hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
+(hdisj : Pairwise (fun i j => Disjoint (range (f i)) (range (f j))))
+(hs : ∀ i, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) I ∞ (f i))
+(U : Opens M) (g : SmoothRiemannianMetric I U)
+(R : Set (ConnectedComponents (cutCore f)))
+(hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R) U)
+(c : ℝ) (hc : 4 ≤ c)
+(x₀ : ι → U) (order : ι → ℕ)
+(d₀ : ∀ i, normalizedDatum g (x₀ i) (precision i) (order i))
+(hOriginal : ∀ i, f i = neckAmbientMap U (d₀ i))
+{k' : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R} → ℕ}
+(hrec : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (c * precision b.val.1)⁻¹ + 1 ≤ (precision b.val.1)⁻¹)
+(d : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, normalizedDatum g
+  ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b))
+(hmap : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).map = (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
+(hside : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).retainedSide = true)
+{A D ε : ℝ} {hA : 0 < A} {m : ℕ}
+(w : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, CanonicalStaticInsertionWitness (d b) A hA D m ε),
+      ε ≤ 1 / 2 → R₀ + 1 < D →
+      ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R},
+      ∀ p : standardCapWindow D, ‖p.val‖ ≤ R₀ →
+      let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+      let Qcap := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+      let : ChartedSpace ThreeSpace Qcap := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+      let : IsManifold (𝓡 3) ∞ Qcap := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+      let : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+      let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+      let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+      let Φ := F ∘ (w b).window
+      let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+      riemannianBallOf (scaleMetric Q (d b).scalar_pos gRet) (Φ p) δ ⊆
+        Φ '' {x : standardCapWindow D | dist x.val p.val ≤ 1} := by
+  obtain ⟨δ, hδ, hcapture⟩ := exists_uniform_window_isometric_ball_capture R₀
+  refine ⟨δ, hδ, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ ι _ precision hprecision f hf hdisj hs U g R hRet
+    c hc x₀ order d₀ hOriginal k' hrec d hmap hside A D ε hA m w heps hRD b p hp
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let Qcap := FiniteCapQuotient transitionEnd_pos hprecision f (fun i => (hf i).injective) hdisj
+  let : ChartedSpace ThreeSpace Qcap := finiteCapChartedSpace I Fact.out transitionEnd_pos hprecision f hf hdisj
+  let : IsManifold (𝓡 3) ∞ Qcap := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hprecision f hf hdisj hs
+  let : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos hprecision f hf hdisj
+  dsimp only
+  exact hcapture (w b) heps hRD
+    (finiteFullPreparedMetric I hprecision f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w)
+    (finiteFullWitnessMap I Fact.out transitionEnd_pos hprecision f hf hdisj hs R c hc b)
+    (isLocalDiffeomorph_finiteFullWitnessMap I Fact.out transitionEnd_pos hprecision f hf hdisj hs R c hc b)
+    (injective_finiteFullWitnessMap I Fact.out transitionEnd_pos hprecision f hf hdisj hs R c hc b)
+    (finiteFullPreparedMetric_witness_inner I hprecision f hf hdisj hs U g R hRet c hc
+      x₀ order d₀ hOriginal hrec d hmap hside w b) p hp
+
+
+theorem exists_uniform_finiteFullPreparedMetric_window_or_retained_ball :
+    ∃ δ : ℝ, 0 < δ ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+[Fact (Module.finrank ℝ E = 3)] [TopologicalSpace H] (I : ModelWithCorners ℝ E H) [I.Boundaryless]
+[TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
+{ι : Type*} [Finite ι] {precision : ι → ℝ}
+(hδ : ∀ i, 0 < precision i) (f : ∀ i : ι, bufferedCylinder (precision i) → M)
+(hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
+(hdisj : Pairwise (fun i j => Disjoint (range (f i)) (range (f j))))
+(hs : ∀ i, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) I ∞ (f i))
+(U : Opens M) (g : SmoothRiemannianMetric I U)
+(R : Set (ConnectedComponents (cutCore f)))
+(hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R) U)
+(c : ℝ) (hc : 4 ≤ c)
+(x₀ : ι → U) (order : ι → ℕ)
+(d₀ : ∀ i, normalizedDatum g (x₀ i) (precision i) (order i))
+(hOriginal : ∀ i, f i = neckAmbientMap U (d₀ i))
+{k' : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R} → ℕ}
+(hrec : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (c * precision b.val.1)⁻¹ + 1 ≤ (precision b.val.1)⁻¹)
+(d : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, normalizedDatum g
+  ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b))
+(hmap : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).map = (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
+(hside : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, (d b).retainedSide = true)
+{A D ε : ℝ} {hA : 0 < A} {m : ℕ}
+(w : ∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}, CanonicalStaticInsertionWitness (d b) A hA D m ε),
+      ε ≤ 1 / 2 → transitionEnd + 1 < D →
+      let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+      let Qcap := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+      let : ChartedSpace ModelGE3 Qcap := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+      let : IsManifold (𝓡 3) ∞ Qcap := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+      let : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+      let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+      ∀ (q : finiteCapRetained transitionEnd_pos hδ f hf hdisj R) (r : ℝ),
+        (∀ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R},
+          Real.sqrt (metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))) * r ≤ δ) →
+        (∃ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R},
+          ∃ x : standardCapWindow D, ‖x.val‖ ≤ transitionEnd + 1 ∧
+            finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+              ((w b).window x) = q) ∨
+          riemannianBallOf gRet q r ⊆
+            interior (range (finiteRetainedCoreInclusion transitionEnd_pos hδ f hf hdisj R)) := by
+  obtain ⟨δ, hδpos, hcapture⟩ := exists_uniform_finiteFullPreparedMetric_window_ball_capture transitionEnd
+  refine ⟨δ, hδpos, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ ι _ precision hδ f hf hdisj hs U g R hRet
+    c hc x₀ order d₀ hOriginal k' hrec d hmap hside A D ε hA m w heps hD
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let Qcap := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+  let : ChartedSpace ModelGE3 Qcap := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+  let : IsManifold (𝓡 3) ∞ Qcap := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Qcap := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+  dsimp only
+  intro q r hscale
+  classical
+  by_cases hq : ∃ b : {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R},
+      ∃ x : standardCapWindow D, ‖x.val‖ ≤ transitionEnd + 1 ∧
+        finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+          ((w b).window x) = q
+  · exact Or.inl hq
+  right
+  intro y hy
+  by_contra hyold
+  obtain ⟨b, p, hp, himage⟩ := finiteFullWitnessMap_exists_window_preimage_of_notMem_retainedInterior
+    I hδ f hf hdisj hs R c hc U g (fun b => (d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+    k' d w (by linarith) y hyold
+  let F := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b
+  let Q := metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
+  have hback : q ∈ riemannianBallOf gRet (F ((w b).window p)) r := by
+    change riemannianEDistOf gRet (F ((w b).window p)) q < ENNReal.ofReal r
+    rw [show F ((w b).window p) = y from himage, riemannianEDistOf_comm]
+    exact hy
+  have hnormalized : q ∈ riemannianBallOf (scaleMetric Q (d b).scalar_pos gRet)
+      (F ((w b).window p)) δ := by
+    apply riemannianBallOf_mono _ _ (hscale b)
+    rwa [riemannianBallOf_scaleMetric]
+  obtain ⟨x, hx, hxq⟩ := hcapture I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal
+    hrec d hmap hside w heps hD b p hp hnormalized
+  apply hq
+  refine ⟨b, x, ?_, hxq⟩
+  change dist x.val p.val ≤ 1 at hx
+  have hn := norm_le_norm_sub_add x.val p.val
+  rw [← dist_eq_norm] at hn
+  linarith
+
+end
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

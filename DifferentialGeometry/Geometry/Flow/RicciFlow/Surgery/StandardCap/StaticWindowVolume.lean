@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
+import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
 import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Euclidean
@@ -544,5 +547,92 @@ theorem exists_uniform_normalized_window_ball_volume_lower (R : ℝ) :
     ring
   exact heq.trans_le h
 
+
+section
+
+open DifferentialGeometry.Topology.Manifold
+
+theorem exists_uniform_window_isometric_ball_capture (R₀ : ℝ) :
+    ∃ δ : ℝ, 0 < δ ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {η : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ η k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+      ε ≤ 1 / 2 → R₀ + 1 < D →
+      ∀ {N : Type*} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
+        [IsManifold ThreeModel ∞ N] [T2Space N]
+        (gN : SmoothRiemannianMetric ThreeModel N)
+        (F : InsertionQuotient (inv_pos.mpr d.precision_pos) → N),
+      IsLocalDiffeomorph ThreeModel ThreeModel ∞ F → Injective F →
+      (∀ y v z, gN.inner (F y) (mfderiv ThreeModel ThreeModel F y v)
+        (mfderiv ThreeModel ThreeModel F y z) = w.data.outMetric.inner y v z) →
+      ∀ p : standardCapWindow D, ‖p.val‖ ≤ R₀ →
+        riemannianBallOf (scaleMetric (metricScalarAt g x₀) d.scalar_pos gN)
+            (F (w.window p)) δ ⊆
+          (F ∘ w.window) '' {x : standardCapWindow D | dist x.val p.val ≤ 1} := by
+  obtain ⟨Λ, hΛ, hbound⟩ := exists_uniform_window_ellipticity (R₀ + 1)
+  have hΛpos : 0 < Λ := zero_lt_one.trans_le hΛ
+  refine ⟨1 / Λ, div_pos zero_lt_one hΛpos, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ η k d A hA D m ε w heps hRD
+    N _ _ _ _ gN F hF hiF hisom p hp
+  let Φ := F ∘ w.window
+  let gQ := scaleMetric (metricScalarAt g x₀) d.scalar_pos gN
+  let ge := DifferentialGeometry.Geometry.standardEuclideanMetric ThreeSpace
+  have hed (x y : ThreeSpace) : riemannianEDistOf ge x y = edist x y :=
+    DifferentialGeometry.Geometry.riemannianEDistOf_standardEuclideanMetric x y
+  have hball : riemannianClosedBallOf ge p.val 1 = Metric.closedBall p.val 1 := by
+    ext x
+    change riemannianEDistOf ge p.val x ≤ ENNReal.ofReal 1 ↔ dist x p.val ≤ 1
+    rw [hed, edist_dist, ENNReal.ofReal_le_ofReal_iff zero_le_one, dist_comm]
+  have hnorm {x : ThreeSpace} (hx : x ∈ riemannianClosedBallOf ge p.val 1) :
+      ‖x‖ ≤ R₀ + 1 := by
+    have hd : dist x p.val ≤ 1 := by simpa only [hball, Metric.mem_closedBall] using hx
+    have hn := norm_le_norm_sub_add x p.val
+    rw [← dist_eq_norm] at hn
+    linarith
+  have hcpt : IsCompact (riemannianClosedBallOf ge p.val 1) :=
+    hball ▸ isCompact_closedBall p.val 1
+  have hsub : riemannianClosedBallOf ge p.val 1 ⊆ standardCapWindow D := by
+    intro x hx
+    change ‖x‖ < D + 1
+    linarith [hnorm hx]
+  have hΦ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Φ :=
+    fun x => (w.properties.window_local x).comp ThreeModel N (hF (w.window x))
+  have hiΦ : Injective Φ := hiF.comp w.window_smooth.isEmbedding.injective
+  have hin (x : standardCapWindow D) (v z : TangentSpace ThreeModel x) :
+      gQ.inner (Φ x) (mfderiv ThreeModel ThreeModel Φ x v)
+          (mfderiv ThreeModel ThreeModel Φ x z) = w.windowMetric.inner x v z := by
+    rw [scaleMetric_inner, w.window_inner]
+    apply congrArg (fun a => metricScalarAt g x₀ * a)
+    exact metric_inner_comp_of_isometry w.data.outMetric gN F hF.contMDiff hisom
+      w.window w.window_smooth.contMDiff x v z
+  have hlow (x : standardCapWindow D)
+      (hx : x.val ∈ riemannianClosedBallOf ge p.val 1)
+      (v : TangentSpace ThreeModel x) :
+      ge.inner x.val v v ≤ Λ ^ 2 * gQ.inner (Φ x)
+        (mfderiv ThreeModel ThreeModel Φ x v) (mfderiv ThreeModel ThreeModel Φ x v) := by
+    rw [hin]
+    have hb := (hbound w heps hRD x (hnorm hx) v).1
+    rw [← w.window_inner x v v] at hb
+    have hh : ‖(show ThreeSpace from v)‖ ^ 2 ≤ Λ * w.windowMetric.inner x v v :=
+      (inv_mul_le_iff₀ hΛpos).mp hb
+    have hΛsq : Λ ≤ Λ ^ 2 := le_self_pow₀ hΛ (by decide)
+    have hnn : 0 ≤ w.windowMetric.inner x v v := metric_inner_self_nonneg w.windowMetric x v
+    have heuc : ge.inner x.val v v = ‖(show ThreeSpace from v)‖ ^ 2 := by
+      change @inner ℝ ThreeSpace _ (show ThreeSpace from v) (show ThreeSpace from v) = _
+      exact real_inner_self_eq_norm_sq _
+    rw [heuc]
+    exact hh.trans (mul_le_mul_of_nonneg_right hΛsq hnn)
+  have hcapture := Geometry.Metric.ball_subset_image_of_metric_lower_on_opens
+    gQ ge (standardCapWindow D) Φ hΦ hiΦ p zero_lt_one hΛpos hcpt hsub hlow
+  apply hcapture.trans
+  apply image_mono
+  intro x hx
+  simpa only [hball, Metric.mem_closedBall] using hx
+
+end
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
