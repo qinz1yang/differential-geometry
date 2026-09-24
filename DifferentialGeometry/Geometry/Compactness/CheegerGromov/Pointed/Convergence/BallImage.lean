@@ -198,4 +198,71 @@ theorem PointedRiemannianConvergenceMaps.eventually_ball_subset_image_closed_bal
     exact ENNReal.ofReal_pos.mpr (by linarith)
   · linarith
 
+
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
+theorem PointedRiemannianConvergenceMaps.exists_eventually_image_compact_subset_inner_ball
+    {X : PointedRiemannianSeq.{u, uE, uH} I}
+    {L : PointedRiemannianManifold.{u, uE, uH} I} {f : ℕ → ℕ}
+    (F : PointedRiemannianConvergenceMaps X L f) {rho : ℝ} (hrho : 0 < rho)
+    (hradial : ∀ x : L.M, riemannianEDistOf L.metric L.basepoint x < ENNReal.ofReal rho)
+    (hcompact : ∀ R : ℝ, 0 ≤ R → R < rho → IsCompact (riemannianClosedBallOf L.metric L.basepoint R))
+    (hupper : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ i in atTop,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (X.obj (f i)).metric.inner (F.map i x)
+          (mfderiv I I (F.map i) x v) (mfderiv I I (F.map i) x v) ≤
+            C ^ 2 * L.metric.inner x v v)
+    {K : Set L.M} (hK : IsCompact K) :
+    ∃ R : ℝ, 0 < R ∧ R < rho ∧ ∀ᶠ i in atTop,
+      K ⊆ F.source i ∧ F.map i '' K ⊆ riemannianBallOf (X.obj (f i)).metric (X.obj (f i)).basepoint R := by
+  have hdistfinite (x : L.M) : riemannianEDistOf L.metric L.basepoint x ≠ ⊤ := ne_top_of_lt (hradial x)
+  have hcontinuous : Continuous (fun x : L.M => (riemannianEDistOf L.metric L.basepoint x).toReal) := by
+    apply continuous_iff_continuousAt.mpr
+    intro x
+    exact (ENNReal.continuousAt_toReal (hdistfinite x)).comp
+      (Geometry.Riemannian.continuous_riemannianEDist L.metric L.basepoint).continuousAt
+  have hnear : ∃ r : ℝ, 0 < r ∧ r < rho ∧ K ⊆ riemannianBallOf L.metric L.basepoint r := by
+    rcases K.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨rho / 2, half_pos hrho, half_lt_self hrho, empty_subset _⟩
+    obtain ⟨x, hx, hmax⟩ := hK.exists_isMaxOn hne hcontinuous.continuousOn
+    have hdx : (riemannianEDistOf L.metric L.basepoint x).toReal < rho :=
+      ENNReal.toReal_lt_of_lt_ofReal (hradial x)
+    obtain ⟨r, hr, hrrho⟩ := exists_between hdx
+    have hrpos : 0 < r := ENNReal.toReal_nonneg.trans_lt hr
+    refine ⟨r, hrpos, hrrho, fun y hy => ?_⟩
+    exact (ENNReal.lt_ofReal_iff_toReal_lt (hdistfinite y)).mpr ((hmax hy).trans_lt hr)
+  obtain ⟨r, hr, hrrho, hKr⟩ := hnear
+  let R := (r + rho) / 2
+  have hrR : r < R := by dsimp [R]; linarith
+  have hRrho : R < rho := by dsimp [R]; linarith
+  have hR : 0 < R := hr.trans hrR
+  let C := R / r
+  have hC : 1 < C := (one_lt_div hr).mpr hrR
+  let B := (r + R) / 2
+  have hrB : r < B := by dsimp [B]; linarith
+  have hB : 0 < B := hr.trans hrB
+  have hBrho : B < rho := by dsimp [B]; linarith
+  have hcpt := hcompact B hB.le hBrho
+  obtain ⟨N, hN⟩ := F.source_exhausts.subset _ hcpt
+  refine ⟨R, hR, hRrho, ?_⟩
+  filter_upwards [hupper _ hcpt C hC, eventually_ge_atTop N] with i hi hNi
+  have hsource := hN i hNi
+  have hKsource : K ⊆ F.source i := fun x hx => hsource
+    ((hKr hx).le.trans (ENNReal.ofReal_le_ofReal hrB.le))
+  refine ⟨hKsource, ?_⟩
+  rintro _ ⟨x, hx, rfl⟩
+  have hdx : riemannianEDistOf L.metric L.basepoint x < ENNReal.ofReal r := hKr hx
+  have hd := PDE.RicciFlow.Perelman.KappaSolutions.edistOf_map_le_of_metric_upper_on_ball
+    L.metric (X.obj (f i)).metric (F.partialDiffeomorph i) L.basepoint x hB (zero_lt_one.trans hC)
+    hsource hi (hdx.trans_le (ENNReal.ofReal_le_ofReal hrB.le))
+  rw [F.basepoint_map i] at hd
+  change riemannianEDistOf (X.obj (f i)).metric (X.obj (f i)).basepoint (F.map i x) < _
+  apply hd.trans_lt
+  calc
+    _ < ENNReal.ofReal C * ENNReal.ofReal r :=
+      (ENNReal.mul_lt_mul_iff_right (ENNReal.ofReal_ne_zero_iff.mpr (zero_lt_one.trans hC))
+        ENNReal.ofReal_ne_top).mpr hdx
+    _ = ENNReal.ofReal R := by rw [← ENNReal.ofReal_mul (zero_lt_one.trans hC).le]; congr 1; exact div_mul_cancel₀ R hr.ne'
+
+
+
 end DifferentialGeometry.CheegerGromovCompactness
