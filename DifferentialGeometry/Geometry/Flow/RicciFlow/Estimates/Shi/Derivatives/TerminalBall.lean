@@ -5,10 +5,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Te
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
 import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
+import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
 
 noncomputable section
 open Set
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -253,7 +256,7 @@ theorem shi_curvDerivNorm_terminal_of_terminal_ball
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem shi_curvDerivNorm_on_terminal_ball
+private theorem shi_curvDerivNorm_on_terminal_ball_of_innerProductSpace
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn S) {a b K R : ℝ} (hab : a < b) (hK : 0 < K) (hR : 0 < R)
     (hcarrier : Icc a b ⊆ D.carrier) (hregular : Ioo a b ⊆ D.regular)
@@ -353,5 +356,67 @@ theorem shi_curvDerivNorm_on_terminal_ball
     (by linarith) hK hsmall (hsub.trans hcarrier) hreg x hcpt
     (fun s hs y hy => hcurv s (hsub hs) y (hcontain hy)) m
   simpa only [show t - (t - tau) = tau by ring, tau, L] using hb
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Set
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open scoped _root_.Manifold ContDiff
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [SigmaCompactSpace M]
+
+theorem shi_curvDerivNorm_on_terminal_ball
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {a b K R : ℝ} (hab : a < b) (hK : 0 < K) (hR : 0 < R)
+    (hcarrier : Icc a b ⊆ D.carrier) (hregular : Ioo a b ⊆ D.regular)
+    (p : M) (hcompact : IsCompact (riemannianClosedBallOf (S.base.metric b) p R))
+    (hcurv : ∀ t ∈ Icc a b, ∀ y ∈ riemannianClosedBallOf (S.base.metric b) p R,
+      curvDerivNormSq (I := I) 0 (S.base.metric t) y ≤ K ^ 2) :
+    let tau := (b - a) / 4
+    let L := Real.exp ((Module.finrank ℝ E : ℝ) ^ 2 * K * (b - a))
+    ∀ m : ℕ, ∀ t ∈ Icc ((a + b) / 2) b,
+      ∀ x ∈ riemannianClosedBallOf (S.base.metric b) p (R / 4),
+        curvDerivNorm m (S.base.metric t) x ≤
+          shiLocalUniformBound (Module.finrank ℝ E) m (K * tau)
+            ((R / (4 * L)) * Real.sqrt K /
+              (4 * Real.exp ((Module.finrank ℝ E : ℝ) ^ 2 * K * tau))) *
+            K / Real.sqrt tau ^ m := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    (Module.finBasis ℝ E).equivFun.toContinuousLinearEquiv.trans
+      (EuclideanSpace.equiv (Fin (Module.finrank ℝ E)) ℝ).symm
+  let J := I.transContinuousLinearEquiv e
+  let f := ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e
+  let U : SolutionOn (I := J) (M := M) D := S.pullback f.symm
+  have hU : IsSolutionOn U := hS.pullback S f.symm
+  have hballs (r : ℝ) : riemannianClosedBallOf (U.base.metric b) p r =
+      riemannianClosedBallOf (S.base.metric b) p r := by
+    ext y
+    change riemannianEDistOf (Diffeomorph.pullbackMetricCross (S.base.metric b) f.symm) p y
+      ≤ ENNReal.ofReal r ↔ _
+    rw [riemannianEDistOf_pullbackMetricCross]
+    rfl
+  have hnorm (m : ℕ) (t : ℝ) (x : M) :
+      curvDerivNorm m (U.base.metric t) x = curvDerivNorm m (S.base.metric t) x :=
+    Perelman.KappaSolutions.curvDerivNorm_pullbackMetricCross (S.base.metric t) f.symm m x
+  have hbound : ∀ t ∈ Icc a b, ∀ y ∈ riemannianClosedBallOf (U.base.metric b) p R,
+      curvDerivNormSq 0 (U.base.metric t) y ≤ K ^ 2 := by
+    intro t ht y hy
+    have hh : curvDerivNorm 0 (U.base.metric t) y ≤ K := by
+      rw [hnorm]
+      exact (Real.sqrt_le_iff.mpr ⟨hK.le, hcurv t ht y ((hballs R) ▸ hy)⟩)
+    exact (Real.sqrt_le_iff.mp hh).2
+  have hshi := shi_curvDerivNorm_on_terminal_ball_of_innerProductSpace U hU hab hK hR
+    hcarrier hregular p ((hballs R).symm ▸ hcompact) hbound
+  dsimp only at hshi ⊢
+  intro m t ht x hx
+  have hh := hshi m t ht x ((hballs (R / 4)).symm ▸ hx)
+  rw [hnorm] at hh
+  simpa only [finrank_euclideanSpace_fin] using hh
 
 end DifferentialGeometry.PDE.RicciFlow

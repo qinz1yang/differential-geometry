@@ -277,6 +277,40 @@ theorem shrinkingCylinderMetric_complete (t : ℝ) :
   let : CompactSpace (Metric.sphere (0 : E) 1) := inferInstance
   exact cylinder_complete_of_compact _
 
+theorem shrinkingCylinderMetric_scalar {t : ℝ} (ht : t < 1)
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    metricScalarAt (shrinkingCylinderMetric (E := E) t) x = (1 - t)⁻¹ := by
+  have hpos : 0 < 2 * (1 - t) := by positivity
+  have heq : shrinkingCylinderMetric (E := E) t =
+      cylinderMetric (scaleMetric (2 * (1 - t)) hpos (roundMetric (E := E) (n := 2))) := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rw [shrinkingCylinderMetric_inner ht, cylinderMetric_inner]
+    exact congrArg (fun z : ℝ => z + v.2 * w.2)
+      (scaleMetric_inner (2 * (1 - t)) hpos (roundMetric (E := E) (n := 2)) y.1
+        (v.1 : TangentSpace (𝓡 2) y.1) (w.1 : TangentSpace (𝓡 2) y.1)).symm
+  have hround : metricScalarAt (roundMetric (E := E) (n := 2)) x.1 = 2 := by
+    have h := metricScalarAt_roundCylinder (E := E) (n := 2) x
+    rw [roundCylinderMetric, cylinderMetric, metricScalarAt_productMetric,
+      metricScalarAt_scaleMetric, metricScalarAt_eq_zero_of_finrank_le_one _ (by simp) x.2] at h
+    norm_num at h
+    linarith
+  rw [heq, cylinderMetric, metricScalarAt_productMetric, metricScalarAt_scaleMetric,
+    hround, metricScalarAt_eq_zero_of_finrank_le_one _ (by simp) x.2, add_zero]
+  field_simp
+
+theorem shrinkingCylinderMetric_scalar_pos {t : ℝ} (ht : t < 1)
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    0 < metricScalarAt (shrinkingCylinderMetric (E := E) t) x := by
+  rw [shrinkingCylinderMetric_scalar ht]
+  exact inv_pos.mpr (sub_pos.mpr ht)
+
+theorem shrinkingCylinderMetric_scalar_le_one {t : ℝ} (ht : t ≤ 0)
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    metricScalarAt (shrinkingCylinderMetric (E := E) t) x ≤ 1 := by
+  rw [shrinkingCylinderMetric_scalar (ht.trans_lt zero_lt_one)]
+  exact inv_le_one_of_one_le₀ (by linarith)
+
 theorem shrinkingCylinderMetric_scalar_zero (x : Metric.sphere (0 : E) 1 × ℝ) :
     metricScalarAt (shrinkingCylinderMetric (E := E) 0) x = 1 := by
   rw [shrinkingCylinderMetric_zero]

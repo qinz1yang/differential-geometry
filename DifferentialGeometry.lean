@@ -13675,3 +13675,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCutoffR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapRecentering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalComponentClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.UncutDiscardedClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.LocalCompact
