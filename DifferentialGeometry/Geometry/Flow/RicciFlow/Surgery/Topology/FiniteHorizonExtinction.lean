@@ -65,7 +65,7 @@ private theorem prefix_initial_metric {H K : ObservedHistory.{u}} (h : H.IsPrefi
   simpa only [Fin.cast_zero, ObservedHistory.restrict_initialMetric_zero,
     ObservedHistory.restrict_stage_zero] using hh
 
-theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debit
+theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_volume_debit
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
     {g : P.Metric} (H : RetainedCoreHistory P)
     (A : InitialIdentification P g H.toHistory)
@@ -93,9 +93,9 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debi
         (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric
           (K.time (Fin.last K.eventCount)) = K.initialMetric (Fin.last K.eventCount)),
         E.incoming = G ∧ K.appendEvent E.incoming.lt E hinit ∈ S)
-    (parameters : CutoffParameters)
-    (records : ∀ K ∈ S, ∀ i : Fin K.eventCount,
-      GeometricCutoffRecord K.toHistory i parameters)
+    (parameters : ∀ K ∈ S, CutoffParameters)
+    (records : ∀ K hK, ∀ i : Fin K.eventCount,
+      GeometricCutoffRecord K.toHistory i (parameters K hK))
     (hbfr : ∀ K ∈ S, ∀ i : Fin K.eventCount,
       (K.coreEvent i).transition.boundaryFrameReversing)
     (hctrl : ∀ K ∈ S, ∀ i : Fin K.eventCount,
@@ -134,12 +134,54 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debi
       hend hscalar hdebit hproduce
   · let A' := A.of_stageZero (prefix_initial_stage (hprefix J hJ))
       (prefix_initial_metric (hprefix J hJ))
-    exact J.exists_poincare_controlled_extinction_of_initialScalarBarrier A' parameters
+    exact J.exists_poincare_controlled_extinction_of_initialScalarBarrier A' (parameters J hJ)
       (records J hJ) (hbfr J hJ) (hctrl J hJ) hc hscalar0 (hJB ▸ hthr)
   · let K := J.extendHorizon B hB G hG
     let A' := A.of_stageZero (prefix_initial_stage hp) (prefix_initial_metric hp)
-    exact K.exists_poincare_controlled_extinction_of_initialScalarBarrier A' parameters
+    exact K.exists_poincare_controlled_extinction_of_initialScalarBarrier A' (parameters J hJ)
       (fun i => GeometricCutoffRecord.extendHorizon B hB G hG (records J hJ i))
       (hbfr J hJ) (hctrl J hJ) hc hscalar0 hthr
+
+theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debit
+    {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
+    {g : P.Metric} (H : RetainedCoreHistory P)
+    (A : InitialIdentification P g H.toHistory)
+    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    {B v : ℝ} (hv : 0 < v)
+    (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
+    (hhorizon : ∀ K ∈ S, K.horizon ≤ B)
+    (hend : ∀ K ∈ S, K.time (Fin.last K.eventCount) = K.horizon)
+    (hdebit : ∀ K ∈ S, ∀ i : Fin K.eventCount,
+      ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
+        riemannianVolumeMeasure ThreeModel (K.stage i.succ).Carrier
+          (K.coreEvent i).outputMetric univ +
+            ENNReal.ofReal ((Nat.card (K.coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
+        riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
+          (K.coreEvent i).terminal.metric F)
+    (hproduce : ∀ K ∈ S, K.horizon < B →
+      ∀ (s : ℝ) (G : (K.stage (Fin.last K.eventCount)).IncomingSlab
+        (K.time (Fin.last K.eventCount)) s),
+      s ≤ B →
+      G.flow.base.metric (K.time (Fin.last K.eventCount)) =
+        K.initialMetric (Fin.last K.eventCount) → G.SingularEndpoint →
+      ∃ (Q : OrientedThreeStage.{u})
+        (E : RetainedCoreEvent (K.stage (Fin.last K.eventCount)) Q
+          (K.time (Fin.last K.eventCount)) s)
+        (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric
+          (K.time (Fin.last K.eventCount)) = K.initialMetric (Fin.last K.eventCount)),
+        E.incoming = G ∧ K.appendEvent E.incoming.lt E hinit ∈ S)
+    (parameters : CutoffParameters)
+    (records : ∀ K ∈ S, ∀ i : Fin K.eventCount,
+      GeometricCutoffRecord K.toHistory i parameters)
+    (hbfr : ∀ K ∈ S, ∀ i : Fin K.eventCount,
+      (K.coreEvent i).transition.boundaryFrameReversing)
+    (hctrl : ∀ K ∈ S, ∀ i : Fin K.eventCount,
+      (K.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
+    {c : ℝ} (hc : 0 < c) (hscalar0 : InitialScalarBarrier g c)
+    (hthr : extinctionThreshold c (canonicalWidth g P.orientation) < B) :
+    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+  exact H.exists_poincare_controlled_extinction_of_history_volume_debit A S hH hv
+    hprefix hhorizon hend hdebit hproduce (fun _ _ => parameters) records hbfr hctrl
+    hc hscalar0 hthr
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
