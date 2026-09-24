@@ -132,6 +132,30 @@ private theorem exists_window_of_stage_metric_heq
   cases eq_of_heq hg
   exact ⟨J, HEq.rfl, hJ, hmetric⟩
 
+theorem RetainedCoreHistory.exists_window_at_appendEvent
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hOld : E.old = E.transition.trace.retainedCore)
+    (hinit : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    {D q : ℝ} (g : SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    (J : C(standardCapWindow D, Q.Carrier))
+    (hJ : IsSmoothEmbedding ThreeModel ThreeModel ∞ J)
+    (hmetric : ∀ x v w, g.inner x v w = q * E.outputMetric.inner (J x)
+      (mfderiv ThreeModel ThreeModel J x v) (mfderiv ThreeModel ThreeModel J x w)) :
+    let K := H.appendEvent E.incoming.lt (E.toRetainedCoreEvent hOld) hinit
+    ∃ J' : C(standardCapWindow D, (K.stage (Fin.last K.eventCount)).Carrier),
+      HEq J' J ∧ IsSmoothEmbedding ThreeModel ThreeModel ∞ J' ∧
+      ∀ x v w, g.inner x v w = q *
+        (K.initialMetric (Fin.last K.eventCount)).inner (J' x)
+          (mfderiv ThreeModel ThreeModel J' x v) (mfderiv ThreeModel ThreeModel J' x w) := by
+  exact exists_window_of_stage_metric_heq
+    (H.appendEvent_stage_last E.incoming.lt (E.toRetainedCoreEvent hOld) hinit)
+    _ E.outputMetric
+    (H.appendEvent_initialMetric_last_heq E.incoming.lt (E.toRetainedCoreEvent hOld) hinit)
+    g J hJ hmetric
+
 theorem RetainedCoreHistory.exists_static_window_at_appendEvent
     {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
@@ -147,10 +171,7 @@ theorem RetainedCoreHistory.exists_static_window_at_appendEvent
       ∀ x v w, S.witness.windowMetric.inner x v w = S.neck.scale *
         (K.initialMetric (Fin.last K.eventCount)).inner (J x)
           (mfderiv ThreeModel ThreeModel J x v) (mfderiv ThreeModel ThreeModel J x w) := by
-  exact exists_window_of_stage_metric_heq
-    (H.appendEvent_stage_last E.incoming.lt (E.toRetainedCoreEvent hOld) hinit)
-    _ E.outputMetric
-    (H.appendEvent_initialMetric_last_heq E.incoming.lt (E.toRetainedCoreEvent hOld) hinit)
+  exact H.exists_window_at_appendEvent E hOld hinit
     S.witness.windowMetric S.window S.window_smooth S.window_inner
 
 theorem RetainedCoreHistory.exists_static_cap_family_at_appendEvent

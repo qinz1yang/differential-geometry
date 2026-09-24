@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricDerivatives
 import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
 import DifferentialGeometry.Geometry.Curvature.EmbeddingSectional
@@ -86,6 +87,32 @@ theorem finiteFullPreparedMetric_deep_inner {C : ℕ → ℝ}
     (w b).data.capMap (w b).properties.capMap_embedding.contMDiff x v z
   rw [he]
   exact (hw b).deep_metric x hx v z
+
+theorem finiteFullPreparedMetric_window_inner (b : ModelGB) :
+    let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+    let : ChartedSpace ModelGE3 ModelGQ := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+    let : IsManifold (𝓡 3) ∞ ModelGQ := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+    let : T2Space ModelGQ := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    let gRet := finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w
+    let J := finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b ∘ (w b).window
+    ∀ x v z, (w b).windowMetric.inner x v z =
+      metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) *
+        gRet.inner (J x) (mfderiv (𝓡 3) (𝓡 3) J x v) (mfderiv (𝓡 3) (𝓡 3) J x z) := by
+  let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
+  let : ChartedSpace ModelGE3 ModelGQ := finiteCapChartedSpace I Fact.out transitionEnd_pos hδ f hf hdisj
+  let : IsManifold (𝓡 3) ∞ ModelGQ := finiteCapQuotient_isManifold Fact.out transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space ModelGQ := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  dsimp only
+  intro x v z
+  rw [(w b).window_inner]
+  apply congrArg (fun a => metricScalarAt g ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) * a)
+  exact (metric_inner_comp_of_isometry (w b).data.outMetric
+    (finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc x₀ order d₀ hOriginal hrec d hmap hside w)
+    (finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b)
+    (contMDiff_finiteFullWitnessMap I Fact.out transitionEnd_pos hδ f hf hdisj hs R c hc b)
+    (finiteFullPreparedMetric_witness_inner I hδ f hf hdisj hs U g R hRet c hc
+      x₀ order d₀ hOriginal hrec d hmap hside w b)
+    (w b).window (w b).window_smooth.contMDiff x v z).symm
 
 theorem finiteFullPreparedMetric_window_close (b : ModelGB) :
     let : LocallyPathConnectedSpace M := originalModel_locallyPathConnected I Fact.out
