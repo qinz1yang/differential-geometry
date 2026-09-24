@@ -20,11 +20,11 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.exists_disjoint_spherical_region
-    (L : G.TerminalLimitMetric) :
+theorem exists_uniform_disjoint_spherical_region :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
-      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
-        ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+      ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+        (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+        ∀ (L : G.TerminalLimitMetric) (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
           metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
           ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
             (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
@@ -56,12 +56,16 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region
   refine ⟨min eta (1 / 40000), lt_min heta (by norm_num), ?_⟩
   intro δ hδ hδeta
   have hδsmall : δ < 1 / 20000 := by linarith [hδeta.trans (min_le_right _ _)]
-  obtain ⟨C2, q, hC2, hq, hfamily⟩ :=
-    L.exists_finite_recorded_spherical_barriers_with_compact_component_closures hδ hδsmall
-  refine ⟨C2, q, hC2, hq, ?_⟩
-  intro A y hA hqA hyA hnoncompact
+  obtain ⟨C2, hC2, hfamily⟩ :=
+    exists_uniform_finite_recorded_spherical_barriers_with_compact_component_closures.{u}
+      hδ hδsmall
+  refine ⟨C2, hC2, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hfamily⟩ := hfamily P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L A y hA hqA hyA hnoncompact
   obtain ⟨S, D, hSne, hcover, hD, v, neck, level, sign, collar, hfront, hunion, hgeometry,
-    hcollar, hallcompact, hlow, hold⟩ := hfamily A y hA hqA hyA hnoncompact
+    hcollar, hallcompact, hlow, hold⟩ := hfamily L A y hA hqA hyA hnoncompact
   let J := {p // p ∈ S} × Fin 2
   let F : J → Set G.terminalRegularOpen := fun i =>
     range (fun z : Sphere 2 => (neck i.1).map (z, level i))
@@ -148,6 +152,44 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region
     · intro z t ht
       have hh := hinside z (σ * t) (hscaled t ht)
       rcases hσ with rfl | rfl <;> simpa [K] using hh
+
+theorem TerminalLimitMetric.exists_disjoint_spherical_region
+    (L : G.TerminalLimitMetric) :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
+        ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+          metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
+          ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
+            (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
+            (b : Finset ι) (K : Set G.terminalRegularOpen),
+            b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
+            {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+              ⊆ interior K ∧ K ⊆ connectedComponent y ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * A) ∧
+            (b : Set ι).PairwiseDisjoint
+              (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
+            frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+            (∀ x ∈ frontier K, 2 * A < metricScalarAt L.metric x) ∧
+            ∀ i ∈ b, |level i| ≤ 3 ∧
+              IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+                2 * A < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * A) ∧
+              (neck i).cylindricalChart.metricCloseOn L.metric δ
+                {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
+  obtain ⟨eta, heta, hregion⟩ := exists_uniform_disjoint_spherical_region.{u}
+  refine ⟨eta, heta, ?_⟩
+  intro δ hδ hδη
+  obtain ⟨C2, hC2, hregion⟩ := hregion δ hδ hδη
+  obtain ⟨q, hq, hregion⟩ := hregion P a s G
+  exact ⟨C2, q, hC2, hq, hregion L⟩
 
 theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_boundary_atlas
     (L : G.TerminalLimitMetric) :
@@ -364,11 +406,12 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
-    (L : G.TerminalLimitMetric) :
+theorem exists_uniform_disjoint_spherical_region_with_low_anchors_of_le :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
-      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
-        ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+      ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+        (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+        ∀ (L : G.TerminalLimitMetric) (A B : ℝ) (y : G.terminalRegularOpen),
+          0 < A → A ≤ B → q < 4 * C2 * B →
           metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
           ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
             (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
@@ -376,18 +419,18 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
             b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
             {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
               ⊆ interior K ∧ K ⊆ connectedComponent y ∧
-            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * A) ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * B) ∧
             (b : Set ι).PairwiseDisjoint
               (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
             frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
-            (∀ x ∈ frontier K, 2 * A < metricScalarAt L.metric x) ∧
+            (∀ x ∈ frontier K, 2 * B < metricScalarAt L.metric x) ∧
             (∀ x ∈ interior K, ∃ a ∈ connectedComponentIn (interior K) x,
               metricScalarAt L.metric a ≤ A) ∧
             ∀ i ∈ b, |level i| ≤ 3 ∧
               IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
               (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
-                2 * A < metricScalarAt L.metric ((neck i).map z) ∧
-                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * A) ∧
+                2 * B < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * B) ∧
               (neck i).cylindricalChart.metricCloseOn L.metric δ
                 {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
               (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
@@ -397,14 +440,18 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
                   (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
                 ∀ z, ∀ t ∈ Ioo (-r) r,
                   (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
-  obtain ⟨eta, heta, hregion⟩ := L.exists_disjoint_spherical_region
+  obtain ⟨eta, heta, hregion⟩ := exists_uniform_disjoint_spherical_region.{u}
   refine ⟨eta, heta, ?_⟩
   intro δ hδ hδη
-  obtain ⟨C2, q, hC2, hq, hregion⟩ := hregion δ hδ hδη
-  refine ⟨C2, q, hC2, hq, ?_⟩
-  intro A y hA hqA hyA hnoncompact
+  obtain ⟨C2, hC2, hregion⟩ := hregion δ hδ hδη
+  refine ⟨C2, hC2, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hregion⟩ := hregion P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L A B y hA hAB hqB hyA hnoncompact
   obtain ⟨ι, v, neck, level, b, W, _, hW, hregular, hlow, hcomponent, hscalar,
-    hdisjoint, hfront, hfrontscalar, hnecks⟩ := hregion A y hA hqA hyA hnoncompact
+    hdisjoint, hfront, hfrontscalar, hnecks⟩ :=
+      hregion L B y (hA.trans_le hAB) hqB (hyA.trans hAB) hnoncompact
   let Low := {z : G.terminalRegularOpen | z ∈ connectedComponent y ∧ metricScalarAt L.metric z ≤ A}
   let R := ⋃ z ∈ Low, connectedComponentIn W z
   let F (i : ι) := range (fun z : Sphere 2 => (neck i).map (z, level i))
@@ -423,7 +470,7 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
   obtain ⟨hRcompact, hRW, hLR, hRregular, hRfront, hanchor, _, hcollars⟩ :=
     spatial_neck_component_union_meeting L.metric (fun i : {i // i ∈ b} => v i.val)
       (fun i => neck i.val) (fun i => level i.val) hlevel hdisjoint' hW hregular hfront'
-      (show Low ⊆ interior W from hlow)
+      (show Low ⊆ interior W from fun z hz => hlow ⟨hz.1, hz.2.trans hAB⟩)
   have hfrontR : frontier R = ⋃ i ∈ b', F i := by
     change frontier R = ⋃ i : {i // i ∈ b},
       ⋃ (_ : (F i.val ∩ R).Nonempty), F i.val at hRfront
@@ -463,5 +510,145 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
     obtain ⟨hside', hinside'⟩ := hcollars ⟨i, hib⟩ hia r σ hsrc hside hinside
     exact ⟨hl, hembed, hband, hclose, hdomain, r, σ, hr, hr1, hσ, hsrc, hside', hinside'⟩
 
+
+theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors_of_le
+    (L : G.TerminalLimitMetric) :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
+        ∀ (A B : ℝ) (y : G.terminalRegularOpen), 0 < A → A ≤ B → q < 4 * C2 * B →
+          metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
+          ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
+            (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
+            (b : Finset ι) (K : Set G.terminalRegularOpen),
+            b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
+            {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+              ⊆ interior K ∧ K ⊆ connectedComponent y ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * B) ∧
+            (b : Set ι).PairwiseDisjoint
+              (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
+            frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+            (∀ x ∈ frontier K, 2 * B < metricScalarAt L.metric x) ∧
+            (∀ x ∈ interior K, ∃ a ∈ connectedComponentIn (interior K) x,
+              metricScalarAt L.metric a ≤ A) ∧
+            ∀ i ∈ b, |level i| ≤ 3 ∧
+              IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+                2 * B < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * B) ∧
+              (neck i).cylindricalChart.metricCloseOn L.metric δ
+                {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
+  obtain ⟨eta, heta, hregion⟩ := exists_uniform_disjoint_spherical_region_with_low_anchors_of_le.{u}
+  refine ⟨eta, heta, ?_⟩
+  intro δ hδ hδη
+  obtain ⟨C2, hC2, hregion⟩ := hregion δ hδ hδη
+  obtain ⟨q, hq, hregion⟩ := hregion P a s G
+  exact ⟨C2, q, hC2, hq, hregion L⟩
+
+theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
+    (L : G.TerminalLimitMetric) :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
+        ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
+          metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
+          ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
+            (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
+            (b : Finset ι) (K : Set G.terminalRegularOpen),
+            b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
+            {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+              ⊆ interior K ∧ K ⊆ connectedComponent y ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * A) ∧
+            (b : Set ι).PairwiseDisjoint
+              (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
+            frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+            (∀ x ∈ frontier K, 2 * A < metricScalarAt L.metric x) ∧
+            (∀ x ∈ interior K, ∃ a ∈ connectedComponentIn (interior K) x,
+              metricScalarAt L.metric a ≤ A) ∧
+            ∀ i ∈ b, |level i| ≤ 3 ∧
+              IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+                2 * A < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * A) ∧
+              (neck i).cylindricalChart.metricCloseOn L.metric δ
+                {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
+  obtain ⟨eta, heta, hregion⟩ := L.exists_disjoint_spherical_region_with_low_anchors_of_le
+  refine ⟨eta, heta, ?_⟩
+  intro δ hδ hδη
+  obtain ⟨C2, q, hC2, hq, hregion⟩ := hregion δ hδ hδη
+  exact ⟨C2, q, hC2, hq, fun A y hA hqA hyA hnoncompact =>
+    hregion A A y hA le_rfl hqA hyA hnoncompact⟩
+
+
+
+theorem exists_uniform_disjoint_spherical_region_with_scalar_gap :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ C : ℝ, 1 ≤ C → ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+        (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+        ∀ (L : G.TerminalLimitMetric) (A : ℝ) (y : G.terminalRegularOpen),
+          0 < A → q < 4 * C2 * (C * A) →
+          metricScalarAt L.metric y ≤ A → ¬ IsCompact (connectedComponent y) →
+          ∃ (ι : Type u) (v : ι → G.terminalRegularOpen)
+            (neck : ∀ i, SpatialNeck L.metric δ (v i)) (level : ι → ℝ)
+            (b : Finset ι) (K : Set G.terminalRegularOpen),
+            b.Nonempty ∧ IsCompact K ∧ closure (interior K) = K ∧
+            {x : G.terminalRegularOpen | x ∈ connectedComponent y ∧ metricScalarAt L.metric x ≤ A}
+              ⊆ interior K ∧ K ⊆ connectedComponent y ∧
+            (∀ x ∈ K, metricScalarAt L.metric x ≤ 8 * C2^2 * (C * A)) ∧
+            (b : Set ι).PairwiseDisjoint
+              (fun i => range (fun z : Sphere 2 => (neck i).map (z, level i))) ∧
+            frontier K = ⋃ i ∈ b, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+            (∀ x ∈ frontier K, 2 * (C * A) < metricScalarAt L.metric x) ∧
+            (∀ x ∈ interior K, ∃ a ∈ connectedComponentIn (interior K) x,
+              metricScalarAt L.metric a ≤ A ∧
+              ∀ z ∈ frontier K, C * metricScalarAt L.metric a < metricScalarAt L.metric z) ∧
+            ∀ i ∈ b, |level i| ≤ 3 ∧
+              IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+                2 * (C * A) < metricScalarAt L.metric ((neck i).map z) ∧
+                  metricScalarAt L.metric ((neck i).map z) ≤ 8 * C2^2 * (C * A)) ∧
+              (neck i).cylindricalChart.metricCloseOn L.metric δ
+                {z : (neck i).cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+              (∀ z t, t ∈ Icc (-101 : ℝ) 101 → (z, t) ∈ (neck i).cylindricalChart.domain) ∧
+              ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ K ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior K ↔ t < 0 := by
+  obtain ⟨eta, heta, hmain⟩ := exists_uniform_disjoint_spherical_region_with_low_anchors_of_le.{u}
+  refine ⟨eta, heta, ?_⟩
+  intro δ hδ hδη
+  obtain ⟨C2, hC2, hmain⟩ := hmain δ hδ hδη
+  refine ⟨C2, hC2, ?_⟩
+  intro C hC P a s G
+  obtain ⟨q, hq, hregion⟩ := hmain P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L A y hA hqA hyA hnoncompact
+  have hCA : 0 < C * A := mul_pos (zero_lt_one.trans_le hC) hA
+  have hA_CA : A ≤ C * A := le_mul_of_one_le_left hA.le hC
+  obtain ⟨ι, v, neck, level, b, K, hb, hK, hregular, hlow, hcomp, hscalar,
+    hdisj, hfront, hfrontscalar, hanchor, hnecks⟩ :=
+    hregion L A (C * A) y hA hA_CA hqA hyA hnoncompact
+  refine ⟨ι, v, neck, level, b, K, hb, hK, hregular, hlow, hcomp, hscalar,
+    hdisj, hfront, hfrontscalar, ?_, hnecks⟩
+  intro x hx
+  obtain ⟨z, hzx, hzA⟩ := hanchor x hx
+  refine ⟨z, hzx, hzA, ?_⟩
+  intro w hw
+  have hmul := mul_le_mul_of_nonneg_left hzA (zero_le_one.trans hC)
+  exact hmul.trans_lt (lt_trans (by linarith : C * A < 2 * (C * A)) (hfrontscalar w hw))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
