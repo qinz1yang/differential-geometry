@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Family.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Boundary
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.IntervalLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorMetricSeam
@@ -609,6 +610,149 @@ theorem eventRegularizedC1Cost_eq_of_survivor_minimum_and_frontier_separation
   rcases hescape with h | h
   · exact Or.inl (fun hstay => h (fun t ht => hKPlusRange (hstay ht)))
   · exact Or.inr (fun hstay => h (fun t ht => hKMinusRange (hstay ht)))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+end
+
+noncomputable section
+open Set Manifold TopologicalSpace MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Metric
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u
+variable {P Q : OrientedThreeStage.{u}} {a s b : ℝ} (E : MetricCutCapEvent P Q a s)
+  (G : Q.IncomingSlab s b)
+  {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+  (f : X → P.Carrier) (g : X → Q.Carrier)
+  (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f)
+  (hg : IsLocalDiffeomorph ThreeModel ThreeModel ∞ g)
+  (hfi : Function.Injective f) (hgi : Function.Injective g)
+
+include hfi hgi in
+theorem exists_compact_balls_metric_lower_across_event
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (hS : IsSolutionOn S) (T : ℝ) {d v : ℝ} (hd : 0 ≤ d) (hdv : d ≤ v)
+    (htime : ∀ r ∈ Icc 0 v, T - r ^ 2 ∈ D.carrier)
+    (hbefore : ∀ r ∈ Ioo d v, S.base.metric (T - r ^ 2) =
+      localPullMetric (E.incoming.flow.base.metric (T - r ^ 2)) f hf)
+    (hafter : ∀ r ∈ Ioo 0 d, S.base.metric (T - r ^ 2) =
+      localPullMetric (G.flow.base.metric (T - r ^ 2)) g hg)
+    (x y : X) (gPlus : Q.Metric) (gMinus : P.Metric) :
+    ∃ r μ : ℝ, 0 < r ∧ 0 < μ ∧
+      IsCompact (riemannianClosedBallOf gPlus (g x) r) ∧
+      IsCompact (riemannianClosedBallOf gMinus (f y) r) ∧
+      riemannianClosedBallOf gPlus (g x) r ⊆ range g ∧
+      riemannianClosedBallOf gMinus (f y) r ⊆ range f ∧
+      (∀ t ∈ Ioo 0 d, ∀ z ∈ riemannianClosedBallOf gPlus (g x) r,
+        ∀ w : TangentSpace ThreeModel z,
+        μ * gPlus.inner z w w ≤ (G.flow.base.metric (T - t ^ 2)).inner z w w) ∧
+      (∀ t ∈ Ioo d v, ∀ z ∈ riemannianClosedBallOf gMinus (f y) r,
+        ∀ w : TangentSpace ThreeModel z,
+        μ * gMinus.inner z w w ≤ (E.incoming.flow.base.metric (T - t ^ 2)).inner z w w) := by
+  have hclock : ContinuousOn (fun t : ℝ => T - t ^ 2) (Icc 0 v) :=
+    (continuous_const.sub (continuous_id.pow 2)).continuousOn
+  obtain ⟨rp, cp, hrp, hcp, hKp, hKprange, hboundp⟩ :=
+    hS.smoothMetric.exists_pos_isCompact_riemannianClosedBallOf_metric_lower_of_localPullMetric
+      G.flow.base.metric g hg hgi (g x) ⟨x, rfl⟩ isCompact_Icc
+      (show Ioo 0 d ⊆ Icc 0 v from fun t ht => ⟨ht.1.le, ht.2.le.trans hdv⟩)
+      (fun t => T - t ^ 2) hclock htime gPlus hafter
+  obtain ⟨rm, cm, hrm, hcm, hKm, hKmrange, hboundm⟩ :=
+    hS.smoothMetric.exists_pos_isCompact_riemannianClosedBallOf_metric_lower_of_localPullMetric
+      E.incoming.flow.base.metric f hf hfi (f y) ⟨y, rfl⟩ isCompact_Icc
+      (show Ioo d v ⊆ Icc 0 v from fun t ht => ⟨hd.trans ht.1.le, ht.2.le⟩)
+      (fun t => T - t ^ 2) hclock htime gMinus hbefore
+  let r := min rp rm
+  let μ := min cp cm
+  have hsubp : riemannianClosedBallOf gPlus (g x) r ⊆ riemannianClosedBallOf gPlus (g x) rp :=
+    riemannianClosedBallOf_mono gPlus (g x) (min_le_left _ _)
+  have hsubm : riemannianClosedBallOf gMinus (f y) r ⊆ riemannianClosedBallOf gMinus (f y) rm :=
+    riemannianClosedBallOf_mono gMinus (f y) (min_le_right _ _)
+  refine ⟨r, μ, lt_min hrp hrm, lt_min hcp hcm,
+    hKp.of_isClosed_subset (isClosed_riemannianClosedBallOf _ _ _) hsubp,
+    hKm.of_isClosed_subset (isClosed_riemannianClosedBallOf _ _ _) hsubm,
+    hsubp.trans hKprange, hsubm.trans hKmrange, ?_, ?_⟩
+  · intro t ht z hz w
+    exact (mul_le_mul_of_nonneg_right (min_le_left cp cm)
+      (metric_inner_self_nonneg gPlus z w)).trans (hboundp t ht z (hsubp hz) w)
+  · intro t ht z hz w
+    exact (mul_le_mul_of_nonneg_right (min_le_right cp cm)
+      (metric_inner_self_nonneg gMinus z w)).trans (hboundm t ht z (hsubm hz) w)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+end
+
+noncomputable section
+open Set Manifold TopologicalSpace MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Metric
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u
+variable {P Q : OrientedThreeStage.{u}} {a s b : ℝ} (E : MetricCutCapEvent P Q a s)
+  (G : Q.IncomingSlab s b)
+  {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+  (f : X → P.Carrier) (g : X → Q.Carrier)
+  (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f)
+  (hg : IsLocalDiffeomorph ThreeModel ThreeModel ∞ g)
+  (hfi : Function.Injective f) (hgi : Function.Injective g)
+  (hcross : ∀ z : X, E.RegularCrossing (f z) (g z))
+
+include hfi hgi hcross in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_eventRegularizedC1Cost_eq_of_low_survivor_minimum
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (hS : IsSolutionOn S) (T : ℝ) {d v : ℝ} (hd : 0 < d) (hdv : d < v)
+    (hclock : T - d ^ 2 = s)
+    (htime : ∀ r ∈ Icc 0 v, T - r ^ 2 ∈ D.carrier)
+    (htimePlus : ∀ r ∈ Icc 0 d, T - r ^ 2 ∈ (RealTimeInterval.closedOpen s b G.lt).carrier)
+    (htimeMinus : ∀ r ∈ Ioc d v, T - r ^ 2 ∈ (RealTimeInterval.closedOpen a s E.incoming.lt).carrier)
+    (hbefore : ∀ r ∈ Ioo d v, S.base.metric (T - r ^ 2) =
+      localPullMetric (E.incoming.flow.base.metric (T - r ^ 2)) f hf)
+    (hafter : ∀ r ∈ Ioo 0 d, S.base.metric (T - r ^ 2) =
+      localPullMetric (G.flow.base.metric (T - r ^ 2)) g hg)
+    (x y : X) (gPlus : Q.Metric) (gMinus : P.Metric) :
+    ∃ r μ : ℝ, 0 < r ∧ 0 < μ ∧ ∀ B : ℝ, 0 ≤ B →
+      (∀ t ∈ Ioo 0 d, ∀ z : Q.Carrier, -B ≤ G.flow.scalar (T - t ^ 2) z) →
+      (∀ t ∈ Ioo d v, ∀ z : P.Carrier, -B ≤ E.incoming.flow.scalar (T - t ^ 2) z) →
+      ∀ η : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η → η 0 = x → η v = y →
+      (∀ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ →
+        γ 0 = x → γ v = y → lRegularizedAction S T η 0 v ≤ lRegularizedAction S T γ 0 v) →
+      lRegularizedAction S T η 0 v < μ * r ^ 2 / (2 * v) - 2 * B * v ^ 3 →
+      E.eventRegularizedC1Cost G T d v (g x) (f y) =
+        (lRegularizedAction S T η 0 v : WithTop ℝ) := by
+  obtain ⟨r, μ, hr, hμ, hKp, hKm, hKprange, hKmrange, hboundp, hboundm⟩ :=
+    E.exists_compact_balls_metric_lower_across_event G f g hf hg hfi hgi S hS T hd.le hdv.le
+      htime hbefore hafter x y gPlus gMinus
+  refine ⟨r, μ, hr, hμ, ?_⟩
+  intro B hB hscalarPlus hscalarMinus η hη hηzero hηend hmin hηlow
+  have hcost := E.eventRegularizedC1Cost_eq_of_survivor_minimum_and_frontier_separation
+    G f g hf hg hfi hgi hcross S hS T hd hdv hclock htime htimePlus htimeMinus
+    hbefore hafter η hη
+    (fun γ hγ hzero hend => hmin γ hγ (hzero.trans hηzero) (hend.trans hηend))
+    hμ.le hB hr.le gPlus gMinus
+    (isClosed_riemannianClosedBallOf gPlus (g x) r)
+    (isClosed_riemannianClosedBallOf gMinus (f y) r) hKprange hKmrange
+    (by simpa only [hηzero] using mem_interior_riemannianClosedBallOf gPlus (g x) hr)
+    (by simpa only [hηend] using mem_interior_riemannianClosedBallOf gMinus (f y) hr)
+    hboundp hboundm hscalarPlus hscalarMinus ?_ ?_ hηlow
+  · simpa only [hηzero, hηend] using hcost
+  · intro z hz
+    rw [hηzero, riemannianEDistOf_eq_of_mem_frontier_riemannianClosedBallOf gPlus (g x) hz]
+  · intro z hz
+    rw [hηend, riemannianEDistOf_comm gMinus z (f y),
+      riemannianEDistOf_eq_of_mem_frontier_riemannianClosedBallOf gMinus (f y) hz]
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
 
