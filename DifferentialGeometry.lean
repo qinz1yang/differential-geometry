@@ -5439,6 +5439,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.Distance.SublevelMinimizer
 import DifferentialGeometry.Geometry.Neck.CapSeparation
 import DifferentialGeometry.Geometry.Neck.CompactCapCover
 import DifferentialGeometry.Geometry.Neck.ScalarNormalization
