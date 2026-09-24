@@ -122,4 +122,43 @@ theorem exists_horn_side_points_at_distance
     d.isConnected_right.isPreconnected y hs (hright hcenter) hA hcompact Thi hhigh
   exact ⟨a, b, ha, hb, hdistA, hdistB⟩
 
+theorem exists_horn_side_points_at_scaled_distance
+    (c : ConnectedComponents D.slab.terminalRegularOpen) (e : P.hornIndex c)
+    {S : Set positiveHornDomain} (d : ComplementPair S)
+    (hleft : S ⊆ closure d.left) (hright : S ⊆ closure d.right)
+    (y : Sphere 2) {s : ℝ} (hs : 0 < s)
+    (hcenter : (⟨(y, s), mem_univ _, hs⟩ : positiveHornDomain) ∈ S)
+    (Q : ℝ) (hQ : 0 < Q) {A Tlo Thi : ℝ} (hA : 0 < A) (hTlo : 0 < Tlo)
+    (hcompact : IsCompact (riemannianClosedBallOf (scaleMetric Q hQ D.terminal.metric)
+      (P.horn c e (y, s)) A))
+    (hbase : ENNReal.ofReal A < riemannianEDistOf (scaleMetric Q hQ D.terminal.metric)
+      (P.horn c e (y, s)) (P.horn c e (y, 0)))
+    (hlow : ∀ z : positiveHornDomain, z.val.2 < Tlo → z ∈ d.left)
+    (hhigh : ∀ z : positiveHornDomain, Thi < z.val.2 → z ∈ d.right) :
+    ∃ a b : positiveHornDomain, a ∈ d.left ∧ b ∈ d.right ∧
+      riemannianEDistOf (scaleMetric Q hQ D.terminal.metric) (P.horn c e (y, s))
+        (P.positiveHornMap c e a) = ENNReal.ofReal A ∧
+      riemannianEDistOf (scaleMetric Q hQ D.terminal.metric) (P.horn c e (y, s))
+        (P.positiveHornMap c e b) = ENNReal.ofReal A := by
+  have hsqrt : 0 < Real.sqrt Q := Real.sqrt_pos.mpr hQ
+  have hmul : Real.sqrt Q * (A / Real.sqrt Q) = A := mul_div_cancel₀ _ hsqrt.ne'
+  have hball : riemannianClosedBallOf (scaleMetric Q hQ D.terminal.metric)
+      (P.horn c e (y, s)) A =
+      riemannianClosedBallOf D.terminal.metric (P.horn c e (y, s)) (A / Real.sqrt Q) := by
+    simpa only [hmul] using
+      riemannianClosedBallOf_scaleMetric Q hQ D.terminal.metric (P.horn c e (y, s))
+        (A / Real.sqrt Q)
+  have hbasePhysical : ENNReal.ofReal (A / Real.sqrt Q) < riemannianEDistOf D.terminal.metric
+      (P.horn c e (y, s)) (P.horn c e (y, 0)) := by
+    have hzero : ENNReal.ofReal (Real.sqrt Q) ≠ 0 := (ENNReal.ofReal_pos.mpr hsqrt).ne'
+    apply (ENNReal.mul_lt_mul_iff_right hzero ENNReal.ofReal_ne_top).mp
+    rw [← ENNReal.ofReal_mul hsqrt.le, hmul, ← edistOf_scale]
+    exact hbase
+  obtain ⟨a, b, ha, hb, hdistA, hdistB⟩ := P.exists_horn_side_points_at_distance
+    c e d hleft hright y hs hcenter (div_pos hA hsqrt) hTlo (hball ▸ hcompact)
+      hbasePhysical hlow hhigh
+  refine ⟨a, b, ha, hb, ?_, ?_⟩
+  · rw [edistOf_scale, hdistA, ← ENNReal.ofReal_mul hsqrt.le, hmul]
+  · rw [edistOf_scale, hdistB, ← ENNReal.ofReal_mul hsqrt.le, hmul]
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TerminalCorePresentation

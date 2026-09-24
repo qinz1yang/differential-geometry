@@ -346,3 +346,75 @@ theorem exists_pointed_metric_line_of_eventual_separated_points_in_compact_balls
     (fun n => (hthreshold (phi n) (f n) (le_max_right _ _)).2.1)
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+set_option autoImplicit false
+noncomputable section
+
+open Bundle Filter Set
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+
+open Geometry.Curvature
+open DifferentialGeometry.Topology.SphereSeparation
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {X : PointedRiemannianSeq.{u, uE, uH} I}
+  {L : PointedRiemannianManifold.{u, uE, uH} I}
+  {subseq : ℕ → ℕ} {Phi : PointedRiemannianConvergenceMaps X L subseq}
+
+attribute [local instance] PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+theorem exists_pointed_metric_line_of_eventual_minimizing_segments_intersecting_bounded_sets
+    (C : MetricConvergenceData Phi)
+    (href : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (hcomplete : MetricComplete L) (hconnected : ConnectedSpace L.M)
+    (S : ∀ k, Set (X.obj (subseq k)).M) {B : ℝ} (hB : 0 ≤ B)
+    (hS : ∀ k, S k ⊆ riemannianClosedBallOf (X.obj (subseq k)).metric
+      (X.obj (subseq k)).basepoint B)
+    (hsegments : ∀ R : ℝ, B < R → ∀ᶠ k in atTop,
+      ∃ (gamma : ℝ → (X.obj (subseq k)).M) (length : ℝ), 0 ≤ length ∧
+        (∀ s ∈ Icc 0 length, ∀ t ∈ Icc 0 length,
+          riemannianEDistOf (X.obj (subseq k)).metric (gamma s) (gamma t) =
+            ENNReal.ofReal |s - t|) ∧
+        (∃ t ∈ Icc 0 length, gamma t ∈ S k) ∧
+        (riemannianEDistOf (X.obj (subseq k)).metric (X.obj (subseq k)).basepoint
+          (gamma 0)).toReal = R ∧
+        (riemannianEDistOf (X.obj (subseq k)).metric (X.obj (subseq k)).basepoint
+          (gamma length)).toReal = R) :
+    ∃ line : ℝ → L.M, ∀ s t : ℝ,
+      riemannianEDistOf L.metric (line s) (line t) = ENNReal.ofReal |s - t| := by
+  classical
+  let radius (n : ℕ) : ℝ := B + n + 1
+  have hradius (n : ℕ) : B < radius n := by
+    dsimp only [radius]
+    linarith [Nat.cast_nonneg (α := ℝ) n]
+  choose threshold hthreshold using fun n => eventually_atTop.mp (hsegments (radius n) (hradius n))
+  let index : ℕ → ℕ := fun n => max n (threshold n)
+  obtain ⟨phi, hphi, hindex⟩ := strictMono_subseq_of_id_le (u := index) (fun n => le_max_left _ _)
+  let f := index ∘ phi
+  have hf : StrictMono f := hindex
+  choose gamma length hlength hmin hinter hleft hright using fun n =>
+    hthreshold (phi n) (f n) (le_max_right _ _)
+  have hlim : Tendsto (fun n => radius (phi n)) atTop atTop := by
+    have hcast : Tendsto (fun n => (phi n : ℝ)) atTop atTop :=
+      tendsto_natCast_atTop_atTop.comp hphi.tendsto_atTop
+    simpa only [radius, add_comm B, add_assoc] using
+      tendsto_atTop_add_const_right atTop (B + 1) hcast
+  have href' : ∀ n, ((C.compSubseq f hf).domain n).referenceMetric =
+      ((C.compSubseq f hf).domain n).limitMetric := fun n => href (f n)
+  apply exists_pointed_metric_line_of_minimizing_segments_intersecting_bounded_sets
+    (C.compSubseq f hf) href' hcomplete hconnected (fun n => S (f n)) hB
+    (fun n => hS (f n)) gamma length hlength hmin hinter
+  · simpa only [Function.comp_apply, hleft] using hlim
+  · simpa only [Function.comp_apply, hright] using hlim
+
+end DifferentialGeometry.CheegerGromovCompactness

@@ -13736,3 +13736,10 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCover
 import DifferentialGeometry.Geometry.Neck.RelativeNeckPath
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutNeckPath
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.TerminalScalarCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.ScalarTerminalBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalScalarAncientLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckNoncollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornPointedLine
+import DifferentialGeometry.Geometry.Metric.Distance.SeparatingMinimizer
+import DifferentialGeometry.Geometry.Neck.ProductCapExclusion
