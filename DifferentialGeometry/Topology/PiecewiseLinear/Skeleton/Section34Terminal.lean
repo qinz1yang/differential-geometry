@@ -7,6 +7,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetRecognitionOfTiling
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceFaceOrder
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualBalls
 
 /-!
 # Sorry-first skeleton of the terminal half of Section 34
@@ -147,6 +148,14 @@ checks and an axiom audit; statement byte-identical): `section34SourceFace_iff_c
 locally finite twin of the compact face order, with the third tetraBall excluded by the incidence
 rigidity of the cut frame rather than by `Q_t ⊆ conv t`.  The Terminal file has two leaves left:
 the P0–P5 composite and the residual balls.
+
+Proved and imported (Codex item 17 of `Skeleton/FILL_QUEUE.md`, lease a, the compact P7 route of
+worker e transported; lead-accepted on 2026-09-24 with zero-diagnostic checks of the forty modules
+and one axiom/linter audit on the lead lease; statement and `variable` block byte-identical):
+`exists_section34ResidualBalls` (module `Section34ResidualBalls` over the tetrahedron claw balls,
+the four-disk pocket, the residual patches and edge arcs, the foreign-cell exclusions and the two
+boundary tilings).  The one leaf left in this file is `exists_section34NormalFamily`, which the
+normalization skeleton discharges once its own leaves close.
 -/
 
 open Set Topology
@@ -187,18 +196,6 @@ theorem exists_section34NormalFamily [Nonempty M₁] [T2Space M₁] [SecondCount
       (tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
       (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
       Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd fbl fblBd := by
-  sorry
-
-theorem exists_section34ResidualBalls
-    (hdata : Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd
-      fbl fblBd)
-    (hdisk : Section34FaceDiskFamily 𝒦 𝒦' tgtV tgtE tgtEBd fblBd tgtD tgtDBd tgtA tgtABd
-      tgtP) :
-    ∃ (tgtR tgtRBd : Section34SimplexIndex 𝒦 4 → Set M₂)
-      (tgtX tgtXBd : Section34PatchIndex 𝒦 𝒦' → Set M₂)
-      (tgtI tgtIBd : Section34EdgeArcIndex 𝒦 𝒦' → Set M₂),
-      Section34ResidualPlus 𝒦 𝒦' H tgtV tgtE tgtEBd tgtD tgtA tgtP tgtR tgtRBd tgtX tgtXBd
-        tgtI tgtIBd := by
   sorry
 
 end Diagram

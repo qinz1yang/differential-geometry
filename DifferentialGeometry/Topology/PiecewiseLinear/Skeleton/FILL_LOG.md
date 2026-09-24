@@ -11321,6 +11321,622 @@ DerivedCellCone: ED45886F7F1AE9AC1D490A0CBC744AE48F2A1E667678D7F321D4C5B4E849A27
   no write Git command was issued. Import closure also explicitly excludes CircleArcSplit,
   TwoBallPocket, compact FaceRuns and ResidualBall(s), in addition to Skeleton/P6/foreign untracked files.
 
+# Codex item 13
+
+## canonical-null-seam-split-verified-work-continuing (2026-09-23T22:56:49.6309884Z)
+
+Real h303 split now preserves the full labelled canonical state, including every boundary, collar, carrier, disjointness and original-seam label. The selected finite-window rank strictly decreases and the other even traces stay fixed. Actual capping disks, collars and PL maps are retained. No additional named input and no frozen statement changed.
+
+All 47 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SurfacePairCapping
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SurfacePairCapping.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 455E8AD114E3A5B694AD1563BC3144892A121A45DB3F79D771EEF4870483F21A
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SeparatingSurfacePairSplit
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SeparatingSurfacePairSplit.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 87605304425175D1EB6F48E048FA14664ABB31AD2D4EF500C9336CCB5799CE44
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceLocality
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CollaredTraceLocality.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 3E7A2D5BBF8F1BB5AF8E1D87FC17DA39DB9219A2F836FD645D053F81F50E20F9
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceTraceLocality
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceTraceLocality.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 043805C159E3F1774CC05424B910930EECE7F8EC445CD8FF4A7560DC7C7987ED
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceReplacement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceReplacement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 4453FF697756FFBB831AE1B64BF50094C2DC96C63367C347FD9BD8231AB41B1F
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceNullRank
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceNullRank.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: C1B9522FE56C9E75A82BDCC43E2EF3A780763156F44F8D6DC701B146B822E7D5
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceSplit
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceSplit.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 14CA6D64A1B6FCA1F03E3E2C558C5A449AA9EF7BD3AA9F213F43B674F57E5E10
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13CanonicalSplit.receipt.json
+Audit SHA-256: A91A25930DFA6E9F56086D717CBDDAC2A4489DF3F01049515E041B3091D94430
+Audit: all nonautomatic declarations in 47 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Finite-window strong induction is written and awaiting verification; then Type 1/2/3 reduction, coherent halves, relative exhaustion, limit and every IsAnnularChain field, frozen exists_descentSequence.
+
+# Codex item 18
+
+## Package E reconciliation and verification
+
+Lease e: claude-agent-e-20260919. Checkout HEAD 0f2727b04239f5465611d2eab2a2d13d9df0854b. All 77 PR files are owned untracked modules. At takeover the six collisions had already been resolved in source; comparison against local original commit 4d83c0e6e68eab8dae2b84d4aea6bb526eaae629 confirmed four matching APIs reused and two different statements renamed. The remaining 261 public names were scanned tree-wide: only the intended frozen skeleton/real-leaf restatement is duplicated. Added required file headers/module documentation and made GraphDualCellRestrictionE reuse the tracked restriction API directly. Every owned module will be checked in PR15_ORDER order; no tracked mathematics, frozen skeleton, other lane files or Git metadata is modified.
+
+
+### Item 18 verified: ConeMarkedPrism
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConeMarkedPrism.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 89820ffbf80c9c13d784617aab7c64f30384b55f7b2fc808c8db9c603b0fa454
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\ConeMarkedPrism.json
+UTC: 09/23/2026 23:03:06
+
+### Item 18 verified: ArcCellMarkedPrism
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCellMarkedPrism.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 924886d1a76ce546a048b9c16f1d51687b88a4814c04032ea22f30c6692480cf
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\ArcCellMarkedPrism.json
+UTC: 09/23/2026 23:03:20
+
+### Item 18 verified: BoundaryBallComplement
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryBallComplement.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 40de741663d11c02d5b52e8b1672295610f9f557bf79080d36ce9fc906a9d64a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryBallComplement.json
+UTC: 09/23/2026 23:03:37
+
+### Item 18 verified: BoundaryBallFamilyComplement
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryBallFamilyComplement.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a291a1a267f728c51faaa5826e0f59032071ad145c02a613bc390646ebbbbcce
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryBallFamilyComplement.json
+UTC: 09/23/2026 23:03:55
+
+### Item 18 verified: BoundaryComplementCover
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryComplementCover.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 1cd51998a00365d44d4db8f341f99a169b6f80c80d54ecc03a85710eb4f4dbb4
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryComplementCover.json
+UTC: 09/23/2026 23:04:08
+
+### Item 18 verified: CompactImageNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CompactImageNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 65642d525156a3bf8e37e9f22e4766a27c1991647a5603bf2b6b01b1d1010cc9
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\CompactImageNeighborhood.json
+UTC: 09/23/2026 23:04:18
+
+### Item 18 verified: LocallyFiniteIncidentNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteIncidentNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a4530c79ce12837a291633ba6bfc9732b359c9ca65e3d524b4e8969077d8b7b9
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteIncidentNeighborhood.json
+UTC: 09/23/2026 23:04:26
+
+# Codex item 13
+
+## finite-window-null-seam-normalization-verified-work-continuing (2026-09-23T23:04:40.7825333Z)
+
+The first finite-window phase is now a real strong-induction construction. It returns a complete canonical surface state with zero null-seam rank, a finite chain of actual h303 circle-capping steps with valid intermediate states, per-piece equality outside the window support, and exact equality on the protected set. Surviving seams are proved to be original canonical circles, generate the even solid-torus fundamental groups, and do not bound disks on the corresponding original odd torus. No new named input or frozen statement change.
+
+All 49 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceNullNormalization
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceNullNormalization.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: E4772C6FDA5F2E9905F3B090DBBBB5ECA8D2E947694E5AA0D4A402BF2AD9DE3F
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceEssentialSeams
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceEssentialSeams.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: AB7933BF53685885272BA801CEECFD31900960909EE091CA2C792D7E83AF12E7
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13WindowNullNormalization.receipt.json
+Audit SHA-256: B1398D7FFBA36DA471D22BC78CC82EA659FDD5EF9E3E7DA3A742AEE8E61E03D0
+Audit: all nonautomatic declarations in 49 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Classify capped components and prove actual Type 1 nonseparation/deletion; Type 2 and Type 3 geometric deletion; compatible even halves; relative multi-phase windows and exhaustion; limit, all IsAnnularChain fields, frozen exists_descentSequence.
+
+### Item 18 verified: Section34SubdivisionCarriers
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SubdivisionCarriers.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: e5dfbcee60ddb44a7effcb9303d91fc7c3057bfc7f0fbccd8a52e0353061f24b
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34SubdivisionCarriers.json
+UTC: 09/23/2026 23:04:43
+
+### Item 18 verified: Section34GraphNeighborhoodSubdivision
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphNeighborhoodSubdivision.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a46ea48469bd53961a511fd3f9cd89730790424c2e9119cf23e30d3f6b8c2f7a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphNeighborhoodSubdivision.json
+UTC: 09/23/2026 23:04:59
+
+### Item 18 verified: Section34IncidentBufferSubdivision
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34IncidentBufferSubdivision.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: d140f35ed5bfdd8d57d9e166a4a71d86f8ca49520d5ed638a31a39155133a527
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34IncidentBufferSubdivision.json
+UTC: 09/23/2026 23:05:15
+
+### Item 18 verified: Section34BufferedGraphSubdivision
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34BufferedGraphSubdivision.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 76526d6cb31578a658a9e8720b4187a5157e785ea37753b493e72056220d1e9f
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34BufferedGraphSubdivision.json
+UTC: 09/23/2026 23:05:30
+
+### Item 18 verified: Section34GraphRefinementControl
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphRefinementControl.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 4e9024b3293654fc6070bc0269891814cac4398100adc6aa8fbbb2e27b1aaff7
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphRefinementControl.json
+UTC: 09/23/2026 23:05:43
+
+### Item 18 verified: LocallyFiniteGraphDualCells
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphDualCells.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: cb0611c52828d83de6103aaa8bfb321074ddba6214c2975ddbc16fa3e1b9fce2
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphDualCells.json
+UTC: 09/23/2026 23:05:58
+
+### Item 18 verified: Section34CutExhaustion
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CutExhaustion.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: c2059406cb49acabb5921c09fc39cd7f6285b0ee3012310f5efe7fe24613e4f4
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34CutExhaustion.json
+UTC: 09/23/2026 23:06:12
+
+### Item 18 verified: LocallyFiniteDerivedNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteDerivedNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2fb85c79628f91dfa239686038dde33b36ec36ad819a71ee83811be2be62110f
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteDerivedNeighborhood.json
+UTC: 09/23/2026 23:06:31
+
+### Item 18 verified: LocallyFiniteDerivedManifold
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteDerivedManifold.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: bd61ac1a45477907346a10b0960bdb9a958d39ede2e3bdb98551c1676203567a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteDerivedManifold.json
+UTC: 09/23/2026 23:06:51
+
+### Item 18 verified: LocallyFiniteManifoldExhaustion
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldExhaustion.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: d00fb37748d9e8d9b8d7916006a7d4984d40f07f9e76706ed8de572ca0ff49be
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldExhaustion.json
+UTC: 09/23/2026 23:07:13
+
+### Item 18 verified: LocallyFiniteGraphExhaustion
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphExhaustion.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 7b42f8b7f1c12d3ea8e8104fefb7b409a14910dd9b84f0d97daa2dc9b888f4ff
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphExhaustion.json
+UTC: 09/23/2026 23:07:29
+
+### Item 18 verified: LocallyFinitePieceTransport
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFinitePieceTransport.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: eed5b3330ecd7ad079f82fbe7eadeac235a69587659fb6e9eec19d265ecf2307
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFinitePieceTransport.json
+UTC: 09/23/2026 23:07:46
+
+### Item 18 verified: LocallyFinitePieceRestriction
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFinitePieceRestriction.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 38377aec585490c01c8ed6e4675b1e1a7922f68e103a2c41fa34a6c12ff3a159
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFinitePieceRestriction.json
+UTC: 09/23/2026 23:08:00
+
+### Item 18 verified: DerivedExhaustionRegularNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedExhaustionRegularNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 3baa980274aaf956512a7bad903ef8e7bce8ea31acadbb289612d0fdaa732de2
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\DerivedExhaustionRegularNeighborhood.json
+UTC: 09/23/2026 23:08:16
+
+### Item 18 verified: LocallyFiniteGraphCutCells
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphCutCells.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 4c070bfc00025d3166bdbc7c943e1b298aafbf707c1e5eac996ad5d094cbdc2a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphCutCells.json
+UTC: 09/23/2026 23:08:31
+
+### Item 18 verified: Section34GraphCellCarriers
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellCarriers.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 86f5030afa18f542e4573c39f5ee17dfdef5d391541c70fb95a079dd263fd24f
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellCarriers.json
+UTC: 09/23/2026 23:08:45
+
+### Item 18 verified: Section34GraphCoreComplex
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCoreComplex.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: cf0baa0577335ce6c11d746bfbc3ce67bbfd1748799fa41598b4fb3c9a423550
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCoreComplex.json
+UTC: 09/23/2026 23:08:59
+
+### Item 18 verified: Section34GraphDualIncidence
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphDualIncidence.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 9cbbba476d150e5e53abad3a07ecc5203a2f7f8324492e83fbecef0886a7e967
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphDualIncidence.json
+UTC: 09/23/2026 23:09:14
+
+### Item 18 verified: Section34GraphImageSubdivision
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphImageSubdivision.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: f8f617fed98834c704e1efeade3d030b785eabb13481df8df19661267153509c
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphImageSubdivision.json
+UTC: 09/23/2026 23:09:31
+
+## Four-hole and face-run stage verified (2026-09-23)
+
+The ten modules below and the preceding six claw modules passed the external audit together.
+Every audited declaration has axioms contained in {propext, Classical.choice, Quot.sound};
+all thirteen environment linters passed. Carrier charts are derived from hdata, and target
+intrinsic boundaries are proved equal to the source-boundary images.
+
+- `Section34TetraEdges.lean` (172 lines)
+  SHA-256: `dcd754840b16dfb57ff7532206e0d056b8192931013c4454de0473f7f075290c`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraEdges.lean with no diagnostics; shared outputs unchanged.`
+- `Section34TetraHoles.lean` (204 lines)
+  SHA-256: `b53dddc097a4e9fec3a7ba0ae57b4cb5fa25e7a985beac0b1f0c07b1c33a377b`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraHoles.lean with no diagnostics; shared outputs unchanged.`
+- `Section34TetraCarriers.lean` (92 lines)
+  SHA-256: `25a02dd9a90e57345cd594c259792e3b81a67303ac074414af687210a836182f`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraCarriers.lean with no diagnostics; shared outputs unchanged.`
+- `Section34FaceDiskIncidence.lean` (127 lines)
+  SHA-256: `d5ddf3f4f3248866f1fad40b9e325c87984b8589f3674841e8b697931251b795`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceDiskIncidence.lean with no diagnostics; shared outputs unchanged.`
+- `PLDiskChartArcSplit.lean` (71 lines)
+  SHA-256: `3445e06271d33fc64b2c85731fe9a79f31b84f64cc16f884cceb4acfc8abfddf`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskChartArcSplit.lean with no diagnostics; shared outputs unchanged.`
+- `Section34TetraFaces.lean` (136 lines)
+  SHA-256: `b2ca47c4bd0bd7fd7085316b3a4344c1d8d1d570d6f0facb82b6b7093822ee78`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraFaces.lean with no diagnostics; shared outputs unchanged.`
+- `Section34FaceRuns.lean` (196 lines)
+  SHA-256: `f487e9e7168f25139d11bf1c65e3396c2a5b29aeeab0c5a94b4150553efbdf6f`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceRuns.lean with no diagnostics; shared outputs unchanged.`
+- `Section34ClawHoles.lean` (158 lines)
+  SHA-256: `bb52fd5a466634f6788418ba763fc35c8aa25b5998bd0f161d6a1da017ed0151`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawHoles.lean with no diagnostics; shared outputs unchanged.`
+- `Section34TetraFaceRuns.lean` (279 lines)
+  SHA-256: `c1c7ed1438dc99fcdff7e07749a17ec634d0e730c72b2dc511210ad28f81982a`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraFaceRuns.lean with no diagnostics; shared outputs unchanged.`
+- `FourDiskPocket.lean` (93 lines)
+  SHA-256: `18e5ba593619e6d7f60826a3bc35b08663c8d57d8c27906ad60d0ca6eb73000a`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FourDiskPocket.lean with no diagnostics; shared outputs unchanged.`
+
+Audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17FaceRuns.lean with no diagnostics; shared outputs unchanged.`
+Audit probe SHA-256: `88395913b9f001ab8eb7b79606c8c2ed6af2d4f7b9c74bf147c592f9544eaa1e`.
+Preserved receipt: `claude-moise-agent-a/AuditCodexItem17FaceRuns.json`.
+Remaining: chart pocket, pullback and near-face sides, foreign-cell exclusion, patches and
+edge arcs, pairwise residual intersections, tilings, and the byte-identical frozen leaf.
+
+### Item 18 verified: Section34ControlledVertexCells
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledVertexCells.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 5a0661a81f0459aa7a5452a611967bfa0328d9a54d2b5cb9ec47e15e8e23952f
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledVertexCells.json
+UTC: 09/23/2026 23:09:49
+
+# Codex item 18
+
+## Six collision decisions, checked against the original local Package E commit
+
+Original source inspected by read-only git show: `4d83c0e6e68eab8dae2b84d4aea6bb526eaae629` (the controlled Section 34 cut-frame commit). At takeover, eight of the 77 listed files already differed from that source by the preliminary reconciliation. These existing resolutions are retained after complete signature comparison; this lane does not claim those preliminary edits as newly authored.
+
+| Old declaration | Decision | PR files / canonical tracked module |
+|---|---|---|
+| `closure_sdiff_derivedNeighborhood_inter_subcomplex` | Rename to `closure_sdiff_derivedNeighborhood_inter_subcomplex_ambient` | Declaration and local call in `Section34ResidualFaceRestriction`; calls in `Section34GraphEdgeDensity`, `Section34GraphEdgeBoundaries`. |
+| `graphDualCell_space_eq_inter` | Rename to `graphDualCell_space_eq_inter_dualCell` | `GraphDualCellRestrictionE`; now proved directly from the tracked `GraphDualCellRestriction.graphDualCell_space_eq_inter` and the closed-star/dual-cell identity (the namespace remains PiecewiseLinear). |
+| `graphDualCell_space_inter_subcomplex` | Reuse, same name | PR copy removed from `GraphDualCellRestrictionE`; direct import of tracked `GraphDualCellRestriction` made explicit. |
+| `splittingDisk_space_inter_subcomplex` | Reuse, same name | PR copy removed from `Section34GraphMarkedPoints`; imports tracked `GraphDualCellRestriction`. |
+| `IsCombinatorialManifoldWithBoundary.isPLBall_graphDualCell_two` | Reuse, same name | PR copy removed from `Section34GraphBoundaryDisks`; imports tracked `GraphDualCellSurface`. |
+| `restrict_convexHull_eq_simplexComplex` | Reuse, same name | PR copy removed from `Section34LocalResidualCells`; imports tracked `SimplexSubcomplex`, passing its explicit complex argument. |
+
+The four reused signatures match after binder alpha-renaming and, for the simplex restriction, making the complex binder explicit. Both renamed declarations retain their original signatures. The ambient residual theorem cannot simply be replaced: the PR version only assumes the local complex `K` finite and uses the fixed ambient derived neighborhood, whereas the tracked theorem assumes the ambient complex finite and uses the restricted neighborhoods. The graph-dual-cell equality has a dual-cell conclusion rather than the tracked closed-star conclusion; the retained variant is now a corollary of the canonical theorem.
+
+Public-name scan: 261 remaining public declarations, no duplicate with a real module. The sole expected duplicate is `exists_section34CutFrame` in its frozen Skeleton declaration and its real-module restatement. All 77 module dependencies obey `PR15_ORDER.txt`; no Skeleton import or foreign untracked dependency occurs in their closure.
+
+This lane added the required copyright headers and mathematical module headings within the 77 owned files. Removing just those additions recovers the takeover bytes of 76 files exactly; the sole further source edit is the canonical import/proof in `GraphDualCellRestrictionE`. This makes all 77 modules changed, so the sequential checker run covers the full order. Frozen source SHA-256: `9f84f81ac5f832f8750b11abc4053e8372cf66df73950542062fcfa39723b351`; the leaf statement and entire variable block were compared byte-identically.
+
+Detailed source/name evidence is in the lease-e private directory: `PR15_CollisionDecisions.json`, `PR15_PublicNameScan.json`, `PR15_UpstreamComparison.json`, `PR15_SourcePreservation.json`. Per-module receipts follow in the same item-18 log and are also collected verbatim in `PR15_Reconcile_Receipts.txt`. Verification is still in progress; final audit is not yet claimed.
+
+### Item 18 verified: Section34GraphRegularNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphRegularNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: f404427758d9633231fff49fd2472ce81f7559a73b0ea6c0cbcecf8728832307
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphRegularNeighborhood.json
+UTC: 09/23/2026 23:10:09
+
+### Item 18 verified: Section34ControlledGraphCore
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledGraphCore.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 084d9fd23e2a4cd1ce6cb513443b6ef12c7204e2c396cec0d96ceaef370036ea
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledGraphCore.json
+UTC: 09/23/2026 23:10:28
+
+### Item 18 verified: CylinderSpine
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CylinderSpine.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: ad39b759608a32de41778309bd675e59f1e1ab27b038eb9f062136c05b985a77
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\CylinderSpine.json
+UTC: 09/23/2026 23:10:46
+
+### Item 18 verified: CyclicCellMarkedPrism
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CyclicCellMarkedPrism.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: ae0151d83338ca8097144124a15ec723bf9d1565867b8345da2a316b1b287f40
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\CyclicCellMarkedPrism.json
+UTC: 09/23/2026 23:11:02
+
+### Item 18 verified: MarkedPrismChain
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedPrismChain.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 24a442d085fc56fdca7cbbbd94908eddf899a6c636f576e322326a0b9cbd0686
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\MarkedPrismChain.json
+UTC: 09/23/2026 23:11:20
+
+### Item 18 verified: MarkedCylinderUntwisting
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCylinderUntwisting.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2cd5ee78ec1606a568ba1b0605bad4ed9a60961455140cfc3b2597d9422ca216
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCylinderUntwisting.json
+UTC: 09/23/2026 23:11:36
+
+### Item 18 verified: MarkedCircleNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCircleNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2bb1c681a15c602f74564764295b43ba8a4002807bd6661e1041f823b49eeb73
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCircleNeighborhood.json
+UTC: 09/23/2026 23:11:57
+
+### Item 18 verified: MarkedCircleTorus
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCircleTorus.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 9c33ac88e20bb6ab436afb736d81b9cf687ad9a5c20953d194b6323c5bfdcd81
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCircleTorus.json
+UTC: 09/23/2026 23:12:17
+
+### Item 18 verified: Section34OuterTorusTransport
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34OuterTorusTransport.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 6ffb1d7f631aedfc7499fb7ebff689dacb03fff36d1885fbe726a8f6bef43aa8
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34OuterTorusTransport.json
+UTC: 09/23/2026 23:12:33
+
+### Item 18 verified: Section34SourceRimTori
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SourceRimTori.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0db3547a4aebacba4d70d4f0587e213a88310b33899262562490f8a23dd16be8
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34SourceRimTori.json
+UTC: 09/23/2026 23:12:51
+
+### Item 18 verified: Section34OuterTorusCarriers
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34OuterTorusCarriers.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: e225b7cefd41b29a9e106209e4cb3a160979b2af9a8e292cb6decb0c8d3df488
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34OuterTorusCarriers.json
+UTC: 09/23/2026 23:13:10
+
+### Item 18 verified: Section34ControlledGraphNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledGraphNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 39639496caf0ab11796a03eb6723f2f1439bd4a67753a22f4eace649cb44437d
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledGraphNeighborhood.json
+UTC: 09/23/2026 23:13:28
+
+### Item 18 verified: GraphDualCellRestrictionE
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRestrictionE.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 88ee603285f77dc9c17ce2d80b54a505899ee50ab3a9c30c3e9c63a7796f0721
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRestrictionE.json
+UTC: 09/23/2026 23:13:39
+
+### Item 18 verified: LocallyFiniteManifoldFaces
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldFaces.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: f0c5d5089dee4a6b4eb1c7f1602658977c40ffcae8ebb6a0e12bc539ee5904f0
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldFaces.json
+UTC: 09/23/2026 23:13:54
+
+### Item 18 verified: Section34LocalResidualCells
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34LocalResidualCells.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0027a2323ebd54e6d20da75c9ce4b17409503c18df1a9ad0da67425776e77ab0
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34LocalResidualCells.json
+UTC: 09/23/2026 23:14:15
+
+### Item 18 verified: Section34RefinedResidualCells
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualCells.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0c276c1663474405d494ddc96c8b3af62bd6c0a0a68ee5c2f75d1cd29b117b06
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualCells.json
+UTC: 09/23/2026 23:14:38
+
+### Item 18 verified: Section34RefinedResidualDisks
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualDisks.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: e4a6c31c2b4b9baea838b96308c1a2b6383aa6d852b8d49703f822266657f19b
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualDisks.json
+UTC: 09/23/2026 23:15:01
+
+### Item 18 verified: Section34GraphResidualCover
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualCover.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 1d15699f61bb8834a53b078d00447caf8d5e56d6a014d66d087e90ed4e5d6f65
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualCover.json
+UTC: 09/23/2026 23:15:24
+
+### Item 18 verified: Section34GraphCutIncidence
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutIncidence.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 4dba95ce3c9b90521406f11d0ed72c7a7e753de03884a41cffe663158080765e
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutIncidence.json
+UTC: 09/23/2026 23:15:39
+
+### Item 18 verified: Section34GraphMarkedPoints
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphMarkedPoints.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 1353ef9f64f188409132f4389fa33c7761c3555ab8f07b4d56535a42c4bc352a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphMarkedPoints.json
+UTC: 09/23/2026 23:16:05
+
+### Item 18 verified: Section34GraphBoundaryDisks
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphBoundaryDisks.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 6d11e94ac4148d029b926340a682c7422d20d022ff27c1b371f69150dca0e177
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphBoundaryDisks.json
+UTC: 09/23/2026 23:16:31
+
+### Item 18 verified: Section34GraphEdgeArcs
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeArcs.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 070f46f3e9d2ba66cd1421eb5f11c629af16fddfa519b6de03b326b95e01f282
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeArcs.json
+UTC: 09/23/2026 23:16:54
+
+### Item 18 verified: Section34ResidualFaceRestriction
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualFaceRestriction.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: c66ec0c72d3c27fa33cb5130ca3b9b7fa11696e2eab4b6708a084d05323c87cf
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualFaceRestriction.json
+UTC: 09/23/2026 23:17:15
+
+### Item 18 verified: Section34GraphEdgeDensity
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeDensity.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 58d79b3d423a59d2dde95a440442d65e1359252e7f03479408ae28902cc1980a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeDensity.json
+UTC: 09/23/2026 23:17:38
+
+### Item 18 verified: Section34GraphPatchTraces
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatchTraces.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0b74c13e79c5d97a3d17caf23e27535ca343e44406d134ab4045101d28bf2f20
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatchTraces.json
+UTC: 09/23/2026 23:18:04
+
+### Item 18 verified: Section34GraphFaceArcs
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphFaceArcs.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: d58cbd84c40e7f8ad0664f7ff4b890a60bd4e4d7e517a3c98c7833f3ec5ba4f5
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphFaceArcs.json
+UTC: 09/23/2026 23:18:29
+
+### Item 18 verified: Section34GraphResidualIncidence
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualIncidence.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: b57733e4dbc58a0fdf7dd82d42b158fe6be9efe8c359e38363e601869d292801
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualIncidence.json
+UTC: 09/23/2026 23:18:50
+
+### Item 18 verified: Section34GraphCutFamily
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutFamily.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 253a730984cf016ec15d6e27a8d2851edc4706f9c053fcc071d7032d75eb5021
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutFamily.json
+UTC: 09/23/2026 23:19:12
+
+### Item 18 verified: Section34GraphCellBoundaries
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellBoundaries.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 3372fe596f96e45b93d181cfab905d15ad3e4d66e79c06b21b958d84fcf8fd46
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellBoundaries.json
+UTC: 09/23/2026 23:19:31
+
+### Item 18 verified: Section34GraphCutIntersections
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutIntersections.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 6b44b4d24fe13c28695492c843621ea640dbaab64af1e6bc4e9aa1fe364628aa
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutIntersections.json
+UTC: 09/23/2026 23:19:57
+
+### Item 18 verified: PLCellOnDimensionOrder
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnDimensionOrder.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0ec675b2d1fb9791abc3b78905548c04b559da5fdf5bc410658c78b57f8c7d2b
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnDimensionOrder.json
+UTC: 09/23/2026 23:20:11
+
+### Item 18 verified: Section34GraphPatches
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatches.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 08fd2bc5c019ca304a7a946f6726635d5707453b3f4faabe79a696e66f698733
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatches.json
+UTC: 09/23/2026 23:20:37
+
+### Item 18 verified: Section34RefinedResidualBalls
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualBalls.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 5177a681aa808917d9f17f2a50bc06e54f2f931e77e8fa5d5ce616706db89bc6
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualBalls.json
+UTC: 09/23/2026 23:21:03
+
 # Codex item 14
 
 ## Item 14 module check (2026-09-23T23:21:08.3562287Z)
@@ -11465,6 +12081,87 @@ SHA-256: 7a62999fe993273611cb25ae5f0b1c34ea43f9058514f0d037a8ce093c91b45f
 Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphSplitBoundary.json
 UTC: 09/23/2026 23:26:15
 
+# Codex item 13
+
+## component-capping-invariants-verified-work-continuing (2026-09-23T23:26:34.9219006Z)
+
+All 54 staged modules are compiled and jointly audited. A connected polyhedral attachment induces a genuine bijection of connected components. For an actual circle cap, exactly one component is capped with its disk and collar witnesses retained, its Euler characteristic increases by one, and all other components are PL homeomorphic with unchanged Euler characteristic. Component boundaries and finite collared traces are derived from the whole surface. These are component-classification inputs, not a proof of Type 1 nonseparation or of the descent leaf.
+
+All 54 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ComponentPartitionEquivalence
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ComponentPartitionEquivalence.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 5D04ACA634471FF95671053BF3C3EC47411330EBE31FE454D4457649E4375E63
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralAttachmentComponents
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\PolyhedralAttachmentComponents.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 3C6FF6DE54AA0FD6F3129A46F614F4A8C047B119E44E6781864FE40431F1984A
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.DiskAttachmentComponentEuler
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\DiskAttachmentComponentEuler.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 4EBDF3E013009B7F3E9D3B19F0D075DC6444759513E7150EA7EDC833B6470708
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ComponentCollaredTrace
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ComponentCollaredTrace.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 105E75B151946BA2CA7488E9BE79504C85151504E3FBC411F4EC1517CB1DA288
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CircleCappingComponentInvariants
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CircleCappingComponentInvariants.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 4BCEC99E67C365453D073B4984A43151467CF7769B7009EB5EC36D6A352C3017
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13ComponentCapping.receipt.json
+Audit SHA-256: 525BB4B2D5008A29A9D31500A265DA2006CF10F72E1E95C083A53CEB5E13315F
+Audit: all nonautomatic declarations in 54 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Construct component deletion and its finite count decrease; classify the capped components and prove actual Type 1 nonseparation/deletion; returning and redundant annulus deletions; coherent halves, relative multi-phase windows, exhaustion, limit, IsAnnularChain and frozen leaf.
+
+### Item 18 verified: Section34GraphPatchBoundary
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatchBoundary.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2d88539fd61bd04e48bda58f70f32a3acec7b89fc8cca80f895bfe4149d4c9ed
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatchBoundary.json
+UTC: 09/23/2026 23:26:38
+
+### Item 18 verified: Section34GraphEdgeBoundaries
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeBoundaries.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 6cbf933a86328135a0f6b56dae9cdbd56dd5734526de775ef43ecd5d42590ae6
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeBoundaries.json
+UTC: 09/23/2026 23:27:04
+
+### Item 18 verified: Section34GraphCutFrame
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutFrame.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 7f50319c02d740dd417143e1cc0d8306382a3b8d866d75ada009c5983a71250a
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutFrame.json
+UTC: 09/23/2026 23:27:29
+
+### Item 18 verified: ControlledGraphCutFrame
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ControlledGraphCutFrame.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 05ede6069ed2c22145177563df241920a85a102e7f960c2af6ef78c57c6b3338
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\ControlledGraphCutFrame.json
+UTC: 09/23/2026 23:28:03
+
+### Item 18 verified: PLCellOnNeighborhood
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnNeighborhood.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: d5bb82e4924831925c28b8cc6023c172aaa7088f06244d0950abc1b3cb0e26ca
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnNeighborhood.json
+UTC: 09/23/2026 23:28:18
+
+### Item 18 verified: Section34VertexCarrierBalls
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexCarrierBalls.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: eafbf7b082c9e77d84026762afa1b3597a7b4fd7ef0f131c26120ad390dc641d
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexCarrierBalls.json
+UTC: 09/23/2026 23:28:35
+
 # Codex item 14
 
 ## Item 14 module check (2026-09-23T23:31:36.3521800Z)
@@ -11478,6 +12175,122 @@ Checker output:
 ```text
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.lean with no diagnostics; shared outputs unchanged.
 ```
+
+
+
+# Codex item 15
+
+## Innermost return disks and admissible bigons
+
+Lease: codex-trace; token: codex-trace-20260919. Private output root: C:\Users\liao9\AppData\Local\Temp\codex-trace.
+Audit UTC: 2026-09-23T23:31:07.1823190Z.
+Read-only HEAD at delivery: 32dd1d6cf4a0ab663bb986af6375e5a2ceecfdac.
+
+The actual returning-arc hypothesis now produces the complete Section34CompactBigonSlide
+predicate, on a possibly different face label, under the existing universal no-compression
+hypothesis. The nested-disk descent preserves every splitting-disk exclusion and ends with
+the disk interior disjoint from all face boundaries. It never re-invokes the return-disk
+producer. InnermostBoundaryDisk minimizes a finite boundary intersection count and rules out
+a full-boundary subarc by the forbidden vertex-contained circle. No single-crossing input is used.
+
+Sub-leaf 5 remains OPEN at the torus-filling-disk to actual vertex return-arc bridge.
+Both frozen trace headlines remain OPEN. BV has been read in full; its two exact bridge
+signatures and old-corner exclusion are the next requested implementation. No hard stop found.
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CircleComplementaryArc
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CircleComplementaryArc.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 5e3e78767205a2862c1a4d975e2191f19e146004732cc507184b8fff5dc6a903
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CircleComplementaryArc.json
+UTC: 2026-09-23T22:39:59.7542328Z
+
+### DifferentialGeometry.Topology.Connected.FiniteIntervalCuts
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Connected\FiniteIntervalCuts.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a9f30f83c12ac5bef9fc46484a51fee769db9571c0135d44a1526f1ac668a753
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\Connected\FiniteIntervalCuts.json
+UTC: 2026-09-23T22:42:29.2286471Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.ArcBoundaryCuts
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcBoundaryCuts.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 52dc12431bbc146666439f53f3c74b9496ac648ffedc3aeb41557b23e672eeed
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\ArcBoundaryCuts.json
+UTC: 2026-09-23T22:52:21.4736828Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CircleDiskSubarc
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CircleDiskSubarc.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 27dba7200cdfdf04950b7aa2425e58382e83b661dcd736fd190203b1e64b9724
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CircleDiskSubarc.json
+UTC: 2026-09-23T23:01:02.6097835Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.ArcSubinterval
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcSubinterval.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0086dee2c080ac2af0a77f596bcb2b0ca57565d04f4e5540ddfddb9358e1822b
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\ArcSubinterval.json
+UTC: 2026-09-23T23:10:35.5752517Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.BallUnionBoundarySurface
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BallUnionBoundarySurface.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: eed6ba50f59685c63468101acfc1e5beaf12bcb88326cf8847d484595040ab20
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\BallUnionBoundarySurface.json
+UTC: 2026-09-23T23:16:14.2238757Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundarySurface
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactBoundarySurface.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 033d1c2274d9489162a7613d08ceea23dd2c3755014a57f724975565fe5f828c
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactBoundarySurface.json
+UTC: 2026-09-23T23:16:30.8353917Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskContainment
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskContainment.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 6f63ac4a45072c6256c65d390916fd7a702bf6358015d83c30a9ac7d6b34448c
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskContainment.json
+UTC: 2026-09-23T23:25:33.3627317Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceFamily
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceFamily.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2aa33a001fcba8dbf911931d1c913329853daeb81af878c5982c54c4b5caf3fb
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceFamily.json
+UTC: 2026-09-23T23:25:49.4277472Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.InnermostBoundaryDisk
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\InnermostBoundaryDisk.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 29e03eeb7e9d2d1270660f764f1a10eab11f7b9c6b6194613de6b3f0fc45e82d
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\InnermostBoundaryDisk.json
+UTC: 2026-09-23T23:26:03.5673410Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactInnermostReturn
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactInnermostReturn.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: bfc03e3d2bbfbd1a87cadd58e096bf4858ecf60ed37e14f51a3e149bd6b5dca7
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactInnermostReturn.json
+UTC: 2026-09-23T23:28:59.3338624Z
+
+Audit: C:\Users\liao9\AppData\Local\Temp\codex-trace\InnermostReturnAudit.lean
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\InnermostReturnAudit.receipt.json
+SHA-256: 6a9356482728f03bee9fecc6ce1ba46bff91ea1578763fe6745b82af2e32cab8
+Result: 38 modules, 106 declarations; all thirteen linters passed; axiom closure contains
+only propext / Classical.choice / Quot.sound; zero diagnostics; shared outputs unchanged.
+Source/import gate: no Skeleton, prohibited P6, or foreign-lane dependency; lines <= 100.
 
 # Codex item 14
 
@@ -11529,6 +12342,7 @@ Checker output:
 ```text
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellCurveTrace.lean with no diagnostics; shared outputs unchanged.
 ```
+
 
 # Codex item 14
 
@@ -11591,6 +12405,32 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 
 ```
 
+
+# Codex item 13
+
+## component-complement-manifold-verified-work-continuing (2026-09-23T23:42:52.7409236Z)
+
+All 56 current modules passed the joint audit. Removing an actual connected component constructs a finite polyhedral orientable manifold with exactly the remaining component labels and one fewer connected component. Its boundary is the original boundary minus the removed component; for a closed component the entire boundary is unchanged. Generic component complement facts now have their own mathematical module, without importing canonical-tower or collared-trace machinery. Separation preservation is not yet claimed.
+
+All 56 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ComponentCollaredTrace
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ComponentCollaredTrace.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 50FE21CB493DE9D7FEC4A721CC0BF0F64EB46DDA9216DAEB25DA201FF316835F
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ComponentComplement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: C27F141BD73A22C31F6D205F2C9470DE42BA2062B36A04F49A36E714550D9BC3
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComponentComplement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\ManifoldComponentComplement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: A999897FF213C0735F2161B04F3799B9751F33F9570C5FEE387473DB5335CCD7
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13ComponentDeletion.receipt.json
+Audit SHA-256: 8C3374F814438990A8BF7C1AF83546FD37FE9EC84DF1C7CF14D8759E77920661
+Audit: all nonautomatic declarations in 56 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Type 1 component classification and actual nonseparation; canonical three-layer carrier topology is being proved from existing planar disk-union results. Then Type 2/3 geometric deletion, coherent halves, relative normalization and exhaustion, limit and frozen leaf.
+
 # Codex item 14
 
 ## Item 14 module check (2026-09-23T23:42:56.6589981Z)
@@ -11604,6 +12444,7 @@ Checker output:
 ```text
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean with no diagnostics; shared outputs unchanged.
 ```
+
 
 # Codex item 14
 
@@ -11764,6 +12605,7 @@ At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
 
 ```
 
+
 # Codex item 14
 
 ## Item 14 module check (2026-09-23T23:48:03.6169950Z)
@@ -11777,6 +12619,7 @@ Checker output:
 ```text
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean with no diagnostics; shared outputs unchanged.
 ```
+
 
 # Codex item 14
 
@@ -11792,6 +12635,7 @@ Checker output:
 Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDisk.lean with no diagnostics; shared outputs unchanged.
 ```
 
+
 # Codex item 14
 
 ## Item 14 module check (2026-09-23T23:55:16.5745630Z)
@@ -11806,6 +12650,119 @@ Checker output:
 Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDiskArc.lean with no diagnostics; shared outputs unchanged.
 ```
 
+
+# Codex item 18
+
+## COMPLETE: Package E / item 14 reconciliation
+
+All 77 owned modules passed prepare-private-root.py + checker.ps1 in PR15_ORDER.txt order. Each final source SHA-256 matches a stable, exit-code-0, zero-diagnostic receipt with sharedArtifactsModified=false. Per-module receipts and hashes are recorded above; the complete 77 module receipt lines are repeated below for a contiguous handoff.
+
+Final collision disposition: four canonical declarations reused and two distinct statements retained under unique names. Complete original signatures were inspected in local source commit 4d83c0e6e68eab8dae2b84d4aea6bb526eaae629. The original and final names/signatures, files, and alpha/implicitness comparisons are recorded in PR15_CollisionDecisions.json. The full canonical equality name is DifferentialGeometry.Topology.PiecewiseLinear.graphDualCell_space_eq_inter; GraphDualCellRestriction is its module, not an extra namespace qualifier.
+
+1. closure_sdiff_derivedNeighborhood_inter_subcomplex -> closure_sdiff_derivedNeighborhood_inter_subcomplex_ambient: Section34ResidualFaceRestriction, Section34GraphEdgeDensity, Section34GraphEdgeBoundaries. Retains local finiteness and the fixed ambient neighborhood.
+2. graphDualCell_space_eq_inter -> graphDualCell_space_eq_inter_dualCell: GraphDualCellRestrictionE, now proved from the tracked canonical theorem.
+3. graphDualCell_space_inter_subcomplex: remove PR duplicate from GraphDualCellRestrictionE and import tracked GraphDualCellRestriction.
+4. splittingDisk_space_inter_subcomplex: remove PR duplicate from Section34GraphMarkedPoints and import tracked GraphDualCellRestriction.
+5. IsCombinatorialManifoldWithBoundary.isPLBall_graphDualCell_two: remove PR duplicate from Section34GraphBoundaryDisks and import tracked GraphDualCellSurface.
+6. restrict_convexHull_eq_simplexComplex: remove PR duplicate from Section34LocalResidualCells and import tracked SimplexSubcomplex, with the explicit complex argument at uses.
+
+Final whole-tree public-name census: 261 public declarations; the only duplicate is the intended frozen exists_section34CutFrame restatement. No foreign untracked dependency or Skeleton import. Removing file headers and module documentation recovers the takeover bytes of 76 modules; GraphDualCellRestrictionE additionally has the canonical import and corollary proof. No tracked mathematical source, other lane source, frozen skeleton, or Git metadata was edited.
+
+The original single-command audit exceeded the default heartbeat limit. AuditPR15.lean now audits one module per command and uses Lean module-declaration metadata. An initial exhaustive two-way comparison asserts that this is exactly the declaration set selected by the original whole-environment scan; the original axiom checks, module nonemptiness checks, thirteen linters, and failure reporting are retained verbatim. No resource limit or linter was disabled or raised. The original audit is preserved as AuditPR15.original.lean.
+
+Final audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditPR15.lean with no diagnostics; shared outputs unchanged.`
+
+Audit UTC: `2026-09-23T23:53:58.3458343Z`. Audit source SHA-256: `70bc8fc3fdd7cb8b26768b4a94a674ce7e26a095e4fc9fc0633851f46f94be62`. All selected declarations have transitive axioms only among propext, Classical.choice, Quot.sound; all thirteen environment linters passed. No sorryAx.
+
+Frozen gate: ControlledGraphCutFrame.lean:39 statement and the complete variable block are byte-identical to Skeleton/ControlledGraphNeighborhood.lean. Frozen file SHA-256 remains 9f84f81ac5f832f8750b11abc4053e8372cf66df73950542062fcfa39723b351. Final leaf source SHA-256: 05ede6069ed2c22145177563df241920a85a102e7f960c2af6ef78c57c6b3338.
+
+Remaining work: none for reconciliation or the requested verification. Wiring, registration and any aggregate build remain with the lead. No Git write command was run.
+
+Complete receipt lines:
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ConeMarkedPrism.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcCellMarkedPrism.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryBallComplement.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryBallFamilyComplement.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryComplementCover.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CompactImageNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteIncidentNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SubdivisionCarriers.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphNeighborhoodSubdivision.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34IncidentBufferSubdivision.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34BufferedGraphSubdivision.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphRefinementControl.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphDualCells.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CutExhaustion.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteDerivedNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteDerivedManifold.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldExhaustion.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphExhaustion.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFinitePieceTransport.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFinitePieceRestriction.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DerivedExhaustionRegularNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteGraphCutCells.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellCarriers.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCoreComplex.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphDualIncidence.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphImageSubdivision.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledVertexCells.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphRegularNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledGraphCore.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CylinderSpine.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CyclicCellMarkedPrism.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedPrismChain.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCylinderUntwisting.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCircleNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MarkedCircleTorus.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34OuterTorusTransport.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34SourceRimTori.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34OuterTorusCarriers.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ControlledGraphNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellRestrictionE.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteManifoldFaces.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34LocalResidualCells.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualCells.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualDisks.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualCover.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutIncidence.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphMarkedPoints.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphBoundaryDisks.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeArcs.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualFaceRestriction.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeDensity.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatchTraces.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphFaceArcs.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualIncidence.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutFamily.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellBoundaries.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutIntersections.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnDimensionOrder.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatches.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34RefinedResidualBalls.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellSeparation.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualSeparation.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphArcSeparation.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnPoints.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutCellRecognition.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteBoundaryCover.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphVertexBoundaryCover.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphTetrahedronBoundary.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphFaceBoundary.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphArcBoundaries.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphSplitBoundary.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphPatchBoundary.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphEdgeBoundaries.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutFrame.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ControlledGraphCutFrame.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnNeighborhood.lean with no diagnostics; shared outputs unchanged.
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexCarrierBalls.lean with no diagnostics; shared outputs unchanged.
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditPR15.lean with no diagnostics; shared outputs unchanged.
+```
+
+Machine-readable final module receipt/hash manifest: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\PR15_VerifiedModules.json. Plain receipt handoff: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\PR15_AllReceipts.txt. Final audit receipt copy: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\AuditPR15.receipt.json.
+
 # Codex item 14
 
 ## Item 14 external audit (2026-09-23T23:58:37.7402112Z)
@@ -11819,6 +12776,7 @@ Checker output:
 ```text
 Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.lean with no diagnostics; shared outputs unchanged.
 ```
+
 
 # Codex item 14
 
@@ -11937,6 +12895,47 @@ The unproved step is relative ambient straightening of the bridge arc, retaining
 BoundaryExtension provides no interior arc equation. InteriorDiskCollar.exists_collar_of_properly_embedded_disk requires the entire disk boundary on the ball frontier; this bridge meets the frontier only in the complementary arc.
 This is a formal proof frontier, not a counterexample to L2 and not a claim that the leaf hypotheses are mathematically insufficient.
 No new named input, unmarked-prism substitute, frozen statement change, or Git write was introduced.
+
+# Codex item 13
+
+## canonical-carrier-nonseparation-verified-work-continuing (2026-09-24T00:10:54.4442195Z)
+
+All 61 modules are compiled and jointly audited. The actual planar three-cell chain is a disk; its revolved image gives a topological solid-torus carrier for each triple. Canonical states now record the derived interior-carrier invariant, while the prior carrier API remains available. A closed connected PL surface inside a compact carrier with connected frontier bounds a region inside that carrier. Bicollars and connected exteriors are transported to the actual open ambient subspace, proving nonseparation of two points outside the carrier. No new named mathematical input.
+
+All 61 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceState
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceState.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 6DB693B89692EAF93F5838AC7D3FD6D8548B402EE11ED9C4E113CD59B250A166
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceReplacement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceReplacement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 268B2A89CC17C55BF3EF39355007FF41A8C89BF6D12BBFB098A7D0E96888A02D
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PlanarChainUnion
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\PlanarChainUnion.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 0CE7BEC5D58CE699688EDDBFF1D03D29F9566014397259ACD8A40CDB3D42E184
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerCarrierTorus
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalTowerCarrierTorus.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: BAFE809A78E4EA572112249E0B7F795A634984FA53FCC794071B2B38A8DA82E4
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SurfaceRegionInSolidTorus
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceRegionInSolidTorus.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 45FE180D7828512F033C12309B2955714AF86F919129F01BAE2D5617CB5EDE73
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SurfaceBicollarSubspace
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceBicollarSubspace.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 69698EBEACB6A2436275FB5D2D45D345C2932DA98703BD39222FA3B4B39D57A3
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SurfaceRelativeExterior
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceRelativeExterior.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: E039EA0FFDBF6617C0D8C08BC8969F5756E378BF2B0115AE6738762553448325
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13CarrierNonseparation.receipt.json
+Audit SHA-256: 542EB8AB877CC792947A446474F0C14FFBBF795CAADEE045A1E5996CC9B2A5F8
+Audit: all nonautomatic declarations in 61 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Compile the explicit tube-pair simple-connectivity and canonical closed-component nonseparation consumers; assemble Type 1 separator-preserving state deletion and finite termination. Annular component classification, Type 2/3 deletion, coherent halves, relative multi-phase windows, exhaustion, limit and frozen leaf remain.
 
 # Codex item 14
 
@@ -12341,6 +13340,398 @@ UTC: 2026-09-23T20:08:39.5128176Z
 
 Publication includes only this lane; expanded audit remains pending at the owner-requested pause.
 
+
+# Codex item 17
+
+## Residual patches and foreign-incidence checkpoint (2026-09-24)
+
+Lease a. The cumulative 31-module tree-external audit passed: all non-auto declarations have
+axiom closures contained in `propext / Classical.choice / Quot.sound`; all thirteen
+environment linters passed with zero diagnostics. The generic boundary lemma was generalized
+to remove its unnecessary T2Space input, and all affected downstream modules were rebuilt.
+
+- `BicollarLocalSide.lean`
+  SHA-256: `b45912b7ecf2ee5e5b173047d72e7bc0e5727fa3e958a16c543d7c10aefa39ed`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\BicollarLocalSide.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\BicollarLocalSide.lean with no diagnostics; shared outputs unchanged.`
+
+- `PLCellOnClosure.lean`
+  SHA-256: `6462faca33da0c1acf3f5089c753eac2fbec373726c4fa4b67ce8a8a84f25330`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnClosure.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnClosure.lean with no diagnostics; shared outputs unchanged.`
+
+- `PLCellChartLocalSide.lean`
+  SHA-256: `4578595583512a4e19215a93e826c9abeb895661dde3b56b85ea649e0da19a16`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartLocalSide.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartLocalSide.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualLocalSide.lean`
+  SHA-256: `20cac69508c4dfe173c34712c1888e55aa723fdd8a894b9319abf2e7cb5f7e7d`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualLocalSide.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualLocalSide.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualForeignVertex.lean`
+  SHA-256: `d413d536ee639e2560e8d55995e2961a78670034fa85889d3c89afd13f8a8005`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignVertex.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignVertex.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualForeignFace.lean`
+  SHA-256: `23c0454f228145b30150932c817c18db917fa621c1019454c29e1c3573d5ade8`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignFace.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignFace.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34PatchEnumeration.lean`
+  SHA-256: `fa47df2ee3a2f43dba2cc02062b7c62176762d0d35741f39457b9a9fef686f76`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34PatchEnumeration.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PatchEnumeration.lean with no diagnostics; shared outputs unchanged.`
+
+- `PLCellChartBoundary.lean`
+  SHA-256: `772540bd3085d75845f6baf06c18024f21484cefaa3908c1ab3afc6d901f6afb`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartBoundary.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartBoundary.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualBoundary.lean`
+  SHA-256: `ec77a27a3033b605924eb4f783d8e46cb26c208c8f9fd0cbfa45575abe9257ad`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBoundary.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBoundary.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualPatchSides.lean`
+  SHA-256: `5af6bdd19afbffd5558abd8026070ef28c1ee6ab556cd80650c95dc341d9803b`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchSides.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchSides.lean with no diagnostics; shared outputs unchanged.`
+
+- `PLCellChartCircleRuns.lean`
+  SHA-256: `97048317735efc7a40e47e1dbd6b2b4c4d077e8d992addd7f3fd5a3773cc8497`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartCircleRuns.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartCircleRuns.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualPatch.lean`
+  SHA-256: `8046e90ead8e0b6bd02b034ee38001a2a03116c4a62a355879124d506a406dd6`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatch.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatch.lean with no diagnostics; shared outputs unchanged.`
+
+- `Section34ResidualPatchCells.lean`
+  SHA-256: `db14f94ae1e394517edab1ffa9f0d31e6d8500c22e5865158dc592b5613fc272`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchCells.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchCells.lean with no diagnostics; shared outputs unchanged.`
+
+Audit probe: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17PatchCells.lean`.
+Audit SHA-256: `3369dbab75bf521849399580905269122019b1f9823cdd60459d74664d5ebc24`.
+Audit receipt: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17PatchCells.json`.
+Receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17PatchCells.lean with no diagnostics; shared outputs unchanged.`
+
+Sub-leaves delivered: foreign vertex-ball, splitting-disk and face-disk exclusion; finite
+cyclic incidence enumeration; residual patch 2-cells and edge-arc 1-cells with their exact
+intrinsic boundary unions. No new named leaf inputs and no frozen statement changes.
+
+Remaining: residual-pair separation, the two manifold tiling clauses, and the exact P7 leaf.
+New pair/coface drafts are not included in this checkpoint.
+
+# Codex item 19
+
+## PR 19 acceptance: step 2 stopped on working-tree byte mismatch (2026-09-24)
+
+- Lease: codex-moise-recon / codex-moise-recon-20260922; private root
+  `C:\Users\liao9\AppData\Local\Temp\codex-moise-recon`.
+- Step 1 verified the fetched PR contains exactly 40 added Lean files and seven commits.
+  Imported commits: db3dee87b, a81f256e6, 61c26b15f, 62bab2a6a, bac59be55,
+  6c5a362d8, f7e3acb9e. Git skipped the refused sixth patch on continue; it was
+  explicitly cherry-picked afterward, with all 40 final sources checked against PR blobs.
+- Commit fefed70f5 renames the PR module to SurfaceDiskNeighborhoodS31 and repoints
+  SurfaceDiskDisplacement. The foreign untracked SurfaceDiskNeighborhood was restored
+  byte-for-byte; SHA256 d067adc397638f5689be9d042c7f6cda91a364dc2e034af31139b14e652f9136.
+- Step 2: both Git source-blob theorem statements are exactly equal to their frozen
+  counterparts. The working-tree comparison is NOT byte-identical: frozen LF versus
+  Git-checked-out PR CRLF. No mathematical text or binder differs. The explicit
+  stop-on-any-other-difference rule applies; no normalization was performed.
+- Exact escaped-byte differences and statement SHA256 values are in private
+  PR19_StatementByteDiff.txt and PR19_StatementCheck.json. Source inventory and original
+  foreign-file backup are retained in the same private root.
+- Steps 3-7 not executed. No compiler or audit receipt; no skeleton promotion,
+  root registration, ledger modification, or push. Existing shared log edits preserved.
+
+# Codex item 13
+
+## Route review draft, owner-requested return (2026-09-24T00:53:03.6400995Z)
+
+Draft: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\Codex13DescentRouteDraft-20260924.md
+Draft SHA-256: BD8242CFD5FF351580DA58C21A2BC9C94C68F7A93662421D0B184A2DBA69B71D
+Review only: marked reference capping, initial mixed-end witness, connected-patch deletion, guarded full-state recursion. No new named input identified; proposed intermediate proofs are not compiler-certified.
+Previously audited baseline: Codex13CarrierNonseparationManifest.json (61 modules; allowed axioms and all thirteen linters).
+The following current module receipts were rechecked against source hashes. Their joint external audit remains pending; these are compile receipts, not an accepted audit checkpoint.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BallInteriorContractible
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\BallInteriorContractible.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: B88608C93A8446043C44FD225174E33C4AB85E6C688A51CDFDFAE28CDFF0F228
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TubePairSimplyConnected
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TubePairSimplyConnected.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 78697EEBCF97F1302D5FF2865E7E511B37B47D71C4C12B9F78DDA49005F50C47
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.EmptyBoundaryManifold
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\EmptyBoundaryManifold.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: EEFDFC19963103D3618EDDA2811C9E934CC91DCE94663871DD34868A7D8E0604
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceClosedNonseparation
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceClosedNonseparation.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 8A12AD1D7C597396300D279A7613D8B6CEFA1E6A3FD7E3DE8A366A7434B1BC17
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceRemoval
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CollaredTraceRemoval.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 471D23D467591F1C1F3676B91F78E7F9DAC685C5F0D5ABC5AF344D85E5F25EAA
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceClosedTraces
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceClosedTraces.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 1B64642E5793C1DD485492DC666F28DF005D3FA507E2091105465718B45D0BAD
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerSurfaceClosed
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalTowerSurfaceClosed.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 41D93D1402D76B814B8830E84992A687A4C1CDFD84B938DCC9B29D28297807C4
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TowerSurfaceComponentDeletion
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TowerSurfaceComponentDeletion.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 588B4B7033C90DC756FD6C8305F30D0584901B1C53505701AF28104C723638D6
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceComponentComplement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceComponentComplement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false; joint audit pending)
+SHA-256: 9BC0A92535376B8BF8774CEAB920255E1213F10C6C198B17DAB1A87BD2EB4FDE
+
+CanonicalSurfaceClosedDeletion: latest compiler exitCode=0 but diagnosticLines=2 from an unused change tactic; NOT accepted. Next step is deleting that redundant tactic, recompiling, and auditing modules 1-71.
+Owner requested a proof-route draft and return before switching effort down. No new Lean source edit or compile was performed during this review.
+
+Draft final appendix recorded: five-index mixed-witness range, public H1 nontriviality route, and null-disk non-cover premise.
+Final draft SHA-256: 54783DD0A32B215C59E9C24D74C37D06095D9A1EB0A59D1AB775F9D0F3CF1DA1
+
+
+# Codex item 17
+
+## Final manifold P7 delivery (2026-09-24)
+
+The exact frozen leaf exists_section34ResidualBalls is complete, including all 18 clauses
+and both tiling clauses. Its variable block and statement are byte-identical to the frozen
+Skeleton declaration. No named leaf inputs were added. No mathematical obligations remain.
+
+All 40 new modules passed the private checker with zero diagnostics. The final tree-external
+audit checks every non-auto declaration, all thirteen environment linters, and axiom closures
+contained in propext / Classical.choice / Quot.sound. Shared artifacts remained unchanged.
+
+Final source identities below supersede the earlier checkpoint identities where a task-owned
+module was generalized. The edge-coface special case now calls the general subdivision-face
+coface theorem; all 20 affected modules were rebuilt in dependency order.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraSkeleton.lean`
+  SHA-256: `aa33acc6d2adfa48c003495d1c8d7f9166bce02d8ade1ff17cb22354b6e9765f`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraSkeleton.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraSkeleton.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraPaths.lean`
+  SHA-256: `c1d929381818d7676818026404513e28b7433c7708c651d7e158916720f3551b`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraPaths.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraPaths.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraClaws.lean`
+  SHA-256: `b559e8c0322a71797c8de3b7bfb5906a89efcd6cbb33c822705e474d602b7df2`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraClaws.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraClaws.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLCellChartGluing.lean`
+  SHA-256: `643448ea6c7469a1b0078497509fa386bb2cb71cb1256b8db0ea7d5512061fa4`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartGluing.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartGluing.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ClawIncidence.lean`
+  SHA-256: `e7dd8a90294e0734f9a298327b6fb01ef0ceec48098d3e8c8a3877830bcd8d8c`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawIncidence.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawIncidence.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ClawBall.lean`
+  SHA-256: `f021683f0a1d957f4e3fc1274bb1939e42d741f8f094ea3d05a0174bfd7ac868`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawBall.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawBall.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraEdges.lean`
+  SHA-256: `dcd754840b16dfb57ff7532206e0d056b8192931013c4454de0473f7f075290c`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraEdges.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraEdges.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraHoles.lean`
+  SHA-256: `b53dddc097a4e9fec3a7ba0ae57b4cb5fa25e7a985beac0b1f0c07b1c33a377b`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraHoles.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraHoles.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraCarriers.lean`
+  SHA-256: `00e8a99fecec9c6ce6fdf9f4659bbb8c747dedd1eaa6de7147b0ffe9439b0c9a`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraCarriers.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraCarriers.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceDiskIncidence.lean`
+  SHA-256: `d5ddf3f4f3248866f1fad40b9e325c87984b8589f3674841e8b697931251b795`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceDiskIncidence.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceDiskIncidence.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLDiskChartArcSplit.lean`
+  SHA-256: `3445e06271d33fc64b2c85731fe9a79f31b84f64cc16f884cceb4acfc8abfddf`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskChartArcSplit.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskChartArcSplit.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraFaces.lean`
+  SHA-256: `b2ca47c4bd0bd7fd7085316b3a4344c1d8d1d570d6f0facb82b6b7093822ee78`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraFaces.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraFaces.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34FaceRuns.lean`
+  SHA-256: `f487e9e7168f25139d11bf1c65e3396c2a5b29aeeab0c5a94b4150553efbdf6f`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceRuns.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34FaceRuns.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ClawHoles.lean`
+  SHA-256: `bb52fd5a466634f6788418ba763fc35c8aa25b5998bd0f161d6a1da017ed0151`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawHoles.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ClawHoles.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraFaceRuns.lean`
+  SHA-256: `c1c7ed1438dc99fcdff7e07749a17ec634d0e730c72b2dc511210ad28f81982a`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraFaceRuns.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraFaceRuns.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/FourDiskPocket.lean`
+  SHA-256: `18e5ba593619e6d7f60826a3bc35b08663c8d57d8c27906ad60d0ca6eb73000a`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\FourDiskPocket.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FourDiskPocket.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraPocket.lean`
+  SHA-256: `64448d166f1ae4fc63f279b917108408abfd5072a28b0adde1ba1afdfc142a42`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraPocket.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraPocket.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualBall.lean`
+  SHA-256: `83c33e63ca3bee73fd4ed87df01070a674ca998a33f810cc8da5afdead7a4208`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBall.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBall.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/BicollarLocalSide.lean`
+  SHA-256: `b45912b7ecf2ee5e5b173047d72e7bc0e5727fa3e958a16c543d7c10aefa39ed`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\BicollarLocalSide.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\BicollarLocalSide.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLCellOnClosure.lean`
+  SHA-256: `6462faca33da0c1acf3f5089c753eac2fbec373726c4fa4b67ce8a8a84f25330`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnClosure.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnClosure.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLCellChartLocalSide.lean`
+  SHA-256: `4578595583512a4e19215a93e826c9abeb895661dde3b56b85ea649e0da19a16`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartLocalSide.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartLocalSide.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualLocalSide.lean`
+  SHA-256: `20cac69508c4dfe173c34712c1888e55aa723fdd8a894b9319abf2e7cb5f7e7d`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualLocalSide.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualLocalSide.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualForeignVertex.lean`
+  SHA-256: `d413d536ee639e2560e8d55995e2961a78670034fa85889d3c89afd13f8a8005`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignVertex.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignVertex.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualForeignFace.lean`
+  SHA-256: `23c0454f228145b30150932c817c18db917fa621c1019454c29e1c3573d5ade8`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignFace.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualForeignFace.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34PatchEnumeration.lean`
+  SHA-256: `fa47df2ee3a2f43dba2cc02062b7c62176762d0d35741f39457b9a9fef686f76`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34PatchEnumeration.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34PatchEnumeration.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLCellChartBoundary.lean`
+  SHA-256: `772540bd3085d75845f6baf06c18024f21484cefaa3908c1ab3afc6d901f6afb`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartBoundary.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartBoundary.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualBoundary.lean`
+  SHA-256: `ec77a27a3033b605924eb4f783d8e46cb26c208c8f9fd0cbfa45575abe9257ad`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBoundary.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBoundary.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualPatchSides.lean`
+  SHA-256: `5af6bdd19afbffd5558abd8026070ef28c1ee6ab556cd80650c95dc341d9803b`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchSides.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchSides.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLCellChartCircleRuns.lean`
+  SHA-256: `97048317735efc7a40e47e1dbd6b2b4c4d077e8d992addd7f3fd5a3773cc8497`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartCircleRuns.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellChartCircleRuns.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualPatch.lean`
+  SHA-256: `8046e90ead8e0b6bd02b034ee38001a2a03116c4a62a355879124d506a406dd6`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatch.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatch.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualPatchCells.lean`
+  SHA-256: `db14f94ae1e394517edab1ffa9f0d31e6d8500c22e5865158dc592b5613fc272`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchCells.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPatchCells.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualPairs.lean`
+  SHA-256: `2db930e583ea1f55d270132f53131789b54973cf5df1fe0230016ada000b301c`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPairs.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualPairs.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34TetraCofaces.lean`
+  SHA-256: `5352d5771eab38c536a25481c185f71b2f062a0d2dfb408a885ee46136cb6bea`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraCofaces.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraCofaces.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLDiskChartGluing.lean`
+  SHA-256: `78c28f2088618d7763aa7cd65ed1b4a270526585d45f1457d2db7bd98e7eae0b`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskChartGluing.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskChartGluing.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualUnion.lean`
+  SHA-256: `3033a67ac31e01aa69575883257c481e4a15b51c46a64f3b73b4d9173d6d247f`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualUnion.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualUnion.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualCoverLocal.lean`
+  SHA-256: `4616388671ef5fb40d5ab0ac3853baf56593635ffda9f067a223d8731722d592`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualCoverLocal.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualCoverLocal.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/PLCellBoundaryConnected.lean`
+  SHA-256: `08049266ea0bde4911f8ad4f5247614c48e17a953134823a8c679490647a2f20`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\PLCellBoundaryConnected.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellBoundaryConnected.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualEdgeCover.lean`
+  SHA-256: `c57ac72157973d63066af07cbb43d56e79076fa5c86bef0939d4b188db0129e5`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualEdgeCover.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualEdgeCover.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualVertexCover.lean`
+  SHA-256: `a82e92c145807fd72d1672dbbf86ea0bb34bc68160c559342050e5169769e5d2`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualVertexCover.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualVertexCover.lean with no diagnostics; shared outputs unchanged.`.
+
+- `DifferentialGeometry/Topology/PiecewiseLinear/Section34ResidualBalls.lean`
+  SHA-256: `9b30b7b5ade1c380c35c9689fd2d253ca80c95c11412823753903f30cd993511`.
+  Receipt file: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBalls.json`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBalls.lean with no diagnostics; shared outputs unchanged.`.
+
+Final audit probe: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17Final.lean`.
+Final audit SHA-256: `a617dc91021b4acff895fa6a21e2f8e905a7fe5805868d304e31568124094a3d`.
+Final audit receipt: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17Final.json`.
+Receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17Final.lean with no diagnostics; shared outputs unchanged.`
+
+Complete module/receipt/hash inventory and per-clause producer table: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\CodexItem17Delivery.md`.
+Machine-readable inventory: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\CodexItem17VerifiedModules.json`.
+Frozen bytes and import/source checks: `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\CodexItem17StaticReview.json`.
+
+The final leaf imports all 40 task modules through its dependency closure. The closure contains
+no Skeleton modules and no other-lane untracked sources. Frozen files and the root aggregate
+were not edited; no git writes were run. Integration remains with the accepting lane.
+
 # Codex item 20
 
 ## PR 14 acceptance: steps 1-4 verified (2026-09-24)
@@ -12583,6 +13974,59 @@ Imported commits:
 - Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexPreparationAxioms.lean with no diagnostics; shared outputs unchanged.`
   SHA-256: `8E59A3B1CAC98B348062D76F3727D2C0C813927FABF9A10BA634657D22B3AB5F`.
 
+# Codex item 13
+
+## canonical-closed-deletion-verified-work-continuing (2026-09-24T01:28:26.5819592Z)
+
+Actual closed-component deletion now preserves the full canonical surface state, the vertex separator, protected sets, and strictly decreases the finite component count. All 71 modules were audited in five independent commands without resource-budget overrides.
+
+All 71 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BallInteriorContractible
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\BallInteriorContractible.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: B88608C93A8446043C44FD225174E33C4AB85E6C688A51CDFDFAE28CDFF0F228
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TubePairSimplyConnected
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TubePairSimplyConnected.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 78697EEBCF97F1302D5FF2865E7E511B37B47D71C4C12B9F78DDA49005F50C47
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.EmptyBoundaryManifold
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\EmptyBoundaryManifold.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: EEFDFC19963103D3618EDDA2811C9E934CC91DCE94663871DD34868A7D8E0604
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceClosedNonseparation
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceClosedNonseparation.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 8A12AD1D7C597396300D279A7613D8B6CEFA1E6A3FD7E3DE8A366A7434B1BC17
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceRemoval
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CollaredTraceRemoval.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 471D23D467591F1C1F3676B91F78E7F9DAC685C5F0D5ABC5AF344D85E5F25EAA
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceClosedTraces
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceClosedTraces.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 1B64642E5793C1DD485492DC666F28DF005D3FA507E2091105465718B45D0BAD
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerSurfaceClosed
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalTowerSurfaceClosed.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 41D93D1402D76B814B8830E84992A687A4C1CDFD84B938DCC9B29D28297807C4
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TowerSurfaceComponentDeletion
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TowerSurfaceComponentDeletion.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 588B4B7033C90DC756FD6C8305F30D0584901B1C53505701AF28104C723638D6
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceComponentComplement
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceComponentComplement.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 9BC0A92535376B8BF8774CEAB920255E1213F10C6C198B17DAB1A87BD2EB4FDE
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceClosedDeletion
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceClosedDeletion.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 55B8C188D47F2E8BFF4488887C384A126B7573EC2C44CCAE202F9D3E44422D92
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13ClosedDeletionBatches.receipt.json
+Audit SHA-256: 733255CD853BF4A6984178BA340FB33DAE27C4514B8D1B7D312B1CCFBDC27C7C
+Audit: all nonautomatic declarations in 71 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Boundary-marked capping transport; reference annular classification; initial mixed-end component witness; connected-patch deletion for returning/excess annuli and torus halves; guarded finite-window recursion and exact frozen descent leaf.
+
 # Codex item 20
 
 ## Package F wiring and records complete (2026-09-24)
@@ -12608,6 +14052,51 @@ Imported commits:
   Item20_FrozenStatementChecks.json, both PR scan reports, three audit receipts,
   Item20_Wiring.receipt.json and Item20_LedgerChange.json. No foreign source was changed.
 
+# Codex item 13
+
+## marked-torus-subsurface-capping-verified-work-continuing (2026-09-24T01:53:53.8035117Z)
+
+The actual null-split and component-capping maps now fix all surviving marked boundary points. Five new modules prove subsurface/disk intersection, marked PL ball extension, fixed-boundary manifold attachment, exact capping boundaries, and an actual torus-subsurface update when an essential boundary survives. All 76 modules pass the complete external audit.
+
+All 76 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SeparatingSurfacePairSplit
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SeparatingSurfacePairSplit.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: D8DACC66BE68A9A03A3413F5B3BECDB98C58BF16EC96E4E6E59EDF08DE7E62C6
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceSplit
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalSurfaceSplit.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: E5A513038DE90073E86D461083653E6D99D4B4BC3C71DFBBEDF6939837CECF5A
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CircleCappingComponentInvariants
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CircleCappingComponentInvariants.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 14964BD95366EA76867C95C2619C425E416CBFFAFB84689E0AFBCFA7A1A00515
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SubsurfaceDiskIntersection
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SubsurfaceDiskIntersection.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 8637762DCFB088D33726BB293A00D429E497D1F68B7E3B55459468094E2DDD9C
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphBallAttachment
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\PLHomeomorphBallAttachment.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: CDC8E50D542032367A8039AE49449A308397DA79ACF9AD5C5F4143BEE7A6AD78
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFixedBallAttachment
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryFixedBallAttachment.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 81355B13169451CEE5E9542B30F0C2C694AC656ABCA6B07BB26B568C881370BF
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CircleCappingBoundary
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CircleCappingBoundary.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: CDD53C17F2563ED3AD803054B5B8ABA01153382B0B3169891B02403B6A455E1A
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TorusSubsurfaceCapping
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TorusSubsurfaceCapping.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 90476B08A6AD65C02529B3B0447B949C9B7E659624F881BDA5EF6FA5CC2E4F3E
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13MarkedTorusCapping.receipt.json
+Audit SHA-256: CA6E3786746EA38F9BA17CED98563D9053DC80CC061E1624F63F1E522AA586C7
+Audit: all nonautomatic declarations in 76 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Componentwise reference history and annulus classification; original mixed-end component witness; actual Type 2/3 and half deletion via connected patches; guarded finite-window recursion, limit chain, and frozen leaf.
+
 # Codex item 19
 
 ## Step 3: resume under owner LF-normalization ruling (2026-09-24)
@@ -12627,3 +14116,32 @@ Imported commits:
   remains byte-identical to its original backup; PR imports still use the S31 module.
 - Details and affected files: private PR19_Renames.json; statement evidence in
   PR19_StatementCheck_LF.json. Step4 verification follows this source-only checkpoint.
+
+# Codex item 13
+
+## torus-subsurface-annulus-recognition-verified-work-continuing (2026-09-24T02:06:14.1766173Z)
+
+Connected subsurfaces are now identified as closures of complementary components of their own boundaries. A single essential boundary circle is excluded, and h286 gives a marked annulus for every finite nonempty essential boundary family. Annulus transport preserves exact ends, and actual canonical component disk-boundaries transfer through h314. All 80 modules pass the full external audit.
+
+All 80 current source hashes and receipts were rechecked. Unlisted module hashes are unchanged. The recursive source import closure contains no Skeleton import.
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.SubsurfaceInteriorComponent
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\SubsurfaceInteriorComponent.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 3A695D1F1EF41ED104277E475A827B6A10261A215205FBD348118B823D392AD7
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.TorusSubsurfaceAnnulus
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\TorusSubsurfaceAnnulus.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 6BC8FB445728C4B456EEA192EB4A8A1C2AB69C9FBB9C7B378EA4D7CC42BFCDC6
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusEnds
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\PLAnnulusEnds.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: EFF3BBE4BCF37AFC39DE1FD450BA7E98C55648538636558E2167DD6833E0BA85
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentSeamDisks
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\DifferentialGeometry\Topology\PiecewiseLinear\CanonicalComponentSeamDisks.json (exitCode=0, diagnosticLines=0, sourceStable=true, sharedArtifactsModified=false)
+SHA-256: 34062F4794E752C2F54156B7F5277EC8C0D79E749223E48798FDBB0535F095CB
+
+Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex13TorusAnnulus.receipt.json
+Audit SHA-256: D8787530C8962D9E432E3B81818EA7FA2FE6EC81A283B0E666508B74A542B30C
+Audit: all nonautomatic declarations in 80 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
+Remaining work: Transport the subsurface embedding invariant through actual component histories; construct the initial mixed-end component witness; connected-patch Type 2/3/half deletion; guarded finite-window recursion and frozen endpoint.

@@ -990,3 +990,4 @@ D. Item 21 (smooth batch + sphere leaf entry) is owner-scheduled and unchanged; 
 E. Owed lead cleanups, deferred by the owner: `Section34FaceTorusCycle` to `hf₁`; removal of the
    `h304`/`h305` named inputs from the nine consumers.
 Report (≤ 40 lines) after each of A, B, C: commits, receipts, audit lines, ledger total before/after.
+A DONE by the Claude lead at 03:15 UTC on 2026-09-24 (41 `Verified`, wiring, skeleton recheck errors=0 sorry=1; total 10). Start at B.

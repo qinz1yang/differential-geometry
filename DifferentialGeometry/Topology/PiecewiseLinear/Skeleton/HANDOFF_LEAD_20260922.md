@@ -604,3 +604,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 02:55 UTC (09-24) - LEAD HANDOVER TO CODEX (item 22 of `Skeleton/FILL_QUEUE.md`): the Claude lead's budget is out.
   Item 17 pre-checked, its lead checks running (`AcceptCodexItem17.log`); item 18 pre-checked, `accept-PR15.ps1` ready;
   item 19 ruled to continue (CRLF false alarm); tools in `claude-moise-shared\lead-tools\`. Physical `sorry` 11.
+* 02:40 UTC (09-24) - accepted Codex item 17 (the manifold P7 `exists_section34ResidualBalls`, 40 modules incl.
+  `Topology/BicollarLocalSide`; lead checks + one audit on the lead lease; statement byte-identical).
+  `Section34Terminal` keeps one leaf (`exists_section34NormalFamily`). Physical `sorry` 10.
