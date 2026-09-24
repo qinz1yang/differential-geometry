@@ -57,6 +57,37 @@ theorem exists_compact_subset_terminalRegularRegion_containing_scalar_sublevels
   have hhigh := hscalar y t ⟨(hmax (some y) hsome).trans_lt ht.1, ht.2⟩ x hxy
   exact (not_lt_of_ge hx) hhigh
 
+theorem TerminalLimitMetric.isCompact_scalar_sublevel_of_time_derivative_bound
+    (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    (hpinch : PhiAlmostNonnegative G.flow (Ico a s) Phi) (A : ℝ) :
+    IsCompact {x : G.terminalRegularOpen | metricScalarAt L.metric x ≤ A} := by
+  obtain ⟨K, hK, hKreg, d, hd, hcapture⟩ :=
+    G.exists_compact_subset_terminalRegularRegion_containing_scalar_sublevels
+      hq hbound hPhi hpinch (A + 1)
+  let K' : Set G.terminalRegularOpen := Subtype.val ⁻¹' K
+  have himage : Subtype.val '' K' = K := by
+    ext y
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      exact hz
+    · intro hy
+      exact ⟨⟨y, hKreg hy⟩, hy, rfl⟩
+  have hK' : IsCompact K' := by
+    rw [_root_.Topology.IsEmbedding.isCompact_iff
+      (_root_.Topology.IsEmbedding.subtypeVal (p := fun y => y ∈ G.terminalRegularOpen))]
+    exact himage ▸ hK
+  apply hK'.of_isClosed_subset
+    (isClosed_le (metricScalar_smooth L.metric).continuous continuous_const)
+  intro x hx
+  have hclose : ∀ᶠ t in 𝓝[<] s, G.flow.scalar t x.val < A + 1 :=
+    (L.tendsto_metricScalarAt x).eventually_lt_const (hx.trans_lt (lt_add_one A))
+  have hlate : ∀ᶠ t in 𝓝[<] s, t ∈ Ioo d s := Ioo_mem_nhdsLT hd.2
+  obtain ⟨t, ht, hscalar⟩ := (hlate.and hclose).exists
+  exact hcapture t ht x.val hscalar.le
+
 theorem TerminalLimitMetric.exists_compact_containing_canonical_domains
     (L : G.TerminalLimitMetric) {q eps C1 C2 : ℝ} (hq : 0 < q)
     (hcanonical : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →

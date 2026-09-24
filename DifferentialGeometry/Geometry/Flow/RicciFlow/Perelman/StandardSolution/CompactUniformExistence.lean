@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompactCurvatureControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Maximal.Flow
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Maximal.Scaling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
 
 set_option autoImplicit false
 noncomputable section
@@ -111,4 +113,57 @@ theorem exists_compact_flow_beyond_control_time (g₀ : SmoothRiemannianMetric I
   obtain ⟨ε, hε, hwide⟩ := extend_before_control_time g₀ Tsup P hdim K hTsupbound hinit
   have hle : Tsup + ε ≤ Tsup := le_csSup hbdd (show Tsup + ε ∈ ends from hwide)
   linarith
+
+omit [I.Boundaryless] [CompactSpace M] [BoundarylessManifold I M] in
+private theorem sqrt_normSq0S_metricRm04_scale (g : SmoothRiemannianMetric I M)
+    (c : ℝ) (hc : 0 < c) (x : M) :
+    Real.sqrt (normSq0S (scaleMetric c hc g) x 4 (metricRm04 (scaleMetric c hc g) x)) =
+      Real.sqrt (normSq0S g x 4 (metricRm04 g x)) / c := by
+  convert! CheegerGromovCompactness.curvDerivNorm_scaleMetric g c hc 0 x using 1
+  simp only [pow_zero, mul_one]
+  rfl
+
+theorem exists_compact_flow_scaled_curvature_bound
+    (g₀ : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 3)
+    (K : ℝ) {Q : ℝ} (hQ : 0 < Q)
+    (hinit : ∀ x : M, Real.sqrt (normSq0S g₀ x 4 (metricRm04 g₀ x)) ≤ K * Q) :
+    ∃ T : ℝ, compactCurvatureControlTime 3 K / Q < T ∧
+      ∃ F : FlowTo g₀ T,
+        ∀ t ∈ Icc 0 (compactCurvatureControlTime 3 K / Q), ∀ x : M,
+          Real.sqrt (normSq0S (F.S.base.metric t) x 4 (metricRm04 (F.S.base.metric t) x)) ≤
+            Real.sqrt (2 * K ^ 2 + 1) * Q := by
+  let gQ := scaleMetric Q hQ g₀
+  have hnorm : ∀ x : M, Real.sqrt (normSq0S gQ x 4 (metricRm04 gQ x)) ≤ K := by
+    intro x
+    rw [sqrt_normSq0S_metricRm04_scale]
+    exact (div_le_iff₀ hQ).mpr (hinit x)
+  obtain ⟨U, hU, ⟨P⟩⟩ := exists_compact_flow_beyond_control_time gQ hdim K hnorm
+  have hU' : compactCurvatureControlTime 3 K < U := by simpa only [hdim] using hU
+  have heq : scaleMetric Q⁻¹ (inv_pos.mpr hQ) gQ = g₀ := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro x v w
+    simp only [gQ, scaleMetric_inner, ← mul_assoc, inv_mul_cancel₀ hQ.ne', one_mul]
+  let F' := P.scale Q⁻¹ (inv_pos.mpr hQ)
+  let F : FlowTo g₀ (Q⁻¹ * U) := { F' with start := F'.start.trans heq }
+  have hmetric (t : ℝ) : F.S.base.metric t =
+      scaleMetric Q⁻¹ (inv_pos.mpr hQ) (P.S.base.metric (t * Q)) := by
+    simp only [F, F', FlowTo.scale_metric, div_inv_eq_mul]
+  refine ⟨Q⁻¹ * U, ?_, F, ?_⟩
+  · simpa only [div_eq_mul_inv, mul_comm] using (div_lt_div_iff_of_pos_right hQ).mpr hU'
+  · intro t ht x
+    have htQ : t * Q ∈ Icc 0 (compactCurvatureControlTime 3 K) :=
+      ⟨mul_nonneg ht.1 hQ.le, (le_div_iff₀ hQ).mp ht.2⟩
+    have hsub : Icc 0 (compactCurvatureControlTime 3 K) ⊆
+        (RealTimeInterval.closedOpen 0 U P.time_pos).carrier :=
+      fun r hr => ⟨hr.1, hr.2.trans_lt hU'⟩
+    let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+    have hb := curvature_bound_from_initial_compact (compactCurvatureControlTime 3 K)
+      (compactCurvatureControlTime_pos 3 K).le K (by rw [hdim]) _ P.S P.isSolution hsub
+      (fun r hr => ⟨hr.1, hr.2.trans hU'⟩)
+      (fun x₀ i j => (P.joint x₀ i j).mono (prod_mono hsub subset_rfl))
+      (fun x => by rw [show P.S.base.metric 0 = gQ from P.start]; exact hnorm x)
+      (t * Q) htQ x
+    rw [hmetric, sqrt_normSq0S_metricRm04_scale, div_inv_eq_mul]
+    exact mul_le_mul_of_nonneg_right hb hQ.le
+
 end DifferentialGeometry.PDE.RicciFlow

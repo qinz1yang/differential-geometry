@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.LocalPullback
@@ -111,3 +112,43 @@ theorem IsSolutionOn.localPullback
 end DifferentialGeometry.PDE.RicciFlow
 
 end
+
+set_option autoImplicit false
+noncomputable section
+
+open Bundle Set Manifold
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Tensor.Coordinates
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+  {D : RealTimeInterval}
+
+theorem SolutionOn.localPullback_chartGramMatrix_joint_contMDiffOn
+    (S : SolutionOn (I := J) (M := N) D) (p : M → N)
+    (hp : IsLocalDiffeomorph I J ∞ p) (A : Set ℝ)
+    (hg : ∀ (y₀ : N) (i j : Fin (Module.finrank ℝ F)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod J) 𝓘(ℝ) ∞
+        (fun q : ℝ × N => chartGramMatrix (S.base.metric q.1) y₀ q.2 i j)
+        (A ×ˢ (trivializationAt F (TangentSpace J) y₀).baseSet))
+    (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+      (fun q : ℝ × M => chartGramMatrix
+        ((S.localPullback p hp).base.metric q.1) x₀ q.2 i j)
+      (A ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+  let _ : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  let _ : IsManifold J 1 N := IsManifold.of_le (n := ∞) (by decide)
+  have hj := metricCLMSection_jointContMDiffOn_of_chartGram_on S.base.metric A hg
+  exact chartGramMatrix_joint_contMDiffOn_of_pullback S.base.metric A hj
+    (fun t => (S.localPullback p hp).base.metric t) p hp.contMDiff
+    (fun _ _ x v w => localPullMetric_inner _ p hp x v w) x₀ i j
+
+end DifferentialGeometry.PDE.RicciFlow

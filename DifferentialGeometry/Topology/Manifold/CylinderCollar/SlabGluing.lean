@@ -225,4 +225,78 @@ theorem exists_unit_slab_concatenation
     change R (D q) = Q (η.symm (D q).1,(D q).2-1) at hq
     exact hq.trans (congrArg Q (by rw [hD]))
 
+def cylinderSeamTransport (η : ℕ → S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2) :
+    ℕ → S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2
+  | 0 => Diffeomorph.refl (𝓡 2) S2 ∞
+  | n + 1 => (cylinderSeamTransport η n).trans (η n).symm
+
+theorem exists_finite_unit_slab_concatenation
+    (P : ℕ → PartialDiffeomorph SphereCylinderModel I SphereCylinder M ∞)
+    (η : ℕ → S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2) (n : ℕ)
+    (hsource : ∀ k ≤ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (P k).source)
+    (hseam : ∀ k < n, ∀ z : S2, P (k + 1) (z, 0) = P k (η k z, 1))
+    (hmeet : ∀ k < n,
+      (⋃ j ≤ k, P j '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+          P (k + 1) '' (univ ×ˢ Icc (0 : ℝ) 1) =
+        P k '' (univ ×ˢ ({1} : Set ℝ))) :
+    ∃ R : PartialDiffeomorph SphereCylinderModel I SphereCylinder M ∞,
+      univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source ∧
+      R '' (univ ×ˢ Icc (0 : ℝ) 1) = ⋃ k ≤ n, P k '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
+      (∀ z : S2, R (z, 0) = P 0 (z, 0)) ∧
+      ∀ z : S2, R (z, 1) = P n (cylinderSeamTransport η n z, 1) := by
+  induction n with
+  | zero =>
+    refine ⟨P 0, hsource 0 le_rfl, ?_, ?_, ?_⟩
+    · simp
+    · intro z
+      rfl
+    · intro z
+      rfl
+  | succ n ih =>
+    obtain ⟨R, hR, himage, hzero, hone⟩ := ih
+      (fun k hk => hsource k (hk.trans (Nat.le_succ n)))
+      (fun k hk => hseam k (hk.trans (Nat.lt_succ_self n)))
+      (fun k hk => hmeet k (hk.trans (Nat.lt_succ_self n)))
+    let ρ := cylinderSeamTransport η n
+    let κ := (η n).trans ρ.symm
+    have hmatch (z : S2) : P (n + 1) (z, 0) = R (κ z, 1) := by
+      rw [hone]
+      change P (n + 1) (z, 0) = P n (ρ (ρ.symm (η n z)), 1)
+      rw [ρ.apply_symm_apply]
+      exact hseam n (Nat.lt_succ_self n) z
+    have hupper : R '' (univ ×ˢ ({1} : Set ℝ)) = P n '' (univ ×ˢ ({1} : Set ℝ)) := by
+      ext x
+      constructor
+      · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+        have ht : t = 1 := ht
+        subst t
+        exact ⟨(ρ z, 1), ⟨mem_univ _, rfl⟩, (hone z).symm.trans hx⟩
+      · rintro ⟨⟨z, t⟩, ⟨_, ht⟩, hx⟩
+        have ht : t = 1 := ht
+        subst t
+        refine ⟨(ρ.symm z, 1), ⟨mem_univ _, rfl⟩, ?_⟩
+        rw [hone, ρ.apply_symm_apply]
+        exact hx
+    have hintersection : R '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+        P (n + 1) '' (univ ×ˢ Icc (0 : ℝ) 1) = R '' (univ ×ˢ ({1} : Set ℝ)) := by
+      rw [himage, hupper]
+      exact hmeet n (Nat.lt_succ_self n)
+    obtain ⟨R', hR', himage', hzero', hone', _, _⟩ :=
+      exists_unit_slab_concatenation R (P (n + 1)) κ hR (hsource _ le_rfl)
+        hmatch hintersection
+    refine ⟨R', hR', ?_, (fun z => (hzero' z).trans (hzero z)), ?_⟩
+    · rw [himage', himage]
+      ext x
+      simp only [mem_union, mem_iUnion]
+      constructor
+      · rintro (⟨k, hk, hx⟩ | hx)
+        · exact ⟨k, hk.trans (Nat.le_succ n), hx⟩
+        · exact ⟨n + 1, le_rfl, hx⟩
+      · rintro ⟨k, hk, hx⟩
+        rcases Nat.eq_or_lt_of_le hk with rfl | hk
+        · exact Or.inr hx
+        · exact Or.inl ⟨k, Nat.le_of_lt_succ hk, hx⟩
+    · intro z
+      exact hone' z
+
 end DifferentialGeometry.Topology.Manifold

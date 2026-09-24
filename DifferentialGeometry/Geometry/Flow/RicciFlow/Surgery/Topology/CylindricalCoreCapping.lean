@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.SlabGluing
 
 set_option autoImplicit false
 noncomputable section
@@ -48,13 +49,13 @@ private theorem capCore_cap_and_frontier (b : T.Boundary) :
     exact (hBf (sphereToClosedCell ((C.attaching b).symm q))).trans
       ((C.boundary_eq b _).trans (by simp))
 
-theorem isPoincareStandard_component_of_cylindrical_core
+theorem isPoincareStandard_component_of_cylindrical_core_boundary_ranges
     (x : T.core) (U : PartialDiffeomorph IC (𝓡 3) Cylinder M.Carrier ∞)
     (hU : univ ×ˢ Icc (0 : ℝ) 1 ⊆ U.source)
     (hcore : U '' (univ ×ˢ Icc (0 : ℝ) 1) = Subtype.val '' connectedComponent x)
     (b₀ b₁ : T.Boundary)
-    (hzero : ∀ z : Sphere 2, U (z, 0) = T.boundarySphere b₀ z)
-    (hone : ∀ z : Sphere 2, U (z, 1) = T.boundarySphere b₁ z)
+    (hzero : range (fun z : Sphere 2 => U (z, 0)) = range (T.boundarySphere b₀))
+    (hone : range (fun z : Sphere 2 => U (z, 1)) = range (T.boundarySphere b₁))
     (hboundary : ∀ b : T.Boundary,
       (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
         b = b₀ ∨ b = b₁) :
@@ -65,11 +66,13 @@ theorem isPoincareStandard_component_of_cylindrical_core
     obtain ⟨w, _, hw⟩ := hcore ▸ mem_image_of_mem U hz
     exact hw ▸ w.property
   have hend (b : T.Boundary) (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1)
-      (he : ∀ z : Sphere 2, U (z, t) = T.boundarySphere b z) (z : Sphere 2) :
+      (he : range (fun z : Sphere 2 => U (z, t)) = range (T.boundarySphere b))
+      (z : Sphere 2) :
       T.coreBoundarySphere b z ∈ connectedComponent x := by
     have hz : T.boundarySphere b z ∈ Subtype.val '' connectedComponent x := by
-      rw [← hcore, ← he z]
-      exact mem_image_of_mem U ⟨mem_univ _, ht⟩
+      rw [← hcore]
+      obtain ⟨w, hw⟩ := he.symm ▸ mem_range_self z
+      exact ⟨(w, t), ⟨mem_univ _, ht⟩, hw⟩
     obtain ⟨w, hw, hwz⟩ := hz
     exact (Subtype.ext hwz : w = T.coreBoundarySphere b z) ▸ hw
   have hb₀ := hend b₀ 0 (by norm_num) hzero
@@ -103,10 +106,16 @@ theorem isPoincareStandard_component_of_cylindrical_core
   obtain ⟨⟨cap₀⟩, hfront₀⟩ := C.capCore_cap_and_frontier b₀
   have hfront : frontier (range (C.cap b₀)) = range (fun z : Sphere 2 => V (z, 0)) := by
     rw [hfront₀]
-    congr 1
-    funext z
-    exact (congrArg C.coreInclusion (Subtype.ext (hzero z).symm)).trans
-      (hVe (z, 0) ⟨mem_univ _, by norm_num⟩).symm
+    ext y
+    constructor
+    · rintro ⟨z, rfl⟩
+      obtain ⟨w, hw⟩ := hzero.symm ▸ mem_range_self z
+      exact ⟨w, (hVe (w, 0) ⟨mem_univ _, by norm_num⟩).trans
+        (congrArg C.coreInclusion (Subtype.ext hw))⟩
+    · rintro ⟨z, rfl⟩
+      obtain ⟨w, hw⟩ := hzero ▸ mem_range_self z
+      exact ⟨w, (congrArg C.coreInclusion (Subtype.ext hw)).trans
+        (hVe (z, 0) ⟨mem_univ _, by norm_num⟩).symm⟩
   have hside (z : Sphere 2) (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1)
       (hcap : V (z, t) ∈ range (C.cap b₀)) : t = 0 := by
     have hzt : (z, t) ∈ univ ×ˢ Icc (0 : ℝ) 1 := ⟨mem_univ _, ht⟩
@@ -117,12 +126,62 @@ theorem isPoincareStandard_component_of_cylindrical_core
     obtain ⟨w, hw⟩ := hmem
     have heq : T.boundarySphere b₀ w = U (z, t) :=
       congrArg Subtype.val (C.core_embedding.isEmbedding.injective hw)
-    have hcoords : (w, (0 : ℝ)) = (z, t) :=
-      U.injOn (hU ⟨mem_univ _, by norm_num⟩) (hU hzt) ((hzero w).trans heq)
+    obtain ⟨w', hw'⟩ := hzero.symm ▸ mem_range_self w
+    have hcoords : (w', (0 : ℝ)) = (z, t) :=
+      U.injOn (hU ⟨mem_univ _, by norm_num⟩) (hU hzt) (hw'.trans heq)
     exact (congrArg Prod.snd hcoords).symm
   obtain ⟨capK⟩ := cap₀.nonempty_union_cylinder V hV hfront hside
   apply C.isPoincareStandard_component_of_capCore_union_cap capK b₁
     (ConnectedComponents.mk (C.coreInclusion x))
   rw [himage, union_comm (range (C.cap b₀)), hcover, ClosedOrientedManifold.componentSet_mk]
+
+theorem isPoincareStandard_component_of_cylindrical_core
+    (x : T.core) (U : PartialDiffeomorph IC (𝓡 3) Cylinder M.Carrier ∞)
+    (hU : univ ×ˢ Icc (0 : ℝ) 1 ⊆ U.source)
+    (hcore : U '' (univ ×ˢ Icc (0 : ℝ) 1) = Subtype.val '' connectedComponent x)
+    (b₀ b₁ : T.Boundary)
+    (hzero : ∀ z : Sphere 2, U (z, 0) = T.boundarySphere b₀ z)
+    (hone : ∀ z : Sphere 2, U (z, 1) = T.boundarySphere b₁ z)
+    (hboundary : ∀ b : T.Boundary,
+      (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
+        b = b₀ ∨ b = b₁) :
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+  apply C.isPoincareStandard_component_of_cylindrical_core_boundary_ranges x U hU hcore b₀ b₁
+    (by simp only [hzero]) (by simp only [hone]) hboundary
+
+theorem isPoincareStandard_component_of_finite_cylindrical_core
+    (x : T.core) (P : ℕ → PartialDiffeomorph IC (𝓡 3) Cylinder M.Carrier ∞)
+    (η : ℕ → Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2) (n : ℕ)
+    (hsource : ∀ k ≤ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (P k).source)
+    (hseam : ∀ k < n, ∀ z : Sphere 2, P (k + 1) (z, 0) = P k (η k z, 1))
+    (hmeet : ∀ k < n,
+      (⋃ j ≤ k, P j '' (univ ×ˢ Icc (0 : ℝ) 1)) ∩
+          P (k + 1) '' (univ ×ˢ Icc (0 : ℝ) 1) =
+        P k '' (univ ×ˢ ({1} : Set ℝ)))
+    (hcore : (⋃ k ≤ n, P k '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+      Subtype.val '' connectedComponent x)
+    (b₀ b₁ : T.Boundary)
+    (hzero : ∀ z : Sphere 2, P 0 (z, 0) = T.boundarySphere b₀ z)
+    (hone : ∀ z : Sphere 2, P n (z, 1) = T.boundarySphere b₁ z)
+    (hboundary : ∀ b : T.Boundary,
+      (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
+        b = b₀ ∨ b = b₁) :
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+  obtain ⟨R, hR, hRi, hR0, hR1⟩ :=
+    Manifold.exists_finite_unit_slab_concatenation P η n hsource hseam hmeet
+  apply C.isPoincareStandard_component_of_cylindrical_core_boundary_ranges x R hR
+    (hRi.trans hcore) b₀ b₁
+  · simp only [hR0, hzero]
+  · ext y
+    constructor
+    · rintro ⟨z, rfl⟩
+      change R (z, 1) ∈ range (T.boundarySphere b₁)
+      rw [hR1, hone]
+      exact mem_range_self _
+    · rintro ⟨z, rfl⟩
+      refine ⟨(Manifold.cylinderSeamTransport η n).symm z, ?_⟩
+      change R ((Manifold.cylinderSeamTransport η n).symm z, 1) = _
+      rw [hR1, Diffeomorph.apply_symm_apply, hone]
+  · exact hboundary
 
 end DifferentialGeometry.Topology.SphericalCapping
