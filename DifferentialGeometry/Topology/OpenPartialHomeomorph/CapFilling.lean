@@ -7,33 +7,23 @@ namespace DifferentialGeometry.Topology
 variable {X Y : Type*} [TopologicalSpace X] [CompactSpace X]
   [PreconnectedSpace X] [TopologicalSpace Y]
 
-theorem subset_or_fill_of_shared_cylinder_boundary
+theorem fill_of_shared_cylinder_boundary_of_disjoint_interiors
     (T : OpenPartialHomeomorph (X × ℝ) Y)
     (hsource : ∀ q : X, (q, 0) ∈ T.source) {W B R : Set Y}
     (hW : closure (interior W) = W) (hB : closure (interior B) = B)
-    (hconn : IsPreconnected (interior W)) (hR : IsClosed R)
+    (houtside : Disjoint (interior W) (interior B)) (hR : IsClosed R)
     (hfrontW : frontier W = range (fun q : X => T (q, 0)) ∪ R)
     (hfrontB : frontier B = range (fun q : X => T (q, 0)))
     (hdis : Disjoint (range (fun q : X => T (q, 0))) R) :
-    W ⊆ B ∨
-      B ∩ W = range (fun q : X => T (q, 0)) ∧
+    B ∩ W = range (fun q : X => T (q, 0)) ∧
       closure (interior (W ∪ B)) = W ∪ B ∧
       frontier (W ∪ B) = R ∧
       range (fun q : X => T (q, 0)) ⊆ interior (W ∪ B) := by
   have hWclosed : IsClosed W := hW ▸ isClosed_closure
   have hBclosed : IsClosed B := hB ▸ isClosed_closure
-  have havoid : interior W ⊆ (frontier B)ᶜ := by
-    intro x hx hb
-    have hf : x ∈ frontier W := hfrontW.symm ▸ Or.inl (hfrontB ▸ hb)
-    exact hf.2 hx
-  have hsplit : (frontier B)ᶜ = interior B ∪ Bᶜ := by
-    rw [compl_frontier_eq_union_interior, hBclosed.isOpen_compl.interior_eq]
-  rcases hconn.subset_or_subset isOpen_interior hBclosed.isOpen_compl
-      (disjoint_compl_right.mono_left interior_subset) (havoid.trans hsplit.subset) with hin | hout
-  · exact Or.inl (hW ▸ hB ▸ closure_mono hin)
   have hWB : W ⊆ (interior B)ᶜ := by
     rw [← hW]
-    simpa only [closure_compl] using closure_mono hout
+    exact (houtside.closure_left isOpen_interior).subset_compl_right
   have hSW : range (fun q : X => T (q, 0)) ⊆ W :=
     fun x hx => hWclosed.frontier_subset (hfrontW.symm ▸ Or.inl hx)
   have hSB : range (fun q : X => T (q, 0)) ⊆ B :=
@@ -105,6 +95,36 @@ theorem subset_or_fill_of_shared_cylinder_boundary
         hxint, hxB⟩
       intro y hy
       exact (interior_subset hy.1).resolve_right hy.2
-  exact Or.inr ⟨hinter, hreg, hfront, hfill⟩
+  exact ⟨hinter, hreg, hfront, hfill⟩
+
+theorem subset_or_fill_of_shared_cylinder_boundary
+    (T : OpenPartialHomeomorph (X × ℝ) Y)
+    (hsource : ∀ q : X, (q, 0) ∈ T.source) {W B R : Set Y}
+    (hW : closure (interior W) = W) (hB : closure (interior B) = B)
+    (hconn : IsPreconnected (interior W)) (hR : IsClosed R)
+    (hfrontW : frontier W = range (fun q : X => T (q, 0)) ∪ R)
+    (hfrontB : frontier B = range (fun q : X => T (q, 0)))
+    (hdis : Disjoint (range (fun q : X => T (q, 0))) R) :
+    W ⊆ B ∨
+      B ∩ W = range (fun q : X => T (q, 0)) ∧
+      closure (interior (W ∪ B)) = W ∪ B ∧
+      frontier (W ∪ B) = R ∧
+      range (fun q : X => T (q, 0)) ⊆ interior (W ∪ B) := by
+  have hBclosed : IsClosed B := hB ▸ isClosed_closure
+  have havoid : interior W ⊆ (frontier B)ᶜ := by
+    intro x hx hb
+    have hf : x ∈ frontier W := hfrontW.symm ▸ Or.inl (hfrontB ▸ hb)
+    exact hf.2 hx
+  have hsplit : (frontier B)ᶜ = interior B ∪ Bᶜ := by
+    rw [compl_frontier_eq_union_interior, hBclosed.isOpen_compl.interior_eq]
+  rcases hconn.subset_or_subset isOpen_interior hBclosed.isOpen_compl
+      (disjoint_compl_right.mono_left interior_subset) (havoid.trans hsplit.subset) with hin | hout
+  · exact Or.inl (hW ▸ hB ▸ closure_mono hin)
+  have hWB : W ⊆ (interior B)ᶜ := by
+    rw [← hW]
+    simpa only [closure_compl] using closure_mono hout
+  exact Or.inr (fill_of_shared_cylinder_boundary_of_disjoint_interiors T hsource hW hB
+    (disjoint_left.mpr (fun x hxW hxB => hWB (interior_subset hxW) hxB))
+    hR hfrontW hfrontB hdis)
 
 end DifferentialGeometry.Topology

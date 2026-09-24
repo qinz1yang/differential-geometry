@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.CoverBySides
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
 import Mathlib.Topology.Connected.Clopen
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
@@ -707,6 +708,26 @@ theorem isCompact_closed_exterior_component_of_connected_intersections
       rw [connectedComponentIn_eq hap]
       exact hba
     exact (hne ((connectedComponentIn_eq hbp).trans (connectedComponentIn_eq hbq).symm)).elim
+
+
+theorem subset_compl_interior_of_frontier_subset_of_components_meet_compl
+    {B : Set X} (hW : W ⊆ closure (interior W)) (hfront : frontier B ⊆ frontier W)
+    (hmeet : ∀ x ∈ interior W,
+      (connectedComponentIn (interior W) x ∩ Bᶜ).Nonempty) :
+    W ⊆ (interior B)ᶜ := by
+  have hsub : interior W ⊆ Bᶜ := by
+    intro x hx
+    have hdisj : Disjoint (connectedComponentIn (interior W) x) (frontier Bᶜ) := by
+      rw [frontier_compl]
+      refine disjoint_left.mpr ?_
+      intro y hyC hyB
+      exact (hfront hyB).2 (connectedComponentIn_subset (interior W) x hyC)
+    have hc := isPreconnected_subset_interior_of_meets_of_disjoint_frontier
+      (isPreconnected_connectedComponentIn (F := interior W) (x := x)) (hmeet x hx) hdisj
+    exact interior_subset (hc (mem_connectedComponentIn hx))
+  apply hW.trans
+  rw [← closure_compl]
+  exact closure_mono hsub
 
 
 end DifferentialGeometry.Topology
