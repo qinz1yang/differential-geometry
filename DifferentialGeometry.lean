@@ -5389,7 +5389,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSourceBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.AmbientSpatialCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.SpatialCapFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapturedCapClassification
@@ -5408,6 +5413,9 @@ import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactDomainTransport
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
+import DifferentialGeometry.Geometry.Neck.ScalarNormalization
+import DifferentialGeometry.Geometry.Neck.SpatialIsometry
 import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
