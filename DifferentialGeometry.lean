@@ -12591,6 +12591,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 import DifferentialGeometry.Geometry.Neck.SpatialOverlap
 import DifferentialGeometry.Geometry.Neck.SpatialRecentering
 import DifferentialGeometry.Geometry.Neck.SpatialRestriction
+import DifferentialGeometry.Geometry.Neck.SpatialNormalization
 import DifferentialGeometry.Geometry.Neck.SpatialCollarRadius
 import DifferentialGeometry.Geometry.Neck.SpatialComponentCollar
 import DifferentialGeometry.Geometry.Neck.SpatialCapFilling

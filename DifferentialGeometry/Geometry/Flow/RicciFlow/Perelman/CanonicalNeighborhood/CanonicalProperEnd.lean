@@ -88,9 +88,9 @@ private theorem canonical_frontier_step
       NeckFrontierState.exists_step_at_of_neck_central (S.base.metric t) eps ι W i hi
         heps hepsstep ⟨localNeck.strong.toSpatialNeck⟩
     · rcases hm with ⟨halive, hia, p, nk, P, hsource, hregion, hP0, hP1, hother,
-        hinter, hfill, hcontrolled, hband, hpoint, _⟩
+        hinter, hfill, hcontrolled, hband, hpoint, hcentral⟩
       exact ⟨V, hWV, hVI hconn, Or.inl ⟨halive, hia, p, nk, P, hsource,
-        hregion, hP0, hP1, hother, hinter, hfill, hcontrolled, hband, hpoint⟩,
+        hregion, hP0, hP1, hother, hinter, hfill, hcontrolled, hband, hpoint, hcentral⟩,
         Or.inl ⟨localNeck, htag⟩⟩
     · exact ⟨V, hWV, hVI hconn, Or.inr hr, Or.inl ⟨localNeck, htag⟩⟩
   · obtain ⟨cap, depth, htag, K, hK, _, hKin, _, hinter, hVK, hVI, hVR, hVF, _, _, _, _, _⟩ := hc
@@ -415,7 +415,7 @@ theorem exists_spatial_neck_saved_end_decomposition_of_canonical_witnesses_toler
       (heps.trans (min_le_left _ _))
       (heps.trans ((min_le_right _ _).trans (min_le_left _ _)))
       (hrec.trans (by norm_num)) anchor ha hcanonical hgap
-  obtain ⟨T, hsub, halive, hspheres, hconnect, Θ, hends, hdisjoint, hfull⟩ :=
+  obtain ⟨T, hsub, halive, hspheres, hconnect, Θ, hends, hdisjoint, hfull, _⟩ :=
     NeckFrontierState.exists_saved_end_family_of_fair_process (S.base.metric t) eps ι W₀
       hrec hcompact seq selected hzero hmono hanti hselected hsteps N hne hstable hN hfair
   let Ind := {i // i ∈ (NeckFrontierState.alive T)}
