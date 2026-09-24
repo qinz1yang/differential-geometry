@@ -156,3 +156,155 @@ theorem exists_partialDiffeomorph_ball_replacement_eqOn_complement
   · exact fun z hz => (hJQ (hBO₁ (mem_image_of_mem b hz))).trans (hQapply z hz)
 
 end DifferentialGeometry.Topology.Manifold
+
+section
+
+open Set Metric Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Topology.Manifold
+
+variable {Z M ι : Type*} [TopologicalSpace Z] [ChartedSpace E3 Z] [T3Space Z]
+  [TopologicalSpace M] [ChartedSpace E3 M] [T2Space M]
+
+omit [T3Space Z] in
+private theorem ball_chart_sphere_subset_punctured
+    (b : ι → PartialDiffeomorph (𝓡 3) (𝓡 3) E3 Z ∞)
+    (s : Finset ι)
+    (hb : ∀ i ∈ s, closedBall (0 : E3) 1 ⊆ (b i).source) {Ω : Set Z}
+    (hΩ : ∀ i ∈ s, b i '' closedBall (0 : E3) 1 ⊆ Ω)
+    (hdis : (s : Set ι).Pairwise (fun i j => Disjoint
+      (b i '' closedBall (0 : E3) 1) (b j '' closedBall (0 : E3) 1)))
+    (i : ι) (hi : i ∈ s) :
+    b i '' sphere (0 : E3) 1 ⊆ Ω \ ⋃ j ∈ s, b j '' ball (0 : E3) 1 := by
+  rintro y ⟨z,hz,rfl⟩
+  refine ⟨hΩ i hi (mem_image_of_mem (b i) (sphere_subset_closedBall hz)),?_⟩
+  intro hy
+  obtain ⟨j,hj,w,hw,heq⟩ := mem_iUnion₂.mp hy
+  by_cases hij : i = j
+  · subst j
+    have he := (b i).injOn (hb i hi (ball_subset_closedBall hw)) (hb i hi (sphere_subset_closedBall hz)) heq
+    exact (mem_ball_zero_iff.mp (he ▸ hw)).ne (mem_sphere_zero_iff_norm.mp hz)
+  · exact disjoint_left.mp (hdis hi hj hij)
+      (mem_image_of_mem (b i) (sphere_subset_closedBall hz))
+      ⟨w,ball_subset_closedBall hw,heq⟩
+
+theorem exists_partialDiffeomorph_finite_ball_replacement_eqOn_complement
+    (s : Finset ι)
+    (b : ι → PartialDiffeomorph (𝓡 3) (𝓡 3) E3 Z ∞)
+    (G : ι → PartialDiffeomorph (𝓡 3) (𝓡 3) E3 M ∞)
+    (hb : ∀ i ∈ s, closedBall (0 : E3) 1 ⊆ (b i).source)
+    (hG : ∀ i ∈ s, closedBall (0 : E3) 1 ⊆ (G i).source)
+    {Ω : Set Z} (hΩ : IsCompact Ω)
+    (hbΩ : ∀ i ∈ s, b i '' closedBall (0 : E3) 1 ⊆ interior Ω)
+    (hdisb : (s : Set ι).Pairwise (fun i j => Disjoint
+      (b i '' closedBall (0 : E3) 1) (b j '' closedBall (0 : E3) 1)))
+    (hdisG : (s : Set ι).Pairwise (fun i j => Disjoint
+      (G i '' closedBall (0 : E3) 1) (G j '' closedBall (0 : E3) 1)))
+    (P : PartialDiffeomorph (𝓡 3) (𝓡 3) Z M ∞)
+    (hP : Ω \ ⋃ i ∈ s, b i '' ball (0 : E3) 1 ⊆ P.source)
+    (hboundary : ∀ i ∈ s, P '' (b i '' sphere (0 : E3) 1) = G i '' sphere (0 : E3) 1)
+    (hinter : ∀ i ∈ s, P '' (Ω \ ⋃ j ∈ s, b j '' ball (0 : E3) 1) ∩
+      G i '' closedBall (0 : E3) 1 ⊆ G i '' sphere (0 : E3) 1) :
+    ∃ J : PartialDiffeomorph (𝓡 3) (𝓡 3) Z M ∞,
+      Ω ⊆ J.source ∧
+      J '' Ω = P '' (Ω \ ⋃ i ∈ s, b i '' ball (0 : E3) 1) ∪
+        ⋃ i ∈ s, G i '' closedBall (0 : E3) 1 ∧
+      (∀ i ∈ s, ∃ D : E3 ≃ₘ[ℝ] E3,
+        D '' closedBall (0 : E3) 1 = closedBall (0 : E3) 1 ∧
+        ∀ z ∈ closedBall (0 : E3) 1, J (b i z) = G i (D z)) ∧
+      ∃ O : Set Z, IsOpen O ∧ (Ω \ ⋃ i ∈ s, b i '' ball (0 : E3) 1) ⊆ O ∧
+        O ⊆ P.source ∧ EqOn J P O := by
+  classical
+  induction s using Finset.induction_on generalizing P with
+  | empty =>
+    refine ⟨P,?_,?_,?_,P.source,P.open_source,?_,subset_rfl,fun _ _ => rfl⟩
+    · simpa using hP
+    · simp
+    · simp
+    · simpa using hP
+  | @insert a s ha ih =>
+    let A := b a '' closedBall (0 : E3) 1
+    let U := ⋃ i ∈ s, b i '' ball (0 : E3) 1
+    let Ω₀ := Ω \ U
+    let K := Ω \ ⋃ i ∈ insert a s, b i '' ball (0 : E3) 1
+    have hUopen : IsOpen U := isOpen_biUnion (fun i hi =>
+      (b i).toOpenPartialHomeomorph.isOpen_image_of_subset_source isOpen_ball
+        (ball_subset_closedBall.trans (hb i (Finset.mem_insert_of_mem hi))))
+    have hΩ₀ : IsCompact Ω₀ := hΩ.diff hUopen
+    have hAΩ : A ⊆ interior Ω₀ := by
+      let V := ⋃ i ∈ s, b i '' closedBall (0 : E3) 1
+      have hVclosed : IsClosed V := s.finite_toSet.isClosed_biUnion (fun i hi =>
+        ((isCompact_closedBall _ _).image_of_continuousOn
+          ((b i).contMDiffOn_toFun.continuousOn.mono (hb i (Finset.mem_insert_of_mem hi)))).isClosed)
+      have hAV : Disjoint A V := by
+        rw [disjoint_left]
+        intro y hyA hyV
+        obtain ⟨i,hi,hy⟩ := mem_iUnion₂.mp hyV
+        exact disjoint_left.mp (hdisb (x := a) (y := i) (by simp) (by simp [hi]) (fun he => ha (he.symm ▸ hi))) hyA hy
+      have hopen : IsOpen (interior Ω \ V) := isOpen_interior.sdiff hVclosed
+      apply subset_trans _ (hopen.subset_interior_iff.mpr _)
+      · intro y hy
+        exact ⟨hbΩ a (by simp) hy,disjoint_left.mp hAV hy⟩
+      · intro y hy
+        refine ⟨interior_subset hy.1,?_⟩
+        intro hu
+        obtain ⟨i,hi,hw⟩ := mem_iUnion₂.mp hu
+        exact hy.2 (mem_iUnion₂.mpr ⟨i,hi,image_mono ball_subset_closedBall hw⟩)
+    have hK : Ω₀ \ b a '' ball (0 : E3) 1 = K := by
+      dsimp [Ω₀,K,U]
+      rw [Finset.set_biUnion_insert]
+      ext y
+      simp only [mem_sdiff,mem_union,not_or]
+      tauto
+    obtain ⟨Q,D,hQ,hQi,hD,hQball,O,hO,hKO,hOP,hQP⟩ :=
+      exists_partialDiffeomorph_ball_replacement_eqOn_complement (b a) P (G a) (hb a (by simp)) (hG a (by simp))
+        hΩ₀ hAΩ (hK.symm ▸ hP) (hboundary a (by simp))
+        (hK.symm ▸ hinter a (by simp))
+    have hKO' : K ⊆ O := hK ▸ hKO
+    have hQimage : Q '' Ω₀ = P '' K ∪ G a '' closedBall (0 : E3) 1 := by
+      simpa only [hK] using hQi
+    have hremaining_boundary (i : ι) (hi : i ∈ s) :
+        Q '' (b i '' sphere (0 : E3) 1) = G i '' sphere (0 : E3) 1 := by
+      have hiK := ball_chart_sphere_subset_punctured b (insert a s) hb
+        (fun j hj => (hbΩ j hj).trans interior_subset) hdisb i (by simp [hi])
+      rw [(hQP.mono (hiK.trans hKO')).image_eq]
+      exact hboundary i (by simp [hi])
+    have hremaining_inter (i : ι) (hi : i ∈ s) :
+        Q '' Ω₀ ∩ G i '' closedBall (0 : E3) 1 ⊆ G i '' sphere (0 : E3) 1 := by
+      rw [hQimage]
+      rintro y ⟨hy,hyi⟩
+      rcases hy with hy | hy
+      · exact hinter i (by simp [hi]) ⟨hy,hyi⟩
+      · exact False.elim (disjoint_left.mp
+          (hdisG (x := a) (y := i) (by simp) (by simp [hi]) (fun he => ha (he.symm ▸ hi))) hy hyi)
+    obtain ⟨J,hJ,hJi,hJballs,O',hO',hΩ₀O',hO'Q,hJQ⟩ := ih
+      (fun i hi => hb i (by simp [hi]))
+      (fun i hi => hG i (by simp [hi]))
+      (fun i hi => hbΩ i (by simp [hi]))
+      (hdisb.mono (by intro i hi; simp [hi]))
+      (hdisG.mono (by intro i hi; simp [hi])) Q hQ hremaining_boundary hremaining_inter
+    refine ⟨J,hJ,?_,?_,O ∩ O',hO.inter hO',?_,inter_subset_left.trans hOP,?_⟩
+    · rw [hJi,hQimage]
+      change (P '' K ∪ G a '' closedBall (0 : E3) 1) ∪ _ = P '' K ∪ _
+      rw [Finset.set_biUnion_insert, union_assoc]
+    · intro i hi
+      rcases Finset.mem_insert.mp hi with heq | hi
+      · subst i
+        refine ⟨D,hD,?_⟩
+        intro z hz
+        have hbz : b a z ∈ Ω₀ := interior_subset (hAΩ (mem_image_of_mem (b a) hz))
+        exact (hJQ (hΩ₀O' hbz)).trans (hQball z hz)
+      · exact hJballs i hi
+    · intro y hy
+      refine ⟨hKO' hy,hΩ₀O' ⟨hy.1,?_⟩⟩
+      intro hu
+      apply hy.2
+      rw [Finset.set_biUnion_insert]
+      exact Or.inr hu
+    · intro y hy
+      exact (hJQ hy.2).trans (hQP hy.1)
+
+end DifferentialGeometry.Topology.Manifold
+
+end
