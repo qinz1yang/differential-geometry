@@ -250,3 +250,78 @@ theorem ncard_associatedFactors_le_natCard_cappedCutComponents
 end SphericalCutCapTransition
 
 end DifferentialGeometry.Topology
+
+section
+
+namespace DifferentialGeometry.Topology.SphericalCapping
+
+universe u
+
+variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
+  (C : SphericalCapping M N T)
+
+private theorem cap_mem_connectedComponent_boundary (b : T.Boundary)
+    (z : ClosedCell 3) (q : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+    C.cap b z ∈ connectedComponent
+      (C.coreInclusion (T.coreBoundarySphere b (C.attaching b q))) := by
+  let _ : PreconnectedSpace (ClosedCell 3) := by
+    have hconv : Convex ℝ ({x : EuclideanSpace ℝ (Fin 3) | ‖x‖ ≤ 1} : Set _) := by
+      simpa only [Metric.closedBall, dist_zero_right] using
+        (convex_closedBall (0 : EuclideanSpace ℝ (Fin 3)) (1 : ℝ))
+    exact Subtype.preconnectedSpace hconv.isPreconnected
+  have hconn : IsPreconnected (range (C.cap b)) := by
+    apply isPreconnected_range
+    exact (C.cap b).continuous
+  have hbase : C.coreInclusion (T.coreBoundarySphere b (C.attaching b q)) ∈
+      range (C.cap b) := ⟨sphereToClosedCell q, C.boundary_eq b q⟩
+  exact hconn.subset_connectedComponent hbase (mem_range_self z)
+
+theorem image_coreComponent_union_cap_eq_connectedComponent
+    (x : T.core) (b : T.Boundary)
+    (hboundary : ∀ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      T.coreBoundarySphere b z ∈ connectedComponent x)
+    (hunique : ∀ b' : T.Boundary,
+      (∃ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+        T.coreBoundarySphere b' z ∈ connectedComponent x) → b' = b) :
+    C.coreInclusion '' connectedComponent x ∪ range (C.cap b) =
+      connectedComponent (C.coreInclusion x) := by
+  let _ : CompactSpace T.core := isCompact_iff_compactSpace.mp C.core_compact
+  let _ : LocallyConnectedSpace T.core :=
+    C.coreCharts.locallyConnectedSpace (EuclideanHalfSpace 3) T.core
+  let q : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 :=
+    ⟨EuclideanSpace.single 0 1, by simp⟩
+  have hcore (y : T.core) :
+      C.coreInclusion y ∈ connectedComponent (C.coreInclusion x) ↔
+        y ∈ connectedComponent x := by
+    constructor
+    · intro hy
+      apply ConnectedComponents.coe_eq_coe'.mp
+      apply C.rfs_cap_component_bijection.injective
+      exact ConnectedComponents.coe_eq_coe'.mpr hy
+    · intro hy
+      exact C.coreInclusion.continuous.mapsTo_connectedComponent x hy
+  apply Subset.antisymm
+  · rintro y (⟨z, hz, rfl⟩ | ⟨z, rfl⟩)
+    · exact (hcore z).mpr hz
+    · have hmem := C.cap_mem_connectedComponent_boundary b z q
+      have hh := (hcore _).mpr (hboundary (C.attaching b q))
+      exact (connectedComponent_eq hh) ▸ hmem
+  · intro y hy
+    have hall : y ∈ range C.coreInclusion ∪ ⋃ b', range (C.cap b') := by
+      rw [C.exhaustive]
+      exact mem_univ y
+    rcases hall with ⟨z, rfl⟩ | hall
+    · exact Or.inl ⟨z, (hcore z).mp hy, rfl⟩
+    · obtain ⟨b', z, rfl⟩ := mem_iUnion.mp hall
+      have hm := C.cap_mem_connectedComponent_boundary b' z q
+      have he := ConnectedComponents.coe_eq_coe'.mpr hm
+      have hz := ConnectedComponents.coe_eq_coe'.mpr hy
+      have hc : C.coreInclusion (T.coreBoundarySphere b' (C.attaching b' q)) ∈
+          connectedComponent (C.coreInclusion x) :=
+        ConnectedComponents.coe_eq_coe'.mp (he.symm.trans hz)
+      have hbeq : b' = b := hunique b' ⟨C.attaching b' q, (hcore _).mp hc⟩
+      exact Or.inr (hbeq ▸ mem_range_self z)
+
+end DifferentialGeometry.Topology.SphericalCapping
+
+end

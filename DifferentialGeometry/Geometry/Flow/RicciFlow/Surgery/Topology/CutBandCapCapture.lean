@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.Boundary
 import DifferentialGeometry.Topology.Connected.CoverBySides
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
+import Mathlib.Topology.Order.ProjIcc
 
 set_option autoImplicit false
 noncomputable section
@@ -160,3 +161,67 @@ theorem closedBand_subset_cap_core_interior_of_spatialNeck_center_close
     (add_le_add_right (T.closedBand_subset_closedBall_of_spatialNeck nk a hmap hy) _)).trans_lt hclose
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+variable {M : Type*} [TopologicalSpace M] (T : TubeSystem M)
+
+theorem boundarySphere_mem_closure_removedBand (b : T.Boundary) (q : Sphere 2) :
+    T.boundarySphere b q ∈ closure (T.removedBand b.1) := by
+  let f : ℝ → M := fun t => T.tube b.1 (q, Set.projIcc (-2 : ℝ) 2 (by norm_num) t)
+  have hf : Continuous f := (T.tube b.1).continuous.comp
+    (continuous_const.prodMk continuous_projIcc)
+  have hlevel : (boundaryLevel b.2).val ∈ closure (Ioo (-1 : ℝ) 1) := by
+    rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
+    cases b with
+    | mk a side => cases side <;> norm_num [boundaryLevel]
+  have himage : f '' Ioo (-1 : ℝ) 1 ⊆ T.removedBand b.1 := by
+    rintro y ⟨t, ht, rfl⟩
+    have ht2 : t ∈ Icc (-2 : ℝ) 2 := by constructor <;> linarith [ht.1, ht.2]
+    refine ⟨(q, Set.projIcc (-2 : ℝ) 2 (by norm_num) t), ?_, rfl⟩
+    change -1 < (Set.projIcc (-2 : ℝ) 2 (by norm_num) t).val ∧
+      (Set.projIcc (-2 : ℝ) 2 (by norm_num) t).val < 1
+    rw [Set.projIcc_of_mem (by norm_num : (-2 : ℝ) ≤ 2) ht2]
+    exact ht
+  have hh := closure_mono himage (mem_closure_image hf.continuousAt hlevel)
+  have heq : f (boundaryLevel b.2).val = T.boundarySphere b q := by
+    dsimp [f]
+    rw [Set.projIcc_of_mem (by norm_num : (-2 : ℝ) ≤ 2) (boundaryLevel b.2).property]
+    rfl
+  exact heq ▸ hh
+
+theorem eq_of_boundarySphere_mem_of_frontier_eq
+    {K : Set M} (hcore : K ⊆ T.core) (b : T.Boundary)
+    (hfront : frontier K = range (T.boundarySphere b))
+    {b' : T.Boundary} {q : Sphere 2} (hq : T.boundarySphere b' q ∈ K) : b' = b := by
+  have hnot : T.boundarySphere b' q ∉ interior K := by
+    intro hint
+    have hh := T.boundarySphere_mem_closure_removedBand b' q
+    have hn := (mem_closure_iff_nhds.mp hh) (interior K)
+      (isOpen_interior.mem_nhds hint)
+    obtain ⟨y, hyint, hyband⟩ := hn
+    exact hcore (interior_subset hyint) (mem_iUnion.mpr ⟨b'.1, hyband⟩)
+  have hf : T.boundarySphere b' q ∈ frontier K := (mem_frontier_iff_notMem_interior hq).mpr hnot
+  obtain ⟨z, hz⟩ := hfront ▸ hf
+  have hidx : b'.1 = b.1 := by
+    by_contra hne
+    exact (disjoint_left.mp (T.disjoint hne))
+      (mem_range_self (q, boundaryLevel b'.2)) ⟨(z, boundaryLevel b.2), hz⟩
+  apply Prod.ext hidx
+  have he : T.tube b.1 (q, boundaryLevel b'.2) = T.tube b.1 (z, boundaryLevel b.2) := by
+    have hh : T.tube b.1 (z, boundaryLevel b.2) = T.tube b'.1 (q, boundaryLevel b'.2) := hz
+    rw [hidx] at hh
+    exact hh.symm
+  have hcoord := congrArg (fun p : TubeDomain => p.2.val) ((T.embedding b.1).injective he)
+  revert hcoord
+  cases hb' : b'.2 <;> cases hb : b.2
+  · intro _; rfl
+  · norm_num [boundaryLevel]
+  · norm_num [boundaryLevel]
+  · intro _; rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+end

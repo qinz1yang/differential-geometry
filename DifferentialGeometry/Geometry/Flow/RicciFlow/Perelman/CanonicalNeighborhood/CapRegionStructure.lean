@@ -399,4 +399,43 @@ theorem CapCore.isConnected_carrier {K : Set M} (cap : CapCore K) : IsConnected 
     rw [← hK]
     exact hconn.isConnected.image F (F.contMDiffOn_toFun.continuousOn.mono hF)
 
+section
+
+open Set Metric
+
+theorem CapCore.frontier_nonempty {K : Set M} (cap : CapCore K) : (frontier K).Nonempty := by
+  let q : ThreeSpace := EuclideanSpace.single 0 1
+  have hq : q ∈ sphere (0 : ThreeSpace) 1 := by simp [q]
+  cases cap with
+  | ball F hF hK =>
+    have hfront : q ∈ frontier (closedBall (0 : ThreeSpace) 1) := by
+      rwa [frontier_closedBall _ one_ne_zero]
+    have h := (F.toOpenPartialHomeomorph.isImage_image_of_subset_source hF).frontier
+    rw [← hK]
+    exact ⟨F q, (h.apply_mem_iff (hF (sphere_subset_closedBall hq))).mpr hfront⟩
+  | projective Z pr b hb F hF hK =>
+    have hb1 : closedBall (0 : ThreeSpace) 1 ⊆ b.source :=
+      (closedBall_subset_closedBall (by norm_num : (1 : ℝ) ≤ 2)).trans hb
+    have hfront : b q ∈ frontier (b '' Metric.ball (0 : ThreeSpace) 1) := by
+      rw [DifferentialGeometry.Topology.Manifold.frontier_image_ball_of_partialDiffeomorph b hb1]
+      exact mem_image_of_mem b hq
+    have hopen : IsOpen (b '' Metric.ball (0 : ThreeSpace) 1) :=
+      b.toOpenPartialHomeomorph.isOpen_image_of_subset_source isOpen_ball
+        (ball_subset_closedBall.trans hb1)
+    have hmem : b q ∈ (b '' Metric.ball (0 : ThreeSpace) 1)ᶜ := by
+      change b q ∉ b '' Metric.ball (0 : ThreeSpace) 1
+      simpa only [hopen.interior_eq] using hfront.2
+    have h := (F.toOpenPartialHomeomorph.isImage_image_of_subset_source hF).frontier
+    rw [← hK]
+    refine ⟨F (b q), (h.apply_mem_iff (hF hmem)).mpr ?_⟩
+    simpa only [frontier_compl] using hfront
+
+theorem CapCore.ne_univ {K : Set M} (cap : CapCore K) : K ≠ univ := by
+  intro hK
+  have h := cap.frontier_nonempty
+  rw [hK, frontier_univ] at h
+  exact not_nonempty_empty h
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

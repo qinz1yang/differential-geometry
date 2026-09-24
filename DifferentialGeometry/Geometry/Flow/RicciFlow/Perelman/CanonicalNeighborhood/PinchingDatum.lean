@@ -115,6 +115,27 @@ theorem AdmissiblePinchingFunction.rescale {Phi : Real → Real}
     filter_upwards [eventually_gt_atTop (0 : Real)] with u hu
     exact (rescalePinchingFunction_div hQ Phi hu).symm
 
+
+theorem AdmissiblePinchingFunction.rescale_le {Phi : ℝ → ℝ}
+    (hPhi : AdmissiblePinchingFunction Phi) {Q : ℝ} (hQ : 1 ≤ Q) (u : ℝ) :
+    rescalePinchingFunction Q Phi u ≤ Phi u := by
+  have hQpos : 0 < Q := zero_lt_one.trans_le hQ
+  by_cases hu : 0 < u
+  · have huQ : u ≤ Q * u := by nlinarith
+    have hquot := hPhi.quotientAntitoneOn hu (mul_pos hQpos hu) huQ
+    dsimp only at hquot
+    rw [← rescalePinchingFunction_div hQpos Phi hu] at hquot
+    exact (div_le_div_iff_of_pos_right hu).mp hquot
+  · have hum : u ≤ 0 := le_of_not_gt hu
+    have hQu : Q * u ≤ u := by nlinarith
+    have hle : Phi (Q * u) ≤ Phi u := hPhi.mono hQu
+    have hInv : Q⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hQ
+    calc
+      rescalePinchingFunction Q Phi u = Q⁻¹ * Phi (Q * u) := rfl
+      _ ≤ Q⁻¹ * Phi u := mul_le_mul_of_nonneg_left hle (inv_nonneg.mpr hQpos.le)
+      _ ≤ Phi u := by nlinarith [hPhi.pos u]
+
+
 theorem exists_forall_rescalePinchingFunction_le {Phi : Real → Real}
     (hPhi : AdmissiblePinchingFunction Phi) {eps B : Real} (heps : 0 < eps) :
     ∃ Q0 : Real, 0 < Q0 ∧ ∀ Q : Real, Q0 ≤ Q → ∀ u : Real, u ∈ Set.Icc (0 : Real) B →

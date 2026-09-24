@@ -45,7 +45,7 @@ theorem exists_subsequence_converges_to_shrinkingCylinder_of_neck_terminal_conve
         (rescalePinchingFunction (Q (i + N n)) Phi
           (metricScalarAt ((S n i).base.metric t) x)))
     {C : ℝ}
-    (hbound : ∀ n, ∀ t ∈ Icc a 0, ∀ᶠ i in atTop, ∀ x : neckBuffer (δ n),
+    (hbound : ∀ n, ∀ t ∈ Icc a 0, ∀ x : neckBuffer (δ n), ∀ᶠ i in atTop,
       normSq0S ((S n i).base.metric t) x 4 (metricRm04At ((S n i).base.metric t) x) ≤ C) :
     ∃ rho : ℕ → ℕ, StrictMono rho ∧
       ∀ n, ∀ K : Set (neckBuffer (δ n)), IsCompact K → ∀ p : ℕ, ∀ η : ℝ, 0 < η →

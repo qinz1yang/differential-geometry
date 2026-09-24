@@ -194,7 +194,7 @@ theorem normSq_rm_le_of_neck_metric_limits
       metricAlgebraicCurvatureTensorAt (G t) x ∈
         algebraicCurvatureOperatorNonnegativeCone (I := NeckCylinderModel))
     {C : ℝ}
-    (hbound : ∀ n, ∀ t ∈ Icc a b, ∀ᶠ i in atTop, ∀ x : neckBuffer (δ n),
+    (hbound : ∀ n, ∀ t ∈ Icc a b, ∀ x : neckBuffer (δ n), ∀ᶠ i in atTop,
       normSq0S ((S n i).base.metric t) x 4 (metricRm04At ((S n i).base.metric t) x) ≤ C) :
     ∀ t ∈ Icc a b, ∀ x : NeckCylinder,
       normSq0S (G t) x 4 (metricRm04At (G t) x) ≤ 100 ^ 2 * (9 * Real.sqrt C) ^ 2 := by
@@ -220,7 +220,7 @@ theorem normSq_rm_le_of_neck_metric_limits
     ((G t).restrictOpen U) (roundCylinderMetric.restrictOpen U) y
     (hconvU {y} isCompact_singleton 2)
     (by simp [Module.finrank_prod]) hconeU
-    ((hj.eventually (hbound n t ht)).mono fun i hi => hi y)
+    (hj.eventually (hbound n t ht y))
   have hrm : metricRm04At ((G t).restrictOpen U) y = metricRm04At (G t) x := by
     ext slots
     exact curvCovDeriv_restrictOpen (G t) U 0 y slots
@@ -256,7 +256,7 @@ theorem exists_global_complete_nonnegative_neck_limit_of_curvature_bound
         (rescalePinchingFunction (Q (i + N n)) Phi
           (metricScalarAt ((S n i).base.metric t) x)))
     {C : ℝ}
-    (hbound : ∀ n, ∀ t ∈ Icc a b, ∀ᶠ i in atTop, ∀ x : neckBuffer (δ n),
+    (hbound : ∀ n, ∀ t ∈ Icc a b, ∀ x : neckBuffer (δ n), ∀ᶠ i in atTop,
       normSq0S ((S n i).base.metric t) x 4 (metricRm04At ((S n i).base.metric t) x) ≤ C) :
     ∃ rho : ℕ → ℕ, StrictMono rho ∧
       ∃ G : ℝ → SmoothRiemannianMetric NeckCylinderModel NeckCylinder,

@@ -1,6 +1,7 @@
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Topology.MetricSpace.Lipschitz
+import Mathlib.Topology.Instances.ENNReal.Lemmas
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Tactic.Linarith
@@ -91,5 +92,30 @@ theorem lipschitzOnWith_inv_max_of_quadratic_deriv_bound
     exact hordered hu hv huv
   · rw [abs_of_nonneg (sub_nonneg.mpr hvu)]
     exact hordered hv hu hvu
+
+
+theorem lipschitzOnWith_inv_max_of_quadratic_deriv_bound_Icc
+    {r r' : ℝ → ℝ} {a b q : ℝ} {C : ℝ≥0}
+    (hq : 0 < q) (hc : ContinuousOn r (Icc a b))
+    (hd : ∀ t ∈ Ioo a b, q < r t → HasDerivAt r (r' t) t)
+    (hb : ∀ t ∈ Ioo a b, q < r t → |r' t| ≤ C * r t ^ 2) :
+    LipschitzOnWith C (fun t => (max q (r t))⁻¹) (Icc a b) := by
+  by_cases hab : a < b
+  · have hi := lipschitzOnWith_inv_max_of_quadratic_deriv_bound hq ordConnected_Ioo
+      (hc.mono Ioo_subset_Icc_self)
+      (fun t ht hqt => (hd t ht hqt).hasDerivWithinAt) hb
+    have hcont : ContinuousOn (fun t => (max q (r t))⁻¹) (Icc a b) :=
+      (continuous_max.comp_continuousOn (continuousOn_const.prodMk hc)).inv₀
+        (fun t _ => ne_of_gt (hq.trans_le (le_max_left _ _)))
+    rw [← closure_Ioo hab.ne] at hcont ⊢
+    exact LipschitzOnWith.closure hcont hi
+  · rw [lipschitzOnWith_iff_dist_le_mul]
+    intro t ht u hu
+    have heq : t = u := by
+      have := le_of_not_gt hab
+      rcases ht with ⟨hat, htb⟩
+      rcases hu with ⟨hau, hub⟩
+      linarith
+    simp only [heq, dist_self, mul_zero, le_refl]
 
 end DifferentialGeometry.Analysis

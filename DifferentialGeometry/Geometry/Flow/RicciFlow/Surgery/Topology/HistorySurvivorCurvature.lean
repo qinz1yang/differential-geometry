@@ -206,4 +206,42 @@ theorem ObservedHistory.exists_backwardSurvivorFootprint_curvature_bound
           hPhi hpinch j hf hl y hy htime'
     exact (Real.sqrt_le_iff.mp hb).2
 
+theorem ObservedHistory.metricScalarAt_backwardSurvivorFootprint
+    (H : ObservedHistory.{u}) (first : Fin (H.eventCount + 1))
+    (i : Fin H.eventCount) (hle : first ≤ i.castSucc)
+    (K : Set (H.event i).incoming.terminalRegularOpen)
+    (G : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.backwardSurvivorFootprintInterior first i hle K))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc)
+      (hl : j.succ ≤ i.castSucc), ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+      G t = ((H.backwardSurvivorSlabMetric first i.castSucc hle j hf hl t).restrictOpen
+        (H.backwardSurvivorTerminalFace first i hle)).restrictOpen
+        (H.backwardSurvivorFootprintInterior first i hle K))
+    (hlast : ∀ t ∈ Icc (H.time i.castSucc) (H.time i.succ),
+      G t = (H.backwardSurvivorTerminalFaceMetric first i hle t).restrictOpen
+        (H.backwardSurvivorFootprintInterior first i hle K))
+    (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.castSucc ≤ i.castSucc)
+    {t : ℝ} (ht : t ∈ Ico (H.time j.castSucc) (H.time j.succ))
+    (x : H.backwardSurvivorFootprintInterior first i hle K) :
+    metricScalarAt (G t) x = (H.event j).incoming.flow.scalar t
+      (H.backwardSurvivorMap first i.castSucc hle j.castSucc hf hl x.val.val) := by
+  by_cases he : j = i
+  · subst j
+    rw [hlast t ⟨ht.1, ht.2.le⟩, CheegerGromovCompactness.metricScalarAt_restrictOpen,
+      ObservedHistory.backwardSurvivorTerminalFaceMetric, metricScalarAt_localPull,
+      (H.event i).terminal.extendedMetric_before ht.2, CheegerGromovCompactness.metricScalarAt_restrictOpen,
+      H.backwardSurvivorMap_last]
+    rfl
+  · have hjnext : j.succ ≤ i.castSucc := by
+      change j.val + 1 ≤ i.val
+      have hji : j.val ≤ i.val := hl
+      have hne : j.val ≠ i.val := fun h => he (Fin.ext h)
+      omega
+    rw [hslabs j hf hjnext t ⟨ht.1, ht.2.le⟩,
+      CheegerGromovCompactness.metricScalarAt_restrictOpen, CheegerGromovCompactness.metricScalarAt_restrictOpen,
+      ObservedHistory.backwardSurvivorSlabMetric, metricScalarAt_localPull,
+      (H.event j).terminal.extendedMetric_before ht.2, CheegerGromovCompactness.metricScalarAt_restrictOpen]
+    rfl
+
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

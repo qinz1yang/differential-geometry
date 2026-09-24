@@ -1,8 +1,11 @@
 import DifferentialGeometry.Topology.ThreeManifold.UncappingInteriorCover
+import DifferentialGeometry.Topology.ThreeManifold.UncappingProjectionInterior
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
+import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 
 noncomputable section
 
-open Set Metric Manifold Filter
+open Set Metric Manifold Filter Function
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Topology.SphericalCapping
@@ -58,5 +61,51 @@ theorem exists_uncapping_homeomorph_localDiffeomorph :
   · intro a z
     exact C.isLocalDiffeomorphAt_homeomorph_uncappingSeam H (fun b => (B b).toHomeomorph)
       hsmall hboundary hhalf Ψ ρ hρ hmono hzero hone hann hρgerm a z
+
+theorem exists_core_neighborhood_partialDiffeomorph
+    (x₀ : T.core) :
+    ∃ F : PartialDiffeomorph (𝓡 3) (𝓡 3) M.Carrier N.Carrier ∞,
+      T.core ⊆ F.source ∧ range C.coreInclusion ⊆ F.target ∧
+      (∀ x : T.core, F x.val = C.coreInclusion x) ∧
+      ∀ x : T.core, F.symm (C.coreInclusion x) = x.val := by
+  obtain ⟨H,hcore,hlocal,_⟩ := C.exists_uncapping_homeomorph_localDiffeomorph
+  let f := C.uncappingInteriorMap H
+  have hf : Injective f := by
+    intro x y h
+    apply C.uncappingProjection_injective_on_interior
+    exact H.injective h
+  let hU : Nonempty C.uncappingInterior :=
+    ⟨⟨C.coreInclusion x₀,C.coreInclusion_mem_uncappingInterior x₀⟩⟩
+  obtain ⟨A,hAs,hAt,hAf⟩ :=
+    DifferentialGeometry.IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
+      (hlocal.isLocalDiffeomorphOn univ) isOpen_univ
+      ⟨Classical.choice hU,mem_univ _⟩ hf.injOn
+  let B := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph (𝓡 3)
+    C.uncappingInterior hU
+  let F := A.symm.trans B
+  have hA (x : C.uncappingInterior) : A x = f x := congrFun hAf x
+  have heq (x : T.core) : f ⟨C.coreInclusion x,C.coreInclusion_mem_uncappingInterior x⟩ = x.val :=
+    C.uncappingInteriorMap_core H hcore x
+  have hAeq (x : T.core) : A ⟨C.coreInclusion x,C.coreInclusion_mem_uncappingInterior x⟩ = x.val :=
+    (hA _).trans (heq x)
+  have hAtx (x : T.core) : x.val ∈ A.target := by
+    rw [hAt]
+    exact ⟨⟨C.coreInclusion x,C.coreInclusion_mem_uncappingInterior x⟩,mem_univ _,heq x⟩
+  have hAi (x : T.core) : A.symm x.val = ⟨C.coreInclusion x,C.coreInclusion_mem_uncappingInterior x⟩ := by
+    rw [← hAeq x]
+    exact A.left_inv (by rw [hAs]; exact mem_univ _)
+  have hsrc : T.core ⊆ F.source := by
+    intro x hx
+    exact ⟨hAtx ⟨x,hx⟩,mem_univ _⟩
+  have hFx (x : T.core) : F x.val = C.coreInclusion x := by
+    change (A.symm x.val).val = _
+    rw [hAi]
+  refine ⟨F,hsrc,?_,hFx,?_⟩
+  · rintro _ ⟨x,rfl⟩
+    rw [← hFx x]
+    exact F.map_source (hsrc x.property)
+  · intro x
+    rw [← hFx x]
+    exact F.left_inv (hsrc x.property)
 
 end DifferentialGeometry.Topology.SphericalCapping
