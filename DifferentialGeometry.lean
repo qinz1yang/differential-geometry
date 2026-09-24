@@ -5096,6 +5096,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.B
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Graphical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductProjection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.GraphicalSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopyFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopySuperwindow
