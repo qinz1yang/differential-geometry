@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapSide
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapComponent
 
 noncomputable section
 
@@ -22,19 +23,15 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem image_capCore_union_cap_eq_componentSet_of_spatialNeck
+theorem image_capCore_union_cap_eq_componentSet
     {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ T.core)
     (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
-    {g : SmoothRiemannianMetric (𝓡 3) M.Carrier} {eps : ℝ} {p : M.Carrier}
-    (nk : SpatialNeck g eps p)
-    (hmap : ∀ q : TubeDomain, q.2.val ∈ Icc (-1 : ℝ) 1 →
-      T.tube b.1 q = nk.map (q.1, q.2.val))
     (x : T.core) (hx : x.val ∈ K) :
     C.coreInclusion '' (Subtype.val ⁻¹' K : Set T.core) ∪ range (C.cap b) =
       N.componentSet (ConnectedComponents.mk (C.coreInclusion x)) := by
   have hcomp : connectedComponent x = (Subtype.val ⁻¹' K : Set T.core) :=
-    T.toTopological.connectedComponent_eq_preimage_of_capCore_of_spatialNeck
-      cap hK b hfront nk hmap x hx
+    T.toTopological.connectedComponent_eq_preimage_of_capCore_of_boundarySphere
+      cap hK b hfront (T.smooth b.1) x hx
   rw [ClosedOrientedManifold.componentSet_mk, ← hcomp]
   apply C.image_coreComponent_union_cap_eq_connectedComponent x b
   · intro z
@@ -67,17 +64,13 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isPoincareStandard_component_of_capCore_spatialNeck_frontier
+theorem isPoincareStandard_component_of_capCore_frontier
     {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ T.core)
     (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
-    {g : SmoothRiemannianMetric (𝓡 3) M.Carrier} {eps : ℝ} {p : M.Carrier}
-    (nk : SpatialNeck g eps p)
-    (hmap : ∀ q : TubeDomain, q.2.val ∈ Icc (-1 : ℝ) 1 →
-      T.tube b.1 q = nk.map (q.1, q.2.val))
     (x : T.core) (hx : x.val ∈ K) :
     isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier :=
   C.isPoincareStandard_component_of_capCore_and_cap_cover cap hK b _
-    (C.image_capCore_union_cap_eq_componentSet_of_spatialNeck cap hK b hfront nk hmap x hx)
+    (C.image_capCore_union_cap_eq_componentSet cap hK b hfront x hx)
 
 theorem exists_isPoincareStandard_component_of_spatialNeck_center_close
     {J : RealTimeInterval} {S : SolutionOn (I := I3) (M := M.Carrier) J}
@@ -99,8 +92,8 @@ theorem exists_isPoincareStandard_component_of_spatialNeck_center_close
     T.toTopological.exists_capCore_in_cutCore_of_spatialNeck_center_close
       cap hdepth nk a hmap hclose hanchor
   exact ⟨side, K, hK, hKU, hfront, hcore, fun z hz =>
-    C.isPoincareStandard_component_of_capCore_spatialNeck_frontier
-      hK.some hcore (a, side) hfront nk hmap z hz⟩
+    C.isPoincareStandard_component_of_capCore_frontier
+      hK.some hcore (a, side) hfront z hz⟩
 
 end DifferentialGeometry.Topology.SphericalCapping
 
@@ -110,18 +103,14 @@ universe u
 
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem isPoincareStandard_discardedComponent_of_capCore_spatialNeck_frontier
+theorem isPoincareStandard_discardedComponent_of_capCore_frontier
     {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ E.tubes.core)
     (b : E.tubes.Boundary) (hfront : frontier K = range (E.tubes.boundarySphere b))
-    {g : SmoothRiemannianMetric (𝓡 3) M.Carrier} {eps : ℝ} {p : M.Carrier}
-    (nk : SpatialNeck g eps p)
-    (hmap : ∀ q : TubeDomain, q.2.val ∈ Icc (-1 : ℝ) 1 →
-      E.tubes.tube b.1 q = nk.map (q.1, q.2.val))
     (x : E.tubes.core) (hx : x.val ∈ K) (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d) :
     isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier :=
   E.isPoincareStandard_discardedComponent_of_capCore_and_cap_cover cap hK b x d hd
-    (E.capping.image_capCore_union_cap_eq_componentSet_of_spatialNeck cap hK b hfront nk hmap x hx)
+    (E.capping.image_capCore_union_cap_eq_componentSet cap hK b hfront x hx)
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
@@ -190,11 +179,71 @@ theorem exists_isPoincareStandard_discardedComponent_of_spatialNeck_center_close
     (congrArg E.presentation
       (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion E hc z)).trans
         ((congrFun E.presentation_eq _).trans hd)
-  exact X.isPoincareStandard_discardedComponent_of_capCore_spatialNeck_frontier
-    hK.some hcore (a, side) hfront nk hmap z hz d hdx
+  exact X.isPoincareStandard_discardedComponent_of_capCore_frontier
+    hK.some hcore (a, side) hfront z hz d hdx
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition
 
 end
+
+end
+
+section
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+universe u
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+
+include G in
+theorem exists_isPoincareStandard_discardedComponent_of_terminal_cap_boundary_capture
+    (hc : SmoothCutCapCompletion (H.event i).transition)
+    {U : Set (H.event i).incoming.terminalRegularOpen} (cap : CapCore U)
+    (hscalar : ∀ y ∈ interior U,
+      ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+        metricScalarAt (H.event i).terminal.metric y)
+    (j : (H.event i).transition.trace.tubes.Index)
+    (hinside : ∀ side : Bool, range ((H.event i).transition.trace.tubes.boundarySphere (j, side)) ⊆
+      (Subtype.val : (H.event i).incoming.terminalRegularOpen → (H.stage i.castSucc).Carrier) ''
+        interior U) :
+    ∃ (b : (H.event i).transition.trace.tubes.Boundary) (K : Set (H.stage i.castSucc).Carrier), Nonempty (CapCore K) ∧
+      K ⊆ (Subtype.val : (H.event i).incoming.terminalRegularOpen → (H.stage i.castSucc).Carrier) ''
+        interior U ∧
+      frontier K = range ((H.event i).transition.trace.tubes.boundarySphere b) ∧
+      K ⊆ (H.event i).transition.trace.tubes.core ∧
+      ∀ z : (H.event i).transition.trace.tubes.core, z.val ∈ K →
+        ∃ d : (H.event i).discarded.Carrier,
+          (H.event i).transition.trace.presentation
+            ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr d ∧
+          DifferentialGeometry.Topology.isPoincareStandard
+            ((H.event i).discarded.toClosedOrientedManifold.component
+              (ConnectedComponents.mk d)).Carrier := by
+  obtain ⟨b, K, hK, hKU, hfront, hcore, _, hdiscard⟩ :=
+    G.exists_discarded_capCore_component_of_terminal_cap_boundary_capture cap hscalar j hinside
+  refine ⟨b, K, hK, hKU, hfront, hcore, ?_⟩
+  intro z hz
+  obtain ⟨d, hd⟩ : ∃ d : (H.event i).discarded.Carrier,
+      (H.event i).transition.trace.presentation
+        ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr d := by
+    cases hp : (H.event i).transition.trace.presentation
+        ((H.event i).transition.trace.capping.coreInclusion z) with
+    | inl q => exact (hdiscard z hz ⟨q, hp⟩).elim
+    | inr d => exact ⟨d, rfl⟩
+  refine ⟨d, hd, ?_⟩
+  let X := SphericalCutCapTransition.ofSmoothCutCapTransition (H.event i).transition hc
+  have hdx : X.presentation (X.capping.coreInclusion z) = Sum.inr d :=
+    (congrArg (H.event i).transition.presentation
+      (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion
+        (H.event i).transition hc z)).trans
+        ((congrFun (H.event i).transition.presentation_eq _).trans hd)
+  exact X.isPoincareStandard_discardedComponent_of_capCore_frontier
+    hK.some hcore b hfront z hz d hdx
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
 end

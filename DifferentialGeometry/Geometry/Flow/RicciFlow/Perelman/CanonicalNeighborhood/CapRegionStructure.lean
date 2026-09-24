@@ -439,3 +439,24 @@ theorem CapCore.ne_univ {K : Set M} (cap : CapCore K) : K ≠ univ := by
 end
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+
+theorem CapCore.nonempty_image_open {O : TopologicalSpace.Opens M} {U : Set O}
+    (cap : CapCore U) : Nonempty (CapCore ((Subtype.val : O → M) '' U)) := by
+  obtain ⟨x, _⟩ := cap.nonempty_carrier
+  let inc := DifferentialGeometry.Topology.PartialDiffeomorph.subtypeVal (I := I3) O ⟨x⟩
+  exact cap.image_of_partialDiffeomorph inc (subset_univ U)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end

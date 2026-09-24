@@ -39,15 +39,13 @@ theorem nonempty_capCore_image_coreInclusion
   exact cap.image_of_partialDiffeomorph F (hK.trans hFs)
 
 
-theorem isPoincareStandard_component_of_capCore_and_cap_cover
-    {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ T.core)
-    (b : T.Boundary) (c : ConnectedComponents N.Carrier)
-    (hcover : (C.coreInclusion '' (Subtype.val ⁻¹' K : Set T.core)) ∪
-      range (C.cap b) = N.componentSet c) :
+theorem isPoincareStandard_component_of_capCore_union_cap
+    {K : Set N.Carrier} (cap : CapCore K) (b : T.Boundary)
+    (c : ConnectedComponents N.Carrier)
+    (hcover : K ∪ range (C.cap b) = N.componentSet c) :
     isPoincareStandard (N.component c).Carrier := by
   let U := N.componentOpen c
-  let A := C.coreInclusion '' (Subtype.val ⁻¹' K : Set T.core)
-  have hAU : A ⊆ U := by
+  have hKU : K ⊆ U := by
     intro x hx
     change x ∈ N.componentSet c
     rw [← hcover]
@@ -56,9 +54,8 @@ theorem isPoincareStandard_component_of_capCore_and_cap_cover
     change C.cap b x ∈ N.componentSet c
     rw [← hcover]
     exact Or.inr (mem_range_self x)
-  obtain ⟨capA⟩ := C.nonempty_capCore_image_coreInclusion cap hK
-  obtain ⟨capU⟩ := capA.nonempty_preimage_open U hAU
-  let f : ClosedCell 3 → U := fun x => ⟨C.cap b x,hfU x⟩
+  obtain ⟨capU⟩ := cap.nonempty_preimage_open U hKU
+  let f : ClosedCell 3 → U := fun x => ⟨C.cap b x, hfU x⟩
   have hf : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ f := by
     apply DifferentialGeometry.Topology.isSmoothEmbedding_of_lift_through_localDiffeomorph
       (I := 𝓡∂ 3) (J := 𝓡 3) (N := U) (g := f)
@@ -66,27 +63,37 @@ theorem isPoincareStandard_component_of_capCore_and_cap_cover
       ((C.cap b).continuous.subtype_mk hfU)
     intro x
     rfl
-  obtain ⟨B,hB,hBf⟩ := Manifold.exists_partialDiffeomorph_extension_closedCell f hf
-  have hBimage : B '' Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1 = range f := by
+  obtain ⟨B, hB, hBf⟩ := Manifold.exists_partialDiffeomorph_extension_closedCell f hf
+  have hBimage : B '' Metric.closedBall (0 : ThreeSpace) 1 = range f := by
     ext y
     constructor
-    · rintro ⟨x,hx,rfl⟩
-      exact ⟨⟨x,by simpa only [mem_closedBall_zero_iff] using hx⟩,(hBf _).symm⟩
-    · rintro ⟨x,rfl⟩
-      exact ⟨x.val,by simpa only [mem_closedBall_zero_iff] using x.property,hBf x⟩
-  have hcov : B '' Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1 ∪
-      (Subtype.val ⁻¹' A : Set U) = univ := by
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨⟨x, mem_closedBall_zero_iff.mp hx⟩, (hBf _).symm⟩
+    · rintro ⟨x, rfl⟩
+      exact ⟨x.val, mem_closedBall_zero_iff.mpr x.property, hBf x⟩
+  have hcov : B '' Metric.closedBall (0 : ThreeSpace) 1 ∪
+      (Subtype.val ⁻¹' K : Set U) = univ := by
     rw [hBimage]
     apply eq_univ_of_forall
     intro y
-    have hy : y.val ∈ A ∪ range (C.cap b) := by
+    have hy : y.val ∈ K ∪ range (C.cap b) := by
       rw [hcover]
       exact y.property
-    rcases hy with hy | ⟨x,hx⟩
+    rcases hy with hy | ⟨x, hx⟩
     · exact Or.inr hy
-    · exact Or.inl ⟨x,Subtype.ext hx⟩
+    · exact Or.inl ⟨x, Subtype.ext hx⟩
   obtain ⟨W⟩ := nonempty_positiveComponent_of_ball_cap_cover B hB capU hcov
   exact isPoincareStandard_of_positiveComponent W
+
+
+theorem isPoincareStandard_component_of_capCore_and_cap_cover
+    {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ T.core)
+    (b : T.Boundary) (c : ConnectedComponents N.Carrier)
+    (hcover : (C.coreInclusion '' (Subtype.val ⁻¹' K : Set T.core)) ∪
+      range (C.cap b) = N.componentSet c) :
+    isPoincareStandard (N.component c).Carrier := by
+  obtain ⟨capA⟩ := C.nonempty_capCore_image_coreInclusion cap hK
+  exact C.isPoincareStandard_component_of_capCore_union_cap capA b c hcover
 
 
 end DifferentialGeometry.Topology.SphericalCapping

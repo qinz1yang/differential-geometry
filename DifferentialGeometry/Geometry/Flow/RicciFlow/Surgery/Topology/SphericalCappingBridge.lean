@@ -276,20 +276,18 @@ private theorem cap_mem_connectedComponent_boundary (b : T.Boundary)
       range (C.cap b) := ⟨sphereToClosedCell q, C.boundary_eq b q⟩
   exact hconn.subset_connectedComponent hbase (mem_range_self z)
 
-theorem image_coreComponent_union_cap_eq_connectedComponent
-    (x : T.core) (b : T.Boundary)
-    (hboundary : ∀ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+theorem image_coreComponent_union_caps_eq_connectedComponent
+    (x : T.core) (B : Set T.Boundary)
+    (hboundary : ∀ b ∈ B, ∀ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
       T.coreBoundarySphere b z ∈ connectedComponent x)
-    (hunique : ∀ b' : T.Boundary,
-      (∃ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
-        T.coreBoundarySphere b' z ∈ connectedComponent x) → b' = b) :
-    C.coreInclusion '' connectedComponent x ∪ range (C.cap b) =
+    (hexact : ∀ b : T.Boundary,
+      (∃ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, T.coreBoundarySphere b z ∈ connectedComponent x) → b ∈ B) :
+    C.coreInclusion '' connectedComponent x ∪ ⋃ b ∈ B, range (C.cap b) =
       connectedComponent (C.coreInclusion x) := by
   let _ : CompactSpace T.core := isCompact_iff_compactSpace.mp C.core_compact
   let _ : LocallyConnectedSpace T.core :=
     C.coreCharts.locallyConnectedSpace (EuclideanHalfSpace 3) T.core
-  let q : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 :=
-    ⟨EuclideanSpace.single 0 1, by simp⟩
+  let q : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 := ⟨EuclideanSpace.single 0 1, by simp⟩
   have hcore (y : T.core) :
       C.coreInclusion y ∈ connectedComponent (C.coreInclusion x) ↔
         y ∈ connectedComponent x := by
@@ -301,26 +299,41 @@ theorem image_coreComponent_union_cap_eq_connectedComponent
     · intro hy
       exact C.coreInclusion.continuous.mapsTo_connectedComponent x hy
   apply Subset.antisymm
-  · rintro y (⟨z, hz, rfl⟩ | ⟨z, rfl⟩)
+  · rintro y (⟨z, hz, rfl⟩ | hy)
     · exact (hcore z).mpr hz
-    · have hmem := C.cap_mem_connectedComponent_boundary b z q
-      have hh := (hcore _).mpr (hboundary (C.attaching b q))
+    · obtain ⟨b, hb, z, rfl⟩ := mem_iUnion₂.mp hy
+      have hmem := C.cap_mem_connectedComponent_boundary b z q
+      have hh := (hcore _).mpr (hboundary b hb (C.attaching b q))
       exact (connectedComponent_eq hh) ▸ hmem
   · intro y hy
-    have hall : y ∈ range C.coreInclusion ∪ ⋃ b', range (C.cap b') := by
+    have hall : y ∈ range C.coreInclusion ∪ ⋃ b, range (C.cap b) := by
       rw [C.exhaustive]
       exact mem_univ y
     rcases hall with ⟨z, rfl⟩ | hall
     · exact Or.inl ⟨z, (hcore z).mp hy, rfl⟩
-    · obtain ⟨b', z, rfl⟩ := mem_iUnion.mp hall
-      have hm := C.cap_mem_connectedComponent_boundary b' z q
+    · obtain ⟨b, z, rfl⟩ := mem_iUnion.mp hall
+      have hm := C.cap_mem_connectedComponent_boundary b z q
       have he := ConnectedComponents.coe_eq_coe'.mpr hm
       have hz := ConnectedComponents.coe_eq_coe'.mpr hy
-      have hc : C.coreInclusion (T.coreBoundarySphere b' (C.attaching b' q)) ∈
+      have hc : C.coreInclusion (T.coreBoundarySphere b (C.attaching b q)) ∈
           connectedComponent (C.coreInclusion x) :=
         ConnectedComponents.coe_eq_coe'.mp (he.symm.trans hz)
-      have hbeq : b' = b := hunique b' ⟨C.attaching b' q, (hcore _).mp hc⟩
-      exact Or.inr (hbeq ▸ mem_range_self z)
+      exact Or.inr (mem_iUnion₂.mpr
+        ⟨b, hexact b ⟨C.attaching b q, (hcore _).mp hc⟩, mem_range_self z⟩)
+
+theorem image_coreComponent_union_cap_eq_connectedComponent
+    (x : T.core) (b : T.Boundary)
+    (hboundary : ∀ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      T.coreBoundarySphere b z ∈ connectedComponent x)
+    (hunique : ∀ b' : T.Boundary,
+      (∃ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+        T.coreBoundarySphere b' z ∈ connectedComponent x) → b' = b) :
+    C.coreInclusion '' connectedComponent x ∪ range (C.cap b) =
+      connectedComponent (C.coreInclusion x) := by
+  simpa only [Set.biUnion_singleton] using
+    C.image_coreComponent_union_caps_eq_connectedComponent x {b}
+      (fun b' hb' z => Set.mem_singleton_iff.mp hb' ▸ hboundary z)
+      (fun b' hb' => Set.mem_singleton_iff.mpr (hunique b' hb'))
 
 end DifferentialGeometry.Topology.SphericalCapping
 

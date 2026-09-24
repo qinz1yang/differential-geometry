@@ -748,14 +748,17 @@ open private exists_finite_first_hit_oriented_horn_neck_data from DifferentialGe
 open private exists_precision_order_compatible precision_order_compatible_of_le from
   DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMetricEvent
 
-private theorem exists_prepared_horn_cutoff_event :
-    ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ), 0 < Kreset ∧
+private theorem exists_prepared_horn_cutoff_event_at_scale :
+    ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ), 3 ≤ Kreset ∧
       ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
       ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧ ∃ ε₀ : ℝ, 0 < ε₀ ∧
       ∀ {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ),
-      ε ≤ ε₀ → ∃ (Qout : OrientedThreeStage.{u})
+      ε ≤ ε₀ → ∃ coreBound : ℝ, 0 ≤ coreBound ∧
+      ∀ Q : ℝ, 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q →
+      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
+      ∃ (Qout : OrientedThreeStage.{u})
         (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
-        (p : CutoffParameters) (Q : ℝ)
+        (p : CutoffParameters)
         (N : E.transition.trace.tubes.Index → NormalizedNeck E.terminal.metric δ
           (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4))),
         0 < Q ∧ E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
@@ -770,7 +773,7 @@ private theorem exists_prepared_horn_cutoff_event :
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) ∧
-        (∀ q, metricScalarAt E.outputMetric q ≤ Kreset * Q) ∧
+        (∀ q, metricScalarAt E.outputMetric q ≤ max coreBound (Kreset * Q)) ∧
         ∃ F : PreparedCutoffEventGeometry E p δ (Real.sqrt Q⁻¹)
           (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)), F.neck = N ∧
           ∃ (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
@@ -792,7 +795,7 @@ private theorem exists_prepared_horn_cutoff_event :
   choose δcap hδcap hcapHalf hcapScalar using
     exists_metricCutCapEvent_capRegion_scalar_lower A hA
   let Kreset := max 3 (2 * C 0)
-  have hKreset : 0 < Kreset := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
+  have hKreset : 3 ≤ Kreset := le_max_left _ _
   refine ⟨c, hc, A, hA, Kreset, hKreset, ?_⟩
   intro Dcap hDcap m accuracy haccuracy
   obtain ⟨δ, hδ, hquarter, hmake⟩ := hfactory Dcap hDcap m accuracy haccuracy δcap hδcap
@@ -815,15 +818,12 @@ private theorem exists_prepared_horn_cutoff_event :
   let ρ := D.parameters.neckRadius D.endTime
   have ht : 0 ≤ D.endTime := D.startTime_nonneg.trans D.startTime_lt_endTime.le
   have hρ : 0 < ρ := D.parameters.neckRadius_pos _ ht
-  let Q₀ := max coreBound (2 * Λ * (P.coreRadius ^ 2)⁻¹)
-  let Q := max Q₀ (((δ^2 * ρ)^2)⁻¹) + 1
-  have hQQ : Q₀ < Q := by dsimp [Q]; linarith [le_max_left Q₀ (((δ^2 * ρ)^2)⁻¹)]
-  have hQ : 0 < Q := (hcoreNonneg.trans (le_max_left _ _)).trans_lt hQQ
-  have hcoreQ : coreBound ≤ Q := (le_max_left _ _).trans hQQ.le
-  have hQscale : 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q := (le_max_right _ _).trans_lt hQQ
+  refine ⟨coreBound, hcoreNonneg, ?_⟩
+  intro Q hQscale hQnominal
+  have hQ : 0 < Q :=
+    (inv_pos.mpr (sq_pos_of_pos (mul_pos (pow_pos hδ 2) hρ))).trans hQnominal
   have hr : Real.sqrt Q⁻¹ < δ^2 * ρ :=
-    sqrt_inv_lt_of_inv_sq_lt hQ (mul_pos (pow_pos hδ 2) hρ) (by
-      dsimp [Q]; linarith [le_max_right Q₀ (((δ^2 * ρ)^2)⁻¹)])
+    sqrt_inv_lt_of_inv_sq_lt hQ (mul_pos (pow_pos hδ 2) hρ) hQnominal
   have hεdouble : 2 * ε ≤ εbase := by
     have hh := hε.trans (min_le_left _ _)
     linarith
@@ -912,13 +912,13 @@ private theorem exists_prepared_horn_cutoff_event :
     D.terminal.metric R hRet c hc x₀ (fun _ => m + 6) d (fun _ => rfl)
     hrec dCap hcapMap hcapSide w hw (hC 0).le hratio (max coreBound (3 * Q)) Q hQ.le
     hboundRet (fun b => (hscaleOrig b.val.1).le) oRet E hOutput
-  have hreset : ∀ q, metricScalarAt E.outputMetric q ≤ Kreset * Q := by
+  have hreset : ∀ q, metricScalarAt E.outputMetric q ≤ max coreBound (Kreset * Q) := by
     intro q
     apply (hupper q).trans
     apply max_le
-    · exact max_le (hcoreQ.trans (by dsimp [Kreset]; nlinarith [le_max_left (3:ℝ) (2*C 0)]))
-        (mul_le_mul_of_nonneg_right (le_max_left _ _) hQ.le)
-    · exact mul_le_mul_of_nonneg_right (le_max_right _ _) hQ.le
+    · exact max_le (le_max_left _ _)
+        ((mul_le_mul_of_nonneg_right (le_max_left _ _) hQ.le).trans (le_max_right _ _))
+    · exact (mul_le_mul_of_nonneg_right (le_max_right _ _) hQ.le).trans (le_max_right _ _)
   have hpreserve := terminal_data_transport E D.slab D.terminal hG hL
     (F := fun G L =>
       (∀ z : ℝ, 0 < z → (∀ x, InFixedHamiltonIveyRegion L.metric z x) →
@@ -936,12 +936,76 @@ private theorem exists_prepared_horn_cutoff_event :
     E D.slab D.terminal hG hL hδ1 δOrig kOrig NOrig hδOrig rotation hmark side hk
   have hEscale (j) : (NOrigE j).scale = Q := by
     exact (hNEscale j).trans (hdata j).2.1
-  refine ⟨_, E, p, Q, geometry.neck, hQ, hG, hL, hOld, hBoundary,
+  refine ⟨_, E, p, geometry.neck, hQ, hG, hL, hOld, hBoundary,
     rfl, ?_, rfl, rfl, rfl, rfl, rfl, rfl, hr, hvol, hbound, hreset, geometry, rfl,
     _, δOrig, kOrig, NOrigE, hδOrig, rotation, hmarkE, side, hk, hδ1, eEvent, hEscale, ?_⟩
   · exact funext fun _ => rfl
   · intro j
     exact eq_of_heq ((hgeometry j).trans (hNEhigh j).symm)
+
+private theorem exists_prepared_horn_cutoff_event :
+    ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ), 0 < Kreset ∧
+      ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
+      ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧ ∃ ε₀ : ℝ, 0 < ε₀ ∧
+      ∀ {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ),
+      ε ≤ ε₀ → ∃ (Qout : OrientedThreeStage.{u})
+        (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
+        (p : CutoffParameters) (Q : ℝ)
+        (N : E.transition.trace.tubes.Index → NormalizedNeck E.terminal.metric δ
+          (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4))),
+        0 < Q ∧ E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
+        E.old = E.transition.trace.retainedCore ∧ E.transition.boundaryFrameReversing ∧
+        p.delta = (fun _ => δ) ∧ p.protectedRadius = (fun _ => P.coreRadius) ∧
+        p.neckRadius = (fun _ => D.parameters.neckRadius D.endTime) ∧
+        p.fixed = StaticCapScaffold.ofCollarLength A hA ∧ p.modelOrder = m ∧
+        p.modelRadius = Dcap ∧ p.modelAccuracy = accuracy ∧ p.recenterConstant = c ∧
+        Real.sqrt Q⁻¹ < (p.delta D.endTime)^2 * p.neckRadius D.endTime ∧
+        (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
+          riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
+            ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
+          riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
+        (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) ∧
+        (∀ q, metricScalarAt E.outputMetric q ≤ Kreset * Q) ∧
+        ∃ F : PreparedCutoffEventGeometry E p δ (Real.sqrt Q⁻¹)
+          (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)), F.neck = N ∧
+          ∃ (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
+            (NOriginal : ∀ j, NormalizedNeck E.terminal.metric (δOriginal j) (kOriginal j))
+            (hδOriginal : ∀ j, δOriginal j ≤ δ)
+            (rotation : Fin n → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+            (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j)
+              spherePoint = (NOriginal j).sphereMark)
+            (side : Fin n → Bool)
+            (horder : ∀ j, max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4) ≤ kOriginal j)
+            (hδ1 : δ < 1) (e : Fin n ≃ E.transition.trace.tubes.Index),
+            (∀ j, (NOriginal j).scale = Q) ∧
+            ∀ j, F.neck (e j) = orientedRotatedNeck (NOriginal j) (hδOriginal j)
+              hδ1 (rotation j) (hmark j) (side j) (horder j) := by
+  obtain ⟨c, hc, A, hA, Kreset, hKreset, hfamily⟩ := exists_prepared_horn_cutoff_event_at_scale.{u}
+  refine ⟨c, hc, A, hA, Kreset, lt_of_lt_of_le (by norm_num) hKreset, ?_⟩
+  intro Dcap hDcap m accuracy haccuracy
+  obtain ⟨δ, hδ, hδ1, ε₀, hε₀, hmake⟩ := hfamily Dcap hDcap m accuracy haccuracy
+  refine ⟨δ, hδ, hδ1, ε₀, hε₀, ?_⟩
+  intro D ε Λ P hε
+  obtain ⟨coreBound, hcoreNonneg, hproduce⟩ := hmake P hε
+  let Q₀ := max coreBound (2 * Λ * (P.coreRadius ^ 2)⁻¹)
+  let Q := max Q₀ (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) + 1
+  have hQQ : Q₀ < Q := by
+    dsimp [Q]
+    linarith [le_max_left Q₀ (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹)]
+  have hQscale : 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q := (le_max_right _ _).trans_lt hQQ
+  have hQnominal : (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q := by
+    dsimp [Q]
+    linarith [le_max_right Q₀ (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹)]
+  obtain ⟨Qout, E, p, N, hQ, hG, hL, hOld, hBoundary, hpδ, hpR, hpρ, hpFixed,
+    hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset, hrest⟩ := hproduce Q hQscale hQnominal
+  have hupper : ∀ q, metricScalarAt E.outputMetric q ≤ Kreset * Q := by
+    intro q
+    have hcoreQ : coreBound ≤ Q := (le_max_left _ _).trans hQQ.le
+    have hKQ : Q ≤ Kreset * Q :=
+      le_mul_of_one_le_left hQ.le (le_trans (by norm_num) hKreset)
+    exact (hreset q).trans (max_le (hcoreQ.trans hKQ) le_rfl)
+  exact ⟨Qout, E, p, Q, N, hQ, hG, hL, hOld, hBoundary, hpδ, hpR, hpρ, hpFixed,
+    hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hupper, hrest⟩
 
 end
 
@@ -1172,6 +1236,359 @@ private theorem original_backward_of_cut_neck_family
   exact ⟨(IncomingBackwardNeck.oriented _
     ((B.monoDelta (hδ (e.symm j)) hδ1).rotatedDatum (rotation (e.symm j))
       (hmark (e.symm j)) (side (e.symm j)))).lowerOrder (horder (e.symm j))⟩
+
+theorem exists_uniform_horn_cutoff_history_extension_at_scale :
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+      4 ≤ recenterConstant ∧
+    ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
+    ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
+    ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
+      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      H.time (Fin.last H.eventCount) = H.horizon →
+      ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
+      H.time (Fin.last H.eventCount) = D.startTime →
+      HEq (D.slab.flow.base.metric D.startTime) (H.initialMetric (Fin.last H.eventCount)) →
+      ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
+      ∀ Q : ℝ, 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q →
+      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
+      ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
+        (hOld : E.old = E.transition.trace.retainedCore)
+        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (i : Fin K.eventCount) (parameters : CutoffParameters)
+        (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
+        (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
+          (δOriginal j) (kOriginal j))
+        (hδOriginal : ∀ j, δOriginal j ≤ δ)
+        (rotation : Fin n → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+        (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j)
+          spherePoint = (NOriginal j).sphereMark)
+        (side : Fin n → Bool)
+        (horder : ∀ j, max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4) ≤ kOriginal j)
+        (hδ1 : δ < 1)
+        (Nrecord : (K.toHistory.event i).transition.trace.tubes.Index →
+          NormalizedNeck (K.toHistory.event i).terminal.metric δ
+            (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)))
+        (eOriginal : Fin n ≃ (K.toHistory.event i).transition.trace.tubes.Index),
+        0 < Q ∧ E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
+        E.transition.boundaryFrameReversing ∧
+        initial.IsPrefixOf initialK ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
+        K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
+        HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+        i.val = H.eventCount ∧ K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
+        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
+        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
+        (∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
+            (H.time (Fin.last H.eventCount)) D.endTime)
+          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
+          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount)),
+          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
+            (Eappend.toRetainedCoreEvent hOldAppend) hInitial) ∧
+        parameters.delta = (fun _ => δ) ∧ parameters.protectedRadius = (fun _ => P.coreRadius) ∧
+        parameters.neckRadius = (fun _ => D.parameters.neckRadius D.endTime) ∧
+        parameters.fixed = fixed ∧ parameters.recenterConstant = recenterConstant ∧
+        parameters.modelOrder = m ∧ parameters.modelRadius = Dcap ∧ parameters.modelAccuracy = accuracy ∧
+        (∀ x : E.incoming.terminalRegularOpen,
+          metricScalarAt E.terminal.metric x ≤ ((parameters.protectedRadius D.endTime) ^ 2)⁻¹ →
+          x.val ∈ interior (Subtype.val '' E.old)) ∧
+        (∀ c : ConnectedComponents E.transition.trace.tubes.core,
+          (∃ x : E.transition.trace.tubes.core,
+            ConnectedComponents.mk x = c ∧ x ∈ E.transition.trace.retainedCore) →
+          ∃ x : E.incoming.terminalRegularOpen,
+            ∃ hx : x.val ∈ E.transition.trace.tubes.core,
+              ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧ metricScalarAt E.terminal.metric x ≤
+                ((parameters.protectedRadius D.endTime) ^ 2)⁻¹) ∧
+        (∀ j, (NOriginal j).scale = Q) ∧
+        (∀ j, Nrecord (eOriginal j) =
+          (((NOriginal j).monoDelta (hδOriginal j) hδ1).rotatedDatum
+            (rotation j) (hmark j) (side j)).oriented.toNormalizedNeck.lowerOrder (horder j)) ∧
+        (∀ j (z : TubeDomain) (hz : (z.1, z.2.val) ∈ neckBuffer δ),
+          (K.toHistory.event i).transition.trace.tubes.tube j z =
+            ((Nrecord j).chart ⟨(z.1, z.2.val), hz⟩).val) ∧
+        ((∀ j, Nonempty (IncomingBackwardNeck K.toHistory i (Nrecord j) (Real.sqrt Q⁻¹))) →
+          Nonempty (GeometricCutoffRecord K.toHistory i parameters)) ∧
+        (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
+          riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
+            ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
+          riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
+        (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
+  classical
+  obtain ⟨c, hc, A, hA, Kreset, hKreset, hfamily⟩ := exists_prepared_horn_cutoff_event_at_scale.{u}
+  refine ⟨StaticCapScaffold.ofCollarLength A hA, c, hc, ?_⟩
+  intro Dcap hDcap m accuracy haccuracy
+  obtain ⟨δ, hδ, hδ1, ε₀, hε₀, hmake⟩ := hfamily Dcap hDcap m accuracy haccuracy
+  refine ⟨δ, ε₀, hδ, hδ1, hε₀, ?_⟩
+  intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
+  obtain ⟨coreBound, hcoreNonneg, hproduce⟩ := hmake P hε
+  obtain ⟨Qout, E, p, N, hQ, hG, hL, hOld, hBoundary,
+    hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
+    geometry, hgeometry, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
+    side, horder, hδ1', e, hscale, hneck⟩ := hproduce Q hQscale hQnominal
+  have hext : ∃ (K : RetainedCoreHistory P₀) (B : InitialIdentification P₀ g₀ K.toHistory),
+      initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
+      K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
+      HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+      ∃ i : Fin K.eventCount, i.val = H.eventCount ∧
+        K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
+        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
+        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
+        ∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
+            (H.time (Fin.last H.eventCount)) D.endTime)
+          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
+          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount)),
+          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
+            (Eappend.toRetainedCoreEvent hOldAppend) hInitial := by
+    cases D with
+    | mk stage startTime endTime hnonneg hlt slab terminal singular params =>
+      cases hstage
+      cases hstart
+      have hinitE : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+          H.initialMetric (Fin.last H.eventCount) := by
+        rw [hG]
+        exact eq_of_heq hinit
+      obtain ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
+        i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent, hK⟩ :=
+        exists_append_metricCutCapEvent H initial htime E hOld hinitE
+      exact ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
+        i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent,
+        E, hOld, hinitE, HEq.rfl, hK⟩
+  obtain ⟨K, B, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
+    i, hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend⟩ := hext
+  have hdelta : δ ≤ p.delta D.endTime := by rw [hpδ]
+  have hk : max (p.modelOrder + 6) (2 * ⌊δ⁻¹⌋₊ + 4) ≤
+      max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4) := by rw [hpM]
+  obtain ⟨NOrigH, hmarkH, Nrecord, eOriginal, hNOrigH, hscaleH, hNrecord, hTube, hrecord⟩ :=
+    exists_record_from_original_backward
+    E hsrc hout hsrcTime houtTime geometry hEvent hdelta hk hr
+    δOrig kOrig NOrig hδOrig hδ1' rotation hmark side horder e hneck
+  exact ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
+    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
+    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
+    (by simpa only [hOld] using geometry.protected_interior), geometry.retained_meets_protected,
+    fun j => (hscaleH j).trans (hscale j), hNrecord, hTube, hrecord, hvol, hcap⟩
+
+theorem exists_uniform_horn_cutoff_history_extension_at_base_bounded_scale :
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+      4 ≤ recenterConstant ∧
+    ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
+    ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
+    ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
+      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      H.time (Fin.last H.eventCount) = H.horizon →
+      ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
+      H.time (Fin.last H.eventCount) = D.startTime →
+      HEq (D.slab.flow.base.metric D.startTime) (H.initialMetric (Fin.last H.eventCount)) →
+      ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
+      ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
+        (hOld : E.old = E.transition.trace.retainedCore)
+        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
+        (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
+        (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
+          (δOriginal j) (kOriginal j))
+        (hδOriginal : ∀ j, δOriginal j ≤ δ)
+        (rotation : Fin n → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+        (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j)
+          spherePoint = (NOriginal j).sphereMark)
+        (side : Fin n → Bool)
+        (horder : ∀ j, max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4) ≤ kOriginal j)
+        (hδ1 : δ < 1)
+        (Nrecord : (K.toHistory.event i).transition.trace.tubes.Index →
+          NormalizedNeck (K.toHistory.event i).terminal.metric δ
+            (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)))
+        (eOriginal : Fin n ≃ (K.toHistory.event i).transition.trace.tubes.Index),
+        0 < Q ∧
+        Q = max (2 * Λ * (P.coreRadius ^ 2)⁻¹)
+          (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) + 1 ∧ E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
+        E.transition.boundaryFrameReversing ∧
+        initial.IsPrefixOf initialK ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
+        K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
+        HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+        i.val = H.eventCount ∧ K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
+        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
+        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
+        (∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
+            (H.time (Fin.last H.eventCount)) D.endTime)
+          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
+          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount)),
+          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
+            (Eappend.toRetainedCoreEvent hOldAppend) hInitial) ∧
+        parameters.delta = (fun _ => δ) ∧ parameters.protectedRadius = (fun _ => P.coreRadius) ∧
+        parameters.neckRadius = (fun _ => D.parameters.neckRadius D.endTime) ∧
+        parameters.fixed = fixed ∧ parameters.recenterConstant = recenterConstant ∧
+        parameters.modelOrder = m ∧ parameters.modelRadius = Dcap ∧ parameters.modelAccuracy = accuracy ∧
+        (∀ x : E.incoming.terminalRegularOpen,
+          metricScalarAt E.terminal.metric x ≤ ((parameters.protectedRadius D.endTime) ^ 2)⁻¹ →
+          x.val ∈ interior (Subtype.val '' E.old)) ∧
+        (∀ c : ConnectedComponents E.transition.trace.tubes.core,
+          (∃ x : E.transition.trace.tubes.core,
+            ConnectedComponents.mk x = c ∧ x ∈ E.transition.trace.retainedCore) →
+          ∃ x : E.incoming.terminalRegularOpen,
+            ∃ hx : x.val ∈ E.transition.trace.tubes.core,
+              ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧ metricScalarAt E.terminal.metric x ≤
+                ((parameters.protectedRadius D.endTime) ^ 2)⁻¹) ∧
+        (∀ j, (NOriginal j).scale = Q) ∧
+        (∀ j, Nrecord (eOriginal j) =
+          (((NOriginal j).monoDelta (hδOriginal j) hδ1).rotatedDatum
+            (rotation j) (hmark j) (side j)).oriented.toNormalizedNeck.lowerOrder (horder j)) ∧
+        (∀ j (z : TubeDomain) (hz : (z.1, z.2.val) ∈ neckBuffer δ),
+          (K.toHistory.event i).transition.trace.tubes.tube j z =
+            ((Nrecord j).chart ⟨(z.1, z.2.val), hz⟩).val) ∧
+        ((∀ j, Nonempty (IncomingBackwardNeck K.toHistory i (Nrecord j) (Real.sqrt Q⁻¹))) →
+          Nonempty (GeometricCutoffRecord K.toHistory i parameters)) ∧
+        (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
+          riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
+            ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
+          riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
+        (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
+  obtain ⟨fixed, c, hc, hfamily⟩ := exists_uniform_horn_cutoff_history_extension_at_scale.{u}
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dcap hDcap m accuracy haccuracy
+  obtain ⟨δ, ε₀, hδ, hδ1, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy
+  refine ⟨δ, ε₀, hδ, hδ1, hε₀, ?_⟩
+  intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε
+  let Q := max (2 * Λ * (P.coreRadius ^ 2)⁻¹)
+    (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) + 1
+  have hQscale : 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q := by
+    dsimp [Q]
+    linarith [le_max_left (2 * Λ * (P.coreRadius ^ 2)⁻¹)
+      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹)]
+  have hQnominal : (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q := by
+    dsimp [Q]
+    linarith [le_max_right (2 * Λ * (P.coreRadius ^ 2)⁻¹)
+      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹)]
+  obtain ⟨Qout, E, hOld, K, initialK, i, parameters, n, δOriginal, kOriginal,
+    NOriginal, hδOriginal, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, hrest⟩ := hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
+  exact ⟨Qout, E, hOld, K, initialK, i, parameters, Q, n, δOriginal, kOriginal,
+    NOriginal, hδOriginal, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, rfl, hrest⟩
+
+theorem exists_neckRadius_horn_cutoff_history_extension_at_base_bounded_scale :
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+      4 ≤ recenterConstant ∧
+    ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
+    ∃ δ Λ : ℝ, 0 < δ ∧ δ < 1 ∧ 1 ≤ Λ ∧
+    ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
+      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      H.time (Fin.last H.eventCount) = H.horizon →
+      ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
+      H.time (Fin.last H.eventCount) = D.startTime →
+      HEq (D.slab.flow.base.metric D.startTime) (H.initialMetric (Fin.last H.eventCount)) →
+      ∃ (ρ : ℝ → ℝ) (_ : ∀ t, 0 ≤ t → 0 < ρ t),
+        (∀ t, 0 ≤ t → ρ t ≤ D.parameters.neckRadius t) ∧
+        (Antitone D.parameters.neckRadius → Antitone ρ) ∧
+        (AntitoneOn D.parameters.neckRadius (Ici 0) → AntitoneOn ρ (Ici 0)) ∧
+        D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
+      ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
+        (hOld : E.old = E.transition.trace.retainedCore)
+        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
+        (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
+        (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
+          (δOriginal j) (kOriginal j))
+        (hδOriginal : ∀ j, δOriginal j ≤ δ)
+        (rotation : Fin n → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+        (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j)
+          spherePoint = (NOriginal j).sphereMark)
+        (side : Fin n → Bool)
+        (horder : ∀ j, max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4) ≤ kOriginal j)
+        (hδ1 : δ < 1)
+        (Nrecord : (K.toHistory.event i).transition.trace.tubes.Index →
+          NormalizedNeck (K.toHistory.event i).terminal.metric δ
+            (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)))
+        (eOriginal : Fin n ≃ (K.toHistory.event i).transition.trace.tubes.Index),
+        0 < Q ∧
+        Q = max (2 * Λ * ((D.parameters.delta D.endTime * ρ D.endTime) ^ 2)⁻¹)
+          (((δ ^ 2 * ρ D.endTime) ^ 2)⁻¹) + 1 ∧
+        E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
+        E.transition.boundaryFrameReversing ∧
+        initial.IsPrefixOf initialK ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
+        K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
+        HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+        i.val = H.eventCount ∧ K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
+        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
+        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
+        (∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
+            (H.time (Fin.last H.eventCount)) D.endTime)
+          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
+          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount)),
+          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
+            (Eappend.toRetainedCoreEvent hOldAppend) hInitial) ∧
+        parameters.delta = (fun _ => δ) ∧ parameters.protectedRadius = (fun _ => D.parameters.delta D.endTime * ρ D.endTime) ∧
+        parameters.neckRadius = (fun _ => ρ D.endTime) ∧
+        parameters.fixed = fixed ∧ parameters.recenterConstant = recenterConstant ∧
+        parameters.modelOrder = m ∧ parameters.modelRadius = Dcap ∧ parameters.modelAccuracy = accuracy ∧
+        (∀ x : E.incoming.terminalRegularOpen,
+          metricScalarAt E.terminal.metric x ≤ ((parameters.protectedRadius D.endTime) ^ 2)⁻¹ →
+          x.val ∈ interior (Subtype.val '' E.old)) ∧
+        (∀ x : E.incoming.terminalRegularOpen,
+          metricScalarAt E.terminal.metric x ≤ ((D.parameters.protectedRadius D.endTime) ^ 2)⁻¹ →
+          x.val ∈ interior (Subtype.val '' E.old)) ∧
+        (∀ c : ConnectedComponents E.transition.trace.tubes.core,
+          (∃ x : E.transition.trace.tubes.core,
+            ConnectedComponents.mk x = c ∧ x ∈ E.transition.trace.retainedCore) →
+          ∃ x : E.incoming.terminalRegularOpen,
+            ∃ hx : x.val ∈ E.transition.trace.tubes.core,
+              ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧ metricScalarAt E.terminal.metric x ≤
+                ((parameters.protectedRadius D.endTime) ^ 2)⁻¹) ∧
+        (∀ j, (NOriginal j).scale = Q) ∧
+        (∀ j, Nrecord (eOriginal j) =
+          (((NOriginal j).monoDelta (hδOriginal j) hδ1).rotatedDatum
+            (rotation j) (hmark j) (side j)).oriented.toNormalizedNeck.lowerOrder (horder j)) ∧
+        (∀ j (z : TubeDomain) (hz : (z.1, z.2.val) ∈ neckBuffer δ),
+          (K.toHistory.event i).transition.trace.tubes.tube j z =
+            ((Nrecord j).chart ⟨(z.1, z.2.val), hz⟩).val) ∧
+        ((∀ j, Nonempty (IncomingBackwardNeck K.toHistory i (Nrecord j) (Real.sqrt Q⁻¹))) →
+          Nonempty (GeometricCutoffRecord K.toHistory i parameters)) ∧
+        (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
+          riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
+            ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
+          riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
+        (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
+  obtain ⟨fixed, recenterConstant, hconstant, hfamily⟩ :=
+    exists_uniform_horn_cutoff_history_extension_at_base_bounded_scale.{u}
+  refine ⟨fixed, recenterConstant, hconstant, ?_⟩
+  intro Dcap hDcap m accuracy haccuracy
+  obtain ⟨δ, ε₀, hδ, hδ1, hε₀, hfactory⟩ := hfamily Dcap hDcap m accuracy haccuracy
+  obtain ⟨Λ, hΛ, hpresentation⟩ := OneStepIncoming.exists_neckRadius_terminalCorePresentation hε₀
+  refine ⟨δ, Λ, hδ, hδ1, hΛ, ?_⟩
+  intro P₀ g₀ H initial htime D hstage hstart hinit
+  obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, _, hprotect, P, hradius, _⟩ := hpresentation D
+  obtain ⟨Qout, E, hOld, K, B, i, p, Q, n, δOrig, kOrig, NOrig,
+    hδOrig, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, hQeq, hG, hL, hbfr, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
+    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpConstant, hpM, hpD, hpAcc,
+    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+    hfactory H initial htime (D.withNeckRadius ρ hρ) hstage hstart hinit P le_rfl
+  have hpRadius : p.protectedRadius = (fun _ => D.parameters.delta D.endTime * ρ D.endTime) :=
+    hpR.trans (congrArg (fun r : ℝ => fun _ : ℝ => r) hradius)
+  have hQexact : Q =
+      max (2 * Λ * ((D.parameters.delta D.endTime * ρ D.endTime) ^ 2)⁻¹)
+        (((δ ^ 2 * ρ D.endTime) ^ 2)⁻¹) + 1 := by
+    change Q = max (2 * Λ * (P.coreRadius ^ 2)⁻¹)
+      (((δ ^ 2 * ρ D.endTime) ^ 2)⁻¹) + 1 at hQeq
+    simpa only [hradius] using hQeq
+  refine ⟨ρ, hρ, hρle, hmono, hmonoOn, hprotect, Qout, E, hOld, K, B, i, p,
+    Q, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, hQexact, hG, hL, hbfr, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric, hi, hsrc,
+    hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpRadius, hpρ, hpFixed, hpConstant, hpM, hpD, hpAcc,
+    hprotected, ?_, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap⟩
+  intro x hx
+  apply hprotected
+  apply hx.trans
+  rw [hpRadius]
+  have hs : 0 ≤ D.endTime := D.startTime_nonneg.trans D.startTime_lt_endTime.le
+  have hr : 0 < D.parameters.delta D.endTime * ρ D.endTime :=
+    mul_pos (D.parameters.delta_pos _ hs) (hρ _ hs)
+  apply inv_anti₀ (sq_pos_of_pos hr)
+  have hp := D.parameters.protectedRadius_pos D.endTime hs
+  nlinarith
+
 
 theorem exists_uniform_horn_cutoff_history_extension_of_cut_necks :
     ∃ (fixed : StaticCapScaffold) (recenterConstant Kreset : ℝ),

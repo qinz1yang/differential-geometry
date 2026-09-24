@@ -410,8 +410,9 @@ namespace OneStepIncoming
 
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
-theorem exists_neckRadius_terminalCorePresentation {ε : ℝ} (hε : 0 < ε) :
-    ∃ Λ : ℝ, 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
+theorem exists_neckRadius_terminalCorePresentation_with_scale_bound {ε : ℝ} (hε : 0 < ε) :
+    ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
+      ∃ q : ℝ, 0 < q ∧ ∀ q' : ℝ, q ≤ q' →
       ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
         (∀ t, 0 ≤ t → ρ t ≤ D.parameters.neckRadius t) ∧
         (Antitone D.parameters.neckRadius → Antitone ρ) ∧
@@ -421,11 +422,15 @@ theorem exists_neckRadius_terminalCorePresentation {ε : ℝ} (hε : 0 < ε) :
         D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
         ∃ P : TerminalCorePresentation (D.withNeckRadius ρ hρ) ε Λ,
           P.coreRadius = D.parameters.delta D.endTime * ρ D.endTime ∧
+          q' < C * (P.coreRadius ^ 2)⁻¹ ∧
+          (P.coreRadius ^ 2)⁻¹ ≤
+            max (max ((D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)^2)⁻¹
+              ((D.parameters.protectedRadius D.endTime)^2)⁻¹) (4 * (max q' 0 + 1) / C) ∧
           ∀ x : D.slab.terminalRegularOpen,
             metricScalarAt D.terminal.metric x ≤ ((D.parameters.protectedRadius D.endTime)^2)⁻¹ →
               ∃ c ∈ P.component, x ∈ interior (P.core c) := by
   classical
-  obtain ⟨η₁, hη₁, hcutoff⟩ := exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives.{u}
+  obtain ⟨η₁, hη₁, hcutoff⟩ := exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound.{u}
   obtain ⟨η₂, hη₂, hends⟩ := exists_smooth_saved_end_decomposition_on_noncompact_component.{u,u}
   let δ := min η₁ (min η₂ (ε / 26000))
   have hδ : 0 < δ := lt_min hη₁ (lt_min hη₂ (by positivity))
@@ -435,9 +440,13 @@ theorem exists_neckRadius_terminalCorePresentation {ε : ℝ} (hε : 0 < ε) :
     have hh : δ ≤ ε / 26000 := (min_le_right _ _).trans (min_le_right _ _)
     linarith
   obtain ⟨C, Λ, hC, hΛ, hcutoff⟩ := hcutoff δ hδ hδ₁
-  refine ⟨Λ, hΛ, ?_⟩
+  refine ⟨C, Λ, hC, hΛ, ?_⟩
   intro D
-  obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, hregions⟩ := hcutoff D
+  obtain ⟨q, hq, hcutoff⟩ := hcutoff D
+  refine ⟨q, hq, ?_⟩
+  intro q' hqq'
+  obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, hscale, hscaleBound, hregions⟩ :=
+    hcutoff q' hqq'
   let D' := D.withNeckRadius ρ hρ
   let r := D.parameters.delta D.endTime * ρ D.endTime
   let A := (r ^ 2)⁻¹
@@ -477,19 +486,45 @@ theorem exists_neckRadius_terminalCorePresentation {ε : ℝ} (hε : 0 < ε) :
         hlowK hendsK hdisjoint hfrontK hcover hcharts hcollar
       exact ⟨hUeq ▸ Q.toAmbient hUclosed⟩
   let P := assembleTerminalCorePresentation D' hε hΛ hr rfl hproducer
-  refine ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, P, P.coreRadius_eq, ?_⟩
-  intro x hx
-  have hprotectA : ((D.parameters.protectedRadius D.endTime)^2)⁻¹ ≤ A := by
-    apply inv_anti₀ (sq_pos_of_pos hr)
-    have hp := D.parameters.protectedRadius_pos D.endTime hs
-    change r ≤ D.parameters.protectedRadius D.endTime at hprotect
-    nlinarith
-  have hxA : metricScalarAt D'.terminal.metric x ≤ (P.coreRadius ^ 2)⁻¹ := by
-    rw [P.coreRadius_eq]
-    exact hx.trans hprotectA
-  have hc := (P.component_iff_meets_low (ConnectedComponents.mk x)).mpr ⟨x, rfl, hxA⟩
-  exact ⟨ConnectedComponents.mk x, hc,
-    P.low_mem_interior_core _ hc x rfl hxA⟩
+  refine ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, P, P.coreRadius_eq, ?_, ?_, ?_⟩
+  · rw [P.coreRadius_eq]
+    exact hscale
+  · rw [P.coreRadius_eq]
+    exact hscaleBound
+  · intro x hx
+    have hprotectA : ((D.parameters.protectedRadius D.endTime)^2)⁻¹ ≤ A := by
+      apply inv_anti₀ (sq_pos_of_pos hr)
+      have hp := D.parameters.protectedRadius_pos D.endTime hs
+      change r ≤ D.parameters.protectedRadius D.endTime at hprotect
+      nlinarith
+    have hxA : metricScalarAt D'.terminal.metric x ≤ (P.coreRadius ^ 2)⁻¹ := by
+      rw [P.coreRadius_eq]
+      exact hx.trans hprotectA
+    have hc := (P.component_iff_meets_low (ConnectedComponents.mk x)).mpr ⟨x, rfl, hxA⟩
+    exact ⟨ConnectedComponents.mk x, hc,
+      P.low_mem_interior_core _ hc x rfl hxA⟩
+
+theorem exists_neckRadius_terminalCorePresentation {ε : ℝ} (hε : 0 < ε) :
+    ∃ Λ : ℝ, 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
+      ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
+        (∀ t, 0 ≤ t → ρ t ≤ D.parameters.neckRadius t) ∧
+        (Antitone D.parameters.neckRadius → Antitone ρ) ∧
+        (AntitoneOn D.parameters.neckRadius (Ici 0) → AntitoneOn ρ (Ici 0)) ∧
+        (HasRecenterConstants.{u} D.parameters →
+          HasRecenterConstants.{u} (D.withNeckRadius ρ hρ).parameters) ∧
+        D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
+        ∃ P : TerminalCorePresentation (D.withNeckRadius ρ hρ) ε Λ,
+          P.coreRadius = D.parameters.delta D.endTime * ρ D.endTime ∧
+          ∀ x : D.slab.terminalRegularOpen,
+            metricScalarAt D.terminal.metric x ≤ ((D.parameters.protectedRadius D.endTime)^2)⁻¹ →
+              ∃ c ∈ P.component, x ∈ interior (P.core c) := by
+  obtain ⟨C, Λ, _, hΛ, hproduce⟩ := exists_neckRadius_terminalCorePresentation_with_scale_bound hε
+  refine ⟨Λ, hΛ, ?_⟩
+  intro D
+  obtain ⟨q, _, hproduce⟩ := hproduce D
+  obtain ⟨ρ, hρ, hle, hmono, hmonoOn, hrecenter, hprotect, P, hradius, _, _, hlow⟩ :=
+    hproduce q le_rfl
+  exact ⟨ρ, hρ, hle, hmono, hmonoOn, hrecenter, hprotect, P, hradius, hlow⟩
 
 end OneStepIncoming
 

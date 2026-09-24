@@ -208,6 +208,66 @@ theorem exists_capCore_in_cutCore_of_spatialNeck_center_close
   exact T.exists_capCore_in_cutCore_of_boundary_spheres_subset a cap.core_model hsmooth
     (T.central_and_boundary_spheres_subset_of_closedBand_subset a hinside).2 hanchor
 
+omit [ChartedSpace ThreeSpace M] [T2Space M] in
+private theorem closedBand_subset_interior_of_meets_of_frontier_eq_boundarySphere
+    {K : Set M} (b : T.Boundary)
+    (hfront : frontier K = range (T.boundarySphere b))
+    {j : T.Index} (hjb : j ≠ b.1) (hmeet : (K ∩ T.removedBand j).Nonempty) :
+    T.tube j '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ⊆ interior K := by
+  have hdis : Disjoint
+      (T.tube j '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1}) (frontier K) := by
+    rw [hfront]
+    exact (T.disjoint hjb).mono (image_subset_range _ _) (by
+      rintro x ⟨z, rfl⟩
+      exact mem_range_self (z, boundaryLevel b.2))
+  obtain ⟨x, hxK, q, hq, hqx⟩ := hmeet
+  apply isPreconnected_subset_interior_of_meets_of_disjoint_frontier
+    (T.isPreconnected_closedBand j) _ hdis
+  exact ⟨x, ⟨q, ⟨hq.1.le, hq.2.le⟩, hqx⟩, hxK⟩
+
+theorem exists_capCore_in_cutCore_of_captured_boundary_spheres
+    (a : T.Index) {U : Set M} (cap : CapCore U)
+    (hsmooth : ∀ b : T.Boundary, IsSmoothEmbedding I2 I3 ∞ (T.boundarySphere b))
+    (hinside : ∀ side : Bool, range (T.boundarySphere (a, side)) ⊆ interior U) :
+    ∃ (b : T.Boundary) (K : Set M), Nonempty (CapCore K) ∧ K ⊆ interior U ∧
+      frontier K = range (T.boundarySphere b) ∧ K ⊆ T.core := by
+  classical
+  let occupied (K : Set M) : Finset T.Index :=
+    Finset.univ.filter (fun j => (K ∩ T.removedBand j).Nonempty)
+  let candidate (n : ℕ) : Prop := ∃ (b : T.Boundary) (K : Set M),
+    Nonempty (CapCore K) ∧ K ⊆ interior U ∧ frontier K = range (T.boundarySphere b) ∧
+      Disjoint K (T.removedBand b.1) ∧ (occupied K).card = n
+  have hex : ∃ n, candidate n := by
+    obtain ⟨side, K, hK, hKU, hfront, havoid⟩ :=
+      T.exists_capCore_cutting_side_of_boundary_spheres_subset a cap
+        (fun side => hsmooth (a, side)) hinside
+    exact ⟨(occupied K).card, (a, side), K, hK, hKU, hfront, havoid, rfl⟩
+  obtain ⟨b, K, hK, hKU, hfront, havoid, hcount⟩ := Nat.find_spec hex
+  refine ⟨b, K, hK, hKU, hfront, ?_⟩
+  intro x hxK hxremoved
+  obtain ⟨j, hxj⟩ := mem_iUnion.mp hxremoved
+  have hjb : j ≠ b.1 := fun he => disjoint_left.mp havoid hxK (he ▸ hxj)
+  have hband := T.closedBand_subset_interior_of_meets_of_frontier_eq_boundarySphere
+    b hfront hjb ⟨x, hxK, hxj⟩
+  obtain ⟨side, K', hK', hK'K, hfront', havoid'⟩ :=
+    T.exists_capCore_cutting_side_of_closedBand_subset j hK.some
+      (fun side => hsmooth (j, side)) hband
+  have hsub : occupied K' ⊆ occupied K := by
+    intro k hk
+    obtain ⟨z, hzK', hzk⟩ := (Finset.mem_filter.mp hk).2
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, z, interior_subset (hK'K hzK'), hzk⟩
+  have hjold : j ∈ occupied K := Finset.mem_filter.mpr ⟨Finset.mem_univ _, x, hxK, hxj⟩
+  have hjnew : j ∉ occupied K' := by
+    intro hj
+    obtain ⟨z, hzK', hzj⟩ := (Finset.mem_filter.mp hj).2
+    exact disjoint_left.mp havoid' hzK' hzj
+  have hlt : (occupied K').card < (occupied K).card :=
+    Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr
+      ⟨hsub, fun he => hjnew (he.symm ▸ hjold)⟩)
+  exact Nat.find_min hex (hcount ▸ hlt)
+    ⟨(j, side), K', hK', hK'K.trans (interior_subset.trans hKU), hfront', havoid', rfl⟩
+
+
 section
 
 variable [IsManifold I3 ∞ M]

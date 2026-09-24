@@ -5391,7 +5391,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSourceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapturedCapClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapSide
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalScalarDerivative

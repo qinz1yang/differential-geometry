@@ -100,4 +100,59 @@ theorem exists_pos_volume_debit_and_eventCount_bound_of_finite_scales
   have hb := hbound H bin hK hT hscalar hcap
   linarith
 
+theorem ObservedHistory.eventCount_le_card_initial_add_volume_bound_of_scale_le
+    (H : ObservedHistory.{u}) (scale : Fin H.eventCount → ℝ)
+    {Q K T : ℝ} (hQ : 0 < Q) (hscale : ∀ i, 0 < scale i)
+    (hscale_le : ∀ i, scale i ≤ Q)
+    (hK : 0 ≤ K) (hT : H.horizon ≤ T)
+    (hscalar : ∀ i : Fin H.eventCount, ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ x : (H.stage i.castSucc).Carrier,
+      -K ≤ metricScalarAt ((H.event i).incoming.flow.base.metric t) x)
+    (hcap : ∀ i : Fin H.eventCount, ∃ F : Set (H.event i).incoming.terminalRegularOpen,
+      IsCompact F ∧
+      riemannianVolumeMeasure ThreeModel (H.stage i.succ).Carrier (H.event i).outputMetric univ +
+        ENNReal.ofReal ((Nat.card (H.event i).transition.trace.tubes.Index : ℝ) * scale i ^ (-3 / 2 : ℝ)) ≤
+      riemannianVolumeMeasure ThreeModel (H.event i).incoming.terminalRegularOpen
+        (H.event i).terminal.metric F) :
+    (H.eventCount : ℝ) ≤ Nat.card (ConnectedComponents (H.stage 0).Carrier) +
+      2 * (Real.exp (K * T) *
+        (riemannianVolumeMeasure ThreeModel (H.stage 0).Carrier
+          (H.initialMetric 0) univ).toReal / Q ^ (-3 / 2 : ℝ)) := by
+  apply H.eventCount_le_card_initial_add_volume_bound (Real.rpow_pos_of_pos hQ _) hK hT hscalar
+  intro i
+  obtain ⟨F, hF, hvol⟩ := hcap i
+  refine ⟨F, hF, le_trans ?_ hvol⟩
+  apply add_le_add_right
+  apply ENNReal.ofReal_le_ofReal
+  apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+  exact Real.rpow_le_rpow_of_nonpos (hscale i) (hscale_le i) (by norm_num)
+
+theorem ObservedHistory.eventCount_le_card_initial_add_volume_bound_of_scale_le_of_fixedHamiltonIveyRegion
+    (H : ObservedHistory.{u}) {parameters : CutoffParameters}
+    (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
+    {a₀ : ℝ} (ha₀ : 0 < a₀)
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x)
+    (hlower : ∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x)
+    (scale : Fin H.eventCount → ℝ) {Q T : ℝ} (hQ : 0 < Q)
+    (hscale : ∀ i, 0 < scale i) (hscale_le : ∀ i, scale i ≤ Q) (hT : H.horizon ≤ T)
+    (hcap : ∀ i : Fin H.eventCount, ∃ F : Set (H.event i).incoming.terminalRegularOpen,
+      IsCompact F ∧
+      riemannianVolumeMeasure ThreeModel (H.stage i.succ).Carrier (H.event i).outputMetric univ +
+        ENNReal.ofReal ((Nat.card (H.event i).transition.trace.tubes.Index : ℝ) * scale i ^ (-3 / 2 : ℝ)) ≤
+      riemannianVolumeMeasure ThreeModel (H.event i).incoming.terminalRegularOpen
+        (H.event i).terminal.metric F) :
+    (H.eventCount : ℝ) ≤ Nat.card (ConnectedComponents (H.stage 0).Carrier) +
+      2 * (Real.exp ((3 / a₀) * T) *
+        (riemannianVolumeMeasure ThreeModel (H.stage 0).Carrier
+          (H.initialMetric 0) univ).toReal / Q ^ (-3 / 2 : ℝ)) := by
+  apply H.eventCount_le_card_initial_add_volume_bound_of_fixedHamiltonIveyRegion
+    records ha₀ hfixed hlower (Real.rpow_pos_of_pos hQ _) hT
+  intro i
+  obtain ⟨F, hF, hvol⟩ := hcap i
+  refine ⟨F, hF, le_trans ?_ hvol⟩
+  apply add_le_add_right
+  apply ENNReal.ofReal_le_ofReal
+  apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+  exact Real.rpow_le_rpow_of_nonpos (hscale i) (hscale_le i) (by norm_num)
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

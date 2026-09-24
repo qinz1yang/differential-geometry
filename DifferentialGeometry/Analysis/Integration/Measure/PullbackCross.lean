@@ -214,6 +214,38 @@ theorem riemannianVolumeMeasure_partialIsometry
   · rintro ⟨hy, hyt⟩
     exact ⟨Φ.symm y, ⟨hy, Φ.toPartialEquiv.map_target hyt⟩, Φ.toPartialEquiv.right_inv hyt⟩
 
+theorem riemannianVolumeMeasure_image_of_partialIsometry
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [T2Space N] [SigmaCompactSpace N]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (Φ : PartialDiffeomorph I J M N 1)
+    (hmetric : ∀ x ∈ Φ.source, ∀ v w, g.inner x v w =
+      h.inner (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w))
+    {A : Set M} (hA : MeasurableSet A) (hAs : A ⊆ Φ.source) :
+    riemannianVolumeMeasure I M g A = riemannianVolumeMeasure J N h (Φ '' A) := by
+  have hvolume := riemannianVolumeMeasure_partialIsometry g h Φ hmetric
+  have hsymm : AEMeasurable Φ.symm
+      ((riemannianVolumeMeasure J N h).restrict Φ.target) :=
+    Φ.contMDiffOn_invFun.continuousOn.aemeasurable Φ.open_target.measurableSet
+  have hset : (Φ.symm ⁻¹' A) ∩ Φ.target = Φ '' A := by
+    ext y
+    constructor
+    · rintro ⟨hy, hyt⟩
+      exact ⟨Φ.symm y, hy, Φ.toPartialEquiv.right_inv hyt⟩
+    · rintro ⟨x, hx, rfl⟩
+      refine ⟨?_, Φ.toPartialEquiv.map_source (hAs hx)⟩
+      change Φ.toPartialEquiv.invFun (Φ.toPartialEquiv.toFun x) ∈ A
+      have hleft : Φ.toPartialEquiv.invFun (Φ.toPartialEquiv.toFun x) = x :=
+        Φ.toPartialEquiv.left_inv (hAs hx)
+      exact hleft.symm ▸ hx
+  calc
+    _ = ((riemannianVolumeMeasure I M g).restrict Φ.source) A := by
+      rw [Measure.restrict_apply hA, inter_eq_self_of_subset_left hAs]
+    _ = (Measure.map Φ.symm ((riemannianVolumeMeasure J N h).restrict Φ.target)) A := by
+      rw [hvolume]
+    _ = ((riemannianVolumeMeasure J N h).restrict Φ.target) (Φ.symm ⁻¹' A) :=
+      Measure.map_apply_of_aemeasurable hsymm hA
+    _ = _ := by rw [Measure.restrict_apply' Φ.open_target.measurableSet, hset]
+
 theorem riemannianVolumeMeasure_pullback_cross
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space N] [SigmaCompactSpace N]

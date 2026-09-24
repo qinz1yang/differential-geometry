@@ -108,9 +108,10 @@ theorem exists_neckRadius_finite_spherical_barrier_cover
   intro y hy hnoncompact
   exact hcover D.terminal A y hA hscale hy hnoncompact
 
-theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives :
+theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
+        ∃ q : ℝ, 0 < q ∧ ∀ q' : ℝ, q ≤ q' →
         ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
           (∀ t, 0 ≤ t → ρ t ≤ D.parameters.neckRadius t) ∧
           (Antitone D.parameters.neckRadius → Antitone ρ) ∧
@@ -118,6 +119,10 @@ theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives :
           (HasRecenterConstants.{u} D.parameters →
             HasRecenterConstants.{u} (D.withNeckRadius ρ hρ).parameters) ∧
           D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
+          q' < C * ((D.parameters.delta D.endTime * ρ D.endTime)^2)⁻¹ ∧
+          ((D.parameters.delta D.endTime * ρ D.endTime)^2)⁻¹ ≤
+            max (max ((D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)^2)⁻¹
+              ((D.parameters.protectedRadius D.endTime)^2)⁻¹) (4 * (max q' 0 + 1) / C) ∧
           let D' := D.withNeckRadius ρ hρ
           let A := ((D'.parameters.delta D'.endTime * D'.parameters.neckRadius D'.endTime) ^ 2)⁻¹
           ∀ y : D'.slab.terminalRegularOpen, metricScalarAt D'.terminal.metric y ≤ A →
@@ -170,22 +175,13 @@ theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives :
   intro D
   have hs : 0 ≤ D.endTime := D.startTime_nonneg.trans D.startTime_lt_endTime.le
   have hd : 0 < D.parameters.delta D.endTime := D.parameters.delta_pos _ hs
-  have hp : 0 < D.parameters.protectedRadius D.endTime := D.parameters.protectedRadius_pos _ hs
-  let r := D.parameters.protectedRadius D.endTime / D.parameters.delta D.endTime
-  have hr : 0 < r := div_pos hp hd
-  let ρ₀ := fun t => min (D.parameters.neckRadius t) r
-  have hρ₀ : ∀ t, 0 ≤ t → 0 < ρ₀ t := fun t ht => lt_min (D.parameters.neckRadius_pos t ht) hr
-  obtain ⟨q, _, hregion⟩ := hmain D.stage D.startTime D.endTime D.slab
-  obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, hscale⟩ :=
-    (D.parameters.withNeckRadius ρ₀ hρ₀).exists_neckRadius_le_cutoff_scale_gt hs hCpos q
-  have hprotect : D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime := by
-    have hle : ρ D.endTime ≤ r := (hρle _ hs).trans (min_le_right _ _)
-    have hmul := (le_div_iff₀ hd).mp hle
-    nlinarith
-  refine ⟨ρ, hρ, (fun t ht => (hρle t ht).trans (min_le_left _ _)),
-    (fun h => hmono (h.min antitone_const)),
-    (fun h => hmonoOn (h.min antitoneOn_const)),
-    (fun h => h.withNeckRadius hρ), hprotect, ?_⟩
+  obtain ⟨q, hq, hregion⟩ := hmain D.stage D.startTime D.endTime D.slab
+  refine ⟨q, hq, ?_⟩
+  intro q' hqq'
+  obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, hprotect, hscale, hscaleBound⟩ :=
+    D.parameters.exists_neckRadius_le_protected_cutoff_scale_gt_with_bound hs hCpos q'
+  refine ⟨ρ, hρ, hρle, hmono, hmonoOn,
+    (fun h => h.withNeckRadius hρ), hprotect, hscale, hscaleBound, ?_⟩
   let D' := D.withNeckRadius ρ hρ
   let A := ((D'.parameters.delta D'.endTime * D'.parameters.neckRadius D'.endTime) ^ 2)⁻¹
   have hprod : 0 < D.parameters.delta D.endTime * ρ D.endTime := mul_pos hd (hρ _ hs)
@@ -198,12 +194,71 @@ theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives :
   intro y hy hnoncompact
   obtain ⟨ι, hi, hne, v, neck, level, W, hW, hreg, hlow, hupper,
     hdisjoint, hfront, hlevel, hcollar, hfrontscalar, hexterior⟩ :=
-    hregion D.terminal A (C * A) y hscale le_rfl (hy.trans hAle) hnoncompact
+    hregion D.terminal A (C * A) y (hqq'.trans_lt hscale) le_rfl (hy.trans hAle) hnoncompact
   refine ⟨ι, hi, hne, v, neck, level, W, hW, hreg, hlow,
     (fun x hx => hlow (hx.trans (hprotected.trans hAle))), ?_,
     hdisjoint, hfront, hlevel, hcollar, hfrontscalar, hexterior⟩
   intro x hx
   exact (hupper x hx).trans_eq (by change 8 * C2^2 * (C * A) = 8 * C2^2 * C * A; ring)
+
+theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives :
+    ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
+      ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
+        ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
+          (∀ t, 0 ≤ t → ρ t ≤ D.parameters.neckRadius t) ∧
+          (Antitone D.parameters.neckRadius → Antitone ρ) ∧
+          (AntitoneOn D.parameters.neckRadius (Ici 0) → AntitoneOn ρ (Ici 0)) ∧
+          (HasRecenterConstants.{u} D.parameters →
+            HasRecenterConstants.{u} (D.withNeckRadius ρ hρ).parameters) ∧
+          D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
+          let D' := D.withNeckRadius ρ hρ
+          let A := ((D'.parameters.delta D'.endTime * D'.parameters.neckRadius D'.endTime) ^ 2)⁻¹
+          ∀ y : D'.slab.terminalRegularOpen, metricScalarAt D'.terminal.metric y ≤ A →
+            ¬ IsCompact (connectedComponent y) →
+            let U := connectedComponentOpen (I := I3) y
+            ∃ (ι : Type u) (_ : Finite ι) (_ : Nonempty ι)
+              (v : ι → U) (neck : ∀ i, SpatialNeck (D'.terminal.metric.restrictOpen U) δ (v i))
+              (level : ι → ℝ) (W : Set U),
+              IsCompact W ∧ closure (interior W) = W ∧
+              {x : U | metricScalarAt (D'.terminal.metric.restrictOpen U) x ≤ C * A} ⊆ interior W ∧
+              {x : U | metricScalarAt (D'.terminal.metric.restrictOpen U) x ≤
+                ((D.parameters.protectedRadius D.endTime) ^ 2)⁻¹} ⊆ interior W ∧
+              (∀ x ∈ W, metricScalarAt (D'.terminal.metric.restrictOpen U) x ≤ Λ * A) ∧
+              Pairwise (fun i j => Disjoint
+                (range (fun z : Sphere 2 => (neck i).map (z, level i)))
+                (range (fun z : Sphere 2 => (neck j).map (z, level j)))) ∧
+              frontier W = ⋃ i, range (fun z : Sphere 2 => (neck i).map (z, level i)) ∧
+              (∀ i, |level i| ≤ 3) ∧
+              (∀ i, ∃ r σ : ℝ, 0 < r ∧ r ≤ 1 ∧ (σ = 1 ∨ σ = -1) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r, (z, level i + σ * t) ∈ (neck i).map.source) ∧
+                (∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ W ↔ t ≤ 0) ∧
+                ∀ z, ∀ t ∈ Ioo (-r) r,
+                  (neck i).map (z, level i + σ * t) ∈ interior W ↔ t < 0) ∧
+              (∀ x ∈ frontier W, 2 * (C * A) < metricScalarAt (D'.terminal.metric.restrictOpen U) x) ∧
+              ∀ V : Set U, W ⊆ V → ∀ x : U, x ∉ interior V →
+                C * A < metricScalarAt (D'.terminal.metric.restrictOpen U) x ∧
+                ∀ (p : U) (nk : SpatialNeck (D'.terminal.metric.restrictOpen U) δ p)
+                  (z : Sphere 2) (level : ℝ), |level| ≤ 4 → nk.map (z, level) = x →
+                  Nonempty (SpatialNeck (D'.terminal.metric.restrictOpen U) δ x) ∨
+                  ∃ K : CompactDomain U,
+                    Nonempty (CapCore K.carrier) ∧
+                    nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4) ⊆ interior K.carrier ∧
+                    (∀ w ∈ K.carrier, A < metricScalarAt (D'.terminal.metric.restrictOpen U) w ∧
+                      metricScalarAt (D'.terminal.metric.restrictOpen U) x / C <
+                        metricScalarAt (D'.terminal.metric.restrictOpen U) w ∧
+                      metricScalarAt (D'.terminal.metric.restrictOpen U) w <
+                        C * metricScalarAt (D'.terminal.metric.restrictOpen U) x) := by
+  obtain ⟨η, hη, hproduce⟩ :=
+    exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound.{u}
+  refine ⟨η, hη, ?_⟩
+  intro δ hδ hδη
+  obtain ⟨C, Λ, hC, hΛ, hproduce⟩ := hproduce δ hδ hδη
+  refine ⟨C, Λ, hC, hΛ, ?_⟩
+  intro D
+  obtain ⟨q, _, hproduce⟩ := hproduce D
+  obtain ⟨ρ, hρ, hle, hmono, hmonoOn, hrecenter, hprotect, _, _, hregion⟩ := hproduce q le_rfl
+  exact ⟨ρ, hρ, hle, hmono, hmonoOn, hrecenter, hprotect, hregion⟩
 
 
 end OneStepIncoming
