@@ -13726,3 +13726,5 @@ import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullbackCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCylinder
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandFrontier

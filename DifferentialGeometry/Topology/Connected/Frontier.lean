@@ -1,4 +1,4 @@
-import Mathlib.Topology.Connected.Basic
+import Mathlib.Topology.Connected.Clopen
 import DifferentialGeometry.Topology.Frontier
 
 namespace DifferentialGeometry.Topology
@@ -93,5 +93,41 @@ theorem frontier_union_eq_iUnion_of_isClosed_of_isPreconnected
     (hclosed : IsClosed B) (hB : frontier B ⊆ interior A) :
     frontier (A ∪ B) = ⋃ i ∈ {i | Disjoint (F i) B}, F i := by
   rw [frontier_union_eq_iUnion_of_isPreconnected F hF hfront hB, hclosed.closure_eq]
+
+variable {X : Type*} [TopologicalSpace X]
+
+theorem isClopen_preimage_of_frontier_union_subset
+    {K W C S : Set X} (hK : IsClosed K) (hS : IsClosed S)
+    (hKS : Disjoint K S) (hfront : frontier (W ∪ K) ⊆ S)
+    (hcore : W ∩ C ⊆ K ∪ S) :
+    IsClopen ((Subtype.val : C → X) ⁻¹' K) := by
+  refine ⟨hK.preimage continuous_subtype_val, ?_⟩
+  rw [isOpen_iff_mem_nhds]
+  intro x hx
+  have hxnot : x.val ∉ S := disjoint_left.mp hKS hx
+  have hxfront : x.val ∉ frontier (W ∪ K) := fun h => hxnot (hfront h)
+  have hxint : x.val ∈ interior (W ∪ K) :=
+    (mem_interior_iff_notMem_frontier (show x.val ∈ W ∪ K from Or.inr hx)).mpr hxfront
+  have hU : IsOpen (interior (W ∪ K) \ S) := isOpen_interior.sdiff hS
+  apply Filter.mem_of_superset
+    ((hU.preimage continuous_subtype_val).mem_nhds (show x.val ∈ interior (W ∪ K) \ S from
+      ⟨hxint,hxnot⟩))
+  intro y hy
+  rcases interior_subset hy.1 with hyW | hyK
+  · exact (hcore ⟨hyW,y.property⟩).resolve_right hy.2
+  · exact hyK
+
+theorem connectedComponent_eq_preimage_of_frontier_union_subset
+    {K W C S : Set X} (hK : IsClosed K) (hconn : IsPreconnected K)
+    (hKC : K ⊆ C) (hS : IsClosed S) (hKS : Disjoint K S)
+    (hfront : frontier (W ∪ K) ⊆ S) (hcore : W ∩ C ⊆ K ∪ S)
+    (x : C) (hx : x.val ∈ K) :
+    connectedComponent x = (Subtype.val : C → X) ⁻¹' K := by
+  have hcl := isClopen_preimage_of_frontier_union_subset hK hS hKS hfront hcore
+  have hpre : IsPreconnected ((Subtype.val : C → X) ⁻¹' K) := by
+    apply _root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mp
+    rwa [Subtype.image_preimage_coe, inter_eq_right.mpr hKC]
+  exact Subset.antisymm (hcl.connectedComponent_subset hx) (hpre.subset_connectedComponent hx)
+
 
 end DifferentialGeometry.Topology
