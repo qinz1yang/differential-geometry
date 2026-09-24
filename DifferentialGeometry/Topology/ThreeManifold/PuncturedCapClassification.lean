@@ -765,3 +765,58 @@ theorem isPoincareStandard_discardedComponent_of_projective_cutting_side
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
 end
+
+section
+
+namespace DifferentialGeometry.Topology.SphericalCapping
+
+universe u
+variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
+  (C : SphericalCapping M N T)
+
+theorem isPoincareStandard_component_of_capCore_cutting_side
+    {K : Set M.Carrier} (cap : CapCore K) (b : T.Boundary)
+    (hfront : frontier K = range (T.boundarySphere b))
+    (hdis : Disjoint K (T.removedBand b.1)) (q : Sphere 2) :
+    isPoincareStandard
+      (N.component (ConnectedComponents.mk (C.coreInclusion (T.coreBoundarySphere b q)))).Carrier := by
+  cases cap with
+  | ball A hA hK =>
+    have hAf : A '' sphere (0 : ThreeSpace) 1 = range (T.boundarySphere b) := by
+      have h := A.image_frontier_of_isCompact (isCompact_closedBall (0 : ThreeSpace) 1) hA
+      rw [frontier_closedBall _ one_ne_zero,hK,hfront] at h
+      exact h
+    exact C.isPoincareStandard_component_of_ball_cutting_side A hA b hAf (hK.symm ▸ hdis) q
+  | projective Z pr A hA F hF hK =>
+    have hA1 : closedBall (0 : ThreeSpace) 1 ⊆ A.source :=
+      (closedBall_subset_closedBall (by norm_num)).trans hA
+    have hΩ : IsCompact (A '' ball (0 : ThreeSpace) 1)ᶜ :=
+      (A.toOpenPartialHomeomorph.isOpen_image_of_subset_source isOpen_ball
+        (ball_subset_closedBall.trans hA1)).isClosed_compl.isCompact
+    have hAf : F '' (A '' sphere (0 : ThreeSpace) 1) = range (T.boundarySphere b) :=
+      (DifferentialGeometry.Topology.Manifold.image_sphere_eq_frontier_of_ball_complement
+        A F hA1 hΩ hF).trans ((congrArg frontier hK).trans hfront)
+    exact C.isPoincareStandard_component_of_projective_cutting_side pr A F hA hF b hAf
+      (hK.symm ▸ hdis) q
+
+end DifferentialGeometry.Topology.SphericalCapping
+
+namespace DifferentialGeometry.Topology.SphericalCutCapTransition
+
+universe u
+variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
+
+theorem isPoincareStandard_discardedComponent_of_capCore_cutting_side
+    {K : Set M.Carrier} (cap : CapCore K) (b : E.tubes.Boundary)
+    (hfront : frontier K = range (E.tubes.boundarySphere b))
+    (hdis : Disjoint K (E.tubes.removedBand b.1))
+    (q : Sphere 2) (d : E.discarded.Carrier)
+    (hd : E.presentation (E.capping.coreInclusion (E.tubes.coreBoundarySphere b q)) = Sum.inr d) :
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_capCore_cutting_side cap b hfront hdis q
+  obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization (E.tubes.coreBoundarySphere b q) d hd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
+
+end DifferentialGeometry.Topology.SphericalCutCapTransition
+
+end
