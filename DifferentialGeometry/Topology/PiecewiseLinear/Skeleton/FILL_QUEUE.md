@@ -917,7 +917,7 @@ Steps (each needs the owner's explicit go; this is the "entry" of plan §5,
 3. Until step 2 is done the shared tree keeps the sphere `sorry`; the ledger records the leaf as
    "proved on the isolated branch, entry pending".
 
-## Codex item 22 — act as lead: finish the acceptances of items 17, 18 and 19 (lead-written 2026-09-24 02:55 UTC; Codex lane with git rights, owner-scheduled)
+## Codex item 22 — act as lead: finish the acceptances of items 17, 18 and 19 (lead-written 2026-09-24 02:00 UTC; Codex lane with git rights, owner-scheduled)
 
 The Claude lead's weekly budget is exhausted; this lane acts as lead until the owner says otherwise.
 Lease: `integration` (token `claude-integration-20260919`, private root
@@ -990,6 +990,6 @@ D. Item 21 (smooth batch + sphere leaf entry) is owner-scheduled and unchanged; 
 E. Owed lead cleanups, deferred by the owner: `Section34FaceTorusCycle` to `hf₁`; removal of the
    `h304`/`h305` named inputs from the nine consumers.
 Report (≤ 40 lines) after each of A, B, C: commits, receipts, audit lines, ledger total before/after.
-A DONE by the Claude lead at 03:15 UTC on 2026-09-24 (41 `Verified`, wiring, skeleton recheck errors=0 sorry=1; total 10). Start at B.
-B's lead checks STARTED by the Claude lead at 03:25 UTC on 2026-09-24 (`accept-PR15.ps1`; log `D:\differential-geometry-moise-int\.lake\scratch\AcceptPR15.log`, done = 79 `Verified`). Do not start a second run; read the log, then continue B from `wire_pr15.py --dry`.
-B DONE by the Claude lead at 03:45 UTC on 2026-09-24 (79 `Verified`, two audits clean, wiring, CGN recheck errors=0 sorry=1; total 7 after the §31 promotion 8df9cb5dd). C is running in its own lane; nothing of item 22 remains except D/E.
+A DONE by the Claude lead at 02:20 UTC on 2026-09-24 (41 `Verified`, wiring, skeleton recheck errors=0 sorry=1; total 10). Start at B.
+B's lead checks STARTED by the Claude lead at 02:25 UTC on 2026-09-24 (`accept-PR15.ps1`; log `D:\differential-geometry-moise-int\.lake\scratch\AcceptPR15.log`, done = 79 `Verified`). Do not start a second run; read the log, then continue B from `wire_pr15.py --dry`.
+B DONE by the Claude lead at 02:40 UTC on 2026-09-24 (79 `Verified`, two audits clean, wiring, CGN recheck errors=0 sorry=1; total 7 after the §31 promotion 8df9cb5dd). C is running in its own lane; nothing of item 22 remains except D/E.
