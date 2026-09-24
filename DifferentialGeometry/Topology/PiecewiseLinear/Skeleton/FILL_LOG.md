@@ -11320,3 +11320,638 @@ DerivedCellCone: ED45886F7F1AE9AC1D490A0CBC744AE48F2A1E667678D7F321D4C5B4E849A27
 - No hard stop. Both headlines remain open. Current checkout HEAD observed 583c046f1454713834fadd7d1b1f0fb0f3e61ec2;
   no write Git command was issued. Import closure also explicitly excludes CircleArcSplit,
   TwoBallPocket, compact FaceRuns and ResidualBall(s), in addition to Skeleton/P6/foreign untracked files.
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:21:08.3562287Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleDisk. Checker exit: 1.
+Sub-leaf list: BU A0: triangle face subcomplex; PL disk; exact rim boundary; boundary faces in the actual K one-skeleton
+SHA-256: C9E77654280A7CAE29DEDB0F249E2D27DDA6DAD09DB837E7666E51856178BFD6
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.lean:52:8: warning: Try `simp at hxt` instead of `simpa using hxt`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\Section34CompactTriangleDisk.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.log and .json
+
+```
+
+
+### Item 18 verified: Section34GraphCellSeparation
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellSeparation.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: cfbf3b47263a689185d703121a65138a3e22555d1307a88a67dc31bbc3be622d
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCellSeparation.json
+UTC: 09/23/2026 23:21:25
+
+### Item 18 verified: Section34GraphResidualSeparation
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualSeparation.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 431a1030e162d437bcc978d62e31230497795260aa44ba9eb3784c923ac72e35
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphResidualSeparation.json
+UTC: 09/23/2026 23:21:47
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:22:06.7142845Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleDisk. Checker exit: 0.
+Sub-leaf list: BU A0: triangle face subcomplex; PL disk; exact rim boundary; boundary faces in K one-skeleton; repair unnecessarySimpa
+SHA-256: 03533DA4E66E7A84C94985ACD0937A5901957A8461FC68A301FF98D76E423903
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+### Item 18 verified: Section34GraphArcSeparation
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphArcSeparation.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 333d22d9dccbb4f71cc9828a83014e9e3849ff46e09bdfaf9eef35dadd7ddb6b
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphArcSeparation.json
+UTC: 09/23/2026 23:22:13
+
+### Item 18 verified: PLCellOnPoints
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnPoints.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: ebe08d2a018bfdbaac4b438cec19f0309b5e6ff9a8f4f86349b11e5ad2c7187f
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\PLCellOnPoints.json
+UTC: 09/23/2026 23:22:27
+
+### Item 18 verified: Section34GraphCutCellRecognition
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutCellRecognition.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 61378532e6493eedd37dd0614d01209743ea775d0762a2f9c077b68537fd08d7
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphCutCellRecognition.json
+UTC: 09/23/2026 23:22:53
+
+### Item 18 verified: LocallyFiniteBoundaryCover
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteBoundaryCover.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 877b3c06c9383cff531c8f85aca0484a02d0d28787dab647e43b9daf7b913ad7
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\LocallyFiniteBoundaryCover.json
+UTC: 09/23/2026 23:23:01
+
+### Item 18 verified: Section34GraphVertexBoundaryCover
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphVertexBoundaryCover.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 63539904378d336dc45fb7b7a9fb1534bea17ea7f844e4ef133112e0e720987d
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphVertexBoundaryCover.json
+UTC: 09/23/2026 23:23:25
+
+### Item 18 verified: Section34GraphTetrahedronBoundary
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphTetrahedronBoundary.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 08024f283c600ae3d7ff5da5b85576a95f50a6e7f8542e6657024d8f0e5d8036
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphTetrahedronBoundary.json
+UTC: 09/23/2026 23:23:47
+
+### Item 18 verified: Section34GraphFaceBoundary
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphFaceBoundary.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 8523b76cab29d595e4e7f25dd40841c11945dcb35de40f763e4bf313edf5e067
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphFaceBoundary.json
+UTC: 09/23/2026 23:24:10
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T23:25:25.6455572Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14TriangleDisk.lean. Checker exit: 0.
+Sub-leaf list: BU A0 new module axiom closure and thirteen linters; L0 exact proposed specialization and existing provider axiom closure
+SHA-256: 88DB3E7A58CB15B2F1C85BB08BDE2124C3628AE6827854875398F6E8D94417B3
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14TriangleDisk.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14TriangleDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+### Item 18 verified: Section34GraphArcBoundaries
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphArcBoundaries.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: f9893f8930e71470d88bb5a4f400f8b6e6c6aa9525459635b2243df6046b0977
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphArcBoundaries.json
+UTC: 09/23/2026 23:25:48
+
+### Item 18 verified: Section34GraphSplitBoundary
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphSplitBoundary.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 7a62999fe993273611cb25ae5f0b1c34ea43f9058514f0d037a8ce093c91b45f
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-e\DifferentialGeometry\Topology\PiecewiseLinear\Section34GraphSplitBoundary.json
+UTC: 09/23/2026 23:26:15
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:31:36.3521800Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellSurfaceTrace. Checker exit: 0.
+Sub-leaf list: BU L1: surface intersection is a PL disk; ambient cell frontier trace lies in its intrinsic boundary; localized derived-neighborhood frontier restriction
+SHA-256: B96D133ADBB7BDE0967B7E2BF218C6AF333ED1C2436FF248DFFB784A772337D7
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:34:14.0395146Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellSurfaceTrace. Checker exit: 0.
+Sub-leaf list: BU L1: PL disk recognition and both inclusions for the intrinsic boundary cover by original surface boundary and ambient graph-cell frontier
+SHA-256: 22EF920FB0FE0C2AC1BD1A7F5B37C4088CE22DE5AE48E677C65ADBF40446FBB4
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+
+## Individual residual balls verified (2026-09-23)
+
+`Section34NormalPlus.exists_residualBall` now produces an actual manifold PL three-cell,
+its incident face disks in the frontier, the required frontier support and disjoint interior,
+its inclusion in H(t), and both near-face sides needed for the patch construction.
+Finiteness in the near-face argument is only the finite family of vertices incident to t.
+
+- `Section34TetraPocket.lean` (282 lines)
+  SHA-256: `64448d166f1ae4fc63f279b917108408abfd5072a28b0adde1ba1afdfc142a42`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34TetraPocket.lean with no diagnostics; shared outputs unchanged.`
+- `Section34ResidualBall.lean` (381 lines)
+  SHA-256: `83c33e63ca3bee73fd4ed87df01070a674ca998a33f810cc8da5afdead7a4208`.
+  Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34ResidualBall.lean with no diagnostics; shared outputs unchanged.`
+
+All eighteen modules passed the combined axiom whitelist and thirteen environment linters.
+Audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditCodexItem17ResidualBall.lean with no diagnostics; shared outputs unchanged.`
+Audit probe SHA-256: `4a0ef6d0e52d81ad43528ce9143e3f0e1f25e9123e881424cd2fd60ae1e04973`.
+Remaining: foreign-cell exclusion, patch/edge cells, residual pair incidences, tilings, and leaf.
+For comparisons across distinct carrier charts, the local-side argument is being generalized
+in new topology modules; its bicollar is produced from an existing carrier chart, not added
+as an input to the frozen leaf.
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:37:14.9976204Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellCurveTrace. Checker exit: 0.
+Sub-leaf list: BU L1: exact source-curve trace as a dual arc; intrinsic endpoints at the two edge centroids; no extra ambient-frontier points on the curve trace
+SHA-256: 1283CFF759433C8D770D97AF98D2907D2253DBE52EAF71661C13D52F143F86BA
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellCurveTrace.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellCurveTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:41:47.9624039Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BridgeDisk. Checker exit: 1.
+Sub-leaf list: BU L1 vocabulary and assembly: explicit bridge disk certificate; triangle boundary partition; endpoint-preserving arc parametrization; disk map from the verified boundary cover
+SHA-256: A7A64E4D8996B425B6491BDE2DACE2E1FDAD52B4020645C109B31503B06CE5B2
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:30:51: warning: This simp argument is unused:
+  sub_smul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [AffineMap.lineMap_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:30:61: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:77:21: error: unsolved goals
+⊢ ![1, 0, 0] 2 = 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:77:56: error: unsolved goals
+⊢ ![1, 0, 0] 2 = 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:80:21: error: unsolved goals
+⊢ ![1, 0, 0] 2 = 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:85:21: error: unsolved goals
+hx : ![0, 1, 0] ∈ {![0, 1, 0]}
+⊢ ![0, 1, 0] 2 = 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:85:56: error: unsolved goals
+hx : ![0, 1, 0] ∈ {![0, 1, 0]}
+⊢ ![0, 1, 0] 2 = 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:88:21: error: unsolved goals
+hx : ![0, 1, 0] ∈ {![0, 1, 0]}
+⊢ ![0, 1, 0] 2 = 0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean:165:24: error: Application type mismatch: The argument
+  hbase
+has type
+  standardTriangleBase ⊆
+    (@boundaryComplex (Fin (2 + 1) → ℝ) Pi.normedAddCommGroup Pi.normedSpace (fun a b => Fintype.decidablePiFintype a b)
+        2 Q).space
+but is expected to have type
+  standardTriangleBase ⊆
+    (@boundaryComplex (Fin (2 + 1) → ℝ) Pi.normedAddCommGroup Pi.normedSpace (fun a b => propDecidable (a = b)) 2
+        Q).space
+in the application
+  @exists_isPLHomeomorphOn_eqOn_arc_of_boundaryComplex_of_ambient (Fin (2 + 1) → ℝ) E Pi.normedAddCommGroup
+    Pi.normedSpace inst✝³ inst✝² ?m.826 ?m.827 Q ?m.828 B ?m.829 hQ hB standardTriangleBase ?m.831 hBaseBall hbase
+Verification failed; see
+C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.log
+and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\BridgeDisk.log and .json
+
+```
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:42:56.6589981Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BridgeDisk. Checker exit: 0.
+Sub-leaf list: BU L1 bridge certificate and boundary assembly; repair concrete finite-vector reduction and DecidableEq compatibility; remove redundant endpoint inequality
+SHA-256: A8FC67B1AA2491B735EB751A2748E3265F933712B7F630196EDBB7E285219BBA
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:46:25.9322212Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellBridgeDisk. Checker exit: 1.
+Sub-leaf list: BU L1 complete proposed geometric signature: actual F intersection is a bridge disk; exact ambient frontier trace; labelled half-edge core with prescribed cap centroids
+SHA-256: 37E720E5462A28EE70BB7E30FD7C15E49BCF310EAD08261FE07429D762C67B3D
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.json
+
+Checker output:
+```text
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean:86:58: error: Application type mismatch: The argument
+  h0
+has type
+  @insert E3 (Finset E3) (@Finset.instInsert E3 fun a b => WithLp.instDecidableEq 2 ((i : Fin 3) → (fun x => ℝ) i) a b)
+      u {v} ∈
+    (boundaryComplex 2 F).faces
+but is expected to have type
+  @insert E3 (Finset E3) (@Finset.instInsert E3 fun a b => propDecidable (a = b)) u {v} ∈ H.faces
+in the application
+  boundary_dualCell_vertex_eq_pair H hH hvH huv hvw huw h0
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean:128:11: error: synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
+  this
+inferred
+  fun a b => WithLp.instDecidableEq 2 ((i : Fin 3) → (fun x => ℝ) i) a b
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean:128:34: error: unsolved goals
+M L F : Geometry.SimplicialComplex ℝ E3
+inst✝¹ : Finite ↑M.faces
+inst✝ : Finite ↑F.faces
+hM : IsCombinatorialManifoldWithBoundary 3 M
+hLM : L.faces ⊆ M.faces
+hLdim : ∀ e ∈ L.faces, e.card ≤ 2
+hFM : F.faces ⊆ M.faces
+hF : IsPLBall 2 F.space
+hFint : F.space ⊆ interior M.space
+u v w : E3
+huv : u ≠ v
+hvw : v ≠ w
+huw : u ≠ w
+dNative : DecidableEq E3 := inferInstance
+this : DecidableEq E3 := Classical.decEq E3
+h1 : {v, w} ∈ (boundaryComplex 2 F).faces
+h0 : {u, v} ∈ (boundaryComplex 2 F).faces
+hJL : (boundaryComplex 2 F).faces ⊆ L.faces
+hboundary : boundaryComplex 2 F = boundaryComplex 2 F
+H : Geometry.SimplicialComplex ℝ E3 := boundaryComplex 2 F
+G : Geometry.SimplicialComplex ℝ E3 := restrict L F.space
+hH : IsCombinatorialManifold 1 H
+hHF : H.faces ⊆ F.faces
+hHM : H.faces ⊆ M.faces
+hvH : {v} ∈ H.faces
+hvF : {v} ∈ F.faces
+hvL : {v} ∈ L.faces
+A : Geometry.SimplicialComplex ℝ E3 := dualCell H {v} hvH
+B : Geometry.SimplicialComplex ℝ E3 := graphDualCell F G v
+x✝² : Finite ↑H.faces := Finite.to_subtype (boundaryComplex_faces_finite 2 F)
+x✝¹ : Finite ↑A.faces := Finite.to_subtype (dualCell_faces_finite H hvH)
+x✝ : Finite ↑B.faces := Finite.to_subtype (graphDualCell_faces_finite F G v)
+hGF : G.faces ⊆ F.faces
+hGdim : ∀ e ∈ G.faces, e.card ≤ 2
+hvG : {v} ∈ G.faces
+hB : IsPLBall 2 B.space
+hA : IsPLBall 1 A.space
+htrace : (graphDualCell M L v).space ∩ F.space = B.space
+hcurve : (graphDualCell M L v).space ∩ H.space = A.space
+hBdA : (boundaryComplex 1 A).space = {Finset.centroid ℝ {u, v} id, Finset.centroid ℝ {v, w} id}
+γ : ℝ → E3
+hγ : IsPLHomeomorphOn γ (Icc 0 1) A.space
+hγ0 : γ 0 = Finset.centroid ℝ {u, v} id
+hγ1 : γ 1 = Finset.centroid ℝ {v, w} id
+hBC : B.space ⊆ (graphDualCell M L v).space
+hBF : B.space ⊆ F.space
+hBsub : B.faces ⊆ (secondDerived F).faces
+hAB : A.space ⊆ (boundaryComplex 2 B).space
+hfront : B.space ∩ frontier (graphDualCell M L v).space ⊆ (boundaryComplex 2 B).space
+hcover : (boundaryComplex 2 B).space ⊆ A.space ∪ frontier (graphDualCell M L v).space
+hxA : Finset.centroid ℝ {u, v} id ∈ A.space
+⊢ ?m.1195 = u ∨ ?m.1195 = v
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean:131:11: error: synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
+  this
+inferred
+  fun a b => WithLp.instDecidableEq 2 ((i : Fin 3) → (fun x => ℝ) i) a b
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean:131:34: error: unsolved goals
+M L F : Geometry.SimplicialComplex ℝ E3
+inst✝¹ : Finite ↑M.faces
+inst✝ : Finite ↑F.faces
+hM : IsCombinatorialManifoldWithBoundary 3 M
+hLM : L.faces ⊆ M.faces
+hLdim : ∀ e ∈ L.faces, e.card ≤ 2
+hFM : F.faces ⊆ M.faces
+hF : IsPLBall 2 F.space
+hFint : F.space ⊆ interior M.space
+u v w : E3
+huv : u ≠ v
+hvw : v ≠ w
+huw : u ≠ w
+dNative : DecidableEq E3 := inferInstance
+this : DecidableEq E3 := Classical.decEq E3
+h1 : {v, w} ∈ (boundaryComplex 2 F).faces
+h0 : {u, v} ∈ (boundaryComplex 2 F).faces
+hJL : (boundaryComplex 2 F).faces ⊆ L.faces
+hboundary : boundaryComplex 2 F = boundaryComplex 2 F
+H : Geometry.SimplicialComplex ℝ E3 := boundaryComplex 2 F
+G : Geometry.SimplicialComplex ℝ E3 := restrict L F.space
+hH : IsCombinatorialManifold 1 H
+hHF : H.faces ⊆ F.faces
+hHM : H.faces ⊆ M.faces
+hvH : {v} ∈ H.faces
+hvF : {v} ∈ F.faces
+hvL : {v} ∈ L.faces
+A : Geometry.SimplicialComplex ℝ E3 := dualCell H {v} hvH
+B : Geometry.SimplicialComplex ℝ E3 := graphDualCell F G v
+x✝² : Finite ↑H.faces := Finite.to_subtype (boundaryComplex_faces_finite 2 F)
+x✝¹ : Finite ↑A.faces := Finite.to_subtype (dualCell_faces_finite H hvH)
+x✝ : Finite ↑B.faces := Finite.to_subtype (graphDualCell_faces_finite F G v)
+hGF : G.faces ⊆ F.faces
+hGdim : ∀ e ∈ G.faces, e.card ≤ 2
+hvG : {v} ∈ G.faces
+hB : IsPLBall 2 B.space
+hA : IsPLBall 1 A.space
+htrace : (graphDualCell M L v).space ∩ F.space = B.space
+hcurve : (graphDualCell M L v).space ∩ H.space = A.space
+hBdA : (boundaryComplex 1 A).space = {Finset.centroid ℝ {u, v} id, Finset.centroid ℝ {v, w} id}
+γ : ℝ → E3
+hγ : IsPLHomeomorphOn γ (Icc 0 1) A.space
+hγ0 : γ 0 = Finset.centroid ℝ {u, v} id
+hγ1 : γ 1 = Finset.centroid ℝ {v, w} id
+hBC : B.space ⊆ (graphDualCell M L v).space
+hBF : B.space ⊆ F.space
+hBsub : B.faces ⊆ (secondDerived F).faces
+hAB : A.space ⊆ (boundaryComplex 2 B).space
+hfront : B.space ∩ frontier (graphDualCell M L v).space ⊆ (boundaryComplex 2 B).space
+hcover : (boundaryComplex 2 B).space ⊆ A.space ∪ frontier (graphDualCell M L v).space
+hxA : Finset.centroid ℝ {v, w} id ∈ A.space
+hx : Finset.centroid ℝ {v, w} id ∈ {Finset.centroid ℝ {v, w} id}
+⊢ ?m.1221 = v ∨ ?m.1221 = w
+D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean:137:2: error: Type mismatch
+  hbridge
+has type
+  IsBridgeDisk (graphDualCell M L v).space A.space B.space
+    (Finset.centroid ℝ (@insert E3 (Finset E3) (@Finset.instInsert E3 this) u {v}) id) (Finset.centroid ℝ {v, w} id)
+but is expected to have type
+  IsBridgeDisk (graphDualCell M L v).space A.space B.space
+    (Finset.centroid ℝ
+      (@insert E3 (Finset E3)
+        (@Finset.instInsert E3 fun a b => WithLp.instDecidableEq 2 ((i : Fin 3) → (fun x => ℝ) i) a b) u {v})
+      id)
+    (Finset.centroid ℝ {v, w} id)
+Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\Piecewise
+Linear\GraphDualCellBridgeDisk.log and .json
+At C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\checker.ps1:121 char:76
++ ... skStable) { throw "Verification failed; see $taskBase.log and .json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Verification fa...k.log and .json:String) [], RuntimeException
+    + FullyQualifiedErrorId : Verification failed; see C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\Differen
+   tialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.log and .json
+
+```
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:48:03.6169950Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellBridgeDisk. Checker exit: 0.
+Sub-leaf list: BU L1 full bridge producer; normalize native and classical finite-pair instances at the exact proposed interface
+SHA-256: 5E64E34EE625E17747E44A604CCB5D1B3EC3DBC7A89E43658F3A258820A88959
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T23:51:15.4401556Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDisk.lean. Checker exit: 0.
+Sub-leaf list: BU A0 and L1 complete batch: five real modules; literal BU expanded bridge signature; foundational axiom whitelist and thirteen environment linters
+SHA-256: 359C7760FB5B4F92DF2889E1B15ABF872B37D3796BD621672D4C05725FBFAF1F
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDisk.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## Item 14 module check (2026-09-23T23:55:16.5745630Z)
+
+Module: DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskArc. Checker exit: 0.
+Sub-leaf list: BU L2 prerequisites: marked PL arc parameter; exactly two frontier endpoints; all remaining arc points in the ball interior; boundary cap contacts restricted to those endpoints
+SHA-256: 8367DEDBCA2FE957565E9DF50B4FF8D1BC32581A6B291853E7BB4FEDF3B702AB
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDiskArc.json
+
+Checker output:
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDiskArc.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## Item 14 external audit (2026-09-23T23:58:37.7402112Z)
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.lean. Checker exit: 0.
+Sub-leaf list: Final six-module BU batch: A0; L1 full exact signature; L2 proper marked arc prerequisites; all new non-auto declarations pass foundational axioms and thirteen environment linters
+SHA-256: 626FCEDBACB7ED35C3B24D51A7E99C422F03B91998C76430D5B4511AD51B4661
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.receipt.json
+
+Checker output:
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.lean with no diagnostics; shared outputs unchanged.
+```
+
+# Codex item 14
+
+## BU batch delivery: A0/L0/L1 complete; STOP at L2
+
+Receipt manifest: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\CodexItem14BridgeDeliveryReceipt.md
+
+# Codex item 14: BU face bridge batch
+
+UTC: 2026-09-24T00:00:17.321774+00:00
+
+A0: complete in Section34CompactTriangleDisk.
+L0: reused derivedNeighborhood_space_subset_interior; its exact E3 specialization and axiom closure passed AuditCodexItem14TriangleDisk.
+L1: complete in GraphDualCellBridgeDisk. The delivery audit checks the literal expanded BU bridge signature, including its two if-expression vertices.
+L2: prerequisites only. BridgeDiskArc proves a marked PL interval, exactly the two frontier endpoints, and interior containment away from those endpoints.
+L2 relative arc straightening remains unproved. L3-L6, exists_compactRimCoreBuffer, transport/shrink and the final leaf assembly have not been implemented in this batch.
+
+Six new real modules; 24 source declarations. No Skeleton imports in the 1321-module local dependency closure.
+Every current source SHA-256 matches its successful private checker receipt. Source style checks and scoped git diff --check passed.
+The final outside-tree audit checks every new non-auto declaration: only propext / Classical.choice / Quot.sound and all thirteen environment linters.
+
+## Module receipts
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleDisk
+
+Source: D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.lean
+SHA-256: 03533DA4E66E7A84C94985ACD0937A5901957A8461FC68A301FF98D76E423903
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.json
+Sub-leaf list: exists_triangle_subcomplex_with_rim
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTriangleDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+### DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellSurfaceTrace
+
+Source: D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.lean
+SHA-256: 22EF920FB0FE0C2AC1BD1A7F5B37C4088CE22DE5AE48E677C65ADBF40446FBB4
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.json
+Sub-leaf list: frontier_derivedNeighborhood_inter_subcomplex_subset_closure_sdiff; IsCombinatorialManifoldWithBoundary.isPLBall_graphDualCell_inter_surface; frontier_graphDualCell_inter_surface_subset_boundary; boundary_graphDualCell_surface_subset_boundary_union_frontier
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellSurfaceTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+### DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellCurveTrace
+
+Source: D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellCurveTrace.lean
+SHA-256: 1283CFF759433C8D770D97AF98D2907D2253DBE52EAF71661C13D52F143F86BA
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellCurveTrace.json
+Sub-leaf list: centroid_mem_upperLink_of_ssubset; graphDualCell_inter_subcomplex_eq_dualCell; boundary_dualCell_vertex_eq_pair; frontier_graphDualCell_inter_curve_subset_boundary
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellCurveTrace.lean with no diagnostics; shared outputs unchanged.
+```
+
+### DifferentialGeometry.Topology.PiecewiseLinear.BridgeDisk
+
+Source: D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean
+SHA-256: A8FC67B1AA2491B735EB751A2748E3265F933712B7F630196EDBB7E285219BBA
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.json
+Sub-leaf list: standardTriangleBase; standardTriangleSides; standardTriangleBase_eq_segment; standardTriangleBase_union_sides; standardTriangleBase_inter_sides; IsBridgeDisk; exists_isPLHomeomorphOn_Icc_with_boundary_endpoints; exists_isBridgeDisk_of_boundary_cover
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+### DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellBridgeDisk
+
+Source: D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean
+SHA-256: 5E64E34EE625E17747E44A604CCB5D1B3EC3DBC7A89E43658F3A258820A88959
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.json
+Sub-leaf list: centroid_mem_frontier_graphDualCell_of_edge; isBridgeDisk_graphDualCell
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GraphDualCellBridgeDisk.lean with no diagnostics; shared outputs unchanged.
+```
+
+### DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskArc
+
+Source: D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDiskArc.lean
+SHA-256: 8367DEDBCA2FE957565E9DF50B4FF8D1BC32581A6B291853E7BB4FEDF3B702AB
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDiskArc.json
+Sub-leaf list: IsBridgeDisk.subset; IsBridgeDisk.inter_frontier; IsBridgeDisk.sdiff_subset_interior; IsBridgeDisk.inter_boundary_subset; IsBridgeDisk.exists_parametrization
+
+```text
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BridgeDiskArc.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Final audit
+
+Probe: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.lean
+SHA-256: 626FCEDBACB7ED35C3B24D51A7E99C422F03B91998C76430D5B4511AD51B4661
+Receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.receipt.json
+
+```text
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-d\AuditCodexItem14BridgeDelivery.lean with no diagnostics; shared outputs unchanged.
+```
+
+## Exact remaining obligation: BU L2
+
+For a PL three-ball C, disjoint boundary disks D0 and D1 with PL coordinates r0 and r1,
+and IsBridgeDisk C A B (r0 (stdCenter 1)) (r1 (stdCenter 1)), produce:
+
+```lean
+∃ ρ : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3),
+  IsPLHomeomorphOn ρ (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C ∧
+  ρ '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) = D0 ∧
+  ρ '' (stdSimplex ℝ (Fin 3) ×ˢ {(1 : ℝ)}) = D1 ∧
+  ρ (stdCenter 1, 0) = r0 (stdCenter 1) ∧
+  ρ (stdCenter 1, 1) = r1 (stdCenter 1) ∧
+  ρ '' ({stdCenter 1} ×ˢ Icc (0 : ℝ) 1) = A
+```
+
+The unproved step is relative ambient straightening of the bridge arc, retaining the entire ball and the marked cap centres.
+BoundaryExtension provides no interior arc equation. InteriorDiskCollar.exists_collar_of_properly_embedded_disk requires the entire disk boundary on the ball frontier; this bridge meets the frontier only in the complementary arc.
+This is a formal proof frontier, not a counterexample to L2 and not a claim that the leaf hypotheses are mathematically insufficient.
+No new named input, unmarked-prism substitute, frozen statement change, or Git write was introduced.
+
+# Codex item 14
+
+## Owner-requested pause and partial publication
+
+The owner explicitly paused proof work and requested a partial commit/push and an English takeover
+prompt. No proof edits or Lean compilations were performed after the pause. All child agents were
+already completed. The previous STOP at L2 was premature, not a demonstrated mathematical blocker:
+L2 remains an assigned new-theory proof obligation, and the leaf hypotheses have not been refuted.
+The brief resumed investigation before this pause only inspected existing source APIs; it created
+no additional Lean module or compiler result.
+
+Publication scope: the six verified A0/L1/marked-arc modules, TubeEdgePairOverlap and
+GraphDualCellRadialBoundary, this lane's appended log sections, and the new English handoff
+consult/Item14MarkedRimHandoff.md. The eight current source hashes match successful receipts;
+their dependency closure has no untracked module belonging to another lane. Existing external
+axiom/thirteen-linter audits remain the verification evidence. The aggregate is unchanged under
+the new-files-only rule. Other lanes' untracked files and log additions are excluded from staging.
