@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorChartFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
 
 set_option autoImplicit false
@@ -357,5 +359,322 @@ theorem exists_normalized_backwardSurvivor_chart_solution_curvature_bound
     G hslabs hlast Ξ hΞ J hbirth hr hq hrQ haq hbound hscalar records hfixed hlower htime L
     (fun t _ => hmetric t)
 
+section Incoming
+
+variable {last : Fin (H.eventCount + 1)} {hle : first ≤ last} {s : ℝ}
+
+theorem riemannNorm_backwardSurvivorIncoming_le_of_initial_scalar_bound
+    (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (gflow : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hlast : ∀ t ∈ Icc (H.time last) s,
+      gflow t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (z : H.backwardSurvivorIncomingDomain first last hle G)
+    {q Q a₀ : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q) (ha₀ : 0 < a₀)
+    (hbound : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) z.val) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) z.val)) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) z.val) ^ 2)
+    (hfinal : ∀ t ∈ Ioo (H.time last) s, q < G.flow.scalar t z.val.val →
+      |derivWithin (fun v => G.flow.scalar v z.val.val) (Iic t) t| ≤ C * G.flow.scalar t z.val.val ^ 2)
+    (hscalar : metricScalarAt (H.initialMetric first)
+      (H.backwardSurvivorMap first last hle first le_rfl hle z.val) ≤ Q)
+    (hpinch : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ico (H.time j.castSucc) (H.time j.succ),
+        InFixedHamiltonIveyRegion ((H.event j).incoming.flow.base.metric t) a₀
+          (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) z.val))
+    (hpinchFinal : ∀ t ∈ Ico (H.time last) s,
+      InFixedHamiltonIveyRegion (G.flow.base.metric t) a₀ z.val.val)
+    (htime : 2 * C * (s - H.time first) * Q ≤ 1) :
+    ∀ t ∈ Icc (H.time first) s,
+      Real.sqrt (normSq0S (gflow t) z 4 (metricRm04At (gflow t) z)) ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+  let A : BackwardPointTrace H first last hle z.val.val := Classical.choice z.val.property
+  have heq (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hl : j ≤ last) :
+      H.backwardSurvivorMap first last hle j hf hl z.val = A.point j hf hl :=
+    H.backwardSurvivorMap_eq_point first last hle j hf hl z.val A
+  have hscalarA : metricScalarAt (H.initialMetric first) (A.point first le_rfl hle) ≤ Q := by
+    rw [← heq]
+    exact hscalar
+  have hboundA : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) ^ 2 := by
+    intro j hf hl
+    simpa only [heq] using hbound j hf hl
+  intro t ht
+  by_cases hlasttime : H.time last ≤ t
+  · rw [hlast t ⟨hlasttime, ht.2⟩, backwardSurvivorIncomingMetric,
+      normSq0S_metricRm04At_localPullMetric]
+    exact incoming_extended_riemannNorm_le_of_initial_scalar_bound G L hinit
+      (H.backwardSurvivorIncomingMap first last hle G z) A hq hqQ ha₀ hboundA hfinal hscalarA
+      hpinchFinal htime t ⟨hlasttime, ht.2⟩
+  · have hti : t < H.time last := lt_of_not_ge hlasttime
+    let tH : Icc (0 : ℝ) H.horizon :=
+      ⟨t, (H.time_nonneg first).trans ht.1, hti.le.trans (H.time_le_horizon_at last)⟩
+    let k := H.activeStage tH
+    have hk : k < last := by
+      apply H.time_strictMono.lt_iff_lt.mp
+      exact (H.activeStage_time_le tH).trans_lt hti
+    have hf : first ≤ k := H.le_activeStage tH first ht.1
+    let j : Fin H.eventCount := ⟨k.val, by have := last.isLt; change k.val < H.eventCount; omega⟩
+    have hl : j.succ ≤ last := hk
+    have htj : t ∈ Icc (H.time j.castSucc) (H.time j.succ) :=
+      ⟨H.activeStage_time_le tH,
+        (H.activeStage_before_next tH (show k.val < H.eventCount from j.isLt)).le⟩
+    rw [hslabs j hf hl t htj, rmNormSq_restrictOpen,
+      backwardSurvivorSlabMetric, normSq0S_metricRm04At_localPullMetric]
+    apply A.extended_riemannNorm_le_of_initial_scalar_bound hq hqQ ha₀ hboundA hscalarA
+      j hf hl (H.backwardSurvivorTerminalMap first last hle j hf hl z.val)
+    · exact heq j.castSucc hf (j.castSucc_lt_succ.le.trans hl)
+    · exact hpinch j hf hl
+    · apply le_trans _ htime
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left
+          (sub_le_sub_right ((H.time_strictMono.monotone hl).trans G.lt.le) _)
+          (by positivity)) (hq.trans_le hqQ).le
+    · exact htj
+
+theorem curvature_bound_normalized_backwardSurvivorIncoming_chart_of_initial_scalar_bound
+    {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+    [IsManifold ThreeModel ∞ X] [T2Space X]
+    (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (gflow : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hlast : ∀ t ∈ Icc (H.time last) (s),
+      gflow t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (Ξ : X → H.backwardSurvivorIncomingDomain first last hle G)
+    (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ)
+    (J : X → (H.stage first).Carrier)
+    (hbirth : ∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ x).val = J x)
+    {r q C₀ a₀ : ℝ} {C : ℝ≥0} (hr : 0 < r) (hq : 0 < q) (hrQ : r ≤ C₀ * q)
+    (haq : 1 ≤ a₀ * q)
+    (hbound : ∀ x : X, ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc,
+      ∀ hl : j.succ ≤ last, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      r < (H.event j).incoming.flow.scalar t
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val)) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val) ^ 2)
+    (hfinal : ∀ x : X, ∀ t ∈ Ioo (H.time last) s, r < G.flow.scalar t (Ξ x).val.val →
+      |derivWithin (fun v => G.flow.scalar v (Ξ x).val.val) (Iic t) t| ≤
+        C * G.flow.scalar t (Ξ x).val.val ^ 2)
+    (hscalar : ∀ x, metricScalarAt (H.initialMetric first) (J x) ≤ C₀ * q)
+    (hpinch : ∀ x : X, ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc,
+      ∀ hl : j.succ ≤ last, ∀ t ∈ Ico (H.time j.castSucc) (H.time j.succ),
+        InFixedHamiltonIveyRegion ((H.event j).incoming.flow.base.metric t) a₀
+          (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val))
+    (hpinchFinal : ∀ x : X, ∀ t ∈ Ico (H.time last) s,
+      InFixedHamiltonIveyRegion (G.flow.base.metric t) a₀ (Ξ x).val.val)
+    (htime : 2 * C * C₀ * (q * (s - H.time first)) ≤ 1)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (hmetric : ∀ t ∈ Icc 0 (q * (s - H.time first)), S.base.metric t =
+      localPullMetric (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) :
+    ∀ t ∈ Icc 0 (q * (s - H.time first)), ∀ x : X,
+      normSq0S (S.base.metric t) x 4 (S.base.rm04 t x) ≤
+        (2 * Real.sqrt 3 * (C₀ + max (2 * C₀) (Real.exp 4))) ^ 2 := by
+  intro t ht x
+  have ha₀ : 0 < a₀ := by
+    by_contra! h
+    have := mul_nonpos_of_nonpos_of_nonneg h hq.le
+    linarith
+  have htG : H.time first + t / q ∈ Icc (H.time first) (s) := by
+    constructor
+    · have := div_nonneg ht.1 hq.le
+      linarith
+    · have := (div_le_iff₀ hq).mpr (show t ≤ (s - H.time first) * q by nlinarith [ht.2])
+      linarith
+  have hs : metricScalarAt (H.initialMetric first)
+      (H.backwardSurvivorMap first last hle first le_rfl hle (Ξ x).val) ≤ C₀ * q := by
+    rw [hbirth x]
+    exact hscalar x
+  have ht0 : 2 * C * (s - H.time first) * (C₀ * q) ≤ 1 := by
+    nlinarith [htime]
+  have hb := riemannNorm_backwardSurvivorIncoming_le_of_initial_scalar_bound G L hinit
+    gflow hslabs hlast (Ξ x) hr hrQ ha₀ (hbound x) (hfinal x) hs (hpinch x)
+    (hpinchFinal x) ht0 _ htG
+  have hscale : Real.sqrt (normSq0S (scaleMetric q hq (gflow (H.time first + t / q))) (Ξ x) 4
+      (metricRm04At (scaleMetric q hq (gflow (H.time first + t / q))) (Ξ x))) =
+      Real.sqrt (normSq0S (gflow (H.time first + t / q)) (Ξ x) 4
+        (metricRm04At (gflow (H.time first + t / q)) (Ξ x))) / q := by
+    convert! CheegerGromovCompactness.curvDerivNorm_scaleMetric
+      (gflow (H.time first + t / q)) q hq 0 (Ξ x) using 1
+    simp only [pow_zero, mul_one]
+    rfl
+  have hn : Real.sqrt (normSq0S (S.base.metric t) x 4 (S.base.rm04 t x)) ≤
+      2 * Real.sqrt 3 * (C₀ + max (2 * C₀) (Real.exp 4)) := by
+    change Real.sqrt (normSq0S (S.base.metric t) x 4 (metricRm04At (S.base.metric t) x)) ≤ _
+    rw [hmetric t ht, normSq0S_metricRm04At_localPullMetric, hscale]
+    exact (div_le_div_of_nonneg_right hb hq.le).trans
+      (normalized_hamiltonIvey_curvature_bound hq haq)
+  exact (Real.sqrt_le_iff.mp hn).2
+
+theorem curvature_bound_normalized_backwardSurvivorIncoming_chart_of_initial_fixedHamiltonIveyRegion
+    {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+    [IsManifold ThreeModel ∞ X] [T2Space X]
+    (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (gflow : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hlast : ∀ t ∈ Icc (H.time last) (s),
+      gflow t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (Ξ : X → H.backwardSurvivorIncomingDomain first last hle G)
+    (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ)
+    (J : X → (H.stage first).Carrier)
+    (hbirth : ∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ x).val = J x)
+    {r q C₀ a₀ : ℝ} {C : ℝ≥0} (hr : 0 < r) (hq : 0 < q) (hrQ : r ≤ C₀ * q)
+    (haq : 1 ≤ a₀ * q)
+    (hbound : ∀ x : X, ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc,
+      ∀ hl : j.succ ≤ last, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      r < (H.event j).incoming.flow.scalar t
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val)) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val) ^ 2)
+    (hfinal : ∀ x : X, ∀ t ∈ Ioo (H.time last) s, r < G.flow.scalar t (Ξ x).val.val →
+      |derivWithin (fun v => G.flow.scalar v (Ξ x).val.val) (Iic t) t| ≤
+        C * G.flow.scalar t (Ξ x).val.val ^ 2)
+    (hscalar : ∀ x, metricScalarAt (H.initialMetric first) (J x) ≤ C₀ * q)
+    {parameters : CutoffParameters}
+    (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters)
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x)
+    (hlower : ∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x)
+    (htime : 2 * C * C₀ * (q * (s - H.time first)) ≤ 1)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (hmetric : ∀ t ∈ Icc 0 (q * (s - H.time first)), S.base.metric t =
+      localPullMetric (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) :
+    ∀ t ∈ Icc 0 (q * (s - H.time first)), ∀ x : X,
+      normSq0S (S.base.metric t) x 4 (S.base.rm04 t x) ≤
+        (2 * Real.sqrt 3 * (C₀ + max (2 * C₀) (Real.exp 4))) ^ 2 := by
+  have ha₀ : 0 < a₀ := by
+    by_contra! h
+    have := mul_nonpos_of_nonpos_of_nonneg h hq.le
+    linarith
+  have hp := H.fixedHamiltonIveyRegion_and_scalar_lower records ha₀ hfixed hlower
+  have hstart : H.time last ∈ H.stageDomain last := by
+    cases last using Fin.lastCases with
+    | last =>
+      simpa only [stageDomain, Fin.lastCases_last] using
+        (show H.time (Fin.last H.eventCount) ∈ Icc (H.time (Fin.last H.eventCount)) H.horizon from
+          ⟨le_rfl, H.time_le_horizon⟩)
+    | cast j =>
+      simpa only [stageDomain, Fin.lastCases_castSucc] using
+        (show H.time j.castSucc ∈ Ico (H.time j.castSucc) (H.time j.succ) from
+          ⟨le_rfl, H.time_strictMono j.castSucc_lt_succ⟩)
+  have hinitHI (x : (H.stage last).Carrier) :
+      InFixedHamiltonIveyRegion (H.initialMetric last) (a₀ + H.time last) x ∧
+        -3 / (a₀ + H.time last) ≤ metricScalarAt (H.initialMetric last) x := by
+    simpa only [H.stageMetric_initial] using hp.1 last (H.time last) hstart x
+  have hfuture := G.fixedHamiltonIveyRegion_and_scalar_lower
+    (by linarith [H.time_nonneg last] : 0 < a₀ + H.time last)
+    (fun x => by rw [hinit]; exact (hinitHI x).1)
+    (fun x => by
+      change -3 / (a₀ + H.time last) ≤ metricScalarAt (G.flow.base.metric (H.time last)) x
+      rw [hinit]
+      exact (hinitHI x).2)
+  apply curvature_bound_normalized_backwardSurvivorIncoming_chart_of_initial_scalar_bound
+    G L hinit gflow hslabs hlast Ξ hΞ J hbirth hr hq hrQ haq hbound hfinal hscalar _ _ htime S hmetric
+  · intro x j hf hl t ht
+    let y := H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val
+    have ht0 : 0 ≤ t := (H.time_nonneg j.castSucc).trans ht.1
+    have hstage : t ∈ H.stageDomain j.castSucc := by
+      simpa only [stageDomain, Fin.lastCases_castSucc] using ht
+    have hregion : InFixedHamiltonIveyRegion ((H.event j).incoming.flow.base.metric t) (a₀ + t) y := by
+      simpa only [stageMetric, Fin.lastCases_castSucc] using (hp.1 j.castSucc t hstage y).1
+    apply (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ a₀ y).mpr
+    exact fixedHamiltonIveyRegion_antitoneOn ha₀ (by linarith : 0 < a₀ + t) (by linarith)
+      ((inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ (a₀ + t) y).mp hregion)
+  · intro x t ht
+    have ht0 : 0 ≤ t := (H.time_nonneg last).trans ht.1
+    have hregion : InFixedHamiltonIveyRegion (G.flow.base.metric t) (a₀ + t) (Ξ x).val.val := by
+      simpa only [show a₀ + H.time last + t - H.time last = a₀ + t by ring] using
+        (hfuture t ht (Ξ x).val.val).1
+    apply (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ a₀ (Ξ x).val.val).mpr
+    exact fixedHamiltonIveyRegion_antitoneOn ha₀ (by linarith : 0 < a₀ + t) (by linarith)
+      ((inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ (a₀ + t) (Ξ x).val.val).mp hregion)
+
+theorem exists_normalized_backwardSurvivorIncoming_chart_solution_curvature_bound
+    {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+    [IsManifold ThreeModel ∞ X] [T2Space X]
+    (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (Ξ : X → H.backwardSurvivorIncomingDomain first last hle G)
+    (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ)
+    (J : X → (H.stage first).Carrier)
+    (hbirth : ∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ x).val = J x)
+    {r q C₀ a₀ : ℝ} {C : ℝ≥0} (hr : 0 < r) (hq : 0 < q) (hrQ : r ≤ C₀ * q)
+    (g₀ : SmoothRiemannianMetric ThreeModel X)
+    (hzero : ∀ x (v w : TangentSpace ThreeModel x),
+      g₀.inner x v w = q * (H.initialMetric first).inner (J x)
+        (mfderiv ThreeModel ThreeModel J x v) (mfderiv ThreeModel ThreeModel J x w))
+    (haq : 1 ≤ a₀ * q)
+    (hbound : ∀ x : X, ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc,
+      ∀ hl : j.succ ≤ last, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      r < (H.event j).incoming.flow.scalar t
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val)) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (H.backwardSurvivorMap first last hle j.castSucc hf (j.castSucc_lt_succ.le.trans hl) (Ξ x).val) ^ 2)
+    (hfinal : ∀ x : X, ∀ t ∈ Ioo (H.time last) s, r < G.flow.scalar t (Ξ x).val.val →
+      |derivWithin (fun v => G.flow.scalar v (Ξ x).val.val) (Iic t) t| ≤
+        C * G.flow.scalar t (Ξ x).val.val ^ 2)
+    (hscalar : ∀ x, metricScalarAt (H.initialMetric first) (J x) ≤ C₀ * q)
+    {parameters : CutoffParameters}
+    (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters)
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x)
+    (hlower : ∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x)
+    (htime : 2 * C * C₀ * (q * (s - H.time first)) ≤ 1) :
+    ∃ gflow : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorIncomingDomain first last hle G),
+      (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+            (H.backwardSurvivorIncomingDomain first last hle G)) ∧
+      (∀ t ∈ Icc (H.time last) s,
+        gflow t = H.backwardSurvivorIncomingMetric first last hle G L t) ∧
+      ∃ S : SolutionOn (I := ThreeModel) (M := X)
+          (RealTimeInterval.closed 0 (q * (s - H.time first))
+            (by have ht := (H.time_strictMono.monotone hle).trans_lt G.lt; positivity)),
+        IsSolutionOn S ∧ S.base.metric 0 = g₀ ∧
+        (∀ t, S.base.metric t =
+          localPullMetric (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) ∧
+        (∀ (x : X) (k l : Fin (Module.finrank ℝ ThreeSpace)),
+          ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ) ∞
+            (fun z : ℝ × X => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (S.base.metric z.1) x z.2 k l)
+            (Icc 0 (q * (s - H.time first)) ×ˢ
+              (trivializationAt ThreeSpace (TangentSpace ThreeModel) x).baseSet)) ∧
+        ∀ t ∈ Icc 0 (q * (s - H.time first)), ∀ x : X,
+          normSq0S (S.base.metric t) x 4 (S.base.rm04 t x) ≤
+            (2 * Real.sqrt 3 * (C₀ + max (2 * C₀) (Real.exp 4))) ^ 2 := by
+  obtain ⟨gflow, hslabs, hlast, S, hS, hSzero, hmetric, hgram⟩ :=
+    H.exists_normalized_backwardSurvivorIncoming_chart_solution first last hle G L hinit
+      Ξ hΞ J hbirth q hq g₀ hzero
+  refine ⟨gflow, hslabs, hlast, S, hS, hSzero, hmetric, hgram, ?_⟩
+  exact curvature_bound_normalized_backwardSurvivorIncoming_chart_of_initial_fixedHamiltonIveyRegion
+    G L hinit gflow hslabs hlast Ξ hΞ J hbirth hr hq hrQ haq hbound hfinal hscalar
+    records hfixed hlower htime S (fun t _ => hmetric t)
+
+end Incoming
 end ObservedHistory
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLossIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCutScaleProtection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorInitialCurvature
@@ -205,5 +207,92 @@ theorem exists_uniform_cap_window_survival_time
   have hF := H.backwardSurvivorMap_isSmoothEmbedding first last hle first le_rfl hle
   exact ⟨hF.lift J hsurvive, hF.isSmoothEmbedding_lift hJ (by simp) hsurvive,
     hF.comp_lift hsurvive⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+
+noncomputable section
+open Set Function Bundle Manifold DifferentialGeometry
+open DifferentialGeometry.Geometry.Neck DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff ENNReal NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+theorem exists_uniform_incoming_cap_window_survival_time
+    (D r eps C₀ : ℝ) (C : ℝ≥0) (hC₀ : 0 < C₀)
+    (heps : 0 < eps) (hepssmall : eps ≤ 1 / 1000)
+    (hr : StandardCap.transitionEnd + eps⁻¹ + 1 < r)
+    (hfit : 64 * (r + eps⁻¹) < D) :
+    ∃ η ε₀ δ₀ : ℝ, 0 < η ∧ 0 < ε₀ ∧ ε₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A hA D m ζ),
+      ⌈eps⁻¹⌉₊ + 2 ≤ m → ζ ≤ ε₀ →
+      (∀ x : standardCapWindow D, ∀ v : TangentSpace ThreeModel x,
+        w.windowMetric.inner x v v ≤ (3/2 : ℝ) * StandardCap.metric.inner x.val v v) →
+      ∀ (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+        (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s),
+      G.flow.base.metric (H.time last) = H.initialMetric last →
+      ∀ (J : standardCapWindow D → (H.stage first).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ J →
+      ∀ (q q₀ a₀ : ℝ), 0 < q → 0 < q₀ → q₀ ≤ C₀ * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric first).inner (J x) (mfderiv ThreeModel ThreeModel J x v)
+          (mfderiv ThreeModel ThreeModel J x z)) →
+      (∀ x, metricScalarAt (H.initialMetric first) (J x) ≤ C₀ * q) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            C * (H.event j).incoming.flow.scalar t x ^ 2) →
+      (∀ x : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s,
+        q₀ < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
+      q * (s - H.time first) ≤ η →
+      ∀ (z : standardCapWindow D) (endpoint : (H.stage last).Carrier)
+        (A : BackwardPointTrace H first last hle endpoint), A.point first le_rfl hle = J z →
+      ∃ Ψ : standardCapWindow D → H.backwardSurvivorIncomingDomain first last hle G,
+        IsSmoothEmbedding ThreeModel ThreeModel ∞ Ψ ∧
+        ∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ψ x).val = J x := by
+  obtain ⟨η₀, ε₀, δ₀, hη₀, hε₀, hεhalf, hδ₀, hsurvive⟩ :=
+    exists_uniform_cap_window_survival_time D r eps C₀ C hC₀ heps hepssmall hr hfit
+  let η := min η₀ (8 * C * C₀ + 1)⁻¹
+  have hη : 0 < η := lt_min hη₀ (by positivity)
+  refine ⟨η, ε₀, δ₀, hη, hε₀, hεhalf, hδ₀, ?_⟩
+  intro E H0 M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA m ζ w hm hζ hupper
+    H first last hle s G hinit J hJ q q₀ a₀ hq hq₀ hq₀Q haq hzero hscalar parameters records
+    hfixed hlower hδ hderiv hfinal htime z endpoint Atrace hanchor
+  have hprior : q * (H.time last - H.time first) ≤ η₀ :=
+    (mul_le_mul_of_nonneg_left (sub_le_sub_right G.lt.le _) hq.le).trans
+      (htime.trans (min_le_left _ _))
+  obtain ⟨Ψ, hΨ, hbirth⟩ := hsurvive w hm hζ hupper H first last hle J hJ
+    q q₀ a₀ hq hq₀ hq₀Q haq hzero hscalar parameters records hfixed hlower hδ hderiv
+    hprior z endpoint Atrace hanchor
+  have htime8 : 8 * C * (s - H.time first) * (C₀ * q) ≤ 1 := by
+    have hh := htime.trans (min_le_right _ _)
+    have hden : 0 < 8 * (C : ℝ) * C₀ + 1 := by positivity
+    have hm := (le_div_iff₀ hden).mp (show q * (s - H.time first) ≤
+      1 / (8 * (C : ℝ) * C₀ + 1) from by simpa only [one_div] using hh)
+    have ht0 := (H.time_strictMono.monotone hle).trans G.lt.le
+    nlinarith [mul_nonneg hq.le (sub_nonneg.mpr ht0)]
+  have hregular (x : standardCapWindow D) : (Ψ x).val ∈ G.terminalRegularRegion := by
+    let B : BackwardPointTrace H first last hle (Ψ x).val := Classical.choice (Ψ x).property
+    apply B.mem_incoming_terminalRegularRegion_of_initial_scalar_bound G hinit (Ψ x).val hq₀ hq₀Q
+      (fun j hf hl => hderiv j hf hl _) isOpen_univ (mem_univ _)
+      (fun y _ => hfinal y) ?_ htime8
+    rw [← H.backwardSurvivorMap_eq_point first last hle first le_rfl hle (Ψ x) B, hbirth]
+    exact hscalar x
+  let Ξ : standardCapWindow D → H.backwardSurvivorIncomingDomain first last hle G :=
+    fun x => ⟨Ψ x, hregular x⟩
+  exact ⟨Ξ, DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen ThreeModel ThreeModel
+    (H.backwardSurvivorIncomingDomain first last hle G) Ξ hΨ, hbirth⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

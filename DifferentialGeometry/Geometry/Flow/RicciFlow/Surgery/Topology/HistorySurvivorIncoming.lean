@@ -569,3 +569,29 @@ theorem localPullMetric_backwardSurvivorIncomingFootprint_eq
   exact localPullMetric_incoming_footprint_restrict_eq _ K₁ K₂ Φ₁ Φ₂ hΦ₁ hΦ₂ hcomp
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+
+noncomputable section
+open Set Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+  {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s)
+
+theorem backwardSurvivorIncomingMap_eq_of_initial_point_eq
+    {X : Type*} (J : X → (H.stage first).Carrier)
+    (F : X → H.backwardSurvivorIncomingDomain first last hle G)
+    (hF : ∀ y, H.backwardSurvivorMap first last hle first le_rfl hle (F y).val = J y)
+    (x : G.terminalRegularOpen) (A : BackwardPointTrace H first last hle x.val) (y : X)
+    (hbirth : J y = A.point first le_rfl hle) :
+    H.backwardSurvivorIncomingMap first last hle G (F y) = x := by
+  let B : BackwardPointTrace H first last hle (F y).val.val := Classical.choice (F y).val.property
+  have hB : B.point first le_rfl hle = A.point first le_rfl hle := by
+    have he := H.backwardSurvivorMap_eq_point first last hle first le_rfl hle (F y).val B
+    exact he.symm.trans ((hF y).trans hbirth)
+  exact Subtype.ext (B.endpoint_eq_of_point_first_eq A hB)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

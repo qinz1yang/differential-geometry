@@ -5435,6 +5435,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorInitialCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapBallVolume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapWindowSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ProspectiveNeckConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SelectedHistoricalNeck
