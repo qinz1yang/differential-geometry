@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Neck.CompactComplementaryComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegion
 import DifferentialGeometry.Geometry.Neck.SpatialLevelEmbedding
 import DifferentialGeometry.Topology.Manifold.SignedGraphCollar
@@ -317,5 +318,62 @@ theorem exists_smoothSphericalRegion_of_compact_bridging_exterior_components
       (neck i.val).map (q, level i.val) := Subtype.ext (hlabels i q)
   rw [heq]
   exact hscalar i.val q
+
+
+theorem exists_smoothSphericalRegion_of_spatial_neck_exterior_tolerance :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
+      ∀ (P : OrientedThreeStage.{u}) (U : TopologicalSpace.Opens P.Carrier)
+        [PreconnectedSpace U] (g : SmoothRiemannianMetric ThreeModel U)
+        (ι : Type u) [Finite ι] (point : ι → U)
+        (neck : ∀ i, SpatialNeck g eps (point i)) (level : ι → ℝ),
+        (∀ i, |level i| ≤ 4) →
+        Pairwise (fun i j => Disjoint
+          (range (fun q : Sphere 2 => (neck i).map (q, level i)))
+          (range (fun q : Sphere 2 => (neck j).map (q, level j)))) →
+        ∀ W : Set U, IsCompact W → closure (interior W) = W →
+        frontier W = ⋃ i, range (fun q : Sphere 2 => (neck i).map (q, level i)) →
+        ∀ A B : ℝ,
+        (∀ i q, A < metricScalarAt g ((neck i).map (q, level i)) ∧
+          metricScalarAt g ((neck i).map (q, level i)) ≤ B) →
+        W.Nonempty →
+        (∀ x : U, x ∉ interior W → Nonempty (SpatialNeck g eps x)) →
+        (∀ R : ℝ, IsCompact {x : U | metricScalarAt g x ≤ R}) →
+    ∃ (rep : ConnectedComponents ↥((interior W)ᶜ) → ↥((interior W)ᶜ))
+      (chosen : Finset (ConnectedComponents ↥((interior W)ᶜ))),
+      (∀ i, ConnectedComponents.mk (rep i) = i) ∧
+      (∀ i, i ∈ chosen ↔ IsCompact (connectedComponentIn (interior W)ᶜ (rep i))) ∧
+    let C := ⋃ i ∈ chosen, connectedComponentIn (interior W)ᶜ (rep i)
+    let J := {i : ι // Disjoint (range (fun q : Sphere 2 => (neck i).map (q, level i))) C}
+    ∃ (S : SmoothSphericalRegion P) (label : J ≃ S.Boundary) (hSU : S.region ⊆ U),
+      S.region = Subtype.val '' (W ∪ C) ∧
+      Subtype.val '' interior W ⊆ interior S.region ∧
+      (∀ i q, (S.sphere (label i) q).val = ((neck i.val).map (q, level i.val)).val) ∧
+      frontier (W ∪ C) =
+        ⋃ i : J, range (fun q : Sphere 2 => (neck i.val).map (q, level i.val)) ∧
+      (∀ b q, A < metricScalarAt g (Set.inclusion hSU (S.sphere b q)) ∧
+        metricScalarAt g (Set.inclusion hSU (S.sphere b q)) ≤ B) ∧
+      ∀ (i : J) (r σ : ℝ), 0 < r → (σ = 1 ∨ σ = -1) →
+        (∀ q t, t ∈ Ioo (-r) r → (q, level i.val + σ * t) ∈ (neck i.val).map.source) →
+        (∀ q t, t ∈ Ioo (-r) r →
+          ((neck i.val).map (q, level i.val + σ * t) ∈ W ↔ t ≤ 0)) →
+        ∃ c : DifferentialGeometry.Topology.SmoothTwoSidedCollar I2 ThreeModel
+            (fun q : Sphere 2 => (S.sphere (label i) q).val),
+          c.radius < r ∧ ∀ p,
+            c.toFun p = ((neck i.val).map (p.1, level i.val + σ * (p.2 : ℝ))).val ∧
+            (c.toFun p ∈ S.region ↔ (p.2 : ℝ) ≤ 0) ∧
+            (c.toFun p ∈ interior S.region ↔ (p.2 : ℝ) < 0) := by
+  obtain ⟨eta, heta, hbridge⟩ := exists_spatial_neck_compact_bridging_component_tolerance.{u, u}
+  refine ⟨eta, heta, ?_⟩
+  intro eps heps P U _ g ι _ point neck level hlevel hdisjoint W hW hregular hfront
+    A B hscalar hne hneck hsublevel
+  have hlevel' (i : ι) : |level i| < eps⁻¹ := by
+    have hfour : (4 : ℝ) < eps⁻¹ :=
+      (lt_inv_comm₀ (by norm_num) (neck i).eps_pos).mpr (by linarith [(neck i).eps_small])
+    exact (hlevel i).trans_lt hfour
+  apply exists_smoothSphericalRegion_of_compact_bridging_exterior_components U g point neck level
+    hlevel' hdisjoint hW hregular hfront hscalar hne
+  intro x _ p q hp hq hpq
+  exact hbridge eps heps U g W hW hregular ι point neck level hlevel hdisjoint hfront
+    hneck hsublevel x p q hp hq hpq
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
