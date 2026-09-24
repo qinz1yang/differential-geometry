@@ -1,3 +1,8 @@
+import DifferentialGeometry.Analysis.ODE.QuadraticCrossing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.VolumeCollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardDistanceComparison
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.UniformMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.HighCurvatureModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ScalarHarnack
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarControl
@@ -190,5 +195,200 @@ theorem PartialStandardSolution.scalar_tendsto_atTop_at_nonregular_point
   exact hx (S.mem_terminalRegularRegion_of_bounded_scalar_at_tendsto hT hT1 hTl x
     (point ∘ φ) (hpoint.comp hφ.tendsto_atTop) (time ∘ φ) (fun n => htime (φ n))
     (hlim.comp hφ.tendsto_atTop) (Filter.Eventually.of_forall (fun n => (hφB n).le)))
+
+section
+
+open _root_.MeasureTheory DifferentialGeometry.Integral.Measure
+
+private local instance : MeasurableSpace E3 := borel E3
+private local instance : BorelSpace E3 := ⟨rfl⟩
+
+private theorem PartialStandardSolution.exists_positive_volume_of_terminal_regular_point
+    (S : PartialStandardSolution) {T : ℝ} (hT : 0 < T)
+    (hTl : ENNReal.ofReal T ≤ S.lifetime) {y : E3}
+    (hy : y ∈ terminalRegularRegion S.metric 0 T) :
+    ∃ r v a : ℝ, 0 < r ∧ r ≤ 1 ∧ 0 < v ∧ a ∈ Ico 0 T ∧
+      ∀ t ∈ Ico a T, ENNReal.ofReal v ≤
+        riemannianVolumeMeasure (𝓡 3) E3 (S.metric t) (Metric.ball y r) := by
+  obtain ⟨U, hyU, a, ha, K, hK, hbound⟩ := hy
+  obtain ⟨r₀, hr₀, hball⟩ := Metric.isOpen_iff.mp U.isOpen y hyU
+  let r := min r₀ 1
+  have hr : 0 < r := lt_min hr₀ zero_lt_one
+  have hBU : Metric.ball y r ⊆ U :=
+    (Metric.ball_subset_ball (min_le_left _ _)).trans hball
+  let B := Metric.ball y r
+  let Λ := Real.exp (18 * K * T)
+  let V := Real.sqrt (Λ ^ 3)
+  have hΛ : 0 < Λ := Real.exp_pos _
+  have hV : 0 < V := by dsimp [V]; positivity
+  let μ := riemannianVolumeMeasure (𝓡 3) E3 (S.metric a)
+  let _ : μ.IsOpenPosMeasure := riemannianVolumeMeasure_isOpenPosMeasure _
+  have hpos : 0 < μ B := Metric.isOpen_ball.measure_pos μ ⟨y, Metric.mem_ball_self hr⟩
+  obtain ⟨c, _, hc, hcμ⟩ := ENNReal.lt_iff_exists_real_btwn.mp hpos
+  have hcpos : 0 < c := ENNReal.ofReal_pos.mp hc
+  refine ⟨r, c / V, a, hr, min_le_right _ _, div_pos hcpos hV, ha, ?_⟩
+  intro t ht
+  have hdom : Icc a t ⊆ S.domain := by
+    intro s hs
+    exact (mem_lifetimeInterval_carrier S.lifetime S.lifetime_pos s).mpr
+      ⟨ha.1.trans hs.1, ((ENNReal.ofReal_lt_ofReal_iff hT).mpr (hs.2.trans_lt ht.2)).trans_le hTl⟩
+  have hRic : ∀ s ∈ Icc a t, ∀ z ∈ B, ∀ v : TangentSpace (𝓡 3) z,
+      |ricciTensor (S.metric s) z v v| ≤ (9 * K) * (S.metric s).inner z v v := by
+    intro s hs z hz v
+    exact S.ricci_quadratic_bound hK z (hbound z (hBU hz) s ⟨hs.1, hs.2.trans_lt ht.2⟩) v
+  have heq := metricEquiv_Icc_on S.metric B
+    (fun s hs z v w => (S.equation s (hdom hs) z v w).mono
+      (fun q hq => ha.1.trans hq.1)) hRic
+  have hquad : ∀ z ∈ B, ∀ v : TangentSpace (𝓡 3) z,
+      (S.metric a).inner z v v ≤ Λ * (S.metric t).inner z v v := by
+    intro z hz v
+    have hlow := (heq t ⟨ht.1, le_rfl⟩ z hz v).1
+    have hh := mul_le_mul_of_nonneg_left hlow (Real.exp_pos (18 * K * (t - a))).le
+    have he : Real.exp (18 * K * (t - a)) * Real.exp (-(2 * (9 * K) * (t - a))) = 1 := by
+      rw [← Real.exp_add]
+      ring_nf
+      exact Real.exp_zero
+    rw [← mul_assoc, he, one_mul] at hh
+    exact hh.trans (mul_le_mul_of_nonneg_right
+      (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (by linarith [ht.2, ha.1]) (by positivity)))
+      (metric_inner_self_nonneg _ _ _))
+  have hμ := volumeMeasure_restrict_le (S.metric t) (S.metric a) hΛ
+    Metric.isOpen_ball.measurableSet hquad
+  have hcomp : μ B ≤ ENNReal.ofReal V * riemannianVolumeMeasure (𝓡 3) E3 (S.metric t) B := by
+    simpa only [Measure.restrict_apply_univ, Measure.smul_apply, smul_eq_mul,
+      finrank_euclideanSpace, Fintype.card_fin, V] using hμ univ
+  rw [ENNReal.ofReal_div_of_pos hV]
+  exact (ENNReal.div_le_iff (ENNReal.ofReal_pos.mpr hV).ne' ENNReal.ofReal_ne_top).mpr
+    (by simpa only [mul_comm] using hcμ.le.trans hcomp)
+
+theorem PartialStandardSolution.terminalRegularRegion_eq_bot_or_top
+    (S : PartialStandardSolution) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
+    (hTl : ENNReal.ofReal T ≤ S.lifetime) :
+    terminalRegularRegion S.metric 0 T = ⊥ ∨ terminalRegularRegion S.metric 0 T = ⊤ := by
+  by_cases htop : terminalRegularRegion S.metric 0 T = ⊤
+  · exact Or.inr htop
+  left
+  apply bot_unique
+  intro y hy
+  obtain ⟨x, hx⟩ : ∃ x : E3, x ∉ terminalRegularRegion S.metric 0 T := by
+    by_contra h
+    apply htop
+    apply top_unique
+    intro x _
+    exact not_not.mp (fun hx => h ⟨x, hx⟩)
+  obtain ⟨r, v, a, hr, hr1, hv, ha, hvolume⟩ :=
+    S.exists_positive_volume_of_terminal_regular_point hT hTl hy
+  let time : ℕ → ℝ := fun n => T - T / ((n : ℝ) + 2)
+  have htime (n : ℕ) : time n ∈ Ico 0 T := by
+    dsimp [time]
+    have hden : 0 < (n : ℝ) + 2 := by positivity
+    have hsub : T / ((n : ℝ) + 2) < T := by
+      apply (div_lt_iff₀ hden).mpr
+      nlinarith [Nat.cast_nonneg (α := ℝ) n]
+    exact ⟨by linarith, sub_lt_self _ (div_pos hT hden)⟩
+  have htimeLimit : Tendsto time atTop (𝓝 T) := by
+    have hnat : Tendsto (fun n : ℕ => (n : ℝ) + 2) atTop atTop :=
+      tendsto_atTop_mono (fun n => by linarith : ∀ n : ℕ, (n : ℝ) ≤ (n : ℝ) + 2)
+        tendsto_natCast_atTop_atTop
+    have hzero : Tendsto (fun n : ℕ => T / ((n : ℝ) + 2)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop hnat
+    simpa only [sub_zero] using (tendsto_const_nhds (x := T)).sub hzero
+  have hdomain (n : ℕ) : time n ∈ S.domain :=
+    (mem_lifetimeInterval_carrier S.lifetime S.lifetime_pos _).mpr
+      ⟨(htime n).1, ((ENNReal.ofReal_lt_ofReal_iff hT).mpr (htime n).2).trans_le hTl⟩
+  have hblow := S.scalar_tendsto_atTop_at_nonregular_point hT hT1 hTl x hx
+    (fun _ => x) tendsto_const_nhds time htime htimeLimit
+  let D := ‖x‖ + ‖y‖ + 1
+  have hD : 0 < D := by dsimp [D]; positivity
+  have hlate : ∀ᶠ n in atTop, T / 2 ≤ time n ∧ time n < 1 := by
+    filter_upwards [htimeLimit.eventually (Ioi_mem_nhds (half_lt_self hT))] with n hn
+    exact ⟨hn.le, (htime n).2.trans_le hT1⟩
+  have hcollapse := standard_fixed_radius_volume_tendsto_zero_of_scalar_tendsto_top
+    (fun _ : ℕ => S) (fun _ => x) time hdomain (half_pos hT) hlate hblow hD
+  have hpositive : ∀ᶠ n in atTop, ENNReal.ofReal v ≤
+      riemannianVolumeMeasure (𝓡 3) E3 (S.metric (time n))
+        (riemannianBallOf (S.metric (time n)) x D) := by
+    filter_upwards [htimeLimit.eventually (Ioi_mem_nhds ha.2)] with n hn
+    apply (hvolume (time n) ⟨hn.le, (htime n).2⟩).trans
+    apply measure_mono
+    exact (Metric.ball_subset_ball hr1).trans
+      (S.euclidean_ball_subset_riemannianBallOf (hdomain n) y x le_rfl)
+  have hfalse : ENNReal.ofReal v ≤ 0 := ge_of_tendsto hcollapse hpositive
+  exact ((ENNReal.ofReal_pos.mpr hv).not_ge hfalse).elim
+
+end
+
+theorem exists_standard_scalar_lower_bound_at_nonregular_point :
+    ∃ c : ℝ, 0 < c ∧ ∀ (S : PartialStandardSolution), 1 ≤ S.lifetime →
+      ∀ (x : E3), x ∉ terminalRegularRegion S.metric 0 1 →
+        ∀ t ∈ Ico (0 : ℝ) 1, c / (1 - t) ≤ metricScalarAt (S.metric t) x := by
+  obtain ⟨C, hC, hderivative⟩ := exists_standard_high_scalar_time_derivative_bound
+  obtain ⟨Q₀, hQ₀, hderiv⟩ := hderivative (1 / 2) (by norm_num)
+  let Q := max Q₀ 1
+  have hQ : 0 < Q := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hQ1 : 1 ≤ Q := le_max_right _ _
+  let c := min (1 / 2) (C * Q)⁻¹
+  have hc : 0 < c := lt_min (by norm_num) (inv_pos.mpr (mul_pos hC hQ))
+  refine ⟨c, hc, ?_⟩
+  intro S hSl x hx t ht
+  have hdomain (s : ℝ) (hs : s ∈ Ico (0 : ℝ) 1) : s ∈ S.domain := by
+    apply (mem_lifetimeInterval_carrier S.lifetime S.lifetime_pos s).mpr
+    refine ⟨hs.1, ?_⟩
+    exact ((ENNReal.ofReal_lt_one).mpr hs.2).trans_le hSl
+  have hR := S.one_le_scalar t (hdomain t ht) x
+  apply (div_le_iff₀ (sub_pos.mpr ht.2)).mpr
+  by_cases htlate : 1 / 2 ≤ t
+  · let R := metricScalarAt (S.metric t) x
+    let A := max Q R
+    have hA : 0 < A := hQ.trans_le (le_max_left _ _)
+    let time : ℕ → ℝ := fun n => 1 - (1 - t) / ((n : ℝ) + 2)
+    have htime (n : ℕ) : time n ∈ Ico t 1 := by
+      dsimp only [time]
+      have hden : 0 < (n : ℝ) + 2 := by positivity
+      have hratio : (1 - t) / ((n : ℝ) + 2) ≤ 1 - t := by
+        exact div_le_self (sub_pos.mpr ht.2).le (by linarith [Nat.cast_nonneg (α := ℝ) n])
+      exact ⟨by linarith, sub_lt_self _ (div_pos (sub_pos.mpr ht.2) hden)⟩
+    have htimeLimit : Tendsto time atTop (𝓝 1) := by
+      have hnat : Tendsto (fun n : ℕ => (n : ℝ) + 2) atTop atTop :=
+        tendsto_atTop_mono (fun n => by linarith : ∀ n : ℕ, (n : ℝ) ≤ (n : ℝ) + 2)
+          tendsto_natCast_atTop_atTop
+      have hzero : Tendsto (fun n : ℕ => (1 - t) / ((n : ℝ) + 2)) atTop (𝓝 0) :=
+        tendsto_const_nhds.div_atTop hnat
+      simpa only [sub_zero] using (tendsto_const_nhds (x := (1 : ℝ))).sub hzero
+    have hblow := S.scalar_tendsto_atTop_at_nonregular_point (by norm_num) le_rfl
+      (by simpa only [ENNReal.ofReal_one] using hSl) x hx
+      (fun _ => x) tendsto_const_nhds time
+      (fun n => ⟨ht.1.trans (htime n).1, (htime n).2⟩) htimeLimit
+    have hcont : ContinuousOn (fun s => metricScalarAt (S.metric s) x) (Ico t 1) := by
+      intro s hs
+      exact (S.scalarTime hs (fun s hs => hdomain s ⟨ht.1.trans hs.1, hs.2⟩) x).continuousWithinAt
+    have hcross : A⁻¹ ≤ C * (1 - t) := by
+      apply DifferentialGeometry.Analysis.ODE.inv_le_mul_sub_of_unbounded_sequence
+        hA hC.le hcont (le_max_right _ _) ?_ htime hblow
+      intro s hs hAs
+      have hsdom := hdomain s ⟨ht.1.trans hs.1.le, hs.2⟩
+      have hsreg : s ∈ (lifetimeInterval S.lifetime S.lifetime_pos).regular := by
+        apply (mem_lifetimeInterval_regular S.lifetime S.lifetime_pos s).mpr
+        exact ⟨(by linarith [hs.1]), ((mem_lifetimeInterval_carrier S.lifetime S.lifetime_pos s).mp hsdom).2⟩
+      have hd : DifferentiableAt ℝ (fun r => metricScalarAt (S.metric r) x) s :=
+        (S.scalarTime (K := S.domain) hsdom (fun _ hr => hr) x).differentiableAt
+          ((lifetimeInterval S.lifetime S.lifetime_pos).regular_mem_nhds hsreg)
+      refine ⟨hd, (le_abs_self _).trans (hderiv S x s hsdom (htlate.trans hs.1.le) hs.2 ?_)⟩
+      exact (le_max_left _ _).trans ((le_max_left Q R).trans hAs.le)
+    have hAR : A ≤ Q * R := by
+      apply max_le
+      · simpa only [mul_one] using mul_le_mul_of_nonneg_left hR hQ.le
+      · simpa only [one_mul] using mul_le_mul_of_nonneg_right hQ1 (zero_lt_one.trans_le hR).le
+    have hone : 1 ≤ C * (1 - t) * (Q * R) := by
+      have hh := mul_le_mul_of_nonneg_right hcross hA.le
+      rw [inv_mul_cancel₀ hA.ne'] at hh
+      exact hh.trans (mul_le_mul_of_nonneg_left hAR (mul_nonneg hC.le (sub_pos.mpr ht.2).le))
+    have hlower : (C * Q)⁻¹ ≤ R * (1 - t) := by
+      rw [inv_eq_one_div]
+      apply (div_le_iff₀ (mul_pos hC hQ)).mpr
+      nlinarith only [hone]
+    exact (min_le_right _ _).trans hlower
+  · have hhalf : (1 : ℝ) / 2 ≤ 1 - t := by linarith
+    exact (min_le_left _ _).trans (hhalf.trans (by nlinarith [ht.2]))
 
 end DifferentialGeometry.PDE.RicciFlow
