@@ -1,11 +1,14 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCylinderScalarConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.HighCurvatureModels
 import DifferentialGeometry.Analysis.ODE.QuadraticCrossing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardUniformExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarLower
+import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ScalarFamilyRegularity
 
 noncomputable section
 open Set Filter Manifold DifferentialGeometry
-open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -35,11 +38,11 @@ private theorem scalar_crossing_bound
       ((lifetimeInterval U.lifetime U.lifetime_pos).regular_mem_nhds hregular)
   exact ⟨hdiff, (le_abs_self _).trans (hderiv v hvdom (hτ.trans hv.1.le) (hv.2.trans hb1) hAv)⟩
 
-theorem not_standard_scalar_blowup_at_spatial_infinity
+theorem not_standard_scalar_blowup_at_spatial_infinity_of_tendsto
     {T : ℝ} (hT : 0 < T) (hT1 : T < 1)
     (hTLife : ENNReal.ofReal T ≤ uniformStandardLifetime)
     (S : ℕ → StandardSolution) (x : ℕ → E3) (t : ℕ → ℝ)
-    (ht : ∀ n, t n ∈ Ico 0 T) (htend : Tendsto t atTop (𝓝 T))
+    (ht : ∀ n, t n ∈ (S n).val.domain ∧ t n < 1) (htend : Tendsto t atTop (𝓝 T))
     (hx : Tendsto (fun n => (riemannianEDistOf ((S n).val.metric 0) 0 (x n)).toReal)
       atTop atTop) :
     ¬ Tendsto (fun n => metricScalarAt ((S n).val.metric (t n)) (x n)) atTop atTop := by
@@ -77,24 +80,108 @@ theorem not_standard_scalar_blowup_at_spatial_infinity
     (hblow.comp hψ.tendsto_atTop).eventually_ge_atTop (2 * A)
   have htime : ∀ᶠ n in atTop, τ < t (ψ n) :=
     (htend.comp hψ.tendsto_atTop).eventually (Ioi_mem_nhds hτT)
-  obtain ⟨n, hnsmall, hnlarge, hntime⟩ := (hsmall.and (hlarge.and htime)).exists
+  have hbuffer : T < T + 1 / (8 * C * A) := by
+    have hh : 0 < 1 / (8 * C * A) := by positivity
+    linarith
+  have hupper : ∀ᶠ n in atTop, t (ψ n) < T + 1 / (8 * C * A) :=
+    (htend.comp hψ.tendsto_atTop).eventually (Iio_mem_nhds hbuffer)
+  obtain ⟨n, hnsmall, hnlarge, hntime, hnupper⟩ := (hsmall.and (hlarge.and (htime.and hupper))).exists
   let U := (S (ψ n)).val
   let y := x (ψ n)
   have hdom : Icc τ (t (ψ n)) ⊆ U.domain := by
     intro v hv
     apply (mem_lifetimeInterval_carrier U.lifetime U.lifetime_pos v).mpr
     refine ⟨hτ.le.trans hv.1, ?_⟩
-    have hvT : v < T := hv.2.trans_lt (ht (ψ n)).2
-    exact ((ENNReal.ofReal_lt_ofReal_iff hT).mpr hvT).trans_le
-      (hTLife.trans (uniformStandardLifetime_le_lifetime (S (ψ n))))
-  have hcross := scalar_crossing_bound U y hτ hntime.le hτhalf ((ht (ψ n)).2.trans hT1) hA
+    exact (ENNReal.ofReal_le_ofReal hv.2).trans_lt
+      ((mem_lifetimeInterval_carrier U.lifetime U.lifetime_pos (t (ψ n))).mp (ht (ψ n)).1).2
+  have hcross := scalar_crossing_bound U y hτ hntime.le hτhalf (ht (ψ n)).2 hA
     hdom hnsmall hnlarge (fun v hv htv hv1 hAv =>
       hderiv U y v hv htv hv1 (hQA.le.trans hAv.le))
-  have htimeBound : C * (t (ψ n) - τ) ≤ 1 / (4 * A) :=
-    (mul_le_mul_of_nonneg_left (by linarith [(ht (ψ n)).2]) hC.le).trans hbudget
+  have htimeBound : C * (t (ψ n) - τ) ≤ 3 / (8 * A) := by
+    have he : C * (1 / (8 * C * A)) = 1 / (8 * A) := by field_simp
+    have hu := mul_le_mul_of_nonneg_left hnupper.le hC.le
+    have hpos : 0 < 8 * A := by positivity
+    have hfour : 1 / (4 * A) + 1 / (8 * A) = 3 / (8 * A) := by field_simp; ring
+    rw [mul_add, he] at hu
+    rw [← hfour]
+    linarith
   have hinverse : A⁻¹ - (2 * A)⁻¹ = 1 / (2 * A) := by field_simp; ring
   rw [hinverse] at hcross
-  have hgap : 1 / (4 * A) < 1 / (2 * A) := one_div_lt_one_div_of_lt (by positivity) (by linarith)
+  have hgap : 3 / (8 * A) < 1 / (2 * A) := by
+    apply (div_lt_div_iff₀ (by positivity : 0 < 8 * A) (by positivity : 0 < 2 * A)).mpr
+    linarith
   exact (not_le_of_gt hgap) (hcross.trans htimeBound)
+
+
+theorem not_standard_scalar_blowup_at_spatial_infinity
+    {T : ℝ} (hT : 0 < T) (hT1 : T < 1)
+    (hTLife : ENNReal.ofReal T ≤ uniformStandardLifetime)
+    (S : ℕ → StandardSolution) (x : ℕ → E3) (t : ℕ → ℝ)
+    (ht : ∀ n, t n ∈ Ico 0 T) (htend : Tendsto t atTop (𝓝 T))
+    (hx : Tendsto (fun n => (riemannianEDistOf ((S n).val.metric 0) 0 (x n)).toReal)
+      atTop atTop) :
+    ¬ Tendsto (fun n => metricScalarAt ((S n).val.metric (t n)) (x n)) atTop atTop := by
+  apply not_standard_scalar_blowup_at_spatial_infinity_of_tendsto hT hT1 hTLife S x t ?_ htend hx
+  intro n
+  refine ⟨?_, (ht n).2.trans hT1⟩
+  exact (mem_lifetimeInterval_carrier (S n).val.lifetime (S n).val.lifetime_pos (t n)).mpr
+    ⟨(ht n).1, ((ENNReal.ofReal_lt_ofReal_iff hT).mpr (ht n).2).trans_le
+      (hTLife.trans (uniformStandardLifetime_le_lifetime (S n)))⟩
+
+theorem standard_uniform_exterior_scalar_bound
+    {T : ℝ} (hT : 0 < T) (hT1 : T < 1)
+    (hTLife : ENNReal.ofReal T ≤ uniformStandardLifetime) :
+    ∃ R K : ℝ, 0 < R ∧ 0 < K ∧ ∀ (S : StandardSolution) (t : ℝ),
+      t ∈ Ico 0 T → ∀ x : E3, R ≤ ‖x‖ → metricScalarAt (S.val.metric t) x ≤ K := by
+  classical
+  by_contra hnot
+  have hbad (n : ℕ) : ∃ (S : StandardSolution) (t : ℝ) (x : E3),
+      t ∈ Ico 0 T ∧ (n : ℝ) + 1 ≤ ‖x‖ ∧ (n : ℝ) + 1 < metricScalarAt (S.val.metric t) x := by
+    by_contra h
+    apply hnot
+    refine ⟨(n : ℝ) + 1, (n : ℝ) + 1, by positivity, by positivity, ?_⟩
+    intro S t ht x hx
+    exact le_of_not_gt fun hh => h ⟨S, t, x, ht, hx, hh⟩
+  choose S t x ht hx hR using hbad
+  obtain ⟨b, hb, φ, hφ, hbconv⟩ := isCompact_Icc.tendsto_subseq
+    (fun n => ⟨(ht n).1, (ht n).2.le⟩ : ∀ n, t n ∈ Icc 0 T)
+  have hblow : Tendsto (fun n => metricScalarAt ((S n).val.metric (t n)) (x n)) atTop atTop :=
+    tendsto_atTop_mono (fun n : ℕ => (show (n : ℝ) ≤ (n : ℝ) + 1 by linarith).trans (hR n).le)
+      tendsto_natCast_atTop_atTop
+  have hblow' := hblow.comp hφ.tendsto_atTop
+  have hescape : Tendsto (fun n =>
+      (riemannianEDistOf ((S n).val.metric 0) 0 (x n)).toReal) atTop atTop := by
+    have hn : Tendsto (fun n => ‖x n‖) atTop atTop := tendsto_atTop_mono
+      (fun n : ℕ => (show (n : ℝ) ≤ (n : ℝ) + 1 by linarith).trans (hx n)) tendsto_natCast_atTop_atTop
+    apply hn.congr'
+    filter_upwards with n
+    rw [(S n).val.initial, StandardCap.distance_zero]
+  have hbpos : 0 < b := by
+    by_contra h
+    have hbzero : b = 0 := le_antisymm (le_of_not_gt h) hb.1
+    subst b
+    obtain ⟨α, hα, K, hK, hlife, hcurv⟩ := standard_uniform_initial_window
+    have hsmall : ∀ᶠ n in atTop, t (φ n) < α :=
+      hbconv.eventually (Iio_mem_nhds hα)
+    have hlarge : ∀ᶠ n in atTop, 9 * K < metricScalarAt ((S (φ n)).val.metric (t (φ n))) (x (φ n)) :=
+      hblow'.eventually (eventually_gt_atTop (9 * K))
+    obtain ⟨n, hn, hnlarge⟩ := (hsmall.and hlarge).exists
+    have hs := scalar_abs_le_rm ((S (φ n)).val.metric (t (φ n))) (x (φ n))
+    change |metricScalarAt ((S (φ n)).val.metric (t (φ n))) (x (φ n))| ≤
+      (Module.finrank ℝ E3 : ℝ) ^ 2 * Real.sqrt
+        (normSq0S ((S (φ n)).val.metric (t (φ n))) (x (φ n)) 4
+          (metricRm04 ((S (φ n)).val.metric (t (φ n))) (x (φ n)))) at hs
+    norm_num only [finrank_euclideanSpace, Fintype.card_fin, Nat.cast_ofNat] at hs
+    have hc := hcurv (S (φ n)) (t (φ n)) ⟨(ht (φ n)).1, hn.le⟩ (x (φ n))
+    have hlo := le_abs_self (metricScalarAt ((S (φ n)).val.metric (t (φ n))) (x (φ n)))
+    nlinarith
+  apply not_standard_scalar_blowup_at_spatial_infinity_of_tendsto hbpos (hb.2.trans_lt hT1)
+    ((ENNReal.ofReal_le_ofReal hb.2).trans hTLife) (S ∘ φ) (x ∘ φ) (t ∘ φ) ?_ hbconv
+    (hescape.comp hφ.tendsto_atTop) hblow'
+  intro n
+  refine ⟨?_, (ht (φ n)).2.trans hT1⟩
+  apply (mem_lifetimeInterval_carrier (S (φ n)).val.lifetime (S (φ n)).val.lifetime_pos (t (φ n))).mpr
+  exact ⟨(ht (φ n)).1, ((ENNReal.ofReal_lt_ofReal_iff hT).mpr (ht (φ n)).2).trans_le
+    (hTLife.trans (uniformStandardLifetime_le_lifetime (S (φ n))))⟩
 
 end DifferentialGeometry.PDE.RicciFlow
