@@ -7,7 +7,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 private theorem signs_of_frontier_reading
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup F]
     {D : Set E} {X : Set F} {f : E → F} (ℓ : E →ₗ[ℝ] ℝ)
     (hD : Convex ℝ D) (hf : ContinuousOn f D) (hX : IsClosed X)
     (hzero : ∀ p ∈ D, f p ∈ frontier X ↔ ℓ p = 0)

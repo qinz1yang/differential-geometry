@@ -65,8 +65,8 @@ theorem IsPLTorus.nonempty_chartedSpace_two
   exact ⟨(Homeomorph.setCongr hspace).chartedSpace⟩
 
 private theorem annulus_product_arc {E F : Type*} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [FiniteDimensional ℝ F] {J : Set E} {A : Set F} (hJ : IsPLSphere 1 J)
+    [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {J : Set E} {A : Set F} (hJ : IsPLSphere 1 J)
     {δ : ℝ → F} (hδ : IsPLHomeomorphOn δ (Icc 0 1) A) :
     IsAnnulusOn (J ×ˢ A) (J ×ˢ {δ 0}) (J ×ˢ {δ 1}) := by
   obtain ⟨g, hg⟩ := hJ
