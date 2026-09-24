@@ -20,3 +20,5 @@ The unmodified aggregate build is running separately; no aggregate success is cl
 - Ambient deletion: one-edge and two-edge boundary traces are realized by protected triangle moves. `IsBridgeDisk.exists_isPLHomeomorphOn_map_arc_to_subdisk` maps the actual bridge arc onto that of a prescribed bridge subdisk, fixing the ball boundary and exterior. The intrinsic-boundary invariant is proved through the finite deletion chain.
 
 - Bridge links: `IsBridgeDisk.exists_compatible_triangulation` and `IsBridgeDisk.geometricLink_traces` derive the actual source links. Disk crosscuts and one-ended disk arcs admit relative rectangle coordinates; conical comparison preserves the disk, its intrinsic boundary, the bridge arc, and its endpoint segments.
+
+- Collar infrastructure: indexed transverse patterns and both end cuts survive finite arc-chart gluing. A prescribed boundary-disk collar extends over a spherical boundary. `IsPLBall.exists_isPLHomeomorphOn_collar_core` constructs the ball core by an explicit collar shift; `exists_isPLHomeomorphOn_eq_on_collars` matches whole collars and extends over the remaining cores.
