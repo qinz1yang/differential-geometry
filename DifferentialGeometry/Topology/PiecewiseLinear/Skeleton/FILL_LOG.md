@@ -14272,3 +14272,37 @@ Remaining work: Transport the subsurface embedding invariant through actual comp
   Item19_FinalNames.json, PR19_StatementCheck_LF.json and Item19_LedgerChange.json.
 - Other-lane SurfaceDiskNeighborhood still has original SHA-256
   d067adc397638f5689be9d042c7f6cda91a364dc2e034af31139b14e652f9136.
+
+# Codex item 22
+
+## Lead takeover reconciliation (2026-09-24)
+
+- Re-read item 22 and its live addenda before writing. A was already complete; B's existing
+  acceptance was still running. No duplicate acceptance or same-root checker was started.
+- A: d29369fbe accepted 40 modules. AcceptCodexItem17.log contains 41 Verified lines, including
+  AuditCodexItem17. All 40 current source hashes match the lead's zero-diagnostic receipts.
+  Section34Terminal matches its checked source: zero errors, one retained sorry warning.
+  Historical ledger change: 11 -> 10.
+- B: observed the existing acceptance finish with 79 Verified lines (77 modules plus two audits).
+  All 77 current source hashes match zero-diagnostic receipts. LF-normalized cut-frame statement
+  matches the pre-wiring skeleton; namescan finds only the permitted frozen-leaf duplicate.
+  Forbidden-token, declaration-docstring, diagnostic-command and line-length scans are clean.
+- B dry run succeeded. Before this lane's real wiring, its ledger guard detected concurrent
+  completion by the original lead, so this lane did not duplicate or overwrite that wiring.
+  Accepted commit: 7ce7e5052. CGN checked-source hash matches: zero errors, one retained sorry
+  warning. Historical ledger change: 8 -> 7, preserving the completed Section 31 promotion.
+- B audit receipt: Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private\AuditPR15A.lean with no diagnostics; shared outputs unchanged.
+- B audit receipt: Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private\AuditPR15B.lean with no diagnostics; shared outputs unchanged.
+  Preserved separate AuditPR15A.receipt.json and AuditPR15B.receipt.json in the lead private root;
+  both zero-diagnostic receipts match their audit source hashes.
+- C was already complete: 7465bd0ce (helper names), 01cec4741 (40-module checks and audit),
+  8df9cb5dd (promotion and registration). Recompared both current leaf statements against the
+  pre-promotion skeleton from Git: exactly equal after LF normalization, no binder exception.
+  All 41 current module hashes match clean receipts. AuditPR19 and the promoted-module audit
+  have clean receipts and matching audit hashes. Historical ledger change: 10 -> 8.
+- All 158 accepted modules (A: 40, B: 77, C: 40 + promoted module) are tracked and imported
+  exactly once by DifferentialGeometry.lean. Live frozen census and ledger both equal 7.
+  Evidence is the scoped private checker/audit workflow required by item 22; no unrestricted
+  full-repository build was run under the topology-only, shared-output-read-only lease.
+- Origin codex/moise-integration and mirror moise-integration were both verified at 7ce7e5052.
+  Unrelated tracked edits and other lanes' untracked files were preserved. D/E remain deferred.
