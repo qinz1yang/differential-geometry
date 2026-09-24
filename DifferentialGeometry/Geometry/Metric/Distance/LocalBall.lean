@@ -77,3 +77,46 @@ theorem exists_pos_isCompact_riemannianClosedBallOf_subset_of_mem_nhds
     (fun x hx => (hball hx).2), fun x hx => (hball hx).1⟩
 
 end DifferentialGeometry.Geometry.Metric
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.Geometry.Metric
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem ofReal_sub_le_riemannianEDistOf_of_mem_closedBall_of_mem_frontier
+    (g : SmoothRiemannianMetric I M) (p : M) {R r : ℝ} (hr : 0 ≤ r) (hrR : r ≤ R)
+    {y z : M} (hy : y ∈ riemannianClosedBallOf g p r)
+    (hz : z ∈ frontier (riemannianClosedBallOf g p R)) :
+    ENNReal.ofReal (R - r) ≤ riemannianEDistOf g z y := by
+  have hfar := riemannianEDistOf_eq_of_mem_frontier_riemannianClosedBallOf g p hz
+  change riemannianEDistOf g p y ≤ ENNReal.ofReal r at hy
+  have hfinite : riemannianEDistOf g p y ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hy
+  by_contra hnot
+  have hlt : riemannianEDistOf g z y < ENNReal.ofReal (R - r) := lt_of_not_ge hnot
+  have htriangle := riemannianEDistOf_triangle g p y z
+  rw [riemannianEDistOf_comm g y z, hfar] at htriangle
+  have hsum := ENNReal.add_lt_add_of_le_of_lt hfinite hy hlt
+  rw [← ENNReal.ofReal_add hr (sub_nonneg.mpr hrR), add_sub_cancel] at hsum
+  exact (not_lt_of_ge htriangle) hsum
+
+theorem ofReal_half_le_riemannianEDistOf_of_mem_ball_of_mem_frontier
+    (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ} (hR : 0 < R)
+    {y z : M} (hy : y ∈ riemannianBallOf g p (R / 2))
+    (hz : z ∈ frontier (riemannianClosedBallOf g p R)) :
+    ENNReal.ofReal (R / 2) ≤ riemannianEDistOf g z y := by
+  have hclosed : y ∈ riemannianClosedBallOf g p (R / 2) := by
+    change riemannianEDistOf g p y < ENNReal.ofReal (R / 2) at hy
+    exact hy.le
+  simpa only [show R - R / 2 = R / 2 by ring] using
+    ofReal_sub_le_riemannianEDistOf_of_mem_closedBall_of_mem_frontier g p
+      (by linarith : 0 ≤ R / 2) (by linarith : R / 2 ≤ R) hclosed hz
+
+end DifferentialGeometry.Geometry.Metric
