@@ -13819,3 +13819,4 @@ import DifferentialGeometry.Topology.ThreeManifold.SphericalBoundaryProjectiveHo
 import DifferentialGeometry.Geometry.Neck.PointedNormalizedDetection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapWindowGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ScalarHarnack
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecentPreparedCapProductExclusion
