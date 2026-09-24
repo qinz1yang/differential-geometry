@@ -5398,6 +5398,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalScalarDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSpatialNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTensorPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckMixedJets
