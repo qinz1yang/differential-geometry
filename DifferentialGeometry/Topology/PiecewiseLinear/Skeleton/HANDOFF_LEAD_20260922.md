@@ -587,3 +587,9 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   Consult BV (sub-leaf 5 of the compact trace, written with the item-15 lane) is out.
 * 18:10 (09-24) - BV answered (external): compact trace sub-leaf 5 closable from the existing inputs; two bridge
   signatures and the side-selected descent (SphereSchoenflies obstacle disk) recorded in B1.b.8; relayed to item 15.
+* 19:40 (09-24) - OWNER: Codex items 14 and 15 handed over to the collaborator; their partial results are on the
+  branch (5a05246e4 bridge-disk route A0/L0/L1 with the two refutations; 4375f6dcf the 46 trace modules through
+  sub-leaf 5). Briefs: `consult/COLLABORATOR-item14-marked-rim-request.md` (L2-L6 + assembly),
+  `consult/COLLABORATOR-item15-trace-request.md` (sub-leaf 6, compact headline, manifold twin). Codex items 18,
+  19, 20 (PR #15 reconciliation, PR #19 Section 31, PRs #14/#12 package F) are end-to-end Codex acceptances with
+  git rights granted by the owner. Package F complete (PR #12 + #14). Frozen sorry 13 before those acceptances.
