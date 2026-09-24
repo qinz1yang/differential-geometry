@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.CurveEndpointPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Basic
@@ -141,5 +142,71 @@ theorem continuousOn_lRegularizedAction_family_of_contMDiffOn_one
     S hS T hVopen hKopen halpha hcarrier
   exact intervalIntegral.continuousOn_integral_of_continuousOn_prod hVopen
     (hlag.mono (prod_mono subset_rfl hslab))
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+noncomputable section
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology Interval
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {D : RealTimeInterval}
+
+theorem exists_open_endpoint_family_of_lRegularizedAction_lt
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b L : ℝ} (hab : a < b)
+    (hreg : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.regular)
+    (γ : ℝ → M) (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    (hact : lRegularizedAction S T γ a b < L) :
+    ∃ U : Set M, IsOpen U ∧ γ b ∈ U ∧ ∃ α : M → ℝ → M,
+      (∀ y ∈ U, ContMDiff 𝓘(ℝ, ℝ) I 1 (α y)) ∧
+      (∀ y ∈ U, α y a = γ a) ∧ (∀ y ∈ U, α y b = y) ∧
+      (∀ t, α (γ b) t = γ t) ∧
+      ∀ y ∈ U, lRegularizedAction S T (α y) a b < L := by
+  obtain ⟨V, hV, hqV, β, hβ, hslices, hstart, hend, hcenter⟩ :=
+    Geometry.exists_contMDiff_endpoint_perturbation γ hγ hab
+  let p := γ b
+  let q : E := extChartAt I p p
+  let K : Set ℝ := (fun t : ℝ => T - t ^ 2) ⁻¹' D.regular
+  have hK : IsOpen K := D.regular_isOpen.preimage (continuous_const.sub (continuous_id.pow 2))
+  have hslab : uIcc a b ⊆ K := by
+    rw [uIcc_of_le hab.le]
+    exact hreg
+  have hcarrier : ∀ t ∈ K, T - t ^ 2 ∈ D.carrier := fun _ ht => D.regular_subset ht
+  have hfamily : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) I 1 β (V ×ˢ K) :=
+    hβ.mono (prod_mono Subset.rfl (subset_univ K))
+  have hcont := continuousOn_lRegularizedAction_family_of_contMDiffOn_one S hS T a b
+    hV hK hfamily hcarrier hslab
+  have hactq : lRegularizedAction S T (fun t => β (q, t)) a b < L := by
+    have heq : (fun t => β (q, t)) = γ := funext hcenter
+    rwa [heq]
+  have hq : q ∈ V := hqV
+  have hparam : ∀ᶠ A in 𝓝 q, lRegularizedAction S T (fun t => β (A, t)) a b < L :=
+    ((hcont q hq).continuousAt (hV.mem_nhds hq)).eventually (Iio_mem_nhds hactq)
+  have hcoord : ContinuousAt (fun y : M => extChartAt I p y) p := continuousAt_extChartAt p
+  have hnear : {y : M | lRegularizedAction S T (fun t => β (extChartAt I p y, t)) a b < L ∧
+      extChartAt I p y ∈ V ∧ y ∈ (extChartAt I p).source} ∈ 𝓝 p := by
+    filter_upwards [hcoord.tendsto.eventually hparam,
+      hcoord.tendsto.eventually (hV.mem_nhds hq),
+      (isOpen_extChartAt_source (I := I) p).mem_nhds (mem_extChartAt_source p)] with y hyact hyV hys
+    exact ⟨hyact, hyV, hys⟩
+  obtain ⟨U, hUsub, hU, hpU⟩ := mem_nhds_iff.mp hnear
+  let α : M → ℝ → M := fun y t => β (extChartAt I p y, t)
+  refine ⟨U, hU, hpU, α, ?_, ?_, ?_, hcenter, ?_⟩
+  · intro y hy
+    exact hslices _ (hUsub hy).2.1
+  · intro y hy
+    exact hstart _ (hUsub hy).2.1
+  · intro y hy
+    exact (hend _ (hUsub hy).2.1).trans ((extChartAt I p).left_inv (hUsub hy).2.2)
+  · intro y hy
+    exact (hUsub hy).1
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
