@@ -24,3 +24,5 @@ The unmodified aggregate build is running separately; no aggregate success is cl
 - Collar infrastructure: indexed transverse patterns and both end cuts survive finite arc-chart gluing. A prescribed boundary-disk collar extends over a spherical boundary. `IsPLBall.exists_isPLHomeomorphOn_collar_core` constructs the ball core by an explicit collar shift; `exists_isPLHomeomorphOn_eq_on_collars` matches whole collars and extends over the remaining cores.
 
 - Compact adapters: actual dual cells have shared marked cap centers and bridge disks. Supplied single-vertex marked prisms glue into a marked product, with an outward buffer of the whole torus. These are downstream adapters; they do not supply L2.
+
+- Standard model: the box axis has a genuine bridge disk and exact endpoint/interior affine charts. `exists_isBridgeDisk_prism_axis` produces a full Euclidean three-ball prism and its marked bridge without hypotheses.
