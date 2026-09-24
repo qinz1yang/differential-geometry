@@ -116,12 +116,12 @@ theorem SpatialNeck.interior_eq_empty_of_frontier_neck_in_neck_chart
   rw [hprod] at hh
   exact hh
 
-theorem SpatialNeck.disjoint_unit_slab_of_frontier_neck
+theorem SpatialNeck.disjoint_unit_slab_of_frontier_neck_of_subset
     (cut : SpatialNeck g eps p) {epsb : ℝ} {pb : M}
     (boundary : SpatialNeck g epsb pb) (hb : epsb ≤ 1 / 1000)
     {s : ℝ} (hs : s ∈ Ioo (-epsb⁻¹) epsb⁻¹)
-    {K : Set M} (hK : IsCompact K) (hinterior : (interior K).Nonempty)
-    (hfront : frontier K = range (fun z : Sphere 2 => boundary.map (z, s)))
+    {L K : Set M} (hLK : L ⊆ K) (hL : IsCompact L) (hinterior : (interior L).Nonempty)
+    (hfront : frontier L = range (fun z : Sphere 2 => boundary.map (z, s)))
     {q C D c : ℝ} (hq : 0 < q) (hC : 0 < C) (hD : 0 ≤ D)
     (heps : 4323 * eps ≤ 1 / 2)
     (hscalar : ∀ x ∈ K, metricScalarAt g x ≤ C * q)
@@ -150,8 +150,63 @@ theorem SpatialNeck.disjoint_unit_slab_of_frontier_neck
     have hstrict := mul_lt_mul_of_pos_right hsmall hq
     nlinarith
   have hempty := cut.interior_eq_empty_of_frontier_neck_in_neck_chart boundary hb hs
-    hK htarget hfront hratio
+    hL (hLK.trans htarget) hfront hratio
   exact Set.not_nonempty_empty (hempty ▸ hinterior)
+
+omit [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M] in
+theorem exists_neck_cap_separation_tolerance_of_subset
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧
+      ∀ (M : Type*) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] (g : SmoothRiemannianMetric I3 M)
+      (eps epsb : ℝ) (p pb : M), eps ≤ eta →
+      ∀ (cut : SpatialNeck g eps p) (boundary : SpatialNeck g epsb pb),
+        epsb ≤ 1 / 1000 → ∀ s ∈ Ioo (-epsb⁻¹) epsb⁻¹,
+        ∀ (L K : Set M), L ⊆ K → IsCompact L → (interior L).Nonempty →
+          frontier L = range (fun z : Sphere 2 => boundary.map (z, s)) →
+          ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt g x ≤ C * q) →
+            c * q ≤ metricScalarAt g pb →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D) →
+            Disjoint K (cut.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  let R := 2 * (15 + Real.sqrt (2 * C) * D)
+  have hR : 0 < R := by dsimp [R]; positivity
+  let eta := min (1 / 10000) (min ((2 * R)⁻¹) (c / (46080 * C)))
+  have heta : 0 < eta := by dsimp [eta]; positivity
+  refine ⟨eta, heta, ?_⟩
+  intro M _ _ _ _ g eps epsb p pb heps cut boundary hb s hs L K hLK hL hLi hfront q hq hscalar hboundary hdiam
+  have hepsbound : eps ≤ 1 / 10000 := heps.trans (min_le_left _ _)
+  have hepsR : eps ≤ (2 * R)⁻¹ := heps.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hepsc : eps ≤ c / (46080 * C) := heps.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hfit : R < eps⁻¹ := by
+    have hh := inv_anti₀ cut.eps_pos hepsR
+    rw [inv_inv] at hh
+    linarith
+  have hsmall : 23040 * C * eps < c := by
+    have hh := (le_div_iff₀ (by positivity : 0 < 46080 * C)).mp hepsc
+    nlinarith
+  exact cut.disjoint_unit_slab_of_frontier_neck_of_subset boundary hb hs hLK hL hLi hfront
+    hq hC hD (by linarith) hscalar hboundary hdiam hfit hsmall
+
+theorem SpatialNeck.disjoint_unit_slab_of_frontier_neck
+    (cut : SpatialNeck g eps p) {epsb : ℝ} {pb : M}
+    (boundary : SpatialNeck g epsb pb) (hb : epsb ≤ 1 / 1000)
+    {s : ℝ} (hs : s ∈ Ioo (-epsb⁻¹) epsb⁻¹)
+    {K : Set M} (hK : IsCompact K) (hinterior : (interior K).Nonempty)
+    (hfront : frontier K = range (fun z : Sphere 2 => boundary.map (z, s)))
+    {q C D c : ℝ} (hq : 0 < q) (hC : 0 < C) (hD : 0 ≤ D)
+    (heps : 4323 * eps ≤ 1 / 2)
+    (hscalar : ∀ x ∈ K, metricScalarAt g x ≤ C * q)
+    (hboundary : c * q ≤ metricScalarAt g pb)
+    (hdiam : ∀ x ∈ K, ∀ y ∈ K,
+      riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D)
+    (hfit : 2 * (15 + Real.sqrt (2 * C) * D) < eps⁻¹)
+    (hsmall : 23040 * C * eps < c) :
+    Disjoint K (cut.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  exact cut.disjoint_unit_slab_of_frontier_neck_of_subset boundary hb hs Subset.rfl hK hinterior hfront
+    hq hC hD heps hscalar hboundary hdiam hfit hsmall
+
 
 omit [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M] in
 theorem exists_neck_cap_separation_tolerance
@@ -170,23 +225,10 @@ theorem exists_neck_cap_separation_tolerance
             (∀ x ∈ K, ∀ y ∈ K,
               riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D) →
             Disjoint K (cut.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
-  let R := 2 * (15 + Real.sqrt (2 * C) * D)
-  have hR : 0 < R := by dsimp [R]; positivity
-  let eta := min (1 / 10000) (min ((2 * R)⁻¹) (c / (46080 * C)))
-  have heta : 0 < eta := by dsimp [eta]; positivity
+  obtain ⟨eta, heta, hsep⟩ := exists_neck_cap_separation_tolerance_of_subset hC hD hc
   refine ⟨eta, heta, ?_⟩
   intro M _ _ _ _ g eps epsb p pb heps cut boundary hb s hs K hK hKi hfront q hq hscalar hboundary hdiam
-  have hepsbound : eps ≤ 1 / 10000 := heps.trans (min_le_left _ _)
-  have hepsR : eps ≤ (2 * R)⁻¹ := heps.trans ((min_le_right _ _).trans (min_le_left _ _))
-  have hepsc : eps ≤ c / (46080 * C) := heps.trans ((min_le_right _ _).trans (min_le_right _ _))
-  have hfit : R < eps⁻¹ := by
-    have hh := inv_anti₀ cut.eps_pos hepsR
-    rw [inv_inv] at hh
-    linarith
-  have hsmall : 23040 * C * eps < c := by
-    have hh := (le_div_iff₀ (by positivity : 0 < 46080 * C)).mp hepsc
-    nlinarith
-  exact cut.disjoint_unit_slab_of_frontier_neck boundary hb hs hK hKi hfront
-    hq hC hD (by linarith) hscalar hboundary hdiam hfit hsmall
+  exact hsep M g eps epsb p pb heps cut boundary hb s hs K K Subset.rfl hK hKi hfront q hq
+    hscalar hboundary hdiam
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
