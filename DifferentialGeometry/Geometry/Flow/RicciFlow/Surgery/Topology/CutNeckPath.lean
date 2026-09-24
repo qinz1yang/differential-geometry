@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.RelativeNeckPath
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCylinder
 
 noncomputable section
@@ -116,3 +117,67 @@ theorem exists_cut_neck_cylinder_stop_or_return_tolerance :
       exact ⟨⟨⟨d.val,d.property.1⟩,fun he => d.property.2 (congrArg Subtype.val he)⟩,hd⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+section
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Topology.SphericalCapping
+
+universe u
+
+theorem exists_cut_neck_standard_or_stopped_tolerance :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
+      ∀ (M N : ClosedOrientedManifold.{u} 3) (T : SphericalTubeSystem M)
+        (C : SphericalCapping M N T) (g : SmoothRiemannianMetric I3 M.Carrier)
+        (point : T.Index → M.Carrier) (neck : ∀ i, SpatialNeck g eps (point i)),
+        (∀ i (q : TubeDomain), T.tube i q = (neck i).map (q.1,q.2.val)) →
+        ∀ b : T.Boundary,
+          let W := ⋃ i, T.tube i '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1}
+          (∀ q : Sphere 2, isPoincareStandard
+            (N.component (ConnectedComponents.mk (C.coreInclusion (T.coreBoundarySphere b q)))).Carrier) ∨
+          (∃ (R : PartialDiffeomorph IC I3 Cylinder M.Carrier ∞) (p : M.Carrier)
+            (nk : SpatialNeck g eps p) (a : ℝ) (κ : Sphere 2 ≃ₘ⟮I2,I2⟯ Sphere 2),
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source ∧ |a| ≤ 4 ∧
+            (∀ q : Sphere 2, R (q,0) = T.boundarySphere b q) ∧
+            (∀ q : Sphere 2, R (q,1) = nk.map (κ q,a)) ∧
+            R '' (univ ×ˢ Icc (0 : ℝ) 1) ∩ W = range (T.boundarySphere b) ∧
+            Disjoint (range (fun q : Sphere 2 => nk.map (q,a))) W ∧
+            closure (interior (W ∪ R '' (univ ×ˢ Icc (0 : ℝ) 1))) =
+              W ∪ R '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
+            frontier (W ∪ R '' (univ ×ˢ Icc (0 : ℝ) 1)) =
+              range (fun q : Sphere 2 => nk.map (q,a)) ∪
+                ⋃ c : {c : T.Boundary // c ≠ b}, range (T.boundarySphere c.val) ∧
+            ¬ Nonempty (SpatialNeck g eps (nk.map (nk.center,a)))) := by
+  obtain ⟨eta,heta,hpath⟩ := TubeSystem.exists_cut_neck_cylinder_stop_or_return_tolerance.{u}
+  refine ⟨eta,heta,?_⟩
+  intro eps heps M N T C g point neck hmap b W
+  rcases hpath eps heps M.Carrier T.toTopological g point neck hmap b with hstop | hreturn
+  · exact Or.inr hstop
+  · left
+    obtain ⟨c,hcb,ρ,R,hR,hR0,hR1,hRW,_,hfront⟩ := hreturn
+    have hlo : range (fun q : Sphere 2 => R (q,0)) = range (T.boundarySphere b) := by
+      simp only [hR0]
+      rfl
+    have hhi : range (fun q : Sphere 2 => R (q,1)) = range (T.boundarySphere c) := by
+      ext y
+      constructor
+      · rintro ⟨q,rfl⟩
+        exact ⟨ρ q,(hR1 q).symm⟩
+      · rintro ⟨q,rfl⟩
+        refine ⟨ρ.symm q,?_⟩
+        change R (ρ.symm q,1) = _
+        rw [hR1,ρ.apply_symm_apply]
+        rfl
+    intro q
+    apply C.isPoincareStandard_component_of_returned_cylinder R hR b c hlo hhi hRW
+      (fun z hz => hfront ▸ hz) (T.coreBoundarySphere b q)
+    exact ⟨(q,0),⟨mem_univ _,by norm_num⟩,hR0 q⟩
+
+end DifferentialGeometry.Topology.SphericalCapping
+
+end
