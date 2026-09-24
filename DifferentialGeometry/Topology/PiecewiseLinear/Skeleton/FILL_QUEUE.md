@@ -870,3 +870,17 @@ item 20 acceptance; the skeleton's `Moise341.exists_section34VertexApproximation
 imported module)", set the count-table line `| ControlledGraphNeighborhood | … |` to 3, lower the
 "physical sorry occurrences" total by 1 with a dated note; one handoff line. Commit steps 5–6 together;
 push. (7) Report (<= 40 lines): commits, receipts, audit line, ledger total before/after.
+
+ADDENDUM 2026-09-24 19:10 (lead): Package F is now COMPLETE. PR #12 (`50e96a425`, 22 commits, 57 new files)
+proves the second F leaf `exists_section34VertexPreparation` in `Section34VertexPreparation.lean`; the lead
+checked: statement byte-identical, no `sorry`, no collision with the working tree; two files
+(`IsAnnulusOnCompact.lean`, `PLCellOnBoundarySphere.lean`) are in both PRs with identical content.
+So item 20 covers BOTH: do steps 1-4 for PR #14 first, then repeat steps 1-4 for PR #12
+(`git fetch origin pull/12/head:pr12`; the two shared files are identical adds), then ONE wiring step 5
+deleting both leaves `exists_section34PiercingPackage` and `exists_section34VertexPreparation` and importing
+`Section34VertexApproximation`, `Section34PiercingPackage`, `Section34VertexPreparation`; the skeleton must
+then have exactly 2 `sorry` (cut frame, protected circle removal step); register 30 + 55 modules; ledger rows
+`| B1.c.2 |` (preparation) and `| B1.c.3 |` (package), count-table line to 2, total lowered by 2. The
+collaborator reports remaining 'frozen-binder diagnostics' (unused binders of the frozen statements): if the
+checker reports an unused-variable warning in a restated leaf, silence it in the PROOF BODY with
+`let _ := <binder>` (never by touching the statement) and record the edit.
