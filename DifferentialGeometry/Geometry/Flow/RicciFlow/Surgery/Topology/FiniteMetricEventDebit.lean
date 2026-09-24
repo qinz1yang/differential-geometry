@@ -93,9 +93,12 @@ private theorem exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_
         (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
       ∃ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
         (oDisc : SmoothOrientation ThreeModel Disc)
+        (F : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
         (B : (ι × Bool) → ThreeBall ≃ₘ⟮𝓡∂ 3, 𝓡∂ 3⟯ ThreeBall)
         (aCap : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
+        (∀ b, F b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ F b = LinearIsometryEquiv.neg ℝ) ∧
+        (∀ b x, (B b x : ThreeSpace) = F b x) ∧
       ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
         (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
         E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
@@ -130,6 +133,8 @@ private theorem exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_
         E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
           G.terminalRegularOpen L.metric R hRet c hc x₀ (fun _ => m + 6) d₀
           hOriginal hrec d hmap hside w ∧
+        (∀ b : Bidx, |metricScalarAt L.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) /
+          metricScalarAt L.metric (x₀ b.val.1) - 1| ≤ c * precision b.val.1) ∧
         (∀ b : Bidx, StaticInsertionAdditionalProperties C (w b)) ∧
         (∀ b : Bidx, c * precision b.val.1 ≤ δcap) ∧
         ∀ b : Bidx, S / 2 ≤
@@ -218,10 +223,114 @@ private theorem exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_
     (riemannianVolumeMeasure ThreeModel
       (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier E.outputMetric univ) S
       (riemannianVolumeMeasure ThreeModel G.terminalRegularOpen L.metric K) hbound
-  exact ⟨oQ, oRet, oDisc, B, a, hboundary, E, hDisc, hCap, htrace, htubes, hG, hL, hOld,
+  exact ⟨oQ, oRet, oDisc, F, B, a, hboundary, hchoice, hB, E, hDisc, hCap, htrace, htubes, hG, hL, hOld,
     hBoundary, hpreserve.1, hpreserve.2, ⟨K, hK, hfinal⟩,
-    hrec, d, hmap, hside, w, hOutput, hw,
+    hrec, d, hmap, hside, w, hOutput, hratio, hw,
     (fun b => (hcapPrecision b).trans (min_le_right _ _)), hlocal⟩
+
+theorem exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data :
+    ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
+      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
+      ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧
+      ∀ {P : OrientedThreeStage.{u}} {t₀ t₁ : ℝ}
+        (G : P.IncomingSlab t₀ t₁)
+        (L : G.TerminalLimitMetric)
+        {ι : Type} [Fintype ι] (precision : ι → ℝ) (hδ : ∀ i, 0 < precision i),
+      (∀ i, precision i ≤ δ₀) → ∀ (x₀ : ι → G.terminalRegularOpen)
+        (d₀ : ∀ i, normalizedDatum L.metric (x₀ i) (precision i) (m + 6))
+        (f : ∀ i : ι, bufferedCylinder (precision i) → P.Carrier)
+        (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
+        (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
+        (hs : ∀ i, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ (f i))
+        (hOriginal : ∀ i, f i = neckAmbientMap G.terminalRegularOpen (d₀ i))
+        (R : Set (ConnectedComponents (cutCore f)))
+        (hRet : MapsTo (Subtype.val : cutCore f → P.Carrier) (retainedCore f R)
+          (fun x : P.Carrier => G.terminalRegularRegion x))
+        (hSingular : G.SingularEndpoint)
+        (_ : ∀ i, cuttingSphereComponent hδ f hf hdisj (i, true) ∈ R ∧
+          cuttingSphereComponent hδ f hf hdisj (i, false) ∉ R)
+        (S : ℝ) (_ : 0 < S) (_ : ∀ i, metricScalarAt L.metric (x₀ i) = S),
+      let hnontrivial := G.nonempty_cut_or_discardedCore_of_singularEndpoint hSingular f R hRet
+      let Bidx := {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
+      let Q := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+      letI : SecondCountableTopology P.Carrier :=
+        ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace P.Carrier
+      letI : SigmaCompactSpace G.terminalRegularOpen := isSigmaCompact_iff_sigmaCompactSpace.mp
+        (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
+          G.terminalRegularOpen.isOpen)
+      letI : LocallyPathConnectedSpace P.Carrier :=
+        originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
+      let Ret := finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+      let Disc := finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+      letI : ChartedSpace ThreeSpace Q :=
+        finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+      letI : IsManifold ThreeModel ∞ Q :=
+        finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+      letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+      letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+      letI : CompactSpace Ret :=
+        (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+      letI : CompactSpace Disc :=
+        (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+      ∃ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
+        (oDisc : SmoothOrientation ThreeModel Disc)
+        (F : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+        (B : (ι × Bool) → ThreeBall ≃ₘ⟮𝓡∂ 3, 𝓡∂ 3⟯ ThreeBall)
+        (aCap : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+        (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
+        (∀ b, F b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ F b = LinearIsometryEquiv.neg ℝ) ∧
+        (∀ b x, (B b x : ThreeSpace) = F b x) ∧
+      ∃ E : MetricCutCapEvent P
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
+        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
+        E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ ∧
+        HEq E.transition.trace
+          ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ
+            (fun i => (d₀ i).precision_lt_one) f hf hdisj R hnontrivial).reparametrizeCaps
+              (fun b => (B b).toHomeomorph) (fun b => (aCap b).toHomeomorph) hboundary) ∧
+        E.transition.trace.tubes = TubeSystem.ofBufferedCharts hδ
+          (fun i => (d₀ i).precision_lt_one) f hf hdisj ∧
+        E.incoming = G ∧ HEq E.terminal L ∧
+        E.old = E.transition.trace.retainedCore ∧ E.transition.boundaryFrameReversing ∧
+        (∀ a : ℝ, 0 < a →
+          (∀ x : E.incoming.terminalRegularOpen, InFixedHamiltonIveyRegion E.terminal.metric a x) →
+          ∀ x : Ret, InFixedHamiltonIveyRegion E.outputMetric a x) ∧
+        (∀ L₀ : ℝ, L₀ ≤ 0 →
+          (∀ x : E.incoming.terminalRegularOpen, L₀ ≤ metricScalarAt E.terminal.metric x) →
+          ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
+        (∃ K : Set G.terminalRegularOpen, IsCompact K ∧
+          riemannianVolumeMeasure ThreeModel
+            (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
+            E.outputMetric univ + ENNReal.ofReal
+              ((Nat.card E.transition.trace.tubes.Index : ℝ) * S ^ (-3 / 2 : ℝ)) ≤
+          riemannianVolumeMeasure ThreeModel G.terminalRegularOpen L.metric K) ∧
+      ∃ hrec : ∀ b : Bidx, (c * precision b.val.1)⁻¹ + 1 ≤ (precision b.val.1)⁻¹,
+      ∃ d : ∀ b : Bidx, normalizedDatum L.metric
+        ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (m + 4),
+      ∃ hmap : ∀ b : Bidx, (d b).map =
+        (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b),
+      ∃ hside : ∀ b : Bidx, (d b).retainedSide = true,
+      ∃ w : ∀ b : Bidx, CanonicalStaticInsertionWitness (d b) A hA D m ε,
+        E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
+          G.terminalRegularOpen L.metric R hRet c hc x₀ (fun _ => m + 6) d₀
+          hOriginal hrec d hmap hside w ∧
+        (∀ b : Bidx, |metricScalarAt L.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) /
+          metricScalarAt L.metric (x₀ b.val.1) - 1| ≤ c * precision b.val.1) ∧
+        (∀ b : Bidx, StaticInsertionAdditionalProperties C (w b)) ∧
+        (∀ b : Bidx, c * precision b.val.1 ≤ δcap) ∧
+        ∀ b : Bidx, S / 2 ≤
+          metricScalarAt L.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) := by
+  obtain ⟨c,hc,C,hC,A,hA,hsmall,hfactory⟩ :=
+    exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_precision.{u}
+  refine ⟨c,hc,C,hC,A,hA,hsmall,?_⟩
+  intro D hD m ε hε δcap hδcap
+  obtain ⟨δ₀,hδ₀,hquarter,hmake⟩ := hfactory D hD m ε hε δcap hδcap
+  refine ⟨δ₀,hδ₀,hquarter,?_⟩
+  intro P
+  rw [← P.ofSmoothOrientation_smoothOrientation]
+  exact hmake P.smoothOrientation
+
 
 theorem exists_uniform_metricCutCapEvent_volume_debit_with_cap_precision :
     ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
@@ -311,16 +420,22 @@ theorem exists_uniform_metricCutCapEvent_volume_debit_with_cap_precision :
         (∀ b : Bidx, c * precision b.val.1 ≤ δcap) ∧
         ∀ b : Bidx, S / 2 ≤
           metricScalarAt L.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) := by
-  obtain ⟨c,hc,C,hC,A,hA,hsmall,hfactory⟩ :=
-    exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_precision.{u}
-  refine ⟨c,hc,C,hC,A,hA,hsmall,?_⟩
+  classical
+  choose c hc C hC A hA hsmall hfactory using
+    exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data.{u}
+  refine ⟨c, hc, C, hC, A, hA, hsmall, ?_⟩
   intro D hD m ε hε δcap hδcap
-  obtain ⟨δ₀,hδ₀,hquarter,hmake⟩ := hfactory D hD m ε hε δcap hδcap
-  refine ⟨δ₀,hδ₀,hquarter,?_⟩
-  intro P
-  rw [← P.ofSmoothOrientation_smoothOrientation]
-  exact hmake P.smoothOrientation
-
+  choose δ₀ hδ₀ hquarter hmake using hfactory D hD m ε hε δcap hδcap
+  refine ⟨δ₀, hδ₀, hquarter, ?_⟩
+  intro P t₀ t₁ G L ι inst precision hδ hle x₀ d₀ f hf hdisj hs hOriginal R hRet
+    hSingular hone S hS hscale
+  choose oQ oRet oDisc F B aCap hboundary hchoice hB E
+    hDisc hCap htrace htubes hG hL hOld hBoundary hpin hscalar
+    hvolume hrec d hmap hside w hOutput hratio hw hcapPrecision hlow using
+    hmake G L precision hδ hle x₀ d₀ f hf hdisj hs hOriginal R hRet hSingular hone S hS hscale
+  exact ⟨oQ, oRet, oDisc, B, aCap, hboundary, E, hDisc, hCap, htrace, htubes,
+    hG, hL, hOld, hBoundary, hpin, hscalar, hvolume, hrec, d, hmap, hside, w,
+    hOutput, hw, hcapPrecision, hlow⟩
 
 theorem exists_uniform_metricCutCapEvent_volume_debit :
     ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
