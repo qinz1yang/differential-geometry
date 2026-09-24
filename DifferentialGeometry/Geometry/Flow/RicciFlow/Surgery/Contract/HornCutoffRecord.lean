@@ -401,197 +401,10 @@ private theorem exists_preparedCutoffEventGeometry_of_static_family
   · intro b z
     exact (hlabel b).2 ▸ (hfields b).2.2.2.2.1 z
 
-private def preparedCutoffEventGeometryOfFiniteMetricEvent
-    (p : CutoffParameters) {r : ℝ} {k : ℕ} :
-    letI : ChartedSpace ThreeSpace Q :=
-      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
-    letI : IsManifold ThreeModel ∞ Q :=
-      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
-    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
-    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
-    letI : CompactSpace Ret :=
-      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
-    letI : CompactSpace Disc :=
-      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
-    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
-      (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
-      (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
-      (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
-      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
-      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
-      ∀ (hB : ∀ b x, (B b x : ThreeSpace) = A b x)
-      (hDisc : E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc)
-      (hCap : E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ)
-      (htrace : HEq E.transition.trace
-        ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R
-          hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary)),
-      E.incoming.SingularEndpoint → E.old = E.transition.trace.retainedCore →
-      ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
-          (fun x : M => E.incoming.terminalRegularRegion x))
-        (x₀ : ι → E.incoming.terminalRegularOpen)
-        (d₀ : ∀ j, normalizedDatum E.terminal.metric (x₀ j) δ (p.modelOrder + 6))
-        (hOriginal : ∀ j, f j = neckAmbientMap E.incoming.terminalRegularOpen (d₀ j))
-        (N : ι → NormalizedNeck E.terminal.metric δ k)
-        (_ : ∀ j q, (N j).chart q = (d₀ j).map q)
-        (_ : ∀ j, (N j).sphereMark = spherePoint)
-        (_ : ∀ j, (N j).scale = metricScalarAt E.terminal.metric (x₀ j))
-        (_ : ∀ j, metricScalarAt E.terminal.metric (x₀ j) = (r ^ 2)⁻¹)
-        (_ : ∀ x : E.incoming.terminalRegularOpen,
-          metricScalarAt E.terminal.metric x ≤ ((p.protectedRadius t₁)^2)⁻¹ →
-          x.val ∈ interior ((Subtype.val : cutCore f → M) '' retainedCore f R))
-        (_ : R ⊆ scalarSublevelComponents E.incoming.terminalRegularOpen
-          E.terminal.metric f ((p.protectedRadius t₁)^2)⁻¹)
-        (_ : ∀ j, cuttingSphereComponent hδ f hf hdisj (j, true) ∈ R ∧
-          cuttingSphereComponent hδ f hf hdisj (j, false) ∉ R)
-        (hrec : ∀ _ : Bidx, (p.recenterConstant * δ)⁻¹ + 1 ≤ δ⁻¹)
-        (d : ∀ b : Bidx, normalizedDatum E.terminal.metric
-          ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
-          (p.recenterConstant * δ) (p.modelOrder + 4))
-        (hmap : ∀ b : Bidx, (d b).map =
-          (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
-        (hside : ∀ b : Bidx, (d b).retainedSide = true)
-        (w : ∀ b : Bidx, CanonicalStaticInsertionWitness (d b)
-          p.fixed.collarLength p.fixed.collar_pos p.modelRadius p.modelOrder p.modelAccuracy)
-        (_ : ∀ b : Bidx,
-          |metricScalarAt E.terminal.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) /
-            metricScalarAt E.terminal.metric (x₀ b.val.1) - 1| ≤ p.recenterConstant * δ)
-        (_ : ∀ c : ℝ, 0 < c →
-          (∀ z, InFixedHamiltonIveyRegion E.terminal.metric c z) →
-          ∀ z, InFixedHamiltonIveyRegion E.outputMetric c z)
-        (_ : ∀ B₀ : ℝ, B₀ ≤ 0 →
-          (∀ z, B₀ ≤ metricScalarAt E.terminal.metric z) →
-          ∀ z, B₀ ≤ metricScalarAt E.outputMetric z),
-        ∀ hOutput : E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
-          E.incoming.terminalRegularOpen E.terminal.metric R hRet p.recenterConstant p.recenterConstant_ge_four x₀
-          (fun _ => p.modelOrder + 6) d₀ hOriginal hrec d hmap hside w,
-        let caps := finitePresentedStaticCaps hδ hδ1 f hf hdisj hs R o hnontrivial
-          p.modelRadius_pos oQ oRet oDisc E A B a hboundary
-          hB hDisc hCap htrace
-          hRet p.recenterConstant p.recenterConstant_ge_four x₀
-          (fun _ => p.modelOrder + 6) d₀ hOriginal (fun _ => p.modelOrder + 4)
-          hrec d hmap hside w hOutput
-        Σ e : ι ≃ E.transition.trace.tubes.Index,
-          {F : PreparedCutoffEventGeometry E p δ r k //
-            (F.neck = fun j => N (e.symm j)) ∧ F.static = caps.2.1} := by
-  let : ChartedSpace ThreeSpace Q :=
-    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
-  let : IsManifold ThreeModel ∞ Q :=
-    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
-  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
-  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
-  let : CompactSpace Ret :=
-    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
-  let : CompactSpace Disc :=
-    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
-  intro oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace hsing hOld hRet x₀ d₀
-    hOriginal N hNchart hNmark hNscale hscale hprotected hR hone hrec d hmap hside w
-    hratio hcurvature hscalar hOutput
-  classical
-  let caps := finitePresentedStaticCaps hδ hδ1 f hf hdisj hs R o hnontrivial
-    p.modelRadius_pos oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace
-    hRet p.recenterConstant p.recenterConstant_ge_four x₀ (fun _ => p.modelOrder + 6)
-    d₀ hOriginal (fun _ => p.modelOrder + 4) hrec d hmap hside w hOutput
-  let hex := exists_preparedCutoffEventGeometry_of_static_family
-    hδ hδ1 f hf hdisj hs R o hnontrivial p oQ oRet oDisc E A B a hboundary hB
-    hDisc hCap htrace hsing hOld x₀ d₀ hOriginal N hNchart hNmark hNscale hscale
-    hprotected hR hone hrec d hmap hside caps.1 caps.2.2.1 caps.2.1
-    (fun b => (caps.2.2.2 b).1) (fun b => (caps.2.2.2 b).2.1)
-    (fun b => (caps.2.2.2 b).2.2.1) hratio hcurvature hscalar
-  exact ⟨hex.choose, ⟨hex.choose_spec.choose, hex.choose_spec.choose_spec⟩⟩
-
-private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent
-    (p : CutoffParameters) {r : ℝ} {k : ℕ} :
-    letI : ChartedSpace ThreeSpace Q :=
-      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
-    letI : IsManifold ThreeModel ∞ Q :=
-      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
-    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
-    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
-    letI : CompactSpace Ret :=
-      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
-    letI : CompactSpace Disc :=
-      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
-    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
-      (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
-      (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
-      (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
-      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
-      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
-      (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
-      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
-      HEq E.transition.trace
-        ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R
-          hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
-      E.incoming.SingularEndpoint → E.old = E.transition.trace.retainedCore →
-      ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
-          (fun x : M => E.incoming.terminalRegularRegion x))
-        (x₀ : ι → E.incoming.terminalRegularOpen)
-        (d₀ : ∀ j, normalizedDatum E.terminal.metric (x₀ j) δ (p.modelOrder + 6))
-        (hOriginal : ∀ j, f j = neckAmbientMap E.incoming.terminalRegularOpen (d₀ j))
-        (N : ι → NormalizedNeck E.terminal.metric δ k)
-        (_ : ∀ j q, (N j).chart q = (d₀ j).map q)
-        (_ : ∀ j, (N j).sphereMark = spherePoint)
-        (_ : ∀ j, (N j).scale = metricScalarAt E.terminal.metric (x₀ j))
-        (_ : ∀ j, metricScalarAt E.terminal.metric (x₀ j) = (r ^ 2)⁻¹)
-        (_ : ∀ x : E.incoming.terminalRegularOpen,
-          metricScalarAt E.terminal.metric x ≤ ((p.protectedRadius t₁)^2)⁻¹ →
-          x.val ∈ interior ((Subtype.val : cutCore f → M) '' retainedCore f R))
-        (_ : R ⊆ scalarSublevelComponents E.incoming.terminalRegularOpen
-          E.terminal.metric f ((p.protectedRadius t₁)^2)⁻¹)
-        (_ : ∀ j, cuttingSphereComponent hδ f hf hdisj (j, true) ∈ R ∧
-          cuttingSphereComponent hδ f hf hdisj (j, false) ∉ R)
-        (hrec : ∀ _ : Bidx, (p.recenterConstant * δ)⁻¹ + 1 ≤ δ⁻¹)
-        (d : ∀ b : Bidx, normalizedDatum E.terminal.metric
-          ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
-          (p.recenterConstant * δ) (p.modelOrder + 4))
-        (hmap : ∀ b : Bidx, (d b).map =
-          (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
-        (hside : ∀ b : Bidx, (d b).retainedSide = true)
-        (w : ∀ b : Bidx, CanonicalStaticInsertionWitness (d b)
-          p.fixed.collarLength p.fixed.collar_pos p.modelRadius p.modelOrder p.modelAccuracy)
-        (_ : ∀ b : Bidx,
-          |metricScalarAt E.terminal.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) /
-            metricScalarAt E.terminal.metric (x₀ b.val.1) - 1| ≤ p.recenterConstant * δ)
-        (_ : ∀ c : ℝ, 0 < c →
-          (∀ z, InFixedHamiltonIveyRegion E.terminal.metric c z) →
-          ∀ z, InFixedHamiltonIveyRegion E.outputMetric c z)
-        (_ : ∀ B₀ : ℝ, B₀ ≤ 0 →
-          (∀ z, B₀ ≤ metricScalarAt E.terminal.metric z) →
-          ∀ z, B₀ ≤ metricScalarAt E.outputMetric z),
-        E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
-          E.incoming.terminalRegularOpen E.terminal.metric R hRet p.recenterConstant p.recenterConstant_ge_four x₀
-          (fun _ => p.modelOrder + 6) d₀ hOriginal hrec d hmap hside w →
-        ∃ (e : ι ≃ E.transition.trace.tubes.Index)
-          (F : PreparedCutoffEventGeometry E p δ r k),
-          F.neck = fun j => N (e.symm j) := by
-  let : ChartedSpace ThreeSpace Q :=
-    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
-  let : IsManifold ThreeModel ∞ Q :=
-    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
-  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
-  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
-  let : CompactSpace Ret :=
-    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
-  let : CompactSpace Disc :=
-    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
-  intro oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace hsing hOld hRet x₀ d₀
-    hOriginal N hNchart hNmark hNscale hscale hprotected hR hone hrec d hmap hside w
-    hratio hcurvature hscalar hOutput
-  let F := preparedCutoffEventGeometryOfFiniteMetricEvent
-    hδ hδ1 f hf hdisj hs R o hnontrivial p oQ oRet oDisc E A B a hboundary hB
-    hDisc hCap htrace hsing hOld hRet x₀ d₀ hOriginal N hNchart hNmark hNscale hscale
-    hprotected hR hone hrec d hmap hside w hratio hcurvature hscalar hOutput
-  exact ⟨F.1, F.2.1, F.2.2.1⟩
-
 open private terminal_data_transport
   from DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FinitePresentedStaticCap
 
-private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_terminal
+private theorem exists_preparedCutoffEventGeometry_of_static_family_terminal
     (p : CutoffParameters) {r : ℝ} {k : ℕ} :
     letI : ChartedSpace ThreeSpace Q :=
       finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
@@ -621,11 +434,9 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_terminal
           hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
       G.SingularEndpoint → E.old = E.transition.trace.retainedCore →
-      ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
-          (fun x : M => G.terminalRegularRegion x))
-        (x₀ : ι → G.terminalRegularOpen)
+      ∀ (x₀ : ι → G.terminalRegularOpen)
         (d₀ : ∀ j, normalizedDatum L.metric (x₀ j) δ (p.modelOrder + 6))
-        (hOriginal : ∀ j, f j = neckAmbientMap G.terminalRegularOpen (d₀ j))
+        (_ : ∀ j, f j = neckAmbientMap G.terminalRegularOpen (d₀ j))
         (N : ι → NormalizedNeck L.metric δ k)
         (_ : ∀ j q, (N j).chart q = (d₀ j).map q)
         (_ : ∀ j, (N j).sphereMark = spherePoint)
@@ -642,11 +453,16 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_terminal
         (d : ∀ b : Bidx, normalizedDatum L.metric
           ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
           (p.recenterConstant * δ) (p.modelOrder + 4))
-        (hmap : ∀ b : Bidx, (d b).map =
+        (_ : ∀ b : Bidx, (d b).map =
           (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
-        (hside : ∀ b : Bidx, (d b).retainedSide = true)
-        (w : ∀ b : Bidx, CanonicalStaticInsertionWitness (d b)
-          p.fixed.collarLength p.fixed.collar_pos p.modelRadius p.modelOrder p.modelAccuracy)
+        (_ : ∀ b : Bidx, (d b).retainedSide = true)
+        (eB : E.RetainedBoundaryIndex ≃ Bidx)
+        (_ : ∀ b, HEq b.val (eB b).val)
+        (S : ∀ b : E.RetainedBoundaryIndex,
+          E.PresentedStaticCap p.fixed p.modelRadius p.modelOrder p.modelAccuracy b)
+        (_ : ∀ b, (S b).delta = p.recenterConstant * δ)
+        (_ : ∀ b, (S b).order = p.modelOrder + 4)
+        (_ : ∀ b, HEq (S b).neck (d (eB b)).oriented.toNormalizedNeck)
         (_ : ∀ b : Bidx,
           |metricScalarAt L.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) /
             metricScalarAt L.metric (x₀ b.val.1) - 1| ≤ p.recenterConstant * δ)
@@ -656,12 +472,9 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_terminal
         (_ : ∀ B₀ : ℝ, B₀ ≤ 0 →
           (∀ z, B₀ ≤ metricScalarAt L.metric z) →
           ∀ z, B₀ ≤ metricScalarAt E.outputMetric z),
-        E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
-          G.terminalRegularOpen L.metric R hRet p.recenterConstant p.recenterConstant_ge_four x₀
-          (fun _ => p.modelOrder + 6) d₀ hOriginal hrec d hmap hside w →
         ∃ (e : ι ≃ E.transition.trace.tubes.Index)
           (F : PreparedCutoffEventGeometry E p δ r k),
-          ∀ j, HEq (F.neck (e j)) (N j) := by
+          (∀ j, HEq (F.neck (e j)) (N j)) ∧ F.static = S := by
   let : ChartedSpace ThreeSpace Q :=
     finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
@@ -674,13 +487,13 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_terminal
     (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc G L E A B a hboundary hB hDisc hCap htrace hG hL
   apply terminal_data_transport E G L hG hL
-  intro hsing hOld hRet x₀ d₀ hOriginal N hNchart hNmark hNscale hscale hprotected hR
-    hone hrec d hmap hside w hratio hcurvature hscalar hOutput
-  obtain ⟨e, F, hF⟩ := exists_preparedCutoffEventGeometry_of_finiteMetricEvent
+  intro hsing hOld x₀ d₀ hOriginal N hNchart hNmark hNscale hscale hprotected hR
+    hone hrec d hmap hside eB heB S hSδ hSk hSN hratio hcurvature hscalar
+  obtain ⟨e, F, hF, hFS⟩ := exists_preparedCutoffEventGeometry_of_static_family
     hδ hδ1 f hf hdisj hs R o hnontrivial p oQ oRet oDisc E A B a hboundary
-    hB hDisc hCap htrace hsing hOld hRet x₀ d₀ hOriginal N hNchart hNmark hNscale
-    hscale hprotected hR hone hrec d hmap hside w hratio hcurvature hscalar hOutput
-  refine ⟨e, F, fun j => heq_of_eq ?_⟩
+    hB hDisc hCap htrace hsing hOld x₀ d₀ hOriginal N hNchart hNmark hNscale
+    hscale hprotected hR hone hrec d hmap hside eB heB S hSδ hSk hSN hratio hcurvature hscalar
+  refine ⟨e, F, (fun j => heq_of_eq ?_), hFS⟩
   exact (congrFun hF (e j)).trans (congrArg N (e.symm_apply_apply j))
 
 end
@@ -776,7 +589,7 @@ section
 
 universe u
 
-private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_stage
+private theorem exists_preparedCutoffEventGeometry_of_static_family_stage
     (P : OrientedThreeStage.{u})
     {ι : Type} [Fintype ι] {δ : ℝ}
     (hδ : ∀ _ : ι, 0 < δ) (hδ1 : ∀ _ : ι, δ < 1)
@@ -822,11 +635,9 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_stage
           hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
       G.SingularEndpoint → E.old = E.transition.trace.retainedCore →
-      ∀ (hRet : MapsTo (Subtype.val : cutCore f → P.Carrier) (retainedCore f R)
-          (fun x : P.Carrier => G.terminalRegularRegion x))
-        (x₀ : ι → G.terminalRegularOpen)
+      ∀ (x₀ : ι → G.terminalRegularOpen)
         (d₀ : ∀ j, normalizedDatum L.metric (x₀ j) δ (p.modelOrder + 6))
-        (hOriginal : ∀ j, f j = neckAmbientMap G.terminalRegularOpen (d₀ j))
+        (_ : ∀ j, f j = neckAmbientMap G.terminalRegularOpen (d₀ j))
         (N : ι → NormalizedNeck L.metric δ k)
         (_ : ∀ j q, (N j).chart q = (d₀ j).map q)
         (_ : ∀ j, (N j).sphereMark = spherePoint)
@@ -843,11 +654,16 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_stage
         (d : ∀ b : Bidx, normalizedDatum L.metric
           ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2))
           (p.recenterConstant * δ) (p.modelOrder + 4))
-        (hmap : ∀ b : Bidx, (d b).map =
+        (_ : ∀ b : Bidx, (d b).map =
           (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
-        (hside : ∀ b : Bidx, (d b).retainedSide = true)
-        (w : ∀ b : Bidx, CanonicalStaticInsertionWitness (d b)
-          p.fixed.collarLength p.fixed.collar_pos p.modelRadius p.modelOrder p.modelAccuracy)
+        (_ : ∀ b : Bidx, (d b).retainedSide = true)
+        (eB : E.RetainedBoundaryIndex ≃ Bidx)
+        (_ : ∀ b, HEq b.val (eB b).val)
+        (S : ∀ b : E.RetainedBoundaryIndex,
+          E.PresentedStaticCap p.fixed p.modelRadius p.modelOrder p.modelAccuracy b)
+        (_ : ∀ b, (S b).delta = p.recenterConstant * δ)
+        (_ : ∀ b, (S b).order = p.modelOrder + 4)
+        (_ : ∀ b, HEq (S b).neck (d (eB b)).oriented.toNormalizedNeck)
         (_ : ∀ b : Bidx,
           |metricScalarAt L.metric ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) /
             metricScalarAt L.metric (x₀ b.val.1) - 1| ≤ p.recenterConstant * δ)
@@ -857,20 +673,16 @@ private theorem exists_preparedCutoffEventGeometry_of_finiteMetricEvent_stage
         (_ : ∀ B₀ : ℝ, B₀ ≤ 0 →
           (∀ z, B₀ ≤ metricScalarAt L.metric z) →
           ∀ z, B₀ ≤ metricScalarAt E.outputMetric z),
-        E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
-          G.terminalRegularOpen L.metric R hRet p.recenterConstant p.recenterConstant_ge_four x₀
-          (fun _ => p.modelOrder + 6) d₀ hOriginal hrec d hmap hside w →
         ∃ (e : ι ≃ E.transition.trace.tubes.Index)
           (F : PreparedCutoffEventGeometry E p δ r k),
-          ∀ j, HEq (F.neck (e j)) (N j) := by
+          (∀ j, HEq (F.neck (e j)) (N j)) ∧ F.static = S := by
   revert f
   rw [← P.ofSmoothOrientation_smoothOrientation]
   intro f hf hdisj hs R hnontrivial
-  exact exists_preparedCutoffEventGeometry_of_finiteMetricEvent_terminal
+  exact exists_preparedCutoffEventGeometry_of_static_family_terminal
     hδ hδ1 f hf hdisj hs R P.smoothOrientation hnontrivial p
 
 end
-
 section
 
 universe u
@@ -930,7 +742,132 @@ open private exists_finite_first_hit_oriented_horn_neck_data from DifferentialGe
 open private exists_precision_order_compatible precision_order_compatible_of_le from
   DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMetricEvent
 
-private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_metric :
+private theorem range_oldOutput_eq_of_buffered_trace_stage
+    (P : OrientedThreeStage.{u})
+    {ι : Type} [Fintype ι] {precision : ι → ℝ}
+    (hδ : ∀ j, 0 < precision j) (hδ1 : ∀ j, precision j < 1)
+    (f : ∀ j : ι, bufferedCylinder (precision j) → P.Carrier)
+    (hf : ∀ j, _root_.Topology.IsOpenEmbedding (f j))
+    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
+    (hs : ∀ j, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ (f j))
+    (R : Set (ConnectedComponents (cutCore f)))
+    (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
+    {t₀ t₁ : ℝ} :
+    letI : LocallyPathConnectedSpace P.Carrier :=
+      originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
+    let Q := FiniteCapQuotient transitionEnd_pos hδ f (fun i => (hf i).injective) hdisj
+    let Ret := finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+    let Disc := finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+    letI : ChartedSpace ThreeSpace Q := finiteCapChartedSpace ThreeModel
+      finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+    letI : IsManifold ThreeModel ∞ Q := finiteCapQuotient_isManifold
+      finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Ret := (finiteCapRetained_discarded_compactSpace
+      transitionEnd_pos hδ f hf hdisj R).1
+    letI : CompactSpace Disc := (finiteCapRetained_discarded_compactSpace
+      transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
+      (oDisc : SmoothOrientation ThreeModel Disc)
+      (B : (ι × Bool) → ThreeBall ≃ₘ⟮𝓡∂ 3, 𝓡∂ 3⟯ ThreeBall)
+      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y))
+      (E : MetricCutCapEvent P (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁),
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
+      HEq E.transition.trace ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1
+        f hf hdisj R hnontrivial).reparametrizeCaps
+          (fun b => (B b).toHomeomorph) (fun b => (a b).toHomeomorph) hboundary) →
+      E.old = E.transition.trace.retainedCore →
+      range E.oldOutput = range (finiteRetainedCoreInclusion transitionEnd_pos hδ f hf hdisj R) := by
+  revert f
+  rw [← P.ofSmoothOrientation_smoothOrientation]
+  intro f hf hdisj hs R hnontrivial
+  dsimp only
+  intro oQ oRet oDisc B a hboundary E hDisc hCap htrace hOld
+  exact MetricCutCapEvent.range_oldOutput_eq_of_buffered_trace transitionEnd_pos
+    hδ hδ1 f hf hdisj hs R P.smoothOrientation hnontrivial
+    oQ oRet oDisc B a hboundary E hDisc hCap htrace hOld
+
+private def finitePresentedStaticCapsOfStage
+    (P : OrientedThreeStage.{u})
+    {ι : Type} [Fintype ι] {precision : ι → ℝ}
+    (hδ : ∀ j, 0 < precision j) (hδ1 : ∀ j, precision j < 1)
+    (f : ∀ j : ι, bufferedCylinder (precision j) → P.Carrier)
+    (hf : ∀ j, _root_.Topology.IsOpenEmbedding (f j))
+    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
+    (hs : ∀ j, IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ (f j))
+    (R : Set (ConnectedComponents (cutCore f)))
+    (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
+    {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ} (hD : 0 < D) :
+    letI : LocallyPathConnectedSpace P.Carrier :=
+      originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
+    let Q := FiniteCapQuotient transitionEnd_pos hδ f
+      (fun j => (hf j).injective) hdisj
+    let Ret := finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+    let Disc := finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+    let Bidx := {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
+    letI : ChartedSpace ThreeSpace Q :=
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
+    letI : IsManifold ThreeModel ∞ Q :=
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Ret :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
+    letI : CompactSpace Disc :=
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
+      (oDisc : SmoothOrientation ThreeModel Disc)
+      (G : P.IncomingSlab t₀ t₁)
+      (L : G.TerminalLimitMetric)
+      (E : MetricCutCapEvent P
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+      (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
+      (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
+      (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
+      (∀ b x, (B b x : ThreeSpace) = A b x) →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
+      HEq E.transition.trace
+        ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
+      E.incoming = G → HEq E.terminal L →
+      ∀ (hRet : MapsTo (Subtype.val : cutCore f → P.Carrier) (retainedCore f R)
+          (fun x : P.Carrier => G.terminalRegularRegion x))
+        (c : ℝ) (hc : 4 ≤ c) (x₀ : ι → G.terminalRegularOpen) (order : ι → ℕ)
+        (d₀ : ∀ i, normalizedDatum L.metric (x₀ i) (precision i) (order i))
+        (hOriginal : ∀ i, f i = neckAmbientMap G.terminalRegularOpen (d₀ i))
+        (k' : Bidx → ℕ)
+        (hrec : ∀ b : Bidx, (c * precision b.val.1)⁻¹ + 1 ≤ (precision b.val.1)⁻¹)
+        (d : ∀ b : Bidx, normalizedDatum L.metric
+          ((d₀ b.val.1).offsetPoint (cuttingSign_sq b.val.2)) (c * precision b.val.1) (k' b))
+        (hmap : ∀ b : Bidx, (d b).map =
+          (d₀ b.val.1).recenteringMap (cuttingSign_sq b.val.2) (hrec b))
+        (hside : ∀ b : Bidx, (d b).retainedSide = true)
+        (w : ∀ b : Bidx,
+          CanonicalStaticInsertionWitness (d b) fixed.collarLength fixed.collar_pos D m ε),
+        E.outputMetric = finiteFullPreparedMetric ThreeModel hδ f hf hdisj hs
+          G.terminalRegularOpen L.metric R hRet c hc x₀ order d₀
+          hOriginal hrec d hmap hside w →
+        Σ e : E.RetainedBoundaryIndex ≃ Bidx,
+          {S : ∀ b : E.RetainedBoundaryIndex, E.PresentedStaticCap fixed D m ε b //
+            (∀ b, HEq b.val (e b).val) ∧
+            ∀ b, (S b).delta = c * precision (e b).val.1 ∧
+              (S b).order = k' (e b) ∧
+              HEq (S b).neck (d (e b)).oriented.toNormalizedNeck ∧
+              ∀ u : standardCapWindow D,
+                (S b).inclusion ((S b).witness.window u) =
+                  finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos
+                    hδ f hf hdisj hs R c hc (e b) ((w (e b)).window u)} := by
+  revert f
+  rw [← P.ofSmoothOrientation_smoothOrientation]
+  intro f hf hdisj hs R hnontrivial
+  exact finitePresentedStaticCapsOfTerminal
+    hδ hδ1 f hf hdisj hs R P.smoothOrientation hnontrivial hD
+
+private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_caps :
     ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ), 3 ≤ Kreset ∧
       ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
       ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧ ∃ ε₀ : ℝ, 0 < ε₀ ∧
@@ -1016,7 +953,20 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_metric :
                       D.slab.terminalRegularOpen D.terminal.metric R hRet
                       p.recenterConstant p.recenterConstant_ge_four x₀
                       (fun _ => p.modelOrder + 6) d₀ (fun _ => rfl)
-                      hrec dCap hmap hside w)) ∧
+                      hrec dCap hmap hside w) ∧
+                  HEq (range E.oldOutput)
+                    (range (finiteRetainedCoreInclusion transitionEnd_pos hδ f hf hd R)) ∧
+                  ∃ (S : ∀ b : E.RetainedBoundaryIndex,
+                      E.PresentedStaticCap p.fixed p.modelRadius p.modelOrder p.modelAccuracy b)
+                    (eB : E.RetainedBoundaryIndex ≃ Bidx),
+                    F.static = S ∧ (∀ b, HEq b.val (eB b).val) ∧
+                    (∀ b, HEq (S b).neck
+                      (dCap (eB b)).oriented.toNormalizedNeck) ∧
+                    ∀ b (z : standardCapWindow p.modelRadius),
+                      HEq ((S b).inclusion ((S b).witness.window z))
+                        (finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three
+                          transitionEnd_pos hδ f hf hd hs R p.recenterConstant
+                          p.recenterConstant_ge_four (eB b) ((w (eB b)).window z))) ∧
             ∀ j, F.neck (e j) = orientedRotatedNeck (NOriginal j) (hδOriginal j)
               hδ1 (rotation j) (hmark j) (side j) (horder j) := by
   classical
@@ -1156,13 +1106,34 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_metric :
         ∀ x, InFixedHamiltonIveyRegion E.outputMetric z x) ∧
       (∀ z : ℝ, z ≤ 0 → (∀ x, z ≤ metricScalarAt L.metric x) →
         ∀ x, z ≤ metricScalarAt E.outputMetric x)) ⟨hpin, hfloor⟩
-  obtain ⟨eEvent, geometry, hgeometry⟩ :=
-    exists_preparedCutoffEventGeometry_of_finiteMetricEvent_stage D.stage
+  let caps :=
+    finitePresentedStaticCapsOfStage
+      (fixed := p.fixed) (D := p.modelRadius) (m := p.modelOrder) (ε := p.modelAccuracy) D.stage
+      (fun j => (d j).precision_pos) (fun j => (d j).precision_lt_one)
+      f hf hd hlocal R hnontrivial p.modelRadius_pos oQ oRet oDisc
+      D.slab D.terminal E rotationCap (fun b => (B b).toHomeomorph) aCap
+      hboundary hB hDisc hCap htrace hG hL hRet p.recenterConstant
+      p.recenterConstant_ge_four x₀ (fun _ => p.modelOrder + 6) d (fun _ => rfl)
+      (fun _ => p.modelOrder + 4) hrec dCap hcapMap hcapSide w hOutput
+  let eBoundary := caps.1
+  let S := caps.2.1
+  have hBoundaryLabel := caps.2.2.1
+  have hSδ := fun b => (caps.2.2.2 b).1
+  have hSk := fun b => (caps.2.2.2 b).2.1
+  have hSN := fun b => (caps.2.2.2 b).2.2.1
+  have hSwindow := fun b => (caps.2.2.2 b).2.2.2
+  obtain ⟨eEvent, geometry, hgeometry, hStatic⟩ :=
+    exists_preparedCutoffEventGeometry_of_static_family_stage D.stage
       (fun j => (d j).precision_pos) (fun j => (d j).precision_lt_one)
       f hf hd hlocal R hnontrivial p oQ oRet oDisc D.slab D.terminal E rotationCap
       (fun b => (B b).toHomeomorph) aCap hboundary hB hDisc hCap htrace hG hL D.singular hOld
-      hRet x₀ d (fun _ => rfl) Nhigh hNchart hNmark hNscale hscale hprotected
-      Subset.rfl hone hrec dCap hcapMap hcapSide w hratio hpreserve.1 hpreserve.2 hOutput
+      x₀ d (fun _ => rfl) Nhigh hNchart hNmark hNscale hscale hprotected
+      Subset.rfl hone hrec dCap hcapMap hcapSide eBoundary hBoundaryLabel
+      S hSδ hSk hSN hratio hpreserve.1 hpreserve.2
+  have hOldRange := range_oldOutput_eq_of_buffered_trace_stage D.stage
+    (fun j => (d j).precision_pos) (fun j => (d j).precision_lt_one)
+    f hf hd hlocal R hnontrivial oQ oRet oDisc B aCap hboundary E
+    hDisc hCap htrace hOld
   obtain ⟨NOrigE, hmarkE, hNE, hNEpoint, hNEscale, hNEhigh⟩ := original_neck_data_of_terminal_heq
     E D.slab D.terminal hG hL hδ1 δOrig kOrig NOrig hδOrig rotation hmark side hk
   have hEscale (j) : (NOrigE j).scale = Q := by
@@ -1172,7 +1143,9 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_finite_metric :
     _, δOrig, kOrig, NOrigE, hδOrig, rotation, hmarkE, side, hk, hδ1, eEvent, hEscale, ?_, ?_⟩
   · exact funext fun _ => rfl
   · exact ⟨x₀, d, hf, hd, hlocal, R, hRet, hrec, dCap,
-      hcapMap, hcapSide, w, oRet, rfl, hscaleOrig, hratio, heq_of_eq hOutput⟩
+      hcapMap, hcapSide, w, oRet, rfl, hscaleOrig, hratio, heq_of_eq hOutput, heq_of_eq hOldRange,
+      S, eBoundary, hStatic, hBoundaryLabel, hSN,
+      fun b z => heq_of_eq (hSwindow b z)⟩
   · intro j
     exact eq_of_heq ((hgeometry j).trans (hNEhigh j).symm)
 
@@ -1217,7 +1190,7 @@ private theorem exists_prepared_horn_cutoff_event_at_scale :
             ∀ j, F.neck (e j) = orientedRotatedNeck (NOriginal j) (hδOriginal j)
               hδ1 (rotation j) (hmark j) (side j) (horder j) := by
   obtain ⟨c, hc, A, hA, Kreset, hKreset, hfamily⟩ :=
-    exists_prepared_horn_cutoff_event_at_scale_with_finite_metric.{u}
+    exists_prepared_horn_cutoff_event_at_scale_with_finite_caps.{u}
   refine ⟨c, hc, A, hA, Kreset, hKreset, ?_⟩
   intro Dcap hDcap m accuracy haccuracy
   obtain ⟨δ, hδ, hδ1, ε₀, hε₀, hmake⟩ := hfamily Dcap hDcap m accuracy haccuracy
