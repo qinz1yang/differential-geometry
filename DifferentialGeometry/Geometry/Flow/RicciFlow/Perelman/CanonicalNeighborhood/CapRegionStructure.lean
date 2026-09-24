@@ -94,8 +94,9 @@ theorem capCore_image_closedBall (F : PartialDiffeomorph I3 I3 ThreeSpace M ∞)
   ⟨CapCore.ball F h rfl⟩
 
 omit [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M] in
-theorem CapCore.image_of_partialDiffeomorph {X : Set M} (c : CapCore X)
-    (e : PartialDiffeomorph I3 I3 M M ∞) (he : X ⊆ e.source) :
+theorem CapCore.image_of_partialDiffeomorph
+    {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
+    {X : Set M} (c : CapCore X) (e : PartialDiffeomorph I3 I3 M N ∞) (he : X ⊆ e.source) :
     Nonempty (CapCore (e '' X)) := by
   cases c with
   | ball F h hx =>
@@ -106,6 +107,31 @@ theorem CapCore.image_of_partialDiffeomorph {X : Set M} (c : CapCore X)
     rw [← hx]
     exact ⟨CapCore.projective Z pr ball hb (PartialDiffeomorph.trans F e)
       (fun y hy => ⟨hc hy, he (hx ▸ ⟨y, hy, rfl⟩)⟩) (by rw [Set.image_image]; rfl)⟩
+
+omit [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M] in
+theorem CapCore.nonempty_preimage_open {X : Set M} (cap : CapCore X)
+    (O : TopologicalSpace.Opens M) (hXO : X ⊆ O) :
+    Nonempty (CapCore (Subtype.val ⁻¹' X : Set O)) := by
+  obtain ⟨x, hx⟩ := cap.nonempty_carrier
+  let inc := DifferentialGeometry.Topology.PartialDiffeomorph.subtypeVal (I := I3) O
+    ⟨⟨x, hXO hx⟩⟩
+  have hinc_target : inc.target = (O : Set M) :=
+    O.openPartialHomeomorphSubtypeCoe_target _
+  have himage : inc.symm '' X = (Subtype.val ⁻¹' X : Set O) := by
+    ext y
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      change inc (inc.symm z) ∈ X
+      have ht : z ∈ inc.target := hinc_target.symm ▸ hXO hz
+      exact (inc.right_inv' ht).symm ▸ hz
+    · intro hy
+      exact ⟨y.val, hy, inc.left_inv' (mem_univ y)⟩
+  rw [← himage]
+  apply cap.image_of_partialDiffeomorph inc.symm
+  intro y hy
+  change y ∈ inc.target
+  exact hinc_target.symm ▸ hXO hy
+
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem metricDistance_ge_of_not_mem_riemannianBallOf [PreconnectedSpace M]
