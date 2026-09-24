@@ -3,7 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
-import DifferentialGeometry.Topology.PiecewiseLinear.ConvexRadialExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.ConvexPrismBoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskPseudoIsotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.PolytopeBoundary
@@ -48,49 +48,20 @@ theorem IsPLPseudoIsotopicToId.exists_isPLHomeomorphOn_fixed_axis
       ∀ t ∈ Icc (0 : ℝ) 1, Ψ (p, t) = (p, t) := by
   obtain ⟨Φ, hΦ, hΦ0, hΦ1⟩ := hiso
   have hQ : IsHPolytope (P ×ˢ Icc (0 : ℝ) 1) := hP.prod isHPolytope_Icc
-  have hq : (p, (1 / 2 : ℝ)) ∈ interior (P ×ˢ Icc (0 : ℝ) 1) := by
-    rw [interior_prod_eq, interior_Icc]
-    exact ⟨hp, by norm_num⟩
   have hΦf : IsPLHomeomorphOn Φ (frontier (P ×ˢ Icc (0 : ℝ) 1))
       (frontier (P ×ˢ Icc (0 : ℝ) 1)) := by
     have h := hΦ.restrict hQ.isPolyhedron_frontier hQ.isClosed.frontier_subset
     rwa [hΦ.image_frontier rfl hQ.isClosed hQ.isClosed] at h
-  obtain ⟨Ψ, hΨ, hΨf, -, hΨrad⟩ := exists_isPLHomeomorphOn_of_convex_frontier
-    hQ.convex hQ.convex hQ.isCompact hQ.isCompact
-    hQ.isPolyhedron_frontier hQ.isPolyhedron_frontier hq hq hΦf
+  obtain ⟨Ψ, hΨ, hΨf, hΨaxis⟩ := exists_isPLHomeomorphOn_prism_fixed_axis hP hp hΦf
+    (hΦ0 p (interior_subset hp)) (by rw [hΦ1 p (interior_subset hp), hup])
   have hend : ∀ x ∈ P, ∀ a ∈ ({0, 1} : Set ℝ),
       (x, a) ∈ frontier (P ×ˢ Icc (0 : ℝ) 1) := by
     intro x hx a ha
     rw [frontier_prod_eq, hP.isClosed.closure_eq, frontier_Icc zero_le_one]
     exact Or.inl ⟨hx, ha⟩
-  refine ⟨Ψ, hΨ, fun x hx => ?_, fun x hx => ?_, fun t ht => ?_⟩
+  refine ⟨Ψ, hΨ, fun x hx => ?_, fun x hx => ?_, hΨaxis⟩
   · rw [hΨf (hend x hx 0 (Or.inl rfl)), hΦ0 x hx]
   · rw [hΨf (hend x hx 1 (Or.inr rfl)), hΦ1 x hx]
-  · have hpP := interior_subset hp
-    rcases le_total t (1 / 2) with htle | htle
-    · have hs : 1 - 2 * t ∈ Icc (0 : ℝ) 1 := by
-        constructor <;> linarith [ht.1]
-      have h := hΨrad (p, 0) (hend p hpP 0 (Or.inl rfl)) (1 - 2 * t) hs
-      rw [hΦ0 p hpP] at h
-      have heq : (p, (1 / 2 : ℝ)) + (1 - 2 * t) •
-          ((p, (0 : ℝ)) - (p, (1 / 2 : ℝ))) = (p, t) := by
-        apply Prod.ext
-        · simp
-        · dsimp
-          ring
-      simpa only [heq] using h
-    · have hs : 2 * t - 1 ∈ Icc (0 : ℝ) 1 := by
-        constructor <;> linarith [ht.2]
-      have h := hΨrad (p, 1) (hend p hpP 1 (Or.inr rfl)) (2 * t - 1) hs
-      rw [hΦ1 p hpP, hup] at h
-      have heq : (p, (1 / 2 : ℝ)) + (2 * t - 1) •
-          ((p, (1 : ℝ)) - (p, (1 / 2 : ℝ))) = (p, t) := by
-        apply Prod.ext
-        · simp
-        · dsimp
-          ring
-      simpa only [heq] using h
-
 
 theorem IsPLPseudoIsotopicToId.exists_isPLHomeomorphOn_fixed_axis_of_convex_model
     {P : Set E} {Q : Set F} (hQ : IsHPolytope Q)

@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.PointedPseudoIsotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightTriangleStability
-import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
+import DifferentialGeometry.Topology.PiecewiseLinear.StandardTriangleCoordinates
 
 /-! Pseudo-isotopies of the standard triangle fixing its barycentre. -/
 
@@ -23,62 +23,16 @@ theorem IsPLPseudoIsotopicToId.exists_isPLHomeomorphOn_fixed_stdCenter
       (∀ x ∈ stdSimplex ℝ (Fin 3), Ψ (x, 0) = (x, 0)) ∧
       (∀ x ∈ stdSimplex ℝ (Fin 3), Ψ (x, 1) = (u x, 1)) ∧
       ∀ t ∈ Icc (0 : ℝ) 1, Ψ (stdCenter 1, t) = (stdCenter 1, t) := by
-  let π : (Fin 3 → ℝ) →ₗ[ℝ] ℝ × ℝ :=
-    { toFun := fun x => (x 1, x 2)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
+  let π : (Fin 3 → ℝ) → ℝ × ℝ := fun x => (x 1, x 2)
   let Q : Set (ℝ × ℝ) := {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1}
   have hQ : IsHPolytope Q := isHPolytope_coordinate_triangle
-  have hπ : IsPLHomeomorphOn π (stdSimplex ℝ (Fin 3)) Q := by
-    apply isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn
-      (isHPolytope_stdSimplex (Fin 3)).isPolyhedron
-      (isPiecewiseAffineOn_of_affine_of_isHPolytope π.toAffineMap
-        (isHPolytope_stdSimplex (Fin 3)))
-    refine ⟨fun x hx => ?_, fun x hx y hy hxy => ?_, fun z hz => ?_⟩
-    · have hsum : x 0 + x 1 + x 2 = 1 := by
-        simpa only [Fin.sum_univ_three] using hx.2
-      exact ⟨hx.1 1, hx.1 2, by dsimp [π]; linarith [hx.1 0]⟩
-    · have h1 : x 1 = y 1 := congrArg Prod.fst hxy
-      have h2 : x 2 = y 2 := congrArg Prod.snd hxy
-      have hsx : x 0 + x 1 + x 2 = 1 := by
-        simpa only [Fin.sum_univ_three] using hx.2
-      have hsy : y 0 + y 1 + y 2 = 1 := by
-        simpa only [Fin.sum_univ_three] using hy.2
-      funext i
-      fin_cases i
-      · change x 0 = y 0
-        linarith
-      · exact h1
-      · exact h2
-    · refine ⟨![1 - z.1 - z.2, z.1, z.2], ⟨?_, ?_⟩, rfl⟩
-      · intro i
-        fin_cases i
-        · change 0 ≤ 1 - z.1 - z.2
-          linarith [hz.2.2]
-        · exact hz.1
-        · exact hz.2.1
-      · simp only [Fin.sum_univ_three]
-        change 1 - z.1 - z.2 + z.1 + z.2 = 1
-        ring
-  have hc : ((1 / 3 : ℝ), (1 / 3 : ℝ)) ∈ interior Q := by
-    have hO : IsOpen {z : ℝ × ℝ | 0 < z.1 ∧ 0 < z.2 ∧ z.1 + z.2 < 1} :=
-      (isOpen_lt continuous_const continuous_fst).inter
-        ((isOpen_lt continuous_const continuous_snd).inter
-          (isOpen_lt (continuous_fst.add continuous_snd) continuous_const))
-    have hsub : {z : ℝ × ℝ | 0 < z.1 ∧ 0 < z.2 ∧ z.1 + z.2 < 1} ⊆ Q :=
-      fun _ hz => ⟨hz.1.le, hz.2.1.le, hz.2.2.le⟩
-    exact interior_maximal hsub hO (by norm_num)
-  have hp : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) := by
-    constructor
-    · intro i
-      norm_num [stdCenter]
-    · norm_num [stdCenter, Fin.sum_univ_three]
-  have hπp : π (stdCenter 1) = ((1 / 3 : ℝ), (1 / 3 : ℝ)) := by
-    norm_num [π, stdCenter]
-  have hwc : Function.invFunOn π (stdSimplex ℝ (Fin 3))
-      ((1 / 3 : ℝ), (1 / 3 : ℝ)) = stdCenter 1 := by
-    rw [← hπp]
-    exact hπ.bijOn.invOn_invFunOn.1 hp
+  have hπ : IsPLHomeomorphOn π (stdSimplex ℝ (Fin 3)) Q :=
+    isPLHomeomorphOn_triangle_coordinate_projection
+  have hc : π (stdCenter 1) ∈ interior Q := stdCenter_mem_interior_coordinate_triangle
+  have hp : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
+    openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
+  have hwc : Function.invFunOn π (stdSimplex ℝ (Fin 3)) (π (stdCenter 1)) =
+      stdCenter 1 := hπ.bijOn.invOn_invFunOn.1 hp
   obtain ⟨Ψ, hΨ, hΨ0, hΨ1, hΨc⟩ :=
     hiso.exists_isPLHomeomorphOn_fixed_axis_of_convex_model hQ hπ.symm hc
       (by rw [hwc]; exact hu)
