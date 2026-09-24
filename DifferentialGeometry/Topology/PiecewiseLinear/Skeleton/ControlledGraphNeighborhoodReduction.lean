@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConfinedTubePiercingConditions
 
 /-!
 # Relative boundary matching and protected moves
@@ -83,8 +83,8 @@ theorem exists_joint_boundary_matching [T2Space M₁] [SecondCountableTopology M
     (htor : Section34OuterTorus 𝒦 𝒦' h Q ct Sd)
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
+    (hpack : Section34ConfinedTubePiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
     (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
     (Dd DdBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
     (hDvdef : ∀ w, Dv w = G w '' Cp w \
@@ -119,8 +119,8 @@ theorem face_rim_subset_interior_deleted_family [T2Space M₁] [SecondCountableT
     (htor : Section34OuterTorus 𝒦 𝒦' h Q ct Sd)
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
+    (hpack : Section34ConfinedTubePiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
     (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
     (Dd DdBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
     (hDvdef : ∀ w, Dv w = G w '' Cp w \
@@ -150,8 +150,8 @@ theorem exists_nested_torus_of_deleted_family [T2Space M₁] [SecondCountableTop
     (htor : Section34OuterTorus 𝒦 𝒦' h Q ct Sd)
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
+    (hpack : Section34ConfinedTubePiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
     (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
     (Dd DdBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
     (hDvdef : ∀ w, Dv w = G w '' Cp w \
@@ -190,8 +190,8 @@ theorem exists_section34EdgeMatching [T2Space M₁] [SecondCountableTopology M�
     (htor : Section34OuterTorus 𝒦 𝒦' h Q ct Sd)
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
+    (hpack : Section34ConfinedTubePiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
     (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
     (Dd DdBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
     (hDvdef : ∀ w, Dv w = G w '' Cp w \
