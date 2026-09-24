@@ -473,3 +473,64 @@ theorem exists_cutoff_cap_survivor_chart_tolerance
     hKi hfront q hq hscalar hboundary hdiam
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+noncomputable section
+open Set Manifold DifferentialGeometry
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem exists_cutoff_cap_protection_tolerance_of_scaled_subset
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (H.event i).old = (H.event i).transition.trace.retainedCore →
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (q : ℝ) (hq : 0 < q) (epsb : ℝ) (pb : (H.event i).incoming.terminalRegularOpen)
+        (boundary : SpatialNeck (scaleMetric q hq (H.event i).terminal.metric) epsb pb),
+        epsb ≤ 1 / 1000 → ∀ s ∈ Ioo (-epsb⁻¹) epsb⁻¹,
+        ∀ (L K : Set (H.event i).incoming.terminalRegularOpen), L ⊆ K → IsCompact L → IsPreconnected K →
+          (interior L).Nonempty →
+          frontier L = range (fun z : Sphere 2 => boundary.map (z, s)) →
+          (∀ x ∈ K, metricScalarAt (scaleMetric q hq (H.event i).terminal.metric) x ≤ C) →
+          c ≤ metricScalarAt (scaleMetric q hq (H.event i).terminal.metric) pb →
+          (∀ x ∈ K, ∀ y ∈ K,
+            riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤ ENNReal.ofReal D) →
+          ∀ (x : (H.event i).incoming.terminalRegularOpen), x ∈ K →
+            ∀ y : (H.stage i.succ).Carrier, (H.event i).RegularCrossing x.val y →
+            ∀ z ∈ K, z.val ∈ interior (Subtype.val '' (H.event i).old) := by
+  obtain ⟨eta, heta, hprotect⟩ := exists_cutoff_cap_protection_tolerance_of_subset hC hD hc
+  refine ⟨eta, heta, ?_⟩
+  intro H i parameters R hOld hδ q hq epsb pb boundary hb s hs L K hLK hL hK hLi hfront
+    hscalar hboundary hdiam x hx y hcross
+  have heq : scaleMetric q⁻¹ (inv_pos.mpr hq) (scaleMetric q hq (H.event i).terminal.metric) =
+      (H.event i).terminal.metric := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro z v w
+    simp only [scaleMetric_inner]
+    field_simp
+  let nk : SpatialNeck (H.event i).terminal.metric epsb pb :=
+    heq ▸ boundary.scaleMetric q⁻¹ (inv_pos.mpr hq)
+  have hmap : nk.map = boundary.map := by
+    have hcast {g h : SmoothRiemannianMetric ThreeModel (H.event i).incoming.terminalRegularOpen}
+        (e : g = h) (n : SpatialNeck g epsb pb) :
+        (e ▸ n : SpatialNeck h epsb pb).map = n.map := by
+      cases e
+      rfl
+    exact (hcast heq (boundary.scaleMetric q⁻¹ (inv_pos.mpr hq))).trans rfl
+  apply hprotect H i parameters R hOld hδ epsb pb nk hb s hs L K hLK hL hK hLi
+    (by rw [hmap]; exact hfront) q hq ?_ ?_ hdiam x hx y hcross
+  · intro z hz
+    have h := hscalar z hz
+    rw [metricScalarAt_scaleMetric, ← div_eq_inv_mul] at h
+    exact (div_le_iff₀ hq).mp h
+  · have h := hboundary
+    rw [metricScalarAt_scaleMetric, ← div_eq_inv_mul] at h
+    exact (le_div_iff₀ hq).mp h
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

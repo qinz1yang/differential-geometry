@@ -184,3 +184,39 @@ theorem exists_first_event_without_regularCrossing
     first le_rfl hf).trans (hAx.symm.trans (hbirth x)))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+
+noncomputable section
+open Set Manifold
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u v
+variable (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+  {X : Type v}
+
+theorem exists_regularCrossing_of_backwardSurvivor_initial_eq
+    (J : X → (H.stage first).Carrier)
+    (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last)
+    (Ξ : X → H.backwardSurvivorTerminalFace first i hf)
+    (hbirth : ∀ x,
+      H.backwardSurvivorMap first i.castSucc hf first le_rfl hf (Ξ x).val = J x)
+    (x : X) (endpoint : (H.stage last).Carrier)
+    (A : BackwardPointTrace H first last hle endpoint)
+    (hA : A.point first le_rfl hle = J x) :
+    (H.event i).RegularCrossing (H.backwardSurvivorTerminalFaceMap first i hf (Ξ x)).val
+      (A.point i.succ (hf.trans i.castSucc_lt_succ.le) hl) := by
+  let B := A.restrictLast hf (i.castSucc_lt_succ.le.trans hl)
+  let C : BackwardPointTrace H first i.castSucc hf (Ξ x).val.val :=
+    Classical.choice (Ξ x).val.property
+  have hfirst : B.point first le_rfl hf = C.point first le_rfl hf := by
+    exact hA.trans ((hbirth x).symm.trans
+      (H.backwardSurvivorMap_eq_point first i.castSucc hf first le_rfl hf (Ξ x).val C))
+  have he := B.endpoint_eq_of_point_first_eq C hfirst
+  have hc := A.crossing i hf hl
+  change (H.event i).RegularCrossing (Ξ x).val.val _
+  rwa [he] at hc
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

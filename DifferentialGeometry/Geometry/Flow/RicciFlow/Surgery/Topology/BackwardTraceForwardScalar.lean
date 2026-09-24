@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceReciprocal
 
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
+
 set_option autoImplicit false
 noncomputable section
 open Set
@@ -200,5 +202,81 @@ theorem mem_incoming_terminalRegularRegion_of_initial_scalar_bound
   have h := mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left (sub_le_sub_left hpast s) (by positivity : 0 ≤ 8 * (C : ℝ))) hQ.le
   nlinarith
+
+section
+
+open Filter
+
+variable {endpoint : (H.stage last).Carrier}
+
+theorem scalar_le_two_mul_initial_at_time
+    (A : BackwardPointTrace H first last hle endpoint)
+    {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)
+    (hbound : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) ^ 2)
+    (hscalar : metricScalarAt (H.initialMetric first) (A.point first le_rfl hle) ≤ Q)
+    (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last)
+    {t : ℝ} (ht : t ∈ Ico (H.time j.castSucc) (H.time j.succ))
+    (htime : 2 * C * (t - H.time first) * Q ≤ 1) :
+    (H.event j).incoming.flow.scalar t
+      (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) ≤ 2 * Q := by
+  let B := A.restrictLast hf (j.castSucc_lt_succ.le.trans hl)
+  exact B.scalar_incoming_le_two_mul_initial_of_time_sub_le
+    (H.event j).incoming (H.event_initial j) _ hq hqQ
+    (fun k hk hkj => hbound k hk (hkj.trans (j.castSucc_lt_succ.le.trans hl)))
+    (hbound j hf hl) hscalar ht htime
+
+theorem extended_riemannNorm_le_of_initial_scalar_bound
+    (A : BackwardPointTrace H first last hle endpoint)
+    {q Q a₀ : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q) (ha₀ : 0 < a₀)
+    (hbound : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) ^ 2)
+    (hscalar : metricScalarAt (H.initialMetric first) (A.point first le_rfl hle) ≤ Q)
+    (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last)
+    (y : (H.event j).incoming.terminalRegularOpen)
+    (hy : y.val = A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))
+    (hpinch : ∀ t ∈ Ico (H.time j.castSucc) (H.time j.succ),
+      InFixedHamiltonIveyRegion ((H.event j).incoming.flow.base.metric t) a₀ y.val)
+    (htime : 2 * C * (H.time j.succ - H.time first) * Q ≤ 1) :
+    ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+      Real.sqrt (DifferentialGeometry.Tensor0SBundle.normSq0S
+        ((H.event j).terminal.extendedMetric t) y 4
+        (metricRm04At ((H.event j).terminal.extendedMetric t) y)) ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+  have hQ : 0 < Q := hq.trans_le hqQ
+  have hpast (t : ℝ) (ht : t ∈ Ico (H.time j.castSucc) (H.time j.succ)) :
+      (H.event j).incoming.riemannNorm t y.val ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+    have hs := A.scalar_le_two_mul_initial_at_time hq hqQ hbound hscalar j hf hl ht
+      ((mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le _) (by positivity)) hQ.le).trans htime)
+    rw [← hy] at hs
+    have hr := sqrt_normSq0S_le_of_fixedHamiltonIveyRegion
+      ((H.event j).incoming.flow.base.metric t) y.val ha₀ le_rfl (hpinch t ht) hs
+    rw [max_eq_left (by positivity : 0 ≤ 2 * Q), show 2 * Q / 2 = Q by ring] at hr
+    exact hr
+  intro t ht
+  rcases lt_or_eq_of_le ht.2 with hlt | rfl
+  · rw [(H.event j).terminal.extendedMetric_before hlt,
+      DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.rmNormSq_restrictOpen]
+    exact hpast t ⟨ht.1, hlt⟩
+  · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    apply le_of_tendsto ((H.event j).terminal.tendsto_riemannNorm y)
+    filter_upwards [Ioo_mem_nhdsLT (H.event j).incoming.lt] with t ht
+    exact hpast t ⟨ht.1.le, ht.2⟩
+
+end
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace

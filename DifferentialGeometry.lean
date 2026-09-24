@@ -5407,6 +5407,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FirstExit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalInitialFlowComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalInitialSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvatureHorizon
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.SpatialCapFrontier
@@ -5418,6 +5419,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapturedCapClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCutScaleProtection
@@ -5430,6 +5432,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorInitialCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapBallVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ProspectiveNeckConvergence
