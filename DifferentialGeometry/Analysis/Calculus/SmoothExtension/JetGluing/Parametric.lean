@@ -162,12 +162,12 @@ theorem iteratedFDerivWithin_seam_match_of_uniqueDiffOn {V : Set E}
       simp [Prod.smul_mk, Prod.mk_add_mk]
     have htrans : fderivWithin ℝ (iteratedFDerivWithin ℝ n fL sL) sL (0, z) ((1:ℝ), (0:E))
         = fderivWithin ℝ (iteratedFDerivWithin ℝ n fR sR) sR (0, z) ((1:ℝ), (0:E)) := by
-      rw [fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ hUDL hSLclo n
+      rw [fderivWithin_iteratedFDerivWithin_apply_eq hUDL hSLclo n
           (hL.of_le
             (WithTop.coe_le_coe.mpr le_top :
               ((n : WithTop ℕ∞) + 1) ≤ ∞))
           ((1:ℝ), (0:E)) (0, z) hmemL,
-        fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ hUDR hSRclo n
+        fderivWithin_iteratedFDerivWithin_apply_eq hUDR hSRclo n
           (hR.of_le
             (WithTop.coe_le_coe.mpr le_top :
               ((n : WithTop ℕ∞) + 1) ≤ ∞))

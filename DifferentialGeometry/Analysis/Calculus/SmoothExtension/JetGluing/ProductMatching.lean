@@ -54,7 +54,7 @@ theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish_of_uniqueDiffOn
       rw [show (0 : (ℝ × E) →L[ℝ] ((ℝ × E) [×n]→L[ℝ] F)) (t, e) = 0 from rfl, hsplit, map_add,
         map_smul]
       have htrans : fderivWithin ℝ (iteratedFDerivWithin ℝ n D S) S (0, z) ((1:ℝ), (0:E)) = 0 := by
-        rw [fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ hUD hSclo n
+        rw [fderivWithin_iteratedFDerivWithin_apply_eq hUD hSclo n
           (hD.of_le
             (WithTop.coe_le_coe.mpr le_top :
               ((n : WithTop ℕ∞) + 1) ≤ ∞))

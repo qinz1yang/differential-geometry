@@ -31,7 +31,7 @@ variable {E F G : Type*}
 
 namespace Analysis
 
-theorem fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ {G W : Type*}
+theorem fderivWithin_iteratedFDerivWithin_apply_eq {G W : Type*}
     [NormedAddCommGroup G] [NormedSpace ℝ G]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     {s : Set G} (hs : UniqueDiffOn ℝ s) (hs' : s ⊆ closure (interior s))
@@ -98,19 +98,6 @@ theorem fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ {G W : Typ
       rw [hflip, ContinuousLinearMap.flip_apply]
       exact hsymH.eq u v
 
-theorem fderivWithin_iteratedFDerivWithin_apply_eq {G W : Type*}
-    [NormedAddCommGroup G] [NormedSpace ℝ G]
-    [NormedAddCommGroup W] [NormedSpace ℝ W]
-    {s : Set G} (hs : UniqueDiffOn ℝ s) (hs' : s ⊆ closure (interior s))
-    (n : ℕ) {f : G → W}
-    (hf : ContDiffOn ℝ ((n : WithTop ℕ∞) + 2) f s) (u : G) :
-    ∀ x ∈ s,
-      fderivWithin ℝ (iteratedFDerivWithin ℝ n f s) s x u =
-        iteratedFDerivWithin ℝ n
-          (fun y => fderivWithin ℝ f s y u) s x :=
-  fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ hs hs' n
-    (hf.of_le (by norm_cast; omega)) u
-
 end Analysis
 
 theorem _root_.ContDiffAt.fderiv_iteratedFDeriv_apply
@@ -127,9 +114,8 @@ theorem _root_.ContDiffAt.fderiv_iteratedFDeriv_apply
   have hcl : U ⊆ closure (interior U) := by
     rw [hU.interior_eq]
     exact subset_closure
-  have hh :=
-    DifferentialGeometry.Analysis.fderivWithin_iteratedFDerivWithin_apply_eq_of_contDiffOn_succ
-      hU.uniqueDiffOn hcl n (by simpa using hft.mono (show U ⊆ t from interior_subset)) v x hxU
+  have hh := DifferentialGeometry.Analysis.fderivWithin_iteratedFDerivWithin_apply_eq
+    hU.uniqueDiffOn hcl n (by simpa using hft.mono (show U ⊆ t from interior_subset)) v x hxU
   have he : EqOn (iteratedFDerivWithin ℝ n f U) (iteratedFDeriv ℝ n f) U :=
     iteratedFDerivWithin_of_isOpen n hU
   rw [fderivWithin_congr he (he hxU), fderivWithin_of_isOpen hU hxU,
