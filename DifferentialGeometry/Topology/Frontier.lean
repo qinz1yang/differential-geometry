@@ -1,5 +1,7 @@
 import DifferentialGeometry.Topology.Combinatorics.BranchUpdates
 import Mathlib.Topology.Closure
+import Mathlib.Topology.Connected.Clopen
+import Mathlib.Topology.Maps.Proper.Basic
 
 namespace DifferentialGeometry.Topology
 
@@ -83,5 +85,69 @@ theorem closure_interior_eq_of_frontier_subset_closure_interior
   by_cases hi : x ∈ interior D
   · exact subset_closure hi
   · exact hfront ((mem_frontier_iff_notMem_interior hx).mpr hi)
+
+theorem eq_univ_of_recurrent_frontier_attachments
+    {X Y ι : Type*} [TopologicalSpace X] [PreconnectedSpace X]
+    [Finite ι]
+    (R B : ℕ → Set X) (hclosed : IsClosed (R 0)) (hne : (R 0).Nonempty)
+    (hstep : ∀ n, R (n + 1) = R n ∪ B n)
+    (face : ℕ → ι → Set X) (label : ℕ → ι)
+    (hfrontier : ∀ n, frontier (R n) ⊆ ⋃ i, face n i)
+    (hunchanged : ∀ n i, label n ≠ i → face (n + 1) i = face n i)
+    (hfilled : ∀ n, face n (label n) ⊆ interior (R (n + 1)))
+    (hrecurrent : ∀ i N, ∃ n, N ≤ n ∧ label n = i)
+    (ends : ι → Y → X) (hclosedRanges : ∀ i, IsClosed (range (ends i)))
+    (hrange : ∀ i, range (ends i) = ⋃ n, ⋃ (_ : label n = i), B n) :
+    (⋃ n, R n) = univ ∧ R 0 ∪ ⋃ i, range (ends i) = univ := by
+  have hdecomposition : (⋃ n, R n) = R 0 ∪ ⋃ i, range (ends i) := by
+    apply Subset.antisymm
+    · apply iUnion_subset
+      intro n
+      induction n with
+      | zero => exact subset_union_left
+      | succ n ih =>
+        rw [hstep n]
+        refine union_subset ih ?_
+        intro x hx
+        right
+        apply mem_iUnion.mpr
+        refine ⟨label n, ?_⟩
+        rw [hrange]
+        exact mem_iUnion₂.mpr ⟨n, rfl, hx⟩
+    · refine union_subset (subset_iUnion R 0) ?_
+      apply iUnion_subset
+      intro i
+      rw [hrange]
+      apply iUnion_subset
+      intro n
+      apply iUnion_subset
+      intro hn
+      have hsub : B n ⊆ R (n + 1) := (hstep n).symm ▸ subset_union_right
+      exact hsub.trans (subset_iUnion R (n + 1))
+  have hopen : IsOpen (⋃ n, R n) :=
+    isOpen_iUnion_of_recurrent_frontier_updates R face label hfrontier hunchanged hfilled hrecurrent
+  have hclosedall : IsClosed (⋃ n, R n) := by
+    rw [hdecomposition]
+    exact hclosed.union (isClosed_iUnion_of_finite hclosedRanges)
+  have hfull : (⋃ n, R n) = univ :=
+    (show IsClopen (⋃ n, R n) from ⟨hclosedall, hopen⟩).eq_univ
+      (hne.mono (subset_iUnion R 0))
+  exact ⟨hfull, hdecomposition.symm.trans hfull⟩
+
+theorem eq_univ_of_recurrent_frontier_attachments_of_proper
+    {X Y ι : Type*} [TopologicalSpace X] [PreconnectedSpace X]
+    [TopologicalSpace Y] [Finite ι]
+    (R B : ℕ → Set X) (hclosed : IsClosed (R 0)) (hne : (R 0).Nonempty)
+    (hstep : ∀ n, R (n + 1) = R n ∪ B n)
+    (face : ℕ → ι → Set X) (label : ℕ → ι)
+    (hfrontier : ∀ n, frontier (R n) ⊆ ⋃ i, face n i)
+    (hunchanged : ∀ n i, label n ≠ i → face (n + 1) i = face n i)
+    (hfilled : ∀ n, face n (label n) ⊆ interior (R (n + 1)))
+    (hrecurrent : ∀ i N, ∃ n, N ≤ n ∧ label n = i)
+    (ends : ι → Y → X) (hproper : ∀ i, IsProperMap (ends i))
+    (hrange : ∀ i, range (ends i) = ⋃ n, ⋃ (_ : label n = i), B n) :
+    (⋃ n, R n) = univ ∧ R 0 ∪ ⋃ i, range (ends i) = univ  := by
+  exact eq_univ_of_recurrent_frontier_attachments R B hclosed hne hstep face label
+    hfrontier hunchanged hfilled hrecurrent ends (fun i => (hproper i).isClosed_range) hrange
 
 end DifferentialGeometry.Topology

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.Frontier
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Compactness.Compact
 
@@ -325,5 +326,68 @@ theorem component_union_meeting_interior_anchor
     exact ⟨hL hyL, mem_connectedComponentIn hyW⟩
   exact ⟨y, (hconn y hyL).subset_connectedComponentIn hxint
     (interior_mono hcomponent) hyint, hyL⟩
+
+theorem component_union_exhaustion_of_recurrent_attachments
+    {X Y ι : Type*} [TopologicalSpace X] [PreconnectedSpace X]
+    [TopologicalSpace Y] [Finite ι]
+    (W B : ℕ → Set X) (L : Set X)
+    [∀ n, DiscreteTopology (ConnectedComponents (W n))]
+    (hW : ∀ n, IsClosed (W n))
+    (hBclosed : ∀ n, IsClosed (B n)) (hBconnected : ∀ n, IsPreconnected (B n))
+    (hstep : ∀ n, W (n + 1) = W n ∪ B n)
+    (hcontact : ∀ n, B n ∩ W n ⊆ ⋃ a ∈ L, connectedComponentIn (W n) a)
+    (hmeet : ∀ n, (B n ∩ ⋃ a ∈ L, connectedComponentIn (W n) a).Nonempty)
+    (face : ℕ → ι → Set X) (label : ℕ → ι)
+    (hfrontier : ∀ n, frontier (⋃ a ∈ L, connectedComponentIn (W n) a) ⊆ ⋃ i, face n i)
+    (hunchanged : ∀ n i, label n ≠ i → face (n + 1) i = face n i)
+    (hfilled : ∀ n, face n (label n) ⊆
+      interior (⋃ a ∈ L, connectedComponentIn (W (n + 1)) a))
+    (hrecurrent : ∀ i N, ∃ n, N ≤ n ∧ label n = i)
+    (ends : ι → Y → X) (hproper : ∀ i, IsProperMap (ends i))
+    (hrange : ∀ i, range (ends i) = ⋃ n, ⋃ (_ : label n = i), B n) :
+    let R := fun n => ⋃ a ∈ L, connectedComponentIn (W n) a
+    (⋃ n, R n) = univ ∧ R 0 ∪ ⋃ i, range (ends i) = univ ∧
+      ∀ n, W n = R n := by
+  intro R
+  have hactive (n : ℕ) : R (n + 1) = R n ∪ B n := by
+    dsimp only [R]
+    rw [hstep]
+    exact component_union_meeting_union_of_inter_subset (hW n)
+      (hBclosed n) (hBconnected n) (hcontact n) (hmeet n)
+  obtain ⟨Q, hQ, hQimage⟩ := exists_isClopen_component_union_meeting (W := W 0) (L := L)
+  have hRclosed : IsClosed (R 0) := by
+    change IsClosed (⋃ a ∈ L, connectedComponentIn (W 0) a)
+    rw [← hQimage]
+    exact (hW 0).isClosedMap_subtype_val Q hQ.isClosed
+  obtain ⟨hfull, hends⟩ := eq_univ_of_recurrent_frontier_attachments_of_proper R B hRclosed
+    ((hmeet 0).mono inter_subset_right) hactive face label hfrontier hunchanged hfilled hrecurrent
+    ends hproper hrange
+  have hRsub (n) : R n ⊆ W n := by
+    rintro x hx
+    obtain ⟨a, _, hxa⟩ := mem_iUnion₂.mp hx
+    exact connectedComponentIn_subset (W n) a hxa
+  have hinactive (n : ℕ) : W n \ R n = W 0 \ R 0 := by
+    induction n with
+    | zero => rfl
+    | succ n ih =>
+      rw [hstep n, hactive n]
+      have heq : (W n ∪ B n) \ (R n ∪ B n) = W n \ R n := by
+        ext x
+        constructor
+        · rintro ⟨hx, hn⟩
+          exact ⟨hx.resolve_right (fun h => hn (Or.inr h)), fun h => hn (Or.inl h)⟩
+        · rintro ⟨hxW, hxR⟩
+          exact ⟨Or.inl hxW, fun h => h.elim hxR (fun hxB => hxR (hcontact n ⟨hxB, hxW⟩))⟩
+      exact heq.trans ih
+  have hempty : W 0 \ R 0 = ∅ := by
+    apply eq_empty_iff_forall_notMem.mpr
+    intro x hx
+    obtain ⟨n, hxn⟩ := mem_iUnion.mp (hfull.symm ▸ mem_univ x)
+    exact ((hinactive n).symm ▸ hx).2 hxn
+  refine ⟨hfull, hends, ?_⟩
+  intro n
+  apply Subset.antisymm ?_ (hRsub n)
+  have hnempty : W n \ R n = ∅ := (hinactive n).trans hempty
+  exact sdiff_eq_empty.mp hnempty
 
 end DifferentialGeometry.Topology
