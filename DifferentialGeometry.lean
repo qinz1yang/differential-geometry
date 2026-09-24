@@ -13733,3 +13733,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetr
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.LocalVolume
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Local
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCover

@@ -126,4 +126,47 @@ theorem riemannianVolumeMeasure_ball_ge_of_initial_volume_and_curvature_bound
       rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.exp_pos _).le,
         ← Real.exp_add, neg_add_cancel, Real.exp_zero, ENNReal.ofReal_one, one_mul]
 
+theorem riemannianVolumeMeasure_ball_ge_of_initial_volume_ratio_and_curvature_bound
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {T K t κ R : ℝ} (hT : 0 ≤ T) (hK : 0 ≤ K)
+    (hcarrier : Icc 0 T ⊆ D.carrier) (hregular : Ioo 0 T ⊆ D.regular)
+    (hRm : ∀ u ∈ Icc 0 T, ∀ x : M,
+      Real.sqrt (normSq0S (S.base.metric u) x 4 (S.base.rm04 u x)) ≤ K)
+    (ht : t ∈ Icc 0 T) (p : M)
+    (hinitial : ∀ ρ : ℝ, 0 < ρ → ρ ≤ R →
+      ENNReal.ofReal κ * ENNReal.ofReal ρ ^ Module.finrank ℝ E ≤
+        riemannianVolumeMeasure I M (S.base.metric 0) (riemannianBallOf (S.base.metric 0) p ρ))
+    {r : ℝ} (hr : 0 < r) (hrR : r ≤ R) :
+    ENNReal.ofReal (Real.exp (-(2 * (Module.finrank ℝ E : ℝ) ^ 3 * K * T)) * κ) *
+      ENNReal.ofReal r ^ Module.finrank ℝ E ≤
+      riemannianVolumeMeasure I M (S.base.metric t) (riemannianBallOf (S.base.metric t) p r) := by
+  let n := Module.finrank ℝ E
+  let a := Real.exp (-((n : ℝ)^2 * K * T))
+  have ha : 0 < a := Real.exp_pos _
+  have ha1 : a ≤ 1 := Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))
+  have harp : 0 < a * r := mul_pos ha hr
+  have harR : a * r ≤ R := (mul_le_mul_of_nonneg_right ha1 hr.le).trans_eq (one_mul r) |>.trans hrR
+  have h := riemannianVolumeMeasure_ball_ge_of_initial_volume_and_curvature_bound
+    S hS hT hK hcarrier hregular hRm ht p hr.le (hinitial (a * r) harp harR)
+  have hexp : Real.exp (-((n : ℝ)^3 * K * T)) * a ^ n =
+      Real.exp (-(2 * (n : ℝ)^3 * K * T)) := by
+    dsimp only [a]
+    rw [← Real.exp_nat_mul, ← Real.exp_add]
+    congr 1
+    ring
+  have heq : ENNReal.ofReal (Real.exp (-((n : ℝ)^3 * K * T))) *
+      (ENNReal.ofReal κ * ENNReal.ofReal (a * r) ^ n) =
+      ENNReal.ofReal (Real.exp (-(2 * (n : ℝ)^3 * K * T)) * κ) * ENNReal.ofReal r ^ n := by
+    rw [ENNReal.ofReal_mul ha.le, mul_pow]
+    calc
+      _ = (ENNReal.ofReal (Real.exp (-((n : ℝ)^3 * K * T))) *
+          ENNReal.ofReal a ^ n) * ENNReal.ofReal κ * ENNReal.ofReal r ^ n := by ring
+      _ = _ := by
+        rw [← ENNReal.ofReal_pow ha.le,
+          ← ENNReal.ofReal_mul (Real.exp_pos _).le, hexp,
+          ← ENNReal.ofReal_mul (Real.exp_pos _).le]
+  rw [← heq]
+  exact h
+
+
 end DifferentialGeometry.PDE.RicciFlow
