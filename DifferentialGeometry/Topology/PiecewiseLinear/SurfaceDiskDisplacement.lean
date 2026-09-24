@@ -6,7 +6,7 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskInteriorMove
 import DifferentialGeometry.Topology.PiecewiseLinear.FirstHomologyCarrying
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubcomplexBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskNeighborhoodS31
 
 /-!
 # Moving surface polygons off disks
