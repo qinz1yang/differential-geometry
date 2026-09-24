@@ -338,3 +338,45 @@ theorem image_coreComponent_union_cap_eq_connectedComponent
 end DifferentialGeometry.Topology.SphericalCapping
 
 end
+
+section
+
+namespace DifferentialGeometry.Topology.SphericalCutCapTransition
+
+universe u
+variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
+
+theorem exists_core_presentation_eq_inr_component
+    (D : ConnectedComponents E.discarded.Carrier) :
+    ∃ (x : E.tubes.core) (d : E.discarded.Carrier),
+      ConnectedComponents.mk d = D ∧
+        E.presentation (E.capping.coreInclusion x) = Sum.inr d := by
+  obtain ⟨d₀,hd₀⟩ := ConnectedComponents.surjective_coe D
+  let _ : CompactSpace E.tubes.core := isCompact_iff_compactSpace.mp E.capping.core_compact
+  let _ : LocallyConnectedSpace E.tubes.core :=
+    E.capping.coreCharts.locallyConnectedSpace (EuclideanHalfSpace 3) E.tubes.core
+  obtain ⟨x,hx⟩ := E.capping.component_meets_core
+    (ConnectedComponents.mk (E.presentation.symm (Sum.inr d₀)))
+  have hc : ConnectedComponents.mk (E.presentation (E.capping.coreInclusion x)) =
+      ConnectedComponents.mk (Sum.inr d₀ : Q.Carrier ⊕ E.discarded.Carrier) := by
+    have hh := congrArg E.presentation.continuous.connectedComponentsMap hx
+    simpa only [Continuous.connectedComponentsMap_mk,E.presentation.apply_symm_apply] using hh
+  have hmem : E.presentation (E.capping.coreInclusion x) ∈
+      connectedComponent (Sum.inr d₀ : Q.Carrier ⊕ E.discarded.Carrier) :=
+    ConnectedComponents.coe_eq_coe'.mp hc
+  have hsub : connectedComponent (Sum.inr d₀ : Q.Carrier ⊕ E.discarded.Carrier) ⊆
+      range (@Sum.inr Q.Carrier E.discarded.Carrier) :=
+    isPreconnected_connectedComponent.subset_isClopen isClopen_range_inr
+      ⟨Sum.inr d₀,mem_connectedComponent,⟨d₀,rfl⟩⟩
+  obtain ⟨d,hd⟩ := hsub hmem
+  let r : Q.Carrier ⊕ E.discarded.Carrier → E.discarded.Carrier := Sum.elim (fun _ => d₀) id
+  have hr : Continuous r := continuous_const.sumElim continuous_id
+  have hdd : ConnectedComponents.mk d = ConnectedComponents.mk d₀ := by
+    have hh := congrArg hr.connectedComponentsMap hc
+    rw [Continuous.connectedComponentsMap_mk,Continuous.connectedComponentsMap_mk,← hd] at hh
+    exact hh
+  exact ⟨x,d,hdd.trans hd₀,hd.symm⟩
+
+end DifferentialGeometry.Topology.SphericalCutCapTransition
+
+end

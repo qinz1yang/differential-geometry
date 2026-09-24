@@ -13848,3 +13848,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.VolumeCollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardBlowupVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardLifetime
+import DifferentialGeometry.Topology.ThreeManifold.CoreComponentBoundary
