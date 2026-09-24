@@ -13550,6 +13550,7 @@ import DifferentialGeometry.Geometry.Neck.DisjointBarrierRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalBarrierFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBarrierComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegionExterior
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegionConnectedSigned
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegionSigned

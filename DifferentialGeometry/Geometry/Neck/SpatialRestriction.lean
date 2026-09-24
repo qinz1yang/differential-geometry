@@ -157,4 +157,83 @@ theorem SpatialNeck.exists_of_restrictOpen
       exact hy
 
 
+theorem exists_spatial_neck_frontier_on_connectedComponent
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] {g : SmoothRiemannianMetric I3 M} {eps : ℝ}
+    {ι : Type*} (b : Finset ι) (point : ι → M)
+    (neck : ∀ i, SpatialNeck g eps (point i)) (level : ι → ℝ)
+    (hlevel : ∀ i ∈ b, |level i| < eps⁻¹)
+    (c : M) {W : Set M} (hW : IsCompact W)
+    (hregular : closure (interior W) = W) (hcomponent : W ⊆ connectedComponent c)
+    (hfront : frontier W = ⋃ i ∈ b, range (fun q => (neck i).map (q, level i)))
+    (hdisjoint : (b : Set ι).Pairwise (fun i j =>
+      Disjoint (range (fun q => (neck i).map (q, level i)))
+        (range (fun q => (neck j).map (q, level j))))) :
+    let U := connectedComponentOpen (I := I3) c
+    let W' := (Subtype.val : U → M) ⁻¹' W
+    ∃ (point' : {i // i ∈ b} → U)
+      (neck' : ∀ i, SpatialNeck (g.restrictOpen U) eps (point' i)),
+      (∀ i, (point' i : M) = point i.val) ∧
+      (∀ i, (neck' i).center = (neck i.val).center) ∧
+      (∀ i z, z ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ →
+        ((neck' i).map z : M) = (neck i.val).map z) ∧
+      IsCompact W' ∧ closure (interior W') = W' ∧
+      interior W' = (Subtype.val : U → M) ⁻¹' interior W ∧
+      frontier W' = ⋃ i, range (fun q => (neck' i).map (q, level i.val)) ∧
+      Pairwise (fun i j => Disjoint
+        (range (fun q => (neck' i).map (q, level i.val)))
+        (range (fun q => (neck' j).map (q, level j.val)))) := by
+  classical
+  intro U W'
+  have hcontrolled (i : {i // i ∈ b}) (q : Sphere 2) :
+      (q, level i.val) ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
+    exact ⟨mem_univ _, abs_lt.mp (hlevel i.val i.property)⟩
+  have hcapture (i : {i // i ∈ b}) :
+      (neck i.val).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ U := by
+    let x := (neck i.val).map ((neck i.val).center, level i.val)
+    have hxfront : x ∈ frontier W := by
+      rw [hfront]
+      exact mem_iUnion₂.mpr ⟨i.val, i.property, ⟨(neck i.val).center, rfl⟩⟩
+    have hxc : x ∈ connectedComponent c := hcomponent (hW.isClosed.frontier_subset hxfront)
+    have hxp : x ∈ connectedComponent (point i.val) :=
+      (neck i.val).controlled_range_subset_connectedComponent
+        ⟨((neck i.val).center, level i.val), hcontrolled i _, rfl⟩
+    have heq : connectedComponent (point i.val) = connectedComponent c :=
+      (connectedComponent_eq hxp).trans (connectedComponent_eq hxc).symm
+    change _ ⊆ connectedComponent c
+    rw [← heq]
+    exact (neck i.val).controlled_range_subset_connectedComponent
+  choose hp nk hcenter hmap hinv htarget hscalar using
+    fun i : {i // i ∈ b} => (neck i.val).exists_restrict_target U (hcapture i)
+  let point' (i : {i // i ∈ b}) : U := ⟨point i.val, hp i⟩
+  have hinterior : interior W' = (Subtype.val : U → M) ⁻¹' interior W :=
+    (U.isOpenEmbedding'.isOpenMap.preimage_interior_eq_interior_preimage
+      continuous_subtype_val W).symm
+  have hrange (i : {i // i ∈ b}) :
+      range (fun q => (nk i).map (q, level i.val)) =
+        (Subtype.val : U → M) ⁻¹' range (fun q => (neck i.val).map (q, level i.val)) := by
+    ext x
+    constructor
+    · rintro ⟨q, rfl⟩
+      exact ⟨q, (hmap i _ (hcontrolled i q)).symm⟩
+    · rintro ⟨q, hq⟩
+      exact ⟨q, Subtype.ext ((hmap i _ (hcontrolled i q)).trans hq)⟩
+  refine ⟨point', nk, fun _ => rfl, hcenter, hmap, ?_, ?_, hinterior, ?_, ?_⟩
+  · exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hW
+      (fun x hx => ⟨⟨x, hcomponent hx⟩, rfl⟩)
+  · rw [hinterior, ← U.isOpenEmbedding'.isOpenMap.preimage_closure_eq_closure_preimage
+      continuous_subtype_val, hregular]
+  · rw [← U.isOpenEmbedding'.isOpenMap.preimage_frontier_eq_frontier_preimage
+      continuous_subtype_val, hfront]
+    ext x
+    simp only [mem_preimage, mem_iUnion]
+    constructor
+    · rintro ⟨i, hi, hxi⟩
+      exact ⟨⟨i, hi⟩, (hrange ⟨i, hi⟩).superset hxi⟩
+    · rintro ⟨i, hxi⟩
+      exact ⟨i.val, i.property, (hrange i).subset hxi⟩
+  · intro i j hij
+    rw [hrange, hrange]
+    exact (hdisjoint i.property j.property (fun h => hij (Subtype.ext h))).preimage _
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
