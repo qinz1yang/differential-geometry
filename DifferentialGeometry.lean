@@ -13719,3 +13719,4 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornEndpointRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMinimizingSegment
+import DifferentialGeometry.Geometry.Metric.Comparison.BoundaryDetour

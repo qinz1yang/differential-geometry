@@ -56,18 +56,18 @@ theorem TerminalLimitMetric.eventually_canonical_neck_or_cap_of_not_isCompact
   | positive whole data hsec => exact (hproper whole).elim
   | round whole data => exact (hproper whole).elim
 
-private theorem exists_canonical_neck_or_cap_sequence_of_eventually
-    {x : P.Carrier} {eps C q : ℝ}
-    (hcanonical : ∀ t ∈ Ico a s, q ≤ G.flow.scalar t x →
-      ∃ W : CanonicalWitness G.flow eps C C x t, W.capTubeHasNeckChart eps)
+theorem exists_canonical_neck_or_cap_sequence_of_eventually
+    {x : P.Carrier} {eps C1 C2 q : ℝ}
+    (hcanonical : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      ∃ W : CanonicalWitness G.flow eps C1 C2 x t, W.capTubeHasNeckChart eps)
     (hhigh : ∀ᶠ t in 𝓝[<] s, q < G.flow.scalar t x)
-    (hbranch : ∀ᶠ t in 𝓝[<] s, ∀ W : CanonicalWitness G.flow eps C C x t,
+    (hbranch : ∀ᶠ t in 𝓝[<] s, ∀ W : CanonicalWitness G.flow eps C1 C2 x t,
       (∃ neck : LocalNeck G.flow eps x t W.domain.carrier,
         W.alternative = CanonicalAlternative.neck neck) ∨
       ∃ cap : LocalCap G.flow eps x t W.domain.carrier,
         ∃ depth, W.alternative = CanonicalAlternative.cap cap depth) :
     ∃ τ : ℕ → ℝ, StrictMono τ ∧ (∀ n, τ n ∈ Ioo a s) ∧ Tendsto τ atTop (𝓝[<] s) ∧
-      ∃ W : ∀ n, CanonicalWitness G.flow eps C C x (τ n),
+      ∃ W : ∀ n, CanonicalWitness G.flow eps C1 C2 x (τ n),
         (∀ n, (W n).capTubeHasNeckChart eps) ∧
         ((∃ neck : ∀ n, LocalNeck G.flow eps x (τ n) (W n).domain.carrier,
           ∀ n, (W n).alternative = CanonicalAlternative.neck (neck n)) ∨
@@ -83,8 +83,7 @@ private theorem exists_canonical_neck_or_cap_sequence_of_eventually
   have hτ : Tendsto τ atTop (𝓝[<] s) :=
     tendsto_nhdsWithin_iff.mpr ⟨hτlim, Eventually.of_forall (fun n => (hτmem n).2)⟩
   have hτdomain (n : ℕ) : τ n ∈ Ioo a s := ⟨hd.1.trans_lt (hτmem n).1, (hτmem n).2⟩
-  choose W hW using fun n => hcanonical (τ n) ⟨(hτdomain n).1.le, (hτdomain n).2⟩
-    (hlate (hτmem n)).1.le
+  choose W hW using fun n => hcanonical (τ n) (hτdomain n) (hlate (hτmem n)).1
   have halt (n : ℕ) := (hlate (hτmem n)).2 (W n)
   let isNeck (n : ℕ) : Prop := ∃ neck : LocalNeck G.flow eps x (τ n) (W n).domain.carrier,
     (W n).alternative = CanonicalAlternative.neck neck
@@ -130,7 +129,7 @@ theorem exists_uniform_canonical_neck_or_cap_sequence
     (L.tendsto_metricScalarAt x).eventually (Ioi_mem_nhds hx)
   have hbranch := L.eventually_canonical_neck_or_cap x y hy (eps := eps) (C1 := C) hscalar
   exact exists_canonical_neck_or_cap_sequence_of_eventually
-    (fun t ht hx => hcanonical x.val t ht hx) hhigh hbranch
+    (fun t ht hx => hcanonical x.val t ⟨ht.1.le, ht.2⟩ hx.le) hhigh hbranch
 
 theorem exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
@@ -159,7 +158,7 @@ theorem exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact
     (L.tendsto_metricScalarAt x).eventually (Ioi_mem_nhds hx)
   have hbranch := L.eventually_canonical_neck_or_cap_of_not_isCompact x hnoncompact eps C C
   exact exists_canonical_neck_or_cap_sequence_of_eventually
-    (fun t ht hx => hcanonical x.val t ht hx) hhigh hbranch
+    (fun t ht hx => hcanonical x.val t ⟨ht.1.le, ht.2⟩ hx.le) hhigh hbranch
 
 theorem TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
     (L : G.TerminalLimitMetric) :
