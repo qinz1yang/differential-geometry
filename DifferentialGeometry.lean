@@ -5446,6 +5446,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingRec
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSpatialNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTensorPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckMixedJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckNormalization

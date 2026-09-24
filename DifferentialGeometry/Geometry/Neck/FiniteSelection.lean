@@ -376,4 +376,76 @@ theorem exists_spatial_neck_chain_with_shared_collars :
   · exact (hdisj j.castSucc k hk).mono_left hsub
   · exact (hdisj k j.castSucc hk).symm.mono_left hsub
 
+
+section
+
+variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+  {g : SmoothRiemannianMetric I3 M} {eps : ℝ}
+
+private theorem SpatialNeck.scalar_le_twice_of_intersect_unit_slabs
+    {x y : M} (nx : SpatialNeck g eps x) (ny : SpatialNeck g eps y) (heps : eps ≤ 1 / 20000)
+    (hmeet : (nx.map '' (univ ×ˢ Icc (-1 : ℝ) 1) ∩ ny.map '' (univ ×ˢ Icc (-1 : ℝ) 1)).Nonempty) :
+    metricScalarAt g y ≤ 2 * metricScalarAt g x := by
+  obtain ⟨z, hzx, hzy⟩ := hmeet
+  have hwindow : (univ : Set (Sphere 2)) ×ˢ Icc (-1 : ℝ) 1 ⊆ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
+    have hinv : (1 : ℝ) < eps⁻¹ := (one_lt_inv₀ nx.eps_pos).mpr (by linarith)
+    intro p hp
+    exact ⟨hp.1, by constructor <;> linarith [hp.2.1, hp.2.2]⟩
+  have hx := (nx.scalar_bounds_on_image_window ((image_mono hwindow) hzx)).2
+  have hy := (ny.scalar_bounds_on_image_window ((image_mono hwindow) hzy)).1
+  have hposx := nx.Q_pos
+  have hposy := ny.Q_pos
+  nlinarith
+
+private theorem scalar_le_pow_two_of_neck_chain
+    {n : ℕ} (p : Fin (n + 1) → M) (neck : ∀ j, SpatialNeck g eps (p j))
+    (heps : eps ≤ 1 / 20000)
+    (hmeet : ∀ j : Fin n,
+      ((neck j.castSucc).map '' (univ ×ˢ Icc (-1 : ℝ) 1) ∩
+        (neck j.succ).map '' (univ ×ˢ Icc (-1 : ℝ) 1)).Nonempty) :
+    metricScalarAt g (p (Fin.last n)) ≤ (2 : ℝ) ^ n * metricScalarAt g (p 0) := by
+  have hb (j : Fin (n + 1)) : metricScalarAt g (p j) ≤ (2 : ℝ) ^ j.val * metricScalarAt g (p 0) := by
+    induction j using Fin.induction with
+    | zero => simp
+    | succ j ih =>
+      have hs := (neck j.castSucc).scalar_le_twice_of_intersect_unit_slabs (neck j.succ) heps (hmeet j)
+      calc
+        metricScalarAt g (p j.succ) ≤ 2 * metricScalarAt g (p j.castSucc) := hs
+        _ ≤ 2 * ((2 : ℝ) ^ j.val * metricScalarAt g (p 0)) := by
+          exact mul_le_mul_of_nonneg_left ih (by norm_num)
+        _ = (2 : ℝ) ^ j.succ.val * metricScalarAt g (p 0) := by
+          rw [Fin.val_succ, pow_succ]
+          ring
+  exact hb (Fin.last n)
+
+
+theorem exists_long_spatial_neck_chain_of_scalar_ratio
+    {C : Set M} (hC : IsPreconnected C)
+    (neck : ∀ p ∈ C, SpatialNeck g eps p) (heps : eps ≤ 1 / 20000)
+    (a b : C) (N : ℕ)
+    (hratio : (2 : ℝ) ^ N * metricScalarAt g a ≤ metricScalarAt g b) :
+    ∃ n : ℕ, N ≤ n ∧ ∃ p : Fin (n + 1) → C,
+      p 0 = a ∧ p (Fin.last n) = b ∧ Function.Injective p ∧
+      (∀ i : Fin n,
+        ((neck (p i.castSucc) (p i.castSucc).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1) ∩
+          (neck (p i.succ) (p i.succ).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1)).Nonempty) ∧
+      ∀ i j : Fin (n + 1), i.val + 1 < j.val →
+        Disjoint ((neck (p i) (p i).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1))
+          ((neck (p j) (p j).property).map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  obtain ⟨n, p, hp0, hpn, hinj, hmeet, hdisj⟩ :=
+    exists_spatial_neck_chain_with_disjoint_nonadjacent_slabs g hC neck a b
+  have hscale := scalar_le_pow_two_of_neck_chain
+    (fun j => (p j).val) (fun j => neck (p j) (p j).property) heps hmeet
+  rw [hp0, hpn] at hscale
+  have hN : N ≤ n := by
+    by_contra hn
+    have hpow : (2 : ℝ) ^ n < (2 : ℝ) ^ N := pow_lt_pow_right₀ (by norm_num) (lt_of_not_ge hn)
+    have hQ := (neck a a.property).Q_pos
+    have hmul := mul_lt_mul_of_pos_right hpow hQ
+    exact (not_lt_of_ge (hratio.trans hscale)) hmul
+  exact ⟨n, hN, p, hp0, hpn, hinj, hmeet, hdisj⟩
+
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
