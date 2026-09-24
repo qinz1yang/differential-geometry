@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalIncomingScalarDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
 import DifferentialGeometry.Geometry.Neck.NormalizedLift
@@ -131,5 +133,73 @@ theorem exists_historical_pullback_solution_from_incoming_slab
         exact N.pullback_normalizedMetric f hf Φ hΦ hmapf
   · intro t
     rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+open scoped NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+attribute [local instance] survivor_domain_sigmaCompact incoming_domain_sigmaCompact
+  incoming_footprint_sigmaCompact
+
+theorem exists_historical_pullback_solution_from_incoming_slab_with_scalar_bounds
+    (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
+    (K : Set G.terminalRegularOpen)
+    (htrace : ∀ x ∈ K, Nonempty (BackwardPointTrace H first last hle x.val))
+    (hinside : range N.chart ⊆ interior K)
+    {θ : ℝ} (hθ : 0 ≤ θ) (hstart : H.time first ≤ s - θ / N.scale)
+    {q : ℝ} {C : ℝ≥0}
+    (hbound : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+      ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+        q < (H.event j).incoming.flow.scalar t x →
+        |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+          C * (H.event j).incoming.flow.scalar t x ^ 2)
+    (hfinal : ∀ x : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s,
+      q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    {phi : ℝ → ℝ} (hphi : Continuous phi)
+    (hpinch : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+      Perelman.PhiAlmostNonnegative (H.event j).incoming.flow
+        (Ico (H.time j.castSucc) (H.time j.succ)) phi)
+    (hpinchFinal : Perelman.PhiAlmostNonnegative G.flow (Ico (H.time last) s) phi) :
+    ∃ (Φ : neckBuffer δ → H.backwardSurvivorIncomingFootprint first last hle G K)
+      (hΦ : IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ Φ)
+      (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+        (H.backwardSurvivorIncomingFootprint first last hle G K))
+      (S : SolutionOn (I := NeckCylinderModel)
+        (M := neckBuffer δ) (RealTimeInterval.closed (-θ) 0 (neg_nonpos.mpr hθ))),
+      H.backwardSurvivorIncomingFootprintMap first last hle G K ∘ Φ = N.chart ∧
+      IsSolutionOn S ∧ S.base.metric 0 = N.normalizedMetric ∧
+      (∀ t, S.base.metric t = localPullMetric
+        (scaleMetric N.scale N.scale_pos (gflow (s + t / N.scale))) Φ hΦ) ∧
+      (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          gflow t = ((H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+            (H.backwardSurvivorIncomingDomain first last hle G)).restrictOpen
+              (H.backwardSurvivorIncomingFootprint first last hle G K)) ∧
+      (∀ t ∈ Icc (H.time last) s,
+        gflow t = (H.backwardSurvivorIncomingMetric first last hle G L t).restrictOpen
+          (H.backwardSurvivorIncomingFootprint first last hle G K)) ∧
+      (∀ v ∈ Ioo (-θ) 0, ∀ x : neckBuffer δ, q / N.scale < S.scalar v x →
+        |derivWithin (fun w => S.scalar w x) (Iic v) v| ≤ C * S.scalar v x ^ 2) ∧
+      Perelman.PhiAlmostNonnegative S (Icc (-θ) 0)
+        (Perelman.rescalePinchingFunction N.scale phi) := by
+  obtain ⟨F, hF, gflow, S, hmap, hS, hzero, hmetric, hslabs, hlast⟩ :=
+    H.exists_historical_pullback_solution_from_incoming_slab first last hle G L hinit
+      N K htrace hinside hθ hstart
+  refine ⟨F, hF, gflow, S, hmap, hS, hzero, hmetric, hslabs, hlast, ?_, ?_⟩
+  · intro v hv x hhigh
+    exact H.abs_derivWithin_scalar_parabolic_backwardSurvivorIncomingFootprint_le
+      first last hle G L K gflow hslabs hlast F hF S N.scale_pos (fun t _ => hmetric t)
+      hS Ioo_subset_Icc_self hstart hbound hfinal hv x hhigh
+  · exact H.phiAlmostNonnegative_parabolic_backwardSurvivorIncomingFootprint_localPullback
+      first last hle G L K gflow hslabs hlast hphi hpinch hpinchFinal N.scale_pos hstart
+      F hF S (fun t _ => hmetric t)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
