@@ -599,3 +599,5 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `nonempty_diffeomorph_sphere_of_homeomorph_sphere` there (e290b2f1d). Entry into the shared tree = Codex item 21
   (host replay under the smooth lease with an owner decision on the 138 formatting-warning batch modules, then the
   exclusive-window merge, aggregate registration, cone recompile, promotion). Shared-tree frozen sorry unchanged.
+
+2026-09-24: Codex item 20 accepted Package F (PRs #14/#12, 85 distinct modules); both frozen leaves compiled and axiom/linter-audited, CGN wired with exactly two remaining sorry leaves, ledger 13 -> 11.

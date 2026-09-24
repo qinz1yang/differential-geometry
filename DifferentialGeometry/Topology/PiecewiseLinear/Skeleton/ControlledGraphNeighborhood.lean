@@ -10,9 +10,18 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CircleRemovalDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34DeletedBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingPackage
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparation
 
 /-!
 # Sorry-first skeleton of the controlled form of Moise 35.1
+
+Vertex preparation and the piercing package were proved by Bennett Chow in PRs #12 and #14.
+Codex item 20 accepted them on 2026-09-24 by private compilation and axiom/linter audits.
+The vertex approximation theorem is now imported. The cut frame and protected circle
+removal step remain as the two unproved leaves.
+
 
 The assembly `controlledGraphNeighborhood` proves the endpoint
 `ControlledGraphNeighborhoodStatement` for real from the seven leaves of this file; every `sorry`
@@ -308,92 +317,6 @@ theorem exists_section34CutFrame [T2Space M₁] [SecondCountableTopology M₁]
         (∀ (w : Section34VertexIndex 𝒦 𝒦') (s : Section34SimplexIndex 𝒦 3),
           Section34Incident w.1 s.1 → Q w ⊆ H s.1) ∧
         Section34OuterTorus 𝒦 𝒦' h Q ct Sd := by
-  sorry
-
-theorem exists_section34VertexPreparation [T2Space M₁] [SecondCountableTopology M₁]
-    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
-      (graphSkeletonSpace 𝒦) U)
-    (hQint : ∀ w, h '' src (Section34Label.vertexBall w) ⊆ interior (Q w))
-    (hCchart : ∀ w : Section34VertexIndex 𝒦 𝒦', ∃ c ∈ (plGroupoid 3).maximalAtlas M₂,
-      h '' src (Section34Label.vertexBall w) ⊆ c.source) :
-    ∃ (Cp CpBd Cc CcBd Kcore : Section34VertexIndex 𝒦 𝒦' → Set M₁)
-      (ends : Section34EdgeIndex 𝒦 𝒦' →
-        Section34VertexIndex 𝒦 𝒦' × Section34VertexIndex 𝒦 𝒦')
-      (Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ : Section34EdgeIndex 𝒦 𝒦' → Set M₁)
-      (ε : Section34VertexIndex 𝒦 𝒦' → ℝ),
-      Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-        Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε := by
-  sorry
-
-omit [FiniteDimensional ℝ Ea] in
-theorem Moise341.exists_section34VertexApproximation (h341 : Moise341)
-    [HasGroupoid M₂ (plGroupoid 3)] (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
-    ∃ G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂,
-      (∀ w, IsPLHomeomorphInto 3 (G w) (Cc w)) ∧
-        ∀ w, ∀ x ∈ Cc w, dist (G w x) (h x) < ε w := by
-  classical
-  obtain ⟨hεpos, hcc, hsub, hchart, -⟩ := hprep
-  have hcontU : ContinuousOn h U :=
-    continuousOn_iff_continuous_domRestrict.mpr hh.continuous
-  have hinjU : InjOn h U := by
-    intro x hx y hy hxy
-    have hxy' : U.domRestrict h ⟨x, hx⟩ = U.domRestrict h ⟨y, hy⟩ := hxy
-    exact congrArg Subtype.val (hh.injective hxy')
-  have key : ∀ w : Section34VertexIndex 𝒦 𝒦', ∃ F : M₁ → M₂,
-      IsPLHomeomorphInto 3 F (Cc w) ∧ ∀ x ∈ Cc w, dist (F x) (h x) < ε w := by
-    intro w
-    obtain ⟨P, r, u, hr, hu, hCceq, -⟩ := hcc w
-    obtain ⟨c, hc, hcsrc⟩ := hchart w
-    have hPball : IsPLBall 3 P := ⟨r, hr⟩
-    have hmem : ∀ x ∈ P, u x ∈ Cc w := by
-      intro x hx
-      rw [hCceq]
-      exact ⟨x, hx, rfl⟩
-    have hback : ∀ y ∈ Cc w, ∃ x ∈ P, u x = y := by
-      intro y hy
-      rw [hCceq] at hy
-      exact hy
-    have huP : MapsTo u P U := fun x hx => (hsub w).2.2 (hmem x hx)
-    have hcont : ContinuousOn (h ∘ u) P := hcontU.comp hu.continuousOn huP
-    have hinj : InjOn (h ∘ u) P := hinjU.comp hu.injOn huP
-    have hmap : MapsTo (h ∘ u) P c.source := fun x hx => hcsrc ⟨u x, hmem x hx, rfl⟩
-    obtain ⟨f, hf, -, hfd⟩ :=
-      h341.exists_isPLHomeomorphInto_dist_lt_of_mapsTo_chart hPball hcont hinj c hc hmap
-        (τ := fun _ => ε w) continuousOn_const fun _ _ => hεpos w
-    refine ⟨f ∘ Function.invFunOn u P, ?_, ?_⟩
-    · rw [hCceq]
-      exact (exists_isPLHomeomorphInto_of_isPLHomeomorphOn hu hf
-        hPball.isPolyhedron.isPLHomeomorphOn_id).1
-    · intro x hx
-      obtain ⟨z, hz, rfl⟩ := hback x hx
-      have hzz : Function.invFunOn u P (u z) = z := hu.injOn.leftInvOn_invFunOn hz
-      have hd := hfd z hz
-      simp only [Function.comp_apply, hzz] at hd ⊢
-      exact hd
-  choose G hG hGd using key
-  exact ⟨G, hG, hGd⟩
-
-theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology M₁]
-    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    (h341 : Moise341) (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hframe : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hN : IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
-      (graphSkeletonSpace 𝒦) U)
-    (hQsub : ∀ w, Q w ⊆ h '' U)
-    (hQlfU : LocallyFinite fun w => {y : h '' U | (y : M₂) ∈ Q w})
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε) :
-    ∃ (Sp Tp : Section34EdgeIndex 𝒦 𝒦' → Set M₂) (cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ)
-      (Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂)
-      (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂),
-      Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
-          Sp Tp cnt Pg G' ∧
-        ∀ w, ∀ x ∈ Cc w, dist (G' w x) (h x) < ε w := by
   sorry
 
 theorem exists_section34ProtectedCircleRemovalStep

@@ -12582,3 +12582,28 @@ Imported commits:
   SHA-256: `4A221220F84FD08DC2A9E209813AAA40CD100E0C48E71ACD7FE04C99929238BE`.
 - Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34VertexPreparationAxioms.lean with no diagnostics; shared outputs unchanged.`
   SHA-256: `8E59A3B1CAC98B348062D76F3727D2C0C813927FABF9A10BA634657D22B3AB5F`.
+
+# Codex item 20
+
+## Package F wiring and records complete (2026-09-24)
+
+- Both PR acceptance gates passed before wiring: PR14 commit bf9474fed; PR12 commit f52e69317.
+- Removed the two frozen sorry leaves and the duplicate Moise341 approximation proof,
+  including its omit line; imported the three proved modules. Every remaining skeleton
+  theorem statement and all three imported frozen statements remain byte-identical.
+- Skeleton raw checker evidence: Lean exitCode=0, diagnosticLines=2, sourceStable=true,
+  sharedArtifactsModified=false; exactly the two owner-approved declaration-uses-sorry
+  warnings at cut frame and protected circle removal step, and no other diagnostic.
+  The strict wrapper rejects any warning, so no zero-diagnostic receipt is claimed for
+  this deliberately unfinished skeleton. Source SHA-256: `B5EDBAFD9596857EE483C0CFBCF6A8510B2D399B2CD8AEB148FC64AD1F52CC87`.
+- Registered85 distinct modules (30+55) in dependency order at the specified aggregate
+  block. The57-module second batch includes the two identical shared modules.
+- Combined receipt: `Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\AuditItem20Combined.lean with no diagnostics; shared outputs unchanged.`
+  Audit SHA-256: `3271FACB2A78A232882D7CF46721C66D4E1895A65ECA1A10F9E164674B3E7205`.
+- Aggregate registration was checked by the combined85-module import probe; no full
+  repository aggregate build was run under the focused Topology-only compiler lease.
+- Ledger B1.c.2 and B1.c.3 appended PROVED; CGN count4 ->2; physical total13 ->11.
+  Added one handoff line. All85 current source hashes match clean private receipts.
+- Private evidence: Item20_AllReceipts.txt, Item20_VerifiedModules.json,
+  Item20_FrozenStatementChecks.json, both PR scan reports, three audit receipts,
+  Item20_Wiring.receipt.json and Item20_LedgerChange.json. No foreign source was changed.
