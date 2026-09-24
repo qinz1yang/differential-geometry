@@ -11955,3 +11955,388 @@ consult/Item14MarkedRimHandoff.md. The eight current source hashes match success
 their dependency closure has no untracked module belonging to another lane. Existing external
 axiom/thirteen-linter audits remain the verification evidence. The aggregate is unchanged under
 the new-files-only rule. Other lanes' untracked files and log additions are excluded from staging.
+
+
+# Codex item 15
+
+## Owner-requested pause and partial publication
+
+Proof development paused at owner request; no mathematical hard stop. All 46 current modules
+have source-matching clean checker receipts. BV bridges and their context match raw source bytes.
+The complete separating-operation theorem compiles. Expanded 46-module axiom/linter audit
+remains pending; the last audit covered an earlier 38-module / 106-declaration snapshot.
+Prepared external probe: C:\Users\liao9\AppData\Local\Temp\codex-trace\SubleafFiveAudit.lean
+English takeover prompt and full receipt inventory:
+consult/BV-compact-trace-partial-handoff.md
+Both frozen headlines remain OPEN; no new proof build was launched after the pause request.
+The owner explicitly authorized this partial commit/push as an exception to no git writes.
+
+### DifferentialGeometry.Topology.PiecewiseLinear.ArcBoundaryCuts
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcBoundaryCuts.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 52dc12431bbc146666439f53f3c74b9496ac648ffedc3aeb41557b23e672eeed
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\ArcBoundaryCuts.json
+UTC: 2026-09-23T22:52:21.4736828Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.ArcSubinterval
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\ArcSubinterval.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 9f0161f7620341ce46197d55d0158ba6d0f5f312bd3d30dbd15c029707942430
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\ArcSubinterval.json
+UTC: 2026-09-24T00:02:19.8619705Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.BallUnionBoundarySurface
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BallUnionBoundarySurface.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: eed6ba50f59685c63468101acfc1e5beaf12bcb88326cf8847d484595040ab20
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\BallUnionBoundarySurface.json
+UTC: 2026-09-23T23:16:14.2238757Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CircleComplementaryArc
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CircleComplementaryArc.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 5e3e78767205a2862c1a4d975e2191f19e146004732cc507184b8fff5dc6a903
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CircleComplementaryArc.json
+UTC: 2026-09-23T22:39:59.7542328Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CircleDiskSubarc
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CircleDiskSubarc.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 27dba7200cdfdf04950b7aa2425e58382e83b661dcd736fd190203b1e64b9724
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CircleDiskSubarc.json
+UTC: 2026-09-23T23:01:02.6097835Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CrossingBallSeam
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CrossingBallSeam.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 246e017570ea8180fef4aaa7e80514a9852cf31ceb3259359ead75cc61ceb4d6
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CrossingBallSeam.json
+UTC: 2026-09-23T21:11:11.6684296Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallMeridians
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CyclicBallMeridians.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: c93376cb764b0ec4bc7ca94ee76bb0c2c15a0aace3d3255ea906cceddfcaf6bd
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CyclicBallMeridians.json
+UTC: 2026-09-23T20:34:33.7063681Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.CylindricalBoundaryMeridian
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CylindricalBoundaryMeridian.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 3e996be48d6af3a1a4569f948a7cd3e8967f35d742a1f4e67d9593b9c957dd4d
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\CylindricalBoundaryMeridian.json
+UTC: 2026-09-23T20:30:42.3667306Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutContainment
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DiskCrosscutContainment.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 452134418804339140e1a70318dc7d33eaa009ec36dd6f09bf82cc47a72b9064
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\DiskCrosscutContainment.json
+UTC: 2026-09-23T23:37:31.9709114Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutPair
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DiskCrosscutPair.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: fbb81714f89b7ae7f59ff0c292896c392721ded7f47ddaf283efe81ca8e02d25
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\DiskCrosscutPair.json
+UTC: 2026-09-23T22:24:11.7046297Z
+
+### DifferentialGeometry.Topology.Connected.FiniteIntervalCuts
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Connected\FiniteIntervalCuts.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a9f30f83c12ac5bef9fc46484a51fee769db9571c0135d44a1526f1ac668a753
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\Connected\FiniteIntervalCuts.json
+UTC: 2026-09-23T22:42:29.2286471Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.InnermostBoundaryDisk
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\InnermostBoundaryDisk.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 603140c2d8d516a726ea09461e1b08cd728dfb1714ada5ddbceaf87dd9e64b8e
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\InnermostBoundaryDisk.json
+UTC: 2026-09-23T23:39:44.7597559Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.LocalDiskSeparation
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocalDiskSeparation.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: cf253f583b708247bf2f9f60e1f594688a6a8d4f76f0ea7f6bc0506f05721fae
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\LocalDiskSeparation.json
+UTC: 2026-09-23T21:46:46.2474307Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.LocalInnermostDisk
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\LocalInnermostDisk.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a3aef1a6abc3fa6d8c12c7df9e7f870cc01844d8cd00a5447d7ba8706ad875f7
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\LocalInnermostDisk.json
+UTC: 2026-09-23T21:50:29.0611778Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.OutermostCircleCrosscut
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\OutermostCircleCrosscut.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 26249c99d510a926209ac46735051a52721f90b01767b1f196eec06df824e8bd
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\OutermostCircleCrosscut.json
+UTC: 2026-09-23T23:44:53.5565685Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundarySurface
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactBoundarySurface.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 033d1c2274d9489162a7613d08ceea23dd2c3755014a57f724975565fe5f828c
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactBoundarySurface.json
+UTC: 2026-09-23T23:16:30.8353917Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDiskLocalization
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDiskLocalization.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2316edfda63d67bf6b334bd73ee2c86872529b13d6818a6081118b399fd885e8
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactDiskLocalization.json
+UTC: 2026-09-23T21:01:56.2253377Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactEdgeCarriers
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactEdgeCarriers.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: f42327245a289e781fba48c92d87e672f0a9d67dd1167394e38c0228ec070b48
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactEdgeCarriers.json
+UTC: 2026-09-23T21:35:07.9557869Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceCycle
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceCycle.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 372e9eb88317c01f7bbf535d2312475ac343aa37cc8b8120d4e0e9c477d20156
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactFaceCycle.json
+UTC: 2026-09-23T20:12:31.7135558Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactInnermostReturn
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactInnermostReturn.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 27b4684a7b7e4de4fd8e7482e38a821269c5f7a2bcd99e5c68e611f40b7b0b0c
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactInnermostReturn.json
+UTC: 2026-09-24T00:11:37.2374675Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactLinkPropagation
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactLinkPropagation.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 77b523e972b2f61bdb837f6f01b70346b661176eb558aefa8c240b6ee2fb4f05
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactLinkPropagation.json
+UTC: 2026-09-23T21:38:00.5619884Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianSystem
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactMeridianSystem.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: b8cfa1c7b4adb45680d09d31705f11994c40078da7aff7c2c18fef5b282cb8c1
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactMeridianSystem.json
+UTC: 2026-09-23T20:34:52.2920034Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMouthAvoidance
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactMouthAvoidance.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2cecf325fc5fcdca0949f7061f3b571c31746c26041cdb149b1cee49d6e11207
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactMouthAvoidance.json
+UTC: 2026-09-23T21:42:05.9719284Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPolygonFilling
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPolygonFilling.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: fb762cc768c88d17c648868062460b759c9ad17cd1cef0184085a10be91b149e
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPolygonFilling.json
+UTC: 2026-09-23T22:03:42.1132736Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedLink
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPuncturedLink.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 0b1551cf5739532172394e5118c08d72ac6e864523a2a4a2d8557a1e589c98aa
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPuncturedLink.json
+UTC: 2026-09-23T22:10:44.7508610Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedSphere
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPuncturedSphere.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: c69e1c79d84db2834f28edb2a68e859b52b6d7da57ad8ed51381039ffdf77f7c
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactPuncturedSphere.json
+UTC: 2026-09-23T22:17:01.0913005Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDiskDescent
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactReturnDiskDescent.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 482702b0b2c25a8d7a34429c6c769b81f0af91e62b947aea3daa2a84da4871dc
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactReturnDiskDescent.json
+UTC: 2026-09-24T00:11:21.9516830Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDisks
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactReturnDisks.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a0ad967510aa1d4e5d2e763d6cfb5dc7753a647f89fb156a6702d1d29bf4b3e4
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactReturnDisks.json
+UTC: 2026-09-23T22:28:30.8926495Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeamArcSides
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeamArcSides.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 51c7223f5da56420209816ffc6a72de891cc87070b58041878abd95e8088f26e
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeamArcSides.json
+UTC: 2026-09-23T23:55:35.6035829Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingOperations
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingOperations.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 6cc2f0c9239a0d2043b3f9dc7f438e43c69eb490799886c88da24dd644aceca0
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingOperations.json
+UTC: 2026-09-24T00:11:53.2087555Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingReturn
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingReturn.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 7ccd7b638e044c513dff64a69fd666594f03e7f243d0d8b2b0584c1c5512a438
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingReturn.json
+UTC: 2026-09-24T00:11:07.3507871Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingTrace
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingTrace.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: b8ffc4d73ccb3229a5ba7ec86296d44581d638fcbd2d1976fea6d67cd8e23b9d
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactSeparatingTrace.json
+UTC: 2026-09-23T20:45:27.6397286Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCarrying
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceCarrying.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: c41809c47d107d51f3600803c85ba421273e8282896e1943dd8d26ab5c56c59a
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceCarrying.json
+UTC: 2026-09-23T20:09:24.8879683Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCircles
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceCircles.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: c31ce5a68947b47b64b942ae0b52e53a4dd8f4bc9c403d82d535ceadcd80b136
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceCircles.json
+UTC: 2026-09-23T19:37:31.1255220Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCrossing
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceCrossing.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: d33b3b289cf6c63de4946eec9bef72df91773e7e04e552f0ee2dd56c2ac6ccdd
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceCrossing.json
+UTC: 2026-09-23T23:50:39.4155695Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceFamily
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceFamily.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2aa33a001fcba8dbf911931d1c913329853daeb81af878c5982c54c4b5caf3fb
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceFamily.json
+UTC: 2026-09-23T23:25:49.4277472Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLocalization
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceLocalization.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: d41d91b9b8361702be530fe3471f933c5f24963bcbbac4b16ccc7c60542f7d9a
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceLocalization.json
+UTC: 2026-09-23T23:45:40.5321502Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceSeams
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceSeams.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 58e6db851003ef31100d56a894b2ad99b53487bbb529b8392b105a499e9c34a9
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactTraceSeams.json
+UTC: 2026-09-23T20:03:52.8213439Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexLink
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexLink.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: eececc2c62e542f5d906fde9e526114bc3eedbc2010a5d4af2d157ebd0823947
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexLink.json
+UTC: 2026-09-23T22:08:39.1484207Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexOperations
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexOperations.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: a5c56cd232dd95ce5a19409fa05b784fff0678056c9deecdf6497ca5bb275554
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexOperations.json
+UTC: 2026-09-23T21:54:04.3581555Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexTrace
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexTrace.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: ee61e96bdb919d2dab3ba6b2702966faf4500c97c8fe52c6b2d1440a1531d6cf
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\Section34CompactVertexTrace.json
+UTC: 2026-09-23T23:46:56.1202636Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionEdgeEnds
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SubdivisionEdgeEnds.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 2b8acba8ad955fbe9637fa5816332ed08610cc281bec5307e38aa28b623ab9fe
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\SubdivisionEdgeEnds.json
+UTC: 2026-09-23T21:33:15.0173226Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskContainment
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskContainment.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 3d7dd4830b43dc6398ed1359f8b17c73368382c3b21782e03adf55ba7129b91a
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskContainment.json
+UTC: 2026-09-24T00:02:32.6374854Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskSeparation
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskSeparation.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: 5bd07f7e7b272a9a38bb239fcefe5eb97a41ef24d77a23cdc49b7d61605baead
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskSeparation.json
+UTC: 2026-09-23T20:52:22.1840991Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.TorusDisjointCircleFilling
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TorusDisjointCircleFilling.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: ca5aaad0216ef64855b7c562c55a17d441e0197ba05254181e4d838c6bbc0332
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\TorusDisjointCircleFilling.json
+UTC: 2026-09-23T21:59:56.8354179Z
+
+### DifferentialGeometry.Topology.PiecewiseLinear.TorusTraceCircles
+
+Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TorusTraceCircles.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: efca1aa9cb578a4baa66cec73fd14f11809947bd4876e188b6f1eef10773f2b7
+Receipt: C:\Users\liao9\AppData\Local\Temp\codex-trace\DifferentialGeometry\Topology\PiecewiseLinear\TorusTraceCircles.json
+UTC: 2026-09-23T20:08:39.5128176Z
+
+Publication includes only this lane; expanded audit remains pending at the owner-requested pause.
