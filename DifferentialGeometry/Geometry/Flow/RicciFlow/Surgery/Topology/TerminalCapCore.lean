@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Neck.SpatialRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
+import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapSlabCapture
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
@@ -247,6 +250,70 @@ theorem exists_uniform_spatial_neck_or_cap_core
     · intro hyK
       have hlowy := (div_lt_iff₀ (by positivity : 0 < 2 * C)).mp (hband y hyK).1
       nlinarith
+
+
+theorem exists_uniform_spatial_neck_or_cap_core_on_component
+    {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+      (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+      ∀ (L : G.TerminalLimitMetric) (c : G.terminalRegularOpen),
+        let U := connectedComponentOpen (I := I3) c
+        ∀ (p x y : U),
+          q < metricScalarAt (L.metric.restrictOpen U) x →
+          C * metricScalarAt (L.metric.restrictOpen U) y <
+            metricScalarAt (L.metric.restrictOpen U) x →
+          ∀ (nk : SpatialNeck (L.metric.restrictOpen U) δ p) (z : Sphere 2) (level : ℝ),
+            |level| ≤ 4 → nk.map (z, level) = x →
+            Nonempty (SpatialNeck (L.metric.restrictOpen U) δ x) ∨
+            ∃ K : CompactDomain U,
+              Nonempty (CapCore K.carrier) ∧
+              nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4) ⊆ interior K.carrier ∧
+              (∀ w ∈ K.carrier,
+                metricScalarAt (L.metric.restrictOpen U) x / C <
+                  metricScalarAt (L.metric.restrictOpen U) w ∧
+                  metricScalarAt (L.metric.restrictOpen U) w <
+                    C * metricScalarAt (L.metric.restrictOpen U) x) ∧
+              y ∉ K.carrier := by
+  obtain ⟨C, hC, hmain⟩ := exists_uniform_spatial_neck_or_cap_core.{u} hδ hδsmall
+  refine ⟨C, hC, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hqmain⟩ := hmain P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L c U p x y hqx hgap nk z level hlevel hx
+  have hcomp : connectedComponent x.val = connectedComponent c :=
+    (connectedComponent_eq x.property).symm
+  have hxy : y.val ∈ connectedComponent x.val := hcomp.symm ▸ y.property
+  have hxyambient : y.val.val ∈ connectedComponent x.val.val :=
+    (continuous_subtype_val.image_connectedComponent_subset x.val) ⟨y.val, hxy, rfl⟩
+  obtain ⟨nk₀, _, hmap, _, _, _⟩ := nk.exists_of_restrictOpen
+  have hx₀ : nk₀.map (z, level) = x.val := by
+    rw [hmap, hx]
+  have hq₀ : q < metricScalarAt L.metric x.val := by
+    simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hqx
+  have hgap₀ : C * metricScalarAt L.metric y.val < metricScalarAt L.metric x.val := by
+    simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hgap
+  rcases hqmain L p.val x.val y.val hq₀ hxyambient hgap₀ nk₀ z level hlevel hx₀ with
+    hn | hc
+  · obtain ⟨newNeck⟩ := hn
+    have hcapture : newNeck.map '' (univ ×ˢ Ioo (-δ⁻¹) δ⁻¹) ⊆ (U : Set G.terminalRegularOpen) := by
+      change _ ⊆ connectedComponent c
+      rw [← hcomp]
+      exact newNeck.controlled_range_subset_connectedComponent
+    exact Or.inl ⟨newNeck.restrictOpen hcapture⟩
+  · obtain ⟨K₀, ⟨model⟩, hinside, hscalar, hyK⟩ := hc
+    have hxK : x.val ∈ K₀.carrier := interior_subset (hinside
+        ⟨(z, level), ⟨mem_univ _, abs_le.mp hlevel⟩, hx₀⟩)
+    have hKU : K₀.carrier ⊆ U := by
+      change K₀.carrier ⊆ connectedComponent c
+      rw [← hcomp]
+      exact K₀.connected.subset_connectedComponent hxK
+    let K := K₀.restrictOpen U hKU
+    refine Or.inr ⟨K, model.nonempty_preimage_open U hKU, ?_, ?_, hyK⟩
+    · rw [CompactDomain.interior_restrictOpen_carrier]
+      rintro w ⟨v, hv, rfl⟩
+      exact hinside ⟨v, hv, hmap v⟩
+    · intro w hw
+      simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hscalar w.val hw
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

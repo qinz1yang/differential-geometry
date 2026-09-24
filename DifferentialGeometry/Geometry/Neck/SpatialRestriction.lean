@@ -94,4 +94,67 @@ theorem SpatialNeck.controlled_range_subset_connectedComponent
   exact ⟨(nk.center,0), ⟨mem_univ _, neg_lt_zero.mpr (inv_pos.mpr nk.eps_pos),
     inv_pos.mpr nk.eps_pos⟩, nk.center_eq⟩
 
+theorem SpatialNeck.exists_of_restrictOpen
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] {g : SmoothRiemannianMetric I3 M} {U : TopologicalSpace.Opens M}
+    {p : U} {eps : ℝ} (nk : SpatialNeck (g.restrictOpen U) eps p) :
+    ∃ out : SpatialNeck g eps (p : M),
+      out.center = nk.center ∧
+      (∀ z, out.map z = (nk.map z : M)) ∧
+      (∀ x : U, out.map.symm (x : M) = nk.map.symm x) ∧
+      out.map.source = nk.map.source ∧
+      out.map.target = Subtype.val '' nk.map.target := by
+  let iU := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I3 U ⟨p⟩
+  let F := partialDiffeomorphTransMixed nk.map iU
+  have hmap (z : Cylinder) : F z = (nk.map z : M) := rfl
+  have hsource : F.source = nk.map.source := by
+    ext z
+    change (z ∈ nk.map.source ∧ nk.map z ∈ (univ : Set U)) ↔ z ∈ nk.map.source
+    simp only [mem_univ, and_true]
+  have hder (z : Cylinder) : mfderiv IC I3 F z = mfderiv IC I3 nk.map z :=
+    mfderiv_subtypeVal_comp nk.map z
+  have hscalar : metricScalarAt (g.restrictOpen U) p = metricScalarAt g (p : M) :=
+    metricScalarAt_restrictOpen g U p
+  have hQ : 0 < metricScalarAt g (p : M) := hscalar ▸ nk.Q_pos
+  let cmp : MetricComparisonOn (fun _ => nk.cylinder.metric 0)
+      (fun _ => scaleMetric (metricScalarAt g (p : M)) hQ g)
+      F (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) {0} ⌈eps⁻¹⌉₊ eps := {
+    pullback := nk.comparison.pullback
+    pullback_eq := by
+      intro s z hz v
+      rw [nk.comparison.pullback_eq s z hz v]
+      simp only [scaleMetric_inner, SmoothRiemannianMetric.restrictOpen_inner,
+        hscalar, hder]
+      rfl
+    jet := nk.comparison.jet
+    jet_zero := nk.comparison.jet_zero
+    jet_succ := nk.comparison.jet_succ
+    equivalence := nk.comparison.equivalence
+    close := nk.comparison.close }
+  refine ⟨{
+    eps_pos := nk.eps_pos
+    eps_small := nk.eps_small
+    Q_pos := hQ
+    cylinder := nk.cylinder
+    map := F
+    center := nk.center
+    center_eq := congrArg Subtype.val nk.center_eq
+    domain := hsource ▸ nk.domain
+    comparison := cmp }, rfl, hmap, ?_, hsource, ?_⟩
+  · intro x
+    change nk.map.symm (iU.symm (x : M)) = nk.map.symm x
+    rw [DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_symm_apply I3 U ⟨p⟩ x.property]
+  · ext x
+    change (x ∈ iU.target ∧ iU.symm x ∈ nk.map.target) ↔
+      x ∈ Subtype.val '' nk.map.target
+    constructor
+    · rintro ⟨hxU, hx⟩
+      exact ⟨iU.symm x, hx, iU.right_inv hxU⟩
+    · rintro ⟨y, hy, rfl⟩
+      refine ⟨?_, ?_⟩
+      · exact iU.map_source (mem_univ y)
+      rw [DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_symm_apply I3 U ⟨p⟩ y.property]
+      exact hy
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
