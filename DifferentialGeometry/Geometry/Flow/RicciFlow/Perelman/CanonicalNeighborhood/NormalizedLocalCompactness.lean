@@ -88,6 +88,57 @@ theorem NormalizedSequence.eventually_hasInjRadiusAt_on_closed_ball_of_curvature
   exact hasInjRadiusAt_of_expMap_injOn ((X.term i).atTime 0) y (mul_pos hiota ha)
     (hinj _ _ ⟨X.complete i 0 hzero⟩ y a ha hcurv hvol')
 
+theorem exists_terminal_bidirectional_pairwise_metric_approximation_within_radius
+    {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+            ∀ rho : ℝ, 0 < rho →
+              (∀ r : ℝ, 0 < r → r < rho → CurvatureBoundedWithin X r) →
+              ∃ f : ℕ → ℕ, StrictMono f ∧
+                ∀ r : ℝ, 0 < r → r < rho → ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ p : ℕ,
+                  ∃ N : ℕ, ∀ k l : ℕ, N ≤ k → N ≤ l →
+                    ∃ Ψ : PartialDiffeomorph I3 I3 (X.term (f k)).M (X.term (f l)).M ∞,
+                      Ψ (X.term (f k)).basepoint = (X.term (f l)).basepoint ∧
+                      Nonempty (PartialDiffeomorphMetricApproximation
+                        (riemannianClosedBallOf ((X.term (f k)).S.base.metric 0)
+                          (X.term (f k)).basepoint r)
+                        eta p Ψ ((X.term (f k)).S.base.metric 0)
+                          ((X.term (f l)).S.base.metric 0)) ∧
+                      Nonempty (PartialDiffeomorphMetricApproximation
+                        (riemannianClosedBallOf ((X.term (f l)).S.base.metric 0)
+                          (X.term (f l)).basepoint r)
+                        eta p Ψ.symm ((X.term (f l)).S.base.metric 0)
+                          ((X.term (f k)).S.base.metric 0)) := by
+  obtain ⟨epsStar, hepsStar, hsublevel⟩ := exists_curvDerivNorm_le_on_scalar_sublevel hkappa
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X rho hrho hinner
+  have hb : ∀ r : ℝ, 0 < r → r < rho → ∀ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i y, metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r →
+        curvDerivNorm m ((X.term i).S.base.metric 0) y ≤ C := by
+    intro r hr hrho m
+    obtain ⟨A, hA⟩ := hinner r hr hrho
+    obtain ⟨C, hC, hc⟩ := hsublevel eps heps hle sigma hsigma Phi hPhi X A m
+    exact ⟨C, hC, fun i y hy => hc i y (hA i y hy)⟩
+  let Y := X.toFlowSequence.atTime 0
+  have hcomplete : SeqMetricComplete Y := by
+    constructor
+    intro i
+    apply X.complete i 0
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos i], le_rfl⟩
+  apply exists_subsequence_bidirectional_pairwise_metric_approximation_within_radius
+    Y hcomplete X.connected hrho
+  · intro r hr hrrho m
+    obtain ⟨C, hC, hc⟩ := hb ((r + rho) / 2) (by linarith) (by linarith) m
+    refine ⟨C, hC, Filter.Eventually.of_forall fun i y hy => hc i y ?_⟩
+    exact (ENNReal.toReal_le_of_le_ofReal hr.le hy).trans_lt (by linarith)
+  · intro r hr hrrho
+    obtain ⟨C, _, hc⟩ := hb ((r + rho) / 2) (by linarith) (by linarith) 0
+    exact X.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
+      hkappa hsigma hr.le (by linarith) (Eventually.of_forall hc)
+
 theorem exists_terminal_pairwise_metric_approximation_within_radius
     {kappa : ℝ} (hkappa : 0 < kappa) :
     ∃ epsStar : ℝ, 0 < epsStar ∧
@@ -106,33 +157,17 @@ theorem exists_terminal_pairwise_metric_approximation_within_radius
                           (X.term (f k)).basepoint r)
                         eta p Ψ ((X.term (f k)).S.base.metric 0)
                           ((X.term (f l)).S.base.metric 0)) := by
-  obtain ⟨epsStar, hepsStar, hsublevel⟩ := exists_curvDerivNorm_le_on_scalar_sublevel hkappa
+  obtain ⟨epsStar, hepsStar, hcompare⟩ :=
+    exists_terminal_bidirectional_pairwise_metric_approximation_within_radius hkappa
   refine ⟨epsStar, hepsStar, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X rho hrho hinner
-  have hb : ∀ r : ℝ, 0 < r → r < rho → ∀ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧
-      ∀ i y, metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r →
-        curvDerivNorm m ((X.term i).S.base.metric 0) y ≤ C := by
-    intro r hr hrho m
-    obtain ⟨A, hA⟩ := hinner r hr hrho
-    obtain ⟨C, hC, hc⟩ := hsublevel eps heps hle sigma hsigma Phi hPhi X A m
-    exact ⟨C, hC, fun i y hy => hc i y (hA i y hy)⟩
-  let Y := X.toFlowSequence.atTime 0
-  have hcomplete : SeqMetricComplete Y := by
-    constructor
-    intro i
-    apply X.complete i 0
-    rw [X.carrier_eq]
-    exact ⟨by linarith [X.depth_pos i], le_rfl⟩
-  apply exists_subsequence_pairwise_metric_approximation_within_radius
-    Y hcomplete X.connected hrho
-  · intro r hr hrrho m
-    obtain ⟨C, hC, hc⟩ := hb ((r + rho) / 2) (by linarith) (by linarith) m
-    refine ⟨C, hC, Filter.Eventually.of_forall fun i y hy => hc i y ?_⟩
-    exact (ENNReal.toReal_le_of_le_ofReal hr.le hy).trans_lt (by linarith)
-  · intro r hr hrrho
-    obtain ⟨C, _, hc⟩ := hb ((r + rho) / 2) (by linarith) (by linarith) 0
-    exact X.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
-      hkappa hsigma hr.le (by linarith) (Eventually.of_forall hc)
+  obtain ⟨f, hf, hpair⟩ := hcompare eps heps hle sigma hsigma Phi hPhi X rho hrho hinner
+  refine ⟨f, hf, ?_⟩
+  intro r hr hrrho eta heta heta1 p
+  obtain ⟨N, hN⟩ := hpair r hr hrrho eta heta heta1 p
+  refine ⟨N, fun k l hk hl => ?_⟩
+  obtain ⟨Ψ, hbase, hfwd, _⟩ := hN k l hk hl
+  exact ⟨Ψ, hbase, hfwd⟩
 
 theorem exists_terminal_pairwise_metric_approximation_of_not_boundedAtDistance
     {kappa : ℝ} (hkappa : 0 < kappa) :
