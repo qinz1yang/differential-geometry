@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalProperEnd
-import DifferentialGeometry.Topology.Manifold.CylinderCollar.CoreAtlas
+import DifferentialGeometry.Geometry.Neck.SmoothSavedEnd
+import Batteries.Tactic.OpenPrivate
 
 noncomputable section
 open Set Manifold
@@ -10,6 +11,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u v
+
+open private exists_smooth_saved_end_charts from DifferentialGeometry.Geometry.Neck.SmoothSavedEnd
 
 theorem exists_spatial_neck_smooth_saved_end_decomposition_of_canonical_witnesses_tolerance :
     ∃ eta : ℝ, 0 < eta ∧
@@ -83,22 +86,9 @@ theorem exists_spatial_neck_smooth_saved_end_decomposition_of_canonical_witnesse
     hends, hdisjoint, hfrontK, hcover⟩ :=
     hproduce eps heps M D S C1 C2 t W hW hreg hconn ι point neck level hlevel hpair
       hfront anchor ha hcanonical hgap hscalar
-  have hfirst (i : Fin m) := (hends i).2.2.2.2.2.2
-  choose center neck₀ P hcenter hsource hfirst hcontrolled using hfirst
-  let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
-    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
-      (0 : ThreeSpace) (by norm_num : (0 : ℝ) ≤ 1))
-  obtain ⟨charts, collar, hcharts, hcollar⟩ :=
-    DifferentialGeometry.Topology.exists_isManifold_of_finite_half_cylinders (n := 2)
-      Θ P hsource hfirst hdisjoint hKreg hfrontK (fun i => (hends i).2.2.2.2.1)
-  refine ⟨K, m, origin, Θ, charts, collar, hWK, hK, hKconn, hKreg, hm, horigin,
-    hfrontW, hzero, ?_, hdisjoint, hfrontK, hcover, hcharts, ?_⟩
-  · intro i
-    obtain ⟨hsm, hinj, hproper, hembed, hinter, hdiverge, _⟩ := hends i
-    exact ⟨hsm, hinj, hproper, hembed, hinter, hdiverge, center i, neck₀ i, P i,
-      hcenter i, hsource i, hfirst i, hcontrolled i, (hcollar i).2.1, (hcollar i).2.2.1⟩
-  intro i
-  obtain ⟨hr, _, _, hside, hnegative, hpositive⟩ := hcollar i
-  exact ⟨hr, hside, hnegative, hpositive⟩
+  obtain ⟨charts, collar, hends', hcharts, hcollar⟩ :=
+    exists_smooth_saved_end_charts (S.base.metric t) eps K m Θ hKreg hends hdisjoint hfrontK
+  exact ⟨K, m, origin, Θ, charts, collar, hWK, hK, hKconn, hKreg, hm, horigin,
+    hfrontW, hzero, hends', hdisjoint, hfrontK, hcover, hcharts, hcollar⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
