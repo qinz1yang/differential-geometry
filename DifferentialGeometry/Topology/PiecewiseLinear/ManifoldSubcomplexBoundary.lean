@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryMonotonicity
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplementLink
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
+
+/-! # Manifold Subcomplex Boundary -/
 
 open Set
 
@@ -98,7 +105,8 @@ theorem inter_closure_sdiff_space_eq_boundaryComplex_of_isCombinatorialManifold 
     (hA : IsCombinatorialManifoldWithBoundary (n + 1) A) (hAK : A.faces ⊆ K.faces) :
     A.space ∩ closure (K.space \ A.space) = (boundaryComplex (n + 1) A).space :=
   Subset.antisymm
-    (inter_closure_sdiff_space_subset_boundaryComplex K A hK.isCombinatorialManifoldWithBoundary hA hAK)
+    (inter_closure_sdiff_space_subset_boundaryComplex K A hK.isCombinatorialManifoldWithBoundary hA
+        hAK)
     (subset_inter (boundaryComplex_space_subset (n + 1) A)
       (boundaryComplex_space_subset_closure_sdiff_of_isCombinatorialManifold K A hK hA hAK))
 

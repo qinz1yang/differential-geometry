@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskUnion
+
+/-! # Prism -/
 
 open Set
 
@@ -278,7 +285,8 @@ theorem isPLBall_three_prod
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {P : Set E} {Q : Set F} (hP : IsPLBall 2 P) (hQ : IsPLBall 1 Q) :
     IsPLBall 3 (P ×ˢ Q) := by
-  have hmodel := isPLBall_triangle_prism.of_isPLHomeomorphOn isPLHomeomorphOn_triangle_prism_coordinates
+  have hmodel := isPLBall_triangle_prism.of_isPLHomeomorphOn
+      isPLHomeomorphOn_triangle_prism_coordinates
   obtain ⟨t, ht⟩ := isPLBall_coordinate_triangle
   obtain ⟨u, hu⟩ := isPLBall_Icc (by norm_num : (0 : ℝ) < 1)
   obtain ⟨p, hp⟩ := hP

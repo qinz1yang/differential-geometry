@@ -1811,3 +1811,13 @@ A recipient on another host or source path must rebuild locally: these private r
 bind the Windows worktree path and are progress evidence, not portable acceptance.
 The actual lead remains Claude. No handover was sent to a historical Codex task or an
 inferred recipient; the package is ready for the owner/current lead to route correctly.
+
+
+# Codex item 21: strict isolated host acceptance, 2026-09-24
+
+741/741 strict module checks and 27/27 audit shards passed; 632 audited modules,
+11,086 declarations, thirteen linters and foundational axioms only. The sphere
+leaf statement remains LF-identical (336 characters). Repairs, exact source
+hashes, receipt timestamps and the dependency freshness correction are recorded
+in ../consult/smooth-isolated-host-acceptance.md and its JSON manifest.
+Main-checkout merge, replay, registration, promotion and ledger update are pending.

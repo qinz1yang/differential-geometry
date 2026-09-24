@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPiece
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeDerived
+
+/-! # Gluing -/
 
 open Set Topology
 
@@ -662,11 +669,13 @@ theorem PLPieceIn.exists_glue_of_full [FiniteDimensional ℝ E] [FiniteDimension
       change e (gluedMap T₁.complex A₁ ψ T₁.map T₂.map z) = e (T₁.map (glueFst E F z))
       rw [hg₁ z hz.1]
     have hD₂ : IsPiecewiseAffineOn (e ∘ gluedMap T₁.complex A₁ ψ T₁.map T₂.map)
-        ((glued₂ T₂.complex A₂ ψ').space ∩ gluedMap T₁.complex A₁ ψ T₁.map T₂.map ⁻¹' e.source) := by
+        ((glued₂ T₂.complex A₂ ψ').space ∩ gluedMap T₁.complex A₁ ψ T₁.map T₂.map ⁻¹' e.source) :=
+            by
       have h1 := (T₂.isPiecewiseAffineOn_chart e he).comp hπ₂pl
       have heq : (glued₂ T₂.complex A₂ ψ').space ∩
           glueSnd E F ⁻¹' (T₂.complex.space ∩ T₂.map ⁻¹' e.source) =
-          (glued₂ T₂.complex A₂ ψ').space ∩ gluedMap T₁.complex A₁ ψ T₁.map T₂.map ⁻¹' e.source := by
+          (glued₂ T₂.complex A₂ ψ').space ∩ gluedMap T₁.complex A₁ ψ T₁.map T₂.map ⁻¹' e.source :=
+              by
         ext z
         simp only [mem_inter_iff, mem_preimage]
         constructor
@@ -787,7 +796,8 @@ theorem PLPieceIn.glue_of_full [FiniteDimensional ℝ E] [FiniteDimensional ℝ 
 
 end GlueMap
 
-theorem mem_faces_of_mem_relDerived_of_forall_singleton_mem {K L L' : Geometry.SimplicialComplex ℝ E}
+theorem mem_faces_of_mem_relDerived_of_forall_singleton_mem {K L L' : Geometry.SimplicialComplex ℝ
+    E}
     {c : Finset E → E} (hL : L.faces ⊆ K.faces) (hL' : IsSubdivision L' L)
     (hc : ∀ s ∈ K.faces, c s ∈ openSimplex s) [DecidableEq E] {f : Finset E}
     (hf : f ∈ (relDerived hL hL' hc).faces) (hv : ∀ v ∈ f, {v} ∈ L'.faces) : f ∈ L'.faces := by

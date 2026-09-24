@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.DefiningFunction
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.InwardField
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
+
+/-! # Unit Speed Field -/
 
 open Set Function Topology Bundle
 open scoped Manifold ContDiff

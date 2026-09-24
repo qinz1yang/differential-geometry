@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldWithBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.StarJoin
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricCompactness
+
+/-! # Boundary Of Ball -/
 
 open Set
 
@@ -25,7 +32,8 @@ theorem boundaryComplex_simplexComplex {n : ℕ} {T : Finset E}
     rw [hsT, hcard] at hle
     omega
   · rintro ⟨hsT, hs, hsne⟩
-    have hslt : s.card < T.card := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hsT, hsne⟩)
+    have hslt : s.card < T.card := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hsT,
+        hsne⟩)
     have hsn : s.card ≤ n + 1 := by omega
     have hrestcard : (T \ s).card = n + 1 - s.card + 1 := by
       rw [Finset.card_sdiff_of_subset hsT, hcard]

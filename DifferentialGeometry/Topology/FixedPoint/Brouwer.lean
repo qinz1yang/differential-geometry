@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FixedPoint.NoRetraction
 import DifferentialGeometry.Topology.InvarianceOfDomain
 import Mathlib.Analysis.InnerProductSpace.Continuous
@@ -9,6 +14,8 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
+
+/-! # Brouwer -/
 
 namespace DifferentialGeometry.Topology.FixedPoint
 

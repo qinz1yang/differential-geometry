@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.ArcChain
 import DifferentialGeometry.Topology.PathConcatenation
+
+/-! # Arc Chain Limit -/
 
 open Set Filter Topology
 
@@ -36,7 +43,9 @@ theorem isArcBetween_insert_iUnion_of_tendsto
     have hyA : g x ∈ A ⌊y⌋₊ := heq.symm ▸ hgA y hy
     rcases lt_or_eq_of_le (Nat.succ_le_of_lt hlt) with hmore | hadj
     · exact disjoint_left.mp (hdis _ _ hmore) hxA hyA
-    · have hcontact : g x ∈ A ⌊x⌋₊ ∩ A (⌊x⌋₊ + 1) := ⟨hxA, by rw [show ⌊x⌋₊ + 1 = ⌊y⌋₊ from hadj]; exact hyA⟩
+    · have hcontact : g x ∈ A ⌊x⌋₊ ∩ A (⌊x⌋₊ + 1) := ⟨hxA, by
+        rw [show ⌊x⌋₊ + 1 = ⌊y⌋₊ from hadj]
+        exact hyA⟩
       exact hgend x hx ((hmeet ⌊x⌋₊).subset hcontact)
   have hgi : InjOn g (Ici 0) := by
     intro x hx y hy heq

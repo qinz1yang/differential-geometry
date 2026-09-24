@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.ArcFamilyDrawing
 import DifferentialGeometry.External.Schoenflies.ArcComplementPrep
 import DifferentialGeometry.External.Schoenflies.Subarc
+
+/-! # Graph Subdivision -/
 
 open Set Schoenflies
 open scoped Graph
@@ -121,7 +128,8 @@ open Classical in
 theorem IsDrawing.exists_subdivisionDrawing_diam_lt {β : Type*} {G : Graph Plane β}
     {drawing : β → ℝ → Plane} (h : IsDrawing G drawing) {ε : ℝ} (hε : 0 < ε) :
     ∃ n : E(G) → ℕ, (∀ d, 0 < n d) ∧
-      ∀ d : Σ e : E(G), Fin (n e), Metric.diam (edgeArc (subdivisionDrawing G drawing n) d) < ε := by
+      ∀ d : Σ e : E(G), Fin (n e), Metric.diam (edgeArc (subdivisionDrawing G drawing n) d) < ε :=
+          by
   have hmesh (d : E(G)) := exists_mesh (h.edge_param d.2).1
     (show 0 < ε / 4 by positivity) 1 zero_lt_one
   choose n hn hsmall using hmesh

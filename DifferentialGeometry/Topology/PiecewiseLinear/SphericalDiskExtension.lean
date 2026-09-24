@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
+
+/-! # Spherical Disk Extension -/
 
 open Set
 
@@ -46,7 +53,8 @@ theorem exists_isPLHomeomorphOn_eqOn_disk_of_isPLSphere_two
     · exact Or.inl hxD
     · exact Or.inr (subset_closure ⟨hx, hxD⟩)
   have hcover' : D' ∪ A' = S' := by
-    apply Subset.antisymm (union_subset hD'S' (closure_minimal sdiff_subset hS'.isPolyhedron.isClosed))
+    apply Subset.antisymm (union_subset hD'S' (closure_minimal sdiff_subset
+        hS'.isPolyhedron.isClosed))
     intro x hx
     by_cases hxD : x ∈ D'
     · exact Or.inl hxD

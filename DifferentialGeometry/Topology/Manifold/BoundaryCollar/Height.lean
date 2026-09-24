@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.Diffeomorph
 import DifferentialGeometry.Topology.Manifold.IntegralCurve.ScalarRate
+
+/-! # Height -/
 
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
@@ -94,7 +101,8 @@ theorem exists_unit_height_boundary_collar
   refine ⟨ε,hε,?_⟩
   let : Fact ((0 : ℝ) < ε) := ⟨hε⟩
   obtain ⟨δ,hδ,hδε,Y,hKY,hYN,d,hd,hheight⟩ :=
-    exists_boundary_flow_collar_diffeomorph_height hK hV hpos hKU hF hzero hcurve hi N hKN hr hrzero hunit
+    exists_boundary_flow_collar_diffeomorph_height hK hV hpos hKU hF hzero hcurve hi N hKN hr hrzero
+        hunit
   refine ⟨δ,hδ,hδε,Y,hKY,hYN,d,?_,hheight⟩
   intro p
   rw [hd]

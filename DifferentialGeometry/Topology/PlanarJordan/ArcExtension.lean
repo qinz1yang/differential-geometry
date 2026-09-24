@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.Schoenflies.JordanSchoenflies
 import DifferentialGeometry.External.Schoenflies.MatchedArc
 import DifferentialGeometry.Topology.Homeomorph.CompactGluing
+
+/-! # Arc Extension -/
 
 open Set
 

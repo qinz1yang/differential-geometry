@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCornerExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexPush
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAffine
+
+/-! # Simplex Corner Chart -/
 
 open Set
 
@@ -22,7 +29,8 @@ theorem simplexAvoiding_erase_eq_coneComplex [DecidableEq E]
   simpa only [simplexAvoiding_singleton_self] using h
 
 open Classical in
-theorem isPLHomeomorphOn_simplicialMap_simplex_vertex_star [FiniteDimensional ℝ E] [dE : DecidableEq E]
+theorem isPLHomeomorphOn_simplicialMap_simplex_vertex_star [FiniteDimensional ℝ E] [dE : DecidableEq
+    E]
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 3 ≤ T.card)
     {a : E} (ha : a ∈ T) :
     IsPLHomeomorphOn

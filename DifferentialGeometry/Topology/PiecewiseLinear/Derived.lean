@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Subdivision
+
+/-! # Derived -/
 
 open Set
 
@@ -149,7 +156,8 @@ theorem top_coeff_le {d d' : Finset (Finset E)} (hd : IsFlag K d)
       constructor
       · intro hs
         by_contra hne
-        have : s ∈ d.erase u := Finset.mem_erase.mpr ⟨fun h => hne (h ▸ Finset.mem_singleton_self u), hs⟩
+        have : s ∈ d.erase u := Finset.mem_erase.mpr ⟨fun h => hne (h ▸ Finset.mem_singleton_self
+            u), hs⟩
         rw [hrest] at this
         exact absurd this (Finset.notMem_empty s)
       · intro hs

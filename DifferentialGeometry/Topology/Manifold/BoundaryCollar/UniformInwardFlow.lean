@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.ManifoldLocalFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.InwardField
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.CurveUniqueness
+
+/-! # Uniform Inward Flow -/
 
 open Set Function Filter Manifold
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary

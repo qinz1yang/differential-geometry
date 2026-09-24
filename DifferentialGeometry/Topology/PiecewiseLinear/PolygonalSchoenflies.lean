@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
@@ -7,6 +12,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
 import DifferentialGeometry.Topology.PlanarJordan.Regions
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
+
+/-! # Polygonal Schoenflies -/
 
 open Set Topology
 
@@ -32,7 +39,8 @@ theorem IsCompact.exists_isPolyhedron_superset [FiniteDimensional ℝ E] {C : Se
   choose P hP hPU hPn using fun x : E =>
     exists_isHPolytope_subset_mem_nhds (x := x) (U := univ) Filter.univ_mem
   obtain ⟨s, hs⟩ := hC.elim_finite_subcover (fun x => interior (P x))
-    (fun _ => isOpen_interior) (fun x _ => mem_iUnion.mpr ⟨x, mem_interior_iff_mem_nhds.mpr (hPn x)⟩)
+    (fun _ => isOpen_interior) (fun x _ => mem_iUnion.mpr ⟨x, mem_interior_iff_mem_nhds.mpr (hPn
+        x)⟩)
   refine ⟨⋃ x : s, P x, IsPolyhedron.iUnion (fun x => (hP x).isPolyhedron), ?_⟩
   intro x hx
   obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.mp (hs hx)
@@ -662,9 +670,11 @@ theorem exists_isPLBall_pair_with_segment_inter_and_finite_frontier_inter :
     rw [Finset.card_insert_of_notMem hpc, Finset.card_erase_of_mem hcT, hcard]
   let K := simplexComplex (insert p (T.erase b)) hB
   let L := simplexComplex (insert p (T.erase c)) hC
-  have hK : K.space = convexHull ℝ ((insert p (T.erase b) : Finset _) : Set (EuclideanSpace ℝ (Fin 2))) :=
+  have hK : K.space = convexHull ℝ ((insert p (T.erase b) : Finset _) : Set (EuclideanSpace ℝ (Fin
+      2))) :=
     simplexComplex_space _ hB (Finset.insert_nonempty _ _)
-  have hL : L.space = convexHull ℝ ((insert p (T.erase c) : Finset _) : Set (EuclideanSpace ℝ (Fin 2))) :=
+  have hL : L.space = convexHull ℝ ((insert p (T.erase c) : Finset _) : Set (EuclideanSpace ℝ (Fin
+      2))) :=
     simplexComplex_space _ hC (Finset.insert_nonempty _ _)
   have hKball : IsPLBall 2 K.space := by
     rw [hK]
@@ -674,7 +684,8 @@ theorem exists_isPLBall_pair_with_segment_inter_and_finite_frontier_inter :
     exact isPLBall_convexHull_of_affineIndependent _ hC hCcard
   have hpT : p ∈ convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))) :=
     mem_convexHull_of_mem_openSimplex_erase hp
-  have hsub : ∀ v, convexHull ℝ ((insert p (T.erase v) : Finset _) : Set (EuclideanSpace ℝ (Fin 2))) ⊆
+  have hsub : ∀ v, convexHull ℝ ((insert p (T.erase v) : Finset _) : Set (EuclideanSpace ℝ (Fin 2)))
+      ⊆
       convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))) := by
     intro v
     refine convexHull_min ?_ (convex_convexHull ℝ _)
@@ -827,7 +838,8 @@ theorem exists_triangle_with_boundary_edge
   have : Finite (restrict K J).faces := (restrict_faces_finite K J).to_subtype
   obtain ⟨s, hs, hcard⟩ := exists_face_card_two_of_isPLSphere_one (restrict K J) (hJK.symm ▸ hJ)
   have hsep := Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)
-  obtain ⟨t, ht, hst, htcard⟩ := exists_face_superset_card_eq_finrank_succ K hsep.isOpen_inside hK hs.1
+  obtain ⟨t, ht, hst, htcard⟩ := exists_face_superset_card_eq_finrank_succ K hsep.isOpen_inside hK
+      hs.1
   exact ⟨s, hs, hcard, t, ht, hst, by simpa using htcard⟩
 
 theorem space_eq_convexHull_of_simplexBoundary_eq
@@ -960,7 +972,8 @@ theorem isPLBall_or_exists_isCrosscut_of_triangulation
     have hrqIn := segment_sdiff_pair_subset_inside_of_mem_faces K hJordan hK hJK hrq hrqK hrqJ
     have hrIn : r ∈ Schoenflies.inside J := by
       have hrcl := hK ▸ K.subset_space hrK (Finset.mem_singleton_self r)
-      rw [(Schoenflies.IsRegionOf.inside J).closure_eq (Schoenflies.jordan_curve_theorem hJordan)] at hrcl
+      rw [(Schoenflies.IsRegionOf.inside J).closure_eq (Schoenflies.jordan_curve_theorem hJordan)]
+          at hrcl
       exact hrcl.resolve_right hrJ
     have hpairinter : ({p, r} ∩ {r, q} : Finset (EuclideanSpace ℝ (Fin 2))) = {r} := by
       ext z
@@ -1229,7 +1242,8 @@ theorem exists_triangulation_closure_inside_of_isPLSphere_one
     ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
       K.faces.Finite ∧ K.space = closure (Schoenflies.inside J) ∧ (restrict K J).space = J := by
   have hsep := Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)
-  obtain ⟨L, hLfin, hL⟩ := (isPolyhedron_closure_inside_of_isPLSphere_one hJ).exists_simplicialComplex
+  obtain ⟨L, hLfin, hL⟩ := (isPolyhedron_closure_inside_of_isPLSphere_one
+      hJ).exists_simplicialComplex
   have : Finite L.faces := hLfin.to_subtype
   have hJL : J ⊆ L.space :=
     hsep.frontier_inside.symm.subset.trans (frontier_subset_closure.trans hL.symm.subset)
@@ -1244,7 +1258,8 @@ theorem isPLBall_space_of_triangulation_closure_inside
   have H : ∀ N : ℕ, ∀ L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
       Finite L.faces → {s ∈ L.faces | s.card = 3}.ncard = N →
       ∀ C : Set (EuclideanSpace ℝ (Fin 2)), IsPLSphere 1 C →
-        L.space = closure (Schoenflies.inside C) → (restrict L C).space = C → IsPLBall 2 L.space := by
+        L.space = closure (Schoenflies.inside C) → (restrict L C).space = C → IsPLBall 2 L.space :=
+            by
     intro N
     induction N using Nat.strong_induction_on with
     | h N ih =>
@@ -1293,7 +1308,8 @@ theorem isPLBall_closure_inside_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (
 
 theorem isPLBall_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :
-    ∃ D : Set (EuclideanSpace ℝ (Fin 2)), IsPLBall 2 D ∧ frontier D = J ∧ Bornology.IsBounded D := by
+    ∃ D : Set (EuclideanSpace ℝ (Fin 2)), IsPLBall 2 D ∧ frontier D = J ∧ Bornology.IsBounded D :=
+        by
   refine ⟨closure (Schoenflies.inside J), isPLBall_closure_inside_of_isPLSphere_one hJ,
     frontier_closure_inside_of_isPLSphere_one hJ, ?_⟩
   exact (Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)).isBounded_inside

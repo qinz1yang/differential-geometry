@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.Connected.Dense
+
+/-! # Ball Density -/
 
 open Set
 
@@ -64,7 +71,8 @@ theorem IsPLBall.closure_sdiff_iUnion_eq {ι : Type*} {n : ℕ} {P : Set E}
       simpa only [hprev, hAi.isPolyhedron.isClosed.closure_eq] using
         (closure_sdiff (s := P \ ⋃ j ∈ d, A j) (t := A i))
     have hcover : closure ((P \ ⋃ j ∈ d, A j) \ A i) = P := by
-      apply Subset.antisymm (closure_minimal (sdiff_subset.trans sdiff_subset) hP.isPolyhedron.isClosed)
+      apply Subset.antisymm (closure_minimal (sdiff_subset.trans sdiff_subset)
+          hP.isPolyhedron.isClosed)
       have h := closure_mono hsub
       rwa [hsingle, closure_closure] at h
     rw [Finset.set_biUnion_insert, union_comm (A i), ← sdiff_sdiff]

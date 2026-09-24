@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphGluing
+
+/-! # Cone Ambient Extension -/
 
 open Set
 
@@ -22,8 +29,10 @@ theorem exists_isPLHomeomorphOn_extension_coneComplex_union_radial
         h (p + s • (z - p)) = p + s • (f z - p)) ∧
       (∀ z ∈ L.space, ∀ s : ℝ, 0 ≤ s → s ≤ 1 →
         h (q + s • (z - q)) = q + s • (f z - q)) := by
-  have : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite L.faces)).to_subtype
-  have : Finite (coneComplex hq).faces := (coneComplex_faces_finite hq (Set.toFinite L.faces)).to_subtype
+  have : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite
+      L.faces)).to_subtype
+  have : Finite (coneComplex hq).faces := (coneComplex_faces_finite hq (Set.toFinite
+      L.faces)).to_subtype
   have hP := isPolyhedron_space (coneComplex hp)
   have hQ := isPolyhedron_space (coneComplex hq)
   have hBL : B.space ⊆ L.space := by

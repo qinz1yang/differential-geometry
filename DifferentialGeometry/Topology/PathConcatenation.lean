@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.LocallyFinite
 import Mathlib.Topology.Algebra.Order.Floor
 import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Topology.Instances.Real.Lemmas
+
+/-! # Path Concatenation -/
 
 open Set Filter Topology
 
@@ -56,7 +63,8 @@ theorem tendsto_intervalConcatenation {X : Type*} [TopologicalSpace X]
     Nat.floor_mono.tendsto_atTop_atTop fun n => ⟨(n : ℝ), by simp⟩
   apply (hf.comp hfloor).of_smallSets
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
-  exact mem_image_of_mem (f ⌊t⌋₊) ⟨sub_nonneg.mpr (Nat.floor_le ht), (Nat.self_sub_floor_lt_one t).le⟩
+  exact mem_image_of_mem (f ⌊t⌋₊) ⟨sub_nonneg.mpr (Nat.floor_le ht), (Nat.self_sub_floor_lt_one
+      t).le⟩
 
 theorem ContinuousOn.exists_continuousOn_Icc_of_tendsto_atTop
     {X : Type*} [TopologicalSpace X] {g : ℝ → X} {p : X}
@@ -73,7 +81,8 @@ theorem ContinuousOn.exists_continuousOn_Icc_of_tendsto_atTop
     apply (hg.comp ?_ hmap).congr heq
     exact (continuousOn_id.inv₀ (fun t ht => ht.1.ne')).sub continuousOn_const
   have hinv : Tendsto (fun t : ℝ => t⁻¹ - 1) (𝓝[>] (0 : ℝ)) atTop := by
-    simpa only [sub_eq_add_neg] using tendsto_atTop_add_const_right _ (-1 : ℝ) tendsto_inv_nhdsGT_zero
+    simpa only [sub_eq_add_neg] using tendsto_atTop_add_const_right _ (-1 : ℝ)
+        tendsto_inv_nhdsGT_zero
   have hzero : ContinuousWithinAt h (Ioc 0 1) 0 := by
     rw [ContinuousWithinAt, h0]
     refine ((hlim.comp hinv).mono_left (nhdsWithin_mono 0 Ioc_subset_Ioi_self)).congr' ?_

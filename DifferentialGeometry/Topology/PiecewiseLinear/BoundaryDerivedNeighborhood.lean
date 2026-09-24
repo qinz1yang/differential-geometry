@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodAttachments
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskUnion
+
+/-! # Boundary Derived Neighborhood -/
 
 open Set
 
@@ -42,11 +49,13 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhoodCellBase
   classical
   have hsK := boundaryComplex_faces_subset (n + 1) K hs
   have hv := singleton_centroid_mem_barycentricSubdivision K hsK
-  have hx : s.centroid ℝ id ∈ (boundaryComplex (n + 1) (PiecewiseLinear.barycentricSubdivision K)).space := by
+  have hx : s.centroid ℝ id ∈ (boundaryComplex (n + 1) (PiecewiseLinear.barycentricSubdivision
+      K)).space := by
     rw [boundaryComplex_space_of_isSubdivision K _ hK (barycentricSubdivision_isSubdivision K)]
     exact (boundaryComplex (n + 1) K).convexHull_subset_space hs
       (s.centroid_mem_convexHull (K.nonempty_of_mem_faces hsK))
-  have hvB : {s.centroid ℝ id} ∈ (boundaryComplex (n + 1) (PiecewiseLinear.barycentricSubdivision K)).faces :=
+  have hvB : {s.centroid ℝ id} ∈ (boundaryComplex (n + 1) (PiecewiseLinear.barycentricSubdivision
+      K)).faces :=
     mem_faces_of_mem_openSimplex_of_mem_space (boundaryComplex_faces_subset (n + 1) _)
       hv (by simpa only [Finset.centroid_singleton, id_eq] using
         centroid_mem_openSimplex (Finset.singleton_nonempty (s.centroid ℝ id))) hx
@@ -115,7 +124,8 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhoodCell_int
   have hAB (u : Finset E) (hu : u ∈ d) : A u ⊆ (derivedNeighborhoodCellBase K s).space :=
     derivedNeighborhoodCell_inter_subset_base K hsK (hd u hu) (hne u hu).1.symm
   have hI (u : Finset E) (hu : u ∈ d) :
-      IsPLBall 1 (((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space) ∩ A u) := by
+      IsPLBall 1 (((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space) ∩ A u)
+          := by
     have heq : ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space) ∩ A u =
         (derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space ∩
           (derivedNeighborhoodCell K u).space := by
@@ -148,7 +158,9 @@ theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhoodCell_inter_subset
     (derivedNeighborhoodCell_faces_finite K t).to_subtype
   by_cases hnon : ((derivedNeighborhoodCell K s).space ∩
       (derivedNeighborhoodCell K t).space).Nonempty
-  · exact _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall (PiecewiseLinear.secondDerived K)
+  · exact
+      _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall
+      (PiecewiseLinear.secondDerived K)
       (derivedNeighborhoodCell K s) (derivedNeighborhoodCell K t) hK.secondDerived
       (hK.isPLBall_derivedNeighborhoodCell hs) (hK.isPLBall_derivedNeighborhoodCell ht)
       (derivedNeighborhoodCell_faces_subset K s) (derivedNeighborhoodCell_faces_subset K t)

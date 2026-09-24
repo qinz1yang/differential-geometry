@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
+
+/-! # PL Map -/
 
 open Set Topology
 open scoped Manifold
@@ -77,7 +84,8 @@ theorem IsPLOn.piecewise_postcomp_of_isClosed {f : M → N} {h : N → N} {A B :
       · exact piecewise_eq_of_notMem A (h ∘ f) f hzA
     · apply piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_of_eventuallyEq_of_mem
         ((hh.comp_isPLOn hf) x hx) _ hx
-      filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds (hB.isOpen_compl.mem_nhds hxB)]
+      filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds (hB.isOpen_compl.mem_nhds
+          hxB)]
         with z hz hzB
       exact piecewise_eq_of_mem A (h ∘ f) f (hz.resolve_right hzB)
   · apply piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_of_eventuallyEq_of_mem
@@ -98,7 +106,7 @@ theorem IsPLOn.mono_of_isPolyhedron {f : EuclideanSpace ℝ (Fin n) → N}
     (ht : IsPolyhedron t) (hts : t ⊆ s) : IsPLOn n m f t :=
   fun x hx => IsPLWithinAt.mono_of_isPolyhedron (hf x (hts hx)) ht hts
 
-theorem isPLOn_iff_isPiecewiseAffineOn_comp_chart [HasGroupoid N (plGroupoid m)]
+theorem isPLOn_iff_isPiecewiseAffineOn_comp_chart
     {f : EuclideanSpace ℝ (Fin n) → N} {s : Set (EuclideanSpace ℝ (Fin n))}
     (e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)))
     (he : e ∈ (plGroupoid m).maximalAtlas N) (hmap : MapsTo f s e.source) :
@@ -119,7 +127,7 @@ theorem isPLOn_iff_isPiecewiseAffineOn_comp_chart [HasGroupoid N (plGroupoid m)]
       he (hmap hx)).mpr
     exact ⟨hcont x hx, hf x hx⟩
 
-theorem IsPLOn.exists_isPLHomeomorphOn_chart_image [HasGroupoid N (plGroupoid m)]
+theorem IsPLOn.exists_isPLHomeomorphOn_chart_image
     {f : EuclideanSpace ℝ (Fin n) → N} {s : Set (EuclideanSpace ℝ (Fin n))}
     (hf : IsPLOn n m f s) (hs : IsPolyhedron s) (hinj : InjOn f s)
     (e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)))

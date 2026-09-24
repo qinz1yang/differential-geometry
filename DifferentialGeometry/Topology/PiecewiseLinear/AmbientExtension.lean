@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
+
+/-! # Ambient Extension -/
 
 open Set Topology Metric
 
@@ -17,7 +24,8 @@ theorem exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces [FiniteDi
     ∃ (g : E → F) (k : NNReal), IsPiecewiseAffineOn g univ ∧ LipschitzWith k g ∧
       EqOn g f K.space ∧ EqOn g (fun _ => 0) Nᶜ ∧
       ∀ x, g x ∈ convexHull ℝ (insert 0 (f '' K.space)) := by
-  obtain ⟨r, hr⟩ := ((isPolyhedron_space K).isCompact.union hN.isCompact).isBounded.subset_ball (0 : E)
+  obtain ⟨r, hr⟩ := ((isPolyhedron_space K).isCompact.union hN.isCompact).isBounded.subset_ball (0 :
+      E)
   obtain ⟨T, hT, hTcard, hTP⟩ := exists_affineIndependent_openSimplex_superset
     (Module.finrank ℝ E) rfl (isBounded_ball (x := (0 : E)) (r := r))
   let P := simplexComplex T hT
@@ -88,7 +96,8 @@ theorem exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces [FiniteDi
     (isPiecewiseAffineOn_simplicialMap R ψ).mono isOpen_interior
       (by rw [hR.space_eq]; exact interior_subset)
   have hgN : IsPiecewiseAffineOn g Nᶜ :=
-    (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : F)) hN.isCompact.isClosed.isOpen_compl).congr hzeroN
+    (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : F))
+        hN.isCompact.isClosed.isOpen_compl).congr hzeroN
   have hg : IsPiecewiseAffineOn g univ := by
     intro x _
     by_cases hxP : x ∈ interior P.space

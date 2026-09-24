@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
@@ -5,6 +10,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StarIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexChart
 import DifferentialGeometry.Topology.Simplex.BallCoordinates
+
+/-! # Frontier Boundary -/
 
 open Set Topology
 
@@ -21,7 +28,8 @@ private theorem interior_stdClosedTarget (n : ℕ) :
     interior (stdClosedTarget n) = stdTarget n := by
   let e : EuclideanSpace ℝ (Fin (n + 1)) ≃ₜ (Fin (n + 1) → ℝ) :=
     PiLp.homeomorph 2 fun _ : Fin (n + 1) => ℝ
-  have htarget : stdClosedTarget n = e ⁻¹' DifferentialGeometry.Simplex.coordinateSimplex (n + 1) := by
+  have htarget : stdClosedTarget n = e ⁻¹' DifferentialGeometry.Simplex.coordinateSimplex (n + 1) :=
+      by
     rfl
   rw [htarget, ← e.preimage_interior,
     DifferentialGeometry.Simplex.interior_coordinateSimplex]
@@ -122,7 +130,7 @@ private theorem not_mem_interior_of_mem_boundaryComplex_of_isPLBall
   exact notMem_boundary_of_mem_openSimplex (stdVertices_affineIndependent n) hopen hyB
 
 private theorem IsSubdivision.isPLHomeomorphOn_id [FiniteDimensional ℝ E]
-    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite K'.faces]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (h : IsSubdivision K' K) : IsPLHomeomorphOn id K.space K'.space := by
   have hpa : IsPiecewiseAffineOn (id : E → E) K.space :=
     isPiecewiseAffineOn_space_of_forall_face K fun _ _ =>
@@ -278,7 +286,8 @@ theorem frontier_space_eq_boundaryComplex_space_of_finrank [FiniteDimensional �
     (isPiecewiseAffineOn_of_affine e.toLinearMap.toAffineMap isOpen_univ).mono_of_isPolyhedron
       (isPolyhedron_space K) (subset_univ _)
   obtain ⟨L, hLfin, hLspace⟩ :=
-    ((isPolyhedron_space K).image_of_isPiecewiseAffineOn he e.injective.injOn).exists_simplicialComplex
+    ((isPolyhedron_space K).image_of_isPiecewiseAffineOn he
+        e.injective.injOn).exists_simplicialComplex
   let _ : Finite L.faces := hLfin.to_subtype
   have hf : IsPLHomeomorphOn e K.space L.space := by
     rw [hLspace]
@@ -373,7 +382,7 @@ theorem PLPieceIn.mem_interior_iff_not_mem_boundaryComplex_space
 open Classical in
 theorem frontier_eq_polyhedralBoundary {n : ℕ} {X : Type u} [TopologicalSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin (n + 1))) X] [T2Space X]
-    [HasGroupoid X (plGroupoid (n + 1))] {P : Set X}
+    {P : Set X}
     (h : IsPolyhedralManifoldWithBoundary (n := n + 1) (n + 1) P) :
     frontier P = polyhedralBoundary (n + 1) P h := by
   classical

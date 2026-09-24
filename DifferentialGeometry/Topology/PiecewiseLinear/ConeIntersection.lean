@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAvoiding
+
+/-! # Cone Intersection -/
 
 open Set
 
@@ -29,9 +36,11 @@ theorem coneComplex_space_inter [DecidableEq E] {K L M B : Geometry.SimplicialCo
   have hMK : M.space ⊆ K.space := space_mono_of_faces_subset hM
   apply Subset.antisymm
   · rintro x ⟨hxL, hxM⟩
-    rcases (mem_coneComplex_space_iff (hp.of_faces_subset hL)).mp hxL with rfl | ⟨z, hz, s, hs, hs', rfl⟩
+    rcases (mem_coneComplex_space_iff (hp.of_faces_subset hL)).mp hxL with rfl | ⟨z, hz, s, hs, hs',
+        rfl⟩
     · exact apex_mem_coneComplex_space _
-    rcases (mem_coneComplex_space_iff (hp.of_faces_subset hM)).mp hxM with hx | ⟨w, hw, t, ht, ht', hx⟩
+    rcases (mem_coneComplex_space_iff (hp.of_faces_subset hM)).mp hxM with hx | ⟨w, hw, t, ht, ht',
+        hx⟩
     · rw [hx]
       exact apex_mem_coneComplex_space _
     have hwz : w = p + (s / t) • (z - p) := by

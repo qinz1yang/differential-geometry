@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedron
+
+/-! # PL Piece -/
 
 open Set Topology
 
@@ -127,7 +134,7 @@ theorem IsPiecewiseAffineOn.inter_preimage_of_isHPolytope [FiniteDimensional ℝ
     IsPiecewiseAffineOn f (s ∩ f ⁻¹' C) :=
   fun x hx => (hf x hx.1).inter_preimage_of_isHPolytope hC
 
-theorem IsPiecewiseAffineWithinAt.inter_of_isHPolytope [FiniteDimensional ℝ E] {f : E → F}
+theorem IsPiecewiseAffineWithinAt.inter_of_isHPolytope {f : E → F}
     {s : Set E} {x : E} (hf : IsPiecewiseAffineWithinAt f s x) {C : Set E} (hC : IsHPolytope C) :
     IsPiecewiseAffineWithinAt f (s ∩ C) x := by
   obtain ⟨ι, hι, Cs, A, hCA, hnhds⟩ := hf
@@ -138,7 +145,7 @@ theorem IsPiecewiseAffineWithinAt.inter_of_isHPolytope [FiniteDimensional ℝ E]
   exact Filter.inter_mem (nhdsWithin_mono x inter_subset_left hnhds)
     (Filter.mem_of_superset self_mem_nhdsWithin inter_subset_right)
 
-theorem IsPiecewiseAffineOn.inter_of_isHPolytope [FiniteDimensional ℝ E] {f : E → F} {s : Set E}
+theorem IsPiecewiseAffineOn.inter_of_isHPolytope {f : E → F} {s : Set E}
     (hf : IsPiecewiseAffineOn f s) {C : Set E} (hC : IsHPolytope C) :
     IsPiecewiseAffineOn f (s ∩ C) :=
   fun x hx => (hf x hx.1).inter_of_isHPolytope hC
@@ -229,7 +236,8 @@ theorem space_bot : (⊥ : Geometry.SimplicialComplex ℝ E).space = ∅ := by
   intro s hs
   exact absurd hs (Set.notMem_empty s)
 
-noncomputable def PLPieceIn.empty (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [Nonempty X] :
+noncomputable def PLPieceIn.empty (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [Nonempty X]
+    :
     PLPieceIn E n X ∅ where
   complex := ⊥
   finite_faces := Set.finite_empty
@@ -284,7 +292,8 @@ theorem PLPieceIn.exists_transport [FiniteDimensional ℝ E] [FiniteDimensional 
   have hinvbij : BijOn Linv K'.space T.complex.space := hpl.symm.bijOn
   have hinv_mem : ∀ z ∈ K'.space, Linv z ∈ T.complex.space := fun z hz => hinvbij.mapsTo hz
   refine ⟨⟨K', hfin', T.map ∘ Linv, T.bijOn.comp hinvbij,
-    T.continuousOn.comp hinvpl.continuousOn hinvbij.mapsTo, fun e he => ?_, fun e he => ?_⟩, rfl, ?_⟩
+    T.continuousOn.comp hinvpl.continuousOn hinvbij.mapsTo, fun e he => ?_, fun e he => ?_⟩, rfl,
+        ?_⟩
   · have h := (T.isPiecewiseAffineOn_chart e he).comp hinvpl
     have heq : K'.space ∩ Linv ⁻¹' (T.complex.space ∩ T.map ⁻¹' e.source) =
         K'.space ∩ (T.map ∘ Linv) ⁻¹' e.source := by

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Prism
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexBallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.FrontierBoundary
+
+/-! # Prism Boundary -/
 
 open Set
 
@@ -22,7 +29,8 @@ theorem IsPolyhedron.isPLHomeomorphOn_fst_prod_const {P : Set E} (hP : IsPolyhed
   exact h.symm.congr fun x hx => (congrArg Prod.fst (h.bijOn.invOn_invFunOn.2 hx)).symm
 
 open Classical in
-theorem prod_left_endpoint_subset_boundaryComplex [d : DecidableEq (E × ℝ)] {P : Set E} (hP : IsPLBall 2 P)
+theorem prod_left_endpoint_subset_boundaryComplex [d : DecidableEq (E × ℝ)] {P : Set E} (hP :
+    IsPLBall 2 P)
     {a b : ℝ} (hab : a < b) (A : Geometry.SimplicialComplex ℝ (E × ℝ)) [Finite A.faces]
     (hAP : A.space = P ×ˢ Icc a b) :
     P ×ˢ {a} ⊆ (boundaryComplex 3 A).space := by

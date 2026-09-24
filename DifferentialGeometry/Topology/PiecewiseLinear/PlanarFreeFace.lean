@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarRelativeDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleDeletion
+
+/-! # Planar Free Face -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -129,7 +136,8 @@ theorem planeComplexOfSimplicialComplex_eraseTriangle_support
       rw [← Finset.card_map e, hr, hucard]⟩
     have hrne : r ≠ t := fun h => hut (hr.symm.trans (congrArg (Finset.map e) h))
     refine mem_iUnion₂.mpr ⟨r, Finset.mem_erase.mpr ⟨hrne, hrmem⟩, ?_⟩
-    exact (hcarrier r).symm ▸ (show x ∈ convexHull ℝ ((r.map e : Finset Plane) : Set Plane) from hr.symm ▸ hxu)
+    exact (hcarrier r).symm ▸ (show x ∈ convexHull ℝ ((r.map e : Finset Plane) : Set Plane) from
+        hr.symm ▸ hxu)
 
 theorem one_lt_triangles_card_of_support_ne_triangleCarrier (M : TriangleMesh)
     (T : M.Triangle) (hne : M.toPlaneComplex.support ≠ M.triangleCarrier T.1) :
@@ -298,7 +306,8 @@ theorem exists_isPLBall_eraseTriangleComplex_with_intersections
     rw [Finset.coe_map]
     rfl
   let q := M.freeTriangleOrder T hTfree.choose
-  have hq : Function.Injective q := (M.freeTriangleOrder_affineIndependent T hTfree.choose).injective
+  have hq : Function.Injective q := (M.freeTriangleOrder_affineIndependent T
+      hTfree.choose).injective
   have htq : t = Finset.univ.image q := by
     apply Finset.coe_injective
     calc

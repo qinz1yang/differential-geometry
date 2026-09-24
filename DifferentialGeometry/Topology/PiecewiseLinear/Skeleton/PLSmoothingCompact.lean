@@ -244,11 +244,12 @@ theorem nonempty_diffeomorph_sphere_of_homeomorph_sphere
     [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
     (h : S ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
     Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S) := by
+  let _ := (inferInstance : CompactSpace S)
   exact h.nonempty_diffeomorph_sphere
 
 theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
+    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M]
     (ψ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,

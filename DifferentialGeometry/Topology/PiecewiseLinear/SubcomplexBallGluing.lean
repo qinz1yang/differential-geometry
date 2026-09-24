@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
+
+/-! # Subcomplex Ball Gluing -/
 
 open Set
 
@@ -184,7 +191,8 @@ theorem IsCombinatorialManifoldWithBoundary.inter_subset_boundaryComplex_of_isPL
     (by simpa using hcover true)
   have hB' : B'.space = D := restrict_space_of_eq_biUnion R D (by simpa using hcover false)
   have hI' : IsPLBall n (A'.space ∩ B'.space) := by rwa [hA', hB']
-  have hsub := PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall R A' B' (hK.of_isSubdivision hR)
+  have hsub := PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall R A' B' (hK.of_isSubdivision
+      hR)
     (hA'.symm ▸ hA) (hB'.symm ▸ hD) (restrict_faces_subset R A.space)
     (restrict_faces_subset R D) hI'
   have hid : IsPLHomeomorphOn (id : E → E) A.space A'.space := by

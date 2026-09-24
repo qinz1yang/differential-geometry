@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
+
+/-! # Subcomplex -/
 
 open Set
 
@@ -78,7 +85,8 @@ theorem restrict_isSubdivision (L : Geometry.SimplicialComplex ℝ E)
     exact (restrict K L.space).convexHull_subset_space
       ⟨hs, hst.trans (L.convexHull_subset_space ht)⟩ hxs
   · rintro s ⟨hs, hsL⟩
-    have hx : s.centroid ℝ id ∈ openSimplex s := centroid_mem_openSimplex (K.nonempty_of_mem_faces hs)
+    have hx : s.centroid ℝ id ∈ openSimplex s := centroid_mem_openSimplex (K.nonempty_of_mem_faces
+        hs)
     have hxL : s.centroid ℝ id ∈ L.space := hsL (openSimplex_subset_convexHull s hx)
     obtain ⟨t, ht, hxt⟩ := L.mem_space_iff.mp hxL
     rw [hL t ht] at hxt

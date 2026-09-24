@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceInclusion
+
+/-! # Piece Parametrization -/
 
 open Set Topology
 
@@ -10,7 +17,8 @@ variable {n : ℕ} {X : Type*} [TopologicalSpace X]
 
 theorem PLPieceIn.isClosedEmbedding [T2Space X] {Y : Set X} (T : PLPieceIn E n X Y) :
     IsClosedEmbedding (fun x : T.complex.space => T.map x) := by
-  let _ : CompactSpace T.complex.space := isCompact_iff_compactSpace.mp T.isPolyhedron_space.isCompact
+  let _ : CompactSpace T.complex.space := isCompact_iff_compactSpace.mp
+      T.isPolyhedron_space.isCompact
   exact T.continuousOn.domRestrict.isClosedEmbedding
     (fun x y hxy => Subtype.ext (T.bijOn.injOn x.2 y.2 hxy))
 

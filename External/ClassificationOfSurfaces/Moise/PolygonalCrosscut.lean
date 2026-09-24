@@ -371,7 +371,7 @@ theorem disjoint_insertZero_last_next (J : PolygonalCircle) {p : Plane}
   simp only [zero_add, one_add_one_eq_two, hbase, Set.mem_singleton_iff] at hxBase
   exact J.vertex_one_not_mem_insertZero_last hp hp0 hp1 (hxBase ▸ hxLast)
 
-private theorem natCast_eq_natCast_of_lt {n m l : ℕ} [NeZero n]
+private theorem natCast_eq_natCast_of_lt {n m l : ℕ}
     (hm : m < n) (hl : l < n) (h : (m : ZMod n) = (l : ZMod n)) : m = l := by
   have hv := congrArg ZMod.val h
   rwa [ZMod.val_natCast_of_lt hm, ZMod.val_natCast_of_lt hl] at hv

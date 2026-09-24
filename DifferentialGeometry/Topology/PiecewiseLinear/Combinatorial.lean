@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangulationExistence
 import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
@@ -6,6 +11,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialZero
 import DifferentialGeometry.Topology.PiecewiseLinear.PLBallSphere
 import DifferentialGeometry.Topology.PiecewiseLinear.BallSphereLink
 import Mathlib.Topology.Baire.Lemmas
+
+/-! # Combinatorial -/
 
 open Set Topology Metric
 open scoped Manifold
@@ -130,7 +137,7 @@ theorem exists_isSubdivision_closedStar_subset
 
 theorem PLPieceIn.isPLSphere_geometricLink [FiniteDimensional ℝ E] [DecidableEq E] {m : ℕ}
     {X : Type u} [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X]
-    [T2Space X] (T : PLPieceIn E (m + 1) X univ) {v : E} (hv : {v} ∈ T.complex.faces)
+    (T : PLPieceIn E (m + 1) X univ) {v : E} (hv : {v} ∈ T.complex.faces)
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin (m + 1))))
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin (m + 1))) X)
     (hstar : closedStar T.complex v ⊆ T.map ⁻¹' e.source) :
@@ -201,7 +208,7 @@ theorem PLPieceIn.isPLSphere_geometricLink [FiniteDimensional ℝ E] [DecidableE
 
 theorem PLPieceIn.exists_isSubdivision_isCombinatorialManifold_succ [FiniteDimensional ℝ E]
     {m : ℕ} {X : Type u} [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X]
-    [T2Space X] (T : PLPieceIn E (m + 1) X univ) :
+    (T : PLPieceIn E (m + 1) X univ) :
     ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' T.complex ∧ K'.faces.Finite ∧
       IsCombinatorialManifold (m + 1) K' := by
   classical
@@ -236,7 +243,8 @@ theorem PLPieceIn.isCombinatorialManifold_zero {X : Type u} [TopologicalSpace X]
   have hvmem : v ∈ convexHull ℝ (({v, w} : Finset E) : Set E) :=
     subset_convexHull ℝ _ (Finset.mem_coe.mpr (Finset.mem_insert_self _ _))
   have hwmem : w ∈ convexHull ℝ (({v, w} : Finset E) : Set E) :=
-    subset_convexHull ℝ _ (Finset.mem_coe.mpr (Finset.mem_insert_of_mem (Finset.mem_singleton_self w)))
+    subset_convexHull ℝ _ (Finset.mem_coe.mpr (Finset.mem_insert_of_mem (Finset.mem_singleton_self
+        w)))
   have hopen : IsOpen ({T.map v} : Set X) := by
     have hsrc : (chartAt (EuclideanSpace ℝ (Fin 0)) (T.map v)).source = {T.map v} := by
       apply Subset.antisymm
@@ -262,7 +270,8 @@ theorem exists_pLTriangulation_isCombinatorialManifold [CompactSpace X] [T2Space
   | zero => exact ⟨T.toPLTriangulation, T.piece.isCombinatorialManifold_zero⟩
   | succ m =>
     obtain ⟨K', hK', hfin', hcomb⟩ := T.piece.exists_isSubdivision_isCombinatorialManifold_succ
-    exact ⟨(⟨T.ambientDim, T.piece.subdivide K' hK' hfin'⟩ : PLPiece (m + 1) X univ).toPLTriangulation,
+    exact ⟨(⟨T.ambientDim, T.piece.subdivide K' hK' hfin'⟩ : PLPiece (m + 1) X
+        univ).toPLTriangulation,
       hcomb⟩
 
 theorem plManifoldTriangulation (n : ℕ) : PLManifoldTriangulation n := by

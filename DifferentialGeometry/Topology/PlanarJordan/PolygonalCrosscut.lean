@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.CrosscutExtension
 import DifferentialGeometry.Topology.Homeomorph.UniformGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.InteriorAccess
+
+/-! # Polygonal Crosscut -/
 
 open Set Topology
 
@@ -25,7 +32,8 @@ theorem exists_homeomorph_polygonal_crosscut
     (isJordanCurve_of_isPLSphere_one hD.isPLSphere_frontier) hP hQ.arc hp hq
     (hinside.symm ▸ hPI) hQ.sdiff_subset f
   have hclosed : frontier D ∪ inside (frontier D) = D := by
-    rw [hinside, union_comm, ← closure_eq_interior_union_frontier, hD.isPolyhedron.isClosed.closure_eq]
+    rw [hinside, union_comm, ← closure_eq_interior_union_frontier,
+        hD.isPolyhedron.isClosed.closure_eq]
   refine ⟨e, ?_, ?_, ?_⟩
   · rw [heP.image_eq, f.image_eq]
     exact hQ.polygonal

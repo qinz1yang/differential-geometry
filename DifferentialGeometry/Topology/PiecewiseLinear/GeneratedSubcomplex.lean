@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
+
+/-! # Generated Subcomplex -/
 
 open Set
 
@@ -17,7 +24,8 @@ def subcomplexGeneratedBy (K : Geometry.SimplicialComplex ℝ E) (A : Set (Finse
     (K.down_closed hs.choose_spec.1.1 hs.choose_spec.2.1 hs.choose_spec.2.2)
     (K.down_closed ht.choose_spec.1.1 ht.choose_spec.2.1 ht.choose_spec.2.2)
 
-theorem subcomplexGeneratedBy_faces_subset (K : Geometry.SimplicialComplex ℝ E) (A : Set (Finset E)) :
+theorem subcomplexGeneratedBy_faces_subset (K : Geometry.SimplicialComplex ℝ E) (A : Set (Finset E))
+    :
     (subcomplexGeneratedBy K A).faces ⊆ K.faces := by
   rintro s ⟨t, ht, hst, hs⟩
   exact K.down_closed ht.1 hst hs

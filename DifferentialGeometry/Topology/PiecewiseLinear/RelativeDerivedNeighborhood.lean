@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LocalManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeDerived
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
+
+/-! # Relative Derived Neighborhood -/
 
 open Set Topology
 
@@ -181,9 +188,11 @@ theorem IsLocallyCombinatorialManifoldWithBoundary.relativeDerivedNeighborhood
   have hpa : IsPiecewiseAffineOn (id : E → E) (PiecewiseLinear.derivedNeighborhood K L).space :=
     isPiecewiseAffineOn_space_of_forall_face _ fun _ _ =>
       ⟨AffineMap.id ℝ E, fun _ _ => rfl⟩
-  have hinv : IsPiecewiseAffineOn (Function.invFunOn id (PiecewiseLinear.derivedNeighborhood K L).space)
+  have hinv : IsPiecewiseAffineOn (Function.invFunOn id (PiecewiseLinear.derivedNeighborhood K
+      L).space)
       (PiecewiseLinear.derivedNeighborhood K L).space :=
-    hpa.congr fun y hy => (bijOn_id (PiecewiseLinear.derivedNeighborhood K L).space).invOn_invFunOn.1 hy
+    hpa.congr fun y hy => (bijOn_id (PiecewiseLinear.derivedNeighborhood K
+        L).space).invOn_invFunOn.1 hy
   have hid : IsPLHomeomorphOn id (PiecewiseLinear.derivedNeighborhood K L).space
       (PiecewiseLinear.relativeDerivedNeighborhood hA L).space := by
     rw [relativeDerivedNeighborhood_space hA L hL hdeep]

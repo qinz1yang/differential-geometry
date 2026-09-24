@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
+
+/-! # Std Simplex Cone -/
 
 open Set Topology
 
@@ -32,7 +39,8 @@ theorem coe_stdVertices :
 
 theorem stdVertices_affineIndependent :
     AffineIndependent ℝ ((↑) : stdVertices n → (Fin (n + 2) → ℝ)) := by
-  have hlin : LinearIndependent ℝ fun i : Fin (n + 2) => (Pi.single i (1 : ℝ) : Fin (n + 2) → ℝ) := by
+  have hlin : LinearIndependent ℝ fun i : Fin (n + 2) => (Pi.single i (1 : ℝ) : Fin (n + 2) → ℝ) :=
+      by
     have h := (Pi.basisFun ℝ (Fin (n + 2))).linearIndependent
     have heq : (⇑(Pi.basisFun ℝ (Fin (n + 2))) : Fin (n + 2) → Fin (n + 2) → ℝ) =
         fun i => Pi.single i 1 := funext fun i => by simp

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Geometry.Boundary.Metric.Induced
 import DifferentialGeometry.Geometry.Boundary.Metric.GramMatrix
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
@@ -15,6 +20,8 @@ import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+
+/-! # Outward -/
 
 
 noncomputable section
@@ -770,7 +777,8 @@ private lemma boundaryFlatCharted_contMDiffAt
     FiberBundle.mem_baseSet_trivializationAt' x₀
   exact ((trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
       (fun y : BoundaryManifold I M =>
-        TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ) x₀).contMDiffAt_section_iff h_x₀).mp
+        TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ)
+            x₀).contMDiffAt_section_iff h_x₀).mp
     h_section.contMDiffAt
 
 private noncomputable def boundaryFunOfInwardCLM

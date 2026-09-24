@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
+
+/-! # Simplex Complex -/
 
 open Set
 
@@ -61,7 +68,8 @@ theorem isConeBase_simplexComplex [DecidableEq E] {p : E} (hpT : p ∉ T)
     have h1t : (1 : ℝ) - t ≠ 0 := sub_ne_zero.mpr ht1.symm
     obtain ⟨a, -, ha1, hax⟩ := mem_convexHull_iff_exists_weights.mp hxT
     obtain ⟨b, -, hb1, hby⟩ := mem_convexHull_iff_exists_weights.mp hyT
-    refine (affineIndependent_insert_iff hpT hT).mp hpind ⟨fun v => (b v - t * a v) / (1 - t), ?_, ?_⟩
+    refine (affineIndependent_insert_iff hpT hT).mp hpind ⟨fun v => (b v - t * a v) / (1 - t), ?_,
+        ?_⟩
     · rw [← Finset.sum_div, Finset.sum_sub_distrib, ← Finset.mul_sum, ha1, hb1, mul_one,
         div_self h1t]
     · calc ∑ v ∈ T, ((b v - t * a v) / (1 - t)) • v

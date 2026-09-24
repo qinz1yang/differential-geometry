@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
+
+/-! # PL Homeomorph Open -/
 
 open Set Topology
 
@@ -7,8 +14,10 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-noncomputable def IsPLHomeomorphOn.toOpenPartialHomeomorph [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
-    {f : E → F} {P : Set E} {Q : Set F} (hf : IsPLHomeomorphOn f P Q) (hP : IsOpen P) (hQ : IsOpen Q) :
+noncomputable def IsPLHomeomorphOn.toOpenPartialHomeomorph [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F]
+    {f : E → F} {P : Set E} {Q : Set F} (hf : IsPLHomeomorphOn f P Q) (hP : IsOpen P) (hQ : IsOpen
+        Q) :
     OpenPartialHomeomorph E F where
   toFun := f
   invFun := Function.invFunOn f P

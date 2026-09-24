@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
@@ -5,6 +10,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeThinKite
+
+/-! # Planar Schoenflies -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -676,7 +683,7 @@ theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier_and_
       exact hp
     exact this.1
   obtain ⟨δ, hδ, hfixU, hfixBoundary, hfixFamily, hmove⟩ :=
-    DifferentialGeometry.Topology.PiecewiseLinear.TriangleMesh.exists_supported_triangle_push_fixing_boundaryCarrier_and_family
+    TriangleMesh.exists_supported_triangle_push_fixing_boundaryCarrier_and_family
       M T k hfree A hA U hU hTU
   let thin := thinKiteAmbientHomeomorph δ hδ
   let g := transportedThinKiteHomeomorph E δ hδ
@@ -802,7 +809,8 @@ theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle
           frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
         (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
   obtain ⟨g, J', hg, hU', -, hfront, hremaining⟩ :=
-    exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier M J hsupport T k hfree hmore U hU hTU
+    exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier M J hsupport T k hfree hmore
+        U hU hTU
   exact ⟨g, J', hg, hU', hfront, hremaining⟩
 
 theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier_and_family
@@ -935,7 +943,7 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier_and_
     · exact Or.inl (E.injective (hpWorld.trans h0.symm))
     · exact Or.inr (E.injective (hpWorld.trans h1.symm))
   obtain ⟨δ, hδ, hpatchW, hfixK, hfixA⟩ :=
-    DifferentialGeometry.Topology.PiecewiseLinear.PolygonalCircle.exists_thinKite_fixing_outside_triangle_and_family
+    PolygonalCircle.exists_thinKite_fixing_outside_triangle_and_family
       K hleft hcenter hright htraceK A' hA' W hW htriangleW
   let thin := thinKiteAmbientHomeomorph δ hδ
   let push := transportedThinKiteHomeomorph E δ hδ
@@ -1053,7 +1061,8 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
           frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
         (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
   obtain ⟨g, J', hg, hU', -, hfront, hremaining⟩ :=
-    exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier M J hsupport T k hfree U hU hTU
+    exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier M J hsupport T k hfree U hU
+        hTU
   exact ⟨g, J', hg, hU', hfront, hremaining⟩
 
 theorem exists_isPLHomeomorphOn_remove_geometricallyFree_triangle_fixing_frontier_and_family
@@ -1135,7 +1144,8 @@ theorem exists_isPLHomeomorphOn_straighten_to_triangle (M : TriangleMesh) (K : P
           have hT₀ : T₀.1 = t := Finset.mem_singleton.mp (ht ▸ T₀.2)
           rwa [← hT₀] at ht
       have hsupport₀ : M.toPlaneComplex.support = M.triangleCarrier T₀.1 := by
-        simp only [M.toPlaneComplex_support, hsingleton, Finset.mem_singleton, iUnion_iUnion_eq_left]
+        simp only [M.toPlaneComplex_support, hsingleton, Finset.mem_singleton,
+            iUnion_iUnion_eq_left]
         rfl
       refine ⟨Homeomorph.refl Plane, ?_, ?_, fun _ _ => rfl⟩
       · exact ⟨bijOn_id univ, isPiecewiseAffineOn_id isOpen_univ,
@@ -1233,7 +1243,8 @@ theorem exists_isPLHomeomorphOn_straighten (J : PolygonalCircle)
     have hvertexClosed : J.vertex 0 ∈ J.closedRegion := by
       rw [J.closedRegion_eq_union]
       exact Or.inr (J.vertex_mem_carrier 0)
-    rw [← J.closedRegionMesh_support, J.closedRegionMesh.toPlaneComplex_support, hempty'] at hvertexClosed
+    rw [← J.closedRegionMesh_support,
+      J.closedRegionMesh.toPlaneComplex_support, hempty'] at hvertexClosed
     simp at hvertexClosed
   obtain ⟨T, hT⟩ := htriangles
   obtain ⟨h, hpl, himage, hfix⟩ := exists_isPLHomeomorphOn_straighten_to_triangle

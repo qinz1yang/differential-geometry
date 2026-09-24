@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.NormalCoordinates
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.LocalFlow
+
+/-! # Manifold Local Flow -/
 
 open Set Function Topology Filter Manifold
 open scoped ContDiff

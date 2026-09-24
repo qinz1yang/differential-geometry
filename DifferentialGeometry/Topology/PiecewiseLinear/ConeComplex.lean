@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Cone
+
+/-! # Cone Complex -/
 
 open Set Topology
 
@@ -28,13 +35,14 @@ theorem exists_combo_of_mem_convexHull_insert {p : E} {σ : Finset E} (hpσ : p 
   right
   have hlt : μ p < 1 := lt_of_le_of_ne (by linarith) h1
   have hs : 0 < 1 - μ p := by linarith
-  refine ⟨∑ v ∈ σ, ((1 - μ p)⁻¹ * μ v) • v, ?_, 1 - μ p, hs, by linarith [hμ₀ p (Finset.mem_insert_self p σ)], ?_⟩
+  refine ⟨∑ v ∈ σ, ((1 - μ p)⁻¹ * μ v) • v, ?_, 1 - μ p, hs, ?_, ?_⟩
   · refine (convex_convexHull ℝ _).sum_mem
       (fun v hv => mul_nonneg (inv_pos.mpr hs).le (hμ₀ v (Finset.mem_insert_of_mem hv))) ?_
       fun v hv => subset_convexHull ℝ _ (Finset.mem_coe.mpr hv)
     rw [← Finset.mul_sum]
     have : ∑ v ∈ σ, μ v = 1 - μ p := by linarith
     rw [this, inv_mul_cancel₀ hs.ne']
+  · linarith [hμ₀ p (Finset.mem_insert_self p σ)]
   · rw [smul_sub, Finset.smul_sum]
     simp_rw [smul_smul, mul_inv_cancel_left₀ hs.ne']
     rw [← hμx]
@@ -102,7 +110,8 @@ theorem coneFaces_indep (h : IsConeBase p L) {t : Finset E} (ht : t ∈ coneFace
 
 omit [DecidableEq E] in
 theorem IsConeBase.notMem_face (h : IsConeBase p L) {σ : Finset E} (hσ : σ ∈ L.faces) : p ∉ σ :=
-  fun hp => h.notMem_space (L.convexHull_subset_space hσ (subset_convexHull ℝ _ (Finset.mem_coe.mpr hp)))
+  fun hp => h.notMem_space (L.convexHull_subset_space hσ (subset_convexHull ℝ _ (Finset.mem_coe.mpr
+      hp)))
 
 theorem coneFaces_inter_base_cone (h : IsConeBase p L) {σ₁ σ₂ : Finset E} (h₁ : σ₁ ∈ L.faces)
     (h₂ : σ₂ ∈ L.faces) :
@@ -110,12 +119,14 @@ theorem coneFaces_inter_base_cone (h : IsConeBase p L) {σ₁ σ₂ : Finset E} 
       convexHull ℝ ((σ₁ : Set E) ∩ ((insert p σ₂ : Finset E) : Set E)) := by
   rintro x ⟨hx₁, hx₂⟩
   have hxL : x ∈ L.space := L.convexHull_subset_space h₁ hx₁
-  rcases exists_combo_of_mem_convexHull_insert (h.notMem_face h₂) hx₂ with rfl | ⟨z, hz, s, hs, -, hxz⟩
+  rcases exists_combo_of_mem_convexHull_insert (h.notMem_face h₂) hx₂ with rfl | ⟨z, hz, s, hs, -,
+      hxz⟩
   · exact absurd hxL h.notMem_space
   · have hzL : z ∈ L.space := L.convexHull_subset_space h₂ hz
     have hxz' : x = z := h.radial z hzL x hxL s hs hxz
     rw [hxz'] at hx₁ ⊢
-    exact convexHull_mono (inter_subset_inter_right _ (Finset.coe_subset.mpr (Finset.subset_insert p σ₂)))
+    exact convexHull_mono (inter_subset_inter_right _ (Finset.coe_subset.mpr (Finset.subset_insert p
+        σ₂)))
       (L.inter_subset_convexHull h₁ h₂ ⟨hx₁, hz⟩)
 
 theorem coneFaces_inter_cone_cone (h : IsConeBase p L) {σ₁ σ₂ : Finset E} (h₁ : σ₁ ∈ L.faces)
@@ -125,10 +136,13 @@ theorem coneFaces_inter_cone_cone (h : IsConeBase p L) {σ₁ σ₂ : Finset E} 
       convexHull ℝ (((insert p σ₁ : Finset E) : Set E) ∩ ((insert p σ₂ : Finset E) : Set E)) := by
   rintro x ⟨hx₁, hx₂⟩
   have hp₁ : p ∈ ((insert p σ₁ : Finset E) : Set E) ∩ ((insert p σ₂ : Finset E) : Set E) :=
-    ⟨Finset.mem_coe.mpr (Finset.mem_insert_self p σ₁), Finset.mem_coe.mpr (Finset.mem_insert_self p σ₂)⟩
-  rcases exists_combo_of_mem_convexHull_insert (h.notMem_face h₁) hx₁ with rfl | ⟨z₁, hz₁, s₁, hs₁, hs₁', hxz₁⟩
+    ⟨Finset.mem_coe.mpr (Finset.mem_insert_self p σ₁), Finset.mem_coe.mpr (Finset.mem_insert_self p
+        σ₂)⟩
+  rcases exists_combo_of_mem_convexHull_insert (h.notMem_face h₁) hx₁ with rfl | ⟨z₁, hz₁, s₁, hs₁,
+      hs₁', hxz₁⟩
   · exact subset_convexHull ℝ _ hp₁
-  rcases exists_combo_of_mem_convexHull_insert (h.notMem_face h₂) hx₂ with hxp | ⟨z₂, hz₂, s₂, hs₂, -, hxz₂⟩
+  rcases exists_combo_of_mem_convexHull_insert (h.notMem_face h₂) hx₂ with hxp | ⟨z₂, hz₂, s₂, hs₂,
+      -, hxz₂⟩
   · rw [hxp]
     exact subset_convexHull ℝ _ hp₁
   have hz₁L : z₁ ∈ L.space := L.convexHull_subset_space h₁ hz₁
@@ -154,7 +168,8 @@ theorem coneFaces_inter (h : IsConeBase p L) {t₁ t₂ : Finset E} (h₁ : t₁
     (h₂ : t₂ ∈ coneFaces p L) :
     convexHull ℝ (t₁ : Set E) ∩ convexHull ℝ (t₂ : Set E) ⊆
       convexHull ℝ ((t₁ : Set E) ∩ (t₂ : Set E)) := by
-  have hsing : ∀ t ∈ coneFaces p L, convexHull ℝ (({p} : Finset E) : Set E) ∩ convexHull ℝ (t : Set E) ⊆
+  have hsing : ∀ t ∈ coneFaces p L, convexHull ℝ (({p} : Finset E) : Set E) ∩ convexHull ℝ (t : Set
+      E) ⊆
       convexHull ℝ ((({p} : Finset E) : Set E) ∩ (t : Set E)) := by
     intro t ht
     rintro x ⟨hx₁, hx₂⟩
@@ -207,7 +222,8 @@ theorem mem_coneComplex_space_iff (h : IsConeBase p L) {x : E} :
         rw [one_smul, add_sub_cancel]⟩
     · rw [Finset.coe_singleton, convexHull_singleton] at hxt
       exact Or.inl hxt
-    · rcases exists_combo_of_mem_convexHull_insert (h.notMem_face hσ) hxt with hxp | ⟨z, hz, s, hs, hs', hxz⟩
+    · rcases exists_combo_of_mem_convexHull_insert (h.notMem_face hσ) hxt with hxp | ⟨z, hz, s, hs,
+        hs', hxz⟩
       · exact Or.inl hxp
       · exact Or.inr ⟨z, L.convexHull_subset_space hσ hz, s, hs, hs', hxz⟩
   · rintro (hxp | ⟨z, hz, s, hs, hs', rfl⟩)
@@ -266,7 +282,8 @@ theorem closedStar_eq_coneComplex_space (hp : {p} ∈ K.faces) :
     obtain ⟨t, ⟨ht, hpt⟩, hxt⟩ := mem_iUnion₂.mp hx
     have hpt' : p ∈ t := mem_of_mem_convexHull_of_singleton_mem K hp ht hpt
     rw [← Finset.insert_erase hpt'] at hxt
-    rcases exists_combo_of_mem_convexHull_insert (Finset.notMem_erase p t) hxt with hxp | ⟨z, hz, s, hs, hs', hxz⟩
+    rcases exists_combo_of_mem_convexHull_insert (Finset.notMem_erase p t) hxt with hxp | ⟨z, hz, s,
+        hs, hs', hxz⟩
     · exact Or.inl hxp
     · refine Or.inr ⟨z, ?_, s, hs, hs', hxz⟩
       refine Geometry.SimplicialComplex.mem_space_iff.mpr ⟨t.erase p, ?_, hz⟩

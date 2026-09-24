@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalArc
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PlanarJordan.ArcGap
 import DifferentialGeometry.Topology.PlanarJordan.CompactRegion
+
+/-! # Disk Crosscut -/
 
 open Set
 
@@ -92,7 +99,8 @@ theorem exists_isCrosscut_subset_frontier_of_isPLBall_two
       hPL.isPolyhedron.isPolygonal_of_isArcBetween hQ, ha, hb, ?_⟩
     rw [← hD.interior_eq_inside_frontier]
     intro x hx
-    have hxD : x ∈ D := hCD (hC.isPolyhedron.isClosed.closure_eq ▸ frontier_subset_closure (hQC hx.1))
+    have hxD : x ∈ D := hCD (hC.isPolyhedron.isClosed.closure_eq ▸ frontier_subset_closure (hQC
+        hx.1))
     exact (mem_interior_iff_notMem_frontier hxD).mpr (hQoff hx)
   exact hbad.elim (hgap A hcut.fst hcut.fst_subset) (hgap B hcut.snd hcut.snd_subset)
 

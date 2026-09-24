@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.StdChart
 import DifferentialGeometry.Topology.PiecewiseLinear.Groupoid
+
+/-! # Vertex Chart -/
 
 open Set Topology
 open scoped Manifold
@@ -260,7 +267,8 @@ theorem mem_openStar_vertexOf (x : K.space) : x.1 ∈ openStar K (vertexOf K x) 
 
 open Classical in
 noncomputable def vertexChartAt (hK : IsCombinatorialManifold (n + 1) K)
-    (v : {v : E // {v} ∈ K.faces}) : OpenPartialHomeomorph K.space (EuclideanSpace ℝ (Fin (n + 1))) :=
+    (v : {v : E // {v} ∈ K.faces}) : OpenPartialHomeomorph K.space (EuclideanSpace ℝ (Fin (n + 1)))
+        :=
   vertexChart K v.2 (hK.isPLSphere_link v.2)
 
 open Classical in

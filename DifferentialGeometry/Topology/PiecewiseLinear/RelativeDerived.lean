@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Derived
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeBase
+
+/-! # Relative Derived -/
 
 open Set
 
@@ -106,7 +113,8 @@ theorem IsRelFace.exists_vertex_avoiding {τ : Finset E} {d : Finset (Finset E)}
       obtain ⟨t, ht, hτt⟩ := hL'.exists_face_subset hτ'
       have hτu : convexHull ℝ (τ : Set E) ⊆ convexHull ℝ ((t ∩ u : Finset E) : Set E) := by
         rw [Finset.coe_inter]
-        exact fun x hx => K.inter_subset_convexHull (hL ht) huK ⟨hτt hx, h.convexHull_subset_of_mem hu hx⟩
+        exact fun x hx => K.inter_subset_convexHull (hL ht) huK ⟨hτt hx, h.convexHull_subset_of_mem
+            hu hx⟩
       have htu : t ∩ u ⊂ u := by
         refine Finset.ssubset_iff_subset_ne.mpr ⟨Finset.inter_subset_right, fun heq => ?_⟩
         have hut : u ⊆ t := by
@@ -584,7 +592,8 @@ theorem exists_relFace_of_mem_openSimplex_aux :
     · have hxL : x ∈ L'.space := hL'.space_eq ▸ L.convexHull_subset_space huL hxu
       obtain ⟨τ, hτ, hxτ⟩ := exists_face_mem_openSimplex L' hxL
       refine ⟨τ, ∅, ⟨Or.inr hτ, ⟨fun s hs => absurd hs (Finset.notMem_empty s),
-        fun s hs => absurd hs (Finset.notMem_empty s)⟩, fun s hs => absurd hs (Finset.notMem_empty s),
+        fun s hs => absurd hs (Finset.notMem_empty s)⟩, fun s hs => absurd hs (Finset.notMem_empty
+            s),
         fun s hs => absurd hs (Finset.notMem_empty s), Or.inl (L'.nonempty_of_mem_faces hτ)⟩,
         fun s hs => absurd hs (Finset.notMem_empty s), ?_, ?_⟩
       · exact (subset_convexHull ℝ _).trans
@@ -713,7 +722,8 @@ theorem exists_relFace_of_mem_openSimplex {u : Finset E} (hu : u ∈ K.faces) {x
 
 theorem IsRelFace.convexHull_subset_face {τ : Finset E} {d : Finset (Finset E)}
     (h : IsRelFace K L L' τ d) :
-    ∃ t ∈ K.faces, convexHull ℝ ((τ ∪ d.image c : Finset E) : Set E) ⊆ convexHull ℝ (t : Set E) := by
+    ∃ t ∈ K.faces, convexHull ℝ ((τ ∪ d.image c : Finset E) : Set E) ⊆ convexHull ℝ (t : Set E) :=
+        by
   rcases d.eq_empty_or_nonempty with hd | hd
   · subst hd
     rw [Finset.image_empty, Finset.union_empty]

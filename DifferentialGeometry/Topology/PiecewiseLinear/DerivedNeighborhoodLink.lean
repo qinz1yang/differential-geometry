@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedWeights
 import DifferentialGeometry.Topology.PiecewiseLinear.JoinInternal
 import DifferentialGeometry.Topology.PiecewiseLinear.UpperLink
+
+/-! # Derived Neighborhood Link -/
 
 open Set
 
@@ -177,7 +184,8 @@ theorem geometricLink_derivedNeighborhood_eq_internalJoin {e : Finset E}
         s = D₁.image fun x => x.centroid ℝ id := by
       rcases hs with rfl | hs
       · exact ⟨∅, ⟨fun x hx => absurd hx (Finset.notMem_empty x),
-          fun x hx => absurd hx (Finset.notMem_empty x)⟩, fun x hx => absurd hx (Finset.notMem_empty x),
+          fun x hx => absurd hx (Finset.notMem_empty x)⟩, fun x hx => absurd hx (Finset.notMem_empty
+              x),
           fun x hx => absurd hx (Finset.notMem_empty x), by rw [Finset.image_empty]⟩
       · obtain ⟨D₁, hD₁, -, hlt, hL₁, rfl⟩ :=
           (mem_geometricLink_faceNeighborhood_iff K L he hef).mp hs
@@ -187,7 +195,8 @@ theorem geometricLink_derivedNeighborhood_eq_internalJoin {e : Finset E}
         r = D₂.image fun x => x.centroid ℝ id := by
       rcases hr with rfl | hr
       · exact ⟨∅, ⟨fun x hx => absurd hx (Finset.notMem_empty x),
-          fun x hx => absurd hx (Finset.notMem_empty x)⟩, fun x hx => absurd hx (Finset.notMem_empty x),
+          fun x hx => absurd hx (Finset.notMem_empty x)⟩, fun x hx => absurd hx (Finset.notMem_empty
+              x),
           by rw [Finset.image_empty]⟩
       · obtain ⟨D₂, hD₂, -, hgt, rfl⟩ := (mem_upperLink_faces_iff _ _).mp hr
         exact ⟨D₂, hD₂, hgt, rfl⟩
@@ -237,7 +246,8 @@ theorem geometricLink_derivedNeighborhood_eq_internalJoin {e : Finset E}
 
 theorem faceNeighborhood_faces_subset_secondDerived {e : Finset E}
     (he : e ∈ (barycentricSubdivision K).faces) (f : Finset E) :
-    (faceNeighborhood e ((barycentricSubdivision K).indep he) f).faces ⊆ (secondDerived K).faces := by
+    (faceNeighborhood e ((barycentricSubdivision K).indep he) f).faces ⊆ (secondDerived K).faces :=
+        by
   rintro u ⟨d, hd, hchain, hne, -, rfl⟩
   exact ⟨d, isFlag_of_subsets_of_chain K he hd hchain, hne, rfl⟩
 
@@ -248,7 +258,8 @@ theorem geometricLink_faceNeighborhood_faces_subset_secondDerived {e : Finset E}
       (faceNeighborhood e ((barycentricSubdivision K).indep he)
         (e.filter fun v => ∃ σ ∈ L.faces, σ.centroid ℝ id = v)) {e.centroid ℝ id}).faces ⊆
       (secondDerived K).faces :=
-  (SimplicialComplex.geometricLink_le _ _).trans (faceNeighborhood_faces_subset_secondDerived K he _)
+  (SimplicialComplex.geometricLink_le _ _).trans (faceNeighborhood_faces_subset_secondDerived K he
+      _)
 
 open Classical in
 theorem union_mem_secondDerived_of_lower_upper {e : Finset E}
@@ -351,6 +362,7 @@ theorem internalJoin_eq_left_of_faces_eq_empty {A B : Geometry.SimplicialComplex
     · rw [hBe] at ht
       exact absurd ht (Set.notMem_empty t)
   · intro hu
-    exact ⟨u, ∅, Or.inr hu, Or.inl rfl, Or.inl (A.nonempty_of_mem_faces hu), by rw [Finset.union_empty]⟩
+    exact ⟨u, ∅, Or.inr hu, Or.inl rfl, Or.inl (A.nonempty_of_mem_faces hu), by rw
+        [Finset.union_empty]⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

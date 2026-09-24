@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedron
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedra
+
+/-! # PL Homeomorph -/
 
 open Set Topology
 
@@ -75,7 +82,7 @@ theorem symm (h : IsPLHomeomorphOn f P Q) : IsPLHomeomorphOn (Function.invFunOn 
         (hinv.2 hy).symm
     _ = f x := by rw [hxy]
 
-theorem trans [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [FiniteDimensional ℝ G]
+theorem trans [FiniteDimensional ℝ E] [FiniteDimensional ℝ G]
     (hf : IsPLHomeomorphOn f P Q) (hg : IsPLHomeomorphOn g Q R) :
     IsPLHomeomorphOn (g ∘ f) P R := by
   have hgf : BijOn (g ∘ f) P R := hg.1.comp hf.1
@@ -101,13 +108,13 @@ theorem trans [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [FiniteDimensi
 
 end IsPLHomeomorphOn
 
-theorem IsPLBall.of_isPLHomeomorphOn [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {n : ℕ}
+theorem IsPLBall.of_isPLHomeomorphOn [FiniteDimensional ℝ F] {n : ℕ}
     {P : Set E} (hP : IsPLBall n P) {f : E → F} {Q : Set F} (hf : IsPLHomeomorphOn f P Q) :
     IsPLBall n Q := by
   obtain ⟨g, hg⟩ := hP
   exact ⟨f ∘ g, hg.trans hf⟩
 
-theorem IsPLSphere.of_isPLHomeomorphOn [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {n : ℕ}
+theorem IsPLSphere.of_isPLHomeomorphOn [FiniteDimensional ℝ F] {n : ℕ}
     {P : Set E} (hP : IsPLSphere n P) {f : E → F} {Q : Set F} (hf : IsPLHomeomorphOn f P Q) :
     IsPLSphere n Q := by
   obtain ⟨g, hg⟩ := hP

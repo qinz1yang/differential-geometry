@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.AffineOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
@@ -10,6 +15,8 @@ import DifferentialGeometry.Topology.SphereSeparation.PermutationDeletion
 import Mathlib.Data.Fin.SuccPredOrder
 import Mathlib.Data.Prod.Lex
 import Mathlib.Data.Sum.Order
+
+/-! # Orientation -/
 
 open Set
 
@@ -684,7 +691,6 @@ theorem orderAmalgam_lt_iff_right {X : Type*}
 
 open Classical in
 noncomputable def orientationVertexKey
-    [NormedAddCommGroup E] [NormedSpace ℝ E]
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (L : Geometry.SimplicialComplex ℝ F) (ψ : F → E) (y : F) : E ⊕ₗ F :=
   if {y} ∈ L.faces then toLex (Sum.inl (ψ y)) else toLex (Sum.inr y)
@@ -4738,7 +4744,7 @@ private theorem faceCofaces_eq_empty_of_not_mem
 
 private theorem faceCofaces_eq_left_of_faces_eq_union_of_not_mem
     (D K L : Geometry.SimplicialComplex ℝ E)
-    [Finite D.faces] [Finite K.faces] [Finite L.faces]
+    [Finite D.faces] [Finite K.faces]
     (hfaces : D.faces = K.faces ∪ L.faces) {t : Finset E}
     (htL : t ∉ L.faces) (htne : t.Nonempty) (n : ℕ) :
     faceCofaces D t n = faceCofaces K t n := by
@@ -4758,7 +4764,7 @@ private theorem faceCofaces_eq_left_of_faces_eq_union_of_not_mem
 
 private theorem faceCofaces_eq_right_of_faces_eq_union_of_not_mem
     (D K L : Geometry.SimplicialComplex ℝ E)
-    [Finite D.faces] [Finite K.faces] [Finite L.faces]
+    [Finite D.faces] [Finite L.faces]
     (hfaces : D.faces = K.faces ∪ L.faces) {t : Finset E}
     (htK : t ∉ K.faces) (htne : t.Nonempty) (n : ℕ) :
     faceCofaces D t n = faceCofaces L t n := by
@@ -6088,7 +6094,7 @@ noncomputable def barycentricFlagNormalizedSign
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     (r : LinearOrder E)
     {n : ℕ} {K : Geometry.SimplicialComplex ℝ E}
-    [Finite K.faces] [Finite (barycentricSubdivision K).faces]
+    [Finite (barycentricSubdivision K).faces]
     (o : CoherentOrientation (n + 1) (barycentricSubdivision K))
     {T : Finset E} (hT : T.card = n + 2)
     (σ : Equiv.Perm (Fin (n + 2))) : ℤ :=
@@ -7396,7 +7402,7 @@ open Classical in
 noncomputable def barycentricRecoveredOrientationSign
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     (r : LinearOrder E)
-    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {K : Geometry.SimplicialComplex ℝ E}
     [Finite (barycentricSubdivision K).faces] {n : ℕ}
     (o : CoherentOrientation (n + 1) (barycentricSubdivision K))
     (s : Finset E) : ℤ :=
@@ -8074,7 +8080,8 @@ theorem subdivision_carrierFace_spec
   have hxK : s.centroid ℝ id ∈ K.space :=
     h.space_eq ▸ K'.convexHull_subset_space hs (openSimplex_subset_convexHull s hx)
   exact ⟨carrierFace_mem hxK,
-    h.convexHull_subset_of_mem_openSimplex (carrierFace_mem hxK) hs hx (mem_convexHull_carrierFace hxK)⟩
+    h.convexHull_subset_of_mem_openSimplex (carrierFace_mem hxK) hs hx (mem_convexHull_carrierFace
+        hxK)⟩
 
 theorem subdivision_carrierFace_card
     [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -8104,7 +8111,8 @@ theorem subdivisionOrientationSign_eq
     (o : CoherentOrientation n K) {s : Finset E} (hs : s.card = n + 1)
     (ht : (carrierFace K (s.centroid ℝ id)).card = n + 1) :
     subdivisionOrientationSign o s =
-      affineSimplexOrientationSign o.vertexOrder hs ht * o.sign (carrierFace K (s.centroid ℝ id)) := by
+      affineSimplexOrientationSign o.vertexOrder hs ht * o.sign (carrierFace K (s.centroid ℝ id)) :=
+          by
   simp only [subdivisionOrientationSign, dif_pos hs, dif_pos ht]
 
 open Classical in
@@ -8243,8 +8251,10 @@ noncomputable def CoherentOrientation.subdivision
     have hScard := subdivision_carrierFace_card h (fun u hu => hK.card_le K hu) hs hscard
     have hTcard := subdivision_carrierFace_card h (fun u hu => hK.card_le K hu) ht htcard
     rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
-    simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton, hst, not_false_eq_true]
-    rw [subdivisionOrientationSign_eq o hscard hScard, subdivisionOrientationSign_eq o htcard hTcard]
+    simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton, hst,
+        not_false_eq_true]
+    rw [subdivisionOrientationSign_eq o hscard hScard, subdivisionOrientationSign_eq o htcard
+        hTcard]
     exact o.affine_coface_pair_cancel hK K' hs ht hst hfs hft hfcard hscard htcard
       hS hT hScard hTcard hsS htT
 
@@ -8522,7 +8532,8 @@ theorem isOrientable_of_isPLSphere
     obtain ⟨f, hf⟩ := h
     obtain ⟨g, hg⟩ := hS
     exact (isOrientable_iff_of_isPLHomeomorphOn
-      (isPLSphere_simplexBoundary_std (n + 1)).isCombinatorialManifold.isCombinatorialManifoldWithBoundary
+      (isPLSphere_simplexBoundary_std (n +
+          1)).isCombinatorialManifold.isCombinatorialManifoldWithBoundary
       (hg.symm.trans hf)).mp
         (isOrientable_simplexBoundary _ (stdVertices_affineIndependent (n + 1))
           (card_stdVertices (n + 1)))

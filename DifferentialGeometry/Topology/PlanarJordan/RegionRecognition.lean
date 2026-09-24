@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.Regions
+
+/-! # Region Recognition -/
 
 open Set
 
@@ -21,7 +28,8 @@ theorem eq_inside_of_isOpen_isBounded_frontier_subset
     fun x hx => ⟨hsub hx, hbounded.subset (hcomponent x hx)⟩
   obtain ⟨x, hx⟩ := hne
   exact hinside.antisymm
-    (((Schoenflies.jordan_curve_theorem hJ).connectedComponentIn_eq_inside (hinside hx)).symm.subset.trans
+    (((Schoenflies.jordan_curve_theorem hJ).connectedComponentIn_eq_inside (hinside
+        hx)).symm.subset.trans
       (hcomponent x hx))
 
 end DifferentialGeometry.Topology.PlanarJordan

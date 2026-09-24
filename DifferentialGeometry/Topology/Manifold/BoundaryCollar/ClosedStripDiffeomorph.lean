@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.Diffeomorph
+
+/-! # Closed Strip Diffeomorph -/
 
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
@@ -22,7 +29,8 @@ theorem exists_closed_boundary_collar_diffeomorph
         (∀ q, 0 < q.2.val → (𝓡∂ (n + 1)).IsInteriorPoint (c q)) ∧
         ∃ (δ : ℝ) (_ : 0 < δ), δ < ε ∧
           let S : Opens (BoundaryManifold (𝓡∂ (n + 1)) M × Icc (0 : ℝ) ε) :=
-            ⟨{q | q.2.val < δ}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
+            ⟨{q | q.2.val < δ}, isOpen_lt (continuous_subtype_val.comp continuous_snd)
+                continuous_const⟩
           ∃ Y : Opens M, (𝓡∂ (n + 1)).boundary M ⊆ Y ∧
             (Y : Set M) = c '' {q | q.2.val < δ} ∧
             ∃ e : Diffeomorph ((HasSmoothBoundary.boundaryModel (𝓡∂ (n + 1))).prod (𝓡∂ 1))

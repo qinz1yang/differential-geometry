@@ -141,3 +141,9 @@ changed; no linter was disabled and no warning receipt was accepted.
 - `External/ClassificationOfSurfaces/Moise/PolygonalJordan.lean`: 1 substitutions at original lines 228.
 - `External/ClassificationOfSurfaces/Moise/PolygonalCrosscut.lean`: 7 substitutions at original lines 418, 1170, 1213, 1248, 1346, 1396, 1690.
 - `External/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean`: 1 substitutions at original lines 787.
+
+## Windows integration linter repair, 2026-09-24
+
+- `Moise/PolygonalCrosscut.lean`: removed the unused `[NeZero n]` hypothesis from the private
+  `PolygonalCircle.natCast_eq_natCast_of_lt`; its proof and conclusion are unchanged.
+  Original licensing, attribution, comments and namespaces are preserved.

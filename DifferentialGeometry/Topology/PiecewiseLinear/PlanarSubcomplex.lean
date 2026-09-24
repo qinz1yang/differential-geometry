@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleDeletion
+
+/-! # Planar Subcomplex -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise (Plane TriangleMesh)
@@ -121,7 +128,8 @@ theorem triangleMeshOfSubcomplex_restrict_eraseTriangle
     (K L P : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces] (hPL : P.faces ⊆ L.faces)
     (t : Finset K.vertices) :
     ((triangleMeshOfSubcomplex K L).restrictTriangles
-        (fun u : Finset K.vertices => u.map ⟨Subtype.val, Subtype.val_injective⟩ ∈ P.faces)).eraseTriangle t =
+        (fun u : Finset K.vertices => u.map ⟨Subtype.val, Subtype.val_injective⟩ ∈
+            P.faces)).eraseTriangle t =
       (triangleMeshOfSubcomplex K P).eraseTriangle t := by
   let M := (planeComplexOfSimplicialComplex K).toTriangleMesh
   let e : M.Vertex ↪ Plane := ⟨M.position, M.position_injective⟩
