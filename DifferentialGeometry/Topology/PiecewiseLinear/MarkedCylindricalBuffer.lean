@@ -28,7 +28,8 @@ theorem IsCylindricalDiagram.exists_thickening_marked_stdCenter
       ∃ Φ : (Disk × Circle) ≃ₜ P,
         f '' ({stdCenter 1} ×ˢ Icc (0 : ℝ) 1) =
           Subtype.val '' (Φ '' {z | (z.1 : E2) = 0}) := by
-  obtain ⟨g, hg, hends, haxis⟩ := bu_untwist_preserving_axis hf hclosed
+  obtain ⟨g, hg, hends, haxis⟩ :=
+    hf.exists_endMap_id_preserving_stdCenter (by simp) hclosed
   obtain ⟨Ψ, hΨ⟩ := hg.exists_homeomorph_closedBall_prod_sphere_of_eq_ends hends
   have haxisimage : g '' ({stdCenter 1} ×ˢ Icc (0 : ℝ) 1) =
       f '' ({stdCenter 1} ×ˢ Icc (0 : ℝ) 1) := by

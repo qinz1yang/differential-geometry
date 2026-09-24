@@ -68,7 +68,7 @@ theorem exists_marked_graphDualCell_prisms_triangle
       (fun h => hnext i (hinj h))
     exact disjoint_left.mpr fun x hx hy =>
       Set.notMem_empty x (ht ▸ show x ∈ (C (i + 2) ∩ C i) ∩ C (i + 1) from ⟨hx, hy.2⟩)
-  have hprism (i : Fin 3) := bu_markedPrism_of_bridge (hC i) (hD0 i) (hD1 i)
+  have hprism (i : Fin 3) := exists_marked_prism_of_isBridgeDisk (hC i) (hD0 i) (hD1 i)
     (hdis i) (hr0 i) (hr1 i) (hr i).2.2
   choose ρ hρ hρ0 hρ1 hmark0 hmark1 haxis using hprism
   refine ⟨ρ, hρ, hρ0, hρ1, fun i => ?_, haxis⟩

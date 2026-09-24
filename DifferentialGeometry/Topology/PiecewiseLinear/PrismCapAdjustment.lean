@@ -7,7 +7,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ConvexPrismBoundaryExtensio
 import DifferentialGeometry.Topology.PiecewiseLinear.ConvexPolytope
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskPairMarked
+import DifferentialGeometry.Topology.PiecewiseLinear.ConeMarkedPrism
 
 /-! Adjustment of prism end disks preserving the entire marked axis. -/
 
@@ -87,8 +87,8 @@ theorem IsPLHomeomorphOn.exists_prism_cap_images_preserving_axis
   obtain ⟨f, hf, hfg, hfD₁, hfc⟩ :=
     exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk_marked hS hS
       (hPball.of_isPLHomeomorphOn (hP.isPolyhedron.isPLHomeomorphOn_prod_const 0))
-      (hcapfront 0 (Or.inl rfl)) (hcapfront 1 (Or.inr rfl)) hcapdis
-      (hvD D₁ hD₁) hvdis hg₀ (hvD D₀ hD₀) (hcap 1) (hr₁.trans hv₁)
+      (hcapfront 0 (Or.inl rfl)) (hcap 1) (hr₁.trans hv₁)
+      (hcapfront 1 (Or.inr rfl)) (hvD D₁ hD₁) hcapdis hvdis hg₀ (hvD D₀ hD₀)
   have hpΔ : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
     openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
   have hpP := interior_subset hp

@@ -68,15 +68,4 @@ theorem IsCylindricalDiagram.exists_endMap_id_preserving_stdCenter
   · change f (Ψ (stdCenter 1, t)) = f (stdCenter 1, t)
     rw [hΨp t ht]
 
-theorem bu_untwist_preserving_axis
-    {S : Set (EuclideanSpace ℝ (Fin 3))}
-    {f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3)}
-    (hf : IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) S)
-    (hclosed : f (stdCenter 1, 0) = f (stdCenter 1, 1)) :
-    ∃ g : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3),
-      IsCylindricalDiagram g (stdSimplex ℝ (Fin 3)) S ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), g (x, 0) = g (x, 1)) ∧
-      ∀ t ∈ Icc (0 : ℝ) 1, g (stdCenter 1, t) = f (stdCenter 1, t) :=
-  hf.exists_endMap_id_preserving_stdCenter (by simp) hclosed
-
 end DifferentialGeometry.Topology.PiecewiseLinear

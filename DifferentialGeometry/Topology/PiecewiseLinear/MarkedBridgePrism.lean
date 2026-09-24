@@ -17,7 +17,7 @@ local notation "V2" => Fin 3 → ℝ
 local notation "Δ" => stdSimplex ℝ (Fin 3)
 local notation "p" => stdCenter 1
 
-theorem bu_markedPrism_of_bridge
+theorem exists_marked_prism_of_isBridgeDisk
     {C A B D0 D1 : Set E3}
     (hC : IsPLBall 3 C)
     (hD0 : D0 ⊆ frontier C) (hD1 : D1 ⊆ frontier C)
