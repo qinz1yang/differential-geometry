@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnThickeningStability
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnInteriorRegionStability
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.IsAnnulusOnCompact
 import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentEdgeFinite
+
+/-! # Section34Piercing Side Stability -/
 
 open Set
 

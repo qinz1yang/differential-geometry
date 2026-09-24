@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartRelativeGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingSurfacePatches
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingIntersectionConfinement
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceMap
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
+
+/-! # Supported Surface General Position -/
 
 open Set Topology
 

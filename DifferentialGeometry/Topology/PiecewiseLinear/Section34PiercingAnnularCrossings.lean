@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallUpdate
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralSurfaceCharts
 import DifferentialGeometry.Topology.PiecewiseLinear.CrossingSurfaceLineChart
 import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
+
+/-! # Section34Piercing Annular Crossings -/
 
 open Set Topology
 

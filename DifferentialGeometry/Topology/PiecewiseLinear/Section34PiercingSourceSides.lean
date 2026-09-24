@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingSourceBicollar
+
+/-! # Section34Piercing Source Sides -/
 
 open Set Topology
 
@@ -23,7 +30,7 @@ private theorem meets_interior_near_frontier {X : Type*} [TopologicalSpace X]
   · exact hx (interior_subset hxP)
   · exact hne ⟨x, ⟨hxN, hx⟩, hxP⟩
 
-theorem IsPLCellOn.isConnected_boundary {M : Type*} [TopologicalSpace M]
+theorem IsPLCellOn.isConnected_boundary_three {M : Type*} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {S B : Set M} (h : IsPLCellOn 3 S B) :
     IsConnected B := by
   obtain ⟨P, r, u, hr, hu, -, hB⟩ := h
@@ -72,7 +79,7 @@ theorem section34_piercing_source_sides
       rw [(hAb e).2] at hbmem
       exact hbmem
   obtain ⟨x, ⟨hxBd, hxT⟩, hxCp⟩ := meets_interior_near_frontier
-    (hCp _).isConnected_boundary.isPreconnected (hCp _).isCompact.isClosed
+    (hCp _).isConnected_boundary_three.isPreconnected (hCp _).isCompact.isClosed
     isOpen_interior (show CpBd (ends e).2 ∩ frontier (Cp (ends e).1) ⊆
       interior (Tn e) from by
         intro x hx

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingComponentStability
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalCircleBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusComplement
 import Mathlib.Geometry.Manifold.Instances.Sphere
+
+/-! # Section34Piercing Source Bicollar -/
 
 open Set Topology
 

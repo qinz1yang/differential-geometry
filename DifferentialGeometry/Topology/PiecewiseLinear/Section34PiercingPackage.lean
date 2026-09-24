@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RelativeVertexCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingAnnularCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.CrossingTracePolyhedron
@@ -7,6 +12,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximatio
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingConditionsOfCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingCircles
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingNonempty
+
+/-! # Section34Piercing Package -/
 
 open Set Topology
 
@@ -50,6 +57,12 @@ theorem exists_section34PiercingPackage [T2Space M₁] [SecondCountableTopology 
       Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
           Sp Tp cnt Pg G' ∧
         ∀ w, ∀ x ∈ Cc w, dist (G' w x) (h x) < ε w := by
+  let _ := (inferInstance : SecondCountableTopology M₁)
+  let _ := (inferInstance : SecondCountableTopology M₂)
+  let _ := (inferInstance : FiniteDimensional ℝ Ea)
+  let _ := hU
+  let _ := hN
+  let _ := hQsub
   obtain ⟨δs, hδs, hδsε, hsides⟩ := exists_auxiliary_scales_preserving_piercing_sides hh hprep
   obtain ⟨c, δc, hc, hδc, -, hcharts⟩ :=
     exists_section34_vertex_chart_stability_scales hh hprep

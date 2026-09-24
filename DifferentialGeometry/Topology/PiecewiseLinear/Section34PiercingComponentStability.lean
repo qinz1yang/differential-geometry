@@ -1,12 +1,19 @@
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CapDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingNonempty
 import DifferentialGeometry.Topology.Connected.BicollarComplement
+
+/-! # Section34Piercing Component Stability -/
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-theorem IsPLCellOn.isConnected_interior {M : Type*} [TopologicalSpace M]
+theorem IsPLCellOn.isConnected_interior_three {M : Type*} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {S B : Set M} (h : IsPLCellOn 3 S B) :
     IsConnected (interior S) := by
   obtain ⟨P, r, u, hr, hu, rfl, -⟩ := h
@@ -32,7 +39,7 @@ theorem IsPLCellOn.frontier_inter_interior_nonempty {M : Type*} [TopologicalSpac
       by_contra hzi
       exact hne ⟨z, by rw [hC.frontier_eq]; exact ⟨hzC, hzi⟩, hzS⟩
     · exact Or.inr hzC
-  have hsub := h.isConnected_interior.isPreconnected.subset_left_of_subset_union
+  have hsub := h.isConnected_interior_three.isPreconnected.subset_left_of_subset_union
     isOpen_interior hC.isOpen_compl
     (disjoint_compl_right.mono_left interior_subset) hcover ⟨a, haS, haC⟩
   exact hbC (interior_subset (hsub hbS))
