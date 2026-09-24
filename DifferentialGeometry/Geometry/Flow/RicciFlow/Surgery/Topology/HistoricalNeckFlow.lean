@@ -1,5 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckCurvature
+import DifferentialGeometry.Geometry.Neck.NormalizedLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EqualDimensionImmersion
+
 
 noncomputable section
 open Set Bundle Manifold
@@ -76,3 +81,78 @@ theorem NormalizedNeck.exists_historical_footprint_isSolutionOn_curvature_bound
   exact ⟨K,hK,hcompact,hconn,hcenter,hchart,hball,hballsub,hrange,G,hslabs,hlast,hterminal,hsol,hRm⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+set_option autoImplicit false
+noncomputable section
+
+open Set Manifold
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+variable {H : ObservedHistory.{u}} {first : Fin (H.eventCount + 1)}
+  {i : Fin H.eventCount} {hle : first ≤ i.castSucc}
+
+private local instance (K : Set (H.event i).incoming.terminalRegularOpen) :
+    SigmaCompactSpace (H.backwardSurvivorFootprintInterior first i hle K) := by
+  let _ : SigmaCompactSpace (H.backwardSurvivorDomain first i.castSucc hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.backwardSurvivorDomain first i.castSucc hle).isOpen)
+  let _ : SigmaCompactSpace (H.backwardSurvivorTerminalFace first i hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.backwardSurvivorTerminalFace first i hle).isOpen)
+  exact isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.backwardSurvivorFootprintInterior first i hle K).isOpen)
+
+theorem NormalizedNeck.exists_historical_pullback_solution
+    {δ : ℝ} {k : ℕ} (N : NormalizedNeck (H.event i).terminal.metric δ k)
+    (K : Set (H.event i).incoming.terminalRegularOpen)
+    (htrace : ∀ x ∈ K, Nonempty (BackwardPointTrace H first i.castSucc hle x.val))
+    (hinside : range N.chart ⊆ interior K)
+    {θ : ℝ} (hθ : 0 ≤ θ) (hstart : H.time first ≤ H.time i.succ - θ / N.scale) :
+    ∃ (Φ : neckBuffer δ → H.backwardSurvivorFootprintInterior first i hle K)
+      (hΦ : IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ Φ)
+      (G : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorFootprintInterior first i hle K))
+      (S : SolutionOn (I := NeckCylinderModel) (M := neckBuffer δ)
+        (RealTimeInterval.closed (-θ) 0 (neg_nonpos.mpr hθ))),
+      H.backwardSurvivorFootprintMap first i hle K ∘ Φ = N.chart ∧
+      IsSolutionOn S ∧ S.base.metric 0 = N.normalizedMetric ∧
+      (∀ t, S.base.metric t = localPullMetric
+        (scaleMetric N.scale N.scale_pos (G (H.time i.succ + t / N.scale))) Φ hΦ) ∧
+      (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ i.castSucc),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          G t = ((H.backwardSurvivorSlabMetric first i.castSucc hle j hf hl t).restrictOpen
+            (H.backwardSurvivorTerminalFace first i hle)).restrictOpen
+              (H.backwardSurvivorFootprintInterior first i hle K)) ∧
+      ∀ t ∈ Icc (H.time i.castSucc) (H.time i.succ),
+        G t = (H.backwardSurvivorTerminalFaceMetric first i hle t).restrictOpen
+          (H.backwardSurvivorFootprintInterior first i hle K) := by
+  let Φ := H.backwardSurvivorFootprintLift first i hle K htrace N.chart hinside
+  have hsm : IsSmoothEmbedding NeckCylinderModel ThreeModel ∞ Φ :=
+    H.backwardSurvivorFootprintLift_isSmoothEmbedding first i hle K htrace N.chart hinside N.chart_smooth
+  have hΦ : IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ Φ := fun x =>
+    Perelman.KappaSolutions.immersionAt_isLocalDiffeomorphAt_of_finrank_eq
+      (by simp [ThreeSpace, Module.finrank_prod]) (hsm.isImmersion.isImmersionAt x)
+  have hmap : H.backwardSurvivorFootprintMap first i hle K ∘ Φ = N.chart := rfl
+  obtain ⟨G, hslabs, hlast, hterminal, _, hsol⟩ :=
+    H.exists_backwardSurvivorFootprint_isSolutionOn first i hle K
+  let D := RealTimeInterval.closed (H.time first) (H.time i.succ)
+    (H.time_strictMono.monotone (hle.trans i.castSucc_lt_succ.le))
+  let T : SolutionOn (I := ThreeModel)
+      (M := H.backwardSurvivorFootprintInterior first i hle K) D := { base.metric := G }
+  let U := T.parabolicClosedWindow (H.time i.succ) N.scale θ N.scale_pos hθ
+  have hU : IsSolutionOn U := isSolutionOn_parabolicClosedWindow T hsol N.scale_pos hθ
+    (fun t ht => ⟨hstart.trans ht.1, ht.2⟩)
+    (fun t ht => ⟨hstart.trans_lt ht.1, ht.2⟩)
+  let S := U.localPullback Φ hΦ
+  refine ⟨Φ, hΦ, G, S, hmap, hU.localPullback Φ hΦ, ?_, fun _ => rfl, hslabs, hlast⟩
+  change localPullMetric (scaleMetric N.scale N.scale_pos
+    (G (H.time i.succ + 0 / N.scale))) Φ hΦ = N.normalizedMetric
+  rw [zero_div, add_zero, hterminal]
+  exact N.pullback_normalizedMetric _ _ Φ hΦ hmap
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end

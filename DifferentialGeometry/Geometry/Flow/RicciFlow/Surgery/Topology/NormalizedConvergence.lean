@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
 import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
+import DifferentialGeometry.Topology.Exhaustion
 
 set_option autoImplicit false
 noncomputable section
@@ -62,5 +63,35 @@ theorem NormalizedNeck.metricCInfConvergenceOn_restrict_of_precision_tendsto_zer
     constructor <;> linarith
   exact lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall K p _ _ _
     (η / 2) (by positivity) (fun a ha x _ => hpoint a ha x)) (by linarith)
+
+theorem iUnion_neckBuffer_eq_univ_of_tendsto_zero
+    {δ : ℕ → ℝ} (hδ : ∀ n, 0 < δ n) (hlim : Tendsto δ atTop (𝓝 0)) :
+    (⋃ n, (neckBuffer (δ n) : Set NeckCylinder)) = univ := by
+  apply eq_univ_of_forall
+  intro x
+  have ha : 0 < (|x.2| + 1)⁻¹ := by positivity
+  obtain ⟨n, hn⟩ := (hlim.eventually_lt_const ha).exists
+  have hw : |x.2| + 1 < (δ n)⁻¹ := by
+    simpa only [inv_inv] using
+      (inv_lt_inv₀ ha (hδ n)).mpr hn
+  apply mem_iUnion.mpr
+  refine ⟨n, ?_⟩
+  change -(δ n)⁻¹ - 1 < x.2 ∧ x.2 < (δ n)⁻¹ + 1
+  constructor <;> linarith [le_abs_self x.2, neg_le_abs x.2]
+
+theorem exhaustsByOpen_neckBuffer_of_antitone_tendsto_zero
+    {δ : ℕ → ℝ} (hδ : ∀ n, 0 < δ n) (hanti : Antitone δ)
+    (hlim : Tendsto δ atTop (𝓝 0)) :
+    DifferentialGeometry.CheegerGromovCompactness.ExhaustsByOpen (fun n => (neckBuffer (δ n) : Set NeckCylinder)) := by
+  have hmono : Monotone (fun n => (neckBuffer (δ n) : Set NeckCylinder)) := by
+    intro n m hnm
+    exact neckBuffer_le_of_le (hδ m) (hanti hnm)
+  refine ⟨fun n => (neckBuffer (δ n)).isOpen, fun n => hmono (Nat.le_succ n), ?_⟩
+  intro K hK
+  obtain ⟨n, hn⟩ := hK.elim_directed_cover (fun n => (neckBuffer (δ n) : Set NeckCylinder))
+    (fun n => (neckBuffer (δ n)).isOpen) (by
+      rw [iUnion_neckBuffer_eq_univ_of_tendsto_zero hδ hlim]
+      exact subset_univ _) (fun n m => ⟨max n m, hmono (le_max_left _ _), hmono (le_max_right _ _)⟩)
+  exact ⟨n, fun m hnm => hn.trans (hmono hnm)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

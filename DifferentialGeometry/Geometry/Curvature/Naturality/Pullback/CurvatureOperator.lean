@@ -45,4 +45,25 @@ theorem curvatureOperatorLowerBoundAt_localPullMetric_iff
   · intro h n c v w
     rw [he]
     exact h n c _ _
+
+theorem metricAlgebraicCurvatureTensorAt_localPullMetric_mem_nonnegativeCone_iff
+    (g : SmoothRiemannianMetric J N) (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f)
+    (x : M) :
+    metricAlgebraicCurvatureTensorAt (localPullMetric g f hf) x ∈
+        algebraicCurvatureOperatorNonnegativeCone ↔
+      metricAlgebraicCurvatureTensorAt g (f x) ∈
+        algebraicCurvatureOperatorNonnegativeCone := by
+  simpa only [mem_algebraicCurvatureOperatorNonnegativeCone,
+    curvatureOperatorLowerBoundAt, zero_mul, add_zero] using
+    curvatureOperatorLowerBoundAt_localPullMetric_iff g f hf x 0
+
+theorem metricAlgebraicCurvatureTensorAt_pullbackMetricCross_mem_nonnegativeCone_iff
+    (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) (x : M) :
+    metricAlgebraicCurvatureTensorAt (Diffeomorph.pullbackMetricCross g Φ) x ∈
+        algebraicCurvatureOperatorNonnegativeCone ↔
+      metricAlgebraicCurvatureTensorAt g (Φ x) ∈
+        algebraicCurvatureOperatorNonnegativeCone := by
+  rw [Diffeomorph.pullbackMetricCross_eq_localPullMetric,
+    metricAlgebraicCurvatureTensorAt_localPullMetric_mem_nonnegativeCone_iff]
+
 end DifferentialGeometry.Geometry.Curvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Pullback.Cross
+import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.Scaling
 
 set_option autoImplicit false
@@ -15,6 +15,16 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners Real F G}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+
+theorem localPullMetric_scaleMetric [T2Space M]
+    (g : SmoothRiemannianMetric J N) (Φ : M → N)
+    (hΦ : IsLocalDiffeomorph I J ∞ Φ) (c : ℝ) (hc : 0 < c) :
+    localPullMetric (scaleMetric c hc g) Φ hΦ =
+      scaleMetric c hc (localPullMetric g Φ hΦ) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  simp only [localPullMetric_inner, scaleMetric_inner]
+
 
 theorem Diffeomorph.pullbackMetricCross_scaleMetric
     [T2Space M]
