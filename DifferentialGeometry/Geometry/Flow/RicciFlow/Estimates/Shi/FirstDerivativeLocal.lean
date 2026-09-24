@@ -51,14 +51,14 @@ variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
 variable [T2Space M] [BoundarylessManifold I M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 
-theorem shiFirstDerivative_local_of_cutoff
+theorem shiFirstDerivative_local_of_cutoff_of_positive_time_regular
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     {T a A B Dcoef cn r₁ r₂ : Real} {p : M} {Theta : Real → M → Real}
     (cut : ShiInitialDistanceCutoff (I := I) S T p r₁ r₂ A B Dcoef Theta)
     (hT : 0 < T) (ha : 32 ≤ a)
     (hA : 0 ≤ A) (hB : 0 ≤ B) (hD : 0 ≤ Dcoef) (hcn : 0 ≤ cn)
-    (hreg : Set.Icc 0 T ⊆ D.regular)
+    (hreg : Set.Ioc 0 T ⊆ D.regular)
     (hu : ∀ s ∈ Set.Icc 0 T, ∀ y : M, 0 < cut.chi y →
       nablaKRm04NormSqIntrinsic (I := I) S 0 s y ≤ 1)
     (hcont : ContinuousOn
@@ -119,9 +119,9 @@ theorem shiFirstDerivative_local_of_cutoff
     (fun s hs y => shiFirstBernsteinTimeQuantity_nonneg (I := I) S
       (by linarith : (0 : Real) ≤ a) hs.1 y)
     (fun y => shiFirstBernsteinTimeQuantity_zero (I := I) S a y) hcont
-    (fun s hs _ y =>
+    (fun s hs hp y =>
       (differentiableAt_shiFirstBernsteinTimeQuantity (I := I) S hS a
-        (hreg hs) y).differentiableWithinAt)
+        (hreg ⟨hp, hs.2⟩) y).differentiableWithinAt)
     (fun s _ _ y =>
       (contMDiff_shiFirstBernsteinTimeQuantity (I := I) S a
         s).contMDiffAt.mdifferentiableAt (by simp))
@@ -129,8 +129,8 @@ theorem shiFirstDerivative_local_of_cutoff
       gradientFun_mdiffAt (I := I) ((flowG (I := I) S).metric s)
         (contMDiff_shiFirstBernsteinTimeQuantity (I := I) S a s) y)
     (fun s hs hspos y hy =>
-      parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le
-        (I := I) S hS hT ha hreg hs hspos y (hu s hs y hy))
+      parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le_of_mem_regular
+        (I := I) S hS hT ha hs (hreg ⟨hspos, hs.2⟩) hspos y (hu s hs y hy))
     hTheta'
   intro t ht x hball
   have htmem : t ∈ Set.Icc (0 : Real) T := ⟨ht.1.le, ht.2⟩
@@ -156,6 +156,31 @@ theorem shiFirstDerivative_local_of_cutoff
           (shiFirstDerivativeCoupling a cn) T / a) := rfl
   rw [hbnd, le_div_iff₀ (Real.sqrt_pos.mpr ht.1), ← Real.sqrt_mul hv]
   exact Real.sqrt_le_sqrt hkey
+
+theorem shiFirstDerivative_local_of_cutoff
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {T a A B Dcoef cn r₁ r₂ : Real} {p : M} {Theta : Real → M → Real}
+    (cut : ShiInitialDistanceCutoff (I := I) S T p r₁ r₂ A B Dcoef Theta)
+    (hT : 0 < T) (ha : 32 ≤ a)
+    (hA : 0 ≤ A) (hB : 0 ≤ B) (hD : 0 ≤ Dcoef) (hcn : 0 ≤ cn)
+    (hreg : Set.Icc 0 T ⊆ D.regular)
+    (hu : ∀ s ∈ Set.Icc 0 T, ∀ y : M, 0 < cut.chi y →
+      nablaKRm04NormSqIntrinsic (I := I) S 0 s y ≤ 1)
+    (hcont : ContinuousOn
+      (fun q : Real × M => shiFirstBernsteinTimeQuantity (I := I) S a q.1 q.2)
+      (spacetimeSlab (M := M) T))
+    (hTheta : ∀ t ∈ Set.Ioc (0 : Real) T, ∀ x : M, 0 < cut.chi x →
+      ∃ s ∈ Set.Icc (0 : Real) t,
+        Theta t x ≤
+          cn * Real.sqrt (s * nablaKRm04NormSqIntrinsic (I := I) S 1 s x)) :
+    ∀ t ∈ Set.Ioc (0 : Real) T, ∀ x : M,
+      riemannianEDistOf (I := I) (S.base.metric 0) p x ≤ ENNReal.ofReal r₁ →
+        Real.sqrt (nablaKRm04NormSqIntrinsic (I := I) S 1 t x) ≤
+          shiFirstDerivativeLocalBound (Module.finrank Real E) a T A B Dcoef cn /
+            Real.sqrt t :=
+  shiFirstDerivative_local_of_cutoff_of_positive_time_regular S hS cut hT ha hA hB hD hcn
+    (fun _ ht => hreg ⟨ht.1.le, ht.2⟩) hu hcont hTheta
 
 section CutoffProduction
 
@@ -320,7 +345,8 @@ theorem shiFirstDerivative_local_unnormalized_of_cutoff
     have hp2 : (0 : Real) < (K⁻¹ : Real) ^ 2 := pow_pos hKinv 2
     nlinarith [hb, hp2, hid]
   have hmain := shiFirstDerivative_local_of_cutoff (I := I)
-    (parabolicSolution (I := I) S 0 K hK h0) (parabolicSolution_isSolutionOn (I := I) S hS 0 K hK h0) cut
+    (parabolicSolution (I := I) S 0 K hK h0)
+    (parabolicSolution_isSolutionOn (I := I) S hS 0 K hK h0) cut
     hKT ha hA hB hD hcn hregp hup hcont hTheta
   intro t ht x hball
   have hKt : K * t ∈ Set.Ioc (0 : Real) (K * T) :=

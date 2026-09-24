@@ -3525,6 +3525,7 @@ import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCompactness
 import DifferentialGeometry.Geometry.Comparison.RadialHessian
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
 import DifferentialGeometry.Geometry.Comparison.RadialLength
@@ -4936,10 +4937,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Te
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.HigherDerivativeReaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialConnectionClosedSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialConnectionDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialDistanceCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialDistanceLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialDistanceSupWeight
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialFirstDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialLocalCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LaplacianBoundScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LaplacianInputRegularWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LocalAllOrders
@@ -5394,7 +5398,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.AmbientSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.SpatialCapFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowIntrinsicBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowScalarBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSpatialCap
