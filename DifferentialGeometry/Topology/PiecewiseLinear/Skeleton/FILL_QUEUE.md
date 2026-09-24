@@ -916,3 +916,77 @@ Steps (each needs the owner's explicit go; this is the "entry" of plan §5,
    handoff line; commit by explicit paths; push.
 3. Until step 2 is done the shared tree keeps the sphere `sorry`; the ledger records the leaf as
    "proved on the isolated branch, entry pending".
+
+## Codex item 22 — act as lead: finish the acceptances of items 17, 18 and 19 (lead-written 2026-09-24 02:55 UTC; Codex lane with git rights, owner-scheduled)
+
+The Claude lead's weekly budget is exhausted; this lane acts as lead until the owner says otherwise.
+Lease: `integration` (token `claude-integration-20260919`, private root
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private`, valid to 2026-09-26 04:17 UTC).
+Same OWNER-GRANTED EXCEPTION as items 19/20: git writes by explicit path only, never `git add -A`, no
+force-push, no touching other lanes' untracked files, one commit per step, push to
+`origin codex/moise-integration`, then the mirror sync
+`bash C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\lead-tools\sync-mirror.sh` (no force; if it
+refuses because the mirror carries foreign content, stop and tell the owner). Host limits: at most four
+`lean.exe`, the checker policy, and never two checker runs on the same private root at once. Log to
+`Skeleton/FILL_LOG.md`, section `# Codex item 22`.
+
+Lead tools (copies of the Claude lead's scripts, CR-free) in
+`C:\Users\liao9\AppData\Local\Temp\claude-moise-shared\lead-tools\`:
+`stmtcheck.py <skeleton> <module> <name…>` (statement byte-identity, LF-normalised);
+`namescan.py <orderfile>` (declaration collisions against the whole tree, forbidden imports, `sorry`,
+underscore names; the only allowed collision is the leaf itself); `mkaudit.py <letter> <Name> <mods…>`
+(writes `accept-<Name>.ps1` and `Audit<Name>.lean` for lease `<letter>`; for the lead lease replace
+`claude-moise-agent-<letter>` by `claude-moise-integration-private` and `claude-agent-<letter>-20260919` by
+`claude-integration-20260919`, copy the audit file into the lead root, and strip every CR); `hoistlib.py`
+(`leaf_span`, `delete_spans`, `add_imports_after`, `add_note` (lines ≤ 100 codepoints), `sorry_count`,
+`frozen_total`, `ledger_update`); `wire_i17.py`, `wire_pr15.py` (ready wiring scripts, `--dry` first);
+`skelcheck-lead.ps1 -Modules <full module>` (zero-diagnostic check of a skeleton on the lead lease).
+PITFALLS met today: an order file written by Python has CRLF, and `$(cat order.txt)` then passes module
+names with a trailing CR to the checker ("Illegal characters in path" on every module) — strip the CRs
+first; an audit of more than ~40 modules exceeds the heartbeat — split it; `ledger_update` needs the exact
+sentence `There are **N physical sorry occurrences** in these files (` (item 20 had inserted its note
+before "in these files"; `wire_i17.py` repairs it); the root `.gitignore` starts with `/*`, so new files
+from a cherry-pick need `git add -f`.
+
+State at handover (frozen `sorry` 11: CGN 2, PLSmoothingCompact 1, §31 2, §32 1, Compact 2,
+Normalization 1, Terminal 2):
+
+A. Item 17 (manifold P7 `exists_section34ResidualBalls`, 40 modules incl.
+   `DifferentialGeometry/Topology/BicollarLocalSide.lean`, lease a, delivery
+   `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a\CodexItem17Delivery.md`). Lead pre-checks DONE:
+   statement and `variable` block identical, 40 files untracked with hashes equal to the delivery table,
+   namescan clean (only the leaf collision), no Skeleton/foreign imports. Lead checks RUNNING at handover:
+   `lead-tools\accept-CodexItem17.ps1`, log `D:\differential-geometry-moise-int\.lake\scratch\AcceptCodexItem17.log`;
+   success = 41 lines beginning `Verified` (40 modules + the audit). If the log is complete and clean:
+   `python lead-tools\wire_i17.py --dry` then without `--dry` (it deletes the leaf, imports
+   `Section34ResidualBalls` after `Section34SourceFaceOrder`, adds the docstring note, registers the 40
+   modules after `Section34VertexPreparationAxioms` in `DifferentialGeometry.lean`, repairs the ledger
+   total sentence, appends to row B1.b.T3, sets Terminal 2 → 1, total 11 → 10, writes the handoff lines);
+   recheck `skelcheck-lead.ps1 -Modules DifferentialGeometry.Topology.PiecewiseLinear.Skeleton.Section34Terminal`
+   (zero errors, one `sorry` warning); commit the 40 files + `Skeleton/Section34Terminal.lean` +
+   `DifferentialGeometry.lean` + `FREE_INPUTS.md` + `Skeleton/HANDOFF_LEAD_20260922.md` +
+   `Skeleton/FILL_LOG.md` as "Prove the Section 34 residual balls (Codex item 17)"; push; mirror. If the
+   log shows a failure, report the module and the diagnostic to the owner; do not wire.
+B. Item 18 (Package E = collaborator PR #15 reconciled with item 14 by lease e; 77 modules, order
+   `lead-tools\pr15order2.txt`; FILL_LOG "COMPLETE: Package E / item 14 reconciliation"). Lead pre-checks
+   DONE: `exists_section34CutFrame` identical (1000 chars) against `ControlledGraphCutFrame.lean`, 77
+   files untracked with lease-e receipts matching the current hashes, namescan clean (only the leaf),
+   no bad imports. Lead checks NOT yet run: `lead-tools\accept-PR15.ps1` (77 modules then audits A/B;
+   log `AcceptPR15.log`; success = 79 `Verified`), only after A's run has finished. Then
+   `python lead-tools\wire_pr15.py --dry` / real (deletes the leaf in
+   `Skeleton/ControlledGraphNeighborhood.lean`, imports `ControlledGraphCutFrame` after
+   `Section34VertexPreparation`, note, registers the 77 after the item-17 block, row B1.c.1, CGN 2 → 1,
+   total −1, handoff lines); recheck the CGN skeleton (zero errors, one `sorry` warning); commit the 77
+   files + skeleton + aggregate + ledger + handoff + log as "Prove the controlled graph cut frame
+   (collaborator PR #15, Codex item 18)"; push; mirror.
+C. Item 19 (collaborator PR #19, §31): its lane stopped at step 2 because the working-tree PR files are
+   CRLF while the frozen skeleton is LF; the git blobs are equal and no binder differs. RULING: the
+   byte-identity rule is on LF-normalised text (what `stmtcheck.py` compares); continue item 19 from
+   step 3 exactly as written (the 8 PR commits are already on origin). §31 promotion lowers the total
+   by 2.
+D. Item 21 (smooth batch + sphere leaf entry) is owner-scheduled and unchanged; items 14 and 15 are with
+   the collaborator (`consult/COLLABORATOR-item14-marked-rim-request.md`, `…item15-trace-request.md`);
+   accept his PRs as in item 20.
+E. Owed lead cleanups, deferred by the owner: `Section34FaceTorusCycle` to `hf₁`; removal of the
+   `h304`/`h305` named inputs from the nine consumers.
+Report (≤ 40 lines) after each of A, B, C: commits, receipts, audit lines, ledger total before/after.

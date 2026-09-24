@@ -601,3 +601,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   exclusive-window merge, aggregate registration, cone recompile, promotion). Shared-tree frozen sorry unchanged.
 
 2026-09-24: Codex item 20 accepted Package F (PRs #14/#12, 85 distinct modules); both frozen leaves compiled and axiom/linter-audited, CGN wired with exactly two remaining sorry leaves, ledger 13 -> 11.
+* 02:55 UTC (09-24) - LEAD HANDOVER TO CODEX (item 22 of `Skeleton/FILL_QUEUE.md`): the Claude lead's budget is out.
+  Item 17 pre-checked, its lead checks running (`AcceptCodexItem17.log`); item 18 pre-checked, `accept-PR15.ps1` ready;
+  item 19 ruled to continue (CRLF false alarm); tools in `claude-moise-shared\lead-tools\`. Physical `sorry` 11.
