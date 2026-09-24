@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
+import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCrossConvergence
+import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.EventualTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
@@ -175,7 +179,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M] [BoundarylessManifold I M]
 
-theorem exists_metric_subsequence_on_closed_interval_of_terminal_convergence
+private theorem exists_metric_subsequence_on_closed_interval_of_terminal_convergence_of_innerProductSpace
     {D : RealTimeInterval} (S : ℕ → SolutionOn (I := I) (M := M) D)
     (hS : ∀ i, IsSolutionOn (S i)) (R : SmoothRiemannianMetric I M)
     {a b : ℝ} (hab : a < b) (hslab : Icc a b ⊆ D.carrier)
@@ -230,3 +234,77 @@ theorem exists_metric_subsequence_on_closed_interval_of_terminal_convergence
 end DifferentialGeometry.PDE.RicciFlow
 
 end
+
+set_option autoImplicit false
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Set Filter
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open scoped _root_.Manifold ContDiff _root_.Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [SigmaCompactSpace M] [BoundarylessManifold I M]
+
+theorem exists_metric_subsequence_on_closed_interval_of_terminal_convergence
+    {D : RealTimeInterval} (S : ℕ → SolutionOn (I := I) (M := M) D)
+    (hS : ∀ i, IsSolutionOn (S i)) (R : SmoothRiemannianMetric I M)
+    {a b : ℝ} (hab : a < b) (hslab : Icc a b ⊆ D.carrier)
+    (hreg : Ico a b ⊆ D.regular)
+    (hterminal : MetricCInfConvergenceOnCompacts (fun i => (S i).base.metric b) R R)
+    (hcurv : ∀ K : Set M, IsCompact K → ∀ q : ℕ,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop, ∀ t ∈ Icc a b, ∀ x ∈ K,
+        curvDerivNorm q ((S i).base.metric t) x ≤ C) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧ ∃ g : ℝ → SmoothRiemannianMetric I M,
+      g b = R ∧ ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+        ∃ N : ℕ, ∀ i ≥ N, ∀ t ∈ Icc a b,
+          metricDerivNormSupOn K p ((S (rho i)).base.metric t) (g t) R < epsilon := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    (Module.finBasis ℝ E).equivFun.toContinuousLinearEquiv.trans
+      (EuclideanSpace.equiv (Fin (Module.finrank ℝ E)) ℝ).symm
+  let J := I.transContinuousLinearEquiv e
+  let Φ := ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e
+  let U : ℕ → SolutionOn (I := J) (M := M) D := fun i => (S i).pullback Φ.symm
+  have hU : ∀ i, IsSolutionOn (U i) := fun i => (hS i).pullback (S i) Φ.symm
+  let R' : SmoothRiemannianMetric J M := Diffeomorph.pullbackMetricCross R Φ.symm
+  have hterminal' : MetricCInfConvergenceOnCompacts (fun i => (U i).base.metric b) R' R' :=
+    Perelman.KappaSolutions.metricCInfConvOnCompacts_pullbackCross
+      (fun i => (S i).base.metric b) R R Φ.symm hterminal
+  have hcurv' : ∀ K : Set M, IsCompact K → ∀ q : ℕ,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop, ∀ t ∈ Icc a b, ∀ x ∈ K,
+        curvDerivNorm q ((U i).base.metric t) x ≤ C := by
+    intro K hK q
+    obtain ⟨C, hC, hb⟩ := hcurv (Φ.symm '' K) (hK.image Φ.symm.continuous) q
+    refine ⟨C, hC, hb.mono fun i hi t ht x hx => ?_⟩
+    change curvDerivNorm q (Diffeomorph.pullbackMetricCross ((S i).base.metric t) Φ.symm) x ≤ C
+    rw [Perelman.KappaSolutions.curvDerivNorm_pullbackMetricCross]
+    exact hi t ht (Φ.symm x) (mem_image_of_mem _ hx)
+  obtain ⟨rho, hrho, g, hgb, hconv⟩ :=
+    exists_metric_subsequence_on_closed_interval_of_terminal_convergence_of_innerProductSpace
+      U hU R' hab hslab hreg hterminal' hcurv'
+  have hcancel (h : SmoothRiemannianMetric I M) :
+      Diffeomorph.pullbackMetricCross (Diffeomorph.pullbackMetricCross h Φ.symm) Φ = h := by
+    exact SmoothRiemannianMetric.pullback_transContinuousLinearEquiv h e
+  refine ⟨rho, hrho, fun t => Diffeomorph.pullbackMetricCross (g t) Φ, ?_, ?_⟩
+  · change Diffeomorph.pullbackMetricCross (g b) Φ = R
+    rw [hgb]
+    exact hcancel R
+  · intro K hK p epsilon hepsilon
+    obtain ⟨N, hN⟩ := hconv (Φ '' K) (hK.image Φ.continuous) p epsilon hepsilon
+    refine ⟨N, fun i hi t ht => ?_⟩
+    have hpull := Perelman.KappaSolutions.metricDerivNormSupOn_pullbackCross_image
+      K p ((U (rho i)).base.metric t) (g t) R' Φ
+    change metricDerivNormSupOn K p
+      (Diffeomorph.pullbackMetricCross (Diffeomorph.pullbackMetricCross ((S (rho i)).base.metric t) Φ.symm) Φ)
+      (Diffeomorph.pullbackMetricCross (g t) Φ)
+      (Diffeomorph.pullbackMetricCross (Diffeomorph.pullbackMetricCross R Φ.symm) Φ) = _ at hpull
+    rw [hcancel, hcancel] at hpull
+    rw [hpull]
+    exact hN i hi t ht
+
+end DifferentialGeometry.PDE.RicciFlow

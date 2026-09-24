@@ -106,7 +106,7 @@ theorem exists_local_flow_limit_of_local_metric_agreement
     exact hn t ht (Phi n x) (himageS n ⟨x, subset_closure x.property, rfl⟩)
   obtain ⟨L, hL, hmetricL, hterminalL, _, _, rho, hrho, g, hgb, hsol, hlimit⟩ :=
     exists_local_flow_subsequence_of_terminal_metric_convergence (X.subseq phi)
-      (fun n => S (phi n)) (fun n => hS (phi n)) V ⟨q, hq⟩ Phi hsourceV G
+      (fun n => S (phi n)) (fun n => hS (phi n)) V Phi hsourceV G
       (gQ.restrictOpen V) hab hslab hregular hG hconv hlocalJets
   refine ⟨phi, hphi, Q, top, charts, hman, hT2, hsecond, gQ, V, q, Phi, G,
     hV, hq, hsource, hbase, ?_, himageS, hG, hconv, L, hL, hmetricL,
