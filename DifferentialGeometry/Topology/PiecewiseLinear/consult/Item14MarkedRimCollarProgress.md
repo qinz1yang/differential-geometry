@@ -1,19 +1,21 @@
 # Marked rim collar route: verified checkpoint
 
-The frozen `exists_compactCutAndGraph` statement remains open. So do
-`bu_markedPrism_of_bridge` and the exact `exists_compactRimCoreBuffer`.
-The outstanding geometric obligation is the actual endpoint-compatible
-bridge-pair collar, followed by the sweep, whole-ball marked map, and final assembly.
+L2 `bu_markedPrism_of_bridge` is proved, together with its actual compatible collar
+and cap-free whole-ball marked-prism producer. L3, L4, L5, and L6 are also proved.
+The exact `exists_compactRimCoreBuffer` and frozen `exists_compactCutAndGraph`
+assemblies remain open and are the active work.
 No construction hypothesis has been added to any frozen target.
 
-This checkpoint comprises 52 modules and 113 non-auto declarations, including private helpers.
+This checkpoint comprises 72 modules and 188 non-auto declarations, including private helpers.
 Every module compiled under the collaborator strict flags. Independent checks ran all thirteen
 standard environment linters and checked every declaration's transitive axioms:
 only `propext`, `Classical.choice`, and `Quot.sound` occur.
-Source scans and the 1395-local-module import closure exclude forbidden debt,
+Source scans and the 1421-local-module import closure exclude forbidden debt,
 resource overrides, Skeleton imports, and `HurewiczLowDegrees`.
 The requested flat aggregate and `FREE_INPUTS.md` are unchanged.
-The unmodified aggregate build is running separately; no aggregate success is claimed here.
+The unmodified aggregate build has pre-existing sorry and linter diagnostics outside this
+import closure; no clean aggregate build is claimed. It is being resumed after a needed
+focused baseline dependency build.
 
 - Cap correction: `IsPLHomeomorphOn.exists_prism_cap_images_preserving_stdCenter` preserves the entire parametrized axis while matching both cap sets. Shared radial prism and triangle-coordinate proofs replace duplicated arguments in the pointed pseudo-isotopy modules.
 
@@ -30,3 +32,5 @@ The unmodified aggregate build is running separately; no aggregate success is cl
 - Actual compatible collar: `IsBridgeDisk.exists_boundary_collar` now derives a jointly PL collar on frontier C × [0,2] from the bridge certificate and the PL ball. It includes the collar-neighborhood property, exact bridge intersection, and endpoint fibers lying in the original arc. Local charts come from actual links; finite germ restrictions avoid false closed-star intersection identities.
 
 - Ribbon geometry: a disk meeting the ambient boundary in a boundary arc is a bridge for the closure of its complementary intrinsic boundary. Positive collar ribbons specialize this producer.
+
+- L2 DONE: `bu_markedPrism_of_bridge` gives the whole-ball PL prism, both prescribed cap sets, ordered marked centers, and the exact marked-axis image. The cap-free primary `IsBridgeDisk.exists_prism_axis` uses actual compatible collars, finite disk-deletion sweeps, boundary arc matching, and the whole-ball shell/core extension. Cap adjustment is applied last and preserves every axis point.
