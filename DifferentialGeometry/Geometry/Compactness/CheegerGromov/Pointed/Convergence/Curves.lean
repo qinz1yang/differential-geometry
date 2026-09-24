@@ -306,6 +306,50 @@ theorem PointedRiemannianConvergenceMaps.exists_isometric_curve_subseq_limit
   rw [limsup_const] at hlower'
   exact hlower'.trans hlim
 
+theorem PointedRiemannianConvergenceMaps.exists_isometric_segment_subseq_limit
+    [I.Boundaryless]
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)} {σ : ℕ → ℕ}
+    (Φ : PointedRiemannianConvergenceMaps X L σ) {rho : ℝ} (hrho : 0 < rho)
+    (r ell : ℕ → ℝ) (hr : ∀ n, 0 < r n) (hell : ∀ n, 0 ≤ ell n)
+    (hrconv : Tendsto r atTop (𝓝 rho)) (hellconv : Tendsto ell atTop (𝓝 rho))
+    (htarget : ∀ n, riemannianBallOf (X.obj (σ n)).metric
+      (X.obj (σ n)).basepoint (r n) ⊆ Φ.target n)
+    (hlower : ∀ ε : ℝ, 0 < ε → ∀ᶠ n in atTop,
+      ∀ x ∈ Φ.source n, ∀ v : TangentSpace I x,
+        (1 - ε) * L.metric.inner x v v ≤
+          (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+            (mfderiv I I (Φ.partialDiffeomorph n) x v)
+            (mfderiv I I (Φ.partialDiffeomorph n) x v))
+    (hupper : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ n in atTop,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v) ≤ C ^ 2 * L.metric.inner x v v)
+    (hcompact : ∀ R : ℝ, 0 ≤ R → R < rho →
+      IsCompact (riemannianClosedBallOf L.metric L.basepoint R))
+    (γ : ∀ n, ℝ → (X.obj (σ n)).M)
+    (hγ : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (γ n) (Icc 0 (ell n)))
+    (hstart : ∀ n, γ n 0 = (X.obj (σ n)).basepoint)
+    (hmin : ∀ n, ∀ s ∈ Icc 0 (ell n), ∀ t ∈ Icc 0 (ell n),
+      riemannianEDistOf (X.obj (σ n)).metric (γ n s) (γ n t) = ENNReal.ofReal |s - t|) :
+    let _ : EMetricSpace L.M := L.emetricSpace
+    ∃ (phi : ℕ → ℕ) (g : C(Ico 0 rho, L.M)), StrictMono phi ∧ Isometry g ∧
+      g ⟨0, le_rfl, hrho⟩ = L.basepoint ∧
+      ∀ A : Set (Ico 0 rho), IsCompact A →
+        TendstoUniformlyOn
+          (fun n (t : Ico 0 rho) => (Φ.partialDiffeomorph (phi n)).symm (γ (phi n) t))
+          g atTop A := by
+  apply Φ.exists_isometric_curve_subseq_limit hrho r ell hr hell hrconv hellconv
+    htarget hlower hupper hcompact γ hγ hstart
+  · intro n t ht
+    exact (DifferentialGeometry.Geometry.Riemannian.inner_mfderiv_self_eq_one_of_edist_eq_on_interval
+      (X.obj (σ n)).metric (hγ n) ht (hmin n)).le
+  · intro n s hs t ht
+    rw [hmin n s hs t ht]
+    simp only [edist_dist, Real.dist_eq, le_refl]
+
+
 theorem PointedRiemannianConvergenceMaps.tendsto_edist_curve_endpoint_zero
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)} {σ : ℕ → ℕ}
