@@ -13851,3 +13851,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Topology.ThreeManifold.CoreComponentBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedComponentClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Boundary
+import DifferentialGeometry.Geometry.Neck.PointedEndpoint

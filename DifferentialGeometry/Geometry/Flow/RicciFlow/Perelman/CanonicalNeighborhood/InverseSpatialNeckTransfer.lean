@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckImageRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedNoncollapse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.MetricExtension
@@ -7,7 +8,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 set_option autoImplicit false
 noncomputable section
 open Set Filter
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -52,6 +53,78 @@ theorem eventually_spatialNeck_inverse_transport_on_compact
     (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 2) hscalar)
     (Phi.partialDiffeomorph k).symm cmp ha hsmall
     (neckSourceTolerance_pos ha).le le_rfl le_rfl hbase houter htarget
+
+
+private theorem spatialNeck_cast_map
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {g : SmoothRiemannianMetric I3 M} {eps : ℝ} {x y : M} (h : x = y)
+    (nk : SpatialNeck g eps x) : (h ▸ nk : SpatialNeck g eps y).map = nk.map := by
+  cases h
+  rfl
+
+theorem eventually_spatialNeck_inverse_transport_of_window_subset_ball
+    (C : MetricConvergenceData Phi)
+    (hcanonical : ∀ n, C.domain n = CanonicalMetricCompactness.canonicalSourceData Phi n)
+    {alpha r R factor : ℝ} (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
+    (hr : 0 ≤ r) (hfactor : 1 < factor) (hbuffer : factor * r < R)
+    (hcompact : IsCompact (riemannianClosedBallOf L.metric L.basepoint R)) :
+    ∀ᶠ n in atTop, ∀ x : (X.obj (subseq n)).M,
+      2 ≤ metricScalarAt L.metric ((Phi.partialDiffeomorph n).symm x) →
+      ∀ nk : SpatialNeck (X.obj (subseq n)).metric (neckModelTolerance alpha) x,
+        (∀ y ∈ univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹,
+          nk.map y ∈ riemannianClosedBallOf (X.obj (subseq n)).metric (X.obj (subseq n)).basepoint r) →
+        x ∈ Phi.target n ∧
+        ∃ out : SpatialNeck L.metric (2 * alpha) ((Phi.partialDiffeomorph n).symm x),
+          out.map = partialDiffeomorphTransMixed nk.map (Phi.partialDiffeomorph n).symm := by
+  let A := riemannianClosedBallOf L.metric L.basepoint (factor * r)
+  let K := riemannianClosedBallOf L.metric L.basepoint R
+  have hopen : IsOpen (riemannianBallOf L.metric L.basepoint R) :=
+    isOpen_lt (by
+      unfold riemannianEDistOf
+      exact Geometry.Riemannian.continuous_riemannianEDist _ _) continuous_const
+  have hAK : A ⊆ interior K := by
+    have hsubset : riemannianBallOf L.metric L.basepoint R ⊆ K :=
+      fun y hy => (show riemannianEDistOf L.metric L.basepoint y < ENNReal.ofReal R from hy).le
+    have hinterior := hopen.subset_interior_iff.mpr hsubset
+    intro x hx
+    apply hinterior
+    exact hx.trans_lt ((ENNReal.ofReal_lt_ofReal_iff
+      ((mul_nonneg (zero_lt_one.trans hfactor).le hr).trans_lt hbuffer)).mpr hbuffer)
+  have hconv : metricSourceConvergesOn Phi (CanonicalMetricCompactness.canonicalSourceData Phi) K 0 := by
+    have heq : C.domain = CanonicalMetricCompactness.canonicalSourceData Phi := funext hcanonical
+    rw [← heq]
+    exact C.converges K hcompact 0
+  filter_upwards [pointed_metric_eventually_inverse_ball_capture L.basepoint hr hfactor hbuffer hcompact hconv,
+    eventually_spatialNeck_inverse_transport_on_compact C hcanonical K hcompact ha hsmall] with n hcapture htransport
+  intro x hscalar nk hwindow
+  have hx : x ∈ riemannianClosedBallOf (X.obj (subseq n)).metric (X.obj (subseq n)).basepoint r := by
+    have h := hwindow (nk.center, 0) ⟨mem_univ _, by
+      change -alpha⁻¹ < 0 ∧ 0 < alpha⁻¹
+      exact ⟨neg_neg_of_pos (inv_pos.mpr ha), inv_pos.mpr ha⟩⟩
+    simpa only [nk.center_eq] using h
+  have capture (y) (hy : y ∈ riemannianClosedBallOf (X.obj (subseq n)).metric (X.obj (subseq n)).basepoint r) :
+      y ∈ (Phi.partialDiffeomorph n).target ∧ (Phi.partialDiffeomorph n).symm y ∈ A := by
+    have hy' : y ∈ riemannianClosedBallOf (X.obj (subseq n)).metric (Phi.map n L.basepoint) r := by
+      change y ∈ riemannianClosedBallOf (X.obj (subseq n)).metric ((Phi.partialDiffeomorph n) L.basepoint) r
+      rw [Phi.basepoint_map]
+      exact hy
+    have hh := hcapture.2 y hy'
+    exact ⟨hh.1, hh.2.2.1⟩
+  have hxcap := capture x hx
+  have hright : Phi.map n ((Phi.partialDiffeomorph n).symm x) = x :=
+    (Phi.partialDiffeomorph n).right_inv hxcap.1
+  let nk' : SpatialNeck (X.obj (subseq n)).metric (neckModelTolerance alpha)
+      (Phi.map n ((Phi.partialDiffeomorph n).symm x)) := hright.symm ▸ nk
+  have houter : ∀ y ∈ univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹, nk'.map y ∈ Phi.map n '' A := by
+    intro y hy
+    have hnk : nk'.map = nk.map := spatialNeck_cast_map hright.symm nk
+    rw [hnk]
+    have hp := capture (nk.map y) (hwindow y hy)
+    exact ⟨(Phi.partialDiffeomorph n).symm (nk.map y), hp.2,
+      (Phi.partialDiffeomorph n).right_inv hp.1⟩
+  obtain ⟨out, hout⟩ := htransport.2 _ (interior_subset (hAK hxcap.2)) hscalar A hAK nk' houter
+  have hnk : nk'.map = nk.map := spatialNeck_cast_map hright.symm nk
+  exact ⟨hxcap.1, out, by simpa only [hnk] using hout⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
