@@ -593,3 +593,9 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `consult/COLLABORATOR-item15-trace-request.md` (sub-leaf 6, compact headline, manifold twin). Codex items 18,
   19, 20 (PR #15 reconciliation, PR #19 Section 31, PRs #14/#12 package F) are end-to-end Codex acceptances with
   git rights granted by the owner. Package F complete (PR #12 + #14). Frozen sorry 13 before those acceptances.
+* 20:40 (09-24) - SPHERE LEAF PROVED on the isolated branch: the collaborator's PRs #18, #20-#26 (28 modules) are
+  force-added on `codex/moise-smooth-integration` (root `.gitignore` starts with `/*`, so plain cherry-picks of new
+  files become empty - use `git show pr:path > path; git add -f`), and his integration patch closes
+  `nonempty_diffeomorph_sphere_of_homeomorph_sphere` there (e290b2f1d). Entry into the shared tree = Codex item 21
+  (host replay under the smooth lease with an owner decision on the 138 formatting-warning batch modules, then the
+  exclusive-window merge, aggregate registration, cone recompile, promotion). Shared-tree frozen sorry unchanged.

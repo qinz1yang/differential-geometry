@@ -884,3 +884,35 @@ then have exactly 2 `sorry` (cut frame, protected circle removal step); register
 collaborator reports remaining 'frozen-binder diagnostics' (unused binders of the frozen statements): if the
 checker reports an unused-variable warning in a restated leaf, silence it in the PROOF BODY with
 `let _ := <binder>` (never by touching the statement) and record the edit.
+
+## Codex item 21 — bring the smooth batch and the sphere leaf into the shared tree (lead-written 2026-09-24 20:40; Codex lane with git rights, owner-scheduled)
+
+State: `codex/moise-smooth-integration@e290b2f1d` = the batch (118 modules from `pc-sorry-free@54ad4d8ec`)
++ the collaborator's Mac-verified repairs (f4d228f67) + his PRs #18, #20–#26 (28 modules; new files only,
+force-added because the root `.gitignore` starts with `/*`) + the sphere leaf closed in
+`Skeleton/PLSmoothingCompact.lean` by his integration patch (719d33065; statement unchanged, the `sorry`
+replaced by the proof through `Topology.Manifold.SphereDiffeomorph`). His verification: 758 modules
+compiled with the host checker's flags (620 zero-diagnostic receipts, 138 with formatting warnings that
+the owner approved for the ported batch), audit of 542 modules / 7,817 declarations, foundational axioms
+only, 13 linters. Nothing of this is host-verified yet; no shared-tree module imports any of it.
+
+Steps (each needs the owner's explicit go; this is the "entry" of plan §5,
+`Skeleton/SMOOTH_DEPENDENCY_INTEGRATION_PLAN.md`):
+1. Host replay in the worktree `D:\differential-geometry-smooth-int` under the `codex-smooth-integration`
+   lease (token in its JSON; `MOISE_CHECKOUT=D:\differential-geometry-smooth-int` for
+   `prepare-private-root-worktree.py`, `checker.ps1 -Checkout D:\differential-geometry-smooth-int`): every
+   module that is not in the shared baseline or differs from it — the 118 batch modules, the 7 extra
+   prerequisites, the 28 PR modules, the patched skeleton — in dependency order. OWNER DECISION needed
+   first: the checker demands zero diagnostics, and 138 batch modules still carry formatting warnings on
+   the Mac; either repair them (headers, long lines; record every edit) or grant a written exception for
+   the ported batch modules only (never for the PR modules or the skeleton). Then the two-entry audit plus
+   the sphere audit on the host.
+2. Exclusive window (all lanes paused, owner's call): merge `codex/moise-smooth-integration` into
+   `codex/moise-integration` (a real merge, no squash); register the 118 + 7 + 28 modules in
+   `DifferentialGeometry.lean`; the 30 updated upstream modules change the import cone of ~400 PL
+   modules, so recompile the affected cone once in a shared-checkout private root (receipts are bound to
+   the checkout path); promote `Skeleton/PLSmoothingCompact.lean` (no `sorry` left) to a real module as
+   in the C1 promotion; ledger: the smoothing row PROVED, count-table line removed, total lowered by 1;
+   handoff line; commit by explicit paths; push.
+3. Until step 2 is done the shared tree keeps the sphere `sorry`; the ledger records the leaf as
+   "proved on the isolated branch, entry pending".
