@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.StaticSlabCapture
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCanonicalCover
+import DifferentialGeometry.Topology.GraphBand
+import DifferentialGeometry.Topology.Connected.Frontier
 
 noncomputable section
 open Set Manifold

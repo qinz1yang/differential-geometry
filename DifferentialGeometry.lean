@@ -5441,6 +5441,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.Distance.SublevelMinimizer
 import DifferentialGeometry.Geometry.Neck.CapSeparation
+import DifferentialGeometry.Geometry.Neck.CompactCapClassification
 import DifferentialGeometry.Geometry.Neck.CompactCapCover
 import DifferentialGeometry.Geometry.Neck.ScalarNormalization
 import DifferentialGeometry.Geometry.Neck.SpatialIsometry
