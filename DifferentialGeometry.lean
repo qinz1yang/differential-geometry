@@ -3527,6 +3527,7 @@ import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 import DifferentialGeometry.Geometry.Comparison.RadialHessian
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
 import DifferentialGeometry.Geometry.Comparison.RadialLength
+import DifferentialGeometry.Geometry.Comparison.ScalarNormalizedRadius
 import DifferentialGeometry.Geometry.Comparison.SliceParallelTransport
 import DifferentialGeometry.Geometry.Comparison.Soul.BoundarySupport
 import DifferentialGeometry.Geometry.Comparison.Soul.BusemannLevels
@@ -5394,10 +5395,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.SpatialCapFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowScalarBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapturedCapClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCutScaleProtection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapBallVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapSide

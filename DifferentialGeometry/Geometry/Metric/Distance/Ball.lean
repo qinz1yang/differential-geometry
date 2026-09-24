@@ -88,4 +88,42 @@ theorem isPathConnected_riemannianBallOf
   exact (hprefix.trans (pathELength_mono (I := I) le_rfl t.property.2)).trans_lt hlength
 
 
+namespace Geometry.Metric
+
+open Set in
+theorem subset_ball_of_scaled_tip_distance_bounds
+    (g : SmoothRiemannianMetric I M) (tip p : M) (K : Set M)
+    {q S C R : ℝ} (hq : 0 < q) (hS : 0 < S) (hR : 0 < R)
+    (hscale : S / q < C)
+    (hp : riemannianEDistOf (scaleMetric q hq g) tip p ≤ ENNReal.ofReal (2 * R))
+    (hK : ∀ x ∈ K, riemannianEDistOf (scaleMetric q hq g) tip x ≤ ENNReal.ofReal (2 * R)) :
+    K ⊆ riemannianBallOf (scaleMetric S hS g) p (4 * R * Real.sqrt C) := by
+  have hc : 0 < S / q := div_pos hS hq
+  have hC : 0 < C := hc.trans hscale
+  have heq : scaleMetric S hS g = scaleMetric (S / q) hc (scaleMetric q hq g) := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro x v w
+    simp only [scaleMetric_inner]
+    field_simp
+  intro x hx
+  have htip := riemannianEDistOf_triangle (scaleMetric q hq g) p tip x
+  rw [riemannianEDistOf_comm (scaleMetric q hq g) p tip] at htip
+  have hb : riemannianEDistOf (scaleMetric q hq g) p x ≤ ENNReal.ofReal (4 * R) := by
+    have hh := htip.trans (add_le_add hp (hK x hx))
+    rw [← ENNReal.ofReal_add (by positivity : 0 ≤ 2 * R) (by positivity)] at hh
+    simpa only [show 2 * R + 2 * R = 4 * R by ring] using hh
+  change riemannianEDistOf (scaleMetric S hS g) p x < ENNReal.ofReal (4 * R * Real.sqrt C)
+  rw [heq, edistOf_scale]
+  calc
+    _ ≤ ENNReal.ofReal (Real.sqrt (S / q)) * ENNReal.ofReal (4 * R) :=
+      mul_le_mul' le_rfl hb
+    _ = ENNReal.ofReal (Real.sqrt (S / q) * (4 * R)) :=
+      (ENNReal.ofReal_mul (Real.sqrt_nonneg _)).symm
+    _ < _ := by
+      apply (ENNReal.ofReal_lt_ofReal_iff (mul_pos (by positivity) (Real.sqrt_pos.mpr hC))).mpr
+      have hsqrt : Real.sqrt (S / q) < Real.sqrt C := Real.sqrt_lt_sqrt hc.le hscale
+      nlinarith
+
+end Geometry.Metric
+
 end DifferentialGeometry

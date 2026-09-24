@@ -1,0 +1,201 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBufferedChartTransfer
+import DifferentialGeometry.Topology.RelativeOpenInterior
+
+noncomputable section
+open Set Manifold Filter
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {p : CutoffParameters}
+
+theorem GeometricCutoffRecord.scalar_sublevel_mem_interior_core
+    (R : GeometricCutoffRecord H i p) {L : ℝ}
+    (hδ : ∀ j, R.delta j ≤ 1 / 2)
+    (hscale : ∀ j, L < (1 - 4323 * R.delta j) * (R.neck j).scale)
+    (x : (H.event i).incoming.terminalRegularOpen)
+    (hx : metricScalarAt (H.event i).terminal.metric x ≤ L) :
+    x.val ∈ interior (H.event i).transition.trace.tubes.core := by
+  let T := (H.event i).transition.trace.tubes
+  have hopen : IsOpen ((⋃ j : T.Index, range (T.tube j))ᶜ) :=
+    (isCompact_iUnion (fun j => isCompact_range (T.tube j).continuous)).isClosed.isOpen_compl
+  have hsub : (⋃ j : T.Index, range (T.tube j))ᶜ ⊆ T.core := by
+    intro y hy
+    change y ∉ ⋃ j, T.removedBand j
+    intro hm
+    obtain ⟨j, q, hq, heq⟩ := mem_iUnion.mp hm
+    exact hy (mem_iUnion.mpr ⟨j, q, heq⟩)
+  apply interior_maximal hsub hopen
+  intro hm
+  obtain ⟨j, q, heq⟩ := mem_iUnion.mp hm
+  let z : neckBuffer (R.delta j) := ⟨(q.1, q.2.val), R.tube_in_buffer j q⟩
+  have hwide : 2 ≤ (R.delta j)⁻¹ := by
+    have hh := inv_anti₀ (R.delta_pos j) (hδ j)
+    norm_num at hh
+    exact hh
+  have hz : z ∈ neckClosedTest (R.delta j) := by
+    change -(R.delta j)⁻¹ ≤ q.2.val ∧ q.2.val ≤ (R.delta j)⁻¹
+    constructor <;> linarith [q.2.property.1, q.2.property.2]
+  have hk : 2 ≤ R.order j := by
+    have hh := R.order_lower j
+    have hl := le_max_right (p.modelOrder + 6) (2 * ⌊(R.delta j)⁻¹⌋₊ + 4)
+    omega
+  have hmark : (R.neck j).chart z = x :=
+    Subtype.ext ((R.tube_eq j q z.property).symm.trans heq)
+  have hr := (abs_le.mp ((R.neck j).abs_scalar_ratio_sub_one_le hk (hδ j) z hz)).1
+  rw [hmark] at hr
+  have hlow : (1 - 4323 * R.delta j) * (R.neck j).scale ≤
+      metricScalarAt (H.event i).terminal.metric x := by
+    apply (le_div_iff₀ (R.neck j).scale_pos).mp
+    linarith
+  exact (not_lt_of_ge (hlow.trans hx)) (hscale j)
+
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
+
+theorem MetricCutCapEvent.subset_interior_old_of_isPreconnected
+    (E : MetricCutCapEvent P Q a s) (hOld : E.old = E.transition.trace.retainedCore)
+    {K : Set E.incoming.terminalRegularOpen} (hK : IsPreconnected K)
+    (hcore : ∀ x ∈ K, x.val ∈ interior E.transition.trace.tubes.core)
+    {x : E.incoming.terminalRegularOpen} (hx : x ∈ K) {q : Q.Carrier}
+    (hcross : E.RegularCrossing x.val q) :
+    ∀ y ∈ K, y.val ∈ interior (Subtype.val '' E.old) := by
+  let f : K → E.transition.trace.tubes.core := fun y => ⟨y.val.val, interior_subset (hcore y.val y.property)⟩
+  have hf : Continuous f := (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _
+  let : PreconnectedSpace K := isPreconnected_iff_preconnectedSpace.mp hK
+  have hret : range f ⊆ E.transition.trace.retainedCore := by
+    apply (isPreconnected_range hf).subset_isClopen E.transition.trace.isClopen_retainedCore
+    obtain ⟨z, _, hz, _⟩ := hcross
+    have hzf : f ⟨x, hx⟩ = z.val := Subtype.ext hz.symm
+    refine ⟨f ⟨x, hx⟩, mem_range_self _, ?_⟩
+    rw [hzf, ← hOld]
+    exact z.property
+  intro y hy
+  rw [hOld]
+  exact DifferentialGeometry.Topology.mem_interior_image_val_of_isOpen
+    E.transition.trace.isClopen_retainedCore.isOpen
+    (hret (mem_range_self ⟨y, hy⟩)) (hcore y hy)
+
+theorem GeometricCutoffRecord.subset_interior_old_of_scalar_upper_bound
+    (R : GeometricCutoffRecord H i p)
+    (hOld : (H.event i).old = (H.event i).transition.trace.retainedCore)
+    {L : ℝ} (hδ : ∀ j, R.delta j ≤ 1 / 2)
+    (hscale : ∀ j, L < (1 - 4323 * R.delta j) * (R.neck j).scale)
+    {K : Set (H.event i).incoming.terminalRegularOpen} (hK : IsPreconnected K)
+    (hscalar : ∀ y ∈ K, metricScalarAt (H.event i).terminal.metric y ≤ L)
+    {x : (H.event i).incoming.terminalRegularOpen} (hx : x ∈ K)
+    {q : (H.stage i.succ).Carrier} (hcross : (H.event i).RegularCrossing x.val q) :
+    ∀ y ∈ K, y.val ∈ interior (Subtype.val '' (H.event i).old) :=
+  (H.event i).subset_interior_old_of_isPreconnected hOld hK
+    (fun y hy => R.scalar_sublevel_mem_interior_core hδ hscale y (hscalar y hy)) hx hcross
+
+theorem GeometricCutoffRecord.exists_survivor_partialDiffeomorph_of_scalar_upper_bound
+    (R : GeometricCutoffRecord H i p)
+    (hOld : (H.event i).old = (H.event i).transition.trace.retainedCore)
+    {L : ℝ} (hδ : ∀ j, R.delta j ≤ 1 / 2)
+    (hscale : ∀ j, L < (1 - 4323 * R.delta j) * (R.neck j).scale)
+    {K : Set (H.event i).incoming.terminalRegularOpen} (hK : IsPreconnected K)
+    (hscalar : ∀ y ∈ K, metricScalarAt (H.event i).terminal.metric y ≤ L)
+    {x : (H.event i).incoming.terminalRegularOpen} (hx : x ∈ K)
+    {q : (H.stage i.succ).Carrier} (hcross : (H.event i).RegularCrossing x.val q) :
+    ∃ F : PartialDiffeomorph ThreeModel ThreeModel
+        (H.event i).incoming.terminalRegularOpen (H.stage i.succ).Carrier ∞,
+      K ⊆ F.source ∧ F x = q ∧
+      (∀ y ∈ F.source, (H.event i).RegularCrossing y.val (F y)) ∧
+      ∀ y ∈ F.source, ∀ v w : TangentSpace ThreeModel y,
+        (H.event i).outputMetric.inner (F y)
+          (mfderiv ThreeModel ThreeModel (F : _ → _) y v)
+          (mfderiv ThreeModel ThreeModel (F : _ → _) y w) =
+            (H.event i).terminal.metric.inner y v w := by
+  have hKold := R.subset_interior_old_of_scalar_upper_bound hOld hδ hscale hK hscalar hx hcross
+  let W : TopologicalSpace.Opens (H.event i).incoming.terminalRegularOpen :=
+    ⟨{y | y.val ∈ interior (Subtype.val '' (H.event i).old)},
+      isOpen_interior.preimage continuous_subtype_val⟩
+  obtain ⟨F, hsource, hcrossF, _, hmetric⟩ :=
+    (H.event i).exists_survivor_partialDiffeomorph W ⟨x, hKold x hx⟩ (fun _ hy => hy)
+  have hKF : K ⊆ F.source := by rw [hsource]; exact hKold
+  have hpoint : F x = q :=
+    (H.event i).regularCrossing_right_unique (hcrossF x (hKold x hx)) hcross
+  refine ⟨F, hKF, hpoint, ?_, ?_⟩
+  · intro y hy
+    exact hcrossF y (by change y ∈ (W : Set _); rwa [← hsource])
+  · intro y hy
+    exact hmetric y (by change y ∈ (W : Set _); rwa [← hsource])
+
+theorem GeometricCutoffRecord.exists_survivor_neighborhood_of_scalar_upper_bound
+    (R : GeometricCutoffRecord H i p)
+    (hOld : (H.event i).old = (H.event i).transition.trace.retainedCore)
+    {L : ℝ} (hδ : ∀ j, R.delta j ≤ 1 / 2)
+    (hscale : ∀ j, L < (1 - 4323 * R.delta j) * (R.neck j).scale)
+    {K : Set (H.event i).incoming.terminalRegularOpen}
+    (hKcompact : IsCompact K) (hK : IsPreconnected K)
+    (hscalar : ∀ y ∈ K, metricScalarAt (H.event i).terminal.metric y ≤ L)
+    {x : (H.event i).incoming.terminalRegularOpen} (hx : x ∈ K)
+    {q : (H.stage i.succ).Carrier} (hcross : (H.event i).RegularCrossing x.val q) :
+    ∃ (F : PartialDiffeomorph ThreeModel ThreeModel
+        (H.event i).incoming.terminalRegularOpen (H.stage i.succ).Carrier ∞)
+      (V : Set (H.event i).incoming.terminalRegularOpen),
+      IsOpen V ∧ K ⊆ V ∧ closure V ⊆ F.source ∧ IsCompact (closure V) ∧
+      F x = q ∧
+      (∀ y ∈ F.source, (H.event i).RegularCrossing y.val (F y)) ∧
+      ∀ y ∈ F.source, ∀ v w : TangentSpace ThreeModel y,
+        (H.event i).outputMetric.inner (F y)
+          (mfderiv ThreeModel ThreeModel (F : _ → _) y v)
+          (mfderiv ThreeModel ThreeModel (F : _ → _) y w) =
+            (H.event i).terminal.metric.inner y v w := by
+  let : LocallyCompactSpace (H.event i).incoming.terminalRegularOpen :=
+    ChartedSpace.locallyCompactSpace ThreeSpace (H.event i).incoming.terminalRegularOpen
+  obtain ⟨F, hKF, hpoint, hcrossF, hmetric⟩ :=
+    R.exists_survivor_partialDiffeomorph_of_scalar_upper_bound hOld hδ hscale hK hscalar hx hcross
+  obtain ⟨V, hV, hKV, hVF, hcompact⟩ :=
+    exists_open_between_and_isCompact_closure hKcompact F.open_source hKF
+  exact ⟨F, V, hV, hKV, hVF, hcompact, hpoint, hcrossF, hmetric⟩
+
+universe v
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {Y : Type*} [TopologicalSpace Y] {I : ModelWithCorners ℝ E Y}
+  {X : Type v} [TopologicalSpace X] [ChartedSpace Y X]
+
+theorem GeometricCutoffRecord.exists_survivor_chart_of_scalar_upper_bound
+    [PreconnectedSpace X]
+    (R : GeometricCutoffRecord H i p)
+    (hOld : (H.event i).old = (H.event i).transition.trace.retainedCore)
+    {L : ℝ} (hδ : ∀ j, R.delta j ≤ 1 / 2)
+    (hscale : ∀ j, L < (1 - 4323 * R.delta j) * (R.neck j).scale)
+    (φ : X → (H.event i).incoming.terminalRegularOpen)
+    (hφ : IsSmoothEmbedding I ThreeModel ∞ φ)
+    (hscalar : ∀ y, metricScalarAt (H.event i).terminal.metric (φ y) ≤ L)
+    (x : X) {q : (H.stage i.succ).Carrier}
+    (hcross : (H.event i).RegularCrossing (φ x).val q) :
+    ∃ F : PartialDiffeomorph ThreeModel ThreeModel
+        (H.event i).incoming.terminalRegularOpen (H.stage i.succ).Carrier ∞,
+      range φ ⊆ F.source ∧
+      ∃ ψ : X → (H.stage i.succ).Carrier, ψ = (F : _ → _) ∘ φ ∧
+        IsSmoothEmbedding I ThreeModel ∞ ψ ∧ ψ x = q ∧
+        (∀ y, (H.event i).RegularCrossing (φ y).val (ψ y)) ∧
+        (∀ K : Set X, ψ '' K = (F : _ → _) '' (φ '' K)) ∧
+        ∀ (y : X) (v w : TangentSpace I y),
+          (H.event i).outputMetric.inner (ψ y) (mfderiv I ThreeModel ψ y v)
+            (mfderiv I ThreeModel ψ y w) =
+          (H.event i).terminal.metric.inner (φ y) (mfderiv I ThreeModel φ y v)
+            (mfderiv I ThreeModel φ y w) := by
+  have hscalar' : ∀ z ∈ range φ, metricScalarAt (H.event i).terminal.metric z ≤ L := by
+    rintro z ⟨y, rfl⟩
+    exact hscalar y
+  obtain ⟨F, hsource, hpoint, hcrossF, hmetric⟩ :=
+    R.exists_survivor_partialDiffeomorph_of_scalar_upper_bound hOld hδ hscale
+      (isPreconnected_range hφ.contMDiff.continuous) hscalar' (mem_range_self x) hcross
+  refine ⟨F, hsource, (F : _ → _) ∘ φ, rfl,
+    DifferentialGeometry.Topology.isSmoothEmbedding_comp_partialDiffeomorph F hφ hsource,
+    hpoint, ?_, ?_, ?_⟩
+  · intro y
+    exact hcrossF (φ y) (hsource (mem_range_self y))
+  · intro K
+    exact (image_image (F : _ → _) φ K).symm
+  · intro y v w
+    exact (H.event i).survivor_chart_metric_inner F hmetric φ hφ.contMDiff hsource y v w
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
