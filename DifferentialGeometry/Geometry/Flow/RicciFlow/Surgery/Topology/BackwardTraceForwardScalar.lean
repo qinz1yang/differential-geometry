@@ -280,3 +280,75 @@ theorem extended_riemannNorm_le_of_initial_scalar_bound
 end
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
+
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
+
+universe u
+variable {H : ObservedHistory.{u}} {first last : Fin (H.eventCount + 1)}
+  {hle : first ≤ last} {s : ℝ}
+
+private theorem half_le_of_inv_max_sub_inv_le
+    {q R Q d : ℝ} (hq : 0 < q) (hQ : 2 * q < Q)
+    (hrec : |(max q R)⁻¹ - Q⁻¹| ≤ d) (hbudget : d * Q ≤ 1) : Q / 2 ≤ R := by
+  have hQpos : 0 < Q := by linarith
+  have hd : d ≤ Q⁻¹ := by
+    rw [inv_eq_one_div]
+    exact (le_div_iff₀ hQpos).mpr hbudget
+  have hinv : (max q R)⁻¹ ≤ (Q / 2)⁻¹ := by
+    have h := (abs_le.mp hrec).2
+    have heq : (Q / 2)⁻¹ = 2 * Q⁻¹ := by field_simp
+    rw [heq]
+    linarith
+  have hmax : Q / 2 ≤ max q R :=
+    (inv_le_inv₀ (hq.trans_le (le_max_left _ _)) (by positivity)).mp hinv
+  rcases le_total q R with hqR | hRq
+  · rwa [max_eq_right hqR] at hmax
+  · rw [max_eq_left hRq] at hmax
+    linarith
+
+variable (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+  (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+  (x : G.terminalRegularOpen) (A : BackwardPointTrace H first last hle x.val)
+  {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+  (hderiv : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+    ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+    q < (H.event j).incoming.flow.scalar t
+      (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) →
+    |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+      (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))) (Iic t) t| ≤
+      C * (H.event j).incoming.flow.scalar t
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) ^ 2)
+  (hfinal : ∀ t ∈ Ioo (H.time last) s, q < G.flow.scalar t x.val →
+    |derivWithin (fun v => G.flow.scalar v x.val) (Iic t) t| ≤ C * G.flow.scalar t x.val ^ 2)
+
+include hinit hq hderiv hfinal in
+theorem half_terminal_scalar_le_initial_of_time_sub_le
+    (hthreshold : 2 * q < metricScalarAt L.metric x)
+    (htime : C * (s - H.time first) * metricScalarAt L.metric x ≤ 1) :
+    metricScalarAt L.metric x / 2 ≤
+      metricScalarAt (H.initialMetric first) (A.point first le_rfl hle) := by
+  have hrec := A.inv_max_scalar_initial_sub_incoming_terminal_le G L hinit x hq hderiv hfinal
+  rw [max_eq_right (by linarith : q ≤ metricScalarAt L.metric x)] at hrec
+  exact half_le_of_inv_max_sub_inv_le hq hthreshold hrec htime
+
+include hinit hq hderiv hfinal in
+theorem terminal_scalar_div_le_birth_scale_of_time_sub_le
+    {C₀ qcap : ℝ} (hC₀ : 0 < C₀)
+    (hbirth : metricScalarAt (H.initialMetric first) (A.point first le_rfl hle) ≤ C₀ * qcap)
+    (hthreshold : 2 * q < metricScalarAt L.metric x)
+    (htime : C * (s - H.time first) * metricScalarAt L.metric x ≤ 1) :
+    metricScalarAt L.metric x / (2 * C₀) ≤ qcap ∧ q < C₀ * qcap := by
+  have hhalf := A.half_terminal_scalar_le_initial_of_time_sub_le G L hinit x hq
+    hderiv hfinal hthreshold htime
+  constructor
+  · apply (div_le_iff₀ (by positivity : 0 < 2 * C₀)).mpr
+    nlinarith
+  · linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
