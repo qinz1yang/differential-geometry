@@ -14145,3 +14145,100 @@ Audit receipt: C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\AuditCodex
 Audit SHA-256: D8787530C8962D9E432E3B81818EA7FA2FE6EC81A283B0E666508B74A542B30C
 Audit: all nonautomatic declarations in 80 modules; only propext / Classical.choice / Quot.sound; all thirteen linters passed; zero diagnostics.
 Remaining work: Transport the subsurface embedding invariant through actual component histories; construct the initial mixed-end component witness; connected-patch Type 2/3/half deletion; guarded finite-window recursion and frozen endpoint.
+
+# Codex item 19
+
+## Step 4: forty modules and full audit verified (2026-09-24)
+
+- All40 modules were prepared and checked sequentially under codex-moise-recon.
+  Each current source SHA-256 matches a clean, stable, shared-output-preserving receipt.
+- Full-name scan covers60 public declarations; only the two approved frozen leaf copies
+  remain. No proof change was needed beyond the five recorded helper renames.
+- Full audit checks every non-auto declaration from all40 modules, with original/direct
+  selector equivalence assertions, transitive axioms limited to propext/Classical.choice/
+  Quot.sound, and all13 environment linters. No heartbeat override or audit split was needed.
+- Audit receipt: `Verified C:\Users\liao9\AppData\Local\Temp\codex-moise-recon\AuditPR19.lean with no diagnostics; shared outputs unchanged.`
+  Audit SHA-256: `EF4D0363E4D99BE703958976C7E5F30D9ED554BE7E1DDAC385F39227CA9BA1CF`.
+- Source/receipt evidence: private PR19_VerifiedModules.json, PR19_ScanFinal.json,
+  PR19_StatementCheck_LF.json and AuditPR19.receipt.json.
+
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\Algebra\FreeModuleCancellation.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `EFA9917CB02507A11990DB4C301FBD1AC761248B31A54832DA1C23D2A3614CA8`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\Algebra\PrimitiveSummand.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `3C3A6BA562E0961E40E3FECBBEF24F469D9DA605C3DF51AC66B127E20364BA29`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\Algebra\PushoutHomologyDifference.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `8967D811DBDBE864E2CB0819EDDEF2A9F49E2CFAFC505EF5EF85C0B8DD61DBA1`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\Algebra\PushoutHomologyGeneration.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `DA2BFFAB88880A184990F2BADE011B8A18C6A9382D843F7DF7907E3CCDDC5841`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\Algebra\PushoutHomologyProduct.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `6A22A0DA580178757CBF0D6C14C7D1FC08062A947111F6150C7687BDF83CB12D`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\SmallChains\IntersectionPreimage.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `8FD0477C0586D1970486E459C8124586E4EF12C14E1FB31C8E47EF81E3BECA39`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\MayerVietorisProduct.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `A0C5944D2FD1C7E5B339BFD214515C3B567E4BBB9AA12EDDA4F3068F207DDD17`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryCollarHomotopy.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `5B03F2D13742C2126C5D858DCF4DA270EA9F8EFB4547E3232155C97BED4B01CB`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\CollaredCoverProduct.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `35F404620B07ACE2DEFC772027A5FC6EA47D1515DC7AF9D832BE685038919948`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\CompactChainSupport.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `0697A767E829EEF1093A5D9D0BA7F07CE3D7D741CFB8C887B307218F754D2551`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\ConvexComplementFirstHomology.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `3088F3D00C1C48C90EA0E9FB8752E4261FF9A3B1DD52E32D922C6A38C0746EB9`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\FirstHomologyProduct.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `DF4BE8DB43FC79383D35C03658307EF7FA47E20E4DBACC2F135232DA0BACDA05`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\FirstHomologyAdditiveMap.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `78F8C5AFD8A270C3A2D1C8D89817A72CEE286495DB028EBAD730C2DC4B12F8B2`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\Homology\MayerVietorisGeneration.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `9A547FA5462C49A79D30363E72B1677516EB7BAFADD31454E7DD1D207A49367A`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\BoundaryCollarInward.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `59C348B132EAFDE361B441015949378C5F7EE37E01BCF3D522E2D22B1071566C`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DeletedBoundaryCollar.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `355D56CE1E2354823AF8BFE74B6EC27C87A7A1D05EB9007D2BB65169951543AF`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CollaredHomologyGeneration.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `33B0048EA359CA891FFBCEDB5A82A8780436C3C985733C3960C3FFAD1E444198`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\CompactSubsurfaceNeighborhood.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `3E075AE0F8B0FC238BCC5472F656E13075522468494DA0FFD26EBA10F4E9BDEF`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskComplementConnected.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `05DB01CF6A3F5F6676EEDF235654B3AF60F7910A0C6CF88B64D589601F2B4BED`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\DisjointRimDiskFamily.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `829E693D5A22A9701F6C5E58DB2FA803A1AB5D4F91A4C09B213A7E8D3DBD04A0`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\MayerVietorisSubcomplexDifference.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4303DFD41AB304977427F5745BFECF48202B1029333B8F7F4DA98A29B28BB9E0`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\FrontierCycleCut.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `0A306EB66D64947CE82931A4D6CC63074709A36C75FFF073B02EA3250B18F9DD`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\NonseparatingPolygonHomologySummand.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `EBE94B27A6FA36CE6A817BF54AF7AE6FA9877B95AF3224696CE652D22196DE58`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonalCircleCover.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `D104B2639B8D8F7ED49E064600EB4BD45B49F6C4D589351AD13D414E77DABACC`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonalCircleEmbedding.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `2E0B30191E97565806375E8161B0568220E104C66F113089FB97AB416C8DB390`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonalTorusSlope.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `5EE0E51C852BDAB7F8C8CFA43B512C2C947ED082FBD3BA0A5DD971FFBC56CCED`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TorusBicollar.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `EBCA37DEDB754A5DA0CB66B075629722EDB673C741E15FD2A1DA69BB12A42306`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SolidTorusComplementHomology.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `5F5E615619538C95E9621EFACB281F912104531E6A6E4CD3805A8806F93BBE14`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\GlobalSolidTorusLongitude.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `3C72A91E912E8877184B71141635BA41A20FC3BAC625D6F9F9FCF08732479C2A`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SolidTorusBoundaryDeletionHomology.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `A34340245186959D6E923AB79DAA9095FD8A517207EAB711628FBEC353BB92CE`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\NullMeridianComplementHomology.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `84867523AF513360A41F45A981C2C4EA7E03F7FE88E2549583E97737BF170944`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PLDiskComplementHomology.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `7C4FD4B0B83C6B719A84D768E904EBFA42D69D03E801A631E1EC84E64AC2CE6B`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\TorusSubsurfaceHomologyRange.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `4EEF612DBE7B380908BFF2561DD3F420482DE9AF0E4011DD1A23396BB8FDC1A0`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskNeighborhoodS31.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `BCE235CF98A42F6D21330F4FD571A355C60CAD4F1AE5174D85D97BCD366BD2FB`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceDiskDisplacement.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `51E5F2C79474E82AD6C9932AC8E876D91971AB55813F69A10F2FE72CEA4D189C`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\SolidTorusSeparatingSubsurface.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `84843BC1A9108F7DE4D13E416ACD785C05F9E51B2E916F7A0CF4C9CC68980079`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonCycleResolution.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `515B1049580C003F7BA28A32EEABB8B8F810F6D39C5C4612EFAD795FC4362C2D`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonCarrierOfSpine.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `96B0DF83E1C9E53758F3747091D44968B21A434C2ECB5F75E71A8D941F71C3F4`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonComplementHomology.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `88D68D11D6CD5EC7663C961042D32D80C7A9AA6C99DAC8C209E969B116D3F5F9`.
+- Receipt: `Verified D:\differential-geometry-moise-int\DifferentialGeometry\Topology\PiecewiseLinear\PolygonNullhomotopicBoundaryDisk.lean with no diagnostics; shared outputs unchanged.`
+  SHA-256: `35FD7DBD63935430BA36557797D1675C20489B754F81ABA028DA85F76482F120`.
