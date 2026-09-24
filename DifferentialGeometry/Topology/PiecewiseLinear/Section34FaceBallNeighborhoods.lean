@@ -47,7 +47,7 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {cr : Section34VertexIndex 𝒦 𝒦' → Finset Ea} {f₁ : M₁ → M₂}
 
 open Classical in
-theorem exists_section34FaceBallNeighborhoods (h305 : Moise305Tame) (hU : IsOpen U)
+theorem exists_section34FaceBallNeighborhoods (hU : IsOpen U)
     (hh : IsEmbedding (U.domRestrict h))
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd) (hctrl : Section34CarrierControl U 𝒦 h η H)
     (hgraph : Section34GraphFrame U W h ψ H 𝒦 𝒦' src cr f₁)
@@ -303,7 +303,7 @@ theorem exists_section34FaceBallNeighborhoods (h305 : Moise305Tame) (hU : IsOpen
     rintro _ ⟨x, hx, rfl⟩ hxB
     exact (hW'G s hx).1.2 hxB
   · intro s
-    exact Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two h305 hU 𝒦 hK hhU hhinj
+    exact Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two hU 𝒦 hK hhU hhinj
       (isPLBall_convexHull_of_affineIndependent s.1 (𝒦.complex.indep s.2.1) (by rw [s.2.2]))
       (𝒦.complex.convexHull_subset_space s.2.1) (hc s) (hWo s) (hWsrc s) (hbodyW s)
 

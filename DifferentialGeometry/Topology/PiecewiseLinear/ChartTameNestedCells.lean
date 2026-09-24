@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPiece
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOn
-import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Moise304Producer
 
 /-!
 # Piecewise linear cells through charts of the maximal atlas; Theorem 30.5 in a chart
@@ -119,7 +119,7 @@ theorem isPLHomeomorphInto_symm_of_mem_maximalAtlas
 
 end MaximalAtlas
 
-theorem Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas (h305 : Moise305Tame)
+theorem Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     {c : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
     (hc : c ∈ (plGroupoid 3).maximalAtlas M) {C₁ C₂ : Set M} (hC₂ : C₂ ⊆ c.source)
@@ -133,7 +133,7 @@ theorem Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas (h305 : Moise305Tame)
   have hsub : c '' C₁ ⊆ interior (c '' C₂) :=
     (image_mono hC₁₂).trans (interior_maximal (image_mono interior_subset)
       (c.isOpen_image_of_subset_source isOpen_interior hint))
-  obtain ⟨D, hD, hD₁, hD₂⟩ := h305 _ _ hcell₁ hcell₂ hsub hshell hbi
+  obtain ⟨D, hD, hD₁, hD₂⟩ := moise305Tame _ _ hcell₁ hcell₂ hsub hshell hbi
   have hDt : D ⊆ c.target := by
     refine (hD₂.trans interior_subset).trans ?_
     rintro _ ⟨x, hx, rfl⟩

@@ -14568,3 +14568,13 @@ Accepted PRs #28/#29 at the pinned heads in `consult/PR2829-host-acceptance.md`:
 and variable blocks LF-identical. Canonical duplicates reconciled; both assemblies compile cleanly
 and pass their own audit. Promoted Section34Compact and Section34Normalization; frozen total 6 -> 4.
 Smooth host replay and the authorized E interface cleanup continue separately.
+
+# Codex item 22 E — discharged application inputs (06:08 UTC on 2026-09-24)
+
+The face-torus API now uses only its PL embedding input and a Hausdorff target. The canonical
+cell restriction theorem has the same generality. Fourteen application theorems in eight modules
+use the proved tame-cell producer; the generic 304-to-305 implication is retained below it.
+Fourteen changed modules and 261 real consumers compile without diagnostics. Seventy declarations
+pass two axiom/linter audits; both affected skeletons retain exactly one existing sorry warning.
+The frozen total remains 4. Details and source hashes: `consult/named-input-cleanup-host-acceptance.md`
+and its receipt manifest. Smooth integration continues in the isolated checkout.

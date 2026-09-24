@@ -653,7 +653,7 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁} {H : Finset Ea → Set M₂}
   {cr : Section34VertexIndex 𝒦 𝒦' → Finset Ea} {f₁ : M₁ → M₂}
 
-theorem exists_section34FaceBalls (h305 : Moise305Tame) (hU : IsOpen U)
+theorem exists_section34FaceBalls (hU : IsOpen U)
     (hh : Topology.IsEmbedding (U.domRestrict h))
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
     (hctrl : Section34CarrierControl U 𝒦 h η H)
@@ -665,7 +665,7 @@ theorem exists_section34FaceBalls (h305 : Moise305Tame) (hU : IsOpen U)
     id hcut
   choose C' hC'c hC'1 hRC' hC'dis using exists_section34FaceTorusAuxiliary hh hcut hgraph
   obtain ⟨Wn, -, -, hWo, -, -, hWH, hWV, hWW, hWS, hWbad, hcell⟩ :=
-    exists_section34FaceBallNeighborhoods h305 hU hh hcut hctrl hgraph
+    exists_section34FaceBallNeighborhoods hU hh hcut hctrl hgraph
       (fun s => C' s \ interior (section34FaceTorus (section34VertexBallImage src f₁) s))
       (fun s => (hC'c s).isClosed.sdiff isOpen_interior) hC'dis
   choose C Cb hC hbodyC hCW using hcell

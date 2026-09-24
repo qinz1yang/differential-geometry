@@ -28,6 +28,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNormal
 /-!
 # Section 34 on a compact piecewise linear ball: a producer of `Moise341`
 
+The current assembly takes only `Moise331OnTube`; tame nested cells are supplied by
+`moise305Tame`. All leaf proofs are imported. The notes below describe the historical
+decomposition and its earlier explicit inputs.
+
 The two assemblies `moise341OnNeighborhood` and `moise341_of_onNeighborhood` prove, for real,
 the local endpoint `Moise341OnNeighborhood` and then `Moise341` (Moise 34.1, page 239) from the
 twelve leaves of this file and the two named propositions `Moise331` (33.1) and `Moise305Tame`
@@ -99,12 +103,14 @@ exterior clause for the thin obstacle `⋃_{v ∈ t} V_v ∪ ⋃_{σ ⊂ t} h ''
 `exists_compactFaceEnvelopes` (the smallness of Lemmas 3--5; medium): open neighbourhoods
 `env σ` of `h '' σ` avoiding the non-incident vertex balls, overlapping only in `Int N''`, inside
 the carriers, with the auxiliary ball `A` of Lemma 4 (a polyhedral cell around `h '' τ` for a
-source disk `τ` with `τ ∩ K² = ∂σ`, by `h305`) such that `env σ ∩ A ⊆ Int N''_σ`, and 5(7) for
+source disk `τ` with `τ ∩ K² = ∂σ`, by `moise305Tame`) such that
+`env σ ∩ A ⊆ Int N''_σ`, and 5(7) for
 the thickened obstacle, derived from the thin one by choosing the envelopes after finitely many
 escape paths.  The explicit `IsOpen V` input supplies room for transporting the auxiliary
 ball's two collars; mere containment `C ⊆ V` does not supply that room.
 
-`exists_compactFaceShellBalls` (Lemma 3, first half; medium; page 240): from `h305`, piecewise
+`exists_compactFaceShellBalls` (Lemma 3, first half; medium; page 240): from
+`moise305Tame`, piecewise
 linear 3-balls `C_σ ⊆ env σ` with `h '' σ ⊆ Int C_σ`; the nested cells around `σ` with a
 spherical shell and a bicollared outer sphere are built in the source and transported by the
 embedding.  [ASSERTED]: arbitrarily small shell-separated cell neighbourhoods of `σ` and their
@@ -252,7 +258,7 @@ images of the vertex cells inside the neighbourhoods the graph frame prescribes,
 same three named inputs (`moise331OnTube h323 h324 h264`) and implies `Moise331`
 (`Moise331OnTube.moise331`), so the endpoint's dependency set is unchanged; a consumer holding
 `Moise323`, `Moise324` and `Moise264` calls
-`moise341_of_onNeighborhood (moise331OnTube h323 h324 h264) h305`.
+`moise341_of_onNeighborhood (moise331OnTube h323 h324 h264)`.
 
 Proved and imported (external collaborator, PR #11, lead-accepted on 2026-09-23 with zero-diagnostic
 checks and an axiom/linter audit; statement byte-identical): `exists_compactBigonSlide` (module
@@ -428,15 +434,15 @@ def Moise341OnNeighborhood : Prop :=
       ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
         IsPLHomeomorphOn f C (f '' C) ∧ ∀ x ∈ C, dist (f x) (h x) < ε
 
-theorem moise341OnNeighborhood (h331 : Moise331OnTube) (h305 : Moise305Tame) :
+theorem moise341OnNeighborhood (h331 : Moise331OnTube) :
     Moise341OnNeighborhood := by
   classical
   intro C V hC hV hCV h hh ε hε
   obtain ⟨K, K', src, srcBd, H, f₁, hcut, hcar, hgraph⟩ :=
     exists_compactCutAndGraph h331 hC hV hCV hh hε
   have hgen := hgraph.carriesFundamentalGroupOnto
-  obtain ⟨env, henv⟩ := exists_compactFaceEnvelopes h305 hV hCV hh hcut hcar hgraph
-  obtain ⟨fbl₀, fblBd₀, hfam₀⟩ := exists_compactFaceShellBalls h305 hV hCV hh hcut henv
+  obtain ⟨env, henv⟩ := exists_compactFaceEnvelopes hV hCV hh hcut hcar hgraph
+  obtain ⟨fbl₀, fblBd₀, hfam₀⟩ := exists_compactFaceShellBalls hV hCV hh hcut henv
   obtain ⟨fbl₁, fblBd₁, hfam₁, hgp₁, hgp₂, hfin₁, hfin₂⟩ :=
     exists_compactFaceBallsGeneralPosition hcut hgraph henv hfam₀
   obtain ⟨-, hKfin, hK'fin, -, -, -, hscell, hsbd, hsinter, hsdim, hscover, -, -, -, -, -, -,
@@ -557,13 +563,13 @@ theorem moise341OnNeighborhood (h331 : Moise331OnTube) (h305 : Moise305Tame) :
   exact ⟨F, isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hC.isPolyhedron hpl
     (hF.injOn.mono hCsub).bijOn_image, hdist⟩
 
-theorem moise341_of_onNeighborhood (h331 : Moise331OnTube) (h305 : Moise305Tame) : Moise341 := by
+theorem moise341_of_onNeighborhood (h331 : Moise331OnTube) : Moise341 := by
   intro C hC h hcont hinj ε hε
   obtain ⟨p, hp, hpC, hpdist⟩ := exists_isPLBall_subset_interior_dist_lt hC hcont (half_pos hε)
   have hpball : IsPLBall 3 (p '' C) := hC.of_isPLHomeomorphOn hp
   have hemb := isEmbedding_domRestrict_interior_of_continuousOn_injOn
     hC.isPolyhedron.isCompact hcont hinj
-  obtain ⟨g, hg, hgdist⟩ := moise341OnNeighborhood h331 h305 (p '' C) (interior C) hpball
+  obtain ⟨g, hg, hgdist⟩ := moise341OnNeighborhood h331 (p '' C) (interior C) hpball
     isOpen_interior hpC h hemb (ε / 2) (half_pos hε)
   refine ⟨g ∘ p, ?_, fun x hx => ?_⟩
   · rw [image_comp]

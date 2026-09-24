@@ -292,7 +292,7 @@ theorem exists_section34Compression_of_disjoint_of_uncleanPocket
     exact c.map_source (hfrTc hy)
   have hΘtor : IsPLTorus Θ := by
     rw [← hΘeq]
-    exact isPLTorus_image_frontier_section34FaceTorus hcut hgraph s hc hTc
+    exact isPLTorus_image_frontier_section34FaceTorus hcut (hgraph.2.2.1) s hc hTc
   have hmemT : ∀ y ∈ c.source, (y ∈ frontier T ↔ c y ∈ Θ) := by
     intro y hy
     rw [← hΘeq]
@@ -939,7 +939,7 @@ theorem exists_section34Compression_of_disjoint_of_uncleanPocket
     · have hOM := (hOsymm _ (hR'O hz'R)).2
       rw [← hte, c.left_inv (hTc ht)] at hOM
       exact hOMV t hOM w' hww htw'
-  have hTsolid := isCombinatorialSolidTorus_image_section34FaceTorus hcut hgraph s hc hTc
+  have hTsolid := isCombinatorialSolidTorus_image_section34FaceTorus hcut (hgraph.2.2.1) s hc hTc
   have hTconn := isConnected_compl_of_isCombinatorialSolidTorus hTsolid
   obtain ⟨qq, hqq⟩ : (Wc ∪ c '' T)ᶜ.Nonempty :=
     nonempty_compl.mpr (hW.isPolyhedron.isCompact.union hcT).ne_univ

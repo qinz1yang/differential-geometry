@@ -217,7 +217,7 @@ theorem LocallyFinitePLPieceIn.exists_isPLBall_nhdsWithin_space_of_isPLBall_two
     ⟨space_mono_of_faces_subset (restrict_faces_subset 𝒦.complex X) (hNT hy).1, (hNT hy).2.1⟩,
     fun x hx => nhdsWithin_le_of_mem (hTn x hx) (hNn x hx)⟩
 
-theorem Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two (h305 : Moise305Tame)
+theorem Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two
     {M₂ : Type*} [TopologicalSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
     (hU : IsOpen U) (𝒦 : LocallyFinitePLPieceIn Ea 3 M U)
     (hK : IsCombinatorialManifold 3 𝒦.complex) {h : M → M₂} (hhc : ContinuousOn h U)
@@ -307,7 +307,8 @@ theorem Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two (h305 : Mo
     (hD.isPolyhedron.isCompact.image_of_continuousOn
       (𝒦.continuousOn.mono hD𝒦)).image_of_continuousOn
         (hhc.mono (image_subset_iff.mpr fun x hx => hmapU (hD𝒦 hx)))
-  obtain ⟨C, B, hCB, hKC, hCY⟩ := h305.exists_isPLCellOn_of_isTopologicalCell hc hYc hcell hKc hKY
+  obtain ⟨C, B, hCB, hKC, hCY⟩ :=
+    Moise305Tame.exists_isPLCellOn_of_isTopologicalCell hc hYc hcell hKc hKY
   exact ⟨C, B, hCB, hKC, hCY.trans (interior_subset.trans hYW)⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

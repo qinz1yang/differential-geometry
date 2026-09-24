@@ -224,7 +224,7 @@ theorem exists_section34BigonTraceArc (hh : IsEmbedding (U.domRestrict h))
   have hXT : c '' frontier T = frontier X := c.image_frontier_of_isCompact hTcomp hTc
   obtain ⟨hP, hPbd⟩ := (hfcell s).isPLBall_image_chart hc hfc
   have hX : IsPolyhedron X :=
-    (isCombinatorialSolidTorus_image_section34FaceTorus hcut hgraph s hc hTc).isPolyhedron
+    (isCombinatorialSolidTorus_image_section34FaceTorus hcut (hgraph.2.2.1) s hc hTc).isPolyhedron
   have hreg : X ⊆ closure (interior X) := by
     rintro _ ⟨y, hy, rfl⟩
     obtain ⟨w, hw, hyw⟩ := mem_section34FaceTorus_iff.mp hy

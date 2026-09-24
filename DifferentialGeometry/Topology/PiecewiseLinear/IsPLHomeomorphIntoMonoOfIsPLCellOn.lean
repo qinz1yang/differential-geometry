@@ -116,7 +116,7 @@ universe u
 
 variable {M₁ M₂ : Type u} [TopologicalSpace M₁]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
-  [MetricSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
+  [TopologicalSpace M₂] [T2Space M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
 
 theorem IsPLHomeomorphInto.mono_of_isPLCellOn {d : ℕ} {Z S B : Set M₁} {G : M₁ → M₂}
     (hG : IsPLHomeomorphInto 3 G Z) (hS : IsPLCellOn d S B) (hSZ : S ⊆ Z) :

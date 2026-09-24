@@ -380,7 +380,7 @@ theorem exists_section34Compression_of_disjoint_of_cleanPocket
     exact c.map_source (hfrTc hy)
   have hΘtor : IsPLTorus Θ := by
     rw [← hΘeq]
-    exact isPLTorus_image_frontier_section34FaceTorus hcut hgraph s hc hTc
+    exact isPLTorus_image_frontier_section34FaceTorus hcut (hgraph.2.2.1) s hc hTc
   have hmemT : ∀ y ∈ c.source, (y ∈ frontier T ↔ c y ∈ Θ) := by
     intro y hy
     rw [← hΘeq]

@@ -79,14 +79,15 @@ section FaceTorus
 
 variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
   {M₁ M₂ : Type u} [TopologicalSpace M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
-  [MetricSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
-  {U W : Set M₁} {h : M₁ → M₂} {ψ : M₁ → ℝ} {H : Finset Ea → Set M₂}
+  [TopologicalSpace M₂] [T2Space M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
+  {U : Set M₁}
   {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U} {src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁}
-  {cr : Section34VertexIndex 𝒦 𝒦' → Finset Ea} {f₁ : M₁ → M₂}
+  {f₁ : M₁ → M₂}
 
 theorem isCombinatorialSolidTorus_image_section34FaceTorus
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hgraph : Section34GraphFrame U W h ψ H 𝒦 𝒦' src cr f₁) (s : Section34SimplexIndex 𝒦 3)
+    (hf₁ : IsPLHomeomorphInto 3 f₁ (section34CutNeighborhood src))
+    (s : Section34SimplexIndex 𝒦 3)
     {c : OpenPartialHomeomorph M₂ (EuclideanSpace ℝ (Fin 3))}
     (hc : c ∈ (plGroupoid 3).maximalAtlas M₂)
     (hTc : section34FaceTorus (section34VertexBallImage src f₁) s ⊆ c.source) :
@@ -94,7 +95,6 @@ theorem isCombinatorialSolidTorus_image_section34FaceTorus
   classical
   obtain ⟨-, hsubdiv, hmap, hcell, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hvertexEdge,
     hends, -, -⟩ := id hcut
-  obtain ⟨-, -, hf₁, -, -, -, -, -, -, -, -, -, -, -⟩ := id hgraph
   set R : Set Ea := ⋃ u ∈ s.1, convexHull ℝ ((s.1.erase u : Finset Ea) : Set Ea)
   have hRs : R ⊆ convexHull ℝ (s.1 : Set Ea) :=
     iUnion₂_subset fun u _ => convexHull_mono (Finset.coe_subset.mpr (Finset.erase_subset u s.1))
@@ -336,12 +336,13 @@ theorem isCombinatorialSolidTorus_image_section34FaceTorus
 
 theorem isPLTorus_image_frontier_section34FaceTorus
     (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hgraph : Section34GraphFrame U W h ψ H 𝒦 𝒦' src cr f₁) (s : Section34SimplexIndex 𝒦 3)
+    (hf₁ : IsPLHomeomorphInto 3 f₁ (section34CutNeighborhood src))
+    (s : Section34SimplexIndex 𝒦 3)
     {c : OpenPartialHomeomorph M₂ (EuclideanSpace ℝ (Fin 3))}
     (hc : c ∈ (plGroupoid 3).maximalAtlas M₂)
     (hTc : section34FaceTorus (section34VertexBallImage src f₁) s ⊆ c.source) :
     IsPLTorus (c '' frontier (section34FaceTorus (section34VertexBallImage src f₁) s)) := by
-  have hT := isCombinatorialSolidTorus_image_section34FaceTorus hcut hgraph s hc hTc
+  have hT := isCombinatorialSolidTorus_image_section34FaceTorus hcut hf₁ s hc hTc
   have hTcomp : IsCompact (section34FaceTorus (section34VertexBallImage src f₁) s) := by
     have hK : IsCompact (c '' section34FaceTorus (section34VertexBallImage src f₁) s) :=
       hT.isPolyhedron.isCompact

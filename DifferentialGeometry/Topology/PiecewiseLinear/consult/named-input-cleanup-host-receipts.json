@@ -1,0 +1,1327 @@
+{
+  "modules": [
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells",
+      "sha256": "3A68FAEEE05DADA37F134F21A951533A7349B95DC8024EF8867F1B9C5CE05D62",
+      "verifiedAtUtc": "2026-09-24T04:38:31.1724132Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CellPairBoundaryOrientation",
+      "sha256": "94B5F35C2F774F2B3687CF6F6EA41D676F0AF2F974E5A588B8097443E35B1D1B",
+      "verifiedAtUtc": "2026-09-24T04:39:10.5067322Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CellDiskOrientationCorrection",
+      "sha256": "2C91E1FC0625E846D3B72FF12EECD6939D77F7B4B6F6ABF232799EC0DA74B8E7",
+      "verifiedAtUtc": "2026-09-24T04:39:51.5074312Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn",
+      "sha256": "E170F2C31E20480A4749F4245BDBC740D6614A0F8A8B4FEFDBE7E74910C2292D",
+      "verifiedAtUtc": "2026-09-24T04:47:51.9113276Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellPairExtension",
+      "sha256": "48385339B121BDBD9F5189771D572BC86960C95E781BA7800DC495196D7BC005",
+      "verifiedAtUtc": "2026-09-24T04:48:13.8279570Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellPairComparison",
+      "sha256": "E1EE03AC59D074FB689FDA5B0600BA9C769310CB9F5B4E7F768826453E241ACA",
+      "verifiedAtUtc": "2026-09-24T04:48:34.9455146Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CellPairRelativeOrientation",
+      "sha256": "8661385AAF7FF3A26323238D49D30C2AD435C6C5E0854DCDD826AB7C2873C990",
+      "verifiedAtUtc": "2026-09-24T04:48:59.3810332Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.ChartCellConjugation",
+      "sha256": "05F2E9E8D0763932C3B9F9BEEC54F018CFEAFAD75DA8AD155F39F29E811A5407",
+      "verifiedAtUtc": "2026-09-24T04:39:11.0109581Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.TopologicalCellNestedShell",
+      "sha256": "48436F43858F322FE11F54B3DAC32F0E0D8DD3447E6A9CD550C077120A30DBA1",
+      "verifiedAtUtc": "2026-09-24T04:40:12.9813818Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.DiskBallNeighborhoodImage",
+      "sha256": "DE97FDBC898993687191F14B1A76A53FFFCE6BC673184B06BDD88A4E8A8E2D9F",
+      "verifiedAtUtc": "2026-09-24T04:40:46.1189491Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceRimTori",
+      "sha256": "0DB3547A4AEBACBA4D70D4F0587E213A88310B33899262562490F8A23DD16BE8",
+      "verifiedAtUtc": "2026-09-24T04:41:29.9369622Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ControlledGraphNeighborhood",
+      "sha256": "39639496CAF0AB11796A03EB6723F2F1439BD4A67753A22F4EACE649CB44437D",
+      "verifiedAtUtc": "2026-09-24T04:42:07.9577087Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionSegmentStep",
+      "sha256": "7D71171000A1F883EBCA38E486B1E3ABE73B795311341F224F424E805B69C64E",
+      "verifiedAtUtc": "2026-09-24T04:41:57.3458464Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ExteriorComponent",
+      "sha256": "A44377EF705851AE56C7B60E573303195D01C14CE19CB717F01E1FEA6BEDD986",
+      "verifiedAtUtc": "2026-09-24T04:48:54.9661393Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallNeighborhoods",
+      "sha256": "047CEF67CFAA33032F6A25E93374031CEDC4A35101A0CCD3D8A3DC6AB03A8E68",
+      "verifiedAtUtc": "2026-09-24T04:42:44.5283829Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusHomology",
+      "sha256": "D674D4324BD01E77D70DAC738775259500B0DFCB855E986073CEFDABA9B5E10C",
+      "verifiedAtUtc": "2026-09-24T04:43:12.9454215Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls",
+      "sha256": "F781D6326053825F721370F33992C7F3600470336E0F404C124FAA08E63A04D6",
+      "verifiedAtUtc": "2026-09-24T04:49:43.8409477Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionTools",
+      "sha256": "9EBB9C0BB26F3D2B229A6D53E961912FB423C2465FDD65E9BAEFF0D90938BEB6",
+      "verifiedAtUtc": "2026-09-24T04:50:28.4922877Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusCycle",
+      "sha256": "9E858DF92C9E0C1A6D9FB4D58B4AD91C067C2EACE6B31EEBFA2D0B376BAEB164",
+      "verifiedAtUtc": "2026-09-24T04:50:48.0623040Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentEdges",
+      "sha256": "3D1B79259BF7E9CC04124E3E177632E43CA6A6D72B552116DE0E2A6E79A77F24",
+      "verifiedAtUtc": "2026-09-24T04:52:52.6099812Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetCells",
+      "sha256": "A658D6D39CCD1EFA5ECA13BC85FFE30553DC810434219F83EEBA923DB70D0831",
+      "verifiedAtUtc": "2026-09-24T04:53:19.8311448Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetRecognitionOfTiling",
+      "sha256": "265D00F1F6A04E8F8D95A3470A0E818ADCDF0DDE533CECB6AB5C0685895A8E95",
+      "verifiedAtUtc": "2026-09-24T04:53:50.1705159Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCellBoundaries",
+      "sha256": "3372FE596F96E45B93D181CFAB905D15AD3E4D66E79C06B21B958D84FCF8FD46",
+      "verifiedAtUtc": "2026-09-24T04:54:15.6326429Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutIntersections",
+      "sha256": "6B44B4D24FE13C28695492C843621EA640DBAAB64AF1E6BC4E9AA1FE364628AA",
+      "verifiedAtUtc": "2026-09-24T04:54:41.0955171Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphPatches",
+      "sha256": "08FD2BC5C019CA304A7A946F6726635D5707453B3F4FAABE79A696E66F698733",
+      "verifiedAtUtc": "2026-09-24T04:55:06.8111947Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCellSeparation",
+      "sha256": "CFBF3B47263A689185D703121A65138A3E22555D1307A88A67DC31BBC3BE622D",
+      "verifiedAtUtc": "2026-09-24T04:54:45.1206422Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualSeparation",
+      "sha256": "431A1030E162D437BCC978D62E31230497795260AA44BA9EB3784C923AC72E35",
+      "verifiedAtUtc": "2026-09-24T04:55:09.9457826Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphArcSeparation",
+      "sha256": "333D22D9DCCBB4F71CC9828A83014E9E3849FF46E09BDFAF9EEF35DADD7DDB6B",
+      "verifiedAtUtc": "2026-09-24T04:55:32.7017601Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutCellRecognition",
+      "sha256": "61378532E6493EEDD37DD0614D01209743EA775D0762A2F9C077B68537FD08D7",
+      "verifiedAtUtc": "2026-09-24T04:56:00.3338874Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphVertexBoundaryCover",
+      "sha256": "63539904378D336DC45FB7B7A9FB1534BEA17EA7F844E4EF133112E0E720987D",
+      "verifiedAtUtc": "2026-09-24T04:55:34.5040918Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphTetrahedronBoundary",
+      "sha256": "08024F283C600AE3D7FF5DA5B85576A95F50A6E7F8542E6657024D8F0E5D8036",
+      "verifiedAtUtc": "2026-09-24T04:56:02.4179672Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphFaceBoundary",
+      "sha256": "8523B76CAB29D595E4E7F25DD40841C11945DCB35DE40F763E4BF313EDF5E067",
+      "verifiedAtUtc": "2026-09-24T04:56:26.5669180Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphArcBoundaries",
+      "sha256": "F9893F8930E71470D88BB5A4F400F8B6E6C6AA9525459635B2243DF6046B0977",
+      "verifiedAtUtc": "2026-09-24T04:56:30.0874297Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphSplitBoundary",
+      "sha256": "7A62999FE993273611CB25AE5F0B1C34EA43F9058514F0D037A8CE093C91B45F",
+      "verifiedAtUtc": "2026-09-24T04:56:52.5371747Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphPatchBoundary",
+      "sha256": "2D88539FD61BD04E48BDA58F70F32A3ACEC7B89FC8CCA80F895BFE4149D4C9ED",
+      "verifiedAtUtc": "2026-09-24T04:56:59.2990592Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphEdgeBoundaries",
+      "sha256": "6CBF933A86328135A0F6B56DAE9CDBD56DD5734526DE775EF43ECD5D42590AE6",
+      "verifiedAtUtc": "2026-09-24T04:57:21.6632640Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutFrame",
+      "sha256": "7F50319C02D740DD417143E1CC0D8306382A3B8D866D75ADA009C5983A71250A",
+      "verifiedAtUtc": "2026-09-24T04:57:48.6860865Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphCutFrame",
+      "sha256": "05EDE6069ED2C22145177563DF241920A85A102E7F960C2AF6EF78C57C6B3338",
+      "verifiedAtUtc": "2026-09-24T04:58:15.2060187Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceEnvelopes",
+      "sha256": "42A5AEA9A84486AEE5E4DBFA8A8B3A0D40BE3C7D4E7FC037533B0048BAD479A5",
+      "verifiedAtUtc": "2026-09-24T04:41:15.0519855Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGeneralPosition",
+      "sha256": "84F8096B2CC95514A72D38FA251DAB70884B172EEE9291DD49E9F4918C92F59D",
+      "verifiedAtUtc": "2026-09-24T04:51:03.7930396Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetCells",
+      "sha256": "8E8BA974545F519122F4480F140D38E53AE0C93451FAE17CCC627511F185E52C",
+      "verifiedAtUtc": "2026-09-24T04:52:52.3742960Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactClawBall",
+      "sha256": "C3A092583603900202651BD9EF996BE57CBC33E11E5D8035AEF7B5A5F8343163",
+      "verifiedAtUtc": "2026-09-24T04:53:23.9013863Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraClaws",
+      "sha256": "203F6975DEBD37635347E5504F6A75DE96164A70214CAE131D8EFB79C8637D4E",
+      "verifiedAtUtc": "2026-09-24T04:53:53.0936333Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraHoles",
+      "sha256": "BC0C1CCA1E594C95EB971FF51FE38D9A5E94252929AC8665FA364A42F1D5EBE5",
+      "verifiedAtUtc": "2026-09-24T04:54:17.7736856Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceRuns",
+      "sha256": "EA7EF97A2D2BF681498A535666C8BC2F3E1874AD1D6548A9B66C3D2B3A2F31A0",
+      "verifiedAtUtc": "2026-09-24T04:57:26.1676080Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraCircle",
+      "sha256": "E19EED0A9DE54E7CC554DCF09540E5A8B00DECA2E1448E9D636C82B7C8B506EA",
+      "verifiedAtUtc": "2026-09-24T04:57:53.5875298Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.FourDiskPocket",
+      "sha256": "18E5BA593619E6D7F60826A3BC35B08663C8D57D8C27906AD60D0CA6EB73000A",
+      "verifiedAtUtc": "2026-09-24T04:58:18.5714920Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSubdivisionEdgeEnds",
+      "sha256": "4DF84A190F5504A24D1AAC1A601D4A192A6A649F488F0FB10435BBECE537A75B",
+      "verifiedAtUtc": "2026-09-24T04:43:23.5809591Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.MarkedCellOrientation",
+      "sha256": "D9FC6A3D8E996E80691AC9B446F4D5FDE25659197573E0DFE72D885455115BC1",
+      "verifiedAtUtc": "2026-09-24T04:49:42.2062517Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.MarkedCellPositiveExtension",
+      "sha256": "C7B8562C4A0E46B5899B66D2548C46110294AAEADED6E2F13A30686BEEEDB805",
+      "verifiedAtUtc": "2026-09-24T04:44:03.5217603Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLBallImageComplement",
+      "sha256": "1C174DFF1D10BE4228BDD2F6F9C10BF02B0CBC8AD7E1284D999B1B539D677297",
+      "verifiedAtUtc": "2026-09-24T04:45:07.7784520Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellChartGluing",
+      "sha256": "643448EA6C7469A1B0078497509FA386BB2CB71CB1256B8DB0EA7D5512061FA4",
+      "verifiedAtUtc": "2026-09-24T04:58:38.0990959Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellChartBoundary",
+      "sha256": "772540BD3085D75845F6BAF06C18024F21484CEFAA3908C1AB3AFC6D901F6AFB",
+      "verifiedAtUtc": "2026-09-24T04:59:04.4146220Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraBall",
+      "sha256": "1FC1FCB46CFA851B76DC32827846E60E89D3183E8A2CBEAB62D15A37BBF7B1A5",
+      "verifiedAtUtc": "2026-09-24T04:58:49.6778249Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBall",
+      "sha256": "80CC90ED3D5764FB0625A827123493C8F52296F2E62755B2846FC9F5B71A441E",
+      "verifiedAtUtc": "2026-09-24T04:59:16.8201993Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualForeign",
+      "sha256": "1AEC2C1E3623708FC678EF7E1260D7E0130F2E94CEC2811FF6B8E292BA1EA926",
+      "verifiedAtUtc": "2026-09-24T04:59:39.5974294Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualPatch",
+      "sha256": "4A48539030E12070BF8E1F1E93CD44E68FDAE4F2CFE055B5AD3E470F74999B73",
+      "verifiedAtUtc": "2026-09-24T05:00:08.1573383Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellChartCircleRuns",
+      "sha256": "97048317735EFC7A40E47E1DBD6B2B4C4D077E8D992ADDD7F3FD5A3773CC8497",
+      "verifiedAtUtc": "2026-09-24T05:00:35.0051677Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CellEnlargements",
+      "sha256": "5FD8F865BF26DE7D29A143997C68D81A066DDD888B16628355B9BD74422D14BF",
+      "verifiedAtUtc": "2026-09-24T04:50:05.6831075Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPieceConjugate",
+      "sha256": "56B1BF91741D36A554AC30C73DF173583A8D258336CD20A35B1252F52E14F50A",
+      "verifiedAtUtc": "2026-09-24T04:59:24.7960166Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.SupportedPLPrismShift",
+      "sha256": "70686E595DCF543147D990603729DB8BE6672158980D57CB9AE6F728D5CDCC6E",
+      "verifiedAtUtc": "2026-09-24T04:59:46.7648295Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellEnlargement",
+      "sha256": "BBE1F65DC8CE054AB359BA23E8DF00D5F251950DD01F8AB665C0B8EEBD17E1A1",
+      "verifiedAtUtc": "2026-09-24T05:00:10.0744874Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCellPairHalfSpaceChart",
+      "sha256": "1DB08202199FECF7D54694E8A07F2FEE57E8DBC80565BB84BE39E701B227E587",
+      "verifiedAtUtc": "2026-09-24T05:00:33.6453035Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLDiskChartArcSplit",
+      "sha256": "3445E06271D33FC64B2C85731FE9A79F31B84F64CC16F884CCEB4ACFC8ABFDDF",
+      "verifiedAtUtc": "2026-09-24T05:00:59.4982954Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLDiskChartGluing",
+      "sha256": "78C28F2088618D7763AA7CD65ED1B4A270526585D45F1457D2DB7BD98E7EAE0B",
+      "verifiedAtUtc": "2026-09-24T05:00:59.8256195Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonBall",
+      "sha256": "01FFADEE8CFA960ED2DC40A04F4B3C3EC9252D981A9471F31FF437608BC4CF64",
+      "verifiedAtUtc": "2026-09-24T05:01:23.7493686Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonCarrier",
+      "sha256": "7E42146093045770ACA5E348AFE0AB878F2A5B3FFD2F26E4DDE402091DE4FB0B",
+      "verifiedAtUtc": "2026-09-24T05:01:58.6053048Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonInvariantUpdate",
+      "sha256": "0740A528B2B9268F7FDFD0FC50E9166E3C53AA8128D5F3FA73A5CC816A788F5A",
+      "verifiedAtUtc": "2026-09-24T05:01:24.2548871Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonChart",
+      "sha256": "D64ED583A46D028AEF8D6656E1904A350643997BBBF7950085186D49F3097BBA",
+      "verifiedAtUtc": "2026-09-24T05:02:27.8701141Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonModelUpdate",
+      "sha256": "24E5A7F8CACE1A37035026F9A1717DCA9E93E795F1C09029C4A14EAE871F10EE",
+      "verifiedAtUtc": "2026-09-24T05:01:59.3575827Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonTrace",
+      "sha256": "AEB0B5DC82E776673385872673A9A8694B01D7BF5C3FD57CA6AE8FB237969883",
+      "verifiedAtUtc": "2026-09-24T05:02:27.0090917Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonNeighborhood",
+      "sha256": "B2B27F754ADFE56C57449FA0542E362433DA6AE3CE0D499FC32C1C5E818B9128",
+      "verifiedAtUtc": "2026-09-24T05:02:54.8561607Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide",
+      "sha256": "27D61EBBECF3B383785AD3EE54E3CD1CD742919F69C1E8FABFD030E7288F20D0",
+      "verifiedAtUtc": "2026-09-24T05:03:28.5294326Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexIncidentEdge",
+      "sha256": "67415F433FBEE6EC639964B134F34961CDE561A5CE44CB06D2D1951B7DE7FD94",
+      "verifiedAtUtc": "2026-09-24T05:02:52.1124082Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierOrientation",
+      "sha256": "7F2F66AEA64F2656FA63EF333D63D0614045F3ADC05730FA6AFAF45DB6967A36",
+      "verifiedAtUtc": "2026-09-24T05:03:16.0133895Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ChartLocalEnlargements",
+      "sha256": "21B22E25269461B621F624378EFA9A94D1BC50F903F39F329E49DEF1C7FBCA07",
+      "verifiedAtUtc": "2026-09-24T05:03:37.0710410Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraSkeleton",
+      "sha256": "AA33ACC6D2ADFA48C003495D1C8D7F9166BCE02D8ADE1FF17CB22354B6E9765F",
+      "verifiedAtUtc": "2026-09-24T05:03:49.9629316Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraPaths",
+      "sha256": "C1D929381818D7676818026404513E28B7433C7708C651D7E158916720F3551B",
+      "verifiedAtUtc": "2026-09-24T05:04:13.5955657Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraClaws",
+      "sha256": "B559E8C0322A71797C8DE3B7BFB5906A89EFCD6CBB33C822705E474D602B7DF2",
+      "verifiedAtUtc": "2026-09-24T05:04:36.2035070Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ClawIncidence",
+      "sha256": "E7DD8A90294E0734F9A298327B6FB01EF0CEEC48098D3E8C8A3877830BCD8D8C",
+      "verifiedAtUtc": "2026-09-24T05:04:59.4524285Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ClawBall",
+      "sha256": "F021683F0A1D957F4E3FC1274BB1939E42D741F8F094EA3D05A0174BFD7AC868",
+      "verifiedAtUtc": "2026-09-24T05:05:24.5942111Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraEdges",
+      "sha256": "DCD754840B16DFB57FF7532206E0D056B8192931013C4454DE0473F7F075290C",
+      "verifiedAtUtc": "2026-09-24T05:05:07.9611011Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraHoles",
+      "sha256": "B53DDDC097A4E9FEC3A7BA0AE57B4CB5FA25E7A985BEAC0B1F0C07B1C33A377B",
+      "verifiedAtUtc": "2026-09-24T05:05:46.7438493Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ClawHoles",
+      "sha256": "BB52FD5A466634F6788418BA763FC35C8AA25B5998BD0F161D6A1DA017ED0151",
+      "verifiedAtUtc": "2026-09-24T05:06:10.0120118Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceHomology",
+      "sha256": "CB68DAEB7FD6CBED6C430EA9FD02DE52E98F77B6164128AA8064DE58079EAB1A",
+      "verifiedAtUtc": "2026-09-24T05:03:57.9897080Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceArcs",
+      "sha256": "985A57D9F1AC9F505CBB511B290C17FC5A334A6F8BAA25F6598AA6F62F2F77D0",
+      "verifiedAtUtc": "2026-09-24T05:04:21.6453484Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks",
+      "sha256": "2D584CF181635F3C34C8CD43EB2634CEEDB9F4D28E312B1C34176959074B71F0",
+      "verifiedAtUtc": "2026-09-24T05:04:44.1162885Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecognition",
+      "sha256": "B43492909C5291C20786A44F800915C684801AC124298A539913399B7F03BD4A",
+      "verifiedAtUtc": "2026-09-24T05:05:33.2985893Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundaryThinness",
+      "sha256": "8E2C1D02A12ECFE1C425DCBD574AA76D7EA6D0D240A1E4264CA95722ECCA9AE5",
+      "verifiedAtUtc": "2026-09-24T05:05:53.5033871Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactOuterIncidence",
+      "sha256": "0F06125D806EBE136F58CAEA0E75501C2BC7D12C59A594F30255820B065F9CD5",
+      "verifiedAtUtc": "2026-09-24T05:06:14.0100359Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraIncidence",
+      "sha256": "AD3F81AEF85FC908D080C370A273870BCC6B8AF96E8FE7CDE4D77D2A77DF79C5",
+      "verifiedAtUtc": "2026-09-24T05:06:39.0614759Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundaryIncidence",
+      "sha256": "075112F0FF1DADA713D89590BB1A4939D6E7E1485E6E87DAB8514E54AA6AE1DB",
+      "verifiedAtUtc": "2026-09-24T05:07:07.2334948Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFacets",
+      "sha256": "F1F5E4D1ED11E2A622B477F34944058076D1CD450410C054D8534C7B1D3EE745",
+      "verifiedAtUtc": "2026-09-24T05:06:33.2871296Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFaceOrder",
+      "sha256": "946EEED94052FCBC8430D0C5FBB909C0546D235E0DFD2B0AB42571D4C471A664",
+      "verifiedAtUtc": "2026-09-24T05:07:31.7209752Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonBall",
+      "sha256": "3FFA80356180E815D2A2494DCB1F755E1A2B5B59E66EA33E7B2ADFE1B5303B8D",
+      "verifiedAtUtc": "2026-09-24T05:07:00.3928076Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonCarrier",
+      "sha256": "69F3B16603FD518CDC11117A5466486E2BA48197EB3778361CB69023D6DAF1F8",
+      "verifiedAtUtc": "2026-09-24T05:07:26.4234075Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSupport",
+      "sha256": "6C765183D401E3D85BD91D0AC84DAD92C14E2C4E530E5C9A11F8742ADF6E8B53",
+      "verifiedAtUtc": "2026-09-24T05:07:52.1485242Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonChart",
+      "sha256": "E462FF9BCC3BC4EC52536AE7B078892D04C8236EFB8446F727771587A942BCB3",
+      "verifiedAtUtc": "2026-09-24T05:08:20.5602283Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonTrace",
+      "sha256": "DF633B3C98D2B37884DD3908B435AB02699ADD18F735BABE0C99ED65BD1FD9EC",
+      "verifiedAtUtc": "2026-09-24T05:07:57.6326380Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonNeighborhood",
+      "sha256": "9E484501139B7BB52352B06E33D6B7958E862C64FCD437CAF8D85DF16DE8A21D",
+      "verifiedAtUtc": "2026-09-24T05:08:24.6232865Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide",
+      "sha256": "D4E1B2ACB3E18203B4525BD6DB32CB3CEE0A596C674808FF7AC818D01E3C4CFB",
+      "verifiedAtUtc": "2026-09-24T05:08:52.4600573Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionBall",
+      "sha256": "C5994FDC9144E1BF79A346670A9ACA2F74C5CBA57F7F668B422C06D3C6F0C133",
+      "verifiedAtUtc": "2026-09-24T05:08:47.4666523Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionCarrier",
+      "sha256": "6E71884BE30F1B21D2E8467DFFB11D8EA53ED107CE4AF1B99E49A341AEC46702",
+      "verifiedAtUtc": "2026-09-24T05:09:11.0298313Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionInside",
+      "sha256": "323EA9E0261CBE86CB6C702E7923EC8CB992063A54D08EF8723786A20CCB9089",
+      "verifiedAtUtc": "2026-09-24T05:09:24.2529507Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionInside",
+      "sha256": "CE35E801CD8E1156A6A0DED8D68917733BD92527D2CAF4797BE97EEEB983CFF6",
+      "verifiedAtUtc": "2026-09-24T05:09:48.7901630Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutsideTools",
+      "sha256": "7FC2F40C7A35746D5C834E061E3A7FE8F4C3E7B409C0F954CA258A59B2B53349",
+      "verifiedAtUtc": "2026-09-24T05:09:35.5634190Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutsideUpdate",
+      "sha256": "68EFF664783A83F7E9789555D6E4DA75CFF18D88F9118C366F40C495ACF7CD34",
+      "verifiedAtUtc": "2026-09-24T05:09:58.3173169Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionChartBall",
+      "sha256": "2E6FA45AF85130287EE1148FDCEC2192E3098249813831B866C1F6E6A45D0F3A",
+      "verifiedAtUtc": "2026-09-24T05:10:20.1997964Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionTraceCarry",
+      "sha256": "DB5774F4E7B89B69E19741AD3BE9CD93A5F9B2C66F005DC837B992C9EFEA9489",
+      "verifiedAtUtc": "2026-09-24T05:10:10.3577892Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutside",
+      "sha256": "E1D5235A329E4D6CC070E64995ABF195C4CBF34941567A3890E3F7C33EF450F4",
+      "verifiedAtUtc": "2026-09-24T05:11:34.0721278Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeCrossing",
+      "sha256": "213DF169F73697497EB35BA8D704EEC99BDCF8C09A86EB88803FBB1513E1818D",
+      "verifiedAtUtc": "2026-09-24T05:10:40.4442490Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeChain",
+      "sha256": "7C4E480BB2A4255497AB40340712B45957C20292D207B3B055C4B1376DFC1134",
+      "verifiedAtUtc": "2026-09-24T05:11:08.2338002Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeGeneralPosition",
+      "sha256": "D6AC20A116FB22D7301589330ADB8FF45A17E04D9C26A4F2E9299B6B7498E3FF",
+      "verifiedAtUtc": "2026-09-24T05:11:36.1071447Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeGeneralPath",
+      "sha256": "2E51D217A0095A44B176F64CBC13AD44FF31AE9C009393061A53CA893D866452",
+      "verifiedAtUtc": "2026-09-24T05:12:03.2980641Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TubeArc",
+      "sha256": "67A3E8208AA17E9F0F2E22B3C1076238C80B40A5D6E5E91DEC9C8005EC1F4F2D",
+      "verifiedAtUtc": "2026-09-24T05:12:28.6362278Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ThroughTube",
+      "sha256": "20273DB6E64A99954615C71F59A204E4F9B928E27AEAD88FA7069FB4C6275AEE",
+      "verifiedAtUtc": "2026-09-24T05:17:29.6715786Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionOutsideTube",
+      "sha256": "40A3EC99DED41973EB3008F0EB3437DE8C2672CF0C8264D4DCBE837F04F1AEDA",
+      "verifiedAtUtc": "2026-09-24T05:18:45.3337194Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionOutside",
+      "sha256": "86356DCBF9A1FD5CEECAE6A2B292B8B7AEAC76AA879F7B23199449E6D2A95588",
+      "verifiedAtUtc": "2026-09-24T05:19:17.2120782Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionCases",
+      "sha256": "F566D851D30CAD79138C44CB7F3A2E572FFEA7533CB4A5FF85FCB702123938F8",
+      "verifiedAtUtc": "2026-09-24T05:11:58.4891450Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf",
+      "sha256": "E432F164524E9A6D63FBDA6F91BB6D83C4668641B40F174D8D87FA0AD7298C44",
+      "verifiedAtUtc": "2026-09-24T05:19:37.7206467Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchEnumeration",
+      "sha256": "BF28569384FDF2F29FC5EB786E81D610C8503AADC87011BB4763D1A8F688FF88",
+      "verifiedAtUtc": "2026-09-24T05:12:26.9965988Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualPatchCells",
+      "sha256": "06747776911D4792E2BBD56DF8A6A36EE38B81420602A54744949C3451E9107C",
+      "verifiedAtUtc": "2026-09-24T05:17:14.2713939Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualPairs",
+      "sha256": "A3D7D40ABA78952E7067D857B1D7C48E1A9C370BB68D887A5E88C785BBAEB85D",
+      "verifiedAtUtc": "2026-09-24T05:17:35.9482762Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualTiling",
+      "sha256": "52AD5D0275270357924C5CBA0A58C4632F3652A92D07D99DF7032292EF786928",
+      "verifiedAtUtc": "2026-09-24T05:17:59.8955988Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualOuterArc",
+      "sha256": "D2259655524E97D35101058A32A633B29CF171B7488F89BEFB008C244F510578",
+      "verifiedAtUtc": "2026-09-24T05:18:27.7760230Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactOuterEnumeration",
+      "sha256": "59A78CD8FFE150BBB144A637B266B0E1402CAFC9A5C8B08E3EDB1F2BA2B2F52B",
+      "verifiedAtUtc": "2026-09-24T05:18:53.0720598Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualOuterDisk",
+      "sha256": "D689BA3D1387DA0B71FA6B8A5D0B3067770A2B06464942E8124F5E97B119092C",
+      "verifiedAtUtc": "2026-09-24T05:19:17.2894748Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls",
+      "sha256": "E1FDBC2619FE63A76129CD57F2A544E89FABE06E28E0209C1B9F8FA74E11A83D",
+      "verifiedAtUtc": "2026-09-24T05:19:40.0962507Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCarriers",
+      "sha256": "5BF1023BF1C762C0817D6D5D1BB8D25D5575E7125A214B7A6FB5F85B487DEB49",
+      "verifiedAtUtc": "2026-09-24T04:48:13.2778768Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphCarriers",
+      "sha256": "31B765FE0DFB80B58CC1ED7933383F948881A9AF9BC7A1427138DAE96B43ACD2",
+      "verifiedAtUtc": "2026-09-24T05:19:57.7648727Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphNeighborhoods",
+      "sha256": "E612EB1B1C369629009AB54956BE63B159C3A01B621EEF5020BAAE0A7DB22C6F",
+      "verifiedAtUtc": "2026-09-24T05:20:17.6695477Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactExteriorNeighborhoods",
+      "sha256": "7325119A650D99828AEEA292C0043CE49C38F37DEA30860445283D01977A457C",
+      "verifiedAtUtc": "2026-09-24T05:20:00.0663097Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCutAndGraph",
+      "sha256": "38AE671FEB3659005770496CE3C0E3A1C2E645C6BC78210F8542D0457599FDC9",
+      "verifiedAtUtc": "2026-09-24T05:20:38.7045243Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundarySurface",
+      "sha256": "033D1C2274D9489162A7613D08CEEA23DD2C3755014A57F724975565FE5F828C",
+      "verifiedAtUtc": "2026-09-24T05:20:19.7730491Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeamArcSides",
+      "sha256": "51C7223F5DA56420209816FFC6A72DE891CC87070B58041878ABD95E8088F26E",
+      "verifiedAtUtc": "2026-09-24T05:20:38.5333167Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceCycle",
+      "sha256": "372E9EB88317C01F7BBF535D2312475AC343AA37CC8B8120D4E0E9C477D20156",
+      "verifiedAtUtc": "2026-09-24T05:20:59.1468505Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceSeams",
+      "sha256": "58E6DB851003EF31100D56A894B2AD99B53487BBB529B8392B105A499E9C34A9",
+      "verifiedAtUtc": "2026-09-24T05:20:57.8633267Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianSystem",
+      "sha256": "B8CFA1C7B4ADB45680D09D31705F11994C40078DA7AFF7C2C18FEF5B282CB8C1",
+      "verifiedAtUtc": "2026-09-24T05:21:17.7375976Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCircles",
+      "sha256": "C31CE5A68947B47B64B942AE0B52E53A4DD8F4BC9C403D82D535CEADCD80B136",
+      "verifiedAtUtc": "2026-09-24T05:21:16.1231029Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCarrying",
+      "sha256": "C41809C47D107D51F3600803C85BA421273E8282896E1943DD8D26AB5C56C59A",
+      "verifiedAtUtc": "2026-09-24T05:21:34.3867114Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingTrace",
+      "sha256": "B8FFC4D73CCB3229A5BA7EC86296D44581D638FCBD2D1976FEA6D67CD8E23B9D",
+      "verifiedAtUtc": "2026-09-24T05:21:52.4460962Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDiskLocalization",
+      "sha256": "2316EDFDA63D67BF6B334BD73EE2C86872529B13D6818A6081118B399FD885E8",
+      "verifiedAtUtc": "2026-09-24T05:22:10.8778650Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexTrace",
+      "sha256": "EE61E96BDB919D2DAB3BA6B2702966FAF4500C97C8FE52C6B2D1440A1531D6CF",
+      "verifiedAtUtc": "2026-09-24T05:22:29.7311245Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCrossing",
+      "sha256": "D33B3B289CF6C63DE4946EEC9BEF72DF91773E7E04E552F0EE2DD56C2AC6CCDD",
+      "verifiedAtUtc": "2026-09-24T05:22:48.6683613Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceFamily",
+      "sha256": "2AA33A001FCBA8DBF911931D1C913329853DAEB81AF878C5982C54C4B5CAF3FB",
+      "verifiedAtUtc": "2026-09-24T05:21:36.2291725Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMouthAvoidance",
+      "sha256": "2CECF325FC5FCDCA0949F7061F3B571C31746C26041CDB149B1CEE49D6E11207",
+      "verifiedAtUtc": "2026-09-24T05:22:49.4182082Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexOperations",
+      "sha256": "A5C56CD232DD95CE5A19409FA05B784FFF0678056C9DEECDF6497CA5BB275554",
+      "verifiedAtUtc": "2026-09-24T05:23:07.7286114Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDiskDescent",
+      "sha256": "482702B0B2C25A8D7A34429C6C769B81F0AF91E62B947AEA3DAA2A84DA4871DC",
+      "verifiedAtUtc": "2026-09-24T05:23:27.0839513Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPolygonFilling",
+      "sha256": "FB762CC768C88D17C648868062460B759C9AD17CD1CEF0184085A10BE91B149E",
+      "verifiedAtUtc": "2026-09-24T05:22:31.1704539Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedSphere",
+      "sha256": "C69E1C79D84DB2834F28EDB2A68E859B52B6D7DA57AD8ED51381039FFDF77F7C",
+      "verifiedAtUtc": "2026-09-24T05:23:08.0116705Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDisks",
+      "sha256": "A0AD967510AA1D4E5D2E763D6CFB5DC7753A647F89FB156A6702D1D29BF4B3E4",
+      "verifiedAtUtc": "2026-09-24T05:23:28.3217706Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactInnermostReturn",
+      "sha256": "27B4684A7B7E4DE4FD8E7482E38A821269C5F7A2BCD99E5C68E611F40B7B0B0C",
+      "verifiedAtUtc": "2026-09-24T05:28:15.4925019Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLocalization",
+      "sha256": "D41D91B9B8361702BE530FE3471F933C5F24963BCBBAC4B16CCC7C60542F7D9A",
+      "verifiedAtUtc": "2026-09-24T05:21:54.0102327Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianReturn",
+      "sha256": "176AEBA1AE1993F3869BEDC40CE23438BF3AE26F00AF1A041D1C707D170895AA",
+      "verifiedAtUtc": "2026-09-24T05:28:34.9292068Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingReturn",
+      "sha256": "7CCD7B638E044C513DFF64A69FD666594F03E7F243D0D8B2B0584C1C5512A438",
+      "verifiedAtUtc": "2026-09-24T05:23:45.2945483Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingOperations",
+      "sha256": "6CC2F0C9239A0D2043B3F9DC7F438E43C69EB490799886C88DA24DD644ACECA0",
+      "verifiedAtUtc": "2026-09-24T05:28:35.0659398Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNonseparating",
+      "sha256": "AD359809F4FC61B98A9EED79E44B0D76BC7E0201291439C2B8613E91B43FC974",
+      "verifiedAtUtc": "2026-09-24T05:28:54.9776858Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceDegree",
+      "sha256": "5AB0A54DAF6256EB666A6FF354CEE1467EBA66A2DBA4D6AD2A46359FCAFBBEBD",
+      "verifiedAtUtc": "2026-09-24T05:29:14.9740343Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLongitude",
+      "sha256": "C8BC5CD7AFD7BBE4BDFE6C3BC8DF11EEF7303F98C8EF5942A6E5E9AF24D0A7E6",
+      "verifiedAtUtc": "2026-09-24T05:29:41.3188294Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactExcessCrossings",
+      "sha256": "9ADCE9ED5C4C4A06E3B620B520DBB18C0CAD310C23DAAC9B573ED42142F30345",
+      "verifiedAtUtc": "2026-09-24T05:30:07.6232449Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceMeetsMeridians",
+      "sha256": "A4D5555A43D0063DB0E37326F21FFC3256827AF6F6F8DEC01A754C1DF7DA35B2",
+      "verifiedAtUtc": "2026-09-24T05:30:31.4101096Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNormalization",
+      "sha256": "AFCCEA017F226182EBCA38CB0242A57A089DEB213C8AF9341FC380355DD17D12",
+      "verifiedAtUtc": "2026-09-24T05:30:59.5764197Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34Compact",
+      "sha256": "009868217C0F649125416C6D3D6C4A93BAF08836CCF5CF631ED672AB5911E904",
+      "verifiedAtUtc": "2026-09-24T05:31:27.3329593Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf",
+      "sha256": "7C2ABDA822CDA46AF56E86EA2BB093C2F5D42CD9ED02E3E11DB9C442A541031A",
+      "verifiedAtUtc": "2026-09-24T05:22:12.2880742Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceVertexCycle",
+      "sha256": "0655C698E1F65A1F737915549D4385421AD21CF0EE870631580C62369105DFA0",
+      "verifiedAtUtc": "2026-09-24T05:28:15.3294744Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34DeletedFamilyTorus",
+      "sha256": "B337DE144F4964D6DCA1BB8EF55BBF12318CE1A11A0BC8B8C0FE9B248764CCB8",
+      "verifiedAtUtc": "2026-09-24T05:28:55.6385285Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeCarriers",
+      "sha256": "E27271C1EE2BDF676C9937D00758CFC791B38903C0819E565E44519B085FD12C",
+      "verifiedAtUtc": "2026-09-24T05:29:15.3860087Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeGraphRegions",
+      "sha256": "4BCF3CEFAE7500F7A579E81B7BB44F029282522C3D0A1B47A1CCD00258C2335C",
+      "verifiedAtUtc": "2026-09-24T05:29:40.2439168Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34RelativeVertexSigns",
+      "sha256": "552E62D80C97CB4C6C98FDF2DE911D1DBDBB54C0933D019B467D637165FA999E",
+      "verifiedAtUtc": "2026-09-24T05:30:05.4515072Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34RelativeEdgeCharacter",
+      "sha256": "E81C401B0D475C7234B9781D54E3F0A4E5D56D5407967FB13A1F0B2E34E14AA0",
+      "verifiedAtUtc": "2026-09-24T05:30:33.8811126Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ReferenceSphereMaps",
+      "sha256": "9D413889B5A32A4CF908C54D63A0B3D1D6B419B0DA5B66A66E5CE1DE71F3297A",
+      "verifiedAtUtc": "2026-09-24T05:31:00.7472757Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ReferenceBallMaps",
+      "sha256": "4D9F32FA1B5FB49C40EC2A73A7A3B40D713CC765EC426DD3C85A8D157CD7F44F",
+      "verifiedAtUtc": "2026-09-24T05:31:25.4309043Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PositiveReferenceMaps",
+      "sha256": "93DB4485251538081765F7D82CCCF3E1D81B98AFA9AFB9DA3273459E4B13C344",
+      "verifiedAtUtc": "2026-09-24T05:31:49.9869635Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceVertexAdjacency",
+      "sha256": "C873BE8EF0A62B5CC54915939845FE7727CA328C490BB85A51EEB72CC31A8B9B",
+      "verifiedAtUtc": "2026-09-24T05:31:48.8831043Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34JointCellMatching",
+      "sha256": "B27E7965BFCE33D61A717347BF2B50542E0E264CA1FACAA627AB6DD56446C04B",
+      "verifiedAtUtc": "2026-09-24T05:32:13.7481922Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedDeletedTorus",
+      "sha256": "0B753E2A23D7BC8490CDA4DBF8D710FAA7023EC7EBF0D0DFF039432C89AAFE1A",
+      "verifiedAtUtc": "2026-09-24T05:32:10.2551402Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf",
+      "sha256": "E5E6FA5F9FD8FD87381DC69D089DCCCF21CFA9C8B1D4800CFA6A02B894DDF9CE",
+      "verifiedAtUtc": "2026-09-24T05:32:34.3701822Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraCarriers",
+      "sha256": "00E8A99FECEC9C6CE6FDF9F4659BBB8C747DEDD1EAA6DE7147B0FFE9439B0C9A",
+      "verifiedAtUtc": "2026-09-24T05:32:31.8945528Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDiskIncidence",
+      "sha256": "D5DDF3F4F3248866F1FAD40B9E325C87984B8589F3674841E8B697931251B795",
+      "verifiedAtUtc": "2026-09-24T05:32:51.8655297Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceArcs",
+      "sha256": "E48A442CC44E2F5153E1107376842292FCCCA76E4D2DD2AB8D99301C9D3CA0C5",
+      "verifiedAtUtc": "2026-09-24T05:33:00.6392910Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceDisks",
+      "sha256": "7A6BB9C6D4245CD71D5B650273EAA20128654D5FAE4539CF59E4683EBF0C0EF3",
+      "verifiedAtUtc": "2026-09-24T05:33:26.5699932Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceRuns",
+      "sha256": "F487E9E7168F25139D11BF1C65E3396C2A5B29AEEAB0C5A94B4150553EFBDF6F",
+      "verifiedAtUtc": "2026-09-24T05:33:13.7254223Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ImageLocalFiniteness",
+      "sha256": "06B655205A5359A81EB4D565202895109A66D6F4ADA7D28E69E5D9D430E60BDD",
+      "verifiedAtUtc": "2026-09-24T05:33:35.0908001Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusFrontier",
+      "sha256": "32C73C8D401A557B7BFCEDE62AB27115798B19502A949B4F6CFC9B37866FBBA5",
+      "verifiedAtUtc": "2026-09-24T05:33:59.4375892Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCoveringEdgeCells",
+      "sha256": "63DB094B405CD25ECFF02F3AAA85CFED108572ABD017AB9DA127186441948D47",
+      "verifiedAtUtc": "2026-09-24T05:33:50.6389964Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicFaceCycle",
+      "sha256": "05F579D7DAC93A6F3D292AE68622334143E236F70ADB9E90B0186E8D753D8CBB",
+      "verifiedAtUtc": "2026-09-24T05:34:15.6793958Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicMeridianSystem",
+      "sha256": "21E23EB9111D8DD564CA0F9233BACA083982B18C27B9610D63F5812F4DEEFC53",
+      "verifiedAtUtc": "2026-09-24T05:34:45.3165480Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicDiskLocalization",
+      "sha256": "85268B794E2C9F2C29879515C32FDE9A970D2FFA49FCE78D344EEDA74B86E0FC",
+      "verifiedAtUtc": "2026-09-24T05:35:11.0730247Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceFaceTorusModel",
+      "sha256": "56F574464A05CCBA264D5FE6E407AE589124FAD8474482FE0BDF043992ABFF10",
+      "verifiedAtUtc": "2026-09-24T05:34:26.6558963Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceTetraBuffer",
+      "sha256": "2C37AC61BF4EE757E0ED5303FE0FA0D762500487BD944ADF6FCCC04B08240D05",
+      "verifiedAtUtc": "2026-09-24T05:34:55.3939400Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicFaceTorusModel",
+      "sha256": "18DDD796C89DC570F9B95F316475F12C42223F68766E6A7BC2E28C5EBFC6C9F5",
+      "verifiedAtUtc": "2026-09-24T05:35:18.1242866Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceCircles",
+      "sha256": "54634F1FA252A804AEAE1C667D6AC3ED2518E13E7AD7E8A5F4816786B542B303",
+      "verifiedAtUtc": "2026-09-24T05:35:40.9727828Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicPolygonFilling",
+      "sha256": "27239846FB63D2448BD0E90A645E7A0CE4F6AD18B39E243CF39129F9C66AE886",
+      "verifiedAtUtc": "2026-09-24T05:36:02.9054078Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPairModel",
+      "sha256": "A9BF0CB8F88DC97E99BDEFE58C4558C0525C4ACD2D5348405445AE235378F7BA",
+      "verifiedAtUtc": "2026-09-24T05:35:34.2195893Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexFrontier",
+      "sha256": "E6B592380D67CBE1A8A4B109A61D4C52D4741F0C417A4509921BEC3D1B1C3C33",
+      "verifiedAtUtc": "2026-09-24T05:35:55.7012352Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicSeamCrossing",
+      "sha256": "78630B2917CBC581265834157A8A98FFD49AA82362143AD96784C7022051E055",
+      "verifiedAtUtc": "2026-09-24T05:36:16.2556394Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceCrossing",
+      "sha256": "CCC459769A74FEFEF8944F5AE30C6591DCF3646A280D76FF0C8D5C35D123637E",
+      "verifiedAtUtc": "2026-09-24T05:36:24.8967534Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicVertexTrace",
+      "sha256": "9BD9D06CEECDBF5ABC6A9EEB3F3609E3EA552A64BE34706AFCD2464C2A39A71B",
+      "verifiedAtUtc": "2026-09-24T05:36:46.1220883Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34LinkPropagation",
+      "sha256": "350F674EA573DE98315404612A08B07F5C0D6B4BA5D1CCF35A83F7EC3F80BBD7",
+      "verifiedAtUtc": "2026-09-24T05:36:38.8130065Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexLink",
+      "sha256": "682DBB1EB8AEA5868AFA1F5F7ADC39DABB877ADBE0E7F1FB953BBBBA6AF855B2",
+      "verifiedAtUtc": "2026-09-24T05:36:59.9164353Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PuncturedLink",
+      "sha256": "87ECCF9E45B3CEF8540D74FE2148177AED55FBC49A420F041F0A8C7B316F487D",
+      "verifiedAtUtc": "2026-09-24T05:37:26.9379281Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34MouthConnectivity",
+      "sha256": "A07323EABC765CF80ED5FE1C89F878960E528D036B26FB23CA31FFB48BE2BE75",
+      "verifiedAtUtc": "2026-09-24T05:37:49.8468543Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexIncidentFacesFinite",
+      "sha256": "E50F30C530CFE7FC3805395E1CC6B5EF9761B65B970955362E744850E7E51A41",
+      "verifiedAtUtc": "2026-09-24T05:37:09.4513737Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicVertexCompression",
+      "sha256": "210321CDC8BE76277E3B2689FA53C52017B34A00FD9BF219272D177D9873424A",
+      "verifiedAtUtc": "2026-09-24T05:38:13.9654592Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicCompressionOperations",
+      "sha256": "3CF30EF798C656A4F7BB06D775909311A38529CAA0D485D80A5D7FF7965EDB67",
+      "verifiedAtUtc": "2026-09-24T05:38:36.5809609Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceLocalization",
+      "sha256": "E2EF8C1D0CDBCBB6E713DCADB4FA14E9DA803F2395EECF9AD367FA9642D3B3C1",
+      "verifiedAtUtc": "2026-09-24T05:37:35.1645937Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceLongitude",
+      "sha256": "184D4C389F4B875F905F4A4E24ECF7F6435305FC20B8E920D71AEE296B7D077C",
+      "verifiedAtUtc": "2026-09-24T05:38:09.2258175Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicExcessCrossingsReturn",
+      "sha256": "F5595833F829DD0B60710B177BA32018E67E3075178199D2FC5F55359FF9A8F1",
+      "verifiedAtUtc": "2026-09-24T05:38:34.8785698Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicSeamArcSides",
+      "sha256": "71B1D872FECBB81F18442F38E46319AD8EF53C33BAFE56C646C998D0E6299B59",
+      "verifiedAtUtc": "2026-09-24T05:38:57.2401913Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ReturnDiskBoundary",
+      "sha256": "53898DA42ECE4058ABBFB086625313403E6FFAD32DEF357E9C768CD9F75AA7FB",
+      "verifiedAtUtc": "2026-09-24T05:38:58.0394085Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicReturnCrosscut",
+      "sha256": "9D15366E0AF4626BDAC59085B5846B2237C2FE9D62899A4E12266D8DEAA31EA8",
+      "verifiedAtUtc": "2026-09-24T05:39:21.3157758Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceRimFiniteness",
+      "sha256": "D51E297FD9B00ED62B5E12D25E6F36CC8B8E6022C9E85DBDF9846F7955477486",
+      "verifiedAtUtc": "2026-09-24T05:39:20.1268693Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicReturnDescent",
+      "sha256": "74CD2A18E2FB5FE91DD33DFAFDCF0116C44A45A41E137B850C667C3D86767E89",
+      "verifiedAtUtc": "2026-09-24T05:39:50.4250000Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicReturnDisks",
+      "sha256": "60A0811851A90ADC759B82941C9447BE59075C2ACBD7B055B1EF83840AB17D22",
+      "verifiedAtUtc": "2026-09-24T05:39:53.1123853Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicReturnOperations",
+      "sha256": "C1C5F49F7BC21A05F0B3BCF3AE5B4111E2E6945CACFF69FE3014E4AA376491D6",
+      "verifiedAtUtc": "2026-09-24T05:40:15.6099782Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicExcessCrossings",
+      "sha256": "71D8A2225221E1948B6420584B4D6CEC572B2E2E6A3024C7537D2B1E0264BE11",
+      "verifiedAtUtc": "2026-09-24T05:40:37.6964495Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicSeparatingReturn",
+      "sha256": "1F6ED779CE26881E19811C29C53F7E279B91C3CDE36F8BFE89DBEDB10717FBF9",
+      "verifiedAtUtc": "2026-09-24T05:40:11.3742942Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceCarrying",
+      "sha256": "9C43E0B9AC11422A0B6EF79EA47FB050398660F55759365130F78372DFD09C14",
+      "verifiedAtUtc": "2026-09-24T05:40:33.1259489Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceCircleModel",
+      "sha256": "CE52254523AD4C452ED2FBB54DEB5045DCF7A332156B5688A1F5822329DC0818",
+      "verifiedAtUtc": "2026-09-24T05:40:52.6164519Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceMeetsMeridians",
+      "sha256": "2A1815DFA5484FCC3A8125C2CC6CAC8B21DBBDF5DB6D3105DCF101C14508AD33",
+      "verifiedAtUtc": "2026-09-24T05:40:58.8770305Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceNonseparating",
+      "sha256": "42DDBD371D3E018A3D63C82F3E88309CF70F401425287A8727A112E3DB13754C",
+      "verifiedAtUtc": "2026-09-24T05:41:14.4702753Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedPiercingRegularNeighborhood",
+      "sha256": "FD6BBD42AD44CE8C05AC1F13BCA436733E1A0528FFCD7458F7B528C1EE3C7A4F",
+      "verifiedAtUtc": "2026-09-24T05:41:20.2511650Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedPiercingSubdivision",
+      "sha256": "A729C22566A14B2F2E82BD5CFD739A25F785556B789D2B2CBB8CEE60454EC3A2",
+      "verifiedAtUtc": "2026-09-24T05:41:41.0192547Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SmallRegularNeighborhood",
+      "sha256": "BF5F45B4D2E3CFA780679F2895EBC6396FBA7511E41B93856990CB4974E901FE",
+      "verifiedAtUtc": "2026-09-24T05:41:59.8279152Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SmallSolidTorus",
+      "sha256": "E63844682BD5260E43BAD23E61BCD79AA2BC870D58AE86B82D4D14940E4C3E3A",
+      "verifiedAtUtc": "2026-09-24T05:42:20.1124917Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedNestedAnnuli",
+      "sha256": "4F78CE0B8C6E21CB1CD990C62D8F58CA01959E5ADFFCD67923346991B5659E79",
+      "verifiedAtUtc": "2026-09-24T05:42:40.0941924Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedAnnularNeighborhoods",
+      "sha256": "F0AC2AD32328453675CD30D1E934EEEE9C87CD31975A8D495D39F09F28BA15DD",
+      "verifiedAtUtc": "2026-09-24T05:42:58.8970941Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceNormalization",
+      "sha256": "F6424FE8C916511A2CFE55164E47C4D871AA886059C0ED5B89E682FA2A31C842",
+      "verifiedAtUtc": "2026-09-24T05:41:34.2745540Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34Normalization",
+      "sha256": "46530E68C843948A37D52AF0BAA049B7B5C980B396D5B706A79898EBB7100238",
+      "verifiedAtUtc": "2026-09-24T06:10:53.7213057Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraFaces",
+      "sha256": "B2CA47C4BD0BD7FD7085316B3A4344C1D8D1D570D6F0FACB82B6B7093822EE78",
+      "verifiedAtUtc": "2026-09-24T05:42:14.8100227Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PatchEnumeration",
+      "sha256": "FA47DF2EE3A2F43DBA2CC02062B7C62176762D0D35741F39457B9A9FEF686F76",
+      "verifiedAtUtc": "2026-09-24T05:42:39.2757574Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexCellIntersections",
+      "sha256": "EB1045062B08FE156758B03935B5B9F1ACB435CCCA9F45FE5A42DC8749F7225C",
+      "verifiedAtUtc": "2026-09-24T05:43:00.5439228Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercedVertexCells",
+      "sha256": "36302A2A637B162734652ABDA4291BE4D8A197C5AA8E504B91E44BEE048E8FD1",
+      "verifiedAtUtc": "2026-09-24T05:43:20.6255949Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingAnnularCrossings",
+      "sha256": "D4F0BEBC2541380814DD32C2F7163542EA51AB1A19524E3F77690CC082BD2945",
+      "verifiedAtUtc": "2026-09-24T05:43:18.1121384Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingSideStability",
+      "sha256": "24CCDC55E7F0F0A7FF85B91A8ABE2145E329BC9F717C4BDE011A8786B2084D02",
+      "verifiedAtUtc": "2026-09-24T05:43:35.1661055Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingAuxiliaryScales",
+      "sha256": "8DEB2FDECB80DE8770BF018458680B1E38688DC756A90C77F85803718665C139",
+      "verifiedAtUtc": "2026-09-24T05:43:53.5782468Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingConditionsOfCrossings",
+      "sha256": "9990CBB539E4AD61C27F38092FC42CDD5772F3F9F0E2230C78D5ACF37428DA33",
+      "verifiedAtUtc": "2026-09-24T05:43:37.5588088Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34RelativeVertexCrossings",
+      "sha256": "35B04BF73A9263DF6258AE23E82C28689609FAB316659BCF2E734F29BCDDE1D3",
+      "verifiedAtUtc": "2026-09-24T05:43:57.6300232Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingPackage",
+      "sha256": "7F59379BE20E43D571F4CFCB915CFDF7BB03A8FB2F68052467873992FFFEC55A",
+      "verifiedAtUtc": "2026-09-24T05:44:18.8080411Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingPackageAxioms",
+      "sha256": "89B3EB1A79533EA6482598ADE4B59F94682FB46B1ECF93AC1F8425AF44E6BCE4",
+      "verifiedAtUtc": "2026-09-24T05:44:36.0718164Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraFaceRuns",
+      "sha256": "C1C7ED1438DC99FCDFF7E07749A17EC634D0E730C72B2DC511210AD28F81982A",
+      "verifiedAtUtc": "2026-09-24T05:44:17.2479512Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraPocket",
+      "sha256": "64448D166F1AE4FC63F279B917108408ABFD5072A28B0ADDE1BA1AFDFC142A42",
+      "verifiedAtUtc": "2026-09-24T05:44:39.0759084Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualBall",
+      "sha256": "83C33E63CA3BEE73FD4ED87DF01070A674CA998A33F810CC8DA5AFDEAD7A4208",
+      "verifiedAtUtc": "2026-09-24T05:45:01.7387980Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualLocalSide",
+      "sha256": "20CAC69508C4DFE173C34712C1888E55AA723FDD8A894B9319ABF2E7CB5F7E7D",
+      "verifiedAtUtc": "2026-09-24T05:45:23.2066274Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualForeignVertex",
+      "sha256": "D413D536EE639E2560E8D55995E2961A78670034FA85889D3C89AFD13F8A8005",
+      "verifiedAtUtc": "2026-09-24T05:45:42.8473229Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualBoundary",
+      "sha256": "EC77A27A3033B605924EB4F783D8E46CB26C208C8F9FD0CBFA45575ABE9257AD",
+      "verifiedAtUtc": "2026-09-24T05:46:02.1296376Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualPatchSides",
+      "sha256": "5AF6BDD19AFBFFD5558ABD8026070EF28C1EE6AB556CD80650C95DC341D9803B",
+      "verifiedAtUtc": "2026-09-24T05:46:21.1944012Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualPatch",
+      "sha256": "8046E90EAD8E0B6BD02B034EE38001A2A03116C4A62A355879124D506A406DD6",
+      "verifiedAtUtc": "2026-09-24T05:46:41.3206722Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualPatchCells",
+      "sha256": "DB14F94AE1E394517EDAB1FFA9F0D31E6D8500C22E5865158DC592B5613FC272",
+      "verifiedAtUtc": "2026-09-24T05:47:01.4530260Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualUnion",
+      "sha256": "3033A67AC31E01AA69575883257C481E4A15B51C46A64F3B73B4D9173D6D247F",
+      "verifiedAtUtc": "2026-09-24T05:47:22.7605058Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualForeignFace",
+      "sha256": "23C0454F228145B30150932C817C18DB917FA621C1019454C29E1C3573D5ADE8",
+      "verifiedAtUtc": "2026-09-24T05:46:16.9946929Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualPairs",
+      "sha256": "2DB930E583EA1F55D270132F53131789B54973CF5DF1FE0230016ADA000B301C",
+      "verifiedAtUtc": "2026-09-24T05:46:37.1141394Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualCoverLocal",
+      "sha256": "4616388671EF5FB40D5AB0AC3853BAF56593635FFDA9F067A223D8731722D592",
+      "verifiedAtUtc": "2026-09-24T05:46:57.4215147Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34TetraCofaces",
+      "sha256": "5352D5771EAB38C536A25481C185F71B2F062A0D2DFB408A885EE46136CB6BEA",
+      "verifiedAtUtc": "2026-09-24T05:44:56.1008134Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualEdgeCover",
+      "sha256": "C57AC72157973D63066AF07CBB43D56E79076FA5C86BEF0939D4B188DB0129E5",
+      "verifiedAtUtc": "2026-09-24T05:47:42.2173881Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualVertexCover",
+      "sha256": "A82E92C145807FD72D1672DBBF86EA0BB34BC68160C559342050E5169769E5D2",
+      "verifiedAtUtc": "2026-09-24T05:48:02.4684000Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34ResidualBalls",
+      "sha256": "9B30B7B5ADE1C380C35C9689FD2D253CA80C95C11412823753903F30CD993511",
+      "verifiedAtUtc": "2026-09-24T05:48:21.6241268Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceIncidence",
+      "sha256": "BFDCAEB850E5C47E95A36DAAE06E5C24F55DA7F873737E75FDD4A5B6D5973DD4",
+      "verifiedAtUtc": "2026-09-24T05:45:17.7198224Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34SourceFaceOrder",
+      "sha256": "E52C468ABD48D7FA847E85F379B57B148377E0D5EA2DE3B45BEB62C9DD20B424",
+      "verifiedAtUtc": "2026-09-24T05:45:35.8123225Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparation",
+      "sha256": "4A221220F84FD08DC2A9E209813AAA40CD100E0C48E71ACD7FE04C99929238BE",
+      "verifiedAtUtc": "2026-09-24T05:45:57.6533607Z"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparationAxioms",
+      "sha256": "8E59A3B1CAC98B348062D76F3727D2C0C813927FABF9A10BA634657D22B3AB5F",
+      "verifiedAtUtc": "2026-09-24T05:47:17.6332587Z"
+    }
+  ],
+  "changedDeclarations": 70,
+  "skeletons": [
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Skeleton.ControlledGraphNeighborhood",
+      "sourceSha256": "9DC069C3712B8F440C4E3C946FB23B2EAE0E868C480208E6AEB2838ED2371321",
+      "endedAtUtc": "2026-09-24T05:59:49.6303609Z",
+      "errors": 0,
+      "retainedSorryWarnings": 1
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Skeleton.Section34Terminal",
+      "sourceSha256": "0356B98627D3F41FA394172A71DC2DB0C60056EDD46EE58E779DC47B31BC8AD3",
+      "endedAtUtc": "2026-09-24T06:04:17.3130382Z",
+      "errors": 0,
+      "retainedSorryWarnings": 1
+    }
+  ],
+  "auditRoot": "C:\\Users\\liao9\\AppData\\Local\\Temp\\claude-moise-integration-private"
+}

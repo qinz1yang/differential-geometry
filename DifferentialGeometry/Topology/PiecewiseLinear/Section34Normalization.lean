@@ -18,7 +18,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceNormalization
 
 /-!
-# Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
+# Normalised face balls for Section 34
+
+The current assembly takes `Section34ControlStatement` and
+`ControlledGraphNeighborhoodStatement`; tame nested cells are supplied by `moise305Tame`.
+All leaf proofs are imported. The notes below record the historical decomposition.
 
 The assembly `section34NormalFamily` proves the endpoint `Section34NormalFamilyStatement` for
 real from five of the six leaves of this file; every `sorry` is a leaf and none sits inside
@@ -28,8 +32,8 @@ an assembly.  The endpoint is stated so that it matches, binder for binder, the 
 `[HasGroupoid M₁ (plGroupoid 3)]`, `[HasGroupoid M₂ (plGroupoid 3)]`, `IsOpen U`,
 `Topology.IsEmbedding (U.domRestrict h)`, `ContinuousOn η U` and `∀ x ∈ U, 0 < η x`.  Skeletons
 cannot import each other, so the match is textual: the terminal skeleton discharges its leaf by
-`intro`ducing that binder list and applying this endpoint to `h305`, to the two named
-propositions of the real module `Section34Statements` and to `hU hh hηc hηpos`, the four
+`intro`ducing that binder list and applying this endpoint to the two named propositions of
+the real module `Section34Statements` and to `hU hh hηc hηpos`, the four
 explicit hypotheses being in the same order in both statements.
 
 What is taken as given and what is produced.  `Section34ControlStatement` (step P0) supplies the
@@ -394,7 +398,7 @@ def Section34NormalFamilyStatement : Prop :=
       (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
       Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd fbl fblBd
 
-theorem section34NormalFamily (h305 : Moise305Tame) (hP0 : Section34ControlStatement.{u})
+theorem section34NormalFamily (hP0 : Section34ControlStatement.{u})
     (h351 : ControlledGraphNeighborhoodStatement.{u}) : Section34NormalFamilyStatement.{u} := by
   intro M₁ M₂ _ _ _ _ U h η _ _ _ _ _ _ hU hh hηc hηpos
   obtain ⟨N, 𝒦, H, hcm, hctrl⟩ := hP0 hU hh η hηc hηpos
@@ -410,7 +414,7 @@ theorem section34NormalFamily (h305 : Moise305Tame) (hP0 : Section34ControlState
     -, -, -, -, hsupT,
     -, -, hends, -, -⟩ := id hcut
   obtain ⟨hsup, -, -, -, -, -⟩ := id hctrl
-  obtain ⟨fbl₀, fblBd₀, hinv₀⟩ := exists_section34FaceBalls h305 hU hh hcut hctrl hgraph
+  obtain ⟨fbl₀, fblBd₀, hinv₀⟩ := exists_section34FaceBalls hU hh hcut hctrl hgraph
   obtain ⟨fbl, fblBd, hinv, hnc, hnb⟩ :=
     exists_section34TerminalFaceBalls hinv₀
       (fun _ _ s hg hop => by
