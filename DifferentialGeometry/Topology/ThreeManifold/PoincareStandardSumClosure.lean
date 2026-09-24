@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardModels
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLawsAssembly
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 
 set_option autoImplicit false
 noncomputable section
@@ -73,5 +74,25 @@ theorem FiniteCutCapTrace.isPoincareStandard_of_initialIdentification_of_localRe
     (Φ : T.InitialIdentification M) : isPoincareStandard M.Carrier :=
   T.isPoincareStandard_of_initialIdentification h hctrl hext
     poincareStandardSumClosed_holds M Φ
+
+end DifferentialGeometry.Topology
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Topology
+
+universe u
+
+theorem isPoincareStandard_smoothConnectedSum
+    (M N : ConnectedClosedOrientedManifold.{u} 3)
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold)
+    (hM : isPoincareStandard M.Carrier) (hN : isPoincareStandard N.Carrier) :
+    isPoincareStandard
+      (smoothConnectedSum M N c d boundaryAttachment).toConnectedClosedOrientedManifold.Carrier := by
+  obtain ⟨e⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_charts
+    c (orientedBallChart M) d (orientedBallChart N) boundaryAttachment
+  exact isPoincareStandard_of_diffeomorph e.val
+    (isPoincareStandard_connectedSum hM hN)
 
 end DifferentialGeometry.Topology

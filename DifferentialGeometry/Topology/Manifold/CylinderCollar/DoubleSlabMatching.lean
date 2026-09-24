@@ -36,6 +36,96 @@ private theorem reverseCylinder_band :
 private theorem reverseCylinder_involutive (q : SphereCylinder) : reverseCylinder (reverseCylinder q) = q := by
   simp only [reverseCylinder_apply,sub_sub_cancel,Prod.mk.eta]
 
+theorem exists_two_ended_slab_collar_matching
+    (P₀ P₁ Q : PartialDiffeomorph SphereCylinderModel I SphereCylinder M ∞)
+    (hP₀ : univ ×ˢ Icc (0 : ℝ) 1 ⊆ P₀.source)
+    (hP₁ : univ ×ˢ Icc (0 : ℝ) 1 ⊆ P₁.source)
+    (hQ : univ ×ˢ Icc (0 : ℝ) 1 ⊆ Q.source)
+    (hzero : ∀ z : S2, Q (z,0) = P₀ (z,1))
+    (hone : ∀ z : S2, Q (z,1) = P₁ (z,1))
+    (hmeet₀ : P₀ '' (univ ×ˢ Icc (0 : ℝ) 1) ∩ Q '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+      P₀ '' (univ ×ˢ ({0} : Set ℝ)) ∪ P₀ '' (univ ×ˢ ({1} : Set ℝ)))
+    (hmeet₁ : P₁ '' (univ ×ˢ Icc (0 : ℝ) 1) ∩ Q '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆
+      P₁ '' (univ ×ˢ ({0} : Set ℝ)) ∪ P₁ '' (univ ×ˢ ({1} : Set ℝ))) :
+    ∃ G : SphereCylinder ≃ₘ⟮SphereCylinderModel,SphereCylinderModel⟯ SphereCylinder,
+      G '' (univ ×ˢ Icc (0 : ℝ) 1) = univ ×ˢ Icc (0 : ℝ) 1 ∧
+      (∀ z : S2, G (z,0) = (z,0)) ∧ (∀ z : S2, G (z,1) = (z,1)) ∧
+      (∀ z : S2, (fun q => Q (G q)) =ᶠ[𝓝 (z,0)] (fun q => P₀ (q.1,1+q.2))) ∧
+      ∀ z : S2, (fun q => Q (G q)) =ᶠ[𝓝 (z,1)] (fun q => P₁ (q.1,2-q.2)) := by
+  let B : Set SphereCylinder := univ ×ˢ Icc (0 : ℝ) 1
+  let R := reverseCylinder
+  have hR : R '' B = B := reverseCylinder_band
+  obtain ⟨r₀,hr₀,F₀,hF₀,hF₀zero,hF₀fix,hF₀band⟩ :=
+    exists_slab_collar_matching_of_boundary_intersection P₀ Q hP₀ hQ hzero hmeet₀
+  let Q₀ := F₀.toPartialDiffeomorph.trans Q
+  have hQ₀ : B ⊆ Q₀.source := fun q hq =>
+    ⟨mem_univ _,hQ (hF₀band ▸ mem_image_of_mem F₀ hq)⟩
+  have hQ₀i : Q₀ '' B = Q '' B := by
+    calc
+      _ = Q '' (F₀ '' B) := by rw [image_image]; rfl
+      _ = _ := by rw [hF₀band]
+  let A := R.toPartialDiffeomorph.trans Q₀
+  have hA : B ⊆ A.source := fun q hq =>
+    ⟨mem_univ _,hQ₀ (hR ▸ mem_image_of_mem R hq)⟩
+  have hAi : A '' B = Q '' B := by
+    calc
+      _ = Q₀ '' (R '' B) := by rw [image_image]; rfl
+      _ = _ := by rw [hR,hQ₀i]
+  have hA0 (z : S2) : A (z,0) = P₁ (z,1) := by
+    change Q (F₀ (R (z,0))) = _
+    rw [reverseCylinder_apply,sub_zero,hF₀fix _ (by norm_num),hone]
+  obtain ⟨r₁,hr₁,F₁,hF₁,hF₁zero,hF₁fix,hF₁band⟩ :=
+    exists_slab_collar_matching_of_boundary_intersection P₁ A hP₁ hA hA0 (by
+      rw [hAi]
+      exact hmeet₁)
+  let U := (R.trans F₁).trans R
+  let G := U.trans F₀
+  have hUb : U '' B = B := by
+    calc
+      _ = R '' (F₁ '' (R '' B)) := by simp only [image_image]; rfl
+      _ = _ := by rw [hR,hF₁band,hR]
+  have hGb : G '' B = B := by
+    calc
+      _ = F₀ '' (U '' B) := by rw [image_image]; rfl
+      _ = _ := by rw [hUb,hF₀band]
+  have hUfix (q : SphereCylinder) (hq : q.2 ≤ 1/2) : U q = q := by
+    change R (F₁ (R q)) = q
+    rw [hF₁fix _ (by rw [reverseCylinder_apply]; change (1/2:ℝ) ≤ 1-q.2; linarith),reverseCylinder_involutive]
+  refine ⟨G,hGb,?_,?_,?_,?_⟩
+  · intro z
+    change F₀ (U (z,0)) = _
+    rw [hUfix _ (by norm_num),hF₀zero]
+  · intro z
+    change F₀ (R (F₁ (R (z,1)))) = _
+    have hR1 : R (z,1) = (z,0) := by rw [reverseCylinder_apply,sub_self]
+    rw [hR1,hF₁zero,reverseCylinder_apply,sub_zero,hF₀fix _ (by norm_num)]
+  · intro z
+    filter_upwards [continuous_snd.continuousAt.preimage_mem_nhds
+      (Metric.ball_mem_nhds (0 : ℝ) (lt_min hr₀ (by norm_num : (0 : ℝ)<1/2)))] with q hq
+    have ht : |q.2| < min r₀ (1/2:ℝ) := by simpa [Real.dist_eq] using hq
+    change Q (F₀ (U q)) = _
+    rw [hUfix q (by linarith [(abs_lt.mp ht).2,min_le_right r₀ (1/2:ℝ)])]
+    exact (hF₀ q (ht.le.trans (min_le_left _ _))).2
+  · intro z
+    filter_upwards [continuous_snd.continuousAt.preimage_mem_nhds
+      (Metric.ball_mem_nhds (1 : ℝ) hr₁)] with q hq
+    have ht : |(R q).2| ≤ r₁ := by
+      rw [reverseCylinder_apply]
+      change |1-q.2| ≤ r₁
+      rw [abs_sub_comm]
+      exact (show |q.2-1| < r₁ by simpa [Real.dist_eq] using hq).le
+    have hh := (hF₁ (R q) ht).2
+    change Q (F₀ (R (F₁ (R q)))) = _
+    change Q (F₀ (R (F₁ (R q)))) = P₁ ((R q).1,1+(R q).2) at hh
+    have he : ((R q).1,1+(R q).2) = (q.1,2-q.2) := by
+      rw [reverseCylinder_apply]
+      apply Prod.ext
+      · rfl
+      · dsimp
+        ring
+    exact hh.trans (congrArg P₁ he)
+
+
 theorem exists_double_slab_collar_matching
     (a c : PartialDiffeomorph SphereCylinderModel I SphereCylinder M ∞)
     (f : S2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S2)
@@ -80,23 +170,6 @@ theorem exists_double_slab_collar_matching
   have hPzero (z:S2) : a (z,0) = P (z,1) := by
     change a (z,0) = c (R (z,1))
     rw [reverseCylinder_apply,sub_self,hzero]
-  obtain ⟨r₀,hr₀,F₀,hF₀,hF₀zero,hF₀fix,hF₀band⟩ :=
-    exists_slab_collar_matching_of_boundary_intersection P a hP ha hPzero (by
-      rw [hPi,hPends,inter_comm]
-      exact hmeet)
-  let a₀ := F₀.toPartialDiffeomorph.trans a
-  have ha₀ : B ⊆ a₀.source := fun q hq =>
-    ⟨mem_univ _,ha (hF₀band ▸ mem_image_of_mem F₀ hq)⟩
-  have ha₀i : a₀ '' B = a '' B := by
-    calc
-      _ = a '' (F₀ '' B) := by rw [image_image]; rfl
-      _ = _ := by rw [hF₀band]
-  let A := R.toPartialDiffeomorph.trans a₀
-  have hA : B ⊆ A.source := fun q hq => ⟨mem_univ _,ha₀ (hR ▸ mem_image_of_mem R hq)⟩
-  have hAi : A '' B = a '' B := by
-    calc
-      _ = a₀ '' (R '' B) := by rw [image_image]; rfl
-      _ = _ := by rw [hR,ha₀i]
   let D := f.symm.prodCongr (Diffeomorph.refl 𝓘(ℝ) ℝ ∞)
   let C := D.toPartialDiffeomorph.trans c
   have hDb : D '' B = B := by
@@ -128,61 +201,16 @@ theorem exists_double_slab_collar_matching
         change c (f.symm (f q.1),q.2) = c q
         rw [f.symm_apply_apply]
     rw [he,he]
-  have hA0 (z:S2) : A (z,0) = C (z,1) := by
-    change a (F₀ (R (z,0))) = c (f.symm z,1)
-    rw [reverseCylinder_apply,sub_zero,hF₀fix _ (by norm_num),hone]
-  obtain ⟨r₁,hr₁,F₁,hF₁,hF₁zero,hF₁fix,hF₁band⟩ :=
-    exists_slab_collar_matching_of_boundary_intersection C A hC hA hA0 (by
-      rw [hCi,hAi,hCends,inter_comm]
-      exact hmeet)
-  let U := (R.trans F₁).trans R
-  let G := U.trans F₀
-  have hUb : U '' B = B := by
-    calc
-      _ = R '' (F₁ '' (R '' B)) := by simp only [image_image]; rfl
-      _ = _ := by rw [hR,hF₁band,hR]
-  have hGb : G '' B = B := by
-    calc
-      _ = F₀ '' (U '' B) := by rw [image_image]; rfl
-      _ = _ := by rw [hUb,hF₀band]
-  have hUfix (q : SphereCylinder) (hq : q.2 ≤ 1/2) : U q = q := by
-    change R (F₁ (R q)) = q
-    rw [hF₁fix _ (by rw [reverseCylinder_apply]; change (1/2:ℝ) ≤ 1-q.2; linarith),reverseCylinder_involutive]
-  refine ⟨G,hGb,?_,?_,?_,?_⟩
+  obtain ⟨G,hGb,hGzero,hGone,hGlo,hGhi⟩ :=
+    exists_two_ended_slab_collar_matching P C a hP hC ha hPzero hone
+      (by rw [hPi,hPends,inter_comm]; exact hmeet)
+      (by rw [hCi,hCends,inter_comm]; exact hmeet)
+  refine ⟨G,hGb,hGzero,hGone,?_,?_⟩
   · intro z
-    change F₀ (U (z,0)) = _
-    rw [hUfix _ (by norm_num),hF₀zero]
-  · intro z
-    change F₀ (R (F₁ (R (z,1)))) = _
-    have hR1 : R (z,1) = (z,0) := by rw [reverseCylinder_apply,sub_self]
-    rw [hR1,hF₁zero,reverseCylinder_apply,sub_zero,hF₀fix _ (by norm_num)]
-  · intro z
-    filter_upwards [continuous_snd.continuousAt.preimage_mem_nhds
-      (Metric.ball_mem_nhds (0 : ℝ) (lt_min hr₀ (by norm_num : (0 : ℝ)<1/2)))] with q hq
-    have ht : |q.2| < min r₀ (1/2:ℝ) := by simpa [Real.dist_eq] using hq
-    change a (F₀ (U q)) = _
-    rw [hUfix q (by linarith [(abs_lt.mp ht).2, min_le_right r₀ (1/2:ℝ)]),(hF₀ q (ht.le.trans (min_le_left _ _))).2]
-    change c (R (q.1,1+q.2)) = _
-    rw [reverseCylinder_apply]
-    congr 1
-    ext <;> simp
-  · intro z
-    filter_upwards [continuous_snd.continuousAt.preimage_mem_nhds
-      (Metric.ball_mem_nhds (1 : ℝ) hr₁)] with q hq
-    have ht : |(R q).2| ≤ r₁ := by
-      rw [reverseCylinder_apply]
-      change |1-q.2| ≤ r₁
-      rw [abs_sub_comm]
-      exact (show |q.2-1| < r₁ by simpa [Real.dist_eq] using hq).le
-    have hh := (hF₁ (R q) ht).2
-    change a (F₀ (R (F₁ (R q)))) = _
-    change a (F₀ (R (F₁ (R q)))) = c (f.symm (R q).1,1+(R q).2) at hh
-    have he : (f.symm (R q).1,1+(R q).2) = (f.symm q.1,2-q.2) := by
-      rw [reverseCylinder_apply]
-      apply Prod.ext
-      · rfl
-      · dsimp
-        ring
-    exact hh.trans (congrArg c he)
+    filter_upwards [hGlo z] with q hq
+    change a (G q) = c (R (q.1,1+q.2)) at hq
+    rw [reverseCylinder_apply] at hq
+    exact hq.trans (congrArg c (by congr 1; ring))
+  · exact hGhi
 
 end DifferentialGeometry.Topology.Manifold

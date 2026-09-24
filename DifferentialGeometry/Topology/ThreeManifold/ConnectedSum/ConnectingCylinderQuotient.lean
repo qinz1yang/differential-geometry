@@ -75,4 +75,44 @@ theorem contMDiff_connectingCylinder_interior :
       ((contMDiff_subtype_val (I := 𝓘(ℝ, ℝ)) (U := U)).comp contMDiff_snd)
   exact (isLocalDiffeomorph_connectingCylinderOpen c d a).contMDiff.comp hphi
 
+variable {P : Type*} [TopologicalSpace P]
+
+theorem exists_homeomorph_of_outer_caps_cylinder_cover
+    (f₀ : C(outerPunctured c, P)) (f₁ : C(outerPunctured d, P))
+    (T : C(S2 × unitInterval, P))
+    (hf₀ : _root_.Topology.IsClosedEmbedding f₀)
+    (hf₁ : _root_.Topology.IsClosedEmbedding f₁)
+    (hT : _root_.Topology.IsClosedEmbedding T)
+    (hdisj : Disjoint (range f₀) (range f₁))
+    (hzero : ∀ z, T (z, 0) = f₀ (outerLeftBoundary c z))
+    (hone : ∀ z, T (z, 1) = f₁ (outerRightBoundary d a z))
+    (hcross₀ : ∀ q x, T q = f₀ x → q.2 = 0 ∧ outerLeftBoundary c q.1 = x)
+    (hcross₁ : ∀ q x, T q = f₁ x → q.2 = 1 ∧ outerRightBoundary d a q.1 = x)
+    (hcover : range T ∪ (range f₀ ∪ range f₁) = univ) :
+    ∃ H : (smoothConnectedSum M N c d a).toConnectedClosedOrientedManifold.Carrier ≃ₜ P,
+      (∀ q, H (connectingCylinder c d a q) = T q) ∧
+      (∀ x, H (outerLeft c d a x) = f₀ x) ∧
+      (∀ x, H (outerRight c d a x) = f₁ x) ∧
+      (∀ q, H.symm (T q) = connectingCylinder c d a q) ∧
+      (∀ x, H.symm (f₀ x) = outerLeft c d a x) ∧
+      ∀ x, H.symm (f₁ x) = outerRight c d a x := by
+  obtain ⟨A,hAT,hAL,hAR,hATi,hALi,hARi⟩ := exists_outer_caps_cylinder_homeomorph c d a
+  obtain ⟨B,hBT,hBL,hBR⟩ := exists_adjunction_homeomorph_of_two_cap_cylinder_cover
+    (outerLeftBoundary c) (outerRightBoundary d a) f₀ f₁ T
+    hf₀ hf₁ hT hdisj hzero hone hcross₀ hcross₁ hcover
+  let H := A.symm.trans B
+  have hHT (q) : H (connectingCylinder c d a q) = T q := by
+    change B (A.symm (connectingCylinder c d a q)) = T q
+    rw [hATi,hBT]
+  have hHL (x) : H (outerLeft c d a x) = f₀ x := by
+    change B (A.symm (outerLeft c d a x)) = f₀ x
+    rw [hALi,hBL]
+  have hHR (x) : H (outerRight c d a x) = f₁ x := by
+    change B (A.symm (outerRight c d a x)) = f₁ x
+    rw [hARi,hBR]
+  exact ⟨H,hHT,hHL,hHR,
+    fun q => H.symm_apply_eq.mpr (hHT q).symm,
+    fun x => H.symm_apply_eq.mpr (hHL x).symm,
+    fun x => H.symm_apply_eq.mpr (hHR x).symm⟩
+
 end DifferentialGeometry.Topology.ConnectedSumQuotient
