@@ -23,6 +23,7 @@ import DifferentialGeometry.Topology.Attachment.Homeomorph
 import DifferentialGeometry.Topology.Manifold.InteriorAtlas
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 import Mathlib.Geometry.Manifold.Instances.Sphere
+import DifferentialGeometry.Topology.Manifold.SphereDiffeomorph
 
 /-!
 # Sorry-first skeleton of C1: the compact PL smoothing model in dimension three
@@ -243,7 +244,7 @@ theorem nonempty_diffeomorph_sphere_of_homeomorph_sphere
     [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
     (h : S ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
     Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S) := by
-  sorry
+  exact h.nonempty_diffeomorph_sphere
 
 theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
