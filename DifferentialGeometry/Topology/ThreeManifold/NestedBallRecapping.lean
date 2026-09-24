@@ -402,4 +402,200 @@ theorem exists_ball_chart_of_recapped_nested_ball_complements
 
 end
 
+section
+
+variable {Z M N ι : Type*} [TopologicalSpace Z] [ChartedSpace E3 Z] [T2Space Z]
+  [TopologicalSpace M] [ChartedSpace E3 M] [T3Space M]
+  [TopologicalSpace N] [ChartedSpace E3 N] [T2Space N]
+
+theorem exists_ball_chart_of_finitely_recapped_nested_ball_complements
+    (C B : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 Z ∞)
+    (F : PartialDiffeomorph (𝓡 3) (𝓡 3) Z M ∞)
+    (P : PartialDiffeomorph (𝓡 3) (𝓡 3) M N ∞)
+    (G : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 N ∞)
+    (s : Finset ι)
+    (b : ι → PartialDiffeomorph (𝓡 3) (𝓡 3) E3 M ∞)
+    (g : ι → PartialDiffeomorph (𝓡 3) (𝓡 3) E3 N ∞)
+    (hC : closedBall (0 : E3) 1 ⊆ C.source)
+    (hB : closedBall (0 : E3) 1 ⊆ B.source)
+    (hG : closedBall (0 : E3) 1 ⊆ G.source)
+    (hb : ∀ i ∈ s, closedBall (0 : E3) 1 ⊆ (b i).source)
+    (hg : ∀ i ∈ s, closedBall (0 : E3) 1 ⊆ (g i).source)
+    (hF : (C '' ball (0 : E3) 1)ᶜ ⊆ F.source)
+    (hside : (B '' ball (0 : E3) 1)ᶜ ⊆ (C '' closedBall (0 : E3) 1)ᶜ)
+    {K W : Set M} (hK : IsClosed K)
+    (hKi : F '' (B '' closedBall (0 : E3) 1)ᶜ = interior K)
+    (hKf : F '' (B '' sphere (0 : E3) 1) = frontier K)
+    (hKΩ : K ⊆ interior (F '' (C '' ball (0 : E3) 1)ᶜ))
+    (hbΩ : ∀ i ∈ s, b i '' closedBall (0 : E3) 1 ⊆ interior (F '' (C '' ball (0 : E3) 1)ᶜ))
+    (hbK : ∀ i ∈ s, Disjoint (b i '' closedBall (0 : E3) 1) K)
+    (hdisb : (s : Set ι).Pairwise (fun i j => Disjoint
+      (b i '' closedBall (0 : E3) 1) (b j '' closedBall (0 : E3) 1)))
+    (hdisg : (s : Set ι).Pairwise (fun i j => Disjoint
+      (g i '' closedBall (0 : E3) 1) (g j '' closedBall (0 : E3) 1)))
+    (hgG : ∀ i ∈ s, Disjoint (g i '' closedBall (0 : E3) 1) (G '' closedBall (0 : E3) 1))
+    (hW : W = F '' (C '' ball (0 : E3) 1)ᶜ \ (interior K ∪ ⋃ i ∈ s, b i '' ball (0 : E3) 1))
+    (hP : W ⊆ P.source)
+    (hboundary : ∀ i ∈ s, P '' (b i '' sphere (0 : E3) 1) = g i '' sphere (0 : E3) 1)
+    (hboundaryG : P '' frontier K = G '' sphere (0 : E3) 1)
+    (hinter : ∀ i ∈ s, P '' W ∩ g i '' closedBall (0 : E3) 1 ⊆ g i '' sphere (0 : E3) 1)
+    (hinterG : P '' W ∩ G '' closedBall (0 : E3) 1 ⊆ G '' sphere (0 : E3) 1) :
+    ∃ (A : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 N ∞)
+      (H : PartialDiffeomorph (𝓡 3) (𝓡 3) M E3 ∞)
+      (Q : PartialDiffeomorph (𝓡 3) (𝓡 3) M N ∞),
+      closedBall (0 : E3) 1 ⊆ A.source ∧
+      H = Q.trans A.symm ∧
+      MapsTo H (F '' (C '' ball (0 : E3) 1)ᶜ \ interior K) (closedBall (0 : E3) 1) ∧
+      A '' closedBall (0 : E3) 1 = P '' W ∪
+        (⋃ i ∈ s, g i '' closedBall (0 : E3) 1) ∪ G '' closedBall (0 : E3) 1 ∧
+      A '' sphere (0 : E3) 1 = P '' (F '' (C '' sphere (0 : E3) 1)) ∧
+      (F '' (C '' ball (0 : E3) 1)ᶜ \ interior K) ⊆ Q.source ∧
+      Q '' (F '' (C '' ball (0 : E3) 1)ᶜ \ interior K) = P '' W ∪ ⋃ i ∈ s, g i '' closedBall (0 : E3) 1 ∧
+      (F '' (C '' ball (0 : E3) 1)ᶜ \ interior K) ⊆ H.source ∧
+      (∀ x ∈ F '' (C '' ball (0 : E3) 1)ᶜ \ interior K, A (H x) = Q x) ∧
+      (∀ x ∈ W, A (H x) = P x) ∧
+      (∀ i ∈ s, ∃ D : E3 ≃ₘ[ℝ] E3,
+        D '' closedBall (0 : E3) 1 = closedBall (0 : E3) 1 ∧
+        ∀ z ∈ closedBall (0 : E3) 1, A (H (b i z)) = g i (D z)) ∧
+      (∀ x ∈ F '' (C '' sphere (0 : E3) 1), H x ∈ sphere (0 : E3) 1) ∧
+      ∃ O : Set M, IsOpen O ∧ W ⊆ O ∧ O ⊆ P.source ∧ EqOn Q P O := by
+  let Ω := F '' (C '' ball (0 : E3) 1)ᶜ
+  let S := Ω \ interior K
+  have hnest : C '' closedBall (0 : E3) 1 ⊆ B '' ball (0 : E3) 1 := by
+    intro x hx
+    by_contra hn
+    exact hside hn hx
+  have hBcomp : (B '' closedBall (0 : E3) 1)ᶜ ⊆ (C '' ball (0 : E3) 1)ᶜ := by
+    intro x hx hxC
+    exact hx (image_mono ball_subset_closedBall (hnest (image_mono ball_subset_closedBall hxC)))
+  have hmodel : F '' (B '' closedBall (0 : E3) 1 \ C '' ball (0 : E3) 1) = S := by
+    dsimp only [S,Ω]
+    rw [← hKi]
+    ext x
+    constructor
+    · rintro ⟨z,hz,rfl⟩
+      refine ⟨⟨z,hz.2,rfl⟩,?_⟩
+      rintro ⟨y,hy,hyz⟩
+      have he := F.injOn (hF (hBcomp hy)) (hF hz.2) hyz
+      exact hy (he.symm ▸ hz.1)
+    · rintro ⟨⟨z,hz,rfl⟩,hn⟩
+      refine ⟨z,⟨?_,hz⟩,rfl⟩
+      by_contra hzB
+      exact hn ⟨z,hzB,rfl⟩
+  have hCopen : IsOpen (C '' ball (0 : E3) 1) :=
+    C.toOpenPartialHomeomorph.isOpen_image_of_subset_source isOpen_ball (ball_subset_closedBall.trans hC)
+  have hS : IsCompact S := by
+    rw [← hmodel]
+    apply IsCompact.image_of_continuousOn
+      (((isCompact_closedBall (0 : E3) 1).image_of_continuousOn
+        (B.contMDiffOn_toFun.continuousOn.mono hB)).diff hCopen)
+    exact F.contMDiffOn_toFun.continuousOn.mono (fun x hx => hF hx.2)
+  have hbS (i : ι) (hi : i ∈ s) : b i '' closedBall (0 : E3) 1 ⊆ interior S := by
+    have ho : IsOpen (interior Ω \ K) := isOpen_interior.sdiff hK
+    apply subset_trans _ (ho.subset_interior_iff.mpr _)
+    · intro x hx
+      exact ⟨hbΩ i hi hx,disjoint_left.mp (hbK i hi) hx⟩
+    · intro x hx
+      exact ⟨interior_subset hx.1,fun h => hx.2 (interior_subset h)⟩
+  have hres : S \ ⋃ i ∈ s, b i '' ball (0 : E3) 1 = W := by
+    rw [hW]
+    dsimp [S,Ω]
+    ext x
+    simp only [mem_sdiff,mem_union,not_or]
+    tauto
+  obtain ⟨Q,hQ,hQi,hQballs,O,hO,hWO,hOP,hQP⟩ :=
+    DifferentialGeometry.Topology.Manifold.exists_partialDiffeomorph_finite_ball_replacement_eqOn_complement
+      s b g hb hg hS hbS hdisb hdisg P (hres.symm ▸ hP) hboundary
+      (fun i hi => hres.symm ▸ hinter i hi)
+  rw [hres] at hQi hWO
+  have hKfW : frontier K ⊆ W := by
+    intro x hx
+    rw [hW]
+    refine ⟨interior_subset (hKΩ (hK.frontier_subset hx)),?_⟩
+    rintro (hxK | hxB)
+    · exact hx.2 hxK
+    · obtain ⟨i,hi,hxi⟩ := mem_iUnion₂.mp hxB
+      exact disjoint_left.mp (hbK i hi) (image_mono ball_subset_closedBall hxi) (hK.frontier_subset hx)
+  have hΩint : interior Ω = F '' (C '' closedBall (0 : E3) 1)ᶜ := by
+    have h := F.toOpenPartialHomeomorph.image_interior_of_subset_source hF
+    change F '' interior (C '' ball (0 : E3) 1)ᶜ = interior Ω at h
+    rw [interior_compl,DifferentialGeometry.Topology.Manifold.closure_image_ball_of_partialDiffeomorph C hC] at h
+    exact h.symm
+  have houterW : F '' (C '' sphere (0 : E3) 1) ⊆ W := by
+    rintro x ⟨z,hz,rfl⟩
+    have hzΩ : z ∈ (C '' ball (0 : E3) 1)ᶜ := by
+      obtain ⟨w,hw,rfl⟩ := hz
+      rintro ⟨v,hv,heq⟩
+      have hvw := C.injOn (hC (ball_subset_closedBall hv)) (hC (sphere_subset_closedBall hw)) heq
+      exact (mem_ball_zero_iff.mp (hvw ▸ hv)).ne (mem_sphere_zero_iff_norm.mp hw)
+    have hnotint : F z ∉ interior Ω := by
+      rw [hΩint]
+      rintro ⟨y,hy,hyz⟩
+      have hyΩ : y ∈ (C '' ball (0 : E3) 1)ᶜ :=
+        fun h => hy (image_mono ball_subset_closedBall h)
+      have he := F.injOn (hF hyΩ) (hF hzΩ) hyz
+      exact hy (he.symm ▸ image_mono sphere_subset_closedBall hz)
+    rw [hW]
+    refine ⟨mem_image_of_mem F hzΩ,?_⟩
+    rintro (hxK | hxB)
+    · exact hnotint (hKΩ (interior_subset hxK))
+    · obtain ⟨i,hi,hxi⟩ := mem_iUnion₂.mp hxB
+      exact hnotint (hbΩ i hi (image_mono ball_subset_closedBall hxi))
+  have hQboundary : Q '' frontier K = G '' sphere (0 : E3) 1 :=
+    ((hQP.mono (hKfW.trans hWO)).image_eq).trans hboundaryG
+  have hQinter : Q '' S ∩ G '' closedBall (0 : E3) 1 ⊆ G '' sphere (0 : E3) 1 := by
+    rw [hQi]
+    rintro x ⟨hx,hxG⟩
+    rcases hx with hxP | hxg
+    · exact hinterG ⟨hxP,hxG⟩
+    · obtain ⟨i,hi,hxi⟩ := mem_iUnion₂.mp hxg
+      exact (disjoint_left.mp (hgG i hi) hxi hxG).elim
+  obtain ⟨A,_,hA,hAi,hAf,_,_,_⟩ :=
+    exists_ball_chart_of_recapped_nested_ball_complements C B F Q G hC hB hG hF hside
+      hKi hKf hQ hQboundary hQinter
+  let H := Q.trans A.symm
+  have hQt (x : M) (hx : x ∈ S) : Q x ∈ A.target := by
+    have hmem : Q x ∈ A '' closedBall (0 : E3) 1 := by
+      rw [hAi]
+      exact Or.inl (mem_image_of_mem Q hx)
+    obtain ⟨z,hz,hzq⟩ := hmem
+    exact hzq ▸ A.map_source (hA hz)
+  have hH : S ⊆ H.source := fun x hx => ⟨hQ hx,hQt x hx⟩
+  have hAH (x : M) (hx : x ∈ S) : A (H x) = Q x := A.right_inv (hQt x hx)
+  have hHclosed : MapsTo H S (closedBall (0 : E3) 1) := by
+    intro x hx
+    have hmem : Q x ∈ A '' closedBall (0 : E3) 1 := by
+      rw [hAi]
+      exact Or.inl (mem_image_of_mem Q hx)
+    obtain ⟨z,hz,hzq⟩ := hmem
+    change A.symm (Q x) ∈ closedBall (0 : E3) 1
+    have hleft : A.symm.toPartialEquiv (A.toPartialEquiv z) = z := A.toPartialEquiv.left_inv (hA hz)
+    rw [← hzq,hleft]
+    exact hz
+  have hHS (x : M) (hx : x ∈ F '' (C '' sphere (0 : E3) 1)) : H x ∈ sphere (0 : E3) 1 := by
+    obtain ⟨z,hz,hzx⟩ := hAf.symm ▸ mem_image_of_mem Q hx
+    change A.symm (Q x) ∈ sphere (0 : E3) 1
+    have hleft : A.symm.toPartialEquiv (A.toPartialEquiv z) = z := A.toPartialEquiv.left_inv (hA (sphere_subset_closedBall hz))
+    rw [← hzx,hleft]
+    exact hz
+  have hAi' : A '' closedBall (0 : E3) 1 = P '' W ∪
+      (⋃ i ∈ s, g i '' closedBall (0 : E3) 1) ∪ G '' closedBall (0 : E3) 1 := by
+    rw [hQi] at hAi
+    exact hAi
+  have hAf' : A '' sphere (0 : E3) 1 = P '' (F '' (C '' sphere (0 : E3) 1)) :=
+    hAf.trans ((hQP.mono (houterW.trans hWO)).image_eq)
+  refine ⟨A,H,Q,hA,rfl,hHclosed,hAi',hAf',hQ,hQi,hH,hAH,?_,?_,hHS,O,hO,hWO,hOP,hQP⟩
+  · intro x hx
+    have hxS : x ∈ S := by
+      rw [← hres] at hx
+      exact hx.1
+    exact (hAH x hxS).trans (hQP (hWO hx))
+  · intro i hi
+    obtain ⟨D,hD,hQD⟩ := hQballs i hi
+    refine ⟨D,hD,?_⟩
+    intro z hz
+    exact (hAH (b i z) (interior_subset (hbS i hi (mem_image_of_mem (b i) hz)))).trans (hQD z hz)
+
+end
+
 end DifferentialGeometry.Topology.ThreeManifold
