@@ -50,19 +50,11 @@ private theorem inv_max_initial_sub_terminal_le
     |(max q (metricScalarAt (H.initialMetric first) (A.point first le_rfl hle)))⁻¹ -
       (max q (metricScalarAt (H.event i).terminal.metric x))⁻¹| ≤
         C * (H.time i.succ - H.time first) := by
-  have htail := A.inv_max_scalar_sub_endpoint_le i.castSucc first hle x.val hq
+  exact A.inv_max_scalar_initial_sub_incoming_terminal_le
+    (H.event i).incoming (H.event i).terminal (H.event_initial i) x hq
     (fun j hf hl => hderiv j hf (j.castSucc_lt_succ.le.trans hl)
       (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)))
-  have hlast := (H.event i).terminal.inv_max_scalar_initial_sub_terminal_le
-    (H.event i).incoming hq x (hderiv i hle le_rfl x.val)
-  change |(max q (metricScalarAt ((H.event i).incoming.flow.base.metric
-      (H.time i.castSucc)) x.val))⁻¹ - _| ≤ _ at hlast
-  rw [H.event_initial i] at hlast
-  have htri := abs_sub_le
-    ((max q (metricScalarAt (H.initialMetric first) (A.point first le_rfl hle)))⁻¹)
-    ((max q (metricScalarAt (H.initialMetric i.castSucc) x.val))⁻¹)
-    ((max q (metricScalarAt (H.event i).terminal.metric x))⁻¹)
-  nlinarith
+    (hderiv i hle le_rfl x.val)
 
 private theorem exists_backwardPointTrace_of_crossing_time_lower_bound
     (H : ObservedHistory.{u}) (i : Fin H.eventCount)
@@ -311,6 +303,98 @@ theorem exists_backwardPointTrace_or_cap (H : ObservedHistory.{u})
             exact Or.inl ⟨A.prepend p.val hp⟩
         · exact Or.inr ⟨k, j.castSucc_lt_succ.le.trans hf, hk, A, b, z, hz⟩
 
+theorem exists_backwardPointTrace_or_recent_presented_cap_of_incoming_slab
+    (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (x : G.terminalRegularOpen)
+    {q Q θ : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)
+    (hθsmall : θ ≤ 1 / 4) (hbudget : 6 * C * θ ≤ 1)
+    (hcrossTime : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+      s - θ / Q < H.time j.succ)
+    (hscalar : metricScalarAt L.metric x ≤ (3 / 2 : ℝ) * Q)
+    (hderiv : ∀ j : Fin H.eventCount, first < j.castSucc → j.succ ≤ last →
+      ∀ y : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t y →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v y) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t y ^ 2)
+    (hfinal : ∀ t ∈ Ioo (H.time last) s, q < G.flow.scalar t x.val →
+      |derivWithin (fun v => G.flow.scalar v x.val) (Iic t) t| ≤
+        C * G.flow.scalar t x.val ^ 2)
+    (hOld : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+      (H.event j).old = (H.event j).transition.trace.retainedCore)
+    {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
+    (S : ∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+      ∀ b : (H.event j).RetainedBoundaryIndex, (H.event j).PresentedStaticCap fixed D m ε b)
+    (hcap : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc,
+      ∀ hl : j.succ ≤ last,
+      ∀ (b : (H.event j).RetainedBoundaryIndex) (z : ThreeBall),
+        (S j hf hl b).neck.scale / 2 ≤
+          metricScalarAt (S j hf hl b).witness.metric ((S j hf hl b).witness.cap z)) :
+    Nonempty (BackwardPointTrace H first last hle x.val) ∨
+      ∃ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last)
+        (A : BackwardPointTrace H j.succ last hl x.val)
+        (b : (H.event j).RetainedBoundaryIndex) (z : ThreeBall),
+        (H.event j).transition.trace.presentation
+          ((H.event j).transition.trace.capping.cap b.val z) =
+            Sum.inl (A.point j.succ le_rfl hl) ∧
+        A.point j.succ le_rfl hl = (S j hf hl b).inclusion ((S j hf hl b).witness.cap z) ∧
+        metricScalarAt (H.event j).outputMetric (A.point j.succ le_rfl hl) < 2 * Q ∧
+        (S j hf hl b).neck.scale < 4 * Q ∧
+        0 < (S j hf hl b).neck.scale * (s - H.time j.succ) ∧
+        (S j hf hl b).neck.scale * (s - H.time j.succ) < 4 * θ ∧
+        (S j hf hl b).neck.scale * (s - H.time j.succ) < 1 := by
+  have hQ : 0 < Q := hq.trans_le hqQ
+  rcases H.exists_backwardPointTrace_or_cap first last hle x.val hOld with
+    h | ⟨j, hf, hl, A, b, z, hz⟩
+  · exact Or.inl h
+  have hbirth : s - θ / Q < H.time j.succ := hcrossTime j hf hl
+  have hdt : 0 < s - H.time j.succ :=
+    sub_pos.mpr ((H.time_strictMono.monotone hl).trans_lt G.lt)
+  have hdtle : s - H.time j.succ < θ / Q := by linarith
+  have hrec := A.inv_max_scalar_initial_sub_incoming_terminal_le G L hinit x hq
+    (fun k hk hkl => hderiv k
+      ((hf.trans_lt j.castSucc_lt_succ).trans_le hk) hkl
+      (A.point k.castSucc hk (k.castSucc_lt_succ.le.trans hkl))) hfinal
+  have hgap : ((3 / 2 : ℝ) * Q)⁻¹ - (2 * Q)⁻¹ = (6 * Q)⁻¹ := by
+    field_simp
+    ring
+  have hsmall : C * (s - H.time j.succ) <
+      ((3 / 2 : ℝ) * Q)⁻¹ - (2 * Q)⁻¹ := by
+    rw [hgap, inv_eq_one_div]
+    apply (lt_div_iff₀ (by positivity : 0 < 6 * Q)).mpr
+    by_cases hC : (C : ℝ) = 0
+    · simp only [hC, zero_mul]
+      norm_num
+    · have hCpos : 0 < (C : ℝ) := lt_of_le_of_ne C.coe_nonneg (Ne.symm hC)
+      have hdtQ : (s - H.time j.succ) * Q < θ := (lt_div_iff₀ hQ).mp hdtle
+      nlinarith
+  have hlow : metricScalarAt (H.initialMetric j.succ) (A.point j.succ le_rfl hl) < 2 * Q := by
+    have hlast : max q (metricScalarAt L.metric x) ≤ (3 / 2 : ℝ) * Q :=
+      max_le (by linarith) hscalar
+    have hpos : 0 < max q (metricScalarAt L.metric x) := hq.trans_le (le_max_left _ _)
+    have hinv : ((3 / 2 : ℝ) * Q)⁻¹ ≤ (max q (metricScalarAt L.metric x))⁻¹ :=
+      inv_anti₀ hpos hlast
+    have hlo : (2 * Q)⁻¹ <
+        (max q (metricScalarAt (H.initialMetric j.succ) (A.point j.succ le_rfl hl)))⁻¹ := by
+      linarith [(abs_le.mp hrec).1]
+    exact (le_max_right _ _).trans_lt
+      ((inv_lt_inv₀ (by positivity : 0 < 2 * Q)
+        (hq.trans_le (le_max_left _ _))).mp hlo)
+  rw [← H.event_output j] at hlow
+  have hpoint : A.point j.succ le_rfl hl =
+      (S j hf hl b).inclusion ((S j hf hl b).witness.cap z) :=
+    Sum.inl_injective (hz.symm.trans ((S j hf hl b).cap_eq z))
+  have hcapBound := hcap j hf hl b z
+  rw [(S j hf hl b).scalar_eq (H.event j), ← hpoint] at hcapBound
+  have hscale : (S j hf hl b).neck.scale < 4 * Q := by linarith
+  have hage : (S j hf hl b).neck.scale * (s - H.time j.succ) < 4 * θ := by
+    have hdtQ : (s - H.time j.succ) * Q < θ := (lt_div_iff₀ hQ).mp hdtle
+    nlinarith [mul_lt_mul_of_pos_right hscale hdt]
+  exact Or.inr ⟨j, hf, hl, A, b, z, hz, hpoint, hlow, hscale,
+    mul_pos (S j hf hl b).neck.scale_pos hdt, hage, hage.trans_le (by linarith)⟩
+
+
 theorem exists_backwardPointTrace_or_recent_presented_cap
     (H : ObservedHistory.{u}) (first i : Fin H.eventCount)
     (hle : first.castSucc ≤ i.castSucc)
@@ -348,47 +432,20 @@ theorem exists_backwardPointTrace_or_recent_presented_cap
         0 < (S j hf hl b).neck.scale * (H.time i.succ - H.time j.succ) ∧
         (S j hf hl b).neck.scale * (H.time i.succ - H.time j.succ) < 4 * θ ∧
         (S j hf hl b).neck.scale * (H.time i.succ - H.time j.succ) < 1 := by
-  have hQ : 0 < Q := hq.trans_le hqQ
-  rcases H.exists_backwardPointTrace_or_cap first.castSucc i.castSucc hle x.val hOld with
-    h | ⟨j, hf, hl, A, b, z, hz⟩
-  · exact Or.inl h
-  have hbirth : H.time i.succ - θ / Q < H.time j.succ :=
-    hfirst.2.trans_le (H.time_strictMono.monotone (by
-      change first.val + 1 ≤ j.val + 1
-      exact Nat.succ_le_succ hf))
-  have hdt : 0 < H.time i.succ - H.time j.succ :=
-    sub_pos.mpr (H.time_strictMono (hl.trans_lt i.castSucc_lt_succ))
-  have hdtle : H.time i.succ - H.time j.succ < θ / Q := by linarith
-  have hrec := inv_max_initial_sub_terminal_le x A hq
-    (fun k hk hki => hderiv k ((show first.succ ≤ j.succ from Nat.succ_le_succ hf).trans hk) hki)
-  have hgap : ((3 / 2 : ℝ) * Q)⁻¹ - (2 * Q)⁻¹ = (6 * Q)⁻¹ := by
-    field_simp
-    ring
-  have hsmall : C * (H.time i.succ - H.time j.succ) <
-      ((3 / 2 : ℝ) * Q)⁻¹ - (2 * Q)⁻¹ := by
-    rw [hgap, inv_eq_one_div]
-    apply (lt_div_iff₀ (by positivity : 0 < 6 * Q)).mpr
-    by_cases hC : (C : ℝ) = 0
-    · simp only [hC, zero_mul]
-      norm_num
-    · have hCpos : 0 < (C : ℝ) := lt_of_le_of_ne C.coe_nonneg (Ne.symm hC)
-      have hdtQ : (H.time i.succ - H.time j.succ) * Q < θ :=
-        (lt_div_iff₀ hQ).mp hdtle
-      nlinarith
-  have hlow := scalar_lt_of_inv_max_bound hq (by linarith : q ≤ (3 / 2 : ℝ) * Q)
-    (by linarith : (3 / 2 : ℝ) * Q ≤ 2 * Q) hscalar hrec hsmall
-  rw [← H.event_output j] at hlow
-  have hpoint : A.point j.succ le_rfl hl = (S j hf hl b).inclusion ((S j hf hl b).witness.cap z) :=
-    Sum.inl_injective (hz.symm.trans ((S j hf hl b).cap_eq z))
-  have hcapBound := hcap j hf hl b z
-  rw [(S j hf hl b).scalar_eq (H.event j), ← hpoint] at hcapBound
-  have hscale : (S j hf hl b).neck.scale < 4 * Q := by linarith
-  have hage : (S j hf hl b).neck.scale * (H.time i.succ - H.time j.succ) < 4 * θ := by
-    have hdtQ : (H.time i.succ - H.time j.succ) * Q < θ :=
-      (lt_div_iff₀ hQ).mp hdtle
-    nlinarith [mul_lt_mul_of_pos_right hscale hdt]
-  exact Or.inr ⟨j, hf, hl, A, b, z, hz, hpoint, hlow, hscale,
-    mul_pos (S j hf hl b).neck.scale_pos hdt, hage, hage.trans (by linarith)⟩
+  by_cases hfi : first = i
+  · subst first
+    exact Or.inl ⟨BackwardPointTrace.singleton H i.castSucc x.val⟩
+  have hfirsti : first.succ ≤ i.castSucc := by
+    change first.val + 1 ≤ i.val
+    have hlt : first.val < i.val := lt_of_le_of_ne hle (fun h => hfi (Fin.ext h))
+    omega
+  exact H.exists_backwardPointTrace_or_recent_presented_cap_of_incoming_slab
+    first.castSucc i.castSucc hle (H.event i).incoming (H.event i).terminal
+    (H.event_initial i) x hq hqQ hθsmall.le hbudget
+    (fun j hj _ => hfirst.2.trans_le (H.time_strictMono.monotone (Nat.succ_le_succ hj)))
+    hscalar
+    (fun j hj hl => hderiv j (Nat.succ_le_of_lt hj) (j.castSucc_lt_succ.le.trans hl))
+    (hderiv i hfirsti le_rfl x.val) hOld S hcap
 
 end ObservedHistory
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

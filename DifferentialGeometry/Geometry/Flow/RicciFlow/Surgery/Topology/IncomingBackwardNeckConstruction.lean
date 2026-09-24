@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CylinderBackwardConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTimeJetConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFootprint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorAction
@@ -500,6 +501,90 @@ theorem eventually_exists_incomingBackwardNeck_of_historical_spatial_convergence
     (K n) (Φ n) (hΦ n) (hmap n) (G n) hθ (S n) (hS n) (hterminal n)
       (hmetric n) (hslabs n) (hlast n) (hstart n) Z hZ hclose
   exact ⟨B, hB, hchart⟩
+
+open scoped NNReal in
+theorem exists_subsequence_incomingBackwardNeck_of_historical_scalar_bounds
+    (H : ℕ → ObservedHistory.{u}) (event : ∀ i, Fin (H i).eventCount)
+    (first : ∀ i, Fin ((H i).eventCount + 1))
+    (hle : ∀ i, first i ≤ (event i).castSucc)
+    (δ : ℕ → ℝ) (hδ : ∀ n, 0 < δ n) (hδlim : Tendsto δ atTop (𝓝 0))
+    {k : ℕ} (N : ∀ i, NormalizedNeck ((H i).event (event i)).terminal.metric (δ 0) k)
+    (K : ∀ i, Set ((H i).event (event i)).incoming.terminalRegularOpen)
+    (Phi : ∀ i, neckBuffer (δ 0) → (H i).backwardSurvivorFootprintInterior
+      (first i) (event i) (hle i) (K i))
+    (hPhi : ∀ i, IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ (Phi i))
+    (hmap : ∀ i, (H i).backwardSurvivorFootprintMap (first i) (event i) (hle i) (K i) ∘ Phi i =
+      (N i).chart)
+    (G : ∀ i, ℝ → SmoothRiemannianMetric ThreeModel
+      ((H i).backwardSurvivorFootprintInterior (first i) (event i) (hle i) (K i)))
+    (S : ∀ n, ℕ → SolutionOn (I := NeckCylinderModel) (M := neckBuffer (δ n))
+      (RealTimeInterval.closed (-2) 0 (by norm_num)))
+    (hS : ∀ n i, IsSolutionOn (S n i))
+    (hzero : ∀ i, (S 0 i).base.metric 0 = (N i).normalizedMetric)
+    (hmetric : ∀ i t, t ∈ Ico (-1 : ℝ) 0 → (S 0 i).base.metric t = localPullMetric
+      (scaleMetric (N i).scale (N i).scale_pos
+        (G i ((H i).time (event i).succ + t / (N i).scale))) (Phi i) (hPhi i))
+    (hslabs : ∀ i (j : Fin (H i).eventCount) (hf : first i ≤ j.castSucc)
+      (hl : j.succ ≤ (event i).castSucc),
+      ∀ t ∈ Icc ((H i).time j.castSucc) ((H i).time j.succ),
+        G i t = (((H i).backwardSurvivorSlabMetric (first i) (event i).castSucc
+          (hle i) j hf hl t).restrictOpen
+          ((H i).backwardSurvivorTerminalFace (first i) (event i) (hle i))).restrictOpen
+            ((H i).backwardSurvivorFootprintInterior (first i) (event i) (hle i) (K i)))
+    (hlast : ∀ i t, t ∈ Icc ((H i).time (event i).castSucc) ((H i).time (event i).succ) →
+      G i t = ((H i).backwardSurvivorTerminalFaceMetric (first i) (event i) (hle i) t).restrictOpen
+        ((H i).backwardSurvivorFootprintInterior (first i) (event i) (hle i) (K i)))
+    (hstart : ∀ i, (H i).time (first i) ≤ (H i).time (event i).succ - (N i).scale⁻¹)
+    (hterminal : ∀ n, MetricCInfConvergenceOnCompacts
+      (fun i => (S n i).base.metric 0)
+      (roundCylinderMetric.restrictOpen (neckBuffer (δ n)))
+      (roundCylinderMetric.restrictOpen (neckBuffer (δ n))))
+    (offset : ℕ → ℕ) (hoffset : offset 0 = 0)
+    (hcompat : ∀ n m t, t ∈ Icc (-2 : ℝ) 0 →
+      (fun i => ((S n (i - offset n)).base.metric t).restrictOpenOfSubset
+        (inf_le_left : neckBuffer (δ n) ⊓ neckBuffer (δ m) ≤ neckBuffer (δ n))) =ᶠ[atTop]
+      (fun i => ((S m (i - offset m)).base.metric t).restrictOpenOfSubset
+        (inf_le_right : neckBuffer (δ n) ⊓ neckBuffer (δ m) ≤ neckBuffer (δ m))))
+    (C : ℝ≥0) (q : ℕ → ℝ) (hq : ∀ᶠ i in atTop, q i ≤ 1)
+    (hscale : Tendsto (fun i => (N i).scale) atTop atTop)
+    (hderiv : ∀ n, ∀ A : Set (neckBuffer (δ n)), IsCompact A → ∀ᶠ i in atTop,
+      ∀ x ∈ A, ∀ t ∈ Ioo (-2 : ℝ) 0,
+        q (i + offset n) < (S n i).scalar t x →
+        |derivWithin (fun s => (S n i).scalar s x) (Iic t) t| ≤
+          C * (S n i).scalar t x ^ 2)
+    {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi)
+    (hpinch : ∀ n, ∀ᶠ i in atTop, Perelman.PhiAlmostNonnegative (S n i)
+      (Icc (-2 : ℝ) 0) (Perelman.rescalePinchingFunction (N (i + offset n)).scale phi)) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧ ∀ᶠ i in atTop,
+      ∃ B : IncomingBackwardNeck (H (rho i)) (event (rho i)) (N (rho i))
+          (Real.sqrt (N (rho i)).scale⁻¹),
+        B.metric = (S 0 (rho i)).base.metric ∧
+        ∀ (j : Fin (H (rho i)).eventCount) (hj : j.val ≤ (event (rho i)).val)
+          (ha : (H (rho i)).time (event (rho i)).succ - (Real.sqrt (N (rho i)).scale⁻¹)^2 <
+            (H (rho i)).time j.succ)
+          (hf : first (rho i) ≤ j.castSucc) (x : neckBuffer (δ 0)),
+          B.stageChart j hj ha x =
+            (H (rho i)).backwardSurvivorMap (first (rho i)) (event (rho i)).castSucc
+              (hle (rho i)) j.castSucc hf hj (Phi (rho i) x).val.val := by
+  obtain ⟨rho,hrho,hconv⟩ :=
+    exists_subsequence_converges_to_shrinkingCylinder_on_subinterval_of_scalar_deriv_bound
+      hδ hδlim S hS (by norm_num : (0 : ℝ) < 3 / 2)
+      (by norm_num : (3 / 2 : ℝ) < 2) Subset.rfl Subset.rfl hterminal offset hcompat
+      C q (fun i => (N i).scale) hq (fun i => (N i).scale_pos) hscale hderiv hphi hpinch
+  refine ⟨rho,hrho,?_⟩
+  apply eventually_exists_incomingBackwardNeck_of_historical_spatial_convergence
+    (fun i => H (rho i)) (fun i => event (rho i)) (fun i => first (rho i))
+    (fun i => hle (rho i)) (by norm_num : (1 : ℝ) < 2)
+    (fun i => N (rho i)) (fun i => K (rho i)) (fun i => Phi (rho i))
+    (fun i => hPhi (rho i)) (fun i => hmap (rho i)) (fun i => G (rho i))
+    (fun i => S 0 (rho i)) (fun i => hS 0 (rho i)) (fun i => hzero (rho i))
+    (fun i => hmetric (rho i)) (fun i => hslabs (rho i)) (fun i => hlast (rho i))
+    (fun i => hstart (rho i)) ?_
+  intro A hA r epsilon hepsilon
+  obtain ⟨i0,hi0⟩ := hconv 0 A hA r epsilon hepsilon
+  refine ⟨i0,fun i hi t ht => ?_⟩
+  have hh := hi0 i hi t ⟨by norm_num at *; linarith [ht.1],ht.2⟩
+  simpa only [hoffset,Nat.sub_zero] using hh
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
