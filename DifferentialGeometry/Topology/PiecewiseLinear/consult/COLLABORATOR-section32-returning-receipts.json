@@ -1,0 +1,71 @@
+{
+  "baseCommit": "a8dda0594b18b1e73e620daf6ea0cd313926a691",
+  "stage": "Finite-window returning-annulus elimination",
+  "toolchain": "Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "flags": [
+    "-DautoImplicit=false",
+    "-DmaxSynthPendingDepth=3",
+    "-Dweak.linter.mathlibStandardSet=true",
+    "-Dlinter.style.header=true",
+    "-Dlinter.style.longLine=true",
+    "-j1"
+  ],
+  "modules": [
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusBoundary",
+      "sourceSha256": "151e0888342bce0f76323f3ae271bffd885bf43eefb31ee3340e9defccede46d",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "sourceStable": true
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentDeletion",
+      "sourceSha256": "58aff72aa770bc4984ab4fec20db018e51860c36c7ca540bcca1913b38facb94",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "sourceStable": true
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion",
+      "sourceSha256": "b9b66de6c00636f0383cd2dc55ad408aee52569e6df78b5379229d855473aebc",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "sourceStable": true
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion",
+      "sourceSha256": "15fbef919ee522bd9d0727ea94a339508d5b13b945e4a5efe192d7390fe07b4a",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "sourceStable": true
+    },
+    {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWindowReduction",
+      "sourceSha256": "f6f356810f11d6a6c09000d220c4e42008e0fa4c1ba7785a08a403fde587eef1",
+      "exitCode": 0,
+      "diagnosticLines": 0,
+      "sourceStable": true
+    }
+  ],
+  "audit": {
+    "exitCode": 0,
+    "diagnosticLines": 0,
+    "declarations": 43,
+    "environmentLinters": 13,
+    "allowedAxioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sourceSha256": "b1b41fbfb57e79d3cb1f34328578df8dd04f64f6f5061a541e486d972a2ca3de",
+    "driver": "/-\nCopyright (c) 2026 DifferentialGeometry contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: DifferentialGeometry contributors\n-/\nimport DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusBoundary\nimport DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentDeletion\nimport DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion\nimport DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion\nimport DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWindowReduction\nimport Lean.Util.CollectAxioms\nimport Mathlib.Tactic.Linter.Lint\n\n/-! # External declaration and axiom checks for canonical surface descent -/\n\nopen Lean Elab Command Batteries.Tactic.Lint in\nrun_cmd liftTermElabM do\n  let env \u2190 getEnv\n  let modules : Array Name := #[\n    `DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusBoundary,\n    `DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentDeletion,\n    `DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion,\n    `DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion,\n    `DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWindowReduction]\n  let declarations := env.constants.map\u2081.fold (init := #[]) fun names name _ =>\n    match env.getModuleIdxFor? name with\n    | some idx =>\n      if modules.contains env.header.moduleNames[idx]! && !env.isAutoDecl name then\n        names.push name else names\n    | none => names\n  for target in modules do\n    unless declarations.any (fun name =>\n      match env.getModuleIdxFor? name with\n      | some idx => env.header.moduleNames[idx]! == target\n      | none => false) do\n      throwError m!\"No nonautomatic declarations found for {target}\"\n  let allowed := #[`propext, `Classical.choice, `Quot.sound]\n  for name in declarations do\n    let axioms \u2190 Lean.collectAxioms name\n    let bad := axioms.filter fun axiomName => !allowed.contains axiomName\n    unless bad.isEmpty do\n      throwError m!\"Non-foundational axioms {bad.toList} in {name}\"\n  let checks \u2190 getChecks true none none\n  let checks := checks.filter fun check =>\n    check.name != `docBlame && check.name != `docBlameThm\n  unless checks.size == 13 do\n    throwError m!\"Expected 13 declaration linters; found {checks.size}\"\n  for check in checks do\n    for name in declarations do\n      if let some message \u2190 check.test name then\n        logError m!\"{check.name}: {name}: {message}\"\n",
+    "axiomReport": "DifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.pieceSubset: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.boundarySubset: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalSurface.exists_annulus_pair_of_returning_component: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.nullRankLE: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion: [propext, Classical.choice, Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.unchanged: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsReturningAnnulusDeletion: [propext, Classical.choice, Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.towerSurface_eq_sdiff_interior: [propext,\n Classical.choice,\n Quot.sound]\n_private.DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningWindowReduction.0.DifferentialGeometry.Topology.PiecewiseLinear.termE3: []\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningComponent: [propext, Classical.choice, Quot.sound]\n_private.DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion.0.DifferentialGeometry.Topology.PiecewiseLinear.termE3: []\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.mk: [propext, Classical.choice, Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalAnnularWindow.exists_window_returning_reduction: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsPLAnnulusWithEnds.boundaryComplex_space: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.rec: [propext, Classical.choice, Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalAnnularWindow.of_component_deletion: [propext,\n Classical.choice,\n Quot.sound]\n_private.DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentDeletion.0.DifferentialGeometry.Topology.PiecewiseLinear.termE3: []\n_private.DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion.0.DifferentialGeometry.Topology.PiecewiseLinear.termE3: []\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.adjacent_trace_subset: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.unchanged: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.rec: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.exists_component_embedding: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.traceSubset: [propext,\n Classical.choice,\n Quot.sound]\n_private.DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusBoundary.0.DifferentialGeometry.Topology.PiecewiseLinear.termE3: []\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.windowNullRank_le: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.steps: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.componentCount: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.mk: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.space: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.componentEmbedding: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.windowComponentRank_lt: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.space_subset: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.fixedSet: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.source: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.retained: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.returningFree: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.rankLE: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalReturningWindowReduction.target: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.boundary_eq_sdiff: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalSurface.isSeparatorIn_after_delete_returning_component: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalComponentDeletion.towerSurface_inter_eq: [propext,\n Classical.choice,\n Quot.sound]\nDifferentialGeometry.Topology.PiecewiseLinear.IsCanonicalAnnularWindow.exists_returning_component_deletion: [propext,\n Classical.choice,\n Quot.sound]\nAudited 43 nonautomatic declarations in 5 modules\n"
+  },
+  "frozenFilesUnchanged": [
+    "DifferentialGeometry/Topology/PiecewiseLinear/Skeleton/Section32PseudoCell.lean",
+    "DifferentialGeometry.lean",
+    "DifferentialGeometry/Topology/PiecewiseLinear/FREE_INPUTS.md"
+  ],
+  "rootRegistration": "Reserved for integration lead by brief",
+  "frozenDescentLeaf": "Open"
+}
