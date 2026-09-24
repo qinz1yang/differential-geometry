@@ -263,4 +263,64 @@ theorem RetainedCoreHistory.exists_static_cap_family_before_appendEvent
     (H.appendEvent_time_castSucc hs E hinit i.succ) hE S
   exact ⟨e, S', hE, hrest⟩
 
+
+theorem RetainedCoreHistory.exists_static_cap_families_at_appendEvent
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hOld : E.old = E.transition.trace.retainedCore)
+    (hinit : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
+    (S : ∀ i : Fin H.eventCount, ∀ b : (H.toHistory.event i).RetainedBoundaryIndex,
+      (H.toHistory.event i).PresentedStaticCap fixed D m ε b)
+    (T : ∀ b : E.RetainedBoundaryIndex, E.PresentedStaticCap fixed D m ε b) :
+    let K := H.appendEvent E.incoming.lt (E.toRetainedCoreEvent hOld) hinit
+    ∃ S' : ∀ i : Fin K.eventCount, ∀ b : (K.toHistory.event i).RetainedBoundaryIndex,
+        (K.toHistory.event i).PresentedStaticCap fixed D m ε b,
+      (∀ i : Fin H.eventCount,
+        ∃ e : (K.toHistory.event i.castSucc).RetainedBoundaryIndex ≃
+            (H.toHistory.event i).RetainedBoundaryIndex,
+          HEq (K.toHistory.event i.castSucc) (H.toHistory.event i) ∧
+          (∀ b, HEq b.val (e b).val) ∧
+          (∀ b, HEq (S' i.castSucc b).neck (S i (e b)).neck) ∧
+          (∀ b, (S' i.castSucc b).neck.scale = (S i (e b)).neck.scale) ∧
+          (∀ b, HEq (S' i.castSucc b).witness (S i (e b)).witness) ∧
+          (∀ b, HEq (S' i.castSucc b).inclusion (S i (e b)).inclusion) ∧
+          (∀ b, HEq (S' i.castSucc b).window (S i (e b)).window) ∧
+          HEq (K.toHistory.event i.castSucc).outputMetric (H.toHistory.event i).outputMetric ∧
+          HEq (range (K.toHistory.event i.castSucc).oldOutput)
+            (range (H.toHistory.event i).oldOutput)) ∧
+      ∃ e : (K.toHistory.event (Fin.last H.eventCount)).RetainedBoundaryIndex ≃ E.RetainedBoundaryIndex,
+        HEq (K.coreEvent (Fin.last H.eventCount)) (E.toRetainedCoreEvent hOld) ∧
+        (∀ b, HEq b.val (e b).val) ∧
+        (∀ b, HEq (S' (Fin.last H.eventCount) b).neck (T (e b)).neck) ∧
+        (∀ b, (S' (Fin.last H.eventCount) b).neck.scale = (T (e b)).neck.scale) ∧
+        (∀ b, HEq (S' (Fin.last H.eventCount) b).witness (T (e b)).witness) ∧
+        (∀ b, HEq (S' (Fin.last H.eventCount) b).inclusion (T (e b)).inclusion) ∧
+        (∀ b, HEq (S' (Fin.last H.eventCount) b).window (T (e b)).window) ∧
+        HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+        HEq (range (K.toHistory.event (Fin.last H.eventCount)).oldOutput) (range E.oldOutput) := by
+  classical
+  let F := E.toRetainedCoreEvent hOld
+  let K := H.appendEvent E.incoming.lt F hinit
+  obtain ⟨eNew, T', hnew⟩ := H.exists_static_cap_family_at_appendEvent E hOld hinit T
+  have hex (i : Fin H.eventCount) := H.exists_static_cap_family_before_appendEvent
+    E.incoming.lt F hinit i (S i)
+  choose eOld S₀ hold using hex
+  let S' : ∀ i : Fin (H.eventCount + 1), ∀ b : (K.toHistory.event i).RetainedBoundaryIndex,
+      (K.toHistory.event i).PresentedStaticCap fixed D m ε b := Fin.lastCases T' S₀
+  have hOldFamily (i : Fin H.eventCount) : S' i.castSucc = S₀ i :=
+    Fin.lastCases_castSucc i
+  have hNewFamily : S' (Fin.last H.eventCount) = T' :=
+    Fin.lastCases_last
+  refine ⟨S', ?_, ?_⟩
+  · intro i
+    refine ⟨eOld i, ?_⟩
+    rw [hOldFamily]
+    exact hold i
+  · refine ⟨eNew, ?_⟩
+    rw [hNewFamily]
+    exact hnew
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
