@@ -13669,3 +13669,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CylinderP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalRigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Cylindrical
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordEventExtension
