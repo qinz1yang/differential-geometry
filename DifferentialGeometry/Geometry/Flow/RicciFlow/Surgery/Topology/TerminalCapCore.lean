@@ -179,6 +179,61 @@ theorem TerminalLimitMetric.eventually_canonical_cap_core
   · intro y hy
     exact hbn y (hcoreU hy)
 
+private theorem spatial_neck_or_cap_core_of_canonical_sequence
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    (x : G.terminalRegularOpen) (hxpos : 0 < metricScalarAt L.metric x)
+    {eps δ C1 C2 : ℝ} (hδsmall : δ ≤ 1 / 8646)
+    (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
+    (W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n))
+    (hW : ∀ n, (W n).capTubeHasNeckChart eps)
+    (halternatives :
+      (∃ neck : ∀ n, LocalNeck G.flow eps x.val (τ n) (W n).domain.carrier,
+        ∀ n, (W n).alternative = CanonicalAlternative.neck (neck n)) ∨
+      ∃ cap : ∀ n, LocalCap G.flow eps x.val (τ n) (W n).domain.carrier,
+        ∃ depth : ∀ n, ∀ w ∈ (cap n).tube,
+          10000 / Real.sqrt (G.flow.scalar (τ n) x.val) ≤
+            metricDistance (G.flow.base.metric (τ n)) x.val w,
+          ∀ n, (W n).alternative = CanonicalAlternative.cap (cap n) (depth n))
+    {p : G.terminalRegularOpen} (nk : SpatialNeck L.metric δ p)
+    (z : Sphere 2) {level : ℝ} (hlevel : |level| ≤ 4) (hxmap : nk.map (z, level) = x) :
+    Nonempty (SpatialNeck L.metric δ x) ∨
+      ∃ K : CompactDomain G.terminalRegularOpen,
+        Nonempty (CapCore K.carrier) ∧
+        nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4) ⊆ interior K.carrier ∧
+        (∀ w ∈ K.carrier,
+          metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric w ∧
+            metricScalarAt L.metric w < (2 * C2) * metricScalarAt L.metric x) := by
+  have hC2pos : 0 < C2 := zero_lt_one.trans_le (W 0).one_le_comparison_constant
+  have hδ11 : δ < 1 / 11 := hδsmall.trans_lt (by norm_num)
+  rcases halternatives with hn | hc
+  · obtain ⟨neck, _⟩ := hn
+    obtain ⟨n, newNeck, _, _⟩ := (L.eventually_spatialNeck_of_incoming_strongNecks
+      hτ x hxpos nk.eps_pos hδ11 hepsδ hfit (fun n => (neck n).strong)).exists
+    exact Or.inl ⟨newNeck⟩
+  · obtain ⟨cap, depth, hcap⟩ := hc
+    have hcore := L.eventually_canonical_cap_core hτ x hxpos W hW cap depth hcap
+    have hslab := L.eventually_spatial_neck_slab_subset_cap_core hτ nk hδsmall
+      z hlevel hxmap cap depth
+    obtain ⟨n, ⟨K, hK, hmodel, _, hscalar⟩, hinside⟩ := (hcore.and hslab).exists
+    have hpre : K.carrier = (Subtype.val ⁻¹' (cap n).core.carrier : Set G.terminalRegularOpen) := by
+      rw [← hK, preimage_image_eq _ Subtype.val_injective]
+    have hlow : metricScalarAt L.metric x / (2 * C2) <
+        3 * metricScalarAt L.metric x / (4 * C2) := by
+      apply (div_lt_div_iff₀ (by positivity : 0 < 2 * C2) (by positivity : 0 < 4 * C2)).mpr
+      nlinarith
+    have hupp : 3 * C2 * metricScalarAt L.metric x / 2 <
+        (2 * C2) * metricScalarAt L.metric x := by
+      nlinarith [mul_pos hC2pos hxpos]
+    have hband : ∀ w ∈ K.carrier,
+        metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric w ∧
+          metricScalarAt L.metric w < (2 * C2) * metricScalarAt L.metric x :=
+      fun w hw => ⟨hlow.trans (hscalar w hw).1, (hscalar w hw).2.trans hupp⟩
+    refine Or.inr ⟨K, hmodel, ?_, hband⟩
+    · rw [hpre, ← G.terminalRegularOpen.isOpenEmbedding'.isOpenMap.preimage_interior_eq_interior_preimage
+        G.terminalRegularOpen.isOpenEmbedding'.continuous]
+      intro w hw
+      exact hinside ⟨w, hw, rfl⟩
+
 theorem exists_uniform_spatial_neck_or_cap_core
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
@@ -219,37 +274,51 @@ theorem exists_uniform_spatial_neck_or_cap_core
     by_cases hypos : 0 ≤ metricScalarAt L.metric y
     · nlinarith [mul_nonneg hCpos.le hypos]
     · exact (mul_nonpos_of_nonneg_of_nonpos hCpos.le (le_of_not_ge hypos)).trans_lt hxpos
-  obtain ⟨τ, _, _, hτ, W, hW, hn | hc⟩ := hseq L x y hqx hy hgap'
-  · obtain ⟨neck, _⟩ := hn
-    obtain ⟨n, newNeck, _, _⟩ := (L.eventually_spatialNeck_of_incoming_strongNecks
-      hτ x hxpos hδ hδ11 hepsδ hfit (fun n => (neck n).strong)).exists
-    exact Or.inl ⟨newNeck⟩
-  · obtain ⟨cap, depth, hcap⟩ := hc
-    have hcore := L.eventually_canonical_cap_core hτ x hxpos W hW cap depth hcap
-    have hslab := L.eventually_spatial_neck_slab_subset_cap_core hτ nk hδsmall
-      z hlevel hxmap cap depth
-    obtain ⟨n, ⟨K, hK, hmodel, _, hscalar⟩, hinside⟩ := (hcore.and hslab).exists
-    have hpre : K.carrier = (Subtype.val ⁻¹' (cap n).core.carrier : Set G.terminalRegularOpen) := by
-      rw [← hK, preimage_image_eq _ Subtype.val_injective]
-    have hlow : metricScalarAt L.metric x / (2 * C) <
-        3 * metricScalarAt L.metric x / (4 * C) := by
-      apply (div_lt_div_iff₀ (by positivity : 0 < 2 * C) (by positivity : 0 < 4 * C)).mpr
-      nlinarith
-    have hupp : 3 * C * metricScalarAt L.metric x / 2 <
-        (2 * C) * metricScalarAt L.metric x := by
-      nlinarith [mul_pos hCpos hxpos]
-    have hband : ∀ w ∈ K.carrier,
-        metricScalarAt L.metric x / (2 * C) < metricScalarAt L.metric w ∧
-          metricScalarAt L.metric w < (2 * C) * metricScalarAt L.metric x :=
-      fun w hw => ⟨hlow.trans (hscalar w hw).1, (hscalar w hw).2.trans hupp⟩
-    refine Or.inr ⟨K, hmodel, ?_, hband, ?_⟩
-    · rw [hpre, ← G.terminalRegularOpen.isOpenEmbedding'.isOpenMap.preimage_interior_eq_interior_preimage
-        G.terminalRegularOpen.isOpenEmbedding'.continuous]
-      intro w hw
-      exact hinside ⟨w, hw, rfl⟩
-    · intro hyK
-      have hlowy := (div_lt_iff₀ (by positivity : 0 < 2 * C)).mp (hband y hyK).1
-      nlinarith
+  obtain ⟨τ, _, _, hτ, W, hW, halt⟩ := hseq L x y hqx hy hgap'
+  rcases spatial_neck_or_cap_core_of_canonical_sequence L hτ x hxpos hδsmall
+    hepsδ hfit W hW halt nk z hlevel hxmap with hn | hc
+  · exact Or.inl hn
+  · obtain ⟨K, hmodel, hinside, hband⟩ := hc
+    refine Or.inr ⟨K, hmodel, hinside, hband, ?_⟩
+    intro hyK
+    have hlowy := (div_lt_iff₀ (by positivity : 0 < 2 * C)).mp (hband y hyK).1
+    nlinarith
+
+theorem exists_uniform_spatial_neck_or_cap_core_of_not_isCompact
+    {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+      (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+      ∀ (L : G.TerminalLimitMetric) (p x : G.terminalRegularOpen),
+        q < metricScalarAt L.metric x → ¬ IsCompact (connectedComponent x) →
+        ∀ (nk : SpatialNeck L.metric δ p) (z : Sphere 2) (level : ℝ),
+          |level| ≤ 4 → nk.map (z, level) = x →
+          Nonempty (SpatialNeck L.metric δ x) ∨
+          ∃ K : CompactDomain G.terminalRegularOpen,
+            Nonempty (CapCore K.carrier) ∧
+            nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4) ⊆ interior K.carrier ∧
+            (∀ w ∈ K.carrier,
+              metricScalarAt L.metric x / C < metricScalarAt L.metric w ∧
+                metricScalarAt L.metric w < C * metricScalarAt L.metric x) := by
+  let eps := δ / 4
+  have heps : 0 < eps := by dsimp [eps]; positivity
+  have hepsδ : eps < δ := by dsimp [eps]; linarith
+  have hδ11 : δ < 1 / 11 := hδsmall.trans_lt (by norm_num)
+  have hfit : δ⁻¹ + 1 ≤ eps⁻¹ := by
+    change δ⁻¹ + 1 ≤ (δ / 4)⁻¹
+    rw [inv_div]
+    apply (le_div_iff₀ hδ).mpr
+    field_simp
+    linarith
+  obtain ⟨C, hC, hsequence⟩ := exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact.{u}
+    heps (hepsδ.trans hδ11)
+  refine ⟨2 * C, by linarith, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hseq⟩ := hsequence P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L p x hqx hnoncompact nk z level hlevel hxmap
+  obtain ⟨τ, _, _, hτ, W, hW, halt⟩ := hseq L x hqx hnoncompact
+  exact spatial_neck_or_cap_core_of_canonical_sequence L hτ x (hq.trans hqx) hδsmall
+    hepsδ hfit W hW halt nk z hlevel hxmap
 
 
 theorem exists_uniform_spatial_neck_or_cap_core_on_component
@@ -315,5 +384,62 @@ theorem exists_uniform_spatial_neck_or_cap_core_on_component
     · intro w hw
       simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hscalar w.val hw
 
+
+theorem exists_uniform_spatial_neck_or_cap_core_on_noncompact_component
+    {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+      (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
+      ∀ (L : G.TerminalLimitMetric) (c : G.terminalRegularOpen),
+        let U := connectedComponentOpen (I := I3) c
+        ¬ IsCompact (connectedComponent c) → ∀ (p x : U),
+          q < metricScalarAt (L.metric.restrictOpen U) x →
+          ∀ (nk : SpatialNeck (L.metric.restrictOpen U) δ p) (z : Sphere 2) (level : ℝ),
+            |level| ≤ 4 → nk.map (z, level) = x →
+            Nonempty (SpatialNeck (L.metric.restrictOpen U) δ x) ∨
+            ∃ K : CompactDomain U,
+              Nonempty (CapCore K.carrier) ∧
+              nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4) ⊆ interior K.carrier ∧
+              (∀ w ∈ K.carrier,
+                metricScalarAt (L.metric.restrictOpen U) x / C <
+                  metricScalarAt (L.metric.restrictOpen U) w ∧
+                  metricScalarAt (L.metric.restrictOpen U) w <
+                    C * metricScalarAt (L.metric.restrictOpen U) x) := by
+  obtain ⟨C, hC, hmain⟩ := exists_uniform_spatial_neck_or_cap_core_of_not_isCompact.{u} hδ hδsmall
+  refine ⟨C, hC, ?_⟩
+  intro P a s G
+  obtain ⟨q, hq, hqmain⟩ := hmain P a s G
+  refine ⟨q, hq, ?_⟩
+  intro L c U hnoncompact p x hqx nk z level hlevel hx
+  have hcomp : connectedComponent x.val = connectedComponent c :=
+    (connectedComponent_eq x.property).symm
+  have hxnoncompact : ¬ IsCompact (connectedComponent x.val) := by
+    rwa [hcomp]
+  obtain ⟨nk₀, _, hmap, _, _, _⟩ := nk.exists_of_restrictOpen
+  have hx₀ : nk₀.map (z, level) = x.val := by
+    rw [hmap, hx]
+  have hq₀ : q < metricScalarAt L.metric x.val := by
+    simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hqx
+  rcases hqmain L p.val x.val hq₀ hxnoncompact nk₀ z level hlevel hx₀ with
+    hn | hc
+  · obtain ⟨newNeck⟩ := hn
+    have hcapture : newNeck.map '' (univ ×ˢ Ioo (-δ⁻¹) δ⁻¹) ⊆ (U : Set G.terminalRegularOpen) := by
+      change _ ⊆ connectedComponent c
+      rw [← hcomp]
+      exact newNeck.controlled_range_subset_connectedComponent
+    exact Or.inl ⟨newNeck.restrictOpen hcapture⟩
+  · obtain ⟨K₀, ⟨model⟩, hinside, hscalar⟩ := hc
+    have hxK : x.val ∈ K₀.carrier := interior_subset (hinside
+        ⟨(z, level), ⟨mem_univ _, abs_le.mp hlevel⟩, hx₀⟩)
+    have hKU : K₀.carrier ⊆ U := by
+      change K₀.carrier ⊆ connectedComponent c
+      rw [← hcomp]
+      exact K₀.connected.subset_connectedComponent hxK
+    let K := K₀.restrictOpen U hKU
+    refine Or.inr ⟨K, model.nonempty_preimage_open U hKU, ?_, ?_⟩
+    · rw [CompactDomain.interior_restrictOpen_carrier]
+      rintro w ⟨v, hv, rfl⟩
+      exact hinside ⟨v, hv, hmap v⟩
+    · intro w hw
+      simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hscalar w.val hw
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
