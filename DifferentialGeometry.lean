@@ -13730,3 +13730,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCyli
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialFlowComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricInitialComparison
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.LocalVolume
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Local
