@@ -13838,3 +13838,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Initial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarBlowup
 import DifferentialGeometry.Geometry.Neck.ScalarSeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardUniformCurvatureBlowup
