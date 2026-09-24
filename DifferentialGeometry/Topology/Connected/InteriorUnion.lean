@@ -227,4 +227,47 @@ theorem exists_mem_connectedComponentIn_interior_union_collar
 
 end
 
+variable {X : Type*} [TopologicalSpace X]
+
+theorem interior_subset_connectedComponentIn_interior_union_of_incident_component
+    {W B : Set X} {a : X} (hB : IsPreconnected (interior B))
+    (hmeet : (closure (connectedComponentIn (interior W) a) ∩
+      closure (interior B) ∩ interior (W ∪ B)).Nonempty) :
+    interior B ⊆ connectedComponentIn (interior (W ∪ B)) a := by
+  obtain ⟨p, ⟨hpW, hpB⟩, hpV⟩ := hmeet
+  have hpC : p ∈ connectedComponentIn (interior (W ∪ B)) a := by
+    rw [← closure_connectedComponentIn_inter (interior (W ∪ B)) a]
+    exact ⟨closure_mono (connectedComponentIn_mono a (interior_mono subset_union_left)) hpW, hpV⟩
+  have hconn : IsPreconnected (insert p (interior B)) :=
+    hB.subset_closure (subset_insert p _) (insert_subset hpB subset_closure)
+  have hsub : insert p (interior B) ⊆ interior (W ∪ B) :=
+    insert_subset hpV (interior_mono subset_union_right)
+  rw [connectedComponentIn_eq hpC]
+  exact (subset_insert p _).trans (hconn.subset_connectedComponentIn (mem_insert p _) hsub)
+
+theorem subset_closure_connectedComponentIn_interior_union_of_incident_component
+    {W B : Set X} {a : X} (hB : B ⊆ closure (interior B))
+    (hBconn : IsPreconnected (interior B))
+    (hmeet : (closure (connectedComponentIn (interior W) a) ∩
+      closure (interior B) ∩ interior (W ∪ B)).Nonempty) :
+    B ⊆ closure (connectedComponentIn (interior (W ∪ B)) a) :=
+  hB.trans (closure_mono
+    (interior_subset_connectedComponentIn_interior_union_of_incident_component hBconn hmeet))
+
+theorem connectedComponentIn_interior_union_eq_of_incident_components
+    {W B : Set X} {a b : X} (hB : IsPreconnected (interior B))
+    (ha : (closure (connectedComponentIn (interior W) a) ∩
+      closure (interior B) ∩ interior (W ∪ B)).Nonempty)
+    (hb : (closure (connectedComponentIn (interior W) b) ∩
+      closure (interior B) ∩ interior (W ∪ B)).Nonempty) :
+    connectedComponentIn (interior (W ∪ B)) a =
+      connectedComponentIn (interior (W ∪ B)) b := by
+  have hne : (interior B).Nonempty :=
+    closure_nonempty_iff.mp ⟨ha.choose, ha.choose_spec.1.2⟩
+  obtain ⟨z, hz⟩ := hne
+  exact (connectedComponentIn_eq
+    (interior_subset_connectedComponentIn_interior_union_of_incident_component hB ha hz)).trans
+      (connectedComponentIn_eq
+        (interior_subset_connectedComponentIn_interior_union_of_incident_component hB hb hz)).symm
+
 end DifferentialGeometry.Topology
