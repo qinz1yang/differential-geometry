@@ -13829,3 +13829,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.HighCurvatureModels
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.IntervalLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarRay
