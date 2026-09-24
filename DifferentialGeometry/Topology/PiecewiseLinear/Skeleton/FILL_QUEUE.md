@@ -835,3 +835,38 @@ Steps (each verified before the next):
    `Skeleton/HANDOFF_LEAD_20260922.md`. Commit these with the files of step 5 in one commit; push.
 7. Report (<= 40 lines): commits made (hashes, files), the statement-check result, the receipts and audit
    lines, the ledger total before/after.
+
+## Codex item 20 — accept the collaborator's piercing package (PR #14, CGN leaf 3) (lead-written 2026-09-24 18:50; Codex lane)
+
+Lease: lease a (token `claude-agent-a-20260919`, root `C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-a`)
+if item 17 has not started on it; otherwise run after item 19 on `codex-moise-recon`. Same
+OWNER-GRANTED EXCEPTION and limits as item 19 (git writes by explicit path only, no `git add -A`, no
+force-push, no touching other lanes' untracked files, one commit per step, push to
+`origin codex/moise-integration` at the end). Log to `Skeleton/FILL_LOG.md`, section `# Codex item 20`.
+
+PR #14 (6 commits, 30 new files, no collision with the working tree) proves the CGN leaf
+`exists_section34PiercingPackage` in `Section34PiercingPackage.lean`; the lead checked the statement
+byte-identical against `Skeleton/ControlledGraphNeighborhood.lean` and found no `sorry`. One PR module,
+`Section34VertexApproximation.lean`, carries `Moise341.exists_section34VertexApproximation`, which also
+exists as a proved theorem in the skeleton (line 322, with its `omit [FiniteDimensional ℝ Ea] in` line):
+same statement, reformatted proof.
+
+Steps: (1) `git fetch origin pull/14/head:pr14`, confirm 30 added `.lean` files and nothing else,
+cherry-pick the six commits. (2) Statement check of the leaf (byte-identical; stop on any diff). (3)
+Scan the 30 files as in item 19 step 3; the only allowed name collisions are the leaf (skeleton) and
+`Moise341.exists_section34VertexApproximation` (skeleton). (4) Verify all 30 modules in dependency order
+with `prepare-private-root.py` + `checker.ps1` on the lane's lease (zero diagnostics each) and run the
+audit probe over the 30 (split if needed). (5) Wiring in `Skeleton/ControlledGraphNeighborhood.lean`:
+delete the leaf `exists_section34PiercingPackage`; delete the skeleton's own
+`Moise341.exists_section34VertexApproximation` block (the `omit … in` line through the end of its
+proof); add `import …Section34VertexApproximation` and `import …Section34PiercingPackage` after the
+last import; add a short note to the module docstring (proved by whom, when, accepted how; the
+approximation theorem now imported). The skeleton must then have exactly 3 `sorry`
+(cut frame, vertex preparation, protected circle removal step); recheck it (zero errors, 3 sorry
+warnings). Register the 30 modules in `DifferentialGeometry.lean` after the last consecutive
+`import DifferentialGeometry.` line following `…Section34CompactResidualBalls`. (6) Records: append to
+ledger row `| B1.c.3 |` "**Piercing package PROVED 2026-09-24** (collaborator PR #14, 30 modules; Codex
+item 20 acceptance; the skeleton's `Moise341.exists_section34VertexApproximation` replaced by the
+imported module)", set the count-table line `| ControlledGraphNeighborhood | … |` to 3, lower the
+"physical sorry occurrences" total by 1 with a dated note; one handoff line. Commit steps 5–6 together;
+push. (7) Report (<= 40 lines): commits, receipts, audit line, ledger total before/after.
