@@ -14561,3 +14561,10 @@ Final inventory:
 C:\Users\liao9\AppData\Local\Temp\claude-moise-agent-b\Codex13HandoffManifest.json
 Final all-96-module audit accepted. No lane-b Lean process remained at the final check. Proof development stopped at owner request for collaborator takeover; the lease record is unchanged.
 
+# Codex item 22 D — compact and manifold traces accepted (2026-09-24)
+
+Accepted PRs #28/#29 at the pinned heads in `consult/PR2829-host-acceptance.md`: 101 modules,
+268 declarations, four axiom/linter audits and independent coverage census. Two frozen statements
+and variable blocks LF-identical. Canonical duplicates reconciled; both assemblies compile cleanly
+and pass their own audit. Promoted Section34Compact and Section34Normalization; frozen total 6 -> 4.
+Smooth host replay and the authorized E interface cleanup continue separately.

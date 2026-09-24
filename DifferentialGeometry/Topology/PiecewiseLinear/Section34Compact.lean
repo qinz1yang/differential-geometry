@@ -23,9 +23,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCutAndGraph
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNormalization
 
 /-!
-# Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
+# Section 34 on a compact piecewise linear ball: a producer of `Moise341`
 
 The two assemblies `moise341OnNeighborhood` and `moise341_of_onNeighborhood` prove, for real,
 the local endpoint `Moise341OnNeighborhood` and then `Moise341` (Moise 34.1, page 239) from the
@@ -284,6 +285,12 @@ removed and the marked-prism theorem received its mathematical name. The frozen 
 and variable block are LF-identical. `exists_compactCutAndGraph` retains the existing
 `Moise331OnTube` hypothesis, chooses all constraints before one approximation, and is
 imported from `Section34CompactCutAndGraph`. The trace leaf remains open.
+
+The final trace leaf was proved by Bennett Chow in collaborator PRs #28 and #29,
+accepted by the Codex integration lead on 2026-09-24 after host compilation and
+foundational-axiom/thirteen-linter audits. The frozen statement and variable block
+are LF-identical. This module has no remaining proof placeholders and is promoted
+from Skeleton; the preceding development notes record its historical proof frontier.
 -/
 
 open Set Topology
@@ -300,21 +307,6 @@ variable {C V : Set (EuclideanSpace ℝ (Fin 3))}
   {src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3))}
   {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
   {env : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-
-theorem compactTrace_of_noOperation (hcut : Section34CompactCutFrame C K K' src srcBd)
-    (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
-    {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hinv : Section34CompactFaceBallInvariants K K' h H
-      (section34CompactVertexBallImage src f₁) (section34CompactSplitDiskImage srcBd f₁)
-      fbl fblBd)
-    (hnc : ∀ s, ¬ Section34CompactCompression K K' (section34CompactVertexBallImage srcBd f₁)
-      (section34CompactSplitDiskImage src f₁) fbl fblBd s)
-    (hnb : ∀ s, ¬ Section34CompactBigonSlide K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactVertexBallImage srcBd f₁) (section34CompactSplitDiskImage src f₁)
-      (section34CompactSplitDiskImage srcBd f₁) fblBd s) :
-    Section34CompactTrace K K' (section34CompactVertexBallImage src f₁)
-      (section34CompactSplitDiskImage srcBd f₁) fblBd := by
-  sorry
 
 end Leaves
 

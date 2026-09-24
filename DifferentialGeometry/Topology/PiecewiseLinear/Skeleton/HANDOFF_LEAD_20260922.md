@@ -498,7 +498,8 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `codex/moise-smooth-integration` from `2dcb704e8`, commits `69f2be6e4` + `4b898b95f` hold all 118 batch modules
   (UNVERIFIED), pushed to origin. Lease `codex-smooth-integration` re-pointed at the worktree, expiry 09-26 04:17 UTC;
   worker leases a–e renewed to 09-26 04:17 UTC (owner's word). The batch's 104 new files moved out of the shared
-  checkout into `codex-smooth-integrationemoved-from-shared\`; the shared tree is clean of the batch. Lane c runs
+  checkout into `codex-smooth-integration
+emoved-from-shared\`; the shared tree is clean of the batch. Lane c runs
   the 144-module cone verification and the single-face replacement in the worktree; entry into the shared tree
   needs an exclusive window and one recompilation of the cone in a shared-checkout private root (plan §5).
 * 23:55 (09-23) — collaborator PR #11 (both bigon slides, 49 modules) cherry-picked (`2dcb704e8`); statements
@@ -618,3 +619,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 03:50 UTC on 2026-09-24 - registered the 96 Section 32 descent bricks of Codex item 13 (lane b stopped for handoff; pushed on the instruction
   of the owner with the receipts and audit of lane b only, no lead re-check); the leaf `exists_descentSequence` is handed to the collaborator (brief
   `consult/COLLABORATOR-item13-section32-descent-request.md`). Physical `sorry` 6.
+
+* 2026-09-24: accepted PRs #28/#29 trace leaves; 101 modules, 268 declarations, four audits and
+  coverage census. Promoted Section34Compact and Section34Normalization; frozen total 6 -> 4.

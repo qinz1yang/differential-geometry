@@ -1,0 +1,1592 @@
+{
+  "base_commit": "c6c05ca9f69376ee2be77e9ac5403be95b551311",
+  "platform": "macOS",
+  "private_outputs": true,
+  "intake_audit": {
+    "head": "c6c05ca9f69376ee2be77e9ac5403be95b551311",
+    "audit_sha256": "a5eba1f2047755eaa0053fb4381343938a85885c034c37f766532a08f77ea96a",
+    "started_utc": "2026-09-24T00:43:48.385822+00:00",
+    "elapsed_seconds": 28.781717459000003,
+    "exit_code": 0,
+    "diagnostic_bytes": 0,
+    "diagnostic_lines": 0,
+    "command": [
+      "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+      "-j1",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dweak.linter.mathlibStandardSet=true",
+      "-Dlinter.style.header=true",
+      "-Dlinter.style.longLine=true",
+      "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/SubleafFiveAudit.lean"
+    ],
+    "sources": {
+      "DifferentialGeometry.Topology.PiecewiseLinear.ArcBoundaryCuts": "52dc12431bbc146666439f53f3c74b9496ac648ffedc3aeb41557b23e672eeed",
+      "DifferentialGeometry.Topology.PiecewiseLinear.ArcSubinterval": "8eb56a4442fa6ee59ad0653d14253494b80152ad6f04aea56e3987686ca6811f",
+      "DifferentialGeometry.Topology.PiecewiseLinear.BallUnionBoundarySurface": "eed6ba50f59685c63468101acfc1e5beaf12bcb88326cf8847d484595040ab20",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CircleComplementaryArc": "5e3e78767205a2862c1a4d975e2191f19e146004732cc507184b8fff5dc6a903",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CircleDiskSubarc": "27dba7200cdfdf04950b7aa2425e58382e83b661dcd736fd190203b1e64b9724",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CrossingBallSeam": "246e017570ea8180fef4aaa7e80514a9852cf31ceb3259359ead75cc61ceb4d6",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallMeridians": "c93376cb764b0ec4bc7ca94ee76bb0c2c15a0aace3d3255ea906cceddfcaf6bd",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CylindricalBoundaryMeridian": "3e996be48d6af3a1a4569f948a7cd3e8967f35d742a1f4e67d9593b9c957dd4d",
+      "DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutContainment": "53af3cb08e06fb2ab0b9a37a69ba15df519f2892a75446042a33538be0ad2f5f",
+      "DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutPair": "fbb81714f89b7ae7f59ff0c292896c392721ded7f47ddaf283efe81ca8e02d25",
+      "DifferentialGeometry.Topology.Connected.FiniteIntervalCuts": "a9f30f83c12ac5bef9fc46484a51fee769db9571c0135d44a1526f1ac668a753",
+      "DifferentialGeometry.Topology.PiecewiseLinear.InnermostBoundaryDisk": "603140c2d8d516a726ea09461e1b08cd728dfb1714ada5ddbceaf87dd9e64b8e",
+      "DifferentialGeometry.Topology.PiecewiseLinear.LocalDiskSeparation": "cf253f583b708247bf2f9f60e1f594688a6a8d4f76f0ea7f6bc0506f05721fae",
+      "DifferentialGeometry.Topology.PiecewiseLinear.LocalInnermostDisk": "a3aef1a6abc3fa6d8c12c7df9e7f870cc01844d8cd00a5447d7ba8706ad875f7",
+      "DifferentialGeometry.Topology.PiecewiseLinear.OutermostCircleCrosscut": "7b6c7a23a142ecc8a1e3b31333b9162bb97050dd354eb0399fbc33b100ac8a96",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundarySurface": "033d1c2274d9489162a7613d08ceea23dd2c3755014a57f724975565fe5f828c",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDiskLocalization": "2316edfda63d67bf6b334bd73ee2c86872529b13d6818a6081118b399fd885e8",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactEdgeCarriers": "f42327245a289e781fba48c92d87e672f0a9d67dd1167394e38c0228ec070b48",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceCycle": "372e9eb88317c01f7bbf535d2312475ac343aa37cc8b8120d4e0e9c477d20156",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactInnermostReturn": "414f0e699cb959220b00fddaf1b3cb3e34d8fe24aa1e7056490faad65b0d2a06",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactLinkPropagation": "77b523e972b2f61bdb837f6f01b70346b661176eb558aefa8c240b6ee2fb4f05",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianSystem": "b8cfa1c7b4adb45680d09d31705f11994c40078da7aff7c2c18fef5b282cb8c1",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMouthAvoidance": "2cecf325fc5fcdca0949f7061f3b571c31746c26041cdb149b1cee49d6e11207",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPolygonFilling": "fb762cc768c88d17c648868062460b759c9ad17cd1cef0184085a10be91b149e",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedLink": "0b1551cf5739532172394e5118c08d72ac6e864523a2a4a2d8557a1e589c98aa",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedSphere": "c69e1c79d84db2834f28edb2a68e859b52b6d7da57ad8ed51381039ffdf77f7c",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDiskDescent": "482702b0b2c25a8d7a34429c6c769b81f0af91e62b947aea3daa2a84da4871dc",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDisks": "a0ad967510aa1d4e5d2e763d6cfb5dc7753a647f89fb156a6702d1d29bf4b3e4",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeamArcSides": "c7c1b95b2bbbec7511c5e74f5a5f45c296c8023c6531512ddb9d127e709e2187",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingOperations": "40a3fe7ae5ea8168f6de1beed47597897b5e23d5224d69e0dcee735c39e21fd5",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingReturn": "7ccd7b638e044c513dff64a69fd666594f03e7f243d0d8b2b0584c1c5512a438",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingTrace": "b8ffc4d73ccb3229a5ba7ec86296d44581d638fcbd2d1976fea6d67cd8e23b9d",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCarrying": "c41809c47d107d51f3600803c85ba421273e8282896e1943dd8d26ab5c56c59a",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCircles": "c31ce5a68947b47b64b942ae0b52e53a4dd8f4bc9c403d82d535ceadcd80b136",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCrossing": "09d35d332329d56d854ddfbf3e357304ff1b6c4efdb0b7d574dfc52c9d7e3e16",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceFamily": "2aa33a001fcba8dbf911931d1c913329853daeb81af878c5982c54c4b5caf3fb",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLocalization": "5c5213eb062ec42fa38abed1c9390bcdd2b187f66122abf8ec823c6c71228078",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceSeams": "58e6db851003ef31100d56a894b2ad99b53487bbb529b8392b105a499e9c34a9",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexLink": "eececc2c62e542f5d906fde9e526114bc3eedbc2010a5d4af2d157ebd0823947",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexOperations": "a5c56cd232dd95ce5a19409fa05b784fff0678056c9deecdf6497ca5bb275554",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexTrace": "ee61e96bdb919d2dab3ba6b2702966faf4500c97c8fe52c6b2d1440a1531d6cf",
+      "DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionEdgeEnds": "2b8acba8ad955fbe9637fa5816332ed08610cc281bec5307e38aa28b623ab9fe",
+      "DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskContainment": "41234f855c179abbb52b8a3e6db07e2eed8c9858ecf1ccce2307c5c2734560f3",
+      "DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskSeparation": "5bd07f7e7b272a9a38bb239fcefe5eb97a41ef24d77a23cdc49b7d61605baead",
+      "DifferentialGeometry.Topology.PiecewiseLinear.TorusDisjointCircleFilling": "ca5aaad0216ef64855b7c562c55a17d441e0197ba05254181e4d838c6bbc0332",
+      "DifferentialGeometry.Topology.PiecewiseLinear.TorusTraceCircles": "efca1aa9cb578a4baa66cec73fd14f11809947bd4876e188b6f1eef10773f2b7"
+    },
+    "source_stable": true,
+    "modules_completed": 46,
+    "declarations": 129,
+    "census": [
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.ArcBoundaryCuts",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.ArcSubinterval",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.BallUnionBoundarySurface",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleComplementaryArc",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleDiskSubarc",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CrossingBallSeam",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallMeridians",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 9,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CylindricalBoundaryMeridian",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutContainment",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutPair",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.Connected.FiniteIntervalCuts",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.InnermostBoundaryDisk",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.LocalDiskSeparation",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.LocalInnermostDisk",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.OutermostCircleCrosscut",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBoundarySurface",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDiskLocalization",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactEdgeCarriers",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceCycle",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactInnermostReturn",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactLinkPropagation",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianSystem",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMouthAvoidance",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPolygonFilling",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedLink",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedSphere",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDiskDescent",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDisks",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeamArcSides",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingOperations",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingReturn",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingTrace",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCarrying",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCircles",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceCrossing",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceFamily",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLocalization",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceSeams",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexLink",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 5,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexOperations",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVertexTrace",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionEdgeEnds",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskContainment",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskSeparation",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusDisjointCircleFilling",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusTraceCircles",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 5,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      }
+    ],
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "primitive_longitude_audit": {
+    "audit_sha256": "6e5bb8cd7906e50b86a49f4f4871229d714626384a5c380a9c61861e0420caa1",
+    "elapsed_seconds": 27.186985084,
+    "exit_code": 0,
+    "diagnostic_bytes": 0,
+    "command": [
+      "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+      "-j1",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dweak.linter.mathlibStandardSet=true",
+      "-Dlinter.style.header=true",
+      "-Dlinter.style.longLine=true",
+      "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/CompactPrimitiveLongitudeAudit.lean"
+    ],
+    "sources": {
+      "DifferentialGeometry.Topology.Homology.InfiniteCyclicDegree": "0db55c35769babc7fdb96939401b0bf2acdf1c4851f5d521eb79863ae87e04b2",
+      "DifferentialGeometry.Topology.PiecewiseLinear.TorusTracePrimitiveHomology": "e3aa8d8ee6ab489875b3b374e53efd682f12836b67fc7b87c645f920fd50d16f",
+      "DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusHomologyCarrying": "0342920aa7b305cb2ed5065017371917ea38c1b63afc4a1befa215b9452cb509",
+      "DifferentialGeometry.Topology.FundamentalGroup.CyclicProductMap": "2a737486ad63a8ee0774657bfe4dfe67a01f11de91f09df126a2693c46999a2b",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNonseparating": "000e1d659e1827e4d1c26b3b2060038bba0271428aaed86fa4c624f4c90e82e7",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceDegree": "de5193aeba7f7b65d471449b9416be94410303f35269227cca475ff45c5460c6",
+      "DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridianLongitude": "c3dd2c16afa6502a695dac2eca59f74f7241b8b87bb09b6cb5bb2f7866d6c630",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLongitude": "b87e377cf16e27c8ce80b32c9485fa56152aaa48338f4fd437566a25a74ba3bf"
+    },
+    "source_stable": true,
+    "modules_completed": 8,
+    "declarations": 27,
+    "census": [
+      {
+        "module": "DifferentialGeometry.Topology.Homology.InfiniteCyclicDegree",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusTracePrimitiveHomology",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 6,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusHomologyCarrying",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.FundamentalGroup.CyclicProductMap",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNonseparating",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 4,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceDegree",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridianLongitude",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 6,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLongitude",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      }
+    ],
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "compilation": {
+    "DifferentialGeometry.Topology.Homology.InfiniteCyclicDegree": {
+      "module": "DifferentialGeometry.Topology.Homology.InfiniteCyclicDegree",
+      "source_sha256": "0db55c35769babc7fdb96939401b0bf2acdf1c4851f5d521eb79863ae87e04b2",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/Homology/InfiniteCyclicDegree.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/Homology/InfiniteCyclicDegree.ilean",
+        "DifferentialGeometry/Topology/Homology/InfiniteCyclicDegree.lean"
+      ],
+      "elapsed_seconds": 1.343410917,
+      "olean_sha256": "681808cdcf6013e9d2cb90e44bb33c2e54a167347aef6c71da9e33fa6e69f7da"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.TorusTracePrimitiveHomology": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusTracePrimitiveHomology",
+      "source_sha256": "e3aa8d8ee6ab489875b3b374e53efd682f12836b67fc7b87c645f920fd50d16f",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/TorusTracePrimitiveHomology.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/TorusTracePrimitiveHomology.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/TorusTracePrimitiveHomology.lean"
+      ],
+      "elapsed_seconds": 2.02097375,
+      "olean_sha256": "e61b7c907a70ccd18c76be9d80146cfae9a90a444a9d82e9e50313b0053ca505"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusHomologyCarrying": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusHomologyCarrying",
+      "source_sha256": "0342920aa7b305cb2ed5065017371917ea38c1b63afc4a1befa215b9452cb509",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/SolidTorusHomologyCarrying.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/SolidTorusHomologyCarrying.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/SolidTorusHomologyCarrying.lean"
+      ],
+      "elapsed_seconds": 1.9884035420000001,
+      "olean_sha256": "18ffcd97f09f66a9ac1b51fe0e92bf45e959a66e95b0ee155738aafff2c5f575"
+    },
+    "DifferentialGeometry.Topology.FundamentalGroup.CyclicProductMap": {
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.CyclicProductMap",
+      "source_sha256": "2a737486ad63a8ee0774657bfe4dfe67a01f11de91f09df126a2693c46999a2b",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/FundamentalGroup/CyclicProductMap.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/FundamentalGroup/CyclicProductMap.ilean",
+        "DifferentialGeometry/Topology/FundamentalGroup/CyclicProductMap.lean"
+      ],
+      "elapsed_seconds": 1.631416916,
+      "olean_sha256": "34038ad8038fbcd73d0e89cdd55329caa3a128dec3b349da8a294dedc52d7f3d"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNonseparating": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNonseparating",
+      "source_sha256": "000e1d659e1827e4d1c26b3b2060038bba0271428aaed86fa4c624f4c90e82e7",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceNonseparating.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceNonseparating.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceNonseparating.lean"
+      ],
+      "elapsed_seconds": 2.1147912079999998,
+      "olean_sha256": "48b22566ff6dd74e5c10e70690b52532eec5fb860b266c3ea749442a25e09c1b"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceDegree": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceDegree",
+      "source_sha256": "de5193aeba7f7b65d471449b9416be94410303f35269227cca475ff45c5460c6",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceDegree.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceDegree.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceDegree.lean"
+      ],
+      "elapsed_seconds": 2.008549542,
+      "olean_sha256": "62299b26213a88ce7c1544954f83e9cd82ec46686675e4887fe7c62a1f3d6fb0"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridianLongitude": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridianLongitude",
+      "source_sha256": "c3dd2c16afa6502a695dac2eca59f74f7241b8b87bb09b6cb5bb2f7866d6c630",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/TorusMeridianLongitude.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/TorusMeridianLongitude.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/TorusMeridianLongitude.lean"
+      ],
+      "elapsed_seconds": 9.408186417000003,
+      "olean_sha256": "9236dca474bc64ead7875e52755a1a5bcd1b48fb6a983e202f320a5f74913ead"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLongitude": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceLongitude",
+      "source_sha256": "b87e377cf16e27c8ce80b32c9485fa56152aaa48338f4fd437566a25a74ba3bf",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceLongitude.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceLongitude.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceLongitude.lean"
+      ],
+      "elapsed_seconds": 2.248050042,
+      "olean_sha256": "9950a53c430da78fab5746fb6c13e307b95aa2455986e9d8144841a30645f890"
+    }
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "audit": {
+    "audit_sha256": "427c99e3ac6039df500f46527d12ff954ea5fa9d2aa73bf724d96542e09e1f0f",
+    "elapsed_seconds": 26.337498208,
+    "exit_code": 0,
+    "diagnostic_bytes": 0,
+    "command": [
+      "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+      "-j1",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dweak.linter.mathlibStandardSet=true",
+      "-Dlinter.style.header=true",
+      "-Dlinter.style.longLine=true",
+      "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/MeridianReturnFoundationsAudit.lean"
+    ],
+    "sources": {
+      "DifferentialGeometry.Topology.LoopSpace.PrimitiveCircleLift": "4ffa227888f143b9252137b4e5a2ab7512af0076ae0007df94088f272ab7ed57",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CircleLiftArc": "7f2986a4da94d939653b791a6311b5341f8953dae5c0ffe02042d506d5b17aa8",
+      "DifferentialGeometry.Topology.PiecewiseLinear.CurveCrossingExtrema": "f45aedae34a072178f6cec09b29f759b42fc1e8762499eff54dec81143d35fed",
+      "DifferentialGeometry.Topology.PiecewiseLinear.PLCircleSurjectivity": "69b3a23313b057d0a43c757720dbdf954ad2fc8195c3d4ec57ce95e4f65cb1d6",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceMeetsMeridians": "f955ff0521b079478c3fa15beb746ce670e45e4d94557fb0abfdfafd5005f90b",
+      "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianReturn": "0dd178f31157632e76e769e538aeabc9d7c3753b28dbd7f22b52e6200bcaaad5"
+    },
+    "source_stable": true,
+    "modules_completed": 6,
+    "declarations": 11,
+    "census": [
+      {
+        "module": "DifferentialGeometry.Topology.LoopSpace.PrimitiveCircleLift",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 3,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleLiftArc",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.CurveCrossingExtrema",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCircleSurjectivity",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 1,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceMeetsMeridians",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianReturn",
+        "linters": [
+          "checkType",
+          "defsWithUnderscore",
+          "deprecatedNoSince",
+          "impossibleInstance",
+          "nonClassInstance",
+          "simpComm",
+          "simpNF",
+          "structureInType",
+          "subsetDotNotationLinter",
+          "synTaut",
+          "tacticDocs",
+          "unusedArguments",
+          "unusedHavesSuffices"
+        ],
+        "declarations": 2,
+        "allowed_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      }
+    ],
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "compilation": {
+    "DifferentialGeometry.Topology.LoopSpace.PrimitiveCircleLift": {
+      "module": "DifferentialGeometry.Topology.LoopSpace.PrimitiveCircleLift",
+      "source_sha256": "4ffa227888f143b9252137b4e5a2ab7512af0076ae0007df94088f272ab7ed57",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/LoopSpace/PrimitiveCircleLift.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/LoopSpace/PrimitiveCircleLift.ilean",
+        "DifferentialGeometry/Topology/LoopSpace/PrimitiveCircleLift.lean"
+      ],
+      "elapsed_seconds": 3.263115959,
+      "olean_sha256": "68fecd371192af8b04212a9ffef454355988ed68fd3ee169577b423b87bc105a"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.CircleLiftArc": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CircleLiftArc",
+      "source_sha256": "7f2986a4da94d939653b791a6311b5341f8953dae5c0ffe02042d506d5b17aa8",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/CircleLiftArc.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/CircleLiftArc.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/CircleLiftArc.lean"
+      ],
+      "elapsed_seconds": 2.110662833000001,
+      "olean_sha256": "4decd5d7a50848fa9b10204a1b2ef6a2e193851a8856bcb84396d9068ef823a0"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.CurveCrossingExtrema": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.CurveCrossingExtrema",
+      "source_sha256": "f45aedae34a072178f6cec09b29f759b42fc1e8762499eff54dec81143d35fed",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/CurveCrossingExtrema.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/CurveCrossingExtrema.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/CurveCrossingExtrema.lean"
+      ],
+      "elapsed_seconds": 2.377243792,
+      "olean_sha256": "48a270b27adaed5f92d802d42ae669ec59a5c1b6402eeb54f6e98603180a1324"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.PLCircleSurjectivity": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.PLCircleSurjectivity",
+      "source_sha256": "69b3a23313b057d0a43c757720dbdf954ad2fc8195c3d4ec57ce95e4f65cb1d6",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/PLCircleSurjectivity.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/PLCircleSurjectivity.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/PLCircleSurjectivity.lean"
+      ],
+      "elapsed_seconds": 1.907074583,
+      "olean_sha256": "ef2d22e5a11fa6e4dac28235322e55b13adee140103fc15d1fb4963ce060f37c"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceMeetsMeridians": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceMeetsMeridians",
+      "source_sha256": "f955ff0521b079478c3fa15beb746ce670e45e4d94557fb0abfdfafd5005f90b",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceMeetsMeridians.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceMeetsMeridians.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactTraceMeetsMeridians.lean"
+      ],
+      "elapsed_seconds": 2.505617875,
+      "olean_sha256": "c4a798109e201fe824f66157370e0e151bd1f6354b2f2609c25fcab787c2ecbb"
+    },
+    "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianReturn": {
+      "module": "DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMeridianReturn",
+      "source_sha256": "0dd178f31157632e76e769e538aeabc9d7c3753b28dbd7f22b52e6200bcaaad5",
+      "source_stable": true,
+      "exit_code": 0,
+      "diagnostic_bytes": 0,
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.33.1/bin/lean",
+        "-j1",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=true",
+        "-Dlinter.style.longLine=true",
+        "-o",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactMeridianReturn.olean",
+        "-i",
+        "/Users/bennettchow/Documents/Codex/2026-09-23/please-take-over-the-two-section/work/trace/.lake/build/lib/lean/DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactMeridianReturn.ilean",
+        "DifferentialGeometry/Topology/PiecewiseLinear/Section34CompactMeridianReturn.lean"
+      ],
+      "elapsed_seconds": 1.942209584,
+      "olean_sha256": "8a2d09c3e8705535c6963fabe4a7ef480074f5f3f2caeec1b0ed081e2f20ba6b"
+    }
+  }
+}

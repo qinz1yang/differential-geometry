@@ -15,6 +15,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceNormalization
 
 /-!
 # Sorry-first skeleton of stages P2--P5 of Section 34, the normalised face balls
@@ -314,6 +315,12 @@ drilled by a through-tube in the complement of the face torus, connected because
 bicollared polyhedral torus (`Section34ThroughTube`, `Section34CompressionOutsideTube`), so the wild
 rim is never approached and review BK's through-tube obligation is closed).  The one leaf left in
 this file is the trace.
+
+The final trace leaf was proved by Bennett Chow in collaborator PRs #28 and #29,
+accepted by the Codex integration lead on 2026-09-24 after host compilation and
+foundational-axiom/thirteen-linter audits. The frozen statement and variable block
+are LF-identical. This module has no remaining proof placeholders and is promoted
+from Skeleton; the preceding development notes record its historical proof frontier.
 -/
 
 open Set Topology
@@ -368,22 +375,6 @@ theorem nonempty_section34FaceTorus
     omega
   obtain ⟨x, hx⟩ := nonempty_simplexRim (𝒦 := 𝒦) hcard
   exact ⟨h x, interior_subset (hrim s ⟨x, hx, rfl⟩)⟩
-
-theorem section34Trace_of_noOperation (hU : IsOpen U)
-    (hh : Topology.IsEmbedding (U.domRestrict h))
-    (hcut : Section34CutFrame U 𝒦 𝒦' src srcBd)
-    (hgraph : Section34GraphFrame U U h η H 𝒦 𝒦' src cr f₁)
-    {fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂}
-    (hinv : Section34FaceBallInvariants 𝒦 𝒦' h H (section34VertexBallImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fbl fblBd)
-    (hnc : ∀ s, ¬ Section34Compression 𝒦 𝒦' (section34VertexBallImage srcBd f₁)
-      (section34SplitDiskImage src f₁) fbl fblBd s)
-    (hnb : ∀ s, ¬ Section34BigonSlide 𝒦 𝒦' (section34VertexBallImage src f₁)
-      (section34VertexBallImage srcBd f₁) (section34SplitDiskImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fblBd s) :
-    Section34Trace 𝒦 𝒦' (section34VertexBallImage src f₁)
-      (section34SplitDiskImage srcBd f₁) fblBd := by
-  sorry
 
 end Leaves
 
