@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.FundamentalSolution
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.Basic
@@ -28,17 +29,6 @@ theorem continuous_laplacian_complex {f : ℂ → ℝ} (hf : ContDiff ℝ 2 f) :
     ((h.clm_apply continuous_const).clm_apply continuous_const)
 
 
-theorem tsupport_laplacian_subset (f : ℂ → ℝ) :
-    tsupport (Laplacian.laplacian f) ⊆ tsupport f := by
-  apply closure_minimal _ (isClosed_tsupport f)
-  intro z hz
-  contrapose! hz
-  have he : iteratedFDeriv ℝ 2 f z = 0 := image_eq_zero_of_notMem_tsupport
-    (fun h => hz (tsupport_iteratedFDeriv_subset (𝕜 := ℝ) (f := f) 2 h))
-  simp [laplacian_eq_iteratedFDeriv_complexPlane, he]
-
-
-
 theorem integrable_log_norm_mul_laplacian {f : ℂ → ℝ}
     (hc : HasCompactSupport f) (hf : ContDiff ℝ 2 f) :
     Integrable (fun z => Real.log ‖z‖ * Laplacian.laplacian f z) := by
@@ -47,7 +37,7 @@ theorem integrable_log_norm_mul_laplacian {f : ℂ → ℝ}
     (hc.of_isClosed_subset (isClosed_tsupport _) (tsupport_laplacian_subset f))
 
 private theorem continuous_angular_integral {E : Type*} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [CompleteSpace E] {f : ℝ × ℝ → E} (hf : Continuous f) :
+    [NormedSpace ℝ E] {f : ℝ × ℝ → E} (hf : Continuous f) :
     Continuous (fun r : ℝ => ∫ θ in -Real.pi..Real.pi, f (r, θ)) := by
   have h := continuous_parametric_integral_of_continuous
     (μ := (volume : Measure ℝ)) (f := fun r θ => f (r, θ)) (by convert! hf)
@@ -89,7 +79,7 @@ theorem tendsto_log_polar_test_derivative_zero {f : ℂ → ℝ} (hf : ContDiff 
 
 
 theorem tendsto_integral_annulus_zero {E : Type*} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [CompleteSpace E] {f : ℂ → E} {R : ℝ}
+    [NormedSpace ℝ E] {f : ℂ → E} {R : ℝ}
     (hf : IntegrableOn f {z : ℂ | ‖z‖ ≤ R}) :
     Tendsto (fun r : ℝ => ∫ z in {z : ℂ | ‖z‖ ∈ Icc r R}, f z)
       (𝓝 0) (𝓝 (∫ z in {z : ℂ | ‖z‖ ≤ R}, f z)) := by

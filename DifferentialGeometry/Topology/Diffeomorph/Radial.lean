@@ -642,3 +642,102 @@ theorem exists_diffeomorph_eq_smul_on_sphere
   simpa only [one_smul, Real.scalarRadial_one] using hray θ 1 zero_le_one
 
 end Diffeomorph
+
+namespace Diffeomorph
+
+open Set Metric
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
+
+theorem exists_diffeomorph_image_closedBall_subset_ball (r : ℝ) {R : ℝ} (hR : 1 < R) :
+    ∃ F : E ≃ₘ[ℝ] E,
+      EqOn F id (sphere (0 : E) 1) ∧
+      F '' ball (0 : E) 1 = ball (0 : E) 1 ∧
+      F '' closedBall (0 : E) 1 = closedBall (0 : E) 1 ∧
+      F '' sphere (0 : E) 1 = sphere (0 : E) 1 ∧
+      F '' closedBall (0 : E) r ⊆ ball (0 : E) R := by
+  rcases subsingleton_or_nontrivial E with hE | hE
+  · let := hE
+    refine ⟨Diffeomorph.refl 𝓘(ℝ, E) E ∞, ?_, ?_, ?_, ?_, ?_⟩
+    · intro x hx
+      rfl
+    · exact image_id _
+    · exact image_id _
+    · exact image_id _
+    · intro x hx
+      rw [mem_ball_zero_iff, Subsingleton.elim x 0, norm_zero]
+      exact zero_lt_one.trans hR
+  let := hE
+  obtain ⟨d, hd⟩ := Nat.exists_eq_succ_of_ne_zero (Module.finrank_pos (R := ℝ) (M := E)).ne'
+  let : Fact (Module.finrank ℝ E = d + 1) := ⟨hd⟩
+  let t : ℝ := max 2 r
+  have ht : 0 < t := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
+  let c : ℝ := min (1 / 2) ((R - 1) / (2 * t))
+  have hc : 0 < c := lt_min (by norm_num) (div_pos (by linarith) (by positivity))
+  have hc1 : c < 1 := (min_le_left _ _).trans_lt (by norm_num)
+  have hcR : c * t + 1 - c < R := by
+    have hh : c * (2 * t) ≤ R - 1 :=
+      (le_div_iff₀ (by positivity : 0 < 2 * t)).mp (min_le_right _ _)
+    nlinarith
+  let F : E ≃ₘ[ℝ] E := ambientRadial (d := d) (fun _ => 1) contMDiff_const c hc (fun _ => hc1)
+  have hnorm (x : E) : ‖F x‖ = Real.scalarRadial c 1 ‖x‖ := by
+    by_cases hx : x = 0
+    · subst x
+      rw [show F 0 = 0 from ambientRadial_zero (d := d) _ _ _ _ _, norm_zero, Real.scalarRadial_zero]
+    · let p := unitSphereProd (E := E) (d := d) ∞ (⟨x, hx⟩ : ({0}ᶜ : Set E))
+      have hp : (p.2 : ℝ) • (p.1 : E) = x :=
+        congrArg Subtype.val ((unitSphereProd (E := E) (d := d) ∞).symm_apply_apply ⟨x, hx⟩)
+      have hn : (p.2 : ℝ) = ‖x‖ := unitSphereProd_apply_snd_val _ _
+      have hpos : 0 < Real.scalarRadial c 1 ‖x‖ := by
+        simpa only [Real.scalarRadial_zero] using
+          Real.scalarRadial_strictMono hc hc1.le (norm_pos_iff.mpr hx)
+      conv_lhs => rw [← hp]
+      rw [show F ((p.2 : ℝ) • (p.1 : E)) = Real.scalarRadial c 1 p.2 • (p.1 : E) from
+        ambientRadial_apply_ray _ _ _ _ _ p.1 p.2 p.2.property.le]
+      rw [norm_smul, Real.norm_eq_abs, hn, abs_of_pos hpos,
+        mem_sphere_zero_iff_norm.mp p.1.property, mul_one]
+  have hlt (x : E) : ‖F x‖ < 1 ↔ ‖x‖ < 1 := by
+    rw [hnorm]
+    simpa only [Real.scalarRadial_one] using
+      (Real.scalarRadial_strictMono hc hc1.le).lt_iff_lt (a := ‖x‖) (b := 1)
+  have hle (x : E) : ‖F x‖ ≤ 1 ↔ ‖x‖ ≤ 1 := by
+    rw [hnorm]
+    simpa only [Real.scalarRadial_one] using
+      (Real.scalarRadial_strictMono hc hc1.le).le_iff_le (a := ‖x‖) (b := 1)
+  have hfix : EqOn F id (sphere (0 : E) 1) := by
+    intro x hx
+    simpa only [one_smul, Real.scalarRadial_one, id_eq] using
+      ambientRadial_apply_ray (d := d) (fun _ : sphere (0 : E) 1 => 1) contMDiff_const c hc
+        (fun _ => hc1) ⟨x, hx⟩ 1 zero_le_one
+  refine ⟨F, hfix, ?_, ?_, ?_, ?_⟩
+  · ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact mem_ball_zero_iff.mpr ((hlt x).mpr (mem_ball_zero_iff.mp hx))
+    · intro hy
+      refine ⟨F.symm y, ?_, F.apply_symm_apply y⟩
+      apply mem_ball_zero_iff.mpr
+      apply (hlt _).mp
+      rw [F.apply_symm_apply]
+      exact mem_ball_zero_iff.mp hy
+  · ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact mem_closedBall_zero_iff.mpr ((hle x).mpr (mem_closedBall_zero_iff.mp hx))
+    · intro hy
+      refine ⟨F.symm y, ?_, F.apply_symm_apply y⟩
+      apply mem_closedBall_zero_iff.mpr
+      apply (hle _).mp
+      rw [F.apply_symm_apply]
+      exact mem_closedBall_zero_iff.mp hy
+  · rw [image_congr hfix, image_id]
+  · rintro y ⟨x, hx, rfl⟩
+    rw [mem_ball_zero_iff, hnorm]
+    have hbound := (Real.scalarRadial_strictMono hc hc1.le).monotone
+      ((mem_closedBall_zero_iff.mp hx).trans (le_max_right 2 r))
+    rw [Real.scalarRadial_eq_mul_add_of_le c 1
+      ((by norm_num : (3 : ℝ) / 4 ≤ 2).trans (le_max_left 2 r))] at hbound
+    exact hbound.trans_lt hcR
+
+end Diffeomorph

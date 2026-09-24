@@ -1,5 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
 
 noncomputable section
 
@@ -217,6 +219,55 @@ def SmoothDisk.IsHarmonic (u : SmoothDisk (I := I) (Q := Q))
   ∀ z : Disk, ∀ F : DiskLocalExtension (I := I) u.map z,
     diskLocalTension g F.map (z : ℂ) = 0
 
+def DiskLocalTensionClosureLocality (g : SmoothRiemannianMetric I Q) : Prop :=
+  ∀ {F G : ℂ → Q} {U : Set ℂ}, IsOpen U → EqOn F G U → ∀ {z : ℂ}, z ∈ closure U →
+    ContMDiffAt 𝓘(ℝ, ℂ) I ∞ F z → ContMDiffAt 𝓘(ℝ, ℂ) I ∞ G z →
+    (diskLocalTension g F z : E) = (diskLocalTension g G z : E)
+
+theorem diskLocalTension_congr_of_eqOn_of_mem_closure (g : SmoothRiemannianMetric I Q)
+    (hloc : DiskLocalTensionClosureLocality (I := I) (Q := Q) g)
+    {F G : ℂ → Q} {U : Set ℂ} (hU : IsOpen U) (hFG : EqOn F G U) {z : ℂ}
+    (hz : z ∈ closure U) (hF : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ F z)
+    (hG : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ G z) :
+    (diskLocalTension g F z : E) = (diskLocalTension g G z : E) :=
+  hloc hU hFG hz hF hG
+
+theorem SmoothDisk.isHarmonic_of_localExtension (g : SmoothRiemannianMetric I Q)
+    (hloc : DiskLocalTensionClosureLocality (I := I) (Q := Q) g)
+    (u : SmoothDisk (I := I) (Q := Q))
+    {U : ℂ → Q} {N : Set ℂ} (hN : IsOpen N) (hDN : Metric.closedBall (0 : ℂ) 1 ⊆ N)
+    (hsm : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ U N)
+    (hag : EqOn U (diskExtension u.map) (N ∩ Metric.closedBall (0 : ℂ) 1))
+    (hharm : ∀ z ∈ Metric.closedBall (0 : ℂ) 1, (diskLocalTension g U z : E) = 0) :
+    u.IsHarmonic g := by
+  intro z F
+  have hNmem : N ∈ 𝓝 (z : ℂ) := hN.mem_nhds (hDN z.property)
+  have hmem : F.domain ∩ N ∈ 𝓝 (z : ℂ) :=
+    Filter.inter_mem (F.isOpen_domain.mem_nhds F.mem_domain) hNmem
+  have hball : (z : ℂ) ∈ closure (Metric.ball (0 : ℂ) 1) := by
+    rw [closure_ball (0 : ℂ) (by norm_num : (1 : ℝ) ≠ 0)]
+    exact z.property
+  have hzcl : (z : ℂ) ∈ closure (F.domain ∩ N ∩ Metric.ball (0 : ℂ) 1) := by
+    rw [mem_closure_iff_nhds]
+    intro t ht
+    have hA : t ∩ (F.domain ∩ N) ∈ 𝓝 (z : ℂ) := Filter.inter_mem ht hmem
+    obtain ⟨w, hwtA, hwb⟩ := mem_closure_iff_nhds.mp hball (t ∩ (F.domain ∩ N)) hA
+    obtain ⟨hwt, hwd, hwN⟩ := hwtA
+    exact ⟨w, hwt, ⟨hwd, hwN⟩, hwb⟩
+  have hVopen : IsOpen (F.domain ∩ N ∩ Metric.ball (0 : ℂ) 1) :=
+    (F.isOpen_domain.inter hN).inter Metric.isOpen_ball
+  have heq : EqOn F.map U (F.domain ∩ N ∩ Metric.ball (0 : ℂ) 1) := by
+    intro w hw
+    obtain ⟨⟨hwd, hwN⟩, hwb⟩ := hw
+    rw [F.agrees ⟨hwd, Metric.ball_subset_closedBall hwb⟩,
+      hag ⟨hwN, Metric.ball_subset_closedBall hwb⟩]
+  have hFsm : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ F.map (z : ℂ) :=
+    (F.smooth (z : ℂ) F.mem_domain).contMDiffAt (F.isOpen_domain.mem_nhds F.mem_domain)
+  have hUsm : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ U (z : ℂ) :=
+    (hsm (z : ℂ) (hDN z.property)).contMDiffAt hNmem
+  rw [hloc hVopen heq hzcl hFsm hUsm]
+  exact hharm (z : ℂ) z.property
+
 structure SmoothWeaklyMonotoneCircleMap where
   map : C(Surgery.Topology.Circle, Surgery.Topology.Circle)
   lift : ℝ → ℝ
@@ -243,28 +294,6 @@ private theorem periodic_lift_continuous {f : ℝ → ℝ}
   simpa only [Function.Periodic.lift_coe] using! hc
 
 
-private theorem exists_short_circle_lifts (x y : Surgery.Topology.Circle) :
-    ∃ a d : ℝ, 0 ≤ a ∧ a ≤ 1 ∧ -(1 / 2 : ℝ) ≤ d ∧ d ≤ 1 / 2 ∧
-      (a : Surgery.Topology.Circle) = y ∧ ((a + d : ℝ) : Surgery.Topology.Circle) = x ∧
-      dist x y = |d| := by
-  let a := AddCircle.equivIco (1 : ℝ) 0 y
-  let d := AddCircle.equivIco (1 : ℝ) (-(1 / 2 : ℝ)) (x - y)
-  have ha : 0 ≤ a.1 ∧ a.1 < 1 := by simpa using a.2
-  have hd : -(1 / 2 : ℝ) ≤ d.1 ∧ d.1 < 1 / 2 := by convert! d.2 using 1; norm_num
-  have haq : (a.1 : Surgery.Topology.Circle) = y := AddCircle.coe_equivIco
-  have hdq : (d.1 : Surgery.Topology.Circle) = x - y := AddCircle.coe_equivIco
-  have hadq : ((a.1 + d.1 : ℝ) : Surgery.Topology.Circle) = x := by
-    rw [AddCircle.coe_add, haq, hdq]
-    abel
-  have hdabs : |d.1| ≤ |(1 : ℝ)| / 2 := by
-    rw [abs_one, abs_le]
-    exact ⟨hd.1, hd.2.le⟩
-  have hnorm : ‖(d.1 : Surgery.Topology.Circle)‖ = |d.1| :=
-    (AddCircle.norm_coe_eq_abs_iff (1 : ℝ) one_ne_zero).mpr hdabs
-  refine ⟨a.1, d.1, ha.1, ha.2.le, hd.1, hd.2.le, haq, hadq, ?_⟩
-  rw [dist_eq_norm, ← hdq]
-  exact hnorm
-
 private theorem periodic_smooth_lift_lipschitz {f : ℝ → ℝ}
     (hf : ContDiff ℝ ∞ f) (hp : Function.Periodic f 1) :
     ∃ L : ℝ≥0, LipschitzWith L hp.lift := by
@@ -274,7 +303,8 @@ private theorem periodic_smooth_lift_lipschitz {f : ℝ → ℝ}
   refine ⟨NNReal.mk (max 0 C) (le_max_left _ _), ?_⟩
   apply LipschitzWith.of_dist_le_mul
   intro x y
-  obtain ⟨a, d, ha0, ha1, hd0, hd1, hay, hadx, hdist⟩ := exists_short_circle_lifts x y
+  obtain ⟨a, d, ha0, ha1, hd0, hd1, hay, hadx, hdist⟩ :=
+    DifferentialGeometry.Topology.exists_short_circle_lifts x y
   have ha : a ∈ Icc (-1 : ℝ) 2 := by constructor <;> linarith
   have had : a + d ∈ Icc (-1 : ℝ) 2 := by constructor <;> linarith
   have hconv : Convex ℝ (Icc (-1 : ℝ) 2) := convex_Icc _ _
@@ -521,7 +551,58 @@ theorem smooth_exact_disk_density (g : SmoothRiemannianMetric I Q)
     ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
       (∀ j θ, (w j).map (diskBoundary θ) = γ θ) ∧
       Filter.Tendsto (fun j => diskArea g (w j).map) Filter.atTop (𝓝 (diskArea g v.1.map)) := by
-  sorry
+  classical
+  let c : Geometry.Topology.StandardModelCopy I Q E :=
+    Geometry.Topology.standardModelCopy (I := I) (M := Q)
+      (e := ContinuousLinearEquiv.refl ℝ E)
+  let _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
+  let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
+    Diffeomorph.pullbackMetricCross g c.equiv.symm
+  let fc : C(Q, c.Q) := ⟨c.equiv, c.equiv.continuous⟩
+  let γ' : Surgery.Topology.ContinuousFreeLoop c.Q := fc.comp γ.toContinuousLoop
+  let v' : C(Disk, c.Q) := fc.comp v.1.map
+  have hγ' : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
+      (fun t : ℝ => γ' (t : Surgery.Topology.Circle)) :=
+    c.equiv.contMDiff.comp hγ
+  have hv' : v' ∈ Geometry.spanningDiskCompetitors g' γ' := by
+    apply (mem_spanningDiskCompetitors_iff g' γ' v').mpr
+    refine ⟨fun θ => ?_, ?_⟩
+    · exact congrArg c.equiv (v.2 θ)
+    · obtain ⟨L, hL⟩ := v.1.isLipschitz
+      refine ⟨L, fun z w => ?_⟩
+      rw [Geometry.Metric.edistOf_pullbackMetricCross]
+      simpa only [v', fc, ContinuousMap.coe_mk, ContinuousMap.comp_apply,
+        Diffeomorph.symm_apply_apply] using hL z w
+  obtain ⟨vj, Uj, hdata, htend⟩ :=
+    Geometry.exists_smooth_spanning_disks_smooth_extension_tendsto_area g' hγ' hv'
+  let w : ℕ → SmoothDisk (I := I) (Q := Q) := fun j =>
+    { map := ⟨fun z => c.equiv.symm (vj j z), c.equiv.symm.continuous.comp (vj j).continuous⟩
+      smooth z := by
+        obtain ⟨heq, N, hN, hDN, hUN⟩ := (hdata j).1
+        refine ⟨{
+          map := fun y => c.equiv.symm (Uj j y)
+          domain := N
+          isOpen_domain := hN
+          mem_domain := hDN z.property
+          smooth := c.equiv.symm.contMDiff.comp_contMDiffOn hUN
+          agrees := ?_ }⟩
+        intro y hy
+        exact (congrArg c.equiv.symm (heq ⟨y, hy.2⟩)).trans
+          (diskExtension_coe (fun z : Disk => c.equiv.symm (vj j z)) ⟨y, hy.2⟩).symm }
+  have harea (u : C(Disk, c.Q)) :
+      diskArea g (fun z => c.equiv.symm (u z)) = Geometry.riemannianDiskArea g' u := by
+    rw [← diskArea_pullbackDiffeo g c.equiv.symm u, diskArea_eq_riemannianDiskArea]
+  have hlim : Geometry.riemannianDiskArea g' v' = diskArea g v.1.map := by
+    rw [← harea]
+    congr 1
+  refine ⟨w, ?_, ?_⟩
+  · intro j θ
+    change c.equiv.symm (vj j (diskBoundary θ)) = γ θ
+    rw [(diskTrace_eq_iff (vj j) γ').mp (hdata j).2 θ]
+    exact c.equiv.symm_apply_apply (γ θ)
+  · have hw j : diskArea g (w j).map = Geometry.riemannianDiskArea g' (vj j) :=
+      harea (vj j)
+    simpa only [hw, hlim] using htend
 
 
 def IsSignedWeaklyMonotoneTrace (u : Disk → Q) (γ : Surgery.Topology.ContinuousFreeLoop Q) : Prop :=
@@ -534,6 +615,511 @@ omit boundarylessI t2Q compactQ in
 def diskReflection (z : Disk) : Disk :=
   ⟨star (z : ℂ), by simpa only [Metric.mem_closedBall, dist_zero_right, norm_star] using z.property⟩
 
+
+section PlateauTracedisk
+
+omit boundarylessI t2Q compactQ
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem contDiff_star : ContDiff ℝ ∞ (fun z : ℂ => star z) := by
+  have h : (fun z : ℂ => star z) = ⇑(Complex.conjCLE : ℂ →L[ℝ] ℂ) := by
+    funext z
+    exact congrFun Complex.star_def z
+  rw [h]
+  exact Complex.conjCLE.contDiff
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem contMDiff_star : ContMDiff 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) ∞ (fun z : ℂ => star z) :=
+  contDiff_star.contMDiff
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem mfderivWithin_star (s : Set ℂ) {z : ℂ} (hz : UniqueDiffWithinAt ℝ s z) :
+    mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) (fun w : ℂ => star w) s z =
+      (Complex.conjCLE : ℂ →L[ℝ] ℂ) := by
+  have h : (fun w : ℂ => star w) = ⇑(Complex.conjCLE : ℂ →L[ℝ] ℂ) := by
+    funext w
+    exact congrFun Complex.star_def w
+  rw [h, mfderivWithin_eq_fderivWithin]
+  exact (Complex.conjCLE.hasFDerivAt (x := z)).hasFDerivWithinAt.fderivWithin hz
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem star_mem_closedBall {z : ℂ} (hz : z ∈ Metric.closedBall (0 : ℂ) 1) :
+    star z ∈ Metric.closedBall (0 : ℂ) 1 := by
+  simpa only [Metric.mem_closedBall, dist_zero_right, norm_star] using hz
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem diskReflection_involutive (z : Disk) : diskReflection (diskReflection z) = z := by
+  refine Subtype.ext ?_
+  simp only [diskReflection, star_star]
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem diskReflection_lipschitz : LipschitzWith 1 diskReflection := by
+  apply LipschitzWith.of_dist_le_mul
+  intro z w
+  rw [Subtype.dist_eq, Subtype.dist_eq, NNReal.coe_one, one_mul]
+  change dist (star (z : ℂ)) (star (w : ℂ)) ≤ dist (z : ℂ) (w : ℂ)
+  exact (Complex.isometry_conj.dist_eq _ _).le
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem diskReflection_continuous : Continuous diskReflection :=
+  diskReflection_lipschitz.continuous
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private def diskReflectionHomeo : Disk ≃ₜ Disk where
+  toFun := diskReflection
+  invFun := diskReflection
+  left_inv := diskReflection_involutive
+  right_inv := diskReflection_involutive
+  continuous_toFun := diskReflection_continuous
+  continuous_invFun := diskReflection_continuous
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem diskReflectionHomeo_symm : diskReflectionHomeo.symm = diskReflectionHomeo := rfl
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+private theorem diskExtension_comp_diskReflection (u : SmoothDisk (I := I) (Q := Q)) :
+    diskExtension (fun z : Disk => u.map (diskReflection z)) =
+      diskExtension u.map ∘ (fun z : ℂ => star z) := by
+  funext z
+  by_cases hz : z ∈ Metric.closedBall (0 : ℂ) 1
+  · have hz' : star z ∈ Metric.closedBall (0 : ℂ) 1 := star_mem_closedBall hz
+    have h1 : diskExtension (fun z : Disk => u.map (diskReflection z)) z =
+        u.map (diskReflection ⟨z, hz⟩) := diskExtension_coe _ ⟨z, hz⟩
+    have h2 : diskReflection (⟨z, hz⟩ : Disk) = ⟨star z, hz'⟩ := Subtype.ext rfl
+    have h3 : u.map (⟨star z, hz'⟩ : Disk) = diskExtension u.map (star z) :=
+      (diskExtension_coe u.map ⟨star z, hz'⟩).symm
+    rw [Function.comp_apply, h1, h2, h3]
+  · have hz' : star z ∉ Metric.closedBall (0 : ℂ) 1 := fun h =>
+      hz (by simpa only [star_star] using star_mem_closedBall h)
+    have hdc : diskReflection diskCenter = diskCenter := by
+      refine Subtype.ext ?_
+      simp only [diskReflection, diskCenter, star_zero]
+    rw [Function.comp_apply]
+    simp only [diskExtension, dif_neg hz, dif_neg hz', hdc]
+
+omit [I.Boundaryless] t2Q compactQ in
+def SmoothDisk.diskReflection (u : SmoothDisk (I := I) (Q := Q)) :
+    SmoothDisk (I := I) (Q := Q) where
+  map := ⟨fun z : Disk => u.map (Width.diskReflection z),
+    u.map.continuous.comp diskReflection_continuous⟩
+  smooth z := by
+    obtain ⟨F⟩ := u.smooth (Width.diskReflection z)
+    exact ⟨{
+      map := fun w : ℂ => F.map (star w)
+      domain := star ⁻¹' F.domain
+      isOpen_domain := F.isOpen_domain.preimage contDiff_star.continuous
+      mem_domain := F.mem_domain
+      smooth := F.smooth.comp
+        ((contMDiffOn_univ.mpr contMDiff_star).mono (subset_univ _)) (fun _ hw => hw)
+      agrees := by
+        intro w hw
+        obtain ⟨hw1, hw2⟩ := hw
+        have hball : star w ∈ Metric.closedBall (0 : ℂ) 1 := star_mem_closedBall hw2
+        exact (F.agrees ⟨hw1, hball⟩).trans
+          (congrFun (diskExtension_comp_diskReflection u) w).symm }⟩
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+theorem SmoothDisk.diskReflection_map (u : SmoothDisk (I := I) (Q := Q)) (z : Disk) :
+    (SmoothDisk.diskReflection u).map z = u.map (Width.diskReflection z) := rfl
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+private theorem diskExtension_diskReflection (u : SmoothDisk (I := I) (Q := Q)) :
+    diskExtension (⇑(SmoothDisk.diskReflection u).map) =
+      diskExtension u.map ∘ (fun z : ℂ => star z) :=
+  diskExtension_comp_diskReflection u
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+theorem SmoothDisk.differential_diskReflection (u : SmoothDisk (I := I) (Q := Q))
+    (z : Disk) (v : ℂ) :
+    (SmoothDisk.diskReflection u).differential z v =
+      u.differential (Width.diskReflection z) ((Complex.conjCLE : ℂ →L[ℝ] ℂ) v) := by
+  have hz : UniqueMDiffWithinAt 𝓘(ℝ, ℂ) (Metric.closedBall (0 : ℂ) 1) (z : ℂ) :=
+    (disk_uniqueDiffWithinAt z).uniqueMDiffWithinAt
+  have hg : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I (diskExtension u.map)
+      (Metric.closedBall (0 : ℂ) 1) ((Width.diskReflection z : Disk) : ℂ) :=
+    (u.contMDiffOn_extension _ (star_mem_closedBall z.property)).mdifferentiableWithinAt
+      (by simp)
+  have hf : MDifferentiableWithinAt 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) (fun w : ℂ => star w)
+      (Metric.closedBall (0 : ℂ) 1) (z : ℂ) :=
+    (contMDiff_star.mdifferentiableAt (by simp)).mdifferentiableWithinAt
+  have hmap : Metric.closedBall (0 : ℂ) 1 ⊆ (fun w : ℂ => star w) ⁻¹'
+      Metric.closedBall (0 : ℂ) 1 := fun w hw => star_mem_closedBall hw
+  have hext : diskExtension (⇑(SmoothDisk.diskReflection u).map) =
+      diskExtension u.map ∘ (fun w : ℂ => star w) := diskExtension_diskReflection u
+  unfold SmoothDisk.differential
+  rw [hext]
+  rw [mfderivWithin_comp (z : ℂ) hg hf hmap hz]
+  erw [ContinuousLinearMap.comp_apply, mfderivWithin_star _ hz.uniqueDiffWithinAt]
+  rfl
+
+section ReflectionConformal
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+private theorem conjCLE_one : (Complex.conjCLE : ℂ →L[ℝ] ℂ) (1 : ℂ) = 1 := by
+  change Complex.conjCLE (1 : ℂ) = 1
+  rw [Complex.conjCLE_apply, map_one]
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+private theorem conjCLE_I : (Complex.conjCLE : ℂ →L[ℝ] ℂ) Complex.I = -Complex.I := by
+  change Complex.conjCLE Complex.I = -Complex.I
+  rw [Complex.conjCLE_apply, Complex.conj_I]
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ in
+private theorem inner_neg_neg (g : SmoothRiemannianMetric I Q) (p : Q)
+    (a b : TangentSpace I p) : g.inner p (-a) (-b) = g.inner p a b := by
+  simp
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ in
+private theorem inner_neg_right (g : SmoothRiemannianMetric I Q) (p : Q)
+    (a b : TangentSpace I p) : g.inner p a (-b) = -g.inner p a b := by
+  simp
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+private theorem eq_mp_neg {A : Type*} [AddGroup A] (h : A = A) (x : A) :
+    h.mp (-x) = -(h.mp x) := by
+  cases h
+  rfl
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] t2Q compactQ [IsManifold I ∞ Q] in
+private theorem SmoothDisk.differential_neg (u : SmoothDisk (I := I) (Q := Q))
+    (z : Disk) (v : ℂ) : u.differential z (-v) = -u.differential z v := by
+  unfold SmoothDisk.differential
+  erw [map_neg]
+  exact eq_mp_neg _ _
+
+private def SmoothDisk.IsConformalAt (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) (z : Disk) : Prop :=
+  g.inner (u.map z) (u.differential z (1 : ℂ)) (u.differential z Complex.I) = 0 ∧
+    g.inner (u.map z) (u.differential z (1 : ℂ)) (u.differential z (1 : ℂ)) =
+      g.inner (u.map z) (u.differential z Complex.I) (u.differential z Complex.I)
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ in
+private theorem SmoothDisk.isConformal_iff_isConformalAt (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) :
+    u.IsConformal g ↔ ∀ z, u.IsConformalAt g z := Iff.rfl
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ in
+set_option backward.isDefEq.respectTransparency false in
+private theorem SmoothDisk.isConformalAt_diskReflection (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) (z : Disk) :
+    (SmoothDisk.diskReflection u).IsConformalAt g z ↔
+      u.IsConformalAt g (Width.diskReflection z) := by
+  have hd1 : (SmoothDisk.diskReflection u).differential z (1 : ℂ) =
+      u.differential (Width.diskReflection z) (1 : ℂ) := by
+    have h := SmoothDisk.differential_diskReflection u z (1 : ℂ)
+    rwa [conjCLE_one] at h
+  have hdI : (SmoothDisk.diskReflection u).differential z Complex.I =
+      -u.differential (Width.diskReflection z) Complex.I := by
+    have h := SmoothDisk.differential_diskReflection u z Complex.I
+    rw [conjCLE_I] at h
+    exact h.trans (SmoothDisk.differential_neg u (Width.diskReflection z) Complex.I)
+  unfold SmoothDisk.IsConformalAt
+  rw [SmoothDisk.diskReflection_map, hd1, hdI]
+  constructor
+  · intro h
+    exact ⟨by simpa only [inner_neg_right, neg_eq_zero] using h.1,
+      by simpa only [inner_neg_neg] using h.2⟩
+  · intro h
+    exact ⟨by simpa only [inner_neg_right, neg_eq_zero] using h.1,
+      by simpa only [inner_neg_neg] using h.2⟩
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ in
+theorem SmoothDisk.diskReflection_conformal_iff (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) :
+    (SmoothDisk.diskReflection u).IsConformal g ↔ u.IsConformal g := by
+  rw [SmoothDisk.isConformal_iff_isConformalAt, SmoothDisk.isConformal_iff_isConformalAt]
+  constructor
+  · intro h z
+    have hz := (SmoothDisk.isConformalAt_diskReflection u g (Width.diskReflection z)).mp
+      (h (Width.diskReflection z))
+    rwa [diskReflection_involutive] at hz
+  · intro h z
+    exact (SmoothDisk.isConformalAt_diskReflection u g z).mpr (h (Width.diskReflection z))
+
+end ReflectionConformal
+
+section ReflectionHarmonic
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem mfderiv_star (z : ℂ) :
+    mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) (fun w : ℂ => star w) z =
+      (Complex.conjCLE : ℂ →L[ℝ] ℂ) := by
+  rw [mfderiv_eq_fderiv]
+  exact (Complex.conjCLE.hasFDerivAt (x := z)).fderiv
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem star_add_one (z : ℂ) (t : ℝ) :
+    star (z + t • (1 : ℂ)) = star z + t • (1 : ℂ) := by
+  rw [Complex.real_smul]
+  simp only [map_add, Complex.star_def, Complex.conj_ofReal, mul_one]
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem star_add_I (z : ℂ) (t : ℝ) :
+    star (z + t • Complex.I) = star z + ((-1 : ℝ) * t) • Complex.I := by
+  have h : star (z + t • Complex.I) = star z + t • star Complex.I := by
+    change (Complex.conjCLE : ℂ →L[ℝ] ℂ) (z + t • Complex.I) =
+      (Complex.conjCLE : ℂ →L[ℝ] ℂ) z + t • (Complex.conjCLE : ℂ →L[ℝ] ℂ) Complex.I
+    rw [map_add, map_smul]
+  have hI : star Complex.I = -Complex.I := by
+    rw [Complex.star_def]
+    exact Complex.conj_I
+  rw [h, hI, smul_neg, neg_one_mul, neg_smul]
+
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ [IsManifold I ∞ Q] in
+private theorem mfderiv_comp_star (U : ℂ → Q) (z : ℂ) (v : ℂ) :
+    mfderiv 𝓘(ℝ, ℂ) I (fun w : ℂ => U (star w)) z v =
+      mfderiv 𝓘(ℝ, ℂ) I U (star z) ((Complex.conjCLE : ℂ →L[ℝ] ℂ) v) := by
+  by_cases hU : MDifferentiableAt 𝓘(ℝ, ℂ) I U (star z)
+  · have hcomp := mfderiv_comp (x := z) (g := U) (f := fun w : ℂ => star w) hU
+      (contMDiff_star.mdifferentiableAt (by simp))
+    rw [mfderiv_star z] at hcomp
+    exact congrArg (fun L : ℂ →L[ℝ] TangentSpace I (U (star z)) => L v) hcomp
+  · have hc : ¬ MDifferentiableAt 𝓘(ℝ, ℂ) I (fun w : ℂ => U (star w)) z := by
+      intro h
+      have hi : MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) (fun w : ℂ => star w) (star z) :=
+        contMDiff_star.mdifferentiableAt (by simp)
+      have h' : MDifferentiableAt 𝓘(ℝ, ℂ) I (fun w : ℂ => U (star w)) (star (star z)) := by
+        rw [star_star]
+        exact h
+      have heq : ((fun w : ℂ => U (star w)) ∘ (fun w : ℂ => star w)) = U := by
+        funext w
+        simp only [Function.comp_apply, star_star]
+      exact hU (heq ▸ h'.comp (star z) hi)
+    rw [mfderiv_zero_of_not_mdifferentiableAt hc, mfderiv_zero_of_not_mdifferentiableAt hU]
+    rfl
+
+omit boundarylessI t2Q compactQ in
+private theorem diskLocalTension_comp_star (g : SmoothRiemannianMetric I Q)
+    (U : ℂ → Q) (z : ℂ) :
+    diskLocalTension g (fun w : ℂ => U (star w)) z = diskLocalTension g U (star z) := by
+  have hcurve1 : (fun t : ℝ => (fun w : ℂ => U (star w)) (z + t • (1 : ℂ))) =
+      fun t : ℝ => U (star z + t • (1 : ℂ)) :=
+    funext fun t => congrArg U (star_add_one z t)
+  have hfield1 : (fun t : ℝ =>
+        mfderiv 𝓘(ℝ, ℂ) I (fun w : ℂ => U (star w)) (z + t • (1 : ℂ)) (1 : ℂ)) =
+      fun t : ℝ => mfderiv 𝓘(ℝ, ℂ) I U (star z + t • (1 : ℂ)) (1 : ℂ) := by
+    funext t
+    rw [mfderiv_comp_star, star_add_one z t, conjCLE_one]
+  have hcurve2 : (fun t : ℝ => (fun w : ℂ => U (star w)) (z + t • Complex.I)) =
+      fun t : ℝ => U (star z + ((-1 : ℝ) * t) • Complex.I) :=
+    funext fun t => congrArg U (star_add_I z t)
+  have hfield2 : (fun t : ℝ =>
+        mfderiv 𝓘(ℝ, ℂ) I (fun w : ℂ => U (star w)) (z + t • Complex.I) Complex.I) =
+      fun t : ℝ => (-1 : ℝ) •
+        mfderiv 𝓘(ℝ, ℂ) I U (star z + ((-1 : ℝ) * t) • Complex.I) Complex.I := by
+    funext t
+    rw [mfderiv_comp_star, star_add_I z t, conjCLE_I]
+    erw [map_neg, neg_one_smul]
+  have hrev : covDerivAlong g (fun t : ℝ => U (star z + ((-1 : ℝ) * t) • Complex.I))
+        (fun t : ℝ => (-1 : ℝ) •
+          mfderiv 𝓘(ℝ, ℂ) I U (star z + ((-1 : ℝ) * t) • Complex.I) Complex.I) 0 =
+      covDerivAlong g (fun t : ℝ => U (star z + t • Complex.I))
+        (fun t : ℝ => mfderiv 𝓘(ℝ, ℂ) I U (star z + t • Complex.I) Complex.I) 0 := by
+    let γ : ℝ → Q := fun t => U (star z + t • Complex.I)
+    let V : ∀ t, TangentSpace I (γ t) :=
+      fun t => mfderiv 𝓘(ℝ, ℂ) I U (star z + t • Complex.I) Complex.I
+    have hγeq : (fun t : ℝ => U (star z + ((-1 : ℝ) * t) • Complex.I)) =
+        fun t : ℝ => γ ((-1) * t) := by
+      funext t
+      rfl
+    have hVeq : (fun t : ℝ => (-1 : ℝ) •
+          mfderiv 𝓘(ℝ, ℂ) I U (star z + ((-1 : ℝ) * t) • Complex.I) Complex.I) =
+        fun t : ℝ => (-1 : ℝ) • V ((-1) * t) := by
+      funext t
+      rfl
+    rw [hγeq, hVeq, covDerivAlong_smul, covDeriv_comp_mul]
+    simp only [neg_smul, one_smul, neg_neg]
+    exact congrArg (fun t : ℝ => (covDerivAlong g γ V t : E)) (mul_zero (-1))
+  unfold diskLocalTension
+  rw [hcurve1, hfield1, hcurve2, hfield2, hrev]
+  change _ + _ = _ + _
+  exact congrArg₂ (fun x y : E => x + y) rfl rfl
+
+private def SmoothDisk.IsHarmonicAt (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) (z : Disk) : Prop :=
+  ∀ F : DiskLocalExtension (I := I) u.map z, diskLocalTension g F.map (z : ℂ) = 0
+
+omit boundarylessI t2Q compactQ in
+private theorem SmoothDisk.isHarmonic_iff_isHarmonicAt (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) :
+    u.IsHarmonic g ↔ ∀ z, u.IsHarmonicAt g z := Iff.rfl
+
+omit boundarylessI t2Q compactQ in
+private theorem SmoothDisk.isHarmonicAt_diskReflection (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) (z : Disk) :
+    (SmoothDisk.diskReflection u).IsHarmonicAt g z ↔
+      u.IsHarmonicAt g (Width.diskReflection z) := by
+  constructor
+  · intro h F
+    have hG := h {
+      map := fun w : ℂ => F.map (star w)
+      domain := star ⁻¹' F.domain
+      isOpen_domain := F.isOpen_domain.preimage contDiff_star.continuous
+      mem_domain := F.mem_domain
+      smooth := F.smooth.comp
+        ((contMDiffOn_univ.mpr contMDiff_star).mono (subset_univ _)) (fun _ hw => hw)
+      agrees := by
+        intro w hw
+        obtain ⟨hw1, hw2⟩ := hw
+        have hball : star w ∈ Metric.closedBall (0 : ℂ) 1 := star_mem_closedBall hw2
+        exact (F.agrees ⟨hw1, hball⟩).trans
+          (congrFun (diskExtension_diskReflection u) w).symm }
+    rwa [diskLocalTension_comp_star g F.map z] at hG
+  · intro h G
+    have hF := h {
+      map := fun w : ℂ => G.map (star w)
+      domain := star ⁻¹' G.domain
+      isOpen_domain := G.isOpen_domain.preimage contDiff_star.continuous
+      mem_domain := by
+        simpa only [Set.mem_preimage, Width.diskReflection, star_star] using G.mem_domain
+      smooth := G.smooth.comp
+        ((contMDiffOn_univ.mpr contMDiff_star).mono (subset_univ _)) (fun _ hw => hw)
+      agrees := by
+        intro w hw
+        obtain ⟨hw1, hw2⟩ := hw
+        have hball : star w ∈ Metric.closedBall (0 : ℂ) 1 := star_mem_closedBall hw2
+        have hd := (G.agrees ⟨hw1, hball⟩).trans
+          (congrFun (diskExtension_diskReflection u) (star w))
+        simpa only [Function.comp_apply, star_star] using hd }
+    have hcomp : diskLocalTension g (fun w : ℂ => G.map (star w))
+        ((Width.diskReflection z : Disk) : ℂ) = diskLocalTension g G.map (z : ℂ) := by
+      rw [diskLocalTension_comp_star g G.map (Width.diskReflection z)]
+      congr 1
+      simp only [Width.diskReflection, star_star]
+    exact hcomp.symm.trans hF
+
+omit boundarylessI t2Q compactQ in
+theorem SmoothDisk.diskReflection_harmonic_iff (u : SmoothDisk (I := I) (Q := Q))
+    (g : SmoothRiemannianMetric I Q) :
+    (SmoothDisk.diskReflection u).IsHarmonic g ↔ u.IsHarmonic g := by
+  rw [SmoothDisk.isHarmonic_iff_isHarmonicAt, SmoothDisk.isHarmonic_iff_isHarmonicAt]
+  constructor
+  · intro h z
+    have hz := (SmoothDisk.isHarmonicAt_diskReflection u g (Width.diskReflection z)).mp
+      (h (Width.diskReflection z))
+    rwa [diskReflection_involutive] at hz
+  · intro h z
+    exact (SmoothDisk.isHarmonicAt_diskReflection u g z).mpr (h (Width.diskReflection z))
+
+end ReflectionHarmonic
+
+section ReflectionArea
+
+private theorem diskReflectionHomeo_lipschitz : LipschitzWith 1 ⇑diskReflectionHomeo :=
+  diskReflection_lipschitz
+
+include boundarylessI t2Q compactQ in
+theorem diskArea_diskReflection (g : SmoothRiemannianMetric I Q)
+    (u : SmoothDisk (I := I) (Q := Q)) :
+    diskArea g (fun z : Disk => u.map (diskReflection z)) = diskArea g u.map := by
+  obtain ⟨ul, hul⟩ := u.exists_lipschitz g
+  have h1 : diskArea g (fun z : Disk => u.map (diskReflection z)) =
+      diskArea g (fun z : Disk => ul.map (diskReflection z)) := by
+    rw [hul]
+  rw [h1, ← hul]
+  exact diskArea_reparametrize g ul diskReflectionHomeo ⟨1, diskReflectionHomeo_lipschitz⟩
+    ⟨1, by rw [diskReflectionHomeo_symm]; exact diskReflectionHomeo_lipschitz⟩
+
+end ReflectionArea
+
+section MonotoneTraceLift
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+  [IsManifold I ∞ Q] in
+private theorem periodic_circle_coe {ψ : ℝ → ℝ} (hinc : ∀ t, ψ (t + 1) = ψ t + 1) :
+    Function.Periodic (fun t : ℝ => (ψ t : Surgery.Topology.Circle)) 1 := by
+  intro t
+  change ((ψ (t + 1) : ℝ) : Surgery.Topology.Circle) = ((ψ t : ℝ) : Surgery.Topology.Circle)
+  rw [hinc t, AddCircle.coe_add, AddCircle.coe_period, add_zero]
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+  [IsManifold I ∞ Q] in
+private def smoothWeaklyMonotoneCircleMapOfLift (ψ : ℝ → ℝ) (hψ : ContDiff ℝ ∞ ψ)
+    (hmono : Monotone ψ) (hinc : ∀ t, ψ (t + 1) = ψ t + 1) :
+    SmoothWeaklyMonotoneCircleMap where
+  map := ⟨(periodic_circle_coe hinc).lift, by
+    apply isQuotientMap_quotient_mk'.continuous_iff.mpr
+    change Continuous (fun x : ℝ =>
+      (periodic_circle_coe hinc).lift (x : Surgery.Topology.Circle))
+    simpa only [Function.Periodic.lift_coe] using!
+      (continuous_quotient_mk'.comp hψ.continuous :
+        Continuous (fun x : ℝ => (ψ x : Surgery.Topology.Circle)))⟩
+  lift := ψ
+  smooth_lift := hψ
+  monotone_lift := hmono
+  increment := hinc
+  lift_eq := fun t => Function.Periodic.lift_coe (periodic_circle_coe hinc) t
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] in
+private theorem contMDiff_diskBoundary_coe :
+    ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ) ∞
+      (fun t : ℝ => (diskBoundary (t : Surgery.Topology.Circle) : ℂ)) := by
+  let _ := (Complex.finrank_real_complex_fact : Fact (Module.finrank ℝ ℂ = 1 + 1))
+  have h1 : ContMDiff 𝓘(ℝ, ℝ) (𝓡 1) ∞
+      (fun t : ℝ => Circle.exp (2 * Real.pi * t)) :=
+    contMDiff_circleExp.comp (contDiff_const.mul contDiff_id).contMDiff
+  have h2 : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ) ∞
+      (fun t : ℝ => ((Circle.exp (2 * Real.pi * t) : Circle) : ℂ)) :=
+    (contMDiff_coe_sphere (E := ℂ) (n := 1) (m := ∞)).comp h1
+  exact h2.congr fun t => diskBoundary_coe t
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+  [IsManifold I ∞ Q] in
+private theorem contMDiff_trace (u : SmoothDisk (I := I) (Q := Q)) :
+    ContMDiff 𝓘(ℝ, ℝ) I ∞
+      (fun t : ℝ => u.map (diskBoundary (t : Surgery.Topology.Circle))) := by
+  have h := (u.contMDiffOn_extension).comp_contMDiff contMDiff_diskBoundary_coe
+    (fun t => (diskBoundary (t : Surgery.Topology.Circle)).property)
+  exact h.congr fun t => (diskExtension_coe u.map (diskBoundary (t : Surgery.Topology.Circle))).symm
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+  [IsManifold I ∞ Q] in
+private theorem injective_of_apply_one_ne_zero {W : Type*} [NormedAddCommGroup W] [NormedSpace ℝ W]
+    (L : ℝ →L[ℝ] W) (h : L 1 ≠ 0) : Function.Injective L := by
+  intro a b hab
+  have hz : (a - b) • L 1 = 0 := by
+    rw [← map_smul, smul_eq_mul, mul_one, map_sub, hab, sub_self]
+  exact sub_eq_zero.mp ((smul_eq_zero.mp hz).resolve_right h)
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+  [IsManifold I ∞ Q] in
+private theorem diskReflection_diskBoundary (θ : Surgery.Topology.Circle) :
+    diskReflection (diskBoundary θ) = diskBoundary (-θ) := by
+  refine Subtype.ext ?_
+  have hneg : ((AddCircle.toCircle (-θ) : ℂ)) = ((AddCircle.toCircle θ : ℂ))⁻¹ := by
+    rw [AddCircle.toCircle_neg, Circle.coe_inv]
+  have hinv : ((AddCircle.toCircle θ : ℂ))⁻¹ =
+      star (AddCircle.toCircle θ : ℂ) := by
+    rw [Complex.inv_eq_conj (Circle.norm_coe (AddCircle.toCircle θ))]
+    exact (congrFun Complex.star_def _).symm
+  simp only [diskReflection, diskBoundary, Subtype.coe_mk]
+  rw [hneg, hinv]
+
+omit [I.Boundaryless] [T2Space Q] [CompactSpace Q] in
+private theorem contDiff_signed_trace_lift (γ : RegularLoop I Q)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
+    (himm : ∀ t : ℝ, loopVelocity (I := I) γ.toContinuousLoop t ≠ 0)
+    (u : SmoothDisk (I := I) (Q := Q)) (φ : ℝ → ℝ) (hφ : Continuous φ)
+    (htrace : ∀ t : ℝ,
+      u.map (diskBoundary (t : Surgery.Topology.Circle)) = γ (φ t : Surgery.Topology.Circle)) :
+    ContDiff ℝ ∞ φ := by
+  rw [contDiff_iff_contDiffAt]
+  intro x
+  refine Geometry.contDiffAt_parameterLift_of_manifoldImmersion
+    (I := I) (E := ℝ) (G := ℝ) (M := Q)
+    (f := loopLift γ.toContinuousLoop) (ψ := φ) (x := x) hγ ?_ hφ.continuousAt ?_
+  · exact injective_of_apply_one_ne_zero _ (himm (φ x))
+  · have htr : ContMDiffAt 𝓘(ℝ, ℝ) I ∞
+        (fun t : ℝ => u.map (diskBoundary (t : Surgery.Topology.Circle))) x :=
+      (contMDiff_trace u).contMDiffAt
+    exact htr.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun t => (htrace t).symm)
+
+end MonotoneTraceLift
+
+
+end PlateauTracedisk
+
 theorem smooth_monotone_trace (g : SmoothRiemannianMetric I Q)
     (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
@@ -545,7 +1131,50 @@ theorem smooth_monotone_trace (g : SmoothRiemannianMetric I Q)
       (∀ θ, v.map (diskBoundary θ) = γ (σ.map θ)) ∧
       diskArea g v.map = diskArea g u.map ∧
       (v.IsConformal g ↔ u.IsConformal g) ∧ (v.IsHarmonic g ↔ u.IsHarmonic g) := by
-  sorry
+  obtain ⟨φ, hφcont, hφmono, hφtrace⟩ := htrace
+  have hφsmooth : ContDiff ℝ ∞ φ :=
+    contDiff_signed_trace_lift γ hγ himm u φ hφcont hφtrace
+  rcases hφmono with ⟨hmono, hinc⟩ | ⟨hanti, hinc⟩
+  · let σ := smoothWeaklyMonotoneCircleMapOfLift φ hφsmooth hmono hinc
+    refine ⟨u, σ, Or.inl fun z => rfl, ?_, rfl, Iff.rfl, Iff.rfl⟩
+    intro θ
+    refine QuotientAddGroup.induction_on θ ?_
+    intro t
+    have hmap : σ.map (t : Surgery.Topology.Circle) = (φ t : Surgery.Topology.Circle) := by
+      dsimp only [σ, smoothWeaklyMonotoneCircleMapOfLift]
+      exact hemb.injective
+        (congrArg γ (Function.Periodic.lift_coe (periodic_circle_coe hinc) t))
+    rw [hmap]
+    exact hφtrace t
+  · have hψ : ContDiff ℝ ∞ (fun t : ℝ => φ (-t)) := hφsmooth.comp contDiff_id.neg
+    have hmono' : Monotone (fun t : ℝ => φ (-t)) := fun a b hab => hanti (neg_le_neg hab)
+    have hinc' : ∀ t, φ (-(t + 1)) = φ (-t) + 1 := by
+      intro t
+      have h := hinc (-t - 1)
+      have h1 : (-t - 1 : ℝ) + 1 = -t := by ring
+      have h2 : -(t + 1) = -t - 1 := by ring
+      rw [h1] at h
+      rw [h2]
+      linarith
+    let σ := smoothWeaklyMonotoneCircleMapOfLift (fun t : ℝ => φ (-t)) hψ hmono' hinc'
+    refine ⟨SmoothDisk.diskReflection u, σ,
+      Or.inr fun z => SmoothDisk.diskReflection_map u z, ?_, ?_,
+      SmoothDisk.diskReflection_conformal_iff u g, SmoothDisk.diskReflection_harmonic_iff u g⟩
+    · intro θ
+      refine QuotientAddGroup.induction_on θ ?_
+      intro t
+      have hmap : σ.map (t : Surgery.Topology.Circle) = ((φ (-t) : ℝ) : Surgery.Topology.Circle) := by
+        dsimp only [σ, smoothWeaklyMonotoneCircleMapOfLift]
+        exact hemb.injective (congrArg γ (Function.Periodic.lift_coe
+          (periodic_circle_coe (ψ := fun t : ℝ => φ (-t)) hinc') t))
+      rw [hmap]
+      rw [SmoothDisk.diskReflection_map, diskReflection_diskBoundary, ← AddCircle.coe_neg,
+        hφtrace (-t)]
+    · have hmap : (⇑(SmoothDisk.diskReflection u).map : Disk → Q) =
+          fun z : Disk => u.map (diskReflection z) := by
+        funext z
+        exact SmoothDisk.diskReflection_map u z
+      rw [hmap, diskArea_diskReflection]
 
 theorem conformal_disk_attains_exact_area (g : SmoothRiemannianMetric I Q)
     (γ : RegularLoop I Q)
@@ -568,17 +1197,5 @@ theorem conformal_disk_attains_exact_area (g : SmoothRiemannianMetric I Q)
     have hle := leastArea_le_competitor g γ.toContinuousLoop hctr (γ.isLipschitz g) v
     simpa only [hv, hulip] using hle
 
-theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
-    (hdim : Module.finrank ℝ E = 3) (γ : RegularLoop I Q)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hemb : Topology.IsEmbedding (γ : Surgery.Topology.Circle → Q))
-    (himm : ∀ t : ℝ, loopVelocity (I := I) γ.toContinuousLoop t ≠ 0)
-    (hctr : Surgery.Topology.IsContractibleLoop γ.toContinuousLoop) :
-    ∃ u : SmoothDisk (I := I) (Q := Q), ∃ σ : SmoothWeaklyMonotoneCircleMap,
-      (∀ θ, u.map (diskBoundary θ) = γ (σ.map θ)) ∧
-      u.IsConformal g ∧ u.IsHarmonic g ∧
-      ∀ v : SmoothDisk (I := I) (Q := Q),
-        (∀ θ, v.map (diskBoundary θ) = γ θ) → diskArea g u.map ≤ diskArea g v.map := by
-  sorry
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Morse.RegularLevel.LevelSet
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
+import Mathlib.Geometry.Manifold.Instances.Real
 
 open Set DifferentialGeometry.Topology.Morse
 open scoped Manifold ContDiff Topology
@@ -68,13 +69,16 @@ private theorem exists_euclidean_regular_coordinates {m : ℕ}
     rw [hRR]
 
 private def heightSplitDiffeomorph (m : ℕ) (a : ℝ) :
-    (ℝ × MorseModel m) ≃ₘ[ℝ] MorseModel (m + 1) where
+    Diffeomorph (𝓘(ℝ, ℝ).prod 𝓘(ℝ, MorseModel m)) 𝓘(ℝ, MorseModel (m + 1))
+      (ℝ × MorseModel m) (MorseModel (m + 1)) ∞ where
   toEquiv := (((Equiv.subLeft a).prodCongr (Equiv.refl (MorseModel m))).trans
     (Equiv.prodComm ℝ (MorseModel m))).trans (levelSetSplit m)
-  contMDiff_toFun :=
-    ((levelSetSplit m).toContinuousLinearEquiv.contDiff.comp
+  contMDiff_toFun := by
+    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
+    exact ((levelSetSplit m).toContinuousLinearEquiv.contDiff.comp
       (contDiff_snd.prodMk (contDiff_const.sub contDiff_fst))).contMDiff
   contMDiff_invFun := by
+    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
     change ContMDiff 𝓘(ℝ, MorseModel (m + 1)) 𝓘(ℝ, ℝ × MorseModel m) ∞
       (fun v => (-v (Fin.last m) + a, levelSetSplitFst m v))
     exact (((contDiff_apply ℝ ℝ (Fin.last m)).neg.add contDiff_const).prodMk
@@ -85,34 +89,39 @@ private theorem heightSplitDiffeomorph_last (m : ℕ) (a : ℝ) (z : ℝ × Mors
   change levelSetSplit m (z.2, a - z.1) (Fin.last m) = a - z.1
   simp [levelSetSplit]
 
-variable {m : ℕ} {H : Type*} [TopologicalSpace H]
+section General
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {m : ℕ} {H : Type*} [TopologicalSpace H]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  (I : ModelWithCorners ℝ (MorseModel (m + 1)) H)
-  [I.Boundaryless] [IsManifold I ∞ M]
+  (I : ModelWithCorners ℝ E H) [I.Boundaryless] [IsManifold I ∞ M]
 
-private def ambientChart (x : M) :
-    PartialDiffeomorph I 𝓘(ℝ, MorseModel (m + 1)) M (MorseModel (m + 1)) ∞ where
-  toPartialEquiv := extChartAt I x
-  open_source := isOpen_extChartAt_source x
-  open_target := isOpen_extChartAt_target x
-  contMDiffOn_toFun := by simpa only [extChartAt_source] using (contMDiffOn_extChartAt (I := I) (x := x) (n := ∞))
-  contMDiffOn_invFun := contMDiffOn_extChartAt_symm x
-
-theorem exists_coordinates_of_contMDiffOn {f : M → ℝ} {s : Set M}
-    (hs : IsOpen s) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f s)
-    {x : M} (hx : x ∈ s) (hreg : mfderiv I 𝓘(ℝ, ℝ) f x ≠ 0) (a : ℝ) :
-    ∃ Φ : PartialDiffeomorph I 𝓘(ℝ, MorseModel (m + 1)) M (MorseModel (m + 1)) ∞,
-      x ∈ Φ.source ∧ Φ.source ⊆ s ∧
-      ∀ y ∈ Φ.source, Φ y (Fin.last m) = a - f y := by
-  let c := ambientChart I x
-  let e := c.toOpenPartialHomeomorph.restrOpen s hs
+theorem exists_product_coordinates_of_contMDiffOn
+    (hdim : Module.finrank ℝ E = m + 1)
+    {f : M → ℝ} {s : Set M} (hs : IsOpen s) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f s)
+    {x : M} (hx : x ∈ s) (hreg : mfderiv I 𝓘(ℝ, ℝ) f x ≠ 0) :
+    ∃ Φ : PartialDiffeomorph I (𝓘(ℝ, ℝ).prod (𝓡 m)) M
+        (ℝ × EuclideanSpace ℝ (Fin m)) ∞,
+      x ∈ Φ.source ∧ Φ.source ⊆ s ∧ ∀ y ∈ Φ.source, (Φ y).1 = f y := by
+  rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
+  let L : E ≃L[ℝ] MorseModel (m + 1) := ContinuousLinearEquiv.ofFinrankEq (by
+    simpa only [MorseModel, Module.finrank_fin_fun] using hdim)
+  let c : PartialDiffeomorph I 𝓘(ℝ, E) M E ∞ := {
+    toPartialEquiv := extChartAt I x
+    open_source := isOpen_extChartAt_source x
+    open_target := isOpen_extChartAt_target x
+    contMDiffOn_toFun := by simpa only [extChartAt_source] using
+      (contMDiffOn_extChartAt (I := I) (x := x) (n := ∞))
+    contMDiffOn_invFun := contMDiffOn_extChartAt_symm x }
+  let c' := c.trans L.toDiffeomorph.toPartialDiffeomorph
+  let e := c'.toOpenPartialHomeomorph.restrOpen s hs
   let σ : PartialDiffeomorph I 𝓘(ℝ, MorseModel (m + 1)) M (MorseModel (m + 1)) ∞ := {
     toPartialEquiv := e.toPartialEquiv
     open_source := e.open_source
     open_target := e.open_target
-    contMDiffOn_toFun := c.contMDiffOn.mono inter_subset_left
-    contMDiffOn_invFun := c.symm.contMDiffOn.mono inter_subset_left }
-  have hxσ : x ∈ σ.source := ⟨mem_extChartAt_source x, hx⟩
+    contMDiffOn_toFun := c'.contMDiffOn.mono inter_subset_left
+    contMDiffOn_invFun := c'.symm.contMDiffOn.mono inter_subset_left }
+  have hxσ : x ∈ σ.source := ⟨⟨mem_extChartAt_source x, mem_univ _⟩, hx⟩
   let g : MorseModel (m + 1) → ℝ := f ∘ σ.symm
   have hg : ContDiffOn ℝ ∞ g σ.target :=
     contMDiffOn_iff_contDiffOn.mp
@@ -129,15 +138,49 @@ theorem exists_coordinates_of_contMDiffOn {f : M → ℝ} {s : Set M}
     exact hreg hh
   obtain ⟨Ψ, hxΨ, _, hΨcoord⟩ :=
     exists_euclidean_regular_coordinates σ.open_target hg (σ.map_source hxσ) hgreg
-  let Φ := (σ.trans Ψ).trans (heightSplitDiffeomorph m a).toPartialDiffeomorph
+  let A : (ℝ × MorseModel m) ≃L[ℝ] (ℝ × EuclideanSpace ℝ (Fin m)) :=
+    (ContinuousLinearEquiv.refl ℝ ℝ).prodCongr (EuclideanSpace.equiv (Fin m) ℝ).symm
+  let Φ := (σ.trans Ψ).trans A.toDiffeomorph.toPartialDiffeomorph
   refine ⟨Φ, ⟨⟨hxσ, hxΨ⟩, mem_univ _⟩, ?_, ?_⟩
   · intro y hy
     exact hy.1.1.2
   · intro y hy
-    change heightSplitDiffeomorph m a (Ψ (σ y)) (Fin.last m) = a - f y
-    rw [heightSplitDiffeomorph_last, hΨcoord (σ y) hy.1.2]
-    change a - f (σ.symm (σ y)) = a - f y
-    exact congrArg (fun z => a - f z) (σ.left_inv hy.1.1)
+    change (Ψ (σ y)).1 = f y
+    rw [hΨcoord (σ y) hy.1.2]
+    exact congrArg f (σ.left_inv hy.1.1)
+
+end General
+
+variable {m : ℕ} {H : Type*} [TopologicalSpace H]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  (I : ModelWithCorners ℝ (MorseModel (m + 1)) H)
+  [I.Boundaryless] [IsManifold I ∞ M]
+
+theorem exists_coordinates_of_contMDiffOn {f : M → ℝ} {s : Set M}
+    (hs : IsOpen s) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f s)
+    {x : M} (hx : x ∈ s) (hreg : mfderiv I 𝓘(ℝ, ℝ) f x ≠ 0) (a : ℝ) :
+    ∃ Φ : PartialDiffeomorph I 𝓘(ℝ, MorseModel (m + 1)) M (MorseModel (m + 1)) ∞,
+      x ∈ Φ.source ∧ Φ.source ⊆ s ∧
+      ∀ y ∈ Φ.source, Φ y (Fin.last m) = a - f y := by
+  obtain ⟨Φ, hxΦ, hsub, hcoord⟩ := exists_product_coordinates_of_contMDiffOn (m := m) I
+    (by simp [MorseModel]) hs hf hx hreg
+  let B : Diffeomorph (𝓡 m) 𝓘(ℝ, MorseModel m)
+      (EuclideanSpace ℝ (Fin m)) (MorseModel m) ∞ :=
+    (EuclideanSpace.equiv (Fin m) ℝ).toDiffeomorph
+  let A : Diffeomorph (𝓘(ℝ, ℝ).prod (𝓡 m)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, MorseModel m))
+      (ℝ × EuclideanSpace ℝ (Fin m)) (ℝ × MorseModel m) ∞ :=
+    { toEquiv := (Equiv.refl ℝ).prodCongr B.toEquiv
+      contMDiff_toFun := contMDiff_fst.prodMk (B.contMDiff.comp contMDiff_snd)
+      contMDiff_invFun := contMDiff_fst.prodMk (B.symm.contMDiff.comp contMDiff_snd) }
+  let Ψ := (Φ.trans A.toPartialDiffeomorph).trans (heightSplitDiffeomorph m a).toPartialDiffeomorph
+  refine ⟨Ψ, ⟨⟨hxΦ, mem_univ _⟩, mem_univ _⟩, ?_, ?_⟩
+  · intro y hy
+    exact hsub hy.1.1
+  · intro y hy
+    change heightSplitDiffeomorph m a (A (Φ y)) (Fin.last m) = a - f y
+    rw [heightSplitDiffeomorph_last]
+    change a - (Φ y).1 = a - f y
+    rw [hcoord y hy.1.1]
 
 theorem exists_level_coordinates {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x : M} {a : ℝ} (hlevel : f x = a) (hreg : mfderiv I 𝓘(ℝ, ℝ) f x ≠ 0) :

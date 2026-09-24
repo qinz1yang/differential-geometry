@@ -303,4 +303,62 @@ theorem expDens_le_hyperbolic
     rw [curveDensity, hgram, Matrix.det_one, Real.sqrt_one]
     simp only [hd0, hyperbolicDensity, pow_zero, le_refl]
 
+open DifferentialGeometry.Geometry.Curvature in
+omit [T2Space (TangentBundle I M)] in
+theorem expDens_le_hyperbolic_on
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) (u : TangentSpace I p)
+    (B : Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I p))
+    (hB : ∀ i j, g.inner p (B i) (B j) = if i = j then 1 else 0)
+    (q : Real)
+    (hq : 0 ≤ q) (hu : u ≠ 0)
+    (hno : ∀ t ∈ Set.Ioo (0 : Real) 1,
+      ¬ IsConjVec (I := I) g hEnorm p
+        ((t • u : TangentSpace I p) : E))
+    (hRic : ∀ t ∈ Set.Ioo (0 : Real) 1,
+      -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
+          g.inner (intrinsicGeodesic (I := I) g hEnorm p u t)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p u) t)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p u) t) ≤
+        ricciTensor (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm p u t)
+          (curveVelocity (I := I)
+            (intrinsicGeodesic (I := I) g hEnorm p u) t)
+          (curveVelocity (I := I)
+            (intrinsicGeodesic (I := I) g hEnorm p u) t)) :
+    curveDensity (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm p u)
+        (fun i t => intrinsicJacobi (I := I) g hEnorm p u
+          (B i) t) 1 ≤
+      hyperbolicDensity (q * Real.sqrt (g.inner p u u))
+        (Module.finrank Real E - 1) 1 := by
+  have hu_pos : 0 < g.inner p u u := g.pos p u hu
+  by_cases hd : 0 < Module.finrank Real E - 1
+  · obtain ⟨v, hON, hperp, hbound⟩ :=
+      transDens_le_one_on (I := I) g hEnorm p u q hq hd hu_pos hno hRic
+    rw [curveDensity_basis_eq_orthogonalComplement (I := I) g hEnorm p u hu_pos B hB v hON hperp]
+    exact hbound
+  · have hd0 : Module.finrank Real E - 1 = 0 := Nat.eq_zero_of_not_pos hd
+    let v : Fin (Module.finrank Real E - 1) → TangentSpace I p :=
+      fun i => isEmptyElim (hd0 ▸ i)
+    have hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0 := by
+      intro i
+      exact isEmptyElim (hd0 ▸ i)
+    have hperp : ∀ i, g.inner p u (v i) = 0 := by
+      intro i
+      exact isEmptyElim (hd0 ▸ i)
+    rw [curveDensity_basis_eq_orthogonalComplement (I := I) g hEnorm p u hu_pos B hB v hON hperp]
+    have hgram :
+        curveGram (I := I) g
+            (intrinsicGeodesic (I := I) g hEnorm p u)
+            (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) 1 = 1 := by
+      ext i
+      exact isEmptyElim (hd0 ▸ i)
+    rw [curveDensity, hgram, Matrix.det_one, Real.sqrt_one]
+    simp only [hd0, hyperbolicDensity, pow_zero, le_refl]
+
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

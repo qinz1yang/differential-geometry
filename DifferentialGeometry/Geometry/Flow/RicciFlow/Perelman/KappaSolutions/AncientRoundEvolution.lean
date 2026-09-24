@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 private theorem ancient_eq_terminal_of_deriv_zero {f : ℝ → ℝ}
     (hcont : ContinuousOn f (Iic 0))

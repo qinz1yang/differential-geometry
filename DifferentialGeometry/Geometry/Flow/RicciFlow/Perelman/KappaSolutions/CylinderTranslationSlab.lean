@@ -81,6 +81,7 @@ private local instance cylinderSlabProductBorel : BorelSpace (SphereTwo × ℝ) 
 private local instance cylinderSlabC1 : IsManifold I 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
 
+omit [CompleteSpace E] in
 theorem cylinderDeck_translation_total_volume_le
     (g : SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric (𝓡 2) SphereTwo)

@@ -99,7 +99,7 @@ omit [PseudoEMetricSpace M] [SecondCountableTopology M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] in
-private theorem proj_pathELength_eq
+theorem proj_pathELength_eq
     (g : SmoothRiemannianMetric I M)
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [RiemannianBundle

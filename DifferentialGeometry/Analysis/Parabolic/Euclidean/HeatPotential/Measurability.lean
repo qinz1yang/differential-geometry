@@ -42,31 +42,27 @@ private theorem integral_time_aestronglyMeasurable_of_continuousOn
   rwa [Measure.restrict_congr_set Ioo_ae_eq_Ioc] at hIoo
 
 omit [Nontrivial V] [CompleteSpace F] in
-theorem heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
-    {alpha K : NNReal} (halpha0 : 0 < alpha)
-    {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
+theorem heatSup_timeSource_aestronglyMeasurable_of_continuousOn
+    {t : Real} (ht : 0 ≤ t)
     (f : Real → BoundedContinuousFunction V F)
-    (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
-        (fun p => f p.time p.space)))
+    (hsource : ContinuousOn (fun q : Real × V => f q.1 q.2)
+      (Ioo (0 : Real) t ×ˢ (Set.univ : Set V)))
     (z : V) :
     AEStronglyMeasurable (fun s : Real => heatSup (t - s) (f s) z)
       (volume.restrict (uIoc (0 : Real) t)) := by
-  rw [uIoc_of_le ht.1.le]
+  rw [uIoc_of_le ht]
   let A : Set (Real × V) := Ioo (0 : Real) t ×ˢ (Set.univ : Set V)
   let G : Real × V → F := fun q =>
     heatKernel (t - q.1) q.2 • f q.1 (z - q.2)
   apply integral_time_aestronglyMeasurable_of_continuousOn (G := G)
   rw [show Ioo (0 : Real) t ×ˢ (Set.univ : Set V) = A from rfl,
     continuousOn_iff_continuous_domRestrict]
-  let phi : A → parabolicCylinder (Icc (0 : Real) S) Set.univ := fun q =>
-    ⟨parabolicPoint q.1.1 (z - q.1.2),
-      ⟨⟨q.2.1.1.le, q.2.1.2.le.trans ht.2⟩, Set.mem_univ _⟩⟩
+  let phi : A → A := fun q => ⟨(q.1.1, z - q.1.2), q.2.1, Set.mem_univ _⟩
   have hphi : Continuous phi := by
-    unfold phi parabolicPoint
+    unfold phi
     fun_prop
   have hf : Continuous (fun q : A => f q.1.1 (z - q.1.2)) := by
-    exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
+    exact (continuousOn_iff_continuous_domRestrict.mp hsource).comp hphi
   have hr : Continuous (fun q : A => heatScale (t - q.1.1)) := by
     unfold heatScale
     fun_prop
@@ -83,7 +79,7 @@ theorem heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
   exact (((hr.pow _).inv₀ (fun q => pow_ne_zero _ (hr0 q))).mul hbase).smul hf
 
 omit [Nontrivial V] [CompleteSpace F] in
-theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
+theorem heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
     {alpha K : NNReal} (halpha0 : 0 < alpha)
     {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -91,24 +87,38 @@ theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
       ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (z : V) :
-    AEStronglyMeasurable
-      (fun s : Real => heatSupGradient (t - s) (f s) z)
+    AEStronglyMeasurable (fun s : Real => heatSup (t - s) (f s) z)
       (volume.restrict (uIoc (0 : Real) t)) := by
-  rw [uIoc_of_le ht.1.le]
+  apply heatSup_timeSource_aestronglyMeasurable_of_continuousOn ht.1.le f ?_ z
+  rw [continuousOn_iff_continuous_domRestrict]
   let A : Set (Real × V) := Ioo (0 : Real) t ×ˢ (Set.univ : Set V)
-  let G : Real × V → V →L[Real] F := fun q =>
-    (heatD1Map (t - q.1) (z - q.2)).smulRight (f q.1 q.2)
-  apply integral_time_aestronglyMeasurable_of_continuousOn (G := G)
-  rw [show Ioo (0 : Real) t ×ˢ (Set.univ : Set V) = A from rfl,
-    continuousOn_iff_continuous_domRestrict]
   let phi : A → parabolicCylinder (Icc (0 : Real) S) Set.univ := fun q =>
     ⟨parabolicPoint q.1.1 q.1.2,
       ⟨⟨q.2.1.1.le, q.2.1.2.le.trans ht.2⟩, Set.mem_univ _⟩⟩
   have hphi : Continuous phi := by
     unfold phi parabolicPoint
     fun_prop
-  have hf : Continuous (fun q : A => f q.1.1 q.1.2) := by
-    exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
+  exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
+
+omit [Nontrivial V] [CompleteSpace F] in
+theorem heatSupGradient_timeSource_aestronglyMeasurable_of_continuousOn
+    {t : Real} (ht : 0 ≤ t)
+    (f : Real → BoundedContinuousFunction V F)
+    (hsource : ContinuousOn (fun q : Real × V => f q.1 q.2)
+      (Ioo (0 : Real) t ×ˢ (Set.univ : Set V)))
+    (z : V) :
+    AEStronglyMeasurable
+      (fun s : Real => heatSupGradient (t - s) (f s) z)
+      (volume.restrict (uIoc (0 : Real) t)) := by
+  rw [uIoc_of_le ht]
+  let A : Set (Real × V) := Ioo (0 : Real) t ×ˢ (Set.univ : Set V)
+  let G : Real × V → V →L[Real] F := fun q =>
+    (heatD1Map (t - q.1) (z - q.2)).smulRight (f q.1 q.2)
+  apply integral_time_aestronglyMeasurable_of_continuousOn (G := G)
+  rw [show Ioo (0 : Real) t ×ˢ (Set.univ : Set V) = A from rfl,
+    continuousOn_iff_continuous_domRestrict]
+  have hf : Continuous (fun q : A => f q.1.1 q.1.2) :=
+    continuousOn_iff_continuous_domRestrict.mp hsource
   have hr : Continuous (fun q : A => heatScale (t - q.1.1)) := by
     unfold heatScale
     fun_prop
@@ -132,6 +142,29 @@ theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
     hcoef.smul hbase
   unfold G heatD1Map
   exact (ContinuousLinearMap.smulRightL Real V F).continuous₂.comp₂ hmap hf
+
+omit [Nontrivial V] [CompleteSpace F] in
+theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
+    {alpha K : NNReal} (halpha0 : 0 < alpha)
+    {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
+    (f : Real → BoundedContinuousFunction V F)
+    (hsource : HolderWith K alpha
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
+        (fun p => f p.time p.space)))
+    (z : V) :
+    AEStronglyMeasurable
+      (fun s : Real => heatSupGradient (t - s) (f s) z)
+      (volume.restrict (uIoc (0 : Real) t)) := by
+  apply heatSupGradient_timeSource_aestronglyMeasurable_of_continuousOn ht.1.le f ?_ z
+  rw [continuousOn_iff_continuous_domRestrict]
+  let A : Set (Real × V) := Ioo (0 : Real) t ×ˢ (Set.univ : Set V)
+  let phi : A → parabolicCylinder (Icc (0 : Real) S) Set.univ := fun q =>
+    ⟨parabolicPoint q.1.1 q.1.2,
+      ⟨⟨q.2.1.1.le, q.2.1.2.le.trans ht.2⟩, Set.mem_univ _⟩⟩
+  have hphi : Continuous phi := by
+    unfold phi parabolicPoint
+    fun_prop
+  exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
 
 omit [Nontrivial V] [CompleteSpace F] in
 theorem heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder

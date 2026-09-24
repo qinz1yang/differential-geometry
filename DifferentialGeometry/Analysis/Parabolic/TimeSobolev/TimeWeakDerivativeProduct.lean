@@ -168,6 +168,65 @@ theorem exists_timeH1_of_spacetime_weak_deriv_on
   exact exists_timeH1_of_weak_deriv_on hab (Lp.memLp P) (Lp.memLp Q)
     (weak_deriv_of_spacetime_test_identity hΩ P R hweak)
 
+theorem exists_timeH1_of_spacetime_weak_deriv
+    (hab : a < b) (hΩ : IsOpen Ω)
+    (U R : Lp ℝ 2 ((volume.restrict (Icc a b)).prod (ν.restrict Ω)))
+    (hweak : ∀ φ : ℝ × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b ×ˢ Ω →
+      (∫ p, U p * fderiv ℝ φ p (1, 0) ∂(volume.restrict (Icc a b)).prod (ν.restrict Ω)) =
+        -(∫ p, R p * φ p ∂(volume.restrict (Icc a b)).prod (ν.restrict Ω))) :
+    ∃ w : timeH1 (Lp ℝ 2 (ν.restrict Ω)) (b - a),
+      ∀ᵐ t ∂timeMeasure (b - a),
+        ((w.toFun t : E → ℝ) =ᵐ[ν.restrict Ω] fun x => U (a + t, x)) ∧
+        ((w.deriv t : E → ℝ) =ᵐ[ν.restrict Ω] fun x => R (a + t, x)) := by
+  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
+  let : SecondCountableTopology (Lp ℝ 2 (ν.restrict Ω)) := Lp.SecondCountableTopology
+  let P := Lp.curry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) U
+  have hP : ∀ φ : ℝ × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b ×ˢ Ω →
+      (∫ p, (Lp.uncurry ℝ (by norm_num) P) p * fderiv ℝ φ p (1, 0)
+        ∂(volume.restrict (Icc a b)).prod (ν.restrict Ω)) =
+      -(∫ p, R p * φ p ∂(volume.restrict (Icc a b)).prod (ν.restrict Ω)) := by
+    simpa only [P, Lp.uncurry_curry] using hweak
+  have hex := exists_timeH1_of_spacetime_weak_deriv_on
+    (E := E) (ν := ν) (Ω := Ω) (a := a) (b := b)
+    hab hΩ P R hP
+  obtain ⟨w, hwp, hwd⟩ := hex
+  let μ₀ := volume.restrict (Icc a b)
+  let ν₀ := ν.restrict Ω
+  let hp₀ : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
+  let Uc : Lp (Lp ℝ 2 ν₀) 2 μ₀ →ₗᵢ[ℝ] Lp ℝ 2 (μ₀.prod ν₀) :=
+    Lp.uncurry ℝ hp₀
+  have hUc : Function.Surjective Uc := Lp.uncurry_surjective hp₀
+  let Euc := LinearIsometryEquiv.ofSurjective Uc hUc
+  have hAdj : Uc.toContinuousLinearMap.adjoint =
+      (Lp.curry ℝ hp₀).toContinuousLinearEquiv.toContinuousLinearMap :=
+    Euc.adjoint_eq_symm
+  have hwd₀ : w.deriv =ᵐ[timeMeasure (b - a)]
+      fun t => Uc.toContinuousLinearMap.adjoint R (a + t) := by
+    simpa only [Uc, μ₀, ν₀] using hwd
+  have hwd' : w.deriv =ᵐ[timeMeasure (b - a)]
+      fun t => Lp.curry ℝ hp₀ R (a + t) := by
+    filter_upwards [hwd₀] with t ht
+    rw [ht, hAdj]
+    rfl
+  have hshift : MeasurePreserving (fun t : ℝ => a + t)
+      (timeMeasure (b - a)) (volume.restrict (Icc a b)) := by
+    have h := (measurePreserving_add_right volume a).restrict_image_emb
+      (Homeomorph.addRight a).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (b - a))
+    simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm a] using h
+  refine ⟨w, ?_⟩
+  filter_upwards [hwp, hwd',
+    hshift.quasiMeasurePreserving.ae (Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) U),
+    hshift.quasiMeasurePreserving.ae (Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) R)]
+    with t hwt hdt hUt hRt
+  constructor
+  · rw [← hwt]
+    exact hUt
+  · rw [hdt]
+    exact hRt
+
+
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 
 theorem exists_timeH1_of_finite_weak_partial_trees {d : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
@@ -194,57 +253,12 @@ theorem exists_timeH1_of_finite_weak_partial_trees {d : ℕ} {Ω : Set (Euclidea
             fun x => U n α (a + t, x)) ∧
           ((w.deriv t : EuclideanSpace ℝ (Fin d) → ℝ) =ᵐ[volume.restrict Ω]
             fun x => R n α (a + t, x)) := by
-  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
-  let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω)) := Lp.SecondCountableTopology
   have hw := integral_fderiv_prod_left_eq_neg_of_finite_weak_partial_trees
     (Z := ℝ) (d := d) (μ := volume.restrict (Icc a b)) (W := Ioo a b) (Ω := Ω) K (1 : ℝ)
     (fun n α q => U n α q) (fun n α q => R n α q)
     (fun n _ α => (Lp.memLp (U n α)).locallyIntegrable (by norm_num))
     (fun n _ α => (Lp.memLp (R n α)).locallyIntegrable (by norm_num)) hUweak hRweak hroot
   intro n hn α
-  let P := Lp.curry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) (U n α)
-  have hP : ∀ φ : ℝ × EuclideanSpace ℝ (Fin d) → ℝ,
-      ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioo a b ×ˢ Ω →
-      (∫ q, (Lp.uncurry ℝ (by norm_num) P) q * fderiv ℝ φ q (1, 0)
-        ∂(volume.restrict (Icc a b)).prod (volume.restrict Ω)) =
-        -∫ q, R n α q * φ q ∂(volume.restrict (Icc a b)).prod (volume.restrict Ω) := by
-    simpa only [P, Lp.uncurry_curry] using hw n hn α
-  have hex := exists_timeH1_of_spacetime_weak_deriv_on
-    (E := EuclideanSpace ℝ (Fin d)) (ν := volume) (Ω := Ω) (a := a) (b := b)
-    hab hΩ P (R n α) hP
-  obtain ⟨w, hwp, hwd⟩ := hex
-  let μ₀ := volume.restrict (Icc a b)
-  let ν₀ := volume.restrict Ω
-  let hp₀ : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
-  let Uc : Lp (Lp ℝ 2 ν₀) 2 μ₀ →ₗᵢ[ℝ] Lp ℝ 2 (μ₀.prod ν₀) :=
-    Lp.uncurry ℝ hp₀
-  have hUc : Function.Surjective Uc := Lp.uncurry_surjective hp₀
-  let Euc := LinearIsometryEquiv.ofSurjective Uc hUc
-  have hAdj : Uc.toContinuousLinearMap.adjoint =
-      (Lp.curry ℝ hp₀).toContinuousLinearEquiv.toContinuousLinearMap :=
-    Euc.adjoint_eq_symm
-  have hwd₀ : w.deriv =ᵐ[timeMeasure (b - a)]
-      fun t => Uc.toContinuousLinearMap.adjoint (R n α) (a + t) := by
-    simpa only [Uc, μ₀, ν₀] using hwd
-  have hwd' : w.deriv =ᵐ[timeMeasure (b - a)]
-      fun t => Lp.curry ℝ hp₀ (R n α) (a + t) := by
-    filter_upwards [hwd₀] with t ht
-    rw [ht, hAdj]
-    rfl
-  have hshift : MeasurePreserving (fun t : ℝ => a + t)
-      (timeMeasure (b - a)) (volume.restrict (Icc a b)) := by
-    have h := (measurePreserving_add_right volume a).restrict_image_emb
-      (Homeomorph.addRight a).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (b - a))
-    simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm a] using h
-  refine ⟨w, ?_⟩
-  filter_upwards [hwp, hwd',
-    hshift.quasiMeasurePreserving.ae (Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) (U n α)),
-    hshift.quasiMeasurePreserving.ae (Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) (R n α))]
-    with t hwt hdt hUt hRt
-  constructor
-  · rw [← hwt]
-    exact hUt
-  · rw [hdt]
-    exact hRt
+  exact exists_timeH1_of_spacetime_weak_deriv hab hΩ (U n α) (R n α) (hw n hn α)
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

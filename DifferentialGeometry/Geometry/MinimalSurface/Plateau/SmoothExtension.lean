@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
+import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
+import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 
 
 
@@ -11,7 +13,7 @@ noncomputable section
 
 open Bundle Manifold DifferentialGeometry Set ContinuousMap
 open DifferentialGeometry.Topology
-open scoped Bundle Manifold ContDiff Topology ENNReal NNReal
+open scoped Bundle Manifold ContDiff Topology ComplexConjugate ENNReal NNReal
 
 namespace DifferentialGeometry.Geometry
 
@@ -44,9 +46,60 @@ theorem SmoothDiskExtension.comp
   obtain ⟨heq, s, hs, hDs, hU⟩ := hu
   exact ⟨fun z => congrArg f (heq z), s, hs, hDs, hf.comp_contMDiffOn hU⟩
 
+theorem SmoothDiskExtension.eventuallyEq_diskExtension {u : C(closedDisk, M)} {U : ℂ → M}
+    (h : SmoothDiskExtension (E := E) u U) {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    U =ᶠ[𝓝 z] diskExtension u := by
+  obtain ⟨heq, N, hN, hDN, hU⟩ := h
+  filter_upwards [Metric.isOpen_ball.mem_nhds hz] with w hw
+  have hwD : w ∈ Metric.closedBall (0 : ℂ) 1 := Metric.ball_subset_closedBall hw
+  rw [diskExtension_coe u ⟨w, hwD⟩]
+  exact heq ⟨w, hwD⟩
+
+theorem SmoothDiskExtension.comp_diskReflection {u : C(closedDisk, M)} {U : ℂ → M}
+    (h : SmoothDiskExtension (E := E) u U) :
+    SmoothDiskExtension (E := E) (u.comp ⟨diskReflection, diskReflection.continuous⟩) (U ∘ conj) := by
+  obtain ⟨heq, N, hN, hDN, hU⟩ := h
+  refine ⟨fun z => ?_, conj ⁻¹' N, hN.preimage Complex.continuous_conj, fun z hz => ?_, ?_⟩
+  · have hc : conj (z : ℂ) ∈ Metric.closedBall (0 : ℂ) 1 := by
+      simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using z.property
+    have hz' : (⟨conj (z : ℂ), hc⟩ : closedDisk) = diskReflection z := Subtype.ext rfl
+    have huse := heq ⟨conj (z : ℂ), hc⟩
+    rw [hz'] at huse
+    change U (conj (z : ℂ)) = u (diskReflection z)
+    exact huse
+  · exact hDN (by simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using hz)
+  · exact hU.comp ((Complex.conjCLE : ℂ →L[ℝ] ℂ).contMDiff.contMDiffOn) (fun z hz => hz)
+
 variable [IsManifold 𝓘(ℝ, E) ∞ M]
 
+theorem exists_smoothDiskExtension_of_locally_extendable
+    (u : C(closedDisk, M))
+    (hloc : ∀ x : closedDisk, ∃ U : ℂ → M, ∃ V : Set ℂ,
+      IsOpen V ∧ (x : ℂ) ∈ V ∧ ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U V ∧
+        ∀ y : closedDisk, (y : ℂ) ∈ V → U y = u y) :
+    ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U := by
+  obtain ⟨U, _, heq, N, hN, hKN, hUs⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiffOn_extension_closedBall
+      (I := 𝓘(ℝ, E)) (n := ⊤) (0 : ℂ) (by norm_num : (0 : ℝ) ≤ 1) u hloc
+  exact ⟨U, heq, N, hN, hKN, hUs⟩
 
+
+
+
+theorem exists_smoothDiskExtension_of_diskSmoothUpToBoundary [CompleteSpace E]
+    {u : C(closedDisk, M)} (hu : DiskSmoothUpToBoundary (E := E) u) :
+    ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U := by
+  obtain ⟨g, _, heq, N, hN, hKN, hgs⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiffOn_extension_closedDisk
+      (I := 𝓘(ℝ, E)) (show ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞
+        (diskExtension u) (Metric.closedBall (0 : ℂ) 1) from hu)
+  exact ⟨g, fun z => (heq z.property).trans (diskExtension_coe u z), N, hN, hKN, hgs⟩
+
+theorem diskSmoothUpToBoundary_iff_exists_smoothDiskExtension [CompleteSpace E]
+    (u : C(closedDisk, M)) :
+    DiskSmoothUpToBoundary (E := E) u ↔ ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U :=
+  ⟨exists_smoothDiskExtension_of_diskSmoothUpToBoundary,
+    fun ⟨_, hU⟩ => hU.smoothUpToBoundary⟩
 
 theorem SmoothDiskExtension.lipschitz (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     {u : C(closedDisk, M)} {U : ℂ → M} (h : SmoothDiskExtension (E := E) u U) :

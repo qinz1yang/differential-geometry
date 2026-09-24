@@ -201,5 +201,18 @@ theorem sepTailBudget (B ε : ℝ) (hε : 0 < ε) :
           mul_le_mul_of_nonneg_left hgeom hβpos.le
     _ = ε := by field_simp [ne_of_gt hβpos]
 
+theorem sepTail_le_half_pow (j l : ℕ) : sepTail j l ≤ (1 / 2 : ℝ) ^ j := by
+  have hsum := sum_le_hasSum (Finset.range l) (fun i _ => by positivity) hasSum_geometric_two
+  calc
+    sepTail j l = (1 / 2 : ℝ) ^ (j + 1) * ∑ i ∈ Finset.range l, (1 / 2 : ℝ) ^ i := by
+      simp only [sepTail, Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [← pow_add]
+      congr 1
+      omega
+    _ ≤ (1 / 2 : ℝ) ^ (j + 1) * 2 := mul_le_mul_of_nonneg_left hsum (by positivity)
+    _ = (1 / 2 : ℝ) ^ j := by rw [pow_succ]; ring
+
 end CheegerGromovCompactness
 end DifferentialGeometry

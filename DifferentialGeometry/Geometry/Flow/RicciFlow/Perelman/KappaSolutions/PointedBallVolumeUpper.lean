@@ -11,7 +11,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 universe u uE uH
 
@@ -19,7 +19,7 @@ section LocalVolume
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M N : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
   [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
@@ -30,6 +30,7 @@ private local instance ballUpperLocalMBorel : BorelSpace M := ⟨rfl⟩
 private local instance ballUpperLocalNMeasurable : MeasurableSpace N := borel N
 private local instance ballUpperLocalNBorel : BorelSpace N := ⟨rfl⟩
 
+omit [CompleteSpace E] in
 private theorem pointedBallUpper_volume_le_image
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (F : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))

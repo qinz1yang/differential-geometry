@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.RegularLevel.Coordinates
+import Mathlib.Geometry.Manifold.SmoothEmbedding
+import Mathlib.Topology.Connected.LocallyConnected
 
 set_option autoImplicit false
 open Set Manifold
@@ -216,5 +218,53 @@ theorem contMDiff_level_factor {f : M → ℝ} {a : ℝ}
   have hx : F x ∈ Φ.source := (levelCoordinates_spec I hf hr p).1
   have hΦ := Φ.contMDiffOn.contMDiffAt (Φ.open_source.mem_nhds hx)
   exact (levelSetSplitFst m).contMDiff.contMDiffAt.comp x (hΦ.comp x (hF x))
+
+theorem isSmoothEmbedding_level_inclusion {f : M → ℝ} {a : ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hr : ∀ x, f x = a → mfderiv I 𝓘(ℝ, ℝ) f x ≠ 0) :
+    let _ := levelChartedSpace I hf hr
+    IsSmoothEmbedding 𝓘(ℝ, MorseModel m) I ∞
+      (Subtype.val : {y : M // f y = a} → M) := by
+  let _ := levelChartedSpace I hf hr
+  let _ := levelIsManifold I hf hr
+  refine ⟨IsImmersionOfComplement.isImmersion (F := ℝ) ?_, .subtypeVal⟩
+  intro x
+  let Φ := levelCoordinates I hf hr x
+  let B : PartialDiffeomorph 𝓘(ℝ, MorseModel (m + 1)) I (MorseModel (m + 1)) H ∞ :=
+    { toPartialEquiv := I.toHomeomorph.symm.toPartialEquiv
+      open_source := isOpen_univ
+      open_target := isOpen_univ
+      contMDiffOn_toFun := by
+        change ContMDiffOn 𝓘(ℝ, MorseModel (m + 1)) I ∞ I.symm univ
+        simpa only [I.range_eq_univ] using I.contMDiffOn_symm (n := ∞)
+      contMDiffOn_invFun := I.contMDiff.contMDiffOn }
+  let β := Φ.trans B
+  have hsource : (levelChart I hf hr x).source ⊆
+      (Subtype.val : {y : M // f y = a} → M) ⁻¹' β.source :=
+    fun _ hy => ⟨hy, mem_univ _⟩
+  refine IsImmersionAtOfComplement.mk_of_charts
+    (levelSetSplit m).toContinuousLinearEquiv (levelChart I hf hr x)
+    β.toOpenPartialHomeomorph (mem_chart_source (MorseModel m) x)
+    (hsource (mem_chart_source (MorseModel m) x))
+    (IsManifold.subset_maximalAtlas ⟨x, rfl⟩)
+    (β.toOpenPartialHomeomorph.mem_maximalAtlas_of_contMDiffOn
+      β.contMDiffOn_toFun β.contMDiffOn_invFun) hsource ?_
+  intro z hz
+  change I (I.symm (Φ (((levelChart I hf hr x).symm z : {y : M // f y = a}) : M))) =
+    levelSetSplit m (z, 0)
+  rw [I.right_inv (by rw [I.range_eq_univ]; exact mem_univ _)]
+  have hz' : z ∈ (levelChart I hf hr x).target := by simpa using hz
+  rw [levelChart_inverse I hf hr x hz']
+  exact Φ.right_inv hz'
+
+theorem finite_connectedComponents_level [CompactSpace M] {f : M → ℝ} {a : ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hr : ∀ x, f x = a → mfderiv I 𝓘(ℝ, ℝ) f x ≠ 0) :
+    Finite (ConnectedComponents {y : M // f y = a}) := by
+  let _ := levelChartedSpace I hf hr
+  let : CompactSpace {y : M // f y = a} :=
+    isCompact_iff_compactSpace.mp (isClosed_eq hf.continuous continuous_const).isCompact
+  let := ChartedSpace.locallyConnectedSpace (MorseModel m) {y : M // f y = a}
+  infer_instance
 
 end DifferentialGeometry.Manifold.RegularLevel

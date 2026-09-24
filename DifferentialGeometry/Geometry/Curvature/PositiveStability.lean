@@ -155,44 +155,13 @@ private theorem lowered_curvature_error
       Real.sqrt (G.inner x R R) ≤ C) :
     |metricRm04StandardAt g x u v v u - metricRm04StandardAt G x u v v u| ≤
       ε * (360 * C ^ 4 + C ^ 2) := by
-  let : CompleteSpace E := FiniteDimensional.complete ℝ E
-  have hε0 : 0 ≤ ε := (Real.sqrt_nonneg _).trans (hsmall 0 (by norm_num))
-  let N (z : TangentSpace I x) := Real.sqrt (G.inner x z z)
-  let Rg := riemannOp (LeviCivita g) x u v v
-  let RG := riemannOp (LeviCivita G) x u v v
-  let d := Rg - RG
-  have hd : N d ≤ 240 * ε * C ^ 3 := by
-    have h := riemann_difference_bound_of_small_metric_derivatives g G x ε hε hsmall u v v
-    apply h.trans
-    calc
-      _ ≤ 240 * ε * C * C * C := by gcongr
-      _ = _ := by ring
-  have hRg : N Rg ≤ 240 * ε * C ^ 3 + C := by
-    have he : Rg = d + RG := by dsimp [d]; abel
-    calc
-      N Rg = N (d + RG) := congrArg N he
-      _ ≤ N d + N RG := sqrt_inner_add_le G x d RG
-      _ ≤ _ := add_le_add hd hR
-  have hmetric : |g.inner x u Rg - G.inner x u Rg| ≤
-      ε * C * (240 * ε * C ^ 3 + C) := by
-    apply (metricDifference_abs_le g G G x u Rg).trans
-    change metricDerivNorm 0 g G G x * N u * N Rg ≤ _
-    gcongr
-    exact hsmall 0 (by norm_num)
-  have hcurv : |G.inner x u Rg - G.inner x u RG| ≤ C * (240 * ε * C ^ 3) := by
-    rw [← map_sub]
-    apply (abs_metric_inner_le_sqrt_metric_quadratic G x u d).trans
-    change N u * N d ≤ _
-    exact mul_le_mul hu hd (Real.sqrt_nonneg _) hC
-  rw [metricRm04StandardAt_eq_inner_riemannOp, metricRm04StandardAt_eq_inner_riemannOp]
-  change |g.inner x u Rg - G.inner x u RG| ≤ _
+  have heps0 : 0 ≤ ε := (Real.sqrt_nonneg _).trans (hsmall 0 (by norm_num))
+  have h := abs_metricRm04_sub_le_of_small_metric_derivatives g G x hε hsmall u v v u
+  apply h.trans
   calc
-    _ ≤ |g.inner x u Rg - G.inner x u Rg| +
-        |G.inner x u Rg - G.inner x u RG| := abs_sub_le _ _ _
-    _ ≤ ε * C * (240 * ε * C ^ 3 + C) + C * (240 * ε * C ^ 3) :=
-      add_le_add hmetric hcurv
-    _ = ε * ((240 * ε + 240) * C ^ 4 + C ^ 2) := by ring
-    _ ≤ _ := by gcongr; linarith
+    _ ≤ ε * (360 * C * C * C + C) * C := by gcongr
+    _ = _ := by ring
+
 end DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.Geometry.Curvature

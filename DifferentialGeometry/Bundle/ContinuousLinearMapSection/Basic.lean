@@ -1,4 +1,5 @@
 import DifferentialGeometry.Bundle.Equiv
+import DifferentialGeometry.Bundle.Hom.Trace
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Analysis.Normed.Module.FiniteDimension
@@ -110,28 +111,7 @@ theorem contMDiffAt_linearMap_trace
         (fun y : M => V y →L[ℝ] V y))) x) :
     ContMDiffAt I 𝓘(ℝ) n
       (fun y : M => LinearMap.trace ℝ (V y) (A y).toLinearMap) x := by
-  have hcoord := (contMDiffAt_hom_bundle
-    (f := fun y : M => (⟨y, A y⟩ : TotalSpace (F →L[ℝ] F)
-      (fun z : M => V z →L[ℝ] V z)))).mp hA
-  let tr : (F →L[ℝ] F) →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap
-      ((LinearMap.trace ℝ F).comp
-        (LinearMap.toContinuousLinearMap :
-          (F →ₗ[ℝ] F) ≃ₗ[ℝ] F →L[ℝ] F).symm.toLinearMap)
-  have hsmooth : ContMDiffAt I 𝓘(ℝ) n
-      (fun y : M => tr (ContinuousLinearMap.inCoordinates
-        F V F V x y x y (A y))) x :=
-    tr.contMDiff.contMDiffAt.comp x hcoord.2
-  refine hsmooth.congr_of_eventuallyEq ?_
-  have hxbase : x ∈ (trivializationAt F V x).baseSet :=
-    mem_baseSet_trivializationAt F V x
-  filter_upwards [(trivializationAt F V x).open_baseSet.mem_nhds hxbase] with y hy
-  change LinearMap.trace ℝ (V y) (A y).toLinearMap =
-    LinearMap.trace ℝ F
-      (ContinuousLinearMap.inCoordinates F V F V x y x y (A y)).toLinearMap
-  rw [ContinuousLinearMap.inCoordinates_eq hy hy]
-  let e := (trivializationAt F V x).continuousLinearEquivAt ℝ y hy
-  exact (LinearMap.trace_conj' (A y).toLinearMap e.toLinearEquiv).symm
+  exact hA.trace_bundle
 
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in

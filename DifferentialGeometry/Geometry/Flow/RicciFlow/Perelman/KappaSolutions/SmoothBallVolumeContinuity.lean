@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Filter Manifold MeasureTheory Metric Set
-open scoped ENNReal Manifold ContDiff Topology
+open scoped ENNReal Manifold ContDiff _root_.Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

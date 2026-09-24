@@ -7,7 +7,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Set Topology
+open Set _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness
 
 universe u uE uH

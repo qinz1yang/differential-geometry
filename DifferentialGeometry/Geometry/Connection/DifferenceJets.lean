@@ -263,7 +263,7 @@ private theorem actual_tower_bound_at
     (G g : SmoothRiemannianMetric I M) (x : M) (m : ℕ)
     (ell B : ℝ) (hell : 0 < ell) (hB : 0 ≤ B)
     (hLower : ∀ v : TangentSpace I x, ell * G.inner x v v ≤ g.inner x v v)
-    (hJet : ∀ a : ℕ, a ≤ m + 1 → metricDerivNorm a g G G x ≤ B) :
+    (hJet : ∀ a : ℕ, 1 ≤ a → a ≤ m + 1 → metricCovDerivNorm a g G x ≤ B) :
     Real.sqrt (normSq0S G x (3 + m)
       (iterCov G 3 (metricLoweredConnectionDifferenceField G g) m x)) ≤
     1 + Real.sqrt (Module.finrank ℝ E : ℝ) *
@@ -297,10 +297,7 @@ private theorem actual_tower_bound_at
     intro a ha ham
     rw [compL2_tower_eq G (metricTensorField g) frame hf e.open_baseSet hx hinv a,
       ← metricCovDerivNorm_eq_iterCov g G a (hf.toBasisAt hx) hinv]
-    obtain ⟨r, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : a ≠ 0)
-    have h := covNorm_le_add (r + 1) g G G x
-    rw [covNorm_self_succ, zero_add] at h
-    exact h.trans (hJet (r + 1) ham)
+    exact hJet a ha ham
   have hA := component_tower_bound_at e G g basis hx m
     (Real.sqrt (Module.finrank ℝ E : ℝ) / ell) B hInv hcompJet
   have hGbase : compL2 (frameComp0S (metricTensorField G) frame x) ≤
@@ -318,6 +315,58 @@ private theorem actual_tower_bound_at
   have hprod := mul_le_mul hA hGbase (compL2_nonneg _)
     (mul_nonneg hR (by linarith : 0 ≤ 1 + B))
   exact (hL.trans hprod).trans (by nlinarith)
+
+end DifferentialGeometry.Geometry.Connection
+
+namespace DifferentialGeometry.Geometry.Connection
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [BoundarylessManifold I M] [T2Space M]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+theorem exists_connection_difference_derivative_bound
+    (j : ℕ) (ell B : ℝ) (hell : 0 < ell) (hB : 0 ≤ B) :
+    ∃ C > 0, ∀ (G g : SmoothRiemannianMetric I M) (x : M),
+      (∀ v : TangentSpace I x, ell * G.inner x v v ≤ g.inner x v v) →
+      (∀ a : ℕ, 1 ≤ a → a ≤ j + 1 → metricCovDerivNorm a g G x ≤ B) →
+      Real.sqrt (normSq0S G x (3 + j)
+        (iterCov G 3 (metricLoweredConnectionDifferenceField G g) j x)) ≤ C := by
+  let C := 1 + Real.sqrt (Module.finrank ℝ E : ℝ) *
+    inverseContractionAffineRecurrenceConstant
+      (Real.sqrt (Module.finrank ℝ E : ℝ) / ell + 1) (3 / 2) (B + 1) j * (1 + B)
+  have hR := inverse_contraction_affine_recurrence_constant_nonneg
+    (Real.sqrt (Module.finrank ℝ E : ℝ) / ell + 1) (3 / 2) (B + 1) j
+  have hC : 0 < C := by
+    dsimp only [C]
+    positivity
+  refine ⟨C, hC, ?_⟩
+  intro G g x hLower hJet
+  exact actual_tower_bound_at G g x j ell B hell hB hLower hJet
+
+theorem exists_connection_difference_derivatives_bound
+    (j : ℕ) (ell B : ℝ) (hell : 0 < ell) (hB : 0 ≤ B) :
+    ∃ C > 0, ∀ (G g : SmoothRiemannianMetric I M) (x : M),
+      (∀ v : TangentSpace I x, ell * G.inner x v v ≤ g.inner x v v) →
+      (∀ a : ℕ, 1 ≤ a → a ≤ j + 1 → metricCovDerivNorm a g G x ≤ B) →
+      ∀ m ≤ j, Real.sqrt (normSq0S G x (3 + m)
+        (iterCov G 3 (metricLoweredConnectionDifferenceField G g) m x)) ≤ C := by
+  classical
+  choose C hC hbound using fun m : ℕ =>
+    exists_connection_difference_derivative_bound (I := I) (M := M) m ell B hell hB
+  let D := 1 + ∑ m ∈ Finset.range (j + 1), C m
+  have hsum : 0 ≤ ∑ m ∈ Finset.range (j + 1), C m :=
+    Finset.sum_nonneg fun m _ => (hC m).le
+  have hD : 0 < D := by dsimp only [D]; linarith
+  refine ⟨D, hD, ?_⟩
+  intro G g x hLower hJet m hm
+  have h := hbound m G g x hLower (fun a ha ham => hJet a ha (by omega))
+  have hterm : C m ≤ ∑ n ∈ Finset.range (j + 1), C n :=
+    Finset.single_le_sum (fun n _ => (hC n).le) (Finset.mem_range.mpr (by omega))
+  exact h.trans (hterm.trans (by dsimp only [D]; linarith))
 
 end DifferentialGeometry.Geometry.Connection
 
@@ -352,6 +401,11 @@ theorem exists_connection_difference_derivative_bound_on_opens
     positivity
   refine ⟨C, hC, ?_⟩
   intro U g q hLower hJet
-  exact actual_tower_bound_at (G.restrictOpen U) g q j ell B hell hB hLower hJet
+  apply actual_tower_bound_at (G.restrictOpen U) g q j ell B hell hB hLower
+  intro a ha haj
+  obtain ⟨r, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : a ≠ 0)
+  have h := covNorm_le_add (r + 1) g (G.restrictOpen U) (G.restrictOpen U) q
+  rw [covNorm_self_succ, zero_add] at h
+  exact h.trans (hJet (r + 1) haj)
 
 end DifferentialGeometry.Geometry.Connection

@@ -8,7 +8,7 @@ import DifferentialGeometry.External.Schoenflies.PolygonBridge
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Topology.Diffeomorph.Convex
 import DifferentialGeometry.External.Schoenflies.PrePolygonSep
-import External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
 import DifferentialGeometry.Analysis.Convex.AffineBasis
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.Calculus.AddTorsor.AffineMap

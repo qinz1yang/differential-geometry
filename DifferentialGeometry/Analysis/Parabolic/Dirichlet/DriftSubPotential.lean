@@ -278,6 +278,49 @@ theorem dirichletHsNegOneEquivH1Dual_driftSubPotential_apply_smooth
     (smoothToH1ComplDirichlet q v), LinearIsometryEquiv.apply_symm_apply]
   exact dirichletDriftSubPotentialForm_apply_smooth q Y a u v
 
+theorem dirichletDriftSubPotentialForm_apply_smooth_right
+    (q : SmoothRiemannianMetric (I_half n) M)
+    (Y : Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (a : C^∞⟮I_half n, M; ℝ⟯)
+    (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q))
+    (v : SmoothScalarDirichlet q) :
+    dirichletDriftSubPotentialForm q Y a u (smoothToH1ComplDirichlet q v) =
+      -∫ x, u x * (tangentSectionAction (I := I_half n) Y v.toFun x +
+        (divergence (I := I_half n) (leviCivitaConnectionOfMetric (I := I_half n) q) Y x + a x) *
+          v.toFun x) ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+  rw [dirichletDriftSubPotentialForm, ContinuousLinearMap.bilinearComp_apply,
+    ContinuousLinearMap.id_apply, innerSL_apply_apply, dirichletDriftSubPotentialAdjoint,
+    neg_apply, add_apply, ContinuousLinearMap.comp_apply,
+    dirichletDirectionalDerivativeCLM_smoothToH1ComplDirichlet,
+    H1ComplDirichletToLp_smoothToH1ComplDirichlet, inner_neg_right, L2.inner_def]
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [Lp.coeFn_add (dirichletDirectionalDerivativeSmooth q Y v)
+      (smoothMulLp q (driftSubPotentialAdjointCoefficient q Y a) (smoothToLpDirichlet q v)),
+    dirichletDirectionalDerivativeSmooth_coeFn q Y v,
+    smoothMulLp_apply_coeFn q (driftSubPotentialAdjointCoefficient q Y a) (smoothToLpDirichlet q v),
+    v.memLp_two.coeFn_toLp] with x hs hd hm hv
+  change smoothToLpDirichlet q v x = v.toFun x at hv
+  rw [Real.inner_apply, hs, Pi.add_apply, hd, hm, hv,
+    tangentSectionAction_grad_g_with_boundary_eq_inner (I := I_half n) q Y x]
+  rfl
+
+theorem dirichletHsNegOneEquivH1Dual_driftSubPotential_apply_smooth_right
+    (q : SmoothRiemannianMetric (I_half n) M)
+    (Y : Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (a : C^∞⟮I_half n, M; ℝ⟯)
+    (u : DirichletHs q 0) (v : SmoothScalarDirichlet q) :
+    dirichletHsNegOneEquivH1Dual q (dirichletDriftSubPotential q Y a u)
+        (smoothToH1ComplDirichlet q v) =
+      -∫ x, dirichletHsZeroEquivL2 q u x *
+        (tangentSectionAction (I := I_half n) Y v.toFun x +
+          (divergence (I := I_half n) (leviCivitaConnectionOfMetric (I := I_half n) q) Y x + a x) *
+            v.toFun x) ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+  rw [dirichletHsNegOneEquivH1Dual_driftSubPotential,
+    dirichletDriftSubPotentialForm_apply_smooth_right]
+
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 end

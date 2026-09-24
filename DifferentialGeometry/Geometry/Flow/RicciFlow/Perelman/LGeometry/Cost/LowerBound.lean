@@ -1,3 +1,8 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Approximation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.CarrierBaseTime
+import DifferentialGeometry.Geometry.Metric.CurveEnergy
+
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Curvature
 
@@ -96,5 +101,89 @@ theorem lRegularizedCosts_bdd_rm
     intro s _hs
     exact lRegularizedSpeedSq_nonneg (I := I) S T alpha s
   linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+noncomputable section
+
+open Set MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Riemannian
+open scoped ContDiff Manifold
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {M : Type*} [PseudoMetricSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] [PreconnectedSpace M]
+  {D : RealTimeInterval}
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [PreconnectedSpace M] in
+theorem lRegularizedAction_ge_riemannianEDistOf_sq_div
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (alpha : ℝ → M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
+    {tau : ℝ} (htau : 0 < tau) (g : SmoothRiemannianMetric I M)
+    (htime : ∀ s ∈ Icc 0 (Real.sqrt tau), T - s ^ 2 ∈ D.carrier)
+    (hmetric : ∀ s ∈ Icc 0 (Real.sqrt tau), ∀ z : M, ∀ v : TangentSpace I z,
+      g.inner z v v ≤ (S.base.metric (T - s ^ 2)).inner z v v)
+    (hscalar : ∀ s ∈ Icc 0 (Real.sqrt tau), ∀ z : M,
+      0 ≤ S.scalar (T - s ^ 2) z) :
+    (riemannianEDistOf (I := I) g (alpha 0) (alpha (Real.sqrt tau))).toReal ^ 2 /
+        (2 * Real.sqrt tau) ≤ lRegularizedAction S T alpha 0 (Real.sqrt tau) := by
+  have hb : 0 < Real.sqrt tau := Real.sqrt_pos.mpr htau
+  have hE := integrableOn_inner_mfderiv_self_of_contMDiffOn g halpha.contMDiffOn
+    (a := 0) (b := Real.sqrt tau)
+  have href : IntervalIntegrable
+      (fun s => g.inner (alpha s) (lVelocity (I := I) alpha s)
+        (lVelocity (I := I) alpha s)) volume 0 (Real.sqrt tau) := by
+    apply IntegrableOn.intervalIntegrable
+    simpa only [uIcc_of_le hb.le, lVelocity] using hE
+  have hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha)
+      volume 0 (Real.sqrt tau) := by
+    have hcont := lRegularizedLagrangian_continuousOn_carrier S hS alpha halpha
+    have hcurve := hcont.comp (s := Icc 0 (Real.sqrt tau))
+      (continuous_const.prodMk continuous_id).continuousOn (fun s hs => htime s hs)
+    exact hcurve.intervalIntegrable_of_Icc hb.le
+  have hcoerc := lRegularizedAction_ge_reference_energy_add_constant S T alpha g
+    0 (Real.sqrt tau) 1 0 hb.le
+    (fun s hs => by simpa only [one_mul] using hmetric s hs (alpha s) (lVelocity alpha s))
+    (fun s hs => mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg s))
+      (hscalar s hs (alpha s))) href hLag
+  have henergy : curveEnergy g alpha 0 (Real.sqrt tau) ≤
+      2 * lRegularizedAction S T alpha 0 (Real.sqrt tau) := by
+    simp only [zero_mul, add_zero, intervalIntegral.integral_const_mul] at hcoerc
+    change (1 / 2 : ℝ) * curveEnergy g alpha 0 (Real.sqrt tau) ≤ _ at hcoerc
+    linarith
+  have hdist := riemannianEDistOf_toReal_sq_le_curveEnergy g hb.le halpha.contMDiffOn hE
+  rw [sub_zero] at hdist
+  have hbound := hdist.trans (mul_le_mul_of_nonneg_left henergy hb.le)
+  apply (div_le_iff₀ (show 0 < 2 * Real.sqrt tau by positivity)).mpr
+  nlinarith
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lCost_ge_riemannianEDistOf_sq_div
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x y : M) {tau : ℝ} (htau : 0 < tau)
+    (g : SmoothRiemannianMetric I M)
+    (htime : ∀ s ∈ Icc 0 (Real.sqrt tau), T - s ^ 2 ∈ D.carrier)
+    (hmetric : ∀ s ∈ Icc 0 (Real.sqrt tau), ∀ z : M, ∀ v : TangentSpace I z,
+      g.inner z v v ≤ (S.base.metric (T - s ^ 2)).inner z v v)
+    (hscalar : ∀ s ∈ Icc 0 (Real.sqrt tau), ∀ z : M,
+      0 ≤ S.scalar (T - s ^ 2) z) :
+    (riemannianEDistOf (I := I) g x y).toReal ^ 2 / (2 * Real.sqrt tau) ≤
+      lCost S T x y tau := by
+  by_contra hnot
+  obtain ⟨alpha, halpha, h0, hbEnd, hact⟩ :=
+    exists_lRegularizedAction_lt_of_lCost_lt_of_preconnected S T x y tau htau
+      ((riemannianEDistOf (I := I) g x y).toReal ^ 2 / (2 * Real.sqrt tau))
+      (lt_of_not_ge hnot)
+  have hbound := lRegularizedAction_ge_riemannianEDistOf_sq_div S hS T alpha halpha
+    htau g htime hmetric hscalar
+  rw [h0, hbEnd] at hbound
+  exact (not_lt_of_ge hbound) hact
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

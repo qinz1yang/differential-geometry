@@ -1,5 +1,6 @@
 import Mathlib.Dynamics.Flow
 import Mathlib.Topology.Instances.Real.Lemmas
+import Mathlib.Topology.Connected.Clopen
 
 open Set
 
@@ -90,5 +91,47 @@ theorem exists_simple_closed_curve_of_periodic_orbit
       rw [hcancel]
       exact he.symm
   exact ⟨γ, hγ, hclose, hsimple, himage⟩
+
+theorem orbit_eq_univ_of_isOpenMap
+    {X : Type*} [TopologicalSpace X] [PreconnectedSpace X] (φ : _root_.Flow ℝ X)
+    (hopen : ∀ x, IsOpenMap (fun t : ℝ => φ t x)) (x : X) : φ.orbit x = univ := by
+  have ho (y : X) : IsOpen (φ.orbit y) := (hopen y).isOpen_range
+  have hc : IsOpen (φ.orbit x)ᶜ := by
+    rw [isOpen_iff_mem_nhds]
+    intro y hy
+    apply Filter.mem_of_superset ((ho y).mem_nhds (φ.mem_orbit_self y))
+    rintro z ⟨t, rfl⟩ hz
+    have hback := φ.mem_orbit_of_mem_orbit (-t) hz
+    change φ (-t) (φ t y) ∈ φ.orbit x at hback
+    apply hy
+    simpa only [← φ.map_add, neg_add_cancel, φ.map_zero_apply] using hback
+  exact IsClopen.eq_univ ⟨by simpa only [compl_compl] using hc.isClosed_compl, ho x⟩
+    (φ.nonempty_orbit x)
+
+theorem exists_pos_period_of_isOpenMap
+    {X : Type*} [TopologicalSpace X] [PreconnectedSpace X] [CompactSpace X]
+    (φ : _root_.Flow ℝ X) (hopen : ∀ x, IsOpenMap (fun t : ℝ => φ t x)) (x : X) :
+    ∃ T > 0, φ T x = x := by
+  have hsurj : Function.Surjective (fun t : ℝ => φ t x) := by
+    rw [← Set.range_eq_univ, ← φ.orbit_eq_range]
+    exact orbit_eq_univ_of_isOpenMap φ hopen x
+  by_contra hreturn
+  push Not at hreturn
+  have hlt : ∀ s t : ℝ, s < t → φ s x ≠ φ t x := by
+    intro s t hst he
+    apply hreturn (t - s) (sub_pos.mpr hst)
+    calc
+      φ (t - s) x = φ (-s) (φ t x) := by rw [← φ.map_add]; congr 1; ring
+      _ = φ (-s) (φ s x) := congrArg (φ (-s)) he.symm
+      _ = x := by rw [← φ.map_add, neg_add_cancel, φ.map_zero_apply]
+  have hinj : Function.Injective (fun t : ℝ => φ t x) := by
+    intro s t he
+    rcases lt_trichotomy s t with hst | hst | hst
+    · exact (hlt s t hst he).elim
+    · exact hst
+    · exact (hlt t s hst he.symm).elim
+  let e : ℝ ≃ₜ X := (Equiv.ofBijective (fun t : ℝ => φ t x) ⟨hinj, hsurj⟩).toHomeomorphOfContinuousOpen (φ.continuous continuous_id continuous_const) (hopen x)
+  have hc : CompactSpace ℝ := e.symm.compactSpace
+  exact (not_compactSpace_iff.mpr inferInstance) hc
 
 end DifferentialGeometry.Topology.Flow

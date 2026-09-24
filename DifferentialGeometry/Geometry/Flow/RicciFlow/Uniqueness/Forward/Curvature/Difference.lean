@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.MetricConnectionDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.DifferenceFields
 import DifferentialGeometry.Geometry.Operator.CovariantTensor
 
@@ -26,30 +27,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 section DivergenceForm
 
 variable {s : ℕ}
-
-def lapDiffFlux (g₁ g₂ : SmoothRiemannianMetric I M)
-    (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) s) :
-    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) (s + 1) :=
-  metricNabla0S (I := I) g₁ T - metricNabla0S (I := I) g₂ T
-
-omit [SigmaCompactSpace M] in
-theorem lapDiffFlux_apply (g₁ g₂ : SmoothRiemannianMetric I M)
-    (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) s) (x : M) :
-    lapDiffFlux (I := I) g₁ g₂ T x =
-      totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
-          (metricCov (I := I) g₁) T x -
-        totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
-          (metricCov (I := I) g₂) T x := rfl
-
-omit [SigmaCompactSpace M] in
-@[simp] theorem lapDiffFlux_self (g : SmoothRiemannianMetric I M)
-    (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) s) :
-    lapDiffFlux (I := I) g g T = 0 :=
-  sub_self _
 
 def lapDiffRem (g₁ g₂ : SmoothRiemannianMetric I M)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

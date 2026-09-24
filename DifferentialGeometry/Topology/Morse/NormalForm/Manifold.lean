@@ -16,7 +16,7 @@ open CellAttachment
 
 noncomputable section
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private theorem fderiv_fderiv_translate_of_contDiffOn (g : E → ℝ) (c : E) (r : ℝ)
     (hr : 0 < r) (hg : ContDiffOn ℝ 2 g (Metric.ball c r)) :
@@ -45,7 +45,7 @@ private theorem fderiv_fderiv_translate_of_contDiffOn (g : E → ℝ) (c : E) (r
     simpa using fderiv_translate (fderiv ℝ g) c (0 : E) (by simpa using hd)
   rw [hfder, hlast]
 
-private theorem hessian_linearPullback_at_critical {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+private theorem hessian_linearPullback_at_critical {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
     (f : E → ℝ) (σ : F →L[ℝ] E) (hf : ContDiff ℝ 2 f)
     (u v : F) :

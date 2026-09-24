@@ -56,7 +56,7 @@ theorem attachDiskAnnulus_boundary (u : ℂ → Q) (H : ℝ × loopCircle → Q)
 
 
 
-theorem attachDiskAnnulus_lipschitz [PseudoMetricSpace Q]
+theorem attachDiskAnnulus_lipschitz [PseudoEMetricSpace Q]
     {u : ℂ → Q} {H : ℝ × loopCircle → Q} {Ku Kh : ℝ≥0}
     (hu : LipschitzWith Ku u) (hH : LipschitzWith Kh H)
     (hglue : ∀ θ : loopCircle, u (AddCircle.toCircle θ : ℂ) = H (0, θ)) :

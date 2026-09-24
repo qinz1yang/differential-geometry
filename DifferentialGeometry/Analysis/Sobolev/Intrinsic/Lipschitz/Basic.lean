@@ -33,43 +33,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-omit [FiniteDimensional ℝ E] in
-private lemma mdiff_of_pull
-    (α : M) {f : M → ℝ} {x : M}
-    (hx : x ∈ (chartAt H α).source)
-    (hf : DifferentiableAt ℝ (chartPullZero (I := I) α f)
-      (extChartAt I α x)) :
-    MDifferentiableAt I 𝓘(ℝ, ℝ) f x := by
-  let coord : M → E := fun y => extChartAt I α y
-  have hcoord : MDifferentiableAt I 𝓘(ℝ, E) coord x := by
-    change MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) x
-    exact mdifferentiableAt_extChartAt hx
-  have hcomp : MDifferentiableAt I 𝓘(ℝ, ℝ)
-      ((chartPullZero (I := I) α f) ∘ coord) x :=
-    hf.comp_mdifferentiableAt hcoord
-  refine hcomp.congr_of_eventuallyEq ?_
-  filter_upwards [(chartAt H α).open_source.mem_nhds hx] with y hy
-  have hy_ext : y ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hy
-  have hy_target : extChartAt I α y ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hy_ext
-  rw [Function.comp_apply, chartPullZero_mem (I := I) α f hy_target]
-  exact (scalarOnE_extChartAt (I := I) α f hy_ext).symm
-
-private lemma chart_lip_ae_mdiff
-    (g : SmoothRiemannianMetric I M) (α : M)
-    {φ : M → ℝ} {C : NNReal}
-    (hφ : LipschitzWith C (chartPullZero (I := I) α φ)) :
-    ∀ᵐ x ∂chartLocalMeasure (I := I) g α,
-      x ∈ (chartAt H α).source → MDifferentiableAt I 𝓘(ℝ) φ x := by
-  have hdiff : ∀ᵐ y ∂(modelHaar (E := E)),
-      DifferentiableAt ℝ (chartPullZero (I := I) α φ) y :=
-    hφ.ae_differentiableAt
-  filter_upwards [ae_chart_of_haar (I := I) (M := M) g α
-      (measurableSet_of_differentiableAt ℝ _) hdiff] with x hx
-  exact fun hxsource => mdiff_of_pull (I := I) α hxsource (hx hxsource)
-
 omit [IsManifold I ∞ M] in
 private lemma pull_lipschitz_of_chartPushedRaw
     (α : M) (φ : M → ℝ) {C : NNReal}
@@ -199,7 +162,7 @@ theorem integrable_tangentSectionAction_and_integral_eq_neg_integral_smul_diverg
   have hφ_mdiff_local (α : M) :
       ∀ᵐ x ∂chartLocalMeasure (I := I) g α,
         x ∈ (chartAt H α).source → MDifferentiableAt I 𝓘(ℝ) (φ α) x :=
-    chart_lip_ae_mdiff (I := I) g α (hD α)
+    ae_mdifferentiableAt_of_lipschitzWith_chartPullZero (I := I) g α (hD α)
   have hφ_mdiff_global (α : M) :
       ∀ᵐ x ∂riemannianVolumeMeasure (I := I) (M := M) g,
         MDifferentiableAt I 𝓘(ℝ) (φ α) x := by
@@ -539,7 +502,7 @@ private theorem global_lip_ibp
       tangentSectionAction (I := I) X (φ α) x) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       tangentSectionAction (I := I) X u := by
-    filter_upwards [ae_mdiff_of_lip (I := I) g hu hB] with x hux
+    filter_upwards [ae_mdiff_of_lip (I := I) g hu] with x hux
     have hφdiff : ∀ α ∈ S, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ α) x := by
       intro α _
       unfold φ
@@ -733,7 +696,7 @@ theorem memW1p_of_lip
   · refine ⟨(fun x => (gradFun (I := I) g u x : E)),
       weak_grad_of_lip (I := I) g hu hB, ?_⟩
     refine MemLp.of_bound (grad_norm_aesm (I := I) g
-      (ae_mdiff_of_lip (I := I) g hu hB)) (L : ℝ) ?_
+      (ae_mdiff_of_lip (I := I) g hu)) (L : ℝ) ?_
     exact Filter.Eventually.of_forall fun x => by
       rw [Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
       exact Geometry.Riemannian.grad_norm_le_lip_all (I := I) g hu

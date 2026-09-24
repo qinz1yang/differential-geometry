@@ -120,7 +120,7 @@ structure SphericalCapping (M N : ClosedOrientedManifold.{u} 3)
           (Subtype.val : ClosedCell 3 → EuclideanSpace ℝ (Fin 3)) x).toLinearMap hi).symm.trans
           (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) (𝓡 3) (cap b) x).toLinearMap hj))
         ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
-          N.orientation.orientation (cap b x)
+          (if b.2 then (1 : ℝˣ) else -1) • N.orientation.orientation (cap b x)
   boundary_orientation_reversing : ∀ b z (v w : TangentSpace (𝓡 2) z),
     let f : S² → M.Carrier := T.boundarySphere b ∘ attaching b
     let _ : FiniteDimensional ℝ (TangentSpace (𝓡 3) (f z)) :=
@@ -131,8 +131,9 @@ structure SphericalCapping (M N : ClosedOrientedManifold.{u} 3)
       change Fintype.card (Fin 3) = Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))
       simp)).det
       (Fin.cons (T.outwardVector b (attaching b z)) (Fin.cons (d v) (Fin.cons (d w) ![])))) ↔
-      (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
+      (if b.2 then (1 : ℝ) else -1) *
+        (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
+          (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
 
 structure SphericalCutCapTransition (M Q : ClosedOrientedManifold.{u} 3) where
   source_nonempty : Nonempty M.Carrier

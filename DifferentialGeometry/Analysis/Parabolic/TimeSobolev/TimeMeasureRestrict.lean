@@ -21,4 +21,16 @@ theorem measurePreserving_add_right_timeMeasure_restrict
       (Icc (0 : ℝ) (t₁ - t₀))
   simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm t₀] using h
 
+theorem ae_add_right_timeMeasure {T a b : ℝ} (ha : 0 ≤ a) (hbT : b ≤ T)
+    {P : ℝ → Prop} (hP : ∀ᵐ t ∂timeMeasure T, P t) :
+    ∀ᵐ t ∂timeMeasure (b - a), P (t + a) := by
+  have hI : Icc a b ⊆ Icc (0 : ℝ) T := fun t ht =>
+    ⟨ha.trans ht.1, ht.2.trans hbT⟩
+  have hrestricted : ∀ᵐ t ∂(timeMeasure T).restrict (Icc a b), P t :=
+    hP.filter_mono (ae_mono Measure.restrict_le_self)
+  have hshift : ∀ᵐ t ∂timeMeasure (b - a), P (a + t) :=
+    (measurePreserving_add_right_timeMeasure_restrict hI).quasiMeasurePreserving.ae hrestricted
+  simpa only [add_comm a] using hshift
+
+
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

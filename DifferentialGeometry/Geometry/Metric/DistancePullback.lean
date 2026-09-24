@@ -43,6 +43,23 @@ private theorem edistOf_localPullMetric_le
   exact (not_lt_of_ge hbound) hlen
 
 omit [FiniteDimensional ℝ F] [T2Space N] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem edistOf_le_of_quad_of_localDiffeomorph
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f) {c : ℝ} (hc : 0 < c)
+    (hu : ∀ x v, h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x v) ≤
+      c * g.inner x v v)
+    (x y : M) :
+    riemannianEDistOf h (f x) (f y) ≤
+      ENNReal.ofReal (Real.sqrt c) * riemannianEDistOf g x y := by
+  refine (edistOf_localPullMetric_le h f hf x y).trans ?_
+  refine edistOf_le_of_quad g (localPullMetric h f hf) hc ?_ x y
+  intro z v
+  rw [localPullMetric_inner]
+  exact hu z v
+
+omit [FiniteDimensional ℝ F] [T2Space N] in
 private theorem localPullMetric_eq_pullbackMetricCross
     (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) :
     localPullMetric g Φ Φ.isLocalDiffeomorph = Diffeomorph.pullbackMetricCross g Φ := by

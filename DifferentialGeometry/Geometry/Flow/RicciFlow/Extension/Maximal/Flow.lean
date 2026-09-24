@@ -157,18 +157,11 @@ theorem flow_to_extend
   refine ⟨eps, heps, ⟨⟨hwide, Shat, hShat, hstart, hjoint, hpde⟩⟩⟩
 
 omit [SigmaCompactSpace M] in
-theorem exists_max_flow
-    [Nonempty M]
+theorem exists_maximal_flowTo_of_bddAbove
     (g0 : SmoothRiemannianMetric I M)
-    (hdim : Module.finrank Real E = 3)
-    (hscalar_pos : ∀ x : M,
-      0 < metricScalarAt (I := I) (M := M) g0 x) :
-    ∃ omega : Real, ∃ h0omega : 0 < omega,
-      ∃ Smax : SolutionOn (I := I) (M := M)
-          (RealTimeInterval.closedOpen 0 omega h0omega),
-        IsSolutionOn (I := I) Smax ∧
-          Smax.family.metric 0 = g0 ∧
-          IsMaximalAtEndpoint (I := I) h0omega Smax := by
+    (hbounded : BddAbove {T : ℝ | Nonempty (FlowTo (I := I) (M := M) g0 T)}) :
+    ∃ omega : ℝ, ∃ P : FlowTo (I := I) (M := M) g0 omega,
+      IsMaximalAtEndpoint (I := I) P.time_pos P.S := by
   classical
   let ends : Set Real :=
     {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}
@@ -178,20 +171,7 @@ theorem exists_max_flow
     change Nonempty (FlowTo (I := I) (M := M) g0 T0)
     exact hseed
   have hends_nonempty : ends.Nonempty := ⟨T0, hT0_mem⟩
-  have hscalar_cont : Continuous (fun x : M =>
-      metricScalarAt (I := I) (M := M) g0 x) := by
-    simpa using (metricScalar_smooth (I := I) (M := M) g0).continuous
-  rcases exists_initialScalarMinimum_of_continuous
-      (M := M) (fun _t x => metricScalarAt (I := I) (M := M) g0 x)
-      (by simpa using hscalar_cont) with
-    ⟨c0, hc0⟩
-  have hends_bdd : BddAbove ends := by
-    refine ⟨3 / (2 * c0), ?_⟩
-    intro T hT
-    change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
-    let P : FlowTo (I := I) (M := M) g0 T := Classical.choice hT
-    exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.time_pos hc0
-      P.S P.isSolution P.start
+  have hends_bdd : BddAbove ends := hbounded
   let omega : Real := sSup ends
   have hT0_le : T0 ≤ omega := by
     dsimp [omega]
@@ -302,6 +282,54 @@ theorem exists_max_flow
     have hle : omega + eps ≤ omega := by
       simpa [omega] using le_csSup hends_bdd hlong_mem
     linarith
-  exact ⟨omega, h0omega, Smax, hSmax, hstart_max, hmaximal⟩
+  exact ⟨omega, Pmax, hmaximal⟩
+
+omit [SigmaCompactSpace M] in
+theorem exists_flowTo_beyond_or_maximal_before
+    (g0 : SmoothRiemannianMetric I M) (B : ℝ) :
+    (∃ T : ℝ, B < T ∧ Nonempty (FlowTo (I := I) (M := M) g0 T)) ∨
+      ∃ omega : ℝ, ∃ P : FlowTo (I := I) (M := M) g0 omega,
+        omega ≤ B ∧ IsMaximalAtEndpoint (I := I) P.time_pos P.S := by
+  classical
+  by_cases h : ∃ T : ℝ, B < T ∧ Nonempty (FlowTo (I := I) (M := M) g0 T)
+  · exact Or.inl h
+  · have hb : ∀ T : ℝ, Nonempty (FlowTo (I := I) (M := M) g0 T) → T ≤ B := by
+      intro T hT
+      exact le_of_not_gt (fun hBT => h ⟨T, hBT, hT⟩)
+    obtain ⟨omega, P, hmax⟩ := exists_maximal_flowTo_of_bddAbove g0 ⟨B, hb⟩
+    exact Or.inr ⟨omega, P, hb omega ⟨P⟩, hmax⟩
+
+
+omit [SigmaCompactSpace M] in
+theorem exists_max_flow
+    [Nonempty M]
+    (g0 : SmoothRiemannianMetric I M)
+    (hdim : Module.finrank Real E = 3)
+    (hscalar_pos : ∀ x : M,
+      0 < metricScalarAt (I := I) (M := M) g0 x) :
+    ∃ omega : Real, ∃ h0omega : 0 < omega,
+      ∃ Smax : SolutionOn (I := I) (M := M)
+          (RealTimeInterval.closedOpen 0 omega h0omega),
+        IsSolutionOn (I := I) Smax ∧
+          Smax.family.metric 0 = g0 ∧
+          IsMaximalAtEndpoint (I := I) h0omega Smax := by
+  classical
+  have hscalar_cont : Continuous (fun x : M =>
+      metricScalarAt (I := I) (M := M) g0 x) := by
+    simpa using (metricScalar_smooth (I := I) (M := M) g0).continuous
+  rcases exists_initialScalarMinimum_of_continuous
+      (M := M) (fun _t x => metricScalarAt (I := I) (M := M) g0 x)
+      (by simpa using hscalar_cont) with
+    ⟨c0, hc0⟩
+  have hends_bdd : BddAbove
+      {T : ℝ | Nonempty (FlowTo (I := I) (M := M) g0 T)} := by
+    refine ⟨3 / (2 * c0), ?_⟩
+    intro T hT
+    change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
+    let P : FlowTo (I := I) (M := M) g0 T := Classical.choice hT
+    exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.time_pos hc0
+      P.S P.isSolution P.start
+  obtain ⟨omega, Pmax, hmax⟩ := exists_maximal_flowTo_of_bddAbove g0 hends_bdd
+  exact ⟨omega, Pmax.time_pos, Pmax.S, Pmax.isSolution, Pmax.start, hmax⟩
 
 end DifferentialGeometry.PDE.RicciFlow

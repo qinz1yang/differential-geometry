@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactMetricSegment
+import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
 import Mathlib.Topology.Order.LiminfLimsup
 
 set_option autoImplicit false

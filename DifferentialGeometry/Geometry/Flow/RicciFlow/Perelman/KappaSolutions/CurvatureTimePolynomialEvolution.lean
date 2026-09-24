@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Manifold Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology BigOperators
+open scoped Manifold ContDiff _root_.Topology BigOperators
 
 
 abbrev CurvatureTimePolynomialVariable (n : ℕ) :=

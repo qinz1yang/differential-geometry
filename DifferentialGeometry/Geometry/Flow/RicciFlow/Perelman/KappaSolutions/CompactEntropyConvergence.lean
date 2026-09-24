@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactScalarConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceEntropyContinuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import Mathlib.Topology.UniformSpace.CompactConvergence
@@ -15,7 +15,7 @@ open Bundle Filter
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]

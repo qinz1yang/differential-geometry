@@ -66,6 +66,8 @@ private theorem productScalar_basis_inr {Idx : Type*} {x : M}
     ((b.prod_apply_inr_snd (Module.Basis.singleton Unit ℝ) i).trans
       (Module.Basis.singleton_apply Unit ℝ i))
 
+variable [I.Boundaryless]
+
 theorem metricScalarAt_product_real_of_inner_eq
     (h : SmoothRiemannianMetric I M)
     (gP : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))

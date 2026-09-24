@@ -592,11 +592,11 @@ private theorem globalIntegralCurve_metric_pairing_eq
 
 theorem exists_global_product_diffeomorph_with_potential_from_parallel_unit_section
     {m : ℕ}
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
@@ -999,11 +999,11 @@ theorem exists_global_product_diffeomorph_with_potential_from_parallel_unit_sect
 
 theorem exists_global_product_diffeomorph_from_parallel_unit_section
     {m : ℕ}
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
@@ -1014,7 +1014,7 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
     (hunit : ∀ x, g.inner x (X x) (X x) = 1)
     (hparallel : ∀ x, ∀ v : TangentSpace I x,
       (LeviCivita (I := I) g) X x v = 0) :
-    ∃ (N : Type) (_ : TopologicalSpace N)
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
       (hcs : ChartedSpace
         (DifferentialGeometry.Topology.Morse.MorseModel m) N),
       let _ := hcs
@@ -1079,11 +1079,11 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
 
 theorem ContMDiffVectorSubbundle.exists_global_product_diffeomorph_of_rank_eq_one
     {m : ℕ}
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
@@ -1094,7 +1094,7 @@ theorem ContMDiffVectorSubbundle.exists_global_product_diffeomorph_of_rank_eq_on
       (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
     (hSrank : S.rank = 1)
     (hS : IsParallelSubmoduleFamily g S.fiber) :
-    ∃ (N : Type) (_ : TopologicalSpace N)
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
       (hcs : ChartedSpace
         (DifferentialGeometry.Topology.Morse.MorseModel m) N),
       let _ := hcs

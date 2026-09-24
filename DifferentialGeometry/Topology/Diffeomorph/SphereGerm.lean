@@ -115,6 +115,52 @@ namespace PartialDiffeomorph
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
+theorem inner_fderiv_pos_of_mapsTo_compl_ball
+    (F : PartialDiffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) E E ∞)
+    {c x : E} {r : ℝ} (hr : 0 < r) (hx : x ∈ sphere c r)
+    (hxF : x ∈ F.source) (hfixed : EqOn F id (sphere c r))
+    (hmap : MapsTo F ((ball c r)ᶜ ∩ F.source) (ball c r)ᶜ) :
+    0 < ⟪x - c, fderiv ℝ F x (x - c)⟫ := by
+  have hn : ‖x - c‖ = r := by simpa only [mem_sphere, dist_eq_norm] using hx
+  have hd := ((F.contMDiffOn.contDiffOn.contDiffAt
+    (F.open_source.mem_nhds hxF)).differentiableAt (by simp)).hasFDerivAt
+  have hmin : IsLocalMinOn (fun y => ‖F y - c‖ ^ 2) (ball c r)ᶜ x := by
+    filter_upwards [self_mem_nhdsWithin,
+      eventually_nhdsWithin_of_eventually_nhds (F.open_source.mem_nhds hxF)] with y hy hyF
+    have hnorm : r ≤ ‖F y - c‖ := by
+      simpa only [mem_compl_iff, mem_ball, dist_eq_norm, not_lt] using hmap ⟨hy, hyF⟩
+    change ‖F x - c‖ ^ 2 ≤ ‖F y - c‖ ^ 2
+    rw [hfixed hx, id_eq, hn]
+    exact (sq_le_sq₀ hr.le (norm_nonneg _)).mpr hnorm
+  have hcone : x - c ∈ posTangentConeAt (ball c r)ᶜ x := by
+    apply mem_posTangentConeAt_of_frequently_mem
+    have he : ∀ᶠ t : ℝ in 𝓝[>] 0, x + t • (x - c) ∈ (ball c r)ᶜ := by
+      filter_upwards [self_mem_nhdsWithin] with t ht
+      have ht' : 0 < t := ht
+      rw [mem_compl_iff, mem_ball, dist_eq_norm, not_lt]
+      have heq : x + t • (x - c) - c = (1 + t) • (x - c) := by
+        rw [add_smul, one_smul]
+        abel
+      rw [heq, norm_smul, Real.norm_eq_abs, abs_of_pos (by linarith), hn]
+      nlinarith
+    exact he.frequently
+  have hnonneg : 0 ≤ ⟪x - c, fderiv ℝ F x (x - c)⟫ := by
+    have h := hmin.hasFDerivWithinAt_nonneg (hd.sub_const c).norm_sq.hasFDerivWithinAt hcone
+    simp only [two_smul, add_apply, ContinuousLinearMap.comp_apply,
+      innerSL_apply_apply, hfixed hx, id_eq] at h
+    linarith
+  apply lt_of_le_of_ne hnonneg
+  intro heq
+  have htangent : fderiv ℝ F x (fderiv ℝ F x (x - c)) = fderiv ℝ F x (x - c) := by
+    simpa only [fderiv_id, ContinuousLinearMap.id_apply] using
+      fderiv_apply_eq_of_eqOn_sphere hr hx hd.differentiableAt differentiableAt_id
+        hfixed heq.symm
+  have hA := DifferentialGeometry.Analysis.bijective_fderiv_of_partialDiffeomorph F hxF
+  have hrad : fderiv ℝ F x (x - c) = x - c := hA.injective htangent
+  have hzero := heq.symm
+  rw [hrad, real_inner_self_eq_norm_sq, hn] at hzero
+  exact (sq_pos_of_pos hr).ne' hzero
+
 theorem inner_fderiv_pos_of_mapsTo_closedBall
     (F : PartialDiffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) E E ∞)
     {c x : E} {r : ℝ} (hr : 0 < r) (hx : x ∈ sphere c r)
@@ -182,5 +228,30 @@ theorem exists_contDiff_compact_isotopy_eqOn_sphere_neighborhood
   exact F.exists_contDiff_compact_isotopy_eqOn_neighborhood_of_eqOn_sphere hr
     (hfixed.mono inter_subset_left) (isCompact_sphere c r) (fun x hx => ⟨hx, hSF hx⟩)
     hmap hO hSO
+
+theorem exists_contDiff_compact_isotopy_eqOn_sphere_neighborhood_of_mapsTo_compl_ball
+    [FiniteDimensional ℝ E]
+    (F : PartialDiffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) E E ∞)
+    {c : E} {r : ℝ} (hr : 0 < r) (hSF : sphere c r ⊆ F.source)
+    (hfixed : EqOn F id (sphere c r))
+    (hmap : MapsTo F ((ball c r)ᶜ ∩ F.source) (ball c r)ᶜ)
+    {O : Set E} (hO : IsOpen O) (hSO : sphere c r ⊆ O) :
+    ∃ V : Set E, IsOpen V ∧ sphere c r ⊆ V ∧ V ⊆ F.source ∧
+      ∃ Φ : ℝ → (E ≃ₘ[ℝ] E),
+        ContDiff ℝ ∞ (fun z : ℝ × E => Φ z.1 z.2) ∧
+        ContDiff ℝ ∞ (fun z : ℝ × E => (Φ z.1).symm z.2) ∧
+        Φ 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞ ∧
+        EqOn (Φ 1) F V ∧
+        (∀ t, EqOn (Φ t) id (sphere c r) ∧ EqOn (Φ t).symm id (sphere c r)) ∧
+        (∀ t ∈ Icc (0 : ℝ) 1, Φ t '' closedBall c r = closedBall c r) ∧
+        ∃ L : Set E, IsCompact L ∧ L ⊆ O ∧ ∀ t : ℝ,
+          EqOn (Φ t) id Lᶜ ∧ EqOn (Φ t).symm id Lᶜ := by
+  obtain ⟨V, hV, hSV, hVF, Φ, hΦ, hΦi, hΦ0, htrack, hfix, hball, hsupport⟩ :=
+    Diffeomorph.exists_contDiff_compact_isotopy_eqOn_of_eqOn_sphere
+      F.open_source F.contMDiffOn.contDiffOn hr hSF hfixed
+      (fun x hx => F.inner_fderiv_pos_of_mapsTo_compl_ball hr hx (hSF hx) hfixed hmap) hO hSO
+  refine ⟨V, hV, hSV, hVF, Φ, hΦ, hΦi, hΦ0, ?_, hfix, hball, hsupport⟩
+  intro x hx
+  simpa only [sub_self, zero_smul, one_smul, zero_add] using htrack 1 ⟨zero_le_one, le_rfl⟩ x hx
 
 end PartialDiffeomorph

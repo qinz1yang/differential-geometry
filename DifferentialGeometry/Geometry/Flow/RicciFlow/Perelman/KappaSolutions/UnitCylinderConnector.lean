@@ -11,7 +11,7 @@ noncomputable section
 
 open Bundle Manifold MeasureTheory Set
 open DifferentialGeometry.Geometry
-open scoped Manifold ContDiff Topology ENNReal
+open scoped Manifold ContDiff _root_.Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

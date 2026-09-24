@@ -1,3 +1,6 @@
+import Mathlib.Topology.Algebra.Support
+import DifferentialGeometry.Topology.MetricSpace.Lipschitz
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
@@ -322,6 +325,19 @@ theorem abs_deriv_le_derivBound (s : ℝ) :
     |deriv value s| ≤ derivBound :=
   (Classical.choose_spec exists_deriv_bounds).2.1 s
 
+open scoped NNReal in
+theorem lipschitzWith : LipschitzWith ⟨derivBound, derivBound_nonneg⟩ value := by
+  apply lipschitzWith_of_nnnorm_deriv_le (contDiff.differentiable (by simp))
+  intro s
+  change ‖deriv value s‖ ≤ derivBound
+  simpa only [Real.norm_eq_abs] using abs_deriv_le_derivBound s
+
+open scoped ENNReal NNReal in
+theorem lipschitzWith_edist {X : Type*} [PseudoEMetricSpace X] (a : ℝ≥0) (o : X) :
+    LipschitzWith (⟨derivBound, derivBound_nonneg⟩ * a)
+      (fun x => evalue ((a : ℝ≥0∞) * edist o x)) :=
+  lipschitzWith.comp (lipschitzWith_truncateToReal_edist a 2 (by norm_num) o)
+
 theorem abs_deriv2_le_derivBound (s : ℝ) :
     |deriv (deriv value) s| ≤ derivBound :=
   (Classical.choose_spec exists_deriv_bounds).2.2 s
@@ -362,5 +378,29 @@ theorem deriv3Bound_nonneg : 0 ≤ deriv3Bound :=
 theorem abs_deriv3_le_deriv3Bound (s : ℝ) :
     |deriv (deriv (deriv value)) s| ≤ deriv3Bound :=
   (Classical.choose_spec exists_deriv3_bound).2 s
+
+end DifferentialGeometry.Analysis.CutoffProfile
+
+end
+
+namespace DifferentialGeometry.Analysis.CutoffProfile
+
+variable {X : Type*} [TopologicalSpace X]
+
+theorem tsupport_value_comp_div_subset_sublevel {ρ : X → ℝ}
+    (hρ : Continuous ρ) {R : ℝ} (hR : 0 < R) :
+    tsupport (fun x => value (ρ x / R)) ⊆ {x | ρ x ≤ 2 * R} := by
+  apply closure_minimal _ (isClosed_le hρ continuous_const)
+  intro x hx
+  by_contra hxR
+  apply hx
+  exact zero_of_two_le ((le_div_iff₀ hR).2 (le_of_lt (not_le.mp hxR)))
+
+theorem hasCompactSupport_value_comp_div {ρ : X → ℝ}
+    (hρ : Continuous ρ) {R : ℝ} (hR : 0 < R)
+    (hc : IsCompact {x | ρ x ≤ 2 * R}) :
+    HasCompactSupport (fun x => value (ρ x / R)) := by
+  exact hc.of_isClosed_subset isClosed_closure
+    (tsupport_value_comp_div_subset_sublevel hρ hR)
 
 end DifferentialGeometry.Analysis.CutoffProfile

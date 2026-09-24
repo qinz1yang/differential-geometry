@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Existence.Compact
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.BoundarySmoothness
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ComponentDisk
+import DifferentialGeometry.Geometry.Metric.LoopLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CompactHomogeneousRegularity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MetricCompleteness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SelectedConformalDisk
@@ -35,7 +39,7 @@ theorem selectedMorreyDisk_conformal_output_of_compact
     let hregular := homogeneouslyRegularMetric_of_compact g hd
     let hfinite := spanningDiskCompetitors_nonempty_of_compact g
       γ.property.choose_spec γ.val.property
-    let u := selectedMorreyDisk g hd hcomplete hregular γ.val.val hγ γ.val.property hfinite
+    let u := selectedMorreyDisk g hcomplete hregular γ.val.val hγ hfinite
     ∃ (v : C(closedDisk, M)) (σ : C(loopCircle, loopCircle)) (U : ℂ → M),
       (v = u ∨ v = u.comp ⟨diskReflection, diskReflection.continuous⟩) ∧
       riemannianDiskArea g v = riemannianDiskArea g u ∧
@@ -44,7 +48,7 @@ theorem selectedMorreyDisk_conformal_output_of_compact
   dsimp only
   obtain ⟨v, σ, U, hid, harea, hconf⟩ := selectedMorreyDisk_conformal_output g hd
     (riemannianMetricComplete_of_compact g) (homogeneouslyRegularMetric_of_compact g hd)
-    γ.val.val hγ γ.val.property
+    γ.val.val hγ
     (spanningDiskCompetitors_nonempty_of_compact g γ.property.choose_spec γ.val.property)
   exact ⟨v, σ, U, hid, harea, hconf, hconf.area_eq_leastSpanningArea hγ.smooth⟩
 
@@ -57,12 +61,23 @@ theorem exists_conformalMinimizingDisk_of_compact
     (γ : freeLoop M) (hγ : IsSmoothEmbeddedLoop (E := E) γ) (hnull : γ.Nullhomotopic) :
     ∃ (u : C(closedDisk, M)) (σ : C(loopCircle, loopCircle)) (U : ℂ → M),
       IsConformalMinimizingDisk g γ u σ U := by
-  let : Nonempty M := ⟨γ 0⟩
-  obtain ⟨L, hL⟩ := regularLoop_riemannian_lipschitz g
-    (⟨γ, hγ.smooth.of_le (by simp)⟩ : regularLoop E M)
-  obtain ⟨u, σ, U, _, _, hconf⟩ := selectedMorreyDisk_conformal_output g hd
-    (riemannianMetricComplete_of_compact g) (homogeneouslyRegularMetric_of_compact g hd)
-    γ hγ hnull (spanningDiskCompetitors_nonempty_of_compact g hL hnull)
-  exact ⟨u, σ, U, hconf⟩
+  let N := loopComponentOpen E γ
+  let γN : freeLoop N := loopInComponent γ
+  have hγN : IsSmoothEmbeddedLoop (E := E) γN :=
+    (isSmoothEmbeddedLoop_open_inclusion_iff N γN).mp hγ
+  obtain ⟨L, hL⟩ := exists_riemannian_lipschitz_freeLoop_of_contMDiff
+    (g.restrictOpen N) (hγN.smooth.of_le (by simp))
+  have hfinite : (weaklyMonotoneDiskCompetitors (g.restrictOpen N) γN).Nonempty :=
+    (spanningDiskCompetitors_nonempty (g.restrictOpen N) hL
+      (loopInComponent_nullhomotopic γ hnull)).mono
+        (spanningDiskCompetitors_subset_weaklyMonotoneDiskCompetitors _ _)
+  obtain ⟨q, hq⟩ := exists_morrey_disk_of_compact (g.restrictOpen N) γN hγN hfinite
+  obtain ⟨τ, _, htrace⟩ := hq.trace
+  obtain ⟨Q, hQ⟩ := exists_smooth_extension_of_conformal_harmonic_disk
+    (g.restrictOpen N) hγN q hq.smoothInterior hq.conformal hq.harmonic τ htrace
+  obtain ⟨u, σ, U, _, _, hu⟩ := hq.exists_conformal_minimizing_disk
+    (g.restrictOpen N) hd hγN ⟨Q, hQ⟩
+  exact ⟨_, σ, _, hu.component_inclusion g γ⟩
+
 
 end DifferentialGeometry.Geometry

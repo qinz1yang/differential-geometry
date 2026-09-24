@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Filter Manifold Set
-open scoped Topology ContDiff Manifold ENNReal
+open scoped _root_.Topology ContDiff Manifold ENNReal
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential

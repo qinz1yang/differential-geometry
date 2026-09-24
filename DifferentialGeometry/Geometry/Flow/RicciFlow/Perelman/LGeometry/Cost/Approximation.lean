@@ -16,6 +16,29 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {D : RealTimeInterval}
 
+section
+
+variable [T2Space M]
+
+omit [T2Space M] in
+theorem lCost_le_lRegularizedAction_of_scalar_nonneg
+    (S : SolutionOn (I := I) (M := M) D) {T tau : ℝ} (htau : 0 ≤ tau)
+    (hscalar : ∀ s ∈ Icc 0 tau, ∀ z : M, 0 ≤ S.scalar (T - s) z)
+    (alpha : ℝ → M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha) :
+    lCost S T (alpha 0) (alpha (Real.sqrt tau)) tau ≤
+      lRegularizedAction S T alpha 0 (Real.sqrt tau) := by
+  rw [← lLength_squareRootReparametrization_eq_lRegularizedAction S T alpha tau htau]
+  apply csInf_le
+  · refine ⟨0, ?_⟩
+    rintro r ⟨beta, _, _, _, rfl⟩
+    apply intervalIntegral.integral_nonneg htau
+    intro s hs
+    exact mul_nonneg (Real.sqrt_nonneg s) (add_nonneg
+      (hscalar s hs _) (lSpeedSq_nonneg S T _ s))
+  · exact ⟨alpha, halpha, rfl, rfl, rfl⟩
+
+end
+
 theorem exists_lRegularizedAction_lt_of_lCost_lt
     (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (x y : M)
     (tau : ℝ) (htau : 0 ≤ tau)

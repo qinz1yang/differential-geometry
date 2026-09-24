@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamily.C1Velocity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.MomentumRegularity
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse
+import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
 set_option autoImplicit false
 
@@ -173,5 +176,73 @@ theorem lChartAction_minimizer_velocity_contDiffOn_one
     hKchart u huK hA C hC F hF hEuler'
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Filter Set
+open scoped ContDiff Manifold Topology
+
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Geometry.Curvature
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+variable {D : RealTimeInterval}
+
+theorem lChartAction_minimizer_contDiffOn_two_of_spatial_derivatives
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
+    {L : Real} (hL : 0 < L) (u : timeH1 E L)
+    {J : Set Real} (hJ : J ⊆ D.carrier)
+    (htime : ∀ r ∈ Icc (0 : Real) L, T - (a + r) ^ 2 ∈ J)
+    (hreg : ∀ r ∈ Ioo (0 : Real) L, T - (a + r) ^ 2 ∈ D.regular)
+    (hGramFd : ContinuousOn (fun z : Real × E => fderiv Real
+      (fun y : E => chartGramOp (I := I) S.family p (z.1, y)) z.2)
+      (J ×ˢ interior (extChartAt I p).target))
+    (hScalFd : ContinuousOn (fun z : Real × E => fderiv Real
+      (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar z.1)) z.2)
+      (J ×ˢ interior (extChartAt I p).target))
+    (hchart : MapsTo u.toFun (Icc (0 : Real) L)
+      (interior (extChartAt I p).target))
+    (hmin : IsLocalMinOn (lChartAction S T a p) (sameTimeEnds u) u) :
+    ContDiffOn Real 2 u.toFun (Ioo (0 : Real) L) := by
+  obtain ⟨q, P, _, _, hu1, huder, hP1, hPeq, _⟩ :=
+    lChartAction_minimizer_momentum_contDiffOn_one_of_spatial_derivatives S hS T a p hL u
+      hJ htime hreg hGramFd hScalFd hchart hmin
+  have htau : ContDiffOn Real 1 (fun r : Real => T - (a + r) ^ 2)
+      (Ioo (0 : Real) L) :=
+    (contDiff_const.sub ((contDiff_const.add contDiff_id).pow 2)).contDiffOn
+  have hq1 : ContDiffOn Real 1 q (Ioo (0 : Real) L) := by
+    exact contDiffOn_chart_velocity_of_momentum hS.smoothMetric p
+      (fun r : Real => T - (a + r) ^ 2) u.toFun q P htau (hu1.mono Ioo_subset_Icc_self) (hP1.mono Ioo_subset_Icc_self) hreg
+      (fun r hr => hchart ⟨hr.1.le, hr.2.le⟩)
+      (fun r hr => hPeq ⟨hr.1.le, hr.2.le⟩)
+  have hderiv : ContDiffOn Real 1 (deriv u.toFun) (Ioo (0 : Real) L) := by
+    apply hq1.congr
+    intro r hr
+    have hIcc : Icc (0 : Real) L ∈ nhds r :=
+      mem_of_superset (Ioo_mem_nhds hr.1 hr.2) Ioo_subset_Icc_self
+    rw [← derivWithin_of_mem_nhds hIcc]
+    exact huder ⟨hr.1.le, hr.2.le⟩
+  change ContDiffOn Real ((1 : ℕ∞ω) + 1) u.toFun (Ioo (0 : Real) L)
+  exact (contDiffOn_succ_iff_deriv_of_isOpen isOpen_Ioo).2
+    ⟨(hu1.mono Ioo_subset_Icc_self).differentiableOn (by norm_num), by simp, hderiv⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
 
 end

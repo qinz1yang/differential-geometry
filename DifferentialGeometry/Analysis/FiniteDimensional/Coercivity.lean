@@ -3,6 +3,7 @@ import Mathlib.Analysis.Normed.Operator.Bilinear
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Analysis.Normed.Group.Bounded
 import Mathlib.Topology.Order.Compact
+import Mathlib.Topology.Separation.Regular
 
 open Set
 
@@ -75,3 +76,50 @@ theorem IsCoercive.isBounded_le
   have hr := le_max_left (r / c) 1
   have hone := le_max_right (r / c) 1
   nlinarith [sq_nonneg (‖v‖ - 1)]
+
+section
+
+variable {Z E : Type*} [TopologicalSpace Z]
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+
+theorem ContinuousOn.exists_uniform_bilin_quadratic_bounds
+    {B : Z → E →L[ℝ] E →L[ℝ] ℝ} {K : Set Z}
+    (hB : ContinuousOn B K) (hK : IsCompact K)
+    (hpos : ∀ z ∈ K, ∀ v : E, v ≠ 0 → 0 < B z v v) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ z ∈ K, ∀ v : E,
+      C⁻¹ * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ C * ‖v‖ ^ 2 := by
+  have hc : ContinuousOn (fun p : Z × E => B p.1 p.2 p.2) (K ×ˢ univ) :=
+    ((hB.comp continuous_fst.continuousOn (fun _ hp => hp.1)).clm_apply
+      continuous_snd.continuousOn).clm_apply continuous_snd.continuousOn
+  obtain ⟨c, hcp, hc⟩ := hc.exists_uniform_bilin_quadratic_lower_bound hK hpos
+  obtain ⟨A, hA⟩ := hK.exists_bound_of_continuousOn hB
+  let C := max 1 (max c⁻¹ A)
+  have hC1 : 1 ≤ C := le_max_left _ _
+  have hCpos : 0 < C := zero_lt_one.trans_le hC1
+  have hcC : C⁻¹ ≤ c := (inv_le_comm₀ hCpos hcp).mpr
+    ((le_max_left _ _).trans (le_max_right _ _))
+  have hAC : A ≤ C := (le_max_right _ _).trans (le_max_right _ _)
+  refine ⟨C, hC1, fun z hz v => ⟨?_, ?_⟩⟩
+  · exact (mul_le_mul_of_nonneg_right hcC (sq_nonneg ‖v‖)).trans (hc z hz v)
+  · calc
+      B z v v ≤ ‖B z v v‖ := le_abs_self _
+      _ ≤ ‖B z‖ * ‖v‖ * ‖v‖ := (B z).le_opNorm₂ v v
+      _ ≤ C * ‖v‖ ^ 2 := by
+        simpa only [pow_two, mul_assoc] using
+          mul_le_mul_of_nonneg_right ((hA z hz).trans hAC) (sq_nonneg ‖v‖)
+
+theorem ContinuousOn.exists_uniform_bilin_quadratic_bounds_nhds
+    [LocallyCompactSpace Z] [RegularSpace Z]
+    {B : Z → E →L[ℝ] E →L[ℝ] ℝ} {U K : Set Z}
+    (hB : ContinuousOn B U) (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
+    (hpos : ∀ z ∈ U, ∀ v : E, v ≠ 0 → 0 < B z v v) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∃ W : Set Z, IsOpen W ∧ K ⊆ W ∧ closure W ⊆ U ∧
+      IsCompact (closure W) ∧ ∀ z ∈ closure W, ∀ v : E,
+        C⁻¹ * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ C * ‖v‖ ^ 2 := by
+  obtain ⟨W, hW, hKW, hWU, hcW⟩ :=
+    exists_open_between_and_isCompact_closure hK hU hKU
+  obtain ⟨C, hC, hb⟩ := (hB.mono hWU).exists_uniform_bilin_quadratic_bounds hcW
+    (fun z hz => hpos z (hWU hz))
+  exact ⟨C, hC, W, hW, hKW, hWU, hcW, hb⟩
+
+end

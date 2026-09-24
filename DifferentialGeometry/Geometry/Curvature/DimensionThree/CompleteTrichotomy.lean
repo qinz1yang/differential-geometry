@@ -24,10 +24,10 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ
   (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
 variable [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
 
@@ -123,11 +123,11 @@ def HasCurvatureSurfaceProductSplitting
 
 omit [Nonempty M] in
 theorem _root_.DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.GlobalSurfaceProductSplitting.pullbackMetric_eq_prod
-    {H : Type} [TopologicalSpace H]
+    {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M]
     [LocallyPathConnectedSpace M]
@@ -164,7 +164,7 @@ theorem _root_.DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.
   convert P.isometry z.1 z.2 u.1 v.1 u.2 v.2 using 1
   all_goals rfl
 
-variable {N : Type} [TopologicalSpace N]
+variable {N : Type*} [TopologicalSpace N]
   [ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) N]
   [IsManifold (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2))
     (↑(⊤ : ℕ∞) : WithTop ℕ∞) N]

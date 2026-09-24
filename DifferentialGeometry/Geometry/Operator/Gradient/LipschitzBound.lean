@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+import Mathlib.Analysis.SpecialFunctions.Sqrt
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
@@ -197,6 +200,44 @@ theorem grad_norm_le_lip_all
     rw [hgrad]
     simpa only [map_zero, Real.sqrt_zero] using NNReal.coe_nonneg L
 
+theorem grad_norm_sq_le_of_sqrt_lipschitz
+    [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) {u : M → ℝ} {K : ℝ≥0}
+    (hu : ∀ y, 0 ≤ u y)
+    (hLip : ∀ y z, edist (Real.sqrt (u y)) (Real.sqrt (u z)) ≤
+      (K : ℝ≥0∞) * riemannianEDistOf g y z) (x : M) :
+    g.inner x (gradFun g u x) (gradFun g u x) ≤ 4 * (K : ℝ) ^ 2 * u x := by
+  by_cases hd : MDifferentiableAt I 𝓘(ℝ, ℝ) u x
+  · by_cases hz : u x = 0
+    · have hm : IsLocalMin u x := Eventually.of_forall fun y => by rw [hz]; exact hu y
+      have hg : gradFun g u x = 0 := gradientFun_eq_zero_of_isLocalMin g hm hd
+      simp only [hg, map_zero, hz, mul_zero, le_refl]
+    · have hs : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => Real.sqrt (u y)) x :=
+        (Real.hasDerivAt_sqrt hz).differentiableAt.mdifferentiableAt.comp x hd
+      have heq : (fun y => Real.sqrt (u y) ^ 2) = u := funext fun y => Real.sq_sqrt (hu y)
+      have hgrad : gradFun g u x = (2 * Real.sqrt (u x)) • gradFun g (fun y => Real.sqrt (u y)) x := by
+        have h := gradientFun_pow g 1 hs
+        norm_num only [Nat.reduceAdd, Nat.cast_ofNat, pow_one] at h
+        rw [heq] at h
+        exact h
+      have hn := grad_norm_le_lip_all g hLip (x := x)
+      have hnonneg : 0 ≤ g.inner x (gradFun g (fun y => Real.sqrt (u y)) x)
+          (gradFun g (fun y => Real.sqrt (u y)) x) := metric_inner_self_nonneg g x _
+      have hsq := (sq_le_sq₀ (Real.sqrt_nonneg _) K.coe_nonneg).mpr hn
+      rw [Real.sq_sqrt hnonneg] at hsq
+      rw [hgrad]
+      simp only [map_smul, smul_apply, smul_eq_mul]
+      calc
+        _ = (4 * Real.sqrt (u x) ^ 2) *
+            g.inner x (gradFun g (fun y => Real.sqrt (u y)) x)
+              (gradFun g (fun y => Real.sqrt (u y)) x) := by ring
+        _ ≤ (4 * Real.sqrt (u x) ^ 2) * (K : ℝ) ^ 2 :=
+          mul_le_mul_of_nonneg_left hsq (by positivity)
+        _ = _ := by rw [Real.sq_sqrt (hu x)]; ring
+  · rw [gradFun_eq_zero_of_mfderiv_eq_zero g u (mfderiv_zero_of_not_mdifferentiableAt hd)]
+    simp only [map_zero]
+    exact mul_nonneg (by positivity) (hu x)
+
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem lip_of_grad_norm_le_ne
@@ -338,6 +379,25 @@ theorem lip_of_grad_norm_le
     simp only [edist_self, riemannianEDistOf_self, mul_zero, le_refl]
   · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
     exact lip_of_grad_norm_le_ne (I := I) g hg hu hgrad
+
+open scoped ContDiff in
+theorem exists_lipschitz_constant_of_smooth_compact_support
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] (g : SmoothRiemannianMetric I M) (hg : RiemannianMetricComplete g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (hc : HasCompactSupport f) :
+    ∃ C : ℝ≥0, ∀ x y, edist (f x) (f y) ≤ C * riemannianEDistOf g x y := by
+  have hN : Continuous (fun x => Real.sqrt (normGradSqFun g f x)) :=
+    Real.continuous_sqrt.comp (normGradSqFun_continuous g hf)
+  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuousOn hN.continuousOn
+  refine ⟨⟨max B 0, le_max_right B 0⟩, lip_of_grad_norm_le g hg hf ?_⟩
+  intro x
+  by_cases hx : x ∈ tsupport f
+  · exact ((le_abs_self _).trans (hB x hx)).trans (le_max_left B 0)
+  · have hz : gradFun g f x = 0 := by
+      by_contra hn
+      exact hx (support_gradFun_subset g f hn)
+    simp only [hz, map_zero, Real.sqrt_zero]
+    exact le_max_right B 0
+
 
 end Riemannian
 end Geometry

@@ -12,11 +12,11 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry
 
-variable {E : Type} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E]
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
   [ConnectedSpace M]
 

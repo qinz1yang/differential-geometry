@@ -13,7 +13,7 @@ open Bundle Manifold Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

@@ -532,13 +532,12 @@ private theorem covAlong_map_nat
         (fun s => mfderiv I J (Phi : M → N) (gamma s) (Y (gamma s))) t := by
       simp [delta, Ypush]
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
-private theorem covAlong_nat_cross
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+  [CompleteSpace E] [CompleteSpace F] in
+theorem covDerivAlong_pullback
     [I.Boundaryless]
-    [T2Space M] [BoundarylessManifold I M]
+    [T2Space M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M]
-    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (gamma : ℝ → M) (V : ∀ s, TangentSpace I (gamma s)) (t : ℝ)
     (hgamma : MDifferentiableAt (modelWithCornersSelf ℝ ℝ) I gamma t)
@@ -549,6 +548,8 @@ private theorem covAlong_nat_cross
           gamma V t) =
       covDerivAlong (I := J) g (fun s => Phi (gamma s))
         (fun s => mfderiv I J (Phi : M → N) (gamma s) (V s)) t := by
+  let instCompleteE : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let instCompleteF : CompleteSpace F := FiniteDimensional.complete ℝ F
   let Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     { toFun := linearExtensionTangent (I := I) (gamma t) (V t)
@@ -643,14 +644,12 @@ private theorem covAlong_nat_cross
         (fun s => Ymap s + Rmap s) t := htargetAdd.symm
     _ = covDerivAlong (I := J) g delta Vmap t := by rw [htarget]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem covAlong_natMDiff
     {P : Type uN} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [I.Boundaryless]
-    [T2Space M] [BoundarylessManifold I M]
+    [T2Space M]
     [T2Space P] [BoundarylessManifold I P]
-    [IsManifold I 1 M]
-    [IsManifold I 1 P]
     (g : SmoothRiemannianMetric I P) (Phi : M ≃ₘ⟮I, I⟯ P)
     (gamma : ℝ → M) (V : ∀ s, TangentSpace I (gamma s)) (t : ℝ)
     (hgamma : MDifferentiableAt (modelWithCornersSelf ℝ ℝ) I gamma t)
@@ -668,6 +667,6 @@ theorem covAlong_natMDiff
     rw [Diffeomorph.pullbackMetricCross_inner,
       Diffeomorph.pullbackMetric_inner]
   rw [← hmetric]
-  exact covAlong_nat_cross (I := I) (J := I) g Phi gamma V t hgamma hV
+  exact covDerivAlong_pullback (I := I) (J := I) g Phi gamma V t hgamma hV
 
 end DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
 
 noncomputable section
 
@@ -214,6 +215,14 @@ theorem integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul
   filter_upwards [] with x
   rw [ENNReal.toReal_ofReal
     (le_of_lt (riemannianVolumeDensity_pos (I := I) q h x))]
+
+theorem riemannianVolumeDensity_le_of_inner_le
+    (g h : SmoothRiemannianMetric I M) {Q : ℝ} (hQ : 0 < Q) (x : M)
+    (hcomp : ∀ v : TangentSpace I x, h.inner x v v ≤ Q * g.inner x v v) :
+    riemannianVolumeDensity g h x ≤ Real.sqrt (Q ^ Module.finrank ℝ E) := by
+  rw [riemannianVolumeDensity_apply_of_mem_chart_source g h x (mem_chart_source H x)]
+  apply (div_le_iff₀ (chartDensity_pos g x (mem_chart_source H x))).2
+  exact chartDensity_le g h hQ x (mem_baseSet_trivializationAt E (TangentSpace I) x) hcomp
 
 end Measure
 end Integral

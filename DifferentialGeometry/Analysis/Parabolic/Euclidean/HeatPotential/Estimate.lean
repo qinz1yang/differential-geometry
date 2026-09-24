@@ -707,6 +707,34 @@ theorem heatDuhamel_const_schauder_estimate
     ENNReal.coe_mul, ENNReal.coe_ofNat]
   ring
 
+omit [Nontrivial V] in
+theorem heatDuhamel_const_contDiff_two
+    {α K : ℝ≥0} (hα : 0 < α) {t : ℝ} (ht : 0 < t)
+    (f : BoundedContinuousFunction V F) (hf : HolderWith K α f) :
+    ContDiff ℝ 2 (heatDuhamel t (fun _ => f)) := by
+  rcases subsingleton_or_nontrivial V with hV | hV
+  · let : Subsingleton V := hV
+    have he : heatDuhamel t (fun _ => f) = fun _ : V => heatDuhamel t (fun _ => f) 0 := by
+      funext x
+      rw [Subsingleton.elim x 0]
+    rw [he]
+    exact contDiff_const
+  · let : Nontrivial V := hV
+    let β : ℝ≥0 := min α (1 / 2)
+    have hβ0 : 0 < β := lt_min hα (by norm_num)
+    have hβ1 : β < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+    have hf0 : HolderWith (2 * ‖f‖₊) 0 (f : V → F) := holderWith_zero_of_norm_le f.norm_coe_le_norm
+    have hfβ : HolderWith (max (2 * ‖f‖₊) K) β (f : V → F) :=
+      hf0.of_le_of_le hf (by positivity) (min_le_left _ _)
+    have hp := heatDuhamel_isParabolicC2HolderOn hβ0 hβ1 ht.le
+      (show t < t + 1 by linarith) (fun _ => f)
+      (B := ‖f‖₊) (fun _ _ => le_rfl)
+      (holderWith_parabolic_const_time f hfβ (Icc (0 : ℝ) (t + 1)))
+    apply contDiff_iff_contDiffAt.mpr
+    intro x
+    exact hp.1.1 (parabolicPoint t x) ⟨⟨ht, le_rfl⟩, mem_univ x⟩
+
+
 end DifferentialGeometry.Analysis.Parabolic.Euclidean
 
 end

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactPointedLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalKappaConstant
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalizedRoundRigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarPositive
@@ -13,7 +14,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 
@@ -36,7 +37,7 @@ theorem ancientKappaThree_universal_noncollapsed
     PointedFlowNoncollapsedAllScales F universalKappaConstant := by
   intro t B hRm
   let Q : ℝ := F.S.scalar t B.center
-  have hQ : 0 < Q := ancientKappa_scalar_pos F hdim hF t.2 B.center
+  have hQ : 0 < Q := ancientKappa_scalar_pos F hF t.2 B.center
   let G := curvatureNormalizedFlow F rfl rfl t Q hQ t.2 B.center
   have hG : IsAncientKappaSolution kappa G :=
     isAncientKappaSolution_curvatureNormalizedFlow F hF t Q hQ t.2 B.center rfl
@@ -96,3 +97,39 @@ theorem ancientKappaThree_universal_kappa_gap
         notFlat := hF.notFlat }
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+
+theorem IsAncientKappaSolution.universal_kappa_of_noncompact
+    (F : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval) {kappa : ℝ}
+    (hF : IsAncientKappaSolution kappa F) (hnoncompact : NoncompactSpace F.M) :
+    IsAncientKappaSolution universalKappaConstant F := by
+  rcases ancientKappaThree_universal_kappa_gap F hF (by simp [ThreeSpace]) with hround | hgap
+  · obtain ⟨_T, _hT, Q, e, _hmetric⟩ := hround
+    let _ : CompactSpace Q.Q := Q.proj_surjective.compactSpace Q.proj_smooth.continuous
+    have hcompact : CompactSpace F.M := e.symm.surjective.compactSpace e.symm.continuous
+    exact (hnoncompact.noncompact_univ hcompact.isCompact_univ).elim
+  · exact hgap
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+end

@@ -6,7 +6,9 @@ Authors: Bennett Chow, OpenAI
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.Geometry.Manifold.Instances.Sphere
+import DifferentialGeometry.Topology.FundamentalGroup.BasepointChange
 import DifferentialGeometry.Topology.FundamentalGroup.Circle
+import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 
 set_option autoImplicit false
@@ -149,6 +151,33 @@ noncomputable def sphereTwoNorth : SphereTwo :=
 noncomputable def fundamentalGroupSphereTwoProdCircleEquivInt :
     FundamentalGroup (SphereTwo × Circle) (sphereTwoNorth, 1) ≃* Multiplicative ℤ :=
   fundamentalGroupProdCircleEquivIntOfSimplyConnected sphereTwoNorth
+
+noncomputable def circleSphereOneHomeomorph :
+    Circle ≃ₜ sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 :=
+  (Complex.orthonormalBasisOneI.repr.toHomeomorph).subtype (fun z => by
+    change z ∈ (sphere (0 : ℂ) 1 : Set ℂ) ↔
+      Complex.orthonormalBasisOneI.repr.toHomeomorph z ∈
+        (sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 : Set (EuclideanSpace ℝ (Fin 2)))
+    rw [LinearIsometryEquiv.coe_toHomeomorph, mem_sphere_zero_iff_norm,
+      mem_sphere_zero_iff_norm, Complex.orthonormalBasisOneI.repr.norm_map])
+
+noncomputable def fundamentalGroupSphereOneEquivInt
+    (y : sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) :
+    FundamentalGroup (sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) y ≃* Multiplicative ℤ :=
+  (fundamentalGroupMulEquivOfHomotopyEquiv circleSphereOneHomeomorph.toHomotopyEquiv
+      (circleSphereOneHomeomorph.symm y) y
+      (circleSphereOneHomeomorph.apply_symm_apply y)).symm.trans
+    ((fundamentalGroupChangeBasepoint
+        (PathConnectedSpace.somePath (1 : Circle) (circleSphereOneHomeomorph.symm y))).trans
+      fundamentalGroupCircleEquivInt)
+
+noncomputable def fundamentalGroupProdSphereOneEquivInt
+    {X : Type*} [TopologicalSpace X] [SimplyConnectedSpace X] (x : X)
+    (y : sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) :
+    FundamentalGroup (X × sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) (x, y) ≃*
+      Multiplicative ℤ :=
+  (fundamentalGroupProdRightEquivOfSimplyConnected x y).trans
+    (fundamentalGroupSphereOneEquivInt y)
 
 abbrev SphereThree := sphere (0 : EuclideanSpace ℝ (Fin 4)) 1
 

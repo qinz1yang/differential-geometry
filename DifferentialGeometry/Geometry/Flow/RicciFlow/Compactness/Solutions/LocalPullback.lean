@@ -25,6 +25,30 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [T2Space N] [SigmaCompactSpace N]
 
 
+theorem exists_local_solution_of_partialDiffeomorph
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := N) D)
+    (hS : IsSolutionOn S) (Phi : PartialDiffeomorph I I M N ∞)
+    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    (hU : (U : Set M) ⊆ Phi.source) :
+    ∃ S' : SolutionOn (I := I) (M := U) D, IsSolutionOn S' ∧
+      ∀ t (x : U) (v w : TangentSpace I x),
+        (S'.base.metric t).inner x v w =
+          (S.base.metric t).inner (Phi x)
+            (mfderiv I I Phi x v) (mfderiv I I Phi x w) := by
+  let V : TopologicalSpace.Opens N :=
+    ⟨(Phi : M → N) '' (U : Set M), image_opens_isOpen Phi hU⟩
+  let _ : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I V.isOpen)
+  let e : U ≃ₘ⟮I, I⟯ V := PartialDiffeomorph.toOpensDiffeo Phi hU
+  let S' := solutionOnPullback (solutionOnRestrictOpen S V) e
+  refine ⟨S', isSolutionOn_pullback _ (isSolutionOn_restrictOpen S hS V) e, ?_⟩
+  intro t x v w
+  change (Diffeomorph.pullbackMetric ((S.base.metric t).restrictOpen V) e).inner x v w = _
+  rw [Diffeomorph.pullbackMetric_inner, SmoothRiemannianMetric.restrictOpen_inner]
+  exact congrArg₂ (fun v' w' => (S.base.metric t).inner (Phi (x : M)) v' w')
+    (PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x v)
+    (PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x w)
+
 theorem exists_local_solution_of_pullback
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := N) D)
     (hS : IsSolutionOn (I := I) S)
@@ -38,25 +62,12 @@ theorem exists_local_solution_of_pullback
     ∃ S' : SolutionOn (I := I) (M := U) D,
       IsSolutionOn (I := I) S' ∧
       ∀ t : ℝ, S'.family.metric t = (g t).restrictOpen (I := I) U := by
-  let V : TopologicalSpace.Opens N :=
-    ⟨(Phi : M → N) '' (U : Set M), image_opens_isOpen Phi hU⟩
-  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I V.isOpen)
-  let e : U ≃ₘ⟮I, I⟯ V := PartialDiffeomorph.toOpensDiffeo Phi hU
-  let S' := solutionOnPullback (I := I) (solutionOnRestrictOpen (I := I) S V) e
-  refine ⟨S', isSolutionOn_pullback (I := I) _
-    (isSolutionOn_restrictOpen (I := I) S hS V) e, ?_⟩
+  obtain ⟨S', hS', hmetric⟩ := exists_local_solution_of_partialDiffeomorph S hS Phi U hU
+  refine ⟨S', hS', ?_⟩
   intro t
   apply SmoothRiemannianMetric.ext_inner
   intro x v w
-  change (Diffeomorph.pullbackMetric (I := I)
-    ((S.family.metric t).restrictOpen (I := I) V) e).inner x v w = _
-  rw [Diffeomorph.pullbackMetric_inner, SmoothRiemannianMetric.restrictOpen_inner,
-    SmoothRiemannianMetric.restrictOpen_inner]
-  have hv := PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x v
-  have hw := PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x w
-  exact (congrArg₂ (fun v' w' => (S.family.metric t).inner (Phi (x : M)) v' w')
-    hv hw).trans (hmet t (x : M) x.property v w).symm
+  exact (hmetric t x v w).trans (hmet t (x : M) x.property v w).symm
 
 
 theorem ricCovTower_normSq_eq_of_local_pullback

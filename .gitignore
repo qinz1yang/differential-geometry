@@ -4,12 +4,15 @@
 !/DifferentialGeometry/
 !/.github
 !/Examples/
+!/canonical-topology/
 !/DifferentialGeometry.lean
 !/lakefile.toml
 !/lean-toolchain
 !/README.md
+!/docs/
 !/LICENSE
 !/NOTICE
+!/TAU_CETI_REUSE.md
 !/.gitignore
 # end of whitelist
 

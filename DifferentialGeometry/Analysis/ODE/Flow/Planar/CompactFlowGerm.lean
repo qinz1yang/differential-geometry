@@ -64,4 +64,50 @@ theorem exists_compact_isotopy_realizing_flow_germ
   apply (D p).injective
   exact ((D p).apply_symm_apply x).trans (hfix p x hx).symm
 
+theorem exists_compact_isotopy_realizing_exp_germ
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (X : E →L[ℝ] E) (r : ℝ) (hr : 0 < r) :
+    ∃ D : ℝ → Diffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) E E ∞,
+      ContDiff ℝ ∞ (fun q : ℝ × E ↦ D q.1 q.2) ∧
+      ContDiff ℝ ∞ (fun q : ℝ × E ↦ (D q.1).symm q.2) ∧
+      D 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞ ∧
+      (D 1 : E → E) =ᶠ[𝓝 0] (fun x ↦ NormedSpace.exp X x) ∧
+      ∀ p z, z ∉ closedBall 0 (2 * r) → D p z = z ∧ (D p).symm z = z := by
+  have hderiv (x : E) (t : ℝ) :
+      HasDerivAt (fun s : ℝ ↦ NormedSpace.exp (s • X) x)
+        (X (NormedSpace.exp (t • X) x)) t := by
+    have h1 : HasStrictFDerivAt (fun u : ℝ ↦ NormedSpace.exp (u • X))
+        (NormedSpace.exp (t • X) • (1 : ℝ →L[ℝ] ℝ).smulRight X) t :=
+      hasStrictFDerivAt_exp_smul_const ℝ X t
+    have hc : HasFDerivAt (fun u : ℝ ↦ ((ContinuousLinearMap.apply ℝ E) x)
+        (NormedSpace.exp (u • X)))
+        (((ContinuousLinearMap.apply ℝ E) x) ∘SL
+          (NormedSpace.exp (t • X) • (1 : ℝ →L[ℝ] ℝ).smulRight X)) t :=
+      (ContinuousLinearMap.hasFDerivAt ((ContinuousLinearMap.apply ℝ E) x)).comp t h1.hasFDerivAt
+    have hval : (((ContinuousLinearMap.apply ℝ E) x) ∘SL
+        (NormedSpace.exp (t • X) • (1 : ℝ →L[ℝ] ℝ).smulRight X)) 1 =
+        X (NormedSpace.exp (t • X) x) := by
+      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply, smul_apply,
+        ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul, smul_eq_mul]
+      rw [← mul_apply_eq_comp, ((Commute.refl X).smul_left t).exp_left.eq, mul_apply_eq_comp]
+    have hd := hc.hasDerivAt
+    rw [hval] at hd
+    simpa only [ContinuousLinearMap.apply_apply] using hd
+  have hexpcont : Continuous (NormedSpace.exp : (E →L[ℝ] E) → (E →L[ℝ] E)) :=
+    continuous_iff_continuousAt.mpr fun x ↦ (NormedSpace.exp_analytic (𝕂 := ℝ) x).continuousAt
+  have hΓcont : Continuous (fun q : E × ℝ ↦ NormedSpace.exp (q.2 • X) q.1) :=
+    (hexpcont.comp (continuous_snd.smul continuous_const)).clm_apply continuous_fst
+  have hΓzero : ∀ x : E, NormedSpace.exp ((0 : ℝ) • X) x = x := by
+    intro x
+    simp only [zero_smul, NormedSpace.exp_zero, one_apply_eq_self]
+  have hΓfix : ∀ t ∈ Icc (0 : ℝ) 1, NormedSpace.exp (t • X) (0 : E) = 0 := by
+    intro t _
+    simp only [map_zero]
+  obtain ⟨D, hD, hDi, hD0, hDg, hDfix⟩ :=
+    exists_compact_isotopy_realizing_flow_germ (v := fun x ↦ X x) X.contDiff
+      (fun q : E × ℝ ↦ NormedSpace.exp (q.2 • X) q.1) hΓcont hΓzero hΓfix
+      (fun x t _ ↦ hderiv x t) r hr
+  exact ⟨D, hD, hDi, hD0, by simpa only [one_smul] using hDg, hDfix⟩
+
+
 end DifferentialGeometry.Analysis

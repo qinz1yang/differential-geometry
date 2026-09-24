@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.FiniteIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Regularized
 
@@ -298,6 +299,53 @@ private theorem lRegularizedLagrangian_contDiffOn_two
   simpa only [lRegularizedLagrangian] using
     (contDiffOn_const.mul hspeed).add
       ((contDiffOn_const.mul (contDiffOn_snd.pow 2)).mul hscalar)
+
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] [SigmaCompactSpace M] in
+theorem contDiff_lRegularizedAction
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
+    (a b : Real)
+    (ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular) :
+    ContDiff Real 2 (fun u : Real ↦ lRegularizedAction S T (f u) a b) := by
+  let U : Set (Real × Real) :=
+    {p : Real × Real | T - p.2 ^ 2 ∈ D.regular}
+  have hUopen : IsOpen U :=
+    D.regular_isOpen.preimage
+      (continuous_const.sub (continuous_snd.pow 2))
+  have hlag : ContDiffOn Real 2
+      (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2) U :=
+    lRegularizedLagrangian_contDiffOn_two (I := I) S hS T f hf
+  have hordered (c d : Real) (hcd : c ≤ d)
+      (hreg : ∀ s ∈ Set.Icc c d, T - s ^ 2 ∈ D.regular) :
+      ContDiff Real 2 (fun u : Real ↦ lRegularizedAction S T (f u) c d) := by
+    let : MeasureSpace (Set.Icc c d) := MeasureTheory.Measure.Subtype.measureSpace
+    let : IsFiniteMeasure (volume : Measure (Set.Icc c d)) := {
+      measure_univ_lt_top := by
+        rw [MeasureTheory.Measure.Subtype.volume_univ measurableSet_Icc.nullMeasurableSet]
+        exact isCompact_Icc.measure_lt_top }
+    have hsub : (Set.univ : Set Real) ×ˢ Set.Icc c d ⊆ U := by
+      intro p hp
+      exact hreg p.2 hp.2
+    apply contDiffOn_univ.mp
+    apply (DifferentialGeometry.Integral.Measure.contDiffOn_integral_subtype_of_isCompact
+      2 isCompact_Icc (volume : Measure (Set.Icc c d))
+      isOpen_univ hUopen hsub hlag).congr
+    intro u _
+    rw [lRegularizedAction, integral_subtype measurableSet_Icc
+      (fun s : Real ↦ lRegularizedLagrangian S T (f u) s),
+      integral_Icc_eq_integral_Ioc]
+    exact intervalIntegral.integral_of_le hcd
+  rcases le_total a b with hab | hba
+  · exact hordered a b hab (by simpa only [Set.uIcc_of_le hab] using ht)
+  · have hrev := hordered b a hba (by simpa only [Set.uIcc_of_ge hba] using ht)
+    have hswap : (fun u : Real ↦ lRegularizedAction S T (f u) a b) =
+        (fun u : Real ↦ -lRegularizedAction S T (f u) b a) := by
+      funext u
+      unfold lRegularizedAction
+      exact intervalIntegral.integral_symm b a
+    rw [hswap]
+    exact hrev.neg
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in

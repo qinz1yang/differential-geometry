@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
 namespace DifferentialGeometry.Topology.Morse
 
 open Integral.DivergenceTheorem.WithBoundary MeasureTheory
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

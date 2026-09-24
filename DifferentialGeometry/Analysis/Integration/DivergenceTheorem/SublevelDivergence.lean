@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Boundary.SublevelMetric
 namespace DifferentialGeometry.Topology.Morse
 
 open Bundle Geometry.Operator Geometry.Curvature Integral.DivergenceTheorem
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

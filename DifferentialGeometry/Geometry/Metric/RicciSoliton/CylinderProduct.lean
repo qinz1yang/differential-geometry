@@ -12,11 +12,11 @@ namespace DifferentialGeometry.Geometry
 
 open Curvature Operator
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
   [SimplyConnectedSpace M]
 

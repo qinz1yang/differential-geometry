@@ -59,7 +59,7 @@ theorem weighted_error_covariant_norm_tendsto_at_point
     (A B : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2) (p : M)
     {V : Set E} (hV : IsOpen V) (hpV : extChartAt I p p ∈ V)
     (hVt : V ⊆ (extChartAt I p).target)
-    {J L : Set ℝ} (hJ : UniqueDiffOn ℝ J) (hL : UniqueDiffOn ℝ L)
+    {J L : Set ℝ}
     (hgram : ∀ i j : Fin (Module.finrank ℝ E), ContDiffOn ℝ ∞
       (fun z : ℝ × E => chartGramOnE (I := I) (g z.1) p i j z.2) (L ×ˢ V))
     (hA : ∀ slots : Fin 2 → Fin (Module.finrank ℝ E), ContDiffOn ℝ ∞
@@ -84,7 +84,7 @@ theorem weighted_error_covariant_norm_tendsto_at_point
         (alpha₀ • A t - beta₀ • B u)
         (scaleMetric c₀ hc₀ (g u)) (scaleMetric c₀ hc₀ (g u)) p)) := by
   obtain ⟨K, z, hK, hKV, hpK, hzK, hz, heq⟩ := exists_compact_chart_sequence p hV hpV y hy
-  have hn := weighted_error_covariant_norm_tendsto g A B p hV hVt hJ hL hgram hA hB
+  have hn := weighted_error_covariant_norm_tendsto g A B p hV hVt hgram hA hB
     tau upsilon htau hupsilon ht hu htlim hulim c alpha beta hc hc₀ hclim halim hblim
     hK hKV z hzK hpK hz a
   rw [(extChartAt I p).left_inv (mem_extChartAt_source p)] at hn

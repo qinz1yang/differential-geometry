@@ -131,16 +131,20 @@ open Bundle
 omit [T2Space M] [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem MetricFamilySmoothOn.exists_pos_mul_norm_sq_le_chart_inner
+theorem MetricFamilySmoothOn.exists_chart_inner_bounds_on_compact
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
     {J : Set ℝ} (hJ : J ⊆ D.regular) (hJc : IsCompact J)
     (α : M) {K : Set E} (hK : K ⊆ (extChartAt I α).target)
     (hKc : IsCompact K) :
-    ∃ c : ℝ, 0 < c ∧ ∀ p ∈ J ×ˢ K, ∀ v : E,
+    ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ p ∈ J ×ˢ K, ∀ v : E,
       c * ‖v‖ ^ 2 ≤ (g p.1).inner ((extChartAt I α).symm p.2)
         ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v)
-        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v) := by
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v) ∧
+      (g p.1).inner ((extChartAt I α).symm p.2)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v) ≤
+          C * ‖v‖ ^ 2 := by
   classical
   let e := trivializationAt E (TangentSpace I) α
   let b : ℝ × E → M := fun p => (extChartAt I α).symm p.2
@@ -198,9 +202,69 @@ theorem MetricFamilySmoothOn.exists_pos_mul_norm_sq_le_chart_inner
     rw [hz, map_zero] at hleft
     exact hv hleft.symm
   obtain ⟨c, hc, hbound⟩ := exists_pos_mul_norm_sq_le_bilinear_of_isCompact (hJc.prod hKc) A hA hpos
-  refine ⟨c, hc, ?_⟩
+  obtain ⟨C, hC, hupper⟩ := ((hJc.prod hKc).image_of_continuousOn hA).isBounded.exists_pos_norm_le
+  refine ⟨c, C, hc, hC, ?_⟩
   intro p hp v
-  simpa only [hAeval p hp] using hbound p hp v
+  refine ⟨by simpa only [hAeval p hp] using hbound p hp v, ?_⟩
+  rw [← hAeval p hp]
+  calc
+    A p v v ≤ ‖A p v v‖ := le_abs_self _
+    _ ≤ ‖A p‖ * ‖v‖ * ‖v‖ := (A p).le_opNorm₂ v v
+    _ ≤ C * ‖v‖ ^ 2 := by
+      nlinarith only [mul_le_mul_of_nonneg_right (hupper (A p) (mem_image_of_mem A hp))
+        (sq_nonneg ‖v‖)]
+
+omit [T2Space M] [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem MetricFamilySmoothOn.exists_pos_mul_norm_sq_le_chart_inner
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) (hJc : IsCompact J)
+    (α : M) {K : Set E} (hK : K ⊆ (extChartAt I α).target)
+    (hKc : IsCompact K) :
+    ∃ c : ℝ, 0 < c ∧ ∀ p ∈ J ×ˢ K, ∀ v : E,
+      c * ‖v‖ ^ 2 ≤ (g p.1).inner ((extChartAt I α).symm p.2)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v) := by
+  obtain ⟨c, _, hc, _, hbound⟩ := hG.exists_chart_inner_bounds_on_compact hJ hJc α hK hKc
+  exact ⟨c, hc, fun p hp v => (hbound p hp v).1⟩
+
+omit [T2Space M] [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem MetricFamilySmoothOn.exists_chart_norm_comparison_on_compact
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) (hJc : IsCompact J)
+    {ι : Type*} [Finite ι] (α : ι → M) (K : ι → Set E)
+    (hK : ∀ i, K i ⊆ (extChartAt I (α i)).target) (hKc : ∀ i, IsCompact (K i)) :
+    ∃ C : ℝ, 0 < C ∧ ∀ i t, t ∈ J → ∀ x ∈ K i, ∀ v : E,
+      Real.sqrt ((g t).inner ((extChartAt I (α i)).symm x)
+        ((trivializationAt E (TangentSpace I) (α i)).symmL ℝ ((extChartAt I (α i)).symm x) v)
+        ((trivializationAt E (TangentSpace I) (α i)).symmL ℝ ((extChartAt I (α i)).symm x) v)) ≤
+          C * ‖v‖ ∧
+      ‖v‖ ≤ C * Real.sqrt ((g t).inner ((extChartAt I (α i)).symm x)
+        ((trivializationAt E (TangentSpace I) (α i)).symmL ℝ ((extChartAt I (α i)).symm x) v)
+        ((trivializationAt E (TangentSpace I) (α i)).symmL ℝ ((extChartAt I (α i)).symm x) v)) := by
+  classical
+  choose c B hc hB hbound using fun i =>
+    hG.exists_chart_inner_bounds_on_compact hJ hJc (α i) (hK i) (hKc i)
+  let C₀ : ι → ℝ := fun i => max (Real.sqrt (B i)) (Real.sqrt (c i))⁻¹
+  obtain ⟨C, hC, hCbound⟩ := (finite_range C₀).isCompact.isBounded.exists_pos_norm_le
+  have hCi (i : ι) : C₀ i ≤ C := (le_abs_self _).trans (hCbound (C₀ i) (mem_range_self i))
+  refine ⟨C, hC, fun i t ht x hx v => ?_⟩
+  obtain ⟨hlower, hupper⟩ := hbound i (t, x) ⟨ht, hx⟩ v
+  have hlow := Real.sqrt_le_sqrt hlower
+  have hupp := Real.sqrt_le_sqrt hupper
+  rw [Real.sqrt_mul (hc i).le, Real.sqrt_sq_eq_abs, abs_norm] at hlow
+  rw [Real.sqrt_mul (hB i).le, Real.sqrt_sq_eq_abs, abs_norm] at hupp
+  refine ⟨hupp.trans (mul_le_mul_of_nonneg_right ((le_max_left _ _).trans (hCi i))
+    (norm_nonneg v)), ?_⟩
+  have hlow' := mul_le_mul_of_nonneg_left hlow (inv_nonneg.mpr (Real.sqrt_nonneg (c i)))
+  rw [← mul_assoc, inv_mul_cancel₀ (Real.sqrt_pos.mpr (hc i)).ne', one_mul] at hlow'
+  exact hlow'.trans (mul_le_mul_of_nonneg_right ((le_max_right _ _).trans (hCi i))
+    (Real.sqrt_nonneg _))
 
 end Geometry.Curvature
 

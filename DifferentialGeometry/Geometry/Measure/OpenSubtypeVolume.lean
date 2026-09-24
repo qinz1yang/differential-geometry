@@ -204,6 +204,21 @@ theorem riemannianVolumeMeasure_restrictOpen_preimage_of_subset
     inter_eq_left.mpr hAU] at hmap
   exact hmap
 
+theorem setLIntegral_restrictOpen
+    (g : SmoothRiemannianMetric I M) (U : Opens M)
+    {A : Set M} (hA : MeasurableSet A) (hAU : A ⊆ U) (f : M → ℝ≥0∞) :
+    let _ : SigmaCompactSpace U := openSubtype_sigmaCompact (I := I) U
+    ∫⁻ x in Subtype.val ⁻¹' A, f x ∂riemannianVolumeMeasure (I := I) (M := U) (g.restrictOpen U) =
+      ∫⁻ x in A, f x ∂riemannianVolumeMeasure (I := I) (M := M) g := by
+  let _ : SigmaCompactSpace U := openSubtype_sigmaCompact (I := I) U
+  have hval : MeasurableEmbedding (Subtype.val : U → M) :=
+    U.isOpen.isOpenEmbedding_subtypeVal.measurableEmbedding (mα := borel U)
+  have hmap := riemannianVolumeMeasure_map_restrictOpen g U
+  have h := hval.lintegral_map (μ :=
+    (riemannianVolumeMeasure (I := I) (M := U) (g.restrictOpen U)).restrict (Subtype.val ⁻¹' A)) f
+  rw [← hval.restrict_map, hmap, Measure.restrict_restrict hA, inter_eq_left.mpr hAU] at h
+  exact h.symm
+
 end DifferentialGeometry.Geometry.Measure
 
 end

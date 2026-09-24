@@ -117,4 +117,31 @@ theorem simplyConnectedSpace_closure_component_of_smoothSphereEmbedding
     rw [hside]
     exact h.simplyConnectedSpace_closure_sides.2
 
+theorem exists_twoSided_side_data_of_smoothSphereEmbedding
+    [CompactSpace M] [ConnectedSpace M]
+    (he : IsSmoothEmbedding
+      (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 2)))
+      (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 3))) ∞ e) :
+    ∃ B C : Set M, IsOpen B ∧ IsOpen C ∧ IsConnected B ∧ IsConnected C ∧
+      IsCompact (closure B) ∧ IsCompact (closure C) ∧
+      B ⊆ (Set.range e)ᶜ ∧ C ⊆ (Set.range e)ᶜ ∧ Disjoint B C ∧
+      B ∪ C = (Set.range e)ᶜ ∧
+      closure B = B ∪ Set.range e ∧ closure C = C ∪ Set.range e ∧
+      frontier B = Set.range e ∧ frontier C = Set.range e := by
+  let : LocallyPathConnectedSpace M :=
+    ChartedSpace.locallyPathConnectedSpace (EuclideanSpace ℝ (Fin 3)) M
+  obtain ⟨c⟩ := exists_smoothTwoSidedCollar_of_smoothSphereEmbedding e he
+  let h := c.toTwoSidedCollar
+  have hconn : ∀ y : h.complement, IsConnected (Subtype.val '' connectedComponent y) :=
+    fun y => isConnected_connectedComponent.image (Subtype.val : h.complement → M)
+      continuous_subtype_val.continuousOn
+  exact ⟨h.negativeSide, h.positiveSide, h.isOpen_negativeSide, h.isOpen_positiveSide,
+    hconn h.negativePoint, hconn h.positivePoint,
+    isCompact_univ.of_isClosed_subset isClosed_closure (Set.subset_univ _),
+    isCompact_univ.of_isClosed_subset isClosed_closure (Set.subset_univ _),
+    h.negativeSide_subset_complement, h.positiveSide_subset_complement,
+    h.disjoint_negativeSide_positiveSide, h.complement_eq_negativeSide_union_positiveSide.symm,
+    h.closure_negativeSide, h.closure_positiveSide, h.frontier_negativeSide,
+    h.frontier_positiveSide⟩
+
 end DifferentialGeometry.Topology.ThreeManifold

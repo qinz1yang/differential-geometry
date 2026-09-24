@@ -1,13 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskDifferential
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldLipschitz
 import Mathlib.Analysis.InnerProductSpace.PiL2
-
-
-
-
-
-
-
+import DifferentialGeometry.Geometry.Metric.Completeness.PseudoEMetric
 
 noncomputable section
 
@@ -51,12 +45,6 @@ def HomogeneouslyRegularMetric (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) : Pro
       ∀ k : ℕ, ∃ C : ℝ, 0 ≤ C ∧ ∀ p i j y, y ∈ plateauOpenCube →
         ‖iteratedFDeriv ℝ k (plateauChartCoefficient g (ψ p) i j) y‖ ≤ C
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-def RiemannianMetricComplete [T3Space M] (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) : Prop :=
-  let cg := g.toContinuousRiemannianMetric
-  let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : M → Type _) := ⟨cg.toRiemannianMetric⟩
-  let : PseudoEMetricSpace M := .ofRiemannianMetric 𝓘(ℝ, E) M
-  CompleteSpace M
+
 
 end DifferentialGeometry.Geometry

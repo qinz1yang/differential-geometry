@@ -48,10 +48,11 @@ theorem densityOnEuclid_family_contDiffOn
     ContDiffOn ℝ ∞
       (fun p : ℝ × EuclN => densityOnEuclid (I := I) (G.metric p.1) α p.2)
       (J ×ˢ chartTargetEuclid (I := I) α) := by
-  have hd := chartDensity_family_contMDiffOn G.metric α
-    (hG.chartGramMatrix_contDiffOn hJ α)
-  exact (hd.comp (chartInverse_prod_contMDiffOn (I := I) α J)
-    (fun p hp => ⟨hp.1, chartInverse_mem_baseSet α hp.2⟩)).contDiffOn
+  have hd := chartDensityOnE_family_contDiffOn hG hJ α
+  have hc := hd.comp (s := J ×ˢ chartTargetEuclid (I := I) α)
+    (contDiff_fst.prodMk ((toEuclidean (E := E)).symm.contDiff.comp contDiff_snd)).contDiffOn
+    (fun p hp => ⟨hp.1, toEuclidean_symm_mem_target hp.2⟩)
+  exact hc
 
 theorem invGramOnEuclid_family_contDiffOn
     {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}

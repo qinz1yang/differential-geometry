@@ -163,4 +163,14 @@ noncomputable def connectedComponentsComplEquivFinTwo
     · exact hBconnected
     · exact hEconnected
 
+theorem not_isPreconnected_of_connectedComponents_equiv_nontrivial
+    {Y : Type*} [TopologicalSpace Y] {S : Set Y} {β : Type*} [Nontrivial β]
+    (h : Nonempty (ConnectedComponents (S : Set Y) ≃ β)) : ¬ IsPreconnected S := by
+  obtain ⟨e⟩ := h
+  intro hpre
+  have hpre' : PreconnectedSpace (S : Set Y) := isPreconnected_iff_preconnectedSpace.mp hpre
+  obtain ⟨a, b, hab⟩ := exists_pair_ne β
+  have hsymm : (e.symm a : ConnectedComponents (S : Set Y)) = e.symm b := Subsingleton.elim _ _
+  exact hab (by simpa using congrArg e hsymm)
+
 end DifferentialGeometry.Topology.SphereSeparation

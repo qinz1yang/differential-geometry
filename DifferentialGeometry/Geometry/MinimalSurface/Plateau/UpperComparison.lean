@@ -21,7 +21,7 @@ namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
-  [T3Space M]
+  [T3Space M] [CompactSpace M]
 
 
 
@@ -37,9 +37,6 @@ theorem SmoothDiskExtension.leastSpanningArea_le
     exists_spanning_disk_competitor_area_eq_of_smooth_positive_trace
       g hγ hσ htrace (hu.lipschitz g)
   exact (leastSpanningArea_le_competitor g γ hv).trans_eq harea
-
-variable [CompactSpace M]
-
 
 
 

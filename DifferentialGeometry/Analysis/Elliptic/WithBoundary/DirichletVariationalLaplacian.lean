@@ -267,3 +267,39 @@ end Analysis
 end DifferentialGeometry
 
 end
+
+noncomputable section
+
+open Manifold MeasureTheory
+open scoped ContDiff ENNReal InnerProductSpace Manifold RealInnerProductSpace Topology
+
+namespace DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+
+open DifferentialGeometry.Integral.Measure
+
+variable {n : ℕ} [NeZero n]
+variable {M : Type*} [TopologicalSpace M]
+  [ChartedSpace (EuclideanHalfSpace n) M]
+  [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
+  [T2Space M] [CompactSpace M]
+
+local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem dirichletLaplacian_inner_h1ComplDirichlet
+    (q : SmoothRiemannianMetric I_hs M)
+    (u : dirichletLaplacianDomain q) (v : H1ComplDirichlet q) :
+    ⟪dirichletLaplacian q u, H1ComplDirichletToLp q v⟫_ℝ =
+      ⟪H1ComplDirichletToLp q (u : H1ComplDirichlet q), H1ComplDirichletToLp q v⟫_ℝ -
+        ⟪(u : H1ComplDirichlet q), v⟫_ℝ := by
+  rw [dirichletLaplacian_apply, inner_sub_left]
+  have hu := resolventDirichlet_inner_eq_lpFunctional q
+    ((dirichletResolventEquiv q).symm u) v
+  rw [resolventDirichlet_dirichletResolventEquiv_symm] at hu
+  rw [hu, real_inner_comm ((dirichletResolventEquiv q).symm u)]
+
+end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+
+end

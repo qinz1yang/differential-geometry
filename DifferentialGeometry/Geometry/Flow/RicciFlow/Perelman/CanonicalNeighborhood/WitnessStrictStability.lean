@@ -152,8 +152,6 @@ theorem WindowedModelWitness.eventually_strict_of_regular_window
       simpa only [inv_one, one_pow, one_mul] using hClim.mul ((hClim.inv₀ one_ne_zero).pow j)
     have hh := eventually_strict_weighted_error_norm_on_scaled_ball
       (fun s => W.model.S.base.metric s) (A j) (B j) W.model.basepoint (modelRadius eps) hK
-      (uniqueDiffOn_Icc hcb)
-      (uniqueDiffOn_Icc (a := -2 * modelDepth eps - 1) (b := 0) (by linarith))
       (fun y hy => by
         obtain ⟨V₁, hV₁, hp₁, ht₁, hAc⟩ := hAreg (⟨y, hKU hy⟩ : U)
         obtain ⟨V₂, hV₂, hp₂, _ht₂, hBc⟩ := hBreg (⟨y, hKU hy⟩ : U)

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactLimitGlobalization
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Compact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceSequence
 
 set_option autoImplicit false

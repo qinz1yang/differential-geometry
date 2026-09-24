@@ -25,7 +25,7 @@ variable {M : Type v} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 theorem positiveFreeContractibleClass_isEssential (o : TangentOrientationSection M) :
     IsEssentialFamilyClass (positiveFreeContractibleClass o) := by
   exact isEssentialFamilyClass_of_pi2_zero
-    (fun q => (rfs_homotopy_groups o q).1) (positiveFreeContractibleClass o)
+    (fun q => (rfs_homotopy_groups q).1) (positiveFreeContractibleClass o)
     (fun q => positiveFreeContractibleClass_nontrivial o q)
 
 theorem canonicalWidth_smooth_on_regular_slab
@@ -188,7 +188,7 @@ theorem incoming_component_integrated_width (G : P.IncomingSlab a b)
     obtain ⟨B, hB⟩ := hbackground s hs t ht
     have hess : IsEssentialFamilyClass (positiveFreeContractibleClass (P.component c).orientation) :=
       isEssentialFamilyClass_of_pi2_zero
-        (fun q => (rfs_homotopy_groups (P.component c).orientation q).1)
+        (fun q => (rfs_homotopy_groups q).1)
         (positiveFreeContractibleClass (P.component c).orientation)
         (fun q => positiveFreeContractibleClass_nontrivial (P.component c).orientation q)
     have h := (rfs_integrated_class_width B (by simp [ThreeSpace])

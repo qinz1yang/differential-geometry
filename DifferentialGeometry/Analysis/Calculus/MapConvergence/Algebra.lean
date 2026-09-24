@@ -49,3 +49,23 @@ theorem mapCInfConvergence_inv {U : Set E'} (hU : IsOpen U)
 
 end CheegerGromovCompactness
 end DifferentialGeometry
+
+noncomputable section
+open Set
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+
+variable {P E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+theorem MapCInfConvergenceOnCompacts.const_add {U : Set P}
+    {f : ℕ → P → E} {fInf : P → E}
+    (h : MapCInfConvergenceOnCompacts U f fInf) (a : E) :
+    MapCInfConvergenceOnCompacts U (fun k z => a + f k z) (fun z => a + fInf z) := by
+  intro K hK hKU p ε hε
+  obtain ⟨N, hN⟩ := h K hK hKU p ε hε
+  refine ⟨N, fun k hk j hj z hz => ?_⟩
+  simpa only [mapDerivNorm, add_sub_add_left_eq_sub] using hN k hk j hj z hz
+
+end DifferentialGeometry.CheegerGromovCompactness
+end

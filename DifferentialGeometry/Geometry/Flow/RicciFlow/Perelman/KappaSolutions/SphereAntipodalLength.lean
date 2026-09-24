@@ -12,7 +12,7 @@ open Bundle Manifold Set
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open scoped Manifold ContDiff Topology ENNReal RealInnerProductSpace
+open scoped Manifold ContDiff _root_.Topology ENNReal RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

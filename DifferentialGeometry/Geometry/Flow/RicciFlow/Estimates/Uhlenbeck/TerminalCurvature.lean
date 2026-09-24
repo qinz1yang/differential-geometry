@@ -13,13 +13,13 @@ open Bundle Filter
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff Matrix BigOperators _root_.Topology
+open scoped _root_.Manifold ContDiff Matrix BigOperators _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
 
 private local instance terminalUhlenbeckC1 : IsManifold I 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
@@ -41,12 +41,6 @@ theorem solution_uhlenbeckCurvatureMatrix_continuousWithinAt_terminal
           (fun t x i j k l => tensor04StandardAt (S.base.rm04 t x)
             (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l))) t x)
       (Set.Iio b) b := by
-  have hdim : Module.finrank ℝ E = 3 := by
-    calc
-      Module.finrank ℝ E = Module.finrank ℝ (TangentSpace I x) :=
-        (tangentSpaceModelContinuousLinearEquiv (I := I) x).toLinearEquiv.finrank_eq.symm
-      _ = 3 := by simpa only [Fintype.card_fin] using Module.finrank_eq_card_basis (basisAt x)
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   have hRm (i j k l : Fin 3) : ContinuousWithinAt
       (fun t => tensor04StandardAt (S.base.rm04 t x)
         (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) (Set.Iio b) b := by

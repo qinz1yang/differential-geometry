@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Cons
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.ChartSolution
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.HatBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometryReplay
 
 set_option autoImplicit false
 
@@ -287,16 +288,30 @@ theorem has_live_chart_center_solution_of_cage
         (by nlinarith [h.r_pos, show 0 ≤ dist x0 x from dist_nonneg])).2
           (hptDist i) |>.trans
             (by simpa only [rho0] using hradCage)
-  have hρChart : rho0 ≤ (d.chart (L.φ k) x0).radius := by
-    have hradius := (d.chart (L.φ k) x0).radius_pos
-    exact hρInner.trans (by nlinarith)
-  have hsol := d.center_of_mass_satisfies_normal_coordinate_equation
+  have hc4 : (d.chart (L.φ k) x0).radius / 4 ≤
+      (d.chart (L.φ k) x0).radius := by
+    nlinarith [(d.chart (L.φ k) x0).radius_pos]
+  have hsub4 : Metric.ball (0 : E) ((d.chart (L.φ k) x0).radius / 4) ⊆
+      Metric.ball (0 : E) (d.chart (L.φ k) x0).radius :=
+    Metric.ball_subset_ball hc4
+  let mb : (d.chart (L.φ k) x0).MetricBounds (X.obj (L.φ k)).metric :=
+    { C := d.metricC
+      C_nonneg := d.metricC_nonneg
+      radius := (d.chart (L.φ k) x0).radius / 4
+      radius_pos := by linarith [(d.chart (L.φ k) x0).radius_pos]
+      equiv := fun z hz v => (d.metricBounds (L.φ k) x0).equiv z (hsub4 hz) v
+      deriv := fun q z hz => (d.metricBounds (L.φ k) x0).deriv q z (hsub4 hz) }
+  have hmb : mb.radius = (d.chart (L.φ k) x0).radius / 4 := rfl
+  have hsol := SeqBallNormalChartData.center_of_mass_satisfies_normal_coordinate_equation
+    (SeqBallNormalChartData.of_boundedGeometryNormalChartData d)
     (L.φ k) (hcomplete.complete (L.φ k))
     (hconn (L.φ k)) x0 hq he hf happrox
     (by
-      exact hinvErr.trans (by norm_num)) mu points join x rad hsum h hρ hρq
-      hρChart hpairs
-  exact ⟨hq, e, he, hf, by simpa only [x0, y, rho0] using hsol⟩
+      exact hinvErr.trans (by norm_num)) mb mu points join x rad hsum h hmb hρ hρq
+      hρInner hpairs
+  exact ⟨hq, e, he, hf, by
+    simpa only [x0, y, rho0,
+      SeqBallNormalChartData.of_boundedGeometryNormalChartData] using hsol⟩
 
 theorem exists_live_chart_center_solutions
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

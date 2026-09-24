@@ -239,7 +239,8 @@ private theorem positive_triangular_basis_homotopy
     (hdiag : ∀ i, 0 < LinearMap.toMatrix b.toBasis g.toBasis L.toLinearMap i i) :
     ∃ H : (⟨L, L.continuous⟩ : C(E, E)).Homotopy
         (⟨b.equiv g (Equiv.refl (Fin 3)), (b.equiv g (Equiv.refl (Fin 3))).continuous⟩ : C(E, E)),
-      ∀ t z, z ≠ 0 → H (t, z) ≠ 0 := by
+      (∀ t z, z ≠ 0 → H (t, z) ≠ 0) ∧
+      ∃ C : ℝ, ∀ t z, ‖H (t, z)‖ ≤ C * ‖z‖ := by
   classical
   let Q := b.equiv g (Equiv.refl (Fin 3))
   let A (t : unitInterval) : E →L[ℝ] E :=
@@ -283,13 +284,34 @@ private theorem positive_triangular_basis_homotopy
       fun_prop
     map_zero_left := fun z => by simp [A]
     map_one_left := fun z => by simp [A] }
-  refine ⟨H, ?_⟩
-  intro t z hz he
-  have hzero : B t z = 0 := by
-    change Q.symm (A t z) = 0
-    change A t z = 0 at he
-    rw [he, map_zero]
-  exact hz (hB t (hzero.trans (map_zero (B t)).symm))
+  refine ⟨H, ?_, ?_⟩
+  · intro t z hz he
+    have hzero : B t z = 0 := by
+      change Q.symm (A t z) = 0
+      change A t z = 0 at he
+      rw [he, map_zero]
+    exact hz (hB t (hzero.trans (map_zero (B t)).symm))
+  · refine ⟨‖L.toContinuousLinearMap‖ +
+        ‖Q.toContinuousLinearEquiv.toContinuousLinearMap‖, fun t z => ?_⟩
+    have hHz : H (t, z) = A t z := rfl
+    rw [hHz]
+    calc
+      ‖A t z‖ ≤ ‖A t‖ * ‖z‖ := (A t).le_opNorm z
+      _ ≤ (‖L.toContinuousLinearMap‖ +
+            ‖Q.toContinuousLinearEquiv.toContinuousLinearMap‖) * ‖z‖ := by
+        apply mul_le_mul_of_nonneg_right _ (norm_nonneg z)
+        calc
+          ‖A t‖ ≤ ‖(1 - (t : ℝ)) • L.toContinuousLinearMap‖ +
+              ‖(t : ℝ) • Q.toContinuousLinearEquiv.toContinuousLinearMap‖ :=
+            norm_add_le _ _
+          _ = (1 - (t : ℝ)) * ‖L.toContinuousLinearMap‖ +
+              (t : ℝ) * ‖Q.toContinuousLinearEquiv.toContinuousLinearMap‖ := by
+            rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+              abs_of_nonneg (sub_nonneg.mpr t.property.2), abs_of_nonneg t.property.1]
+          _ ≤ ‖L.toContinuousLinearMap‖ +
+              ‖Q.toContinuousLinearEquiv.toContinuousLinearMap‖ := by
+            nlinarith [t.property.1, t.property.2, norm_nonneg L.toContinuousLinearMap,
+              norm_nonneg Q.toContinuousLinearEquiv.toContinuousLinearMap]
 
 end Triangular
 
@@ -301,7 +323,8 @@ theorem positive_linear_homotopy
     (b : OrthonormalBasis (Fin 3) ℝ E) (L : E ≃L[ℝ] E)
     (hpos : 0 < LinearMap.det L.toLinearMap) :
     ∃ H : (⟨L, L.continuous⟩ : C(E, E)).Homotopy (ContinuousMap.id E),
-      ∀ t z, z ≠ 0 → H (t, z) ≠ 0 := by
+      (∀ t z, z ≠ 0 → H (t, z) ≠ 0) ∧
+      ∃ C : ℝ, ∀ t z, ‖H (t, z)‖ ≤ C * ‖z‖ := by
   classical
   have hdim : Module.finrank ℝ E = Fintype.card (Fin 3) :=
     Module.finrank_eq_card_basis b.toBasis
@@ -338,20 +361,31 @@ theorem positive_linear_homotopy
     apply (b.toBasis.orientation_comp_linearEquiv_eq_iff_det_pos Q.toLinearEquiv).mp
     rw [hQBasis]
     exact hgOrientation.trans hfOrientation
-  obtain ⟨H, hH⟩ := positive_triangular_basis_homotopy b g L htri hdiag
+  obtain ⟨H, hH, CH, hCH⟩ := positive_triangular_basis_homotopy b g L htri hdiag
   have hdimLower : 1 < Module.rank ℝ E :=
     Module.one_lt_rank_of_one_lt_finrank (by rw [hdim]; decide)
   have hdimUpper : Module.finrank ℝ E ≤ 3 := by rw [hdim]; decide
   obtain ⟨K, hK⟩ := positive_isometry_homotopy hdimLower hdimUpper Q hQpos
-  refine ⟨H.trans K, ?_⟩
-  intro t z hz
-  rw [ContinuousMap.Homotopy.trans_apply]
-  split_ifs
-  · exact hH _ z hz
-  · intro he
-    have hnorm := congrArg norm he
-    rw [hK, norm_zero] at hnorm
-    exact hz (norm_eq_zero.mp hnorm)
+  refine ⟨H.trans K, ?_, ?_⟩
+  · intro t z hz
+    rw [ContinuousMap.Homotopy.trans_apply]
+    split_ifs
+    · exact hH _ z hz
+    · intro he
+      have hnorm := congrArg norm he
+      rw [hK, norm_zero] at hnorm
+      exact hz (norm_eq_zero.mp hnorm)
+  · refine ⟨max CH 1, fun t z => ?_⟩
+    rw [ContinuousMap.Homotopy.trans_apply]
+    split_ifs with ht
+    · calc
+        ‖H (_, z)‖ ≤ CH * ‖z‖ := hCH _ z
+        _ ≤ max CH 1 * ‖z‖ :=
+          mul_le_mul_of_nonneg_right (le_max_left CH 1) (norm_nonneg z)
+    · calc
+        ‖K (_, z)‖ = ‖z‖ := hK _ z
+        _ ≤ max CH 1 * ‖z‖ :=
+          le_mul_of_one_le_left (norm_nonneg z) (le_max_right CH 1)
 end PositiveLinear
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

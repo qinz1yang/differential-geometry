@@ -835,7 +835,7 @@ theorem galerkinLim_d_zero
     {phi : Nat → Nat}
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
-    (hDim : Module.finrank Real E = 3) (hτ : 0 ≤ tau)
+    (hτ : 0 ≤ tau)
     (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) (x : M) (X : TangentSpace I x) :
     Tendsto
@@ -851,14 +851,15 @@ theorem galerkinLim_d_zero
     scalarSpecSum (I := I) (M := M) q (fun i s => ulim s i) t
   let f0 : Real := mvfderiv (I := I)
     (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection) x X
+  let D0 : Nat := Module.finrank Real E / 2 + 2
   let N : Real → Real := fun t =>
-    ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖
+    ‖galerkinLimExt hτ hlim D0 t - galerkinLimExt hτ hlim D0 0‖
   obtain ⟨C, hC, hgrad⟩ :=
-    hs3_grad_low2 (I := I) (M := M) hDim q 0
+    hs_grad_low2 (I := I) (M := M) q 0
   have hN : Tendsto N (𝓝[Set.Icc (0 : Real) tau] 0) (𝓝 0) := by
     have hc : Continuous (fun t =>
-        ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖) :=
-      (galerkinLimExt_cont hτ hlim 3).sub continuous_const |>.norm
+        ‖galerkinLimExt hτ hlim D0 t - galerkinLimExt hτ hlim D0 0‖) :=
+      (galerkinLimExt_cont hτ hlim D0).sub continuous_const |>.norm
     rw [nhdsWithin]
     simpa only [N, sub_self, norm_zero] using
       (hc.tendsto 0).mono_left inf_le_left
@@ -904,14 +905,14 @@ theorem galerkinLim_d_zero
       ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
         (I := I) (M := M) q 0 0 DU).toSection x) X
     rw [covGrad0_apply (I := I) (M := M) q DU x X] at hpoint
-    have hDU : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU =
-        galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0 := by
-      have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) U =
-          galerkinLimExt hτ hlim 3 t := by
-        simpa only [q] using hUall 3
-      have h03 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) u0 =
-          galerkinLimExt hτ hlim 3 0 := by
-        simpa only [q] using (galerkinLimExt_zero hτ hlim 3).symm
+    have hDU : ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) DU =
+        galerkinLimExt hτ hlim D0 t - galerkinLimExt hτ hlim D0 0 := by
+      have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) U =
+          galerkinLimExt hτ hlim D0 t := by
+        simpa only [q] using hUall D0
+      have h03 : ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) u0 =
+          galerkinLimExt hτ hlim D0 0 := by
+        simpa only [q] using (galerkinLimExt_zero hτ hlim D0).symm
       dsimp only [DU]
       rw [← ccToHsLin_apply, map_sub, ccToHsLin_apply, ccToHsLin_apply,
         hU3, h03]
@@ -924,7 +925,7 @@ theorem galerkinLim_d_zero
                 ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
                   (I := I) (M := M) q 0 0 DU).toSection x) := hpoint
       _ ≤ q.inner x X X *
-          (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU‖) ^ 2 :=
+          (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) DU‖) ^ 2 :=
         mul_le_mul_of_nonneg_left ((hgrad DU).1 x)
           (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) q x X)
@@ -949,7 +950,7 @@ theorem galerkinLim_d_joint
     {phi : Nat → Nat}
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
-    (hDim : Module.finrank Real E = 3) (hτ : 0 ≤ tau)
+    (hτ : 0 ≤ tau)
     (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     (a : M) (i : Fin (Module.finrank Real E)) :
@@ -971,8 +972,9 @@ theorem galerkinLim_d_joint
   let f0 : M → Real :=
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection
   let base : M → Real := fun y => mvfderiv (I := I) f0 y (Xf y)
+  let D0 : Nat := Module.finrank Real E / 2 + 2
   let N : Real → Real := fun t =>
-    ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖
+    ‖galerkinLimExt hτ hlim D0 t - galerkinLimExt hτ hlim D0 0‖
   let K : Set (Real × M) := Set.Icc (0 : Real) tau ×ˢ e.baseSet
   have hae : a ∈ e.baseSet := by
     simpa only [e] using
@@ -980,11 +982,11 @@ theorem galerkinLim_d_joint
   have hfzero : f 0 = f0 := by
     simpa only [f, f0, q] using galerkinLim_initial (I := I) (M := M) hlim
   obtain ⟨C, hC, hgrad⟩ :=
-    hs3_grad_low2 (I := I) (M := M) hDim q 0
+    hs_grad_low2 (I := I) (M := M) q 0
   have hN0 : Tendsto N (𝓝 (0 : Real)) (𝓝 0) := by
     have hc : Continuous (fun t =>
-        ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖) :=
-      (galerkinLimExt_cont hτ hlim 3).sub continuous_const |>.norm
+        ‖galerkinLimExt hτ hlim D0 t - galerkinLimExt hτ hlim D0 0‖) :=
+      (galerkinLimExt_cont hτ hlim D0).sub continuous_const |>.norm
     simpa only [N, sub_self, norm_zero] using hc.tendsto 0
   have hN : Tendsto (fun p : Real × M => N p.1)
       (𝓝[K] ((0 : Real), a)) (𝓝 0) :=
@@ -1051,14 +1053,14 @@ theorem galerkinLim_d_joint
       ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
         (I := I) (M := M) q 0 0 DU).toSection p.2) (Xf p.2)
     rw [covGrad0_apply (I := I) (M := M) q DU p.2 (Xf p.2)] at hpoint
-    have hDU : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU =
-        galerkinLimExt hτ hlim 3 p.1 - galerkinLimExt hτ hlim 3 0 := by
-      have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) U =
-          galerkinLimExt hτ hlim 3 p.1 := by
-        simpa only [q] using hUall 3
-      have h03 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) u0 =
-          galerkinLimExt hτ hlim 3 0 := by
-        simpa only [q] using (galerkinLimExt_zero hτ hlim 3).symm
+    have hDU : ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) DU =
+        galerkinLimExt hτ hlim D0 p.1 - galerkinLimExt hτ hlim D0 0 := by
+      have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) U =
+          galerkinLimExt hτ hlim D0 p.1 := by
+        simpa only [q] using hUall D0
+      have h03 : ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) u0 =
+          galerkinLimExt hτ hlim D0 0 := by
+        simpa only [q] using (galerkinLimExt_zero hτ hlim D0).symm
       dsimp only [DU]
       rw [← ccToHsLin_apply, map_sub, ccToHsLin_apply, ccToHsLin_apply,
         hU3, h03]
@@ -1072,7 +1074,7 @@ theorem galerkinLim_d_joint
                 ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
                   (I := I) (M := M) q 0 0 DU).toSection p.2) := hpoint
       _ ≤ q.inner p.2 (Xf p.2) (Xf p.2) *
-          (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU‖) ^ 2 :=
+          (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((D0 : Nat) : Real) DU‖) ^ 2 :=
         mul_le_mul_of_nonneg_left ((hgrad DU).1 p.2)
           (DifferentialGeometry.metric_inner_self_nonneg
             (I := I) (M := M) q p.2 (Xf p.2))
@@ -1127,7 +1129,7 @@ theorem galerkinLim_grad_zero
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S)
-    (hDim : Module.finrank Real E = 3) (hτ : 0 ≤ tau)
+    (hτ : 0 ≤ tau)
     (hσ : 0 ≤ sigma) (hστ : sigma ≤ tau)
     (hmap : Set.MapsTo (fun r : Real => (T : Real) - r)
       (Set.Icc (0 : Real) sigma) D.regular)
@@ -1191,7 +1193,7 @@ theorem galerkinLim_grad_zero
     exact (continuousWithinAt_pi.mp (continuousWithinAt_pi.mp hinv i) j)
   have hdF (i : Fin (Module.finrank Real E)) :
       ContinuousWithinAt (fun p => dF p i) K ((0 : Real), a) := by
-    have hjoint := galerkinLim_d_joint (I := I) (M := M) hDim hτ hlim a i
+    have hjoint := galerkinLim_d_joint (I := I) (M := M) hτ hlim a i
     have hsub : Set.Icc (0 : Real) sigma ×ˢ
         (trivializationAt E (TangentSpace I) a).baseSet ⊆
         Set.Icc (0 : Real) tau ×ˢ
@@ -1433,7 +1435,7 @@ theorem galerkinLim_grad_cont
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S)
-    (hDim : Module.finrank Real E = 3) (hτ : 0 < tau)
+    (hτ : 0 < tau)
     (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
@@ -1502,7 +1504,7 @@ theorem galerkinLim_grad_cont
   by_cases ht0 : t = 0
   · subst t
     have hzero := galerkinLim_grad_zero (I := I) (M := M)
-      hS hDim hτ.le htauCore.le htauCore_tau hmapCore hlim x
+      hS hτ.le htauCore.le htauCore_tau hmapCore hlim x
     refine hzero.mono ?_
     intro p hp
     exact ⟨⟨hp.1.1, le_trans hp.1.2 htau'_core.le⟩, hp.2⟩

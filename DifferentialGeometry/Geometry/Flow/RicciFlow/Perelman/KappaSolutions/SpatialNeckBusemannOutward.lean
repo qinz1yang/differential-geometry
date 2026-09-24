@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Filter Manifold Set
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Topology
-open scoped Manifold ContDiff Topology ENNReal NNReal
+open scoped Manifold ContDiff _root_.Topology ENNReal NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

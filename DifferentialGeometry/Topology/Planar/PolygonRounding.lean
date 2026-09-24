@@ -11,11 +11,11 @@ import DifferentialGeometry.Topology.Compactness.FiniteReplacement
 import DifferentialGeometry.Topology.Planar.CornerRounding
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
 import Mathlib.Geometry.Manifold.Diffeomorph
-import External.ClassificationOfSurfaces.PrePolygonDeletion
+import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion
 import Mathlib.Topology.MetricSpace.Thickening
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.External.Schoenflies.Plane
-import External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
 import Mathlib.Analysis.Calculus.AddTorsor.AffineMap
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.LineDeriv.Basic

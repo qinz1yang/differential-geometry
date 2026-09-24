@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 def euclideanUnitBallVolume (n : ℕ) : ℝ≥0∞ :=
   (volume : Measure (EuclideanSpace ℝ (Fin n))) (Metric.ball 0 1)

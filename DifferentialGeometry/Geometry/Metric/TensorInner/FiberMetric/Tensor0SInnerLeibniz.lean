@@ -339,19 +339,36 @@ end CoordAlgebra
 
 section DirectionalDeriv
 
-variable {Idx : Type} [Fintype Idx]
+variable {Idx : Type*} [Fintype Idx]
 
 open DifferentialGeometry.Tensor.Coordinates (mvfderiv_mul_real
   mvfderiv_finset_sum_real)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mvfderiv_finset_prod_real
-    {ι : Type} [DecidableEq ι] (t : Finset ι) (f : ι -> M -> Real)
+    {ι : Type*} [DecidableEq ι] (t : Finset ι) (f : ι -> M -> Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
     mvfderiv (I := I) (fun y : M => ∏ i ∈ t, f i y) x v =
       ∑ i ∈ t, (∏ j ∈ t.erase i, f j x) * mvfderiv (I := I) (f i) x v := by
   classical
+  have hmdiff : ∀ t : Finset ι,
+      (∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) →
+        MDifferentiableAt I 𝓘(Real, Real) (fun y : M => ∏ i ∈ t, f i y) x := by
+    intro t
+    induction t using Finset.induction_on with
+    | empty =>
+        intro _
+        simp only [Finset.prod_empty]
+        exact mdifferentiableAt_const
+    | insert i t hit ih =>
+        intro ht
+        have hsplit : (fun y : M => ∏ j ∈ insert i t, f j y) =
+            fun y : M => f i y * ∏ j ∈ t, f j y := by
+          funext y; rw [Finset.prod_insert hit]
+        rw [hsplit]
+        exact (ht i (Finset.mem_insert_self i t)).mul
+          (ih fun j hj => ht j (Finset.mem_insert_of_mem hj))
   induction t using Finset.induction_on with
   | empty =>
       simp only [Finset.prod_empty, Finset.sum_empty]
@@ -363,10 +380,7 @@ theorem mvfderiv_finset_prod_real
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x :=
         fun j hj => hf j (Finset.mem_insert_of_mem hj)
       have hprodt : MDifferentiableAt I 𝓘(Real, Real)
-          (fun y : M => ∏ j ∈ t, f j y) x := by
-        have h := MDifferentiableAt.prod (I := I) (𝕜 := Real)
-          (F' := Real) (f := f) (t := t) (z := x) hft
-        simpa [Finset.prod_fn] using h
+          (fun y : M => ∏ j ∈ t, f j y) x := hmdiff t hft
       have hsplit :
           (fun y : M => ∏ j ∈ insert i t, f j y) =
             fun y : M => f i y * ∏ j ∈ t, f j y := by

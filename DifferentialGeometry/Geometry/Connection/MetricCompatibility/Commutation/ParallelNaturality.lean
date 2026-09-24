@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Pairing
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.SecondDerivativeBound
 
@@ -33,19 +34,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-noncomputable def unitZeroSec :
-    Cₛ^∞⟮I; Tensor0SModel 0 ℝ E, (fun y : M => Tensor0SSpace 0 I y)⟯ :=
-  ⟨fun _ : M => Tensor0SSpace.ofModel
-      (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)),
-    contMDiff_unitZeroSection (I := I) (M := M)⟩
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] in
-@[simp] lemma unitZeroSec_apply (y : M) :
-    unitZeroSec (I := I) (M := M) y =
-      Tensor0SSpace.ofModel
-        (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) := rfl
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in

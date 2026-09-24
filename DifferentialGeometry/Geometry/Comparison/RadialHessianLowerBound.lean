@@ -878,7 +878,7 @@ private theorem branchHess_perp_le_of_minimizing_of_sectional_lower_bound
   rw [← hJLone, hshape, hleft, hright]
   exact hindex
 
-theorem branchHess_le_of_minimizing_of_sectional_lower_bound
+theorem branchHess_sharp_le_of_minimizing_of_sectional_lower_bound
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (L K : Real)
@@ -903,7 +903,10 @@ theorem branchHess_le_of_minimizing_of_sectional_lower_bound
     hessFun (I := I) g (branchRadius (I := I) g B)
         (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y ≤
       modelRadialLogDeriv K L *
-        g.inner (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y := by
+        (g.inner (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y -
+          (g.inner (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p (L • u)) 1) Y / L) ^ 2) := by
   let v : TangentSpace I p := L • u
   let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p v
   let q : M := γ 1
@@ -921,7 +924,6 @@ theorem branchHess_le_of_minimizing_of_sectional_lower_bound
       _ = L ^ 2 := by
         dsimp only [v]
         rw [gInner_smul_self (I := I) g p L u, hu, mul_one]
-  have hVpos : 0 < g.inner q V V := hVsq.symm ▸ sq_pos_of_pos hL
   let a : Real := g.inner q V Y / L ^ 2
   let Z : TangentSpace I q := Y - a • V
   have hZperp : g.inner q V Z = 0 := by
@@ -1034,14 +1036,105 @@ theorem branchHess_le_of_minimizing_of_sectional_lower_bound
       _ = g.inner q Z Z + a ^ 2 * g.inner q V V := by
         rw [hGZaV, hGaVZ, hGaVaV]
         ring
-  have hnorm_le : g.inner q Z Z ≤ g.inner q Y Y := by
-    rw [hnorm]
-    exact le_add_of_nonneg_right (mul_nonneg (sq_nonneg a) hVpos.le)
+  have hradial : a ^ 2 * g.inner q V V = (g.inner q V Y / L) ^ 2 := by
+    rw [hVsq]
+    dsimp only [a]
+    field_simp
+  have hnorm_exact : g.inner q Z Z =
+      g.inner q Y Y - (g.inner q V Y / L) ^ 2 := by
+    rw [hradial] at hnorm
+    linarith only [hnorm]
   calc
     Hess Y Y = Hess Z Z := hHdecomp
     _ ≤ modelRadialLogDeriv K L * g.inner q Z Z := hZbound
-    _ ≤ modelRadialLogDeriv K L * g.inner q Y Y :=
-      mul_le_mul_of_nonneg_left hnorm_le (modelRadialLogDeriv_pos hK hL).le
+    _ = modelRadialLogDeriv K L *
+        (g.inner q Y Y - (g.inner q V Y / L) ^ 2) := by rw [hnorm_exact]
+
+theorem branchHess_le_of_minimizing_of_sectional_lower_bound
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u : TangentSpace I p) (L K : Real)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
+    (hK : K ≤ 0)
+    (hL : 0 < L)
+    (hu : g.inner p u u = 1)
+    (hsrc : tangentSpaceModelContinuousLinearEquiv (I := I) p (L • u) ∈
+      B.hom.source)
+    (hmin : ∀ η : Real → M,
+      ContMDiffOn 𝓘(Real, Real) I 1 η (Set.Icc 0 L) →
+      η 0 = p →
+      η L = intrinsicGeodesic (I := I) g hEnorm p u L →
+      arcLength (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm p u) 0 L ≤
+        arcLength (I := I) g η 0 L)
+    (hsec : ∀ t ∈ Set.Icc (0 : Real) L,
+      SectionalBoundedBelowAt (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm p u t) K)
+    (Y : TangentSpace I
+      (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1)) :
+    hessFun (I := I) g (branchRadius (I := I) g B)
+        (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y ≤
+      modelRadialLogDeriv K L *
+        g.inner (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y := by
+  exact (branchHess_sharp_le_of_minimizing_of_sectional_lower_bound
+    (I := I) g hEnorm p u L K B hK hL hu hsrc hmin hsec Y).trans
+    (mul_le_mul_of_nonneg_left (sub_le_self _ (sq_nonneg _))
+      (modelRadialLogDeriv_pos hK hL).le)
+
+theorem branchHess_gradient_le_of_minimizing_of_sectional_lower_bound
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u : TangentSpace I p) (L K : Real)
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
+    (hK : K ≤ 0)
+    (hL : 0 < L)
+    (hu : g.inner p u u = 1)
+    (hsrc : tangentSpaceModelContinuousLinearEquiv (I := I) p (L • u) ∈
+      B.hom.source)
+    (hmin : ∀ η : Real → M,
+      ContMDiffOn 𝓘(Real, Real) I 1 η (Set.Icc 0 L) →
+      η 0 = p →
+      η L = intrinsicGeodesic (I := I) g hEnorm p u L →
+      arcLength (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm p u) 0 L ≤
+        arcLength (I := I) g η 0 L)
+    (hsec : ∀ t ∈ Set.Icc (0 : Real) L,
+      SectionalBoundedBelowAt (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm p u t) K)
+    (Y : TangentSpace I
+      (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1)) :
+    hessFun (I := I) g (branchRadius (I := I) g B)
+        (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y ≤
+      modelRadialLogDeriv K L *
+        (g.inner (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1) Y Y -
+        (g.inner (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1)
+          (gradientFun (I := I) g (branchRadius (I := I) g B)
+            (intrinsicGeodesic (I := I) g hEnorm p (L • u) 1)) Y) ^ 2) := by
+  let v : TangentSpace I p := L • u
+  let q : M := intrinsicGeodesic (I := I) g hEnorm p v 1
+  let V : TangentSpace I q :=
+    curveVelocity (I := I) (intrinsicGeodesic (I := I) g hEnorm p v) 1
+  have hvsq : g.inner p v v = L ^ 2 := by
+    dsimp only [v]
+    rw [gInner_smul_self (I := I) g p L u, hu, mul_one]
+  have hv : 0 < g.inner p v v := hvsq.symm ▸ sq_pos_of_pos hL
+  have hgrad : gradientFun (I := I) g (branchRadius (I := I) g B) q =
+      L⁻¹ • V := by
+    have h := grad_branchRadius (I := I) B hsrc hv
+    rw [hvsq, Real.sqrt_sq_eq_abs, abs_of_pos hL] at h
+    with_unfolding_all exact h
+  have hradial : g.inner q
+      (gradientFun (I := I) g (branchRadius (I := I) g B) q) Y =
+      g.inner q V Y / L := by
+    rw [hgrad, ContinuousLinearMap.map_smul₂, smul_eq_mul]
+    ring
+  have h := branchHess_sharp_le_of_minimizing_of_sectional_lower_bound
+    (I := I) g hEnorm p u L K B hK hL hu hsrc hmin hsec Y
+  change hessFun (I := I) g (branchRadius (I := I) g B) q Y Y ≤
+    modelRadialLogDeriv K L * (g.inner q Y Y -
+      (g.inner q (gradientFun (I := I) g (branchRadius (I := I) g B) q) Y) ^ 2)
+  rw [hradial]
+  exact h
 
 theorem branchHess_le_of_minimizing_of_sectional_lower_bound_zero
     (g : SmoothRiemannianMetric I M)

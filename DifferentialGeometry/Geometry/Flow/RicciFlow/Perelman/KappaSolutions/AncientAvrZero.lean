@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -140,7 +140,7 @@ theorem ancientKappaThree_avr_eq_zero {kappa : ℝ}
   have ht0le : t0 ≤ 0 := by
     simpa only [hF.carrier_eq, Set.mem_Iic] using ht0
   obtain ⟨hQ, hdata⟩ :=
-    ancientKappa_exists_curvatureNormalization_ascr F hdim hF t0 ht0le p
+    ancientKappa_exists_curvatureNormalization_ascr F hF t0 ht0le p
   let G := curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq
     t0 (F.S.scalar t0 p) hQ ht0 p
   have hG : IsAncientKappaSolution (I := I) kappa G := hdata.1

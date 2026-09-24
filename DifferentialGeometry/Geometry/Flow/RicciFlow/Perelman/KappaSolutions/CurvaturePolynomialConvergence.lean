@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open CanonicalNeighborhood.FiniteHorn
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 open DifferentialGeometry.Analysis DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.Multilinear
@@ -70,19 +70,7 @@ private local instance curvaturePolynomialC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
 
-theorem mapCInfConvergence_chartInvGram_of_gram
-    (g : ℕ → SmoothRiemannianMetric I M) (g₀ : SmoothRiemannianMetric I M)
-    (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
-    (hgram : ∀ i j : CoordinateIdx (𝕜 := ℝ) E, MapCInfConvergenceOnCompacts W
-      (fun n => chartGramOnE (I := I) (g n) p i j)
-      (chartGramOnE (I := I) g₀ p i j)) (i j : CoordinateIdx (𝕜 := ℝ) E) :
-    MapCInfConvergenceOnCompacts W (fun n => chartInvGramOnE (I := I) (g n) p i j)
-      (chartInvGramOnE (I := I) g₀ p i j) := by
-  have hh := mapCInfConvergence_chartJetOperator g g₀ p hW hWt hgram
-    (fun J => (Matrix.of J.1)⁻¹ i j)
-    (fun _ hJ => contDiffAt_jetInvGram hJ i j)
-  exact hh.congr hW (fun n y _ => (jet2_chartGram_invGram (g n) p y i j).symm)
-    (fun y _ => (jet2_chartGram_invGram g₀ p y i j).symm)
+export DifferentialGeometry.CheegerGromovCompactness (mapCInfConvergence_chartInvGram_of_gram)
 
 variable [T2Space M]
 

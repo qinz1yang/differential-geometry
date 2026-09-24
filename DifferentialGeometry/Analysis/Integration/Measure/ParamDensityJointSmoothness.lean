@@ -30,7 +30,9 @@ theorem contMDiffAt_paramGramMatrix_joint
       ContMDiffAt (IP.prod 𝓘(ℝ, E)) I.tangent n
         (fun p : P × E => (⟨Φ p.1 p.2,
           mfderiv 𝓘(ℝ, E) I (Φ p.1) p.2 (chartModelBasis E i)⟩ : TangentBundle I M)) p₀ :=
-    hΦ.partial_mfderiv_apply contMDiffAt_const le_rfl
+    hΦ.partial_mfderiv_apply (by
+      rw [contMDiffAt_totalSpace]
+      exact ⟨contMDiffAt_snd, by simpa using contMDiffAt_const⟩) le_rfl
   refine contMDiffAt_pi_space.mpr fun i => contMDiffAt_pi_space.mpr fun j => ?_
   have hinner : ContMDiffAt (IP.prod 𝓘(ℝ, E)) (I.prod 𝓘(ℝ, ℝ)) n
       (fun p : P × E => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) (Φ p.1 p.2)

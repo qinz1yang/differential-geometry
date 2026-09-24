@@ -933,7 +933,9 @@ private theorem hamilton_perturbed_harnack_block_evolution_within_of_pulled_test
   let B := basis.map (φ clock.time x).toLinearEquiv
   have hB : ∀ i j, (S.base.metric clock.time).inner x (B i) (B j) = if i = j then 1 else 0 :=
     fun i j => (hiso (basis i) (basis j)).trans (horth i j)
-  sorry
+  exact hamilton_perturbed_harnack_block_exact_evolution_of_phi
+    (I := I) S hS clock ht x B hB U W hskew hDW' hDU' hUt' hWt'
+      hT phi psi phi' psi' hphi hpsi hh
 
 
 theorem hamilton_perturbed_harnack_block_evolution_within_pullback

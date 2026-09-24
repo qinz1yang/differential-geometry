@@ -1,4 +1,7 @@
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderQuotientSmoothModels
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Descent
+import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
+import Mathlib.Geometry.Manifold.SmoothEmbedding
 
 set_option autoImplicit false
 
@@ -6,9 +9,11 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Set Topology
+open Set _root_.Topology Manifold
+open scoped ContDiff
 
 local notation "SphereTwo" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
+local notation "CylinderI" => ModelWithCorners.prod 𝓘(ℝ, EuclideanSpace ℝ (Fin 2)) 𝓘(ℝ, ℝ)
 
 namespace CylinderDiagonalQuotient
 
@@ -50,6 +55,53 @@ theorem isClosedEmbedding_projectiveSlice : IsClosedEmbedding projectiveSlice :=
 theorem isCompact_range_projectiveSlice : IsCompact (Set.range projectiveSlice) :=
   isCompact_range continuous_projectiveSlice
 
+theorem contMDiff_projectiveSlice : ContMDiff (𝓡 2) CylinderI ∞ projectiveSlice := by
+  apply contMDiff_of_comp_surjective_localDiffeomorph
+    SphereAntipodalQuotient.proj SphereAntipodalQuotient.isLocalDiffeomorph_proj
+    SphereAntipodalQuotient.surjective_proj
+  exact isLocalDiffeomorph_proj.contMDiff.comp (contMDiff_id.prodMk contMDiff_const)
+
+set_option backward.isDefEq.respectTransparency false in
+theorem isSmoothEmbedding_projectiveSlice :
+    IsSmoothEmbedding (𝓡 2) CylinderI ∞ projectiveSlice := by
+  refine ⟨DifferentialGeometry.Topology.Manifold.isImmersion_of_injective_mfderiv
+    (by decide) contMDiff_projectiveSlice ?_, isClosedEmbedding_projectiveSlice.isEmbedding⟩
+  intro y
+  obtain ⟨x, rfl⟩ := SphereAntipodalQuotient.surjective_proj y
+  let A := (SphereAntipodalQuotient.isLocalDiffeomorph_proj x).mfderivToContinuousLinearEquiv
+    (by decide : (∞ : ℕ∞ω) ≠ 0)
+  let B := (isLocalDiffeomorph_proj (x, 0)).mfderivToContinuousLinearEquiv
+    (by decide : (∞ : ℕ∞ω) ≠ 0)
+  have hder :
+      (mfderiv (𝓡 2) CylinderI projectiveSlice (SphereAntipodalQuotient.proj x)).comp
+        (mfderiv (𝓡 2) (𝓡 2) SphereAntipodalQuotient.proj x) =
+      (mfderiv CylinderI CylinderI proj (x, 0)).comp
+        (ContinuousLinearMap.inl ℝ (TangentSpace (𝓡 2) x)
+          (TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))) := by
+    calc
+      _ = mfderiv (𝓡 2) CylinderI
+          (projectiveSlice ∘ SphereAntipodalQuotient.proj) x :=
+        (mfderiv_comp x (contMDiff_projectiveSlice.mdifferentiableAt (by decide))
+          (SphereAntipodalQuotient.isLocalDiffeomorph_proj.contMDiff.mdifferentiableAt
+            (by decide))).symm
+      _ = mfderiv (𝓡 2) CylinderI (proj ∘ (fun z : SphereTwo => (z, (0 : ℝ)))) x := rfl
+      _ = _ := by
+        rw [mfderiv_comp x (isLocalDiffeomorph_proj.contMDiff.mdifferentiableAt (by decide))
+          (show MDifferentiableAt (𝓡 2) CylinderI
+            (fun z : SphereTwo => (z, (0 : ℝ))) x from
+              mdifferentiableAt_id.prodMk mdifferentiableAt_const), mfderiv_prod_left]
+  intro v w hvw
+  obtain ⟨a, rfl⟩ := A.surjective v
+  obtain ⟨b, rfl⟩ := A.surjective w
+  have hab : B (a, 0) = B (b, 0) := by
+    change (mfderiv CylinderI CylinderI proj (x, 0)) (a, 0) =
+      (mfderiv CylinderI CylinderI proj (x, 0)) (b, 0)
+    have ha := congrArg (fun L => L a) hder
+    have hb := congrArg (fun L => L b) hder
+    exact ha.symm.trans (hvw.trans hb)
+  exact congrArg A (congrArg Prod.fst (B.injective hab))
+
+
 end CylinderDiagonalQuotient
 
 namespace SphereAntipodalQuotient
@@ -64,6 +116,16 @@ theorem isClosedEmbedding_zeroSlice : IsClosedEmbedding zeroSlice := by
 
 theorem isCompact_range_zeroSlice : IsCompact (Set.range zeroSlice) :=
   isCompact_range (continuous_id.prodMk continuous_const)
+
+theorem isSmoothEmbedding_zeroSlice : IsSmoothEmbedding (𝓡 2) CylinderI ∞ zeroSlice := by
+  refine ⟨DifferentialGeometry.Topology.Manifold.isImmersion_of_injective_mfderiv
+    (by decide) (contMDiff_id.prodMk contMDiff_const) ?_, isClosedEmbedding_zeroSlice.isEmbedding⟩
+  intro x
+  change Function.Injective (mfderiv (𝓡 2) CylinderI (fun q : SphereAntipodalQuotient =>
+    (q, (0 : ℝ))) x)
+  rw [mfderiv_prod_left]
+  exact fun _ _ h => congrArg Prod.fst h
+
 
 end SphereAntipodalQuotient
 

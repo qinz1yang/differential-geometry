@@ -1,4 +1,7 @@
+import Mathlib.Topology.Order.LeftRightNhds
+import Mathlib.Topology.Constructions.SumProd
 import Mathlib.Topology.Order.Basic
+import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set Filter
 open scoped Topology
@@ -55,3 +58,69 @@ theorem Set.OrdConnected.exists_Icc_mem_subset_of_mem_nhdsWithin
   · rw [← Icc_inter_Icc]
     intro x hx
     exact ⟨hab hx.1, hVU ⟨hcV hx.2, hab hx.1⟩⟩
+
+theorem ContinuousWithinAt.exists_mapsTo_Icc_prod_nhds {α M N : Type*}
+    [LinearOrder α] [DenselyOrdered α] [TopologicalSpace α] [OrderTopology α]
+    [TopologicalSpace M] [TopologicalSpace N]
+    {G : α × M → N} {s T : α} (hst : s < T) {x : M} {U : Set N}
+    (hG : ContinuousWithinAt G (Icc s T ×ˢ (univ : Set M)) (T, x))
+    (hU : U ∈ 𝓝 (G (T, x))) :
+    ∃ s' : α, s ≤ s' ∧ s' < T ∧ ∃ V : Set M, IsOpen V ∧ x ∈ V ∧
+      MapsTo G (Icc s' T ×ˢ V) U := by
+  have hpre := hG.preimage_mem_nhdsWithin hU
+  rcases mem_nhdsWithin_prod_iff.mp hpre with ⟨A, hA, B, hB, hAB⟩
+  rw [nhdsWithin_Icc_eq_nhdsLE hst] at hA
+  rw [nhdsWithin_univ] at hB
+  rcases (mem_nhdsLE_iff_exists_mem_Ico_Ioc_subset hst).mp hA with ⟨l, hl, hlA⟩
+  rcases exists_between hl.2 with ⟨s', hls', hs'T⟩
+  rcases mem_nhds_iff.mp hB with ⟨V, hVB, hVopen, hxV⟩
+  refine ⟨s', le_trans hl.1 hls'.le, hs'T, V, hVopen, hxV, ?_⟩
+  rintro p ⟨⟨ht1, ht2⟩, hxV'⟩
+  exact hAB ⟨hlA ⟨lt_of_lt_of_le hls' ht1, ht2⟩, hVB hxV'⟩
+
+theorem ContinuousOn.exists_mapsTo_Icc_prod_nhds {α M N : Type*}
+    [LinearOrder α] [DenselyOrdered α] [TopologicalSpace α] [OrderTopology α]
+    [TopologicalSpace M] [TopologicalSpace N]
+    {G : α × M → N} {s T : α} (hst : s < T) {x : M}
+    {U : Set N} (hU : IsOpen U) (hxU : G (T, x) ∈ U)
+    (hG : ContinuousOn G (Icc s T ×ˢ (univ : Set M))) :
+    ∃ s' : α, s ≤ s' ∧ s' < T ∧ ∃ V : Set M, IsOpen V ∧ x ∈ V ∧
+      MapsTo G (Icc s' T ×ˢ V) U := by
+  exact (hG (T, x) ⟨⟨hst.le, le_rfl⟩, mem_univ _⟩).exists_mapsTo_Icc_prod_nhds
+    hst (hU.mem_nhds hxU)
+
+section
+
+
+variable {A M : Type*} [TopologicalSpace A] [TopologicalSpace M]
+
+theorem ContinuousWithinAt.exists_mapsTo_Icc_prod_open
+    {F : ℝ × A → M} {a b t : ℝ} {s : Set A} {z : A} {U : Set M}
+    (hF : ContinuousWithinAt F (Icc a b ×ˢ s) (t, z))
+    (ht : t ∈ Ico a b) (hs : IsOpen s) (hz : z ∈ s) (hU : U ∈ 𝓝 (F (t, z))) :
+    ∃ c d : ℝ, c < d ∧ t ∈ Icc c d ∧ Icc c d ∈ 𝓝[Icc a b] t ∧ Icc c d ⊆ Icc a b ∧
+      ∃ V : Set A, IsOpen V ∧ z ∈ V ∧ V ⊆ s ∧ MapsTo F (Icc c d ×ˢ V) U := by
+  have hpre := hF.preimage_mem_nhdsWithin hU
+  rcases mem_nhdsWithin_prod_iff.mp hpre with ⟨C, hC, V, hV, hCV⟩
+  rw [nhdsWithin_eq_nhds.mpr (hs.mem_nhds hz)] at hV
+  rcases mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hC with ⟨B, hB, hBC⟩
+  rcases mem_nhds_iff_exists_Ioo_subset.mp hB with ⟨l, r, ⟨hlt, htr⟩, hlr⟩
+  rcases exists_between hlt with ⟨l', hll', hl't⟩
+  rcases exists_between (lt_min htr ht.2) with ⟨r', htr', hr'rb⟩
+  rcases mem_nhds_iff.mp (inter_mem hV (hs.mem_nhds hz)) with ⟨W, hWV, hW, hzW⟩
+  refine ⟨max a l', r', max_lt_iff.mpr ⟨ht.1.trans_lt htr', hl't.trans htr'⟩,
+    ⟨max_le ht.1 hl't.le, htr'.le⟩, ?_, ?_, W, hW, hzW, ?_, ?_⟩
+  · have hnl : Icc l' r' ∈ 𝓝 t := Icc_mem_nhds hl't htr'
+    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds hnl] with q hq hqr
+    exact ⟨max_le hq.1 hqr.1, hqr.2⟩
+  · intro q hq
+    exact ⟨(le_max_left _ _).trans hq.1, hq.2.trans (lt_min_iff.mp hr'rb).2.le⟩
+  · intro q hq
+    exact (hWV hq).2
+  · rintro ⟨q, y⟩ ⟨hq, hy⟩
+    apply hCV
+    refine ⟨hBC ⟨?_, ?_⟩, (hWV hy).1⟩
+    · exact hlr ⟨hll'.trans_le ((le_max_right _ _).trans hq.1), hq.2.trans_lt (lt_min_iff.mp hr'rb).1⟩
+    · exact ⟨(le_max_left _ _).trans hq.1, hq.2.trans (lt_min_iff.mp hr'rb).2.le⟩
+
+end

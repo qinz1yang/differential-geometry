@@ -18,7 +18,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
@@ -32,6 +32,8 @@ theorem lInj_isOpen
     (T : Real) (x : M) (tau : Real) :
     IsOpen (lInjDomain S T x tau) := by
   classical
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : PseudoMetricSpace M := TopologicalSpace.pseudoMetrizableSpacePseudoMetric M
   rw [isOpen_iff_mem_nhds]
   intro Z hZ
   obtain ⟨sigma, hsigma, hZmin⟩ := hZ
@@ -238,6 +240,8 @@ theorem lInj_local
     (hZ : Z ∈ lInjDomain S T x tau) :
     IsLocalDiffeomorphAt 𝓘(Real, E) I ∞
       (fun W : E => lExp S T x W tau) Z := by
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : PseudoMetricSpace M := TopologicalSpace.pseudoMetrizableSpacePseudoMetric M
   obtain ⟨sigma, hsigma, hmin⟩ := hZ
   have hminTau : (Z, tau) ∈ lMinDomain S T x :=
     lMinDomain_down S hS T x Z hmin htau hsigma.le
@@ -251,6 +255,8 @@ theorem lInj_inj
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (tau : Real) (htau : 0 < tau) :
     Set.InjOn (fun Z : E => lExp S T x Z tau) (lInjDomain S T x tau) := by
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : PseudoMetricSpace M := TopologicalSpace.pseudoMetrizableSpacePseudoMetric M
   intro Z hZ W hW hend
   obtain ⟨sigmaZ, hsigmaZ, hZmin⟩ := hZ
   obtain ⟨sigmaW, hsigmaW, hWmin⟩ := hW

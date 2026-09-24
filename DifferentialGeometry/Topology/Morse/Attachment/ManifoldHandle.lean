@@ -3399,7 +3399,8 @@ theorem morseAttachingMap_eq_modelHandleMap {m k : ℕ} (hk : k ≤ m + 1) (c ε
 
 theorem isClosed_morseLowerSublevel {m k : ℕ} (hk : k ≤ m + 1) (c ε : ℝ) :
     IsClosed (sublevel (morseNormalForm hk c) (c - ε) : Set (MorseModel (m + 1))) := by
-  have hcont : Continuous (morseNormalForm hk c) := (contDiff_morseNormalForm hk c).continuous
+  have hcont : Continuous (morseNormalForm hk c) :=
+    (contDiff_morseNormalForm (m := ∞) hk c).continuous
   change IsClosed ((morseNormalForm hk c) ⁻¹' Set.Iic (c - ε))
   exact isClosed_Iic.preimage hcont
 
@@ -6870,7 +6871,8 @@ theorem continuous_morseBeltCellMapExt {m k : ℕ} (hk : k ≤ m + 1) (c ε r : 
             have hcl : IsClosed (modelHandle hk ε r : Set (MorseModel (m + 1))) := by
               rw [modelHandle_eq_inter hk c ε r (le_of_lt hr)]
               exact IsClosed.inter (isClosed_le (continuous_norm.comp (continuous_posPart hk)) continuous_const)
-                (isClosed_le continuous_const (CellAttachment.contDiff_morseNormalForm hk c).continuous)
+                (isClosed_le continuous_const
+                  (CellAttachment.contDiff_morseNormalForm (m := ∞) hk c).continuous)
             exact hcl.preimage (continuous_subtype_val.comp continuous_subtype_val)
           exact hy₀ (hclosed.closure_subset_iff.mpr hsub hycl)
         simp [ContinuousWithinAt, hbot]
@@ -6878,13 +6880,13 @@ theorem continuous_morseBeltCellMapExt {m k : ℕ} (hk : k ≤ m + 1) (c ε r : 
   · by_cases hgt : c - ε < morseNormalForm hk c (y₀.1 : MorseModel (m + 1))
     · exact (continuousOn_morseBeltCellMapExt_cell hk c ε r data hε hεr' hr) y₀ hgt |>.continuousAt
         (IsOpen.mem_nhds (isOpen_lt continuous_const
-          ((CellAttachment.contDiff_morseNormalForm hk c).continuous.comp
+          ((CellAttachment.contDiff_morseNormalForm (m := ∞) hk c).continuous.comp
             (continuous_subtype_val.comp continuous_subtype_val))) hgt)
     · have hlt : morseNormalForm hk c (y₀.1 : MorseModel (m + 1)) < c - ε := by
         exact lt_of_le_of_ne (not_lt.mp hgt) hb
       exact (continuousOn_morseBeltCellMapExt_lower hk c ε r data hε hεr' hr) y₀ hlt |>.continuousAt
         (IsOpen.mem_nhds (isOpen_lt
-          ((CellAttachment.contDiff_morseNormalForm hk c).continuous.comp
+          ((CellAttachment.contDiff_morseNormalForm (m := ∞) hk c).continuous.comp
             (continuous_subtype_val.comp continuous_subtype_val)) continuous_const) hlt)
 
 theorem continuous_morseBeltMapOnOpen_inv {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)

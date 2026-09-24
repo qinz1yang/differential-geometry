@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.Connected.Frontier
 import DifferentialGeometry.External.Schoenflies.JordanClosed
 import DifferentialGeometry.External.Schoenflies.PolyArcRealize
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
@@ -12,6 +13,46 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 noncomputable section
 open Set Topology
+
+namespace Schoenflies.IsSeparating
+
+theorem inside_eq_compl_closure_outside {C : Set Plane} (hC : IsSeparating C) :
+    inside C = (closure (outside C))ᶜ := by
+  rw [(IsRegionOf.outside C).closure_eq hC]
+  ext p
+  constructor
+  · intro hp
+    rintro (ho | hc)
+    · exact disjoint_left.mp disjoint_inside_outside hp ho
+    · exact hp.1 hc
+  · intro hp
+    have hpc : p ∉ C := fun hc => hp (Or.inr hc)
+    have hm : p ∈ inside C ∪ outside C := by
+      rw [inside_union_outside]
+      exact hpc
+    exact hm.resolve_right (fun ho => hp (Or.inl ho))
+
+theorem outside_eq_compl_closure_inside {C : Set Plane} (hC : IsSeparating C) :
+    outside C = (closure (inside C))ᶜ := by
+  rw [(IsRegionOf.inside C).closure_eq hC]
+  ext p
+  constructor
+  · intro hp
+    rintro (hi | hc)
+    · exact disjoint_left.mp disjoint_inside_outside hi hp
+    · exact hp.1 hc
+  · intro hp
+    have hpc : p ∉ C := fun hc => hp (Or.inr hc)
+    have hm : p ∈ inside C ∪ outside C := by
+      rw [inside_union_outside]
+      exact hpc
+    exact hm.resolve_left (fun hi => hp (Or.inl hi))
+
+theorem frontier_closure_inside {C : Set Plane} (hC : IsSeparating C) :
+    frontier (closure (inside C)) = C := by
+  rw [← frontier_compl, ← hC.outside_eq_compl_closure_inside, hC.frontier_outside]
+
+end Schoenflies.IsSeparating
 
 namespace DifferentialGeometry.Topology.PlanarJordan
 
@@ -67,22 +108,8 @@ theorem eq_of_isJordanCurve_of_subset {C J : Set Schoenflies.Plane}
   · exact (hcut.ne (hA.trans hB.symm)).elim
 
 theorem frontier_closure_inside {J : Set Schoenflies.Plane} (hJ : Schoenflies.IsJordanCurve J) :
-    frontier (closure (Schoenflies.inside J)) = J := by
-  have hsep := Schoenflies.jordan_curve_theorem hJ
-  refine Subset.antisymm (frontier_closure_subset.trans hsep.frontier_inside.subset) ?_
-  intro x hx
-  have hxIn : x ∈ closure (Schoenflies.inside J) :=
-    frontier_subset_closure (hsep.frontier_inside.symm.subset hx)
-  have hxOut : x ∈ closure (Schoenflies.outside J) :=
-    frontier_subset_closure (hsep.frontier_outside.symm.subset hx)
-  have hdisj : Disjoint (closure (Schoenflies.inside J)) (Schoenflies.outside J) :=
-    Schoenflies.disjoint_inside_outside.closure_left hsep.isOpen_outside
-  have hout : Schoenflies.outside J ⊆ (closure (Schoenflies.inside J))ᶜ :=
-    fun y hy hy' => Set.disjoint_left.mp hdisj hy' hy
-  have hxNot := closure_mono hout hxOut
-  rw [closure_compl] at hxNot
-  rw [frontier, closure_closure]
-  exact ⟨hxIn, hxNot⟩
+    frontier (closure (Schoenflies.inside J)) = J :=
+  (Schoenflies.jordan_curve_theorem hJ).frontier_closure_inside
 
 theorem closure_inside_union_of_isCrosscut {J P A B : Set Schoenflies.Plane}
     {p q : Schoenflies.Plane} (h : Schoenflies.IsCrosscut J P p q)
@@ -183,5 +210,38 @@ theorem exists_regions_of_simple_closed_curve
     have he : IsCompact (closure (Schoenflies.outside C)) :=
       e.isCompact_preimage.mp (by simpa only [e.preimage_closure] using hcompact)
     exact hsep.not_isBounded_outside (he.isBounded.subset subset_closure)
+
+
+theorem eq_closure_inside_of_isCompact_of_frontier_subset
+    {K C : Set Schoenflies.Plane} (hK : IsCompact K)
+    (hC : Schoenflies.IsJordanCurve C) (hne : (interior K).Nonempty)
+    (hfront : frontier K ⊆ C) : K = closure (Schoenflies.inside C) := by
+  have hsep := Schoenflies.jordan_curve_theorem hC
+  have hdisj : Disjoint (Schoenflies.outside C) (frontier K) :=
+    disjoint_left.mpr (fun x hx hxf => hx.1 (hfront hxf))
+  have hKout : Disjoint K (Schoenflies.outside C) := by
+    apply disjoint_left.mpr
+    intro x hxK hxo
+    have hxi : x ∈ interior K := (mem_interior_iff_notMem_frontier hxK).mpr
+      (fun hxf => hxo.1 (hfront hxf))
+    have hsub :=
+      DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+      hsep.isConnected_outside.isPreconnected hdisj ⟨x, hxo, hxi⟩
+    exact hsep.not_isBounded_outside (hK.isBounded.subset (hsub.trans interior_subset))
+  have hsub : K ⊆ closure (Schoenflies.inside C) := by
+    intro x hx
+    by_contra hn
+    have hout : x ∈ Schoenflies.outside C := by
+      rw [hsep.outside_eq_compl_closure_inside]
+      exact hn
+    exact disjoint_left.mp hKout hx hout
+  obtain ⟨x, hx⟩ := hne
+  obtain ⟨y, hyK, hyinside⟩ := mem_closure_iff.mp (hsub (interior_subset hx))
+    (interior K) isOpen_interior hx
+  have hinside : Schoenflies.inside C ⊆ interior K :=
+    DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+      hsep.isConnected_inside.isPreconnected
+      (disjoint_left.mpr (fun z hz hzf => hz.1 (hfront hzf))) ⟨y, hyinside, hyK⟩
+  exact subset_antisymm hsub (closure_minimal (hinside.trans interior_subset) hK.isClosed)
 
 end DifferentialGeometry.Topology.PlanarJordan

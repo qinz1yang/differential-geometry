@@ -2,9 +2,11 @@ import DifferentialGeometry.Geometry.Metric.Family.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Pullback
-
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
+
+section
+
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -545,5 +547,40 @@ theorem isSolutionOn_pullback
 end RicciFlow
 end PDE
 end DifferentialGeometry
+
+end
+
+end
+section
+
+set_option autoImplicit false
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+  {D : Geometry.Curvature.RealTimeInterval}
+
+@[simp] theorem SolutionOn.pullback_symm
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N) :
+    (S.pullback Φ).pullback Φ.symm = S := by
+  cases S with
+  | mk base =>
+    cases base with
+    | mk metric =>
+      unfold SolutionOn.pullback
+      congr 2
+      funext t
+      rw [Diffeomorph.pullbackMetricCross_trans, Φ.symm_trans_self,
+        Diffeomorph.pullbackMetricCross_refl]
+
+end DifferentialGeometry.PDE.RicciFlow
 
 end

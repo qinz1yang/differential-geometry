@@ -1,4 +1,5 @@
 import Mathlib.Topology.Homeomorph.Lemmas
+import DifferentialGeometry.Topology.Order.DisjointGraphs
 import Mathlib.Topology.Algebra.Ring.Real
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Order.IntermediateValue
@@ -12,43 +13,58 @@ namespace DifferentialGeometry.Topology
 variable {N : Type*} [TopologicalSpace N]
 
 def graphBandHomeomorph (a b : N → ℝ) (ha : Continuous a) (hb : Continuous b)
-    (hab : ∀ p, a p < b p) : N × ℝ ≃ₜ N × ℝ where
+    (hab : ∀ p, a p ≠ b p) : N × ℝ ≃ₜ N × ℝ where
   toEquiv := Equiv.prodCongrRight (fun p ↦
-    (affineHomeomorph (b p - a p) (a p) (ne_of_gt (sub_pos.mpr (hab p)))).toEquiv)
+    (affineHomeomorph (b p - a p) (a p) (sub_ne_zero.mpr (hab p).symm)).toEquiv)
   continuous_toFun := continuous_fst.prodMk
     ((((hb.sub ha).comp continuous_fst).mul continuous_snd).add (ha.comp continuous_fst))
   continuous_invFun := continuous_fst.prodMk
     ((continuous_snd.sub (ha.comp continuous_fst)).div
       ((hb.sub ha).comp continuous_fst)
-      (fun x ↦ ne_of_gt (sub_pos.mpr (hab x.1))))
+      (fun x ↦ sub_ne_zero.mpr (hab x.1).symm))
 
 @[simp] theorem graphBandHomeomorph_apply (a b : N → ℝ)
-    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) (x : N × ℝ) :
+    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p ≠ b p) (x : N × ℝ) :
     graphBandHomeomorph a b ha hb hab x = (x.1, a x.1 + (b x.1 - a x.1) * x.2) :=
   Prod.ext rfl (add_comm _ _)
 
 @[simp] theorem graphBandHomeomorph_symm_apply (a b : N → ℝ)
-    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) (x : N × ℝ) :
+    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p ≠ b p) (x : N × ℝ) :
     (graphBandHomeomorph a b ha hb hab).symm x =
       (x.1, (x.2 - a x.1) / (b x.1 - a x.1)) := rfl
 
-private theorem image_closed_strip (a b : N → ℝ)
-    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) :
+theorem graphBandHomeomorph_image_closed_strip (a b : N → ℝ)
+    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p ≠ b p) :
     graphBandHomeomorph a b ha hb hab '' ((univ : Set N) ×ˢ Icc (0 : ℝ) 1) =
-      {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} := by
+      {x : N × ℝ | x.2 ∈ uIcc (a x.1) (b x.1)} := by
   rw [(graphBandHomeomorph a b ha hb hab).image_eq_preimage_symm]
   ext ⟨p, t⟩
   change (True ∧ 0 ≤ (t - a p) / (b p - a p) ∧
-    (t - a p) / (b p - a p) ≤ 1) ↔ a p ≤ t ∧ t ≤ b p
-  rw [true_and, le_div_iff₀ (sub_pos.mpr (hab p)), zero_mul,
-    div_le_one (sub_pos.mpr (hab p))]
-  constructor <;> rintro ⟨h₀, h₁⟩ <;> constructor <;> linarith only [h₀, h₁]
+    (t - a p) / (b p - a p) ≤ 1) ↔ t ∈ uIcc (a p) (b p)
+  rw [true_and]
+  rcases lt_or_gt_of_ne (hab p) with h | h
+  · rw [uIcc_of_le h.le, le_div_iff₀ (sub_pos.mpr h), zero_mul,
+      div_le_one (sub_pos.mpr h)]
+    constructor <;> rintro ⟨h₀, h₁⟩ <;> constructor <;> linarith only [h₀, h₁]
+  · rw [uIcc_of_ge h.le, le_div_iff_of_neg (sub_neg.mpr h), zero_mul,
+      div_le_iff_of_neg (sub_neg.mpr h), one_mul]
+    constructor <;> rintro ⟨h₀, h₁⟩ <;> constructor <;> linarith only [h₀, h₁]
+
+private theorem image_closed_strip (a b : N → ℝ)
+    (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) :
+    graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p)) '' ((univ : Set N) ×ˢ Icc (0 : ℝ) 1) =
+      {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} := by
+  rw [graphBandHomeomorph_image_closed_strip]
+  ext x
+  change x.2 ∈ uIcc (a x.1) (b x.1) ↔ a x.1 ≤ x.2 ∧ x.2 ≤ b x.1
+  rw [uIcc_of_le (hab x.1).le]
+  rfl
 
 private theorem image_open_strip (a b : N → ℝ)
     (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) :
-    graphBandHomeomorph a b ha hb hab '' ((univ : Set N) ×ˢ Ioo (0 : ℝ) 1) =
+    graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p)) '' ((univ : Set N) ×ˢ Ioo (0 : ℝ) 1) =
       {x : N × ℝ | a x.1 < x.2 ∧ x.2 < b x.1} := by
-  rw [(graphBandHomeomorph a b ha hb hab).image_eq_preimage_symm]
+  rw [(graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p))).image_eq_preimage_symm]
   ext ⟨p, t⟩
   change (True ∧ 0 < (t - a p) / (b p - a p) ∧
     (t - a p) / (b p - a p) < 1) ↔ a p < t ∧ t < b p
@@ -61,7 +77,7 @@ theorem interior_graphBand (a b : N → ℝ)
     interior {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} =
       {x : N × ℝ | a x.1 < x.2 ∧ x.2 < b x.1} := by
   rw [← image_closed_strip a b ha hb hab,
-    ← (graphBandHomeomorph a b ha hb hab).image_interior]
+    ← (graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p))).image_interior]
   simpa only [interior_prod_eq, interior_univ, interior_Icc] using
     image_open_strip a b ha hb hab
 
@@ -70,7 +86,7 @@ theorem closure_openGraphBand (a b : N → ℝ)
     closure {x : N × ℝ | a x.1 < x.2 ∧ x.2 < b x.1} =
       {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} := by
   rw [← image_open_strip a b ha hb hab,
-    ← (graphBandHomeomorph a b ha hb hab).image_closure]
+    ← (graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p))).image_closure]
   simpa only [closure_prod_eq, closure_univ, closure_Ioo zero_ne_one] using
     image_closed_strip a b ha hb hab
 
@@ -79,7 +95,7 @@ theorem frontier_graphBand (a b : N → ℝ)
     frontier {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} =
       range (fun p ↦ (p, a p)) ∪ range (fun p ↦ (p, b p)) := by
   rw [← image_closed_strip a b ha hb hab,
-    ← (graphBandHomeomorph a b ha hb hab).image_frontier,
+    ← (graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p))).image_frontier,
     frontier_univ_prod_eq, frontier_Icc zero_le_one]
   ext y
   constructor
@@ -98,19 +114,86 @@ theorem isCompact_graphBand [CompactSpace N] (a b : N → ℝ)
     IsCompact {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} := by
   rw [← image_closed_strip a b ha hb hab]
   exact (isCompact_univ.prod isCompact_Icc).image
-    (graphBandHomeomorph a b ha hb hab).continuous
+    (graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p))).continuous
 
 theorem isPreconnected_openGraphBand [PreconnectedSpace N] (a b : N → ℝ)
     (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) :
     IsPreconnected {x : N × ℝ | a x.1 < x.2 ∧ x.2 < b x.1} := by
   rw [← image_open_strip a b ha hb hab]
   exact (isPreconnected_univ.prod isPreconnected_Ioo).image _
-    (graphBandHomeomorph a b ha hb hab).continuous.continuousOn
+    (graphBandHomeomorph a b ha hb (fun p ↦ ne_of_lt (hab p))).continuous.continuousOn
 
 theorem isPreconnected_graphBand [PreconnectedSpace N] (a b : N → ℝ)
     (ha : Continuous a) (hb : Continuous b) (hab : ∀ p, a p < b p) :
     IsPreconnected {x : N × ℝ | a x.1 ≤ x.2 ∧ x.2 ≤ b x.1} := by
   rw [← closure_openGraphBand a b ha hb hab]
   exact (isPreconnected_openGraphBand a b ha hb hab).closure
+
+theorem exists_graph_band_of_affine_height
+    {X A : Type*} [TopologicalSpace X]
+    (ψ : A → X × ℝ) {s c : ℝ} (hs : s ≠ 0)
+    {a b : X → ℝ} (ha : Continuous a) (hb : Continuous b) (hab : ∀ x, a x < b x)
+    (hrange : range (fun x => ((ψ x).1, s * (ψ x).2 + c)) =
+      {y : X × ℝ | a y.1 ≤ y.2 ∧ y.2 ≤ b y.1}) :
+    ∃ l r : X → ℝ, Continuous l ∧ Continuous r ∧ (∀ x, l x < r x) ∧
+      range ψ = {y : X × ℝ | l y.1 ≤ y.2 ∧ y.2 ≤ r y.1} := by
+  have hpre : range ψ = {y : X × ℝ | a y.1 ≤ s * y.2 + c ∧ s * y.2 + c ≤ b y.1} := by
+    ext y
+    constructor
+    · rintro ⟨x, rfl⟩
+      have hh : ((ψ x).1, s * (ψ x).2 + c) ∈ range
+          (fun x => ((ψ x).1, s * (ψ x).2 + c)) := mem_range_self x
+      rw [hrange] at hh
+      exact hh
+    · intro hy
+      obtain ⟨x, hx⟩ := (show (y.1, s * y.2 + c) ∈ range (fun x => ((ψ x).1, s * (ψ x).2 + c)) from
+        hrange.symm ▸ hy)
+      have hfirst := congrArg (fun z : X × ℝ => z.1) hx
+      refine ⟨x, Prod.ext hfirst ?_⟩
+      exact mul_left_cancel₀ hs (add_right_cancel (congrArg Prod.snd hx))
+  rcases lt_or_gt_of_ne hs with hs | hs
+  · refine ⟨fun x => (b x - c) / s, fun x => (a x - c) / s,
+      (hb.sub continuous_const).div_const s, (ha.sub continuous_const).div_const s, ?_, ?_⟩
+    · intro x
+      exact (div_lt_div_right_of_neg hs).mpr (sub_lt_sub_right (hab x) c)
+    · rw [hpre]
+      ext y
+      simp only [mem_ofPred_eq, div_le_iff_of_neg hs, le_div_iff_of_neg hs]
+      constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+  · refine ⟨fun x => (a x - c) / s, fun x => (b x - c) / s,
+      (ha.sub continuous_const).div_const s, (hb.sub continuous_const).div_const s, ?_, ?_⟩
+    · intro x
+      exact (div_lt_div_iff_of_pos_right hs).mpr (sub_lt_sub_right (hab x) c)
+    · rw [hpre]
+      ext y
+      simp only [mem_ofPred_eq, div_le_iff₀ hs, le_div_iff₀ hs]
+      constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+
+theorem exists_uniform_gap_between_disjoint_graph_bands
+    {X : Type*} [TopologicalSpace X] [CompactSpace X] [PreconnectedSpace X]
+    {a b c d : X → ℝ} (ha : Continuous a) (hb : Continuous b)
+    (hc : Continuous c) (hd : Continuous d)
+    (hab : ∀ x, a x ≤ b x) (hcd : ∀ x, c x ≤ d x)
+    (hdisj : Disjoint {p : X × ℝ | a p.1 ≤ p.2 ∧ p.2 ≤ b p.1}
+      {p : X × ℝ | c p.1 ≤ p.2 ∧ p.2 ≤ d p.1}) :
+    ∃ δ : ℝ, 0 < δ ∧ ∃ m : C(X, ℝ),
+      (∀ x, b x + δ ≤ m x ∧ m x + δ ≤ c x) ∨
+      (∀ x, d x + δ ≤ m x ∧ m x + δ ≤ a x) := by
+  have hgap {u v : X → ℝ} (hu : Continuous u) (hv : Continuous v) (h : ∀ x, u x < v x) :
+      ∃ δ : ℝ, 0 < δ ∧ ∃ m : C(X, ℝ), ∀ x, u x + δ ≤ m x ∧ m x + δ ≤ v x := by
+    have hpositive (x : X) (_hx : x ∈ univ) : (0 : ℝ) < v x - u x := sub_pos.mpr (h x)
+    obtain ⟨r, hr, hbound⟩ := isCompact_univ.exists_forall_le'
+      (hv.sub hu).continuousOn hpositive
+    refine ⟨r / 2, half_pos hr, ⟨fun x => (u x + v x) / 2,
+      (hu.add hv).div_const 2⟩, ?_⟩
+    intro x
+    have hh := hbound x (mem_univ x)
+    change r ≤ v x - u x at hh
+    constructor <;> dsimp only [ContinuousMap.coe_mk] <;> linarith
+  rcases (disjoint_graph_bands_iff_of_preconnected hb hc hab hcd).mp hdisj with h | h
+  · obtain ⟨δ, hδ, m, hm⟩ := hgap hb hc h
+    exact ⟨δ, hδ, m, Or.inl hm⟩
+  · obtain ⟨δ, hδ, m, hm⟩ := hgap hd ha h
+    exact ⟨δ, hδ, m, Or.inr hm⟩
 
 end DifferentialGeometry.Topology

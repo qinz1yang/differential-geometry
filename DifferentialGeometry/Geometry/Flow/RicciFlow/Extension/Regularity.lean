@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Family.ConnectionRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciContinuityInMetricTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
@@ -493,60 +494,6 @@ private lemma chartTimeSlice_contDiffOn {α : M} {J : Set ℝ} {y : E}
     (hf : ContDiffOn ℝ ∞ f (J ×ˢ interior (extChartAt I α).target)) :
     ContDiffOn ℝ ∞ (fun t : ℝ => f (t, y)) J :=
   hf.comp (contDiffOn_id.prodMk contDiffOn_const) (fun _ ht => ⟨ht, hy⟩)
-
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)]
-  [BoundarylessManifold I M]
-  [I.Boundaryless]
-  [T2Space M]
-  [SigmaCompactSpace M] in
-theorem chartGramOnE_set
-    (g : ℝ → SmoothRiemannianMetric I M) (J : Set ℝ) (α : M)
-    (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M =>
-          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
-        (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
-    (i j : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞
-      (fun p : ℝ × E =>
-        DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g p.1) α i j p.2)
-      (J ×ˢ interior ((extChartAt I α).target)) := by
-  classical
-  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm (extChartAt I α).target :=
-    contMDiffOn_extChartAt_symm (I := I) α
-  have hsubset : (extChartAt I α).target ⊆
-      (extChartAt I α).symm ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet := by
-    intro y hy
-    have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-      (extChartAt I α).map_target hy
-    rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
-    rw [trivializationAt_baseSet_eq_chartAt_source]
-    exact hsource
-  have hσ1 : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × E => p.1)
-    (J ×ˢ interior ((extChartAt I α).target)) :=
-    (contMDiff_iff_contDiff.mpr contDiff_fst).contMDiffOn
-  have hsnd : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞ (fun p : ℝ × E => p.2)
-      (J ×ˢ interior ((extChartAt I α).target)) :=
-    (contMDiff_iff_contDiff.mpr contDiff_snd).contMDiffOn
-  have hmaps2 : Set.MapsTo (fun p : ℝ × E => p.2)
-      (J ×ˢ interior ((extChartAt I α).target)) (extChartAt I α).target :=
-    fun p hp => interior_subset hp.2
-  have hσ2 : ContMDiffOn 𝓘(ℝ, ℝ × E) I ∞
-      (fun p : ℝ × E => (extChartAt I α).symm p.2) (J ×ˢ interior ((extChartAt I α).target)) :=
-    hsymm.comp hsnd hmaps2
-  have hσ : ContMDiffOn 𝓘(ℝ, ℝ × E) (𝓘(ℝ, ℝ).prod I) ∞
-      (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
-        (J ×ˢ interior ((extChartAt I α).target)) :=
-    hσ1.prodMk hσ2
-  have hcomp : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ) ∞
-      (fun p : ℝ × E =>
-        DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g p.1) α i j p.2)
-          (J ×ˢ interior ((extChartAt I α).target)) := by
-    refine ((hsmooth α i j).comp hσ (fun p hp => ⟨hp.1, hsubset (interior_subset hp.2)⟩)).congr ?_
-    intro p _
-    rfl
-  exact hcomp.contDiffOn
 
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]

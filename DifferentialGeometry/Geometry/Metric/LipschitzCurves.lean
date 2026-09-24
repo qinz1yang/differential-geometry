@@ -12,7 +12,7 @@ namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
-  [CompactSpace M] [T3Space M]
+  [T3Space M]
 
 
 
@@ -22,7 +22,6 @@ theorem ae_mdifferentiableAt_riemannian_curve
     ∀ᵐ t ∂volume, MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ t :=
   ae_mdifferentiableAt_of_metric_lipschitz g hγ
 
-omit [CompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
 theorem riemannianCurveSpeed_le_of_lipschitz
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {γ : ℝ → M} {C : ℝ≥0}
@@ -53,14 +52,12 @@ theorem riemannianCurveSpeed_le_of_lipschitz
     simp only [zero_apply, map_zero, Real.sqrt_zero]
     exact C.coe_nonneg
 
-omit [CompactSpace M] in
 theorem riemannianCurveELength_le_of_lipschitz
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {γ : ℝ → M} {C : ℝ≥0}
     (hγ : ∀ x y, riemannianEDistOf g (γ x) (γ y) ≤ (C : ℝ≥0∞) * edist x y) (a b : ℝ) :
     riemannianCurveELength g γ a b ≤ (C : ℝ≥0∞) * ENNReal.ofReal (b - a) :=
   riemannianCurveELength_le g (fun t _ => riemannianCurveSpeed_le_of_lipschitz g hγ t)
 
-omit [CompactSpace M] in
 theorem riemannianCurveELength_ne_top_of_lipschitz
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {γ : ℝ → M} {C : ℝ≥0}
     (hγ : ∀ x y, riemannianEDistOf g (γ x) (γ y) ≤ (C : ℝ≥0∞) * edist x y) (a b : ℝ) :

@@ -10,7 +10,7 @@ open Bundle Manifold Set
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Comparison.Toponogov
-open scoped Manifold ContDiff Topology ENNReal
+open scoped Manifold ContDiff _root_.Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

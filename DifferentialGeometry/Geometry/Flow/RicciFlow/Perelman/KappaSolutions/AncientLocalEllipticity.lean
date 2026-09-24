@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open scoped Manifold ContDiff Topology BigOperators Matrix
+open scoped Manifold ContDiff _root_.Topology BigOperators Matrix
 
 private theorem exists_uniform_quadratic_lower_bound
     {Y V : Type*} [TopologicalSpace Y] [NormedAddCommGroup V] [NormedSpace ℝ V]

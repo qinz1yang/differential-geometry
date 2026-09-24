@@ -831,6 +831,157 @@ theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
     integral_congr_ae (Filter.Eventually.of_forall hcross)] at hgreen
   exact hgreen
 
+omit [CompactSpace M] in
+private theorem integral_sq_weighted_rawTensorConnLapSmooth_le
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (χ : C^∞⟮I, M; ℝ⟯) (T : SmoothCcTensor g r s)
+    {ε : ℝ} (hε : 0 < ε) :
+    (∫ x, χ x ^ 2 * tensorInnerPointwise (I := I) g r s x
+      ((rawTensorConnLapSmooth (I := I) g r s T).toFun x) (T.toFun x)
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) ≤
+      (ε - 1) * (∫ x, χ x ^ 2 * tensorCovDerivPointwiseInner (I := I) g r s T T x
+        ∂riemannianVolumeMeasure (I := I) (M := M) g) +
+      ε⁻¹ * ∫ x, tensorInnerPointwise (I := I) g r (s + 1) x
+        ((prependCovGradSlot (I := I) g r s χ T).toFun x)
+        ((prependCovGradSlot (I := I) g r s χ T).toFun x)
+        ∂riemannianVolumeMeasure (I := I) (M := M) g := by
+  let μ := riemannianVolumeMeasure (I := I) (M := M) g
+  let A := scalarSmul (I := I) g r (s + 1) χ (covGrad (I := I) g r s T)
+  let B := prependCovGradSlot (I := I) g r s χ T
+  have hAA (x : M) : tensorInnerPointwise (I := I) g r (s + 1) x
+      (A.toFun x) (A.toFun x) =
+      χ x ^ 2 * tensorCovDerivPointwiseInner (I := I) g r s T T x := by
+    dsimp only [A]
+    rw [scalarSmul_toFun_apply, tensorInnerPointwise_smul_left,
+      tensorInnerPointwise_smul_right,
+      tensorCovDerivPointwiseInner_eq_tensorInnerPointwise_grad]
+    simp only [SmoothCcTensor.toFun_apply]
+    ring
+  have hAB (x : M) : tensorInnerPointwise (I := I) g r (s + 1) x
+      (A.toFun x) (B.toFun x) =
+      χ x * tensorCovDerivCrossLeft (I := I) g r s χ T T x := by
+    dsimp only [A, B]
+    rw [scalarSmul_toFun_apply, tensorInnerPointwise_smul_left,
+      tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad]
+    rfl
+  have hAAint : Integrable
+      (fun x => χ x ^ 2 * tensorCovDerivPointwiseInner (I := I) g r s T T x) μ :=
+    (A.integrable_inner_cross A).congr (Eventually.of_forall hAA)
+  have hABint : Integrable
+      (fun x => χ x * tensorCovDerivCrossLeft (I := I) g r s χ T T x) μ :=
+    (A.integrable_inner_cross B).congr (Eventually.of_forall hAB)
+  have hBBint := B.integrable_inner_cross B
+  have hpoint (x : M) :
+      -(2 * (χ x * tensorCovDerivCrossLeft (I := I) g r s χ T T x)) ≤
+      ε * (χ x ^ 2 * tensorCovDerivPointwiseInner (I := I) g r s T T x) +
+        ε⁻¹ * tensorInnerPointwise (I := I) g r (s + 1) x (B.toFun x) (B.toFun x) := by
+    rw [← hAA x, ← hAB x]
+    have hnonneg := tensorInnerPointwise_nonneg (I := I) g r (s + 1) x
+      (ε • A.toFun x + B.toFun x)
+    rw [tensorInnerPointwise_add_left, tensorInnerPointwise_add_right,
+      tensorInnerPointwise_add_right, tensorInnerPointwise_smul_left,
+      tensorInnerPointwise_smul_right, tensorInnerPointwise_smul_left,
+      tensorInnerPointwise_smul_right,
+      tensorInnerPointwise_symm (I := I) g r (s + 1) x (B.toFun x) (A.toFun x)] at hnonneg
+    have hdiv := div_nonneg hnonneg hε.le
+    have halgebra (a b c : ℝ) :
+        (ε * (ε * a) + ε * b + (ε * b + c)) / ε = ε * a + 2 * b + ε⁻¹ * c := by
+      field_simp
+      ring
+    rw [halgebra] at hdiv
+    linarith
+  have hint := integral_mono (hABint.const_mul 2 |>.neg)
+    ((hAAint.const_mul ε).add (hBBint.const_mul ε⁻¹)) hpoint
+  simp only [Pi.neg_apply, Pi.add_apply] at hint
+  rw [integral_neg, integral_const_mul,
+    integral_add (hAAint.const_mul ε) (hBBint.const_mul ε⁻¹),
+    integral_const_mul, integral_const_mul] at hint
+  rw [integral_sq_weighted_rawTensorConnLapSmooth_eq_neg_covDeriv]
+  dsimp only [μ, B] at hint
+  linarith
+
+omit [CompactSpace M] in
+theorem integral_sq_weighted_rawTensorConnLap_le_of_hasCompactSupport
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (χ : C^∞⟮I, M; ℝ⟯) (hχ : HasCompactSupport (χ : M → ℝ))
+    (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
+      (fun x : M => TensorRSSpace r s I x)⟯)
+    {ε : ℝ} (hε : 0 < ε) :
+    let cov := tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
+    let grad := fun x => covGradBundleEquiv (I := I) (M := M) r s x (cov T x)
+    let cutoffGrad := fun x => covGradBundleEquiv (I := I) (M := M) r s x
+      ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight (T x))
+    (∫ x, χ x ^ 2 * tensorInnerPointwise (I := I) g r s x
+      (TensorRSSpace.toModel (rawTensorConnLap (I := I) g r s T x))
+      (TensorRSSpace.toModel (T x))
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) ≤
+      (ε - 1) * (∫ x, χ x ^ 2 * tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (grad x)) (TensorRSSpace.toModel (grad x))
+        ∂riemannianVolumeMeasure (I := I) (M := M) g) +
+      ε⁻¹ * ∫ x, tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (cutoffGrad x)) (TensorRSSpace.toModel (cutoffGrad x))
+        ∂riemannianVolumeMeasure (I := I) (M := M) g := by
+  classical
+  dsimp only
+  obtain ⟨Tc, hTc, hTeq⟩ := T.exists_compactly_supported_eq_nhdsSet hχ
+  have hsupport : HasCompactSupport (fun x => TensorRSSpace.toModel (Tc x)) := by
+    apply HasCompactSupport.of_support_subset_isCompact hTc
+    intro x hx
+    apply subset_closure
+    intro hzero
+    exact hx (by simp [hzero, TensorRSSpace.toModel_zero])
+  let T₀ : SmoothCcTensor g r s := ⟨Tc, hsupport⟩
+  have hcov {x : M} (hx : x ∈ tsupport (χ : M → ℝ)) :
+      tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) Tc x =
+      tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x := by
+    exact tensorRSCovariantDerivative_congr_of_eventuallyEq (I := I) g r s
+      ((nhds_le_nhdsSet hx) hTeq)
+      (Tc.contMDiff.mdifferentiableAt (by simp))
+      (T.contMDiff.mdifferentiableAt (by simp))
+  have hlap (x : M) : χ x ^ 2 * tensorInnerPointwise (I := I) g r s x
+      ((rawTensorConnLapSmooth (I := I) g r s T₀).toFun x) (T₀.toFun x) =
+      χ x ^ 2 * tensorInnerPointwise (I := I) g r s x
+        (TensorRSSpace.toModel (rawTensorConnLap (I := I) g r s T x))
+        (TensorRSSpace.toModel (T x)) := by
+    by_cases hx : x ∈ tsupport (χ : M → ℝ)
+    · have heq : ∀ᶠ y in 𝓝 x, Tc y = T y := (nhds_le_nhdsSet hx) hTeq
+      simp only [SmoothCcTensor.toFun_apply, rawTensorConnLapSmooth_toSection_apply]
+      rw [rawTensorConnLap_congr_of_eventuallyEq (I := I) g r s Tc T heq]
+      rw [show T₀.toSection x = T x from heq.self_of_nhds]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  have hgrad (x : M) :
+      χ x ^ 2 * tensorCovDerivPointwiseInner (I := I) g r s T₀ T₀ x =
+      χ x ^ 2 * tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x)))
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x))) := by
+    by_cases hx : x ∈ tsupport (χ : M → ℝ)
+    · rw [tensorCovDerivPointwiseInner_eq_tensorInnerPointwise_grad,
+        covGrad_toSection_apply, hcov hx]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  have hcutoff (x : M) :
+      (prependCovGradSlot (I := I) g r s χ T₀).toFun x =
+      TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+        ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight (T x))) := by
+    rw [SmoothCcTensor.toFun_apply, prependCovGradSlot_toSection_apply]
+    by_cases hx : x ∈ tsupport (χ : M → ℝ)
+    · have heq : ∀ᶠ y in 𝓝 x, Tc y = T y := (nhds_le_nhdsSet hx) hTeq
+      rw [show T₀.toSection x = T x from heq.self_of_nhds]
+    · have hzero : mvfderiv (I := I) (χ : M → ℝ) x = 0 := by
+        have hev : (χ : M → ℝ) =ᶠ[𝓝 x] (fun _ => 0) :=
+          notMem_tsupport_iff_eventuallyEq.mp hx
+        have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (χ : M → ℝ) x = 0 := by
+          rw [hev.mfderiv_eq]
+          exact mfderiv_const
+        simp [mvfderiv, hmfd_zero]
+      simp only [hzero, ContinuousLinearMap.zero_smulRight, map_zero]
+  have hestimate := integral_sq_weighted_rawTensorConnLapSmooth_le g r s χ T₀ hε
+  rw [integral_congr_ae (Eventually.of_forall hlap),
+    integral_congr_ae (Eventually.of_forall hgrad)] at hestimate
+  simpa only [hcutoff] using hestimate
+
+
 end Elliptic
 end Analysis
 end DifferentialGeometry

@@ -109,6 +109,26 @@ theorem lVelocity_squareReparametrization_of_pos
     rw [hleft, hright, smul_zero]
     rfl
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lVelocity_squareRootReparametrization_of_pos
+    (alpha : ℝ → M) {tau : ℝ} (htau : 0 < tau) :
+    lVelocity (I := I) alpha (Real.sqrt tau) =
+      (2 * Real.sqrt tau) • lVelocity (I := I) (squareRootReparametrization alpha) tau := by
+  let s : ℝ := Real.sqrt tau
+  let gamma : ℝ → M := squareRootReparametrization alpha
+  have hs : 0 < s := Real.sqrt_pos.mpr htau
+  have heq : alpha =ᶠ[𝓝 s] squareReparametrization gamma := by
+    filter_upwards [eventually_gt_nhds hs] with r hr
+    simp only [squareReparametrization, gamma, squareRootReparametrization, Real.sqrt_sq hr.le]
+  have hvel : lVelocity (I := I) alpha s = lVelocity (I := I) (squareReparametrization gamma) s := by
+    unfold lVelocity
+    rw [heq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I)]
+    rfl
+  have hsq := lVelocity_squareReparametrization_of_pos (I := I) gamma s hs
+  rw [← hvel, show s ^ 2 = tau by exact Real.sq_sqrt htau.le] at hsq
+  exact hsq
+
 variable [IsManifold I ∞ M] [FiniteDimensional Real E]
 variable [IsManifold I 1 M]
 variable [T2Space M] [SigmaCompactSpace M]

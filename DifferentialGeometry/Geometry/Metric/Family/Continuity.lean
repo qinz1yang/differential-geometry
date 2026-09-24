@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Family.Basic
+import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
@@ -285,6 +286,36 @@ theorem metricCLMSection_jointContMDiffOn_of_chartGram_on
   · exact MetricCLMSectionCoordinates.inCoordinates_metric_eq_chartGram_sum
       (g q₀.1) α hbase0 v w
 
+namespace MetricFamilySmoothOn
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem metricCLMSection_contMDiffOn {D : RealTimeInterval}
+    {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (J ×ˢ (Set.univ : Set M)) := by
+  refine metricCLMSection_jointContMDiffOn_of_chartGram_on (I := I) g J ?_
+  intro x₀ i j
+  let e := trivializationAt E (TangentSpace I) x₀
+  let b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
+  have hframe : IsLocalFrameOn I E (∞ : ℕ∞ω) (e.localFrame b) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I (∞ : ℕ∞ω) b
+  have hsm := (hG.frameCompSmooth (e.localFrame b) hframe i j).mono
+    (Set.prod_mono hJ (subset_refl _))
+  refine hsm.congr ?_
+  rintro ⟨t, y⟩ ⟨ht, hy⟩
+  rw [e.localFrame_apply_of_mem_baseSet b hy, e.localFrame_apply_of_mem_baseSet b hy]
+  simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix, Matrix.of_apply,
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, Trivialization.basisAt,
+    Module.Basis.map_apply, e, b, Trivialization.linearEquivAt_symm_apply]
+  rw [Trivialization.symmL_apply _ hy, Trivialization.symmL_apply _ hy]
+
+end MetricFamilySmoothOn
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCLMSection_jointContMDiffOn_of_chartGram
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
@@ -475,5 +506,90 @@ theorem restrictOpen
   rfl
 
 end tensor0SFamilyContinuousOnSet
+
+end DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+open Bundle Set Filter
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem MetricFamilySmoothOn.chartGramMatrix_continuousOn_carrier
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (α : M) (i j : Fin (Module.finrank ℝ E)) :
+    ContinuousOn (fun p : ℝ × M => chartGramMatrix (g p.1) α p.2 i j)
+      (D.carrier ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
+  rw [continuousOn_iff_continuous_domRestrict]
+  let Q := D.carrier ×ˢ (trivializationAt E (TangentSpace I) α).baseSet
+  change Continuous (fun p : Q =>
+    (g p.val.1).inner p.val.2 (chartBasisVecFiber (I := I) α i p.val.2)
+      (chartBasisVecFiber (I := I) α j p.val.2))
+  have hb : Continuous (fun p : Q => p.1.2) := continuous_snd.comp continuous_subtype_val
+  have hv (k : Fin (Module.finrank ℝ E)) :
+      Continuous (fun p : Q =>
+        TotalSpace.mk' E (p.1.2) (chartBasisVecFiber (I := I) α k p.1.2)) :=
+    (chartBasisVec_contMDiffOn α k).continuousOn.comp_continuous hb (fun p => p.property.2)
+  have heval := hg.metricTensor_cont.eval_continuous
+    (continuous_fst.comp continuous_subtype_val : Continuous (fun p : Q => p.1.1))
+    (fun p : Q => p.property.1) hb
+    (v := fun k p => ![chartBasisVecFiber (I := I) α i p.1.2,
+      chartBasisVecFiber (I := I) α j p.1.2] k)
+    (fun k => Fin.cases (hv i) (fun k => Fin.cases (hv j) (fun k => Fin.elim0 k) k) k)
+  simpa only [DifferentialGeometry.Tensor0SBundle.metricTensorField_apply, chartGramMatrix_apply,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Function.comp_apply, Set.domRestrict_apply, Q] using heval
+
+theorem metricCLMSection_continuousOn_of_chartGram
+    {P : Type*} [TopologicalSpace P]
+    (g : P → SmoothRiemannianMetric I M) (A : Set P)
+    (hgram : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn (fun p : P × M => chartGramMatrix (g p.1) α p.2 i j)
+        (A ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)) :
+    ContinuousOn (fun p : P × M => (⟨p.2, (g p.1).inner p.2⟩ :
+      TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (univ : Set M)) := by
+  classical
+  intro q hq
+  have hbase : q.2 ∈ (trivializationAt E (TangentSpace I) q.2).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) q.2
+  rw [continuousWithinAt_hom_bundle]
+  refine ⟨continuousWithinAt_snd, ?_⟩
+  apply continuousWithinAt_clm_apply.mpr
+  intro v
+  apply continuousWithinAt_clm_apply.mpr
+  intro w
+  have hpre : (fun p : P × M => p.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) q.2).baseSet ∈ 𝓝 q :=
+    continuous_snd.continuousAt.preimage_mem_nhds
+      ((trivializationAt E (TangentSpace I) q.2).open_baseSet.mem_nhds hbase)
+  have hgram_at (i j : Fin (Module.finrank ℝ E)) :
+      ContinuousWithinAt (fun p : P × M => chartGramMatrix (g p.1) q.2 p.2 i j)
+        (A ×ˢ univ) q := by
+    apply (hgram q.2 i j q ⟨hq.1, hbase⟩).mono_of_mem_nhdsWithin
+    filter_upwards [nhdsWithin_le_nhds hpre, self_mem_nhdsWithin] with p hp hA
+    exact ⟨hA.1, hp⟩
+  have hs : ContinuousWithinAt
+      (fun p : P × M => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
+          chartGramMatrix (g p.1) q.2 p.2 i j) (A ×ˢ univ) q :=
+    tendsto_finsetSum _ fun i _ =>
+      tendsto_finsetSum _ fun j _ => continuousWithinAt_const.mul (hgram_at i j)
+  apply hs.congr_of_eventuallyEq
+  · filter_upwards [nhdsWithin_le_nhds hpre] with p hp
+    exact MetricCLMSectionCoordinates.inCoordinates_metric_eq_chartGram_sum (g p.1) q.2 hp v w
+  · exact MetricCLMSectionCoordinates.inCoordinates_metric_eq_chartGram_sum (g q.1) q.2 hbase v w
+
+theorem MetricFamilySmoothOn.metricCLMSection_continuousOn_carrier
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) :
+    ContinuousOn (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ :
+      TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (D.carrier ×ˢ (univ : Set M)) :=
+  metricCLMSection_continuousOn_of_chartGram g D.carrier hg.chartGramMatrix_continuousOn_carrier
 
 end DifferentialGeometry.Geometry.Curvature

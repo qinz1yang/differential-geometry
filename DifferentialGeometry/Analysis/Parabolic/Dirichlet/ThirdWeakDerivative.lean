@@ -25,41 +25,6 @@ local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 local notation "EuN" => EuclideanSpace ℝ (Fin n)
 local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 
-private theorem ae_dirichletLocalWeakPartialLp_eq_on_cutoff_one
-    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
-    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₁ Ω₀ : Set EuStd}
-    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
-    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    (hΩ₁ : IsOpen Ω₁) (hΩ₁c : IsCompact (closure Ω₁))
-    (hΩ₁s : closure Ω₁ ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    (hsub : Ω₁ ⊆ Ω) (hΩ₀ : IsOpen Ω₀) (hΩ₀₁ : Ω₀ ⊆ Ω₁)
-    (u v : Z → H1ComplDirichlet q) (k j : Fin (Module.finrank ℝ EuN))
-    (H : Lp ℝ 2 (μ.prod (volume.restrict Ω₁))) {η : EuStd → ℝ}
-    (hv : ∀ᵐ t ∂μ,
-      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
-        chartPullback I_hs α
-          (fun z => η z * dirichletLocalWeakPartialLp q α hΩ₁ hΩ₁c hΩ₁s k (u t) z))
-    (hweak : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j (fun z => H (t, z))
-      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u t)) Ω₁)
-    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
-    (hηone : ∀ z ∈ Ω₀, η z = 1) :
-    ∀ᵐ t ∂μ,
-      (dirichletLocalWeakPartialLp q α hΩ₁ hΩ₁c hΩ₁s j (v t) : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
-        (fun z => H (t, z)) := by
-  have hηderiv : ∀ z ∈ Ω₀, fderiv ℝ η z = 0 := by
-    intro z hz
-    have heq : η =ᶠ[𝓝 z] fun _ => (1 : ℝ) :=
-      Filter.eventually_of_mem (hΩ₀.mem_nhds hz) fun y hy => hηone y hy
-    simpa only [fderiv_const_apply] using heq.fderiv_eq (𝕜 := ℝ)
-  have hformula := ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_localWeakPartial
-    q α hΩ hΩc hΩs hΩ₁ hΩ₁c hΩ₁s hsub u v k j H hv hweak hη hηc
-  filter_upwards [hformula] with t ht
-  have ht' := ht.filter_mono (ae_mono (Measure.restrict_mono hΩ₀₁ le_rfl))
-  filter_upwards [ht', ae_restrict_mem hΩ₀.measurableSet] with z hz hzm
-  simpa only [hηone z hzm, hηderiv z hzm, zero_apply,
-    one_mul, zero_mul, add_zero] using hz
-
-
 theorem IsWeakEvolutionSolution.exists_local_third_weak_derivative
     {q : SmoothRiemannianMetric I_hs M}
     {D : RealTimeInterval}
@@ -157,25 +122,23 @@ theorem IsWeakEvolutionSolution.exists_local_third_weak_derivative
   have hμle : μ₀ ≤ μ := by
     rw [← hμrestrict']
     exact Measure.restrict_le_self
-  have hHeq (i j) : ∀ᵐ t ∂μ₀,
-      (fun z => H i j (t, z)) =ᵐ[volume.restrict Ω₀] fun z => H₀ i j (t, z) := by
-    filter_upwards [(hH i j).filter_mono (ae_mono hμle), hH₀ i j,
-      ((Lp.memLp (H i j)).prodMk_left (by norm_num)).filter_mono (ae_mono hμle),
-      (Lp.memLp (H₀ i j)).prodMk_left (by norm_num)] with t ht ht₀ hm hm₀
-    exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ₀
-      (DeGiorgi.HasWeakPartialDeriv.restrict hΩ₀ hsub₀₁ ht) ht₀
-      ((hm.mono_measure (Measure.restrict_mono hsub₀₁ le_rfl)).locallyIntegrable (by norm_num))
-      (hm₀.locallyIntegrable (by norm_num))
   have halign (i j) : ∀ᵐ t ∂μ₀,
       (dirichletLocalWeakPartialLp q α hΩ₁ hΩ₁c hΩ₁s j (v i t) : EuStd → ℝ)
-        =ᵐ[volume.restrict Ω₀] fun z => H i j (t, z) := by
-    exact (ae_dirichletLocalWeakPartialLp_eq_on_cutoff_one q α
-      hΩ hΩc hΩs hΩ₁ hΩ₁c hΩ₁s hsub₁ hΩ₀ hsub₀₁
-      (fun t => u t) (fun t => v i t) i j (H i j) (hrep i) (hH i j)
-      hη hηc hηone').filter_mono (ae_mono hμle)
+        =ᵐ[volume.restrict Ω₀] fun z => H₀ i j (t, z) := by
+    apply ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_eq_one q α
+      hΩ₁ hΩ₁c hΩ₁s hΩ₀ hsub₀₁ (fun t => v i t)
+      (fun t => dirichletLocalWeakPartialLp q α hΩ₁ hΩ₁c hΩ₁s i (u t)) j (fun t z => H₀ i j (t, z))
+      hηone' ((hrep i).filter_mono (ae_mono hμle))
+      (((Lp.memLp (H₀ i j)).prodMk_left (by norm_num)).mono
+        (fun _ ht => ht.locallyIntegrable (by norm_num)))
+    filter_upwards [hH₀ i j] with t ht
+    exact hasWeakPartialDeriv_congr_ae hΩ₀ j
+      ((dirichletLocalWeakPartialLp_restrict_ae q α hΩ hΩc hΩs
+        hΩ₁ hΩ₁c hΩ₁s hsub₁ i (u t)).filter_mono
+          (ae_mono (Measure.restrict_mono hsub₀₁ le_rfl))) ht
   refine ⟨K, ?_⟩
   intro i j k
-  filter_upwards [hK i j k, halign i j, hHeq i j] with t ht ha he
-  exact hasWeakPartialDeriv_congr_ae hΩ₀ k (ha.trans he) ht
+  filter_upwards [hK i j k, halign i j] with t ht he
+  exact hasWeakPartialDeriv_congr_ae hΩ₀ k he ht
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

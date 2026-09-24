@@ -1,13 +1,11 @@
+import Mathlib.Analysis.Calculus.ContDiff.Comp
+import Mathlib.Analysis.Calculus.ContDiff.Operations
+import Mathlib.Analysis.Calculus.TangentCone.Prod
 import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
 import Mathlib.Analysis.Calculus.Deriv.Comp
-
-
-
-
-
-
-
-
+import Mathlib.Algebra.Group.Pointwise.Set.Scalar
+import Mathlib.Topology.Compactness.Compact
+import Mathlib.Topology.UniformSpace.HeineCantor
 
 noncomputable section
 
@@ -58,5 +56,297 @@ theorem continuous_iteratedDeriv_family_comp {f : K × ℝ → E} {g : E → F} 
   exact continuous_eval.comp
     (((hg.continuousOn_iteratedFDerivWithin (by exact_mod_cast le_top) hU.uniqueDiffOn).comp_continuous
       hc hmap).prodMk (continuous_pi (fun j => hjet (c.partSize j))))
+
+end DifferentialGeometry.Analysis
+
+namespace DifferentialGeometry.Analysis
+
+theorem continuousOn_iteratedFDerivWithin_comp
+    {𝕜 P E F G : Type*} [NontriviallyNormedField 𝕜] [TopologicalSpace P]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    [NormedAddCommGroup G] [NormedSpace 𝕜 G]
+    {S : Set P} {K : Set E} {U : Set F} {f : P → E → F} {g : P → F → G} {n : ℕ}
+    (hK : UniqueDiffOn 𝕜 K) (hU : UniqueDiffOn 𝕜 U)
+    (hf : ∀ p ∈ S, ContDiffOn 𝕜 n (f p) K) (hg : ∀ p ∈ S, ContDiffOn 𝕜 n (g p) U)
+    (hjet : ∀ k ≤ n, ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 k (f q.1) K q.2) (S ×ˢ K))
+    (hgjet : ∀ k ≤ n, ContinuousOn
+      (fun q : P × F => iteratedFDerivWithin 𝕜 k (g q.1) U q.2) (S ×ˢ U))
+    (hmap : Set.MapsTo (fun q : P × E => f q.1 q.2) (S ×ˢ K) U) :
+    ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 n (g q.1 ∘ f q.1) K q.2) (S ×ˢ K) := by
+  classical
+  have hvalue : ContinuousOn (fun q : P × E => f q.1 q.2) (S ×ˢ K) := by
+    exact ((continuousMultilinearCurryFin0 𝕜 E F).continuous.comp_continuousOn
+      (hjet 0 (Nat.zero_le n))).congr fun _ _ => rfl
+  have hterm (c : OrderedFinpartition n) : ContinuousOn
+      (fun q : P × E => c.compAlongOrderedFinpartition
+        (iteratedFDerivWithin 𝕜 c.length (g q.1) U (f q.1 q.2))
+        (fun i => iteratedFDerivWithin 𝕜 (c.partSize i) (f q.1) K q.2)) (S ×ˢ K) := by
+    let B := c.compAlongOrderedFinpartitionL 𝕜 E F G
+    change ContinuousOn
+      ((fun r => B r.1 r.2) ∘ (fun q : P × E =>
+        (iteratedFDerivWithin 𝕜 c.length (g q.1) U (f q.1 q.2),
+          fun i => iteratedFDerivWithin 𝕜 (c.partSize i) (f q.1) K q.2))) (S ×ˢ K)
+    apply B.continuous_uncurry_of_multilinear.comp_continuousOn
+      (ContinuousOn.prodMk ?_ ?_)
+    · exact (hgjet c.length c.length_le).comp
+        (continuousOn_fst.prodMk hvalue) (fun q hq => ⟨hq.1, hmap hq⟩)
+    · exact continuousOn_pi.mpr fun i => hjet (c.partSize i) (c.partSize_le i)
+  have hsum : ContinuousOn
+      (fun q : P × E => ∑ c : OrderedFinpartition n, c.compAlongOrderedFinpartition
+        (iteratedFDerivWithin 𝕜 c.length (g q.1) U (f q.1 q.2))
+        (fun i => iteratedFDerivWithin 𝕜 (c.partSize i) (f q.1) K q.2)) (S ×ˢ K) :=
+    continuousOn_finsetSum _ fun c _ => hterm c
+  refine hsum.congr fun q hq => ?_
+  simpa only [FormalMultilinearSeries.taylorComp,
+    FormalMultilinearSeries.compAlongOrderedFinpartition, ftaylorSeriesWithin] using
+    iteratedFDerivWithin_comp (hg q.1 hq.1 _ (hmap hq)) (hf q.1 hq.1 q.2 hq.2) hU hK hq.2
+      (fun x hx => hmap (x := (q.1, x)) ⟨hq.1, hx⟩) (i := n) le_rfl
+
+end DifferentialGeometry.Analysis
+
+namespace DifferentialGeometry.Analysis
+
+theorem continuousOn_iteratedFDerivWithin_family_comp
+    {𝕜 P E F G : Type*} [NontriviallyNormedField 𝕜] [TopologicalSpace P]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    [NormedAddCommGroup G] [NormedSpace 𝕜 G]
+    {S : Set P} {K : Set E} {U : Set F} {f : P → E → F} {g : F → G} {n : ℕ}
+    (hK : UniqueDiffOn 𝕜 K) (hU : UniqueDiffOn 𝕜 U)
+    (hf : ∀ p ∈ S, ContDiffOn 𝕜 n (f p) K) (hg : ContDiffOn 𝕜 n g U)
+    (hjet : ∀ k ≤ n, ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 k (f q.1) K q.2) (S ×ˢ K))
+    (hmap : Set.MapsTo (fun q : P × E => f q.1 q.2) (S ×ˢ K) U) :
+    ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 n (g ∘ f q.1) K q.2) (S ×ˢ K) := by
+  apply continuousOn_iteratedFDerivWithin_comp hK hU hf (fun _ _ => hg) hjet ?_ hmap
+  intro k hk
+  exact (hg.continuousOn_iteratedFDerivWithin (by exact_mod_cast hk) hU).comp
+    continuousOn_snd (fun _ hq => hq.2)
+
+end DifferentialGeometry.Analysis
+
+section
+
+
+namespace DifferentialGeometry.Analysis
+
+theorem continuousOn_iteratedFDerivWithin_prod
+    {𝕜 P E F G : Type*} [NontriviallyNormedField 𝕜] [TopologicalSpace P]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    [NormedAddCommGroup G] [NormedSpace 𝕜 G]
+    {S : Set P} {K : Set E} {f : P → E → F} {g : P → E → G}
+    (hK : UniqueDiffOn 𝕜 K) (n : ℕ)
+    (hf : ∀ p ∈ S, ContDiffOn 𝕜 n (f p) K)
+    (hg : ∀ p ∈ S, ContDiffOn 𝕜 n (g p) K)
+    (hfj : ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 n (f q.1) K q.2) (S ×ˢ K))
+    (hgj : ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 n (g q.1) K q.2) (S ×ˢ K)) :
+    ContinuousOn
+      (fun q : P × E => iteratedFDerivWithin 𝕜 n
+        (fun z => (f q.1 z, g q.1 z)) K q.2) (S ×ˢ K) := by
+  have h := (ContinuousMultilinearMap.prodL 𝕜 (fun _ : Fin n => E) F G).continuous
+    |>.comp_continuousOn (hfj.prodMk hgj)
+  apply h.congr
+  intro q hq
+  exact (iteratedFDerivWithin_prodMk (hf q.1 hq.1 q.2 hq.2)
+    (hg q.1 hq.1 q.2 hq.2) hK hq.2 le_rfl)
+
+end DifferentialGeometry.Analysis
+
+end
+
+namespace DifferentialGeometry.Analysis
+
+
+theorem continuousOn_iteratedFDerivWithin_comp_graph
+    {P F : Type*} [TopologicalSpace P] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {S : Set P} {J V : Set ℝ} {γ : P → ℝ × ℝ → ℝ} {d : P → ℝ × ℝ → F}
+    {n : ℕ} (hJ : UniqueDiffOn ℝ J) (hV : UniqueDiffOn ℝ V)
+    (hγ : ∀ p ∈ S, ContDiffOn ℝ n (γ p) (J ×ˢ V))
+    (hd : ∀ p ∈ S, ContDiffOn ℝ n (d p) (J ×ˢ univ))
+    (hγjet : ∀ k ≤ n, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ k (γ q.1) (J ×ˢ V) q.2)
+      (S ×ˢ J ×ˢ V))
+    (hdjet : ∀ k ≤ n, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ k (d q.1) (J ×ˢ univ) q.2)
+      (S ×ˢ J ×ˢ univ)) :
+    ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ n
+        (fun z => d q.1 (z.1, γ q.1 z)) (J ×ˢ V) q.2) (S ×ˢ J ×ˢ V) := by
+  let Q := fun p (z : ℝ × ℝ) => (z.1, γ p z)
+  have hQ (p : P) (hp : p ∈ S) : ContDiffOn ℝ n (Q p) (J ×ˢ V) :=
+    contDiffOn_fst.prodMk (hγ p hp)
+  have hQjet (k : ℕ) (hk : k ≤ n) : ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ k (Q q.1) (J ×ˢ V) q.2)
+      (S ×ˢ J ×ˢ V) := by
+    apply continuousOn_iteratedFDerivWithin_prod (hJ.prod hV) k
+      (fun _ _ => contDiffOn_fst)
+      (fun p hp => (hγ p hp).of_le (by exact_mod_cast hk)) ?_ (hγjet k hk)
+    have hs : ContDiffOn ℝ k (fun z : ℝ × ℝ => z.1) (J ×ˢ V) := contDiffOn_fst
+    exact (hs.continuousOn_iteratedFDerivWithin le_rfl (hJ.prod hV)).comp continuousOn_snd
+        (fun _ hq => hq.2)
+  exact continuousOn_iteratedFDerivWithin_comp (hJ.prod hV)
+    (hJ.prod uniqueDiffOn_univ) hQ hd hQjet hdjet (fun _ hq => ⟨hq.2.1, mem_univ _⟩)
+
+end DifferentialGeometry.Analysis
+end
+
+noncomputable section
+
+open Set Filter
+open scoped Topology ContDiff Pointwise
+
+namespace DifferentialGeometry.Analysis
+
+variable {P E F : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem iteratedFDerivWithin_prod_slice
+    {f : P × E → F} {U : Set P} {S : Set E} {n : ℕ∞ω}
+    (hU : IsOpen U) (hS : UniqueDiffOn ℝ S) (hf : ContDiffOn ℝ n f (U ×ˢ S))
+    {p : P} {x : E} (hp : p ∈ U) (hx : x ∈ S) (m : ℕ) (hm : m ≤ n) :
+    iteratedFDerivWithin ℝ m (fun y => f (p, y)) S x =
+      (iteratedFDerivWithin ℝ m f (U ×ˢ S) (p, x)).compContinuousLinearMap
+        (fun _ : Fin m => ContinuousLinearMap.inr ℝ P E) := by
+  let R : Set (P × E) := (fun q : P × E => q + (p, 0)) ⁻¹' (U ×ˢ S)
+  have hR : R = ((fun q : P => q + p) ⁻¹' U) ×ˢ S := by
+    ext q
+    simp only [R, mem_preimage, mem_prod, Prod.fst_add, Prod.snd_add, add_zero]
+  have huniq : UniqueDiffOn ℝ R := by
+    rw [hR]
+    exact (hU.preimage (continuous_id.add continuous_const)).uniqueDiffOn.prod hS
+  have hpre : (ContinuousLinearMap.inr ℝ P E) ⁻¹' R = S := by
+    ext y
+    simp only [R, mem_preimage, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+      zero_add, add_zero, mem_prod, hp, true_and]
+  have hshift : ContDiffOn ℝ n (fun q : P × E => f (q + (p, 0))) R :=
+    hf.comp (contDiff_id.add contDiff_const).contDiffOn (fun _ h => h)
+  have hmem : (ContinuousLinearMap.inr ℝ P E) x ∈ R := by
+    change (0 + p, x + 0) ∈ U ×ˢ S
+    simpa only [zero_add, add_zero, mem_prod] using And.intro hp hx
+  have hcomp := (ContinuousLinearMap.inr ℝ P E).iteratedFDerivWithin_comp_right
+    hshift huniq (by rw [hpre]; exact hS) hmem hm
+  have htranslate : (p, (0 : E)) +ᵥ R = U ×ˢ S := by
+    ext q
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      simpa only [R, mem_preimage, vadd_eq_add, add_comm (p, (0 : E))] using hy
+    · intro hq
+      refine ⟨q - (p, 0), ?_, ?_⟩
+      · simpa only [R, mem_preimage, sub_add_cancel] using hq
+      · change (p, 0) + (q - (p, 0)) = q
+        abel
+  rw [hpre, iteratedFDerivWithin_comp_add_right, htranslate] at hcomp
+  simpa only [Function.comp_def, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+    zero_add, add_zero] using hcomp
+
+theorem continuousOn_iteratedFDerivWithin_prod_slice
+    {f : P × E → F} {U : Set P} {S : Set E} {n : ℕ∞ω}
+    (hU : IsOpen U) (hS : UniqueDiffOn ℝ S) (hf : ContDiffOn ℝ n f (U ×ˢ S))
+    (m : ℕ) (hm : m ≤ n) :
+    ContinuousOn (fun q : P × E => iteratedFDerivWithin ℝ m (fun y => f (q.1, y)) S q.2)
+      (U ×ˢ S) := by
+  have hfull := hf.continuousOn_iteratedFDerivWithin hm (hU.uniqueDiffOn.prod hS)
+  have h := (ContinuousMultilinearMap.compContinuousLinearMapL
+    (fun _ : Fin m => ContinuousLinearMap.inr ℝ P E)).continuous.comp_continuousOn hfull
+  refine h.congr fun q hq => ?_
+  exact iteratedFDerivWithin_prod_slice hU hS hf hq.1 hq.2 m hm
+
+theorem eventually_uniform_iteratedFDerivWithin_prod_slice
+    {f : P × E → F} {U : Set P} {S K : Set E}
+    (hU : IsOpen U) (hS : UniqueDiffOn ℝ S) (hf : ContDiffOn ℝ ∞ f (U ×ˢ S))
+    (hK : IsCompact K) (hKS : K ⊆ S) {a : P} (ha : a ∈ U)
+    (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ p in 𝓝 a, ∀ m : ℕ, m ≤ n → ∀ x ∈ K,
+      ‖iteratedFDerivWithin ℝ m (fun y => f (p, y)) S x -
+        iteratedFDerivWithin ℝ m (fun y => f (a, y)) S x‖ < ε := by
+  have hsingle : ∀ m : Fin (n + 1), ∀ᶠ p in 𝓝 a, ∀ x ∈ K,
+      ‖iteratedFDerivWithin ℝ m.val (fun y => f (p, y)) S x -
+        iteratedFDerivWithin ℝ m.val (fun y => f (a, y)) S x‖ < ε := by
+    intro m
+    have hjets := continuousOn_iteratedFDerivWithin_prod_slice hU hS hf m.val
+      (by exact_mod_cast le_top)
+    obtain ⟨W, hW, hclose⟩ := hK.mem_uniformity_of_prod
+      (f := fun p x => iteratedFDerivWithin ℝ m.val (fun y => f (p, y)) S x)
+      (hjets.mono (prod_mono subset_rfl hKS)) ha (Metric.dist_mem_uniformity hε)
+    rw [hU.nhdsWithin_eq ha] at hW
+    filter_upwards [hW] with p hp x hx
+    simpa only [mem_ofPred_eq, dist_eq_norm] using hclose p hp x hx
+  have hfinite : ∀ᶠ p in 𝓝 a, ∀ m : Fin (n + 1), ∀ x ∈ K,
+      ‖iteratedFDerivWithin ℝ m.val (fun y => f (p, y)) S x -
+        iteratedFDerivWithin ℝ m.val (fun y => f (a, y)) S x‖ < ε :=
+    Filter.eventually_all.mpr hsingle
+  filter_upwards [hfinite] with p hp m hm x hx
+  exact hp ⟨m, Nat.lt_succ_of_le hm⟩ x hx
+
+end DifferentialGeometry.Analysis
+end
+
+noncomputable section
+open Set Filter
+open scoped ContDiff Topology Pointwise
+namespace DifferentialGeometry.Analysis
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+private theorem iteratedFDerivWithin_spatial_Icc
+    {f : ℝ × E → F} {a b : ℝ} {V : Set E} {n : ℕ∞ω}
+    (hab : a < b) (hV : IsOpen V) (hf : ContDiffOn ℝ n f (Icc a b ×ˢ V))
+    {t : ℝ} {x : E} (ht : t ∈ Icc a b) (hx : x ∈ V) (m : ℕ) (hm : m ≤ n) :
+    iteratedFDeriv ℝ m (fun y => f (t, y)) x =
+      (iteratedFDerivWithin ℝ m f (Icc a b ×ˢ V) (t, x)).compContinuousLinearMap
+        (fun _ : Fin m => ContinuousLinearMap.inr ℝ ℝ E) := by
+  let R : Set (ℝ × E) := (fun q : ℝ × E => q + (t, 0)) ⁻¹' (Icc a b ×ˢ V)
+  have hR : R = Icc (a - t) (b - t) ×ˢ V := by
+    ext q
+    simp only [R, mem_preimage, mem_prod, Prod.fst_add, Prod.snd_add, add_zero, mem_Icc]
+    constructor <;> rintro ⟨⟨ha, hb⟩, hv⟩ <;> exact ⟨⟨by linarith, by linarith⟩, hv⟩
+  have huniq : UniqueDiffOn ℝ R := by
+    rw [hR]
+    exact (uniqueDiffOn_Icc (by linarith : a - t < b - t)).prod hV.uniqueDiffOn
+  have hpre : (ContinuousLinearMap.inr ℝ ℝ E) ⁻¹' R = V := by
+    ext y
+    simp only [R, mem_preimage, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+      zero_add, add_zero, mem_prod, ht, true_and]
+  have hshift : ContDiffOn ℝ n (fun q : ℝ × E => f (q + (t, 0))) R :=
+    hf.comp (contDiff_id.add contDiff_const).contDiffOn (fun _ h => h)
+  have hmem : (ContinuousLinearMap.inr ℝ ℝ E) x ∈ R := by
+    change (0 + t, x + 0) ∈ Icc a b ×ˢ V
+    simpa only [zero_add, add_zero, mem_prod] using And.intro ht hx
+  have hcomp := (ContinuousLinearMap.inr ℝ ℝ E).iteratedFDerivWithin_comp_right
+    hshift huniq (by rw [hpre]; exact hV.uniqueDiffOn) hmem hm
+  have htranslate : (t, (0 : E)) +ᵥ R = Icc a b ×ˢ V := by
+    ext q
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      simpa only [R, mem_preimage, vadd_eq_add, add_comm (t, (0 : E))] using hy
+    · intro hq
+      refine ⟨q - (t, 0), ?_, ?_⟩
+      · simpa only [R, mem_preimage, sub_add_cancel] using hq
+      · change (t, 0) + (q - (t, 0)) = q
+        abel
+  rw [hpre, iteratedFDerivWithin_comp_add_right, htranslate] at hcomp
+  rw [← iteratedFDerivWithin_of_isOpen m hV hx]
+  simpa only [Function.comp_def, ContinuousLinearMap.inr_apply, Prod.mk_add_mk,
+    zero_add, add_zero] using hcomp
+
+theorem continuousOn_iteratedFDeriv_spatial_Icc
+    {f : ℝ × E → F} {a b : ℝ} {V : Set E} {n : ℕ∞ω}
+    (hab : a < b) (hV : IsOpen V) (hf : ContDiffOn ℝ n f (Icc a b ×ˢ V))
+    (m : ℕ) (hm : m ≤ n) :
+    ContinuousOn (fun q : ℝ × E => iteratedFDeriv ℝ m (fun y => f (q.1, y)) q.2)
+      (Icc a b ×ˢ V) := by
+  have hfull := hf.continuousOn_iteratedFDerivWithin hm
+    ((uniqueDiffOn_Icc hab).prod hV.uniqueDiffOn)
+  have hh := (ContinuousMultilinearMap.compContinuousLinearMapL
+    (fun _ : Fin m => ContinuousLinearMap.inr ℝ ℝ E)).continuous.comp_continuousOn hfull
+  exact hh.congr fun q hq => iteratedFDerivWithin_spatial_Icc hab hV hf hq.1 hq.2 m hm
+
 
 end DifferentialGeometry.Analysis

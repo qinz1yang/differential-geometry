@@ -13,8 +13,8 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-variable {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable {I : ModelWithCorners ℝ E H}
 variable {f : M → ℝ} {a b : ℝ}
 

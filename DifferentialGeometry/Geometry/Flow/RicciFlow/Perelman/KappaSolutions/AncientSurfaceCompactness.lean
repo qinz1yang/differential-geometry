@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceShrinker
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactLimitGlobalization
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Compact
 
 set_option autoImplicit false
 
@@ -12,7 +12,7 @@ open Bundle Filter
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -26,7 +26,7 @@ local instance ancientSurfaceCompactCharted : ChartedSpace H F.M := F.charted
 local instance ancientSurfaceCompactSmooth : IsManifold I ∞ F.M := F.smooth
 local instance ancientSurfaceCompactT2 : T2Space F.M := F.t2
 
-theorem exists_compact_backward_surface_limit [NeZero (Module.finrank ℝ E)]
+theorem exists_compact_backward_surface_limit
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (hdim : Module.finrank ℝ E = 2)
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop) :
@@ -44,7 +44,7 @@ theorem exists_compact_backward_surface_limit [NeZero (Module.finrank ℝ E)]
          CompactSpace L.M ∧ ConnectedSpace L.M ∧
            ∀ x : L.M, metricScalarAt (I := I) L.metric x = 1) := by
   obtain ⟨q, L, phi, hphi, Phi, C, hdomain, hreference, hcomplete, hgeometry⟩ :=
-    exists_backward_slice_asymptotic_shrinker F hF (by omega) tau htau hescape
+    exists_backward_slice_asymptotic_shrinker F hF tau htau hescape
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace H L.M := L.charted
   let _ : IsManifold I ∞ L.M := L.smooth
@@ -61,7 +61,6 @@ theorem exists_compact_backward_surface_limit [NeZero (Module.finrank ℝ E)]
 
 theorem ancientKappaSurface_compact {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (hdim : Module.finrank ℝ E = 2) : CompactSpace F.M := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   let tau : ℕ → ℝ := fun i => (i : ℝ) + 1
   have htau : ∀ i, 0 < tau i := by
     intro i

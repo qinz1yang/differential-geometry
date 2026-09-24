@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -42,28 +42,22 @@ theorem KLim.rankOne_branch {kappa : ℝ} (hK : KLim (I := I) kappa F)
 
 
 theorem KLim.three_terminal_scalar_bddAbove {kappa : ℝ}
-    (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3) :
     BddAbove (Set.range (F.S.scalar 0)) :=
-  KLim.three_terminal_scalar_bddAbove_of_rankOne F hK hdim hnoEmbedding
+  KLim.three_terminal_scalar_bddAbove_of_rankOne F hK hdim
     (hK.rankOne_branch F hdim)
 
 
 theorem KLim.scalar_bounded {kappa : ℝ}
-    (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3) :
     ∃ C : ℝ, PointedFlowScalarBounded (I := I) F C :=
-  KLim.scalar_bounded_of_rankOne F hK hdim hnoEmbedding (hK.rankOne_branch F hdim)
+  KLim.scalar_bounded_of_rankOne F hK hdim (hK.rankOne_branch F hdim)
 
 
 theorem KLim.isAncientKappaSolution {kappa : ℝ}
-    (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3) :
     IsAncientKappaSolution (I := I) kappa F :=
-  KLim.isAncientKappaSolution_of_rankOne F hK hdim hnoEmbedding (hK.rankOne_branch F hdim)
+  KLim.isAncientKappaSolution_of_rankOne F hK hdim (hK.rankOne_branch F hdim)
 
 end General
 
@@ -79,9 +73,7 @@ theorem exists_fixed_kappa_compactness
     (X : PointedFlowSeq.{u, 0, 0} (I := I3))
     (hD : X.D = ancientTimeInterval) {κ : ℝ}
     (hsource : ∀ i, KLim (I := I3) κ (X.term i))
-    (hbase : ∀ i, PointedFlowScalarAtBase (I := I3) (X.term i) 1)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hbase : ∀ i, PointedFlowScalarAtBase (I := I3) (X.term i) 1) :
     ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) X.D) (phi : ℕ → ℕ),
       StrictMono phi ∧
       ∃ Phi : PointedCGHMaps (I := I3) X (L.atTime (I := I3) 0) phi,
@@ -97,7 +89,7 @@ theorem exists_fixed_kappa_compactness
               (Phi.map i) K (Icc a b) order ε)) ∧
         IsAncientKappaSolution (I := I3) κ L := by
   obtain ⟨L, phi, hphi, Phi, hKL, hbaseL, hconv, hcmp, himp⟩ :=
-    exists_fixed_kappa_compactness_of_rankOne X hD hsource hbase hnoEmbedding
+    exists_fixed_kappa_compactness_of_rankOne X hD hsource hbase
   refine ⟨L, phi, hphi, Phi, hKL, hbaseL, hconv, hcmp, himp ?_⟩
   intro P
   exact hKL.rankOne_terminal_scalar_bddAbove finrank_euclideanSpace_fin P

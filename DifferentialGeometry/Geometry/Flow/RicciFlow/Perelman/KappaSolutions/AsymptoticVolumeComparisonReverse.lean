@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.IndexRaising
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Algebra.TensorLifts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Algebra.Relowering
 
@@ -120,25 +121,6 @@ theorem inner_raiseAt (g : SmoothRiemannianMetric I M) (x : M)
     refine Finset.sum_congr rfl fun p _ => by ring
   rw [Finset.sum_congr rfl fun l (_ : l ∈ Finset.univ) => hrow l]
   simp
-
-omit [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem inner_sharpFlat (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
-    (V W : TangentSpace I x) :
-    g₁.inner x V (sharpFlat (I := I) g₂ g₁ x W) = g₂.inner x V W := by
-  have hflat : tangentFlatEquiv (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) =
-      tangentFlatEquiv (I := I) g₂ x W := by
-    change tangentFlatEquiv (I := I) g₁ x
-      ((tangentFlatEquiv (I := I) g₁ x).symm
-        ((tangentFlatEquiv (I := I) g₂ x) W)) = _
-    exact (tangentFlatEquiv (I := I) g₁ x).apply_symm_apply _
-  calc g₁.inner x V (sharpFlat (I := I) g₂ g₁ x W)
-      = g₁.inner x (sharpFlat (I := I) g₂ g₁ x W) V :=
-        g₁.symm x V (sharpFlat (I := I) g₂ g₁ x W)
-    _ = tangentFlatEquiv (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) V :=
-        (tangentFlatEquiv_apply (I := I) g₁ x _ V).symm
-    _ = tangentFlatEquiv (I := I) g₂ x W V := by rw [hflat]
-    _ = g₂.inner x W V := tangentFlatEquiv_apply (I := I) g₂ x W V
-    _ = g₂.inner x V W := g₂.symm x W V
 
 omit [IsManifold I 2 M] [SigmaCompactSpace M] [I.Boundaryless] in
 theorem rm04mix_inner (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)

@@ -1,6 +1,8 @@
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.WithinTower
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OrdinaryMetricTimeJets
 import DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowMetricFields
 
 
 set_option autoImplicit false
@@ -10,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open DifferentialGeometry.Tensor.Coordinates
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.Multilinear
@@ -22,14 +24,10 @@ theorem scalar_time_towers_eq {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)
     (hf : ∀ q t, t ∈ J → HasDerivWithinAt (f q) (f (q + 1) t) J t)
     (hg : ∀ q t, t ∈ J → HasDerivWithinAt (g q) (g (q + 1) t) J t)
     (hzero : ∀ t ∈ J, f 0 t = g 0 t) : ∀ q t, t ∈ J → f q t = g q t := by
-  intro q
-  induction q with
-  | zero => exact hzero
-  | succ q ih =>
-    intro t ht
-    have hd := (hg q t ht).congr_of_eventuallyEq
-      (Filter.eventuallyEq_of_mem self_mem_nhdsWithin (fun s hs => ih s hs)) (ih t ht)
-    exact ((hf q t ht).derivWithin (hJ t ht)).symm.trans (hd.derivWithin (hJ t ht))
+  exact DifferentialGeometry.Analysis.derivWithin_tower_eq f g
+    (fun q t ht => ((hf q t ht).derivWithin (hJ t ht)).symm)
+    (fun q t ht => ((hg q t ht).derivWithin (hJ t ht)).symm) hzero
+
 
 section Charts
 
@@ -99,7 +97,7 @@ end Charts
 section Time
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
 
@@ -146,6 +144,51 @@ theorem ambient_time_jet_chart_eq_local
         rw [chartBasisVecFiber_restrictOpen U p x hx, chartBasisVecFiber_restrictOpen U p x hx]
       _ = C 0 s x vU := by rw [hCzero, metricTensorField_apply]
   have heq := scalar_time_towers_eq (uniqueDiffOn_Iic b) f h hf hh hzero q t ht
+  change B q t (x : M) vM = C q t x vU at heq
+  rw [(hC q t ht x).1] at heq
+  exact heq
+
+theorem ambient_time_jet_chart_eq_local_on_closedWindow
+    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    {D : RealTimeInterval} (T : SolutionOn (I := I) (M := U) D) (hT : IsSolutionOn T)
+    {a c b t : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hregular : Ioo a b ⊆ D.regular)
+    (ht : t ∈ Icc c b)
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hmetric : ∀ s, T.base.metric s = (g s).restrictOpen (I := I) U)
+    (B : ℕ → ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2)
+    (hBzero : ∀ s, B 0 s = metricTensorField (g s))
+    (hB : ∀ q s, s ∈ Icc c b → ∀ x : M,
+      HasDerivWithinAt (fun u => B q u x) (B (q + 1) s x) (Icc c b) s)
+    (p x : U) (hx : (x : M) ∈ (chartAt H (p : M)).source) (q : ℕ)
+    (slots : Fin 2 → Fin (Module.finrank ℝ E)) :
+    B q t (x : M) (fun j => chartBasisVecFiber (I := I) (p : M) (slots j) (x : M)) =
+      (iteratedDerivWithin q (fun s => metricTensorField (T.base.metric s) x) (Icc c b) t)
+        (fun j => chartBasisVecFiber (I := I) p (slots j) x) := by
+  obtain ⟨C, hCzero, hC⟩ := CanonicalNeighborhood.FiniteHorn.exists_closedWindow_metric_time_fields T hT hac hcb hslab hregular
+  let vM : Fin 2 → TangentSpace I (x : M) :=
+    fun j => chartBasisVecFiber (I := I) (p : M) (slots j) (x : M)
+  let vU : Fin 2 → TangentSpace I x := fun j => chartBasisVecFiber (I := I) p (slots j) x
+  let f (q : ℕ) (s : ℝ) := B q s (x : M) vM
+  let h (q : ℕ) (s : ℝ) := C q s x vU
+  have hf (q : ℕ) (s : ℝ) (hs : s ∈ Icc c b) :
+      HasDerivWithinAt (f q) (f (q + 1) s) (Icc c b) s :=
+    (tensor0SEvalCLM (I := I) (x := (x : M)) vM).hasFDerivAt.comp_hasDerivWithinAt s
+      (hB q s hs (x : M))
+  have hh (q : ℕ) (s : ℝ) (hs : s ∈ Icc c b) :
+      HasDerivWithinAt (h q) (h (q + 1) s) (Icc c b) s :=
+    (tensor0SEvalCLM (I := I) (x := x) vU).hasFDerivAt.comp_hasDerivWithinAt s
+      (hC q s hs x).2
+  have hzero (s : ℝ) (_hs : s ∈ Icc c b) : f 0 s = h 0 s := by
+    change B 0 s (x : M) vM = C 0 s x vU
+    calc
+      _ = (g s).inner (x : M) (vM 0) (vM 1) := by rw [hBzero, metricTensorField_apply]
+      _ = (T.base.metric s).inner x (vU 0) (vU 1) := by
+        rw [hmetric, SmoothRiemannianMetric.restrictOpen_inner]
+        dsimp only [vM, vU]
+        rw [chartBasisVecFiber_restrictOpen U p x hx, chartBasisVecFiber_restrictOpen U p x hx]
+      _ = C 0 s x vU := by rw [hCzero, metricTensorField_apply]
+  have heq := scalar_time_towers_eq (uniqueDiffOn_Icc hcb) f h hf hh hzero q t ht
   change B q t (x : M) vM = C q t x vU at heq
   rw [(hC q t ht x).1] at heq
   exact heq

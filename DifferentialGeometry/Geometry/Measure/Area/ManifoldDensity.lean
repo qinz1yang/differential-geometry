@@ -150,4 +150,14 @@ theorem riemannianAreaDensity_eq_chart (g : SmoothRiemannianMetric 𝓘(ℝ, E) 
 
 end Chart
 
+theorem riemannianAreaDensity_le_mfderiv_speeds
+    (g : SmoothRiemannianMetric I M) (u : ℂ → M) (z : ℂ) :
+    riemannianAreaDensity g u z ≤
+      Real.sqrt (g.inner (u z) (mfderiv 𝓘(ℝ, ℂ) I u z (1 : ℂ))
+        (mfderiv 𝓘(ℝ, ℂ) I u z (1 : ℂ))) *
+      Real.sqrt (g.inner (u z) (mfderiv 𝓘(ℝ, ℂ) I u z Complex.I)
+        (mfderiv 𝓘(ℝ, ℂ) I u z Complex.I)) := by
+  unfold riemannianAreaDensity
+  exact tangentTwoJacobian_le g _ _
+
 end DifferentialGeometry.Geometry

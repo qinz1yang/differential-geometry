@@ -13,6 +13,54 @@ variable {X : Type*} [TopologicalSpace X] {S₁ S₂ : Set X}
 private theorem frontier_subset_closure' (A : Set X) : frontier A ⊆ closure A :=
   frontier_subset_closure
 
+theorem compactSide_disjoint_or_subset_of_isPreconnected_sdiff
+    (d₁ : SphereSides S₁) (d₂ : SphereSides S₂)
+    (hconn : IsPreconnected (S₂ \ S₁)) :
+    Disjoint d₁.compactSide d₂.compactSide ∨
+      d₁.compactSide ⊆ d₂.compactSide ∨ d₂.compactSide ⊆ d₁.compactSide := by
+  rcases d₁.subset_compactSide_or_subset_endSide hconn (sdiff_subset_compl S₂ S₁) with hS | hS
+  · have havoid : d₁.endSide ⊆ S₂ᶜ := by
+      intro x hx hxS
+      exact d₁.disjoint.le_bot ⟨hS ⟨hxS, d₁.endSide_subset_compl hx⟩, hx⟩
+    have hend : d₁.endSide ⊆ d₂.endSide :=
+      d₂.subset_endSide_of_not_isCompact_closure d₁.isConnected_endSide.isPreconnected
+        havoid d₁.not_isCompact_closure_endSide
+    have hsub : d₂.compactSide ⊆ closure d₁.compactSide := by
+      intro x hx
+      rw [d₁.closure_compactSide]
+      by_cases hxS : x ∈ S₁
+      · exact Or.inr hxS
+      · have hparts : x ∈ d₁.compactSide ∪ d₁.endSide := d₁.compl_eq_union ▸ hxS
+        exact Or.inl (hparts.resolve_right (fun he => d₂.disjoint.le_bot ⟨hx, hend he⟩))
+    right
+    right
+    simpa only [d₂.isOpen_compactSide.interior_eq, d₁.interior_closure_compactSide] using
+      interior_mono hsub
+  · have havoid : d₁.compactSide ⊆ S₂ᶜ := by
+      intro x hx hxS
+      exact d₁.disjoint.le_bot ⟨hx, hS ⟨hxS, d₁.compactSide_subset_compl hx⟩⟩
+    rcases d₂.subset_compactSide_or_subset_endSide
+      d₁.isConnected_compactSide.isPreconnected havoid with hsub | hsub
+    · exact Or.inr (Or.inl hsub)
+    · exact Or.inl (Set.disjoint_left.mpr fun _ hx hy => d₂.disjoint.le_bot ⟨hy, hsub hx⟩)
+
+theorem closure_compactSide_inter_eq_of_disjoint
+    (d₁ : SphereSides S₁) (d₂ : SphereSides S₂)
+    (hd : Disjoint d₁.compactSide d₂.compactSide) :
+    closure d₁.compactSide ∩ closure d₂.compactSide = S₁ ∩ S₂ := by
+  have hd₁ := hd.closure_left d₂.isOpen_compactSide
+  have hd₂ := hd.closure_right d₁.isOpen_compactSide
+  ext x
+  constructor
+  · rintro ⟨hx, hy⟩
+    constructor
+    · have := d₁.closure_compactSide ▸ hx
+      exact this.resolve_left (fun h => hd₂.le_bot ⟨h, hy⟩)
+    · have := d₂.closure_compactSide ▸ hy
+      exact this.resolve_left (fun h => hd₁.le_bot ⟨hx, h⟩)
+  · rintro ⟨hx, hy⟩
+    exact ⟨d₁.closure_compactSide ▸ Or.inr hx, d₂.closure_compactSide ▸ Or.inr hy⟩
+
 theorem disjoint_sides_nested
     (d₁ : SphereSides S₁) (d₂ : SphereSides S₂)
     (hS₁S₂ : Disjoint S₁ S₂) (hS₂conn : IsConnected S₂)

@@ -586,6 +586,24 @@ omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
       (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (γ s) (V s) := rfl
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem contDiffAt_chartRepAtBase {n : ℕ∞} {γ : ℝ → M}
+    {V : ∀ s, TangentSpace I (γ s)} (β : M) {x : ℝ}
+    (hV : ContMDiffAt 𝓘(ℝ, ℝ) I.tangent n
+      (fun s => (TotalSpace.mk' E (γ s) (V s) : TangentBundle I M)) x)
+    (hβ : γ x ∈ (chartAt H β).source) :
+    ContDiffAt ℝ n (chartRepAtBase β γ V) x := by
+  let e := trivializationAt E (TangentSpace I) β
+  have hmem : γ x ∈ e.baseSet := by rwa [TangentBundle.trivializationAt_baseSet]
+  have hγ := (contMDiffAt_tangentField_iff.mp hV).1
+  have hread := ((e.contMDiffAt_iff (e.mem_source.mpr hmem)).mp hV).2
+  have heq : chartRepAtBase β γ V =ᶠ[𝓝 x]
+      (fun s => (e (TotalSpace.mk' E (γ s) (V s))).2) := by
+    filter_upwards [hγ.continuousAt.preimage_mem_nhds (e.open_baseSet.mem_nhds hmem)] with s hs
+    exact e.continuousLinearMapAt_apply_of_mem ℝ hs (V s)
+  exact hread.contDiffAt.congr_of_eventuallyEq heq
+
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartRepAtBase_foot (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t)) (t : ℝ) :
     chartRepAtBase (I := I) (γ t) γ V = chartRepAt (I := I) γ V t := rfl
 

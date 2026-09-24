@@ -420,3 +420,129 @@ theorem complete_of_ricBound
     simpa only [Real.exp_neg] using hequiv x v
 
 end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+open scoped Manifold ContDiff
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [IsManifold I 1 M] [T2Space M]
+
+theorem metric_inner_antitoneOn_of_ricci_nonnegative_interior
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {a b : ℝ}
+    (hslab : Set.Icc a b ⊆ D.carrier) (hreg : Set.Ioo a b ⊆ D.regular)
+    (hRic : ∀ s ∈ Set.Ioo a b, ∀ y : M, ∀ w : TangentSpace I y,
+      0 ≤ S.ricciAt s y (vec2 w w))
+    (x : M) (v : TangentSpace I x) :
+    AntitoneOn (fun s : ℝ => (S.base.metric s).inner x v v) (Set.Icc a b) := by
+  have hcont : ContinuousOn (fun s : ℝ => (S.base.metric s).inner x v v) D.carrier := by
+    rw [continuousOn_iff_continuous_domRestrict]
+    exact hS.smoothMetric.metricTensor_cont.eval_continuous
+      (P := {s : ℝ // s ∈ D.carrier}) (τ := Subtype.val) (b := fun _ => x)
+      continuous_subtype_val (fun p => p.2) continuous_const
+      (v := fun i _ => vec2 v v i) (fun _ => continuous_const)
+  apply antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc a b)
+    (f' := fun s => (-2 : ℝ) * S.ricciAt s x (vec2 v v)) (hcont.mono hslab)
+  · intro s hs
+    have hs' : s ∈ Set.Ioo a b := by simpa only [interior_Icc] using hs
+    exact (metricDerivAt (I := I) S hS ⟨s, hreg hs'⟩ x v v).hasDerivWithinAt
+  · intro s hs
+    have hs' : s ∈ Set.Ioo a b := by simpa only [interior_Icc] using hs
+    exact mul_nonpos_of_nonpos_of_nonneg (by norm_num) (hRic s hs' x v)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] [T2Space M]
+
+theorem complete_at_earlier_time_of_ricci_nonnegative
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {a b s : ℝ}
+    (hslab : Set.Icc a b ⊆ D.carrier) (hreg : Set.Ioo a b ⊆ D.regular)
+    (hRic : ∀ t ∈ Set.Ioo a b, ∀ x : M, ∀ v : TangentSpace I x,
+      0 ≤ S.ricciAt t x (vec2 v v))
+    (hb : RiemannianMetricComplete (I := I) (S.base.metric b))
+    (hs : s ∈ Set.Icc a b) :
+    RiemannianMetricComplete (I := I) (S.base.metric s) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  refine RiemannianMetricComplete.of_lower hb (c := 1) zero_lt_one ?_
+  intro x v
+  have hanti :=
+    Perelman.CanonicalNeighborhood.metric_inner_antitoneOn_of_ricci_nonnegative_interior
+      S hS hslab hreg hRic x v
+  simpa only [one_mul] using hanti hs ⟨hs.1.trans hs.2, le_rfl⟩ hs.2
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Set DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] [T2Space M]
+
+theorem complete_of_abs_ricciTensor_le
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {a b K s t : ℝ}
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)
+    (hRic : ∀ r ∈ Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      |ricciTensor (S.base.metric r) x v v| ≤ K * (S.base.metric r).inner x v v)
+    (hs : s ∈ Icc a b) (ht : t ∈ Icc a b)
+    (hcomplete : RiemannianMetricComplete (S.base.metric t)) :
+    RiemannianMetricComplete (S.base.metric s) := by
+  have hpde := metricPDE_Icc S hS hslab hreg
+  refine RiemannianMetricComplete.of_lower hcomplete
+    (Real.exp_pos (-(2 * K * |t - s|))) ?_
+  intro x v
+  have hderiv : ∀ r ∈ Icc a b,
+      ∃ d : ℝ, HasDerivWithinAt (fun u => (S.base.metric u).inner x v v)
+        d (Icc a b) r ∧ |d| ≤ (2 * K) * (S.base.metric r).inner x v v := by
+    intro r hr
+    refine ⟨_, hpde r hr x v v, ?_⟩
+    rw [abs_mul, abs_neg, abs_two]
+    calc
+      2 * |ricciTensor (S.base.metric r) x v v| ≤
+          2 * (K * (S.base.metric r).inner x v v) :=
+        mul_le_mul_of_nonneg_left (hRic r hr x v) (by norm_num)
+      _ = (2 * K) * (S.base.metric r).inner x v v := by ring
+  have hbound := inner_le_exp_mul_inner_of_abs_deriv_le S.base.metric x v hderiv ht hs
+  calc
+    Real.exp (-(2 * K * |t - s|)) * (S.base.metric t).inner x v v ≤
+        Real.exp (-(2 * K * |t - s|)) *
+          (Real.exp (2 * K * |t - s|) * (S.base.metric s).inner x v v) :=
+      mul_le_mul_of_nonneg_left hbound (Real.exp_pos _).le
+    _ = (S.base.metric s).inner x v v := by
+      rw [← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
+
+theorem complete_of_curvature_bound
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {a b C s t : ℝ}
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)
+    (hcurv : ∀ r ∈ Icc a b, ∀ x : M,
+      normSq0S (S.base.metric r) x 4 (S.base.rm04 r x) ≤ C)
+    (hs : s ∈ Icc a b) (ht : t ∈ Icc a b)
+    (hcomplete : RiemannianMetricComplete (S.base.metric t)) :
+    RiemannianMetricComplete (S.base.metric s) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  exact complete_of_abs_ricciTensor_le S hS hslab hreg
+    (fun r hr x v => ricci_quadratic_form_bound_of_solution_curvature_bound
+      S x v (hcurv r hr x)) hs ht hcomplete
+
+end DifferentialGeometry.PDE.RicciFlow

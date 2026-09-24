@@ -17,7 +17,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Topology
 
-theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
+theorem exists_smoothTwoSidedCollar_eq_of_localDiffeomorphAt_zero
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {B : Type*} [TopologicalSpace B] [ChartedSpace H B] [CompactSpace B]
@@ -26,8 +26,10 @@ theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
     {A : Type*} [TopologicalSpace A] [ChartedSpace G A] [T2Space A]
     {e : B → A} (he : Injective e) (Φ : B × ℝ → A) (hΦ : Continuous Φ)
     (hzero : ∀ x, Φ (x, 0) = e x)
-    (hloc : ∀ x, IsLocalDiffeomorphAt (I.prod (modelWithCornersSelf ℝ ℝ)) J ∞ Φ (x, 0)) :
-    Nonempty (SmoothTwoSidedCollar I J e) := by
+    (hloc : ∀ x, IsLocalDiffeomorphAt (I.prod (modelWithCornersSelf ℝ ℝ)) J ∞ Φ (x, 0))
+    (r : ℝ) (hr : 0 < r) :
+    ∃ c : SmoothTwoSidedCollar I J e, c.radius ≤ r ∧
+      ∀ p, c.toFun p = Φ (p.1, p.2.val) := by
   let IP := I.prod (modelWithCornersSelf ℝ ℝ)
   have hinjloc : ∀ x, ∃ W ∈ nhds (x, (0 : ℝ)), InjOn Φ W := by
     intro x
@@ -51,9 +53,14 @@ theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
   have hVall : ∀ x, x ∈ V := by
     have : V = univ := by simpa using hV
     simp [this]
-  obtain ⟨ε, hε, hεUW⟩ := Metric.mem_nhds_iff.mp (inter_mem hU hW)
+  obtain ⟨δ, hδ, hδUW⟩ := Metric.mem_nhds_iff.mp (inter_mem hU hW)
+  let ε := min δ r
+  have hε : 0 < ε := lt_min hδ hr
   have hinterval : Ioo (-ε) ε ⊆ U ∩ W := by
-    simpa only [Real.ball_eq_Ioo, zero_sub, zero_add] using hεUW
+    have hδinterval : Ioo (-δ) δ ⊆ U ∩ W := by
+      simpa only [Real.ball_eq_Ioo, zero_sub, zero_add] using hδUW
+    apply Subset.trans (b := Ioo (-δ) δ) ?_ hδinterval
+    exact Ioo_subset_Ioo (neg_le_neg (min_le_left δ r)) (min_le_left δ r)
   let Z : TopologicalSpace.Opens (B × ℝ) :=
     ⟨univ ×ˢ Ioo (-ε) ε, isOpen_univ.prod isOpen_Ioo⟩
   let d : Diffeomorph IP IP (B × symmetricOpenInterval ε) Z ∞ := {
@@ -89,6 +96,20 @@ theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
     radius_pos := hε
     neighborhood := hf.image
     toDiffeomorph := diffeomorphRangeOfInjective hf hfInj
-    zero_eq := fun x ↦ hzero x }⟩
+    zero_eq := fun x ↦ hzero x }, min_le_right δ r, fun _ ↦ rfl⟩
+
+theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {B : Type*} [TopologicalSpace B] [ChartedSpace H B] [CompactSpace B]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+    {A : Type*} [TopologicalSpace A] [ChartedSpace G A] [T2Space A]
+    {e : B → A} (he : Injective e) (Φ : B × ℝ → A) (hΦ : Continuous Φ)
+    (hzero : ∀ x, Φ (x, 0) = e x)
+    (hloc : ∀ x, IsLocalDiffeomorphAt (I.prod (modelWithCornersSelf ℝ ℝ)) J ∞ Φ (x, 0)) :
+    Nonempty (SmoothTwoSidedCollar I J e) := by
+  obtain ⟨c, _⟩ := exists_smoothTwoSidedCollar_eq_of_localDiffeomorphAt_zero he Φ hΦ hzero hloc 1 zero_lt_one
+  exact ⟨c⟩
 
 end DifferentialGeometry.Topology

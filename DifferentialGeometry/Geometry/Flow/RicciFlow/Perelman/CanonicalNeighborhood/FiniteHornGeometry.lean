@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.KernelSecondDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
+import DifferentialGeometry.Geometry.Metric.ConeChart.Defs
 
 set_option autoImplicit false
 noncomputable section
@@ -133,6 +134,7 @@ structure StrongNeck {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D
     (rescaledMetric S t (S.scalar t x) Q_pos) map
     (Set.univ ×ˢ Set.Ioo (-eps⁻¹) eps⁻¹) (Set.Icc (-1) 0)
     (⌈eps⁻¹⌉₊) eps
+
 
 
 structure LocalNeck {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D)
@@ -293,20 +295,7 @@ structure CanonicalWitness {D : RealTimeInterval}
       Real.sqrt ((S.base.metric t).inner x v v)
   time_derivative : |derivWithin (fun s => S.scalar s x) (Set.Iic t) t| ≤ C2 * S.scalar t x ^ 2
 
-structure ConeChart (g : SmoothRiemannianMetric I3 M) (U : Set M) where
-  surface : Type u
-  [topology : TopologicalSpace surface]
-  [charted : ChartedSpace (EuclideanSpace ℝ (Fin 2)) surface]
-  [smooth : IsManifold I2 ∞ surface]
-  [t2 : T2Space surface]
-  [sigmaCompact : SigmaCompactSpace surface]
-  metric : SmoothRiemannianMetric I2 surface
-  map : PartialDiffeomorph (𝓘(ℝ, ℝ).prod I2) I3 (ℝ × surface) M ∞
-  positive_radius : ∀ z ∈ map.source, 0 < z.1
-  target_eq : map.target = U
-  radial_metric : ∀ z ∈ map.source, ∀ v w : TangentSpace (𝓘(ℝ, ℝ).prod I2) z,
-    g.inner (map z) (mfderiv (𝓘(ℝ, ℝ).prod I2) I3 map z v)
-      (mfderiv (𝓘(ℝ, ℝ).prod I2) I3 map z w) =
-        v.1 * w.1 + z.1 ^ 2 * metric.inner z.2 v.2 w.2
+abbrev ConeChart (g : SmoothRiemannianMetric I3 M) (U : Set M) :=
+  DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, u} 2 g U
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

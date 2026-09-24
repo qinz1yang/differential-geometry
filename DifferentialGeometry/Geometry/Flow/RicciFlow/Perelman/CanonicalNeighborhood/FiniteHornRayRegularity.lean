@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornLocalCompletion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompleteTriangleEquality
+import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteTriangleEquality
 
 set_option autoImplicit false
 noncomputable section
@@ -19,7 +19,7 @@ variable {W : Type u} [TopologicalSpace W] [T2Space W] [ChartedSpace ThreeSpace 
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem regularity_of_complete_metric_segment [ConnectedSpace W]
+private theorem regularity_of_complete_metric_segment
     (g : SmoothRiemannianMetric I3 W) (hcomplete : RiemannianMetricComplete g)
     (f : ℝ → W) (t : ℝ) {R : ℝ} (hR : 0 < R)
     (hdist : ∀ s ∈ Icc (-R) R, ∀ v ∈ Icc (-R) R,
@@ -88,7 +88,6 @@ theorem finiteHorn_endRay_smooth_geodesic
       ContMDiffOn 𝓘(ℝ, ℝ) I3 ∞ a.point (Ioo 0 (min a.length d)) ∧
       Geodesic.IsGeodesicOn g a.point (Ioo 0 (min a.length d)) := by
   obtain ⟨d, hd, hlocal⟩ := finiteHorn_exists_local_complete_metric g H
-  let : ConnectedSpace W := connectedSpace_iff_univ.mpr H.tube.isConnected_univ
   refine ⟨d, hd, ?_⟩
   intro a
   have hpoint (t : ℝ) (ht : t ∈ Ioo 0 (min a.length d)) :

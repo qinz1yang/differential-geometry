@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalEnergy
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
 import DifferentialGeometry.Geometry.Measure.Area.SpanningCompetitors
+import DifferentialGeometry.Analysis.Integration.Measure.UniformIntegrability
 
 
 
@@ -27,13 +29,6 @@ structure IsSmoothEmbeddedLoop (γ : freeLoop M) : Prop where
   embedding : Topology.IsEmbedding γ
   immersed : ∀ t : ℝ,
     mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => γ (s : loopCircle)) t 1 ≠ 0
-
-
-
-def IsWeaklyMonotoneOnce (σ : C(loopCircle, loopCircle)) : Prop :=
-  ∃ ψ : ℝ → ℝ, Continuous ψ ∧ (∀ t : ℝ, (ψ t : loopCircle) = σ (t : loopCircle)) ∧
-    ((Monotone ψ ∧ ∀ t, ψ (t + 1) = ψ t + 1) ∨
-      (Antitone ψ ∧ ∀ t, ψ (t + 1) = ψ t - 1))
 
 
 
@@ -65,5 +60,19 @@ theorem IsMorreyDisk.integrableArea {g : SmoothRiemannianMetric 𝓘(ℝ, E) M}
     {γ : freeLoop M} {u : C(closedDisk, M)} (h : IsMorreyDisk g γ u) :
     IntegrableOn (riemannianAreaDensity g (diskExtension u)) (Metric.closedBall 0 1) :=
   diskArea_integrable_of_conformal_energy g u h.conformal h.finiteEnergy
+
+theorem IsMorreyDisk.exists_pos_integral_energy_lt
+    {g : SmoothRiemannianMetric 𝓘(ℝ, E) M} {γ : freeLoop M} {u : C(closedDisk, M)}
+    (h : IsMorreyDisk g γ u) {ε : ℝ} (hε : 0 < ε) :
+    ∃ r > 0, ∀ a : ℂ,
+      (∫ z in Metric.closedBall a r ∩ Metric.closedBall (0 : ℂ) 1,
+        diskMapEnergyDensity g (diskExtension u) z) < ε := by
+  obtain ⟨r, hr, hbound⟩ := h.finiteEnergy.exists_pos_integral_norm_closedBall_lt hε
+  refine ⟨r, hr, fun a => ?_⟩
+  have hle := norm_integral_le_integral_norm
+    (μ := volume.restrict (Metric.closedBall a r ∩ Metric.closedBall (0 : ℂ) 1))
+    (diskMapEnergyDensity g (diskExtension u))
+  rw [Real.norm_eq_abs] at hle
+  exact ((le_abs_self _).trans hle).trans_lt (hbound a)
 
 end DifferentialGeometry.Geometry

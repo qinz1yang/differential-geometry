@@ -150,9 +150,11 @@ theorem trivToE_mfderiv_trivFromE
           (extChartAt IN a p) v)) at hchainE
   exact hchainE.symm
 
-theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback
+theorem chartMetricBilin_pullback_of_inner_map
     {gN : SmoothRiemannianMetric IN N} {gM : SmoothRiemannianMetric I M}
-    {f : N → M} (h : IsRiemannianIsometricImmersion gN gM f)
+    {f : N → M} (hf : ContMDiff IN I ∞ f)
+    (hmetric : ∀ (x : N) (u v : TangentSpace IN x),
+      gM.inner (f x) (mfderiv IN I f x u) (mfderiv IN I f x v) = gN.inner x u v)
     (a p : N) (b : M) (hp : p ∈ (chartAt HN a).source)
     (hfp : f p ∈ (chartAt H b).source) (v w : EN) :
     chartMetricBilin gM b (extChartAt I b (f p))
@@ -162,19 +164,21 @@ theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback
           (extChartAt IN a p) w) =
       chartMetricBilin gN a (extChartAt IN a p) v w := by
   rw [← trivToE_mfderiv_trivFromE a p b hp hfp
-      (h.contMDiff.mdifferentiableAt (by simp)) v,
+      (hf.mdifferentiableAt (by simp)) v,
     ← trivToE_mfderiv_trivFromE a p b hp hfp
-      (h.contMDiff.mdifferentiableAt (by simp)) w,
-    chartMetricBilin_trivToE gM b (f p) hfp, h.inner_map]
+      (hf.mdifferentiableAt (by simp)) w,
+    chartMetricBilin_trivToE gM b (f p) hfp, hmetric]
   have hp' : (extChartAt IN a).symm (extChartAt IN a p) = p :=
     (extChartAt IN a).left_inv (by simpa using hp)
   change gN.inner p _ _ = gN.inner _ _ _
   rw [hp']
   rfl
 
-theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback_eventually
+theorem chartMetricBilin_pullback_eventually_of_inner_map
     {gN : SmoothRiemannianMetric IN N} {gM : SmoothRiemannianMetric I M}
-    {f : N → M} (h : IsRiemannianIsometricImmersion gN gM f)
+    {f : N → M} (hf : ContMDiff IN I ∞ f)
+    (hmetric : ∀ (x : N) (u v : TangentSpace IN x),
+      gM.inner (f x) (mfderiv IN I f x u) (mfderiv IN I f x v) = gN.inner x u v)
     (a : N) :
     ∀ᶠ z in nhds (extChartAt IN a a), ∀ v w : EN,
       chartMetricBilin gM (f a) (writtenInExtChartAt IN I a f z)
@@ -185,7 +189,7 @@ theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback_eventually
     mem_extChartAt_target a
   have hcont : ContinuousAt (fun z => f ((extChartAt IN a).symm z))
       (extChartAt IN a a) :=
-    h.continuous.continuousAt.comp (continuousAt_extChartAt_symm a)
+    hf.continuous.continuousAt.comp (continuousAt_extChartAt_symm a)
   have hsrc : ∀ᶠ z in nhds (extChartAt IN a a),
       f ((extChartAt IN a).symm z) ∈ (chartAt H (f a)).source := by
     apply hcont.preimage_mem_nhds
@@ -195,10 +199,34 @@ theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback_eventually
   intro v w
   have hp : (extChartAt IN a).symm z ∈ (chartAt HN a).source := by
     simpa using (extChartAt IN a).map_target hz
-  have hid := h.chartMetricBilin_pullback a ((extChartAt IN a).symm z)
+  have hid := chartMetricBilin_pullback_of_inner_map hf hmetric a ((extChartAt IN a).symm z)
     (f a) hp hsrc v w
   rw [(extChartAt IN a).right_inv hz] at hid
   exact hid
+
+theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback
+    {gN : SmoothRiemannianMetric IN N} {gM : SmoothRiemannianMetric I M}
+    {f : N → M} (h : IsRiemannianIsometricImmersion gN gM f)
+    (a p : N) (b : M) (hp : p ∈ (chartAt HN a).source)
+    (hfp : f p ∈ (chartAt H b).source) (v w : EN) :
+    chartMetricBilin gM b (extChartAt I b (f p))
+        (fderiv ℝ (fun z : EN => extChartAt I b (f ((extChartAt IN a).symm z)))
+          (extChartAt IN a p) v)
+        (fderiv ℝ (fun z : EN => extChartAt I b (f ((extChartAt IN a).symm z)))
+          (extChartAt IN a p) w) =
+      chartMetricBilin gN a (extChartAt IN a p) v w :=
+  chartMetricBilin_pullback_of_inner_map h.contMDiff h.inner_map a p b hp hfp v w
+
+theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback_eventually
+    {gN : SmoothRiemannianMetric IN N} {gM : SmoothRiemannianMetric I M}
+    {f : N → M} (h : IsRiemannianIsometricImmersion gN gM f)
+    (a : N) :
+    ∀ᶠ z in nhds (extChartAt IN a a), ∀ v w : EN,
+      chartMetricBilin gM (f a) (writtenInExtChartAt IN I a f z)
+          (fderiv ℝ (writtenInExtChartAt IN I a f) z v)
+          (fderiv ℝ (writtenInExtChartAt IN I a f) z w) =
+        chartMetricBilin gN a z v w :=
+  chartMetricBilin_pullback_eventually_of_inner_map h.contMDiff h.inner_map a
 
 end ChartDerivative
 

@@ -72,6 +72,11 @@ theorem diskLocalTension_congr_germ (g : SmoothRiemannianMetric I M)
     · exact (hd v).comp_tendsto (hline v)
   change _ + _ = _ + _
   exact congrArg₂ (fun x y : E => x + y) (heq 1) (heq Complex.I)
+
+theorem diskLocalTension_congr_of_eqOn (g : SmoothRiemannianMetric I M)
+    {F G : ℂ → M} {U : Set ℂ} (hU : IsOpen U) (h : EqOn F G U) {z : ℂ} (hz : z ∈ U) :
+    (diskLocalTension g F z : E) = (diskLocalTension g G z : E) :=
+  diskLocalTension_congr_germ g F G z (eventuallyEq_of_mem (hU.mem_nhds hz) h)
 end Germ
 
 section OpenTarget

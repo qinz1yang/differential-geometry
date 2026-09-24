@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Connected.Dense
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Analysis.Convex.PathConnected
+import Mathlib.Topology.Algebra.Module.LocallyConvex
 
 open Set Filter Topology
 open scoped Manifold ContDiff
@@ -67,5 +68,35 @@ theorem isPreconnected_manifold_interior [PreconnectedSpace M] :
   rw [heq]
   exact ((convex_ball (c x) r).inter I.convex_range.interior).isPreconnected.image c.symm
     ((continuousOn_extChartAt_symm (I := I) x).mono htarget)
+
+end DifferentialGeometry.Topology.Manifold
+
+namespace DifferentialGeometry.Topology.Manifold
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
+
+theorem isPreconnected_manifold_interior_inter_open
+    (U : TopologicalSpace.Opens M) (hU : IsPreconnected (U : Set M)) :
+    IsPreconnected (I.interior M ∩ U) := by
+  let _ : PreconnectedSpace U := isPreconnected_iff_preconnectedSpace.mp hU
+  have h := (isPreconnected_manifold_interior (I := I) (M := U)).image
+    Subtype.val continuous_subtype_val.continuousOn
+  rw [I.interior_open, image_preimage_eq_inter_range] at h
+  have hrange : range (Subtype.val : U → M) = U := by
+    ext y
+    exact ⟨fun ⟨z, hz⟩ => hz ▸ z.property, fun hy => ⟨⟨y, hy⟩, rfl⟩⟩
+  rwa [hrange] at h
+
+theorem isPreconnected_manifold_interior_inter_connectedComponent
+    (x : M) : IsPreconnected (I.interior M ∩ connectedComponent x) := by
+  let _ : LocallyPathConnectedSpace (range I) := I.convex_range.locallyPathConnectedSpace
+  let _ : LocallyConnectedSpace H :=
+    I.isClosedEmbedding.isEmbedding.toHomeomorph.locallyConnectedSpace
+  let _ : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace H M
+  exact isPreconnected_manifold_interior_inter_open
+    ⟨connectedComponent x, ConnectedComponents.discreteTopology_iff.mp inferInstance x⟩
+    isPreconnected_connectedComponent
 
 end DifferentialGeometry.Topology.Manifold

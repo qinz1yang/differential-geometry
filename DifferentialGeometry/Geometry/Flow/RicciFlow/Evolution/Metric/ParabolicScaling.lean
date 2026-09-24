@@ -51,6 +51,31 @@ theorem covariantEndomorphismAction0S_smul_smul {r : ℕ} {x : M}
   exact Finset.sum_congr rfl fun _ _ => (mul_assoc _ _ _).symm
 
 
+theorem metricTimeDerivWithin_parabolic_of_mapsTo
+    (g : ℝ → SmoothRiemannianMetric I M) {r : ℕ} {x : M}
+    (A : ℝ → Tensor0SSpace r I x) {J K : Set ℝ} {t₀ Q s : ℝ}
+    (hQ : 0 < Q) (c : ℝ)
+    (hmaps : MapsTo (fun u : ℝ => t₀ + u / Q) K J)
+    (hK : UniqueDiffWithinAt ℝ K s)
+    (hA : DifferentiableWithinAt ℝ A J (t₀ + s / Q)) :
+    metricTimeDerivWithin (fun u => scaleMetric Q hQ (g (t₀ + u / Q)))
+        K (fun u => c • A (t₀ + u / Q)) s =
+      (c * Q⁻¹) • metricTimeDerivWithin g J A (t₀ + s / Q) := by
+  have htime : HasDerivAt (fun u : ℝ => t₀ + u / Q) Q⁻¹ s := by
+    convert ((hasDerivAt_id s).div_const Q).const_add t₀ using 1 <;>
+      first | rfl | simp only [one_div]
+  have hd : HasDerivWithinAt (fun u => c • A (t₀ + u / Q))
+      (c • (Q⁻¹ • derivWithin A J (t₀ + s / Q))) K s :=
+    (hA.hasDerivWithinAt.scomp s htime.hasDerivWithinAt hmaps).const_smul c
+  have hd' : derivWithin (fun u => c • A (t₀ + u / Q)) K s =
+      (c * Q⁻¹) • derivWithin A J (t₀ + s / Q) := by
+    have heq := hd.derivWithin hK
+    rw [smul_smul] at heq
+    exact heq
+  rw [metricTimeDerivWithin, hd', ricciSharp_scaleMetric,
+    covariantEndomorphismAction0S_smul_smul, ← smul_add]
+  rfl
+
 theorem metricTimeDerivWithin_parabolic
     (g : ℝ → SmoothRiemannianMetric I M) {r : ℕ} {x : M}
     (A : ℝ → Tensor0SSpace r I x) {b t₀ Q s : ℝ}
@@ -59,22 +84,9 @@ theorem metricTimeDerivWithin_parabolic
     metricTimeDerivWithin (fun u => scaleMetric Q hQ (g (t₀ + u / Q)))
         (Iic 0) (fun u => c • A (t₀ + u / Q)) s =
       (c * Q⁻¹) • metricTimeDerivWithin g (Iic b) A (t₀ + s / Q) := by
-  have htime : HasDerivAt (fun u : ℝ => t₀ + u / Q) Q⁻¹ s := by
-    convert ((hasDerivAt_id s).div_const Q).const_add t₀ using 1 <;>
-      first | rfl | simp only [one_div]
-  have hmaps : MapsTo (fun u : ℝ => t₀ + u / Q) (Iic 0) (Iic b) := by
-    intro u hu
-    exact (add_le_of_nonpos_right (div_nonpos_of_nonpos_of_nonneg hu hQ.le)).trans ht₀
-  have hd : HasDerivWithinAt (fun u => c • A (t₀ + u / Q))
-      (c • (Q⁻¹ • derivWithin A (Iic b) (t₀ + s / Q))) (Iic 0) s :=
-    (hA.hasDerivWithinAt.scomp s htime.hasDerivWithinAt hmaps).const_smul c
-  have hd' : derivWithin (fun u => c • A (t₀ + u / Q)) (Iic 0) s =
-      (c * Q⁻¹) • derivWithin A (Iic b) (t₀ + s / Q) := by
-    have heq := hd.derivWithin (uniqueDiffOn_Iic 0 s hs)
-    rw [smul_smul] at heq
-    exact heq
-  rw [metricTimeDerivWithin, hd', ricciSharp_scaleMetric,
-    covariantEndomorphismAction0S_smul_smul, ← smul_add]
-  rfl
+  apply metricTimeDerivWithin_parabolic_of_mapsTo g A hQ c _
+    (uniqueDiffOn_Iic 0 s hs) hA
+  intro u hu
+  exact (add_le_of_nonpos_right (div_nonpos_of_nonpos_of_nonneg hu hQ.le)).trans ht₀
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

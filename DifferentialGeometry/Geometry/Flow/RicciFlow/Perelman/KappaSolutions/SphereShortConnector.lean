@@ -10,7 +10,7 @@ noncomputable section
 open Bundle Manifold Set
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open scoped Manifold ContDiff Topology RealInnerProductSpace
+open scoped Manifold ContDiff _root_.Topology RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

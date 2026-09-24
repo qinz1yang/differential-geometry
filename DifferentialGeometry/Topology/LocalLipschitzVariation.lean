@@ -1,3 +1,5 @@
+import Mathlib.Topology.EMetricSpace.Lipschitz
+import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.EMetricSpace.BoundedVariation
 import Mathlib.Topology.UnitInterval
 
@@ -61,5 +63,22 @@ theorem boundedVariationOn_comp_of_locally_lipschitzOn
     BoundedVariationOn (f ∘ γ) (Icc a b) :=
   ne_top_of_le_ne_top (by finiteness)
     (eVariationOn_comp_le_of_locally_lipschitzOn hγ hf)
+
+
+theorem IsCompact.exists_uniform_lipschitzOnWith_nhds
+    {K : Set X} (hK : IsCompact K) {f : X → Y}
+    (hf : ∀ x ∈ K, ∃ L : ℝ≥0, ∃ s ∈ 𝓝 x, LipschitzOnWith L f s) :
+    ∃ L : ℝ≥0, ∀ x ∈ K, ∃ s ∈ 𝓝 x, LipschitzOnWith L f s := by
+  classical
+  choose L V hV hLip using hf
+  obtain ⟨t, ht⟩ := hK.elim_nhds_subcover' (fun x hx => interior (V x hx))
+    (fun x hx => interior_mem_nhds.mpr (hV x hx))
+  refine ⟨t.sup (fun x => L x x.property), ?_⟩
+  intro x hx
+  obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.mp (ht hx)
+  refine ⟨interior (V y y.property), isOpen_interior.mem_nhds hxy, ?_⟩
+  intro z hz w hw
+  exact (hLip y y.property (interior_subset hz) (interior_subset hw)).trans
+    (mul_le_mul_of_nonneg_right (ENNReal.coe_le_coe.mpr (Finset.le_sup (f := fun x : K => L x x.property) hy)) zero_le)
 
 end DifferentialGeometry.Topology

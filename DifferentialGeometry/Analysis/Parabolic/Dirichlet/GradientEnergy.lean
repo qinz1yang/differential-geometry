@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartFlux
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
@@ -128,17 +129,14 @@ private theorem ae_cutoff_gradient_flux_eq_fixed_density
         (∑ i, c i j (t, z) * dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s i (v t) z) -
           ∑ i, c i j (t, z) * fderiv ℝ η z (EuclideanSpace.single i 1) * V (t, z) := by
   intro ρ σ r A c V j
-  have h := ae_cutoff_gradient_flux_eq q α hΩ hΩc hΩs hΩ₀ hΩ₀c hΩ₀s hsub
-    u v k H A r hv hweak hη hηc j
+  have h := ae_cutoff_gradient_flux_eq_density_ratio q G.metric α hΩ hΩc hΩs hΩ₀ hΩ₀c hΩ₀s
+    hsub u v k H hv hweak hη hηc j
   have hV := (dirichletLocalSpacetimeWeakPartialLp_coeFn q α hΩ hΩc hΩs
     (timeMeasure T) k u).filter_mono (ae_mono hμ)
   filter_upwards [h, hV] with t ht hVt
   have hVt₀ := hVt.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
-  filter_upwards [ht, hVt₀, ae_restrict_mem hΩ₀.measurableSet] with z hz hVz hzm
-  have hcoeff (i) : A i j (t, z) / r (t, z) = c i j (t, z) :=
-    weightedInvGramOnEuclid_div_density_ratio q (G.metric t) α i j z
-      (hΩ₀s.trans (image_mono interior_subset) (subset_closure hzm))
-  simpa only [hcoeff, ← hVz] using hz
+  filter_upwards [ht, hVt₀] with z hz hVz
+  simpa only [← hVz] using hz
 
 private theorem exists_cutoff_gradient_energy_of_timeH1
     (q : SmoothRiemannianMetric I_hs M)

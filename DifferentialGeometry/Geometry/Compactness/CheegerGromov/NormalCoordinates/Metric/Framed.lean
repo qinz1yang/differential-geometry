@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.CompactBounds
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.IntrinsicGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 
@@ -473,6 +476,230 @@ theorem contDiffOn_framedTransition
       (fun z => framedExpDiffeo (I := I) Y.metric x z) U :=
     (framedExp_smoothOn (I := I) Y x).mono hUx
   exact (framedChart_smooth (I := I) Y y).comp hexp hmaps
+
+local instance framedMetricFormNormedAddCommGroup :
+    NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+local instance framedMetricFormNormedSpace :
+    NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem normalCoordMetric_eq_pullback_framedMetric
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
+    {u : E}
+    (hu : letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      u ∈ (expMapDiffeo (I := I) Y.metric x).source) :
+    letI : TopologicalSpace Y.M := Y.topology
+    letI : ChartedSpace H Y.M := Y.charted
+    letI : IsManifold I ∞ Y.M := Y.smooth
+    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    let L : E ≃L[ℝ] E :=
+      (normalFrame (I := I) Y.metric x).trans
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+    normalCoordMetric (I := I) Y x u =
+      pullbackForm (framedMetric (I := I) Y.metric x (L.symm u), (L.symm : E →L[ℝ] E)) := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let L : E ≃L[ℝ] E :=
+    (normalFrame (I := I) Y.metric x).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+  change normalCoordMetric (I := I) Y x u =
+    pullbackForm (framedMetric (I := I) Y.metric x (L.symm u), (L.symm : E →L[ℝ] E))
+  have hLc : ((tangentSpaceModelContinuousLinearEquiv (I := I) x : TangentSpace I x →L[ℝ] E) ∘SL
+      (normalFrame (I := I) Y.metric x : E →L[ℝ] TangentSpace I x)) = (L : E →L[ℝ] E) := rfl
+  have hLs : L.symm u ∈ (framedExpDiffeo (I := I) Y.metric x).source := by
+    rw [framedExp_source]
+    change L (L.symm u) ∈ (expMapDiffeo (I := I) Y.metric x).source
+    rw [L.apply_symm_apply]
+    exact hu
+  have hb := framedMetric_eq_pullback_normalCoordMetric (I := I) Y x (L.symm u) hLs
+  rw [hLc] at hb
+  dsimp only at hb
+  have happ : (↑L : E →L[ℝ] E) (L.symm u) = u := by simp
+  rw [happ] at hb
+  rw [hb]
+  ext v w
+  simp [pullbackForm_apply]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem normalCoordMetric_eq_pullback_framedCoordMetric
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
+    {u : E}
+    (hu : letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      u ∈ (expMapDiffeo (I := I) Y.metric x).source) :
+    letI : TopologicalSpace Y.M := Y.topology
+    letI : ChartedSpace H Y.M := Y.charted
+    letI : IsManifold I ∞ Y.M := Y.smooth
+    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    normalCoordMetric (I := I) Y x u =
+      pullbackForm (framedCoordMetric (I := I) Y x
+          (((normalFrame (I := I) Y.metric x).trans
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x)).symm u),
+        (((normalFrame (I := I) Y.metric x).trans
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x)).symm : E →L[ℝ] E)) := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let L : E ≃L[ℝ] E :=
+    (normalFrame (I := I) Y.metric x).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+  change normalCoordMetric (I := I) Y x u =
+    pullbackForm (framedMetric (I := I) Y.metric x (L.symm u), (L.symm : E →L[ℝ] E))
+  exact normalCoordMetric_eq_pullback_framedMetric (I := I) Y x hu
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem norm_iteratedFDeriv_normalCoordMetric_le_of_framedCoordMetric
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
+    {s U : Set E} (hs : IsOpen s)
+    (hsmooth : letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      ContDiffOn ℝ ∞ (framedCoordMetric (I := I) Y x) s)
+    (hUsrc : ∀ u ∈ U,
+      letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      u ∈ (expMapDiffeo (I := I) Y.metric x).source)
+    (hsU : ∀ u ∈ U,
+      letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      (((normalFrame (I := I) Y.metric x).trans
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x)).symm u) ∈ s)
+    (p : ℕ) {C : ℝ}
+    (hC : ∀ u ∈ U,
+      letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      ‖iteratedFDeriv ℝ p (framedCoordMetric (I := I) Y x)
+        (((normalFrame (I := I) Y.metric x).trans
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x)).symm u)‖ ≤ C) :
+    ∀ u ∈ U,
+      letI : TopologicalSpace Y.M := Y.topology
+      letI : ChartedSpace H Y.M := Y.charted
+      letI : IsManifold I ∞ Y.M := Y.smooth
+      letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      ‖iteratedFDeriv ℝ p (normalCoordMetric (I := I) Y x) u‖ ≤
+        C * ‖(((normalFrame (I := I) Y.metric x).trans
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x)).symm : E →L[ℝ] E)‖ ^ (p + 2) := by
+  intro u hu
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let L : E ≃L[ℝ] E :=
+    (normalFrame (I := I) Y.metric x).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+  change ‖iteratedFDeriv ℝ p (normalCoordMetric (I := I) Y x) u‖ ≤
+    C * ‖(L.symm : E →L[ℝ] E)‖ ^ (p + 2)
+  let Ls : E →L[ℝ] E := (L.symm : E →L[ℝ] E)
+  let T : (E →L[ℝ] (E →L[ℝ] ℝ)) →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ)) :=
+    (ContinuousLinearMap.compL ℝ E E (E →L[ℝ] ℝ)).flip Ls
+  let F : (E →L[ℝ] (E →L[ℝ] ℝ)) →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ)) :=
+    (ContinuousLinearMap.flipₗᵢ ℝ E E ℝ).toContinuousLinearEquiv.toContinuousLinearMap
+  let S : (E →L[ℝ] (E →L[ℝ] ℝ)) →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ)) :=
+    F.comp (T.comp (F.comp T))
+  have hT : ∀ X : E →L[ℝ] E →L[ℝ] ℝ, T X = X ∘SL Ls := by
+    intro X
+    simp only [T, ContinuousLinearMap.flip_apply, ContinuousLinearMap.compL_apply]
+  have hF : ∀ X : E →L[ℝ] E →L[ℝ] ℝ, F X = X.flip := fun X => rfl
+  have hS_form : ∀ B : E →L[ℝ] E →L[ℝ] ℝ, S B = pullbackForm (B, Ls) := by
+    intro B
+    ext a b
+    change F (T (F (T B))) a b = pullbackForm (B, Ls) a b
+    rw [hF, hT, hF, hT, ContinuousLinearMap.flip_apply,
+      ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      pullbackForm_apply]
+  have hSnorm : ‖S‖ ≤ ‖Ls‖ ^ 2 := by
+    refine ContinuousLinearMap.opNorm_le_bound S (by positivity) fun B => ?_
+    rw [hS_form B]
+    refine ContinuousLinearMap.opNorm_le_bound (pullbackForm (B, Ls)) (by positivity) fun a => ?_
+    refine ContinuousLinearMap.opNorm_le_bound (pullbackForm (B, Ls) a) (by positivity) fun b => ?_
+    calc ‖pullbackForm (B, Ls) a b‖ = ‖B (Ls a) (Ls b)‖ := by rw [pullbackForm_apply]
+      _ ≤ ‖B‖ * ‖Ls a‖ * ‖Ls b‖ := ContinuousLinearMap.le_opNorm₂ B _ _
+      _ ≤ ‖B‖ * (‖Ls‖ * ‖a‖) * (‖Ls‖ * ‖b‖) := by
+            gcongr <;> exact ContinuousLinearMap.le_opNorm Ls _
+      _ = (‖Ls‖ ^ 2 * ‖B‖) * ‖a‖ * ‖b‖ := by ring
+  have hbridge : ∀ w ∈ (expMapDiffeo (I := I) Y.metric x).source,
+      normalCoordMetric (I := I) Y x w =
+        pullbackForm (framedCoordMetric (I := I) Y x (L.symm w), Ls) := by
+    intro w hw
+    change normalCoordMetric (I := I) Y x w =
+      pullbackForm (framedMetric (I := I) Y.metric x (L.symm w), (L.symm : E →L[ℝ] E))
+    exact normalCoordMetric_eq_pullback_framedMetric (I := I) Y x hw
+  have hV : IsOpen (expMapDiffeo (I := I) Y.metric x).source :=
+    (expMapDiffeo (I := I) Y.metric x).open_source
+  have hiter : iteratedFDeriv ℝ p (normalCoordMetric (I := I) Y x) u =
+      iteratedFDeriv ℝ p
+        (fun w : E => pullbackForm (framedCoordMetric (I := I) Y x (Ls w), Ls)) u := by
+    rw [← (iteratedFDerivWithin_of_isOpen (𝕜 := ℝ) p hV) (hUsrc u hu),
+      ← (iteratedFDerivWithin_of_isOpen (𝕜 := ℝ) p hV) (hUsrc u hu)]
+    exact iteratedFDerivWithin_congr (fun w hw => hbridge w hw) (hUsrc u hu) p
+  have hScomp : (fun w : E => pullbackForm (framedCoordMetric (I := I) Y x (Ls w), Ls)) =
+      (⇑S ∘ fun w : E => framedCoordMetric (I := I) Y x (Ls w)) := by
+    funext w
+    rw [Function.comp_apply, hS_form]
+  have hsmooth_p : ContDiffOn ℝ (p : WithTop ℕ∞) (framedCoordMetric (I := I) Y x) s :=
+    hsmooth.of_le (by exact_mod_cast le_top)
+  have hx : (0 : E) + Ls u ∈ s := by
+    rw [zero_add]
+    exact hsU u hu
+  have hcomp := DifferentialGeometry.Analysis.iteratedFDeriv_comp_affine
+    (k := p) hs hsmooth_p (0 : E) Ls (x := u) hx
+  simp only [zero_add] at hcomp
+  have hsmAt : ContDiffAt ℝ ∞
+      (fun w : E => framedCoordMetric (I := I) Y x (Ls w)) u :=
+    (hsmooth.contDiffAt (hs.mem_nhds (hsU u hu))).comp u Ls.contDiff.contDiffAt
+  have hleft := S.iteratedFDeriv_comp_left hsmAt (i := p)
+    (by exact_mod_cast le_top : (p : WithTop ℕ∞) ≤ ∞)
+  calc ‖iteratedFDeriv ℝ p (normalCoordMetric (I := I) Y x) u‖
+      = ‖iteratedFDeriv ℝ p
+          (fun w : E => pullbackForm (framedCoordMetric (I := I) Y x (Ls w), Ls)) u‖ := by
+        rw [hiter]
+    _ = ‖S.compContinuousMultilinearMap
+          (iteratedFDeriv ℝ p
+            (fun w : E => framedCoordMetric (I := I) Y x (Ls w)) u)‖ := by
+        rw [hScomp, hleft]
+    _ ≤ ‖S‖ * ‖iteratedFDeriv ℝ p
+          (fun w : E => framedCoordMetric (I := I) Y x (Ls w)) u‖ :=
+        ContinuousLinearMap.norm_compContinuousMultilinearMap_le _ _
+    _ = ‖S‖ * ‖(iteratedFDeriv ℝ p (framedCoordMetric (I := I) Y x) (Ls u)).compContinuousLinearMap
+          (fun _ : Fin p => Ls)‖ := by rw [hcomp]
+    _ ≤ ‖S‖ * (‖iteratedFDeriv ℝ p (framedCoordMetric (I := I) Y x) (Ls u)‖ * ‖Ls‖ ^ p) := by
+        gcongr
+        calc ‖(iteratedFDeriv ℝ p (framedCoordMetric (I := I) Y x) (Ls u)).compContinuousLinearMap
+              (fun _ : Fin p => Ls)‖
+            ≤ ‖iteratedFDeriv ℝ p (framedCoordMetric (I := I) Y x) (Ls u)‖ *
+                ∏ _ : Fin p, ‖Ls‖ :=
+              ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _
+          _ = ‖iteratedFDeriv ℝ p (framedCoordMetric (I := I) Y x) (Ls u)‖ * ‖Ls‖ ^ p := by
+              simp
+    _ ≤ ‖Ls‖ ^ 2 * (C * ‖Ls‖ ^ p) := by
+        gcongr
+        exact hC u hu
+    _ = C * ‖Ls‖ ^ (p + 2) := by ring
 
 end CheegerGromovCompactness
 end DifferentialGeometry

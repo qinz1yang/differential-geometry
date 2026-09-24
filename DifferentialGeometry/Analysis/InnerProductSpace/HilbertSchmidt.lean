@@ -62,6 +62,19 @@ theorem hilbertSchmidtInner_self_pos {A : U →L[ℝ] V} (hA : A ≠ 0) :
   exact (stdOrthonormalBasis ℝ U).continuousLinearMapEquiv.injective.ne
     (by simpa using hA)
 
+theorem hilbertSchmidtInner_self_le_finrank_mul_norm_sq (A : U →L[ℝ] V) :
+    A.hilbertSchmidtInner A ≤ Module.finrank ℝ U * ‖A‖ ^ 2 := by
+  rw [hilbertSchmidtInner]
+  calc
+    _ ≤ ∑ _i : Fin (Module.finrank ℝ U), ‖A‖ ^ 2 := by
+      apply Finset.sum_le_sum
+      intro i _
+      rw [real_inner_self_eq_norm_sq]
+      apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2
+      simpa only [(stdOrthonormalBasis ℝ U).orthonormal.norm_eq_one i, mul_one] using
+        A.le_opNorm ((stdOrthonormalBasis ℝ U) i)
+    _ = _ := by simp only [Finset.sum_const, Finset.card_fin, nsmul_eq_mul]
+
 def hilbertSchmidtInnerSL : (U →L[ℝ] V) →L[ℝ] (U →L[ℝ] V) →L[ℝ] ℝ :=
   ∑ i, (innerSL ℝ (E := V)).bilinearComp
     (apply ℝ V (stdOrthonormalBasis ℝ U i))

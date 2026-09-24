@@ -67,7 +67,7 @@ noncomputable def flatNestedDiffeo {U V : Opens M} (hVU : V ≤ U) :
 
 omit [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-private theorem flatNested_mfderiv {U V : Opens M} (hVU : V ≤ U) (x : V) :
+theorem flatNested_mfderiv {U V : Opens M} (hVU : V ≤ U) (x : V) :
     mfderiv I I (flatNestedDiffeo (H := H) (I := I) (M := M) hVU :
       V → nestedOpen (M := M) (U := U) (V := V)) x =
       ContinuousLinearMap.id Real E := by

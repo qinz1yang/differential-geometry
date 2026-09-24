@@ -1,75 +1,10 @@
-import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothMap
-import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothLimits
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 
 set_option autoImplicit false
 
 noncomputable section
-
-namespace DifferentialGeometry.CheegerGromovCompactness
-
-open Filter Topology
-open scoped ContDiff
-
-section LocalIdentification
-
-variable {E F : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-
-theorem mapCInfConvergenceOnCompacts_of_pointwise_of_local_jet_bounds
-    {U : Set E} (hU : IsOpen U) (f : ℕ → E → F) (f₀ : E → F)
-    (hf : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (f k) U)
-    (hbdd : ∀ r : ℕ, ∀ K : Set E, IsCompact K → K ⊆ U →
-      ∃ C : ℝ, ∀ k : ℕ, ∀ x ∈ K, ‖iteratedFDeriv ℝ r (f k) x‖ ≤ C)
-    (hpoint : ∀ x ∈ U, Tendsto (fun k => f k x) atTop (𝓝 (f₀ x))) :
-    MapCInfConvergenceOnCompacts U f f₀ := by
-  classical
-  intro K hK hKU p ε hε
-  by_contra hbad
-  push Not at hbad
-  choose k hk hbad using hbad
-  choose r hr hbad using hbad
-  choose x hx hbad using hbad
-  have hkTop : Tendsto k atTop atTop := tendsto_atTop_mono hk tendsto_id
-  obtain ⟨σ, fLimit, hσ, _, hconv⟩ := exists_cInf_subseq_on hU
-    (fun n => f (k n)) (fun n => hf (k n)) (by
-      intro j C hC hCU
-      obtain ⟨B, hB⟩ := hbdd j C hC hCU
-      exact ⟨B, fun n y hy => hB (k n) y hy⟩)
-  have heq : Set.EqOn f₀ fLimit U := by
-    intro y hy
-    have hto₀ := (hpoint y hy).comp (hkTop.comp hσ.tendsto_atTop)
-    have htoLimit := (tendstoUniformlyOn_of_cPConvergence
-      (hconv {y} isCompact_singleton (Set.singleton_subset_iff.mpr hy) 0)).tendsto_at
-        (Set.mem_singleton y)
-    exact tendsto_nhds_unique hto₀ htoLimit
-  have hconv₀ : MapCInfConvergenceOnCompacts U (fun n => f (k (σ n))) f₀ :=
-    hconv.congr hU (fun _ _ _ => rfl) heq
-  obtain ⟨N, hN⟩ := hconv₀ K hK hKU p ε hε
-  exact not_lt_of_ge
-    (hN N le_rfl (r (σ N)) (hr (σ N)) (x (σ N)) (hx (σ N))) (hbad (σ N))
-
-theorem iteratedFDeriv_norm_le_of_pointwise_of_local_jet_bounds
-    {U : Set E} (hU : IsOpen U) (f : ℕ → E → F) (f₀ : E → F)
-    (hf : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (f k) U)
-    (hf₀ : ContDiffOn ℝ (∞ : WithTop ℕ∞) f₀ U)
-    (hbdd : ∀ r : ℕ, ∀ K : Set E, IsCompact K → K ⊆ U →
-      ∃ C : ℝ, ∀ k : ℕ, ∀ x ∈ K, ‖iteratedFDeriv ℝ r (f k) x‖ ≤ C)
-    (hpoint : ∀ x ∈ U, Tendsto (fun k => f k x) atTop (𝓝 (f₀ x)))
-    (r : ℕ) {x : E} (hx : x ∈ U) {C : ℝ}
-    (hC : ∀ᶠ k in atTop, ‖iteratedFDeriv ℝ r (f k) x‖ ≤ C) :
-    ‖iteratedFDeriv ℝ r f₀ x‖ ≤ C := by
-  have hconv := mapCInfConvergenceOnCompacts_of_pointwise_of_local_jet_bounds
-    hU f f₀ hf hbdd hpoint
-  have hjet := (hconv.tendstoUniformlyOn_iteratedFDeriv hU isCompact_singleton
-    (Set.singleton_subset_iff.mpr hx) hf hf₀ r).tendsto_at (Set.mem_singleton x)
-  exact le_of_tendsto hjet.norm hC
-
-end LocalIdentification
-
-end DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

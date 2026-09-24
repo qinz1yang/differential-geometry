@@ -191,7 +191,7 @@ theorem inner_metricGaugeVelocityWithin (g : ℝ → SmoothRiemannianMetric I M)
   simp only [metricGaugeVelocityWithin, smul_apply, ContinuousLinearMap.comp_apply,
     map_smul, hinv, smul_eq_mul]
 
-private theorem metricGaugeVelocityWithin_contMDiffOn
+theorem metricGaugeVelocityWithin_contMDiffOn
     {g : ℝ → SmoothRiemannianMetric I M} {s : Set ℝ}
     (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun p : ℝ × M =>

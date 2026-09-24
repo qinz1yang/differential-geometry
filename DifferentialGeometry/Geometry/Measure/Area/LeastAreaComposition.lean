@@ -33,7 +33,7 @@ theorem continuous_of_riemannian_map_lipschitz
   let : PseudoEMetricSpace M := .ofRiemannianMetric 𝓘(ℝ, E) M
   exact continuous_of_riemannian_lipschitz h hf
 
-variable [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [CompactSpace M] [CompactSpace N]
+variable [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [CompactSpace M]
 
 
 def postcomposeLipschitzContractibleLoop
@@ -47,6 +47,7 @@ def postcomposeLipschitzContractibleLoop
 
 
 
+omit [CompactSpace M] in
 theorem postcompose_spanningDisk_competitor
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (h : SmoothRiemannianMetric 𝓘(ℝ, F) N)
     (f : M → N) {L : ℝ≥0}

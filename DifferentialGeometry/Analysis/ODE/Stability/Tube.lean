@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Topology.MetricSpace.Thickening
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.ODE.Basic
 import Mathlib.Analysis.ODE.Gronwall
@@ -149,14 +151,14 @@ private theorem exists_pos_gronwallBound_lt
   · exact (le_abs_self _).trans_lt (by simpa [Real.dist_eq] using hnBound)
 
 theorem integralCurve_tendstoUniformlyOn_of_limit_tube
-    {P X : Type*}
+    {ι P X : Type*} {l : Filter ι}
     [NormedAddCommGroup X] [NormedSpace ℝ X]
     {K : Set P} {t₀ t₁ r : ℝ}
     (ht₀₁ : t₀ ≤ t₁)
     (hr : 0 < r)
-    {v : ℕ → ℝ → X → X}
+    {v : ι → ℝ → X → X}
     {vInf : ℝ → X → X}
-    {γ : ℕ → P → ℝ → X}
+    {γ : ι → P → ℝ → X}
     {γInf : P → ℝ → X}
     (hγ :
       ∀ n p, p ∈ K →
@@ -168,21 +170,21 @@ theorem integralCurve_tendstoUniformlyOn_of_limit_tube
       TendstoUniformlyOn
         (fun n p => γ n p t₀)
         (fun p => γInf p t₀)
-        atTop K)
+        l K)
     (hfield :
       TendstoUniformlyOn
         (fun n (q : P × ℝ) => v n q.2 (γInf q.1 q.2))
         (fun q : P × ℝ => vInf q.2 (γInf q.1 q.2))
-        atTop (K ×ˢ Icc t₀ t₁))
+        l (K ×ˢ Icc t₀ t₁))
     (hLip :
-      ∃ L : NNReal, ∀ᶠ n in atTop,
+      ∃ L : NNReal, ∀ᶠ n in l,
         ∀ p ∈ K, ∀ t ∈ Ico t₀ t₁,
           LipschitzOnWith L (v n t)
             (closedBall (γInf p t) r)) :
     TendstoUniformlyOn
       (fun n (q : P × ℝ) => γ n q.1 q.2)
       (fun q : P × ℝ => γInf q.1 q.2)
-      atTop (K ×ˢ Icc t₀ t₁) := by
+      l (K ×ˢ Icc t₀ t₁) := by
   rw [Metric.tendstoUniformlyOn_iff] at hinit hfield ⊢
   intro ε hε
   let R : ℝ := min r ε
@@ -284,3 +286,76 @@ theorem integralCurve_tendstoUniformlyOn_of_limit_tube
     _ ≤ ε := min_le_right r ε
 
 end DifferentialGeometry.Analysis.ODE
+
+noncomputable section
+
+open Filter Metric Set
+open scoped NNReal
+
+namespace DifferentialGeometry.Analysis.ODE
+
+theorem integralCurve_tendstoUniformlyOn_of_fderiv_compact
+    {ι P X : Type*} {l : Filter ι} [TopologicalSpace P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X] [ProperSpace X]
+    {a b : ℝ} (hab : a ≤ b) {K : Set P} (hK : IsCompact K)
+    {v : ι → ℝ → X → X} {vInf : ℝ → X → X}
+    {γ : ι → P → ℝ → X} {γInf : P → ℝ → X}
+    (hγ : ∀ i p, p ∈ K → IsIntegralCurveOn (γ i p) (v i) (Icc a b))
+    (hγInf : ∀ p ∈ K, IsIntegralCurveOn (γInf p) vInf (Icc a b))
+    (hcInf : ContinuousOn (Function.uncurry γInf) (K ×ˢ Icc a b))
+    (hd : ∀ᶠ i in l, ∀ t ∈ Icc a b, Differentiable ℝ (v i t))
+    (hdInf : ContinuousOn (fun q : X × ℝ => fderiv ℝ (vInf q.2) q.1)
+      (univ ×ˢ Icc a b))
+    (hinit : TendstoUniformlyOn (fun i p => γ i p a) (fun p => γInf p a) l K)
+    (hv : ∀ C : Set X, IsCompact C → TendstoUniformlyOn
+      (fun i (q : X × ℝ) => v i q.2 q.1)
+      (fun q : X × ℝ => vInf q.2 q.1) l (C ×ˢ Icc a b))
+    (hDv : ∀ C : Set X, IsCompact C → TendstoUniformlyOn
+      (fun i (q : X × ℝ) => fderiv ℝ (v i q.2) q.1)
+      (fun q : X × ℝ => fderiv ℝ (vInf q.2) q.1) l (C ×ˢ Icc a b)) :
+    TendstoUniformlyOn (fun i (q : P × ℝ) => γ i q.1 q.2)
+      (fun q : P × ℝ => γInf q.1 q.2) l (K ×ˢ Icc a b) := by
+  let R : Set X := Function.uncurry γInf '' (K ×ˢ Icc a b)
+  have hR : IsCompact R := (hK.prod isCompact_Icc).image_of_continuousOn hcInf
+  let C : Set X := cthickening 1 R
+  have hC : IsCompact C := hR.cthickening
+  have hDcont : ContinuousOn (fun q : X × ℝ => fderiv ℝ (vInf q.2) q.1)
+      (C ×ˢ Icc a b) :=
+    hdInf.mono (prod_mono (subset_univ C) Subset.rfl)
+  obtain ⟨B, hB⟩ := (hC.prod isCompact_Icc).exists_bound_of_continuousOn hDcont
+  let L : ℝ≥0 := ⟨max B 0 + 1, by positivity⟩
+  have hderiv : ∀ᶠ i in l, ∀ t ∈ Icc a b, ∀ x ∈ C,
+      ‖fderiv ℝ (v i t) x‖ ≤ (L : ℝ) := by
+    filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hDv C hC) 1 zero_lt_one] with i hi
+    intro t ht x hx
+    have hdist : dist (fderiv ℝ (v i t) x) (fderiv ℝ (vInf t) x) ≤ 1 :=
+      (dist_comm _ _).trans_le (hi (x, t) ⟨hx, ht⟩).le
+    exact (norm_le_norm_add_const_of_dist_le hdist).trans
+      (add_le_add ((hB (x, t) ⟨hx, ht⟩).trans (le_max_left B 0)) le_rfl)
+  have hfield : TendstoUniformlyOn
+      (fun i (q : P × ℝ) => v i q.2 (γInf q.1 q.2))
+      (fun q : P × ℝ => vInf q.2 (γInf q.1 q.2)) l (K ×ˢ Icc a b) := by
+    have h := hv R hR
+    rw [Metric.tendstoUniformlyOn_iff] at h ⊢
+    intro ε hε
+    filter_upwards [h ε hε] with i hi
+    intro q hq
+    exact hi (γInf q.1 q.2, q.2) ⟨⟨q, hq, rfl⟩, hq.2⟩
+  apply integralCurve_tendstoUniformlyOn_of_limit_tube hab zero_lt_one
+    hγ hγInf hinit hfield
+  refine ⟨L, ?_⟩
+  filter_upwards [hd, hderiv] with i hdi hi
+  intro p hp t ht
+  have htI : t ∈ Icc a b := Ico_subset_Icc_self ht
+  apply Convex.lipschitzOnWith_of_nnnorm_fderiv_le
+    (fun x _ => hdi t htI x) ?_ (convex_closedBall _ _)
+  intro x hx
+  rw [← NNReal.coe_le_coe]
+  change ‖fderiv ℝ (v i t) x‖ ≤ (L : ℝ)
+  apply hi t htI x
+  exact mem_cthickening_of_dist_le x (γInf p t) 1 R
+    ⟨(p, t), ⟨hp, htI⟩, rfl⟩ hx
+
+end DifferentialGeometry.Analysis.ODE
+
+end

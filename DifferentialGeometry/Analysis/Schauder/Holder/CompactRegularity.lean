@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Schauder.Holder.SecondOrderComposition
+import DifferentialGeometry.Analysis.Schauder.Holder.Compactness
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 
 noncomputable section
@@ -21,6 +22,19 @@ theorem exists_norm_bound_of_continuousOn_isCompact
   refine ⟨⟨max C 0, le_max_right _ _⟩, ?_⟩
   intro x hx
   exact (hC x hx).trans (le_max_left _ _)
+
+theorem exists_norm_bound_and_holderWith_of_contDiff_hasCompactSupport
+    {E G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {f : E → G} (hf : ContDiff ℝ 1 f) (hc : HasCompactSupport f)
+    {α : ℝ≥0} (hα : α ≤ 1) :
+    ∃ M K : ℝ≥0, (∀ x, ‖f x‖ ≤ M) ∧ HolderWith K α f := by
+  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuous hf.continuous
+  let M : ℝ≥0 := ⟨max B 0, le_max_right _ _⟩
+  have hM : ∀ x, ‖f x‖ ≤ M := fun x => (hB x).trans (le_max_left _ _)
+  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hc hf one_ne_zero
+  exact ⟨M, max (2 * M) K, hM,
+    (Schauder.holderWith_zero_of_norm_le hM).of_le_of_le hK.holderWith (by positivity) hα⟩
 
 theorem exists_holderWith_restrict_of_contDiffOn_isCompact
     {s : Set V} (hs : IsCompact s) (hsconv : Convex Real s)
@@ -45,6 +59,47 @@ theorem exists_norm_bound_and_holderWith_restrict_of_contDiffOn_isCompact
   rcases exists_norm_bound_of_continuousOn_isCompact hs hf.continuousOn with ⟨C₀, hC₀⟩
   rcases exists_holderWith_restrict_of_contDiffOn_isCompact hs hsconv hf halpha with ⟨Cα, hCα⟩
   exact ⟨C₀, Cα, hC₀, hCα⟩
+
+theorem exists_holderOnWith_comp_of_contDiffOn_isCompact
+    {X V F : Type*} [PseudoMetricSpace X]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {s : Set X} (hs : IsCompact s) {U : Set V} (hU : IsOpen U)
+    {u : X → V} {K α : ℝ≥0} (hu : HolderOnWith K α u s) (hα : 0 < α)
+    (huU : MapsTo u s U) {f : V → F} (hf : ContDiffOn ℝ 1 f U) :
+    ∃ C : ℝ≥0, HolderOnWith C α (fun x => f (u x)) s := by
+  have huc : IsCompact (u '' s) := hs.image_of_continuousOn (hu.continuousOn hα)
+  have hloc : LocallyLipschitzOn (u '' s) f := by
+    intro y hy
+    obtain ⟨x, hx, rfl⟩ := hy
+    obtain ⟨L, t, ht, hL⟩ := ((hf (u x) (huU hx)).contDiffAt
+      (hU.mem_nhds (huU hx))).exists_lipschitzOnWith
+    exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hL⟩
+  obtain ⟨L, hL⟩ := LocallyLipschitzOn.exists_lipschitzOnWith_of_compact huc hloc
+  refine ⟨L * K, ?_⟩
+  have hh := hL.holderOnWith.comp hu (mapsTo_image u s)
+  simpa only [Function.comp_def, NNReal.coe_one, NNReal.rpow_one, one_mul] using! hh
+
+theorem exists_holderOnWith_firstJet_comp_of_contDiffOn_isCompact
+    {V F G : Type*}
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {s : Set V} (hs : IsCompact s) (hsconv : Convex ℝ s)
+    {u : V → F} (hu : ContDiffOn ℝ 1 u s) {K α : ℝ≥0}
+    (hD : HolderOnWith K α (fderivWithin ℝ u s) s)
+    (hα : 0 < α) (hα1 : α ≤ 1)
+    {U : Set (V × F × (V →L[ℝ] F))} (hU : IsOpen U)
+    (huU : MapsTo (fun x => (x, u x, fderivWithin ℝ u s x)) s U)
+    {f : (V × F × (V →L[ℝ] F)) → G} (hf : ContDiffOn ℝ 1 f U) :
+    ∃ C : ℝ≥0, HolderOnWith C α (fun x => f (x, u x, fderivWithin ℝ u s x)) s := by
+  obtain ⟨A, hA⟩ := exists_holderWith_restrict_of_contDiffOn_isCompact hs hsconv
+    (contDiff_id.contDiffOn : ContDiffOn ℝ 1 (fun x : V => x) s) hα1
+  obtain ⟨B, hB⟩ := exists_holderWith_restrict_of_contDiffOn_isCompact hs hsconv hu hα1
+  exact exists_holderOnWith_comp_of_contDiffOn_isCompact hs hU
+    (holderOnWith_prodMk (HolderWith.restrict_iff.mp hA)
+      (holderOnWith_prodMk (HolderWith.restrict_iff.mp hB) hD)) hα huU hf
+
 
 theorem isCompact_parabolicCylinder_Icc
     {X : Type*} [TopologicalSpace X]

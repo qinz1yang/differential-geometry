@@ -11,14 +11,14 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Set MeasureTheory
+open Bundle Set _root_.MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 private theorem reduced_volume_scale_factor {r theta : ℝ} (hr : 0 < r) (htheta : 0 < theta) :
     (4 * Real.pi * (theta * r ^ 2)) ^ (-(3 / 2 : ℝ)) * r ^ 3 =

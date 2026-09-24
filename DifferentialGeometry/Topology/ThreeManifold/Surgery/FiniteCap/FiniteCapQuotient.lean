@@ -2,6 +2,8 @@ import DifferentialGeometry.Topology.Manifold.Attachment.AdjunctionInjectivity
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialCap
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CuttingSphereAttachment
 
+import Mathlib.Topology.Compactness.SigmaCompact
+
 set_option autoImplicit false
 noncomputable section
 open Set Function TopologicalSpace DifferentialGeometry.Topology
@@ -119,4 +121,22 @@ theorem finiteCapQuotient_compactSpace [CompactSpace M] [Finite ι]
     simpa only [Metric.closedBall, dist_zero_right] using isCompact_closedBall (0 : E3) L
   let : CompactSpace (Cap L) := isCompact_iff_compactSpace.mp hcap
   infer_instance
+
+theorem finiteCapQuotient_sigmaCompactSpace [SigmaCompactSpace M] [Countable ι]
+    (hL : 0 < L) (hδ : ∀ i, 0 < precision i)
+    (f : ∀ i : ι, bufferedCylinder (precision i) → M)
+    (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
+    (hdisj : Pairwise (fun i j => Disjoint (range (f i)) (range (f j)))) :
+    SigmaCompactSpace (FiniteCapQuotient hL hδ f (fun i => (hf i).injective) hdisj) := by
+  let : SigmaCompactSpace (cutCore f) := (isClosed_cutCore f hf).sigmaCompactSpace
+  have hcap : IsCompact {x : EuclideanSpace ℝ (Fin 3) | ‖x‖ ≤ L} := by
+    simpa only [Metric.closedBall, dist_zero_right] using
+      isCompact_closedBall (0 : EuclideanSpace ℝ (Fin 3)) L
+  let : CompactSpace {x : EuclideanSpace ℝ (Fin 3) // ‖x‖ ≤ L} :=
+    isCompact_iff_compactSpace.mp hcap
+  apply isSigmaCompact_univ_iff.mp
+  have h := isSigmaCompact_range (continuous_adjunctionMk (indexedCapBoundary hL)
+    (cuttingSphereAttachment hδ f (fun i => (hf i).injective) hdisj))
+  rwa [Set.range_eq_univ.mpr (isQuotientMap_adjunctionMk _ _).surjective] at h
+
 end DifferentialGeometry.Topology.ThreeManifold.Surgery

@@ -26,6 +26,31 @@ theorem CanonicalWitness.one_le_comparison_constant
     (W.scalar_bounds x (interior_subset W.center_inside)).2
 
 
+theorem CanonicalWitness.alternative_eq_neck_or_cap_of_mul_scalar_lt {y : M}
+    (W : CanonicalWitness S eps C1 C2 x t) (hy : y ∈ connectedComponent x)
+    (hscalar : C2 * S.scalar t y < S.scalar t x) :
+    (∃ neck : LocalNeck S eps x t W.domain.carrier,
+      W.alternative = CanonicalAlternative.neck neck) ∨
+    ∃ cap : LocalCap S eps x t W.domain.carrier,
+      ∃ hdepth : ∀ z ∈ cap.tube,
+        10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x z,
+        W.alternative = CanonicalAlternative.cap cap hdepth := by
+  have hC2 : 0 < C2 := zero_lt_one.trans_le W.one_le_comparison_constant
+  have hproper : W.domain.carrier ≠ connectedComponent x := by
+    intro hwhole
+    have hbound := (W.scalar_bounds y (hwhole.symm ▸ hy)).1
+    have hmul := mul_le_mul_of_nonneg_left hbound hC2.le
+    have hcancel : C2 * (C2⁻¹ * S.scalar t x) = S.scalar t x := by
+      rw [← mul_assoc, mul_inv_cancel₀ hC2.ne', one_mul]
+    rw [hcancel] at hmul
+    exact (not_le_of_gt hscalar) hmul
+  cases W.alternative with
+  | neck data => exact Or.inl ⟨data, rfl⟩
+  | cap data deep => exact Or.inr ⟨data, deep, rfl⟩
+  | positive whole data hsec => exact (hproper whole).elim
+  | round whole data => exact (hproper whole).elim
+
+
 theorem CanonicalWitness.strict_curvature_volume_reserves
     (W : CanonicalWitness S eps C1 C2 x t) :
     let C := max C1 C2 + 1

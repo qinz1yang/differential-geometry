@@ -128,6 +128,18 @@ theorem exists_busemann_gt_in_ball
   · rw [hq]
     linarith
 
+theorem exists_busemann_maximum_on_frontier
+    (g : SmoothRiemannianMetric I M) (hEnorm : Riemannian.IsMetricNorm g)
+    {c : ℝ≥0 → M} (hc : Isometry c)
+    {K : Set M} (hK : IsCompact K) (hne : K.Nonempty) :
+    ∃ y ∈ frontier K, ∀ x ∈ K, busemann c x ≤ busemann c y := by
+  obtain ⟨y, hy, hmax⟩ := hK.exists_isMaxOn hne (lipschitzWith_busemann hc).continuous.continuousOn
+  refine ⟨y, ⟨subset_closure hy, ?_⟩, fun x hx => hmax hx⟩
+  intro hyin
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp (mem_interior_iff_mem_nhds.mp hyin)
+  obtain ⟨z, hz, hgt⟩ := exists_busemann_gt_in_ball g hEnorm hc y hr
+  exact (not_lt_of_ge (hmax (hball hz))) hgt
+
 theorem interior_busemann_sublevel_eq
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
     {c : ℝ≥0 → M} (hc : Isometry c) (a : ℝ) :

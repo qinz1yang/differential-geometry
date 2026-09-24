@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Topology
-open scoped Topology NNReal ContDiff Manifold
+open scoped _root_.Topology NNReal ContDiff Manifold
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace

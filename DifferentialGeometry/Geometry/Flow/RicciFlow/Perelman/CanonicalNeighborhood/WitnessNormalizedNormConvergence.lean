@@ -20,39 +20,6 @@ section Calculus
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-private theorem mapCInf_spatial_constants {c : ℕ → ℝ} {c₀ : ℝ}
-    (hc : Tendsto c atTop (𝓝 c₀)) (V : Set E) :
-    MapCInfConvergenceOnCompacts V (fun n _ => c n) (fun _ => c₀) := by
-  intro K _hK _hKV m eps heps
-  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hc eps heps
-  refine ⟨N, fun n hn r _hr x _hx => ?_⟩
-  cases r with
-  | zero =>
-    simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, Real.norm_eq_abs,
-      Real.dist_eq] using (hN n hn).le
-  | succ r =>
-    simp only [mapDerivNorm, iteratedFDeriv_const_of_ne (Nat.succ_ne_zero r),
-      Pi.zero_apply, norm_zero]
-    exact heps.le
-
-
-theorem weighted_time_sample_mapCInf
-    {G : ℝ → E → ℝ} {J : Set ℝ} {V : Set E}
-    (hJ : UniqueDiffOn ℝ J) (hV : IsOpen V)
-    (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ V))
-    (tau : ℕ → ℝ) (htau : ∀ n, tau n ∈ J) {t : ℝ} (ht : t ∈ J)
-    (htend : Tendsto tau atTop (𝓝 t))
-    (weight : ℕ → ℝ) {weight₀ : ℝ} (hw : Tendsto weight atTop (𝓝 weight₀)) :
-    MapCInfConvergenceOnCompacts V (fun n y => weight n * G (tau n) y)
-      (fun y => weight₀ * G t y) := by
-  have hs (s : ℝ) (hs : s ∈ J) : ContDiffOn ℝ ∞ (G s) V :=
-    hG.comp (f := fun y => (s, y)) (contDiffOn_const.prodMk contDiffOn_id)
-      (fun _ hy => ⟨hs, hy⟩)
-  exact mapCInfConvergence_mul hV (mapCInf_spatial_constants hw V)
-    (mapCInf_of_joint_smooth_on_closed hJ hV hG tau htau ht htend)
-    (fun _ => contDiffOn_const) contDiffOn_const
-    (fun n => hs (tau n) (htau n)) (hs t ht)
-
 private theorem mapCInf_sub_on_open {V : Set E} (hV : IsOpen V)
     {f g : ℕ → E → ℝ} {f₀ g₀ : E → ℝ}
     (hf : MapCInfConvergenceOnCompacts V f f₀) (hg : MapCInfConvergenceOnCompacts V g g₀)
@@ -84,7 +51,7 @@ theorem weighted_error_covariant_norm_tendsto
     (g : ℝ → SmoothRiemannianMetric I M)
     (A B : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2) (p : M)
     {V : Set E} (hV : IsOpen V) (hVt : V ⊆ (extChartAt I p).target)
-    {J L : Set ℝ} (hJ : UniqueDiffOn ℝ J) (hL : UniqueDiffOn ℝ L)
+    {J L : Set ℝ}
     (hgram : ∀ i j : Fin (Module.finrank ℝ E), ContDiffOn ℝ ∞
       (fun z : ℝ × E => chartGramOnE (I := I) (g z.1) p i j z.2) (L ×ˢ V))
     (hA : ∀ slots : Fin 2 → Fin (Module.finrank ℝ E), ContDiffOn ℝ ∞
@@ -115,9 +82,9 @@ theorem weighted_error_covariant_norm_tendsto
     (fun n => alpha n • A (tau n) - beta n • B (upsilon n))
     (alpha₀ • A t - beta₀ • B u) p hV hVt ?_ ?_ hK hKV z hzK hz₀ hz a
   · intro i j
-    convert weighted_time_sample_mapCInf
+    convert mapCInfConvergenceOnCompacts_smul_of_tendsto_parameter
       (G := fun s y => chartGramOnE (I := I) (g s) p i j y)
-      hL hV (hgram i j) upsilon hupsilon hu hulim c hclim using 1
+      hV (hgram i j) upsilon hupsilon hu hulim c hclim using 1
     · funext n y
       simp [chartGramOnE,
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, scaleMetric_inner]
@@ -136,8 +103,10 @@ theorem weighted_error_covariant_norm_tendsto
       (hB slots).comp (f := fun y => (s, y)) (contDiffOn_const.prodMk contDiffOn_id)
         (fun _ hy => ⟨hs, hy⟩)
     have hh := mapCInf_sub_on_open hV
-      (weighted_time_sample_mapCInf (G := f) hJ hV (hA slots) tau htau ht htlim alpha halim)
-      (weighted_time_sample_mapCInf (G := k) hL hV (hB slots) upsilon hupsilon hu hulim beta hblim)
+      (mapCInfConvergenceOnCompacts_smul_of_tendsto_parameter
+        (G := f) hV (hA slots) tau htau ht htlim alpha halim)
+      (mapCInfConvergenceOnCompacts_smul_of_tendsto_parameter
+        (G := k) hV (hB slots) upsilon hupsilon hu hulim beta hblim)
       (fun n => contDiffOn_const.mul (hfc (tau n) (htau n)))
       (contDiffOn_const.mul (hfc t ht))
       (fun n => contDiffOn_const.mul (hkc (upsilon n) (hupsilon n)))

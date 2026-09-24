@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticVolumeRatio
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedInverseDistanceControl
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistanceControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalVolumeOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OpenRestrictionVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.VolumeNaturality
@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 universe u uE uH
 
@@ -26,7 +26,7 @@ section LocalVolume
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M N : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
   [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
@@ -37,6 +37,7 @@ private local instance pointedAvrLocalMBorel : BorelSpace M := ⟨rfl⟩
 private local instance pointedAvrLocalNMeasurable : MeasurableSpace N := borel N
 private local instance pointedAvrLocalNBorel : BorelSpace N := ⟨rfl⟩
 
+omit [CompleteSpace E] in
 private theorem pointedAvr_image_volume_le
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (F : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))

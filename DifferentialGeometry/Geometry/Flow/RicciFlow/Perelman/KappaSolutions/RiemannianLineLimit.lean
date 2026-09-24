@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RescaledPointedSequence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedOppositeRayLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Line
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CanonicalPointedMetricControl
 
 set_option autoImplicit false
@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Filter Manifold Set
-open scoped Topology ContDiff Manifold ENNReal
+open scoped _root_.Topology ContDiff Manifold ENNReal
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness

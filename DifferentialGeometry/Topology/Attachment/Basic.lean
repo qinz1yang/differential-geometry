@@ -86,6 +86,69 @@ theorem continuous_adjunction_lift (i : A → B) (φ : A → X) {Y : Type t} [To
     Continuous (Quot.lift f hr : AdjunctionSpace i φ → Y) :=
   continuous_quot_lift hr hf
 
+theorem adjunction_cell_eq_lower_iff {A : Type v} {B : Type w} {X : Type u}
+    (i : A → B) (φ : A → X) (hφ : Function.Injective φ) (b : B) (x : X) :
+    adjunctionCell i φ b = adjunctionLower φ x ↔ ∃ a, i a = b ∧ φ a = x := by
+  have key : ∀ a : A, (i a = b) = (∃ a', i a' = b ∧ φ a' = φ a) := by
+    intro a
+    apply propext
+    constructor
+    · intro h
+      exact ⟨a, h, rfl⟩
+    · rintro ⟨a', ha', hφ'⟩
+      exact ((congrArg i (hφ hφ')).symm).trans ha'
+  constructor
+  · intro h
+    let f : B ⊕ X → Prop := Sum.elim (fun b' => b' = b)
+      (fun x' => ∃ a, i a = b ∧ φ a = x')
+    have hf : ∀ u v, adjunctionRel i φ u v → f u = f v := by
+      rintro u v ⟨a, ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩⟩
+      · exact key a
+      · exact (key a).symm
+    let g : AdjunctionSpace i φ → Prop := Quot.lift f hf
+    have hh := congrArg g h
+    change f (Sum.inl b) = f (Sum.inr x) at hh
+    change (b = b) = (∃ a, i a = b ∧ φ a = x) at hh
+    exact Eq.mp hh rfl
+  · rintro ⟨a, rfl, rfl⟩
+    exact adjunction_coherence i φ a
+
+theorem connectedSpace_adjunctionSpace {A : Type*} {B : Type*} {X : Type*}
+    [TopologicalSpace B] [TopologicalSpace X] [ConnectedSpace B] [ConnectedSpace X] [Nonempty A]
+    (i : A → B) (φ : A → X) : ConnectedSpace (AdjunctionSpace i φ) := by
+  have hcov : Set.range (adjunctionCell i φ) ∪ Set.range (adjunctionLower (i := i) φ) = univ := by
+    refine Set.eq_univ_of_forall fun q => ?_
+    exact Quot.induction_on q fun s => by
+      cases s with
+      | inl b => exact Or.inl ⟨b, rfl⟩
+      | inr x => exact Or.inr ⟨x, rfl⟩
+  obtain ⟨z⟩ := ‹Nonempty A›
+  have hne : (Set.range (adjunctionCell i φ) ∩
+      Set.range (adjunctionLower (i := i) φ)).Nonempty :=
+    ⟨adjunctionCell i φ (i z),
+      ⟨⟨i z, rfl⟩, ⟨φ z, (adjunction_coherence i φ z).symm⟩⟩⟩
+  rw [connectedSpace_iff_univ, ← hcov]
+  exact IsConnected.union hne (isConnected_range (continuous_adjunctionCell i φ))
+    (isConnected_range (continuous_adjunctionLower i φ))
+
+theorem pathConnectedSpace_adjunctionSpace {A : Type*} {B : Type*} {X : Type*}
+    [TopologicalSpace B] [TopologicalSpace X] [PathConnectedSpace B] [PathConnectedSpace X]
+    [Nonempty A] (i : A → B) (φ : A → X) : PathConnectedSpace (AdjunctionSpace i φ) := by
+  have hcov : Set.range (adjunctionCell i φ) ∪ Set.range (adjunctionLower (i := i) φ) = univ := by
+    refine Set.eq_univ_of_forall fun q => ?_
+    exact Quot.induction_on q fun s => by
+      cases s with
+      | inl b => exact Or.inl ⟨b, rfl⟩
+      | inr x => exact Or.inr ⟨x, rfl⟩
+  obtain ⟨z⟩ := ‹Nonempty A›
+  have hne : (Set.range (adjunctionCell i φ) ∩
+      Set.range (adjunctionLower (i := i) φ)).Nonempty :=
+    ⟨adjunctionCell i φ (i z),
+      ⟨⟨i z, rfl⟩, ⟨φ z, (adjunction_coherence i φ z).symm⟩⟩⟩
+  rw [pathConnectedSpace_iff_univ, ← hcov]
+  exact IsPathConnected.union (isPathConnected_range (continuous_adjunctionCell i φ))
+    (isPathConnected_range (continuous_adjunctionLower i φ)) hne
+
 end AdjunctionSpace
 
 end DifferentialGeometry.Topology

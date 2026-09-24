@@ -6,13 +6,13 @@ set_option autoImplicit false
 
 namespace DifferentialGeometry
 
-theorem exists_first_exit_frontier
-    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
+theorem exists_first_exit_frontier_of_not_mem_interior
+    {X : Type*} [TopologicalSpace X] {K : Set X}
     {γ : Real → X} {b : Real} (hb : 0 < b)
     (hγ : ContinuousOn γ (Set.Icc 0 b))
-    (hzero : γ 0 ∈ interior K) (hbK : γ b ∉ K) :
+    (hzero : γ 0 ∈ interior K) (hbK : γ b ∉ interior K) :
     ∃ t : Real, t ∈ Set.Ioc 0 b ∧
-      (∀ s ∈ Set.Icc 0 t, γ s ∈ K) ∧ γ t ∈ frontier K := by
+      (∀ s ∈ Set.Ico 0 t, γ s ∈ interior K) ∧ γ t ∈ frontier K := by
   let T := Set.Icc (0 : Real) b
   let : CompactSpace T := isCompact_iff_compactSpace.mp isCompact_Icc
   let γT : T → X := fun t => γ t
@@ -22,7 +22,7 @@ theorem exists_first_exit_frontier
     isOpen_interior.isClosed_compl.preimage hγT
   have hbB : (⟨b, by simp [T, hb.le]⟩ : T) ∈ B := by
     change γ b ∉ interior K
-    exact fun h => hbK (interior_subset h)
+    exact hbK
   have hBne : B.Nonempty := ⟨⟨b, by simp [T, hb.le]⟩, hbB⟩
   obtain ⟨t, htB, htmin⟩ :=
     hBclosed.isCompact.exists_isMinOn hBne continuous_subtype_val.continuousOn
@@ -49,14 +49,24 @@ theorem exists_first_exit_frontier
       ⟨hs.1, (le_of_lt hs.2).trans t.property.2⟩
   have htKclosure : γ t ∈ closure K :=
     hcont.mem_closure htClosure fun s hs => interior_subset (hbefore s hs)
-  have htK : γ t ∈ K := by
-    simpa only [hK.closure_eq] using htKclosure
-  refine ⟨t, ⟨htpos, t.property.2⟩, ?_, ?_⟩
-  · intro s hs
-    by_cases hst : s = t
-    · simpa only [hst] using htK
-    · exact interior_subset (hbefore s ⟨hs.1, lt_of_le_of_ne hs.2 hst⟩)
-  · rw [frontier, hK.closure_eq]
-    exact ⟨htK, htNot⟩
+  refine ⟨t, ⟨htpos, t.property.2⟩, hbefore, ?_⟩
+  exact ⟨htKclosure, htNot⟩
+
+theorem exists_first_exit_frontier
+    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
+    {γ : Real → X} {b : Real} (hb : 0 < b)
+    (hγ : ContinuousOn γ (Set.Icc 0 b))
+    (hzero : γ 0 ∈ interior K) (hbK : γ b ∉ K) :
+    ∃ t : Real, t ∈ Set.Ioc 0 b ∧
+      (∀ s ∈ Set.Icc 0 t, γ s ∈ K) ∧ γ t ∈ frontier K := by
+  obtain ⟨t, ht, hbefore, hfront⟩ :=
+    exists_first_exit_frontier_of_not_mem_interior hb hγ hzero
+      (fun h ↦ hbK (interior_subset h))
+  refine ⟨t, ht, ?_, hfront⟩
+  intro s hs
+  by_cases hst : s = t
+  · subst s
+    exact hK.closure_eq ▸ frontier_subset_closure hfront
+  · exact interior_subset (hbefore s ⟨hs.1, lt_of_le_of_ne hs.2 hst⟩)
 
 end DifferentialGeometry

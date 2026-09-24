@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.ModelChange
 
 namespace DifferentialGeometry.Geometry.Curvature
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 noncomputable section
 

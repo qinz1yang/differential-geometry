@@ -1,8 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
-import Mathlib.Geometry.Manifold.Instances.Real
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-import Mathlib.MeasureTheory.Measure.Prod
+import DifferentialGeometry.Geometry.Curvature.Product
+import DifferentialGeometry.Geometry.Measure.Product
 
 noncomputable section
 
@@ -21,10 +19,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 section Curvature
 
 variable [CompleteSpace E]
+variable [I.Boundaryless] [T2Space M]
 
 private local instance upstreamRiemannianProductC1 : IsManifold I 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem metricRm04At_product_real_of_inner_eq
     (h : SmoothRiemannianMetric I M)
     (gP : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))
@@ -33,31 +33,24 @@ theorem metricRm04At_product_real_of_inner_eq
     (y : M) (s : ℝ) (v : Fin 4 → TangentSpace I y) (a : Fin 4 → ℝ) :
     metricRm04At (I := I.prod 𝓘(ℝ, ℝ)) gP (y, s) (fun i => (v i, a i)) =
       metricRm04At (I := I) h y v := by
-  sorry
+  have heq : gP = h.prod (euclideanMetric (E := ℝ)) := by
+    refine SmoothRiemannianMetric.ext_inner (I := I.prod 𝓘(ℝ, ℝ)) ?_
+    intro x u w
+    obtain ⟨y', s'⟩ := x
+    rw [SmoothRiemannianMetric.prod_inner]
+    change gP.inner (y', s') u w = h.inner y' u.1 w.1 + inner ℝ u.2 w.2
+    have hu : u = ((u.1, u.2) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (y', s')) := rfl
+    have hw : w = ((w.1, w.2) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (y', s')) := rfl
+    rw [hu, hw]
+    rw [hproduct y' s' u.1 w.1 u.2 w.2]
+    simp [inner, mul_comm]
+  rw [heq]
+  rw [metricRm04At_productMetric_apply]
+  rw [metricRm04At_eq_zero_of_finrank_le_one (I := 𝓘(ℝ, ℝ)) (euclideanMetric (E := ℝ))
+    (by simp) s]
+  simp
 
 end Curvature
-
-section Volume
-
-variable [T2Space M] [SigmaCompactSpace M]
-
-private local instance upstreamRiemannianProductMeasurable : MeasurableSpace M := borel M
-private local instance upstreamRiemannianProductBorel : BorelSpace M := ⟨rfl⟩
-
-theorem riemannianVolumeMeasure_product_real_of_inner_eq
-    (h : SmoothRiemannianMetric I M)
-    (gP : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))
-    (hproduct : ∀ (y : M) (s : ℝ) (v w : TangentSpace I y) (a c : ℝ),
-      gP.inner (y, s) (v, a) (w, c) = h.inner y v w + a * c) :
-    riemannianVolumeMeasure (I := I.prod 𝓘(ℝ, ℝ)) (M := M × ℝ) gP =
-      cast
-        (congrArg (fun m : MeasurableSpace (M × ℝ) => @Measure (M × ℝ) m)
-          (BorelSpace.measurable_eq (α := M × ℝ)))
-        ((riemannianVolumeMeasure (I := I) (M := M) h).prod
-          (volume : Measure ℝ)) := by
-  sorry
-
-end Volume
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

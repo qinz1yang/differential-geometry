@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometryReplay
 
 set_option autoImplicit false
 
@@ -128,10 +129,19 @@ theorem strict_distance_convexity
   let hEnorm := normal_enorm (I := I) (X.obj k)
   let join := minJoin (I := I) (X.obj k).metric hEnorm
   let c := d.chart k x
-  have hρChart : ρ ≤ c.radius := by
-    have hc : c.radius / 4 ≤ c.radius := by
-      nlinarith [c.radius_pos]
-    exact hρInner.trans hc
+  have hc4 : c.radius / 4 ≤ c.radius := by
+    nlinarith [c.radius_pos]
+  have hsub4 : Metric.ball (0 : E) (c.radius / 4) ⊆
+      Metric.ball (0 : E) c.radius :=
+    Metric.ball_subset_ball hc4
+  let mb : (d.chart k x).MetricBounds (X.obj k).metric :=
+    { C := d.metricC
+      C_nonneg := d.metricC_nonneg
+      radius := c.radius / 4
+      radius_pos := by linarith [c.radius_pos]
+      equiv := fun z hz v => (d.metricBounds k x).equiv z (hsub4 hz) v
+      deriv := fun q z hz => (d.metricBounds k x).deriv q z (hsub4 hz) }
+  have hmb : mb.radius = (d.chart k x).radius / 4 := rfl
   have hR6pos : 0 < R + 6 * r := by
     nlinarith [show 0 ≤ dist x p from dist_nonneg]
   have hjoin_dist (a b : (X.obj k).M) {t : Real} (ht : 0 ≤ t) :
@@ -223,8 +233,9 @@ theorem strict_distance_convexity
     have hsmooth : ContMDiffOn I 𝓘(Real) ∞
         (CenterOfMass.halfSqDist pt) S := by
       simpa only [S] using
-        d.halfSqDist_contMDiffOn k hcomplete hconn x hq he hf
-          hρ hρq hρChart
+        SeqBallNormalChartData.halfSqDist_contMDiffOn
+          (SeqBallNormalChartData.of_boundedGeometryNormalChartData d)
+          k hcomplete hconn x hq he hf mb hmb hρ hρq hρInner
     have hmap : MapsTo γ unitInterval S := by
       intro t ht
       with_unfolding_all
@@ -276,8 +287,10 @@ theorem strict_distance_convexity
           (mfderiv 𝓘(Real) I γ t 1)
           (mfderiv 𝓘(Real) I γ t 1) := by
       intro t ht
-      exact d.hess_pos k hcomplete hconn x hq he hf happrox heta hqAcc
-        hρInner hρ hρq
+      exact SeqBallNormalChartData.hess_pos
+        (SeqBallNormalChartData.of_boundedGeometryNormalChartData d)
+        k hcomplete hconn x hq he hf happrox heta mb (d.metricC 1) hqAcc
+        hmb le_rfl hρInner hρ hρq
         (by
           with_unfolding_all
             exact hmem ht) (hvel t)

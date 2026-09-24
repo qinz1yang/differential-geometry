@@ -182,6 +182,29 @@ theorem exists_source_tolerance (alpha : ℝ) (ha : 0 < alpha) :
 end Tolerances
 
 
+def StrongNeck.mono {D : RealTimeInterval} {M : Type u} [TopologicalSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {S : SolutionOn (I := I3) (M := M) D} {eps eps' : ℝ} {x : M} {t : ℝ}
+    (neck : StrongNeck S eps x t) (heps : eps ≤ eps') (hsmall : eps' < 1 / 11) :
+    StrongNeck S eps' x t where
+  eps_pos := lt_of_lt_of_le neck.eps_pos heps
+  eps_small := hsmall
+  Q_pos := neck.Q_pos
+  cylinder := neck.cylinder
+  map := neck.map
+  center := neck.center
+  center_eq := neck.center_eq
+  domain := by
+    have hle : eps'⁻¹ ≤ eps⁻¹ := inv_anti₀ neck.eps_pos heps
+    exact fun y hy => neck.domain (Set.prod_mono (subset_refl _)
+      (Set.Ioo_subset_Ioo (neg_le_neg hle) hle) hy)
+  time_domain := neck.time_domain
+  comparison := by
+    have hle : eps'⁻¹ ≤ eps⁻¹ := inv_anti₀ neck.eps_pos heps
+    exact neck.comparison.mono (Set.prod_mono (subset_refl _)
+      (Set.Ioo_subset_Ioo (neg_le_neg hle) hle)) (Nat.ceil_mono hle) heps
+
+
 theorem neck_window_subset_of_le {alpha beta : ℝ} (hbeta : 0 < beta) (hle : beta ≤ alpha) :
     (Set.univ ×ˢ Set.Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹ : Set Cylinder) ⊆
       Set.univ ×ˢ Set.Ioo (-beta⁻¹) beta⁻¹ := by

@@ -198,4 +198,11 @@ theorem orientedDegree_diffeomorph
   apply (orientedDegree_eq_iff oM oN (⟨e, e.continuous⟩ : C(M, N)) 1).mpr
   simpa only [one_smul] using fundamentalClass_natural_diffeomorph oM oN e he
 
+omit [ConnectedSpace M] in
+theorem integralHomologyMap_fundamentalClass_eq_iff_orientedDegree_eq_one
+    (oM : TangentOrientationSection M) (oN : TangentOrientationSection N) (f : C(M, N)) :
+    integralHomologyMap 3 f (fundamentalClass oM) = fundamentalClass oN ↔
+      orientedDegree oM oN f = 1 := by
+  rw [orientedDegree_eq_iff, one_smul]
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Regularity
+import DifferentialGeometry.Bundle.PartialMfderiv.Parameter
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Bundle.Equiv
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
@@ -248,6 +249,63 @@ theorem contMDiffOn_connectionForm (cov : CovariantDerivative I F V)
   · rw [connectionForm_apply cov e hp]
     exact e.continuousLinearMapAt_apply_of_mem ℝ hp _
 
+variable {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
+  {P : Type*} [TopologicalSpace P] [ChartedSpace HP P] [IsManifold IP 1 P]
+
+theorem ContMDiffCovariantDerivative.contMDiffAt_partial
+    {cov : CovariantDerivative I F V} (hcov : ContMDiffCovariantDerivative cov ∞)
+    {σ : P → ∀ x : M, V x} {p : P × M} {m : ℕ∞} {n : ℕ∞ω}
+    (hσ : ContMDiffAt (IP.prod I) (I.prod 𝓘(ℝ, F)) n
+      (fun q => (⟨q.2, σ q.1 q.2⟩ : TotalSpace F V)) p)
+    (hmn : (m : ℕ∞ω) + 1 ≤ n) :
+    ContMDiffAt (IP.prod I) (I.prod 𝓘(ℝ, E →L[ℝ] F)) m
+      (fun q => (⟨q.2, cov (σ q.1) q.2⟩ : TotalSpace (E →L[ℝ] F)
+        (fun y => TangentSpace I y →L[ℝ] V y))) p := by
+  have hone : (1 : ℕ∞ω) ≤ n :=
+    (le_add_of_nonneg_left (show (0 : ℕ∞ω) ≤ m from zero_le)).trans hmn
+  let e := trivializationAt F V p.2
+  let eT := trivializationAt E (TangentSpace I) p.2
+  have he : p.2 ∈ e.baseSet := mem_baseSet_trivializationAt F V p.2
+  have heT : p.2 ∈ eT.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) p.2
+  have hmi : (m : ℕ∞ω) + 1 ≤ ∞ := by
+    exact_mod_cast (le_top : m + 1 ≤ (⊤ : ℕ∞))
+  have : ContMDiffVectorBundle ((m : ℕ∞ω) + 1) F V I :=
+    ContMDiffVectorBundle.of_le hmi
+  let z : P → M → F := fun a y => e.continuousLinearMapAt ℝ y (σ a y)
+  have hz : ContMDiffAt (IP.prod I) 𝓘(ℝ, F) ((m : ℕ∞ω) + 1)
+      (Function.uncurry z) p := by
+    have h := (Bundle.contMDiffAt_totalSpace.mp (hσ.of_le hmn)).2
+    apply h.congr_of_eventuallyEq
+    filter_upwards [(e.open_baseSet.preimage continuous_snd).mem_nhds he] with q hq
+    exact e.continuousLinearMapAt_apply_of_mem ℝ hq (σ q.1 q.2)
+  have hσnear : ∀ᶠ q in 𝓝 p,
+      MDifferentiableAt I (I.prod 𝓘(ℝ, F)) (T% (σ q.1)) q.2 := by
+    have h := (contMDiffAt_iff_contMDiffAt_nhds (n := 1) (by simp)).mp (hσ.of_le hone)
+    filter_upwards [h] with q hq
+    exact (hq.comp q.2 (contMDiffAt_const.prodMk contMDiffAt_id)).mdifferentiableAt
+      (by simp)
+  rw [contMDiffAt_hom_bundle]
+  refine ⟨contMDiffAt_snd, ?_⟩
+  apply contMDiffAt_clm_of_pointwise
+  intro v
+  have hv : ContMDiffAt (IP.prod I) I.tangent m
+      (fun q : P × M => (⟨q.2, eT.symmL ℝ q.2 v⟩ : TangentBundle I M)) p :=
+    (contMDiffAt_trivialization_symmL (I := I) (n := ∞) eT v heT).comp
+      p contMDiffAt_snd |>.of_le (by exact_mod_cast (le_top : m ≤ (⊤ : ℕ∞)))
+  have hDz : ContMDiffAt (IP.prod I) 𝓘(ℝ, F) m
+      (fun q => mvfderiv I (z q.1) q.2 (eT.symmL ℝ q.2 v)) p :=
+    (contMDiff_snd_tangentBundle_modelSpace F 𝓘(ℝ, F)).contMDiffAt.comp p
+      (hz.partial_mfderiv_apply hv le_rfl)
+  have hA : ContMDiffAt (IP.prod I) 𝓘(ℝ, F →L[ℝ] F) m
+      (fun q => cov.connectionForm e q.2 (eT.symmL ℝ q.2 v)) p := by
+    exact ((cov.contMDiffOn_connectionForm hcov e).contMDiffAt
+      ((e.open_baseSet.preimage (FiberBundle.continuous_proj E (TangentSpace I))).mem_nhds he)
+      |>.of_le (by exact_mod_cast (le_top : m ≤ (⊤ : ℕ∞)))).comp p hv
+  apply (hDz.add (hA.clm_apply (hz.of_le le_self_add))).congr_of_eventuallyEq
+  filter_upwards [(e.open_baseSet.preimage continuous_snd).mem_nhds he, hσnear] with q hq hσq
+  exact cov.covariant_derivative_coord e hq hσq (eT.symmL ℝ q.2 v)
+
 theorem ContMDiffCovariantDerivative.contMDiffAt
     {cov : CovariantDerivative I F V} (hcov : ContMDiffCovariantDerivative cov ∞)
     {σ : ∀ x : M, V x} {x : M} {m : ℕ∞} {n : ℕ∞ω}
@@ -256,48 +314,9 @@ theorem ContMDiffCovariantDerivative.contMDiffAt
     ContMDiffAt I (I.prod 𝓘(ℝ, E →L[ℝ] F)) m
       (fun y => (⟨y, cov σ y⟩ : TotalSpace (E →L[ℝ] F)
         (fun y => TangentSpace I y →L[ℝ] V y))) x := by
-  have hone : (1 : ℕ∞ω) ≤ n :=
-    (le_add_of_nonneg_left (show (0 : ℕ∞ω) ≤ m from zero_le)).trans hmn
-  let e := trivializationAt F V x
-  let eT := trivializationAt E (TangentSpace I) x
-  have he : x ∈ e.baseSet := mem_baseSet_trivializationAt F V x
-  have heT : x ∈ eT.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
-  have hmi : (m : ℕ∞ω) + 1 ≤ ∞ := by
-    exact_mod_cast (le_top : m + 1 ≤ (⊤ : ℕ∞))
-  have : ContMDiffVectorBundle ((m : ℕ∞ω) + 1) F V I :=
-    ContMDiffVectorBundle.of_le hmi
-  let z : M → F := fun y => e.continuousLinearMapAt ℝ y (σ y)
-  have hz : ContMDiffAt I 𝓘(ℝ, F) ((m : ℕ∞ω) + 1) z x := by
-    have h := (e.contMDiffAt_section_iff he).mp (hσ.of_le hmn)
-    apply h.congr_of_eventuallyEq
-    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
-    exact e.continuousLinearMapAt_apply_of_mem ℝ hy (σ y)
-  have hσnear : ∀ᶠ y in 𝓝 x, MDifferentiableAt I (I.prod 𝓘(ℝ, F)) (T% σ) y :=
-    ((contMDiffAt_iff_contMDiffAt_nhds (n := 1) (by simp)).mp (hσ.of_le hone)).mono
-      (fun _ hy => hy.mdifferentiableAt (by simp))
-  rw [contMDiffAt_hom_bundle]
-  refine ⟨contMDiffAt_id, ?_⟩
-  apply contMDiffAt_clm_of_pointwise
-  intro v
-  have hDz : ContMDiffAt I 𝓘(ℝ, F) m
-      (fun y => mvfderiv I z y (eT.symmL ℝ y v)) x := by
-    have h := (hz.mfderiv_const (m := (m : ℕ∞ω)) le_rfl).clm_apply
-      (contMDiffAt_const (c := v))
-    convert h using 1
-    funext y
-    simp only [inTangentCoordinates, ContinuousLinearMap.inCoordinates,
-      TangentBundle.continuousLinearMapAt_model_space, mvfderiv,
-      ContinuousLinearMap.coe_comp, Function.comp_apply, id_eq]
-    rfl
-  have hA : ContMDiffAt I 𝓘(ℝ, F →L[ℝ] F) m
-      (fun y => cov.connectionForm e y (eT.symmL ℝ y v)) x := by
-    have hv := contMDiffAt_trivialization_symmL (I := I) (n := ∞) eT v heT
-    exact ((cov.contMDiffOn_connectionForm hcov e).contMDiffAt
-      ((e.open_baseSet.preimage (FiberBundle.continuous_proj E (TangentSpace I))).mem_nhds he)).comp
-        x hv |>.of_le (by exact_mod_cast (le_top : m ≤ (⊤ : ℕ∞)))
-  apply (hDz.add (hA.clm_apply (hz.of_le le_self_add))).congr_of_eventuallyEq
-  filter_upwards [e.open_baseSet.mem_nhds he, hσnear] with y hy hσy
-  exact cov.covariant_derivative_coord e hy hσy (eT.symmL ℝ y v)
+  have h := hcov.contMDiffAt_partial (IP := I) (p := (x, x)) (σ := fun _ => σ)
+    (hσ.comp (x, x) contMDiffAt_snd) hmn
+  exact h.comp x (contMDiffAt_const.prodMk contMDiffAt_id)
 
 end Smoothness
 

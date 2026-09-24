@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
+import DifferentialGeometry.Geometry.Metric.Cylinder
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
 import Mathlib.Topology.Constructions
 
 noncomputable section
@@ -11,6 +14,8 @@ open scoped Manifold ContDiff Topology InnerProductSpace NNReal ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
+
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
 
 abbrev NeckCylinder := Sphere 2 × ℝ
 abbrev NeckCylinderModel := (𝓡 2).prod 𝓘(ℝ, ℝ)
@@ -27,7 +32,54 @@ def shrinkingCylinderInner (v : Iio (1 : ℝ)) (x : NeckCylinder)
 theorem exists_unique_shrinkingCylinderMetric (v : Iio (1 : ℝ)) :
     ∃! g : SmoothRiemannianMetric NeckCylinderModel NeckCylinder,
       ∀ x V W, g.inner x V W = shrinkingCylinderInner v x V W := by
-  sorry
+  have key : ∀ (x : NeckCylinder) (V : TangentSpace NeckCylinderModel x),
+      mfderiv NeckCylinderModel ThreeModel (fun p : NeckCylinder => (p.1.1 : ThreeSpace)) x V
+        = DifferentialGeometry.Geometry.dIncl (E := ThreeSpace) (n := 2) x.1 V.1 := by
+    intro x V
+    rw [show (fun p : NeckCylinder => (p.1.1 : ThreeSpace)) =
+        ((↑) : Sphere 2 → ThreeSpace) ∘ Prod.fst from rfl]
+    rw [mfderiv_comp x
+      ((contMDiff_coe_sphere (E := ThreeSpace) (n := 2) (m := ∞)).contMDiffAt.mdifferentiableAt
+        (by simp))
+      (mdifferentiableAt_fst (x := x))]
+    rw [mfderiv_fst]
+    rfl
+  have hpos : 0 < 2 * (1 - v.1) := by
+    have hv : (v.1 : ℝ) < 1 := v.2
+    linarith
+  let g : SmoothRiemannianMetric NeckCylinderModel NeckCylinder :=
+    DifferentialGeometry.Geometry.Metric.cylinderMetric
+      (scaleMetric (2 * (1 - v.1)) hpos
+        (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)))
+  have hg : ∀ x V W, g.inner x V W = shrinkingCylinderInner v x V W := by
+    intro x V W
+    have hsndV : mfderiv NeckCylinderModel 𝓘(ℝ, ℝ) Prod.snd x V = V.2 := by
+      rw [mfderiv_snd]
+      rfl
+    have hsndW : mfderiv NeckCylinderModel 𝓘(ℝ, ℝ) Prod.snd x W = W.2 := by
+      rw [mfderiv_snd]
+      rfl
+    have hround : (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner x.1 V.1 W.1 =
+        ⟪DifferentialGeometry.Geometry.dIncl (E := ThreeSpace) (n := 2) x.1 V.1,
+          DifferentialGeometry.Geometry.dIncl (E := ThreeSpace) (n := 2) x.1 W.1⟫_ℝ :=
+      DifferentialGeometry.Geometry.roundMetric_inner (E := ThreeSpace) (n := 2) x.1 V.1 W.1
+    have hcyl : g.inner x V W =
+        2 * (1 - v.1) *
+            (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner x.1 V.1 W.1 +
+          V.2 * W.2 := by
+      simp only [g]
+      rw [DifferentialGeometry.Geometry.Metric.cylinderMetric_inner]
+      rw [DifferentialGeometry.scaleMetric_inner (I := 𝓡 2) (2 * (1 - v.1)) hpos
+        (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)) x.1 V.1 W.1]
+    have hshrink : shrinkingCylinderInner v x V W =
+        2 * (1 - v.1) *
+            (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner x.1 V.1 W.1 +
+          V.2 * W.2 := by
+      rw [shrinkingCylinderInner, key x V, key x W, hsndV, hsndW]
+      exact (congrArg (fun t : ℝ => 2 * (1 - v.1) * t + V.2 * W.2) hround).symm
+    rw [hcyl, hshrink]
+  exact ⟨g, hg, fun g' hg' =>
+    SmoothRiemannianMetric.ext_inner fun x v w => (hg' x v w).trans (hg x v w).symm⟩
 
 def shrinkingCylinderMetric (v : Iio (1 : ℝ)) :
     SmoothRiemannianMetric NeckCylinderModel NeckCylinder :=
@@ -90,12 +142,69 @@ structure StaticCapScaffold where
 
 def standardCapClosedCore : Set ThreeSpace := Metric.closedBall 0 standardCapL
 
+private theorem standardCapRho_eq_expNegInvGlue (r : ℝ) : standardCapRho r = expNegInvGlue r := by
+  by_cases hr : r ≤ 0
+  · simp [standardCapRho, expNegInvGlue, hr]
+  · simp only [standardCapRho, expNegInvGlue, if_neg hr]
+    congr 1
+    ring
+
+private theorem standardCapEta_eq_smoothTransition (x : ℝ) :
+    standardCapEta x = Real.smoothTransition (1 - x) := by
+  simp only [standardCapEta, Real.smoothTransition, standardCapRho_eq_expNegInvGlue,
+    sub_sub_cancel]
+  rw [add_comm]
+
+private theorem standardCapAngle_eq (r : ℝ) :
+    standardCapAngle r = DifferentialGeometry.PDE.RicciFlow.StandardCap.angle r := by
+  have h1 : (∫ u in (0 : ℝ)..r, standardCapEta (u - standardCapA0)) =
+      (∫ u in (0 : ℝ)..r,
+        Real.smoothTransition
+          (DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd - u)) := by
+    apply intervalIntegral.integral_congr
+    intro u _
+    change standardCapEta (u - standardCapA0) =
+      Real.smoothTransition
+        (DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd - u)
+    rw [standardCapEta_eq_smoothTransition]
+    congr 1
+    simp only [standardCapA0,
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionStart,
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd]
+    ring
+  simp only [standardCapAngle, DifferentialGeometry.PDE.RicciFlow.StandardCap.angle, one_div]
+  rw [h1]
+
+private theorem standardCapWarp_eq_warpingFunction (r : ℝ) :
+    standardCapWarp r = DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction r := by
+  simp only [standardCapWarp, DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction,
+    standardCapAngle_eq]
+
+theorem standardCapMetric_eq_metric :
+    standardCapMetric = DifferentialGeometry.PDE.RicciFlow.StandardCap.metric := by
+  have hstd : ∀ (x v w : ThreeSpace),
+      (DifferentialGeometry.PDE.RicciFlow.StandardCap.metric).inner x v w =
+        standardCapInner x v w := by
+    intro x v w
+    by_cases hx : x = 0
+    · subst x
+      rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_zero, standardCapInner,
+        if_pos rfl]
+    · rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_of_ne_zero hx,
+        standardCapInner, if_neg hx]
+      rw [DifferentialGeometry.Geometry.Riemannian.radialBilinearField_apply]
+      simp only [standardCapWarp_eq_warpingFunction]
+      field_simp
+  refine SmoothRiemannianMetric.ext_inner fun x v w => ?_
+  exact (standardCapMetric_inner x v w).trans (hstd x v w).symm
+
 theorem standardCap_edist_zero (x : ThreeSpace) :
     riemannianEDistOf standardCapMetric 0 x = ENNReal.ofReal ‖x‖ := by
-  sorry
+  rw [standardCapMetric_eq_metric]
+  exact DifferentialGeometry.PDE.RicciFlow.StandardCap.edist_zero x
 
 def standardCapWindow (D : ℝ) : TopologicalSpace.Opens ThreeSpace :=
-  ⟨Metric.ball 0 (D + 1), Metric.isOpen_ball⟩
+  ⟨{x | ‖x‖ < D + 1}, isOpen_lt continuous_norm continuous_const⟩
 
 def staticCapGluingRel (δ : ℝ) (ζ : Sphere 2 ≃ₜ Sphere 2)
     (x y : neckRetainedCollar δ ⊕ ThreeBall) : Prop :=
@@ -214,4 +323,35 @@ structure StaticCapWitness {h : SmoothRiemannianMetric ThreeModel M}
 attribute [instance] StaticCapWitness.outputTopology StaticCapWitness.outputCharts
   StaticCapWitness.outputSmooth StaticCapWitness.outputHausdorff StaticCapWitness.outputCountable
 
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace StaticCapScaffold
+
+def ofCollarLength (A : ℝ) (hA : 0 < A) : StaticCapScaffold := by
+  have hL : 0 < standardCapL := by
+    rw [standardCapL_eq_transitionEnd]
+    exact DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd_pos
+  let r := min (min (standardCapL / 2) (standardCapRadiusOfZ (-2 * A) / 2)) (1 / 2)
+  have hr : 0 < r :=
+    lt_min (lt_min (half_pos hL)
+      (half_pos (Function.invFun standardCapConformalCoordinate (-2 * A)).2)) (by norm_num)
+  exact {
+    collarLength := A
+    collar_pos := hA
+    positiveRadius := r / 2
+    deepRadius := r
+    positiveRadius_pos := half_pos hr
+    positive_lt_deep := half_lt_self hr
+    deep_lt_one := (min_le_right _ _).trans_lt (by norm_num)
+    deep_lt_cap := ((min_le_left _ _).trans (min_le_left _ _)).trans_lt
+      (half_lt_self hL)
+    deep_tip_side := ((min_le_left _ _).trans (min_le_right _ _)).trans_lt
+      (half_lt_self (Function.invFun standardCapConformalCoordinate (-2 * A)).2) }
+
+@[simp] theorem ofCollarLength_collarLength (A : ℝ) (hA : 0 < A) :
+    (ofCollarLength A hA).collarLength = A := rfl
+
+end StaticCapScaffold
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

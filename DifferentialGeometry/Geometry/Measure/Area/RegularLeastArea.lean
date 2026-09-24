@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaAnnulus
+import DifferentialGeometry.Geometry.Measure.Area.LeastAreaComponent
 import DifferentialGeometry.Topology.LoopSpace.RegularDerivativeBounds
 import DifferentialGeometry.Topology.LoopSpace.RegularContractible
 
@@ -28,9 +29,10 @@ def regularLeastArea (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (γ : regularContractibleLoop E M) : ℝ :=
   leastSpanningArea g (regularContractibleToLipschitz g γ)
 
-theorem regularLeastArea_nonneg [PreconnectedSpace M]
+theorem regularLeastArea_nonneg
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (γ : regularContractibleLoop E M) :
-    0 ≤ regularLeastArea g γ := leastSpanningArea_nonneg g _
+    0 ≤ regularLeastArea g γ :=
+  leastSpanningArea_nonneg_of_nullhomotopic g (regularContractibleToLipschitz g γ)
 
 theorem regularLeastArea_constant [PreconnectedSpace M]
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (q : M) :

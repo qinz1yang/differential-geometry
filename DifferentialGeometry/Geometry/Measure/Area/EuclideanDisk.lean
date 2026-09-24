@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.BallBoundary
 import DifferentialGeometry.Geometry.Measure.Area.Euclidean
 import DifferentialGeometry.Geometry.Metric.ConvexProjection
 import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
@@ -46,15 +47,9 @@ theorem diskExtension_lipschitz {Q : Type*} [PseudoMetricSpace Q]
 
 
 theorem ae_disk_interior : ∀ᵐ z ∂volume.restrict (Metric.closedBall (0 : ℂ) 1),
-    z ∈ Metric.ball (0 : ℂ) 1 := by
-  have hzero : ∀ᵐ z : ℂ ∂volume, z ∉ Metric.sphere (0 : ℂ) 1 := by
-    rw [ae_iff]
-    convert addHaar_sphere volume (0 : ℂ) 1 using 1
-    congr 1
-    ext z
-    simp
-  filter_upwards [ae_restrict_mem measurableSet_closedBall, ae_restrict_of_ae hzero] with z hz hzn
-  exact lt_of_le_of_ne hz hzn
+    z ∈ Metric.ball (0 : ℂ) 1 :=
+  ae_mem_ball_of_measure_sphere_eq_zero (addHaar_sphere volume (0 : ℂ) 1)
+
 
 variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [NormedAddCommGroup F] [InnerProductSpace ℝ F]

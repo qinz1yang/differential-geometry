@@ -73,6 +73,30 @@ def relativeHomology (n : ℕ) : ModuleCat.{u} k :=
   (relativeChainComplex X s R).homology n
 
 
+section CoefficientIso
+variable {R' : ModuleCat.{u} k} (φ : R ≅ R')
+
+def singularChainComplexCoefficientIso :
+    (singularChainComplexFunctor (ModuleCat.{u} k)).obj R ≅
+      (singularChainComplexFunctor (ModuleCat.{u} k)).obj R' :=
+  (singularChainComplexFunctor (ModuleCat.{u} k)).mapIso φ
+
+def relativeChainComplexCoefficientIso :
+    relativeChainComplex X s R ≅ relativeChainComplex X s R' :=
+  cokernel.mapIso (relativeInclusion X s R) (relativeInclusion X s R')
+    ((singularChainComplexCoefficientIso (R := R) (R' := R') φ).app (TopCat.of s))
+    ((singularChainComplexCoefficientIso (R := R) (R' := R') φ).app X)
+    (NatTrans.naturality (singularChainComplexCoefficientIso (R := R) (R' := R') φ).hom
+      (TopCat.ofHom (⟨Subtype.val, continuous_subtype_val⟩ : C(s, X))))
+
+def relativeHomologyCoefficientIso (n : ℕ) :
+    relativeHomology X s R n ≅ relativeHomology X s R' n :=
+  (HomologicalComplex.homologyFunctor (ModuleCat.{u} k) (ComplexShape.down ℕ) n).mapIso
+    (relativeChainComplexCoefficientIso (X := X) (s := s) (R := R) (R' := R') φ)
+
+end CoefficientIso
+
+
 def relativeConnecting (n : ℕ) :
     relativeHomology X s R (n + 1) ⟶
       ((singularHomologyFunctor (ModuleCat.{u} k) n).obj R).obj (TopCat.of s) :=

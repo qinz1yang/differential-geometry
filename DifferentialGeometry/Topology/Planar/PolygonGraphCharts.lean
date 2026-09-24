@@ -26,9 +26,9 @@ import Mathlib.Analysis.Convex.Topology
 import Mathlib.Topology.Order.Compact
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
-import External.ClassificationOfSurfaces.PrePolygonDeletion
-import External.ClassificationOfSurfaces.TriangleMeshCrosscut
-import External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion
+import DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
 import Mathlib.Analysis.Convex.Combination
 import DifferentialGeometry.External.Schoenflies.Graph.K33Land
 import Mathlib.Analysis.Convex.PathConnected

@@ -530,4 +530,24 @@ theorem modelVolume_pos {K r : ℝ} {n : ℕ} (hn : 1 ≤ n) (hr : 0 < r)
     ((modelArea_continuous K n).intervalIntegrable (0 : ℝ) r)
     (fun t ht => modelArea_pos hn ⟨ht.1, fun hK => lt_of_lt_of_le ht.2 (hadm.2 hK)⟩) hr
 
+theorem euclideanUnitBallVolume_two : euclideanUnitBallVolume 2 = Real.pi := by
+  rw [euclideanUnitBallVolume, Real.sq_sqrt Real.pi_pos.le]
+  have harg : ((2 : ℕ) : ℝ) / 2 + 1 = ((1 : ℕ) : ℝ) + 1 := by norm_num
+  rw [harg, Real.Gamma_nat_eq_factorial]
+  norm_num
+
+theorem modelVolume_one_two_pi : modelVolume 1 2 Real.pi = 4 * Real.pi := by
+  rw [modelVolume_eq_sphereFactor_mul_radialVolume, euclideanUnitBallVolume_two]
+  have hrad : modelRadialVolume 1 1 Real.pi = 2 := by
+    rw [modelRadialVolume]
+    have hdens : ∀ t : ℝ, modelDensity 1 1 t = Real.sin t := by
+      intro t
+      rw [modelDensity, pow_one, modelRadius, if_pos one_pos]
+      norm_num
+    simp_rw [hdens]
+    rw [integral_sin, Real.cos_zero, Real.cos_pi]
+    norm_num
+  rw [hrad]
+  ring
+
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

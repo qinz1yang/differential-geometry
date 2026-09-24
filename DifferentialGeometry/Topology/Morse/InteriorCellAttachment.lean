@@ -81,7 +81,7 @@ theorem one_critical_point_cell_attachment_of_interiorSublevel
     · right
       intro hxJ
       have hxs := (isCriticalPointAt_transContinuousLinearEquiv_iff
-        𝓘(ℝ, E) e hg BoundarylessManifold.isInteriorPoint).mp hxJ
+        𝓘(ℝ, E) e g x).mp hxJ
       have hxo := (isCriticalPointAt_interiorAtlas I hgold x).mp hxs
       exact hc ((isCriticalPointAt_openRestriction I hf x x.property).mp hxo)
   obtain ⟨ε, hε, hεa, φ, ⟨hφ⟩⟩ := one_critical_point_cell_attachment

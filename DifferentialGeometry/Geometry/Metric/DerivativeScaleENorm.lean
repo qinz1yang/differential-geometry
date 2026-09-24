@@ -132,4 +132,24 @@ theorem metricDerivENormSupOn_scaleMetric_self {K : Set M} (hK : K.Nonempty) (p 
       (Nat.zero_le p) hx
     simpa only [metricDerivNorm_scaleMetric_self, ite_true] using h
 
+
+theorem metricDerivNorm_scaleMetric_same_metric
+    (c d : ℝ) (hc : 0 < c) (hd : 0 < d)
+    (g gRef : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
+    metricDerivNorm j (scaleMetric c hc g) (scaleMetric d hd g) gRef x =
+      |c - d| * metricCovDerivNorm j g gRef x := by
+  simp only [metricDerivNorm, metricDiffCovDerivAt,
+    metricCovDeriv_scaleMetric_left, ContMDiffSection.coe_smul, Pi.smul_apply]
+  rw [← sub_smul, sqrt_normSq0S_smul]
+  rfl
+
+theorem metricCovDerivNorm_scaleMetric_left
+    (c : ℝ) (hc : 0 < c) (g gRef : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
+    metricCovDerivNorm j (scaleMetric c hc g) gRef x =
+      c * metricCovDerivNorm j g gRef x := by
+  simp only [metricCovDerivNorm, metricCovDeriv_scaleMetric_left,
+    ContMDiffSection.coe_smul, Pi.smul_apply]
+  rw [sqrt_normSq0S_smul, abs_of_pos hc]
+
+
 end DifferentialGeometry.Geometry.Metric

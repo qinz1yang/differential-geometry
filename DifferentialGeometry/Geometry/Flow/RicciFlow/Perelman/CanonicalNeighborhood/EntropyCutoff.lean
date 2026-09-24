@@ -94,7 +94,7 @@ theorem exists_entropy_cutoff (g : SmoothRiemannianMetric I M) (x : M)
     let : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
       riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
     exact MemLp.of_bound (grad_norm_aesm g
-      (DifferentialGeometry.Analysis.Sobolev.Chart.ae_mdiff_of_lip g hηlip hηbound)) (3 / r)
+      (DifferentialGeometry.Analysis.Sobolev.Chart.ae_mdiff_of_lip g hηlip)) (3 / r)
       (Eventually.of_forall fun y => by
         rw [Real.norm_of_nonneg (Real.sqrt_nonneg _)]
         exact hgrad y)

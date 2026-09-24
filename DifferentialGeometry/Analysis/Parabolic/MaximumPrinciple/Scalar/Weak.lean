@@ -561,6 +561,41 @@ structure ParabolicUpperSupportAt
   operator_nonneg :
     0 <= parabolicOperatorWithDrift (I := I) G T X upperSupport t x
 
+noncomputable def ParabolicUpperSupportAt.constMul
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    {T : Real} {X : Real → (x : M) → TangentSpace I x}
+    {w : Real → M → Real} {t : Real} {x : M}
+    (h : ParabolicUpperSupportAt G T X w t x)
+    (c : Real) (hc : 0 ≤ c) :
+    ParabolicUpperSupportAt G T X (fun s y => c * w s y) t x where
+  upperSupport := fun s y => c * h.upperSupport s y
+  eq_at := congrArg (c * ·) h.eq_at
+  upper_nhds := h.upper_nhds.mono fun _ hp => mul_le_mul_of_nonneg_left hp hc
+  time_diff := h.time_diff.const_mul c
+  space_diff_nhds := h.space_diff_nhds.mono fun _ hy => hy.const_smul c
+  grad_diff := by
+    have heq :
+        (T% fun y : M =>
+          gradientFun (I := I) (G.metric t) (fun z => c * h.upperSupport t z) y) =ᶠ[𝓝 x]
+        (T% fun y : M => c • gradientFun (I := I) (G.metric t) (h.upperSupport t) y) := by
+      filter_upwards [h.space_diff_nhds] with y hy
+      apply congrArg (fun z => (⟨y, z⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      exact gradientFun_const_smul (I := I) (G.metric t) c hy
+    exact (h.grad_diff.smul_const_section (a := c)).congr_of_eventuallyEq heq
+  operator_nonneg := by
+    rw [parabolic_smul_nhds T X c h.upperSupport t x h.space_diff_nhds h.grad_diff]
+    exact mul_nonneg hc h.operator_nonneg
+
+theorem nonempty_parabolicUpperSupportAt_const_mul
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    {T : Real} {X : Real → (x : M) → TangentSpace I x}
+    {w : Real → M → Real} {t : Real} {x : M}
+    (h : Nonempty (ParabolicUpperSupportAt G T X w t x))
+    (c : Real) (hc : 0 ≤ c) :
+    Nonempty (ParabolicUpperSupportAt G T X (fun s y => c * w s y) t x) := by
+  exact h.map fun hs => hs.constMul c hc
+
+
 private theorem spacetimeSlab_isCompact
     [CompactSpace M] (T : Real) :
     IsCompact (spacetimeSlab (M := M) T) := by

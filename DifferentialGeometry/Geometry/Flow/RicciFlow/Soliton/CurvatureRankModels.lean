@@ -18,9 +18,9 @@ namespace DifferentialGeometry.Geometry
 
 open Curvature Curvature.DimensionThree Operator
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [ConnectedSpace M]
 
 omit [ConnectedSpace M] in
@@ -91,6 +91,7 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_rank_three
       ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
     change mfderiv (𝓡 3) I cover x =
       (mfderiv J I id (cover x)).comp (mfderiv (𝓡 3) J cover x) at hchain
+    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hchain
     rw [hchain]
     exact hm
   · intro x
@@ -127,6 +128,7 @@ private theorem gaussian_cover_of_scalar_zero
       ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
     change mfderiv (𝓡 3) I cover x =
       (mfderiv J I id (cover x)).comp (mfderiv (𝓡 3) J cover x) at hchain
+    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hchain
     rw [hchain]
     exact hm
   · intro x

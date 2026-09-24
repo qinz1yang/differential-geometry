@@ -309,4 +309,59 @@ theorem sum_sq_le_sq_sum_of_nonneg
         Finset.sum_nonneg fun i _ => hu i
       nlinarith [ih, hu n, sq_nonneg (u n)]
 
+
+theorem prod_le_pow_card_mul_pow_of_sum_le {ι : Type*} (s : Finset ι) (d : ι → ℕ)
+    (f : ι → ℝ) {D ρ : ℝ} {w : ℕ} (hD : 0 ≤ D) (hρ : 1 ≤ ρ)
+    (hf : ∀ i ∈ s, 0 ≤ f i) (hb : ∀ i ∈ s, f i ≤ D * ρ ^ d i)
+    (hw : (∑ i ∈ s, d i) ≤ w) : (∏ i ∈ s, f i) ≤ D ^ s.card * ρ ^ w := by
+  calc
+    (∏ i ∈ s, f i) ≤ ∏ i ∈ s, D * ρ ^ d i := Finset.prod_le_prod hf hb
+    _ = D ^ s.card * ρ ^ (∑ i ∈ s, d i) := by
+      rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.prod_pow_eq_pow_sum]
+    _ ≤ D ^ s.card * ρ ^ w :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hρ hw) (pow_nonneg hD _)
+
+theorem prod_le_of_weight_sum_lt_two_mul {ι : Type*} (s : Finset ι) (d : ι → ℕ)
+    (f : ℕ → ℝ) {D ρ : ℝ} {n w : ℕ} (hD : 1 ≤ D) (hρ : 1 ≤ ρ)
+    (hf : ∀ j, 0 ≤ f j) (hb : ∀ j < n, f j ≤ D * ρ ^ j)
+    (hw : (∑ i ∈ s, d i) ≤ w) (hw2 : w < 2 * n) (hd : ∀ i ∈ s, d i ≤ n + 1) :
+    (∏ i ∈ s, f (d i)) ≤ D ^ s.card *
+      (ρ ^ w + ρ ^ (w - n) * f n + ρ ^ (w - (n + 1)) * f (n + 1)) := by
+  classical
+  have hD0 : 0 ≤ D := zero_le_one.trans hD
+  have hρ0 : 0 ≤ ρ := zero_le_one.trans hρ
+  have h0 : 0 ≤ ρ ^ w := pow_nonneg hρ0 _
+  have h1 : 0 ≤ ρ ^ (w - n) * f n := mul_nonneg (pow_nonneg hρ0 _) (hf n)
+  have h2 : 0 ≤ ρ ^ (w - (n + 1)) * f (n + 1) := mul_nonneg (pow_nonneg hρ0 _) (hf (n + 1))
+  by_cases hlow : ∀ i ∈ s, d i < n
+  · refine (prod_le_pow_card_mul_pow_of_sum_le s d (fun i => f (d i)) hD0 hρ
+      (fun i _ => hf (d i)) (fun i hi => hb (d i) (hlow i hi)) hw).trans ?_
+    exact mul_le_mul_of_nonneg_left (by linarith only [h1, h2]) (pow_nonneg hD0 _)
+  · push Not at hlow
+    obtain ⟨i, hi, hni⟩ := hlow
+    have hsum := Finset.sum_erase_add s d hi
+    have herase : (∑ j ∈ s.erase i, d j) ≤ w - d i := by omega
+    have hrest (j : ι) (hj : j ∈ s.erase i) : d j < n := by
+      have hjle := Finset.single_le_sum (f := d) (fun _ _ => Nat.zero_le _) hj
+      omega
+    have hprod := prod_le_pow_card_mul_pow_of_sum_le (s.erase i) d (fun j => f (d j)) hD0 hρ
+      (fun j _ => hf (d j)) (fun j hj => hb (d j) (hrest j hj)) herase
+    have hcard : D ^ (s.erase i).card ≤ D ^ s.card :=
+      pow_le_pow_right₀ hD (Finset.card_le_card (Finset.erase_subset i s))
+    have hmain : (∏ j ∈ s, f (d j)) ≤ D ^ s.card * (ρ ^ (w - d i) * f (d i)) := by
+      rw [← Finset.mul_prod_erase s (fun j => f (d j)) hi]
+      calc
+        f (d i) * ∏ j ∈ s.erase i, f (d j) ≤ f (d i) * (D ^ (s.erase i).card * ρ ^ (w - d i)) :=
+          mul_le_mul_of_nonneg_left hprod (hf (d i))
+        _ ≤ f (d i) * (D ^ s.card * ρ ^ (w - d i)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hcard (pow_nonneg hρ0 _)) (hf (d i))
+        _ = _ := by ring
+    have hdi : d i = n ∨ d i = n + 1 := by have := hd i hi; omega
+    refine hmain.trans (mul_le_mul_of_nonneg_left ?_ (pow_nonneg hD0 _))
+    rcases hdi with hdi | hdi
+    · rw [hdi]
+      linarith only [h0, h2]
+    · rw [hdi]
+      linarith only [h0, h1]
+
 end DifferentialGeometry.Analysis

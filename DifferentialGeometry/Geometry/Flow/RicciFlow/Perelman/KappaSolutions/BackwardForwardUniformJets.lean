@@ -6,7 +6,7 @@ set_option autoImplicit false
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Filter Set
-open scoped Topology
+open scoped _root_.Topology
 
 
 theorem backwardForward_time_error_le (a s : ℝ) (hs : s ∈ Icc (-1 : ℝ) 0) :

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.CovariantTrace
+import DifferentialGeometry.Geometry.Operator.Divergence
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormCompletion
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMul
@@ -319,5 +321,120 @@ theorem dirichletMassCompl_smoothMul_volumeDensity_swap
     (H1ComplDirichletToLp q u) (H1ComplDirichletToLp q v)
   rw [dirichletMassLp_apply_eq_integral] at hp
   exact hp
+
+theorem dirichletWeakFormCompl_volumeDensity_eq_integral_laplacian_adjoint
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ w : TangentSpace (I_half n) x,
+      Cg⁻¹ * q.inner x w w ≤ h.inner x w w ∧
+        h.inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u : H1ComplDirichlet q) (v : SmoothScalarDirichlet q) :
+    dirichletWeakFormCompl h 0 0 0 (by intro x; simp) hCg hequiv Cv hCv0 hCvtop hvol
+      u (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap h q)
+        (smoothToH1ComplDirichlet q v)) =
+      ∫ x, H1ComplDirichletToLp q u x *
+        (riemannianVolumeDensity q h x * laplacian (leviCivitaConnectionOfMetric h) h
+          (fun y => v.toFun y / riemannianVolumeDensity q h y) x)
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+  rw [smoothMulH1ComplDirichlet_smoothToH1ComplDirichlet,
+    dirichletWeakFormCompl_apply_eq_integral_volumeDensity_adjoint]
+  apply integral_congr_ae
+  exact Filter.Eventually.of_forall fun x => by
+    dsimp only
+    have hv : (smoothScalarDirichletMul q (riemannianVolumeDensitySmoothMap h q) v).toFun =
+        fun y => v.toFun y / riemannianVolumeDensity q h y := by
+      funext y
+      rw [smoothScalarDirichletMul_toFun]
+      change riemannianVolumeDensity h q y * v.toFun y = _
+      apply (eq_div_iff (ne_of_gt (riemannianVolumeDensity_pos q h y))).mpr
+      calc
+        _ = (riemannianVolumeDensity q h y * riemannianVolumeDensity h q y) * v.toFun y := by ring
+        _ = _ := by rw [riemannianVolumeDensity_mul_swap, one_mul]
+    rw [tangentSectionAction_zero_of_X_zero (hx := by rfl)]
+    simp only [ContMDiffSection.coe_zero]
+    rw [divergence_zero]
+    simp only [zero_mul, sub_zero]
+    rw [Δ_g_with_boundary_def, divergence_g_with_boundary_eq_divergence_metricCov]
+    change _ * _ * laplacian (leviCivitaConnectionOfMetric h) h
+      (smoothScalarDirichletMul q (riemannianVolumeDensitySmoothMap h q) v).toFun x = _
+    rw [hv]
+    ring
+
+theorem eq_dirichletWeakFormCompl_of_heat_adjoint
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ w : TangentSpace (I_half n) x,
+      Cg⁻¹ * q.inner x w w ≤ h.inner x w w ∧
+        h.inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (a : C^∞⟮I_half n, M; ℝ⟯)
+    (u : H1ComplDirichlet q) (ℓ F : H1ComplDirichlet q →L[ℝ] ℝ)
+    (heq : ∀ v : SmoothScalarDirichlet q,
+      ℓ (smoothToH1ComplDirichlet q v) =
+        (∫ x, H1ComplDirichletToLp q u x *
+          (riemannianVolumeDensity q h x * laplacian (leviCivitaConnectionOfMetric h) h
+            (fun y => v.toFun y / riemannianVolumeDensity q h y) x - a x * v.toFun x)
+          ∂riemannianVolumeMeasure (I := I_half n) (M := M) q) +
+        F (smoothToH1ComplDirichlet q v))
+    (v : H1ComplDirichlet q) :
+    ℓ v = dirichletWeakFormCompl h 0 0 0 (by intro x; simp) hCg hequiv
+      Cv hCv0 hCvtop hvol u
+        (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap h q) v) -
+      inner ℝ (smoothMulLp q a (H1ComplDirichletToLp q u)) (H1ComplDirichletToLp q v) +
+      F v := by
+  refine UniformSpace.Completion.induction_on (α := SmoothScalarDirichlet q) v
+    (isClosed_eq (by fun_prop) (by fun_prop)) ?_
+  intro v
+  change ℓ (smoothToH1ComplDirichlet q v) =
+    dirichletWeakFormCompl h 0 0 0 (by intro x; simp) hCg hequiv Cv hCv0 hCvtop hvol u
+      (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap h q)
+        (smoothToH1ComplDirichlet q v)) -
+    inner ℝ (smoothMulLp q a (H1ComplDirichletToLp q u))
+      (H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)) +
+    F (smoothToH1ComplDirichlet q v)
+  rw [heq, dirichletWeakFormCompl_volumeDensity_eq_integral_laplacian_adjoint]
+  have hpot : inner ℝ (smoothMulLp q a (H1ComplDirichletToLp q u))
+      (H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)) =
+      ∫ x, H1ComplDirichletToLp q u x * (a x * v.toFun x)
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+    rw [H1ComplDirichletToLp_smoothToH1ComplDirichlet, L2.inner_def]
+    apply integral_congr_ae
+    filter_upwards [smoothMulLp_apply_coeFn q a (H1ComplDirichletToLp q u),
+      MemLp.coeFn_toLp v.memLp_two] with x hax hvx
+    change (smoothToLpDirichlet q v : M → ℝ) x = v.toFun x at hvx
+    rw [hax, hvx]
+    simp only [Real.inner_apply]
+    ring
+  rw [hpot]
+  congr 1
+  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) q
+  let _ : IsFiniteMeasure μ :=
+    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) q
+  have hi (w : M → ℝ) (hw : Continuous w) :
+      Integrable (fun x => H1ComplDirichletToLp q u x * w x) μ :=
+    (Lp.memLp _).integrable_mul
+      (hw.memLp_of_hasCompactSupport (p := 2) (HasCompactSupport.of_compactSpace _))
+  have hvdiv : ContMDiff (I_half n) 𝓘(ℝ) ∞
+      (fun y => v.toFun y / riemannianVolumeDensity q h y) :=
+    v.smooth.div₀ (riemannianVolumeDensity_contMDiff q h)
+      (fun y => ne_of_gt (riemannianVolumeDensity_pos q h y))
+  have hΔ : Integrable (fun x => H1ComplDirichletToLp q u x *
+      (riemannianVolumeDensity q h x * laplacian (leviCivitaConnectionOfMetric h) h
+        (fun y => v.toFun y / riemannianVolumeDensity q h y) x)) μ :=
+    hi _ ((riemannianVolumeDensity_contMDiff q h).continuous.mul
+      (leviCivita_divergence_contMDiff h
+        ⟨gradientFun h _, gradientFun_smooth h hvdiv⟩).continuous)
+  have ha : Integrable (fun x => H1ComplDirichletToLp q u x * (a x * v.toFun x)) μ :=
+    hi _ (a.contMDiff.continuous.mul v.smooth.continuous)
+  rw [← integral_sub hΔ ha]
+  apply integral_congr_ae
+  exact Filter.Eventually.of_forall fun x => by dsimp only; ring
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

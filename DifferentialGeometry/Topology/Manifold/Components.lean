@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.ClosedOriented
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import Mathlib.Topology.Connected.LocallyConnected
+import Mathlib.Topology.Homeomorph.Lemmas
 
 noncomputable section
 
@@ -100,6 +101,26 @@ def componentTangentOrientation (C : ConnectedComponents M.Carrier) (x : compone
   Orientation.map (Fin n) (componentInclusionTangentEquiv M C x).symm
     (M.orientation.orientation (componentInclusion M C x))
 
+theorem componentInclusionTangentEquiv_eq_refl (C : ConnectedComponents M.Carrier)
+    (x : componentOpen M C) :
+    componentInclusionTangentEquiv M C x =
+      LinearEquiv.refl ℝ (TangentSpace 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) x) := by
+  refine LinearEquiv.ext fun v => ?_
+  rw [componentInclusionTangentEquiv_apply]
+  change mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+    (Subtype.val : componentOpen M C → M.Carrier) x v = v
+  rw [DifferentialGeometry.mfderiv_subtype_val]
+  rfl
+
+@[simp]
+theorem componentTangentOrientation_apply (C : ConnectedComponents M.Carrier)
+    (x : componentOpen M C) :
+    componentTangentOrientation M C x = M.orientation.orientation x.1 := by
+  rw [componentTangentOrientation]
+  erw [componentInclusionTangentEquiv_eq_refl M C x, LinearEquiv.refl_symm,
+    Orientation.map_refl]
+  rfl
+
 theorem componentTangentOrientation_locally_constant (C : ConnectedComponents M.Carrier) :
     ∀ p x : componentOpen M C,
     ∀ hx : x ∈ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) p).baseSet,
@@ -112,7 +133,8 @@ theorem componentTangentOrientation_locally_constant (C : ConnectedComponents M.
         Orientation.map (Fin n)
           (tangentChartEquiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (componentOpen M C) p x hx)
           (componentTangentOrientation M C x) := by
-  sorry
+  simpa only [ManifoldOrientation.restrictOpen_orientation, componentTangentOrientation_apply M C]
+    using (M.orientation.restrictOpen (componentOpen M C)).locally_constant
 
 def componentOrientation (C : ConnectedComponents M.Carrier) :
     ManifoldOrientation 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (componentOpen M C) n where
@@ -140,5 +162,53 @@ theorem component_carrier (C : ConnectedComponents M.Carrier) :
 @[simp]
 theorem component_orientation (C : ConnectedComponents M.Carrier) :
     (component M C).orientation = componentOrientation M C := rfl
+
+theorem componentSet_eq_univ_of_preconnectedSpace [PreconnectedSpace M.Carrier]
+    (C : ConnectedComponents M.Carrier) : componentSet M C = univ := by
+  obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe C
+  rw [componentSet_mk, PreconnectedSpace.connectedComponent_eq_univ]
+
+theorem componentOpen_eq_top_of_preconnectedSpace [PreconnectedSpace M.Carrier]
+    (C : ConnectedComponents M.Carrier) : componentOpen M C = ⊤ := by
+  ext x
+  simp [componentSet_eq_univ_of_preconnectedSpace M C]
+
+def componentDiffeomorph [PreconnectedSpace M.Carrier] (C : ConnectedComponents M.Carrier) :
+    M.Carrier ≃ₘ⟮𝓘(ℝ, EuclideanSpace ℝ (Fin n)), 𝓘(ℝ, EuclideanSpace ℝ (Fin n))⟯
+      componentOpen M C where
+  toEquiv :=
+    { toFun := fun x => ⟨x, by rw [componentOpen_eq_top_of_preconnectedSpace M C]; trivial⟩
+      invFun := fun x => x.1
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+  contMDiff_toFun := by
+    refine (ContMDiff.subtypeVal_comp_iff (componentOpen M C) _).mp ?_
+    exact contMDiff_id
+  contMDiff_invFun := contMDiff_subtype_val
+
+end DifferentialGeometry.Topology.ClosedOrientedManifold
+
+namespace DifferentialGeometry.Topology.ClosedOrientedManifold
+
+universe u
+variable {n : ℕ} (M : ClosedOrientedManifold.{u} n)
+
+def componentUnionHomeomorph : (Σ K, (M.component K).Carrier) ≃ₜ M.Carrier := by
+  let f : (Σ K, (M.component K).Carrier) → M.Carrier := fun p => p.snd.val
+  have hf : Continuous f := continuous_sigma fun _ => continuous_subtype_val
+  have hi : Function.Injective f := by
+    rintro ⟨K, x⟩ ⟨L, y⟩ h
+    have hK : K = L := x.property.symm.trans ((congrArg ConnectedComponents.mk h).trans y.property)
+    subst L
+    have hxy : x = y := Subtype.ext h
+    subst y
+    rfl
+  have hs : Function.Surjective f := fun x => ⟨⟨ConnectedComponents.mk x, ⟨x, rfl⟩⟩, rfl⟩
+  let := M.finite_components
+  let := Fintype.ofFinite (ConnectedComponents M.Carrier)
+  exact IsHomeomorph.homeomorph f (isHomeomorph_iff_continuous_bijective.mpr ⟨hf, hi, hs⟩)
+
+theorem componentUnionHomeomorph_apply (K : ConnectedComponents M.Carrier)
+    (x : (M.component K).Carrier) : M.componentUnionHomeomorph ⟨K, x⟩ = x.val := rfl
 
 end DifferentialGeometry.Topology.ClosedOrientedManifold

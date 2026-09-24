@@ -457,4 +457,60 @@ theorem integral_neg_bilinear_comp_le_of_timeH1_mass_dual_integral_on
   exact h
 
 
+theorem timeL2.integral_mul_bilinear_comp_le_of_timeH1_mass_dual
+    {T : ℝ} (hT : 0 ≤ T) (F : ℝ → X →L[ℝ] X →L[ℝ] ℝ)
+    (hF : ∀ x y, AEStronglyMeasurable (fun t => F t x y) (timeMeasure T))
+    {CF : ℝ} (hCF : ∀ᵐ t ∂timeMeasure T, ‖F t‖ ≤ CF)
+    (B : X →L[ℝ] X →L[ℝ] ℝ) (u : timeL2 X T)
+    (β : timeL2 (X →L[ℝ] ℝ) T) (w : timeH1 (X →L[ℝ] ℝ) T)
+    (hwmass : w.toFun =ᵐ[timeMeasure T] fun t => B (u t))
+    (hwderiv : w.deriv =ᵐ[timeMeasure T] fun t => F t (u t) + β t)
+    (L : X →L[ℝ] X)
+    (hBL : (-(B.bilinearComp (ContinuousLinearMap.id ℝ X) L)).flip =
+      -(B.bilinearComp (ContinuousLinearMap.id ℝ X) L))
+    (hBLpos : ∀ x, 0 ≤ -(B x (L x)))
+    {ζ : ℝ → ℝ} (hζsmooth : ContDiff ℝ 1 ζ)
+    (hζ : MemLp ζ ∞ volume) (hζpos : ∀ᵐ t ∂volume, 0 ≤ ζ t)
+    {K : ℝ≥0} (hζlip : LipschitzWith K ζ) (hζ0 : ζ 0 = 0) (hζT : ζ T = 0) :
+    (∫ t, ζ t * F t (u t) (L (u t)) ∂timeMeasure T) ≤
+      (3 * (K : ℝ) / 2) * ∫ t, -(B (u t) (L (u t))) ∂timeMeasure T -
+        ∫ t, ζ t * β t (L (u t)) ∂timeMeasure T := by
+  have hFn : ∀ x y, AEStronglyMeasurable (fun t => (-F t) x y) (timeMeasure T) :=
+    fun x y => (hF x y).neg
+  have hCFn : ∀ᵐ t ∂timeMeasure T, ‖-F t‖ ≤ CF := by
+    simpa only [norm_neg] using hCF
+  have hdn : w.deriv =ᵐ[timeMeasure T] fun t => β t - (-F t) (u t) := by
+    filter_upwards [hwderiv] with t ht
+    rw [ht]
+    simp only [neg_apply, sub_neg_eq_add, add_comm]
+  have hneg (v : ℝ → X) : (∫ t, (-β) t (v t) ∂timeMeasure T) =
+      -(∫ t, β t (v t) ∂timeMeasure T) := by
+    rw [← integral_neg]
+    apply integral_congr_ae
+    filter_upwards [Lp.coeFn_neg β] with t ht
+    rw [ht]
+    rfl
+  have htest : ∀ v : timeH1 X T, v.initial = 0 → v.toFun T = 0 →
+      (∫ t, B (u t) (v.deriv t) ∂timeMeasure T) +
+        (∫ t, F t (u t) (v.toFun t) ∂timeMeasure T) =
+          ∫ t, (-β) t (v.toFun t) ∂timeMeasure T := by
+    intro v hv0 hvT
+    have h := u.integral_bilinear_eq_of_timeH1_mass_dual hT (fun t => -F t)
+      hFn hCFn B β w hwmass hdn v hv0 hvT
+    simp only [neg_apply, integral_neg] at h
+    rw [hneg]
+    linarith only [h]
+  have h := u.integral_mul_bilinear_comp_le_of_forced_timeH1_test_identity hT
+    F hF hCF B (-β) htest L hBL hBLpos hζsmooth hζ hζpos hζlip hζ0 hζT
+  have hs : (∫ t, ζ t * (-β) t (L (u t)) ∂timeMeasure T) =
+      -(∫ t, ζ t * β t (L (u t)) ∂timeMeasure T) := by
+    rw [← integral_neg]
+    apply integral_congr_ae
+    filter_upwards [Lp.coeFn_neg β] with t ht
+    rw [ht]
+    change ζ t * -(β t (L (u t))) = -(ζ t * β t (L (u t)))
+    exact mul_neg _ _
+  rw [hs, ← sub_eq_add_neg] at h
+  exact h
+
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

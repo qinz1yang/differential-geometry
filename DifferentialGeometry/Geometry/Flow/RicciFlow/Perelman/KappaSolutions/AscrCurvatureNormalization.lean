@@ -73,7 +73,7 @@ end Pointed
 
 section Ancient
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -82,7 +82,7 @@ attribute [local instance] ascrNormalizationTopology ascrNormalizationCharted
   ascrNormalizationSmooth ascrNormalizationC1
 
 theorem ancientKappa_exists_curvatureNormalization_ascr {kappa : ℝ}
-    (hdim : Module.finrank ℝ E = 3) (hF : IsAncientKappaSolution (I := I) kappa F)
+    (hF : IsAncientKappaSolution (I := I) kappa F)
     (t0 : ℝ) (ht0 : t0 ≤ 0) (x0 : F.M) :
     ∃ hQ : 0 < F.S.scalar t0 x0,
       let G := curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq
@@ -94,7 +94,7 @@ theorem ancientKappa_exists_curvatureNormalization_ascr {kappa : ℝ}
           @asymptoticScalarCurvatureRatio E _ _ _ _ H _ I F.M F.topology F.charted F.smooth
             (G.S.family.metric 0) p =
           asymptoticScalarCurvatureRatio (F.S.family.metric t0) p := by
-  have hQ : 0 < F.S.scalar t0 x0 := ancientKappa_scalar_pos F hdim hF ht0 x0
+  have hQ : 0 < F.S.scalar t0 x0 := ancientKappa_scalar_pos F hF ht0 x0
   refine ⟨hQ, ?_⟩
   dsimp only
   refine ⟨isAncientKappaSolution_curvatureNormalizedFlow

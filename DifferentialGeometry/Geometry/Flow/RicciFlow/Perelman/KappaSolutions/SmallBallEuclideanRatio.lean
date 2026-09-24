@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 private theorem tendsto_one_of_eventual_real_bounds
     {α : Type*} {l : Filter α} {f : α → ℝ≥0∞}

@@ -89,4 +89,51 @@ theorem exists_timeH1_weighted_weak_partial_dual
       (hΩs.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q v)] with x hx
     exact congrArg (fun y => z.deriv t x * fderiv ℝ c x (EuclideanSpace.single k 1) * y) hx
 
+theorem exists_timeH1_mass_dual_of_chartPullback_weak_partial
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηs : tsupport η ⊆ Ω)
+    (k : Fin (Module.finrank ℝ EuN)) {T : ℝ}
+    (z : timeH1 (Lp ℝ 2 (volume.restrict Ω)) T)
+    (H : ℝ × EuStd → ℝ)
+    (hHmem : ∀ᵐ t ∂timeMeasure T, MemLp (fun x => H (t, x)) 2 (volume.restrict Ω))
+    (hH : ∀ᵐ t ∂timeMeasure T, DeGiorgi.HasWeakPartialDeriv k
+      (fun x => H (t, x)) (z.toFun t) Ω)
+    (v : ℝ → H1ComplDirichlet q)
+    (hv : ∀ᵐ t ∂timeMeasure T,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        Sobolev.Chart.chartPullback I_hs α (fun x => η x * H (t, x))) :
+    ∃ w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T,
+      ∀ᵐ t ∂timeMeasure T, ∀ y : H1ComplDirichlet q,
+        w.toFun t y = inner ℝ (H1ComplDirichletToLp q (v t)) (H1ComplDirichletToLp q y) := by
+  let c : EuStd → ℝ := fun x => Laplacian.MetricExtension.densityOnEuclid q α x * η x
+  have hcs : tsupport c ⊆ Ω := tsupport_mul_subset_right.trans hηs
+  have hc : ContDiff ℝ (⊤ : ℕ∞) c :=
+    (((Laplacian.MetricExtension.densityOnEuclid_contDiffOn q α).mono
+      (subset_closure.trans (hΩs.trans (image_mono interior_subset)))).mul
+        hη.contDiffOn).contDiff_of_tsupport_subset hΩ hcs
+  obtain ⟨w, hw, _⟩ := exists_timeH1_weighted_weak_partial_dual q α hΩ hΩc hΩs
+    hc hcs k z H hHmem hH
+  refine ⟨w, ?_⟩
+  filter_upwards [hw, hv, hHmem] with t hwt hvt hmem
+  let P := hmem.toLp (fun x => H (t, x))
+  have hP : (P : EuStd → ℝ) =ᵐ[volume.restrict Ω] fun x => H (t, x) := hmem.coeFn_toLp
+  have hvP : (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        Sobolev.Chart.chartPullback I_hs α (fun x => η x * P x) := by
+    apply hvt.trans
+    apply Sobolev.Chart.chartPullback_ae_eq_of_ae_eq q α
+    have hall := (ae_restrict_iff' hΩ.measurableSet).mp hP
+    filter_upwards [hall] with x hx
+    by_cases hxs : x ∈ tsupport η
+    · exact congrArg (η x * ·) (hx (hηs hxs)).symm
+    · simp only [image_eq_zero_of_notMem_tsupport hxs, zero_mul]
+  intro y
+  rw [hwt y, inner_eq_integral_chartPullback_mul q α hΩs hη hηs P (v t) y hvP]
+  apply integral_congr_ae
+  filter_upwards [hP] with x hx
+  change H (t, x) * c x * _ = P x * c x * _
+  rw [hx]
+
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

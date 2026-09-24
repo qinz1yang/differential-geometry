@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.SolutionFieldLink
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.Basic
+import DifferentialGeometry.Analysis.Integration.Lp.Operator
 
 noncomputable section
 
@@ -33,32 +33,32 @@ variable {a T : ℝ}
 def nonautonomousMap (a : ℝ) {T : ℝ} (hT : 0 < T)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ)) :
     timeL2 (DirichletHs g a) T → timeL2 (DirichletHs g a) T :=
   fun f =>
-    timeOp A₂ hA₂ C₂ hC₂
+    Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
         (maximalRegularityDuhamelSolField a hT u₀ f) +
-      timeOp A₁ hA₁ C₁ hC₁
+      Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
         (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f)
 
 theorem nonautonomousMap_apply (hT : 0 < T)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
     (f : timeL2 (DirichletHs g a) T) :
     nonautonomousMap a hT u₀ A₂ hA₂ C₂ hC₂
         A₁ hA₁ C₁ hC₁ f =
-      timeOp A₂ hA₂ C₂ hC₂
+      Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
           (maximalRegularityDuhamelSolField a hT u₀ f) +
-        timeOp A₁ hA₁ C₁ hC₁
+        Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
           (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) :=
   rfl
 
@@ -66,10 +66,10 @@ theorem nonautonomousMap_dist_le
     (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
     (f f' : timeL2 (DirichletHs g a) T) :
     dist (nonautonomousMap a hT u₀ A₂ hA₂ C₂ hC₂
@@ -83,88 +83,88 @@ theorem nonautonomousMap_dist_le
   have hfield₁ := maximalRegularityDuhamelSolFieldHa1_norm_sub_le
     (a := a) hT hT1 u₀ f f'
   have h₂ :
-      ‖timeOp A₂ hA₂ C₂ hC₂
+      ‖Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f) -
-          timeOp A₂ hA₂ C₂ hC₂
+          Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f')‖ ≤
         (C₂ : ℝ) * (1 + T) * ‖f - f'‖ := by
     rw [← map_sub]
     calc
-      ‖timeOp A₂ hA₂ C₂ hC₂
+      ‖Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
           (maximalRegularityDuhamelSolField a hT u₀ f -
             maximalRegularityDuhamelSolField a hT u₀ f')‖ ≤
-          ‖timeOp A₂ hA₂ C₂ hC₂‖ *
+          ‖Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂‖ *
             ‖maximalRegularityDuhamelSolField a hT u₀ f -
               maximalRegularityDuhamelSolField a hT u₀ f'‖ :=
-        (timeOp A₂ hA₂ C₂ hC₂).le_opNorm _
+        (Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂).le_opNorm _
       _ ≤ (C₂ : ℝ) *
             ‖maximalRegularityDuhamelSolField a hT u₀ f -
               maximalRegularityDuhamelSolField a hT u₀ f'‖ :=
         mul_le_mul_of_nonneg_right
-          (timeOp_norm_le A₂ hA₂ C₂ hC₂) (norm_nonneg _)
+          (Lp.multiplicationOperator_norm_le (p := 2) A₂ hA₂ C₂ hC₂) (norm_nonneg _)
       _ ≤ (C₂ : ℝ) * ((1 + T) * ‖f - f'‖) :=
         mul_le_mul_of_nonneg_left hfield₂ C₂.coe_nonneg
       _ = (C₂ : ℝ) * (1 + T) * ‖f - f'‖ := by ring
   have h₁ :
-      ‖timeOp A₁ hA₁ C₁ hC₁
+      ‖Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) -
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f')‖ ≤
         (C₁ : ℝ) * (2 * Real.sqrt T) * ‖f - f'‖ := by
     rw [← map_sub]
     calc
-      ‖timeOp A₁ hA₁ C₁ hC₁
+      ‖Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
           (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f -
             maximalRegularityDuhamelSolFieldHa1 a hT u₀ f')‖ ≤
-          ‖timeOp A₁ hA₁ C₁ hC₁‖ *
+          ‖Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁‖ *
             ‖maximalRegularityDuhamelSolFieldHa1 a hT u₀ f -
               maximalRegularityDuhamelSolFieldHa1 a hT u₀ f'‖ :=
-        (timeOp A₁ hA₁ C₁ hC₁).le_opNorm _
+        (Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁).le_opNorm _
       _ ≤ (C₁ : ℝ) *
             ‖maximalRegularityDuhamelSolFieldHa1 a hT u₀ f -
               maximalRegularityDuhamelSolFieldHa1 a hT u₀ f'‖ :=
         mul_le_mul_of_nonneg_right
-          (timeOp_norm_le A₁ hA₁ C₁ hC₁) (norm_nonneg _)
+          (Lp.multiplicationOperator_norm_le (p := 2) A₁ hA₁ C₁ hC₁) (norm_nonneg _)
       _ ≤ (C₁ : ℝ) * ((2 * Real.sqrt T) * ‖f - f'‖) :=
         mul_le_mul_of_nonneg_left hfield₁ C₁.coe_nonneg
       _ = (C₁ : ℝ) * (2 * Real.sqrt T) * ‖f - f'‖ := by ring
   rw [dist_eq_norm, dist_eq_norm]
   unfold nonautonomousMap
   have hsplit :
-      (timeOp A₂ hA₂ C₂ hC₂
+      (Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f) +
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f)) -
-        (timeOp A₂ hA₂ C₂ hC₂
+        (Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f') +
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f')) =
-      (timeOp A₂ hA₂ C₂ hC₂
+      (Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f) -
-          timeOp A₂ hA₂ C₂ hC₂
+          Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f')) +
-        (timeOp A₁ hA₁ C₁ hC₁
+        (Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) -
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f')) := by
     abel
   rw [hsplit]
   calc
-    ‖(timeOp A₂ hA₂ C₂ hC₂
+    ‖(Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
           (maximalRegularityDuhamelSolField a hT u₀ f) -
-        timeOp A₂ hA₂ C₂ hC₂
+        Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
           (maximalRegularityDuhamelSolField a hT u₀ f')) +
-      (timeOp A₁ hA₁ C₁ hC₁
+      (Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
           (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) -
-        timeOp A₁ hA₁ C₁ hC₁
+        Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
           (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f'))‖ ≤
-        ‖timeOp A₂ hA₂ C₂ hC₂
+        ‖Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f) -
-          timeOp A₂ hA₂ C₂ hC₂
+          Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f')‖ +
-        ‖timeOp A₁ hA₁ C₁ hC₁
+        ‖Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) -
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f')‖ :=
       norm_add_le _ _
     _ ≤ (C₂ : ℝ) * (1 + T) * ‖f - f'‖ +
@@ -177,10 +177,10 @@ theorem nonautonomousMap_contractingWith
     (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
     (hsmall :
       (C₂ : ℝ) * (1 + T) + (C₁ : ℝ) * (2 * Real.sqrt T) < 1) :
@@ -204,10 +204,10 @@ theorem nonautonomous_forced_timeH1_exists
     (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
     (f₀ : timeL2 (DirichletHs g a) T)
     (hsmall :
@@ -215,18 +215,18 @@ theorem nonautonomous_forced_timeH1_exists
     ∃ (u : MaximalRegularitySolutionSpace (g := g) a T)
       (f : timeL2 (DirichletHs g a) T),
       u = maximalRegularityDuhamelMap a hT u₀ f ∧
-      f = timeOp A₂ hA₂ C₂ hC₂
+      f = Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f) +
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) + f₀ ∧
       TimeSobolev.timeH1.trace0 _ T u =
         dirichletHsInclusion (show a ≤ a + 1 by linarith) u₀ ∧
       TimeSobolev.timeH1.timeDeriv _ T u =
         timeDirichletHsLaplacian g a
             (maximalRegularityDuhamelSolField a hT u₀ f) +
-          (timeOp A₂ hA₂ C₂ hC₂
+          (Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
               (maximalRegularityDuhamelSolField a hT u₀ f) +
-            timeOp A₁ hA₁ C₁ hC₁
+            Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
               (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) + f₀) ∧
       (fun t => dirichletHsInclusion (show a ≤ a + 2 by linarith)
           (maximalRegularityDuhamelSolField a hT u₀ f t))
@@ -260,9 +260,9 @@ theorem nonautonomous_forced_timeH1_exists
   have hfix : F fstar = fstar :=
     ContractingWith.fixedPoint_isFixedPt hcontr
   have hfstar : fstar =
-      timeOp A₂ hA₂ C₂ hC₂
+      Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
           (maximalRegularityDuhamelSolField a hT u₀ fstar) +
-        timeOp A₁ hA₁ C₁ hC₁
+        Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
           (maximalRegularityDuhamelSolFieldHa1 a hT u₀ fstar) + f₀ := by
     simpa only [F, nonautonomousMap] using hfix.symm
   refine ⟨maximalRegularityDuhamelMap a hT u₀ fstar, fstar,
@@ -276,10 +276,10 @@ theorem nonautonomous_forcing_unique
     (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
     (f₀ : timeL2 (DirichletHs g a) T)
     (hsmall :
@@ -324,28 +324,28 @@ theorem nonautonomous_timeH1_exists
     (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : DirichletHs g (a + 1))
     (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
-    (hA₂ : AEStronglyMeasurable A₂ (timeMeasure T))
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
     (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
     (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
-    (hA₁ : AEStronglyMeasurable A₁ (timeMeasure T))
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
     (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
     (hsmall :
       (C₂ : ℝ) * (1 + T) + (C₁ : ℝ) * (2 * Real.sqrt T) < 1) :
     ∃ (u : MaximalRegularitySolutionSpace (g := g) a T)
       (f : timeL2 (DirichletHs g a) T),
       u = maximalRegularityDuhamelMap a hT u₀ f ∧
-      f = timeOp A₂ hA₂ C₂ hC₂
+      f = Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
             (maximalRegularityDuhamelSolField a hT u₀ f) +
-          timeOp A₁ hA₁ C₁ hC₁
+          Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
             (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f) ∧
       TimeSobolev.timeH1.trace0 _ T u =
         dirichletHsInclusion (show a ≤ a + 1 by linarith) u₀ ∧
       TimeSobolev.timeH1.timeDeriv _ T u =
         timeDirichletHsLaplacian g a
             (maximalRegularityDuhamelSolField a hT u₀ f) +
-          (timeOp A₂ hA₂ C₂ hC₂
+          (Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂
               (maximalRegularityDuhamelSolField a hT u₀ f) +
-            timeOp A₁ hA₁ C₁ hC₁
+            Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁
               (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f)) ∧
       (fun t => dirichletHsInclusion (show a ≤ a + 2 by linarith)
           (maximalRegularityDuhamelSolField a hT u₀ f t))
@@ -360,6 +360,91 @@ theorem nonautonomous_timeH1_exists
   refine ⟨u, f, hu, ?_, htrace, ?_, hfield₂, hfield₁⟩
   · simpa using hf
   · simpa using heq
+
+theorem exists_nonautonomous_solution
+    (hT : 0 < T) (hT1 : T ≤ 1)
+    (u₀ : DirichletHs g (a + 1))
+    (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T))
+    (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T, ‖A₂ t‖ ≤ (C₂ : ℝ))
+    (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T))
+    (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T, ‖A₁ t‖ ≤ (C₁ : ℝ))
+    (f₀ : timeL2 (DirichletHs g a) T)
+    (hsmall : (C₂ : ℝ) * (1 + T) + (C₁ : ℝ) * (2 * Real.sqrt T) < 1) :
+    ∃ (u : timeH1 (DirichletHs g a) T)
+      (U₂ : timeL2 (DirichletHs g (a + 2)) T)
+      (U₁ : timeL2 (DirichletHs g (a + 1)) T),
+      u.initial = dirichletHsInclusion (show a ≤ a + 1 by linarith) u₀ ∧
+      (fun t => dirichletHsInclusion (show a ≤ a + 2 by linarith) (U₂ t))
+        =ᵐ[timeMeasure T] u.toFun ∧
+      (fun t => dirichletHsInclusion (show a ≤ a + 1 by linarith) (U₁ t))
+        =ᵐ[timeMeasure T] u.toFun ∧
+      u.deriv =ᵐ[timeMeasure T] fun t =>
+        dirichletHsLaplacian g a (U₂ t) + A₂ t (U₂ t) + A₁ t (U₁ t) + f₀ t := by
+  obtain ⟨u, f, hu, hf, htrace, heq, hfield₂, hfield₁⟩ :=
+    nonautonomous_forced_timeH1_exists hT hT1 u₀ A₂ hA₂ C₂ hC₂
+      A₁ hA₁ C₁ hC₁ f₀ hsmall
+  let U₂ := maximalRegularityDuhamelSolField a hT u₀ f
+  let U₁ := maximalRegularityDuhamelSolFieldHa1 a hT u₀ f
+  let B₂ := Lp.multiplicationOperator (p := 2) A₂ hA₂ C₂ hC₂ U₂
+  let B₁ := Lp.multiplicationOperator (p := 2) A₁ hA₁ C₁ hC₁ U₁
+  refine ⟨u, U₂, U₁, htrace, hfield₂, hfield₁, ?_⟩
+  change u.deriv = timeDirichletHsLaplacian g a U₂ + (B₂ + B₁ + f₀) at heq
+  filter_upwards [Lp.coeFn_add (timeDirichletHsLaplacian g a U₂) (B₂ + B₁ + f₀),
+    Lp.coeFn_add (B₂ + B₁) f₀, Lp.coeFn_add B₂ B₁,
+    timeDirichletHsLaplacian_coeFn U₂,
+    Lp.multiplicationOperator_apply_ae A₂ hA₂ C₂ hC₂ U₂,
+    Lp.multiplicationOperator_apply_ae A₁ hA₁ C₁ hC₁ U₁] with t hsum hsum₀ hsum₁ hΔ h₂ h₁
+  rw [heq, hsum, Pi.add_apply, hsum₀, Pi.add_apply, hsum₁, Pi.add_apply, hΔ]
+  change _ + ((Lp.multiplicationOperator A₂ hA₂ C₂ hC₂ U₂ t +
+    Lp.multiplicationOperator A₁ hA₁ C₁ hC₁ U₁ t) + _) = _
+  rw [h₂, h₁]
+  abel
+
+theorem exists_local_nonautonomous_solution
+    {T₀ : ℝ} (hT₀ : 0 < T₀)
+    (A₂ : ℝ → DirichletHs g (a + 2) →L[ℝ] DirichletHs g a)
+    (hA₂ : ∀ v, AEStronglyMeasurable (fun t => A₂ t v) (timeMeasure T₀))
+    (C₂ : NNReal) (hC₂ : ∀ᵐ t ∂timeMeasure T₀, ‖A₂ t‖ ≤ (C₂ : ℝ))
+    (hsmall : (C₂ : ℝ) < 1)
+    (A₁ : ℝ → DirichletHs g (a + 1) →L[ℝ] DirichletHs g a)
+    (hA₁ : ∀ v, AEStronglyMeasurable (fun t => A₁ t v) (timeMeasure T₀))
+    (C₁ : NNReal) (hC₁ : ∀ᵐ t ∂timeMeasure T₀, ‖A₁ t‖ ≤ (C₁ : ℝ)) :
+    ∃ T : ℝ, 0 < T ∧ T ≤ T₀ ∧
+      ∀ (u₀ : DirichletHs g (a + 1)) (f₀ : timeL2 (DirichletHs g a) T),
+        ∃ (u : timeH1 (DirichletHs g a) T)
+          (U₂ : timeL2 (DirichletHs g (a + 2)) T)
+          (U₁ : timeL2 (DirichletHs g (a + 1)) T),
+          u.initial = dirichletHsInclusion (show a ≤ a + 1 by linarith) u₀ ∧
+          (fun t => dirichletHsInclusion (show a ≤ a + 2 by linarith) (U₂ t))
+            =ᵐ[timeMeasure T] u.toFun ∧
+          (fun t => dirichletHsInclusion (show a ≤ a + 1 by linarith) (U₁ t))
+            =ᵐ[timeMeasure T] u.toFun ∧
+          u.deriv =ᵐ[timeMeasure T] fun t =>
+            dirichletHsLaplacian g a (U₂ t) + A₂ t (U₂ t) + A₁ t (U₁ t) + f₀ t := by
+  have hcont : ContinuousAt
+      (fun t : ℝ => (C₂ : ℝ) * (1 + t) + (C₁ : ℝ) * (2 * Real.sqrt t)) 0 :=
+    (continuousAt_const.mul (continuousAt_const.add continuousAt_id)).add
+      (continuousAt_const.mul (continuousAt_const.mul Real.continuous_sqrt.continuousAt))
+  have hevent : ∀ᶠ t : ℝ in 𝓝 0,
+      (C₂ : ℝ) * (1 + t) + (C₁ : ℝ) * (2 * Real.sqrt t) < 1 :=
+    hcont.eventually (gt_mem_nhds (by simpa only [add_zero, Real.sqrt_zero,
+      mul_zero, mul_one] using hsmall))
+  obtain ⟨ε, hε, he⟩ := Metric.eventually_nhds_iff.mp hevent
+  let T := min T₀ (min 1 (ε / 2))
+  have hT : 0 < T := lt_min hT₀ (lt_min zero_lt_one (half_pos hε))
+  have hTT₀ : T ≤ T₀ := min_le_left _ _
+  have hT1 : T ≤ 1 := (min_le_right _ _).trans (min_le_left _ _)
+  have hTε : T < ε := ((min_le_right _ _).trans (min_le_right _ _)).trans_lt
+    (half_lt_self hε)
+  have hμ : timeMeasure T ≤ timeMeasure T₀ :=
+    Measure.restrict_mono (Icc_subset_Icc le_rfl hTT₀) le_rfl
+  refine ⟨T, hT, hTT₀, fun u₀ f₀ => ?_⟩
+  exact exists_nonautonomous_solution hT hT1 u₀ A₂
+    (fun v => (hA₂ v).mono_measure hμ) C₂ (ae_mono hμ hC₂) A₁
+    (fun v => (hA₁ v).mono_measure hμ) C₁ (ae_mono hμ hC₁) f₀
+    (he (by simpa only [Real.dist_eq, sub_zero, abs_of_pos hT] using hTε))
 
 end MaximalRegularity
 end Dirichlet

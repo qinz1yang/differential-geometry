@@ -154,6 +154,7 @@ theorem metricDifference_small
       (D.regular_isOpen.mem_nhds T.2) hPzero hPjoint hε
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem scalarTrace_joint
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -237,6 +238,7 @@ theorem connTrace_joint
   congr 1
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem scalarTrace_rev
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -282,6 +284,7 @@ theorem connTrace_rev
       (fun p hp => ⟨Set.mem_univ p.1, hp.2⟩)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem scalarTrace_rev_on
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)

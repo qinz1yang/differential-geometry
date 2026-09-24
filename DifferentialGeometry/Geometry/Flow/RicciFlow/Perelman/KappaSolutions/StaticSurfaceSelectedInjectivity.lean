@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology ENNReal
+open scoped Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

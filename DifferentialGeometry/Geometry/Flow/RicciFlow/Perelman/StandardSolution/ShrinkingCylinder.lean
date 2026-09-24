@@ -221,12 +221,13 @@ private theorem shrinkingCylinderMetric_interpolate {t : ℝ} (ht : t < 1)
   ring
 
 private theorem shrinkingCylinderMetric_jointGram
+    {a b : ℝ} (hbone : b ≤ 1)
     (x₀ : Metric.sphere (0 : E) 1 × ℝ)
     (i j : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin 2) × ℝ))) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
       (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) =>
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (shrinkingCylinderMetric (E := E) p.1) x₀ p.2 i j)
-      (Ico 0 1 ×ˢ
+      (Ico a b ×ˢ
         (trivializationAt (EuclideanSpace ℝ (Fin 2) × ℝ)
           (TangentSpace ((𝓡 2).prod 𝓘(ℝ))) x₀).baseSet) := by
   let g₀ := roundCylinderMetric (E := E) (n := 2)
@@ -237,38 +238,78 @@ private theorem shrinkingCylinderMetric_jointGram
       (Metric.sphere (0 : E) 1 × ℝ)) :
       ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
         (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ p.2 i j)
-        (Ico 0 1 ×ˢ U) :=
+        (Ico a b ×ˢ U) :=
     (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn g x₀ i j).comp contMDiffOn_snd
       (fun _ hp => hp.2)
   have ha : ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
       (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) => 1 - 2 * p.1)
-      (Ico 0 1 ×ˢ U) :=
+      (Ico a b ×ˢ U) :=
     contMDiffOn_const.sub (contMDiffOn_const.mul contMDiffOn_fst)
   have hb : ContMDiffOn (𝓘(ℝ, ℝ).prod ((𝓡 2).prod 𝓘(ℝ))) 𝓘(ℝ) ∞
       (fun p : ℝ × (Metric.sphere (0 : E) 1 × ℝ) => 2 * p.1)
-      (Ico 0 1 ×ˢ U) := contMDiffOn_const.mul contMDiffOn_fst
+      (Ico a b ×ˢ U) := contMDiffOn_const.mul contMDiffOn_fst
   apply ((ha.mul (hstatic g₀)).add (hb.mul (hstatic g₁))).congr
   intro p hp
   dsimp only [Pi.mul_apply, Pi.add_apply]
   simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
-  exact shrinkingCylinderMetric_interpolate hp.1.2 p.2 _ _
+  exact shrinkingCylinderMetric_interpolate (hp.1.2.trans_le hbone) p.2 _ _
 
 def shrinkingCylinderSolutionOn :
     SolutionOn (I := (𝓡 2).prod 𝓘(ℝ)) (M := Metric.sphere (0 : E) 1 × ℝ)
       (RealTimeInterval.closedOpen 0 1 (by norm_num)) where
   base := { metric := shrinkingCylinderMetric (E := E) }
 
-theorem shrinkingCylinderSolutionOn_isSolutionOn :
-    IsSolutionOn (shrinkingCylinderSolutionOn (E := E)) := by
-  apply solutionOn_of_joint (by norm_num : (0 : ℝ) < 1)
-    (shrinkingCylinderMetric (E := E)) shrinkingCylinderMetric_jointGram
+theorem shrinkingCylinderMetric_isSolutionOn_interval {a b : ℝ} (hab : a < b) (hbone : b ≤ 1) :
+    IsSolutionOn ({ base.metric := shrinkingCylinderMetric (E := E) } :
+      SolutionOn (I := (𝓡 2).prod 𝓘(ℝ)) (M := Metric.sphere (0 : E) 1 × ℝ)
+        (RealTimeInterval.closedOpen a b hab)) := by
+  apply solutionOn_of_joint hab (shrinkingCylinderMetric (E := E))
+    (shrinkingCylinderMetric_jointGram hbone)
   intro t ht x v w
-  exact (shrinkingCylinderMetric_hasDerivAt ht.2 x v w).hasDerivWithinAt
+  exact (shrinkingCylinderMetric_hasDerivAt (ht.2.trans_le hbone) x v w).hasDerivWithinAt
+
+theorem shrinkingCylinderSolutionOn_isSolutionOn :
+    IsSolutionOn (shrinkingCylinderSolutionOn (E := E)) :=
+  shrinkingCylinderMetric_isSolutionOn_interval (by norm_num) le_rfl
 
 theorem shrinkingCylinderMetric_complete (t : ℝ) :
     RiemannianMetricComplete (shrinkingCylinderMetric (E := E) t) := by
   let : CompactSpace (Metric.sphere (0 : E) 1) := inferInstance
   exact cylinder_complete_of_compact _
+
+theorem shrinkingCylinderMetric_scalar {t : ℝ} (ht : t < 1)
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    metricScalarAt (shrinkingCylinderMetric (E := E) t) x = (1 - t)⁻¹ := by
+  have hpos : 0 < 2 * (1 - t) := by positivity
+  have heq : shrinkingCylinderMetric (E := E) t =
+      cylinderMetric (scaleMetric (2 * (1 - t)) hpos (roundMetric (E := E) (n := 2))) := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rw [shrinkingCylinderMetric_inner ht, cylinderMetric_inner]
+    exact congrArg (fun z : ℝ => z + v.2 * w.2)
+      (scaleMetric_inner (2 * (1 - t)) hpos (roundMetric (E := E) (n := 2)) y.1
+        (v.1 : TangentSpace (𝓡 2) y.1) (w.1 : TangentSpace (𝓡 2) y.1)).symm
+  have hround : metricScalarAt (roundMetric (E := E) (n := 2)) x.1 = 2 := by
+    have h := metricScalarAt_roundCylinder (E := E) (n := 2) x
+    rw [roundCylinderMetric, cylinderMetric, metricScalarAt_productMetric,
+      metricScalarAt_scaleMetric, metricScalarAt_eq_zero_of_finrank_le_one _ (by simp) x.2] at h
+    norm_num at h
+    linarith
+  rw [heq, cylinderMetric, metricScalarAt_productMetric, metricScalarAt_scaleMetric,
+    hround, metricScalarAt_eq_zero_of_finrank_le_one _ (by simp) x.2, add_zero]
+  field_simp
+
+theorem shrinkingCylinderMetric_scalar_pos {t : ℝ} (ht : t < 1)
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    0 < metricScalarAt (shrinkingCylinderMetric (E := E) t) x := by
+  rw [shrinkingCylinderMetric_scalar ht]
+  exact inv_pos.mpr (sub_pos.mpr ht)
+
+theorem shrinkingCylinderMetric_scalar_le_one {t : ℝ} (ht : t ≤ 0)
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    metricScalarAt (shrinkingCylinderMetric (E := E) t) x ≤ 1 := by
+  rw [shrinkingCylinderMetric_scalar (ht.trans_lt zero_lt_one)]
+  exact inv_le_one_of_one_le₀ (by linarith)
 
 theorem shrinkingCylinderMetric_scalar_zero (x : Metric.sphere (0 : E) 1 × ℝ) :
     metricScalarAt (shrinkingCylinderMetric (E := E) 0) x = 1 := by

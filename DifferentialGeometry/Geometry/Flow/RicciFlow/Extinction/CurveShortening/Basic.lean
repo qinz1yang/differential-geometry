@@ -78,6 +78,28 @@ def ds (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → ℝ → ℝ) (x t : ℝ) : ℝ :=
   (c.speed g x t)⁻¹ * deriv (fun y => f y t) x
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem ds_add (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
+    (f h : ℝ → ℝ → ℝ) (x t : ℝ)
+    (hf : DifferentiableAt ℝ (fun y => f y t) x) (hh : DifferentiableAt ℝ (fun y => h y t) x) :
+    c.ds g (fun y τ => f y τ + h y τ) x t = c.ds g f x t + c.ds g h x t := by
+  simp only [ds, deriv_fun_add hf hh, mul_add]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem ds_sub (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
+    (f h : ℝ → ℝ → ℝ) (x t : ℝ)
+    (hf : DifferentiableAt ℝ (fun y => f y t) x) (hh : DifferentiableAt ℝ (fun y => h y t) x) :
+    c.ds g (fun y τ => f y τ - h y τ) x t = c.ds g f x t - c.ds g h x t := by
+  simp only [ds, deriv_fun_sub hf hh, mul_sub]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem ds_mul (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
+    (f h : ℝ → ℝ → ℝ) (x t : ℝ)
+    (hf : DifferentiableAt ℝ (fun y => f y t) x) (hh : DifferentiableAt ℝ (fun y => h y t) x) :
+    c.ds g (fun y τ => f y τ * h y τ) x t = c.ds g f x t * h x t + f x t * c.ds g h x t := by
+  simp only [ds, deriv_fun_mul hf hh]
+  ring
+
 def integral (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → ℝ → ℝ) (t : ℝ) : ℝ :=
   ∫ x in (0 : ℝ)..1, f x t * c.speed g x t
@@ -163,5 +185,79 @@ structure RicciBackground (D : RealTimeInterval) (a b : ℝ) extends
 def RicciBackground.C {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) : ℝ :=
   1 + 3 * B.B₀ + B.B₁ + 3 * B.B₂
+
+namespace CurveMap
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+  [T2Space M] in
+theorem time_slice_contMDiffWithinAt (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    ContMDiffWithinAt 𝓘(ℝ, ℝ) I ∞ (fun s => c.lift x s) J t := by
+  have hmem : (x, t) ∈ (univ : Set ℝ) ×ˢ J := ⟨mem_univ x, ht⟩
+  have hz : ContMDiffWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun s : ℝ => (x, s)) J t := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffWithinAt_const.prodMk contMDiffWithinAt_id
+  have hto : Set.MapsTo (fun s : ℝ => (x, s)) J ((univ : Set ℝ) ×ˢ J) :=
+    fun s _ => ⟨mem_univ x, by assumption⟩
+  exact (hc (x, t) hmem).comp t hz hto
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+  [T2Space M] in
+theorem time_slice_contMDiffOn (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (x : ℝ) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (fun s => c.lift x s) J :=
+  fun t ht => time_slice_contMDiffWithinAt c J hc x t ht
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+  [T2Space M] in
+theorem space_slice_contMDiffWithinAt (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    ContMDiffWithinAt 𝓘(ℝ, ℝ) I ∞ (fun z => c.lift z t) univ x := by
+  have hmem : (x, t) ∈ (univ : Set ℝ) ×ˢ J := ⟨mem_univ x, ht⟩
+  have hz : ContMDiffWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun z : ℝ => (z, t)) univ x := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffWithinAt_id.prodMk contMDiffWithinAt_const
+  have hto : Set.MapsTo (fun z : ℝ => (z, t)) univ ((univ : Set ℝ) ×ˢ J) :=
+    fun z _ => ⟨mem_univ z, ht⟩
+  exact (hc (x, t) hmem).comp x hz hto
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+  [T2Space M] in
+theorem space_slice_contMDiffOn (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (fun z => c.lift z t) univ :=
+  fun x _ => space_slice_contMDiffWithinAt c J hc x t ht
+
+end CurveMap
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : RealTimeInterval} {a b : ℝ}
+
+theorem SmoothMetricWindow.exists_right_extension
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) :
+    ∃ b' : ℝ, b < b' ∧ ∃ B' : SmoothMetricWindow (I := I) (M := M) D a b',
+      B'.family = B.family := by
+  obtain ⟨l, b', hb, hregular⟩ :=
+    D.exists_Icc_regular (B.regular ⟨B.lt.le, le_rfl⟩)
+  refine ⟨b', hb.2, {
+    family := B.family
+    smooth := B.smooth
+    lt := B.lt.trans hb.2
+    regular := ?_ }, rfl⟩
+  intro t ht
+  by_cases htb : t ≤ b
+  · exact B.regular ⟨ht.1, htb⟩
+  · exact hregular ⟨hb.1.le.trans (lt_of_not_ge htb).le, ht.2⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

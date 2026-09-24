@@ -3,6 +3,9 @@ import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Calculus.FDeriv.Congr
 import Mathlib.Analysis.Calculus.ContDiff.Operations
+import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+
+section
 
 open Set Filter Topology Nat
 
@@ -264,3 +267,66 @@ theorem exists_contDiff_extend_of_contDiffOn_Icc
 
 end Analysis
 end DifferentialGeometry
+
+end
+section
+
+open Set
+open scoped ContDiff
+
+namespace DifferentialGeometry.Analysis
+
+private theorem exists_contDiff_extension_Icc_zero
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {T : ℝ} (hT : 0 < T) (k : ℕ) (f : ℝ → E)
+    (hf : ContDiffOn ℝ (k : ℕ) f (Icc 0 T)) :
+    ∃ g : ℝ → E, ContDiff ℝ (k : ℕ) g ∧ EqOn g f (Icc 0 T) := by
+  classical
+  let e : E ≃L[ℝ] (Fin (Module.finrank ℝ E) → ℝ) :=
+    (Module.finBasis ℝ E).equivFunL
+  have he : ContDiffOn ℝ (k : ℕ) (fun t ↦ e (f t)) (Icc 0 T) :=
+    e.contDiff.comp_contDiffOn hf
+  have hcoords (i : Fin (Module.finrank ℝ E)) :
+      ∃ g : ℝ → ℝ, ContDiff ℝ (k : ℕ) g ∧ EqOn g (fun t ↦ e (f t) i) (Icc 0 T) :=
+    exists_contDiff_extend_of_contDiffOn_Icc hT k _ ((contDiffOn_pi.mp he) i)
+  choose g hg hgf using hcoords
+  refine ⟨fun t ↦ e.symm (fun i ↦ g i t),
+    e.symm.contDiff.comp (contDiff_pi.mpr hg), ?_⟩
+  intro t ht
+  have hgeq : (fun i ↦ g i t) = e (f t) := funext fun i ↦ hgf i ht
+  change e.symm (fun i ↦ g i t) = f t
+  rw [hgeq, e.symm_apply_apply]
+
+private theorem exists_contDiff_extension_Icc_of_lt
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {a b : ℝ} (hab : a < b) (k : ℕ) (f : ℝ → E)
+    (hf : ContDiffOn ℝ (k : ℕ) f (Icc a b)) :
+    ∃ g : ℝ → E, ContDiff ℝ (k : ℕ) g ∧ EqOn g f (Icc a b) := by
+  obtain ⟨g, hg, hgeq⟩ := exists_contDiff_extension_Icc_zero (T := b - a)
+    (sub_pos.mpr hab) k (fun t ↦ f (t + a)) (by
+      simpa only [Function.comp_def, id_eq] using hf.comp
+        (contDiffOn_id.add contDiffOn_const)
+        (fun t ht => ⟨by dsimp; linarith [ht.1], by dsimp; linarith [ht.2]⟩))
+  refine ⟨fun t ↦ g (t - a), hg.comp (contDiff_id.sub contDiff_const), ?_⟩
+  intro t ht
+  have h := hgeq (x := t - a) ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  simpa only [sub_add_cancel] using h
+
+theorem exists_contDiff_extension_Icc
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {a b : ℝ} (k : ℕ) (f : ℝ → E)
+    (hf : ContDiffOn ℝ (k : ℕ) f (Icc a b)) :
+    ∃ g : ℝ → E, ContDiff ℝ (k : ℕ) g ∧ EqOn g f (Icc a b) := by
+  rcases lt_trichotomy a b with hab | hab | hab
+  · exact exists_contDiff_extension_Icc_of_lt hab k f hf
+  · subst b
+    refine ⟨fun _ ↦ f a, contDiff_const, ?_⟩
+    intro t ht
+    have ht' : t = a := le_antisymm ht.2 ht.1
+    rw [ht']
+  · refine ⟨fun _ ↦ 0, contDiff_const, ?_⟩
+    simp only [Icc_eq_empty_of_lt hab, eqOn_empty]
+
+end DifferentialGeometry.Analysis
+
+end

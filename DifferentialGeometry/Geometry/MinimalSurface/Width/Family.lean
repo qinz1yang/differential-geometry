@@ -29,7 +29,7 @@ theorem regularFamilyAreaValues_nonempty (g : SmoothRiemannianMetric 𝓘(ℝ, E
     (Γ : regularSphereFamily e he) : (regularFamilyAreaValues g e he Γ).Nonempty :=
   Set.range_nonempty _
 
-
+omit [PreconnectedSpace M] in
 theorem regularFamilyAreaValues_bddAbove (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -48,7 +48,7 @@ def regularFamilyMaximum (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) 1 e)
     (Γ : regularSphereFamily e he) : ℝ := sSup (regularFamilyAreaValues g e he Γ)
 
-
+omit [PreconnectedSpace M] in
 theorem regularFamilyMaximum_isLUB (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -60,7 +60,7 @@ theorem regularFamilyMaximum_isLUB (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
   isLUB_csSup (regularFamilyAreaValues_nonempty g e _ Γ)
     (regularFamilyAreaValues_bddAbove g e he hemb hi Γ)
 
-
+omit [PreconnectedSpace M] in
 theorem regularLeastArea_le_familyMaximum (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -70,7 +70,7 @@ theorem regularLeastArea_le_familyMaximum (g : SmoothRiemannianMetric 𝓘(ℝ, 
     regularLeastArea g (Γ k) ≤ regularFamilyMaximum g e (he.of_le (by exact_mod_cast le_top)) Γ :=
   (regularFamilyMaximum_isLUB g e he hemb hi Γ).1 ⟨k, rfl⟩
 
-
+omit [PreconnectedSpace M] in
 theorem regularFamilyMaximum_attained (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -87,7 +87,7 @@ theorem regularFamilyMaximum_attained (g : SmoothRiemannianMetric 𝓘(ℝ, E) M
   rintro _ ⟨j, rfl⟩
   exact hk (mem_univ j)
 
-
+omit [PreconnectedSpace M] in
 theorem regularFamilyMaximum_nonneg (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)

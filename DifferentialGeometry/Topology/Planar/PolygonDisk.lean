@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.Planar.PolygonRounding
 import DifferentialGeometry.Topology.Planar.TriangleRounding
-import External.ClassificationOfSurfaces.TriangleMeshGeometricFree
+import DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshGeometricFree
 
 /-! Polygon Disk. -/
 open Set Metric

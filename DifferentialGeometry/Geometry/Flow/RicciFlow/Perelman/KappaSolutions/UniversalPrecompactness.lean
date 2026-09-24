@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u
 
@@ -34,21 +34,21 @@ def universalNormalizedFlow {kappa : ℝ}
     (hF : IsAncientKappaSolution (I := I3) kappa F) {t : ℝ} (ht : t ≤ 0) (p : F.M) :
     PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval :=
   curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t (F.S.scalar t p)
-    (ancientKappa_scalar_pos F threeSpace_finrank hF ht p) ht p
+    (ancientKappa_scalar_pos F hF ht p) ht p
 
 
 theorem universalNormalizedFlow_isAncientKappaSolution {kappa : ℝ}
     (hF : IsAncientKappaSolution (I := I3) kappa F) {t : ℝ} (ht : t ≤ 0) (p : F.M) :
     IsAncientKappaSolution (I := I3) kappa (universalNormalizedFlow F hF ht p) :=
   isAncientKappaSolution_curvatureNormalizedFlow F hF t (F.S.scalar t p)
-    (ancientKappa_scalar_pos F threeSpace_finrank hF ht p) ht p rfl
+    (ancientKappa_scalar_pos F hF ht p) ht p rfl
 
 
 theorem universalNormalizedFlow_scalarAtBase {kappa : ℝ}
     (hF : IsAncientKappaSolution (I := I3) kappa F) {t : ℝ} (ht : t ≤ 0) (p : F.M) :
     PointedFlowScalarAtBase (I := I3) (universalNormalizedFlow F hF ht p) 1 :=
   curvatureNormalizedFlow_scalar_base F hF.carrier_eq hF.regular_eq t (F.S.scalar t p)
-    (ancientKappa_scalar_pos F threeSpace_finrank hF ht p) ht p rfl
+    (ancientKappa_scalar_pos F hF ht p) ht p rfl
 
 
 theorem universalNormalizedFlow_not_isShrinkingSphericalSpaceFormFlow {kappa : ℝ}
@@ -59,7 +59,7 @@ theorem universalNormalizedFlow_not_isShrinkingSphericalSpaceFormFlow {kappa : �
   intro hround
   exact hnotround (round_of_curvatureNormalizedFlow_round F threeSpace_finrank
     hF.connected t (F.S.scalar t p)
-    (ancientKappa_scalar_pos F threeSpace_finrank hF ht p) ht p hround)
+    (ancientKappa_scalar_pos F hF ht p) ht p hround)
 
 
 theorem universalNormalizedFlow_isAncientKappaSolution_universal {kappa : ℝ}
@@ -89,9 +89,7 @@ theorem exists_universal_precompactness
     (X : ℕ → PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval)
     {kappa : ℕ → ℝ} (hX : ∀ i, IsAncientKappaSolution (I := I3) (kappa i) (X i))
     (hnotround : ∀ i, ¬ IsShrinkingSphericalSpaceFormFlow (I := I3) (X i))
-    {t : ℕ → ℝ} (ht : ∀ i, t i ≤ 0) (p : ∀ i, (X i).M)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    {t : ℕ → ℝ} (ht : ∀ i, t i ≤ 0) (p : ∀ i, (X i).M) :
     ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ),
       StrictMono phi ∧
       ∃ Phi : PointedCGHMaps (I := I3) (universalNormalizedSeq X hX ht p)
@@ -121,7 +119,7 @@ theorem exists_universal_precompactness
     universalNormalizedFlow_scalarAtBase (X i) (hX i) (ht i) (p i)
   obtain ⟨L, phi, hphi, Phi, hKL, hbaseL, hconv, hcmp, hanc⟩ :=
     exists_fixed_kappa_compactness (universalNormalizedSeq X hX ht p) rfl
-      (fun i => ancientKappaThree_toKLim _ (hnorm i) threeSpace_finrank) hbase hnoEmbedding
+      (fun i => ancientKappaThree_toKLim _ (hnorm i) threeSpace_finrank) hbase
   refine ⟨L, phi, hphi, Phi, hanc, hbaseL, hKL, hconv, hcmp, ?_⟩
   intro hnoncompact
   exact klim_pointedLimit_noncompact Phi (fun i => (hX i).connected) hnoncompact

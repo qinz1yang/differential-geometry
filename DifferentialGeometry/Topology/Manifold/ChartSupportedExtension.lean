@@ -47,15 +47,13 @@ end OpenPartialHomeomorph
 
 namespace DifferentialGeometry.Topology.Manifold
 
-variable {E F P H M : Type*}
-  [NormedAddCommGroup E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
-  [NormedAddCommGroup P] [NormedSpace ℝ P]
-  [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
-  {I : ModelWithCorners ℝ F H}
+section
 
-def extendChartById (e : OpenPartialHomeomorph M E) (f : E → E) (x : M) : M :=
-  e.extendById f x
+variable {E M : Type*} [TopologicalSpace E] [TopologicalSpace M]
+
+def extendChartById (e : OpenPartialHomeomorph M E) (f : E → E) (x : M) : M := by
+  classical
+  exact if x ∈ e.source then e.symm (f (e x)) else x
 
 private theorem extendChartById_of_mem (e : OpenPartialHomeomorph M E) (f : E → E)
     {x : M} (hx : x ∈ e.source) : extendChartById e f x = e.symm (f (e x)) :=
@@ -74,7 +72,23 @@ theorem extendChartById_eq_of_notMem_image
     rw [hf _ hek, e.left_inv hxs]
   · exact extendChartById_of_notMem e f hxs
 
-variable [NormedSpace ℝ E]
+theorem extendChartById_mem_iff {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (e : OpenPartialHomeomorph X Y) (f : Y → Y)
+    (hmap : MapsTo f e.target e.target) {A B : Set X} {C D : Set Y}
+    (hA : e.IsImage A C) (hB : e.IsImage B D)
+    (houtside : ∀ x ∉ e.source, x ∈ A ↔ x ∈ B)
+    (hf : ∀ y ∈ e.target, f y ∈ D ↔ y ∈ C) (x : X) :
+    extendChartById e f x ∈ B ↔ x ∈ A :=
+  e.extendById_mem_iff f hmap hA hB houtside hf x
+
+end
+
+variable {E F P H M : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [NormedAddCommGroup P] [NormedSpace ℝ P]
+  [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
+  {I : ModelWithCorners ℝ F H}
 
 theorem contMDiff_extendChartById [T2Space M]
     (e : OpenPartialHomeomorph M E) (htarget : e.target = univ)

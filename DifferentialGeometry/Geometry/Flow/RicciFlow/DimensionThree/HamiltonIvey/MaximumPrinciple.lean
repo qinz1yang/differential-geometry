@@ -5118,16 +5118,17 @@ end RadialTransportLinear
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem curvatureOperatorRegionPropagationOn_zero
+private theorem curvatureOperatorRegionPropagationOn_zero_of_initial_region
     {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [Nonempty M]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     {K : Real} (hK : 0 < K)
-    (hinit : ∀ x : M,
-      curvatureOperatorLowerBoundAt (I := I) (S.base.metric 0) x
-        ⟨S.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-          (I := I) (S.base.metric 0) x⟩ K) :
+    (hinit : ∀ (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
+      OrthonormalBasisAt (I := I) (S.base.metric 0) x basis →
+        curvatureOperatorMatrixAt x basis
+          ⟨S.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric 0) x⟩ ∈ hamiltonIveyConvexMatrixRegion K 0) :
     curvatureOperatorRegionPropagationOn (I := I) (M := M) S K 0 T := by
   classical
   let : NeZero (Module.finrank Real E) := ⟨by
@@ -5175,9 +5176,9 @@ private theorem curvatureOperatorRegionPropagationOn_zero
       uhlenbeckPulledRm04At S basisAt iota 0 x ∈
         fiberHamiltonIveyRegion basisAt K 0 x := by
     intro x
-    exact uhlenbeckPulledRm04At_initial_mem_fiberHamiltonIveyRegion
-      (I := I) (M := M) hT S basisAt iota
-      hiota0 horth0 hK x (hinit x)
+    rw [uhlenbeckPulledRm04At_zero_eq_rm04 S basisAt iota hiota0 x]
+    exact ⟨metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.base.metric 0) x,
+      hinit x (basisAt x) (horth0 x)⟩
   have hfiber := fiberRegionPropagationOn_of_bundleMaximumPrinciple
     (I := I) (M := M) hT S hS hdim basisAt horth0 iota hiota0 hgram hK hinitFiber hsol
   have hprop := curvatureOperatorRegionPropagationOn_of_fiberRegion_mem
@@ -5186,7 +5187,7 @@ private theorem curvatureOperatorRegionPropagationOn_zero
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
+private theorem curvatureOperatorRegionPropagationOn_of_initial_region_aux
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -5195,10 +5196,11 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hreg : Set.Ioo t0 (t0 + T) ⊆ D.regular)
     (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M,
-      curvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
-        ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-          (I := I) (S.base.metric t0) x⟩ K) :
+    (hinit : ∀ (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
+      OrthonormalBasisAt (I := I) (S.base.metric t0) x basis →
+        curvatureOperatorMatrixAt x basis
+          ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric t0) x⟩ ∈ hamiltonIveyConvexMatrixRegion K 0) :
     curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
   classical
   cases isEmpty_or_nonempty M with
@@ -5225,14 +5227,18 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
         · intro t ht
           change t + t0 ∈ D.regular
           exact hreg ⟨by linarith [ht.1], by linarith [ht.2]⟩
-      have hinit0 : ∀ x : M,
-          curvatureOperatorLowerBoundAt (I := I) (S0.base.metric 0) x
-            ⟨S0.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-              (I := I) (S0.base.metric 0) x⟩ K := by
-        intro x
+      have hinit0 : ∀ (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
+          OrthonormalBasisAt (I := I) (S0.base.metric 0) x basis →
+            curvatureOperatorMatrixAt x basis
+              ⟨S0.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                (I := I) (S0.base.metric 0) x⟩ ∈ hamiltonIveyConvexMatrixRegion K 0 := by
+        intro x basis horth
+        have horth' : OrthonormalBasisAt (I := I) (S.base.metric t0) x basis := by
+          simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
+            SolutionFamily.timeShift] using horth
         simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
-          SolutionFamily.timeShift, SolutionFamily.rm04] using hinit x
-      have hprop0 := curvatureOperatorRegionPropagationOn_zero
+          SolutionFamily.timeShift, SolutionFamily.rm04] using hinit x basis horth'
+      have hprop0 := curvatureOperatorRegionPropagationOn_zero_of_initial_region
         (I := I) (M := M) hT S0 hS0 hdimT hK hinit0
       have hpropShift : curvatureOperatorRegionPropagationOn
           (I := I) (M := M) Sshift K 0 T := by
@@ -5261,6 +5267,41 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [T2Space M]
 
+theorem curvatureOperatorRegionPropagationOn_of_initial_region
+    [I.Boundaryless] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {t0 T K : Real} (hT : 0 ≤ T) (hK : 0 < K)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioo t0 (t0 + T) ⊆ D.regular)
+    (hdim : Module.finrank Real E = 3)
+    (hinit : ∀ (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
+      OrthonormalBasisAt (I := I) (S.base.metric t0) x basis →
+        curvatureOperatorMatrixAt x basis
+          ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric t0) x⟩ ∈ hamiltonIveyConvexMatrixRegion K 0) :
+    curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
+  rcases hT.eq_or_lt with hTzero | hTpos
+  · subst T
+    intro t ht x
+    have htt : t = t0 := le_antisymm (by simpa only [add_zero] using ht.2) ht.1
+    subst t
+    obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (S.base.metric t0) x hdim
+    exact ⟨basis, horth, by simpa only [sub_self] using hinit x basis horth⟩
+  · let : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    let : IsManifold I 2 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    let : IsManifold I 3 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    let : SigmaCompactSpace M := CompactSpace.sigmaCompact
+    exact curvatureOperatorRegionPropagationOn_of_initial_region_aux
+      (I := I) (M := M) S hS hTpos hK hslab hreg hdim hinit
+
 theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
@@ -5275,22 +5316,10 @@ theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound
         ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
           (I := I) (S.base.metric t0) x⟩ K) :
     curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
-  rcases hT.eq_or_lt with hTzero | hTpos
-  · subst T
-    exact curvatureOperatorRegionPropagationOn_initial
-      (I := I) (M := M) S hK hdim hinit
-  · let : IsManifold I 1 M :=
-      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
-        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-    let : IsManifold I 2 M :=
-      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
-        (by decide : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-    let : IsManifold I 3 M :=
-      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
-        (by decide : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-    let : SigmaCompactSpace M := CompactSpace.sigmaCompact
-    exact curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
-      (I := I) (M := M) S hS hTpos hK hslab hreg hdim hinit
+  apply curvatureOperatorRegionPropagationOn_of_initial_region S hS hT hK hslab hreg hdim
+  intro x basis horth
+  exact curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
+    S hK basis horth (hinit x)
 
 theorem hamilton_ivey_pinching
     [I.Boundaryless] [CompactSpace M]

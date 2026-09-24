@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzW1
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
+import DifferentialGeometry.Analysis.Integration.Measure.LocalRestriction
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
@@ -639,89 +640,92 @@ theorem exists_chartPushedRaw_memW1p_on_ball_of_lipschitz
     (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
       Metric.isOpen_ball hcut_eq).mp hcut_mem
 
+omit [FiniteDimensional ℝ E] in
+private theorem mdiff_of_chart_pull
+    (α : M) {f : M → ℝ} {x : M}
+    (hx : x ∈ (chartAt H α).source)
+    (hf : DifferentiableAt ℝ (chartPullZero (I := I) α f) (extChartAt I α x)) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) f x := by
+  let coord : M → E := fun y => extChartAt I α y
+  have hcoord : MDifferentiableAt I 𝓘(ℝ, E) coord x := by
+    change MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) x
+    exact mdifferentiableAt_extChartAt hx
+  have hcomp : MDifferentiableAt I 𝓘(ℝ, ℝ)
+      ((chartPullZero (I := I) α f) ∘ coord) x :=
+    hf.comp_mdifferentiableAt hcoord
+  refine hcomp.congr_of_eventuallyEq ?_
+  filter_upwards [(chartAt H α).open_source.mem_nhds hx] with y hy
+  have hy_ext : y ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact hy
+  have hy_target : extChartAt I α y ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hy_ext
+  rw [Function.comp_apply, chartPullZero_mem (I := I) α f hy_target]
+  exact (scalarOnE_extChartAt (I := I) α f hy_ext).symm
+
+open DifferentialGeometry.Integral.Measure in
+theorem ae_mdifferentiableAt_of_lipschitzWith_chartPullZero
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {φ : M → ℝ} {C : ℝ≥0}
+    (hφ : LipschitzWith C (chartPullZero (I := I) α φ)) :
+    ∀ᵐ x ∂chartLocalMeasure (I := I) g α,
+      x ∈ (chartAt H α).source → MDifferentiableAt I 𝓘(ℝ) φ x := by
+  have hdiff : ∀ᵐ y ∂(modelHaar (E := E)),
+      DifferentiableAt ℝ (chartPullZero (I := I) α φ) y := hφ.ae_differentiableAt
+  filter_upwards [ae_chart_of_haar (I := I) (M := M) g α
+      (measurableSet_of_differentiableAt ℝ _) hdiff] with x hx
+  exact fun hxsource => mdiff_of_chart_pull α hxsource (hx hxsource)
+
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma pou_ae_diff
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (α : M) {u : M → ℝ} {L B : ℝ≥0}
-    (hu : ∀ x y, edist (u x) (u y) ≤ L *
-      DifferentialGeometry.riemannianEDistOf (I := I) g x y)
-    (hB : ∀ x, ‖u x‖₊ ≤ B) :
-    ∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α),
-      x ∈ (chartAt H α).source →
-        DifferentiableAt ℝ
-          (chartPushedRaw (I := I) (M := M) α
-            (fun y =>
-              (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α :
-                C^∞⟮I, M; ℝ⟯) y * u y))
-          ((toEuclidean (E := E)) (extChartAt I α x)) := by
-  obtain ⟨C, hC⟩ := chart_pou_lip (I := I) g α hu hB
-  exact ae_chart_of_volume (I := I) (M := M) g α
-    (measurableSet_of_differentiableAt ℝ _) hC.ae_differentiableAt
-
-private lemma pou_ae_mdiff
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (α : M) {u : M → ℝ} {L B : ℝ≥0}
-    (hu : ∀ x y, edist (u x) (u y) ≤ L *
-      DifferentialGeometry.riemannianEDistOf (I := I) g x y)
-    (hB : ∀ x, ‖u x‖₊ ≤ B) :
-    ∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α),
-      x ∈ (chartAt H α).source →
-        MDifferentiableAt I 𝓘(ℝ, ℝ)
-          (fun y =>
-            (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α :
-              C^∞⟮I, M; ℝ⟯) y * u y) x := by
-  filter_upwards [pou_ae_diff (I := I) g α hu hB] with x hx
-  exact fun hx_source => mdifferentiableAt_of_chartPushedRaw_differentiableAt (I := I) α hx_source (hx hx_source)
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+open DifferentialGeometry.Integral.Measure in
 theorem ae_mdiff_of_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {u : M → ℝ} {L B : ℝ≥0}
-    (hu : ∀ x y, edist (u x) (u y) ≤ L *
-      DifferentialGeometry.riemannianEDistOf (I := I) g x y)
-    (hB : ∀ x, ‖u x‖₊ ≤ B) :
-    ∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
-      (I := I) (M := M) g), MDifferentiableAt I 𝓘(ℝ, ℝ) u x := by
-  rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_eq_finset_sum
-    (I := I) (M := M) g, MeasureTheory.ae_finsetSum_measure_iff]
-  intro α _
-  let ρ : M → ℝ := fun x =>
-    (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α :
-      C^∞⟮I, M; ℝ⟯) x
-  rw [MeasureTheory.ae_withDensity_iff
-    (DifferentialGeometry.Integral.Measure.measurable_ofReal_pou_weight
-      (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α)]
-  filter_upwards [pou_ae_mdiff (I := I) g α hu hB] with x hx
-  intro hweight
-  have hρ_ne : ρ x ≠ 0 := by
-    intro hρ_zero
-    apply hweight
-    simp only [ρ, hρ_zero, ENNReal.ofReal_zero]
-  have hx_tsupport : x ∈ tsupport ρ := by
-    apply subset_closure
-    simpa only [Function.mem_support] using hρ_ne
-  have hx_source : x ∈ (chartAt H α).source := by
-    apply (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
-    simpa only [ρ] using hx_tsupport
-  have hprod : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => ρ y * u y) x := by
-    simpa only [ρ] using hx hx_source
-  have hρ_smooth : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ ρ x := by
-    simpa only [ρ] using
-      (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α :
-        C^∞⟮I, M; ℝ⟯).contMDiff.contMDiffAt
-  have hinv : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => (ρ y)⁻¹) x :=
-    (hρ_smooth.inv₀ hρ_ne).mdifferentiableAt (by simp)
-  have hrecover : MDifferentiableAt I 𝓘(ℝ, ℝ)
-      (fun y => (ρ y)⁻¹ * (ρ y * u y)) x :=
-    hinv.mul hprod
-  refine hrecover.congr_of_eventuallyEq ?_
-  filter_upwards [hρ_smooth.continuousAt.eventually_ne hρ_ne] with y hy
-  rw [← mul_assoc, inv_mul_cancel₀ hy, one_mul]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : ℝ≥0}
+    (hu : ∀ x y, edist (u x) (u y) ≤ L * riemannianEDistOf g x y) :
+    ∀ᵐ x ∂riemannianVolumeMeasure (I := I) (M := M) g,
+      MDifferentiableAt I 𝓘(ℝ, ℝ) u x := by
+  classical
+  let _ : SecondCountableTopology H := I.secondCountableTopology
+  let _ : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
+  have hlocal (α : M) : ∃ U : Set M, U ∈ 𝓝 α ∧
+      ∀ᵐ x ∂riemannianVolumeMeasure (I := I) (M := M) g,
+        x ∈ U → MDifferentiableAt I 𝓘(ℝ, ℝ) u x := by
+    obtain ⟨χ, -, hχs⟩ := (SmoothBumpFunction.nhds_basis_tsupport (I := I) α).mem_iff.mp
+      ((chartAt H α).open_source.mem_nhds (mem_chart_source H α))
+    refine ⟨{x | χ x ≠ 0}, ?_, ?_⟩
+    · filter_upwards [χ.eventuallyEq_one] with x hx
+      rw [hx]
+      exact one_ne_zero
+    · obtain ⟨C, hC⟩ := exists_lipschitzWith_chartPullZero_mul g α χ.contMDiff
+        χ.hasCompactSupport hχs hu
+      have hd := ae_mdifferentiableAt_of_lipschitzWith_chartPullZero g α hC
+      have heq := riemannianVolumeMeasure_restrict_eq_chartLocalMeasure_restrict g α
+        χ.hasCompactSupport hχs
+      have hd' : ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g).restrict
+          (tsupport (χ : M → ℝ)), MDifferentiableAt I 𝓘(ℝ)
+            (fun y => χ y * u y) x := by
+        rw [heq]
+        filter_upwards [ae_restrict_mem (isClosed_tsupport (χ : M → ℝ)).measurableSet,
+          ae_restrict_of_ae hd] with x hx hdx
+        exact hdx (hχs hx)
+      have hd'' := (ae_restrict_iff' (isClosed_tsupport (χ : M → ℝ)).measurableSet).mp hd'
+      filter_upwards [hd''] with x hx hχ
+      have hcut := hx (subset_tsupport _ hχ)
+      have hdiv := hcut.div (χ.contMDiff.mdifferentiable (by simp) x) hχ
+      apply hdiv.congr_of_eventuallyEq
+      filter_upwards [χ.contMDiff.continuous.continuousAt.eventually_ne hχ] with y hy
+      exact (mul_div_cancel_left₀ (u y) hy).symm
+  choose U hU hdiff using hlocal
+  obtain ⟨s, hs, hcover⟩ := countable_cover_nhds hU
+  let _ := hs.toEncodable
+  have hall : ∀ᵐ x ∂riemannianVolumeMeasure (I := I) (M := M) g,
+      ∀ α : s, x ∈ U α → MDifferentiableAt I 𝓘(ℝ, ℝ) u x :=
+    ae_all_iff.mpr fun α => hdiff α
+  filter_upwards [hall] with x hx
+  have hxcover : x ∈ ⋃ α ∈ s, U α := by rw [hcover]; trivial
+  obtain ⟨α, hα, hxα⟩ := mem_iUnion₂.mp hxcover
+  exact hx ⟨α, hα⟩ hxα
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

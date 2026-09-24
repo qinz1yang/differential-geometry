@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.HopfRinow
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Geometry.Topology
-open scoped Topology ContDiff Manifold NNReal ENNReal
+open scoped _root_.Topology ContDiff Manifold NNReal ENNReal
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace

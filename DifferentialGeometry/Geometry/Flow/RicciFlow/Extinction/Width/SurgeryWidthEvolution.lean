@@ -1,10 +1,12 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Ancestry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative
 
 noncomputable section
 
@@ -406,14 +408,33 @@ variable {M N : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold ThreeModel ∞ N] [T2Space N] [CompactSpace N]
   [ConnectedSpace N] [SimplyConnectedSpace N]
 
-theorem isometry_fundamentalClass_iff_preservesTangentOrientation
-    (g : SmoothRiemannianMetric ThreeModel M) (h : SmoothRiemannianMetric ThreeModel N)
+omit [ConnectedSpace M] [ConnectedSpace N]
+  [SimplyConnectedSpace M] [SimplyConnectedSpace N] in
+theorem integralHomologyMap_fundamentalClass_of_preservesTangentOrientation
     (oM : TangentOrientationSection M) (oN : TangentOrientationSection N)
-    (e : M ≃ₜ N)
-    (he : ∀ x y, riemannianEDistOf h (e x) (e y) = riemannianEDistOf g x y) :
-    integralHomologyMap 3 (e : C(M, N)) (fundamentalClass oM) = fundamentalClass oN ↔
-      PreservesTangentOrientation oM oN e := by
-  sorry
+    (e : M ≃ₜ N) (he : PreservesTangentOrientation oM oN e) :
+    integralHomologyMap 3 (e : C(M, N)) (fundamentalClass oM) = fundamentalClass oN := by
+  have hlocOn : IsLocalDiffeomorphOn ThreeModel ThreeModel ∞ (e : M → N) Set.univ :=
+    ContMDiffOn.isLocalDiffeomorphOn_of_isInvertible_mfderiv
+      (fun x _ => (he.1 x).contMDiffWithinAt) isOpen_univ (by simp)
+      (fun x _ => by
+        obtain ⟨hbij, -⟩ := he.2 x
+        let L : TangentSpace ThreeModel x ≃ₗ[ℝ] TangentSpace ThreeModel (e x) :=
+          LinearEquiv.ofBijective
+            (mfderiv ThreeModel ThreeModel (e : M → N) x).toLinearMap hbij
+        refine ⟨L.toContinuousLinearEquiv,
+          ContinuousLinearMap.ext fun v => rfl⟩)
+  have hloc : IsLocalDiffeomorph ThreeModel ThreeModel ∞ (e : M → N) :=
+    fun x => hlocOn ⟨x, Set.mem_univ x⟩
+  let E : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N :=
+    hloc.diffeomorphOfBijective e.bijective
+  have hE : PreservesTangentOrientation oM oN E := he
+  have hcm : (⟨⇑E, E.continuous⟩ : C(M, N)) = (e : C(M, N)) := by
+    ext x
+    rfl
+  have hnat := fundamentalClass_natural_diffeomorph oM oN E hE
+  rw [hcm] at hnat
+  exact hnat
 
 omit [SimplyConnectedSpace M] in
 theorem familyMaximum_scale (g : SmoothRiemannianMetric ThreeModel M)

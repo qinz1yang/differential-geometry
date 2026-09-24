@@ -49,24 +49,35 @@ theorem uniqueDiffOn_norm_band {a b : ℝ} (ha : 0 < a) (hab : a < b) :
     exact Filter.mem_of_superset (isOpen_ball.mem_nhds (mem_ball_self hr)) ball_subset_closedBall
   exact ((uniqueDiffOn_convex (convex_closedBall c ((b - a) / 2)) hi) x hxc).mono hc
 
-theorem isConnected_norm_band (hrank : 1 < Module.rank ℝ E)
-    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
-    IsConnected {x : E | ‖x‖ ∈ Icc a b} := by
-  have hprod := (isConnected_sphere hrank (0 : E) (show (0 : ℝ) ≤ 1 from zero_le_one)).prod
-    (isConnected_Icc hab)
-  have himage : (fun q : E × ℝ ↦ q.2 • q.1) '' (sphere (0 : E) 1 ×ˢ Icc a b) =
-      {x : E | ‖x‖ ∈ Icc a b} := by
+theorem isConnected_preimage_norm (hrank : 1 < Module.rank ℝ E) {s : Set ℝ}
+    (hs : IsConnected s) (hsnonneg : s ⊆ Ici 0) :
+    IsConnected ((norm : E → ℝ) ⁻¹' s) := by
+  have hsphere := isConnected_sphere hrank (0 : E) (show (0 : ℝ) ≤ 1 from zero_le_one)
+  have hprod := hsphere.prod hs
+  have himage : (fun q : E × ℝ ↦ q.2 • q.1) '' (sphere (0 : E) 1 ×ˢ s) =
+      (norm : E → ℝ) ⁻¹' s := by
     ext x
     constructor
     · rintro ⟨⟨v, r⟩, ⟨hv, hr⟩, rfl⟩
       have hvn : ‖v‖ = 1 := mem_sphere_zero_iff_norm.mp hv
-      simpa [norm_smul, hvn, abs_of_pos (lt_of_lt_of_le ha hr.1)] using hr
+      have hrnonneg : 0 ≤ r := hsnonneg hr
+      simpa [norm_smul, hvn, abs_of_nonneg hrnonneg] using hr
     · intro hx
-      have hnx : 0 < ‖x‖ := lt_of_lt_of_le ha hx.1
-      refine ⟨(‖x‖⁻¹ • x, ‖x‖), ⟨?_, hx⟩, ?_⟩
-      · exact mem_sphere_zero_iff_norm.mpr (norm_smul_inv_norm (norm_ne_zero_iff.mp hnx.ne'))
-      · simp [smul_smul, hnx.ne']
+      by_cases hxzero : x = 0
+      · obtain ⟨v, hv⟩ := hsphere.nonempty
+        refine ⟨(v, 0), ⟨hv, ?_⟩, ?_⟩
+        · simpa only [mem_preimage, hxzero, norm_zero] using hx
+        · simpa only [zero_smul] using hxzero.symm
+      · have hnx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hxzero
+        refine ⟨(‖x‖⁻¹ • x, ‖x‖), ⟨?_, hx⟩, ?_⟩
+        · exact mem_sphere_zero_iff_norm.mpr (norm_smul_inv_norm hxzero)
+        · simp [smul_smul, hnx]
   rw [← himage]
   exact hprod.image _ (continuous_snd.smul continuous_fst).continuousOn
+
+theorem isConnected_norm_band (hrank : 1 < Module.rank ℝ E)
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    IsConnected {x : E | ‖x‖ ∈ Icc a b} := by
+  exact isConnected_preimage_norm hrank (isConnected_Icc hab) (fun _ hx => ha.le.trans hx.1)
 
 end DifferentialGeometry.Analysis

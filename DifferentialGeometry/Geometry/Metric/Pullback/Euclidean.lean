@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
+import DifferentialGeometry.Geometry.Metric.Pullback.Product
+import DifferentialGeometry.Geometry.Metric.Scaling
+import Mathlib.Tactic.Ring
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
@@ -88,5 +91,39 @@ theorem Diffeomorph.real_affine_of_pullbackMetric_eq_euclidean
   rw [mfderiv_eq_fderiv] at h
   change (fderiv ℝ ψ r 1) * (fderiv ℝ ψ r 1) = 1 * 1 at h
   simpa only [fderiv_apply_one_eq_deriv, one_mul, pow_two] using h
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+set_option backward.isDefEq.respectTransparency false in
+theorem Diffeomorph.pullbackMetric_euclidean_smul (c : ℝ) (hc : c ≠ 0) :
+    Diffeomorph.pullbackMetric (euclideanMetric (E := E))
+      (LinearEquiv.smulOfNeZero ℝ E c hc).toContinuousLinearEquiv.toDiffeomorph =
+        scaleMetric (c ^ 2) (sq_pos_of_ne_zero hc) (euclideanMetric (E := E)) := by
+  let T := (LinearEquiv.smulOfNeZero ℝ E c hc).toContinuousLinearEquiv
+  have hderiv (x : E) : mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) T.toDiffeomorph x =
+      T.toContinuousLinearMap := by
+    rw [mfderiv_eq_fderiv]
+    change fderiv ℝ (T.toContinuousLinearMap : E → E) x = _
+    exact T.toContinuousLinearMap.fderiv
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetric_inner, hderiv, scaleMetric_inner,
+    euclideanMetric_inner, euclideanMetric_inner]
+  change inner ℝ (c • (v : E)) (c • (w : E)) = c ^ 2 * inner ℝ (v : E) (w : E)
+  rw [real_inner_smul_left (F := E), real_inner_smul_right (F := E)]
+  ring
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ F H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem Diffeomorph.pullbackMetric_prod_euclidean_smul (g : SmoothRiemannianMetric I M)
+    (c : ℝ) (hc : c ≠ 0) :
+    Diffeomorph.pullbackMetric (g.prod (euclideanMetric (E := E)))
+      ((Diffeomorph.refl I M ∞).prodCongr
+        (LinearEquiv.smulOfNeZero ℝ E c hc).toContinuousLinearEquiv.toDiffeomorph) =
+      g.prod (scaleMetric (c ^ 2) (sq_pos_of_ne_zero hc) (euclideanMetric (E := E))) := by
+  rw [Diffeomorph.pullbackMetric_prodCongr, Diffeomorph.pullbackMetric_refl,
+    Diffeomorph.pullbackMetric_euclidean_smul]
 
 end DifferentialGeometry

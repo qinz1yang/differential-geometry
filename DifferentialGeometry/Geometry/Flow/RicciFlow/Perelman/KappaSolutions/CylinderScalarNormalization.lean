@@ -15,7 +15,7 @@ open Bundle
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 local notation "SphereAmbient" => EuclideanSpace ℝ (Fin 3)
 local notation "SphereTwo" => Metric.sphere (0 : SphereAmbient) 1

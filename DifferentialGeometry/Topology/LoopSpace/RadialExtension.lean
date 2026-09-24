@@ -1,5 +1,7 @@
 import DifferentialGeometry.Topology.LoopSpace.PolarAnnulus
 import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
+import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
 
 
 
@@ -85,5 +87,17 @@ theorem radialExtension_lipschitz {F : Circle → Circle} {L : ℝ≥0}
     · exact hordered x y hxy
     · simpa only [dist_comm] using hordered y x (le_of_not_ge hxy)
   exact h
+
+open MeasureTheory in
+theorem measurable_coe_radialDirection :
+    Measurable (fun z : ℂ => (radialDirection z : ℂ)) := by
+  classical
+  have heq : (fun z : ℂ => (radialDirection z : ℂ)) =
+      fun z => if z = 0 then 1 else ‖z‖⁻¹ • z := by
+    funext z
+    by_cases hz : z = 0 <;> simp [radialDirection, hz, NormedSpace.normalize]
+  rw [heq]
+  exact Measurable.ite (measurableSet_singleton (0 : ℂ)) measurable_const
+    (measurable_norm.inv.smul measurable_id)
 
 end DifferentialGeometry.Topology

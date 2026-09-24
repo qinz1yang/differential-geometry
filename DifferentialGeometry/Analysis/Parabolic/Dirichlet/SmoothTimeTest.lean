@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.ContinuousMapDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
 import DifferentialGeometry.Geometry.Operator.WithBoundary.TimeLaplacian
 import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
@@ -274,5 +275,96 @@ theorem exists_timeH1_chartPullback_of_tsupport_subset
   intro y
   by_contra hne
   exact lt_irrefl T (hφi (subset_tsupport φ hne)).1
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+private theorem exists_smooth_dirichlet_time_test
+    (q : SmoothRiemannianMetric I_hs M) {φ : ℝ × M → ℝ}
+    (hφ : ContMDiff (𝓘(ℝ).prod I_hs) 𝓘(ℝ) ∞ φ)
+    (hφc : HasCompactSupport φ) (hφi : tsupport φ ⊆ univ ×ˢ (I_hs).interior M)
+    {T : ℝ} (hT : 0 ≤ T) (hφT : ∀ x, φ (T, x) = 0) :
+    ∃ (v v' : ℝ → SmoothScalarDirichlet q) (w : timeH1 (H1ComplDirichlet q) T),
+      (∀ t x, (v t).toFun x = φ (t, x)) ∧
+      (∀ t x, (v' t).toFun x = deriv (fun s => φ (s, x)) t) ∧
+      EqOn w.toFun (fun t => smoothToH1ComplDirichlet q (v t)) (Icc (0 : ℝ) T) ∧
+      w.deriv =ᵐ[timeMeasure T] (fun t => smoothToH1ComplDirichlet q (v' t)) ∧
+      w.toFun T = 0 := by
+  let K := Prod.snd '' tsupport φ
+  have hK : IsCompact K := hφc.image continuous_snd
+  have hKi : K ⊆ (I_hs).interior M := by
+    rintro x ⟨p, hp, rfl⟩
+    exact (hφi hp).2
+  have hφK (t : ℝ) : tsupport (fun x => φ (t, x)) ⊆ K := by
+    have h := tsupport_comp_subset_preimage φ (f := fun x : M => (t, x))
+      (continuous_const.prodMk continuous_id)
+    exact h.trans fun x hx => ⟨(t, x), hx, rfl⟩
+  let ψ : ℝ × M → ℝ := fun p => deriv (fun s => φ (s, p.2)) p.1
+  have hψ : ContMDiff (𝓘(ℝ).prod I_hs) 𝓘(ℝ) ∞ ψ := by
+    intro p
+    exact timeDeriv_smoothAt (hφ p) (by simp)
+  have hψK (t : ℝ) : tsupport (fun x => ψ (t, x)) ⊆ K := by
+    apply closure_minimal ?_ hK.isClosed
+    intro x hx
+    by_contra hnot
+    have hz : (fun s => φ (s, x)) = fun _ => 0 := by
+      funext s
+      apply image_eq_zero_of_notMem_tsupport
+      intro hs
+      exact hnot ⟨(s, x), hs, rfl⟩
+    have : ψ (t, x) = 0 := by
+      dsimp only [ψ]
+      rw [hz, deriv_const]
+    exact hx this
+  let v : ℝ → SmoothScalarDirichlet q := fun t =>
+    ⟨fun x => φ (t, x), hφ.comp (contMDiff_const.prodMk contMDiff_id), (hφK t).trans hKi⟩
+  let v' : ℝ → SmoothScalarDirichlet q := fun t =>
+    ⟨fun x => ψ (t, x), hψ.comp (contMDiff_const.prodMk contMDiff_id), (hψK t).trans hKi⟩
+  have hd (t : ℝ) (_ht : t ∈ (univ : Set ℝ)) (x : M) :
+      HasDerivAt (fun s => (v s).toFun x) ((v' t).toFun x) t := by
+    exact ((hφ.comp (contMDiff_id.prodMk contMDiff_const)).contDiff.differentiable
+      (by simp) t).hasDerivAt
+  have hvT : v T = 0 := by
+    ext x
+    exact hφT x
+  obtain ⟨w, hw, hwd, _, hwT⟩ := exists_timeH1_smoothToH1ComplDirichlet q v v'
+    isOpen_univ hφ.contMDiffOn hψ.contMDiffOn hd hK.isClosed hKi
+    (fun t _ => hψK t) hT (subset_univ _) hvT
+  exact ⟨v, v', w, fun _ _ => rfl, fun _ _ => rfl, hw, hwd, hwT⟩
+
+theorem integral_smooth_test_of_timeH1_mass_dual
+    (q : SmoothRiemannianMetric I_hs M) {T : ℝ} (hT : 0 ≤ T)
+    (U : ℝ → Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q))
+    (w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T)
+    (hmass : ∀ᵐ t ∂timeMeasure T, ∀ z,
+      w.toFun t z = inner ℝ (U t) (H1ComplDirichletToLp q z))
+    (v : ℝ → SmoothScalarDirichlet q)
+    (hv : ContMDiff (𝓘(ℝ).prod I_hs) 𝓘(ℝ) ∞ (fun p : ℝ × M => (v p.1).toFun p.2))
+    (hvc : HasCompactSupport (fun p : ℝ × M => (v p.1).toFun p.2))
+    (hvi : tsupport (fun p : ℝ × M => (v p.1).toFun p.2) ⊆ univ ×ˢ (I_hs).interior M)
+    (hvT : v T = 0) :
+    (∫ t, ∫ x, U t x * deriv (fun s => (v s).toFun x) t
+      ∂riemannianVolumeMeasure (I := I_hs) (M := M) q ∂timeMeasure T) +
+      (∫ t, w.deriv t (smoothToH1ComplDirichlet q (v t)) ∂timeMeasure T) =
+        -w.toFun 0 (smoothToH1ComplDirichlet q (v 0)) := by
+  obtain ⟨v₁, v₂, z, hv₁, hv₂, hz, hzd, hzT⟩ :=
+    exists_smooth_dirichlet_time_test q hv hvc hvi hT (by intro x; simp [hvT])
+  have hv₁eq (t) : v₁ t = v t := by ext x; exact hv₁ t x
+  have h := timeH1.integral_dual_deriv_add_deriv_dual hT w z
+  rw [hzT, map_zero, hz ⟨le_rfl, hT⟩] at h
+  simp only [hv₁eq, zero_sub] at h
+  refine Eq.trans ?_ h
+  apply congrArg₂ (fun a b : ℝ => a + b)
+  · apply integral_congr_ae
+    filter_upwards [hzd, hmass] with t hzt hmt
+    rw [hzt, hmt, H1ComplDirichletToLp_smoothToH1ComplDirichlet, L2.inner_def]
+    apply integral_congr_ae
+    filter_upwards [MemLp.coeFn_toLp (v₂ t).memLp_two] with x hx
+    change (smoothToLpDirichlet q (v₂ t) : M → ℝ) x = (v₂ t).toFun x at hx
+    rw [hx, hv₂]
+    simp only [Real.inner_apply, mul_comm]
+  · apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    simpa only [hv₁eq] using congrArg (w.deriv t) (hz ht).symm
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

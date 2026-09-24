@@ -82,15 +82,14 @@ structure EmbeddedSphereNormalChart
   neighborhood_inter_range_subset_image :
     neighborhood ∩ Set.range e ⊆ e '' normalForm.domChart.source
 
-theorem embeddedSphereNormalChart_nonempty
-    [ChartedSpace EuclideanThree N] {e : SphereTwo → N}
-    (he : Manifold.IsSmoothEmbedding (𝓡 2)
-      (modelWithCornersSelf ℝ EuclideanThree) ∞ e)
-    (x : SphereTwo) : Nonempty (EmbeddedSphereNormalChart e x) := by
+theorem embeddedSphereNormalChart_nonempty_of_isImmersionAtOfComplement
+    [ChartedSpace EuclideanThree N] {e : SphereTwo → N} {x : SphereTwo}
+    (he : _root_.Topology.IsEmbedding e)
+    (h : Manifold.IsImmersionAtOfComplement ℝ (𝓡 2) (𝓡 3) ∞ e x) :
+    Nonempty (EmbeddedSphereNormalChart e x) := by
   classical
-  let h := isImmersionAtOfComplement_real_of_isSmoothEmbedding he x
   obtain ⟨W, hWopen, himage⟩ :=
-    he.isEmbedding.isInducing.image_eq_isOpen_inter_range
+    he.isInducing.image_eq_isOpen_inter_range
       h.domChart.open_source
   let strip : Set EuclideanThree :=
     h.equiv '' (h.domChart.target ×ˢ (Set.univ : Set ℝ))
@@ -154,6 +153,14 @@ theorem embeddedSphereNormalChart_nonempty
     tangent_mem_domChart_target := hOtangent
     neighborhood_inter_range_subset_image := hOrange.subset
   }⟩
+
+theorem embeddedSphereNormalChart_nonempty
+    [ChartedSpace EuclideanThree N] {e : SphereTwo → N}
+    (he : Manifold.IsSmoothEmbedding (𝓡 2)
+      (modelWithCornersSelf ℝ EuclideanThree) ∞ e)
+    (x : SphereTwo) : Nonempty (EmbeddedSphereNormalChart e x) :=
+  embeddedSphereNormalChart_nonempty_of_isImmersionAtOfComplement he.isEmbedding
+    (isImmersionAtOfComplement_real_of_isSmoothEmbedding he x)
 
 namespace EmbeddedSphereNormalChart
 

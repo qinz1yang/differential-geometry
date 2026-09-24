@@ -18,9 +18,9 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.RicciFlow.Soliton
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners Real (DifferentialGeometry.Topology.Morse.MorseModel 3) H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
 
 theorem gradientRicciSoliton_hasCurvatureSurfaceProductSplitting_of_nonnegative_of_rank_one
@@ -107,9 +107,9 @@ open Curvature
 open Curvature.DimensionThree
 open Riemannian.Topology.UniversalCover
 
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners Real (DifferentialGeometry.Topology.Morse.MorseModel 3) H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
 
 private theorem cylinder_cover_of_nonnegative_of_rank_one_morseModel
@@ -161,9 +161,9 @@ namespace DifferentialGeometry.Geometry
 
 open Curvature Curvature.DimensionThree Operator
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [ConnectedSpace M]
 
 omit [ConnectedSpace M] in
@@ -237,6 +237,7 @@ theorem exists_roundThreeCylinder_solitonModelCovering_of_nonnegative_of_rank_on
       ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
     change mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) I cover x =
       (mfderiv J I id (cover x)).comp (mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) J cover x) at hchain
+    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hchain
     rw [hchain]
     exact hm
   · intro x
@@ -255,9 +256,9 @@ namespace DifferentialGeometry.Geometry
 
 open Curvature Curvature.DimensionThree Operator
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [ConnectedSpace M]
 
 omit [ConnectedSpace M] in
@@ -336,6 +337,7 @@ theorem exists_roundThreeSphere_solitonModelCovering_of_rank_three_of_nonnegativ
       ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
     change mfderiv (𝓡 3) I cover x =
       (mfderiv J I id (cover x)).comp (mfderiv (𝓡 3) J cover x) at hchain
+    rw [DifferentialGeometry.Manifold.mfderiv_id_transContinuousLinearEquiv] at hchain
     rw [hchain]
     exact hm
   · intro x

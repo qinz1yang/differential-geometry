@@ -1,7 +1,6 @@
-import DifferentialGeometry.Analysis.Integration.Lp.Pairing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianTimeEquation
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffScalarSource
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartFlux
 
 noncomputable section
 
@@ -29,131 +28,6 @@ local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 
 private local instance : MeasurableSpace EuStd :=
   WithLp.measurableSpace 2 ((i : Fin (Module.finrank ℝ EuN)) → ℝ)
-
-private local instance h1ComplDirichletBilinearSeminormed
-    {q : SmoothRiemannianMetric I_hs M} :
-    SeminormedAddCommGroup (H1ComplDirichlet q →L[ℝ] H1ComplDirichlet q →L[ℝ] ℝ) :=
-  @ContinuousLinearMap.toSeminormedAddCommGroup ℝ ℝ
-    (H1ComplDirichlet q) (H1ComplDirichlet q →L[ℝ] ℝ)
-    inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
-    (RingHom.id ℝ) inferInstance
-
-private theorem exists_cutoff_scalar_source
-    (q : SmoothRiemannianMetric I_hs M)
-    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
-    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric)
-    {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ D.regular)
-    (α : M) {Ω : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
-    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    {μ : Measure ℝ} (hμ : μ ≤ volume.restrict J)
-    (H : Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (v : Lp (H1ComplDirichlet q) 2 μ)
-    (ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ)
-    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηs : tsupport η ⊆ Ω)
-    (hweak : ∀ j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
-      (fun z => K j (t, z)) (fun z => H (t, z)) Ω)
-    (Q : Fin (Module.finrank ℝ EuN) → ℝ × EuStd → ℝ) (B : ℝ × EuStd → ℝ)
-    (hQ : ∀ j, MemLp (Q j) 2 (μ.prod (volume.restrict Ω)))
-    (hB : MemLp B 2 (μ.prod (volume.restrict Ω)))
-    (hℓ : ∀ (τ : Lp ℝ 2 μ) (z : H1ComplDirichlet q),
-      (∫ t, τ t * ℓ t z ∂μ) =
-        (∫ p, τ p.1 * B p * H1ComplDirichletToLp q z
-          ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2)) ∂μ.prod (volume.restrict Ω)) -
-          ∑ j, ∫ p, τ p.1 * Q j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j z p.2
-            ∂μ.prod (volume.restrict Ω)) :
-    let c := fun i j (p : ℝ × EuStd) => MetricExtension.densityOnEuclid q α p.2 *
-      MetricExtension.invGramOnEuclid (G.metric p.1) α i j p.2
-    let P := fun i j (p : ℝ × EuStd) => c i j p * fderiv ℝ η p.2 (EuclideanSpace.single i 1)
-    let E := fun j p => ∑ i, P i j p * H p
-    (∀ j, ∀ᵐ t ∂μ, ∀ᵐ x ∂volume.restrict Ω,
-      Q j (t, x) = (∑ i, c i j (t, x) * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) x) - E j (t, x)) →
-    ∃ β : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ,
-      ∃ f : Lp ℝ 2 (μ.prod (volume.restrict Ω)),
-        (∀ (τ : Lp ℝ 2 μ) (z : H1ComplDirichlet q),
-          (∫ t, τ t * β t z ∂μ) =
-            (∫ p, τ p.1 * B p * H1ComplDirichletToLp q z
-              ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2)) ∂μ.prod (volume.restrict Ω)) +
-              ∑ j, ∫ p, τ p.1 * E j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j z p.2
-                ∂μ.prod (volume.restrict Ω)) ∧
-        (∀ z : Lp (H1ComplDirichlet q) 2 μ,
-          (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
-            ∫ t, (∑ i, ∑ j, ∫ y in Ω,
-              dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) y *
-                c i j (t, y) * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (z t) y) ∂μ) ∧
-        (f =ᵐ[μ.prod (volume.restrict Ω)] fun p => B p - ∑ i, ∑ j,
-          (P i j p * K j p +
-            fderiv ℝ (fun x => P i j (p.1, x)) p.2 (EuclideanSpace.single j 1) * H p)) ∧
-        ∀ z : Lp (H1ComplDirichlet q) 2 μ,
-          (∫ t, β t (z t) ∂μ) =
-            ∫ t, (∫ x in Ω, f (t, x) * H1ComplDirichletToLp q (z t)
-              ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x))) ∂μ := by
-  let : IsLocallyFiniteMeasure μ := Measure.isLocallyFiniteMeasure_of_le hμ
-  intro c P E hflux
-  have hexForm := exists_local_dirichlet_bilinear_form_family q hG
-    hJc hJ α hΩ hΩc hΩs
-  let form := Classical.choose hexForm
-  have hform := (Classical.choose_spec hexForm).1
-  change ∀ t u z, form t u z = _ at hform
-  obtain ⟨Lm, hβ, hLm⟩ := exists_cutoff_forcing_dual q hG hJc hJ
-    α hΩ hΩc hΩs hμ (fun p => H p) (Lp.memLp H) hη v ℓ form hform
-    Q B hQ hℓ hflux
-  have hweak' (j) : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
-      (fun x => K j (t, x))
-      (fun x => (Lp.memLp H).toLp H (t, x)) Ω := by
-    simpa only [Lp.toLp_coeFn] using hweak j
-  obtain ⟨f, hf, hfsource⟩ := exists_lp_scalar_source_of_cutoff_pairing q hG
-    hJc hJ α hΩ hΩc hΩs hμ hη hηs hB (Lp.memLp H) K hweak' (ℓ + Lm) hβ
-  refine ⟨ℓ + Lm, f, hβ, ?_, hf, hfsource⟩
-  intro z
-  have he := Lp.integral_add_apply ℓ Lm z
-  rw [hLm] at he
-  simp only [hform] at he
-  change _ = _ + _ at he
-  exact eq_sub_of_add_eq he.symm
-
-private theorem ae_cutoff_flux_eq
-    (q : SmoothRiemannianMetric I_hs M)
-    {D : RealTimeInterval} (G : MetricConnectionFamilyOn (I := I_hs) (M := M) D)
-    (α : M) {Ω : Set EuStd}
-    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
-    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    {μ : Measure ℝ} (H : Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
-    (v : ℝ → H1ComplDirichlet q) {η : EuStd → ℝ}
-    (hv : ∀ᵐ t ∂μ,
-      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
-        chartPullback I_hs α (fun z => η z * H (t, z)))
-    (hweak : ∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
-      (fun z => K i (t, z)) (fun z => H (t, z)) Ω)
-    (hη : ContDiff ℝ (⊤ : ℕ∞) η) :
-    let ρ := fun p : ℝ × EuStd => MetricExtension.densityOnEuclid (G.metric p.1) α p.2
-    let σ := fun p : ℝ × EuStd => MetricExtension.densityOnEuclid q α p.2
-    let r := fun p => ρ p / σ p
-    let A := fun i j (p : ℝ × EuStd) => MetricExtension.weightedInvGramOnEuclid (G.metric p.1) α i j p.2
-    let c := fun i j (p : ℝ × EuStd) => σ p * MetricExtension.invGramOnEuclid (G.metric p.1) α i j p.2
-    ∀ j, ∀ᵐ t ∂μ, ∀ᵐ z ∂volume.restrict Ω,
-      (∑ i, (η z / r (t, z)) * A i j (t, z) * K i (t, z)) =
-        (∑ i, c i j (t, z) * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) z) -
-          ∑ i, c i j (t, z) * fderiv ℝ η z (EuclideanSpace.single i 1) * H (t, z) := by
-  intro ρ σ r A c j
-  classical
-  have hpartial (i) : ∀ᵐ t ∂μ,
-      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) : EuStd → ℝ) =ᵐ[volume.restrict Ω]
-        (fun z => η z * K i (t, z) + fderiv ℝ η z (EuclideanSpace.single i 1) * H (t, z)) :=
-    ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul q α hΩ hΩc hΩs v hv
-      (Lp.memLp H) (Lp.memLp (K i)) i (hweak i) hη
-  filter_upwards [ae_all_iff.mpr hpartial] with t ht
-  filter_upwards [ae_all_iff.mpr ht, ae_restrict_mem hΩ.measurableSet] with z hz hzm
-  have hcoeff (i) : A i j (t, z) / r (t, z) = c i j (t, z) :=
-    weightedInvGramOnEuclid_div_density_ratio q (G.metric t) α i j z
-      (hΩs.trans (image_mono interior_subset) (subset_closure hzm))
-  rw [← Finset.sum_sub_distrib]
-  apply Finset.sum_congr rfl
-  intro i _
-  rw [hz i, ← hcoeff i]
-  simp only [div_eq_mul_inv]
-  ring
 
 theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_hessian_scalar_source
     {q : SmoothRiemannianMetric I_hs M}
@@ -283,9 +157,10 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_hessian_scalar_source
   have hℓ := htime'.1
   have hw := htime'.2.1
   have hd := htime'.2.2.1
-  have hflux := ae_cutoff_flux_eq q G α hΩ₀ hΩ₀c hΩ₀s (H k l) (K k l)
+  have hflux := ae_cutoff_flux_eq_density_ratio q G.metric α hΩ₀ hΩ₀c hΩ₀s
+    (H k l) (fun j p => K k l j p) (Lp.memLp (H k l)) (fun j => Lp.memLp (K k l j))
     (fun t => v k l t) (hv k l) (hK k l) hη
-  obtain ⟨β, f, _, hpair, hf, hfsource⟩ := exists_cutoff_scalar_source q hG
+  obtain ⟨β, f, _, hpair, hf, hfsource⟩ := exists_lp_scalar_source_of_cutoff_flux q hG
     isCompact_Icc hreg α hΩ₀ hΩ₀c hΩ₀s (μ := μ) Measure.restrict_le_self
     (H k l) (K k l) (v k l) ℓ hη hηs (hK k l) (Q k l) (B k l)
     (hQ k l) (hB k l) hℓ hflux

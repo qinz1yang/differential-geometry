@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundBackwardSpaceForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerMassClassification
 
 
 set_option autoImplicit false
@@ -13,7 +14,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -41,9 +42,8 @@ theorem ancientKappaThree_reducedVolume_lower
     apply tendsto_atTop_mono (fun i => ?_) (tendsto_natCast_atTop_atTop (R := ℝ))
     dsimp only [tau]
     linarith
-  have hdim2 : 2 ≤ Module.finrank ℝ E := by omega
   obtain ⟨q, L, phi, hphi, _hcenters, Phi, C, hcanonical, hcomplete, hgeometry⟩ :=
-    exists_samePole_normalized_asymptotic_shrinker F hF hdim2 p tau htau hescape
+    exists_samePole_normalized_asymptotic_shrinker F hF p tau htau hescape
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace H L.M := L.charted
   let _ : IsManifold I ∞ L.M := L.smooth
@@ -52,7 +52,7 @@ theorem ancientKappaThree_reducedVolume_lower
   let _ : SigmaCompactSpace L.M := L.sigmaCompact
   obtain ⟨hconnected, hnonflat, hnco, f, hsoliton, hnormal, hmass⟩ := hgeometry
   have hmassLower : ENNReal.ofReal (Real.exp (-1)) ≤ normalizedShrinkerMass L.metric f := by
-    rcases normalized_nonflat_three_shrinker_round_or_mass L hdim hcomplete hconnected
+    rcases normalized_nonflat_three_shrinker_classification L hdim hcomplete hconnected
       hnonflat hnco f hsoliton hnormal with hround | hdouble | hsingle
     · obtain ⟨hcompact, hscalar, hEin⟩ := hround
       obtain ⟨hT, D, e, hmetric⟩ :=

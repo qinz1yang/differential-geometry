@@ -9,12 +9,12 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
@@ -68,7 +68,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance errorJetC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompleteSpace E] [I.Boundaryless] in
 theorem tensor_time_tower_derivWithin_Icc {r : ℕ}
     (B : ℕ → ℝ → Tensor0SField (I := I) (M := M) (n := ∞) r)
     {c : ℝ} (hB : ∀ q t, t ≤ c → ∀ x : M,

@@ -22,7 +22,33 @@ private theorem abs_trace_le_of_metric_bound
     (A : TangentSpace I x →ₗ[ℝ] TangentSpace I x) (c : ℝ)
     (hA : ∀ v, Real.sqrt (g.inner x (A v) (A v)) ≤ c * Real.sqrt (g.inner x v v)) :
     |LinearMap.trace ℝ (TangentSpace I x) A| ≤ (Module.finrank ℝ E : ℝ) * c := by
-  sorry
+  classical
+  obtain ⟨b, hb⟩ := Tensor0SBundle.exists_orthonormal_basis (I := I) g x
+  have hinv := Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g b hb
+  have hdiag (i : Fin (Module.finrank ℝ (TangentSpace I x))) :
+      b.repr (A (b i)) i = g.inner x (A (b i)) (b i) := by
+    rw [Tensor0SBundle.basis_repr_eq_sum_inv_inner (I := I) g x b _ hinv]
+    simp [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric]
+  have htrace : LinearMap.trace ℝ (TangentSpace I x) A =
+      ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)), g.inner x (A (b i)) (b i) := by
+    rw [LinearMap.trace_eq_matrix_trace ℝ b]
+    exact Finset.sum_congr rfl fun i _ => by
+      simpa only [Matrix.trace, Matrix.diag, LinearMap.toMatrix_apply] using hdiag i
+  rw [htrace]
+  calc
+    |∑ i : Fin (Module.finrank ℝ (TangentSpace I x)), g.inner x (A (b i)) (b i)| ≤
+        ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+          |g.inner x (A (b i)) (b i)| := Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _i : Fin (Module.finrank ℝ (TangentSpace I x)), c := by
+      refine Finset.sum_le_sum fun i _ => ?_
+      have hu : g.inner x (b i) (b i) = 1 := by simpa only [ite_true] using hb i i
+      have hcs := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+        g x (A (b i)) (b i)
+      rw [hu, Real.sqrt_one, mul_one] at hcs
+      exact hcs.trans (by simpa only [hu, Real.sqrt_one, mul_one] using hA (b i))
+    _ = (Module.finrank ℝ E : ℝ) * c := by
+      simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      rw [show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from rfl]
 
 private theorem trace_restricted_roundCylinder (O : TopologicalSpace.Opens (S × ℝ)) (x : O) :
     LinearMap.trace ℝ (TangentSpace IC x)

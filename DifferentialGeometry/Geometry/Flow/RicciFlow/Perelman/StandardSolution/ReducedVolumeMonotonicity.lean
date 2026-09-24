@@ -109,6 +109,70 @@ theorem redVolume_anti_of_rm
         ∂modelHaar (E := E) :=
       MeasureTheory.lintegral_mono_set hdomain
 
+namespace Perelman
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)]
+  [ConnectedSpace M] in
+theorem redVolume_congr_base {D D' : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (S' : SolutionOn (I := I) (M := M) D')
+    (h : S'.base = S.base) (T : ℝ) (x : M) (tau : ℝ) :
+    redVolume S' T x tau = redVolume S T x tau := by
+  simp only [redVolume, redDensity, redLength, lCost, lLength, lDensity, lSpeedSq,
+    SolutionOn.scalar, SolutionFamily.scalar]
+  rw [h]
+
+omit [T2Space (TangentBundle I M)] in
+theorem redVolume_anti_Ico_of_base_eq
+    [CompactSpace M]
+    {D D' : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (S' : SolutionOn (I := I) (M := M) D')
+    (hbase : S'.base = S.base) (hS' : IsSolutionOn (I := I) S')
+    (T : ℝ) (x : M) {tau₁ tau₂ : ℝ}
+    (htau₁ : 0 < tau₁) (h12 : tau₁ ≤ tau₂)
+    (hslab : Set.Icc (T - tau₂) T ⊆ D'.regular) :
+    redVolume (I := I) (M := M) S T x tau₂ ≤ redVolume (I := I) (M := M) S T x tau₁ := by
+  have h := redVolume_anti (I := I) (M := M) (D := D') S' hS' T x htau₁ h12 hslab
+  rw [redVolume_congr_base (I := I) (M := M) (D := D) (D' := D') S S' hbase T x tau₂,
+    redVolume_congr_base (I := I) (M := M) (D := D) (D' := D') S S' hbase T x tau₁] at h
+  exact h
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)]
+  [ConnectedSpace M] in
+set_option backward.isDefEq.respectTransparency false in
+theorem redVolume_standard_eq {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (x : M) (tau : ℝ) :
+    DifferentialGeometry.PDE.RicciFlow.redVolume S T x tau = redVolume S T x tau := rfl
+
+theorem redVolume_anti_of_rm_Ico_of_base_eq
+    {D D' : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (S' : SolutionOn (I := I) (M := M) D')
+    (hbase : S'.base = S.base) (hS' : IsSolutionOn (I := I) S')
+    (T : ℝ) (x : M)
+    (hg : RiemannianMetricComplete (I := I) (S.base.metric T))
+    (hRm : ∀ sigma : ℝ, 0 < sigma → Set.Icc (T - sigma) T ⊆ D'.regular →
+      ∃ K : ℝ, ∀ t ∈ Set.Icc (T - sigma) T, ∀ z : M,
+        normSq0S (I := I) (S.base.metric t) z 4 (S.base.rm04 t z) ≤ K)
+    {tau₁ tau₂ : ℝ} (htau₁ : 0 < tau₁) (h12 : tau₁ ≤ tau₂)
+    (hslab : Set.Icc (T - tau₂) T ⊆ D'.regular) :
+    redVolume (I := I) (M := M) S T x tau₂ ≤ redVolume (I := I) (M := M) S T x tau₁ := by
+  have hg' : RiemannianMetricComplete (I := I) (S'.base.metric T) := by
+    rw [hbase]; exact hg
+  have hRm' : ∀ sigma : ℝ, 0 < sigma → Set.Icc (T - sigma) T ⊆ D'.regular →
+      ∃ K : ℝ, ∀ t ∈ Set.Icc (T - sigma) T, ∀ z : M,
+        normSq0S (I := I) (S'.base.metric t) z 4 (S'.base.rm04 t z) ≤ K := by
+    intro sigma hsigma hsub
+    obtain ⟨K, hK⟩ := hRm sigma hsigma hsub
+    exact ⟨K, fun t ht z => by rw [hbase]; exact hK t ht z⟩
+  have h := DifferentialGeometry.PDE.RicciFlow.redVolume_anti_of_rm (I := I) (M := M)
+    (D := D') S' hS' T hg' x hRm' htau₁ h12 hslab
+  rw [redVolume_standard_eq (I := I) (M := M) (D := D') S' T x tau₂,
+    redVolume_standard_eq (I := I) (M := M) (D := D') S' T x tau₁] at h
+  rw [redVolume_congr_base (I := I) (M := M) (D := D) (D' := D') S S' hbase T x tau₂,
+    redVolume_congr_base (I := I) (M := M) (D := D) (D' := D') S S' hbase T x tau₁] at h
+  exact h
+
+end Perelman
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end

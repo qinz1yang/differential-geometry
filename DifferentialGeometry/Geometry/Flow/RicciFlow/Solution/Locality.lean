@@ -92,3 +92,109 @@ theorem isSolutionOn_ancient_of_open_interval_restrictions
   refine ⟨t - 1, T, hmem, hloc (t - 1) T t hmem ?_⟩
   exact fun _ hs => hs.2
 end DifferentialGeometry.PDE.RicciFlow
+
+end
+
+noncomputable section
+
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M]
+
+theorem isSolutionOn_of_local_time_restrictions
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hloc : ∀ t ∈ D.carrier, ∃ U : Set ℝ, IsOpen U ∧ t ∈ U ∧
+      ∃ D' : RealTimeInterval, D.carrier ∩ U ⊆ D'.carrier ∧
+        D.regular ∩ U ⊆ D'.regular ∧ IsSolutionOn (S.timeRestrict D')) :
+    IsSolutionOn S where
+  smoothMetric := by
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · intro x X Y t ht
+      obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t (D.regular_subset ht)
+      exact (hS.smoothMetric.coeff x X Y t (hreg ⟨ht, htU⟩)).mono_of_mem_nhdsWithin
+        (Filter.mem_of_superset (inter_mem_nhdsWithin _ (hU.mem_nhds htU)) hreg)
+    · intro x X Y t ht
+      obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t ht
+      exact (hS.smoothMetric.coeff_cont x X Y t (hcar ⟨ht, htU⟩)).mono_of_mem_nhdsWithin
+        (Filter.mem_of_superset (inter_mem_nhdsWithin _ (hU.mem_nhds htU)) hcar)
+    · apply tensor0SFamilyContinuousOnSet.of_locally
+      intro t ht
+      obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t ht
+      exact ⟨U, hU, htU, hS.smoothMetric.metricTensor_cont.mono hcar⟩
+    · intro Idx _ frame u hframe i j
+      apply contMDiffOn_of_locally_contMDiffOn
+      intro p hp
+      obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc p.1 (D.regular_subset hp.1)
+      refine ⟨U ×ˢ (univ : Set M), hU.prod isOpen_univ, ⟨htU, trivial⟩, ?_⟩
+      exact (hS.smoothMetric.frameCompSmooth frame hframe i j).mono
+        (fun q hq => ⟨hreg ⟨hq.1.1, hq.2.1⟩, hq.1.2⟩)
+  smoothConnection := by
+    intro t
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t t.2
+    exact hS.smoothConnection ⟨t, hcar ⟨t.2, htU⟩⟩
+  equation := by
+    intro t x X Y
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t (D.regular_subset t.2)
+    exact (hS.equation ⟨t, hreg ⟨t.2, htU⟩⟩ x X Y).mono_of_mem_nhdsWithin
+      (Filter.mem_of_superset (inter_mem_nhdsWithin _ (hU.mem_nhds htU)) hcar)
+  scalarCont := by
+    intro p hp
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc p.1 hp.1
+    apply (hS.scalarCont p ⟨hcar ⟨hp.1, htU⟩, hp.2⟩).mono_of_mem_nhdsWithin
+    exact Filter.mem_of_superset (inter_mem_nhdsWithin _
+      ((hU.prod isOpen_univ).mem_nhds ⟨htU, trivial⟩))
+      (fun q hq => ⟨hcar ⟨hq.1.1, hq.2.1⟩, hq.1.2⟩)
+  scalarTime := by
+    intro K t ht hK x
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t (hK ht)
+    exact (hS.scalarTime (hcar ⟨hK ht, htU⟩) Subset.rfl x).mono_of_mem_nhdsWithin
+      (Filter.mem_of_superset (inter_mem_nhdsWithin _ (hU.mem_nhds htU))
+        (fun s hs => hcar ⟨hK hs.1, hs.2⟩))
+  ricciCont := by
+    apply tensor0SFamilyContinuousOnSet.of_locally
+    intro t ht
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t ht
+    exact ⟨U, hU, htU, hS.ricciCont.mono hcar⟩
+  rm04Cont := by
+    apply tensor0SFamilyContinuousOnSet.of_locally
+    intro t ht
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t ht
+    exact ⟨U, hU, htU, hS.rm04Cont.mono hcar⟩
+  ricciNormSpace := by
+    intro t ht x
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t ht
+    exact hS.ricciNormSpace t (hcar ⟨ht, htU⟩) x
+  ricciNormGrad := by
+    intro t ht x
+    obtain ⟨U, hU, htU, D', hcar, hreg, hS⟩ := hloc t ht
+    exact hS.ricciNormGrad t (hcar ⟨ht, htU⟩) x
+
+theorem isSolutionOn_of_closed_backward_windows
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    {T : ℝ} (hcarrier : D.carrier ⊆ Iic T)
+    (hwin : ∀ n : ℕ, IsSolutionOn (S.timeRestrict
+      (RealTimeInterval.closed (T - ((n + 1 : ℕ) : ℝ)) T (sub_le_self _ (Nat.cast_nonneg _))))) :
+    IsSolutionOn S := by
+  have hregular : D.regular ⊆ Iio T := by
+    simpa only [interior_Iic] using
+      interior_maximal (D.regular_subset.trans hcarrier) D.regular_isOpen
+  apply isSolutionOn_of_local_time_restrictions S
+  intro t ht
+  obtain ⟨n, hn⟩ := exists_nat_ge (T - t)
+  have htN : T - ((n + 1 : ℕ) : ℝ) < t := by
+    push_cast
+    linarith
+  refine ⟨Ioi (T - ((n + 1 : ℕ) : ℝ)), isOpen_Ioi, htN,
+    RealTimeInterval.closed (T - ((n + 1 : ℕ) : ℝ)) T
+      (sub_le_self _ (Nat.cast_nonneg _)), ?_, ?_, hwin n⟩
+  · exact fun s hs => ⟨hs.2.le, hcarrier hs.1⟩
+  · exact fun s hs => ⟨hs.2, hregular hs.1⟩
+
+end DifferentialGeometry.PDE.RicciFlow
+
+end

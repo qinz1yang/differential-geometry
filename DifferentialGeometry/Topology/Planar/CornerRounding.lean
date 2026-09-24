@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.Diffeomorph.CompactIsotopyComposition
 import DifferentialGeometry.Topology.Diffeomorph.LevelTransport
-import External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import DifferentialGeometry.Topology.Diffeomorph.DisjointSupport
 import DifferentialGeometry.Analysis.Calculus.SmoothMax

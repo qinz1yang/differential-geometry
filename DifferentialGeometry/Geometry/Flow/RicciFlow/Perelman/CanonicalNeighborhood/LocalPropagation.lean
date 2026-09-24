@@ -344,6 +344,127 @@ variable [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
 omit [SigmaCompactSpace M] in
+theorem scalar_le_on_ball_of_gradient_bound
+    (S : SolutionOn (I := I) (M := M) D)
+    {CStar Q s : ℝ} {z y : M} (hCStar : 0 ≤ CStar) (hQ : 0 < Q)
+    (hgrad : ∀ w, 2 * Q ≤ S.scalar s w → ∀ v : TangentSpace I w,
+      |scalarDifferential (I := I) S s w v| ≤
+        2 * CStar * (S.scalar s w * Real.sqrt (S.scalar s w)) *
+          Real.sqrt ((S.base.metric s).inner w v v))
+    (hz : S.scalar s z ≤ Q)
+    (hy : y ∈ riemannianClosedBallOf (S.base.metric s) z
+      (localPropagationRadius CStar / Real.sqrt Q)) :
+    S.scalar s y ≤ 3 * Q := by
+  have hcpos : 0 < localPropagationRadius CStar := localPropagationRadius_pos hCStar
+  have hcsmall : CStar * localPropagationRadius CStar < 1 / 20 :=
+    mul_localPropagationRadius_lt hCStar
+  have hradpos : 0 < localPropagationRadius CStar / Real.sqrt Q :=
+    div_pos hcpos (Real.sqrt_pos.2 hQ)
+  have hsqP : 0 < Real.sqrt Q := Real.sqrt_pos.2 hQ
+  obtain ⟨gam, hgam, hgam0, hgam1, hspeed⟩ :=
+    exists_path_lintegral_speed_lt_of_mem_closedBall (I := I) (S.base.metric s)
+      hradpos.le hradpos hy
+  have hspeed2 := hspeed.le
+  rw [show localPropagationRadius CStar / Real.sqrt (Q) +
+        localPropagationRadius CStar / Real.sqrt (Q) =
+      2 * (localPropagationRadius CStar / Real.sqrt (Q)) from by ring] at hspeed2
+  have hbudnn : (0 : Real) ≤ 2 * (localPropagationRadius CStar / Real.sqrt (Q)) := by
+    positivity
+  have hstep1 : S.scalar s y ≤ 3 * (Q) := by
+    have hcont : ContinuousOn (fun sig : Real => S.scalar s (gam sig)) (Set.Icc 0 1) :=
+      (((scalarSmoothOfSolution (I := I) S s).continuous).comp hgam.continuous).continuousOn
+    have hkey : ∀ t ∈ Set.Icc (0 : Real) 1,
+        (fun sig : Real => S.scalar s (gam sig)) t ≤ 3 * (Q) := by
+      refine forall_le_of_no_crossing (B := 2 * Q) (by linarith) hcont ?_
+      intro uu vv h0u huv hv1 hge hstart hend
+      have hsub : Set.Icc uu vv ⊆ Set.Icc (0 : Real) 1 := Set.Icc_subset_Icc h0u hv1
+      have hpos : ∀ w ∈ Set.Icc uu vv, 0 < S.scalar s (gam w) := by
+        intro w hw
+        exact lt_of_lt_of_le (by linarith) (hge w hw)
+      have hderiv : ∀ w ∈ Set.Icc uu vv,
+          HasDerivAt (fun sig : Real => (Real.sqrt (S.scalar s (gam sig)))⁻¹)
+            (-(1 / (2 * Real.sqrt (S.scalar s (gam w))) *
+                scalarDifferential (I := I) S s (gam w)
+                  (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) /
+                Real.sqrt (S.scalar s (gam w)) ^ 2) w := by
+        intro w hw
+        exact hasDerivAt_inv_sqrt (hasDerivAt_scalar_comp (I := I) S s hgam w) (hpos w hw)
+      have hbdd : ∀ w ∈ Set.Icc uu vv,
+          |-(1 / (2 * Real.sqrt (S.scalar s (gam w))) *
+              scalarDifferential (I := I) S s (gam w)
+                (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) /
+              Real.sqrt (S.scalar s (gam w)) ^ 2| ≤
+            CStar * Real.sqrt ((S.base.metric s).inner (gam w)
+              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
+              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) := by
+        intro w hw
+        refine abs_deriv_inv_sqrt_le (hpos w hw) ?_
+        have hgd := hgrad (gam w) (hge w hw)
+          (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
+        have hring : 2 * (CStar * Real.sqrt ((S.base.metric s).inner (gam w)
+              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
+              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w)))) *
+            (S.scalar s (gam w) * Real.sqrt (S.scalar s (gam w))) =
+          2 * CStar * (S.scalar s (gam w) * Real.sqrt (S.scalar s (gam w))) *
+            Real.sqrt ((S.base.metric s).inner (gam w)
+              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
+              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) := by
+          ring
+        rw [hring]
+        exact hgd
+      have hbud : |(Real.sqrt (S.scalar s (gam vv)))⁻¹ -
+          (Real.sqrt (S.scalar s (gam uu)))⁻¹| ≤
+            CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q))) :=
+        abs_sub_le_of_hasDerivAt_of_lintegral_le
+          (f := fun sig : Real => (Real.sqrt (S.scalar s (gam sig)))⁻¹)
+          (a := uu) (b := vv)
+          (v := fun w : Real => Real.sqrt ((S.base.metric s).inner (gam w)
+            (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
+            (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))))
+          huv hsub hCStar hbudnn hderiv hbdd hspeed2
+      have huupos : 0 < S.scalar s (gam uu) := hpos uu (Set.left_mem_Icc.2 huv)
+      have hstart' : S.scalar s (gam uu) ≤ max (2 * Q) (S.scalar s (gam 0)) := hstart
+      rw [hgam0] at hstart'
+      have hend' : 3 * (Q) ≤ S.scalar s (gam vv) := hend
+      have hstart2 : S.scalar s (gam uu) ≤ 2 * Q := by
+        exact hstart'.trans (max_le le_rfl (hz.trans (by linarith)))
+      have hA : (Real.sqrt (2 * (Q)))⁻¹ ≤ (Real.sqrt (S.scalar s (gam uu)))⁻¹ := by
+        have h2 := one_div_le_one_div_of_le (Real.sqrt_pos.2 huupos)
+          (Real.sqrt_le_sqrt hstart2)
+        rwa [one_div, one_div] at h2
+      have hB : (Real.sqrt (S.scalar s (gam vv)))⁻¹ ≤ (Real.sqrt (3 * (Q)))⁻¹ := by
+        have h2 := one_div_le_one_div_of_le
+          (Real.sqrt_pos.2 (by linarith : (0 : Real) < 3 * (Q)))
+          (Real.sqrt_le_sqrt hend')
+        rwa [one_div, one_div] at h2
+      have hgapEq : (Real.sqrt (2 * (Q)))⁻¹ - (Real.sqrt (3 * (Q)))⁻¹ =
+          ((Real.sqrt 2)⁻¹ - (Real.sqrt 3)⁻¹) * (Real.sqrt (Q))⁻¹ := by
+        rw [Real.sqrt_mul (by norm_num : (0 : Real) ≤ 2),
+          Real.sqrt_mul (by norm_num : (0 : Real) ≤ 3), mul_inv, mul_inv]
+        ring
+      have hbudEq : CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q))) =
+          2 * (CStar * localPropagationRadius CStar) * (Real.sqrt (Q))⁻¹ := by
+        rw [div_eq_mul_inv]
+        ring
+      have hnum : 2 * (CStar * localPropagationRadius CStar) <
+          (Real.sqrt 2)⁻¹ - (Real.sqrt 3)⁻¹ := by
+        linarith [one_div_ten_lt_inv_sqrt_two_sub_inv_sqrt_three]
+      have hfin : CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q))) <
+          (Real.sqrt (2 * (Q)))⁻¹ - (Real.sqrt (3 * (Q)))⁻¹ := by
+        rw [hgapEq, hbudEq]
+        exact mul_lt_mul_of_pos_right hnum (inv_pos.2 hsqP)
+      have hdrop : (Real.sqrt (2 * (Q)))⁻¹ - (Real.sqrt (3 * (Q)))⁻¹ ≤
+          CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q))) := by
+        refine le_trans ?_ hbud
+        linarith [hA, hB, neg_le_abs ((Real.sqrt (S.scalar s (gam vv)))⁻¹ -
+          (Real.sqrt (S.scalar s (gam uu)))⁻¹)]
+      linarith
+    have h1 : S.scalar s (gam 1) ≤ 3 * (Q) := hkey 1 ⟨by norm_num, le_rfl⟩
+    rwa [hgam1] at h1
+  exact hstep1
+
+
+omit [SigmaCompactSpace M] in
 theorem scalar_le_of_good_locus
     {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn (I := I) S)
     {eps kappa CStar Q Hd L t0 s v : Real} {z y : M}
@@ -388,111 +509,12 @@ theorem scalar_le_of_good_locus
     have h1 := hs.1
     have h2 := hw.1
     linarith
-  have hradpos : 0 < localPropagationRadius CStar / Real.sqrt (Q * L) :=
-    div_pos hcpos (Real.sqrt_pos.2 hP)
-  have hsqP : (0 : Real) < Real.sqrt (Q * L) := Real.sqrt_pos.2 hP
-  obtain ⟨gam, hgam, hgam0, hgam1, hspeed⟩ :=
-    exists_path_lintegral_speed_lt_of_mem_closedBall (I := I) (S.base.metric s)
-      hradpos.le hradpos hy
-  have hspeed2 := hspeed.le
-  rw [show localPropagationRadius CStar / Real.sqrt (Q * L) +
-        localPropagationRadius CStar / Real.sqrt (Q * L) =
-      2 * (localPropagationRadius CStar / Real.sqrt (Q * L)) from by ring] at hspeed2
-  have hbudnn : (0 : Real) ≤ 2 * (localPropagationRadius CStar / Real.sqrt (Q * L)) := by
-    positivity
   have hstep1 : S.scalar s y ≤ 3 * (Q * L) := by
-    have hcont : ContinuousOn (fun sig : Real => S.scalar s (gam sig)) (Set.Icc 0 1) :=
-      (((scalarSmoothOfSolution (I := I) S s).continuous).comp hgam.continuous).continuousOn
-    have hkey : ∀ t ∈ Set.Icc (0 : Real) 1,
-        (fun sig : Real => S.scalar s (gam sig)) t ≤ 3 * (Q * L) := by
-      refine forall_le_of_no_crossing (B := 2 * Q) (by linarith) hcont ?_
-      intro uu vv h0u huv hv1 hge hstart hend
-      have hsub : Set.Icc uu vv ⊆ Set.Icc (0 : Real) 1 := Set.Icc_subset_Icc h0u hv1
-      have hpos : ∀ w ∈ Set.Icc uu vv, 0 < S.scalar s (gam w) := by
-        intro w hw
-        exact lt_of_lt_of_le (by linarith) (hge w hw)
-      have hderiv : ∀ w ∈ Set.Icc uu vv,
-          HasDerivAt (fun sig : Real => (Real.sqrt (S.scalar s (gam sig)))⁻¹)
-            (-(1 / (2 * Real.sqrt (S.scalar s (gam w))) *
-                scalarDifferential (I := I) S s (gam w)
-                  (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) /
-                Real.sqrt (S.scalar s (gam w)) ^ 2) w := by
-        intro w hw
-        exact hasDerivAt_inv_sqrt (hasDerivAt_scalar_comp (I := I) S s hgam w) (hpos w hw)
-      have hbdd : ∀ w ∈ Set.Icc uu vv,
-          |-(1 / (2 * Real.sqrt (S.scalar s (gam w))) *
-              scalarDifferential (I := I) S s (gam w)
-                (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) /
-              Real.sqrt (S.scalar s (gam w)) ^ 2| ≤
-            CStar * Real.sqrt ((S.base.metric s).inner (gam w)
-              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
-              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) := by
-        intro w hw
-        refine abs_deriv_inv_sqrt_le (hpos w hw) ?_
-        have hgp : IsGoodPoint.{u, uE, uH} (I := I) eps kappa S (gam w) s :=
-          hgood (gam w) s hsJ (hge w hw)
-        have hgd := (hbnd (gam w) s hgp).1 (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
-        have hring : 2 * (CStar * Real.sqrt ((S.base.metric s).inner (gam w)
-              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
-              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w)))) *
-            (S.scalar s (gam w) * Real.sqrt (S.scalar s (gam w))) =
-          2 * CStar * (S.scalar s (gam w) * Real.sqrt (S.scalar s (gam w))) *
-            Real.sqrt ((S.base.metric s).inner (gam w)
-              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
-              (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))) := by
-          ring
-        rw [hring]
-        exact hgd
-      have hbud : |(Real.sqrt (S.scalar s (gam vv)))⁻¹ -
-          (Real.sqrt (S.scalar s (gam uu)))⁻¹| ≤
-            CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q * L))) :=
-        abs_sub_le_of_hasDerivAt_of_lintegral_le
-          (f := fun sig : Real => (Real.sqrt (S.scalar s (gam sig)))⁻¹)
-          (a := uu) (b := vv)
-          (v := fun w : Real => Real.sqrt ((S.base.metric s).inner (gam w)
-            (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))
-            (mfderiv 𝓘(Real, Real) I gam w (realTangentOne w))))
-          huv hsub hCStar hbudnn hderiv hbdd hspeed2
-      have huupos : 0 < S.scalar s (gam uu) := hpos uu (Set.left_mem_Icc.2 huv)
-      have hstart' : S.scalar s (gam uu) ≤ max (2 * Q) (S.scalar s (gam 0)) := hstart
-      rw [hgam0] at hstart'
-      have hend' : 3 * (Q * L) ≤ S.scalar s (gam vv) := hend
-      have hstart2 : S.scalar s (gam uu) ≤ 2 * (Q * L) := by
-        refine le_trans hstart' (max_le (by linarith) ?_)
-        nlinarith [hz, hP, hQ]
-      have hA : (Real.sqrt (2 * (Q * L)))⁻¹ ≤ (Real.sqrt (S.scalar s (gam uu)))⁻¹ := by
-        have h2 := one_div_le_one_div_of_le (Real.sqrt_pos.2 huupos)
-          (Real.sqrt_le_sqrt hstart2)
-        rwa [one_div, one_div] at h2
-      have hB : (Real.sqrt (S.scalar s (gam vv)))⁻¹ ≤ (Real.sqrt (3 * (Q * L)))⁻¹ := by
-        have h2 := one_div_le_one_div_of_le
-          (Real.sqrt_pos.2 (by linarith : (0 : Real) < 3 * (Q * L)))
-          (Real.sqrt_le_sqrt hend')
-        rwa [one_div, one_div] at h2
-      have hgapEq : (Real.sqrt (2 * (Q * L)))⁻¹ - (Real.sqrt (3 * (Q * L)))⁻¹ =
-          ((Real.sqrt 2)⁻¹ - (Real.sqrt 3)⁻¹) * (Real.sqrt (Q * L))⁻¹ := by
-        rw [Real.sqrt_mul (by norm_num : (0 : Real) ≤ 2),
-          Real.sqrt_mul (by norm_num : (0 : Real) ≤ 3), mul_inv, mul_inv]
-        ring
-      have hbudEq : CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q * L))) =
-          2 * (CStar * localPropagationRadius CStar) * (Real.sqrt (Q * L))⁻¹ := by
-        rw [div_eq_mul_inv]
-        ring
-      have hnum : 2 * (CStar * localPropagationRadius CStar) <
-          (Real.sqrt 2)⁻¹ - (Real.sqrt 3)⁻¹ := by
-        linarith [one_div_ten_lt_inv_sqrt_two_sub_inv_sqrt_three]
-      have hfin : CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q * L))) <
-          (Real.sqrt (2 * (Q * L)))⁻¹ - (Real.sqrt (3 * (Q * L)))⁻¹ := by
-        rw [hgapEq, hbudEq]
-        exact mul_lt_mul_of_pos_right hnum (inv_pos.2 hsqP)
-      have hdrop : (Real.sqrt (2 * (Q * L)))⁻¹ - (Real.sqrt (3 * (Q * L)))⁻¹ ≤
-          CStar * (2 * (localPropagationRadius CStar / Real.sqrt (Q * L))) := by
-        refine le_trans ?_ hbud
-        linarith [hA, hB, neg_le_abs ((Real.sqrt (S.scalar s (gam vv)))⁻¹ -
-          (Real.sqrt (S.scalar s (gam uu)))⁻¹)]
-      linarith
-    have h1 : S.scalar s (gam 1) ≤ 3 * (Q * L) := hkey 1 ⟨by norm_num, le_rfl⟩
-    rwa [hgam1] at h1
+    apply scalar_le_on_ball_of_gradient_bound S hCStar hP
+    · intro w hw v
+      exact (hbnd w s (hgood w s hsJ (by nlinarith [hQL]))).1 v
+    · nlinarith [hz, hQ]
+    · exact hy
   have hvs : v ≤ s := hv.2
   have hsv : (0 : Real) ≤ s - v := by linarith
   have hsvle : s - v ≤ localPropagationRadius CStar / (Q * L) := by

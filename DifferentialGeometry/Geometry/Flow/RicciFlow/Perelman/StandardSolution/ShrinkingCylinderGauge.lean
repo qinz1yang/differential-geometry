@@ -52,7 +52,7 @@ theorem localPullMetric_shrinkingCylinderMetric_of_initial
           (x : Metric.sphere (0 : E) 1 × ℝ) v w := by
     have h := ricciTensor_localPullMetric
       ((shrinkingCylinderMetric (E := E) 0).restrictOpen V) f hf x v w
-    rw [hzero, ricciTensor_restrictOpen, ricciTensor_restrictOpen] at h
+    rw [hzero, DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen, DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen] at h
     simpa only [mfderiv_subtype_val_apply] using h.symm
   apply SmoothRiemannianMetric.ext_inner
   intro x v w

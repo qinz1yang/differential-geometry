@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.InsertionOrientation
+import DifferentialGeometry.Geometry.Neck.Recentering
 
 set_option autoImplicit false
 noncomputable section
@@ -44,4 +45,9 @@ theorem lowerOrder_oriented (d : normalizedDatum g x₀ δ k) (hjk : j ≤ k) :
 
 theorem lowerOrder_rescaled (d : normalizedDatum g x₀ δ k) (hjk : j ≤ k) (c : ℝ) (hc : 0 < c) :
     (d.lowerOrder hjk).rescaled c hc = (d.rescaled c hc).lowerOrder hjk := rfl
+
+theorem lowerOrder_offsetPoint (d : normalizedDatum g x₀ δ k) (hjk : j ≤ k)
+    {σ : ℝ} (hσ : σ ^ 2 = 1) :
+    (d.lowerOrder hjk).offsetPoint hσ = d.offsetPoint hσ := rfl
+
 end DifferentialGeometry.Geometry.Neck.normalizedDatum

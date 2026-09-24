@@ -19,6 +19,83 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 universe u
 
+section LocalComparison
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {J : ModelWithCorners ℝ E H}
+  {N M : Type*}
+  [TopologicalSpace N] [ChartedSpace H N] [IsManifold J ∞ N]
+  [T2Space N] [SigmaCompactSpace N]
+  [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+
+private local instance localComparisonComplete : CompleteSpace E :=
+  FiniteDimensional.complete ℝ E
+
+theorem MetricComparisonOn.metricDerivNorm_of_local_metric
+    {h : ℝ → SmoothRiemannianMetric J N} {g : ℝ → SmoothRiemannianMetric I3 M}
+    {F : N → M} {K : Set N} {times : Set ℝ}
+    {order : ℕ} {eps : ℝ} (P : MetricComparisonOn h g F K times order eps)
+    (U : TopologicalSpace.Opens N) (hUK : (U : Set N) ⊆ K) (s : ℝ)
+    (G : SmoothRiemannianMetric J U)
+    (hG : ∀ z : U, ∀ v w : TangentSpace J z,
+      G.inner z v w = (g s).inner (F z) (mfderiv J I3 F (z : N) v)
+        (mfderiv J I3 F (z : N) w)) (a : ℕ) (y : U) :
+    metricDerivNorm a G ((h s).restrictOpen U) ((h s).restrictOpen U) y =
+      tensor02CovDerivNormWith a (P.jet 0 s) (h s) (h s) (y : N) := by
+  let hR := (h s).restrictOpen U
+  have hbase : ∀ (z : U) (slots : Fin 2 → TangentSpace J z),
+      (metricTensorField G - metricTensorField hR) z slots =
+        P.jet 0 s (z : N) slots := by
+    intro z slots
+    simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply,
+      metricTensorField_apply]
+    erw [P.jet_zero, P.pullback_eq s (z : N) (hUK z.2)]
+    rw [hG, SmoothRiemannianMetric.restrictOpen_inner]
+  have htower := covDerivOfField_restrictOpen (I := J) (h s) U
+    (metricTensorField G - metricTensorField hR) (P.jet 0 s) hbase a y
+  have hT : metricDiffCovDerivAt (I := J) a G hR hR y =
+      covDerivOfField (I := J) (h s) (P.jet 0 s) a (y : N) := by
+    have hsub : metricDiffCovDerivAt (I := J) a G hR hR y =
+        covDerivOfField (I := J) hR
+          (metricTensorField G - metricTensorField hR) a y := by
+      rw [covDerivOfField_sub]
+      rfl
+    rw [hsub]
+    exact ContinuousMultilinearMap.ext htower
+  change Real.sqrt (normSq0S (I := J) hR y (a + 2)
+    (metricDiffCovDerivAt (I := J) a G hR hR y)) = _
+  rw [hT]
+  unfold tensor02CovDerivNormWith
+  rw [tensor02_cov_deriv_eq_cov_deriv_of_field]
+  congr 1
+  exact normSq0S_restrictOpen_apply (I := J) (h s) U (a + 2) y _
+
+end LocalComparison
+
+section OpenComparison
+
+variable {N M : Type u}
+  [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N]
+  [T2Space N] [SigmaCompactSpace N]
+  [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+omit [SigmaCompactSpace M] in
+theorem MetricComparisonOn.openPullback_metricDerivNorm
+    {h : ℝ → SmoothRiemannianMetric I3 N} {g : ℝ → SmoothRiemannianMetric I3 M}
+    {F : PartialDiffeomorph I3 I3 N M ∞} {K : Set N} {times : Set ℝ}
+    {order : ℕ} {eps : ℝ} (P : MetricComparisonOn h g F K times order eps)
+    (U : TopologicalSpace.Opens N) (hU : (U : Set N) ⊆ F.source)
+    (hUK : (U : Set N) ⊆ K) (s : ℝ) (a : ℕ) (y : U) :
+    metricDerivNorm (I := I3) a (openPullbackMetric F U hU (g s))
+        ((h s).restrictOpen U) ((h s).restrictOpen U) y =
+      tensor02CovDerivNormWith (I := I3) a (P.jet 0 s) (h s) (h s) (y : N) := by
+  exact P.metricDerivNorm_of_local_metric U hUK s (openPullbackMetric F U hU (g s))
+    (openPullbackMetric_inner F U hU (g s)) a y
+
+end OpenComparison
+
 variable {M N : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M]
   [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N]

@@ -359,19 +359,9 @@ theorem chartInverse_h1ComplDirichletChartPullback_coeFn
     {f : EuStd → ℝ} (hf : MemWkp 1 2 f Ω) (hfs : tsupport f ⊆ Ω) :
     (fun z => H1ComplDirichletToLp q (h1ComplDirichletChartPullback q α hΩ hΩc hΩs hf hfs)
       ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) =ᵐ[volume.restrict Ω] f := by
-  have h := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+  exact ae_chartInverse_eq_of_chartPullback q α hΩ.measurableSet hΩc
     (hΩs.trans (image_mono interior_subset))
     (h1ComplDirichletChartPullback_coeFn q α hΩ hΩc hΩs hf hfs)
-  filter_upwards [h, ae_restrict_mem hΩ.measurableSet] with z hz hzΩ
-  rw [hz]
-  have hy : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
-    obtain ⟨y, hy, he⟩ := hΩs (subset_closure hzΩ)
-    rw [← he, ContinuousLinearEquiv.symm_apply_apply]
-    exact interior_subset hy
-  have hx := (extChartAt I_hs α).map_target hy
-  rw [extChartAt_source] at hx
-  rw [chartPullback_apply_of_mem α f hx, (extChartAt I_hs α).right_inv hy,
-    ContinuousLinearEquiv.apply_symm_apply]
 
 
 theorem dirichletLocalWeakPartialLp_eq_ae_of_coeFn_eq_chartPullback
@@ -389,18 +379,8 @@ theorem dirichletLocalWeakPartialLp_eq_ae_of_coeFn_eq_chartPullback
   have hval : (fun z => H1ComplDirichletToLp q v
       ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) =ᵐ[
       volume.restrict Ω] f := by
-    have h := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+    exact ae_chartInverse_eq_of_chartPullback q α hΩ.measurableSet hΩc
       (hΩs.trans (image_mono interior_subset)) hv
-    filter_upwards [h, ae_restrict_mem hΩ.measurableSet] with z hz hzΩ
-    rw [hz]
-    have hy : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
-      obtain ⟨y, hy, he⟩ := hΩs (subset_closure hzΩ)
-      rw [← he, ContinuousLinearEquiv.symm_apply_apply]
-      exact interior_subset hy
-    have hx := (extChartAt I_hs α).map_target hy
-    rw [extChartAt_source] at hx
-    rw [chartPullback_apply_of_mem α f hx, (extChartAt I_hs α).right_inv hy,
-      ContinuousLinearEquiv.apply_symm_apply]
   have hvweak : DeGiorgi.HasWeakPartialDeriv j
       (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v) f Ω := by
     intro ψ hψ hψc hψs

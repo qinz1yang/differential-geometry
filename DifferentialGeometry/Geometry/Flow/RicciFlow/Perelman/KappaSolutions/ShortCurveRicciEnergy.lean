@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Filter Set MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
-open scoped Manifold ContDiff Topology Interval
+open scoped Manifold ContDiff _root_.Topology Interval
 
 universe u uE uH
 

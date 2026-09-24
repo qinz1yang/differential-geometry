@@ -136,7 +136,12 @@ lemma exists_tendsto_clm_of_basis_eval {W : Type*} [NormedAddCommGroup W] [Norme
       have := LinearMap.congr_fun hcoe v
       simpa using this
     rw [hv]; simp
-  have hcemb := LinearMap.isClosedEmbedding_of_injective (f := ev) hker
+  let _ : NormedAddCommGroup (W →L[Real] W →L[Real] Real) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  have hcemb : Topology.IsClosedEmbedding ev :=
+    LinearMap.isClosedEmbedding_of_injective
+      (𝕜 := Real) (E := W →L[Real] W →L[Real] Real) (F := Fin n × Fin n → Real)
+      (f := ev) hker
   have htpi : Filter.Tendsto (fun k => ev (L k)) Filter.atTop (nhds (fun p => cval p.1 p.2)) := by
     rw [tendsto_pi_nhds]; rintro ⟨i, j⟩; exact hcval i j
   have hmem : (fun p => cval p.1 p.2) ∈ Set.range ev :=
@@ -179,12 +184,13 @@ include I in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 1 M] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-lemma exists_gm_symm_pos
+private lemma exists_gm_symm_pos_of_eventual_lower
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M) (φ : ℕ → ℕ)
     (hconv : ∀ x : M, ∃ Lx : TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real,
       Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop (nhds Lx))
-    (hlow : ∃ c : Real, 0 < c ∧ ∀ (k : ℕ) (x : M) (v : TangentSpace I x),
-      c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
+    (hlow : ∀ x : M, ∃ c : Real, 0 < c ∧
+      ∀ᶠ m in Filter.atTop, ∀ v : TangentSpace I x,
+        c * gRef.inner x v v ≤ (gSeq (φ m)).inner x v v) :
     ∃ gm : Π x : M, TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real,
       (∀ x, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop (nhds (gm x))) ∧
       (∀ (x : M) (v w : TangentSpace I x), gm x v w = gm x w v) ∧
@@ -210,11 +216,30 @@ lemma exists_gm_symm_pos
       funext m; exact (gSeq (φ m)).symm x v w
     rw [heq] at h1
     exact tendsto_nhds_unique h1 h2
-  · obtain ⟨c, hc, hcle⟩ := hlow
-    intro x v hv
+  · intro x v hv
+    obtain ⟨c, hc, hcle⟩ := hlow x
     have hle : c * gRef.inner x v v ≤ gm x v v :=
-      ge_of_tendsto (hev x v v) (Filter.Eventually.of_forall (fun m => hcle (φ m) x v))
+      ge_of_tendsto (hev x v v) (hcle.mono fun _ hm => hm v)
     exact lt_of_lt_of_le (mul_pos hc (gRef.pos x v hv)) hle
+
+include I in
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I 1 M] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
+lemma exists_gm_symm_pos
+    (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M) (φ : ℕ → ℕ)
+    (hconv : ∀ x : M, ∃ Lx : TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real,
+      Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop (nhds Lx))
+    (hlow : ∃ c : Real, 0 < c ∧ ∀ (k : ℕ) (x : M) (v : TangentSpace I x),
+      c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
+    ∃ gm : Π x : M, TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real,
+      (∀ x, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop (nhds (gm x))) ∧
+      (∀ (x : M) (v w : TangentSpace I x), gm x v w = gm x w v) ∧
+      (∀ (x : M) (v : TangentSpace I x), v ≠ 0 → 0 < gm x v v) := by
+  apply exists_gm_symm_pos_of_eventual_lower (I := I) gRef gSeq φ hconv
+  intro x
+  obtain ⟨c, hc, hcle⟩ := hlow
+  exact ⟨c, hc, Filter.Eventually.of_forall fun m v => hcle (φ m) x v⟩
 
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -527,12 +552,13 @@ lemma exists_allcomp_refs
 
 include I in
 omit [IsManifold I 2 M] in
-lemma exists_limit_gm (hne : Nonempty M)
+lemma exists_limit_gm_of_eventual_pointwise_lower (hne : Nonempty M)
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
-    (hlow : ∃ c : Real, 0 < c ∧ ∀ (k : ℕ) (x : M) (v : TangentSpace I x),
-      c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
+    (hlow : ∀ x : M, ∃ c : Real, 0 < c ∧
+      ∀ᶠ k in Filter.atTop, ∀ v : TangentSpace I x,
+        c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
       ∃ gm : Π x : M, TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real,
         (∀ x, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop (nhds (gm x))) ∧
@@ -566,8 +592,33 @@ lemma exists_limit_gm (hne : Nonempty M)
     obtain ⟨L, hL⟩ := hφP k i j x hxK
     refine ⟨L, ?_⟩
     rw [hb i, hb j]; exact hL
-  obtain ⟨gm, hgm, hsymm, hpos⟩ := exists_gm_symm_pos (I := I) gRef gSeq φ hconv hlow
+  have hlow' : ∀ x : M, ∃ c : Real, 0 < c ∧
+      ∀ᶠ m in Filter.atTop, ∀ v : TangentSpace I x,
+        c * gRef.inner x v v ≤ (gSeq (φ m)).inner x v v := by
+    intro x
+    obtain ⟨c, hc, hcle⟩ := hlow x
+    exact ⟨c, hc, hφmono.tendsto_atTop.eventually hcle⟩
+  obtain ⟨gm, hgm, hsymm, hpos⟩ :=
+    exists_gm_symm_pos_of_eventual_lower (I := I) gRef gSeq φ hconv hlow'
   exact ⟨φ, hφmono, gm, hgm, hsymm, hpos⟩
+
+include I in
+omit [IsManifold I 2 M] in
+lemma exists_limit_gm (hne : Nonempty M)
+    (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
+    (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
+      metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
+    (hlow : ∃ c : Real, 0 < c ∧ ∀ (k : ℕ) (x : M) (v : TangentSpace I x),
+      c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧
+      ∃ gm : Π x : M, TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real,
+        (∀ x, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop (nhds (gm x))) ∧
+        (∀ (x : M) (v w : TangentSpace I x), gm x v w = gm x w v) ∧
+        (∀ (x : M) (v : TangentSpace I x), v ≠ 0 → 0 < gm x v v) := by
+  apply exists_limit_gm_of_eventual_pointwise_lower (I := I) hne gRef gSeq hbdd
+  intro x
+  obtain ⟨c, hc, hcle⟩ := hlow
+  exact ⟨c, hc, Filter.Eventually.of_forall fun k v => hcle k x v⟩
 
 include I in
 omit [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -710,6 +761,27 @@ lemma frame_smooth_refs
 
 include I in
 omit [IsManifold I 2 M] in
+theorem metricPreconv_gInf_of_eventual_pointwise_lower (hne : Nonempty M)
+    (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
+    (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
+      metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
+    (hlower : ∀ x : M, ∃ c : Real, 0 < c ∧
+      ∀ᶠ k in Filter.atTop, ∀ v : TangentSpace I x,
+        c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ gInf : SmoothRiemannianMetric I M,
+      ∀ x : M, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop
+        (nhds (gInf.inner x)) := by
+  obtain ⟨φ, hφ, gm, hgm, hsymm, hpos⟩ :=
+    exists_limit_gm_of_eventual_pointwise_lower (I := I) hne gRef gSeq hbdd hlower
+  obtain ⟨gInf, hgInf⟩ :=
+    Geometry.smoothMetric_of_localCoeff gm hsymm hpos
+      (fun x₀ i j => frameComp_contMDiffOn (I := I) gRef gSeq hbdd φ gm hgm x₀ i j)
+  refine ⟨φ, hφ, gInf, fun x => ?_⟩
+  have hx : gInf.inner x = gm x := by ext v w; exact hgInf x v w
+  rw [hx]; exact hgm x
+
+include I in
+omit [IsManifold I 2 M] in
 theorem metricPreconv_gInf (hne : Nonempty M)
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
@@ -719,13 +791,10 @@ theorem metricPreconv_gInf (hne : Nonempty M)
     ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ gInf : SmoothRiemannianMetric I M,
       ∀ x : M, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop
         (nhds (gInf.inner x)) := by
-  obtain ⟨φ, hφ, gm, hgm, hsymm, hpos⟩ := exists_limit_gm (I := I) hne gRef gSeq hbdd hlow
-  obtain ⟨gInf, hgInf⟩ :=
-    Geometry.smoothMetric_of_localCoeff gm hsymm hpos
-      (fun x₀ i j => frameComp_contMDiffOn (I := I) gRef gSeq hbdd φ gm hgm x₀ i j)
-  refine ⟨φ, hφ, gInf, fun x => ?_⟩
-  have hx : gInf.inner x = gm x := by ext v w; exact hgInf x v w
-  rw [hx]; exact hgm x
+  apply metricPreconv_gInf_of_eventual_pointwise_lower (I := I) hne gRef gSeq hbdd
+  intro x
+  obtain ⟨c, hc, hcle⟩ := hlow
+  exact ⟨c, hc, Filter.Eventually.of_forall fun k v => hcle k x v⟩
 
 include I in
 omit [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in

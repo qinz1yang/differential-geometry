@@ -3,6 +3,7 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.VectorField.Pullback
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.Algebra.LieGroup
 import Mathlib.Topology.OpenPartialHomeomorph.IsImage
 import Mathlib.Analysis.Calculus.Deriv.Comp
@@ -441,5 +442,310 @@ theorem exists_contMDiff_boundary_tangent_vector_field
     · have hi0 : L (X i.val y) 0 = 0 :=
         htangent i.val m d hd y ⟨(hρs i (subset_tsupport (ρ i) hzero)).1, hyD⟩ hyd
       rw [hi0, smul_zero]
+
+
+private theorem exists_contMDiff_collar_velocity
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {G H : Type*} [TopologicalSpace G] [TopologicalSpace H]
+    {J : ModelWithCorners ℝ E G} {I : ModelWithCorners ℝ F H}
+    {N M : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J 1 N]
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
+    (c : PartialDiffeomorph (J.prod 𝓘(ℝ)) I (N × ℝ) M ∞)
+    (g : M → ℝ) (a : ℝ) (hheight : ∀ p ∈ c.source, g (c p) = a + p.2) :
+    ∃ V : (y : M) → TangentSpace I y,
+      ContMDiffOn I I.tangent ∞ (fun y => (V y : TangentBundle I M)) c.target ∧
+      ∀ y ∈ c.target,
+        mfderiv I (J.prod 𝓘(ℝ)) c.symm y (V y) = (0, 1) ∧
+        NormedSpace.fromTangentSpace (g y) (mfderiv I 𝓘(ℝ) g y (V y)) = 1 := by
+  let Y : (p : N × ℝ) → TangentSpace (J.prod 𝓘(ℝ)) p := fun _ => (0, 1)
+  have hzero : ContMDiff J J.tangent ∞
+      (fun p : N => (⟨p, 0⟩ : TangentBundle J N)) :=
+    Bundle.contMDiff_zeroSection ℝ (TangentSpace J)
+  have hone : ContMDiff 𝓘(ℝ) (𝓘(ℝ).tangent) ∞
+      (fun t : ℝ => (⟨t, (1 : ℝ)⟩ : TangentBundle 𝓘(ℝ) ℝ)) :=
+    contMDiff_vectorSpace_iff_contDiff.mpr contDiff_const
+  have hY : ContMDiff (J.prod 𝓘(ℝ)) (J.prod 𝓘(ℝ)).tangent ∞
+      (fun p => (Y p : TangentBundle (J.prod 𝓘(ℝ)) (N × ℝ))) := by
+    exact contMDiff_equivTangentBundleProd_symm.comp
+      ((hzero.comp contMDiff_fst).prodMk (hone.comp contMDiff_snd))
+  let V : (y : M) → TangentSpace I y := fun y => by
+    exact mfderiv (J.prod 𝓘(ℝ)) I c (c.symm y) (Y (c.symm y))
+  have hT := c.contMDiffOn.contMDiffOn_tangentMapWithin
+    (m := ∞) (by simp) c.open_source.uniqueMDiffOn
+  have hpush : ContMDiffOn (J.prod 𝓘(ℝ)) I.tangent ∞
+      (fun p => tangentMapWithin (J.prod 𝓘(ℝ)) I c c.source
+        (Y p : TangentBundle (J.prod 𝓘(ℝ)) (N × ℝ))) c.source :=
+    hT.comp hY.contMDiffOn (fun _ hp => hp)
+  have hsection : ContMDiffOn I I.tangent ∞
+      (fun y => tangentMapWithin (J.prod 𝓘(ℝ)) I c c.source
+        (Y (c.symm y) : TangentBundle (J.prod 𝓘(ℝ)) (N × ℝ))) c.target :=
+    hpush.comp c.symm.contMDiffOn (fun _ hy => c.toPartialEquiv.map_target hy)
+  refine ⟨V, hsection.congr ?_, ?_⟩
+  · intro y hy
+    have hd : mfderivWithin (J.prod 𝓘(ℝ)) I c c.source (c.symm y) =
+        mfderiv (J.prod 𝓘(ℝ)) I c (c.symm y) :=
+      mfderivWithin_of_mem_nhds
+        (c.open_source.mem_nhds (c.toPartialEquiv.map_target hy))
+    apply Bundle.TotalSpace.ext (c.toPartialEquiv.right_inv hy).symm
+    apply heq_of_eq
+    change (mfderiv (J.prod 𝓘(ℝ)) I c (c.symm y) (Y (c.symm y)) : F) =
+      mfderivWithin (J.prod 𝓘(ℝ)) I c c.source (c.symm y) (Y (c.symm y))
+    exact congrArg
+      (fun L : TangentSpace (J.prod 𝓘(ℝ)) (c.symm y) →L[ℝ] F => L (Y (c.symm y))) hd.symm
+  · intro y hy
+    have hsrc : c.symm y ∈ c.source := c.toPartialEquiv.map_target hy
+    have hc := c.mdifferentiableAt (by simp) hsrc
+    have hi := c.symm.mdifferentiableAt (by simp) hy
+    have hcoord : mfderiv I (J.prod 𝓘(ℝ)) c.symm y (V y) = (0, 1) := by
+      have hleft : (c.symm ∘ c) =ᶠ[𝓝 (c.symm y)] id := by
+        filter_upwards [c.open_source.mem_nhds hsrc] with p hp
+        exact c.toPartialEquiv.left_inv hp
+      have hcomp := mfderiv_comp_apply_of_eq (c.symm y) hi hc
+        (c.toPartialEquiv.right_inv hy) (Y (c.symm y))
+      have hid : mfderiv (J.prod 𝓘(ℝ)) (J.prod 𝓘(ℝ)) (c.symm ∘ c) (c.symm y)
+          (Y (c.symm y)) = Y (c.symm y) := by
+        have he := congrArg
+          (fun L : TangentSpace (J.prod 𝓘(ℝ)) (c.symm y) →L[ℝ] (E × ℝ) =>
+            L (Y (c.symm y)))
+          (hleft.mfderiv_eq (I := J.prod 𝓘(ℝ)) (I' := J.prod 𝓘(ℝ)))
+        exact he.trans (by rw [mfderiv_id]; rfl)
+      exact hcomp.symm.trans hid
+    refine ⟨hcoord, ?_⟩
+    let q : M → ℝ := fun z => a + (c.symm z).2
+    have heq : g =ᶠ[𝓝 y] q := by
+      filter_upwards [c.open_target.mem_nhds hy] with z hz
+      exact (congrArg g (c.toPartialEquiv.right_inv hz)).symm.trans
+        (hheight (c.symm z) (c.toPartialEquiv.map_target hz))
+    have hrate : mvfderiv I g y = mvfderiv I q y := by
+      apply ContinuousLinearMap.ext
+      intro v
+      change (mfderiv I 𝓘(ℝ) g y v : ℝ) = mfderiv I 𝓘(ℝ) q y v
+      exact congrArg (fun L : TangentSpace I y →L[ℝ] ℝ => L v) heq.mfderiv_eq
+    have hadd : mvfderiv I q y = mvfderiv I (fun _ : M => a) y +
+        mvfderiv I (fun z => (c.symm z).2) y :=
+      mvfderiv_add (mdifferentiableAt_const (c := a)) hi.snd
+    have hconst : mvfderiv I (fun _ : M => a) y = 0 := mvfderiv_const a
+    have hsnd : mvfderiv I (fun z => (c.symm z).2) y (V y) =
+        (mfderiv I (J.prod 𝓘(ℝ)) c.symm y (V y)).2 := by
+      change (mfderiv I 𝓘(ℝ) (fun z => (c.symm z).2) y (V y) : ℝ) = _
+      have hcomp := mfderiv_comp_apply y (mdifferentiableAt_snd (I := J)) hi (V y)
+      have hscalar := congrArg (NormedSpace.fromTangentSpace ((c.symm y).2)) hcomp
+      rw [mfderiv_snd] at hscalar
+      exact hscalar
+    change mvfderiv I g y (V y) = 1
+    rw [hrate, hadd, hconst, zero_add, hsnd]
+    exact congrArg (fun z : E × ℝ => z.2) hcoord
+
+private theorem exists_contMDiff_cutoff_near_compact
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ F]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ F H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M]
+    {T W : Set M} (hT : IsCompact T) (hW : IsOpen W) (hTW : T ⊆ W) :
+    ∃ η : M → ℝ, ContMDiff I 𝓘(ℝ) ∞ η ∧ HasCompactSupport η ∧
+      tsupport η ⊆ W ∧ (∀ x, 0 ≤ η x ∧ η x ≤ 1) ∧
+      ∃ Q, IsOpen Q ∧ T ⊆ Q ∧ Set.EqOn η (fun _ => 1) Q := by
+  classical
+  have hbumps (p : T) : ∃ f : SmoothBumpFunction I (p : M), tsupport f ⊆ W := by
+    obtain ⟨f, _, hf⟩ := (SmoothBumpFunction.nhds_basis_tsupport (I := I) (p : M)).mem_iff.mp
+      (hW.mem_nhds (hTW p.property))
+    exact ⟨f, hf⟩
+  choose f hf using hbumps
+  let Q : T → Set M := fun p => interior {y | f p y = 1}
+  have hpQ (p : T) : (p : M) ∈ Q p := by
+    apply mem_interior_iff_mem_nhds.mpr
+    exact (f p).eventuallyEq_one
+  obtain ⟨s, hs⟩ := hT.elim_finite_subcover Q (fun _ => isOpen_interior)
+    (fun p hp => Set.mem_iUnion.mpr ⟨⟨p, hp⟩, hpQ ⟨p, hp⟩⟩)
+  let ι := {p : T // p ∈ s}
+  let U : Set M := ⋃ i : ι, Q i.val
+  have hU : IsOpen U := isOpen_iUnion fun _ => isOpen_interior
+  have hTU : T ⊆ U := by
+    intro p hp
+    obtain ⟨q, hqs, hpq⟩ := Set.mem_iUnion₂.mp (hs hp)
+    exact Set.mem_iUnion.mpr ⟨⟨q, hqs⟩, hpq⟩
+  let fs : SmoothBumpCovering ι I M U :=
+    { c := fun i => i.val.val
+      toFun := fun i => f i.val
+      c_mem' := fun i => Set.mem_iUnion.mpr ⟨i, hpQ i.val⟩
+      locallyFinite' := locallyFinite_of_finite _
+      eventuallyEq_one' := by
+        intro y hy
+        obtain ⟨i, hi⟩ := Set.mem_iUnion.mp hy
+        refine ⟨i, ?_⟩
+        filter_upwards [isOpen_interior.mem_nhds hi] with z hz
+        exact (interior_subset (s := {y | f i.val y = 1}) hz) }
+  let ρ := fs.toSmoothPartitionOfUnity
+  let η : M → ℝ := fun y => ∑ i : ι, ρ i y
+  have hη : ContMDiff I 𝓘(ℝ) ∞ η :=
+    ContMDiff.sum fun i _ => (ρ i).contMDiff
+  let K : Set M := ⋃ i : ι, tsupport (ρ i)
+  have hρc (i : ι) : HasCompactSupport (ρ i) :=
+    (f i.val).hasCompactSupport.mono (fs.support_toSmoothPartitionOfUnity_subset i)
+  have hK : IsCompact K := isCompact_iUnion fun i => (hρc i).isCompact
+  have hηK : tsupport η ⊆ K := by
+    apply closure_minimal _ hK.isClosed
+    intro y hy
+    by_contra hn
+    have hz (i : ι) : ρ i y = 0 :=
+      image_eq_zero_of_notMem_tsupport (fun hi => hn (Set.mem_iUnion.mpr ⟨i, hi⟩))
+    exact hy (by simp only [η, hz, Finset.sum_const_zero])
+  have hKW : K ⊆ W := by
+    intro y hy
+    obtain ⟨i, hi⟩ := Set.mem_iUnion.mp hy
+    exact hf i.val ((closure_mono (fs.support_toSmoothPartitionOfUnity_subset i)) hi)
+  refine ⟨η, hη, hK.of_isClosed_subset (isClosed_tsupport η) hηK,
+    hηK.trans hKW, ?_, U, hU, hTU, ?_⟩
+  · intro y
+    constructor
+    · simpa only [η, finsum_eq_sum_of_fintype] using ρ.sum_nonneg y
+    · simpa only [η, finsum_eq_sum_of_fintype] using ρ.sum_le_one y
+  · intro y hy
+    simpa only [η, finsum_eq_sum_of_fintype] using ρ.sum_eq_one hy
+
+private theorem exists_contMDiff_field_eq_local_field
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ F]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ F H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M]
+    (Y V : (y : M) → TangentSpace I y)
+    (L : (y : M) → TangentSpace I y →L[ℝ] ℝ)
+    {T W O D : Set M} (hT : IsCompact T) (hW : IsOpen W)
+    (hTW : T ⊆ W) (hWO : W ⊆ O) (hWD : Disjoint W (frontier D))
+    (hY : ContMDiff I I.tangent ∞ (fun y => (Y y : TangentBundle I M)))
+    (hYc : HasCompactSupport Y) (hYO : tsupport Y ⊆ O)
+    (hV : ContMDiffOn I I.tangent ∞ (fun y => (V y : TangentBundle I M)) W)
+    (hrate : ∀ y ∈ W, L y (V y) = L y (Y y)) :
+    ∃ X : (y : M) → TangentSpace I y,
+      ContMDiff I I.tangent ∞ (fun y => (X y : TangentBundle I M)) ∧
+      HasCompactSupport X ∧ tsupport X ⊆ O ∧
+      (∀ y, L y (X y) = L y (Y y)) ∧
+      (∀ y ∈ frontier D, X y = Y y) ∧
+      ∃ Q, IsOpen Q ∧ T ⊆ Q ∧ Q ⊆ W ∧ Set.EqOn X V Q := by
+  obtain ⟨η, hη, hηc, hηW, _, Q, hQ, hTQ, hηone⟩ :=
+    exists_contMDiff_cutoff_near_compact (I := I) hT hW hTW
+  let X : (y : M) → TangentSpace I y :=
+    fun y => η y • V y + (1 - η y) • Y y
+  have hηV : ContMDiff I I.tangent ∞
+      (fun y => ((η y • V y : TangentSpace I y) : TangentBundle I M)) :=
+    hη.contMDiffOn.smul_section_of_tsupport hW hηW hV
+  have hX : ContMDiff I I.tangent ∞ (fun y => (X y : TangentBundle I M)) :=
+    hηV.add_section ((contMDiff_const.sub hη).smul_section hY)
+  have hsupport : tsupport X ⊆ tsupport η ∪ tsupport Y := by
+    apply closure_minimal _ ((isClosed_tsupport η).union (isClosed_tsupport Y))
+    intro y hy
+    by_contra hn
+    have hηzero : η y = 0 := image_eq_zero_of_notMem_tsupport
+      (fun h => hn (Or.inl h))
+    have hYzero : Y y = 0 := image_eq_zero_of_notMem_tsupport
+      (fun h => hn (Or.inr h))
+    exact hy (by simp only [X, hηzero, hYzero, zero_smul, smul_zero, add_zero]; rfl)
+  refine ⟨X, hX,
+    (hηc.isCompact.union hYc.isCompact).of_isClosed_subset (isClosed_tsupport X) hsupport,
+    hsupport.trans (Set.union_subset (hηW.trans hWO) hYO), ?_, ?_,
+    Q ∩ W, hQ.inter hW, Set.subset_inter hTQ hTW, Set.inter_subset_right, ?_⟩
+  · intro y
+    by_cases hz : η y = 0
+    · simp only [X, hz, zero_smul, sub_zero, one_smul, zero_add]
+    · have hyW : y ∈ W := hηW (subset_tsupport η hz)
+      simp only [X, map_add, map_smul, hrate y hyW, smul_eq_mul]
+      ring
+  · intro y hy
+    have hz : η y = 0 := image_eq_zero_of_notMem_tsupport
+      (fun h => Set.disjoint_left.mp hWD (hηW h) hy)
+    simp only [X, hz, zero_smul, sub_zero, one_smul, zero_add]
+  · intro y hy
+    simp only [X, hηone hy.1, one_smul, sub_self, zero_smul, add_zero]
+    rfl
+
+theorem exists_contMDiff_boundary_tangent_vector_field_eq_collar_velocity
+    {n : ℕ} {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {G H : Type*} [TopologicalSpace G] [TopologicalSpace H]
+    {J : ModelWithCorners ℝ E G} {I : ModelWithCorners ℝ F H}
+    {N M : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J 1 N]
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+    (c : PartialDiffeomorph (J.prod 𝓘(ℝ)) I (N × ℝ) M ∞)
+    {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ) ∞ g) {a : ℝ}
+    (hheight : ∀ p ∈ c.source, g (c p) = a + p.2)
+    {D B T O : Set M} (hB : IsCompact B) (hT : IsCompact T)
+    (hO : IsOpen O) (hBO : B ⊆ O) (hTO : T ⊆ O)
+    (hTc : T ⊆ c.target) (hTD : Disjoint T (frontier D))
+    (hregular : ∀ p ∈ B, p ∉ frontier D → mfderiv I 𝓘(ℝ) g p ≠ 0)
+    (hcharts : ∀ p ∈ B ∩ frontier D,
+      ∃ d : PartialDiffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) M (Fin (n + 1) → ℝ) ∞,
+        p ∈ d.source ∧ d.toOpenPartialHomeomorph.IsImage D {z | 0 ≤ z 0} ∧
+        fderiv ℝ (fun u : Fin n → ℝ => g (d.symm (Fin.cons 0 u)))
+          (Fin.tail (d p)) ≠ 0) :
+    ∃ X : (y : M) → TangentSpace I y,
+      ContMDiff I I.tangent ∞ (fun y => (X y : TangentBundle I M)) ∧
+      HasCompactSupport X ∧ tsupport X ⊆ O ∧
+      (∀ y, 0 ≤ NormedSpace.fromTangentSpace (g y) (mfderiv I 𝓘(ℝ) g y (X y)) ∧
+        NormedSpace.fromTangentSpace (g y) (mfderiv I 𝓘(ℝ) g y (X y)) ≤ 1) ∧
+      (∃ U, IsOpen U ∧ B ∪ T ⊆ U ∧ U ⊆ O ∧
+        ∀ y ∈ U, NormedSpace.fromTangentSpace (g y) (mfderiv I 𝓘(ℝ) g y (X y)) = 1) ∧
+      (∀ (m : ℕ)
+        (d : PartialDiffeomorph I 𝓘(ℝ, Fin (m + 1) → ℝ) M (Fin (m + 1) → ℝ) ∞),
+        d.toOpenPartialHomeomorph.IsImage D {z | 0 ≤ z 0} →
+        ∀ y ∈ frontier D, y ∈ d.source →
+          (mfderiv I 𝓘(ℝ, Fin (m + 1) → ℝ) d y (X y)) 0 = 0) ∧
+      ∃ P, IsOpen P ∧ T ⊆ P ∧ P ⊆ c.target ∧
+        ∀ y ∈ P, mfderiv I (J.prod 𝓘(ℝ)) c.symm y (X y) = (0, 1) := by
+  obtain ⟨V, hV, hVcoord⟩ := exists_contMDiff_collar_velocity c g a hheight
+  let L : (y : M) → TangentSpace I y →L[ℝ] ℝ := fun y => mfderiv I 𝓘(ℝ) g y
+  have hreg : ∀ p ∈ B ∪ T, p ∉ frontier D → mfderiv I 𝓘(ℝ) g p ≠ 0 := by
+    intro p hp hn
+    rcases hp with hp | hp
+    · exact hregular p hp hn
+    · intro hz
+      have hone := (hVcoord p (hTc hp)).2
+      have hzero : NormedSpace.fromTangentSpace (g p)
+          (mfderiv I 𝓘(ℝ) g p (V p)) = 0 :=
+        congrArg (fun A : TangentSpace I p →L[ℝ] ℝ => A (V p)) hz
+      exact zero_ne_one (hzero.symm.trans hone)
+  have hboundary : ∀ p ∈ (B ∪ T) ∩ frontier D,
+      ∃ d : PartialDiffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) M (Fin (n + 1) → ℝ) ∞,
+        p ∈ d.source ∧ d.toOpenPartialHomeomorph.IsImage D {z | 0 ≤ z 0} ∧
+        fderiv ℝ (fun u : Fin n → ℝ => g (d.symm (Fin.cons 0 u)))
+          (Fin.tail (d p)) ≠ 0 := by
+    intro p hp
+    rcases hp.1 with hpB | hpT
+    · exact hcharts p ⟨hpB, hp.2⟩
+    · exact (Set.disjoint_left.mp hTD hpT hp.2).elim
+  obtain ⟨Y, hY, hYc, hYO, hYbounds, ⟨U, hU, hBTU, hUO, hYrate⟩, hYboundary⟩ :=
+    exists_contMDiff_boundary_tangent_vector_field (hB.union hT) hO
+      (Set.union_subset hBO hTO) hg hreg hboundary
+  let W : Set M := (c.target ∩ U) ∩ (frontier D)ᶜ
+  have hW : IsOpen W := (c.open_target.inter hU).inter isClosed_frontier.isOpen_compl
+  have hTW : T ⊆ W := fun y hy =>
+    ⟨⟨hTc hy, hBTU (Or.inr hy)⟩, fun hd => Set.disjoint_left.mp hTD hy hd⟩
+  have hWO : W ⊆ O := fun _ hy => hUO hy.1.2
+  have hWD : Disjoint W (frontier D) := Set.disjoint_left.mpr fun _ hy hd => hy.2 hd
+  have hVr : ∀ y ∈ W, L y (V y) = L y (Y y) := by
+    intro y hy
+    exact (hVcoord y hy.1.1).2.trans (hYrate y hy.1.2).symm
+  obtain ⟨X, hX, hXc, hXO, hXrate, hXY, P, hP, hTP, hPW, hXV⟩ :=
+    exists_contMDiff_field_eq_local_field Y V L hT hW hTW hWO hWD
+      hY hYc hYO (hV.mono (fun _ hy => hy.1.1)) hVr
+  refine ⟨X, hX, hXc, hXO, ?_, ⟨U, hU, hBTU, hUO, ?_⟩, ?_,
+    P, hP, hTP, (fun _ hy => (hPW hy).1.1), ?_⟩
+  · intro y
+    change 0 ≤ L y (X y) ∧ L y (X y) ≤ 1
+    rw [hXrate]
+    exact hYbounds y
+  · intro y hy
+    change L y (X y) = 1
+    rw [hXrate]
+    exact hYrate y hy
+  · intro m d hd y hy hyd
+    rw [hXY y hy]
+    exact hYboundary m d hd y hy hyd
+  · intro y hy
+    rw [hXV hy]
+    exact (hVcoord y (hPW hy).1.1).1
+
 
 end Manifold

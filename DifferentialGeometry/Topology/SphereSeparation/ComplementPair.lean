@@ -42,6 +42,28 @@ theorem subset_left_or_subset_right (p : ComplementPair S)
   apply hC.subset_or_subset p.isOpen_left p.isOpen_right p.disjoint
   simpa only [p.union_eq_compl] using hCS
 
+theorem not_mem_connectedComponentIn_of_left_of_right (p : ComplementPair S) {a z : X}
+    (ha : a ∈ p.right) (hz : z ∈ p.left) : z ∉ connectedComponentIn Sᶜ a := by
+  intro hzcomp
+  have hacompl : a ∈ Sᶜ := p.right_subset_compl ha
+  have hsub : connectedComponentIn Sᶜ a ⊆ Sᶜ := connectedComponentIn_subset Sᶜ a
+  rcases p.subset_left_or_subset_right isPreconnected_connectedComponentIn hsub with h | h
+  · exact Set.disjoint_left.mp p.disjoint (h (mem_connectedComponentIn hacompl)) ha
+  · exact Set.disjoint_left.mp p.disjoint hz (h hzcomp)
+
+theorem side_iff_of_isPreconnected_subset_compl (p : ComplementPair S) {C : Set X}
+    (hC : IsPreconnected C) (hsub : C ⊆ Sᶜ) {a b : X} (ha : a ∈ C) (hb : b ∈ C) :
+    (a ∈ p.left ↔ b ∈ p.left) ∧ (a ∈ p.right ↔ b ∈ p.right) := by
+  rcases p.subset_left_or_subset_right hC hsub with h | h
+  · exact ⟨iff_of_true (h ha) (h hb),
+      iff_of_false
+        (fun hx => Set.disjoint_left.mp p.disjoint (h ha) hx)
+        (fun hx => Set.disjoint_left.mp p.disjoint (h hb) hx)⟩
+  · exact ⟨iff_of_false
+        (fun hx => Set.disjoint_left.mp p.disjoint hx (h ha))
+        (fun hx => Set.disjoint_left.mp p.disjoint hx (h hb)),
+      iff_of_true (h ha) (h hb)⟩
+
 theorem closure_left_eq (p : ComplementPair S) (hSleft : S ⊆ closure p.left) :
     closure p.left = p.left ∪ S := by
   apply Set.Subset.antisymm
@@ -163,6 +185,42 @@ def swap (p : ComplementPair S) : ComplementPair S where
   isConnected_right := p.isConnected_left
   disjoint := p.disjoint.symm
   union_eq_compl := by rw [union_comm, p.union_eq_compl]
+
+theorem sphere_subset_right_of_sphere_subset_left
+    {T : Set X}
+    (p : ComplementPair S) (q : ComplementPair T)
+    (hS : S ⊆ closure p.right)
+    (hsub : T ⊆ p.left) (hmeet : (p.right ∩ q.right).Nonempty) : S ⊆ q.right := by
+  have havoid : p.right ⊆ Tᶜ := by
+    intro x hx hxT
+    exact p.disjoint.le_bot ⟨hsub hxT, hx⟩
+  have hright : p.right ⊆ q.right := by
+    rcases q.subset_left_or_subset_right p.isConnected_right.isPreconnected havoid with h | h
+    · obtain ⟨x, hx, hxq⟩ := hmeet
+      exact False.elim (q.disjoint.le_bot ⟨h hx, hxq⟩)
+    · exact h
+  intro x hx
+  have hcl : x ∈ closure q.right := closure_mono hright (hS hx)
+  have hxT : x ∈ Tᶜ := fun hxT => p.left_disjoint_sphere.le_bot ⟨hsub hxT, hx⟩
+  rw [← q.union_eq_compl] at hxT
+  rcases hxT with hleft | hright
+  · exact False.elim ((q.disjoint.closure_right q.isOpen_left).le_bot ⟨hleft, hcl⟩)
+  · exact hright
+
+theorem inter_sphere_nonempty_of_isPreconnected
+    (p : ComplementPair S) (hC : IsPreconnected C)
+    (hl : (C ∩ p.left).Nonempty) (hr : (C ∩ p.right).Nonempty) :
+    (C ∩ S).Nonempty := by
+  by_contra hnone
+  have havoid : C ⊆ Sᶜ := by
+    intro x hx hxS
+    exact hnone ⟨x, hx, hxS⟩
+  rcases p.subset_left_or_subset_right hC havoid with h | h
+  · obtain ⟨x, hx, hxr⟩ := hr
+    exact p.disjoint.le_bot ⟨h hx, hxr⟩
+  · obtain ⟨x, hx, hxl⟩ := hl
+    exact p.disjoint.le_bot ⟨hxl, h hx⟩
+
 
 end ComplementPair
 

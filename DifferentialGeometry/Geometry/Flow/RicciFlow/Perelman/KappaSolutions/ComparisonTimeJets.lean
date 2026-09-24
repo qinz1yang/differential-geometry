@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabChartBootstrap
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.WithinTower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedRegularity
 import DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
@@ -11,13 +12,13 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open CanonicalNeighborhood.FiniteHorn
-open Bundle Manifold Filter Set
+open Bundle _root_.Manifold Filter Set
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Geometry.Operator
 open CanonicalNeighborhood
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 
 theorem derivWithin_tower_eq_of_genuine {times : Set ℝ} (htimes : UniqueDiffOn ℝ times)
@@ -26,21 +27,16 @@ theorem derivWithin_tower_eq_of_genuine {times : Set ℝ} (htimes : UniqueDiffOn
     (hg : ∀ q t, t ∈ times → HasDerivWithinAt (g q) (g (q + 1) t) times t)
     (hzero : ∀ t ∈ times, f 0 t = g 0 t) :
     ∀ q t, t ∈ times → f q t = g q t := by
-  intro q
-  induction q with
-  | zero => exact hzero
-  | succ q ih =>
-    intro t ht
-    exact (hf q t ht).trans
-      ((derivWithin_congr (fun s hs => ih s hs) (ih t ht)).trans
-        ((hg q t ht).derivWithin (htimes t ht)))
+  exact DifferentialGeometry.Analysis.derivWithin_tower_eq f g hf
+    (fun q t ht => ((hg q t ht).derivWithin (htimes t ht)).symm) hzero
+
 
 universe u v uE uH
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {J : ModelWithCorners ℝ E H} [J.Boundaryless]
   {N : Type v} [TopologicalSpace N] [ChartedSpace H N] [IsManifold J ∞ N]
   [T2Space N] [SigmaCompactSpace N]

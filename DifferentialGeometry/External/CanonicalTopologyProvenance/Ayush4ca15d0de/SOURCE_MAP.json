@@ -1,0 +1,881 @@
+{
+  "incoming_commit": "4ca15d0de",
+  "modules": [
+    {
+      "source": "canonical-topology/Poincare/Analysis/LocalDerivativeHomotopy.lean",
+      "destination": "DifferentialGeometry/Analysis/Calculus/Derivative/PuncturedBallDerivativeHomotopy.lean",
+      "source_sha256": "511f23c9a970a92fb4043064494f7a57b43607ab9c15bd69bd91a5f75be23499",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/LinearAlgebra/Orientation.lean",
+      "destination": "DifferentialGeometry/Tensor/LinearAlgebra/Orientation.lean",
+      "source_sha256": "1a1cda8dd67762b6cf03d846150a8d2dfcc685f2f064f16aba410539e3aae279",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineCarriers.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineCarriers.lean",
+      "source_sha256": "c3316025cecad412d006892e3538b3edc902ed7b5bef3fcdcc754dc19716be3a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineChains.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineChains.lean",
+      "source_sha256": "82718caca7e57f76c7ede23c39b8b1c10162fa3451307221c904e93e78414ea8",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineCones.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineCones.lean",
+      "source_sha256": "6ce94fd59d8af274abe2d45a9e8e5ff172f20c74cc09d599e1bcd778cd48c6ea",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineMesh.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineMesh.lean",
+      "source_sha256": "76e1ab3a99dcca102ede5e1be12a5fc904290e951010a4b372c8309b03a7135e",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineNaturality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineNaturality.lean",
+      "source_sha256": "22bd9137dc1208145d0c2868956c2ef7479e910bfd340fc278102c55cf0eda49",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineSimplex.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineSimplex.lean",
+      "source_sha256": "53c12f6fc55a918584c74eb21d4e93360006f8d2186b8dd9d210fb8e765478c8",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineSubdivision.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineSubdivision.lean",
+      "source_sha256": "72a41deaa68216358983b46a7338a90a9b894910b145e09033b43dbce8fbbd2f",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/AffineZeroCone.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/AffineZeroCone.lean",
+      "source_sha256": "c0666c55a5caf71c7522f9da96f9769adf4f793ade978ac6516d49606958637f",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/Augmentation.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/Augmentation.lean",
+      "source_sha256": "a267b51009a30b110185d9044a6f56101ebcc076bb25953e874540038aabb2ff",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/BarycenterBounds.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/BarycenterBounds.lean",
+      "source_sha256": "b71c0370d420bce8a481ca0afa308d412fddcc1f239ea8c583e3cc0b81c309bb",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CapContractibleCover.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CapContractibleCover.lean",
+      "source_sha256": "08ee492f4aeef7de520a54f602d695f7b1645366be85d2f6093f14e5be7dfc08",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CapHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CapHomology.lean",
+      "source_sha256": "5cbe6407fff7e003c91474dece453515e90463088d23b2e5ca3088104561ee4d",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CapProduct.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CapProduct.lean",
+      "source_sha256": "2026e7f24d2210b244817fb0c6aba15df7b7851e22f261a6ac7aef82e5cc251e",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CarrierMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CarrierMaps.lean",
+      "source_sha256": "e449702207a0c64f1797d7ab8a1a513e573663a118085b95ce327cbf841ca9af",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CarrierRestriction.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CarrierRestriction.lean",
+      "source_sha256": "a062ae554f852a6a916ed117710054fb637105a27f9fa7d66d65c1a330b7a7dd",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ChainCokernelElements.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ChainCokernelElements.lean",
+      "source_sha256": "b8436e3c2b169d9ef37bd3f011fff33800d74dee80d74ea9b990b6a6d9b1e935",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ChainSupport.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ChainSupport.lean",
+      "source_sha256": "c6efb629ec44666e91022abeb1d315def704ece987f141e975b7ceda6634f08a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ChainsIn.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ChainsIn.lean",
+      "source_sha256": "fc328ef54a8b97c3185392c6c6aede89668419b340bacca140192543d88bbd83",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CochainCones.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CochainCones.lean",
+      "source_sha256": "9e8ab9296427738a558054e7d68bfb0c619e5e6a69e70efe2336f073d98c1057",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CochainExcision.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CochainExcision.lean",
+      "source_sha256": "d12835e102951b1dfe45c2e8796f1e7c534de986e9c7eff6f4001480f1b1c940",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CochainHomotopy.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CochainHomotopy.lean",
+      "source_sha256": "9bfca41d38079cb9afd2a3a18116d50b54bb8a6739ad96ec1941da8efe0f5b06",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CochainMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CochainMaps.lean",
+      "source_sha256": "9b02bc83064cff53553ffc50e6d27a809d91161694bfb5c3f0a8cc18e162b8e9",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/Cochains.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/Cochains.lean",
+      "source_sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CohomologyContractibleCover.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CohomologyContractibleCover.lean",
+      "source_sha256": "2dd71984864c9e7f68ba45cd2fb7e212e71da093a0b180beaf63aaa68f1ca55d",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CohomologyVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CohomologyVanishing.lean",
+      "source_sha256": "e140de0b00f2b5304bf90bd1ea7b69d1a8f841c9b26eaa623a9f10043ceb5d8b",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CompactSupport.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CompactSupport.lean",
+      "source_sha256": "0c3e4c245d5aaad1b7aabf3c12c25cb705c23303b8742799d47378944cc770cc",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/CompactVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/CompactVanishing.lean",
+      "source_sha256": "7cbf33e9b01f6c671e6168c12b42357ba8d56dfb8c1be98b10318d2ca2e9aeb9",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ConnectedZeroCohomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ConnectedZeroCohomology.lean",
+      "source_sha256": "c86374f2cc60c9d676ce159321bb67279f11c33c421d52cb65cbce80723c825a",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ConnectedZeroHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ConnectedZeroHomology.lean",
+      "source_sha256": "f119522616c7beca7894c6317fce0c63f6a4287b319ce292f85239d61a956377",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ContractibleCoverOne.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ContractibleCoverOne.lean",
+      "source_sha256": "b30839f6222963437f50af378b4869ace50a82c96953db95f6ee0aaf43649efb",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ContractiblePair.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ContractiblePair.lean",
+      "source_sha256": "54b57739916b55ddd9bf68b4628370aacbcc610860356301a4af0e383d68e8d5",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ContractiblePairOne.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ContractiblePairOne.lean",
+      "source_sha256": "bccca8817b10e958b54548c14527bf925811994512935b13735a2d06c7d2458a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/Cycles.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/Cycles.lean",
+      "source_sha256": "68248e5d61a9634d1ebe98bf4d7dc074f63afb1ed98055366febe3ef0a1a0339",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/EuclideanLocalCapDuality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/EuclideanLocalCapDuality.lean",
+      "source_sha256": "c4887e6fecf50ed9269af3b29fad81aa419b48ce7b3c21f1062e95e075648552",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/EuclideanLocalCohomologyVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/EuclideanLocalCohomologyVanishing.lean",
+      "source_sha256": "f6ec83b6d58bfd2f7470cbb02609fd6b2b8b2d3ba263131ac50e88b1b8b3dcbd",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/EuclideanLocalTop.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/EuclideanLocalTop.lean",
+      "source_sha256": "a7a12110eba69f2999bf8a4ed70e330b0216d7dec3e927743de2210ed7501f90",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/EuclideanLocalVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/EuclideanLocalVanishing.lean",
+      "source_sha256": "e569a99ba220903b9409762301437f46f8d08475760a5a0c5ad626ea98f03333",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ExcisionQuotient.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ExcisionQuotient.lean",
+      "source_sha256": "351284223d2722bacb63c368fd7943d75c5a38129837c6dc56b772b1ae85fe84",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/FineAffineImages.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/FineAffineImages.lean",
+      "source_sha256": "a2507ca3d1c7a141fa3a12275c41bff447d0ba755b3f0764fdfecc7ddbcf4213",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/Homotopy.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/Homotopy.lean",
+      "source_sha256": "e2b26b31b1b6d3c47c71f04d340ee30de24bffed9834015fb664c27c45ef971b",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/Integral.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/Integral.lean",
+      "source_sha256": "c17ecc2a64d9292692c9dd48d03f17b8cbf19fa7abd9f9a534df48e5567dacdb",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LiftedFaces.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LiftedFaces.lean",
+      "source_sha256": "60b375281dc367214339351961c14743dfb74a04d48b03137f51e89f8a3d0cb3",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LiftedSimplex.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LiftedSimplex.lean",
+      "source_sha256": "54038ea451cc826423ff2eee47ce9ee01e5da4fc3533a36b725988b7dbf0717a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalBallHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalBallHomology.lean",
+      "source_sha256": "02ad4cf473fe18a6a9e873c2ed5e79fbad5cac11493d510ad46ce6fce83ac3a9",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalCharts.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalCharts.lean",
+      "source_sha256": "b41c6b72f5200f1534eaa31f9c75d3f652b32bb513a08e2818c6f148d8a67f1a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalCompactHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalCompactHomology.lean",
+      "source_sha256": "5e9257600ce282aae819b203d68c7878ee00187eadc00f2c196b40efad03fe35",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalDerivativeComparison.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalDerivativeComparison.lean",
+      "source_sha256": "37278b20cf3a2092979b052a09d06d4d6349a39dc2e88262efab92c5d664a98a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalHomology.lean",
+      "source_sha256": "62f3c9f3288e60a524e5796b961f89b22b13c959eb6b9dd07e96d624c3c042d7",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalLinearMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalLinearMaps.lean",
+      "source_sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalOrientation.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalOrientation.lean",
+      "source_sha256": "a86574bc0c07dd4be005b2fa33cd133306964f4bd8010cac3a4237dca982384d",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/LocalStarConvex.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/LocalStarConvex.lean",
+      "source_sha256": "2a93a43a829e78c030e1f30120f5fb5058809f2dab0fdf280d99bb5c64000b54",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ManifoldCompactHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ManifoldCompactHomology.lean",
+      "source_sha256": "f7b528f30e383a919e8d034c768c349cc9956726a8308710a520cddf2f4a1f80",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ManifoldFundamentalClass.lean",
+      "source_sha256": "a0c7817c637ca45c9a6be143c89aa244d2ef008541404cf22478fcaa69afb166",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/MeshBoundary.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/MeshBoundary.lean",
+      "source_sha256": "772e2e5b0418b2380fb066b75af5eb1832cd12e4859b6c170b91399a37efcd8d",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/MeshIteration.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/MeshIteration.lean",
+      "source_sha256": "4d05735d16b219b129aa44314874d938c1342551c980dd957d060add362276ca",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ModuleHomologyClasses.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ModuleHomologyClasses.lean",
+      "source_sha256": "fac5a18749db4c0fe2edca9dbdb31747e8bde6f4ad30a6395950b7675954eb5c",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ModuleHomologyConnecting.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ModuleHomologyConnecting.lean",
+      "source_sha256": "b6494c2aeffa4ac46f6358dd9555b2093162dda408521c35b59f6dd51140e576",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ModuleHomologyCriterion.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ModuleHomologyCriterion.lean",
+      "source_sha256": "d8bab53ec187f69e1960698fee8f29605c214464b423e7c469782520fedf88f3",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ModuleHomologyMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ModuleHomologyMaps.lean",
+      "source_sha256": "77c1bc2dab1c15addc673b4e9b4768f46b5df7475a4800b0232d8360c7b56557",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/OneDimensionalSphere.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/OneDimensionalSphere.lean",
+      "source_sha256": "2823e5659e11088a67fef0c7aa604a1348df69eab3d36870a3c615b029085f42",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/OpenExcision.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/OpenExcision.lean",
+      "source_sha256": "e5bf7ed33bf7f554d7f70470e902e7b6a6e3a14fb34cea900202174714c4a7fc",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/PathChains.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/PathChains.lean",
+      "source_sha256": "66b896ed9eac3cd9193e6cba7ff2103a13618fa163582f25a3b8630e34a2efb6",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/PathCones.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/PathCones.lean",
+      "source_sha256": "847d86e025dd50435d21046f5e807cb5d5fab425daed1bdf4df7007af66ec75c",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/PathEvaluation.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/PathEvaluation.lean",
+      "source_sha256": "235b6eb6aecaa60c9599ae3c2c190a55eaf3d260a04144e097bf7e3785aa0dc3",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RadialCohomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RadialCohomology.lean",
+      "source_sha256": "9d78fd05775a9cb82912fb193d93d1ce1b2f9baadc4d8b532214959ec3696643",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RadialHomotopy.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RadialHomotopy.lean",
+      "source_sha256": "162ae0a1909afa2ed5c3ea0823f7960bf2cf3b94aa90be937ab7553ea52ca3fd",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RealLocalDuality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RealLocalDuality.lean",
+      "source_sha256": "40cde489aa449ee154a9ec72c16cd1e743588517e21ee7a0d2c453b7718a4545",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ReducedZero.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ReducedZero.lean",
+      "source_sha256": "56bb2f5063f7b145ffc52b0b2bcb08eb33f77e128c0cd491a63673d87fbe41d4",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/Relative.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/Relative/Basic.lean",
+      "source_sha256": "f3f7424601f2af6394f6ca375ef6bffd89b11a5ce0b29367a35fdcad27510d31",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCapCohomologyConnecting.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCapCohomologyConnecting.lean",
+      "source_sha256": "b21d48dc5faed08e7c05608cf722902e61aef319fcc338abe289fe05d9299af1",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCapConnecting.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCapConnecting.lean",
+      "source_sha256": "06d9bbcdfa2f4ed634469db48647f9c6c01079c04bbbf4251eb6ed6c45d828d4",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCapHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCapHomology.lean",
+      "source_sha256": "1525737b0ff6dc8393419aa0256c149a7ff0c4e9bd06f4a67c306defd67ccd6b",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCapProduct.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCapProduct.lean",
+      "source_sha256": "65452486ad9779a4164548b03d151dd164944b5c770740bb49a39b2c055bd3fe",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCapToAbsolute.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCapToAbsolute.lean",
+      "source_sha256": "47d270cceeb451499c4bb664e3f276c27e0272df377072c34dc2832fbd28db08",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCapToAbsoluteHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCapToAbsoluteHomology.lean",
+      "source_sha256": "30acab850f67ebec408abe4ee9bf8999cc6f6d6da381acc1dedfd3355585dd08",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCochains.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCochains.lean",
+      "source_sha256": "a387959e472686cd256747d57323faa3038af6db41f7bda44ddc2422a8f5d709",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeCohomologyVanishing.lean",
+      "source_sha256": "844924744c74f1ccece3828146c32f7cf6caad26f4338704bdd91d1d85532096",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeComparison.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeComparison.lean",
+      "source_sha256": "8f03c0c0a69fb4f47e6a8815fef721b4668fbb4b4aba55669da727d198f39425",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeEmpty.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeEmpty.lean",
+      "source_sha256": "d66c7111318994319207df6e503087f6f8e737053724e8ee8f5f6ade181fdfe9",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeFunctoriality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeFunctoriality.lean",
+      "source_sha256": "542d9a4c7337c9275147dfa870cc6041ecb1a3658019d663d7597cfee7b730c5",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeHomeomorphism.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeHomeomorphism.lean",
+      "source_sha256": "9ed6f18525bbf671211af5dd60094c0b27866632a3aaa0cba26339ca873f574b",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeMaps.lean",
+      "source_sha256": "37e7765b7eb6da4f7a76751bd0fead9df5fa8b820edf9e4251ccd3330f5b4f0c",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeMayerVietoris.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeMayerVietoris.lean",
+      "source_sha256": "23c019a33a5908a9dc9a6974480f7c889ac057f2db49efc2c200ede0c74d758c",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeVanishing.lean",
+      "source_sha256": "4a1d2fcc70283b696feadd6c0ee684a5530adfe3ef9a6afbd67e9a4b58b7f5f3",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/RelativeZero.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/RelativeZero.lean",
+      "source_sha256": "6e3fa2156309518597f9ccc00ea87c6cfd424480c54674d5d3d6b64e4e207b0a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SimplexBasis.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SimplexBasis.lean",
+      "source_sha256": "d01ab67f386a896ccc21413e1e0a0a8db66ee3ff448c474449ea9d41249e3ce0",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SimplexBoundary.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SimplexBoundary.lean",
+      "source_sha256": "940276bda0d543781a9e847836eceb1717c9165c60b0598d9d964042c7aa7f01",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SimplexEvaluation.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SimplexEvaluation.lean",
+      "source_sha256": "da6d62b5a6d88ac1f8fa00c41c371dd4d2441e18adaccdc45910cacc1264bba3",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SimplexMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SimplexMaps.lean",
+      "source_sha256": "d167149a91351b5c9bda5a2cc6617dea773ae7f9f1fee1a7a53765f9cf7f804a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SimplexPushFaces.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SimplexPushFaces.lean",
+      "source_sha256": "6325e71a0cbae364eb7f569e27298ca1e46f21520ba2e7e8205cd5f58bd4817e",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SingularSubdivision.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SingularSubdivision.lean",
+      "source_sha256": "63fdf248080a6a07cc6d9d17049cc73a1e33c0900a39833dbec640e9908d7117",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SingularSubdivisionBoundary.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SingularSubdivisionBoundary.lean",
+      "source_sha256": "15eb577fd4e610fddfc31e6674c543b91bdab2bdfcf7e3010b4deacaca29aa09",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SingularSubdivisionHomotopy.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SingularSubdivisionHomotopy.lean",
+      "source_sha256": "beb680811397440352efb324bf045c78430d338f043e53ddfb39c43298481e6a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SingularSubdivisionIteration.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SingularSubdivisionIteration.lean",
+      "source_sha256": "64f5f33cf4a8bd2ebaf02a0c4495dc46984305882d6755772463e266addc0f39",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SingularSubdivisionNaturality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SingularSubdivisionNaturality.lean",
+      "source_sha256": "38f011ab225cb415531c32ce57bbf1fa524caa8d3c36d0e4fa0b07b98051bfd5",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SmallChains.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SmallChains/Basic.lean",
+      "source_sha256": "e817692da8f10539bf503437b99a1078ac1515e60f06c5f142a07926ca0ddd16",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SmallComplex.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SmallComplex.lean",
+      "source_sha256": "17e78526dbcfe9fbab8a78259a0745832770fa950ee4185786e9a8ee12198373",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SmallCycles.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SmallCycles.lean",
+      "source_sha256": "c1131a8a3e73a4814640f62cc925252f9b217345a9fe42053fb7b632d43df145",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SmallHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SmallHomology.lean",
+      "source_sha256": "737748add7fc5277ea54f641426e03520bb96c520531ec6508ab0c4a46f0d8db",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SmallRelative.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SmallRelative.lean",
+      "source_sha256": "1f3c3df54422c1a417aaa795d9abd12bd9734330befd53d2e8ee07cd87d224cc",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SmallSubspaceInclusion.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SmallSubspaceInclusion.lean",
+      "source_sha256": "a65112f9688f510fba9ed57942d86f9b64b71580331dd738df90c737a92b70e7",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereCapDuality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereCapDuality.lean",
+      "source_sha256": "5cb5771d86a3c641ae297ac0726030bbc2b2fa1d16a65246404e0335ec4f8c62",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereCohomologyVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereCohomologyVanishing.lean",
+      "source_sha256": "d59d478679072ff8d67c9f373599d3cd697b6687993eb68673f6f420ed1d8e4f",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereHomologyOne.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereHomologyOne.lean",
+      "source_sha256": "3575ac7193cfb8796e4f73f39b6768837e1a3b8b5a9d3911616c281d33148824",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereHomologyShift.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereHomologyShift.lean",
+      "source_sha256": "120403e15e7d76f337f05047f999ed6c07bdb057168ce97704b301392c09caeb",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereHomologyVanishing.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereHomologyVanishing.lean",
+      "source_sha256": "1ea3fbbd371a840c64230ec1351b616eaf1dc6e2251684771a8076d5a38cf4a9",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SpherePuncture.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SpherePuncture.lean",
+      "source_sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereRank.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereRank.lean",
+      "source_sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SphereTopHomology.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SphereTopHomology.lean",
+      "source_sha256": "46310fb75e457dc810e2bf1ed05acd74579d5092f1b878066113b0eaf53f9f24",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionAffineAgreement.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionAffineAgreement.lean",
+      "source_sha256": "9e49d79cd0ae02cd824fd61a3c50c25ee74f6847673e8c16d9fe04fe4ea451f6",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionBoundary.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionBoundary.lean",
+      "source_sha256": "de2b34bd4d63d5b191a87c49a20635fcc45aadba8865310bdbf35ec33bea8281",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionCarriers.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionCarriers.lean",
+      "source_sha256": "39af49978c09dc76716c85daf9830663fb9798178063a02139336b25bdf164b0",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionHomotopy.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionHomotopy.lean",
+      "source_sha256": "2fb917368e4780cc9fe10c4355af8d9437c74ee4ed82e9dce9942f57fdb97263",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionHomotopyIdentity.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionHomotopyIdentity.lean",
+      "source_sha256": "1a276ef1a486f3818d1ac14fd6ae7b893b5946068dcac7d24b70731e4e7dc134",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionHomotopyNaturality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionHomotopyNaturality.lean",
+      "source_sha256": "d580a4dc5d110ded675cc7cc49f5da175bfe52b78628a29036e2528ce5d92f48",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionIterationHomotopy.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionIterationHomotopy.lean",
+      "source_sha256": "407c0f1fc6ae149c42fcba13a9f75460263af757b8e770aa36bd9aa81c45db04",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionMesh.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionMesh.lean",
+      "source_sha256": "a3023faf87291a6096fd97df41e3f9588ac593b2d70e280ccf086736671b8b51",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionNaturality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionNaturality.lean",
+      "source_sha256": "bc530039a61962228be9a6a3adcbf1204868e5babd32daff953223826b810b20",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubdivisionSmallness.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubdivisionSmallness.lean",
+      "source_sha256": "393a84d497b9784c8833c57e9a54385708984b98bbc793c673e6a060a19b8955",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/SubspaceCarriers.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/SubspaceCarriers.lean",
+      "source_sha256": "d0bf5770692b2c39dbcba8e754f33040249f06eddb9181822253004e0367ca48",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/TotallyDisconnectedZero.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/TotallyDisconnectedZero.lean",
+      "source_sha256": "90c354b5cd6148631a4122c9ccadc95d73bd15f9c7d5d6ae0895ed6172882756",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/TriangleFilling.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/TriangleFilling.lean",
+      "source_sha256": "6031feba84b4741690457d6fe4520d1d94658da04774ee15b9e47c8016623995",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/TwoPointCapDuality.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/TwoPointCapDuality.lean",
+      "source_sha256": "d522adbf35f6c2970b167367f85bf0aab741f6920b79f927fc573bf2984f6666",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/TwoPointReducedZero.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/TwoPointReducedZero.lean",
+      "source_sha256": "9a45ae2895ddb8dcce541775cb7b9dbb4bc2738df94a661c1c8e7391b026b7dc",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/TwoSetSmallChains.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/TwoSetSmallChains.lean",
+      "source_sha256": "1a54c2d788a914c9fc663f7300a5cc7f55997123a04b840865bbf918075f667c",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/UniversalHomotopyBoundary.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/UniversalHomotopyBoundary.lean",
+      "source_sha256": "4feb22d812ddd34a8aa00dd406ab3720327c27c5ad0b023125240671379efc57",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/UniversalSubdivisionFaces.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/UniversalSubdivisionFaces.lean",
+      "source_sha256": "2501f25f7e131a2b5c2e5c8da98238f60ddbb112968de53e3adbb20fcc318ef4",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/UniversalSubdivisionIteration.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/UniversalSubdivisionIteration.lean",
+      "source_sha256": "377a0655b9f387f6b8d2f34bb29fbe0255720136f87367a69e0a7c2d763b3630",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ZeroAugmentation.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ZeroAugmentation.lean",
+      "source_sha256": "6842c625b099ba6f00a31be07bc75e34d5ba8ced507b867cd826fe7278d0ba30",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ZeroChainClasses.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ZeroChainClasses.lean",
+      "source_sha256": "157a02ac79f2138d12c57ad34772458141b7f3177b3a2626a8ae1daa1a8c306d",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homology/ZeroHomologyMaps.lean",
+      "destination": "DifferentialGeometry/Topology/Homology/ZeroHomologyMaps.lean",
+      "source_sha256": "ff96bdb01077e8c63f760e0cc3715cf9299b90dd24fc9fc72dd97eb171e6b36a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/ConvexPlaneExtension.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/ConvexPlaneExtension.lean",
+      "source_sha256": "e59a0c15b8084eea808f285e6ed019a05929adedc251caffa4498f132e4459c4",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/PlaneTriangle.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/PlaneTriangle.lean",
+      "source_sha256": "3a3cd7b1ed0331d08740a47e57c949b8169f7d43d31bf9c8b57f0ccbb2386d29",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/StarConvexComplement.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/StarConvexComplement.lean",
+      "source_sha256": "ff5c10ae8999a75c2aba098b19905573557f750dfc7eac075e53000cdbdc799b",
+      "existing": false
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/TriangleBoundaryQuotient.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/TriangleBoundaryQuotient.lean",
+      "source_sha256": "292638c0b0e5b96e341beb793cc2f8ca50f710143d77b1254803789cce6cb882",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/TriangleEdges.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/TriangleEdges.lean",
+      "source_sha256": "2f9807e3b8dbc6ecb0cd99e7558ab449133ef401cee3d9043610e65f83fb00a2",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/TriangleFaces.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/TriangleFaces.lean",
+      "source_sha256": "26ec4e0ce4eb406379dcad396368156046a159de44deaacd4a8f2c7258a34b96",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Homotopy/TrianglePathBoundary.lean",
+      "destination": "DifferentialGeometry/Topology/Homotopy/TrianglePathBoundary.lean",
+      "source_sha256": "b5452a7e5db259257e1a9fbf089fcd589895048231a5ee4ffe36312bd992a70a",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/LoopSpace/BasedCircle.lean",
+      "destination": "DifferentialGeometry/Topology/LoopSpace/BasedCircle.lean",
+      "source_sha256": "c87b424651a6a7c0c9e31d9502e60b74216d020122029fa52622abfab8ef25c5",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/LoopSpace/Basic.lean",
+      "destination": "DifferentialGeometry/Topology/LoopSpace/Basic.lean",
+      "source_sha256": "4673fc054f71e9063a837fcdd60e475f44ef7362d9aefea947066126b0c0ed77",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/LoopSpace/ContinuousFilling.lean",
+      "destination": "DifferentialGeometry/Topology/LoopSpace/ContinuousFilling.lean",
+      "source_sha256": "76d8a8f4da9225f8fc815a7e686fe97d3e9184ed25158471d09bad43a0337bf4",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/LoopSpace/SimplyConnectedTarget.lean",
+      "destination": "DifferentialGeometry/Topology/LoopSpace/SimplyConnectedTarget.lean",
+      "source_sha256": "a7d322495d06d8787f738956c2f63789194674f454bab47fa5d40c33bd384bff",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/LoopSpace/SpanningDisk.lean",
+      "destination": "DifferentialGeometry/Topology/LoopSpace/SpanningDisk.lean",
+      "source_sha256": "a53eae10d7a6f158c8d12febd33ca8b4b653fde4d7bbcf9bdc3b067b68514bf1",
+      "existing": true
+    },
+    {
+      "source": "canonical-topology/Poincare/Topology/Manifold/TangentOrientation.lean",
+      "destination": "DifferentialGeometry/Topology/Manifold/TangentOrientation.lean",
+      "source_sha256": "67802b0b81153a6b29103ba90e8e898b3bd95fc4600f3506d08e3eaef6cd0358",
+      "existing": false
+    }
+  ]
+}

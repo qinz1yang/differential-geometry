@@ -360,7 +360,7 @@ theorem ancientKappa_temporal_scale_comparison
     hsub
 
 omit [I.Boundaryless] in
-theorem ancientKappa_scalar_scale_comparison
+theorem ancientKappa_scalar_scale_comparison_of_scalar_pos
     (hF : IsAncientKappaSolution kappa F) {η : ℝ} (hη : 1 ≤ η)
     (hpos : ∀ t ≤ (0 : ℝ), ∀ x : F.M, 0 < F.S.scalar t x)
     (hb : ScalarDifferentialBounds F η) :
@@ -378,30 +378,9 @@ theorem ancientKappa_scalar_scale_comparison
         ancientKappa_spatial_scale_comparison F hF hη0 hpos hb ht x y hxy,
       fun x => ancientKappa_temporal_scale_comparison F hF hη0 hpos hb ht x⟩
 
-end Flow
 
-section AncientThree
-
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E]
-  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
-
-local instance scaleComparisonThreeTopology : TopologicalSpace F.M := F.topology
-local instance scaleComparisonThreeCharted : ChartedSpace H F.M := F.charted
-local instance scaleComparisonThreeSmooth : IsManifold I ∞ F.M := F.smooth
-local instance scaleComparisonThreeC1 : IsManifold I 1 F.M :=
-  IsManifold.of_le (I := I) (M := F.M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-local instance scaleComparisonThreeSigmaCompact : SigmaCompactSpace F.M := F.sigmaCompact
-local instance scaleComparisonThreeT2 : T2Space F.M := F.t2
-local instance scaleComparisonThreeTangentT2 : T2Space (TangentBundle I F.M) :=
-  F.t2TangentBundle
-
-variable {kappa : ℝ}
-
-
-theorem ancientKappa_scalar_scale_comparison_three
-    (hdim : Module.finrank ℝ E = 3) (hF : IsAncientKappaSolution kappa F)
+theorem ancientKappa_scalar_scale_comparison
+    (hF : IsAncientKappaSolution kappa F)
     {η : ℝ} (hη : 1 ≤ η) (hb : ScalarDifferentialBounds F η) :
     ∀ t ≤ (0 : ℝ),
       (∀ x y : F.M, riemannianEDistOf (I := I) (F.S.base.metric t) x y ≤
@@ -411,10 +390,10 @@ theorem ancientKappa_scalar_scale_comparison_three
       (∀ x : F.M, ∀ s ∈ Icc (t - (2 * η * F.S.scalar t x)⁻¹) t,
         2 / 3 * F.S.scalar t x ≤ F.S.scalar s x ∧
           F.S.scalar s x ≤ F.S.scalar t x) := by
-  refine ancientKappa_scalar_scale_comparison F hF hη ?_ hb
+  refine ancientKappa_scalar_scale_comparison_of_scalar_pos F hF hη ?_ hb
   intro t ht x
-  exact ancientKappa_scalar_pos F hdim hF ht x
+  exact ancientKappa_scalar_pos F hF ht x
 
-end AncientThree
+end Flow
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

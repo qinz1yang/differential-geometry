@@ -209,7 +209,7 @@ theorem gradientFun_add
   exact e.map_add (mvfderiv (I := I) f x).toLinearMap
     (mvfderiv (I := I) h x).toLinearMap
 
-theorem gradientFun_sum {κ : Type}
+theorem gradientFun_sum {κ : Type*}
     (g : SmoothRiemannianMetric I M) (s : Finset κ)
     {f : κ -> M -> Real} {x : M}
     (hf : ∀ i ∈ s, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
@@ -227,8 +227,7 @@ theorem gradientFun_sum {κ : Type}
         intro i hi
         exact hf i (Finset.mem_insert_of_mem hi)
       have htail : MDifferentiableAt I 𝓘(Real, Real) (∑ i ∈ s, f i) x :=
-        MDifferentiableAt.sum (𝕜 := Real) (I := I) (E' := Real)
-          (t := s) (f := f) (z := x) hfs
+        mdifferentiableAt_finset_sum s f hfs
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
       calc
         gradientFun (I := I) g (f a + ∑ i ∈ s, f i) x
@@ -241,7 +240,7 @@ theorem gradientFun_sum {κ : Type}
               ∑ i ∈ s, gradientFun (I := I) g (f i) x := by
               rw [ih hfs]
 
-theorem gradientFun_sum_smul {κ : Type}
+theorem gradientFun_sum_smul {κ : Type*}
     (g : SmoothRiemannianMetric I M) (s : Finset κ) (c : κ -> Real)
     {f : κ -> M -> Real} {x : M}
     (hf : ∀ i ∈ s, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :

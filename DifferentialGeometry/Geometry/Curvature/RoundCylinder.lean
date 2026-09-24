@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductRank
 import DifferentialGeometry.Geometry.Curvature.Cylinder
 import DifferentialGeometry.Geometry.Curvature.RoundSphere
 import DifferentialGeometry.Geometry.Curvature.ScalarTrace
@@ -69,3 +70,54 @@ theorem metricScalarAt_roundCylinder (x : Metric.sphere (0 : E) 1 × ℝ) :
   ring
 
 end DifferentialGeometry.Geometry.Curvature
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [Fact (Module.finrank ℝ E = 2 + 1)]
+
+theorem metricCurvatureOperatorRankAt_roundCylinder
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    metricCurvatureOperatorRankAt
+      (Geometry.Metric.roundCylinderMetric (E := E) (n := 2)) x (by
+        change Module.finrank ℝ (EuclideanSpace ℝ (Fin 2) × ℝ) = 3
+        simp [Module.finrank_prod]) = 1 := by
+  let g := scaleMetric 2 (by norm_num) (roundMetric (E := E) (n := 2))
+  have hprod : Geometry.Metric.roundCylinderMetric (E := E) (n := 2) =
+      g.prod (euclideanMetric (E := ℝ)) := by
+    ext q v w
+    rw [Geometry.Metric.roundCylinderMetric_inner, SmoothRiemannianMetric.prod_inner]
+    change 2 * inner ℝ (dIncl q.1 v.1) (dIncl q.1 w.1) + v.2 * w.2 =
+      2 * (roundMetric (E := E) (n := 2)).inner q.1 v.1 w.1 +
+        inner ℝ v.2 w.2
+    erw [roundMetric_inner]
+    simp [mul_comm]
+  have hscalar : metricScalarAt g x.1 ≠ 0 := by
+    have hs := metricScalarAt_roundCylinder (E := E) (n := 2) x
+    rw [hprod, metricScalarAt_productMetric,
+      metricScalarAt_eq_zero_of_finrank_le_one (euclideanMetric (E := ℝ)) (by simp),
+      add_zero] at hs
+    norm_num at hs
+    rw [hs]
+    norm_num
+  rw [hprod, metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank]
+  exact curvatureOperatorImageAt_finrank_prod_real_eq_one_of_scalar_ne_zero
+    g (by simp) x hscalar
+
+theorem curvatureOperatorImageAt_finrank_roundCylinder
+    (x : Metric.sphere (0 : E) 1 × ℝ) :
+    Module.finrank ℝ (curvatureOperatorImageAt
+      (Geometry.Metric.roundCylinderMetric (E := E) (n := 2)) x
+      (metricAlgebraicCurvatureTensorAt
+        (Geometry.Metric.roundCylinderMetric (E := E) (n := 2)) x)) = 1 := by
+  have h := metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank
+    (Geometry.Metric.roundCylinderMetric (E := E) (n := 2)) x (by
+      change Module.finrank ℝ (EuclideanSpace ℝ (Fin 2) × ℝ) = 3
+      simp [Module.finrank_prod])
+  exact h.symm.trans (metricCurvatureOperatorRankAt_roundCylinder x)
+
+end DifferentialGeometry.Geometry.Curvature.DimensionThree

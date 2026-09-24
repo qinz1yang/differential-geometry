@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.ProductChartSection
+import DifferentialGeometry.Topology.Manifold.ProductChartCollar
 import DifferentialGeometry.Topology.Manifold.TransverseGraph
 
 noncomputable section
@@ -81,5 +82,53 @@ theorem exists_diffeomorph_graph_of_product_chart_section
   rw [hz]
   change (Φ₁ (Φ₁.symm (f (η p))) : M) = e₀ (η p)
   rw [Φ₁.apply_symm_apply]
+
+theorem exists_smoothTwoSidedCollar_of_transverse_product_chart_section
+    {E₀ E₁ F H₀ H₁ H N₀ N₁ M : Type*}
+    [NormedAddCommGroup E₀] [NormedSpace ℝ E₀] [FiniteDimensional ℝ E₀]
+    [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [FiniteDimensional ℝ E₁]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [TopologicalSpace H₀] [TopologicalSpace H₁] [TopologicalSpace H]
+    {I₀ : ModelWithCorners ℝ E₀ H₀} {I₁ : ModelWithCorners ℝ E₁ H₁}
+    {J : ModelWithCorners ℝ F H}
+    [I₀.Boundaryless] [I₁.Boundaryless]
+    [TopologicalSpace N₀] [ChartedSpace H₀ N₀] [IsManifold I₀ ∞ N₀]
+    [CompactSpace N₀] [PathConnectedSpace N₀]
+    [TopologicalSpace N₁] [ChartedSpace H₁ N₁] [IsManifold I₁ ∞ N₁]
+    [T2Space N₁] [ConnectedSpace N₁]
+    [TopologicalSpace M] [ChartedSpace H M]
+    (O₀ : TopologicalSpace.Opens (N₀ × ℝ)) (O₁ : TopologicalSpace.Opens (N₁ × ℝ))
+    (V₀ V₁ : TopologicalSpace.Opens M)
+    (Φ₀ : O₀ ≃ₘ⟮I₀.prod 𝓘(ℝ), J⟯ V₀) (Φ₁ : O₁ ≃ₘ⟮I₁.prod 𝓘(ℝ), J⟯ V₁)
+    (t : ℝ) (hsection : ∀ p : N₀, (p, t) ∈ O₀)
+    (htarget : ∀ p : N₀, (Φ₀ ⟨(p, t), hsection p⟩ : M) ∈ V₁)
+    (htransverse : ∀ p, (0, 1) ∉ range
+      (mfderiv I₀ (I₁.prod 𝓘(ℝ))
+        (fun p : N₀ ↦ (Φ₁.symm ⟨(Φ₀ ⟨(p, t), hsection p⟩ : M), htarget p⟩ : N₁ × ℝ)) p))
+    {r : ℝ} (hr : 0 < r) :
+    ∃ (η : N₁ ≃ₘ⟮I₁, I₀⟯ N₀) (a : N₁ → ℝ), ContMDiff I₁ 𝓘(ℝ) ∞ a ∧
+      ∃ hmem : ∀ p, (p, a p) ∈ O₁,
+        (∀ p, (Φ₁ ⟨(p, a p), hmem p⟩ : M) =
+          (Φ₀ ⟨(η p, t), hsection (η p)⟩ : M)) ∧
+        ∃ c : DifferentialGeometry.Topology.SmoothTwoSidedCollar I₀ J
+            (fun p ↦ (Φ₀ ⟨(p, t), hsection p⟩ : M)),
+          c.radius < r ∧
+          (∀ p s, s ∈ Icc (-c.radius) c.radius → (p, a p + s) ∈ O₁) ∧
+          ∀ p : N₀ × DifferentialGeometry.Topology.symmetricOpenInterval c.radius,
+            ∃ hp : (η.symm p.1, a (η.symm p.1) + (p.2 : ℝ)) ∈ O₁,
+              c.toFun p = (Φ₁ ⟨(η.symm p.1, a (η.symm p.1) + (p.2 : ℝ)), hp⟩ : M) := by
+  obtain ⟨η, a, ha, hmem, heq⟩ :=
+    exists_diffeomorph_graph_of_product_chart_section O₀ O₁ V₀ V₁ Φ₀ Φ₁
+      t hsection htarget htransverse
+  let _ : CompactSpace N₁ := η.symm.toHomeomorph.compactSpace
+  have heq' (p : N₀) : (Φ₀ ⟨(p, t), hsection p⟩ : M) =
+      (Φ₁ ⟨(η.symm p, a (η.symm p)), hmem (η.symm p)⟩ : M) := by
+    simpa only [η.apply_symm_apply] using (heq (η.symm p)).symm
+  obtain ⟨c, hcr, hstrip, hpoint⟩ :=
+    DifferentialGeometry.Topology.exists_smoothTwoSidedCollar_of_reparametrized_product_chart_graph
+      O₁ V₁ Φ₁ a ha hmem (fun p ↦ (Φ₀ ⟨(p, t), hsection p⟩ : M)) η.symm heq' hr
+  refine ⟨η, a, ha, hmem, heq, c, hcr, ?_, hpoint⟩
+  intro p s hs
+  simpa only [η.symm_apply_apply] using hstrip (η p) s hs
 
 end DifferentialGeometry.Topology.Manifold

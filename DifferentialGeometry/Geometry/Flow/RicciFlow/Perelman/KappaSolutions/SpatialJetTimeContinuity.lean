@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalChartJets
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
-import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Parameter
 
 
 set_option autoImplicit false
@@ -17,50 +17,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Opera
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
 
-section Calculus
-
-variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
-theorem spatial_iteratedFDeriv_contDiffOn {G : ℝ → E → F} {J : Set ℝ} {V : Set E}
-    (hJ : UniqueDiffOn ℝ J) (hV : IsOpen V)
-    (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ V)) (r : ℕ) :
-    ContDiffOn ℝ ∞ (Function.uncurry (fun t y => iteratedFDeriv ℝ r (G t) y)) (J ×ˢ V) := by
-  induction r with
-  | zero =>
-    exact ((continuousMultilinearCurryFin0 ℝ E F).symm.contDiff.comp_contDiffOn hG).congr
-      (fun _ _ => rfl)
-  | succ r ih =>
-    let : NormedAddCommGroup (ContinuousMultilinearMap ℝ (fun _ : Fin r => E) F) :=
-      ContinuousMultilinearMap.normedAddCommGroup
-    let : NormedSpace ℝ (ContinuousMultilinearMap ℝ (fun _ : Fin r => E) F) :=
-      ContinuousMultilinearMap.normedSpace
-    have hd := spatialFDeriv_contDiffOn hJ hV ih
-    exact ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (r + 1) => E) F).symm.contDiff.comp_contDiffOn hd).congr (fun _ _ => rfl)
-
-
-theorem spatial_jets_tendstoUniformlyOn_of_joint_smooth
-    {G : ℝ → E → F} {J : Set ℝ} {V : Set E} (hJ : IsOpen J) (hV : IsOpen V)
-    (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ V))
-    {t : ℝ} (ht : t ∈ J) {K : Set E} (hK : IsCompact K) (hKV : K ⊆ V) (r : ℕ) :
-    TendstoUniformlyOn (fun s => iteratedFDeriv ℝ r (G s))
-      (iteratedFDeriv ℝ r (G t)) (𝓝 t) K := by
-  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp (hJ.mem_nhds ht)
-  have hTJ : Metric.closedBall t (δ / 2) ⊆ J := by
-    intro s hs
-    exact hball ((Metric.mem_closedBall.mp hs).trans_lt (half_lt_self hδ))
-  have hTc : IsCompact (Metric.closedBall t (δ / 2)) := isCompact_closedBall t (δ / 2)
-  have hc := (spatial_iteratedFDeriv_contDiffOn hJ.uniqueDiffOn hV hG r).continuousOn.mono
-    (Set.prod_mono hTJ hKV)
-  have hu := (hTc.prod hK).uniformContinuousOn_of_continuous hc
-  have htime := UniformContinuousOn.tendstoUniformlyOn
-    (F := fun s y => iteratedFDeriv ℝ r (G s) y) (x := t) hu
-    (Metric.mem_closedBall_self (half_pos hδ).le)
-  have hmem : Metric.closedBall t (δ / 2) ∈ 𝓝 t := Metric.closedBall_mem_nhds t (half_pos hδ)
-  simpa only [nhdsWithin_eq_nhds.mpr hmem] using htime
-
-end Calculus
+export DifferentialGeometry.Analysis (spatial_iteratedFDeriv_contDiffOn)
 
 section Geometry
 
@@ -85,8 +42,11 @@ theorem solution_chartGram_jets_tendsto_regular {D : RealTimeInterval}
       (iteratedFDeriv ℝ r (chartGramOnE (I := I) (S.base.metric t) p i j)) (𝓝 t) K := by
   have hG := MetricFamilySmoothOn.chartGramOnE_contDiffOn (I := I)
     hS.smoothMetric (J := D.regular) (fun _ h => h) p i j
-  exact spatial_jets_tendstoUniformlyOn_of_joint_smooth D.regular_isOpen isOpen_interior
-    hG ht hK (fun y hy => (isOpen_extChartAt_target (I := I) p).interior_eq.symm ▸ hKt hy) r
+  have h := hG.tendstoUniformlyOn_iteratedFDeriv_snd
+    (G := fun s y => chartGramOnE (I := I) (S.base.metric s) p i j y) isOpen_interior hK
+    (fun y hy => (isOpen_extChartAt_target (I := I) p).interior_eq.symm ▸ hKt hy) r
+    (by exact_mod_cast le_top) ht
+  simpa only [nhdsWithin_eq_nhds.mpr (D.regular_isOpen.mem_nhds ht)] using h
 
 variable [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
 

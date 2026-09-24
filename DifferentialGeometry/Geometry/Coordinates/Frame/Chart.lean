@@ -1,3 +1,4 @@
+import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import DifferentialGeometry.Tensor.Coordinates.ModelBasis
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
@@ -112,6 +113,22 @@ lemma tangent_model_equiv_symm_chart_basis (x : M)
 def chartBasisVecFiber (x₀ : M) (i : Fin (Module.finrank ℝ E)) (x : M) :
     TangentSpace I x :=
   (trivializationAt E (TangentSpace I) x₀).symmL ℝ x ((chartModelBasis E) i)
+
+theorem localFrame_eq_chartBasisVec
+    (alpha : M) {x : M}
+    (hx : x ∈ (trivializationAt E (TangentSpace I) alpha).baseSet)
+    (i : Fin (Module.finrank Real E)) :
+    (trivializationAt E (TangentSpace I) alpha).localFrame
+        (chartModelBasis E) i x =
+      chartBasisVecFiber (I := I) alpha i x := by
+  rw [(trivializationAt E (TangentSpace I) alpha).localFrame_apply_of_mem_baseSet
+    (chartModelBasis E) hx]
+  rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply]
+  change ((trivializationAt E (TangentSpace I) alpha).linearEquivAt Real x hx).symm
+      (chartModelBasis E i) =
+    (trivializationAt E (TangentSpace I) alpha).symmL Real x (chartModelBasis E i)
+  rw [(trivializationAt E (TangentSpace I) alpha).symmL_apply hx]
+  rfl
 
 def chartBasisVec (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
     M → TotalSpace E (TangentSpace I : M → Type _) :=

@@ -83,59 +83,6 @@ lemma gNormGrad_eq_zero_of_notMem_tsupport
   rw [gradFun_eq_zero_off_tsupport_smooth (I := I) (M := M) g hf hx]
   simp
 
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private lemma mdifferentiableAt_finset_sum
-    {ι : Type*} (S : Finset ι) (h : ι → M → ℝ)
-    (hh : ∀ α ∈ S, ∀ x : M, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α) x) (x : M) :
-    MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => ∑ α ∈ S, h α y) x := by
-  classical
-  induction S using Finset.induction_on with
-  | empty =>
-    simp only [Finset.sum_empty]
-    exact mdifferentiableAt_const
-  | insert β B hβB ihB =>
-    have hh_β : ∀ x, MDifferentiableAt I 𝓘(ℝ, ℝ) (h β) x :=
-      fun x => hh β (Finset.mem_insert_self β B) x
-    have hh_rest : ∀ α ∈ B, ∀ x, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α) x :=
-      fun α hα x => hh α (Finset.mem_insert_of_mem hα) x
-    have h_eq : (fun y : M => ∑ α ∈ insert β B, h α y) =
-        (fun y : M => h β y + ∑ α ∈ B, h α y) := by
-      funext y
-      rw [Finset.sum_insert hβB]
-    rw [h_eq]
-    exact (hh_β x).add (ihB hh_rest)
-
-private lemma gradFun_finset_sum
-    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    {ι : Type*} (S : Finset ι) (h : ι → M → ℝ)
-    (hh : ∀ α ∈ S, ∀ x : M, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α) x) (x : M) :
-    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
-        (fun y => ∑ α ∈ S, h α y) x =
-      ∑ α ∈ S, DifferentialGeometry.Geometry.Operator.gradFun
-        (I := I) g (h α) x := by
-  classical
-  induction S using Finset.induction_on with
-  | empty =>
-    simp only [Finset.sum_empty]
-    rw [DifferentialGeometry.Geometry.Operator.gradFun_const
-      (I := I) g 0 x]
-  | insert α₀ S₀ hα₀_notMem ih =>
-    have hh_α₀ : ∀ x, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α₀) x :=
-      hh α₀ (Finset.mem_insert_self α₀ S₀)
-    have hh_rest : ∀ α ∈ S₀, ∀ x, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α) x :=
-      fun α hα x => hh α (Finset.mem_insert_of_mem hα) x
-    have hsum_diff : ∀ x, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => ∑ α ∈ S₀, h α y) x :=
-      fun x => mdifferentiableAt_finset_sum (I := I) (M := M) S₀ h hh_rest x
-    have h_eq_sum : (fun y : M => ∑ α ∈ insert α₀ S₀, h α y) =
-        h α₀ + (fun y : M => ∑ α ∈ S₀, h α y) := by
-      funext y
-      simp [Finset.sum_insert hα₀_notMem]
-    rw [h_eq_sum]
-    rw [DifferentialGeometry.Geometry.Operator.gradFun_add
-      (I := I) g (hh_α₀ x) (hsum_diff x)]
-    rw [ih hh_rest]
-    rw [Finset.sum_insert hα₀_notMem]
-
 private lemma gradFun_eq_sum_gradFun_pou_mul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -177,7 +124,11 @@ private lemma gradFun_eq_sum_gradFun_pou_mul
     unfold DifferentialGeometry.Geometry.Operator.metricSharp
     rw [h_mfderiv_eq]
   rw [h_gradFun_eq]
-  exact gradFun_finset_sum (I := I) (M := M) g S h hh_diff x
+  have heq : (fun y => ∑ i ∈ S, h i y) = ∑ i ∈ S, h i := by
+    funext y
+    simp only [Finset.sum_apply]
+  rw [heq]
+  exact gradientFun_sum (I := I) g S (fun i hi => hh_diff i hi x)
 
 lemma gNormGrad_le_finset_sum_pou_mul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]

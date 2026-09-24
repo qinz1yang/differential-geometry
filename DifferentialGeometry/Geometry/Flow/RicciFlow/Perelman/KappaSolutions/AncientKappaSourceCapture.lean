@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u
 
@@ -85,15 +85,13 @@ theorem exists_ancientKappa_fixed_kappa_compactness_captured {kappa : ℝ}
     (hkappa : 0 < kappa)
     (X : ℕ → PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval)
     (hX : ∀ i, IsAncientKappaSolution (I := I3) kappa (X i))
-    (hbase : ∀ i, PointedFlowScalarAtBase (I := I3) (X i) 1)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hbase : ∀ i, PointedFlowScalarAtBase (I := I3) (X i) 1) :
     ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (f : ℕ → ℕ),
       StrictMono f ∧ IsAncientKappaSolution (I := I3) kappa L ∧
         PointedFlowScalarAtBase (I := I3) L 1 ∧
         ∃ F : PointedRiemannianConvergenceMaps (I := I3) ((ancientFlowSequence X).atTime 0)
           (L.atTime (I := I3) 0) f, MetricSourceCapture F ∧ ConvergesOn F L.S := by
-  refine ancientKappa_fixed_kappa_compactness_of_capture hkappa X hX hbase hnoEmbedding ?_
+  refine ancientKappa_fixed_kappa_compactness_of_capture hkappa X hX hbase ?_
   intro L f F hL hconv
   have h0 : (0 : ℝ) ∈ ancientTimeInterval.carrier := by
     rw [ancientTimeInterval_carrier]

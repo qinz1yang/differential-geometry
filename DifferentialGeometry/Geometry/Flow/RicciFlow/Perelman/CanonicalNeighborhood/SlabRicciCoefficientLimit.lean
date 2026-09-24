@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabMetricCoefficientLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricRicciDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 
 set_option autoImplicit false
 noncomputable section
@@ -11,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ThreeSpace)
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u
 
@@ -22,45 +23,6 @@ variable {N M : Type u}
   [T2Space N] [SigmaCompactSpace N]
   [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
   [T2Space M] [SigmaCompactSpace M]
-
-omit [SigmaCompactSpace M] in
-theorem MetricComparisonOn.openPullback_metricDerivNorm
-    {h : ℝ → SmoothRiemannianMetric I3 N} {g : ℝ → SmoothRiemannianMetric I3 M}
-    {F : PartialDiffeomorph I3 I3 N M ∞} {K : Set N} {times : Set ℝ}
-    {order : ℕ} {eps : ℝ} (P : MetricComparisonOn h g F K times order eps)
-    (U : TopologicalSpace.Opens N) (hU : (U : Set N) ⊆ F.source)
-    (hUK : (U : Set N) ⊆ K) (s : ℝ) (a : ℕ) (y : U) :
-    metricDerivNorm (I := I3) a (openPullbackMetric F U hU (g s))
-        ((h s).restrictOpen U) ((h s).restrictOpen U) y =
-      tensor02CovDerivNormWith (I := I3) a (P.jet 0 s) (h s) (h s) (y : N) := by
-  let gU := openPullbackMetric F U hU (g s)
-  let hR := (h s).restrictOpen U
-  have hbase : ∀ (z : U) (slots : Fin 2 → TangentSpace I3 z),
-      (metricTensorField gU - metricTensorField hR) z slots =
-        P.jet 0 s (z : N) slots := by
-    intro z slots
-    simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply,
-      metricTensorField_apply]
-    erw [P.jet_zero, P.pullback_eq s (z : N) (hUK z.2)]
-    erw [openPullbackMetric_inner, SmoothRiemannianMetric.restrictOpen_inner]
-  have htower := covDerivOfField_restrictOpen (I := I3) (h s) U
-    (metricTensorField gU - metricTensorField hR) (P.jet 0 s) hbase a y
-  have hT : metricDiffCovDerivAt (I := I3) a gU hR hR y =
-      covDerivOfField (I := I3) (h s) (P.jet 0 s) a (y : N) := by
-    have hsub : metricDiffCovDerivAt (I := I3) a gU hR hR y =
-        covDerivOfField (I := I3) hR
-          (metricTensorField gU - metricTensorField hR) a y := by
-      rw [covDerivOfField_sub]
-      rfl
-    rw [hsub]
-    exact ContinuousMultilinearMap.ext htower
-  change Real.sqrt (normSq0S (I := I3) hR y (a + 2)
-    (metricDiffCovDerivAt (I := I3) a gU hR hR y)) = _
-  rw [hT]
-  unfold tensor02CovDerivNormWith
-  rw [tensor02_cov_deriv_eq_cov_deriv_of_field]
-  congr 1
-  exact normSq0S_restrictOpen_apply (I := I3) (h s) U (a + 2) y _
 
 omit [SigmaCompactSpace N] in
 private theorem slabOpenPullback_ricci
@@ -74,7 +36,7 @@ private theorem slabOpenPullback_ricci
   let : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp (Geometry.isSigmaCompact_of_isOpen I3 V.isOpen)
   rw [openPullbackMetric, CheegerGromovCompactness.ricciTensor_pullback]
-  erw [ricciTensor_restrictOpen g V (PartialDiffeomorph.toOpensDiffeo F hU y),
+  erw [DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen g V (PartialDiffeomorph.toOpensDiffeo F hU y),
     mfderiv_subtype_val_apply, mfderiv_subtype_val_apply,
     PartialDiffeomorph.mfderiv_toOpensDiffeo F hU y v,
     PartialDiffeomorph.mfderiv_toOpensDiffeo F hU y w]
@@ -103,7 +65,7 @@ theorem MetricComparisonOn.ricciQuadratic_sub_le
   have hb := KappaSolutions.metricRicci_difference_le_relative_two_jets
     ((h s).restrictOpen U) (openPullbackMetric F U hU (g s)) y heps heps1 hsmall hjet v
   have hp := slabOpenPullback_ricci F U hU (g s) y v v
-  have hr := ricciTensor_restrictOpen (h s) U y v v
+  have hr := DifferentialGeometry.CheegerGromovCompactness.ricciTensor_restrictOpen (h s) U y v v
   erw [mfderiv_subtype_val_apply] at hr
   have herror := congrArg₂ (fun r q : ℝ => |r - q|) hp hr
   exact (le_of_eq herror.symm).trans hb
@@ -235,5 +197,189 @@ theorem slabComparison_ricciCoeff_tendstoUniformlyOn
   obtain ⟨hwl, hwu⟩ := abs_lt.mp hw'
   apply abs_lt.mpr
   constructor <;> linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open Filter Set DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ThreeSpace)
+open scoped _root_.Manifold ContDiff
+
+universe u
+
+section Pullback
+
+variable {N M : Type u}
+  [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N]
+  [T2Space N] [SigmaCompactSpace N]
+  [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+  [T2Space M]
+
+private theorem MetricComparisonOn.metricDerivNorm_eq_jet_of_pullback_inner
+    {h : ℝ → SmoothRiemannianMetric I3 N} {g : ℝ → SmoothRiemannianMetric I3 M}
+    {F : PartialDiffeomorph I3 I3 N M ∞} {K : Set N} {times : Set ℝ}
+    {order : ℕ} {eps : ℝ} (P : MetricComparisonOn h g F K times order eps)
+    (W : TopologicalSpace.Opens N) (hW : (W : Set N) ⊆ F.source)
+    (s : ℝ) (A : SmoothRiemannianMetric I3 W)
+    (hA : ∀ (z : W) (v w : TangentSpace I3 z),
+      A.inner z v w = (g s).inner (F (z : N))
+        (mfderiv I3 I3 F (z : N) v) (mfderiv I3 I3 F (z : N) w))
+    (U : TopologicalSpace.Opens N) (hUW : U ≤ W) (hUK : (U : Set N) ⊆ K)
+    (a : ℕ) (y : U) :
+    metricDerivNorm (I := I3) a A ((h s).restrictOpen W) ((h s).restrictOpen W)
+        (TopologicalSpace.Opens.inclusion hUW y) =
+      tensor02CovDerivNormWith (I := I3) a (P.jet 0 s) (h s) (h s) (y : N) := by
+  let _ : SigmaCompactSpace W :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp (Geometry.isSigmaCompact_of_isOpen I3 W.isOpen)
+  have hU : (U : Set N) ⊆ F.source := fun _ hx => hW (hUW hx)
+  have hrestrict : A.restrictOpenOfSubset hUW = openPullbackMetric F U hU (g s) := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro z v w
+    rw [SmoothRiemannianMetric.restrictSubset_inner, openPullbackMetric_inner]
+    exact hA (TopologicalSpace.Opens.inclusion hUW z) v w
+  have hnorm := metricDerivNorm_flat (I := I3) hUW A
+    ((h s).restrictOpen W) ((h s).restrictOpen W) a y
+  simp only [hrestrict, SmoothRiemannianMetric.restrictOpen_flat] at hnorm
+  exact hnorm.symm.trans (P.openPullback_metricDerivNorm U hU hUK s a y)
+
+end Pullback
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedFlowData.t2TangentBundle PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+variable {X : FlowSequence.{u}}
+
+def FlowSequence.sliceMaps (X : FlowSequence.{u})
+    {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
+    (F : PointedRiemannianConvergenceMaps (X.atTime 0) P f)
+    (g : ℝ → SmoothRiemannianMetric I3 P.M) (t : ℝ) :
+    PointedRiemannianConvergenceMaps (X.atTime t) { P with metric := g t } f where
+  partialDiffeomorph := F.partialDiffeomorph
+  source_exhausts := F.source_exhausts
+  base_mem := F.base_mem
+  basepoint_map := F.basepoint_map
+
+private theorem exists_slice_convergence_of_comparison
+    {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
+    (F : PointedRiemannianConvergenceMaps (X.atTime 0) P f)
+    (g : ℝ → SmoothRiemannianMetric I3 P.M) (t : ℝ)
+    (hcomp : ∀ K : Set P.M, IsCompact K → ∀ p : ℕ, ∀ eps : ℝ, 0 < eps →
+      ∀ᶠ i in atTop, Nonempty (MetricComparisonOn g
+        (fun s => (X.term (f i)).S.base.metric s) (F.partialDiffeomorph i)
+        K (Set.Icc t t) p eps)) :
+    ∃ C : MetricConvergenceData (X.sliceMaps F g t),
+      ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData (X.sliceMaps F g t) i := by
+  let Ft : PointedRiemannianConvergenceMaps (X.atTime t) { P with metric := g t } f :=
+    X.sliceMaps F g t
+  let : LocallyCompactSpace P.M := Manifold.locallyCompact_of_finiteDimensional I3
+  refine ⟨{ domain := CanonicalMetricCompactness.canonicalSourceData Ft
+            converges := ?_ }, fun _ => rfl⟩
+  intro K hK p eps heps
+  obtain ⟨K', hK', hKU⟩ := exists_compact_superset hK
+  let U : TopologicalSpace.Opens P.M := ⟨interior K', isOpen_interior⟩
+  have hUK : (U : Set P.M) ⊆ K' := interior_subset
+  obtain ⟨m, hm⟩ := F.source_subset hK'
+  obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp
+    (hcomp K' hK' p (eps / 2) (half_pos heps))
+  refine ⟨max N m, fun i hi => ?_⟩
+  have hmi : m ≤ i := le_trans (le_max_right N m) hi
+  let W : TopologicalSpace.Opens P.M :=
+    ⟨(F.partialDiffeomorph i).source, (F.partialDiffeomorph i).open_source⟩
+  have hUW : U ≤ W := hUK.trans (hm i hmi)
+  have hsource : K ⊆ Ft.source i := hKU.trans hUW
+  refine ⟨hsource, ?_⟩
+  obtain ⟨Q⟩ := hN i (le_trans (le_max_left N m) hi)
+  let D : MetricSourceData Ft i := CanonicalMetricCompactness.canonicalSourceData Ft i
+  let : TopologicalSpace (MetricSourceDomain Ft i) := D.topology
+  let : ChartedSpace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ThreeSpace
+      (MetricSourceDomain Ft i) := D.charted
+  let : IsManifold I3 ∞ (MetricSourceDomain Ft i) := D.smooth
+  let : T2Space (MetricSourceDomain Ft i) := D.t2
+  let : SigmaCompactSpace (MetricSourceDomain Ft i) := D.sigmaCompact
+  change metricDerivNormSupOn (metricSourceCompactSet Ft i K) p
+    D.pullbackMetric D.limitMetric D.referenceMetric < eps
+  apply lt_of_le_of_lt
+    (metricDerivNormSupOn_le_of_forall (metricSourceCompactSet Ft i K) p
+      D.pullbackMetric D.limitMetric D.referenceMetric (eps / 2) (half_pos heps).le ?_)
+    (half_lt_self heps)
+  intro a ha y hy
+  let yu : U := ⟨(y : P.M), hKU hy⟩
+  have hA : ∀ (z : W) (v w : TangentSpace I3 z),
+      D.pullbackMetric.inner z v w =
+        ((X.term (f i)).S.base.metric t).inner
+          (F.partialDiffeomorph i (z : P.M))
+          (mfderiv I3 I3 (F.partialDiffeomorph i) (z : P.M) v)
+          (mfderiv I3 I3 (F.partialDiffeomorph i) (z : P.M) w) := by
+    intro z v w
+    have hd : mfderiv I3 I3
+        (fun y : W => F.partialDiffeomorph i (y : P.M)) z =
+        mfderiv I3 I3 (F.partialDiffeomorph i) (z : P.M) :=
+      DifferentialGeometry.mfderiv_restrict_open (I := I3) (J := I3)
+        (F.partialDiffeomorph i) W z
+    have hp := D.pullback_inner z v w
+    change D.pullbackMetric.inner z v w =
+      ((X.term (f i)).S.base.metric t).inner (F.partialDiffeomorph i (z : P.M))
+        (mfderiv I3 I3
+          (fun y : W => F.partialDiffeomorph i (y : P.M)) z v)
+        (mfderiv I3 I3
+          (fun y : W => F.partialDiffeomorph i (y : P.M)) z w) at hp
+    rw [hd] at hp
+    exact hp
+  have hW : (W : Set P.M) ⊆ (F.partialDiffeomorph i).source :=
+    Set.Subset.refl _
+  have hnorm := MetricComparisonOn.metricDerivNorm_eq_jet_of_pullback_inner
+    (N := P.M) (M := (X.term (f i)).M) (h := g)
+    (g := fun s => (X.term (f i)).S.base.metric s) (F := F.partialDiffeomorph i)
+    Q W hW t D.pullbackMetric hA U hUW hUK a yu
+  change metricDerivNorm a D.pullbackMetric D.limitMetric D.referenceMetric y =
+    tensor02CovDerivNormWith a (Q.jet 0 t) (g t) (g t) (y : P.M) at hnorm
+  rw [hnorm]
+  exact Q.close a 0 (by omega) t ⟨le_rfl, le_rfl⟩ (y : P.M) (hUK (hKU hy))
+
+theorem ConvergesOn.exists_canonical_metric_convergence
+    {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
+    {F : PointedRiemannianConvergenceMaps (X.atTime 0) P f}
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := P.M) D}
+    (hconv : ConvergesOn F S) {t : ℝ} (ht : t ∈ D.carrier) :
+    ∃ C : MetricConvergenceData (X.sliceMaps F S.base.metric t),
+      ∀ i, C.domain i =
+        CanonicalMetricCompactness.canonicalSourceData (X.sliceMaps F S.base.metric t) i := by
+  apply exists_slice_convergence_of_comparison F S.base.metric t
+  intro K hK p eps heps
+  have hsub : Set.Icc t t ⊆ D.carrier := by
+    intro s hs
+    have heq : s = t := le_antisymm hs.2 hs.1
+    simpa only [heq] using ht
+  exact (hconv K hK t t le_rfl hsub p eps heps).mono fun _ hi => hi.2.2
+
+variable {depthBound : ℝ}
+
+def StaticTerminalLimit.sliceMaps (L : StaticTerminalLimit X depthBound)
+    (k : ℕ → ℕ) (hk : StrictMono k)
+    (g : ℝ → SmoothRiemannianMetric I3 L.space.M) (t : ℝ) :
+    PointedRiemannianConvergenceMaps (X.atTime t)
+      { L.space with metric := g t } (L.subseq ∘ k) :=
+  X.sliceMaps (subsequenceMaps L.maps k hk) g t
+
+theorem slabComparison_exists_canonical_metric_convergence
+    (L : StaticTerminalLimit X depthBound) {delta : ℝ} {k : ℕ → ℕ}
+    (hk : StrictMono k) {g : ℝ → SmoothRiemannianMetric I3 L.space.M}
+    (hcomp : SlabComparison L delta k g) {t : ℝ} (ht : t ∈ Set.Icc (-delta) 0) :
+    ∃ C : MetricConvergenceData (L.sliceMaps k hk g t),
+      ∀ i, C.domain i =
+        CanonicalMetricCompactness.canonicalSourceData (L.sliceMaps k hk g t) i := by
+  apply exists_slice_convergence_of_comparison (subsequenceMaps L.maps k hk) g t
+  intro K hK p eps heps
+  have hsub : Set.Icc t t ⊆ Set.Icc (-delta) 0 := by
+    intro s hs
+    have heq : s = t := le_antisymm hs.2 hs.1
+    simpa only [heq] using ht
+  exact hcomp K hK t t le_rfl hsub p eps heps
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

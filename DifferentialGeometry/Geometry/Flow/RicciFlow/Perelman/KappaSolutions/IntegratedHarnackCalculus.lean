@@ -11,7 +11,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Filter MeasureTheory Set
-open scoped Topology Interval
+open scoped _root_.Topology Interval
 
 theorem compensated_monotoneOn_of_pointwise_of_uniform_bound
     {a b : ℝ} (scalar energy : ℕ → ℝ → ℝ) (scalarLimit energyLimit : ℝ → ℝ)

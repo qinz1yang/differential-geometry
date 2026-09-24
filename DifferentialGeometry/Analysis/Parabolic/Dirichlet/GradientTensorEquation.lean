@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceDual
-import Mathlib.MeasureTheory.Function.LpSeminorm.Prod
-import DifferentialGeometry.Analysis.Parabolic.WeakEquationTensor
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffWeakEquation
 
 noncomputable section
 
@@ -8,44 +7,6 @@ open Filter MeasureTheory Set
 open scoped ENNReal Topology
 
 namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
-
-private theorem integrable_tensor_mul_lp
-    {Z E : Type*} [MeasurableSpace Z] [MeasurableSpace E]
-    {μ : Measure Z} {ν : Measure E} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
-    {τ : Z → ℝ} {ψ : E → ℝ} {c F : Z × E → ℝ}
-    (hτ : MemLp τ ∞ μ) (hψ : MemLp ψ ∞ ν)
-    (hc : MemLp c ∞ (μ.prod ν)) (hF : MemLp F 2 (μ.prod ν)) :
-    Integrable (fun p => τ p.1 * (c p * F p) * ψ p.2) (μ.prod ν) := by
-  have hτp := hτ.comp_fst ν
-  have hψp := hψ.comp_snd μ
-  have hm : MemLp (fun p => τ p.1 * (c p * F p) * ψ p.2) 2 (μ.prod ν) := by
-    exact hψp.mul (r := 2) ((hF.mul (r := 2) hc).mul (r := 2) hτp)
-  exact hm.integrable (by norm_num)
-
-private theorem integrable_fixed_density_tensor_terms
-    {d : ℕ} {μ : Measure ℝ} {ν : Measure (EuclideanSpace ℝ (Fin d))}
-    [IsFiniteMeasure μ] [IsFiniteMeasure ν]
-    {τ : ℝ → ℝ} {η ψ : EuclideanSpace ℝ (Fin d) → ℝ}
-    {r C : ℝ × EuclideanSpace ℝ (Fin d) → ℝ}
-    {P : Fin d → ℝ × EuclideanSpace ℝ (Fin d) → ℝ}
-    (hτ : MemLp τ ∞ μ) (hψ : MemLp ψ ∞ ν)
-    (hdψ : ∀ j, MemLp (fun z => fderiv ℝ ψ z (EuclideanSpace.single j 1)) ∞ ν)
-    (hη : MemLp η ∞ ν)
-    (hηr : MemLp (fun p => η p.2 / r p) ∞ (μ.prod ν))
-    (hdηr : ∀ j, MemLp (fun p => fderiv ℝ (fun z => η z.2 / r z) p
-      (0, EuclideanSpace.single j 1)) ∞ (μ.prod ν))
-    (hC : MemLp C 2 (μ.prod ν)) (hP : ∀ j, MemLp (P j) 2 (μ.prod ν)) :
-    (∀ j, Integrable (fun p => τ p.1 * ((η p.2 / r p) * P j p) *
-      fderiv ℝ ψ p.2 (EuclideanSpace.single j 1)) (μ.prod ν)) ∧
-    (∀ j, Integrable (fun p => τ p.1 * (P j p *
-      fderiv ℝ (fun z => η z.2 / r z) p (0, EuclideanSpace.single j 1)) * ψ p.2) (μ.prod ν)) ∧
-    Integrable (fun p => τ p.1 * (η p.2 * C p) * ψ p.2) (μ.prod ν) := by
-  refine ⟨fun j => integrable_tensor_mul_lp hτ (hdψ j) hηr (hP j), ?_,
-    integrable_tensor_mul_lp hτ hψ (hη.comp_snd μ) hC⟩
-  intro j
-  simpa only [mul_comm (P j _) (fderiv ℝ (fun z => η z.2 / r z) _
-    (0, EuclideanSpace.single j 1))] using
-    integrable_tensor_mul_lp hτ hψ (hdηr j) (hP j)
 
 open Bundle Manifold
 open scoped ContDiff Manifold NNReal
@@ -67,31 +28,6 @@ variable {M : Type*} [TopologicalSpace M]
 local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 local notation "EuN" => EuclideanSpace ℝ (Fin n)
 local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
-
-omit [T2Space M] [CompactSpace M] in
-private theorem smoothScalarDirichlet_chartInverse_bounds
-    {q : SmoothRiemannianMetric I_hs M}
-    (α : M) {Ω : Set EuStd} (hΩ : MeasurableSet Ω) (hΩc : IsCompact (closure Ω))
-    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    (v : SmoothScalarDirichlet q) :
-    let ψ := fun z => v.toFun ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))
-    ContDiffOn ℝ (⊤ : ℕ∞) ψ Ω ∧ MemLp ψ ∞ (volume.restrict Ω) ∧
-      ∀ j : Fin (Module.finrank ℝ EuN),
-        MemLp (fun z => fderiv ℝ ψ z (EuclideanSpace.single j 1)) ∞ (volume.restrict Ω) := by
-  intro ψ
-  let U := toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target
-  have hU : IsOpen U := (toEuclidean (E := EuN)).toHomeomorph.isOpenMap _ isOpen_interior
-  have hP : ContDiffOn ℝ (⊤ : ℕ∞) ψ U := by
-    apply (scalarOnE_contDiffOn α v.smooth).comp
-      (toEuclidean (E := EuN)).symm.contDiff.contDiffOn
-    rintro z ⟨y, hy, rfl⟩
-    simpa only [ContinuousLinearEquiv.symm_apply_apply] using interior_subset hy
-  refine ⟨hP.mono (subset_closure.trans hΩs),
-    (hP.continuousOn.mono hΩs).memLp_top_of_subset_isCompact hΩc hΩ subset_closure, ?_⟩
-  intro j
-  have hc := (((hP.fderiv_of_isOpen hU (m := (⊤ : ℕ∞)) (by simp)).clm_apply
-    (g := fun _ => EuclideanSpace.single j 1) contDiffOn_const).continuousOn).mono hΩs
-  exact hc.memLp_top_of_subset_isCompact hΩc hΩ subset_closure
 
 theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
     {q : SmoothRiemannianMetric I_hs M}
@@ -182,11 +118,10 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
           ∫ p, τ p.1 * B k p * ψ p.2 ∂ν := by
   intro μ ν ρ σ r A U V
   classical
-  obtain ⟨R, H, F, hR, hH, hHsym, hF, hfixed, hsource⟩ :=
-    hu.exists_lp_cutoff_gradient_source_dual hXcont hacont α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω hη
+  obtain ⟨R, H, F, hR, hH, hHsym, hF, hfixed⟩ :=
+    hu.exists_lp_weak_gradient_equation_fixed_density hXcont hacont α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω
   refine ⟨R, H, F, hR, hH, hHsym, hF, hfixed, ?_⟩
   intro C Q B
-  obtain ⟨hQ, hB, hdual⟩ := hsource
   have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
   have hchart : Ω ⊆ MetricExtension.chartTargetEuclid (I := I_hs) α :=
     subset_closure.trans (hΩs.trans (image_mono interior_subset))
@@ -212,8 +147,6 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
   have hAall (i j) : ContDiffOn ℝ (⊤ : ℕ∞) (A i j) (D.regular ×ˢ Ω) :=
     MetricExtension.weightedInvGramOnEuclid_family_contDiffOn hG Subset.rfl α
       (subset_closure.trans hΩs) i j
-  have hηall : ContDiffOn ℝ (⊤ : ℕ∞) (fun p : ℝ × EuStd => η p.2) (D.regular ×ˢ Ω) :=
-    (hη.comp contDiff_snd).contDiffOn
   have hlift (f : ℝ × EuStd → ℝ) (hc : ContinuousOn f (D.regular ×ˢ Ω)) : MemLp f ∞ ν := by
     have hb := (hc.mono (prod_mono hreg hΩ₀Ω)).memLp_top_of_subset_isCompact
       (isCompact_Icc.prod hΩ₀c) (measurableSet_Icc.prod hΩ₀.measurableSet)
@@ -224,58 +157,28 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
   have hrt : MemLp (fun p => fderiv ℝ r p (1, 0)) ∞ ν :=
     hlift _ ((hrall.fderiv_of_isOpen (m := (⊤ : ℕ∞)) (D.regular_isOpen.prod hΩ) (by simp)).clm_apply contDiffOn_const).continuousOn
   have hσmem : MemLp σ ∞ ν := hlift _ hσall.continuousOn
-  have hηmem : MemLp (fun p : ℝ × EuStd => η p.2) ∞ ν := hlift _ hηall.continuousOn
   have hAmem (i j) : MemLp (A i j) ∞ ν := hlift _ (hAall i j).continuousOn
   have hC (k) : MemLp (C k) 2 ν :=
     ((Lp.memLp (F k)).mul (r := 2) hrinv).sub (((hV k).mul (r := 2) hσmem).mul (r := 2) (hrt.mul (r := ∞) hrinv))
-  have hdηr (j) : MemLp (fun p => fderiv ℝ (fun z : ℝ × EuStd => η z.2 / r z) p
-      (0, EuclideanSpace.single j 1)) ∞ ν :=
-    hlift _ (((hηall.div hrall hrne).fderiv_of_isOpen (m := (⊤ : ℕ∞)) (D.regular_isOpen.prod hΩ)
-      (by simp)).clm_apply contDiffOn_const).continuousOn
-  refine ⟨hQ, hB, hdual, ?_⟩
-  intro k v τ hτ hτc hτs ψ
   let : IsFiniteMeasure (volume.restrict Ω₀) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, univ_inter]
     exact (measure_mono subset_closure).trans_lt hΩ₀c.measure_lt_top
   have hΩ₀s : closure Ω₀ ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target :=
     hΩ₀Ω.trans (subset_closure.trans hΩs)
-  let P := fun j p => ∑ i, A i j p * H k i p
-  have hP (j) : MemLp (P j) 2 ν := by
+  let P := fun k j p => ∑ i, A i j p * H k i p
+  have hP (k j) : MemLp (P k j) 2 ν := by
     apply memLp_finsetSum
     intro i _
     exact (Lp.memLp (H k i)).mul (r := 2) (hAmem i j)
-  obtain ⟨hψ, hψmem, hdψmem⟩ :=
-    smoothScalarDirichlet_chartInverse_bounds α hΩ₀.measurableSet hΩ₀c hΩ₀s v
-  have hηr : MemLp (fun p => η p.2 / r p) ∞ ν := by
-    convert hrinv.mul (r := ∞) hηmem using 1
-    ext p
-    simp only [div_eq_mul_inv, Pi.mul_apply]
-  have hτmem : MemLp τ ∞ μ := hτ.continuous.memLp_top_of_hasCompactSupport hτc μ
-  have hηsp : MemLp η ∞ (volume.restrict Ω₀) :=
-    hη.continuous.memLp_top_of_hasCompactSupport hηc _
-  obtain ⟨hmain, herr, hsource⟩ := integrable_fixed_density_tensor_terms
-    hτmem hψmem hdψmem hηsp hηr hdηr (hC k) hP
-  have hmem : ∀ᵐ p ∂ν, p.1 ∈ Icc t₀ t₁ ∧ p.2 ∈ Ω₀ := by
-    apply (Measure.ae_prod_iff_ae_ae (measurableSet_Icc.prod hΩ₀.measurableSet)).mpr
-    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
-    filter_upwards [ae_restrict_mem hΩ₀.measurableSet] with z hz
-    exact ⟨ht, hz⟩
-  have hgood : ∀ᵐ p ∂ν, DifferentiableAt ℝ ψ p.2 ∧ DifferentiableAt ℝ r p ∧ r p ≠ 0 := by
-    filter_upwards [hmem] with p hp
-    have hpS : p ∈ D.regular ×ˢ Ω :=
-      ⟨hreg ⟨ht₀.le.trans hp.1.1, hp.1.2.trans ht₁.le⟩, hsub hp.2⟩
-    exact ⟨(hψ.contDiffAt (hΩ₀.mem_nhds hp.2)).differentiableAt (by simp),
-      (hrall.contDiffAt ((D.regular_isOpen.prod hΩ).mem_nhds hpS)).differentiableAt (by simp),
-      hrne p hpS⟩
   have hSsub : Ioo t₀ t₁ ×ˢ Ω₀ ⊆ D.regular ×ˢ Ω := by
     intro p hp
     exact ⟨hreg ⟨ht₀.le.trans hp.1.1.le, hp.1.2.le.trans ht₁.le⟩, hsub hp.2⟩
   have hr := hrall.mono hSsub
-  have hw : ∀ ψ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+  have hw (k) : ∀ ψ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
       (∫ p, (σ p * V k p) * fderiv ℝ ψ p (1, 0) ∂ν) =
-        (∑ j, ∫ p, P j p * fderiv ℝ (fun z => ψ z / r z) p
+        (∑ j, ∫ p, P k j p * fderiv ℝ (fun z => ψ z / r z) p
           (0, EuclideanSpace.single j 1) ∂ν) - ∫ p, C k p * ψ p ∂ν := by
     intro ψ hψ hψc hψs
     have hψrs : tsupport (fun z => ψ z / r z) ⊆ Ioo t₀ t₁ ×ˢ Ω₀ := by
@@ -292,7 +195,7 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
     have hin (i j) : Integrable (fun p => A i j p * H k i p *
         fderiv ℝ (fun z => ψ z / r z) p (0, EuclideanSpace.single j 1)) ν :=
       (((hdψ j).mul (r := 2) ((Lp.memLp (H k i)).mul (r := 2) (hAmem i j))).integrable (by norm_num))
-    have heach (j) : (∫ p, P j p * fderiv ℝ (fun z => ψ z / r z) p
+    have heach (j) : (∫ p, P k j p * fderiv ℝ (fun z => ψ z / r z) p
         (0, EuclideanSpace.single j 1) ∂ν) =
         ∑ i, ∫ p, A i j p * H k i p * fderiv ℝ (fun z => ψ z / r z) p
           (0, EuclideanSpace.single j 1) ∂ν := by
@@ -301,14 +204,26 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
     simp_rw [heach]
     rw [Finset.sum_comm]
     exact hfixed k ψ hψ hψc hψs
-  have he := integral_fixed_density_tensor_test (fun j => EuclideanSpace.single j 1)
-    hΩ₀ hη hηc hηs hψ hgood hw hτ hτc hτs hmain herr hsource
-  have hQeq (j) (p : ℝ × EuStd) : (η p.2 / r p) * P j p = Q k j p := by
+  have hKO : Icc t₀ t₁ ×ˢ closure Ω₀ ⊆ D.regular ×ˢ Ω := by
+    intro p hp
+    exact ⟨hreg ⟨ht₀.le.trans hp.1.1, hp.1.2.trans ht₁.le⟩, hΩ₀Ω hp.2⟩
+  have hcore (k) := exists_lp_dual_of_fixed_density_cutoff_equation
+    (q := q) α hΩ₀ hΩ₀c hΩ₀s (D.regular_isOpen.prod hΩ) hKO hrall hrne
+    (hC k) (hP k) (hw k) hη hηc hηs
+  have hQeq (k j) (p : ℝ × EuStd) : (η p.2 / r p) * P k j p = Q k j p := by
     simp only [P, Q, Finset.mul_sum, mul_assoc]
-  have hBeq (p : ℝ × EuStd) : (η p.2 * C k p - ∑ j, P j p * fderiv ℝ
+  have hBeq (k) (p : ℝ × EuStd) : (η p.2 * C k p - ∑ j, P k j p * fderiv ℝ
       (fun z => η z.2 / r z) p (0, EuclideanSpace.single j 1)) = B k p := by
     simp only [P, B, Finset.sum_mul]
     rw [Finset.sum_comm]
-  simpa only [hQeq, hBeq] using he
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro k j
+    simpa only [hQeq] using (hcore k).1 j
+  · intro k
+    simpa only [hBeq] using (hcore k).2.1
+  · intro k
+    simpa only [hQeq, hBeq] using (hcore k).2.2.1
+  · intro k v τ hτ hτc hτs
+    simpa only [hQeq, hBeq] using (hcore k).2.2.2 v τ hτ hτc hτs
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

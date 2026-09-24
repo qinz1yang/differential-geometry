@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import Mathlib.Topology.Separation.Hausdorff
+import DifferentialGeometry.Topology.Manifold.PartialChartEmbedding
 
 set_option autoImplicit false
 
@@ -7,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Set Topology
+open Set _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness
 
 universe u uE uH
@@ -45,6 +46,31 @@ theorem pointedMaps_eventually_compactEmbedding
     exact he.injective ((Phi.partialDiffeomorph k).toPartialEquiv.injOn
       (hsource x) (hsource y) hxy)
   exact ⟨⟨_, hcontinuous⟩, hcontinuous.isClosedEmbedding hinjective, fun _ => rfl⟩
+
+open scoped ContDiff
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+  {S : Type*} [TopologicalSpace S] [ChartedSpace G S] [CompactSpace S]
+
+theorem pointedMaps_eventually_compactSmoothEmbedding
+    (e : S → L.M) (he : Manifold.IsSmoothEmbedding J I ∞ e) :
+    ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k →
+      ∃ f : C(S, (X.obj (subseq k)).M),
+        Manifold.IsSmoothEmbedding J I ∞ f ∧
+          _root_.Topology.IsClosedEmbedding f ∧ ∀ x : S, f x = Phi.map k (e x) := by
+  obtain ⟨k0, hk0⟩ := Phi.source_subset (isCompact_range he.isEmbedding.continuous)
+  refine ⟨k0, fun k hk => ?_⟩
+  have hsource : Set.range e ⊆ (Phi.partialDiffeomorph k).source := hk0 k hk
+  let : IsManifold I ∞ (X.obj (subseq k)).M := (X.obj (subseq k)).smooth
+  have hs : Manifold.IsSmoothEmbedding J I ∞ (Phi.map k ∘ e) :=
+    DifferentialGeometry.Topology.isSmoothEmbedding_comp_partialDiffeomorph
+      (Phi.partialDiffeomorph k) he hsource
+  let f : C(S, (X.obj (subseq k)).M) := ⟨Phi.map k ∘ e, hs.isEmbedding.continuous⟩
+  let : T2Space (X.obj (subseq k)).M := (X.obj (subseq k)).t2
+  exact ⟨f, hs, hs.isEmbedding.continuous.isClosedEmbedding hs.isEmbedding.injective,
+    fun _ => rfl⟩
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

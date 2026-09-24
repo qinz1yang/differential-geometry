@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology
+open scoped Manifold ContDiff ENNReal _root_.Topology
 
 private theorem avrComparison_sqrt_pow (Q : ℝ) (hQ : 0 ≤ Q) (n : ℕ) :
     Real.sqrt (Q ^ n) = Real.sqrt Q ^ n := by

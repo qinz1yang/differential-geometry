@@ -54,4 +54,16 @@ theorem diskMapPartial_comp_conj_I (U : ℂ → M) (z : ℂ) :
   rw [diskMapPartial_comp_conj, Complex.conj_I]
   exact map_neg (mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U (conj z)) Complex.I
 
+variable [IsManifold 𝓘(ℝ, E) ∞ M]
+
+theorem DiskMapConformalAt.comp_conj (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {U : ℂ → M} {z : ℂ}
+    (h : DiskMapConformalAt g U (conj z)) : DiskMapConformalAt g (U ∘ conj) z := by
+  unfold DiskMapConformalAt at h ⊢
+  simp only [Function.comp_apply]
+  constructor
+  · simpa only [diskMapPartial_comp_conj_one, diskMapPartial_comp_conj_I, map_neg,
+      _root_.neg_apply, neg_eq_zero] using h.1
+  · simpa only [diskMapPartial_comp_conj_one, diskMapPartial_comp_conj_I, map_neg,
+      _root_.neg_apply, neg_neg] using h.2
+
 end DifferentialGeometry.Geometry

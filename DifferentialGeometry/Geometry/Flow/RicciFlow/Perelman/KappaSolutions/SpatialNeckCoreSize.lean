@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckCoreCurves
 import Mathlib.Order.Filter.AtTopBot.Basic
 
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -8,7 +11,7 @@ noncomputable section
 open Bundle Filter Manifold Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
-open scoped Manifold ContDiff Topology ENNReal
+open scoped Manifold ContDiff _root_.Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
@@ -94,3 +97,56 @@ theorem eventually_spatialNeck_core_subset_ball
   exact ((W i).core_dist_le hEnorm hsmall hq).trans_lt hsmallRadius
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open DifferentialGeometry.Geometry.Curvature
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+theorem SpatialNeckWitness.core_edist_le
+    {h : SmoothRiemannianMetric I M} {mark : SpatialNeckSphere} {p : M} {epsilon : ℝ}
+    (W : SpatialNeckWitness h mark p epsilon) (hsmall : epsilon ≤ spatialNeckControlEpsilon)
+    {q : M} (hq : q ∈ W.core) :
+    riemannianEDistOf h q p ≤ ENNReal.ofReal (spatialNeckCoreRadiusConstant epsilon /
+      Real.sqrt (metricScalarAt h p)) := by
+  obtain ⟨z, hz, rfl⟩ := hq
+  have hscale := spatialNeckScale_pos h p W.scalar_pos
+  have hbound := W.core_edist_upper hsmall
+    (spatialNeckCentralPoint epsilon W.epsilon_pos mark) z
+    (spatialNeckCentralDomain_subset_core epsilon W.epsilon_pos rfl) hz
+  rw [W.marked] at hbound
+  change riemannianEDistOf h p (W.embedding z) ≤ ENNReal.ofReal
+    ((13 / 12 * spatialNeckScale h p) * Real.sqrt (Real.pi ^ 2 + (z.val.2 - 0) ^ 2)) at hbound
+  rw [sub_zero] at hbound
+  have habs : |z.val.2| ≤ epsilon⁻¹ := abs_le.mpr hz
+  have hsq : z.val.2 ^ 2 ≤ (epsilon⁻¹) ^ 2 := by
+    have hh := (sq_le_sq₀ (abs_nonneg z.val.2) (inv_nonneg.mpr W.epsilon_pos.le)).mpr habs
+    simpa only [sq_abs] using hh
+  rw [riemannianEDistOf_comm h]
+  apply hbound.trans
+  apply ENNReal.ofReal_le_ofReal
+  calc
+    (13 / 12 * spatialNeckScale h p) * Real.sqrt (Real.pi ^ 2 + z.val.2 ^ 2)
+      ≤ (13 / 12 * spatialNeckScale h p) * Real.sqrt (Real.pi ^ 2 + (epsilon⁻¹) ^ 2) :=
+      mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (by linarith)) (by positivity)
+    _ = spatialNeckCoreRadiusConstant epsilon / Real.sqrt (metricScalarAt h p) := by
+      dsimp only [spatialNeckCoreRadiusConstant, spatialNeckScale]
+      ring
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+end

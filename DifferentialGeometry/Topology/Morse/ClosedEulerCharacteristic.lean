@@ -13,6 +13,31 @@ variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [ChartedSpace H M] (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
   [BoundarylessManifold I M] [T2Space M] [CompactSpace M]
 
+theorem finiteHomologyType_and_eulerChar_of_finite_morse
+    (K : Type) [Field K] {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hfinite : {x | IsCriticalPointAt I f x}.Finite)
+    (hnd : ∀ x, IsCriticalPointAt I f x → IsNondegenerateCriticalPointAt I f x)
+    (hinj : InjOn f {x | IsCriticalPointAt I f x}) :
+    DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of M) ∧
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of M) =
+        ∑ p ∈ hfinite.toFinset, (-1 : ℤ) ^ sigNeg (chartHessianAt
+          (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) := by
+  obtain ⟨A,hA⟩ := (isCompact_range hf.continuous).bddAbove
+  have hbelow (x : M) : f x < A + 1 := lt_of_le_of_lt (hA (mem_range_self x)) (lt_add_one A)
+  have htop : sublevel f (A + 1) = univ := eq_univ_of_forall fun x => (hbelow x).le
+  let eTop : SublevelSpace f (A + 1) ≃ₜ M :=
+    (Homeomorph.setCongr htop).trans (Homeomorph.Set.univ M)
+  obtain ⟨m,hm⟩ := Nat.exists_eq_succ_of_ne_zero (Module.finrank_pos (R := ℝ) (M := E)).ne'
+  let e : E ≃L[ℝ] MorseModel (m + 1) :=
+    ((Module.finBasis ℝ E).reindex (finCongr hm)).equivFunL
+  obtain ⟨hfin,hχ⟩ := finiteHomologyType_and_eulerChar_of_finite_morse_sublevel I K e
+    hf (A + 1) (htop ▸ isCompact_univ) (fun _ _ => BoundarylessManifold.isInteriorPoint)
+    hfinite hnd hinj (fun x _ => hbelow x)
+  exact ⟨(DifferentialGeometry.Homology.finiteHomologyType_iff_of_homeomorph K
+      (X := TopCat.of (SublevelSpace f (A + 1))) (Y := TopCat.of M) eTop).mp hfin,
+    (DifferentialGeometry.Homology.eulerChar_eq_of_homeomorph K eTop).symm.trans hχ⟩
+
 theorem exists_morse_eulerChar :
     ∃ f : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ f ∧
       (∀ x, IsCriticalPointAt I f x → IsNondegenerateCriticalPointAt I f x) ∧
@@ -31,21 +56,8 @@ theorem exists_morse_eulerChar :
     (fun x hx => (hgnd x hx).2) (U := univ) (S := univ) isOpen_univ (subset_univ _)
     (fun _ _ => BoundarylessManifold.isInteriorPoint) (Subset.refl _) hgpos
   have hfinite : {x | IsCriticalPointAt I f x}.Finite := hcrit.symm ▸ hgfin
-  obtain ⟨A,hA⟩ := (isCompact_range hf.continuous).bddAbove
-  have hbelow (x : M) : f x < A + 1 := lt_of_le_of_lt (hA (mem_range_self x)) (lt_add_one A)
-  have htop : sublevel f (A + 1) = univ := eq_univ_of_forall fun x => (hbelow x).le
-  let eTop : SublevelSpace f (A + 1) ≃ₜ M :=
-    (Homeomorph.setCongr htop).trans (Homeomorph.Set.univ M)
-  obtain ⟨m,hm⟩ := Nat.exists_eq_succ_of_ne_zero (Module.finrank_pos (R := ℝ) (M := E)).ne'
-  let e : E ≃L[ℝ] MorseModel (m + 1) :=
-    ((Module.finBasis ℝ E).reindex (finCongr hm)).equivFunL
   refine ⟨f,hf,hnd,hinj,hfinite,?_⟩
   intro K instK
-  obtain ⟨hfin,hχ⟩ := finiteHomologyType_and_eulerChar_of_finite_morse_sublevel I K e
-    hf (A + 1) (htop ▸ isCompact_univ) (fun _ _ => BoundarylessManifold.isInteriorPoint)
-    hfinite hnd hinj (fun x _ => hbelow x)
-  exact ⟨(DifferentialGeometry.Homology.finiteHomologyType_iff_of_homeomorph K
-      (X := TopCat.of (SublevelSpace f (A + 1))) (Y := TopCat.of M) eTop).mp hfin,
-    (DifferentialGeometry.Homology.eulerChar_eq_of_homeomorph K eTop).symm.trans hχ⟩
+  exact finiteHomologyType_and_eulerChar_of_finite_morse I K hf hfinite hnd hinj
 
 end DifferentialGeometry.Morse

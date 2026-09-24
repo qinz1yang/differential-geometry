@@ -34,7 +34,22 @@ lemma centralCurvatureDensity_eq_of_eventuallyEq (g : SmoothRiemannianMetric I M
     {d f : ℝ × ℝ → M} {t : ℝ} (h : d =ᶠ[𝓝 (0, t)] f) :
     centralCurvatureDensity (I := I) g (Function.curry d) t =
       centralCurvatureDensity (I := I) g (Function.curry f) t := by
-  sorry
+  have hvel : centralVelocity (I := I) (Function.curry d) t =
+      centralVelocity (I := I) (Function.curry f) t := by
+    unfold centralVelocity
+    have hpath : (fun u : ℝ => Function.curry d 0 u) =ᶠ[𝓝 t]
+        (fun u : ℝ => Function.curry f 0 u) := by
+      filter_upwards
+        [h.comp_tendsto (continuous_const.prodMk continuous_id).continuousAt]
+        with u hu using hu
+    exact congrArg (fun A => A (1 : ℝ))
+      (hpath.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I))
+  have hv : centralVariationField (I := I) (Function.curry d) t =
+      centralVariationField (I := I) (Function.curry f) t :=
+    (centralVariationField_eventuallyEq (I := I) h).self_of_nhds
+  have hbase : Function.curry d 0 t = Function.curry f 0 t := h.self_of_nhds
+  unfold centralCurvatureDensity
+  rw [hbase, hv, hvel]
 
 theorem secondVariation_curveEnergy_neg_of_parallel_geodesicEndpoints_local
     (g : SmoothRiemannianMetric I M) (f : ℝ × ℝ → M) {L : ℝ} (hL : 0 < L)

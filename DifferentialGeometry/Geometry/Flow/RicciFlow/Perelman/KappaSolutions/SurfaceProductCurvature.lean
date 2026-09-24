@@ -68,6 +68,7 @@ private theorem surfaceProduct_basis_orthonormal {Idx : Type*} [DecidableEq Idx]
     exact (hproduct y s 0 0 1 1).trans (by simp)
 
 variable [CompleteSpace E]
+variable [I.Boundaryless] [T2Space M]
 
 private theorem surfaceProduct_curvature_fst
     (h : SmoothRiemannianMetric I M)
@@ -145,7 +146,6 @@ theorem metricRmNormSq_product_real_of_inner_eq
     simp only [e, bP, surfaceProduct_basis_inl]
 
 theorem metricAlgebraicCurvatureTensorAt_product_real_mem_operatorCone_iff
-    [T2Space M]
     (h : SmoothRiemannianMetric I M)
     (gP : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))
     (hproduct : ∀ (y : M) (s : ℝ) (v w : TangentSpace I y) (a c : ℝ),

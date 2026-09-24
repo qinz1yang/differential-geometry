@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Duhamel.Lowe
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.Schauder.SecondDerivative
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.Regularity
 import DifferentialGeometry.Analysis.Schauder.Holder.Basic
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 
 noncomputable section
@@ -31,6 +32,93 @@ theorem heatSupGradient_norm_le {t : Real} (ht : 0 < t)
   intro v
   rw [heatSupGradient_apply ht]
   exact (heatD1Sup_norm ht v u x).trans_eq (by ring)
+
+omit [Nontrivial V] [CompleteSpace F] in
+theorem heatSupHessian_norm_le {t : Real} (ht : 0 < t)
+    (u : BoundedContinuousFunction V F) (x : V) :
+    ‖heatSupHessian t u x‖ ≤ t⁻¹ * heatC2 V * ‖u‖ := by
+  cases subsingleton_or_nontrivial V with
+  | inl h =>
+    let := h
+    have hz : heatSupHessian t u x = 0 := Subsingleton.elim _ _
+    rw [hz, ContinuousLinearMap.opNorm_zero]
+    exact mul_nonneg (mul_nonneg (inv_nonneg.mpr ht.le)
+      (heatC2_nonneg (V := V))) (norm_nonneg u)
+  | inr h =>
+    let := h
+    unfold heatSupHessian
+    calc
+      ‖∫ y : V, heatD2SmulRightMap t (x - y) (u y)‖ ≤
+          ∫ y : V, heatD2Maj t (x - y) * ‖u‖ := by
+        apply norm_integral_le_of_norm_le
+          (((heatD2Maj_int (V := V) ht).comp_sub_left x).mul_const ‖u‖)
+        filter_upwards with y
+        exact (heatD2SmulRightMap_norm_le ht (x - y) (u y)).trans
+          (mul_le_mul_of_nonneg_left (u.norm_coe_le_norm y) (heatD2Maj_nonneg ht _))
+      _ = t⁻¹ * heatC2 V * ‖u‖ := by
+        rw [integral_mul_const, integral_sub_left_eq_self, integral_heatD2Maj ht]
+
+omit [Nontrivial V] [CompleteSpace F] in
+theorem heatSupGradient_holderWith {alpha : NNReal} (halpha : alpha ≤ 1)
+    {t : Real} (ht : 0 < t) (u : BoundedContinuousFunction V F) :
+    HolderWith
+      ⟨(heatC2 V + 2 * heatC1 V) * ‖u‖ * t ^ (-(1 + (alpha : Real)) / 2), by
+        have hC1 := heatC1_nonneg (V := V)
+        have hC2 := heatC2_nonneg (V := V)
+        positivity⟩ alpha (heatSupGradient t u) := by
+  rcases subsingleton_or_nontrivial V with hV | hV
+  · let : Subsingleton V := hV
+    intro x y
+    rw [Subsingleton.elim x y, edist_self]
+    exact bot_le
+  · let : Nontrivial V := hV
+    have hC1 := heatC1_nonneg (V := V)
+    have hC2 := heatC2_nonneg (V := V)
+    let M : NNReal := ⟨(heatScale t)⁻¹ * heatC1 V * ‖u‖, by
+      exact mul_nonneg (mul_nonneg (inv_nonneg.mpr (heatScale_pos ht).le) hC1)
+        (norm_nonneg u)⟩
+    let L : NNReal := ⟨t⁻¹ * heatC2 V * ‖u‖, by positivity⟩
+    let epsilon : NNReal := ⟨heatScale t, (heatScale_pos ht).le⟩
+    have hlip : LipschitzWith L (heatSupGradient t u) := by
+      apply lipschitzWith_of_nnnorm_fderiv_le (𝕜 := Real)
+      · exact fun x => (heatSupGradient_hasFDerivAt ht u x).differentiableAt
+      · intro x
+        rw [(heatSupGradient_hasFDerivAt ht u x).fderiv]
+        exact_mod_cast heatSupHessian_norm_le ht u x
+    have hh := holderWith_restrict_of_norm_le_of_lipschitzOnWith
+      (s := (Set.univ : Set V)) (M := M) (epsilon := epsilon)
+      (show 0 < epsilon from heatScale_pos ht) halpha
+      (fun x _ => heatSupGradient_norm_le ht u x) hlip.lipschitzOnWith
+    have hh' := holderOnWith_univ.mp (HolderWith.restrict_iff.mp hh)
+    have he1 : t⁻¹ * (heatScale t) ^ (1 - (alpha : Real)) =
+        t ^ (-(1 + (alpha : Real)) / 2) := by
+      unfold heatScale
+      rw [Real.sqrt_eq_rpow, ← Real.rpow_mul ht.le, ← Real.rpow_neg_one,
+        ← Real.rpow_add ht]
+      congr 1
+      ring
+    have he2 : (heatScale t)⁻¹ / (heatScale t) ^ (alpha : Real) =
+        t ^ (-(1 + (alpha : Real)) / 2) := by
+      unfold heatScale
+      rw [Real.sqrt_eq_rpow, ← Real.rpow_neg_one, ← Real.rpow_mul ht.le,
+        ← Real.rpow_mul ht.le, ← Real.rpow_sub ht]
+      congr 1
+      ring
+    apply hh'.mono
+    change ((L * epsilon ^ ((1 : NNReal) - alpha : Real) +
+      2 * M / epsilon ^ (alpha : Real) : NNReal) : Real) ≤
+        (heatC2 V + 2 * heatC1 V) * ‖u‖ * t ^ (-(1 + (alpha : Real)) / 2)
+    apply le_of_eq
+    symm
+    change _ = (t⁻¹ * heatC2 V * ‖u‖) * (heatScale t) ^ (1 - (alpha : Real)) +
+      (2 * ((heatScale t)⁻¹ * heatC1 V * ‖u‖)) / (heatScale t) ^ (alpha : Real)
+    calc
+      (heatC2 V + 2 * heatC1 V) * ‖u‖ * t ^ (-(1 + (alpha : Real)) / 2) =
+          heatC2 V * ‖u‖ * (t⁻¹ * (heatScale t) ^ (1 - (alpha : Real))) +
+          2 * heatC1 V * ‖u‖ * ((heatScale t)⁻¹ / (heatScale t) ^ (alpha : Real)) := by
+        rw [he1, he2]
+        ring
+      _ = _ := by ring
 
 theorem heatSupHessian_norm_le_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
@@ -182,6 +270,67 @@ theorem heatDuhamelGradient_int {t : Real} (ht : 0 < t) {B : NNReal}
       rw [← heatScale12_eq hpos]
       unfold heatDuhamelGradientMajor
       ring
+
+omit [Nontrivial V] [CompleteSpace F] in
+theorem heatDuhamelGradientMap_norm_sub_le {alpha B : NNReal}
+    (halpha : alpha < 1) {t : Real} (ht : 0 < t)
+    (f : Real → BoundedContinuousFunction V F)
+    (hf : ∀ s ∈ Icc (0 : Real) t, ‖f s‖ ≤ B)
+    (hmeas : ∀ z : V, AEStronglyMeasurable
+      (fun s : Real => heatSupGradient (t - s) (f s) z)
+      (volume.restrict (uIoc (0 : Real) t))) (x y : V) :
+    ‖heatDuhamelGradientMap t f x - heatDuhamelGradientMap t f y‖ ≤
+      ((2 / (1 - (alpha : Real))) * (heatC2 V + 2 * heatC1 V) * B *
+        t ^ ((1 - (alpha : Real)) / 2)) * ‖x - y‖ ^ (alpha : Real) := by
+  have ha : (alpha : Real) < 1 := by exact_mod_cast halpha
+  have hC1 := heatC1_nonneg (V := V)
+  have hC2 := heatC2_nonneg (V := V)
+  rcases subsingleton_or_nontrivial V with hV | hV
+  · let : Subsingleton V := hV
+    rw [Subsingleton.elim x y, sub_self, norm_zero]
+    positivity
+  · let : Nontrivial V := hV
+    let beta : NNReal := 1 - alpha
+    have hb : 0 < beta := tsub_pos_iff_lt.mpr halpha
+    have hbval : (beta : Real) = 1 - (alpha : Real) := by
+      simp only [beta, NNReal.coe_sub halpha.le, NNReal.coe_one]
+    have hscale (s : Real) : holderHeatScale beta s =
+        s ^ (-(1 + (alpha : Real)) / 2) := by
+      unfold holderHeatScale
+      rw [hbval]
+      congr 1
+      ring
+    let A : Real := (heatC2 V + 2 * heatC1 V) * B * ‖x - y‖ ^ (alpha : Real)
+    have hint : IntervalIntegrable
+        (fun s : Real => A * holderHeatScale beta (t - s)) volume 0 t :=
+      (holderHeatScale_intble hb).const_mul A
+    have hn : ∀ᵐ s ∂(volume : Measure Real), s ≠ t := by
+      simp [ae_iff, measure_singleton]
+    have hbound : ∀ᵐ s ∂(volume : Measure Real), s ∈ Ioc (0 : Real) t →
+        ‖heatSupGradient (t - s) (f s) x - heatSupGradient (t - s) (f s) y‖ ≤
+          A * holderHeatScale beta (t - s) := by
+      filter_upwards [hn] with s hs
+      intro hst
+      have hp : 0 < t - s := sub_pos.mpr (lt_of_le_of_ne hst.2 hs)
+      have hh := (heatSupGradient_holderWith halpha.le hp (f s)).dist_le x y
+      rw [dist_eq_norm, dist_eq_norm] at hh
+      calc
+        ‖heatSupGradient (t - s) (f s) x - heatSupGradient (t - s) (f s) y‖ ≤
+            ((heatC2 V + 2 * heatC1 V) * ‖f s‖ *
+              (t - s) ^ (-(1 + (alpha : Real)) / 2)) * ‖x - y‖ ^ (alpha : Real) := hh
+        _ ≤ ((heatC2 V + 2 * heatC1 V) * B *
+              (t - s) ^ (-(1 + (alpha : Real)) / 2)) * ‖x - y‖ ^ (alpha : Real) := by
+          gcongr
+          exact hf s ⟨hst.1.le, hst.2⟩
+        _ = A * holderHeatScale beta (t - s) := by rw [hscale]; dsimp [A]; ring
+    unfold heatDuhamelGradientMap
+    rw [← intervalIntegral.integral_sub
+      (heatDuhamelGradient_int ht f hf x (hmeas x))
+      (heatDuhamelGradient_int ht f hf y (hmeas y))]
+    refine (intervalIntegral.norm_integral_le_of_norm_le ht.le hbound hint).trans_eq ?_
+    rw [intervalIntegral.integral_const_mul, timeHolderHeatScale_int hb, hbval]
+    dsimp [A]
+    ring
 
 omit [CompleteSpace F] in
 theorem heatDuhamelGradientMap_apply {t : Real} (ht : 0 < t) {B : NNReal}

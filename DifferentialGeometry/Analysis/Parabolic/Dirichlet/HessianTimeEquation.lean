@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianSourceDual
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationTensor
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartMassPairing
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffTimeEquation
 
 noncomputable section
 
@@ -31,82 +31,6 @@ local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 
 private local instance : MeasurableSpace EuStd :=
   WithLp.measurableSpace 2 ((i : Fin (Module.finrank ℝ EuN)) → ℝ)
-
-private theorem cutoff_lp_dual_deriv
-    {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
-    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
-    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηs : tsupport η ⊆ Ω)
-    {T t₀ t₁ : ℝ} (ht₀ : 0 ≤ t₀) (ht₁ : t₁ ≤ T) (ht₀₁ : t₀ < t₁)
-    (H : Lp ℝ 2 (((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω)))
-    (v : Lp (H1ComplDirichlet q) 2 ((timeMeasure T).restrict (Icc t₀ t₁)))
-    (w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) (t₁ - t₀))
-    (ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 ((timeMeasure T).restrict (Icc t₀ t₁)))
-    (Q : Fin (Module.finrank ℝ EuN) → ℝ × EuStd → ℝ) (B : ℝ × EuStd → ℝ)
-    (hv : ∀ᵐ t ∂(timeMeasure T).restrict (Icc t₀ t₁),
-      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
-        chartPullback I_hs α (fun z => η z * H (t, z)))
-    (hw : ∀ᵐ s ∂timeMeasure (t₁ - t₀), ∀ z : H1ComplDirichlet q,
-      w.toFun s z = inner ℝ (H1ComplDirichletToLp q (v (t₀ + s))) (H1ComplDirichletToLp q z))
-    (hℓ : ∀ (τ : Lp ℝ 2 ((timeMeasure T).restrict (Icc t₀ t₁))) (z : H1ComplDirichlet q),
-      (∫ t, τ t * ℓ t z ∂(timeMeasure T).restrict (Icc t₀ t₁)) =
-        (∫ p, τ p.1 * B p * H1ComplDirichletToLp q z
-          ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2))
-          ∂((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω)) -
-        ∑ j, ∫ p, τ p.1 * Q j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j z p.2
-          ∂((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω))
-    (htensor : ∀ (z : SmoothScalarDirichlet q) (τ : ℝ → ℝ),
-      ContDiff ℝ (⊤ : ℕ∞) τ → HasCompactSupport τ → tsupport τ ⊆ Ioo t₀ t₁ →
-      let ψ := fun x => z.toFun ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x))
-      (∫ p, deriv τ p.1 * (η p.2 * (MetricExtension.densityOnEuclid q α p.2 * H p)) * ψ p.2
-          ∂((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω)) =
-        (∑ j, ∫ p, τ p.1 * Q j p * fderiv ℝ ψ p.2 (EuclideanSpace.single j 1)
-          ∂((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω)) -
-          ∫ p, τ p.1 * B p * ψ p.2
-            ∂((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω)) :
-    w.deriv =ᵐ[timeMeasure (t₁ - t₀)] fun s => ℓ (t₀ + s) := by
-  let μ := (timeMeasure T).restrict (Icc t₀ t₁)
-  let σ := fun p : ℝ × EuStd => MetricExtension.densityOnEuclid q α p.2
-  let mass : H1ComplDirichlet q →L[ℝ] H1ComplDirichlet q →L[ℝ] ℝ :=
-    (innerSL ℝ).bilinearComp (H1ComplDirichletToLp q) (H1ComplDirichletToLp q)
-  have hμ : μ = volume.restrict (Icc t₀ t₁) :=
-    Measure.restrict_restrict_of_subset (fun t ht => ⟨ht₀.trans ht.1, ht.2.trans ht₁⟩)
-  have hηc : HasCompactSupport η :=
-    hΩc.of_isClosed_subset (isClosed_tsupport _) (hηs.trans subset_closure)
-  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
-  let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω)) := Lp.SecondCountableTopology
-  obtain ⟨P, hP, _⟩ := Lp.exists_curry (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) H
-  have hvP : ∀ᵐ t ∂μ,
-      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
-        chartPullback I_hs α (fun z => η z * P t z) := by
-    filter_upwards [hv, hP] with t hvt hPt
-    apply hvt.trans
-    apply chartPullback_ae_eq_of_ae_eq q α
-    have hall := (ae_restrict_iff' hΩ.measurableSet).mp hPt
-    filter_upwards [hall] with x hx
-    by_cases hxs : x ∈ tsupport η
-    · exact congrArg (η x * ·) (hx (hηs hxs)).symm
-    · simp only [image_eq_zero_of_notMem_tsupport hxs, zero_mul]
-  refine timeH1.deriv_ae_eq_of_tensor_mass_dual (ν := volume.restrict Ω)
-    (X := H1ComplDirichlet q) (S := SmoothScalarDirichlet q) ht₀₁ μ hμ
-    (smoothToH1ComplDirichlet q) (denseRange_smoothToH1ComplDirichlet q)
-    mass v w ℓ hw
-    (W := fun x => η x.2 * (σ x * H x)) (B := B) (Q := Q)
-    (R := fun z x => H1ComplDirichletToLp q (smoothToH1ComplDirichlet q z)
-      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x)))
-    (D := fun z j => dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (smoothToH1ComplDirichlet q z)) ?_ ?_ ?_
-  · intro τ z
-    have h := integral_mass_inner_eq_integral_chart_prod q α hΩ hΩc hΩs hη hηc hηs
-      τ v P H (hP.mono fun _ ht => ht.symm) (smoothToH1ComplDirichlet q z) hvP
-    apply h.trans
-    apply integral_congr_ae
-    filter_upwards with x
-    dsimp only [σ]
-    ring
-  · intro τ z
-    exact hℓ τ (smoothToH1ComplDirichlet q z)
-  · intro z τ hτ hτc hτs
-    exact integral_chart_tensor_test_of_smooth q α hΩ hΩc hΩs μ z τ (htensor z τ hτ hτc hτs)
 
 omit [T2Space M] [CompactSpace M] in
 private theorem integral_chart_cutoff_tensor_test
@@ -396,7 +320,8 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_hessian_dual_deriv
   obtain ⟨ℓ, hℓ⟩ := hdual k l
   obtain ⟨w, hw⟩ := hmass k l
   have hd : w.deriv =ᵐ[timeMeasure (t₁ - t₀)] fun s => ℓ (t₀ + s) :=
-    cutoff_lp_dual_deriv α hΩ₀ hΩ₀c hΩ₀s hη hηs ht₀.le ht₁.le ht₀₁
+    deriv_ae_eq_of_cutoff_tensor_identity α hΩ₀ hΩ₀c hΩ₀s hη hηs ht₀₁ μ
+      (Measure.restrict_restrict_of_subset (Icc_subset_Icc ht₀.le ht₁.le))
       (H k l) (v k l) w ℓ (Q k l) (B k l) (hv k l) hw hℓ
       (integral_chart_cutoff_tensor_test hG hreg α hΩ hΩc hΩs ht₀.le ht₁.le hΩ₀ hΩ₀Ω
         hη hηs (H k l) (K k l) (C k l) (hC k l) (hP k l) (hQ k l) hdηr (hfixed k l))

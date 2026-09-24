@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.ChartAxis
 import DifferentialGeometry.Geometry.Neck.InwardCurve
+import DifferentialGeometry.Geometry.Neck.LeastRicciField
 import DifferentialGeometry.Topology.Manifold.ProductChartGraph
 import Mathlib.Analysis.Normed.Module.Connected
 
@@ -19,33 +20,21 @@ private instance : PathConnectedSpace S :=
     (isPathConnected_sphere (by simp [← Module.finrank_eq_rank] :
       1 < Module.rank ℝ (EuclideanSpace ℝ (Fin 3))) _ zero_le_one)
 
-theorem cylindricalChart.exists_graph_of_full_cross_section_and_gradient_close
-    {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+theorem cylindricalChart.transverse_full_cross_section_of_axial_derivative_ne_zero
+    {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     [TopologicalSpace H] {J : ModelWithCorners ℝ F H}
-    [TopologicalSpace M] [ChartedSpace H M] [IsManifold J ∞ M] [T2Space M]
-    (C₀ C₁ : cylindricalChart J (M := M)) (g : SmoothRiemannianMetric J M)
-    (t : ℝ)
+    [TopologicalSpace M] [ChartedSpace H M]
+    (C₀ C₁ : cylindricalChart J (M := M)) (t : ℝ)
     (hsection : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, (p, t) ∈ C₀.domain)
     (htarget : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
       (C₀.chart ⟨(p, t), hsection p⟩ : M) ∈ C₁.target)
-    {U : Set C₁.domain} (ε : ℝ) (hε : ε < 1) (hsmall : C₁.metricCloseOn g ε U)
-    (hU : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
-      C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩ ∈ U)
-    (σ c δ B : ℝ) (hσ : σ = 1 ∨ σ = -1) (hδ : δ * Real.sqrt (1 + ε) < 1)
-    (hgrad : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
-      let y : M := C₀.chart ⟨(p, t), hsection p⟩
-      Real.sqrt (g.inner y (gradFun g C₀.axial y - σ • gradFun g C₁.axial y)
-        (gradFun g C₀.axial y - σ • gradFun g C₁.axial y)) ≤ δ)
-    (hvalue : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
-      let y : M := C₀.chart ⟨(p, t), hsection p⟩
-      |C₀.axial y - σ * C₁.axial y - c| ≤ B) :
-    ∃ (η : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯
-        Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
-      (h : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → ℝ), ContMDiff (𝓡 2) 𝓘(ℝ) ∞ h ∧
-      ∃ hmem : ∀ p, (p, h p) ∈ C₁.domain,
-        (∀ p, (C₁.chart ⟨(p, h p), hmem p⟩ : M) =
-          (C₀.chart ⟨(η p, t), hsection (η p)⟩ : M)) ∧
-        ∀ p, |(Real.sqrt C₀.scale)⁻¹ * t - σ * ((Real.sqrt C₁.scale)⁻¹ * h p) - c| ≤ B := by
+    (haxial : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      let x := C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩
+      mvfderiv J C₀.axial (C₁.chart x : M) (C₁.axialVector x) ≠ 0) :
+    ∀ p, (0, 1) ∉ range (mfderiv (𝓡 2) ((𝓡 2).prod 𝓘(ℝ))
+      (fun p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ↦
+        (C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩ :
+          Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ)) p) := by
   let e₀ : S → M := fun p ↦ C₀.chart ⟨(p, t), hsection p⟩
   obtain ⟨he₀, -, -⟩ := contMDiff_injective_and_injective_mfderiv_of_product_chart_section
     C₀.domain C₀.target C₀.chart t hsection
@@ -109,17 +98,53 @@ theorem cylindricalChart.exists_graph_of_full_cross_section_and_gradient_close
       change mfderiv J J (Subtype.val : C₁.target → M) (C₁.chart (ψ p))
         (Real.sqrt C₁.scale • mfderiv IC J C₁.chart (ψ p) w) = _
       exact (map_smul _ _ _).trans (congrArg (fun v ↦ Real.sqrt C₁.scale • v) hdw.symm)
-    have hn := C₁.mvfderiv_axialVector_ne_zero_of_gradient_close g ε hε hsmall C₀.axial
-      σ δ hσ hδ (ψ p) (hU p) (by
-        change Real.sqrt (g.inner (Φ (ψ p))
-          (gradFun g C₀.axial (Φ (ψ p)) - σ • gradFun g C₁.axial (Φ (ψ p)))
-          (gradFun g C₀.axial (Φ (ψ p)) - σ • gradFun g C₁.axial (Φ (ψ p)))) ≤ δ
-        rw [hpoint]
-        exact hgrad p)
+    have hn := haxial p
     apply hn
+    change mvfderiv J C₀.axial (Φ (ψ p)) (C₁.axialVector (ψ p)) = 0
     rw [hv, map_smul, smul_eq_mul]
-    change Real.sqrt C₁.scale * mvfderiv J C₀.axial (Φ (ψ p)) (mfderiv IC J Φ (ψ p) w) = 0
     rw [← hchain, hqw, mul_zero]
+  exact htransverse
+
+theorem cylindricalChart.exists_graph_of_full_cross_section_and_gradient_close
+    {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [TopologicalSpace H] {J : ModelWithCorners ℝ F H}
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold J ∞ M] [T2Space M]
+    (C₀ C₁ : cylindricalChart J (M := M)) (g : SmoothRiemannianMetric J M)
+    (t : ℝ)
+    (hsection : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, (p, t) ∈ C₀.domain)
+    (htarget : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      (C₀.chart ⟨(p, t), hsection p⟩ : M) ∈ C₁.target)
+    {U : Set C₁.domain} (ε : ℝ) (hε : ε < 1) (hsmall : C₁.metricCloseOn g ε U)
+    (hU : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩ ∈ U)
+    (σ c δ B : ℝ) (hσ : σ = 1 ∨ σ = -1) (hδ : δ * Real.sqrt (1 + ε) < 1)
+    (hgrad : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      let y : M := C₀.chart ⟨(p, t), hsection p⟩
+      Real.sqrt (g.inner y (gradFun g C₀.axial y - σ • gradFun g C₁.axial y)
+        (gradFun g C₀.axial y - σ • gradFun g C₁.axial y)) ≤ δ)
+    (hvalue : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      let y : M := C₀.chart ⟨(p, t), hsection p⟩
+      |C₀.axial y - σ * C₁.axial y - c| ≤ B) :
+    ∃ (η : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯
+        Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
+      (h : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → ℝ), ContMDiff (𝓡 2) 𝓘(ℝ) ∞ h ∧
+      ∃ hmem : ∀ p, (p, h p) ∈ C₁.domain,
+        (∀ p, (C₁.chart ⟨(p, h p), hmem p⟩ : M) =
+          (C₀.chart ⟨(η p, t), hsection (η p)⟩ : M)) ∧
+        ∀ p, |(Real.sqrt C₀.scale)⁻¹ * t - σ * ((Real.sqrt C₁.scale)⁻¹ * h p) - c| ≤ B := by
+  have haxial (p : S) :
+      let x := C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩
+      mvfderiv J C₀.axial (C₁.chart x : M) (C₁.axialVector x) ≠ 0 :=
+    C₁.mvfderiv_axialVector_ne_zero_of_gradient_close g ε hε hsmall C₀.axial
+      σ δ hσ hδ _ (hU p) (by
+        have heq : (C₁.chart (C₁.chart.symm
+            ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩) : M) =
+            (C₀.chart ⟨(p, t), hsection p⟩ : M) :=
+          congrArg Subtype.val (C₁.chart.apply_symm_apply _)
+        rw [heq]
+        exact hgrad p)
+  have htransverse := C₀.transverse_full_cross_section_of_axial_derivative_ne_zero
+    C₁ t hsection htarget haxial
   obtain ⟨η, h, hh, hmem, heq⟩ := exists_diffeomorph_graph_of_product_chart_section
     C₀.domain C₁.domain C₀.target C₁.target C₀.chart C₁.chart t hsection htarget htransverse
   refine ⟨η, h, hh, hmem, heq, ?_⟩
@@ -130,5 +155,62 @@ theorem cylindricalChart.exists_graph_of_full_cross_section_and_gradient_close
   have h₁ := C₁.axial_chart ⟨(p, h p), hmem p⟩
   rw [heq p] at h₁
   rwa [h₀, h₁] at hb
+
+theorem cylindricalChart.exists_smoothTwoSidedCollar_of_full_cross_section_of_metric_close
+    {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [TopologicalSpace H] {J : ModelWithCorners ℝ F H}
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold J ∞ M] [T2Space M]
+    [BoundarylessManifold J M]
+    (C₀ C₁ : cylindricalChart J (M := M)) (g : SmoothRiemannianMetric J M) (t : ℝ)
+    (hsection : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, (p, t) ∈ C₀.domain)
+    (htarget : ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      (C₀.chart ⟨(p, t), hsection p⟩ : M) ∈ C₁.target)
+    {U₀ : Set C₀.domain} {U₁ : Set C₁.domain} (hU₀ : IsOpen U₀) (hU₁ : IsOpen U₁)
+    (ε : ℝ) (hε : ε < 1 / 1000000)
+    (hsmall₀ : C₀.metricCloseOn g ε U₀) (hsmall₁ : C₁.metricCloseOn g ε U₁)
+    (hinside₀ : ∀ p, (⟨(p, t), hsection p⟩ : C₀.domain) ∈ U₀)
+    (hinside₁ : ∀ p,
+      C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩ ∈ U₁)
+    {r : ℝ} (hr : 0 < r) :
+    ∃ (η : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯
+        Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
+      (a : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → ℝ), ContMDiff (𝓡 2) 𝓘(ℝ) ∞ a ∧
+      ∃ hmem : ∀ p, (p, a p) ∈ C₁.domain,
+        (∀ p, (C₁.chart ⟨(p, a p), hmem p⟩ : M) =
+          (C₀.chart ⟨(η p, t), hsection (η p)⟩ : M)) ∧
+        ∃ c : DifferentialGeometry.Topology.SmoothTwoSidedCollar (𝓡 2) J
+            (fun p ↦ (C₀.chart ⟨(p, t), hsection p⟩ : M)),
+          c.radius < r ∧
+          (∀ p s, s ∈ Icc (-c.radius) c.radius → (p, a p + s) ∈ C₁.domain) ∧
+          ∀ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ×
+              DifferentialGeometry.Topology.symmetricOpenInterval c.radius,
+            ∃ hp : (η.symm p.1, a (η.symm p.1) + (p.2 : ℝ)) ∈ C₁.domain,
+              c.toFun p =
+                (C₁.chart ⟨(η.symm p.1, a (η.symm p.1) + (p.2 : ℝ)), hp⟩ : M) := by
+  have haxial (p : S) :
+      let x := C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩
+      mvfderiv J C₀.axial (C₁.chart x : M) (C₁.axialVector x) ≠ 0 := by
+    let x := C₁.chart.symm ⟨(C₀.chart ⟨(p, t), hsection p⟩ : M), htarget p⟩
+    have hpoint : (C₁.chart x : M) = (C₀.chart ⟨(p, t), hsection p⟩ : M) := by
+      simp only [x, C₁.chart.apply_symm_apply]
+    have hx₀ : (C₁.chart x : M) ∈ C₀.region U₀ := by
+      rw [hpoint]
+      exact ⟨_, ⟨_, hinside₀ p, rfl⟩, rfl⟩
+    have hx₁ : (C₁.chart x : M) ∈ C₁.region U₁ :=
+      ⟨_, ⟨x, hinside₁ p, rfl⟩, rfl⟩
+    obtain ⟨σ, hσ, hgrad⟩ := C₀.exists_sign_axial_gradient_bound C₁ g hU₀ hU₁ ε ε
+      (by linarith) (by linarith) hsmall₀ hsmall₁ hx₀ hx₁
+    have heq : 184712 * (ε + ε) = 369424 * ε := by ring
+    rw [heq] at hgrad
+    have hδ0 : 0 ≤ 369424 * ε := (Real.sqrt_nonneg _).trans hgrad
+    have hsqrt : Real.sqrt (1 + ε) ≤ 2 :=
+      Real.sqrt_le_iff.mpr ⟨by norm_num, by linarith⟩
+    have hδ : (369424 * ε) * Real.sqrt (1 + ε) < 1 :=
+      (mul_le_mul_of_nonneg_left hsqrt hδ0).trans_lt (by linarith)
+    exact C₁.mvfderiv_axialVector_ne_zero_of_gradient_close g ε (by linarith) hsmall₁
+      C₀.axial σ (369424 * ε) hσ hδ x (hinside₁ p) hgrad
+  exact exists_smoothTwoSidedCollar_of_transverse_product_chart_section
+    C₀.domain C₁.domain C₀.target C₁.target C₀.chart C₁.chart t hsection htarget
+    (C₀.transverse_full_cross_section_of_axial_derivative_ne_zero C₁ t hsection htarget haxial) hr
 
 end DifferentialGeometry.Geometry.Neck

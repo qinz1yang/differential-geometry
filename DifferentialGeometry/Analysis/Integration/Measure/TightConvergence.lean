@@ -2,6 +2,9 @@ import Mathlib.MeasureTheory.Integral.CompactlySupported
 import Mathlib.MeasureTheory.Measure.FiniteMeasure
 import Mathlib.MeasureTheory.Measure.Real
 import Mathlib.Topology.UrysohnsLemma
+import Mathlib.MeasureTheory.Measure.Map
+import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
+import Mathlib.Topology.Order.Basic
 
 noncomputable section
 
@@ -75,3 +78,95 @@ theorem tendsto_mass_of_integral_tendsto_of_tight
     linarith [hmass_le (mus i), hhigh mu, htail_i]
 
 end DifferentialGeometry.Analysis.Measure
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.Analysis.Measure
+
+open MeasureTheory Set
+open scoped ENNReal
+
+variable {X Y : Type*} [MeasurableSpace X] [MeasurableSpace Y]
+
+theorem map_restrict_compl_le_of_mapsTo
+    (mu : Measure Y) {F : Y → X} {T B : Set Y} {K : Set X}
+    (hK : MeasurableSet K)
+    (hF : AEMeasurable F (mu.restrict T)) (hBK : MapsTo F (B ∩ T) K) :
+    Measure.map F (mu.restrict T) Kᶜ ≤ mu Bᶜ := by
+  rw [Measure.map_apply_of_aemeasurable hF hK.compl,
+    Measure.restrict_apply₀ (hF.nullMeasurable hK.compl)]
+  apply measure_mono
+  intro y hy hyB
+  exact hy.1 (hBK ⟨hyB, hy.2⟩)
+
+theorem measure_univ_le_map_restrict_univ_add_compl
+    (mu : Measure Y) {F : Y → X} {T B : Set Y}
+    (hF : AEMeasurable F (mu.restrict T)) (hBT : B ⊆ T) :
+    mu Set.univ ≤ Measure.map F (mu.restrict T) Set.univ + mu Bᶜ := by
+  rw [Measure.map_apply_of_aemeasurable hF MeasurableSet.univ,
+    Set.preimage_univ, Measure.restrict_apply_univ]
+  calc
+    mu Set.univ ≤ mu (T ∪ Bᶜ) := by
+      apply measure_mono
+      intro y _
+      by_cases hy : y ∈ B
+      · exact Or.inl (hBT hy)
+      · exact Or.inr hy
+    _ ≤ mu T + mu Bᶜ := measure_union_le T Bᶜ
+
+theorem lintegral_le_lintegral_mul_add_compl
+    (mu : Measure Y) (density cutoff : Y → ℝ≥0∞) {B : Set Y}
+    (hB : MeasurableSet B) (hone : EqOn cutoff 1 B) :
+    (∫⁻ y, density y ∂mu) ≤
+      (∫⁻ y, cutoff y * density y ∂mu) + ∫⁻ y in Bᶜ, density y ∂mu := by
+  have hBint : (∫⁻ y in B, density y ∂mu) ≤
+      ∫⁻ y, cutoff y * density y ∂mu := by
+    calc
+      (∫⁻ y in B, density y ∂mu) = ∫⁻ y in B, cutoff y * density y ∂mu := by
+        apply setLIntegral_congr_fun hB
+        intro y hy
+        simp only [hone hy, Pi.one_apply, one_mul]
+      _ ≤ _ := setLIntegral_le_lintegral B _
+  calc
+    (∫⁻ y, density y ∂mu) = (∫⁻ y in B, density y ∂mu) +
+        ∫⁻ y in Bᶜ, density y ∂mu := (lintegral_add_compl density hB).symm
+    _ ≤ _ := add_le_add hBint le_rfl
+
+end DifferentialGeometry.Analysis.Measure
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.Analysis.Measure
+
+open Filter MeasureTheory Set
+open scoped ENNReal Topology
+
+theorem tendsto_measure_univ_of_map_restrict_and_compl
+    {ι X : Type*} {Y : ι → Type*} [MeasurableSpace X] [∀ i, MeasurableSpace (Y i)]
+    {l : Filter ι} (mu : ∀ i, Measure (Y i)) (f : ∀ i, Y i → X)
+    (T B : ∀ i, Set (Y i)) {mass : ℝ≥0∞}
+    (hf : ∀ᶠ i in l, AEMeasurable (f i) ((mu i).restrict (T i)))
+    (hBT : ∀ᶠ i in l, B i ⊆ T i)
+    (hmap : Tendsto (fun i => Measure.map (f i) ((mu i).restrict (T i)) Set.univ)
+      l (𝓝 mass))
+    (htail : Tendsto (fun i => (mu i) (B i)ᶜ) l (𝓝 0)) :
+    Tendsto (fun i => (mu i) Set.univ) l (𝓝 mass) := by
+  have hupper : Tendsto
+      (fun i => Measure.map (f i) ((mu i).restrict (T i)) Set.univ + (mu i) (B i)ᶜ)
+      l (𝓝 mass) := by
+    simpa only [add_zero] using hmap.add htail
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hmap hupper
+  · filter_upwards [hf] with i hi
+    rw [Measure.map_apply_of_aemeasurable hi MeasurableSet.univ,
+      Set.preimage_univ, Measure.restrict_apply_univ]
+    exact measure_mono (subset_univ _)
+  · filter_upwards [hf, hBT] with i hi hBi
+    exact measure_univ_le_map_restrict_univ_add_compl (mu i) hi hBi
+
+end DifferentialGeometry.Analysis.Measure
+
+end

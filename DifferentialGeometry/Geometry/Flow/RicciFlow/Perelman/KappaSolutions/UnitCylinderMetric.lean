@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Manifold
 open DifferentialGeometry.Geometry
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 
 abbrev SpatialNeckSphere := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1

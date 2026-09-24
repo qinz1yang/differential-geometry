@@ -143,13 +143,15 @@ end DifferentialGeometry.Geometry.Connection
 
 namespace DifferentialGeometry.Geometry.Connection
 
+universe uH uM
+
 theorem exists_global_product_metric_family_from_common_parallel_unit_section
     {m : ℕ}
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [SimplyConnectedSpace M]
@@ -162,7 +164,7 @@ theorem exists_global_product_metric_family_from_common_parallel_unit_section
       (LeviCivita (I := I) (g a)) X x v = 0)
     (hdual : ∀ a x, ∀ v : TangentSpace I x,
       (g a).inner x (X x) v = (g a₀).inner x (X x) v) :
-    ∃ (N : Type) (_ : TopologicalSpace N)
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
       (hcs : ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel m) N),
       let _ := hcs
       ∃ hmanifold : IsManifold

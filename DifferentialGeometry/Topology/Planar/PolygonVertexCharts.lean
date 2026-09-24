@@ -6,13 +6,13 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PlanarJordan.LocalSides
 import DifferentialGeometry.External.Schoenflies.PrePolygonArc
 import DifferentialGeometry.External.Schoenflies.PrePolygonSep
-import External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
 import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 import Mathlib.Tactic.Module
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.FunProp
-import External.ClassificationOfSurfaces.TriangleMeshCrosscut
+import DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut
 
 /-! Polygon Vertex Charts. -/
 section

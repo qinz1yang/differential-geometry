@@ -11,11 +11,11 @@ import Mathlib.Topology.MetricSpace.Lipschitz
 noncomputable section
 
 open Set Metric
-open scoped Convex NNReal
+open scoped Convex NNReal ENNReal
 
 namespace DifferentialGeometry.Analysis
 
-variable {V Q : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [PseudoMetricSpace Q]
+variable {V Q : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [PseudoEMetricSpace Q]
 
 
 theorem exists_sphere_point_on_segment {x y : V} {r : ℝ}
@@ -29,29 +29,34 @@ theorem exists_sphere_point_on_segment {x y : V} {r : ℝ}
 
 
 
+theorem edist_add_edist_of_mem_segment {x y z : V} (h : z ∈ segment ℝ x y) :
+    edist x z + edist z y = edist x y := by
+  rw [edist_dist, edist_dist, edist_dist, ← ENNReal.ofReal_add (dist_nonneg) (dist_nonneg),
+    dist_add_dist_of_mem_segment h]
+
+
 theorem lipschitzOnWith_of_radial_pieces {f : V → Q} {S : Set V} {r : ℝ} {K : ℝ≥0}
     (hS : Convex ℝ S)
     (hin : LipschitzOnWith K f (S ∩ {z | ‖z‖ ≤ r}))
     (hout : LipschitzOnWith K f (S ∩ {z | r ≤ ‖z‖})) : LipschitzOnWith K f S := by
   have hcross (x : V) (hxS : x ∈ S) (hx : ‖x‖ ≤ r)
       (y : V) (hyS : y ∈ S) (hy : r ≤ ‖y‖) :
-      dist (f x) (f y) ≤ (K : ℝ) * dist x y := by
+      edist (f x) (f y) ≤ (K : ℝ≥0∞) * edist x y := by
     obtain ⟨z, hz, hzr⟩ := exists_sphere_point_on_segment hx hy
     have hzS := hS.segment_subset hxS hyS hz
     calc
-      _ ≤ dist (f x) (f z) + dist (f z) (f y) := dist_triangle _ _ _
-      _ ≤ (K : ℝ) * dist x z + (K : ℝ) * dist z y := add_le_add
-        (hin.dist_le_mul x ⟨hxS, hx⟩ z ⟨hzS, hzr.le⟩)
-        (hout.dist_le_mul z ⟨hzS, hzr.ge⟩ y ⟨hyS, hy⟩)
-      _ = _ := by rw [← mul_add, dist_add_dist_of_mem_segment hz]
-  apply LipschitzOnWith.of_dist_le_mul
+      _ ≤ edist (f x) (f z) + edist (f z) (f y) := edist_triangle _ _ _
+      _ ≤ (K : ℝ≥0∞) * edist x z + (K : ℝ≥0∞) * edist z y := add_le_add
+        (hin ⟨hxS, hx⟩ ⟨hzS, hzr.le⟩)
+        (hout ⟨hzS, hzr.ge⟩ ⟨hyS, hy⟩)
+      _ = _ := by rw [← mul_add, edist_add_edist_of_mem_segment hz]
   intro x hx y hy
   by_cases hxr : ‖x‖ ≤ r
   · by_cases hyr : ‖y‖ ≤ r
-    · exact hin.dist_le_mul x ⟨hx, hxr⟩ y ⟨hy, hyr⟩
+    · exact hin ⟨hx, hxr⟩ ⟨hy, hyr⟩
     · exact hcross x hx hxr y hy (le_of_not_ge hyr)
   · by_cases hyr : ‖y‖ ≤ r
-    · simpa only [dist_comm] using hcross y hy hyr x hx (le_of_not_ge hxr)
-    · exact hout.dist_le_mul x ⟨hx, le_of_not_ge hxr⟩ y ⟨hy, le_of_not_ge hyr⟩
+    · simpa only [edist_comm] using hcross y hy hyr x hx (le_of_not_ge hxr)
+    · exact hout ⟨hx, le_of_not_ge hxr⟩ ⟨hy, le_of_not_ge hyr⟩
 
 end DifferentialGeometry.Analysis

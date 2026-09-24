@@ -513,3 +513,42 @@ theorem orderedSlices_core_of_isSmoothEmbedding
 end IsAxiallyOriented
 
 end DifferentialGeometry.Topology.SphereSeparation
+
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Topology.SphereSeparation.IsAxiallyOriented
+
+theorem compactClosure_inter_closedSlab
+    {N : Type*} [TopologicalSpace N] {a : ℝ}
+    {Φ : SphereTwo × AxialInterval a → N}
+    {d : ∀ c, SphereSides (sliceImage Φ c)}
+    (o : IsAxiallyOriented Φ d) {s t : AxialInterval a} (hst : s ≤ t) :
+    closure (d s).compactSide ∩ closedSlabImage Φ s t = sliceImage Φ s := by
+  apply Set.Subset.antisymm
+  · rintro y ⟨hyK, p, hp, rfl⟩
+    rcases eq_or_lt_of_le hp.2.1 with hps | hsp
+    · exact ⟨p, ⟨hp.1, hps.symm⟩, rfl⟩
+    · have hend : Φ p ∈ (d s).endSide :=
+        o.upper_subset_end s ⟨p, ⟨hp.1, hsp⟩, rfl⟩
+      rw [(d s).closure_compactSide] at hyK
+      rcases hyK with hyB | hyS
+      · exact False.elim (Set.disjoint_left.mp (d s).disjoint hyB hend)
+      · exact False.elim ((d s).endSide_subset_compl hend hyS)
+  · rintro y ⟨p, hp, rfl⟩
+    refine ⟨?_, p, ⟨hp.1, hp.2 ▸ le_rfl, hp.2 ▸ hst⟩, rfl⟩
+    rw [(d s).closure_compactSide]
+    exact Or.inr ⟨p, hp, rfl⟩
+
+end DifferentialGeometry.Topology.SphereSeparation.IsAxiallyOriented
+
+
+end
+
+end

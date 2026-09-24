@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OrientedBadPointSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedNoncollapse
 
 set_option autoImplicit false
 noncomputable section
@@ -76,6 +78,32 @@ def MetricSourceCapture {X : PointedRiemannianSeq.{u, 0, 0} I3}
       (F.partialDiffeomorph i) '' (F.partialDiffeomorph i).source
 
 
+theorem metricSourceCapture_of_metricConvergenceData
+    {X : PointedRiemannianSeq.{u, 0, 0} I3}
+    {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
+    {F : PointedRiemannianConvergenceMaps X P f}
+    (C : MetricConvergenceData F)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (hcomplete : MetricComplete P) : MetricSourceCapture F := by
+  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  intro r hr
+  obtain ⟨_, k₀, hk₀⟩ := KappaSolutions.exists_pointed_inverse_capture_at
+    C hreference hcomplete P.basepoint hr.le (show (0 : ℝ) < 1 by norm_num)
+  filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
+  intro y hy
+  have hclosed : y ∈ riemannianClosedBallOf (X.obj (f k)).metric
+      (F.map k P.basepoint) r := by
+    have hbase : F.map k P.basepoint = (X.obj (f k)).basepoint := F.basepoint_map k
+    rw [hbase]
+    change riemannianEDistOf (X.obj (f k)).metric (X.obj (f k)).basepoint y ≤ ENNReal.ofReal r
+    change riemannianEDistOf (X.obj (f k)).metric (X.obj (f k)).basepoint y < ENNReal.ofReal r at hy
+    exact hy.le
+  have ht := (hk₀ k hk y hclosed).1
+  exact ⟨(F.partialDiffeomorph k).symm y,
+    (F.partialDiffeomorph k).symm.map_source ht,
+    (F.partialDiffeomorph k).right_inv ht⟩
+
+
 def subsequenceMaps {X : PointedRiemannianSeq.{u, 0, 0} I3}
     {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
     (F : PointedRiemannianConvergenceMaps X P f) (k : ℕ → ℕ) (hk : StrictMono k) :
@@ -104,7 +132,86 @@ theorem noncollapse_passes_to_limit (X : PointedRiemannianSeq.{u, 0, 0} I3)
     (hradii : Filter.Tendsto radii Filter.atTop Filter.atTop)
     (hsource : ∀ i, MetricNoncollapsed (X.obj i) kappa (Set.Ioc 0 (radii i))) :
     MetricNoncollapsed P kappa Set.univ := by
-  sorry
+  intro z r _ hr hcurvature
+  let _ := capture
+  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  have hn : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  have hconv : ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ ThreeSpace =
+      ENNReal.ofReal (kappa * r ^ 3) := by
+    rw [← ENNReal.ofReal_pow hr.le, ← ENNReal.ofReal_mul hkappa.le, hn]
+  have hreference (k : ℕ) : (conv.domain k).referenceMetric = (conv.domain k).limitMetric := by
+    rw [canonical_domains k]
+    rfl
+  let epsilon : ℕ → ℝ := fun j => 1 / ((j : ℝ) + 1)
+  let s : ℕ → ℝ := fun j => r / (1 + epsilon j) ^ 2
+  have hepsilon : Filter.Tendsto epsilon Filter.atTop (𝓝 (0 : ℝ)) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have hone : Filter.Tendsto (fun j => 1 + epsilon j) Filter.atTop (𝓝 (1 : ℝ)) := by
+    simpa only [add_zero] using
+      (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (1 : ℝ)) Filter.atTop (𝓝 1)).add hepsilon
+  have hs : Filter.Tendsto s Filter.atTop (𝓝 r) := by
+    simpa only [s, Pi.div_def, one_pow, div_one] using
+      (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => r) Filter.atTop (𝓝 r)).div
+        (hone.pow 2) (by norm_num : (1 : ℝ) ^ 2 ≠ 0)
+  have hreal : Filter.Tendsto (fun j => ENNReal.ofReal (s j)) Filter.atTop
+      (𝓝 (ENNReal.ofReal r)) := by
+    simpa only [Function.comp_def] using
+      ENNReal.continuous_ofReal.continuousAt.tendsto.comp hs
+  have hleft := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal kappa)
+    (ENNReal.Tendsto.pow (n := Module.finrank ℝ ThreeSpace) hreal)
+    (Or.inr ENNReal.ofReal_ne_top)
+  have hsqrt : Filter.Tendsto
+      (fun j => Real.sqrt ((1 + epsilon j) ^ Module.finrank ℝ ThreeSpace))
+      Filter.atTop (𝓝 (1 : ℝ)) := by
+    simpa only [one_pow, Real.sqrt_one, Function.comp_def] using
+      Real.continuous_sqrt.continuousAt.tendsto.comp
+        (hone.pow (Module.finrank ℝ ThreeSpace))
+  have hcoef : Filter.Tendsto (fun j => ENNReal.ofReal
+      (Real.sqrt ((1 + epsilon j) ^ Module.finrank ℝ ThreeSpace)))
+      Filter.atTop (𝓝 (1 : ℝ≥0∞)) := by
+    simpa only [ENNReal.ofReal_one, Function.comp_def] using
+      ENNReal.continuous_ofReal.continuousAt.tendsto.comp hsqrt
+  have hright : Filter.Tendsto (fun j =>
+      ENNReal.ofReal (Real.sqrt ((1 + epsilon j) ^ Module.finrank ℝ ThreeSpace)) *
+        riemannianVolumeMeasure I3 P.M P.metric (riemannianBallOf P.metric z r))
+      Filter.atTop
+      (𝓝 (riemannianVolumeMeasure I3 P.M P.metric (riemannianBallOf P.metric z r))) := by
+    simpa only [one_mul] using ENNReal.Tendsto.mul_const hcoef (Or.inl one_ne_zero)
+  rw [← hconv]
+  refine le_of_tendsto_of_tendsto' hleft hright fun j => ?_
+  have he : 0 < epsilon j := by dsimp only [epsilon]; positivity
+  have h1 : 0 < 1 + epsilon j := by linarith
+  have hsj : 0 < s j := div_pos hr (sq_pos_of_pos h1)
+  have hbuffer : (1 + epsilon j) * s j < r := by
+    calc
+      (1 + epsilon j) * s j = r / (1 + epsilon j) := by
+        dsimp only [s]
+        field_simp [ne_of_gt h1]
+      _ < r := (div_lt_self hr (by linarith))
+  obtain ⟨kv, hkv⟩ :=
+    KappaSolutions.exists_pointed_buffered_ball_volume_le_at
+      (I := I3) (X := X) (L := P) (subseq := f) (Φ := F) conv hreference complete z
+      hsj he hbuffer he
+  obtain ⟨kc, hkc⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_pointed_ball_curvature_control
+      (I := I3) (X := X) (L := P) (subseq := f) (Φ := F) conv canonical_domains complete z
+      hsj he hbuffer hcurvature
+  obtain ⟨krad, hkrad⟩ := Filter.eventually_atTop.mp
+    ((hradii.comp hf.tendsto_atTop).eventually (Filter.eventually_ge_atTop (s j)))
+  have hnc := hsource (f (max kv (max kc krad))) (F.map (max kv (max kc krad)) z) (s j)
+    ⟨hsj, hkrad (max kv (max kc krad))
+      (le_trans (le_max_right _ _) (le_max_right _ _))⟩
+    hsj
+    (hkc (max kv (max kc krad))
+      (le_trans (le_max_left _ _) (le_max_right _ _)))
+  have hnc' : ENNReal.ofReal kappa * ENNReal.ofReal (s j) ^ Module.finrank ℝ ThreeSpace ≤
+      riemannianVolumeMeasure I3 (X.obj (f (max kv (max kc krad)))).M
+        (X.obj (f (max kv (max kc krad)))).metric
+        (riemannianBallOf (X.obj (f (max kv (max kc krad)))).metric
+          (F.map (max kv (max kc krad)) z) (s j)) := by
+    rw [← ENNReal.ofReal_pow hsj.le, ← ENNReal.ofReal_mul hkappa.le, hn]
+    exact hnc
+  exact hnc'.trans (hkv (max kv (max kc krad)) (le_max_left _ _))
 
 theorem blowup_limit_nonnegative {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (X : NormalizedSequence.{u} eps kappa sigma Phi) (hPhi : AdmissiblePinchingFunction Phi)
@@ -114,7 +221,39 @@ theorem blowup_limit_nonnegative {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (canonical_domains : ∀ k,
       conv.domain k = CanonicalMetricCompactness.canonicalSourceData F k) :
     SecLower P.metric 0 Set.univ := by
-  sorry
+  let Y : PointedRiemannianSeq.{u, 0, 0} I3 := X.toFlowSequence.atTime 0
+  have hQ : Filter.Tendsto (fun k => X.scale (f k)) Filter.atTop Filter.atTop :=
+    X.scale_tendsto.comp hf.tendsto_atTop
+  have hpin : ∀ i (y : (Y.obj i).M),
+      curvatureOperatorLowerBoundAt (Y.obj i).metric y
+        (metricAlgebraicCurvatureTensorAt (Y.obj i).metric y)
+        (rescalePinchingFunction (X.scale i) Phi (metricScalarAt (Y.obj i).metric y)) := by
+    intro i y
+    have h0 : (0:ℝ) ∈ (X.interval i).carrier := by
+      rw [X.carrier_eq i]
+      exact ⟨by linarith [X.depth_pos i], le_rfl⟩
+    have h := X.pinching i 0 h0 y
+    have hval : ((X.term i).S.base.rm04 (0:ℝ)) y =
+        metricRm04At ((X.term i).S.base.metric 0) y := by
+      simp only [SolutionFamily.rm04]
+      exact metricRm04_apply _ _
+    have hK : (X.term i).S.scalar (0:ℝ) y =
+        metricScalarAt ((X.term i).S.base.metric 0) y := by
+      simp only [SolutionOn.scalar, SolutionFamily.scalar]
+    simp only [Y, FlowSequence.atTime, PointedFlowData.atTime, SolutionOn.family_metric]
+    refine fun n c v w => ?_
+    have hh := h n c v w
+    simp only [algebraicCurvatureOperatorQuadraticEval, algebraicCurvatureIdentityQuadraticEval,
+      hval, hK] at hh ⊢
+    exact hh
+  have hmain := sectional_nonnegative_of_pointed_admissible_pinching
+    (X := Y) (L := P) (F := F)
+    conv canonical_domains hPhi X.scale (fun i => X.scale_pos i) hQ hpin
+  intro x _ v w
+  have hvec : (fun i => ![v, w, w, v] i) = vec4 (I := I3) v w w v := by
+    funext i
+    fin_cases i <;> simp [vec4]
+  simpa only [SecLower, zero_mul, metricRm04StandardAt_apply, hvec] using hmain x v w
 
 structure TerminalLimit {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (X : NormalizedSequence.{u} eps kappa sigma Phi) where
@@ -128,7 +267,8 @@ structure TerminalLimit {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   capture : MetricSourceCapture maps
   precompact : ∀ i, IsCompact (closure (maps.partialDiffeomorph i).source)
   connected_domains : ∀ i, IsConnected (maps.partialDiffeomorph i).source
-  nested : ∀ i, closure (maps.partialDiffeomorph i).source ⊆ (maps.partialDiffeomorph (i + 1)).source
+  nested : ∀ i, closure (maps.partialDiffeomorph i).source ⊆
+    (maps.partialDiffeomorph (i + 1)).source
   connected : ConnectedSpace space.M
   orientation : TangentOrientationSection space.M
   orientation_preserved : ∀ i y, y ∈ (maps.partialDiffeomorph i).source →
@@ -169,3 +309,45 @@ structure BackwardExtension {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     ∃ C : ℝ, ∀ t ∈ Set.Icc a b, ∀ x, FlowMetricBall.rmNormSq solution t x ≤ C
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+noncomputable section
+open Filter Set
+open scoped Topology Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.Integral.Measure
+
+universe u
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedFlowData.t2TangentBundle PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+theorem metricNoncollapsed_atTime_of_spatiallyKappaNoncollapsedBelowScale
+    {D : RealTimeInterval} (F : PointedFlowData.{u, 0, 0} I3 D)
+    {kappa radius : ℝ}
+    (h : SpatiallyKappaNoncollapsedBelowScale F.S kappa radius)
+    {s : ℝ} (hs : s ∈ D.carrier) :
+    MetricNoncollapsed (F.atTime s) kappa (Ioc 0 radius) := by
+  intro y r hr hrpos hcurv
+  let B : FlowMetricBall F.S ⟨s, hs⟩ := ⟨y, r, hrpos⟩
+  have hB : B.IsSpatiallyRmControlled := hcurv
+  have hvol := (h.2 ⟨s, hs⟩ B hr.2 hB).2
+  rw [ENNReal.ofReal_mul' (pow_nonneg hrpos.le 3), ENNReal.ofReal_pow hrpos.le]
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  simp only [hdim, B, FlowMetricBall.volume, FlowMetricBall.set, FlowMetricBall.setAt,
+    volumeMeasureOn_eq_metric, SolutionOn.family_metric, PointedFlowData.atTime,
+    riemannianBallOf] at hvol ⊢
+  with_unfolding_all exact hvol
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end

@@ -24,3 +24,17 @@ Apache-2.0 §4(b).
 The original `LICENSE`, README content (`UPSTREAM_README.md`), and
 `formalization.yaml` are preserved. Compatibility changes and the module-path
 relocation are recorded in `Schoenflies/MODIFICATIONS.md`.
+## `ClassificationOfSurfaces/`
+
+- **Source**: https://github.com/mccorvie/classification-of-surfaces
+- **Commit**: `e3c7230fe78d7b056a415d9ecae6f77887046b32`
+- **Authors**: ClassificationOfSurfaces contributors
+- **License**: Apache-2.0 (`ClassificationOfSurfaces/LICENSE`)
+
+Selected finite planar mesh, line-subdivision, free-triangle and geometric
+attachment modules, plus native PrePolygon triangulation and the remaining
+closed polygonal region after a geometric one-edge deletion.
+The original namespace, README, attribution and documentation are retained.
+See `ClassificationOfSurfaces/PORTING.md`, `MODIFICATIONS.md` and `UPSTREAM.patch`
+  for scope, exact changes and verification. This port does not include the
+  upstream surface-classification or polygonal Jordan development.

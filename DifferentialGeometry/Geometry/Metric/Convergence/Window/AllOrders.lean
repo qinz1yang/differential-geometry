@@ -30,7 +30,8 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
 
-theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_interval (hne : Nonempty M)
+theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_interval
+    (hne : Nonempty M)
     (K : Set M) (hK : IsCompact K) (beta psiT : Real) (p : Nat)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
@@ -71,7 +72,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_i
               metricDerivNorm (I := I) a (gSeq (phi (psi k)) t) gT gRef x < eps := by
     intro t ht
     obtain ⟨psi, hpsi, gT, hinner, hnorm⟩ :=
-      exists_metric_subsequence_tendsto_on_compact (I := I) hne K hK p gRef (fun k => gSeq (phi k) t)
+      exists_metric_subsequence_tendsto_on_compact
+        (I := I) hne K hK p gRef (fun k => gSeq (phi k) t)
         (hbdd phi hphi t ht) (hlow phi hphi t ht)
     refine ⟨psi, hpsi, gT, ?_, ?_⟩
     · intro x
@@ -103,7 +105,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_i
           metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by
     intro t ht eps heps
     have hcauchy :=
-      metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) K beta psiT p gSeq gNet gRef phi L hL hgLip e he hdense hnetNorm
+      metric_subsequence_cauchy_at_time_of_dense_time_convergence
+        (I := I) K beta psiT p gSeq gNet gRef phi L hL hgLip e he hdense hnetNorm
         t ht
     have hsub : forall eps : Real, 0 < eps -> exists k0 : Nat,
         forall k : Nat, k0 <= k -> forall a : Nat, a <= p -> forall x, x ∈ K ->
@@ -112,7 +115,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_i
       intro eps heps
       exact (hgAt t ht).2 eps heps
     obtain ⟨k0, hk0⟩ :=
-      metric_sequence_tendsto_of_cauchy_and_subsequence_tendsto (I := I) K p (fun k => gSeq (phi k) t) (gAt t ht) gRef
+      metric_sequence_tendsto_of_cauchy_and_subsequence_tendsto
+        (I := I) K p (fun k => gSeq (phi k) t) (gAt t ht) gRef
         (psiAt t ht) (hpsiAt t ht) hcauchy hsub eps heps
     refine ⟨k0, fun k hk a ha x hx => ?_⟩
     have hgInf_t : gInf t = gAt t ht := by
@@ -187,7 +191,7 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_i
   rw [hgInf_t]
   exact (hgAt t ht).1
 
-theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uniformly_on_time_interval
+theorem exists_metric_subsequence_tendsto_uniformly_on_compacts_and_time_of_eventual_pointwise_lower
     [WeaklyLocallyCompactSpace M]
     (hne : Nonempty M)
     (beta psiT : Real)
@@ -205,9 +209,9 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       forall q : Nat, forall K' : Set M, IsCompact K' -> exists C : Real,
         forall k : Nat, forall z, z ∈ K' ->
           metricCovDerivNorm (I := I) q (gSeq (rho k) t) gRef z <= C)
-    (hlow : forall rho : Nat -> Nat, StrictMono rho -> forall t, t ∈ Set.Icc beta psiT ->
-      exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
-        c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v) :
+    (hlow : ∀ rho : ℕ → ℕ, StrictMono rho → ∀ t ∈ Set.Icc beta psiT,
+      ∀ x : M, ∃ c : ℝ, 0 < c ∧ ∀ᶠ k in atTop,
+        ∀ v : TangentSpace I x, c * gRef.inner x v v ≤ (gSeq (rho k) t).inner x v v) :
     exists phi : Nat -> Nat, StrictMono phi /\
       exists gInf : Real -> SmoothRiemannianMetric I M,
         forall K : Set M, IsCompact K -> forall p : Nat, forall eps : Real, 0 < eps ->
@@ -229,7 +233,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       exists psi : Nat -> Nat, StrictMono psi /\ P j (phi ∘ psi) := by
     intro j phi hphi
     obtain ⟨psi, hpsi, gNet, htend, hconv⟩ :=
-      exists_metric_subsequence_tendsto_on_countable_times (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k)) e
+      exists_metric_subsequence_tendsto_on_countable_times_of_eventual_pointwise_lower
+        (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k)) e
         (fun n rho hrho q K' hK' => hbdd (phi ∘ rho) (hphi.comp hrho) (e n) (he n) q K' hK')
         (fun n rho hrho => hlow (phi ∘ rho) (hphi.comp hrho) (e n) (he n))
     refine ⟨psi, hpsi, gNet, ?_, ?_⟩
@@ -294,7 +299,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
     obtain ⟨m0, hm0⟩ := Kx.exists_superset_of_isCompact (isCompact_singleton (x := x))
     have hxKm : x ∈ Kx m0 := hm0 (Set.mem_singleton x)
     obtain ⟨k0, hk0⟩ :=
-      metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) (Kx m0) beta psiT m0 gSeq gNet gRef phi (Lf m0) (hLfnn m0)
+      metric_subsequence_cauchy_at_time_of_dense_time_convergence
+        (I := I) (Kx m0) beta psiT m0 gSeq gNet gRef phi (Lf m0) (hLfnn m0)
         (hLipAll m0) e he hdense (hnetConvergence m0) t ht eps heps
     exact ⟨k0, fun m hm l hl => hk0 m hm l hl 0 (Nat.zero_le m0) x hxKm⟩
   have hcauchyInner : forall t, t ∈ Set.Icc beta psiT -> forall x : M,
@@ -309,7 +315,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
             Filter.atTop (nhds (gT.inner x))) := by
     intro t ht
     obtain ⟨psi, hpsi, gT, hinner, _⟩ :=
-      exists_metric_subsequence_tendsto_on_compact (I := I) hne (Kx 0) (hKxc 0) 0 gRef (fun k => gSeq (phi k) t)
+      exists_metric_subsequence_tendsto_on_compact_of_eventual_pointwise_lower
+        (I := I) hne (Kx 0) (hKxc 0) 0 gRef (fun k => gSeq (phi k) t)
         (hbdd phi hphi t ht) (hlow phi hphi t ht)
     exact ⟨psi, hpsi, gT, fun x => by simpa only [Function.comp_apply] using hinner x⟩
   let psi0 : (t : Real) -> t ∈ Set.Icc beta psiT -> Nat -> Nat :=
@@ -331,7 +338,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
         metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by
     intro j t ht eps heps
     obtain ⟨psi, hpsi, gT, hinnerT, hnormT⟩ :=
-      exists_metric_subsequence_tendsto_on_compact (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k) t)
+      exists_metric_subsequence_tendsto_on_compact_of_eventual_pointwise_lower
+        (I := I) hne (Kx j) (hKxc j) j gRef (fun k => gSeq (phi k) t)
         (hbdd phi hphi t ht) (hlow phi hphi t ht)
     have hinnerT' : forall x : M, Filter.Tendsto (fun m => (gSeq (phi (psi m)) t).inner x)
         Filter.atTop (nhds (gT.inner x)) := fun x => by
@@ -340,7 +348,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       rw [hgInf_eq t ht]
       exact metricLimit_uniq (I := I) (fun k => gSeq (phi k) t) gT (gAt0 t ht)
         (hcauchyInner t ht) psi hpsi (psi0 t ht) (hpsi0 t ht) hinnerT' (hgAt0 t ht)
-    have hcauchyj := metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) (Kx j) beta psiT j gSeq gNet gRef phi (Lf j)
+    have hcauchyj := metric_subsequence_cauchy_at_time_of_dense_time_convergence
+      (I := I) (Kx j) beta psiT j gSeq gNet gRef phi (Lf j)
       (hLfnn j) (hLipAll j) e he hdense (hnetConvergence j) t ht
     have hsubj : forall eps : Real, 0 < eps -> exists k0 : Nat,
         forall k : Nat, k0 <= k -> forall a : Nat, a <= j -> forall x, x ∈ Kx j ->
@@ -350,7 +359,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       exact ⟨k0, fun k hk a ha x hx => by
         simpa only [Function.comp_apply] using hk0 k hk a ha x hx⟩
     obtain ⟨k0, hk0⟩ :=
-      metric_sequence_tendsto_of_cauchy_and_subsequence_tendsto (I := I) (Kx j) j (fun k => gSeq (phi k) t) gT gRef psi hpsi
+      metric_sequence_tendsto_of_cauchy_and_subsequence_tendsto
+        (I := I) (Kx j) j (fun k => gSeq (phi k) t) gT gRef psi hpsi
         hcauchyj hsubj eps heps
     refine ⟨k0, fun k hk a ha x hx => ?_⟩
     rw [← hgTeq]; exact hk0 k hk a ha x hx
@@ -358,7 +368,8 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       forall s, s ∈ Set.Icc beta psiT -> forall t, t ∈ Set.Icc beta psiT ->
         forall a : Nat, a <= j -> forall x, x ∈ Kx j ->
           metricDerivNorm (I := I) a (gInf s) (gInf t) gRef x <= Lf j * |s - t| := fun j =>
-    metric_limit_derivative_norm_lipschitz (I := I) (Kx j) beta psiT j gSeq gInf gRef phi (Lf j) (hLipAll j)
+    metric_limit_derivative_norm_lipschitz
+      (I := I) (Kx j) beta psiT j gSeq gInf gRef phi (Lf j) (hLipAll j)
       (fun t ht eps heps => hfullj j t ht eps heps)
   have hwinj : forall j : Nat, forall eps : Real, 0 < eps -> exists k0 : Nat,
       forall k : Nat, k0 <= k -> forall t, t ∈ Set.Icc beta psiT -> forall a : Nat, a <= j ->
@@ -429,6 +440,40 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       (eps / 2) (by positivity) ?_) (by linarith)
   intro a hap x hxK
   exact (hk0 k hk t ht a (le_trans hap hpj) x (hKj hxK)).le
+
+theorem
+    exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uniformly_on_time_interval
+    [WeaklyLocallyCompactSpace M]
+    (hne : Nonempty M)
+    (beta psiT : Real)
+    (gRef : SmoothRiemannianMetric I M)
+    (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
+    (e : Nat -> Real) (he : forall n : Nat, e n ∈ Set.Icc beta psiT)
+    (hdense : forall t, t ∈ Set.Icc beta psiT -> forall delta : Real, 0 < delta ->
+      exists n : Nat, |t - e n| < delta)
+    (hgLip : forall K' : Set M, IsCompact K' -> forall p : Nat,
+      exists L : Real, 0 <= L /\
+        forall k : Nat, forall s, s ∈ Set.Icc beta psiT -> forall t, t ∈ Set.Icc beta psiT ->
+          forall a : Nat, a <= p -> forall x, x ∈ K' ->
+            metricDerivNorm (I := I) a (gSeq k s) (gSeq k t) gRef x <= L * |s - t|)
+    (hbdd : forall rho : Nat -> Nat, StrictMono rho -> forall t, t ∈ Set.Icc beta psiT ->
+      forall q : Nat, forall K' : Set M, IsCompact K' -> exists C : Real,
+        forall k : Nat, forall z, z ∈ K' ->
+          metricCovDerivNorm (I := I) q (gSeq (rho k) t) gRef z <= C)
+    (hlow : forall rho : Nat -> Nat, StrictMono rho -> forall t, t ∈ Set.Icc beta psiT ->
+      exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
+        c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v) :
+    exists phi : Nat -> Nat, StrictMono phi /\
+      exists gInf : Real -> SmoothRiemannianMetric I M,
+        forall K : Set M, IsCompact K -> forall p : Nat, forall eps : Real, 0 < eps ->
+          exists k0 : Nat, forall k : Nat, k0 <= k ->
+            forall t, t ∈ Set.Icc beta psiT ->
+              metricDerivNormSupOn (I := I) K p (gSeq (phi k) t) (gInf t) gRef < eps := by
+  apply exists_metric_subsequence_tendsto_uniformly_on_compacts_and_time_of_eventual_pointwise_lower
+    (I := I) hne beta psiT gRef gSeq e he hdense hgLip hbdd
+  intro rho hrho t ht x
+  obtain ⟨c, hc, hbound⟩ := hlow rho hrho t ht
+  exact ⟨c, hc, Filter.Eventually.of_forall fun k v => hbound k x v⟩
 
 end CheegerGromovCompactness
 end DifferentialGeometry

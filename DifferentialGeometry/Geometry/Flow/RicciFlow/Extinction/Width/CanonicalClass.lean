@@ -70,7 +70,7 @@ theorem rfs_canonical_short_loop_fillings (g : SmoothRiemannianMetric ThreeModel
   have hshort : ∀ k, loopLength g (Γ.1 k).1.toContinuousLoop < σ := by
     intro k
     exact lt_of_not_ge (fun hk => h ⟨k, hk⟩)
-  obtain ⟨q, hq⟩ := hnull (fun q => (rfs_homotopy_groups o q).1) Γ.1 hshort
+  obtain ⟨q, hq⟩ := hnull (fun q => (rfs_homotopy_groups q).1) Γ.1 hshort
   exact canonical_regularRepresentative_not_null o Γ q hq
 
 theorem canonicalWidth_scale (g : SmoothRiemannianMetric ThreeModel M)

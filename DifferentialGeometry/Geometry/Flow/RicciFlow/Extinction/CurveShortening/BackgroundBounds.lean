@@ -11,6 +11,7 @@ open Bundle Manifold Set
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.CheegerGromovCompactness
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 private theorem larger_regular_window {D : RealTimeInterval} {a b : ℝ}
@@ -167,5 +168,44 @@ theorem RicciBackground.nablaRicci_unit_bound
     (hv : ∀ i, (B.family.metric t).inner p (v i) (v i) ≤ 1) :
     |totalNabla0SFun 2 (B.family.connection t) (B.family.ricci t) p v| ≤ B.B₂ :=
   tensor_abs_eval_le_of_unit_slots _ _ _ _ _ B.B₂_nonneg (B.nablaRicci_bound t ht p) v hv
+
+omit [SigmaCompactSpace M] in
+theorem RicciBackground.exists_curvature_derivative_bounds
+    [I.Boundaryless] [CompactSpace M]
+    (B : RicciBackground (I := I) (M := M) D a b) :
+    ∃ C : ℝ, B.C ≤ C ∧
+      (∀ t ∈ Icc a b, ∀ p : M, normSq0S (B.family.metric t) p 5
+        (totalNabla0SFun 4 (B.family.connection t) (B.family.rm04 t) p) ≤ C ^ 2) ∧
+      (∀ t ∈ Icc a b, ∀ p : M, normSq0S (B.family.metric t) p 4
+        (totalNabla0SFun 3 (B.family.connection t)
+          (covStep (B.family.metric t) 2 (B.family.ricci t)) p) ≤ C ^ 2) := by
+  let F : SolutionOn (I := I) (M := M) D := ⟨B.family⟩
+  obtain ⟨_, _, hbound⟩ := rfs_csf_background F B.equation B.lt B.regular
+  obtain ⟨K1, hK1, h1⟩ := hbound 1
+  obtain ⟨K2, _, h2⟩ := hbound 2
+  let N := (Module.finrank ℝ E : ℝ) ^ 6 * K2 ^ 2
+  have hN : 0 ≤ N := by dsimp only [N]; positivity
+  have hBC : 0 ≤ B.C := by
+    dsimp only [RicciBackground.C]
+    linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  let C := 1 + B.C + K1 + N
+  have hC : 1 ≤ C := by dsimp only [C]; linarith only [hBC, hK1, hN]
+  have hK1C : K1 ≤ C := by dsimp only [C]; linarith only [hBC, hN]
+  have hNC : N ≤ C := by dsimp only [C]; linarith only [hBC, hK1]
+  refine ⟨C, by dsimp only [C]; linarith only [hK1, hN], ?_, ?_⟩
+  · intro t ht p
+    have hh := h1 t ht p
+    change normSq0S (B.family.metric t) p 5
+      (totalNabla0SFun 4 (B.family.connection t) (B.family.rm04 t) p) ≤ K1 ^ 2 at hh
+    exact hh.trans (pow_le_pow_left₀ hK1 hK1C 2)
+  · intro t ht p
+    have hh := ricTower_normSq_le F t 2 p
+    change normSq0S (B.family.metric t) p 4
+        (totalNabla0SFun 3 (B.family.connection t)
+          (covStep (B.family.metric t) 2 (B.family.ricci t)) p) ≤
+      (Module.finrank ℝ E : ℝ) ^ 6 * normSq0S (B.family.metric t) p 6 (nablaKRm04Field F t 2 p) at hh
+    have hNbound := (mul_le_mul_of_nonneg_left (h2 t ht p)
+      (by positivity : 0 ≤ (Module.finrank ℝ E : ℝ) ^ 6))
+    exact (hh.trans hNbound).trans (hNC.trans (by nlinarith only [hC]))
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

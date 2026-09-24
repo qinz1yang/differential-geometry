@@ -12,7 +12,7 @@ open Bundle Filter Set DifferentialGeometry.Analysis DifferentialGeometry.Cheege
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Operator
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]

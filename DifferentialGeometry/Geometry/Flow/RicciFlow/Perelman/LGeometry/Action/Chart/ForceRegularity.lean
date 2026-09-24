@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Force
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Smoothness
 
 set_option autoImplicit false
 
@@ -193,5 +194,199 @@ theorem lChartForce_ae_eq_lChartForceRepresentative
   rw [lChartForce, lChartForceRepresentative, hpos]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Filter MeasureTheory Set
+open scoped ContDiff Manifold Topology
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.DivergenceTheorem
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M]
+variable {D : RealTimeInterval}
+
+def lChartSpatialForceRepresentative
+    (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
+    {L : Real} (u : timeH1 E L) (q : Real → E) (r : Real) : E :=
+  (∑ i : Fin (Module.finrank Real E),
+    (inner Real
+        (((1 / 2 : Real) •
+          fderiv Real (fun y : E => chartGramOp (I := I) S.family p
+            (T - (a + r) ^ 2, y)) (u.toFun r))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (q r)) (q r) +
+      2 * (a + r) ^ 2 *
+        fderiv Real (scalarOnE (I := I) p (S.scalar (T - (a + r) ^ 2)))
+          (u.toFun r) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) •
+      chartCoordCLM E i).adjoint 1
+
+theorem continuousOn_lChartSpatialForceRepresentative
+    (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
+    {L : Real} (u : timeH1 E L) (q : Real → E) {J : Set Real}
+    (htime : ∀ r ∈ Icc (0 : Real) L, T - (a + r) ^ 2 ∈ J)
+    (hGramFd : ContinuousOn (fun z : Real × E => fderiv Real
+      (fun y : E => chartGramOp (I := I) S.family p (z.1, y)) z.2)
+      (J ×ˢ interior (extChartAt I p).target))
+    (hScalFd : ContinuousOn (fun z : Real × E => fderiv Real
+      (scalarOnE (I := I) p (S.scalar z.1)) z.2)
+      (J ×ˢ interior (extChartAt I p).target))
+    (hchart : MapsTo u.toFun (Icc (0 : Real) L)
+      (interior (extChartAt I p).target))
+    (hq : ContinuousOn q (Icc (0 : Real) L)) :
+    ContinuousOn (lChartSpatialForceRepresentative S T a p u q) (Icc (0 : Real) L) := by
+  let tau : Real → Real := fun r => T - (a + r) ^ 2
+  have htau : ContinuousOn tau (Icc (0 : Real) L) :=
+    continuousOn_const.sub ((continuousOn_const.add continuousOn_id).pow 2)
+  have hpair : ContinuousOn (fun r => (tau r, u.toFun r)) (Icc (0 : Real) L) :=
+    htau.prodMk u.continuousOn_toFun
+  have hpair_mem : MapsTo (fun r => (tau r, u.toFun r)) (Icc (0 : Real) L)
+      (J ×ˢ interior (extChartAt I p).target) :=
+    fun r hr => ⟨htime r hr, hchart hr⟩
+  have hG := hGramFd.comp hpair hpair_mem
+  have hR := hScalFd.comp hpair hpair_mem
+  have hcoord (i : Fin (Module.finrank Real E)) : ContinuousOn
+      (fun r =>
+        inner Real
+          (((1 / 2 : Real) •
+            fderiv Real (fun y : E => chartGramOp (I := I) S.family p
+              (tau r, y)) (u.toFun r))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (q r)) (q r) +
+          2 * (a + r) ^ 2 *
+            fderiv Real (scalarOnE (I := I) p (S.scalar (tau r))) (u.toFun r)
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
+      (Icc (0 : Real) L) := by
+    have hdir := (hG.const_smul (1 / 2 : Real)).clm_apply
+      (show ContinuousOn (fun _ : Real =>
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (Icc (0 : Real) L) from
+        continuousOn_const)
+    have hkin := (hdir.clm_apply hq).inner (𝕜 := Real) hq
+    have hscal := hR.clm_apply
+      (show ContinuousOn (fun _ : Real =>
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (Icc (0 : Real) L) from
+        continuousOn_const)
+    exact hkin.add (((continuousOn_const.add continuousOn_id).pow 2).const_mul 2 |>.mul hscal)
+  have hcov : ContinuousOn
+      (fun r => ∑ i : Fin (Module.finrank Real E),
+        (inner Real
+          (((1 / 2 : Real) •
+            fderiv Real (fun y : E => chartGramOp (I := I) S.family p
+              (tau r, y)) (u.toFun r))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (q r)) (q r) +
+          2 * (a + r) ^ 2 *
+            fderiv Real (scalarOnE (I := I) p (S.scalar (tau r))) (u.toFun r)
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) •
+          chartCoordCLM E i) (Icc (0 : Real) L) :=
+    continuousOn_finsetSum Finset.univ fun i _ => (hcoord i).smul continuousOn_const
+  have hadj : Continuous (fun A : E →L[Real] Real => A.adjoint (1 : Real)) :=
+    (ContinuousLinearMap.adjoint (E := E) (F := Real)).continuous.clm_apply continuous_const
+  exact hadj.comp_continuousOn hcov
+
+variable [T2Space M]
+
+theorem lChartForce_ae_eq_lChartSpatialForceRepresentative
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
+    {L : Real} (u : timeH1 E L) (q : Real → E)
+    (hreg : ∀ r ∈ Ioo (0 : Real) L, T - (a + r) ^ 2 ∈ D.regular)
+    (hchart : MapsTo u.toFun (Icc (0 : Real) L)
+      (interior (extChartAt I p).target))
+    (hq : u.deriv =ᵐ[timeMeasure L] q) :
+    lChartForce (I := I) S T a p u =ᵐ[timeMeasure L]
+      lChartSpatialForceRepresentative S T a p u q := by
+  have haeReg : ∀ᵐ r ∂timeMeasure L, r ∈ Ioo (0 : Real) L := by
+    change ∀ᵐ r ∂volume.restrict (Icc (0 : Real) L), r ∈ Ioo (0 : Real) L
+    rw [← restrict_Ioo_eq_restrict_Icc]
+    exact ae_restrict_mem measurableSet_Ioo
+  filter_upwards [haeReg, hq] with r hr hqr
+  have hx := hchart ⟨hr.1.le, hr.2.le⟩
+  have hG := chartGramOp_spatial_fderiv_eq S.family hS.smoothMetric p (hreg r hr) hx
+  have hscalar (i : Fin (Module.finrank Real E)) :
+      fderiv Real (scalarOnE (I := I) p (S.scalar (T - (a + r)^2))) (u.toFun r)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
+      mvfderiv (I := I) (S.scalar (T - (a + r)^2)) ((extChartAt I p).symm (u.toFun r))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i
+          ((extChartAt I p).symm (u.toFun r))) := by
+    rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
+    have hsrc : (extChartAt I p).symm (u.toFun r) ∈ (chartAt H p).source := by
+      simpa only [extChartAt_source] using (extChartAt I p).map_target (interior_subset hx)
+    have hright := (extChartAt I p).right_inv (interior_subset hx)
+    have hf := scalarSmoothOfSolution (I := I) S (T - (a + r)^2)
+    rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt
+      (I := I) p (hf.mdifferentiableAt (by simp)) hsrc
+        (by simpa only [hright] using hx) i]
+    simp only [DifferentialGeometry.Tensor.Coordinates.partialDeriv, hright]
+    rfl
+  unfold lChartForce lChartSpatialForceRepresentative
+  congr 2
+  unfold lChartPositionDerivative
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [hG, hscalar i]
+  rw [← hqr]
+  rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Set
+open scoped ContDiff Manifold Topology
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Geometry.Curvature
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+variable {D : RealTimeInterval}
+
+theorem lChartSpatialForceRepresentative_eq_lChartForceRepresentative
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
+    {L : Real} (u : timeH1 E L) (q : Real → E) (r : Real)
+    (ht : T - (a + r) ^ 2 ∈ D.regular)
+    (hx : u.toFun r ∈ interior (extChartAt I p).target) :
+    lChartSpatialForceRepresentative S T a p u q r =
+      lChartForceRepresentative S T a p u q r := by
+  have hG := chartGramOp_spatial_fderiv_eq S.family hS.smoothMetric p ht hx
+  have hR := chartScalCov_eq S hS p ht hx
+  unfold lChartSpatialForceRepresentative lChartForceRepresentative
+  congr 2
+  unfold lChartPositionDerivativeRepresentative
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [hG, hR]
+  rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
 
 end

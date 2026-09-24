@@ -8,10 +8,9 @@ namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 variable {X Y : Type*}
 variable [NormedAddCommGroup X] [NormedSpace ℝ X]
-variable [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y]
+variable [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 variable {T : ℝ}
 
-omit [CompleteSpace Y] in
 theorem memLp_timeOpL2
     (A : ℝ → X →L[ℝ] Y)
     (hA : MemLp A 2 (timeMeasure T))
@@ -43,7 +42,6 @@ def timeOpL2
     timeL2 Y T :=
   (memLp_timeOpL2 A hA u hu C hC).toLp (fun t => A t (u t))
 
-omit [CompleteSpace Y] in
 theorem timeOpL2_apply_ae
     (A : ℝ → X →L[ℝ] Y)
     (hA : MemLp A 2 (timeMeasure T))
@@ -55,7 +53,6 @@ theorem timeOpL2_apply_ae
       fun t => A t (u t) :=
   (memLp_timeOpL2 A hA u hu C hC).coeFn_toLp
 
-omit [CompleteSpace Y] in
 theorem timeOpL2_sub
     (A : ℝ → X →L[ℝ] Y)
     (hA : MemLp A 2 (timeMeasure T))
@@ -78,7 +75,6 @@ theorem timeOpL2_sub
     with t hout hu' hv' huv'
   rw [hout, Pi.sub_apply, hu', hv', huv', map_sub]
 
-omit [CompleteSpace Y] in
 theorem timeOpL2_congr
     (A : ℝ → X →L[ℝ] Y)
     (hA : MemLp A 2 (timeMeasure T))
@@ -97,7 +93,6 @@ theorem timeOpL2_congr
     with t hu' hv' huv'
   rw [hu', hv', huv']
 
-omit [CompleteSpace Y] in
 theorem timeOpL2_norm_le
     (A : ℝ → X →L[ℝ] Y)
     (hA : MemLp A 2 (timeMeasure T))

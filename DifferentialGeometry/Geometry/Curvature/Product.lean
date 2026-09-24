@@ -302,4 +302,26 @@ theorem metricScalarAt_productMetric
       LinearMap.trace ℝ F (ricciSharp h x.2).toLinearMap
   exact LinearMap.trace_prodMap' _ _
 
+theorem metricRicciAt_productMetric_apply [I.Boundaryless] [J.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x : M × N) (v : Fin 2 → TangentSpace (I.prod J) x) :
+    metricRicciAt (g.prod h) x v =
+      metricRicciAt g x.1 (fun k => (v k).1) + metricRicciAt h x.2 (fun k => (v k).2) := by
+  have hv : v = (vec2 (I := I.prod J) (x := x) (v 0) (v 1) :
+      Fin 2 → TangentSpace (I.prod J) x) := by
+    funext i
+    fin_cases i <;> rfl
+  have hv₁ : (fun k => (v k).1) = vec2 (I := I) (x := x.1) (v 0).1 (v 1).1 := by
+    funext i
+    fin_cases i <;> rfl
+  have hv₂ : (fun k => (v k).2) = vec2 (I := J) (x := x.2) (v 0).2 (v 1).2 := by
+    funext i
+    fin_cases i <;> rfl
+  conv_lhs => rw [hv]
+  rw [hv₁, hv₂,
+    DifferentialGeometry.metricRicciAt_apply_eq_ricciTensor (g := g.prod h) x (v 0) (v 1),
+    DifferentialGeometry.metricRicciAt_apply_eq_ricciTensor (g := g) x.1 (v 0).1 (v 1).1,
+    DifferentialGeometry.metricRicciAt_apply_eq_ricciTensor (g := h) x.2 (v 0).2 (v 1).2,
+    ricciTensor_productMetric]
+
 end DifferentialGeometry.Geometry.Curvature

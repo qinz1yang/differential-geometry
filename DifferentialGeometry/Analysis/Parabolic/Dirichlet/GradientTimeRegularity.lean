@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
-import DifferentialGeometry.Analysis.Integration.Lp.Curry
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientTimeRegularity
 
 noncomputable section
 
@@ -67,103 +66,17 @@ theorem IsWeakEvolutionSolution.exists_timeH1_localWeakPartial
       ∀ᵐ s ∂timeMeasure (t₁ - t₀),
         (w.toFun s : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
           dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u (t₀ + s)) := by
-  let μ := volume.restrict (Icc t₀ t₁)
-  let ν := μ.prod (volume.restrict Ω₀)
-  have hI : Icc t₀ t₁ ⊆ Icc (0 : ℝ) T :=
-    fun t ht => ⟨ht₀.le.trans ht.1, ht.2.trans ht₁.le⟩
-  have hμ : (timeMeasure T).restrict (Icc t₀ t₁) = μ :=
+  have hI : Icc t₀ t₁ ⊆ Icc (0 : ℝ) T := Icc_subset_Icc ht₀.le ht₁.le
+  have hμ : (timeMeasure T).restrict (Icc t₀ t₁) = volume.restrict (Icc t₀ t₁) :=
     Measure.restrict_restrict_of_subset hI
-  have hμle : μ ≤ timeMeasure T := by
-    rw [← hμ]
-    exact Measure.restrict_le_self
-  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
-  let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
-    (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
-  let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs
-    (timeMeasure T) i u
-  have hmeasure : ν ≤ (timeMeasure T).prod (volume.restrict Ω) :=
-    Measure.prod_mono hμle (Measure.restrict_mono hsub le_rfl)
-  have hU : LocallyIntegrable U ν :=
-    ((Lp.memLp U).mono_measure hmeasure).locallyIntegrable (by norm_num)
-  have hV (i) : MemLp (V i) 2 ν := (Lp.memLp (V i)).mono_measure hmeasure
   have hsource := hu.exists_lp_weak_time_deriv_and_spatial_weak_deriv hXcont hacont
     α hΩ hΩc hΩs hXsmooth ht₀ ht₁ ht₀₁.le hΩ₀ hΩ₀Ω
   dsimp only at hsource
   rw [hμ] at hsource
   obtain ⟨R, hR, DR, hDR, _, _⟩ := hsource
-  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
-  let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω₀)) := Lp.SecondCountableTopology
-  have hshift : MeasurePreserving (fun s : ℝ => t₀ + s)
-      (timeMeasure (t₁ - t₀)) μ := by
-    rw [← hμ]
-    exact measurePreserving_add_right_timeMeasure_restrict hI
   intro i
-  let V₀ : Lp ℝ 2 ν := (hV i).toLp (V i)
-  let P := Lp.curry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) V₀
-  have hfirst : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
-      (fun z => V i (t, z)) (fun z => U (t, z)) Ω₀ := by
-    filter_upwards [(hasWeakPartialDeriv_dirichletLocalSpacetimeWeakPartialLp q α
-      hΩ hΩc hΩs (timeMeasure T) i u).filter_mono (ae_mono hμle)] with t ht
-    exact ht.restrict hΩ₀ hsub
-  have hspace : ∀ ψ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
-      HasCompactSupport ψ → tsupport ψ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
-      (∫ p, U p * fderiv ℝ ψ p (0, EuclideanSpace.single i 1) ∂ν) =
-        -∫ p, V i p * ψ p ∂ν := by
-    intro ψ hψ hψc hψs
-    exact Sobolev.Euclidean.integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      hU ((hV i).locallyIntegrable (by norm_num)) i hfirst ψ hψ hψc
-      (hψs.trans (Set.prod_mono (subset_univ _) Subset.rfl))
-  have hweak : ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
-      HasCompactSupport φ → tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
-      (∫ p, (Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) P) p *
-        fderiv ℝ φ p (1, 0) ∂ν) = -∫ p, DR i p * φ p ∂ν := by
-    intro φ hφ hφc hφs
-    change (∫ p, (Lp.uncurry ℝ _ (Lp.curry ℝ _ V₀)) p *
-      fderiv ℝ φ p (1, 0) ∂ν) = _
-    rw [Lp.uncurry_curry]
-    have hcomm := Sobolev.integral_weak_deriv_fderiv_comm
-      (0, EuclideanSpace.single i 1) (1, 0) hspace hR hφ hφc hφs
-    have hrspace := Sobolev.Euclidean.integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      ((Lp.memLp R).locallyIntegrable (by norm_num))
-      ((Lp.memLp (DR i)).locallyIntegrable (by norm_num)) i (hDR i) φ hφ hφc
-      (hφs.trans (Set.prod_mono (subset_univ _) Subset.rfl))
-    refine (integral_congr_ae ?_).trans (hcomm.trans hrspace)
-    filter_upwards [(hV i).coeFn_toLp] with p hp
-    exact congrArg (fun v => v * fderiv ℝ φ p (1, 0)) hp
-  let Utree : ∀ n : ℕ, (Fin n → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν :=
-    fun n _ => if n = 0 then Lp.uncurry ℝ (by norm_num) P else 0
-  let Rtree : ∀ n : ℕ, (Fin n → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν :=
-    fun n _ => if n = 0 then DR i else 0
-  have hrootTree : ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
-      HasCompactSupport φ → tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
-      (∫ p, Utree 0 (fun j => Fin.elim0 j) p * fderiv ℝ φ p (1, 0) ∂ν) =
-        -∫ p, Rtree 0 (fun j => Fin.elim0 j) p * φ p ∂ν := by
-    intro φ hφ hφc hφs
-    simpa only [Utree, Rtree, if_pos] using hweak φ hφ hφc hφs
-  have htree := exists_timeH1_of_finite_weak_partial_trees
-    (d := Module.finrank ℝ EuN) (Ω := Ω₀) (a := t₀) (b := t₁)
-    ht₀₁ hΩ₀ 0 Utree Rtree
-    (by intro n hn; omega) (by intro n hn; omega) hrootTree
-  obtain ⟨w, hwae⟩ := htree 0 (by omega) (fun j => Fin.elim0 j)
-  have hw : ∀ᵐ s ∂timeMeasure (t₁ - t₀),
-      (w.toFun s : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
-        fun x => V₀ (t₀ + s, x) := by
-    filter_upwards [hwae] with s hs
-    simpa [Utree, P, Lp.uncurry_curry] using hs.1
-  have hP : ∀ᵐ t ∂μ, (P t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
-      dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t) := by
-    have hc := (dirichletLocalSpacetimeWeakPartialLp_coeFn q α hΩ hΩc hΩs
-      (timeMeasure T) i u).filter_mono (ae_mono hμle)
-    filter_upwards [Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) V₀,
-      Measure.ae_ae_of_ae_prod ((hV i).coeFn_toLp), hc] with t ht hvt hct
-    exact Filter.EventuallyEq.trans ht
-      (Filter.EventuallyEq.trans hvt (ae_restrict_of_ae_restrict_of_subset hsub hct))
-  have hP₀ : ∀ᵐ t ∂μ, (fun x => V₀ (t, x)) =ᵐ[volume.restrict Ω₀]
-      dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t) := by
-    filter_upwards [Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) V₀, hP] with t ht hpt
-    exact ht.symm.trans hpt
-  refine ⟨w, ?_⟩
-  filter_upwards [hw, hshift.quasiMeasurePreserving.ae hP₀] with s hs hsP
-  exact hs.trans hsP
+  obtain ⟨w, hw⟩ := exists_timeH1_localWeakPartial_of_spatial_weak_deriv_time_deriv
+    q u α hΩ hΩc hΩs ht₀₁ hI hΩ₀ (subset_closure.trans hΩ₀Ω) R DR hR hDR i
+  exact ⟨w, hw.mono (fun _ hs => hs.1)⟩
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
