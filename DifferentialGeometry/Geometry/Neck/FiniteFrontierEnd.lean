@@ -1232,14 +1232,16 @@ private theorem NeckFrontierState.exists_end_family
   intro i
   simpa only [hsphere] using hends i
 
-private theorem NeckFrontierState.exists_proper_end
-    [PreconnectedSpace M] [NoncompactSpace M]
+private theorem NeckFrontierState.exists_proper_end_of_process
     (S₀ : NeckFrontierState g eps ι)
-    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
-    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
     (hepsrec : eps ≤ 1 / 156000)
     (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
-    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    (seq : ℕ → NeckFrontierState g eps ι) (hseq0 : seq 0 = S₀)
+    (hmono : Monotone (fun n => (seq n).region))
+    (hanti : Antitone (fun n => (seq n).alive))
+    (hsteps : ∀ n, OrdinaryNeckMove g eps ι (seq n) (seq (n + 1)) ∨
+      ((seq (n + 1)).alive ⊂ (seq n).alive ∧ (seq (n + 1)).sphere = (seq n).sphere))
+    (N : ℕ) (hN : ∀ n, N ≤ n → OrdinaryNeckMove g eps ι (seq n) (seq (n + 1))) :
     ∃ i ∈ S₀.alive, ∃ Θ : Cylinder → M,
       ContMDiffOn IC I3 ∞ Θ (univ ×ˢ Ici (0 : ℝ)) ∧
       InjOn Θ (univ ×ˢ Ici (0 : ℝ)) ∧
@@ -1257,8 +1259,6 @@ private theorem NeckFrontierState.exists_proper_end
         (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ (z, t) = P (z, t)) ∧
         P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) := by
   classical
-  obtain ⟨seq, hseq0, hmono, hanti, hsteps, N, hN⟩ :=
-    NeckFrontierState.exists_ordinary_tail g eps ι S₀ heps hepsstep allNeck
   let event := fun n => OrdinaryNeckMove g eps ι (seq n) (seq (n + 1))
   have hinfinite : {n | event n}.Infinite :=
     (Ici_infinite N).mono (fun n hn => hN n hn)
@@ -1340,6 +1340,35 @@ private theorem NeckFrontierState.exists_proper_end
   refine ⟨z, ?_⟩
   exact (hbase' z).symm.trans ((hfirst z 0 (by norm_num)).trans
     ((hlower (select 0) z).trans hz))
+
+private theorem NeckFrontierState.exists_proper_end
+    [PreconnectedSpace M] [NoncompactSpace M]
+    (S₀ : NeckFrontierState g eps ι)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (hepsrec : eps ≤ 1 / 156000)
+    (hcompact : ∀ B : ℝ, IsCompact {x : M | Geometry.Curvature.metricScalarAt g x ≤ B})
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ i ∈ S₀.alive, ∃ Θ : Cylinder → M,
+      ContMDiffOn IC I3 ∞ Θ (univ ×ˢ Ici (0 : ℝ)) ∧
+      InjOn Θ (univ ×ˢ Ici (0 : ℝ)) ∧
+      IsProperMap (fun z : Sphere 2 × ℝ≥0 => Θ (z.1, z.2.val)) ∧
+      (let U : TopologicalSpace.Opens Cylinder :=
+        ⟨univ ×ˢ Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+       IsSmoothEmbedding IC I3 ∞ (fun z : U => Θ z)) ∧
+      Θ '' (univ ×ˢ Ici (0 : ℝ)) ∩ S₀.region = range (S₀.sphere i).map ∧
+      (∀ z, Θ (z, 0) = RecordedNeckSphere.map g eps (S₀.sphere i) z) ∧
+      (∀ B : ℝ, ∃ T : ℝ≥0, ∀ (z : Sphere 2) (t : ℝ≥0),
+        T ≤ t → B < Geometry.Curvature.metricScalarAt g (Θ (z, t.val))) ∧
+      ∃ (p : M) (nk : SpatialNeck g eps p) (P : PartialDiffeomorph IC I3 Cylinder M ∞),
+        p ∈ range (S₀.sphere i).map ∧
+        univ ×ˢ Icc (0 : ℝ) 1 ⊆ P.source ∧
+        (∀ z t, t ∈ Icc (0 : ℝ) 1 → Θ (z, t) = P (z, t)) ∧
+        P '' (univ ×ˢ Icc (0 : ℝ) 1) ⊆ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) := by
+  obtain ⟨seq, hseq0, hmono, hanti, hsteps, N, hN⟩ :=
+    NeckFrontierState.exists_ordinary_tail g eps ι S₀ heps hepsstep allNeck
+  exact NeckFrontierState.exists_proper_end_of_process g eps ι S₀ hepsrec hcompact
+    seq hseq0 hmono hanti hsteps N hN
 
 theorem exists_spatial_neck_proper_end_with_first_slab_tolerance :
     ∃ eta : ℝ, 0 < eta ∧
